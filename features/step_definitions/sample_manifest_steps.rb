@@ -133,3 +133,14 @@ Then /^the last created sample manifest should be:$/ do |table|
   end
 end
 
+When /^the sample manifest with ID (\d+) is owned by study "([^\"]+)"$/ do |id, name|
+  manifest = SampleManifest.find(id)
+  study    = Study.find_by_name(name) or raise StandardError, "Cannot find study #{name.inspect}"
+  manifest.update_attributes!(:study => study)
+end
+
+When /^the sample manifest with ID (\d+) is supplied by "([^\"]+)"$/ do |id, name|
+  manifest = SampleManifest.find(id)
+  supplier = Supplier.find_by_name(name) or raise StandardError, "Cannot find supplier #{name.inspect}"
+  manifest.update_attributes!(:supplier => supplier)
+end
