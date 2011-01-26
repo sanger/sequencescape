@@ -51,6 +51,9 @@ end
 
 
 class SampleManifest < ActiveRecord::Base
+  include Uuid::Uuidable
+  include ::Io::SampleManifest::ApiIoSupport
+
   class ProcessingError < Exception
   end
   
