@@ -90,7 +90,6 @@ Given /^the sample "([^"]*)" has no accession number$/ do |sample_name|
   assert_nil sample.sample_metadata.sample_ebi_accession_number
 end
 
-
 Given /^I run the "([^\"]+)" cron script$/ do |script_name|
   eval File.read("#{RAILS_ROOT}/lib/cron_scripts/#{script_name}")
 end
@@ -99,4 +98,15 @@ Given /^sample "([^"]*)" came from a sample manifest$/ do |sample_name|
   sample = Sample.find_by_name(sample_name)
   sample_manifest = Factory(:sample_manifest, :id => 1)
   sample.update_attributes!(:sample_manifest => sample_manifest)
+end
+
+Given /^the Sanger sample ID of the last sample is "([^\"]+)"$/ do |id|
+  sample = Sample.last or raise StandardError, "There appear to be no samples"
+  sample.update_attributes!(:sanger_sample_id => id)
+end
+
+Given /^all samples have a Sanger sample ID based on "([^\"]+)"$/ do |id|
+  Sample.all.each_with_index do |sample, index|
+    sample.update_attributes!(:sanger_sample_id => "#{id}#{'%02d' % (index+1)}")
+  end
 end
