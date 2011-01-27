@@ -15,7 +15,6 @@ Feature: Access sample manifests through the API
 
     Given I am using the latest version of the API
 
-
   @paging
   Scenario: Retrieving the first page of sample manifests when none exist
     When I GET the API path "/sample_manifests"
@@ -120,49 +119,5 @@ Feature: Access sample manifests through the API
       """
       {
         general: [ "UUID does not exist" ]
-      }
-      """
-
-  @read
-  Scenario: Reading the JSON for a UUID
-    Given I have an "active" study called "Testing sample manifests"
-    And the UUID for the study "Testing sample manifests" is "22222222-3333-4444-5555-000000000000"
-
-    Given a supplier called "John's Genes" with ID 2
-    And the UUID for the supplier "John's Genes" is "33333333-1111-2222-3333-4444444444444"
-
-    Given the sample manifest exists with ID 1
-    And the UUID for the sample manifest with ID 1 is "00000000-1111-2222-3333-444444444444"
-    And the sample manifest with ID 1 is owned by study "Testing sample manifests"
-    And the sample manifest with ID 1 is supplied by "John's Genes"
-
-    When I GET the API path "/00000000-1111-2222-3333-444444444444"
-    Then the HTTP response should be "200 OK"
-    And the JSON should match the following for the specified fields:
-      """
-      {
-        sample_manifest: {
-          actions: {
-            read: "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
-          },
-          study: {
-            actions: {
-              read: "http://www.example.com/api/1/22222222-3333-4444-5555-000000000000"
-            }
-          },
-          supplier: {
-            actions: {
-              read: "http://www.example.com/api/1/33333333-1111-2222-3333-444444444444"
-            }
-          },
-
-          uuid: "00000000-1111-2222-3333-444444444444",
-          state: "pending",
-          last_errors: null,
-          barcodes: []
-        },
-        uuids_to_ids: {
-          "00000000-1111-2222-3333-444444444444": 1
-        }
       }
       """
