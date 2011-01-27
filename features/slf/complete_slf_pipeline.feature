@@ -1,8 +1,7 @@
 @slf @javascript @sequenom @barcode-service
 Feature: I wish to create samples and push them all the way through QC in SLF
   Background:
-    # The Sanger sample IDs need reseting as the ID column is being used
-    Given the Sanger sample IDs have been reset
+    Given the Sanger sample IDs will be sequentially generated
 
     Given I am a "administrator" user logged in as "user"
     And the "96 Well Plate" barcode printer "xyz" exists
