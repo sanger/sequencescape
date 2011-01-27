@@ -47,10 +47,12 @@ Then /^sample "([^"]*)" should have empty supplier name set to "([^"]*)"$/ do |s
   end
 end
 
-# This resets the auto-increment column of the SangerSampleId table so that their IDs start back a 1.
-# NOTE: Use sparringly because you shouldn't be relying on the ID values anyway.
-Given /^the Sanger sample IDs have been reset$/ do
-  SangerSampleId.connection.execute("ALTER TABLE #{SangerSampleId.quoted_table_name} AUTO_INCREMENT=1")
+Given /^the Sanger sample IDs will be sequentially generated$/ do
+  SangerSampleId::Factory.instance_variable_set(:@instance, Object.new.tap do |instance|
+    def instance.next!
+      @counter = (@counter || 0) + 1
+    end
+  end)
 end
 
 Then /^the samples table should look like:$/ do |table|
@@ -143,4 +145,20 @@ When /^the sample manifest with ID (\d+) is supplied by "([^\"]+)"$/ do |id, nam
   manifest = SampleManifest.find(id)
   supplier = Supplier.find_by_name(name) or raise StandardError, "Cannot find supplier #{name.inspect}"
   manifest.update_attributes!(:supplier => supplier)
+end
+
+Given /^the sample manifest with ID (\d+) is for (\d+) sample tube$/ do |id, count|
+  manifest = SampleManifest.find(id)
+  manifest.update_attributes!(:asset_type => '1dtube', :count => count.to_i)
+end
+
+Given /^the sample manifest with ID (\d+) is for (\d+) plates?$/ do |id, count|
+  manifest = SampleManifest.find(id)
+  manifest.update_attributes!(:asset_type => 'plate', :count => count.to_i)
+end
+
+Given /^the sample manifest with ID (\d+) has been processed$/ do |id|
+  manifest = SampleManifest.find(id)
+  manifest.generate
+  Given %Q{3 pending delayed jobs are processed}
 end
