@@ -693,6 +693,9 @@ var TableSorter = {
       this._add_custom_sort_type();
     }
   },
+  extend_table : function(element_or_id) {
+    TableKit.load(element_or_id);
+  },
   _add_custom_sort_type : function(){
     TableKit.Sortable.detectors.unshift('date-rfc822');
     TableKit.Sortable.addSortType(
