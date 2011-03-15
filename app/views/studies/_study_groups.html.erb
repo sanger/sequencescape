@@ -18,10 +18,14 @@
         :method => :get,
         :loading => "Element.show('loading')",
         :complete => "try {
-            Element.hide('loading');
             TableSorterFacade.extend_table('study_list');
             Element.highlight('study_list');
-          } catch(e) {console.warn(e);}") %>
+          } catch (e) {
+            (e.name == 'ElementDoesNotExistError') || console.warn(e);
+          } finally {
+            Element.hide('loading');
+          };",
+        :failure => "Element.show('remote_error')") %>
     });
     </script>
   </div>
