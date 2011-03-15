@@ -17,12 +17,11 @@
         :update => "everything",
         :method => :get,
         :loading => "Element.show('loading')",
-        :complete => "TableKit.load();
-          TableKit.heads['study_list'] = null;
-          TableKit.rows['study_list'] = null;
-          TableKit.Sortable.init('study_list');
-          Element.highlight('study_list');
-          Element.hide('loading')") %>
+        :complete => "try {
+            Element.hide('loading');
+            TableSorterFacade.extend_table('study_list');
+            Element.highlight('study_list');
+          } catch(e) {console.warn(e);}") %>
     });
     </script>
   </div>
