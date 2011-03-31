@@ -55,6 +55,7 @@ class RequestsController < ApplicationController
 
   def edit
     @request = Request.find(params[:id])
+    @reqtype_list = RequestType.find_all_by_asset_type(@request.request_type.asset_type)
     if current_user.is_administrator?
       respond_to do |format|
         format.html
@@ -76,6 +77,14 @@ class RequestsController < ApplicationController
       redirect_to request_path(@request)
       return
     end
+
+    unless params[:request][:request_type_id].nil? 
+      unless @request.update_request_type?(params[:request][:request_type_id])
+        flash[:error] = "You can not change the request type. Quota insufficient."
+        redirect_to request_path(@request)
+        return
+      end
+   end
 
     parameters = params[:request]
 #    parameters[:properties] = params[:request][:properties] if params[:request][:properties]
