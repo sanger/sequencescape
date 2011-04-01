@@ -39,7 +39,9 @@ class Api::StudyIO < Api::Base
     end
 
     map_attribute_to_json_attribute(:data_release_strategy)
-
+    map_attribute_to_json_attribute(:ega_dac_accession_number)
+    map_attribute_to_json_attribute(:array_express_accession_number)
+    map_attribute_to_json_attribute(:ega_policy_accession_number)
   end
 
   self.related_resources = [ :samples, :projects ]

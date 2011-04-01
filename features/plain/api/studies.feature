@@ -13,10 +13,9 @@ Feature: Interacting with studies through the API
     Given I have an active study called "Testing the JSON API"
     And the UUID for the study "Testing the JSON API" is "00000000-1111-2222-3333-444444444444"
     And the faculty sponsor for study "Testing the JSON API" is "John Smith"
-    And the Array Express accession number for study "Study Testing the JSON API" is "AE111"
-    And the EGA policy accession number for study "Study Testing the JSON API" is "EGA222"
-    And the dac accession number for study "Study Testing the JSON API" is "DAC333"
-
+    And the Array Express accession number for study "Testing the JSON API" is "AE111"
+    And the EGA policy accession number for study "Testing the JSON API" is "EGA222"
+    And the dac accession number for study "Testing the JSON API" is "DAC333"
 
     When I GET the API path "/studies"
     Then ignoring "id" the JSON should be:
