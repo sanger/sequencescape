@@ -208,6 +208,8 @@ GivenReferenceGenomeStudyMetadata(:reference_genome, /^the reference genome for 
 
 GivenStudyMetadata(:dac_policy, /^the policy for study "([^\"]+)" is "([^\"]+)"$/)
 GivenStudyMetadata(:ega_dac_accession_number, /^the dac accession number for study "([^\"]+)" is "([^\"]+)"$/)
+GivenStudyMetadata(:array_express_accession_number, /^the Array Express accession number for study "([^\"]+)" is "([^\"]+)"$/)
+GivenStudyMetadata(:ega_policy_accession_number, /^the EGA policy accession number for study "([^\"]+)" is "([^\"]+)"$/)
 
 Given /^the (abstract|description|title) of study "([^\"]+)" is "([^\"]*)"$/ do |attribute,name,description|
   study = Study.find_by_name(name) or raise StandardError, "There appears to be no study named '#{ name }'"
