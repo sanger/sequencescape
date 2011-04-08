@@ -39,7 +39,11 @@ class Pipeline < ActiveRecord::Base
   validates_presence_of :name
   validates_uniqueness_of :name, :on => :create, :message => "name already in use"
 
-  INBOX_PARTIAL='default_inbox'
+  INBOX_PARTIAL               = 'default_inbox'
+  
+  # Override this in subclasses if you want to display action links
+  # for released batches
+  ALWAYS_SHOW_RELEASE_ACTIONS = false
   
   def inbox_partial
     INBOX_PARTIAL
