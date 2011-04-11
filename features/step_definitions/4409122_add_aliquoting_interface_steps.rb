@@ -10,8 +10,9 @@ end
 Given /^study "([^\"]+)" has the following registered samples in sample tubes:$/ do |study_name, table|
   study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   table.hashes.each do |details|
+    sample_tube_name = details['sample tube']
     sample      = study.samples.create!(:name => details['sample'])
-    sample_tube = Factory(:sample_tube, :name => details['sample tube'], :material => sample)
+    sample_tube = Factory(:sample_tube, :name => sample_tube_name, :material => sample)
 
     Factory(
       :submission,
@@ -20,5 +21,7 @@ Given /^study "([^\"]+)" has the following registered samples in sample tubes:$/
       :workflow => @current_user.workflow,
       :state => 'ready'
     )
+    And %Q{the asset "#{sample_tube_name}" belongs to study "#{study_name}"}
+
   end
 end
