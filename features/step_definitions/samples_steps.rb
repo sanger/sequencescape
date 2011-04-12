@@ -115,3 +115,14 @@ Given /^study "([^\"]+)" has the following samples in sample tubes:$/ do |study_
 
   end
 end
+
+Then /^the sample "([^"]*)" should belong to the study named "([^"]*)"$/ do |sample_name, study_name|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample #{sample_name.inspect}"
+  study  = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
+  assert study.samples.include?(sample)
+end
+Then /^the sample "([^"]*)" should not belong to the study named "([^"]*)"$/ do |sample_name, study_name|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample #{sample_name.inspect}"
+  study  = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
+  assert !study.samples.include?(sample)
+end
