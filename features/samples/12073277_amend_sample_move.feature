@@ -5,6 +5,14 @@ Feature: move samples and assets between studies
     Given a study called "study from" exists
     Given a study called "study to" exists
 
+  Scenario: move a sample without any asset
+    Given I have a sample called "sample_to_move" with metadata
+    And the sample "sample_to_move" belongs to the study "study from"
+    When I move sample "sample_to_move" from study "study from" to "study to"
+    Then I should see "Sample has been moved"
+    And the sample "sample_to_move" should belong to the study named "study to"
+    And the sample "sample_to_move" should not belong to the study named "study from"
+
   Scenario: move a sample with one asset
     Given study "study from" has the following registered samples in sample tubes:
       | sample | sample tube |
