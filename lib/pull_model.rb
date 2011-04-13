@@ -38,7 +38,10 @@ end
 optparse = OptionParser.new do |opts|
   opts.on('-s', '--sample id_or_name', 'sample to pull') do |sample|
     #$objects<< [Sample, {},  sample]
-    $objects<< [Sample, {:assets => { :requests => [:submission, :target_asset], :children => :requests, :parents => :requests }, :studies => nil },  sample]
+    $objects<< [Sample, {:assets => { :requests => [:submission, :target_asset], :children => :requests, :parents => :requests }, :studies => nil},  sample]
+  end
+  opts.on('-sm', '--sample_with_metada id_or_name', 'sample to pull') do |sample|
+    $objects<< [Sample, {:assets => { :requests => [:submission, :target_asset], :children => :requests, :parents => :requests }, :studies => nil, :sample_metadata => nil },  sample]
   end
   opts.on('-m', '--model', 'model (classname) of the object to pull') do |model|
     $options[:model]=model
@@ -69,7 +72,7 @@ loaded = []
       raise RuntimeError, "can't find #{model} '#{name}'" unless object
       loaded += object.pull(includes) do |object|
         att =object.attributes.reject { |k,v| [ :created_at, :updated_at ].include?(k.to_sym) }
-        att["name"] = "#{object.class.name}_#{id}" if att.include?("name")
+        att["name"] = "#{object.class.name}_#{object.id}" if att.include?("name")
 %Q{
 #{object.class.name}.new(#{att.inspect}) { |r| r.id = #{object.id} }.save_without_validation
 }
