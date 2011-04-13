@@ -38,9 +38,9 @@ end
 optparse = OptionParser.new do |opts|
   opts.on('-s', '--sample id_or_name', 'sample to pull') do |sample|
     #$objects<< [Sample, {},  sample]
-    $objects<< [Sample, {:assets => { :requests => [:submission, :target_asset], :children => :requests, :parents => :requests }, :studies => nil},  sample]
+    $objects<< [Sample, {:assets => { :requests => [:submission, :target_asset, :request_metadata], :children => :requests, :parents => :requests }, :study_samples =>  :study},  sample]
   end
-  opts.on('-sm', '--sample_with_metada id_or_name', 'sample to pull') do |sample|
+  opts.on('--sample_with_metada id_or_name', 'sample to pull') do |sample|
     $objects<< [Sample, {:assets => { :requests => [:submission, :target_asset], :children => :requests, :parents => :requests }, :studies => nil, :sample_metadata => nil },  sample]
   end
   opts.on('-m', '--model', 'model (classname) of the object to pull') do |model|
