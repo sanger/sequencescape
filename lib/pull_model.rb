@@ -1,11 +1,14 @@
 require 'optparse'
 $options = { :model => "sample"}
 $objects = []
+$already_pulled = {}
 
 class ActiveRecord::Base
   def pull(includes=nil, &block)
-    return [] if @already_pulled
-    @already_pulled = true
+    #debugger if id == 57422
+    key = [self.class.table_name, self.id]
+    return [] if $already_pulled.include?(key)
+    $already_pulled[key] = true
     pulled = [block ? block.call(self) : self ]
 
     case includes
@@ -34,8 +37,8 @@ end
 
 optparse = OptionParser.new do |opts|
   opts.on('-s', '--sample id_or_name', 'sample to pull') do |sample|
-    $objects<< [Sample, {},  sample]
-    #$objects<< [Sample, {:assets => :requests, :studies => nil },  sample]
+    #$objects<< [Sample, {},  sample]
+    $objects<< [Sample, {:assets => { :requests => [:submission, :target_asset], :children => :requests, :parents => :requests }, :studies => nil },  sample]
   end
   opts.on('-m', '--model', 'model (classname) of the object to pull') do |model|
     $options[:model]=model
@@ -65,8 +68,10 @@ loaded = []
 
       raise RuntimeError, "can't find #{model} '#{name}'" unless object
       loaded += object.pull(includes) do |object|
+        att =object.attributes.reject { |k,v| [ :created_at, :updated_at ].include?(k.to_sym) }
+        att["name"] = "#{object.class.name}_#{id}" if att.include?("name")
 %Q{
-        object = #{object.class.name}.new(#{object.attributes.reject { |k,v| [ :created_at, :updated_at ].include?(k.to_sym) } .inspect}) { |r| r.id = #{id} } #.save_without_validation
+#{object.class.name}.new(#{att.inspect}) { |r| r.id = #{object.id} }.save_without_validation
 }
       end
     end
@@ -79,5 +84,4 @@ end
   #puts $options.to_yaml
   #puts $objects.to_yaml
 
-  puts "debugger"
 puts load_objects($objects) 
