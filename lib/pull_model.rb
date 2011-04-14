@@ -20,7 +20,7 @@ class ActiveRecord::Base
     key = [self.class.table_name, self.id]
     return [] if $already_pulled.include?(key)
     $already_pulled[key] = true
-    pulled = [self]
+    pulled = []
     case includes
     when Array
       includes.each do |model|
@@ -31,10 +31,11 @@ class ActiveRecord::Base
         pulled += self.send(model).pull(options)
       end
     when nil
+      # nothing. no method to call
     else
       pulled += self.send(includes).pull([])
     end
-    return pulled
+    return pulled << self
 
   end
 end
@@ -45,10 +46,17 @@ def pull(includes =nil)
 end
 end
 
+class NilClass
+  def pull(includes = nil)
+    []
+  end
+end
+
 # don't modidy this for a new model, as it will affect all the previous using it
 # declare a specific one instead
-RequestAssociations = {:submission => nil, :target_asset => Proc.new {AssetAssociations}, :request_metadata => nil, :user => nil }
+RequestAssociations = {:submission => Proc.new {SubmissionAssociations}, :target_asset => Proc.new {AssetAssociations}, :request_metadata => nil, :user => nil }
 AssetAssociations = { :requests => RequestAssociations , :children => Proc.new {AssetAssociations}, :parents => Proc.new {AssetAssociations}}
+  SubmissionAssociations = { :asset_group => { :assets =>AssetAssociations } }
 
 optparse = OptionParser.new do |opts|
   opts.on('-s', '--sample id_or_name', 'sample to pull') do |sample|
@@ -95,7 +103,7 @@ end
 def object_to_hash(object)
   att =object.attributes.reject { |k,v| [ :created_at, :updated_at ].include?(k.to_sym) }
   att.each do |k,v|
-    if k =~ /name|login|email/i and v.is_a?(String)
+    if k =~ /name|login|email|decription|abstract|title/i and v.is_a?(String)
       att[k] = "#{object.class.name}_#{object.id}_#{k}"
     end
   end

@@ -89,7 +89,11 @@ Feature: move samples and assets between studies
     And I should not see "study from"
     @developping
   Scenario: real one from production
-    Given data are preloaded from "12073277"
-    When I move sample "Sample_7280" from study "Study_333" to "study to"
+    #Given data are preloaded from "12073277"
+    Given data are preloaded from "12073277_II" renaming:
+      | old name | new name |
+      | Sample_1082059_name | sample_to_move |
+      |Study_1757_name | study_from |
+    When I move sample "sample_to_move" from study "study_from" to "study to"
     Then show me the page
 
