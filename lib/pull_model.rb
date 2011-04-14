@@ -4,34 +4,32 @@ $objects = []
 $already_pulled = {}
 
 class ActiveRecord::Base
-  def pull(includes=nil, &block)
-    #debugger if id == 57422
+  def pull(includes=nil)
     key = [self.class.table_name, self.id]
     return [] if $already_pulled.include?(key)
     $already_pulled[key] = true
-    pulled = [block ? block.call(self) : self ]
-
+    pulled = [self]
     case includes
     when Array
       includes.each do |model|
-        pulled += self.send(model).pull([], &block)
+        pulled += self.send(model).pull([])
       end
     when Hash
       includes.each do |model, options|
-        pulled += self.send(model).pull(options, &block)
+        pulled += self.send(model).pull(options)
       end
     when nil
     else
-      pulled += self.send(includes).pull([],  &block)
+      pulled += self.send(includes).pull([])
     end
     return pulled
-  end
 
+  end
 end
 
 class Array
-def pull(includes =nil, &block)
-  map {|e| e.pull(includes, &block) }.flatten
+def pull(includes =nil)
+  map {|e| e.pull(includes) }.flatten
 end
 end
 
@@ -70,15 +68,23 @@ loaded = []
       end
 
       raise RuntimeError, "can't find #{model} '#{name}'" unless object
-      loaded += object.pull(includes) do |object|
-        att =object.attributes.reject { |k,v| [ :created_at, :updated_at ].include?(k.to_sym) }
-        att["name"] = "#{object.class.name}_#{object.id}" if att.include?("name")
+      loaded += object.pull(includes)
+    end
+  return loaded
+  end
+end
+
+def object_to_hash(object)
+    att =object.attributes.reject { |k,v| [ :created_at, :updated_at ].include?(k.to_sym) }
+    att["name"] = "#{object.class.name}_#{object.id}" if att.include?("name")
+    att
+end
+def objects_to_script(objects)
+  objects.map do |object|
+    att = object_to_hash(object)
 %Q{
 #{object.class.name}.new(#{att.inspect}) { |r| r.id = #{object.id} }.save_without_validation
 }
-      end
-    end
-  return loaded
   end
 end
 
@@ -87,4 +93,4 @@ end
   #puts $options.to_yaml
   #puts $objects.to_yaml
 
-puts load_objects($objects) 
+puts objects_to_script(load_objects($objects) )
