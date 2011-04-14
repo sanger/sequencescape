@@ -2,7 +2,7 @@
 - :attributes: 
     control: 
     empty_supplier_sample_name: true
-    name: Sample_7280
+    name: Sample_7280_name
     new_name_format: true
     sample_manifest_id: 
     id: 7280
@@ -11,7 +11,7 @@
   :class: Sample
   :id: 7280
 - :attributes: 
-    name: SampleTube_57421
+    name: SampleTube_57421_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -38,7 +38,7 @@
   :class: SampleTube
   :id: 57421
 - :attributes: 
-    name: LibraryTube_57422
+    name: LibraryTube_57422_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -65,7 +65,7 @@
   :class: LibraryTube
   :id: 57422
 - :attributes: 
-    name: Lane_76375
+    name: Lane_76375_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -92,7 +92,7 @@
   :class: Lane
   :id: 76375
 - :attributes: 
-    name: Lane_1423155
+    name: Lane_1423155_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -119,7 +119,7 @@
   :class: Lane
   :id: 1423155
 - :attributes: 
-    name: Lane_1423156
+    name: Lane_1423156_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -166,7 +166,23 @@
   :class: SequencingRequest
   :id: 31540
 - :attributes: 
-    name: SequencingRequest::Metadata_23241
+    salt: 
+    crypted_password: 
+    remember_token_expires_at: 
+    api_key: db96e355b024b-aec41b9212b8e5cd81d6e967bf96b46f
+    barcode: ID198L
+    id: 145
+    pipeline_administrator: 
+    last_name: User_145_last_name
+    remember_token: 
+    workflow_id: 1
+    login: User_145_login
+    email: User_145_email
+    first_name: User_145_first_name
+  :class: User
+  :id: 145
+- :attributes: 
+    name: 
     pipeline_id: 27625
     failure: Loading failure (lin/block/hyb)
     request_id: 31540
@@ -223,7 +239,7 @@
   :class: SequencingRequest
   :id: 2911542
 - :attributes: 
-    name: SequencingRequest::Metadata_2535027
+    name: 
     pipeline_id: 27625
     failure: Loading failure (lin/block/hyb)
     request_id: 2911542
@@ -261,7 +277,7 @@
   :class: SequencingRequest
   :id: 2911543
 - :attributes: 
-    name: SequencingRequest::Metadata_2535028
+    name: 
     pipeline_id: 27625
     failure: Loading failure (lin/block/hyb)
     request_id: 2911543
@@ -299,7 +315,7 @@
   :class: LibraryCreationRequest
   :id: 31539
 - :attributes: 
-    name: LibraryCreationRequest::Metadata_23240
+    name: 
     pipeline_id: 22371
     failure: 
     request_id: 31539
@@ -317,7 +333,7 @@
   :class: LibraryCreationRequest::Metadata
   :id: 23240
 - :attributes: 
-    name: SampleTube_57433
+    name: SampleTube_57433_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -344,7 +360,7 @@
   :class: SampleTube
   :id: 57433
 - :attributes: 
-    name: LibraryTube_57434
+    name: LibraryTube_57434_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -371,7 +387,7 @@
   :class: LibraryTube
   :id: 57434
 - :attributes: 
-    name: Lane_76393
+    name: Lane_76393_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -398,7 +414,7 @@
   :class: Lane
   :id: 76393
 - :attributes: 
-    name: Lane_78456
+    name: Lane_78456_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -425,7 +441,7 @@
   :class: Lane
   :id: 78456
 - :attributes: 
-    name: Lane_78458
+    name: Lane_78458_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -452,7 +468,7 @@
   :class: Lane
   :id: 78458
 - :attributes: 
-    name: Lane_78460
+    name: Lane_78460_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -479,7 +495,7 @@
   :class: Lane
   :id: 78460
 - :attributes: 
-    name: Lane_78462
+    name: Lane_78462_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -506,7 +522,7 @@
   :class: Lane
   :id: 78462
 - :attributes: 
-    name: Lane_78464
+    name: Lane_78464_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -533,7 +549,7 @@
   :class: Lane
   :id: 78464
 - :attributes: 
-    name: Lane_78466
+    name: Lane_78466_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -560,7 +576,7 @@
   :class: Lane
   :id: 78466
 - :attributes: 
-    name: Lane_78468
+    name: Lane_78468_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -587,7 +603,7 @@
   :class: Lane
   :id: 78468
 - :attributes: 
-    name: Lane_78472
+    name: Lane_78472_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -614,7 +630,7 @@
   :class: Lane
   :id: 78472
 - :attributes: 
-    name: Lane_78485
+    name: Lane_78485_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -641,7 +657,7 @@
   :class: Lane
   :id: 78485
 - :attributes: 
-    name: Lane_78486
+    name: Lane_78486_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -668,7 +684,7 @@
   :class: Lane
   :id: 78486
 - :attributes: 
-    name: Lane_78488
+    name: Lane_78488_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -695,7 +711,7 @@
   :class: Lane
   :id: 78488
 - :attributes: 
-    name: Lane_78490
+    name: Lane_78490_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -722,7 +738,7 @@
   :class: Lane
   :id: 78490
 - :attributes: 
-    name: Lane_78491
+    name: Lane_78491_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -749,7 +765,7 @@
   :class: Lane
   :id: 78491
 - :attributes: 
-    name: Lane_78492
+    name: Lane_78492_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -776,7 +792,7 @@
   :class: Lane
   :id: 78492
 - :attributes: 
-    name: Lane_78493
+    name: Lane_78493_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -803,7 +819,7 @@
   :class: Lane
   :id: 78493
 - :attributes: 
-    name: Lane_78494
+    name: Lane_78494_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -830,7 +846,7 @@
   :class: Lane
   :id: 78494
 - :attributes: 
-    name: Lane_78495
+    name: Lane_78495_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -857,7 +873,7 @@
   :class: Lane
   :id: 78495
 - :attributes: 
-    name: Lane_78496
+    name: Lane_78496_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -884,7 +900,7 @@
   :class: Lane
   :id: 78496
 - :attributes: 
-    name: Lane_78497
+    name: Lane_78497_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -911,7 +927,7 @@
   :class: Lane
   :id: 78497
 - :attributes: 
-    name: Lane_78498
+    name: Lane_78498_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -938,7 +954,7 @@
   :class: Lane
   :id: 78498
 - :attributes: 
-    name: Lane_78499
+    name: Lane_78499_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -965,7 +981,7 @@
   :class: Lane
   :id: 78499
 - :attributes: 
-    name: Lane_78500
+    name: Lane_78500_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -992,7 +1008,7 @@
   :class: Lane
   :id: 78500
 - :attributes: 
-    name: Lane_78501
+    name: Lane_78501_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -1019,7 +1035,7 @@
   :class: Lane
   :id: 78501
 - :attributes: 
-    name: Lane_78502
+    name: Lane_78502_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -1046,7 +1062,7 @@
   :class: Lane
   :id: 78502
 - :attributes: 
-    name: Lane_78503
+    name: Lane_78503_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -1073,7 +1089,7 @@
   :class: Lane
   :id: 78503
 - :attributes: 
-    name: Lane_85677
+    name: Lane_85677_name
     material_id: 
     size: 
     descriptor_fields: 
@@ -1100,7 +1116,7 @@
   :class: Lane
   :id: 85677
 - :attributes: 
-    name: Lane_85678
+    name: Lane_85678_name
     material_id: 
     size: 
     descriptor_fields: 
@@ -1127,7 +1143,7 @@
   :class: Lane
   :id: 85678
 - :attributes: 
-    name: Lane_86013
+    name: Lane_86013_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -1154,7 +1170,7 @@
   :class: Lane
   :id: 86013
 - :attributes: 
-    name: Lane_86014
+    name: Lane_86014_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -1181,7 +1197,7 @@
   :class: Lane
   :id: 86014
 - :attributes: 
-    name: Lane_86015
+    name: Lane_86015_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -1208,7 +1224,7 @@
   :class: Lane
   :id: 86015
 - :attributes: 
-    name: Lane_86143
+    name: Lane_86143_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -1235,7 +1251,7 @@
   :class: Lane
   :id: 86143
 - :attributes: 
-    name: Lane_86144
+    name: Lane_86144_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -1262,7 +1278,7 @@
   :class: Lane
   :id: 86144
 - :attributes: 
-    name: Lane_1423167
+    name: Lane_1423167_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -1289,7 +1305,7 @@
   :class: Lane
   :id: 1423167
 - :attributes: 
-    name: Lane_1423168
+    name: Lane_1423168_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -1316,7 +1332,7 @@
   :class: Lane
   :id: 1423168
 - :attributes: 
-    name: Lane_1424219
+    name: Lane_1424219_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -1343,7 +1359,7 @@
   :class: Lane
   :id: 1424219
 - :attributes: 
-    name: Lane_1424220
+    name: Lane_1424220_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -1370,7 +1386,7 @@
   :class: Lane
   :id: 1424220
 - :attributes: 
-    name: Lane_1424221
+    name: Lane_1424221_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -1397,7 +1413,7 @@
   :class: Lane
   :id: 1424221
 - :attributes: 
-    name: Lane_1424222
+    name: Lane_1424222_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -1424,7 +1440,7 @@
   :class: Lane
   :id: 1424222
 - :attributes: 
-    name: Lane_1424223
+    name: Lane_1424223_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -1451,7 +1467,7 @@
   :class: Lane
   :id: 1424223
 - :attributes: 
-    name: Lane_1424224
+    name: Lane_1424224_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -1478,7 +1494,7 @@
   :class: Lane
   :id: 1424224
 - :attributes: 
-    name: Lane_1424225
+    name: Lane_1424225_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -1505,7 +1521,7 @@
   :class: Lane
   :id: 1424225
 - :attributes: 
-    name: Lane_1424226
+    name: Lane_1424226_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -1532,7 +1548,7 @@
   :class: Lane
   :id: 1424226
 - :attributes: 
-    name: Lane_1424227
+    name: Lane_1424227_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -1559,7 +1575,7 @@
   :class: Lane
   :id: 1424227
 - :attributes: 
-    name: Lane_1424228
+    name: Lane_1424228_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -1586,7 +1602,7 @@
   :class: Lane
   :id: 1424228
 - :attributes: 
-    name: Lane_1424229
+    name: Lane_1424229_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -1613,7 +1629,7 @@
   :class: Lane
   :id: 1424229
 - :attributes: 
-    name: Lane_1424230
+    name: Lane_1424230_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -1640,7 +1656,7 @@
   :class: Lane
   :id: 1424230
 - :attributes: 
-    name: Lane_1424231
+    name: Lane_1424231_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -1667,7 +1683,7 @@
   :class: Lane
   :id: 1424231
 - :attributes: 
-    name: Lane_1424232
+    name: Lane_1424232_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -1694,7 +1710,7 @@
   :class: Lane
   :id: 1424232
 - :attributes: 
-    name: Lane_1424233
+    name: Lane_1424233_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -1721,7 +1737,7 @@
   :class: Lane
   :id: 1424233
 - :attributes: 
-    name: Lane_1424234
+    name: Lane_1424234_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -1748,7 +1764,7 @@
   :class: Lane
   :id: 1424234
 - :attributes: 
-    name: Lane_1424235
+    name: Lane_1424235_name
     material_id: 
     size: 
     descriptor_fields: 
@@ -1775,7 +1791,7 @@
   :class: Lane
   :id: 1424235
 - :attributes: 
-    name: Lane_1424236
+    name: Lane_1424236_name
     material_id: 
     size: 
     descriptor_fields: 
@@ -1802,7 +1818,7 @@
   :class: Lane
   :id: 1424236
 - :attributes: 
-    name: Lane_1424237
+    name: Lane_1424237_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -1829,7 +1845,7 @@
   :class: Lane
   :id: 1424237
 - :attributes: 
-    name: Lane_1424238
+    name: Lane_1424238_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -1856,7 +1872,7 @@
   :class: Lane
   :id: 1424238
 - :attributes: 
-    name: Lane_1424239
+    name: Lane_1424239_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -1883,7 +1899,7 @@
   :class: Lane
   :id: 1424239
 - :attributes: 
-    name: Lane_1424240
+    name: Lane_1424240_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -1930,7 +1946,7 @@
   :class: SequencingRequest
   :id: 31594
 - :attributes: 
-    name: SequencingRequest::Metadata_23295
+    name: 
     pipeline_id: 24783
     failure: Sybr Green - over-dense clusters
     request_id: 31594
@@ -1987,7 +2003,7 @@
   :class: SequencingRequest
   :id: 36084
 - :attributes: 
-    name: SequencingRequest::Metadata_27202
+    name: 
     pipeline_id: 26437
     failure: Loading failure (lin/block/hyb)
     request_id: 36084
@@ -2025,7 +2041,7 @@
   :class: SequencingRequest
   :id: 36085
 - :attributes: 
-    name: SequencingRequest::Metadata_27203
+    name: 
     pipeline_id: 26438
     failure: Loading failure (lin/block/hyb)
     request_id: 36085
@@ -2063,7 +2079,7 @@
   :class: SequencingRequest
   :id: 36086
 - :attributes: 
-    name: SequencingRequest::Metadata_27204
+    name: 
     pipeline_id: 26439
     failure: Loading failure (lin/block/hyb)
     request_id: 36086
@@ -2101,7 +2117,7 @@
   :class: SequencingRequest
   :id: 36087
 - :attributes: 
-    name: SequencingRequest::Metadata_27205
+    name: 
     pipeline_id: 26440
     failure: Loading failure (lin/block/hyb)
     request_id: 36087
@@ -2139,7 +2155,7 @@
   :class: SequencingRequest
   :id: 36088
 - :attributes: 
-    name: SequencingRequest::Metadata_27206
+    name: 
     pipeline_id: 26441
     failure: Loading failure (lin/block/hyb)
     request_id: 36088
@@ -2177,7 +2193,7 @@
   :class: SequencingRequest
   :id: 36089
 - :attributes: 
-    name: SequencingRequest::Metadata_27207
+    name: 
     pipeline_id: 27676
     failure: Loading failure (lin/block/hyb)
     request_id: 36089
@@ -2215,7 +2231,7 @@
   :class: SequencingRequest
   :id: 36090
 - :attributes: 
-    name: SequencingRequest::Metadata_27208
+    name: 
     pipeline_id: 26442
     failure: Loading failure (lin/block/hyb)
     request_id: 36090
@@ -2253,7 +2269,7 @@
   :class: SequencingRequest
   :id: 36091
 - :attributes: 
-    name: SequencingRequest::Metadata_27209
+    name: 
     pipeline_id: 36091
     failure: 
     request_id: 36091
@@ -2291,7 +2307,7 @@
   :class: SequencingRequest
   :id: 36092
 - :attributes: 
-    name: SequencingRequest::Metadata_27210
+    name: 
     pipeline_id: 27677
     failure: 
     request_id: 36092
@@ -2329,7 +2345,7 @@
   :class: SequencingRequest
   :id: 36093
 - :attributes: 
-    name: SequencingRequest::Metadata_27211
+    name: 
     pipeline_id: 36093
     failure: 
     request_id: 36093
@@ -2367,7 +2383,7 @@
   :class: SequencingRequest
   :id: 36094
 - :attributes: 
-    name: SequencingRequest::Metadata_27212
+    name: 
     pipeline_id: 36094
     failure: 
     request_id: 36094
@@ -2405,7 +2421,7 @@
   :class: SequencingRequest
   :id: 36095
 - :attributes: 
-    name: SequencingRequest::Metadata_27213
+    name: 
     pipeline_id: 36095
     failure: 
     request_id: 36095
@@ -2443,7 +2459,7 @@
   :class: SequencingRequest
   :id: 36096
 - :attributes: 
-    name: SequencingRequest::Metadata_27214
+    name: 
     pipeline_id: 36096
     failure: 
     request_id: 36096
@@ -2481,7 +2497,7 @@
   :class: SequencingRequest
   :id: 36097
 - :attributes: 
-    name: SequencingRequest::Metadata_27215
+    name: 
     pipeline_id: 36097
     failure: 
     request_id: 36097
@@ -2519,7 +2535,7 @@
   :class: SequencingRequest
   :id: 36098
 - :attributes: 
-    name: SequencingRequest::Metadata_27216
+    name: 
     pipeline_id: 36098
     failure: 
     request_id: 36098
@@ -2557,7 +2573,7 @@
   :class: SequencingRequest
   :id: 36099
 - :attributes: 
-    name: SequencingRequest::Metadata_27217
+    name: 
     pipeline_id: 25626
     failure: 
     request_id: 36099
@@ -2595,7 +2611,7 @@
   :class: SequencingRequest
   :id: 36100
 - :attributes: 
-    name: SequencingRequest::Metadata_27218
+    name: 
     pipeline_id: 26443
     failure: 
     request_id: 36100
@@ -2633,7 +2649,7 @@
   :class: SequencingRequest
   :id: 36101
 - :attributes: 
-    name: SequencingRequest::Metadata_27219
+    name: 
     pipeline_id: 27678
     failure: 
     request_id: 36101
@@ -2671,7 +2687,7 @@
   :class: SequencingRequest
   :id: 36102
 - :attributes: 
-    name: SequencingRequest::Metadata_27220
+    name: 
     pipeline_id: 27679
     failure: 
     request_id: 36102
@@ -2709,7 +2725,7 @@
   :class: SequencingRequest
   :id: 36103
 - :attributes: 
-    name: SequencingRequest::Metadata_27221
+    name: 
     pipeline_id: 25642
     failure: 
     request_id: 36103
@@ -2747,7 +2763,7 @@
   :class: SequencingRequest
   :id: 36104
 - :attributes: 
-    name: SequencingRequest::Metadata_27222
+    name: 
     pipeline_id: 25643
     failure: 
     request_id: 36104
@@ -2785,7 +2801,7 @@
   :class: SequencingRequest
   :id: 36105
 - :attributes: 
-    name: SequencingRequest::Metadata_27223
+    name: 
     pipeline_id: 25644
     failure: 
     request_id: 36105
@@ -2823,7 +2839,7 @@
   :class: SequencingRequest
   :id: 36106
 - :attributes: 
-    name: SequencingRequest::Metadata_27224
+    name: 
     pipeline_id: 25645
     failure: 
     request_id: 36106
@@ -2861,7 +2877,7 @@
   :class: SequencingRequest
   :id: 36107
 - :attributes: 
-    name: SequencingRequest::Metadata_27225
+    name: 
     pipeline_id: 25646
     failure: 
     request_id: 36107
@@ -2899,7 +2915,7 @@
   :class: SequencingRequest
   :id: 36108
 - :attributes: 
-    name: SequencingRequest::Metadata_27226
+    name: 
     pipeline_id: 25647
     failure: 
     request_id: 36108
@@ -2937,7 +2953,7 @@
   :class: SequencingRequest
   :id: 36109
 - :attributes: 
-    name: SequencingRequest::Metadata_27227
+    name: 
     pipeline_id: 25627
     failure: 
     request_id: 36109
@@ -2975,7 +2991,7 @@
   :class: SequencingRequest
   :id: 36110
 - :attributes: 
-    name: SequencingRequest::Metadata_27228
+    name: 
     pipeline_id: 25628
     failure: 
     request_id: 36110
@@ -3013,7 +3029,7 @@
   :class: SequencingRequest
   :id: 36111
 - :attributes: 
-    name: SequencingRequest::Metadata_27229
+    name: 
     pipeline_id: 25629
     failure: 
     request_id: 36111
@@ -3051,7 +3067,7 @@
   :class: SequencingRequest
   :id: 36112
 - :attributes: 
-    name: SequencingRequest::Metadata_27230
+    name: 
     pipeline_id: 25630
     failure: 
     request_id: 36112
@@ -3089,7 +3105,7 @@
   :class: SequencingRequest
   :id: 36113
 - :attributes: 
-    name: SequencingRequest::Metadata_27231
+    name: 
     pipeline_id: 25631
     failure: 
     request_id: 36113
@@ -3127,7 +3143,7 @@
   :class: SequencingRequest
   :id: 36114
 - :attributes: 
-    name: SequencingRequest::Metadata_27232
+    name: 
     pipeline_id: 25632
     failure: 
     request_id: 36114
@@ -3165,7 +3181,7 @@
   :class: SequencingRequest
   :id: 36115
 - :attributes: 
-    name: SequencingRequest::Metadata_27233
+    name: 
     pipeline_id: 25648
     failure: 
     request_id: 36115
@@ -3203,7 +3219,7 @@
   :class: SequencingRequest
   :id: 2911554
 - :attributes: 
-    name: SequencingRequest::Metadata_2535039
+    name: 
     pipeline_id: 24783
     failure: Sybr Green - over-dense clusters
     request_id: 2911554
@@ -3241,7 +3257,7 @@
   :class: SequencingRequest
   :id: 2911555
 - :attributes: 
-    name: SequencingRequest::Metadata_2535040
+    name: 
     pipeline_id: 24783
     failure: Sybr Green - over-dense clusters
     request_id: 2911555
@@ -3279,7 +3295,7 @@
   :class: SequencingRequest
   :id: 2912606
 - :attributes: 
-    name: SequencingRequest::Metadata_2536091
+    name: 
     pipeline_id: 26437
     failure: Loading failure (lin/block/hyb)
     request_id: 2912606
@@ -3317,7 +3333,7 @@
   :class: SequencingRequest
   :id: 2912607
 - :attributes: 
-    name: SequencingRequest::Metadata_2536092
+    name: 
     pipeline_id: 26438
     failure: Loading failure (lin/block/hyb)
     request_id: 2912607
@@ -3355,7 +3371,7 @@
   :class: SequencingRequest
   :id: 2912608
 - :attributes: 
-    name: SequencingRequest::Metadata_2536093
+    name: 
     pipeline_id: 26439
     failure: Loading failure (lin/block/hyb)
     request_id: 2912608
@@ -3393,7 +3409,7 @@
   :class: SequencingRequest
   :id: 2912609
 - :attributes: 
-    name: SequencingRequest::Metadata_2536094
+    name: 
     pipeline_id: 26440
     failure: Loading failure (lin/block/hyb)
     request_id: 2912609
@@ -3431,7 +3447,7 @@
   :class: SequencingRequest
   :id: 2912610
 - :attributes: 
-    name: SequencingRequest::Metadata_2536095
+    name: 
     pipeline_id: 26441
     failure: Loading failure (lin/block/hyb)
     request_id: 2912610
@@ -3469,7 +3485,7 @@
   :class: SequencingRequest
   :id: 2912611
 - :attributes: 
-    name: SequencingRequest::Metadata_2536096
+    name: 
     pipeline_id: 27676
     failure: Loading failure (lin/block/hyb)
     request_id: 2912611
@@ -3507,7 +3523,7 @@
   :class: SequencingRequest
   :id: 2912612
 - :attributes: 
-    name: SequencingRequest::Metadata_2536097
+    name: 
     pipeline_id: 26442
     failure: Loading failure (lin/block/hyb)
     request_id: 2912612
@@ -3545,7 +3561,7 @@
   :class: SequencingRequest
   :id: 2912613
 - :attributes: 
-    name: SequencingRequest::Metadata_2536098
+    name: 
     pipeline_id: 36091
     failure: 
     request_id: 2912613
@@ -3583,7 +3599,7 @@
   :class: SequencingRequest
   :id: 2912614
 - :attributes: 
-    name: SequencingRequest::Metadata_2536099
+    name: 
     pipeline_id: 36091
     failure: 
     request_id: 2912614
@@ -3621,7 +3637,7 @@
   :class: SequencingRequest
   :id: 2912615
 - :attributes: 
-    name: SequencingRequest::Metadata_2536100
+    name: 
     pipeline_id: 27677
     failure: 
     request_id: 2912615
@@ -3659,7 +3675,7 @@
   :class: SequencingRequest
   :id: 2912616
 - :attributes: 
-    name: SequencingRequest::Metadata_2536101
+    name: 
     pipeline_id: 36093
     failure: 
     request_id: 2912616
@@ -3697,7 +3713,7 @@
   :class: SequencingRequest
   :id: 2912617
 - :attributes: 
-    name: SequencingRequest::Metadata_2536102
+    name: 
     pipeline_id: 36093
     failure: 
     request_id: 2912617
@@ -3735,7 +3751,7 @@
   :class: SequencingRequest
   :id: 2912618
 - :attributes: 
-    name: SequencingRequest::Metadata_2536103
+    name: 
     pipeline_id: 36094
     failure: 
     request_id: 2912618
@@ -3773,7 +3789,7 @@
   :class: SequencingRequest
   :id: 2912619
 - :attributes: 
-    name: SequencingRequest::Metadata_2536104
+    name: 
     pipeline_id: 36094
     failure: 
     request_id: 2912619
@@ -3811,7 +3827,7 @@
   :class: SequencingRequest
   :id: 2912620
 - :attributes: 
-    name: SequencingRequest::Metadata_2536105
+    name: 
     pipeline_id: 36095
     failure: 
     request_id: 2912620
@@ -3849,7 +3865,7 @@
   :class: SequencingRequest
   :id: 2912621
 - :attributes: 
-    name: SequencingRequest::Metadata_2536106
+    name: 
     pipeline_id: 36095
     failure: 
     request_id: 2912621
@@ -3887,7 +3903,7 @@
   :class: SequencingRequest
   :id: 2912622
 - :attributes: 
-    name: SequencingRequest::Metadata_2536107
+    name: 
     pipeline_id: 36096
     failure: 
     request_id: 2912622
@@ -3925,7 +3941,7 @@
   :class: SequencingRequest
   :id: 2912623
 - :attributes: 
-    name: SequencingRequest::Metadata_2536108
+    name: 
     pipeline_id: 36097
     failure: 
     request_id: 2912623
@@ -3963,7 +3979,7 @@
   :class: SequencingRequest
   :id: 2912624
 - :attributes: 
-    name: SequencingRequest::Metadata_2536109
+    name: 
     pipeline_id: 36098
     failure: 
     request_id: 2912624
@@ -4001,7 +4017,7 @@
   :class: SequencingRequest
   :id: 2912625
 - :attributes: 
-    name: SequencingRequest::Metadata_2536110
+    name: 
     pipeline_id: 36098
     failure: 
     request_id: 2912625
@@ -4039,7 +4055,7 @@
   :class: SequencingRequest
   :id: 2912626
 - :attributes: 
-    name: SequencingRequest::Metadata_2536111
+    name: 
     pipeline_id: 27678
     failure: 
     request_id: 2912626
@@ -4077,7 +4093,7 @@
   :class: SequencingRequest
   :id: 2912627
 - :attributes: 
-    name: SequencingRequest::Metadata_2536112
+    name: 
     pipeline_id: 27679
     failure: 
     request_id: 2912627
@@ -4115,7 +4131,7 @@
   :class: LibraryCreationRequest
   :id: 31593
 - :attributes: 
-    name: LibraryCreationRequest::Metadata_23294
+    name: 
     pipeline_id: 22298
     failure: 
     request_id: 31593
@@ -4133,7 +4149,7 @@
   :class: LibraryCreationRequest::Metadata
   :id: 23294
 - :attributes: 
-    name: SampleTube_58140
+    name: SampleTube_58140_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -4160,7 +4176,7 @@
   :class: SampleTube
   :id: 58140
 - :attributes: 
-    name: LibraryTube_58141
+    name: LibraryTube_58141_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -4187,7 +4203,7 @@
   :class: LibraryTube
   :id: 58141
 - :attributes: 
-    name: Lane_77459
+    name: Lane_77459_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -4234,7 +4250,7 @@
   :class: SequencingRequest
   :id: 33803
 - :attributes: 
-    name: SequencingRequest::Metadata_25153
+    name: 
     pipeline_id: 26889
     failure: 
     request_id: 33803
@@ -4291,7 +4307,7 @@
   :class: LibraryCreationRequest
   :id: 33802
 - :attributes: 
-    name: LibraryCreationRequest::Metadata_25152
+    name: 
     pipeline_id: 24413
     failure: 
     request_id: 33802
@@ -4309,7 +4325,7 @@
   :class: LibraryCreationRequest::Metadata
   :id: 25152
 - :attributes: 
-    name: SampleTube_58150
+    name: SampleTube_58150_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -4336,7 +4352,7 @@
   :class: SampleTube
   :id: 58150
 - :attributes: 
-    name: LibraryTube_58151
+    name: LibraryTube_58151_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -4363,7 +4379,7 @@
   :class: LibraryTube
   :id: 58151
 - :attributes: 
-    name: Lane_77468
+    name: Lane_77468_name
     material_id: 7280
     size: 
     descriptor_fields: 
@@ -4410,7 +4426,7 @@
   :class: SequencingRequest
   :id: 33923
 - :attributes: 
-    name: SequencingRequest::Metadata_25248
+    name: 
     pipeline_id: 26893
     failure: 
     request_id: 33923
@@ -4467,7 +4483,7 @@
   :class: LibraryCreationRequest
   :id: 33922
 - :attributes: 
-    name: LibraryCreationRequest::Metadata_25247
+    name: 
     pipeline_id: 24419
     failure: 
     request_id: 33922
@@ -4492,7 +4508,7 @@
   :id: 6789
 - :attributes: 
     ethically_approved: true
-    name: Study_333
+    name: Study_333_name
     enforce_data_release: true
     reference_genome_id: 1
     blocked: false

@@ -15,6 +15,8 @@ class ActiveRecord::Base
       end
     end
 
+    # TODO store the actual 'includes' that have been already made for an object and only pull the difference
+    # so that, if different paths pull an object with different data, they all will be pulled do
     key = [self.class.table_name, self.id]
     return [] if $already_pulled.include?(key)
     $already_pulled[key] = true
@@ -45,7 +47,7 @@ end
 
 # don't modidy this for a new model, as it will affect all the previous using it
 # declare a specific one instead
-RequestAssociations = {:submission => nil, :target_asset => Proc.new {AssetAssociations}, :request_metadata => nil}
+RequestAssociations = {:submission => nil, :target_asset => Proc.new {AssetAssociations}, :request_metadata => nil, :user => nil }
 AssetAssociations = { :requests => RequestAssociations , :children => Proc.new {AssetAssociations}, :parents => Proc.new {AssetAssociations}}
 
 optparse = OptionParser.new do |opts|
@@ -91,9 +93,13 @@ loaded = []
 end
 
 def object_to_hash(object)
-    att =object.attributes.reject { |k,v| [ :created_at, :updated_at ].include?(k.to_sym) }
-    att["name"] = "#{object.class.name}_#{object.id}" if att.include?("name")
-    att
+  att =object.attributes.reject { |k,v| [ :created_at, :updated_at ].include?(k.to_sym) }
+  att.each do |k,v|
+    if k =~ /name|login|email/i and v.is_a?(String)
+      att[k] = "#{object.class.name}_#{object.id}_#{k}"
+    end
+  end
+  att
 end
 def objects_to_script(objects)
   objects.map do |object|
