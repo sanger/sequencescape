@@ -95,8 +95,8 @@ end
 def objects_to_yaml(objects)
   objects.map do |object|
     att = object_to_hash(object)
-    {:class => object.class.name, :id => object.id, :attribute => att}.to_yaml
-  end
+    {:class => object.class.name, :id => object.id, :attributes => att}
+  end.to_yaml
 end
 
 ARGV.shift  # to remove the -- needed using script/runner

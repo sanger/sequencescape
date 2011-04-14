@@ -1,0 +1,3422 @@
+--- 
+:class: Sample
+:id: 7280
+:attribute: 
+  control: 
+  empty_supplier_sample_name: true
+  name: Sample_7280
+  new_name_format: true
+  sample_manifest_id: 
+  id: 7280
+  sanger_sample_id: 
+  updated_by_manifest: false
+--- 
+:class: SampleTube
+:id: 57421
+:attribute: 
+  name: SampleTube_57421
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 1
+  public_name: 
+  resource: 
+  archive: 
+  barcode: "31538"
+  concentration: 
+  id: 57421
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: 
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: 
+  map_id: 
+  sti_type: SampleTube
+--- 
+:class: LibraryTube
+:id: 57422
+:attribute: 
+  name: LibraryTube_57422
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 2
+  public_name: 
+  resource: 
+  archive: 
+  barcode: "22371"
+  concentration: 
+  id: 57422
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: pending
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: 
+  map_id: 
+  sti_type: LibraryTube
+--- 
+:class: SequencingRequest
+:id: 31540
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 76375
+  id: 31540
+  submission_id: 3831
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5278
+  asset_id: 57422
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 2911542
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 1423155
+  id: 2911542
+  submission_id: 3831
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5278
+  asset_id: 57422
+  state: failed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 2911543
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 1423156
+  id: 2911543
+  submission_id: 3831
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5278
+  asset_id: 57422
+  state: failed
+  sti_type: SequencingRequest
+--- 
+:class: LibraryCreationRequest
+:id: 31539
+:attribute: 
+  pipeline_id: 1
+  request_type_id: 1
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 57422
+  id: 31539
+  submission_id: 3831
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5278
+  asset_id: 57421
+  state: passed
+  sti_type: LibraryCreationRequest
+--- 
+:class: Submission
+:id: 3831
+:attribute: 
+  item_options: 
+  request_types: 
+  comments: 
+  assets: 
+  project_id: 333
+  asset_group_name: 
+  asset_group_id: 
+  id: 3831
+  request_options: 
+  template_name: 
+  study_id: 333
+  user_id: 145
+  workflow_id: 1
+  message: 
+  state: ready
+  sti_type: Submission
+--- 
+:class: LibraryCreationRequest::Metadata
+:id: 23240
+:attribute: 
+  name: LibraryCreationRequest::Metadata_23240
+  pipeline_id: 22371
+  failure: 
+  request_id: 31539
+  batch_id: 4195
+  read_length: 37
+  tag: 
+  fragment_size_required_to: 4kb
+  id: 23240
+  fragment_size_required_from: 3kb
+  insert_size: 
+  sequencing_type: 
+  pass: 
+  library_creation_complete: "YES"
+  library_type: High complexity
+--- 
+:class: SampleTube
+:id: 57433
+:attribute: 
+  name: SampleTube_57433
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 1
+  public_name: 
+  resource: 
+  archive: 
+  barcode: "31592"
+  concentration: 
+  id: 57433
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: 
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: 
+  map_id: 
+  sti_type: SampleTube
+--- 
+:class: LibraryTube
+:id: 57434
+:attribute: 
+  name: LibraryTube_57434
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 2
+  public_name: 
+  resource: 
+  archive: 
+  barcode: "22298"
+  concentration: 
+  id: 57434
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: pending
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: 
+  map_id: 
+  sti_type: LibraryTube
+--- 
+:class: SequencingRequest
+:id: 31594
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 76393
+  id: 31594
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: failed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36084
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 78456
+  id: 36084
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36085
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 78458
+  id: 36085
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36086
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 78460
+  id: 36086
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36087
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 78462
+  id: 36087
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36088
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 78464
+  id: 36088
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36089
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 78466
+  id: 36089
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36090
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 78468
+  id: 36090
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36091
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 86013
+  id: 36091
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36092
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 78472
+  id: 36092
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36093
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 86014
+  id: 36093
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36094
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 86015
+  id: 36094
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36095
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 86143
+  id: 36095
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36096
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 85677
+  id: 36096
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: cancelled
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36097
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 85678
+  id: 36097
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: cancelled
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36098
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 86144
+  id: 36098
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36099
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 78485
+  id: 36099
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36100
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 78486
+  id: 36100
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36101
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 78488
+  id: 36101
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36102
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 78490
+  id: 36102
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36103
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 78491
+  id: 36103
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36104
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 78492
+  id: 36104
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36105
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 78493
+  id: 36105
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36106
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 78494
+  id: 36106
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36107
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 78495
+  id: 36107
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36108
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 78496
+  id: 36108
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36109
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 78497
+  id: 36109
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36110
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 78498
+  id: 36110
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36111
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 78499
+  id: 36111
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36112
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 78500
+  id: 36112
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36113
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 78501
+  id: 36113
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36114
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 78502
+  id: 36114
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 36115
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 78503
+  id: 36115
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 2911554
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 1423167
+  id: 2911554
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: failed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 2911555
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 1423168
+  id: 2911555
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: failed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 2912606
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 1424219
+  id: 2912606
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: failed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 2912607
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 1424220
+  id: 2912607
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: failed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 2912608
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 1424221
+  id: 2912608
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: failed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 2912609
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 1424222
+  id: 2912609
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: failed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 2912610
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 1424223
+  id: 2912610
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: failed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 2912611
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 1424224
+  id: 2912611
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: failed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 2912612
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 1424225
+  id: 2912612
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: failed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 2912613
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 1424226
+  id: 2912613
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: failed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 2912614
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 1424227
+  id: 2912614
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: failed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 2912615
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 1424228
+  id: 2912615
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: failed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 2912616
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 1424229
+  id: 2912616
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: failed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 2912617
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 1424230
+  id: 2912617
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: failed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 2912618
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 1424231
+  id: 2912618
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: failed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 2912619
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 1424232
+  id: 2912619
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: failed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 2912620
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 1424233
+  id: 2912620
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: failed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 2912621
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 1424234
+  id: 2912621
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: failed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 2912622
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 1424235
+  id: 2912622
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: failed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 2912623
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 1424236
+  id: 2912623
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: failed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 2912624
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 1424237
+  id: 2912624
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: failed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 2912625
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 1424238
+  id: 2912625
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: failed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 2912626
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 1424239
+  id: 2912626
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: failed
+  sti_type: SequencingRequest
+--- 
+:class: SequencingRequest
+:id: 2912627
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 1424240
+  id: 2912627
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57434
+  state: failed
+  sti_type: SequencingRequest
+--- 
+:class: LibraryCreationRequest
+:id: 31593
+:attribute: 
+  pipeline_id: 1
+  request_type_id: 1
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 57434
+  id: 31593
+  submission_id: 3834
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5296
+  asset_id: 57433
+  state: passed
+  sti_type: LibraryCreationRequest
+--- 
+:class: Submission
+:id: 3834
+:attribute: 
+  item_options: 
+  request_types: 
+  comments: 
+  assets: 
+  project_id: 333
+  asset_group_name: 
+  asset_group_id: 
+  id: 3834
+  request_options: 
+  template_name: 
+  study_id: 333
+  user_id: 145
+  workflow_id: 1
+  message: 
+  state: ready
+  sti_type: Submission
+--- 
+:class: LibraryCreationRequest::Metadata
+:id: 23294
+:attribute: 
+  name: LibraryCreationRequest::Metadata_23294
+  pipeline_id: 22298
+  failure: 
+  request_id: 31593
+  batch_id: 4187
+  read_length: 108
+  tag: 
+  fragment_size_required_to: "400"
+  id: 23294
+  fragment_size_required_from: "300"
+  insert_size: 
+  sequencing_type: 
+  pass: 
+  library_creation_complete: "YES"
+  library_type: No PCR
+--- 
+:class: SampleTube
+:id: 58140
+:attribute: 
+  name: SampleTube_58140
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 1
+  public_name: 
+  resource: 
+  archive: 
+  barcode: "33801"
+  concentration: 
+  id: 58140
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: 
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: 
+  map_id: 
+  sti_type: SampleTube
+--- 
+:class: LibraryTube
+:id: 58141
+:attribute: 
+  name: LibraryTube_58141
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 2
+  public_name: 
+  resource: 
+  archive: 
+  barcode: "24413"
+  concentration: 
+  id: 58141
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: pending
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: 
+  map_id: 
+  sti_type: LibraryTube
+--- 
+:class: SequencingRequest
+:id: 33803
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 77459
+  id: 33803
+  submission_id: 3978
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5862
+  asset_id: 58141
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: LibraryCreationRequest
+:id: 33802
+:attribute: 
+  pipeline_id: 1
+  request_type_id: 1
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 58141
+  id: 33802
+  submission_id: 3978
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5862
+  asset_id: 58140
+  state: passed
+  sti_type: LibraryCreationRequest
+--- 
+:class: Submission
+:id: 3978
+:attribute: 
+  item_options: 
+  request_types: 
+  comments: 
+  assets: 
+  project_id: 333
+  asset_group_name: 
+  asset_group_id: 
+  id: 3978
+  request_options: 
+  template_name: 
+  study_id: 333
+  user_id: 145
+  workflow_id: 1
+  message: 
+  state: ready
+  sti_type: Submission
+--- 
+:class: LibraryCreationRequest::Metadata
+:id: 25152
+:attribute: 
+  name: LibraryCreationRequest::Metadata_25152
+  pipeline_id: 24413
+  failure: 
+  request_id: 33802
+  batch_id: 4439
+  read_length: 76
+  tag: 
+  fragment_size_required_to: "500"
+  id: 25152
+  fragment_size_required_from: "400"
+  insert_size: 
+  sequencing_type: 
+  pass: 
+  library_creation_complete: "YES"
+  library_type: No PCR
+--- 
+:class: SampleTube
+:id: 58150
+:attribute: 
+  name: SampleTube_58150
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 1
+  public_name: 
+  resource: 
+  archive: 
+  barcode: "33921"
+  concentration: 
+  id: 58150
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: 
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: 
+  map_id: 
+  sti_type: SampleTube
+--- 
+:class: LibraryTube
+:id: 58151
+:attribute: 
+  name: LibraryTube_58151
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 2
+  public_name: 
+  resource: 
+  archive: 
+  barcode: "24419"
+  concentration: 
+  id: 58151
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: pending
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: 
+  map_id: 
+  sti_type: LibraryTube
+--- 
+:class: SequencingRequest
+:id: 33923
+:attribute: 
+  pipeline_id: 4
+  request_type_id: 3
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 77468
+  id: 33923
+  submission_id: 3984
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5873
+  asset_id: 58151
+  state: passed
+  sti_type: SequencingRequest
+--- 
+:class: LibraryCreationRequest
+:id: 33922
+:attribute: 
+  pipeline_id: 1
+  request_type_id: 1
+  sample_pool_id: 
+  project_id: 333
+  priority: 0
+  target_asset_id: 58151
+  id: 33922
+  submission_id: 3984
+  study_id: 333
+  user_id: 145
+  sample_id: 7280
+  workflow_id: 1
+  charge: 
+  item_id: 5873
+  asset_id: 58150
+  state: passed
+  sti_type: LibraryCreationRequest
+--- 
+:class: Submission
+:id: 3984
+:attribute: 
+  item_options: 
+  request_types: 
+  comments: 
+  assets: 
+  project_id: 333
+  asset_group_name: 
+  asset_group_id: 
+  id: 3984
+  request_options: 
+  template_name: 
+  study_id: 333
+  user_id: 145
+  workflow_id: 1
+  message: 
+  state: ready
+  sti_type: Submission
+--- 
+:class: LibraryCreationRequest::Metadata
+:id: 25247
+:attribute: 
+  name: LibraryCreationRequest::Metadata_25247
+  pipeline_id: 24419
+  failure: 
+  request_id: 33922
+  batch_id: 4439
+  read_length: 76
+  tag: 
+  fragment_size_required_to: "500"
+  id: 25247
+  fragment_size_required_from: "400"
+  insert_size: 
+  sequencing_type: 
+  pass: 
+  library_creation_complete: "YES"
+  library_type: No PCR
+--- 
+:class: Lane
+:id: 76375
+:attribute: 
+  name: Lane_76375
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 76375
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 76393
+:attribute: 
+  name: Lane_76393
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 76393
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: failed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: false
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 77459
+:attribute: 
+  name: Lane_77459
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 77459
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 77468
+:attribute: 
+  name: Lane_77468
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 77468
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 78456
+:attribute: 
+  name: Lane_78456
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 78456
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 78458
+:attribute: 
+  name: Lane_78458
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 78458
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 78460
+:attribute: 
+  name: Lane_78460
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 78460
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 78462
+:attribute: 
+  name: Lane_78462
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 78462
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 78464
+:attribute: 
+  name: Lane_78464
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 78464
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 78466
+:attribute: 
+  name: Lane_78466
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 78466
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 78468
+:attribute: 
+  name: Lane_78468
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 78468
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 78472
+:attribute: 
+  name: Lane_78472
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 78472
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 78485
+:attribute: 
+  name: Lane_78485
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 78485
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 78486
+:attribute: 
+  name: Lane_78486
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 78486
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 78488
+:attribute: 
+  name: Lane_78488
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 78488
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 78490
+:attribute: 
+  name: Lane_78490
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 78490
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 78491
+:attribute: 
+  name: Lane_78491
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 78491
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 78492
+:attribute: 
+  name: Lane_78492
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 78492
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 78493
+:attribute: 
+  name: Lane_78493
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 78493
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 78494
+:attribute: 
+  name: Lane_78494
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 78494
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 78495
+:attribute: 
+  name: Lane_78495
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 78495
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 78496
+:attribute: 
+  name: Lane_78496
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 78496
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 78497
+:attribute: 
+  name: Lane_78497
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 78497
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 78498
+:attribute: 
+  name: Lane_78498
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 78498
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 78499
+:attribute: 
+  name: Lane_78499
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 78499
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 78500
+:attribute: 
+  name: Lane_78500
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 78500
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 78501
+:attribute: 
+  name: Lane_78501
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 78501
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 78502
+:attribute: 
+  name: Lane_78502
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 78502
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 78503
+:attribute: 
+  name: Lane_78503
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 78503
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 86013
+:attribute: 
+  name: Lane_86013
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 86013
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 86014
+:attribute: 
+  name: Lane_86014
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 86014
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 86015
+:attribute: 
+  name: Lane_86015
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 86015
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 86143
+:attribute: 
+  name: Lane_86143
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 86143
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 86144
+:attribute: 
+  name: Lane_86144
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 86144
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 1423155
+:attribute: 
+  name: Lane_1423155
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 1423155
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 1423156
+:attribute: 
+  name: Lane_1423156
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 1423156
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 1423167
+:attribute: 
+  name: Lane_1423167
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 1423167
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: failed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: false
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 1423168
+:attribute: 
+  name: Lane_1423168
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 1423168
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: failed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: false
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 1424219
+:attribute: 
+  name: Lane_1424219
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 1424219
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 1424220
+:attribute: 
+  name: Lane_1424220
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 1424220
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 1424221
+:attribute: 
+  name: Lane_1424221
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 1424221
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 1424222
+:attribute: 
+  name: Lane_1424222
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 1424222
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 1424223
+:attribute: 
+  name: Lane_1424223
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 1424223
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 1424224
+:attribute: 
+  name: Lane_1424224
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 1424224
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 1424225
+:attribute: 
+  name: Lane_1424225
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 1424225
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 1424226
+:attribute: 
+  name: Lane_1424226
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 1424226
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 1424227
+:attribute: 
+  name: Lane_1424227
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 1424227
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 1424228
+:attribute: 
+  name: Lane_1424228
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 1424228
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 1424229
+:attribute: 
+  name: Lane_1424229
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 1424229
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 1424230
+:attribute: 
+  name: Lane_1424230
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 1424230
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 1424231
+:attribute: 
+  name: Lane_1424231
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 1424231
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 1424232
+:attribute: 
+  name: Lane_1424232
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 1424232
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 1424233
+:attribute: 
+  name: Lane_1424233
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 1424233
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 1424234
+:attribute: 
+  name: Lane_1424234
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 1424234
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 1424237
+:attribute: 
+  name: Lane_1424237
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 1424237
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 1424238
+:attribute: 
+  name: Lane_1424238
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 1424238
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 1424239
+:attribute: 
+  name: Lane_1424239
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 1424239
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: Lane
+:id: 1424240
+:attribute: 
+  name: Lane_1424240
+  material_id: 7280
+  size: 
+  descriptor_fields: 
+  holder_type: Location
+  closed: false
+  holder_id: 
+  public_name: 
+  resource: 
+  archive: 
+  barcode: 
+  concentration: 
+  id: 1424240
+  descriptors: 
+  value: 
+  volume: 
+  barcode_prefix_id: 4
+  plate_purpose_id: 
+  qc_state: passed
+  material_type: Sample
+  two_dimensional_barcode: 
+  external_release: true
+  map_id: 
+  sti_type: Lane
+--- 
+:class: StudySample
+:id: 6789
+:attribute: 
+  id: 6789
+  study_id: 333
+  sample_id: 7280
+--- 
+:class: Study
+:id: 333
+:attribute: 
+  ethically_approved: true
+  name: Study_333
+  enforce_data_release: true
+  reference_genome_id: 1
+  blocked: false
+  enforce_accessioning: true
+  id: 333
+  user_id: 145
+  state: active
