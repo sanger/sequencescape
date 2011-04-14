@@ -1,5 +1,5 @@
 require 'optparse'
-$options = { :model => "sample", :output_method => :objects_to_yaml}
+$options = {:output_method => :objects_to_yaml}
 $objects = []
 $already_pulled = {}
 
@@ -40,9 +40,6 @@ optparse = OptionParser.new do |opts|
   end
   opts.on('--sample_with_metada id_or_name', 'sample to pull') do |sample|
     $objects<< [Sample, {:assets => { :requests => [:submission, :target_asset], :children => :requests, :parents => :requests }, :studies => nil, :sample_metadata => nil },  sample]
-  end
-  opts.on('-m', '--model', 'model (classname) of the object to pull') do |model|
-    $options[:model]=model
   end
 
   opts.on('-i', '--id', 'id of the object to pull') do |id|
