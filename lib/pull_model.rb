@@ -5,6 +5,16 @@ $already_pulled = {}
 
 class ActiveRecord::Base
   def pull(includes=nil)
+    # procs are used to declare recursive tree 
+    if includes.is_a?(Proc)
+      case includes.arity
+      when 1
+        includes = includes.call(self)
+      else
+        includes = includes.call()
+      end
+    end
+
     key = [self.class.table_name, self.id]
     return [] if $already_pulled.include?(key)
     $already_pulled[key] = true
@@ -33,13 +43,18 @@ def pull(includes =nil)
 end
 end
 
+# don't modidy this for a new model, as it will affect all the previous using it
+# declare a specific one instead
+RequestAssociations = {:submission => nil, :target_asset => Proc.new {AssetAssociations}, :request_metadata => nil}
+AssetAssociations = { :requests => RequestAssociations , :children => Proc.new {AssetAssociations}, :parents => Proc.new {AssetAssociations}}
+
 optparse = OptionParser.new do |opts|
   opts.on('-s', '--sample id_or_name', 'sample to pull') do |sample|
     #$objects<< [Sample, {},  sample]
-    $objects<< [Sample, {:assets => { :requests => [:submission, :target_asset, :request_metadata], :children => :requests, :parents => :requests }, :study_samples =>  :study},  sample]
+    $objects<< [Sample, {:assets => AssetAssociations , :study_samples =>  :study},  sample]
   end
   opts.on('--sample_with_metada id_or_name', 'sample to pull') do |sample|
-    $objects<< [Sample, {:assets => { :requests => [:submission, :target_asset], :children => :requests, :parents => :requests }, :studies => nil, :sample_metadata => nil },  sample]
+    $objects<< [Sample, {:assets => AssetAssociations , :study_samples =>  :study, :sample_metadata => nil},  sample]
   end
 
   opts.on('-i', '--id', 'id of the object to pull') do |id|
