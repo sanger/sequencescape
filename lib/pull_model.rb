@@ -1,5 +1,5 @@
 require 'optparse'
-$options = { :model => "sample"}
+$options = { :model => "sample", :output_method => :objects_to_yaml}
 $objects = []
 $already_pulled = {}
 
@@ -52,6 +52,10 @@ optparse = OptionParser.new do |opts|
   opts.on('-n', '--name', 'name of the object to pull') do |name|
     $options[:name]=name
   end
+
+  opts.on('-r', '--ruby', 'Generate a ruby script') do 
+    $options[:output_method] = :objects_to_script
+  end
 end
 
 def load_objects(objects)
@@ -88,9 +92,16 @@ def objects_to_script(objects)
   end
 end
 
-  ARGV.shift  # to remove the -- needed using script/runner
-  optparse.parse!
-  #puts $options.to_yaml
-  #puts $objects.to_yaml
+def objects_to_yaml(objects)
+  objects.map do |object|
+    att = object_to_hash(object)
+    {:class => object.class.name, :id => object.id, :attribute => att}.to_yaml
+  end
+end
 
-puts objects_to_script(load_objects($objects) )
+ARGV.shift  # to remove the -- needed using script/runner
+optparse.parse!
+#puts $options.to_yaml
+#puts $objects.to_yaml
+
+puts send($options[:output_method], load_objects($objects))
