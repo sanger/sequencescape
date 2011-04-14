@@ -1,1739 +1,5 @@
 --- 
 - :attributes: 
-    name: 
-    pipeline_id: 
-    failure: 
-    request_id: 3073797
-    batch_id: 
-    read_length: 
-    tag: 
-    fragment_size_required_to: 
-    id: 2630239
-    fragment_size_required_from: 
-    insert_size: 250
-    sequencing_type: Standard
-    pass: 
-    library_creation_complete: 
-    library_type: 
-  :class: PacBioSequencingRequest::Metadata
-  :id: 2630239
-- :attributes: 
-    salt: 
-    crypted_password: 
-    remember_token_expires_at: 
-    api_key: 1105c5f96792b-a220ea5c42d0b95a72c07f053380ca28
-    barcode: ID18580F
-    id: 27
-    pipeline_administrator: true
-    last_name: User_27_last_name
-    remember_token: 
-    workflow_id: 1
-    login: User_27_login
-    email: User_27_email
-    first_name: User_27_first_name
-  :class: User
-  :id: 27
-- :attributes: 
-    name: 
-    pipeline_id: 
-    failure: 
-    request_id: 3073799
-    batch_id: 
-    read_length: 
-    tag: 
-    fragment_size_required_to: 
-    id: 2630241
-    fragment_size_required_from: 
-    insert_size: 250
-    sequencing_type: Standard
-    pass: 
-    library_creation_complete: 
-    library_type: 
-  :class: PacBioSequencingRequest::Metadata
-  :id: 2630241
-- :attributes: 
-    pipeline_id: 
-    request_type_id: 16
-    sample_pool_id: 
-    project_id: 764
-    priority: 0
-    target_asset_id: 
-    id: 3073799
-    submission_id: 9071
-    study_id: 1757
-    user_id: 27
-    sample_id: 1082060
-    workflow_id: 1
-    charge: 
-    item_id: 78901
-    asset_id: 2159905
-    state: cancelled
-    sti_type: PacBioSequencingRequest
-  :class: PacBioSequencingRequest
-  :id: 3073799
-- :attributes: 
-    name: PacBioLibraryTube_2159905_name
-    material_id: 1082060
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 7
-    public_name: 
-    resource: 
-    archive: 
-    barcode: "228956"
-    concentration: 
-    id: 2159905
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 
-    sti_type: PacBioLibraryTube
-  :class: PacBioLibraryTube
-  :id: 2159905
-- :attributes: 
-    name: 
-    pipeline_id: 
-    failure: 
-    request_id: 3073798
-    batch_id: 
-    read_length: 
-    tag: 
-    fragment_size_required_to: 
-    id: 2630240
-    fragment_size_required_from: 
-    insert_size: 250
-    sequencing_type: Standard
-    pass: 
-    library_creation_complete: 
-    library_type: 
-  :class: PacBioSamplePrepRequest::Metadata
-  :id: 2630240
-- :attributes: 
-    pipeline_id: 
-    request_type_id: 15
-    sample_pool_id: 
-    project_id: 764
-    priority: 0
-    target_asset_id: 2159905
-    id: 3073798
-    submission_id: 9071
-    study_id: 1757
-    user_id: 27
-    sample_id: 1082060
-    workflow_id: 1
-    charge: 
-    item_id: 78901
-    asset_id: 2159893
-    state: failed
-    sti_type: PacBioSamplePrepRequest
-  :class: PacBioSamplePrepRequest
-  :id: 3073798
-- :attributes: 
-    name: SampleTube_2159893_name
-    material_id: 1082060
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 6
-    public_name: 
-    resource: 
-    archive: 
-    barcode: "2159893"
-    concentration: 
-    id: 2159893
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: ""
-    external_release: 
-    map_id: 
-    sti_type: SampleTube
-  :class: SampleTube
-  :id: 2159893
-- :attributes: 
-    name: Well_2159924_name
-    material_id: 1082061
-    size: 
-    descriptor_fields: 
-    holder_type: Asset
-    closed: false
-    holder_id: 2159935
-    public_name: 
-    resource: 
-    archive: 
-    barcode: 
-    concentration: 
-    id: 2159924
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 1
-    sti_type: Well
-  :class: Well
-  :id: 2159924
-- :attributes: 
-    name: 
-    pipeline_id: 
-    failure: 
-    request_id: 3073801
-    batch_id: 
-    read_length: 
-    tag: 
-    fragment_size_required_to: 
-    id: 2630243
-    fragment_size_required_from: 
-    insert_size: 250
-    sequencing_type: Standard
-    pass: 
-    library_creation_complete: 
-    library_type: 
-  :class: PacBioSequencingRequest::Metadata
-  :id: 2630243
-- :attributes: 
-    pipeline_id: 
-    request_type_id: 16
-    sample_pool_id: 
-    project_id: 764
-    priority: 0
-    target_asset_id: 2159924
-    id: 3073801
-    submission_id: 9071
-    study_id: 1757
-    user_id: 27
-    sample_id: 1082061
-    workflow_id: 1
-    charge: 
-    item_id: 78902
-    asset_id: 2159906
-    state: started
-    sti_type: PacBioSequencingRequest
-  :class: PacBioSequencingRequest
-  :id: 3073801
-- :attributes: 
-    name: PacBioLibraryTube_2159906_name
-    material_id: 1082061
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 7
-    public_name: 
-    resource: 
-    archive: 
-    barcode: "228957"
-    concentration: 
-    id: 2159906
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 
-    sti_type: PacBioLibraryTube
-  :class: PacBioLibraryTube
-  :id: 2159906
-- :attributes: 
-    name: 
-    pipeline_id: 
-    failure: 
-    request_id: 3073800
-    batch_id: 
-    read_length: 
-    tag: 
-    fragment_size_required_to: 
-    id: 2630242
-    fragment_size_required_from: 
-    insert_size: 250
-    sequencing_type: Standard
-    pass: 
-    library_creation_complete: 
-    library_type: 
-  :class: PacBioSamplePrepRequest::Metadata
-  :id: 2630242
-- :attributes: 
-    pipeline_id: 
-    request_type_id: 15
-    sample_pool_id: 
-    project_id: 764
-    priority: 0
-    target_asset_id: 2159906
-    id: 3073800
-    submission_id: 9071
-    study_id: 1757
-    user_id: 27
-    sample_id: 1082061
-    workflow_id: 1
-    charge: 
-    item_id: 78902
-    asset_id: 2159894
-    state: passed
-    sti_type: PacBioSamplePrepRequest
-  :class: PacBioSamplePrepRequest
-  :id: 3073800
-- :attributes: 
-    name: SampleTube_2159894_name
-    material_id: 1082061
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 6
-    public_name: 
-    resource: 
-    archive: 
-    barcode: "2159894"
-    concentration: 
-    id: 2159894
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: ""
-    external_release: 
-    map_id: 
-    sti_type: SampleTube
-  :class: SampleTube
-  :id: 2159894
-- :attributes: 
-    name: Well_2159925_name
-    material_id: 1082062
-    size: 
-    descriptor_fields: 
-    holder_type: Asset
-    closed: false
-    holder_id: 2159935
-    public_name: 
-    resource: 
-    archive: 
-    barcode: 
-    concentration: 
-    id: 2159925
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 2
-    sti_type: Well
-  :class: Well
-  :id: 2159925
-- :attributes: 
-    name: 
-    pipeline_id: 
-    failure: 
-    request_id: 3073803
-    batch_id: 
-    read_length: 
-    tag: 
-    fragment_size_required_to: 
-    id: 2630245
-    fragment_size_required_from: 
-    insert_size: 250
-    sequencing_type: Standard
-    pass: 
-    library_creation_complete: 
-    library_type: 
-  :class: PacBioSequencingRequest::Metadata
-  :id: 2630245
-- :attributes: 
-    pipeline_id: 
-    request_type_id: 16
-    sample_pool_id: 
-    project_id: 764
-    priority: 0
-    target_asset_id: 2159925
-    id: 3073803
-    submission_id: 9071
-    study_id: 1757
-    user_id: 27
-    sample_id: 1082062
-    workflow_id: 1
-    charge: 
-    item_id: 78903
-    asset_id: 2159907
-    state: started
-    sti_type: PacBioSequencingRequest
-  :class: PacBioSequencingRequest
-  :id: 3073803
-- :attributes: 
-    name: PacBioLibraryTube_2159907_name
-    material_id: 1082062
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 7
-    public_name: 
-    resource: 
-    archive: 
-    barcode: "228958"
-    concentration: 
-    id: 2159907
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 
-    sti_type: PacBioLibraryTube
-  :class: PacBioLibraryTube
-  :id: 2159907
-- :attributes: 
-    name: 
-    pipeline_id: 
-    failure: 
-    request_id: 3073802
-    batch_id: 
-    read_length: 
-    tag: 
-    fragment_size_required_to: 
-    id: 2630244
-    fragment_size_required_from: 
-    insert_size: 250
-    sequencing_type: Standard
-    pass: 
-    library_creation_complete: 
-    library_type: 
-  :class: PacBioSamplePrepRequest::Metadata
-  :id: 2630244
-- :attributes: 
-    pipeline_id: 
-    request_type_id: 15
-    sample_pool_id: 
-    project_id: 764
-    priority: 0
-    target_asset_id: 2159907
-    id: 3073802
-    submission_id: 9071
-    study_id: 1757
-    user_id: 27
-    sample_id: 1082062
-    workflow_id: 1
-    charge: 
-    item_id: 78903
-    asset_id: 2159895
-    state: passed
-    sti_type: PacBioSamplePrepRequest
-  :class: PacBioSamplePrepRequest
-  :id: 3073802
-- :attributes: 
-    name: SampleTube_2159895_name
-    material_id: 1082062
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 6
-    public_name: 
-    resource: 
-    archive: 
-    barcode: "2159895"
-    concentration: 
-    id: 2159895
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: ""
-    external_release: 
-    map_id: 
-    sti_type: SampleTube
-  :class: SampleTube
-  :id: 2159895
-- :attributes: 
-    name: Well_2159926_name
-    material_id: 1082063
-    size: 
-    descriptor_fields: 
-    holder_type: Asset
-    closed: false
-    holder_id: 2159935
-    public_name: 
-    resource: 
-    archive: 
-    barcode: 
-    concentration: 
-    id: 2159926
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 3
-    sti_type: Well
-  :class: Well
-  :id: 2159926
-- :attributes: 
-    name: 
-    pipeline_id: 
-    failure: 
-    request_id: 3073805
-    batch_id: 
-    read_length: 
-    tag: 
-    fragment_size_required_to: 
-    id: 2630247
-    fragment_size_required_from: 
-    insert_size: 250
-    sequencing_type: Standard
-    pass: 
-    library_creation_complete: 
-    library_type: 
-  :class: PacBioSequencingRequest::Metadata
-  :id: 2630247
-- :attributes: 
-    pipeline_id: 
-    request_type_id: 16
-    sample_pool_id: 
-    project_id: 764
-    priority: 0
-    target_asset_id: 2159926
-    id: 3073805
-    submission_id: 9071
-    study_id: 1757
-    user_id: 27
-    sample_id: 1082063
-    workflow_id: 1
-    charge: 
-    item_id: 78904
-    asset_id: 2159908
-    state: started
-    sti_type: PacBioSequencingRequest
-  :class: PacBioSequencingRequest
-  :id: 3073805
-- :attributes: 
-    name: PacBioLibraryTube_2159908_name
-    material_id: 1082063
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 7
-    public_name: 
-    resource: 
-    archive: 
-    barcode: "228959"
-    concentration: 
-    id: 2159908
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 
-    sti_type: PacBioLibraryTube
-  :class: PacBioLibraryTube
-  :id: 2159908
-- :attributes: 
-    name: 
-    pipeline_id: 
-    failure: 
-    request_id: 3073804
-    batch_id: 
-    read_length: 
-    tag: 
-    fragment_size_required_to: 
-    id: 2630246
-    fragment_size_required_from: 
-    insert_size: 250
-    sequencing_type: Standard
-    pass: 
-    library_creation_complete: 
-    library_type: 
-  :class: PacBioSamplePrepRequest::Metadata
-  :id: 2630246
-- :attributes: 
-    pipeline_id: 
-    request_type_id: 15
-    sample_pool_id: 
-    project_id: 764
-    priority: 0
-    target_asset_id: 2159908
-    id: 3073804
-    submission_id: 9071
-    study_id: 1757
-    user_id: 27
-    sample_id: 1082063
-    workflow_id: 1
-    charge: 
-    item_id: 78904
-    asset_id: 2159896
-    state: passed
-    sti_type: PacBioSamplePrepRequest
-  :class: PacBioSamplePrepRequest
-  :id: 3073804
-- :attributes: 
-    name: SampleTube_2159896_name
-    material_id: 1082063
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 6
-    public_name: 
-    resource: 
-    archive: 
-    barcode: "2159896"
-    concentration: 
-    id: 2159896
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: ""
-    external_release: 
-    map_id: 
-    sti_type: SampleTube
-  :class: SampleTube
-  :id: 2159896
-- :attributes: 
-    name: Well_2159927_name
-    material_id: 1082064
-    size: 
-    descriptor_fields: 
-    holder_type: Asset
-    closed: false
-    holder_id: 2159935
-    public_name: 
-    resource: 
-    archive: 
-    barcode: 
-    concentration: 
-    id: 2159927
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 4
-    sti_type: Well
-  :class: Well
-  :id: 2159927
-- :attributes: 
-    name: 
-    pipeline_id: 
-    failure: 
-    request_id: 3073807
-    batch_id: 
-    read_length: 
-    tag: 
-    fragment_size_required_to: 
-    id: 2630249
-    fragment_size_required_from: 
-    insert_size: 250
-    sequencing_type: Standard
-    pass: 
-    library_creation_complete: 
-    library_type: 
-  :class: PacBioSequencingRequest::Metadata
-  :id: 2630249
-- :attributes: 
-    pipeline_id: 
-    request_type_id: 16
-    sample_pool_id: 
-    project_id: 764
-    priority: 0
-    target_asset_id: 2159927
-    id: 3073807
-    submission_id: 9071
-    study_id: 1757
-    user_id: 27
-    sample_id: 1082064
-    workflow_id: 1
-    charge: 
-    item_id: 78905
-    asset_id: 2159909
-    state: started
-    sti_type: PacBioSequencingRequest
-  :class: PacBioSequencingRequest
-  :id: 3073807
-- :attributes: 
-    name: PacBioLibraryTube_2159909_name
-    material_id: 1082064
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 7
-    public_name: 
-    resource: 
-    archive: 
-    barcode: "228960"
-    concentration: 
-    id: 2159909
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 
-    sti_type: PacBioLibraryTube
-  :class: PacBioLibraryTube
-  :id: 2159909
-- :attributes: 
-    name: 
-    pipeline_id: 
-    failure: 
-    request_id: 3073806
-    batch_id: 
-    read_length: 
-    tag: 
-    fragment_size_required_to: 
-    id: 2630248
-    fragment_size_required_from: 
-    insert_size: 250
-    sequencing_type: Standard
-    pass: 
-    library_creation_complete: 
-    library_type: 
-  :class: PacBioSamplePrepRequest::Metadata
-  :id: 2630248
-- :attributes: 
-    pipeline_id: 
-    request_type_id: 15
-    sample_pool_id: 
-    project_id: 764
-    priority: 0
-    target_asset_id: 2159909
-    id: 3073806
-    submission_id: 9071
-    study_id: 1757
-    user_id: 27
-    sample_id: 1082064
-    workflow_id: 1
-    charge: 
-    item_id: 78905
-    asset_id: 2159897
-    state: passed
-    sti_type: PacBioSamplePrepRequest
-  :class: PacBioSamplePrepRequest
-  :id: 3073806
-- :attributes: 
-    name: SampleTube_2159897_name
-    material_id: 1082064
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 6
-    public_name: 
-    resource: 
-    archive: 
-    barcode: "2159897"
-    concentration: 
-    id: 2159897
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: ""
-    external_release: 
-    map_id: 
-    sti_type: SampleTube
-  :class: SampleTube
-  :id: 2159897
-- :attributes: 
-    name: Well_2159928_name
-    material_id: 1082065
-    size: 
-    descriptor_fields: 
-    holder_type: Asset
-    closed: false
-    holder_id: 2159935
-    public_name: 
-    resource: 
-    archive: 
-    barcode: 
-    concentration: 
-    id: 2159928
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 5
-    sti_type: Well
-  :class: Well
-  :id: 2159928
-- :attributes: 
-    name: 
-    pipeline_id: 
-    failure: 
-    request_id: 3073809
-    batch_id: 
-    read_length: 
-    tag: 
-    fragment_size_required_to: 
-    id: 2630251
-    fragment_size_required_from: 
-    insert_size: 250
-    sequencing_type: Standard
-    pass: 
-    library_creation_complete: 
-    library_type: 
-  :class: PacBioSequencingRequest::Metadata
-  :id: 2630251
-- :attributes: 
-    pipeline_id: 
-    request_type_id: 16
-    sample_pool_id: 
-    project_id: 764
-    priority: 0
-    target_asset_id: 2159928
-    id: 3073809
-    submission_id: 9071
-    study_id: 1757
-    user_id: 27
-    sample_id: 1082065
-    workflow_id: 1
-    charge: 
-    item_id: 78906
-    asset_id: 2159910
-    state: started
-    sti_type: PacBioSequencingRequest
-  :class: PacBioSequencingRequest
-  :id: 3073809
-- :attributes: 
-    name: PacBioLibraryTube_2159910_name
-    material_id: 1082065
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 7
-    public_name: 
-    resource: 
-    archive: 
-    barcode: "228961"
-    concentration: 
-    id: 2159910
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 
-    sti_type: PacBioLibraryTube
-  :class: PacBioLibraryTube
-  :id: 2159910
-- :attributes: 
-    name: 
-    pipeline_id: 
-    failure: 
-    request_id: 3073808
-    batch_id: 
-    read_length: 
-    tag: 
-    fragment_size_required_to: 
-    id: 2630250
-    fragment_size_required_from: 
-    insert_size: 250
-    sequencing_type: Standard
-    pass: 
-    library_creation_complete: 
-    library_type: 
-  :class: PacBioSamplePrepRequest::Metadata
-  :id: 2630250
-- :attributes: 
-    pipeline_id: 
-    request_type_id: 15
-    sample_pool_id: 
-    project_id: 764
-    priority: 0
-    target_asset_id: 2159910
-    id: 3073808
-    submission_id: 9071
-    study_id: 1757
-    user_id: 27
-    sample_id: 1082065
-    workflow_id: 1
-    charge: 
-    item_id: 78906
-    asset_id: 2159898
-    state: passed
-    sti_type: PacBioSamplePrepRequest
-  :class: PacBioSamplePrepRequest
-  :id: 3073808
-- :attributes: 
-    name: SampleTube_2159898_name
-    material_id: 1082065
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 6
-    public_name: 
-    resource: 
-    archive: 
-    barcode: "2159898"
-    concentration: 
-    id: 2159898
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: ""
-    external_release: 
-    map_id: 
-    sti_type: SampleTube
-  :class: SampleTube
-  :id: 2159898
-- :attributes: 
-    name: Well_2159929_name
-    material_id: 1082066
-    size: 
-    descriptor_fields: 
-    holder_type: Asset
-    closed: false
-    holder_id: 2159935
-    public_name: 
-    resource: 
-    archive: 
-    barcode: 
-    concentration: 
-    id: 2159929
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 6
-    sti_type: Well
-  :class: Well
-  :id: 2159929
-- :attributes: 
-    name: 
-    pipeline_id: 
-    failure: 
-    request_id: 3073811
-    batch_id: 
-    read_length: 
-    tag: 
-    fragment_size_required_to: 
-    id: 2630253
-    fragment_size_required_from: 
-    insert_size: 250
-    sequencing_type: Standard
-    pass: 
-    library_creation_complete: 
-    library_type: 
-  :class: PacBioSequencingRequest::Metadata
-  :id: 2630253
-- :attributes: 
-    pipeline_id: 
-    request_type_id: 16
-    sample_pool_id: 
-    project_id: 764
-    priority: 0
-    target_asset_id: 2159929
-    id: 3073811
-    submission_id: 9071
-    study_id: 1757
-    user_id: 27
-    sample_id: 1082066
-    workflow_id: 1
-    charge: 
-    item_id: 78907
-    asset_id: 2159911
-    state: started
-    sti_type: PacBioSequencingRequest
-  :class: PacBioSequencingRequest
-  :id: 3073811
-- :attributes: 
-    name: PacBioLibraryTube_2159911_name
-    material_id: 1082066
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 7
-    public_name: 
-    resource: 
-    archive: 
-    barcode: "228962"
-    concentration: 
-    id: 2159911
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 
-    sti_type: PacBioLibraryTube
-  :class: PacBioLibraryTube
-  :id: 2159911
-- :attributes: 
-    name: 
-    pipeline_id: 
-    failure: 
-    request_id: 3073810
-    batch_id: 
-    read_length: 
-    tag: 
-    fragment_size_required_to: 
-    id: 2630252
-    fragment_size_required_from: 
-    insert_size: 250
-    sequencing_type: Standard
-    pass: 
-    library_creation_complete: 
-    library_type: 
-  :class: PacBioSamplePrepRequest::Metadata
-  :id: 2630252
-- :attributes: 
-    pipeline_id: 
-    request_type_id: 15
-    sample_pool_id: 
-    project_id: 764
-    priority: 0
-    target_asset_id: 2159911
-    id: 3073810
-    submission_id: 9071
-    study_id: 1757
-    user_id: 27
-    sample_id: 1082066
-    workflow_id: 1
-    charge: 
-    item_id: 78907
-    asset_id: 2159899
-    state: passed
-    sti_type: PacBioSamplePrepRequest
-  :class: PacBioSamplePrepRequest
-  :id: 3073810
-- :attributes: 
-    name: SampleTube_2159899_name
-    material_id: 1082066
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 6
-    public_name: 
-    resource: 
-    archive: 
-    barcode: "2159899"
-    concentration: 
-    id: 2159899
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: ""
-    external_release: 
-    map_id: 
-    sti_type: SampleTube
-  :class: SampleTube
-  :id: 2159899
-- :attributes: 
-    name: Well_2159930_name
-    material_id: 1082067
-    size: 
-    descriptor_fields: 
-    holder_type: Asset
-    closed: false
-    holder_id: 2159935
-    public_name: 
-    resource: 
-    archive: 
-    barcode: 
-    concentration: 
-    id: 2159930
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 7
-    sti_type: Well
-  :class: Well
-  :id: 2159930
-- :attributes: 
-    name: 
-    pipeline_id: 
-    failure: 
-    request_id: 3073813
-    batch_id: 
-    read_length: 
-    tag: 
-    fragment_size_required_to: 
-    id: 2630255
-    fragment_size_required_from: 
-    insert_size: 250
-    sequencing_type: Standard
-    pass: 
-    library_creation_complete: 
-    library_type: 
-  :class: PacBioSequencingRequest::Metadata
-  :id: 2630255
-- :attributes: 
-    pipeline_id: 
-    request_type_id: 16
-    sample_pool_id: 
-    project_id: 764
-    priority: 0
-    target_asset_id: 2159930
-    id: 3073813
-    submission_id: 9071
-    study_id: 1757
-    user_id: 27
-    sample_id: 1082067
-    workflow_id: 1
-    charge: 
-    item_id: 78908
-    asset_id: 2159912
-    state: started
-    sti_type: PacBioSequencingRequest
-  :class: PacBioSequencingRequest
-  :id: 3073813
-- :attributes: 
-    name: PacBioLibraryTube_2159912_name
-    material_id: 1082067
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 7
-    public_name: 
-    resource: 
-    archive: 
-    barcode: "228963"
-    concentration: 
-    id: 2159912
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 
-    sti_type: PacBioLibraryTube
-  :class: PacBioLibraryTube
-  :id: 2159912
-- :attributes: 
-    name: 
-    pipeline_id: 
-    failure: 
-    request_id: 3073812
-    batch_id: 
-    read_length: 
-    tag: 
-    fragment_size_required_to: 
-    id: 2630254
-    fragment_size_required_from: 
-    insert_size: 250
-    sequencing_type: Standard
-    pass: 
-    library_creation_complete: 
-    library_type: 
-  :class: PacBioSamplePrepRequest::Metadata
-  :id: 2630254
-- :attributes: 
-    pipeline_id: 
-    request_type_id: 15
-    sample_pool_id: 
-    project_id: 764
-    priority: 0
-    target_asset_id: 2159912
-    id: 3073812
-    submission_id: 9071
-    study_id: 1757
-    user_id: 27
-    sample_id: 1082067
-    workflow_id: 1
-    charge: 
-    item_id: 78908
-    asset_id: 2159900
-    state: passed
-    sti_type: PacBioSamplePrepRequest
-  :class: PacBioSamplePrepRequest
-  :id: 3073812
-- :attributes: 
-    name: SampleTube_2159900_name
-    material_id: 1082067
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 6
-    public_name: 
-    resource: 
-    archive: 
-    barcode: "2159900"
-    concentration: 
-    id: 2159900
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: ""
-    external_release: 
-    map_id: 
-    sti_type: SampleTube
-  :class: SampleTube
-  :id: 2159900
-- :attributes: 
-    name: Well_2159931_name
-    material_id: 1082068
-    size: 
-    descriptor_fields: 
-    holder_type: Asset
-    closed: false
-    holder_id: 2159935
-    public_name: 
-    resource: 
-    archive: 
-    barcode: 
-    concentration: 
-    id: 2159931
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 8
-    sti_type: Well
-  :class: Well
-  :id: 2159931
-- :attributes: 
-    name: 
-    pipeline_id: 
-    failure: 
-    request_id: 3073815
-    batch_id: 
-    read_length: 
-    tag: 
-    fragment_size_required_to: 
-    id: 2630257
-    fragment_size_required_from: 
-    insert_size: 250
-    sequencing_type: Standard
-    pass: 
-    library_creation_complete: 
-    library_type: 
-  :class: PacBioSequencingRequest::Metadata
-  :id: 2630257
-- :attributes: 
-    pipeline_id: 
-    request_type_id: 16
-    sample_pool_id: 
-    project_id: 764
-    priority: 0
-    target_asset_id: 2159931
-    id: 3073815
-    submission_id: 9071
-    study_id: 1757
-    user_id: 27
-    sample_id: 1082068
-    workflow_id: 1
-    charge: 
-    item_id: 78909
-    asset_id: 2159913
-    state: started
-    sti_type: PacBioSequencingRequest
-  :class: PacBioSequencingRequest
-  :id: 3073815
-- :attributes: 
-    name: PacBioLibraryTube_2159913_name
-    material_id: 1082068
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 7
-    public_name: 
-    resource: 
-    archive: 
-    barcode: "228964"
-    concentration: 
-    id: 2159913
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 
-    sti_type: PacBioLibraryTube
-  :class: PacBioLibraryTube
-  :id: 2159913
-- :attributes: 
-    name: 
-    pipeline_id: 
-    failure: 
-    request_id: 3073814
-    batch_id: 
-    read_length: 
-    tag: 
-    fragment_size_required_to: 
-    id: 2630256
-    fragment_size_required_from: 
-    insert_size: 250
-    sequencing_type: Standard
-    pass: 
-    library_creation_complete: 
-    library_type: 
-  :class: PacBioSamplePrepRequest::Metadata
-  :id: 2630256
-- :attributes: 
-    pipeline_id: 
-    request_type_id: 15
-    sample_pool_id: 
-    project_id: 764
-    priority: 0
-    target_asset_id: 2159913
-    id: 3073814
-    submission_id: 9071
-    study_id: 1757
-    user_id: 27
-    sample_id: 1082068
-    workflow_id: 1
-    charge: 
-    item_id: 78909
-    asset_id: 2159901
-    state: passed
-    sti_type: PacBioSamplePrepRequest
-  :class: PacBioSamplePrepRequest
-  :id: 3073814
-- :attributes: 
-    name: SampleTube_2159901_name
-    material_id: 1082068
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 6
-    public_name: 
-    resource: 
-    archive: 
-    barcode: "2159901"
-    concentration: 
-    id: 2159901
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: ""
-    external_release: 
-    map_id: 
-    sti_type: SampleTube
-  :class: SampleTube
-  :id: 2159901
-- :attributes: 
-    name: Well_2159932_name
-    material_id: 1082069
-    size: 
-    descriptor_fields: 
-    holder_type: Asset
-    closed: false
-    holder_id: 2159935
-    public_name: 
-    resource: 
-    archive: 
-    barcode: 
-    concentration: 
-    id: 2159932
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 9
-    sti_type: Well
-  :class: Well
-  :id: 2159932
-- :attributes: 
-    name: 
-    pipeline_id: 
-    failure: 
-    request_id: 3073817
-    batch_id: 
-    read_length: 
-    tag: 
-    fragment_size_required_to: 
-    id: 2630259
-    fragment_size_required_from: 
-    insert_size: 250
-    sequencing_type: Standard
-    pass: 
-    library_creation_complete: 
-    library_type: 
-  :class: PacBioSequencingRequest::Metadata
-  :id: 2630259
-- :attributes: 
-    pipeline_id: 
-    request_type_id: 16
-    sample_pool_id: 
-    project_id: 764
-    priority: 0
-    target_asset_id: 2159932
-    id: 3073817
-    submission_id: 9071
-    study_id: 1757
-    user_id: 27
-    sample_id: 1082069
-    workflow_id: 1
-    charge: 
-    item_id: 78910
-    asset_id: 2159914
-    state: started
-    sti_type: PacBioSequencingRequest
-  :class: PacBioSequencingRequest
-  :id: 3073817
-- :attributes: 
-    name: PacBioLibraryTube_2159914_name
-    material_id: 1082069
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 7
-    public_name: 
-    resource: 
-    archive: 
-    barcode: "228965"
-    concentration: 
-    id: 2159914
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 
-    sti_type: PacBioLibraryTube
-  :class: PacBioLibraryTube
-  :id: 2159914
-- :attributes: 
-    name: 
-    pipeline_id: 
-    failure: 
-    request_id: 3073816
-    batch_id: 
-    read_length: 
-    tag: 
-    fragment_size_required_to: 
-    id: 2630258
-    fragment_size_required_from: 
-    insert_size: 250
-    sequencing_type: Standard
-    pass: 
-    library_creation_complete: 
-    library_type: 
-  :class: PacBioSamplePrepRequest::Metadata
-  :id: 2630258
-- :attributes: 
-    pipeline_id: 
-    request_type_id: 15
-    sample_pool_id: 
-    project_id: 764
-    priority: 0
-    target_asset_id: 2159914
-    id: 3073816
-    submission_id: 9071
-    study_id: 1757
-    user_id: 27
-    sample_id: 1082069
-    workflow_id: 1
-    charge: 
-    item_id: 78910
-    asset_id: 2159902
-    state: passed
-    sti_type: PacBioSamplePrepRequest
-  :class: PacBioSamplePrepRequest
-  :id: 3073816
-- :attributes: 
-    name: SampleTube_2159902_name
-    material_id: 1082069
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 6
-    public_name: 
-    resource: 
-    archive: 
-    barcode: "2159902"
-    concentration: 
-    id: 2159902
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: ""
-    external_release: 
-    map_id: 
-    sti_type: SampleTube
-  :class: SampleTube
-  :id: 2159902
-- :attributes: 
-    name: Well_2159933_name
-    material_id: 1082070
-    size: 
-    descriptor_fields: 
-    holder_type: Asset
-    closed: false
-    holder_id: 2159935
-    public_name: 
-    resource: 
-    archive: 
-    barcode: 
-    concentration: 
-    id: 2159933
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 10
-    sti_type: Well
-  :class: Well
-  :id: 2159933
-- :attributes: 
-    name: 
-    pipeline_id: 
-    failure: 
-    request_id: 3073819
-    batch_id: 
-    read_length: 
-    tag: 
-    fragment_size_required_to: 
-    id: 2630261
-    fragment_size_required_from: 
-    insert_size: 250
-    sequencing_type: Standard
-    pass: 
-    library_creation_complete: 
-    library_type: 
-  :class: PacBioSequencingRequest::Metadata
-  :id: 2630261
-- :attributes: 
-    pipeline_id: 
-    request_type_id: 16
-    sample_pool_id: 
-    project_id: 764
-    priority: 0
-    target_asset_id: 2159933
-    id: 3073819
-    submission_id: 9071
-    study_id: 1757
-    user_id: 27
-    sample_id: 1082070
-    workflow_id: 1
-    charge: 
-    item_id: 78911
-    asset_id: 2159915
-    state: started
-    sti_type: PacBioSequencingRequest
-  :class: PacBioSequencingRequest
-  :id: 3073819
-- :attributes: 
-    name: PacBioLibraryTube_2159915_name
-    material_id: 1082070
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 7
-    public_name: 
-    resource: 
-    archive: 
-    barcode: "228966"
-    concentration: 
-    id: 2159915
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 
-    sti_type: PacBioLibraryTube
-  :class: PacBioLibraryTube
-  :id: 2159915
-- :attributes: 
-    name: 
-    pipeline_id: 
-    failure: 
-    request_id: 3073818
-    batch_id: 
-    read_length: 
-    tag: 
-    fragment_size_required_to: 
-    id: 2630260
-    fragment_size_required_from: 
-    insert_size: 250
-    sequencing_type: Standard
-    pass: 
-    library_creation_complete: 
-    library_type: 
-  :class: PacBioSamplePrepRequest::Metadata
-  :id: 2630260
-- :attributes: 
-    pipeline_id: 
-    request_type_id: 15
-    sample_pool_id: 
-    project_id: 764
-    priority: 0
-    target_asset_id: 2159915
-    id: 3073818
-    submission_id: 9071
-    study_id: 1757
-    user_id: 27
-    sample_id: 1082070
-    workflow_id: 1
-    charge: 
-    item_id: 78911
-    asset_id: 2159903
-    state: passed
-    sti_type: PacBioSamplePrepRequest
-  :class: PacBioSamplePrepRequest
-  :id: 3073818
-- :attributes: 
-    name: SampleTube_2159903_name
-    material_id: 1082070
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 6
-    public_name: 
-    resource: 
-    archive: 
-    barcode: "2159903"
-    concentration: 
-    id: 2159903
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: ""
-    external_release: 
-    map_id: 
-    sti_type: SampleTube
-  :class: SampleTube
-  :id: 2159903
-- :attributes: 
     name: AssetGroup_4146_name
     id: 4146
     study_id: 1757
@@ -1778,6 +44,40 @@
     sti_type: LinearSubmission
   :class: LinearSubmission
   :id: 9071
+- :attributes: 
+    name: 
+    pipeline_id: 
+    failure: 
+    request_id: 3073797
+    batch_id: 
+    read_length: 
+    tag: 
+    fragment_size_required_to: 
+    id: 2630239
+    fragment_size_required_from: 
+    insert_size: 250
+    sequencing_type: Standard
+    pass: 
+    library_creation_complete: 
+    library_type: 
+  :class: PacBioSequencingRequest::Metadata
+  :id: 2630239
+- :attributes: 
+    salt: 
+    crypted_password: 
+    remember_token_expires_at: 
+    api_key: 1105c5f96792b-a220ea5c42d0b95a72c07f053380ca28
+    barcode: ID18580F
+    id: 27
+    pipeline_administrator: true
+    last_name: User_27_last_name
+    remember_token: 
+    workflow_id: 1
+    login: User_27_login
+    email: User_27_email
+    first_name: User_27_first_name
+  :class: User
+  :id: 27
 - :attributes: 
     pipeline_id: 
     request_type_id: 16
@@ -1826,293 +126,43 @@
   :class: PacBioLibraryTube
   :id: 2159904
 - :attributes: 
-    name: Well_2159937_name
-    material_id: 1082059
-    size: 
-    descriptor_fields: 
-    holder_type: Asset
-    closed: false
-    holder_id: 2159947
-    public_name: 
-    resource: 
-    archive: 
-    barcode: 
-    concentration: 
-    id: 2159937
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 1
-    sti_type: Well
-  :class: Well
-  :id: 2159937
-- :attributes: 
-    name: Well_2159938_name
-    material_id: 1082059
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 
-    public_name: 
-    resource: 
-    archive: 
-    barcode: 
-    concentration: 
-    id: 2159938
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 
-    sti_type: Well
-  :class: Well
-  :id: 2159938
-- :attributes: 
-    name: Well_2159939_name
-    material_id: 1082059
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 
-    public_name: 
-    resource: 
-    archive: 
-    barcode: 
-    concentration: 
-    id: 2159939
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 
-    sti_type: Well
-  :class: Well
-  :id: 2159939
-- :attributes: 
-    name: Well_2159940_name
-    material_id: 1082059
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 
-    public_name: 
-    resource: 
-    archive: 
-    barcode: 
-    concentration: 
-    id: 2159940
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 
-    sti_type: Well
-  :class: Well
-  :id: 2159940
-- :attributes: 
-    name: Well_2159941_name
-    material_id: 1082059
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 
-    public_name: 
-    resource: 
-    archive: 
-    barcode: 
-    concentration: 
-    id: 2159941
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 
-    sti_type: Well
-  :class: Well
-  :id: 2159941
-- :attributes: 
-    name: Well_2159942_name
-    material_id: 1082059
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 
-    public_name: 
-    resource: 
-    archive: 
-    barcode: 
-    concentration: 
-    id: 2159942
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 
-    sti_type: Well
-  :class: Well
-  :id: 2159942
-- :attributes: 
-    name: Well_2159943_name
-    material_id: 1082059
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 
-    public_name: 
-    resource: 
-    archive: 
-    barcode: 
-    concentration: 
-    id: 2159943
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 
-    sti_type: Well
-  :class: Well
-  :id: 2159943
-- :attributes: 
-    name: Well_2159944_name
-    material_id: 1082059
-    size: 
-    descriptor_fields: 
-    holder_type: Asset
-    closed: false
-    holder_id: 2159947
-    public_name: 
-    resource: 
-    archive: 
-    barcode: 
-    concentration: 
-    id: 2159944
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 2
-    sti_type: Well
-  :class: Well
-  :id: 2159944
-- :attributes: 
-    name: Well_2159945_name
-    material_id: 1082059
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 
-    public_name: 
-    resource: 
-    archive: 
-    barcode: 
-    concentration: 
-    id: 2159945
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 
-    sti_type: Well
-  :class: Well
-  :id: 2159945
-- :attributes: 
-    name: Well_2159946_name
-    material_id: 1082059
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 
-    public_name: 
-    resource: 
-    archive: 
-    barcode: 
-    concentration: 
-    id: 2159946
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: 
-    external_release: 
-    map_id: 
-    sti_type: Well
-  :class: Well
-  :id: 2159946
-- :attributes: 
     name: 
     pipeline_id: 
     failure: 
-    request_id: 3073824
+    request_id: 3073796
     batch_id: 
     read_length: 
     tag: 
     fragment_size_required_to: 
-    id: 2630266
+    id: 2630238
     fragment_size_required_from: 
     insert_size: 250
     sequencing_type: Standard
     pass: 
     library_creation_complete: 
     library_type: 
-  :class: PacBioSequencingRequest::Metadata
-  :id: 2630266
+  :class: PacBioSamplePrepRequest::Metadata
+  :id: 2630238
+- :attributes: 
+    pipeline_id: 
+    request_type_id: 15
+    sample_pool_id: 
+    project_id: 764
+    priority: 0
+    target_asset_id: 2159904
+    id: 3073796
+    submission_id: 9071
+    study_id: 1757
+    user_id: 27
+    sample_id: 1082059
+    workflow_id: 1
+    charge: 
+    item_id: 78900
+    asset_id: 2159892
+    state: failed
+    sti_type: PacBioSamplePrepRequest
+  :class: PacBioSamplePrepRequest
+  :id: 3073796
 - :attributes: 
     name: AssetGroup_4147_name
     id: 4147
@@ -2147,6 +197,51 @@
     sti_type: LinearSubmission
   :class: LinearSubmission
   :id: 9072
+- :attributes: 
+    name: Well_2159937_name
+    material_id: 1082059
+    size: 
+    descriptor_fields: 
+    holder_type: Asset
+    closed: false
+    holder_id: 2159947
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 2159937
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: 
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: 
+    map_id: 1
+    sti_type: Well
+  :class: Well
+  :id: 2159937
+- :attributes: 
+    name: 
+    pipeline_id: 
+    failure: 
+    request_id: 3073824
+    batch_id: 
+    read_length: 
+    tag: 
+    fragment_size_required_to: 
+    id: 2630266
+    fragment_size_required_from: 
+    insert_size: 250
+    sequencing_type: Standard
+    pass: 
+    library_creation_complete: 
+    library_type: 
+  :class: PacBioSequencingRequest::Metadata
+  :id: 2630266
 - :attributes: 
     pipeline_id: 
     request_type_id: 16
@@ -2396,6 +491,33 @@
   :class: PacBioSequencingRequest
   :id: 3073830
 - :attributes: 
+    name: Well_2159944_name
+    material_id: 1082059
+    size: 
+    descriptor_fields: 
+    holder_type: Asset
+    closed: false
+    holder_id: 2159947
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 2159944
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: 
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: 
+    map_id: 2
+    sti_type: Well
+  :class: Well
+  :id: 2159944
+- :attributes: 
     name: 
     pipeline_id: 
     failure: 
@@ -2510,6 +632,222 @@
   :class: PacBioSequencingRequest
   :id: 3073833
 - :attributes: 
+    name: Well_2159938_name
+    material_id: 1082059
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 2159938
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: 
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: 
+    map_id: 
+    sti_type: Well
+  :class: Well
+  :id: 2159938
+- :attributes: 
+    name: Well_2159939_name
+    material_id: 1082059
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 2159939
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: 
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: 
+    map_id: 
+    sti_type: Well
+  :class: Well
+  :id: 2159939
+- :attributes: 
+    name: Well_2159940_name
+    material_id: 1082059
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 2159940
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: 
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: 
+    map_id: 
+    sti_type: Well
+  :class: Well
+  :id: 2159940
+- :attributes: 
+    name: Well_2159941_name
+    material_id: 1082059
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 2159941
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: 
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: 
+    map_id: 
+    sti_type: Well
+  :class: Well
+  :id: 2159941
+- :attributes: 
+    name: Well_2159942_name
+    material_id: 1082059
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 2159942
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: 
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: 
+    map_id: 
+    sti_type: Well
+  :class: Well
+  :id: 2159942
+- :attributes: 
+    name: Well_2159943_name
+    material_id: 1082059
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 2159943
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: 
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: 
+    map_id: 
+    sti_type: Well
+  :class: Well
+  :id: 2159943
+- :attributes: 
+    name: Well_2159945_name
+    material_id: 1082059
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 2159945
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: 
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: 
+    map_id: 
+    sti_type: Well
+  :class: Well
+  :id: 2159945
+- :attributes: 
+    name: Well_2159946_name
+    material_id: 1082059
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 2159946
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: 
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: 
+    map_id: 
+    sti_type: Well
+  :class: Well
+  :id: 2159946
+- :attributes: 
     name: PacBioLibraryTube_2159936_name
     material_id: 1082059
     size: 
@@ -2536,6 +874,71 @@
     sti_type: PacBioLibraryTube
   :class: PacBioLibraryTube
   :id: 2159936
+- :attributes: 
+    name: 
+    pipeline_id: 
+    failure: 
+    request_id: 3073823
+    batch_id: 
+    read_length: 
+    tag: 
+    fragment_size_required_to: 
+    id: 2630265
+    fragment_size_required_from: 
+    insert_size: 250
+    sequencing_type: Standard
+    pass: 
+    library_creation_complete: 
+    library_type: 
+  :class: PacBioSamplePrepRequest::Metadata
+  :id: 2630265
+- :attributes: 
+    pipeline_id: 
+    request_type_id: 15
+    sample_pool_id: 
+    project_id: 764
+    priority: 0
+    target_asset_id: 2159936
+    id: 3073823
+    submission_id: 9072
+    study_id: 1757
+    user_id: 27
+    sample_id: 1082059
+    workflow_id: 1
+    charge: 
+    item_id: 78900
+    asset_id: 2159892
+    state: passed
+    sti_type: PacBioSamplePrepRequest
+  :class: PacBioSamplePrepRequest
+  :id: 3073823
+- :attributes: 
+    item_options: 
+    request_types: 
+    - "15"
+    - "16"
+    comments: ""
+    assets: 
+    - 2159892
+    project_id: 764
+    asset_group_name: 
+    asset_group_id: 4147
+    id: 9073
+    request_options: !map:HashWithIndifferentAccess 
+      multiplier: !map:HashWithIndifferentAccess 
+        16: 1
+        15: 1
+      sequencing_type: Standard
+      insert_size: "250"
+    template_name: LinearSubmission_9073_template_name
+    study_id: 1757
+    user_id: 27
+    workflow_id: 1
+    message: 
+    state: ready
+    sti_type: LinearSubmission
+  :class: LinearSubmission
+  :id: 9073
 - :attributes: 
     name: Well_2159961_name
     material_id: 1082059
@@ -2581,33 +984,6 @@
     library_type: 
   :class: PacBioSequencingRequest::Metadata
   :id: 2630277
-- :attributes: 
-    item_options: 
-    request_types: 
-    - "15"
-    - "16"
-    comments: ""
-    assets: 
-    - 2159892
-    project_id: 764
-    asset_group_name: 
-    asset_group_id: 4147
-    id: 9073
-    request_options: !map:HashWithIndifferentAccess 
-      multiplier: !map:HashWithIndifferentAccess 
-        16: 1
-        15: 1
-      sequencing_type: Standard
-      insert_size: "250"
-    template_name: LinearSubmission_9073_template_name
-    study_id: 1757
-    user_id: 27
-    workflow_id: 1
-    message: 
-    state: ready
-    sti_type: LinearSubmission
-  :class: LinearSubmission
-  :id: 9073
 - :attributes: 
     pipeline_id: 
     request_type_id: 16
@@ -2656,6 +1032,78 @@
   :class: PacBioLibraryTube
   :id: 2159948
 - :attributes: 
+    name: 
+    pipeline_id: 
+    failure: 
+    request_id: 3073834
+    batch_id: 
+    read_length: 
+    tag: 
+    fragment_size_required_to: 
+    id: 2630276
+    fragment_size_required_from: 
+    insert_size: 250
+    sequencing_type: Standard
+    pass: 
+    library_creation_complete: 
+    library_type: 
+  :class: PacBioSamplePrepRequest::Metadata
+  :id: 2630276
+- :attributes: 
+    pipeline_id: 
+    request_type_id: 15
+    sample_pool_id: 
+    project_id: 764
+    priority: 0
+    target_asset_id: 2159948
+    id: 3073834
+    submission_id: 9073
+    study_id: 1757
+    user_id: 27
+    sample_id: 1082059
+    workflow_id: 1
+    charge: 
+    item_id: 78900
+    asset_id: 2159892
+    state: passed
+    sti_type: PacBioSamplePrepRequest
+  :class: PacBioSamplePrepRequest
+  :id: 3073834
+- :attributes: 
+    name: AssetGroup_4153_name
+    id: 4153
+    study_id: 1757
+    user_id: 
+  :class: AssetGroup
+  :id: 4153
+- :attributes: 
+    item_options: 
+    request_types: 
+    - "15"
+    - "16"
+    comments: ""
+    assets: 
+    - 2159892
+    project_id: 764
+    asset_group_name: 
+    asset_group_id: 4153
+    id: 9083
+    request_options: !map:HashWithIndifferentAccess 
+      multiplier: !map:HashWithIndifferentAccess 
+        16: 1
+        15: 1
+      sequencing_type: Strobe
+      insert_size: "2000"
+    template_name: LinearSubmission_9083_template_name
+    study_id: 1757
+    user_id: 27
+    workflow_id: 1
+    message: 
+    state: ready
+    sti_type: LinearSubmission
+  :class: LinearSubmission
+  :id: 9083
+- :attributes: 
     name: Well_2159999_name
     material_id: 1082059
     size: 
@@ -2700,40 +1148,6 @@
     library_type: 
   :class: PacBioSequencingRequest::Metadata
   :id: 2630311
-- :attributes: 
-    name: AssetGroup_4153_name
-    id: 4153
-    study_id: 1757
-    user_id: 
-  :class: AssetGroup
-  :id: 4153
-- :attributes: 
-    item_options: 
-    request_types: 
-    - "15"
-    - "16"
-    comments: ""
-    assets: 
-    - 2159892
-    project_id: 764
-    asset_group_name: 
-    asset_group_id: 4153
-    id: 9083
-    request_options: !map:HashWithIndifferentAccess 
-      multiplier: !map:HashWithIndifferentAccess 
-        16: 1
-        15: 1
-      sequencing_type: Strobe
-      insert_size: "2000"
-    template_name: LinearSubmission_9083_template_name
-    study_id: 1757
-    user_id: 27
-    workflow_id: 1
-    message: 
-    state: ready
-    sti_type: LinearSubmission
-  :class: LinearSubmission
-  :id: 9083
 - :attributes: 
     pipeline_id: 
     request_type_id: 16
@@ -2782,6 +1196,71 @@
   :class: PacBioLibraryTube
   :id: 2159998
 - :attributes: 
+    name: 
+    pipeline_id: 
+    failure: 
+    request_id: 3073868
+    batch_id: 
+    read_length: 
+    tag: 
+    fragment_size_required_to: 
+    id: 2630310
+    fragment_size_required_from: 
+    insert_size: 2000
+    sequencing_type: Strobe
+    pass: 
+    library_creation_complete: 
+    library_type: 
+  :class: PacBioSamplePrepRequest::Metadata
+  :id: 2630310
+- :attributes: 
+    pipeline_id: 
+    request_type_id: 15
+    sample_pool_id: 
+    project_id: 764
+    priority: 0
+    target_asset_id: 2159998
+    id: 3073868
+    submission_id: 9083
+    study_id: 1757
+    user_id: 27
+    sample_id: 1082059
+    workflow_id: 1
+    charge: 
+    item_id: 78900
+    asset_id: 2159892
+    state: passed
+    sti_type: PacBioSamplePrepRequest
+  :class: PacBioSamplePrepRequest
+  :id: 3073868
+- :attributes: 
+    item_options: 
+    request_types: 
+    - "15"
+    - "16"
+    comments: ""
+    assets: 
+    - 2159892
+    project_id: 764
+    asset_group_name: 
+    asset_group_id: 4153
+    id: 9084
+    request_options: !map:HashWithIndifferentAccess 
+      multiplier: !map:HashWithIndifferentAccess 
+        16: 1
+        15: 1
+      sequencing_type: Standard
+      insert_size: "250"
+    template_name: LinearSubmission_9084_template_name
+    study_id: 1757
+    user_id: 27
+    workflow_id: 1
+    message: 
+    state: ready
+    sti_type: LinearSubmission
+  :class: LinearSubmission
+  :id: 9084
+- :attributes: 
     name: Well_2160002_name
     material_id: 1082059
     size: 
@@ -2826,33 +1305,6 @@
     library_type: 
   :class: PacBioSequencingRequest::Metadata
   :id: 2630313
-- :attributes: 
-    item_options: 
-    request_types: 
-    - "15"
-    - "16"
-    comments: ""
-    assets: 
-    - 2159892
-    project_id: 764
-    asset_group_name: 
-    asset_group_id: 4153
-    id: 9084
-    request_options: !map:HashWithIndifferentAccess 
-      multiplier: !map:HashWithIndifferentAccess 
-        16: 1
-        15: 1
-      sequencing_type: Standard
-      insert_size: "250"
-    template_name: LinearSubmission_9084_template_name
-    study_id: 1757
-    user_id: 27
-    workflow_id: 1
-    message: 
-    state: ready
-    sti_type: LinearSubmission
-  :class: LinearSubmission
-  :id: 9084
 - :attributes: 
     pipeline_id: 
     request_type_id: 16
@@ -2901,6 +1353,71 @@
   :class: PacBioLibraryTube
   :id: 2160001
 - :attributes: 
+    name: 
+    pipeline_id: 
+    failure: 
+    request_id: 3073870
+    batch_id: 
+    read_length: 
+    tag: 
+    fragment_size_required_to: 
+    id: 2630312
+    fragment_size_required_from: 
+    insert_size: 250
+    sequencing_type: Standard
+    pass: 
+    library_creation_complete: 
+    library_type: 
+  :class: PacBioSamplePrepRequest::Metadata
+  :id: 2630312
+- :attributes: 
+    pipeline_id: 
+    request_type_id: 15
+    sample_pool_id: 
+    project_id: 764
+    priority: 0
+    target_asset_id: 2160001
+    id: 3073870
+    submission_id: 9084
+    study_id: 1757
+    user_id: 27
+    sample_id: 1082059
+    workflow_id: 1
+    charge: 
+    item_id: 78900
+    asset_id: 2159892
+    state: passed
+    sti_type: PacBioSamplePrepRequest
+  :class: PacBioSamplePrepRequest
+  :id: 3073870
+- :attributes: 
+    item_options: 
+    request_types: 
+    - "15"
+    - "16"
+    comments: ""
+    assets: 
+    - 2159892
+    project_id: 764
+    asset_group_name: 
+    asset_group_id: 4153
+    id: 9088
+    request_options: !map:HashWithIndifferentAccess 
+      multiplier: !map:HashWithIndifferentAccess 
+        16: 1
+        15: 1
+      sequencing_type: Standard
+      insert_size: "250"
+    template_name: LinearSubmission_9088_template_name
+    study_id: 1757
+    user_id: 27
+    workflow_id: 1
+    message: 
+    state: ready
+    sti_type: LinearSubmission
+  :class: LinearSubmission
+  :id: 9088
+- :attributes: 
     name: Well_2160012_name
     material_id: 1082059
     size: 
@@ -2945,33 +1462,6 @@
     library_type: 
   :class: PacBioSequencingRequest::Metadata
   :id: 2630319
-- :attributes: 
-    item_options: 
-    request_types: 
-    - "15"
-    - "16"
-    comments: ""
-    assets: 
-    - 2159892
-    project_id: 764
-    asset_group_name: 
-    asset_group_id: 4153
-    id: 9088
-    request_options: !map:HashWithIndifferentAccess 
-      multiplier: !map:HashWithIndifferentAccess 
-        16: 1
-        15: 1
-      sequencing_type: Standard
-      insert_size: "250"
-    template_name: LinearSubmission_9088_template_name
-    study_id: 1757
-    user_id: 27
-    workflow_id: 1
-    message: 
-    state: ready
-    sti_type: LinearSubmission
-  :class: LinearSubmission
-  :id: 9088
 - :attributes: 
     pipeline_id: 
     request_type_id: 16
@@ -3019,196 +1509,6 @@
     sti_type: PacBioLibraryTube
   :class: PacBioLibraryTube
   :id: 2160011
-- :attributes: 
-    name: 
-    pipeline_id: 
-    failure: 
-    request_id: 3073796
-    batch_id: 
-    read_length: 
-    tag: 
-    fragment_size_required_to: 
-    id: 2630238
-    fragment_size_required_from: 
-    insert_size: 250
-    sequencing_type: Standard
-    pass: 
-    library_creation_complete: 
-    library_type: 
-  :class: PacBioSamplePrepRequest::Metadata
-  :id: 2630238
-- :attributes: 
-    pipeline_id: 
-    request_type_id: 15
-    sample_pool_id: 
-    project_id: 764
-    priority: 0
-    target_asset_id: 2159904
-    id: 3073796
-    submission_id: 9071
-    study_id: 1757
-    user_id: 27
-    sample_id: 1082059
-    workflow_id: 1
-    charge: 
-    item_id: 78900
-    asset_id: 2159892
-    state: failed
-    sti_type: PacBioSamplePrepRequest
-  :class: PacBioSamplePrepRequest
-  :id: 3073796
-- :attributes: 
-    name: 
-    pipeline_id: 
-    failure: 
-    request_id: 3073823
-    batch_id: 
-    read_length: 
-    tag: 
-    fragment_size_required_to: 
-    id: 2630265
-    fragment_size_required_from: 
-    insert_size: 250
-    sequencing_type: Standard
-    pass: 
-    library_creation_complete: 
-    library_type: 
-  :class: PacBioSamplePrepRequest::Metadata
-  :id: 2630265
-- :attributes: 
-    pipeline_id: 
-    request_type_id: 15
-    sample_pool_id: 
-    project_id: 764
-    priority: 0
-    target_asset_id: 2159936
-    id: 3073823
-    submission_id: 9072
-    study_id: 1757
-    user_id: 27
-    sample_id: 1082059
-    workflow_id: 1
-    charge: 
-    item_id: 78900
-    asset_id: 2159892
-    state: passed
-    sti_type: PacBioSamplePrepRequest
-  :class: PacBioSamplePrepRequest
-  :id: 3073823
-- :attributes: 
-    name: 
-    pipeline_id: 
-    failure: 
-    request_id: 3073834
-    batch_id: 
-    read_length: 
-    tag: 
-    fragment_size_required_to: 
-    id: 2630276
-    fragment_size_required_from: 
-    insert_size: 250
-    sequencing_type: Standard
-    pass: 
-    library_creation_complete: 
-    library_type: 
-  :class: PacBioSamplePrepRequest::Metadata
-  :id: 2630276
-- :attributes: 
-    pipeline_id: 
-    request_type_id: 15
-    sample_pool_id: 
-    project_id: 764
-    priority: 0
-    target_asset_id: 2159948
-    id: 3073834
-    submission_id: 9073
-    study_id: 1757
-    user_id: 27
-    sample_id: 1082059
-    workflow_id: 1
-    charge: 
-    item_id: 78900
-    asset_id: 2159892
-    state: passed
-    sti_type: PacBioSamplePrepRequest
-  :class: PacBioSamplePrepRequest
-  :id: 3073834
-- :attributes: 
-    name: 
-    pipeline_id: 
-    failure: 
-    request_id: 3073868
-    batch_id: 
-    read_length: 
-    tag: 
-    fragment_size_required_to: 
-    id: 2630310
-    fragment_size_required_from: 
-    insert_size: 2000
-    sequencing_type: Strobe
-    pass: 
-    library_creation_complete: 
-    library_type: 
-  :class: PacBioSamplePrepRequest::Metadata
-  :id: 2630310
-- :attributes: 
-    pipeline_id: 
-    request_type_id: 15
-    sample_pool_id: 
-    project_id: 764
-    priority: 0
-    target_asset_id: 2159998
-    id: 3073868
-    submission_id: 9083
-    study_id: 1757
-    user_id: 27
-    sample_id: 1082059
-    workflow_id: 1
-    charge: 
-    item_id: 78900
-    asset_id: 2159892
-    state: passed
-    sti_type: PacBioSamplePrepRequest
-  :class: PacBioSamplePrepRequest
-  :id: 3073868
-- :attributes: 
-    name: 
-    pipeline_id: 
-    failure: 
-    request_id: 3073870
-    batch_id: 
-    read_length: 
-    tag: 
-    fragment_size_required_to: 
-    id: 2630312
-    fragment_size_required_from: 
-    insert_size: 250
-    sequencing_type: Standard
-    pass: 
-    library_creation_complete: 
-    library_type: 
-  :class: PacBioSamplePrepRequest::Metadata
-  :id: 2630312
-- :attributes: 
-    pipeline_id: 
-    request_type_id: 15
-    sample_pool_id: 
-    project_id: 764
-    priority: 0
-    target_asset_id: 2160001
-    id: 3073870
-    submission_id: 9084
-    study_id: 1757
-    user_id: 27
-    sample_id: 1082059
-    workflow_id: 1
-    charge: 
-    item_id: 78900
-    asset_id: 2159892
-    state: passed
-    sti_type: PacBioSamplePrepRequest
-  :class: PacBioSamplePrepRequest
-  :id: 3073870
 - :attributes: 
     name: 
     pipeline_id: 

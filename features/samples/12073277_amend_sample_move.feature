@@ -87,7 +87,7 @@ Feature: move samples and assets between studies
     When I am on the show page for asset "sample_tube_to_move"
     Then I should see "study to"
     And I should not see "study from"
-    @developping
+    @developping @production_sample
   Scenario: real one from production
     #Given data are preloaded from "12073277"
     Given data are preloaded from "12073277_II" renaming:

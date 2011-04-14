@@ -1,88 +1,63 @@
 require 'optparse'
-$options = {:output_method => :objects_to_yaml}
+$options = {:output_method => :objects_to_yaml, :model => :sample_with_assets}
 $objects = []
 $already_pulled = {}
 
 class ActiveRecord::Base
-  def pull(includes=nil)
-    # procs are used to declare recursive tree 
-    if includes.is_a?(Proc)
-      case includes.arity
-      when 1
-        includes = includes.call(self)
-      else
-        includes = includes.call()
-      end
-    end
-
-    # TODO store the actual 'includes' that have been already made for an object and only pull the difference
-    # so that, if different paths pull an object with different data, they all will be pulled do
+  def to_pull
+    []
+  end
+  def pull()
+    #check if object has already been pulled
     key = [self.class.table_name, self.id]
     return [] if $already_pulled.include?(key)
     $already_pulled[key] = true
+
     pulled = []
-    case includes
-    when Array
-      includes.each do |model|
-        pulled += self.send(model).pull([])
-      end
-    when Hash
-      includes.each do |model, options|
-        pulled += self.send(model).pull(options)
-      end
-    when nil
-      # nothing. no method to call
-    else
-      pulled += self.send(includes).pull([])
+    self.to_pull.each do |model|
+      pulled += self.send(model).pull()
     end
     return pulled << self
-
   end
 end
 
 class Array
-def pull(includes =nil)
-  map {|e| e.pull(includes) }.flatten
-end
+  def pull()
+    map {|e| e.pull() }.flatten
+  end
 end
 
 class NilClass
-  def pull(includes = nil)
+  def pull()
     []
   end
 end
 
-# don't modidy this for a new model, as it will affect all the previous using it
-# declare a specific one instead
-RequestAssociations = {:submission => Proc.new {SubmissionAssociations}, :target_asset => Proc.new {AssetAssociations}, :request_metadata => nil, :user => nil }
-AssetAssociations = { :requests => RequestAssociations , :children => Proc.new {AssetAssociations}, :parents => Proc.new {AssetAssociations}}
-  SubmissionAssociations = { :asset_group => { :assets =>AssetAssociations } }
-
+Models = {
+  :sample_with_assets =>  {
+    Sample => [:assets, :study_samples],
+    StudySample => [:study],
+    Asset => [:requests, :children, :parents],
+    Request => [:submission, :asset, :target_asset, :request_metadata, :user],
+    Submission => [:asset_group]
+  }
+}
 optparse = OptionParser.new do |opts|
   opts.on('-s', '--sample id_or_name', 'sample to pull') do |sample|
-    #$objects<< [Sample, {},  sample]
-    $objects<< [Sample, {:assets => AssetAssociations , :study_samples =>  :study},  sample]
-  end
-  opts.on('--sample_with_metada id_or_name', 'sample to pull') do |sample|
-    $objects<< [Sample, {:assets => AssetAssociations , :study_samples =>  :study, :sample_metadata => nil},  sample]
+    $objects<< [Sample, sample]
   end
 
-  opts.on('-i', '--id', 'id of the object to pull') do |id|
-    $options[:id]=id
+  opts.on '-m' '--model', 'model of what needs to be pull' do |model_name|
+    $options[:model]=model_name
   end
-
-  opts.on('-n', '--name', 'name of the object to pull') do |name|
-    $options[:name]=name
-  end
-
   opts.on('-r', '--ruby', 'Generate a ruby script') do 
     $options[:output_method] = :objects_to_script
   end
 end
 
 def load_objects(objects)
-loaded = []
-  objects.each do |model, includes,  name|
+  loaded = []
+  objects.each do |model, name|
     name.split(",").each do |name|
       if name =~ /\A\d+\Z/
         #name is an id
@@ -94,10 +69,10 @@ loaded = []
       end
 
       raise RuntimeError, "can't find #{model} '#{name}'" unless object
-      loaded += object.pull(includes)
+      loaded << object
     end
-  return loaded
   end
+  return loaded
 end
 
 def object_to_hash(object)
@@ -125,9 +100,28 @@ def objects_to_yaml(objects)
   end.to_yaml
 end
 
+def install_model(model_name)
+    model = Models[model_name]
+    raise "can't find model #{model_name}. Available models are #{Models.keys.inspect}" unless model
+
+    model.each do |klass, list|
+      klass.class_eval <<-EOC
+        def to_pull
+          list = #{list.inspect}
+          if list.delete(:super)
+            list.concat(super)
+          end
+          list
+        end
+        EOC
+    end
+end
 ARGV.shift  # to remove the -- needed using script/runner
 optparse.parse!
 #puts $options.to_yaml
 #puts $objects.to_yaml
 
-puts send($options[:output_method], load_objects($objects))
+install_model($options[:model])
+
+
+puts send($options[:output_method], load_objects($objects).pull)
