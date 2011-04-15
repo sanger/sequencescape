@@ -22,7 +22,7 @@ Feature: if request is pending and there is enough quota the admin could change 
      Then I should see "Request Type:"
      When I select "Single ended sequencing" from "Request Type:"   
      And I press "Save changes"
-     Then I should see "You can not change the request type. Quota insufficient."
+     Then I should see "You can not change the request type. Insufficient quota for single ended sequencing."
 
    Scenario: The user asks to change with Request Type that has enough quotas.
      Given last request enough quota

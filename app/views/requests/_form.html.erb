@@ -9,11 +9,11 @@
       <td></td>
     </tr>
     <% if @request.pending? %>
-    <tr>
-      <td width="40%" class="item"><%= label_tag(:request_request_type_id, 'Request Type: ') %>: </td>
-      <td width="60%"><%= form.collection_select(:request_type_id, @reqtype_list, :id, :name) %></td>
-      <td></td>
-    </tr>
+      <tr>
+        <td width="40%" class="item"><%= label_tag(:request_request_type_id, 'Request Type: ') %>: </td>
+        <td width="60%"><%= form.collection_select(:request_type_id, @request_types, :id, :name) %></td>
+        <td></td>
+      </tr>
     <% end %>
     <td width="100%" colspan=2>
       <%= render :partial => "shared/metadata/edit/request", :locals => { :request => @request } %>

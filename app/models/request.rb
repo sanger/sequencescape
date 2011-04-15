@@ -529,8 +529,8 @@ class Request < ActiveRecord::Base
     end
   end
   
-  def update_request_type?(new_request_type)
-    return true unless self.pending?
+  def request_type_updatable?(new_request_type)
+    return false unless self.pending?
     request_type = RequestType.find(new_request_type) 
     return true if self.request_type_id == request_type.id
     self.project.has_quota?(request_type, 1)
