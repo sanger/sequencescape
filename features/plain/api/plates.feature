@@ -16,7 +16,6 @@ Feature: Interacting with plates through the API
     And the infinium barcode for plate "Testing the JSON API" is "WG123456"
 
     When I GET the API path "/plates"
-    Then show me the HTTP response body
     Then ignoring "id|barcode|plate_purpose_uuid|plate_purpose_internal_id" the JSON should be:
       """
       [
