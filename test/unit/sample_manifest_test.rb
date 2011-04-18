@@ -13,12 +13,6 @@ class SampleManifestTest < ActiveSupport::TestCase
     end
 
     context 'creates the right assets' do
-      setup do
-        plate = mock("plate")
-        plate.stubs(:create_barcode_labels_from_plates)
-        PlatePurpose.stubs(:find).returns(plate)
-      end
-
       (1..2).each do |count|
         context "#{count} plate(s)" do
           setup do
@@ -36,6 +30,7 @@ class SampleManifestTest < ActiveSupport::TestCase
     context 'converts to a spreadsheet' do
       setup do
         @manifest = Factory :sample_manifest, :study => @study, :count => 1
+        @manifest.generate
         SampleManifestTemplate.first.generate(@manifest)
 
         @spreadsheet = Spreadsheet.open(StringIO.new(@manifest.generated.data))
@@ -46,8 +41,10 @@ class SampleManifestTest < ActiveSupport::TestCase
         assert_equal 1, @spreadsheet.worksheets.size
         assert_equal 'CARD1', @worksheet[4, 1]
         assert_equal 'Test supplier', @worksheet[5, 1]
-        assert_equal 'A1', @worksheet[9, 1]
-        assert_equal 'B1', @worksheet[10, 1]
+
+        assert_equal 'A1',  @worksheet[  9, 1]
+        assert_equal 'B1',  @worksheet[ 10, 1]
+        assert_equal 'H12', @worksheet[104, 1]
       end
     end
   end
@@ -61,7 +58,7 @@ class SampleManifestTest < ActiveSupport::TestCase
         )
       manifest.save!
 
-      manifest.process
+      manifest.process(Factory(:user))
       Delayed::Job.all(:limit => 1).map(&:invoke_job)
 
       manifest.reload
@@ -79,42 +76,42 @@ class SampleManifestTest < ActiveSupport::TestCase
         well.sample = Factory(
           :sample,
           :name             => "Sample_#{offset+index}",
-          :sanger_sample_id => "CCC2_VLR#{offset+index}"
+          :sanger_sample_id => "ABC_123#{offset+index}"
         )
       end
 
       @old_sample_count   = Sample.count
-      @sample_ccc2_vlr302 = Sample.find_by_sanger_sample_id('CCC2_VLR302')
+      @sample             = Sample.find_by_sanger_sample_id('ABC_123302') or raise "Cannot find sample"
     end
 
     context 'valid CSV file' do
       setup do
         @manifest = load_manifest_from('sample_manifest.csv')
-        @sample_ccc2_vlr302.reload
+        @sample.reload
       end
 
       should "create sample with name, and DNA source of Blood, and not create new samples" do
         assert_equal @old_sample_count, Sample.count
         assert_nil SampleManifest.find(@manifest.id).last_errors
 
-        assert_equal 'CCC2_VLR302', @sample_ccc2_vlr302.sample_metadata.supplier_name
-        assert_equal 'Sample_302',  @sample_ccc2_vlr302.name
-        assert_equal 'Blood',       @sample_ccc2_vlr302.sample_metadata.dna_source
+        assert_equal 'ABC_123302', @sample.sample_metadata.supplier_name
+        assert_equal 'Sample_302', @sample.name
+        assert_equal 'Blood',      @sample.sample_metadata.dna_source
       end
     end
     
     context 'invalid CSV file' do
       setup do
         @manifest = load_manifest_from('invalid_sample_manifest.csv')
-        @sample_ccc2_vlr302.reload
+        @sample.reload
       end
 
       should "not update sample name or dna_source, or create more samples and have errors" do
         assert_equal @old_sample_count, Sample.count
         assert_not_nil SampleManifest.find(@manifest.id).last_errors
 
-        assert_not_equal 'CCC2_VLR302', @sample_ccc2_vlr302.sample_metadata.supplier_name
-        assert_not_equal 'Blood',       @sample_ccc2_vlr302.sample_metadata.dna_source
+        assert_not_equal 'ABC_123302', @sample.sample_metadata.supplier_name
+        assert_not_equal 'Blood',      @sample.sample_metadata.dna_source
       end
     end
   end

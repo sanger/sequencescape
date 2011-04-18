@@ -37,20 +37,24 @@ module SampleManifest::SampleTubeBehaviour
       end
       yield(printables, 'NT')
     end
+
+    def updated_by!(user, samples)
+      # Does nothing at the moment
+    end
+
+    def details(&block)
+      samples.each do |sample|
+        yield({
+          :barcode   => sample.assets.first.sanger_human_barcode,
+          :sample_id => sample.sanger_sample_id
+        })
+      end
+    end
   end
 
   def self.included(base)
     base.class_eval do
       extend ClassMethods
-    end
-  end
-
-  def details(&block)
-    samples.each do |sample|
-      yield({
-        :barcode   => sample.assets.first.sanger_human_barcode,
-        :sample_id => sample.sanger_sample_id
-      })
     end
   end
 

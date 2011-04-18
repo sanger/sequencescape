@@ -8,6 +8,7 @@ class Event::SampleManifestEvent< Event
       :created_by => user ? user.login : nil
     )
   end
+
   def self.updated_sample!(sample, user)
     self.create!(
       :eventful => sample,

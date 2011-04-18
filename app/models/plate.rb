@@ -479,13 +479,12 @@ class Plate < Asset
     nil
   end
 
-  def self.create_plate_with_barcode(plate = nil)
-    if plate && ! self.find_by_barcode(plate.barcode)
-      self.create(:barcode => plate.barcode)
-    else
-      barcode = PlateBarcode.create.barcode
-      self.create(:barcode => barcode)
-    end
+  def self.create_plate_with_barcode(*args)
+    attributes = args.extract_options!
+    plate      = args.first
+    barcode    = plate.barcode if plate.present? and not find_by_barcode(plate.barcode)
+    barcode  ||= PlateBarcode.create.barcode
+    self.create(attributes.merge(:barcode => barcode))
   end
 
   def self.plates_from_scanned_plate_barcodes(source_plate_barcodes)
