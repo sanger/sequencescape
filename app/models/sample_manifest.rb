@@ -52,12 +52,14 @@ end
 
 class SampleManifest < ActiveRecord::Base
   include Uuid::Uuidable
-  include ::Io::SampleManifest::ApiIoSupport
+  include ModelExtensions::SampleManifest
   include SampleManifest::BarcodePrinterBehaviour
   include SampleManifest::TemplateBehaviour
   include SampleManifest::SampleTubeBehaviour
+  include SampleManifest::CoreBehaviour
   include SampleManifest::PlateBehaviour
   include SampleManifest::InputBehaviour
+  extend SampleManifest::StateMachine
 
   module Associations
     def self.included(base)
@@ -109,19 +111,6 @@ class SampleManifest < ActiveRecord::Base
   
   before_save :default_asset_type
   
-  include SampleManifest::PlateManifest
-  include SampleManifest::TubeManifest
-  extend SampleManifest::StateMachine
-
-  def core_behaviour
-    @core_behaviour = case self.asset_type
-    when '1dtube' then ::SampleManifest::SampleTubeBehaviour::Core.new(self)
-    when 'plate'  then ::SampleManifest::PlateBehaviour::Core.new(self)
-    else raise StandardError, "Unknown core behaviour (#{self.asset_type.inspect}) for sample manifest"
-    end
-  end
-  private :core_behaviour
-
   def default_asset_type
     self.asset_type = "plate" if self.asset_type.blank?
   end

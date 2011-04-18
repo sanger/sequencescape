@@ -2,7 +2,7 @@
 Feature: The XML for the sequencescape API
   Background:
     Given sequencescape is setup for 5600990 
-    
+   
   Scenario: POST XML to change qc_state on a asset
     When I POST following XML to change the QC state on the last asset:
        """
