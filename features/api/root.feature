@@ -36,14 +36,14 @@ Feature: The entry point for the API gives directions to the other actions
             "create": "http://www.example.com/api/1/samples"
           }
         },
-        sample_manifests: {
-          actions: {
-            read: "http://www.example.com/api/1/sample_manifests"
+        "sample_manifests": {
+          "actions": {
+            "read": "http://www.example.com/api/1/sample_manifests"
           }
         },
-        suppliers: {
-          actions: {
-            read: "http://www.example.com/api/1/suppliers"
+        "suppliers": {
+          "actions": {
+            "read": "http://www.example.com/api/1/suppliers"
           }
         },
 

@@ -2,10 +2,9 @@ module SampleManifest::InputBehaviour
   module ClassMethods
     def find_sample_manifest_from_uploaded_spreadsheet(spreadsheet_file)
       csv  = FasterCSV.parse(spreadsheet_file.read)
-      column_map = compute_column_map(csv[::SampleManifest::SPREADSHEET_HEADER_ROW])
+      column_map = compute_column_map(csv[spreadsheet_header_row])
 
-      offset = ::SampleManifest::SPREADSHEET_OFFSET
-      offset.upto(csv.size-1) do |n|
+      spreadsheet_offset.upto(csv.size-1) do |n|
         sanger_sample_id = SampleManifest.read_column_by_name(csv, n, 'SANGER SAMPLE ID', column_map)
         next if sanger_sample_id.blank?
         sample = Sample.find_by_sanger_sample_id(sanger_sample_id)
@@ -73,7 +72,7 @@ module SampleManifest::InputBehaviour
   private :strip_non_word_characters
 
   # Always allow 'empty' samples to be updated, but non-empty samples need to have the override checkbox set for an update to occur
-  def process(override_sample_information = false)
+  def process(user_updating_manifest, override_sample_information = false)
     self.start!
     @manifest_errors = []
 
@@ -86,7 +85,7 @@ module SampleManifest::InputBehaviour
         study = self.study
         supplier = self.supplier
 
-        headers = csv[::SampleManifest::SPREADSHEET_HEADER_ROW]
+        headers = csv[spreadsheet_header_row]
         headers.each_with_index do |name, index|
           next if name.blank?
           if strip_non_word_characters(name) != strip_non_word_characters(ColumnMap.fields[index])
@@ -96,15 +95,15 @@ module SampleManifest::InputBehaviour
         end
         column_map= SampleManifest.compute_column_map(headers)
 
-        offset = ::SampleManifest::SPREADSHEET_OFFSET
-        offset.upto(csv.size-1) do |n|
+        samples_updated_by_manifest = []
+        spreadsheet_offset.upto(csv.size-1) do |n|
           begin
             sanger_sample_id = SampleManifest.read_column_by_name(csv, n, 'SANGER SAMPLE ID', column_map)
             next if sanger_sample_id.blank?
             sample      = Sample.find_by_sanger_sample_id(sanger_sample_id)
 
             if !sample
-              @manifest_errors << "Unable to find sample with Sanger Sample ID #{sanger_sample_id} "
+              @manifest_errors << "Unable to find sample with Sanger Sample ID #{sanger_sample_id}"
             else
               if sample.updated_by_manifest && ! override_sample_information
                 next
@@ -151,11 +150,15 @@ module SampleManifest::InputBehaviour
                 }
 
               sample.update_attributes_from_manifest!(
-                :empty_supplier_sample_name => false,
-                :control                    => convert_yes_no_to_boolean(SampleManifest.read_column_by_name(csv, n, 'IS SAMPLE A CONTROL?', column_map)),
-                :updated_by_manifest        => true,
-                :sample_metadata_attributes => metadata.delete_if { |_, v| v.nil? }
+                {
+                  :empty_supplier_sample_name => false,
+                  :control                    => convert_yes_no_to_boolean(SampleManifest.read_column_by_name(csv, n, 'IS SAMPLE A CONTROL?', column_map)),
+                  :updated_by_manifest        => true,
+                  :sample_metadata_attributes => metadata.delete_if { |_, v| v.nil? }
+                },
+                user_updating_manifest
               )
+              samples_updated_by_manifest << sample
             end
           rescue ActiveRecord::RecordInvalid => e
             @manifest_errors << e.message
@@ -163,9 +166,10 @@ module SampleManifest::InputBehaviour
             @manifest_errors << e.message
           end
         end
-        if !@manifest_errors.empty?
-          raise ActiveRecord::Rollback
-        end
+
+        core_behaviour.updated_by!(user_updating_manifest, samples_updated_by_manifest)
+
+        raise ActiveRecord::Rollback unless @manifest_errors.empty?
       end
     rescue ActiveRecord::Rollback
     rescue FasterCSV::MalformedCSVError => e
