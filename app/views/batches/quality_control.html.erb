@@ -1,0 +1,9 @@
+<% add :title, "Batch" -%>
+<% add :back_menu, "Back to pipeline" => pipeline_path(@qc_pipeline) -%>
+
+<h1>BATCHES FOR <%= @qc_pipeline.name %></h1>
+<% if @qc_pipeline.id == @qc_pipeline.qc_auto_pipeline_id -%>
+  <%= render :partial => "pipelines/qc_batches", :locals => { :batches => @batches } %>
+<% else -%>
+  <%= render :partial => "pipelines/manual_qc_batches", :locals => { :batches => @batches } %>
+<% end -%>

@@ -1,0 +1,15 @@
+<tr>
+  <td style='text-align: center'>
+    <%= task.name %>
+    <% unless task.families.empty? -%>
+      &rarr; <%= task.families.collect {|family| family.name + ", "}.to_s.gsub /, $/, "" %>
+    <% end %>
+    <% if current_user.is_admin? %>
+    <br />
+    <%= link_to 'edit', edit_task_url(task) %><br />
+    <% end %>
+  </td>
+</tr>
+<tr>
+  <td style='text-align: center'>&darr;</td>
+</tr>

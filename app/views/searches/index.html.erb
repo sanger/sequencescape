@@ -1,0 +1,18 @@
+<% add :title, "You can search for studies, samples and items here." -%>
+
+<h1>Search for <%= @query %></h1>
+
+<%- form_tag searches_path(:q => params["q"]), :method => :get do -%>
+  <div>
+    <span class="item">
+      <label for="q">Search for:</label> <%= text_field_tag "q" %> 
+      <%= submit_tag "Go" %>
+    </span>
+  </div>
+<%- end %>
+
+<% unless params["q"].blank? -%>
+  <div id="results">
+    <%= render :partial => "search" %>
+  </div>
+<% end -%>

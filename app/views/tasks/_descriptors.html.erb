@@ -1,0 +1,20 @@
+<%= descriptor_javascript_support('tasks', 'task') %>
+
+<table width='65%'>
+  <tr>
+    <td width='100%'>
+      <strong>Descriptors</strong> &middot; 
+      <% link_to_add_descriptor do %><img src="/images/add.png" width="12" height="12" alt="Add"><% end %>
+    </td>
+  </tr>
+</table>
+<div id='descriptors'>
+  <% field_number = 0 %>
+  <% @task.descriptors.each do |field| %>
+    <% field_number = field_number + 1 %>
+    <%= render :partial => "descriptor", :locals => {:field => field, :field_number => field_number} %>
+  <% end %>
+</div>
+<div id='add'>
+  <% link_to_add_descriptor do %><img src="/images/add.png" width="12" height="12" alt="Add"> Add field<% end %>
+</div>

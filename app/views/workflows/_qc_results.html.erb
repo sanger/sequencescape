@@ -1,0 +1,75 @@
+<tr>
+  <td colspan="10">
+    <div style="padding-left:50px;padding-right:50px;">
+      <div style="padding:5px;text-align:center;font-size:13px;background:#CBDCEF;font-weight:bold;">
+        <%= @batch.qc_pipeline.previous_pipeline.name %> data
+      </div>
+        <% @batch.qc_pipeline.previous_pipeline.workflow.tasks.each do |task| %>
+          <div id="boxContainer">
+            <div id="left">
+              <strong><%= task.name %></strong>
+            </div>
+            <div id="right">
+              <% request.lab_events_for_batch(@batch).each do |event| %>
+                <% if event.description == task.name %>
+                  <table width="100%" cellspacing="0" cellpadding="0">
+                    <tbody>
+                    <% event.descriptors.each do |descriptor| %>
+                      <% row_color = cycle("rowA", "rowB") %>
+                      <tr class='<%= row_color %>'>
+                        <% if descriptor.value.kind_of?(Hash) %>
+                          <td><%= descriptor.name.humanize %></td>
+                          <td><%= display_complex_content(descriptor.value) %>
+                          </td>
+                        <% else %>
+                          <td><%= descriptor.name.humanize %></td>
+                          <td><%= descriptor.value %></td>
+                        <% end %>
+                    <% end %>
+                      </tbody>
+                    </table>
+                    <hr />
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+  </td>
+</tr>
+<tr>
+  <td colspan="10">
+    <div style="padding-left:50px;padding-right:50px;">
+      <div style="padding:5px;text-align:center;font-size:13px;background:#CBDCEF;font-weight:bold;">
+        <%= @batch.pipeline.name %> data
+        <%= link_to "(show more)", "", :onclick => "$('requests_#{request.id}').toggle();" %>
+      </div>
+      <div id='<%= "requests_#{request.id}" %>' style='display:none;'>
+        <% @batch.pipeline.workflow.tasks.each do |task| %>
+          <div id="boxContainer">
+            <div id="left">
+              <strong><%= task.name %></strong>
+            </div>
+            <div id="right">
+              <table width="100%" cellspacing="0" cellpadding="0">
+                <tbody>
+                    <% request.lab_events_for_batch(@batch).each do |event| %>
+                      <% if event.description == task.name %>
+                        <% event.descriptors.each do |descriptor| %>
+                          <% row_color = cycle("rowA", "rowB") %>
+                          <tr class='<%= row_color %>'>
+                            <td width="35%"><%= descriptor.name.humanize %></td>
+                            <td width="65%"><%= descriptor.value %></td>
+                          </tr>
+                        <% end %>
+                      <% end %>
+                    <% end %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </td>
+</tr>

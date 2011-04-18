@@ -1,0 +1,11 @@
+<li><%= event.description %></li>
+<ul>
+  <% event.descriptors.each do |descriptor|%>
+  <li><%= descriptor.name %>: <%= descriptor.value %></li>
+  <% end %>
+  <% if @batch  and task=@batch.task_for_event(event) %>
+    <% task.sub_events_for_event(event).each do |ev| %>
+      <%= render :partial => 'event', :locals => {:event => ev} %>
+    <% end %>
+  <% end %>
+</ul>

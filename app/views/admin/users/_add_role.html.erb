@@ -1,0 +1,13 @@
+<% role_class_name =  authorizable_type.first.class.class_name %>
+
+<div id="<%= role_class_name.downcase %>_role">
+<h3><%= role_class_name %></h3>
+<div style="text-align:center">
+  <% form_remote_tag :url => grant_user_role_user_path(:id => @user), :update => "role_list" do -%>
+    <label for="role_authorizable_name"><%= role_class_name %> role</label> <%= select "role", "authorizable_name", @all_roles.map {|r| [r.name, r.name]}.compact, { :prompt => true,  } %> <label for="role_authorizable_id">for <%= authorizable_type.first.class.class_name %></label> <%= select "role", "authorizable_id", authorizable_type.map {|r| [r.name, r.id]}, { :prompt => true } %>
+    <%= hidden_field_tag 'role[authorizable_type]', role_class_name %>
+    <%= submit_tag "Add #{role_class_name} role" %>
+  <% end -%>
+</div>
+<br />
+</div>

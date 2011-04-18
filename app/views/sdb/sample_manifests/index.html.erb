@@ -1,0 +1,9 @@
+<%= render :partial => "side_links" %>
+
+<h1>Sample Manifests</h1>
+<%= render :partial => "upload" %>
+
+<%= will_paginate @sample_manifests %>
+<%= render :partial => 'shared/manifests', :locals => { :manifests => @display_manifests, :show_uploaded => true} %>
+
+<%= will_paginate @sample_manifests %>

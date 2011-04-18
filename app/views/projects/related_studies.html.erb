@@ -1,0 +1,3 @@
+<% add :menu, "Back to project" => project_path(@project) -%>
+<h1>Studies for project <%= @project.name %></h1>
+<%= render :partial => "studies/study_list",  :locals => {:studies => @studies} %>

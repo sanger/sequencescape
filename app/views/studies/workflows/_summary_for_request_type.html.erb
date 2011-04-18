@@ -1,0 +1,24 @@
+<table id="summary" width="100%" class="sortable">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Pending</th>
+      <th>Started</th>
+      <th>Passed</th>
+      <th>Failed</th>
+      <th>Cancelled</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% @assets_to_detail.each do |asset| %>
+    <tr class="<%= label_asset_state(asset) %>">
+      <td><%= link_to asset.name, asset_path(asset), :title => asset.label.capitalize  %></td>
+      <td><%= request_count_link(@study, asset, 'pending', @request_type) %></td>
+      <td><%= request_count_link(@study, asset, 'started', @request_type) %></td>
+      <td><%= request_count_link(@study, asset, 'passed', @request_type) %></td>
+      <td><%= request_count_link(@study, asset, 'failed', @request_type) %></td>
+      <td><%= request_count_link(@study, asset, 'cancelled', @request_type) %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

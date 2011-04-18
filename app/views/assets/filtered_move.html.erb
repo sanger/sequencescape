@@ -1,0 +1,81 @@
+<% add :title, "Move Asset" -%>
+
+<h1>Move <%= @asset.name %></h1>
+<div class='help'>
+  <h2>Important notice</h2>
+    For any help moving asset, please email <%= help_email_link %><br />
+</div>
+<div id="study">
+  <% form_tag move_asset_path(@asset) do %>
+    <table>
+      <tr>
+        <td>
+           <h2>1. Select Study FROM move this asset: </h2>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <%= select_tag :study_id_from,
+            "<option value='0'>Select a Study</option>" + options_from_collection_for_select(@studies_from.sort_by {|p| p.name }, :id, :name, @name_study )
+          %>
+        </td>
+      </tr>
+    
+      <tr>
+        <td>
+          <h2>2. Select Study where TO move this asset: </h2>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <%= select_tag :study_id_to, "<option value='0'>Select a Study</option>" + options_from_collection_for_select(@studies.sort_by {|p| p.name }, :id, :name)  %>
+          &nbsp;<input type="text" id="search_study"> <INPUT type="button" value="Search"  onClick="searchSel()">
+        </td>
+      </tr>
+      <tr>
+        <td>
+          &nbsp;
+          <%= observe_field 'search_study',
+            :url => { :action => :select_asset_name_for_move, :controller => :assets },
+            :on => 'change',
+            :update => "assets_group_name_list",
+            :with => "'study_id_to='+ escape($('search_study').value)+'&asset_id="+@asset.id.to_s+"'"
+          -%>
+          <%= observe_field 'study_id_to',
+            :url => { :action => :select_asset_name_for_move, :controller => :assets },
+            :on => 'change',
+            :update => "assets_group_name_list",
+            :with => "'study_id_to='+ escape($('study_id_to').value)+'&asset_id="+@asset.id.to_s+"'"
+          -%>
+          <%= observe_field 'study_id_to',
+            :url => { :action => :reset_values_for_move, :controller => :assets },
+            :on => 'change',
+            :update => "submission_list",
+            :with => "'study_id_to='+ escape($('study_id_to').value)"
+          -%>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <h2>3. Choose an Asset group: </h2>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div id="assets_group_name_list">
+            <select id="asset_group_id" name="asset_group_id">
+            <option value="0">- Select an existing Asset Group from this study -</option>
+            </select>
+            or enter the new name:  <%= text_field_tag "new_assets_name" %> &nbsp; <INPUT type="button" value="Help me!"  onClick="createNameAsset()">
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td><br><br>
+          <%= submit_tag "Move Asset" %>
+        </td>
+      </tr>
+    </table>
+  <% end %>
+</div>
+

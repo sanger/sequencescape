@@ -1,0 +1,25 @@
+<h1>Listing robots</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Location</th>
+		<th>Show</th>
+		<th>Edit</th>
+		<th>Delete</th>
+  </tr>
+
+<% for robot in @robots %>
+  <tr>
+    <td><%=h robot.name %></td>
+    <td><%=h robot.location %></td>
+    <td><%= link_to 'Show', robot %></td>
+    <td><%= link_to 'Edit', edit_robot_path(robot) %></td>
+    <td><%= link_to 'Delete', robot, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New robot', new_robot_path %> 

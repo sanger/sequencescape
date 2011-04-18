@@ -1,0 +1,33 @@
+<h1>Find a plate to update</h1>
+<%= form_tag(sequenom_search_path, :method => :post, :id => 'sequenom_search') %>
+  <fieldset class="inputs">
+    <p>
+      <label for="plate_barcode">Plate barcode:</label>
+      <%= text_field_tag('plate_barcode', params[:plate_barcode]) %>
+    </p>
+  </fieldset>
+  <fieldset class="buttons">
+    <%= submit_tag('Search') %>
+  </fieldset>
+</form>
+
+<h1>Quickly update a plate</h1>
+<%= form_tag(sequenom_quick_update_path, :method => :post, :id => 'sequenom_quick_update') %>
+  <fieldset class="inputs">
+    <p>
+      <label for="plate_barcode">Plate barcode:</label>
+      <%= text_field_tag('plate_barcode', params[:plate_barcode]) %>
+    </p>
+    <p>
+      <label for="user_barcode">User barcode:</label>
+      <%= text_field_tag('user_barcode', params[:user_barcode]) %>
+    </p>
+    <p>
+      <label for="sequenom_step">Step</label>
+      <%= dropdown_for_steps(:sequenom_step) %>
+    </p>
+  </fieldset>
+  <fieldset class="buttons">
+    <%= submit_tag('Update') %>
+  </fieldset>
+</form>

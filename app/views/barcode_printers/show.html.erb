@@ -1,0 +1,13 @@
+<p>
+  <b>Name:</b>
+  <%=h @barcode_printer.name %>
+</p>
+
+<p>
+  <b>Active:</b>
+  <%=h @barcode_printer.active %>
+</p>
+
+
+<%= link_to 'Edit', edit_barcode_printer_path(@barcode_printer) %> |
+<%= link_to 'Back', barcode_printers_path %>

@@ -1,0 +1,24 @@
+<% unless studies.empty? -%>
+<table id="study_list" width="100%" class="sortable" cellpadding="4" cellspacing="0">
+  <thead>
+    <tr>
+      <th><%= link_to "ID", "javascript:void(0);" %></th>
+      <th><%= link_to "Study name", "javascript:void(0);" %></th>
+      <th><%= link_to "Date created", "javascript:void(0);" %></th>
+      <th><%= link_to "Study Owner", "javascript:void(0);" %></th>
+    </tr>
+  </thead>
+  <tbody>
+  <% studies.each do |study| -%>
+    <tr>
+      <td class="strong"><%= study.id %></td>
+      <td class="strong"><%= link_to truncate(study.name, :length => 40), study_path(study) %></td>
+      <td class="strong faint"><span style="display:none"><%= study.created_at %></span><%= study.created_at.to_formatted_s(:sortable) %></td>
+      <td class="strong"><%= display_owners(study) %></td>
+    </tr>
+  <% end -%>
+  </tbody>
+</table>
+<% else -%>
+  <div id="study_list">No studies match your selection.</div>
+<% end -%>

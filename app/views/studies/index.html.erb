@@ -1,0 +1,18 @@
+<%- add :title, I18n.t("studies.about") %>
+<%- add :manager_option, "<strong>Create study</strong>" => new_study_path %>
+<%- add :manager_option, "<strong>Create project</strong>" => new_project_path %>
+
+<h1>
+<% if params[:scope] %>
+  <%= @alternatives[params[:scope].to_i].capitalize  %> studies
+<% else %>
+  Studies
+<% end %>
+</h1>
+
+<% if @studies.empty? && params[:scope].nil?-%>
+  <%= display_user_guide(I18n.t('studies.guidance.nothing_interesting'), new_study_path) %>
+<% end -%>
+<div class='grouper' id='studies'>
+  <%= render :partial => "study_groups", :locals => {:scope => params[:scope]}  %>
+</div>

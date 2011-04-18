@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="urn:Barcode/Service" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="urn:Barcode/Service" xmlns:intf="urn:Barcode/Service" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)-->
+ <wsdl:types>
+  <schema targetNamespace="urn:Barcode/Service" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="BarcodeLabelDTO">
+    <sequence>
+     <element name="barcode" type="xsd:int"/>
+     <element name="desc" nillable="true" type="xsd:string"/>
+     <element name="name" nillable="true" type="xsd:string"/>
+     <element name="prefix" nillable="true" type="xsd:string"/>
+     <element name="project" nillable="true" type="xsd:string"/>
+     <element name="suffix" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="ArrayOfBarcodeLabelDTO">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="impl:BarcodeLabelDTO[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="BarcodeDTO">
+    <sequence>
+     <element name="check" nillable="true" type="xsd:string"/>
+     <element name="number" type="xsd:int"/>
+     <element name="process" nillable="true" type="xsd:string"/>
+     <element name="type" nillable="true" type="xsd:string"/>
+     <element name="whole" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="verifyNumberRequest">
+
+      <wsdl:part name="number" type="xsd:long"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="verifyNumberResponse">
+
+      <wsdl:part name="verifyNumberReturn" type="impl:BarcodeDTO"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="printLabelsRequest">
+
+      <wsdl:part name="printer" type="xsd:string"/>
+
+      <wsdl:part name="type" type="xsd:int"/>
+
+      <wsdl:part name="headerLabel" type="xsd:boolean"/>
+
+      <wsdl:part name="footerLabel" type="xsd:boolean"/>
+
+      <wsdl:part name="labels" type="impl:ArrayOfBarcodeLabelDTO"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="printLabelsResponse">
+
+      <wsdl:part name="printLabelsReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="Barcode">
+
+      <wsdl:operation name="printLabels" parameterOrder="printer type headerLabel footerLabel labels">
+
+         <wsdl:input message="impl:printLabelsRequest" name="printLabelsRequest"/>
+
+         <wsdl:output message="impl:printLabelsResponse" name="printLabelsResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="verifyNumber" parameterOrder="number">
+
+         <wsdl:input message="impl:verifyNumberRequest" name="verifyNumberRequest"/>
+
+         <wsdl:output message="impl:verifyNumberResponse" name="verifyNumberResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="barcodeSoapBinding" type="impl:Barcode">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="printLabels">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="printLabelsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Barcode/Service" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="printLabelsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Barcode/Service" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="verifyNumber">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="verifyNumberRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Barcode/Service" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="verifyNumberResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Barcode/Service" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="BarcodeService">
+
+      <wsdl:port binding="impl:barcodeSoapBinding" name="barcode">
+
+         <wsdlsoap:address location="http://localhost:9998/barcode_service"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>
+

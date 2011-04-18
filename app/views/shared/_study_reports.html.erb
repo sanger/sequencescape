@@ -1,0 +1,37 @@
+<table id="study_list" width="100%" class="sortable" cellpadding="4" cellspacing="0">
+  <thead>
+  <tr>
+    <th><%= link_to "Study", "javascript:void(0);" %></th>
+    <th><%= link_to "Created on", "javascript:void(0);" %></th>
+    <th><%= link_to "Created by", "javascript:void(0);" %></th>
+    <th><%= link_to "Download", "javascript:void(0);" %></th>
+    <th><%= link_to "Rerun", "javascript:void(0);" %></th>
+    </tr>
+  </thead>
+  <tbody>
+  <% study_reports.each do |study_report| %>
+    <tr>
+      <td><%= link_to study_report.study.name, study_reports_study_path(study_report.study) %></td>
+      <td class="strong faint"><%= study_report.created_at.to_formatted_s(:sortable) %></td>
+      <td>
+        <% if study_report.user %>
+          
+          <%= link_to study_report.user.login, study_reports_profile_path(study_report.user) %>
+        <% end %>
+      </td>
+      <td>
+      <% if study_report.report? %>
+         <%= link_to 'Download', study_report_path(study_report), :title => "Download report for #{study_report.study.name}" %>
+      <% else %>
+        Processing
+      <% end %>
+      </td>
+      <td>
+        <% if study_report.report? %>
+          <%= link_to "Rerun", new_study_report_path(:study => study_report.study) %>
+        <% end %>
+      </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

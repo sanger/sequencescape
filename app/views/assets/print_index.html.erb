@@ -1,0 +1,51 @@
+<%- add :title, "Items for Workflow" %>
+<% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_workflow_path(@study, @workflow) -%>
+
+<div id="content-links">
+  <%= link_to "Full details", study_workflow_path(@study, @workflow) %>
+</div>
+
+<h1><%= @study.name %></h1>
+<div class='subtitle'>
+Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(:long) %> &middot; <%= @study.state.capitalize %>
+</div>
+
+<% if @assets.blank? -%>
+  <%= display_user_guide(I18n.t('studies.workflows.assets.no_assets_available', :label => @workflow.asset_label.downcase.pluralize)) %>
+<% else -%>
+  <p>Select the labware you want to print and press 'Print labels'.</p>
+  <form action="<%= print_assets_path %>" method="POST">
+  <table width='100%'>
+    <thead>
+      <tr>
+        <th class='label'></th>
+        <th class='label'>Name</th>
+        <th class='label'>Type</th>
+        <th class='label'>Barcode</th>
+       </tr>
+    </thead>
+    <tbody>
+    <% @assets.each do |asset| -%>
+    <tr>
+      <td><%= check_box_tag "printable[#{asset.id}]" %></td>
+      <td><%= link_to(asset.name, asset_path(asset)) %></td>
+      <td><%= asset.label %></td>
+      <td><%= asset.barcode %></td>
+    </tr>
+    <% end -%>
+    </tbody>
+  </table>
+  <table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="35%" class="asset">Print to: </td>
+    <td width="65%">
+      <%= render :partial => "shared/printer_list" %>
+    </td>
+  </tr>
+  <tr>
+    <td width="35%" class="asset">&nbsp;</td>
+    <td width="65%"><input type="submit" value="Print labels" /> or <%= link_to "cancel", study_workflow_path(@study, @workflow) %></td>
+  </tr>
+  </table>
+  </form>
+<% end -%>

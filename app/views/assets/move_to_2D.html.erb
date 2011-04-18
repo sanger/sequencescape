@@ -1,0 +1,5 @@
+<% add :title, "This page moves a sample from the current sample tube to a 2D sample tube" -%>
+
+<p>Please scan the 2D tube you want to move the sample into</p>
+<%= render :partial => "scan_barcodes", :locals =>{ :message =>  'scan_message',     :num_text_boxes => 1, :receive_barcode => "receive_barcode"} %>
+

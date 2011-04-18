@@ -1,0 +1,31 @@
+<table id="plate" width="100%">
+  <tr>
+    <% plate.plate_header.each do |header| %>
+      <th><%= header %></th>
+    <% end %>
+  </tr>
+  <% plate.plate_rows.each do |row| %>
+    <tr>
+	<td id='border' width='2%'><%= row %></td>
+      <% plate.plate_columns.each do |column| -%>
+         <td>
+           <div id="boxNormal">
+						<% well = plate.find_well_by_name("#{row}#{column}") %>
+						<% if well %>
+							<% if well.sample%>
+                 <%= link_to well.sample.name, "#{configatron.studies_url}/samples	/#{well.sample.id}" %><br/>
+							<% end %>
+							<%= link_to "#{row}#{column}",  "#{configatron.studies_url}/assets/#{well.id}"  %><br/>
+							<% if p = well.parents.find_by_sti_type("Well") %>
+								Parent: <%= p.map.description %>
+							<% end %>
+							<%= pluralize well.requests.size, 'request' %>
+						<% else %>
+							[ Empty ]
+						<% end %>
+           </div>
+         </td>
+      <% end -%>
+    </tr>
+  <% end -%>
+</table>

@@ -1,0 +1,12 @@
+Given /^the barcode for the sample tube "([^\"]+)" is "([^\"]+)"$/ do |name, barcode|
+  sample_tube = SampleTube.find_by_name(name) or raise StandardError, "Cannot find sample tube #{name.inspect}"
+  sample_tube.update_attributes!(:barcode => barcode)
+end
+
+Given /^tube "([^"]*)" has a public name of "([^"]*)"$/ do |name, public_name|
+  Asset.find_by_name(name).update_attributes!(:public_name => public_name)
+end
+
+Given /^(?:I have )?a (sample|library) tube called "([^\"]+)"$/ do |tube_type, name|
+  Factory(:"#{ tube_type }_tube", :name => name)
+end

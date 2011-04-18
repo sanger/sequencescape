@@ -1,0 +1,17 @@
+<% group = group.blank? ? 'general' : group %>
+<th class="property_group_<%= group %>" id="property_<%= field_name %>">
+  <div class="collapse_property_group_<%= group %>" style="display:none;">
+    <%= link_to_function(image_tag("show.png"), "toggleGroupVisibility('#{group}',true)", :title=> "Show columns") %>
+  </div>
+  <div class="cell_property_group_<%= group %>">
+    <%# TODO[xxx]: support field being required somehow %>
+    <span class="property_edit_info"><%= sections.edit_info %></span><br/>
+    <span class="label"><%= sections.label %></span><br/>
+    <span>
+      <%= link_to_function(image_tag("hide.png"), "toggleGroupVisibility('#{group}')", :title=> "Hide column") %>
+      <% unless sections.help.blank? %>
+        <% tooltip do %><%= sections.help %><% end %>
+      <% end %>
+    </span>
+  </div>
+</th>

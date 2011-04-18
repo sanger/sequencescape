@@ -1,0 +1,8 @@
+<% @roles.each do |role| %>
+  <h2><%= role.users.size > 1 ? role.name.humanize.pluralize : role.name.humanize %></h2>
+    <ul>
+      <% role.users.each do |user| %>
+        <li><%= link_to user.name, profile_path(user) %> (<%= user.login %>) <% if current_user.administrator? %><%= button_to_remote "Remove", :url => remove_role_project_path(:id => @project, :role => {:user => user.id, :authorizable_type => role.name}), :update => "role_list" %><% end %></li>
+      <% end %>
+    </ul>
+<% end %>

@@ -1,0 +1,6 @@
+<% form_tag(update_gel_url(@plate), :method => :post) do %>
+  <%= render :partial => "gel_plate", :locals => { :plate => @plate } %>
+  <br /><br />
+  <%= submit_tag 'Update gel values' %>
+
+<% end %>

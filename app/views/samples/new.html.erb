@@ -1,0 +1,12 @@
+<% add :title, "Samples" -%>
+
+<h1>CREATE SAMPLE</h1>
+
+<div class="info">
+  To add a new sample, complete the form below. Required fields are marked with <%= required_marker %>.
+</div>
+<div id="sample">
+  <% form_for :sample, :url => samples_path do |form| -%>
+    <%= render :partial => "sample", :locals => { :read_only => false, :creation => true, :form => form } -%>
+  <% end -%>
+</div>

@@ -1,0 +1,36 @@
+<h1>Overview of Plates going through QC</h1>
+
+<%= will_paginate @stock_plates %>
+<table id="qc_overview_table" width="100%" class="sortable" cellpadding="4" cellspacing="0">
+  <thead>
+  <tr>
+    <th><%= link_to "Study", "javascript:void(0);" %></th>
+    <th><%= link_to "Stock", "javascript:void(0);" %></th>
+    <th><%= link_to "QC started", "javascript:void(0);" %></th>
+    <th><%= link_to "Pico Analysed", "javascript:void(0);" %></th>
+    <th><%= link_to "Gel Analysed", "javascript:void(0);" %></th>
+    <th><%= link_to "Sequenom Stamp", "javascript:void(0);" %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @stock_plates.each do |stock_plate| %>
+    <tr>
+      <% qc_started_date = stock_plate.events.select{ |event| event.family == 'create_dilution_plate_purpose'  }.first.try(:content) %>
+      <% sequenom_plate_stamp_date = stock_plate.events.select{ |event| event.family == 'create_for_sequenom'  }.first.try(:content)  %>
+      <% pico_plate_analysed_date = stock_plate.events.select{ |event| event.family == 'pico_analysed'  }.first.try(:content) %>
+      <% gel_plate_analysed_date = stock_plate  .events.select{ |event| event.family == 'gel_analysed'  }.first.try(:content) %> 
+      <td>
+         <% if stock_plate.study %>
+           <%= link_to stock_plate.study.name, study_path(stock_plate.study) %>
+         <% end %>
+      </td>
+      <td><%= link_to stock_plate.barcode, asset_path(stock_plate) %></td>
+      <td><%= qc_started_date %></td>
+      <td><%= pico_plate_analysed_date %></td>
+      <td><%= gel_plate_analysed_date %></td>
+      <td><%= sequenom_plate_stamp_date %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= will_paginate @stock_plates %>

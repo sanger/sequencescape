@@ -1,0 +1,10 @@
+Hello,
+
+This is to let you know that Sequencescape has just failed an attempt for request <%= @request.id %>.
+
+You can view the request details here:
+<%= url_for(:host => configatron.site_url, :controller => 'requests', :action => 'show', :id => @request.id) %>
+
+Many thanks,
+Sequencescape
+

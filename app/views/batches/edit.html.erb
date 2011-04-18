@@ -1,0 +1,73 @@
+<% add :title, "Batch" -%>
+<% add :menu, "Finish editing" => batch_path(@batch) -%>
+<% add :menu, "Swap lanes editing" => filtered_batch_path(@batch) -%>
+<% add :admin_option, {"Delete batch" => batch_path(@batch) }, {:confirm => "Are you sure you want to delete this batch? There is no undo.", :method => :delete} -%>
+<% add :back_menu, "View all batches" => batch_path(@batch) -%>
+
+<h1>BATCH <%= @batch.id %></h1>
+<div class="info">
+  This batch belongs to pipeline: <%= @batch.pipeline.name %>
+</div>
+
+<% if @requests.empty? -%>
+  <div id="empty_filter">
+    No items found. <%= link_to "Create the first one", :action => "new" %>
+  </div>
+<% else -%>
+  <%= render :partial => "shared/batch", :locals => { :requests => @requests, :edit => true, :stage => false  } %>
+<%- end -%>
+
+<% if !@batch.has_control? && @batch.pipeline.has_controls? -%>
+<h1>CONTROLS</h1>
+<%= render :partial => "controls" %>
+<% end -%>
+
+<h1>ASSIGN BATCH TO USER</h1>
+<div class="content">
+  <div class="info">
+  Assign this batch to another user
+  </div>
+  <div id="sample">
+    <% form_for :assignee, :url => {:action => "assign_batch", :id => @batch} do |form| -%>
+      <table width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="45%" class="item"><%= select :assignee, :id, @users.map {|u| [u.login, u.id]}, :selected => current_user.id %></td>
+          <td width="55%"><%= submit_tag :pipeline, :value => "Assign" %></td>
+        </tr>
+      </table>
+    <% end -%>
+  </div>
+</div>
+<% if current_user.is_administrator? -%>
+  <h1>RESET BATCH</h1>
+  <div class="content">
+    <div class="info">
+      This will destroy the batch, all of the target assets that are related the requests that were in are batch
+    </div>
+    <div id="sample">
+      <% form_tag(:controller => :batches, :action => :reset_batch, :id => @batch.id) do -%>
+        <table width="100%" cellspacing="0" cellpadding="0">
+          <tr>
+            <td width="45%" class="item"><%= submit_tag "Reset", :confirm => 'Do you really want to do this?' %></td><td widht="55%"></td>
+          </tr>
+        </table>
+      <% end %>
+    </div>
+  </div>
+  <h1>ROLLBACK QC</h1>
+  <div class="content">
+    <div class="info">
+      This will move the batch to it's previous QC state.
+    </div>
+    <div id="sample">
+      <% form_tag(:controller => :batches, :action => :previous_qc_state, :id => @batch.id) do -%>
+        <table width="100%" cellspacing="0" cellpadding="0">
+          <tr>
+            <td width="45%" class="item"><%= submit_tag "Move to previous state", :confirm => 'Do you really want to do this?' %></td><td widht="55%"></td>
+          </tr>
+        </table>
+      <% end %>
+    </div>
+  </div>
+  
+<% end %>

@@ -1,0 +1,25 @@
+<% add :title, "This page displays details the event history." -%>
+<% add :menu, "Back to sample" => sample_path(@sample.id) -%>
+
+<h1>Event history</h1>
+
+<div class="help">
+  Complete event history for sample <%= @sample.id %>, in chronological order.
+</div>
+
+<div class="info">
+  <%- unless @sample.events.empty? %>
+    <h3><%= pluralize @sample.events.size, "event" %></h3>
+    <table width="100%" cellspacing="0" cellpadding="4" class="sortable" id="events">
+      <tr>
+        <th>Message</th>
+        <th>Content</th>
+        <th>Created at</th>
+        <th>Created by</th>
+      </tr>
+      <%= render :partial => "requests/event", :collection => @sample.events.sort{ |a,b| a.id <=> b.id  } %>
+    </table>
+  <%- else %>
+    <%= display_user_guide("No events registered") %>
+  <%- end %>
+</div>

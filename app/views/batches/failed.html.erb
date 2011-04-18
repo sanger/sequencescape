@@ -1,0 +1,6 @@
+<% add :title, "Batch" -%>
+<% add :back_menu, "Back to pipeline" => pipeline_path(@pipeline) -%>
+
+<h1>FAILED BATCHES FOR <%= @pipeline.name %></h1>
+
+<%= render :partial => "shared/batches", :locals => { :batches => @batches, :in_progress => false, :showing_all => true, :batch_state => 'failed' } %>

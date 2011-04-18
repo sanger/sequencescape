@@ -1,0 +1,110 @@
+<% add :title, "Move Sample" -%>
+
+<h1>Move <%= @sample.name %></h1>
+<div class='help'>
+  <h2>Important notice</h2>
+    You can move a Sample but before Sequencescape will check if it is possible.<br />
+    For any help moving samples, please email <%= help_email_link %><br />
+    Automatic procedure  <%= link_to "Spreadsheet upload", move_spreadsheet_samples_path %>
+</div>
+<div id="study">
+  <% form_tag move_sample_path(@sample) do %>
+    <table>
+      <tr>
+        <td>
+          <h2>1. Select Study FROM move this sample: </h2>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <%= select_tag :study_id_from,
+            "<option value='0'>Select a Study</option>" + options_from_collection_for_select(@studies_from.sort_by {|p| p.name }, :id, :name, @name_study )
+          %>
+          &nbsp;
+          <div id="from_submission_list">
+            <label id="number_submission">0 Submission for this Study/ies.</label>
+          </div>
+          <%= observe_field 'study_id_from',
+            :url => { :action => :show_submissions, :controller => :samples },
+            :on => 'change',
+            :update => "from_submission_list",
+            :with => "'study_id_from='+ escape($('study_id_from').value)+'&sample_id="+@sample.id.to_s+"'"
+          -%>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <h2>2. Select Study where TO move this sample: </h2>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <%= select_tag :study_id_to, "<option value='0'>Select a Study</option>" + options_from_collection_for_select(@studies.sort_by {|p| p.name }, :id, :name)  %>
+          &nbsp;<input type="text" id="search_study"> <INPUT type="button" value="Search"  onClick="searchSel()">
+        </td>
+      </tr>
+      <tr>
+        <td>
+          &nbsp;
+          <%= observe_field 'search_study',
+            :url => { :action => :select_asset_name_for_move, :controller => :samples },
+            :on => 'change',
+            :update => "assets_group_name_list",
+            :with => "'study_id_to='+ escape($('search_study').value)+'&sample_id="+@sample.id.to_s+"'"
+          -%>
+          <%= observe_field 'study_id_to',
+            :url => { :action => :select_asset_name_for_move, :controller => :samples },
+            :on => 'change',
+            :update => "assets_group_name_list",
+            :with => "'study_id_to='+ escape($('study_id_to').value)+'&sample_id="+@sample.id.to_s+"'"
+          -%>
+          <%= observe_field 'study_id_to',
+            :url => { :action => :reset_values_for_move, :controller => :samples },
+            :on => 'change',
+            :update => "submission_list",
+            :with => "'study_id_to='+ escape($('study_id_to').value)"
+          -%>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <h2>3. Choose an Asset group: </h2>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div id="assets_group_name_list">
+            <select id="asset_group_id" name="asset_group_id"
+              onChange="<%= remote_function( :update => 'submission_list',
+                :url => { :action => 'select_submission_for_move'},
+                :with => "'asset_group_id='+escape($('asset_group_id').value)+'&study_id_to='+escape($('study_id_to').value)+'&sample_id="+@sample.id.to_s+"'" )
+              %>">
+            <option value="0">- Select an existing Asset Group from this study -</option>
+            </select>
+            or enter the new name:  <%= text_field_tag "new_assets_name" %> &nbsp; <INPUT type="button" value="Help me!"  onClick="createNameAsset()">
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <h2>4. Choose a Submission: </h2>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div id="submission_list">
+            <select id="submission_id" name="submission_id">
+            <option value="0">- Select a Submission -</option>
+            </select>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td><br><br>
+          <%= submit_tag "Move Sample" %>
+        </td>
+      </tr>
+    </table>
+  <% end %>
+</div>
+

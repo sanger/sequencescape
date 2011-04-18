@@ -1,0 +1,55 @@
+<%= javascript_include_tag 'cherrypick.js' %>
+<!--% form_for @batch, :url => {:controller => :batches, :action => :qc_batch, :id => @batch.id, :task_id => @task.id }, :html => { :id => 'stage_form'} do |form| %-->
+<% form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
+
+
+	<% plate_class = {}%>
+	<h4>Source Plates</h4>
+	<table id="source_plates" class="plate">
+		<tr>
+    <% @source_plate_ids.each_with_index do |source_plate_id,index| -%>
+      <% plate_class[source_plate_id] = "colour#{index%12}" -%>
+      <td class="<%= plate_class[source_plate_id] %>"><%= source_plate_id %></td>
+    <% end %>
+    </tr>
+	</table>
+
+	<% plate_ids = [] %>
+	<% @plates.each_with_index do |plate,index| -%>
+		<%= render :partial => "plate", :locals => {:plate_cols =>@plate_cols, :plate_rows => @plate_rows, :plate => plate, :index => index, :plate_class => plate_class} %>
+
+    <% @plate_rows.times { |row_index| plate_ids << "plate[#{index}][#{row_index}]" } %>
+	<% end -%>
+	
+	<%= render :partial => "scratch_pad", :locals => {:plate_cols =>@plate_cols, :plate_rows => @plate_rows,:plate_class => plate_class} %>
+
+  <% (@plate_rows/2).times { |row_index| plate_ids << "scratch_[#{row_index}]" } %>
+	<% plate_ids << "control_[0]" -%>
+	<% plate_ids << "control_[1]" -%>
+
+	<% if @plate.nil? -%>
+	<script type="text/javascript">
+		window.onload = (function() {
+      /* 
+       * Sortable only supports direct child elements, which have to have an 'id' attribute.  Hence this Sortable's of each
+       * row in the the plate tables, and allows dragging between them and the scratch pad.
+       */
+			<% plate_ids.each do |plate| %>
+		  Sortable.create('<%= plate %>', { containment: ['<%= plate_ids.join("','") %>'], tag: 'td', overlap: 'horizontal' });
+			<% end%>
+		})();
+	</script>
+	<% end -%>
+	
+  <%= hidden_field_tag 'minimum_volume', @minimum_volume    %>
+  <%= hidden_field_tag 'maximum_volume', @maximum_volume    %>
+  <%= hidden_field_tag 'total_nano_grams', @total_nano_grams  %>
+  <%= hidden_field_tag 'cherrypick_action', @cherrypick_action %>
+	<%= hidden_field_tag 'plate_type', @plate_type %>
+	<%= hidden_field_tag 'volume_required', @volume_required %>
+	<%= hidden_field_tag 'concentration_required', @concentration_required %>
+	<%= hidden_field_tag 'micro_litre_volume_required', @micro_litre_volume_required %>
+	<input type='button' value="Submit" id='stage_button' onclick='verifyplate(<%= @plate_cols %>,<%= @plate_rows %>,<%= @plates.size %>)' />
+  <span id='stage_loading' style='display: none;'><%= image_tag 'ajax-loader.gif', :size => "10x10", :alt => 'Saving' %> Saving</span>
+    <span id="stage_links"> or <%= link_to "cancel", pipeline_path(@batch.pipeline) %>
+<% end %>

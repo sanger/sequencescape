@@ -1,0 +1,13 @@
+<% add :title, "Sequencing studies can be edited, approved and managed from here." %>
+<% add :menu, "View all studies" => studies_path %>
+<% add :menu, "Contacts" => collaborators_study_path(@study) %>
+<% add :menu, "Study History" => summary_study_workflow_path(@study, @current_user.workflow) -%>
+<% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(@study) -%>
+
+<h1>Manage study: <%= @study.name %></h1>
+
+<%= tabulated_error_messages_for "study" -%>
+
+<p>You can update the approval status for a study here.</p>
+
+<%= render :partial => "manage_single_study", :locals => { :request_types => @request_types } %>

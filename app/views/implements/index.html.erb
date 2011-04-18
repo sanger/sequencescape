@@ -1,0 +1,57 @@
+<% add :title, "Lab Implements" -%>
+<% if current_user.is_administrator? -%>
+  <% add :menu, "New Implement" => new_implement_path -%>
+  <% add :menu, "Print Labels" =>  url_for(:controller => :implements, :action => :print_labels) -%>
+<% end -%>
+
+<h1>LAB IMPLEMENTS</h1>
+
+<div class="content">
+  <div class="info">
+    All available Lab Implements and their barcodes
+  </div>
+
+<div style="text-align:center">
+  <%= will_paginate @implements %>
+</div>
+<div class="info">
+  <table width="100%" cellpadding="5" cellspacing="0" class='sortable' id='sortable_batches'>
+    <thead>
+      <tr>
+        <th class='label'>Name</th>
+        <th class='label'>Barcode</th>
+    <th class='label'>Equipment Type</th>
+        <th class='label'>&nbsp;</th>
+        <th class='label'>&nbsp;</th>
+      </tr>
+    </thead>
+
+  <tbody>
+    <% if @implements.empty? -%>
+      <tr>
+        <td colspan="6">No Lab Implements</td>
+      </tr>
+    <% else -%>
+      <% @implements.each do |implement| -%>
+      <tr>
+      <td><%= link_to  implement.name, implement_path(implement) %></td>
+      <td><%= link_to  implement.barcode, implement_path(implement)  %></td>
+      <td><%= link_to  implement.equipment_type, implement_path(implement) %></td>
+      <td><%= link_to 'Show', implement_path(implement) %></td>
+    <% if current_user.is_admin? -%>
+     <td><%= link_to 'Delete', implement, :confirm => 'Are you sure you want to delete this lab implement and barcode?', :method => :delete %></td>
+    <% else -%>
+    <td>&nbsp;</td>
+    <% end -%>
+
+    </tr>
+      <% end -%>
+    <% end -%>
+    </tbody>
+</table>
+</div>
+<div style="text-align:center">
+  <%= will_paginate @assets %>
+</div>
+
+</div>

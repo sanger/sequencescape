@@ -1,0 +1,6 @@
+<%= render_title "Released!" %>
+<p>
+Batch <%= @batch.id %> has been released.
+</p>
+<br />
+<%= link_to 'Back to pipelines', workflows_url %> &middot; <%= link_to 'View batch', batch_url(@batch.id)%>

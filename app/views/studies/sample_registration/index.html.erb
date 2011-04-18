@@ -1,0 +1,12 @@
+<% add :title, I18n.t("studies.about") -%>
+<% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(@study) -%>
+
+<h1>Sample registration</h1>
+
+<p>There are two recommended ways to register samples for use with a study in Sequencescape:</p>
+
+<h2><%= link_to "1. Manual entry", new_study_sample_registration_path %></h2>
+<p>Type your samples in online using the manual entry form.</p>
+
+<h2><%= link_to "2. Spreadsheet load", upload_study_sample_registration_path %></h2>
+<p>Pre-populate the manual entry form with values from an Excel spreadsheet.</p>

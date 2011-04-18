@@ -1,0 +1,46 @@
+<!--% form_for @batch, :url => {:controller => :batches, :action => :qc_batch, :id => @batch.id, :task_id => @task.id }, :html => { :id => 'stage_form'} do |form| %-->
+<% form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
+<div class="info">
+  <table width="100%" cellpadding="5" cellspacing="0" class='sortable' id='sortable_batches'>
+  <thead>
+    <tr>
+  <% %w(Qc Plate Well Request Gel Pico Sequenom Gender Concentration Volume Genotyped Empty?).zip([nil, nil, "5%"]).each do |column, width| %>
+    <th class='label' <%= width ? 'width="#{width}"' : ""%>>
+    <%= column %>
+    </th>
+  <% end %>
+</tr>
+  </thead>
+  <tbody>
+  <% for qc in @qc_results %>
+    <tr class="<%= "qc_#{qc.qc_status}"%>" id="<%="qc_row_#{qc.request.id}"%>">
+      <td>
+        <%= label_tag("#{ qc.request.id }_qc_state", h("#{ qc.well.plate.name } QC status #{qc.well.map.description}"), :style => 'display:none') %>
+        <%= qc_select_box(qc.request, qc.qc_status,:generate_blank => true, :onChange => "update_qc_row('#{qc.request.id}_qc_state', 'qc_row_#{qc.request.id}');") %>
+      </td>
+      <td><%= link_to qc.well.plate.name, asset_url(qc.well.plate) %></td>
+      <td><%= qc.well.map.description %> </td>
+      <td><%= link_to qc.asset.id, asset_url(qc.request) %></td>
+      <td class="<%= "qc_#{qc.gel_status}" %>"> <%= qc.gel_value %> </td>
+      <td class="<%= "qc_#{qc.pico_status}" %>"> <%= qc.pico_value.try(:titleize) %> </td>
+      <td class="<%= "qc_#{qc.sequenom_status}" %>"> <%= qc.sequenom_value %></td>
+      <td class="<%= "qc_#{qc.gender_status}" %>"> <%= qc.gender_value %> </td>
+      <td class="<%= "qc_#{qc.concentration_status}" %>"> <%= qc.initial_concentration %> </td>
+      <td> <%= qc.volume %> </td>
+      <td class="<%= "qc_#{qc.genotyping_done_status}" %>"> <%= qc.genotyping_done %> </td>
+      <td class="<%= "qc_#{qc.sample_empty}" %>"> <%= "Empty" if qc.sample_empty %> </td>
+    </tr>
+  <% end %>
+</tbody>
+  </table>
+
+<script>$$('tr.qc_pass').invoke('hide');</script>
+</div>
+
+<div class="help">
+	<a href= "#" onclick="$$('tr.qc_pass').invoke('show');">Show all samples</a> -
+	<a href= "#" onclick="$$('tr.qc_pass').invoke('hide');">Hide passed samples</a>
+</div>
+
+  <%= render :partial => "next_stage_submit" %>
+<% end %>

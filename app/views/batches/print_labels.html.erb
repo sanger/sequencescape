@@ -1,0 +1,46 @@
+<% add :title, "Print labels" -%>
+<% add :back_menu, "Back to batch" => batch_path(@batch) -%>
+
+<h1>PRINT LABELS</h1>
+<div class="content">
+  <div class="info">
+    Print labels for Batch <%= @batch.id %>
+  </div>
+  <div class="info">
+    <form action='/batches/print_barcodes' method='POST'>
+      <table width="100%" cellspacing="0" cellpadding="0">
+        <% if @batch.multiplexed? %>
+        <tr>
+          <td>Labels for requests and tag numbers </td>
+        </tr>
+        <% end %>
+				</table>
+				<%= render :partial => "shared/print" %>
+				<table width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="35%" class="item">Number of copies:</td>
+          <td width="65%"><input name="count" size="10" value="1" /></td>
+        </tr>
+        <% if ! @batch.multiplexed? %>
+          <% @batch.requests.map{ |r| r.target_asset }.uniq.map{|asset| asset.source_request }.each do |request| -%>
+            <tr>
+              <td width="35%" class="item"><label for="printable[<%= request.id %>]">Tube <%= request.target_asset.barcode %></label></td>
+              <td width="65%"><input type='checkbox' checked='on' value='on' name='printable[<%= request.id %>]' id='printable[<%= request.id %>]' ></td>
+            </tr>
+          <% end -%>
+        <% else %>
+          <% @batch.requests.each do |request| -%>
+            <tr>
+              <td width="35%" class="item"><%= request.target_asset.barcode %> - Tag <%= request.tag_number %></td>
+              <td width="65%"><input type='checkbox' checked='on' name='printable[<%= request.id %>]'></td>
+            </tr>
+          <% end -%>
+        <% end %>
+        <tr>
+          <td width="35%" class="item">&nbsp;</td>
+          <td width="65%"><input type='submit' value='Print labels'> or <%= link_to 'cancel', :controller => 'batches', :action => 'show', :id => @batch.id %></td>
+        </tr>
+      </table>
+    <input type='hidden' name='batch_id' value='<%= @batch.id %>' />
+  </div>
+</div>

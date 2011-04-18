@@ -1,0 +1,6 @@
+<label for="barcode_printer_list" style="display:none">Barcode Printer</label>
+<select name="printer" id="barcode_printer_list">
+  <% BarcodePrinter.all.each do |printer| %>
+    <option value="<%= printer.name %>"><%= printer.name %></option>
+  <% end %>
+</select>

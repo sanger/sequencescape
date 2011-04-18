@@ -1,0 +1,21 @@
+<% add :menu, "All Tag Groups" => tag_groups_path(@asset) %>
+
+<h1>Editing tag_group</h1>
+
+<% form_for(@tag_group) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </p>
+
+<%= render :partial => "shared/tags_list", :locals => { :tag_group => @tag_group, :tags => @tag_group.tags } %>
+	
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @tag_group %> |
+<%= link_to 'Back', tag_groups_path %>

@@ -1,0 +1,90 @@
+class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpoint::BasicHandler
+  include Core::Endpoint::BasicHandler::Paged
+
+  def initialize(association, options, &block)
+    super(&block)
+    @association, @options = association, options
+  end
+
+  [ :create, :update, :delete ].each do |action|
+    line = __LINE__ + 1
+    class_eval(%Q{
+      def #{action}(request, path)
+        nested_action(request, path, request.target.send(@association)) do
+          super
+        end
+      end
+    }, __FILE__, line)
+  end
+
+  def association_details_for(request)
+    association_class = request.target.class.reflections[@association].klass
+    association_io    = ::Core::Io::Registry.instance.lookup_for_class(association_class)
+    yield(association_io)
+  end
+  private :association_details_for
+
+  def association_from(request)
+    association = request.target.send(@association)
+    association = @options[:scoped].split('.').inject(association) { |c,m| c.send(m) } if @options.key?(:scoped)
+    association
+  end
+  private :association_from
+
+  def nested_action(request, path, association, &block)
+    uuid = request.target.uuid
+    association_details_for(request) do |association_io|
+      request.io = association_io
+      request.push(association) do 
+        association.singleton_class.send(:define_method, :uuid) { uuid } unless association.respond_to?(:uuid)
+        yield
+      end
+    end
+  end
+  private :nested_action
+
+  def read(request, path)
+    association_details_for(request) do |association_io|
+      association  = association_from(request)
+      eager_loaded = association_io.eager_loading_for(association).include_uuid
+      nested_action(request, path, page_of_results(eager_loaded, path.first.try(:to_i) || 1, association)) do
+        super
+      end
+    end
+  end
+
+  def _read(request, _)
+    yield(self, request.target)
+  end
+  private :_read
+  standard_action(:read)
+
+  def as_json(options = {})
+    json = super.tap { |json| action_updates_for(options) { |updates| json['actions'].merge!(updates) } }
+    options[:embedded] ?  generate_embedded_as_json(options, json) : generate_list_as_json(options, json)
+  end
+
+  def generate_embedded_as_json(options, json)
+    json['size'] = options[:target].send(@association).count
+    { @options[:json].to_s => json }
+  end
+  private :generate_embedded_as_json
+
+  def generate_list_as_json(options, json)
+    json.tap do |json|
+      dupped = options.merge(:target => nil, :only => @options[:include])
+      json[@options[:json].to_s] = options[:response].object.map do |object|
+        handler_for_object = endpoint_for_object(object).instance_handler
+        dupped[:target] = object
+        handler_for_object.as_json(dupped)
+      end
+    end
+  end
+  private :generate_list_as_json
+
+  def core_path(*args)
+    options = args.extract_options!
+    options[:response].request.service.api_path(options[:target].uuid, @options[:to], *args)
+  end
+  private :core_path
+end

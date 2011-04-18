@@ -1,0 +1,32 @@
+<p>
+  <b>Name:</b>
+  <%=h @robot.name %>
+</p>
+
+<p>
+  <b>Location:</b>
+  <%=h @robot.location %>
+</p>
+
+
+<h2>Properties</h2>
+<table>
+	<thead>
+		<th>Name</th>
+		<th>Key</th>
+		<th>Value</th>
+</thead>
+<% @robot.robot_properties.each do |property| %>
+<tr>
+	<td><%= property.name %></td>
+	<td><%= property.key %></td>
+	<td><%= property.value %></td>
+</tr>
+<% end %>
+</table>
+
+
+<%= link_to 'Edit', edit_robot_path(@robot) %> |
+<%= link_to 'Back', robots_path %> |
+<%= link_to 'Manage Properties', robot_robot_properties_path(@robot) %> |
+<%= link_to 'All robots', robots_path %>

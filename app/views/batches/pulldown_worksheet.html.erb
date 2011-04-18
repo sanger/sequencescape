@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <%= stylesheet_link_tag "print" %>
+  <%= stylesheet_link_tag "print",:media => "print" %>
+	<%= javascript_include_tag "prototype" %>
+  <%= javascript_include_tag "barcode" %>
+  <title>Batch <%= @batch.id %></title>
+</head>
+<body>
+	
+ <div id="header">
+      <h1>Batch <%= @batch.id %> for plate <%= @plate.barcode %></h1>
+			<div id="batchbarcode_<%= @plate.barcode %>">
+			  <img src='<%= "#{configatron.barcode_images_url}/barcode_images/ean13/0#{Barcode.calculate_barcode('BA',@batch.id)}" %>' alt="batchbarcode_<%= @plate.barcode %>"/>
+			</div>
+	</div>
+
+<table id="pulldown_worksheet_details">
+  <thead>
+    <tr>
+     <th>Pooled Tube</th>
+     <th>Plate</th>
+     <th>Well</th>
+     <th>Tag</th>
+     <th>Sample</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% well_submission_colours = AssignTagsToWellsTask.new.map_asset_ids_to_normalised_index_by_submission(@batch.requests) %>
+    <% CherrypickGroupBySubmissionTask.new.sort_grouped_requests_by_submission_id(@batch.requests).each do |request| %>
+      <% well = request.asset %>
+      <% next unless well %>
+      <% submission_colour = (well && well_submission_colours[well.id] ) ? "colour#{well_submission_colours[well.id]%12}"  : '' %>
+    <tr>
+      <td class="<%= submission_colour %>"><%= request.target_asset.barcode if request.target_asset %></td>
+      <td class="<%= submission_colour %>"><%= well.plate.sanger_human_barcode if well.plate %></td>
+      <td class="<%= submission_colour %>"><%= well.map.description if well.map %></td>
+      <td class="<%= submission_colour %>"><%= well.tag_instance.tag.name  if well.tag_instance && well.tag_instance.tag %></td>
+      <td class="<%= submission_colour %>"><%= well.sample.name if well.sample %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+
+  <div id="footer">Created: <%= @batch.updated_at.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= @batch.user.login if @batch.user %> -
+	Printed: <%= Time.now.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= current_user.login if current_user %></div>
+  <script language="javascript">
+     window.print();
+  </script>
+</body>
+</html>

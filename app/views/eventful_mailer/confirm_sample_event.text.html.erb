@@ -1,0 +1,16 @@
+Hello,
+
+<p>The following activity has been recorded for <strong><%= @eventful.name %></strong></p>
+<p><%= @eventful.class %> <%= @eventful.id %>: <%= @message %></p>
+
+<pre><%= @content %></pre>
+
+<p>
+You can view this sample here:<br />
+
+<% link = url_for(:host => configatron.site_url, :controller => 'samples', :action => 'show', :id => @eventful.id) %>
+<a href="<%= link %>"><%= link %></a>
+</p>
+
+<p>Many thanks,<br />
+<em>Sequencescape</em></p>

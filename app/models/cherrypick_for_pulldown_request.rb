@@ -1,0 +1,2 @@
+class CherrypickForPulldownRequest < TransfertRequest
+end

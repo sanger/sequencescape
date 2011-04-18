@@ -1,0 +1,2 @@
+class QcPlatePurpose < PlatePurpose
+end

@@ -1,0 +1,20 @@
+<% add :title, "Swap Batches" -%>
+<% add :menu, "View all batches" => {:action => :all} -%>
+<% add :back_menu, "Back to all pipelines" => pipelines_path -%>
+
+<h1>Batch <%= @batch.id %></h1>
+<div class="content">
+  <div class="info">
+  </div>
+  <% form_tag swap_batch_path(@batch) do %>
+    <h3>First Batch</h3>
+    <div><%= label_tag "batch_1", "<strong>ID:</strong>" %><br /><%= text_field_tag "batch[1]", @batch.id %></div>
+    <div><%= label_tag "position_batch_1", "<strong>Position:</strong>" %><br /><%= text_field_tag "batch[position][1]" %></div>
+    <br />
+    <h3>Second Batch</h3>
+    <div><%= label_tag "batch_2", "<strong>ID:</strong>" %><br /><%= text_field_tag "batch[2]" %></div>
+    <div><%= label_tag "position_batch_2", "<strong>Position:</strong>" %><br /><%= text_field_tag "batch[position][2]" %></div>
+    <br />
+    <%= submit_tag "Swap positions" %>
+  <% end %>
+</div>

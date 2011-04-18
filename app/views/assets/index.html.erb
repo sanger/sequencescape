@@ -1,0 +1,23 @@
+<% add(:menu, "Back to study" => study_path(@study)) if @study.present? -%>
+
+<h1>
+<% if @study.present? -%>
+ Listing assets for study <%= @study.name %>
+<% else -%>
+ Listing assets
+<% end -%>
+</h1>
+<br />
+
+<% unless @assets_with_requests.blank? %>
+  <strong>The following assets have had work requested on them</strong>
+  <%= render(:partial => 'table_of_assets', :locals => { :assets => @assets_with_requests, :study => @study }) %>
+  <br />
+<% end %>
+
+<%# will_paginate @assets_with_requests %>
+
+<% unless @assets_without_requests.blank? %>
+  <strong>The following assets have not had work requested on them</strong>
+  <%= render(:partial => 'table_of_assets', :locals => { :assets => @assets_without_requests, :study => @study }) %>
+<% end %>

@@ -1,0 +1,68 @@
+# SQLite version 3.x
+#   gem install sqlite3-ruby (not necessary on OS X Leopard)
+
+# To enable developers to have their own development setup per repository clone we allow them to stick
+# the suffix they want attached to any database names in the suffix file in the root of the project.
+<% suffix = "_#{File.read(File.join(Rails.root, 'database_suffix'))}".strip rescue nil %>
+
+mysql: &MYSQL
+  adapter: mysql
+  username: root
+  password:
+  host: localhost
+  port: 3306
+
+development:
+  <<: *MYSQL
+  database: sequencescape_development<%= suffix %>
+
+  # indentation is deliberate!
+  development_warehouse: &warehouse
+    <<: *MYSQL
+    database: warehouse_development<%= suffix %>
+
+development_local:
+  adapter: sqlite3
+  database: db/development.sqlite3
+  pool: 5
+  timeout: 5000
+
+development_local_snp:
+  adapter: sqlite3
+  database: db/snp_development.sqlite3
+  pool: 5
+  timeout: 5000
+
+development_local_cas:
+  adapter: sqlite3
+  database: db/cas_development.sqlite3
+  pool: 5
+  timeout: 5000
+
+##  Oracle legacy
+development_snp:
+  adapter: oracle_enhanced
+  database: snp.world
+  username: read_only
+  password: read_only
+  host: localhost
+  port: 1524
+
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+
+test: &test
+  <<: *MYSQL
+  database: sequencescape_test<%= ENV['TEST_ENV_NUMBER'] %><%= suffix %>
+
+cucumber:
+  <<: *test
+
+# These other connections are exported during deploy, from:
+# ssh://git/repos/git/psd/config/private.git/
+### Staging
+### Next release
+### Training
+### Production

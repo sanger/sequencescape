@@ -1,0 +1,19 @@
+<% add :title, "Batches by pipeline" -%>
+
+<% Pipeline.all.each do |pipeline| -%>
+  <% add :menu, "#{pipeline.name}" => url_for(:controller => :pipelines, :action => :batches, :id => pipeline.id) %>
+<% end -%>
+
+<% add :back_menu, "Back to all pipelines" => pipelines_path -%>
+
+<h1>BATCHES</h1>
+<div class="content">
+  <div class="info">
+  <% if @user -%>
+    Batches created by or assigned to you.
+  <% else -%>
+    All batches. Log in to see batches created by or assigned to you.
+  <% end -%>
+  </div>
+  <%= render :partial => "shared/batches", :locals => {:batches => @batches, :showing_all => true, :in_progress => true, :batch_state => 'assigned'} %>
+</div>

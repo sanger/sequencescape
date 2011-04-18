@@ -1,0 +1,9 @@
+<ul id="sample_annotations_<%= @sample.id %>" style="list-style-type:none;padding:0;">
+  <% if @sample.comments.size > 0 %>
+    <% @comments.each do |comment| %>
+      <li><%= render :partial => "comment" , :locals => {:comment => comment, :commentable => @sample}%></li>
+    <% end %>
+  <% else %>
+    <%= display_user_guide(I18n.t('samples.comments.no_comments')) %>
+  <% end %>
+</ul>

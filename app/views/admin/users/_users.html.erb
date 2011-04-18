@@ -1,0 +1,19 @@
+<% unless @users.empty? || @users.nil? %>
+  <table width='100%' class='sortable' cellspacing='0' cellpadding='4'>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Login</th>
+        <th>Joined</th>
+        <th>&nbsp;</th>
+        <th>&nbsp;</th>
+        <th>&nbsp;</th>
+      </tr>
+    </thead>
+    <tbody>
+        <%= render :partial => "admin/users/user", :collection => @users %>
+    </tbody>
+  </table>
+<% else %>
+  <h3>No users were found</h3>
+<% end %>

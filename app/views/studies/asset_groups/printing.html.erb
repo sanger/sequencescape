@@ -1,0 +1,26 @@
+<%- add :menu, "Back to Study" => study_path(@study)  %>
+
+<h1>Asset groups for <%= @study.name %></h1>
+<div class='info'>
+  <p>Please select a group below to print labels for.  Please note that these labels will be for the sample tubes.</p>
+</div>
+<div class='info'>
+  <table>
+    <thead>
+      <tr>
+        <td class='label'>Name</td>
+        <td class='label'>Number of assets in group</td>
+        <td class='label'></td>
+      </tr>
+    </thead>
+    <tbody>
+    <% @asset_groups.each do |asset_group| -%>
+      <tr>
+        <td><%= asset_group.name %> </td>
+        <td align="center"><%= asset_group.assets.size %></td>
+        <td> <%= link_to 'Print labels', print_study_asset_group_path(@study, asset_group) %>
+      </tr>
+    <% end -%>
+    </tbody>
+  </table>
+</div>

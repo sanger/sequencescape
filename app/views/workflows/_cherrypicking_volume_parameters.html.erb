@@ -1,0 +1,59 @@
+<div id='pick_by_nano_grams_per_micro_litre'>
+<fieldset>
+    <table cellspacing='0' cellpadding='0'>
+    <tr>
+      <td><label for="cherrypick_action_nano_grams_per_micro_litre">Pick by ng/&micro;l</label>:</td>
+      <td><%= radio_button("cherrypick", "action", "nano_grams_per_micro_litre", :checked => true) %></td>
+    </tr>
+      <tr>
+        <td><label for="volume_required">Volume Required</label> (&micro;l):</td>
+        <td><%= text_field_tag 'volume_required', '65', :size => 5 %></td>
+      </tr>
+      <tr>
+        <td><label for="concentration_required">Concentration Required</label> (ng/&micro;l):</td>
+        <td><%= text_field_tag 'concentration_required', '50', :size => 5  %></td>
+      </tr>
+    </table>
+</fieldset>
+</div>
+
+<strong>OR</strong>
+
+<div id='pick_by_nano_grams'>
+<fieldset>
+    <table cellspacing='0' cellpadding='0'>
+      <tr>
+        <td><label for="cherrypick_action_nano_grams">Pick by ng</label>:</td>
+        <td><%= radio_button("cherrypick", "action", "nano_grams") %></td>
+      </tr>
+      <tr>
+        <td><label for="total_nano_grams">Quantity to pick</label> (ng):</td>
+        <td><%= text_field_tag 'total_nano_grams', '1000', :size => 5  %></td>
+      </tr>
+      <tr>
+        <td><label for="minimum_volume">Minimum Volume</label> (&micro;/l):</td>
+        <td><%= text_field_tag 'minimum_volume', '10', :size => 5  %></td>
+      </tr>
+      <tr>
+        <td><label for="maximum_volume">Maximum Volume</label> (&micro;/l):</td>
+        <td><%= text_field_tag 'maximum_volume', '50', :size => 5  %></td>
+      </tr>
+    </table>
+</fieldset>
+</div>
+
+<strong>OR</strong>
+<div id='pick_by_micro_litre'>
+<fieldset>
+    <table cellspacing='0' cellpadding='0'>
+    <tr>
+      <td><label for="cherrypick_action_micro_litre">Pick by &micro;l</label>:</td>
+      <td><%= radio_button("cherrypick", "action", "micro_litre") %></td>
+    </tr>
+    <tr>
+      <td><label for="micro_litre_volume_required">Volume</label> (&micro;l):</td>
+      <td><%= text_field_tag 'micro_litre_volume_required', '13', :size => 5 %></td>
+    </tr>
+    </table>
+</fieldset>
+</div>

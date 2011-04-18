@@ -1,0 +1,39 @@
+<% add :title, I18n.t("studies.about") -%>
+<% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(@study) -%>
+
+<h1>Reference assembly</h1>
+
+<p>Select the type of reference assembly to upload, or select from one of our preset default sequences.</p>
+<p>Not specifying a reference sequence can delay analysis.</p>
+
+<% form_for :study, :url => assembly_study_path(@study), :html => {:method => 'put', :multipart => true } do |form| %>
+  <table width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+      <td width="35%" class="item">Reference assembly type: <%= required_marker %></span></td>
+      <td width="30%">
+        <select id="assembly_kind" name="assembly[kind]" onchange="select_reference();">
+          <option value="">Select format</option>
+          <option value="EMBL">EMBL accession</option>
+          <option value="FASTA">FASTA formatted sequence</option>
+          <option value="reference">Reference assembly</option>
+          <option value="None">No reference</option>
+        </select>
+      </td>
+      <td class="help_field">&nbsp;</td>
+    </tr>
+    <tr>
+       <td width="35%" class="item">&nbsp;</td>
+       <td width="30%" colspan="2" id="assembly"></td>
+       <td class="help_field">&nbsp;</td>
+     </tr>
+  </table>
+  <table width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+      <td width="40%" >&nbsp;</td>
+      <td width="60%">
+        <br />
+          <%= submit_tag :study, :value => "Update" %> or <%= link_to "cancel", study_path(@study) %>
+      </td>
+    </tr>
+  </table>
+<% end %>

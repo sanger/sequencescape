@@ -1,0 +1,24 @@
+<% unless @projects.empty? %>
+  <div id='project_list'>
+    <% form_remote_tag(:url => { :action => :editor }, :html => { :id => "project_form"}, :update => "project_editor", :loading => "show_update_loader();", :complete => "hide_update_loader();") do %>
+      <table width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <%= select_tag :id, "<option value='0'>Select a project</option>" + options_from_collection_for_select(@projects.sort_by {|p| p.name }, :id, :name)  %>
+          </td>
+          <td class='right'>
+            <%= pluralize @projects.size, "project" %>
+          </td>
+        </tr>
+      </table>
+    <% end %>
+
+      <%= observe_form(:project_form, :url => { :action => :editor }, :loading => "show_update_loader();", :complete => "hide_update_loader();", :frequency => 0.5, :update => :project_editor) %>
+
+    <div id='project_editor'>
+      <%= render :partial => "editor", :locals => { :project => @projects.first } -%>
+    </div>
+  </div>
+<% else %>
+  No projects.
+<% end %>

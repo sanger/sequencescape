@@ -1,0 +1,45 @@
+<% if current_user.administrator? -%>
+  <% add :menu, "Spreadsheet Move Sample" =>  move_spreadsheet_samples_path -%>
+<% end %>
+<% add :title, "Samples are registered here for sequencing or other laboratory pipelines." -%>
+
+<h1>All Samples</h1>
+
+<div style="text-align:center">
+  <%= will_paginate @samples %>
+</div>
+<br />
+<table cellpadding="4" cellspacing="0" width="100%" class="sortable">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Sample Name</th>
+      <th>Date Created</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @samples.each do |sample| -%>
+      <tr class="<%= cycle("rowodd", "roweven") %>">
+        <td width="5%"><%= link_to sample.id, sample_path(sample) %></td>
+        <td><%= sample.name %></td>
+        <td><%= sample.created_at.to_formatted_s(:day_full_with_time) %></td>
+        <% if current_user.administrator? -%>
+          <td><%= link_to "Edit", edit_sample_path(sample) -%></td>
+          <% if ! sample.has_submission? %>
+            <td><%= link_to "Delete", sample, :method => :delete, :confirm => "Are you sure?" -%></td>
+           <% else %>
+            <td>&nbsp;</td>
+          <% end %>
+          <td><%= link_to "Move", filtered_move_sample_path(sample) -%></td>
+        <% end -%>
+      </tr>
+    <% end -%>
+  </tbody>
+</table>
+<br />
+<div style="text-align:center">
+  <%= will_paginate @samples %>
+</div>

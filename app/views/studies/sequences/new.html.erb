@@ -1,0 +1,19 @@
+<%= render_title "Edit" %>
+<%= render_help "Add new section to this template."%>
+
+<div id="main-items">
+  <div id="template">
+    Add a new section: <strong>Reference assembly</strong>
+    <p>
+      Collect reference assembly information for each sample.
+    </p>
+  </div>
+</div>
+
+<div id="main-links">
+  <div id="callouts">
+    <%= link_to "Back", :controller => :families, :action => :edit, :id => @family.id %>
+  </div>
+</div>
+
+<br clear="all" />

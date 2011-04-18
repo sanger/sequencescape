@@ -1,0 +1,16 @@
+<%- add :title, "New submission."%>
+<% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_workflow_path(@study, @workflow) -%>
+
+<h1><%= @study.name %></h1>
+<div class='subtitle'>
+  Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(:long) %> &middot; <%= @study.state.capitalize %>
+</div>
+
+<% form_for @study, :url => {:action => "new", :study_id => @study.id}  do |form| %>
+	<p class="info">Please select a submission template.</p>
+  <p>
+    <%= label_tag(:submission_template_id, 'Template') %>:
+    <%= select_tag(:submission_template_id, options_from_collection_for_select(@template_list, :id, :name)) %>
+  </p>
+  <%= form.submit 'Next' %>
+<% end %>

@@ -1,0 +1,16 @@
+<%= render_title "Batches for '#{@study.name}'" %>
+<%= render_help "Batches containing samples originating from the '#{@study.name}' study."%>
+
+<div id='yield'>
+  <div id='main-items'>
+    <%= @batches.size %> batches<br />
+    <% @batches.each do |batch| %>
+      <%= batch.id %><br />
+    <% end %>
+  </div>
+
+  <div id='main-links'>
+  </div>
+
+  <br clear='all' />
+</div>

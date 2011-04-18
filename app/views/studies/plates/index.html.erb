@@ -1,0 +1,33 @@
+<%- add :title, I18n.t("studies.about") %>
+
+<h1><%= @study.name %> : Plates</h1>
+<div class='subtitle'>
+  Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(:long) %> &middot; <%= @study.state.capitalize %>
+</div>
+<% form_tag view_wells_study_plates_path(@study) do %>
+<div class="help" style="text-align:center">
+  <p>Select plates you wish to view their wells from below then click on the view wells button</p>
+  <%= submit_tag "View wells of selected plates" %>
+</div>
+  <table width="100%" cellspacing="0" cellpadding="5">
+    <tr>
+      <th class="label">&nbsp;</th>
+      <th class="label">ID</th>
+      <th class="label">Plate name</th>
+      <th class="label">Plate size</th>
+      <th class="label">Plate Wells</th>
+      <th class="label">Created at</th>
+    </tr>
+  <% for plate in @plates %>
+    <tr class="<%= cycle('rowodd', 'roweven')%>">
+      <td width="5%"><%= check_box_tag "plates[#{plate.id}]", 1, false %></td>
+      <td width="5%"><%= link_to plate.id, study_plate_path(@study, plate) %></td>
+      <td width="20%"><% if plate.name %><%= plate.name %><% else %>Name is not defined<% end %></td>
+      <td width="20%"><% if plate.size %><%= plate.size %><% else %>Size is not set<% end %></td>
+      <td width="20%"><%= link_to "#{pluralize(plate.wells.size, 'well')}", study_plate_wells_path(@study, plate) %></td>
+      <td width="20%"><%= plate.created_at %></td>
+    </tr>
+  <% end %>
+  </table>
+
+<% end %>

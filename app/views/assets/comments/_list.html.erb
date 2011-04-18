@@ -1,0 +1,9 @@
+<ul id="asset_annotations_<%= @asset.id %>" style="list-style-type:none;padding:0;">
+  <% if @asset.comments.size > 0 %>
+    <% @comments.each do |comment| %>
+      <li><%= render :partial => "comment" , :locals => {:comment => comment, :asset => @asset}%></li>
+    <% end %>
+  <% else %>
+    <%= display_user_guide(I18n.t('assets.comments.no_comments')) %>
+  <% end %>
+</ul>

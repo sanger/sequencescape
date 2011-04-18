@@ -1,0 +1,24 @@
+<% unless @studies.empty? %>
+  <div id='study_list'>
+    <% form_remote_tag(:url => { :action => :editor }, :html => { :id => "study_form"}, :update => "study_editor", :loading => "show_update_loader();", :complete => "hide_update_loader();") do %>
+      <table width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <%= select_tag :id, "<option value='0'>Select a study</option>" + options_from_collection_for_select(@studies.sort_by {|p| p.name }, :id, :name)  %>
+          </td>
+          <td class='right'>
+            <%= pluralize @studies.size, "study" %>
+          </td>
+        </tr>
+      </table>
+    <% end %>
+
+      <%= observe_form(:study_form, :url => { :action => :editor }, :loading => "show_update_loader();", :complete => "hide_update_loader();", :frequency => 0.5, :update => :study_editor) %>
+
+    <div id='study_editor'>
+      <%= render :partial => "editor", :locals => { :study => @studies.first } -%>
+    </div>
+  </div>
+<% else %>
+  No studies.
+<% end %>

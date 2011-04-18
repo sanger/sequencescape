@@ -1,0 +1,5 @@
+<% if well && well.sample && ! well.sample.empty_supplier_sample_name %>
+  <% if tag %>
+    <%= select "tag", well.id.to_s  , [[tag.name, tag.id]] | @tags.collect { |t| [t.name, t.id] } %>
+  <% end %>
+<% end %>

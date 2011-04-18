@@ -1,0 +1,39 @@
+<div class="info">
+<% if assets.empty? -%>
+<div id="empty_filter">
+  No controls found.
+</div>
+<% else -%>
+<table width="100%" cellpadding="5" cellspacing="0" class="sortable">
+  <thead>
+    <tr>
+      <th class='label' width="10%"><%= link_to 'Request', "javascript:void(0);" %></th>
+      <th class='label' width="20%"><%= link_to 'Library', "javascript:void(0);" %></th>
+      <th class='label' width="10%"><%= link_to 'Library ID', "javascript:void(0);" %></th>
+      <th class='label' width="10%"><%= link_to 'Order', "javascript:void(0);" %></th>
+      <th class='label' width="10%"><%= link_to 'From', "javascript:void(0);" %></th>
+      <th class='label' width="10%"><%= link_to 'To', "javascript:void(0);" %></th>
+      <th class='label' width="10%"><%= link_to 'Conc.', "javascript:void(0);" %></th>
+      <th class='label' width="10%"><%= link_to 'Ended', "javascript:void(0);" %></th>
+      <th class='label' width="10%">&nbsp;</th>
+    </tr>
+  </thead>
+  <tbody>
+<% items.each do |item| -%>
+    <tr>
+      <td width="10%"><%= link_to item.ident, item_path(item) %></td>
+      <td class="20%"><%= item.name %></td>
+      <td class="10%"><%= item.id %></td>
+      <td class="10%"><%= item.position %></td>
+      <td class="10%">&nbsp;</td>
+      <td class="10%">&nbsp;</td>
+      <td class="10%">&nbsp;</td>
+      <td class="10%">&nbsp;</td>
+      <td class="10%">&nbsp;</td>
+    </tr>
+<% end -%>
+  </tbody>
+</table>
+<% end -%>
+<br />
+</div>

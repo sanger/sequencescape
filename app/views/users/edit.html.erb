@@ -1,0 +1,29 @@
+<%- add :title, "Update your user profile." %>
+
+<h1>EDIT PROFILE: <%=h @user.login %></h1>
+<% form_for :user, :url => profile_path(@user), :html => {:method => :put} do |f| %>
+  <div class="info">
+    <table width='100%'>
+      <tr>
+        <td class="item" width="40%">First name:</td>
+        <td><strong><%= f.text_field :first_name %></strong></td>
+      </tr>
+      <tr>
+        <td class="item" width="40%">Last name:</td>
+        <td><strong><%= f.text_field :last_name %></strong></td>
+      </tr>
+      <tr>
+        <td class="item" width="40%">Preferred email:</td>
+        <td><strong><%= f.text_field :email %></strong></td>
+      </tr>
+      <tr>
+        <td class="item" width="40%">Workflow:</td>
+        <td><strong><%= f.collection_select :workflow_id, Submission::Workflow.all, :id, :name %></strong></td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+        <td><br /><%= submit_tag "Update" %> or <%= link_to 'cancel', "javascript:history.back();" %></td>
+      </tr>
+    </table>
+  <div>
+<% end %>

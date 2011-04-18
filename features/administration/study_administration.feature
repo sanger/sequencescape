@@ -1,0 +1,73 @@
+@study @admin
+Feature: Study administration
+    Owners and administrators can update the approval
+    status for a study
+
+  Background:
+    Given I have an active study called "Study B"
+
+  @focus @wip
+  Scenario: Administrator views study contacts
+    Given I am an "administrator" user logged in as "xyz1"
+    Given I am visiting study "Study B" homepage
+    When I follow "Contacts"
+    Then I should see "Study B : Contacts"
+    Then show me the page
+    # And I should see the following contacts
+    #   | role     | name       |
+    #   | Owner    | John Smith |
+    #   | Manager  | Mary Smith |
+    #   | Follower | Lisa Smith |
+    #   | Follower | Jack Smith |
+
+  Scenario: User updates a study
+    Given I am a "User" user logged in as "abc123"
+    Given I am visiting study "Study B" homepage
+    Then I should not see "Manage"
+
+  Scenario: Administrator edits study properties
+    Given I am an "administrator" user logged in as "xyz1"
+    Given I am visiting study "Study B" homepage
+    When I follow "Manage"
+    Then I should see "Manage study: Study B"
+    And the checkbox labeled "Ethically approved" should not be checked
+    When I check "Ethically approved"
+    And I press "Update"
+    Then I should see "Your study has been updated"
+    And the checkbox labeled "Ethically approved" should be checked
+    When I press "Update"
+    Then I should see "Your study has been updated"
+
+  @wip
+  Scenario: Administrator edits study state
+    Given I am visiting study "Study B" homepage
+    When I follow "Manage"
+    Then I should see "Manage study: Study B"
+    And option "active" in the menu labeled "State" should be selected
+    When I select "Inactive" from "State"
+    And I press "Update"
+    Then I should see "Your study has been updated"
+    And option "inactive" in the menu labeled "State" should be selected
+    When I select "Pending" from "State"
+    And I press "Update"
+    Then I should see "Your study has been updated"
+    And option "pending" in the menu labeled "State" should be selected
+
+  Scenario: Administrator edits study ethical approval
+    Given I am an "administrator" user logged in as "xyz1"
+    Given I am on the management page for study "Study B"
+    When I attach the relative file "test/data/blah.fasta" to "study_uploaded_data"
+    And I press "Update"
+    Then I should see "Your study has been updated"
+    And I should see "Listing 1 document"
+    And I should see "blah.fasta"
+    When I attach the relative file "test/data/very_small_file" to "study_uploaded_data"
+    And I press "Update"
+    Then I should see "Your study has been updated"
+    And I should see "Listing 2 documents"
+    And I should see "very_small_file"
+    When I delete the attached file "very_small_file"
+    Then I should see "Document was successfully deleted"
+    And I should see "Listing 1 document"
+    And I should see "blah.fasta"
+    And I should not see "very_small_file"

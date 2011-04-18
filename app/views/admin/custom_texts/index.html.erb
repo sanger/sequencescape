@@ -1,0 +1,33 @@
+<% add :title, "Custom texts." %>
+<% add :menu, "<strong>Create custom texts</strong>" => url_for(:controller => :custom_texts, :action => :new) %>
+<h1>CUSTOM TEXTS</h1>
+<div id="custom_texts">
+  <table cellpadding="4" cellspacing="0" width="100%" class="sortable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Identifier</th>
+        <th>Differential</th>
+        <th>Content type</th>
+        <th>Content</th>
+        <th>&nbsp;</th>
+        <th>&nbsp;</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @custom_texts.each do |custom_text| %>
+        <tr class="<%= cycle("rowodd", "roweven") %>">
+          <td><%= link_to custom_text.id, custom_text_url(custom_text) %></td>
+          <td><%= custom_text.identifier %></td>
+          <td><%= custom_text.differential %></td>
+          <td><%= custom_text.content_type %></td>
+          <td><%= custom_text.content %></td>
+          <% if current_user.administrator? %>
+            <td><%= link_to "Edit", edit_custom_text_url(custom_text) %></td>
+            <td><%= link_to "<span style='color: red;'><strong>[Delete]</strong></span>", custom_text_url(custom_text), :method => :delete, :confirm => "Are you sure?" %></td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

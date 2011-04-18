@@ -1,0 +1,8 @@
+<% add :title, "Batches" -%>
+<% add :menu, "View your batches" => batches_path -%>
+<% add :back_menu, "Back to all pipelines" => pipelines_path -%>
+
+<h1>ALL BATCHES</h1>
+<div class="content">
+  <%= render :partial => "shared/batches", :locals => {:batches => @batches, :showing_all => true, :in_progress => true, :batch_state => 'all' } %>
+</div>

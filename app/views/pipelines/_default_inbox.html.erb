@@ -1,0 +1,20 @@
+<h2>Input requests</h2>
+<%= render :partial => "batch_statuses" %>
+<%= render :partial => 'pipeline_limit' %>
+
+<% unless @requests.empty? -%>
+	<%= render :partial => 'pipeline_paginate' %>
+  <% form_tag({:controller => :batches, :action => :create, :id => @pipeline.id}, :id => "requests_to_batch_form") do -%>
+    <% if @pipeline.item_limit -%>
+      <input type="hidden" id="batch_item_limit" value="<%= @pipeline.item_limit %>" />
+    <% end -%>
+    <%= render :partial => "requests", :locals => {:requests => @requests} %>
+	  <%= render :partial => 'inbox_submission_button' %>
+  <% end -%>
+
+ <%= render :partial => 'pipeline_paginate' %>
+<% else -%>
+  There are no outstanding requests for this pipeline.
+<% end -%>
+
+<%= render :partial => 'show_held_requests' %>

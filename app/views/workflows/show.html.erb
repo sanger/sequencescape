@@ -1,0 +1,36 @@
+<% add :title, "Workflows group tasks together to define laboratory processes or automated pipelines." -%>
+<% add :back_menu, "Back to workflows" => url_for(:controller => :workflows, :action => :index) -%>
+<% add :menu, "<strong>Start workflow</strong>" => url_for(:controller => :workflows, :action => :auto, :id => @workflow) -%>
+<% if current_user.is_administrator? -%>
+  <% add :menu, "Add task" => new_task_url(:workflow_id => @workflow.id) -%>
+  <% add :menu, "Reorder tasks" => url_for(:action => "reorder_tasks", :id => @workflow.id) -%>
+  <% add :menu, "Edit workflow" => edit_workflow_path(@workflow) -%>
+<% end -%>
+
+<h1><%= @workflow.name %></h1>
+<div class='info'>
+  This workflow comprises <%= pluralize @workflow.tasks.size, "task" %>.
+</div>
+<div class='info'>
+  <table width='100%'>
+    <% @workflow.tasks.each do |task| -%>
+    <tr>
+      <td colspan='2' class='center boxed_title'><%= task.interactive? ? "Laboratory" : "Automated" %></td>
+    </tr>
+    <tr>
+      <td class='boxed_left'><strong><%= task.name %></strong> &middot; <%= link_to 'Edit', edit_task_path(task) %></td>
+      <td class='boxed_right'>
+      <% task.descriptors.sort_by{ |d| d.sorter }.each do |descriptor| -%>
+      <%= descriptor.name %><br />
+      <% end -%>
+      </td>
+    </tr>
+    <tr>
+      <td colspan='2' class='center separator'>&darr;</td>
+    </tr>
+    <% end -%>
+    <tr>
+      <td colspan='2' class='center separator'><strong>COMPLETE</strong></td>
+    </tr>
+  </table>
+</div>

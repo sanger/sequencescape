@@ -1,0 +1,72 @@
+<table width="100%" cellpadding="2" cellspacing="0" class="sortable" id="pipeline_inbox">
+  <thead>
+    <tr>
+      <th class='label'>&nbsp;</th>
+      <th class='label'><%= link_to "Internal ID", "javascript:void(0);" %></th>
+			<th class='label'>
+        <%= link_to "Barcode", "javascript:void(0);" %>
+			</th>
+      <th class='label'><%= link_to "Wells", "javascript:void(0);" %></th>
+			<th class='label'>
+      <% if @pipeline.group_by_submission? -%>
+        <%= link_to "Submission", "javascript:void(0);" %>
+      <% end -%>
+			</th>
+			<th class='label'>
+      <% if @pipeline.group_by_study? %>
+        <%= link_to "Study", "javascript:void(0);" %>
+      <% end%>
+			</th>
+      <th class='label'></th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- <%= @request_groups.inspect -%> -->
+    <% @request_groups.each_with_index do |(group, requests),index| -%>
+      <% if group.blank? -%>
+        Null Group
+      <% next; end -%>
+      <% hash_group = @pipeline.group_key_to_hash(group) %>
+      <% group_id = group.join(", ") %>
+      <%- #beware , the group will be destructed after the shift operation %>
+      <%  parent  = @pipeline.group_by_parent? && ( pid = group.shift ) && Asset.find(pid) %>
+      <% submission_id = @pipeline.group_by_submission? && group.shift  %>
+      <% study = @pipeline.group_by_study? && Study.find(group.shift) %>
+      <% unless parent.nil? %>
+        <tr>
+          <td class="request center" width='5%'>
+            <% request_group_id = "request_group_#{ group_id.gsub(/[^a-z0-9]+/, '_') }" %>
+            <%= label_tag(request_group_id, "Select #{ parent.sanger_human_barcode } for batch", :style => 'display:none') %>
+            <%= label_tag(request_group_id, "Include request #{index+1}", :style => 'display:none') %>
+            <%= check_box(:request_group, group_id, :id => request_group_id, :onclick => 'check_grouped_request_count();') %>
+            <%= hidden_field_tag("#{request_group_id}_size", "",  :value => requests.size)  %>
+          </td>
+          <td><%= parent.id %></td>
+          <td><%= parent.sanger_human_barcode %></td>
+          <td><%= requests.size %></td>
+					<td>
+          	<% if @pipeline.group_by_submission? %>
+          		<%= submission_id %>
+        		<% end -%>
+					</td>
+					<td>
+          	<% if @pipeline.group_by_study? -%>
+            	<%= link_to study.name,"#{configatron.studies_url}/studies/#{study.id}" %>
+        		<% end -%>
+					</td>
+          <td><%= link_to 'Show plate', show_plate_asset_url(parent) %></td>
+        </tr>
+      <% else %>
+      <tr>
+        <td class="request center" width='5%' colspan="3" style="background:red;font-weight:bold;">Empty parent ID set</td>
+        <td style="background:red;"><%= requests.size %></td>
+        <td style="background:red;">&nbsp;</td>
+        <td style="background:red;">&nbsp;</td>
+				<td style="background:red;">&nbsp;</td>
+				<td style="background:red;">&nbsp;</td>
+				<td style="background:red;">&nbsp;</td>
+      </tr>
+      <% end -%>
+    <% end -%>
+  </tbody>
+</table>

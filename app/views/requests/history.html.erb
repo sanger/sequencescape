@@ -1,0 +1,25 @@
+<% add :title, "This page displays details the event history for an item." -%>
+<% add :menu, "Back to request" => request_path(@request.id) -%>
+
+<h1>Event history</h1>
+
+<div class="help">
+  Complete event history for request <%= @request.id %>, in chronological order.
+</div>
+
+<div class="info">
+  <%- unless @request.events.empty? %>
+    <h3><%= pluralize @request.events.size, "event" %></h3>
+    <table width="100%" cellspacing="0" cellpadding="4" class="sortable" id="events">
+      <tr>
+        <th>Message</th>
+        <th>Content</th>
+        <th>Created at</th>
+        <th>Created by</th>
+      </tr>
+      <%= render :partial => "event", :collection => @request.events %>
+    </table>
+  <%- else %>
+    <%= display_user_guide("No events registered") %>
+  <%- end %>
+</div>

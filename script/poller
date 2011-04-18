@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+
+ENV['APP_ROOT'] ||= File.expand_path(File.join(File.dirname(__FILE__), '..'))
+APP_ROOT = ENV['APP_ROOT']
+script_file = File.join(APP_ROOT, 'lib', 'qc_evaluations-mini_poller.rb')
+tmp_dir = File.join(APP_ROOT, 'log')
+
+require 'daemons'
+
+options = {
+  #:app_name   => "projects-poller",
+  :dir_mode   => :normal,
+  :dir        => tmp_dir,
+  :multiple   => false,
+  :ontop      => false,
+  :mode       => :load,
+  :backtrace  => true,
+  :monitor    => true,
+  :log_output => true
+}
+
+if ENV.has_key?('RAILS_ENV')
+  options[:app_name] = "#{ENV['RAILS_ENV']}-qc_evaluations-mini_poller"
+else
+  options[:app_name] = "development-qc_evaluations-mini_poller"
+end
+
+ARGV.each do |arg|
+  if arg.include?('=')
+    (k, v) = arg.split('=', 2)
+    options[:"#{k}"] = v
+  end
+end
+
+Daemons.run(script_file,options)

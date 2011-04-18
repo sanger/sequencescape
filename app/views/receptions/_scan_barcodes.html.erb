@@ -1,0 +1,25 @@
+<div class="content">
+  <% unless @errors.nil? %>
+  <table class="error">
+    <% @errors.each do |error| %>
+    <tr><td class="error"><%= error %></td></tr>
+    <% end %>
+  </table>
+  <% end %>
+  <div id='form'>
+    <div id='message'>
+      <%= render :partial => message %>
+    </div>
+    <br />
+    <% form_for :asset, :url => { :action => receive_barcode } do |f| %>
+    <label for="type_id">Type</label>: <%= select :type, :id, { "Plate" => "Plate", "Library" => "LibraryTube", "Sample" => "SampleTube", "Multiplexed Library" => "MultiplexedLibraryTube", "PacBioLibraryTube" => "PacBioLibraryTube", " Pulldown Multiplexed Library" => "PulldownMultiplexedLibraryTube" } %><br />
+    <ul class="plate_import">
+      <% num_text_boxes ||= 10 %>
+      <% num_text_boxes.times do |i| %>
+      <li><%= text_field :barcode, i, { :class => 'big' } %></li>
+      <% end %>
+      <li><%= submit_tag "Submit" %></li>
+    </ul>
+    <% end %>
+  </div>
+</div>

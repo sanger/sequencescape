@@ -1,0 +1,26 @@
+<p>
+  <b>Name:</b>
+  <%=h @faculty_sponsor.name %>
+</p>
+
+<h2>Studies</h2>
+<table id="study_list" width="100%" class="sortable" cellpadding="4" cellspacing="0">
+  <thead>
+  <tr>
+      <th><%= link_to "Study name", "javascript:void(0);" %></th>
+      <th>Edit</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% for study in @faculty_sponsor.studies %>
+    <tr>
+      <td><%= link_to study.name, study_path(study), :title => "View #{study.name}" %></td>
+      <td><%= link_to 'Edit', edit_study_path(study), :title => "Edit #{study.name}" %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+
+
+<%= link_to 'Edit', edit_faculty_sponsor_path(@faculty_sponsor) %> |
+<%= link_to 'Back', faculty_sponsors_path %>

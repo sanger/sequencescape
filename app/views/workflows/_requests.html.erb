@@ -1,0 +1,9 @@
+<%= render :partial => 'new_samples' %>
+
+<% if @batch.workflow.source_is_internal? %>
+  <% cache(:action => 'requests', :part => 'internal_requests') do %>
+    <%= render :partial => 'partial_samples' %>
+    <%= render :partial => 'processed_samples' %>
+    <%= render :partial => 'auto_batches' %>
+  <% end %>
+<% end %>

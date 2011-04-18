@@ -1,0 +1,30 @@
+<%- add :title, I18n.t("studies.about") %>
+<%- add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(@study) -%>
+
+<h1><%= @study.name %> : Samples</h1>
+<div class='subtitle'>
+  Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(:long) %> &middot; <%= @study.state.capitalize %>
+</div>
+
+<% if @samples.size > 0 %>
+  <table cellpadding="4" cellspacing="0" width="100%" class="sortable">
+    <thead>
+      <tr>
+        <th width="10%">ID</th>
+        <th>Sample Name</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @samples.each do |sample| -%>
+      <tr class="<%= cycle("rowodd", "roweven") %>">
+        <td><%= link_to sample.id, sample_path(sample) %></td>
+        <td><%= sample.name %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <% if current_user.is_administrator? || current_user.is_manager?(@study) %>
+    <%= display_user_guide(I18n.t('studies.samples.no_samples_registered'), study_sample_registration_index_path(@study)) %>
+  <% end %>
+<% end %>

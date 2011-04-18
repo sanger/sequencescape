@@ -1,0 +1,14 @@
+---
+- app/controllers/samples_controller.rb
+- app/controllers/workflows_controller.rb
+- app/models/cherrypick_task.rb
+- app/models/sample_registrar.rb
+- app/models/sample_registrar.rb
+- app/controllers/batches_controller.rb
+- app/controllers/samples_controller.rb
+- app/controllers/studies_controller.rb
+- app/controllers/workflows_controller.rb
+- app/models/batch.rb
+- app/models/request.rb
+- app/models/study.rb
+- app/helpers/application_helper.rb

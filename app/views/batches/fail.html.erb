@@ -1,0 +1,39 @@
+<% add :title, "Batch" -%>
+<% add :menu, "Edit batch" => edit_batch_path(@batch) -%>
+<% add :admin_option, {"Delete batch" => batch_path(@batch) }, {:confirm => "Are you sure you want to delete this batch? There is no undo.", :method => :delete} -%>
+<% add :back_menu, "Back to batch" => batch_path(@batch) -%>
+
+<h1>FAIL ITEMS IN BATCH <%= @batch.id %></h1>
+<div class="info">
+  Removing a request from a batch will result in it being returned to the inbox to be reprocessed. <br/ >
+  Failing a request will result in an email being generated and sent to the project's PM.  This request will not be returned to the inbox.
+</div>
+<% form_tag(:controller => :batches, :action => :fail_items, :id => @batch.id ) do -%>
+
+<%= render :partial => "batch_fail", :locals => { :requests => @batch.ordered_requests, :edit => false } %>
+
+<h1>FAILURE REASON</h1>
+<div class="info">
+  <table width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+      <td width="35%" class="item"><%= label_tag(:failure_reason, 'Select failure reason') %>:</td>
+      <td width="65%"><%= select :failure, :reason, @fail_reasons, {:prompt => 'Select Reason'} %></td>
+    </tr>
+    <tr>
+      <td width="35%" class="item">Comment:</td>
+      <td width="65%"><%= text_area :failure, :comment, :size => "40x6" %></td>
+    </tr>
+    <tr>
+      <td width="35%" class="item">Fail entire batch?</td>
+      <td width="65%"><%= check_box :failure, :entire_batch %></td>
+    </tr>
+    <tr>
+      <td width="35%" class="item">Fail only batch?</td>
+      <td width="65%"><%= check_box :failure, :only_batch %></td>
+    </tr>
+    <tr>
+      <td width="35%" class="item">&nbsp;</td><td width="65%"><%= submit_tag "Fail items/batch" %></td>
+    </tr>
+  </table>
+</div>
+<% end -%>

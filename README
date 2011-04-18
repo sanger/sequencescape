@@ -1,0 +1,84 @@
+Sequencescape is a cloud based and highly extenable LIMS system for use in labs with
+large numbers of samples. 
+ 
+ * Work order tracking
+ * Sample and study management
+ * Capacity management for pipelines
+ * Accounting
+ * Accessioning for samples and studies at the EBI ENA/EGA
+ * Dynamically defined workflows for labs with support for custom processes
+ * Labware and freezer tracking
+ * API support for 3rd party applications
+
+Current installation supports a million sampled and 1.3 million pieces
+of labware and is used in a organisation of 900 people. 
+
+=== Getting started ===
+
+$ cp config/config.yml.example config/config.yml
+$ $EDITOR config/config.yml
+$ gem install bundler
+$ bundle install
+$ rake db:schema:load
+$ rake db:seed
+$ ./script/delayed_job start
+$ ./script/server
+# Login as admin/admin
+
+=== Data model ===
+
+ +--------+
+ | Sample |                     +-------+
+ +--------+                   _ | Study |
+     |                      /   +-------+
+ +-------+     +---------+ /    +---------+
+ | Asset | --- | Request | -----| Project |
+ +-------+     +---------+      +---------+
+
+== Delayed job ==
+
+For background processing Sequencescape uses delayed_job ensure
+that the server is running.
+
+=== Supporting applications ===
+
+There are a number of services that are needed in certain parts
+of Sequencescape these are listed bellow.
+
+== Barcode printing ==
+
+Sequencescape expects a barcode printing SOAP service to run
+on the given URL. The WSDL of the service is defined in
+doc/barcode.wsdl. We will in the future work on extracting
+our barcoding Hitachi Printing Language generator. Which
+we use for barcode printing.
+
+== Plate barcode service ==
+
+Due to DNA plate barcode series being stored in a legacy system
+in Sanger your required to use a webservice for supplying numbers 
+for plates with a simple service.
+
+== Barcode rendering (danio) ==
+
+To render barcodes you need the danio application. It will generate
+an image from a barcode.
+
+== Pico green ==
+
+To analyse Pico green plats you need for the pico green application.
+
+== Data warehousing ==
+
+There is a client application for building a data warehouse based
+on the information in Sequencescape.
+
+== NPG - Illumina tracking software ==
+
+For tracking illumina instruments you need the NPG systems.
+NPG is linked to Sequencescape via a cluster formation batch
+which represents a flowcell.
+
+http://www.sanger.ac.uk/resources/software/npg/
+
+

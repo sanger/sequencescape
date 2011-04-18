@@ -1,0 +1,24 @@
+<% add :title, "Resources lookup" -%>
+<% add :menu, "Reception" => "reception" -%>
+<% add :back_menu, "Back to pipelines" => pipelines_path -%>
+
+<h1>FIND ASSET</h1>
+<div class="content">
+  <center>
+    <div id='form'>
+      <div id='message'>
+        <strong>Scan your asset:</strong>
+      </div>
+      <br />
+      <% form_for(:asset) do |f| %>
+        <div class='entry'>
+          <%= text_field :asset, :barcode, { :class => 'big' } %>
+        </div>
+      <% end %>
+      <div id='loading' style='display: none;'>Loading <%= image_tag 'ajax-loader.gif', :size => "10x10", :alt => "Ajax Loader" %></div>
+      <div id='response'>
+      </div>
+      <br />
+    </div>
+  </center>
+</div>

@@ -1,0 +1,26 @@
+<%- add :menu, "View all plates" => study_plates_path(@study) %>
+
+<h1><%= @study.name %> : Plates : Wells</h1>
+<div class='subtitle'>
+  Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(:long) %> &middot; <%= @study.state.capitalize %>
+</div>
+
+<% form_tag asset_group_study_plates_path(@study) do %>
+  <div class="help" style="text-align:center">
+    Enter a new asset group name: <%= text_field_tag 'asset_group_name', nil -%> <%= submit_tag "Create asset group using selected wells" %>
+  </div>
+  <table width="100%" cellspacing="0" cellpadding="5">
+  <% for plate in @plates %>
+    <tr class="<%= cycle('rowodd', 'roweven') %>">
+      <td colspan="3" style="text-align:center;"><strong>Wells from <%= plate.name %></strong></td>
+    </tr>
+    <% for well in plate.wells %>
+      <tr class="<%= cycle('rowodd', 'roweven') %>">
+        <td width="2%"><%= check_box_tag "wells[#{well.id}]", 1, false %></td>
+        <td width="45%"><% if well.name %><%= well.name %><% else %>No name is defined<% end %></td>
+        <td width="25%"><%= well.created_at %></td>
+      </tr>
+    <% end %>
+  <% end %>
+  </table>
+<% end %>

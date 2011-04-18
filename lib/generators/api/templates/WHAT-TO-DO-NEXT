@@ -1,0 +1,12 @@
+
+You now have an endpoint (under app/api/endpoints), an I/O class (under app/api/io), a module for extending the
+behaviour of your model (under app/api/model_extensions) and a feature (under features/api).  You should review
+the contents of these files and ensure that they are appropriate, specifically:
+
+* Associations have been automatically added to the endpoint code, so please check the app/api/endpoints file.
+* Review the mapping from the Ruby model to JSON, and vice-verse, in the app/api/io file.
+* Ensure that your model includes the model extension module
+* Update the JSON in the various scenarios in the Cucumber feature.
+
+Hopefully it'll be obvious when you look at the files!
+

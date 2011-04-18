@@ -1,0 +1,27 @@
+@barcode-service @barcode @sample_tube @asset @printing @sample_tube_printing
+Feature: Print truncated sanger sample id on sample tube barcode
+
+  Background:
+    Given I am a "manager" user logged in as "john"
+    And I have a "Library creation - Paired end sequencing" submission with 1 sample tubes as part of "Test study" and "Test project"
+    And the "1D Tube" barcode printer "xyz" exists
+    Given I am on the show page for pipeline "Library preparation"
+    And I check "Select SampleTube 1 for batch" 
+    And I press "Submit"
+    And I follow "Print labels"
+    
+  Scenario: Print a barcode for an asset with a sample without a sanger_sample_id
+    Given the child asset of "Sample Tube 1" has a sanger_sample_id of ""
+    When I press "Print labels"
+    Then the printed label is expected to have a name containing "Sample Tube 1"
+
+  Scenario: Print a barcode for an asset with a sample with a short sanger_sample_id
+    Given the child asset of "Sample Tube 1" has a sanger_sample_id of "TW123456"
+    When I press "Print labels"
+    Then the printed label is expected to have a name of "TW123456"
+
+  Scenario: Print a barcode for an asset with a long sanger_sample_id
+    Given the child asset of "Sample Tube 1" has a sanger_sample_id of "UK10K_Twins1234567"
+    When I press "Print labels"
+    Then the printed label is expected to have a name of "1234567"
+

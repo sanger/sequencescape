@@ -1,0 +1,35 @@
+<%= form_tag(path) %>
+<div class='info'>
+  <table width='60%'>
+    <thead>
+      <th class='label' width='5%'></th>
+      <th class='label' width='15%'>Name</th>
+      <th class='label' width='15%'>Type</th>
+      <th class='label' width='25%'>Date created</th>
+    </thead>
+    <tbody>
+      <% @assets.each do |asset| %>
+        <tr>
+          <td><%= check_box_tag "printables[#{asset.id}]", 'true', true %></td>
+          <td><%= asset.name.blank? ? "id: #{asset.id}" : asset.name %></td>
+          <td><%= asset.sti_type %></td>
+          <td><%= asset.created_at.to_formatted_s(:day_full_with_time) %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+<div class='info'>
+  <table width='50%'>
+    <tr>
+      <td>
+        Please select a printer from the list:
+      </td>
+      <td>
+        <%= render :partial => "shared/printer_list"%>
+      </td>
+    </tr>
+    <td></td>
+    <td><%= submit_tag "Print" %></td>
+  </table>
+</div>

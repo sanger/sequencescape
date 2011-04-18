@@ -1,0 +1,21 @@
+<h1>Editing asset group</h1>
+
+<% form_for @asset_group, :url => study_asset_group_path(@study), :html => {:method => :put} do |f| %>
+  <%= f.error_messages %>
+
+	<p>
+		Name: <%= f.text_field :name %>
+	</p>
+
+	<p>
+		Study: <%= f.collection_select :study_id, Study.all, :id, :name %>
+	</p>
+
+
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', study_asset_group_path(@study, @asset_group) %> |
+<%= link_to 'Back', study_asset_groups_path(@study) %>

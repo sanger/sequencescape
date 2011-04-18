@@ -1,0 +1,20 @@
+<% add :title, "Pipelines" -%>
+<% if current_user.is_administrator? %>
+  <% add :menu, "Create new pipeline" => new_pipeline_url -%>
+<% end %>
+<% add :menu, "Create Plate Barcodes" => new_plate_path -%>
+<% if current_user.slf_manager? || current_user.slf_gel?|| current_user.manager_or_administrator? %>
+  <% add :menu, "Sample Logistics" => sample_logistics_path -%>
+<% end %>
+<% if current_user.lab_manager? %>
+  <% add :menu, "Create controls" => new_asset_path -%>
+<% end %>
+
+
+<h1>PIPELINES</h1>
+<div class="info">
+  Available pipelines
+</div>
+
+<%= render :partial => "pipelines", :locals => { :title => "Manual", :pipelines => @manual_pipelines } %>
+<%= render :partial => "pipelines", :locals => { :title => "Automated", :pipelines => @automated_pipelines } %>

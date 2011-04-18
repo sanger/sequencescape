@@ -1,0 +1,1 @@
+../../vendor/plugins/informatics/assets/javascripts/smooth.pack.js

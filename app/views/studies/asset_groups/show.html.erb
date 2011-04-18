@@ -1,0 +1,43 @@
+<%- add :menu, "Back to Study" => study_path(@study) -%>
+
+<h3>Name: <%= @asset_group.name %></h3>
+
+<div>
+  <table class="hover_table">
+    <thead>
+      <th width="5%">Asset Name</th>
+      <th width="5%">Sample Name</th>
+      <th width="5%">Asset Type</th>
+      <th width="5%">Asset Barcode</th>
+    </thead>
+    <% @asset_group.assets.each do |asset| -%>
+      <tr>
+        <td><%= link_to asset.name, asset_path(asset) %></td>
+        <% unless asset.sample.nil? %>
+          <td><%= link_to asset.sample.name, sample_path(asset.sample) %></td>
+        <% else %>
+          <td></td>
+        <% end %>
+        <td><%= asset.label %></td>
+        <% unless asset.barcode.nil? %>
+          <td><%= "Barcode: #{asset.barcode}" %></td>
+        <% else %>
+          <td></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </table>
+</div>
+<hr />
+<% if current_user.is_administrator? || current_user.is_manager?(@study) %>
+  <% form_for @asset_group, :url => search_study_asset_group_path(@study, @asset_group), :html => {:method => :post} do |f| %>
+    <p><%= label_tag(:q, 'Search for assets to add to group') %>: <%= text_field_tag :q %> <%= f.submit "Search" %></p>
+  <% end %>
+<hr />
+<% end %>
+<div class='section'>
+  <% if current_user.is_admin? %>
+    <%= link_to 'Edit', edit_study_asset_group_path(@study, @asset_group) %> |
+  <% end %>
+  <%= link_to 'Back', study_asset_groups_path(@study) %>
+</div>

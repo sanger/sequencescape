@@ -1,0 +1,2 @@
+<%= label_tag(:asset_group, 'Select a group to submit') %>
+<%= select_tag(:asset_group, '<option value="">Please select</option>' + options_from_collection_for_select(@asset_groups, :id, :name)) %>

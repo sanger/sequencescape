@@ -1,0 +1,52 @@
+<%= render :partial => "side_links" %>
+<% add :menu, "Download Blank Manifest" => export_sample_manifest_path(@sample_manifest) %>
+
+<h2>Manifest "<%= @sample_manifest.name %>" for study <%= @sample_manifest.study.name %></h2>
+<h3><%= link_to "Download Blank Manifest", export_sample_manifest_path(@sample_manifest) %></h3>
+
+<% if @sample_manifest.user %>
+  <p>Created by <%= link_to @sample_manifest.user.login, profile_path(@sample_manifest.user) %></p>
+<% end %>
+
+<%= render :partial => "upload" %>
+
+<% if @sample_manifest.last_errors %>
+  <h2>Errors</h2>
+  <div class="help">
+  Since there are errors no samples have been updated. Please fix them and upload again.
+  </div>
+  <ul>
+    
+    <% @sample_manifest.last_errors.each do |error| %>
+      <li><%= error %></li>
+    <% end %>
+  </ul>
+<% end %>
+
+<% if @sample_manifest.barcodes %>
+  <h2>Barcodes</h2>
+  <ul>
+  <% @sample_manifest.barcodes.each do |barcode| %>
+    <li><%= barcode %></li>
+  <% end %>
+  </ul>
+<% end %>
+
+<% if @sample_manifest.samples.size < 50 %>
+  <h2>Samples</h2>
+  <% @sample_manifest.samples.each do |sample| %>
+    <%= link_to "#{sample.sanger_sample_id} (#{sample.name})", sample_path(sample) %><br />
+  <% end %>
+<% else %>
+  <h3>Contains</h3>
+  <p>
+  <%= pluralize(@sample_manifest.count, @sample_manifest.asset_type) %>  
+  </p>
+<% end %>
+
+<% if @sample_manifest.samples.size == 0 %>
+  <div class="help">
+    Samples may take a few minutes to be processed.
+  </div>
+<% end %>
+

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<STUDY_SET>
+<STUDY alias="egaTest-Study7" center_name="SC" >
+ <DESCRIPTOR>
+   <CENTER_NAME>SC</CENTER_NAME>
+   <CENTER_PROJECT_NAME>BII</CENTER_PROJECT_NAME>
+   <PROJECT_ID>1234</PROJECT_ID>
+   <STUDY_TITLE>some title</STUDY_TITLE>
+   <STUDY_DESCRIPTION>some description</STUDY_DESCRIPTION>
+   <STUDY_TYPE existing_study_type="Other" new_study_type="Transcriptome Analysis"/>
+ </DESCRIPTOR>  
+<STUDY_ATTRIBUTES>
+   <STUDY_ATTRIBUTE>
+     <TAG>Study Publication</TAG>
+     <VALUE>PUBMED ID: 123456789</VALUE>
+   </STUDY_ATTRIBUTE>
+ </STUDY_ATTRIBUTES>
+</STUDY>
+</STUDY_SET>

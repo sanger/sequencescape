@@ -1,0 +1,14 @@
+<% @request.format_qc_information.each do |event| %>
+  <tr>
+    <td>
+      <% if event["status"] == "pass" %>
+        <span style="color: green; font-weight: bold;">
+      <% elsif event["status"] == "fail" %>
+        <span style="color: red; font-weight: bold;">
+      <% end %>
+      <%= event["message"] %></span>
+    </td>
+    <td><%= event["created_at"].to_formatted_s(:day_full_with_time) %></td>
+    <td><%= link_to "Remove", :action => :reset_qc_information, :id => @request.id, :event_id => event["event_id"] if current_user.administrator? %></td>
+  </tr>
+<% end %>

@@ -1,0 +1,14 @@
+<table width="100%" cellspacing="5" cellpadding="0">
+  <col align="right" width="40%"/>
+  <col align="left" width="60%"/>
+<% field_infos.each do |field| %>
+  <tr>
+    <td align="right">
+      <label for="<%=field_info_label(path, field)%>"><%= field.display_name %></label> :
+    </td>
+    <td>
+      <%= render :partial => "shared/fields/#{field.kind.downcase}_edit.html.erb", :locals => { :field => field, :path => path} %>
+    </td>
+  </tr>
+<% end %>
+</table>

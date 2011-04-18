@@ -1,0 +1,11 @@
+<% add :title, I18n.t("studies.about") -%>
+
+<h1>CREATE STUDY</h1>
+
+<p>To register a new study, complete the form below. Required fields are marked with <%= required_marker %>.</p>
+
+<div id="study">
+  <% form_for :study, :url => studies_path, :html => {:multipart => true } do |form| %>
+    <%= render :partial => "study", :locals => {:read_only => false, :creation => true, :form => form, :study => @study} %>
+  <% end %>
+</div>

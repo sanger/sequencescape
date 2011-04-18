@@ -1,0 +1,35 @@
+<% add :title, "" -%>
+<% add :menu, "Back to batch" => batch_path(@batch) -%>
+<div class="info">
+  <h2>Update the volume and concentration for assets in <%= @batch.id %></h2>
+</div>
+
+<div class="info">
+  <%= form_tag ('/batches/update_volume_and_concentration', :id => @batch.id, :multipart => true) %>
+    <%= hidden_field_tag "batch_id", "#{@batch.id}" %>
+      <table cellpadding="4" cellspacing="0" width="80%">
+        <thead>
+          <th width="25%">Name</th><th width="25%">Type</th><th width="25%">Volume (&#181;L)</th><th width="25%">Concentration (nM)</th>
+        </thead>
+        <% @batch.requests.each do |request| %>
+          <% if request.target_asset %>
+            <% if request.target_asset.has_stock_asset? %>
+              <tr>
+                <td><%= link_to request.target_asset.stock_asset.name, asset_path(request.target_asset.stock_asset) %>
+                <td><%= request.target_asset.stock_asset.sti_type %></td>
+                <td><%= text_field_tag "assets[#{request.target_asset.stock_asset.id}][volume]", "#{request.target_asset.stock_asset.volume}" %></td>
+                <td><%= text_field_tag "assets[#{request.target_asset.stock_asset.id}][concentration]", "#{request.target_asset.stock_asset.concentration}" %></td>
+              </tr>     
+            <% end %>     
+            <tr>
+              <td><%= link_to request.target_asset.name, asset_path(request.target_asset) %>
+              <td><%= request.target_asset.sti_type %></td>
+              <td><%= text_field_tag "assets[#{request.target_asset_id}][volume]", "#{request.target_asset.volume}" %></td>
+              <td><%= text_field_tag "assets[#{request.target_asset_id}][concentration]", "#{request.target_asset.concentration}" %></td>
+            </tr>
+            <tr><td>&nbsp;</td></tr>
+          <% end %>
+        <% end %>
+      </table><br />
+    <%= submit_tag 'Save' %>
+</div>

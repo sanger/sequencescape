@@ -1,0 +1,29 @@
+<% form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form", :multipart => true} do |form| %>
+
+
+<p><strong>Optional:</strong> Link a plate to an infinium barcode</p>
+<table id="summary" width="100%" class="sortable">
+  <thead>
+    <tr>
+      <th>Study</th>
+      <th>Plate</th>
+      <th>Infinium Barcode</th>
+    </tr>
+  </thead>
+  <tbody>
+	<% @studies.each do |study|	%>
+	  <% @batch.plate_ids_in_study(study).each do |plate_id| %>
+	    <% plate = Plate.find_by_id(plate_id) %>
+	    <% next if plate.nil? %>
+      <tr>
+      	<td><%= link_to study.name, study_path(study) %></td>
+        <td><%= link_to plate.name, show_plate_asset_path(plate) %></td>
+        <td><label style="display:none" for="barcodes_<%= plate.id %>">Infinium barcode for plate <%= plate.barcode %></label><%= text_field_tag "barcodes[#{plate.id}]" %></td>
+      </tr>
+    <% end %>
+  <% end %>
+  </tbody>
+</table>
+
+<%= render :partial => "next_stage_submit" %>
+<% end %>

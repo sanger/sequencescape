@@ -1,0 +1,31 @@
+<% add :title, "Review a custom text" -%>
+<% add :menu, "<strong>Edit</strong>" => edit_custom_text_url(@custom_text) -%>
+<% add :menu, "View all custom texts" => custom_texts_url -%>
+
+<h1>Custom text</h1>
+
+<div id="custom text">
+  <table width="100%" cellspacing="0" cellpadding="0">
+	<tr>
+		<td width="35%" class="item"><label for="custom_text_id">Custom text id:</label> </td>
+		<td width="65%"><%= @custom_text.id %></td>
+	</tr>
+	<tr>
+		<td width="35%" class="item"><label for="custom_text_identifier">Custom text identifier:</label> </td>
+		<td width="65%"><%= @custom_text.identifier %></td>
+	</tr>
+	<tr>
+		<td width="35%" class="item"><label for="custom_text_differential">Custom text differential:</label> </td>
+		<td width="65%"><%= @custom_text.differential %></td>
+	</tr>
+	<tr>
+		<td width="35%" class="item"><label for="custom_text_content_type">Custom text content type:</label> </td>
+		<td width="65%"><%= @custom_text.content_type %></td>
+	</tr>
+	<tr>
+		<td width="35%" class="item"><label for="custom_text_content">Custom text content:</label> </td>
+		<td width="65%"><%= @custom_text.content %></td>
+	</tr>
+
+  </table>
+</div>

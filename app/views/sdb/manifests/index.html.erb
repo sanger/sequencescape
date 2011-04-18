@@ -1,0 +1,10 @@
+<h2>Manifests</h2>
+<p>
+<a href="/sdb/manifests/new?type=1dtube&count=3">Manifest for 1D tubes</a><br /><br />
+<a href="/sdb/manifests/new?type=2dtube&count=3">Manifest for 2D tubes (in 3 racks)</a><br /><br />
+<a href="/sdb/manifests/new?type=plate">Manifest for plates</a><br /><br />
+</p>
+
+<% @manifests.each do |manifest| %>
+  <%= link_to manifest.name, manifest_path(manifest) %><br />  
+<% end %>

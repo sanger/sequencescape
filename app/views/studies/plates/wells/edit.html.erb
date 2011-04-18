@@ -1,0 +1,12 @@
+<h1>Editing plate</h1>
+
+<% form_for(@well) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @well %> |
+<%= link_to 'Back', plate_wells_path %>

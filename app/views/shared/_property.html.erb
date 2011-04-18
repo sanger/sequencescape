@@ -1,0 +1,8 @@
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="item" width="40%"><%= property.name %>:</td>
+<% property.render_for_view(self) do |view| %>
+    <td width="60%"><%= view %></td>
+<% end %>
+  </tr>
+</table>

@@ -1,0 +1,13 @@
+<% add :title, "Edit request." -%>
+<% add :menu, "Back to request" => request_path(@request) -%>
+
+<h1>EDIT <%= @request.id %></h1>
+
+<div class="info">
+Edit your request. Required fields are marked with <%= required_marker %>.
+</div>
+<div id="study">
+  <% form_for :request, :url => request_path(@request), :html => {:method => :put} do |form| -%>
+    <%= render :partial => "form", :locals => { :read_only => false, :form => form } %>
+  <% end -%>
+</div>

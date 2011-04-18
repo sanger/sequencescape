@@ -1,0 +1,68 @@
+<% add :title, "Processing batch" -%>
+<% add :menu, "Back to batch" => url_for(:controller => :batches, :action => :show, :id => @batch.id) -%>
+
+<h1>MANUAL QC FOR BATCH <%= @batch.id %></h1>
+<table width="100%" cellpadding="4" cellspacing="0">
+  <tr>
+    <th class='label' width="5%">Library QC state (not in use)</th>
+    <th class='label' width="5%">Lane QC state (shown in NPG)</th>
+    <th class='label' width="5%">Request state (shown in Studies)</th>
+    <th class='label' width="5%">Sample</th>
+    <th class='label' width="7%">Library ID</th>
+    <th class='label' width="15%">Library</th>
+    <th class='label' width="7%">Request</th>
+    <th class='label' width="4%">Cycles</th>
+    <th class='label' width="4%">Order</th>
+    <th class='label' width="4%">From</th>
+    <th class='label' width="4%">To</th>
+    <th class='label' width="4%">Conc.</th>
+  </tr>
+
+  <% @batch.batch_requests.each do |br| -%>
+    <tr class='rowB'>
+      <td>
+          <%= br.request.asset.qc_state %>
+      </td>
+      <td>
+        <% if br.request.target_asset %>
+          <%= br.request.target_asset.qc_state %>
+        <% end %>
+      </td>
+      <td>
+            <%= br.request.state %>
+      </td>
+      <td>
+        <%= link_to br.request.asset.id, asset_url(br.request.asset) %>
+      </td>
+      <td>
+        <%= br.request.asset.barcode %>
+      </td>
+      <td>
+        <%= br.request.asset.name %>
+      </td>
+      <td>
+        <%= br.request.id %>
+      </td>
+      <td>
+        <%= br.request.value_for("Read length", @batch) %>
+      </td>
+      <td>
+        <%= br.request.position(@batch) %>
+      </td>
+      <td>
+        <%= br.request.value_for("Fragment size required (from)", @batch) %>
+      </td>
+      <td>
+        <%= br.request.value_for("Fragment size required (to)", @batch) %>
+      </td>
+      <td>
+        <%= br.request.value_for("Concentration", @batch) %>
+      </td>
+    </tr>
+  <% end -%>
+</table>
+<div class="info">
+  <ul>
+    <li><%= link_to "Back to batch", :controller => "batches", :action => "show", :id => @batch.id %></li>
+  </ul>
+</div>

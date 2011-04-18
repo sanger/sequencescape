@@ -1,0 +1,14 @@
+Hello,
+
+The following activity has been recorded for <%= @study.name %>.
+Study <%= @study.id %>: <%= @message %></p>
+
+<%= @content %>
+
+You can view this study's status here:
+
+<% link = url_for(:host => configatron.site_url, :controller => 'studies', :action => 'show', :id => @study.id) %>
+<%= link %>
+
+Many thanks,
+Sequencescape

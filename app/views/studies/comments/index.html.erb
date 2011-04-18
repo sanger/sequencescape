@@ -1,0 +1,17 @@
+<% add :title, I18n.t("studies.about") -%>
+<% add :back_menu,I18n.t("navigation.menu.back_to_study") => study_path(@study) -%>
+<% add :admin_option, "Administer studies" => studies_path -%>
+
+<h1><%= @study.name %> : Comments</h1>
+<div class='subtitle'>
+  Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(:long) %> &middot; <%= @study.state.capitalize %>
+</div>
+
+<%= render :partial => "list", :locals => {:study => @study } %>
+<% if current_user.privileged? @study %>
+  <div>
+    <p>Type your comment:</p>
+    <%= form_remote_tag(:url => study_comments_path(@study), :update => "study_annotations_#{@study.id}") %>
+    <%= text_field_tag "comment", '', :size  => 65 %><%= submit_tag 'Add comment' %>
+  </div>
+<% end %>

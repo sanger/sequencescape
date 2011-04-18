@@ -1,0 +1,7 @@
+<% add :title, I18n.t("studies.about") -%>
+<% add :menu, "Register using spreadsheet" => upload_study_sample_registration_path -%>
+<% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(@study) -%>
+
+<h1>Sample registration for <%= current_user.workflow.name %></h1>
+
+<%= render :partial => "sample_registrar" %>

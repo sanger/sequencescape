@@ -1,0 +1,19 @@
+<% add :title, I18n.t("studies.about") -%>
+<%- add :back_menu, "Back to sample" => sample_path(@sample) -%>
+<% add :admin_option, "Administer studies" => studies_path -%>
+
+<h1>Sample <%= @sample.name %> : Comments</h1>
+<div class='subtitle'>
+  Sample <%= @sample.id %> &middot; Created on <%= @sample.created_at.to_formatted_s(:long) %>
+</div>
+
+<div class='info'>
+  <%= render :partial => "list", :locals => {:item => @sample } %>
+  <% if current_user.privileged? @sample %>
+    <div>
+      <p>Type your comment:</p>
+			<%= form_remote_tag(:url => sample_comments_path(@sample), :update => "sample_annotations_#{@sample.id}") %>
+      <%= text_field_tag "comment", '', :size  => 65 %><%= submit_tag 'Add comment' %>
+    </div>
+  <% end %>
+</div>

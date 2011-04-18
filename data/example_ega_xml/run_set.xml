@@ -1,0 +1,12 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<RUN_SET>
+ <RUN alias="egaTest-Run7" total_data_blocks="1" run_center="SC">
+   <EXPERIMENT_REF refname="egaTest-Experiment7"/>
+   <DATA_BLOCK>
+     <FILES>
+       <FILE filename="ega.fq.gz" filetype="fastq"/>
+     </FILES>
+   </DATA_BLOCK>
+ </RUN>
+</RUN_SET>

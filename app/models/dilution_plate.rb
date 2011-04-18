@@ -1,0 +1,2 @@
+class DilutionPlate < Plate
+end

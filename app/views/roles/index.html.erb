@@ -1,0 +1,15 @@
+<%- add :title, "User Management" %>
+<%- add :admin_option, "Add new role" => new_role_path %>
+<%- add :admin_option, "Back to Admin Panel" => admin_path %>
+
+<h1>Listing Roles</h1>
+
+<ul>
+  <% @roles.each do |role| -%>
+    <li>
+      <h3><%= role.name.humanize %></h3>
+      <p><%= link_to "<strong>Edit #{role.name}'s role</strong>", edit_role_path(role) %></p>
+      <p><%= link_to "<strong>Show all users that are #{role.name}s</strong>", role_users_path(role) %></p>
+    </li>
+  <% end %>
+</ul>

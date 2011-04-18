@@ -1,0 +1,14 @@
+<table width="100%" cellspacing="0" cellpadding="0" class="property_group_<%= group.blank? ? 'general' : group %>">
+  <tr>
+    <td width="40%" class="item">
+      <span class="property_edit_info"><%= sections.edit_info %></span>
+      <%= form.label(field_name, sections.label, sections.label_options) %>
+    </td>
+    <td width="40%">
+      <%= field %>
+    </td>
+    <td class="help_field">
+      <% help_text("#{sections.label} help text") do %><%= sections.help %><% end %>
+    </td>
+  </tr>
+</table>

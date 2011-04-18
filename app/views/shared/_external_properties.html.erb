@@ -1,0 +1,6 @@
+<% item.external_properties.each do |property| %>
+<tr>
+  <td class="item"><%= property.key %>:</td>
+  <td><strong><%= property.value %></strong></td>
+</tr>
+<% end %>

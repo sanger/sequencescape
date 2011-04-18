@@ -1,0 +1,62 @@
+<% form_for @batch, :url => {:controller => :batches, :action => :qc_batch, :id => @batch.id }, :html => { :id => 'stage_form'} do |form| %>
+  <% requests.each do |request| %>
+    <div style="padding:5px;font-size:18px;background:grey;font-weight:bold;color:white;">
+      Library: <%= request.asset.barcode %>
+    </div>
+    <div id="boxContainer">
+      <table cellpadding="2" cellspacing="0">
+        <tr>
+          <th class='label' width="5%">&nbsp;</th>
+          <th class='label' width="15%">Sample</th>
+          <th class='label' width="7%">Library ID</th>
+          <th class='label' width="15%">Library</th>
+          <th class='label' width="7%">Request</th>
+          <th class='label' width="4%">Cycles</th>
+          <th class='label' width="4%">Order</th>
+          <th class='label' width="4%">From</th>
+          <th class='label' width="4%">To</th>
+          <th class='label' width="4%">Conc.</th>
+        </tr>
+        <tr>
+          <% unless request.nil? || request.target_asset.nil? %>
+            <td>
+              <%= qc_select_box(request, request.target_asset.qc_state) %>
+            </td>
+          <% else %>
+            <td></td>
+          <% end %>
+          <td>
+            <%= link_to request.asset.barcode, asset_url(request.asset) %>
+          </td>
+          <td>
+            <%= request.asset.barcode %>
+          </td>
+          <td>
+            <%= request.asset.name %>
+          </td>
+          <td>
+            <%= request.id %>
+          </td>
+          <td>
+            <%= request.value_for("Read length") %>
+          </td>
+          <td>
+            <%= request.position(@batch) %>
+          </td>
+          <td>
+            <%= request.value_for("Fragment size required (from)") %>
+          </td>
+          <td>
+            <%= request.value_for("Fragment size required (to)") %>
+          </td>
+          <td>
+            <%= request.value_for("Concentration") %>
+          </td>
+        </tr>
+        <%= render :partial => "qc_results", :locals => {:batch => @batch, :request => request} %>
+      </table>
+    </div>
+    <br />
+  <% end %>
+  <%= render :partial => "next_stage_submit" %>
+<% end %>

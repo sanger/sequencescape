@@ -1,0 +1,13 @@
+<% add :title, "Batch" -%>
+<% add :menu, "Edit batch" => edit_batch_path(@batch) -%>
+<% add :back_menu, "Back to pipeline" => pipeline_path(@batch.pipeline) -%>
+
+<h1>ADD CONTROL TO BATCH <%= @batch.id %></h1>
+<div class="info">
+  This batch belongs to pipeline: <%= @batch.pipeline.name %>
+</div>
+
+<%= render :partial => "shared/batch", :locals => { :requests => @batch.ordered_requests, :edit => false, :stage => false } %>
+
+<h1>CONTROLS</h1>
+<%= render :partial => "controls" %>

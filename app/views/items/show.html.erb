@@ -1,0 +1,78 @@
+<h2>Item/Library <%= @item.id %> <%= @item.name %></h2>
+
+<div class="callout">
+  <table width="100%">
+    <tr>
+      <td>This <strong><%= @item.workflow.item_label %></strong> was registered on <%= @item.created_at.to_formatted_s(:day_full_with_time) %>.</td>
+      <td class="right"><% pluralize @item.requests.size, "request" %></td>
+    </tr>
+  </table>
+</div>
+<br />
+<div class="callout">
+  <table width='100%'>
+    <tr>
+      <td>Name:</td>
+      <td><strong><%= @item.name %></strong></td>
+    </tr>
+  </table>
+</div>
+<br />
+
+<div class='help'>
+  <h2>Important notice</h2>
+  <p>
+    Items have now been replaced with assets. This shows the historic requests related to this item. It will be completely removed in the next version. 
+  </p>
+  <p>
+    Workflow samples have also been removed. This page shows the ID that the Item used and the study_id it has been related to.
+  </p>
+  <p>
+    If you have any questions or suspect any inconsistencies please contact <%= help_email_link %> with a link to this page and an explanation.
+  </p>
+</div>
+
+<h3>Workflow sample ID <%= @item.workflow_sample_id %></h3>
+<h3>Study ID <%= link_to_unless @item.study_id.nil?, @item.study_id, { :controller => "studies", :action => "show", :id => @item.study_id } %></h3>
+<h3>Submission ID 
+  <% if @item.submission %>
+    <%= link_to_if @item.submission, @item.submission_id, study_workflow_submission_url(@item.submission.study, @item.submission.workflow, @item.submission) %></h3>
+  <% end %>
+
+<h3>Requests</h3>
+<table width="100%" class="sortable">
+  <thead>
+    <tr>
+     <th>Request ID</th>
+     <th>Request type</th>
+     <th>State</th>
+     <th>Batches</th>
+     <th>Asset</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @item.requests.each do |request| %>
+    <tr>
+      <td><%= link_to  request.id, request_url(request) %></td>
+      <% if  request.request_type %>
+        <td><%= request.request_type.name %></td>
+      <% else %>
+        <td><%= request.request_type_id %></td>
+      <% end %>
+      <td><%= request.state %></td>
+      <td>
+      <% request.batch_ids.each do |batch_id| %>
+        <%= link_to batch_id, URI.join(configatron.pipelines_url, "batches/#{batch_id}").to_s %>
+      <% end %>
+      </td>
+      <% if request.asset %>
+      <td><%= link_to "#{request.asset.label} #{request.asset.id}", asset_url(request.asset) %></td>
+      <% else %>
+      <td>No asset found for this request</td>
+      <% end %>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+
+

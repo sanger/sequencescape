@@ -1,0 +1,2 @@
+class GenotypingRequest < Request
+end

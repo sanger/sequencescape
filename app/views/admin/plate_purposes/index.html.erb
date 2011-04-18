@@ -1,0 +1,19 @@
+<h1>Listing All Plate Purposes</h1>
+<p>This is equivalent to the plate types in SNP.</p>
+<table>
+  <tr>
+    <th>Name</th>
+  </tr>
+
+<% for plate_purpose in @plate_purposes %>
+  <tr>
+    <td><%=h plate_purpose.name %></td>
+    <td><%= link_to 'Edit', edit_plate_purpose_path(plate_purpose), :title => "Edit #{plate_purpose.name}" %></td>
+    <td><%= link_to 'Delete', plate_purpose, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Plate Purpose', new_plate_purpose_path %>

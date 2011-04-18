@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SAMPLE_SET>
+    <SAMPLE alias="egaTest-Sample7" center_name="SC" >
+         <SAMPLE_NAME>
+              <TAXON_ID>9612</TAXON_ID>
+              <COMMON_NAME>Human HapMap individual XXXXXXXX</COMMON_NAME>
+	       <ANONYMIZED_NAME>NA19240</ANONYMIZED_NAME>
+         </SAMPLE_NAME>   
+	 <DESCRIPTION>Human HapMap individual XXXXXXXX</DESCRIPTION>    
+	 <SAMPLE_ATTRIBUTES>
+	  <SAMPLE_ATTRIBUTE>
+	 	<TAG>population</TAG>
+		<VALUE>XXXXXXXX</VALUE>
+	  </SAMPLE_ATTRIBUTE>	 
+	</SAMPLE_ATTRIBUTES>
+    </SAMPLE>     
+</SAMPLE_SET>

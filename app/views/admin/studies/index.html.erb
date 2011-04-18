@@ -1,0 +1,31 @@
+<%- add :title, "Sequencing studies can be edited, approved and managed from here." %>
+<%- add :menu, "View all studies" => url_for(:controller => "admin/studies", :action => "index")  %>
+
+<% if @studies %>
+  <h1>Manage Studies</h1>
+  <%= form_remote_tag(:url => { :action => :filter }, :html => { :id => "filter_form"}, :id => "filter_form", :update => "studies", :loading => "show_update_loader();", :complete => "hide_update_loader();") %>
+
+    <div class='callout_filter'>
+      <table width='100%'>
+        <tr>
+          <td>
+            Show <%= select :filter, :status, [ "open", "closed", "all" ] -%> studies that are <%= select :filter, :by, ["unallocated manager", "all" ], {}, :onchange => "swap_filter();" -%>
+          </td>
+          <td style='text-align: right;'>
+            <%= image_tag "ajax-loader.gif", :size => "10x10", :id => "update_loader", :style => "display: none;"%>
+            <input type="search" placeholder="Search" name="q" id="q" />
+          </td>
+        </tr>
+      </table>
+      <%= observe_form(:filter_form, :url => { :action => :filter }, :loading => "show_update_loader();", :complete => "hide_update_loader();", :frequency => 0.5, :update => :studies) %>
+    </div>
+  </form>
+  <div id='studies'>
+    <%= render :partial => "filtered_studies" %>
+  </div>
+
+<% else %>
+  <h1>Manage study: <%= @study.name %></h1>
+  <p>You can update the quotas, billing information and approval status for a study here.</p>
+  <%= render :partial => "manage_single_study" %>
+<% end %>

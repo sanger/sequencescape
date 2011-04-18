@@ -1,0 +1,28 @@
+<%- add :title, "Role: #{@role.name.pluralize.humanize}" %>
+<%- add :admin_option, "Back to roles management" => url_for(:controller => "admin/roles", :action => :index) %>
+<%- add :admin_option, "Back to Admin Panel" => admin_path %>
+
+<h1>Role: <%= @role.name.pluralize.upcase %></h1>
+
+<div class="info" id='users'>
+  <table width='100%' cellpadding='4' cellspacing='0' class='sortable'>
+    <thead>
+      <tr>
+        <th>Full Name</th>
+        <th>Login</th>
+        <th>&nbsp;</th>
+        <th>&nbsp;</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @users.each do |user| %>
+        <tr class='<%= cycle("rowodd", "roweven")%>'>
+          <td><%= user.name.humanize %></td>
+          <td><%= user.login %></td>
+          <td><%= link_to "Show profile", "/admin/users/#{user.id}" %></td>
+          <td><%= link_to "Edit profile", :controller => "admin/users", :action => :edit, :id => user.id %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

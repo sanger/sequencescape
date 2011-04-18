@@ -1,0 +1,80 @@
+<% unless batches.empty? %>
+<table width="100%" cellpadding="5" cellspacing="0" class="sortable">
+  <thead>
+    <tr>
+      <th class='label' width="5%"><%= link_to 'Batch', "javascript:void(0);" %></th>
+      <th class='label' width="5%"><%= link_to 'Items', "javascript:void(0);" %></th>
+      <th class='label' width="8%"><%= link_to 'Created by', "javascript:void(0);" %></th>
+      <th class='label' width="8%"><%= link_to 'Assigned to', "javascript:void(0);" %></th>
+      <th class='label' width="15%"><%= link_to 'Created at', "javascript:void(0);" %></th>
+      <th class='label' width="15%"><%= link_to 'Status', "javascript:void(0);" %></th>
+      <% if in_progress %>
+        <th class='label' width="15%"><%= link_to 'Last completed task', "javascript:void(0);" %></th>
+      <% end %>
+      <th class='label' width="5%">&nbsp;</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% batches.each_with_index do |batch, index| %>
+    <tr class="batch">
+      <td><%= link_to batch.id, batch_path(batch), {:title => "#{batch.state} batch #{batch.id}"} %></td>
+      <td><%= batch.request_count %></td>
+      <td><%= batch.user.blank? ? "Unknown" : batch.user.login %></td>
+      <td><%= batch.assigned_user %></td>
+      <td><%= batch.created_at.to_date.to_formatted_s(:rfc822) %></td>
+      <% if batch.failed? %>
+      <td>
+        <%= batch.state.capitalize %>
+        <% unless batch.failures.blank? %>
+          (<%= batch.failures.first.reason  %>) <!-- TODO: Make sure a reason is being saved when failing a batch -->
+        <% end %>
+      </td>
+      <% else %>
+        <td><%= batch.state.humanize %></td>
+      <% end %>
+      <% if in_progress %>
+        <% unless batch.last_completed_task.nil? %>
+          <td><%= batch.last_completed_task.name %></td>
+        <% else %>
+          <% if batch.started? %>
+            <td>Only just started</td>
+          <% elsif batch.pending? %>
+            <td>Pending</td>
+          <% else %>
+            <td></td>
+          <% end %>
+        <% end %>
+      <% end %>
+        <td>
+          <% if batch.pipeline %>
+            <% if batch.pipeline.automated? %>
+              <%= link_to "View batch", :controller => :workflows, :action => :auto_batch, :id => batch.pipeline.workflow.id, :batch_id => batch.id %>
+            <% else %>
+              <% if batch.state == "completed" -%>
+                <%= link_to "Release batch", release_batch_url(batch) %>
+              <% else -%>
+                <%= link_to("View batch", batch_path(batch), :title => "View #{batch_state} batch #{index+1}") %>
+              <% end -%>
+            <% end %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+  <% unless showing_all %>
+    <tfoot>
+      <tr>
+        <td colspan="7">
+          <% if @pipeline.qc? %>
+            <%= link_to "View all batches in this state", :controller => :batches, :action => "quality_control", :id => batches.first.qc_pipeline.id, :qc_state => batches.first.qc_state, :state => batches.first.state %>
+          <% else %>
+            <%= link_to "View all #{batches.first.state} batches", :controller => :batches, :action => batches.first.state, :id => @pipeline.id %>
+          <% end %>
+        </td>
+      </tr>
+    </tfoot>
+  <% end %>
+</table>
+<% else -%>
+  <p>No batches have this status</p>
+<% end -%>

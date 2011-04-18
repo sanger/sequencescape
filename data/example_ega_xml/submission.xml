@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SUBMISSION submission_date="2010-06-26T00:00:00.000Z" alias="egaTest7" center_name="SC" broker_name="EGA">  
+ <ACTIONS>    
+   <ACTION>
+     <ADD schema="study" source="study.xml"/>
+   </ACTION> 
+ <ACTION>
+     <ADD schema="sample" source="sample.xml"/>
+   </ACTION>   
+   <ACTION>
+     <ADD schema="experiment" source="experiment.xml"/>
+   </ACTION> 
+   <ACTION>
+     <ADD schema="run" source="run.xml"/>
+   </ACTION>  
+   <ACTION>
+     <PROTECT/>
+   </ACTION>
+ </ACTIONS>
+ <FILES>
+   <FILE filename="ega.fq.gz" checksum_method="MD5" checksum="123" />
+ </FILES>
+</SUBMISSION>

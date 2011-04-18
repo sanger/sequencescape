@@ -1,0 +1,307 @@
+<% form_for(:sample_registrars, nil, :url => study_sample_registration_index_path, :method => :post) do |registrars_fields| %>
+  <%= error_messages_for(:sample_registrars, :object => @sample_registrars, :object_name => "set of sample(s)") %>
+
+  <h2>1. Enter sample information</h2>
+  <%= display_user_guide(I18n.t('samples.name_format')) %>
+  <p>Required fields are marked with <%= required_marker %></p>
+  <p>Ignored rows are not registered.</p>
+  <table id="samples_to_register" border='1' cellpadding='2' cellspacing='0'>
+    <thead>
+      <tr>
+        <th>
+          <span class='property_edit_info'><br> </span>
+          Ignore
+          <% tooltip do %>
+            You can mark a particular sample to be ignored and it will not be registered when you submit the page.
+            This is useful if you have used a spreadsheet to load a lot of samples and only wish to register a few.
+          <% end%>
+        </th>
+        <th id='asset_group'>
+          <span class='property_edit_info'><br> </span>
+          <%= required_marker -%>Asset group name<br>
+          <% tooltip do %>
+            Asset group name can only contain letters, numbers, _ or -
+          <% end%>
+        </th>
+        <th id='property_sample_name' >
+          <span class='property_edit_info'><br> </span>
+          <%= required_marker -%>Sample name<br>
+          <% tooltip do %>
+            Sample name can only contain letters, numbers, _ or -
+          <% end%>
+        </th>
+        <th id='property_barcode'>
+          <span class='property_edit_info'><br> </span>
+          <% tooltip do %>
+            The 2D barcode of the tube
+          <% end%>
+          2D Barcode
+        </th>
+        <%# NOTE[xxx]: Kind of a hack because we're not actually building a form %>
+        <% fields_for(Sample.new) do |form| %>
+          <% form.fields_for(:sample_metadata, :builder => Metadata::FormBuilder) do |metadata_fields| %>
+            <% metadata_fields.filter { |field| current_user.workflow.visible_attribute?(field) } %>
+
+            <%# Fields for 'Microarray genotyping' %>
+            <%= metadata_fields.header(:cohort) %>
+            <%= metadata_fields.header(:gender) %>
+            <%= metadata_fields.header(:country_of_origin) %>
+            <%= metadata_fields.header(:geographical_region) %>
+            <%= metadata_fields.header(:ethnicity) %>
+            <%= metadata_fields.header(:dna_source) %>
+            <%= metadata_fields.header(:volume) %>
+            <%= metadata_fields.header(:supplier_plate_id) %>
+            <%= metadata_fields.header(:mother) %>
+            <%= metadata_fields.header(:father) %>
+            <%= metadata_fields.header(:replicate) %>
+
+            <%# Fields for 'Next-gen sequencing' %>
+            <%= metadata_fields.header(:organism) %>
+            <%= metadata_fields.header(:gc_content) %>
+
+            <!-- SRA -->
+            <% metadata_fields.with_options(:grouping => 'SRA') do |group| %>
+              <%= group.header(:sample_public_name) %>
+            <% end %>
+
+            <!-- ENA requirement -->
+            <% metadata_fields.with_options(:grouping => 'ENA requirement') do |group| %>
+              <%= group.header(:sample_sra_hold) %>
+              <%= group.header(:sample_common_name) %>
+              <%= group.header(:sample_taxon_id) %>
+            <% end %>
+
+            <!-- SRA attributes -->
+            <% metadata_fields.with_options(:grouping => 'SRA attributes') do |group| %>
+              <%= group.header(:sample_strain_att) %>
+              <%= group.header(:sample_description) %>
+            <% end %>
+
+            <!-- SRA Sample AN -->
+            <% metadata_fields.with_options(:grouping => 'SRA Sample AN') do |group| %>
+              <%= group.header(:sample_ebi_accession_number) %>
+            <% end %>
+            
+            <%= metadata_fields.header(:reference_genome) %>
+    <!-- array express field -->
+    <%metadata_fields.with_options(:grouping => 'Array Express') do |group| %>
+    <%= group.header(:genotype) %>
+    <%= group.header(:phenotype) %>
+    <%= group.header(:age) %>
+    <%= group.header(:developmental_stage) %>
+    <%= group.header(:cell_type) %>
+    <%= group.header(:disease_state) %>
+    <%= group.header(:compound) %>
+    <%= group.header(:dose) %>
+    <%= group.header(:immunoprecipitate) %>
+    <%= group.header(:growth_condition) %>
+    <%= group.header(:rnai) %>
+    <%= group.header(:organism_part) %>
+    <%= group.header(:time_point) %>
+  <% end %>
+
+    <!-- EGA field -->
+    <%metadata_fields.with_options(:grouping => 'EGA') do |group| %>
+    <%= group.header(:subject) %>
+    <%= group.header(:disease) %>
+    <%= group.header(:treatment)%>
+  <% end %>
+
+          <% end %>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+    <% @sample_registrars.each_with_index do |registrar, index| %>
+      <% registrars_fields.fields_for(index.to_s, registrar) do |registrar_fields| %>
+        <tr class="sample_row">
+          <td>
+            <%= registrar_fields.label(:ignore, "Ignore sample #{ index }", :style => 'display:none;') %>
+            <%= registrar_fields.check_box(:ignore, { :class => 'ignore' }) %>
+          </td>
+          <td>
+            <%= registrar_fields.label(:asset_group_name, "Asset group name for sample #{ index }", :style => 'display:none;') %>
+            <%= registrar_fields.text_field(:asset_group_name, :size => 15) %>
+          </td>
+
+          <% registrar_fields.fields_for(:sample) do |sample_fields| %>
+            <td>
+              <%= sample_fields.label(:name, "Sample name for sample #{ index }", :style => 'display:none;') %>
+              <%= sample_fields.text_field(:name, :size => 15) %>
+            </td>
+          <% end %>
+
+          <% registrar_fields.fields_for(:sample_tube) do |sample_tube_fields| %>
+            <td>
+              <%= sample_tube_fields.label(:two_dimensional_barcode, "2D barcode for sample #{ index }", :style => 'display:none;') %>
+              <%= sample_tube_fields.text_field(:two_dimensional_barcode, :size => 15) %>
+            </td>
+          <% end %>
+
+          <%# TODO[xxx]: This is really inefficient, taking 25s to render for the large spreadsheet %>
+          <% registrar_fields.fields_for(:sample) do |sample_fields| %>
+            <% sample_fields.fields_for(:sample_metadata, :builder => Metadata::FormBuilder) do |metadata_fields| %>
+              <% metadata_fields.view_for(:field, 'shared/metadata/edit_value') %>
+              <% metadata_fields.locals = { :index => index } %>
+              <% metadata_fields.filter { |field| current_user.workflow.visible_attribute?(field) } %>
+
+              <%# Fields for 'Microarray genotyping' %>
+              <%= metadata_fields.text_field(:cohort) %>
+              <%= metadata_fields.select(:gender, Sample::GENDERS, :include_blank => true) %>
+              <%= metadata_fields.text_field(:country_of_origin) %>
+              <%= metadata_fields.text_field(:geographical_region) %>
+              <%= metadata_fields.text_field(:ethnicity) %>
+              <%= metadata_fields.select(:dna_source, Sample::DNA_SOURCES) %>
+              <%= metadata_fields.text_field(:volume) %>
+              <%= metadata_fields.text_field(:supplier_plate_id) %>
+              <%= metadata_fields.text_field(:mother) %>
+              <%= metadata_fields.text_field(:father) %>
+              <%= metadata_fields.text_field(:replicate) %>
+
+              <%# Fields for 'Next-gen sequencing' %>
+              <%= metadata_fields.text_field(:organism) %>
+              <%= metadata_fields.select(:gc_content, Sample::GC_CONTENTS) %>
+
+              <!-- SRA -->
+              <% metadata_fields.with_options(:grouping => 'SRA') do |group| %>
+                <%= group.text_field(:sample_public_name) %>
+              <% end %>
+
+              <!-- ENA requirement -->
+              <% metadata_fields.with_options(:grouping => 'ENA requirement') do |group| %>
+                <%= group.select(:sample_sra_hold, Sample::SRA_HOLD_VALUES) %>
+                <%= group.text_field(:sample_common_name, 'data-organism' => 'common_name') %>
+                <%= group.text_field(:sample_taxon_id,    'data-organism' => 'taxon_id') %>
+              <% end %>
+
+              <!-- SRA attributes -->
+              <% metadata_fields.with_options(:grouping => 'SRA attributes') do |group| %>
+                <%= group.text_field(:sample_strain_att) %>
+                <%= group.text_field(:sample_description) %>
+              <% end %>
+
+              <!-- SRA Sample AN -->
+              <% metadata_fields.with_options(:grouping => 'SRA Sample AN') do |group| %>
+                <%= group.text_field(:sample_ebi_accession_number) %>
+              <% end %>
+              
+              <%= metadata_fields.select_by_association(:reference_genome)%>
+              <!-- array express field -->
+              <%metadata_fields.with_options(:grouping => 'Array Express') do |group| %>
+                <%= group.text_field(:genotype) %>
+                <%= group.text_field(:phenotype) %>
+                <%= group.text_field(:age) %>
+                <%= group.text_field(:developmental_stage) %>
+                <%= group.text_field(:cell_type) %>
+                <%= group.text_field(:disease_state) %>
+                <%= group.text_field(:compound) %>
+                <%= group.text_field(:dose) %>
+                <%= group.text_field(:immunoprecipitate) %>
+                <%= group.text_field(:growth_condition) %>
+                <%= group.text_field(:rnai) %>
+                <%= group.text_field(:organism_part) %>
+                <%= group.text_field(:time_point) %>
+              <% end %>
+
+              <!-- EGA field -->
+                <%metadata_fields.with_options(:grouping => 'EGA') do |group| %>
+                <%= group.text_field(:subject) %>
+                <%= group.text_field(:disease) %>
+                <%= group.text_field(:treatment)%>
+              <% end %>
+
+    <%  metadata_fields.finalize_related_fields %>
+            <% end %>
+          <% end %>
+        </tr>
+      <% end %>
+    <% end -%>
+    </tbody>
+  </table>
+  <br />
+
+  <div class="add_row_button">
+    <%= link_to(image_tag('add.png'), '', :title => 'Add one more sample (will insert an extra row into the table)', :class => 'add_row') %>
+    <%= link_to('Add row',            '', :title => 'Add one more sample (will insert an extra row into the table)', :class => 'add_row') %>
+  </div>
+
+   <p>Data in this form can be amended later.</p>
+  <p><%= submit_tag "Register samples", :class => "enhanced" %></p>
+<% end %>
+
+<script type="text/javascript">
+(function() {
+  var updateIgnoreState = function(ignored, row) {
+    ignored ? row.addClassName('disabled') : row.removeClassName('disabled');
+    row.select('input[type=text]', 'select', 'textarea').each(function(field) {
+      ignored ? field.disable() : field.enable();
+    });
+  };
+  var attachIgnoreHandlerToRow = function(row) {
+    row.select('.ignore').each(function(checkbox) {
+      checkbox.observe('click', function() { updateIgnoreState(checkbox.checked, row); });
+    });
+  };
+  var addNewSampleRow = function() {
+    sampleRows = $$('.sample_row');
+    var row_number = sampleRows.length;
+
+    // Perform a deep clone of the first sample row.  Change any fields so that they are properly
+    // setup for the new row.  Note that 'hidden' fields don't have an ID attribute.
+    newRow = sampleRows[0].clone(true);
+    newRow.select('input', 'textarea', 'select').each(function(e) {
+      if (e.readAttribute('type') != 'hidden') {
+        e.writeAttribute('id', e.readAttribute('id').sub(/_0_/, '_' + row_number + '_'));
+      }
+      e.writeAttribute('name', e.readAttribute('name').sub(/\[0\]/, '[' + row_number + ']'));
+      e.value = ''
+    });
+    newRow.select('label').each(function(e) {
+      e.writeAttribute('for', e.readAttribute('for').sub(/_0_/, '_' + row_number + '_'));
+      e.innerHTML = e.innerHTML.gsub('0', row_number);
+    });
+    newRow.select('.ignore').each(function(e) {
+      e.value = '1';      // Got reset in the previous loop!
+      e.setAttribute('id', "ignore_" + row_number);
+      e.setAttribute('name', "ignore[" + row_number + "]");
+      updateIgnoreState(e.checked = false, newRow);
+    });
+
+    // Remove any fieldWithErrors elements
+    newRow.select('.fieldWithErrors').each(function(field) {
+      field.childElements().reverse().each(function(child) {
+        field.insert({ after: child });
+      });
+      field.remove();
+    });
+
+    // Now we can append the new row to the end of our table.
+    $$('#samples_to_register tbody')[0].insert(newRow);
+    new Effect.Highlight(newRow);
+
+    attachIgnoreHandlerToRow(newRow);
+  };
+
+  document.observe('dom:loaded', function() {
+    $$('.sample_row').each(function(row) {
+      attachIgnoreHandlerToRow(row);
+
+      // Firefox has a nasty habit of keeping the state of the checkbox but we know that it should
+      // always be unchecked on the initial load of the page.
+      row.select('.ignore').each(function(checkbox) { updateIgnoreState(checkbox.checked = false, row); });
+    });
+
+    $$('.add_row').each(function(link) {
+      link.observe('click', function(event) {
+        event.preventDefault();
+        addNewSampleRow();
+        return false;
+      });
+    });
+  });
+})();
+
+fix_firefox_tooltip_layout();
+</script>
+
+<%= organism_validation_javascript %>

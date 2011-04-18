@@ -1,0 +1,44 @@
+<%- add :title, "User profile." %>
+<%- add :admin_option, "Manage accounts" => users_url %>
+<%- add :admin_option, "Back to roles management" => url_for(:controller => "admin/roles", :action => :index) %>
+<%- add :admin_option, "Back to Admin Panel" => admin_path %>
+
+<h1><% unless @user.name.empty? %><%= @user.name %><% end %> : <%=h @user.login %></h1>
+
+<% if @user.profile_complete? %>
+  <div class='callout'>
+    Your profile is up to date and complete.
+  </div>
+<% else %>
+  <div class='callout_alert'>
+    Your profile not complete!
+  </div>
+<% end %>
+
+<table width='100%'>
+  <tr>
+    <td class="item" width="40%">First name:</td>
+    <td><strong><%=h @user.first_name.blank? ? "Unknown" : @user.first_name %></strong></td>
+  </tr>
+  <tr>
+    <td class="item" width="40%">Last name:</td>
+    <td><strong><%=h @user.last_name.blank? ? "Unknown" : @user.last_name %></strong></td>
+  </tr>
+  <tr>
+    <td class="item" width="40%">Preferred email:</td>
+    <td><strong><%=h @user.email.blank? ? "Unknown" : @user.email %></strong></td>
+  </tr>
+  <% @user.roles.each do |role| %>
+      <% if role.authorizable.nil? %>
+        <tr>
+          <td class="item" width="40%"><%= role.name.capitalize %></td>
+          <td><strong><%=h "Yes" %></strong></td>
+        </tr>
+      <% else %>
+          <tr>
+            <td class="item" width="40%"><%= role.name.capitalize %></td>
+            <td><strong><%=h role.authorizable.name %></strong></td>
+          </tr>
+      <% end %>
+  <% end %>
+</table>

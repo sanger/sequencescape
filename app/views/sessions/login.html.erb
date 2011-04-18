@@ -1,0 +1,34 @@
+<%= render_flashes %>
+<div style="padding: 0px 5px 5px 0px; margin: 0px 10px 3px 10px; border-bottom: 1px solid #ccc;">
+  <strong>SEQUENCESCAPE <%= Deployed::VERSION_ID %></strong>
+  <div class='intro'>
+    Sample and study management for sequencing and genotyping at the Wellcome Trust Sanger Institute.
+  </div>
+</div>
+<div id="account_box">
+  <div id="account_form">
+    <% form_tag do -%>
+    <table width="100%" cellspacing="0" cellpadding="0">
+      <tr class="account_item">
+        <td colspan="2" class="account_item account_label">
+          <div style="padding:0px 10px 10px 0px;font-weight:bold;color:green;">Please use your UNIX username and password to login</div>
+        </td>
+      </tr>
+      <tr class="account_item">
+        <td width="25%" class="account_item account_label">Username: </td>
+        <td width="75%" class="account_item"><%= text_field_tag "login", "", { :size => 35 } %></td>
+      </tr>
+      
+      <tr>
+        <td class="account_label">Password: </td>
+        <td><%= password_field_tag "password", "", { :size => 35 } %></td>
+      </tr>
+      
+      <tr>
+        <td>&nbsp;</td>
+        <td><br /><%= submit_tag I18n.t('global_links.login') %></td>
+      </tr>
+    </table>
+    <% end -%>
+  </div>
+</div>

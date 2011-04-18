@@ -1,0 +1,24 @@
+<%- add :title, I18n.t("studies.about") %>
+<%- add :menu, "<strong>Back to all plates</strong>" => study_plates_path(@study) %>
+
+<h1>Wells for plate <%= @plate.id %></h1>
+<h3>Number of wells: <%= @wells.size %></h3>
+
+<table width="100%" cellspacing="0" cellpadding="5">
+  <tr>
+    <th class="label">&nbsp;</th>
+    <th class="label">Well name</th>
+    <th class="label">Created at</th>
+  </tr>
+<% for well in @wells %>
+  <tr class="<%= cycle('rowodd', 'roweven') %>">
+    <td width="2%"><%= check_box_tag "record", 1, false %></td>
+    <td width="45%"><% if well.name %><%= well.name %><% else %>No name is defined<% end %></td>
+    <td width="25%"><%= well.created_at %></td>
+  </tr>
+<% end %>
+</table>
+
+<div style="text-align:center;">
+  <%= will_paginate @wells %>
+</div>

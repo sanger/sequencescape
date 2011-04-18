@@ -1,0 +1,10 @@
+<% if value %>
+  <% if value < 500 %>
+    <% colour = "red" %>
+  <% elsif value < 1000 %>
+    <% colour = "orange" %>
+  <% else %>
+    <% colour = "green" %>
+  <% end %>  
+<% end %>
+<td class="<%= colour %>"><%= value %></td>

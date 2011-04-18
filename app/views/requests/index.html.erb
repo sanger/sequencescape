@@ -1,0 +1,83 @@
+<%- add :title, "Requests" %>
+<% if @requests.empty? && ! @study.nil?  %>
+  <% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(@study) -%>
+<% elsif @requests.size > 1 && ! @requests.first.study.nil?  %>
+  <% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(@requests.first.study) -%>
+<% end %>
+
+<h1>
+  <% if @study && params[:state] && params[:attempt] %>
+    <%= params[:state].capitalize %> <%= @request_type.name.downcase %> requests for study '<%= @study.name %>' with <%= pluralize params[:attempt], 'attempt' %>
+  <% elsif @study && params[:state] %>
+    <%= params[:state].capitalize %> <%= @request_type.name.downcase %> requests for study '<%= @study.name %>'
+  <% elsif @study && @request_type %>
+    <%= @request_type.name %> requests for '<%= @study.name %>'
+  <% elsif @request_type && @item && params[:state] && params[:attempt] %>
+    <%= @request_type.name %> requests for '<%= @item.name %>'  with <%= pluralize params[:attempt], 'attempt' %>
+  <% elsif @item && params[:state] && params[:attempt] %>
+    Requests for '<%= @item.name %>' with <%= pluralize params[:attempt], 'attempt' %>
+  <% elsif @item && params[:state] %>
+    <%= params[:state].capitalize %> requests for '<%= @item.name %>'
+  <% elsif @item %>
+    Requests for '<%= @item.name %>'
+  <% end %>
+</h1>
+
+<% if @requests.empty? -%>
+  <%= display_user_guide("There are no requests ") %>
+<% else -%>
+  <table cellpadding="4" cellspacing="0" width="100%" class="sortable">
+    <thead>
+      <tr class="<%= cycle("rowodd", "roweven") %>">
+        <th>Source asset</th>
+        <th>Latest activity</th>
+        <th>Request ID</th>
+        <th>Request type</th>
+        <th>User</th>
+        <th>Study</th>
+        <th>Date Created</th>
+        <th>Status</th>
+        <th>Item ID</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @requests.each do |request| -%>
+        <tr>
+          <td>
+            <% if request.asset %>
+              <%= link_to "#{request.asset.label} #{request.asset.barcode}", asset_url(request.asset) %>
+            <% end %>
+          </td>
+
+          <% if request.asset %>
+            <% summary = UiHelper::Summary.new(); summary.load_item(request.asset); summary_item = summary.get_items.first %>
+            <% if summary_item %>
+              <td>
+                <%= link_to(summary_item.message, summary_item.external_link.to_s) %>
+              </td>
+            <% else %>
+              <td></td>
+            <% end %>
+          <% else %>
+            <td></td>
+          <% end %>
+
+        <td><%= link_to request.id, request_path(request) %></td>
+        <td><%= request.request_type.name unless request.request_type.nil? %></td>
+        <td><%= request.user.login unless request.user.blank? %></td>
+        <td><%= link_to(request.study.name, study_path(request.study)) if request.study %></td>
+        <td><%= request.created_at.to_formatted_s(:sortable) %></td>
+        <td><%= display_status(request.state) %></td>
+        <td><%= link_to(request.item.id, item_url(request.item)) if request.item %></td>
+      </tr>
+    <% end -%>
+  </tbody>
+</table>
+<% end -%>
+<br />
+
+<div style="text-align: center;">
+  <% if @study.nil? && @item.nil? %>
+    <%= will_paginate @samples %>
+  <% end %>
+</div>

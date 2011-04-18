@@ -1,0 +1,35 @@
+<div class="info">
+<strong><%= "#{title} pipelines".upcase %></strong><br /><br />
+<% if pipelines.empty? -%>
+<div id="empty_filter">
+  No pipelines found. <%= link_to "Create the first one", :action => "new" %>
+</div>
+<% else -%>
+<table width="100%" cellpadding="3" cellspacing="0">
+<% pipelines.each do |pipeline| -%>
+  <% if current_user.is_administrator? -%>
+  <tr>
+    <% if pipeline.active? -%>
+    <td width="80%"><%= link_to pipeline.name, pipeline_path(pipeline) %></td>
+    <% else -%>
+    <td width="80%" style="color:grey;"><%= link_to pipeline.name, pipeline_path(pipeline) %> (inactive)</td>
+    <% end -%>
+    <% if current_user.is_administrator? %>
+      <td class="10%"><%= link_to "Edit", edit_pipeline_path(pipeline) %></td>
+      <td class="10%"><%= link_to "Delete", pipeline_path(pipeline), :confirm => "Are you sure you want to delete this pipeline?", :method => :delete %></td>
+    <% end %>
+  </tr>
+  <% else -%>
+    <% if pipeline.active? -%>
+    <tr>
+      <td width="80%"><%= link_to pipeline.name, pipeline_path(pipeline) %></td>
+      <td class="10%">&nbsp;</td>
+      <td class="10%">&nbsp;</td>
+    </tr>
+    <% end -%>
+  <% end -%>
+<% end -%>
+</table>
+<% end -%>
+<br />
+</div>

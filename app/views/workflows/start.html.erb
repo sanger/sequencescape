@@ -1,0 +1,20 @@
+<% add :title, "Batch" -%>
+<% add :menu, "Back to all batches" => batches_path -%>
+<% add :back_menu, "Back to all pipelines" => pipelines_url -%>
+
+<h1>BATCH <%= @batch.id %></h1>
+<div class="info">
+  This batch belongs to pipeline: <%= @batch.pipeline.name %>
+</div>
+
+<%= render :partial => "batch", :locals => { :items => @batch.items } %>
+<h1>CONTROLS</h1>
+<div class="info">
+  Available controls for this batch
+</div>
+
+<%= render :partial => "controls", :locals => { :assets => @workflow.assets } %>
+<%= link_to_remote 'Start', :url => { :action => :confirm, :id => @workflow.id, :batch_id => @batch.id } %>
+
+<div id='confirm' class='overlay_panel' style='display: none;'>
+</div>

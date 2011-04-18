@@ -1,0 +1,23 @@
+internal:
+  - Cluster station failure (applification)
+  - Cluster station failure (lin/block/hyb)
+  - Sybr Green - failed amplification
+  - Sybr Green - sparse clusters
+  - Sybr Green - over-dense clusters
+  - Sybr Green - no clusters
+  - Broken flowcell
+  - Loading failure (lin/block/hyb)
+  - Instrument failure
+  - Batch not needed
+  - Other
+external:
+  - Not enough sample DNA
+  - PCR failure
+  - Loss of sample
+  - Power failure
+  - Incorrect reagents
+  - Incorrect protocol
+  - Equipment failure
+  - Faulty/contaminated reagents
+  - Batch not needed
+  - Other

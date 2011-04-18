@@ -1,0 +1,15 @@
+<% semantic_form_for(@supplier) do |form| %>
+  <% form.inputs :name => "Supplier" do %>
+    <%= form.input :name %>
+    <%= form.input :address,  :as => :text, :required => false %>
+    <%= form.input :contact_name, :required => false  %>
+    <%= form.input :email, :required => false   %>
+    <%= form.input :phone_number, :required => false  %>
+    <%= form.input :fax, :required => false  %>
+    <%= form.input :url, :required => false  %>
+    <%= form.input :abbreviation, :required => false  %>
+  <% end %>
+  <% form.buttons do %>
+    <%= form.commit_button %>
+  <% end %>
+<% end %>

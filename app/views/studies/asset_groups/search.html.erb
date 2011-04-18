@@ -1,0 +1,18 @@
+<h1>Found <%= pluralize @assets.size, 'asset' %></h1>
+
+<h1>Add to <%= @asset_group.name %></h1>
+
+<% form_for @asset_group,  :url => add_study_asset_group_path(@study, @asset_group), :html => { :method => :post } do |f| %>
+  <%= f.error_messages %>
+
+
+	<% @assets.each do |asset| %>
+    <%= check_box :asset, asset.id, :value => asset.id %> <%= label(:asset, asset.id, "#{asset.name} #{asset.label}") %><br/>
+	<% end %>
+
+  <p>
+    <%= f.submit "Create" %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', study_asset_groups_path(@study) %>

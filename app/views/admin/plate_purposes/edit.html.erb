@@ -1,0 +1,16 @@
+<h1>Editing Plate Purpose</h1>
+
+<% form_for(@plate_purpose) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @plate_purpose %> |
+<%= link_to 'Back', plate_purposes_path %>

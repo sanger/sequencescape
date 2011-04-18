@@ -1,0 +1,7 @@
+<%- add :menu, "Back to Asset creation" => new_asset_path  %>
+
+<h3>Assets List</h3>
+<div class='info'>
+  Below are the assets which have been created.  Please select the assets you want to print labels and the printer you want them to be printed from.
+</div>
+<%= render :partial => 'shared/assets_to_print', :locals => { :path => print_labels_assets_path } %>

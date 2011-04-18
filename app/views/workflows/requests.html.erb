@@ -1,0 +1,19 @@
+<%= render_title @workflow.name %>
+<%= render_help "Select samples for processing."%>
+
+<div id='yield'>
+  <div id='main-items'>
+    <%= render :partial => 'requests' %>
+  </div>
+  <div id='main-links'>
+    <div id='callouts'>
+      <div class='info_callout'>
+        Assign samples for inclusion in <strong>Batch #<%= @batch.id.to_s %></strong>.
+      </div>
+      <div class='callout' id='selected_samples'>
+        <%= render :partial => 'selected_samples' %>
+      </div>
+    </div>
+  </div>
+  <br clear='all' />
+</div>

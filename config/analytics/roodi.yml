@@ -1,0 +1,17 @@
+# Help for this file: http://github.com/martinjandrews/roodi
+#
+# AssignmentInConditionalCheck:    { }
+# CaseMissingElseCheck:            { }
+ClassLineCountCheck:             { line_count: 780 }
+ClassNameCheck:                  { pattern: !ruby/regexp /^[A-Z][a-zA-Z0-9]*$/ }
+# ClassVariableCheck:              { }
+CyclomaticComplexityBlockCheck:  { complexity: 22 }
+CyclomaticComplexityMethodCheck: { complexity: 22 }
+#EmptyRescueBodyCheck:            { }
+ForLoopCheck:                    { }
+MethodLineCountCheck:            { line_count: 132 }
+MethodNameCheck:                 { pattern: !ruby/regexp /^[_a-z<>=\[|+-\/\*`]+[_a-z0-9_<>=~@\[\]]*[=!\?]?$/i }
+ModuleLineCountCheck:            { line_count: 320 }
+ModuleNameCheck:                 { pattern: !ruby/regexp /^[A-Z][a-zA-Z0-9]*$/ }
+ParameterNumberCheck:            { parameter_count: 6 }
+

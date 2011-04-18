@@ -1,0 +1,6 @@
+<tr class="<%= cycle("rowodd", "roweven") %>">
+  <td><%= event.message %></td>
+  <td><%= event.content %></td>
+  <td><%= event.created_at.to_formatted_s(:day_full) %></td>
+  <td><%= event.created_by %></td>
+</tr>

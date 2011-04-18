@@ -1,0 +1,128 @@
+<% add :title, "This page details a registered sample." -%>
+<% add :menu, (pluralize @sample.comments.size, "comment") => sample_comments_path(@sample) -%>
+<% add :menu, 'Event history' => history_sample_path(@sample) -%>
+
+<% add :back_menu, "Back to STUDIES" => studies_path -%>
+<% if current_user.administrator? -%>
+  <% if (! @sample.has_submission? ) -%>
+    <% add :menu, { "Delete" => destroy_sample_path(@sample.id) }, { :confirm => "Are you sure to delete this sample?" } -%>
+  <% end%>
+  <% add :menu, { "Move sample to different study" => filtered_move_sample_path(@sample.id) } -%>
+<% end%>
+<% if current_user.manager_or_administrator? || current_user.owner?(@sample) -%>
+  <% add :menu, "Edit" => edit_sample_path(@sample) -%>
+  <% add :menu, { "Flag for public release" => url_for({:controller => "samples", :action => "release", :id =>@sample.id }) }, { :confirm => "Do you want to flag this sample for public release?" }   -%>
+  <% add :menu, { "Generate Accession Number" => url_for({:controller => 'samples', :action => 'accession', :id => @sample.id}) }, { :confirm => "Do you want to request an accession for this sample?" }  -%>
+<% end %>
+
+<% if @sample.accession_number? %>
+  <% add(:menu, "View data stored in ENA" => url_for(configatron.accession_view_url+@sample.ebi_accession_number)) -%>
+<% end %>
+
+<% @sample.studies.each do |study| %>
+  <% add :menu, "Back to study #{study.name}" => study_path(study) -%>
+<% end %>
+
+<h1>Sample Specification</h1>
+
+<div class='help'>
+  <h2>Important notice</h2>
+    Sample names need to be unique and can only contain letters, numbers, underscores and hyphens.<br />
+    Spaces are not allowed.<br />
+    For any help editing or creating new samples, please email <%= help_email_link %>
+</div>
+<div class='info'>
+  <table width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+      <td class="item" width="40%">Name:</td>
+      <td width="60%"><strong><%=h @sample.name %></strong></td>
+    </tr>
+    <tr>
+      <td class="item">Sequencescape Sample ID:</td>
+      <td><strong><%=h @sample.id.to_s %></strong></td>
+    </tr>
+    <tr>
+      <td class="item">Sanger Sample ID:</td>
+      <td><strong><%=h @sample.sanger_sample_id.to_s %></strong></td>
+    </tr>
+    <% if @sample.sample_manifest %>
+    <tr>
+      <td class="item">Manifest:</td>
+      <td><strong><%= link_to @sample.sample_manifest.try(:name), sample_manifest_path(@sample.sample_manifest) %></strong></td>
+    </tr>
+    <% end %>
+    <tr>
+      <td class="item">Created at:</td>
+      <td><strong><%=h @sample.created_at.to_formatted_s(:day_full_with_time) %></strong></td>
+    </tr>
+     <%= render :partial => "shared/external_properties", :locals => {:item => @sample } %>
+  </table>
+  <div id="template_form_body">
+    <% unless @sample.nil? -%>
+      <%= render(:partial => 'shared/metadata/show/sample', :locals => { :sample => @sample }) %>
+    <% end -%>
+  </div>
+  <br />
+</div
+  
+<div class='info'>
+  <h3>STUDIES</h3>
+  <div class='help'>
+    This sample is associated with <%= pluralize @sample.studies.size, "study" %>.
+  </div>
+  
+  <% form_for :sample, :url => url_for({:controller => "samples", :id => @sample.id, :action => :add_to_study}), :html => {:method => :put} do |form| -%>
+  <table width='100%'>
+    <thead>
+      <tr>
+        <th width='70%'>Study name</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @sample.studies.each do |study| %>
+        <tr>
+          <td><%= link_to study.name, study_path(study) %></td>
+          <% if current_user.is_administrator? || current_user.is_manager?(@study) %>
+            <td><%= link_to("Unlink", url_for({:controller => "samples", :id => @sample.id, :action => :remove_from_study, :study_id => study.id}), :confirm => "Are you sure you want to unlink this sample from the '#{study.name}' study?\n\nThere is no undo.") -%></td>
+          <% end %>
+        </tr>
+      <% end %>
+      <% if current_user.is_administrator? || current_user.is_manager?(@study) %>
+      <tr>
+        <td>
+          <%= label("study", "id", 'Add to study', :style => 'display:none') %> 
+          <%= collection_select("study", :id, @studies, :id, :name, :prompt => "Add to study") %>
+        </td>
+        <td><%= form.submit "Add" %></td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <% end %>
+</div>
+
+<div class='info'>
+  <h3>ASSETS</h3>
+  <div class='help'>
+    This sample is associated with <%= pluralize @sample.assets.size, "asset" %>. 
+  </div>
+  
+  <table width='100%'>
+    <thead>
+      <tr>
+        <th width='70%'></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @sample.assets.each do |asset| %>
+        <tr>
+          <td><%= link_to "#{asset.label} #{asset.id}", asset_path(asset) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<br />
+

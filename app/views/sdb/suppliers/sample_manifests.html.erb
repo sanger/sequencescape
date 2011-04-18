@@ -1,0 +1,6 @@
+<% add :menu, "SDB Home" => '/sdb/' %>
+<% add :menu, "Create manifest" => new_sample_manifest_path() %>
+<h2>Sample Manifests for <%= @supplier.name %></h2>
+<%= will_paginate @sample_manifests %>
+<%= render :partial => 'shared/manifests', :locals => { :manifests => @sample_manifests, :show_uploaded => true} %>
+<%= will_paginate @sample_manifests %>

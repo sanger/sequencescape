@@ -1,0 +1,24 @@
+<% add :title, "Contacts for project." -%>
+<% add :back_menu, I18n.t("navigation.menu.back_to_project") => project_path(@project) -%>
+<% if current_user.is_administrator? || current_user.is_manager?(@project) %>
+  <% add :menu, "Edit" => edit_project_path(@project) -%>
+<% end %>
+
+
+<h1><%= @project.name %> : Contacts</h1>
+<div class='subtitle'>
+Project <%= @project.id %> &middot; Created on <%= @project.created_at.to_formatted_s(:long) %> &middot; <%= @project.state.capitalize %>
+</div>
+<div id="role_list">
+  <!-- renders all roles on this project -->
+  <%= render :partial => "roles" -%>
+</div>
+
+<% if current_user.administrator? -%>
+  <hr>
+  <!-- renders all available roles with all users form -->
+  <div style="text-align:center">
+    <h3 id="add_new_role">Assign roles to users</h3>
+    <%= render :partial => "role" -%>
+  </div>
+<% end -%>

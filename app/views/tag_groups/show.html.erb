@@ -1,0 +1,15 @@
+<% add :menu, "All Tag Groups" => tag_groups_path(@asset) %>
+
+<p>
+  <b>Name:</b>
+  <%=h @tag_group.name %>
+</p>
+
+<%= render :partial => "shared/tags_list", :locals => { :tag_group => @tag_group, :tags => @tag_group.tags } %>
+
+
+<script type="text/javascript">$$('table tbody > tr:nth-child(even)').invoke('addClassName', 'roweven');</script>
+<% if current_user.administrator? %>
+  <%= link_to 'Edit', edit_tag_group_path(@tag_group) %> |
+<% end %>
+<%= link_to 'Back', tag_groups_path %>

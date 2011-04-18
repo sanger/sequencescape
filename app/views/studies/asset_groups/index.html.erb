@@ -1,0 +1,31 @@
+<% if current_user.is_administrator? || current_user.is_manager?(@study) %>
+  <%- add :menu, "New asset group" => new_study_asset_group_path(@study) -%>
+  <% if @study.approved? && @study.active? -%>
+    <% add :menu, "<strong>Create Submission</strong>" => info_study_workflow_submissions_path(@study, @current_user.workflow) -%>
+  <% end -%>
+  <%- add :menu, "<strong>New asset group from existing plates</strong>" => study_plates_path(@study) -%>
+<% end %>  
+<%- add :menu, "Back to Study" => study_path(@study) -%>
+
+<h1>Asset groups for <%= @study.name %></h1>
+
+<table width="100%" cellspacing="0" cellpadding="5">
+  <tr>
+    <th class="label" width="50%">Asset Group name</th>
+    <th class="label" width="17%">Print</th>
+    <th class="label" width="17%">&nbsp;</th>
+    <th class="label" width="17%">&nbsp;</th>
+  </tr>
+  <% @asset_groups.each do |asset_group| -%>
+    <tr>
+      <td><%= link_to asset_group.name, study_asset_group_path(@study, asset_group) %></td>
+      <% if current_user.is_administrator? || current_user.is_manager?(@study) %>
+        <td><%= link_to 'Print labels', print_study_asset_group_path(@study, asset_group) %>
+      <% end %>
+      <% if @current_user.administrator? %>
+        <td><%= link_to 'Edit', edit_study_asset_group_path(@study, asset_group) %></td>
+        <td><%= link_to 'Destroy', study_asset_group_path(@study, asset_group), :confirm => 'Are you sure?', :method => :delete %></td>
+      <% end %>
+    </tr>
+  <% end -%>
+</table>

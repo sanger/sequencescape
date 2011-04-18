@@ -1,0 +1,66 @@
+<table width="100%" cellspacing="0" cellpadding="0">
+  <% if @asset.respond_to?(:sample) && @asset.sample %>
+  <tr>
+    <td class="item">Sample:</td>
+    <td><strong><%= link_to @asset.sample.name, sample_url(@asset.sample) %></strong></td>
+  </tr>
+  <% end %>
+  <tr>
+    <td class="item" width="40%">Asset name:</td>
+    <td width="60%"><strong><%=h @asset.name %></strong></td>
+  </tr>
+  <tr>
+    <td class="item">Asset ID:</td>
+    <td><strong><%=h @asset.id.to_s %></strong></td>
+  </tr>
+  <tr>
+    <td class="item">Created at:</td>
+    <td><strong><%=h @asset.created_at.to_formatted_s(:day_full_with_time) %></strong></td>
+  </tr>
+  <tr>
+    <td class="item">Type:</td>
+    <td><strong><%=h @asset.label %></strong></td>
+  </tr>
+  <% if @asset.is_a?(Lane) %>
+    <tr>
+    <td class="item">Data to be released externally?:</td>
+    <td><strong><%=h @asset.external_release_text %></strong></td>
+    </tr>
+    <tr>
+      <td class="item"><%= h(@asset.lane_metadata.attribute_details_for(:release_reason).to_field_info.display_name) %>:</td>
+      <td><strong><%= h(@asset.lane_metadata.release_reason) %></strong></td>    
+    </tr>
+  <% elsif @asset.is_a?(SpikedBuffer) %>
+  <!-- 
+    The percentage needs to be calculated differently.
+    BJ to fix - PT 9221511
+   -->
+  <!-- <tr>
+    <td class="item">Percentage of phiX:</td>
+    <td><strong><%=h @asset.percentage_of_index %></strong> %</td>
+  </tr> -->
+  <% end %>
+  <tr>
+    <td class="item">Volume:</td>
+    <td><strong><%=h @asset.volume %></strong> &#181l</td>
+  </tr>
+  <tr>
+    <td class="item">Concentration:</td>
+    <td><strong><%=h @asset.concentration %></strong> nM</td>
+  </tr>
+  <tr>
+    <td class="item">Human barcode:</td>
+    <td><strong><%=h @asset.sanger_human_barcode %></strong></td>
+  </tr>
+  <tr>
+    <td class="item">Scanned into lab?:</td>
+    <td><strong><%= @asset.location.nil? ? 'No' : @asset.location.name %></strong></td>
+  </tr>
+  <% if @asset.qc_state %>
+    <tr>
+      <td class="item">QC state:</td>
+      <td><strong><%= @asset.qc_state %></strong></td>
+    </tr>
+  <% end %>
+  <%= render :partial => "shared/external_properties", :locals => {:item => @asset} %>
+</table>

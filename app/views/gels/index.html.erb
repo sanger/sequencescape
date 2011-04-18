@@ -1,0 +1,36 @@
+<h1>Gel scoring</h1>
+
+<% form_tag(lookup_gels_url, :method => :post) do %>
+  <%= label_tag :barcode, "Find gel plate:" %>
+  <%= text_field_tag :barcode %>
+  <br /><br />
+  <%= submit_tag 'Update gel values' %>
+<% end %>
+
+<h2>Recently updated</h2>
+<%= will_paginate @gel_plates %>
+<table id="study_list" width="100%" class="sortable" cellpadding="4" cellspacing="0">
+  <thead>
+  <tr>
+    <th><%= link_to "Plate", "javascript:void(0);" %></th>
+    <th><%= link_to "Study", "javascript:void(0);" %></th>
+    <th><%= link_to "Created on", "javascript:void(0);" %></th>
+    <th><%= link_to "Gel Score", "javascript:void(0);" %></th>
+    </tr>
+  </thead>
+  <tbody>
+  <% @plates.each do |plate|  %>
+    <tr>
+      <td><%= link_to plate.barcode, asset_path(plate) %></td>
+      <td>
+      <% if plate.study %>
+        <%= link_to plate.study.try(:name), study_path(plate.study) %>
+      <% end %>
+      </td>
+      <td class="strong faint"><span style="display:none"><%= plate.created_at %></span><%= plate.created_at.to_formatted_s(:sortable) %></td>
+      <td><%= link_to plate.scored? ? "Rescore" : "Score",  gel_path(plate) %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+<%= will_paginate @gel_plates %>

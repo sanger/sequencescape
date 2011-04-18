@@ -1,0 +1,46 @@
+<% if current_user.is_administrator? %>
+  <% add :admin_option, "Manage" => url_for(:controller => "admin/projects", :action => "show", :id => @project.id) -%>
+<% end %>
+<% add :manager_option, "Edit" => edit_project_path(@project) -%>
+<% add :menu, "Studies" => related_studies_project_path(@project) -%>
+<% add :menu, "Contacts" => collaborators_project_path(@project) %>
+<% add :menu, "&nbsp;" => '' -%>
+<% add :menu, display_follow(@project, current_user, "Project") => follow_project_path(@project) -%>
+<% add :manager_option, "Request quota increase" => update_request_project_workflow_quotas_path(@project, current_user.workflow) -%>
+<% add :menu, "&nbsp;" => '' -%>
+<% add :menu, "Back to projects" => projects_path -%>
+
+<h1><%=h @project.name %></h1>
+
+<div id="template_form_body">
+  <%= render :partial => "shared/metadata/show/project", :locals => { :project => @project } %>
+
+	<table width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+      <td width="40%" class="item">
+        Approved:
+      </td>
+      <td width="40%">
+				<%=h @project.approved %>
+			</td>
+		  <td width="20%">
+			</td>
+		</tr>
+		<tr>
+      <td width="40%" class="item">
+        State:
+      </td>
+      <td width="40%">
+				<%=h @project.state %>
+			</td>
+		  <td width="20%">
+			</td>
+		</tr>
+	</table>
+
+	<% if current_user.privileged?(@project) %>
+	  <h3>Quotas</h3>
+    <%= render :partial => "projects/workflows/quotas/all", :locals => {:project => @project, :workflow => @workflow} %>
+	<% end %>
+
+</div>

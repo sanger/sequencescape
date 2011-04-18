@@ -1,0 +1,80 @@
+<% add :menu, "Create Plates" => '/pulldown/plates/new' %>
+<% add :menu, "Verify Plates" => '/pulldown/verifies' %>
+
+
+<h1>Pulldown Library Creation</h1>
+<%= will_paginate @pulldown_aliquot_plates %>
+<table id="study_list" width="100%" class="sortable" cellpadding="4" cellspacing="0">
+  <thead>
+  <tr>
+    <th><%= link_to "Aliquot Plate", "javascript:void(0);" %></th>
+    <th><%= link_to "Sonication", "javascript:void(0);" %></th>
+    <th><%= link_to "Run of Robot", "javascript:void(0);" %></th>
+    <th><%= link_to "Er1", "javascript:void(0);" %></th>
+    <th><%= link_to "Er2", "javascript:void(0);" %></th>
+    <th><%= link_to "Er3", "javascript:void(0);" %></th>
+    <th><%= link_to "Er4", "javascript:void(0);" %></th>
+    <th><%= link_to "Sequence Capture", "javascript:void(0);" %></th>
+    <th><%= link_to "PCR", "javascript:void(0);" %></th>
+    <th><%= link_to "qPCR", "javascript:void(0);" %></th>
+    <th><%= link_to "Location",      "javascript:void(0);" %></th>
+    </tr>
+  </thead>
+  <tbody>
+  <% @pulldown_aliquot_plates.each do |pulldown_aliquot_plate|  %>
+    <% aliquot_descendants = pulldown_aliquot_plate.descendants %>
+    <% sonication       = aliquot_descendants.find_by_sti_type("PulldownSonicationPlate") %>
+    <% run_of_robot     = aliquot_descendants.find_by_sti_type("PulldownRunOfRobotPlate") %>
+    <% er1              = aliquot_descendants.find_by_sti_type("PulldownEnrichmentOnePlate") %>
+    <% er2              = aliquot_descendants.find_by_sti_type("PulldownEnrichmentTwoPlate") %>
+    <% er3              = aliquot_descendants.find_by_sti_type("PulldownEnrichmentThreePlate") %>
+    <% er4              = aliquot_descendants.find_by_sti_type("PulldownEnrichmentFourPlate") %>
+    <% sequence_capture = aliquot_descendants.find_by_sti_type("PulldownSequenceCapturePlate") %>
+    <% pcr              = aliquot_descendants.find_by_sti_type("PulldownPcrPlate") %>
+    <% qpcr             = aliquot_descendants.find_by_sti_type("PulldownQpcrPlate") %>
+    <tr>
+      <td><%= link_to pulldown_aliquot_plate.sanger_human_barcode, asset_path(pulldown_aliquot_plate) %></td>
+      <td><%= sonication ? link_to(sonication.sanger_human_barcode, asset_path(sonication)) : "" %></td>
+      <td><%= run_of_robot ? link_to(run_of_robot.sanger_human_barcode, asset_path(run_of_robot)) : "" %></td>
+      <td><%= er1 ? link_to(er1.sanger_human_barcode, asset_path(er1))  : "" %></td>
+      <td><%= er2 ? link_to(er2.sanger_human_barcode, asset_path(er2))  : "" %></td>      
+      <td><%= er3 ? link_to(er3.sanger_human_barcode, asset_path(er3))  : "" %></td>      
+      <td><%= er4 ? link_to(er4.sanger_human_barcode, asset_path(er4))  : "" %></td>
+      <td><%= sequence_capture ? link_to(sequence_capture.sanger_human_barcode, asset_path(sequence_capture))  : "" %></td>
+      <td><%= pcr ? link_to(pcr.sanger_human_barcode, asset_path(pcr)) : "" %></td>
+      <td><%= qpcr ? link_to(qpcr.sanger_human_barcode, asset_path(qpcr))  : "" %></td>
+      <td>ETS</td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+<%= will_paginate @pulldown_aliquot_plates %>
+
+<h2>Latest plates created </h2>
+<table id="study_list" width="100%" class="sortable" cellpadding="4" cellspacing="0">
+  <thead>
+  <tr>
+    <th><%= link_to "Plate Type", "javascript:void(0);" %></th>
+    <th><%= link_to "Barcode", "javascript:void(0);" %></th>
+    <th><%= link_to "Created on", "javascript:void(0);" %></th>
+    <th><%= link_to "Location",      "javascript:void(0);" %></th>
+    </tr>
+  </thead>
+  <tbody>
+  <% @pulldown_plates.each do |pulldown_plate|  %>
+    <tr>
+      <td>
+        <% if pulldown_plate.plate_purpose %>
+          <%= link_to pulldown_plate.plate_purpose.name, asset_path(pulldown_plate) %>
+        <% else %>
+          <%= link_to pulldown_plate.sti_type.titleize, asset_path(pulldown_plate) %>
+        <% end %>
+      </td>
+      <td><%= link_to pulldown_plate.sanger_human_barcode, asset_path(pulldown_plate) %></td>
+      <td class="strong faint"><span style="display:none"><%= pulldown_plate.created_at %></span><%= pulldown_plate.created_at.to_formatted_s(:sortable) %></td>
+      <td>ETS</td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+

@@ -1,0 +1,43 @@
+<div id='descriptor_<%= field_number %>' class='descriptor_container'>
+<table width='100%' cellpadding='2' cellspacing='0'>
+<tr>
+  <td>Field name and key:</td>
+  <td>Type:</td>
+  <td>&nbsp;</td>
+</tr>
+<tr>
+  <td><input type='text' name="descriptor[<%= field_number %>][name]" id="descriptor[<%= field_number %>][name]" value="<%= field.name %>" size='42' /></td>
+  <td>
+    <select id='field_type_<%= field_number %>' name='descriptor[<%= field_number %>][kind]' onchange='field_change(<%= field_number %>)'>
+      <%= options_for_select([ "Text", "Number", "Barcode", "ExternalBarcode", "Selection", "File upload" ], field.kind) %>
+    </select>
+  </td>
+  <td>
+    <% link_to_remove_descriptor(field_number) do %><img src="/images/delete.png" width="16" height="16" alt="Delete"><% end %>
+  </td>
+</tr>
+<tr>
+  <td colspan='2'>
+    <div class='select' id='field_selection_<%= field_number %>' style='display: <%= field.kind == 'Selection' ? 'block' : 'none' %>;'>
+      <div id='field_options_<%= field_number %>'>
+        <% option_count = 1 %>
+        <% unless field.selection.nil? -%>
+          <% field.selection.each_value do |option| %>
+            <%= render :partial => 'option', :locals => { :field => field, :name => option, :field_number => field_number, :option_number => option_count } %>
+            <% option_count = option_count + 1 %>
+          <% end %>
+        <% else %>
+          <%= render :partial => 'option', :locals => { :field => field, :name => '', :field_number => field_number, :option_number => option_count } %>
+        <% end %>
+      </div>
+      <input type='hidden' name='option_count_<%= field_number %>' id='option_count_<%= field_number %>' value = '<%= option_count %>' />
+    </div>
+  </td>
+</tr>
+<tr>
+  <td><input type='text' name="descriptor[<%= field_number %>][key]" id="descriptor[<%= field_number %>][key]" value="<%= field.key %>" size='42' /></td>
+  <td colspan='2'><input type='checkbox' name='descriptor[<%= field_number %>][required]' <%= field.is_required? ? 'checked' : '' %>> Required</td>
+</tr>
+</table>
+<input type='hidden' name='field_active_<%= field_number %>' id='field_active_<%= field_number %>' value='0' />
+</div>

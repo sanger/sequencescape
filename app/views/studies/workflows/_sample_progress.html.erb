@@ -1,0 +1,46 @@
+<%= will_paginate @page_elements %>
+<table id="summary" width="100%" class="sortable">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Update date</th>
+      <% @request_types.each do |request_type| %>
+        <% if @total_requests[request_type] > 0 %>
+          <th><center><%= request_type.name %></center></th>
+        <% end %>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+  <% @page_elements.each do |sample| %>
+    <tr>
+      <td> <%= link_to sample.name, sample_path(sample)	  %></td>
+      <td><%= sample.updated_at.to_formatted_s(:sortable) %></td>
+      <% @request_types.each do |request_type| %>
+        <% if @total_requests[request_type] > 0 %>
+          <% sample_request_size = @total_sample_request[sample.id][request_type]  %>
+          <% if sample_request_size == 0 %>
+            <td></td>
+          <% elsif sample_request_size > 1 && (progress = completed(sample, request_type, @cache)) > 0%>
+            <td><%= progress_bar(progress) %></td>
+          <% else %>
+            <% first_rt = sample.requests.request_type(request_type).first %>
+            <% if first_rt && first_rt.passed? %>
+              <td><center><span style="display:none">passed</span><%= image_tag "accept.png" %></center></td>
+            <% elsif first_rt && first_rt.started?  %>
+              <td><center><span style="display:none">started</span><%= image_tag "cog.png" %></center></td>
+            <% elsif first_rt && first_rt.pending?  %>
+              <td><center><span style="display:none">pending</span><%= image_tag "hourglass.png" %></center></td>
+            <% elsif first_rt && first_rt.failed?  %>
+              <td><center><span style="display:none">failed</span><%= image_tag "delete.png" %></center></td>
+            <% else %>
+              <td></td>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+<%= will_paginate @page_elements %>

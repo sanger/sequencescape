@@ -1,0 +1,6 @@
+<% form_tag(lookup_gels_url, :method => :post) do %>
+  Find gel plate <%= text_field_tag :barcode %>
+  <br /><br />
+  <%= submit_tag 'Update gel values' %>
+
+<% end %>

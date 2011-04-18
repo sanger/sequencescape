@@ -1,0 +1,2 @@
+class CherrypickingPipeline < GenotypingPipeline
+end

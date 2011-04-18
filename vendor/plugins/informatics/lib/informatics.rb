@@ -1,0 +1,2 @@
+module Informatics
+end

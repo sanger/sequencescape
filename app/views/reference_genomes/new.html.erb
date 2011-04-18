@@ -1,0 +1,15 @@
+<h1>New reference genome</h1>
+
+<% form_for(@reference_genome) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.submit 'Create' %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', reference_genomes_path %>

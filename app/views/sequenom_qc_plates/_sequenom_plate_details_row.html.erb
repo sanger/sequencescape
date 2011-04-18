@@ -1,0 +1,25 @@
+<% plate.source_plates.each_with_index do |source_plate, index| %>
+  <% next if source_plate.nil? %>
+<tr <%= plate_index.even? ? 'class="roweven"' : '' %> >
+  <td><%= link_to plate.sanger_human_barcode, show_plate_asset_path(source_plate) %></td>
+  <td><%= plate.name %></td>
+  <td class="strong faint"><%= plate.created_at.to_s(:sortable) %></td>
+  <td><%= index + 1 %></td>
+  <td><%= link_to source_plate.barcode, show_plate_asset_path(source_plate) %></td>
+  <td><%= source_plate.number_of_blank_samples %></td>
+  <td>
+      <% if source_plate.study %>
+        <%= link_to source_plate.study.name, study_path(source_plate.study) %>
+      <% end %>
+  </td>
+  <td>
+      <%= source_plate.plate_purpose.try(:name) || "&nbsp;" %>
+  </td>
+  <td>
+    <% well = source_plate.find_well_by_name("A1") %>
+    <% if well.try(:sample) %>
+      <%= link_to well.sample.name, asset_path(well) %>
+    <% end %>
+  </td>
+</tr>
+<% end %>

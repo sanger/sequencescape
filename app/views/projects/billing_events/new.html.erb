@@ -1,0 +1,39 @@
+<h1>Enter a new billing event manually for <%= @project.name %></h1>
+
+<% form_for @billing_event, :url => project_billing_events_path(@project) do |f| -%>
+  <%= f.error_messages %>
+  <table>
+    <tr>
+      <th><%= f.label :kind %></th>
+      <td><%= f.select :kind, ["charge", "refund", "charge internally"] %></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th><%= f.label :reference %></th>
+      <td><%= f.text_field :reference %></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th><%= f.label :description %></th>
+      <td><%= f.text_field :description %></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th><%= f.label :quantity %></th>
+      <td><%= f.text_field :quantity %></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th><%= f.label :entry_date %></th>
+      <td><%= f.date_select :entry_date %></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th><%= f.label :created_by %></th>
+      <td><%= f.text_field :created_by %></td>
+      <td></td>
+    </tr>
+  </table>
+
+  <%= submit_tag %>
+<% end -%>

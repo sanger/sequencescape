@@ -1,0 +1,16 @@
+Hello,
+
+<p>The following activity has been recorded for <strong><%= @eventful.name %></strong></p>
+<p><%= @eventful.class %> <%= @eventful.id %>: <%= @message %></p>
+
+<pre><%= @content %></pre>
+
+<p>
+You can manage this project here:<br />
+
+<% link = project_url(@eventful, :host => configatron.site_url) %>
+<%= link_to link, link %>
+</p>
+
+<p>Many thanks,<br />
+<em>Sequencescape</em></p>

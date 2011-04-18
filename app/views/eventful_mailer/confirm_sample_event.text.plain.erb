@@ -1,0 +1,13 @@
+Hello,
+
+The following activity has been recorded for <%= @eventful.name %>.
+
+<%= @eventful.class %> <%= @eventful.id %>: <%= @message %>
+
+<%= @content %>
+
+You can view this sample here:
+<%= url_for(:host => configatron.site_url, :controller => 'samples', :action => 'show', :id => @eventful.id) %>
+
+Many thanks,
+Sequencescape

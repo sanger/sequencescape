@@ -1,0 +1,2 @@
+module BarcodePrintersHelper
+end

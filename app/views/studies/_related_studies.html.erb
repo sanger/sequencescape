@@ -1,0 +1,22 @@
+<table width='100%' class='sortable'>
+  <thead>
+    <tr>
+      <th width='20%'>Relationship type</th>
+      <th width='60%'>Study</th>
+      <th width='20%'>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @relations.each do |r_study, r_name| %>
+      <tr>
+        <td><%=r_name %></td>
+        <td><%= link_to "#{(r_study.name or "").titleize}", study_url(r_study) %></td>
+        <td>
+          <% if current_user.is_manager?(@study) | current_user.is_manager?(@r_study) %>
+          <%= button_to "Remove", unrelate_study_study_path(:id => @study, :related_study => {:relation_type => r_name, :study_id => r_study.id }) %>
+        <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+ </table>

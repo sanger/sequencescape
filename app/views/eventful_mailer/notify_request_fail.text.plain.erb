@@ -1,0 +1,15 @@
+Hello,
+
+This is to let you know that Sequencescape has just failed one of your requests:
+
+Item: <%= @item.name %>, Request ID: <%= @request.id %> (<%= @request.request_type.name %>).
+
+The reason for failure is: <%= @message %>
+
+You can view the request details here:
+
+<%= url_for(:host => configatron.site_url, :controller => 'requests', :action => 'show', :id => @request.id) %>
+
+
+Many thanks,
+Sequencescape

@@ -1,0 +1,4 @@
+<br />
+<%= label_tag('action_on_requests', 'Action to perform', :style => 'display:none;') %>
+<%= select_tag("action_on_requests", options_for_select([["Create Batch","create_batch"], ["Hide from Inbox","hide_from_inbox"]])) %>
+<%= submit_tag "Submit" %>

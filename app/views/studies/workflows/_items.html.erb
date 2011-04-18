@@ -1,0 +1,28 @@
+<div id="navi" class="yui-navset">
+  <ul class="yui-nav">
+    <% @summaries.each_with_index do |description, index| %>
+    <li class="<%= summary.to_i == index ? 'selected' : '' %>"><%= link_to "<em>#{description}</em>", study_workflow_path(@study,@workflow, {:summary => index}), :class => (summary.to_i == index ? 'selected' : '') %></li>
+    <% end %>
+  </ul>
+  <div class="yui-content">
+    <%= loading_bar %>
+    <div id="remote_error" style="display:none">An error has occured and the results can not be shown at the moment</div>
+    <div id="everything">
+    <script>
+    Event.observe(window, 'load', function() {
+      <%= remote_function(:url => show_summary_study_workflow_path(@study, @workflow, { :summary => summary}.merge(@extra_params)),
+        :update => {:success => "everything"},
+        :method => :get,
+        :loading => "Element.show('loading')",
+        :success => "TableKit.load();
+          TableKit.heads['summary'] = null;
+          TableKit.rows['summary'] = null;
+          TableKit.Sortable.init('summary');
+          Element.highlight('summary');",
+        :failure => "Element.show('remote_error');",
+        :complete => "Element.hide('loading');") %>
+    });
+    </script>
+    </div>
+  </div>
+</div>

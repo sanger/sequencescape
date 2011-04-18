@@ -1,0 +1,74 @@
+<%- add :title, I18n.t("studies.about") %>
+<% add :menu, "<strong>Register samples</strong>" => study_sample_registration_index_path(@study) %>
+<% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(@study) -%>
+
+<div id='content-links'>
+ <%= link_to "Full details", properties_study_path(@study) -%>
+</div>
+
+<h1><%= @study.name %></h1>
+<div class='subtitle'>
+  Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(:long) %> &middot; <%= @study.state.capitalize %>
+</div>
+
+<br />
+
+<h1>Platforms</h1>
+
+<div class='quota'>
+  <table width='100%' cellpadding='3'>
+    <thead>
+      <tr>
+        <th>Platform</th>
+        <th>Submissions</th>
+      </tr>
+    </thead>
+    <% @workflows.each do |workflow| %>
+    <tr>
+      <td class='strong'><%= link_to workflow.name, study_workflow_path(@study, workflow) %></td>
+      <td><%= @study.submissions.select { |s| s.workflow == workflow }.size %></td>
+    </tr>
+    <% end %>
+
+  </table>
+</div>
+<br />
+<br />
+<div class='setup'>
+  <table width='100%'>
+
+    <tr>
+      <td class='setup_item'>
+        This study is <%= @study.study_status %> for processing.
+      </td>
+      <td class='setup_item'>
+      <% if current_user.manager_or_administrator? %>
+        <%= link_to status_link_title, study_status_study_path(@study), :method => :get %>
+      <% end %>
+      </td>
+    </tr>
+  </table>
+
+  <div id="template_form_body">
+    <% unless @study.nil? -%>
+      <%= render :partial => "shared/properties", :locals => { :item => @study } %>
+    <% end -%>
+  </div>
+</div>
+<br />
+<br />
+<div class='setup'>
+  <table width='100%'>
+
+    <tr>
+      <td class='setup_item'>
+        This study is <%= @study.study_status %> for processing.
+      </td>
+      <td class='setup_item'>
+      <% if current_user.manager_or_administrator? %>
+        <%= link_to status_link_title, study_status_study_path(@study), :method => :get %>
+      <% end %>
+      </td>
+    </tr>
+  </table>
+</div>

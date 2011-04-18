@@ -1,0 +1,36 @@
+<% add :title, I18n.t("studies.about") -%>
+<% add :admin_option, "Administer studies" => index_studies_path -%>
+<% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(@study) -%>
+
+<div id="content-links">
+  <%= link_to "Full details", properties_study_path(@study) %>
+</div>
+
+<h1>Study Name: <%= @study.name -%></h1>
+
+<p>This page shows the history of this study in chronological order.</p>
+
+<div class='info'>
+  <% if @study.events.blank? -%>
+    No events registered for this study.
+  <% else -%>
+    <table width='100%' cellspacing="0" cellpadding="4">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Event</th>
+          <th>User</th>
+          </tr>
+      </thead>
+      <tbody>
+      <% @events.each do |event| -%>
+      <tr class="<%= cycle("rowodd", "roweven") %>">
+        <td><%= event.created_at.to_formatted_s(:day_full_with_time) %></td>
+        <td><%= event.message %></td>
+        <td><%= event.created_by %></td>
+      </tr>
+      <% end -%>
+      </tbody>
+    </table>
+  <% end -%>
+</div>

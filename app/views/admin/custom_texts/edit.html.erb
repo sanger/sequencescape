@@ -1,0 +1,12 @@
+<% add :title, "Edit a custom text" -%>
+
+<h1>EDIT CUSTOM TEXT</h1>
+
+<p>To edit the custom text, complete the form below. Required fields are marked with <%= required_marker %>.</p>
+
+<div id="custom_text">
+  <% form_for :custom_text, :url => custom_text_path(@custom_text), :html => {:method => :put} do |form| -%>
+    <%= render :partial => "edit_custom_text", :locals => { :read_only => false, :form => form, :custom_text => @custom_text } -%>
+  <% end -%>
+</div>
+<%#= debug @custom_text %>

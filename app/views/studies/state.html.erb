@@ -1,0 +1,28 @@
+<% add :title, "This page details the current state of a study." -%>
+
+<h1><%= link_to @study.name, study_path(@study) %></h1>
+<div class='subtitle'>
+  Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(:long) %>
+</div>
+
+<div style="text-align:center">
+  <% if @study.active? -%>
+  <div class='help'>
+    <h2>Important notice</h2>
+      <strong>Deactivating</strong> this study will cancel all requests within it.<br/>
+      There is no means of returning the study to its previous state once it has been deactivated.<br/>
+      Are you sure you want to continue?
+  </div>
+  <% end %>
+
+  <h2>This study is <%= study_state(@study.state) %></h2>
+  <h3>
+    <% if current_user.privileged?() -%>
+      <% if @study.active? -%>
+        <%= link_to 'Click here to Deactivate', close_study_path(@study) -%>
+      <% else -%>
+        <%= link_to 'Click here to Activate', open_study_path(@study) -%>
+      <% end -%>
+    <% end -%>
+  </h3>
+</div>

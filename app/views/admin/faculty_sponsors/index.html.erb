@@ -1,0 +1,25 @@
+<h1>Listing All Faculty Sponsors</h1>
+<table id="faculty_sponsor_list" width="100%" class="sortable" cellpadding="3" cellspacing="0">
+  <thead>
+    <tr>
+      <th><%= link_to "Name", "javascript:void(0);" %></th>
+      <th><%= link_to "Number of Studies", "javascript:void(0);" %></th>
+      <th>Edit</th>
+      <th>Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% for faculty_sponsor in @faculty_sponsors %>
+    <tr>
+      <td><%= link_to faculty_sponsor.name, faculty_sponsor_path(faculty_sponsor), :title => "View #{faculty_sponsor.name}" %></td>
+      <td><%= faculty_sponsor.count_studies %></td>
+      <td><%= link_to 'Edit', edit_faculty_sponsor_path(faculty_sponsor), :title => "Edit #{faculty_sponsor.name}" %></td>
+      <td><%= link_to 'Delete', faculty_sponsor, :title => "Delete #{faculty_sponsor.name}", :confirm => 'Are you sure?', :method => :delete %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<br />
+
+<%= link_to 'New Faculty Sponsor', new_faculty_sponsor_path %>

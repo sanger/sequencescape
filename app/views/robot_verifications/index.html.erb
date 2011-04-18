@@ -1,0 +1,36 @@
+<% add :menu, "Sample Logistics homepage" => lab_sample_logistics_path %>
+<% form_for :robot_verifications, :url => {:action => "submission"} do |f| %> 
+<h2>Step 1 of 3: Scan robot and worksheet
+</h2>
+
+<table >
+  <thead>
+   <tr>
+     <th></th>
+     <th>Scanned barcodes</th>
+   </tr>
+  </thead>
+<tbody>
+  <tr>
+     <td><label for="barcodes_user_barcode">Scan user ID</label></td>
+     <td><%= text_field :barcodes, "user_barcode", :onkeypress => "return disable_cr_and_change_focus(event,'barcodes_user_barcode','barcodes_robot_barcode')" %></td>
+  </tr>
+  <tr>
+     <td><label for="barcodes_robot_barcode">Scan Tecan robot</label></td>
+     <td><%= text_field :barcodes, "robot_barcode", :onkeypress => "return disable_cr_and_change_focus(event,'barcodes_robot_barcode','barcodes_batch_barcode')" %></td>
+  </tr>
+  <tr>
+     <td><label for="barcodes_batch_barcode">Scan worksheet</label></td>
+     <td><%= text_field :barcodes, "batch_barcode", :onkeypress => "return disable_cr_and_change_focus(event,'barcodes_batch_barcode','barcodes_destination_plate_barcode')" %></td>
+  </tr>
+  <tr>
+     <td><label for="barcodes_destination_plate_barcode">Scan destination plate</label></td>
+     <td><%= text_field :barcodes, "destination_plate_barcode" %></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td><%= submit_tag "Check" %></td>
+  </tr>
+</tbody>
+</table>
+<% end %>

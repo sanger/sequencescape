@@ -1,0 +1,22 @@
+<% add :title, "Pipelines" %>
+<% add :admin_option, "Edit pipeline" => edit_pipeline_url(@pipeline) %>
+<% add :menu, "Make training batch" => url_for(:action => "training_batch", :id => @pipeline.id) %>
+<% add :menu, "View all pipeline batches" => url_for(:action => "batches", :id => @pipeline.id) %>
+<% if @pipeline.multiplexed? %>
+  <% add :menu, "Create plate and batch" => url_for(:controller => :assets, :action => :get_plate_layout, :pipeline_id => @pipeline.id) %>
+<% end %>
+
+<% add :back_menu, "Back to all pipelines" => pipelines_url %>
+
+<h1>PIPELINE: <%= @pipeline.name %></h1>
+<div class="info">
+  Use the tabs to view batches for this pipeline with different statuses
+</div>
+
+<%= render :partial => @pipeline.inbox_partial, :locals => { :pipeline => @pipeline } %>
+
+<script>
+Event.observe(window, 'load', function() {
+  Inbox.setup_dynamic_interface();
+});
+</script>

@@ -1,0 +1,18 @@
+<% add :title, "Samples must be registered with a study before requests can be made." -%>
+
+<h1>Edit <%= @sample.name %></h1>
+
+<div class='help'>
+  <h2>Important notice</h2>
+    Sample names need to be unique and can only contain letters and numbers.<br />
+    Characters like spaces, underscores and hyphens are not allowed.<br />
+    For any help editing or creating new samples, please email <%= help_email_link %>
+</div>
+<div class="info">
+Edit your sample. Required fields are marked with <%= required_marker %>.
+</div>
+<div id="study">
+  <% form_for :sample, :url => sample_path(@sample), :html => {:method => :put} do |form| -%>
+    <%= render :partial => "sample", :locals => { :read_only => false, :creation => false, :form => form } %>
+  <% end -%>
+</div>

@@ -1,0 +1,13 @@
+<p>Hello,</p>
+
+<p>This is to let you know that Sequencescape has just failed an attempt for request <%= @request.id %>.
+</p>
+<p>You can view the request details here:<br />
+
+<% link = url_for(:host => configatron.site_url, :controller => 'requests', :action => 'show', :id => @request.id) %>
+<a href="<%= link %>"><%= link %></a></p>
+
+<p>Many thanks,<br />
+<em>Sequencescape</em></p>
+
+

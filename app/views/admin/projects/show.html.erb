@@ -1,0 +1,12 @@
+<% add :title, "Sequencing projects can be edited, approved and managed from here." %>
+<% add :menu, "View all projects" => projects_path %>
+<% add :menu, "Billing history" => project_billing_events_path(@project) %>
+<% add :back_menu, I18n.t("navigation.menu.back_to_project") => project_path(@project) -%>
+
+<h1>Manage project: <%= @project.name %></h1>
+
+<%= tabulated_error_messages_for "project" -%>
+
+<p>You can update the quotas, billing information and approval status for a project here.</p>
+
+<%= render :partial => "manage_single_project", :locals => { :request_types => @request_types } %>

@@ -1,0 +1,30 @@
+<h2>Plate <%= index+1 %></h2>
+<%= hidden_field_tag 'rows', plate_rows %>
+<%= hidden_field_tag 'columns', plate_cols %>
+<%= hidden_field_tag 'plate_size', plate_cols*plate_rows %>
+<% unless @plate.nil?-%><%= hidden_field_tag 'plate_barcode', @plate.barcode %><% end -%>
+
+<table id="plate_<%=index+1-%>" class="plate" width="100%">
+  <thead>
+    <% (plate_cols+1).times do |i| %>
+    <th><%= i %></th>
+    <% end %>
+  </thead>
+  <% plate_rows.times do |row| %>
+    <tr id="plate[<%= index %>][<%= row %>]">
+      <% (plate_cols+1).times do |col| %>
+        <% if col==0 %>
+          <td class='border' width='2%'><%= (65+row).chr %></td>
+        <% else %>
+          <% current_well = plate[(col-1)*plate_rows + row]  %>
+          
+          <% if current_well[0] == 0 -%>
+            <td class="empty"><%= current_well[1] %></td>
+          <% else -%>
+            <td id="<%= current_well[0] %>" class="<%= plate_class[current_well[1]] %>" ><%= current_well[1] %><br /><%= current_well[2] %></td>
+          <% end -%>
+        <% end %>
+      <% end %>
+    </tr>
+  <% end %>
+</table>

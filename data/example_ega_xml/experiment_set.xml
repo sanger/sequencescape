@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EXPERIMENT_SET>
+ <EXPERIMENT alias="egaTest-Experiment7">
+   <TITLE>experiment made with the sample fluke.assay1</TITLE>
+   <STUDY_REF refname="egaTest-Study7"/>
+   <DESIGN>
+     <DESIGN_DESCRIPTION>See study and sample descriptions for details</DESIGN_DESCRIPTION>
+     <SAMPLE_DESCRIPTOR refname="egaTest-Sample7"/>
+     <LIBRARY_DESCRIPTOR>
+       <LIBRARY_NAME>test SRA lib</LIBRARY_NAME>
+       <LIBRARY_STRATEGY>OTHER</LIBRARY_STRATEGY>
+       <LIBRARY_SOURCE>NON GENOMIC</LIBRARY_SOURCE>
+       <LIBRARY_SELECTION>cDNA</LIBRARY_SELECTION>
+       <LIBRARY_LAYOUT>
+         <PAIRED NOMINAL_LENGTH="280" NOMINAL_SDEV="0" ORIENTATION="foo-orientation"/>
+       </LIBRARY_LAYOUT>
+       <LIBRARY_CONSTRUCTION_PROTOCOL>Info</LIBRARY_CONSTRUCTION_PROTOCOL>
+     </LIBRARY_DESCRIPTOR>
+     <SPOT_DESCRIPTOR>
+       <SPOT_DECODE_SPEC>
+         <NUMBER_OF_READS_PER_SPOT>3</NUMBER_OF_READS_PER_SPOT>
+         <READ_SPEC>
+           <READ_INDEX>0</READ_INDEX>
+           <READ_CLASS>Application Read</READ_CLASS>
+           <READ_TYPE>Forward</READ_TYPE>
+           <BASE_COORD>10</BASE_COORD>
+         </READ_SPEC>
+         <READ_SPEC>
+           <READ_INDEX>1</READ_INDEX>
+           <READ_CLASS>Application Read</READ_CLASS>
+           <READ_TYPE>BarCode</READ_TYPE>
+           <BASE_COORD>10</BASE_COORD>
+         </READ_SPEC>
+       </SPOT_DECODE_SPEC>
+     </SPOT_DESCRIPTOR>
+   </DESIGN>
+   <PLATFORM>
+     <LS454>
+       <INSTRUMENT_MODEL>454 GS FLX</INSTRUMENT_MODEL>
+       <FLOW_SEQUENCE>2</FLOW_SEQUENCE>
+       <FLOW_COUNT>1</FLOW_COUNT>
+     </LS454>
+   </PLATFORM>
+   <PROCESSING>
+     <BASE_CALLS>
+       <SEQUENCE_SPACE>Base Space</SEQUENCE_SPACE>
+       <BASE_CALLER>454 Basecaller</BASE_CALLER>
+     </BASE_CALLS>
+     <QUALITY_SCORES qtype="phred">
+       <QUALITY_SCORER>454 Basecaller</QUALITY_SCORER>
+       <NUMBER_OF_LEVELS>1</NUMBER_OF_LEVELS>
+       <MULTIPLIER>1.5</MULTIPLIER>
+     </QUALITY_SCORES>
+     <QUALITY_SCORES>
+       <QUALITY_SCORER>454 Basecaller</QUALITY_SCORER>
+       <NUMBER_OF_LEVELS>2</NUMBER_OF_LEVELS>
+       <MULTIPLIER>2.2</MULTIPLIER>
+     </QUALITY_SCORES>
+   </PROCESSING>
+ </EXPERIMENT>
+</EXPERIMENT_SET>

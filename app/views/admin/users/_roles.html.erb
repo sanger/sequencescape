@@ -1,0 +1,25 @@
+<table width="100%" cellspacing="0" cellpadding="4" id="roles_table">
+  <thead>
+    <tr>
+      <th class="label" width="10%">Role</th>
+      <th class="label" width="10%">ID</th>
+      <th class="label" width="20%">Type</th>
+      <th class="label" width="40%">Name</th>
+      <th class="label" width="10%">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% @users_roles.each do |role| -%>
+    <tr class="<%= cycle('rowodd', 'roweven') -%>">
+      <td><%= link_to role.name.humanize, role_path(role) %></td>
+      <% unless role.authorizable.nil? || role.authorizable.name == "Study" -%>
+        <td><%= link_to "#{role.authorizable_id}", study_path(role.authorizable_id) -%></td>
+        <td><%= link_to "#{role.authorizable_type}", study_path(role.authorizable_id) -%></td>
+        <td><%= link_to "#{role.authorizable.name}", study_path(role.authorizable_id) %></td>
+        <td><%= button_to_remote "Remove", :url => remove_user_role_user_path(:id => @user, :role => {:authorizable_id => role.authorizable_id, :authorizable_type => role.name}), :update => "role_list" %></td>
+      <% else -%>
+        <td colspan="4"><%= role.authorizable_type %></td>
+      <% end -%>
+    </tr>
+  <% end -%>
+</table>

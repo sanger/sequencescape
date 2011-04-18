@@ -1,0 +1,46 @@
+<% add :menu, "Sample Logistics homepage" => lab_sample_logistics_path %>
+  <h1>Create Sequenom Plate</h1>
+<%# This form uses tag helpers rather than form helpers because %>
+<%# we're using some non-database backed attributes in our model %>
+<% form_tag(sequenom_qc_plates_path) do %>
+  
+  <fieldset>
+    <legend>User</legend>
+    <%= label_tag :user_barcode, "User barcode" %>
+    <%= text_field_tag "user_barcode", '', :onkeypress => "return disable_cr_and_change_focus(event,'user_barcode','input_plate_names_1')" %>
+    <br />
+  </fieldset>
+  
+  <fieldset>
+    <legend>Input Plate Barcodes</legend>
+
+    <table border="0" cellspacing="5" cellpadding="5">
+      <%- @input_plate_names.each do |plate_number,plate_name| -%>
+        <%= "<tr>" if plate_number % 2 ==  1 %>
+          <td>
+            <%= label_tag "input_plate_names[#{plate_number}]", "Plate #{plate_number}" %>
+            <%= text_field_tag "input_plate_names[#{plate_number}]", plate_name, :onkeypress => "return disable_cr_and_change_focus(event,'input_plate_names_#{plate_number}','input_plate_names_#{((plate_number)%4 +1)}')" %>
+          </td>
+        <%= "</tr>" if plate_number % 2 ==  0 %>
+      <%- end -%>
+    </table>
+
+    <%= label_tag :plate_prefix, "Plate Type"%>
+    <%= select_tag("plate_prefix", options_for_select(["QC","Replication"])) %>
+    <br />
+    <%- if current_user.slf_manager? || current_user.manager_or_administrator? -%>
+    <%= label_tag :gender_check_bypass, "Bypass Source Plate Gender Checks?" %>
+    <%= check_box_tag :gender_check_bypass %>
+    <%- end -%>
+  </fieldset>
+  
+  <fieldset id="barcode_printing">
+    <legend>Labels</legend>
+    <%= label_tag :barcode_printer_id, "Barcode Printer"%>
+    <%= collection_select :barcode_printer, :id, @barcode_printers, :id, :name %><br />
+    <%= label_tag :number_of_barcodes, "Number of Plates"%>
+    <%= text_field_tag "number_of_barcodes", "2" %>
+  </fieldset>
+  
+  <%= submit_tag "Create new Plate" %>
+<% end -%>

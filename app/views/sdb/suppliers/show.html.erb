@@ -1,0 +1,39 @@
+<% add :menu, "SDB Home" => '/sdb/' %>
+<% add :menu, "Sample Manifests" => sample_manifests_supplier_path(@supplier) %>
+
+<p>
+  <strong>Name:</strong>
+  <%=h @supplier.name %>
+</p>
+<p>
+  <strong>Address:</strong>
+  <%=h @supplier.address %>
+</p>
+<p>
+  <strong>Contact Name:</strong>
+  <%=h @supplier.contact_name %>
+</p>
+<p>
+  <strong>Email:</strong>
+  <%=h @supplier.email %>
+</p>
+<p>
+  <strong>Phone Number:</strong>
+  <%=h @supplier.phone_number %>
+</p>
+<p>
+  <strong>Fax Number:</strong>
+  <%=h @supplier.fax %>
+</p>
+
+<p>
+  <strong>Website:</strong>
+  <%= link_to @supplier.url, @supplier.url %>
+</p>
+<p>
+  <strong>Supplier Abbreviation:</strong>
+  <%=h @supplier.abbreviation %>
+</p>
+
+<%= link_to 'Edit', edit_supplier_path(@supplier) %> |
+<%= link_to 'Back', suppliers_path %>

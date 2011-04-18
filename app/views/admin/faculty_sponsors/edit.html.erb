@@ -1,0 +1,16 @@
+<h1>Editing Faculty Sponsor</h1>
+
+<% form_for(@faculty_sponsor) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @faculty_sponsor %> |
+<%= link_to 'Back', faculty_sponsors_path %>

@@ -1,0 +1,113 @@
+<h1>New request for <%= @asset.label %> "<%= @asset.name %>"</h1>
+
+<% form_for(@asset, :url => create_request_asset_url(@asset), :html => {:method => :post}) do |f| %>
+  <%= f.error_messages %>
+
+  <div id="details">
+    <table width="100%" cellspacing="0" cellpadding="0">
+      <% instance_variable_or_id_param(:request_type) do |field_name, value| %>
+        <tr>
+          <td class="item" width="40%"><%= label_tag(field_name, 'Request type') %>:</td>
+          <td><%= select_field_sorted_by_name(field_name, @request_types, value) %></td>
+          <td class="help_field"></td>
+        </tr>
+      <% end %>
+      <% instance_variable_or_id_param(:study) do |field_name, value| %>
+        <tr>
+          <td class="item" width="40%"><%= label_tag(field_name, 'Study') %>:</td>
+          <td><%= select_field_sorted_by_name(field_name, current_user_studies_from(@asset), value) %></td>
+          <td class="help_field"></td>
+        </tr>
+      <% end %>
+      <% instance_variable_or_id_param(:project) do |field_name, value| %>
+        <tr>
+          <td class="item" width="40%"><%= label_tag(field_name, 'Project') %>:</td>
+          <td><%= select_field_sorted_by_name(field_name, Project, value) %></td>
+          <td class="help_field"></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+  
+  <h3>Number of copies</h3>
+  
+  <div id="property_group_ENAAN">
+    <table width="100%" cellspacing="0" cellpadding="0">
+      <tr>
+        <td class="item" width="40%"><%= label_tag(:count, 'Number of requests to generate') %>:</td>
+        <td><%= text_field_tag :count, 1, {:size => 3 } %></td>
+        <td class="help_field"></td>
+      </tr>
+    </table>
+  </div>
+  
+  <div id="study">
+    
+    <h3>Properties</h3>
+    <table width="100%" cellspacing="0" cellpadding="0">
+      <% if @request.present? %>
+        <tr>
+          <%= tabulated_error_messages_for "request" %>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <%= render :partial => 'shared/metadata/edit/request', :locals => { :request => @request } %>
+          </td>
+        </tr>
+      <% else %>
+        <% @request_types.each do |request_type| %>
+          <tr id="request_type_options_for_<%= request_type.id %>" class="request_options">
+            <td colspan="2">
+              <%= render :partial => 'shared/metadata/edit/request', :locals => { :request => request_type.new_request(:request_metadata_attributes => @asset.created_with_request_options) } %>
+            </td>
+          </tr>
+        <% end %>
+      <% end %>
+    </table>
+    
+    <table width="100%" cellspacing="0" cellpadding="0">
+      <tr>
+        <td class="item" width="40%"><%= label_tag(:comments, 'Comments') %>:</td>
+        <td><%= text_area_tag :comments,nil, :rows => 10, :cols => 40%></td>
+        <td class="help_field"></td>
+      </tr>
+    </table>
+    
+    <table width="100%" cellspacing="0" cellpadding="0">
+      <tr>
+        <td class="item" width="40%"><%= f.submit "Create" %></td>
+        <td>or <%= link_to 'Back', asset_url(@asset) %></td>
+        <td class="help_field"></td>
+      </tr>
+    </table>
+  </div>
+<% end %>
+
+<script type="text/javascript">
+  /*
+   * Hook into the 'Request type' select dropdown so that if the value is changed the correct fields
+   * are displayed.
+   */
+  (function($, undefined) {
+    $(function() {
+      request_type_element   = $('#request_type_id');
+      request_options        = $('.request_options');
+
+      // Can't use ':input' selector as it ignores disabled inputs!
+      disable_inputs = function(context) { $('input,select,textarea', context).attr('disabled', true);  }
+      enable_inputs  = function(context) { $('input,select,textarea', context).attr('disabled', false); }
+
+      handler = function() {
+        selected_request_type_id = $('option:selected', request_type_element).attr('value');
+
+        // Not only hide but disable inputs; not only show, but enable inputs.  If this isn't done
+        // the parameters passed to the server are incorrect.
+        disable_inputs(request_options.hide());
+        enable_inputs($('#request_type_options_for_' + selected_request_type_id).show());
+      }
+
+      request_type_element.change(handler);
+      handler();
+    });
+  })(jQuery);
+</script>

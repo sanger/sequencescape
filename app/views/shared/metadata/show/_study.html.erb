@@ -1,0 +1,54 @@
+<%# NOTE[xxx]: Kind of a hack because we're not actually building a form %>
+<% fields_for(study) do |form| %>
+  <% form.fields_for(:study_metadata, :builder => Metadata::ViewBuilder) do |metadata_fields| %>
+    <%= metadata_fields.association_attribute(:faculty_sponsor, :name, :grouping => 'Specification') %>
+
+    <% metadata_fields.with_options(:grouping => 'ENA requirement') do |group| %>
+      <%= group.plain_value(:study_study_title) %>
+      <%= group.association_attribute(:study_type, :name) %>
+      <%= group.plain_value(:study_description) %>
+      <%= group.plain_value(:study_abstract) %>
+      <%= group.plain_value(:study_sra_hold) %>
+    <% end %>
+
+    <%= metadata_fields.plain_value(:contains_human_dna) %>
+    <%= metadata_fields.plain_value(:contaminated_human_dna) %>
+    <%= metadata_fields.plain_value(:commercially_available) %>
+
+    <%= metadata_fields.plain_value(:study_project_id, :grouping => 'SRA') %>
+    <%= metadata_fields.plain_value(:study_ebi_accession_number, :grouping => 'SRA AN') %>
+    <%= metadata_fields.plain_value(:ega_dac_accession_number) %>
+    <%= metadata_fields.plain_value(:ega_policy_accession_number) %>
+    <%= metadata_fields.plain_value(:array_express_accession_number) %>
+    <%= metadata_fields.plain_value(:study_name_abbreviation) %>
+
+    <% metadata_fields.with_options(:grouping => 'Data Release') do |group| %>
+      <%= group.association_attribute(:data_release_study_type, :name) %>  
+      <%= group.plain_value(:data_release_strategy) %>
+      <% if study.study_metadata.managed? %>
+        <%= group.plain_value(:data_release_standard_agreement) %>
+        <% if study.study_metadata.non_standard_agreement? %>
+          <%= group.file(:data_release_non_standard_agreement) %>
+        <% end %>
+      <% end %>
+
+      <%= group.plain_value(:data_release_timing) %>
+      <% if study.study_metadata.delayed_release? %>
+        <%= group.plain_value(:data_release_delay_reason) %>
+        <% if study.study_metadata.delayed_for_other_reasons? %>
+          <%= group.plain_value(:data_release_delay_other_comment) %>
+          <%= group.plain_value(:data_release_delay_period) %>
+          <% if study.study_metadata.delayed_for_long_time? %>
+            <%= group.plain_value(:data_release_delay_approval) %>
+            <%= group.plain_value(:data_release_delay_reason_comment) %>
+          <% end %>
+        <% end %>
+      <% elsif study.study_metadata.never_release? %>
+        <%= group.plain_value(:data_release_prevention_reason) %>
+        <%= group.plain_value(:data_release_prevention_approval) %>
+        <%= group.plain_value(:data_release_prevention_reason_comment) %>
+      <% end %>
+      <%= metadata_fields.plain_value(:dac_policy) %>
+    <% end %>
+  <% end %>
+<% end %>

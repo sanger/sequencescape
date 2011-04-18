@@ -1,0 +1,22 @@
+<table width="100%" cellspacing="0" cellpadding="0" class="property_group_<%= group.blank? ? 'general' : group %>">
+  <tr>
+    <td width="40%" class="item">
+      <span class="property_edit_info"><%= h(sections.edit_info) %></span>
+      <%= form.label("#{ field_name }_attributes_uploaded_data", sections.label, sections.label_options) %>:
+    </td>
+    <td width="40%">
+      <% unless value.nil? or value.new_record? %>
+        <p>
+          <%= display_file_icon(value) %>
+          <%= link_to(h(value.filename), document_path(value)) %>
+        </p>
+        New file:
+      <% end %>
+
+      <%= field %>
+    </td>
+    <td class="help_field">
+      <% help_text do %><%= sections.help %><% end %>
+    </td>
+  </tr>
+</table>

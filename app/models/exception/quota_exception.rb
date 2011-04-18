@@ -1,0 +1,2 @@
+class QuotaException < Exception
+end

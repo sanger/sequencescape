@@ -1,0 +1,7 @@
+<% add :menu, "Create manifest for plates" => new_sample_manifest_path({:type => "plate"}) %>
+<% add :menu, "Create manifest for 1D tubes" => new_sample_manifest_path({:type => "1dtube"}) %>
+
+<h2>Sample Manifests for <%= @study.name %></h2>
+<%= will_paginate @sample_manifests %>
+<%= render :partial => 'shared/manifests', :locals => { :manifests => @sample_manifests, :show_uploaded => true} %>
+<%= will_paginate @sample_manifests %>

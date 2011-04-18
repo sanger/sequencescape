@@ -1,0 +1,26 @@
+<% add :menu, "Create Sequenom Plate" => new_sequenom_qc_plate_path %>
+<h1>Sequenom Plates</h1>
+
+<%= will_paginate @sequenom_qc_plates %>
+<table id="study_list" width="100%"  cellpadding="4" cellspacing="0">
+  <thead>
+  <tr>
+    <th>Plate</th>
+    <th>Name in MSPEC</th>
+    <th>Created</th>
+    <th>Quadrant</th>
+    <th>Source Plate</th>
+    <th>No. Blanks</th>
+    <th>Study</th>
+    <th>Type</th>
+    <th>A1 Name</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% @sequenom_qc_plates.each_with_index do |plate,plate_index| %>
+    <%= render :partial => 'sequenom_plate_details_row', :locals => {:plate => plate, :plate_index => plate_index} %>
+  <% end %>
+  </tbody>
+</table>
+<%= will_paginate @sequenom_qc_plates %>
+

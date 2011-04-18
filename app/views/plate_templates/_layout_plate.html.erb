@@ -1,0 +1,61 @@
+<%= javascript_include_tag 'cherrypick.js' %>
+
+<% if target_action =="update" %>
+	<% html_options = {:method => :put} %>
+	<% else %>
+	<% html_options = {:method => :post} %>
+<% end %>
+<% form_for :plate_templates, :url => {:action => "#{target_action}"}, :html => html_options  do |f| -%>
+
+<label>Template name:</label> 
+<% if pattern.nil? -%>
+	<%= text_field_tag "name" %>
+<% else -%>
+	<%= text_field_tag "name", pattern.name %>
+<% end -%>
+<br />
+<label>Illumina Control well:</label> 
+<% if pattern.nil? || pattern.descriptor_value('control_well').nil? -%>
+	<%= check_box_tag "control_well", 1 %>
+<% elsif pattern.control_well? -%>
+	<%= check_box_tag "control_well", 1, true %>
+<% else%>
+	<%= check_box_tag "control_well", 1 %>
+<% end -%>
+
+<p>Click to leave positions empty.</p>
+<table class="plate" width="100%">
+	<thead>
+		<% (plate_cols+1).times do |i| %>
+		<th><%= i %></th>
+		<% end %>
+	</thead>
+	<tr>
+		<% plate_rows.times do |row| %>
+		<tr>
+			<% (plate_cols+1).times do |col| %>
+				<% rowchar = (65+row).chr %>
+			<% if col==0 %>
+			<td class='border' width='2%'><%= rowchar  %></td>
+			<% else %>
+			<% well = "#{rowchar}#{col}" %>
+			<% unless pattern.nil?%>
+				<% if pattern.find_well_by_name(well).nil? %>
+					<td onclick="empty_well( '<%= "#{well}" %>',<%= row %>, <%= col %>, <%= plate_cols %> )"  id="<%= "#{well}" %>"  ><%= "#{well}" %></td>
+				<% else %>
+					<td id="<%= "#{well}" %>" onclick="empty_well( '<%= "#{well}" %>',<%= row %>, <%= col %>, <%= plate_cols %>  )" class="empty">Empty<input type="hidden" value="<%= ((row)*plate_cols) + col %>" name="empty_well[<%= well %>]"/></td>
+				<% end -%>
+			<% else -%>
+					<td onclick="empty_well( '<%= "#{well}" %>',<%= row %>, <%= col %>, <%= plate_cols %>  )"  id="<%= "#{well}" %>"  ><%= "#{well}" %></td>
+			<% end -%>
+
+			<% end %>
+			<% end %>
+		</tr>
+		<% end %>
+	</table>
+
+	<%= hidden_field_tag 'rows', plate_rows %>
+	<%= hidden_field_tag 'cols', plate_cols %>
+	<%= submit_tag "Save" %>
+<% end %>

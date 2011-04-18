@@ -1,0 +1,210 @@
+<!-- ====================================== -->
+<!-- = new samples for internal requests  = -->
+<!-- ====================================== -->
+<% if @batch.workflow.source_is_internal? -%>
+<% cache(:action => 'requests', :part => 'internal_requests_new_samples') do -%>
+  <div id='new_samples'>
+    <% if @new_items.empty? -%>
+    <div class='sample'>
+      <p>
+        No new samples available.
+      </p>
+    </div>
+    <% else -%>
+      <table width='100%' cellpadding='4' cellspacing='0' id="basic" class="sortable">
+        <thead>
+        <tr class='header'>
+          <th><%= link_to "Library ID", "#", :class => "header"%></th>
+          <th><%= link_to "Sample ID", "#", :class => "header"%></th>
+          <th><%= link_to "Name", "#", :class => "header"%></th>
+          <th><%= link_to "Study", "#", :class => "header"%></th>
+          <th><%= link_to "Lanes", "#", :class => "header"%></th>
+          <th><%= link_to "Ended", "#", :class => "header"%></th>
+          <th><%= link_to "Conc", "#", :class => "header"%></th>
+          <th><%= link_to "Start", "#", :class => "header"%></th>
+          <th><%= link_to "End", "#", :class => "header"%></th>
+          <th>&nbsp;</th>
+          <th>&nbsp;</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @new_items.each do |item| -%>
+        <% unless item.resource -%>
+
+        <!-- If the item is multiplexed -->
+        <% if item.remote_parent.is_multiplexed?  -%>
+
+          <% if Item.batch_pending?(item, @batch.workflow) -%>
+            <tr class='pending'>
+          <% else -%>
+            <tr class="<%= cycle("alternate", "") %>">
+          <% end -%>
+            <td class='small'><%= item.id %></td>
+            <td class='small'><%= image_tag "add.png", :size => "12x12", :onclick => "Element.toggle(\"#{item.id}_samples\");" %></td>
+            <td class='small'><%= link_to not_so_shorten(item.name), { :controller => 'items', :action => 'show', :id => item.ident, :batch_id => @batch.id }, :title => item.name  %></td>
+            <td class='small'><%= item.studies.last.nil? ? "Unclassified" : shorten(item.studies.last.name) %></td>
+            <td class='small'></td>
+            <td class='small'><%= item.descriptor_value('Ended') %></td>
+            <td class='small'><%= item.descriptor_value('Concentration') %></td>
+            <td class='small'><%= item.descriptor_value('Fragment size required (from)') %></td>
+            <td class='small'><%= item.descriptor_value('Fragment size required (to)') %></td>
+            <td class='small'><%= link_to_function "Add", "add_link_builder(gup('batch_id'), #{item.id})" %></td>
+            <td class='small'><%= link_to_function "Fill", "fill_link_builder(gup('batch_id'), #{item.id})" %></td>
+          </tr>
+          <tr>
+            <td colspan="11" width="100%">
+              <div id="<%= item.id %>_samples" style="display:none;">
+                <table width='60%' cellpadding='4' cellspacing='0'>
+                  <tr class="sample_header">
+                    <th>ID</th><th>Sample name</th><th>Lanes</th>
+                  </tr>
+                  <% item.parents.each do |i| -%>
+                  <tr>
+                    <td><%= i.id %></td>
+                    <td><%= link_to i.name, { :controller => 'items', :action => 'show', :id => item.remote_parent.id, :batch_id => @batch.id }, :title => i.name  %></td>
+                    <td><%= i.remaining_lanes %></td>
+                  </tr>
+                  <% end -%>
+                </table>
+              </div>
+            </td>
+          </tr>
+        <% else -%>
+        <!-- item isn't multiplexed-->
+          <% if Item.batch_pending?(item, @batch.workflow) -%>
+            <tr class='pending'>
+          <% else -%>
+            <tr class="<%= cycle("alternate", "") %>">
+          <% end -%>
+            <td class='small'><%= item.id %></td>
+            <td class='small'><%= item.remote_parent.id %></td>
+            <td class='small'><%= link_to not_so_shorten(item.name), { :controller => 'items', :action => 'show', :id => item.remote_parent.id, :batch_id => @batch.id }, :title => item.name  %></td>
+            <td class='small'><%= item.studies.last.nil? ? "Unclassified" : shorten(item.studies.last.name) %></td>
+            <td class='small'><%= item.remaining_lanes %></td>
+            <td class='small'><%= item.descriptor_value('Ended') %></td>
+            <td class='small'><%= item.descriptor_value('Concentration') %></td>
+            <td class='small'><%= item.descriptor_value('Fragment size required (from)') %></td>
+            <td class='small'><%= item.descriptor_value('Fragment size required (to)') %></td>
+            <td class='small'><%= link_to_function "Add", "add_link_builder(gup('batch_id'), #{item.id})" %></td>
+            <td class='small'><%= link_to_function "Fill", "fill_link_builder(gup('batch_id'), #{item.id})" %></td>
+          </tr>
+        <% end -%>
+        <% end -%>
+        <% end -%>
+        </tbody>
+      </table>
+    <% end -%>
+  </div>
+  <% end -%>
+
+
+<% elsif @batch.workflow.source_is_external? && !@batch.workflow.is_multiplex? -%>
+
+<!-- ============================ -->
+<!-- = external new sample list = -->
+<!-- ============================ -->
+
+<div id='new_samples'>
+  <% if @new_items.empty? -%>
+  <div class='sample'>
+    <p>
+      No new samples available.
+    </p>
+  </div>
+  <% else -%>
+    <% count = 0 -%>
+    <table width='100%' cellpadding='4' cellspacing='0' id="basic" class="sortable">
+      <thead>
+      <tr class='header'>
+        <th><%= link_to "Sample ID", "#", :class => "header"%></th>
+        <th><%= link_to "Name", "#", :class => "header"%></th>
+        <th><%= link_to "Study", "#", :class => "header"%></th>
+        <th><%= link_to "Lanes", "#", :class => "header"%></th>
+        <th><%= link_to "Ended", "#", :class => "header"%></th>
+        <th><%= link_to "Library Type", "#", :class => "header"%></th>
+        <th><%= link_to "Conc", "#", :class => "header"%></th>
+        <th><%= link_to "Start", "#", :class => "header"%></th>
+        <th><%= link_to "End", "#", :class => "header"%></th>
+        <th>&nbsp;</th>
+        <th>&nbsp;</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @new_items.each do |item| -%>
+
+        <% if Item.batch_pending?(item, @batch.workflow) -%>
+          <tr class='pending'>
+        <% else -%>
+          <tr class="<%= cycle("alternate", "") %>">
+        <% end -%>
+            <td class='small'><%= item.id %></td>
+            <td class='small'><%= link_to not_so_shorten(item.name), { :controller => 'items', :action => 'show', :id => item.id, :batch_id => @batch.id }, :title => item.id  %></td>
+            <td class='small'><%= item.studies.last.nil? ? "Unclassified" : shorten(item.studies.last.name) %></td>
+            <td class='small'><%= item.requested_lanes %></td>
+            <td class='small'><%= item.descriptor_value('Ended') %></td>
+            <td class='small'><%= item.descriptor_value('Library type') %></td>
+            <td class='small'><%= item.descriptor_value('Concentration') %></td>
+            <td class='small'><%= item.descriptor_value('Fragment size required (from)') %></td>
+            <td class='small'><%= item.descriptor_value('Fragment size required (to)') %></td>
+            <td class='small'><%= link_to_function "Add", "add_link_builder(gup('batch_id'), #{item.id})" %></td>
+            <td class='small'><%= link_to_function "Fill", "fill_link_builder(gup('batch_id'), #{item.id})" %></td>
+          </tr>
+      <% end -%>
+      </tbody>
+    </table>
+  <% end -%>
+</div>
+
+<% elsif @batch.workflow.is_multiplex? -%>
+<div id='multiplex_samples'>
+  <% if @mpitems.empty? -%>
+  <div class='sample'>
+    <p>
+      No new multiplex samples available.
+    </p>
+  </div>
+  <% else -%>
+    <% count = 0 %>
+    <table width='100%' cellpadding='4' cellspacing='0' id="basic" class="sortable">
+      <thead>
+      <tr class='header'>
+        <th><%= link_to "Sample ID", "#", :class => "header"%></th>
+        <th><%= link_to "Name", "#", :class => "header"%></th>
+        <th><%= link_to "Study", "#", :class => "header"%></th>
+        <th><%= link_to "Lanes", "#", :class => "header"%></th>
+        <th><%= link_to "Ended", "#", :class => "header"%></th>
+        <th><%= link_to "Library Type", "#", :class => "header"%></th>
+        <th><%= link_to "Conc", "#", :class => "header"%></th>
+        <th><%= link_to "Start", "#", :class => "header"%></th>
+        <th><%= link_to "End", "#", :class => "header"%></th>
+        <th><%= link_to "MP Tag", "#", :class => "header"%></th>
+        <th>&nbsp;</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @mpitems.each do |item| -%>
+
+        <% if Item.batch_pending?(item, @batch.workflow) -%>
+          <tr class='pending'>
+        <% else -%>
+          <tr class="<%= cycle("alternate", "") -%>">
+        <% end -%>
+            <td class='small'><%= item.id %></td>
+            <td class='small'><%= link_to not_so_shorten(item.name), { :controller => 'items', :action => 'show', :id => item.id, :batch_id => @batch.id }, :title => item.id  %></td>
+            <td class='small'><%= item.studies.last.nil? ? "Unclassified" : shorten(item.studies.last.name) %></td>
+            <td class='small'><%= item.requested_lanes %></td>
+            <td class='small'><%= item.descriptor_value('Ended') %></td>
+            <td class='small'><%= item.descriptor_value('Library type') %></td>
+            <td class='small'><%= item.descriptor_value('Concentration') %></td>
+            <td class='small'><%= item.descriptor_value('Fragment size required (from)') %></td>
+            <td class='small'><%= item.descriptor_value('Fragment size required (to)') %></td>
+            <td class='small'><%= item.multiplex_tag %></td>
+            <td class='small'><%= link_to_function "Add", "add_link_builder(gup('batch_id'), #{item.id})" %></td>
+          </tr>
+      <% end -%>
+      </tbody>
+    </table>
+  <% end -%>
+</div>
+<% end -%>
+

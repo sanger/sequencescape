@@ -1,0 +1,27 @@
+<% add :title, "Pipelines" -%>
+<% add :back_menu, "Back to pipeline" => pipeline_path(@pipeline) -%>
+
+<h1>CREATE TRAINING BATCH</h1>
+<div class="info">
+  Create a training batch for <%= @pipeline.name.titlecase %> pipeline
+</div>
+<% if @pipeline.has_controls? -%>
+<div id="sample">
+  <table width="100%" cellspacing="0" cellpadding="0">
+  <% form_tag(:controller => :batches, :action => :create_training_batch, :id => @pipeline.id) do -%>
+  <tr>
+    <td width="40%" class="item">Select control:</td>
+    <td width="60%"><%= select :control, :id, @controls.map { |c| [c.name, c.id] } %></td>
+  </tr>
+  <tr>
+    <td width="40%">&nbsp;</td>
+    <td width="60%"><%= submit_tag "Create batch" %></td>
+  </tr>
+  <% end -%>
+  </table>
+</div>
+<% else -%>
+<div id="sample">
+  This pipeline doesn't have any control samples.
+</div>
+<% end -%>

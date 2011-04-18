@@ -1,0 +1,35 @@
+<% add :title, "Workflows" -%>
+<% add :menu, "Back to workflow" => workflow_path(@workflow) -%>
+
+<h1><%= @workflow.name %></h1>
+<div class='info'>
+  Drag the workflow tasks to reorder.
+</div>
+<div class='info'>
+  <table width='100%'>
+    <tr>
+      <td style='text-align: center;'>
+        START
+      </td>
+    </tr>
+    <tr>
+      <td style='text-align: center;'>
+        &darr;
+        <ul id="task_list" class="task_list">
+          <% @workflow.tasks.each do |task| -%>
+          <li class="task" id="task_<%= task.id %>"><%= task.name %></li>
+          <% end -%>
+        </ul>
+        &darr;
+      </td>
+    </tr>
+    <tr>
+      <td style='text-align: center;'>
+        FINISH
+      </td>
+    </tr>
+  </table>
+  <%= sortable_element 'task_list',
+                        :url => { :action => "sort", :workflow_id => @workflow.id },
+                        :complete => visual_effect(:highlight, 'task_list') %>
+</div>

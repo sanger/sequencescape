@@ -1,0 +1,9 @@
+<% add :title, "Batches" -%>
+<% add :back_menu, "Back to pipeline" => pipeline_path(@pipeline) -%>
+
+<h1>All batches for <%= @pipeline.name %> pipeline</h1>
+<div class="content">
+  <%= will_paginate @batches %>
+  <%= render :partial => "shared/batches", :locals => {:batches => @batches, :in_progress => false, :showing_all => true, :batch_state => 'normal' } %>
+  <%= will_paginate @batches %>
+</div>

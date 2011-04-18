@@ -1,0 +1,20 @@
+<% add :title, "Administrators can customise Sequencescape from here, including data management and reporting tools." -%>
+
+<h1>User management</h1>
+
+<% form_remote_tag(:url => filter_users_url, :html => { :id => "filter_form" }, :update => "users", :loading => "show_update_loader();", :complete => "hide_update_loader();") do %>
+<div class="callout_filter">
+  <table width="100%">
+    <tr>
+      <td>Registered users: <strong><%=h @users.size %></strong></td>
+      <td style="text-align: right;">
+        <%= image_tag "ajax-loader.gif", :size => "10x10", :id => "update_loader", :style => "display: none;"%>Filter users: <input type="search" placeholder="search" name="q" id="q" />
+      </td>
+    </tr>
+  </table>
+  <%= observe_form(:filter_form, :url => { :action => :filter }, :loading => "show_update_loader();", :complete => "hide_update_loader();", :frequency => 0.5, :update => :users) %>
+</div>
+<% end %>
+<div id='users'>
+  <%= render :partial => 'users', :locals => { :users => @users } %>
+</div>

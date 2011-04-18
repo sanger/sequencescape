@@ -1,0 +1,51 @@
+<%- add :title, "Items for Workflow" %>
+<% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_workflow_path(@study, @workflow) -%>
+
+<div id="content-links">
+  <%= link_to "Full details", study_workflow_path(@study, @workflow) %>
+</div>
+
+<h1><%= @study.name %> : <%= @workflow.item_label.capitalize.pluralize %></h1>
+<div class='subtitle'>
+  Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(:long) %> &middot; <%= @study.state.capitalize %>
+</div>
+
+<% if @items.blank? -%>
+  <%= display_user_guide(I18n.t('studies.workflows.items.no_items_available', :label => @workflow.item_label.downcase.pluralize)) %>
+<% else -%>
+<p>These are the <%= @workflow.item_label.pluralize %> associated to <%= @study.name %>. Select the <%= @workflow.item_label.pluralize %> you want to print and press 'Print labels'.</p>
+  <form action="<%= print_study_workflow_items_path(@study, @workflow) %>" method="POST">
+  <table width='100%'>
+    <thead>
+      <tr>
+        <th></th>
+        <th>Date</th>
+        <th>Name</th>
+        <th>Request</th>
+        </tr>
+    </thead>
+    <tbody>
+    <% @assets.each do |asset| -%>
+    <tr>
+      <td><%= check_box_tag "printable[#{item.id}]" %></td>
+      <td><%= asset.created_at.to_formatted_s(:day_full_with_time) %></td>
+      <td><%= link_to(asset.name, asset_path(assets)) %></td>
+      <td><%= link_to 'New request',new_study_workflow_item_request_path(@study, @workflow, item) %></td>
+    </tr>
+    <% end -%>
+    </tbody>
+  </table>
+  <table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="35%" class="item">Print to: </td>
+    <td width="65%">
+      <%= render :partial => "shared/printer_list" %>
+    </td>
+  </tr>
+  <tr>
+    <td width="35%" class="item">&nbsp;</td>
+    <td width="65%"><input type="submit" value="Print labels" /> or <%= link_to "cancel", study_workflow_path(@study, @workflow) %></td>
+  </tr>
+  </table>
+  </form>
+<% end -%>

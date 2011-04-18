@@ -1,0 +1,10 @@
+<tr>
+  <td class='item' width='20px'><input type='checkbox' checked='on' name='printable[<%= printable.id %>]'></td>
+  <td class='item'><%= printable.name %></td>
+  <% if printable.tracking_ident%>
+  <td class='item'><%= printable.tracking_ident %></td>
+  <% else %>
+  <td class='item'><%= printable.id %></td>
+
+  <% end %>
+</tr>

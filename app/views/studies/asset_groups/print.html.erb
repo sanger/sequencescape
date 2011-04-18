@@ -1,0 +1,7 @@
+<%- add :menu, "Back to Study" => study_path(@study)  %>
+
+<h3>Asset group <%= @asset_group.name %></h3>
+<div class='info'>
+  Below are the assets that are available for this group.  Please select the assets you want to print labels and the printer you want them to be printed from.
+</div>
+<%= render :partial => 'shared/assets_to_print', :locals => { :path => print_labels_study_asset_group_path(@study, @asset_group)}%>

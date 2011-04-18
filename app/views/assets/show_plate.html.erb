@@ -1,0 +1,9 @@
+<p>
+Plate <%= @asset.name %> Barcode <%= @asset.sanger_human_barcode  %>
+</p>
+
+<% plate    = @asset %>
+
+<%= render :partial => "shared/show_plate", :locals => {:plate => plate} %>
+<br />
+

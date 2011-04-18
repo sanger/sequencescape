@@ -1,0 +1,39 @@
+<% add :menu, "View plate details" => asset_path(@plate) -%>
+<% add :menu, "Scan another plate" => sequenom_root_path -%>
+
+
+<h1>Plate <%= @plate.sanger_human_barcode %></h1>
+
+<h2>Plate history</h2>
+<div id="events">
+<table width="100%" class="sortable" id="summary">
+	<tr>
+		<th class="label">Date</th>
+		<th class="label">Process</th>
+		<th class="label">User</th>
+	</tr>
+<% @plate.events.each do |event| -%>
+	<tr>
+		<td><%= h(event.created_at.strftime('%d-%b-%Y %H:%M')) -%></td>
+		<td><%= h(event.message) -%></td>
+		<td><%= h(event.created_by) -%></td>
+  </tr>
+<% end -%>
+</table>
+</div>
+
+<% form_for(@plate, :url => sequenom_update_path(@plate), :html => { :id => 'sequenom_update' }) do |form| %>
+  <fieldset class="inputs">
+    <p>
+      <label for="sequenom_step">Process:</label>
+      <%= dropdown_for_steps(:sequenom_step) %>
+    </p>
+    <p>
+      <label for="user_barcode">Scan User ID barcode:</label>
+      <%= text_field_tag(:user_barcode) %>
+    </p>
+  </fieldset>
+  <fieldset class="buttons">
+    <%= submit_tag('Add process') %>
+  </fieldset>
+<% end %>

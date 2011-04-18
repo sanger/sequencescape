@@ -1,0 +1,107 @@
+<%- add :title, "This page displays details of requests" %>
+<% add :menu, "View event history" => history_request_path(@request) -%>
+<% add :menu, (pluralize @request.comments.size, "comment") => request_comments_path(@request) -%>
+
+<% if current_user.manager_or_administrator? || current_user.owner?(@request) %>
+	<% add :menu, { "Cancel" => cancel_request_url(@request) }, { :confirm => "Are you sure you want to cancel this request?" }  -%>
+  <% add :menu, "Edit" => edit_request_path(@request) -%>
+<% end %> 
+<% if current_user.manager_or_administrator? %>
+  <% add :menu, "Change decision" => filter_change_decision_request_path(@request) -%>
+<% end %>
+
+
+<%- add :back_menu, "Back to asset" => asset_path(@request.asset) if @request.asset %>
+
+<h1>
+  <% if @request.study %>
+    <%= link_to @request.study.name, study_path(@request.study) %> :
+  <% end %>
+  <% if @request.sample %>
+    <%= link_to @request.sample.name, sample_path(@request.sample) %> : 
+  <% end %>
+  Request: <%= @request.id %> 
+  <% if @request.request_type %>
+    (<%= @request.request_type.name %>)
+  <% end %>
+</h1>
+
+<% if @request.study_id %>
+<div class='subtitle'>
+  Study <%= @request.study.id %> &middot; Created on <%= @request.study.created_at.to_formatted_s(:long) %> &middot; <%= @request.study.state.capitalize %>
+  <% if @request.item_id %>
+    &middot; Item ID: <%= link_to  @request.item_id, item_url(@request.item) %>
+  <% end %>
+</div>
+<% end %>
+
+<% if @request.request_type %>
+<div class="info">
+  This request for <strong><%= @request.request_type.name.downcase %></strong> is <%= request_status(@request) %>
+</div>
+<% end %>
+
+<div class="info">
+  <%= render :partial => 'shared/metadata/show/request', :locals => { :request => @request } %>
+</div>
+
+<div class="info">
+<h3>Assets</h3>
+<table width='100%' class='sortable'>
+  <thead>
+    <tr>
+      <th width='10%'>Asset ID</th>
+      <th width='10%'>Asset name</th>
+      <th width='20%'>Asset type</th>
+      <th width='30%'>Source/Target</th>
+    </tr>
+  </thead>
+  <tbody>
+		<% if @request.asset %>
+		<tr>
+			<td><%= link_to @request.asset.id, asset_url(@request.asset) %></td>
+			<td><%= link_to @request.asset.name, asset_url(@request.asset) %></td>
+			<td><%= @request.asset.label %></td>
+			<td>Source</td>
+		</tr>
+    <% end %>
+		<% if @request.target_asset %>
+		<tr>
+			<td><%= link_to @request.target_asset.id, asset_url(@request.target_asset) %></td>
+			<td><%= link_to @request.target_asset.name, asset_url(@request.target_asset) %></td>
+			<td><%= @request.target_asset.label %></td>
+			<td>Target</td>
+		</tr>
+		<% end %>
+	</tbody>
+ </table>
+</div>
+
+<div class="info">
+<h3>Batches</h3>
+<% @request.batch_ids.each do |batch_id| %>
+  <%= link_to batch_id, URI.join(configatron.pipelines_url, "batches/#{batch_id}").to_s %>
+<% end %>
+</div>
+
+
+<div class="info">
+  <h3>QC information</h3>
+  <% if @request.format_qc_information.size > 0  %>
+    <table cellpadding="4" cellspacing="0" width="100%">
+      <thead>
+        <tr>
+          <th width="60%">Message</th>
+          <th>Date</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+      <%= render :partial => 'qc_information' %>
+    </tbody>
+  </table>
+  <% else %>
+    <%= display_empty_table("There is no qc information at the moment") %>
+  <% end %>
+</div>
+

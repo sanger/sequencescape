@@ -1,0 +1,24 @@
+<div class="info">
+  Select a control sample for this batch
+</div>
+
+<div id="sample">
+  <table width="100%" cellspacing="0" cellpadding="0">
+  <% form_tag(:controller => :batches, :action => :add_control, :id => @batch.id) do -%>
+  <tr>
+    <td width="40%" class="item">Select control:</td>
+    <td width="60%"><%= select :control, :id, @controls.map { |c| [c.name, c.id] } %></td>
+  </tr>
+  <% if @batch.underrun > 1 -%>
+  <tr>
+    <td width="40%" class="item">Number:</td>
+    <td width="60%"><input id="control_count" name="control[count]" size="10" /> </td>
+  </tr>
+  <% end -%>
+  <tr>
+    <td width="40%">&nbsp;</td>
+    <td width="60%"><%= submit_tag "Save batch" %></td>
+  </tr>
+  <% end -%>
+  </table>
+</div>

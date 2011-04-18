@@ -1,0 +1,173 @@
+en:
+  date:
+    formats:
+      # Use the strftime parameters for formats.
+      # When no format has been given, it uses default.
+      # You can provide other formats here if you like!
+      default: "%Y-%m-%d"
+      short: "%b %d"
+      long: "%B %d, %Y"
+
+    day_names: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
+    abbr_day_names: [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
+
+    # Don't forget the nil at the beginning; there's no such thing as a 0th month
+    month_names: [~, January, February, March, April, May, June, July, August, September, October, November, December]
+    abbr_month_names: [~, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
+    # Used in date_select and datime_select.
+    order: [ :year, :month, :day ]
+
+  time:
+    formats:
+      default: "%a, %d %b %Y %H:%M:%S %z"
+      short: "%d %b %H:%M"
+      long: "%B %d, %Y %H:%M"
+    am: "am"
+    pm: "pm"
+
+# Used in array.to_sentence.
+  support:
+    array:
+      sentence_connector: "and"
+      skip_last_comma: false
+
+  application:
+    name: "Sequencescape"
+    institute: "Wellcome Trust Sanger Institute"
+    institute_link: "http://sanger.ac.uk/"
+
+  global_links:
+    welcome: "Welcome"
+    workflow: "Workflow is"
+    workflow_not_set: "not set!"
+    settings: "Profile"
+    login: "Login"
+    logout: "Logout"
+    help: "Help"
+
+  navigation:
+    menu:
+      back_to_study: "Back to study"
+      back_to_project: "Back to project"
+      back_to_asset: "Back to asset"
+      back_to_new_submission: "Back to new submission"
+      new_similar_submission: "New similar submission"
+    tabs:
+      studies: "Studies"
+      projects: "Projects"
+      samples: "Samples"
+      admin: "Admin"
+      pipelines: "Pipelines"
+      batches: "Batches"
+      reception: "Reception"
+      labsearch: "Lab search"
+      labview:  "Lab view"
+
+  errors:
+    occured: "Something has gone wrong!"
+    single_sign_on_unavailable: "The Single Sign On server was unavailable and could not verify your request"
+  
+  bed_verification:
+    layout:
+      invalid: Invalid bed layout for destination plate %{plate_barcode}
+      valid: Valid bed layout for destination plate %{plate_barcode}
+
+  projects:
+    billing_events:
+      created: "You have successfully created a billing event with the reference %{ref}"
+      not_created: "There was a problem creating the billing event"
+      no_charge_refund_attempt: "You can not create a refund for something that has not been charged!"
+      duplicate_refund_attempt: "You can not create a second refund for a charge!"
+    status:
+      not_approved: "This project has not been approved yet."
+    quotas:
+      no_quota_requested: "There are currently no quotas available for this project. Click here to request a quota increase."
+    workflows:
+      items:
+        no_items_available: "There are no %{label} registered for this workflow."
+
+  studies:
+    about: "Studies bundle together samples and quotas and enable you to make requests for work."
+    billing_events:
+      created: "You have successfully created a billing event with the reference %{ref}"
+      not_created: "There was a problem creating the billing event"
+      no_charge_refund_attempt: "You can not create a refund for something that has not been charged!"
+      duplicate_refund_attempt: "You can not create a second refund for a charge!"
+    status:
+      not_approved: "This study has not been approved yet."
+    guidance:
+      nothing_interesting: "You don't have any studies you own, manage or are following. Please create your first study"
+      now_create_submission: "There are no submissions on this study yet. Please create your first submission"
+    samples:
+      no_samples_registered: "There are no registered samples. Click to register samples"
+    quotas:
+      no_quota_requested: "There are currently no quotas available for this study. Click here to request a quota increase."
+    submissions:
+      unable_to_create_submission: "You cannot apply to have work carried out on any of the samples you have registered until the study is approved."
+      pending_submission_waiting: "This study has a pending submission. Click for details."
+      last_submission_failed: "The last submission of this study has failed. Click for details."
+      plate:
+        event:
+          success: "Created submission %{submission_id} for plate %{barcode}"
+          failed: "Failed to create submission for plate %{barcode}"
+        create: "Create plates submission"
+
+    sample_groups:
+      no_sample_groups: "There are no Sample Groups. Click to add a new Group Sample"
+      no_samples_in_group: "There are no samples in this sample group. Click to add registered samples"
+      no_samples_available: "No results were found"
+      comments:
+        no_comments: "There are no comments on this sample group"
+    comments:
+      no_comments: "There are no comments on this study"
+    workflows:
+      items:
+        no_items_available: "There are no %{label} registered for this workflow."
+      assets:
+        no_assets_available: "There are no %{label} registered for this workflow."
+
+  requests:
+    comments:
+      no_comments: "There are no comments yet"
+
+  assets:
+    comments:
+      no_comments: "There are no comments yet"
+
+  batches:
+    comments:
+      no_comments: "There are no comments yet"
+
+  billing_events:
+    exceptions:
+      uncharged_refund: "No matching charge - Unable to refund!!"
+      over_refund: "The refund you are issuing is for a quantity more than the remain refunds which is %{refunds}"
+      duplicate_refund: "Refund already been issued - Unable to refund!!"
+
+  samples:
+    name_format: "Sample name can only contain letters, numbers, _ or -"
+
+  asset_audit:
+    key_format: "Key can only contain letters, numbers or _"
+  
+  sequenom:
+    errors:
+      plate:
+        invalid_barcode: "The barcode %{barcode} (%{human_barcode}) does not appear to be a valid plate barcode"
+        not_found_by_barcode: "There appears to be no plate with barcode %{barcode} (%{human_barcode})"
+        not_found_by_id: "The plate you requested does not appear to exist"
+        empty_barcode: "You appear to have forgotten to scan the plate barcode"
+
+      user:
+        invalid_barcode: "The barcode %{barcode} (%{human_barcode}) does not appear to be a valid user barcode"
+        not_found_by_barcode: "There appears to be no user with barcode %{barcode} (%{human_barcode})"
+        empty_barcode: "You appear to have forgotten to scan your barcode"
+
+    notices:
+      step_completed: "%{step} step for plate %{barcode} (%{human_barcode}) marked as completed"
+
+    events:
+      message: "%{step} step completed"
+
+  formtastic:
+    submit: "Submit"

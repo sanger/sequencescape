@@ -1,0 +1,13 @@
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="item" width="40%"><%= h(sections.label) %>:</td>
+    <td width="60%">
+      <%= display_file_icon(document) %>
+      <%- if document %>
+      <%= link_to(document.filename, document_path(document)) %>
+    <% else%>
+      <span class="error" > document missing </span>
+    <% end %>
+    </td>
+  </tr>
+</table>

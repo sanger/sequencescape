@@ -1,0 +1,26 @@
+<div class="quota">
+  <table width="100%">
+    <thead>
+      <tr>
+      <th>Request type</th>
+      <th>Requested</th>
+      <th>Pending</th>
+      <th>Started</th>
+      <th>Passed</th>
+      <th>Failed</th>
+      <th>Cancelled</th>
+      </tr>
+    </thead>
+    <% @workflow.request_types.each do |request_type| %>
+      <tr>
+        <td><%= request_type.name %></td>
+        <td><%= request_link(@study, @study.total_requests(request_type), request_type) %></td>
+        <td><%= request_link(@study, @study.pending_requests(request_type), request_type, 'pending') %></td>
+        <td><%= request_link(@study, @study.started_requests(request_type), request_type, 'started') %></td>
+        <td><%= request_link(@study, @study.passed_requests(request_type), request_type, 'passed') %></td>
+        <td><%= request_link(@study, @study.failed_requests(request_type), request_type, 'failed') %></td>
+        <td><%= request_link(@study, @study.cancelled_requests(request_type), request_type, 'cancelled') %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>

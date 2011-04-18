@@ -1,0 +1,11 @@
+<% add :menu, "SampleDB Home" => '/sdb/' %>
+<% add :menu, "&nbsp;" => '' -%>
+<% add :menu, "Create manifest for plates" => new_sample_manifest_path({:type => "plate"}) %>
+<% add :menu, "Create manifest for 1D tubes" => new_sample_manifest_path({:type => "1dtube"}) %>
+<% add :menu, "View all manifests" => sample_manifests_path %>
+<% add :menu, "&nbsp;" => '' -%>
+<% add :menu, "Create supplier" => new_supplier_path %>
+<% add :menu, "View all suppliers" => suppliers_path %>
+<% add :menu, "&nbsp;" => '' -%>
+<% add :menu, "Create study" => new_study_path() %>
+<% add :menu, "Create project" => new_project_path() %>

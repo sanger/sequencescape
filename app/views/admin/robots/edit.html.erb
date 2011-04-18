@@ -1,0 +1,20 @@
+<h1>Editing robot</h1>
+
+<% form_for(@robot) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.label :location %><br />
+    <%= f.text_field :location %>
+  </p>
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @robot %> |
+<%= link_to 'Back', robots_path %>

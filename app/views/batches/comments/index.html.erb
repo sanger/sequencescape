@@ -1,0 +1,16 @@
+<% add :title, "Batch" -%>
+<%- add :back_menu, "Back to batch" => batch_path(@batch) -%>
+
+<h1>Batch <%= @batch.id %> : Comments</h1>
+<div class='subtitle'>
+  Batch <%= @batch.id %> &middot; Created on <%= @batch.created_at.to_formatted_s(:long) %> &middot; <%= @batch.state.capitalize %>
+</div>
+
+<div class='info'>
+  <%= render :partial => "list", :locals => {:batch => @batch } %>
+    <div>
+      <p>Type your comment:</p>
+      <%= form_remote_tag(:url => batch_comments_path(@batch), :update => "batch_annotations_#{@batch.id}") %>
+      <%= text_field_tag "comment", '', :size  => 65 %><%= submit_tag 'Add comment' %>
+    </div>
+</div>

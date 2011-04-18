@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<RECEIPT receiptDate="2010-07-29T15:54:30.314+01:00" submissionFile="XXXXXXXX-sc-2010-07-29-404.submission.xml" success="true">
+	<SAMPLE accession="EGAN00001000234" alias="XXXXXXXX-sc-2010-07-29-404" status="PRIVATE"/>
+	<SUBMISSION accession="EGA00001000240" alias="XXXXXXXX-sc-2010-07-29-404"/>
+	<MESSAGES>
+		<INFO> ega account </INFO>
+		<INFO> Submission XML is valid</INFO>
+		<INFO> PROTECT option found, so protecting only   XXXXXXXX-sc-2010-07-29-404.sample.xml      </INFO>
+		<INFO> Submission XML is valid</INFO>
+		<INFO> Title is null</INFO>
+		<INFO> Study XML is not valid</INFO>
+		<INFO> Sample XML is valid</INFO>
+		<INFO> Sample(XXXXXXXX-sc-2010-07-29-404)  ANONYMIZED NAME  is null</INFO>
+		<INFO> Sample Description  is null</INFO>
+		<INFO>Experiment XML is not valid</INFO>
+		<INFO>Run XML is not valid</INFO>
+		<INFO>Analysis XML is not valid</INFO>
+		<INFO> Written EGA file in their ftp</INFO>
+	</MESSAGES>
+	<ACTIONS>ADD</ACTIONS>
+	<ACTIONS>PROTECT</ACTIONS>
+</RECEIPT>

@@ -1,0 +1,18 @@
+<div class="info">
+  <h2>Enter or scan the barcode</h2>
+</div>
+<div class="info">
+  <p>
+    <table>
+      <%= form_tag ('/assets/lab_view') %>
+      <tr>
+        <td>
+          <%= text_field_tag 'barcode' %>
+        </td>
+        <td>
+          <%= submit_tag "Find" %>
+        </td>
+      </tr>
+    </table><br />
+  </p>
+</div>

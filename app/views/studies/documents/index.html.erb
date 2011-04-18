@@ -1,0 +1,20 @@
+<h1>Documents associated with <%= @study.name %></h1>
+
+<table>
+  <thead>
+    <tr>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<% @documents.each do |document| -%>
+  <tr>
+    <td><%= link_to document.filename, study_document_path(@study, document) %>
+      <%= display_file_icon(property.document) %>
+    <%= link_to "delete", study_document_url(@study, document), :method => :delete, :confirm => "Are you sure?"  %></td>
+  </tr>
+<% end -%>
+  </tbody>
+</table>
+
+<%= link_to "Attach a new document", new_study_document_path(@study) %>

@@ -1,0 +1,24 @@
+<table id="study_list" width="100%" class="sortable" cellpadding="4" cellspacing="0">
+  <thead>
+  <tr>
+    <th><%= link_to "Name", "javascript:void(0);" %></th>
+    <th><%= link_to "Contact Name", "javascript:void(0);" %></th>
+    <th><%= link_to "Email", "javascript:void(0);" %></th>
+    <th><%= link_to "Phone", "javascript:void(0);" %></th>
+    <th><%= link_to "Studies", "javascript:void(0);" %></th>
+    <th><%= link_to "Manifests", "javascript:void(0);" %></th>
+    </tr>
+  </thead>
+  <tbody>
+  <% suppliers.each do |supplier|  %>
+    <tr>
+    <td><%= link_to supplier.name, supplier_path(supplier) %></td>
+    <td><%= supplier.contact_name%></td>
+    <td><%= mail_to supplier.email, supplier.email %></td>
+    <td><%= supplier.phone_number %></td>
+    <td><%= link_to "#{supplier.studies.count} studies", studies_supplier_path(supplier)%></td>
+    <td><%= link_to "#{supplier.sample_manifests.count} manifests", sample_manifests_supplier_path(supplier)%></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

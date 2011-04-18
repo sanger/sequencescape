@@ -1,0 +1,2 @@
+class PipelineException < Exception
+end

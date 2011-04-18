@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>Batch <%= @batch.id %></title>
+</head>
+<link rel="stylesheet" href="/stylesheets/print.css" type="text/css">
+<body>  
+  <% if @batch.workflow.name.include? "HiSeq" -%>
+  <div style="font-size:40px;text-align:right;padding-right:20px">HiSeq PE</div>
+  <% elsif @batch.workflow.name.include? "PE" -%>
+  <div style="font-size:40px;text-align:right;padding-right:20px">PE</div>
+  <% elsif @batch.workflow.name.include? "SE" -%>
+  <div style="font-size:40px;text-align:right;padding-right:20px">SE</div>
+  <% end -%>
+  <h1>Batch <%= @batch.id %></h1>
+  <table width="100%" cellpadding="4" cellspacing="0" border="1">
+    <thead>
+	  <% if @batch.workflow.name.include? "HiSeq" -%>
+      <tr class="tr_hiseq">
+	  <% else %>
+  	  <tr>
+	  <% end %>
+        <th>Lane</th>
+        <th>Library ID</th>
+        <th>Sample</th>
+        <th>Dilution Volume</th>
+        <th>Number of Cycles</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @batch.ordered_requests.each do |request| -%>
+      <% if request.asset %>
+        <tr>
+          <td width="20%">Lane <%= request.position(@batch) %></td>
+          <td><strong><%= request.asset.barcode unless request.asset.resource? %></strong></td>
+          <td><strong><%= request.asset.name %></strong></td>
+          <td><%= (request.lab_events_for_batch(@batch).size > 0) ? request. lab_events_for_batch(@batch).first.descriptor_value("Concentration") + "&#x3BC;l" : "&nbsp" %></td>
+          <td><%= request.value_for("Read length") unless request.asset.resource? %></td>
+        </tr>
+      <% end %>
+    <% end -%>
+    </tbody>
+  </table>
+  <br />
+  <% if @batch.comments.size > 0 %>
+  <table width="100%" cellpadding="4" cellspacing="0" border="0">
+    <thead>
+      <tr>
+        <th align=left>Comments</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @comments.each do |comment| %>
+      <tr><td><%= comment.description %></td></tr>
+    <% end %>
+    </tbody>
+    </table>
+    <br />
+  <% end %>
+
+  <div style="border-top: 1px solid black; border-left: none; border-right: none; border-bottom: none">
+  Printed at <%= Time.now.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= current_user.login %>
+  </div>
+
+  <script language="javascript">
+    window.print();
+  </script>
+</body>
+</html>

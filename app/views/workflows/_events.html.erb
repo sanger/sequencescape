@@ -1,0 +1,36 @@
+<div class="info">
+<table width="100%" cellpadding="5" cellspacing="0" class="sortable">
+  <thead>
+    <th class='label' width="15%"><%= link_to 'Event type', "javascript:void(0);" %></th>
+    <th class='label' width="15%"><%= link_to 'Event description', "javascript:void(0);" %></th>
+    <th class='label' width="15%"><%= link_to 'Created at', "javascript:void(0);" %></th>
+    <th class='label' width="15%"><%= link_to 'User', "javascript:void(0);" %></th>
+  </thead>
+  <tbody>
+    <% if events.empty? -%>
+    <tr>
+      <td colspan="4">No events</td>
+    </tr>
+    <% else -%>
+      <% events.each do |event| -%>
+      <% unless event.description.nil? -%>
+      <tr>
+        <td width="15%"><div class='<%= event.description.downcase %> label'><%= event.description.capitalize %></td>
+        <% if event.descriptors.size != 0 -%>
+        <td><%= event.descriptor_value "task" %></td>
+        <% else -%>
+        <td><%= event.message %></td>
+        <% end -%>
+        <td><%= event.created_at.nil? ? 'Unknown' : event.created_at.strftime("%A %d %B at %H:%M") %></td>
+        <% if event.user -%>
+        <td><%= event.user.login %></td>
+        <% else -%>
+        <td>&#8211;</td>
+        <% end -%>
+      </tr>
+      <% end -%>
+      <% end -%>
+    <% end -%>
+  </tbody>
+</table>
+</div>

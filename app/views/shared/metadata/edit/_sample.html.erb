@@ -1,0 +1,84 @@
+<%# NOTE[xxx]: Kind of a hack because we need 'sample[sample_metadata_attributes][X]' -%>
+<% fields_for(sample) do |form| %>
+  <% form.fields_for(:sample_metadata, :builder => Metadata::FormBuilder) do |metadata_fields| %>
+    <% metadata_fields.filter { |field| current_user.workflow.visible_attribute?(field) } %>
+
+    <%# Fields for 'Microarray genotyping' %>
+    <%= metadata_fields.text_field(:cohort) %>
+    <%= metadata_fields.select(:gender, Sample::GENDERS,:include_blank => true) %>
+    <%= metadata_fields.text_field(:country_of_origin) %>
+    <%= metadata_fields.text_field(:geographical_region) %>
+    <%= metadata_fields.text_field(:ethnicity) %>
+    <%= metadata_fields.select(:dna_source, Sample::DNA_SOURCES) %>
+    <%= metadata_fields.text_field(:volume) %>
+    <%= metadata_fields.text_field(:supplier_plate_id) %>
+    <%= metadata_fields.text_field(:mother) %>
+    <%= metadata_fields.text_field(:father) %>
+    <%= metadata_fields.text_field(:replicate) %>
+
+    <%# Fields for 'Next-gen sequencing' %>
+    <%= metadata_fields.text_field(:organism) %>
+    <%= metadata_fields.select(:gc_content, Sample::GC_CONTENTS) %>
+
+    <%# Fields for the SLF pipeline, by the looks of it %>
+    <%= metadata_fields.text_field(:sibling) %>
+    <%= metadata_fields.text_field(:is_resubmitted) %>
+    <%= metadata_fields.text_field(:date_of_sample_collection) %>
+    <%= metadata_fields.text_field(:date_of_sample_extraction) %>
+    <%= metadata_fields.text_field(:sample_extraction_method) %>
+    <%= metadata_fields.text_field(:sample_purified) %>
+    <%= metadata_fields.text_field(:purification_method) %>
+    <%= metadata_fields.text_field(:concentration) %>
+    <%= metadata_fields.text_field(:concentration_determined_by) %>
+    <%= metadata_fields.text_field(:sample_type) %>
+
+    <!-- SRA -->
+    <% metadata_fields.with_options(:grouping => 'SRA') do |group| %>
+      <%= group.text_field(:sample_public_name) %>
+    <% end %>
+
+    <!-- ENA requirement -->
+    <% metadata_fields.with_options(:grouping => 'ENA requirement') do |group| %>
+      <%= group.select(:sample_sra_hold, Sample::SRA_HOLD_VALUES) %>
+      <%= group.text_field(:sample_common_name, 'data-organism' => 'common_name') %>
+      <%= group.text_field(:sample_taxon_id,    'data-organism' => 'taxon_id') %>
+    <% end %>
+
+    <!-- SRA attributes -->
+    <% metadata_fields.with_options(:grouping => 'SRA attributes') do |group| %>
+      <%= group.text_field(:sample_strain_att) %>
+      <%= group.text_field(:sample_description) %>
+    <% end %>
+
+    <!-- SRA Sample AN -->
+    <% metadata_fields.with_options(:grouping => 'SRA Sample AN') do |group| %>
+      <%= group.text_field(:sample_ebi_accession_number) %>
+    <% end %>
+    
+    <%= metadata_fields.select_by_association(:reference_genome)%>
+
+    <!-- array express field -->
+    <%= metadata_fields.checktext_field(:genotype) %>
+    <%= metadata_fields.checktext_field(:phenotype) %>
+    <%= metadata_fields.checktext_field(:age) %>
+    <%= metadata_fields.checktext_field(:developmental_stage) %>
+    <%= metadata_fields.checktext_field(:cell_type) %>
+    <%= metadata_fields.checktext_field(:disease_state) %>
+    <%= metadata_fields.checktext_field(:compound) %>
+    <%= metadata_fields.checktext_field(:dose) %>
+    <%= metadata_fields.checktext_field(:immunoprecipitate) %>
+    <%= metadata_fields.checktext_field(:growth_condition) %>
+    <%= metadata_fields.checktext_field(:rnai) %>
+    <%= metadata_fields.checktext_field(:organism_part) %>
+    <%= metadata_fields.checktext_field(:time_point) %>
+
+    <!-- EGA field -->
+    <%= metadata_fields.checktext_field(:subject) %>
+    <%= metadata_fields.checktext_field(:disease) %>
+    <%= metadata_fields.checktext_field(:treatment)%>
+
+    <%  metadata_fields.finalize_related_fields %>
+  <% end %>
+<% end %>
+
+<%= organism_validation_javascript %>

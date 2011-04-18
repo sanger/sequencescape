@@ -1,0 +1,10 @@
+<h2>Input requests</h2>
+<%= render :partial => "batch_statuses" %>
+<%= render :partial => 'pipeline_limit' %>
+
+<% form_tag({:controller => :batches, :action => :create, :id => @pipeline.id}, :id => "assets_to_batch_form") do -%>
+  <%= render :partial => "assets" %>
+  <%= render :partial => 'inbox_submission_button' %>
+<%- end -%>
+<%= render :partial => 'show_held_requests' %>
+

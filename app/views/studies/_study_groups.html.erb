@@ -1,0 +1,30 @@
+<div class="yui-gf">
+<div class="yui-u first grouped_items"  style="width: 20%">
+  <% @alternatives.each_with_index do |description, index| -%>
+    <div class="grouped_item" id="<%= index %>_link">
+      <%= link_to description.humanize, studies_path(:scope => index) %>
+    </div>
+  <% end -%>
+</div>
+
+<div class="yui-u group_contents">
+
+  <%= loading_bar %>
+  <div class="group_content" id="everything">
+    <script>
+    Event.observe(window, 'load', function() {
+      <%= remote_function(:url => study_list_studies_path(:scope => scope),
+        :update => "everything",
+        :method => :get,
+        :loading => "Element.show('loading')",
+        :complete => "TableKit.load();
+          TableKit.heads['study_list'] = null;
+          TableKit.rows['study_list'] = null;
+          TableKit.Sortable.init('study_list');
+          Element.highlight('study_list');
+          Element.hide('loading')") %>
+    });
+    </script>
+  </div>
+</div>
+</div>

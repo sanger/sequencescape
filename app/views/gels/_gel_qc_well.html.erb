@@ -1,0 +1,7 @@
+<% if well && well.sample %>
+  <% if ! well.sample.sample_empty?  %>
+    <%= hidden_label_tag_for_testing(well_description.downcase, "Well #{well_description}") %>
+    <%= gel_qc_select_box(well, well.well_attribute.gel_pass, :generate_blank => true, :id => well_description.downcase) %>
+  <% end %>
+<% end %>
+

@@ -1,0 +1,27 @@
+<% add :title, "Contacts for study." -%>
+<% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(@study) -%>
+<% if current_user.is_administrator? || current_user.is_manager?(@study) %>
+  <% add :menu, "Edit" => edit_study_path(@study) -%>
+<% end %>
+
+<div id="content-links">
+  <%= link_to "View status", study_path(@study) %>
+</div>
+
+<h1><%= @study.name %> : Contacts</h1>
+<div class='subtitle'>
+Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(:long) %> &middot; <%= @study.state.capitalize %>
+</div>
+<div id="role_list">
+  <!-- renders all roles on this study -->
+  <%= render :partial => "roles" -%>
+</div>
+
+<% if current_user.administrator? -%>
+  <hr>
+  <!-- renders all available roles with all users form -->
+  <div style="text-align:center">
+    <h3 id="add_new_role">Assign roles to users</h3>
+    <%= render :partial => "role" -%>
+  </div>
+<% end -%>

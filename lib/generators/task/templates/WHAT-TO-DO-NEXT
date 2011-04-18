@@ -1,0 +1,5 @@
+Edit app/controllers/workflows_controller.rb and add this line to the list of modules:
+  include Tasks::<%= singular_name.camelize %>Handler 
+  
+Edit the migration to set the pipeline workflow that you want the task to be part of.
+

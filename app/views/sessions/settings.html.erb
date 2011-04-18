@@ -1,0 +1,17 @@
+<%= add :title, "Settings" %>
+<%= add :help, "You are logged in as #{current_user.login}" %>
+
+<div id="main-items">
+  <div id="item">
+    Your API key is:<br />
+    <code><%= current_user.api_key %></code>
+  </div>
+</div>
+
+<div id="main-links">
+  <div id="callouts">
+    <div class="info_callout">
+      You can use your API key to access your studies, samples and requests programmatically.
+    </div>
+  </div>
+</div>

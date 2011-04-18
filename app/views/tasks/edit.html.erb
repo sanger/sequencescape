@@ -1,0 +1,94 @@
+<%= render_title "Edit '#{@task.name}'" %>
+<%= render_help 'Update your task definition here.'%>
+
+<% form_for(:task, :url => task_path(@task), :html => { :id => 'task_form', :method => :put }) do |f| %>
+
+<div id='yield'>
+  <div id='main-items'>
+    <div id='template'>
+      <%= error_messages_for :family %>
+      <p>
+        <strong>Name</strong><br />
+        <%= f.text_field :name, :size => '42' %>
+      </p>
+      <p>
+        <strong>Location</strong><br />
+        <%= f.text_field :location, :size => '42' %>
+      </p>
+
+      <p>
+      <%= f.check_box :interactive %> <strong>Interactive laboratory task</strong>
+      </p>
+
+      <p>
+      <%= f.check_box :per_item %> <strong>Assign individual descriptors per sample</strong>
+      </p>
+
+      <p>
+      <%= f.check_box :batched %> <strong>Process entire batch of samples</strong>
+      </p>
+
+      <% @task.get_subclass_attributes.each do |att_name| %>
+        <%
+          options = @task.get_subclass_attribute_options(att_name)
+          pretty_name = options[:display_name] || att_name
+          value = @task.get_subclass_attribute_value(att_name, :undefined)
+        %>
+        <p>
+        <% case options[:kind]
+         when :bool %>
+         <%= f.check_box att_name %> <strong> <%=pretty_name %></strong>
+         <% when :selection
+            choices = options[:choices]
+            choices = choices.call if choices.is_a? Proc
+            select_options = ( options[:options] || {})
+       %>
+       <strong><%= pretty_name %></strong> <%= f.select att_name, choices, select_options %> 
+        <% else %>
+<strong><%=pretty_name %></strong> <%= f.text_field pretty_name %>
+        <%end%>
+        </p>
+
+
+      <% end %>
+
+
+      <%= render :partial => 'descriptors' %>
+
+      <p>
+        <%= submit_tag "Update" %> or <%= link_to 'cancel', workflows_path %>
+      </p>
+    </div>
+  </div>
+  <div id='main-links'>
+    <div id='callouts'>
+      <div class='callout'>
+        <% if @task.families.empty? %>
+          No assets
+        <% else %>
+          <div class='callout-title'>
+            Assests
+          </div>
+          <ul>
+          <% @task.families.each do |family| -%>
+            <li><%= family.name %> <%= link_to 'x', family_path(family), :method => :delete %></li>
+          <% end -%>
+          </ul>
+        <% end %>
+      </div>
+    </div>
+    <div>
+      <span class='bullet'>&raquo;</span> <%= link_to 'Specify assets', :controller => 'families', :action => 'new', :id => @task.id %>
+      <div class='helper'>Detail items to be created during this pipeline</div>
+    </div>
+    <div>
+      <br />
+      <span class='bullet'>&raquo;</span> <%= link_to 'Delete task', task_path(@task), :method => :delete %>
+      <div class='helper'>Remove this task from the pipeline</div>
+    </div>
+
+  </div>
+  <br clear='all' />
+</div>
+
+<% end %>

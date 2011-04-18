@@ -1,0 +1,4 @@
+<li><strong><%= event_request.asset ? event_request.asset.name : "<nil>" %></strong></li>
+<ul>
+<%= render :partial => 'event', :collection => event_request.lab_events_for_batch(@batch) %>
+</ul>

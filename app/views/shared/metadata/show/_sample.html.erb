@@ -1,0 +1,68 @@
+<%# NOTE[xxx]: Kind of a hack because we're not actually building a form %>
+<% fields_for(sample) do |form| %>
+  <% form.fields_for(:sample_metadata, :builder => Metadata::ViewBuilder) do |metadata_fields| %>
+    <% metadata_fields.filter { |field| current_user.workflow.visible_attribute?(field) } %>
+
+    <%# Fields for 'Microarray genotyping' %>
+    <%= metadata_fields.plain_value(:cohort) %>
+    <%= metadata_fields.plain_value(:gender) %>
+    <%= metadata_fields.plain_value(:country_of_origin) %>
+    <%= metadata_fields.plain_value(:geographical_region) %>
+    <%= metadata_fields.plain_value(:ethnicity) %>
+    <%= metadata_fields.plain_value(:dna_source) %>
+    <%= metadata_fields.plain_value(:volume) %>
+    <%= metadata_fields.plain_value(:supplier_plate_id) %>
+    <%= metadata_fields.plain_value(:mother) %>
+    <%= metadata_fields.plain_value(:father) %>
+    <%= metadata_fields.plain_value(:replicate) %>
+
+    <%# Fields for 'Next-gen sequencing' %>
+    <%= metadata_fields.plain_value(:organism) %>
+    <%= metadata_fields.plain_value(:gc_content) %>
+
+    <!-- SRA -->
+    <% metadata_fields.with_options(:grouping => 'SRA') do |group| %>
+      <%= group.plain_value(:sample_public_name) %>
+    <% end %>
+
+    <!-- ENA requirement -->
+    <% metadata_fields.with_options(:grouping => 'ENA requirement') do |group| %>
+      <%= group.plain_value(:sample_sra_hold) %>
+      <%= group.plain_value(:sample_common_name) %>
+      <%= group.plain_value(:sample_taxon_id) %>
+    <% end %>
+
+    <!-- SRA attributes -->
+    <% metadata_fields.with_options(:grouping => 'SRA attributes') do |group| %>
+      <%= group.plain_value(:sample_strain_att) %>
+      <%= group.plain_value(:sample_description) %>
+    <% end %>
+
+    <!-- SRA Sample AN -->
+    <% metadata_fields.with_options(:grouping => 'SRA Sample AN') do |group| %>
+      <%= group.plain_value(:sample_ebi_accession_number) %>
+    <% end %>
+    
+    <%= metadata_fields.association_attribute(:reference_genome, :name) %> 
+    <!-- array express field -->
+    <%= metadata_fields.plain_value(:genotype) %>
+    <%= metadata_fields.plain_value(:phenotype) %>
+    <%= metadata_fields.plain_value(:age) %>
+    <%= metadata_fields.plain_value(:developmental_stage) %>
+    <%= metadata_fields.plain_value(:cell_type) %>
+    <%= metadata_fields.plain_value(:disease_state) %>
+    <%= metadata_fields.plain_value(:compound) %>
+    <%= metadata_fields.plain_value(:dose) %>
+    <%= metadata_fields.plain_value(:immunoprecipitate) %>
+    <%= metadata_fields.plain_value(:growth_condition) %>
+    <%= metadata_fields.plain_value(:rnai) %>
+    <%= metadata_fields.plain_value(:organism_part) %>
+    <%= metadata_fields.plain_value(:time_point) %>
+
+    <!-- EGA field -->
+    <%= metadata_fields.plain_value(:subject) %>
+    <%= metadata_fields.plain_value(:disease) %>
+    <%= metadata_fields.plain_value(:treatment)%>
+
+  <% end %>
+<% end %>

@@ -1,0 +1,27 @@
+<%= descriptor_javascript_support('pipelines/assets', 'stage') %>
+
+<% @task.families.each do |family| -%>
+<div class="info">
+  Add: <% link_to_add_asset(family) do %><%= family.name %><% end %>
+</div>
+<div class="section">
+<% table_style = @batch.assets.empty? ? 'none' : 'table'-%>
+<table width='100%' cellpadding='4' cellspacing='0' id='descriptors' style='display: <%= table_style %>;'>
+  <tr class='header'>
+    <th>Sample</th>
+    <% family.descriptors.each do |descriptor| %>
+    <th><%= descriptor.name %></th>
+    <% end %>
+    <th>&nbsp;</th>
+  </tr>
+  <% @batch.assets.each do |asset| -%>
+  <tr>
+    <td><%= asset.name %></td>
+    <% family.descriptors.each do |descriptor| -%>
+    <td><%= asset.descriptor_value descriptor.name %></td>
+    <% end -%>
+  </tr>
+  <% end -%>
+</table>
+<% end -%>
+</div>

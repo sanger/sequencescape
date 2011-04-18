@@ -1,0 +1,39 @@
+<% form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
+
+<p>Confirm the protocol to be used for each library.</p>
+
+
+<table id="reference_sequence" width="50%" class="sortable" cellpadding="2" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Tube</th>
+      <th>Reference</th>
+      <th id="protocol">Protocol</th>
+      <th>Study</th>
+      <th>Common Name</th>
+      <th>Taxon</th>
+      <th>Strain</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% @assets.each do |asset| %>
+    <tr>
+      <td><%= asset.barcode %></td>
+      <td><%= asset.try(:sample).try(:sample_reference_genome).try(:name) %></td>
+      <td><%= select_tag "asset[#{asset.id}]", options_for_select(asset.protocols_for_select) %></td>
+      <td><%= asset.study.name %></td>
+      <td><%= asset.sample.sample_metadata.sample_common_name %></td>
+      <td><%= asset.sample.sample_metadata.sample_taxon_id %></td>
+      <td><%= asset.sample.sample_metadata.sample_strain_att %></td>
+    </tr>
+  <% end%>
+  </tbody>
+</table>
+
+<% @assets.each do |asset| %>
+  <%= label_tag( "asset[#{asset.id}]", "Protocol for Tube #{asset.barcode}", :style => 'display:none;') %>
+<% end %>
+
+<%= render :partial => "next_stage_submit" %>
+
+<% end %>

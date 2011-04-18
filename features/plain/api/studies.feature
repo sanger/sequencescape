@@ -1,0 +1,91 @@
+# rake features FEATURE=features/plain/api/studies.feature
+@api @json @study @allow-rescue @study_api 
+Feature: Interacting with studies through the API
+  Background:
+    Given all of this is happening at exactly "16-September-2010 13:45:00+01:00"
+
+    Given I am using version "0_5" of a legacy API
+
+  Scenario: Listing all of the studies that exist if there aren't any
+    When I GET the API path "/studies"
+    Then the JSON should be an empty array
+
+  Scenario: Listing all of the studies that exist
+    Given I have an active study called "Testing the JSON API"
+    And the UUID for the study "Testing the JSON API" is "00000000-1111-2222-3333-444444444444"
+    And the faculty sponsor for study "Testing the JSON API" is "John Smith"
+
+    When I GET the API path "/studies"
+    Then ignoring "id" the JSON should be:
+      """
+      [
+        {
+          "study": {
+            "uuid": "00000000-1111-2222-3333-444444444444",
+            "name": "Testing the JSON API",
+            "ethically_approved": false,
+            "reference_genome": "",
+            "study_type": "Not specified",
+            "abstract": null,
+            "sac_sponsor": "John Smith",
+            "abbreviation": "WTCCC",
+            "accession_number": null,
+            "description": "Some study on something",
+            "state": "active",
+            "contaminated_human_dna": "No",
+            "contains_human_dna": "No",
+            "commercially_available": "No",
+            "data_release_sort_of_study": "genomic sequencing",
+            "data_release_strategy": "open",
+            "study_visibility": "Hold",
+            "projects": "http://localhost:3000/0_5/studies/00000000-1111-2222-3333-444444444444/projects",
+            "samples": "http://localhost:3000/0_5/studies/00000000-1111-2222-3333-444444444444/samples",
+
+            "id": 1,
+            "created_at": "2010-09-16T13:45:00+01:00",
+            "updated_at": "2010-09-16T13:45:00+01:00"
+          }
+        }
+      ]
+      """
+
+  Scenario: Retrieving the JSON for a study that does not exist
+    When I GET the API path "/studies/00000000-1111-2222-3333-444444444444"
+    Then the HTTP response should be "404 Not Found"
+
+  Scenario: Retrieving the JSON for a particular study
+    Given I have an active study called "Testing the JSON API"
+    And the UUID for the study "Testing the JSON API" is "00000000-1111-2222-3333-444444444444"
+    And the faculty sponsor for study "Testing the JSON API" is "John Smith"
+
+    When I GET the API path "/studies/00000000-1111-2222-3333-444444444444"
+    Then ignoring "id" the JSON should be:
+      """
+      {
+        "study": {
+          "uuid": "00000000-1111-2222-3333-444444444444",
+          "name": "Testing the JSON API",
+          "ethically_approved": false,
+          "reference_genome": "",
+          "study_type":  "Not specified",
+          "abstract": null,
+          "sac_sponsor": "John Smith",
+          "abbreviation": "WTCCC",
+          "accession_number": null,
+          "description": "Some study on something",
+          "state": "active",
+          "contaminated_human_dna": "No",
+          "contains_human_dna": "No",
+          "commercially_available": "No",
+          "study_visibility": "Hold",
+          "data_release_sort_of_study": "genomic sequencing",
+          "data_release_strategy": "open",
+          "projects": "http://localhost:3000/0_5/studies/00000000-1111-2222-3333-444444444444/projects",
+          "samples": "http://localhost:3000/0_5/studies/00000000-1111-2222-3333-444444444444/samples",
+
+          "id": 1,
+          "created_at": "2010-09-16T13:45:00+01:00",
+          "updated_at": "2010-09-16T13:45:00+01:00"
+        }
+      }
+      """

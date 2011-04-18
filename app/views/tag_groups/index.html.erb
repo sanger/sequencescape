@@ -1,0 +1,27 @@
+<h1>Listing Tag Groups</h1>
+
+<table width="100%" cellspacing="0" cellpadding="5">
+  <thead>
+    <th>Name</th>
+    <th>No. of Tags</th>
+    <th></th>
+		<th></th>
+  </thead>
+
+<% for tag_group in @tag_groups %>
+  <tr>
+    <td><%=h tag_group.name %></td>
+    <td><%=h tag_group.tags.count %></td>
+    <td><%= link_to 'Show', tag_group %></td>
+    <td><% if current_user.administrator? %><%= link_to 'Edit', edit_tag_group_path(tag_group) %><% end %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+<script type="text/javascript">$$('table tbody > tr:nth-child(even)').invoke('addClassName', 'roweven');</script>
+
+<% if current_user.administrator? %>
+<%= link_to 'New Tag Group with 12 tags', new_tag_group_path(:number_of_tags => 12) %>
+<%= link_to 'New Tag Group with 96 tags', new_tag_group_path(:number_of_tags => 96) %>
+<% end %>

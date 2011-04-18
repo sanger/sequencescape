@@ -1,0 +1,14 @@
+<h2>Results:</h2>
+<div class="info">
+  <% each_non_empty_search_result do |kind,results| %>
+    <h4><%= pluralize(results.size, kind) %></h4>
+    <ul>
+      <%= render :partial => "searches/show/#{ kind }", :collection => results %>
+    </ul>
+  <% end %>
+</div>
+<% if @studies.empty? && @samples.empty? && @items.empty? && @assets.empty? && @requests.empty? -%>
+  <div class="info">
+    <h3>No results</h3>
+  </div>
+<% end -%>

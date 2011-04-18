@@ -1,0 +1,25 @@
+<table width="100%" cellspacing="0" cellpadding="0">
+  <% if @task.per_item %>
+    <% @batch.requests.each do |request| %>
+    <tr>
+      <td width='35%' class='item'>Name: </td>
+      <td width='65%'>
+      <% unless request.sample.nil? -%>
+         <%= request.sample.name -%>
+      <% end %>
+      </td>
+    </tr>
+      <%= render :partial => 'descriptor', :collection => @task.descriptors, :locals => {:request => request } %>
+    <% end %>
+  <% else %>
+    <% if @task.descriptors.empty? or  @task.descriptors.first.name == "" %>
+      <tr>
+      <td colspan="2">No additional information required: this space left intentionally blank.</td>
+      </tr>
+    <% else %>
+      <%= render :partial => 'descriptor', :collection => @task.descriptors, :locals => {:request => nil } %>
+    <% end %>
+  <% end %>
+</table>
+
+

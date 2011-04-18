@@ -1,0 +1,41 @@
+<script language="javascript">
+  document.observe('dom:loaded', function() {
+    (function(undefined) {
+      var hide = function(elements) {
+        elements.each(function(e) {
+          // TODO[xxx]: Ideally want to disable any input/select/textarea fields to prevent them being sent back
+          e.hide();
+        });
+      };
+      var show = function(elements) {
+        elements.each(function(e) {
+          // TODO[xxx]: Enable the input/select/textarea fields
+          e.show();
+        });
+      };
+
+      var valueFrom = function(element) { return element.value.toLowerCase().replace(/[^a-z0-9]+/, '_'); };
+
+      observe = function(id) {
+        var selectRelatedFor = function(value) { return $$('.related_to.' + id + '.' + value); }
+        element = $('<%= root %>_' + id);
+
+        var previousValue = valueFrom(element);
+        element.observe('change', function() {
+          value = valueFrom(this);
+          if (previousValue != undefined) { hide(selectRelatedFor(previousValue)); }
+          show(selectRelatedFor(value));
+          previousValue = value;
+        });
+
+        // Hide all of the DIVs and then show the current value
+        hide($$('.related_to.' + id));
+        show(selectRelatedFor(previousValue));
+      };
+
+    <% related.each do |field| %>
+      observe(<%= field.inspect %>);
+    <% end %>
+    })();
+  });
+</script>
