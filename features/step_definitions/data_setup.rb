@@ -3,7 +3,7 @@ Given /^data are preloaded from "([^\"]+)" renaming:$/ do |file_name, table|
   table.rows.each do |old_name, new_name|
     names_map[old_name]= new_name
   end
-  object_parameters = YAML::load(File.read("data/#{file_name}_setup.yml"))
+  object_parameters = YAML::load(File.read("data/setup/#{file_name}.yml"))
   object_parameters.each do |parameter|
     klass = parameter[:class].constantize
     object_id = parameter[:id]

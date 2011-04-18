@@ -88,12 +88,29 @@ Feature: move samples and assets between studies
     Then I should see "study to"
     And I should not see "study from"
     @developping @production_sample
-  Scenario: real one from production
+  Scenario: move sample example from production
     #Given data are preloaded from "12073277"
+  @production_sample
+  Scenario: move sample in well. example from production
+    # real life example which was not working in user story 12073277
+    Given data are preloaded from "12073277_sample_in_well" renaming:
+      | Study_1700_name | study_from |
+    When I am on the assets page for the study "study_from"
+    Then show me the page
+    @production_sample
+  Scenario: move sample and co from production
     Given data are preloaded from "12073277_II" renaming:
       | old name | new name |
       | Sample_1082059_name | sample_to_move |
-      |Study_1757_name | study_from |
+      | Study_1757_name | study_from |
+      | SampleTube_2159892_name | sample_tube_to_move |
+
+    When I am on the assets page for the study "study_from"
+    When I am on the show page for asset "sample_tube_to_move"
     When I move sample "sample_to_move" from study "study_from" to "study to"
+    When I am on the assets page for the study "study_from"
+    Then I should not see "sample_tube_to_move"
+    When I am on the assets page for the study "study to"
+    Then I should see "sample_tube_to_move"
     Then show me the page
 

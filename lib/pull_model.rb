@@ -17,7 +17,7 @@ class ActiveRecord::Base
     self.to_pull.each do |model|
       pulled += self.send(model).pull()
     end
-    return pulled << self
+    return (pulled << self).flatten
   end
 end
 
@@ -39,6 +39,8 @@ Models = {
     Sample => [:assets, :study_samples],
     StudySample => [:study],
     Asset => [:requests, :children, :parents],
+    Well => [:container_association],
+    ContainerAssociation => [:container, :content] ,
     Request => [:submission, :asset, :target_asset, :request_metadata, :user],
     Submission => [:asset_group]
   }
@@ -83,7 +85,7 @@ def object_to_hash(object)
       att[k] = "#{object.class.name}_#{object.id}_#{k}"
     end
   end
-  att
+  att.reject { |k,v| !v }
 end
 def objects_to_script(objects)
   objects.map do |object|

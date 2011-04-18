@@ -198,6 +198,33 @@
   :class: LinearSubmission
   :id: 9072
 - :attributes: 
+    name: Plate_2159947_name
+    material_id: 
+    size: 96
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 3
+    public_name: 
+    resource: 
+    archive: 
+    barcode: "501184"
+    concentration: 
+    id: 2159947
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 1
+    plate_purpose_id: 
+    qc_state: 
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: 
+    map_id: 
+    sti_type: Plate
+  :class: Plate
+  :id: 2159947
+- :attributes: 
     name: Well_2159937_name
     material_id: 1082059
     size: 
@@ -940,6 +967,33 @@
   :class: LinearSubmission
   :id: 9073
 - :attributes: 
+    name: Plate_2159962_name
+    material_id: 
+    size: 96
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 3
+    public_name: 
+    resource: 
+    archive: 
+    barcode: "501189"
+    concentration: 
+    id: 2159962
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 1
+    plate_purpose_id: 
+    qc_state: 
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: 
+    map_id: 
+    sti_type: Plate
+  :class: Plate
+  :id: 2159962
+- :attributes: 
     name: Well_2159961_name
     material_id: 1082059
     size: 
@@ -1104,6 +1158,33 @@
   :class: LinearSubmission
   :id: 9083
 - :attributes: 
+    name: Plate_2160000_name
+    material_id: 
+    size: 96
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 3
+    public_name: 
+    resource: 
+    archive: 
+    barcode: "501196"
+    concentration: 
+    id: 2160000
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 1
+    plate_purpose_id: 
+    qc_state: 
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: 
+    map_id: 
+    sti_type: Plate
+  :class: Plate
+  :id: 2160000
+- :attributes: 
     name: Well_2159999_name
     material_id: 1082059
     size: 
@@ -1261,6 +1342,33 @@
   :class: LinearSubmission
   :id: 9084
 - :attributes: 
+    name: Plate_2160003_name
+    material_id: 
+    size: 96
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 3
+    public_name: 
+    resource: 
+    archive: 
+    barcode: "501197"
+    concentration: 
+    id: 2160003
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 1
+    plate_purpose_id: 
+    qc_state: 
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: 
+    map_id: 
+    sti_type: Plate
+  :class: Plate
+  :id: 2160003
+- :attributes: 
     name: Well_2160002_name
     material_id: 1082059
     size: 
@@ -1417,6 +1525,33 @@
     sti_type: LinearSubmission
   :class: LinearSubmission
   :id: 9088
+- :attributes: 
+    name: Plate_2160013_name
+    material_id: 
+    size: 96
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 3
+    public_name: 
+    resource: 
+    archive: 
+    barcode: "501200"
+    concentration: 
+    id: 2160013
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 1
+    plate_purpose_id: 
+    qc_state: 
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: 
+    map_id: 
+    sti_type: Plate
+  :class: Plate
+  :id: 2160013
 - :attributes: 
     name: Well_2160012_name
     material_id: 1082059

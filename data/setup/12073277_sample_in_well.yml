@@ -1,0 +1,66 @@
+--- 
+- :attributes: 
+    request_id: 3142701
+  :class: Request::Metadata
+  :id: 
+- :attributes: 
+    request_type_id: 11
+    priority: 0
+    id: 3142701
+    study_id: 1700
+    state: pending
+    asset_id: 2382022
+  :class: Request
+  :id: 3142701
+- :attributes: 
+    name: Plate_2382022_name
+    size: 96
+    holder_type: Location
+    holder_id: 3
+    barcode: "180363"
+    id: 2382022
+    plate_purpose_id: 2
+    barcode_prefix_id: 1
+    sti_type: Plate
+  :class: Plate
+  :id: 2382022
+- :attributes: 
+    content_id: 2382025
+    id: 2135599
+    container_id: 2382022
+  :class: ContainerAssociation
+  :id: 2135599
+- :attributes: 
+    holder_type: Asset
+    holder_id: 2382022
+    id: 2382025
+    sample_id: 1115606
+    barcode_prefix_id: 4
+    sti_type: Well
+    map_id: 25
+  :class: Well
+  :id: 2382025
+- :attributes: 
+    name: Study_1700_name
+    enforce_data_release: true
+    reference_genome_id: 43
+    id: 1700
+    enforce_accessioning: true
+    user_id: 427
+    state: active
+  :class: Study
+  :id: 1700
+- :attributes: 
+    id: 2428112
+    study_id: 1700
+    sample_id: 1115606
+  :class: StudySample
+  :id: 2428112
+- :attributes: 
+    name: Sample_1115606_name
+    new_name_format: true
+    sample_manifest_id: 156
+    sanger_sample_id: 1700STDY5093219
+    id: 1115606
+  :class: Sample
+  :id: 1115606
