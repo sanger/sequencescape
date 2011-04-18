@@ -11,12 +11,8 @@ class Sample < ActiveRecord::Base
   include Named
   extend EventfulRecord
   has_many_events do 
-    def created_using_sample_manifest!(user)
-      Event::SampleManifestEvent.created_sample!(self.proxy_owner, user).tap { |event| self << event }
-    end
-    def updated_using_sample_manifest!(user)
-      Event::SampleManifestEvent.updated_sample!(self.proxy_owner, user).tap { |event| self << event }
-    end
+    event_constructor(:created_using_sample_manifest!, Event::SampleManifestEvent, :created_sample!)
+    event_constructor(:updated_using_sample_manifest!, Event::SampleManifestEvent, :updated_sample!)
   end
   
   has_many_lab_events
@@ -40,6 +36,7 @@ class Sample < ActiveRecord::Base
       self.detect { |asset| asset.is_a?(asset_class) }
     end
   end
+  has_many :wells
 
   has_many :submissions, :through => :requests, :uniq => true
   belongs_to :sample_manifest

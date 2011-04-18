@@ -40,26 +40,26 @@ Feature: Access sample manifests through the API
     And the JSON should match the following for the specified fields:
       """
       {
-        sample_manifest: {
-          actions: {
-            read: "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
+        "sample_manifest": {
+          "actions": {
+            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
           },
-          study: {
-            actions: {
-              read: "http://www.example.com/api/1/22222222-3333-4444-5555-000000000000"
+          "study": {
+            "actions": {
+              "read": "http://www.example.com/api/1/22222222-3333-4444-5555-000000000000"
             }
           },
-          supplier: {
-            actions: {
-              read: "http://www.example.com/api/1/33333333-1111-2222-3333-444444444444"
+          "supplier": {
+            "actions": {
+              "read": "http://www.example.com/api/1/33333333-1111-2222-3333-444444444444"
             }
           },
 
-          uuid: "00000000-1111-2222-3333-444444444444",
-          state: "pending",
-          last_errors: null,
+          "uuid": "00000000-1111-2222-3333-444444444444",
+          "state": "pending",
+          "last_errors": null,
 
-          samples: [
+          "samples": [
             { "sanger_sample_id": "WTCCC01", "container":{ "well": "A01", "barcode": "DN1234567T" } },
             { "sanger_sample_id": "WTCCC02", "container":{ "well": "B01", "barcode": "DN1234567T" } },
             { "sanger_sample_id": "WTCCC03", "container":{ "well": "C01", "barcode": "DN1234567T" } },
@@ -157,9 +157,6 @@ Feature: Access sample manifests through the API
             { "sanger_sample_id": "WTCCC95", "container":{ "well": "G12", "barcode": "DN1234567T" } },
             { "sanger_sample_id": "WTCCC96", "container":{ "well": "H12", "barcode": "DN1234567T" } }
           ]
-        },
-        uuids_to_ids: {
-          "00000000-1111-2222-3333-444444444444": 1
         }
       }
       """
@@ -172,9 +169,9 @@ Feature: Access sample manifests through the API
     When I POST the following JSON to the API path "/22222222-3333-4444-5555-000000000000/sample_manifests/create_for_plate":
       """
       {
-        sample_manifest: {
-          supplier: "33333333-1111-2222-3333-444444444444",
-          count: 1
+        "sample_manifest": {
+          "supplier": "33333333-1111-2222-3333-444444444444",
+          "count": 1
         }
       }
       """
@@ -182,26 +179,26 @@ Feature: Access sample manifests through the API
     And the JSON should match the following for the specified fields:
       """
       {
-        sample_manifest: {
-          actions: {
-            read: "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
+        "sample_manifest": {
+          "actions": {
+            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
           },
-          study: {
-            actions: {
-              read: "http://www.example.com/api/1/22222222-3333-4444-5555-000000000000"
+          "study": {
+            "actions": {
+              "read": "http://www.example.com/api/1/22222222-3333-4444-5555-000000000000"
             }
           },
-          supplier: {
-            actions: {
-              read: "http://www.example.com/api/1/33333333-1111-2222-3333-444444444444"
+          "supplier": {
+            "actions": {
+              "read": "http://www.example.com/api/1/33333333-1111-2222-3333-444444444444"
             }
           },
 
-          uuid: "00000000-1111-2222-3333-444444444444",
-          state: "pending",
-          last_errors: null,
+          "uuid": "00000000-1111-2222-3333-444444444444",
+          "state": "pending",
+          "last_errors": null,
 
-          samples: [
+          "samples": [
             { "sanger_sample_id": "WTCCC1",  "container":{ "well": "A01", "barcode": "DN1234567T" } },
             { "sanger_sample_id": "WTCCC2",  "container":{ "well": "B01", "barcode": "DN1234567T" } },
             { "sanger_sample_id": "WTCCC3",  "container":{ "well": "C01", "barcode": "DN1234567T" } },
