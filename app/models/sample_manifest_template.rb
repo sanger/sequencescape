@@ -4,25 +4,29 @@ class SampleManifestTemplate < ActiveRecord::Base
 
   def self.populate()
     transaction do 
-      base_template = SampleManifestTemplate.create!(:name => "default layout",
-                                                      :path => "/data/base_manifest.xls",
-                                                      :cell_map => {
-        :study => [4,1],
-        :supplier => [5,1],
-        :number_of_plates => [6,1]
-      })
+      base_template = SampleManifestTemplate.create!(
+        :name => "default layout",
+        :path => "/data/base_manifest.xls",
+        :cell_map => {
+          :study => [4,1],
+          :supplier => [5,1],
+          :number_of_plates => [6,1]
+        }
+      )
 
       unless RAILS_ENV == "production"
-        base2_template = SampleManifestTemplate.create!(:name => "test layout",
-                                                        :path => "/data/base2_manifest.xls",
-                                                        :cell_map => {
-        :study => [3,1],
-        :supplier => [9,0],
-        :number_of_plates => [6,1]
-      },
-                                                       :default_values => {
-        "GENDER" => "Male"
-      })
+        base2_template = SampleManifestTemplate.create!(
+          :name => "test layout",
+          :path => "/data/base2_manifest.xls",
+          :cell_map => {
+            :study => [3,1],
+            :supplier => [9,0],
+            :number_of_plates => [6,1]
+          },
+          :default_values => {
+            "GENDER" => "Male"
+          }
+        )
       end
     end
   end
@@ -64,7 +68,7 @@ class SampleManifestTemplate < ActiveRecord::Base
     set_value(worksheet, :supplier,         Supplier.find(manifest.supplier_id).name)
     set_value(worksheet, :number_of_plates, manifest.count)  # NOT 'number_of_plates' BUT number of things!
 
-    current_row = SampleManifest::SPREADSHEET_OFFSET
+    current_row = manifest.spreadsheet_offset
     manifest.details do |details|
       worksheet[current_row, barcode_position]   = details[:barcode]
       worksheet[current_row, sample_id_position] = details[:sample_id]
@@ -74,6 +78,11 @@ class SampleManifestTemplate < ActiveRecord::Base
       current_row = current_row + 1
     end
 
+    # Truncate the number of rows in the spreadsheet.  This improves performance dramatically because the 
+    # number of rows in the original sheet is 9999, which means 20s of unnecessary data processing.  This
+    # change causes times to drop to < 1s. An extra offset is required because Excel does things in blocks
+    # of 32 rows
+    worksheet.dimensions[1] = current_row + 64
     Tempfile.open(File.basename(spreadsheet.io.path)) do |tempfile|
       spreadsheet.write(tempfile.path)  # Write out the spreadsheet
       tempfile.open                     # Reopen the temporary file

@@ -1,17 +1,4 @@
 class ::Io::SampleManifest < ::Core::Io::Base
-  # This module adds the behaviour we require from the SampleManifest module.
-  module ApiIoSupport
-    def self.included(base)
-      base.class_eval do
-        named_scope :include_samples, { :include => :samples }
-      end
-    end
-
-    def io_samples
-      core_behaviour.io_samples.map(&:as_json)
-    end
-  end
-
   class SampleMapper
     def initialize(sample, container)
       @sample, @container = sample, container
