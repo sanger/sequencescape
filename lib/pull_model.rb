@@ -33,6 +33,7 @@ class NilClass
   end
 end
 
+# Model descriptions can be specified for subclass. use :super to call include superclass definitions
 Models = {
   :sample_with_assets =>  {
     Sample => [:assets, :study_samples],
