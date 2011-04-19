@@ -31,6 +31,15 @@
   :class: ContainerAssociation
   :id: 2135599
 - :attributes: 
+    request_type_id: 11
+    priority: 0
+    id: 3142704
+    study_id: 1700
+    state: pending
+    asset_id: 2382025
+  :class: Request
+  :id: 3142704
+- :attributes: 
     holder_type: Asset
     holder_id: 2382022
     id: 2382025

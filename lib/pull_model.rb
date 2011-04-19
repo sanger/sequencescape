@@ -7,6 +7,10 @@ class ActiveRecord::Base
   def to_pull
     []
   end
+
+  def all_associations
+    self.class.reflect_on_all_associationsa.reject(&:through_reflection).map(&:name)
+  end
   def pull()
     #check if object has already been pulled
     key = [self.class.table_name, self.id]
@@ -33,7 +37,8 @@ class NilClass
   end
 end
 
-# Model descriptions can be specified for subclass. use :super to call include superclass definitions
+# Model descriptions can be specified for subclass.
+# use :skip_super to not include superclass association
 Models = {
   :sample_with_assets =>  {
     Sample => [:assets, :study_samples],
@@ -108,10 +113,11 @@ def install_model(model_name)
     raise "can't find model #{model_name}. Available models are #{Models.keys.inspect}" unless model
 
     model.each do |klass, list|
+      list.delete(:super)
       klass.class_eval <<-EOC
         def to_pull
           list = #{list.inspect}
-          if list.delete(:super)
+          unless list.delete(:skip_super)
             list.concat(super)
           end
           list
