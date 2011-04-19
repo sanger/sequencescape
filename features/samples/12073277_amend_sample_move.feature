@@ -2,10 +2,10 @@
 Feature: move samples and assets between studies
   Background:
     Given I am an "Administrator" user logged in as "me"
-    Given a study called "study from" exists
     Given a study called "study to" exists
 
   Scenario: move a sample without any asset
+    Given a study called "study from" exists
     Given I have a sample called "sample_to_move" with metadata
     And the sample "sample_to_move" belongs to the study "study from"
     When I move sample "sample_to_move" from study "study from" to "study to"
@@ -14,6 +14,7 @@ Feature: move samples and assets between studies
     And the sample "sample_to_move" should not belong to the study named "study from"
 
   Scenario: move a sample with one asset
+    Given a study called "study from" exists
     Given study "study from" has the following registered samples in sample tubes:
       | sample | sample tube |
       | sample_to_move | sample_tube_to_move|
@@ -28,6 +29,7 @@ Feature: move samples and assets between studies
     And I should not see "study from"
 
   Scenario: move a sample with assets from different study
+    Given a study called "study from" exists
     Given study "study from" has the following registered samples in sample tubes:
       | sample | sample tube |
       | sample_to_move | sample_tube_to_move|
@@ -50,6 +52,7 @@ Feature: move samples and assets between studies
     And I should not see "study from"
 
   Scenario: move all assets (including tag instance)
+    Given a study called "study from" exists
     Given study "study from" has the following registered samples in sample tubes:
       | sample | sample tube |
       | sample_to_move | sample_tube_to_move|
@@ -75,6 +78,7 @@ Feature: move samples and assets between studies
     Then I should see "study to"
     And I should not see "study from"
   Scenario: move a sample with one asset to a new submission
+    Given a study called "study from" exists
     Given study "study from" has the following registered samples in sample tubes:
       | sample | sample tube |
       | sample_to_move | sample_tube_to_move|
@@ -94,21 +98,33 @@ Feature: move samples and assets between studies
   Scenario: move sample in well. example from production
     # real life example which was not working in user story 12073277
     Given data are preloaded from "12073277_sample_in_well" renaming:
-      | Study_1700_name | study_from |
-    When I am on the assets page for the study "study_from"
+      | old name | new name |
+      | Study_1700_name | study from |
+      | Plate_2383022_name | plate |
+      | Sample_1115606_name | sample_to_move |
+    When I am on the assets page for the study "study from"
+    Then I should see "Plate" within "#assets_with_requests"
+    And I should see "Well" within "#assets_with_requests"
+
+    When I move sample "sample_to_move" from study "study from" to "study to"
+    When I am on the assets page for the study "study to"
     Then show me the page
+    Then I should see "Plate" within "#assets_with_requests"
+    And I should see "Well" within "#assets_with_requests"
+
+
     @production_sample
   Scenario: move sample and co from production
     Given data are preloaded from "12073277_II" renaming:
       | old name | new name |
       | Sample_1082059_name | sample_to_move |
-      | Study_1757_name | study_from |
+      | Study_1757_name | study from |
       | SampleTube_2159892_name | sample_tube_to_move |
 
-    When I am on the assets page for the study "study_from"
+    When I am on the assets page for the study "study from"
     When I am on the show page for asset "sample_tube_to_move"
-    When I move sample "sample_to_move" from study "study_from" to "study to"
-    When I am on the assets page for the study "study_from"
+    When I move sample "sample_to_move" from study "study from" to "study to"
+    When I am on the assets page for the study "study from"
     Then I should not see "sample_tube_to_move"
     When I am on the assets page for the study "study to"
     Then I should see "sample_tube_to_move"
