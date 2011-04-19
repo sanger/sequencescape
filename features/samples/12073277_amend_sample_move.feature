@@ -97,6 +97,7 @@ Feature: move samples and assets between studies
   @production_sample
   Scenario: move sample in well. example from production
     # real life example which was not working in user story 12073277
+    # only a well and plate with create asset request. No submission
     Given data are preloaded from "12073277_sample_in_well" renaming:
       | old name | new name |
       | Study_1700_name | study from |
@@ -107,10 +108,14 @@ Feature: move samples and assets between studies
     And I should see "Well" within "#assets_with_requests"
 
     When I move sample "sample_to_move" from study "study from" to "study to"
-    When I am on the assets page for the study "study to"
     Then show me the page
+    When I am on the assets page for the study "study from"
+    Then I should not see "sample_tube_to_move"
+
+    When I am on the assets page for the study "study to"
     Then I should see "Plate" within "#assets_with_requests"
     And I should see "Well" within "#assets_with_requests"
+    Then I should see "sample_tube_to_move"
 
 
     @production_sample
