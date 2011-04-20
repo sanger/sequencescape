@@ -63,7 +63,9 @@ Feature: Access sample manifests through the API
               "container": {
                 "barcode": "NT9999J"
               },
-              "sanger_sample_id": "WTCCC99"
+              "sample": {
+                "sanger_id": "WTCCC99"
+              }
             }
           ]
         }
@@ -110,8 +112,12 @@ Feature: Access sample manifests through the API
 
           "samples": [
             {
-              "container": { },
-              "sanger_sample_id": "WTCCC1"
+              "container": {
+
+              },
+              "sample": {
+                "sanger_id": "WTCCC1"
+              }
             }
           ]
         }
