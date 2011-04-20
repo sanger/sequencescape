@@ -20,7 +20,7 @@ module SampleManifest::PlateBehaviour
     def io_samples
       samples.map do |sample|
         container = sample.assets.first
-        ::Io::SampleManifest::SampleMapper.new(
+        ::ModelExtensions::SampleManifest::SampleMapper.new(
           sample,
           :barcode => container.plate.sanger_human_barcode,
           :well    => container.map.description.sub(/^([^\d]+)(\d)$/, '\10\2')
