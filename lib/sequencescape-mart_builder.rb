@@ -156,7 +156,7 @@ class Script < ActiveRecord::Migration
           :qc_state => asset.qc_state,
           :volume => asset.volume,
           :concentration => asset.concentration,
-          :location => asset.holder_type,
+          :location => (asset.is_a?(Well) ? 'Asset' : 'Location'),
           :scanned_date => preloaded_events[asset.id] #asset.scanned_in_date
         }
       end
@@ -223,12 +223,8 @@ class Script < ActiveRecord::Migration
         group.each do |mlreq|
           numrows = 0
           mlreq.tags.each do |idxlib|
-            if idxlib.material_type != "Sample"
-              # Guard against strangeness.  This makes it safer to use
-              # idxlib.material_id instead of sample_id; code is currently
-              # changing in this area.
-              raise "Expected (indexed) library of a Sample, but got a #{idxlib.material_type} on #{idxlib.inspect}"
-            end                  
+            # Guard against strangness.
+            raise "Expected (indexed) library of a Sample, but got one with a tag on #{idxlib.inspect}" unless idxlib.sample_id.present?
             next unless idxlib.is_a?(LibraryTube)
             tag = idxlib.get_tag 
             mlt = mlreq.asset
@@ -486,7 +482,7 @@ class Script < ActiveRecord::Migration
       end
     end
     run_in_parallel("sample_tube") do
-      SampleTube.find_in_batches(:include => :material) do |group| 
+      SampleTube.find_in_batches(:include => :sample) do |group| 
         stuffing = []
         group.each do |sample_tube|
           if sample_tube.sample

@@ -336,10 +336,7 @@ class BatchesController < ApplicationController
   end
 
   def sort
-    @requests_list = @batch.requests
-    @requests_list.each do |request|
-      request.set_position(@batch, params['requests_list'].index(request.id.to_s) + 1)
-    end
+    @batch.assign_positions_to_requests!(params['requests_list'].map(&:to_i))
     render :nothing => true
   end
 
