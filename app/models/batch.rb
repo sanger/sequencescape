@@ -120,17 +120,27 @@ class Batch < ActiveRecord::Base
     !self.control.nil?
   end
 
-  def shift_item_positions(position, number)
-    return unless number
-    self.requests.each do |r|
-      if r.position(self) >= position
-        unless r.asset && r.asset.resource?
-          r.set_position(self,  r.position(self) + number)
-#          r.save
-        end
+  # Sets the position of the requests in the batch to their index in the array.
+  def assign_positions_to_requests!(request_ids_in_position_order)
+    disparate_ids = batch_requests.map(&:request_id) - request_ids_in_position_order
+    raise StandardError, "Can only sort all requests at once" unless disparate_ids.empty?
+
+    BatchRequest.transaction do
+      batch_requests.each do |batch_request|
+        batch_request.move_to_position!(request_ids_in_position_order.index(batch_request.request_id)+1)
       end
     end
-    save
+  end
+
+  def shift_item_positions(position, number)
+    return unless number
+    BatchRequest.transaction do
+      batch_requests.each do |batch_request|
+        next unless batch_request.position >= position
+        next if batch_request.request.asset.try(:resource?)
+        batch_request.move_to_position!(batch_request.position + number)
+      end
+    end
 
     ordered_requests
   end

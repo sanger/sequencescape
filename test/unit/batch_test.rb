@@ -60,6 +60,47 @@ class BatchTest < ActiveSupport::TestCase
   
     should_change("BatchRequest.count", :by => 2) { BatchRequest.count }
   end
+
+  context 'modifying request positions within a batch' do
+    setup do
+      @requests = (1..10).map { |_| @pipeline.request_type.create! }
+      @batch    = @pipeline.batches.create!(:requests => @requests)
+    end
+
+    context "#assign_positions_to_requests!" do
+      should 'raise an exception if no requests are specified' do
+        assert_raises(StandardError) { @batch.assign_positions_to_requests!([]) }
+      end
+
+      should 'raise an exception if not all of the requests are specified' do
+        assert_raises(StandardError) { @batch.assign_positions_to_requests!(@requests.slice(3, 5).map(&:id)) }
+      end
+
+      should 'move the requests to different positions' do
+        @batch.assign_positions_to_requests!(@requests.reverse.map(&:id))
+
+        expected = Hash[@requests.reverse.each_with_index.map { |request,index| [ request.id, index+1 ] }]
+        actual   = Hash[@batch.batch_requests.map { |batch_request| [ batch_request.request_id, batch_request.position ] }]
+        assert_equal(expected, actual, "Positions of requests do not match")
+      end
+    end
+
+    context '#shift_item_positions' do
+      setup do
+        @requests.each { |r| r.update_attributes!(:asset => nil) }
+      end
+
+      should 'move the requests that are at, and after, the position by the number and have no asset' do
+        @batch.shift_item_positions(5, 2)
+
+        positions = [ 1, 2, 3, 4, 7, 8, 9, 10, 11, 12 ]
+        expected  = Hash[@requests.each_with_index.map { |request,index| [ request.id, positions[index] ] }]
+        actual    = Hash[@batch.batch_requests.map { |batch_request| [ batch_request.request_id, batch_request.position ] }]
+        assert_equal(expected, actual, "Positions of requests do not match")
+      end
+    end
+
+  end
   
   context "when batch is created" do
     setup do
