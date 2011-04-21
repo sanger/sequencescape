@@ -9,19 +9,22 @@
 </h1>
 <br />
 
-<% unless @assets_with_requests.blank? %>
+
+<div id="assets">
   <div id="assets_with_requests">
-    <strong>The following assets have had work requested on them</strong>
-    <%= render(:partial => 'table_of_assets', :locals => { :assets => @assets_with_requests, :study => @study }) %>
+  <% unless @assets_with_requests.blank? %>
+      <strong>The following assets have had work requested on them</strong>
+      <%= render(:partial => 'table_of_assets', :locals => { :assets => @assets_with_requests, :study => @study }) %>
+    <br />
+  <% end %>
   </div>
-  <br />
-<% end %>
-
-<%# will_paginate @assets_with_requests %>
-
-<% unless @assets_without_requests.blank? %>
+  
+  <%# will_paginate @assets_with_requests %>
+  
   <div ="assets_without_requests">
-    <strong>The following assets have not had work requested on them</strong>
-    <%= render(:partial => 'table_of_assets', :locals => { :assets => @assets_without_requests, :study => @study }) %>
+  <% unless @assets_without_requests.blank? %>
+      <strong>The following assets have not had work requested on them</strong>
+      <%= render(:partial => 'table_of_assets', :locals => { :assets => @assets_without_requests, :study => @study }) %>
+  <% end %>
   </div>
-<% end %>
+</div>

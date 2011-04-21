@@ -115,8 +115,8 @@ Feature: move samples and assets between studies
 
     When I move sample "sample_to_move" from study "study from" to "study to"
     When I am on the assets page for the study "study from"
-    Then I should not see "Plate" within "#assets_with_requests"
-    And I should not see "Well" within "#assets_with_requests"
+    Then I should not see "Plate" within "#assets"
+    And I should not see "Well" within "#assets"
 
     When I am on the assets page for the study "study to"
     Then I should see "Plate" within "#assets_with_requests"
