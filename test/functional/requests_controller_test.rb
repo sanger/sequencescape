@@ -75,7 +75,7 @@ class RequestsControllerTest < ActionController::TestCase
         @prop_value_before = "999"
         @prop_value_after = 666
 
-        @params = { :request_metadata_attributes => { :read_length => "37" }, :state => 'pending' }
+        @params = { :request_metadata_attributes => { :read_length => "37" }, :state => 'pending', :request_type_id => @our_request.request_type_id }
       end
 
       context "when not logged in" do
