@@ -44,7 +44,7 @@ module User::Authentication
         if u.nil?
           logger.error "Failed to find or create user #{login}"
         else
-          u.update_profile_via_ldap unless u.profile_complete?
+          u.send(:update_profile_via_ldap) unless u.profile_complete?
         end
         u
       else
