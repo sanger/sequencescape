@@ -531,4 +531,71 @@ class Study < ActiveRecord::Base
     receiver =  User.all_administrators_emails if receiver.empty?
     return receiver
 end
+
+  # return true if yes, false if not , and nil if we don't know
+  def affiliated_with?(object)
+    case
+    when object.respond_to?(:study_id)
+      self.id == object.study_id
+    when object.respond_to?(:study_ids)
+      object.study_ids.include?(self.id)
+    else
+      nil
+    end
+  end
+  # return true if all object have been saved successfully
+  # that's the caller responsibilitie to wrap the call in a transaction if needed
+  def take_sample(sample, study_from, user)
+    #debugger 
+    raise RuntimeError, "study_from not specified. Can't move a sample to a new study" unless study_from
+    objects_to_move =   sample.walk_objects(:sample => [:assets, :study_samples],
+                                     :request => [:submission],
+                                     :asset => [:requests, :children, :parents],
+                                     :well => :plate
+                                    ) do |object|
+                                      case study_from.affiliated_with?(object)
+                                      when true
+                                        object
+                                      when false
+                                        nil # we skip the object and its dependencies
+                                      else # nil
+                                        [] # don't return the object but check it's dependencies
+                                      end
+                                      # skip 
+                                      # nil from affiliated mean, we don't know, so we carry on pulling
+                                    end
+    return objects_to_move.map do |object|
+      take_object(object, user, study_from)
+      object.save
+    end.all?
+  end
+
+
+  private
+  # beware , this method change the study of an object but doesn't look at some 
+  #  eventual dependencies.
+  def take_object(object, user, study_from)
+    # we don't check if the object is related to study from. because this can change 
+    # if the object is  related through and we have just changed the association
+    # (example asset and via Request)
+    if object.respond_to?(:study=)
+      object.study = self
+    end
+
+    if object.respond_to?(:events) && study_from && study_from.affiliated_with?(object)
+      object.events.create(
+        :message => "#{object.class.name} #{object.id} is moved from Study  #{study_from.id} to Study #{self.id}",
+        :created_by => user.login,
+        :content => "#{object.class.name} moved by #{user.login}",
+        :of_interest_to => "administrators"
+      )
+
+      study_from.events.create(
+        :message => "#{object.class.name} #{object.id} is moved to Study #{self.id}",
+        :created_by => user.login,
+        :content => "#{object.class.name} moved by #{user.login}",
+        :of_interest_to => "administrators"
+      ) if study_from
+    end
+  end
 end

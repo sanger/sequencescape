@@ -34,9 +34,9 @@ Feature: move samples and assets between studies
       | sample | sample tube |
       | sample_to_move | sample_tube_to_move|
     Given I have a study called "to_stay study"
-    And  study "to_stay study" has the following samples in sample tubes:
-      | sample | sample tube |
-      | sample_to_move | sample_tube_to_stay|
+    #And  study "to_stay study" has the following samples in sample tubes:
+      #| sample | sample tube |
+      #| sample_to_move | sample_tube_to_stay|
     Given sample "sample_to_move" is in a sample tube named "sample_tube_to_stay"
     And the sample "sample_to_move" belongs to the study "to_stay study"
     And the asset "sample_tube_to_stay" belongs to study "to_stay study"
@@ -48,7 +48,7 @@ Feature: move samples and assets between studies
     And I should not see "study from"
 
     When I am on the show page for asset "sample_tube_to_stay"
-    Then I should see "other study"
+    Then I should see "to_stay study"
     And I should not see "study from"
 
   Scenario: move all assets (including tag instance)
@@ -108,14 +108,13 @@ Feature: move samples and assets between studies
     And I should see "Well" within "#assets_with_requests"
 
     When I move sample "sample_to_move" from study "study from" to "study to"
-    Then show me the page
     When I am on the assets page for the study "study from"
-    Then I should not see "sample_tube_to_move"
+    Then I should not see "Plate" within "#assets_with_requests"
+    And I should not see "Well" within "#assets_with_requests"
 
     When I am on the assets page for the study "study to"
     Then I should see "Plate" within "#assets_with_requests"
     And I should see "Well" within "#assets_with_requests"
-    Then I should see "sample_tube_to_move"
 
 
     @production_sample

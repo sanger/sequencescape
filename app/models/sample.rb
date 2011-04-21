@@ -280,7 +280,12 @@ class Sample < ActiveRecord::Base
     end
   end
 
-  def move_study_sample(study_from, study_to, current_user)
+  #todo move to Study
+  def move_to_study(study_from, study_to, asset_group, asset_group_name, user, submission_to)
+    study_to.take_sample(self, study_from, user)
+  end
+
+  def move_study_sample_quarantine(study_from, study_to, current_user)
     self.study_samples.each do |ps|
       ps.study_id = study_to.id
       ps.save
@@ -302,7 +307,7 @@ class Sample < ActiveRecord::Base
 
   end
 
-  def move_assets_to_submission(study_from, study_to, submission_to, current_user)
+  def move_assets_to_submission_quarantine(study_from, study_to, submission_to, current_user)
     submission_id_from = self.submissions.studies(study_from.id)
     if submission_id_from.size > 0
         submission_id_from.each do |submission_id_from_i|
@@ -318,7 +323,7 @@ class Sample < ActiveRecord::Base
     end
   end
 
-  def move(study_from, study_to, asset_group, new_assets_name, current_user, submission_to = nil)
+  def move_quarantine(study_from, study_to, asset_group, new_assets_name, current_user, submission_to = nil)
     move_result = true
     begin
       ActiveRecord::Base.transaction do

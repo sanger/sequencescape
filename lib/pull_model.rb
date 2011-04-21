@@ -3,39 +3,6 @@ $options = {:output_method => :objects_to_yaml, :model => :sample_with_assets}
 $objects = []
 $already_pulled = {}
 
-class ActiveRecord::Base
-  def to_pull
-    []
-  end
-
-  def all_associations
-    self.class.reflect_on_all_associationsa.reject(&:through_reflection).map(&:name)
-  end
-  def pull()
-    #check if object has already been pulled
-    key = [self.class.table_name, self.id]
-    return [] if $already_pulled.include?(key)
-    $already_pulled[key] = true
-
-    pulled = []
-    self.to_pull.each do |model|
-      pulled += self.send(model).pull()
-    end
-    return (pulled << self).flatten
-  end
-end
-
-class Array
-  def pull()
-    map {|e| e.pull() }.flatten
-  end
-end
-
-class NilClass
-  def pull()
-    []
-  end
-end
 
 # Model descriptions can be specified for subclass.
 # use :skip_super to not include superclass association
@@ -50,6 +17,7 @@ Models = {
     Submission => [:asset_group]
   }
 }
+
 optparse = OptionParser.new do |opts|
   opts.on('-s', '--sample id_or_name', 'sample to pull') do |sample|
     $objects<< [Sample, sample]
@@ -108,29 +76,17 @@ def objects_to_yaml(objects)
   end.to_yaml
 end
 
-def install_model(model_name)
+def find_model(model_name)
     model = Models[model_name]
     raise "can't find model #{model_name}. Available models are #{Models.keys.inspect}" unless model
-
-    model.each do |klass, list|
-      list.delete(:super)
-      klass.class_eval <<-EOC
-        def to_pull
-          list = #{list.inspect}
-          unless list.delete(:skip_super)
-            list.concat(super)
-          end
-          list
-        end
-        EOC
-    end
+    model
 end
+
 ARGV.shift  # to remove the -- needed using script/runner
 optparse.parse!
 #puts $options.to_yaml
 #puts $objects.to_yaml
 
-install_model($options[:model])
 
 
-puts send($options[:output_method], load_objects($objects).pull)
+puts send($options[:output_method], load_objects($objects).walk_objects(find_model($options[:model] )))

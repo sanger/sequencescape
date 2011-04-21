@@ -344,7 +344,7 @@ class SamplesController < ApplicationController
       @asset_group    = AssetGroup.find_or_create_asset_group(params[:new_assets_name], @study_to)
     end
 
-    result = @sample.move(@study_from, @study_to, @asset_group, params[:new_assets_name], current_user, params[:submission_id] )
+    result = @sample.move_to_study(@study_from, @study_to, @asset_group, params[:new_assets_name], current_user, params[:submission_id] )
     return result
   end
 
