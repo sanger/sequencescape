@@ -15,12 +15,17 @@ Models = {
     ContainerAssociation => [:container, :content] ,
     Request => [:submission, :asset, :target_asset, :request_metadata, :user],
     Submission => [:asset_group]
-  }
+  },
+  :bare => {}
 }
 
 optparse = OptionParser.new do |opts|
   opts.on('-s', '--sample id_or_name', 'sample to pull') do |sample|
     $objects<< [Sample, sample]
+  end
+
+  opts.on('-rt','--request_type', 'request types') do |request_types|
+    $objects<< [RequestType, request_types]
   end
 
   opts.on '-m' '--model', 'model of what needs to be pull' do |model_name|
@@ -54,7 +59,7 @@ end
 def object_to_hash(object)
   att =object.attributes.reject { |k,v| [ :created_at, :updated_at ].include?(k.to_sym) }
   att.each do |k,v|
-    if k =~ /name|login|email|decription|abstract|title/i and v.is_a?(String)
+    if k =~ /name|login|email|decription|abstract|title/i and v.is_a?(String) and (k !~ /class_?name/)
       att[k] = "#{object.class.name}_#{object.id}_#{k}"
     end
   end

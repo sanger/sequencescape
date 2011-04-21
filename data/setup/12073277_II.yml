@@ -1,5 +1,31 @@
 --- 
 - :attributes: 
+    name: SampleTube_2159892_name
+    material_id: 1082059
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 6
+    public_name: 
+    resource: 
+    archive: 
+    barcode: "2159892"
+    concentration: 
+    id: 2159892
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: 
+    two_dimensional_barcode: ""
+    external_release: 
+    map_id: 
+    sti_type: SampleTube
+  :class: SampleTube
+  :id: 2159892
+- :attributes: 
     name: AssetGroup_4146_name
     id: 4146
     study_id: 1757
@@ -12,19 +38,8 @@
     - "15"
     - "16"
     comments: ""
-    assets: 
+    asset_ids: 
     - 2159892
-    - 2159893
-    - 2159894
-    - 2159895
-    - 2159896
-    - 2159897
-    - 2159898
-    - 2159899
-    - 2159900
-    - 2159901
-    - 2159902
-    - 2159903
     project_id: 764
     asset_group_name: 
     asset_group_id: 4146
@@ -118,7 +133,6 @@
     barcode_prefix_id: 4
     plate_purpose_id: 
     qc_state: 
-    material_type: Sample
     two_dimensional_barcode: 
     external_release: 
     map_id: 
@@ -176,7 +190,7 @@
     - "15"
     - "16"
     comments: ""
-    assets: 
+    asset_ids: 
     - 2159892
     project_id: 764
     asset_group_name: 
@@ -217,7 +231,6 @@
     barcode_prefix_id: 1
     plate_purpose_id: 
     qc_state: 
-    material_type: Sample
     two_dimensional_barcode: 
     external_release: 
     map_id: 
@@ -244,7 +257,6 @@
     barcode_prefix_id: 4
     plate_purpose_id: 
     qc_state: 
-    material_type: Sample
     two_dimensional_barcode: 
     external_release: 
     map_id: 1
@@ -537,7 +549,6 @@
     barcode_prefix_id: 4
     plate_purpose_id: 
     qc_state: 
-    material_type: Sample
     two_dimensional_barcode: 
     external_release: 
     map_id: 2
@@ -678,7 +689,6 @@
     barcode_prefix_id: 4
     plate_purpose_id: 
     qc_state: 
-    material_type: Sample
     two_dimensional_barcode: 
     external_release: 
     map_id: 
@@ -705,7 +715,6 @@
     barcode_prefix_id: 4
     plate_purpose_id: 
     qc_state: 
-    material_type: Sample
     two_dimensional_barcode: 
     external_release: 
     map_id: 
@@ -732,7 +741,6 @@
     barcode_prefix_id: 4
     plate_purpose_id: 
     qc_state: 
-    material_type: Sample
     two_dimensional_barcode: 
     external_release: 
     map_id: 
@@ -759,7 +767,6 @@
     barcode_prefix_id: 4
     plate_purpose_id: 
     qc_state: 
-    material_type: Sample
     two_dimensional_barcode: 
     external_release: 
     map_id: 
@@ -786,7 +793,6 @@
     barcode_prefix_id: 4
     plate_purpose_id: 
     qc_state: 
-    material_type: Sample
     two_dimensional_barcode: 
     external_release: 
     map_id: 
@@ -813,7 +819,6 @@
     barcode_prefix_id: 4
     plate_purpose_id: 
     qc_state: 
-    material_type: Sample
     two_dimensional_barcode: 
     external_release: 
     map_id: 
@@ -840,7 +845,6 @@
     barcode_prefix_id: 4
     plate_purpose_id: 
     qc_state: 
-    material_type: Sample
     two_dimensional_barcode: 
     external_release: 
     map_id: 
@@ -867,7 +871,6 @@
     barcode_prefix_id: 4
     plate_purpose_id: 
     qc_state: 
-    material_type: Sample
     two_dimensional_barcode: 
     external_release: 
     map_id: 
@@ -894,7 +897,6 @@
     barcode_prefix_id: 4
     plate_purpose_id: 
     qc_state: 
-    material_type: Sample
     two_dimensional_barcode: 
     external_release: 
     map_id: 
@@ -945,7 +947,7 @@
     - "15"
     - "16"
     comments: ""
-    assets: 
+    asset_ids: 
     - 2159892
     project_id: 764
     asset_group_name: 
@@ -986,7 +988,6 @@
     barcode_prefix_id: 1
     plate_purpose_id: 
     qc_state: 
-    material_type: Sample
     two_dimensional_barcode: 
     external_release: 
     map_id: 
@@ -1013,7 +1014,6 @@
     barcode_prefix_id: 4
     plate_purpose_id: 
     qc_state: 
-    material_type: Sample
     two_dimensional_barcode: 
     external_release: 
     map_id: 1
@@ -1078,7 +1078,6 @@
     barcode_prefix_id: 4
     plate_purpose_id: 
     qc_state: 
-    material_type: Sample
     two_dimensional_barcode: 
     external_release: 
     map_id: 
@@ -1136,7 +1135,7 @@
     - "15"
     - "16"
     comments: ""
-    assets: 
+    asset_ids: 
     - 2159892
     project_id: 764
     asset_group_name: 
@@ -1177,7 +1176,6 @@
     barcode_prefix_id: 1
     plate_purpose_id: 
     qc_state: 
-    material_type: Sample
     two_dimensional_barcode: 
     external_release: 
     map_id: 
@@ -1204,7 +1202,6 @@
     barcode_prefix_id: 4
     plate_purpose_id: 
     qc_state: 
-    material_type: Sample
     two_dimensional_barcode: 
     external_release: 
     map_id: 1
@@ -1269,7 +1266,6 @@
     barcode_prefix_id: 4
     plate_purpose_id: 
     qc_state: 
-    material_type: Sample
     two_dimensional_barcode: 
     external_release: 
     map_id: 
@@ -1320,7 +1316,7 @@
     - "15"
     - "16"
     comments: ""
-    assets: 
+    asset_ids: 
     - 2159892
     project_id: 764
     asset_group_name: 
@@ -1361,7 +1357,6 @@
     barcode_prefix_id: 1
     plate_purpose_id: 
     qc_state: 
-    material_type: Sample
     two_dimensional_barcode: 
     external_release: 
     map_id: 
@@ -1388,7 +1383,6 @@
     barcode_prefix_id: 4
     plate_purpose_id: 
     qc_state: 
-    material_type: Sample
     two_dimensional_barcode: 
     external_release: 
     map_id: 1
@@ -1453,7 +1447,6 @@
     barcode_prefix_id: 4
     plate_purpose_id: 
     qc_state: 
-    material_type: Sample
     two_dimensional_barcode: 
     external_release: 
     map_id: 
@@ -1504,7 +1497,7 @@
     - "15"
     - "16"
     comments: ""
-    assets: 
+    asset_ids: 
     - 2159892
     project_id: 764
     asset_group_name: 
@@ -1545,7 +1538,6 @@
     barcode_prefix_id: 1
     plate_purpose_id: 
     qc_state: 
-    material_type: Sample
     two_dimensional_barcode: 
     external_release: 
     map_id: 
@@ -1572,7 +1564,6 @@
     barcode_prefix_id: 4
     plate_purpose_id: 
     qc_state: 
-    material_type: Sample
     two_dimensional_barcode: 
     external_release: 
     map_id: 1
@@ -1637,7 +1628,6 @@
     barcode_prefix_id: 4
     plate_purpose_id: 
     qc_state: 
-    material_type: Sample
     two_dimensional_barcode: 
     external_release: 
     map_id: 
@@ -1683,33 +1673,6 @@
   :class: PacBioSamplePrepRequest
   :id: 3073876
 - :attributes: 
-    name: SampleTube_2159892_name
-    material_id: 1082059
-    size: 
-    descriptor_fields: 
-    holder_type: Location
-    closed: false
-    holder_id: 6
-    public_name: 
-    resource: 
-    archive: 
-    barcode: "2159892"
-    concentration: 
-    id: 2159892
-    descriptors: 
-    value: 
-    volume: 
-    barcode_prefix_id: 4
-    plate_purpose_id: 
-    qc_state: 
-    material_type: Sample
-    two_dimensional_barcode: ""
-    external_release: 
-    map_id: 
-    sti_type: SampleTube
-  :class: SampleTube
-  :id: 2159892
-- :attributes: 
     ethically_approved: false
     name: Study_1757_name
     enforce_data_release: true
@@ -1738,3 +1701,29 @@
     updated_by_manifest: false
   :class: Sample
   :id: 1082059
+- :attributes: 
+    name: RequestType_15_name
+    asset_type: SampleTube
+    initial_state: pending
+    request_class_name: PacBioSamplePrepRequest
+    order: 1
+    id: 15
+    workflow_id: 1
+    morphology: 0
+    key: pacbio_sample_prep
+  :class: RequestType
+  :id: 15
+- :attributes: 
+    name: RequestType_16_name
+    asset_type: PacBioLibraryTube
+    multiples_allowed: true
+    initial_state: pending
+    request_class_name: PacBioSequencingRequest
+    order: 1
+    id: 16
+    workflow_id: 1
+    morphology: 0
+    key: pacbio_sequencing
+  :class: RequestType
+  :id: 16
+--- 

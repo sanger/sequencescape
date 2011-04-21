@@ -37,7 +37,7 @@ module ModelExtensions::Submission
       has_many :submitted_assets
       has_many :assets, :through => :submitted_assets do
         def replace(new_values)
-          raise StandardError, 'requested action is not supported on this resource' if proxy_owner.send(:asset_group?) and not empty?
+          raise StandardError, 'requested action is not supported on this resource' if not proxy_owner.new_record? and  proxy_owner.send(:asset_group?) and not empty?
           super
         end
       end
