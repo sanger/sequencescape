@@ -196,6 +196,13 @@ module NavigationHelpers
       page, name = $1, $2
       page_for_model(Study, "properties", name )
 
+    when /the asset group "([^"]+)" page for study "([^"]+)"$/
+      asset_group_name, study_name = $1, $2
+      study      = Study.first(:conditions => { :name => study_name }) or raise StandardError, "No study defined with name '#{ study_name }'"
+      asset_group = study.asset_groups.find_by_name(asset_group_name) or raise StandardError, "No asset group defined with name '#{asset_group_name}'"
+      study_asset_group_path(study, asset_group)
+
+
     when /the show page for pipeline "([^"]+)"/
       pipeline_name = $1
       pipeline = Pipeline.first(:conditions => {:name => pipeline_name}) or raise StandardError, "No Pipeline defined with name '#{ pipeline_name} '"

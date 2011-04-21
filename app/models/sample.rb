@@ -281,8 +281,19 @@ class Sample < ActiveRecord::Base
   end
 
   #todo move to Study
-  def move_to_study(study_from, study_to, asset_group, asset_group_name, user, submission_to)
+  def move_to_study(study_from, study_to, asset_group, user, submission_to)
+    assets_to_move = assets.select { |a| study_from.affiliated_with?(a) && a.is_a?(SampleTube) }
     study_to.take_sample(self, study_from, user)
+
+    if asset_group
+      assets_to_move.each do |asset|
+        asset_groups = asset.asset_groups.reject { |ag| ag.study == study_from }
+        asset_groups << asset_group
+        asset.asset_groups = asset_groups
+        asset.save
+      end
+    end
+
   end
 
   def move_study_sample_quarantine(study_from, study_to, current_user)

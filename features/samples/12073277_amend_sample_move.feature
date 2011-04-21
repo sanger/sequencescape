@@ -77,15 +77,21 @@ Feature: move samples and assets between studies
     When I am on the show page for asset "library_tube_to_move"
     Then I should see "study to"
     And I should not see "study from"
-  Scenario: move a sample with one asset to a new submission
+
+  Scenario: move a sample with one asset to a new asset group
     Given a study called "study from" exists
     Given study "study from" has the following registered samples in sample tubes:
       | sample | sample tube |
       | sample_to_move | sample_tube_to_move|
-    When I move sample "sample_to_move" from study "study from" to "study to", to asset group "moved assets" and submission "new submission"
+    When I move sample "sample_to_move" from study "study from" to "study to", to asset group "moved assets" and submission ""
     Then I should see "Sample has been moved"
     And the sample "sample_to_move" should belong to the study named "study to"
     And the sample "sample_to_move" should not belong to the study named "study from"
+
+    # check asset group
+    When I am on the asset group "moved assets" page for study "study to"
+    Then show me the page
+    Then I should see "sample_tube_to_move"
 
     # Checking that the asset has moved
     When I am on the show page for asset "sample_tube_to_move"
