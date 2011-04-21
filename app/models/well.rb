@@ -5,7 +5,7 @@ class Well < Asset
   include StudyReport::WellDetails
 
   contained_by :plate
-  delegate :location, :to => :container
+  delegate :location, :to => :container , :allow_nil => true
   
   has_one :well_attribute
 
