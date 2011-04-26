@@ -254,6 +254,9 @@ module NavigationHelpers
     when /the events page for asset (\d+)/
       asset = Asset.find($1)
       history_asset_path(asset)
+    when /the events page for asset "([^\"]+)"/
+      asset = Asset.find_by_name($1)
+      history_asset_path(asset)
 
     when /the XML show page for request (\d+)/
       request = Request.find($1)

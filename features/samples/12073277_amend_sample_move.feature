@@ -32,7 +32,8 @@ Feature: move samples and assets between studies
     Then I should see "study to"
     And I should not see "study from"
 
-    When I am on the events page from asset called "sample_tube_to_move "
+    When I am on the events page for asset "sample_tube_to_move"
+    Then show me the page
     Then I should see "is moved from Study"
 
   Scenario: move a sample with assets from different study
@@ -128,6 +129,17 @@ Feature: move samples and assets between studies
     When I am on the assets page for the study "study to"
     Then I should see "Plate" within "#assets_with_requests"
     And I should see "Well" within "#assets_with_requests"
+
+  Scenario: move sample in well to an asset group
+    Given data are preloaded from "12073277_sample_in_well" renaming:
+      | old name | new name |
+      | Study_1700_name | study from |
+      | Plate_2383022_name | plate |
+      | Sample_1115606_name | sample_to_move |
+    When I move sample "sample_to_move" from study "study from" to "study to", to asset group "moved assets" and submission ""
+    When I am on the asset group "moved assets" page for study "study to"
+    Then I should see "Plate"
+    And I should see "Well"
 
 
     @production_sample
