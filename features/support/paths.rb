@@ -238,6 +238,10 @@ module NavigationHelpers
       sample = Sample.find_by_sanger_sample_id($1)
       history_sample_path(sample)
 
+    when /the events page for sample "([^"]+)"/
+      sample = Sample.find_by_name($1)
+      history_sample_path(sample)
+
     when /the events page for the last sequenom plate/
       history_asset_path(SequenomQcPlate.last)  
       

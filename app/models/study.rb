@@ -546,7 +546,6 @@ end
   # return true if all object have been saved successfully
   # that's the caller responsibilitie to wrap the call in a transaction if needed
   def take_sample(sample, study_from, user)
-    #debugger 
     raise RuntimeError, "study_from not specified. Can't move a sample to a new study" unless study_from
     objects_to_move =   sample.walk_objects(:sample => [:assets, :study_samples],
                                      :request => [:submission],
@@ -582,20 +581,13 @@ end
       object.study = self
     end
 
-    if object.respond_to?(:events) && study_from && study_from.affiliated_with?(object)
+    if object.respond_to?(:events) 
       object.events.create(
-        :message => "#{object.class.name} #{object.id} is moved from Study  #{study_from.id} to Study #{self.id}",
+        :message => (study_from ? "#{object.class.name} #{object.id} is moved from Study  #{study_from.id} to Study #{self.id}" :  "#{object.class.name} #{object.id} is moved to Study #{self.id}"),
         :created_by => user.login,
         :content => "#{object.class.name} moved by #{user.login}",
         :of_interest_to => "administrators"
       )
-
-      study_from.events.create(
-        :message => "#{object.class.name} #{object.id} is moved to Study #{self.id}",
-        :created_by => user.login,
-        :content => "#{object.class.name} moved by #{user.login}",
-        :of_interest_to => "administrators"
-      ) if study_from
     end
   end
 end

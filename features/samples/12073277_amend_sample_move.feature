@@ -13,6 +13,10 @@ Feature: move samples and assets between studies
     And the sample "sample_to_move" should belong to the study named "study to"
     And the sample "sample_to_move" should not belong to the study named "study from"
 
+    # check event
+    When I am on the events page for sample "sample_to_move"
+    Then I should see "is moved from Study"
+
   Scenario: move a sample with one asset
     Given a study called "study from" exists
     Given study "study from" has the following registered samples in sample tubes:
@@ -27,6 +31,9 @@ Feature: move samples and assets between studies
     When I am on the show page for asset "sample_tube_to_move"
     Then I should see "study to"
     And I should not see "study from"
+
+    When I am on the events page from asset called "sample_tube_to_move "
+    Then I should see "is moved from Study"
 
   Scenario: move a sample with assets from different study
     Given a study called "study from" exists
