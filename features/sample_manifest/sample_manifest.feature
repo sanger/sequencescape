@@ -232,10 +232,10 @@ Feature: Sample manifest
       | Contains | Study      | Supplier           | Manifest       | Upload           | Errors   | State     |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Upload manifest  | Errors   | Failed |
     When I follow "Errors for manifest for Test study"
-    Then I should not see "VOLUME (ul) is required for sample_1"
-    And I should see "VOLUME (ul) is required for sample_2"
-    Then I should not see "CONC. (ng/ul) is required for sample_1"
-    And I should see "CONC. (ng/ul) is required for sample_3"
+    Then I should not see "Volume can't be blank for sample_1"
+    And I should see "Volume can't be blank for sample_2"
+    Then I should not see "Concentration can't be blank for sample_1"
+    And I should see "Concentration can't be blank for sample_3"
 
   @cell_line
   Scenario: Upload a manifest with invalid cell line

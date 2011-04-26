@@ -101,7 +101,6 @@ class SampleManifest < ActiveRecord::Base
   belongs_to :study
   belongs_to :project
   belongs_to :user
-  has_many   :samples
   serialize :last_errors
   serialize :barcodes
 

@@ -136,3 +136,8 @@ Given /^all samples have a Sanger sample ID based on "([^\"]+)"$/ do |id|
     sample.update_attributes!(:sanger_sample_id => "#{id}#{'%02d' % (index+1)}")
   end
 end
+
+Given /^the name of the last sample is "([^\"]+)"$/ do |name|
+  sample = Sample.last or raise StandardError, "There appear to be no samples"
+  sample.rename_to!(name)
+end
