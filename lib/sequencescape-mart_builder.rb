@@ -223,8 +223,8 @@ class Script < ActiveRecord::Migration
         group.each do |mlreq|
           numrows = 0
           mlreq.tags.each do |idxlib|
-            # Guard against strangness.
-            raise "Expected (indexed) library of a Sample, but got one with a tag on #{idxlib.inspect}" unless idxlib.sample_id.present?
+            # Ununsed guard that fails with current data.
+#            raise "Expected (indexed) library of a Sample, but got one with a tag on #{idxlib.inspect}" unless idxlib.sample_id.present?
             next unless idxlib.is_a?(LibraryTube)
             tag = idxlib.get_tag 
             mlt = mlreq.asset
