@@ -51,6 +51,7 @@ class SampleManifestTest < ActiveSupport::TestCase
 
   def load_manifest_from(filename)
     Factory(:sample_manifest, :count => 2).tap do |manifest|
+      manifest.samples  = Sample.all
       manifest.uploaded = 
         ActionController::TestUploadedFile.new(
           File.join(File.dirname(__FILE__), %w{.. data}, filename),
@@ -90,7 +91,7 @@ class SampleManifestTest < ActiveSupport::TestCase
         @sample.reload
       end
 
-      should "create sample with name, and DNA source of Blood, and not create new samples" do
+      should "update existing sample, and not create new samples" do
         assert_equal @old_sample_count, Sample.count
         assert_nil SampleManifest.find(@manifest.id).last_errors
 

@@ -45,9 +45,17 @@ class Sample < ActiveRecord::Base
   validates_format_of :name, :with => /^[\w_-]+$/i, :message => I18n.t('samples.name_format'), :if => :new_name_format, :on => :create
   validates_format_of :name, :with => /^[\(\)\+\s\w._-]+$/i, :message => I18n.t('samples.name_format'), :if => :new_name_format, :on => :update
   validates_uniqueness_of :name, :on => :create, :message => "already in use"
-  validates_each(:name, :on => :save, :if => :name_changed_outside_of_manifest?) do |record,attr,value|
-    record.errors.add(:name, 'cannot be changed') unless record.new_record?
+  validates_each(:name, :on => :save, :unless => :can_rename_sample?) do |record,attr,value|
+    record.errors.add(:name, 'cannot be changed') if record.name_changed? and not record.new_record?
   end
+
+  extend ValidationStateGuard
+  validation_guard(:can_rename_sample)
+
+  def rename_to!(new_name)
+    update_attributes!(:name => new_name)
+  end
+  validation_guarded_by(:rename_to!, :can_rename_sample)
   
   named_scope :with_name, lambda { |*names| { :conditions => { :name => names.flatten } } }
 
@@ -57,19 +65,6 @@ class Sample < ActiveRecord::Base
     "sample"
   end
   alias_method(:json_root, :url_name)
-
-  # This is used when updating a sample from a sample manifest, ensuring that the name can be changed.
-  def update_attributes_from_manifest!(attributes, current_user = nil)
-    @updating_from_manifest = true
-    self.update_attributes!(attributes)
-    self.events.updated_using_sample_manifest!(current_user)
-  ensure
-    @updating_from_manifest = false
-  end
-
-  def name_changed_outside_of_manifest?
-    self.name_changed? && !@updating_from_manifest
-  end
 
   named_scope :for_search_query, lambda { |query|
     { :conditions => [ 'name LIKE ? OR id=?', "%#{query}%", query ] }
@@ -480,6 +475,10 @@ class Sample < ActiveRecord::Base
       end
     end
   end
+
+  # This needs to appear after the metadata has been defined to ensure that the Metadata class
+  # is present.
+  include SampleManifest::InputBehaviour::SampleUpdating
 
   class Metadata
     # here we are aliasing ArrayExpress attribute from normal one
