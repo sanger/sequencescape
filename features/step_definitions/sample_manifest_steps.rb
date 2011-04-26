@@ -10,8 +10,7 @@ end
 Given /^sample information is updated from the manifest for study "([^"]*)"$/ do |study_name|
   study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   study.samples.each_with_index do |sample,index|
-    sample.update_attributes_from_manifest!(
-      :name => "#{study.abbreviation}#{index+1}",
+    sample.update_attributes!(
       :sanger_sample_id => sample.name,
       :sample_metadata_attributes => {
         :gender           => "Female",
@@ -19,7 +18,14 @@ Given /^sample information is updated from the manifest for study "([^"]*)"$/ do
         :sample_sra_hold  => "Hold"
       }
     )
+    sample.name = "#{study.abbreviation}#{index+1}"
+    sample.save_without_validation
   end
+end
+
+Given /^the last sample has been updated by a manifest$/ do 
+  sample = Sample.last or raise StandardError, "There appear to be no samples"
+  sample.update_attributes!(:updated_by_manifest => true)
 end
 
 Then /^study "([^"]*)" should have (\d+) samples$/ do |study_name, number_of_samples|

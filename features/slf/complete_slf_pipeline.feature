@@ -19,7 +19,7 @@ Feature: I wish to create samples and push them all the way through QC in SLF
     Given a robot exists
     Given a supplier called "Test supplier name" exists
 
-@manifest
+  @manifest
   Scenario: Push a plate all the way through SLF to genotyping
     Given I have a project called "Test project"
     And project "Test project" has enough quotas

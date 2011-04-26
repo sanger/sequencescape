@@ -13,8 +13,6 @@ class Io::Sample < Core::Io::Base
               sample_metadata.country_of_origin <=> country_of_origin
             sample_metadata.geographical_region <=> geographical_region
                       sample_metadata.ethnicity <=> ethnicity
-                         sample_metadata.volume <=> volume
-              sample_metadata.supplier_plate_id <=> supplier_plate_id
                          sample_metadata.mother <=> mother
                          sample_metadata.father <=> father
                       sample_metadata.replicate <=> replicate
@@ -29,5 +27,11 @@ class Io::Sample < Core::Io::Base
              sample_metadata.sample_description <=> description
                 sample_metadata.sample_sra_hold <=> sra_hold
                    sample_reference_genome_name <=> reference_genome
+
+                         sample_metadata.volume <=> volume
+                  sample_metadata.concentration <=> concentration
+
+                  sample_metadata.supplier_name <=> supplier.name
+              sample_metadata.supplier_plate_id <=> supplier.plate_id
   })
 end
