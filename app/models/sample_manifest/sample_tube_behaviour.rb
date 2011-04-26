@@ -19,10 +19,12 @@ module SampleManifest::SampleTubeBehaviour
 
     def io_samples
       samples.map do |sample|
-        ::ModelExtensions::SampleManifest::SampleMapper.new(
-          sample, 
-          :barcode => sample.assets.first.sanger_human_barcode
-        )
+        {
+          :sample    => sample,
+          :container => {
+            :barcode => sample.assets.first.sanger_human_barcode
+          }
+        }
       end
     end
 
