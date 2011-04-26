@@ -14,7 +14,7 @@ Rename Asset and Sample
         <td width="25%" >
            <%= label('change_name_sample','check_box', 'Sample Rename') %>  
         </td>             
-        <td><%= form.select ('list_samples_to_rename', options_for_select(@study.samples.map(&:name)), {}, {:size => 5, :multiple =>true}) %><br>
+        <td><%= form.select('list_samples_to_rename', options_for_select(@study.samples.map(&:name)), {}, {:size => 5, :multiple =>true}) %><br>
          <%= label('sample_select','all', 'Select ALL Samples', :style => 'display:none;') %>   
          <%= check_box_tag('sample_select_all') %><i>Select ALL Samples</i>
          </td>
@@ -26,7 +26,7 @@ Rename Asset and Sample
         <td width="25%" >
            <%= label('change_name_asset','check_box', 'Asset Rename') %>  
         </td>             
-        <td><%= form.select ('list_assets_to_rename', options_for_select(@study.assets.map(&:name)), {}, {:size => 5, :multiple =>true}) %><br>
+        <td><%= form.select('list_assets_to_rename', options_for_select(@study.assets.map(&:name)), {}, {:size => 5, :multiple =>true}) %><br>
         <%= label('asset_select','all', 'Select ALL Assets', :style => 'display:none;') %>
         <%= check_box_tag('asset_select_all') %><i>Select ALL Assets</i>
         </td> 
