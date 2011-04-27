@@ -29,6 +29,9 @@ gem 'catch_cookie_exception', :git => 'http://github.com/mhartl/catch_cookie_exc
 # gem code).
 gem "acts-as-dag", :git => "http://github.com/mattdenner/acts-as-dag.git", :branch => 'fix_rewire_crossing'
 
+# Better table alterations
+gem "alter_table", :git => "http://github.com/sanger/alter_table.git"
+
 # QC poller / ActiveMQ
 gem "activemessaging"
 gem "stomp"
