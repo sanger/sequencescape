@@ -336,16 +336,17 @@ class SamplesController < ApplicationController
   end
 
   def move_single_sample(params)
-    @sample         = Sample.find(params[:id])
-    @study_from     = Study.find(params[:study_id_from])
-    @study_to       = Study.find(params[:study_id_to])
-    @asset_group    = AssetGroup.find_by_id(params[:asset_group_id])
-    if @asset_group.nil?
-      @asset_group    = AssetGroup.find_or_create_asset_group(params[:new_assets_name], @study_to)
+    sample         = Sample.find(params[:id])
+    study_from     = Study.find(params[:study_id_from])
+    study_to       = Study.find(params[:study_id_to])
+    asset_group    = AssetGroup.find_by_id(params[:asset_group_id])
+    submission_id   = params[:submission_id].to_i
+    submission = submission_id != 0 ? Submission.find(submission_id) : nil
+    if asset_group.nil?
+      asset_group    = AssetGroup.find_or_create_asset_group(params[:new_assets_name], study_to)
     end
 
-    result = @sample.move_to_study(@study_from, @study_to, @asset_group, current_user, params[:submission_id] )
-    return result
+    return study_to.take_sample(sample, study_from, current_user, asset_group)
   end
 
   def move
@@ -390,7 +391,7 @@ class SamplesController < ApplicationController
     @list_of_submissions = []
     if params[:study_id_from] != "0"
       sample = Sample.find( params[:sample_id] )
-      @list_of_submissions = sample.submissions.studies(params[:study_id_from])
+      @list_of_submissions = sample.submissions.for_studies(params[:study_id_from])
     end
     render :layout => false
   end

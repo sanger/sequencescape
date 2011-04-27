@@ -543,12 +543,15 @@ end
       nil
     end
   end
-  # return true if all object have been saved successfully
+  
+  # return the list of objects which haven't been successfully saved
   # that's the caller responsibilitie to wrap the call in a transaction if needed
-  def take_sample(sample, study_from, user)
+  def take_sample(sample, study_from, user, asset_group)
+    errors = []
+    assets_to_move = sample.assets.select { |a| study_from.affiliated_with?(a) && a.is_a?(SampleTube) }
     raise RuntimeError, "study_from not specified. Can't move a sample to a new study" unless study_from
     objects_to_move =   sample.walk_objects(:sample => [:assets, :study_samples],
-                                     :request => [:submission],
+                                     :request => [:item],
                                      :asset => [:requests, :children, :parents],
                                      :well => :plate
                                     ) do |object|
@@ -563,10 +566,22 @@ end
                                       # skip 
                                       # nil from affiliated mean, we don't know, so we carry on pulling
                                     end
-    return objects_to_move.map do |object|
+
+                                    #we duplicate each submission and reassign moved requests to it
+    objects_to_move.each do |object|
       take_object(object, user, study_from)
-      object.save
-    end.all?
+      errors << object unless object.save
+    end
+
+    if asset_group
+      assets_to_move.each do |asset|
+        asset_groups = asset.asset_groups.reject { |ag| ag.study == study_from }
+        asset_groups << asset_group
+        asset.asset_groups = asset_groups
+        asset.save
+      end
+    end
+    return errors
   end
 
 

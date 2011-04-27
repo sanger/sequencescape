@@ -13,7 +13,7 @@ Models = {
     Asset => [:requests, :children, :parents],
     Well => [:container_association],
     ContainerAssociation => [:container, :content] ,
-    Request => [:submission, :asset, :target_asset, :request_metadata, :user],
+    Request => [:submission, :asset,:item,  :target_asset, :request_metadata, :user],
     Submission => [:asset_group]
   },
   :bare => {}

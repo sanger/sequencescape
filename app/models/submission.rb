@@ -35,7 +35,7 @@ class Submission < ActiveRecord::Base
 
   serialize :item_options
 
-  named_scope :studies, lambda {|*args| {:conditions => { :study_id => args[0]} } }
+  named_scope :for_studies, lambda {|*args| {:conditions => { :study_id => args[0]} } }
 
   # TODO[xxx]: I don't like the name but this should disappear once the UI has been fixed
   def self.prepare!(options)
@@ -123,14 +123,14 @@ class Submission < ActiveRecord::Base
     new_submission.save
   end
 
-  def duplicate
+  def duplicate(&block)
     create_parameters = template_parameters
     new_submission = Submission.create(create_parameters.merge( :study => self.study,:workflow => self.workflow,
           :user => self.user, :assets => self.assets, :state => self.state,
           :request_types => self.request_types,
           :request_options => self.request_options,
           :comments => self.comments,
-          :project_id => self.project_id))
+          :project_id => self.project_id), &block)
     new_submission.save
     return new_submission
   end

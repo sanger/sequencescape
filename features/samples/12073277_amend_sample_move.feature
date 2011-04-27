@@ -103,8 +103,7 @@ Feature: move samples and assets between studies
     When I am on the show page for asset "sample_tube_to_move"
     Then I should see "study to"
     And I should not see "study from"
-    @developping @production_sample
-  Scenario: move sample example from production
+
     #Given data are preloaded from "12073277"
   @production_sample
   Scenario: move sample in well. example from production
@@ -129,6 +128,7 @@ Feature: move samples and assets between studies
     And I should see "Well" within "#assets_with_requests"
 
   Scenario: move sample in well to an asset group
+    # sequel of the move sample in well scenario. Same set up , but check asset group
     Given data are preloaded from "12073277_sample_in_well" renaming:
       | old name | new name |
       | Study_1700_name | study from |
@@ -137,23 +137,5 @@ Feature: move samples and assets between studies
     When I move sample "sample_to_move" from study "study from" to "study to", to asset group "moved assets" and submission ""
     When I am on the asset group "moved assets" page for study "study to"
     # so far we only move sample tube.
-    And I not should see "Well"
-    Then I not should see "Plate" 
-
-
-    @production_sample
-  Scenario: move sample and co from production
-    Given data are preloaded from "12073277_II" renaming:
-      | old name | new name |
-      | Sample_1082059_name | sample_to_move |
-      | Study_1757_name | study from |
-      | SampleTube_2159892_name | sample_tube_to_move |
-
-    When I am on the assets page for the study "study from"
-    When I am on the show page for asset "sample_tube_to_move"
-    When I move sample "sample_to_move" from study "study from" to "study to"
-    When I am on the assets page for the study "study from"
-    Then I should not see "sample_tube_to_move"
-    When I am on the assets page for the study "study to"
-    Then I should see "sample_tube_to_move"
-
+    And I should not see "Well" within "#assets"
+    Then I should not see "Plate" within "#assets"

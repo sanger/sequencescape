@@ -73,6 +73,14 @@ class Request < ActiveRecord::Base
   belongs_to :pipeline
   belongs_to :item
   belongs_to :sample
+
+  # deprecating sample, with should use through asset
+  deprecate :sample
+
+  def sample_id
+    attributes[:sample_id]
+  end
+  deprecate :sample_id
   belongs_to :project
 
   has_many :failures, :as => :failable

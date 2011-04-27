@@ -155,6 +155,11 @@ module NavigationHelpers
       submission = Submission.last or raise StandardError, "There are no submissions!"
       study_workflow_submission_path(submission.study, submission.workflow, submission)
 
+    when /the submissions page for study "([^\"]+)"/
+      study    = Study.find_by_name($1) or raise StandardError, "No study defined with name #{ $1.inspect }"
+      study_workflow_submissions_path(study, @current_user.workflow)
+
+
     # Submission related
     when /the "([^\"]+)" submission template selection page for study "([^\"]+)"/
       workflow_name, study_name = $1, $2
@@ -260,8 +265,11 @@ module NavigationHelpers
 
     when /the XML show page for request (\d+)/
       request = Request.find($1)
-      request_path(request, :format => :xml)
+      request_path(request)
 
+    when /the show page for request (\d+)/
+      request = Request.find($1)
+      request_path(request, :format => :xml)
     when /^the new request page for "([^\"]+)"$/
       asset = Asset.find_by_name($1) or raise StandardError, "Cannot find asset #{$1.inspect}"
       new_request_asset_path(:id => asset)
