@@ -14,7 +14,9 @@ module Batch::PipelineBehaviour
         pipeline = batch.pipeline
         unless pipeline.nil?
           batch.errors.add(attr, 'too many requests specified') if not pipeline.max_size.nil? and requests.size > pipeline.max_size
-          batch.errors.add(attr, 'has incorrect type')          if requests.map(&:request_type_id).uniq != [ pipeline.request_type_id ]
+
+          # DISABLED AS THERE IS CODE THAT DOESN'T OBEY THIS RULE IN CHERRYPICKING
+          #batch.errors.add(attr, 'has incorrect type')          if requests.map(&:request_type_id).uniq != [ pipeline.request_type_id ]
         end
       end
     end
