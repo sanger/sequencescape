@@ -548,6 +548,8 @@ end
   # that's the caller responsibilitie to wrap the call in a transaction if needed
   def take_sample(sample, study_from, user, asset_group)
     errors = []
+    # we skip the validation, as it should not be usefull anymore
+    #return false unless sample.check_move_options(self, study_from, asset_group, "", "0")
     assets_to_move = sample.assets.select { |a| study_from.affiliated_with?(a) && a.is_a?(SampleTube) }
     raise RuntimeError, "study_from not specified. Can't move a sample to a new study" unless study_from
     objects_to_move =   sample.walk_objects(:sample => [:assets, :study_samples],
@@ -570,7 +572,11 @@ end
                                     #we duplicate each submission and reassign moved requests to it
     objects_to_move.each do |object|
       take_object(object, user, study_from)
-      errors << object unless object.save
+      begin
+      object.save!
+    rescue Exception => ex
+      errors << ex.message
+    end
     end
 
     if asset_group
@@ -581,7 +587,12 @@ end
         asset.save
       end
     end
-    return errors
+    if errors.present?
+      errors.each { |error | sample.errors.add ("Move:", error) }
+      false
+    else
+       true
+    end
   end
 
 

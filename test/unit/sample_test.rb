@@ -1,5 +1,10 @@
 require "test_helper"
 
+class Sample
+  def move(study_from, study_to, asset_group, new_assets_name, current_user, submission_to)
+    study_to.take_sample(self, study_to, current_user, nil)
+  end
+end
 class SampleTest < ActiveSupport::TestCase
   context "A Sample" do
 
