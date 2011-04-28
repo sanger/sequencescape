@@ -1,7 +1,0 @@
-<h3>Please enter the rack barcode</h3>
-<div class="info">
-<% form_tag("create_plate_layout/") do |form| %>
-  Filename/ rack barcode: <%= text_field_tag :rack_barcode %> : <%= submit_tag "Create layout" %>
-  <%= hidden_field_tag 'pipeline_id', "#{@pipeline_id}" %>
-<% end %>
-</div>
