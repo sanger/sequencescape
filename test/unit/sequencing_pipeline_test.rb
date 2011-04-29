@@ -9,13 +9,20 @@ class SequencingPipelineTest < ActiveSupport::TestCase
     setup do
       @pipeline = SequencingPipeline.new(
         :workflow     => LabInterface::Workflow.new,
-        :request_type => RequestType.new
+        :request_type => RequestType.new(:request_class_name => 'SequencingRequest')
       )
     end
 
     context '#detach_request_from_batch' do
       should 'clone the request and add appropriate comments' do
-        batch, request = @pipeline.batches.build, @pipeline.request_type.new
+        batch   = @pipeline.batches.build
+        request = @pipeline.request_type.new(
+          :request_metadata_attributes => {
+            :fragment_size_required_from => 100,
+            :fragment_size_required_to   => 200,
+            :read_length                 => 76
+          }
+        )
 
         clone = @pipeline.detach_request_from_batch(batch, request)
         assert_equal('pending', clone.state)
