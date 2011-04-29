@@ -229,7 +229,7 @@ Feature: Access pipelines through the API
       }
       """
 
-  @create @batch @authorised @error
+  @create @batch @authorised @error @wip
   Scenario Outline: Attempting to create a batch with invalid request details
     Given the maximum batch size for the pipeline "Cluster formation PE" is 2
 
