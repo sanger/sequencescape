@@ -76,20 +76,16 @@ group :test do
   gem "shoulda", "~>2.10.0"
   gem "timecop"
   gem "treetop", "~>1.2.5"
-  gem "test-unit", "~>1.2.3", :require => "test/unit"
   gem 'parallel_tests'
 end
 
 group :cucumber do
-  gem "capybara", '~>0.3.9', :require => false
-  gem "cucumber-rails", "~>0.3.2", :require => false
+  # We only need to bind cucumber-rails here, the rest are its dependencies which means it should be
+  # making sensible choices.  Should ...
+  gem "capybara", "~>0.3.9", :require => false
   gem "database_cleaner", :require => false
-
-  # A word of caution: if these are changed from these revisions then features break
-  # not because they are wrong but because implementations have changed.  In Cucumber
-  # 0.10.x 'table.rows' appears to reverse the columns (i.e. table might say |1|2|3|
-  # but you get [3,2,1] in the array).
-  gem "cucumber", "~>0.9.2", :require => false
+  gem "cucumber", :require => false
+  gem "cucumber-rails", "~>0.3.2", :require => false
 end
 
 group :deployment do

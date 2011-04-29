@@ -103,10 +103,10 @@ if defined?(ActiveRecord::Base)
       # based on specific columns for the tables, which may be the ID but might not for some tables.
       def determine_seeded_tables
         Hash[
-          ActiveRecord::Base.connection.select_all('SHOW TABLE STATUS WHERE Rows > 0').map do |row|
+          connection_klass.connection.select_all('SHOW TABLE STATUS WHERE Rows > 0').map do |row|
             table_name    = row['Name']
             unique_column = (table_name == 'schema_migrations') ? 'version' : 'id'
-            unique_identifiers_in_table = ActiveRecord::Base.connection.select_all("SELECT #{unique_column} FROM #{table_name}").map { |r| r[unique_column] }
+            unique_identifiers_in_table = connection_klass.connection.select_all("SELECT #{unique_column} FROM #{table_name}").map { |r| r[unique_column] }
             unique_identifiers_in_table.blank? ? nil : [ table_name, "`#{unique_column}` NOT IN (#{ unique_identifiers_in_table.join(',') })" ]
           end.compact
         ]
@@ -114,7 +114,7 @@ if defined?(ActiveRecord::Base)
 
       def clean_seeded_tables
         @seeded.each do |table, delete_conditions|
-          connection.update("DELETE FROM `#{table}` WHERE #{delete_conditions}")
+          connection_klass.connection.update("DELETE FROM `#{table}` WHERE #{delete_conditions}")
         end
       end
     end
