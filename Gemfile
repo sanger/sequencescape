@@ -39,11 +39,6 @@ gem "stomp"
 # For background processing
 gem "delayed_job", '~>2.0.4'
 
-#the most recent one that actually compiles
-gem "ruby-oci8", "1.0.7" 
-#any newer version requires ruby-oci8 => 2.0.1
-gem "activerecord-oracle_enhanced-adapter" , "1.2.3" 
-
 gem "cbrunnkvist-psd_logger"
 
 # For the API level
@@ -51,6 +46,13 @@ gem "uuidtools"
 gem "sinatra", "~>1.1.0"
 gem "rack-acceptable", :require => 'rack/acceptable'
 gem "yajl-ruby", :require => 'yajl'
+
+group :warehouse do
+  #the most recent one that actually compiles
+  gem "ruby-oci8", "1.0.7" 
+  #any newer version requires ruby-oci8 => 2.0.1
+  gem "activerecord-oracle_enhanced-adapter" , "1.2.3" 
+end
 
 group :development do
   gem "flay"
