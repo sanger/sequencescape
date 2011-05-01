@@ -175,7 +175,8 @@ Given /^I have a batch with (\d+) requests for the "(#{LIBRARY_CREATION_PIPELINE
       :asset_type => :sample_tube,
       :request_options => {
         :fragment_size_required_from => 1,
-        :fragment_size_required_to   => 100
+        :fragment_size_required_to   => 100,
+        :library_type                => 'Standard'
       }
     }
   end

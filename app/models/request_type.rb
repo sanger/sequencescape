@@ -24,23 +24,29 @@ class RequestType < ActiveRecord::Base
 
   named_scope :applicable_for_asset, lambda { |asset| { :conditions => { :asset_type => asset.asset_type_for_request_types.name } } }
 
-  def new_request(params={})
-    params.merge!(request_parameters) if request_parameters
-    params[:request_type] = self
+  # Helper method for generating a request constructor, like 'create!'
+  def self.request_constructor(name, options = {})
+    target        = options[:target] || :request_class
+    target_method = options[:method] || name
 
-    request = request_class.new(params)
-    return request
+    line = __LINE__ + 1
+    class_eval(%Q{
+      def #{name}(attributes = nil)
+        attributes ||= {}
+        #{target}.#{target_method}(attributes.merge(request_parameters || {})) do |request|
+          request.request_type = self
+        end.tap do |request|
+          requests << request
+        end
+      end
+    }, __FILE__, line)
   end
 
-  def create!(attributes = nil)
-    attributes ||= {}
-    requests.create!(attributes.merge(request_parameters || {}))
-  end
+  request_constructor(:create!)
+  request_constructor(:new)
+  alias_method(:new_request, :new)
 
-  def new(attributes = nil)
-    attributes ||= {}
-    requests.new(attributes.merge(request_parameters || {}))
-  end
+  request_constructor(:create_control!, :target => 'Request', :method => :create!)
 
   def request_class
     request_class_name.constantize

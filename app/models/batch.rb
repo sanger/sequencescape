@@ -113,7 +113,7 @@ class Batch < ActiveRecord::Base
   end
 
   def control
-    self.requests.detect { |request| request.asset.try(:resource?) }
+    self.requests.detect { |request| request.try(:asset).try(:resource?) }
   end
 
   def has_control?
@@ -435,8 +435,10 @@ class Batch < ActiveRecord::Base
 
     self.shift_item_positions(first_control+1, control_count)
     1.upto(control_count) do |index|
-      request = self.requests.create(:asset => asset, :study_id => 198, :request_type_id => self.pipeline.request_type_id)
-      request.set_position(self, first_control+index)
+      self.pipeline.request_type.create_control!(:asset => asset, :study_id => 198).tap do |request|
+        request.set_position(self, first_control+index)
+        requests << request
+      end
     end
     control_count
   end
