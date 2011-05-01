@@ -97,16 +97,15 @@ class Studies::Workflows::SubmissionsController < ApplicationController
   end
   
   def find_sample_by_name_or_sanger_sample_id( text)
-      names = text.lines.map(&:chomp).reject { |l| l.blank? }
-      names = names.map{ |n| n.strip }
-      objects = Sample.find(:all, :conditions => {:name => names})
-      objects += Sample.find(:all, :conditions => {:sanger_sample_id => names})
-      name_set = Set.new(names)
-      find_set = Set.new(objects.map(&:name))
-      sanger_sample_id_set = Set.new(objects.map(&:sanger_sample_id))
-      not_found = name_set - (find_set + sanger_sample_id_set)
-      raise InvalidInputException, "#{Sample.table_name} #{not_found.to_a.join(", ")} not founds" unless not_found.empty?
-      return objects
+    names = text.lines.map(&:chomp).reject(&:blank?).map(&:strip)
+
+    objects = Sample.all(:include => :assets, :conditions => [ 'name IN (:names) OR sanger_sample_id IN (:names)', { :names => names } ])
+
+    name_set  = Set.new(names)
+    found_set = Set.new(objects.map { |s| [ s.name, s.sanger_sample_id ] }.flatten)
+    not_found = name_set - found_set
+    raise InvalidInputException, "#{Sample.table_name} #{not_found.to_a.join(", ")} not founds" unless not_found.empty?
+    return objects
   end
 
   #--

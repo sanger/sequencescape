@@ -18,17 +18,18 @@ Feature: Update the data release fields for creating a study
       This data has been described in the following article [doi or ref] and its further analysis can be freely submitted for publication. For information on the proper use of data shared by the Wellcome Trust Sanger Institute (including information on acknowledgement), please see http://www.sanger.ac.uk/datasharing/
       """
 
-  # NOTE: selenium-webdriver 0.1.4 appears to have changed it's behaviour so that whitespace does not appear at the
-  # end of an 'li' element.  Therefore in the following text you may notice some cramped words; should this scenario
-  # fail in the future it's likely to be the whitespace coming back.
-  #
   Scenario: Add help text opposite delay drop down (4044305)
     When I select "delayed" from "How is the data release to be timed?"
     Then the help text for "Reason for delaying release help text" should contain:
       """
       To apply for a delay, please send the following information to John Doe (foo):
-      SAC sponsorStudy title and, where available, data set(s) IDStudy description (should describe the data types that will be produced)Data sharing plan (to include the following):
-      - Which repository/repositories will be used- If data will be made available under a managed access mechanism- When data will be shared
+      SAC sponsor
+      Study title and, where available, data set(s) ID
+      Study description (should describe the data types that will be produced)
+      Data sharing plan (to include the following):
+      - Which repository/repositories will be used
+      - If data will be made available under a managed access mechanism
+      - When data will be shared
       Reason(s) for delaying data release
       """
 

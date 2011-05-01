@@ -29,17 +29,15 @@ gem 'catch_cookie_exception', :git => 'http://github.com/mhartl/catch_cookie_exc
 # gem code).
 gem "acts-as-dag", :git => "http://github.com/mattdenner/acts-as-dag.git", :branch => 'fix_rewire_crossing'
 
+# Better table alterations
+gem "alter_table", :git => "http://github.com/sanger/alter_table.git"
+
 # QC poller / ActiveMQ
 gem "activemessaging"
 gem "stomp"
 
 # For background processing
 gem "delayed_job", '~>2.0.4'
-
-#the most recent one that actually compiles
-gem "ruby-oci8", "1.0.7" 
-#any newer version requires ruby-oci8 => 2.0.1
-gem "activerecord-oracle_enhanced-adapter" , "1.2.3" 
 
 gem "cbrunnkvist-psd_logger"
 
@@ -48,6 +46,13 @@ gem "uuidtools"
 gem "sinatra", "~>1.1.0"
 gem "rack-acceptable", :require => 'rack/acceptable'
 gem "yajl-ruby", :require => 'yajl'
+
+group :warehouse do
+  #the most recent one that actually compiles
+  gem "ruby-oci8", "1.0.7" 
+  #any newer version requires ruby-oci8 => 2.0.1
+  gem "activerecord-oracle_enhanced-adapter" , "1.2.3" 
+end
 
 group :development do
   gem "flay"
@@ -73,20 +78,16 @@ group :test do
   gem "shoulda", "~>2.10.0"
   gem "timecop"
   gem "treetop", "~>1.2.5"
-  gem "test-unit", "~>1.2.3", :require => "test/unit"
   gem 'parallel_tests'
 end
 
 group :cucumber do
-  gem "capybara", '~>0.3.9', :require => false
-  gem "cucumber-rails", "~>0.3.2", :require => false
+  # We only need to bind cucumber-rails here, the rest are its dependencies which means it should be
+  # making sensible choices.  Should ...
+  gem "capybara", "~>0.3.9", :require => false
   gem "database_cleaner", :require => false
-
-  # A word of caution: if these are changed from these revisions then features break
-  # not because they are wrong but because implementations have changed.  In Cucumber
-  # 0.10.x 'table.rows' appears to reverse the columns (i.e. table might say |1|2|3|
-  # but you get [3,2,1] in the array).
-  gem "cucumber", "~>0.9.2", :require => false
+  gem "cucumber", :require => false
+  gem "cucumber-rails", "~>0.3.2", :require => false
 end
 
 group :deployment do
