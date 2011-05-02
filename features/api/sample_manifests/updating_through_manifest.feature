@@ -1,4 +1,4 @@
-@api @json @sample_manifest @sample_tube @single-sign-on @new-api @barcode-service
+@api @json @sample_manifest @sample_tube @single-sign-on @new-api @barcode-service @update
 Feature: Access sample manifests through the API
   In order to actually be able to do anything useful
   As an authenticated user of the API
@@ -21,60 +21,6 @@ Feature: Access sample manifests through the API
     Given a supplier called "John's Genes" with ID 2
     And the UUID for the supplier "John's Genes" is "33333333-1111-2222-3333-4444444444444"
 
-  @read
-  Scenario: Reading the JSON for a UUID
-    Given the sample manifest exists with ID 1
-    And the UUID for the sample manifest with ID 1 is "00000000-1111-2222-3333-444444444444"
-    And the sample manifest with ID 1 is owned by study "Testing sample manifests"
-    And the sample manifest with ID 1 is supplied by "John's Genes"
-    And the sample manifest with ID 1 is for 1 sample tube
-
-    Given the "1D Tube" barcode printer "d999bc" exists
-    Given the sample manifest with ID 1 has been processed
-    And the barcode of the last sample tube is "9999"
-    And the Sanger sample ID of the last sample is "WTCCC99"
-
-    When I GET the API path "/00000000-1111-2222-3333-444444444444"
-    Then the HTTP response should be "200 OK"
-    And the JSON should match the following for the specified fields:
-      """
-      {
-        "sample_manifest": {
-          "actions": {
-            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444",
-            "update": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
-          },
-          "study": {
-            "actions": {
-              "read": "http://www.example.com/api/1/22222222-3333-4444-5555-000000000000"
-            }
-          },
-          "supplier": {
-            "actions": {
-              "read": "http://www.example.com/api/1/33333333-1111-2222-3333-444444444444"
-            }
-          },
-
-          "uuid": "00000000-1111-2222-3333-444444444444",
-          "state": "pending",
-          "last_errors": null,
-
-          "samples": [
-            {
-              "container": {
-                "barcode": "NT9999J"
-              },
-              "sample": {
-                "sanger_id": "WTCCC99"
-              }
-            }
-          ]
-        }
-      }
-      """
-
-  @update
-  Scenario: Updating a manifest
     Given the sample manifest exists with ID 1
       And the UUID for the sample manifest with ID 1 is "00000000-1111-2222-3333-444444444444"
       And the sample manifest with ID 1 is owned by study "Testing sample manifests"
@@ -87,6 +33,10 @@ Feature: Access sample manifests through the API
 
     Given the Sanger sample ID of the last sample is "WTCCC99"
       And the UUID for the last sample is "11111111-2222-3333-4444-000000000001"
+      And the name of the last sample is "Original Name"
+
+  Scenario: Updating a manifest after the samples have been updated by another manifest does not change the information
+    Given the last sample has been updated by a manifest
 
     When I PUT the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
       """
@@ -101,15 +51,15 @@ Feature: Access sample manifests through the API
               },
 
               "name": "flurby_wurby_sample",
-              "volume": "100",
-              "concentration": "10"
+              "concentration": 10,
+              "volume": 100
             }
           ]
         }
       }
       """
     Then the HTTP response should be "200 OK"
-    And the JSON should match the following for the specified fields:
+     And the JSON should match the following for the specified fields:
       """
       {
         "sample_manifest": {
@@ -138,9 +88,8 @@ Feature: Access sample manifests through the API
                 "barcode": "NT9999J"
               },
               "sample": {
-                "uuid": "11111111-2222-3333-4444-000000000001",
                 "sanger_id": "WTCCC99",
-                "name": "flurby_wurby_sample"
+                "name": "Original Name"
               }
             }
           ]
@@ -148,23 +97,33 @@ Feature: Access sample manifests through the API
       }
       """
 
-  # NOTE: The 'container' element is not really empty here, I just can't guarantee the barcode inside it!
-  @create
-  Scenario: Creating a sample tube sample manifest through a study
-    Given the UUID of the next sample manifest created will be "00000000-1111-2222-3333-4444444444444"
-    And the Sanger sample IDs will be sequentially generated
+  @override
+  Scenario: Updating a manifest after the samples have been updated by another manifest changes information when forced
+    Given the last sample has been updated by a manifest
 
-    When I POST the following JSON to the API path "/22222222-3333-4444-5555-000000000000/sample_manifests/create_for_tubes":
+    When I PUT the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
       """
       {
         "sample_manifest": {
-          "supplier": "33333333-1111-2222-3333-444444444444",
-          "count": 1
+          "override_previous_manifest": true,
+          "samples": [
+            {
+              "uuid": "11111111-2222-3333-4444-000000000001",
+
+              "supplier": {
+                "name": "John's Genes"
+              },
+
+              "name": "flurby_wurby_sample",
+              "concentration": 10,
+              "volume": 100
+            }
+          ]
         }
       }
       """
-    Then the HTTP response should be "201 Created"
-    And the JSON should match the following for the specified fields:
+    Then the HTTP response should be "200 OK"
+     And the JSON should match the following for the specified fields:
       """
       {
         "sample_manifest": {
@@ -190,13 +149,49 @@ Feature: Access sample manifests through the API
           "samples": [
             {
               "container": {
-
+                "barcode": "NT9999J"
               },
               "sample": {
-                "sanger_id": "WTCCC1"
+                "sanger_id": "WTCCC99",
+                "name": "flurby_wurby_sample"
               }
             }
           ]
         }
       }
       """
+
+  @update @error
+  Scenario Outline: Updating a manifest where required fields are missing
+    When I PUT the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
+      """
+      {
+        "sample_manifest": {
+          "samples": [
+            {
+              "uuid": "11111111-2222-3333-4444-000000000001",
+
+              "supplier": {
+                "name": "John's Genes"
+              },
+
+              "name": "flurby_wurby_sample",
+              <field set>
+            }
+          ]
+        }
+      }
+      """
+    Then the HTTP response should be "422 Unprocessable Entity"
+    Then the JSON should be:
+      """
+      {
+        "content": { <error> }
+      }
+      """
+
+    Examples:
+      | field set          | error                                                                  |
+      | "volume":100       | "samples.sample_metadata.concentration":["can't be blank for WTCCC99"] |
+      | "concentration":10 | "samples.sample_metadata.volume":["can't be blank for WTCCC99"]        |
+
