@@ -32,8 +32,7 @@ Feature: The entry point for the API gives directions to the other actions
 
         "samples": {
           "actions": {
-            "read": "http://www.example.com/api/1/samples",
-            "create": "http://www.example.com/api/1/samples"
+            "read": "http://www.example.com/api/1/samples"
           }
         },
         "sample_manifests": {
