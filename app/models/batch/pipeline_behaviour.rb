@@ -19,6 +19,9 @@ module Batch::PipelineBehaviour
           #batch.errors.add(attr, 'has incorrect type')          if requests.map(&:request_type_id).uniq != [ pipeline.request_type_id ]
         end
       end
+
+      # The batch requires positions on it's requests if the pipeline does
+      delegate :requires_position?, :to => :pipeline
     end
   end
 
