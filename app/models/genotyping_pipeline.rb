@@ -8,4 +8,9 @@ class GenotypingPipeline < Pipeline
   def genotyping?
     true
   end
+
+  # Pipelines in Genotyping do not require their batches to record the position of the requests.
+  def requires_position?
+    false
+  end
 end

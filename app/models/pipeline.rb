@@ -45,6 +45,10 @@ class Pipeline < ActiveRecord::Base
     INBOX_PARTIAL
   end
 
+  def requires_position?
+    true
+  end
+
   #This needs to be re-done a better way
   def qc?
     false
