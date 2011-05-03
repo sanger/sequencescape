@@ -125,3 +125,69 @@ Feature: display an overview of all plates going through QC in SLF
        | Well | QC started date | Seq stamp date | 
        | A1   | 2011-02-14      | 2011-02-14     | 
   
+
+  @new-api @asset_audit @single-sign-on
+  Scenario: A plate has been scanned as received in the audit application
+    Given all HTTP requests to the API have the cookie "WTSISignOn" set to "I-am-authenticated"
+    And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
+    Given I am using the latest version of the API
+    Given the plate exists with ID 1000
+    And the UUID for the plate with ID 1000 is "00000000-1111-2222-3333-555555555555"
+    And plate 1000 has is a stock plate
+    Given the UUID of the next asset audit created will be "00000000-1111-2222-3333-444444444444"
+    When I POST the following JSON to the API path "/asset_audits":
+      """
+      {
+        "asset_audit": {
+          "message": "Process 'Receive plates' performed on instrument Reception fridge",
+          "key": "slf_receive_plates",
+          "created_by": "john",
+          "asset": "00000000-1111-2222-3333-555555555555",
+          "witnessed_by": "jane"
+        }
+      }
+      """
+    Then the HTTP response should be "201 Created"
+    Given I am on the sample logistics homepage
+    When I follow "QC overview"
+    Then the overview of the plates should look like:
+      | Received   | QC started  | Pico Analysed | Gel Analysed | Sequenom Stamp |
+      | 2011-02-14 |             |               |              |                |
+
+  @new-api @asset_audit @single-sign-on
+  Scenario: A plate has been scanned as having been volume checked by the audit application
+    Given all HTTP requests to the API have the cookie "WTSISignOn" set to "I-am-authenticated"
+    And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
+    Given I am using the latest version of the API
+    Given the plate exists with ID 1000
+    And the UUID for the plate with ID 1000 is "00000000-1111-2222-3333-555555555555"
+    And plate 1000 has is a stock plate
+    Given the UUID of the next asset audit created will be "00000000-1111-2222-3333-444444444444"
+    When I POST the following JSON to the API path "/asset_audits":
+      """
+      {
+        "asset_audit": {
+          "message": "Process 'Receive plates' performed on instrument Reception fridge",
+          "key": "slf_receive_plates",
+          "created_by": "john",
+          "asset": "00000000-1111-2222-3333-555555555555"
+        }
+      }
+      """
+    Given the UUID of the next asset audit created will be "00000000-1111-2222-3333-444444444444"
+    When I POST the following JSON to the API path "/asset_audits":
+      """
+      {
+        "asset_audit": {
+          "message": "Process 'Volume check' performed on instrument Volume checker",
+          "key": "slf_volume_check",
+          "created_by": "john",
+          "asset": "00000000-1111-2222-3333-555555555555"
+        }
+      }
+      """
+    Given I am on the sample logistics homepage
+    When I follow "QC overview"
+    Then the overview of the plates should look like:
+      | Received   | QC started | Volume Check   | Pico Analysed | Gel Analysed | Sequenom Stamp |
+      | 2011-02-14 |            | 2011-02-14     |               |              |                |

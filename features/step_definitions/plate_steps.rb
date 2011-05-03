@@ -106,6 +106,10 @@ Given /^a "([^"]*)" plate purpose and of type "([^"]*)" with barcode "([^"]*)" e
     :name => machine_barcode)
 end
 
+Given /^plate (\d+) has is a stock plate$/ do |plate_id|
+  Plate.find(plate_id).update_attributes(:plate_purpose => PlatePurpose.stock_plate_purpose)
+end
+
 
 Given /^a plate with purpose "([^"]*)" and barcode "([^"]*)" exists$/ do |plate_purpose_name, machine_barcode|
   Plate.create!(:barcode =>Barcode.number_to_human("#{machine_barcode}"), :plate_purpose => PlatePurpose.find_by_name(plate_purpose_name))

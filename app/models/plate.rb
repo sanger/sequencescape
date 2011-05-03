@@ -15,8 +15,7 @@ class Plate < Asset
   before_create :set_plate_name_and_size
 
   named_scope :including_associations_for_json, { :include => [:uuid_object, :plate_metadata, :barcode_prefix, { :plate_purpose => :uuid_object } ] }
-  
-  named_scope :qc_started_plates, { :select => "distinct assets.*",  :order => 'id DESC',  :conditions => ["events.family = 'create_dilution_plate_purpose' AND plate_purpose_id = #{PlatePurpose.find_by_name('Stock Plate').id}" ], :joins => {:events => {}}, :include => [:events] }
+  named_scope :qc_started_plates, { :select => "distinct assets.*",  :order => 'assets.id DESC',  :conditions => ["(events.family = 'create_dilution_plate_purpose' OR asset_audits.key = 'slf_receive_plates') AND plate_purpose_id = #{PlatePurpose.find_by_name('Stock Plate').id}" ], :joins => "LEFT OUTER JOIN `events` ON events.eventful_id = assets.id LEFT OUTER JOIN `asset_audits` ON asset_audits.asset_id = assets.id  " ,:include => [:events, :asset_audits] }
 
   def url_name
     "plate"
