@@ -18,6 +18,11 @@ GIT
     alter_table (0.0.1)
       rails (~> 2.3.11)
 
+  remote: http://github.com/maxigit/ruby_walk
+  revision: c565a4f525d0606eea36be5ffb129b838d889e1c
+  specs:
+    ruby_walk (0.0.1)
+
 GIT
   remote: http://github.com/sanger/ci_reporter.git
   revision: 24130382295a59ed07143afa3be3c6cda33b07ba
@@ -228,6 +233,7 @@ DEPENDENCIES
   roodi
   ruby-debug
   ruby-oci8 (= 1.0.7)
+  ruby_walk!
   shoulda (~> 2.10.0)
   sinatra (~> 1.1.0)
   spreadsheet
