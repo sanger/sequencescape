@@ -518,6 +518,11 @@ class Batch < ActiveRecord::Base
     ['Plate', 'Well', 'Study','Pooled Tube', 'Tag Group', 'Tag', 'Expected Sequence', 'Sample Name', 'Measured Volume', 'Measured Concentration']
   end
 
+  def show_actions?
+    self.released? == false or
+      self.pipeline.class.const_get(:ALWAYS_SHOW_RELEASE_ACTIONS)
+  end
+
   def npg_set_state
     complete = true
     self.requests.each do |request|
