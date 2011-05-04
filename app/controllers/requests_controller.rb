@@ -108,67 +108,6 @@ class RequestsController < ApplicationController
     end
   end
 
-  def create
-    raise StandardError, "Sorry, but I don't think this action should be called!"
-
-    if params[:request][:study_id].empty? ||
-       params[:request][:workflow_id].empty? ||
-       params[:request][:request_type_id].empty? ||
-       params[:request][:request_type_id].empty?
-       flash[:error] = "Item, Study, Workflow and Request type must be selected"
-       redirect_to :action => :new
-       return
-     end
-
-    count = 1
-    if params[:count]
-      count = params[:count].to_i
-    end
-
-    @study      = Study.find(params[:request][:study_id])
-    @workflow     = Submission::Workflow.find(params[:request][:workflow_id])
-    @request_type = RequestType.find(params[:request][:request_type_id])
-    @item = Item.find(params[:item_id])
-
-    if @study.enforce_quotas && (@study.studyed_remaining_quota(@request_type)-count) < 0
-      flash[:error] = "No quota remaining for '#{@request_type.name}' for study '#{@study.name}'"
-      redirect_to new_study_workflow_item_request_url(@study, @workflow, @item, {:request_type_id => @request_type.id})
-      return
-    end
-
-    if @item.closed?
-      flash[:error] = "#{@request.workflow.item_label} #{@item.name} is closed unable to create request"
-      redirect_to new_study_workflow_item_request_path(@study, @workflow, @item, {:request_type_id => @request_type.id})
-      return
-    end
-
-    if !@study.approved?
-      flash[:error] = "Study not approved"
-      redirect_to :action => :new, :request_type => @request.request_type.id
-      return
-    end
-
-    1.upto(count) do
-      ActiveRecord::Base.transaction do
-        @request = Request.new(params[:request])
-        @request.user = current_user
-        @request.items << @item
-        unless @request.save
-          flash[:error] = "Failed to create requests"
-          raise ActiveRecord::Rollback
-        end
-      end
-    end
-
-    unless flash[:error]
-      flash[:notice] = "Created #{count} #{@request_type.name} #{'request'.pluralize}"
-      redirect_to asset_path(@request.asset)
-    else
-      redirect_to new_study_workflow_item_request_path(@study, @workflow, @item)
-    end
-  end
-
-
   def show
     @request = Request.find(params[:id])
     unless @request.user_id.blank?
@@ -182,13 +121,8 @@ class RequestsController < ApplicationController
   end
 
   def additional
-    @request            = Request.find(params[:id])
-    @additional         = Request.new
-    @additional.study = @request.study
-    @additional.save
-    @request.items.each do |item|
-      @additional.items << item
-    end
+    @request    = Request.find(params[:id])
+    @additional = @request.request_type.create!(:study => @request.study, :items => @request.items)
     redirect_to request_path(@additional)
   end
 

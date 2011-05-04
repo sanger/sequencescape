@@ -100,7 +100,7 @@ Feature: Creating new requests from an asset
       | Library tube             | Request additional sequencing |
       | Multiplexed library tube | Request additional sequencing |
 
-  @sample_tube
+  @sample_tube @foo
   Scenario Outline: Requesting an additional library from a sample tube
     Given user "John Smith" is a manager of "Study testing new request"
       And the asset "Sample tube for testing new request" belongs to study "Study testing new request"
@@ -124,6 +124,7 @@ Feature: Creating new requests from an asset
       | Pulldown library creation      |
       | PacBio Sample Prep             |
 
+  @foo
   Scenario Outline: Requesting more sequencing of an library
     Given user "John Smith" is a manager of "Study testing new request"
       And the asset "<asset type> for testing new request" belongs to study "Study testing new request"
@@ -158,7 +159,7 @@ Feature: Creating new requests from an asset
       | Multiplexed library tube | Paired end sequencing          | 150                         | 400                       |
       | Multiplexed library tube | HiSeq Paired end sequencing    | 150                         | 400                       |
 
-  @library_tube @multiplexed_library_tube @accession
+  @library_tube @multiplexed_library_tube @accession @foo
   Scenario Outline: Requesting more sequencing of a library where the study needs accession numbers
     Given user "John Smith" is a manager of "Study testing new request"
       And study "Study testing new request" has an accession number
