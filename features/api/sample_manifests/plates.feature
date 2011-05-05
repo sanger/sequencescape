@@ -336,7 +336,7 @@ Feature: Access sample manifests through the API
     Given the UUID of the next sample manifest created will be "00000000-1111-2222-3333-4444444444444"
     And the Sanger sample IDs will be sequentially generated
 
-    When I POST the following JSON to the API path "/22222222-3333-4444-5555-000000000000/sample_manifests/create_for_plate":
+    When I POST the following JSON to the API path "/22222222-3333-4444-5555-000000000000/sample_manifests/create_for_plates":
       """
       {
         "sample_manifest": {
