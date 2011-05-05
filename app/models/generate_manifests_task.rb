@@ -9,6 +9,7 @@ class GenerateManifestsTask < Task
   end
 
   def render_task(workflow, params)
+    super
     workflow.render_generate_manifest_task(self, params)
   end
 

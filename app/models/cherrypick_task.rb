@@ -193,6 +193,7 @@ class CherrypickTask < Task
   end
 
   def render_task(workflow, params)
+    super
     workflow.render_cherrypick_task(self, params)
   end
 

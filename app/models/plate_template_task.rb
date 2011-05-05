@@ -26,6 +26,7 @@ class PlateTemplateTask < Task
   end
 
   def render_task(workflow, params)
+    super
     workflow.render_plate_template_task(self, params)
   end
 
