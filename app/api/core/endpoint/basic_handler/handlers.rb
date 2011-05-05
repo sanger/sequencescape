@@ -20,9 +20,11 @@ module Core::Endpoint::BasicHandler::Handlers
       segments = @handlers.keys
       segments = segments && options[:include].map(&:to_sym) if options.key?(:include)
 
+      # I have no idea why I put 'unless options[:embedded]' on this as it doesn't seem to
+      # do anything other than stop stuff working!
       segments.each do |segment|
         json.deep_merge!(@handlers[segment].as_json(options.merge(:embedded => true)))
-      end unless options[:embedded]
+      end
     end
   end
 

@@ -77,6 +77,13 @@ Feature: Access studies through the API
             "actions": {
               "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/asset_groups"
             }
+          },
+          "sample_manifests": {
+            "actions": {
+              "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/sample_manifests",
+              "create_for_plates": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/sample_manifests/create_for_plates",
+              "create_for_tubes": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/sample_manifests/create_for_tubes"
+            }
           }
         },
         "uuids_to_ids": {
