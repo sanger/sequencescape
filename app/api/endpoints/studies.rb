@@ -9,7 +9,7 @@ class Endpoints::Studies < Core::Endpoint::Base
     has_many(:asset_groups, :json => 'asset_groups', :to => 'asset_groups')
 
     has_many(:sample_manifests, :json => 'sample_manifests', :to => 'sample_manifests') do
-      bind_action(:create, :as => :create_for_plates, :to => 'create_for_plate') do |request, response|
+      bind_action(:create, :as => :create_for_plates, :to => 'create_for_plates') do |request, response|
         ActiveRecord::Base.transaction do
           request.target.create_for_plate!(request.attributes)
         end
