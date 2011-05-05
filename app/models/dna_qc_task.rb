@@ -105,6 +105,7 @@ class DnaQcTask < Task
 
   def render_task(workflow, params)
     #    workflow.render_task(self, params)
+    super
     workflow.render_dna_qc_task(self, params)
   end
 

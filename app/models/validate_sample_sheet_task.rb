@@ -14,6 +14,7 @@ class ValidateSampleSheetTask < Task
   end
 
   def render_task(workflow, params)
+    super
     workflow.render_validate_sample_sheet_task(self, params)
   end
 

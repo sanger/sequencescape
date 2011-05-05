@@ -14,6 +14,7 @@ class PrepKitBarcodeTask < Task
   end
 
   def render_task(workflow, params)
+    super
     workflow.render_prep_kit_barcode_task(self, params)
   end
 
