@@ -15,6 +15,7 @@ class AttachInfiniumBarcodeTask < Task
   end
 
   def render_task(workflow, params)
+    super
     workflow.render_attach_infinium_barcode_task(self, params)
   end
 

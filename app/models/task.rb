@@ -7,6 +7,7 @@ class Task < ActiveRecord::Base
 
   self.inheritance_column = "sti_type"
 
+
   # BEGIN descriptor_to_attribute, could be move into a mixin
 
   #TODO move into SetDescriptorsTask
@@ -126,14 +127,14 @@ class Task < ActiveRecord::Base
 
   def partial
   end
+  
 
-  def render_task(controller, params)
+  def render_task(controller, params) 
     controller.render_task(self, params)
   end
   def create_render_element(request)
     request && RenderElement.new(request)
   end
-
 
   def do_task(controller, params)
     raise NotImplementedError, "Please Implement a do_task for #{self.class.name}"

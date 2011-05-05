@@ -21,6 +21,7 @@ class CherrypickGroupBySubmissionTask < Task
   end
 
   def render_task(workflow, params)
+    super
     workflow.render_cherrypick_group_by_submission_task(self, params)
   end
 
