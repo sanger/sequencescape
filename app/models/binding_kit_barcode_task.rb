@@ -14,6 +14,7 @@ class BindingKitBarcodeTask < Task
   end
 
   def render_task(workflow, params)
+    super
     workflow.render_binding_kit_barcode_task(self, params)
   end
 

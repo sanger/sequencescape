@@ -16,6 +16,7 @@ class AssignTagsToWellsTask < Task
   end
 
   def render_task(workflow, params)
+    super
     workflow.render_assign_tags_to_wells_task(self, params)
   end
 

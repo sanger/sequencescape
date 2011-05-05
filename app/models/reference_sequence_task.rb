@@ -14,6 +14,7 @@ class ReferenceSequenceTask < Task
   end
 
   def render_task(workflow, params)
+    super
     workflow.render_reference_sequence_task(self, params)
   end
 

@@ -14,6 +14,7 @@ class AssignTubesToWellsTask < Task
   end
 
   def render_task(workflow, params)
+    super
     workflow.render_assign_tubes_to_wells_task(self, params)
   end
 

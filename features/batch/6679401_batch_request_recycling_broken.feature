@@ -31,7 +31,8 @@ Feature: Recycling requests in the Cherrypicking pipeline
     Given a plate barcode webservice is available and returns "1234567"
 
     Given I am on the "Cherrypick" pipeline page
-    When I follow "View pending batch 1"
+    When I follow "In progress"
+    When I follow "View in progress batch 1"
     And I follow "Select Plate Template"
     And I select "My plate template" from "Plate Template"
     And I press "Next step"

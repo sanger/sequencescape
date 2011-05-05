@@ -14,6 +14,7 @@ class SmrtCellsTask < Task
   end
 
   def render_task(workflow, params)
+    super
     workflow.render_smrt_cells_task(self, params)
   end
 

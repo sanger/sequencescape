@@ -1,6 +1,7 @@
 class SetDescriptorsTask < Task
   
   def render_task(workflows_controller, params)
+    super
     workflows_controller.render_set_descriptors_task(self, params)
   end
   
