@@ -15,4 +15,10 @@ class Core::Endpoint::BasicHandler::Actions::Bound::Handler < Core::Endpoint::Ba
     @owner
   end
   private :owner_for
+
+  def core_path(*args)
+    args.unshift(@options[:to])
+    @owner.send(:core_path, *args)
+  end
+  private :core_path
 end
