@@ -377,10 +377,12 @@ class Sample < ActiveRecord::Base
     end
   end
 
-  GC_CONTENTS       = [ 'Neutral', 'High AT', 'High GC' ]
-  GENDERS           = [ 'Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable' ]
-  DNA_SOURCES       = [ 'Genomic', 'Whole Genome Amplified', 'Blood', 'Cell Line','Saliva','Brain' ]
-  SRA_HOLD_VALUES   = [ 'Hold', 'Public', 'Protect' ]
+  GC_CONTENTS     = [ 'Neutral', 'High AT', 'High GC' ]
+  GENDERS         = [ 'Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable' ]
+  DNA_SOURCES     = [ 'Genomic', 'Whole Genome Amplified', 'Blood', 'Cell Line','Saliva','Brain' ]
+  SRA_HOLD_VALUES = [ 'Hold', 'Public', 'Protect' ]
+  AGE_REGEXP      = '\d+(?:\.\d+)?\s+(?:second|minute|day|month|year)s?'
+  DOSE_REGEXP     = '\d+(?:\.\d+)?\s+\w+(?:\/\w+)?'
 
   extend Metadata
   has_metadata do
@@ -426,13 +428,13 @@ class Sample < ActiveRecord::Base
     attribute(:phenotype)
     #attribute(:strain_or_line) strain
     #TODO: split age in two fields and use a composed_of
-    attribute(:age, { :with => /^\d+(\.\d+)?\s+(second|minute|day|month|year)s?$/})
+    attribute(:age, :with => Regexp.new("^#{Sample::AGE_REGEXP}$"))
     attribute(:developmental_stage)
     #attribute(:sex) gender
     attribute(:cell_type)
     attribute(:disease_state)
     attribute(:compound) #TODO : yes/no?
-    attribute(:dose, :with => /^\d+(\.\d+)?\s+\w+(\/\w+)?$/)
+    attribute(:dose, :with => Regexp.new("^#{Sample::DOSE_REGEXP}$"))
     attribute(:immunoprecipitate)
     attribute(:growth_condition)
     attribute(:rnai)

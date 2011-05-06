@@ -65,82 +65,9 @@ Feature: Access sample manifests through the API
                 "barcode": "NT9999J"
               },
               "sample": {
-                "sanger_id": "WTCCC99"
-              }
-            }
-          ]
-        }
-      }
-      """
-
-  @update
-  Scenario: Updating a manifest
-    Given the sample manifest exists with ID 1
-      And the UUID for the sample manifest with ID 1 is "00000000-1111-2222-3333-444444444444"
-      And the sample manifest with ID 1 is owned by study "Testing sample manifests"
-      And the sample manifest with ID 1 is supplied by "John's Genes"
-      And the sample manifest with ID 1 is for 1 sample tube
-
-    Given the "1D Tube" barcode printer "d999bc" exists
-    Given the sample manifest with ID 1 has been processed
-      And the barcode of the last sample tube is "9999"
-
-    Given the Sanger sample ID of the last sample is "WTCCC99"
-      And the UUID for the last sample is "11111111-2222-3333-4444-000000000001"
-
-    When I PUT the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
-      """
-      {
-        "sample_manifest": {
-          "samples": [
-            {
-              "uuid": "11111111-2222-3333-4444-000000000001",
-
-              "supplier": {
-                "name": "John's Genes"
-              },
-
-              "name": "flurby_wurby_sample",
-              "volume": "100",
-              "concentration": "10"
-            }
-          ]
-        }
-      }
-      """
-    Then the HTTP response should be "200 OK"
-    And the JSON should match the following for the specified fields:
-      """
-      {
-        "sample_manifest": {
-          "actions": {
-            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444",
-            "update": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
-          },
-          "study": {
-            "actions": {
-              "read": "http://www.example.com/api/1/22222222-3333-4444-5555-000000000000"
-            }
-          },
-          "supplier": {
-            "actions": {
-              "read": "http://www.example.com/api/1/33333333-1111-2222-3333-444444444444"
-            }
-          },
-
-          "uuid": "00000000-1111-2222-3333-444444444444",
-          "state": "pending",
-          "last_errors": null,
-
-          "samples": [
-            {
-              "container": {
-                "barcode": "NT9999J"
-              },
-              "sample": {
-                "uuid": "11111111-2222-3333-4444-000000000001",
-                "sanger_id": "WTCCC99",
-                "name": "flurby_wurby_sample"
+                "sanger": {
+                  "sample_id": "WTCCC99"
+                }
               }
             }
           ]
@@ -193,7 +120,9 @@ Feature: Access sample manifests through the API
 
               },
               "sample": {
-                "sanger_id": "WTCCC1"
+                "sanger": {
+                  "sample_id": "WTCCC1"
+                }
               }
             }
           ]

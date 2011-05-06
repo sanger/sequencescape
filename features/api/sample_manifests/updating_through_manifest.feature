@@ -33,7 +33,7 @@ Feature: Access sample manifests through the API
 
     Given the Sanger sample ID of the last sample is "WTCCC99"
       And the UUID for the last sample is "11111111-2222-3333-4444-000000000001"
-      And the name of the last sample is "Original Name"
+      And the supplier sample name of the last sample is "Original Name"
 
   Scenario: Updating a manifest after the samples have been updated by another manifest does not change the information
     Given the last sample has been updated by a manifest
@@ -47,12 +47,12 @@ Feature: Access sample manifests through the API
               "uuid": "11111111-2222-3333-4444-000000000001",
 
               "supplier": {
-                "name": "John's Genes"
-              },
-
-              "name": "flurby_wurby_sample",
-              "concentration": 10,
-              "volume": 100
+                "sample_name": "flurby_wurby_sample",
+                "measurements": {
+                  "concentration": 10,
+                  "volume": 100
+                }
+              }
             }
           ]
         }
@@ -88,8 +88,12 @@ Feature: Access sample manifests through the API
                 "barcode": "NT9999J"
               },
               "sample": {
-                "sanger_id": "WTCCC99",
-                "name": "Original Name"
+                "sanger": {
+                  "sample_id": "WTCCC99"
+                },
+                "supplier": {
+                  "sample_name": "Original Name"
+                }
               }
             }
           ]
@@ -111,12 +115,12 @@ Feature: Access sample manifests through the API
               "uuid": "11111111-2222-3333-4444-000000000001",
 
               "supplier": {
-                "name": "John's Genes"
-              },
-
-              "name": "flurby_wurby_sample",
-              "concentration": 10,
-              "volume": 100
+                "sample_name": "flurby_wurby_sample",
+                "measurements": {
+                  "concentration": 10,
+                  "volume": 100
+                }
+              }
             }
           ]
         }
@@ -152,8 +156,12 @@ Feature: Access sample manifests through the API
                 "barcode": "NT9999J"
               },
               "sample": {
-                "sanger_id": "WTCCC99",
-                "name": "flurby_wurby_sample"
+                "supplier": {
+                  "sample_name": "flurby_wurby_sample"
+                },
+                "sanger": {
+                  "sample_id": "WTCCC99"
+                }
               }
             }
           ]
@@ -161,7 +169,7 @@ Feature: Access sample manifests through the API
       }
       """
 
-  @update @error
+  @error
   Scenario Outline: Updating a manifest where required fields are missing
     When I PUT the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
       """
@@ -172,11 +180,11 @@ Feature: Access sample manifests through the API
               "uuid": "11111111-2222-3333-4444-000000000001",
 
               "supplier": {
-                "name": "John's Genes"
-              },
-
-              "name": "flurby_wurby_sample",
-              <field set>
+                "sample_name": "flurby_wurby_sample",
+                "measurements": {
+                  <field set>
+                }
+              }
             }
           ]
         }
@@ -194,4 +202,3 @@ Feature: Access sample manifests through the API
       | field set          | error                                                                  |
       | "volume":100       | "samples.sample_metadata.concentration":["can't be blank for WTCCC99"] |
       | "concentration":10 | "samples.sample_metadata.volume":["can't be blank for WTCCC99"]        |
-
