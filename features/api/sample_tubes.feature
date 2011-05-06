@@ -63,7 +63,9 @@ Feature: Access sample tubes through the API
             "actions": {
               "read": "http://www.example.com/api/1/00000000-1111-2222-3333-888888888888"
             },
-            "name": "sample_testing_the_api"
+            "sanger": {
+              "name": "sample_testing_the_api"
+            }
           },
           "requests": {
             "actions": {

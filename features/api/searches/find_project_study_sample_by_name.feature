@@ -31,17 +31,17 @@ Feature: Searching for studies, projects and samples by name
       """
       {
         "<model>": {
-          "name": "Testing_the_API_2",
-          "uuid": "11111111-2222-3333-4444-000000000002"
+          "uuid": "11111111-2222-3333-4444-000000000002",
+          <name json>
         }
       }
       """
 
     Examples:
-      | model   |
-      | project |
-      | study   |
-      | sample  |
+      | model   | name json                                 |
+      | project | "name": "Testing_the_API_2"               |
+      | study   | "name": "Testing_the_API_2"               |
+      | sample  | "sanger": { "name": "Testing_the_API_2" } |
 
   @single
   Scenario Outline: Looking for a non-existant entry

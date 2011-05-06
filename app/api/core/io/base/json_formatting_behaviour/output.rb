@@ -1,11 +1,10 @@
-# TODO[xxx]: Ugly code attack!
 module ::Core::Io::Base::JsonFormattingBehaviour::Output
   def generate_object_to_json_mapping(attribute_to_json)
-    code = attribute_to_json.merge(
-      'uuid'       => 'uuid',
-      'created_at' => 'created_at',
-      'updated_at' => 'updated_at'
-    ).sort do |(k1, _), (k2, _)|
+    code = attribute_to_json.concat([
+      [ 'uuid', 'uuid' ],
+      [ 'created_at', 'created_at' ],
+      [ 'updated_at', 'updated_at' ]
+    ]).sort do |(k1, _), (k2, _)|
       k1 <=> k2     # Ensure that the attributes are built in the right order
     end.map do |attribute, json|
       json_path = json.split('.')
