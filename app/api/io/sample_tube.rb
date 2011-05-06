@@ -8,6 +8,6 @@ class Io::SampleTube < Io::Asset
                 concentration  => concentration
                        volume  => volume
               scanned_in_date  => scanned_in_date
-                  sample.name  => sample.name
+                  sample.name  => sample.sanger.name
   })
 end
