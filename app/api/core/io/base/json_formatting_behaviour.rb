@@ -40,7 +40,18 @@ module Core::Io::Base::JsonFormattingBehaviour
   end
 
   def json_field_for(attribute)
-    attribute_to_json_field[attribute.to_s] || attribute.to_s
+    return attribute_to_json_field[attribute.to_s] if attribute_to_json_field.key?(attribute.to_s)
+
+    # We have to assume that this could be an association that is being exposed, in which case we'll
+    # need to determine the I/O class that deals with it and hand off the error handling to it.
+    association, *association_parts = attribute.to_s.split('.')
+    return attribute.to_s if association_parts.empty?
+    reflection = model_for_input.reflections[association.to_sym]
+    return attribute.to_s if reflection.nil?
+
+    # TODO: 'association' here should really be garnered from the appropriate endpoint
+    association_json_field = ::Core::Io::Registry.instance.lookup_for_class(reflection.klass).json_field_for(association_parts.join('.'))
+    "#{association}.#{association_json_field}"
   end
 
   def set_json_root(name)
