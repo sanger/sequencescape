@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110427101123) do
+ActiveRecord::Schema.define(:version => 20110504125343) do
 
   create_table "archived_properties", :force => true do |t|
     t.text    "value"
@@ -93,6 +93,7 @@ ActiveRecord::Schema.define(:version => 20110427101123) do
   add_index "assets", ["barcode"], :name => "index_assets_on_barcode"
   add_index "assets", ["barcode_prefix_id"], :name => "index_assets_on_barcode_prefix_id"
   add_index "assets", ["map_id"], :name => "index_assets_on_map_id"
+  add_index "assets", ["sample_id"], :name => "index_assets_on_sample_id"
   add_index "assets", ["sti_type", "updated_at"], :name => "index_assets_on_sti_type_and_updated_at"
   add_index "assets", ["sti_type"], :name => "index_assets_on_sti_type"
   add_index "assets", ["updated_at"], :name => "index_assets_on_updated_at"
