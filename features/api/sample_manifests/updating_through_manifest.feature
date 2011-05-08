@@ -199,6 +199,6 @@ Feature: Access sample manifests through the API
       """
 
     Examples:
-      | field set          | error                                                                  |
-      | "volume":100       | "samples.sample_metadata.concentration":["can't be blank for WTCCC99"] |
-      | "concentration":10 | "samples.sample_metadata.volume":["can't be blank for WTCCC99"]        |
+      | field set          | error                                                                        |
+      | "volume":100       | "samples.supplier.measurements.concentration":["can't be blank for WTCCC99"] |
+      | "concentration":10 | "samples.supplier.measurements.volume":["can't be blank for WTCCC99"]        |
