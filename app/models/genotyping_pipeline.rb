@@ -1,5 +1,7 @@
 class GenotypingPipeline < Pipeline
-  INBOX_PARTIAL='group_by_parent'
+  INBOX_PARTIAL               = 'group_by_parent'
+  ALWAYS_SHOW_RELEASE_ACTIONS = true
+  
   
   def inbox_partial
     INBOX_PARTIAL

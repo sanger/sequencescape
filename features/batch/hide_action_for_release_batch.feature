@@ -1,32 +1,27 @@
 @batch
-Feature: If a batch is released, the section Action/Task shouldnt show 
+Feature: If a batch is released, the section Action/Task shouldn't be shown unless it is on a white list 
 
   Background: 
     Given I am logged in as "user"
 
-  Scenario Outline: The batch is released and the section Action isnt show
-    Given I have a batch in "<pipeline>" with state released
+  Scenario Outline: The show or hide the released Actions section for pipelines
+  Given I have a "<batch_state>" batch in "<pipeline>"
     And I am on the last batch show page
-    Then I should see "This batch belongs to pipeline: <pipeline>"
+  Then I should see "This batch belongs to pipeline: <pipeline>"
     And I should see "EVENTS"
-    And I should not see "ACTIONS"
+    And I <should_or_should_not> see "ACTIONS"
   Examples:
-    | pipeline                      |
-    | Cluster formation PE          |
-    | MX Library Preparation [NEW]  |
-    | Library preparation           |
-
-  Scenario Outline: The batch is pending and the section Action is showed 
-    Given I have a batch in "<pipeline>"
-    And I am on the last batch show page
-    Then I should see "This batch belongs to pipeline: <pipeline>"
-    And I should see "EVENTS"
-    And I should see "ACTIONS"
-
-    Examples:
-      | pipeline                      |
-      | Cluster formation PE          |
-      | MX Library Preparation [NEW]  |
-      | Library preparation           |
-
-    
+    | pipeline                               | batch_state | should_or_should_not |
+    | Cluster formation PE                   | released    | should not           |
+    | MX Library Preparation [NEW]           | released    | should not           |
+    | Library preparation                    | released    | should not           |
+    | Cluster formation PE                   | pending     | should               |
+    | MX Library Preparation [NEW]           | pending     | should               |
+    | Library preparation                    | pending     | should               |
+    | Pulldown Multiplex Library Preparation | released    | should               |
+    | Cherrypicking for Pulldown             | released    | should               |
+    | Genotyping                             | released    | should               |
+    | DNA QC                                 | released    | should               |
+    | Cherrypick                             | released    | should               |
+    | PacBio Sample Prep                     | released    | should               |
+    | PacBio Sequencing                      | released    | should               |
