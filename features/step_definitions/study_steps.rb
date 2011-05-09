@@ -316,13 +316,13 @@ end
 Given /^asset with barcode "([^"]*)" belongs to study "([^"]*)"$/ do |raw_barcode, study_name|
   study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   asset = Asset.find_from_machine_barcode(raw_barcode) or raise StandardError, "Cannot find asset with machine barcode #{raw_barcode.inspect}"
-  RequestFactory.create_assets_requests([asset], study)
+  RequestFactory.create_assets_requests([asset.id], study.id)
 end
 
 Given /^the asset "([^\"]+)" belongs to study "([^\"]+)"$/ do |asset_name, study_name|
   study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   asset = Asset.find_by_name(asset_name) or raise StandardError, "Cannot find asset #{asset_name.inspect}"
-  RequestFactory.create_assets_requests([asset], study)
+  RequestFactory.create_assets_requests([asset.id], study.id)
 end
 
 Then /^abbreviation for Study "([^"]*)" should be "([^"]*)"$/ do |study_name, abbreviation_regex|
