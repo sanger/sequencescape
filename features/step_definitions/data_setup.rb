@@ -1,7 +1,7 @@
 require 'import_pulled_data'
 Given /^data are preloaded from "([^\"]+)" renaming:$/ do |file_name, table|
   names_map = {}
-  table.rows.each do |old_name, new_name|
+  table.rows.each do |new_name, old_name|
     names_map[old_name]= new_name
   end
 

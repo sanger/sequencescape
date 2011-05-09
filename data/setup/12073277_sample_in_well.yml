@@ -15,8 +15,6 @@
 - :attributes: 
     name: Plate_2382022_name
     size: 96
-    holder_type: Location
-    holder_id: 3
     barcode: "180363"
     id: 2382022
     plate_purpose_id: 2
@@ -40,8 +38,6 @@
   :class: Request
   :id: 3142704
 - :attributes: 
-    holder_type: Asset
-    holder_id: 2382022
     id: 2382025
     sample_id: 1115606
     barcode_prefix_id: 4
