@@ -211,13 +211,13 @@ class RequestFactory
   # NOTE: This must remain as taking Asset ID and Study ID values, and not be converted to Assets and Study objects, because
   # delayed job does not work with actual ActiveRecord objects.
   def self.create_assets_requests(asset_ids, study_id)
+    raise StandardError, "Can only accept asset IDs" unless asset_ids.all? { |i| i.is_a?(Fixnum) or i.is_a?(String) }
+    raise StandardError, "Can only accept study ID" unless study_id.is_a?(Fixnum) or study_id.is_a?(String)
+
     # internal requests to link study -> request -> asset -> sample
     # TODO: do this as a submission
-    requests = []
-    request_type = RequestType.find_by_key('create_asset')
-    asset_ids.each do |asset_id|
-      requests << Request.new(:study_id => study_id, :asset_id => asset_id, :request_type => request_type)
-    end
+    request_type = RequestType.find_by_key('create_asset') or raise StandardError, "Cannot find create asset request type"
+    requests = asset_ids.map { |asset_id| request_type.new(:study_id => study_id, :asset_id => asset_id) }
     Request.import requests
   end
 end
