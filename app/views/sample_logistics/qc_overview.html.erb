@@ -6,7 +6,9 @@
   <tr>
     <th><%= link_to "Study", "javascript:void(0);" %></th>
     <th><%= link_to "Stock", "javascript:void(0);" %></th>
+    <th><%= link_to "Received", "javascript:void(0);" %></th>
     <th><%= link_to "QC started", "javascript:void(0);" %></th>
+    <th><%= link_to "Volume Check", "javascript:void(0);" %></th>
     <th><%= link_to "Pico Analysed", "javascript:void(0);" %></th>
     <th><%= link_to "Gel Analysed", "javascript:void(0);" %></th>
     <th><%= link_to "Sequenom Stamp", "javascript:void(0);" %></th>
@@ -15,17 +17,23 @@
   <tbody>
     <% @stock_plates.each do |stock_plate| %>
     <tr>
+      <% received_timestamp = stock_plate.asset_audits.select{ |asset_audit| asset_audit.key == 'slf_receive_plates'  }.first.try(:created_at) %>
+      <% received_date = Date.parse(received_timestamp.to_s).to_s if received_timestamp %>
       <% qc_started_date = stock_plate.events.select{ |event| event.family == 'create_dilution_plate_purpose'  }.first.try(:content) %>
+      <% volume_check_timestamp = stock_plate.asset_audits.select{ |asset_audit| asset_audit.key == 'slf_volume_check'  }.first.try(:created_at) %>
+      <% volume_check_date = Date.parse(volume_check_timestamp.to_s).to_s if volume_check_timestamp %>
       <% sequenom_plate_stamp_date = stock_plate.events.select{ |event| event.family == 'create_for_sequenom'  }.first.try(:content)  %>
       <% pico_plate_analysed_date = stock_plate.events.select{ |event| event.family == 'pico_analysed'  }.first.try(:content) %>
-      <% gel_plate_analysed_date = stock_plate  .events.select{ |event| event.family == 'gel_analysed'  }.first.try(:content) %> 
+      <% gel_plate_analysed_date = stock_plate.events.select{ |event| event.family == 'gel_analysed'  }.first.try(:content) %>
       <td>
          <% if stock_plate.study %>
            <%= link_to stock_plate.study.name, study_path(stock_plate.study) %>
          <% end %>
       </td>
       <td><%= link_to stock_plate.barcode, asset_path(stock_plate) %></td>
+      <td><%= received_date %></td>
       <td><%= qc_started_date %></td>
+      <td><%= volume_check_date %></td>
       <td><%= pico_plate_analysed_date %></td>
       <td><%= gel_plate_analysed_date %></td>
       <td><%= sequenom_plate_stamp_date %></td>
