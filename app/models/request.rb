@@ -76,9 +76,9 @@ class Request < ActiveRecord::Base
 
   # deprecating sample, with should use through asset
   deprecate :sample
-
+  
   def sample_id
-    attributes[:sample_id]
+    attributes["sample_id"]
   end
   deprecate :sample_id
   belongs_to :project
