@@ -6,6 +6,12 @@ GIT
     acts-as-dag (1.1.3)
 
 GIT
+  remote: http://github.com/maxigit/ruby_walk
+  revision: c565a4f525d0606eea36be5ffb129b838d889e1c
+  specs:
+    ruby_walk (0.0.1)
+
+GIT
   remote: http://github.com/mhartl/catch_cookie_exception.git
   revision: a107a2d17c53ed8b82aae53dd4aecc5c399ab981
   specs:
@@ -17,11 +23,6 @@ GIT
   specs:
     alter_table (0.0.1)
       rails (~> 2.3.11)
-
-  remote: http://github.com/maxigit/ruby_walk
-  revision: c565a4f525d0606eea36be5ffb129b838d889e1c
-  specs:
-    ruby_walk (0.0.1)
 
 GIT
   remote: http://github.com/sanger/ci_reporter.git
@@ -172,7 +173,7 @@ GEM
     shoulda (2.10.3)
     sinatra (1.1.4)
       rack (~> 1.1)
-      tilt (>= 1.2.2, < 2.0)
+      tilt (< 2.0, >= 1.2.2)
     spreadsheet (0.6.5.4)
       ruby-ole (>= 1.0)
     stomp (1.1.8)
