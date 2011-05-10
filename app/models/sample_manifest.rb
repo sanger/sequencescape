@@ -69,8 +69,7 @@ class SampleManifest < ActiveRecord::Base
 
   has_attached_file :uploaded, :storage => :database
   has_attached_file :generated, :storage => :database
-  default_scope select_without_file_columns_for(:uploaded)
-  default_scope select_without_file_columns_for(:generated)
+  default_scope select_without_file_columns_for(:uploaded, :generated)
 
   class_inheritable_accessor :spreadsheet_offset
   class_inheritable_accessor :spreadsheet_header_row
