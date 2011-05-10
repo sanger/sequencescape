@@ -19,7 +19,7 @@ module SampleManifest::PlateBehaviour
 
     def io_samples
       samples.map do |sample|
-        container = sample.wells.first
+        container = sample.primary_well
         {
           :sample    => sample,
           :container => {
