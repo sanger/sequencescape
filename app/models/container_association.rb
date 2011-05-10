@@ -32,7 +32,7 @@ class ContainerAssociation < ActiveRecord::Base
       class_name = container_name.to_s.singularize.capitalize
       has_one :container_association, :foreign_key => :content_id
       has_one :container, :class_name => class_name, :through => :container_association
-      alias_attribute container_name , :container
+      has_one container_name, :class_name => class_name, :through => :container_association, :source => :container
 
       #delegate :location, :to => :container
 
