@@ -1,0 +1,4520 @@
+--- 
+- :attributes: 
+    item_options: 
+    request_types: 
+    comments: 
+    assets: 
+    project_id: 333
+    asset_group_name: 
+    asset_group_id: 
+    id: 3831
+    request_options: 
+    template_name: 
+    study_id: 333
+    user_id: 145
+    workflow_id: 1
+    message: 
+    state: ready
+    sti_type: Submission
+  :class: Submission
+  :id: 3831
+- :attributes: 
+    name: Lane_76375_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 76375
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 76375
+- :attributes: 
+    name: 
+    pipeline_id: 27625
+    failure: Loading failure (lin/block/hyb)
+    request_id: 31540
+    batch_id: 4837
+    read_length: 37
+    tag: 
+    fragment_size_required_to: 4kb
+    id: 23241
+    fragment_size_required_from: 3kb
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: High complexity
+  :class: SequencingRequest::Metadata
+  :id: 23241
+- :attributes: 
+    salt: 
+    crypted_password: 
+    remember_token_expires_at: 
+    api_key: db96e355b024b-aec41b9212b8e5cd81d6e967bf96b46f
+    barcode: ID198L
+    id: 145
+    pipeline_administrator: 
+    last_name: User_145_last_name
+    remember_token: 
+    workflow_id: 1
+    login: User_145_login
+    email: User_145_email
+    first_name: User_145_first_name
+  :class: User
+  :id: 145
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 76375
+    id: 31540
+    submission_id: 3831
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5278
+    asset_id: 57422
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 31540
+- :attributes: 
+    name: Lane_1423155_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 1423155
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 1423155
+- :attributes: 
+    name: 
+    pipeline_id: 27625
+    failure: Loading failure (lin/block/hyb)
+    request_id: 2911542
+    batch_id: 4837
+    read_length: 37
+    tag: 
+    fragment_size_required_to: 4kb
+    id: 2535027
+    fragment_size_required_from: 3kb
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: High complexity
+  :class: SequencingRequest::Metadata
+  :id: 2535027
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 1423155
+    id: 2911542
+    submission_id: 3831
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5278
+    asset_id: 57422
+    state: failed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 2911542
+- :attributes: 
+    name: Lane_1423156_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 1423156
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 1423156
+- :attributes: 
+    name: 
+    pipeline_id: 27625
+    failure: Loading failure (lin/block/hyb)
+    request_id: 2911543
+    batch_id: 4837
+    read_length: 37
+    tag: 
+    fragment_size_required_to: 4kb
+    id: 2535028
+    fragment_size_required_from: 3kb
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: High complexity
+  :class: SequencingRequest::Metadata
+  :id: 2535028
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 1423156
+    id: 2911543
+    submission_id: 3831
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5278
+    asset_id: 57422
+    state: failed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 2911543
+- :attributes: 
+    name: LibraryTube_57422_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 2
+    public_name: 
+    resource: 
+    archive: 
+    barcode: "22371"
+    concentration: 
+    id: 57422
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: pending
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: 
+    map_id: 
+    sti_type: LibraryTube
+  :class: LibraryTube
+  :id: 57422
+- :attributes: 
+    name: 
+    pipeline_id: 22371
+    failure: 
+    request_id: 31539
+    batch_id: 4195
+    read_length: 37
+    tag: 
+    fragment_size_required_to: 4kb
+    id: 23240
+    fragment_size_required_from: 3kb
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: "YES"
+    library_type: High complexity
+  :class: LibraryCreationRequest::Metadata
+  :id: 23240
+- :attributes: 
+    pipeline_id: 1
+    request_type_id: 1
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 57422
+    id: 31539
+    submission_id: 3831
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5278
+    asset_id: 57421
+    state: passed
+    sti_type: LibraryCreationRequest
+  :class: LibraryCreationRequest
+  :id: 31539
+- :attributes: 
+    name: SampleTube_57421_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 1
+    public_name: 
+    resource: 
+    archive: 
+    barcode: "31538"
+    concentration: 
+    id: 57421
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: 
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: 
+    map_id: 
+    sti_type: SampleTube
+  :class: SampleTube
+  :id: 57421
+- :attributes: 
+    item_options: 
+    request_types: 
+    comments: 
+    assets: 
+    project_id: 333
+    asset_group_name: 
+    asset_group_id: 
+    id: 3834
+    request_options: 
+    template_name: 
+    study_id: 333
+    user_id: 145
+    workflow_id: 1
+    message: 
+    state: ready
+    sti_type: Submission
+  :class: Submission
+  :id: 3834
+- :attributes: 
+    name: Lane_76393_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 76393
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: failed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: false
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 76393
+- :attributes: 
+    name: 
+    pipeline_id: 24783
+    failure: Sybr Green - over-dense clusters
+    request_id: 31594
+    batch_id: 4483
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 23295
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 23295
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 76393
+    id: 31594
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: failed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 31594
+- :attributes: 
+    name: Lane_78456_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 78456
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 78456
+- :attributes: 
+    name: 
+    pipeline_id: 26437
+    failure: Loading failure (lin/block/hyb)
+    request_id: 36084
+    batch_id: 4697
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27202
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27202
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 78456
+    id: 36084
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36084
+- :attributes: 
+    name: Lane_78458_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 78458
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 78458
+- :attributes: 
+    name: 
+    pipeline_id: 26438
+    failure: Loading failure (lin/block/hyb)
+    request_id: 36085
+    batch_id: 4697
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27203
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27203
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 78458
+    id: 36085
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36085
+- :attributes: 
+    name: Lane_78460_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 78460
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 78460
+- :attributes: 
+    name: 
+    pipeline_id: 26439
+    failure: Loading failure (lin/block/hyb)
+    request_id: 36086
+    batch_id: 4697
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27204
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27204
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 78460
+    id: 36086
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36086
+- :attributes: 
+    name: Lane_78462_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 78462
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 78462
+- :attributes: 
+    name: 
+    pipeline_id: 26440
+    failure: Loading failure (lin/block/hyb)
+    request_id: 36087
+    batch_id: 4697
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27205
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27205
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 78462
+    id: 36087
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36087
+- :attributes: 
+    name: Lane_78464_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 78464
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 78464
+- :attributes: 
+    name: 
+    pipeline_id: 26441
+    failure: Loading failure (lin/block/hyb)
+    request_id: 36088
+    batch_id: 4697
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27206
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27206
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 78464
+    id: 36088
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36088
+- :attributes: 
+    name: Lane_78466_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 78466
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 78466
+- :attributes: 
+    name: 
+    pipeline_id: 27676
+    failure: Loading failure (lin/block/hyb)
+    request_id: 36089
+    batch_id: 4844
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27207
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27207
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 78466
+    id: 36089
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36089
+- :attributes: 
+    name: Lane_78468_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 78468
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 78468
+- :attributes: 
+    name: 
+    pipeline_id: 26442
+    failure: Loading failure (lin/block/hyb)
+    request_id: 36090
+    batch_id: 4697
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27208
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27208
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 78468
+    id: 36090
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36090
+- :attributes: 
+    name: Lane_86013_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 86013
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 86013
+- :attributes: 
+    name: 
+    pipeline_id: 36091
+    failure: 
+    request_id: 36091
+    batch_id: 5173
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27209
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27209
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 86013
+    id: 36091
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36091
+- :attributes: 
+    name: Lane_78472_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 78472
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 78472
+- :attributes: 
+    name: 
+    pipeline_id: 27677
+    failure: 
+    request_id: 36092
+    batch_id: 4844
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27210
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27210
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 78472
+    id: 36092
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36092
+- :attributes: 
+    name: Lane_86014_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 86014
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 86014
+- :attributes: 
+    name: 
+    pipeline_id: 36093
+    failure: 
+    request_id: 36093
+    batch_id: 5173
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27211
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27211
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 86014
+    id: 36093
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36093
+- :attributes: 
+    name: Lane_86015_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 86015
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 86015
+- :attributes: 
+    name: 
+    pipeline_id: 36094
+    failure: 
+    request_id: 36094
+    batch_id: 5173
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27212
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27212
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 86015
+    id: 36094
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36094
+- :attributes: 
+    name: Lane_86143_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 86143
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 86143
+- :attributes: 
+    name: 
+    pipeline_id: 36095
+    failure: 
+    request_id: 36095
+    batch_id: 5186
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27213
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27213
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 86143
+    id: 36095
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36095
+- :attributes: 
+    name: Lane_85677_name
+    material_id: 
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 85677
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: failed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: false
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 85677
+- :attributes: 
+    name: 
+    pipeline_id: 36096
+    failure: 
+    request_id: 36096
+    batch_id: 5126
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27214
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27214
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 85677
+    id: 36096
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: cancelled
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36096
+- :attributes: 
+    name: Lane_85678_name
+    material_id: 
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 85678
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: failed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: false
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 85678
+- :attributes: 
+    name: 
+    pipeline_id: 36097
+    failure: 
+    request_id: 36097
+    batch_id: 5126
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27215
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27215
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 85678
+    id: 36097
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: cancelled
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36097
+- :attributes: 
+    name: Lane_86144_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 86144
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 86144
+- :attributes: 
+    name: 
+    pipeline_id: 36098
+    failure: 
+    request_id: 36098
+    batch_id: 5186
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27216
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27216
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 86144
+    id: 36098
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36098
+- :attributes: 
+    name: Lane_78485_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 78485
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 78485
+- :attributes: 
+    name: 
+    pipeline_id: 25626
+    failure: 
+    request_id: 36099
+    batch_id: 4596
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27217
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27217
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 78485
+    id: 36099
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36099
+- :attributes: 
+    name: Lane_78486_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 78486
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 78486
+- :attributes: 
+    name: 
+    pipeline_id: 26443
+    failure: 
+    request_id: 36100
+    batch_id: 4697
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27218
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27218
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 78486
+    id: 36100
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36100
+- :attributes: 
+    name: Lane_78488_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 78488
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 78488
+- :attributes: 
+    name: 
+    pipeline_id: 27678
+    failure: 
+    request_id: 36101
+    batch_id: 4844
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27219
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27219
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 78488
+    id: 36101
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36101
+- :attributes: 
+    name: Lane_78490_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 78490
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 78490
+- :attributes: 
+    name: 
+    pipeline_id: 27679
+    failure: 
+    request_id: 36102
+    batch_id: 4844
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27220
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27220
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 78490
+    id: 36102
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36102
+- :attributes: 
+    name: Lane_78491_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 78491
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 78491
+- :attributes: 
+    name: 
+    pipeline_id: 25642
+    failure: 
+    request_id: 36103
+    batch_id: 4598
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27221
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27221
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 78491
+    id: 36103
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36103
+- :attributes: 
+    name: Lane_78492_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 78492
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 78492
+- :attributes: 
+    name: 
+    pipeline_id: 25643
+    failure: 
+    request_id: 36104
+    batch_id: 4598
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27222
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27222
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 78492
+    id: 36104
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36104
+- :attributes: 
+    name: Lane_78493_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 78493
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 78493
+- :attributes: 
+    name: 
+    pipeline_id: 25644
+    failure: 
+    request_id: 36105
+    batch_id: 4598
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27223
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27223
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 78493
+    id: 36105
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36105
+- :attributes: 
+    name: Lane_78494_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 78494
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 78494
+- :attributes: 
+    name: 
+    pipeline_id: 25645
+    failure: 
+    request_id: 36106
+    batch_id: 4598
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27224
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27224
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 78494
+    id: 36106
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36106
+- :attributes: 
+    name: Lane_78495_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 78495
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 78495
+- :attributes: 
+    name: 
+    pipeline_id: 25646
+    failure: 
+    request_id: 36107
+    batch_id: 4598
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27225
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27225
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 78495
+    id: 36107
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36107
+- :attributes: 
+    name: Lane_78496_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 78496
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 78496
+- :attributes: 
+    name: 
+    pipeline_id: 25647
+    failure: 
+    request_id: 36108
+    batch_id: 4598
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27226
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27226
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 78496
+    id: 36108
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36108
+- :attributes: 
+    name: Lane_78497_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 78497
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 78497
+- :attributes: 
+    name: 
+    pipeline_id: 25627
+    failure: 
+    request_id: 36109
+    batch_id: 4596
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27227
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27227
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 78497
+    id: 36109
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36109
+- :attributes: 
+    name: Lane_78498_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 78498
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 78498
+- :attributes: 
+    name: 
+    pipeline_id: 25628
+    failure: 
+    request_id: 36110
+    batch_id: 4596
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27228
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27228
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 78498
+    id: 36110
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36110
+- :attributes: 
+    name: Lane_78499_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 78499
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 78499
+- :attributes: 
+    name: 
+    pipeline_id: 25629
+    failure: 
+    request_id: 36111
+    batch_id: 4596
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27229
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27229
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 78499
+    id: 36111
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36111
+- :attributes: 
+    name: Lane_78500_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 78500
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 78500
+- :attributes: 
+    name: 
+    pipeline_id: 25630
+    failure: 
+    request_id: 36112
+    batch_id: 4596
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27230
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27230
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 78500
+    id: 36112
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36112
+- :attributes: 
+    name: Lane_78501_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 78501
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 78501
+- :attributes: 
+    name: 
+    pipeline_id: 25631
+    failure: 
+    request_id: 36113
+    batch_id: 4596
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27231
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27231
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 78501
+    id: 36113
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36113
+- :attributes: 
+    name: Lane_78502_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 78502
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 78502
+- :attributes: 
+    name: 
+    pipeline_id: 25632
+    failure: 
+    request_id: 36114
+    batch_id: 4596
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27232
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27232
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 78502
+    id: 36114
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36114
+- :attributes: 
+    name: Lane_78503_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 78503
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 78503
+- :attributes: 
+    name: 
+    pipeline_id: 25648
+    failure: 
+    request_id: 36115
+    batch_id: 4598
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 27233
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 27233
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 78503
+    id: 36115
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 36115
+- :attributes: 
+    name: Lane_1423167_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 1423167
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: failed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: false
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 1423167
+- :attributes: 
+    name: 
+    pipeline_id: 24783
+    failure: Sybr Green - over-dense clusters
+    request_id: 2911554
+    batch_id: 4483
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 2535039
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 2535039
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 1423167
+    id: 2911554
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: failed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 2911554
+- :attributes: 
+    name: Lane_1423168_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 1423168
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: failed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: false
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 1423168
+- :attributes: 
+    name: 
+    pipeline_id: 24783
+    failure: Sybr Green - over-dense clusters
+    request_id: 2911555
+    batch_id: 4483
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 2535040
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 2535040
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 1423168
+    id: 2911555
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: failed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 2911555
+- :attributes: 
+    name: Lane_1424219_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 1424219
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 1424219
+- :attributes: 
+    name: 
+    pipeline_id: 26437
+    failure: Loading failure (lin/block/hyb)
+    request_id: 2912606
+    batch_id: 4697
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 2536091
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 2536091
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 1424219
+    id: 2912606
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: failed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 2912606
+- :attributes: 
+    name: Lane_1424220_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 1424220
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 1424220
+- :attributes: 
+    name: 
+    pipeline_id: 26438
+    failure: Loading failure (lin/block/hyb)
+    request_id: 2912607
+    batch_id: 4697
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 2536092
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 2536092
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 1424220
+    id: 2912607
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: failed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 2912607
+- :attributes: 
+    name: Lane_1424221_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 1424221
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 1424221
+- :attributes: 
+    name: 
+    pipeline_id: 26439
+    failure: Loading failure (lin/block/hyb)
+    request_id: 2912608
+    batch_id: 4697
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 2536093
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 2536093
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 1424221
+    id: 2912608
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: failed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 2912608
+- :attributes: 
+    name: Lane_1424222_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 1424222
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 1424222
+- :attributes: 
+    name: 
+    pipeline_id: 26440
+    failure: Loading failure (lin/block/hyb)
+    request_id: 2912609
+    batch_id: 4697
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 2536094
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 2536094
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 1424222
+    id: 2912609
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: failed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 2912609
+- :attributes: 
+    name: Lane_1424223_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 1424223
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 1424223
+- :attributes: 
+    name: 
+    pipeline_id: 26441
+    failure: Loading failure (lin/block/hyb)
+    request_id: 2912610
+    batch_id: 4697
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 2536095
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 2536095
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 1424223
+    id: 2912610
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: failed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 2912610
+- :attributes: 
+    name: Lane_1424224_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 1424224
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 1424224
+- :attributes: 
+    name: 
+    pipeline_id: 27676
+    failure: Loading failure (lin/block/hyb)
+    request_id: 2912611
+    batch_id: 4844
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 2536096
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 2536096
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 1424224
+    id: 2912611
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: failed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 2912611
+- :attributes: 
+    name: Lane_1424225_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 1424225
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 1424225
+- :attributes: 
+    name: 
+    pipeline_id: 26442
+    failure: Loading failure (lin/block/hyb)
+    request_id: 2912612
+    batch_id: 4697
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 2536097
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 2536097
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 1424225
+    id: 2912612
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: failed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 2912612
+- :attributes: 
+    name: Lane_1424226_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 1424226
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 1424226
+- :attributes: 
+    name: 
+    pipeline_id: 36091
+    failure: 
+    request_id: 2912613
+    batch_id: 5173
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 2536098
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 2536098
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 1424226
+    id: 2912613
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: failed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 2912613
+- :attributes: 
+    name: Lane_1424227_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 1424227
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 1424227
+- :attributes: 
+    name: 
+    pipeline_id: 36091
+    failure: 
+    request_id: 2912614
+    batch_id: 5173
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 2536099
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 2536099
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 1424227
+    id: 2912614
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: failed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 2912614
+- :attributes: 
+    name: Lane_1424228_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 1424228
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 1424228
+- :attributes: 
+    name: 
+    pipeline_id: 27677
+    failure: 
+    request_id: 2912615
+    batch_id: 4844
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 2536100
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 2536100
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 1424228
+    id: 2912615
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: failed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 2912615
+- :attributes: 
+    name: Lane_1424229_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 1424229
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 1424229
+- :attributes: 
+    name: 
+    pipeline_id: 36093
+    failure: 
+    request_id: 2912616
+    batch_id: 5173
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 2536101
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 2536101
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 1424229
+    id: 2912616
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: failed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 2912616
+- :attributes: 
+    name: Lane_1424230_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 1424230
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 1424230
+- :attributes: 
+    name: 
+    pipeline_id: 36093
+    failure: 
+    request_id: 2912617
+    batch_id: 5173
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 2536102
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 2536102
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 1424230
+    id: 2912617
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: failed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 2912617
+- :attributes: 
+    name: Lane_1424231_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 1424231
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 1424231
+- :attributes: 
+    name: 
+    pipeline_id: 36094
+    failure: 
+    request_id: 2912618
+    batch_id: 5173
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 2536103
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 2536103
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 1424231
+    id: 2912618
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: failed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 2912618
+- :attributes: 
+    name: Lane_1424232_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 1424232
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 1424232
+- :attributes: 
+    name: 
+    pipeline_id: 36094
+    failure: 
+    request_id: 2912619
+    batch_id: 5173
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 2536104
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 2536104
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 1424232
+    id: 2912619
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: failed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 2912619
+- :attributes: 
+    name: Lane_1424233_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 1424233
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 1424233
+- :attributes: 
+    name: 
+    pipeline_id: 36095
+    failure: 
+    request_id: 2912620
+    batch_id: 5186
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 2536105
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 2536105
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 1424233
+    id: 2912620
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: failed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 2912620
+- :attributes: 
+    name: Lane_1424234_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 1424234
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 1424234
+- :attributes: 
+    name: 
+    pipeline_id: 36095
+    failure: 
+    request_id: 2912621
+    batch_id: 5186
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 2536106
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 2536106
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 1424234
+    id: 2912621
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: failed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 2912621
+- :attributes: 
+    name: Lane_1424235_name
+    material_id: 
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 1424235
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: failed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: false
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 1424235
+- :attributes: 
+    name: 
+    pipeline_id: 36096
+    failure: 
+    request_id: 2912622
+    batch_id: 5126
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 2536107
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 2536107
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 1424235
+    id: 2912622
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: failed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 2912622
+- :attributes: 
+    name: Lane_1424236_name
+    material_id: 
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 1424236
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: failed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: false
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 1424236
+- :attributes: 
+    name: 
+    pipeline_id: 36097
+    failure: 
+    request_id: 2912623
+    batch_id: 5126
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 2536108
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 2536108
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 1424236
+    id: 2912623
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: failed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 2912623
+- :attributes: 
+    name: Lane_1424237_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 1424237
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 1424237
+- :attributes: 
+    name: 
+    pipeline_id: 36098
+    failure: 
+    request_id: 2912624
+    batch_id: 5186
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 2536109
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 2536109
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 1424237
+    id: 2912624
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: failed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 2912624
+- :attributes: 
+    name: Lane_1424238_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 1424238
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 1424238
+- :attributes: 
+    name: 
+    pipeline_id: 36098
+    failure: 
+    request_id: 2912625
+    batch_id: 5186
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 2536110
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 2536110
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 1424238
+    id: 2912625
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: failed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 2912625
+- :attributes: 
+    name: Lane_1424239_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 1424239
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 1424239
+- :attributes: 
+    name: 
+    pipeline_id: 27678
+    failure: 
+    request_id: 2912626
+    batch_id: 4844
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 2536111
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 2536111
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 1424239
+    id: 2912626
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: failed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 2912626
+- :attributes: 
+    name: Lane_1424240_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 1424240
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 1424240
+- :attributes: 
+    name: 
+    pipeline_id: 27679
+    failure: 
+    request_id: 2912627
+    batch_id: 4844
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 2536112
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 2536112
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 1424240
+    id: 2912627
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57434
+    state: failed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 2912627
+- :attributes: 
+    name: LibraryTube_57434_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 2
+    public_name: 
+    resource: 
+    archive: 
+    barcode: "22298"
+    concentration: 
+    id: 57434
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: pending
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: 
+    map_id: 
+    sti_type: LibraryTube
+  :class: LibraryTube
+  :id: 57434
+- :attributes: 
+    name: 
+    pipeline_id: 22298
+    failure: 
+    request_id: 31593
+    batch_id: 4187
+    read_length: 108
+    tag: 
+    fragment_size_required_to: "400"
+    id: 23294
+    fragment_size_required_from: "300"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: "YES"
+    library_type: No PCR
+  :class: LibraryCreationRequest::Metadata
+  :id: 23294
+- :attributes: 
+    pipeline_id: 1
+    request_type_id: 1
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 57434
+    id: 31593
+    submission_id: 3834
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5296
+    asset_id: 57433
+    state: passed
+    sti_type: LibraryCreationRequest
+  :class: LibraryCreationRequest
+  :id: 31593
+- :attributes: 
+    name: SampleTube_57433_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 1
+    public_name: 
+    resource: 
+    archive: 
+    barcode: "31592"
+    concentration: 
+    id: 57433
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: 
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: 
+    map_id: 
+    sti_type: SampleTube
+  :class: SampleTube
+  :id: 57433
+- :attributes: 
+    item_options: 
+    request_types: 
+    comments: 
+    assets: 
+    project_id: 333
+    asset_group_name: 
+    asset_group_id: 
+    id: 3978
+    request_options: 
+    template_name: 
+    study_id: 333
+    user_id: 145
+    workflow_id: 1
+    message: 
+    state: ready
+    sti_type: Submission
+  :class: Submission
+  :id: 3978
+- :attributes: 
+    name: Lane_77459_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 77459
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 77459
+- :attributes: 
+    name: 
+    pipeline_id: 26889
+    failure: 
+    request_id: 33803
+    batch_id: 4751
+    read_length: 76
+    tag: 
+    fragment_size_required_to: "500"
+    id: 25153
+    fragment_size_required_from: "400"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 25153
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 77459
+    id: 33803
+    submission_id: 3978
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5862
+    asset_id: 58141
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 33803
+- :attributes: 
+    name: LibraryTube_58141_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 2
+    public_name: 
+    resource: 
+    archive: 
+    barcode: "24413"
+    concentration: 
+    id: 58141
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: pending
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: 
+    map_id: 
+    sti_type: LibraryTube
+  :class: LibraryTube
+  :id: 58141
+- :attributes: 
+    name: 
+    pipeline_id: 24413
+    failure: 
+    request_id: 33802
+    batch_id: 4439
+    read_length: 76
+    tag: 
+    fragment_size_required_to: "500"
+    id: 25152
+    fragment_size_required_from: "400"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: "YES"
+    library_type: No PCR
+  :class: LibraryCreationRequest::Metadata
+  :id: 25152
+- :attributes: 
+    pipeline_id: 1
+    request_type_id: 1
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 58141
+    id: 33802
+    submission_id: 3978
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5862
+    asset_id: 58140
+    state: passed
+    sti_type: LibraryCreationRequest
+  :class: LibraryCreationRequest
+  :id: 33802
+- :attributes: 
+    name: SampleTube_58140_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 1
+    public_name: 
+    resource: 
+    archive: 
+    barcode: "33801"
+    concentration: 
+    id: 58140
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: 
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: 
+    map_id: 
+    sti_type: SampleTube
+  :class: SampleTube
+  :id: 58140
+- :attributes: 
+    item_options: 
+    request_types: 
+    comments: 
+    assets: 
+    project_id: 333
+    asset_group_name: 
+    asset_group_id: 
+    id: 3984
+    request_options: 
+    template_name: 
+    study_id: 333
+    user_id: 145
+    workflow_id: 1
+    message: 
+    state: ready
+    sti_type: Submission
+  :class: Submission
+  :id: 3984
+- :attributes: 
+    name: Lane_77468_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 
+    public_name: 
+    resource: 
+    archive: 
+    barcode: 
+    concentration: 
+    id: 77468
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: passed
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: true
+    map_id: 
+    sti_type: Lane
+  :class: Lane
+  :id: 77468
+- :attributes: 
+    name: 
+    pipeline_id: 26893
+    failure: 
+    request_id: 33923
+    batch_id: 4751
+    read_length: 76
+    tag: 
+    fragment_size_required_to: "500"
+    id: 25248
+    fragment_size_required_from: "400"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: 
+    library_type: No PCR
+  :class: SequencingRequest::Metadata
+  :id: 25248
+- :attributes: 
+    pipeline_id: 4
+    request_type_id: 3
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 77468
+    id: 33923
+    submission_id: 3984
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5873
+    asset_id: 58151
+    state: passed
+    sti_type: SequencingRequest
+  :class: SequencingRequest
+  :id: 33923
+- :attributes: 
+    name: LibraryTube_58151_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 2
+    public_name: 
+    resource: 
+    archive: 
+    barcode: "24419"
+    concentration: 
+    id: 58151
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: pending
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: 
+    map_id: 
+    sti_type: LibraryTube
+  :class: LibraryTube
+  :id: 58151
+- :attributes: 
+    name: 
+    pipeline_id: 24419
+    failure: 
+    request_id: 33922
+    batch_id: 4439
+    read_length: 76
+    tag: 
+    fragment_size_required_to: "500"
+    id: 25247
+    fragment_size_required_from: "400"
+    insert_size: 
+    sequencing_type: 
+    pass: 
+    library_creation_complete: "YES"
+    library_type: No PCR
+  :class: LibraryCreationRequest::Metadata
+  :id: 25247
+- :attributes: 
+    pipeline_id: 1
+    request_type_id: 1
+    sample_pool_id: 
+    project_id: 333
+    priority: 0
+    target_asset_id: 58151
+    id: 33922
+    submission_id: 3984
+    study_id: 333
+    user_id: 145
+    sample_id: 7280
+    workflow_id: 1
+    charge: 
+    item_id: 5873
+    asset_id: 58150
+    state: passed
+    sti_type: LibraryCreationRequest
+  :class: LibraryCreationRequest
+  :id: 33922
+- :attributes: 
+    name: SampleTube_58150_name
+    material_id: 7280
+    size: 
+    descriptor_fields: 
+    holder_type: Location
+    closed: false
+    holder_id: 1
+    public_name: 
+    resource: 
+    archive: 
+    barcode: "33921"
+    concentration: 
+    id: 58150
+    descriptors: 
+    value: 
+    volume: 
+    barcode_prefix_id: 4
+    plate_purpose_id: 
+    qc_state: 
+    material_type: Sample
+    two_dimensional_barcode: 
+    external_release: 
+    map_id: 
+    sti_type: SampleTube
+  :class: SampleTube
+  :id: 58150
+- :attributes: 
+    ethically_approved: true
+    name: Study_333_name
+    enforce_data_release: true
+    reference_genome_id: 1
+    blocked: false
+    enforce_accessioning: true
+    id: 333
+    user_id: 145
+    state: active
+  :class: Study
+  :id: 333
+- :attributes: 
+    id: 6789
+    study_id: 333
+    sample_id: 7280
+  :class: StudySample
+  :id: 6789
+- :attributes: 
+    control: 
+    empty_supplier_sample_name: true
+    name: Sample_7280_name
+    new_name_format: true
+    sample_manifest_id: 
+    id: 7280
+    sanger_sample_id: 
+    updated_by_manifest: false
+  :class: Sample
+  :id: 7280

@@ -100,3 +100,29 @@ Given /^sample "([^"]*)" came from a sample manifest$/ do |sample_name|
   sample_manifest = Factory(:sample_manifest, :id => 1)
   sample.update_attributes!(:sample_manifest => sample_manifest)
 end
+
+Given /^study "([^\"]+)" has the following samples in sample tubes:$/ do |study_name, table|
+  study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
+  table.hashes.each do |details|
+    sample_tube_name = details['sample tube']
+    sample_name = details['sample']
+
+    sample = Sample.find_by_name(sample_name)
+    Given %Q{I have a sample called "#{sample_name}"} unless sample
+    Given %Q{sample "#{sample_name}" is in a sample tube named "#{sample_tube_name}"}
+    And %Q{the sample "#{sample_name}" belongs to the study "#{study_name}"}
+    And %Q{the asset "#{sample_tube_name}" belongs to study "#{study_name}"}
+
+  end
+end
+
+Then /^the sample "([^"]*)" should belong to the study named "([^"]*)"$/ do |sample_name, study_name|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample #{sample_name.inspect}"
+  study  = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
+  assert study.samples.include?(sample)
+end
+Then /^the sample "([^"]*)" should not belong to the study named "([^"]*)"$/ do |sample_name, study_name|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample #{sample_name.inspect}"
+  study  = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
+  assert !study.samples.include?(sample)
+end

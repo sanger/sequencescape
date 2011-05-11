@@ -5,9 +5,8 @@ class AssetsController < ApplicationController
   def index
     @assets_without_requests = []
     @assets_with_requests = []
-    if params[:study_id] && params[:workflow_id]
+    if params[:study_id]
       @study = Study.find(params[:study_id])
-      @workflow = Submission::Workflow.find(params[:workflow_id])
       @assets_with_requests = @study.assets.paginate :page => params[:page], :order => 'created_at DESC'
       assets = []
       @study.asset_groups.each{|ag| assets << ag.assets }

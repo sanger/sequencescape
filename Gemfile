@@ -41,6 +41,8 @@ gem "delayed_job", '~>2.0.4'
 
 gem "cbrunnkvist-psd_logger"
 
+gem "ruby_walk", :git => "http://github.com/maxigit/ruby_walk"
+
 # For the API level
 gem "uuidtools"
 gem "sinatra", "~>1.1.0"
@@ -93,3 +95,4 @@ end
 group :deployment do
   gem "mongrel_cluster"
 end
+
