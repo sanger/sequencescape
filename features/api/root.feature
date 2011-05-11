@@ -37,7 +37,6 @@ Feature: The entry point for the API gives directions to the other actions
         },
         "sample_manifests": {
           "actions": {
-            "read": "http://www.example.com/api/1/sample_manifests"
           }
         },
         "suppliers": {
