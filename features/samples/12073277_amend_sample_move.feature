@@ -19,7 +19,7 @@ Feature: move samples and assets between studies
 
   Scenario: move a sample with one asset
     Given a study called "study from" exists
-    Given study "study from" has the following registered samples in sample tubes:
+    Given study "study from" has the following registered samples in sample tubes with a request:
       | sample | sample tube |
       | sample_to_move | sample_tube_to_move|
     When I move sample "sample_to_move" from study "study from" to "study to"
@@ -37,7 +37,7 @@ Feature: move samples and assets between studies
 
   Scenario: move a sample with assets from different study
     Given a study called "study from" exists
-    Given study "study from" has the following registered samples in sample tubes:
+    Given study "study from" has the following registered samples in sample tubes with a request:
       | sample | sample tube |
       | sample_to_move | sample_tube_to_move|
     Given I have a study called "to_stay study"
@@ -60,7 +60,7 @@ Feature: move samples and assets between studies
 
   Scenario: move all assets (including tag instance)
     Given a study called "study from" exists
-    Given study "study from" has the following registered samples in sample tubes:
+    Given study "study from" has the following registered samples in sample tubes with a request:
       | sample | sample tube |
       | sample_to_move | sample_tube_to_move|
     Given the study "study from" has a library tube called "library_tube_to_move"
@@ -87,7 +87,7 @@ Feature: move samples and assets between studies
 
   Scenario: move a sample with one asset to a new asset group
     Given a study called "study from" exists
-    Given study "study from" has the following registered samples in sample tubes:
+    Given study "study from" has the following registered samples in sample tubes with a request:
       | sample | sample tube |
       | sample_to_move | sample_tube_to_move|
     When I move sample "sample_to_move" from study "study from" to "study to", to asset group "moved assets" and submission ""

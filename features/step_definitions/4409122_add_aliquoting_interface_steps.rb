@@ -7,7 +7,7 @@ Given /^a sample tube named "([^\"]*)" exists with a two dimensional barcode "([
   Factory(:sample_tube, :name => sample_tube_name, :two_dimensional_barcode => two_dimensional_barcode) or raise StandardError, "Could not create sample tube named '#{ sample_tube_name }'"
 end
 
-Given /^study "([^\"]+)" has the following registered samples in sample tubes:$/ do |study_name, table|
+Given /^study "([^\"]+)" has the following registered samples in sample tubes( with a request)?:$/ do |study_name, with_a_request, table|
   study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   table.hashes.each do |details|
     sample_tube_name = details['sample tube']
@@ -21,7 +21,8 @@ Given /^study "([^\"]+)" has the following registered samples in sample tubes:$/
       :workflow => @current_user.workflow,
       :state => 'ready'
     )
-    And %Q{the asset "#{sample_tube_name}" belongs to study "#{study_name}"}
+
+    And %Q{the asset "#{sample_tube_name}" belongs to study "#{study_name}"} if with_a_request
 
   end
 end
