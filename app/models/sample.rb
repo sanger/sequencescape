@@ -234,7 +234,7 @@ class Sample < ActiveRecord::Base
   def check_move_options(study_id_to, study_id_from, asset_group_id, new_assets_name, submission_id)
     response =  true
 
-    submissions_id_list = self.submissions.studies(study_id_from.id)
+    submissions_id_list = self.submissions.for_studies(study_id_from.id)
     submission_to = Submission.find_by_id(submission_id)
       # test submission situaztion and status of submission multiplex
       if (submissions_id_list.size == 0) && (new_assets_name.empty?) && (submission_id != "0")
@@ -280,7 +280,7 @@ class Sample < ActiveRecord::Base
     end
   end
 
-  def move_study_sample(study_from, study_to, current_user)
+  def move_study_sample_quarantine(study_from, study_to, current_user)
     self.study_samples.each do |ps|
       ps.study_id = study_to.id
       ps.save
@@ -302,11 +302,10 @@ class Sample < ActiveRecord::Base
 
   end
 
-  def move_assets_to_submission(study_from, study_to, submission_to, current_user)
-    submission_id_from = self.submissions.studies(study_from.id)
-    if submission_id_from.size > 0
-        submission_id_from.each do |submission_id_from_i|
-          submission_from = submission_id_from_i
+  def move_assets_to_submission_quarantine(study_from, study_to, submission_to, current_user)
+    submission_from = self.submissions.for_studies(study_from.id)
+    if submission_from.size > 0
+        submission_from.each do |submission_from|
           if submission_to != "0"
             submission_to_move = Submission.find_by_id(submission_to)
             submission_to_move.add_assets(self.assets)
@@ -318,7 +317,7 @@ class Sample < ActiveRecord::Base
     end
   end
 
-  def move(study_from, study_to, asset_group, new_assets_name, current_user, submission_to = nil)
+  def move_quarantine(study_from, study_to, asset_group, new_assets_name, current_user, submission_to = nil)
     move_result = true
     begin
       ActiveRecord::Base.transaction do
@@ -538,4 +537,14 @@ class Sample < ActiveRecord::Base
     reference_genome
   end
   
+  def affiliated_with?(object)
+    case
+    when object.respond_to?(:sample_id)
+      self.id == object.sample_id
+    when object.respond_to?(:sample_ids)
+      object.sample_ids.include?(self.id)
+    else
+      nil
+    end
+  end
 end
