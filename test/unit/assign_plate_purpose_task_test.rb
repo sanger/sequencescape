@@ -4,8 +4,12 @@ class AssignPlatePurposeTaskTest < ActiveSupport::TestCase
   context "AssignPlatePurposeTask" do
     setup do
       @assign_plate_purpose_task = AssignPlatePurposeTask.new
-      @params = {}
-      @workflows_controller = mock()
+      @batch = Factory :batch
+      @workflows_controller  = WorkflowsController.new
+      @workflow = Factory :lab_workflow_for_pipeline
+      @user = Factory :user
+      @workflows_controller.stubs(:current_user).returns(@user)
+      @params = {:batch_id => @batch.id, :workflow_id => @workflow.id}
     end
 
     context "#partial" do
