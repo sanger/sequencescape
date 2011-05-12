@@ -6,7 +6,7 @@
   </ul>
   <div class="yui-content">
     <%= loading_bar %>
-    <div id="remote_error" style="display:none">An error has occured and the results can not be shown at the moment</div>
+    <%= remote_error %>
     <div id="everything">
     <script>
     Event.observe(window, 'load', function() {
@@ -14,13 +14,15 @@
         :update => {:success => "everything"},
         :method => :get,
         :loading => "Element.show('loading')",
-        :success => "TableKit.load();
-          TableKit.heads['summary'] = null;
-          TableKit.rows['summary'] = null;
-          TableKit.Sortable.init('summary');
-          Element.highlight('summary');",
-        :failure => "Element.show('remote_error');",
-        :complete => "Element.hide('loading');") %>
+        :complete => "try {
+            TableSorterFacade.extend_table('summary');
+            Element.highlight('summary');
+          } catch (e) {
+            (e.name == 'ElementDoesNotExistError') || console.warn(e);
+          } finally {
+            Element.hide('loading');
+          };",
+        :failure => "Element.show('remote_error')") %>
     });
     </script>
     </div>

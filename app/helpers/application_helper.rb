@@ -17,6 +17,12 @@ module ApplicationHelper
     end
   end
 
+  def remote_error(identifier = "remote_error")
+    content_tag("div", :id => identifier, :class=>"error", :style => "display:none;") do
+      "An error has occurred and the results can not be shown at the moment"
+    end
+  end
+
   def display_for_setting(setting)
     display = true
     if logged_in?
