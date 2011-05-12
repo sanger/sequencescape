@@ -31,7 +31,7 @@ module SampleManifest::PlateBehaviour
     end
 
     def print_labels(&block)
-      plates              = self.samples.map { |s| s.wells.first.plate }.uniq
+      plates              = self.samples.map { |s| s.primary_well.plate }.uniq.sort_by(&:barcode)
       stock_plate_purpose = PlatePurpose.stock_plate_purpose
       printables          = stock_plate_purpose.create_barcode_labels_from_plates(plates)
       yield(printables, Plate.prefix, "long", stock_plate_purpose.name.to_s)
