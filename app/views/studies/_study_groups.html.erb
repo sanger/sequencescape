@@ -10,6 +10,7 @@
 <div class="yui-u group_contents">
 
   <%= loading_bar %>
+  <%= remote_error %>
   <div class="group_content" id="everything">
     <script>
     Event.observe(window, 'load', function() {
@@ -17,12 +18,15 @@
         :update => "everything",
         :method => :get,
         :loading => "Element.show('loading')",
-        :complete => "TableKit.load();
-          TableKit.heads['study_list'] = null;
-          TableKit.rows['study_list'] = null;
-          TableKit.Sortable.init('study_list');
-          Element.highlight('study_list');
-          Element.hide('loading')") %>
+        :complete => "try {
+            TableSorterFacade.extend_table('study_list');
+            Element.highlight('study_list');
+          } catch (e) {
+            (e.name == 'ElementDoesNotExistError') || console.warn(e);
+          } finally {
+            Element.hide('loading');
+          };",
+        :failure => "Element.show('remote_error')") %>
     });
     </script>
   </div>
