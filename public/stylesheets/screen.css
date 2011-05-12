@@ -1,7 +1,4 @@
 body {
-  <td>
-  <%= form.select_without_property_field_wrapper("#{field_name}_check", ["N/A", "value"], :value => Proc.new{ "yes"}) %>
-</td>
   margin: 0px;
   padding: 0px 0px 0px 0px;
   font-family: 'Lucida Grande', helvetica, arial, sans-serif;
