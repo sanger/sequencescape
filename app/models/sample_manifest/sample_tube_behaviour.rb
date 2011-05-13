@@ -83,7 +83,7 @@ module SampleManifest::SampleTubeBehaviour
   def sample_tube_sample_creation(samples_data,study_id)
     study_samples_data = []
     samples_data.each do |barcode,sanger_sample_id,prefix|
-      sample = SampleManifest.create_sample("", self, sanger_sample_id)
+      sample      = create_sample(sanger_sample_id)
       sample_tube = SampleTube.find_by_barcode(barcode)
       sample_tube.sample = sample
       sample_tube.save!

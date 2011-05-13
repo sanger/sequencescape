@@ -9,16 +9,20 @@ class Endpoints::Studies < Core::Endpoint::Base
     has_many(:asset_groups, :json => 'asset_groups', :to => 'asset_groups')
 
     has_many(:sample_manifests, :json => 'sample_manifests', :to => 'sample_manifests') do
-      bind_action(:create, :as => :create_for_plates, :to => 'create_for_plates') do |request, response|
-        ActiveRecord::Base.transaction do
-          request.target.create_for_plate!(request.attributes)
-        end
+      def self.constructor(name, method)
+        line = __LINE__ + 1
+        instance_eval(%Q{
+          bind_action(:create, :as => #{name.to_sym.inspect}, :to => #{name.to_s.inspect}) do |request, response|
+            ActiveRecord::Base.transaction do
+              manifest = request.target.#{method}(request.attributes)
+              request.io.eager_loading_for(manifest.class).include_uuid.find(manifest.id)
+            end
+          end
+        }, __FILE__, line)
       end
-      bind_action(:create, :as => :create_for_tubes, :to => 'create_for_tubes') do |request, response|
-        ActiveRecord::Base.transaction do
-          request.target.create_for_sample_tube!(request.attributes)
-        end
-      end
+
+      constructor(:create_for_plates, :create_for_plate!)
+      constructor(:create_for_tubes, :create_for_sample_tube!)
     end
   end
 end

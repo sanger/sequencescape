@@ -162,4 +162,11 @@ class Map < ActiveRecord::Base
     map.description
   end
   
+
+  # Vertically walking the map locations goes A1, B1, C1, ... A2, B2, ...
+  def self.walk_plate_vertically(size, &block)
+    width, height = Map.plate_width(size), Map.plate_length(size)
+    positions     = Map.all(:conditions => {:asset_size => size}, :order => 'location_id ASC')
+    (0...size).map { |index| yield(positions[((index % height) * width) + (index / height)]) }
+  end
 end

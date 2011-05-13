@@ -5,7 +5,6 @@ class ContainerAssociation < ActiveRecord::Base
   belongs_to :content , :class_name => "Asset"
 
   # An object can only be contained once
-  validates_uniqueness_of :content_id, :unless => :blank?
   validates_uniqueness_of :content_id
   validates_presence_of :container_id
   validates_presence_of :content_id

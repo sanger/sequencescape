@@ -153,10 +153,7 @@ class Plate < Asset
   end
 
   def create_well_attributes(wells)
-    well_attributes = []
-    wells.each do |well|
-      well_attributes << [well.id]
-    end
+    well_attributes = wells.map { |well| [ well.id ] }
     WellAttribute.import [:well_id], well_attributes
   end
 

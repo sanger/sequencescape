@@ -44,7 +44,7 @@ class Sample < ActiveRecord::Base
   validates_presence_of :name
   validates_format_of :name, :with => /^[\w_-]+$/i, :message => I18n.t('samples.name_format'), :if => :new_name_format, :on => :create
   validates_format_of :name, :with => /^[\(\)\+\s\w._-]+$/i, :message => I18n.t('samples.name_format'), :if => :new_name_format, :on => :update
-  validates_uniqueness_of :name, :on => :create, :message => "already in use"
+  validates_uniqueness_of :name, :on => :create, :message => "already in use", :unless => :sample_manifest_id?
   validates_each(:name, :on => :save, :unless => :can_rename_sample?) do |record,attr,value|
     record.errors.add(:name, 'cannot be changed') if record.name_changed? and not record.new_record?
   end
@@ -531,7 +531,7 @@ class Sample < ActiveRecord::Base
   
   def sample_reference_genome
     reference_genome = self.sample_metadata.reference_genome
-    reference_genome = self.studies.first.try(:study_metadata).try(:reference_genome) if ( reference_genome.nil? ) || reference_genome.name.blank?
+    reference_genome = self.primary_study.try(:study_metadata).try(:reference_genome) if ( reference_genome.nil? ) || reference_genome.name.blank?
     reference_genome
   end
   
