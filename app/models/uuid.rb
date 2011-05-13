@@ -63,8 +63,11 @@ class Uuid < ActiveRecord::Base
   validates_presence_of :external_id
   validates_format_of :external_id, :with => ValidRegexp
 
+  # It is more efficient to check the individual parts of the resource association than it is to check the
+  # association itself as the latter causes the record to be reloaded
   belongs_to :resource, :polymorphic => true
-  validates_presence_of :resource
+  validates_presence_of :resource_type
+  validates_presence_of :resource_id
 
   # TODO[xxx]: remove this and use resource everywhere!
   def object

@@ -142,11 +142,10 @@ class SampleManifest < ActiveRecord::Base
     false
   end
 
-  def self.create_sample(study_abbreviation, manifest = nil,sanger_sample_id = nil)
-    sanger_sample_id ||= SangerSampleId.generate_sanger_sample_id!(study_abbreviation)
-    sample = Sample.create!(:name => sanger_sample_id, :sanger_sample_id => sanger_sample_id, :sample_manifest => manifest)
-    sample.events.created_using_sample_manifest!(manifest.user)
-    sample
+  def create_sample(sanger_sample_id)
+    Sample.create!(:name => sanger_sample_id, :sanger_sample_id => sanger_sample_id, :sample_manifest => self).tap do |sample|
+      sample.events.created_using_sample_manifest!(self.user)
+    end
   end
 
   def generate_sanger_ids(count = 1)

@@ -6,6 +6,8 @@ module ModelExtensions::Sample
 
       has_one :primary_well, :class_name => 'Well', :order => 'created_at'
       has_one :primary_tube, :class_name => 'SampleTube', :order => 'created_at'
+
+      has_one :primary_study, :through => :study_samples, :source => :study, :order => 'study_id'
     end
   end
 
