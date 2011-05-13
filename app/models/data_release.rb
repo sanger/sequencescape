@@ -3,9 +3,9 @@ module DataRelease
 
   def valid_data_release_properties?
     return true unless self.enforce_data_release
-    return false if self.study_metadata.data_release_study_type.is_not_specified?
-    return false if self.study_metadata.data_release_strategy.blank?
-    return false if self.study_metadata.data_release_timing.blank?
+    return false if self.study_metadata.data_release_study_type.try(:is_not_specified?)
+    return false if self.study_metadata.data_release_strategy.try(:blank?)
+    return false if self.study_metadata.data_release_timing.try(:blank?)
     true
   end
 
