@@ -1,3 +1,12 @@
+def GivenSampleMetadata(attribute, regexp)
+  Given(regexp) do |name,value|
+    sample = Sample.find_by_name(name) or raise StandardError, "There appears to be no sample named '#{ name }'"
+    sample.sample_metadata.send(:"#{ attribute }=", value.blank? ? nil : value)
+    sample.save!
+  end
+end
+
+
 When /^I attach a valid excel file$/ do
   attach_file(:file, File.join(RAILS_ROOT, 'public', 'data', 'sample_information.xls'))
 end
@@ -80,12 +89,12 @@ Given /^the sample "([^\"]+)" is in the sample tube "([^\"]+)"$/ do |sample_name
   tube.save!
 end
 
-Then /^sample "([^"]*)" has an accession number of "([^"]*)"$/ do |sample_name, accession_number|
+Then /^sample "([^"]*)" should have an accession number of "([^"]*)"$/ do |sample_name, accession_number|
   sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample #{sample_name.inspect}"
   assert_equal accession_number, sample.sample_metadata.sample_ebi_accession_number
 end
 
-Given /^the sample "([^"]*)" has no accession number$/ do |sample_name|
+Given /^the sample "([^"]*)" should not have an accession number$/ do |sample_name|
   sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample #{sample_name.inspect}"
   assert_nil sample.sample_metadata.sample_ebi_accession_number
 end
@@ -95,8 +104,25 @@ Given /^I run the "([^\"]+)" cron script$/ do |script_name|
   eval File.read("#{RAILS_ROOT}/lib/cron_scripts/#{script_name}")
 end
 
+GivenSampleMetadata(:sample_ebi_accession_number, /^the sample "([^\"]+)" has the accession number "([^\"]+)"$/)
+
+When /^I generate an? accession number for sample "([^\"]+)"$/ do |sample_name|
+ Then %Q{I am on the show page for sample "#{sample_name}"}
+ When %Q{I follow "Generate Accession Number"}
+end
+
 Given /^sample "([^"]*)" came from a sample manifest$/ do |sample_name|
   sample = Sample.find_by_name(sample_name)
   sample_manifest = Factory(:sample_manifest, :id => 1)
   sample.update_attributes!(:sample_manifest => sample_manifest)
+end
+
+Given /^a sample named "([^\"]+)" exists for accession/ do |sample_name|
+  study_name = "study for sample #{sample_name}"
+  Given %Q{a study named "#{study_name}" exists for accession}
+  Given %Q{a sample named "#{sample_name}" exists}
+  And %Q{I am the owner of sample "sample"}
+  And %Q{the sample "#{sample_name}" belongs to the study "#{study_name}"}
+  And %Q{the sample "#{sample_name}" has the Taxon ID "99999"}
+  And %Q{the sample "#{sample_name}" has the common name "Human"}
 end

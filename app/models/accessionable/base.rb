@@ -46,7 +46,7 @@ class Accessionable::Base
           accession_number       = element &&  element.attributes['accession']
   end
 
-  def update_accession_number!(accession_number)
+  def update_accession_number!(user, accession_number)
     raise NotImplementedError, "abstract method"
   end
 
@@ -57,6 +57,14 @@ class Accessionable::Base
     raise NotImplementError, "abstract method"
   end
 
+  def add_updated_event(user, classname,  eventable)
+        eventable.events.create(
+          :created_by => user.login,
+          :message => "#{classname} #{eventable.id} accession data have been updated by user #{user.login}",
+          :content => "accession number regenerated",
+          :of_interest_to => "administrators"
+        )
+  end
   def label_scope
       @label_scope ||= "metadata.#{self.class.name.split("::").last.downcase}.metadata"
   end

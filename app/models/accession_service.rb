@@ -34,18 +34,26 @@ class AccessionService
       xmldoc  = Document.new(xml_result)
       success = xmldoc.root.attributes['success']
       accession_numbers = []
+      # for some reasons, ebi doesn't give us back a accession number for the submission if it's a MODIFY action
+      # therefore, we should be ready to get one or not
+      number_generated = true
       if success == 'true'
         #extract and update accession numbers
         accession_number = submission.all_accessionables.each do |acc|
           accession_number       = acc.extract_accession_number(xmldoc)
           if accession_number
-            acc.update_accession_number!(accession_number)
+            acc.update_accession_number!(user, accession_number)
             accession_numbers << accession_number
+          else
+            # error only, if one of the expected accessionable didn't get a AN
+            # We don't care about the submission
+            number_generated = false if accessionables.include?(acc)
           end
           ae_an = acc.extract_array_express_accession_number(xmldoc)
           acc.update_array_express_accession_number!(ae_an) if ae_an
         end
-        raise NumberNotGenerated, 'Service gave no numbers back' if accession_numbers.size != submission.all_accessionables.size
+
+        raise NumberNotGenerated, 'Service gave no numbers back' if accession_numbers.size != submission.accessionables.size
 
       elsif success == 'false'
         errors = xmldoc.root.elements.to_a("//ERROR").map(&:text)
@@ -77,7 +85,7 @@ class AccessionService
     
 
     ebi_accession_number = study.study_metadata.study_ebi_accession_number
-    raise NumberNotGenerated, 'No need to' if not ebi_accession_number.blank? and not /ER/.match(ebi_accession_number)
+    #raise NumberNotGenerated, 'No need to' if not ebi_accession_number.blank? and not /ER/.match(ebi_accession_number)
 
     return submit(user, Accessionable::Study.new(study))
   end

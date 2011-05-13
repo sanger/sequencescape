@@ -36,7 +36,7 @@ class Accessionable::Submission < Accessionable::Base
             if accessionable.accession_number.blank?
               xml.ADD(:source => accessionable.file_name,  :schema => accessionable.schema_type)
             else
-              xml.MODIFY(:source => accessionable.file_name, :target => accessionable.accession_number)
+              xml.MODIFY(:source => accessionable.file_name, :schema => accessionable.schema_type, :target => accessionable.accession_number)
             end
           }
           xml.ACTION {
@@ -64,7 +64,7 @@ class Accessionable::Submission < Accessionable::Base
     @accessionables + [self]
   end
 
-  def update_accession_number!(accession_number)
+  def update_accession_number!(user, accession_number)
     @accession_number = accession_number
   end
 
