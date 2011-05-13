@@ -1,6 +1,5 @@
 module ApplicationHelper
 
-  def show_custom_text(identifier, differential = nil)
     text = CustomText.first(:conditions => {:identifier => identifier, :differential => differential})
     # TODO - Make this content type aware
     unless text.nil?
@@ -10,6 +9,7 @@ module ApplicationHelper
       return ""
     end
   end
+  def custom_text(identifier, differential = nil)
 
   def loading_bar(identifier = "loading")
     content_tag("div", :id => identifier, :class => "loading_bar", :style => "display:none") do
