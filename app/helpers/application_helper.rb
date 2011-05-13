@@ -1,16 +1,20 @@
 module ApplicationHelper
 
-    text = CustomText.first(:conditions => {:identifier => identifier, :differential => differential})
-    # TODO - Make this content type aware
-    unless text.nil?
-      return text.content
-    else
-      RAILS_DEFAULT_LOGGER.debug "Called for Custom text with #{identifier} and #{differential}. None found"
-      return ""
-    end
-  end
+  # Should return either the custom text or a blank string
   def custom_text(identifier, differential = nil)
+    text = CustomText.first(
+      :conditions => {
+        :identifier   => identifier,
+        :differential => differential
+      }
+    )
 
+    RAILS_DEFAULT_LOGGER.debug 
+      "No custom text found for #{identifier} #{differential}." if text.nil?    
+    
+    text.try(:content) || ""
+  end
+  
   def loading_bar(identifier = "loading")
     content_tag("div", :id => identifier, :class => "loading_bar", :style => "display:none") do
       image_tag "loader-bar.gif", :size => "200x19"
