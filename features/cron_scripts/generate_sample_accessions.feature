@@ -27,11 +27,11 @@ Feature: Generate Sample Accessions
     Given I am the owner of sample "Sample4491710"
       And the sample "Sample4491710" has the Taxon ID "99999"
       And the sample "Sample4491710" has the common name "Human"
-      And the sample "Sample4491710" has no accession number
+      And the sample "Sample4491710" should not have an accession number
       And an accessioning webservice exists which returns a sample accession number "<accession_number>"
 
     When I run the "generate_sample_accessions.rb" cron script
-    Then sample "Sample4491710" has an accession number of "<accession_number>"
+    Then sample "Sample4491710" should have an accession number of "<accession_number>"
   
 
     Examples:

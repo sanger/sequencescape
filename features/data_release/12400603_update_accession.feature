@@ -18,9 +18,6 @@ Feature: object with an accession should be modifiable
     And the sample "sample" has the accession number "E-ERA-16"
     Given an accessioning webservice exists which returns a sample accession number "E-ERA-16"
     When I generate an accession number for sample "sample"
-    Then show me the page
-
     When I am on the event history page for sample "sample"
-    #Then show me the page
     Then I should see "accession data have been updated by user me"
     
