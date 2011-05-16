@@ -146,5 +146,4 @@ Feature: move samples and assets between studies
       | Study_1787_name | study to |
       | Sample_1115606_name | sample_to_move |
     When I move samples between studies using the spreadsheet "RT211312_samples_to_move.xls"
-    And launch the debugger
     Then the sample "sample_to_move" should belong to the study named "study to"
