@@ -54,6 +54,10 @@ module SampleManifest::SampleTubeBehaviour
     end
   end
 
+  # There is no reason for this to need a rapid version as it should be reasonably
+  # efficient in the first place.
+  RapidCore = Core
+
   def self.included(base)
     base.class_eval do
       extend ClassMethods
