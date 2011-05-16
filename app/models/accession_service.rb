@@ -53,7 +53,7 @@ class AccessionService
           acc.update_array_express_accession_number!(ae_an) if ae_an
         end
 
-        raise NumberNotGenerated, 'Service gave no numbers back' if accession_numbers.size != submission.accessionables.size
+        raise NumberNotGenerated, 'Service gave no numbers back' unless number_generated
 
       elsif success == 'false'
         errors = xmldoc.root.elements.to_a("//ERROR").map(&:text)
