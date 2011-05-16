@@ -1,5 +1,7 @@
 class FixRequestTypeOptions < ActiveRecord::Migration
   # we fix submission which have request options set to []. Should be nil or {}
+  class Submission < ActiveRecord::Base ; set_table_name(:submissions) ; end
+  
   def self.up
     Submission.find_all_by_request_options("--- []\n\n").each do |submission|
       if submission.request_options.blank?
