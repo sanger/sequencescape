@@ -136,8 +136,8 @@ Then /^the last created sample manifest should be:$/ do |table|
   end
   
   table.rows.each_with_index do |row,index|
-    assert_equal @worksheet[offset+index,0], Barcode.barcode_to_human(Barcode.calculate_barcode(Plate.prefix, row[0].to_i))
-    assert_equal @worksheet[offset+index,1], row[1]
+    assert_equal Barcode.barcode_to_human(Barcode.calculate_barcode(Plate.prefix, row[0].to_i)), @worksheet[offset+index,0]
+    assert_equal row[1], @worksheet[offset+index,1]
   end
 end
 

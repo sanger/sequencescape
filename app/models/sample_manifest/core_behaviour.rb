@@ -1,14 +1,23 @@
 module SampleManifest::CoreBehaviour
   def self.included(base)
-    base.delegate :details, :to => :core_behaviour
+    base.class_eval do
+      delegate :details, :to => :core_behaviour
+      attr_accessor :rapid_generation
+      alias_method(:rapid_generation?, :rapid_generation)
+    end
   end
 
   def core_behaviour
-    @core_behaviour = case self.asset_type
-    when '1dtube' then ::SampleManifest::SampleTubeBehaviour::Core.new(self)
-    when 'plate'  then ::SampleManifest::PlateBehaviour::Core.new(self)
+    return @core_behaviour if @core_behaviour.present?
+
+    behaviour = case self.asset_type
+    when '1dtube' then 'SampleTubeBehaviour'
+    when 'plate'  then 'PlateBehaviour'
     else raise StandardError, "Unknown core behaviour (#{self.asset_type.inspect}) for sample manifest"
     end
+
+    core = rapid_generation? ? 'RapidCore' : 'Core'
+    @core_behaviour = "::SampleManifest::#{behaviour}::#{core}".constantize.new(self)
   end
   private :core_behaviour
 end
