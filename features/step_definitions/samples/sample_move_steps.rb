@@ -20,3 +20,12 @@ When /^I move sample "([^\"]*)" from study "([^\"]*)" to "([^\"]*)", to asset gr
   And %{I select "#{submission_id}" from "submission_id"} if submission_id.present?
   Then %Q{I press "Move Sample"}
   end
+
+ When /^I move samples between studies using the spreadsheet "([^\"]*)"$/ do |file_name|
+   Given %Q{I am on the sample move using spreadsheet page}
+  And %Q{I fill in "file" with "data/#{file_name}"}
+  Then %Q{I press "Upload spreadsheet"}
+%
+   
+
+ end

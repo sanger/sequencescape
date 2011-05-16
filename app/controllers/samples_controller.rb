@@ -336,9 +336,7 @@ class SamplesController < ApplicationController
   end
 
   def move_single_sample(params)
-    sample_id = params[:id]
-    @sample         = Sample.find_by_name(sample_id)
-    raise RuntimeError, "Can't find sample #{sample_id}" unless @sample
+    @sample         = Sample.find(params[:id]) 
     @study_from     = Study.find(params[:study_id_from])
     @study_to       = Study.find(params[:study_id_to])
     @asset_group    = AssetGroup.find_by_id(params[:asset_group_id])
@@ -346,7 +344,7 @@ class SamplesController < ApplicationController
       @asset_group    = AssetGroup.find_or_create_asset_group(params[:new_assets_name], @study_to)
     end
 
-    return study_to.take_sample(sample, study_from, current_user, asset_group)
+    return @study_to.take_sample(@sample, @study_from, current_user, @asset_group)
   end
 
   def move
@@ -459,6 +457,7 @@ private
   end
 
   def check_valid_submission_type(params = nil)
+    return true # we dont' care about submissin anymore
     submission_selected = Sample.submissions_by_assets(params[:study_id_to], params[:asset_group_id])
     if ! (submission_selected.empty?) && (params[:submission_id] == "0") && (params[:new_assets_name].empty?)
       flash[:error] = "You must select a Submission because you select an Asset with Submissions."
