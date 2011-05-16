@@ -3,12 +3,14 @@ class FixRequestTypeOptions < ActiveRecord::Migration
   class Submission < ActiveRecord::Base ; set_table_name(:submissions) ; end
   
   def self.up
-    Submission.find_all_by_request_options("--- []\n\n").each do |submission|
-      if submission.request_options.blank?
-        submission.request_options = nil
-        submission.save!
-      else
-        raise RuntimeError, "submission doesn't have blank request options"
+    ActiveRecord::Base.transaction do
+      Submission.find_all_by_request_options("--- []\n\n").each do |submission|
+        if submission.request_options.blank?
+          submission.request_options = nil
+          submission.save!
+        else
+          puts "submission #{submission.id} doesn't have blank request options"
+        end
       end
     end
   end
