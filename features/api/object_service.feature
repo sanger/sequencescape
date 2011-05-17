@@ -8,10 +8,32 @@ Feature: Access objects through the API
   And I understand I will never be able to delete a resource through its UUID
 
   Background:
+    Given all of this is happening at exactly "23-Oct-2010 23:00:00+01:00"
+
     Given all HTTP requests to the API have the cookie "WTSISignOn" set to "I-am-authenticated"
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
+
+  @create @error
+  Scenario: Creating an object but sending the wrong 'Content-Type'
+    When I POST the following "text/plain" to the API path "/samples":
+      """
+      {
+        "sample": {
+          "sanger": {
+            "name": "this_is_valid_json_but_wrong_content_type"
+          }
+        }
+      }
+      """
+    Then the HTTP response should be "415 Invalid Request"
+    And the JSON should be:
+      """
+      {
+        "general": [ "the 'Content-Type' can only be 'application/json'" ]
+      }
+      """
 
   @paging
   Scenario: Retrieving the first page of objects when none exist
@@ -135,6 +157,70 @@ Feature: Access objects through the API
       | 2    | 2     | 2  | 000000000002 | "next": "http://www.example.com/api/1/samples/3", "previous": "http://www.example.com/api/1/samples/1" |
       | 3    | 3     | 3  | 000000000003 | "previous": "http://www.example.com/api/1/samples/2"                                                   |
 
+  @update @error
+  Scenario: Updating the object associated with the UUID which gives an error
+    Given the sample named "testing_the_object_service" exists with ID 1
+    And the UUID for the sample "testing_the_object_service" is "00000000-1111-2222-3333-444444444444"
+
+    When I PUT the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
+      """
+      {
+        "sample": {
+          "sanger": {
+            "name": "weird green jelly like thing"
+          }
+        }
+      }
+      """
+    Then the HTTP response should be "422 Unprocessable Entity"
+    And the JSON should be:
+      """
+      {
+        "content": {
+          "sanger.name": [ "is read-only" ]
+        }
+      }
+      """
+
+  @update
+  Scenario: Updating the object associated with the UUID
+    Given the sample named "testing_the_object_service" exists with ID 1
+    And the UUID for the sample "testing_the_object_service" is "00000000-1111-2222-3333-444444444444"
+
+    When I PUT the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
+      """
+      {
+        "sample": {
+          "taxonomy": {
+            "organism": "weird green jelly like thing"
+          }
+        }
+      }
+      """
+    Then the HTTP response should be "200 OK"
+    And the JSON should match the following for the specified fields:
+      """
+      {
+        "sample": {
+          "actions": {
+            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444",
+            "update": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
+          },
+
+          "uuid": "00000000-1111-2222-3333-444444444444",
+          "sanger": {
+            "name": "testing_the_object_service"
+          },
+          "taxonomy": {
+            "organism": "weird green jelly like thing"
+          }
+        },
+        "uuids_to_ids": {
+          "00000000-1111-2222-3333-444444444444": 1
+        }
+      }
+      """
+
   @read @error
   Scenario: Reading the JSON for a UUID that does not exist
     When I GET the API path "/00000000-1111-2222-3333-444444444444"
@@ -244,8 +330,8 @@ Feature: Access objects through the API
               "read": "http://www.example.com/api/1/11111111-2222-3333-4444-000000000001"
             },
 
-            "name": "testing_the_object_service sample tube 1",
             "uuid": "11111111-2222-3333-4444-000000000001",
+            "name": "testing_the_object_service sample tube 1",
 
             "sample": {
               "actions": {
@@ -378,7 +464,9 @@ Feature: Access objects through the API
       """
       {
         "sample": {
-          "organism": "weird green jelly like thing" 
+          "taxonomy": {
+            "organism": "weird green jelly like thing" 
+          }
         }
       }
       """
