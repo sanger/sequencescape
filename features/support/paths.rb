@@ -247,6 +247,9 @@ module NavigationHelpers
       sample = Sample.find_by_name($1)
       history_sample_path(sample)
 
+    when /the sample move using spreadsheet page/
+      move_spreadsheet_samples_path
+
     when /the events page for the last sequenom plate/
       history_asset_path(SequenomQcPlate.last)  
       
