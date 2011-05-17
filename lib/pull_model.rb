@@ -24,6 +24,10 @@ optparse = OptionParser.new do |opts|
     $objects<< [Sample, sample]
   end
 
+  opts.on('--study id_or_name', 'study to pull') do |study|
+    $objects<< [Study, study]
+  end
+
   opts.on('-rt','--request_type', 'request types') do |request_types|
     $objects<< [RequestType, request_types]
   end

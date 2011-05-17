@@ -1,0 +1,685 @@
+--- 
+- :attributes: 
+    request_id: 3142701
+    id: 2695721
+  :class: Request::Metadata
+  :id: 2695721
+- :attributes: 
+    request_type_id: 11
+    priority: 0
+    id: 3142701
+    study_id: 1787
+    state: pending
+    asset_id: 2382022
+  :class: Request
+  :id: 3142701
+- :attributes: 
+    request_id: 3164302
+    id: 2695722
+  :class: Request::Metadata
+  :id: 2695722
+- :attributes: 
+    request_type_id: 11
+    priority: 0
+    id: 3164302
+    study_id: 1787
+    state: pending
+    asset_id: 2498880
+  :class: Request
+  :id: 3164302
+- :attributes: 
+    request_id: 3164298
+  :class: Request::Metadata
+  :id: 
+- :attributes: 
+    request_type_id: 11
+    priority: 0
+    id: 3164298
+    study_id: 656
+    state: pending
+    asset_id: 2498492
+  :class: Request
+  :id: 3164298
+- :attributes: 
+    request_type_id: 11
+    priority: 0
+    id: 3164300
+    study_id: 1389
+    state: pending
+    asset_id: 2498686
+  :class: Request
+  :id: 3164300
+- :attributes: 
+    request_type_id: 11
+    priority: 0
+    id: 3164341
+    study_id: 1389
+    state: pending
+    asset_id: 2504126
+  :class: Request
+  :id: 3164341
+- :attributes: 
+    name: GelDilutionPlate_2504126_name
+    size: 96
+    barcode: "182683"
+    id: 2504126
+    plate_purpose_id: 14
+    barcode_prefix_id: 7
+    sti_type: GelDilutionPlate
+  :class: GelDilutionPlate
+  :id: 2504126
+- :attributes: 
+    request_type_id: 11
+    priority: 0
+    id: 3159519
+    study_id: 1389
+    state: pending
+    asset_id: 2475205
+  :class: Request
+  :id: 3159519
+- :attributes: 
+    request_type_id: 11
+    priority: 0
+    id: 3164301
+    study_id: 1389
+    state: pending
+    asset_id: 2498783
+  :class: Request
+  :id: 3164301
+- :attributes: 
+    request_type_id: 11
+    priority: 0
+    id: 3164909
+    study_id: 1389
+    state: pending
+    asset_id: 2514297
+  :class: Request
+  :id: 3164909
+- :attributes: 
+    name: PicoAssayAPlate_2514297_name
+    size: 96
+    barcode: "182683"
+    id: 2514297
+    plate_purpose_id: 19
+    barcode_prefix_id: 5
+    sti_type: PicoAssayAPlate
+  :class: PicoAssayAPlate
+  :id: 2514297
+- :attributes: 
+    request_type_id: 11
+    priority: 0
+    id: 3164910
+    study_id: 1389
+    state: pending
+    asset_id: 2514394
+  :class: Request
+  :id: 3164910
+- :attributes: 
+    name: PicoAssayBPlate_2514394_name
+    size: 96
+    barcode: "182683"
+    id: 2514394
+    plate_purpose_id: 60
+    barcode_prefix_id: 6
+    sti_type: PicoAssayBPlate
+  :class: PicoAssayBPlate
+  :id: 2514394
+- :attributes: 
+    name: PicoDilutionPlate_2498783_name
+    size: 96
+    barcode: "182683"
+    id: 2498783
+    plate_purpose_id: 18
+    barcode_prefix_id: 3
+    sti_type: PicoDilutionPlate
+  :class: PicoDilutionPlate
+  :id: 2498783
+- :attributes: 
+    name: Plate_2475205_name
+    size: 96
+    barcode: "182683"
+    id: 2475205
+    plate_purpose_id: 2
+    barcode_prefix_id: 1
+    sti_type: Plate
+  :class: Plate
+  :id: 2475205
+- :attributes: 
+    name: WorkingDilutionPlate_2498686_name
+    size: 96
+    barcode: "182683"
+    id: 2498686
+    plate_purpose_id: 1
+    barcode_prefix_id: 2
+    sti_type: WorkingDilutionPlate
+  :class: WorkingDilutionPlate
+  :id: 2498686
+- :attributes: 
+    name: SequenomQcPlate_2503727_name
+    size: 384
+    barcode: "183522"
+    id: 2503727
+    plate_purpose_id: 13
+    barcode_prefix_id: 1
+    sti_type: SequenomQcPlate
+  :class: SequenomQcPlate
+  :id: 2503727
+- :attributes: 
+    request_type_id: 11
+    priority: 0
+    id: 3164342
+    study_id: 656
+    state: pending
+    asset_id: 2504247
+  :class: Request
+  :id: 3164342
+- :attributes: 
+    name: GelDilutionPlate_2504247_name
+    size: 96
+    barcode: "180254"
+    id: 2504247
+    plate_purpose_id: 14
+    barcode_prefix_id: 7
+    sti_type: GelDilutionPlate
+  :class: GelDilutionPlate
+  :id: 2504247
+- :attributes: 
+    request_type_id: 11
+    priority: 0
+    id: 3142580
+    study_id: 656
+    state: pending
+    asset_id: 2381123
+  :class: Request
+  :id: 3142580
+- :attributes: 
+    request_type_id: 11
+    priority: 0
+    id: 3164299
+    study_id: 656
+    state: pending
+    asset_id: 2498589
+  :class: Request
+  :id: 3164299
+- :attributes: 
+    request_type_id: 11
+    priority: 0
+    id: 3164911
+    study_id: 656
+    state: pending
+    asset_id: 2514491
+  :class: Request
+  :id: 3164911
+- :attributes: 
+    name: PicoAssayAPlate_2514491_name
+    size: 96
+    barcode: "180254"
+    id: 2514491
+    plate_purpose_id: 19
+    barcode_prefix_id: 5
+    sti_type: PicoAssayAPlate
+  :class: PicoAssayAPlate
+  :id: 2514491
+- :attributes: 
+    request_type_id: 11
+    priority: 0
+    id: 3164912
+    study_id: 656
+    state: pending
+    asset_id: 2514588
+  :class: Request
+  :id: 3164912
+- :attributes: 
+    name: PicoAssayBPlate_2514588_name
+    size: 96
+    barcode: "180254"
+    id: 2514588
+    plate_purpose_id: 60
+    barcode_prefix_id: 6
+    sti_type: PicoAssayBPlate
+  :class: PicoAssayBPlate
+  :id: 2514588
+- :attributes: 
+    name: PicoDilutionPlate_2498589_name
+    size: 96
+    barcode: "180254"
+    id: 2498589
+    plate_purpose_id: 18
+    barcode_prefix_id: 3
+    sti_type: PicoDilutionPlate
+  :class: PicoDilutionPlate
+  :id: 2498589
+- :attributes: 
+    name: Plate_2381123_name
+    size: 96
+    barcode: "180254"
+    id: 2381123
+    plate_purpose_id: 2
+    barcode_prefix_id: 1
+    sti_type: Plate
+  :class: Plate
+  :id: 2381123
+- :attributes: 
+    name: WorkingDilutionPlate_2498492_name
+    size: 96
+    barcode: "180254"
+    id: 2498492
+    plate_purpose_id: 1
+    barcode_prefix_id: 2
+    sti_type: WorkingDilutionPlate
+  :class: WorkingDilutionPlate
+  :id: 2498492
+- :attributes: 
+    name: SequenomQcPlate_2503726_name
+    size: 384
+    barcode: "183521"
+    id: 2503726
+    plate_purpose_id: 13
+    barcode_prefix_id: 1
+    sti_type: SequenomQcPlate
+  :class: SequenomQcPlate
+  :id: 2503726
+- :attributes: 
+    request_type_id: 11
+    priority: 0
+    id: 3164340
+    study_id: 1787
+    state: pending
+    asset_id: 2504015
+  :class: Request
+  :id: 3164340
+- :attributes: 
+    name: GelDilutionPlate_2504015_name
+    size: 96
+    barcode: "180363"
+    id: 2504015
+    plate_purpose_id: 14
+    barcode_prefix_id: 7
+    sti_type: GelDilutionPlate
+  :class: GelDilutionPlate
+  :id: 2504015
+- :attributes: 
+    name: WorkingDilutionPlate_2498880_name
+    size: 96
+    barcode: "180363"
+    id: 2498880
+    plate_purpose_id: 1
+    barcode_prefix_id: 2
+    sti_type: WorkingDilutionPlate
+  :class: WorkingDilutionPlate
+  :id: 2498880
+- :attributes: 
+    request_id: 3164303
+    id: 2695724
+  :class: Request::Metadata
+  :id: 2695724
+- :attributes: 
+    request_type_id: 11
+    priority: 0
+    id: 3164303
+    study_id: 1787
+    state: pending
+    asset_id: 2498977
+  :class: Request
+  :id: 3164303
+- :attributes: 
+    request_id: 3164907
+    id: 2695725
+  :class: Request::Metadata
+  :id: 2695725
+- :attributes: 
+    request_type_id: 11
+    priority: 0
+    id: 3164907
+    study_id: 1787
+    state: pending
+    asset_id: 2514103
+  :class: Request
+  :id: 3164907
+- :attributes: 
+    name: PicoAssayAPlate_2514103_name
+    size: 96
+    barcode: "180363"
+    id: 2514103
+    plate_purpose_id: 19
+    barcode_prefix_id: 5
+    sti_type: PicoAssayAPlate
+  :class: PicoAssayAPlate
+  :id: 2514103
+- :attributes: 
+    request_id: 3164908
+    id: 2695726
+  :class: Request::Metadata
+  :id: 2695726
+- :attributes: 
+    request_type_id: 11
+    priority: 0
+    id: 3164908
+    study_id: 1787
+    state: pending
+    asset_id: 2514200
+  :class: Request
+  :id: 3164908
+- :attributes: 
+    name: PicoAssayBPlate_2514200_name
+    size: 96
+    barcode: "180363"
+    id: 2514200
+    plate_purpose_id: 60
+    barcode_prefix_id: 6
+    sti_type: PicoAssayBPlate
+  :class: PicoAssayBPlate
+  :id: 2514200
+- :attributes: 
+    name: PicoDilutionPlate_2498977_name
+    size: 96
+    barcode: "180363"
+    id: 2498977
+    plate_purpose_id: 18
+    barcode_prefix_id: 3
+    sti_type: PicoDilutionPlate
+  :class: PicoDilutionPlate
+  :id: 2498977
+- :attributes: 
+    name: Plate_2382022_name
+    size: 96
+    barcode: "180363"
+    id: 2382022
+    plate_purpose_id: 2
+    barcode_prefix_id: 1
+    sti_type: Plate
+  :class: Plate
+  :id: 2382022
+- :attributes: 
+    content_id: 2382024
+    id: 2135592
+    container_id: 2382022
+  :class: ContainerAssociation
+  :id: 2135592
+- :attributes: 
+    request_type_id: 11
+    priority: 0
+    id: 3142703
+    study_id: 1700
+    state: pending
+    asset_id: 2382024
+  :class: Request
+  :id: 3142703
+- :attributes: 
+    id: 2382024
+    sample_id: 1115605
+    barcode_prefix_id: 4
+    sti_type: Well
+    map_id: 13
+  :class: Well
+  :id: 2382024
+- :attributes: 
+    content_id: 2498882
+    id: 2243152
+    container_id: 2498880
+  :class: ContainerAssociation
+  :id: 2243152
+- :attributes: 
+    content_id: 2503740
+    id: 2247963
+    container_id: 2503726
+  :class: ContainerAssociation
+  :id: 2247963
+- :attributes: 
+    id: 2503740
+    sample_id: 1115605
+    barcode_prefix_id: 4
+    sti_type: Well
+    map_id: 145
+  :class: Well
+  :id: 2503740
+- :attributes: 
+    content_id: 2504124
+    id: 2248251
+    container_id: 2503727
+  :class: ContainerAssociation
+  :id: 2248251
+- :attributes: 
+    id: 2504124
+    sample_id: 1115605
+    barcode_prefix_id: 4
+    sti_type: Well
+    map_id: 145
+  :class: Well
+  :id: 2504124
+- :attributes: 
+    id: 2498882
+    sample_id: 1115605
+    barcode_prefix_id: 4
+    sti_type: Well
+    map_id: 13
+  :class: Well
+  :id: 2498882
+- :attributes: 
+    content_id: 2498979
+    id: 2243248
+    container_id: 2498977
+  :class: ContainerAssociation
+  :id: 2243248
+- :attributes: 
+    id: 2498979
+    sample_id: 1115605
+    barcode_prefix_id: 4
+    sti_type: Well
+    map_id: 13
+  :class: Well
+  :id: 2498979
+- :attributes: 
+    content_id: 2504018
+    id: 2248528
+    container_id: 2504015
+  :class: ContainerAssociation
+  :id: 2248528
+- :attributes: 
+    id: 2504018
+    sample_id: 1115605
+    barcode_prefix_id: 4
+    sti_type: Well
+    map_id: 13
+  :class: Well
+  :id: 2504018
+- :attributes: 
+    content_id: 2514105
+    id: 2257348
+    container_id: 2514103
+  :class: ContainerAssociation
+  :id: 2257348
+- :attributes: 
+    id: 2514105
+    sample_id: 1115605
+    barcode_prefix_id: 4
+    sti_type: Well
+    map_id: 13
+  :class: Well
+  :id: 2514105
+- :attributes: 
+    content_id: 2514202
+    id: 2257444
+    container_id: 2514200
+  :class: ContainerAssociation
+  :id: 2257444
+- :attributes: 
+    id: 2514202
+    sample_id: 1115605
+    barcode_prefix_id: 4
+    sti_type: Well
+    map_id: 13
+  :class: Well
+  :id: 2514202
+- :attributes: 
+    name: Study_1700_name
+    enforce_data_release: true
+    reference_genome_id: 43
+    id: 1700
+    enforce_accessioning: true
+    user_id: 427
+    state: active
+  :class: Study
+  :id: 1700
+- :attributes: 
+    id: 2428111
+    study_id: 1700
+    sample_id: 1115605
+  :class: StudySample
+  :id: 2428111
+- :attributes: 
+    name: Sample_1115605_name
+    new_name_format: true
+    sample_manifest_id: 156
+    sanger_sample_id: 1700STDY5093218
+    id: 1115605
+    updated_by_manifest: true
+  :class: Sample
+  :id: 1115605
+- :attributes: 
+    content_id: 2382025
+    id: 2135593
+    container_id: 2382022
+  :class: ContainerAssociation
+  :id: 2135593
+- :attributes: 
+    request_type_id: 11
+    priority: 0
+    id: 3142704
+    study_id: 1700
+    state: pending
+    asset_id: 2382025
+  :class: Request
+  :id: 3142704
+- :attributes: 
+    id: 2382025
+    sample_id: 1115606
+    barcode_prefix_id: 4
+    sti_type: Well
+    map_id: 25
+  :class: Well
+  :id: 2382025
+- :attributes: 
+    content_id: 2498883
+    id: 2243153
+    container_id: 2498880
+  :class: ContainerAssociation
+  :id: 2243153
+- :attributes: 
+    content_id: 2503752
+    id: 2247975
+    container_id: 2503726
+  :class: ContainerAssociation
+  :id: 2247975
+- :attributes: 
+    id: 2503752
+    sample_id: 1115606
+    barcode_prefix_id: 4
+    sti_type: Well
+    map_id: 193
+  :class: Well
+  :id: 2503752
+- :attributes: 
+    content_id: 2504179
+    id: 2248263
+    container_id: 2503727
+  :class: ContainerAssociation
+  :id: 2248263
+- :attributes: 
+    id: 2504179
+    sample_id: 1115606
+    barcode_prefix_id: 4
+    sti_type: Well
+    map_id: 193
+  :class: Well
+  :id: 2504179
+- :attributes: 
+    id: 2498883
+    sample_id: 1115606
+    barcode_prefix_id: 4
+    sti_type: Well
+    map_id: 25
+  :class: Well
+  :id: 2498883
+- :attributes: 
+    content_id: 2498980
+    id: 2243249
+    container_id: 2498977
+  :class: ContainerAssociation
+  :id: 2243249
+- :attributes: 
+    id: 2498980
+    sample_id: 1115606
+    barcode_prefix_id: 4
+    sti_type: Well
+    map_id: 25
+  :class: Well
+  :id: 2498980
+- :attributes: 
+    content_id: 2504019
+    id: 2248529
+    container_id: 2504015
+  :class: ContainerAssociation
+  :id: 2248529
+- :attributes: 
+    id: 2504019
+    sample_id: 1115606
+    barcode_prefix_id: 4
+    sti_type: Well
+    map_id: 25
+  :class: Well
+  :id: 2504019
+- :attributes: 
+    content_id: 2514106
+    id: 2257349
+    container_id: 2514103
+  :class: ContainerAssociation
+  :id: 2257349
+- :attributes: 
+    id: 2514106
+    sample_id: 1115606
+    barcode_prefix_id: 4
+    sti_type: Well
+    map_id: 25
+  :class: Well
+  :id: 2514106
+- :attributes: 
+    content_id: 2514203
+    id: 2257445
+    container_id: 2514200
+  :class: ContainerAssociation
+  :id: 2257445
+- :attributes: 
+    id: 2514203
+    sample_id: 1115606
+    barcode_prefix_id: 4
+    sti_type: Well
+    map_id: 25
+  :class: Well
+  :id: 2514203
+- :attributes: 
+    id: 2428112
+    study_id: 1700
+    sample_id: 1115606
+  :class: StudySample
+  :id: 2428112
+- :attributes: 
+    name: Sample_1115606_name
+    new_name_format: true
+    sample_manifest_id: 156
+    sanger_sample_id: 1700STDY5093219
+    id: 1115606
+    updated_by_manifest: true
+  :class: Sample
+  :id: 1115606
+- :attributes: 
+    name: Study_1787_name
+    ethically_approved: true
+    enforce_data_release: true
+    reference_genome_id: 30
+    id: 1787
+    enforce_accessioning: true
+    user_id: 86
+    state: active
+  :class: Study
+  :id: 1787
