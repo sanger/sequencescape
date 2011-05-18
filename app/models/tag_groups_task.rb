@@ -16,6 +16,7 @@ class TagGroupsTask < Task
   end
 
   def render_task(workflow, params)
+    super
     workflow.render_tag_groups_task(self, params)
   end
 

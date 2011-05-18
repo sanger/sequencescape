@@ -14,6 +14,7 @@ class SamplePrepQcTask < Task
   end
 
   def render_task(workflow, params)
+    super
     workflow.render_sample_prep_qc_task(self, params)
   end
 

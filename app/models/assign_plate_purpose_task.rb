@@ -13,6 +13,7 @@ class AssignPlatePurposeTask < Task
   
   # Calls the corresponding render task method in the controller.
   def render_task(workflows_controller, params)
+    super
     workflows_controller.render_assign_plate_purpose_task(self,params)
   end
   

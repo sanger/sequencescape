@@ -14,6 +14,7 @@ class MovieLengthTask < Task
   end
 
   def render_task(workflow, params)
+    super
     workflow.render_movie_length_task(self, params)
   end
 
