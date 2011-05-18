@@ -155,6 +155,11 @@ module NavigationHelpers
       submission = Submission.last or raise StandardError, "There are no submissions!"
       study_workflow_submission_path(submission.study, submission.workflow, submission)
 
+    when /the submissions page for study "([^\"]+)"/
+      study    = Study.find_by_name($1) or raise StandardError, "No study defined with name #{ $1.inspect }"
+      study_workflow_submissions_path(study, @current_user.workflow)
+
+
     # Submission related
     when /the "([^\"]+)" submission template selection page for study "([^\"]+)"/
       workflow_name, study_name = $1, $2
@@ -196,6 +201,13 @@ module NavigationHelpers
       page, name = $1, $2
       page_for_model(Study, "properties", name )
 
+    when /the asset group "([^"]+)" page for study "([^"]+)"$/
+      asset_group_name, study_name = $1, $2
+      study      = Study.first(:conditions => { :name => study_name }) or raise StandardError, "No study defined with name '#{ study_name }'"
+      asset_group = study.asset_groups.find_by_name(asset_group_name) or raise StandardError, "No asset group defined with name '#{asset_group_name}'"
+      study_asset_group_path(study, asset_group)
+
+
     when /the show page for pipeline "([^"]+)"/
       pipeline_name = $1
       pipeline = Pipeline.first(:conditions => {:name => pipeline_name}) or raise StandardError, "No Pipeline defined with name '#{ pipeline_name} '"
@@ -231,6 +243,13 @@ module NavigationHelpers
       sample = Sample.find_by_sanger_sample_id($1)
       history_sample_path(sample)
 
+    when /the events page for sample "([^"]+)"/
+      sample = Sample.find_by_name($1)
+      history_sample_path(sample)
+
+    when /the sample move using spreadsheet page/
+      move_spreadsheet_samples_path
+
     when /the events page for the last sequenom plate/
       history_asset_path(SequenomQcPlate.last)  
       
@@ -243,10 +262,17 @@ module NavigationHelpers
     when /the events page for asset (\d+)/
       asset = Asset.find($1)
       history_asset_path(asset)
+    when /the events page for asset "([^\"]+)"/
+      asset = Asset.find_by_name($1)
+      history_asset_path(asset)
 
     when /the XML show page for request (\d+)/
       request = Request.find($1)
       request_path(request, :format => :xml)
+
+    when /the show page for request (\d+)/
+      request = Request.find($1)
+      request_path(request)
 
     when /^the new request page for "([^\"]+)"$/
       asset = Asset.find_by_name($1) or raise StandardError, "Cannot find asset #{$1.inspect}"

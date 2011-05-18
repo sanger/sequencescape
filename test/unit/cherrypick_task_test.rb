@@ -7,7 +7,8 @@ end
 class CherrypickTaskTest < ActiveSupport::TestCase
   context CherrypickTask do
     setup do
-      @task = CherrypickTask.new
+      pipeline = Pipeline.find_by_name('Cherrypick') or raise StandardError, "Cannot find cherrypick pipeline"
+      @task = CherrypickTask.new(:workflow => pipeline.workflow)
     end 
 
     context "#robot_max_plates with valid inputs" do

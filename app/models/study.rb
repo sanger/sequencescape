@@ -531,4 +531,89 @@ class Study < ActiveRecord::Base
     receiver =  User.all_administrators_emails if receiver.empty?
     return receiver
 end
+
+  # return true if yes, false if not , and nil if we don't know
+  def affiliated_with?(object)
+    case
+    when object.respond_to?(:study_id)
+      self.id == object.study_id
+    when object.respond_to?(:study_ids)
+      object.study_ids.include?(self.id)
+    else
+      nil
+    end
+  end
+  
+  # return the list of objects which haven't been successfully saved
+  # that's the caller responsibilitie to wrap the call in a transaction if needed
+  def take_sample(sample, study_from, user, asset_group)
+    errors = []
+    # we skip the validation, as it should not be usefull anymore
+    #return false unless sample.check_move_options(self, study_from, asset_group, "", "0")
+    assets_to_move = sample.assets.select { |a| study_from.affiliated_with?(a) && a.is_a?(SampleTube) }
+    raise RuntimeError, "study_from not specified. Can't move a sample to a new study" unless study_from
+    objects_to_move =   sample.walk_objects(:sample => [:assets, :study_samples],
+                                     :request => [:item],
+                                     :asset => [:requests, :children, :parents],
+                                     :well => :plate
+                                    ) do |object|
+                                      case study_from.affiliated_with?(object)
+                                      when true
+                                        object
+                                      when false
+                                        nil # we skip the object and its dependencies
+                                      else # nil
+                                        [] # don't return the object but check it's dependencies
+                                      end
+                                      # skip 
+                                      # nil from affiliated mean, we don't know, so we carry on pulling
+                                    end
+
+                                    #we duplicate each submission and reassign moved requests to it
+    objects_to_move.each do |object|
+      take_object(object, user, study_from)
+      begin
+      object.save!
+    rescue Exception => ex
+      errors << ex.message
+    end
+    end
+
+    if asset_group
+      assets_to_move.each do |asset|
+        asset_groups = asset.asset_groups.reject { |ag| ag.study == study_from }
+        asset_groups << asset_group
+        asset.asset_groups = asset_groups
+        asset.save
+      end
+    end
+    if errors.present?
+      errors.each { |error | sample.errors.add ("Move:", error) }
+      false
+    else
+       true
+    end
+  end
+
+
+  private
+  # beware , this method change the study of an object but doesn't look at some 
+  #  eventual dependencies.
+  def take_object(object, user, study_from)
+    # we don't check if the object is related to study from. because this can change 
+    # if the object is  related through and we have just changed the association
+    # (example asset and via Request)
+    if object.respond_to?(:study=)
+      object.study = self
+    end
+
+    if object.respond_to?(:events) 
+      object.events.create(
+        :message => (study_from ? "#{object.class.name} #{object.id} is moved from Study  #{study_from.id} to Study #{self.id}" :  "#{object.class.name} #{object.id} is moved to Study #{self.id}"),
+        :created_by => user.login,
+        :content => "#{object.class.name} moved by #{user.login}",
+        :of_interest_to => "administrators"
+      )
+    end
+  end
 end

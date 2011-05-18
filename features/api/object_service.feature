@@ -1,4 +1,4 @@
-@api @json @object_service @single-sign-on @new-api
+@api @json @object_service @single-sign-on @new-api @wip
 Feature: Access objects through the API
   In order to actually be able to do anything useful
   As an authenticated user of the API

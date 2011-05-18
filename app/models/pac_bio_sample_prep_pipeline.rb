@@ -1,4 +1,6 @@
 class PacBioSamplePrepPipeline < Pipeline
+  ALWAYS_SHOW_RELEASE_ACTIONS = true
+  
   def post_release_batch(batch, user)
     cancel_sequencing_requests_on_library_failure(batch)
     cancel_excess_sequencing_requests(batch)

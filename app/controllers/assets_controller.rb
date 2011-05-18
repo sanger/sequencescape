@@ -5,9 +5,8 @@ class AssetsController < ApplicationController
   def index
     @assets_without_requests = []
     @assets_with_requests = []
-    if params[:study_id] && params[:workflow_id]
+    if params[:study_id]
       @study = Study.find(params[:study_id])
-      @workflow = Submission::Workflow.find(params[:workflow_id])
       @assets_with_requests = @study.assets.paginate :page => params[:page], :order => 'created_at DESC'
       assets = []
       @study.asset_groups.each{|ag| assets << ag.assets }
@@ -33,28 +32,6 @@ class AssetsController < ApplicationController
     end
   end
   
-  def child_assets
-    @asset = Asset.find(params[:id])
-    respond_to do |format|
-      format.xml  { render :xml => @asset.children.to_xml }
-    end
-  end
-  
-  def parent_assets
-    @asset = Asset.find(params[:id])
-    respond_to do |format|
-      format.xml  { render :xml => @asset.parents.to_xml }
-    end
-  end
-
-  def holded_assets
-    @asset = Asset.find(params[:id])
-    respond_to do |format|
-      format.xml  { render :xml => @asset.holded_assets.to_xml }
-      format.json { render :json => @asset.holded_assets }
-    end
-  end
-
   def show
     respond_to do |format|
       format.html
@@ -351,69 +328,6 @@ class AssetsController < ApplicationController
     render(:text => "#{Barcode.barcode_to_human(barcode)} => #{barcode}")
   end
 
-  def get_plate_layout
-    @pipeline_id = params[:pipeline_id]
-  end
-
-  def create_plate_layout
-    unless params[:rack_barcode].blank?
-      @rack_barcode = params[:rack_barcode]
-      @pipeline = Pipeline.find(8)
-      request_type = @pipeline.request_type
-      path_for_plate_layout = "#{configatron.two_d_barcode_files_location}/#{@rack_barcode}.csv"
-      @problems = 0
-
-      @plate_layout = PlateLayout.new(12, 8)
-
-      FasterCSV.foreach(path_for_plate_layout) do |row|
-        next if row.empty? or   row.last.blank?
-
-        map = Map.find_for_cell_location(row.first, @plate_layout.size)
-        asset = Asset.find_by_two_dimensional_barcode(row.last.strip)
-        unless asset.nil?
-          if asset.location_id == @pipeline.location_id
-            request = Request.find_by_asset_id_and_request_type_id_and_state(asset.id, request_type.id, "pending")
-            unless request.nil?
-              @plate_layout.set_details_for_well_at(map.location_id, :request => request, :asset => asset, :error => nil)
-            else
-              @problems += 1
-              @plate_layout.set_details_for_well_at(map.location_id, :request => nil, :asset => asset, :error => "No request")
-            end
-          end
-        else
-          @problems += 1
-          @plate_layout.set_details_for_well_at(map.location_id, :request => request, :asset => nil, :error => "No asset")
-          true
-        end
-      end
-      @wells = @plate_layout.wells
-    else
-      flash[:error] = "Please supply a rack barcode"
-      redirect_to :action => "get_plate_layout"
-    end
-  end
-
-  def make_plate_and_batch_from_rack
-    plate_barcode = params[:plate_barcode]
-    pipeline = Pipeline.find(params[:pipeline_id])
-    unless pipeline.nil?
-      unless plate_barcode.blank?
-        path_for_plate_layout = "#{configatron.two_d_barcode_files_location}/#{params[:rack_barcode]}.csv"
-        plate = Plate.create_from_rack_csv(path_for_plate_layout, plate_barcode)
-        batch = pipeline.create_batch_from_assets(plate.wells)
-        redirect_to :controller => :batches, :action => :show, :id => batch.id
-      else
-        rack_barcode = params[:rack_barcode]
-        flash[:error] = "Please supply a barcode for the plate you want to make"
-        redirect_to :action => "create_plate_layout", :rack_barcode => rack_barcode
-      end
-    else
-      rack_barcode = params[:rack_barcode]
-      flash[:error] = "Unable to process request"
-      redirect_to :action => "create_plate_layout", :rack_barcode => rack_barcode
-    end
-  end
-
   def lookup
     if params[:asset] && params[:asset][:barcode]
       id = params[:asset][:barcode][3,7].to_i
@@ -545,40 +459,6 @@ class AssetsController < ApplicationController
     
     batch = Batch.find(params[:batch_id])
     redirect_to batch_path(batch)
-  end
-
-  def move_to_2D
-    source_asset = Asset.find(params[:id])
-    all_pending = true
-    source_asset.requests.each do |request|
-      if !request.pending?
-        all_pending = false
-      end
-    end
-  
-    if !all_pending
-      flash[:error] = "A sample cannot be moved to a 2D tube if it has any requests which are already started or have already been processed"
-
-      redirect_to asset_path(source_asset)
-    end
-  end
-
-  def complete_move_to_2D
-    source_asset = Asset.find(params[:id])
-    barcode = params[:barcode]["0"]
-    if barcode.blank?
-      redirect_to :action => "move_to_2D"
-    else
-      destination_asset = Asset.find_by_two_dimensional_barcode(barcode)
-    end
-
-    if destination_asset.nil?
-      flash[:error] = "Your 2D tube has not been recognised"
-      redirect_to :action => "move_to_2D"
-    else
-      move_requests(source_asset, destination_asset)
-      flash[:message] = "Your sample has been successfully moved"
-    end
   end
 
   def move_requests(source_asset, destination_asset)

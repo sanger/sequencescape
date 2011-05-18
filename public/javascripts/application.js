@@ -5,7 +5,7 @@ document.observe('dom:loaded', function(){
 	} else if ($('fbr')) {
 		new Effect.Pulsate('fbr', {duration: 1, from: 0.4});
 	}
-	TableSorter.setup();
+	TableSorterFacade.setup();
 });
 
 function swap_group(link_ident, ident, key, elementType) {
@@ -687,11 +687,14 @@ function disable_cr_and_change_focus(event, current_field, next_field) {
   return false;
 }
 
-var TableSorter = {
+var TableSorterFacade = {
   setup : function(){
     if( ! TableKit.Sortable.detectors.include('date-rfc822') ) {
       this._add_custom_sort_type();
     }
+  },
+  extend_table : function(element_or_id) {
+    TableKit.load(element_or_id);
   },
   _add_custom_sort_type : function(){
     TableKit.Sortable.detectors.unshift('date-rfc822');

@@ -192,7 +192,7 @@ class Asset < ActiveRecord::Base
 
   end
 
-  def move(study, user)
+  def move_quaratine(study, user)
     self.events << Event.new({:message => "Moved to study #{study.id}", :created_by => user.login, :family => "Update"})
     # Move all requests
     self.requests.each do |request|
