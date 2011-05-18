@@ -122,18 +122,18 @@ Feature: Access <%= plural_human_name %> through the API
 <% end -%>
 
   @read @error
-  Scenario: Reading the JSON for a UUID that does not exist
+  Scenario: Reading the JSON for a <%= singular_human_name  %> UUID that does not exist
     When I GET the API path "/00000000-1111-2222-3333-444444444444"
     Then the HTTP response should be "404 Not Found"
     And the JSON should be:
       """
       {
-        general: [ "UUID does not exist" ]
+        "general": [ "UUID does not exist" ]
       }
       """
 
   @read
-  Scenario: Reading the JSON for a UUID
+  Scenario: Reading the JSON for a <%= singular_human_name  %> UUID
     Given the <%= singular_human_name %> exists with ID 1
     And the UUID for the <%= singular_human_name %> with ID 1 is "00000000-1111-2222-3333-444444444444"
 
@@ -142,14 +142,14 @@ Feature: Access <%= plural_human_name %> through the API
     And the JSON should match the following for the specified fields:
       """
       {
-        <%= singular_name %>: {
-          actions: {
-            read: "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
+        "<%= singular_name %>": {
+          "actions": {
+            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
           },
 
-          uuid: "00000000-1111-2222-3333-444444444444"
+          "uuid": "00000000-1111-2222-3333-444444444444"
         },
-        uuids_to_ids: {
+        "uuids_to_ids": {
           "00000000-1111-2222-3333-444444444444": 1
         }
       }
