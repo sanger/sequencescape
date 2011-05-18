@@ -7,6 +7,7 @@ class User < ActiveRecord::Base
   include Authentication
   include Workflowed
   extend EventfulRecord
+  include Uuid::Uuidable
   has_many_events
 
   has_many :lab_events

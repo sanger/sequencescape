@@ -66,6 +66,7 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
   'multiplexed library creation request',
   'sequencing request',
 
+  'user',
   'asset',
   'sample tube',
   'lane',
