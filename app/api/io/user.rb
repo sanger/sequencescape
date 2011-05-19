@@ -17,17 +17,12 @@ class ::Io::User < ::Core::Io::Base
   # attribute of whatever 'parent' is.
   define_attribute_and_json_mapping(%Q{
                         login  => login
-                        email  => email
-             crypted_password  => crypted_password
-                         salt  => salt
-               remember_token  => remember_token
-    remember_token_expires_at  => remember_token_expires_at
-                      api_key  => api_key
-                   first_name  => first_name
-                    last_name  => last_name
-       pipeline_administrator  => pipeline_administrator
-                      barcode  => barcode
-                       cookie  => cookie
-          cookie_validated_at  => cookie_validated_at
-  })
+                        email  <=> email
+                   first_name  <=> first_name
+                    last_name  <=> last_name
+                      barcode  <=> barcode
+                 swipcard_code <= swipcard_code
+               swipcard_code? => has_a_swipcard_code
+
+})
 end

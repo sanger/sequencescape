@@ -1093,6 +1093,7 @@ ActiveRecord::Schema.define(:version => 20110518135824) do
   end
 
   add_index "users", ["barcode"], :name => "index_users_on_barcode"
+  add_index "users", ["encrypted_swipcard_code"], :name => "index_users_on_encrypted_swipcard_code"
   add_index "users", ["login"], :name => "index_users_on_login"
   add_index "users", ["pipeline_administrator"], :name => "index_users_on_pipeline_administrator"
 
