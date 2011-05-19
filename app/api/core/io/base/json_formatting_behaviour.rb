@@ -63,7 +63,7 @@ module Core::Io::Base::JsonFormattingBehaviour
     end
   end
 
-  VALID_LINE_REGEXP = /^\s*((?:[a-z_][\w_]*\.)*[a-z_][\w_]*)\s*(<=|<=>|=>)\s*((?:[a-z_][\w_]*\.)*[a-z_][\w_]*)\s*$/
+  VALID_LINE_REGEXP = /^\s*((?:[a-z_][\w_]*\.)*[a-z_][\w_]*[?!]?)\s*(<=|<=>|=>)\s*((?:[a-z_][\w_]*\.)*[a-z_][\w_]*)\s*$/
 
   def parse_mapping_rules(mapping, &block)
     attribute_to_json, json_to_attribute = {}, {}
