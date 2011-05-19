@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110504125343) do
+ActiveRecord::Schema.define(:version => 20110518135824) do
 
   create_table "archived_properties", :force => true do |t|
     t.text    "value"
@@ -1089,6 +1089,7 @@ ActiveRecord::Schema.define(:version => 20110504125343) do
     t.string   "barcode"
     t.string   "cookie"
     t.datetime "cookie_validated_at"
+    t.string   "encrypted_swipcard_code",   :limit => 40
   end
 
   add_index "users", ["barcode"], :name => "index_users_on_barcode"
