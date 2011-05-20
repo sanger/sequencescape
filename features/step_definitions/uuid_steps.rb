@@ -1,8 +1,8 @@
 def set_uuid_for(object, uuid_value)
-  object.uuid_object.tap do |uuid|
-    uuid.external_id = uuid_value
-    uuid.save(false)
-  end
+  uuid   = object.uuid_object
+  uuid ||= object.build_uuid_object
+  uuid.external_id = uuid_value
+  uuid.save(false)
 end
 
 ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME = [
@@ -28,6 +28,7 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME = [
   'pico assay b plate',
   'pico assay plate',
   'pico dilution plate',
+  'plate purpose',
   'plate',
   'sequenom qc plate',
   'working dilution plate',
