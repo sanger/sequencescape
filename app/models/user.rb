@@ -24,6 +24,8 @@ class User < ActiveRecord::Base
   validates_presence_of :login
   validates_confirmation_of :password, :if => :password_required?
 
+  named_scope :with_login, lambda { |*logins| { :conditions => { :login => logins.flatten } } }
+
   acts_as_authorized_user
 
   attr_accessor :password
