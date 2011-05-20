@@ -105,6 +105,10 @@ Given /^plate (\d+) has is a stock plate$/ do |plate_id|
   Plate.find(plate_id).update_attributes(:plate_purpose => PlatePurpose.stock_plate_purpose)
 end
 
+Given /^the plate with ID (\d+) has a plate purpose of "([^\"]+)"$/ do |id, name|
+  purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
+  Plate.find(id).update_attributes!(:plate_purpose => purpose)
+end
 
 Given /^a plate with purpose "([^"]*)" and barcode "([^"]*)" exists$/ do |plate_purpose_name, machine_barcode|
   Plate.create!(:barcode =>Barcode.number_to_human("#{machine_barcode}"), :plate_purpose => PlatePurpose.find_by_name(plate_purpose_name))
