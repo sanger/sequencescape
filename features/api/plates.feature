@@ -1,4 +1,4 @@
-@api @json @plate @single-sign-on @new-api @wip
+@api @json @plate @single-sign-on @new-api
 Feature: Access plates through the API
   In order to actually be able to do anything useful
   As an authenticated user of the API
@@ -27,7 +27,9 @@ Feature: Access plates through the API
   @read
   Scenario: Reading the JSON for a UUID
     Given the plate exists with ID 1
-    And the UUID for the plate with ID 1 is "00000000-1111-2222-3333-444444444444"
+      And the UUID for the plate with ID 1 is "00000000-1111-2222-3333-444444444444"
+      And the plate with ID 1 has a plate purpose of "Stock plate"
+      And the UUID for the plate purpose "Stock plate" is "11111111-2222-3333-4444-555555555555"
 
     When I GET the API path "/00000000-1111-2222-3333-444444444444"
     Then the HTTP response should be "200 OK"
@@ -38,11 +40,13 @@ Feature: Access plates through the API
           "actions": {
             "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
           },
+          "plate_purpose": {
+            "actions": {
+              "read": "http://www.example.com/api/1/11111111-2222-3333-4444-555555555555"
+            }
+          },
 
           "uuid": "00000000-1111-2222-3333-444444444444"
-        },
-        "uuids_to_ids": {
-          "00000000-1111-2222-3333-444444444444": 1
         }
       }
       """
