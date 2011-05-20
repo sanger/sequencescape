@@ -1,4 +1,4 @@
-@api @json @user @single-sign-on @new-api @mb14
+@api @json @user @single-sign-on @new-api
 Feature: Access users through the API
   In order to actually be able to do anything useful
   As an authenticated user of the API
@@ -28,7 +28,11 @@ Feature: Access users through the API
 
   @read
   Scenario: Reading the JSON for a user UUID
-    Given the user exists with ID 1
+    Given the user exists with ID 1 with the following attributes:
+      | name | value |
+      | login | user_login |
+      | email | user@example.com |
+
     And the UUID for the user with ID 1 is "00000000-1111-2222-3333-444444444444"
 
     When I GET the API path "/00000000-1111-2222-3333-444444444444"
@@ -40,6 +44,9 @@ Feature: Access users through the API
           "actions": {
             "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
           },
+
+          "login": "user_login",
+          "email": "user@example.com",
 
           "uuid": "00000000-1111-2222-3333-444444444444"
         },
