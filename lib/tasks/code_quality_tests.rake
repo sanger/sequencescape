@@ -9,12 +9,12 @@ namespace :test do
   namespace :analytics do
     task :load_rails_env do
       require 'config/environment'
-   end
+    end
     desc "Analyze for code complexity"
     task :flog => :load_rails_env do
       require 'flog'
       WHITELIST = YAML.load(File.read("#{Rails.root}/config/analytics/flog_whitelist.yml"))
-     # puts WHITELIST.inspect
+      # puts WHITELIST.inspect
 
       print "Complexity..."
       STDOUT.flush
@@ -23,11 +23,11 @@ namespace :test do
       flog.flog('app')
 
       bad_methods = flog.totals.select do |name, score|
-	if !WHITELIST[name].nil?
-	  score > WHITELIST[name]
-	else
-	  score > FLOG_COMPLEXITY_THRESHOLD
-	end
+        if !WHITELIST[name].nil?
+          score > WHITELIST[name]
+        else
+          score > FLOG_COMPLEXITY_THRESHOLD
+        end
       end
       bad_methods.sort { |a,b| a[1] <=> b[1] }.each do |name, score|
         puts "%s: %d" % [name, score+1]
@@ -35,11 +35,11 @@ namespace :test do
       raise "#{bad_methods.size} methods have a flog complexity > #{FLOG_COMPLEXITY_THRESHOLD}" unless bad_methods.empty?
       puts "OK"
     end
-    
+
     desc "Analyze for code duplication"
     task :flay => :load_rails_env do
       require 'flay'
-      print "Duplication..." 
+      print "Duplication..."
       STDOUT.flush
       flay = Flay.new({:fuzzy => false, :verbose => false, :mass => (FLAY_DUPLICATION_THRESHOLD + 1)})
 
@@ -48,7 +48,7 @@ namespace :test do
       check_files = files - exclude_files
       #puts files.join("\n")
       flay.process(*check_files.uniq)
-    
+
       unless flay.masses.empty?
         flay.report
         raise "#{flay.masses.size} chunks of code have a duplicate mass > #{FLAY_DUPLICATION_THRESHOLD}"
@@ -56,12 +56,12 @@ namespace :test do
         puts "OK"
       end
     end
-    
+
     desc "Analyze for code design issues"
     task :roodi => :load_rails_env do |t|
       require 'roodi'
       require 'roodi_task'
-      print "Design..." 
+      print "Design..."
       old_files = YAML.load(File.read("#{Rails.root}/config/analytics/roodi_whitelist.yml"))
       STDOUT.flush
       RoodiTask.new '#{t}:run', old_files, 'config/analytics/roodi.yml'
@@ -76,7 +76,7 @@ namespace :test do
       print "Design (new things)..."
       old_files = YAML.load(File.read("#{Rails.root}/config/analytics/roodi_whitelist.yml"))
       files = Dir.glob('app/**/*.rb') - old_files
-  #    puts files.inspect
+      #    puts files.inspect
       STDOUT.flush
       RoodiTask.new '#{t2}:run', files, 'config/analytics/roodi_new.yml'
       Rake::Task['#{t2}:run'].invoke
