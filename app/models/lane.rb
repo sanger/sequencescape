@@ -26,12 +26,7 @@ class Lane < Asset
     attribute(:release_reason, :in => LIST_REASONS)
   end
 
-  def spiked_in_buffer
-    parents.each do |p|
-      return p if p.is_a?(SpikedBuffer)
-    end
-    nil
-  end
+  has_one_as_child(:spiked_in_buffer, :conditions => { :sti_type => 'SpikedBuffer' })
 
   def related_resources
     ['parents']
