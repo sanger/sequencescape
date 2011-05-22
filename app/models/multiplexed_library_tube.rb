@@ -21,14 +21,7 @@ class MultiplexedLibraryTube < Asset
     LibraryTube
   end
 
-  def has_stock_asset?
-    parent_asset_types = self.parents.map(&:sti_type)
-    if parent_asset_types.include?("StockMultiplexedLibraryTube")
-      return true
-    else
-      return false
-    end
-  end
+  has_one_as_child(:stock_asset, :conditions => { :sti_type => 'StockMultiplexedLibraryTube' })
 
   def is_a_stock_asset?
     false
@@ -36,10 +29,6 @@ class MultiplexedLibraryTube < Asset
 
   def new_stock_asset
     stock = StockMultiplexedLibraryTube.new(:name => "(s) #{self.name}", :barcode => AssetBarcode.new_barcode)
-  end
-
-  def stock_asset
-    self.parents.detect{ |a| a.sti_type == "StockMultiplexedLibraryTube" }
   end
   
   def related_resources

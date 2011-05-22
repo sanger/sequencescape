@@ -94,24 +94,11 @@ class Sample < ActiveRecord::Base
   end
 
   def has_request
-    has_request = false
-    if (! self.requests.empty? )
-      true
-    end
+    not requests.empty?
   end
 
   def has_request_all_cancelled?
-    has_request_all_cancelled = true
-
-    if (! self.requests.empty? )
-      self.requests.each do |request|
-        if request.state != "cancelled"
-          has_request_all_cancelled = false
-        end
-      end
-    end
-
-    return has_request_all_cancelled
+    self.requests.all?(&:cancelled?)
   end
 
   def has_submission?

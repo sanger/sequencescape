@@ -1,6 +1,7 @@
 class Asset < ActiveRecord::Base
   include StudyReport::AssetDetails
   include ModelExtensions::Asset
+  include AssetLink::Associations
 
   class VolumeError< StandardError
   end
@@ -59,8 +60,6 @@ class Asset < ActiveRecord::Base
 
   named_scope :with_name, lambda { |*names| { :conditions => { :name => names.flatten } } }
 
-  # Relationships to other assets
-  has_dag_links :link_class_name => 'AssetLink'
   acts_as_audited :on => [:destroy, :update]
   
 
@@ -200,11 +199,7 @@ class Asset < ActiveRecord::Base
   end
 
   def library_prep?
-    if self.sti_type == "LibraryTube" || self.sti_type == "MultiplexedLibraryTube"
-      return true
-    else
-      return false
-    end
+    self.sti_type == "LibraryTube" || self.sti_type == "MultiplexedLibraryTube"
   end
 
   def display_name
@@ -219,38 +214,32 @@ class Asset < ActiveRecord::Base
     false
   end
 
-  def qc_fail
-    self.qc_state = "failed"
-    self.save
-  end
 
-  def qc_pass
-    self.qc_state = "passed"
-    self.save
-  end
-  
-  def qc_pending
-    self.qc_state = "pending"
-    self.save!
+  QC_STATES =  [
+    [ 'passed',  'pass' ],
+    [ 'failed',  'fail' ],
+    [ 'pending', 'pending' ]
+  ]
+
+  QC_STATES.each do |state, qc_state|
+    line = __LINE__ + 1
+    class_eval(%Q{
+      def qc_#{qc_state}
+        self.qc_state = #{state.inspect}
+        self.save!
+      end
+    }, __FILE__, line)
   end
 
   def compatible_qc_state
-    if self.qc_state == "passed"
-      "pass"
-    elsif self.qc_state == "failed"
-      "fail"
-    else 
-			return self.qc_state
-    end
+    QC_STATES.assoc(qc_state).try(:last) || qc_state
   end
 
-#  def prefix
-#    if barcode_prefix
-#      barcode_prefix.prefix
-#    else
-#      "NT"
-#    end
-#  end
+  def set_qc_state(state)
+    self.qc_state = QC_STATES.rassoc(state).try(:first) || state
+    self.save
+    self.set_external_release(self.qc_state) 
+  end
 
   def underlying_sampletube
     return
@@ -383,19 +372,6 @@ class Asset < ActiveRecord::Base
     self.events.create_external_release!(!external_release_nil_before) unless self.external_release.nil?
   end
   private :update_external_release
-
-  def set_qc_state(state) 
-    case state
-    when 'fail'
-      self.qc_state = "failed"
-    when 'pass'
-      self.qc_state = "passed"
-    else
-      self.qc_state = state
-    end
-    self.save
-    self.set_external_release(self.qc_state) 
-  end
 
   def self.find_by_human_barcode(barcode, location)
     data = Barcode.split_human_barcode(barcode)
