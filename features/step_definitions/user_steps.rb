@@ -26,4 +26,11 @@ end
 
 Given /^the user with login "([^\"]+)" exists$/ do |login|
   Factory(:user, :login => login)
+
+end
+
+
+Then /^the user (\d+) should validate the swipcard code "([^\"]+)"/ do |user_id, code|
+  user = User.find(user_id)
+  assert user.compare_swipcard_code(code)
 end
