@@ -48,7 +48,7 @@ class ApplicationController < ActionController::Base
   end
   
   def set_info_box_text!
-    @info_box_text = Rails.cache.fetch("app_info_box") { CustomText.find_by_identifier('app_info_box').content }
+    @info_box_text = Rails.cache.fetch("app_info_box-1") { CustomText.find_by_identifier('app_info_box').content }
   end
   
   private
