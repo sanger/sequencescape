@@ -32,6 +32,8 @@ Feature: Access users through the API
       | name | value |
       | login | user_login |
       | email | user@example.com |
+      | first_name | John |
+      | last_name | Smith |
 
     And the UUID for the user with ID 1 is "00000000-1111-2222-3333-444444444444"
 
@@ -49,6 +51,9 @@ Feature: Access users through the API
 
           "login": "user_login",
           "email": "user@example.com",
+          "first_name": "John",
+          "last_name": "Smith",
+          "has_a_swipcard_code": false,
 
           "uuid": "00000000-1111-2222-3333-444444444444"
         },
