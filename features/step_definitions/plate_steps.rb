@@ -169,3 +169,8 @@ Then /^the wells with the following UUIDs should all be related to the same plat
   assert_equal(1, plates_by_parents.size, 'Incorrect parent count found for the wells')
   assert_equal(plates_by_holder, plates_by_parents, 'Plates and parents do not agree on well to plate relationship')
 end
+
+Given /^a "([^\"]+)" plate called "([^\"]+)" exists$/ do |name, plate_name|
+  plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
+  plate_purpose.create!(:name => plate_name)
+end
