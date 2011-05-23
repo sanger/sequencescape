@@ -2,17 +2,20 @@ module ApplicationHelper
 
   # Should return either the custom text or a blank string
   def custom_text(identifier, differential = nil)
-    text = CustomText.first(
-      :conditions => {
-        :identifier   => identifier,
-        :differential => differential
-      }
-    )
+    Rails.cache.fetch("#{identifier}-#{differential}") do
+      text = CustomText.first(
+        :conditions => {
+          :identifier   => identifier,
+          :differential => differential
+        }
+      )
 
-    RAILS_DEFAULT_LOGGER.debug 
-      "No custom text found for #{identifier} #{differential}." if text.nil?    
+      RAILS_DEFAULT_LOGGER.debug 
+        "No custom text found for #{identifier} #{differential}." if text.nil?    
     
-    text.try(:content) || ""
+      text.try(:content) || ""
+    end
+    
   end
   
   def loading_bar(identifier = "loading")

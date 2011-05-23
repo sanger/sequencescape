@@ -20,7 +20,7 @@ class ApplicationController < ActionController::Base
   # Provide authentication, and "remember me"
   include AuthenticatedSystem
   before_filter :login_required
-  before_filter :extract_header_info, :set_info_box_text!
+  before_filter :extract_header_info
   filter_parameter_logging :password, :credential_1, :uploaded_data
 
   rescue_from SingleSignOn::ServerError, :with => :sso_not_available
@@ -45,10 +45,6 @@ class ApplicationController < ActionController::Base
     end
     new_hash
 
-  end
-  
-  def set_info_box_text!
-    @info_box_text = Rails.cache.fetch("app_info_box-1") { CustomText.find_by_identifier('app_info_box').content }
   end
   
   private

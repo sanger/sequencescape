@@ -72,9 +72,9 @@
             <div id="app_name"><%= link_to I18n.t('application.name').upcase, root_path %></div>
           
           <%# Only show the info-box if there's something to talk about... %>
-          <%- unless @info_box_text.blank? -%>
+          <%- unless custom_text("app_info_box", 1).blank? -%>
             <div id="info-box">
-              <span><%= @info_box_text %></span>
+              <span><%= custom_text("app_info_box", 1) %></span>
             </div>
           <%- end -%>
             
