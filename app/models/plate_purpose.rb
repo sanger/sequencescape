@@ -130,16 +130,22 @@ class PlatePurpose < ActiveRecord::Base
     @stock_plate_purpose ||= PlatePurpose.find(2)
   end
 
-  def create!(locations_to_wells)
-    maps  = Hash[Map.where_description(locations_to_wells.keys).where_plate_size(96).all.map { |m| [m.description, m] }]
-    wells = locations_to_wells.map { |l,w| w.tap { w.update_attributes!(:map => maps[l]) } }
-    plates.create!(:wells => wells, :size => 96).tap do |plate|
-      wells.each { |well| AssetLink.create_edge!(plate, well) }
-    end
-  end
+  # TODO: For the moment I'm removing this but I need the code to remain whilst it's refactored.
+  #
+  # It was originally here for pipelines to create plates from pre-existing wells but I actually think that's the wrong
+  # way for things to work.  I think that plates are created completely empty, and then transfers are made from one container
+  # to the plate.  That's certainly how it feels for the pulldown pipeline.
+#  def create!(locations_to_wells)
+#    maps  = Hash[Map.where_description(locations_to_wells.keys).where_plate_size(96).all.map { |m| [m.description, m] }]
+#    wells = locations_to_wells.map { |l,w| w.tap { w.update_attributes!(:map => maps[l]) } }
+#    plates.create!(:wells => wells, :size => 96).tap do |plate|
+#      wells.each { |well| AssetLink.create_edge!(plate, well) }
+#    end
+#  end
 
-  def create_empty_plate!
-    plates.create!(:size => 96, :wells => Map.where_plate_size(96).all.map { |map| Well.new(:map => map) }).tap do |plate|
+  def create!(attributes = {}, &block)
+    attributes[:size] ||= 96
+    plates.create!(attributes.merge(:wells => Map.where_plate_size(attributes[:size]).all.map { |map| Well.new(:map => map) })).tap do |plate|
       plate.wells.each { |well| AssetLink.create_edge!(plate, well) }
     end
   end
