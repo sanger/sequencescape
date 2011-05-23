@@ -71,7 +71,8 @@ Feature: Access users through the API
          "user": {
             "email": "new_email@example.com",
             "first_name": "Jack",
-            "last_name": "Smooth"
+            "last_name": "Smooth",
+            "swipcard_code": "my code"
          }
        }
        """
@@ -84,8 +85,8 @@ Feature: Access users through the API
           "email": "new_email@example.com",
           "first_name": "Jack",
           "last_name": "Smooth",
+          "has_a_swipcard_code": true,
           "uuid": "00000000-1111-2222-3333-444444444444"
         }
       }
       """
-
