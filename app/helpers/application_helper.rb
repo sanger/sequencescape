@@ -322,11 +322,6 @@ module ApplicationHelper
     end
   end
   
-  # Creates a label that is hidden from the view so that testing is easier
-  def hidden_label_tag_for_testing(name, text = nil, options = {})
-    label_tag(name, text, options.merge(:style => 'display:none;'))
-  end
-  
   # The admin email address should be stored in config.yml for the current environment
   def help_email_link
     admin_address = configatron.admin_email || "admin@test.com"
