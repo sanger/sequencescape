@@ -562,7 +562,8 @@ end
                                     ) do |object|
                                       case study_from.affiliated_with?(object)
                                       when true
-                                        object
+                                        # skip but pull if it's false. keep if nil (meaning unknown)
+                                        sample.affiliated_with?(object) == [] ? nil : object
                                       when false
                                         nil # we skip the object and its dependencies
                                       else # nil
