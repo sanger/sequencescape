@@ -41,39 +41,24 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   end
       
   def new
-    @sample_manifest = SampleManifest.new
-    @studies = Study.all.sort{ |a,b,| a.name <=> b.name }
-    @suppliers = Supplier.all.sort{ |a,b,| a.name <=> b.name }
-    
-    asset_type = params[:type]
-    if asset_type == "1dtube"
-      @barcode_printers = BarcodePrinterType.find_by_name("1D Tube").barcode_printers
-    else
-      asset_type = "plate"
-      @barcode_printers = BarcodePrinterType.find_by_name("96 Well Plate").barcode_printers
-    end
-    @barcode_printers = BarcodePrinter.find(:all, :order => "name asc") if @barcode_printers.blank?
-    
-   # find templates
-    if asset_type.present?
-      @templates = SampleManifestTemplate.find_all_by_asset_type(asset_type) + SampleManifestTemplate.find_all_by_asset_type(nil)
-    else
-      @templates = SampleManifestTemplate.all
-    end
+    @sample_manifest  = SampleManifest.new(:asset_type => params[:type])
+    @studies          = Study.all.sort{ |a,b,| a.name <=> b.name }
+    @suppliers        = Supplier.all.sort{ |a,b,| a.name <=> b.name }
+    @barcode_printers = @sample_manifest.applicable_barcode_printers
+    @templates        = @sample_manifest.applicable_templates
   end
   
   def create
     barcode_printer_id = params[:sample_manifest].delete(:barcode_printer)
-    if barcode_printer_id
-      barcode_printer = BarcodePrinter.find(barcode_printer_id)
-    end
-    @sample_manifest = SampleManifest.create!(params[:sample_manifest].merge!({ :user => current_user }))
-    template = SampleManifestTemplate.find(@sample_manifest.template)
-    if template.asset_type.present? 
-      @sample_manifest.asset_type = template.asset_type
-      @sample_manifest.save!
-    end
-    @sample_manifest.generate(template, barcode_printer)
+    barcode_printer    = BarcodePrinter.find(barcode_printer_id) unless barcode_printer_id.blank?
+
+    template         = SampleManifestTemplate.find(params[:sample_manifest].delete(:template))
+    @sample_manifest = template.create!(params[:sample_manifest].merge(:user => current_user))
+
+    @sample_manifest.generate
+    template.generate(@sample_manifest)
+    @sample_manifest.print_labels(barcode_printer)
+
     if !@sample_manifest.manifest_errors.empty?
       flash[:error] = @sample_manifest.manifest_errors.join(", ")
       @sample_manifest.destroy

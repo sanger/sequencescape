@@ -99,7 +99,6 @@ Given /^the sample "([^"]*)" should not have an accession number$/ do |sample_na
   assert_nil sample.sample_metadata.sample_ebi_accession_number
 end
 
-
 Given /^I run the "([^\"]+)" cron script$/ do |script_name|
   eval File.read("#{RAILS_ROOT}/lib/cron_scripts/#{script_name}")
 end
@@ -151,4 +150,15 @@ Given /^a sample named "([^\"]+)" exists for accession/ do |sample_name|
   And %Q{the sample "#{sample_name}" belongs to the study "#{study_name}"}
   And %Q{the sample "#{sample_name}" has the Taxon ID "99999"}
   And %Q{the sample "#{sample_name}" has the common name "Human"}
+end
+
+Given /^the Sanger sample ID of the last sample is "([^\"]+)"$/ do |id|
+  sample = Sample.last or raise StandardError, "There appear to be no samples"
+  sample.update_attributes!(:sanger_sample_id => id)
+end
+
+Given /^all samples have a Sanger sample ID based on "([^\"]+)"$/ do |id|
+  Sample.all.each_with_index do |sample, index|
+    sample.update_attributes!(:sanger_sample_id => "#{id}#{'%02d' % (index+1)}")
+  end
 end
