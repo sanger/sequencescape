@@ -23,7 +23,9 @@
           <td><%= custom_text.content_type %></td>
           <td><%= custom_text.content %></td>
           <% if current_user.administrator? %>
-            <td><%= link_to "Edit", edit_custom_text_url(custom_text) %></td>
+            <td id="<%= custom_text.name %>-details">
+            <%= link_to "Edit", edit_custom_text_url(custom_text) %>
+            </td>
             <td><%= link_to "<span style='color: red;'><strong>[Delete]</strong></span>", custom_text_url(custom_text), :method => :delete, :confirm => "Are you sure?" %></td>
           <% end %>
         </tr>

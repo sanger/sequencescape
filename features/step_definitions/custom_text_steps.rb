@@ -6,6 +6,28 @@ Given /^the following custom texts are defined$/ do |table|
   end
 end
 
+Given /^there is a CustomText with identifier: "([^"]*)", differential: "([^"]*)"$/ do |identifier, differential|
+  @current_custom_text = CustomText.first(
+    :conditions => {
+      :identifier   => identifier,
+      :differential => differential
+    }
+  )
+
+  assert_not_nil @current_custom_text
+end
+
+When /^I edit the CustomText$/ do
+  When %Q{I follow "Edit" within "##{@current_custom_text.name}-details"}
+end
+
+Given /^the application information box should contain "([^\"]*)"$/ do |info_text|
+  regexp = Regexp.new(info_text)
+  with_scope('#app-info-box') do
+      assert page.has_xpath?('//*', :text => regexp)
+  end
+end
+
 Given /^I am viewing the "([^\"]*)" page$/ do |url|
   visit url
 end
