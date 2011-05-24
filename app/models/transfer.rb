@@ -1,4 +1,6 @@
 class Transfer < ActiveRecord::Base
+  include Uuid::Uuidable
+
   # So we can track who is requesting the transfer
   belongs_to :user
 
@@ -22,6 +24,10 @@ class Transfer < ActiveRecord::Base
     each_transfer do |source, destination|
       TransfertRequest.create!(:asset => source, :target_asset => destination)
     end
+
+    # Something is incredibly screwed in acts_as_dag because you can't just push the destination onto
+    # the source.children association.
+    AssetLink.create_edge(self.source, self.destination)
   end
   private :create_transfer_requests
 
