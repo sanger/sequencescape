@@ -469,30 +469,32 @@ class Plate < Asset
   end
 
   def find_study_abbreviation_from_parent
-    if self.parent && self.parent.wells.first && self.parent.wells.first.study
-      return self.parent.wells.first.study.abbreviation
-    end
-
-    nil
+    self.parent.try(:wells).try(:first).try(:study).try(:abbreviation)
   end
 
-  def self.create_plate_with_barcode(*args)
-    attributes = args.extract_options!
-    plate      = args.first
-    barcode    = plate.barcode if plate.present? and not find_by_barcode(plate.barcode)
-    barcode  ||= PlateBarcode.create.barcode
-    self.create(attributes.merge(:barcode => barcode))
+# TODO: Fugly code that needs replacing
+#  def self.create_plate_with_barcode(*args)
+#    attributes = args.extract_options!
+#    plate      = args.first
+#    barcode    = plate.barcode if plate.present? and not find_by_barcode(plate.barcode)
+#    barcode  ||= PlateBarcode.create.barcode
+#    self.create(attributes.merge(:barcode => barcode))
+#  end
+  def self.create_plate_with_barcode(barcode = nil, attributes = {}, &block)
+    barcode   = nil if barcode.present? and find_by_barcode(barcode).present?
+    barcode ||= PlateBarcode.create.barcode
+    create(attributes.merge(:barcode => barcode), &block)
   end
 
   def self.plates_from_scanned_plate_barcodes(source_plate_barcodes)
-    source_plate_barcodes.scan(/\d+/).map{ |raw_barcode| self.find_from_machine_barcode(raw_barcode) }
+    source_plate_barcodes.scan(/\d+/).map(&method(:find_from_machine_barcode))
   end
 
   def self.plates_from_scanned_plates_and_typed_plate_ids(source_plate_barcodes)
-    scanned_plates = source_plate_barcodes.scan(/\d+/).map{ |raw_barcode| self.find_from_machine_barcode(raw_barcode) }
-    typed_plates = source_plate_barcodes.scan(/\d+/).map{ |barcode_number| self.find_by_barcode(barcode_number) }
+    scanned_plates = source_plate_barcodes.scan(/\d+/).map(&method(:find_from_machine_barcode))
+    typed_plates   = source_plate_barcodes.scan(/\d+/).map(&method(:find_by_barcode))
 
-    (scanned_plates | typed_plates).select{ |plates| ! plates.nil? }
+    (scanned_plates | typed_plates).compact
   end
 
   def self.create_default_plates_and_print_barcodes(source_plate_barcodes, barcode_printer, current_user)
