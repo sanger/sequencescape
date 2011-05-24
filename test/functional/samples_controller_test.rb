@@ -68,50 +68,6 @@ class SamplesControllerTest < ActionController::TestCase
       end
 
       context "#move" do
-        context "if study_to or study_from is not selected" do
-          setup do
-            @sample2 = Factory :sample
-          end
-          should "redirect and move fails with error" do
-            post :move, :id => @sample2.id, :study_id_from => 0, :study_id_to => 0
-            assert_equal "You have to select 'Study From' and 'Study To'", flash[:error]
-            assert_response :redirect
-          end
-        end
-
-        context "if asset is not selected" do
-          setup do
-            @sample2 = Factory :sample
-            @study_from = Factory :study
-            @study_to = Factory :study
-            @new_assets_name = ""
-          end
-          should "redirect and move fails with error" do
-            post :move, :id => @sample2.id, :study_id_from => @study_from.id, :study_id_to => @study_to.id, :asset_group_id => 0, :new_assets_name => @new_assets_name
-            assert_equal "You must indicate an 'Asset Group'.", flash[:error]
-            assert_response :redirect
-          end
-        end
-
-        context "if exists a submission and it is not selected" do
-          setup do
-            @sample_from = Factory :sample
-            @study_from = Factory :study
-            @study_to = Factory :study
-            @new_assets_name = ""
-
-            @asset_to = Factory :asset
-            @asset_group_to = Factory :asset_group, :study_id => @study_to.id
-            @asset_group_asset_to = Factory :asset_group_asset, :asset_id =>  @asset_to.id , :asset_group_id => @asset_group_to.id
-            @submission_to = Factory :submission, :study_id => @study_to.id, :assets => [ @asset_to ]
-          end
-
-          should "redirect and move fails with error" do
-            post :move, :id => @sample_from.id, :study_id_from => @study_from.id, :study_id_to => @study_to.id, :asset_group_id => @asset_group_to.id , :new_assets_name => @new_assets_name, :submission_id => 0
-            assert_equal "You must select a Submission because you select an Asset with Submissions.", flash[:error]
-            assert_response :redirect
-          end
-        end
       end
     end
   end 
