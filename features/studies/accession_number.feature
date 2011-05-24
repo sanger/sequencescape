@@ -19,13 +19,11 @@ Feature: Studies should be able to generate accession numbers
 
   Scenario: The study already has an accession number
     Given an accessioning webservice exists which returns a study accession number "EGAN00001000234"
-
     Given an accession number is required for study "Study for accession number testing"
     And the study "Study for accession number testing" has the accession number "EGAN00001000235"
 
     When I follow "Generate Accession Number"
-    Then I should be on the workflow page for study "Study for accession number testing"
-    And I should see "No accession number was generated"
+    Then I should see "Accession number generated: EGAN00001000234"
 
   Scenario Outline: The study has data missing from the required fields
     Given an accession number is required for study "Study for accession number testing"
