@@ -270,20 +270,18 @@ td.total {
 #info-box {
   font-size: 12px;
   float: left;
-  margin: 3px 0 0px 160px;
+  margin: 3px 0 0 10px;
   padding: 2px 20px;
-  
-/*  border: 1px solid #B8C8DB;*/
+  width: 700px;
   
   -moz-border-radius:    10px;
   -webkit-border-radius: 10px;
   border-radius:         10px;
   
-  -moz-box-shadow:     1px 1px 6px #000;
-  -webkit-box-shadow:  1px 1px 6px #000;
-  box-shadow:          1px 1px 6px #000;
+  -moz-box-shadow:     1px 1px 4px #1D445A;
+  -webkit-box-shadow:  1px 1px 4px #1D445A;
+  box-shadow:          1px 1px 4px #1D445A;
   
-  width: 500px;
   color: #000;
   background: #FFE138 ;
   font-family:'Century Gothic','Lucida Grande',helvetica,arial,sans-serif;;
