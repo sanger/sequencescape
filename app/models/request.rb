@@ -98,6 +98,8 @@ class Request < ActiveRecord::Base
 
   #  validates_presence_of :study, :request_type#TODO, :submission
 
+  named_scope :between, lambda { |source,target| { :conditions => { :asset_id => source.id, :target_asset_id => target.id } } }
+
   # new version of combinable named_scope
   named_scope :for_state, lambda { |state| { :conditions => { :state => state } } }
 
