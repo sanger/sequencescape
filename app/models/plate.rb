@@ -1,6 +1,24 @@
 class Plate < Asset
   include ModelExtensions::Plate
   include LocationAssociation::Locatable
+  include Transfer::Associations
+
+  # Transfer requests into a plate are the requests leading into the wells of said plate.
+  def transfer_requests
+    # TODO: This should be 'has_many :transfer_requests, :finder_sql => ....' for efficiency
+    wells.map { |well| well.requests_as_target.where_is_a?(TransfertRequest).all }.flatten
+  end
+
+  # The iteration of a plate is defined as the number of times a plate of this type has been created
+  # from it's parent.  It's not quite that simple: it's actually the index of it's transfer_as_destination
+  # within the transfers_as_source of its parent.
+  def iteration
+    return nil if parent.nil?  # No parent means no iteration, not a 0 iteration.
+
+    parent.transfers_as_source.all.select do |p|
+      p.destination.is_a?(Plate) and p.destination.plate_purpose == plate_purpose
+    end.index(transfer_as_destination) + 1
+  end
 
   contains :wells do
     def located_at(location)
@@ -476,17 +494,11 @@ class Plate < Asset
     self.parent.try(:wells).try(:first).try(:study).try(:abbreviation)
   end
 
-# TODO: Fugly code that needs replacing
-#  def self.create_plate_with_barcode(*args)
-#    attributes = args.extract_options!
-#    plate      = args.first
-#    barcode    = plate.barcode if plate.present? and not find_by_barcode(plate.barcode)
-#    barcode  ||= PlateBarcode.create.barcode
-#    self.create(attributes.merge(:barcode => barcode))
-#  end
-  def self.create_plate_with_barcode(barcode = nil, attributes = {}, &block)
-    barcode   = nil if barcode.present? and find_by_barcode(barcode).present?
-    barcode ||= PlateBarcode.create.barcode
+  def self.create_plate_with_barcode(*args, &block)
+    attributes = args.extract_options!
+    barcode    = args.first
+    barcode    = nil if barcode.present? and find_by_barcode(barcode).present?
+    barcode  ||= PlateBarcode.create.barcode
     create(attributes.merge(:barcode => barcode), &block)
   end
 
