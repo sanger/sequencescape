@@ -30,7 +30,11 @@ class TestSampleEndpoint < ::Core::Endpoint::Base
   end
 end
 class ::Api::EndpointHandler
-  def endpoint_for(model, root_model = model)
+  def endpoint_for_object(*args, &block)
+    self.class.endpoint || super
+  end
+
+  def endpoint_for_class(*args, &block)
     self.class.endpoint || super
   end
 

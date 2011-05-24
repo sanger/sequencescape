@@ -1,8 +1,6 @@
 @api @json @submission @single-sign-on @new-api @regression
 Feature: Consistent errors reported by API when listing all submissions
   Background:
-    Given all of this is happening at exactly "23-Oct-2010 23:00:00+01:00"
-
     Given all HTTP requests to the API have the cookie "WTSISignOn" set to "I-am-authenticated"
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 

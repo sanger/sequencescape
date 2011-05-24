@@ -1,8 +1,6 @@
 @api @json @study @project @sample @search @single-sign-on @new-api
 Feature: Searching for studies, projects and samples by name
   Background:
-    Given all of this is happening at exactly "23-Oct-2010 23:00:00+01:00"
-
     Given all HTTP requests to the API have the cookie "WTSISignOn" set to "I-am-authenticated"
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
@@ -31,17 +29,17 @@ Feature: Searching for studies, projects and samples by name
       """
       {
         "<model>": {
-          "name": "Testing_the_API_2",
-          "uuid": "11111111-2222-3333-4444-000000000002"
+          "uuid": "11111111-2222-3333-4444-000000000002",
+          <name json>
         }
       }
       """
 
     Examples:
-      | model   |
-      | project |
-      | study   |
-      | sample  |
+      | model   | name json                                 |
+      | project | "name": "Testing_the_API_2"               |
+      | study   | "name": "Testing_the_API_2"               |
+      | sample  | "sanger": { "name": "Testing_the_API_2" } |
 
   @single
   Scenario Outline: Looking for a non-existant entry

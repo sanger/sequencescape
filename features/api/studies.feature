@@ -8,8 +8,6 @@ Feature: Access studies through the API
   And I understand I will never be able to delete a study through its UUID
 
   Background:
-    Given all of this is happening at exactly "23-Oct-2010 23:00:00+01:00"
-
     Given all HTTP requests to the API have the cookie "WTSISignOn" set to "I-am-authenticated"
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
@@ -76,6 +74,13 @@ Feature: Access studies through the API
           "asset_groups": {
             "actions": {
               "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/asset_groups"
+            }
+          },
+          "sample_manifests": {
+            "actions": {
+              "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/sample_manifests",
+              "create_for_plates": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/sample_manifests/create_for_plates",
+              "create_for_tubes": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/sample_manifests/create_for_tubes"
             }
           }
         },

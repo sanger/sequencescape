@@ -8,8 +8,6 @@ Feature: Access sample tubes through the API
   And I understand I will never be able to delete a sample tube through its UUID
 
   Background:
-    Given all of this is happening at exactly "23-Oct-2010 23:00:00+01:00"
-
     Given all HTTP requests to the API have the cookie "WTSISignOn" set to "I-am-authenticated"
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
@@ -63,7 +61,9 @@ Feature: Access sample tubes through the API
             "actions": {
               "read": "http://www.example.com/api/1/00000000-1111-2222-3333-888888888888"
             },
-            "name": "sample_testing_the_api"
+            "sanger": {
+              "name": "sample_testing_the_api"
+            }
           },
           "requests": {
             "actions": {
