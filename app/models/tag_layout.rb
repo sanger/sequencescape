@@ -5,6 +5,10 @@
 # example, 8 tags in the group laid out in columns would repeat the tags across the plate), or it
 # doesn't (for example, a 96 tag group would occupy an entire 96 well plate).
 class TagLayout < ActiveRecord::Base
+  include Uuid::Uuidable
+
+  self.inheritance_column = "sti_type"
+
   # The user performing the layout
   belongs_to :user
 

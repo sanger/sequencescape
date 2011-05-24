@@ -1,12 +1,6 @@
 module ::Core::Io::Base::JsonFormattingBehaviour::Output
   def generate_object_to_json_mapping(attribute_to_json)
-    code = attribute_to_json.concat([
-      [ 'uuid', 'uuid' ],
-      [ 'created_at', 'created_at' ],
-      [ 'updated_at', 'updated_at' ]
-    ]).sort do |(k1, _), (k2, _)|
-      k1 <=> k2     # Ensure that the attributes are built in the right order
-    end.map do |attribute, json|
+    code = attribute_to_json.sort_by(&:first).map do |attribute, json|
       json_path = json.split('.')
       json_leaf = json_path.pop
 
@@ -34,9 +28,13 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Output
     line = __LINE__ + 1
     class_eval(%Q{
       def self.object_json(object, uuids_to_ids, options)
-        uuids_to_ids[object.uuid] = object.id
+        uuids_to_ids[object.uuid] = object.id if object.respond_to?(:uuid)
 
         super.tap do |result|
+          result["uuid"]       = object.uuid if object.respond_to?(:uuid)
+          result["created_at"] = object.created_at
+          result["updated_at"] = object.updated_at
+
           #{code.join("\n")}
         end
       end
