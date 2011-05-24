@@ -267,7 +267,7 @@ td.total {
   float: left;
 }
 
-#info-box {
+#app-info-box {
   font-size: 12px;
   float: left;
   margin: 3px 0 0 10px;
@@ -287,13 +287,13 @@ td.total {
   font-family:'Century Gothic','Lucida Grande',helvetica,arial,sans-serif;;
 }
 
-#info-box a {
+#app-info-box a {
   float:right;
   text-decoration: none;
   color: #002237;
 }
 
-#info-box a:hover {
+#app-info-box a:hover {
   text-decoration: underline;
 }
 

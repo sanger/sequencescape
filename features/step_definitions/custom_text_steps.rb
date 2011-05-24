@@ -28,6 +28,10 @@ Given /^the application information box should contain "([^\"]*)"$/ do |info_tex
   end
 end
 
+Then /^the application information box is not shown$/ do
+  assert page.has_no_xpath?('//*[@id="app-info-box"]')
+end
+
 Given /^I am viewing the "([^\"]*)" page$/ do |url|
   visit url
 end
