@@ -34,7 +34,8 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME = [
   'working dilution plate',
   'pipeline',
   'supplier',
-  'transfer template'
+  'transfer template',
+  'tag layout template'
 ]
 
 SINGULAR_MODELS_BASED_ON_NAME_REGEXP = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME.join('|')
@@ -87,7 +88,9 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
 
   'submission',
 
-  'batch'
+  'batch',
+
+  'tag layout'
 ]
 
 SINGULAR_MODELS_BASED_ON_ID_REGEXP = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID.join('|')

@@ -172,6 +172,17 @@ Feature: The entry point for the API gives directions to the other actions
           "actions": {
             "read": "http://www.example.com/api/1/transfer_templates"
           }
+        },
+
+        "tag_layouts": {
+          "actions": {
+            "read": "http://www.example.com/api/1/tag_layouts"
+          }
+        },
+        "tag_layout_templates": {
+          "actions": {
+            "read": "http://www.example.com/api/1/tag_layout_templates"
+          }
         }
       }
       """
