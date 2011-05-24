@@ -588,7 +588,7 @@ end
       end
     end
     if errors.present?
-      errors.each { |error | sample.errors.add ("Move:", error) }
+      errors.each { |error | sample.errors.add("Move:", error) }
       false
     else
        true
