@@ -19,10 +19,15 @@ class Asset < ActiveRecord::Base
 
   has_many :asset_group_assets
   has_many :asset_groups, :through => :asset_group_assets
+  has_many :asset_audits
+
+
+  # TODO: Remove 'requests' and 'source_request' as they are abiguous
   has_many :requests
   has_one :source_request, :class_name => "Request", :foreign_key => :target_asset_id
-  has_many :asset_audits
-  
+  has_many :requests_as_source, :class_name => 'Request', :foreign_key => :asset_id
+  has_many :requests_as_target, :class_name => 'Request', :foreign_key => :target_asset_id
+
   # Contents
   belongs_to :sample
   alias_attribute(:material, :sample)

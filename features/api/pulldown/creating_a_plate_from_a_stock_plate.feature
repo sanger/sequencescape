@@ -202,6 +202,29 @@ Feature: Creating a plate from a stock plate
       }
       """
 
+    # Check the state of the plate we have created
+    When I GET the API path "/00000000-1111-2222-3333-000000000002"
+    Then the HTTP response should be "200 OK"
+     And the JSON should match the following for the specified fields:
+      """
+      {
+        "plate": {
+          "actions": {
+            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-000000000002"
+          },
+          "plate_purpose": {
+            "actions": {
+              "read": "http://www.example.com/api/1/11111111-2222-3333-4444-000000000002"
+            }
+          },
+
+          "uuid": "00000000-1111-2222-3333-000000000002",
+          "state": "pending",
+          "iteration": 1
+        }
+      }
+      """
+
     Scenarios:
       | plate purpose           |
       | WGS fragmentation plate |
