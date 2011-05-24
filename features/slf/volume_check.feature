@@ -157,7 +157,6 @@ Feature: Upload volume results from the volume checker robot
       | 222     | B12  | 0.0133          |
  
 
-
   Scenario: Update plate where there is no barcode in first column
     Given study "Study B" has a plate "111" to be volume checked
     Given all plate volume check files are processed

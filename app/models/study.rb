@@ -14,6 +14,8 @@ class Study < ActiveRecord::Base
   include Named
   include Uuid::Uuidable
   include ReferenceGenome::Associations
+  include SampleManifest::Associations
+
   extend EventfulRecord
   has_many_events
   has_many_lab_events
@@ -87,6 +89,7 @@ class Study < ActiveRecord::Base
 
   validates_presence_of :name
   validates_uniqueness_of :name, :on => :create, :message => "already in use (#{self.name})"
+  validates_format_of :abbreviation, :with => /^[\w_-]+$/i, :allow_blank => false, :message => 'cannot contain spaces or be blank'
 
   named_scope :for_search_query, lambda { |query|
     { :conditions => [ 'name LIKE ? OR id=?', "%#{query}%", query ] }

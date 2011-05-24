@@ -31,7 +31,8 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME = [
   'plate',
   'sequenom qc plate',
   'working dilution plate',
-  'pipeline'
+  'pipeline',
+  'supplier'
 ]
 
 SINGULAR_MODELS_BASED_ON_NAME_REGEXP = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME.join('|')
@@ -80,6 +81,7 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
   'dilution plate purpose',
 
   'sample',
+  'sample manifest',
 
   'submission',
 

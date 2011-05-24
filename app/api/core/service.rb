@@ -150,20 +150,20 @@ class Core::Service < Sinatra::Base
     def attributes(object = nil)
       io.map_parameters_to_attributes(json, nil)
     end
-    
+
     def create!(instance_attributes = self.attributes)
       ActiveRecord::Base.transaction do
         target.create!(instance_attributes)
       end
     end
-    
+
     def update!(instance_attributes = self.attributes(target))
       ActiveRecord::Base.transaction do
         target.tap { |o| o.update_attributes!(instance_attributes) }
       end
     end
   end
-  
+
   include Core::Endpoint::BasicHandler::EndpointLookup
 
   # A response from an endpoint handler is made of a pair of values.  One is the object that

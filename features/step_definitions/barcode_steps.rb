@@ -24,3 +24,8 @@ Given /^the ([^\"]+) "([^\"]+)" has a barcode of "([^\"]+)"$/ do |model, name, b
   asset = model.gsub(/\s+/, '_').classify.constantize.first(:conditions => { :name => name }) or raise StandardError, "Could not find asset #{name.inspect}"
   asset.update_attributes!(:barcode => Barcode.number_to_human(barcode.to_i))
 end
+
+Given /^the barcode of the last sample tube is "([^\"]+)"$/ do |barcode|
+  tube = SampleTube.last or raise StandardError, "There appear to be no sample tubes"
+  tube.update_attributes!(:barcode => barcode)
+end

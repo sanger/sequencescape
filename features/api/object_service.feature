@@ -15,64 +15,15 @@ Feature: Access objects through the API
 
     Given I am using the latest version of the API
 
-  # "NOTE": we cannot predefine the ID here so we ignore it in the uuids_to_ids map
-  @create
-  Scenario: Creating an object
-    Given the UUID of the next sample created will be "00000000-1111-2222-3333-444444444444"
-
-    When I POST the following JSON to the API path "/samples":
-      """
-      {
-        "sample": {
-          "name": "testing_the_object_service"
-        }
-      }
-      """
-    Then the HTTP response should be "201 Created"
-    And the JSON should match the following for the specified fields:
-      """
-      {
-        "sample": {
-          "actions": {
-            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444",
-            "update": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
-          },
-
-          "uuid": "00000000-1111-2222-3333-444444444444",
-          "name": "testing_the_object_service"
-        },
-        "uuids_to_ids": {
-        }
-      }
-      """
-
-  @create @error
-  Scenario: Creating an object which results in an error
-    When I POST the following JSON to the API path "/samples":
-      """
-      {
-        "sample": {
-          "name": "this is invalid because of the whitespace"
-        }
-      }
-      """
-    Then the HTTP response should be "422 Unprocessable Entity"
-    And the JSON should be:
-      """
-      {
-        "content": {
-          "name": ["Sample name can only contain letters, numbers, _ or -"]
-        }
-      }
-      """
-
   @create @error
   Scenario: Creating an object but sending the wrong 'Content-Type'
     When I POST the following "text/plain" to the API path "/samples":
       """
       {
         "sample": {
-          "name": "this_is_valid_json_but_wrong_content_type"
+          "sanger": {
+            "name": "this_is_valid_json_but_wrong_content_type"
+          }
         }
       }
       """
@@ -150,8 +101,10 @@ Feature: Access objects through the API
               "update": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
             },
 
-            "name": "testing_the_object_service",
-            "uuid": "00000000-1111-2222-3333-444444444444"
+            "uuid": "00000000-1111-2222-3333-444444444444",
+            "sanger": {
+              "name": "testing_the_object_service"
+            }
           }
         ],
         "uuids_to_ids": {
@@ -186,8 +139,10 @@ Feature: Access objects through the API
               "update": "http://www.example.com/api/1/11111111-2222-3333-4444-<uuid>"
             },
 
-            "name": "testing_the_object_service-<index>",
-            "uuid": "11111111-2222-3333-4444-<uuid>"
+            "uuid": "11111111-2222-3333-4444-<uuid>",
+            "sanger": {
+              "name": "testing_the_object_service-<index>"
+            }
           }
         ],
         "uuids_to_ids": {
@@ -211,7 +166,9 @@ Feature: Access objects through the API
       """
       {
         "sample": {
-          "name": "weird green jelly like thing" 
+          "sanger": {
+            "name": "weird green jelly like thing"
+          }
         }
       }
       """
@@ -220,7 +177,7 @@ Feature: Access objects through the API
       """
       {
         "content": {
-          "name": [ "cannot be changed" ]
+          "sanger.name": [ "is read-only" ]
         }
       }
       """
@@ -234,7 +191,9 @@ Feature: Access objects through the API
       """
       {
         "sample": {
-          "organism": "weird green jelly like thing" 
+          "taxonomy": {
+            "organism": "weird green jelly like thing"
+          }
         }
       }
       """
@@ -249,8 +208,12 @@ Feature: Access objects through the API
           },
 
           "uuid": "00000000-1111-2222-3333-444444444444",
-          "name": "testing_the_object_service",
-          "organism": "weird green jelly like thing"
+          "sanger": {
+            "name": "testing_the_object_service"
+          },
+          "taxonomy": {
+            "organism": "weird green jelly like thing"
+          }
         },
         "uuids_to_ids": {
           "00000000-1111-2222-3333-444444444444": 1
@@ -303,7 +266,9 @@ Feature: Access objects through the API
           },
 
           "uuid": "00000000-1111-2222-3333-444444444444",
-          "name": "testing_the_object_service",
+          "sanger": {
+            "name": "testing_the_object_service"
+          },
 
           "sample_tubes": {
             "actions": {
@@ -365,8 +330,8 @@ Feature: Access objects through the API
               "read": "http://www.example.com/api/1/11111111-2222-3333-4444-000000000001"
             },
 
-            "name": "testing_the_object_service sample tube 1",
             "uuid": "11111111-2222-3333-4444-000000000001",
+            "name": "testing_the_object_service sample tube 1",
 
             "sample": {
               "actions": {
@@ -374,8 +339,10 @@ Feature: Access objects through the API
                 "update": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
               },
 
-              "name": "testing_the_object_service",
-              "uuid": "00000000-1111-2222-3333-444444444444"
+              "uuid": "00000000-1111-2222-3333-444444444444",
+              "sanger": {
+                "name": "testing_the_object_service"
+              }
             },
 
             "requests": {
@@ -456,7 +423,9 @@ Feature: Access objects through the API
       """
       {
         "sample": {
-          "organism": "weird green jelly like thing" 
+          "taxonomy": {
+            "organism": "weird green jelly like thing"
+          }
         }
       }
       """
@@ -471,8 +440,12 @@ Feature: Access objects through the API
           },
 
           "uuid": "00000000-1111-2222-3333-444444444444",
-          "name": "testing_the_object_service",
-          "organism": "weird green jelly like thing"
+          "sanger": {
+            "name": "testing_the_object_service"
+          },
+          "taxonomy": {
+            "organism": "weird green jelly like thing"
+          }
         },
         "uuids_to_ids": {
           "00000000-1111-2222-3333-444444444444": 1
@@ -491,7 +464,9 @@ Feature: Access objects through the API
       """
       {
         "sample": {
-          "organism": "weird green jelly like thing" 
+          "taxonomy": {
+            "organism": "weird green jelly like thing" 
+          }
         }
       }
       """

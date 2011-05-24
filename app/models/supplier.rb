@@ -1,5 +1,8 @@
 class Supplier < ActiveRecord::Base
-  has_many :sample_manifests
+  include Uuid::Uuidable
+  include ::Io::Supplier::ApiIoSupport
+  include SampleManifest::Associations
+
   has_many :studies, :through => :sample_manifests, :uniq => true
   validates_presence_of :name
   acts_as_audited :on => [:destroy, :update]
