@@ -1,4 +1,3 @@
-@this
 Feature:  Site Wide Information Box
   In order to inform users of upcoming events such as redeployment
   As a administrator
