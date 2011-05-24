@@ -17,6 +17,14 @@ Given /^there is a CustomText with identifier: "([^"]*)", differential: "([^"]*)
   assert_not_nil @current_custom_text
 end
 
+When /^I edit the custom text with identifier "([^"]*)" and differential "([^"]*)"$/ do |identifier, differential|
+  When %Q{I follow "Edit" within "##{identifier}-#{differential}-details"}
+end
+
+When /^I delete the custom text with identifier "([^"]*)" and differential "([^"]*)"$/ do |identifier, differential|
+  When %Q{I follow "Delete" within "##{identifier}-#{differential}-details"}
+end
+
 When /^I edit the CustomText$/ do
   When %Q{I follow "Edit" within "##{@current_custom_text.name}-details"}
 end
