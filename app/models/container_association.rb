@@ -10,11 +10,11 @@ class ContainerAssociation < ActiveRecord::Base
   validates_presence_of :content_id
 
   module Extension
-    def contains(content_name)
+    def contains(content_name, &block)
       class_name = content_name ? content_name.to_s.singularize.capitalize : Asset.name
       has_many :container_associations, :foreign_key => :container_id
       has_many :contents, :class_name => class_name, :through => :container_associations
-      has_many content_name, :class_name => class_name, :through => :container_associations, :source => :content
+      has_many(content_name, :class_name => class_name, :through => :container_associations, :source => :content, &block)
 
       named_scope :"include_#{content_name}", :include => :contents  do
         def to_include
@@ -27,11 +27,11 @@ class ContainerAssociation < ActiveRecord::Base
       end
     end
 
-    def contained_by(container_name)
+    def contained_by(container_name, &block)
       class_name = container_name.to_s.singularize.capitalize
       has_one :container_association, :foreign_key => :content_id
       has_one :container, :class_name => class_name, :through => :container_association
-      has_one container_name, :class_name => class_name, :through => :container_association, :source => :container
+      has_one(container_name, :class_name => class_name, :through => :container_association, :source => :container, &block)
 
       #delegate :location, :to => :container
 

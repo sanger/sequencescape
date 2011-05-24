@@ -22,23 +22,21 @@ Feature: Access <%= plural_human_name %> through the API
     When I POST the following JSON to the API path "/<%= plural_name %>":
       """
       {
-        <%= singular_name %>: {
+        "<%= singular_name %>": {
 
         }
       }
       """
     Then the HTTP response should be "201 Created"
-    And the JSON should match the following for the specified fields:
+     And the JSON should match the following for the specified fields:
       """
       {
-        <%= singular_name %>: {
-          actions: {
-            read: "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
+        "<%= singular_name %>": {
+          "actions": {
+            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
           },
 
-          uuid: "00000000-1111-2222-3333-444444444444"
-        },
-        uuids_to_ids: {
+          "uuid": "00000000-1111-2222-3333-444444444444"
         }
       }
       """
@@ -48,17 +46,17 @@ Feature: Access <%= plural_human_name %> through the API
     When I POST the following JSON to the API path "/<%= plural_name %>":
       """
       {
-        <%= singular_name %>: {
+        "<%= singular_name %>": {
 
         }
       }
       """
     Then the HTTP response should be "422 Unprocessable Entity"
-    And the JSON should be:
+     And the JSON should be:
       """
       {
-        content: {
-          field_in_error: ["error message!"]
+        "content": {
+          "field_in_error": ["error message!"]
         }
       }
       """
@@ -68,12 +66,12 @@ Feature: Access <%= plural_human_name %> through the API
   @update @error
   Scenario: Updating the <%= singular_human_name %> associated with the UUID which gives an error
     Given the <%= singular_human_name %> exists with ID 1
-    And the UUID for the <%= singular_human_name %> with ID 1 is "00000000-1111-2222-3333-444444444444"
+      And the UUID for the <%= singular_human_name %> with ID 1 is "00000000-1111-2222-3333-444444444444"
 
     When I PUT the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
       """
       {
-        <%= singular_name %>: {
+        "<%= singular_name %>": {
 
         }
       }
@@ -82,8 +80,8 @@ Feature: Access <%= plural_human_name %> through the API
     And the JSON should be:
       """
       {
-        content: {
-          field_in_error: [ "error message!" ]
+        "content": {
+          "field_in_error": [ "error message!" ]
         }
       }
       """
@@ -91,29 +89,26 @@ Feature: Access <%= plural_human_name %> through the API
   @update
   Scenario: Updating the <%= singular_human_name %> associated with the UUID
     Given the <%= singular_human_name %> exists with ID 1
-    And the UUID for the <%= singular_human_name %> with ID 1 is "00000000-1111-2222-3333-444444444444"
+      And the UUID for the <%= singular_human_name %> with ID 1 is "00000000-1111-2222-3333-444444444444"
 
     When I PUT the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
       """
       {
-        <%= singular_name %>: {
+        "<%= singular_name %>": {
 
         }
       }
       """
     Then the HTTP response should be "200 OK"
-    And the JSON should match the following for the specified fields:
+     And the JSON should match the following for the specified fields:
       """
       {
-        <%= singular_name %>: {
-          actions: {
-            read: "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
+        "<%= singular_name %>": {
+          "actions": {
+            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
           },
 
-          uuid: "00000000-1111-2222-3333-444444444444"
-        },
-        uuids_to_ids: {
-          "00000000-1111-2222-3333-444444444444": 1
+          "uuid": "00000000-1111-2222-3333-444444444444"
         }
       }
       """
@@ -123,7 +118,7 @@ Feature: Access <%= plural_human_name %> through the API
   Scenario: Reading the JSON for a <%= singular_human_name  %> UUID that does not exist
     When I GET the API path "/00000000-1111-2222-3333-444444444444"
     Then the HTTP response should be "404 Not Found"
-    And the JSON should be:
+     And the JSON should be:
       """
       {
         "general": [ "UUID does not exist" ]
@@ -133,11 +128,11 @@ Feature: Access <%= plural_human_name %> through the API
   @read
   Scenario: Reading the JSON for a <%= singular_human_name  %> UUID
     Given the <%= singular_human_name %> exists with ID 1
-    And the UUID for the <%= singular_human_name %> with ID 1 is "00000000-1111-2222-3333-444444444444"
+      And the UUID for the <%= singular_human_name %> with ID 1 is "00000000-1111-2222-3333-444444444444"
 
     When I GET the API path "/00000000-1111-2222-3333-444444444444"
     Then the HTTP response should be "200 OK"
-    And the JSON should match the following for the specified fields:
+     And the JSON should match the following for the specified fields:
       """
       {
         "<%= singular_name %>": {
@@ -146,9 +141,6 @@ Feature: Access <%= plural_human_name %> through the API
           },
 
           "uuid": "00000000-1111-2222-3333-444444444444"
-        },
-        "uuids_to_ids": {
-          "00000000-1111-2222-3333-444444444444": 1
         }
       }
       """

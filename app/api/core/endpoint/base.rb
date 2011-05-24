@@ -13,7 +13,9 @@ class Core::Endpoint::Base
     end
 
     def instance(&block)
-      write_inheritable_attribute(:instance_handler, Class.new(Handler).new(&block))
+      handler = Class.new(Handler).new(&block)
+      handler.instance_variable_set(:@name, name)
+      write_inheritable_attribute(:instance_handler, handler)
     end
   end
 

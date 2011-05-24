@@ -81,13 +81,14 @@ module Core::Endpoint::BasicHandler::Actions
       when options[:to] then options[:to]
       else raise StandardError, "Block or :to option needed to declare action"
       end
-        
+
+    line = __LINE__ + 1
     singleton_class.class_eval(%Q{
       def _#{name}(request, response)
         object = #{action_implementation_method}(request, response)
         yield(endpoint_for(object.class).instance_handler, object)
       end
-    })
+    }, __FILE__, line)
   end
   private :declare_action
 

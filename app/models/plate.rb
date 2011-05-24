@@ -2,7 +2,12 @@ class Plate < Asset
   include ModelExtensions::Plate
   include LocationAssociation::Locatable
 
-  contains :wells
+  contains :wells do
+    def located_at(location)
+      super(proxy_owner, location)
+    end
+  end
+
   #has_many :wells, :as => :holder, :class_name => "Well"
   DEFAULT_SIZE = 96
   self.prefix = "DN"

@@ -4,6 +4,10 @@ class Well < Asset
   include Cherrypick::VolumeByMicroLitre
   include StudyReport::WellDetails
 
+  named_scope :located_at, lambda { |plate, location|
+    { :joins => :map, :conditions => { :maps => { :description => location, :asset_size => plate.size } } }
+  }
+
   contained_by :plate
   delegate :location, :to => :container , :allow_nil => true
   @@per_page = 500
