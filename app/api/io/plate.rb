@@ -8,5 +8,8 @@ class Io::Plate < Io::Asset
                       plate_purpose.name  => plate_purpose.name
                            ean13_barcode  => ean13_barcode
                                    wells  => wells
+
+                                   state  => state
+                               iteration  => iteration
   })
 end
