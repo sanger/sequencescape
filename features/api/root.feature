@@ -160,6 +160,18 @@ Feature: The entry point for the API gives directions to the other actions
           "actions": {
             "read": "http://www.example.com/api/1/batches"
           }
+        },
+
+
+        "transfers": {
+          "actions": {
+            "read": "http://www.example.com/api/1/transfers"
+          }
+        },
+        "transfer_templates": {
+          "actions": {
+            "read": "http://www.example.com/api/1/transfer_templates"
+          }
         }
       }
       """
