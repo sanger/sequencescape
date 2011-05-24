@@ -562,8 +562,8 @@ end
                                     ) do |object|
                                       case study_from.affiliated_with?(object)
                                       when true
-                                        # skip but pull if it's false. keep if nil (meaning unknown)
-                                        sample.affiliated_with?(object) == [] ? nil : object
+                                        # don't propagate asset from another sample
+                                        object.is_a?(Asset) && object.sample_id && object.sample_id != sample.id ? nil : object
                                       when false
                                         nil # we skip the object and its dependencies
                                       else # nil
