@@ -5,6 +5,8 @@
 # - several plate-to-plate transfers of various columns (but all rows)
 # - one whole plate to tube transfer
 class TransferTemplate < ActiveRecord::Base
+  include Uuid::Uuidable
+
   # A name is a useful way to identify templates!
   validates_presence_of :name
   validates_uniqueness_of :name

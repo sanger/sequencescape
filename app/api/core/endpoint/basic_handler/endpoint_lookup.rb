@@ -23,8 +23,8 @@ module Core::Endpoint::BasicHandler::EndpointLookup
   private :cache_endpoint_as
 
   def constant_lookup(current, module_name, value = nil)
-    current.const_get(module_name)
-  rescue NameError => missing_part
+    # NOTE: Do not use const_get and rescue NameError here because that causes Rails to load the model
+    return current.const_get(module_name) if current.const_defined?(module_name)
     current.const_set(module_name, value || Module.new)
   end
   private :constant_lookup
