@@ -130,6 +130,8 @@ class Request < ActiveRecord::Base
     {:conditions => { :request_type_id => id} }
   }
 
+  named_scope :where_is_a?, lambda { |clazz| { :conditions => { :sti_type => clazz.name } } }
+
   named_scope :full_inbox, :conditions => {:state => ["pending","hold"]}
 
   named_scope :with_asset, :conditions =>  'asset_id is not null'

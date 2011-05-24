@@ -7,6 +7,13 @@ class MultiplexedLibraryTube < Asset
     true
   end
 
+  include Transfer::Associations
+
+  # Transfer requests into a tube are direct requests where the tube is the target.
+  def transfer_requests
+    requests_as_target.where_is_a?(TransfertRequest).all
+  end
+
   # A multiplexed library tube is created with the request options of it's parent library tubes.  In effect
   # all of the parent library tubes have the same details, we only need take the first one.
   delegate :created_with_request_options, :to => 'parents.first'
