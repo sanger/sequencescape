@@ -43,18 +43,15 @@ class PlatePurpose < ActiveRecord::Base
     plate = Asset.find_from_machine_barcode(source_plate_barcode) or raise ActiveRecord::RecordNotFound, "Could not find plate with machine barcode #{source_plate_barcode.inspect}"
 
     child_plate_purposes.map do |target_plate_purpose|
-      target_plate_purpose.target_plate_type.constantize.create_plate_with_barcode(plate).tap do |child_plate|
+      target_plate_purpose.target_plate_type.constantize.create_plate_with_barcode(plate.barcode) do |child_plate|
         child_plate.plate_purpose = target_plate_purpose
-        child_plate.size   = plate.size
-        child_plate.location = plate.location
-        child_plate.name   = "#{target_plate_purpose.name} #{child_plate.barcode}"
-        child_plate.save!
-
+        child_plate.size          = plate.size
+        child_plate.location      = plate.location
+        child_plate.name          = "#{target_plate_purpose.name} #{child_plate.barcode}"
+      end.tap do |child_plate|
         plate.events.create_plate!(target_plate_purpose, child_plate, current_user)
 
-        if plate.study
-          RequestFactory.create_assets_requests([child_plate.id], plate.study.id)
-        end
+        RequestFactory.create_assets_requests([child_plate.id], plate.study.id) if plate.study
         child_plate.delayed_stamp_samples_into_wells(plate.id)
         AssetLink.connect(plate,child_plate)
       end
