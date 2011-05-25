@@ -7,10 +7,10 @@ class PlatePurpose < ActiveRecord::Base
     module Associations
       def self.included(base)
         base.class_eval do
-          has_many :child_relationships, :class_name => 'PlatePurpose::Relationship', :foreign_key => :parent_id
+          has_many :child_relationships, :class_name => 'PlatePurpose::Relationship', :foreign_key => :parent_id, :dependent => :destroy
           has_many :child_plate_purposes, :through => :child_relationships, :source => :child
 
-          has_many :parent_relationships, :class_name => 'PlatePurpose::Relationship', :foreign_key => :child_id
+          has_many :parent_relationships, :class_name => 'PlatePurpose::Relationship', :foreign_key => :child_id, :dependent => :destroy
           has_many :parent_plate_purposes, :through => :parent_relationships, :source => :parent
         end
       end
