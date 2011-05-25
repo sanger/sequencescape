@@ -523,6 +523,11 @@ ActiveRecord::Schema.define(:version => 20110725091045) do
 
   add_index "plate_metadata", ["plate_id"], :name => "index_plate_metadata_on_plate_id"
 
+  create_table "plate_purpose_relationships", :force => true do |t|
+    t.integer "parent_id"
+    t.integer "child_id"
+  end
+
   create_table "plate_purposes", :force => true do |t|
     t.string   "name",                                                             :null => false
     t.datetime "created_at"
