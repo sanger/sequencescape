@@ -183,6 +183,11 @@ Feature: The entry point for the API gives directions to the other actions
           "actions": {
             "read": "http://www.example.com/api/1/tag_layout_templates"
           }
+        },
+        "plate_creations": {
+          "actions": {
+            "read": "http://www.example.com/api/1/plate_creations"
+          }
         }
       }
       """

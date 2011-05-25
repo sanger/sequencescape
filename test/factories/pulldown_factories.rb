@@ -10,7 +10,7 @@ Factory.define(:transfer_plate, :class => Plate) do |plate|
   end
 end
 
-Factory.define(:tag_layout_plate, :class => Plate) do |plate|
+Factory.define(:full_plate, :class => Plate) do |plate|
   plate.size 96
 
   plate.after_create do |plate|
@@ -57,6 +57,26 @@ Factory.define(:tag_layout_template) do |tag_layout_template|
 end
 
 Factory.define(:tag_layout, :class => TagLayout::InColumns) do |tag_layout|
-  tag_layout.plate     { |target| target.association(:tag_layout_plate)     }
+  tag_layout.plate     { |target| target.association(:full_plate)           }
   tag_layout.tag_group { |target| target.association(:tag_group_for_layout) }
+end
+
+# Plate creations
+Factory.define(:parent_plate_purpose, :class => PlatePurpose) do |plate_purpose|
+  plate_purpose.name 'Parent plate purpose'
+
+  plate_purpose.after_create do |plate_purpose|
+    plate_purpose.child_plate_purposes << Factory(:child_plate_purpose)
+  end
+end
+Factory.define(:child_plate_purpose, :class => PlatePurpose) do |plate_purpose|
+  plate_purpose.name 'Child plate purpose'
+end
+Factory.define(:plate_creation) do |plate_creation|
+  plate_creation.parent { |target| target.association(:full_plate) }
+
+  plate_creation.after_build do |plate_creation|
+    plate_creation.parent.plate_purpose = PlatePurpose.find_by_name('Parent plate purpose') || Factory(:parent_plate_purpose)
+    plate_creation.child_plate_purpose  = PlatePurpose.find_by_name('Child plate purpose')  || Factory(:child_plate_purpose)
+  end
 end
