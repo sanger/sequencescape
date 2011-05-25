@@ -8,7 +8,7 @@ class User < ActiveRecord::Base
   include Workflowed
   extend EventfulRecord
   include Uuid::Uuidable
-  include Swipcardable
+  include Swipecardable
   has_many_events
 
   has_many :lab_events
