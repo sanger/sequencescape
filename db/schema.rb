@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110525100333) do
+ActiveRecord::Schema.define(:version => 20110525134611) do
 
   create_table "archived_properties", :force => true do |t|
     t.text    "value"
@@ -514,6 +514,15 @@ ActiveRecord::Schema.define(:version => 20110525100333) do
   end
 
   add_index "pipelines", ["sorter"], :name => "index_pipelines_on_sorter"
+
+  create_table "plate_creations", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "parent_id"
+    t.integer  "child_plate_purpose_id"
+    t.integer  "child_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "plate_metadata", :force => true do |t|
     t.integer "plate_id"
