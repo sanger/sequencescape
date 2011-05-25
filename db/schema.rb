@@ -1039,6 +1039,23 @@ ActiveRecord::Schema.define(:version => 20110601083338) do
     t.datetime "updated_at"
   end
 
+  create_table "tag_layout_templates", :force => true do |t|
+    t.string   "layout_class_name"
+    t.integer  "tag_group_id"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "tag_layouts", :force => true do |t|
+    t.string   "sti_type"
+    t.integer  "tag_group_id"
+    t.integer  "plate_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "tags", :force => true do |t|
     t.string   "oligo"
     t.integer  "map_id"
@@ -1090,10 +1107,10 @@ ActiveRecord::Schema.define(:version => 20110601083338) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "sti_type"
-    t.string   "transfers",  :limit => 1024
     t.integer  "source_id"
-    t.string   "destination_type"
     t.integer  "destination_id"
+    t.string   "destination_type"
+    t.string   "transfers",        :limit => 1024
   end
 
   create_table "users", :force => true do |t|
