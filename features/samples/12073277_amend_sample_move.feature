@@ -139,6 +139,8 @@ Feature: move samples and assets between studies
     # so far we only move sample tube.
     And I should not see "Well" within "#assets"
     Then I should not see "Plate" within "#assets"
+
+  @wip
   Scenario: niel bug
     Given data are preloaded from "RT211312" renaming:
       | old name | new name |
