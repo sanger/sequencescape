@@ -549,7 +549,7 @@ class Plate < Asset
   end
 
   def valid_positions?(positions)
-    Map.where_description(positions).where_plate_size(self.size).all.map(&:description) == positions
+    Map.where_description(positions).where_plate_size(self.size).all.map(&:description).sort == positions.sort
   end
 
   private

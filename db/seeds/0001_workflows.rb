@@ -725,3 +725,30 @@ end.tap do |pipeline|
 end
 
 set_pipeline_flow_to('PacBio Sample Prep' => 'PacBio Sequencing')
+
+# Pulldown pipelines
+[
+  'Pulldown WGS',
+  'Pulldown SC',
+  'Pulldown ISC'
+].each do |pipeline_name|
+  Pipeline.create!(:name => pipeline_name) do |pipeline|
+    pipeline.sorter     = Pipeline.maximum(:sorter) + 1
+    pipeline.automated  = false
+    pipeline.active     = true
+    pipeline.asset_type = 'LibraryTube'
+
+    pipeline.location   = Location.create!(:name => "#{pipeline_name} freezer")
+
+    pipeline.request_type = RequestType.create!(:workflow => next_gen_sequencing, :name => pipeline_name) do |request_type|
+      request_type.key               = pipeline_name.downcase.gsub(/\s+/, '_')
+      request_type.initial_state     = 'pending'
+      request_type.asset_type        = 'Well'
+      request_type.order             = 1
+      request_type.multiples_allowed = false
+      request_type.request_class     = PulldownLibraryCreationRequest
+    end
+
+    pipeline.workflow = LabInterface::Workflow.create!(:name => pipeline_name)
+  end
+end
