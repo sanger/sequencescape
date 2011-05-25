@@ -139,4 +139,10 @@ class PlatePurpose < ActiveRecord::Base
       wells.each { |well| AssetLink.create_edge!(plate, well) }
     end
   end
+
+  def create_empty_plate!
+    plates.create!(:size => 96, :wells => Map.where_plate_size(96).all.map { |map| Well.new(:map => map) }).tap do |plate|
+      plate.wells.each { |well| AssetLink.create_edge!(plate, well) }
+    end
+  end
 end
