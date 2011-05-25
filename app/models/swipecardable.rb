@@ -10,7 +10,7 @@ module Swipecardable
 
 
   def compare_swipecard_code(code)
-    encrypt_swipecard_code(code) == encrypted_swipecard_code
+    User.encrypt_swipecard_code(code) == encrypted_swipecard_code
   end
 
 
