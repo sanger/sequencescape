@@ -547,6 +547,10 @@ class Plate < Asset
     wells.any?(&:buffer_required?)
   end
 
+  def valid_positions?(positions)
+    Map.where_description(positions).where_plate_size(self.size).all.map(&:description) == positions
+  end
+
   private
   def set_plate_name_and_size
     self.name = "Plate #{barcode}" if self.name.blank?
