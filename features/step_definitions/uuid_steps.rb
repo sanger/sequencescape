@@ -66,6 +66,7 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
   'multiplexed library creation request',
   'sequencing request',
 
+  'user',
   'asset',
   'sample tube',
   'lane',
@@ -124,6 +125,7 @@ Given /^(\d+) (#{PLURAL_MODELS_BASED_ON_ID_REGEXP}) exist with IDs starting at (
   end
 end
 
+
 # TODO: It's 'UUID' not xxxing 'uuid'.
 Given /^I have an (event|external release event) with uuid "([^"]*)"$/ do |model,uuid_value|
   set_uuid_for(model.gsub(/\s+/, '_').methodize.camelize.constantize.create!(:message => model), uuid_value)
@@ -144,6 +146,13 @@ end
 
 Given /^the (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) exists with ID (\d+)$/ do |model, id|
   Factory(model.gsub(/\s+/, '_').to_sym, :id => id)
+end
+
+
+Given /^the (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) exists with ID (\d+) and the following attributes:$/ do |model, id, table|
+  attributes = table.hashes.inject ({}) { |h, att|  h.update(att["name"] => att["value"]) }
+  attributes[:id] ||= id
+  Factory(model.gsub(/\s+/, '_').to_sym, attributes)
 end
 
 Given /^a asset_link with uuid "([^"]*)" exists and connects "([^"]*)" and "([^"]*)"$/ do |uuid_value, uuid_plate, uuid_well|
