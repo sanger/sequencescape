@@ -1072,6 +1072,24 @@ ActiveRecord::Schema.define(:version => 20110525100333) do
   add_index "tasks", ["sorted"], :name => "index_tasks_on_sorted"
   add_index "tasks", ["sti_type"], :name => "index_tasks_on_sti_type"
 
+  create_table "transfer_templates", :force => true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "name"
+    t.string   "transfer_class_name"
+    t.string   "transfers",           :limit => 1024
+  end
+
+  create_table "transfers", :force => true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "sti_type"
+    t.string   "transfers",  :limit => 1024
+    t.integer  "source_id"
+    t.string   "destination_type"
+    t.integer  "destination_id"
+  end
+
   create_table "users", :force => true do |t|
     t.string   "login"
     t.string   "email"
