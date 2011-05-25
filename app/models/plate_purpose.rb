@@ -1,4 +1,24 @@
 class PlatePurpose < ActiveRecord::Base
+  class Relationship < ActiveRecord::Base
+    set_table_name('plate_purpose_relationships')
+    belongs_to :parent, :class_name => 'PlatePurpose'
+    belongs_to :child, :class_name => 'PlatePurpose'
+
+    module Associations
+      def self.included(base)
+        base.class_eval do
+          has_many :child_relationships, :class_name => 'PlatePurpose::Relationship', :foreign_key => :parent_id
+          has_many :child_plate_purposes, :through => :child_relationships, :source => :child
+
+          has_many :parent_relationships, :class_name => 'PlatePurpose::Relationship', :foreign_key => :child_id
+          has_many :parent_plate_purposes, :through => :parent_relationships, :source => :parent
+        end
+      end
+    end
+  end
+
+  include Relationship::Associations
+
   cattr_reader :per_page
   @@per_page = 500
   include Uuid::Uuidable
@@ -22,58 +42,40 @@ class PlatePurpose < ActiveRecord::Base
   def create_child_plates_from_scanned_plate(source_plate_barcode, current_user)
     plate = Asset.find_from_machine_barcode(source_plate_barcode) or raise ActiveRecord::RecordNotFound, "Could not find plate with machine barcode #{source_plate_barcode.inspect}"
 
-    new_child_plates = []
-    self.child_plate_purposes.each do |target_plate_purpose|
-      child_plate = target_plate_purpose.target_plate_type.constantize.create_plate_with_barcode(plate)
-      child_plate.plate_purpose = target_plate_purpose
-      child_plate.size   = plate.size
-      child_plate.location = plate.location
-      child_plate.name   = "#{target_plate_purpose.name} #{child_plate.barcode}"
-      child_plate.save!
-      
-      plate.events.create_plate!(target_plate_purpose, child_plate, current_user)
+    child_plate_purposes.map do |target_plate_purpose|
+      target_plate_purpose.target_plate_type.constantize.create_plate_with_barcode(plate).tap do |child_plate|
+        child_plate.plate_purpose = target_plate_purpose
+        child_plate.size   = plate.size
+        child_plate.location = plate.location
+        child_plate.name   = "#{target_plate_purpose.name} #{child_plate.barcode}"
+        child_plate.save!
 
-      if plate.study
-        RequestFactory.create_assets_requests([child_plate.id], plate.study.id)
+        plate.events.create_plate!(target_plate_purpose, child_plate, current_user)
+
+        if plate.study
+          RequestFactory.create_assets_requests([child_plate.id], plate.study.id)
+        end
+        child_plate.delayed_stamp_samples_into_wells(plate.id)
+        AssetLink.connect(plate,child_plate)
       end
-      child_plate.delayed_stamp_samples_into_wells(plate.id)
-      AssetLink.connect(plate,child_plate)
-      new_child_plates << child_plate
     end
-
-    new_child_plates
-  end
-
-  def child_plate_purposes
-    [self]
   end
 
   def sort_plates_by_plate_purpose(plates)
-    plates_by_plate_purpose = {}
-    plates.each do |plate|
-      unless plates_by_plate_purpose[plate.plate_purpose]
-        plates_by_plate_purpose[plate.plate_purpose] = []
-      end
-      plates_by_plate_purpose[plate.plate_purpose] << plate
+    plates.inject(Hash.new { |h,k| h[k] = [] }) do |plates_by_plate_purpose, plate|
+      plates_by_plate_purpose.tap { plates_by_plate_purpose[plate.plate_purpose] << plate }
     end
-
-    plates_by_plate_purpose
   end
 
   def create_barcode_labels_from_plates(plates)
-    printables = []
-    plates.each do |plate|
-      if plate.parent
-        parent_plate_barcode = plate.parent.barcode
-      end
-
-      printables.push BarcodeLabel.new({ :number => plate.barcode,
+    plates.map do |plate|
+      BarcodeLabel.new(
+        :number => plate.barcode,
         :study  => plate.find_study_abbreviation_from_parent,
-        :suffix => parent_plate_barcode,
-        :prefix => plate.barcode_prefix.prefix })
+        :suffix => plate.parent.try(:barcode),
+        :prefix => plate.barcode_prefix.prefix
+      )
     end
-
-    printables
   end
 
   def create_plates_and_print_barcodes(source_plate_barcodes, barcode_printer,current_user)
@@ -120,11 +122,7 @@ class PlatePurpose < ActiveRecord::Base
   end
 
   def target_plate_type
-    if self.target_type.nil?
-      return "Plate"
-    end
-
-    self.target_type
+    self.target_type || 'Plate'
   end
   
   def self.stock_plate_purpose
