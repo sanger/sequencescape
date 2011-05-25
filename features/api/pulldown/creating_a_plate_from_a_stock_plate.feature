@@ -22,6 +22,7 @@ Feature: Creating a plate from a stock plate
 
     Given the UUID for the plate purpose "<plate purpose>" is "11111111-2222-3333-4444-000000000002"
       And the UUID of the next plate created will be "00000000-1111-2222-3333-000000000002"
+      And the UUID of the next plate creation created will be "55555555-6666-7777-8888-000000000001"
 
     # Find the plate by barcode
     When I POST the following JSON to the API path "/33333333-4444-5555-6666-000000000001/first":
@@ -44,26 +45,40 @@ Feature: Creating a plate from a stock plate
       """
 
     # Create the child plate
-    When I make an authorised POST with the following JSON to the API path "/11111111-2222-3333-4444-000000000002/plates":
+    When I make an authorised POST with the following JSON to the API path "/plate_creations":
       """
       {
-        "plate": { }
+        "plate_creation": {
+          "parent": "00000000-1111-2222-3333-000000000001",
+          "child_plate_purpose": "11111111-2222-3333-4444-000000000002"
+        }
       }
       """
     Then the HTTP response should be "201 Created"
      And the JSON should match the following for the specified fields:
       """
       {
-        "plate": {
+        "plate_creation": {
           "actions": {
-            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-000000000002"
+            "read": "http://www.example.com/api/1/55555555-6666-7777-8888-000000000001"
           },
-          "plate_purpose": {
+          "parent": {
+            "actions": {
+              "read": "http://www.example.com/api/1/00000000-1111-2222-3333-000000000001"
+            }
+          },
+          "child": {
+            "actions": {
+              "read": "http://www.example.com/api/1/00000000-1111-2222-3333-000000000002"
+            }
+          },
+          "child_plate_purpose": {
             "actions": {
               "read": "http://www.example.com/api/1/11111111-2222-3333-4444-000000000002"
             }
           },
-          "uuid": "00000000-1111-2222-3333-000000000002"
+
+          "uuid": "55555555-6666-7777-8888-000000000001"
         }
       }
       """
