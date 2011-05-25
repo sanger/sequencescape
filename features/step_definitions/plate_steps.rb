@@ -133,11 +133,6 @@ Then /^plate "([^"]*)" is the parent of plate "([^"]*)"$/ do |parent_plate_barco
   parent_plate.save!
 end
 
-Then /^plate (\d+) should be a child of plate (\d+)$/ do |child_id, parent_id|
-  parent, child = Plate.find(parent_id), Plate.find(child_id)
-  assert parent.children.all.include?(child), "Plate #{child_id} is not a child of #{parent_id}"
-end
-
 Given /^the well with ID (\d+) is at position "([^\"]+)" on the plate with ID (\d+)$/ do |well_id, position, plate_id|
   plate = Plate.find(plate_id)
   map   = Map.where_description(position).where_plate_size(plate.size).first or raise StandardError, "Could not find position #{position}"

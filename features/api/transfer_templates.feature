@@ -98,5 +98,4 @@ Feature: Access transfer templates through the API
       | source | destination |
       | A1     | A1          |
       | B1     | B1          |
-     And plate 2 should be a child of plate 1
 

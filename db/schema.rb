@@ -516,6 +516,15 @@ ActiveRecord::Schema.define(:version => 20110725091045) do
 
   add_index "pipelines", ["sorter"], :name => "index_pipelines_on_sorter"
 
+  create_table "plate_creations", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "parent_id"
+    t.integer  "child_plate_purpose_id"
+    t.integer  "child_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "plate_metadata", :force => true do |t|
     t.integer "plate_id"
     t.string  "infinium_barcode"
