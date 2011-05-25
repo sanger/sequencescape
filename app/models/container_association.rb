@@ -14,7 +14,7 @@ class ContainerAssociation < ActiveRecord::Base
       class_name = content_name ? content_name.to_s.singularize.capitalize : Asset.name
       has_many :container_associations, :foreign_key => :container_id
       has_many :contents, :class_name => class_name, :through => :container_associations
-      alias_attribute content_name, :contents if content_name
+      has_many content_name, :class_name => class_name, :through => :container_associations, :source => :content
 
       named_scope :"include_#{content_name}", :include => :contents  do
         def to_include
