@@ -1089,9 +1089,11 @@ ActiveRecord::Schema.define(:version => 20110525100333) do
     t.string   "barcode"
     t.string   "cookie"
     t.datetime "cookie_validated_at"
+    t.string   "encrypted_swipecard_code",   :limit => 40
   end
 
   add_index "users", ["barcode"], :name => "index_users_on_barcode"
+  add_index "users", ["encrypted_swipecard_code"], :name => "index_users_on_encrypted_swipecard_code"
   add_index "users", ["login"], :name => "index_users_on_login"
   add_index "users", ["pipeline_administrator"], :name => "index_users_on_pipeline_administrator"
 
