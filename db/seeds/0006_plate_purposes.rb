@@ -459,6 +459,60 @@ relationships = {
   "Sequence Capture"    => ["Pulldown PCR"],
   "Pulldown PCR"        => ["Pulldown qPCR"]
 }
+
+PULLDOWN_PLATE_PURPOSE_FLOWS = [
+  [
+    'WGS fragmentation plate',
+    'WGS fragment purification plate',
+    'WGS library preparation plate',
+    'WGS library plate',
+    'WGS library PCR plate',
+    'WGS amplified library plate',
+    'WGS pooled simplified library plate'
+  ], [
+    'SC fragmentation plate',
+    'SC fragment purification plate',
+    'SC library preparation plate',
+    'SC library plate',
+    'SC library PCR plate',
+    'SC amplified library plate',
+    'SC hybridisation plate',
+    'SC captured library plate',
+    'SC captured library PCR plate',
+    'SC amplified captured library plate',
+    'SC pooled captured library plate'
+  ], [
+    'ISC fragmentation plate',
+    'ISC fragment purification plate',
+    'ISC library preparation plate',
+    'ISC library plate',
+    'ISC library PCR plate',
+    'ISC amplified library plate',
+    'ISC pooled amplified library plate',
+    'ISC hybridisation plate',
+    'ISC captured library plate',
+    'ISC captured library PCR plate',
+    'ISC amplified captured library plate',
+    'ISC pooled captured library plate'
+  ]
+]
+
+PULLDOWN_PLATE_PURPOSE_LEADING_TO_QC_PLATES = [
+  'WGS fragment purification plate',
+  'WGS library preparation plate',
+  'WGS amplified library plate',
+
+  'SC fragment purification plate',
+  'SC library preparation plate',
+  'SC amplified library plate',
+  'SC amplified captured library plate',
+
+  'ISC fragment purification plate',
+  'ISC library preparation plate',
+  'ISC amplified library plate',
+  'ISC amplified captured library plate'
+]
+
 ActiveRecord::Base.transaction do
   # All of the PlatePurpose names specified in the keys of RELATIONSHIPS have complicated relationships.
   # The others are simply maps to themselves.
@@ -471,5 +525,20 @@ ActiveRecord::Base.transaction do
     PlatePurpose.all(:conditions => { :name => relationships[purpose.name] }).each do |child|
       purpose.child_relationships.create!(:child => child)
     end
+  end
+
+  # And here is pulldown
+  stock_plate_purpose = PlatePurpose.find_by_name('Stock plate') or raise StandardError, 'Cannot find stock plate purpose'
+  PULLDOWN_PLATE_PURPOSE_FLOWS.each do |flow|
+    flow.inject(stock_plate_purpose) do |parent, child_plate_name|
+      parent.child_plate_purposes.create!(:name => child_plate_name)
+    end
+  end
+
+  qc_plate_purpose = PlatePurpose.create!(:name => 'Pulldown QC plate')
+
+  PULLDOWN_PLATE_PURPOSE_LEADING_TO_QC_PLATES.each do |name|
+    plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
+    plate_purpose.child_plate_purposes << qc_plate_purpose
   end
 end

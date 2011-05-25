@@ -26,6 +26,7 @@ Feature: Added a new js version. Check that submission continues to work and Pro
     Given study "Study B" has an accession number
     When I follow "Create Submission"
     Then I should see "Please select a submission template"
+    When I select "Library creation - Single ended sequencing" from "Template"
     When I press "Next"
     Then I should see "Select a group to submit"
     When I fill in "Project Name" with "Pr"
