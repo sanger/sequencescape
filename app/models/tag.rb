@@ -18,4 +18,9 @@ class Tag < ActiveRecord::Base
   def name
     "Tag #{map_id}"
   end
+
+  # Creates an instance of this tag that can be attached to a well.
+  def create!
+    TagInstance.create!(:tag => self)
+  end
 end
