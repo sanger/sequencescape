@@ -1,16 +1,23 @@
 module ApplicationHelper
 
-  def show_custom_text(identifier, differential = nil)
-    text = CustomText.first(:conditions => {:identifier => identifier, :differential => differential})
-    # TODO - Make this content type aware
-    unless text.nil?
-      return text.content
-    else
-      RAILS_DEFAULT_LOGGER.debug "Called for Custom text with #{identifier} and #{differential}. None found"
-      return ""
-    end
-  end
+  # Should return either the custom text or a blank string
+  def custom_text(identifier, differential = nil)
+    Rails.cache.fetch("#{identifier}-#{differential}") do
+      custom_text = CustomText.first(
+        :conditions => {
+          :identifier   => identifier,
+          :differential => differential
+        }
+      )
 
+      RAILS_DEFAULT_LOGGER.debug 
+        "No custom text found for #{identifier} #{differential}." if custom_text.nil?    
+    
+      custom_text.try(:content) || ""
+    end
+    
+  end
+  
   def loading_bar(identifier = "loading")
     content_tag("div", :id => identifier, :class => "loading_bar", :style => "display:none") do
       image_tag "loader-bar.gif", :size => "200x19"
@@ -316,11 +323,6 @@ module ApplicationHelper
       concat(shortened_text)
       tooltip('...', :id => "help_field_#{shortened_text.object_id}", &block)
     end
-  end
-  
-  # Creates a label that is hidden from the view so that testing is easier
-  def hidden_label_tag_for_testing(name, text = nil, options = {})
-    label_tag(name, text, options.merge(:style => 'display:none;'))
   end
   
   # The admin email address should be stored in config.yml for the current environment
