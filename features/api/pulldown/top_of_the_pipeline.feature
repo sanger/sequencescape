@@ -1,8 +1,10 @@
 @api @json @single-sign-on @new-api
-Feature: Creating a plate from a stock plate
-  There is, for all intents-and-purposes, no difference between creating a plate from a stock plate than from any other
-  plate type.  The one difference is that the pipeline knows the type of plate to create.  Other than that everything
-  remains the same.
+Feature: The top of the pulldown pipeline
+  At the top of the pulldown pipeline a stock plate arrives and an initial pulldown plate is processed.
+  "Processed" means that the plate is created from the stock plate, the entire contents of the stock
+  plate is transferred to it, and the plate is started.  The act of starting the plate should change the
+  state of the pulldown library creation requests it is the source asset for, but any other state changes
+  should have no affect on these requests.
 
   Background:
     Given all HTTP requests to the API have the cookie "WTSISignOn" set to "I-am-authenticated"
@@ -13,16 +15,19 @@ Feature: Creating a plate from a stock plate
     Given the UUID for the plate purpose "Stock plate" is "11111111-2222-3333-4444-000000000001"
       And the UUID for the transfer template "Transfer columns 1-12" is "22222222-3333-4444-5555-000000000001"
       And the UUID for the search "Find asset by barcode" is "33333333-4444-5555-6666-000000000001"
+      And the UUID of the next plate creation created will be "55555555-6666-7777-8888-000000000001"
+      And the UUID of the next state change created will be "44444444-5555-6666-7777-000000000001"
 
-  @authorised
-  Scenario Outline: Creating the plate and the transfers to it
     Given a "Stock plate" plate called "Testing the API" exists
       And the UUID for the plate "Testing the API" is "00000000-1111-2222-3333-000000000001"
       And the plate "Testing the API" has a barcode of "1220000123724"
 
+  @authorised
+  Scenario Outline: Dealing with the initial plate in the pipeline
+    Given the plate with UUID "00000000-1111-2222-3333-000000000001" has been submitted to "<pipeline> - HiSeq Paired end sequencing"
+
     Given the UUID for the plate purpose "<plate purpose>" is "11111111-2222-3333-4444-000000000002"
       And the UUID of the next plate created will be "00000000-1111-2222-3333-000000000002"
-      And the UUID of the next plate creation created will be "55555555-6666-7777-8888-000000000001"
 
     # Find the plate by barcode
     When I POST the following JSON to the API path "/33333333-4444-5555-6666-000000000001/first":
@@ -217,31 +222,73 @@ Feature: Creating a plate from a stock plate
       }
       """
 
-    # Check the state of the plate we have created
-    When I GET the API path "/00000000-1111-2222-3333-000000000002"
-    Then the HTTP response should be "200 OK"
+    # Change the state of the plate to started
+    When I make an authorised POST with the following JSON to the API path "/state_changes":
+      """
+      {
+        "state_change": {
+          "target": "00000000-1111-2222-3333-000000000002",
+          "target_state": "started"
+        }
+      }
+      """
+    Then the HTTP response should be "201 Created"
      And the JSON should match the following for the specified fields:
       """
       {
-        "plate": {
+        "state_change": {
           "actions": {
-            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-000000000002"
+            "read": "http://www.example.com/api/1/44444444-5555-6666-7777-000000000001"
           },
-          "plate_purpose": {
+          "target": {
             "actions": {
-              "read": "http://www.example.com/api/1/11111111-2222-3333-4444-000000000002"
+              "read": "http://www.example.com/api/1/00000000-1111-2222-3333-000000000002"
             }
           },
-
-          "uuid": "00000000-1111-2222-3333-000000000002",
-          "state": "pending",
-          "iteration": 1
+          "target_state": "started",
+          "previous_state": "pending"
         }
       }
       """
 
+    # Check all of the states are correct
+    Then the state of the plate with UUID "00000000-1111-2222-3333-000000000002" should be "started"
+     And the state of all the transfer requests to the plate with UUID "00000000-1111-2222-3333-000000000002" should be "started"
+     And the state of all the pulldown library creation requests from the plate with UUID "00000000-1111-2222-3333-000000000001" should be "started"
+
+    # Now change the state of the plate to passed
+    When I make an authorised POST with the following JSON to the API path "/state_changes":
+      """
+      {
+        "state_change": {
+          "target": "00000000-1111-2222-3333-000000000002",
+          "target_state": "passed"
+        }
+      }
+      """
+    Then the HTTP response should be "201 Created"
+     And the JSON should match the following for the specified fields:
+      """
+      {
+        "state_change": {
+          "target": {
+            "actions": {
+              "read": "http://www.example.com/api/1/00000000-1111-2222-3333-000000000002"
+            }
+          },
+          "target_state": "passed",
+          "previous_state": "started"
+        }
+      }
+      """
+
+    # Check all of the states are correct
+    Then the state of the plate with UUID "00000000-1111-2222-3333-000000000002" should be "passed"
+     And the state of all the transfer requests to the plate with UUID "00000000-1111-2222-3333-000000000002" should be "passed"
+     And the state of all the pulldown library creation requests from the plate with UUID "00000000-1111-2222-3333-000000000001" should be "started"
+
     Scenarios:
-      | plate purpose           |
-      | WGS fragmentation plate |
-      | SC fragmentation plate  |
-      | ISC fragmentation plate |
+      | pipeline     | plate purpose           |
+      | Pulldown WGS | WGS fragmentation plate |
+      | Pulldown SC  | SC fragmentation plate  |
+      | Pulldown ISC | ISC fragmentation plate |
