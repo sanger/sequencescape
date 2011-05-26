@@ -16,7 +16,7 @@ Feature: Set and check swipecard code of users through the API
     Given the user exists with ID 1
     And the UUID for the user with ID 1 is "00000000-1111-2222-3333-444444444444"
 
-    When I PUT the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
+    When I make an authorised PUT with the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
        """
        {
          "user": {
