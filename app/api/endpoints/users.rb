@@ -14,9 +14,9 @@ class ::Endpoints::Users < ::Core::Endpoint::Base
     
     # Doesn't exist anymore
     #has_many(:settings, :include => [], :json => "settings", :to => "settings")
-    #
+
     action(:update, :to => :standard_update!)
-    #action_guard(:update) { |guard| guard.authorised? and not guard.finished? }
+    action_requires_authorisation(:update)
 
   end
 end
