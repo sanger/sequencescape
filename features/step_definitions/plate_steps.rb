@@ -175,7 +175,14 @@ Given /^a "([^\"]+)" plate called "([^\"]+)" exists$/ do |name, plate_name|
   plate_purpose.create!(:name => plate_name)
 end
 
-Then /^the state of the plate "([^\"]+)" should be "([^\"]+)"$/ do |name, state|
+Transform /the plate "([^\"]+)"/ do |name|
   plate = Plate.find_by_name(name) or raise StandardError, "Could not find the plate #{name.inspect}"
+end
+
+Transform /the plate with UUID "([^\"]+)"/ do |uuid|
+  Uuid.lookup_single_uuid(uuid).resource
+end
+
+Then /^the state of (the plate .+) should be "([^\"]+)"$/ do |plate, state|
   assert_equal(state, plate.state, "State of plate #{name.inspect} is invalid")
 end

@@ -47,8 +47,11 @@ Given /^the "([^\"]+)" transfer template has been used between "([^\"]+)" and "(
   template.create!(:source => source, :destination => destination)
 end
 
-Then /^the state of all the transfer requests to the plate "([^"]+)" should be "([^"]+)"$/ do |name, state|
-  plate = Plate.find_by_name(name) or raise StandardError, "Could not find plate #{name.inspect}"
-  assert_equal([ state ], plate.wells.map(&:requests_as_target).flatten.select { |r| r.is_a?(TransferRequest) }.map(&:state).uniq, "Some transfer requests to #{name.inspect} are in the wrong state")
+Then /^the state of all the transfer requests to (the plate .+) should be "([^"]+)"$/ do |plate, state|
+  assert_equal([ state ], plate.wells.map(&:requests_as_target).flatten.select { |r| r.is_a?(TransferRequest) }.map(&:state).uniq, "Some transfer requests to #{plate.name.inspect} are in the wrong state")
+end
+
+Then /^the state of all the pulldown library creation requests from (the plate .+) should be "([^"]+)"$/ do |plate, state|
+  assert_equal([ state ], plate.wells.map(&:requests_as_source).flatten.select { |r| r.is_a?(PulldownLibraryCreationRequest) }.map(&:state).uniq, "Some pulldown library creation requests to #{plate.name.inspect} are in the wrong state")
 end
 
