@@ -174,3 +174,8 @@ Given /^a "([^\"]+)" plate called "([^\"]+)" exists$/ do |name, plate_name|
   plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
   plate_purpose.create!(:name => plate_name)
 end
+
+Then /^the state of the plate "([^\"]+)" should be "([^\"]+)"$/ do |name, state|
+  plate = Plate.find_by_name(name) or raise StandardError, "Could not find the plate #{name.inspect}"
+  assert_equal(state, plate.state, "State of plate #{name.inspect} is invalid")
+end

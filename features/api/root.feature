@@ -188,6 +188,11 @@ Feature: The entry point for the API gives directions to the other actions
           "actions": {
             "read": "http://www.example.com/api/1/plate_creations"
           }
+        },
+        "state_changes": {
+          "actions": {
+            "read": "http://www.example.com/api/1/state_changes"
+          }
         }
       }
       """
