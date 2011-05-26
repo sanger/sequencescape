@@ -12,12 +12,17 @@ class Transfer < ActiveRecord::Base
     # plate is also started; otherwise the plate can be considered pending.
     def state
       state_requests = self.transfer_requests
-      case
-      when state_requests.any?(&:failed?)                            then 'failed'
-      when state_requests.any?(&:cancelled?)                         then 'cancelled'
-      when !state_requests.empty? && state_requests.all?(&:started?) then 'started'
-      else                                                                'pending'
-      end
+
+      # The obvious states
+      return 'failed'    if state_requests.any?(&:failed?)
+      return 'cancelled' if state_requests.any?(&:cancelled?)
+
+      # If there is only one state then it's obviously that ...
+      unique_states = state_requests.map(&:state).uniq
+      return unique_states.first if unique_states.size == 1
+
+      # Otherwise we'll assume pending ..
+      'pending'
     end
   end
 
