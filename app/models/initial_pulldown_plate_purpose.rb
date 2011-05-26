@@ -9,8 +9,8 @@ class InitialPulldownPlatePurpose < PlatePurpose
   end
 
   def start_stock_plate_requests(plate)
-    plate.parent.requests_as_source.each do |requests|
-      requests.update_attributes!(:state => 'started')
+    plate.parent.wells.map(&:requests_as_source).flatten.each do |request|
+      request.update_attributes!(:state => 'started')
     end
   end
   private :start_stock_plate_requests
