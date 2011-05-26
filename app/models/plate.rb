@@ -6,7 +6,7 @@ class Plate < Asset
   # Transfer requests into a plate are the requests leading into the wells of said plate.
   def transfer_requests
     # TODO: This should be 'has_many :transfer_requests, :finder_sql => ....' for efficiency
-    wells.map { |well| well.requests_as_target.where_is_a?(TransfertRequest).all }.flatten
+    wells.map { |well| well.requests_as_target.where_is_a?(TransferRequest).all }.flatten
   end
 
   # The iteration of a plate is defined as the number of times a plate of this type has been created
