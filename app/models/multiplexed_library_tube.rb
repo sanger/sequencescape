@@ -11,7 +11,7 @@ class MultiplexedLibraryTube < Asset
 
   # Transfer requests into a tube are direct requests where the tube is the target.
   def transfer_requests
-    requests_as_target.where_is_a?(TransfertRequest).all
+    requests_as_target.where_is_a?(TransferRequest).all
   end
 
   # A multiplexed library tube is created with the request options of it's parent library tubes.  In effect
