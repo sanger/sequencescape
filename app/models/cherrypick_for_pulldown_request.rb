@@ -1,2 +1,2 @@
-class CherrypickForPulldownRequest < TransfertRequest
+class CherrypickForPulldownRequest < TransferRequest
 end

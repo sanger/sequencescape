@@ -49,7 +49,7 @@ class Transfer < ActiveRecord::Base
   def create_transfer_requests
     # TODO: This is probably actually a submission, which means we'll need project & study too
     each_transfer do |source, destination|
-      TransfertRequest.create!(:asset => source, :target_asset => destination)
+      TransferRequest.create!(:asset => source, :target_asset => destination)
     end
   end
   private :create_transfer_requests

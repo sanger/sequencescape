@@ -530,7 +530,7 @@ CherrypickPipeline.create!(:name => 'Cherrypick') do |pipeline|
     request_type.target_asset_type = 'Well'
     request_type.asset_type        = 'Well'
     request_type.order             = 2
-    request_type.request_class = TransfertRequest
+    request_type.request_class     = TransferRequest
     request_type.multiples_allowed = false
   end
 
@@ -615,7 +615,7 @@ GenotypingPipeline.create!(:name => 'Genotyping') do |pipeline|
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'Well'
     request_type.order             = 3
-    request_type.request_class     = TransfertRequest
+    request_type.request_class     = TransferRequest
     request_type.multiples_allowed = false
   end
 
