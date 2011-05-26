@@ -246,10 +246,15 @@ Then /^the JSON should be an empty array$/ do
 end
 
 Then /^the JSON should not contain "([^\"]+)" within any element of "([^\"]+)"$/ do |name, path|
-  json   = decode_json(page.body, 'Received')
+  json = decode_json(page.body, 'Received')
   target = path.split('.').inject(json) { |s,p| s.try(:[], p) } or raise StandardError, "Could not find #{path.inspect} in JSON"
-  target.each_with_index do |record, index|
-    assert_nil(record[name], "Found #{name.inspect} in element #{index}")
+  case target
+  when Array
+    target.each_with_index do |record, index|
+      assert_nil(record[name], "Found #{name.inspect} in element #{index}")
+    end
+  when Hash
+    assert_nil(target[name], "Found #{name.inspect} in element #{target}")
   end
 end
 
