@@ -17,7 +17,28 @@ class PlatePurpose < ActiveRecord::Base
     end
   end
 
+  module Associations
+    def self.included(base)
+      base.class_eval do
+        belongs_to :plate_purpose
+      end
+    end
+
+    # Delegate the change of state to our plate purpose.
+    def transition_to(state)
+      plate_purpose.transition_to(self, state)
+    end
+  end
+
   include Relationship::Associations
+
+  # Updates the state of the specified plate to the specified state.  The basic implementation does this by updating
+  # all of the TransferRequest instances to the state specified.
+  def transition_to(plate, state)
+    plate.transfer_requests.each do |request|
+      request.update_attributes!(:state => state)
+    end
+  end
 
   cattr_reader :per_page
   @@per_page = 500

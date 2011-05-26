@@ -2,6 +2,7 @@ class Plate < Asset
   include ModelExtensions::Plate
   include LocationAssociation::Locatable
   include Transfer::Associations
+  include PlatePurpose::Associations
 
   # Transfer requests into a plate are the requests leading into the wells of said plate.
   def transfer_requests
@@ -31,9 +32,6 @@ class Plate < Asset
   self.prefix = "DN"
   cattr_reader :per_page
   @@per_page = 50
-
-  # plate_purpose is the chip type to be used with this plate.
-  belongs_to :plate_purpose
 
   before_create :set_plate_name_and_size
 

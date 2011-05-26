@@ -39,3 +39,16 @@ end
 Given /^a transfer plate exists with ID (\d+)$/ do |id|
   Factory(:transfer_plate, :id => id)
 end
+
+Given /^the "([^\"]+)" transfer template has been used between "([^\"]+)" and "([^\"]+)"$/ do |template_name, source_name, destination_name|
+  template    = TransferTemplate.find_by_name(template_name) or raise StandardError, "Could not find transfer template #{template_name.inspect}"
+  source      = Plate.find_by_name(source_name)              or raise StandardError, "Could not find source plate #{source_name.inspect}"
+  destination = Plate.find_by_name(destination_name)         or raise StandardError, "Could not find destination plate #{destination_plate.inspect}"
+  template.create!(:source => source, :destination => destination)
+end
+
+Then /^the state of all the transfer requests to the plate "([^"]+)" should be "([^"]+)"$/ do |name, state|
+  plate = Plate.find_by_name(name) or raise StandardError, "Could not find plate #{name.inspect}"
+  assert_equal([ state ], plate.wells.map(&:requests_as_target).flatten.select { |r| r.is_a?(TransferRequest) }.map(&:state).uniq, "Some transfer requests to #{name.inspect} are in the wrong state")
+end
+
