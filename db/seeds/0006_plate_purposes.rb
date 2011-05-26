@@ -530,7 +530,8 @@ ActiveRecord::Base.transaction do
   # And here is pulldown
   stock_plate_purpose = PlatePurpose.find_by_name('Stock plate') or raise StandardError, 'Cannot find stock plate purpose'
   PULLDOWN_PLATE_PURPOSE_FLOWS.each do |flow|
-    flow.inject(stock_plate_purpose) do |parent, child_plate_name|
+    initial_purpose = stock_plate_purpose.child_plate_purposes.create!(:type => 'InitialPulldownPlatePurpose', :name => flow.shift)
+    flow.inject(initial_purpose) do |parent, child_plate_name|
       parent.child_plate_purposes.create!(:name => child_plate_name)
     end
   end
