@@ -14,6 +14,16 @@ class MultiplexedLibraryTube < Asset
     requests_as_target.where_is_a?(TransferRequest).all
   end
 
+  # Transitioning an MX library tube to a state involves updating the state of the transfer requests.  If the
+  # state is anything but "started" or "pending" then the pulldown library creation request should also be
+  # set to the same state
+  def transition_to(state)
+    update_all_requests = ![ 'started', 'pending' ].include?(state)
+    requests_as_target.each do |request|
+      request.update_attributes!(:state => state) if update_all_requests or request.is_a?(TransferRequest)
+    end
+  end
+
   # A multiplexed library tube is created with the request options of it's parent library tubes.  In effect
   # all of the parent library tubes have the same details, we only need take the first one.
   delegate :created_with_request_options, :to => 'parents.first'

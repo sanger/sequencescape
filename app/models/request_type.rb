@@ -56,10 +56,6 @@ class RequestType < ActiveRecord::Base
     self.request_class_name = request_class.name
   end
 
-  def for_multiplexing?
-    request_class.ancestors.include?(MultiplexedLibraryCreationRequest) || request_class.ancestors.include?(PulldownMultiplexedLibraryCreationRequest) || request_class.ancestors.include?(CherrypickForPulldownRequest)
-  end
-
   def quarantine_create_asset_at_submission_time?
     # temporary
     # we should had an attribute for that

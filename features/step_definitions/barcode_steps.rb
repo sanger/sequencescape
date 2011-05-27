@@ -20,8 +20,19 @@ Given /^the "([^\"]+)" barcode printer "([^\"]+)" exists$/ do |type_name, name|
   BarcodePrinter.create!(:name => name, :barcode_printer_type => printer_type)
 end
 
-Given /^the ([^\"]+) "([^\"]+)" has a barcode of "([^\"]+)"$/ do |model, name, barcode|
-  asset = model.gsub(/\s+/, '_').classify.constantize.first(:conditions => { :name => name }) or raise StandardError, "Could not find asset #{name.inspect}"
+Transform /the last plate/ do |_|
+  Plate.last or raise StandardError, "There appear to be no plates"
+end
+
+Transform /the last multiplexed library tube/ do |_|
+  MultiplexedLibraryTube.last or raise StandardError, "There appear to be no multiplexed library tubes"
+end
+
+Transform /the plate "([^\"]+)"/ do |name|
+  Plate.find_by_name(name) or raise StandardError, "Could not find the plate #{name.inspect}"
+end
+
+Given /^(the .+) has a barcode of "([^\"]+)"$/ do |asset, barcode|
   asset.update_attributes!(:barcode => Barcode.number_to_human(barcode.to_i))
 end
 

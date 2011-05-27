@@ -14,13 +14,13 @@ class CreatePulldownSubmissionTemplates < ActiveRecord::Migration
 
   def self.up
     ActiveRecord::Base.transaction do
-      workflow              = Submission::Workflow.find_by_key('short_read_sequencing') or raise StandardError, 'Cannot find Next-gen sequencing workflow'
+      workflow = Submission::Workflow.find_by_key('short_read_sequencing') or raise StandardError, 'Cannot find Next-gen sequencing workflow'
 
       REQUEST_TYPES.each do |request_type_name|
         pulldown_request_type = RequestType.find_by_name(request_type_name) or raise StandardError, "Cannot find #{request_type_name.inspect}"
 
         RequestType.find_each(:conditions => { :name => SEQUENCING_REQUEST_TYPE_NAMES }) do |sequencing_request_type|
-          submission                   = LinearSubmission.new
+          submission                   = MultiplexedSubmission.new
           submission.request_type_ids  = [ pulldown_request_type.id, sequencing_request_type.id ]
           submission.info_differential = workflow.id
           submission.workflow          = workflow

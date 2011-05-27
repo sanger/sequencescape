@@ -20,7 +20,7 @@ class StateChange < ActiveRecord::Base
   # records the state that it was in before the update.  The previous_state is not assigned by the creator but
   # by the action of making the transition.
   validates_inclusion_of :target_state,   :in => %w{pending started passed failed cancelled}
-  validates_each(:previous_state) { |record, attr, value| record.errors.add(:previous_state, 'cannot be assigned') if value.present? }
+  validates_unassigned(:previous_state)
 
   # Before creating an instance we record the current state of the target.
   before_create :record_current_state_of_target

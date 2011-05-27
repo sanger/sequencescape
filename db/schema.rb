@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110526110846) do
+ActiveRecord::Schema.define(:version => 20110527122645) do
 
   create_table "archived_properties", :force => true do |t|
     t.text    "value"
@@ -668,6 +668,7 @@ ActiveRecord::Schema.define(:version => 20110526110846) do
     t.string   "request_class_name"
     t.text     "request_parameters"
     t.integer  "morphology",                       :default => 0
+    t.boolean  "for_multiplexing",                 :default => false
   end
 
   create_table "requests", :force => true do |t|
