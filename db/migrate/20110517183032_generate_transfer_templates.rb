@@ -22,12 +22,15 @@ class GenerateTransferTemplates < ActiveRecord::Migration
           :transfers           => Hash[locations_for(('A'..'H'), range).map { |location| [location, location] }]
         )
       end
+      TransferTemplate.create!(
+        :name                => "Pool wells based on submission",
+        :transfer_class_name => Transfer::BetweenPlatesBySubmission.name
+      )
 
       # Plate-to-tube transfers
       TransferTemplate.create!(
-        :name                => "Transfer all wells to a tube",
-        :transfer_class_name => Transfer::FromPlateToTube.name,
-        :transfers           => locations_for(('A'..'H'), (1..12))
+        :name                => "Transfer wells to MX library tubes by submission",
+        :transfer_class_name => Transfer::FromPlateToTubeBySubmission.name
       )
     end
   end

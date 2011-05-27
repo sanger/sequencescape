@@ -112,8 +112,11 @@ Given /^the UUID for the (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) with ID (\d+) i
 end
 
 Given /^all (#{PLURAL_MODELS_BASED_ON_NAME_REGEXP}|#{PLURAL_MODELS_BASED_ON_ID_REGEXP}) have sequential UUIDs based on "([^\"]+)"$/ do |model,core_uuid|
+  core_uuid << '-' if core_uuid.length == 23
+  core_uuid << "%0#{36-core_uuid.length}d"
+
   model.singularize.gsub(/\s+/, '_').camelize.constantize.all.each_with_index do |object, index|
-    set_uuid_for(object, "#{core_uuid}-%012d" % (index+1))
+    set_uuid_for(object, core_uuid % (index+1))
   end
 end
 
@@ -130,6 +133,11 @@ Given /^the UUID of the next (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) created wil
   root_class = model_class
   root_class = root_class.superclass until root_class.superclass == ActiveRecord::Base
   Uuid.new(:resource_type => root_class.sti_name, :resource_id => last_id+1, :external_id => uuid_value).save(false)
+end
+
+Given /^the UUID of the last (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) created is "([^\"]+)"$/ do |model,uuid_value|
+  target = model.gsub(/\s+/, '_').classify.constantize.last or raise StandardError, "There appear to be no #{model.pluralize}"
+  target.uuid_object.update_attributes!(:external_id => uuid_value)
 end
 
 Given /^(\d+) (#{PLURAL_MODELS_BASED_ON_ID_REGEXP}) exist with IDs starting at (\d+)$/ do |count, model, id|

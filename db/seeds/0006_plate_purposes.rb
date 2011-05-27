@@ -468,7 +468,7 @@ PULLDOWN_PLATE_PURPOSE_FLOWS = [
     'WGS library plate',
     'WGS library PCR plate',
     'WGS amplified library plate',
-    'WGS pooled simplified library plate'
+    'WGS pooled amplified library plate'
   ], [
     'SC fragmentation plate',
     'SC fragment purification plate',
