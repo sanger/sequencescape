@@ -1,6 +1,9 @@
 # Picks the specified wells of a plate into an individual tube.  In this case transfers is an 
 # array of well locations to transfer into the tube, and the destination is a tube.
 class Transfer::FromPlateToTube < Transfer
+  include TransfersBySchema
+  include TransfersToKnownDestination
+
   # The values in the transfers must be an array and must be valid well positions on the plate.
   validates_each(:transfers) do |record, attribute, value|
     if not value.is_a?(Array)

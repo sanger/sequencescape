@@ -30,8 +30,8 @@ class Submission < ActiveRecord::Base
   validates_presence_of :request_types
 
   # Created during the lifetime ...
-  has_many :items, :dependent => :destroy
-  has_many :requests, :through => :items
+  has_many :requests
+  has_many :items, :through => :requests
 
   serialize :item_options
 

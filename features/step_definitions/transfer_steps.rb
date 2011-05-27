@@ -47,11 +47,28 @@ Given /^the "([^\"]+)" transfer template has been used between "([^\"]+)" and "(
   template.create!(:source => source, :destination => destination)
 end
 
-Then /^the state of all the transfer requests to (the plate .+) should be "([^"]+)"$/ do |plate, state|
-  assert_equal([ state ], plate.wells.map(&:requests_as_target).flatten.select { |r| r.is_a?(TransferRequest) }.map(&:state).uniq, "Some transfer requests to #{plate.name.inspect} are in the wrong state")
+
+def assert_request_state(state, targets, direction, request_class)
+  association = (direction == 'to') ? :requests_as_target : :requests_as_source
+  assert_equal(
+    [ state ],
+    Array(targets).map(&association).flatten.select { |r| r.is_a?(request_class) }.map(&:state).uniq,
+    "Some #{request_class.name} requests are in the wrong state"
+  )
 end
 
-Then /^the state of all the pulldown library creation requests from (the plate .+) should be "([^"]+)"$/ do |plate, state|
-  assert_equal([ state ], plate.wells.map(&:requests_as_source).flatten.select { |r| r.is_a?(PulldownLibraryCreationRequest) }.map(&:state).uniq, "Some pulldown library creation requests to #{plate.name.inspect} are in the wrong state")
-end
+{
+  'plate'                    => 'target.wells',
+  'multiplexed library tube' => 'target'
+}.each do |target, request_holder|
+  line = __LINE__
+  instance_eval(%Q{
+    Then /^the state of all the transfer requests (to|from) (the #{target} .+) should be "([^"]+)"$/ do |direction, target, state|
+      assert_request_state(state, #{request_holder}, direction, TransferRequest)
+    end
 
+    Then /^the state of all the pulldown library creation requests (to|from) (the #{target} .+) should be "([^"]+)"$/ do |direction, target, state|
+      assert_request_state(state, #{request_holder}, direction, PulldownLibraryCreationRequest)
+    end
+  }, __FILE__, line)
+end

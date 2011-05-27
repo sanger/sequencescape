@@ -44,11 +44,7 @@ class RequestFactory
     requests = []
     ActiveRecord::Base.transaction do
       request_type_multiplier = {} # Individual multiplier for each request type
-      if @submission.request_options
-        unless @submission.request_options[:multiplier].nil?
-          request_type_multiplier = request_multiplier_to_sym(@submission.request_options[:multiplier])
-        end
-      end
+      request_type_multiplier = request_multiplier_to_sym(@submission.request_options[:multiplier]) if @submission.request_options.present? and @submission.request_options[:multiplier].present?
 
       1.upto(multiplier) do
         @assets.each do |asset|
@@ -73,7 +69,6 @@ class RequestFactory
           end
         end
       end
-      
     end
     requests
   end
@@ -104,7 +99,7 @@ class RequestFactory
     return requests if request_types_and_counts.size < 1
 
     request_type, multiplier = request_types_and_counts.shift
-    
+
     multiplier.times do
       # we create the target first (if needed) to pass it to the request creator
       # so we don't need to save request again and again
@@ -197,11 +192,6 @@ class RequestFactory
     unless item
       asset_name = asset.name ? asset.name : "#{asset.sti_type} #{asset.id}"
       item = Item.create!(:workflow => @submission.workflow, :name => asset_name + " " + @submission.id.to_s, :submission => @submission)
-      if ! @submission.items.include? item
-        @submission.items << item
-        @submission.save!
-      end
-
       asset.save!
     end
 

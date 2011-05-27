@@ -12,6 +12,41 @@ def list_combinations(llist)
   end
   ret
 end
+
+def create_pulldown_submission_templates
+  sequencing_request_type_names = [
+    "Single ended sequencing",
+    "Single ended hi seq sequencing",
+    "Paired end sequencing",
+    "HiSeq Paired end sequencing"
+  ]
+
+  request_types = [
+    'Pulldown WGS',
+    'Pulldown SC',
+    'Pulldown ISC'
+  ]
+
+  workflow = Submission::Workflow.find_by_key('short_read_sequencing') or raise StandardError, 'Cannot find Next-gen sequencing workflow'
+
+  request_types.each do |request_type_name|
+    pulldown_request_type = RequestType.find_by_name(request_type_name) or raise StandardError, "Cannot find #{request_type_name.inspect}"
+
+    RequestType.find_each(:conditions => { :name => sequencing_request_type_names }) do |sequencing_request_type|
+      submission                   = MultiplexedSubmission.new
+      submission.request_type_ids  = [ pulldown_request_type.id, sequencing_request_type.id ]
+      submission.info_differential = workflow.id
+      submission.workflow          = workflow
+
+      SubmissionTemplate.new_from_submission("#{request_type_name} - #{sequencing_request_type.name}", submission).save!
+    end
+  end
+end
+
+# The pulldown submissions
+create_pulldown_submission_templates
+
+# Now generate the rest of the submission templates
 Submission::Workflow.all.each do |workflow|
   request_types_group = workflow.request_types.group_by {|rt| rt.order }.sort {|a, b| a[0] <=> b[0]  }
   request_type_ids_list = request_types_group.map { |o, rts| rts.map { |rt| rt.id } }
@@ -20,6 +55,7 @@ Submission::Workflow.all.each do |workflow|
     combinations = list_combinations(request_type_ids_list)
     combinations.each do |request_type_ids|
       name = request_type_ids.map {|id| RequestType.find(id).name}.join(" - ")
+      next if SubmissionTemplate.find_by_name(name)
 
       submission = LinearSubmission.new
       submission.request_type_ids = request_type_ids

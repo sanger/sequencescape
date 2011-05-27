@@ -122,7 +122,8 @@ LibraryCreationPipeline.create!(:name => 'MX Library Preparation [NEW]') do |pip
     request_type.asset_type        = 'SampleTube'
     request_type.order             = 1
     request_type.multiples_allowed = false
-    request_type.request_class = MultiplexedLibraryCreationRequest
+    request_type.request_class     = MultiplexedLibraryCreationRequest
+    request_type.for_multiplexing  = true
   end
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'New MX Library Preparation') do |workflow|
@@ -563,8 +564,9 @@ CherrypickForPulldownPipeline.create!(:name => 'Cherrypicking for Pulldown') do 
     request_type.target_asset_type = 'Well'
     request_type.asset_type        = 'Well'
     request_type.order             = 1
-    request_type.request_class = CherrypickForPulldownRequest
+    request_type.request_class     = CherrypickForPulldownRequest
     request_type.multiples_allowed = false
+    request_type.for_multiplexing  = true
   end
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'Cherrypicking for Pulldown').tap do |workflow|
@@ -644,8 +646,9 @@ PulldownMultiplexLibraryPreparationPipeline.create!(:name => 'Pulldown Multiplex
   pipeline.request_type = RequestType.create!(:workflow => next_gen_sequencing, :key => 'pulldown_multiplexing', :name => 'Pulldown Multiplex Library Preparation') do |request_type|
     request_type.asset_type        = 'Well'
     request_type.order             = 1
-    request_type.request_class = PulldownMultiplexedLibraryCreationRequest
+    request_type.request_class     = PulldownMultiplexedLibraryCreationRequest
     request_type.multiples_allowed = false
+    request_type.for_multiplexing  = true
   end
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'Pulldown Multiplex Library Preparation').tap do |workflow|
@@ -747,6 +750,7 @@ set_pipeline_flow_to('PacBio Sample Prep' => 'PacBio Sequencing')
       request_type.order             = 1
       request_type.multiples_allowed = false
       request_type.request_class     = PulldownLibraryCreationRequest
+      request_type.for_multiplexing  = true
     end
 
     pipeline.workflow = LabInterface::Workflow.create!(:name => pipeline_name)
