@@ -669,6 +669,7 @@ ActiveRecord::Schema.define(:version => 20110601083338) do
     t.string   "request_class_name"
     t.text     "request_parameters"
     t.integer  "morphology",                       :default => 0
+    t.boolean  "for_multiplexing",                 :default => false
   end
 
   create_table "requests", :force => true do |t|

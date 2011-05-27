@@ -26,6 +26,71 @@ class Transfer < ActiveRecord::Base
     end
   end
 
+  # The transfers are described in some manner, like direct transfers of one well to the same well on
+  # another plate.
+  module TransfersBySchema
+    def self.included(base)
+      base.class_eval do
+        serialize :transfers
+        validates_presence_of :transfers, :allow_blank => false
+      end
+    end
+
+    def well_from(plate, location)
+      plate.wells.detect { |well| well.map.description == location }
+    end
+    private :well_from
+  end
+
+  # The transfer goes from the source to a specified destination and this can only happen once.
+  module TransfersToKnownDestination
+    def self.included(base)
+      base.class_eval do
+        belongs_to :destination, :polymorphic => true
+        validates_presence_of :destination
+        validates_uniqueness_of :destination_id, :scope => [ :destination_type, :source_id ], :message => 'can only be transferred to once from the source'
+      end
+    end
+  end
+
+  # The transfer from the source is controlled by some mechanism other than user choice.  Essentially
+  # an algorithmic transfer, which is recorded so we know what happened.
+  module ControlledDestinations
+    def self.included(base)
+      base.class_eval do
+        # Ensure that the transfers are recorded so we can see what happened.
+        serialize :transfers
+        validates_unassigned :transfers
+      end
+    end
+
+    def each_transfer(&block)
+      well_to_destination.each do |source, destination|
+        yield(source, destination)
+        record_transfer(source, destination)
+      end
+    end
+    private :each_transfer
+
+    def locate_stock_well_for(current_well)
+      return current_well if current_well.parent.plate_purpose == stock_plate_purpose
+
+      while true
+        previous_well =
+          current_well.requests_as_target.where_is_a?(TransferRequest).first.try(:asset) or
+            return nil
+        return previous_well if previous_well.parent.plate_purpose == stock_plate_purpose
+        current_well = previous_well
+      end
+    end
+    private :locate_stock_well_for
+
+    def stock_plate_purpose
+      @stock_plate_purpose ||= PlatePurpose.find(2)
+    end
+    private :stock_plate_purpose
+  end
+
   include Uuid::Uuidable
 
   self.inheritance_column = "sti_type"
@@ -38,19 +103,9 @@ class Transfer < ActiveRecord::Base
   belongs_to :source, :class_name => 'Plate'
   validates_presence_of :source
 
-  # It is only possible to transfer from a source to a destination once.
-  belongs_to :destination, :polymorphic => true
-  validates_presence_of :destination
-  validates_uniqueness_of :destination_id, :scope => [ :destination_type, :source_id ], :message => 'can only be transferred to once from the source'
-
-  # Transfers are described based on the implementation but the general information is contained
-  # in this serialized column and cannot be empty.
-  serialize :transfers
-  validates_presence_of :transfers, :allow_blank => false
-
-  # After creating an instance of this class the appropriate transfers need to be made from a source
+  # Before creating an instance of this class the appropriate transfers need to be made from a source
   # asset to the destination one.
-  after_create :create_transfer_requests
+  before_create :create_transfer_requests
   def create_transfer_requests
     # TODO: This is probably actually a submission, which means we'll need project & study too
     each_transfer do |source, destination|
@@ -58,9 +113,4 @@ class Transfer < ActiveRecord::Base
     end
   end
   private :create_transfer_requests
-
-  def well_from(plate, location)
-    plate.wells.detect { |well| well.map.description == location }
-  end
-  private :well_from
 end
