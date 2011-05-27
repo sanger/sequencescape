@@ -23,9 +23,7 @@ class PlateCreation < ActiveRecord::Base
 
   # This is the child that is created from the parent.  It cannot be assigned before validation.
   belongs_to :child, :class_name => 'Plate'
-  validates_each(:child) do |record, attr, value|
-    record.errors.add(:child, 'cannot be assigned') if value.present?
-  end
+  validates_unassigned(:child)
 
   # Before creating an instance we create the child plate and ensure the asset link is present.  This doesn't
   # copy any of the wells as the plate itself is initially empty.

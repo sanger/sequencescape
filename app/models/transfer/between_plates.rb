@@ -2,6 +2,9 @@
 # is a hash from source to destination well location and destination is the target plate for
 # the transfers.
 class Transfer::BetweenPlates < Transfer
+  include TransfersBySchema
+  include TransfersToKnownDestination
+
   # The values in the transfers must be a hash and must be valid well positions on both the
   # source and destination plates.
   validates_each(:transfers) do |record, attribute, value|

@@ -14,14 +14,12 @@ class TransferTemplate < ActiveRecord::Base
   # A template creates a particular Transfer subclass.
   validates_presence_of :transfer_class_name
 
-  # At least one transfer must be define for a template
+  # A set of transfers that should be made.
   serialize :transfers
-  validates_presence_of :transfers, :allow_nil => false, :allow_blank => false
 
   def transfer_class
     @transfer_class ||= transfer_class_name.constantize
   end
-  private :transfer_class
 
   def create!(attributes)
     transfer_class.create!(attributes.merge(:transfers => self.transfers))

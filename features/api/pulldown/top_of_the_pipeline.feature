@@ -104,14 +104,10 @@ Feature: The top of the pulldown pipeline
       {
         "transfer": {
           "source": {
-            "actions": {
-              "read": "http://www.example.com/api/1/00000000-1111-2222-3333-000000000001"
-            }
+            "uuid": "00000000-1111-2222-3333-000000000001"
           },
           "destination": {
-            "actions": {
-              "read": "http://www.example.com/api/1/00000000-1111-2222-3333-000000000002"
-            }
+            "uuid": "00000000-1111-2222-3333-000000000002"
           },
           "transfers": {
             "A1":  "A1",

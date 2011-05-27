@@ -43,14 +43,10 @@ Feature: Access transfers through the API
             "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
           },
           "source": {
-            "actions": {
-              "read": "http://www.example.com/api/1/11111111-2222-3333-4444-000000000001"
-            }
+            "uuid": "11111111-2222-3333-4444-000000000001"
           },
           "destination": {
-            "actions": {
-              "read": "http://www.example.com/api/1/11111111-2222-3333-4444-000000000002"
-            }
+            "uuid": "11111111-2222-3333-4444-000000000002"
           },
 
           "uuid": "00000000-1111-2222-3333-444444444444",
@@ -79,14 +75,10 @@ Feature: Access transfers through the API
             "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
           },
           "source": {
-            "actions": {
-              "read": "http://www.example.com/api/1/11111111-2222-3333-4444-000000000001"
-            }
+            "uuid": "11111111-2222-3333-4444-000000000001"
           },
           "destination": {
-            "actions": {
-              "read": "http://www.example.com/api/1/11111111-2222-3333-4444-000000000002"
-            }
+            "uuid": "11111111-2222-3333-4444-000000000002"
           },
 
           "uuid": "00000000-1111-2222-3333-444444444444",

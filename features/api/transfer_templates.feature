@@ -66,14 +66,10 @@ Feature: Access transfer templates through the API
       {
         "transfer": {
           "source": {
-            "actions": {
-              "read": "http://www.example.com/api/1/11111111-2222-3333-4444-000000000001"
-            }
+            "uuid": "11111111-2222-3333-4444-000000000001"
           },
           "destination": {
-            "actions": {
-              "read": "http://www.example.com/api/1/11111111-2222-3333-4444-000000000002"
-            }
+            "uuid": "11111111-2222-3333-4444-000000000002"
           },
           "transfers": {
             "A1": "A1",
