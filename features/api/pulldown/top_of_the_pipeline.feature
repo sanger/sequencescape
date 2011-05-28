@@ -1,4 +1,4 @@
-@api @json @single-sign-on @new-api
+@api @json @single-sign-on @new-api @barcode-service
 Feature: The top of the pulldown pipeline
   At the top of the pulldown pipeline a stock plate arrives and an initial pulldown plate is processed.
   "Processed" means that the plate is created from the stock plate, the entire contents of the stock
@@ -12,6 +12,9 @@ Feature: The top of the pulldown pipeline
 
     Given I am using the latest version of the API
 
+    Given the plate barcode webservice returns "1000001"
+      And the plate barcode webservice returns "1000002"
+
     Given the UUID for the plate purpose "Stock plate" is "11111111-2222-3333-4444-000000000001"
       And the UUID for the transfer template "Transfer columns 1-12" is "22222222-3333-4444-5555-000000000001"
       And the UUID for the search "Find asset by barcode" is "33333333-4444-5555-6666-000000000001"
@@ -20,7 +23,6 @@ Feature: The top of the pulldown pipeline
 
     Given a "Stock plate" plate called "Testing the API" exists
       And the UUID for the plate "Testing the API" is "00000000-1111-2222-3333-000000000001"
-      And the plate "Testing the API" has a barcode of "1220000123724"
 
   @authorised
   Scenario Outline: Dealing with the initial plate in the pipeline
@@ -34,7 +36,7 @@ Feature: The top of the pulldown pipeline
       """
       {
         "search": {
-          "barcode": "1220000123724"
+          "barcode": "1221000001777"
         }
       }
       """
@@ -214,6 +216,26 @@ Feature: The top of the pulldown pipeline
             "H11": "H11",
             "H12": "H12"
           }
+        }
+      }
+      """
+
+    # Find the child plate by barcode
+    When I POST the following JSON to the API path "/33333333-4444-5555-6666-000000000001/first":
+      """
+      {
+        "search": {
+          "barcode": "1221000002781"
+        }
+      }
+      """
+    Then the HTTP response should be "301 Moved Permanently"
+     And the JSON should match the following for the specified fields:
+      """
+      {
+        "plate": {
+          "name": "Plate 1000002",
+          "uuid": "00000000-1111-2222-3333-000000000002"
         }
       }
       """

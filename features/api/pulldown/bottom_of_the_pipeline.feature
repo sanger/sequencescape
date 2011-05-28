@@ -1,4 +1,4 @@
-@api @json @single-sign-on @new-api
+@api @json @single-sign-on @new-api @barcode-service
 Feature: The bottom of the pulldown pipeline
   At the bottom of the pulldown pipeline individual wells of the final plate are transfered into the
   MX library tubes on a 1:1 basis.  Once an MX library tube has been processed the act of changing its
@@ -10,6 +10,9 @@ Feature: The bottom of the pulldown pipeline
       And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
+
+    Given the plate barcode webservice returns "1000001"
+      And the plate barcode webservice returns "1000002"
 
     Given the UUID for the plate purpose "Stock plate" is "11111111-2222-3333-4444-000000000001"
       And the UUID for the transfer template "Transfer wells to MX library tubes by submission" is "22222222-3333-4444-5555-000000000001"
@@ -29,12 +32,32 @@ Feature: The bottom of the pulldown pipeline
       And all plates have sequential UUIDs based on "00000000-1111-2222-3333"
       And all multiplexed library tubes have sequential UUIDs based on "00000000-1111-2222-3333-9999"
 
+    # Find the last plate by barcode
+    When I POST the following JSON to the API path "/33333333-4444-5555-6666-000000000001/first":
+      """
+      {
+        "search": {
+          "barcode": "1221000002781"
+        }
+      }
+      """
+    Then the HTTP response should be "301 Moved Permanently"
+     And the JSON should match the following for the specified fields:
+      """
+      {
+        "plate": {
+          "name": "Plate 1000002",
+          "uuid": "00000000-1111-2222-3333-000000000002"
+        }
+      }
+      """
+
     # Make the transfers from the plate to the appropriate MX library tubes
     When I make an authorised POST with the following JSON to the API path "/22222222-3333-4444-5555-000000000001":
       """
       {
         "transfer": {
-          "source": "00000000-1111-2222-3333-000000000003"
+          "source": "00000000-1111-2222-3333-000000000002"
         }
       }
       """
@@ -44,7 +67,7 @@ Feature: The bottom of the pulldown pipeline
       {
         "transfer": {
           "source": {
-            "uuid": "00000000-1111-2222-3333-000000000003"
+            "uuid": "00000000-1111-2222-3333-000000000002"
           },
           "destinations": [
             { "uuid": "00000000-1111-2222-3333-999900000001" },

@@ -493,12 +493,12 @@ class Plate < Asset
     self.parent.try(:wells).try(:first).try(:study).try(:abbreviation)
   end
 
-  def self.create_plate_with_barcode(*args, &block)
+  def self.create_with_barcode!(*args, &block)
     attributes = args.extract_options!
     barcode    = args.first
     barcode    = nil if barcode.present? and find_by_barcode(barcode).present?
     barcode  ||= PlateBarcode.create.barcode
-    create(attributes.merge(:barcode => barcode), &block)
+    create!(attributes.merge(:barcode => barcode), &block)
   end
 
   def self.plates_from_scanned_plate_barcodes(source_plate_barcodes)

@@ -1,4 +1,4 @@
-@api @json @state_change @single-sign-on @new-api
+@api @json @state_change @single-sign-on @new-api @barcode-service
 Feature: Access state changes through the API
   In order to actually be able to do anything useful
   As an authenticated user of the API
@@ -12,6 +12,9 @@ Feature: Access state changes through the API
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
+
+    Given the plate barcode webservice returns "1000001"
+      And the plate barcode webservice returns "1000002"
 
     Given a "Stock plate" plate called "Source plate" exists
       And a "Stock plate" plate called "Destination plate" exists

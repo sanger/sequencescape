@@ -30,7 +30,18 @@ class PlateCreation < ActiveRecord::Base
   before_create :create_child_plate
   def create_child_plate
     self.child = child_plate_purpose.create!
-    AssetLink.create_edge(self.parent, self.child)
+    connect_parent_and_child
+    connect_child_to_parent_study
   end
   private :create_child_plate
+
+  def connect_parent_and_child
+    AssetLink.connect(self.parent, self.child)
+  end
+  private :connect_parent_and_child
+
+  def connect_child_to_parent_study
+    RequestFactory.create_asset_requests([ self.child.id ], self.parent.study.id) if self.parent.study.present?
+  end
+  private :connect_child_to_parent_study
 end
