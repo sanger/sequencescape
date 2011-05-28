@@ -15,17 +15,6 @@ Feature: Access tag layout templates through the API
 
     Given I am using the latest version of the API
 
-  @read @error
-  Scenario: Reading the JSON for a UUID that does not exist
-    When I GET the API path "/00000000-1111-2222-3333-444444444444"
-    Then the HTTP response should be "404 Not Found"
-     And the JSON should be:
-      """
-      {
-        "general": [ "UUID does not exist" ]
-      }
-      """
-
   @read
   Scenario: Reading the JSON for a UUID
     Given the tag layout template "Test tag layout" exists
@@ -60,8 +49,10 @@ Feature: Access tag layout templates through the API
       }
       """
 
-  @tag_layout @create
+  @tag_layout @create @barcode-service
   Scenario: Creating a tag layout from a tag layout template
+    Given the plate barcode webservice returns "1000001"
+
     Given the tag layout template "Test tag layout" exists
       And the UUID for the tag layout template "Test tag layout" is "00000000-1111-2222-3333-444444444444"
       And the tag group for tag layout template "Test tag layout" is called "Tag group 1"
