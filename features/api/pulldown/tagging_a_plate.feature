@@ -27,13 +27,15 @@ Feature: Tagging the wells on a plate using a tag layout template
         | 7     | AATT  |
         | 8     | CCGG  |
 
-  @tag_layout @tag_layout_template
+  @tag_layout @tag_layout_template @barcode-service
   Scenario Outline: Creating the plate to be tagged and assigning tags
+    Given the plate barcode webservice returns "1000001"
+      And the plate barcode webservice returns "1000002"
+
     Given the UUID for the plate purpose "<parent plate type>" is "11111111-2222-3333-4444-000000000001"
       And the UUID for the plate purpose "<child plate type>" is "11111111-2222-3333-4444-000000000002"
       And a "<parent plate type>" plate called "Testing the API" exists
       And the UUID for the plate "Testing the API" is "00000000-1111-2222-3333-000000000001"
-      And the plate "Testing the API" has a barcode of "1220000123724"
 
     Given the UUID of the next plate created will be "00000000-1111-2222-3333-000000000002"
       And the UUID of the next tag layout created will be "22222222-3333-4444-5555-000000000002"
@@ -43,7 +45,7 @@ Feature: Tagging the wells on a plate using a tag layout template
       """
       {
         "search": {
-          "barcode": "1220000123724"
+          "barcode": "1221000001777"
         }
       }
       """

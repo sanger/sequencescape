@@ -15,17 +15,6 @@ Feature: Access plate purposes through the API
 
     Given no plate purposes exist
 
-  @read @error
-  Scenario: Reading the JSON for a UUID that does not exist
-    When I GET the API path "/00000000-1111-2222-3333-444444444444"
-    Then the HTTP response should be "404 Not Found"
-    And the JSON should be:
-      """
-      {
-        "general": [ "UUID does not exist" ]
-      }
-      """
-
   @read
   Scenario: Reading the JSON for a UUID
     Given the plate purpose exists with ID 1
@@ -66,9 +55,6 @@ Feature: Access plate purposes through the API
     Given the plate purpose exists with ID 1
     And the UUID for the plate purpose with ID 1 is "00000000-1111-2222-3333-444444444444"
 
-    Given 10 wells exist with IDs starting at 1
-    And all wells have sequential UUIDs based on "11111111-2222-3333-4444"
-
     When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/plates":
       """
       {
@@ -85,8 +71,10 @@ Feature: Access plate purposes through the API
       }
       """
 
-  @create @plate @authorised
+  @create @plate @authorised @barcode-service
   Scenario: Creating a plate with a bunch of wells from the plate purpose
+    Given the plate barcode webservice returns "1000001"
+
     Given the plate purpose exists with ID 1
       And the UUID for the plate purpose with ID 1 is "00000000-1111-2222-3333-444444444444"
       And the UUID of the next plate created will be "22222222-1111-2222-3333-444444444444"

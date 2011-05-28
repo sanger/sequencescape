@@ -67,7 +67,7 @@ class PlatePurpose < ActiveRecord::Base
 
   def create_child_plates_from(plate, current_user)
     child_plate_purposes.map do |target_plate_purpose|
-      target_plate_purpose.target_plate_type.constantize.create_plate_with_barcode(plate.barcode) do |child_plate|
+      target_plate_purpose.target_plate_type.constantize.create_with_barcode!(plate.barcode) do |child_plate|
         child_plate.plate_purpose = target_plate_purpose
         child_plate.size          = plate.size
         child_plate.location      = plate.location
@@ -123,23 +123,11 @@ class PlatePurpose < ActiveRecord::Base
   end
 
   def create_plates(source_plate_barcodes, current_user)
-    new_plates = []
+    return plates.create_with_barcode! if source_plate_barcodes.blank?
 
-    if source_plate_barcodes.blank?
-      plate = Plate.create_plate_with_barcode
-      plate.plate_purpose = self
-      plate.save
-      new_plates << plate
-    else
-      source_plate_barcodes.scan(/\d+/).each do |source_plate_barcode|
-        child_plates = create_child_plates_from_scanned_plate(source_plate_barcode, current_user)
-        if child_plates
-          new_plates = new_plates | child_plates
-        end
-      end
-    end
-
-    new_plates
+    source_plate_barcodes.scan(/\d+/).map do |source_plate_barcode|
+      create_child_plates_from_scanned_plate(source_plate_barcode, current_user)
+    end.flatten.compact
   end
 
   def target_plate_type
@@ -166,7 +154,7 @@ class PlatePurpose < ActiveRecord::Base
 
   def create!(attributes = {}, &block)
     attributes[:size] ||= 96
-    plates.create!(attributes.merge(:wells => Map.where_plate_size(attributes[:size]).all.map { |map| Well.new(:map => map) })).tap do |plate|
+    plates.create_with_barcode!(attributes.merge(:wells => Map.where_plate_size(attributes[:size]).all.map { |map| Well.new(:map => map) })).tap do |plate|
       plate.wells.each { |well| AssetLink.create_edge!(plate, well) }
     end
   end
