@@ -3,10 +3,12 @@ Factory.define(:transfer_plate, :class => Plate) do |plate|
   plate.size 96
 
   plate.after_create do |plate|
-    [ 'A1', 'B1' ].each do |location|
-      map = Map.where_description(location).where_plate_size(plate.size).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
-      plate.wells << Factory(:well, :map => map)
-    end
+    plate.wells.import(
+      [ 'A1', 'B1' ].map do |location|
+        map = Map.where_description(location).where_plate_size(plate.size).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
+        Factory(:well, :map => map)
+      end
+    )
   end
 end
 
@@ -14,9 +16,7 @@ Factory.define(:full_plate, :class => Plate) do |plate|
   plate.size 96
 
   plate.after_create do |plate|
-    Map.where_plate_size(plate.size).all.each do |map|
-      plate.wells << Factory(:well, :map => map)
-    end
+    plate.wells.import(Map.where_plate_size(plate.size).all.map { |map| Factory(:well, :map => map) })
   end
 end
 
