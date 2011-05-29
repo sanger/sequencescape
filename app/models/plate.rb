@@ -21,9 +21,17 @@ class Plate < Asset
     end.index(transfer_as_destination) + 1
   end
 
-  contains :wells do
+  contains :wells, :include => :map, :order => 'map_id ASC' do
     def located_at(location)
       super(proxy_owner, location)
+    end
+
+    # After importing wells we need to also create the AssetLink and WellAttribute information for them.
+    def post_import(links_data)
+      time_now = Time.now
+
+      AssetLink.import([:direct, :count, :ancestor_id, :descendant_id], links_data.map { |c| [true,1,*c] }, :validate => false)
+      WellAttribute.import([:well_id, :created_at, :updated_at], links_data.map { |c| [c.last, time_now, time_now] }, :validate => false, :timestamps => false)
     end
   end
 
@@ -109,73 +117,6 @@ class Plate < Asset
   def add_and_save_well(well, row=nil, col=nil)
     self.add_well(well, row, col)
     well.save!
-  end
-
-  def map_id_offset
-    first_map = Map.find_by_asset_size(size, :order => 'id ASC')
-    raise Exception, "No maps found for the plate size '#{size}'" unless first_map
-    return first_map.id - 1 # - so 1 + offset = 0
-  end
-
-  # TODO:  move to ContainerAssociation module
-  def import_wells(wells)
-    #Plate.benchmark("import #{wells.size} wells") do
-    # slow
-    # This is a hack to get the id of the imported wells
-    # we prefix all the name so we can found and reload the new created wells, by name
-    # We then only update with the real one
-    
-    thread_name = "%.5d-" % $PID
-    original_names = []
-    Plate.benchmark("import tweaking name") do
-    wells.each do |well|
-      original_names << well.name
-      well.name = "#{thread_name}#{well.name}"
-    end
-    end
-    
-    #Plate.benchmark("import importing #{wells.size}") do
-      Well.import wells
-    #end
-
-    sub_wells = []
-    Plate.benchmark("import reloading") do
-      sub_wells = Well.find(:all, :conditions => ["name LIKE ?", "#{thread_name}%"], :select => "id, name")
-      sub_wells.each do |sub_well|
-        sub_well.name = sub_well.name[thread_name.size, -1]
-      end
-    end
-    #Plate.benchmark("import renaming") do
-      # we can skip the validation, hoping that its been already done and partially on the name
-      # the fake name being already validated
-      Well.import [:id, :name], sub_wells, :on_duplicate_key_update => [:name], :validate => false
-    #end
-    associations = sub_wells.map { |w| ContainerAssociation.new(:container_id => id, :content_id => w.id) }
-    ContainerAssociation.import associations
-    #end
-  end
-
-  def create_wells_with_samples(samples, count = 96)
-    well_data = []
-
-    self.size  = count
-    offset = map_id_offset
-    1.upto(count) do |i|
-      well_data << Well.new(:plate => self, :map_id => i+offset, :sample => samples.shift)
-    end
-
-    import_wells(well_data)
-
-    self.save
-    self.reload
-    self.create_well_attributes(self.wells)
-
-    self.wells
-  end
-
-  def create_well_attributes(wells)
-    well_attributes = wells.map { |well| [ well.id ] }
-    WellAttribute.import [:well_id], well_attributes
   end
 
   def find_well_by_name(well_name)

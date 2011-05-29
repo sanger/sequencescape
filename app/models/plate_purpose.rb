@@ -154,8 +154,8 @@ class PlatePurpose < ActiveRecord::Base
 
   def create!(attributes = {}, &block)
     attributes[:size] ||= 96
-    plates.create_with_barcode!(attributes.merge(:wells => Map.where_plate_size(attributes[:size]).all.map { |map| Well.new(:map => map) })).tap do |plate|
-      plate.wells.each { |well| AssetLink.create_edge!(plate, well) }
+    plates.create_with_barcode!(attributes).tap do |plate|
+      plate.wells.import(Map.where_plate_size(plate.size).all.map { |map| Well.new(:map => map) })
     end
   end
 end

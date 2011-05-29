@@ -42,7 +42,7 @@ Given /^there is a (\d+) well "([^"]*)" plate with a barcode of "([^"]*)"$/ do |
         :sample => sample
       )
   end
-  new_plate.import_wells(well_data)
+  new_plate.wells.import(well_data)
   
   new_plate.wells.first.material.sample_metadata.update_attributes!(
     :gender => "male"

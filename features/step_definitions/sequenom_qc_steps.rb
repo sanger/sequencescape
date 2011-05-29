@@ -10,7 +10,7 @@ class Plate
         :sample => sample
       )
     end
-    import_wells well_data
+    wells.import well_data
   end
 
   def self.create_source_plates(source_barcodes, first_well_gender=true, number_of_wells = 96)
