@@ -34,7 +34,7 @@ Given /^plate "([^"]*)" has "([^"]*)" wells with samples$/ do |plate_barcode, nu
   1.upto(number_of_wells.to_i) do |i|
     well_data  << Well.new(:plate => plate, :map_id => i, :sample => Factory(:sample))
   end
-  plate.import_wells well_data
+  plate.wells.import well_data
 end
 
 
