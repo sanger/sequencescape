@@ -56,7 +56,7 @@ end
 
 Given /^study "([^"]*)" has a plate "([^"]*)" to be volume checked$/ do |study_name, plate_barcode|
   plate = Plate.create!(:barcode => plate_barcode)
-  plate.import_wells((1..24).map { |i| Well.new(:plate => plate, :map_id => i) })
+  plate.wells.import((1..24).map { |i| Well.new(:plate => plate, :map_id => i) })
   WellAttribute.import(plate.wells.map { |well| WellAttribute.new(:well_id => well.id) })
 
   study = Study.find_by_name(study_name)
