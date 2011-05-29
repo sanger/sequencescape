@@ -54,7 +54,10 @@ class AddPulldownPlatePurposesAndRelationships < ActiveRecord::Migration
 
   def self.up
     ActiveRecord::Base.transaction do
-      stock_plate_purpose = PlatePurpose.find_by_name('Stock plate') or raise StandardError, 'Cannot find stock plate purpose'
+      # We have to have a special stock plate purpose for the pulldown pipeline to prevent it clashing with the SLF
+      # stock plates (where they just create all of the children).  Really we should be binding the plate purpose
+      # to the pipeline it is targeted for, but this is a compromise for the moment.
+      stock_plate_purpose = PlatePurpose.create!(:name => 'Pulldown stock plate')
 
       PLATE_PURPOSE_FLOWS.each do |flow|
         flow.inject(stock_plate_purpose) do |parent, child_plate_name|

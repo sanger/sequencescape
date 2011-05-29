@@ -15,13 +15,13 @@ Feature: The top of the pulldown pipeline
     Given the plate barcode webservice returns "1000001"
       And the plate barcode webservice returns "1000002"
 
-    Given the UUID for the plate purpose "Stock plate" is "11111111-2222-3333-4444-000000000001"
+    Given the UUID for the plate purpose "Pulldown stock plate" is "11111111-2222-3333-4444-000000000001"
       And the UUID for the transfer template "Transfer columns 1-12" is "22222222-3333-4444-5555-000000000001"
       And the UUID for the search "Find asset by barcode" is "33333333-4444-5555-6666-000000000001"
       And the UUID of the next plate creation created will be "55555555-6666-7777-8888-000000000001"
       And the UUID of the next state change created will be "44444444-5555-6666-7777-000000000001"
 
-    Given a "Stock plate" plate called "Testing the API" exists
+    Given a "Pulldown stock plate" plate called "Testing the API" exists
       And the UUID for the plate "Testing the API" is "00000000-1111-2222-3333-000000000001"
 
   @authorised
