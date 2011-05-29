@@ -56,8 +56,6 @@ Feature: Creating projects
       | Cherrypick                             | 0           | 0          | 0               | Request more |
       | DNA QC                                 | 0           | 0          | 0               | Request more |
       | Genotyping                             | 0           | 0          | 0               | Request more |
-   
-
 
   Scenario: Creating a next-gen sequencing project
     Given user "John Smith" has a workflow "Next-gen sequencing"
@@ -77,11 +75,13 @@ Feature: Creating projects
       | Multiplexed library creation           | 0           | 0          | 0               | Request more |
       | Pulldown library creation              | 0           | 0          | 0               | Request more |
       | Single ended sequencing                | 0           | 0          | 0               | Request more |
-      | Single ended hi seq sequencing         | 0           | 0          | 0               | Request more |      
+      | Single ended hi seq sequencing         | 0           | 0          | 0               | Request more |
       | Paired end sequencing                  | 0           | 0          | 0               | Request more |
       | HiSeq Paired end sequencing            | 0           | 0          | 0               | Request more |
       | Cherrypicking for Pulldown             | 0           | 0          | 0               | Request more |
       | Pulldown Multiplex Library Preparation | 0           | 0          | 0               | Request more |
       | PacBio Sample Prep                     | 0           | 0          | 0               | Request more |
       | PacBio Sequencing                      | 0           | 0          | 0               | Request more |
-      
+      | Pulldown WGS                           | 0           | 0          | 0               | Request more |
+      | Pulldown SC                            | 0           | 0          | 0               | Request more |
+      | Pulldown ISC                           | 0           | 0          | 0               | Request more |
