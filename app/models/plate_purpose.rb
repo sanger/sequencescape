@@ -124,7 +124,7 @@ class PlatePurpose < ActiveRecord::Base
   end
 
   def create_plates(source_plate_barcodes, current_user)
-    return plates.create_with_barcode! if source_plate_barcodes.blank?
+    return [ plates.create_with_barcode! ] if source_plate_barcodes.blank?
 
     source_plate_barcodes.scan(/\d+/).map do |source_plate_barcode|
       create_child_plates_from_scanned_plate(source_plate_barcode, current_user)

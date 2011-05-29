@@ -1,28 +1,6 @@
 require "test_helper"
 
 class SubmissionTest < ActiveSupport::TestCase
-  context 'Submission' do
-    context 'associations' do
-      should_belong_to :study
-      should_belong_to :user
-    end
-
-    context 'counts' do
-      setup do
-        @submission1 = Factory :submission, :state => "ready", :assets => [Factory(:asset)]
-        3.times { |_| Factory(:request, :item => Factory(:item, :submission => @submission1)) }
-      end
-
-      should 'have the correct number of items' do
-        assert_equal 3, @submission1.items.size
-      end
-
-      should 'have the correct number of requests' do
-        assert_equal 3, @submission1.requests.size
-      end
-    end
-  end
-
   context "Submission" do
     setup do
       @assets = (1..4).map { |i| Factory(:asset, :name => "Asset#{ i }") } # NOTE: huh? why did this have ':id => 1'!?!!

@@ -262,11 +262,12 @@ end
 
 Factory.define :multiplexed_library_creation_request_type, :class => RequestType do |rt|
   rt_value = Factory.next :request_type_id
-  rt.name           "Request type #{rt_value}"
-  rt.key            "request_type_#{rt_value}"
-  rt.request_class  MultiplexedLibraryCreationRequest
-  rt.order          1
-  rt.workflow    {|workflow| workflow.association(:submission_workflow)}
+  rt.name               "Request type #{rt_value}"
+  rt.key                "request_type_#{rt_value}"
+  rt.request_class      MultiplexedLibraryCreationRequest
+  rt.order              1
+  rt.for_multiplexing   true
+  rt.workflow           { |workflow| workflow.association(:submission_workflow)}
 end
 
 Factory.define :sample do |s|
