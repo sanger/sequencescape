@@ -86,7 +86,7 @@ class Transfer < ActiveRecord::Base
     private :locate_stock_well_for
 
     def stock_plate_purpose
-      @stock_plate_purpose ||= PlatePurpose.find(2)
+      @stock_plate_purpose ||= (PlatePurpose.find_by_name('Pulldown stock plate') or raise StandardError, 'Cannot find pulldown stock plate purpose')
     end
     private :stock_plate_purpose
   end
