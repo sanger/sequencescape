@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110527122645) do
+ActiveRecord::Schema.define(:version => 20110531103000) do
 
   create_table "archived_properties", :force => true do |t|
     t.text    "value"
