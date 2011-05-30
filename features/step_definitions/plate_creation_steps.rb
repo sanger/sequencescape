@@ -1,4 +1,4 @@
-Transform /the plate creation with ID (\d+)/ do |id|
+Transform /^the plate creation with ID (\d+)$/ do |id|
   PlateCreation.find(id)
 end
 
