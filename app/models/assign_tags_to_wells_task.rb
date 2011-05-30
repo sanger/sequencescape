@@ -38,14 +38,10 @@ class AssignTagsToWellsTask < Task
   def create_tag_instances_and_link_to_wells(requests, params)
     params[:tag].map do |well_id, tag_id|
       ActiveRecord::Base.transaction do     
-        well = Well.find(well_id)
-        if well.tag_instance.nil?
-          tag = Tag.find(tag_id)
-          tag_instance  = TagInstance.create!(:tag => tag)
-          AssetLink.create_edge!(well, tag_instance)
-        else
-          raise "Unable to add multiple tags to a well."
-        end
+        well, tag = Well.find(well_id), Tag.find(tag_id)
+        next if well.tag_instance.try(:tag) == tag            # No point in re-tagging with the same tag!
+        well.untag! if well.tag_instance.present?
+        tag.tag!(well)
       end
     end
   end
