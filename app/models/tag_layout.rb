@@ -34,7 +34,7 @@ class TagLayout < ActiveRecord::Base
     wells_on_plate = Hash[plate.wells.map { |well| [ well.map, well ] }]
     tags           = tag_group.tags.sort_by(&:map_id)
     Map.send(:"walk_plate_in_#{order}", plate.size) do |map, index|
-      AssetLink.connect(tags[index % tags.length].create!, wells_on_plate[map])
+      tags[index % tags.length].tag!(wells_on_plate[map])
     end
   end
   private :layout_tags_into_wells_by
