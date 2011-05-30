@@ -33,6 +33,7 @@ Feature: The bottom of the pulldown pipeline
       And all multiplexed library tubes have sequential UUIDs based on "00000000-1111-2222-3333-9999"
 
     # Find the last plate by barcode
+    Then log "Find the last plate by barcode" for debugging
     When I POST the following JSON to the API path "/33333333-4444-5555-6666-000000000001/first":
       """
       {
@@ -53,6 +54,7 @@ Feature: The bottom of the pulldown pipeline
       """
 
     # Make the transfers from the plate to the appropriate MX library tubes
+    Then log "Make the transfers from the plate to the appropriate MX library tubes" for debugging
     When I make an authorised POST with the following JSON to the API path "/22222222-3333-4444-5555-000000000001":
       """
       {
@@ -79,6 +81,7 @@ Feature: The bottom of the pulldown pipeline
       """
 
     # Change the state of one tube to ensure it doesn't affect the other
+    Then log "Change the state of one tube to ensure it doesn't affect the other" for debugging
     When I make an authorised POST with the following JSON to the API path "/state_changes":
       """
       {
@@ -111,6 +114,7 @@ Feature: The bottom of the pulldown pipeline
      And the state of all the pulldown library creation requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000002" should be "pending"
 
     # Now passing should adjust the state of the pulldown library creation request
+    Then log "Now passing should adjust the state of the pulldown library creation request" for debugging
     When I make an authorised POST with the following JSON to the API path "/state_changes":
       """
       {
