@@ -32,6 +32,7 @@ class PlateCreation < ActiveRecord::Base
     self.child = child_plate_purpose.create!
     connect_parent_and_child
     connect_child_to_parent_study
+    record_plate_creation
   end
   private :create_child_plate
 
@@ -44,4 +45,9 @@ class PlateCreation < ActiveRecord::Base
     RequestFactory.create_asset_requests([ self.child.id ], self.parent.study.id) if self.parent.study.present?
   end
   private :connect_child_to_parent_study
+
+  def record_plate_creation
+    parent.events.create_plate!(child_plate_purpose, child, user)
+  end
+  private :record_plate_creation
 end

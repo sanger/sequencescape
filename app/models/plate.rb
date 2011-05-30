@@ -465,17 +465,6 @@ class Plate < Asset
     self.wells.with_blank_samples.count
   end
 
-  def delayed_stamp_samples_into_wells(plate_id)
-    return if self.wells.size > 0
-    plate = Plate.find(plate_id)
-    plate.wells.each do |well|
-      cloned_well = well.clone
-      cloned_well.plate = self
-      cloned_well.save!
-    end
-  end
-  #handle_asynchronously :delayed_stamp_samples_into_wells
-
   def default_plate_size
     DEFAULT_SIZE
   end
