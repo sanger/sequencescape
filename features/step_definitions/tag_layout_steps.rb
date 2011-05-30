@@ -5,11 +5,11 @@ end
 TAG_LAYOUT_TEMPLATE_REGEXP = 'tag layout template "[^\"]+"'
 TAG_LAYOUT_REGEXP          = 'tag layout with ID \d+'
 
-Transform /tag layout template "([^\"]+)"/ do |name|
+Transform /^tag layout template "([^\"]+)"$/ do |name|
   TagLayoutTemplate.find_by_name(name) or raise StandardError, "Cannot find tag layout template #{name}"
 end
 
-Transform /tag layout with ID (\d+)/ do |id|
+Transform /^tag layout with ID (\d+)$/ do |id|
   TagLayout.find(id)
 end
 
