@@ -1,8 +1,8 @@
-Transform /submitted to "([^\"]+)"/ do |name|
+Transform /^submitted to "([^\"]+)"$/ do |name|
   SubmissionTemplate.find_by_name(name) or raise StandardError, "Cannot find submission template #{name.inspect}"
 end
 
-Transform /all submissions/ do |_|
+Transform /^all submissions$/ do |_|
   Submission.all
 end
 
@@ -21,7 +21,7 @@ class WellRange
   end
 end
 
-Transform /([A-H]\d+)-([A-H]\d+)/ do |start, finish|
+Transform /^([A-H]\d+)-([A-H]\d+)$/ do |start, finish|
   WellRange.new(start, finish)
 end
 
@@ -69,15 +69,15 @@ Given /^(all submissions) have been worked until the last plate of the "Pulldown
   work_pipeline_for(submissions, 'ISC pooled captured library plate')
 end
 
-Transform /the (sample|library) tube "([^\"]+)"/ do |type, name|
+Transform /^the (sample|library) tube "([^\"]+)"$/ do |type, name|
   "#{type}_tube".classify.constantize.find_by_name(name) or raise StandardError, "Could not find the #{type} tube #{name.inspect}"
 end
 
-Transform /the (?:.+\s)?plate "([^\"]+)"/ do |name|
+Transform /^the (?:.+\s)?plate "([^\"]+)"$/ do |name|
   Plate.find_by_name(name) or raise StandardError, "Could not find the plate #{name.inspect}"
 end
 
-Transform /the (?:.+) with UUID "([^\"]+)"/ do |uuid|
+Transform /^the (?:.+) with UUID "([^\"]+)"$/ do |uuid|
   Uuid.lookup_single_uuid(uuid).resource
 end
 
