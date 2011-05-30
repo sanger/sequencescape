@@ -72,12 +72,12 @@ class PlatePurpose < ActiveRecord::Base
         child_plate.size          = plate.size
         child_plate.location      = plate.location
         child_plate.name          = "#{target_plate_purpose.name} #{child_plate.barcode}"
+        child_plate.wells         = plate.wells.map(&:clone)
       end.tap do |child_plate|
-        plate.events.create_plate!(target_plate_purpose, child_plate, current_user)
-
         RequestFactory.create_assets_requests([child_plate.id], plate.study.id) if plate.study
-        child_plate.delayed_stamp_samples_into_wells(plate.id)
         AssetLink.connect(plate, child_plate)
+
+        plate.events.create_plate!(target_plate_purpose, child_plate, current_user)
       end
     end
   end

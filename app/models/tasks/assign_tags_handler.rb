@@ -30,17 +30,11 @@ module Tasks::AssignTagsHandler
     ActiveRecord::Base.transaction do
       multiplexed_library = MultiplexedLibraryTube.create!(:name => params[:mx_library_name], :barcode => AssetBarcode.new_barcode)
       @batch.requests.each do |request|
-        tag_id       = params[:tag][request.id.to_s] or next
-        tag          = @tag_group.tags.find(tag_id)
-        tag_instance = TagInstance.create!(:tag => tag)
+        tag_id = params[:tag][request.id.to_s] or next
+        tag    = @tag_group.tags.find(tag_id)
+        tag.tag!(request.target_asset)
 
-        begin
-        AssetLink.create_edge(tag_instance, request.target_asset)
         AssetLink.create_edge(request.target_asset, multiplexed_library)
-        rescue => exception
-          debugger
-          raise
-        end
       end
 
       # Find a request to get the submission_id from to find the sequencing request
