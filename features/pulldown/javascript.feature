@@ -44,7 +44,7 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
       | Quantity to pick  | 1000 |
     And I press "Next step"
 		When I press "Submit"
-    Given the last batch has a barcode of "555"
+    Given the last batch has a barcode of "550000555760"
     Then the downloaded tecan file for batch "550000555760" and plate "1220099999705" is
     """
     C;

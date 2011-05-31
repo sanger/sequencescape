@@ -19,7 +19,7 @@ Given /^I have a released cherrypicking batch with (\d+) samples$/ do |number_of
 	When %Q{I select "Genotyping freezer" from "Location"}
 	And %Q{I press "Next step"}
 	When %Q{I press "Release this batch"}
-	Given %Q{the last batch has a barcode of "555"}
+	Given %Q{the last batch has a barcode of "550000555760"}
 end
 
 
@@ -60,7 +60,7 @@ Given /^I have a released cherrypicking batch with 3 plates$/ do
 	When %Q{I select "Genotyping freezer" from "Location"}
 	And %Q{I press "Next step"}
 	When %Q{I press "Release this batch"}
-	Given %Q{the last batch has a barcode of "555"}
+	Given %Q{the last batch has a barcode of "550000555760"}
 end
 
 Given /^I have a released cherrypicking batch with 1 plate which doesnt need buffer$/ do
@@ -75,7 +75,7 @@ Given /^user "([^"]*)" has a user barcode of "([^"]*)"$/ do |login, user_barcode
 end
 
 Transform /^the last batch$/ do |_|
-  Batch.last
+  Batch.last or raise StandardError, 'There appear to be no batches'
 end
 
 Then /^the downloaded tecan file for batch "([^"]*)" and plate "([^"]*)" is$/ do |batch_barcode, plate_barcode, tecan_file|
