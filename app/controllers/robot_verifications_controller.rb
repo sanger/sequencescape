@@ -7,10 +7,12 @@ class RobotVerificationsController < ApplicationController
   def submission
     barcode_hash = params[:barcodes]
 
-    if @robot_verification.valid_barcode_params?(barcode_hash)
+    errors = []
+    @robot_verification.validate_barcode_params(barcode_hash, &errors.method(:push))
+    if errors.empty?
       get_fields_and_check(barcode_hash)
     else
-      flash[:error] = "Invalid barcodes"
+      flash[:error] = errors
       redirect_to :action => :index
     end
   end
