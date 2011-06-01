@@ -10,8 +10,10 @@ class Transfer::BetweenPlates < Transfer
   validates_each(:transfers) do |record, attribute, value|
     if not value.is_a?(Hash)
       record.errors.add(:transfers, 'must be a map from source to destination location')
-    elsif not record.source.valid_positions?(value.keys) or not record.destination.valid_positions?(value.values)
-      record.errors.add(:transfers, 'are not valid positions for the source & destination plates')
+    elsif record.source.present? and not record.source.valid_positions?(value.keys) 
+      record.errors.add(:transfers, 'are not valid positions for the source plate')
+    elsif record.destination.present? and not record.destination.valid_positions?(value.values)
+      record.errors.add(:transfers, 'are not valid positions for the destination plate')
     end
   end
 
