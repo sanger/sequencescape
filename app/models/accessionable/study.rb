@@ -88,7 +88,8 @@ module Accessionable
       service.study_visibility(@study) == AccessionService::Protect
     end
 
-    def update_accession_number!(accession_number)
+    def update_accession_number!(user, accession_number)
+      add_updated_event(user, "Study #{@study.id}", @study) if @accession_number
       @accession_number = accession_number
       @study.study_metadata.study_ebi_accession_number = accession_number
       @study.save!

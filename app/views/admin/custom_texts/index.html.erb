@@ -16,14 +16,16 @@
     </thead>
     <tbody>
       <% @custom_texts.each do |custom_text| %>
-        <tr class="<%= cycle("rowodd", "roweven") %>">
+        <tr id="<%= custom_text.name %>-details" class="<%= cycle("rowodd", "roweven") %>">
           <td><%= link_to custom_text.id, custom_text_url(custom_text) %></td>
           <td><%= custom_text.identifier %></td>
           <td><%= custom_text.differential %></td>
           <td><%= custom_text.content_type %></td>
           <td><%= custom_text.content %></td>
           <% if current_user.administrator? %>
-            <td><%= link_to "Edit", edit_custom_text_url(custom_text) %></td>
+            <td>
+            <%= link_to "Edit", edit_custom_text_url(custom_text) %>
+            </td>
             <td><%= link_to "<span style='color: red;'><strong>[Delete]</strong></span>", custom_text_url(custom_text), :method => :delete, :confirm => "Are you sure?" %></td>
           <% end %>
         </tr>

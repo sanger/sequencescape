@@ -40,7 +40,18 @@ module Core::Io::Base::JsonFormattingBehaviour
   end
 
   def json_field_for(attribute)
-    attribute_to_json_field[attribute.to_s] || attribute.to_s
+    return attribute_to_json_field[attribute.to_s] if attribute_to_json_field.key?(attribute.to_s)
+
+    # We have to assume that this could be an association that is being exposed, in which case we'll
+    # need to determine the I/O class that deals with it and hand off the error handling to it.
+    association, *association_parts = attribute.to_s.split('.')
+    return attribute.to_s if association_parts.empty?
+    reflection = model_for_input.reflections[association.to_sym]
+    return attribute.to_s if reflection.nil?
+
+    # TODO: 'association' here should really be garnered from the appropriate endpoint
+    association_json_field = ::Core::Io::Registry.instance.lookup_for_class(reflection.klass).json_field_for(association_parts.join('.'))
+    "#{association}.#{association_json_field}"
   end
 
   def set_json_root(name)
@@ -57,7 +68,7 @@ module Core::Io::Base::JsonFormattingBehaviour
 
   def define_attribute_and_json_mapping(mapping)
     parse_mapping_rules(mapping) do |attribute_to_json, json_to_attribute|
-      self.attribute_to_json_field.merge!(attribute_to_json)
+      self.attribute_to_json_field.merge!(Hash[attribute_to_json])
       generate_object_to_json_mapping(attribute_to_json)
       generate_json_to_object_mapping(json_to_attribute)
     end
@@ -66,12 +77,12 @@ module Core::Io::Base::JsonFormattingBehaviour
   VALID_LINE_REGEXP = /^\s*((?:[a-z_][\w_]*\.)*[a-z_][\w_]*)\s*(<=|<=>|=>)\s*((?:[a-z_][\w_]*\.)*[a-z_][\w_]*)\s*$/
 
   def parse_mapping_rules(mapping, &block)
-    attribute_to_json, json_to_attribute = {}, {}
+    attribute_to_json, json_to_attribute = [], []
     StringIO.new(mapping).each_line do |line|
       next if line.blank? or line =~ /^\s*#/
       match = VALID_LINE_REGEXP.match(line) or raise StandardError, "Invalid line: #{line.inspect}"
-      attribute_to_json[match[1]] = match[3] if (match[2] =~ /<?=>/) 
-      json_to_attribute[match[3]] = (match[2] =~ /<=>?/) ? match[1] : nil
+      attribute_to_json.push([ match[1], match[3] ]) if (match[2] =~ /<?=>/) 
+      json_to_attribute.push([ match[3], (match[2] =~ /<=>?/) ? match[1] : nil ])
     end
     yield(attribute_to_json, json_to_attribute)
   end

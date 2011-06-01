@@ -11,12 +11,8 @@ class Sample < ActiveRecord::Base
   include Named
   extend EventfulRecord
   has_many_events do 
-    def created_using_sample_manifest!(user)
-      Event::SampleManifestEvent.created_sample!(self.proxy_owner, user).tap { |event| self << event }
-    end
-    def updated_using_sample_manifest!(user)
-      Event::SampleManifestEvent.updated_sample!(self.proxy_owner, user).tap { |event| self << event }
-    end
+    event_constructor(:created_using_sample_manifest!, Event::SampleManifestEvent, :created_sample!)
+    event_constructor(:updated_using_sample_manifest!, Event::SampleManifestEvent, :updated_sample!)
   end
   
   has_many_lab_events
@@ -40,6 +36,7 @@ class Sample < ActiveRecord::Base
       self.detect { |asset| asset.is_a?(asset_class) }
     end
   end
+  has_many :wells
 
   has_many :submissions, :through => :requests, :uniq => true
   belongs_to :sample_manifest
@@ -47,10 +44,18 @@ class Sample < ActiveRecord::Base
   validates_presence_of :name
   validates_format_of :name, :with => /^[\w_-]+$/i, :message => I18n.t('samples.name_format'), :if => :new_name_format, :on => :create
   validates_format_of :name, :with => /^[\(\)\+\s\w._-]+$/i, :message => I18n.t('samples.name_format'), :if => :new_name_format, :on => :update
-  validates_uniqueness_of :name, :on => :create, :message => "already in use"
-  validates_each(:name, :on => :save, :if => :name_changed_outside_of_manifest?) do |record,attr,value|
-    record.errors.add(:name, 'cannot be changed') unless record.new_record?
+  validates_uniqueness_of :name, :on => :create, :message => "already in use", :unless => :sample_manifest_id?
+  validates_each(:name, :on => :save, :unless => :can_rename_sample?) do |record,attr,value|
+    record.errors.add(:name, 'cannot be changed') if record.name_changed? and not record.new_record?
   end
+
+  extend ValidationStateGuard
+  validation_guard(:can_rename_sample)
+
+  def rename_to!(new_name)
+    update_attributes!(:name => new_name)
+  end
+  validation_guarded_by(:rename_to!, :can_rename_sample)
   
   named_scope :with_name, lambda { |*names| { :conditions => { :name => names.flatten } } }
 
@@ -60,19 +65,6 @@ class Sample < ActiveRecord::Base
     "sample"
   end
   alias_method(:json_root, :url_name)
-
-  # This is used when updating a sample from a sample manifest, ensuring that the name can be changed.
-  def update_attributes_from_manifest!(attributes, current_user = nil)
-    @updating_from_manifest = true
-    self.update_attributes!(attributes)
-    self.events.updated_using_sample_manifest!(current_user)
-  ensure
-    @updating_from_manifest = false
-  end
-
-  def name_changed_outside_of_manifest?
-    self.name_changed? && !@updating_from_manifest
-  end
 
   named_scope :for_search_query, lambda { |query|
     { :conditions => [ 'name LIKE ? OR id=?', "%#{query}%", query ] }
@@ -385,10 +377,12 @@ class Sample < ActiveRecord::Base
     end
   end
 
-  GC_CONTENTS       = [ 'Neutral', 'High AT', 'High GC' ]
-  GENDERS           = [ 'Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable' ]
-  DNA_SOURCES       = [ 'Genomic', 'Whole Genome Amplified', 'Blood', 'Cell Line','Saliva','Brain' ]
-  SRA_HOLD_VALUES   = [ 'Hold', 'Public', 'Protect' ]
+  GC_CONTENTS     = [ 'Neutral', 'High AT', 'High GC' ]
+  GENDERS         = [ 'Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable' ]
+  DNA_SOURCES     = [ 'Genomic', 'Whole Genome Amplified', 'Blood', 'Cell Line','Saliva','Brain' ]
+  SRA_HOLD_VALUES = [ 'Hold', 'Public', 'Protect' ]
+  AGE_REGEXP      = '\d+(?:\.\d+)?\s+(?:second|minute|day|month|year)s?'
+  DOSE_REGEXP     = '\d+(?:\.\d+)?\s+\w+(?:\/\w+)?'
 
   extend Metadata
   has_metadata do
@@ -434,13 +428,13 @@ class Sample < ActiveRecord::Base
     attribute(:phenotype)
     #attribute(:strain_or_line) strain
     #TODO: split age in two fields and use a composed_of
-    attribute(:age, { :with => /^\d+(\.\d+)?\s+(second|minute|day|month|year)s?$/})
+    attribute(:age, :with => Regexp.new("^#{Sample::AGE_REGEXP}$"))
     attribute(:developmental_stage)
     #attribute(:sex) gender
     attribute(:cell_type)
     attribute(:disease_state)
     attribute(:compound) #TODO : yes/no?
-    attribute(:dose, :with => /^\d+(\.\d+)?\s+\w+(\/\w+)?$/)
+    attribute(:dose, :with => Regexp.new("^#{Sample::DOSE_REGEXP}$"))
     attribute(:immunoprecipitate)
     attribute(:growth_condition)
     attribute(:rnai)
@@ -483,6 +477,10 @@ class Sample < ActiveRecord::Base
       end
     end
   end
+
+  # This needs to appear after the metadata has been defined to ensure that the Metadata class
+  # is present.
+  include SampleManifest::InputBehaviour::SampleUpdating
 
   class Metadata
     # here we are aliasing ArrayExpress attribute from normal one
@@ -533,7 +531,7 @@ class Sample < ActiveRecord::Base
   
   def sample_reference_genome
     reference_genome = self.sample_metadata.reference_genome
-    reference_genome = self.studies.first.try(:study_metadata).try(:reference_genome) if ( reference_genome.nil? ) || reference_genome.name.blank?
+    reference_genome = self.primary_study.try(:study_metadata).try(:reference_genome) if ( reference_genome.nil? ) || reference_genome.name.blank?
     reference_genome
   end
   

@@ -34,7 +34,8 @@ class Accessionable::Policy < Accessionable::Base
     return xml.target!
   end
 
-  def update_accession_number!(accession_number)
+  def update_accession_number!(user, accession_number)
+    add_updated_event(user, "Policy for Study #{@study.id}", @study) if @accession_number
     @accession_number = accession_number
     @study.study_metadata.ega_policy_accession_number = accession_number
     @study.save!

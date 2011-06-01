@@ -12,12 +12,7 @@ color: #fff;
 div#tabs ul {
 padding-top: 1px;
 }
-div#tabs {
-background: #aad4f4;
-color: #31353d;
-font-size: 12px;
-float: left;
-}
+
 #appTitle a,#appTitle a:link,#appTitle a:visited {
 text-decoration: none;
 color: #efefef;
@@ -219,14 +214,7 @@ width: 45%;
 text-align: right;
 margin-top: -3px;
 }
-#yield {
-background: #fff;
-border: 1px solid #ccc;
-padding: 10px;
-font-size: 12px;
-min-height: 600px;
-line-height: 17px;
-}
+
 .bar li {
 display: inline;
 }

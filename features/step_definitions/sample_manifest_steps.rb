@@ -10,8 +10,7 @@ end
 Given /^sample information is updated from the manifest for study "([^"]*)"$/ do |study_name|
   study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   study.samples.each_with_index do |sample,index|
-    sample.update_attributes_from_manifest!(
-      :name => "#{study.abbreviation}#{index+1}",
+    sample.update_attributes!(
       :sanger_sample_id => sample.name,
       :sample_metadata_attributes => {
         :gender           => "Female",
@@ -19,7 +18,14 @@ Given /^sample information is updated from the manifest for study "([^"]*)"$/ do
         :sample_sra_hold  => "Hold"
       }
     )
+    sample.name = "#{study.abbreviation}#{index+1}"
+    sample.save_without_validation
   end
+end
+
+Given /^the last sample has been updated by a manifest$/ do 
+  sample = Sample.last or raise StandardError, "There appear to be no samples"
+  sample.update_attributes!(:updated_by_manifest => true)
 end
 
 Then /^study "([^"]*)" should have (\d+) samples$/ do |study_name, number_of_samples|
@@ -47,10 +53,12 @@ Then /^sample "([^"]*)" should have empty supplier name set to "([^"]*)"$/ do |s
   end
 end
 
-# This resets the auto-increment column of the SangerSampleId table so that their IDs start back a 1.
-# NOTE: Use sparringly because you shouldn't be relying on the ID values anyway.
-Given /^the Sanger sample IDs have been reset$/ do
-  SangerSampleId.connection.execute("ALTER TABLE #{SangerSampleId.quoted_table_name} AUTO_INCREMENT=1")
+Given /^the Sanger sample IDs will be sequentially generated$/ do
+  SangerSampleId::Factory.instance_variable_set(:@instance, Object.new.tap do |instance|
+    def instance.next!
+      @counter = (@counter || 0) + 1
+    end
+  end)
 end
 
 Then /^the samples table should look like:$/ do |table|
@@ -128,8 +136,35 @@ Then /^the last created sample manifest should be:$/ do |table|
   end
   
   table.rows.each_with_index do |row,index|
-    assert_equal @worksheet[offset+index,0], Barcode.barcode_to_human(Barcode.calculate_barcode(Plate.prefix, row[0].to_i))
-    assert_equal @worksheet[offset+index,1], row[1]
+    assert_equal Barcode.barcode_to_human(Barcode.calculate_barcode(Plate.prefix, row[0].to_i)), @worksheet[offset+index,0]
+    assert_equal row[1], @worksheet[offset+index,1]
   end
 end
 
+When /^the sample manifest with ID (\d+) is owned by study "([^\"]+)"$/ do |id, name|
+  manifest = SampleManifest.find(id)
+  study    = Study.find_by_name(name) or raise StandardError, "Cannot find study #{name.inspect}"
+  manifest.update_attributes!(:study => study)
+end
+
+When /^the sample manifest with ID (\d+) is supplied by "([^\"]+)"$/ do |id, name|
+  manifest = SampleManifest.find(id)
+  supplier = Supplier.find_by_name(name) or raise StandardError, "Cannot find supplier #{name.inspect}"
+  manifest.update_attributes!(:supplier => supplier)
+end
+
+Given /^the sample manifest with ID (\d+) is for (\d+) sample tube$/ do |id, count|
+  manifest = SampleManifest.find(id)
+  manifest.update_attributes!(:asset_type => '1dtube', :count => count.to_i)
+end
+
+Given /^the sample manifest with ID (\d+) is for (\d+) plates?$/ do |id, count|
+  manifest = SampleManifest.find(id)
+  manifest.update_attributes!(:asset_type => 'plate', :count => count.to_i)
+end
+
+Given /^the sample manifest with ID (\d+) has been processed$/ do |id|
+  manifest = SampleManifest.find(id)
+  manifest.generate
+  Given %Q{3 pending delayed jobs are processed}
+end

@@ -379,13 +379,17 @@ Given /^the study "([^\"]+)" is "([^\"]+)" of study "([^\"]+)"/ do |related_stud
   StudyRelationType::relate_studies_by_name!(relation_name, study, related_study)
 end
 
-Given /^a study named "([^\"]+)" exists for array express/ do |study_name|
+Given /^a study named "([^\"]+)" exists for accession/ do |study_name|
     Given %Q{a study named "#{study_name}" exists}
     Given %Q{an accession number is required for study "#{study_name}"}
     And   %Q{the title of study "#{study_name}" is "Testing accession numbers"}
     And   %Q{the description of study "#{study_name}" is "To find out if something is broken"}
     And   %Q{the abstract of study "#{study_name}" is "Ok, not ok?"}
-    And   %Q{the study "#{study_name}" is a "Whole Genome Sequencing" study}
+  And   %Q{the study "#{study_name}" is a "Whole Genome Sequencing" study}
+  end
+Given /^a study named "([^\"]+)" exists for array express/ do |study_name|
+  Given %Q{a study named "#{study_name}" exists for accession}
+  And   %Q{the study "#{study_name}" is a "Whole Genome Sequencing" study}
 end
 
 
