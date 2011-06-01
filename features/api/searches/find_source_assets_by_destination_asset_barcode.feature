@@ -1,7 +1,6 @@
 @api @json @asset @search @single-sign-on @new-api @barcode_search @destination_barcode_search
 Feature: Searching for assets by barcode
   Background:
-    Given all of this is happening at exactly "23-Oct-2010 23:00:00+01:00"
     Given all HTTP requests to the API have the cookie "WTSISignOn" set to "I-am-authenticated"
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
     Given I am using the latest version of the API

@@ -25,8 +25,10 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
     code = []
 
     # Split the mappings into two to make things easier.  Read only attributes are easily
-    # handled right now ...
+    # handled right now, provided there is not a read_write one that shares their name.
     read_only, read_write = json_to_attribute.partition { |_, v| v.nil? }
+    common_keys = read_only.map(&:first) & read_write.map(&:first)
+    read_only.delete_if { |k,_| common_keys.include?(k) }
     code.concat(read_only.map do |json, _|
       %Q{process_if_present(params, #{json.split('.').inspect}) { |_| raise ReadOnlyAttribute, #{json.inspect} }}
     end)

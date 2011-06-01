@@ -1,3 +1,4 @@
+@custom_text
 Feature: Custom text administration
   Administrators can create, edit, update and delete custom texts
 
@@ -7,9 +8,9 @@ Feature: Custom text administration
     Given I am a "Manager" user logged in as "xyz1"
     And I have administrative role
     And the following custom texts are defined
-      | id | identifier | differential | content_type | content                |
-      | 1  | foo        | 99           | letters      | Mary had a little lamb |
-      | 2  | bar        | 101          | digits       | 3.1418                 |
+      | identifier | differential | content_type | content                |
+      | foo        | 99           | letters      | Mary had a little lamb |
+      | bar        | 101          | digits       | 3.1418                 |
 
   Scenario: manager views the list and edits an entry
     Given I am on the custom texts admin page
@@ -23,7 +24,7 @@ Feature: Custom text administration
     | digits                 |
     | Mary had a little lamb |
     | 3.1418                 |
-    When I follow "Edit"
+    When I edit the custom text with identifier "foo" and differential "99"
     Then I should see "EDIT CUSTOM TEXT"
     And the field labeled "Custom text identifier" should contain "foo"
     And the field labeled "Custom text differential" should contain "99"
@@ -60,7 +61,7 @@ Feature: Custom text administration
 
   Scenario: manager deletes an entry
     Given I am on the custom texts admin page
-    And I follow "[Delete]"
+    When I delete the custom text with identifier "foo" and differential "99"
     Then I should see "Custom text deleted"
     And the page should contain the following
     | text         |
@@ -71,10 +72,9 @@ Feature: Custom text administration
     | 3.1418       |
     And I should not see "Mary had a little lamb"
 
-  @focus
   Scenario: manager makes data entry errors (model currently does no validations)
     Given I am on the custom texts admin page
-    And I follow "Edit"
+    When I edit the custom text with identifier "foo" and differential "99"
     Then I should see "EDIT CUSTOM TEXT"
     And the field labeled "Custom text identifier" should contain "foo"
     And the field labeled "Custom text differential" should contain "99"
@@ -92,65 +92,3 @@ Feature: Custom text administration
     And the field labeled "Custom text differential" should contain "0"
     And the field labeled "Custom text content type" should contain " letters "
     And the field labeled "Custom text content" should contain ""
-
-  @xml @api @wip @depricated
-  Scenario: manager uses program to make XML requests
-    When I request XML from the custom texts admin page
-    Then the XML response should be:
-      """
-      <?xml version="1.0" encoding="UTF-8"?>
-      <custom-texts type="array">
-        <custom-text>
-          <id>1</id>
-          <content-type>letters</content-type>
-          <content>Mary had a little lamb</content>
-          <identifier>foo</identifier>
-          <differential>99</differential>
-          
-          <created-at>2010-10-03T18:11:17+01:00</created-at>
-          <updated-at>2010-10-03T18:11:17+01:00</updated-at>
-        </custom-text>
-        <custom-text>
-          <id>2</id>
-          <content-type>digits</content-type>
-          <content>3.1418</content>
-          <identifier>bar</identifier>
-          <differential>101</differential>
-
-          <created-at>2010-10-03T18:11:17+01:00</created-at>
-          <updated-at>2010-10-03T18:11:17+01:00</updated-at>
-        </custom-text>
-      </custom-texts>
-      """
-
-    When I make a request for XML for a custom text identified by "foo"
-    Then the XML response should be:
-      """
-      <?xml version="1.0" encoding="UTF-8"?>
-      <custom-text>
-        <id>1</id>
-        <content-type>letters</content-type>
-        <content>Mary had a little lamb</content>
-        <identifier>foo</identifier>
-        <differential>99</differential>
-
-        <created-at>2010-10-03T18:11:17+01:00</created-at>
-        <updated-at>2010-10-03T18:11:17+01:00</updated-at>
-      </custom-text>
-      """
-
-    When I make a request for XML for a custom text identified by "bar"
-    Then the XML response should be:
-      """
-      <?xml version="1.0" encoding="UTF-8"?>
-      <custom-text>
-        <id>2</id>
-        <content-type>digits</content-type>
-        <content>3.1418</content>
-        <identifier>bar</identifier>
-        <differential>101</differential>
-
-        <created-at>2010-10-03T18:11:17+01:00</created-at>
-        <updated-at>2010-10-03T18:11:17+01:00</updated-at>
-      </custom-text>
-      """

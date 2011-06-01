@@ -14,6 +14,8 @@ class Study < ActiveRecord::Base
   include Named
   include Uuid::Uuidable
   include ReferenceGenome::Associations
+  include SampleManifest::Associations
+
   extend EventfulRecord
   has_many_events
   has_many_lab_events
@@ -87,6 +89,7 @@ class Study < ActiveRecord::Base
 
   validates_presence_of :name
   validates_uniqueness_of :name, :on => :create, :message => "already in use (#{self.name})"
+  validates_format_of :abbreviation, :with => /^[\w_-]+$/i, :allow_blank => false, :message => 'cannot contain spaces or be blank'
 
   named_scope :for_search_query, lambda { |query|
     { :conditions => [ 'name LIKE ? OR id=?', "%#{query}%", query ] }
@@ -559,7 +562,8 @@ end
                                     ) do |object|
                                       case study_from.affiliated_with?(object)
                                       when true
-                                        object
+                                        # don't propagate asset from another sample
+                                        object.is_a?(Asset) && object.sample_id && object.sample_id != sample.id ? nil : object
                                       when false
                                         nil # we skip the object and its dependencies
                                       else # nil
@@ -588,7 +592,7 @@ end
       end
     end
     if errors.present?
-      errors.each { |error | sample.errors.add ("Move:", error) }
+      errors.each { |error | sample.errors.add("Move:", error) }
       false
     else
        true

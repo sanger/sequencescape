@@ -66,48 +66,20 @@ class Asset < ActiveRecord::Base
 
   extend EventfulRecord
   has_many_events do 
-    def create_external_release!(sendmail = false)
-      self << ExternalReleaseEvent.create_for_asset!(self.proxy_owner, sendmail)
-    end
-    def create_pass!(reason)
-      Event::AssetSetQcStateEvent.create_passed!(self.proxy_owner,reason).tap { |event| self << event }
-    end
-    def create_fail!(reason)
-      Event::AssetSetQcStateEvent.create_failed!(self.proxy_owner,reason).tap { |event| self << event }
-    end
-    def create_scanned_into_lab!(location)
-      Event::ScannedIntoLabEvent.create_for_asset!(self.proxy_owner, location).tap { |event| self << event }
-    end
-    def create_plate!(plate_purpose, child_plate, user)
-      Event::PlateCreationEvent.create_for_asset!(self.proxy_owner, plate_purpose, child_plate, user).tap { |event| self << event }
-    end
-    def create_plate_with_date!(plate_purpose, parent_plate,date)
-      Event::PlateCreationEvent.create_for_asset_with_date!(self.proxy_owner, plate_purpose, parent_plate, date).tap { |event| self << event }
-    end
-    def create_sequenom_stamp!(user)
-      Event::PlateCreationEvent.create_sequenom_stamp_for_asset!(self.proxy_owner,user).tap { |event| self << event }
-    end
-    def create_sequenom_plate!(user)
-      Event::PlateCreationEvent.create_sequenom_plate_for_asset!(self.proxy_owner,user).tap { |event| self << event }
-    end
-    def create_gel_qc!(result,user)
-      Event::SampleLogisticsQcEvent.create_gel_qc_for_asset!(self.proxy_owner, result, user).tap { |event| self << event }
-    end
-    def create_pico!(result)
-      Event::SampleLogisticsQcEvent.create_pico_result_for_asset!(self.proxy_owner, result).tap { |event| self << event }
-    end
-    def created_using_sample_manifest!(user)
-      Event::SampleManifestEvent.created_sample!(self.proxy_owner, user).tap { |event| self << event }
-    end
-    def updated_using_sample_manifest!(user)
-      Event::SampleManifestEvent.updated_sample!(self.proxy_owner, user).tap { |event| self << event }
-    end
-    def update_gender_markers!(resource)
-      Event::SequenomLoading.created_update_gender_makers!(self.proxy_owner, resource).tap { |event| self << event }
-    end
-    def update_sequenom_count!(resource)
-      Event::SequenomLoading.created_update_sequenom_count!(self.proxy_owner, resource).tap { |event| self << event }
-    end
+    event_constructor(:create_external_release!,       ExternalReleaseEvent,          :create_for_asset!)
+    event_constructor(:create_pass!,                   Event::AssetSetQcStateEvent,   :create_passed!)
+    event_constructor(:create_fail!,                   Event::AssetSetQcStateEvent,   :create_failed!)
+    event_constructor(:create_scanned_into_lab!,       Event::ScannedIntoLabEvent,    :create_for_asset!)
+    event_constructor(:create_plate!,                  Event::PlateCreationEvent,     :create_for_asset!)
+    event_constructor(:create_plate_with_date!,        Event::PlateCreationEvent,     :create_for_asset_with_date!)
+    event_constructor(:create_sequenom_stamp!,         Event::PlateCreationEvent,     :create_sequenom_stamp_for_asset!)
+    event_constructor(:create_sequenom_plate!,         Event::PlateCreationEvent,     :create_sequenom_plate_for_asset!)
+    event_constructor(:create_gel_qc!,                 Event::SampleLogisticsQcEvent, :create_gel_qc_for_asset!)
+    event_constructor(:create_pico!,                   Event::SampleLogisticsQcEvent, :create_pico_result_for_asset!)
+    event_constructor(:created_using_sample_manifest!, Event::SampleManifestEvent,    :created_sample!)
+    event_constructor(:updated_using_sample_manifest!, Event::SampleManifestEvent,    :updated_sample!)
+    event_constructor(:update_gender_markers!,         Event::SequenomLoading,        :created_update_gender_makers!)
+    event_constructor(:update_sequenom_count!,         Event::SequenomLoading,        :created_update_sequenom_count!)
   end
   has_many_lab_events
 

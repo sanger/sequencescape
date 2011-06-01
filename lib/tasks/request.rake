@@ -1,6 +1,6 @@
 namespace :requests do
   desc "Tests requests statuses before implementing aasm and migrating data. Should disable aasm in Request before running this task"
-  task (:test => :environment) do
+  task :test => :environment do
     Request.find(:all).each do |request|
       case request.current_status
       when "Complete"
