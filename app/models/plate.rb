@@ -16,9 +16,11 @@ class Plate < Asset
   def iteration
     return nil if parent.nil?  # No parent means no iteration, not a 0 iteration.
 
-    parent.transfers_as_source.all.select do |p|
+    index_of_plate = parent.transfers_as_source.all.select do |p|
       p.destination.is_a?(Plate) and p.destination.plate_purpose == plate_purpose
-    end.index(transfer_as_destination) + 1
+    end.index(transfer_as_destination)
+
+    index_of_plate.nil? ? nil : index_of_plate+1
   end
 
   contains :wells, :include => :map, :order => 'map_id ASC' do

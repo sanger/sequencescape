@@ -4,8 +4,9 @@ class ::Io::PlateCreation < ::Core::Io::Base
   # set_eager_loading { |model| model }   # TODO: uncomment and add any named_scopes that do includes you need
 
   define_attribute_and_json_mapping(%Q{
-                   user <=  user
-                 parent <=  parent
-    child_plate_purpose <=  child_plate_purpose
+                   user <=> user
+                 parent <=> parent
+    child_plate_purpose <=> child_plate_purpose
+                  child  => child
   })
 end
