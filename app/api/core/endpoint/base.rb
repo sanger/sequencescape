@@ -13,7 +13,7 @@ class Core::Endpoint::Base
     end
 
     def instance(&block)
-      handler = Class.new(Handler).new(&block)
+      handler = Class.new(Handler).tap { |handler| const_set(:Instance, handler) }.new(&block)
       handler.instance_variable_set(:@name, name)
       write_inheritable_attribute(:instance_handler, handler)
     end
@@ -50,7 +50,8 @@ class Core::Endpoint::Base
     end
 
     def model(&block)
-      write_inheritable_attribute(:model_handler, Class.new(Handler).new(&block))
+      handler = Class.new(Handler).tap { |handler| const_set(:Model, handler) }.new(&block)
+      write_inheritable_attribute(:model_handler, handler)
     end
   end
 
