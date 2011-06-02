@@ -4,7 +4,7 @@ class ::Io::TagLayout < ::Core::Io::Base
   # set_eager_loading { |model| model }   # TODO: uncomment and add any named_scopes that do includes you need
 
   define_attribute_and_json_mapping(%Q{
-        plate <=  plate
+        plate <=> plate
     tag_group  => tag_group
   })
 end
