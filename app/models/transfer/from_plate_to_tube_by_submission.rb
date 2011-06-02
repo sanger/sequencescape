@@ -15,7 +15,7 @@ class Transfer::FromPlateToTubeBySubmission < Transfer
   # well as a source and the target is an MX library tube.
   #++
   def well_to_destination
-    Hash[
+    ActiveSupport::OrderedHash[
       source.wells.map do |well|
         tube = locate_mx_library_tube_for(locate_stock_well_for(well))
         tube.nil? ? nil : [ well, tube ]
