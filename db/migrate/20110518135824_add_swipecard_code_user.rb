@@ -1,4 +1,4 @@
-class AddswipecardCodeUser < ActiveRecord::Migration
+class AddSwipecardCodeUser < ActiveRecord::Migration
   def self.up
     add_column :users, :encrypted_swipecard_code, :string, :limit => 40
 
