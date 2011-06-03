@@ -5,6 +5,7 @@ require "tecan_file_generation"
 include Sanger::Robots::Tecan
 
 class Batch < ActiveRecord::Base
+  include Api::BatchIO::Extensions
   cattr_reader :per_page
   @@per_page = 500
   include AASM
@@ -37,8 +38,6 @@ class Batch < ActiveRecord::Base
     end
     { :conditions => conditions }
   }
-
-  named_scope :including_associations_for_json, { :include => [ :uuid_object, :user, :assignee, { :pipeline => :uuid_object }] }
 
   named_scope :includes_for_ui,    { :limit => 5, :include => :user }
   named_scope :pending_for_ui,     { :conditions => { :state => 'pending',   :production_state => nil    }, :order => 'created_at DESC' }
@@ -479,10 +478,6 @@ class Batch < ActiveRecord::Base
   def request_count
     BatchRequest.count(:conditions => "batch_id = #{self.id}")
   end
-  
-  def self.render_class
-    Api::BatchIO
-  end
 
   def pulldown_batch_report
     report_data = FasterCSV.generate( :row_sep => "\r\n") do |csv|
@@ -491,11 +486,11 @@ class Batch < ActiveRecord::Base
       self.requests.each do |request|
         raise 'Invalid request data' unless  request.valid_request_for_pulldown_report?
         well = request.asset
-
-        if well.tag_instance && well.tag_instance.tag
-          tag_name = well.tag_instance.tag.name
-          tag_expected_sequence = well.tag_instance.tag.oligo
-          tag_group_name = well.tag_instance.tag.tag_group.name if well.tag_instance.tag.tag_group 
+        tag_on_well = well.get_tag
+        if tag_on_well.present?
+          tag_name              = tag_on_well.name
+          tag_expected_sequence = tag_on_well.oligo
+          tag_group_name        = tag_on_well.tag_group.name if tag_on_well.tag_group.present?
         end
 
         csv << [ 

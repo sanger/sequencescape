@@ -18,7 +18,9 @@ class AssetGroup < ActiveRecord::Base
   named_scope :for_search_query, lambda { |query| { :conditions => [ 'name LIKE ?', "%#{query}%" ] } }
 
   def all_samples_have_accession_numbers?
-    assets.all? { |asset| asset.sample.try(:accession_number?) }
+    assets.all? do |asset|
+      asset.aliquots.all? { |aliquot| aliquot.sample.accession_number? }
+    end
   end
 
   def self.find_or_create_asset_group(new_assets_name, study)

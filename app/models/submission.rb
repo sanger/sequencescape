@@ -76,30 +76,23 @@ class Submission < ActiveRecord::Base
   end
   private :is_asset_applicable_to_type?
 
-  def assign_asset(request, request_type, asset)
-    return if asset.nil?
-    request.asset  = asset if is_asset_applicable_to_type?(request_type, asset)
-    request.sample = asset.sample
-  end
+  def create_request_of_type!(request_type, attributes = {}, &block)
+    request_type.create!(attributes) do |request|
+      request.workflow                    = workflow
+      request.project                     = project
+      request.study                       = study
+      request.user                        = user
+      request.submission_id               = id
+      request.request_metadata_attributes = request_type.extract_metadata_from_hash(request_options)
+      request.state                       = initial_request_state(request_type)
 
-  def are_requests_different(submission_to)
-    self.request_types != submission_to.request_types
-  end
+      if request.asset.present?
+        request.sample = request.asset.primary_aliquot.try(:sample)
 
-  def multiplex_started_passed
-    multiplex_started_passed_result = false
-    if self.multiplexed?
-      requests = Request.find_all_by_submission_id(self.id)
-      states = requests.map(&:state).uniq
-      if ( states.include?("started") || states.include?("passed") )
-        multiplex_started_passed_result = true
+        # TODO: This should really be an exception but not sure of the side-effects at the moment
+        request.asset  = nil unless is_asset_applicable_to_type?(request_type, request.asset)
       end
     end
-    return multiplex_started_passed_result
-  end
-
-  def add_assets(assets)
-    self.assets << assets
   end
 
   def move_to_submission(assets, current_user, submission)
@@ -226,12 +219,12 @@ class Submission < ActiveRecord::Base
   def initial_request_state(request_type)
     (request_options || {}).fetch(:initial_state, {}).fetch(request_type.id, request_type.initial_state).to_s
   end
-
-  protected
+  private :initial_request_state
 
   def compute_input_field_infos()
     request_attributes.uniq.map(&:to_field_info)
   end
+  protected :compute_input_field_infos
 end
 
 class Array

@@ -1,37 +1,12 @@
-class LibraryTube < Asset
+class LibraryTube < Tube
+  include Api::LibraryTubeIO::Extensions
   include ModelExtensions::LibraryTube
-  include LocationAssociation::Locatable
-
-  named_scope :including_associations_for_json, { :include => [ :uuid_object, { :tag_instance => { :tag => [ :uuid_object, { :tag_group => :uuid_object } ] } },  {:source_request => [:uuid_object, :request_metadata] }, :barcode_prefix, { :sample => :uuid_object }] }
-  @@per_page = 500
-
-  def url_name
-    "library_tube"
-  end
-  alias_method(:json_root, :url_name)
 
   def is_sequenceable?
     true
   end
 
-  def is_a_pool?
-    false
-  end
-
-  has_one_as_child :tag_instance, :conditions => { :sti_type => 'TagInstance' }
-  named_scope :include_tag, :include => { :tag_instance => { :tag => [ :uuid_object, { :tag_group => :uuid_object } ] } }
-
-  def get_tag_instance
-    self.tag_instance
-  end
-
-  def get_tag
-    self.tag_instance.try(:tag)
-  end
-
-  def tag
-    self.get_tag.try(:map_id) || ''
-  end
+  named_scope :include_tag, :include => { :aliquots => { :tag => [ :uuid_object, { :tag_group => :uuid_object } ] } }
 
   def sorted_tags_for_select
     self.get_tag.tag_group.tags.sort{ |a,b| a.map_id <=> b.map_id }.collect { |t| [t.name, t.id] }
@@ -48,11 +23,14 @@ class LibraryTube < Asset
     false
   end
 
+  def create_stock_asset!(attributes = {}, &block)
+    StockLibraryTube.create!(attributes.reverse_merge(:name => "(s) #{self.name}", :barcode => AssetBarcode.new_barcode), &block).tap do |stock_asset|
+      stock_asset.aliquots = aliquots.map(&:clone)
+    end
+  end
+
   def new_stock_asset
     StockLibraryTube.new(:name => "(s) #{self.name}", :sample_id => self.sample_id, :barcode => AssetBarcode.new_barcode)
   end
-
-  def self.render_class
-    Api::LibraryTubeIO
-  end
+  deprecate :new_stock_asset
 end

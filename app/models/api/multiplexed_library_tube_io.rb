@@ -1,4 +1,29 @@
 class Api::MultiplexedLibraryTubeIO < Api::Base
+  module Extensions
+    module ClassMethods
+      def render_class
+        Api::MultiplexedLibraryTubeIO
+      end
+    end
+
+    def self.included(base)
+      base.class_eval do
+        extend ClassMethods
+
+        named_scope :including_associations_for_json, { :include => [:uuid_object, :barcode_prefix ] }
+        alias_method(:json_root, :url_name)
+      end
+    end
+
+    def related_resources
+      ['parents','children','requests']
+    end
+
+    def url_name
+      "multiplexed_library_tube"
+    end
+  end
+
   renders_model(::MultiplexedLibraryTube)
 
   map_attribute_to_json_attribute(:uuid)

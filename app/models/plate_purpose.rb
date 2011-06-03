@@ -40,6 +40,7 @@ class PlatePurpose < ActiveRecord::Base
     end
   end
 
+  include Api::PlatePurposeIO::Extensions
   cattr_reader :per_page
   @@per_page = 500
   include Uuid::Uuidable
@@ -50,15 +51,6 @@ class PlatePurpose < ActiveRecord::Base
   validates_format_of :name, :with => /^\w[\s\w._-]+\w$/i
   validates_presence_of :name
   validates_uniqueness_of :name, :message => "already in use"
-  
-  def self.render_class
-    Api::PlatePurposeIO
-  end
-  
-  def url_name
-    "plate_purpose"
-  end
-  alias_method(:json_root, :url_name)
 
   def create_child_plates_from_scanned_plate(source_plate_barcode, current_user)
     plate = Asset.find_from_machine_barcode(source_plate_barcode) or raise ActiveRecord::RecordNotFound, "Could not find plate with machine barcode #{source_plate_barcode.inspect}"
@@ -72,8 +64,13 @@ class PlatePurpose < ActiveRecord::Base
         child_plate.size          = plate.size
         child_plate.location      = plate.location
         child_plate.name          = "#{target_plate_purpose.name} #{child_plate.barcode}"
-        child_plate.wells         = plate.wells.map(&:clone)
       end.tap do |child_plate|
+        plate.wells.each do |well|
+          child_plate.wells << well.clone.tap do |child_well|
+            child_well.aliquots = well.aliquots.map(&:clone)
+          end
+        end
+
         RequestFactory.create_assets_requests([child_plate.id], plate.study.id) if plate.study
         AssetLink.connect(plate, child_plate)
 

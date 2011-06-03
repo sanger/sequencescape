@@ -6,6 +6,5 @@ class ::Endpoints::SampleTubes < ::Core::Endpoint::Base
   instance do
     has_many(:library_tubes, :json => 'library_tubes', :to => 'library_tubes')
     has_many(:requests,      :json => 'requests',      :to => 'requests')
-    belongs_to(:sample,      :json => 'sample')
   end
 end

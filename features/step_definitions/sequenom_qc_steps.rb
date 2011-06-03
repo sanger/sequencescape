@@ -1,16 +1,10 @@
+# TODO: Remove these methods from Plate because it's bad to do this in a test
 class Plate
   def add_wells_to_plate(number_of_wells)
-    well_data = []
-    
     sample = Factory(:sample)
-    
     1.upto(number_of_wells.to_i) do |i|
-      well_data  << wells.new(
-        :map_id => i,
-        :sample => sample
-      )
+      wells.create!(:map_id => i).tap { |well| well.aliquots.create!(:sample => sample) }
     end
-    wells.import well_data
   end
 
   def self.create_source_plates(source_barcodes, first_well_gender=true, number_of_wells = 96)
@@ -19,7 +13,7 @@ class Plate
       plate.add_wells_to_plate(number_of_wells)
 
       # Unless we say otherwise give the first sample on the plate
-      plate.wells.first.material.sample_metadata.update_attributes!(
+      plate.wells.first.sample.sample_metadata.update_attributes!(
         :gender => "male"
       ) if first_well_gender
     end

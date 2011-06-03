@@ -1,4 +1,5 @@
 class Plate < Asset
+  include Api::PlateIO::Extensions
   include ModelExtensions::Plate
   include LocationAssociation::Locatable
   include Transfer::Associations
@@ -45,13 +46,7 @@ class Plate < Asset
 
   before_create :set_plate_name_and_size
 
-  named_scope :including_associations_for_json, { :include => [:uuid_object, :plate_metadata, :barcode_prefix, { :plate_purpose => :uuid_object } ] }
   named_scope :qc_started_plates, { :select => "distinct assets.*",  :order => 'assets.id DESC',  :conditions => ["(events.family = 'create_dilution_plate_purpose' OR asset_audits.key = 'slf_receive_plates') AND plate_purpose_id = #{PlatePurpose.find_by_name('Stock Plate').id}" ], :joins => "LEFT OUTER JOIN `events` ON events.eventful_id = assets.id LEFT OUTER JOIN `asset_audits` ON asset_audits.asset_id = assets.id  " ,:include => [:events, :asset_audits] }
-
-  def url_name
-    "plate"
-  end
-  alias_method(:json_root, :url_name)
 
   def wells_sorted_by_map_id
     wells.sorted
@@ -184,15 +179,11 @@ class Plate < Asset
     self.get_plate_type
   end
 
+  # A plate has a sample with the specified name if any of its wells have that sample.
   def sample?(sample_name)
-    self.wells.each do |well|
-      next if well.sample.nil?
-      next if well.sample.name.blank?
-      if well.sample.name == sample_name
-        return true
-      end
+    self.wells.any? do |well|
+      well.aliquots.any? { |aliquot| aliquot.sample.name == sample_name }
     end
-    false
   end
 
   def get_storage_location
@@ -321,16 +312,7 @@ class Plate < Asset
   
   # Should return true if any samples on the plate contains gender information
   def contains_gendered_samples?
-    genders_count = 0
-    
-    wells.each  do |well|
-      next if well.sample.nil?
-      # Does the sample in this well have a gender?
-      genders_count += 1 if !well.sample.sample_metadata.gender.blank?
-    end
-    
-    # So did we find any samples with a gender?
-    genders_count > 0
+    wells.any? { |well| well.sample.present? and not well.sample.sample_metadata.gender.blank? }
   end
 
   def generate_plate_submission(project, study, user, current_time)
@@ -345,10 +327,6 @@ class Plate < Asset
 
   def self.source_plate_types
     ["ABgene_0765","ABgene_0800"]
-  end
-
-  def self.render_class
-    Api::PlateIO
   end
 
   def create_sample_tubes

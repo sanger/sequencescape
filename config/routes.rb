@@ -271,7 +271,6 @@ ActionController::Routing::Routes.draw do |map|
         sample_tube.model :requests, :controller => "api/requests"
       end
       read_only.model :study_samples, :controller => "api/study_samples"
-      read_only.asset :tag_instances, :controller => "api/tag_instances"
       read_only.model :tags, :controller => "api/tags"
       read_only.asset :wells, :controller => "api/wells"
     end

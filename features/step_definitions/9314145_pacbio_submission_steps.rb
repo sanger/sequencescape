@@ -56,9 +56,9 @@ Given /^I have a fast PacBio sequencing batch$/ do
   Given %Q{the sample tubes are part of the study}
   Given %Q{I have a PacBio submission}
   location = Location.find_by_name("PacBio sequencing freezer")
-  library_1 = PacBioLibraryTube.create!(:location => location, :barcode => "333", :sample => SampleTube.find_by_barcode(111).sample )
+  library_1 = PacBioLibraryTube.create!(:location => location, :barcode => "333").tap { |tube| tube.aliquots.create!(:sample => SampleTube.find_by_barcode(111).sample) }
   library_1.pac_bio_library_tube_metadata.update_attributes!(:prep_kit_barcode => "999", :smrt_cells_available => 3)
-  library_2 = PacBioLibraryTube.create!(:location => location, :barcode => "444", :sample => SampleTube.find_by_barcode(222).sample)
+  library_2 = PacBioLibraryTube.create!(:location => location, :barcode => "444").tap { |tube| tube.aliquots.create!(:sample => SampleTube.find_by_barcode(222).sample) }
   library_2.pac_bio_library_tube_metadata.update_attributes!(:prep_kit_barcode => "999", :smrt_cells_available => 1)
   PacBioSequencingRequest.first.update_attributes!(:asset => library_1)
   PacBioSequencingRequest.last.update_attributes!(:asset => library_2)

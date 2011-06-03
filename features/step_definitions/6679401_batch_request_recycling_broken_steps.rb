@@ -83,13 +83,15 @@ def build_batch_for(name, count, &block)
   user = Factory(:user)
 
   assets = (1..count.to_i).map do |_|
-    asset_attributes = { :material => Factory(:sample) }
+    asset_attributes = { }
     if submission_details.key?(:holder_type)
       asset_attributes[:container] = Factory(submission_details[:holder_type], :location_id => pipeline.location_id)
     else
       asset_attributes[:location_id] = pipeline.location_id
     end
-    Factory(submission_details[:asset_type], asset_attributes)
+    Factory(submission_details[:asset_type], asset_attributes).tap do |asset|
+      asset.aliquots.create!(:sample => Factory(:sample))
+    end
   end
 
   # Build a submission that should end up in the appropriate inbox, once all of the assets have been
@@ -112,6 +114,7 @@ def build_batch_for(name, count, &block)
   # Then build a batch that will hold all of these requests, ensuring that it appears to be at least started
   # in some form.
   requests = Request.for_pipeline(pipeline).all
+  raise StandardError, "Pipeline has #{requests.size} requests waiting rather than #{count}" if requests.size != count.to_i
   batch    = Batch.create!(:pipeline => pipeline, :user => user, :requests => requests)
 end
 

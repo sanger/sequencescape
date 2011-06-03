@@ -1,4 +1,26 @@
 class Api::RequestIO < Api::Base
+  module Extensions
+    module ClassMethods
+      def render_class
+        Api::RequestIO
+      end
+    end
+
+    def self.included(base)
+      base.class_eval do
+        extend ClassMethods
+
+        named_scope :including_associations_for_json, { :include => [ :uuid_object, { :study => :uuid_object }, { :project => :uuid_object }, :user, {:asset => [ { :sample => :uuid_object }, :uuid_object, :barcode_prefix] }, { :target_asset => [ { :sample => :uuid_object }, :uuid_object, :barcode_prefix] }, :request_type, :request_metadata ] }
+
+        alias_method(:json_root, :url_name)
+      end
+    end
+
+    def url_name
+      "request" # frozen for subclass of the API
+    end
+  end
+
   renders_model(::Request)
 
   map_attribute_to_json_attribute(:uuid)

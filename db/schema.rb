@@ -9,7 +9,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110531103000) do
+ActiveRecord::Schema.define(:version => 20110608114415) do
+
+  create_table "aliquots", :force => true do |t|
+    t.integer  "receptacle_id"
+    t.integer  "sample_id"
+    t.integer  "tag_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "archived_properties", :force => true do |t|
     t.text    "value"
@@ -86,14 +94,11 @@ ActiveRecord::Schema.define(:version => 20110531103000) do
     t.decimal  "volume",                                :precision => 10, :scale => 2
     t.integer  "barcode_prefix_id"
     t.decimal  "concentration",                         :precision => 18, :scale => 8
-    t.integer  "sample_id"
-    t.integer  "tag_id"
   end
 
   add_index "assets", ["barcode"], :name => "index_assets_on_barcode"
   add_index "assets", ["barcode_prefix_id"], :name => "index_assets_on_barcode_prefix_id"
   add_index "assets", ["map_id"], :name => "index_assets_on_map_id"
-  add_index "assets", ["sample_id"], :name => "index_assets_on_sample_id"
   add_index "assets", ["sti_type", "updated_at"], :name => "index_assets_on_sti_type_and_updated_at"
   add_index "assets", ["sti_type"], :name => "index_assets_on_sti_type"
   add_index "assets", ["updated_at"], :name => "index_assets_on_updated_at"

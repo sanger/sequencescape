@@ -31,8 +31,8 @@ class BatchesControllerTest < ActionController::TestCase
 
           batch = Factory :batch, :pipeline => pipeline
           sample   = Factory :sample
-          library1 = Factory :asset, :sample => sample
-          lane = Factory :asset, :sample => sample, :qc_state => "failed"
+          library1 = Factory(:empty_library_tube).tap { |library_tube| library_tube.aliquots.create!(:sample => sample) }
+          lane = Factory(:empty_lane, :qc_state => 'failed').tap { |lane| lane.aliquots.create!(:sample => sample) }
           @request_one = pipeline.request_type.create!(
             :asset => library1, :target_asset => lane,
             :project => Factory(:project), :study => Factory(:study)
@@ -46,9 +46,9 @@ class BatchesControllerTest < ActionController::TestCase
           assert_response :success
           assert_not_nil @request_one.asset
           assert_not_nil @request_one.asset.sample
-          assert_tag :tag => "library", :attributes => {:sample_id => @request_one.asset.sample.id, :request_id => @request_one.id, :id => @request_one.asset.id}
-          assert_tag :tag => "library", :attributes => {:project_id => @request_one.project_id, :study_id => @request_one.study_id}        
-          assert_tag :tag => "library", :attributes => {:qc_state => "fail"}    
+          assert_tag :tag => "library", :attributes => {:sample_id => @request_one.asset.sample.id, :request_id => @request_one.id}
+          assert_tag :tag => "library", :attributes => {:project_id => @request_one.project_id, :study_id => @request_one.study_id}
+          assert_tag :tag => "library", :attributes => {:qc_state => "fail"}
         end
       end
       
