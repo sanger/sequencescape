@@ -1,11 +1,7 @@
 module ModelExtensions::Sample
   def self.included(base)
     base.class_eval do
-      has_many :sample_tubes
       named_scope :include_studies, { :include => { :studies => :study_metadata } }
-
-      has_one :primary_well, :class_name => 'Well', :order => 'created_at'
-      has_one :primary_tube, :class_name => 'SampleTube', :order => 'created_at'
 
       has_one :primary_study, :through => :study_samples, :source => :study, :order => 'study_id'
     end

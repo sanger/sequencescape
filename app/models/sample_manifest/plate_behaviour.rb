@@ -67,7 +67,7 @@ module SampleManifest::PlateBehaviour
 
     def io_samples
       samples.map do |sample|
-        container = sample.primary_well
+        container = sample.primary_receptacle
         {
           :sample    => sample,
           :container => {
@@ -79,7 +79,7 @@ module SampleManifest::PlateBehaviour
     end
 
     def print_labels(&block)
-      print_labels_for(self.samples.map { |s| s.primary_well.plate }.uniq, &block)
+      print_labels_for(self.samples.map { |s| s.primary_receptacle.plate }.uniq, &block)
     end
 
     def updated_by!(user, samples)
@@ -152,7 +152,9 @@ module SampleManifest::PlateBehaviour
       wells_for_plate = well_data.slice!(0, plate.size)
       study_samples_data = wells_for_plate.map do |map,sanger_sample_id|
         create_sample(sanger_sample_id).tap do |sample|
-          plate.wells.create!(:map => map, :sample => sample, :well_attribute => WellAttribute.new)
+          plate.wells.create!(:map => map, :well_attribute => WellAttribute.new).tap do |well|
+            well.aliquots.create!(:sample => sample)
+          end
         end
       end
 

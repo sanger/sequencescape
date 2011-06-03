@@ -1,12 +1,7 @@
-class SampleTube < Asset
+class SampleTube < Tube
+  include Api::SampleTubeIO::Extensions
   include ModelExtensions::SampleTube
   include StandardNamedScopes
-  include LocationAssociation::Locatable
-
-  named_scope :including_associations_for_json, { :include => [ :uuid_object, :barcode_prefix, { :sample => :uuid_object } ] }
-  named_scope :with_sample_id, lambda { |id| { :conditions => { :sample_id => id } } }
-  named_scope :with_sample, lambda { |sample| { :conditions => { :sample_id => sample.id } } }
-  @@per_page = 500
 
   # In theory these two callbacks should ensure that if a 2D barcode is set then the barcode of
   # the SampleTube is properly configured, otherwise it will be set to the ID of the SampleTube
@@ -21,8 +16,8 @@ class SampleTube < Asset
     end
   end
   after_create do |record|
-    record.barcode = record.id.to_s     if record.two_dimensional_barcode.blank? and record.barcode.blank?
-    record.name    = record.sample.name if record.name.blank? and not record.sample.nil?
+    record.barcode = record.id.to_s                     if record.two_dimensional_barcode.blank? and record.barcode.blank?
+    record.name    = record.primary_aliquot.sample.name if record.name.blank? and not record.primary_aliquot.try(:sample).nil?
 
     record.save! if record.barcode_changed? or record.name_changed?
   end
@@ -45,14 +40,14 @@ class SampleTube < Asset
   end
 
   def move_study_sample(study_from, study_to, current_user)
-    study_samples = self.sample.study_samples.find_all_by_study_id(study_from.id)
-    if study_samples.empty?
-      study_sample_new = StudySample.new(:study => study_to, :sample => self.sample)
-      study_sample_new.save
-    else
-      study_samples.each do |ps|
-        ps.study_id = study_to.id
-        ps.save
+    aliquots.all(:include => :sample).each do |aliquot|
+      study_samples = aliquot.sample.study_samples.find_all_by_study_id(study_from.id)
+      if study_samples.empty?
+        study_to.study_samples.create!(:sample => aliquot.sample)
+      else
+        study_samples.each do |study_sample|
+          study_sample.update_attributes!(:study => study_to)
+        end
       end
     end
 
@@ -70,9 +65,4 @@ class SampleTube < Asset
       :of_interest_to => "administrators"
     )
   end
-
-  def self.render_class
-    Api::SampleTubeIO
-  end
-
 end

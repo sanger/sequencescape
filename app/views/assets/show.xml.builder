@@ -4,7 +4,7 @@ xml.asset(api_data) {
   xml.type @asset.sti_type
   xml.name @asset.name
   xml.public_name @asset.public_name
-  xml.sample_id @asset.material_id
+  xml.sample_id @asset.sample_id
   xml.qc_state @asset.qc_state
   xml.children {
     @asset.children.each do |child_asset|

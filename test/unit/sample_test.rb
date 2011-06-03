@@ -21,7 +21,7 @@ class SampleTest < ActiveSupport::TestCase
         @new_assets_name = ""
         @current_user = Factory :user
 
-        @asset_1 = Factory :asset, :name => @sample_from.name, :material_id => @sample_from.id
+        @asset_1 = Factory(:empty_sample_tube, :name => @sample_from.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_from) }
         
         @asset_group = Factory :asset_group, :name => "not mx"
         @asset_group_asset = Factory :asset_group_asset, :asset_id => @asset_1.id, :asset_group_id => @asset_group.id
@@ -40,48 +40,10 @@ class SampleTest < ActiveSupport::TestCase
 
       end
 
-      # we don't check this anymore
-      #context "has a submission_to and without submission_from" do
-        #should "return failed error" do
-          #@sample_from.move(@study_from, @study_to, @asset_group, @new_assets_name, @current_user, @submission_to.id)
-          #assert_equal @sample_from.errors.full_messages[0], "Move: Study  #{@study_to.id} has a submission. The best way is create a new asset and after create a new submission."
-        #end
-      #end
-      
-      # we don't check this anymore
-      #context "With submissions with different request types" do
-        #setup do
-          #@request_type_ids_from = [@request_type_2.id, @request_type_3.id]
-          #@item = Factory :item
-          #@submission_from_1 = Factory :submission, :study => @study_from, :workflow => @workflow, :assets => [ @asset_1 ],
-                           #:request_types => @request_type_ids_from, :request_options => @request_options
-          #@request = Factory :request, :sample => @sample_from, :submission => @submission_from_1, :request_type => @request_type1, :study => @study_from, :workflow => @workflow, :item => @item
-        #end                                         
-        #should "return failed" do
-          #@sample_from.move(@study_from, @study_to, @asset_group, @new_assets_name, @current_user, @submission_to.id)
-          #assert_equal @sample_from.errors.full_messages[0], "Move: The submissions are different. Please, check this information."
-        #end
-      #end
-
-      # we don't check this anymore
-      #context "With several assets" do
-        #setup do
-          #@new_assets_name = "Test_1"
-          #@asset_from_2 = Factory :asset, :name => @sample_from.name, :material_id => @sample_from.id
-          #@sample_tube_1 = Factory :sample_tube, :name => @sample_from.name, :material_id => @sample_from.id
-          #@sample_tube_1 = Factory :sample_tube, :name => @sample_from.name, :material_id => @sample_from.id
-        #end                                         
-
-        #should "return failed" do
-          #@sample_from.move(@study_from, @study_to, @asset_group, @new_assets_name, @current_user, 0)
-          #assert_equal @sample_from.errors.full_messages[0], "Move: This sample has several assets. We could NOT move this sample."
-        #end
-      #end
-      
       context "only valid assets and without submissions" do
         setup do
           @sample_from_ok = Factory :sample
-          @asset_from = Factory :sample_tube, :name => @sample_from_ok.name, :material_id => @sample_from_ok.id
+          @asset_from = Factory(:empty_sample_tube, :name => @sample_from_ok.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_from_ok) }
           @asset_group_from_new = Factory :asset_group, :name => "Asset_Sample_New", :study => @study_from
           @asset_group_asset_from = Factory :asset_group_asset, :asset_id => @asset_from.id, :asset_group_id => @asset_group_from_new.id
 
@@ -90,7 +52,7 @@ class SampleTest < ActiveSupport::TestCase
           @asset_from.save
 
           @sample_to = Factory :sample         
-          @asset_to = Factory :asset, :name => @sample_to.name, :material_id => @sample_to.id
+          @asset_to = Factory(:empty_sample_tube, :name => @sample_to.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_to) }
           @asset_group_to_new = Factory :asset_group, :name => "Asset_Sample"
           @asset_group_asset_to = Factory :asset_group_asset, :asset_id => @asset_to.id, :asset_group_id => @asset_group_to_new.id
 
@@ -106,12 +68,12 @@ class SampleTest < ActiveSupport::TestCase
       context  "With Study_from with submission and New assets or assets without submission" do
         setup do
           @sample_from_ok = Factory :sample
-          @asset_from = Factory :sample_tube, :name => @sample_from_ok.name, :material_id => @sample_from_ok.id
+          @asset_from = Factory(:empty_sample_tube, :name => @sample_from_ok.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_from_ok) }
           @asset_group_from_new = Factory :asset_group, :name => "Asset_Sample_From", :study => @study_from
           @asset_group_asset_from = Factory :asset_group_asset, :asset_id => @asset_from.id, :asset_group_id => @asset_group_from_new.id
 
           @sample_to = Factory :sample
-          @asset_to = Factory :sample_tube, :name => @sample_to.name, :material_id => @sample_to.id
+          @asset_to = Factory(:empty_sample_tube, :name => @sample_to.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_to) }
           @asset_group_to_new = Factory :asset_group, :name => "Asset_Sample_To"
           @asset_group_asset_to = Factory :asset_group_asset, :asset_id => @asset_to.id, :asset_group_id => @asset_group_to_new.id
 
@@ -146,12 +108,12 @@ class SampleTest < ActiveSupport::TestCase
       context  "With 2 submissions, with same requests" do
         setup do
           @sample_from_ok = Factory :sample
-          @asset_from = Factory :sample_tube, :name => @sample_from_ok.name, :material_id => @sample_from_ok.id
+          @asset_from = Factory(:empty_sample_tube, :name => @sample_from_ok.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_from_ok) }
           @asset_group_from_new = Factory :asset_group, :name => "Asset_Sample_From", :study => @study_from
           @asset_group_asset_from = Factory :asset_group_asset, :asset_id => @asset_from.id, :asset_group_id => @asset_group_from_new.id
 
           @sample_to = Factory :sample
-          @asset_to = Factory :sample_tube, :name => @sample_to.name, :material_id => @sample_to.id
+          @asset_to = Factory(:empty_sample_tube, :name => @sample_to.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_to) }
           @asset_group_to_new = Factory :asset_group, :name => "Asset_Sample_To"
           @asset_group_asset_to = Factory :asset_group_asset, :asset_id => @asset_to.id, :asset_group_id => @asset_group_to_new.id
           
@@ -184,39 +146,6 @@ class SampleTest < ActiveSupport::TestCase
           assert_equal @asset_group_to_new.id, @sample_from_ok.assets.first.asset_group_assets.first.asset_group_id
         end
       end      
-    end
-
-    context "add assets to asset_group" do
-      setup do
-        @sample_base = Factory :sample
-
-        @asset = Factory :asset, :name => @sample_base.name, :material_id => @sample_base.id
-        @asset_group = Factory :asset_group, :name => "Asset_Sample_New"
-      end
-
-      should "return true" do
-        assert_equal @sample_base.assets.first.asset_groups, []
-        @result = @sample_base.add_assets_to_asset_group(@asset_group)
-        @sample_base.reload
-        assert_equal @sample_base.assets.first.asset_groups.first, @asset_group
-      end
-    end
-
-    context "remove assets from asset_group" do
-      setup do
-        @sample_base = Factory :sample
-        @asset_from = Factory :sample_tube, :name => @sample_base.name, :material_id => @sample_base.id
-        @asset_group_from_new = Factory :asset_group, :name => "Asset_Sample_New"
-        @asset_group_asset_from = Factory :asset_group_asset, :asset_id => @asset_from.id, :asset_group_id => @asset_group_from_new.id
-
-      end
-
-      should "return true" do
-        assert_equal @sample_base.assets.first.asset_groups.first, @asset_group_from_new
-        @result = @sample_base.remove_assets_from_asset_group
-        @sample_base.reload
-        assert_equal @sample_base.assets.first.asset_groups, []
-      end
     end
 
     context "#accession_number?" do

@@ -1,4 +1,23 @@
 class Api::LaneIO < Api::Base
+  module Extensions
+    module ClassMethods
+      def self.render_class
+        Api::LaneIO
+      end
+    end
+
+    def self.included(base)
+      base.class_eval do
+        extend ClassMethods
+
+        named_scope :including_associations_for_json, { :include => [:uuid_object, :barcode_prefix ] }
+      end
+    end
+
+    def related_resources
+      ['parents']
+    end
+  end
   renders_model(::Lane)
 
   map_attribute_to_json_attribute(:uuid)

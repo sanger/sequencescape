@@ -1,6 +1,6 @@
 Given /^sample "([^\"]+)" is in a sample tube named "([^\"]+)" with a two dimensional barcode "([^\"]+)"$/ do |sample_name,sample_tube_name, two_dimensional_barcode|
   sample = Sample.find_by_name(sample_name) or raise StandardError, "Could not find a sample named '#{ sample_name }'"
-  Factory(:sample_tube, :name => sample_tube_name, :material => sample, :two_dimensional_barcode => two_dimensional_barcode) or raise StandardError, "Could not create sample tube named '#{ sample_tube_name }'"
+  Factory(:sample_tube, :name => sample_tube_name, :sample => sample, :two_dimensional_barcode => two_dimensional_barcode) or raise StandardError, "Could not create sample tube named '#{ sample_tube_name }'"
 end
 
 Given /^a sample tube named "([^\"]*)" exists with a two dimensional barcode "([^\"]*)"$/ do |sample_tube_name, two_dimensional_barcode|
@@ -12,7 +12,7 @@ Given /^study "([^\"]+)" has the following registered samples in sample tubes( w
   table.hashes.each do |details|
     sample_tube_name = details['sample tube']
     sample      = study.samples.create!(:name => details['sample'])
-    sample_tube = Factory(:sample_tube, :name => sample_tube_name, :material => sample)
+    sample_tube = Factory(:empty_sample_tube, :name => sample_tube_name).tap { |tube| tube.aliquots.create!(:sample => sample) }
 
     Factory(
       :submission,

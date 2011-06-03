@@ -214,10 +214,10 @@ module SampleManifest::InputBehaviour
       sanger_sample_id = row['SANGER SAMPLE ID']
       next if sanger_sample_id.blank?
 
-      sample = samples.find_by_sanger_sample_id(sanger_sample_id, :include => :primary_well)
+      sample = samples.find_by_sanger_sample_id(sanger_sample_id, :include => :primary_receptacle)
 
       # Sanity check the location of the sample if it's in a well
-#      primary_location = sample.primary_well.try(:map).try(:description)
+#      primary_location = sample.primary_receptacle.try(:map).try(:description)
 #      raise StandardError, "Mismatch in well location for #{sanger_sample_id}: expected #{primary_location} but reported as #{row['WELL']}" unless primary_location == row['WELL']
 
       metadata = Hash[

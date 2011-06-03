@@ -1,4 +1,5 @@
-class Well < Asset
+class Well < Aliquot::Receptacle
+  include Api::WellIO::Extensions
   include Cherrypick::VolumeByNanoGrams
   include Cherrypick::VolumeByNanoGramsPerMicroLitre
   include Cherrypick::VolumeByMicroLitre
@@ -15,10 +16,8 @@ class Well < Asset
   has_one :well_attribute
 
   after_create :create_well_attribute_if_not_exists
-  
-  named_scope :including_associations_for_json, { :include => [:uuid_object, :map, :well_attribute, :container, { :sample => :uuid_object } ] }
 
-  named_scope :with_blank_samples, { :conditions => { :samples => { :empty_supplier_sample_name => true } }, :joins => :sample }
+  named_scope :with_blank_samples, { :conditions => { :aliquots => { :samples => { :empty_supplier_sample_name => true } } }, :joins => { :aliquots => :sample } }
 
   class << self
     def delegate_to_well_attribute(attribute, options = {})
@@ -130,10 +129,10 @@ class Well < Asset
   end
 
   def create_child_sample_tube
-    sample_tube = SampleTube.create(:sample => self.sample, :map => self.map)
-    AssetLink.connect(self, sample_tube)
-
-    sample_tube
+    SampleTube.create!(:map => self.map).tap do |sample_tube|
+      sample_tube.aliquots.create!(:sample => self.sample) if sample.present?
+      AssetLink.connect(self, sample_tube)
+    end
   end
 
   def qc_data
@@ -141,10 +140,6 @@ class Well < Asset
      :gel           => self.get_gel_pass,
      :sequenom      => self.get_sequenom_pass,
      :concentration => self.get_concentration }
-  end
-  
-  def self.render_class
-    Api::WellIO
   end
 
 private
@@ -168,18 +163,6 @@ public
     end
     
     nil
-  end
-
-  def get_tag_instance
-    self.tag_instance
-  end
-  
-  def get_tag
-    self.tag_instance.try(:tag)
-  end
-
-  def tag
-    self.get_tag.try(:map_id) || ''
   end
 
 end

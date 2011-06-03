@@ -50,12 +50,12 @@ class AssignTagsTaskTest < TaskTestBase
         @pipeline       = Factory :pipeline, :request_type_id => 1
         @batch          = Factory :batch, :pipeline => @pipeline
         # TODO: Move this into factory. Create library and sample_tube factory
-        @sample_tube    = Factory :asset, :sti_type => "SampleTube"
-        @library        = Factory :asset, :sti_type => "LibraryTube"
+        @sample_tube    = Factory(:sample_tube)
+        @library        = Factory(:library_tube).tap { |tube| tube.aliquots = @sample_tube.aliquots.map(&:clone) }
         @sample_tube.children << @library
           
         @mx_request     = Factory :request, :request_type_id => 1, :submission_id => 1, :asset => @sample_tube, :target_asset => @library
-        @cf_request     = Factory :request, :request_type_id => 2, :submission_id => 1, :asset => nil
+        @cf_request     = Factory :request_without_assets, :request_type_id => 2, :submission_id => 1, :asset => nil
         @batch.requests << [@mx_request, @cf_request]
         @controller.batch = @batch
           
@@ -72,17 +72,16 @@ class AssignTagsTaskTest < TaskTestBase
       end
     
       should_change("MultiplexedLibraryTube.count", :by => 1) { MultiplexedLibraryTube.count }
-      should_change("AssetLink.count", :by => 5) { AssetLink.count }
-      should_change("TagInstance.count", :by => 1) { TagInstance.count }
     
       should "should update library" do
         assert_equal 1, @sample_tube.children.size
     
         # Related to sample tube and tag instance
-        assert_equal 2, @library.parents.size
-        parents = @library.parents.map { |x| x.id}
-        assert parents.include?(@sample_tube.id)
-        assert parents.include?(TagInstance.last.id)
+        assert_equal 1, @library.parents.size
+        assert_equal @sample_tube, @library.parent
+
+        # Should have tagged the library tube
+        assert_equal @tag_group.tags.first, @library.aliquots.first.tag
     
         assert_equal 1, MultiplexedLibraryTube.last.parents.size
         assert_equal LibraryTube.find(@library.id),  MultiplexedLibraryTube.last.parent

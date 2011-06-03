@@ -10,7 +10,7 @@ module Tasks::DnaQcHandler
             :map,
             :container,
             :well_attribute,
-            { :sample => :sample_metadata }
+            { :aliquots => [ :tag, { :sample => :sample_metadata } ] }
           ]
         }
       }
