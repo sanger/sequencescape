@@ -19,7 +19,7 @@ class Api::PulldownMultiplexedLibraryTubeIO < Api::Base
   end
   
   extra_json_attributes do |object, json_attributes|
-    json_attributes["scanned_in_date"] = object.scanned_in_date if object.respond_to?(:scanned_in_date)
+    json_attributes["scanned_in_date"] = object.api_scanned_in_date if object.respond_to?(:api_scanned_in_date)
   end
 
 end

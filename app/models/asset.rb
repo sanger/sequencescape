@@ -140,6 +140,12 @@ class Asset < ActiveRecord::Base
   def scanned_in_date
     self.scanned_into_lab_event.try(:content) || ''
   end
+  
+  def api_scanned_in_date
+    date = scanned_in_date
+    return date if date.blank?
+    date+" 03:00:00"
+  end
 
   def moved_to_2D_tube_date
     self.moved_to_2d_tube_event.try(:content) || ''

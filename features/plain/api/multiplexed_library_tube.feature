@@ -60,3 +60,27 @@ Feature: Interacting with multiplexed_library_tubes through the API
         }
       }
       """
+      @ap13
+  Scenario: Retrieving the JSON for a particular multiplexed_library_tube with a scanned in date
+    Given a multiplexed library tube called "Testing the JSON API" exists
+    And tube "Testing the JSON API" is scanned in
+    And the UUID for the multiplexed library tube "Testing the JSON API" is "00000000-1111-2222-3333-444444444444"
+    When I GET the API path "/multiplexed_library_tubes/00000000-1111-2222-3333-444444444444"
+    Then ignoring "id" the JSON should be:
+      """
+      {
+        "multiplexed_library_tube": {
+          "name": "Testing the JSON API",
+          "created_at": "2010-09-16T13:45:00+01:00",
+          "updated_at": "2010-09-16T13:45:00+01:00",
+          "uuid": "00000000-1111-2222-3333-444444444444",
+          "barcode_prefix": "NT", 
+          "qc_state": "pending",
+          "scanned_in_date": "2010-09-16 03:00:00",
+          "lanes": "http://localhost:3000/0_5/multiplexed_library_tubes/00000000-1111-2222-3333-444444444444/lanes",
+          "requests": "http://localhost:3000/0_5/multiplexed_library_tubes/00000000-1111-2222-3333-444444444444/requests",
+
+          "id": 1
+        }
+      }
+      """

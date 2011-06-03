@@ -325,3 +325,8 @@ end
 Given /^the "([^\"]+)" action on a sample requires authorisation$/ do |action|
   ::TestSampleEndpoint.instance_handler.action_requires_authorisation(action.to_sym)
 end
+
+Given /^tube "([^"]*)" is scanned in$/ do |asset_name|
+  asset = Asset.find_by_name(asset_name)
+  asset.events.create_scanned_into_lab!(Location.first)
+end
