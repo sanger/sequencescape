@@ -38,7 +38,7 @@
       <td class="<%= submission_colour %>"><%= request.target_asset.barcode if request.target_asset %></td>
       <td class="<%= submission_colour %>"><%= well.plate.sanger_human_barcode if well.plate %></td>
       <td class="<%= submission_colour %>"><%= well.map.description if well.map %></td>
-      <td class="<%= submission_colour %>"><%= well.tag_instance.tag.name  if well.tag_instance && well.tag_instance.tag %></td>
+      <td class="<%= submission_colour %>"><%= well.get_tag.name  if well.get_tag.present? %></td>
       <td class="<%= submission_colour %>"><%= well.sample.name if well.sample %></td>
     </tr>
     <% end %>

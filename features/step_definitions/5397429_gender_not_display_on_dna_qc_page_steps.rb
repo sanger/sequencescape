@@ -30,10 +30,6 @@ When /^I create a submission with plate "([^\"]+)" for study "([^\"]+)" under pr
   Given %Q{1 pending delayed jobs are processed}
 end
 
-Then /^launch the debugger$/ do
-  debugger
-end
-
 When /^I start request (\d+) in the "([^\"]+)" pipeline$/ do |index, pipeline|
   When %Q{I follow "Pipelines"}
   When %Q{I follow "#{pipeline}"}

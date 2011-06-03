@@ -5,6 +5,7 @@
 #
 # The primary interface is intended for remote invocation via the Projects::BillingEventsController
 class BillingEvent < ActiveRecord::Base
+  include Api::BillingEventIO::Extensions
   cattr_reader :per_page
   @@per_page = 500
   include Uuid::Uuidable
@@ -19,8 +20,6 @@ class BillingEvent < ActiveRecord::Base
   validates_presence_of :quantity
 
   validates_numericality_of :quantity
-  
-  named_scope :including_associations_for_json, { :include => [ :uuid_object, { :project =>[ { :project_metadata => :budget_division }, :uuid_object ] }, { :request => [ :request_metadata, :request_type, :uuid_object ] } ] }
 
 #  validates_uniqueness_of :reference, :if => :charge?
 #  validates_uniqueness_of :reference, :if => :charge_internally? 
@@ -191,10 +190,6 @@ class BillingEvent < ActiveRecord::Base
     else
       nil
     end
-  end
-  
-  def self.render_class
-    Api::BillingEventIO
   end
 
 end

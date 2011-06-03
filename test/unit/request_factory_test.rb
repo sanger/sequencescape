@@ -3,8 +3,7 @@ require "test_helper"
 class RequestFactoryTest < ActiveSupport::TestCase
   context "RequestFactory" do
     setup do
-      @asset = Factory :asset, :sti_type => "SampleTube"
-      @asset.sample = Factory :sample
+      @asset = Factory(:sample_tube)
 
       @request_type = Factory :sequencing_request_type, :asset_type => "SampleTube", :initial_state => "pending"
       @bad_request_type = Factory :request_type

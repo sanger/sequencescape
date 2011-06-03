@@ -1,4 +1,20 @@
 class Api::BatchIO < Api::Base
+  module Extensions
+    module ClassMethods
+      def render_class
+        Api::BatchIO
+      end
+    end
+
+    def self.included(base)
+      base.class_eval do
+        extend ClassMethods
+
+        named_scope :including_associations_for_json, { :include => [ :uuid_object, :user, :assignee, { :pipeline => :uuid_object }] }
+      end
+    end
+  end
+
   renders_model(::Batch)
 
   map_attribute_to_json_attribute(:uuid)

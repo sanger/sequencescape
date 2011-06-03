@@ -22,6 +22,7 @@ Feature: The bottom of the pulldown pipeline
 
     Given a "Pulldown stock plate" plate called "Testing the API" exists
       And the UUID for the plate "Testing the API" is "00000000-1111-2222-3333-000000000001"
+      And all wells on the plate "Testing the API" have unique samples
 
   @authorised
   Scenario Outline: Dealing with the MX library tube at the end of the pipeline
@@ -79,6 +80,9 @@ Feature: The bottom of the pulldown pipeline
         }
       }
       """
+
+    Then the aliquots of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be the same as the wells "A1-H6" of the plate "Testing the API"
+     And the aliquots of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000002" should be the same as the wells "A7-H12" of the plate "Testing the API"
 
     # Change the state of one tube to ensure it doesn't affect the other
     Then log "Change the state of one tube to ensure it doesn't affect the other" for debugging

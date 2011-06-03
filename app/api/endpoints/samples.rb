@@ -6,7 +6,7 @@ class ::Endpoints::Samples < ::Core::Endpoint::Base
   instance do
     has_many(
       :sample_tubes, :json => 'sample_tubes', :to => 'sample_tubes',
-      :include => [ :library_tubes, :sample, :requests ]
+      :include => [ :library_tubes, :requests, { :aliquots => [ :sample, :tag ] } ]
     )
   end
 end

@@ -156,7 +156,7 @@ end
 
 Given /^the well with ID (\d+) contains the sample "([^\"]+)"$/ do |well_id, name|
   sample = Sample.find_by_name(name) or raise StandardError, "Cannot find the sample #{name.inspect}"
-  Well.find(well_id).update_attributes!(:material => sample)
+  Well.find(well_id).update_attributes!(:sample => sample)
 end
 
 Then /^the wells with the following UUIDs should all be related to the same plate:$/ do |well_uuids|
@@ -173,4 +173,10 @@ end
 Given /^a "([^\"]+)" plate called "([^\"]+)" exists$/ do |name, plate_name|
   plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
   plate_purpose.create!(:name => plate_name)
+end
+
+Given /^all wells on (the plate "[^\"]+") have unique samples$/ do |plate|
+  plate.wells.each do |well|
+    well.aliquots.create!(:sample => Factory(:sample))
+  end
 end

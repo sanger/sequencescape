@@ -75,7 +75,6 @@ class ApiRoutingTest < ActionController::TestCase
       :quotas,
       :sample_tubes,
       :study_samples,
-      :tag_instances,
       :tags,
       :wells,
       :submissions,
@@ -98,7 +97,6 @@ class ApiRoutingTest < ActionController::TestCase
         :library_tubes,
         :multiplexed_library_tubes,
         :plates,
-        :tag_instances,
         :wells,
         :samples => [ :sample_tubes ]
       ) do |context, core_path|
