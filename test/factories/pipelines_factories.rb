@@ -302,26 +302,19 @@ end
 Factory.define :gel_qc_task do |t|
 end
 
-Factory.define :sample_tube, :class => SampleTube do |a|
-  a.name                {|a| Factory.next :asset_name }
-  a.value               ""
-  a.descriptors         []
-  a.descriptor_fields   ""
-  a.material            {|sample| sample.association(:sample)}
-  a.qc_state            ""
-  a.resource            nil
-  a.barcode             {|a| Factory.next :barcode_number }
+Factory.define :empty_sample_tube, :class => SampleTube do |sample_tube|
+  sample_tube.name                {|a| Factory.next :asset_name }
+  sample_tube.value               ""
+  sample_tube.descriptors         []
+  sample_tube.descriptor_fields   ""
+  sample_tube.qc_state            ""
+  sample_tube.resource            nil
+  sample_tube.barcode             {|a| Factory.next :barcode_number }
 end
-
-Factory.define :tag_instance do |a|
-  a.name                {|a| Factory.next :asset_name }
-  a.value               ""
-  a.descriptors         []
-  a.descriptor_fields   ""
-  a.tag                 {|tag| tag.association(:tag)}
-  a.qc_state            ""
-  a.resource            nil
-  a.barcode             {|a| Factory.next :barcode_number }
+Factory.define :sample_tube, :parent => :empty_sample_tube do |sample_tube|
+  sample_tube.after_create do |sample_tube|
+    sample_tube.aliquots.create!(:sample => Factory(:sample))
+  end
 end
 
 Factory.define :cherrypick_task do |t|

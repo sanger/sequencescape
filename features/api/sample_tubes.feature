@@ -57,14 +57,12 @@ Feature: Access sample tubes through the API
           "volume": null,
           "scanned_in_date": "",
 
-          "sample": {
-            "actions": {
-              "read": "http://www.example.com/api/1/00000000-1111-2222-3333-888888888888"
-            },
-            "sanger": {
-              "name": "sample_testing_the_api"
+          "aliquots": [
+            {
+              "sample": {
+              }
             }
-          },
+          ],
           "requests": {
             "actions": {
               "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/requests"

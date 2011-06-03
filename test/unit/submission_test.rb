@@ -3,10 +3,10 @@ require "test_helper"
 class SubmissionTest < ActiveSupport::TestCase
   context "Submission" do
     setup do
-      @assets = (1..4).map { |i| Factory(:asset, :name => "Asset#{ i }") } # NOTE: huh? why did this have ':id => 1'!?!!
+      @assets = (1..4).map { |i| Factory(:sample_tube, :name => "Asset#{ i }") } # NOTE: huh? why did this have ':id => 1'!?!!
       @asset_group = Factory :asset_group, :name => "non MPX", :assets => @assets
 
-      @mpx_assets = (1..10).map { |i| Factory(:asset, :name => "MX-asset#{ i }") }
+      @mpx_assets = (1..10).map { |i| Factory(:sample_tube, :name => "MX-asset#{ i }") }
       @mpx_asset_group = Factory :asset_group, :name => "MPX", :assets => @mpx_assets
     end
 
@@ -300,8 +300,8 @@ class SubmissionTest < ActiveSupport::TestCase
         @project = Factory :project
         @project.enforce_quotas = true
 
-        @asset_1 = Factory(:sample_tube, :material => Factory(:sample))
-        @asset_2 = Factory(:sample_tube, :material => Factory(:sample))
+        @asset_1 = Factory(:sample_tube)
+        @asset_2 = Factory(:sample_tube)
 
         @mx_request_type = Factory :request_type, :asset_type => "SampleTube", :initial_state => "pending", :name => "Multiplexed Library Creation", :order => 1, :key => "multiplexed_library_creation"
         @lib_request_type = Factory :request_type, :asset_type => "SampleTube", :initial_state => "pending", :name => "Library Creation", :order => 1, :key => "library_creation"

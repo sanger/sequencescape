@@ -174,20 +174,26 @@ Factory.define :request_metadata, :class => Request::Metadata do |m|
   m.read_length 76
 end
 
-Factory.define :request do |r|
-  r.asset             {|asset|      asset.association(:asset)}
-  r.item              {|item|       item.association(:item)}
-  r.project           {|pr|         pr.association(:project)}
-  r.request_type      {|rt|         rt.association(:request_type)}
-  r.sample            {|sample|     sample.association(:sample)}
-  r.state             'pending'     
-  r.study             {|study|      study.association(:study)}
-  r.submission        {|submission| submission.association(:submission)}
-  r.target_asset      {|asset|      asset.association(:asset)}
-  r.user              {|user|       user.association(:user)}
-  r.workflow          {|workflow|   workflow.association(:submission_workflow)}
+Factory.define :request_without_assets, :class => Request do |request|
+  request.item              {|item|       item.association(:item)}
+  request.project           {|pr|         pr.association(:project)}
+  request.request_type      {|rt|         rt.association(:request_type)}
+  request.state             'pending'     
+  request.study             {|study|      study.association(:study)}
+  request.submission        {|submission| submission.association(:submission)}
+  request.user              {|user|       user.association(:user)}
+  request.workflow          {|workflow|   workflow.association(:submission_workflow)}
 
-  r.after_build { |request| request.request_metadata = Factory(:request_metadata, :request => request) }
+  request.after_build { |request| request.request_metadata = Factory(:request_metadata, :request => request) }
+end
+
+Factory.define :request, :parent => :request_without_assets do |r|
+  # The sample should be setup correctly and the assets should be valid
+  r.after_build do |request|
+    request.asset        ||= Factory(:sample_tube)
+    request.sample       ||= request.asset.primary_aliquot.try(:sample)
+    request.target_asset ||= Factory(:library_tube)
+  end
 end
 
 Factory.define :request_without_item, :class => "Request" do |r|
@@ -383,8 +389,10 @@ Factory.define :stock_multiplexed_library_tube do |a|
   a.name                {|a| Factory.next :asset_name }
 end
 
-Factory.define :library_tube do |library_tube|
+Factory.define(:empty_library_tube, :class => LibraryTube) do |library_tube|
   library_tube.name {|_| Factory.next :asset_name }
+end
+Factory.define :library_tube, :parent => :empty_library_tube do |library_tube|
 end
 
 # A library tube is created from a sample tube through a library creation request!
@@ -440,9 +448,12 @@ Factory.define :stock_sample_tube do |a|
   a.name                {|a| Factory.next :asset_name }
 end
 
-Factory.define :lane do |l|
-  l.name                {|l| Factory.next :asset_name }
-  l.external_release    nil
+Factory.define(:empty_lane, :class => Lane) do |lane|
+  lane.name                {|l| Factory.next :asset_name }
+  lane.external_release    nil
+end
+
+Factory.define(:lane, :parent => :empty_lane) do |l|
 end
 
 Factory.define :spiked_buffer do |a|

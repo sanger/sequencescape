@@ -23,7 +23,7 @@ class RequestTest < ActiveSupport::TestCase
           :request,
           :sample       => @sample,
           :item         => @item,
-          :asset        => Factory(:sample_tube, :sample => @sample),
+          :asset        => Factory(:empty_sample_tube).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample) },
           :target_asset => nil,
           :submission   => @submission,
           :request_type => @cherrypick_request_type,
@@ -50,8 +50,8 @@ class RequestTest < ActiveSupport::TestCase
 
       context "#associate_pending_requests_for_downstream_pipeline" do
         setup do
-          @request2 = Factory :request, :asset => nil, :sample => @sample, :item => @item, :submission => @submission, :request_type => @genotyping_request_type, :pipeline => @genotype_pipeline
-          @request3 = Factory :request, :asset => nil, :sample => nil, :item => @item, :submission => @submission, :request_type => @genotyping_request_type, :pipeline => @genotype_pipeline
+          @request2 = Factory :request_without_assets, :asset => nil, :sample => @sample, :item => @item, :submission => @submission, :request_type => @genotyping_request_type, :pipeline => @genotype_pipeline
+          @request3 = Factory :request_without_assets, :asset => nil, :sample => nil, :item => @item, :submission => @submission, :request_type => @genotyping_request_type, :pipeline => @genotype_pipeline
 
           @batch = @cherrypick_pipeline.batches.create!(:requests => [ @request1 ])
 

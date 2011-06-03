@@ -1,4 +1,19 @@
 class Api::AssetAuditIO < Api::Base
+  module Extensions
+    module ClassMethods
+      def render_class
+        Api::AssetAuditIO
+      end
+    end
+
+    def self.included(base)
+      base.class_eval do
+        extend ClassMethods
+
+        named_scope :including_associations_for_json, { :include => [:uuid_object, { :asset => [ :uuid_object, :barcode_prefix ] } ] }
+      end
+    end
+  end
   renders_model(::AssetAudit)
 
   map_attribute_to_json_attribute(:id, 'internal_id')

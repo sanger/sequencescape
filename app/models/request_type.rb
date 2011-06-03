@@ -31,10 +31,11 @@ class RequestType < ActiveRecord::Base
 
     line = __LINE__ + 1
     class_eval(%Q{
-      def #{name}(attributes = nil)
+      def #{name}(attributes = nil, &block)
         attributes ||= {}
         #{target}.#{target_method}(attributes.merge(request_parameters || {})) do |request|
           request.request_type = self
+          yield(request) if block_given?
         end.tap do |request|
           requests << request
         end

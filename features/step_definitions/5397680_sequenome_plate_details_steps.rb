@@ -35,16 +35,11 @@ Given /^there is a (\d+) well "([^"]*)" plate with a barcode of "([^"]*)"$/ do |
   )
   sample = Factory :sample, :name => "#{plate_barcode}_x"
   
-  well_data = []
   1.upto(number_of_wells.to_i) do |i|
-      well_data  << new_plate.wells.new(
-        :map_id => i,
-        :sample => sample
-      )
+    new_plate.wells.create!(:map_id => i).aliquots.create!(:sample => sample)
   end
-  new_plate.wells.import(well_data)
   
-  new_plate.wells.first.material.sample_metadata.update_attributes!(
+  new_plate.wells.first.sample.sample_metadata.update_attributes!(
     :gender => "male"
   )
 end

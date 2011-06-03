@@ -1,6 +1,7 @@
 class Request < ActiveRecord::Base
   include ModelExtensions::Request
 
+  include Api::RequestIO::Extensions
   cattr_reader :per_page
   @@per_page = 500
 
@@ -14,13 +15,8 @@ class Request < ActiveRecord::Base
   extend EventfulRecord
   has_many_events
   has_many_lab_events
-  
 
   self.inheritance_column = "sti_type"
-  def url_name
-    "request" # frozen for subclass of the API
-  end
-  alias_method(:json_root, :url_name)
 
   def self.delegate_validator
     DelegateValidation::AlwaysValidValidator
@@ -165,7 +161,6 @@ class Request < ActiveRecord::Base
   }
 
   named_scope :find_all_target_asset, lambda { |target_asset_id| { :conditions => [ 'target_asset_id = ?', "#{target_asset_id}" ] } }
-  named_scope :including_associations_for_json, { :include => [ :uuid_object, { :study => :uuid_object }, { :project => :uuid_object }, :user, {:asset => [ { :sample => :uuid_object }, :uuid_object, :barcode_prefix] }, { :target_asset => [ { :sample => :uuid_object }, :uuid_object, :barcode_prefix] }, :request_type, :request_metadata ] }
   named_scope :for_studies, lambda { |*studies| { :conditions => { :study_id => studies.map(&:id) } } }
 
   #combining scopes
@@ -306,10 +301,7 @@ class Request < ActiveRecord::Base
   end
 
   def tag_number
-    unless tag.blank?
-      return tag.map_id
-    end
-    ''
+    tag.try(:map_id) || ''
   end
 
   # tags and tag have been moved to the appropriate assets.
@@ -317,28 +309,14 @@ class Request < ActiveRecord::Base
   # from the batch xml and can therefore probably be removed.
   # ---
   def tag
-    if self.target_asset
-      parent = self.target_asset.parents.find_by_sti_type('TagInstance')
-      if parent
-        return parent.tag
-      end
-    end
-    nil
+    self.target_asset.get_tag
   end
+  deprecate :tag
 
   def tags
-    if self.asset.instance_of?(MultiplexedLibraryTube)
-      parents = self.asset.parents
-      
-      if parent = parents.detect{ |parent| parent.is_a_stock_asset? }
-        parent.parents
-      else
-        parents
-      end
-    else
-      []
-    end
+    self.asset.tags
   end
+  deprecate :tags
   # ---
   
   def sample_name
@@ -506,10 +484,6 @@ class Request < ActiveRecord::Base
       return true
     end
     false
-  end
-
-  def self.render_class
-    Api::RequestIO
   end
 
   def update_priority(pipeline)

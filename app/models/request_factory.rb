@@ -106,9 +106,8 @@ class RequestFactory
       target_asset = create_target_asset(asset, request_type) # this may or not create a target depending of the request_type
 
       request = create_request(request_type, item, asset, target_asset)
-      if target_asset
-        AssetLink.connect(asset, target_asset)
-      end
+      AssetLink.connect(asset, target_asset) if target_asset.present?
+
       requests << request
 
       next_asset = target_asset || asset
@@ -120,23 +119,14 @@ class RequestFactory
 
   def create_request(request_type, item = nil, asset = nil, target_asset = nil)
     # we don't need to save the request now, as we are doing it at the end
-    request = request_type.new_request(
-      :request_type => request_type,
-      :workflow => @submission.workflow,
-      :project => @submission.project,
-      :study => @submission.study,
-      :user => @submission.user,
-      :item => item,
-      :submission_id => @submission.id,
-      :state => @submission.initial_request_state(request_type),
-      :target_asset => target_asset,
-      :request_metadata_attributes => request_type.extract_metadata_from_hash(@submission.request_options)
+    request = @submission.create_request_of_type!(
+      request_type,
+      :asset        => asset,
+      :item         => item,
+      :target_asset => target_asset
     )
-    @submission.assign_asset(request, request_type, asset)
 
-    request.save!
     #we need to save the request before creating stuff belonging to a it
-
     set_comments(request)
 
     return request
@@ -148,9 +138,10 @@ class RequestFactory
   def self.create_target_asset(source_asset, request_type)
     return if request_type.target_asset_type.blank?
     request_type.target_asset_type.constantize.create! do |asset|
-      asset.sample = source_asset.sample
       asset.barcode = AssetBarcode.new_barcode unless ["Lane", "Well"].include?(request_type.target_asset_type)
       asset.generate_name(source_asset.name)
+    end.tap do |asset|
+      asset.aliquots = source_asset.aliquots.map(&:clone)
     end
   end
 
