@@ -1,6 +1,4 @@
-class PacBioLibraryTube < Asset
-  include LocationAssociation::Locatable
-  
+class PacBioLibraryTube < Tube
   extend Metadata
   has_metadata do
     attribute(:prep_kit_barcode)

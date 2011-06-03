@@ -50,7 +50,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Output
   def jsonify(object, options)
     case
     when object.nil?         then nil
-    when object.is_a?(Array) then object.map! { |o| jsonify(o, options) }
+    when object.is_a?(Array) then object.map { |o| jsonify(o, options) }
     when object.is_a?(Hash)  then Hash[object.map { |k,v| [ jsonify(k, options), jsonify(v, options) ] }]
     when RETURNED_OBJECTS.include?(object.class) then object
     else ::Core::Io::Registry.instance.lookup_for_object(object).as_json(options.merge(:object => object, :nested => true))

@@ -1,31 +1,22 @@
 class Tag < ActiveRecord::Base
   module Associations
-    def self.included(base)
-      base.class_eval do
-        has_one :tag_instance, :through => :links_as_child, :source => :ancestor, :conditions => { :sti_type => 'TagInstance' }
-      end
-    end
-
     def untag!
-      links_as_child.first(:conditions => { :ancestor_id => tag_instance.id }).destroy
+      aliquots.first.try(:update_attributes!, :tag => nil)
     end
   end
 
-  acts_as_audited :on => [:destroy, :update]
+  include Api::TagIO::Extensions
   cattr_reader :per_page
   @@per_page = 500
   include Uuid::Uuidable
+
+  acts_as_audited :on => [:destroy, :update]
 
   belongs_to :tag_group
   has_many :assets, :as => :material
   has_many :requests, :through => :assets, :uniq => true
 
   named_scope :sorted , :order => "map_id ASC"
-  named_scope :including_associations_for_json, { :include => [ :uuid_object, { :tag_group => [:uuid_object] } ] }
-
-  def self.render_class
-    Api::TagIO
-  end
 
   def name
     "Tag #{map_id}"
@@ -35,9 +26,12 @@ class Tag < ActiveRecord::Base
   def create!
     TagInstance.create!(:tag => self)
   end
+  deprecate :create!
 
   # Connects a tag instance to the specified asset
   def tag!(asset)
-    AssetLink.create_edge!(create!, asset)
+    raise StandardError, "Cannot tag an empty asset"   if asset.aliquots.empty?
+    raise StandardError, "Cannot tag multiple samples" if asset.aliquots.size > 1
+    asset.aliquots.first.update_attributes!(:tag => self)
   end
 end

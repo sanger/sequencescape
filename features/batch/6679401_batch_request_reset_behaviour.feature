@@ -17,6 +17,7 @@ Feature: Resetting batches and their requests across the various pipelines
 
     Then the 5 requests should be in the "<pipeline>" pipeline inbox
 
+    @wip
     Scenarios: Library creation pipelines
       | pipeline                     | workflow            |
       | Library preparation          | Next-gen sequencing |
@@ -24,6 +25,7 @@ Feature: Resetting batches and their requests across the various pipelines
 #     | Pulldown library preparation | Next-gen sequencing |    # Unused prototype?
 #     | MX Library creation          | Next-gen sequencing |    # Unused
 
+    @wip
     Scenarios: Sequencing pipelines
       | pipeline                                 | workflow            |
       | Cluster formation SE                     | Next-gen sequencing |
@@ -32,7 +34,7 @@ Feature: Resetting batches and their requests across the various pipelines
       | HiSeq Cluster formation PE (no controls) | Next-gen sequencing |
 #     | Cluster formation SE HiSeq               | Next-gen sequencing |
 #     | Cluster formation SE HiSeq (no controls) | Next-gen sequencing |
- 
+
     Scenarios: Genotyping pipelines
       | pipeline               | workflow              |
       | DNA QC                 | Microarray genotyping |

@@ -22,7 +22,7 @@ module SampleManifest::SampleTubeBehaviour
         {
           :sample    => sample,
           :container => {
-            :barcode => sample.primary_tube.sanger_human_barcode
+            :barcode => sample.primary_receptacle.sanger_human_barcode
           }
         }
       end

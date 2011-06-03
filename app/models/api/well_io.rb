@@ -1,4 +1,19 @@
 class Api::WellIO < Api::Base
+  module Extensions
+    module ClassMethods
+      def render_class
+        Api::WellIO
+      end
+    end
+
+    def self.included(base)
+      base.class_eval do
+        extend ClassMethods
+
+        named_scope :including_associations_for_json, { :include => [:uuid_object, :map, :well_attribute, :container, { :aliquots => { :sample => :uuid_object } } ] }
+      end
+    end
+  end
   renders_model(::Well)
 
   map_attribute_to_json_attribute(:uuid)

@@ -21,7 +21,7 @@ class SampleTest < ActiveSupport::TestCase
         @new_assets_name = ""
         @current_user = Factory :user
 
-        @asset_1 = Factory :asset, :name => @sample_from.name, :material_id => @sample_from.id
+        @asset_1 = Factory(:empty_sample_tube, :name => @sample_from.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_from) }
         
         @asset_group = Factory :asset_group, :name => "not mx"
         @asset_group_asset = Factory :asset_group_asset, :asset_id => @asset_1.id, :asset_group_id => @asset_group.id
@@ -43,7 +43,7 @@ class SampleTest < ActiveSupport::TestCase
       context "only valid assets and without submissions" do
         setup do
           @sample_from_ok = Factory :sample
-          @asset_from = Factory :sample_tube, :name => @sample_from_ok.name, :material_id => @sample_from_ok.id
+          @asset_from = Factory(:empty_sample_tube, :name => @sample_from_ok.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_from_ok) }
           @asset_group_from_new = Factory :asset_group, :name => "Asset_Sample_New", :study => @study_from
           @asset_group_asset_from = Factory :asset_group_asset, :asset_id => @asset_from.id, :asset_group_id => @asset_group_from_new.id
 
@@ -52,7 +52,7 @@ class SampleTest < ActiveSupport::TestCase
           @asset_from.save
 
           @sample_to = Factory :sample         
-          @asset_to = Factory :asset, :name => @sample_to.name, :material_id => @sample_to.id
+          @asset_to = Factory(:empty_sample_tube, :name => @sample_to.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_to) }
           @asset_group_to_new = Factory :asset_group, :name => "Asset_Sample"
           @asset_group_asset_to = Factory :asset_group_asset, :asset_id => @asset_to.id, :asset_group_id => @asset_group_to_new.id
 
@@ -68,12 +68,12 @@ class SampleTest < ActiveSupport::TestCase
       context  "With Study_from with submission and New assets or assets without submission" do
         setup do
           @sample_from_ok = Factory :sample
-          @asset_from = Factory :sample_tube, :name => @sample_from_ok.name, :material_id => @sample_from_ok.id
+          @asset_from = Factory(:empty_sample_tube, :name => @sample_from_ok.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_from_ok) }
           @asset_group_from_new = Factory :asset_group, :name => "Asset_Sample_From", :study => @study_from
           @asset_group_asset_from = Factory :asset_group_asset, :asset_id => @asset_from.id, :asset_group_id => @asset_group_from_new.id
 
           @sample_to = Factory :sample
-          @asset_to = Factory :sample_tube, :name => @sample_to.name, :material_id => @sample_to.id
+          @asset_to = Factory(:empty_sample_tube, :name => @sample_to.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_to) }
           @asset_group_to_new = Factory :asset_group, :name => "Asset_Sample_To"
           @asset_group_asset_to = Factory :asset_group_asset, :asset_id => @asset_to.id, :asset_group_id => @asset_group_to_new.id
 
@@ -108,12 +108,12 @@ class SampleTest < ActiveSupport::TestCase
       context  "With 2 submissions, with same requests" do
         setup do
           @sample_from_ok = Factory :sample
-          @asset_from = Factory :sample_tube, :name => @sample_from_ok.name, :material_id => @sample_from_ok.id
+          @asset_from = Factory(:empty_sample_tube, :name => @sample_from_ok.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_from_ok) }
           @asset_group_from_new = Factory :asset_group, :name => "Asset_Sample_From", :study => @study_from
           @asset_group_asset_from = Factory :asset_group_asset, :asset_id => @asset_from.id, :asset_group_id => @asset_group_from_new.id
 
           @sample_to = Factory :sample
-          @asset_to = Factory :sample_tube, :name => @sample_to.name, :material_id => @sample_to.id
+          @asset_to = Factory(:empty_sample_tube, :name => @sample_to.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_to) }
           @asset_group_to_new = Factory :asset_group, :name => "Asset_Sample_To"
           @asset_group_asset_to = Factory :asset_group_asset, :asset_id => @asset_to.id, :asset_group_id => @asset_group_to_new.id
           
@@ -146,39 +146,6 @@ class SampleTest < ActiveSupport::TestCase
           assert_equal @asset_group_to_new.id, @sample_from_ok.assets.first.asset_group_assets.first.asset_group_id
         end
       end      
-    end
-
-    context "add assets to asset_group" do
-      setup do
-        @sample_base = Factory :sample
-
-        @asset = Factory :asset, :name => @sample_base.name, :material_id => @sample_base.id
-        @asset_group = Factory :asset_group, :name => "Asset_Sample_New"
-      end
-
-      should "return true" do
-        assert_equal @sample_base.assets.first.asset_groups, []
-        @result = @sample_base.add_assets_to_asset_group(@asset_group)
-        @sample_base.reload
-        assert_equal @sample_base.assets.first.asset_groups.first, @asset_group
-      end
-    end
-
-    context "remove assets from asset_group" do
-      setup do
-        @sample_base = Factory :sample
-        @asset_from = Factory :sample_tube, :name => @sample_base.name, :material_id => @sample_base.id
-        @asset_group_from_new = Factory :asset_group, :name => "Asset_Sample_New"
-        @asset_group_asset_from = Factory :asset_group_asset, :asset_id => @asset_from.id, :asset_group_id => @asset_group_from_new.id
-
-      end
-
-      should "return true" do
-        assert_equal @sample_base.assets.first.asset_groups.first, @asset_group_from_new
-        @result = @sample_base.remove_assets_from_asset_group
-        @sample_base.reload
-        assert_equal @sample_base.assets.first.asset_groups, []
-      end
     end
 
     context "#accession_number?" do

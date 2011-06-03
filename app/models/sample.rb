@@ -1,6 +1,7 @@
 require 'rexml/text'
 class Sample < ActiveRecord::Base
   include ModelExtensions::Sample
+  include Api::SampleIO::Extensions
 
   cattr_reader :per_page
   @@per_page = 500
@@ -9,6 +10,8 @@ class Sample < ActiveRecord::Base
   include Uuid::Uuidable
   include StandardNamedScopes
   include Named
+  include Aliquot::Aliquotable
+
   extend EventfulRecord
   has_many_events do 
     event_constructor(:created_using_sample_manifest!, Event::SampleManifestEvent, :created_sample!)
@@ -31,12 +34,13 @@ class Sample < ActiveRecord::Base
   has_many :roles, :as => :authorizable
   has_many :comments, :as => :commentable
 
-  has_many :assets do
+  receptacle_alias(:assets) do
     def first_of_type(asset_class)
       self.detect { |asset| asset.is_a?(asset_class) }
     end
   end
-  has_many :wells
+  receptacle_alias(:wells, :conditions => { :sti_type => 'Well' }, :class_name => 'Well')
+  receptacle_alias(:sample_tubes, :conditions => { :sti_type => 'SampleTube' }, :class_name => 'SampleTube')
 
   has_many :submissions, :through => :requests, :uniq => true
   belongs_to :sample_manifest
@@ -58,13 +62,6 @@ class Sample < ActiveRecord::Base
   validation_guarded_by(:rename_to!, :can_rename_sample)
   
   named_scope :with_name, lambda { |*names| { :conditions => { :name => names.flatten } } }
-
-  named_scope :including_associations_for_json, { :include => [:uuid_object, { :sample_metadata => :reference_genome }, { :studies => [ :study_metadata, :uuid_object ] } ] }
-
-  def url_name
-    "sample"
-  end
-  alias_method(:json_root, :url_name)
 
   named_scope :for_search_query, lambda { |query|
     { :conditions => [ 'name LIKE ? OR id=?', "%#{query}%", query ] }
@@ -197,125 +194,6 @@ class Sample < ActiveRecord::Base
     true
   end
 
-  ##### MOVE SECTION ######
-
-  def are_requests_different(submission_valid = [], submissions_id_list_p_from = [])
-    are_different = false
-    if !submission_valid.nil? && submissions_id_list_p_from.size == 1
-      #we have 2 submission. Compare request_type array.
-      if ! submissions_id_list_p_from[0].request_types.nil?
-        are_different = submissions_id_list_p_from[0].are_requests_different(submission_valid)
-      end
-    end
-    return are_different
-  end
-
-  def check_move_options(study_id_to, study_id_from, asset_group_id, new_assets_name, submission_id)
-    response =  true
-
-    submissions_id_list = self.submissions.for_studies(study_id_from.id)
-    submission_to = Submission.find_by_id(submission_id)
-      # test submission situaztion and status of submission multiplex
-      if (submissions_id_list.size == 0) && (new_assets_name.empty?) && (submission_id != "0")
-        self.errors.add("Move:","Study  #{study_id_to.id} has a submission. The best way is create a new asset and after create a new submission.")
-        response = false
-      else
-        if submissions_id_list.size == 1
-          if !submissions_id_list[0].request_types.nil?
-            if submissions_id_list[0].multiplex_started_passed
-              self.errors.add("Move:","The submission is multiplex and its status is started/passed. You can't move this sample.")
-              response = false
-            end
-          end
-        end
-        if response
-          if are_requests_different(submission_to, submissions_id_list)
-            self.errors.add("Move:","The submissions are different. Please, check this information.")
-            response = false
-          else
-            count_assets_sample = SampleTube.with_sample(self).count
-            if count_assets_sample > 1
-              self.errors.add("Move:","This sample has several assets. We could NOT move this sample.")
-              response = false
-            end
-          end
-        end
-      end
-
-    return response
-  end
-
-  def remove_assets_from_asset_group
-     self.assets.each do |asset|
-       asset.asset_groups = []
-       asset.save
-     end
-  end
-
-  def add_assets_to_asset_group(new_asset_group)
-    self.assets.each do |asset|
-      new_asset_group.assets << asset
-      new_asset_group.save
-    end
-  end
-
-  def move_study_sample_quarantine(study_from, study_to, current_user)
-    self.study_samples.each do |ps|
-      ps.study_id = study_to.id
-      ps.save
-    end
-
-    self.events.create(
-      :message => "Sample #{self.id} is moved from Study  #{study_from.id} to Study #{study_to.id}",
-      :created_by => current_user.login,
-      :content => "Sample moved by #{current_user.login}",
-      :of_interest_to => "administrators"
-    )
-
-    study_from.events.create(
-      :message => "Sample #{self.id} is moved to Study #{study_to.id}",
-      :created_by => current_user.login,
-      :content => "Sample moved by #{current_user.login}",
-      :of_interest_to => "administrators"
-    )
-
-  end
-
-  def move_assets_to_submission_quarantine(study_from, study_to, submission_to, current_user)
-    submission_from = self.submissions.for_studies(study_from.id)
-    if submission_from.size > 0
-        submission_from.each do |submission_from|
-          if submission_to != "0"
-            submission_to_move = Submission.find_by_id(submission_to)
-            submission_to_move.add_assets(self.assets)
-            submission_from.move_to_submission(self.assets, current_user, submission_to_move)
-          else
-            submission_from.move_to_new_submission(self.assets, current_user, study_to)
-          end
-        end
-    end
-  end
-
-  def move_quarantine(study_from, study_to, asset_group, new_assets_name, current_user, submission_to = nil)
-    move_result = true
-    begin
-      ActiveRecord::Base.transaction do
-        if check_move_options(study_to, study_from, asset_group, new_assets_name, submission_to)
-          move_assets_to_submission(study_from, study_to, submission_to, current_user)
-          remove_assets_from_asset_group
-          add_assets_to_asset_group(asset_group)
-          move_study_sample(study_from, study_to, current_user)
-        else
-          move_result = false
-        end
-      end
-      rescue Exception => exc
-        self.errors.add("Move:", exc.message)
-        move_result = false
-    end
-    return move_result
-  end
-
   def self.submissions_by_assets(study_id, asset_group_id)
     return [] if asset_group_id == '0'
 
@@ -339,10 +217,6 @@ class Sample < ActiveRecord::Base
 
   def sample_supplier_name_empty?(supplier_sample_name)
     supplier_sample_name.blank? || [ 'empty', 'blank', 'water', 'no supplier name available', 'none' ].include?(supplier_sample_name.downcase)
-  end
-
-  def self.render_class
-    Api::SampleIO
   end
 
   def accession_service

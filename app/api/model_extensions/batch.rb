@@ -20,8 +20,8 @@ module ModelExtensions::Batch
         :requests => [
           :uuid_object, :study, :project, :request_metadata, :request_type,
           { :submission   => :uuid_object },
-          { :asset        => [ :uuid_object, :barcode_prefix, { :sample => :uuid_object } ] },
-          { :target_asset => [ :uuid_object, :barcode_prefix, { :sample => :uuid_object } ] }
+          { :asset        => [ :uuid_object, :barcode_prefix, { :aliquots => [ :sample, :tag ] } ] },
+          { :target_asset => [ :uuid_object, :barcode_prefix, { :aliquots => [ :sample, :tag ] } ] }
         ]
       }
       

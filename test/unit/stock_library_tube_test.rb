@@ -6,12 +6,6 @@ class StockLibraryTubeTest < ActiveSupport::TestCase
       @stock_library = Factory :stock_library_tube
     end
     
-    context "#is_a_pool?" do
-      should "return false" do
-        assert ! @stock_library.is_a_pool?
-      end
-    end
-    
     context "#has_stock_asset?" do
       should "return false" do
         assert ! @stock_library.has_stock_asset?

@@ -20,6 +20,12 @@ Factory.define(:full_plate, :class => Plate) do |plate|
   end
 end
 
+Factory.define(:full_plate_with_samples, :parent => :full_plate) do |plate|
+  plate.after_create do |plate|
+    plate.wells.each { |well| well.aliquots.create!(:sample => Factory(:sample)) }
+  end
+end
+
 # Transfers and their templates
 Factory.define(:transfer_between_plates, :class => Transfer::BetweenPlates) do |transfer|
   transfer.source      { |target| target.association(:transfer_plate) }
@@ -57,8 +63,8 @@ Factory.define(:tag_layout_template) do |tag_layout_template|
 end
 
 Factory.define(:tag_layout, :class => TagLayout::InColumns) do |tag_layout|
-  tag_layout.plate     { |target| target.association(:full_plate)           }
-  tag_layout.tag_group { |target| target.association(:tag_group_for_layout) }
+  tag_layout.plate     { |target| target.association(:full_plate_with_samples) }
+  tag_layout.tag_group { |target| target.association(:tag_group_for_layout)    }
 end
 
 # Plate creations

@@ -1,4 +1,9 @@
 class BatchRequest < ActiveRecord::Base
+  include Api::BatchRequestIO::Extensions
+  cattr_reader :per_page
+  @@per_page = 500
+  include Uuid::Uuidable
+
   belongs_to :batch
   validates_presence_of :batch
 
@@ -20,16 +25,6 @@ class BatchRequest < ActiveRecord::Base
   validates_numericality_of :position, :only_integer => true, :if => :requires_position?
   validates_uniqueness_of :position, :scope => :batch_id, :if => :need_to_check_position?
   before_validation(:if => :requires_position?) { |record| record.position ||= (record.batch.batch_requests.map(&:position).compact.max || 0) + 1 }
-  
-  cattr_reader :per_page
-  @@per_page = 500
-  include Uuid::Uuidable
-
-  named_scope :including_associations_for_json, { :include => [ :uuid_object, { :request => [ :uuid_object, :request_type, { :asset => :uuid_object }, { :target_asset => :uuid_object } ] }, { :batch => :uuid_object } ] }
-
-  def self.render_class
-    Api::BatchRequestIO
-  end
 
   def move_to_position!(position)
     update_attributes!(:sorting_requests_within_batch => true, :position => position)

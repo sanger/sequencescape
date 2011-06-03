@@ -74,10 +74,12 @@ class SampleManifestTest < ActiveSupport::TestCase
         plate.add_and_save_well(Well.new, i%8, i%12)
       end
       plate.wells.each_with_index do |well,index|
-        well.sample = Factory(
-          :sample,
-          :name             => "Sample_#{offset+index}",
-          :sanger_sample_id => "ABC_123#{offset+index}"
+        well.aliquots.create!(
+          :sample => Factory(
+            :sample,
+            :name             => "Sample_#{offset+index}",
+            :sanger_sample_id => "ABC_123#{offset+index}"
+          )
         )
       end
 

@@ -280,7 +280,7 @@ end
 Given /^the sample "([^\"]+)" is in (\d+) sample tubes? with sequential IDs starting at (\d+)$/ do |name, count, base_id|
   sample = Sample.find_by_name(name) or raise StandardError, "Cannot find the sample #{name.inspect}"
   (1..count.to_i).each do |index|
-    Factory(:sample_tube, :name => "#{name} sample tube #{index}", :material => sample, :id => (base_id.to_i + index - 1))
+    Factory(:sample_tube, :name => "#{name} sample tube #{index}", :sample => sample, :id => (base_id.to_i + index - 1))
   end
 end
 

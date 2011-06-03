@@ -117,7 +117,9 @@ class ProjectsControllerTest < ActionController::TestCase
             }
           }
         END_OF_JSON_DATA
-        post :create, ActiveSupport::JSON.decode(@json_data).merge({'Content-Type' => 'application/json', 'Accept' => 'application/json'})
+
+        @request.accept = @request.env['CONTENT_TYPE'] = 'application/json'
+        post :create, ActiveSupport::JSON.decode(@json_data)
       end
 
       should_set_the_flash_to "Your project has been created"

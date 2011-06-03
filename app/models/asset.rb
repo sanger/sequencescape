@@ -3,6 +3,17 @@ class Asset < ActiveRecord::Base
   include ModelExtensions::Asset
   include AssetLink::Associations
 
+  # Some assets are considered stock assets, that can be reused.
+  module Stock
+    def has_stock_asset?
+      false
+    end
+
+    def is_a_stock_asset?
+      true
+    end
+  end
+
   class VolumeError< StandardError
   end
 
@@ -21,18 +32,11 @@ class Asset < ActiveRecord::Base
   has_many :asset_groups, :through => :asset_group_assets
   has_many :asset_audits
 
-
   # TODO: Remove 'requests' and 'source_request' as they are abiguous
   has_many :requests
   has_one :source_request, :class_name => "Request", :foreign_key => :target_asset_id, :include => :request_metadata
   has_many :requests_as_source, :class_name => 'Request', :foreign_key => :asset_id, :include => :request_metadata
   has_many :requests_as_target, :class_name => 'Request', :foreign_key => :target_asset_id, :include => :request_metadata
-
-  # Contents
-  belongs_to :sample
-  alias_attribute(:material, :sample)
-  alias_attribute(:material_id, :sample_id)
-  def material_type ; Sample.name ; end
 
   extend ContainerAssociation::Extension
 
@@ -214,11 +218,6 @@ class Asset < ActiveRecord::Base
       self.name
     end
   end
-
-  def is_a_pool?
-    false
-  end
-
 
   QC_STATES =  [
     [ 'passed',  'pass' ],
@@ -511,9 +510,7 @@ class Asset < ActiveRecord::Base
   end
 
   def attach_tag(tag)
-    return unless tag
-    tag_instance = TagInstance.new(:tag => tag)
-    self.parents << tag_instance
+    tag.tag!(self) if tag.present?
   end
   
   def requests_status(request_type)
@@ -525,23 +522,13 @@ class Asset < ActiveRecord::Base
     volume = [volume.to_f, self.volume || 0].min
     raise VolumeError, "not enough volume left" if volume <=0
 
-    #create new asset
-    new_asset = self.class.new
-
-    # copy usefull fields from parent
-    new_asset.material = self.material
-    new_asset.name = self.name
-
-    new_asset.add_parent(self)
-
-    # updating volume
-    new_asset.volume = volume
-    self.volume -= volume
-
-    self.save!
-    new_asset.save!
-
-    return new_asset
+    self.class.create!(:name => self.name) do |new_asset|
+      new_asset.volume = volume
+      update_attributes!(:volume => self.volume - volume)  # Update ourselves
+    end.tap do |new_asset|
+      new_asset.aliquots = self.aliquots.map(&:clone)
+      new_asset.add_parent(self)
+    end
   end
 
   def spiked_in_buffer
@@ -550,10 +537,6 @@ class Asset < ActiveRecord::Base
   
   def has_stock_asset?
     return false
-  end
-  
-  def tags
-    return []
   end
   
     

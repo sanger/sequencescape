@@ -31,7 +31,7 @@ end
 Given /^study "([^"]*)" has a plate "([^"]*)"$/ do |study_name, plate_barcode|
   plate = Plate.create!(:barcode => plate_barcode)
   1.upto(3) do |i|
-    Well.create!(:plate => plate, :map_id => i, :sample => Sample.create!(:name => "Sample_#{plate_barcode}_#{i}") )
+    Well.create!(:plate => plate, :map_id => i).aliquots.create!(:sample => Sample.create!(:name => "Sample_#{plate_barcode}_#{i}"))
   end
   study = Study.find_by_name(study_name)
   RequestFactory.create_assets_requests(plate.wells.map(&:id), study.id)
