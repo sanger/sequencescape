@@ -23,7 +23,7 @@ class SampleRegistrarTest < ActiveSupport::TestCase
       should_not_change('SampleRegistrar.count')  { SampleRegistrar.count }
 
       should 'put the sample in the sample tube' do
-        assert_equal(Sample.last, SampleTube.last.sample)
+        assert_equal(Sample.last, SampleTube.last.primary_aliquot.sample)
       end
 
       should 'set the sample tube name to the sample name' do

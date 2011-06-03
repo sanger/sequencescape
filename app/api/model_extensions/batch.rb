@@ -20,8 +20,8 @@ module ModelExtensions::Batch
         :requests => [
           :uuid_object, :study, :project, :request_metadata, :request_type,
           { :submission   => :uuid_object },
-          { :asset        => [ :uuid_object, :barcode_prefix, { :sample => :uuid_object } ] },
-          { :target_asset => [ :uuid_object, :barcode_prefix, { :sample => :uuid_object } ] }
+          { :asset        => [ :uuid_object, :barcode_prefix, { :aliquots => [ :sample, :tag ] } ] },
+          { :target_asset => [ :uuid_object, :barcode_prefix, { :aliquots => [ :sample, :tag ] } ] }
         ]
       }
       
@@ -63,9 +63,10 @@ module ModelExtensions::Batch
       request.update_attributes!(
         :state        => 'started',
         :target_asset => asset_type.create! do |asset|
-          asset.sample  = request.asset.sample
           asset.barcode = AssetBarcode.new_barcode unless [ Lane, Well ].include?(asset_type)
           asset.generate_name(request.asset.name)
+        end.tap do |asset|
+          asset.aliquots = request.asset.aliquots.map(&:clone)
         end
       )
       

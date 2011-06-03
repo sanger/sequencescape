@@ -57,7 +57,7 @@ class ManifestGenerator
 
   private
   def self.check_well_sample_exists(well)
-    raise StandardError, "Sample not found for well #{well.id}" if well.sample.nil?
+    raise StandardError, "Sample not found for well #{well.id}" if well.primary_aliquot.nil?
   end
 
   def self.institute_plate_label(plate)
@@ -75,12 +75,12 @@ class ManifestGenerator
 
   def self.well_sample_parent(well, parent)
     check_well_sample_exists(well)
-    well.sample.sample_metadata[parent].try(:to_i)
+    well.primary_aliquot.sample.sample_metadata[parent].try(:to_i)
   end
 
   def self.well_sample_gender(well)
     check_well_sample_exists(well)
-    gender = well.sample.sample_metadata.gender
+    gender = well.primary_aliquot.sample.sample_metadata.gender
     gender = "male" if gender == "M"
     gender = "female" if gender == "F"
     gender = "Unknown" if ! ["Male","Female", "male","female"].include?(gender)
@@ -89,7 +89,7 @@ class ManifestGenerator
 
   def self.well_sample_is_control(well)
     check_well_sample_exists(well)
-    control_value = well.sample.try(:control)
+    control_value = well.primary_aliquot.sample.try(:control)
     if control_value == true
       1
     elsif control_value == false
@@ -101,7 +101,7 @@ class ManifestGenerator
 
   def self.well_sample_species(well)
     check_well_sample_exists(well)
-    well.sample.sample_metadata.sample_common_name || DEFAULT_SPECIES
+    well.primary_aliquot.sample.sample_metadata.sample_common_name || DEFAULT_SPECIES
   end
 
   def self.well_volume(well)
@@ -120,7 +120,7 @@ class ManifestGenerator
 
   def self.construct_sample_label(plate_barcode, well)
     check_well_sample_exists(well)
-    plate_barcode + "_" + well_map_description(well) + "_" + well.sample.sanger_sample_id
+    plate_barcode + "_" + well_map_description(well) + "_" + well.primary_aliquot.sample.sanger_sample_id
   end
 
   def self.create_header(csv_obj,study)

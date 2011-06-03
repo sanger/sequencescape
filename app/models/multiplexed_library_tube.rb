@@ -1,12 +1,5 @@
-class MultiplexedLibraryTube < Asset
-  include LocationAssociation::Locatable
-  named_scope :including_associations_for_json, { :include => [:uuid_object, :barcode_prefix ] }
-  @@per_page = 500
-  
-  def is_a_pool?
-    true
-  end
-
+class MultiplexedLibraryTube < Tube
+  include Api::MultiplexedLibraryTubeIO::Extensions
   include Transfer::Associations
 
   # Transfer requests into a tube are direct requests where the tube is the target.
@@ -44,28 +37,14 @@ class MultiplexedLibraryTube < Asset
     false
   end
 
+  def create_stock_asset!(attributes = {}, &block)
+    StockMultiplexedLibraryTube.create!(attributes.reverse_merge(:name => "(s) #{self.name}", :barcode => AssetBarcode.new_barcode), &block).tap do |stock_asset|
+      stock_asset.aliquots = aliquots.map(&:clone)
+    end
+  end
+
   def new_stock_asset
     stock = StockMultiplexedLibraryTube.new(:name => "(s) #{self.name}", :barcode => AssetBarcode.new_barcode)
   end
-  
-  def related_resources
-      ['parents','children','requests']
-  end
-  
-  def self.render_class
-    Api::MultiplexedLibraryTubeIO
-  end
-  
-  def url_name
-    "multiplexed_library_tube"
-  end
-  alias_method(:json_root, :url_name)
-  
-  def tags
-    if parent = self.parents.detect{ |parent| parent.is_a_stock_asset? }
-        parent.parents
-    else
-      self.parents
-    end
-  end
+  deprecate :new_stock_asset
 end

@@ -2,14 +2,20 @@
 Feature: Creating Spiked phiX
   Background:
     Given I am an "administrator" user logged in as "me"
+
+    Given I have a sample tube called "Stock of phiX"
+      And the "volume" of the asset called "Stock of phiX" is "200.0"
+
   Scenario: A member of the library creation team creates a "batch" of indexed phiX.
-    And I have a tag called "168"
+    Given I have a tag called "168"
     Given I am on the asset creation page
     When I select "Library Tube" from "Type"
+    And I fill in "Parent Asset" with "Stock of phiX"
     And I fill in "Name" with "indexed phiX"
     And  I fill in "Tag" with "168"
     And I fill in "Concentration" with "17"
     And I fill in "Volume" with "100"
+    And I fill in "vol." with "100"
     When I press "Create"
     Then I should see "Below are the assets which have been created"
     And I should see "indexed phiX"
@@ -20,7 +26,6 @@ Feature: Creating Spiked phiX
 
     When I am on the show page for asset "indexed phiX"
     And I should see "LibraryTube"
-    And I should see "Tag Instance"
 
   #Scenario: A member of the cluster formation team will create a new "batch" of Hybridization buffer spiked with phiX.
     #Given I am logged in as "me"
@@ -102,6 +107,8 @@ Feature: Creating Spiked phiX
     And  I fill in "Tag" with "168"
     And I fill in "Concentration" with "17"
     And I fill in "Volume" with "100"
+    And I fill in "Parent Asset" with "Stock of phiX"
+    And I fill in "vol." with "100"
     When I press "Create"
     Then I should see "Below are the assets which have been created"
     And I should see "indexed phiX"
@@ -112,7 +119,6 @@ Feature: Creating Spiked phiX
 
     When I am on the show page for asset "indexed phiX"
     And I should see "LibraryTube"
-    And I should see "Tag Instance"
 
 #create Hybridization Buffer Spiked (Stock)
     Given I am on the asset creation page

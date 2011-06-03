@@ -617,7 +617,7 @@ GenotypingPipeline.create!(:name => 'Genotyping') do |pipeline|
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'Well'
     request_type.order             = 3
-    request_type.request_class     = TransferRequest
+    request_type.request_class     = Request
     request_type.multiples_allowed = false
   end
 

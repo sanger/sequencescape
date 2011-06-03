@@ -71,100 +71,108 @@ class AssetsController < ApplicationController
     saved = true
 
     begin
-    Asset.transaction do
-      @assets = []
-      sti_type = params[:asset].delete(:sti_type)
-      asset_class = sti_type.present? ?  sti_type.constantize : Asset
-      1.upto(count) do |n|
-        asset = asset_class.new(params[:asset])
-              
-        asset.name += " ##{n}" if count !=1
+      Asset.transaction do
+        @assets = []
+        sti_type = params[:asset].delete(:sti_type)
+        asset_class = sti_type.present? ?  sti_type.constantize : Asset
+        1.upto(count) do |n|
+          asset = asset_class.new(params[:asset]) do |asset|
+            asset.name += " ##{n}" if count !=1
+          end
 
-        sample_param = params[:sample]
-        asset.sample = Sample.find_by_id(sample_param) || Sample.find_by_name(sample_param)
+          # from asset
+          parent_param = first_param(:parent_asset)
+          if parent_param.present?
+            parent = Asset.find_by_id(parent_param) || Asset.find_from_machine_barcode(parent_param) || Asset.find_by_name(parent_param)
+            if parent.present?
+              parent_volume = params[:parent_volume]
+              if parent_volume.present? and parent_volume.first.present?
+                extract= parent.transfer(parent_volume.first)
 
-        # from asset
-        parent_param = first_param(:parent_asset)
-        if parent_param.present?
-          parent = Asset.find_by_id(parent_param) || Asset.find_from_machine_barcode(parent_param) || Asset.find_by_name(parent_param)
-          if parent.present?
-            parent_volume = params[:parent_volume]
-            if parent_volume.present? and parent_volume.first.present?
-              extract= parent.transfer(parent_volume.first)
+                if asset.volume
+                  parent = extract
 
-              if asset.volume
-                parent = extract
-              elsif asset.is_a?(SpikedBuffer) and !parent.is_a?(SpikedBuffer)
-                # error should have its own volume
-                flash[:error] = "Enter a volume"
-                saved = false
-                break
-              else # 
-                extract.name = asset.name
-                asset = extract
-                parent = nil
+                  # We must copy the aliquots of the 'extract' to the asset, otherwise the asset remains
+                  # empty.
+                  asset.save!
+                  asset.aliquots = parent.aliquots.map(&:clone)
+                elsif asset.is_a?(SpikedBuffer) and !parent.is_a?(SpikedBuffer)
+                  # error should have its own volume
+                  flash[:error] = "Enter a volume"
+                  saved = false
+                  break
+                else # 
+                  # Discard the 'asset' that was build initially as it is being replaced by the asset
+                  # created from the extraction process.
+                  extract.update_attributes!(:name => asset.name)
+                  asset = extract
+                  parent = nil
+                end
               end
-            end
 
-            begin
               asset.add_parent(parent)
-            rescue
+            end
+          else
+            # We must save the asset now because the parent stuff isn't being executed.
+            asset.save!
+          end
+          #Study
+          
+          asset.update_attributes!(:barcode => AssetBarcode.new_barcode) if asset.barcode.nil?
+           
+          #TODO : add request or an event
+          asset.comments << Comment.new(:user => current_user, :description => "asset has been created by #{current_user.login}")
+
+          # Can't add the sample until after the asset has been created, and then only if it doesn't
+          # already have any aliquots in it.
+          sample_param = params[:sample]
+          sample = Sample.find_by_id(sample_param) || Sample.find_by_name(sample_param)
+          if sample.present?
+            raise StandardError, "Asset already has aliquots in it" unless asset.aliquots.empty?
+            asset.aliquots.create!(:sample => sample)
+          end
+
+          # associate tag 
+          # create a new tag instance or assign the tag is it's a tag instance
+          tag_param = first_param(:tag)
+          if tag_param.present?
+            tag = nil
+            oligo = params[:tag_sequence]
+            if oligo.present? && oligo.first.present?
+              oligo = oligo.first.upcase!
+              tag = Tag.find(:first, :conditions => {:map_id => tag_param, :oligo => oligo })
+            else
+              tags = Tag.find_all_by_map_id(tag_param)
+              if tags.size ==1
+                tag = tags.first
+              end
+
+            end
+            unless tag
+              flash[:error] = "Tag #{tag_param}:#{params[:tag_sequence]} not found"
               saved = false
             end
-          end
-        end
-        #Study
 
-        # associate tag 
-        # create a new tag instance or assign the tag is it's a tag instance
-        tag_param = first_param(:tag)
-        if tag_param.present?
-          tag = nil
-          oligo = params[:tag_sequence]
-          if oligo.present? && oligo.first.present?
-            oligo = oligo.first.upcase!
-            tag = Tag.find(:first, :conditions => {:map_id => tag_param, :oligo => oligo })
-          else
-            tags = Tag.find_all_by_map_id(tag_param)
-            if tags.size ==1
-              tag = tags.first
-            end
-
-          end
-          unless tag
-            flash[:error] = "Tag #{tag_param}:#{params[:tag_sequence]} not found"
-            saved = false
+            asset.attach_tag(tag)
           end
 
-          asset.attach_tag(tag)
+          @assets << asset
         end
-        
-        if asset.barcode.nil?
-          asset.barcode = AssetBarcode.new_barcode
-        end
-         
-        #TODO : add request or an event
-        asset.comments << Comment.new(:user => current_user, :description => "asset has been created by #{current_user.login}")
-        unless asset.save && saved
-          saved = false
-          raise ActiveRecord::Rollback
-          break
-        end
-        @assets << asset
-      end
-    end # transaction
+      end # transaction
     rescue Asset::VolumeError => ex
       saved = false
       flash[:error] = ex.message
+    rescue => exception
+      saved = false
+      flash[:error] = exception.message
     end
-
 
     respond_to do |format|
       if saved
         flash[:notice] = 'Asset was successfully created.'
         format.html { render :action => :create}
-        format.xml  { render :xml => @assets, :status => :created, :location => @assets }
-        format.json  { render :json => @assets, :status => :created, :location => @assets }
+        format.xml  { render :xml => @assets, :status => :created, :location => assets_url(@assets) }
+        format.json { render :json => @assets, :status => :created, :location => assets_url(@assets) }
       else
         format.html { redirect_to :action => "new" }
         format.xml  { render :xml => @assets.errors, :status => :unprocessable_entity }
@@ -447,11 +455,11 @@ class AssetsController < ApplicationController
     params[:assets].each do |id, params|
       asset = Asset.find(id)
       unless asset.nil?
-        stock_asset = asset.new_stock_asset
-        stock_asset.name = params[:name]
-        stock_asset.volume = params[:volume]
-        stock_asset.concentration = params[:concentration]
-        stock_asset.save
+        stock_asset = asset.create_stock_asset!(
+          :name          => params[:name],
+          :volume        => params[:volume],
+          :concentration => params[:concentration]
+        )
         
         stock_asset.assign_relationships(asset.parents, asset)
       end

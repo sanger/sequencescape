@@ -38,10 +38,7 @@ class AssignTagsToWellsTask < Task
   def create_tag_instances_and_link_to_wells(requests, params)
     params[:tag].map do |well_id, tag_id|
       ActiveRecord::Base.transaction do     
-        well, tag = Well.find(well_id), Tag.find(tag_id)
-        next if well.tag_instance.try(:tag) == tag            # No point in re-tagging with the same tag!
-        well.untag! if well.tag_instance.present?
-        tag.tag!(well)
+        Tag.find(tag_id).tag!(Well.find(well_id))
       end
     end
   end
@@ -77,11 +74,7 @@ class AssignTagsToWellsTask < Task
 
   def unlink_tag_instances_from_wells(requests)
     requests.each do |request|
-      asset = request.asset
-      tag_instance = asset.tag_instance
-      next unless tag_instance
-      asset.children.delete(tag_instance)
-      asset.save!
+      request.asset.untag!
     end
   end
 
