@@ -23,7 +23,6 @@ Feature: Sample manifest
 
   Scenario: Create a plate manifest and upload a manifest file without processing it
     Given a manifest has been created for "Test study"
-    Given I reset all of the sanger sample ids to a known number sequence
     When I fill in "File to upload" with "test/data/test_blank_wells.csv"
     And I press "Upload manifest"
     When I follow "View all manifests"
@@ -264,7 +263,6 @@ Feature: Sample manifest
   @is_control
   Scenario: Check is_control and is_resubmit are set properly in an uploaded manifest
     Given a manifest has been created for "Test study"
-    Given I reset all of the sanger sample ids to a known number sequence
     When I fill in "File to upload" with "test/data/test_is_control_is_resubmit.csv"
     And I press "Upload manifest"
     Given the manifests are successfully processed

@@ -131,7 +131,7 @@ module SampleManifest::PlateBehaviour
       plate.tap do |plate|
         sanger_sample_ids = generate_sanger_ids(plate.size)
 
-        Map.walk_plate_vertically(plate.size) do |map, _|
+        Map.walk_plate_in_column_major_order(plate.size) do |map, _|
           sanger_sample_id           = sanger_sample_ids.shift
           generated_sanger_sample_id = SangerSampleId.generate_sanger_sample_id!(study_abbreviation, sanger_sample_id)
 
