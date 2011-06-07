@@ -1,59 +1,31 @@
-# This class acts slightly differently from other API classes to hide 
-# the internals of Submissions and request types
-class Api::SubmissionIO
-  attr :params, :user
-  attr_accessor :errors
-  
-  def initialize(params, user)
-    if params.nil?
-      raise Exception.new, "params not assigned"
-    end
-    
-    if user.nil?
-      raise Exception.new, "user not assigned"
-    end
+class Api::SubmissionIO < Api::Base
+  renders_model(::Submission)
 
-    @params = params
-    @user   = user
+  map_attribute_to_json_attribute(:uuid)
+  map_attribute_to_json_attribute(:id, 'internal_id')
+  map_attribute_to_json_attribute(:created_at)
+  map_attribute_to_json_attribute(:updated_at)
+  map_attribute_to_json_attribute(:state)
+  map_attribute_to_json_attribute(:message)
+  map_attribute_to_json_attribute(:comments)
+  map_attribute_to_json_attribute(:template_name)
+  #map_attribute_to_json_attribute(:request_options)
+  
+  
+  with_association(:project) do
+     map_attribute_to_json_attribute(:uuid  , 'project_uuid')
+     map_attribute_to_json_attribute(:id  , 'project_internal_id')
+     map_attribute_to_json_attribute(:name  , 'project_name')
   end
 
-  def to_json
-    if @errors
-      @errors.to_json
-    else
-      # TODO: Clean up
-      "Submission created".to_json
-    end
+  with_association(:study) do 
+    map_attribute_to_json_attribute(:uuid  , 'study_uuid')
+    map_attribute_to_json_attribute(:id  , 'study_internal_id')
+    map_attribute_to_json_attribute(:name  , 'study_name')
   end
-  
-  def self.types
-    SubmissionTemplate.all.map { |t| t.name}
+  with_association(:user) do 
+    map_attribute_to_json_attribute(:login  , 'created_by')
   end
-  
-  # Check the submission and create sequencescape submission
-  def check
-    study   = ::Study.find(@params[:study_id])
-    project = ::Project.find(@params[:project_id])
-    assets = ::SampleTube.find(@params[:sample_tubes])
-    template = ::SubmissionTemplae.find_by_name(:@params[:type])
-    comments = self.params[:comments]
-    request_options = {}
-    if self.params[:number_of_lanes]
-      request_options[:multiplier] = @params[:number_of_lanes]
-    end
-    
-    begin
-      submission = ::Submission.build(template, study, project, ::Submission::Workflow.find(1), @user, assets, 
-                      samples = [],  request_type_ids, request_options, 
-                      comments)
-      if submission.new_record?
-        return false
-      end
-    rescue QuotaException => quota_exception
-      @errors =  quota_exception.message
-      return false
-    end
-    true
-  end
+
 
 end
