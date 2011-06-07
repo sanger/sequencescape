@@ -17,7 +17,7 @@ class Api::SubmissionIO < Api::Base
      map_attribute_to_json_attribute(:id  , 'project_internal_id')
      map_attribute_to_json_attribute(:name  , 'project_name')
   end
-
+ 
   with_association(:study) do 
     map_attribute_to_json_attribute(:uuid  , 'study_uuid')
     map_attribute_to_json_attribute(:id  , 'study_internal_id')
@@ -26,6 +26,9 @@ class Api::SubmissionIO < Api::Base
   with_association(:user) do 
     map_attribute_to_json_attribute(:login  , 'created_by')
   end
-
+  
+  extra_json_attributes do |object, json_attributes|
+    json_attributes["asset_uuids"] = object.assets.map(&:uuid) unless object.assets.empty?
+  end
 
 end

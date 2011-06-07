@@ -143,4 +143,8 @@ Given /^the last submission wants (\d+) runs of the "([^\"]+)" requests$/ do |co
   submission.save!
 end
 
-#
+
+Given /^the sample tubes are part of submission "([^"]*)"$/ do | submission_uuid|
+  submission = Uuid.find_by_external_id(submission_uuid).resource or raise StandardError, "Couldnt find object for UUID"
+  Asset.all.map{ |asset| submission.assets << asset } 
+end

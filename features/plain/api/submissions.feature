@@ -24,7 +24,7 @@ Feature: Interacting with submissions through the API
     When I GET the API path "/submissions"
     Then the JSON should be an empty array
 
-  Scenario: Listing all of the submissions that exist
+  Scenario: Listing all of the submissions that exist for a submission without assets
     Given I have a submission created with the following details based on the template "Library creation - Paired end sequencing":
       | study   | 22222222-3333-4444-5555-000000000000 |
       | project | 22222222-3333-4444-5555-000000000001 |
@@ -36,15 +36,18 @@ Feature: Interacting with submissions through the API
       """
       [
         { 
-          "linear_submission":
+          "submission":
           {
+            "uuid": "11111111-2222-3333-4444-555555555555",
             "created_at": "2010-09-16T13:45:00+01:00",
             "updated_at": "2010-09-16T13:45:00+01:00",
             "created_by": "user",
             "template_name":"Library creation - Paired end sequencing",
             "state": "building",
             "study_name": "Testing submission creation",
-            "project_name": "Testing submission creation" 
+            "study_uuid": "22222222-3333-4444-5555-000000000000",
+            "project_name": "Testing submission creation", 
+            "project_uuid": "22222222-3333-4444-5555-000000000001"
           }
         }
       ]
@@ -54,11 +57,37 @@ Feature: Interacting with submissions through the API
     When I GET the API path "/submissions/00000000-1111-2222-3333-444444444444"
     Then the HTTP response should be "404 Not Found"
 
-  Scenario: Retrieving the JSON for a particular submission
-    Given I have a submission with UUID "00000000-1111-2222-3333-444444444444"
+  Scenario: Retrieving the JSON for a particular submission with 3 assets
+    Given I have a submission created with the following details based on the template "Library creation - Paired end sequencing":
+      | study   | 22222222-3333-4444-5555-000000000000 |
+      | project | 22222222-3333-4444-5555-000000000001 |
+      | assets  | 33333333-4444-5555-6666-000000000001 |
+      
+    Given 3 sample tubes exist with names based on "sampletube" and IDs starting at 1
+      And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"
+      And the sample tubes are part of submission "11111111-2222-3333-4444-555555555555"
 
-    When I GET the API path "/submissions/00000000-1111-2222-3333-444444444444"
-    Then ignoring "id" the JSON should be:
+    When I GET the API path "/submissions/11111111-2222-3333-4444-555555555555"
+    Then ignoring "internal_id" the JSON should be:
       """
-  
+        { 
+          "submission":
+          {
+            "uuid": "11111111-2222-3333-4444-555555555555",
+            "created_at": "2010-09-16T13:45:00+01:00",
+            "updated_at": "2010-09-16T13:45:00+01:00",
+            "created_by": "user",
+            "template_name":"Library creation - Paired end sequencing",
+            "state": "building",
+            "study_name": "Testing submission creation",
+            "study_uuid": "22222222-3333-4444-5555-000000000000",
+            "project_name": "Testing submission creation", 
+            "project_uuid": "22222222-3333-4444-5555-000000000001",
+            "asset_uuids": [  
+              "33333333-4444-5555-6666-000000000001",
+              "33333333-4444-5555-6666-000000000002",
+              "33333333-4444-5555-6666-000000000003"
+            ]
+          }
+        }
       """

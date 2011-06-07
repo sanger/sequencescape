@@ -45,6 +45,11 @@ class Submission < ActiveRecord::Base
     Api::SubmissionIO
   end
   
+  def url_name
+    "submission"
+  end
+  alias_method(:json_root, :url_name)
+  
 
   # TODO[xxx]: I don't like the name but this should disappear once the UI has been fixed
   def self.prepare!(options)
