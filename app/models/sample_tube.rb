@@ -6,6 +6,7 @@ class SampleTube < Asset
   named_scope :including_associations_for_json, { :include => [ :uuid_object, :barcode_prefix, { :sample => :uuid_object } ] }
   named_scope :with_sample_id, lambda { |id| { :conditions => { :sample_id => id } } }
   named_scope :with_sample, lambda { |sample| { :conditions => { :sample_id => sample.id } } }
+  @@per_page = 500
 
   # In theory these two callbacks should ensure that if a 2D barcode is set then the barcode of
   # the SampleTube is properly configured, otherwise it will be set to the ID of the SampleTube
