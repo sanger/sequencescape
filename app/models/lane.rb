@@ -1,6 +1,7 @@
 class Lane < Asset
   include LocationAssociation::Locatable
   named_scope :including_associations_for_json, { :include => [:uuid_object, :barcode_prefix ] }
+  @@per_page = 500
   
 
   LIST_REASONS_NEGATIVE = [

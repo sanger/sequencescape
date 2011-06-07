@@ -6,15 +6,16 @@ class Well < Asset
 
   contained_by :plate
   delegate :location, :to => :container , :allow_nil => true
-  
+  @@per_page = 500
   has_one :well_attribute
 
   # # TODO:  remove asset link and use tag_instance via content
   #contains :tag_instance
   has_one :tag_instance, :through => :links_as_parent, :source => :descendant, :conditions => { :sti_type => 'TagInstance' }
   after_create :create_well_attribute_if_not_exists
-
+  
   named_scope :including_associations_for_json, { :include => [:uuid_object, :map, :well_attribute, :container, { :sample => :uuid_object } ] }
+
   named_scope :with_blank_samples, { :conditions => { :samples => { :empty_supplier_sample_name => true } }, :joins => :sample }
 
   class << self
