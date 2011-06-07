@@ -3,6 +3,7 @@ class LibraryTube < Asset
   include LocationAssociation::Locatable
 
   named_scope :including_associations_for_json, { :include => [ :uuid_object, { :tag_instance => { :tag => [ :uuid_object, { :tag_group => :uuid_object } ] } },  {:source_request => [:uuid_object, :request_metadata] }, :barcode_prefix, { :sample => :uuid_object }] }
+  @@per_page = 500
 
   def url_name
     "library_tube"
