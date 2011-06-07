@@ -33,7 +33,7 @@ class Api::BaseController < ApplicationController
   def index
     options = { :order => 'id DESC' }.merge(@context_options || {})
 
-    results = @context.paginate({ :page => params[:page] || 1, :total_entries => 100000000}.merge(options))
+    results = @context.paginate({ :page => params[:page] || 1, :total_entries => 100000000, :per_page => 500}.merge(options))
 
     respond_to do |format|
       format.json { render :json => results }
