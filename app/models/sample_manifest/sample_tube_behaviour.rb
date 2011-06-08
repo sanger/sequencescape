@@ -88,9 +88,9 @@ module SampleManifest::SampleTubeBehaviour
     study_samples_data = []
     samples_data.each do |barcode,sanger_sample_id,prefix|
       sample      = create_sample(sanger_sample_id)
-      sample_tube = SampleTube.find_by_barcode(barcode)
-      sample_tube.sample = sample
-      sample_tube.save!
+      sample_tube = SampleTube.find_by_barcode(barcode) or raise ActiveRecord::RecordNotFound, "Cannot find sample tube with barcode #{barcode.inspect}"
+      sample_tube.aliquots.create!(:sample => sample)
+
       study_samples_data << [study_id, sample.id]
     end
     delayed_generate_study_samples(study_samples_data)

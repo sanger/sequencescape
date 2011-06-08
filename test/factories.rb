@@ -377,13 +377,17 @@ Factory.define :well_attribute do |w|
   w.current_volume      15
 end
 
-Factory.define :well do |a|
+Factory.define :empty_well, :class => Well do |well|
   a.name                {|a| Factory.next :asset_name }
   a.value               ""
   a.qc_state            ""
   a.resource            nil
   a.barcode             nil
   a.well_attribute      {|wa| wa.association(:well_attribute)}
+end
+
+Factory.define :well, :parent => :empty_well do |a|
+  # TODO: This should probably set an aliquot but test code (current) relies on it being empty
 end
 
 Factory.define :fragment do |fragment|

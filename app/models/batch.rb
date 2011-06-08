@@ -486,13 +486,14 @@ class Batch < ActiveRecord::Base
       self.requests.each do |request|
         raise 'Invalid request data' unless  request.valid_request_for_pulldown_report?
         well = request.asset
-        tag_on_well = well.get_tag
+        tag_on_well = well.primary_aliquot.try(:tag)
         if tag_on_well.present?
           tag_name              = tag_on_well.name
           tag_expected_sequence = tag_on_well.oligo
           tag_group_name        = tag_on_well.tag_group.name if tag_on_well.tag_group.present?
         end
 
+        sample = well.primary_aliquot.try(:sample)
         csv << [ 
           well.plate.sanger_human_barcode,
           well.map.description,
@@ -501,7 +502,7 @@ class Batch < ActiveRecord::Base
           tag_group_name,
           tag_name,
           tag_expected_sequence,
-          well.sample.sanger_sample_id || well.sample.name,
+          sample.sanger_sample_id || sample.name,
           well.parent.well_attribute.measured_volume,
           well.parent.well_attribute.concentration
         ]
