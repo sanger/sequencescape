@@ -372,7 +372,6 @@ Factory.define :asset_group_asset do |aga|
   aga.asset_group   {|asset_group| asset_group.association(:asset_group)}
 end
 
-
 Factory.define :fragment do |fragment|
 end
 

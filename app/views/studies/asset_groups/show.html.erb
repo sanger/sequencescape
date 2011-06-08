@@ -6,15 +6,21 @@
   <table class="hover_table">
     <thead>
       <th width="5%">Asset Name</th>
-      <th width="5%">Sample Name</th>
+      <th width="5%">Sample Names</th>
       <th width="5%">Asset Type</th>
       <th width="5%">Asset Barcode</th>
     </thead>
     <% @asset_group.assets.each do |asset| -%>
       <tr>
         <td><%= link_to asset.name, asset_path(asset) %></td>
-        <% unless asset.sample.nil? %>
-          <td><%= link_to asset.sample.name, sample_path(asset.sample) %></td>
+        <% if not asset.aliquots.empty? %>
+          <td>
+            <ul>
+              <% asset.aliquots.each do |aliquot| %>
+                <li><%= link_to aliquot.sample.name, sample_path(aliquot.sample) %></li>
+              <% end %>
+            </ul>
+          </td>
         <% else %>
           <td></td>
         <% end %>

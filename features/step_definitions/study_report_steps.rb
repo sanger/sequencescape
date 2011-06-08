@@ -47,9 +47,9 @@ Given /^study "([^"]*)" has a plate "([^"]*)"$/ do |study_name, plate_barcode|
     )
   end
 
-  study.assets[0].sample.external_properties.create!(:key => 'genotyping_done', :value => "DNAlab completed: 13")
-  study.assets[1].sample.external_properties.create!(:key => 'genotyping_done', :value => "Imported to Illumina: 123")
-  study.assets[2].sample.external_properties.create!(:key => 'genotyping_done', :value => "Imported to Illumina: 51| DNAlab completed: 17")
+  study.assets[0].primary_aliquot.sample.external_properties.create!(:key => 'genotyping_done', :value => "DNAlab completed: 13")
+  study.assets[1].primary_aliquot.sample.external_properties.create!(:key => 'genotyping_done', :value => "Imported to Illumina: 123")
+  study.assets[2].primary_aliquot.sample.external_properties.create!(:key => 'genotyping_done', :value => "Imported to Illumina: 51| DNAlab completed: 17")
 end
 
 

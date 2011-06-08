@@ -10,7 +10,27 @@ class Api::RequestIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        named_scope :including_associations_for_json, { :include => [ :uuid_object, { :study => :uuid_object }, { :project => :uuid_object }, :user, {:asset => [ { :sample => :uuid_object }, :uuid_object, :barcode_prefix] }, { :target_asset => [ { :sample => :uuid_object }, :uuid_object, :barcode_prefix] }, :request_type, :request_metadata ] }
+        named_scope :including_associations_for_json, {
+          :include => [
+            :uuid_object,
+            :request_type,
+            :request_metadata,
+            :user, {
+              :study => :uuid_object,
+              :project => :uuid_object,
+              :asset => [
+                :uuid_object,
+                :barcode_prefix,
+                { :aliquots => { :sample => :uuid_object } }
+              ],
+              :target_asset => [
+                :uuid_object,
+                :barcode_prefix,
+                { :aliquots => { :sample => :uuid_object } }
+              ]
+            }
+          ]
+        }
 
         alias_method(:json_root, :url_name)
       end
@@ -69,11 +89,13 @@ class Api::RequestIO < Api::Base
       json_attributes["source_asset_type"] = object.sti_type.tableize unless object.nil?
     end
 
-    with_association(:sample) do
-      map_attribute_to_json_attribute(:uuid, 'source_asset_sample_uuid')
-      map_attribute_to_json_attribute(:id  , 'source_asset_sample_internal_id')
+    with_association(:primary_aliquot) do
+      with_association(:sample) do
+        map_attribute_to_json_attribute(:uuid, 'source_asset_sample_uuid')
+        map_attribute_to_json_attribute(:id  , 'source_asset_sample_internal_id')
+      end
     end
-    
+
     with_association(:barcode_prefix) do
       map_attribute_to_json_attribute(:prefix, 'source_asset_barcode_prefix')
     end
@@ -92,11 +114,13 @@ class Api::RequestIO < Api::Base
       json_attributes["target_asset_type"] = object.sti_type.tableize unless object.nil?
     end
 
-    with_association(:sample) do
-      map_attribute_to_json_attribute(:uuid, 'target_asset_sample_uuid')
-      map_attribute_to_json_attribute(:id  , 'target_asset_sample_internal_id')
+    with_association(:primary_aliquot) do
+      with_association(:sample) do
+        map_attribute_to_json_attribute(:uuid, 'target_asset_sample_uuid')
+        map_attribute_to_json_attribute(:id  , 'target_asset_sample_internal_id')
+      end
     end
-    
+
     with_association(:barcode_prefix) do
       map_attribute_to_json_attribute(:prefix, 'target_asset_barcode_prefix')
     end

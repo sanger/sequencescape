@@ -29,7 +29,7 @@ class PacBio::Worksheet
   def row(request)
     [
       request.asset.barcode,
-      request.asset.sample.name,
+      request.asset.primary_aliquot.sample.name,
       request.request_metadata.insert_size,
       '',
       '',
