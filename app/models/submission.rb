@@ -39,7 +39,7 @@ class Submission < ActiveRecord::Base
   
   cattr_reader :per_page
   @@per_page = 500
-  named_scope :including_associations_for_json, { :include => [:uuid_object, { :project => :uuid_object }, { :study => :uuid_object }, :user] }
+  named_scope :including_associations_for_json, { :include => [:uuid_object, {:assets => [:uuid_object] }, { :project => :uuid_object }, { :study => :uuid_object }, :user] }
   
   def self.render_class
     Api::SubmissionIO
@@ -50,6 +50,9 @@ class Submission < ActiveRecord::Base
   end
   alias_method(:json_root, :url_name)
   
+  def asset_uuids
+    assets.select{ |asset| ! asset.nil? }.map(&:uuid) if assets
+  end
 
   # TODO[xxx]: I don't like the name but this should disappear once the UI has been fixed
   def self.prepare!(options)

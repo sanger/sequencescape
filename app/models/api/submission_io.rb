@@ -9,8 +9,6 @@ class Api::SubmissionIO < Api::Base
   map_attribute_to_json_attribute(:message)
   map_attribute_to_json_attribute(:comments)
   map_attribute_to_json_attribute(:template_name)
-  #map_attribute_to_json_attribute(:request_options)
-  
   
   with_association(:project) do
      map_attribute_to_json_attribute(:uuid  , 'project_uuid')
@@ -28,7 +26,8 @@ class Api::SubmissionIO < Api::Base
   end
   
   extra_json_attributes do |object, json_attributes|
-    json_attributes["asset_uuids"] = object.assets.map(&:uuid) unless object.assets.empty?
+    json_attributes["asset_uuids"] = object.asset_uuids
+    json_attributes["request_options"] =  object.request_options_structioned_normalised unless object.request_options.blank?
   end
 
 end
