@@ -130,7 +130,7 @@ class Well < Aliquot::Receptacle
 
   def create_child_sample_tube
     SampleTube.create!(:map => self.map).tap do |sample_tube|
-      sample_tube.aliquots.create!(:sample => self.sample) if sample.present?
+      sample_tube.aliquots = aliquots.map(&:clone)
       AssetLink.connect(self, sample_tube)
     end
   end

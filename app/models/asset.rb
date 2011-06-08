@@ -123,8 +123,7 @@ class Asset < ActiveRecord::Base
   end
 
   def tube_name
-    return self.sample.shorten_sanger_sample_id if self.sample && ! self.sample.sanger_sample_id.blank?
-    self.name
+    (primary_aliquot.nil? or primary_aliquot.sample.sanger_sample_id.blank?) ? self.name : primary_aliquot.sample.shorten_sanger_sample_id
   end
 
   def study

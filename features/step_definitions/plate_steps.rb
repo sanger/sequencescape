@@ -75,10 +75,7 @@ end
 
 Given /^plate with barcode "([^"]*)" has a well$/ do |plate_barcode|
   plate = Plate.find_by_barcode(plate_barcode)
-  sample = Factory :sample, :name => "Sample1"
-  well = Factory :well
-  well.sample = sample
-  well.save!
+  well  = Factory(:empty_well).tap { |well| well.aliquots.create!(:sample => Factory(:sample, :name => 'Sample1')) }
   plate.add_and_save_well(well, 0, 0)
 end
 
@@ -151,7 +148,8 @@ end
 
 Given /^the well with ID (\d+) contains the sample "([^\"]+)"$/ do |well_id, name|
   sample = Sample.find_by_name(name) or raise StandardError, "Cannot find the sample #{name.inspect}"
-  Well.find(well_id).update_attributes!(:sample => sample)
+  well   = Well.find(well_id)
+  well.aliquots.create!(:sample => sample)
 end
 
 Then /^the wells with the following UUIDs should all be related to the same plate:$/ do |well_uuids|
