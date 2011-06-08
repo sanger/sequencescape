@@ -11,39 +11,39 @@ class Aliquot < ActiveRecord::Base
     named_scope :with_sample_id, lambda { |id|     { :conditions => { :aliquots => { :sample_id => id        } }, :joins => :aliquots } }
     named_scope :with_sample,    lambda { |sample| { :conditions => { :aliquots => { :sample_id => sample.id } }, :joins => :aliquots } }
 
-    # TODO: Remove these at some point in the future as they're kind of wrong!
-    has_one :sample, :through => :primary_aliquot
-    deprecate :sample
-
-    def sample=(sample)
-      aliquots.clear
-      aliquots << Aliquot.new(:sample => sample)
-    end
-    deprecate :sample=
-
-    def sample_id
-      primary_aliquot.try(:sample_id)
-    end
-    deprecate :sample_id
-
-    def sample_id=(sample_id)
-      aliquots.clear
-      aliquots << Aliquot.new(:sample_id => sample_id)
-    end
-    deprecate :sample_id=
-
-    has_one :get_tag, :through => :primary_aliquot, :source => :tag
-    deprecate :get_tag
-
-    def tag
-      get_tag.try(:map_id) || ''
-    end
-    deprecate :tag
-
-    def tags
-      aliquots
-    end
-    deprecate :tags
+#    # TODO: Remove these at some point in the future as they're kind of wrong!
+#    has_one :sample, :through => :primary_aliquot
+#    deprecate :sample
+#
+#    def sample=(sample)
+#      aliquots.clear
+#      aliquots << Aliquot.new(:sample => sample)
+#    end
+#    deprecate :sample=
+#
+#    def sample_id
+#      primary_aliquot.try(:sample_id)
+#    end
+#    deprecate :sample_id
+#
+#    def sample_id=(sample_id)
+#      aliquots.clear
+#      aliquots << Aliquot.new(:sample_id => sample_id)
+#    end
+#    deprecate :sample_id=
+#
+#    has_one :get_tag, :through => :primary_aliquot, :source => :tag
+#    deprecate :get_tag
+#
+#    def tag
+#      get_tag.try(:map_id) || ''
+#    end
+#    deprecate :tag
+#
+#    def tags
+#      aliquots
+#    end
+#    deprecate :tags
   end
 
   # Something that is aliquotable can be part of an aliquot.  So sample and tag are both examples.

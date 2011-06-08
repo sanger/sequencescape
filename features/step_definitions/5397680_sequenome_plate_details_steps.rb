@@ -39,7 +39,7 @@ Given /^there is a (\d+) well "([^"]*)" plate with a barcode of "([^"]*)"$/ do |
     new_plate.wells.create!(:map_id => i).aliquots.create!(:sample => sample)
   end
   
-  new_plate.wells.first.sample.sample_metadata.update_attributes!(
+  new_plate.wells.first.primary_aliquot.sample.sample_metadata.update_attributes!(
     :gender => "male"
   )
 end

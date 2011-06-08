@@ -1,9 +1,7 @@
 Given /^I have a sample tube "([^"]*)" in study "([^"]*)" in asset group "([^"]*)"$/ do |sample_tube_barcode, study_name, asset_group_name|
   study = Study.find_by_name(study_name)
   sample_tube = Factory(:sample_tube, :barcode => sample_tube_barcode, :location =>  Location.find_by_name('PacBio sample prep freezer'))
-  @updating_from_manifest = true
-  sample_tube.sample.name = "Sample_#{sample_tube_barcode}"
-  sample_tube.sample.save_without_validation!
+  sample_tube.primary_aliquot.sample.rename_to!("Sample_#{sample_tube_barcode}")
   asset_group = AssetGroup.find_by_name(asset_group_name)
   if asset_group.nil?
     asset_group = Factory(:asset_group, :name => asset_group_name, :study => study)

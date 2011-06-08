@@ -332,7 +332,7 @@ class Request < ActiveRecord::Base
     return false if self.study.nil?
     return false if well.nil? || ! well.is_a?(Well)
     return false if well.plate.nil? || well.map.nil?
-    return false if well.sample.nil?
+    return false if well.primary_aliquot.nil?
     return false if well.parent.nil? || ! well.parent.is_a?(Well)
 
 
