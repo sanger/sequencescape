@@ -1,5 +1,5 @@
 module StudyReport::WellDetails
-  
+
   def dna_qc_request_status
     requests_status = dna_qc_requests_status
     return nil if requests_status.blank?
@@ -16,9 +16,9 @@ module StudyReport::WellDetails
   def genotyping_requests_status
     requests_status(RequestType.genotyping)
   end
-  
+
   def genotyping_status
-    sample ? sample.genotyping_done : ""
+    primary_aliquot.present? ? primary_aliquot.sample.genotyping_done : ''
   end
 
   def qc_report
@@ -41,8 +41,8 @@ module StudyReport::WellDetails
       :sequenom_stamp_date => self.plate.sequenom_stamp_date
     })
     qc_data[:genotyping_status] = self.genotyping_status
-    qc_data[:genotyping_barcode] = self.sample.genotyping_snp_plate_id if sample
-    
+    qc_data[:genotyping_barcode] = self.primary_aliquot.sample.genotyping_snp_plate_id if primary_aliquot.present?
+
     child_plate = self.find_child_plate
     if child_plate && child_plate.respond_to?(:plate)
       if child_plate.plate && child_plate.plate.plate_purpose
@@ -56,5 +56,5 @@ module StudyReport::WellDetails
 
     qc_data
   end
-  
+
 end

@@ -9,12 +9,9 @@ class PacBioLibraryTube < Tube
   
   
   def protocols_for_select
-    reference_genome = self.sample.sample_reference_genome
-    protocols = ReferenceGenome.sorted_by_name.map { |x| [x.name, x.id]}
-    if reference_genome
-      return ([[reference_genome.name, reference_genome.id]] + protocols)
+    ReferenceGenome.sorted_by_name.map { |x| [x.name, x.id]}.tap do |protocols|
+      reference_genome = primary_aliquot.sample.sample_reference_genome
+      protocols.unshift([reference_genome.name, reference_genome.id]) if reference_genome.present?
     end
-    
-    protocols
   end
 end

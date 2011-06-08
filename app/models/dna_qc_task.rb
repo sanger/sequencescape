@@ -7,16 +7,20 @@ class DnaQcTask < Task
     def initialize(request)
       super(request)
 
+      primary_sample = well.primary_aliquot.try(:sample)
+      if primary_sample.present?
+        @genotyping_done = primary_sample.get_external_value('genotyping_done')
+        @genotyping_done = primary_sample.genotyping_done
+        @sample_empty    = primary_sample.empty_supplier_sample_name
+      end
+
       @pico_value            = well.get_pico_pass
       @gel_value             = well.get_gel_pass
       @sequenom_count        = well.get_sequenom_count
       @initial_concentration = well.get_concentration
-      @gender_value          = well.sample.try(:sample_metadata).try(:gender) 
+      @gender_value          = primary_sample.try(:sample_metadata).try(:gender) 
       @gender_markers_value  = well.get_gender_markers
-      @genotyping_done       = well.sample.get_external_value('genotyping_done') if well.sample
       @sequenom_value        = "#{@sequenom_count}/30 #{@gender_markers_value}" 
-      @genotyping_done       = well.sample.genotyping_done if well.sample
-      @sample_empty          = well.sample.empty_supplier_sample_name if well.sample
       @volume                = well.well_attribute.measured_volume
     end
 

@@ -537,7 +537,21 @@ class Study < ActiveRecord::Base
       nil
     end
   end
-  
+
+  def decide_if_object_should_be_taken(study_from, sample, object)
+    case study_from.affiliated_with?(object)
+    when true
+      # don't propagate asset from another sample
+      return object unless object.is_a?(Aliquot::Receptacle)
+      object_sample = object.primary_aliquot.try(:sample)
+      (object_sample.present? and object_sample != sample) ? nil : object
+
+    when false then nil # we skip the object and its dependencies
+    else [] # don't return the object but check it's dependencies
+    end
+  end
+  private :decide_if_object_should_be_taken
+
   # return the list of objects which haven't been successfully saved
   # that's the caller responsibilitie to wrap the call in a transaction if needed
   def take_sample(sample, study_from, user, asset_group)
@@ -545,24 +559,15 @@ class Study < ActiveRecord::Base
     assets_to_move = sample.assets.select { |a| study_from.affiliated_with?(a) && a.is_a?(SampleTube) }
 
     raise RuntimeError, "study_from not specified. Can't move a sample to a new study" unless study_from
-    objects_to_move =   sample.walk_objects(
-                                     :sample     => [:receptacles, :study_samples],
-                                     :request    => :item,
-                                     :asset      => [ :requests, :parents, :children ],
-                                     :well       => :plate
-                                    ) do |object|
-                                      case study_from.affiliated_with?(object)
-                                      when true
-                                        # don't propagate asset from another sample
-                                        object.is_a?(Aliquot::Receptacle) && object.sample && object.sample != sample ? nil : object
-                                      when false
-                                        nil # we skip the object and its dependencies
-                                      else # nil
-                                        [] # don't return the object but check it's dependencies
-                                      end
-                                      # skip 
-                                      # nil from affiliated mean, we don't know, so we carry on pulling
-                                    end
+    helper = lambda { |object| decide_if_object_should_be_taken(study_from, sample, object) }
+    objects_to_move = 
+      sample.walk_objects(
+        :sample     => [:receptacles, :study_samples],
+        :request    => :item,
+        :asset      => [ :requests, :parents, :children ],
+        :well       => :plate,
+        &helper
+      )
 
                                     #we duplicate each submission and reassign moved requests to it
     objects_to_move.each do |object|

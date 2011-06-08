@@ -90,10 +90,11 @@ class MoveSampleToAliquots < ActiveRecord::Migration
     def self.at_root(options = {}, &block)
       # Can't use a named_scope here because that seems to cause find_each to behave oddly, where
       # every call to 'asset.children' then includes the scope which has NULL conditions.
-      total = count(ROOT_LEVEL_ASSET_CONDITIONS)
+      total, index = count(ROOT_LEVEL_ASSET_CONDITIONS), 0
       find_in_batches(options.merge(ROOT_LEVEL_ASSET_CONDITIONS)) do |batch|
-        batch.each_with_index do |asset, index|
+        batch.each do |asset|
           yield(asset, index, total)
+          index += 1
         end
       end
     end

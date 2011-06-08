@@ -108,16 +108,19 @@ end
 Given /^well "([^"]*)" on plate "([^"]*)" has a genotyping_done status of "([^"]*)"$/ do |well_description, plate_barcode, genotyping_status|
   plate = Plate.find_by_barcode(plate_barcode)
   well = plate.find_well_by_name(well_description)
-  well.sample.external_properties.create!(:key => 'genotyping_done', :value => genotyping_status)
+  well.primary_aliquot.sample.external_properties.create!(:key => 'genotyping_done', :value => genotyping_status)
 end
 
 
 Given /^well "([^"]*)" has a genotyping status of "([^"]*)"$/ do |well_name, genotyping_status|
   well =Well.find_by_name(well_name)
+
   sample = Factory(:sample, :name => well_name.gsub(/ /,'_'))
-  well.update_attributes!(:sample => sample)
-  well.sample.external_properties.create!(:key => 'genotyping_done', :value => genotyping_status)
-  well.sample.external_properties.create!(:key => 'genotyping_snp_plate_id')
+  sample.external_properties.create!(:key => 'genotyping_done', :value => genotyping_status)
+  sample.external_properties.create!(:key => 'genotyping_snp_plate_id')
+
+  well.aliquots.clear
+  well.aliquots.create!(:sample => sample)
 end
 
 
