@@ -39,20 +39,20 @@
     <% grouped_requests.each do |grouping, requests| %>
         <tr>
           <% request = requests.first %>
-          <% request_item = request %>
+          <% request = request %>
           <td class="request" width='2%'>
           <%= hidden_label_tag_for_testing("select_all_group_#{index}", "Select Request Group #{index}") %>
-		    <input type="checkbox" name="selectAll" onclick="select_requests_by_group(<%=  request_item.item_id %>,<%= requests.size %>, this.checked);" id="select_all_group_<%= index %>"></a>
-		    <% index += 1 %>
-		  </td>
-          <td class="request" width='2%'><a href="javascript:void(0)" onclick="showElement(<%=  request_item.item_id %>,<%= requests.size %>); return false;"><%= image_tag "information.png", :size =>"13x13" %></a></td>
+		        <input type="checkbox" name="selectAll" onclick="select_requests_by_group(<%=  request.submission_id %>,<%= requests.size %>, this.checked);" id="select_all_group_<%= index %>"></a>
+		        <% index += 1 %>
+		      </td>
+          <td class="request" width='2%'><a href="javascript:void(0)" onclick="showElement(<%=  request.submission_id %>,<%= requests.size %>); return false;"><%= image_tag "information.png", :size =>"13x13" %></a></td>
           <% if current_user.is_lab_manager? %>
              <td class='request' style="display:none" width='5%' id="flag_value_<%= request.id.to_s %>"><%= request.priority %></td>
-             <td class='request' style='text-align: center' width='5%'><a href="javascript:void(0)" onclick="changeFlagMxLibrary(<%= request.id %>,<%= request_item.item_id %>, <%= requests.size %>); return false;"><%= image_tag "icon_"+request.priority.to_s+"_flag.png", :size =>"16x16", :id => "flag_"+ request_item.item_id.to_s %></a></td>
+             <td class='request' style='text-align: center' width='5%'><a href="javascript:void(0)" onclick="changeFlagMxLibrary(<%= request.id %>,<%= request.submission_id %>, <%= requests.size %>); return false;"><%= image_tag "icon_"+request.priority.to_s+"_flag.png", :size =>"16x16", :id => "flag_"+ request.submission_id.to_s %></a></td>
           <% end %>
-          <td class="request" width='5%'><%= link_to request.item_id, "#{configatron.studies_url}/items/#{request.item_id}" %></td>
+          <td class="request" width='5%'><%= link_to request.submission_id,study_workflow_submission_path(request.study, current_user.workflow, request.submission) %></td>
           <td class="request" width='5%'>&nbsp;</td>
-          <td style="display:none" class='request' width='5%'><%= link_to request_item.id, "#{configatron.studies_url}/items/#{request_item.id}" %></td>
+          <td style="display:none" class='request' width='5%'><%= link_to request.submission_id,study_workflow_submission_path(request.study, current_user.workflow, request.submission) %></td>
           <td class='request' width='10%'><%= request.asset.name %></td>
           <td class='request' width='15%'>&nbsp;</td>
           <td class='request' width='10%'>&nbsp;</td>
@@ -68,14 +68,12 @@
           <td class='request' width='5%'><%= request.study.name %></td>
         </tr>        
 
-      <tr class="nested" id="<%= request_item.item_id %>_0" style="display:none">
-         <!--td><a href="#" onclick="select_requests_by_group(<%=  request_item.item_id %>,<%= requests.size %>, true);"><%= image_tag "show.png", :size =>"13x13" %></a></td-->
+      <tr class="nested" id="<%= request.submission_id %>_0" style="display:none">
          <td>&nbsp;</td>
          <td>&nbsp;</td>
-         <td style="display:none" class="request" width='5%'><%= link_to request_item.item_id, "#{configatron.studies_url}/items/#{request_item.item_id}" %></td>
-        <!--td><a href="#" onclick="select_requests_by_group(<%=  request_item.item_id %>,<%= requests.size %>, false);"><%= image_tag "hide.png", :size =>"13x13" %></a></td-->
+         <td style="display:none" class="request" width='5%'><%= link_to request.submission_id,study_workflow_submission_path(request.study, current_user.workflow, request.submission) %></td>
         <td>&nbsp;</td>
-        <td style="display:none" class='request' width='5%'><%= link_to request_item.id, "#{configatron.studies_url}/items/#{request_item.id}" %></td>
+        <td style="display:none" class='request' width='5%'><%= link_to request.submission_id,study_workflow_submission_path(request.study, current_user.workflow, request.submission) %></td>
         <td class="request" colspan=12><%= requests.size %> out of <%= Request.number_expected_for_submission_id_and_request_type_id(request.submission_id, request.request_type_id) %> scanned in.</td>
       </tr>
         <%- requests.each_with_index do |request, indice| -%>
@@ -83,25 +81,25 @@
 					<% request_asset = request.asset -%>
           <% request_asset_comments = request_asset.comments -%>
           <% progr = indice + 1 %>
-        <tr class="nested" id="<%= request_item.item_id %>_<%= progr.to_s %>" style="display:none">
+        <tr class="nested" id="<%= request.submission_id %>_<%= progr.to_s %>" style="display:none">
           <td class="request" width='2%'>&nbsp;</td>
           <td>                  
 	        <%= label(:request, request.id, 'Select Request', :style => 'display:none') %>                                     
 		    <%= check_box :request, request.id, :value => request.id %>
 		  </td>
-          <td style="display:none" class="request" width='5%'><%= link_to request_item.item_id, "#{configatron.studies_url}/items/#{request_item.item_id}" %></td>
+          <td style="display:none" class="request" width='5%'><%= link_to request.submission_id,study_workflow_submission_path(request.study, current_user.workflow, request.submission) %></td>
           <% if current_user.is_lab_manager? %>
-           <td class='request' style='text-align: center' width='5%'><%= image_tag "icon_"+request.priority.to_s+"_flag.png", :size =>"16x16", :id => "flag_"+request_item.item_id.to_s+"_"+progr.to_s %></a></td>
+           <td class='request' style='text-align: center' width='5%'><%= image_tag "icon_"+request.priority.to_s+"_flag.png", :size =>"16x16", :id => "flag_"+request.submission_id.to_s+"_"+progr.to_s %></a></td>
           <% end %>
-          <td class="request" width='5%'><%= link_to request.item_id, "#{configatron.studies_url}/items/#{request.item_id}" %></td>
-          <td class='request' width='5%'><%= link_to request.id, "#{configatron.studies_url}/requests/#{request.id}" %></td>
-          <td class='request' width='10%'><%= link_to request_asset.name, "#{configatron.studies_url}/assets/#{request.asset_id}" %></td>
+          <td class="request" width='5%'><%= link_to request.submission_id,study_workflow_submission_path(request.study, current_user.workflow, request.submission) %></td>
+          <td class='request' width='5%'><%= link_to request.id, request_path(request) %></td>
+          <td class='request' width='10%'><%= link_to request_asset.name, asset_path(request.asset) %></td>
           <% unless request_comments.empty? -%>
             <%= render :partial => "request_comments", :locals => { :request => request, :comments => request_comments } %>
           <% else -%>
             <td class='request' width='15%'>&nbsp;</td>
           <% end -%>
-          <td class='request' width='10%'><%=  link_to "#{request_asset.sti_type} #{request_asset.barcode}", "#{configatron.studies_url}/assets/#{request.asset_id}" %></td>
+          <td class='request' width='10%'><%=  link_to "#{request_asset.sti_type} #{request_asset.barcode}", asset_path(request.asset) %></td>
           <% unless request_asset_comments.empty? -%>
             <%= render :partial => "asset_comments", :locals => { :request => request, :comments => request_asset_comments } %>
           <% else -%>
