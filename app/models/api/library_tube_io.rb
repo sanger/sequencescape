@@ -52,10 +52,25 @@ class Api::LibraryTubeIO < Api::Base
     map_attribute_to_json_attribute(:prefix, 'barcode_prefix')
   end
 
-  with_association(:sample) do
-    map_attribute_to_json_attribute(:uuid, 'sample_uuid')
-    map_attribute_to_json_attribute(:id,   'sample_internal_id')
-    map_attribute_to_json_attribute(:name, 'sample_name')
+  with_association(:primary_aliquot) do
+    with_association(:sample) do
+      map_attribute_to_json_attribute(:uuid, 'sample_uuid')
+      map_attribute_to_json_attribute(:id,   'sample_internal_id')
+      map_attribute_to_json_attribute(:name, 'sample_name')
+    end
+
+    with_association(:tag) do
+      map_attribute_to_json_attribute(:uuid  , 'tag_uuid')
+      map_attribute_to_json_attribute(:id    , 'tag_internal_id')
+      map_attribute_to_json_attribute(:oligo , 'expected_sequence')
+      map_attribute_to_json_attribute(:map_id, 'tag_map_id')
+
+      with_association(:tag_group) do
+        map_attribute_to_json_attribute(:name, 'tag_group_name')
+        map_attribute_to_json_attribute(:uuid, 'tag_group_uuid')
+        map_attribute_to_json_attribute(:id  , 'tag_group_internal_id')
+      end
+    end
   end
 
   with_association(:source_request) do
@@ -67,19 +82,6 @@ class Api::LibraryTubeIO < Api::Base
       json_attributes["library_type"]                = object.request_metadata.library_type if object.is_a?(LibraryCreationRequest)
       json_attributes["fragment_size_required_from"] = object.request_metadata.fragment_size_required_from   if object.respond_to?(:fragment_size_required_from)
       json_attributes["fragment_size_required_to"]   = object.request_metadata.fragment_size_required_to     if object.respond_to?(:fragment_size_required_to)
-    end
-  end
-
-  with_association(:get_tag) do
-    map_attribute_to_json_attribute(:uuid  , 'tag_uuid')
-    map_attribute_to_json_attribute(:id    , 'tag_internal_id')
-    map_attribute_to_json_attribute(:oligo , 'expected_sequence')
-    map_attribute_to_json_attribute(:map_id, 'tag_map_id')
-
-    with_association(:tag_group) do
-      map_attribute_to_json_attribute(:name, 'tag_group_name')
-      map_attribute_to_json_attribute(:uuid, 'tag_group_uuid')
-      map_attribute_to_json_attribute(:id  , 'tag_group_internal_id')
     end
   end
 

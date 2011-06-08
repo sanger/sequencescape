@@ -39,7 +39,7 @@ end
 
 def sequence_sanger_sample_ids_for(plate)
   index = 0
-  locations_to_sample = Hash[plate.wells.map { |well| [ well.map.description, well.sample ] }]
+  locations_to_sample = Hash[plate.wells.map { |well| [ well.map.description, well.primary_aliquot.sample ] }]
   Map.walk_plate_in_column_major_order(plate.size) do |map, _|
     locations_to_sample[map.description].update_attributes!(:sanger_sample_id => yield(index))
     index += 1

@@ -39,7 +39,7 @@ Given /^there is a (\d+) well "([^"]*)" plate with a barcode of "([^"]*)"$/ do |
     new_plate.wells.create!(:map_id => i).aliquots.create!(:sample => sample)
   end
   
-  new_plate.wells.first.sample.sample_metadata.update_attributes!(
+  new_plate.wells.first.primary_aliquot.sample.sample_metadata.update_attributes!(
     :gender => "male"
   )
 end
@@ -51,12 +51,9 @@ end
 Given /^plate "([^"]*)" has (\d+) blank samples$/ do |plate_barcode, number_of_blanks|
   plate = Plate.find_by_barcode(plate_barcode)
   plate.wells.each_with_index do |well,index|
-    if index < number_of_blanks.to_i
-      well.sample = Sample.create!(:name => "#{plate_barcode}_#{index}", :empty_supplier_sample_name => true)
-      well.save!
-    else
-      break
-    end
+    break if index >= number_of_blanks.to_i
+    well.aliquots.clear
+    well.aliquots.create!(:sample => Sample.create!(:name => "#{plate_barcode}_#{index}", :empty_supplier_sample_name => true))
   end
 end
 

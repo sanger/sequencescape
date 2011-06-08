@@ -45,7 +45,7 @@ end
 Then /^the tags assigned to the plate "([^"]+)" should be:$/ do |name, table|
   plate                    = Plate.find_by_name(name) or raise StandardError, "Cannot find plate #{name.inspect}"
   expected_wells_to_oligos = Hash[table.hashes.map { |a| [ a['well'], a['tag'] ] }]
-  wells_to_oligos          = Hash[plate.wells.map { |w| [ w.map.description, w.get_tag.oligo ] }]
+  wells_to_oligos          = Hash[plate.wells.map { |w| [ w.map.description, w.primary_aliquot.tag.oligo ] }]
   if expected_wells_to_oligos != wells_to_oligos
     plate_view_of_oligos('Expected', expected_wells_to_oligos)
     plate_view_of_oligos('Got',      wells_to_oligos)
