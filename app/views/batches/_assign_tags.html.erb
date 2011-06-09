@@ -29,11 +29,7 @@
     <% requests.each do |request| -%>
       <tr id="request_<%= request.id %>" class="<%= cycle("rowodd", "roweven") %>">
           <td width="5%"><%= request.position(@batch) %></td>
-					<% if request.sample %>
-						<td width="7%"><%= request.sample.name %></td>
-					<% else %>
-						<td width="7%"></td>
-					<% end %>
+						<td width="7%"><%= request.sample_name %></td>
             <td><%= link_to request.id, "#{configatron.studies_url}/requests/#{request.id}" %></td>
 					<% if request.asset  %>
 	          <td width="15%"><%= link_to request.asset.display_name, asset_url(request.asset), :target => "_blank" %></td>
@@ -49,11 +45,7 @@
 	          <td width="7%"></td>
 					<% end %>
         <% if @batch.multiplexed? -%>
-          <% unless request.sample_name.empty? %>
-            <td><%= request.sample_name -%></td>
-          <% else -%>
-            <td> - </td>
-          <% end %>
+            <td><%= request.sample_name('-') -%></td>
           <% unless request.tag_number.empty? %>
             <td><%= request.tag_number -%></td>
           <% else %>
