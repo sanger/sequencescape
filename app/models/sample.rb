@@ -27,7 +27,7 @@ class Sample < ActiveRecord::Base
   has_many :study_samples
   has_many :studies, :through => :study_samples
 
-  has_many :requests
+  has_many :requests, :through => :assets
   has_many :roles, :as => :authorizable
   has_many :comments, :as => :commentable
 
