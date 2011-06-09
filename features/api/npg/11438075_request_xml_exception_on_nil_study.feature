@@ -18,7 +18,6 @@ Feature: A request with no study should not raise an exception when viewing the 
       <study_id>999</study_id>
 
       <study_name>Study 999</study_name>
-      <sample_id>1</sample_id>
       <template id="1">Library creation</template>
       <read_length>76</read_length>
       <asset_id>9</asset_id>
@@ -42,7 +41,6 @@ Feature: A request with no study should not raise an exception when viewing the 
     <created_at>2011-02-14 22:00:00 +0000</created_at>
     <updated_at>2011-02-14 22:00:00 +0000</updated_at>
     <project_id>1</project_id>
-    <sample_id>1</sample_id>
     <template id="1">Library creation</template>
     <read_length>76</read_length>
     <asset_id>9</asset_id>
@@ -68,7 +66,6 @@ Feature: A request with no study should not raise an exception when viewing the 
     <study_id>999</study_id>
 
     <study_name>Study 999</study_name>
-    <sample_id>1</sample_id>
     <template id="1">Library creation</template>
     <read_length>76</read_length>
     <asset_id>9</asset_id>
@@ -95,7 +92,6 @@ Feature: A request with no study should not raise an exception when viewing the 
       <study_id>999</study_id>
 
       <study_name>Study 999</study_name>
-      <sample_id>1</sample_id>
       <read_length>76</read_length>
       <asset_id>9</asset_id>
       <target_asset_id>1</target_asset_id>
