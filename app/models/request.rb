@@ -15,7 +15,6 @@ class Request < ActiveRecord::Base
   has_many_events
   has_many_lab_events
   
-
   self.inheritance_column = "sti_type"
   def url_name
     "request" # frozen for subclass of the API
@@ -25,6 +24,19 @@ class Request < ActiveRecord::Base
   def self.delegate_validator
     DelegateValidation::AlwaysValidValidator
   end
+
+  #Shouldn't be used . Here for compatibility with the previous code
+  #having request having one sample
+  has_many :samples, :through => :asset
+  deprecate :samples,  :sample_ids, :samples=, :sample_ids=
+  private :samples=, :sample_ids=
+
+  def sample=(s )
+  end
+
+  def sample_id=(id)
+  end
+
 
   ## State machine
   aasm_column :state
@@ -72,15 +84,6 @@ class Request < ActiveRecord::Base
 
   belongs_to :pipeline
   belongs_to :item
-  belongs_to :sample
-
-  # deprecating sample, with should use through asset
-  deprecate :sample
-  
-  def sample_id
-    attributes["sample_id"]
-  end
-  deprecate :sample_id
   belongs_to :project
 
   has_many :failures, :as => :failable
@@ -337,13 +340,25 @@ class Request < ActiveRecord::Base
   end
   # ---
   
-  def sample_name
-    if self.sample
-      return self.sample.name
+  def sample_name?
+    samples.present?
+  end
+
+  def sample_name(default=nil, &block)
+    #return the name of the underlying samples
+    # used mainly for compatibility with the old codebase
+    # # default is used if no smaple
+    # # block is used to aggregate the samples
+    case samples.size
+    when 0 
+      return default 
+    when 1
+      return samples.first.name
     else
-      return ''
+      block ? block.call(samples) : samples.map(&:map).join(" | ") 
     end
   end
+  deprecate :sample_name
   
   def valid_request_for_pulldown_report?
     well = self.asset
@@ -380,11 +395,15 @@ class Request < ActiveRecord::Base
   end
 
   def next_requests(pipeline, &block)
-    return [] if sample.nil?
-    return self.related_pending_requests if pipeline.next_pipeline.try(:request_type_id).nil?
-
     block ||= PERMISSABLE_NEXT_REQUESTS
-    sample.requests.select { |r| pipeline.next_pipeline.request_type_id == r.request_type_id and block.call(r) }
+    eligible_requests = if target_asset.present?
+                          target_asset.requests
+                        else
+                          return [] if submission.nil?
+                          submission.next_requests(self)
+                        end
+
+    eligible_requests.select { |r| pipeline.next_pipeline.request_type_id == r.request_type_id and block.call(r) }
   end
 
   def previous_requests(pipeline, &block)
