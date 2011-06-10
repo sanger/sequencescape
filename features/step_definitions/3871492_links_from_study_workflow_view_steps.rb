@@ -22,7 +22,7 @@ Given /^study "([^"]+)" has made the following "([^"]+)" requests:$/ do |study_n
 
     count = (row['count'] == 'none') ? 0 : row['count'].to_i
     if count == 0
-      Request.for_study_id(study.id).for_asset_id(asset.id).for_state(state).for_sample_id(sample.id).destroy_all
+      Request.for_study_id(study.id).for_asset_id(asset.id).for_state(state).select { |r| r.samples.include?(sample)}.map(&:destraoy)
     else
       count.to_i.times do |index| 
         Factory(
