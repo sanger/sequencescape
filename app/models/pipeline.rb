@@ -22,7 +22,22 @@ class Pipeline < ActiveRecord::Base
   belongs_to :request_type
   validates_presence_of :request_type
 
-  has_many :requests, :through => :request_type, :extend => Pipeline::RequestsInStorage
+  has_many :requests, :through => :request_type, :extend => Pipeline::RequestsInStorage do
+    def inbox(show_held_requests = true, current_page = 1)
+      # Build a list of methods to invoke to build the correct request list
+      actions = []
+      actions << ((proxy_owner.group_by_parent? or show_held_requests) ? :full_inbox : :pipeline_pending)
+      actions << [ :paginate, { :per_page => 50, :page => current_page } ] if proxy_owner.paginate?
+
+      # Ensure that the ordering is obeyed regardless of the way the request list is generated
+      ordering = { :order => 'id DESC' }
+      ordering = { :order => 'submission_id DESC, id ASC' } if proxy_owner.group_by_submission?
+
+      with_scope(:find => ordering) do
+        actions.inject(self.include_request_metadata) { |context, action| context.send(*Array(action)) }
+      end
+    end
+  end
 
   belongs_to :next_pipeline,     :class_name => 'Pipeline'
   belongs_to :previous_pipeline, :class_name => 'Pipeline'
@@ -85,38 +100,8 @@ class Pipeline < ActiveRecord::Base
     request.remove_unused_assets
   end
 
-  def paginate?
-    paginate
-  end
-
-  def get_input_requests(show_held_requests=false)
-    if show_held_requests
-      Request.for_pipeline(self).full_inbox
-    else
-      Request.for_pipeline(self).pipeline_pending
-    end
-  end
-
   def get_input_request_groups(show_held_requests=true)
-    group_requests(get_input_requests(show_held_requests))
-  end
-
-  def get_output_request_groups
-    group_requests(get_output_requests)
-  end
-
-  def get_all_input_requests
-    @requests = Request.all_pending(self.request_type_id)
-  end
-
-  def get_input_requests_checking_for_pagination(show_held_requests=true,current_page=1)
-    if group_by_parent
-      get_input_requests(true).include_request_metadata
-    elsif paginate?
-      get_input_requests(show_held_requests).include_request_metadata.paginate({ :per_page => 50, :page => current_page, :order => 'id DESC' })
-    else
-      get_input_requests(show_held_requests).include_request_metadata
-    end
+    group_requests(requests.inbox(show_held_requests))
   end
 
   def pending_assets
