@@ -52,7 +52,7 @@ end
 
 Given /^plate "([^"]*)" has concentration and sequenom results$/ do |plate_barcode|
   plate = Plate.find_from_machine_barcode(plate_barcode)
-  plate.wells.each_with_index do |well,index|
+  plate.wells.walk_in_column_major_order do |well, index|
     well.well_attribute.update_attributes!(
       :pico_pass      => "Pass",
       :concentration  => 5 + (index%50),

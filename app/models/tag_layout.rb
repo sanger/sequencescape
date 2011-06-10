@@ -31,10 +31,9 @@ class TagLayout < ActiveRecord::Base
 
   # Convenience mechanism for laying out tags in a particular fashion.
   def layout_tags_into_wells_by(order)
-    wells_on_plate = Hash[plate.wells.map { |well| [ well.map, well ] }]
-    tags           = tag_group.tags.sort_by(&:map_id)
-    Map.send(:"walk_plate_in_#{order}", plate.size) do |map, index|
-      tags[index % tags.length].tag!(wells_on_plate[map])
+    tags = tag_group.tags.sort_by(&:map_id)
+    plate.wells.send(:"walk_in_#{order}") do |well, index|
+      tags[index % tags.length].tag!(well)
     end
   end
   private :layout_tags_into_wells_by
