@@ -38,11 +38,8 @@ Then /^I should see the manifest table:$/ do |expected_results_table|
 end
 
 def sequence_sanger_sample_ids_for(plate)
-  index = 0
-  locations_to_sample = Hash[plate.wells.map { |well| [ well.map.description, well.primary_aliquot.sample ] }]
-  Map.walk_plate_in_column_major_order(plate.size) do |map, _|
-    locations_to_sample[map.description].update_attributes!(:sanger_sample_id => yield(index))
-    index += 1
+  plate.wells.walk_in_column_major_order do |well, index|
+    well.primary_aliquot.sample.update_attributes!(:sanger_sample_id => yield(index))
   end
 end
 

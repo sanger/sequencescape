@@ -36,6 +36,22 @@ class Plate < Asset
       AssetLink.import([:direct, :count, :ancestor_id, :descendant_id], links_data.map { |c| [true,1,*c] }, :validate => false)
       WellAttribute.import([:well_id, :created_at, :updated_at], links_data.map { |c| [c.last, time_now, time_now] }, :validate => false, :timestamps => false)
     end
+
+    # Walks the wells A1, B1, C1, ... A2, B2, C2, ... H12
+    def walk_in_column_major_order(&block)
+      locations_to_well = Hash[self.map { |well| [ well.map.description, well ] }]
+      Map.walk_plate_in_column_major_order(proxy_owner.size) do |map, index|
+        yield(locations_to_well[map.description], index)
+      end
+    end
+
+    # Walks the wells A1, A2, ... B1, B2, ... H12
+    def walk_in_row_major_order(&block)
+      locations_to_well = Hash[self.map { |well| [ well.map.description, well ] }]
+      Map.walk_plate_in_row_major_order(proxy_owner.size) do |map, index|
+        yield(locations_to_well[map.description], index)
+      end
+    end
   end
 
   #has_many :wells, :as => :holder, :class_name => "Well"
@@ -56,23 +72,12 @@ class Plate < Asset
     wells.sort { |a, b| block.call(a) <=> block.call(b) }
   end
 
-  def quarantine_combine(plates)
-    raise  Exception, "I thought this function wasn't used. It is ?"
-    # Need to fix the formula of this
-    1.upto(4) do |quadrant|
-      1.upto(96) do |map_id|
-        puts "--#{map_id}--#{map_id+(96*quadrant)}--"
-        well = self.children.find_by_map_id(map_id+(96*quadrant))
-        well.parents << plates[quadrant-1].children.find_by_map_id(map_id)
-      end
-    end
-  end
-  
   def children_and_holded
     ( children | wells )
   end
 
   def create_child
+    raise StandardError, "Kaboom! Don't use this method!"
     child = Plate.create({:size => self.size})
     self.children << child
 
@@ -81,6 +86,7 @@ class Plate < Asset
     end
     child
   end
+  deprecate :create_child
 
   def find_map_by_rowcol(row, col)
     description  = (?A+row).chr+"#{col+1}"
