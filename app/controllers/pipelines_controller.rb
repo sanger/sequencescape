@@ -101,7 +101,7 @@ class PipelinesController < ApplicationController
 
     unless @pipeline.qc?
       @information_types = @pipeline.request_information_types
-      @requests          = @pipeline.get_input_requests_checking_for_pagination(@show_held_requests,@current_page)
+      @requests          = @pipeline.requests.inbox(@show_held_requests,@current_page)
       @request_groups    = @pipeline.get_input_request_groups(@show_held_requests) if @pipeline.group_by_parent?
       @grouped_requests  = @requests.group_by(&:submission_id) if @pipeline.group_by_submission?
     end

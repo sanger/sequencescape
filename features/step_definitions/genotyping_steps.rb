@@ -135,11 +135,11 @@ Given /^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)"
 
   submission_template = SubmissionTemplate.find_by_name(submission_template_name)
   submission = submission_template.create!(
-    :study => study,
-    :project => project,
+    :study    => study,
+    :project  => project,
     :workflow => Submission::Workflow.find_by_key('microarray_genotyping'),
-    :user => User.last,
-    :assets => plate.wells
+    :user     => User.last,
+    :assets   => plate.wells
     ).built!
   And %Q{1 pending delayed jobs are processed}
 end
