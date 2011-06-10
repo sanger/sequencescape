@@ -155,7 +155,6 @@ class Request < ActiveRecord::Base
 
   named_scope :for_asset_id, lambda { |id| { :conditions => { :asset_id => id } } }
   named_scope :for_study_id, lambda { |id| { :conditions => { :study_id => id } } }
-  named_scope :for_sample_id, lambda { |id| { :conditions => { :sample_id => id } } }
   named_scope :for_workflow, lambda { |workflow| { :joins => :workflow, :conditions => { :workflow => { :key => workflow } } } }
   named_scope :for_request_types, lambda { |types| { :joins => :request_type, :conditions => { :request_types => { :key => types } } } }
   
@@ -406,20 +405,8 @@ class Request < ActiveRecord::Base
     eligible_requests.select { |r| pipeline.next_pipeline.request_type_id == r.request_type_id and block.call(r) }
   end
 
-  def previous_requests(pipeline, &block)
-    return [] if sample.nil?
-    return [] if pipeline.previous_pipeline.try(:request_type_id).nil?
-
-    block ||= PERMISSABLE_NEXT_REQUESTS
-    sample.requests.select { |r| pipeline.previous_pipeline.request_type_id == r.request_type_id and block.call(r) }
-  end
-
   def previous_failed_requests
     self.asset.requests.select { |previous_failed_request| (previous_failed_request.failed? or previous_failed_request.blocked?)}
-  end
-
-  def related_pending_requests
-    Request.find_all_by_submission_id_and_sample_id(self.submission_id, self.sample_id).select{ |r| r.pending? and (r.request_type_id != self.request_type_id) }
   end
 
   def self.unhold_requests(request_proxys, save = true)
@@ -466,8 +453,8 @@ class Request < ActiveRecord::Base
 
   def remove_unused_assets
     return if target_asset.nil?
-    self.related_pending_requests.each do |releated_request|
-      next unless releated_request.asset == self.target_asset
+    target_asset.requests do |related_request|
+      target_asset.remove_unused_assets
       releated_request.asset.destroy
       releated_request.asset_id = nil
       releated_request.save!
