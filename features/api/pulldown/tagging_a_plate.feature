@@ -219,7 +219,7 @@ Feature: Tagging the wells on a plate using a tag layout template
       """
 
     # Assigning the tags
-    When I POST the following JSON to the API path "/22222222-3333-4444-5555-000000000001":
+    When I make an authorised POST with the following JSON to the API path "/22222222-3333-4444-5555-000000000001":
       """
       {
         "tag_layout": {

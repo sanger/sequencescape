@@ -10,7 +10,7 @@ class ::Endpoints::Batches < ::Core::Endpoint::Base
             end
           end
         end
-        bound_action_guard(#{name.to_sym.inspect}, :update) { |guard| guard.authorised? and #{options[:guard]} }
+        bound_action_guard(#{name.to_sym.inspect}, :update) { |guard| #{options[:guard]} }
       }, __FILE__, line)
     end
   end
@@ -23,7 +23,7 @@ class ::Endpoints::Batches < ::Core::Endpoint::Base
     belongs_to(:pipeline, :json => "pipeline")
 
     action(:update, :to => :standard_update!)
-    action_guard(:update) { |guard| guard.authorised? and not guard.finished? }
+    action_guard(:update) { |guard| not guard.finished? }
 
     extend StateMachineActions
     state_action(:start,    :guard => 'guard.pending?')

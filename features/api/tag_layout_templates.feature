@@ -72,7 +72,7 @@ Feature: Access tag layout templates through the API
       And the UUID for the plate "Testing the API" is "11111111-2222-3333-4444-000000000001"
       And all wells on the plate "Testing the API" have unique samples
 
-    When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
+    When I make an authorised POST with the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
       """
       {
         "tag_layout": {

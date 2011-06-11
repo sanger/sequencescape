@@ -16,11 +16,36 @@ Feature: Access transfer templates through the API
     Given I am using the latest version of the API
 
   @read
-  Scenario: Reading the JSON for a UUID
+  Scenario: Reading the JSON of a transfer template
     Given the transfer template called "Test transfers" exists
      And the UUID for the transfer template "Test transfers" is "00000000-1111-2222-3333-444444444444"
 
     When I GET the API path "/00000000-1111-2222-3333-444444444444"
+    Then the HTTP response should be "200 OK"
+     And the JSON should match the following for the specified fields:
+      """
+      {
+        "transfer_template": {
+          "actions": {
+            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
+          },
+
+          "uuid": "00000000-1111-2222-3333-444444444444",
+          "name": "Test transfers",
+          "transfers": {
+            "A1": "A1",
+            "B1": "B1"
+          }
+        }
+      }
+      """
+
+  @read @authenticated
+  Scenario: Making an authenticated read for the JSON of a transfer template
+    Given the transfer template called "Test transfers" exists
+     And the UUID for the transfer template "Test transfers" is "00000000-1111-2222-3333-444444444444"
+
+    When I make an authorised GET for the API path "/00000000-1111-2222-3333-444444444444"
     Then the HTTP response should be "200 OK"
      And the JSON should match the following for the specified fields:
       """
@@ -41,7 +66,7 @@ Feature: Access transfer templates through the API
       }
       """
 
-  @transfer @create
+  @transfer @create @authenticated
   Scenario: Creating a transfer from a transfer template
     Given the transfer template called "Test transfers" exists
       And the UUID for the transfer template "Test transfers" is "00000000-1111-2222-3333-444444444444"
@@ -51,7 +76,7 @@ Feature: Access transfer templates through the API
       And a transfer plate exists with ID 2
       And the UUID for the plate with ID 2 is "11111111-2222-3333-4444-000000000002"
 
-    When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
+    When I make an authorised POST with the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
       """
       {
         "transfer": {

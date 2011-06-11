@@ -11,6 +11,7 @@ module Core::Endpoint::BasicHandler::Actions
       include Core::Endpoint::BasicHandler::Actions::Factory
       include Core::Endpoint::BasicHandler::Actions::Guards
       include Core::Endpoint::BasicHandler::EndpointLookup
+      include Core::Abilities::ActionBehaviour
     end
   end
 
@@ -30,7 +31,7 @@ module Core::Endpoint::BasicHandler::Actions
         return handler.#{action}(request, rest, &block) unless self == handler
 
         check_request_io_class!(request)
-        check_guards!(#{action.inspect}, request, request.target)
+        check_authorisation!(self, #{action.inspect}, request, request.target)
         request.response do |response|
           response.status(#{status_code})
           _#{action}(request, response) do |handler, object|
@@ -91,10 +92,4 @@ module Core::Endpoint::BasicHandler::Actions
     }, __FILE__, line)
   end
   private :declare_action
-
-  def action_requires_authorisation(*actions)
-    actions.each do |action|
-      action_guard(action.to_sym, :authorised?)
-    end
-  end
 end
