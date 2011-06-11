@@ -48,6 +48,7 @@ gem "uuidtools"
 gem "sinatra", "~>1.1.0"
 gem "rack-acceptable", :require => 'rack/acceptable'
 gem "yajl-ruby", :require => 'yajl'
+gem "cancan"
 
 group :warehouse do
   #the most recent one that actually compiles

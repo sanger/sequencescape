@@ -12,7 +12,6 @@ class ::Endpoints::PlatePurposes < ::Core::Endpoint::Base
           request.target.proxy_owner.create!(request.attributes)
         end
       end
-      action_requires_authorisation(:create)
     end
   end
 end
