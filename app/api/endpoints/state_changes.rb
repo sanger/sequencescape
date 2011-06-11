@@ -1,7 +1,6 @@
 class ::Endpoints::StateChanges < ::Core::Endpoint::Base
   model do
     action(:create, :to => :standard_create!)
-    action_requires_authorisation(:create)
   end
 
   instance do
