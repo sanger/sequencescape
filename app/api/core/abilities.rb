@@ -61,30 +61,14 @@ module Core::Abilities
       end
     end
 
-    require 'cancan'
-    include ::CanCan::Ability
-
-    def initialize(request)
-      @request = request
-      self.class.unregistered.play_back(self)
-      self.class.registered.play_back(self) if registered?
-    end
-
-    class << self
-      # Abilities can have behaviour for registered objects.  For example, a registered application may be
-      # able to perform additional functionality.  This allows endpoints to access this information and
-      # add more behaviour.
-      #
-      # If you pass a block to this method it is executed as though you are taling to a specific instance
-      # of the ability class.  You can call this as many times as you like to add behaviour.
-      #
-      # At the moment this only applies to applications.
-      def registered(&block)
-        record(@registered ||= Recorder.new, &block)
-      end
-
-      def unregistered(&block)
-        record(@unregistered ||= Recorder.new, &block)
+    module ClassMethods
+      def recorder_helper(name)
+        line = __LINE__ + 1
+        singleton_class.class_eval(%Q{
+          def #{name}(&block)
+            record(@#{name} ||= Recorder.new, &block)
+          end
+        }, __FILE__, line)
       end
 
       def record(recorder, &block)
@@ -92,12 +76,44 @@ module Core::Abilities
       end
       private :record
     end
+
+    require 'cancan'
+    include ::CanCan::Ability
+    extend ClassMethods
+
+    recorder_helper(:registered)
+    recorder_helper(:unregistered)
+
+    def initialize(request)
+      @request = request
+      abilitise(:unregistered)
+      abilitise(:registered) if registered?
+    end
+
+    def abilitise(name)
+      self.class.send(name).play_back(self)
+    end
+    private :abilitise
   end
 
   class User < Base
     unregistered do
       # The API is designed to be read-only, at least.
       can(:read, :all)
+    end
+
+    recorder_helper(:authenticated)
+
+    authenticated do
+      # Submissions should be createable & updateable by anyone
+      can(:create, Endpoints::SubmissionTemplates::Instance::Submissions)
+      can(:create, Endpoints::Submissions::Instance::Submit)
+      can(:update, Endpoints::Submissions::Instance)
+
+      # Sample manifests should also be createable & updateable by anyone
+      can(:update, Endpoints::SampleManifests::Instance)
+      can(:create, Endpoints::Studies::Instance::SampleManifests::CreateForPlates)
+      can(:create, Endpoints::Studies::Instance::SampleManifests::CreateForTubes)
     end
 
     def registered?
@@ -108,17 +124,7 @@ module Core::Abilities
     # Updates the abilities of the user based on the currently authenticated user instance.  If the user
     # unauthenticated then the API remains read-only.
     def authenticated!
-      return if @request.user.nil?
-
-      # Submissions should be createable & updateable by anyone
-      can(:create, Endpoints::SubmissionTemplates::Instance::Submissions)
-      can(:create, Endpoints::Submissions::Instance::Submit)
-      can(:update, Endpoints::Submissions::Instance)
-
-      # Sample manifests should also be createable & updateable by anyone
-      can(:update, Endpoints::SampleManifests::Instance)
-      can(:create, Endpoints::Studies::Instance::SampleManifests::CreateForPlates)
-      can(:create, Endpoints::Studies::Instance::SampleManifests::CreateForTubes)
+      abilitise(:authenticated) if @request.user.present?
     end
   end
 
