@@ -38,7 +38,7 @@ class Core::Endpoint::Base
           action_updates_for(options) { |updates| json['actions'].merge!(updates) }
           unless response.request.target.nil?
             model_io = ::Core::Io::Registry.instance.lookup(response.request.target)
-            handler  = endpoint_for(response.request.target).instance_handler
+            handler  = endpoint_for_class(response.request.target).instance_handler
             json[model_io.json_root.to_s.pluralize] = response.object.map { |o| handler.as_json(options.merge(:target => o)) }
           end
         end
@@ -61,13 +61,4 @@ class Core::Endpoint::Base
   def self.root
     self.name.sub(/^(::)?Endpoints::/, '').underscore.pluralize
   end
-
-  def as_json(options = {})
-    raise 'what, why did i put this here?'
-  end
-
-#  def as_json(options = {})
-#    handler = options[:response].request.target.is_a?(Class) ? model_handler : instance_handler
-#    handler.as_json(options)
-#  end
 end

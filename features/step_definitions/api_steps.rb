@@ -338,13 +338,11 @@ Given /^the number of results returned by the API per page is (\d+)$/ do |count|
 end
 
 Given /^the "([^\"]+)" action on samples requires authorisation$/ do |action|
-  Core::Abilities::Application.registered do
-    can(action.to_sym, TestSampleEndpoint::Model)
-  end
+  Core::Abilities::Application.unregistered { cannot(action.to_sym, TestSampleEndpoint::Model) }
+  Core::Abilities::Application.registered   { can(action.to_sym,    TestSampleEndpoint::Model) }
 end
 
 Given /^the "([^\"]+)" action on a sample requires authorisation$/ do |action|
-  Core::Abilities::Application.registered do
-    can(action.to_sym, TestSampleEndpoint::Instance)
-  end
+  Core::Abilities::Application.unregistered { cannot(action.to_sym, TestSampleEndpoint::Instance) }
+  Core::Abilities::Application.registered   { can(action.to_sym,    TestSampleEndpoint::Instance) }
 end

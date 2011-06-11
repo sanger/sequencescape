@@ -10,7 +10,7 @@ class Core::Endpoint::BasicHandler::Actions::Bound::Handler < Core::Endpoint::Ba
   end
 
   def owner_for(request, object)
-    endpoint_for(object.class).instance_handler
+    endpoint_for_object(object).instance_handler
   rescue => exception
     @owner
   end

@@ -87,7 +87,7 @@ module Core::Endpoint::BasicHandler::Actions
     singleton_class.class_eval(%Q{
       def _#{name}(request, response)
         object = #{action_implementation_method}(request, response)
-        yield(endpoint_for(object.class).instance_handler, object)
+        yield(endpoint_for_object(object).instance_handler, object)
       end
     }, __FILE__, line)
   end

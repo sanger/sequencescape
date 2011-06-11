@@ -1,4 +1,4 @@
-@api @json @object_service @single-sign-on @new-api @wip
+@api @json @object_service @single-sign-on @new-api
 Feature: Access objects through the API
   In order to actually be able to do anything useful
   As an authenticated user of the API
@@ -305,7 +305,7 @@ Feature: Access objects through the API
       }
       """
 
-  @action
+  @action @wip
   Scenario Outline: Performing an action upon an object
     Given the sample named "testing_the_object_service" exists with ID 1
     And the UUID for the sample "testing_the_object_service" is "00000000-1111-2222-3333-444444444444"
@@ -333,17 +333,21 @@ Feature: Access objects through the API
             "uuid": "11111111-2222-3333-4444-000000000001",
             "name": "testing_the_object_service sample tube 1",
 
-            "sample": {
-              "actions": {
-                "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444",
-                "update": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
-              },
+            "aliquots": [
+              {
+                "sample": {
+                  "actions": {
+                    "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444",
+                    "update": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
+                  },
 
-              "uuid": "00000000-1111-2222-3333-444444444444",
-              "sanger": {
-                "name": "testing_the_object_service"
+                  "uuid": "00000000-1111-2222-3333-444444444444",
+                  "sanger": {
+                    "name": "testing_the_object_service"
+                  }
+                }
               }
-            },
+            ],
 
             "requests": {
               "actions": {

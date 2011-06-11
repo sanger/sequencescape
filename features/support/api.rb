@@ -28,28 +28,36 @@ class TestSampleEndpoint < ::Core::Endpoint::Base
   def self.root
     'samples'
   end
+
+  Core::Abilities::Application.unregistered do
+    can(:create, TestSampleEndpoint::Model)
+    can(:update, TestSampleEndpoint::Instance)
+  end
 end
-class ::Api::EndpointHandler
-  def endpoint_for_object(*args, &block)
-    self.class.endpoint || super
+module ::Core::Endpoint::BasicHandler::EndpointLookup
+  [ :object, :class ].each do |name|
+    line = __LINE__ + 1
+    module_eval(%Q{
+      def endpoint_for_#{name}_with_object_service(target, *args, &block)
+        return ::TestSampleEndpoint if ::Core::Endpoint::BasicHandler::EndpointLookup.testing_api? and (target.is_a?(::Sample) or target == ::Sample)
+        endpoint_for_#{name}_without_object_service(target, *args, &block)
+      end
+      alias_method_chain(:endpoint_for_#{name}, :object_service)
+    }, __FILE__, line)
   end
 
-  def endpoint_for_class(*args, &block)
-    self.class.endpoint || super
+  def self.testing_api?
+    @testing_api
   end
 
-  def self.endpoint=(endpoint)
-    @endpoint = endpoint
-  end
-
-  def self.endpoint
-    @endpoint
+  def self.testing_api=(setting)
+    @testing_api = setting
   end
 end
 
 Before('@object_service') do
-  ::Api::EndpointHandler.endpoint = ::TestSampleEndpoint
+  ::Core::Endpoint::BasicHandler::EndpointLookup.testing_api = true
 end
 After('@object_service') do
-  ::Api::EndpointHandler.endpoint = nil
+  ::Core::Endpoint::BasicHandler::EndpointLookup.testing_api = false
 end
