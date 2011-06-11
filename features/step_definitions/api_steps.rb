@@ -115,7 +115,13 @@ When /^I (POST|PUT) the following "([^\"]+)" to the API path "(\/[^\"]*)":$/ do 
   end
 end
 
-When /^I make an authorised (GET|PUT|POST|DELETE) the API path "(\/[^\"]*)"$/ do |action, path|
+When /^I make an authorised (GET|DELETE) (?:(?:for|of) )?the API path "(\/[^\"]*)"$/ do |action, path|
+  api_request(action, path, nil) do |headers|
+    headers['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] = 'cucumber'
+  end
+end
+
+When /^I make an authorised (PUT|POST) (?:to )?the API path "(\/[^\"]*)"$/ do |action, path|
   api_request(action, path, nil) do |headers|
     headers['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] = 'cucumber'
   end
@@ -280,7 +286,9 @@ end
 Given /^the sample "([^\"]+)" is in (\d+) sample tubes? with sequential IDs starting at (\d+)$/ do |name, count, base_id|
   sample = Sample.find_by_name(name) or raise StandardError, "Cannot find the sample #{name.inspect}"
   (1..count.to_i).each do |index|
-    Factory(:sample_tube, :name => "#{name} sample tube #{index}", :sample => sample, :id => (base_id.to_i + index - 1))
+    Factory(:empty_sample_tube, :name => "#{name} sample tube #{index}", :id => (base_id.to_i + index - 1)).tap do |sample_tube|
+      sample_tube.aliquots.create!(:sample => sample)
+    end
   end
 end
 
@@ -330,9 +338,13 @@ Given /^the number of results returned by the API per page is (\d+)$/ do |count|
 end
 
 Given /^the "([^\"]+)" action on samples requires authorisation$/ do |action|
-  ::TestSampleEndpoint.model_handler.action_requires_authorisation(action.to_sym)
+  Core::Abilities::Application.registered do
+    can(action.to_sym, TestSampleEndpoint::Model)
+  end
 end
 
 Given /^the "([^\"]+)" action on a sample requires authorisation$/ do |action|
-  ::TestSampleEndpoint.instance_handler.action_requires_authorisation(action.to_sym)
+  Core::Abilities::Application.registered do
+    can(action.to_sym, TestSampleEndpoint::Instance)
+  end
 end

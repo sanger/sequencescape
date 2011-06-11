@@ -32,8 +32,6 @@ module ::Core::Endpoint::BasicHandler::Actions::Guards
     def initialize(request, object)
       @request, @object = request, object
     end
-    
-    delegate :authorised?, :to => :@request
 
     def respond_to?(method, private_methods = false)
       super || @object.respond_to?(method, private_methods)
@@ -45,13 +43,13 @@ module ::Core::Endpoint::BasicHandler::Actions::Guards
     protected :method_missing
   end
 
-  def check_guards!(action, request, object)
-    accessible_action?(action, request, object) or
+  def check_authorisation!(*args)
+    accessible_action?(*args) or
       raise ::Core::Service::UnsupportedAction, 'requested action is not supported on this resource'
   end
-  private :check_guards!
+  private :check_authorisation!
 
-  def accessible_action?(action, request, object)
+  def accessible_action?(handler, action, request, object)
     guard_for(action).execute(GuardProxy.new(request, object))
   end
   private :accessible_action?

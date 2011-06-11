@@ -110,15 +110,25 @@ class Core::Service < Sinatra::Base
 
     initialized_attr_reader :service, :target, :path, :io, :json
     attr_writer :io
+    attr_reader :ability
 
     delegate :user, :to => :service
 
-    def response(&block)
-      ::Core::Service::Response.new(self, &block)
+    def initialize(*args, &block)
+      super
+      @ability = Core::Abilities.create(self)
     end
 
-    def authorised?
-      @service.request.env['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] == configatron.api.authorisation_code
+    def authorisation_code
+      @service.request.env['HTTP_X_SEQUENCESCAPE_CLIENT_ID']
+    end
+
+    def authentication_code
+      @service.request.cookies['WTSISignOn']
+    end
+
+    def response(&block)
+      ::Core::Service::Response.new(self, &block)
     end
 
     # Safe way to push a particular value on to the request target stack.  Ensures that the
