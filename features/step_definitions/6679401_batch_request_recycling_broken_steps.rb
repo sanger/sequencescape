@@ -113,14 +113,14 @@ def build_batch_for(name, count, &block)
 
   # Then build a batch that will hold all of these requests, ensuring that it appears to be at least started
   # in some form.
-  requests = Request.for_pipeline(pipeline).all
+  requests = pipeline.requests.ready_in_storage.all
   raise StandardError, "Pipeline has #{requests.size} requests waiting rather than #{count}" if requests.size != count.to_i
   batch    = Batch.create!(:pipeline => pipeline, :user => user, :requests => requests)
 end
 
 def requests_for_pipeline(name, count, &block)
   pipeline          = Pipeline.find_by_name(name) or raise StandardError, "Cannot find pipeline #{name.inspect}"
-  requests_in_inbox = Request.for_pipeline(pipeline).full_inbox.all
+  requests_in_inbox = pipeline.requests.ready_in_storage.full_inbox.all
 
   # There should be requests in the inbox and they should be clones of original requests.
   assert_equal(count.to_i, requests_in_inbox.size, "Unexpected number of requests in the #{name.inspect} inbox")

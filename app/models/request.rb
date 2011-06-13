@@ -163,25 +163,6 @@ class Request < ActiveRecord::Base
   named_scope :find_all_target_asset, lambda { |target_asset_id| { :conditions => [ 'target_asset_id = ?', "#{target_asset_id}" ] } }
   named_scope :for_studies, lambda { |*studies| { :conditions => { :study_id => studies.map(&:id) } } }
 
-  #combining scopes
-  def self.for_pipeline(pipeline)
-    Rails.logger.warn('**** DEPRECATED: Request.for_pipeline(pipeline) is deprecated, use pipeline.requests.ready_in_storage ****')
-    pipeline.requests.ready_in_storage
-  end
-
-  def self.old_pending_without_asset(request_type)
-    self.for_request_type(request_type).without_asset.pipeline_pending
-  end
-
-  def self.old_all_pending_with_asset(request_type)
-    self.for_request_type(request_type).with_asset.pipeline_pending
-  end
-
-  def self.old_all_pending(request_type)
-    self.for_request_type(request_type).pipeline_pending
-  end
-
-
   #------
   #TODO: use eager loading association
   def self.get_holder_asset_id_map(request_ids)
