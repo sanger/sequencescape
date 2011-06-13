@@ -104,6 +104,25 @@ module ModelExtensions::Submission
       end
     end.to_hash
   end
+  
+  def request_options_structioned_normalised
+    structured_options = request_options_structured
+    return nil if structured_options.blank?
+    ['read_length', 'library_type'].each do |attribute_name|
+      structured_options[attribute_name] = structured_options[attribute_name]['value'] if contains_value_attribute?(structured_options[attribute_name])
+    end
+    ['to', 'from'].each do |attribute_name|
+      structured_options['fragment_size_required'][attribute_name] = structured_options['fragment_size_required'][attribute_name]['value'] if structured_options['fragment_size_required'] && contains_value_attribute?(structured_options['fragment_size_required'][attribute_name])
+    end
+
+    structured_options
+  end
+  
+  def contains_value_attribute?(request_option)
+    return true if ! request_option.blank? && request_option.is_a?(Hash) && request_option['value']
+    
+    false
+  end
 
   def request_options_structured=(values)
     self.request_options = NonNilHash.new.tap do |attributes|

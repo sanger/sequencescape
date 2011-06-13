@@ -78,6 +78,7 @@ class ApiRoutingTest < ActionController::TestCase
       :tag_instances,
       :tags,
       :wells,
+      :submissions,
       :sample_tubes  => [ :library_tubes, :requests ],
       :samples       => [ :sample_tubes ],
       :library_tubes => [ :lanes, :requests ]
@@ -109,20 +110,6 @@ class ApiRoutingTest < ActionController::TestCase
           context.should_not_route method, "#{core_path}/12345/parents",  :action => :parents,  :id => '12345'
           context.should_not_route method, "#{core_path}/12345/children", :action => :children, :id => '12345'
         end
-      end
-    end
-
-    context 'submissions' do
-      resource_routes(:submissions) do |context, core_path|
-        context.should_route :post, core_path,           :action => :create
-        context.should_route :get, "#{core_path}/types", :action => :types
-
-        context.should_not_route :get,  core_path,            :action => :index
-        context.should_not_route :get,  "#{core_path}/12345", :action => :show,   :id => '12345'
-        context.should_not_route :put,  "#{core_path}/12345", :action => :update, :id => '12345'
-
-        context.should_not_route :put,    "#{core_path}/types", :action => :types
-        context.should_not_route :delete, "#{core_path}/types", :action => :types
       end
     end
   end
