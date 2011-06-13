@@ -32,9 +32,13 @@ class Request < ActiveRecord::Base
   private :samples=, :sample_ids=
 
   def sample=(s )
+    #debugger  if s
+    a=1
   end
 
   def sample_id=(id)
+    #debugger if id
+    a=1
   end
 
 
@@ -395,6 +399,11 @@ class Request < ActiveRecord::Base
   end
 
   def next_requests(pipeline, &block)
+    #TODO remove pipeline parameters
+    # we filter according to the next pipeline
+    next_pipeline = pipeline.next_pipeline
+    return [] unless next_pipeline
+
     block ||= PERMISSABLE_NEXT_REQUESTS
     eligible_requests = if target_asset.present?
                           target_asset.requests
@@ -403,7 +412,7 @@ class Request < ActiveRecord::Base
                           submission.next_requests(self)
                         end
 
-    eligible_requests.select { |r| pipeline.next_pipeline.request_type_id == r.request_type_id and block.call(r) }
+    eligible_requests.select { |r| !next_pipeline || next_pipeline.request_type_id == r.request_type_id and block.call(r) }
   end
 
   def previous_failed_requests
