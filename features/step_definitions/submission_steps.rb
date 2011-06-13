@@ -142,3 +142,18 @@ Given /^the last submission wants (\d+) runs of the "([^\"]+)" requests$/ do |co
   submission.request_options[:multiplier][request_type.id.to_i] = count.to_i
   submission.save!
 end
+
+
+Given /^the sample tubes are part of submission "([^"]*)"$/ do |submission_uuid|
+  submission = Uuid.find_by_external_id(submission_uuid).resource or raise StandardError, "Couldnt find object for UUID"
+  Asset.all.map{ |asset| submission.assets << asset } 
+end
+
+Given /^submission "([^"]*)" has old format request options$/ do |submission_uuid|
+  submission = Uuid.find_by_external_id(submission_uuid).resource or raise StandardError, "Couldnt find object for UUID"
+  submission.request_options["read_length"] = { 'value' =>  submission.request_options["read_length"] }
+  submission.request_options["library_type"] = { 'value' =>  submission.request_options["library_type"] }
+  submission.request_options["fragment_size_required_from"] = { 'value' =>  submission.request_options["fragment_size_required_from"] }
+  submission.request_options["fragment_size_required_to"] = { 'value' =>  submission.request_options["fragment_size_required_to"] }
+  submission.save(false)
+end

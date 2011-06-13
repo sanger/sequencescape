@@ -271,6 +271,8 @@ ActionController::Routing::Routes.draw do |map|
         sample_tube.model :requests, :controller => "api/requests"
       end
       read_only.model :study_samples, :controller => "api/study_samples"
+      read_only.model :submissions, :controller => "api/submissions"
+      
       read_only.asset :tag_instances, :controller => "api/tag_instances"
       read_only.model :tags, :controller => "api/tags"
       read_only.asset :wells, :controller => "api/wells"
@@ -292,7 +294,7 @@ ActionController::Routing::Routes.draw do |map|
     end
 
     # ... and some are specialised (but should not be!)
-    api.resources :submissions, :controller => "api/submissions", :collection => { :types => :get }, :only => [:create], :name_prefix => 'api_'
+    
   end
   #### API end ####
   
