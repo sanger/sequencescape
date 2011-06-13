@@ -9,12 +9,12 @@ class RequestTest < ActiveSupport::TestCase
 
     context "#next_request" do
       setup do
-        @submission  = Factory :submission
-        @item = Factory :item
         @sample = Factory :sample
 
         @genotyping_request_type = Factory :request_type, :name => "genotyping"
         @cherrypick_request_type = Factory :request_type, :name => "cherrypick", :target_asset_type => nil
+        @submission  = Factory :submission, :request_types => [@cherrypick_request_type, @genotyping_request_type].map(&:id)
+        @item = Factory :item, :submission => @submission
         
         @genotype_pipeline = Factory :pipeline, :name =>"genotyping pipeline", :request_type => @genotyping_request_type
         @cherrypick_pipeline = Factory :pipeline, :name => "cherrypick pipeline", :request_type => @cherrypick_request_type, :next_pipeline_id => @genotype_pipeline.id, :asset_type => 'LibraryTube'
