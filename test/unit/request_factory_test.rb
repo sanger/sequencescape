@@ -81,7 +81,6 @@ class RequestFactoryTest < ActiveSupport::TestCase
           assert_equal @request.asset.id, @request_copy.asset.id
           assert_equal @request.project, @request_copy.project
           assert_equal @request.workflow, @request_copy.workflow
-          assert_equal @request.sample, @request_copy.sample
           assert_equal @request.user, @request_copy.user
           assert_equal @request.request_type, @request_copy.request_type
         end
