@@ -106,7 +106,7 @@ When /^pipeline debug$/ do
   puts "Plate #{Plate.last.id} -- #{Plate.last.location_id}"
   puts "Plate #{Plate.last.id} -- #{Plate.last.container}"
   puts Pipeline.find_by_name("DNA QC").location_id
-  puts Request.for_pipeline(Pipeline.find_by_name("DNA QC")).pipeline_pending.size
+  puts Pipeline.find_by_name("DNA QC").requests.ready_in_storage.pipeline_pending.size
   save_and_open_page
   debugger
 end

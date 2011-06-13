@@ -1,5 +1,5 @@
 class PipelinesController < ApplicationController
-  before_filter :find_pipeline_by_id, :only => [:edit, :update, :show, :quarantine_get_pending_assets, :setup_inbox,
+  before_filter :find_pipeline_by_id, :only => [:edit, :update, :show, :setup_inbox,
                                    :set_inbox, :training_batch, :show_comments, :activate, :deactivate, :destroy, :batches]
 
   def index
@@ -105,16 +105,6 @@ class PipelinesController < ApplicationController
       @request_groups    = @pipeline.get_input_request_groups(@show_held_requests) if @pipeline.group_by_parent?
       @grouped_requests  = @requests.group_by(&:submission_id) if @pipeline.group_by_submission?
     end
-  end
-
-  def quarantine_get_pending_assets
-    @information_types = @pipeline.request_information_types
-    if @pipeline.group_by_parent
-      @assets = @pipeline.pending_assets.group_by { |a| a.parent }
-    else
-      @assets = @pipeline.pending_assets
-    end
-    render :partial => "assets"
   end
 
   def setup_inbox

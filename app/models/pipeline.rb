@@ -103,10 +103,6 @@ class Pipeline < ActiveRecord::Base
   def get_input_request_groups(show_held_requests=true)
     group_requests(requests.inbox(show_held_requests))
   end
-
-  def pending_assets
-    @assets = Request.all_pending_with_asset(self.request_type_id).map { |r| r.asset }
-  end
   
   # to overwrite by subpipeline if needed
   def group_requests(requests, option={})
@@ -124,27 +120,12 @@ class Pipeline < ActiveRecord::Base
     end
   end
 
-  # could cause problems
-  def group_by_study?
-    self.group_by_study
-  end
-
-  def request_to_group_key(request, *args)
-    holder_map  = args.first
-    group_key = []
-    if group_by_parent?
-      group_key << holder_map[request.id]
+  def request_to_group_key(request, holder_map)
+    [].tap do |group_key|
+      group_key << holder_map[request.id] if group_by_parent?
+      group_key << request.submission_id  if group_by_submission?
+      group_key << request.study_id       if group_by_study?
     end
-
-    if group_by_submission?
-      group_key << request.submission_id
-    end
-
-    if group_by_study?
-      group_key << request.study_id
-    end
-
-    group_key
   end
 
   def group_key_to_hash(group)
