@@ -179,7 +179,6 @@ Factory.define :request do |r|
   r.item              {|item|       item.association(:item)}
   r.project           {|pr|         pr.association(:project)}
   r.request_type      {|rt|         rt.association(:request_type)}
-  r.sample            {|sample|     sample.association(:sample)}
   r.state             'pending'     
   r.study             {|study|      study.association(:study)}
   r.submission        {|submission| submission.association(:submission)}

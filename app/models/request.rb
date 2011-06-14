@@ -28,18 +28,8 @@ class Request < ActiveRecord::Base
   #Shouldn't be used . Here for compatibility with the previous code
   #having request having one sample
   has_many :samples, :through => :asset
-  deprecate :samples,  :sample_ids, :samples=, :sample_ids=
-  private :samples=, :sample_ids=
+  deprecate :samples,  :sample_ids
 
-  def sample=(s )
-    #debugger  if s
-    a=1
-  end
-
-  def sample_id=(id)
-    #debugger if id
-    a=1
-  end
 
 
   ## State machine

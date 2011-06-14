@@ -171,11 +171,11 @@ class AssetTest < ActiveSupport::TestCase
       @request_type = Factory :request_type
       @workflow     = Factory :submission_workflow
       
-      @request_sampletube  = Factory :request, :study => @study, :request_type => @request_type, :sample => @sample, :asset => @sample_tube, :submission => @submission, :workflow => @workflow
-      @request_librarytube = Factory :request, :study => @study, :request_type => @request_type, :sample => @sample, :asset => @library_tube, :submission => @submission, :workflow => @workflow
-      @request_sampletube2 = Factory :request, :study => @study, :request_type => @request_type, :sample => @sample_2, :asset => @sample_tube_2, :submission => @submission, :workflow => @workflow
-      @request_multiplex   = Factory :request, :study => @study, :request_type => @request_type, :sample => @sample, :asset => @multiplex_tube, :submission => @submission, :workflow => @workflow
-      @request_lane        = Factory :request, :study => @study, :request_type => @request_type, :sample => @sample, :asset => @lane, :submission => @submission, :workflow => @workflow
+      @request_sampletube  = Factory :request, :study => @study, :request_type => @request_type, :asset => @sample_tube, :submission => @submission, :workflow => @workflow
+      @request_librarytube = Factory :request, :study => @study, :request_type => @request_type, :asset => @library_tube, :submission => @submission, :workflow => @workflow
+      @request_sampletube2 = Factory :request, :study => @study, :request_type => @request_type, :asset => @sample_tube_2, :submission => @submission, :workflow => @workflow
+      @request_multiplex   = Factory :request, :study => @study, :request_type => @request_type, :asset => @multiplex_tube, :submission => @submission, :workflow => @workflow
+      @request_lane        = Factory :request, :study => @study, :request_type => @request_type, :asset => @lane, :submission => @submission, :workflow => @workflow
 
       @new_assets_name = ""
 
@@ -249,9 +249,9 @@ class AssetTest < ActiveSupport::TestCase
       @request_type = Factory :request_type
       @workflow     = Factory :submission_workflow
 
-      @request_sampletube  = Factory :request, :study => @study, :request_type => @request_type, :sample => @sample, :asset => @sample_tube, :submission => @submission, :workflow => @workflow
-      @request_librarytube = Factory :request, :study => @study, :request_type => @request_type, :sample => @sample, :asset => @library_tube, :submission => @submission, :workflow => @workflow
-      @request_multiplex   = Factory :request, :study => @study, :request_type => @request_type, :sample => @sample, :asset => @multiplex_tube, :submission => @submission, :workflow => @workflow
+      @request_sampletube  = Factory :request, :study => @study, :request_type => @request_type, :asset => @sample_tube, :submission => @submission, :workflow => @workflow
+      @request_librarytube = Factory :request, :study => @study, :request_type => @request_type, :asset => @library_tube, :submission => @submission, :workflow => @workflow
+      @request_multiplex   = Factory :request, :study => @study, :request_type => @request_type, :asset => @multiplex_tube, :submission => @submission, :workflow => @workflow
 
       @new_assets_name = ""
 
