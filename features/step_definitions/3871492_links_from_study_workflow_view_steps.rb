@@ -29,7 +29,7 @@ Given /^study "([^"]+)" has made the following "([^"]+)" requests:$/ do |study_n
           :request, 
           :request_type => request_type,
           :user => @current_user, :workflow => @current_user.workflow,
-          :sample => sample, :study => study, :asset => asset, :state => state
+          :study => study, :asset => asset, :state => state
         )
       end
     end
