@@ -365,19 +365,6 @@ Factory.define :asset_group_asset do |aga|
   aga.asset_group   {|asset_group| asset_group.association(:asset_group)}
 end
 
-Factory.define :well_attribute do |w|
-  w.concentration       23.2
-  w.current_volume      15
-end
-
-Factory.define :well do |a|
-  a.name                {|a| Factory.next :asset_name }
-  a.value               ""
-  a.qc_state            ""
-  a.resource            nil
-  a.barcode             nil
-  a.well_attribute      {|wa| wa.association(:well_attribute)}
-end
 
 Factory.define :fragment do |fragment|
 end

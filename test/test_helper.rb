@@ -3,9 +3,11 @@ require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 #TODO: for rails 3 replace with rails/test_help
 require "test_help"
 
+require File.expand_path(File.join(Rails.root, %w{test factories.rb}))
+ Dir.glob(File.expand_path(File.join(Rails.root, %w{test factories ** *.rb}))) do |factory_filename|
+   require factory_filename
+ end
 
-require "#{Rails.root}/test/factories"
-require "#{Rails.root}/test/factories/pipelines_factories"
 require "#{Rails.root}/test/unit/task_test_base"
 
 # Turn auditing off by default.  If you need it call Audit.enable_auditing
