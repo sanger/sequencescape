@@ -22,7 +22,7 @@ Feature: Pipeline navigation
 		Given I have a batch in "Library preparation"
 		Given I have a request for "Library preparation"
     Given I am on the show page for pipeline "Library preparation"
-    Then I should see "Item ID"
+    Then I should see "Submission ID"
     Then I should see "Last 5"
     Then I should see "View batch"
 		When I check request "1" for pipeline "Library preparation"

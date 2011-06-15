@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110525100333) do
+ActiveRecord::Schema.define(:version => 20110601083338) do
 
   create_table "archived_properties", :force => true do |t|
     t.text    "value"
@@ -288,14 +288,15 @@ ActiveRecord::Schema.define(:version => 20110525100333) do
   create_table "documents", :force => true do |t|
     t.integer "documentable_id"
     t.integer "size"
-    t.string  "content_type"
-    t.string  "filename"
+    t.string  "uploaded_content_type"
+    t.string  "uploaded_file_name"
     t.integer "height"
     t.integer "width"
     t.integer "parent_id"
     t.string  "thumbnail"
     t.integer "db_file_id"
-    t.string  "documentable_type", :limit => 50
+    t.string  "documentable_type",     :limit => 50
+    t.text    "uploaded_file"
   end
 
   add_index "documents", ["documentable_id", "documentable_type"], :name => "index_documents_on_documentable_id_and_documentable_type"

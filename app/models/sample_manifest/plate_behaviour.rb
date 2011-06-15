@@ -83,7 +83,7 @@ module SampleManifest::PlateBehaviour
     end
 
     def updated_by!(user, samples)
-      samples.map { |s| s.wells.map(&:plate) }.flatten.uniq.each do |plate|
+      samples.map { |s| s.wells.map(&:plate) }.flatten.uniq.select{ |well_container| ! well_container.nil? }.each do |plate|
         plate.events.updated_using_sample_manifest!(user)
       end
     end

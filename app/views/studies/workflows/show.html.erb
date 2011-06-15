@@ -34,7 +34,7 @@
 <% add :menu, pluralize(@study.comments.size, "comment") => study_comments_path(@study) -%>
 
 <% if current_user.is_administrator? || current_user.is_manager?(@study) %>
-  <% add :manager_option, "Generate Accession Number" => url_for(:controller => '/studies', :action => 'accession', :id => @study.id) -%>
+  <% add :manager_option, @study.accession_number? ? "Update EBI Study data" : "Generate Accession Number" => url_for(:controller => '/studies', :action => 'accession', :id => @study.id) -%>
   <% add :manager_option, "Generate DAC Accession Number" => url_for(:controller => '/studies', :action => 'dac_accession', :id => @study.id) -%>
   <% add :manager_option, "Generate Policy Accession Number" => url_for(:controller => '/studies', :action => 'policy_accession', :id => @study.id) -%>
 <% end -%>
