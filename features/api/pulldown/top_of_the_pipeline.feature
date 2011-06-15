@@ -46,7 +46,8 @@ Feature: The top of the pulldown pipeline
       {
         "plate": {
           "name": "Testing the API",
-          "uuid": "00000000-1111-2222-3333-000000000001"
+          "uuid": "00000000-1111-2222-3333-000000000001",
+          "state": "passed"
         }
       }
       """
