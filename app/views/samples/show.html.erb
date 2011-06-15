@@ -6,13 +6,14 @@
 <% if current_user.administrator? -%>
   <% if (! @sample.has_submission? ) -%>
     <% add :menu, { "Delete" => destroy_sample_path(@sample.id) }, { :confirm => "Are you sure to delete this sample?" } -%>
-  <% end%>
+  <% end %>
   <% add :menu, { "Move sample to different study" => filtered_move_sample_path(@sample.id) } -%>
-<% end%>
+<% end %>
+
 <% if current_user.manager_or_administrator? || current_user.owner?(@sample) -%>
   <% add :menu, "Edit" => edit_sample_path(@sample) -%>
   <% add :menu, { "Flag for public release" => url_for({:controller => "samples", :action => "release", :id =>@sample.id }) }, { :confirm => "Do you want to flag this sample for public release?" }   -%>
-  <% add :menu, { "Generate Accession Number" => url_for({:controller => 'samples', :action => 'accession', :id => @sample.id}) }, { :confirm => "Do you want to request an accession for this sample?" }  -%>
+  <% add :menu, { @sample.accession_number? ? "Update EBI Sample data" : "Generate Accession Number" => url_for({:controller => 'samples', :action => 'accession', :id => @sample.id}) }, { :confirm => "Do you want to request an accession for this sample?" }  -%>
 <% end %>
 
 <% if @sample.accession_number? %>
@@ -63,7 +64,7 @@
     <% end -%>
   </div>
   <br />
-</div
+</div>
   
 <div class='info'>
   <h3>STUDIES</h3>
