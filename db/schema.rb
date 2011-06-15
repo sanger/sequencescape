@@ -543,7 +543,7 @@ ActiveRecord::Schema.define(:version => 20110725091045) do
   end
 
   create_table "plate_purposes", :force => true do |t|
-    t.string   "name",                                                             :null => false
+    t.string   "name",                                                  :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "type"
@@ -551,6 +551,7 @@ ActiveRecord::Schema.define(:version => 20110725091045) do
     t.boolean  "qc_display",                                    :default => false
     t.boolean  "pulldown_display"
     t.boolean  "can_be_considered_a_stock_plate",               :default => false, :null => false
+    t.string   "default_state",                  :default => "pending"
   end
 
   add_index "plate_purposes", ["qc_display"], :name => "index_plate_purposes_on_qc_display"
