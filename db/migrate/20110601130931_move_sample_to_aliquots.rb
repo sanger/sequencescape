@@ -171,10 +171,6 @@ class MoveSampleToAliquots < ActiveRecord::Migration
 
       say("Finished #{index+1}/#{count} (%0.03fs, %ds since start)" % [ finish-start, finish-migration_started ])
     end
-  rescue => exception
-    # Here's our transaction!
-    Aliqout.delete_all
-    raise
   end
 
   def self.down
