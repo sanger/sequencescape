@@ -31,9 +31,10 @@ Capybara.save_and_open_page_path = "tmp/capybara"
 # steps to use the XPath syntax.
 Capybara.default_selector = :css
 
-require File.expand_path(File.dirname(__FILE__) + '/../../test/factories.rb')
-require File.expand_path(File.dirname(__FILE__) + '/../../test/factories/pipelines_factories.rb')
-require File.expand_path(File.dirname(__FILE__) + '/../../test/factories/studies.rb')
+require File.expand_path(File.join(Rails.root, %w{test factories.rb}))
+Dir.glob(File.expand_path(File.join(Rails.root, %w{test factories ** *.rb}))) do |factory_filename|
+   require factory_filename
+end
 
 
 # This is a monkey patch for capybara =0.3.9
