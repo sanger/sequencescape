@@ -54,7 +54,9 @@ module Attributable
     end
     
     def association(name, instance_method)
-      association_details.push(Association.new(self, name, instance_method))
+      association = Association.new(self, name, instance_method)
+      association.configure(self)
+      association_details.push(association)
     end
 
     def defaults
@@ -78,6 +80,10 @@ module Attributable
     def initialize(owner, name, method)
       @owner, @name, @method = owner, name, method
     end
+
+    def assignable_attribute_name
+      :"#{@name}_#{@method}"
+    end
     
     def from(record)
       record.send(@name).send(@method)
@@ -89,6 +95,20 @@ module Attributable
         :key           => self.name,
         :kind          => FieldInfo::TEXT
       )
+    end
+
+    def configure(target)
+      target.class_eval(%Q{
+        def #{assignable_attribute_name}=(value)
+          record = self.class.reflections[:#{@name}].klass.find_by_#{@method}(value) or
+            raise ActiveRecord::RecordNotFound, "Could not find #{@name} with #{@method} \#{value.inspect}"
+          send(:#{@name}=, record)
+        end
+
+        def #{assignable_attribute_name}
+          send(:#{@name}).send(:#{@method})
+        end
+      })
     end
   end
 
@@ -126,7 +146,6 @@ module Attributable
       @options[:in]
     end
 
-
     def valid_format
       @options[:with]
     end
@@ -134,6 +153,7 @@ module Attributable
     def valid_format?
       valid_format
     end
+
     def configure(model)
       conditions = @options.slice(:if)
       save_blank_value = @options.delete(:save_blank)
@@ -162,21 +182,19 @@ module Attributable
       end
     end
 
-      def self.find_display_name(klass, name)
-        translation = I18n.t("metadata.#{ klass.name.underscore.gsub('/', '.') }.#{ name }")
-        if translation.is_a?(Hash) # translation found, we return the label
-          return translation[:label]
-        else
-          superclass = klass.superclass
-          if superclass != ActiveRecord::Base # a subclass , try the superclass name scope
-            return find_display_name(superclass, name)
-          else # translation not found
-            return translation # shoulb be an error message, so that's ok
-          end
-
-
+    def self.find_display_name(klass, name)
+      translation = I18n.t("metadata.#{ klass.name.underscore.gsub('/', '.') }.#{ name }")
+      if translation.is_a?(Hash) # translation found, we return the label
+        return translation[:label]
+      else
+        superclass = klass.superclass
+        if superclass != ActiveRecord::Base # a subclass , try the superclass name scope
+          return find_display_name(superclass, name)
+        else # translation not found
+          return translation # shoulb be an error message, so that's ok
         end
       end
+    end
 
     def to_field_info
       options = {

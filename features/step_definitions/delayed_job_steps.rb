@@ -5,7 +5,7 @@ Given /^([1-9]|[1-9]\d+) pending delayed jobs are processed$/ do |count|
   raise StandardError, "There are #{Delayed::Job.count} jobs left to process" unless Delayed::Job.count.zero?
 end
 
-Given /^all pending delayed jobs are processed$/ do
+Given /^all pending delayed jobs (?:are|have been) processed$/ do
   count = Delayed::Job.count
   raise StandardError, "There are no delayed jobs to process!" if count.zero?
   Given %Q{#{count} pending delayed jobs are processed}

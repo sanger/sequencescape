@@ -4,9 +4,12 @@ class Io::Aliquot < Core::Io::Base
 
   define_attribute_and_json_mapping(%Q{
                 sample  => sample
+
               tag.name  => tag.name
             tag.map_id  => tag.identifier
              tag.oligo  => tag.oligo
     tag.tag_group.name  => tag.group
+
+          bait_library  => bait_library
   })
 end

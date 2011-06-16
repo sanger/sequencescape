@@ -1,12 +1,14 @@
 class CreateAliquots < ActiveRecord::Migration
   def self.up
     create_table :aliquots do |t|
-      t.references :receptacle
-      t.references :sample
+      t.references :receptacle, :null => false
+      t.references :sample,     :null => false
       t.references :tag
 
       t.timestamps
     end
+
+    add_index :aliquots, [ :receptacle_id, :tag_id ], :unique => true, :name => 'aliquot_tags_are_unique_within_receptacle'
   end
 
   def self.down
