@@ -25,22 +25,37 @@ Transform /^([A-H]\d+)-([A-H]\d+)$/ do |start, finish|
   WellRange.new(start, finish)
 end
 
-Given /^"([^\"]+)" of (the plate .+) have been (submitted to "[^"]+")$/ do |range, plate, template|
+def create_submission_of_assets(template, assets, request_options = {})
   submission = template.new_submission(
     :user            => Factory(:user),
     :study           => Factory(:study),
     :project         => Factory(:project),
-    :assets          => plate.wells.select(&range.method(:include?)),
-    :request_options => {
-      :fragment_size_required_from => 100,
-      :fragment_size_required_to   => 200,
-      :read_length                 => 100
-    }
+    :assets          => assets,
+    :request_options => request_options
   )
   submission.save!
   submission.built!
 
   Given 'all pending delayed jobs are processed'
+end
+
+Given /^"([^\"]+)" of (the plate .+) have been (submitted to "[^"]+")$/ do |range, plate, template|
+  create_submission_of_assets(
+    template,
+    plate.wells.select(&range.method(:include?)), {
+      :fragment_size_required_from => 100,
+      :fragment_size_required_to   => 200,
+      :read_length                 => 100
+    }
+  )
+end
+
+Given /^"([^\"]+)" of (the plate .+) have been (submitted to "[^\"]+") with the following request options:$/ do |range, plate, template, table|
+  create_submission_of_assets(
+    template,
+    plate.wells.select(&range.method(:include?)),
+    Hash[table.raw]
+  )
 end
 
 Given /^the plate (.+) has been submitted to "([^"]+)"$/ do |info, template|
@@ -81,6 +96,26 @@ Transform /^the (?:.+) with UUID "([^\"]+)"$/ do |uuid|
   Uuid.lookup_single_uuid(uuid).resource
 end
 
+Transform /^the study "([^\"]+)"$/ do |name|
+  Study.find_by_name(name) or raise StandardError, "Could not find the study #{name.inspect}"
+end
+
 Then /^the state of (the .+) should be "([^\"]+)"$/ do |target, state|
   assert_equal(state, target.state, "State is invalid")
+end
+
+Given /^all of the wells on (the plate .+) are in an asset group called "([^"]+)" owned by (the study .+)$/ do |plate, name, study|
+  AssetGroup.create!(:study => study, :name => name, :assets => plate.wells)
+end
+
+Then /^all "([^\"]+)" requests should have the following details:$/ do |name, table|
+  request_type = RequestType.find_by_name(name) or raise StandardError, "Could not find request type #{name.inspect}"
+  raise StandardError, "No requests of type #{name.inspect}" if request_type.requests.empty?
+
+  results = request_type.requests.all.map do |request|
+    Hash[table.raw.map do |attribute,_|
+      [ attribute, attribute.split('.').inject(request.request_metadata) { |m, s| m.send(s) } ]
+    end]
+  end.uniq!
+  assert_equal([Hash[table.raw]], results, "Request details are not identical")
 end
