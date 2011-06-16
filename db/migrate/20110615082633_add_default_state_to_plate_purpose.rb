@@ -4,6 +4,6 @@ class AddDefaultStateToPlatePurpose < ActiveRecord::Migration
   end
 
   def self.down
-    remove_column :plate_purposes
+    remove_column :plate_purposes, :default_state
   end
 end

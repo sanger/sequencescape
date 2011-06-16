@@ -4,6 +4,6 @@ class RemoveTagIdFromAssets < ActiveRecord::Migration
   end
 
   def self.down
-    add_column :assets, :tag_id
+    add_column :assets, :tag_id, :integer
   end
 end
