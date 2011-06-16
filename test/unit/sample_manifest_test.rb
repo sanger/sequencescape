@@ -116,4 +116,30 @@ class SampleManifestTest < ActiveSupport::TestCase
       end
     end
   end
+  
+  context "update event" do
+    setup do
+      @user = Factory :user
+      @well_with_sample_and_plate = Factory :well_with_sample_and_plate
+    end
+    context "where a well has no plate" do
+      setup do
+        @well_with_sample_and_without_plate = Factory :well_with_sample_and_without_plate
+      end
+      should "not try to add an event to a plate" do
+        assert_nothing_raised do
+          SampleManifest::PlateBehaviour::Core.new(SampleManifest.new).updated_by!(@user,[@well_with_sample_and_plate.sample, @well_with_sample_and_without_plate.sample])
+        end
+      end
+    end
+    context "where a well has a plate" do
+      should "add an event to the plate" do
+        SampleManifest::PlateBehaviour::Core.new(SampleManifest.new).updated_by!(@user,[@well_with_sample_and_plate.sample])
+        assert_equal Event.last, @well_with_sample_and_plate.plate.events.last
+        assert_not_nil @well_with_sample_and_plate.plate.events.last
+      end
+    end
+    
+  end
+  
 end
