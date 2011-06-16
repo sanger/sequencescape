@@ -192,12 +192,17 @@ Feature: The entry point for the API gives directions to the other actions
           "actions": {
             "read": "http://www.example.com/api/1/state_changes"
           }
+        },
+        "bait_library_layouts": {
+          "actions": {
+            "read": "http://www.example.com/api/1/bait_library_layouts"
+          }
         }
       }
       """
 
   @authorised
-  Scenario: Retrieving the root entry point when unauthorised
+  Scenario: Retrieving the root entry point when authorised
     When I make an authorised GET the API path "/"
     Then the HTTP response should be "200 OK"
     And the JSON should be:
@@ -381,6 +386,13 @@ Feature: The entry point for the API gives directions to the other actions
           "actions": {
             "read": "http://www.example.com/api/1/state_changes",
             "create": "http://www.example.com/api/1/state_changes"
+          }
+        },
+        "bait_library_layouts": {
+          "actions": {
+            "read": "http://www.example.com/api/1/bait_library_layouts",
+            "create": "http://www.example.com/api/1/bait_library_layouts",
+            "preview": "http://www.example.com/api/1/bait_library_layouts/preview"
           }
         }
       }

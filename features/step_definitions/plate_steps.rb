@@ -168,6 +168,11 @@ Given /^a "([^\"]+)" plate called "([^\"]+)" exists$/ do |name, plate_name|
   plate_purpose.create!(:name => plate_name)
 end
 
+Given /^a "([^\"]+)" plate called "([^\"]+)" with ID (\d+)$/ do |name, plate_name, id|
+  plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
+  plate_purpose.create!(:name => plate_name, :id => id)
+end
+
 Given /^all wells on (the plate "[^\"]+") have unique samples$/ do |plate|
   plate.wells.each do |well|
     well.aliquots.create!(:sample => Factory(:sample))

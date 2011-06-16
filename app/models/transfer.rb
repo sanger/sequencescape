@@ -5,7 +5,7 @@ class Transfer < ActiveRecord::Base
         has_many :transfers_as_source,     :class_name => 'Transfer', :foreign_key => :source_id,      :order => 'created_at ASC'
         has_one  :transfer_as_destination, :class_name => 'Transfer', :foreign_key => :destination_id
 
-        delegate :default_state, :to => :plate_purpose
+        delegate :default_state, :to => :plate_purpose, :allow_nil => true
       end
     end
 
@@ -24,7 +24,7 @@ class Transfer < ActiveRecord::Base
       return unique_states.first if unique_states.size == 1
 
       # Otherwise we'll take the default state from the plate purpose
-      self.default_state
+      self.default_state || 'unknown'
     end
   end
 
@@ -60,6 +60,8 @@ class Transfer < ActiveRecord::Base
   module ControlledDestinations
     def self.included(base)
       base.class_eval do
+        include Transfer::WellHelpers
+
         # Ensure that the transfers are recorded so we can see what happened.
         serialize :transfers
         validates_unassigned :transfers
@@ -73,7 +75,9 @@ class Transfer < ActiveRecord::Base
       end
     end
     private :each_transfer
+  end
 
+  module WellHelpers
     def locate_stock_well_for(current_well)
       return current_well if current_well.parent.plate_purpose == stock_plate_purpose
 

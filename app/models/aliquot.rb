@@ -76,4 +76,7 @@ class Aliquot < ActiveRecord::Base
   # It may have a tag but not necessarily.  If it does, however, that tag needs to be unique within the receptacle.
   belongs_to :tag
   validates_uniqueness_of :tag_id, :scope => :receptacle_id, :allow_nil => true, :allow_blank => true
+
+  # It may have a bait library but not necessarily.
+  belongs_to :bait_library
 end

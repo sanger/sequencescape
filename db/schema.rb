@@ -12,12 +12,15 @@
 ActiveRecord::Schema.define(:version => 20110725091045) do
 
   create_table "aliquots", :force => true do |t|
-    t.integer  "receptacle_id"
-    t.integer  "sample_id"
+    t.integer  "receptacle_id",   :null => false
+    t.integer  "sample_id",       :null => false
     t.integer  "tag_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "bait_library_id"
   end
+
+  add_index "aliquots", ["receptacle_id", "tag_id"], :name => "aliquot_tags_are_unique_within_receptacle", :unique => true
 
   create_table "archived_properties", :force => true do |t|
     t.text    "value"
@@ -125,6 +128,35 @@ ActiveRecord::Schema.define(:version => 20110725091045) do
   add_index "audits", ["auditable_id", "auditable_type"], :name => "auditable_index"
   add_index "audits", ["created_at"], :name => "index_audits_on_created_at"
   add_index "audits", ["user_id", "user_type"], :name => "user_index"
+
+  create_table "bait_libraries", :force => true do |t|
+    t.integer  "bait_library_supplier_id"
+    t.string   "name",                     :null => false
+    t.string   "supplier_identifier"
+    t.string   "target_species",           :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "bait_libraries", ["bait_library_supplier_id", "name"], :name => "bait_library_names_are_unique_within_a_supplier", :unique => true
+
+  create_table "bait_library_layouts", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "plate_id",                   :null => false
+    t.string   "layout",     :limit => 1024
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "bait_library_layouts", ["plate_id"], :name => "bait_libraries_are_laid_out_on_a_plate_once", :unique => true
+
+  create_table "bait_library_suppliers", :force => true do |t|
+    t.string   "name",       :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "bait_library_suppliers", ["name"], :name => "index_bait_library_suppliers_on_name", :unique => true
 
   create_table "barcode_prefixes", :force => true do |t|
     t.string "prefix", :limit => 3
@@ -658,6 +690,7 @@ ActiveRecord::Schema.define(:version => 20110725091045) do
     t.string  "library_creation_complete"
     t.string  "sequencing_type"
     t.integer "insert_size"
+    t.integer "bait_library_id"
   end
 
   add_index "request_metadata", ["request_id"], :name => "index_request_metadata_on_request_id"

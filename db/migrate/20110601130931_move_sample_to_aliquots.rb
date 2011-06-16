@@ -8,15 +8,10 @@ class MoveSampleToAliquots < ActiveRecord::Migration
   class Aliquot < ActiveRecord::Base
     set_table_name('aliquots')
 
+    # NOTE: validations are not here as they are DB constraints and we're not UI based
     belongs_to :receptacle, :class_name => 'MoveSampleToAliquots::Asset'
-    validates_presence_of :receptacle
     belongs_to :sample
-    validates_presence_of :sample
     belongs_to :tag
-
-    # Validate that the tag is unique within the context of the receptacle.  Multiple aliquots
-    # require unique tags.
-    validates_uniqueness_of :tag_id, :scope => :receptacle_id
   end
 
   class Request < ActiveRecord::Base
