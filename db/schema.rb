@@ -1226,6 +1226,12 @@ ActiveRecord::Schema.define(:version => 20110725091045) do
 
   add_index "well_attributes", ["well_id"], :name => "index_well_attributes_on_well_id"
 
+  create_table "well_to_tube_transfers", :force => true do |t|
+    t.integer "transfer_id",    :null => false
+    t.integer "destination_id", :null => false
+    t.string  "source"
+  end
+
   create_table "workflow_samples", :force => true do |t|
     t.text     "name"
     t.integer  "user_id"

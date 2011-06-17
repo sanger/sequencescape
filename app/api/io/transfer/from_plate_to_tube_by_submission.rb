@@ -4,7 +4,6 @@ class ::Io::Transfer::FromPlateToTubeBySubmission < ::Core::Io::Base
 
   define_attribute_and_json_mapping(%Q{
           source <=> source
-    destinations  => destinations
        transfers  => transfers
   })
 end
