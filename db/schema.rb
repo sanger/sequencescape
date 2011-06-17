@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110616121533) do
+ActiveRecord::Schema.define(:version => 20110617202947) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",   :null => false
@@ -332,7 +332,7 @@ ActiveRecord::Schema.define(:version => 20110616121533) do
     t.integer "parent_id"
     t.string  "thumbnail"
     t.integer "db_file_id"
-    t.string  "documentable_type",     :limit => 50
+    t.string  "documentable_type", :limit => 50
     t.text    "uploaded_file"
   end
 
@@ -1222,6 +1222,12 @@ ActiveRecord::Schema.define(:version => 20110616121533) do
   end
 
   add_index "well_attributes", ["well_id"], :name => "index_well_attributes_on_well_id"
+
+  create_table "well_to_tube_transfers", :force => true do |t|
+    t.integer "transfer_id",    :null => false
+    t.integer "destination_id", :null => false
+    t.string  "source"
+  end
 
   create_table "workflow_samples", :force => true do |t|
     t.text     "name"

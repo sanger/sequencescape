@@ -2,10 +2,26 @@
 # into MX library tubes.  Each well is effectively a pool of the stock wells, once they've been
 # through the pipeline, so the mapping needs to be based on the original submissions.
 class Transfer::FromPlateToTubeBySubmission < Transfer
+  class WellToTube < ActiveRecord::Base
+    set_table_name('well_to_tube_transfers')
+
+    belongs_to :transfer, :class_name => 'Transfer::FromPlateToTubeBySubmission'
+    validates_presence_of :transfer
+
+    belongs_to :destination, :class_name => 'Asset'
+    validates_presence_of :destination
+
+    validates_presence_of :source
+  end
+
   include ControlledDestinations
 
-  # TODO: This should be a has_many association
-  attr_accessor :destinations
+  # Records the transfers from the wells on the plate to the assets they have gone into.
+  has_many :well_to_tubes, :class_name => 'Transfer::FromPlateToTubeBySubmission::WellToTube', :foreign_key => :transfer_id
+
+  def transfers
+    Hash[well_to_tubes.map { |t| [ t.source, t.destination ] }]
+  end
 
   #--
   # The source plate wells need to be translated back to the stock plate wells, which simply
@@ -31,11 +47,14 @@ class Transfer::FromPlateToTubeBySubmission < Transfer
   private :locate_mx_library_tube_for
 
   def record_transfer(source, destination)
-    self.transfers    ||= []
-    self.destinations ||= []
-
-    self.transfers    << source.map.description
-    self.destinations << destination
+    @transfers ||= {}
+    @transfers[source.map.description] = destination
   end
   private :record_transfer
+
+  after_create :build_well_to_tube_transfers
+  def build_well_to_tube_transfers
+    @transfers.each { |source, destination| self.well_to_tubes.create!(:source => source, :destination => destination) }
+  end
+  private :build_well_to_tube_transfers
 end
