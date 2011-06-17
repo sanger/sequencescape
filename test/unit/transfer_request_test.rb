@@ -18,5 +18,10 @@ class TransferRequestTest < ActiveSupport::TestCase
         assert_equal(expected_aliquots, target_aliquots)
       end
     end
+
+    should 'not permit transfers to the same asset' do
+      asset = Factory(:sample_tube)
+      assert_raises(ActiveRecord::RecordInvalid) { TransferRequest.create!(:asset => asset, :target_asset => asset) }
+    end
   end
 end
