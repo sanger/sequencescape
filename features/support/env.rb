@@ -31,11 +31,6 @@ Capybara.save_and_open_page_path = "tmp/capybara"
 # steps to use the XPath syntax.
 Capybara.default_selector = :css
 
-require File.expand_path(File.dirname(__FILE__) + '/../../test/factories.rb')
-require File.expand_path(File.dirname(__FILE__) + '/../../test/factories/pipelines_factories.rb')
-require File.expand_path(File.dirname(__FILE__) + '/../../test/factories/studies.rb')
-
-
 # This is a monkey patch for capybara =0.3.9
 # If we upgrade to ~>0.4.0 then this monkey patch needs to go!
 # Add better support for Capybara parallel testing using server port numbering
