@@ -24,7 +24,7 @@ class Plate < Asset
     index_of_plate.nil? ? nil : index_of_plate+1
   end
 
-  contains :wells, :include => :map, :order => 'map_id ASC' do
+  contains :wells, :order => '`assets`.map_id ASC' do
     def located_at(location)
       super(proxy_owner, location)
     end
