@@ -6,7 +6,7 @@ class ::Api::EndpointHandler < ::Core::Service
         uuid = Uuid.with_external_id(uuid_in_url).first or raise ActiveRecord::RecordNotFound, "UUID does not exist"
 
         handle_request(:instance, action, parts) do |request|
-          request.io     = ::Core::Io::Registry.instance.lookup_for_class(uuid.resource_type.constantize)
+          request.io     = ::Core::Io::Registry.instance.lookup_for_class(uuid.resource.class)
           request.target = request.io.eager_loading_for(uuid.resource.class).include_uuid.find(uuid.resource_id)
         end
       end
