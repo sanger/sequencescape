@@ -288,8 +288,8 @@ ActiveRecord::Schema.define(:version => 20110601083338) do
   create_table "documents", :force => true do |t|
     t.integer "documentable_id"
     t.integer "size"
-    t.string  "uploaded_content_type"
-    t.string  "uploaded_file_name"
+    t.string  "content_type"
+    t.string  "filename"
     t.integer "height"
     t.integer "width"
     t.integer "parent_id"
