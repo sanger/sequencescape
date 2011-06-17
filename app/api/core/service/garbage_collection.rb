@@ -20,8 +20,13 @@ module Core::Service::GarbageCollection
     def close
       Rails.logger.debug('Re-enabling and running garbage collector')
 
-      GC.enable
-      GC.start
+      start = Time.now
+      begin
+        GC.enable
+        GC.start
+      ensure
+        Rails.logger.debug("Garbage collection completed in #{Time.now-start}s")
+      end
     end
   end
 end
