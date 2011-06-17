@@ -325,15 +325,14 @@ ActiveRecord::Schema.define(:version => 20110616121533) do
   create_table "documents", :force => true do |t|
     t.integer "documentable_id"
     t.integer "size"
-    t.string  "uploaded_content_type"
-    t.string  "uploaded_file_name"
+    t.string  "content_type"
+    t.string  "filename"
     t.integer "height"
     t.integer "width"
     t.integer "parent_id"
     t.string  "thumbnail"
     t.integer "db_file_id"
-    t.string  "documentable_type",     :limit => 50
-    t.text    "uploaded_file"
+    t.string  "documentable_type", :limit => 50
   end
 
   add_index "documents", ["documentable_id", "documentable_type"], :name => "index_documents_on_documentable_id_and_documentable_type"
