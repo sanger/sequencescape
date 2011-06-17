@@ -2,6 +2,7 @@
 # the parent.
 class PlateCreation < ActiveRecord::Base
   include Uuid::Uuidable
+  include ModelExtensions::PlateCreation
 
   belongs_to :user
 
