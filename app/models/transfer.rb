@@ -99,7 +99,7 @@ class Transfer < ActiveRecord::Base
 
   include Uuid::Uuidable
 
-  self.inheritance_column = "sti_type"
+  self.inheritance_column   = "sti_type"
 
   # So we can track who is requesting the transfer
   belongs_to :user

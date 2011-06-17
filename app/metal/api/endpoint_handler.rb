@@ -41,7 +41,12 @@ class ::Api::EndpointHandler < ::Core::Service
         yield(request)
       end
 
-    body(request.send(handler, action, send(endpoint_lookup, request.target)))
+    begin
+      Rails.logger.info("++++++ Handling #{handler.inspect} #{action.inspect} (#{parts.inspect})")
+      body(request.send(handler, action, send(endpoint_lookup, request.target)))
+    ensure
+      Rails.logger.info("------ Handled #{handler.inspect} #{action.inspect} (#{parts.inspect})")
+    end
   end
 
   ACTIONS_TO_HTTP_VERBS = {

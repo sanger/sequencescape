@@ -146,7 +146,8 @@ class Core::Service < Sinatra::Base
 
     def create!(instance_attributes = self.attributes)
       ActiveRecord::Base.transaction do
-        target.create!(instance_attributes)
+        record = target.create!(instance_attributes)
+        ::Core::Io::Registry.instance.lookup_for_object(record).eager_loading_for(record.class).include_uuid.find(record.id)
       end
     end
 

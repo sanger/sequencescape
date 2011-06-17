@@ -6,10 +6,8 @@ class Plate < Asset
   include PlatePurpose::Associations
 
   # Transfer requests into a plate are the requests leading into the wells of said plate.
-  def transfer_requests
-    # TODO: This should be 'has_many :transfer_requests, :finder_sql => ....' for efficiency
-    wells.map { |well| well.requests_as_target.where_is_a?(TransferRequest).all }.flatten
-  end
+  # NOTE The sti_type value here is singular, where it may need subclasses.
+  has_many :transfer_requests, :finder_sql => 'SELECT * FROM requests WHERE target_asset_id IN (#{self.well_ids.join(",")}) AND sti_type="TransferRequest"'
 
   # The iteration of a plate is defined as the number of times a plate of this type has been created
   # from it's parent.  It's not quite that simple: it's actually the index of it's transfer_as_destination
@@ -425,7 +423,7 @@ class Plate < Asset
     attributes = args.extract_options!
     barcode    = args.first
     barcode    = nil if barcode.present? and find_by_barcode(barcode).present?
-    barcode  ||= PlateBarcode.create.barcode
+    barcode  ||= rand(0x10000) # PlateBarcode.create.barcode
     create!(attributes.merge(:barcode => barcode), &block)
   end
 

@@ -2,9 +2,10 @@
 module ModelExtensions::PlateCreation
   def self.included(base)
     base.class_eval do
-      # TODO: Add an associations or named_scopes required
+      extend ModelExtensions::Plate::NamedScopeHelpers
+
+      include_plate_named_scope :parent
+      include_plate_named_scope :child
     end
   end
-
-  # TODO: Add any instance methods required
 end
