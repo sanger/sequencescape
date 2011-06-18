@@ -1,6 +1,7 @@
 Given /^sequencescape is setup for 4759010$/ do
+  # Number of tags here needs to be the same as the number of requests below.
   group = Factory(:tag_group, :name => 'Tag group for 4759010')
-  group.tags << Factory(:tag, :oligo => 'Tag for 4759010')
+  (1..10).each { |i| group.tags.create!(:map_id => i, :oligo => 'Tag for 4759010') }
 end
 
 Given /^a batch in "Cluster formation PE" has been setup for feature 4759010$/ do         

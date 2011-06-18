@@ -6,6 +6,7 @@
 # doesn't (for example, a 96 tag group would occupy an entire 96 well plate).
 class TagLayout < ActiveRecord::Base
   include Uuid::Uuidable
+  include ModelExtensions::TagLayout
 
   self.inheritance_column = "sti_type"
 
