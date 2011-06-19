@@ -58,6 +58,9 @@ group :warehouse do
 end
 
 group :development do
+  # The fake services run better with Mongrel
+  gem "mongrel", "~>1.1.5"
+
   gem "flay"
   gem "flog"
   gem "roodi"
