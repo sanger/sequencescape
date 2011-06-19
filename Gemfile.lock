@@ -223,6 +223,7 @@ DEPENDENCIES
   launchy
   log4r
   mocha
+  mongrel (~> 1.1.5)
   mongrel_cluster
   mysql
   net-ldap
