@@ -35,7 +35,7 @@ module Tasks::AssignTagsHandler
         tag.tag!(request.target_asset)
 
         AssetLink.create_edge(request.target_asset, multiplexed_library)
-        TransfertRequest.create!(:asset => request.target_asset, :target_asset => multiplexed_library, :state => 'passed') # to drop if merge conflict !!!
+        TransferRequest.create!(:asset => request.target_asset, :target_asset => multiplexed_library, :state => 'passed')
       end
 
       # Find a request to get the submission_id from to find the sequencing request
