@@ -2,15 +2,6 @@ Given /^the system has a plate with a barcode of "([^"]*)"$/ do |encoded_barcode
   Factory(:plate, :barcode => Barcode.number_to_human(encoded_barcode))
 end
 
-# TODO[xxx]: Come back and make these work with the faked services
-Given /^I expect to print barcode labels$/ do
-  #@barcode_printer.expects(:print).at_least(1)
-end
-
-Given /^I expect to print (\d+) barcode labels?$/ do |number_of_labels_required|
-  #@barcode_printer.expects(:print).times(number_of_labels_required.to_i)
-end
-
 Given /^the study "([^\"]+)" has a plate with barcode "([^\"]+)"$/ do |study_name, barcode|
   study, user = Study.find_by_name(study_name), User.find_by_login('user')
   prefix, number, check = Barcode.split_human_barcode(barcode)
