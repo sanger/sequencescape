@@ -126,7 +126,8 @@ class Request < ActiveRecord::Base
     {:conditions => { :request_type_id => id} }
   }
 
-  named_scope :where_is_a?, lambda { |clazz| { :conditions => { :sti_type => clazz.name } } }
+  named_scope :where_is_a?,     lambda { |clazz| { :conditions => [ 'sti_type IN (?)',     clazz.name ] } }
+  named_scope :where_is_not_a?, lambda { |clazz| { :conditions => [ 'sti_type NOT IN (?)', clazz.name ] } }
 
   named_scope :full_inbox, :conditions => {:state => ["pending","hold"]}
 

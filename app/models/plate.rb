@@ -19,16 +19,30 @@ class Plate < Asset
   private :transfer_request_query_conditions
 
   # The iteration of a plate is defined as the number of times a plate of this type has been created
-  # from it's parent.  It's not quite that simple: it's actually the index of it's transfer_as_destination
-  # within the transfers_as_source of its parent.
+  # from it's parent.
   def iteration
     return nil if parent.nil?  # No parent means no iteration, not a 0 iteration.
 
-    index_of_plate = parent.transfers_as_source.all.select do |p|
-      p.destination.is_a?(Plate) and p.destination.plate_purpose == plate_purpose
-    end.index(transfer_as_destination)
+    # NOTE: This is how to do row numbering with MySQL!  It essentially joins the assets and asset_links
+    # tables to find all of the child plates of our parent that have the same plate purpose, numbering
+    # those rows to give the iteration number for each plate.
+    iteration_of_plate = connection.select_one(%Q{
+      SELECT iteration 
+      FROM (
+        SELECT iteration_plates.id, @rownum:=@rownum+1 AS iteration
+        FROM (
+          SELECT assets.id
+          FROM asset_links
+          JOIN assets ON asset_links.descendant_id=assets.id
+          WHERE asset_links.direct=TRUE AND ancestor_id=#{parent.id} AND assets.sti_type='Plate' AND assets.plate_purpose_id=#{plate_purpose.id}
+          ORDER by assets.created_at ASC
+        ) AS iteration_plates,
+        (SELECT @rownum:=0) AS r
+      ) AS a
+      WHERE a.id=#{self.id}
+    }, "Plate #{self.id} iteration query")
 
-    index_of_plate.nil? ? nil : index_of_plate+1
+    iteration_of_plate['iteration'].try(:to_i)
   end
 
   contains :wells, :order => '`assets`.map_id ASC' do
