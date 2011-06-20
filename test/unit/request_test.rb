@@ -9,19 +9,18 @@ class RequestTest < ActiveSupport::TestCase
 
     context "#next_request" do
       setup do
-        @submission  = Factory :submission
-        @item = Factory :item
         @sample = Factory :sample
 
         @genotyping_request_type = Factory :request_type, :name => "genotyping"
         @cherrypick_request_type = Factory :request_type, :name => "cherrypick", :target_asset_type => nil
+        @submission  = Factory :submission, :request_types => [@cherrypick_request_type, @genotyping_request_type].map(&:id)
+        @item = Factory :item, :submission => @submission
         
         @genotype_pipeline = Factory :pipeline, :name =>"genotyping pipeline", :request_type => @genotyping_request_type
         @cherrypick_pipeline = Factory :pipeline, :name => "cherrypick pipeline", :request_type => @cherrypick_request_type, :next_pipeline_id => @genotype_pipeline.id, :asset_type => 'LibraryTube'
 
         @request1 = Factory(
           :request,
-          :sample       => @sample,
           :item         => @item,
           :asset        => Factory(:sample_tube, :sample => @sample),
           :target_asset => nil,
@@ -32,7 +31,7 @@ class RequestTest < ActiveSupport::TestCase
       end
       context "with valid input" do
         setup do
-          @request2 = Factory :request, :sample => @sample, :item => @item, :submission => @submission, :request_type => @genotyping_request_type, :pipeline => @genotype_pipeline
+          @request2 = Factory :request, :item => @item, :submission => @submission, :request_type => @genotyping_request_type, :pipeline => @genotype_pipeline
         end
         should "return the correct next request" do
           assert_equal [@request2], @request1.next_requests(@cherrypick_pipeline)
@@ -41,7 +40,7 @@ class RequestTest < ActiveSupport::TestCase
 
       context "where asset hasnt been created for second request" do
         setup do
-          @request2 = Factory :request, :sample => @sample, :asset => nil, :item => @item, :submission => @submission,:request_type => @genotyping_request_type, :pipeline => @genotype_pipeline
+          @request2 = Factory :request, :asset => nil, :item => @item, :submission => @submission,:request_type => @genotyping_request_type, :pipeline => @genotype_pipeline
         end
         should "return the correct next request" do
           assert_equal [@request2], @request1.next_requests(@cherrypick_pipeline)
@@ -50,8 +49,8 @@ class RequestTest < ActiveSupport::TestCase
 
       context "#associate_pending_requests_for_downstream_pipeline" do
         setup do
-          @request2 = Factory :request, :asset => nil, :sample => @sample, :item => @item, :submission => @submission, :request_type => @genotyping_request_type, :pipeline => @genotype_pipeline
-          @request3 = Factory :request, :asset => nil, :sample => nil, :item => @item, :submission => @submission, :request_type => @genotyping_request_type, :pipeline => @genotype_pipeline
+          @request2 = Factory :request, :asset => nil, :item => @item, :submission => @submission, :request_type => @genotyping_request_type, :pipeline => @genotype_pipeline
+          @request3 = Factory :request, :asset => nil, :item => @item, :submission => @submission, :request_type => @genotyping_request_type, :pipeline => @genotype_pipeline
 
           @batch = @cherrypick_pipeline.batches.create!(:requests => [ @request1 ])
 

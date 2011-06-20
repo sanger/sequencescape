@@ -96,7 +96,6 @@ class Submission < ActiveRecord::Base
   def assign_asset(request, request_type, asset)
     return if asset.nil?
     request.asset  = asset if is_asset_applicable_to_type?(request_type, asset)
-    request.sample = asset.sample
   end
 
   def are_requests_different(submission_to)
@@ -167,6 +166,7 @@ class Submission < ActiveRecord::Base
       end
 
     end
+    deprecate :move_assets
 
     target.study.events.create(
     :message => "Submission #{target.id} is created by Move Sample #{sample.id}",
@@ -242,6 +242,34 @@ class Submission < ActiveRecord::Base
 
   def initial_request_state(request_type)
     (request_options || {}).fetch(:initial_state, {}).fetch(request_type.id, request_type.initial_state).to_s
+  end
+
+  def next_request_type_id(request_type_id)
+    request_type_ids = request_types.map(&:to_i)
+    request_type_ids[request_type_ids.index(request_type_id)+1]
+  end
+
+  def next_requests(request)
+      return request.target_asset.requests if request.target_asset
+
+      next_request_type_id = self.next_request_type_id(request.request_type_id)
+      sibling_requests = requests.select { |r| r.request_type_id == request.request_type_id}
+      next_possible_requests = requests.select { |r| r.request_type_id == next_request_type_id}
+
+      #we need to find the position of the request within its sibling and use the same index
+      #in the next_possible ones.
+
+      [sibling_requests, next_possible_requests].map do |request_list|
+        request_list.sort! { |a, b| a.id <=> b.id }
+      end
+
+      # The divergence_ratio should be equal to the multiplier if there is one and so the same for every requests
+      # should work also for convergent a request (ration < 1.0))
+
+      divergence_ratio = 1.0* next_possible_requests.size / sibling_requests.size
+      index = sibling_requests.index(request)
+
+      next_possible_requests[index*divergence_ratio,[ 1, divergence_ratio ].max]
   end
 
   protected

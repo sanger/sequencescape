@@ -4,9 +4,7 @@
     <tr>
       <td width='35%' class='item'>Name: </td>
       <td width='65%'>
-      <% unless request.sample.nil? -%>
-         <%= request.sample.name -%>
-      <% end %>
+        <%= request.sample_name -%>
       </td>
     </tr>
       <%= render :partial => 'descriptor', :collection => @task.descriptors, :locals => {:request => request } %>

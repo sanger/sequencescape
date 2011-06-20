@@ -30,11 +30,7 @@
         <tr class="<%= cycle("rowodd", "roweven") %>">
           <td class="7%">&nbsp;</td>
           <td width="5%"><%= request.position(@batch) %></td>
-          <% if request.sample %>
-            <td width="7%"><%= request.sample.name %></td>
-          <% else %>
-            <td width="7%"></td>
-          <% end %>
+          <td width="7%"><%= request.sample_name %></td>
           <td width="7%"><%= request.asset.barcode %></td>
           <td width="15%"><%= link_to request.asset.name, asset_url(request.asset), :target => "_blank" %></td>
 

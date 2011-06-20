@@ -40,44 +40,6 @@ class SampleTest < ActiveSupport::TestCase
 
       end
 
-      # we don't check this anymore
-      #context "has a submission_to and without submission_from" do
-        #should "return failed error" do
-          #@sample_from.move(@study_from, @study_to, @asset_group, @new_assets_name, @current_user, @submission_to.id)
-          #assert_equal @sample_from.errors.full_messages[0], "Move: Study  #{@study_to.id} has a submission. The best way is create a new asset and after create a new submission."
-        #end
-      #end
-      
-      # we don't check this anymore
-      #context "With submissions with different request types" do
-        #setup do
-          #@request_type_ids_from = [@request_type_2.id, @request_type_3.id]
-          #@item = Factory :item
-          #@submission_from_1 = Factory :submission, :study => @study_from, :workflow => @workflow, :assets => [ @asset_1 ],
-                           #:request_types => @request_type_ids_from, :request_options => @request_options
-          #@request = Factory :request, :sample => @sample_from, :submission => @submission_from_1, :request_type => @request_type1, :study => @study_from, :workflow => @workflow, :item => @item
-        #end                                         
-        #should "return failed" do
-          #@sample_from.move(@study_from, @study_to, @asset_group, @new_assets_name, @current_user, @submission_to.id)
-          #assert_equal @sample_from.errors.full_messages[0], "Move: The submissions are different. Please, check this information."
-        #end
-      #end
-
-      # we don't check this anymore
-      #context "With several assets" do
-        #setup do
-          #@new_assets_name = "Test_1"
-          #@asset_from_2 = Factory :asset, :name => @sample_from.name, :material_id => @sample_from.id
-          #@sample_tube_1 = Factory :sample_tube, :name => @sample_from.name, :material_id => @sample_from.id
-          #@sample_tube_1 = Factory :sample_tube, :name => @sample_from.name, :material_id => @sample_from.id
-        #end                                         
-
-        #should "return failed" do
-          #@sample_from.move(@study_from, @study_to, @asset_group, @new_assets_name, @current_user, 0)
-          #assert_equal @sample_from.errors.full_messages[0], "Move: This sample has several assets. We could NOT move this sample."
-        #end
-      #end
-      
       context "only valid assets and without submissions" do
         setup do
           @sample_from_ok = Factory :sample
@@ -121,7 +83,7 @@ class SampleTest < ActiveSupport::TestCase
                            :request_types => @request_type_ids_from, :request_options => @request_options
           @asset_from.studies << @study_from
           @asset_from.save
-          @request = Factory :request, :sample => @sample_from_ok, :submission => @submission_from_1, :request_type => @request_type1, :study => @study_from, :workflow => @workflow, :item => @item
+          @request = Factory :request, :submission => @submission_from_1, :request_type => @request_type1, :study => @study_from, :workflow => @workflow, :item => @item
         end
 
         should "return true" do
@@ -161,12 +123,12 @@ class SampleTest < ActiveSupport::TestCase
                            :request_types => @request_type_ids_both, :request_options => @request_options
           @asset_from.studies << @study_from
           @asset_from.save
-          @request = Factory :request, :sample => @sample_from_ok, :submission => @submission_from_1, :request_type => @request_type1, :study => @study_from, :workflow => @workflow, :item => @item
+          @request = Factory :request, :submission => @submission_from_1, :request_type => @request_type1, :study => @study_from, :workflow => @workflow, :item => @item
 
           @item_to = Factory :item
           @submission_to_1 = Factory :submission, :study => @study_to, :workflow => @workflow, :assets => [ @asset_to ],
                              :request_types => @request_type_ids_both, :request_options => @request_options
-          @request = Factory :request, :sample => @sample_to, :submission => @submission_to_1, :request_type => @request_type1, :study => @study_to, :workflow => @workflow, :item => @item_to
+          @request = Factory :request, :submission => @submission_to_1, :request_type => @request_type1, :study => @study_to, :workflow => @workflow, :item => @item_to
         end
 
         should "return true" do
