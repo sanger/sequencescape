@@ -249,12 +249,12 @@ ActiveRecord::Schema.define(:version => 20110725091045) do
   add_index "comments", ["commentable_id", "commentable_type"], :name => "index_comments_on_commentable_id_and_commentable_type"
 
   create_table "container_associations", :force => true do |t|
-    t.integer "container_id"
-    t.integer "content_id"
+    t.integer "container_id", :null => false
+    t.integer "content_id",   :null => false
   end
 
   add_index "container_associations", ["container_id"], :name => "index_container_associations_on_container_id"
-  add_index "container_associations", ["content_id"], :name => "index_container_associations_on_content_id"
+  add_index "container_associations", ["content_id"], :name => "container_association_content_is_unique", :unique => true
 
   create_table "controls", :force => true do |t|
     t.string   "name"
