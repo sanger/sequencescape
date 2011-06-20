@@ -9,7 +9,7 @@ Given /^I have an asset group "([^"]*)" which is part of "([^"]*)"$/ do |asset_g
 end
 
 Given /^asset group "([^"]*)" contains a "([^"]*)" called "([^"]*)"$/ do |asset_group_name, asset_type, asset_name|
-  asset = eval(asset_type).create!(:name => asset_name)
+  asset = eval(asset_type).create!(:name => asset_name, :barcode => "17")
   asset_group = AssetGroup.find_by_name(asset_group_name)
   asset_group.assets << asset
   asset_group.save!
@@ -21,12 +21,25 @@ Given /^the asset "([^"]*)" has a sanger_sample_id of "([^"]*)"$/ do |asset_id, 
   asset.save!
 end
 
-Then /^the printed label is expected to have a name of "([^"]*)"$/ do |label_name|
-  assert_equal label_name, BarcodeLabel.labels.last.study
+Then /^the last printed label should contains:$/ do |table|
+debugger 
+# decoding the soap
+  label = FakeBarcodeService.instance.last_printed_label!
+  label_xml = Nokogiri(label.join(""))
+  items = label_xml.xpath("/env:Envelope/env:Body//labels/item")
+  assert_equal 1,(items.size())
+  item = items.first
+
+  table.hashes.each do |h|
+    field,value = ["field", "value"].map { |k| h[k] }
+    node = item.xpath(field)
+    assert_equal(1, node.size)
+    assert_equal(value, node.first.content)
+  end
 end
 
 
-Then /^the printed label is expected to have a name containing "([^"]*)"$/ do |label_name|
+Then /^the last printed label is expected to have a name containing "([^"]*)"$/ do |label_name|
   assert_not_nil BarcodeLabel.labels.last.study.match(label_name)
 end
 

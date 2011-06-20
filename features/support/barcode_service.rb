@@ -35,6 +35,18 @@ class FakeBarcodeService < FakeSinatraService
     Service
   end
 
+  # Barcode printing related
+  def printed_labels()
+    @printed_labels ||= []
+  end
+
+  def first_printed_labels!()
+    @printed_labels.shift
+  end
+  def last_printed_label!()
+    @printed_labels.pop
+  end
+
   class Service < FakeSinatraService::Base
     get('/barcode_service.wsdl') do
       headers('Content-Type' => 'text/xml')
@@ -43,6 +55,8 @@ class FakeBarcodeService < FakeSinatraService
 
     # Hand crafted SOAP envelope to say success!
     post('/barcode_service') do
+      data = request.body.map
+      FakeBarcodeService.instance.printed_labels << data
       status(200)
       headers('Content-Type' => 'text/xml')
       body(%Q{<?xml version="1.0"?>

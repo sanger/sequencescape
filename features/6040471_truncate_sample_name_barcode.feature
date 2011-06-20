@@ -13,7 +13,9 @@ Feature: Print truncated sanger sample id on sample tube barcode
   Scenario: Print a barcode for an asset with no name set
     Given asset group "Test asset group" contains a "SampleTube" called ""
     When I print the labels in the asset group
-    Then the printed label is expected to have a name of ""
+    Then the last printed label should contains:
+      | field | value |
+      | name | NT 17 |
 
   Scenario: Print a barcode for an asset with no sample
     Given asset group "Test asset group" contains a "SampleTube" called "Test Sample Tube"
