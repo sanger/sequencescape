@@ -18,37 +18,16 @@ class BarcodePrinter < ActiveRecord::Base
     count = 0
 
     labels.each do |label|
-      number = label.number
-      if label.study
-        name = label.study.gsub("_", " ").gsub("-"," ")
-      end
-      if label.prefix
-        prefix = label.prefix
-        barcode_prefix = label.prefix
-      else
-        prefix = label.study[0..1]
-      end
-      
       output_plate_purpose = label.output_plate_purpose
-      barcode_desc = "#{name}_#{number}"
 
-      if prefix =="LE"
-        label.study = label.study[2..label.study.length]
-      else
-        prefix = barcode_prefix
-      end
-      barcode_text = "#{prefix} #{number.to_s}"
-
+      barcode_desc = label.barcode_description
+      barcode_text = label.barcode_text(barcode_prefix)
       if barcode_type == "long"
-        if study_name
-          barcode_text = "#{study_name}"
-        end
-        if user_login
-          barcode_desc = "#{user_login} #{output_plate_purpose} #{name}"
-        end
+          barcode_text = "#{study_name}" if study_name
+          barcode_desc = "#{user_login} #{output_plate_purpose} #{name}" if user_login
       end
 
-      printables[count] = BarcodeLabelDTO.new(number.to_i, barcode_desc, barcode_text, "#{prefix}", barcode_desc, label.suffix)
+      printables[count] = BarcodeLabelDTO.new(label.number.to_i, barcode_desc, barcode_text, label.barcode_prefix(barcode_prefix), barcode_desc, label.suffix)
       count += 1
     end
 

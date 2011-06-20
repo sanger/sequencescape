@@ -25,4 +25,27 @@ class BarcodeLabel
     end
   end
 
+
+  def barcode_description
+    name = study ?  study.gsub("_", " ").gsub("-"," ") : nil
+    "#{name}_#{number}"
+  end
+
+  def barcode_prefix(default_prefix)
+    #todo move upstream
+    prefix || begin 
+      p = study[0..1]
+      p == "LE" ? p : default_prefix
+    end
+  end
+
+  def barcode_number
+    number.to_i
+  end
+
+  def barcode_text(default_prefix)
+      barcode_text = "#{barcode_prefix(default_prefix)} #{number.to_s}"
+  end
+
+
 end
