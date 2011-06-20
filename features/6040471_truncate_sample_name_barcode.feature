@@ -14,29 +14,44 @@ Feature: Print truncated sanger sample id on sample tube barcode
     Given asset group "Test asset group" contains a "SampleTube" called ""
     When I print the labels in the asset group
     Then the last printed label should contains:
-      | field | value |
-      | name | NT 17 |
+      | Field | Value |
+      | desc  | _17       |
+      | name  | NT 17       |
+      | prefix  | NT       |
 
   Scenario: Print a barcode for an asset with no sample
     Given asset group "Test asset group" contains a "SampleTube" called "Test Sample Tube"
     When I print the labels in the asset group
-    Then the printed label is expected to have a name of "Test Sample Tube"
+    Then the last printed label should contains:
+      | Field | Value |
+      | name  | NT 17       |
+      | desc  | Test Sample Tube_17 |
+
 
   Scenario: Print a barcode for an asset with a sample without a sanger_sample_id
     Given asset group "Test asset group" contains a "SampleTube" called "Test Sample Tube"
     And the asset called "Test Sample Tube" has a sanger_sample_id of ""
     When I print the labels in the asset group
-    Then the printed label is expected to have a name of "Test Sample Tube"
+    Then the last printed label should contains:
+      | Field | Value |
+      | name  | NT 17       |
+      | desc  | Test Sample Tube_17 |
 
   Scenario: Print a barcode for an asset with a sample with a short sanger_sample_id
     Given asset group "Test asset group" contains a "SampleTube" called "Test Sample Tube"
     And the asset called "Test Sample Tube" has a sanger_sample_id of "TW123456"
     When I print the labels in the asset group
-    Then the printed label is expected to have a name of "TW123456"
+    Then the last printed label should contains:
+      | Field | Value |
+      | name  | NT 17       |
+      | desc  | TW123456_17 |
 
   Scenario: Print a barcode for an asset with a long sanger_sample_id
     Given asset group "Test asset group" contains a "SampleTube" called "Test Sample Tube"
     And the asset called "Test Sample Tube" has a sanger_sample_id of "UK10K_Twins1234567"
     When I print the labels in the asset group
-    Then the printed label is expected to have a name of "1234567"
+    Then the last printed label should contains:
+      | Field | Value |
+      | name  | NT 17       |
+      | desc  | 1234567_17 |
 

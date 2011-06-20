@@ -22,19 +22,24 @@ Given /^the asset "([^"]*)" has a sanger_sample_id of "([^"]*)"$/ do |asset_id, 
 end
 
 Then /^the last printed label should contains:$/ do |table|
-debugger 
 # decoding the soap
   label = FakeBarcodeService.instance.last_printed_label!
   label_xml = Nokogiri(label.join(""))
   items = label_xml.xpath("/env:Envelope/env:Body//labels/item")
   assert_equal 1,(items.size())
   item = items.first
-
   table.hashes.each do |h|
-    field,value = ["field", "value"].map { |k| h[k] }
-    node = item.xpath(field)
-    assert_equal(1, node.size)
-    assert_equal(value, node.first.content)
+    field,value = ["Field", "Value"].map { |k| h[k] }
+    nodes = item.xpath(field)
+    assert_equal(1, nodes.size)
+    node= nodes.first
+    node_value = if href=node['href']
+    refs = label_xml.xpath("//#{field}[@id='#{href.sub('#','')}']")
+    refs.first.content
+    else
+      node.content
+    end
+    assert_equal(value, node_value)
   end
 end
 
