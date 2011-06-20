@@ -39,7 +39,8 @@ Then /^the last printed label should contains:$/ do |table|
     else
       node.content
     end
-    assert_equal(value, node_value)
+    #we assert to display an error message, but the true test is the regexp
+    assert_equal(value, node_value) unless node_value =~ /^#{value}$/
   end
 end
 

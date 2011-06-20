@@ -14,7 +14,7 @@ end
 
 def assert_xml_strings_equal(str1, str2)
   expected = sort_arrays(Hash.from_xml(str1))
-  received = sort_arrays(Hash.from_xml(str2.join("")))
+  received = sort_arrays(Hash.from_xml(str2))
   assert_hash_equal(expected, received, 'XML differs when decoded')
 end
 
