@@ -18,12 +18,16 @@ class ContainerAssociation < ActiveRecord::Base
         # Provide bulk importing abilities.  Inside a transaction we can guarantee that the information in the DB is
         # consistent from our perspective.  In other words, we can bulk insert the records and then reload them, limited
         # by their count, to obtain the IDs.
+        #
+        # WARNING: Be very careful about the query for the inserted contained IDs as it's behaviour can vary if
+        # you select more than just ID (it may choose to ignore the ordering).  There should be no reason to select
+        # any more than the ID but just so you know that could happen.
         line = __LINE__ + 1
         class_eval(%Q{
           def import(records)
             ActiveRecord::Base.transaction do
               #{class_name}.import(records)
-              links_data = #{class_name}.all(:order => 'id DESC', :limit => records.size).map { |r| [proxy_owner.id, r.id] }
+              links_data = #{class_name}.all(:select => 'id', :order => 'id DESC', :limit => records.size).map { |r| [proxy_owner.id, r.id] }
               ContainerAssociation.import([:container_id, :content_id], links_data, :validate => false)
               post_import(links_data)
             end
