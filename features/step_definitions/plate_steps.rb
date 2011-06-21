@@ -1,5 +1,9 @@
-Given /^the system has a plate with a barcode of "([^"]*)"$/ do |encoded_barcode|
+Given /^the system has a plate with a barcode of "([^\"]*)"$/ do |encoded_barcode|
   Factory(:plate, :barcode => Barcode.number_to_human(encoded_barcode))
+end
+
+Given /^exactly (\d+) labels? should have been printed/ do |expected_number|
+  assert_equal(expected_number.to_i, FakeBarcodeService.instance.printed_labels!.size)
 end
 
 Given /^the study "([^\"]+)" has a plate with barcode "([^\"]+)"$/ do |study_name, barcode|

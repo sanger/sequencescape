@@ -21,6 +21,7 @@ class FakeBarcodeService < FakeSinatraService
 
   def clear
     @barcodes = []
+    @printed_labels = []
   end
 
   def barcode(barcode)
@@ -38,6 +39,16 @@ class FakeBarcodeService < FakeSinatraService
   # Barcode printing related
   def printed_labels()
     @printed_labels ||= []
+  end
+
+  def printed_labels!()
+    labels = printed_labels
+    clear_printed_labels!
+    labels
+  end
+
+  def clear_printed_labels!()
+    @printed_labels=[]
   end
 
   def first_printed_labels!()
