@@ -15,17 +15,6 @@ Feature: Access tag layouts through the API
 
     Given I am using the latest version of the API
 
-  @read @error
-  Scenario: Reading the JSON for a UUID that does not exist
-    When I GET the API path "/00000000-1111-2222-3333-444444444444"
-    Then the HTTP response should be "404 Not Found"
-     And the JSON should be:
-      """
-      {
-        "general": [ "UUID does not exist" ]
-      }
-      """
-
   @read
   Scenario: Reading the JSON for a UUID
     Given the tag layout exists with ID 1
@@ -49,6 +38,7 @@ Feature: Access tag layouts through the API
           },
 
           "uuid": "00000000-1111-2222-3333-444444444444",
+          "direction": "column",
 
           "tag_group": {
             "name": "Tag group 1",

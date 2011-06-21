@@ -11,6 +11,8 @@ class TagLayoutTemplate < ActiveRecord::Base
 
   validates_presence_of :layout_class_name
 
+  delegate :direction, :to => :layout_class
+
   def layout_class
     layout_class_name.constantize
   end
