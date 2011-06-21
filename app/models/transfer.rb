@@ -119,4 +119,12 @@ class Transfer < ActiveRecord::Base
     end
   end
   private :create_transfer_requests
+
+  def self.preview!(attributes)
+    new(attributes) do |transfer|
+      transfer.send(:each_transfer) do |source, destination|
+        # Needs to do nothing at all as the transfers will be recorded
+      end
+    end
+  end
 end
