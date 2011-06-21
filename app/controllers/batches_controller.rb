@@ -495,7 +495,7 @@ class BatchesController < ApplicationController
       begin
         printables.sort! {|a,b| a.number <=> b.number }
         barcode.print(printables, params[:printer], asset.prefix, "short")
-      rescue BarcodeException
+      rescue PrintBarcode::BarcodeException
         flash[:error] = "Label printing to #{params[:printer]} failed: #{$!}."
       rescue SOAP::FaultError
         flash[:warning] = "There is a problem with the selected printer. Please report it to Systems."
@@ -522,7 +522,7 @@ class BatchesController < ApplicationController
       begin
         printables.sort! {|a,b| a.number <=> b.number }
         BarcodePrinter.print(printables, params[:printer], "DN", "long",@batch.study.abbreviation, current_user.login)
-      rescue BarcodeException
+      rescue PrintBarcode::BarcodeException
         flash[:error] = "Label printing to #{params[:printer]} failed: #{$!}."
       rescue SOAP::FaultError
         flash[:warning] = "There is a problem with the selected printer. Please report it to Systems."
@@ -575,7 +575,7 @@ class BatchesController < ApplicationController
         begin
           printables.sort! {|a,b| b.number <=> a.number }
           BarcodePrinter.print(printables, params[:printer], asset.prefix, "short")
-        rescue BarcodeException
+        rescue PrintBarcode::BarcodeException
           flash[:error] = "Label printing to #{params[:printer]} failed: #{$!}."
         rescue SOAP::FaultError
           flash[:warning] = "There is a problem with the selected printer. Please report it to Systems."

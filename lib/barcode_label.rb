@@ -24,6 +24,28 @@ class BarcodeLabel
       end
     end
   end
+  
+  def printable(options)
+    default_prefix = options[:prefix]
+    barcode_type   = options[:type] || "short" 
+    study_name     = options[:study_name]
+    user_login    = options[:user_login]
+
+    printable = PrintBarcode::Printable.new
+
+    printable.number      = self.number.to_i
+    printable.prefix      = self.barcode_prefix(default_prefix)
+    printable.suffix      = self.suffix
+    printable.description = self.barcode_description
+    printable.text        = self.barcode_text(default_prefix)
+    if barcode_type == "long"
+      printable.text = "#{study_name}" if study_name
+      printable.description = "#{user_login} #{output_plate_purpose} #{barcode_name}" if user_login
+    end
+    printable.scope          = printable.description
+
+    return printable
+  end
 
 
   def barcode_name
@@ -33,7 +55,7 @@ class BarcodeLabel
     name = study ?  study.gsub("_", " ").gsub("-"," ") : nil
   end
   def barcode_description
-    "#{barcode_name}_#{barcode_number}"
+    "#{barcode_name}_#{number}"
   end
 
   def barcode_prefix(default_prefix)
@@ -42,10 +64,6 @@ class BarcodeLabel
       p = study[0..1]
       p == "LE" ? p : default_prefix
     end
-  end
-
-  def barcode_number
-    number.to_i
   end
 
   def barcode_text(default_prefix)

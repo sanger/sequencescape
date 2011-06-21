@@ -1,2 +1,0 @@
-class BarcodeException < Exception
-end
