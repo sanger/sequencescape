@@ -21,7 +21,15 @@ class TransferTemplate < ActiveRecord::Base
     @transfer_class ||= transfer_class_name.constantize
   end
 
-  def create!(attributes)
-    transfer_class.create!(attributes.merge(:transfers => self.transfers))
+  def self.transfer_constructor(name)
+    line = __LINE__ + 1
+    class_eval(%Q{
+      def #{name}(attributes)
+        transfer_class.#{name}(attributes.merge(:transfers => self.transfers))
+      end
+    }, __FILE__, line)
   end
+
+  transfer_constructor(:create!)
+  transfer_constructor(:preview!)
 end
