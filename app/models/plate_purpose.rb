@@ -89,7 +89,7 @@ class PlatePurpose < ActiveRecord::Base
       begin
         unless printables.empty?
           barcode_printer = BarcodePrinter.find_by_name(barcode_printer_name) or raise ActiveRecord::RecordNotFound, "Could not find barcode printer #{barcode_printer_name.inspect}"
-          barcode_printer.print printables, barcode_printer.name, Plate.prefix, "long", "#{plate_purpose.name}", current_user.login
+          barcode_printer.print_labels(printables, Plate.prefix, "long", "#{plate_purpose.name}", current_user.login)
         end
       rescue => exception
         return false

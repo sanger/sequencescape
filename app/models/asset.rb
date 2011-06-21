@@ -449,7 +449,7 @@ class Asset < ActiveRecord::Base
     end
     begin
       unless printables.empty?
-        barcode_printer.print printables, barcode_printer.name
+        barcode_printer.print_labels(printables)
       end
     rescue
       return false

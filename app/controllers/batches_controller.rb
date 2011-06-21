@@ -494,7 +494,7 @@ class BatchesController < ApplicationController
       asset = @batch.assets.first
       begin
         printables.sort! {|a,b| a.number <=> b.number }
-        barcode.print printables, params[:printer], asset.prefix, "short"
+        barcode.print(printables, params[:printer], asset.prefix, "short")
       rescue BarcodeException
         flash[:error] = "Label printing to #{params[:printer]} failed: #{$!}."
       rescue SOAP::FaultError
@@ -507,7 +507,6 @@ class BatchesController < ApplicationController
   end
 
   def print_plate_barcodes
-    barcode_printer = BarcodePrinter.new
     printables = []
     count = params[:count].to_i
     params[:printable].each do |key, value|
@@ -522,7 +521,7 @@ class BatchesController < ApplicationController
     unless printables.empty?
       begin
         printables.sort! {|a,b| a.number <=> b.number }
-        barcode_printer.print printables, params[:printer], "DN", "long",@batch.study.abbreviation, current_user.login
+        BarcodePrinter.print(printables, params[:printer], "DN", "long",@batch.study.abbreviation, current_user.login)
       rescue BarcodeException
         flash[:error] = "Label printing to #{params[:printer]} failed: #{$!}."
       rescue SOAP::FaultError
@@ -538,7 +537,6 @@ class BatchesController < ApplicationController
   def print_barcodes
     unless @batch.requests.empty?
       asset = @batch.requests.first.asset
-      barcode_printer = BarcodePrinter.new
       printables = []
       count = params[:count].to_i
       params[:printable].each do |key, value|
@@ -576,7 +574,7 @@ class BatchesController < ApplicationController
       unless printables.empty?
         begin
           printables.sort! {|a,b| b.number <=> a.number }
-          barcode_printer.print printables, params[:printer], asset.prefix, "short"
+          BarcodePrinter.print(printables, params[:printer], asset.prefix, "short")
         rescue BarcodeException
           flash[:error] = "Label printing to #{params[:printer]} failed: #{$!}."
         rescue SOAP::FaultError
