@@ -24,7 +24,7 @@ class BarcodePrinter < ActiveRecord::Base
     barcode_text = label.barcode_text(barcode_prefix)
     if barcode_type == "long"
       barcode_text = "#{study_name}" if study_name
-      barcode_desc = "#{user_login} #{output_plate_purpose} #{name}" if user_login
+      barcode_desc = "#{user_login} #{output_plate_purpose} #{label.barcode_name}" if user_login
     end
 
     printable = BarcodeLabelDTO.new(label.number.to_i, barcode_desc, barcode_text, label.barcode_prefix(barcode_prefix), barcode_desc, label.suffix)

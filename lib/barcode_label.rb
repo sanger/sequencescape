@@ -26,12 +26,14 @@ class BarcodeLabel
   end
 
 
-  def barcode_description
+  def barcode_name
     # at that point we should probably remove the first to chars of the study if its LE
     # but the old code doesn't do it, maybe a bug
     # for now, we keep the old (buggy) code behavior
     name = study ?  study.gsub("_", " ").gsub("-"," ") : nil
-    "#{name}_#{number}"
+  end
+  def barcode_description
+    "#{barcode_name}_#{barcode_number}"
   end
 
   def barcode_prefix(default_prefix)
