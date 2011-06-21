@@ -6,5 +6,6 @@ class ::Io::TagLayoutTemplate < ::Core::Io::Base
   define_attribute_and_json_mapping(%Q{
                  name  => name
             tag_group  => tag_group
+            direction  => direction
   })
 end

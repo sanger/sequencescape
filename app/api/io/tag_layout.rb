@@ -6,5 +6,6 @@ class ::Io::TagLayout < ::Core::Io::Base
   define_attribute_and_json_mapping(%Q{
         plate <=> plate
     tag_group  => tag_group
+    direction  => direction
   })
 end

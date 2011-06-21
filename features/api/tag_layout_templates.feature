@@ -37,6 +37,7 @@ Feature: Access tag layout templates through the API
 
           "uuid": "00000000-1111-2222-3333-444444444444",
           "name": "Test tag layout",
+          "direction": "column",
 
           "tag_group": {
             "name": "Tag group 1",
@@ -95,6 +96,7 @@ Feature: Access tag layout templates through the API
           },
 
           "uuid": "00000000-1111-2222-3333-000000000002",
+          "direction": "column",
 
           "tag_group": {
             "name": "Tag group 1",

@@ -31,11 +31,11 @@ class TagLayout < ActiveRecord::Base
   private :layout_tags_into_wells
 
   # Convenience mechanism for laying out tags in a particular fashion.
-  def layout_tags_into_wells_by(order)
+  def layout_tags_into_wells
     tags = tag_group.tags.sort_by(&:map_id)
-    plate.wells.send(:"walk_in_#{order}") do |well, index|
+    plate.wells.send(:"walk_in_#{direction}_major_order") do |well, index|
       tags[index % tags.length].tag!(well)
     end
   end
-  private :layout_tags_into_wells_by
+  private :layout_tags_into_wells
 end
