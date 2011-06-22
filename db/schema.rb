@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110601083338) do
+ActiveRecord::Schema.define(:version => 20110622085830) do
 
   create_table "archived_properties", :force => true do |t|
     t.text    "value"
@@ -295,7 +295,7 @@ ActiveRecord::Schema.define(:version => 20110601083338) do
     t.integer "parent_id"
     t.string  "thumbnail"
     t.integer "db_file_id"
-    t.string  "documentable_type",     :limit => 50
+    t.string  "documentable_type", :limit => 50
     t.text    "uploaded_file"
   end
 
@@ -950,6 +950,7 @@ ActiveRecord::Schema.define(:version => 20110601083338) do
     t.boolean  "valid_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "valid_for_creation", :default => true, :null => false
   end
 
   create_table "subclass_attributes", :force => true do |t|

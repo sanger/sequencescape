@@ -22,11 +22,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase
   end
   
   def select_by_association(association, options={})
-    select(:"#{association}_id", association.to_s.classify.constantize.all.map(&:for_select_dropdown))
-  end
-
-  def select_by_association(association, options={})
-    select(:"#{association}_id", association.to_s.classify.constantize.all.map(&:for_select_dropdown))
+    select(:"#{association}_id", association.to_s.classify.constantize.all.map(&:for_select_dropdown).compact)
   end
 
   def checktext_field(field, options = {})
