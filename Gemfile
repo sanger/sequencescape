@@ -22,15 +22,15 @@ gem "will_paginate"
 gem 'net-ldap'
 
 # This was once a plugin, now it's a gem:
-gem 'catch_cookie_exception', :git => 'http://github.com/mhartl/catch_cookie_exception.git'
+gem 'catch_cookie_exception', :git => 'git+ssh://git@github.com/mhartl/catch_cookie_exception.git'
 
 # The graph library (1.x only because 2.x uses Rails 3).  This specific respository fixes an issue
 # seen in creating asset links during the assign_tags_handler (which blew up in rewire_crossing in the
 # gem code).
-gem "acts-as-dag", :git => "http://github.com/sanger/acts-as-dag.git", :branch => 'fix_rewire_crossing'
+gem "acts-as-dag", :git => "git+ssh://git@github.com/sanger/acts-as-dag.git", :branch => 'fix_rewire_crossing'
 
 # Better table alterations
-gem "alter_table", :git => "http://github.com/sanger/alter_table.git"
+gem "alter_table", :git => "git+ssh://git@github.com/sanger/alter_table.git"
 
 # QC poller / ActiveMQ
 gem "activemessaging"
@@ -41,7 +41,7 @@ gem "delayed_job", '~>2.0.4'
 
 gem "cbrunnkvist-psd_logger"
 
-gem "ruby_walk", :git => "http://github.com/sanger/ruby_walk"
+gem "ruby_walk", :git => "git+ssh://git@github.com/sanger/ruby_walk"
 
 # For the API level
 gem "uuidtools"
@@ -75,7 +75,7 @@ end
 
 group :test do
   # bundler requires these gems while running tests
-  gem "ci_reporter", :git => "http://github.com/sanger/ci_reporter.git"
+  gem "ci_reporter", :git => "git+ssh://git@github.com/sanger/ci_reporter.git"
   gem "factory_girl", '~>1.3.1'
   gem "launchy"
   gem "mocha", :require => false # avoids load order problems

@@ -1,32 +1,32 @@
 GIT
-  remote: http://github.com/mhartl/catch_cookie_exception.git
+  remote: git+ssh://git@github.com/mhartl/catch_cookie_exception.git
   revision: a107a2d17c53ed8b82aae53dd4aecc5c399ab981
   specs:
     catch_cookie_exception (1.0)
 
 GIT
-  remote: http://github.com/sanger/acts-as-dag.git
+  remote: git+ssh://git@github.com/sanger/acts-as-dag.git
   revision: f8135a3c20c81430cd61bb870bec036e887f1db9
   branch: fix_rewire_crossing
   specs:
     acts-as-dag (1.1.3)
 
 GIT
-  remote: http://github.com/sanger/alter_table.git
+  remote: git+ssh://git@github.com/sanger/alter_table.git
   revision: 109850bb109a3a4deb97f6d39174f8d6c8e8263f
   specs:
     alter_table (0.0.1)
       rails (~> 2.3.11)
 
 GIT
-  remote: http://github.com/sanger/ci_reporter.git
+  remote: git+ssh://git@github.com/sanger/ci_reporter.git
   revision: 24130382295a59ed07143afa3be3c6cda33b07ba
   specs:
     ci_reporter (1.6.4)
       builder (>= 2.1.2)
 
 GIT
-  remote: http://github.com/sanger/ruby_walk
+  remote: git+ssh://git@github.com/sanger/ruby_walk
   revision: c565a4f525d0606eea36be5ffb129b838d889e1c
   specs:
     ruby_walk (0.0.1)
