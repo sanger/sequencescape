@@ -12,6 +12,7 @@ plate_purposes = <<-EOS
   id: 2
   type:
   target_type:
+  can_be_considered_a_stock_plate: true
 - name: optimisation
   qc_display: false
   pulldown_display:
@@ -433,3 +434,7 @@ end
 
 PlatePurpose.import plate_purposes_data
 
+# Some plate purposes that appear to be used by SLF but are not in the seeds from SNP.
+(1..5).each do |index|
+  PlatePurpose.create!(:name => "Aliquot #{index}", :qc_display => true, :can_be_considered_a_stock_plate => true)
+end
