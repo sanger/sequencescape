@@ -110,6 +110,48 @@ Feature: Access transfer templates through the API
       | A1     | A1          |
       | B1     | B1          |
 
+  @transfer @create @authenticated
+  Scenario: Creating a transfer from a transfer template where the source plate is partially filled
+    Given the transfer template called "Test transfers" exists
+      And the UUID for the transfer template "Test transfers" is "00000000-1111-2222-3333-444444444444"
+
+    Given a transfer plate exists with ID 1
+      And the UUID for the plate with ID 1 is "11111111-2222-3333-4444-000000000001"
+      And "A1-A1" of the plate with ID 1 are empty
+      And a transfer plate exists with ID 2
+      And the UUID for the plate with ID 2 is "11111111-2222-3333-4444-000000000002"
+
+    When I make an authorised POST with the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
+      """
+      {
+        "transfer": {
+          "source": "11111111-2222-3333-4444-000000000001",
+          "destination": "11111111-2222-3333-4444-000000000002"
+        }
+      }
+      """
+    Then the HTTP response should be "201 Created"
+     And the JSON should match the following for the specified fields:
+      """
+      {
+        "transfer": {
+          "source": {
+            "uuid": "11111111-2222-3333-4444-000000000001"
+          },
+          "destination": {
+            "uuid": "11111111-2222-3333-4444-000000000002"
+          },
+          "transfers": {
+            "B1": "B1"
+          }
+        }
+      }
+      """
+
+    Then the transfers from plate 1 to plate 2 should be:
+      | source | destination |
+      | B1     | B1          |
+
 
   @transfer @preview @authenticated
   Scenario: Previewing a transfer from a transfer template

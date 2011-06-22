@@ -23,6 +23,7 @@ Feature: The top of the pulldown pipeline
 
     Given a "Pulldown stock plate" plate called "Testing the API" exists
       And the UUID for the plate "Testing the API" is "00000000-1111-2222-3333-000000000001"
+      And all wells on the plate "Testing the API" have unique samples
 
   @authorised
   Scenario Outline: Dealing with the initial plate in the pipeline

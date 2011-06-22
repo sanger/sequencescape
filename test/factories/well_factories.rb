@@ -16,11 +16,12 @@ Factory.define :well_attribute do |w|
   w.current_volume      15
 end
 
-Factory.define :well_with_sample_and_without_plate, :class => Well do |a|
-  a.sample { |sample| sample.association(:sample) }
+Factory.define :well_with_sample_and_without_plate, :parent => :empty_well do |well|
+  well.after_create do |well|
+    well.aliquots.create!(:sample => Factory(:sample))
+  end
 end
 
-Factory.define :well_with_sample_and_plate, :class => Well do |a|
-  a.sample { |sample| sample.association(:sample) }
-  a.plate  { |plate| plate.association(:plate) }
+Factory.define :well_with_sample_and_plate, :parent => :well_with_sample_and_without_plate do |well|
+  well.plate { |plate| plate.association(:plate) }
 end

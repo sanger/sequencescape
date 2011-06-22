@@ -21,10 +21,23 @@ class Transfer::BetweenPlates < Transfer
     end
   end
 
+  #--
+  # Transfers between plates may encounter empty source wells, in which case we don't bother
+  # making that transfer.  In the case of the pulldown pipeline this could happen after the
+  # plate has been put on the robot, as the number of columns transfered could be less than
+  # an entire plate.  Subsequent plates are therefore only partially complete.
+  #++
   def each_transfer(&block)
+    transfers_we_did_not_make = []
     transfers.each do |source_location, destination_location|
-      yield(well_from(source, source_location), well_from(destination, destination_location))
+      source_well = well_from(source, source_location)
+      if source_well.aliquots.empty?
+        transfers_we_did_not_make.push(source_location)
+      else
+        yield(well_from(source, source_location), well_from(destination, destination_location))
+      end
     end
+    transfers.delete_if { |k,_| transfers_we_did_not_make.include?(k) }
   end
   private :each_transfer
 end

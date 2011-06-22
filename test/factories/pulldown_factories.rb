@@ -6,7 +6,7 @@ Factory.define(:transfer_plate, :class => Plate) do |plate|
     plate.wells.import(
       [ 'A1', 'B1' ].map do |location|
         map = Map.where_description(location).where_plate_size(plate.size).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
-        Factory(:well, :map => map)
+        Factory(:well_with_sample_and_without_plate, :map => map)
       end
     )
   end

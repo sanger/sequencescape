@@ -119,3 +119,7 @@ Then /^all "([^\"]+)" requests should have the following details:$/ do |name, ta
   end.uniq!
   assert_equal([Hash[table.raw]], results, "Request details are not identical")
 end
+
+Given /^"([^\"]+-[^\"]+)" of the plate with ID (\d+) are empty$/ do |range, id|
+  Plate.find(id).wells.select(&range.method(:include?)).each { |well| well.aliquots.clear }
+end
