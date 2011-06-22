@@ -5,9 +5,10 @@ class Io::Asset < Core::Io::Base
   
   define_attribute_and_json_mapping(%Q{
                          name  => name
-                      barcode  => barcode
                      qc_state  => qc_state
-        barcode_prefix.prefix  => barcode_prefix
-      two_dimensional_barcode  => two_dimensional_barcode
+                      barcode  => barcode.number
+        barcode_prefix.prefix  => barcode.prefix
+      two_dimensional_barcode  => barcode.two_dimensional
+                ean13_barcode  => barcode.ean13
   })
 end

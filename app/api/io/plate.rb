@@ -6,7 +6,6 @@ class Io::Plate < Io::Asset
   define_attribute_and_json_mapping(%Q{
                                     size <=> size
                       plate_purpose.name  => plate_purpose.name
-                           ean13_barcode  => ean13_barcode
                                    wells  => wells
 
                                    state  => state
