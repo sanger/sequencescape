@@ -39,12 +39,16 @@ Feature: Searching for assets by barcode
           {
             "name": "Testing the API 2",
             "uuid": "11111111-2222-3333-4444-000000000002",
-            "ean13_barcode": "1220000222748"
+            "barcode": {
+              "ean13": "1220000222748"
+            }
           },
           {
             "name": "Testing the API 3",
             "uuid": "11111111-2222-3333-4444-000000000003",
-            "ean13_barcode": "1220000333802"
+            "barcode": {
+              "ean13": "1220000333802"
+            }
           }
         ],
         "uuids_to_ids": {
