@@ -43,25 +43,3 @@ Then /^the last printed label should contains:$/ do |table|
     assert_equal(value, node_value) unless node_value =~ /^#{value}$/
   end
 end
-
-
-Then /^the last printed label is expected to have a name containing "([^"]*)"$/ do |label_name|
-  assert_not_nil BarcodeLabel.labels.last.study.match(label_name)
-end
-
-BarcodeLabel
-class BarcodeLabel
-  @@labels = []
-
-  def self.labels
-    @@labels
-  end 
-
-  def initialize_with_instance_store(options = {})
-    initialize_without_instance_store(options)
-    @@labels << self
-  end
-  alias_method_chain(:initialize, :instance_store)
-end
-
-

@@ -200,7 +200,7 @@ end
 
   def barcode_labels(number_of_barcodes)
     (1..number_of_barcodes).map do |plate_number|
-      BarcodeLabel.new(:number => self.barcode, :prefix => prefix, :suffix => plate_purpose.name)
+      PrintBarcode::Label.new(:number => self.barcode, :prefix => prefix, :suffix => plate_purpose.name)
     end
   end
 

@@ -31,6 +31,12 @@ GIT
   specs:
     ruby_walk (0.0.1)
 
+GIT
+  remote: http://github.com/sanger/sanger_barcode.git
+  revision: a654b102c4f437f68ede6052853a2088ccd2b7c0
+  specs:
+    sanger_barcode (0.0.1)
+
 GEM
   remote: http://rubygems.org/
   remote: http://gems.github.com/
@@ -236,6 +242,7 @@ DEPENDENCIES
   ruby-debug
   ruby-oci8 (= 1.0.7)
   ruby_walk!
+  sanger_barcode!
   shoulda (~> 2.10.0)
   sinatra (~> 1.1.0)
   spreadsheet

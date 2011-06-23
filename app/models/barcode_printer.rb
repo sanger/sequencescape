@@ -1,4 +1,3 @@
-require 'print_barcode'
 class BarcodePrinter < ActiveRecord::Base
   belongs_to :barcode_printer_type
   validates_presence_of :barcode_printer_type

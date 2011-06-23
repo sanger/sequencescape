@@ -483,7 +483,7 @@ class BatchesController < ApplicationController
         asset = Asset.find(key)
         if @batch.multiplexed?
           count.times do
-            printables.push BarcodeLabel.new({ :number => asset.barcode, :study => "(p) #{asset.name}" })
+            printables.push PrintBarcode::Label.new({ :number => asset.barcode, :study => "(p) #{asset.name}" })
           end
         end
       end
@@ -514,7 +514,7 @@ class BatchesController < ApplicationController
         label = key
         identifier = key
         count.times do
-          printables.push BarcodeLabel.new({ :number => identifier, :study => label, :batch => @batch })
+          printables.push PrintBarcode::Label.new({ :number => identifier, :study => label, :batch => @batch })
         end
       end
     end
@@ -567,7 +567,7 @@ class BatchesController < ApplicationController
             end
           end
           count.times do
-            printables.push BarcodeLabel.new({ :number => identifier, :study => label })
+            printables.push PrintBarcode::Label.new({ :number => identifier, :study => label })
           end
         end
       end

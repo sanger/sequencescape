@@ -24,7 +24,7 @@ gem 'net-ldap'
 # This was once a plugin, now it's a gem:
 gem 'catch_cookie_exception', :git => 'git+ssh://git@github.com/mhartl/catch_cookie_exception.git'
 
-gem 'print_barcode', :path => '~/devel/print_barcode'
+gem 'sanger_barcode', :git => 'http://github.com/sanger/sanger_barcode.git'
 # The graph library (1.x only because 2.x uses Rails 3).  This specific respository fixes an issue
 # seen in creating asset links during the assign_tags_handler (which blew up in rewire_crossing in the
 # gem code).

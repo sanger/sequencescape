@@ -67,7 +67,7 @@ class PlatePurpose < ActiveRecord::Base
         parent_plate_barcode = plate.parent.barcode
       end
 
-      printables.push BarcodeLabel.new({ :number => plate.barcode,
+      printables.push PrintBarcode::Label.new({ :number => plate.barcode,
         :study  => plate.find_study_abbreviation_from_parent,
         :suffix => parent_plate_barcode,
         :prefix => plate.barcode_prefix.prefix })
