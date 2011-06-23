@@ -34,7 +34,7 @@ class TagLayout < ActiveRecord::Base
   def layout_tags_into_wells
     tags = tag_group.tags.sort_by(&:map_id)
     plate.wells.send(:"walk_in_#{direction}_major_order") do |well, index|
-      tags[index % tags.length].tag!(well)
+      tags[index % tags.length].tag!(well) unless well.aliquots.empty?
     end
   end
   private :layout_tags_into_wells
