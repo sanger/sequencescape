@@ -28,7 +28,7 @@ class BarcodePrinter < ActiveRecord::Base
   end
 
   def self.verify(number)
-    serive.verify(number)
+    service.verify(number)
   end
 
   @@service = nil
