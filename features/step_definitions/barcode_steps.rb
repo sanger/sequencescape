@@ -17,7 +17,7 @@ end
 
 Given /^the "([^\"]+)" barcode printer "([^\"]+)" exists$/ do |type_name, name|
   printer_type = BarcodePrinterType.find_by_name(type_name) or raise StandardError, "Cannot find barcode printer type #{type_name.inspect}"
-  BarcodePrinter.create!(:name => name, :barcode_printer_type => printer_type)
+  BarcodePrinter.create!(:name => name, :barcode_printer_type => printer_type, :active => true)
 end
 
 Transform /^the last plate$/ do |_|

@@ -35,7 +35,8 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME = [
   'pipeline',
   'supplier',
   'transfer template',
-  'tag layout template'
+  'tag layout template',
+  'barcode printer'
 ]
 
 SINGULAR_MODELS_BASED_ON_NAME_REGEXP = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME.join('|')

@@ -197,6 +197,12 @@ Feature: The entry point for the API gives directions to the other actions
           "actions": {
             "read": "http://www.example.com/api/1/bait_library_layouts"
           }
+        },
+
+        "barcode_printers": {
+          "actions": {
+            "read": "http://www.example.com/api/1/barcode_printers"
+          }
         }
       }
       """
@@ -393,6 +399,12 @@ Feature: The entry point for the API gives directions to the other actions
             "read": "http://www.example.com/api/1/bait_library_layouts",
             "create": "http://www.example.com/api/1/bait_library_layouts",
             "preview": "http://www.example.com/api/1/bait_library_layouts/preview"
+          }
+        },
+
+        "barcode_printers": {
+          "actions": {
+            "read": "http://www.example.com/api/1/barcode_printers"
           }
         }
       }
