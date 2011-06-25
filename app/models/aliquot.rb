@@ -7,6 +7,9 @@ class Aliquot < ActiveRecord::Base
     has_many :aliquots, :foreign_key => :receptacle_id, :autosave => true
     has_one :primary_aliquot, :class_name => 'Aliquot', :foreign_key => :receptacle_id, :order => 'created_at ASC', :readonly => true
 
+    # Named scopes for the future
+    named_scope :include_aliquots, :include => { :aliquots => [ :sample, :tag, :bait_library ] }
+
     # Provide some named scopes that will fit with what we've used in the past
     named_scope :with_sample_id, lambda { |id|     { :conditions => { :aliquots => { :sample_id => id        } }, :joins => :aliquots } }
     named_scope :with_sample,    lambda { |sample| { :conditions => { :aliquots => { :sample_id => sample.id } }, :joins => :aliquots } }

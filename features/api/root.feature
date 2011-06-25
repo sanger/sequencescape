@@ -71,6 +71,11 @@ Feature: The entry point for the API gives directions to the other actions
             "read": "http://www.example.com/api/1/asset_groups"
           }
         },
+        "tubes": {
+          "actions": {
+            "read": "http://www.example.com/api/1/tubes"
+          }
+        },
         "sample_tubes": {
           "actions": {
             "read": "http://www.example.com/api/1/sample_tubes"
@@ -268,6 +273,11 @@ Feature: The entry point for the API gives directions to the other actions
         "asset_groups": {
           "actions": {
             "read": "http://www.example.com/api/1/asset_groups"
+          }
+        },
+        "tubes": {
+          "actions": {
+            "read": "http://www.example.com/api/1/tubes"
           }
         },
         "sample_tubes": {
