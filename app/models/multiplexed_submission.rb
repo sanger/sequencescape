@@ -9,7 +9,9 @@ class MultiplexedSubmission < LinearSubmission
 
   def attach_multiplexed_library_tube
     identify_pool_related_requests do |requests_into_pool, request_from_pool|
-      tube = MultiplexedLibraryTube.create!
+      tube = MultiplexedLibraryTube.create! do |tube|
+        tube.barcode = AssetBarcode.new_barcode
+      end
       requests_into_pool.each { |request| request.update_attributes!(:target_asset => tube) }
       request_from_pool.update_attributes!(:asset => tube)
     end
