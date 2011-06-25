@@ -5,6 +5,9 @@ class Plate < Asset
   include Transfer::Associations
   include PlatePurpose::Associations
 
+  # The default state for a plate comes from the plate purpose
+  delegate :default_state, :to => :plate_purpose
+
   # Transfer requests into a plate are the requests leading into the wells of said plate.
   # NOTE The sti_type value here is singular, where it may need subclasses.
   has_many :transfer_requests, :finder_sql => %q{

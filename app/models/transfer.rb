@@ -4,8 +4,6 @@ class Transfer < ActiveRecord::Base
       base.class_eval do
         has_many :transfers_as_source,     :class_name => 'Transfer', :foreign_key => :source_id,      :order => 'created_at ASC'
         has_one  :transfer_as_destination, :class_name => 'Transfer', :foreign_key => :destination_id
-
-        delegate :default_state, :to => :plate_purpose, :allow_nil => true
       end
     end
 
