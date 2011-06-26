@@ -695,6 +695,13 @@ ActiveRecord::Schema.define(:version => 20110725091045) do
 
   add_index "request_metadata", ["request_id"], :name => "index_request_metadata_on_request_id"
 
+  create_table "request_type_plate_purposes", :force => true do |t|
+    t.integer "request_type_id",  :null => false
+    t.integer "plate_purpose_id", :null => false
+  end
+
+  add_index "request_type_plate_purposes", ["request_type_id", "plate_purpose_id"], :name => "plate_purposes_are_unique_within_request_type", :unique => true
+
   create_table "request_types", :force => true do |t|
     t.string   "key",                :limit => 50
     t.string   "name"
@@ -721,7 +728,6 @@ ActiveRecord::Schema.define(:version => 20110725091045) do
     t.integer  "sample_pool_id"
     t.integer  "workflow_id"
     t.integer  "request_type_id"
-    t.integer  "sample_id"
     t.integer  "item_id"
     t.integer  "asset_id"
     t.integer  "target_asset_id"

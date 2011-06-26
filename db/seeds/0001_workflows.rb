@@ -531,7 +531,7 @@ CherrypickPipeline.create!(:name => 'Cherrypick') do |pipeline|
     request_type.target_asset_type = 'Well'
     request_type.asset_type        = 'Well'
     request_type.order             = 2
-    request_type.request_class     = TransferRequest
+    request_type.request_class     = Request
     request_type.multiples_allowed = false
   end
 
@@ -566,7 +566,7 @@ CherrypickForPulldownPipeline.create!(:name => 'Cherrypicking for Pulldown') do 
     request_type.order             = 1
     request_type.request_class     = CherrypickForPulldownRequest
     request_type.multiples_allowed = false
-    request_type.for_multiplexing  = true
+    request_type.for_multiplexing  = false
   end
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'Cherrypicking for Pulldown').tap do |workflow|
@@ -747,6 +747,7 @@ set_pipeline_flow_to('PacBio Sample Prep' => 'PacBio Sequencing')
       request_type.key               = pipeline_name.downcase.gsub(/\s+/, '_')
       request_type.initial_state     = 'pending'
       request_type.asset_type        = 'Well'
+      request_type.target_asset_type = 'MultiplexedLibraryTube'
       request_type.order             = 1
       request_type.multiples_allowed = false
       request_type.request_class     = PulldownLibraryCreationRequest

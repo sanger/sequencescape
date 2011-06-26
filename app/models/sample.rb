@@ -30,7 +30,6 @@ class Sample < ActiveRecord::Base
   has_many :study_samples
   has_many :studies, :through => :study_samples
 
-  has_many :requests, :through => :assets
   has_many :roles, :as => :authorizable
   has_many :comments, :as => :commentable
 
@@ -42,7 +41,6 @@ class Sample < ActiveRecord::Base
   receptacle_alias(:wells, :conditions => { :sti_type => 'Well' }, :class_name => 'Well')
   receptacle_alias(:sample_tubes, :conditions => { :sti_type => 'SampleTube' }, :class_name => 'SampleTube')
 
-  has_many :submissions, :through => :requests, :uniq => true
   belongs_to :sample_manifest
 
   validates_presence_of :name

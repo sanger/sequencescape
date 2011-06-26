@@ -27,6 +27,7 @@ class Pipeline < ActiveRecord::Base
       # Build a list of methods to invoke to build the correct request list
       actions = []
       actions << ((proxy_owner.group_by_parent? or show_held_requests) ? :full_inbox : :pipeline_pending)
+      actions << [ (proxy_owner.group_by_parent? ? :holder_located : :located), proxy_owner.location_id ]
       actions << [ :paginate, { :per_page => 50, :page => current_page } ] if proxy_owner.paginate?
 
       # Ensure that the ordering is obeyed regardless of the way the request list is generated

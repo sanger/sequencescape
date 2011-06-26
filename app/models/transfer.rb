@@ -77,13 +77,13 @@ class Transfer < ActiveRecord::Base
 
   module WellHelpers
     def locate_stock_well_for(current_well)
-      return current_well if current_well.parent.plate_purpose == stock_plate_purpose
+      return current_well if current_well.plate.plate_purpose == stock_plate_purpose
 
       while true
         previous_well =
           current_well.requests_as_target.where_is_a?(TransferRequest).first.try(:asset) or
             return nil
-        return previous_well if previous_well.parent.plate_purpose == stock_plate_purpose
+        return previous_well if previous_well.plate.plate_purpose == stock_plate_purpose
         current_well = previous_well
       end
     end

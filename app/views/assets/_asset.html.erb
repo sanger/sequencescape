@@ -62,6 +62,10 @@
     <td><strong><%=h @asset.sanger_human_barcode %></strong></td>
   </tr>
   <tr>
+    <td class="item">EAN13 barcode (what the scanners use):</td>
+    <td><strong><%=h @asset.ean13_barcode %></strong></td>
+  </tr>
+  <tr>
     <td class="item">Scanned into lab?:</td>
     <td><strong><%= @asset.location.nil? ? 'No' : @asset.location.name %></strong></td>
   </tr>

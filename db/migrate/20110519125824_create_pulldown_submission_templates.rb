@@ -14,18 +14,19 @@ class CreatePulldownSubmissionTemplates < ActiveRecord::Migration
 
   def self.up
     ActiveRecord::Base.transaction do
-      workflow = Submission::Workflow.find_by_key('short_read_sequencing') or raise StandardError, 'Cannot find Next-gen sequencing workflow'
+      workflow   = Submission::Workflow.find_by_key('short_read_sequencing') or raise StandardError, 'Cannot find Next-gen sequencing workflow'
+      cherrypick = RequestType.find_by_name('Cherrypicking for Pulldown')    or raise StandardError, 'Cannot find Cherrypicking for Pulldown request type'
 
       REQUEST_TYPES.each do |request_type_name|
         pulldown_request_type = RequestType.find_by_name(request_type_name) or raise StandardError, "Cannot find #{request_type_name.inspect}"
 
         RequestType.find_each(:conditions => { :name => SEQUENCING_REQUEST_TYPE_NAMES }) do |sequencing_request_type|
-          submission                   = MultiplexedSubmission.new
-          submission.request_type_ids  = [ pulldown_request_type.id, sequencing_request_type.id ]
+          submission                   = LinearSubmission.new
+          submission.request_type_ids  = [ cherrypick.id, pulldown_request_type.id, sequencing_request_type.id ]
           submission.info_differential = workflow.id
           submission.workflow          = workflow
 
-          SubmissionTemplate.new_from_submission("#{request_type_name} - #{sequencing_request_type.name}", submission).save!
+          SubmissionTemplate.new_from_submission("Cherrypick for pulldown - #{request_type_name} - #{sequencing_request_type.name}", submission).save!
         end
       end
     end
@@ -36,7 +37,7 @@ class CreatePulldownSubmissionTemplates < ActiveRecord::Migration
       template_names = []
       SEQUENCING_REQUEST_TYPE_NAMES.each do |sequencing_name|
         REQUEST_TYPES.each do |request_type_name|
-          template_names << "#{request_type_name} - #{sequencing_name}"
+          template_names << "Cherrypick for pulldown - #{request_type_name} - #{sequencing_name}"
         end
       end
 

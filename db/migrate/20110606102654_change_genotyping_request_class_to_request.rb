@@ -1,6 +1,6 @@
 class ChangeGenotypingRequestClassToRequest < ActiveRecord::Migration
   def self.update_request_class_to(request_class)
-    RequestType.update_all(%Q{request_class_name="#{request_class}"}, 'name="Genotyping"')
+    RequestType.update_all(%Q{request_class_name="#{request_class}"}, 'name IN ("Genotyping", "Cherrypick")')
   end
 
   def self.up

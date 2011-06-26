@@ -20,7 +20,7 @@ class RequestTest < ActiveSupport::TestCase
         @cherrypick_pipeline = Factory :pipeline, :name => "cherrypick pipeline", :request_type => @cherrypick_request_type, :next_pipeline_id => @genotype_pipeline.id, :asset_type => 'LibraryTube'
 
         @request1 = Factory(
-          :request,
+          :request_without_assets,
           :item         => @item,
           :asset        => Factory(:empty_sample_tube).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample) },
           :target_asset => nil,

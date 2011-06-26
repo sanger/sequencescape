@@ -63,8 +63,8 @@ module ModelExtensions::Batch
       # we need to call downstream request before setting the target_asset
       # otherwise, the request use the target asset to find the next request
       target_asset = asset_type.create! do |asset|
-        asset.sample  = request.asset.sample
-        asset.barcode = AssetBarcode.new_barcode unless [ Lane, Well ].include?(asset_type)
+        asset.aliquots = request.asset.aliquots.map(&:clone)
+        asset.barcode  = AssetBarcode.new_barcode unless [ Lane, Well ].include?(asset_type)
         asset.generate_name(request.asset.name)
       end                            
 

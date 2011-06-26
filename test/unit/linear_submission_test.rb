@@ -1,7 +1,7 @@
 require "test_helper"
 
-class SubmissionTest < ActiveSupport::TestCase
-  context "Submission" do
+class LinearSubmissionTest < ActiveSupport::TestCase
+  context "LinearSubmission" do
     setup do
       @assets = (1..4).map { |i| Factory(:sample_tube, :name => "Asset#{ i }") } # NOTE: huh? why did this have ':id => 1'!?!!
       @asset_group = Factory :asset_group, :name => "non MPX", :assets => @assets
@@ -35,7 +35,7 @@ class SubmissionTest < ActiveSupport::TestCase
           @mpx_request_type = Factory :multiplexed_library_creation_request_type
           @mpx_request_type_ids = [@mpx_request_type.id, @sequencing_request_type.id]
 
-          @mpx_submission = Submission.build!(
+          @mpx_submission = LinearSubmission.build!(
             :template         => nil,
             :study            => @study,
             :project          => @project,
@@ -72,7 +72,7 @@ class SubmissionTest < ActiveSupport::TestCase
               @sequencing_request_type_2 = Factory :sequencing_request_type
               @mpx_request_type_ids = [@mpx_request_type.id, @sequencing_request_type_2.id, @sequencing_request_type.id]
 
-              @multiple_mpx_submission = Submission.build!(
+              @multiple_mpx_submission = LinearSubmission.build!(
                 :template         => nil,
                 :study            => @study,
                 :project          => @project,
@@ -94,7 +94,7 @@ class SubmissionTest < ActiveSupport::TestCase
 
       context 'normal submission' do
         setup do
-          @submission = Submission.build!(
+          @submission = LinearSubmission.build!(
             :template         => nil,
             :study            => @study,
             :project          => @project,
@@ -203,7 +203,7 @@ class SubmissionTest < ActiveSupport::TestCase
 
         @request_options = {"read_length"=>"108", "fragment_size_required_from"=>"150", "fragment_size_required_to"=>"200"}
 
-        @submission = Submission.prepare!(
+        @submission = LinearSubmission.prepare!(
           :template         => @submission_template,
           :study            => @study,
           :project          => @project,
@@ -214,7 +214,7 @@ class SubmissionTest < ActiveSupport::TestCase
           :request_options  => @request_options,
           :comments         => 'This is a comment'
         )
-        @mpx_submission = Submission.prepare!(
+        @mpx_submission = LinearSubmission.prepare!(
           :template         => @submission_template,
           :study            => @study,
           :project          => @project,
@@ -313,7 +313,7 @@ class SubmissionTest < ActiveSupport::TestCase
         Factory :project_quota, :project => @project, :limit => 60, :request_type => @pe_request_type 
         Factory :project_quota, :project => @project, :limit => 0, :request_type => @se_request_type 
 
-        @submission_with_multiplication_factor = Submission.build!(
+        @submission_with_multiplication_factor = LinearSubmission.build!(
           :template         => nil,
           :study            => @study,
           :project          => @project,
@@ -324,7 +324,7 @@ class SubmissionTest < ActiveSupport::TestCase
           :request_options  => { :multiplier => { @pe_request_type.id.to_s.to_sym => '5', @lib_request_type.id.to_s.to_sym => '1' } },
           :comments         => ''
         )
-        @mx_submission_with_multiplication_factor = Submission.build!(
+        @mx_submission_with_multiplication_factor = LinearSubmission.build!(
           :template         => nil,
           :study            => @study,
           :project          => @project,
@@ -365,7 +365,7 @@ class SubmissionTest < ActiveSupport::TestCase
           context "insufficient quota" do
             should "build will raise an exception" do
               assert_raise QuotaException do
-                Submission.build!(
+                LinearSubmission.build!(
                   :template         => @submission_template,
                   :study            => @study,
                   :project          => @project,

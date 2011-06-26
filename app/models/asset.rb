@@ -3,6 +3,14 @@ class Asset < ActiveRecord::Base
   include ModelExtensions::Asset
   include AssetLink::Associations
 
+  module InstanceMethods
+    # Assets are, by default, non-barcoded
+    def generate_barcode
+      # Does nothing!
+    end
+  end
+  include InstanceMethods
+
   # Some assets are considered stock assets, that can be reused.
   module Stock
     def has_stock_asset?

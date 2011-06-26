@@ -1,10 +1,25 @@
 class RequestType < ActiveRecord::Base
+  class RequestTypePlatePurpose < ActiveRecord::Base
+    set_table_name('request_type_plate_purposes')
+
+    belongs_to :request_type
+    validates_presence_of :request_type
+    belongs_to :plate_purpose
+    validates_presence_of :plate_purpose
+    validates_uniqueness_of :plate_purpose_id, :scope => :request_type_id
+  end
+
   include Workflowed
   include Uuid::Uuidable
   include Named
 
   has_many :requests
   has_many :pipelines
+
+  # Defines the acceptable plate purposes or the request type.  Essentially this is used to limit the
+  # cherrypick plate types when going into pulldown to the correct list.
+  has_many :plate_purposes, :class_name => 'RequestType::RequestTypePlatePurpose'
+  has_many :acceptable_plate_purposes, :through => :plate_purposes, :source => :plate_purpose
 
   MORPHOLOGIES  = [
     LINEAR = 0,   # one-to-one

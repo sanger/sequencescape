@@ -190,7 +190,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
         # there is no way to differentiate betwween an empti array and an empty hash in she controller paramters, so the controller can send us an empty array
         @properties = {} if @properties == []
 
-        @submission = Submission.build!(asset_details.merge(
+        @submission = LinearSubmission.build!(asset_details.merge(
           :template        => @submission_template,
           :study           => @study,
           :project         => @project,

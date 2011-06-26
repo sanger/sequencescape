@@ -58,6 +58,24 @@ class Aliquot < ActiveRecord::Base
         has_many :aliquots
         has_many :receptacles, :through => :aliquots, :uniq => true
         has_one :primary_receptacle, :through => :aliquots, :source => :receptacle, :order => 'assets.created_at'
+
+        # Unfortunately we cannot use has_many :through because it ends up being a through through a through.  Really we want:
+        #   has_many :requests, :through => :assets
+        #   has_many :submissions, :through => :requests
+        # But 'assets' is already a through!
+        has_many :requests, :finder_sql => %q{
+          SELECT DISTINCT requests.*
+          FROM requests
+          JOIN aliquots ON aliquots.receptacle_id=requests.asset_id
+          WHERE aliquots.sample_id=#{id}
+        }
+        has_many :submissions, :finder_sql => %q{
+          SELECT DISTINCT submissions.*
+          FROM submissions
+          JOIN requests ON requests.submission_id=submissions.id
+          JOIN aliquots ON aliquots.receptacle_id=requests.asset_id
+          WHERE aliquots.sample_id=#{id}
+        }
       end
     end
 

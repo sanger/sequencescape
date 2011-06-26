@@ -96,7 +96,7 @@ def build_batch_for(name, count, &block)
 
   # Build a submission that should end up in the appropriate inbox, once all of the assets have been
   # deemed as scanned into the lab!
-  Submission.build!(
+  LinearSubmission.build!(
     :study    => Factory(:study),
     :project  => Factory(:project),
     :workflow => pipeline.request_type.workflow,

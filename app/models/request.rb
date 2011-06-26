@@ -1,5 +1,6 @@
 class Request < ActiveRecord::Base
   include ModelExtensions::Request
+  include Aliquot::DeprecatedBehaviours::Request
 
   include Api::RequestIO::Extensions
   cattr_reader :per_page
@@ -11,6 +12,7 @@ class Request < ActiveRecord::Base
   include Commentable
   include Proxyable
   include StandardNamedScopes
+  include Request::Statemachine
 
   extend EventfulRecord
   has_many_events
@@ -20,57 +22,6 @@ class Request < ActiveRecord::Base
 
   def self.delegate_validator
     DelegateValidation::AlwaysValidValidator
-  end
-
-  #Shouldn't be used . Here for compatibility with the previous code
-  #having request having one sample
-  has_many :samples, :through => :asset
-  deprecate :samples,  :sample_ids
-
-
-
-  ## State machine
-  aasm_column :state
-  aasm_state :pending
-  aasm_state :started
-  aasm_state :failed
-  aasm_state :passed
-  aasm_state :cancelled
-  aasm_state :blocked
-  aasm_state :hold
-  aasm_initial_state :pending
-
-  # State Machine events
-  aasm_event :start do
-    transitions :to => :started, :from => [:pending, :started, :hold]
-  end
-
-  aasm_event :pass do
-    transitions :to => :passed, :from => [:started, :passed, :pending, :failed]
-  end
-
-  aasm_event :fail do
-    transitions :to => :failed, :from => [:started, :pending, :failed, :passed]
-  end
-
-  aasm_event :block do
-    transitions :to => :blocked, :from => [:pending]
-  end
-
-  aasm_event :unblock do
-    transitions :to => :pending, :from => [:blocked]
-  end
-
-  aasm_event :detach do
-    transitions :to => :pending, :from => [:cancelled, :started, :pending]
-  end
-
-  aasm_event :reset do
-    transitions :to => :pending, :from => [:started, :pending, :passed, :failed, :hold]
-  end
-
-  aasm_event :cancel do
-    transitions :to => :cancelled, :from => [:started, :pending, :passed, :failed, :hold]
   end
 
   belongs_to :pipeline
@@ -131,7 +82,7 @@ class Request < ActiveRecord::Base
 
   named_scope :with_asset, :conditions =>  'asset_id is not null'
   named_scope :with_target, :conditions =>  'target_asset_id is not null and (target_asset_id <> asset_id)'
-  named_scope :join_asset, :joins => :asset
+  named_scope :join_asset, :joins => { :asset => :aliquots }
 
   #Asset are Locatable (or at least some of them)
   belongs_to :location_association, :primary_key => :locatable_id, :foreign_key => :asset_id
@@ -278,57 +229,6 @@ class Request < ActiveRecord::Base
 
   def lab_events_for_batch(batch)
     self.lab_events.find_all_by_batch_id(batch.id)
-  end
-
-  def tag_number
-    tag.try(:map_id) || ''
-  end
-
-  # tags and tag have been moved to the appropriate assets.
-  # I don't think that they are used anywhere else apart 
-  # from the batch xml and can therefore probably be removed.
-  # ---
-  def tag
-    self.target_asset.primary_aliquot.try(:tag)
-  end
-  deprecate :tag
-
-  def tags
-    self.asset.tags
-  end
-  deprecate :tags
-  # ---
-  
-  def sample_name?
-    samples.present?
-  end
-
-  def sample_name(default=nil, &block)
-    #return the name of the underlying samples
-    # used mainly for compatibility with the old codebase
-    # # default is used if no smaple
-    # # block is used to aggregate the samples
-    case samples.size
-    when 0 
-      return default 
-    when 1
-      return samples.first.name
-    else
-      block ? block.call(samples) : samples.map(&:map).join(" | ") 
-    end
-  end
-  deprecate :sample_name
-  
-  def valid_request_for_pulldown_report?
-    well = self.asset
-    return false if self.study.nil?
-    return false if well.nil? || ! well.is_a?(Well)
-    return false if well.plate.nil? || well.map.nil?
-    return false if well.primary_aliquot.nil?
-    return false if well.parent.nil? || ! well.parent.is_a?(Well)
-
-
-    true
   end
   
 

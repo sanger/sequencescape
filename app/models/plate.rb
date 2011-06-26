@@ -4,9 +4,10 @@ class Plate < Asset
   include LocationAssociation::Locatable
   include Transfer::Associations
   include PlatePurpose::Associations
+  include Barcode::Barcodeable
 
   # The default state for a plate comes from the plate purpose
-  delegate :default_state, :to => :plate_purpose
+  delegate :default_state, :to => :plate_purpose, :allow_nil => true
 
   # Transfer requests into a plate are the requests leading into the wells of said plate.
   # NOTE The sti_type value here is singular, where it may need subclasses.
@@ -310,7 +311,7 @@ class Plate < Asset
   end
 
   def create_plate_submission(project, study, user, current_time)
-    Submission.build!(
+    LinearSubmission.build!(
       :study => study,
       :project => project,
       :workflow => genotyping_submission_workflow,
@@ -448,7 +449,7 @@ class Plate < Asset
 
   def self.create_with_barcode!(*args, &block)
     attributes = args.extract_options!
-    barcode    = args.first
+    barcode    = args.first || attributes[:barcode]
     barcode    = nil if barcode.present? and find_by_barcode(barcode).present?
     barcode  ||= PlateBarcode.create.barcode
     create!(attributes.merge(:barcode => barcode), &block)

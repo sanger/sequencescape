@@ -15,4 +15,9 @@ class TransferRequest < Request
     target_asset.aliquots << asset.aliquots.map(&:clone)
   end
   private :perform_transfer_of_contents
+
+  # TODO: Now that callbacks are in place we probably should do the transfer on passing a request.
+  def on_passed
+    # Override the default behaviour to not do the transfer
+  end
 end

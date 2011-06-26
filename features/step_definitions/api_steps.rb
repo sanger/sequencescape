@@ -155,7 +155,7 @@ end
 
 Then /^show me the HTTP response body$/ do
   $stderr.puts('=' * 80)
-  $stderr.puts page.body
+  $stderr.send(:pp, JSON.parse(page.body)) rescue $stderr.puts(page.body)
   $stderr.puts('=' * 80)
 end
 

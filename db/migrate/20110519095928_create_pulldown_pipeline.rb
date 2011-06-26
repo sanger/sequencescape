@@ -23,6 +23,7 @@ class CreatePulldownPipeline < ActiveRecord::Migration
             request_type.key               = pipeline_name.downcase.gsub(/\s+/, '_')
             request_type.initial_state     = 'pending'
             request_type.asset_type        = 'Well'
+            request_type.target_asset_type = 'MultiplexedLibraryTube'
             request_type.order             = 1
             request_type.multiples_allowed = false
             request_type.request_class     = PulldownLibraryCreationRequest

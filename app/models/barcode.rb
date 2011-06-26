@@ -1,4 +1,11 @@
 class Barcode
+  # Anything that has a barcode is considered barcodeable.
+  module Barcodeable
+    def generate_barcode
+      self.barcode = AssetBarcode.new_barcode
+    end
+  end
+
   InvalidBarcode = Class.new(StandardError)
 
   # Sanger barcoding scheme

@@ -80,7 +80,7 @@ class Submission < ActiveRecord::Base
   end
 
   def process_submission!
-    RequestFactory.new(self).create_requests
+    build_request_graph!
   end
   alias_method(:create_requests, :process_submission!)
 
@@ -89,7 +89,7 @@ class Submission < ActiveRecord::Base
   end
 
   def is_asset_applicable_to_type?(request_type, asset)
-    request_type.asset_type == asset.label
+    request_type.asset_type == asset.asset_type_for_request_types.name
   end
   private :is_asset_applicable_to_type?
 
@@ -116,8 +116,6 @@ class Submission < ActiveRecord::Base
       request.state                       = initial_request_state(request_type)
 
       if request.asset.present?
-        request.sample = request.asset.primary_aliquot.try(:sample)
-
         # TODO: This should really be an exception but not sure of the side-effects at the moment
         request.asset  = nil unless is_asset_applicable_to_type?(request_type, request.asset)
       end

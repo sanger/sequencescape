@@ -7,7 +7,7 @@ Feature: A request with no study should not raise an exception when viewing the 
   Scenario: A request with a study
     Given I have a request 123 with a study 999
       And I am on the XML show page for request 123
-    Then ignoring "read_length|asset_id|target_asset_id" the XML response should be:
+    Then ignoring "sample_id|read_length|asset_id|target_asset_id" the XML response should be:
     """
     <?xml version="1.0" encoding="UTF-8"?>
     <request api_version="0.6">
@@ -33,7 +33,7 @@ Feature: A request with no study should not raise an exception when viewing the 
   Scenario: A request without a study
   Given I have a request 123 without a study
     And I am on the XML show page for request 123
-  Then ignoring "read_length|asset_id|target_asset_id" the XML response should be:
+  Then ignoring "sample_id|read_length|asset_id|target_asset_id" the XML response should be:
   """
   <?xml version="1.0" encoding="UTF-8"?>
   <request api_version="0.6">
@@ -56,7 +56,7 @@ Feature: A request with no study should not raise an exception when viewing the 
   Scenario: A request without a project
   Given I have a request 123 without a project
     And I am on the XML show page for request 123
-  Then ignoring "read_length|asset_id|target_asset_id" the XML response should be:
+  Then ignoring "sample_id|read_length|asset_id|target_asset_id" the XML response should be:
   """
   <?xml version="1.0" encoding="UTF-8"?>
   <request api_version="0.6">
@@ -81,7 +81,7 @@ Feature: A request with no study should not raise an exception when viewing the 
   Scenario: A request without a request type
     Given I have a request 123 without a request type
       And I am on the XML show page for request 123
-    Then ignoring "read_length|asset_id|target_asset_id" the XML response should be:
+    Then ignoring "sample_id|read_length|asset_id|target_asset_id" the XML response should be:
     """
     <?xml version="1.0" encoding="UTF-8"?>
     <request api_version="0.6">
