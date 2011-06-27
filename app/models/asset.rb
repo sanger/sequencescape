@@ -8,6 +8,11 @@ class Asset < ActiveRecord::Base
     def generate_barcode
       # Does nothing!
     end
+
+    # Returns nil because assets really don't have barcodes!
+    def barcode_type
+      nil
+    end
   end
   include InstanceMethods
 

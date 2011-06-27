@@ -45,6 +45,13 @@ class PlatePurpose < ActiveRecord::Base
   @@per_page = 500
   include Uuid::Uuidable
 
+  # There's a barcode printer type that has to be used to print the labels for this type of plate.
+  belongs_to :barcode_printer_type
+
+  def barcode_type
+    barcode_printer_type.printer_type_id
+  end
+
   has_many :plates #, :class_name => "Asset"
   acts_as_audited :on => [:destroy, :update]
   

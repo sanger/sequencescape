@@ -46,7 +46,8 @@ Feature: Access sample tubes through the API
             "prefix": "NT",
             "number": "42",
             "ean13": "3980000042705",
-            "two_dimensional": null
+            "two_dimensional": null,
+            "type": 2
           },
 
           "aliquots": [

@@ -35,6 +35,13 @@ Feature: Access plates through the API
             }
           },
 
+          "barcode": {
+            "prefix": "DN",
+            "number": "1",
+            "ean13": "1220000001831",
+            "type": 1
+          },
+
           "uuid": "00000000-1111-2222-3333-444444444444"
         }
       }
