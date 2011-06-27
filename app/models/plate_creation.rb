@@ -38,7 +38,7 @@ class PlateCreation < ActiveRecord::Base
   private :create_child_plate
 
   def connect_parent_and_child
-    AssetLink.connect(self.parent, self.child)
+    AssetLink.create_edge!(self.parent, self.child)
   end
   private :connect_parent_and_child
 

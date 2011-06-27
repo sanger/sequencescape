@@ -35,9 +35,17 @@ class BaitLibraryLayout < ActiveRecord::Base
   # specified as part of the submissions that lead to this plate.
   before_create :layout_bait_libraries_on_plate
   def layout_bait_libraries_on_plate
+    # To improve the performance we store the aliquot IDs that need each of the individual bait libraries
+    # attached to them in a hash.  Then we'll be able to bulk update them later.
+    bait_libraries_to_aliquot_ids = Hash.new { |h,k| h[k] = [] }
     each_bait_library_assignment do |well, bait_library|
-      well.aliquots.each { |aliquot| aliquot.update_attributes!(:bait_library => bait_library) }
+      bait_libraries_to_aliquot_ids[bait_library.id].concat(well.aliquot_ids)
       record_bait_library_assignment(well, bait_library)
+    end
+
+    # Bulk update the aliquots with the appropriate bait libraries
+    bait_libraries_to_aliquot_ids.each do |bait_library_id, aliquot_ids|
+      Aliquot.update_all("bait_library_id=#{bait_library_id}", [ 'id IN (?)', aliquot_ids ])
     end
   end
   private :layout_bait_libraries_on_plate
