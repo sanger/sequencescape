@@ -7,6 +7,8 @@ class User < ActiveRecord::Base
   include Authentication
   include Workflowed
   extend EventfulRecord
+  include Uuid::Uuidable
+  include Swipecardable
   has_many_events
 
   has_many :lab_events
@@ -21,6 +23,8 @@ class User < ActiveRecord::Base
 
   validates_presence_of :login
   validates_confirmation_of :password, :if => :password_required?
+
+  named_scope :with_login, lambda { |*logins| { :conditions => { :login => logins.flatten } } }
 
   acts_as_authorized_user
 
