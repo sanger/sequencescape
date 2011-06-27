@@ -417,11 +417,8 @@ class Plate < Asset
   end
 
   def stock_plate?
-    if self.plate_purpose.nil? or (self.plate_purpose && self.plate_purpose.name == "Stock Plate")
-      true
-    else
-      false
-    end
+    return true if self.plate_purpose.nil?
+    self.plate_purpose.can_be_considered_a_stock_plate?
   end
 
   def stock_plate
