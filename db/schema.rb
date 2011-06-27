@@ -581,7 +581,7 @@ ActiveRecord::Schema.define(:version => 20110725091045) do
     t.string   "type"
     t.boolean  "can_be_considered_a_stock_plate",               :default => false, :null => false
     t.string   "default_state",                         :default => "pending"
-    t.integer  "barcode_printer_type_id", :default => 2
+    t.integer  "barcode_printer_type_id",               :default => 2
   end
 
   add_index "plate_purposes", ["qc_display"], :name => "index_plate_purposes_on_qc_display"

@@ -77,22 +77,27 @@ class Transfer < ActiveRecord::Base
 
   module WellHelpers
     def locate_stock_well_for(current_well)
-      return current_well if current_well.plate.plate_purpose == stock_plate_purpose
+      return current_well if stock_plate_purposes.include?(current_well.plate.plate_purpose)
 
       while true
         previous_well =
           current_well.requests_as_target.where_is_a?(TransferRequest).first.try(:asset) or
             return nil
-        return previous_well if previous_well.plate.plate_purpose == stock_plate_purpose
+        return previous_well if stock_plate_purposes.include?(previous_well.plate.plate_purpose)
         current_well = previous_well
       end
     end
     private :locate_stock_well_for
 
-    def stock_plate_purpose
-      @stock_plate_purpose ||= (PlatePurpose.find_by_name('Pulldown stock plate') or raise StandardError, 'Cannot find pulldown stock plate purpose')
+    # Returns a list of the stock plate purposes that should be used to find the source of 
+    def stock_plate_purposes
+      # TODO: This should actually find all plates that are considered stock plates once that is present in the trunk
+      return @stock_plate_purposes if @stock_plate_purposes.present?
+      @stock_plate_purposes = PlatePurpose.all(:conditions => { :name => [ 'WGS stock plate', 'SC stock plate', 'ISC stock plate' ] }).tap do |found|
+        raise StandardError, "Cannot find pulldown stock plate purposes (found only #{found.map(&:name).inspect})" if found.size != 3
+      end
     end
-    private :stock_plate_purpose
+    private :stock_plate_purposes
   end
 
   include Uuid::Uuidable
