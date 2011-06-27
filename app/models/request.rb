@@ -15,7 +15,6 @@ class Request < ActiveRecord::Base
   has_many_events
   has_many_lab_events
   
-
   self.inheritance_column = "sti_type"
   def url_name
     "request" # frozen for subclass of the API
@@ -25,6 +24,13 @@ class Request < ActiveRecord::Base
   def self.delegate_validator
     DelegateValidation::AlwaysValidValidator
   end
+
+  #Shouldn't be used . Here for compatibility with the previous code
+  #having request having one sample
+  has_many :samples, :through => :asset
+  deprecate :samples,  :sample_ids
+
+
 
   ## State machine
   aasm_column :state
@@ -72,15 +78,6 @@ class Request < ActiveRecord::Base
 
   belongs_to :pipeline
   belongs_to :item
-  belongs_to :sample
-
-  # deprecating sample, with should use through asset
-  deprecate :sample
-  
-  def sample_id
-    attributes["sample_id"]
-  end
-  deprecate :sample_id
   belongs_to :project
 
   has_many :failures, :as => :failable
@@ -152,7 +149,6 @@ class Request < ActiveRecord::Base
 
   named_scope :for_asset_id, lambda { |id| { :conditions => { :asset_id => id } } }
   named_scope :for_study_id, lambda { |id| { :conditions => { :study_id => id } } }
-  named_scope :for_sample_id, lambda { |id| { :conditions => { :sample_id => id } } }
   named_scope :for_workflow, lambda { |workflow| { :joins => :workflow, :conditions => { :workflow => { :key => workflow } } } }
   named_scope :for_request_types, lambda { |types| { :joins => :request_type, :conditions => { :request_types => { :key => types } } } }
   
@@ -337,13 +333,25 @@ class Request < ActiveRecord::Base
   end
   # ---
   
-  def sample_name
-    if self.sample
-      return self.sample.name
+  def sample_name?
+    samples.present?
+  end
+
+  def sample_name(default=nil, &block)
+    #return the name of the underlying samples
+    # used mainly for compatibility with the old codebase
+    # # default is used if no smaple
+    # # block is used to aggregate the samples
+    case samples.size
+    when 0 
+      return default 
+    when 1
+      return samples.first.name
     else
-      return ''
+      block ? block.call(samples) : samples.map(&:map).join(" | ") 
     end
   end
+  deprecate :sample_name
   
   def valid_request_for_pulldown_report?
     well = self.asset
@@ -380,27 +388,24 @@ class Request < ActiveRecord::Base
   end
 
   def next_requests(pipeline, &block)
-    return [] if sample.nil?
-    return self.related_pending_requests if pipeline.next_pipeline.try(:request_type_id).nil?
+    #TODO remove pipeline parameters
+    # we filter according to the next pipeline
+    next_pipeline = pipeline.next_pipeline
+    return [] unless next_pipeline
 
     block ||= PERMISSABLE_NEXT_REQUESTS
-    sample.requests.select { |r| pipeline.next_pipeline.request_type_id == r.request_type_id and block.call(r) }
-  end
+    eligible_requests = if target_asset.present?
+                          target_asset.requests
+                        else
+                          return [] if submission.nil?
+                          submission.next_requests(self)
+                        end
 
-  def previous_requests(pipeline, &block)
-    return [] if sample.nil?
-    return [] if pipeline.previous_pipeline.try(:request_type_id).nil?
-
-    block ||= PERMISSABLE_NEXT_REQUESTS
-    sample.requests.select { |r| pipeline.previous_pipeline.request_type_id == r.request_type_id and block.call(r) }
+    eligible_requests.select { |r| !next_pipeline || next_pipeline.request_type_id == r.request_type_id and block.call(r) }
   end
 
   def previous_failed_requests
     self.asset.requests.select { |previous_failed_request| (previous_failed_request.failed? or previous_failed_request.blocked?)}
-  end
-
-  def related_pending_requests
-    Request.find_all_by_submission_id_and_sample_id(self.submission_id, self.sample_id).select{ |r| r.pending? and (r.request_type_id != self.request_type_id) }
   end
 
   def self.unhold_requests(request_proxys, save = true)
@@ -447,8 +452,8 @@ class Request < ActiveRecord::Base
 
   def remove_unused_assets
     return if target_asset.nil?
-    self.related_pending_requests.each do |releated_request|
-      next unless releated_request.asset == self.target_asset
+    target_asset.requests do |related_request|
+      target_asset.remove_unused_assets
       releated_request.asset.destroy
       releated_request.asset_id = nil
       releated_request.save!

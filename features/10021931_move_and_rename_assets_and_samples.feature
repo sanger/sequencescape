@@ -36,7 +36,7 @@ Feature: Rename Asset and Sample
     And I should see "Sample_10021931_Tuberculosis_2"
     And I should see "Asset_10021931_Tuberculosis_3"
 
-  Scenario: The user doesnt fill properly the form
+  Scenario: The user doesn't fill properly the form
     Given I have a study called "Study_PT_10021931"
     Given the sample named "Sample_10021931_Salmonella_1" exists
     Given the sample named "Sample_10021931_Salmonella_1" belongs to the study named "Study_PT_10021931"
@@ -47,7 +47,6 @@ Feature: Rename Asset and Sample
     When I follow "All"
     Then I should see "Study_PT_10021931"
     When I follow "Study_PT_10021931"
-    And I should see "Rename Assets and Samples"
     When I follow "Rename Assets and Samples"
     Then I should see "Sample_10021931_Salmonella_1"
     And I should see "Asset_10021931_Salmonella_1"
