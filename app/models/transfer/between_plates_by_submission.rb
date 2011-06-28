@@ -15,7 +15,7 @@ class Transfer::BetweenPlatesBySubmission < Transfer
       # Group the wells based on the submission their non-transfer request belongs to
       groups = source.wells.group_by do |well|
         stock_well = locate_stock_well_for(well)
-        stock_well and stock_well.requests.detect { |r| r.submission_id.present? }.try(:submission_id)
+        stock_well and stock_well.requests_as_source.detect { |r| r.submission_id.present? }.try(:submission_id)
       end.delete_if { |k,_| k.nil? }.values
 
       # Submission group 1 will go into A1, group 2 into B1, group 3 C1, etc.
