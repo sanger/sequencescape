@@ -20,8 +20,8 @@ class PicoDilutionsControllerTest < ActionController::TestCase
         @pico_dilution_plate = Factory :plate, :barcode => "2222"
         @assay_plate_a = Factory :plate, :barcode => "9999", :plate_purpose => pico_assay_a_plate_purpose
         @assay_plate_b = Factory :plate, :barcode => "8888", :plate_purpose => pico_assay_b_plate_purpose
-        AssetLink.connect(@pico_dilution_plate,@assay_plate_a)
-        AssetLink.connect(@pico_dilution_plate,@assay_plate_b)
+        AssetLink.create_edge!(@pico_dilution_plate,@assay_plate_a)
+        AssetLink.create_edge!(@pico_dilution_plate,@assay_plate_b)
       end
 
       context "#index" do

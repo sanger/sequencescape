@@ -526,7 +526,7 @@ class Asset < ActiveRecord::Base
     
     self.save!
     parent.save!
-    AssetLink.connect(parent, self)
+    AssetLink.create_edge!(parent, self)
   end
 
   def attach_tag(tag)

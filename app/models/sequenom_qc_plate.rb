@@ -130,7 +130,7 @@ class SequenomQcPlate < Plate
     
     cloned_well.save!
     
-    AssetLink.connect(source_well, cloned_well)
+    AssetLink.create_edge!(source_well, cloned_well)
   end
   
   
