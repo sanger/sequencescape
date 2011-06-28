@@ -37,7 +37,7 @@ class PlatePurpose < ActiveRecord::Base
         RequestFactory.create_assets_requests([child_plate.id], plate.study.id)
       end
       child_plate.delayed_stamp_samples_into_wells(plate.id)
-      AssetLink.connect(plate,child_plate)
+      AssetLink.create_edge!(plate,child_plate)
       new_child_plates << child_plate
     end
 

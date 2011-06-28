@@ -129,7 +129,7 @@ class Well < Asset
 
   def create_child_sample_tube
     sample_tube = SampleTube.create(:sample => self.sample, :map => self.map)
-    AssetLink.connect(self, sample_tube)
+    AssetLink.create_edge!(self, sample_tube)
 
     sample_tube
   end
