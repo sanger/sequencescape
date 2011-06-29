@@ -162,6 +162,7 @@ Feature: Registering samples
       |cn_dev_96_inc_blank_02|ro    |uk               |europe             |Female|100        | Caucasian | Blood      |
       |cn_dev_96_inc_blank_03|ro    |uk               |europe             |Male  |100        | Caucasian | Blood      |
       |cn_dev_96_inc_blank_04|ro    |uk               |europe             |Female|100        | Caucasian | Blood      |
+    And every sample in study "Testing registering samples" should be accessible via a request
 
   Scenario: Uploading a non-spreadsheet file
     Given I am on the page for choosing how to register samples for study "Testing registering samples"

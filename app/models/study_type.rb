@@ -1,14 +1,14 @@
 class StudyType < ActiveRecord::Base 
   has_many :study
-  
+
   validates_presence_of  :name
   validates_uniqueness_of :name, :message => "of study type already present in database"
   acts_as_audited :on => [:destroy, :update]
-  
+
   def for_select_dropdown
-    [self.name, self.id]
-  end  
-  
+    valid_for_creation? ? [self.name, self.id] : nil
+  end
+
   def self.include?(studytype_name)
     study_type = StudyType.find_by_name(studytype_name)
     unless study_type.nil?
