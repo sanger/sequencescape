@@ -6,7 +6,7 @@ GIT
 
 GIT
   remote: git+ssh://git@github.com/sanger/acts-as-dag.git
-  revision: f8135a3c20c81430cd61bb870bec036e887f1db9
+  revision: ce591fe2d39fc27193a897acf27fd35f40c8932c
   branch: fix_rewire_crossing
   specs:
     acts-as-dag (1.1.3)
