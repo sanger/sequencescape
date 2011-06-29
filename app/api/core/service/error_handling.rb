@@ -23,6 +23,8 @@ module Core::Service::ErrorHandling
 
   module Helpers
     class JsonError
+      include Core::Service::GarbageCollection::Response
+
       def initialize(error)
         @error = error
       end

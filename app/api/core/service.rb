@@ -105,9 +105,10 @@ class Core::Service < Sinatra::Base
     extend Core::Initializable
     include Core::References
     include Core::Benchmarking
+    include Core::Service::EndpointHandling
+    include Core::Service::GarbageCollection::Request
 
     initialized_attr_reader :service, :target, :path, :io, :json
-    attr_reader :endpoint
     attr_writer :io
 
     delegate :user, :to => :service
@@ -127,24 +128,6 @@ class Core::Service < Sinatra::Base
       yield
     ensure
       @target = target_before
-    end
-
-    def instance(action, endpoint)
-      GC.disable
-
-      benchmark('Instance handling') do
-        @endpoint = endpoint
-        @endpoint.instance_handler.send(action, self, path)
-      end
-    end
-
-    def model(action, endpoint)
-      GC.disable
-
-      benchmark('Model handling') do
-        @endpoint = endpoint
-        @endpoint.model_handler.send(action, self, path)
-      end
     end
 
     def attributes(object = nil)
@@ -174,6 +157,7 @@ class Core::Service < Sinatra::Base
     extend Core::Initializable
     include Core::References
     include Core::Benchmarking
+    include Core::Service::GarbageCollection::Response
 
     class Initializer
       delegate :status, :headers, :api_path, :to => '@owner.request.service'
@@ -226,17 +210,9 @@ class Core::Service < Sinatra::Base
       end
     end
 
-    #--
-    # Re-enable and run the garbage collection.  In theory this means that the write out of the JSON
-    # should be wicked fast and, once the client has everything it needs, the server can spend a few
-    # seconds tidying itself up.
-    #++
     def close
-      benchmark('Re-enabling and running garbage collector') do
-        discard_all_references
-        GC.enable
-        GC.start
-      end
+      discard_all_references
+      super
     end
 
     def discard_all_references

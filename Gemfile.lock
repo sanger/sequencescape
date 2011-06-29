@@ -6,7 +6,7 @@ GIT
 
 GIT
   remote: git+ssh://git@github.com/sanger/acts-as-dag.git
-  revision: 2d5c44b836c253a2603bd5b00840ed0c2d31bace
+  revision: ce591fe2d39fc27193a897acf27fd35f40c8932c
   branch: fix_rewire_crossing
   specs:
     acts-as-dag (1.1.3)
@@ -223,6 +223,7 @@ DEPENDENCIES
   launchy
   log4r
   mocha
+  mongrel (~> 1.1.5)
   mongrel_cluster
   mysql
   net-ldap
