@@ -112,7 +112,7 @@ class RequestFactory
 
       request = create_request(request_type, item, asset, target_asset)
       if target_asset
-        AssetLink.connect(asset, target_asset)
+        AssetLink.create_edge!(asset, target_asset)
       end
       requests << request
 

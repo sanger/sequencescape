@@ -42,7 +42,7 @@ class AssignTagsToWellsTask < Task
         if well.tag_instance.nil?
           tag = Tag.find(tag_id)
           tag_instance  = TagInstance.create!(:tag => tag)
-          AssetLink.connect(well, tag_instance)
+          AssetLink.create_edge!(well, tag_instance)
         else
           raise "Unable to add multiple tags to a well."
         end
