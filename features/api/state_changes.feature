@@ -65,6 +65,44 @@ Feature: Access state changes through the API
       | passed  |
       | failed  |
 
+  @create
+  Scenario: Changing the state of only one well on the plate
+    Given the UUID of the next state change created will be "11111111-2222-3333-4444-000000000001"
+
+    When I make an authorised POST with the following JSON to the API path "/state_changes":
+      """
+      {
+        "state_change": {
+          "target": "00000000-1111-2222-3333-000000000002",
+          "contents": [ "A1" ],
+          "target_state": "failed"
+        }
+      }
+      """
+    Then the HTTP response should be "201 Created"
+     And the JSON should match the following for the specified fields:
+      """
+      {
+        "state_change": {
+          "actions": {
+            "read": "http://www.example.com/api/1/11111111-2222-3333-4444-000000000001"
+          },
+          "target": {
+            "actions": {
+              "read": "http://www.example.com/api/1/00000000-1111-2222-3333-000000000002"
+            }
+          },
+          "target_state": "failed",
+          "contents": [ "A1" ],
+          "previous_state": "pending"
+        }
+      }
+      """
+
+    Then the state of the plate "Destination plate" should be "pending"
+     And the state of transfer requests to "A1-A1" on the plate "Destination plate" should be "failed"
+     And the state of transfer requests to "A2-H12" on the plate "Destination plate" should be "pending"
+
   @read @wip
   Scenario: Reading the JSON for a UUID
     Given the state change exists with ID 1

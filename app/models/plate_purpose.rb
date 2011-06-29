@@ -25,18 +25,20 @@ class PlatePurpose < ActiveRecord::Base
     end
 
     # Delegate the change of state to our plate purpose.
-    def transition_to(state)
-      plate_purpose.transition_to(self, state)
+    def transition_to(state, contents = nil)
+      plate_purpose.transition_to(self, state, contents)
     end
   end
 
   include Relationship::Associations
 
   # Updates the state of the specified plate to the specified state.  The basic implementation does this by updating
-  # all of the TransferRequest instances to the state specified.
-  def transition_to(plate, state)
+  # all of the TransferRequest instances to the state specified.  If contents is blank then the change is assumed to 
+  # relate to all wells of the plate, otherwise only the selected ones are updated.
+  def transition_to(plate, state, contents = nil)
+    contents ||= []
     plate.transfer_requests.each do |request|
-      request.update_attributes!(:state => state)
+      request.update_attributes!(:state => state) if contents.empty? or contents.include?(request.target_asset.map.description)
     end
   end
 

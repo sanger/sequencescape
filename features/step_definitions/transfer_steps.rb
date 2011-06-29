@@ -72,3 +72,9 @@ end
     end
   }, __FILE__, line)
 end
+
+Then /^the state of transfer requests (to|from) "([^\"]+)" on (the plate .+) should be "([^\"]+)"$/ do |direction, range, plate, state|
+  plate.wells.select(&range.method(:include?)).each do |well|
+    assert_request_state(state, well, direction, TransferRequest)
+  end
+end

@@ -12,7 +12,7 @@ class TransferRequest < Request
   after_create(:perform_transfer_of_contents)
 
   def perform_transfer_of_contents
-    target_asset.aliquots << asset.aliquots.map(&:clone)
+    target_asset.aliquots << asset.aliquots.map(&:clone) unless asset.failed? or asset.cancelled?
   end
   private :perform_transfer_of_contents
 

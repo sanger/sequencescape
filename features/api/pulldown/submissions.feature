@@ -14,7 +14,7 @@ Feature: Creating submissions for pulldown
 
     Given the plate barcode webservice returns "1000001"
 
-    Given a "Pulldown stock plate" plate called "Testing the pulldown submissions" exists
+    Given a "WGS stock plate" plate called "Testing the pulldown submissions" exists
       And all of the wells on the plate "Testing the pulldown submissions" are in an asset group called "Testing the pulldown submissions" owned by the study "Testing submission creation"
       And the UUID for the asset group "Testing the pulldown submissions" is "88888888-1111-2222-3333-000000000000"
 

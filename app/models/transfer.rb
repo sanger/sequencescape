@@ -2,27 +2,42 @@ class Transfer < ActiveRecord::Base
   module Associations
     def self.included(base)
       base.class_eval do
+        include Transfer::State
+
         has_many :transfers_as_source,     :class_name => 'Transfer', :foreign_key => :source_id,      :order => 'created_at ASC'
         has_one  :transfer_as_destination, :class_name => 'Transfer', :foreign_key => :destination_id
       end
     end
+  end
 
-    # The state of an asset is based on the transfer requests for the asset.  If they are any that are failed
-    # or cancelled then this plate is cancelled; if there are requests and they are all started then the
-    # plate is also started; otherwise the plate can be considered pending.
+  module State
+    def self.state_helper(*names)
+      names.each do |name|
+        module_eval(%Q{def #{name}? ; state == #{name.to_s.inspect} ; end})
+      end
+    end
+
+    state_helper(:pending, :started, :passed, :failed, :cancelled)
+
+    # The state of an asset is based on the transfer requests for the asset.  If they are all in the same
+    # state then it takes that state.  Otherwise we take the "most optimum"!
     def state
       state_requests = self.transfer_requests
-
-      # The obvious states
-      return 'failed'    if state_requests.any?(&:failed?)
-      return 'cancelled' if state_requests.any?(&:cancelled?)
 
       # If there is only one state then it's obviously that ...
       unique_states = state_requests.map(&:state).uniq
       return unique_states.first if unique_states.size == 1
 
-      # Otherwise we'll take the default state from the plate purpose
-      self.default_state || 'unknown'
+      # These are the prioritised states.  Started overrides pending, which overrides passed, which
+      # overrides failed or cancelled (we don't really care which!).
+      case
+      when unique_states.include?('started')   then 'started'
+      when unique_states.include?('pending')   then 'pending'
+      when unique_states.include?('passed')    then 'passed'
+      when unique_states.include?('failed')    then 'failed'
+      when unique_states.include?('cancelled') then 'cancelled'
+      else self.default_state || 'unknown'
+      end
     end
   end
 

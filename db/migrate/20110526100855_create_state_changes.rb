@@ -3,6 +3,7 @@ class CreateStateChanges < ActiveRecord::Migration
     create_table :state_changes do |t|
       t.references :user
       t.references :target
+      t.string     :contents, :limit => 1024
       t.string     :previous_state
       t.string     :target_state
 

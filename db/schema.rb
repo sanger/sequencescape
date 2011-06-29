@@ -912,6 +912,7 @@ ActiveRecord::Schema.define(:version => 20110725091045) do
   create_table "state_changes", :force => true do |t|
     t.integer  "user_id"
     t.integer  "target_id"
+    t.string   "contents", :limit => 1024
     t.string   "previous_state"
     t.string   "target_state"
     t.datetime "created_at"

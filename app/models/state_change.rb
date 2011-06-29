@@ -16,6 +16,10 @@ class StateChange < ActiveRecord::Base
   belongs_to :target, :class_name => 'Asset'
   validates_presence_of :target
 
+  # Some targets can have "contents" updated (notably plates).  The meaning of this is is dealt with by the
+  # target being updated.
+  serialize :contents
+
   # These track the state of the target.  The target_state is what we want it to end up in and the previous_state
   # records the state that it was in before the update.  The previous_state is not assigned by the creator but
   # by the action of making the transition.
@@ -32,7 +36,7 @@ class StateChange < ActiveRecord::Base
   # After creation update the state of the target asset, leaving it to do the right thing.
   after_create :update_state_of_target
   def update_state_of_target
-    target.transition_to(target_state)
+    target.transition_to(target_state, contents)
   end
   private :update_state_of_target
 end

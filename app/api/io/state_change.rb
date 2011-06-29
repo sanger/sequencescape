@@ -6,6 +6,7 @@ class ::Io::StateChange < ::Core::Io::Base
   define_attribute_and_json_mapping(%Q{
               user <=> user
             target <=> target
+          contents <=> contents
       target_state <=> target_state
     previous_state  => previous_state
   })
