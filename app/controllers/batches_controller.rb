@@ -131,6 +131,9 @@ class BatchesController < ApplicationController
         format.xml  { render :xml => @batch.errors.to_xml }
       end
     end
+  rescue ActiveRecord::RecordInvalid => exception
+    flash[:error] = exception.record.errors.full_messages
+    redirect_to(pipeline_path(@pipeline))
   end
 
   def destroy

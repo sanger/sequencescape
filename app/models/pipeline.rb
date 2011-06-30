@@ -50,7 +50,7 @@ class Pipeline < ActiveRecord::Base
   include SequencingQcPipeline
   include Uuid::Uuidable
   include Pipeline::InboxUngrouped
-  
+  include Pipeline::BatchValidation
 
   validates_presence_of :name
   validates_uniqueness_of :name, :on => :create, :message => "name already in use"
