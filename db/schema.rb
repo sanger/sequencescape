@@ -332,7 +332,7 @@ ActiveRecord::Schema.define(:version => 20110725091045) do
     t.integer "parent_id"
     t.string  "thumbnail"
     t.integer "db_file_id"
-    t.string  "documentable_type",     :limit => 50
+    t.string  "documentable_type", :limit => 50
     t.text    "uploaded_file"
   end
 
@@ -575,13 +575,16 @@ ActiveRecord::Schema.define(:version => 20110725091045) do
   end
 
   create_table "plate_purposes", :force => true do |t|
-    t.string   "name",                                                         :null => false
+    t.string   "name",                                                                 :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "type"
-    t.boolean  "can_be_considered_a_stock_plate",               :default => false, :null => false
-    t.string   "default_state",                         :default => "pending"
-    t.integer  "barcode_printer_type_id",               :default => 2
+    t.string   "target_type",                     :limit => 30
+    t.boolean  "qc_display",                                    :default => false
+    t.boolean  "pulldown_display"
+    t.boolean  "can_be_considered_a_stock_plate",               :default => false,     :null => false
+    t.string   "default_state",                                 :default => "pending"
+    t.integer  "barcode_printer_type_id",                       :default => 2
   end
 
   add_index "plate_purposes", ["qc_display"], :name => "index_plate_purposes_on_qc_display"
@@ -912,7 +915,7 @@ ActiveRecord::Schema.define(:version => 20110725091045) do
   create_table "state_changes", :force => true do |t|
     t.integer  "user_id"
     t.integer  "target_id"
-    t.string   "contents", :limit => 1024
+    t.string   "contents",       :limit => 1024
     t.string   "previous_state"
     t.string   "target_state"
     t.datetime "created_at"
@@ -1194,7 +1197,7 @@ ActiveRecord::Schema.define(:version => 20110725091045) do
     t.string   "barcode"
     t.string   "cookie"
     t.datetime "cookie_validated_at"
-    t.string   "encrypted_swipecard_code",   :limit => 40
+    t.string   "encrypted_swipecard_code",  :limit => 40
   end
 
   add_index "users", ["barcode"], :name => "index_users_on_barcode"

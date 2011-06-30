@@ -4,7 +4,10 @@ class MakePulldownStockPlateDefaultToPassed < ActiveRecord::Migration
   end
 
   def self.up
-    PlatePurpose.find_by_name('Pulldown stock plate').update_attributes!(:default_state => 'passed')
+    PlatePurpose.update_all(
+      'default_state="passed"',
+      [ 'name IN (?)', [ 'WGS stock plate', 'SC stock plate', 'ISC stock plate' ] ]
+    )
   end
 
   def self.down
