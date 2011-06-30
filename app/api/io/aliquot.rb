@@ -11,5 +11,8 @@ class Io::Aliquot < Core::Io::Base
     tag.tag_group.name  => tag.group
 
           bait_library  => bait_library
+
+      insert_size.from  => insert_size.from
+        insert_size.to  => insert_size.to
   })
 end

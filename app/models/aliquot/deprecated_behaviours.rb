@@ -46,13 +46,11 @@ module Aliquot::DeprecatedBehaviours
       # used mainly for compatibility with the old codebase
       # # default is used if no smaple
       # # block is used to aggregate the samples
-      case samples.size
-      when 0 
-        return default 
-      when 1
-        return samples.first.name
-      else
-        block ? block.call(samples) : samples.map(&:map).join(" | ") 
+      case
+      when samples.size == 0 then default
+      when samples.size == 1 then samples.first.name
+      when block_given?      then yield(samples)
+      else                        samples.map(&:name).join(" | ")
       end
     end
     deprecate :sample_name

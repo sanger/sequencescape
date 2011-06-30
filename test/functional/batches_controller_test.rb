@@ -66,10 +66,10 @@ class BatchesControllerTest < ActionController::TestCase
           @batch_one = Factory(:batch, :pipeline => @pipeline)
           @batch_two = Factory(:batch, :pipeline => @pipeline_qc)
 
-          @sample   = Factory :asset
-          @library1 = Factory :asset
+          @sample   = Factory :sample_tube
+          @library1 = Factory :empty_library_tube
           @library1.parents << @sample
-          @library2 = Factory :asset
+          @library2 = Factory :empty_library_tube
           @library2.parents << @sample
 
           @request_one = @pipeline.request_type.create!(:asset => @library1, :project => Factory(:project))
@@ -77,8 +77,6 @@ class BatchesControllerTest < ActionController::TestCase
           @request_two = @pipeline.request_type.create!(:asset => @library2, :project => Factory(:project))
           @batch_one.batch_requests.create!(:request => @request_two, :position => 2)
           @batch_one.reload
-
-          Request.any_instance.stubs(:sample).returns(@sample)
         end
 
         should "#index" do

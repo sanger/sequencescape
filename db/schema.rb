@@ -12,9 +12,13 @@
 ActiveRecord::Schema.define(:version => 20110725091045) do
 
   create_table "aliquots", :force => true do |t|
-    t.integer  "receptacle_id",   :null => false
-    t.integer  "sample_id",       :null => false
+    t.integer  "receptacle_id",    :null => false
+    t.integer  "study_id"
+    t.integer  "library_id"
+    t.integer  "sample_id",        :null => false
     t.integer  "tag_id"
+    t.integer  "insert_size_from"
+    t.integer  "insert_size_to"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "bait_library_id"

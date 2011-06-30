@@ -32,6 +32,10 @@ Transform /^the plate "([^\"]+)"$/ do |name|
   Plate.find_by_name(name) or raise StandardError, "Could not find the plate #{name.inspect}"
 end
 
+Transform /^the plate with ID (\d+)$/ do |id|
+  Plate.find(id)
+end
+
 Given /^(the .+) has a barcode of "([^\"]+)"$/ do |asset, barcode|
   asset.update_attributes!(:barcode => Barcode.number_to_human(barcode.to_i))
 end

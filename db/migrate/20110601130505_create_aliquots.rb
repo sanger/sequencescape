@@ -2,8 +2,14 @@ class CreateAliquots < ActiveRecord::Migration
   def self.up
     create_table :aliquots do |t|
       t.references :receptacle, :null => false
+      t.references :study
+
+      t.references :library
       t.references :sample,     :null => false
       t.references :tag
+
+      t.integer :insert_size_from
+      t.integer :insert_size_to
 
       t.timestamps
     end

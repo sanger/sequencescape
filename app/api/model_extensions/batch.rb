@@ -63,10 +63,11 @@ module ModelExtensions::Batch
       # we need to call downstream request before setting the target_asset
       # otherwise, the request use the target asset to find the next request
       target_asset = asset_type.create! do |asset|
-        asset.aliquots = request.asset.aliquots.map(&:clone)
         asset.barcode  = AssetBarcode.new_barcode unless [ Lane, Well ].include?(asset_type)
         asset.generate_name(request.asset.name)
-      end                            
+      end.tap do |asset|
+        asset.aliquots = request.asset.aliquots.map(&:clone)
+      end
 
       downstream_requests_needing_asset(request) do |downstream_requests|
         requests_to_update.concat(downstream_requests.map { |r| [ r.id, target_asset.id ] })

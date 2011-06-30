@@ -60,8 +60,8 @@ class AssetTest < ActiveSupport::TestCase
       @sample_tube_2  = Factory(:empty_sample_tube).tap { |sample_tube|  sample_tube.aliquots.create!(:sample => @sample_2)  }
       @library_tube_2 = Factory(:library_tube).tap      { |library_tube| library_tube.aliquots.create!(:sample => @sample_2) }
 
-      @multiplex_tube = Factory :asset, :sti_type => "MultiplexedLibraryTube"
-      @lane = Factory :asset, :sti_type => "Lane"
+      @multiplex_tube = Factory :multiplexed_library_tube
+      @lane = Factory :lane, :sti_type => "Lane"
 
       @study_sample = Factory :study_sample, :study => @study, :sample => @sample
       @study_sample = Factory :study_sample, :study => @study_2, :sample => @sample_2

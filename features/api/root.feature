@@ -208,6 +208,11 @@ Feature: The entry point for the API gives directions to the other actions
           "actions": {
             "read": "http://www.example.com/api/1/barcode_printers"
           }
+        },
+        "users": {
+          "actions": {
+            "read": "http://www.example.com/api/1/users"
+          }
         }
       }
       """
@@ -415,6 +420,12 @@ Feature: The entry point for the API gives directions to the other actions
         "barcode_printers": {
           "actions": {
             "read": "http://www.example.com/api/1/barcode_printers"
+          }
+        },
+        "users": {
+          "actions": {
+            "read": "http://www.example.com/api/1/users",
+            "update": "http://www.example.com/api/1/users"
           }
         }
       }

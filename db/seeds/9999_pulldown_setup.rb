@@ -81,6 +81,14 @@ unless ENV['NO_PULLDOWN']
     $stderr.puts "\tBuilding submission request graphs ..."
     Delayed::Worker.new.work_off(50)
 
+    $stderr.puts "Fudging 7 additional HiSeq requests so that they are available"
+    LinearSubmission.new(:study => Study.first, :project => Project.first, :user => User.first).save_without_validation
+    submission = LinearSubmission.last
+    (1..7).each do |i|
+      tube    = MultiplexedLibraryTube.create!(:location => Location.find(2)).tap { |t| t.aliquots.create!(:sample => Sample.create!(:name => "fudge_#{i}")) }
+      request = RequestType.find(8).create!(:asset => tube, :study => Study.first, :submission => submission, :request_metadata_attributes => { :fragment_size_required_from => 100, :fragment_size_required_to => 200, :read_length => 100 })
+    end
+
     $stderr.puts "You probably want to remove this file: #{__FILE__}"
   end
 end

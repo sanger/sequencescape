@@ -197,6 +197,13 @@ class Plate < Asset
     self.save
   end
 
+  def stock_plate_name
+    if self.get_plate_type == "Stock Plate" || self.get_plate_type.blank?
+      return "ABgene_0765"
+    end
+    self.get_plate_type
+  end
+
   def control_well_exists?
     wells.each do |well|
       request = Request.find_by_target_asset_id(well.id)
@@ -208,13 +215,6 @@ class Plate < Asset
       end
     end
     false
-  end
-
-  def stock_plate_name
-    if self.get_plate_type == "Stock Plate" || self.get_plate_type.blank?
-      return "ABgene_0765"
-    end
-    self.get_plate_type
   end
 
   # A plate has a sample with the specified name if any of its wells have that sample.
@@ -408,23 +408,15 @@ class Plate < Asset
   end
 
   def lookup_stock_plate
-    # TODO: correctly lookup stock plate via pico dilution from assay plate
     self.parents.each do |parent_plate|
-      next unless parent_plate.is_a?(Plate)
+      next unless parent_plate.is_a?(Plate)     # TODO: Do we need this?
       return parent_plate if parent_plate.stock_plate?
-
-      if parent_plate.parents
-        parent_plate.parents.each do |parent_parent_plate|
-          next unless parent_parent_plate.is_a?(Plate)
-          if parent_parent_plate.stock_plate?
-            return parent_parent_plate
-          end
-        end
-      end
+      parent_stock = parent_plate.send(:lookup_stock_plate)
+      return parent_stock if parent_stock.present?
     end
-
     nil
   end
+  private :lookup_stock_plate
 
   def child_dilution_plates_filtered_by_type(parent_model)
     self.children.select{ |p| p.is_a?(parent_model) }

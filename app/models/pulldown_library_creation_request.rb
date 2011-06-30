@@ -1,11 +1,16 @@
 class PulldownLibraryCreationRequest < Request
+  # NOTE: Do not alter the order here:
+  #
+  # 1. has_metadata :as => Request
+  # 2. include Request::LibraryManufacture
+  #
+  # These are dependent upon each other
   has_metadata :as => Request do
-    attribute(:fragment_size_required_from, :required => true, :integer => true)
-    attribute(:fragment_size_required_to,   :required => true, :integer => true)
-
     include BaitLibrary::Associations
     association(:bait_library, :name)
   end
+
+  include Request::LibraryManufacture
 
   # Override the behaviour of Request so that we do not copy the aliquots from our source asset
   # to the target when we are passed.  This is actually done by the TransferRequest from plate

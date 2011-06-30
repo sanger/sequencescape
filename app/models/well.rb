@@ -5,13 +5,6 @@ class Well < Aliquot::Receptacle
   include Cherrypick::VolumeByMicroLitre
   include StudyReport::WellDetails
   include Tag::Associations
-  include Transfer::State
-
-  has_many :transfer_requests, :class_name => 'TransferRequest', :foreign_key => :target_asset_id
-
-  def default_state
-    nil
-  end
 
   named_scope :located_at, lambda { |plate, location|
     { :joins => :map, :conditions => { :maps => { :description => location, :asset_size => plate.size } } }

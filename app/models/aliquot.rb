@@ -2,6 +2,16 @@
 # of a sample, or it might be a library (a combination of the DNA sample and a tag).
 class Aliquot < ActiveRecord::Base
   class Receptacle < Asset
+    include Transfer::State
+
+    has_many :transfer_requests, :class_name => 'TransferRequest', :foreign_key => :target_asset_id
+    has_many :transfer_requests_as_source, :class_name => 'TransferRequest', :foreign_key => :asset_id
+    has_many :transfer_requests_as_target, :class_name => 'TransferRequest', :foreign_key => :target_asset_id
+
+    def default_state
+      nil
+    end
+
     # A receptacle can hold many aliquots.  For example, a multiplexed library tube will contain more than
     # one aliquot.
     has_many :aliquots, :foreign_key => :receptacle_id, :autosave => true
@@ -90,6 +100,9 @@ class Aliquot < ActiveRecord::Base
   belongs_to :receptacle, :class_name => 'Aliquot::Receptacle'
   validates_presence_of :receptacle
 
+  # An aliquot can belong to a study
+  belongs_to :study
+
   # An aliquot is an amount of a sample
   belongs_to :sample
   validates_presence_of :sample
@@ -100,4 +113,15 @@ class Aliquot < ActiveRecord::Base
 
   # It may have a bait library but not necessarily.
   belongs_to :bait_library
+
+  # An aliquot can represent a library, which is a processed sample that has been fragmented.  In which case it 
+  # has a receptacle that held the library aliquot and has an insert size describing the fragment positions.
+  class InsertSize < Range
+    alias_method :from, :first
+    alias_method :to,   :last
+  end
+
+  # It can belong to a library asset
+  belongs_to :library, :class_name => 'Aliquot::Receptacle'
+  composed_of :insert_size, :mapping => [%w{insert_size_from from}, %w{insert_size_to to}], :class_name => 'Aliquot::InsertSize', :allow_nil => true
 end

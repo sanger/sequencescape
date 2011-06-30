@@ -109,11 +109,11 @@ class WorkflowsControllerTest < ActionController::TestCase
         @task2 = Factory :task, :name => "Submit batch", :location => "http://someurl", :workflow => @ws1, :sorted => 1, :sti_type => "SetDescriptorsTask"
         @task3 = Factory :task, :name => "Q20 Check", :location => "", :workflow => @ws2, :sorted => 0, :sti_type => "SetDescriptorsTask"
         @task4 = Factory :task, :name => "Submit batch", :location => "http://someurl", :workflow => @ws2 , :sorted => 1, :sti_type => "SetDescriptorsTask"
-        @library1 = Factory :asset
-        @lane1  = Factory :asset
+        @library1 = Factory :library_tube
+        @lane1  = Factory :lane
         @lane1.parents << @library1
-        @library2 = Factory :asset
-        @lane2  = Factory :asset
+        @library2 = Factory :library_tube
+        @lane2  = Factory :lane
         @lane2.parents << @library2
 
         @item1 = @pipeline.request_type.create!(:asset => @lane1)
