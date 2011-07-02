@@ -1,0 +1,167 @@
+#!/usr/bin/env script/runner
+
+# Ensure that the classes are loaded before we modify them!
+Aliquot::Receptacle ; Well ; Tube ; Request ; Plate
+
+module Graphable
+  def node_id
+    "#{self.class.name.underscore}_#{self.id}"
+  end
+
+  def output_to(outputter, details = :recurse)
+
+  end
+end
+
+class ActiveRecord::Base
+  include Graphable
+end
+
+class Aliquot
+  def output_to(outputter, details = :recurse)
+    # NOTE: This doesn't work, need to uniquely identify nodes everywhere!
+    outputter.node(self.node_id, :label => 'A')
+    outputter.connection(self.receptacle.node_id, self.node_id)
+
+    if library.present?
+      library.output_to(outputter, :just_your_node)
+      outputter.connection(self.node_id, library.node_id, :label => 'Library')
+    end
+    return
+
+    { :sample => :name, :tag => :oligo, :bait_library => :name }.each do |related, label|
+      object = send(related) or next
+      outputter.node(object.node_id, :label => object.send(label))
+      outputter.connection(self.node_id, object.node_id)
+    end
+  end
+end if ARGV.include?('--include-aliquots')
+
+class Aliquot::Receptacle
+  def output_to(outputter, details = :recurse)
+    self.aliquots.each { |aliquot| aliquot.output_to(outputter) }
+  end
+end
+
+class Well
+  def output_to(outputter, details = :recurse)
+    outputter.node(self.node_id, :label => "Well @ #{self.map.try(:description) || 'unknown'}\\n#{self.id}")
+    return if details != :recurse
+
+    if plate.present?
+      plate.output_to(outputter)
+      outputter.connection(plate.node_id, self.node_id)
+    end
+    super
+  end
+end
+
+class Plate
+  def output_to(outputter, details = :recurse)
+    outputter.node(self.node_id, :label => "#{self.plate_purpose.try(:name) || 'Unspecified'}\\nBarcode #{self.barcode}", :shape => 'box')
+  end
+end
+
+class Tube
+  def output_to(outputter, details = :recurse)
+    outputter.node(self.node_id, :label => "Tube #{self.barcode}")
+    return if details != :recurse
+
+    super
+  end
+end
+
+class Request
+  STATES_TO_COLOURS = {
+    "pending"   => "blue",
+    "started"   => "orange",
+    "passed"    => "green",
+    "failed"    => "red",
+    "cancelled" => "red"
+  }
+
+  def output_to(outputter, details = :recurse)
+    throw :ignore if self.state == 'pending' and ARGV.include?('--ignore-pending')
+    destination = self.target_asset.try(:node_id) || outputter.undefined_node
+    outputter.connection(self.asset.node_id, destination, :label => self.class.name, :color => STATES_TO_COLOURS[self.state])
+  end
+end
+
+class Outputter
+  def initialize(io = $stdout)
+    @io = io
+    @known_nodes, @undefined_asset = [], 1
+  end
+
+  def puts(message)
+    @io.puts("#{message};")
+  end
+
+
+  def extras(options)
+    return '' if options.empty?
+    %Q{[#{options.map { |k,v| "#{k}=\"#{v}\"" }.join(' ')}]}
+  end
+  private :extras
+
+  def node(identifier, options = {})
+    return if @known_nodes.include?(identifier)
+    puts %Q{\t#{identifier} #{extras(options)}}
+  ensure
+    @known_nodes << identifier
+  end
+
+  def undefined_node
+    undefined_asset_id.tap { |u| node(u) }
+  end
+
+  def undefined_asset_id
+    "undefined_#{@undefined_asset}"
+  ensure
+    @undefined_asset = @undefined_asset+1
+  end
+  private :undefined_asset_id
+
+  def connection(parent, child, options = {})
+    puts %Q{\t#{parent} -> #{child} #{extras(options)}}
+  end
+
+  def graph(name)
+    @io.puts "digraph \"#{name}\" {"
+    puts "\trankdir=LR"
+    yield
+  ensure
+    @io.puts "}"
+  end
+end
+
+class Walker
+  attr_reader :outputter, :assets
+
+  def initialize(outputter, assets)
+    @outputter, @assets = outputter, Array(assets)
+  end
+
+  def walk
+    outputter.graph("Graph of #{assets.map(&:id).inspect}") do
+      assets.map(&method(:walk_request_graph))
+    end
+  end
+
+  def walk_request_graph(current_asset)
+    return if current_asset.nil?
+
+    current_asset.output_to(outputter)
+    current_asset.requests_as_source.each do |request|
+      catch(:ignore) do
+        request.output_to(outputter)
+        walk_request_graph(request.target_asset)
+      end
+    end
+  end
+  private :walk_request_graph
+end
+
+receptacle_ids = ARGV.select { |a| a =~ /^\d+$/ }.map(&:to_i)
+raise "Specify receptacles to follow" if receptacle_ids.empty?
+Walker.new(Outputter.new, Aliquot::Receptacle.find(receptacle_ids)).walk

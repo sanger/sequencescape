@@ -31,7 +31,7 @@ class Transfer::BetweenPlates < Transfer
     transfers_we_did_not_make = []
     transfers.each do |source_location, destination_location|
       source_well = well_from(source, source_location)
-      if source_well.aliquots.empty?
+      if source_well.nil? or source_well.aliquots.empty?
         transfers_we_did_not_make.push(source_location)
       else
         yield(well_from(source, source_location), well_from(destination, destination_location))

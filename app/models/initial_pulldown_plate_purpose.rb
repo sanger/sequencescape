@@ -7,7 +7,8 @@ class InitialPulldownPlatePurpose < PlatePurpose
     super
 
     plate.wells.each do |well|
-      library_request = well.transfer_requests_as_target.first.asset.requests_as_source.where_is_a?(PulldownLibraryCreationRequest).first
+      transfer_request = well.transfer_requests_as_target.first or next
+      library_request  = transfer_request.asset.requests_as_source.where_is_a?(PulldownLibraryCreationRequest).first
       start_pulldown_library_request(library_request)
       assign_library_information(well, library_request) if [ 'started', 'passed' ].include?(state)
     end

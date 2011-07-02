@@ -47,6 +47,7 @@ unless ENV['NO_PULLDOWN']
     ].each do |pipeline|
       $stderr.puts "\t#{pipeline}"
 
+      $stderr.puts "\t\tFull plate"
       SubmissionTemplate.find_by_name("Cherrypick for pulldown - #{pipeline} - HiSeq Paired end sequencing").create!(
         :user => user, :study => study, :project => project,
         :assets => stock_plate.wells,
@@ -58,6 +59,7 @@ unless ENV['NO_PULLDOWN']
       ).built!
 
       # Submit the plate in two halves
+      $stderr.puts "\t\tTwo halves"
       SubmissionTemplate.find_by_name("Cherrypick for pulldown - #{pipeline} - HiSeq Paired end sequencing").create!(
         :user => user, :study => study, :project => project,
         :assets => stock_plate.wells.slice(0, 48),
@@ -76,10 +78,29 @@ unless ENV['NO_PULLDOWN']
           :bait_library_name => BaitLibrary.first.name
         }
       ).built!
+
+      # Submit the plate in columns
+      (1..12).each do |column|
+        $stderr.puts "\t\tColumn #{column}"
+        wells_to_submit = []
+        stock_plate.wells.walk_in_column_major_order do |well, _|
+          wells_to_submit << well if well.map.description =~ /^[A-H]#{column}$/
+        end
+
+        SubmissionTemplate.find_by_name("Cherrypick for pulldown - #{pipeline} - HiSeq Paired end sequencing").create!(
+          :user => user, :study => study, :project => project,
+          :assets => wells_to_submit,
+          :request_options => {
+            :read_length => 100,
+            :fragment_size_required_from => 100, :fragment_size_required_to => 200,
+            :bait_library_name => BaitLibrary.first.name
+          }
+        ).built!
+      end
     end
 
     $stderr.puts "\tBuilding submission request graphs ..."
-    Delayed::Worker.new.work_off(50)
+    Delayed::Worker.new.work_off(Delayed::Job.count * 2)
 
     $stderr.puts "Fudging 7 additional HiSeq requests so that they are available"
     LinearSubmission.new(:study => Study.first, :project => Project.first, :user => User.first).save_without_validation
