@@ -24,6 +24,10 @@ ActiveRecord::Base.transaction do
     :name                => "Pool wells based on submission",
     :transfer_class_name => Transfer::BetweenPlatesBySubmission.name
   )
+  TransferTemplate.create!(
+    :name                => "Custom pooling",
+    :transfer_class_name => Transfer::BetweenPlates.name
+  )
 
   # Plate-to-tube transfers
   TransferTemplate.create!(

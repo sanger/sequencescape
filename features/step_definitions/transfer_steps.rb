@@ -25,8 +25,7 @@ Given /^the transfer template called "([^\"]+)" exists$/ do |name|
   Factory(:transfer_template, :name => name)
 end
 
-Then /^the transfers from plate (\d+) to plate (\d+) should be:$/ do |id1, id2, table|
-  source, destination = Plate.find(id1), Plate.find(id2)
+Then /^the transfers from (the plate .+) to (the plate .+) should be:$/ do |source, destination, table|
   table.hashes.each do |transfers|
     source_well_location, destination_well_location = transfers['source'], transfers['destination']
 
@@ -38,6 +37,10 @@ end
 
 Given /^a transfer plate exists with ID (\d+)$/ do |id|
   Factory(:transfer_plate, :id => id)
+end
+
+Given /^a transfer plate called "([^\"]+)" exists$/ do |name|
+  Factory(:transfer_plate, :name => name)
 end
 
 Given /^the "([^\"]+)" transfer template has been used between "([^\"]+)" and "([^\"]+)"$/ do |template_name, source_name, destination_name|

@@ -25,7 +25,8 @@ class TransferTemplate < ActiveRecord::Base
     line = __LINE__ + 1
     class_eval(%Q{
       def #{name}(attributes)
-        transfer_class.#{name}(attributes.merge(:transfers => self.transfers))
+        attributes.merge!(:transfers => self.transfers) unless self.transfers.blank?
+        transfer_class.#{name}(attributes)
       end
     }, __FILE__, line)
   end
