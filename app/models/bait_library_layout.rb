@@ -52,7 +52,7 @@ class BaitLibraryLayout < ActiveRecord::Base
 
   def each_bait_library_assignment(&block)
     plate.wells.walk_in_column_major_order do |well, _|
-      stock_well   = locate_stock_well_for(well)
+      stock_well   = locate_stock_well_for(well) or next
       bait_library = stock_well.requests.detect { |r| r.submission_id.present? }.try(:request_metadata).try(:bait_library)
       yield(well, bait_library)
     end

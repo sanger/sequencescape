@@ -52,16 +52,17 @@ module Core::Endpoint::BasicHandler::Actions
   end
 
   def does_not_require_an_io_class
-    self.singleton_class.class_eval(%Q{def check_request_io_class!(_) ; end})
+    self.singleton_class.class_eval(%Q{def check_request_io_class!(_) ; end}, __FILE__, __LINE__)
   end
 
   def disable(*actions)
     actions.each do |action|
+      line = __LINE__ + 1
       singleton_class.class_eval(%Q{
         def _#{action}(request, response)
           raise ::Core::Service::UnsupportedAction
         end
-      })
+      }, __FILE__, line)
       @actions.delete(action.to_sym)
     end
   end

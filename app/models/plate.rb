@@ -13,17 +13,9 @@ class Plate < Asset
   delegate :barcode_type, :to => :plate_purpose, :allow_nil => true
 
   # Transfer requests into a plate are the requests leading into the wells of said plate.
-  # NOTE The sti_type value here is singular, where it may need subclasses.
-  has_many :transfer_requests, :finder_sql => %q{
-    SELECT *
-    FROM requests
-    WHERE #{transfer_request_query_conditions} AND sti_type="TransferRequest"
-  }
-
-  def transfer_request_query_conditions
-    self.well_ids.empty? ? 'FALSE' : "target_asset_id IN (#{self.well_ids.join(',')})"
+  def transfer_requests
+    wells.map(&:transfer_requests_as_target).flatten
   end
-  private :transfer_request_query_conditions
 
   # The iteration of a plate is defined as the number of times a plate of this type has been created
   # from it's parent.

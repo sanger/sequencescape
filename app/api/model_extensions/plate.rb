@@ -11,10 +11,11 @@ module ModelExtensions::Plate
     :plate_metadata, {
       :wells => [
         :map,
+        :transfer_requests_as_target,
         :uuid_object, {
           :aliquots => [
-            :tag,
             :bait_library, {
+              :tag => :tag_group,
               :sample => [
                 :uuid_object, {
                   :primary_study   => { :study_metadata => :reference_genome },

@@ -85,11 +85,12 @@ class Core::Service < Sinatra::Base
   end
 
   [ :before, :after ].each do |filter|
-    class_eval <<-END_OF_ACTION_FILTER
+    line = __LINE__ + 1
+    class_eval(%Q{
       def self.#{filter}_all_actions(&block)
         self.#{filter}(%r{^/#{self.api_version_path}(/.*)?$}, &block)
       end
-    END_OF_ACTION_FILTER
+    }, __FILE__, line)
   end
 
   def command

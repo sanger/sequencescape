@@ -21,6 +21,9 @@ class PlatePurpose < ActiveRecord::Base
     def self.included(base)
       base.class_eval do
         belongs_to :plate_purpose
+        named_scope :with_plate_purpose, lambda { |*purposes|
+          { :conditions => { :plate_purpose_id => purposes.flatten.map(&:id) } }
+        }
       end
     end
 

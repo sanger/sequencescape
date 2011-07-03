@@ -6,11 +6,21 @@ class Transfer < ActiveRecord::Base
 
         has_many :transfers_as_source,     :class_name => 'Transfer', :foreign_key => :source_id,      :order => 'created_at ASC'
         has_one  :transfer_as_destination, :class_name => 'Transfer', :foreign_key => :destination_id
+
+        named_scope :with_no_outgoing_transfers, { :include => :transfers_as_source, :conditions => { :transfers => { :source_id => nil } } }
       end
     end
   end
 
   module State
+    def self.included(base)
+      base.class_eval do
+        named_scope :in_state, lambda { |*states|
+          { }
+        }
+      end
+    end
+
     def self.state_helper(*names)
       names.each do |name|
         module_eval(%Q{def #{name}? ; state == #{name.to_s.inspect} ; end})
