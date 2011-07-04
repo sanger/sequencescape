@@ -483,7 +483,7 @@ class BatchesController < ApplicationController
         asset = Asset.find(key)
         if @batch.multiplexed?
           count.times do
-            printables.push BarcodeLabel.new({ :number => asset.barcode, :study => "(p) #{asset.name}" })
+            printables.push PrintBarcode::Label.new({ :number => asset.barcode, :study => "(p) #{asset.name}" })
           end
         end
       end
@@ -494,8 +494,8 @@ class BatchesController < ApplicationController
       asset = @batch.assets.first
       begin
         printables.sort! {|a,b| a.number <=> b.number }
-        barcode.print printables, params[:printer], asset.prefix, "short"
-      rescue BarcodeException
+        barcode.print(printables, params[:printer], asset.prefix, "short")
+      rescue PrintBarcode::BarcodeException
         flash[:error] = "Label printing to #{params[:printer]} failed: #{$!}."
       rescue SOAP::FaultError
         flash[:warning] = "There is a problem with the selected printer. Please report it to Systems."
@@ -507,7 +507,6 @@ class BatchesController < ApplicationController
   end
 
   def print_plate_barcodes
-    barcode_printer = BarcodePrinter.new
     printables = []
     count = params[:count].to_i
     params[:printable].each do |key, value|
@@ -515,15 +514,15 @@ class BatchesController < ApplicationController
         label = key
         identifier = key
         count.times do
-          printables.push BarcodeLabel.new({ :number => identifier, :study => label, :batch => @batch })
+          printables.push PrintBarcode::Label.new({ :number => identifier, :study => label, :batch => @batch })
         end
       end
     end
     unless printables.empty?
       begin
         printables.sort! {|a,b| a.number <=> b.number }
-        barcode_printer.print printables, params[:printer], "DN", "long",@batch.study.abbreviation, current_user.login
-      rescue BarcodeException
+        BarcodePrinter.print(printables, params[:printer], "DN", "long",@batch.study.abbreviation, current_user.login)
+      rescue PrintBarcode::BarcodeException
         flash[:error] = "Label printing to #{params[:printer]} failed: #{$!}."
       rescue SOAP::FaultError
         flash[:warning] = "There is a problem with the selected printer. Please report it to Systems."
@@ -538,7 +537,6 @@ class BatchesController < ApplicationController
   def print_barcodes
     unless @batch.requests.empty?
       asset = @batch.requests.first.asset
-      barcode_printer = BarcodePrinter.new
       printables = []
       count = params[:count].to_i
       params[:printable].each do |key, value|
@@ -569,15 +567,15 @@ class BatchesController < ApplicationController
             end
           end
           count.times do
-            printables.push BarcodeLabel.new({ :number => identifier, :study => label })
+            printables.push PrintBarcode::Label.new({ :number => identifier, :study => label })
           end
         end
       end
       unless printables.empty?
         begin
           printables.sort! {|a,b| b.number <=> a.number }
-          barcode_printer.print printables, params[:printer], asset.prefix, "short"
-        rescue BarcodeException
+          BarcodePrinter.print(printables, params[:printer], asset.prefix, "short")
+        rescue PrintBarcode::BarcodeException
           flash[:error] = "Label printing to #{params[:printer]} failed: #{$!}."
         rescue SOAP::FaultError
           flash[:warning] = "There is a problem with the selected printer. Please report it to Systems."

@@ -31,9 +31,9 @@ Feature: Sequenom QC Plate Creation
       And select "xyz" from "Barcode Printer"
       
 
-    Then I expect to print <number_of_plates> barcode labels
 
     When I press "Create new Plate"
+    Then exactly <number_of_plates> labels should have been printed
       And all pending delayed jobs are processed
     Then I should see "Sequenom <plate_type> Plate <plate_type><plate_1_human>_<plate_2_human>_<plate_3_human>_<plate_4_human>_20100804 successfully created"
       And I should see "labels printed"

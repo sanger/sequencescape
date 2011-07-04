@@ -134,7 +134,7 @@ class SampleManifest < ActiveRecord::Base
     core_behaviour.print_labels do |printables, prefix, *args|
       unless printables.empty?
         printables.each { |printable| printable.study = self.study.abbreviation }
-        barcode_printer.print(printables, barcode_printer.name, prefix, *args)
+        barcode_printer.print_labels(printables, prefix, *args)
       end
     end
     true

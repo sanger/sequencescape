@@ -22,7 +22,7 @@ class Projects::Workflows::ItemsController < ApplicationController
      item = Item.find(key)
      request = item.requests.detect{ |r| r.request_type.key == "receive_sample" }
      unless request.nil?
-       printables.push BarcodeLabel.new({ :number => request.id, :project => "#{item.id}_#{item.name.gsub("_"," ")}", :suffix => "" })
+       printables.push PrintBarcode::Label.new({ :number => request.id, :project => "#{item.id}_#{item.name.gsub("_"," ")}", :suffix => "" })
      end
     end
     if !printables.empty?

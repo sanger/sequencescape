@@ -12,6 +12,12 @@ def sort_arrays(xml_data)
   end
 end
 
+def assert_xml_strings_equal(str1, str2)
+  expected = sort_arrays(Hash.from_xml(str1))
+  received = sort_arrays(Hash.from_xml(str2))
+  assert_hash_equal(expected, received, 'XML differs when decoded')
+end
+
 Then /^ignoring "([^\"]+)" the XML response should be:$/ do |key_regexp, serialized_xml|
   regexp = Regexp.new(key_regexp)
   block  = lambda { |key| key.to_s =~ regexp }
@@ -22,10 +28,9 @@ Then /^ignoring "([^\"]+)" the XML response should be:$/ do |key_regexp, seriali
   )
 end
 
+
 Then /^the XML response should be:/ do |serialized_xml|
-  expected = sort_arrays(Hash.from_xml(serialized_xml))
-  received = sort_arrays(Hash.from_xml(page.body))
-  assert_hash_equal(expected, received, 'XML differs when decoded')
+  assert_xml_strings_equal(serialized_xml, page.body)
 end
 
 Then /^the value of the "([^"]+)" attribute of the XML element "([^"]+)" should be "([^"]+)"/ do |attribute, xpath, value|
