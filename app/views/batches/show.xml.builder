@@ -42,7 +42,7 @@ xml.batch {
                   xml.tag_group_id      aliquot.tag.tag_group_id
                 } unless aliquot.tag.nil?
 
-                xml.bait!(:id => aliquot.bait_library.id) {
+                xml.bait(:id => aliquot.bait_library.id) {
                   xml.name aliquot.bait_library.name
                 } if aliquot.bait_library.present?
 
