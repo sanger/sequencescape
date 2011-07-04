@@ -1,4 +1,11 @@
 class PulldownLibraryCreationRequest < Request
+  LIBRARY_TYPES = [
+    'Standard',
+    'Agilent Pulldown'
+  ]
+
+  DEFAULT_LIBRARY_TYPE = 'Standard'
+
   # NOTE: Do not alter the order here:
   #
   # 1. has_metadata :as => Request

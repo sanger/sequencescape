@@ -8,6 +8,7 @@ class CreateAliquots < ActiveRecord::Migration
       t.references :sample,     :null => false
       t.references :tag
 
+      t.string :library_type
       t.integer :insert_size_from
       t.integer :insert_size_to
 

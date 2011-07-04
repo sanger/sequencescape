@@ -7,8 +7,8 @@ class ::Io::User < ::Core::Io::Base
                    first_name <=> first_name
                     last_name <=> last_name
                       barcode <=> barcode
-                swipecard_code <=  swipecard_code
-               swipecard_code?  => has_a_swipecard_code
+               swipecard_code <=  swipecard_code
+              swipecard_code?  => has_a_swipecard_code
 
 })
 end

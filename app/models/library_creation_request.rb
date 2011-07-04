@@ -16,6 +16,8 @@ class LibraryCreationRequest < Request
     "qPCR only"
   ]
 
+  DEFAULT_LIBRARY_TYPE = 'Standard'
+
   # NOTE: Do not alter the order here:
   #
   # 1. has_metadata :as => Request
@@ -24,17 +26,11 @@ class LibraryCreationRequest < Request
   #
   # These are dependent upon each other
   has_metadata :as => Request do
-    attribute(:library_type, :default => 'Standard', :in => LIBRARY_TYPES, :required =>true)
     # /!\ We don't check the read_length, because we don't know the restriction, that depends on the SequencingRequest
     attribute(:read_length, :integer => true) # meaning , so not required but some people want to set it
   end
 
   include Request::LibraryManufacture
-
-  class RequestOptionsValidator
-    delegate_attribute :library_type, :to => :target, :default => 'Standard'
-    validates_inclusion_of :library_type, :in => LibraryCreationRequest::LIBRARY_TYPES
-  end
 
   # When a library creation request passes it does the default behaviour of a request but also adds the
   # insert size to the aliquots in the target asset and sets the library.  There's a minor complication in that
@@ -43,8 +39,9 @@ class LibraryCreationRequest < Request
   def on_passed
     super
     target_asset.aliquots.each do |aliquot|
-      aliquot.library     ||= target_asset
-      aliquot.insert_size ||= insert_size
+      aliquot.library      ||= well
+      aliquot.library_type ||= library_type
+      aliquot.insert_size  ||= insert_size
       aliquot.save!
     end
   end

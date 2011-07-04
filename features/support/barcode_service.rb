@@ -7,7 +7,7 @@ class FakeBarcodeService < FakeSinatraService
   # when it comes to the features.
   def self.install_hooks(target, tags)
     target.instance_eval do
-      plate_url, service_url = configatron.plate_barcode_service, configatron.barcode_service_ul
+      plate_url, service_url = configatron.plate_barcode_service, configatron.barcode_service_url
       Before(tags) do |scenario|
         host, port = FakeBarcodeService.instance.host, FakeBarcodeService.instance.port
         configatron.plate_barcode_service = "http://#{host}:#{port}/plate_barcode_service/"
@@ -16,7 +16,7 @@ class FakeBarcodeService < FakeSinatraService
       end
       After(tags) do |scenaro|
         configatron.plate_barcode_service = plate_url
-        configatron.barode_service_url    = service_url
+        configatron.barcode_service_url   = service_url
         PlateBarcode.site                 = configatron.plate_barcode_service
       end
     end

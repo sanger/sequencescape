@@ -166,7 +166,6 @@ Feature: The entry point for the API gives directions to the other actions
           }
         },
 
-
         "transfers": {
           "actions": {
             "read": "http://www.example.com/api/1/transfers"
@@ -424,8 +423,7 @@ Feature: The entry point for the API gives directions to the other actions
         },
         "users": {
           "actions": {
-            "read": "http://www.example.com/api/1/users",
-            "update": "http://www.example.com/api/1/users"
+            "read": "http://www.example.com/api/1/users"
           }
         }
       }

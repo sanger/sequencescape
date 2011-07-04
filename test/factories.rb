@@ -388,7 +388,8 @@ Factory.define :stock_multiplexed_library_tube do |a|
 end
 
 Factory.define(:empty_library_tube, :class => LibraryTube) do |library_tube|
-  library_tube.name {|_| Factory.next :asset_name }
+  library_tube.qc_state ''
+  library_tube.name     {|_| Factory.next :asset_name }
 end
 Factory.define :library_tube, :parent => :empty_library_tube do |library_tube|
 end

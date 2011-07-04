@@ -17,6 +17,7 @@ ActiveRecord::Schema.define(:version => 20110725091045) do
     t.integer  "library_id"
     t.integer  "sample_id",        :null => false
     t.integer  "tag_id"
+    t.string   "library_type"
     t.integer  "insert_size_from"
     t.integer  "insert_size_to"
     t.datetime "created_at"

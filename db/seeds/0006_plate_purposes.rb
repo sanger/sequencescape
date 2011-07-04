@@ -484,9 +484,11 @@ ActiveRecord::Base.transaction do
     request_type.acceptable_plate_purposes << stock_plate_purpose
 
     # Now we can build from the stock plate through to the end
-    initial_purpose = stock_plate_purpose.child_plate_purposes.create!(:type => 'InitialPulldownPlatePurpose', :name => flow.shift)
+    initial_purpose = stock_plate_purpose.child_plate_purposes.create!(:type => 'Pulldown::InitialPlatePurpose', :name => flow.shift)
     flow.inject(initial_purpose) do |parent, child_plate_name|
-      parent.child_plate_purposes.create!(:name => child_plate_name)
+      options = { :name => child_plate_name }
+      options[:type] = 'Pulldown::LibraryPlatePurpose' if child_plate_name =~ /^(WGS|SC|ISC) library plate$/
+      parent.child_plate_purposes.create!(options)
     end
   end
 
