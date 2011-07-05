@@ -50,10 +50,17 @@ optparse = OptionParser.new do |opts|
     $options[:output_method] = :objects_to_script
   end
 
-  opts.on('-g', '--graph', 'Generate a dot graph') do
+  opts.on('-g', '--graph type', 'Generate a dot graph') do |type|
     $options[:output_method] =:objects_to_graph
-    $options[:block] = Proc.new do |object, parent|
+    $options[:block] = case type
+    when "full"
+      Proc.new do |object, parent|
       { parent => object}
+      end
+    when "3max"
+      Proc.new do |object, parent, index, max_index|
+      { parent => object} if [1,2,max_index].include?(index)
+      end
     end
   end
 end
@@ -113,10 +120,11 @@ def objects_to_graph(edges)
       graph << node
     end
     edges.each do |parent, object|
-      next unless parent
+      next unless parent and object
       edge = DOT::DirectedEdge.new
-      edge.from = node_map[parent]
-      edge.to = node_map[object]
+      #edge.from = node_map[parent]
+      edge.from = node_name(parent)
+      edge.to = node_name(object)
       graph << edge
     end
   end
