@@ -20,7 +20,7 @@ Models = {
     Submission => [:asset_group]
   },
   :submission => {
-    Submission => [:study, :project, :requests, :asset_group],
+    Submission => [:study, :project, :requests_by_type, :asset_group],
     Request => [:asset, :target_asset]
   },
   :bare => {}
@@ -59,7 +59,13 @@ optparse = OptionParser.new do |opts|
       end
     when "3max"
       Proc.new do |object, parent, index, max_index|
+      if index == 3 and max_index > 3
+        # things been removed
+        debugger 
+        { parent => "#{object.class} ..." }
+      else
       { parent => object} if [1,2,max_index].include?(index)
+      end
       end
     end
   end
@@ -115,7 +121,11 @@ def objects_to_graph(edges)
     #create the node first
     edges.each do |parent, object|
       next unless object
+      if object.is_a? String
+      node = DOT::Node.new("label" => object, "name" => node_name(object) )
+      else
       node = DOT::Node.new("name" => node_name(object))
+      end
       node_map[object] = node
       graph << node
     end
@@ -148,6 +158,12 @@ optparse.parse!
 #puts $options.to_yaml
 #puts $objects.to_yaml
 
+Submission
+class Submission
+  def requests_by_type
+    requests.group_by(&:request_type_id).values
+  end
+end
 
 
 puts send($options[:output_method],
