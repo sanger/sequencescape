@@ -1,5 +1,7 @@
 #!/usr/bin/env script/runner
 require 'optparse'
+require 'rgl/dot'
+DOT=RGL::DOT
 $options = {:output_method => :objects_to_yaml, :model => :sample_with_assets}
 $objects = []
 $already_pulled = {}
@@ -18,7 +20,8 @@ Models = {
     Submission => [:asset_group]
   },
   :submission => {
-    Submission => [:study, :project, :requests, :asset_group]
+    Submission => [:study, :project, :requests, :asset_group],
+    Request => [:asset, :target_asset]
   },
   :bare => {}
 }
@@ -49,6 +52,9 @@ optparse = OptionParser.new do |opts|
 
   opts.on('-g', '--graph', 'Generate a dot graph') do
     $options[:output_method] =:objects_to_graph
+    $options[:block] = Proc.new do |object, parent|
+      { parent => object}
+    end
   end
 end
 
@@ -90,9 +96,29 @@ def objects_to_script(objects)
   end
 end
 
-def objects_to_graph(objects)
-  objects.map do |object|
-    "#{object.class.name} #{object.id}"
+def node_name(object)
+  "#{object.class}##{object.id}"
+end
+
+def objects_to_graph(edges)
+  edges  = edges.map(&:to_a).map(&:first)
+  DOT::Digraph.new.tap do |graph|
+    node_map =  {}
+
+    #create the node first
+    edges.each do |parent, object|
+      next unless object
+      node = DOT::Node.new("name" => node_name(object))
+      node_map[object] = node
+      graph << node
+    end
+    edges.each do |parent, object|
+      next unless parent
+      edge = DOT::DirectedEdge.new
+      edge.from = node_map[parent]
+      edge.to = node_map[object]
+      graph << edge
+    end
   end
 end
 
@@ -116,4 +142,5 @@ optparse.parse!
 
 
 
-puts send($options[:output_method], load_objects($objects).walk_objects(find_model($options[:model] )))
+puts send($options[:output_method],
+          load_objects($objects).walk_objects(find_model($options[:model]), &($options[:block])))

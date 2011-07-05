@@ -42,7 +42,8 @@ gem "delayed_job", '~>2.0.4'
 
 gem "cbrunnkvist-psd_logger"
 
-gem "ruby_walk", :git => "git+ssh://git@github.com/sanger/ruby_walk"
+#gem "ruby_walk", :git => "git+ssh://git@github.com/sanger/ruby_walk"
+gem "ruby_walk", :path => "../ruby_walk"
 
 # For the API level
 gem "uuidtools"
@@ -85,6 +86,8 @@ group :test do
   gem "timecop"
   gem "treetop", "~>1.2.5"
   gem 'parallel_tests'
+
+  gem 'rgl'
 end
 
 group :cucumber do
