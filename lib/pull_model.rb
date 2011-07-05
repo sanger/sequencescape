@@ -1,3 +1,4 @@
+#!/usr/bin/env script/runner
 require 'optparse'
 $options = {:output_method => :objects_to_yaml, :model => :sample_with_assets}
 $objects = []
@@ -16,6 +17,9 @@ Models = {
     Request => [:submission, :asset,:item,  :target_asset, :request_metadata, :user],
     Submission => [:asset_group]
   },
+  :submission => {
+    Submission => [:study, :project, :requests, :asset_group]
+  },
   :bare => {}
 }
 
@@ -28,6 +32,10 @@ optparse = OptionParser.new do |opts|
     $objects<< [Study, study]
   end
 
+  opts.on('--submission id_or_name', 'submission to pull') do |submission|
+    $objects << [Submission, submission]
+  end
+
   opts.on('-rt','--request_type', 'request types') do |request_types|
     $objects<< [RequestType, request_types]
   end
@@ -37,6 +45,10 @@ optparse = OptionParser.new do |opts|
   end
   opts.on('-r', '--ruby', 'Generate a ruby script') do 
     $options[:output_method] = :objects_to_script
+  end
+
+  opts.on('-g', '--graph', 'Generate a dot graph') do
+    $options[:output_method] =:objects_to_graph
   end
 end
 
@@ -78,6 +90,12 @@ def objects_to_script(objects)
   end
 end
 
+def objects_to_graph(objects)
+  objects.map do |object|
+    "#{object.class.name} #{object.id}"
+  end
+end
+
 def objects_to_yaml(objects)
   objects.map do |object|
     att = object_to_hash(object)
@@ -86,7 +104,7 @@ def objects_to_yaml(objects)
 end
 
 def find_model(model_name)
-    model = Models[model_name]
+    model = Models[model_name.to_sym]
     raise "can't find model #{model_name}. Available models are #{Models.keys.inspect}" unless model
     model
 end
