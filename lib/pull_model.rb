@@ -56,15 +56,29 @@ optparse = OptionParser.new do |opts|
     $options[:block] = case type
                        when "full"
                          Proc.new do |object, parent|
-                         { parent => object}
+                           { parent => object}
                          end
                        when "3max"
                          Proc.new do |object, parent, index, max_index|
-                         if index == 3 and max_index > 3
-                           # things been removed
-                           Cut.new({ parent => [object, "..."]})
-                         else
-                           { parent => object} if [1,2,max_index].include?(index)
+                           if index == 2 and max_index > 2
+                             # things been removed
+                             Cut.new({ parent => [object, "..."]})
+                           else
+                             { parent => object} if [0,1,max_index].include?(index)
+                           end
+                         end
+                       when "3center"
+                         Proc.new do |object, parent, index, max_index|
+                         # cut everything but one
+                         kept_index = [1, max_index || 0].min
+                         case index || kept_index
+                         when kept_index
+                             { parent => object}
+                         when 0,max_index
+                             # things been removed
+                             Cut.new({ parent => [object, object.class.name]})
+                         when 2
+                             Cut.new({ parent => [object, "..."]})
                          end
                          end
                        end
