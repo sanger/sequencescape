@@ -54,20 +54,20 @@ optparse = OptionParser.new do |opts|
   opts.on('-g', '--graph type', 'Generate a dot graph') do |type|
     $options[:output_method] =:objects_to_graph
     $options[:block] = case type
-    when "full"
-      Proc.new do |object, parent|
-      { parent => object}
-      end
-    when "3max"
-      Proc.new do |object, parent, index, max_index|
-      if index == 3 and max_index > 3
-        # things been removed
-        Cut.new({ parent => [object, "..."]})
-      else
-      { parent => object} if [1,2,max_index].include?(index)
-      end
-      end
-    end
+                       when "full"
+                         Proc.new do |object, parent|
+                         { parent => object}
+                         end
+                       when "3max"
+                         Proc.new do |object, parent, index, max_index|
+                         if index == 3 and max_index > 3
+                           # things been removed
+                           Cut.new({ parent => [object, "..."]})
+                         else
+                           { parent => object} if [1,2,max_index].include?(index)
+                         end
+                         end
+                       end
   end
 end
 
