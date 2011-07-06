@@ -71,7 +71,7 @@ module Request::Statemachine
       cloned_aliquots.each do |aliquot|
         aliquot.study ||= study
       end
-    end
+    end if target_asset.present?
   end
 
   def on_cancelled

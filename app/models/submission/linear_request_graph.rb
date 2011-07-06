@@ -89,7 +89,7 @@ module Submission::LinearRequestGraph
         if request_type.for_multiplexing?   # May have many nil assets for non-multiplexing
           target_assets.uniq.map { |asset| [ asset, nil ] }  # 'nil' is Item here and should go
         else
-          target_assets.each_with_index.map { |asset,index| [ asset, source_asset_item_pairs[index].last ] }
+          target_assets.each_with_index.map { |asset,index| [ asset || source_asset_item_pairs[index].first, source_asset_item_pairs[index].last ] }
         end
       create_request_chain!(request_type_and_multiplier_pairs.dup, target_assets)
     end
