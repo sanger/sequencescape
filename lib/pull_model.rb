@@ -20,7 +20,8 @@ Models = {
     Submission => [:asset_group]
   },
   :submission => {
-    Submission => [:study, :project, :requests_by_type, :asset_group],
+    Submission => [:study, :project, lambda { |s|  s.requests.group_by(&:request_type_id).values },
+      :requests_by_type, :asset_group],
     Request => [:asset, :target_asset]
   },
   :bare => {}
@@ -61,8 +62,7 @@ optparse = OptionParser.new do |opts|
       Proc.new do |object, parent, index, max_index|
       if index == 3 and max_index > 3
         # things been removed
-        debugger 
-        { parent => "#{object.class} ..." }
+        Cut.new({ parent => [object, "..."]})
       else
       { parent => object} if [1,2,max_index].include?(index)
       end
@@ -115,16 +115,16 @@ end
 
 def objects_to_graph(edges)
   edges  = edges.map(&:to_a).map(&:first)
-  DOT::Digraph.new.tap do |graph|
+  DOT::Digraph.new("rankdir" => "LR").tap do |graph|
     node_map =  {}
 
     #create the node first
     edges.each do |parent, object|
       next unless object
-      if object.is_a? String
-      node = DOT::Node.new("label" => object, "name" => node_name(object) )
+      if object.is_a?(Array)
+        node = DOT::Node.new("label" => object[1], "name" => node_name(object[0]) )
       else
-      node = DOT::Node.new("name" => node_name(object))
+        node = DOT::Node.new("name" => node_name(object))
       end
       node_map[object] = node
       graph << node
@@ -132,9 +132,8 @@ def objects_to_graph(edges)
     edges.each do |parent, object|
       next unless parent and object
       edge = DOT::DirectedEdge.new
-      #edge.from = node_map[parent]
-      edge.from = node_name(parent)
-      edge.to = node_name(object)
+      edge.from = node_map[parent].name
+      edge.to = node_map[object].name
       graph << edge
     end
   end
