@@ -43,11 +43,11 @@ Feature: Disable form submission on carriage return on Sequenom plate creation p
     And I fill in "Number of Plates" with "1"
     And select "<plate_type>" from "Plate Type"
     And select "xyz" from "Barcode Printer"
-    And I expect to print 1 barcode label
 
     When I press "Create new Plate"
     And I should see "Sequenom <plate_type> Plate <plate_type><plate_1_human>_<plate_2_human>_<plate_3_human>_<plate_4_human>_20100804 successfully created"
     And I should see "labels printed"
+    And exactly 1 label should have been printed
     And I should be on the new Sequenom QC Plate page
     Examples:
       | plate_type  | plate_1       | plate_1_human | plate_2       | plate_2_human | plate_3       | plate_3_human | plate_4       | plate_4_human |

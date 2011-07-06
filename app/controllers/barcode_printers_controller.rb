@@ -66,7 +66,7 @@ class BarcodePrintersController < ApplicationController
       format.html { redirect_to(barcode_printers_url) }
     end
   end
-  # This module define common behavior usede by other controller to print things
+  # This module define common behavior used by other controller to print things
   module Print
   def print_asset_labels(succes_url, failure_url)
     assets = params[:printables]
@@ -82,11 +82,11 @@ class BarcodePrintersController < ApplicationController
         asset.barcode = AssetBarcode.new_barcode
         asset.save!
         end
-        printables.push BarcodeLabel.new({ :number => asset.barcode, :study => "#{asset.tube_name}", :suffix => "" })
+        printables.push PrintBarcode::Label.new({ :number => asset.barcode, :study => "#{asset.tube_name}", :suffix => "" })
        end
 
        unless printables.empty?
-         barcode.print printables, params[:printer], prefix
+         BarcodePrinter.print(printables, params[:printer], prefix)
       end
     end
     flash[:notice] = "Your labels have been sent to printer #{params[:printer]}."
