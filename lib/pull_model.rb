@@ -6,6 +6,8 @@ $options = {:output_method => :objects_to_yaml, :model => :sample_with_assets}
 $objects = []
 $already_pulled = {}
 
+class Hidden < Array
+end
 
 # Model descriptions can be specified for subclass.
 # use :skip_super to not include superclass association
@@ -80,19 +82,21 @@ def set_graph_filter_option(type)
                          end
                        when "3center"
                          Proc.new do |object, parent, index, max_index|
-                         # cut everything but one
-                         kept_index = [1, max_index || 0].min
-                         case index || kept_index
-                         when kept_index
-                             { parent => object}
-                         when 0,max_index
-                             # things been removed
-                             #Cut.new({ parent => [object, object.class.name]})
-                             Cut.new({ parent => [object, node_name(object)] })
-                         when 2
-                             #Cut.new({ parent => [object, "..."]})
-                             Cut.new({ parent => [object, "#{[max_index-3, 1].min} x #{object.class.name}"]})
-                         end
+                           # cut everything but one
+                           kept_index = [1, max_index || 0].min
+                           case index || kept_index
+                           when kept_index
+                               { parent => object}
+                           when 0,max_index
+                               # things been removed
+                               #Cut.new({ parent => [object, object.class.name]})
+                               Cut.new({ parent => [object, node_name(object)] })
+                           when 2
+                               #Cut.new({ parent => [object, "..."]})
+                               Cut.new({ parent => [object, "#{[max_index-3, 1].min} x #{object.class.name}"]})
+                           else 
+                               Cut.new({ parent => Hidden.new([object, "#{[max_index-3, 1].min} x #{object.class.name}"])})
+                           end
                          end
                        end
 end
@@ -146,7 +150,9 @@ def objects_to_graph(edges)
     #create the node first
     edges.each do |parent, object|
       next unless object
+      hidden = false
       if object.is_a?(Array)
+        next if object.is_a?(Hidden)
         node = DOT::Node.new("label" => object[1], "name" => node_name(object[0]), "color" => "red" )
       else
         node = DOT::Node.new("name" => node_name(object), "style"=>"filled")
@@ -158,6 +164,11 @@ def objects_to_graph(edges)
     edges.each do |parent, object|
       next if edge_map[[object, parent]]
       next unless parent and object
+      if object.is_a?(Hidden)
+      debugger  if node_map[object.first]
+      next if not node_map[object.first]
+      object = object.first
+      end
       edge = DOT::Edge.new
       edge.from = node_map[parent].name
       edge.to = node_map[object].name
@@ -174,6 +185,7 @@ def objects_to_digraph(edges)
     #create the node first
     edges.each do |parent, object|
       next unless object
+      next if object.is_a?(Hidden)
       if object.is_a?(Array)
         node = DOT::Node.new("label" => object[1], "name" => node_name(object[0]))
       else
@@ -183,6 +195,7 @@ def objects_to_digraph(edges)
       graph << node
     end
     edges.each do |parent, object|
+      next if object.is_a?(Hidden)
       next unless parent and object
       edge = DOT::DirectedEdge.new
       edge.from = node_map[parent].name
