@@ -85,7 +85,6 @@
     <tr>
       <th width='5%'>Request ID</th>
       <th width='10%'>Request type</th>
-      <th width='5%'>Item ID</th>
       <th width='10%'>Study name </th>
       <th width='10%'>State</th>
       <th width='10%'>Batches</th>
@@ -102,7 +101,6 @@
     <tr>
       <td><%= link_to(request.id, request_url(request), :title => "#{ request.request_type.try(:name) || 'Unknown' } request") %></td>
       <td><%= request.request_type and request.request_type.name %></td>
-      <td><%= request.item_id %></td>
       <td>
         <% if request.study %>
           <%= link_to(request.study.name, study_path(request.study) ) %>

@@ -29,9 +29,6 @@
 <% if @request.study_id %>
 <div class='subtitle'>
   Study <%= @request.study.id %> &middot; Created on <%= @request.study.created_at.to_formatted_s(:long) %> &middot; <%= @request.study.state.capitalize %>
-  <% if @request.item_id %>
-    &middot; Item ID: <%= link_to  @request.item_id, item_url(@request.item) %>
-  <% end %>
 </div>
 <% end %>
 
