@@ -14,7 +14,7 @@ class PlatesControllerTest < ActionController::TestCase
       @barcode_printer = mock("printer abc")
       @barcode_printer.stubs(:id).returns(1)
       @barcode_printer.stubs(:name).returns("abc")
-      @barcode_printer.stubs(:print).returns(nil)
+      @barcode_printer.stubs(:print_labels).returns(nil)
       @barcode_printer.stubs(:map).returns(["abc",1])
       @barcode_printer.stubs(:first).returns(@barcode_printer)
       BarcodePrinter.stubs(:find).returns(@barcode_printer)
@@ -46,7 +46,7 @@ class PlatesControllerTest < ActionController::TestCase
 
       context "#create" do
 
-        context "with no source plates" do
+       context "with no source plates" do
           setup do
             post :create, :plates => {:plate_purpose => @gel_dilution_plates_purpose.id, :barcode_printer => @barcode_printer.id, :user_barcode => '2470000100730'}
           end
