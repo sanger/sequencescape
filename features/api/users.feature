@@ -15,25 +15,14 @@ Feature: Access users through the API
 
     Given I am using the latest version of the API
 
-  @read @error
-  Scenario: Reading the JSON for a user UUID that does not exist
-    When I GET the API path "/00000000-1111-2222-3333-444444444444"
-    Then the HTTP response should be "404 Not Found"
-    And the JSON should be:
-      """
-      {
-        "general": [ "UUID does not exist" ]
-      }
-      """
-
   @read
   Scenario: Reading the JSON for a user UUID
     Given the user exists with ID 1 and the following attributes:
-      | name | value |
-      | login | user_login |
-      | email | user@example.com |
-      | first_name | John |
-      | last_name | Smith |
+      | name       | value            |
+      | login      | user_login       |
+      | email      | user@example.com |
+      | first_name | John             |
+      | last_name  | Smith            |
 
     And the UUID for the user with ID 1 is "00000000-1111-2222-3333-444444444444"
 
@@ -61,13 +50,14 @@ Feature: Access users through the API
       }
       """
       And the JSON should not contain "update" within any element of "user.actions"
+
   Scenario: Reading the JSON for a user UUID with an authorised application
     Given the user exists with ID 1 and the following attributes:
-      | name | value |
-      | login | user_login |
-      | email | user@example.com |
-      | first_name | John |
-      | last_name | Smith |
+      | name       | value            |
+      | login      | user_login       |
+      | email      | user@example.com |
+      | first_name | John             |
+      | last_name  | Smith            |
 
     And the UUID for the user with ID 1 is "00000000-1111-2222-3333-444444444444"
 
@@ -83,13 +73,15 @@ Feature: Access users through the API
           }
       }
       """
+
   Scenario: Updating the JSON for a user UUID from an unauthorised application
     Given the user exists with ID 1 and the following attributes:
-      | name | value |
-      | login | user_login |
-      | email | user@example.com |
-      | first_name | John |
-      | last_name | Smith |
+      | name       | value            |
+      | login      | user_login       |
+      | email      | user@example.com |
+      | first_name | John             |
+      | last_name  | Smith            |
+
     And the UUID for the user with ID 1 is "00000000-1111-2222-3333-444444444444"
     When I PUT the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
        """
@@ -108,16 +100,16 @@ Feature: Access users through the API
     {
       "general":[ "requested action is not supported on this resource"]
     }
-    
     """
 
   Scenario: Updating the JSON for a user UUID
     Given the user exists with ID 1 and the following attributes:
-      | name | value |
-      | login | user_login |
-      | email | user@example.com |
-      | first_name | John |
-      | last_name | Smith |
+      | name       | value            |
+      | login      | user_login       |
+      | email      | user@example.com |
+      | first_name | John             |
+      | last_name  | Smith            |
+
     And the UUID for the user with ID 1 is "00000000-1111-2222-3333-444444444444"
     When I make an authorised PUT with the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
        """

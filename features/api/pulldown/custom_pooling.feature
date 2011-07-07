@@ -10,6 +10,8 @@ Feature: Custom pooling within the pulldown pipeline
 
     Given I am using the latest version of the API
 
+    Given a user with UUID "99999999-8888-7777-6666-555555555555" exists
+
     Given the UUID for the transfer template "Custom pooling" is "00000000-1111-2222-3333-444444444444"
 
     Given a transfer plate called "Source plate" exists
@@ -22,6 +24,7 @@ Feature: Custom pooling within the pulldown pipeline
       """
       {
         "transfer": {
+          "user": "99999999-8888-7777-6666-555555555555",
           "source": "11111111-2222-3333-4444-000000000001",
           "destination": "11111111-2222-3333-4444-000000000002",
           "transfers": {

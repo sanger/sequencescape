@@ -13,6 +13,8 @@ Feature: Access state changes through the API
 
     Given I am using the latest version of the API
 
+    Given a user with UUID "99999999-8888-7777-6666-555555555555" exists
+
     Given the plate barcode webservice returns "1000001"
       And the plate barcode webservice returns "1000002"
 
@@ -31,6 +33,7 @@ Feature: Access state changes through the API
       """
       {
         "state_change": {
+          "user": "99999999-8888-7777-6666-555555555555",
           "target": "00000000-1111-2222-3333-000000000002",
           "target_state": "<state>"
         }
@@ -73,6 +76,7 @@ Feature: Access state changes through the API
       """
       {
         "state_change": {
+          "user": "99999999-8888-7777-6666-555555555555",
           "target": "00000000-1111-2222-3333-000000000002",
           "contents": [ "A1" ],
           "target_state": "failed"

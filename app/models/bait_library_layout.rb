@@ -5,6 +5,7 @@ class BaitLibraryLayout < ActiveRecord::Base
 
   # So we can track who is requesting the layout of the bait libraries
   belongs_to :user
+  validates_presence_of :user
 
   # Bait libraries are laid out on a specific plate only once.
   belongs_to :plate

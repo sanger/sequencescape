@@ -11,6 +11,7 @@ class StateChange < ActiveRecord::Base
   include Uuid::Uuidable
 
   belongs_to :user
+  validates_presence_of :user
 
   # This is the target asset for which to update the state
   belongs_to :target, :class_name => 'Asset'

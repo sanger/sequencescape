@@ -47,7 +47,7 @@ Given /^the "([^\"]+)" transfer template has been used between "([^\"]+)" and "(
   template    = TransferTemplate.find_by_name(template_name) or raise StandardError, "Could not find transfer template #{template_name.inspect}"
   source      = Plate.find_by_name(source_name)              or raise StandardError, "Could not find source plate #{source_name.inspect}"
   destination = Plate.find_by_name(destination_name)         or raise StandardError, "Could not find destination plate #{destination_plate.inspect}"
-  template.create!(:source => source, :destination => destination)
+  template.create!(:source => source, :destination => destination, :user => Factory(:user))
 end
 
 

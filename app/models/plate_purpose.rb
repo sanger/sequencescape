@@ -99,7 +99,7 @@ class PlatePurpose < ActiveRecord::Base
 
   def create_barcode_labels_from_plates(plates)
     plates.map do |plate|
-      BarcodeLabel.new(
+      PrintBarcode::Label.new(
         :number => plate.barcode,
         :study  => plate.find_study_abbreviation_from_parent,
         :suffix => plate.parent.try(:barcode),

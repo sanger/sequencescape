@@ -29,6 +29,7 @@ Feature: Interacting with library_tubes through the API
             "public_name": "ABC",
             "lanes": "http://localhost:3000/0_5/library_tubes/00000000-1111-2222-3333-444444444444/lanes",
             "requests": "http://localhost:3000/0_5/library_tubes/00000000-1111-2222-3333-444444444444/requests",
+            "qc_state": "",
             
             "id": 1
           }
@@ -56,6 +57,7 @@ Feature: Interacting with library_tubes through the API
           "scanned_in_date": "",
           "lanes": "http://localhost:3000/0_5/library_tubes/00000000-1111-2222-3333-444444444444/lanes",
           "requests": "http://localhost:3000/0_5/library_tubes/00000000-1111-2222-3333-444444444444/requests",
+          "qc_state": "",
 
           "id": 1
         }

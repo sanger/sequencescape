@@ -12,6 +12,7 @@ class TagLayout < ActiveRecord::Base
 
   # The user performing the layout
   belongs_to :user
+  validates_presence_of :user
 
   # The tag group to layout on the plate
   belongs_to :tag_group

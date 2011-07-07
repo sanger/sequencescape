@@ -7,16 +7,44 @@ class Transfer < ActiveRecord::Base
         has_many :transfers_as_source,     :class_name => 'Transfer', :foreign_key => :source_id,      :order => 'created_at ASC'
         has_one  :transfer_as_destination, :class_name => 'Transfer', :foreign_key => :destination_id
 
-        named_scope :with_no_outgoing_transfers, { :include => :transfers_as_source, :conditions => { :transfers => { :source_id => nil } } }
+        # This looks odd but it's a LEFT OUTER JOIN, meaning that the rows we would be interested in have no source_id.
+        named_scope :with_no_outgoing_transfers, {
+          :select     => "DISTINCT #{base.quoted_table_name}.*",
+          :joins      => "LEFT OUTER JOIN `transfers` outgoing_transfers ON outgoing_transfers.`source_id`=#{base.quoted_table_name}.`id`",
+          :conditions => 'outgoing_transfers.source_id IS NULL'
+        }
       end
     end
   end
 
   module State
+    ALL_STATES = [ 'pending', 'started', 'passed', 'failed', 'cancelled' ].sort
+
     def self.included(base)
       base.class_eval do
-        named_scope :in_state, lambda { |*states|
-          { }
+        named_scope :in_state, lambda { |states|
+          states = Array(states).map(&:to_s)
+
+          # If all of the states are present there is no point in actually adding this set of conditions because we're
+          # basically looking for all of the plates.
+          if states.sort != ALL_STATES
+            # Note that 'state IS NULL' is included here for plates that are stock plates, because they will not have any 
+            # transfer requests coming into their wells and so we can assume they are pending (from the perspective of
+            # pulldown at least).
+            query_conditions = 'transfer_requests_as_target.state IN (?)'
+            query_conditions << ' OR transfer_requests_as_target.state IS NULL' if states.include?('pending')
+
+            {
+              :joins      => [
+                "INNER JOIN `container_associations` ON (`assets`.`id` = `container_associations`.`container_id`)",
+                "INNER JOIN `assets` wells_assets ON (`wells_assets`.`id` = `container_associations`.`content_id`) AND (`wells_assets`.`sti_type` = 'Well')",
+                "LEFT OUTER JOIN `requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = wells_assets.id AND (transfer_requests_as_target.`sti_type` = 'TransferRequest')"
+              ],
+              :conditions => [ query_conditions, states ]
+            }
+          else
+            { }
+          end
         }
       end
     end
@@ -27,7 +55,7 @@ class Transfer < ActiveRecord::Base
       end
     end
 
-    state_helper(:pending, :started, :passed, :failed, :cancelled)
+    state_helper(ALL_STATES)
 
     # The state of an asset is based on the transfer requests for the asset.  If they are all in the same
     # state then it takes that state.  Otherwise we take the "most optimum"!
@@ -121,6 +149,7 @@ class Transfer < ActiveRecord::Base
 
   # So we can track who is requesting the transfer
   belongs_to :user
+  validates_presence_of :user
 
   # The source plate and the destination asset (which varies between different types of transfers)
   # You can only transfer from one plate to another once, anything else is an error.

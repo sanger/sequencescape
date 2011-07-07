@@ -13,6 +13,8 @@ Feature: Access plate creations through the API
 
     Given I am using the latest version of the API
 
+    Given a user with UUID "99999999-8888-7777-6666-555555555555" exists
+
     Given the plate barcode webservice returns "1000001"
       And the plate barcode webservice returns "1000002"
 
@@ -33,6 +35,7 @@ Feature: Access plate creations through the API
       """
       {
         "plate_creation": {
+          "user": "99999999-8888-7777-6666-555555555555",
           "parent": "00000000-1111-2222-3333-000000000001",
           "child_plate_purpose": "11111111-2222-3333-4444-000000000002"
         }
@@ -90,10 +93,11 @@ Feature: Access plate creations through the API
       """
 
     Scenarios:
-      | json                                                                                                            | error                                                        |
-      | "parent": "00000000-1111-2222-3333-000000000001"                                                                | "child_plate_purpose": [ "can't be blank" ]                  |
-      | "child_plate_purpose": "11111111-2222-3333-4444-000000000002"                                                   | "parent": [ "can't be blank" ]                               |
-      | "parent": "00000000-1111-2222-3333-000000000001", "child_plate_purpose": "11111111-2222-3333-4444-000000000001" | "child_plate_purpose": [ "is not a valid child plate type" ] |
+      | json                                                                                                                                                            | error                                                        |
+      | "parent": "00000000-1111-2222-3333-000000000001", "child_plate_purpose": "11111111-2222-3333-4444-000000000002"                                                 | "user": [ "can't be blank" ]                                 |
+      | "user": "99999999-8888-7777-6666-555555555555", "parent": "00000000-1111-2222-3333-000000000001"                                                                | "child_plate_purpose": [ "can't be blank" ]                  |
+      | "user": "99999999-8888-7777-6666-555555555555", "child_plate_purpose": "11111111-2222-3333-4444-000000000002"                                                   | "parent": [ "can't be blank" ]                               |
+      | "user": "99999999-8888-7777-6666-555555555555", "parent": "00000000-1111-2222-3333-000000000001", "child_plate_purpose": "11111111-2222-3333-4444-000000000001" | "child_plate_purpose": [ "is not a valid child plate type" ] |
 
   @read
   Scenario: Reading the JSON for a UUID

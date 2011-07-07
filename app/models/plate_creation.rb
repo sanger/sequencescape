@@ -5,6 +5,7 @@ class PlateCreation < ActiveRecord::Base
   include ModelExtensions::PlateCreation
 
   belongs_to :user
+  validates_presence_of :user
 
   # There must be a parent plate from which to create a child.
   belongs_to :parent, :class_name => 'Plate'

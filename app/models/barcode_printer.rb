@@ -3,6 +3,7 @@ class BarcodePrinter < ActiveRecord::Base
 
   belongs_to :barcode_printer_type
   validates_presence_of :barcode_printer_type
+  named_scope :include_barcode_printer_type, { :include => :barcode_printer_type }
 
   def service_url
     configatron.barcode_service_url

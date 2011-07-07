@@ -28,12 +28,14 @@ end
 
 # Transfers and their templates
 Factory.define(:transfer_between_plates, :class => Transfer::BetweenPlates) do |transfer|
+  transfer.user        { |target| target.association(:user) }
   transfer.source      { |target| target.association(:transfer_plate) }
   transfer.destination { |target| target.association(:transfer_plate) }
   transfer.transfers('A1' => 'A1', 'B1' => 'B1')
 end
 
 Factory.define(:transfer_from_plate_to_tube, :class => Transfer::FromPlateToTube) do |transfer|
+  transfer.user        { |target| target.association(:user) }
   transfer.source      { |target| target.association(:transfer_plate) }
   transfer.destination { |target| target.association(:library_tube)   }
   transfer.transfers([ 'A1', 'B1' ])
@@ -63,6 +65,7 @@ Factory.define(:tag_layout_template) do |tag_layout_template|
 end
 
 Factory.define(:tag_layout, :class => TagLayout::InColumns) do |tag_layout|
+  tag_layout.user      { |target| target.association(:user) }
   tag_layout.plate     { |target| target.association(:full_plate_with_samples) }
   tag_layout.tag_group { |target| target.association(:tag_group_for_layout)    }
 end
@@ -79,6 +82,7 @@ Factory.define(:child_plate_purpose, :class => PlatePurpose) do |plate_purpose|
   plate_purpose.name 'Child plate purpose'
 end
 Factory.define(:plate_creation) do |plate_creation|
+  plate_creation.user   { |target| target.association(:user) }
   plate_creation.parent { |target| target.association(:full_plate) }
 
   plate_creation.after_build do |plate_creation|

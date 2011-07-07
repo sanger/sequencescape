@@ -10,6 +10,8 @@ Feature: Tagging the wells on a plate using a tag layout template
 
     Given I am using the latest version of the API
 
+    Given a user with UUID "99999999-8888-7777-6666-555555555555" exists
+
     Given the UUID for the search "Find asset by barcode" is "33333333-4444-5555-6666-000000000001"
 
     # Really this should be seed data but ...
@@ -93,6 +95,7 @@ Feature: Tagging the wells on a plate using a tag layout template
       """
       {
         "transfer": {
+          "user": "99999999-8888-7777-6666-555555555555",
           "source": "00000000-1111-2222-3333-000000000001",
           "destination": "00000000-1111-2222-3333-000000000002"
         }
@@ -223,6 +226,7 @@ Feature: Tagging the wells on a plate using a tag layout template
       """
       {
         "tag_layout": {
+          "user": "99999999-8888-7777-6666-555555555555",
           "plate": "00000000-1111-2222-3333-000000000002"
         }
       }
