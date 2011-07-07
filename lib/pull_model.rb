@@ -39,11 +39,12 @@ class GraphRenderer < Renderer
 
   def extract_used_objects_from_edges(edges)
     nodes = Set.new()
-    edges.reject{ |e| e.is_a?(HiddenEdge)}.each do |edge|
+    edges.each do |edge|
       nodes << edge.parent
-      nodes << edge.object
+      nodes << edge.object unless edge.is_a?(HiddenEdge) or edge.is_a?(Ellipsis) or edge.is_a?(CutEdge)
+      #nodes << edge.object unless edge.is_a?(HiddenEdge) or edge.is_a?(Ellipsis)
     end
-    return nodes.delete(nil)
+    return nodes.to_a.compact
   end
 
   def construct_graph(nodes, edges)
@@ -288,13 +289,14 @@ def set_graph_filter_option(type)
                              # things been removed
                              RubyWalk::Cut.new(Ellipsis.new(parent, object, index, max_index))
                            else
-                             Edge.new(parent, object, index, max_index) if [0,1,max_index].include?(index)
+                             Edge.new(parent, object, index, max_index) if [0,1,max_index].include?(index) or not parent
                            end
                          end
                        when "3center"
                          Proc.new do |object, parent, index, max_index|
                            # cut everything but one
                            kept_index = [1, max_index || 0].min
+                           kept_index = index unless parent
                            case index || kept_index
                            when kept_index
                              Edge.new(parent, object, index, max_index)
