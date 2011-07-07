@@ -23,6 +23,20 @@ module SampleManifest::PlateBehaviour
       printables          = stock_plate_purpose.create_barcode_labels_from_plates(plates)
       yield(printables, Plate.prefix, "long", stock_plate_purpose.name.to_s)
     end
+
+    # This method ensures that each of the plates is handled by an individual job.  If it doesn't do this we run
+    # the risk that the 'handler' column in the database for the delayed job will not be large enough and will
+    # truncate the data.
+    def generate_wells_for_plates(well_data, plates, &block)
+      cloned_well_data = well_data.dup
+      plates.each do |plate|
+        block.call(
+          cloned_well_data.slice!(0, plate.size),
+          plate
+        )
+      end
+    end
+    private :generate_wells_for_plates
   end
 
   #--
@@ -32,11 +46,13 @@ module SampleManifest::PlateBehaviour
   #++
   class RapidCore < Base
     def generate_wells(well_data, plates)
-      # Generate the wells, samples & requests asynchronously
-      @manifest.generate_wells_asynchronously(
-        well_data.map { |map,sample_id| [ map.id, sample_id ] },
-        plates.map(&:id)
-      )
+      # Generate the wells, samples & requests asynchronously.
+      generate_wells_for_plates(well_data, plates) do |this_plates_well_data, plate|
+        @manifest.generate_wells_asynchronously(
+          this_plates_well_data.map { |map,sample_id| [map.id, sample_id] },
+          plate.id
+        )
+      end
 
       # Ensure we maintain the information we need for printing labels and generating
       # the CSV file
@@ -63,7 +79,9 @@ module SampleManifest::PlateBehaviour
   end
 
   class Core < Base
-    delegate :generate_wells, :to => :@manifest
+    def generate_wells(well_data, plates)
+      generate_wells_for_plates(well_data, plates, &@manifest.method(:generate_wells))
+    end
 
     def io_samples
       samples.map do |sample|
@@ -108,16 +126,12 @@ module SampleManifest::PlateBehaviour
     end
   end
 
-  def generate_wells_asynchronously(well_data_with_ids, plate_ids)
+  def generate_wells_asynchronously(well_data_with_ids, plate_id)
     # Ensure the order of the wells are maintained
     maps      = Hash[Map.find(well_data_with_ids.map(&:first)).map { |map| [ map.id, map ] }]
     well_data = well_data_with_ids.map { |map_id,sample_id| [ maps[map_id], sample_id ] }
 
-    # Ensure the order of the plates are maintained
-    plates         = Hash[Plate.find(plate_ids).map { |plate| [ plate.id, plate ] }]
-    ordered_plates = plate_ids.map { |id| plates[id] }
-
-    generate_wells(well_data, ordered_plates)
+    generate_wells(well_data, Plate.find(plate_id))
   end
   handle_asynchronously :generate_wells_asynchronously
 
@@ -142,25 +156,22 @@ module SampleManifest::PlateBehaviour
 
     core_behaviour.generate_wells(well_data, plates)
     self.barcodes = plates.map(&:sanger_human_barcode)
+    RequestFactory.create_assets_requests(plates.map(&:id), self.study.id)
 
-    delayed_generate_asset_requests(plates, self.study)
     save!
   end
 
-  def generate_wells(well_data, plates)
-    plates.each_with_index do |plate, index|
-      wells_for_plate = well_data.slice!(0, plate.size)
-      study_samples_data = wells_for_plate.map do |map,sanger_sample_id|
-        create_sample(sanger_sample_id).tap do |sample|
-          plate.wells.create!(:map => map, :sample => sample, :well_attribute => WellAttribute.new)
-        end
+  def generate_wells(wells_for_plate, plate)
+    study_samples_data = wells_for_plate.map do |map,sanger_sample_id|
+      create_sample(sanger_sample_id).tap do |sample|
+        plate.wells.create!(:map => map, :sample => sample, :well_attribute => WellAttribute.new)
       end
-
-      delayed_generate_study_samples(study_samples_data.map { |sample| [ study.id, sample.id ] })
-      plate.events.created_using_sample_manifest!(self.user)
-
-      RequestFactory.create_assets_requests(plate.wells.map(&:id), study.id)
     end
+
+    generate_study_samples(study_samples_data.map { |sample| [ study.id, sample.id ] })
+    plate.events.created_using_sample_manifest!(self.user)
+
+    RequestFactory.create_assets_requests(plate.wells.map(&:id), study.id)
   end
   private :generate_wells
 end
