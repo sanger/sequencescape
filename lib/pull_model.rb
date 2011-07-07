@@ -49,8 +49,8 @@ class GraphRenderer < Renderer
   def construct_graph(nodes, edges)
     DOT::Graph.new("rankdir" => "LR").tap do |graph|
 
-      add_nodes(graph, nodes, edges)
-      add_edges(graph, nodes, edges)
+      drawn_nodes = add_nodes(graph, nodes, edges)
+      add_edges(graph, drawn_nodes, edges)
     end
   end
 
@@ -97,9 +97,12 @@ class GraphRenderer < Renderer
         graph << dot_node
       end
     end
+
+    return cut
   end
 
   def add_edges(graph, nodes, edges)
+    #debugger 
     edges.each do |edge|
       next unless edge.parent and edge.object
       next if edge.is_a?(HiddenEdge) and  not nodes.include?(edge.object)
@@ -119,18 +122,25 @@ end
 # remove doulbon
 class SingleGraphRenderer < GraphRenderer
   def add_edges(graph, nodes, edges)
-    edge_set = Set.new(edges.map(&:key))
-    super(graph, nodes, edges.select { |e| edge_set.include?(e.reversed_key) == false})
+    edge_set = Set.new()
+    super(graph, nodes, edges.select { |e| edge_set<< e.key and edge_set.include?(e.reversed_key) == false})
   end
 end
 
 class DigraphRenderer < GraphRenderer
   def construct_graph(nodes, edges)
-    DOT::Diraph.new("rankdir" => "LR").tap do |graph|
+    DOT::Digraph.new("rankdir" => "LR").tap do |graph|
 
       add_nodes(graph, nodes, edges)
       add_edges(graph, nodes, edges)
     end
+  end
+
+  def create_edge(edge)
+    dot_edge = DOT::DirectedEdge.new(edge.edge_options)
+    dot_edge.from = node_name(edge.parent)
+    dot_edge.to = node_name(edge.object)
+    return dot_edge
   end
 end
 class YamlRenderer < Renderer
@@ -177,6 +187,7 @@ class Edge
     [parent, object]
   end
 
+  # the key of the reversed edge, not necessarily the reverse of the key
   def reversed_key
     [object, parent]
   end
