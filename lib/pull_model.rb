@@ -59,11 +59,13 @@ class GraphRenderer < Renderer
     hidden = Set.new()
     normal = Set.new()
     cut = Set.new()
+    ellipsis = Set.new()
     label_map = {}
     
     edges.each do |edge|
 
       set = case edge
+            when Ellipsis then ellipsis
             when HiddenEdge then  hidden
             when CutEdge then cut
             else normal
@@ -72,6 +74,7 @@ class GraphRenderer < Renderer
       label_map[edge.object] ||= edge.label if edge.object
     end
 
+    cut += ellipsis
     cut -= normal
     hidden -= (cut + normal)
 
@@ -90,6 +93,8 @@ class GraphRenderer < Renderer
         dot_node = case 
         when normal.include?(node)
          DOT::Node.new(node_options.merge("style" => "filled"))
+        when ellipsis.include?(node)
+         DOT::Node.new(node_options.merge("color" => "gray", "fontcolor" => "gray", "shape" => "roundbox"))
         when cut.include?(node)
          DOT::Node.new(node_options.merge("color" => "gray"))
         end
@@ -98,7 +103,7 @@ class GraphRenderer < Renderer
       end
     end
 
-    return cut
+    return cut+normal
   end
 
   def add_edges(graph, nodes, edges)
@@ -223,12 +228,16 @@ Models = {
     Request => [:submission, :asset,:item,  :target_asset, :request_metadata, :user],
     Submission => [:asset_group]
   },
-  :submission => {
+  :submission => [{
     Submission => [:study, :project, lambda { |s|  s.requests.group_by(&:request_type_id).values }, :asset_group],
     Request => [:asset, :target_asset],
     Asset => lambda { |s|  s.requests.group_by(&:request_type_id).values },
     AssetGroup => [:assets]
-  },
+  }, 
+    {
+    Request => [:submission]
+  }
+  ],
     :simple_submission =>  { Submission => lambda { |s|  s.requests.group_by(&:request_type_id).values }} ,
   :bare => {}
 }
