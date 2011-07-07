@@ -2,7 +2,147 @@
 require 'optparse'
 require 'rgl/dot'
 DOT=RGL::DOT
-$options = {:output_method => :objects_to_yaml, :model => :sample_with_assets}
+
+#TODO put in a module
+class Renderer
+  def render(objects, options, &block)
+         render_objects(objects.walk_objects(options, &block))
+  end
+end
+
+class ScriptRenderer < Renderer
+  def render_object(objects)
+    objects.map do |object|
+      att = object_to_hash(object)
+        %Q{
+            #{object.class.name}.new(#{att.inspect}) { |r| r.id = #{object.id} }.save_without_validation
+          }
+    end
+  end
+end
+
+
+class GraphRenderer < Renderer
+  def render(objects, options, &block)
+    options = [options] unless options.is_a?(Array)
+
+    nodes, edges = options.inject([objects, []]) do |ne, option|
+      nodes, old_edges = ne
+      new_edges = nodes.walk_objects(option, &block)
+      new_nodes = extract_used_objects_from_edges(new_edges)
+
+      [new_nodes, old_edges + new_edges]
+    end
+
+    construct_graph(nodes, edges).to_s
+  end
+
+  def extract_used_objects_from_edges(edges)
+    nodes = Set.new()
+    edges.reject{ |e| e.is_a?(HiddenEdge)}.each do |edge|
+      nodes << edge.parent
+      nodes << edge.object
+    end
+    return nodes.delete(nil)
+  end
+
+  def construct_graph(nodes, edges)
+    DOT::Graph.new("rankdir" => "LR").tap do |graph|
+
+      add_nodes(graph, nodes, edges)
+      add_edges(graph, nodes, edges)
+    end
+  end
+
+  def add_nodes(graph, major_nodes, edges)
+    #normal node
+    hidden = Set.new()
+    normal = Set.new()
+    cut = Set.new()
+    label_map = {}
+    
+    edges.each do |edge|
+
+      set = case edge
+            when HiddenEdge then  hidden
+            when CutEdge then cut
+            else normal
+           end
+      set << edge.object
+      label_map[edge.object] ||= edge.label if edge.object
+    end
+
+    cut -= normal
+    hidden -= (cut + normal)
+
+    done = Set.new()
+
+
+    # Draw eache node
+    edges.each do |edge|
+      [edge.parent, edge.object].each do |node|
+        next if done.include?(node) or not node
+        done << node
+         node_options = { "name" => node_name(node) }
+        if label=label_map[node]
+          node_options["label"] = label
+        end
+        dot_node = case 
+        when normal.include?(node)
+         DOT::Node.new(node_options.merge("style" => "filled"))
+        when cut.include?(node)
+         DOT::Node.new(node_options.merge("color" => "gray"))
+        end
+        next unless dot_node
+        graph << dot_node
+      end
+    end
+  end
+
+  def add_edges(graph, nodes, edges)
+    edges.each do |edge|
+      next unless edge.parent and edge.object
+      next if edge.is_a?(HiddenEdge) and  not nodes.include?(edge.object)
+
+      graph << create_edge(edge)
+    end
+  end
+
+  def create_edge(edge)
+    dot_edge = DOT::Edge.new(edge.edge_options)
+    dot_edge.from = node_name(edge.parent)
+    dot_edge.to = node_name(edge.object)
+    return dot_edge
+  end
+end
+
+# remove doulbon
+class SingleGraphRenderer < GraphRenderer
+  def add_edges(graph, nodes, edges)
+    edge_set = Set.new(edges.map(&:key))
+    super(graph, nodes, edges.select { |e| edge_set.include?(e.reversed_key) == false})
+  end
+end
+
+class DigraphRenderer < GraphRenderer
+  def construct_graph(nodes, edges)
+    DOT::Diraph.new("rankdir" => "LR").tap do |graph|
+
+      add_nodes(graph, nodes, edges)
+      add_edges(graph, nodes, edges)
+    end
+  end
+end
+class YamlRenderer < Renderer
+  def render_objects(objects)
+    objects.map do |object|
+      att = object_to_hash(object)
+      {:class => object.class.name, :id => object.id, :attributes => att}
+    end.to_yaml
+  end
+end
+
+$options = {:output_method => YamlRenderer.new, :model => :sample_with_assets}
 $objects = []
 $already_pulled = {}
 
@@ -43,19 +183,20 @@ class Edge
 
 end
 
-class CuttedEdge < Edge
+class CutEdge < Edge
   def node_options
     super.merge({ "color" => "red", "style" => "none" })
   end
 end
 
-class Ellipsis < CuttedEdge
+class  HiddenEdge < CutEdge
+end
+
+class Ellipsis < CutEdge
   def label
      #"#{[max_index+1-3, 1].max} x #{object.class.name}"
      " ... x #{object.class.name}"
   end
-end
-class  HiddenEdge < CuttedEdge
 end
 
 
@@ -72,8 +213,7 @@ Models = {
     Submission => [:asset_group]
   },
   :submission => {
-    Submission => [:study, :project, lambda { |s|  s.requests.group_by(&:request_type_id).values },
-      :requests_by_type, :asset_group],
+    Submission => [:study, :project, lambda { |s|  s.requests.group_by(&:request_type_id).values }, :asset_group],
     Request => [:asset, :target_asset],
     Asset => lambda { |s|  s.requests.group_by(&:request_type_id).values },
     AssetGroup => [:assets]
@@ -103,15 +243,15 @@ optparse = OptionParser.new do |opts|
     $options[:model]=model_name
   end
   opts.on('-r', '--ruby', 'Generate a ruby script') do 
-    $options[:output_method] = :objects_to_script
+    $options[:output_method] = ScriptRendere.new
   end
 
   opts.on('-g', '--graph type', 'Generate a dot graph') do |type|
-    $options[:output_method] =:objects_to_graph
+    $options[:output_method] = SingleGraphRenderer.new
     set_graph_filter_option(type)
   end
   opts.on('-d', '--digraph type', 'Generate a dot graph') do |type|
-    $options[:output_method] =:objects_to_digraph
+    $options[:output_method] = DigraphRenderer.new
     set_graph_filter_option(type)
   end
 end
@@ -141,7 +281,7 @@ def set_graph_filter_option(type)
                            when 0,max_index
                                # things been removed
                                #RubyWalk::Cut.new({ parent => [object, object.class.name]})
-                               RubyWalk::Cut.new(CuttedEdge.new(parent,object, index, max_index))
+                               RubyWalk::Cut.new(CutEdge.new(parent,object, index, max_index))
                            when 2
                                #RubyWalk::Cut.new({ parent => [object, "..."]})
                                RubyWalk::Cut.new(Ellipsis.new(parent,object, index, max_index))
@@ -180,18 +320,11 @@ def object_to_hash(object)
   end
   att.reject { |k,v| !v }
 end
-def objects_to_script(objects)
-  objects.map do |object|
-    att = object_to_hash(object)
-%Q{
-#{object.class.name}.new(#{att.inspect}) { |r| r.id = #{object.id} }.save_without_validation
-}
-  end
-end
-
 def node_name(object)
   "#{object.class}##{object.id}"
 end
+
+
 
 def objects_to_graph(edges)
   edges  = edges.map(&:to_a).map(&:first)
@@ -248,12 +381,6 @@ def objects_to_digraph(edges)
   end
 end
 
-def objects_to_yaml(objects)
-  objects.map do |object|
-    att = object_to_hash(object)
-    {:class => object.class.name, :id => object.id, :attributes => att}
-  end.to_yaml
-end
 
 def find_model(model_name)
     model = Models[model_name.to_sym]
@@ -266,13 +393,4 @@ optparse.parse!
 #puts $options.to_yaml
 #puts $objects.to_yaml
 
-Submission
-class Submission
-  def requests_by_type
-    requests.group_by(&:request_type_id).values
-  end
-end
-
-
-puts send($options[:output_method],
-          load_objects($objects).walk_objects(find_model($options[:model]), &($options[:block])))
+puts $options[:output_method].render(load_objects($objects), find_model($options[:model]), &($options[:block]))
