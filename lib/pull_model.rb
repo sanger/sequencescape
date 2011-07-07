@@ -6,8 +6,58 @@ $options = {:output_method => :objects_to_yaml, :model => :sample_with_assets}
 $objects = []
 $already_pulled = {}
 
-class Hidden < Array
+class Edge
+  attr_reader :parent, :object, :index, :max_index
+  def initialize(*args)
+    @parent, @object, @index, @max_index = args
+  end
+
+  def label()
+    if index
+      "#{index+1}/#{max_index+1} - #{object.class.name}# #{object.id}"
+    else
+      "#{object.class.name}# #{object.id}"
+    end
+  end
+
+  def node_options
+    {
+      "name" => node_name(object),
+      "label" => label(),
+      "style" => "filled"
+    }
+  end
+
+  def edge_options
+    {}
+  end
+
+  # TODO  proably a ruby way to do it
+  def key
+    [parent, object]
+  end
+
+  def reversed_key
+    [object, parent]
+  end
+
 end
+
+class CuttedEdge < Edge
+  def node_options
+    super.merge({ "color" => "red", "style" => "none" })
+  end
+end
+
+class Ellipsis < CuttedEdge
+  def label
+     #"#{[max_index+1-3, 1].max} x #{object.class.name}"
+     " ... x #{object.class.name}"
+  end
+end
+class  HiddenEdge < CuttedEdge
+end
+
 
 # Model descriptions can be specified for subclass.
 # use :skip_super to not include superclass association
@@ -28,6 +78,7 @@ Models = {
     Asset => lambda { |s|  s.requests.group_by(&:request_type_id).values },
     AssetGroup => [:assets]
   },
+    :simple_submission =>  { Submission => lambda { |s|  s.requests.group_by(&:request_type_id).values }} ,
   :bare => {}
 }
 
@@ -68,16 +119,16 @@ end
 def set_graph_filter_option(type)
     $options[:block] = case type
                        when "full"
-                         Proc.new do |object, parent|
-                           { parent => object}
+                         Proc.new do |object, parent, index, max_index|
+                             Edge.new(parent, object, index, max_index)
                          end
                        when "3max"
                          Proc.new do |object, parent, index, max_index|
                            if index == 2 and max_index > 2
                              # things been removed
-                             Cut.new({ parent => [object, "#{[max_index-3, 1].max} x #{object.class.name}"]})
+                             Cut.new(Ellipsis.new(parent, object, index, max_index))
                            else
-                             { parent => object} if [0,1,max_index].include?(index)
+                             Edge.new(parent, object, index, max_index) if [0,1,max_index].include?(index)
                            end
                          end
                        when "3center"
@@ -86,16 +137,16 @@ def set_graph_filter_option(type)
                            kept_index = [1, max_index || 0].min
                            case index || kept_index
                            when kept_index
-                               { parent => object}
+                             Edge.new(parent, object, index, max_index)
                            when 0,max_index
                                # things been removed
                                #Cut.new({ parent => [object, object.class.name]})
-                               Cut.new({ parent => [object, node_name(object)] })
+                               Cut.new(CuttedEdge.new(parent,object, index, max_index))
                            when 2
                                #Cut.new({ parent => [object, "..."]})
-                               Cut.new({ parent => [object, "#{[max_index-3, 1].min} x #{object.class.name}"]})
+                               Cut.new(Ellipsis.new(parent,object, index, max_index))
                            else 
-                               Cut.new({ parent => Hidden.new([object, "#{[max_index-3, 1].min} x #{object.class.name}"])})
+                               Cut.new(HiddenEdge.new(parent, object, index, max_index))
                            end
                          end
                        end
@@ -148,32 +199,24 @@ def objects_to_graph(edges)
     node_map =  {}
 
     #create the node first
-    edges.each do |parent, object|
-      next unless object
+    edges.each do |edge|
+      next unless edge.object
       hidden = false
-      if object.is_a?(Array)
-        next if object.is_a?(Hidden)
-        node = DOT::Node.new("label" => object[1], "name" => node_name(object[0]), "color" => "red" )
-      else
-        node = DOT::Node.new("name" => node_name(object), "style"=>"filled")
-      end
-      node_map[object] = node
+      next if edge.is_a?(HiddenEdge)
+      node = DOT::Node.new(edge.node_options)
+      node_map[edge.object] = node
       graph << node
     end
     edge_map= {}
-    edges.each do |parent, object|
-      next if edge_map[[object, parent]]
-      next unless parent and object
-      if object.is_a?(Hidden)
-      debugger  if node_map[object.first]
-      next if not node_map[object.first]
-      object = object.first
-      end
-      edge = DOT::Edge.new
-      edge.from = node_map[parent].name
-      edge.to = node_map[object].name
-      graph << edge
-      edge_map[[parent, object]] = true
+    edges.each do |edge|
+      next if edge_map[edge.reversed_key]
+      next unless edge.parent and edge.object
+      next if edge.is_a?(HiddenEdge) and  not node_map[edge.object]
+      dot_edge = DOT::Edge.new(edge.edge_options)
+      dot_edge.from = node_map[edge.parent].name
+      dot_edge.to = node_map[edge.object].name
+      graph << dot_edge
+      edge_map[edge.key] = true
     end
   end
 end
