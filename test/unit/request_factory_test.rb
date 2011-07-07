@@ -178,4 +178,24 @@ class RequestFactoryTest < ActiveSupport::TestCase
     end
   end
 
+  context '.create_assets_requests' do
+    setup do
+      @study  = Factory(:study)
+      @assets = [ Factory(:sample_tube), Factory(:sample_tube) ]
+
+      RequestFactory.create_assets_requests(@assets.map(&:id), @study.id)
+    end
+
+    should 'have all create asset requests as passed' do
+      assert_equal ['passed'], RequestType.find_by_key('create_asset').requests.map(&:state).uniq
+    end
+
+    should 'have the study on all requests' do
+      assert_equal [@study.id], RequestType.find_by_key('create_asset').requests.map(&:study_id).uniq
+    end
+
+    should 'have the asset IDs' do
+      assert_equal @assets.map(&:id).sort, RequestType.find_by_key('create_asset').requests.map(&:asset_id).sort
+    end
+  end
 end
