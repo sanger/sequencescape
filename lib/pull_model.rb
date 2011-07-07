@@ -126,7 +126,7 @@ def set_graph_filter_option(type)
                          Proc.new do |object, parent, index, max_index|
                            if index == 2 and max_index > 2
                              # things been removed
-                             Cut.new(Ellipsis.new(parent, object, index, max_index))
+                             RubyWalk::Cut.new(Ellipsis.new(parent, object, index, max_index))
                            else
                              Edge.new(parent, object, index, max_index) if [0,1,max_index].include?(index)
                            end
@@ -140,13 +140,13 @@ def set_graph_filter_option(type)
                              Edge.new(parent, object, index, max_index)
                            when 0,max_index
                                # things been removed
-                               #Cut.new({ parent => [object, object.class.name]})
-                               Cut.new(CuttedEdge.new(parent,object, index, max_index))
+                               #RubyWalk::Cut.new({ parent => [object, object.class.name]})
+                               RubyWalk::Cut.new(CuttedEdge.new(parent,object, index, max_index))
                            when 2
-                               #Cut.new({ parent => [object, "..."]})
-                               Cut.new(Ellipsis.new(parent,object, index, max_index))
+                               #RubyWalk::Cut.new({ parent => [object, "..."]})
+                               RubyWalk::Cut.new(Ellipsis.new(parent,object, index, max_index))
                            else 
-                               Cut.new(HiddenEdge.new(parent, object, index, max_index))
+                               RubyWalk::Cut.new(HiddenEdge.new(parent, object, index, max_index))
                            end
                          end
                        end
