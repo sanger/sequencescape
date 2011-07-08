@@ -202,7 +202,11 @@ end
 
 class CutEdge < Edge
   def node_options
-    super.merge({ "color" => "red", "style" => "none" })
+    super.merge({ "color" => "red", "style" => "none"})
+  end
+
+  def edge_options
+    super.merge("constraint" => "true", "color" => "gray")
   end
 end
 
@@ -221,40 +225,44 @@ end
 # use :skip_super to not include superclass association
 Models = {
   :sample_with_assets =>  {
-    Sample => [:assets, :study_samples],
-    StudySample => [:study],
-    Asset => [:requests, :children, :parents],
-    Well => [:container_association],
-    ContainerAssociation => [:container, :content] ,
-    Request => [:submission, :asset,:item,  :target_asset, :request_metadata, :user],
-    Submission => [:asset_group]
-  },
+  Sample => [:assets, :study_samples],
+  StudySample => [:study],
+  Asset => [:requests, :children, :parents],
+  Well => [:container_association],
+  ContainerAssociation => [:container, :content] ,
+  Request => [:submission, :asset,:item,  :target_asset, :request_metadata, :user],
+  Submission => [:asset_group]
+},
   :submission => [{
-    Submission => [:study, :project, RequestByType=lambda { |s|  s.requests.group_by(&:request_type_id).values }, :asset_group],
-    Request => [:asset, :target_asset],
-    Asset => [lambda { |s|  s.requests.group_by(&:request_type_id).values }, :source_request],
-    AssetGroup => [:assets]
-  }, 
-    {
-    Request => [:submission]
-  }
-  ],
+  Submission => [:study, :project, RequestByType=lambda { |s|  s.requests.group_by(&:request_type_id).values }, :asset_group],
+  Request => [:asset, :target_asset],
+  Asset => [lambda { |s|  s.requests.group_by(&:request_type_id).values }, :source_request],
+  AssetGroup => [:assets]
+}, 
+  {
+  Request => [:submission]
+}
+],
 
   :simple_submission =>  { Submission => lambda { |s|  s.requests.group_by(&:request_type_id).values }} ,
 
   :asset_down => AssetDown={ Asset => [:children, RequestByType ], 
     Request => [:target_asset, :submission]},
   :asset_up => AssetUp={ Asset => [:parent, :source_request], 
-      Request => [:asset, :submission]},
-  :asset_up_and_down => [AssetUp, AssetDown],
-  :asset_down_and_up => [AssetDown, AssetUp],
-  :asset => [{Asset => [ lambda { |s|  s.requests.group_by(&:request_type_id).values },
-          :source_request, :children, :parents]}, 
-            { Request => [:asset, :target_asset]}],
-  :bare => {}
+    Request => [:asset, :submission]},
+    :asset_up_and_down => [AssetUp, AssetDown],
+    :asset_down_and_up => [AssetDown, AssetUp],
+    :asset => [{Asset => [ lambda { |s|  s.requests.group_by(&:request_type_id).values },
+        :source_request, :children, :parents]}, 
+        { Request => [:asset, :target_asset]}],
+    :submission_down => [{ Submission => RequestByType}.merge(AssetDown), {Request => [:submission]}] ,
+    :bare => {}
 }
 
 optparse = OptionParser.new do |opts|
+  opts.on('-e', '--eval expr ', 'ruby expression returning a list of object to pull') do |expr|
+    $objects<< expr
+  end
   opts.on('-s', '--sample id_or_name', 'sample to pull') do |sample|
     $objects<< [Sample, sample]
   end
@@ -335,7 +343,10 @@ end
 
 def load_objects(objects)
   loaded = []
-  objects.each do |model, name|
+  objects.each do |object|
+    case object
+    when Array
+    model, name = object
     name.split(",").each do |name|
       if name =~ /\A\d+\Z/
         #name is an id
@@ -348,6 +359,9 @@ def load_objects(objects)
 
       raise RuntimeError, "can't find #{model} '#{name}'" unless object
       loaded << object
+    end
+    when String
+      loaded = eval(object)
     end
   end
   return loaded
