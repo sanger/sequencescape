@@ -230,16 +230,27 @@ Models = {
     Submission => [:asset_group]
   },
   :submission => [{
-    Submission => [:study, :project, lambda { |s|  s.requests.group_by(&:request_type_id).values }, :asset_group],
+    Submission => [:study, :project, RequestByType=lambda { |s|  s.requests.group_by(&:request_type_id).values }, :asset_group],
     Request => [:asset, :target_asset],
-    Asset => lambda { |s|  s.requests.group_by(&:request_type_id).values },
+    Asset => [lambda { |s|  s.requests.group_by(&:request_type_id).values }, :source_request],
     AssetGroup => [:assets]
   }, 
     {
     Request => [:submission]
   }
   ],
-    :simple_submission =>  { Submission => lambda { |s|  s.requests.group_by(&:request_type_id).values }} ,
+
+  :simple_submission =>  { Submission => lambda { |s|  s.requests.group_by(&:request_type_id).values }} ,
+
+  :asset_down => AssetDown={ Asset => [:children, RequestByType ], 
+    Request => [:target_asset, :submission]},
+  :asset_up => AssetUp={ Asset => [:parent, :source_request], 
+      Request => [:asset, :submission]},
+  :asset_up_and_down => [AssetUp, AssetDown],
+  :asset_down_and_up => [AssetDown, AssetUp],
+  :asset => [{Asset => [ lambda { |s|  s.requests.group_by(&:request_type_id).values },
+          :source_request, :children, :parents]}, 
+            { Request => [:asset, :target_asset]}],
   :bare => {}
 }
 
@@ -250,6 +261,14 @@ optparse = OptionParser.new do |opts|
 
   opts.on('--study id_or_name', 'study to pull') do |study|
     $objects<< [Study, study]
+  end
+
+  opts.on('-a', '--asset id_or_name', 'asset to pull') do |asset|
+    $objects<< [Asset, asset]
+  end
+
+  opts.on('-a', '--request id', 'request to pull') do |request|
+    $objects<< [Request, request]
   end
 
   opts.on('--submission id_or_name', 'submission to pull') do |submission|
@@ -263,7 +282,7 @@ optparse = OptionParser.new do |opts|
   opts.on '-m' '--model', 'model of what needs to be pull' do |model_name|
     $options[:model]=model_name
   end
-  opts.on('-r', '--ruby', 'Generate a ruby script') do 
+  opts.on('-rs', '--ruby', 'Generate a ruby script') do 
     $options[:output_method] = ScriptRendere.new
   end
 
@@ -444,6 +463,13 @@ end
   klass.class_eval do
     def node_options()
       super.merge("shape" => "septagon")
+    end
+  end
+end
+[Plate].each do |klass|
+  klass.class_eval do
+    def node_options()
+      super.merge("shape" => "parallelogram")
     end
   end
 end
