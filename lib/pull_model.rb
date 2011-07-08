@@ -129,7 +129,7 @@ end
 class SingleGraphRenderer < GraphRenderer
   def add_edges(graph, nodes, edges)
     edge_set = Set.new()
-    super(graph, nodes, edges.select { |e| edge_set<< e.key and edge_set.include?(e.reversed_key) == false})
+    super(graph, nodes, edges.select { |e| edge_set.include?(e.key) == false and edge_set<< e.key and edge_set.include?(e.reversed_key) == false})
   end
 end
 
@@ -362,62 +362,6 @@ def object_to_hash(object)
   end
   att.reject { |k,v| !v }
 end
-
-def objects_to_graph(edges)
-  edges  = edges.map(&:to_a).map(&:first)
-  DOT::Graph.new("rankdir" => "LR").tap do |graph|
-    node_map =  {}
-
-    #create the node first
-    edges.each do |edge|
-      next unless edge.object
-      hidden = false
-      next if edge.is_a?(HiddenEdge)
-      node = DOT::Node.new(edge.node_options)
-      node_map[edge.object] = node
-      graph << node
-    end
-    edge_map= {}
-    edges.each do |edge|
-      next if edge_map[edge.reversed_key]
-      next unless edge.parent and edge.object
-      next if edge.is_a?(HiddenEdge) and  not node_map[edge.object]
-      dot_edge = DOT::Edge.new(edge.edge_options)
-      dot_edge.from = node_map[edge.parent].name
-      dot_edge.to = node_map[edge.object].name
-      graph << dot_edge
-      edge_map[edge.key] = true
-    end
-  end
-end
-def objects_to_digraph(edges)
-  edges  = edges.map(&:to_a).map(&:first)
-  DOT::Digraph.new("rankdir" => "LR").tap do |graph|
-    node_map =  {}
-
-    #create the node first
-    edges.each do |parent, object|
-      next unless object
-      next if object.is_a?(Hidden)
-      if object.is_a?(Array)
-        node = DOT::Node.new("label" => object[1], "name" => node_name(object[0]))
-      else
-        node = DOT::Node.new("name" => node_name(object), "style"=>"filled")
-      end
-      node_map[object] = node
-      graph << node
-    end
-    edges.each do |parent, object|
-      next if object.is_a?(Hidden)
-      next unless parent and object
-      edge = DOT::DirectedEdge.new
-      edge.from = node_map[parent].name
-      edge.to = node_map[object].name
-      graph << edge
-    end
-  end
-end
-
 
 def find_model(model_name)
     model = Models[model_name.to_sym]
