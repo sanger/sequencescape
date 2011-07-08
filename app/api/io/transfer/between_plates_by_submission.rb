@@ -4,6 +4,7 @@ class ::Io::Transfer::BetweenPlatesBySubmission < ::Core::Io::Base
   set_eager_loading { |model| model.include_source.include_destination }
 
   define_attribute_and_json_mapping(%Q{
+           user <=> user
          source <=> source
     destination <=> destination
       transfers  => transfers

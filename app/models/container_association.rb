@@ -19,15 +19,20 @@ class ContainerAssociation < ActiveRecord::Base
         # consistent from our perspective.  In other words, we can bulk insert the records and then reload them, limited
         # by their count, to obtain the IDs.
         #
-        # WARNING: Be very careful about the query for the inserted contained IDs as it's behaviour can vary if
-        # you select more than just ID (it may choose to ignore the ordering).  There should be no reason to select
-        # any more than the ID but just so you know that could happen.
+        # WARNING: We have to be extremely careful about how to select the appropriate data from the bulk insert as
+        # the DB can choose to ignore the ordering. To get round this we perform one query in the correct order and
+        # then limit it, rather than doing these two steps together.
         line = __LINE__ + 1
         class_eval(%Q{
           def import(records)
             ActiveRecord::Base.transaction do
               #{class_name}.import(records)
-              links_data = #{class_name}.all(:select => 'id', :order => 'id DESC', :limit => records.size).map { |r| [proxy_owner.id, r.id] }
+
+              sub_query = #{class_name}.send(:construct_finder_sql, :select => 'id', :order => 'id DESC')
+              links_data = #{class_name}.connection.select_all(%Q{
+                SELECT id FROM (\#{sub_query}) AS a LIMIT \#{records.size}
+              }).map { |r| [ proxy_owner.id, r['id'] ] }
+
               ContainerAssociation.import([:container_id, :content_id], links_data, :validate => false)
               post_import(links_data)
             end
