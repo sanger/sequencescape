@@ -82,12 +82,12 @@ class GraphRenderer < Renderer
     done = Set.new()
 
 
-    # Draw eache node
+    # Draw each node
     edges.each do |edge|
       [edge.parent, edge.object].each do |node|
         next if done.include?(node) or not node
         done << node
-         node_options = { "name" => node_name(node) }
+         node_options = node.try(:node_options)
         if label=label_map[node]
           node_options["label"] = label
         end
@@ -119,8 +119,8 @@ class GraphRenderer < Renderer
 
   def create_edge(edge)
     dot_edge = DOT::Edge.new(edge.edge_options)
-    dot_edge.from = node_name(edge.parent)
-    dot_edge.to = node_name(edge.object)
+    dot_edge.from = edge.parent.node_name
+    dot_edge.to = edge.object.node_name
     return dot_edge
   end
 end
@@ -144,8 +144,8 @@ class DigraphRenderer < GraphRenderer
 
   def create_edge(edge)
     dot_edge = DOT::DirectedEdge.new(edge.edge_options)
-    dot_edge.from = node_name(edge.parent)
-    dot_edge.to = node_name(edge.object)
+    dot_edge.from = edge.parent.node_name
+    dot_edge.to = edge.object.node_name
     return dot_edge
   end
 end
@@ -178,7 +178,7 @@ class Edge
 
   def node_options
     {
-      "name" => node_name(object),
+      "name" => object.node_name,
       "label" => label(),
       "style" => "filled"
     }
@@ -313,6 +313,7 @@ def set_graph_filter_option(type)
                          end
                        end
 end
+
 def load_objects(objects)
   loaded = []
   objects.each do |model, name|
@@ -342,11 +343,6 @@ def object_to_hash(object)
   end
   att.reject { |k,v| !v }
 end
-def node_name(object)
-  "#{object.class}##{object.id}"
-end
-
-
 
 def objects_to_graph(edges)
   edges  = edges.map(&:to_a).map(&:first)
@@ -414,5 +410,79 @@ ARGV.shift  # to remove the -- needed using script/runner
 optparse.parse!
 #puts $options.to_yaml
 #puts $objects.to_yaml
+#
+
+#---------------
+# reopening existing class for graph
+
+
+class ActiveRecord::Base
+  def node_name()
+      "#{self.class}##{self.id}"
+  end
+  def node_options()
+    { "name" => node_name }
+  end
+end
+
+
+module ProjectLike
+  def node_options()
+    super.merge("shape" => "note")
+  end
+end
+[Submission, Project,Study].each do |klass| 
+  klass.class_eval do
+    #include ProjectLike
+  def node_options()
+    super.merge("shape" => "note", "fillcolor" => "lightyellow")
+  end
+  end
+end
+
+[Well].each do |klass|
+  klass.class_eval do
+    def node_options()
+      super.merge("shape" => "septagon")
+    end
+  end
+end
+[MultiplexedLibraryTube, LibraryTube].each do |klass|
+  klass.class_eval do
+    def node_options()
+      super.merge("shape" => "invtrapezium")
+    end
+  end
+end
+[AssetGroup].each do |klass|
+  klass.class_eval do
+    def node_options()
+      super.merge("shape" => "tab")
+    end
+  end
+end
+
+[Asset].each do |klass|
+  klass.class_eval do
+    def node_options()
+      super.merge("fillcolor" => "lightcyan")
+    end
+  end
+end
+[Request].each do |klass|
+  klass.class_eval do
+    def node_options()
+      super.merge("shape" => "rectangle")
+    end
+  end
+end
+
+class Request
+  def node_options()
+    super.merge("fontcolor" => {"pass" => "green", "failed" => "red", "pending" => "blue"}.fetch(state, "gray22"))
+  end
+end
+
+
 
 puts $options[:output_method].render(load_objects($objects), find_model($options[:model]), &($options[:block]))
