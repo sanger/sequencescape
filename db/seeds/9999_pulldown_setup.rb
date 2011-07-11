@@ -16,6 +16,7 @@ unless ENV['NO_PULLDOWN']
     # Printers we need
     BarcodePrinterType.find(1).barcode_printers.create!(:name => 'h126bc')  # 1D tube printer
     BarcodePrinterType.find(2).barcode_printers.create!(:name => 'k115bc2') # 96 well printer
+    BarcodePrinterType.find(2).barcode_printers.create!(:name => 'h137bc')  # 96 well printer
     BarcodePrinterType.find(3).barcode_printers.create!(:name => 'd304bc')  # 384 well printer
 
     # Tag layout templates
