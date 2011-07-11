@@ -101,6 +101,9 @@ class Request < ActiveRecord::Base
   named_scope :full_inbox, :conditions => {:state => ["pending","hold"]}
   named_scope :hold, :conditions => {:state => "hold"}
 
+  named_scope :ordered_for_ungrouped_inbox, :order => 'id DESC'
+  named_scope :ordered_for_submission_grouped_inbox, :order => 'submission_id DESC, id ASC'
+
   named_scope :for_asset_id, lambda { |id| { :conditions => { :asset_id => id } } }
   named_scope :for_study_id, lambda { |id| { :conditions => { :study_id => id } } }
   named_scope :for_workflow, lambda { |workflow| { :joins => :workflow, :conditions => { :workflow => { :key => workflow } } } }

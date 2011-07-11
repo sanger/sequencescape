@@ -28,15 +28,15 @@ class Pipeline < ActiveRecord::Base
       actions = []
       actions << ((proxy_owner.group_by_parent? or show_held_requests) ? :full_inbox : :pipeline_pending)
       actions << [ (proxy_owner.group_by_parent? ? :holder_located : :located), proxy_owner.location_id ]
+      actions << (proxy_owner.group_by_submission? ? :ordered_for_submission_grouped_inbox : :ordered_for_ungrouped_inbox)
       actions << [ :paginate, { :per_page => 50, :page => current_page } ] if proxy_owner.paginate?
 
-      # Ensure that the ordering is obeyed regardless of the way the request list is generated
-      ordering = { :order => 'id DESC' }
-      ordering = { :order => 'submission_id DESC, id ASC' } if proxy_owner.group_by_submission?
+      actions.inject(self.include_request_metadata) { |context, action| context.send(*Array(action)) }
+    end
 
-      with_scope(:find => ordering) do
-        actions.inject(self.include_request_metadata) { |context, action| context.send(*Array(action)) }
-      end
+    # Used by the Pipeline class to retrieve the list of requests that are coming into the pipeline.
+    def inputs(show_held_requests = false)
+      send(show_held_requests ? :full_inbox : :pipeline_pending)
     end
   end
 
@@ -102,7 +102,7 @@ class Pipeline < ActiveRecord::Base
   end
 
   def get_input_request_groups(show_held_requests=true)
-    group_requests(requests.inbox(show_held_requests))
+    group_requests(requests.inputs(show_held_requests))
   end
   
   # to overwrite by subpipeline if needed

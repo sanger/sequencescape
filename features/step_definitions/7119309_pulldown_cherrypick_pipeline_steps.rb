@@ -2,14 +2,21 @@ Given /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" su
   Given %Q{I have a plate "#{plate_barcode}" in study "#{study_name}" with #{number_of_samples} samples in asset group "Plate asset group #{plate_barcode}"}
   Given %Q{plate "#{plate_barcode}" has concentration results}
   Given %Q{plate "#{plate_barcode}" has measured volume results}
-  
+
+  # Maintain the order of the wells as though they have been submitted by the user, rather than
+  # relying on the ordering within sequencescape.  Some of the plates are created with less than
+  # the total wells needed (which is bad).
+  wells = []
+  Plate.find_by_barcode(plate_barcode).wells.walk_in_column_major_order { |well, _| wells << well }
+  wells.compact!
+
   submission_template = SubmissionTemplate.find_by_name(submission_name)
   submission = submission_template.create!(
-    :study => Study.find_by_name(study_name),
-    :project => Project.find_by_name("Test project"),
+    :study    => Study.find_by_name(study_name),
+    :project  => Project.find_by_name("Test project"),
     :workflow => Submission::Workflow.find_by_key('short_read_sequencing'),
-    :user => User.last,
-    :assets => Plate.find_by_barcode(plate_barcode).wells,
+    :user     => User.last,
+    :assets   => wells,
     :request_options => {"multiplier"=>{"1"=>"1", "3"=>"1"}, "read_length"=>"100", "fragment_size_required_to"=>"400", "fragment_size_required_from"=>"300", "library_type"=>"Standard"}
     ).built!
   And %Q{1 pending delayed jobs are processed}
@@ -19,14 +26,21 @@ end
 Given /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" submission for cherrypicking$/ do |plate_barcode, number_of_samples, study_name, submission_name|
   Given %Q{I have a plate "#{plate_barcode}" in study "#{study_name}" with #{number_of_samples} samples in asset group "Plate asset group #{plate_barcode}"}
   Given %Q{plate "#{plate_barcode}" has concentration results}
-  
+
+  # Maintain the order of the wells as though they have been submitted by the user, rather than
+  # relying on the ordering within sequencescape.  Some of the plates are created with less than
+  # the total wells needed (which is bad).
+  wells = []
+  Plate.find_by_barcode(plate_barcode).wells.walk_in_column_major_order { |well, _| wells << well }
+  wells.compact!
+
   submission_template = SubmissionTemplate.find_by_name(submission_name)
   submission = submission_template.create!(
-    :study => Study.find_by_name(study_name),
-    :project => Project.find_by_name("Test project"),
+    :study    => Study.find_by_name(study_name),
+    :project  => Project.find_by_name("Test project"),
     :workflow => Submission::Workflow.find_by_key('short_read_sequencing'),
-    :user => User.last,
-    :assets => Plate.find_by_barcode(plate_barcode).wells
+    :user     => User.last,
+    :assets   => wells
     ).built!
   And %Q{1 pending delayed jobs are processed}
 end

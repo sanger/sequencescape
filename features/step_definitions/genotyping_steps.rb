@@ -133,13 +133,20 @@ Given /^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)"
   project = Project.find_by_name(project_name)
   study = Study.find_by_name(study_name)
 
+  # Maintain the order of the wells as though they have been submitted by the user, rather than
+  # relying on the ordering within sequencescape.  Some of the plates are created with less than
+  # the total wells needed (which is bad).
+  wells = []
+  plate.wells.walk_in_column_major_order { |well, _| wells << well }
+  wells.compact!
+
   submission_template = SubmissionTemplate.find_by_name(submission_template_name)
   submission = submission_template.create!(
     :study    => study,
     :project  => project,
     :workflow => Submission::Workflow.find_by_key('microarray_genotyping'),
     :user     => User.last,
-    :assets   => plate.wells
+    :assets   => wells
     ).built!
   And %Q{1 pending delayed jobs are processed}
 end
