@@ -166,6 +166,23 @@ class Edge
   attr_reader :parent, :object, :index, :max_index
   def initialize(*args)
     @parent, @object, @index, @max_index = args
+    #if @parent and @parent.is_a?(Request)
+      #request = @parent
+      #@name = request.class.name
+      #if @object == request.asset
+        #@parent = request.target_asset
+      #elsif @object == request.target_asset
+        #@parent = request.asset
+      #end
+    #elsif @object and @object.is_a?(Request) and (not @parent or @parent.is_a?(Asset))
+      #request = @object
+      #@name = request.class.name
+      #if @parent == request.asset
+        #@object = request.target_asset
+      #elsif parent == request.target_asset
+        #@object = request.asset
+      #end
+    #end
   end
 
   def label()
@@ -185,7 +202,26 @@ class Edge
   end
 
   def edge_options
-    {}
+    case
+    when object && object.is_a?(Request) && parent && parent.is_a?(Asset)
+      { "color" => object.color, "style" => "bold", "dir" => "both", "weight" => "0.0" }.merge(
+      if object.asset == parent # source side
+        { "taillabel" => "src", "arrowtail" => "dot", "arrowhead" => "empty"}
+      else
+        { "taillabel" => "trg", "arrowtail" => "normal", "arrowhead" => "odot"}
+      end
+      )
+    when parent.is_a?(Request) && object && object.is_a?(Asset)
+      { "color" => parent.color, "style" => "bold", "dir" => "both"}.merge(
+      if parent.asset == object # source side
+      {"headlabel" =>  "soorce", "arrowtail" => "empty", "arrowhead" => "dot"}
+      else
+      {"headlabel" =>  "tArget", "arrowhead" => "normal", "arrowtail" => "odot"}
+      end
+      )
+    else
+      {}
+    end
   end
 
   # TODO  proably a ruby way to do it
@@ -255,7 +291,7 @@ Models = {
     :asset => [{Asset => [ lambda { |s|  s.requests.group_by(&:request_type_id).values },
         :source_request, :children, :parents]}, 
         { Request => [:asset, :target_asset]}],
-    :submission_down => [{ Submission => RequestByType}.merge(AssetDown), {Request => [:submission]}] ,
+    :submission_down => [{ Submission => RequestByType}.merge(AssetDown)] ,
     :bare => {}
 }
 
@@ -462,8 +498,11 @@ end
 end
 
 class Request
+  def color()
+    {"pass" => "green", "failed" => "red", "pending" => "blue"}.fetch(state, "gray22")
+  end
   def node_options()
-    super.merge("fontcolor" => {"pass" => "green", "failed" => "red", "pending" => "blue"}.fetch(state, "gray22"))
+    super.merge("fontcolor" => color() )
   end
 end
 
