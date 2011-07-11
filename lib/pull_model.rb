@@ -204,19 +204,19 @@ class Edge
   def edge_options
     case
     when object && object.is_a?(Request) && parent && parent.is_a?(Asset)
-      { "color" => object.color, "style" => "bold", "dir" => "both", "weight" => "0.0" }.merge(
+      { "color" => object.color, "style" => "bold", "dir" => "both"}.merge(
       if object.asset == parent # source side
-        { "taillabel" => "src", "arrowtail" => "dot", "arrowhead" => "empty"}
+        { "taillabel" => "", "arrowtail" => "dot", "arrowhead" => "empty"}
       else
-        { "taillabel" => "trg", "arrowtail" => "normal", "arrowhead" => "odot"}
+        { "taillabel" => "", "arrowtail" => "normal", "arrowhead" => "odot"}
       end
       )
     when parent.is_a?(Request) && object && object.is_a?(Asset)
       { "color" => parent.color, "style" => "bold", "dir" => "both"}.merge(
       if parent.asset == object # source side
-      {"headlabel" =>  "soorce", "arrowtail" => "empty", "arrowhead" => "dot"}
+      {"headlabel" =>  "", "arrowtail" => "empty", "arrowhead" => "dot"}
       else
-      {"headlabel" =>  "tArget", "arrowhead" => "normal", "arrowtail" => "odot"}
+      {"headlabel" =>  "", "arrowhead" => "normal", "arrowtail" => "odot"}
       end
       )
     else
