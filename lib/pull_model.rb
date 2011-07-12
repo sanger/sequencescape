@@ -244,8 +244,8 @@ class Edge
       )
       # AssetLink
     when object.is_a?(Asset) && parent.is_a?(Asset)
-        if parent.parent == object
-          @parent, @object = [object, parent] # reverse so they could share the same 'sametail'
+        if parent and parent.parents.present? and parent.parents.include?(object)
+          @parent, @object = [@object, @parent] # reverse so they could share the same 'sametail'
         end
       {"style" => "dashed", "dir" => "both"}.merge(
         {"arrowtail" => "odiamond", "arrowhead" => "empty", "sametail" => parent.node_name}
@@ -353,14 +353,15 @@ Models = {
   :asset_down => AssetDown={ Asset => [:children, RequestByType ], 
     Request => [:target_asset],
     Submission => [:requests]},
-  :asset_up => AssetUp={ Asset => [:parent, :source_request], 
+  :asset_up => AssetUp={ Asset => [:parents, :source_request], 
     Request => [:asset]},
-    :asset_up_and_down => [AssetUp, AssetDown],
-    :asset_down_and_up => [AssetDown, AssetUp],
-    :asset => [{Asset => [ lambda { |s|  s.requests.group_by(&:request_type_id).values },
+  :asset_up_and_down => [AssetUp, AssetDown],
+  :asset_down_and_up => [AssetDown, AssetUp],
+  :full_asset => AssetUp.merge(AssetDown),
+  :asset => [{Asset => [ lambda { |s|  s.requests.group_by(&:request_type_id).values },
         :source_request, :children, :parents]}, 
         { Request => [:asset, :target_asset]}],
-    :submission_down => [{ Submission => RequestByType}.merge(AssetDown)] ,
+  :submission_down => [{ Submission => RequestByType}.merge(AssetDown)] ,
     :bare => {}
 }
 
