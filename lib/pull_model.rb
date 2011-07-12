@@ -225,21 +225,30 @@ class Edge
 
   def edge_options
     case
+      # Request related
     when object && object.is_a?(Request) && parent && parent.is_a?(Asset)
       { "color" => object.color, "style" => "bold", "dir" => "both"}.merge(
       if object.asset == parent # source side
-        { "taillabel" => "", "arrowtail" => "dot", "arrowhead" => "empty"}
+        { "taillabel" => "", "arrowtail" => "dot", "arrowhead" => "empty", "sametail" => "source_#{parent.node_name}"}
       else
-        { "taillabel" => "", "arrowtail" => "normal", "arrowhead" => "odot"}
+        { "taillabel" => "", "arrowtail" => "normal", "arrowhead" => "odot", "sametail" => "target_#{parent.node_name}"}
       end
       )
     when parent.is_a?(Request) && object && object.is_a?(Asset)
       { "color" => parent.color, "style" => "bold", "dir" => "both"}.merge(
       if parent.asset == object # source side
-      {"headlabel" =>  "", "arrowtail" => "empty", "arrowhead" => "dot"}
+      {"headlabel" =>  "", "arrowtail" => "empty", "arrowhead" => "dot", "samehead" => "source_#{object.node_name}"}
       else
-      {"headlabel" =>  "", "arrowhead" => "normal", "arrowtail" => "odot"}
+      {"headlabel" =>  "", "arrowhead" => "normal", "arrowtail" => "odot", "sametail" => "target_#{object.node_name}"}
       end
+      )
+      # AssetLink
+    when object.is_a?(Asset) && parent.is_a?(Asset)
+        if parent.parent == object
+          @parent, @object = [object, parent] # reverse so they could share the same 'sametail'
+        end
+      {"style" => "dashed", "dir" => "both"}.merge(
+        {"arrowtail" => "odiamond", "arrowhead" => "empty", "sametail" => parent.node_name}
       )
     else
       {}
