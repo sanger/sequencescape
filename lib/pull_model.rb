@@ -27,6 +27,7 @@ class GraphRenderer < Renderer
     Layouts[:submission]
   end
   def render(objects, options, &block)
+    @root_object = Set.new(objects)
     options = [options] unless options.is_a?(Array)
 
     nodes, edges = options.inject([objects, []]) do |ne, option|
@@ -123,6 +124,9 @@ class GraphRenderer < Renderer
          DOT::Node.new(node_options.merge("color" => "gray"))
         end
         next unless dot_node
+         if @root_object.include?(node)
+           dot_node.options.merge!( "penwidth" => "5")
+         end
         graph << dot_node
       end
     end
@@ -239,7 +243,7 @@ class Edge
       if parent.asset == object # source side
       {"headlabel" =>  "", "arrowtail" => "empty", "arrowhead" => "dot", "samehead" => "source_#{object.node_name}"}
       else
-      {"headlabel" =>  "", "arrowhead" => "normal", "arrowtail" => "odot", "sametail" => "target_#{object.node_name}"}
+      {"headlabel" =>  "", "arrowhead" => "normal", "arrowtail" => "odot", "sametail" => "target_#{parent.node_name}"}
       end
       )
       # AssetLink
@@ -248,7 +252,7 @@ class Edge
           @parent, @object = [@object, @parent] # reverse so they could share the same 'sametail'
         end
       {"style" => "dashed", "dir" => "both"}.merge(
-        {"arrowtail" => "odiamond", "arrowhead" => "empty", "sametail" => parent.node_name}
+        {"arrowtail" => "odiamond", "arrowhead" => "empty", "sametail" => parent.node_name, "samehead" => object.node_name}
       )
     else
       {}
@@ -340,7 +344,7 @@ Models = {
   :submission => [{
   Submission => [:study, :project, RequestByType=lambda { |s|  s.requests.group_by(&:request_type_id).values }, :asset_group],
   Request => [:asset, :target_asset],
-  Asset => [lambda { |s|  s.requests.group_by(&:request_type_id).values }, :source_request, :children, :parent],
+  Asset => [lambda { |s|  s.requests.group_by(&:request_type_id).values }, :requests_as_target, :children, :parent],
   AssetGroup => [:assets]
 }, 
   {
@@ -353,13 +357,13 @@ Models = {
   :asset_down => AssetDown={ Asset => [:children, RequestByType ], 
     Request => [:target_asset],
     Submission => [:requests]},
-  :asset_up => AssetUp={ Asset => [:parents, :source_request], 
+  :asset_up => AssetUp={ Asset => [:parents, :requests_as_target], 
     Request => [:asset]},
   :asset_up_and_down => [AssetUp, AssetDown],
   :asset_down_and_up => [AssetDown, AssetUp],
   :full_asset => AssetUp.merge(AssetDown),
   :asset => [{Asset => [ lambda { |s|  s.requests.group_by(&:request_type_id).values },
-        :source_request, :children, :parents]}, 
+        :requests_as_target, :children, :parents]}, 
         { Request => [:asset, :target_asset]}],
   :submission_down => [{ Submission => RequestByType}.merge(AssetDown)] ,
     :bare => {}
@@ -540,7 +544,7 @@ end
     end
   end
 end
-[MultiplexedLibraryTube, LibraryTube].each do |klass|
+[PulldownMultiplexedLibraryTube, MultiplexedLibraryTube, LibraryTube].each do |klass|
   klass.class_eval do
     def node_options()
       super.merge("shape" => "invtrapezium")
@@ -584,6 +588,11 @@ class Request
   def node_options()
     super.merge("fontcolor" => color() )
   end
+end
+
+class Asset
+
+  has_many :requests_as_target, :class_name => 'Request', :foreign_key => :target_asset_id, :include => :request_metadata
 end
 
 
