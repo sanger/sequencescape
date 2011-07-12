@@ -23,6 +23,9 @@ end
 
 
 class GraphRenderer < Renderer
+  def layouts
+    Layouts[:submission]
+  end
   def render(objects, options, &block)
     options = [options] unless options.is_a?(Array)
 
@@ -50,8 +53,28 @@ class GraphRenderer < Renderer
   def construct_graph(nodes, edges)
     DOT::Graph.new("rankdir" => "LR").tap do |graph|
 
+
+      layouts.each do |layout|
+        #layout.transform!(nodes, edges).each { |e| graph << e }
+      end
+
       drawn_nodes = add_nodes(graph, nodes, edges)
       add_edges(graph, drawn_nodes, edges)
+
+      #hack
+      all_requests = drawn_nodes.select { |n| n.is_a?(Request)}
+
+      all_requests.group_by(&:class).each do |klass, requests|
+        subgraph = DOT::Subgraph.new("name" => "cluster_#{klass.name}", "style"=>"filled", "fillcolor"=>"gold", "color" => "goldenrod4")
+        requests.each do |r|
+        subsubgraph = DOT::Subgraph.new("name" => "cluster_#{r.node_name}", "color"=>"none")
+        [r.asset.requests.size <=1 ? r.asset : nil, r, r.target_asset].compact.each do |o| 
+        subsubgraph << DOT::Node.new("name" => o.node_name)
+        graph << subsubgraph
+        end
+        end
+        graph << subgraph
+      end
     end
   end
 
@@ -108,7 +131,6 @@ class GraphRenderer < Renderer
   end
 
   def add_edges(graph, nodes, edges)
-    #debugger 
     edges.each do |edge|
       next unless edge.parent and edge.object
       next if edge.is_a?(HiddenEdge) and  not nodes.include?(edge.object)
@@ -256,6 +278,43 @@ class Ellipsis < CutEdge
   end
 end
 
+class NodeToCluster
+  def initialize(*args)
+    @classes = args
+  end
+  #we could return new nodes and edges, but we modify them instead ... evil
+  def  transform!(nodes, edges)
+    clusters = []
+    selected_nodes = nodes.select { |n| @classes.any? { |c| n.is_a?(c) } }
+
+    #create a cluster for each node
+    selected_nodes.each do | node|
+      cluster_name = "luster_#{node.node_name}"
+      cluster = DOT::Subgraph.new("name" => cluster_name, "label" => node.node_name, "fillcolor" => "yellow", "color" => "lightcyan", "style"=>"filled")
+      cluster << DOT::Node.new("name" => node.node_name)
+      clusters << cluster
+      #node.instance_eval "def node_name(); '#{cluster_name}'; end"
+
+        edges.each do |edge|
+        next if edge.is_a?(HiddenEdge)
+          #debugger  if edge.parent == node
+
+          #i edge.parent == node and edge.object and nodes.include?(edge.object) #!edge.is_a?(HiddenEdge)
+          if edge.parent == node and edge.object and !edge.is_a?(HiddenEdge)
+            cluster << DOT::Node.new("name" => edge.object.node_name)
+          else if edge.object == node and edge.parent and !edge.is_a?(HiddenEdge)
+            cluster << DOT::Node.new("name" => edge.parent.node_name)
+          end
+            edges.delete(edge)
+          end
+        end
+
+        nodes.delete(node)
+    end
+    clusters
+  end
+end
+
 
 # Model descriptions can be specified for subclass.
 # use :skip_super to not include superclass association
@@ -272,7 +331,7 @@ Models = {
   :submission => [{
   Submission => [:study, :project, RequestByType=lambda { |s|  s.requests.group_by(&:request_type_id).values }, :asset_group],
   Request => [:asset, :target_asset],
-  Asset => [lambda { |s|  s.requests.group_by(&:request_type_id).values }, :source_request],
+  Asset => [lambda { |s|  s.requests.group_by(&:request_type_id).values }, :source_request, :children, :parent],
   AssetGroup => [:assets]
 }, 
   {
@@ -283,9 +342,10 @@ Models = {
   :simple_submission =>  { Submission => lambda { |s|  s.requests.group_by(&:request_type_id).values }} ,
 
   :asset_down => AssetDown={ Asset => [:children, RequestByType ], 
-    Request => [:target_asset, :submission]},
+    Request => [:target_asset],
+    Submission => [:requests]},
   :asset_up => AssetUp={ Asset => [:parent, :source_request], 
-    Request => [:asset, :submission]},
+    Request => [:asset]},
     :asset_up_and_down => [AssetUp, AssetDown],
     :asset_down_and_up => [AssetDown, AssetUp],
     :asset => [{Asset => [ lambda { |s|  s.requests.group_by(&:request_type_id).values },
@@ -295,6 +355,9 @@ Models = {
     :bare => {}
 }
 
+Layouts =  { :submission => [ NodeToCluster.new(Submission)
+  ]
+}
 optparse = OptionParser.new do |opts|
   opts.on('-e', '--eval expr ', 'ruby expression returning a list of object to pull') do |expr|
     $objects<< expr
@@ -497,9 +560,16 @@ end
   end
 end
 
+[TagInstance, Sample].each do |klass|
+  klass.class_eval do
+    def node_options()
+      super.merge("fillcolor" => "darkolivegreen")
+    end
+  end
+end
 class Request
   def color()
-    {"pass" => "green", "failed" => "red", "pending" => "blue"}.fetch(state, "gray22")
+    {"passed" => "green4", "failed" => "firebrick4", "pending" => "dodgerblue4", "started" => "darkorchid4"}.fetch(state, "gray22")
   end
   def node_options()
     super.merge("fontcolor" => color() )
