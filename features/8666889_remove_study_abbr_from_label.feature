@@ -13,15 +13,24 @@ Feature: Print truncated sanger sample id on sample tube barcode
   Scenario: Print a barcode for an asset with a sample without a sanger_sample_id
     Given the child asset of "Sample Tube 1" has a sanger_sample_id of ""
     When I press "Print labels"
-    Then the printed label is expected to have a name containing "Sample Tube 1"
+    Then the last printed label should contains:
+      | Field | Value |
+      | name  | NT \d+|
+      | desc  | Sample Tube 1 \d+_\d+ |
 
   Scenario: Print a barcode for an asset with a sample with a short sanger_sample_id
     Given the child asset of "Sample Tube 1" has a sanger_sample_id of "TW123456"
     When I press "Print labels"
-    Then the printed label is expected to have a name of "TW123456"
+    Then the last printed label should contains:
+      | Field | Value |
+      | name  | NT \d+       |
+      | desc  | TW123456_\d+ |
 
   Scenario: Print a barcode for an asset with a long sanger_sample_id
     Given the child asset of "Sample Tube 1" has a sanger_sample_id of "UK10K_Twins1234567"
     When I press "Print labels"
-    Then the printed label is expected to have a name of "1234567"
+    Then the last printed label should contains:
+      | Field | Value |
+      | name  | NT \d+       |
+      | desc  | 1234567_\d+ |
 

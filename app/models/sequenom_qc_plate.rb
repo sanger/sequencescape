@@ -14,7 +14,7 @@ class SequenomQcPlate < Plate
   #after_create :add_event_to_stock_plates
 
   def print_labels(barcode_printer, number_of_barcodes = 3)
-    BarcodePrinter.new.print(self.barcode_labels(number_of_barcodes.to_i), barcode_printer.name, prefix, "long", label_text_top, label_text_bottom)
+    BarcodePrinter.print(self.barcode_labels(number_of_barcodes.to_i), barcode_printer.name, prefix, "long", label_text_top, label_text_bottom)
   end
 
   def source_plates
@@ -200,7 +200,7 @@ end
 
   def barcode_labels(number_of_barcodes)
     (1..number_of_barcodes).map do |plate_number|
-      BarcodeLabel.new(:number => self.barcode, :prefix => prefix, :suffix => plate_purpose.name)
+      PrintBarcode::Label.new(:number => self.barcode, :prefix => prefix, :suffix => plate_purpose.name)
     end
   end
 

@@ -37,7 +37,6 @@
         <th>Study</th>
         <th>Date Created</th>
         <th>Status</th>
-        <th>Item ID</th>
       </tr>
     </thead>
     <tbody>
@@ -68,7 +67,6 @@
         <td><%= link_to(request.study.name, study_path(request.study)) if request.study %></td>
         <td><%= request.created_at.to_formatted_s(:sortable) %></td>
         <td><%= display_status(request.state) %></td>
-        <td><%= link_to(request.item.id, item_url(request.item)) if request.item %></td>
       </tr>
     <% end -%>
   </tbody>

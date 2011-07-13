@@ -217,7 +217,7 @@ class RequestFactory
     # internal requests to link study -> request -> asset -> sample
     # TODO: do this as a submission
     request_type = RequestType.find_by_key('create_asset') or raise StandardError, "Cannot find create asset request type"
-    requests = asset_ids.map { |asset_id| request_type.new(:study_id => study_id, :asset_id => asset_id) }
+    requests = asset_ids.map { |asset_id| request_type.new(:study_id => study_id, :asset_id => asset_id, :state => 'passed') }
     Request.import requests
   end
 end
