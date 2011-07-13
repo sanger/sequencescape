@@ -533,62 +533,63 @@ class ActiveRecord::Base
   end
 end
 
-
-module ProjectLike
-  def node_options()
-    super.merge("shape" => "note")
-  end
-end
 [Submission, Project,Study, Tag].each do |klass| 
   klass.class_eval do
     #include ProjectLike
-  def node_options()
-    super.merge("shape" => "note", "fillcolor" => "lightyellow")
+  def node_options_with_lyellow()
+    node_options_without_lyellow.merge("shape" => "note", "fillcolor" => "lightyellow")
   end
-  end
-end
-
-[Well].each do |klass|
-  klass.class_eval do
-    def node_options()
-      super.merge("shape" => "septagon")
-    end
-  end
-end
-[Plate].each do |klass|
-  klass.class_eval do
-    def node_options()
-      super.merge("shape" => "parallelogram")
-    end
-  end
-end
-[PulldownMultiplexedLibraryTube, MultiplexedLibraryTube, LibraryTube].each do |klass|
-  klass.class_eval do
-    def node_options()
-      super.merge("shape" => "invtrapezium")
-    end
-  end
-end
-[AssetGroup].each do |klass|
-  klass.class_eval do
-    def node_options()
-      super.merge("shape" => "tab")
-    end
+  alias_method_chain :node_options, :lyellow
   end
 end
 
 [Asset].each do |klass|
   klass.class_eval do
-    def node_options()
-      super.merge("fillcolor" => "lightcyan")
+    def node_options_with_lcyan()
+      node_options_without_lcyan.merge("fillcolor" => "lightcyan")
     end
+    alias_method_chain :node_options, :lcyan
   end
 end
+[Well].each do |klass|
+  klass.class_eval do
+    def node_options_with_well()
+      node_options_without_well.merge("shape" => "septagon")
+    end
+    alias_method_chain :node_options, :well
+  end
+end
+[Plate].each do |klass|
+  klass.class_eval do
+    def node_options_with_parallel()
+      node_options_without_parallel.merge("shape" => "parallelogram")
+    end
+    alias_method_chain :node_options, :parallel
+  end
+end
+[PulldownMultiplexedLibraryTube, MultiplexedLibraryTube, LibraryTube].each do |klass|
+  klass.class_eval do
+    def node_options_with_invt()
+      node_options_without_invt.merge("shape" => "invtrapezium")
+    end
+    alias_method_chain :node_options, :invt
+  end
+end
+[AssetGroup].each do |klass|
+  klass.class_eval do
+    def node_options_with_tab()
+      node_options_without_tab.merge("shape" => "tab")
+    end
+    alias_method_chain :node_options, :tab
+  end
+end
+
 [Request].each do |klass|
   klass.class_eval do
-    def node_options()
-      super.merge("shape" => "rectangle")
+    def node_options_with_rect()
+      node_options_without_rect.merge("shape" => "rectangle")
     end
+    alias_method_chain :node_options, :rect
   end
 end
 
@@ -596,36 +597,35 @@ begin
   TagInstance
 rescue
   class TagInstance
+    def node_options
+      {}
+    end
   end
 end
 [TagInstance, Sample, Tag].each do |klass|
   klass.class_eval do
-    def node_options()
-      super.merge("fillcolor" => "darkolivegreen")
+    def node_options_with_fillcolor()
+      node_options_without_fillcolor.merge("fillcolor" => "darkorange")
     end
-  end
-end
-[ Tag].each do |klass|
-  klass.class_eval do
-    def node_options()
-      super.merge("shape" => "note")
-    end
+    alias_method_chain :node_options, :fillcolor
   end
 end
 [Aliquot].each do |klass|
   klass.class_eval do
-    def node_options()
-      super.merge("fillcolor" => "cyan")
+    def node_options_with_cyan()
+      node_options_without_cyan.merge("fillcolor" => "dodgerblue")
     end
+    alias_method_chain :node_options, :cyan
   end
 end
 class Request
   def color()
     {"passed" => "green4", "failed" => "firebrick4", "pending" => "dodgerblue4", "started" => "darkorchid4"}.fetch(state, "gray22")
   end
-  def node_options()
-    super.merge("fontcolor" => color() )
+  def node_options_with_state_color()
+    node_options_without_state_color.merge("fontcolor" => color() )
   end
+  alias_method_chain :node_options, :state_color
 end
 
 class Asset
