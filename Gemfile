@@ -42,8 +42,7 @@ gem "delayed_job", '~>2.0.4'
 
 gem "cbrunnkvist-psd_logger"
 
-#gem "ruby_walk", :git => "git+ssh://git@github.com/sanger/ruby_walk"
-gem "ruby_walk", :path => "../ruby_walk"
+gem "ruby_walk",  ">= 0.0.2",:git => "git+ssh://git@github.com/sanger/ruby_walk"
 
 # For the API level
 gem "uuidtools"
