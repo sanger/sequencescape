@@ -177,7 +177,7 @@ class RequestsController < ApplicationController
     printables = []
     params[:printable].each do |key, value|
       item = Item.find(key)
-      printables.push BarcodeLabel.new({ :number => key, :study => item.name, :suffix => "" })
+      printables.push PrintBarcode::Label.new({ :number => key, :study => item.name, :suffix => "" })
     end
     if !printables.empty?
       barcode.print printables, params[:printer]

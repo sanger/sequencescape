@@ -27,6 +27,10 @@ Feature: Printing new plate barcodes
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
     And I should be on the new plate page
+    And the last printed label should contains:
+      | Field | Value |
+      | name  | Stock Plate       |
+      | desc  | jack\s+ |
     
   Scenario Outline: Creating plates
     Given I am on the new plate page

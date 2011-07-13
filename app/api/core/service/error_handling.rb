@@ -32,6 +32,11 @@ module Core::Service::ErrorHandling
       def each(&block)
         Yajl::Encoder.new.encode(@error, &block)
       end
+      def close
+        GC.enable
+        GC.start
+      end
+
     end
 
     def exception_thrown

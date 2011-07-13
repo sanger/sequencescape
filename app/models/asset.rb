@@ -445,11 +445,11 @@ class Asset < ActiveRecord::Base
   def self.print_assets(assets, barcode_printer)
     printables = []
     assets.each do |asset|
-      printables.push BarcodeLabel.new({ :number => asset.barcode, :study => asset.tube_name, :suffix => "", :prefix => asset.prefix })
+      printables.push PrintBarcode::Label.new({ :number => asset.barcode, :study => asset.tube_name, :suffix => "", :prefix => asset.prefix })
     end
     begin
       unless printables.empty?
-        barcode_printer.print printables, barcode_printer.name
+        barcode_printer.print_labels(printables)
       end
     rescue
       return false

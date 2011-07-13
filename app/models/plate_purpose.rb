@@ -67,7 +67,7 @@ class PlatePurpose < ActiveRecord::Base
         parent_plate_barcode = plate.parent.barcode
       end
 
-      printables.push BarcodeLabel.new({ :number => plate.barcode,
+      printables.push PrintBarcode::Label.new({ :number => plate.barcode,
         :study  => plate.find_study_abbreviation_from_parent,
         :suffix => parent_plate_barcode,
         :prefix => plate.barcode_prefix.prefix })
@@ -89,7 +89,7 @@ class PlatePurpose < ActiveRecord::Base
       begin
         unless printables.empty?
           barcode_printer = BarcodePrinter.find_by_name(barcode_printer_name) or raise ActiveRecord::RecordNotFound, "Could not find barcode printer #{barcode_printer_name.inspect}"
-          barcode_printer.print printables, barcode_printer.name, Plate.prefix, "long", "#{plate_purpose.name}", current_user.login
+          barcode_printer.print_labels(printables, Plate.prefix, "long", "#{plate_purpose.name}", current_user.login)
         end
       rescue => exception
         return false
