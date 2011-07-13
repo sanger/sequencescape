@@ -32,7 +32,7 @@ GIT
     ruby_walk (0.0.1)
 
 GIT
-  remote: http://github.com/sanger/sanger_barcode.git
+  remote: git+ssh://github.com/sanger/sanger_barcode.git
   revision: b826bdfc644d5164fa7dfe1bf2500babeb62cfc5
   ref: b826bdfc644d5164fa7dfe1bf2500babeb62cfc5
   specs:
