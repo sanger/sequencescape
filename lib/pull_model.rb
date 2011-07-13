@@ -3,12 +3,27 @@ require 'optparse'
 require 'rgl/dot'
 DOT=RGL::DOT
 
+# Hack to work different version of sequencescape
 begin
 Aliquot
 rescue
-  class Aliquot
-    class Receptacle
+  class Aliquot < ActiveRecord::Base
+    class Receptacle < Asset
     end
+  end
+
+  Asset
+  class Asset
+    def aliquots
+      []
+    end
+  end
+end
+
+begin
+  TagInstance
+rescue
+  class TagInstance < Asset
   end
 end
 #TODO put in a module
@@ -372,12 +387,13 @@ Models = {
 
   :simple_submission =>  { Submission => lambda { |s|  s.requests.group_by(&:request_type_id).values }} ,
 
-  :asset_down => AssetDown={ Asset => [:children, RequestByType ], 
+  :asset_down => AssetDown={ Asset => [:children, RequestByType, :sample, :tags], 
     Request => [:target_asset],
     Submission => [RequestByType],
     Aliquot::Receptacle => [:aliquots],
     Aliquot => [:sample, :tag]},
   :asset_up => AssetUp={ Asset => [:parents, :requests_as_target], 
+    TagInstance => [:tag],
     Request => [:asset]},
   :asset_up_and_down => [AssetUp, AssetDown],
   :asset_down_and_up => [AssetDown, AssetUp],
@@ -619,9 +635,17 @@ end
 [Aliquot].each do |klass|
   klass.class_eval do
     def node_options_with_cyan()
-      node_options_without_cyan.merge("fillcolor" => "dodgerblue")
+      node_options_without_cyan.merge("fillcolor" => tag ? "deepskyblue3" : "dodgerblue")
     end
     alias_method_chain :node_options, :cyan
+  end
+end
+[Well, MultiplexedLibraryTube].each do |klass|
+  klass.class_eval do
+    def node_options_with_multi
+      node_options_without_multi.merge("fillcolor" => aliquots.size > 1 ? "red": "lightcyan") 
+    end
+    alias_method_chain :node_options, :multi
   end
 end
 class Request
