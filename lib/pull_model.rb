@@ -266,6 +266,12 @@ class Edge
       {"style" => "dashed", "dir" => "both"}.merge(
         {"arrowtail" => "odiamond", "arrowhead" => "empty", "sametail" => parent.node_name, "samehead" => object.node_name}
       )
+      #Aliquot
+    when object.is_a?(Aliquot) && parent.is_a?(Asset)
+        {"arrowtail" => "odiamond", "arrowhead" => "empty", "sametail" => parent.node_name, "samehead" => object.node_name, "dir" => "both"}
+    when parent.is_a?(Aliquot) && object.is_a?(Asset)
+          @parent, @object = [@object, @parent] # reverse so they could share the same 'sametail'
+        {"arrowtail" => "odiamond", "arrowhead" => "empty", "sametail" => parent.node_name, "samehead" => object.node_name, "dir"=> "both"}
     else
       {}
     end
