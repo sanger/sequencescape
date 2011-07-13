@@ -3,6 +3,14 @@ require 'optparse'
 require 'rgl/dot'
 DOT=RGL::DOT
 
+begin
+Aliquot
+rescue
+  class Aliquot
+    class Receptacle
+    end
+  end
+end
 #TODO put in a module
 class Renderer
   def render(objects, options, &block)
@@ -23,6 +31,10 @@ end
 
 
 class GraphRenderer < Renderer
+  def initialize(rankdir="LR")
+    @rankdir = rankdir
+  end
+
   def layouts
     Layouts[:submission]
   end
@@ -52,7 +64,7 @@ class GraphRenderer < Renderer
   end
 
   def construct_graph(nodes, edges)
-    DOT::Graph.new("rankdir" => "LR").tap do |graph|
+    DOT::Graph.new("rankdir" =>@rankdir).tap do |graph|
 
 
       layouts.each do |layout|
@@ -356,7 +368,9 @@ Models = {
 
   :asset_down => AssetDown={ Asset => [:children, RequestByType ], 
     Request => [:target_asset],
-    Submission => [:requests]},
+    Submission => [RequestByType],
+    Aliquot::Receptacle => [:aliquots],
+    Aliquot => [:sample, :tag]},
   :asset_up => AssetUp={ Asset => [:parents, :requests_as_target], 
     Request => [:asset]},
   :asset_up_and_down => [AssetUp, AssetDown],
@@ -411,6 +425,10 @@ optparse = OptionParser.new do |opts|
     $options[:output_method] = SingleGraphRenderer.new
     set_graph_filter_option(type)
   end
+  opts.on('--graph_down type', 'Generate a dot graph') do |type|
+    $options[:output_method] = SingleGraphRenderer.new("TB")
+    set_graph_filter_option(type)
+  end
   opts.on('-d', '--digraph type', 'Generate a dot graph') do |type|
     $options[:output_method] = DigraphRenderer.new
     set_graph_filter_option(type)
@@ -425,11 +443,11 @@ def set_graph_filter_option(type)
                          end
                        when "3max"
                          Proc.new do |object, parent, index, max_index|
-                           if index == 2 and max_index > 2
+                           if index == 1 and max_index > 1
                              # things been removed
                              RubyWalk::Cut.new(Ellipsis.new(parent, object, index, max_index))
                            else
-                             Edge.new(parent, object, index, max_index) if [0,1,max_index].include?(index) or not parent
+                             Edge.new(parent, object, index, max_index) if [0,max_index].include?(index) or not parent
                            end
                          end
                        when "3center"
@@ -521,7 +539,7 @@ module ProjectLike
     super.merge("shape" => "note")
   end
 end
-[Submission, Project,Study].each do |klass| 
+[Submission, Project,Study, Tag].each do |klass| 
   klass.class_eval do
     #include ProjectLike
   def node_options()
@@ -574,10 +592,30 @@ end
   end
 end
 
-[TagInstance, Sample].each do |klass|
+begin
+  TagInstance
+rescue
+  class TagInstance
+  end
+end
+[TagInstance, Sample, Tag].each do |klass|
   klass.class_eval do
     def node_options()
       super.merge("fillcolor" => "darkolivegreen")
+    end
+  end
+end
+[ Tag].each do |klass|
+  klass.class_eval do
+    def node_options()
+      super.merge("shape" => "note")
+    end
+  end
+end
+[Aliquot].each do |klass|
+  klass.class_eval do
+    def node_options()
+      super.merge("fillcolor" => "cyan")
     end
   end
 end
