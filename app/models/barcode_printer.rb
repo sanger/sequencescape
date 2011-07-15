@@ -20,8 +20,8 @@ class BarcodePrinter < ActiveRecord::Base
                          :study_name => study_name,
                          :user_login => user_login)
   end
-  def self.print(labels, printer, *args)
-      printer = BarcodePrinter.find_by_name(printer) or raise ActiveRecord::RecordNotFound, "Could not find barcode printer #{printer.inspect}"
+  def self.print(labels, printer_name, *args)
+      printer = BarcodePrinter.find_by_name(printer) or raise ActiveRecord::RecordNotFound, "Could not find barcode printer '#{printer_name.inspect}'"
 
       printer.print_labels(labels, *args)
 

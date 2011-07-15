@@ -82,6 +82,7 @@ class PlatePurpose < ActiveRecord::Base
       return false
     end
 
+    #TODO don't find again the printer by it's name, just use it
     barcode_printer_name = barcode_printer.name
     sort_plates_by_plate_purpose(new_plates).each do |plate_purpose, plates|
       printables = create_barcode_labels_from_plates(plates)
