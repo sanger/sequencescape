@@ -16,7 +16,6 @@ class Projects::Workflows::ItemsController < ApplicationController
   def print
     @workflow = Submission::Workflow.find(params[:workflow_id])
     @project  = Project.find(params[:project_id])
-    barcode    = BarcodePrinter.new
     printables = []
     params[:printable].each do |key, value|
      item = Item.find(key)
@@ -26,7 +25,7 @@ class Projects::Workflows::ItemsController < ApplicationController
      end
     end
     if !printables.empty?
-      barcode.print printables, params[:printer]
+      BarcodePrinter.print(printables, params[:printer])
     end
     flash[:notice] = "Your labels have been sent to printer #{params[:printer]}."
     redirect_to project_workflow_items_path(@project, @workflow)

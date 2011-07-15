@@ -33,8 +33,8 @@ GIT
 
 GIT
   remote: git+ssh://git@github.com/sanger/sanger_barcode.git
-  revision: b826bdfc644d5164fa7dfe1bf2500babeb62cfc5
-  ref: b826bdfc644d5164fa7dfe1bf2500babeb62cfc5
+  revision: f3175bbb2df4782fe8b5ff2433a25f6fbbebb495
+  branch: ruby-1.8
   specs:
     sanger_barcode (0.0.1)
 
