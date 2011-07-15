@@ -490,11 +490,10 @@ class BatchesController < ApplicationController
     end
 
     unless printables.empty?
-      barcode = BarcodePrinter.new
       asset = @batch.assets.first
       begin
         printables.sort! {|a,b| a.number <=> b.number }
-        barcode.print(printables, params[:printer], asset.prefix, "short")
+        BarcodePrinter.print(printables, params[:printer], asset.prefix, "short")
       rescue PrintBarcode::BarcodeException
         flash[:error] = "Label printing to #{params[:printer]} failed: #{$!}."
       rescue SOAP::FaultError
