@@ -381,8 +381,8 @@ class Sample < ActiveRecord::Base
   GENDERS         = [ 'Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable' ]
   DNA_SOURCES     = [ 'Genomic', 'Whole Genome Amplified', 'Blood', 'Cell Line','Saliva','Brain' ]
   SRA_HOLD_VALUES = [ 'Hold', 'Public', 'Protect' ]
-  AGE_REGEXP      = '\d+(?:\.\d+)?\s+(?:second|minute|day|month|year)s?'
-  DOSE_REGEXP     = '\d+(?:\.\d+)?\s+\w+(?:\/\w+)?'
+  AGE_REGEXP      = '\d+(?:\.\d+)?\s+(?:second|minute|day|month|year)s?|Not Applicable|N/A|To be provided'
+  DOSE_REGEXP     = '\d+(?:\.\d+)?\s+\w+(?:\/\w+)?|Not Applicable|N/A|To be provided'
 
   extend Metadata
   has_metadata do
