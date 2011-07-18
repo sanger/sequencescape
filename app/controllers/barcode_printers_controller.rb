@@ -72,7 +72,6 @@ class BarcodePrintersController < ApplicationController
     assets = params[:printables]
     prefix = nil
     unless assets.nil?
-      barcode = BarcodePrinter.new
       printables = []
       assets = assets.keys
       assets.sort{ |a,b| b.to_i <=> a.to_i }.each do |id|

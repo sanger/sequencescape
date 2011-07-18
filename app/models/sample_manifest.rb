@@ -153,18 +153,8 @@ class SampleManifest < ActiveRecord::Base
   end
   private :generate_sanger_ids
 
-  def delayed_generate_study_samples(study_samples_data)
+  def generate_study_samples(study_samples_data)
     study_sample_fields = [:study_id, :sample_id]
     StudySample.import study_sample_fields, study_samples_data
-  end
-  handle_asynchronously :delayed_generate_study_samples
-
-  def delayed_generate_asset_requests_with_ids(asset_ids,study_id)
-    RequestFactory.create_assets_requests(asset_ids, study_id)
-  end
-  handle_asynchronously :delayed_generate_asset_requests_with_ids
-
-  def delayed_generate_asset_requests(assets,study)
-    delayed_generate_asset_requests_with_ids(assets.map(&:id), study.id)
   end
 end

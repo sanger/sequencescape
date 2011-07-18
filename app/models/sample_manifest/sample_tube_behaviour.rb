@@ -80,9 +80,14 @@ module SampleManifest::SampleTubeBehaviour
     self.barcodes = tubes.map(&:sanger_human_barcode)
 
     sample_tube_sample_creation(samples_data,self.study.id)
-    delayed_generate_asset_requests(tubes, self.study)
+    delayed_generate_asset_requests(tubes.map(&:id), self.study.id)
     save!
   end
+
+  def delayed_generate_asset_requests(asset_ids,study_id)
+    RequestFactory.create_assets_requests(asset_ids, study_id)
+  end
+  handle_asynchronously :delayed_generate_asset_requests
 
   def sample_tube_sample_creation(samples_data,study_id)
     study_samples_data = []
@@ -93,7 +98,7 @@ module SampleManifest::SampleTubeBehaviour
       sample_tube.save!
       study_samples_data << [study_id, sample.id]
     end
-    delayed_generate_study_samples(study_samples_data)
+    generate_study_samples(study_samples_data)
   end
   private :sample_tube_sample_creation
 end
