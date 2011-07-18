@@ -141,5 +141,34 @@ class SampleManifestTest < ActiveSupport::TestCase
     end
     
   end
-  
+
+  # This is testing a specific case pulled from production where the size of the delayed job 'handler' column was
+  # being filled because we're passing large parameter data (it happens that ~37 plates cause this).  Because of this
+  # the parameters were being truncated, ironically to create valid YAML, and the production code was erroring
+  # because the last parameter was being dropped.  Good thing the plate IDs were last, right!?!!
+  context 'creating extremely large manifests' do
+    setup do
+      # Stub out the behaviour of PlateBarcode so that it can be "fudged"
+      PlateBarcode.stubs(:create).returns(Object.new.tap do |fudged_barcode|
+        def fudged_barcode.barcode
+          @barcode = (@barcode || 0) + 1
+        end
+      end)
+
+      @manifest = Factory(:sample_manifest, :count => 37, :asset_type => 'plate', :rapid_generation => true)
+      @manifest.generate
+    end
+
+    should 'have one job per plate' do
+      assert_equal(@manifest.count, Delayed::Job.count, 'number of delayed jobs does not match number of plates')
+    end
+
+    context 'delayed jobs' do
+      setup do
+        Delayed::Job.first.invoke_job
+      end
+
+      should_change('Well.count',   :by => 96) { Sample.count }
+    end
+  end
 end

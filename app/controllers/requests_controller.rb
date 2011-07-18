@@ -173,14 +173,13 @@ class RequestsController < ApplicationController
 
   def print_items
     @request   = Request.find(params[:request_id])
-    barcode    = BarcodePrinter.new
     printables = []
     params[:printable].each do |key, value|
       item = Item.find(key)
       printables.push PrintBarcode::Label.new({ :number => key, :study => item.name, :suffix => "" })
     end
     if !printables.empty?
-      barcode.print printables, params[:printer]
+      BarcodePrinter.print(printables, params[:printer])
     end
     flash[:notice] = "Your labels have been sent to printer #{params[:printer]}."
     redirect_to request_path(@request)

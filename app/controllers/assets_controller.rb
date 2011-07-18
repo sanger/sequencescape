@@ -231,11 +231,10 @@ class AssetsController < ApplicationController
   end
 
   def print_assets
-    barcode = BarcodePrinter.new
     printables = []
     printables.push PrintBarcode::Label.new({ :number => @asset.barcode, :study => "#{@asset.barcode}_#{@asset.name.gsub("_", " ")}", :suffix => "" })
     unless printables.empty?
-      barcode.print printables, params[:printer]
+      BarcodePrinter.print(printables, params[:printer])
     end
 
     flash[:notice] = "Your labels have been sent to printer #{params[:printer]}."
