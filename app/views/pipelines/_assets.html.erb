@@ -3,20 +3,11 @@
     <tr>
       <th class='label'>&nbsp;</th>
       <th class='label'><%= link_to "Internal ID", "javascript:void(0);" %></th>
-			<th class='label'>
-        <%= link_to "Barcode", "javascript:void(0);" %>
-			</th>
+			<th class='label'><%= link_to "Barcode", "javascript:void(0);" %></th>
       <th class='label'><%= link_to "Wells", "javascript:void(0);" %></th>
-			<th class='label'>
-      <% if @pipeline.group_by_submission? -%>
-        <%= link_to "Submission", "javascript:void(0);" %>
-      <% end -%>
-			</th>
-			<th class='label'>
-      <% if @pipeline.group_by_study? %>
-        <%= link_to "Study", "javascript:void(0);" %>
-      <% end%>
-			</th>
+      <th class="label"><%= link_to "Next Pipeline", "javascript:void(0);" %></th>
+			<th class='label'><% if @pipeline.group_by_submission? -%><%= link_to "Submission", "javascript:void(0);" %><% end -%></th>
+			<th class='label'><% if @pipeline.group_by_study? %><%= link_to "Study", "javascript:void(0);" %><% end%></th>
       <th class='label'></th>
     </tr>
   </thead>
@@ -44,6 +35,7 @@
           <td><%= parent.id %></td>
           <td><%= parent.sanger_human_barcode %></td>
           <td><%= requests.size %></td>
+          <td><%= next_pipeline_name_for(requests.first) %></td>
 					<td>
           	<% if @pipeline.group_by_submission? %>
           		<%= submission_id %>
@@ -60,6 +52,7 @@
       <tr>
         <td class="request center" width='5%' colspan="3" style="background:red;font-weight:bold;">Empty parent ID set</td>
         <td style="background:red;"><%= requests.size %></td>
+        <td style="background:red;">&nbsp;</td>
         <td style="background:red;">&nbsp;</td>
         <td style="background:red;">&nbsp;</td>
 				<td style="background:red;">&nbsp;</td>

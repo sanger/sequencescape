@@ -7,11 +7,11 @@ class GenerateTagLayoutTemplates < ActiveRecord::Migration
           :tag_group         => tag_group,
           :layout_class_name => 'TagLayout::InColumns'
         })
-        yield({
-          :name              => "#{tag_group.name} in row major order",
-          :tag_group         => tag_group,
-          :layout_class_name => 'TagLayout::InRows'
-        })
+#        yield({
+#          :name              => "#{tag_group.name} in row major order",
+#          :tag_group         => tag_group,
+#          :layout_class_name => 'TagLayout::InRows'
+#        })
       end
     end
   end

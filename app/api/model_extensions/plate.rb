@@ -39,4 +39,14 @@ module ModelExtensions::Plate
   def plate_purpose_or_stock_plate
     self.plate_purpose || PlatePurpose.find_by_name('Stock Plate')
   end
+
+  # Returns a hash from the submission for the pools to the wells that form that pool on this plate.  This is
+  # not necessarily efficient but it is correct.
+  def pools
+    ActiveSupport::OrderedHash.new { |h,k| h[k] = [] }.tap do |pools|
+      wells.walk_in_column_major_order do |well, _|
+        well.pool_id { |pool_id| pools[pool_id] << well.map.description }
+      end
+    end
+  end
 end

@@ -142,27 +142,33 @@ class Well < Aliquot::Receptacle
      :concentration => self.get_concentration }
   end
 
-private
-
   def create_well_attribute_if_not_exists
     unless self.well_attribute
       self.well_attribute = WellAttribute.create
       self.save!
     end
   end
+  private :create_well_attribute_if_not_exists
 
- def buffer_required?
+  def buffer_required?
     get_buffer_volume > 0.0
   end
+  private :buffer_required?
 
-public
-    
   def find_child_plate
     self.children.reverse_each do |child_asset|
       return child_asset if child_asset.is_a?(Well)
     end
-    
     nil
   end
 
+  def pool_id(&block)
+    return nil if requests_as_target.empty?
+    requests_as_target.map(&:submission_id).uniq.tap do |submission_ids|
+      raise StandardError, "Cannot handle no submissions" if submission_ids.empty?
+      raise StandardError, "Cannot handle multiple submissions (#{submission_ids.inspect})" if submission_ids.size > 1
+    end.first.tap do |pool_id|
+      yield(pool_id) if block_given?
+    end
+  end
 end

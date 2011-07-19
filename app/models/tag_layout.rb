@@ -37,6 +37,13 @@ class TagLayout < ActiveRecord::Base
     plate.wells.send(:"walk_in_#{direction}_major_order") do |well, index|
       tags[index % tags.length].tag!(well) unless well.aliquots.empty?
     end
+
+    # We can now check that the pools do not contain duplicate tags.
+    pool_to_tag = Hash.new { |h,k| h[k] = [] }
+    plate.wells.walk_in_column_major_order do |well, _|
+      well.pool_id { |pool_id| pool_to_tag[pool_id] << well.aliquots.map(&:tag).uniq }
+    end
+    errors.add_to_base('duplicate tags within a pool') if pool_to_tag.any? { |_,t| t.uniq.size > 1 }
   end
   private :layout_tags_into_wells
 end
