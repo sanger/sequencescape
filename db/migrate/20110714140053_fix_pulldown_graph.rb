@@ -91,10 +91,10 @@ class FixPulldownGraph < ActiveRecord::Migration
       #all the well of the same submission go in the pooled well
       pooled_well ||= begin
                         pooled_plate = plate_to_child[tagged_plate] ||=  tagged_plate.create_child 
-                        pooled_well = pooled_plate.find_well_by_map_description(source.map_description)
+                        pooled_plate.find_well_by_map_description(source.map_description)
                       end
       well_chain << pooled_well
-      well_chain << tube unless pooled_well.requests.any?{ |r| r.target_asset == tube }
+      well_chain << tube unless pooled_well.requests(true).any?{ |r| r.target_asset == tube }
 
       well_chain.inject(well_chain.shift){ |s,t| TransfertRequest.create!(:asset => s, :target_asset => t) ; t}
     end
