@@ -96,7 +96,7 @@ class FixPulldownGraph < ActiveRecord::Migration
       well_chain << pooled_well
       well_chain << tube unless pooled_well.requests.any?{ |r| r.target_asset == tube }
 
-      well_chain.inject(well_chain.shift){ |s,t| TransfertRequest.create!(:asset => s, :target_asset => t) }
+      well_chain.inject(well_chain.shift){ |s,t| TransfertRequest.create!(:asset => s, :target_asset => t) ; t}
     end
 
   end
