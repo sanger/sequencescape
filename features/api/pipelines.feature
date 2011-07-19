@@ -113,7 +113,7 @@ Feature: Access pipelines through the API
       | pending |
       | hold    |
 
-  @read @request
+  @read @request @no_ci
   Scenario: Requests for a particular submission are not split across pages
     Given I have 3 requests for "PacBio Sequencing" that are part of the same submission
       And I have 4 requests for "PacBio Sequencing" that are part of the same submission
@@ -153,7 +153,7 @@ Feature: Access pipelines through the API
       }
       """
 
-  @read @request
+  @read @request @no_ci
   Scenario: Requests for a particular submission are not split across pages
     Given I have 3 requests for "PacBio Sequencing" that are part of the same submission
       And I have 4 requests for "PacBio Sequencing" that are part of the same submission
