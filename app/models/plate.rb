@@ -61,7 +61,8 @@ class Plate < Asset
     def walk_in_column_major_order(&block)
       locations_to_well = Hash[self.map { |well| [ well.map.description, well ] }]
       Map.walk_plate_in_column_major_order(proxy_owner.size) do |map, index|
-        yield(locations_to_well[map.description], index)
+        well = locations_to_well[map.description]
+        yield(well, index) if well.present?
       end
     end
 
@@ -69,7 +70,8 @@ class Plate < Asset
     def walk_in_row_major_order(&block)
       locations_to_well = Hash[self.map { |well| [ well.map.description, well ] }]
       Map.walk_plate_in_row_major_order(proxy_owner.size) do |map, index|
-        yield(locations_to_well[map.description], index)
+        well = locations_to_well[map.description]
+        yield(well, index) if well.present?
       end
     end
   end

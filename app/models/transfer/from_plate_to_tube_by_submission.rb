@@ -33,8 +33,9 @@ class Transfer::FromPlateToTubeBySubmission < Transfer
   def well_to_destination
     ActiveSupport::OrderedHash[
       source.wells.map do |well|
-        tube = locate_mx_library_tube_for(locate_stock_well_for(well))
-        tube.nil? ? nil : [ well, tube ]
+        stock_wells = locate_stock_wells_for(well)
+        tube        = locate_mx_library_tube_for(stock_wells.first)
+        tube.nil? ? nil : [ well, [ tube, stock_wells ] ]
       end.compact
     ]
   end
@@ -46,15 +47,40 @@ class Transfer::FromPlateToTubeBySubmission < Transfer
   end
   private :locate_mx_library_tube_for
 
-  def record_transfer(source, destination)
+  def record_transfer(source, destination, stock_well)
     @transfers ||= {}
-    @transfers[source.map.description] = destination
+    @transfers[source.map.description] = [ destination, stock_well ]
   end
   private :record_transfer
 
   after_create :build_well_to_tube_transfers
   def build_well_to_tube_transfers
-    @transfers.each { |source, destination| self.well_to_tubes.create!(:source => source, :destination => destination) }
+    tube_to_stock_wells = Hash.new { |h,k| h[k] = [] }
+    @transfers.each do |source, (destination, stock_wells)|
+      self.well_to_tubes.create!(:source => source, :destination => destination)
+      tube_to_stock_wells[destination].concat(stock_wells)
+    end
+
+    tube_to_stock_wells.each do |tube, stock_wells|
+      tube.update_attributes!(:name => tube_name_for(stock_wells)) if tube.name.blank?
+    end
   end
   private :build_well_to_tube_transfers
+
+  # Builds the name for the tube based on the wells that are being transferred from by finding their stock plate wells and
+  # creating an appropriate range.
+  def tube_name_for(stock_wells)
+    stock_plates = stock_wells.map(&:plate).uniq
+    raise StandardError, "There appears to be no stock plate!" if stock_plates.empty?
+    raise StandardError, "Cannot handle cross plate pooling!" if stock_plates.size > 1
+
+    stock_locations, ordered_wells = stock_wells.map(&:map), []
+    Map.walk_plate_in_column_major_order(stock_plates.first.size) do |location, _|
+      ordered_wells.push(location.description) if stock_locations.include?(location)
+    end
+
+    first, last = [ :first, :last ].map(&ordered_wells.compact.method(:send))
+    "#{stock_plates.first.sanger_human_barcode} #{first}:#{last}"
+  end
+  private :tube_name_for
 end

@@ -120,9 +120,10 @@ class Transfer < ActiveRecord::Base
     end
 
     def each_transfer(&block)
-      well_to_destination.each do |source, destination|
+      well_to_destination.each do |source, destination_and_additional_information|
+        destination, *extra_information = Array(destination_and_additional_information)
         yield(source, destination)
-        record_transfer(source, destination)
+        record_transfer(source, destination, *extra_information)
       end
     end
     private :each_transfer
@@ -141,6 +142,20 @@ class Transfer < ActiveRecord::Base
       end
     end
     private :locate_stock_well_for
+
+    def locate_stock_wells_for(current_well)
+      return [ current_well ] if current_well.plate.plate_purpose.can_be_considered_a_stock_plate?
+
+      [].tap do |stock_wells|
+        wells_to_walk = [ current_well ]
+        until wells_to_walk.empty?
+          wells_to_walk.shift.requests_as_target.where_is_a?(TransferRequest).map(&:asset).each do |well|
+            (well.plate.plate_purpose.can_be_considered_a_stock_plate? ? stock_wells : wells_to_walk) << well
+          end
+        end
+      end
+    end
+    private :locate_stock_wells_for
   end
 
   include Uuid::Uuidable
