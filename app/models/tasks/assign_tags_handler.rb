@@ -37,6 +37,7 @@ module Tasks::AssignTagsHandler
         begin
         AssetLink.create_edge(tag_instance, request.target_asset)
         AssetLink.create_edge(request.target_asset, multiplexed_library)
+        TransfertRequest.create!(:asset => request.target_asset, :target_asset => multiplexed_library, :state => 'passed') # to drop if merge conflict !!!
         rescue => exception
           debugger
           raise
