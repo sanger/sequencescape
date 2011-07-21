@@ -164,7 +164,7 @@ module SampleManifest::PlateBehaviour
   def generate_wells(wells_for_plate, plate)
     study_samples_data = wells_for_plate.map do |map,sanger_sample_id|
       create_sample(sanger_sample_id).tap do |sample|
-        plate.wells.create!(:map => map, :well_attributes => WellAttribute.new).tap do |well|
+        plate.wells.create!(:map => map, :well_attribute => WellAttribute.new).tap do |well|
           well.aliquots.create!(:sample => sample)
         end
       end
