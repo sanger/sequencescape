@@ -234,7 +234,8 @@ class Asset < ActiveRecord::Base
   QC_STATES =  [
     [ 'passed',  'pass' ],
     [ 'failed',  'fail' ],
-    [ 'pending', 'pending' ]
+    [ 'pending', 'pending' ],
+    [  nil, '']
   ]
 
   QC_STATES.each do |state, qc_state|

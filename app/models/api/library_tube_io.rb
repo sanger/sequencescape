@@ -35,7 +35,7 @@ class Api::LibraryTubeIO < Api::Base
   map_attribute_to_json_attribute(:id)
   map_attribute_to_json_attribute(:name)
   map_attribute_to_json_attribute(:barcode)
-  map_attribute_to_json_attribute(:qc_state)
+  map_attribute_to_json_attribute(:compatible_qc_state)
   map_attribute_to_json_attribute(:closed)
   map_attribute_to_json_attribute(:two_dimensional_barcode)
   map_attribute_to_json_attribute(:concentration)
@@ -52,7 +52,7 @@ class Api::LibraryTubeIO < Api::Base
     map_attribute_to_json_attribute(:prefix, 'barcode_prefix')
   end
 
-  with_association(:primary_aliquot) do
+  with_association(:primary_aliquot_if_unique) do
     with_association(:sample) do
       map_attribute_to_json_attribute(:uuid, 'sample_uuid')
       map_attribute_to_json_attribute(:id,   'sample_internal_id')
