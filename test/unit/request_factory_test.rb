@@ -62,17 +62,6 @@ class RequestFactoryTest < ActiveSupport::TestCase
     end
   end
 
-  context "request with a well" do
-    setup do
-      source_well = Factory :well
-      request_type = RequestType.find_by_key("cherrypick")
-      @target_well = RequestFactory.create_target_asset(source_well, request_type)
-    end
-    should "create a well attribute" do
-      assert_not_nil @target_well.well_attribute
-    end
-  end
-
   context '.create_assets_requests' do
     setup do
       @study  = Factory(:study)

@@ -7,7 +7,6 @@ Feature: Creating Spiked phiX
       And the "volume" of the asset called "Stock of phiX" is "200.0"
 
   Scenario: A member of the library creation team creates a "batch" of indexed phiX.
-    Given I have a tag called "168"
     Given I am on the asset creation page
     When I select "Library Tube" from "Type"
     And I fill in "Parent Asset" with "Stock of phiX"
@@ -100,7 +99,6 @@ Feature: Creating Spiked phiX
   @npg @xml
   Scenario: Create a batch and check the xm
     # create control
-    Given I have a tag called "168"
     Given I am on the asset creation page
     When I select "Library Tube" from "Type"
     And I fill in "Name" with "indexed phiX"
@@ -177,8 +175,8 @@ Feature: Creating Spiked phiX
         <control name="indexed phiX" id="781"/>
         <tag tag_id="19">
           <index>168</index>
-          <expected_sequence>AAA</expected_sequence>
-          <tag_group_id></tag_group_id>
+          <expected_sequence>ACAACGCAAT</expected_sequence>
+          <tag_group_id>6</tag_group_id>
         </tag>
       </hyb_buffer>
     </lane>

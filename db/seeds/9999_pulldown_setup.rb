@@ -1,4 +1,4 @@
-unless ENV['NO_PULLDOWN']
+if ENV['PULLDOWN']
   # This is a temporary file because I got tired of typing it every time I wanted to test the Pulldown pipelines!
   class PlateBarcode
     def self.create

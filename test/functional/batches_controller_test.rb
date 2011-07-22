@@ -29,14 +29,13 @@ class BatchesControllerTest < ActionController::TestCase
         setup do
           pipeline = Factory :pipeline
 
+          @study, @project = Factory(:study), Factory(:project)
+          @sample = Factory :sample
+
           batch = Factory :batch, :pipeline => pipeline
-          sample   = Factory :sample
-          library1 = Factory(:empty_library_tube).tap { |library_tube| library_tube.aliquots.create!(:sample => sample) }
-          lane = Factory(:empty_lane, :qc_state => 'failed').tap { |lane| lane.aliquots.create!(:sample => sample) }
-          @request_one = pipeline.request_type.create!(
-            :asset => library1, :target_asset => lane,
-            :project => Factory(:project), :study => Factory(:study)
-          )
+          library1 = Factory(:empty_library_tube).tap { |library_tube| library_tube.aliquots.create!(:sample => @sample, :project => @project, :study => @study) }
+          lane = Factory(:empty_lane, :qc_state => 'failed').tap { |lane| lane.aliquots.create!(:sample => @sample, :project => @project, :study => @study) }
+          @request_one = pipeline.request_type.create!(:asset => library1, :target_asset => lane, :project => @project, :study => @study)
           batch.batch_requests.create!(:request => @request_one, :position => 1)
           get :show, :id => batch.id, :format => "xml"
         end
@@ -44,10 +43,8 @@ class BatchesControllerTest < ActionController::TestCase
         
         should "have api version attribute on root object" do
           assert_response :success
-          assert_not_nil @request_one.asset
-          assert_not_nil @request_one.asset.sample
-          assert_tag :tag => "library", :attributes => {:sample_id => @request_one.asset.sample.id, :request_id => @request_one.id}
-          assert_tag :tag => "library", :attributes => {:project_id => @request_one.project_id, :study_id => @request_one.study_id}
+          assert_tag :tag => "library", :attributes => {:sample_id => @sample.id, :request_id => @request_one.id}
+          assert_tag :tag => "library", :attributes => {:project_id => @project.id, :study_id => @study.id}
           assert_tag :tag => "library", :attributes => {:qc_state => "fail"}
         end
       end

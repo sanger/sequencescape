@@ -136,19 +136,12 @@ class AssetsController < ApplicationController
           # create a new tag instance or assign the tag is it's a tag instance
           tag_param = first_param(:tag)
           if tag_param.present?
-            tag = nil
-            oligo = params[:tag_sequence]
-            if oligo.present? && oligo.first.present?
-              oligo = oligo.first.upcase!
-              tag = Tag.find(:first, :conditions => {:map_id => tag_param, :oligo => oligo })
-            else
-              tags = Tag.find_all_by_map_id(tag_param)
-              if tags.size ==1
-                tag = tags.first
-              end
+            conditions = { :map_id => tag_param }
+            oligo      = params[:tag_sequence]
+            conditions[:oligo] = oligo.first.upcase! if oligo.present? and oligo.first.present?
 
-            end
-            unless tag
+            tag = Tag.first(:conditions => conditions)
+            unless tag.present?
               flash[:error] = "Tag #{tag_param}:#{params[:tag_sequence]} not found"
               saved = false
             end

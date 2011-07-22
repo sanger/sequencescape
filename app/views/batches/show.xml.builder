@@ -20,8 +20,8 @@ xml.batch {
             "sample_id"  => request.asset.primary_aliquot.sample_id,
             "name"       => request.asset.name,
             "request_id" => request.id,
-            "study_id"   => request.primary_aliquot.study_id,
-            "project_id" => request.primary_aliquot.project_id,
+            "study_id"   => request.asset.primary_aliquot.study_id,
+            "project_id" => request.asset.primary_aliquot.project_id,
             "qc_state"   => request.target_asset.compatible_qc_state
           )
         else
