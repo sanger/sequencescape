@@ -64,12 +64,14 @@ module Request::Statemachine
   end
 
   # By default we copy the aliquots of the source asset to the target one when the request
-  # is passed, as this suggests that the chemistry has been done.  At the same time, if
-  # the aliquots don't have studies then they are assigned them from ourselves.
+  # is passed, as this suggests that the chemistry has been done.  The study & project of
+  # the aliquot is based on the request study if it has one, otherwise it is the aliquot's
+  # original study.
   def on_passed
     target_asset.aliquots << asset.aliquots.map(&:clone).tap do |cloned_aliquots|
       cloned_aliquots.each do |aliquot|
-        aliquot.study ||= study
+        aliquot.study   = study   || aliquot.study
+        aliquot.project = project || aliquot.project
       end
     end if target_asset.present?
   end

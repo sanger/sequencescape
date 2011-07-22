@@ -3,6 +3,7 @@ class CreateAliquots < ActiveRecord::Migration
     create_table :aliquots do |t|
       t.references :receptacle, :null => false
       t.references :study
+      t.references :project
 
       t.references :library
       t.references :sample,     :null => false

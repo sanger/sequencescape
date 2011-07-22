@@ -14,6 +14,7 @@ ActiveRecord::Schema.define(:version => 20110725091045) do
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
     t.integer  "study_id"
+    t.integer  "project_id"
     t.integer  "library_id"
     t.integer  "sample_id",        :null => false
     t.integer  "tag_id"

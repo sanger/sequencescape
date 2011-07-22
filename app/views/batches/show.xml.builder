@@ -20,8 +20,8 @@ xml.batch {
             "sample_id"  => request.asset.primary_aliquot.sample_id,
             "name"       => request.asset.name,
             "request_id" => request.id,
-            "study_id"   => request.study_id,
-            "project_id" => request.project_id,
+            "study_id"   => request.primary_aliquot.study_id,
+            "project_id" => request.primary_aliquot.project_id,
             "qc_state"   => request.target_asset.compatible_qc_state
           )
         else
@@ -34,7 +34,7 @@ xml.batch {
             "qc_state"   => request.target_asset.compatible_qc_state
           ) {
             request.asset.aliquots.each do |aliquot|
-              xml.sample(:sample_id => aliquot.sample.id,  :library_id => aliquot.library_id, :study_id => aliquot.study_id) {
+              xml.sample(:sample_id => aliquot.sample.id,  :library_id => aliquot.library_id, :study_id => aliquot.study_id, :project_id => aliquot.project_id) {
                 # NOTE: XmlBuilder has a method called 'tag' so we have to say we want the element 'tag'!
                 xml.tag!(:tag, :tag_id => aliquot.tag.id) {
                   xml.index             aliquot.tag.map_id

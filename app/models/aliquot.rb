@@ -100,8 +100,9 @@ class Aliquot < ActiveRecord::Base
   belongs_to :receptacle, :class_name => 'Aliquot::Receptacle'
   validates_presence_of :receptacle
 
-  # An aliquot can belong to a study
+  # An aliquot can belong to a study and a project.
   belongs_to :study
+  belongs_to :project
 
   # An aliquot is an amount of a sample
   belongs_to :sample

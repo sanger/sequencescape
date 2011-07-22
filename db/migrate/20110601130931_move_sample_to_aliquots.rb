@@ -178,9 +178,10 @@ class MoveSampleToAliquots < ActiveRecord::Migration
 
         parent_aliquots_for_request = parent_aliquots.map do |aliquot|
           aliquot.dup.tap do |aliquot_for_child|
-            # The study is always taken from the request or it's the aliquot's study if the request doesn't
-            # have one.
-            aliquot_for_child.study_id = request.study_id || aliquot_for_child.study_id
+            # The study and project are always taken from the request or it's the aliquot's study if the request
+            # doesn't have one.
+            aliquot_for_child.study_id   = request.study_id   || aliquot_for_child.study_id
+            aliquot_for_child.project_id = request.project_id || aliquot_for_child.project_id
 
             # The library information (the asset that is the library and the insert size) needs to be maintained
             if request.is_library_creation? or pulldown_library_request.present?
