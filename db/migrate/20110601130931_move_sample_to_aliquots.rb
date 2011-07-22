@@ -15,19 +15,86 @@ class MoveSampleToAliquots < ActiveRecord::Migration
   end
 
   class Request < ActiveRecord::Base
+    class Metadata < ActiveRecord::Base
+      set_table_name('request_metadata')
+    end
+
     set_table_name('requests')
 
     # More sensible names for the assets
     belongs_to :source_asset, :class_name => 'MoveSampleToAliquots::Asset', :foreign_key => :asset_id
     belongs_to :target_asset, :class_name => 'MoveSampleToAliquots::Asset', :foreign_key => :target_asset_id
+
+    has_one :request_metadata, :class_name => 'MoveSampleToAliquots::Request::Metadata', :foreign_key => :request_id
+
+    LIBRARY_CREATION_REQUEST_TYPES = [ 'LibraryCreationRequest', 'MultiplexedLibraryCreationRequest' ]
+
+    def is_library_creation?
+      LIBRARY_CREATION_REQUEST_TYPES.include?(self.sti_type)
+    end
   end
 
   class Asset < ActiveRecord::Base
+    SAMPLE_TUBES_ONLY = { :conditions => { :sti_type => 'SampleTube' } }
+
+    # Sample tubes are always root assets so they're easy!
+    def self.each_sample_tube(&block)
+      total, index = count(SAMPLE_TUBES_ONLY), 0
+      find_in_batches(SAMPLE_TUBES_ONLY) do |batch|
+        batch.each do |asset|
+          yield(asset, index, total)
+          index += 1
+        end
+      end
+    end
+
+    UNVISITED_WELLS = { :conditions => { :sti_type => 'Well', :has_been_visited => false } }
+
+    # Finding the root wells is very very time consuming in any reasonable fashion: for instance, finding all
+    # wells that are not target assets took over 5 hours before even getting going on processing them (and I
+    # got bored and cancelled it so that isn't the final time).  Instead, let's just find each well, walk back
+    # up until we find all of it's input wells that have no input wells themselves, then walk down from them
+    # recording the root ones that have been visited before.
+    def self.each_root_well(&block)
+      total, index = Asset.count(UNVISITED_WELLS), 0
+      Asset.find_in_batches(UNVISITED_WELLS) do |batch|
+        root_wells, visited = Set.new, Set.new
+        batch.each do |well|
+          # From this well walk back up until we find all source wells that lead into it that have no
+          # requests where they are the target.  Can't use a set here because it doesn't support shifting!
+          wells = [ well ]
+          until wells.empty?
+            current_well = wells.shift
+            parent_wells = current_well.requests_as_target.map(&:source_asset).uniq
+            if parent_wells.empty?
+              root_wells << current_well
+            else
+              wells.concat(parent_wells.reject(&:has_been_visited?))
+              wells.uniq!
+            end
+
+            # The current well will automatically have all aliquots in it after being processed because we
+            # will have come from its sources.  Therefore we do not need to walk it again if we meet it
+            # in our travels.
+            visited << current_well
+          end
+        end
+
+        # Now we can walk the request graph from each of the root wells.  Just in case we'll eliminate
+        # any well that might have been visited before!  Mark any well we visited during our backwalk
+        # as having been visited so that we don't reprocess it later.
+        root_wells.reject(&:has_been_visited?).each do |well|
+          yield(well, index, total)
+          index += 1
+        end
+        Asset.update_all('has_been_visited=TRUE', [ 'id IN (?)', visited.map(&:id) ])
+      end
+    end
+
     set_table_name('assets')
 
-    # Sometimes we have to skip from the asset to the next asset via a request.  This should return the cases
-    # where that should happen.
-    has_many :requests_to_skip_to, :class_name => 'MoveSampleToAliquots::Request', :foreign_key => :asset_id, :conditions => { :sti_type => 'PulldownMultiplexedLibraryCreationRequest' }
+    has_many :requests_as_source, :class_name => 'MoveSampleToAliquots::Request', :foreign_key => :asset_id, :conditions => 'sti_type != "CreateAssetRequest"'
+    has_many :requests_as_target, :class_name => 'MoveSampleToAliquots::Request', :foreign_key => :target_asset_id, :conditions => 'sti_type != "CreateAssetRequest"'
 
     # We're removing these ...
     belongs_to :sample
@@ -75,48 +142,16 @@ class MoveSampleToAliquots < ActiveRecord::Migration
       end
     end
 
-    ROOT_LEVEL_ASSET_CONDITIONS = {
-      :conditions => [
-        'id IN (SELECT DISTINCT ancestor_id FROM asset_links WHERE ancestor_id NOT IN (SELECT DISTINCT descendant_id FROM asset_links)) AND sti_type!=?',
-        'TagInstance'
-      ]
-    }
-
-    def self.at_root(options = {}, &block)
-      # Can't use a named_scope here because that seems to cause find_each to behave oddly, where
-      # every call to 'asset.children' then includes the scope which has NULL conditions.
-      total, index = count(ROOT_LEVEL_ASSET_CONDITIONS), 0
-      find_in_batches(options.merge(ROOT_LEVEL_ASSET_CONDITIONS)) do |batch|
-        batch.each do |asset|
-          yield(asset, index, total)
-          index += 1
-        end
-      end
+    # True for any terminal assets, which don't have requests leading out of them.
+    def is_terminal?
+      self.sti_type == 'Lane'
     end
   end
 
-  EAGER_LOADING_FOR_ASSETS   = { :include => [ :aliquots, :tag_instance ] }
-  EAGER_LOADING_FOR_REQUESTS = { :include => { :source_asset => [ :aliquots, :tag_instance ], :target_asset => [ :aliquots, :tag_instance ] } }
-
-  # These are all of the classes that are considered to be receptacles.  Any others can be ignored
-  # when it comes to aliquot processing.
-  RECEPTACLES = [
-    # The common ones ...
-    'SampleTube',               # Should only have a sample
-    'LibraryTube',              # Should have both a sample and a tag
-    'MultiplexedLibraryTube',   # Actually has nothing but ends up with multiple aliquots
-    'Well',                     # Nothing, or a sample, but ends up with one or more aliquots
-    'Lane',                     # Actually has nothing but ends up with one or more aliquots
-
-    # The oddities ... which really shouldn't exist ...
-    'PacBioLibraryTube',
-    'StockLibraryTube',
-    'StockMultiplexedLibraryTube',
-    'PulldownMultiplexedLibraryTube'
-  ]
+  EAGER_LOADING_FOR_ASSETS   = { :include => [ :aliquots, :tag_instance, { :requests_as_source => :target_asset } ] }
 
   def self.walk_from_asset(parent, depth = 0)
-    return if parent.nil?   # Guard because we can't guarantee it's not, unfortunately
+    return if parent.is_terminal?   # No point going any further!
     raise StandardError, "Asset #{parent.id} has exceeded the maximum expected depth (do we have a cycle?)" if depth > 10
 
     # Cunning way to handle the depth our children are at!
@@ -124,47 +159,69 @@ class MoveSampleToAliquots < ActiveRecord::Migration
 
     say("#{'-*-'*depth}Walking asset #{parent.id} (#{parent.sti_type})")
 
-    # If the parent is of a type that should not have aliquots then we do not process it, except
-    # to process any children it might have.  This covers, in particular, plates, where the wells
-    # are children.
-    children = parent.children.all(EAGER_LOADING_FOR_ASSETS)
-    return children.each(&walk_next_depth) unless RECEPTACLES.include?(parent.sti_type)
+    # We have to split out the pulldown requests here because they are not to be followed.  However,
+    # their library information must be used for the first transfer requests that are followed.
+    requests_to_follow = parent.requests_as_source.all
+    return if requests_to_follow.empty?
 
+    pulldown_requests, requests_to_follow = requests_to_follow.partition { |r| r.is_a?(PulldownMultiplexedLibraryCreationRequest) }
+    raise StandardError, "Cannot handle multiple pulldown library creation requests" if pulldown_requests.size > 1
+    pulldown_library_request = pulldown_requests.first
+
+    # Copy the aliquots to our children and then process them.  For each request we are
+    # copying the aliquot information down, ensuring that we modify it appropriately based on the
+    # information in the request.
     parent_aliquots = parent.aliquots.for_attachment
-    children.each { |child| child.aliquots.attach_missing_from(parent_aliquots) }
-    children.each(&walk_next_depth)
+    children        = requests_to_follow.inject([]) do |children, request|
+      children.tap do
+        next if request.target_asset.nil?
 
-    # If the well has a "Cherrypick for Pulldown" request leading from it then we should jump
-    # across to the target asset of that request.
-    request_assets = parent.requests_to_skip_to.map(&:target_asset).compact.uniq
-    request_assets.each { |asset| asset.aliquots.attach_missing_from(parent_aliquots) }
-    request_assets.each(&walk_next_depth)
+        parent_aliquots_for_request = parent_aliquots.map do |aliquot|
+          aliquot.dup.tap do |aliquot_for_child|
+            # The study is always taken from the request or it's the aliquot's study if the request doesn't
+            # have one.
+            aliquot_for_child.study_id = request.study_id || aliquot_for_child.study_id
+
+            # The library information (the asset that is the library and the insert size) needs to be maintained
+            if request.is_library_creation? or pulldown_library_request.present?
+              library_request = pulldown_library_request || request
+
+              aliquot_for_child.library_id       = request.target_asset_id  # Target is always from the request
+              aliquot_for_child.insert_size_from = library_request.request_metadata.fragment_size_required_from
+              aliquot_for_child.insert_size_to   = library_request.request_metadata.fragment_size_required_to
+            end
+          end
+        end
+
+        children << request.target_asset.tap do |child|
+          child.aliquots.attach_missing_from(parent_aliquots_for_request)
+        end
+      end
+    end
+
+    # Now walk to the children
+    children.each(&walk_next_depth)
   end
 
   def self.up
-    # In the majority of cases we can walk the asset graph in order to ensure that the aliquots
-    # are properly transferred from parents to children.  We can start at the root of the graph,
-    # where those assets have no parents, and walk along the child relationships.
-    #
-    # However, there is a small snag to this as, with pulldown multiplexing there is a break in
-    # this asset graph that means we have to make a single hop into the request graph.  It's not
-    # when you reach a well with no children: it's actually the parent well of those that has the
-    # request that needs to be followed.
-    #
-    # Because the intention is to run this separately to the release migrations, and on a separate
-    # database, there is no point in being transactional here.  If things go wrong then the
-    # aliquots table can be dropped/truncated and the migration fixed and re-run.  It will also
-    # mean that the MySQL server isn't storing up the transactional data and so should be 
-    # quicker.
     migration_started = Time.now
-    Asset.at_root(EAGER_LOADING_FOR_ASSETS) do |asset, index, count|
-      say("Processing #{index+1}/#{count} ...")
+    asset_handler = lambda do |asset, index, count|
+      begin
+        say("Processing #{index+1}/#{count} ...")
 
-      start = Time.now
-      walk_from_asset(asset)
-      finish = Time.now
+        start = Time.now
+        walk_from_asset(asset)
+        finish = Time.now
 
-      say("Finished #{index+1}/#{count} (%0.03fs, %ds since start)" % [ finish-start, finish-migration_started ])
+        say("Finished #{index+1}/#{count} (%0.03fs, %ds since start)" % [ finish-start, finish-migration_started ])
+      rescue => exception
+        Rails.logger.error(exception.message)
+      end
+    end
+
+    ActiveRecord::Base.transaction do
+      Asset.each_sample_tube(&asset_handler)
+      Asset.each_root_well(&asset_handler)
     end
   end
 
