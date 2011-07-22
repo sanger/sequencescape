@@ -329,15 +329,14 @@ Feature: Interacting with requests through the API
       """
   @aliquot
   Scenario: Retrieving the JSON for a request with multiple aliquots
-    Given the project "Project testing the JSON API" has a "Pulldown library creation" quota of 10
     And I have a sample tube called "Tube"
     And the sample tube "Tube" has been involved in a "Pulldown library creation" request within the study "Study testing the JSON API" for the project "Project testing the JSON API"
-    And th sample tube "Tube" as 4 aliquots
+    And the sample tube "Tube" has 4 aliquots
     And all assets have sequential UUIDs based on "aaaaaaaa-1111-2222-3333"
     And all samples have sequential UUIDs based on "bbbbbbbb-1111-2222-3333"
 
     When I retrieve the JSON for all requests related to the sample tube "Tube"
-    Then ignoring "((source_asset|source_asset_sample|target_asset|project|study)_(internal_id|barcode)|id)" the JSON should be:
+    Then ignoring "^((source_asset.*|target_asset.*|project|study)_(internal_id|barcode)|id)" the JSON should be:
       """
       [
         {
@@ -363,7 +362,7 @@ Feature: Interacting with requests through the API
             "study_url": "http://localhost:3000/0_5/studies/22222222-2222-3333-4444-ffffffffffff",
             "project_name": "Project testing the JSON API",
             "study_uuid": "22222222-2222-3333-4444-ffffffffffff",
-            "source_asset_sample_uuid": "bbbbbbbb-1111-2222-3333-000000000001",
+            "target_asset_sample_uuid": "bbbbbbbb-1111-2222-3333-000000000002",
             "target_asset_name": "Study testing the JSON API - Target asset",
             "source_asset_state": "",
             "source_asset_name": "Tube",
