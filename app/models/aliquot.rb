@@ -62,6 +62,10 @@ class Aliquot < ActiveRecord::Base
     def primary_aliquot_if_unique
       aliquots.first if aliquots.size == 1
     end
+
+    def type
+      self.class.name.underscore
+    end
   end
 
   # Something that is aliquotable can be part of an aliquot.  So sample and tag are both examples.
@@ -101,6 +105,7 @@ class Aliquot < ActiveRecord::Base
     end
   end
 
+  include Api::AliquotIO::Extensions
   # An aliquot is held within a receptacle
   belongs_to :receptacle, :class_name => 'Aliquot::Receptacle'
   validates_presence_of :receptacle
@@ -119,6 +124,14 @@ class Aliquot < ActiveRecord::Base
 
   # It may have a bait library but not necessarily.
   belongs_to :bait_library
+
+  #to remove when project is added to 
+  def project
+    nil
+  end
+  def project_id
+    nil
+  end
 
   # An aliquot can represent a library, which is a processed sample that has been fragmented.  In which case it 
   # has a receptacle that held the library aliquot and has an insert size describing the fragment positions.
