@@ -106,7 +106,7 @@ if ENV['PULLDOWN']
     Delayed::Worker.new.work_off(Delayed::Job.count * 2)
 
     $stderr.puts "Fudging 7 additional HiSeq requests so that they are available"
-    LinearSubmission.new(:study => Study.first, :project => Project.first, :user => User.first).save_without_validation
+    LinearSubmission.new(:study => Study.first, :project => Project.first, :user => User.first, :workflow_id => 1).save_without_validation
     submission = LinearSubmission.last
     (1..7).each do |i|
       tube    = MultiplexedLibraryTube.create!(:location => Location.find(2)).tap { |t| t.aliquots.create!(:sample => Sample.create!(:name => "fudge_#{i}")) }

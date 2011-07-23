@@ -32,6 +32,10 @@ class MoveSampleToAliquots < ActiveRecord::Migration
     def is_library_creation?
       LIBRARY_CREATION_REQUEST_TYPES.include?(self.sti_type)
     end
+
+    def is_pulldown_library_creation?
+      self.sti_type == 'PulldownMultiplexedLibraryCreationRequest'
+    end
   end
 
   class Asset < ActiveRecord::Base
@@ -161,10 +165,7 @@ class MoveSampleToAliquots < ActiveRecord::Migration
 
     # We have to split out the pulldown requests here because they are not to be followed.  However,
     # their library information must be used for the first transfer requests that are followed.
-    requests_to_follow = parent.requests_as_source.all
-    return if requests_to_follow.empty?
-
-    pulldown_requests, requests_to_follow = requests_to_follow.partition { |r| r.is_a?(PulldownMultiplexedLibraryCreationRequest) }
+    pulldown_requests, requests_to_follow = parent.requests_as_source.all.partition(&:is_pulldown_library_creation?)
     raise StandardError, "Cannot handle multiple pulldown library creation requests" if pulldown_requests.size > 1
     pulldown_library_request = pulldown_requests.first
 
