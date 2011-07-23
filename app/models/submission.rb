@@ -223,6 +223,9 @@ class Submission < ActiveRecord::Base
         old_attribute = attributes[att.name]
         attributes[att.name] = att unless old_attribute and old_attribute.required? # required attributes have a priority
       end
+      request_type.request_class::Metadata.association_details.each do |att|
+        attributes[att.name] = att
+      end
     end
 
     attributes.values

@@ -8,7 +8,7 @@ module Pulldown::WorksOnLibraryRequests
   def each_well_and_its_library_request(plate, &block)
     plate.wells.each do |well|
       stock_well      = locate_stock_well_for(well) or next
-      library_request = stock_well.requests_as_source.where_is_a?(PulldownLibraryCreationRequest).first or next
+      library_request = stock_well.requests_as_source.where_is_a?(Pulldown::Requests::LibraryCreation).first or next
       yield(well, library_request)
     end
   end

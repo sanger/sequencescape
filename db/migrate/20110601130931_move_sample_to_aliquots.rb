@@ -189,6 +189,7 @@ class MoveSampleToAliquots < ActiveRecord::Migration
               library_request = pulldown_library_request || request
 
               aliquot_for_child.library_id       = request.target_asset_id  # Target is always from the request
+              aliquot_for_child.library_type     = library_request.request_metadata.library_type
               aliquot_for_child.insert_size_from = library_request.request_metadata.fragment_size_required_from
               aliquot_for_child.insert_size_to   = library_request.request_metadata.fragment_size_required_to
             end

@@ -71,7 +71,7 @@ end
     end
 
     Then /^the state of all the pulldown library creation requests (to|from) (the #{target} .+) should be "([^"]+)"$/ do |direction, target, state|
-      assert_request_state(state, #{request_holder}, direction, PulldownLibraryCreationRequest)
+      assert_request_state(state, #{request_holder}, direction, Pulldown::Requests::LibraryCreation)
     end
   }, __FILE__, line)
 end

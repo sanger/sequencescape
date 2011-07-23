@@ -1,4 +1,4 @@
-module Pipeline::Pulldown
+module Pulldown::PlatePurposes
   PULLDOWN_PLATE_PURPOSE_FLOWS = [
     [
       'WGS stock plate',

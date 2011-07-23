@@ -93,7 +93,8 @@ module Attributable
       FieldInfo.new(
         :display_name  => Attribute::find_display_name(@owner,  name),
         :key           => self.name,
-        :kind          => FieldInfo::TEXT
+        :kind          => FieldInfo::SELECTION,
+        :selection     => @owner.reflections[@name.to_sym].klass.all.map(&@method.to_sym).sort
       )
     end
 

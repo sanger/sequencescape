@@ -475,7 +475,7 @@ ActiveRecord::Base.transaction do
   end
 
   # And here is pulldown
-  Pipeline::Pulldown::PULLDOWN_PLATE_PURPOSE_FLOWS.each do |flow|
+  Pulldown::PlatePurposes::PULLDOWN_PLATE_PURPOSE_FLOWS.each do |flow|
     # We're using a different plate purpose for each pipeline, which means we need to attach that plate purpose to the request
     # type for it.  Then in the cherrypicking they'll only be able to pick the correct type from the list.
     stock_plate_purpose = PlatePurpose.create!(:name => flow.shift, :default_state => 'passed', :can_be_considered_a_stock_plate => true)
@@ -494,7 +494,7 @@ ActiveRecord::Base.transaction do
 
   qc_plate_purpose = PlatePurpose.create!(:name => 'Pulldown QC plate')
 
-  Pipeline::Pulldown::PULLDOWN_PLATE_PURPOSE_LEADING_TO_QC_PLATES.each do |name|
+  Pulldown::PlatePurposes::PULLDOWN_PLATE_PURPOSE_LEADING_TO_QC_PLATES.each do |name|
     plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
     plate_purpose.child_plate_purposes << qc_plate_purpose
   end

@@ -731,10 +731,11 @@ set_pipeline_flow_to('PacBio Sample Prep' => 'PacBio Sequencing')
 
 # Pulldown pipelines
 [
-  'Pulldown WGS',
-  'Pulldown SC',
-  'Pulldown ISC'
-].each do |pipeline_name|
+  'WGS',
+  'SC',
+  'ISC'
+].each do |pipeline_type|
+  pipeline_name = "Pulldown #{pipeline_type}"
   Pipeline.create!(:name => pipeline_name) do |pipeline|
     pipeline.sorter     = Pipeline.maximum(:sorter) + 1
     pipeline.automated  = false
@@ -750,7 +751,7 @@ set_pipeline_flow_to('PacBio Sample Prep' => 'PacBio Sequencing')
       request_type.target_asset_type = 'MultiplexedLibraryTube'
       request_type.order             = 1
       request_type.multiples_allowed = false
-      request_type.request_class     = PulldownLibraryCreationRequest
+      request_type.request_class     = "Pulldown::Requests::#{pipeline_type.humanize}LibraryRequest".constantize
       request_type.for_multiplexing  = true
     end
 
