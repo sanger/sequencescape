@@ -27,6 +27,9 @@ class Api::AliquotIO < Api::Base
   map_attribute_to_json_attribute(:created_at)
   map_attribute_to_json_attribute(:updated_at)
 
+  map_attribute_to_json_attribute(:insert_size_from)
+  map_attribute_to_json_attribute(:insert_size_to)
+
   with_association(:study) do
     map_attribute_to_json_attribute(:url , 'study_url')
     map_attribute_to_json_attribute(:uuid, 'study_uuid')
@@ -49,7 +52,7 @@ class Api::AliquotIO < Api::Base
   with_association(:library) do
     map_attribute_to_json_attribute(:url , 'library_url')
     map_attribute_to_json_attribute(:uuid, 'library_uuid')
-    map_attribute_to_json_attribute(:library_type  , 'library_type')
+    #map_attribute_to_json_attribute(:library_type  , 'library_type')
   end
   #self.related_resources = [ :library_tubes, :requests ]
 end
