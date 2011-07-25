@@ -150,18 +150,27 @@ class MoveSampleToAliquots < ActiveRecord::Migration
     def is_terminal?
       self.sti_type == 'Lane'
     end
+
+    ASSETS_THAT_CAN_HAVE_STOCKS = [ 'LibraryTube', 'MultiplexedLibraryTube' ]
+
+    has_one(:stock_asset, :through => :links_as_child, :source => :ancestor, :conditions => { :sti_type => ASSETS_THAT_CAN_HAVE_STOCKS.map { |n| "Stock#{n}" } })
+
+    def can_have_stock_asset?
+      ASSETS_THAT_CAN_HAVE_STOCKS.include?(self.sti_type)
+    end
+
+    def has_stock_asset?
+      can_have_stock_asset? and stock_asset.present?
+    end
   end
 
-  EAGER_LOADING_FOR_ASSETS   = { :include => [ :aliquots, :tag_instance, { :requests_as_source => :target_asset } ] }
+  EAGER_LOADING_FOR_ASSETS = { :include => [ :aliquots, :tag_instance, { :requests_as_source => :target_asset } ] }
 
   def self.walk_from_asset(parent, depth = 0)
+    say("#{'-*-'*depth}Walking asset #{parent.id} (#{parent.sti_type})")
+
     return if parent.is_terminal?   # No point going any further!
     raise StandardError, "Asset #{parent.id} has exceeded the maximum expected depth (do we have a cycle?)" if depth > 10
-
-    # Cunning way to handle the depth our children are at!
-    walk_next_depth = lambda { |asset| walk_from_asset(asset, depth+1) }
-
-    say("#{'-*-'*depth}Walking asset #{parent.id} (#{parent.sti_type})")
 
     # We have to split out the pulldown requests here because they are not to be followed.  However,
     # their library information must be used for the first transfer requests that are followed.
@@ -202,8 +211,15 @@ class MoveSampleToAliquots < ActiveRecord::Migration
       end
     end
 
+    # If there is a stock asset associated with the current parent then we should treat it like a child, even
+    # though, in reality, it's the other way around.
+    if parent.has_stock_asset?
+      say("#{'-*-'*depth}Dealing with stock asset #{parent.stock_asset.id} (#{parent.stock_asset.sti_type})")
+      parent.stock_asset.aliquots.attach_missing_from(parent_aliquots)
+    end
+
     # Now walk to the children
-    children.each(&walk_next_depth)
+    children.each { |asset| walk_from_asset(asset, depth+1) }
   end
 
   def self.up
