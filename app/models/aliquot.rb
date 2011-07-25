@@ -107,7 +107,7 @@ class Aliquot < ActiveRecord::Base
 
   include Api::AliquotIO::Extensions
   # An aliquot is held within a receptacle
-  belongs_to :receptacle, :class_name => 'Aliquot::Receptacle'
+  belongs_to :receptacle, :class_name => 'Asset'
   validates_presence_of :receptacle
 
   # An aliquot can belong to a study and a project.
@@ -124,14 +124,6 @@ class Aliquot < ActiveRecord::Base
 
   # It may have a bait library but not necessarily.
   belongs_to :bait_library
-
-  #to remove when project is added to 
-  def project
-    nil
-  end
-  def project_id
-    nil
-  end
 
   # An aliquot can represent a library, which is a processed sample that has been fragmented.  In which case it 
   # has a receptacle that held the library aliquot and has an insert size describing the fragment positions.
