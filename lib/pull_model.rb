@@ -26,6 +26,11 @@ rescue
   class TagInstance < Asset
   end
 end
+  class TagInstance < Asset
+    def sample
+      nil
+    end
+  end
 #TODO put in a module
 class Renderer
   def render(objects, options, &block)
@@ -440,7 +445,7 @@ optparse = OptionParser.new do |opts|
     $options[:model]=model_name
   end
   opts.on('-rs', '--ruby', 'Generate a ruby script') do 
-    $options[:output_method] = ScriptRendere.new
+    $options[:output_method] = ScriptRenderer.new
   end
 
   opts.on('-g', '--graph type', 'Generate a dot graph') do |type|
