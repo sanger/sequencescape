@@ -1,9 +1,9 @@
 class DropSampleFromAssets < ActiveRecord::Migration
   def self.up
-    remove_column :assets, :sample_id
+    rename_column :assets, :sample_id, :legacy_sample_id
   end
 
   def self.down
-    add_column :assets, :sample_id, :integer
+    rename_column :assets, :legacy_sample_id, :sample_id
   end
 end
