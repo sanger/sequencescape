@@ -321,7 +321,7 @@ class BatchTest < ActiveSupport::TestCase
         # send_fail_event will be used once since only one request is not a resource /@request1
 #        EventSender.expects(:send_fail_event).returns(true).times(1)
         EventSender.stubs(:send_fail_event).returns(true)
-        @control  = Factory :asset, :resource => true
+        @control  = Factory :sample_tube, :resource => true
 
         @batch = @pipeline.batches.create!
         @request1, @request2 = @batch.requests = [
@@ -386,7 +386,7 @@ class BatchTest < ActiveSupport::TestCase
       context "control request" do
         setup do
           EventSender.expects(:send_fail_event).returns(true).times(1)
-          @asset = Factory :asset, :resource => 1
+          @asset = Factory :sample_tube, :resource => 1
           @request3 = Factory :request, :batches => [@batch], :id => 789, :asset => @asset
           @requests = { "#{@request1.id}"=>"on", "control"=>"on" }
           @batch.fail_batch_items(@requests, @reason, @comment)
@@ -416,8 +416,8 @@ class BatchTest < ActiveSupport::TestCase
 
     context "#public methods" do
       setup do
-        @asset1 = Factory :asset, :barcode => "123456"
-        @asset2 = Factory :asset, :barcode => "654321"
+        @asset1 = Factory :sample_tube, :barcode => "123456"
+        @asset2 = Factory :sample_tube, :barcode => "654321"
 
         @request1 = @pipeline.request_type.create!(:asset => @asset1)
         @request2 = @pipeline.request_type.create!(:asset => @asset2)
@@ -469,7 +469,7 @@ class BatchTest < ActiveSupport::TestCase
 
       context 'with control' do
         setup do
-          @control = Factory :asset, :resource => true
+          @control = Factory :sample_tube, :resource => true
           @request = @pipeline.request_type.create!(:asset => @control)
           @batch.batch_requests.create!(:request => @request, :position => 3)
         end
@@ -537,14 +537,14 @@ class BatchTest < ActiveSupport::TestCase
         setup do
           @batch = @pipeline.batches.create!(:qc_state => 'qc_pending')
 
-          @library1 = Factory :asset
-          @library2 = Factory :asset
+          @library1 = Factory :sample_tube
+          @library2 = Factory :sample_tube
           @batch.batch_requests.create!(
-            :request  => @pipeline.request_type.create!(:asset => @library1, :target_asset => Factory(:asset)),
+            :request  => @pipeline.request_type.create!(:asset => @library1, :target_asset => Factory(:library_tube)),
             :position => 1
           )
           @batch.batch_requests.create!(
-            :request  => @pipeline.request_type.create!(:asset => @library2, :target_asset => Factory(:asset)),
+            :request  => @pipeline.request_type.create!(:asset => @library2, :target_asset => Factory(:library_tube)),
             :position => 2
           )
 
@@ -652,8 +652,8 @@ class BatchTest < ActiveSupport::TestCase
     context "#reset!" do
       setup do
         @batch = @pipeline.batches.create!
-        @started_request   = @pipeline.request_type.create!(:state => 'pending',   :target_asset => Factory(:asset))
-        @cancelled_request = @pipeline.request_type.create!(:state => 'cancelled', :target_asset => Factory(:asset))
+        @started_request   = @pipeline.request_type.create!(:state => 'pending',   :target_asset => Factory(:sample_tube))
+        @cancelled_request = @pipeline.request_type.create!(:state => 'cancelled', :target_asset => Factory(:sample_tube))
         @batch.requests << @started_request << @cancelled_request
 
         @batch.expects(:destroy)    # Always gets destroyed
@@ -749,8 +749,8 @@ class BatchTest < ActiveSupport::TestCase
         @lib_prep_request = Factory :request, :state => "started"
         @pe_seq_request = Factory :request, :state => "pending"
         @lib_prep_batch.requests << @lib_prep_request
-        @sample_tube = Factory :asset, :name => "sample tube 1", :sti_type => "SampleTube"
-        @library_tube = Factory :asset, :name => "lib tube 1", :sti_type => "LibraryTube"
+        @sample_tube = Factory :sample_tube, :name => "sample tube 1"
+        @library_tube = Factory :library_tube, :name => "lib tube 1"
         @number_of_assets = Asset.count
         @lib_prep_request.asset = @sample_tube
         @lib_prep_request.target_asset = @library_tube

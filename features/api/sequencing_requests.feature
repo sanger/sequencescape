@@ -21,17 +21,6 @@ Feature: Access sequencing requests through the API
     And I have a library tube of stuff called "tube_1"
     And the UUID for the library tube "tube_1" is "11111111-3333-4444-5555-666666666666"
 
-  @read @error
-  Scenario: Reading the JSON for a UUID that does not exist
-    When I GET the API path "/00000000-1111-2222-3333-444444444444"
-    Then the HTTP response should be "404 Not Found"
-    And the JSON should be:
-      """
-      {
-        "general": [ "UUID does not exist" ]
-      }
-      """
-
   @read
   Scenario: Reading the JSON for a UUID
     Given I have already made a "Paired end sequencing" request with ID 1 within the study "Testing the sequencing requests API" for the project "My project"

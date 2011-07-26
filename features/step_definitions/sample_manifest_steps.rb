@@ -37,10 +37,21 @@ Then /^I should see the manifest table:$/ do |expected_results_table|
   expected_results_table.diff!(table(tableish('table#study_list tr', 'td,th')))
 end
 
+def sequence_sanger_sample_ids_for(plate)
+  plate.wells.walk_in_column_major_order do |well, index|
+    well.primary_aliquot.sample.update_attributes!(:sanger_sample_id => yield(index))
+  end
+end
+
 Given /^I reset all of the sanger sample ids to a known number sequence$/ do
-  Sample.all.each_with_index do |sample,index|
-    sample.sanger_sample_id = "sample_#{index}"
-    sample.save
+  raise StandardError, "Only works for plate manifests!" if Plate.count == 0
+
+  index = 0
+  Plate.all(:order => 'id ASC').each do |plate|
+    sequence_sanger_sample_ids_for(plate) do |well_index|
+      "sample_#{index+well_index}"
+    end
+    index += plate.size
   end
 end
 
@@ -119,8 +130,8 @@ When /^I visit the sample manifest new page without an asset type$/ do
 end
 
 Given /^plate "([^"]*)" has samples with known sanger_sample_ids$/ do |plate_barcode|
-  Plate.find_by_barcode(plate_barcode).wells.each_with_index do |well,i|
-    well.sample.update_attributes!(:sanger_sample_id => "ABC_#{i}")
+  sequence_sanger_sample_ids_for(Plate.find_by_barcode(plate_barcode)) do |index|
+    "ABC_#{index}"
   end
 end
 

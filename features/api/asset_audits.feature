@@ -18,7 +18,7 @@ Feature: Access asset audits through the API
   @create @error
   Scenario: Creating a asset audit without passing in an asset
     Given the UUID of the next asset audit created will be "00000000-1111-2222-3333-444444444444"
-    When I POST the following JSON to the API path "/asset_audits":
+    When I make an authorised POST with the following JSON to the API path "/asset_audits":
       """
       {
         "asset_audit": {
@@ -44,7 +44,7 @@ Feature: Access asset audits through the API
     Given the plate exists with ID 1
     And the UUID for the plate with ID 1 is "00000000-1111-2222-3333-555555555555"
     Given the UUID of the next asset audit created will be "00000000-1111-2222-3333-444444444444"
-    When I POST the following JSON to the API path "/asset_audits":
+    When I make an authorised POST with the following JSON to the API path "/asset_audits":
       """
       {
         "asset_audit": {
@@ -70,7 +70,7 @@ Feature: Access asset audits through the API
     Given the plate exists with ID 1
     And the UUID for the plate with ID 1 is "00000000-1111-2222-3333-555555555555"
     Given the UUID of the next asset audit created will be "00000000-1111-2222-3333-444444444444"
-    When I POST the following JSON to the API path "/asset_audits":
+    When I make an authorised POST with the following JSON to the API path "/asset_audits":
       """
       {
         "asset_audit": {
@@ -103,7 +103,7 @@ Feature: Access asset audits through the API
     Given the plate exists with ID 1
     And the UUID for the plate with ID 1 is "00000000-1111-2222-3333-555555555555"
     Given the UUID of the next asset audit created will be "00000000-1111-2222-3333-444444444444"
-    When I POST the following JSON to the API path "/asset_audits":
+    When I make an authorised POST with the following JSON to the API path "/asset_audits":
       """
       {
         "asset_audit": {

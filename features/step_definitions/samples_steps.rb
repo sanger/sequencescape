@@ -85,8 +85,8 @@ end
 Given /^the sample "([^\"]+)" is in the sample tube "([^\"]+)"$/ do |sample_name, tube_name|
   sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample #{sample_name.inspect}"
   tube   = SampleTube.find_by_name(tube_name) or raise StandardError, "Cannot find sample tube #{tube_name.inspect}"
-  tube.sample = sample
-  tube.save!
+  tube.aliquots.clear
+  tube.aliquots.create!(:sample => sample)
 end
 
 Then /^sample "([^"]*)" should have an accession number of "([^"]*)"$/ do |sample_name, accession_number|

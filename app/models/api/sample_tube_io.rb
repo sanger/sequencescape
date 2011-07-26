@@ -1,4 +1,19 @@
 class Api::SampleTubeIO < Api::Base
+  module Extensions
+    module ClassMethods
+      def render_class
+        Api::SampleTubeIO
+      end
+    end
+
+    def self.included(base)
+      base.class_eval do
+        extend ClassMethods
+
+        named_scope :including_associations_for_json, { :include => [ :uuid_object, :barcode_prefix, { :aliquots => { :sample => :uuid_object } } ] }
+      end
+    end
+  end
   renders_model(::SampleTube)
 
   map_attribute_to_json_attribute(:uuid)
@@ -21,10 +36,12 @@ class Api::SampleTubeIO < Api::Base
     map_attribute_to_json_attribute(:prefix, 'barcode_prefix')
   end
 
-  with_association(:sample) do
-    map_attribute_to_json_attribute(:uuid, 'sample_uuid')
-    map_attribute_to_json_attribute(:id  , 'sample_internal_id')
-    map_attribute_to_json_attribute(:name, 'sample_name')
+  with_association(:primary_aliquot) do
+    with_association(:sample) do
+      map_attribute_to_json_attribute(:uuid, 'sample_uuid')
+      map_attribute_to_json_attribute(:id  , 'sample_internal_id')
+      map_attribute_to_json_attribute(:name, 'sample_name')
+    end
   end
 
   self.related_resources = [ :library_tubes, :requests ]

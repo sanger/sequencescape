@@ -30,7 +30,8 @@ module Core::Endpoint::BasicHandler::Associations::BelongsTo
   end
 
   def belongs_to(name, options, &block)
-    @endpoints.push(Class.new(Handler).new(name, options, &block))
+    class_handler = Class.new(Handler).tap { |handler| self.class.const_set(name.to_s.camelize, handler) }
+    @endpoints.push(class_handler.new(name, options, &block))
   end
 
   def as_json(options = {})

@@ -20,7 +20,6 @@ class ::Endpoints::Pipelines < ::Core::Endpoint::Base
           request.create!(::Io::Batch.map_parameters_to_attributes(request.json).merge(:user => request.user))
         end
       end
-      action_requires_authorisation(:create)
     end
   end
 end

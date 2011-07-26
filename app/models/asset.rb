@@ -1,6 +1,31 @@
 class Asset < ActiveRecord::Base
   include StudyReport::AssetDetails
   include ModelExtensions::Asset
+  include AssetLink::Associations
+
+  module InstanceMethods
+    # Assets are, by default, non-barcoded
+    def generate_barcode
+      # Does nothing!
+    end
+
+    # Returns nil because assets really don't have barcodes!
+    def barcode_type
+      nil
+    end
+  end
+  include InstanceMethods
+
+  # Some assets are considered stock assets, that can be reused.
+  module Stock
+    def has_stock_asset?
+      false
+    end
+
+    def is_a_stock_asset?
+      true
+    end
+  end
 
   class VolumeError< StandardError
   end
@@ -18,15 +43,13 @@ class Asset < ActiveRecord::Base
 
   has_many :asset_group_assets
   has_many :asset_groups, :through => :asset_group_assets
-  has_many :requests
-  has_one :source_request, :class_name => "Request", :foreign_key => :target_asset_id
   has_many :asset_audits
-  
-  # Contents
-  belongs_to :sample
-  alias_attribute(:material, :sample)
-  alias_attribute(:material_id, :sample_id)
-  def material_type ; Sample.name ; end
+
+  # TODO: Remove 'requests' and 'source_request' as they are abiguous
+  has_many :requests
+  has_one :source_request, :class_name => "Request", :foreign_key => :target_asset_id, :include => :request_metadata
+  has_many :requests_as_source, :class_name => 'Request', :foreign_key => :asset_id, :include => :request_metadata
+  has_many :requests_as_target, :class_name => 'Request', :foreign_key => :target_asset_id, :include => :request_metadata
 
   extend ContainerAssociation::Extension
 
@@ -59,8 +82,6 @@ class Asset < ActiveRecord::Base
 
   named_scope :with_name, lambda { |*names| { :conditions => { :name => names.flatten } } }
 
-  # Relationships to other assets
-  has_dag_links :link_class_name => 'AssetLink'
   acts_as_audited :on => [:destroy, :update]
   
 
@@ -115,8 +136,7 @@ class Asset < ActiveRecord::Base
   end
 
   def tube_name
-    return self.sample.shorten_sanger_sample_id if self.sample && ! self.sample.sanger_sample_id.blank?
-    self.name
+    (primary_aliquot.nil? or primary_aliquot.sample.sanger_sample_id.blank?) ? self.name : primary_aliquot.sample.shorten_sanger_sample_id
   end
 
   def study
@@ -200,11 +220,7 @@ class Asset < ActiveRecord::Base
   end
 
   def library_prep?
-    if self.sti_type == "LibraryTube" || self.sti_type == "MultiplexedLibraryTube"
-      return true
-    else
-      return false
-    end
+    self.sti_type == "LibraryTube" || self.sti_type == "MultiplexedLibraryTube"
   end
 
   def display_name
@@ -215,42 +231,31 @@ class Asset < ActiveRecord::Base
     end
   end
 
-  def is_a_pool?
-    false
-  end
+  QC_STATES =  [
+    [ 'passed',  'pass' ],
+    [ 'failed',  'fail' ],
+    [ 'pending', 'pending' ]
+  ]
 
-  def qc_fail
-    self.qc_state = "failed"
-    self.save
-  end
-
-  def qc_pass
-    self.qc_state = "passed"
-    self.save
-  end
-  
-  def qc_pending
-    self.qc_state = "pending"
-    self.save!
+  QC_STATES.each do |state, qc_state|
+    line = __LINE__ + 1
+    class_eval(%Q{
+      def qc_#{qc_state}
+        self.qc_state = #{state.inspect}
+        self.save!
+      end
+    }, __FILE__, line)
   end
 
   def compatible_qc_state
-    if self.qc_state == "passed"
-      "pass"
-    elsif self.qc_state == "failed"
-      "fail"
-    else 
-			return self.qc_state
-    end
+    QC_STATES.assoc(qc_state).try(:last) || qc_state
   end
 
-#  def prefix
-#    if barcode_prefix
-#      barcode_prefix.prefix
-#    else
-#      "NT"
-#    end
-#  end
+  def set_qc_state(state)
+    self.qc_state = QC_STATES.rassoc(state).try(:first) || state
+    self.save
+    self.set_external_release(self.qc_state) 
+  end
 
   def underlying_sampletube
     return
@@ -383,19 +388,6 @@ class Asset < ActiveRecord::Base
     self.events.create_external_release!(!external_release_nil_before) unless self.external_release.nil?
   end
   private :update_external_release
-
-  def set_qc_state(state) 
-    case state
-    when 'fail'
-      self.qc_state = "failed"
-    when 'pass'
-      self.qc_state = "passed"
-    else
-      self.qc_state = state
-    end
-    self.save
-    self.set_external_release(self.qc_state) 
-  end
 
   def self.find_by_human_barcode(barcode, location)
     data = Barcode.split_human_barcode(barcode)
@@ -530,9 +522,7 @@ class Asset < ActiveRecord::Base
   end
 
   def attach_tag(tag)
-    return unless tag
-    tag_instance = TagInstance.new(:tag => tag)
-    self.parents << tag_instance
+    tag.tag!(self) if tag.present?
   end
   
   def requests_status(request_type)
@@ -544,23 +534,13 @@ class Asset < ActiveRecord::Base
     volume = [volume.to_f, self.volume || 0].min
     raise VolumeError, "not enough volume left" if volume <=0
 
-    #create new asset
-    new_asset = self.class.new
-
-    # copy usefull fields from parent
-    new_asset.material = self.material
-    new_asset.name = self.name
-
-    new_asset.add_parent(self)
-
-    # updating volume
-    new_asset.volume = volume
-    self.volume -= volume
-
-    self.save!
-    new_asset.save!
-
-    return new_asset
+    self.class.create!(:name => self.name) do |new_asset|
+      new_asset.volume = volume
+      update_attributes!(:volume => self.volume - volume)  # Update ourselves
+    end.tap do |new_asset|
+      new_asset.aliquots = self.aliquots.map(&:clone)
+      new_asset.add_parent(self)
+    end
   end
 
   def spiked_in_buffer
@@ -569,10 +549,6 @@ class Asset < ActiveRecord::Base
   
   def has_stock_asset?
     return false
-  end
-  
-  def tags
-    return []
   end
   
     

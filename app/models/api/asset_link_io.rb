@@ -1,4 +1,19 @@
 class Api::AssetLinkIO < Api::Base
+  module Extensions
+    module ClassMethods
+      def render_class
+        Api::AssetLinkIO
+      end
+    end
+
+    def self.included(base)
+      base.class_eval do
+        extend ClassMethods
+
+        named_scope :including_associations_for_json, { :include => [:uuid_object, { :ancestor => :uuid_object }, { :descendant  => :uuid_object }] }
+      end
+    end
+  end
   renders_model(::AssetLink)
 
   map_attribute_to_json_attribute(:uuid)

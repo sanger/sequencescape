@@ -14,7 +14,6 @@ class AssetGroupTest < ActiveSupport::TestCase
       @study = Factory :study
       @asset_group = Factory :asset_group, :study_id => @study.id
       @asset_group.stubs(:assets).returns([@asset1,@asset2])
-      #  @asset_group.add_assets(@assets)
     end
 
     should "return the number of assets" do
@@ -63,27 +62,23 @@ class AssetGroupTest < ActiveSupport::TestCase
       context "where all samples" do
         setup do
           5.times do |i|
-            sample = Factory :sample
-            sample.sample_metadata.sample_ebi_accession_number = "ERS00001"
-            asset =  Factory :asset, :sample => sample
+            asset = Factory(:sample_tube)
+            asset.primary_aliquot.sample.update_attributes!(:sample_metadata_attributes => { :sample_ebi_accession_number => 'ERS00001' })
             @asset_group.assets << asset
-            @asset_group.save
           end
         end
         context "have accession nubmers" do
           should "return true" do
             assert_equal 5, @asset_group.assets.size
-            assert !@asset_group.assets.first.sample.nil?
+            assert !@asset_group.assets.first.primary_aliquot.sample.nil?
             assert @asset_group.all_samples_have_accession_numbers?
           end
         end
         context "except 1 have accession numbers" do
           setup do
-            sample = Factory :sample
-            sample.sample_metadata.sample_ebi_accession_number = ''
-            asset =  Factory :asset,:sample => sample
+            asset = Factory(:sample_tube)
+            asset.primary_aliquot.sample.update_attributes!(:sample_metadata_attributes => { :sample_ebi_accession_number => '' })
             @asset_group.assets << asset
-            @asset_group.save
           end
           should "return false" do
             assert ! @asset_group.all_samples_have_accession_numbers?
@@ -93,11 +88,9 @@ class AssetGroupTest < ActiveSupport::TestCase
       context "no samples have accession numbers" do
         setup do
           5.times do |i|
-            sample = Factory :sample
-            sample.sample_metadata.sample_ebi_accession_number = ''
-            asset =  Factory :asset, :sample => sample
+            asset = Factory(:sample_tube)
+            asset.primary_aliquot.sample.update_attributes!(:sample_metadata_attributes => { :sample_ebi_accession_number => '' })
             @asset_group.assets << asset
-            @asset_group.save
           end
         end
         should "return false" do

@@ -125,7 +125,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
         uuid       = json.delete('uuid')
         associated = association_class(attribute, object)
         if uuid.present?
-          attributes[attribute] = Uuid.include_resource.lookup_single_uuid(uuid).resource
+          attributes[attribute] = load_uuid_resource(uuid)
         elsif associated.present?
           io = ::Core::Io::Registry.instance.lookup_for_class(associated)
           attributes[:"#{attribute}_attributes"] = io.map_parameters_to_attributes(json, nil, true)
@@ -134,10 +134,16 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
           attributes[:"#{attribute}_attributes"] = json
         end
       else
-        attributes[attribute] = Uuid.include_resource.lookup_single_uuid(json).resource
+        attributes[attribute] = load_uuid_resource(json)
       end
     end
     private :handle_belongs_to
+
+    def load_uuid_resource(uuid)
+      record = Uuid.include_resource.lookup_single_uuid(uuid).resource
+      ::Core::Io::Registry.instance.lookup_for_object(record).eager_loading_for(record.class).include_uuid.find(record.id)
+    end
+    private :load_uuid_resource
 
     def handle_has_many(attributes, attribute, json, object)
       if json.first.is_a?(Hash)

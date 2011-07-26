@@ -33,15 +33,20 @@ en:
         sequencing_type:
           label: Sequencing type
 
+        bait_library:
+          label: Bait library
+
     library_creation_request:
       <<: *REQUEST
     sequencing_request:
       <<: *REQUEST
     hi_seq_sequencing_request:
       <<: *REQUEST
-    transfert_request:
+    transfer_request:
       <<: *REQUEST
     genotyping_request:
+      <<: *REQUEST
+    pulldown_library_creation:
       <<: *REQUEST
 
     sample:

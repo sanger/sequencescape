@@ -4,15 +4,17 @@ class Study < ActiveRecord::Base
   include StudyReport::StudyDetails
   include ModelExtensions::Study
 
+  include Api::StudyIO::Extensions
   cattr_reader :per_page
   @@per_page = 500
+  include Uuid::Uuidable
+
   include EventfulRecord
   include AASM
   include DataRelease
   include Commentable
   include Identifiable
   include Named
-  include Uuid::Uuidable
   include ReferenceGenome::Associations
   include SampleManifest::Associations
 
@@ -103,9 +105,6 @@ class Study < ActiveRecord::Base
 
   named_scope :newest_first, { :order => "#{ self.quoted_table_name }.created_at DESC" }
   named_scope :with_user_included, { :include => :user }
-  
-  named_scope :including_associations_for_json, { :include => [:uuid_object, { :study_metadata => [:faculty_sponsor, :reference_genome, :study_type, :data_release_study_type] } ] }
-  
 
   YES = 'Yes'
   NO  = 'No'
@@ -494,10 +493,6 @@ class Study < ActiveRecord::Base
     true
   end
   
-  def self.render_class
-    Api::StudyIO
-  end
-  
   def accession_service
     if data_release_strategy == "open"
       return EraAccessionService.new
@@ -517,10 +512,6 @@ class Study < ActiveRecord::Base
     
     nil
   end
-  
-  def render_class
-    Api::StudyIO
-  end
 
   def validate_ena_required_fields!
     self.validating_ena_required_fields = true
@@ -533,7 +524,7 @@ class Study < ActiveRecord::Base
     receiver = self.managers.map(&:email).compact.uniq
     receiver =  User.all_administrators_emails if receiver.empty?
     return receiver
-end
+  end
 
   # return true if yes, false if not , and nil if we don't know
   def affiliated_with?(object)
@@ -546,32 +537,37 @@ end
       nil
     end
   end
-  
+
+  def decide_if_object_should_be_taken(study_from, sample, object)
+    case study_from.affiliated_with?(object)
+    when true
+      # don't propagate asset from another sample
+      return object unless object.is_a?(Aliquot::Receptacle)
+      object_sample = object.primary_aliquot.try(:sample)
+      (object_sample.present? and object_sample != sample) ? nil : object
+
+    when false then nil # we skip the object and its dependencies
+    else [] # don't return the object but check it's dependencies
+    end
+  end
+  private :decide_if_object_should_be_taken
+
   # return the list of objects which haven't been successfully saved
   # that's the caller responsibilitie to wrap the call in a transaction if needed
   def take_sample(sample, study_from, user, asset_group)
     errors = []
-    # we skip the validation, as it should not be usefull anymore
-    #return false unless sample.check_move_options(self, study_from, asset_group, "", "0")
     assets_to_move = sample.assets.select { |a| study_from.affiliated_with?(a) && a.is_a?(SampleTube) }
+
     raise RuntimeError, "study_from not specified. Can't move a sample to a new study" unless study_from
-    objects_to_move =   sample.walk_objects(:sample => [:assets, :study_samples],
-                                     :request => [:item],
-                                     :asset => [:requests, :children, :parents],
-                                     :well => :plate
-                                    ) do |object|
-                                      case study_from.affiliated_with?(object)
-                                      when true
-                                        # don't propagate asset from another sample
-                                        object.is_a?(Asset) && object.sample_id && object.sample_id != sample.id ? nil : object
-                                      when false
-                                        nil # we skip the object and its dependencies
-                                      else # nil
-                                        [] # don't return the object but check it's dependencies
-                                      end
-                                      # skip 
-                                      # nil from affiliated mean, we don't know, so we carry on pulling
-                                    end
+    helper = lambda { |object| decide_if_object_should_be_taken(study_from, sample, object) }
+    objects_to_move = 
+      sample.walk_objects(
+        :sample     => [:receptacles, :study_samples],
+        :request    => :item,
+        :asset      => [ :requests, :parents, :children ],
+        :well       => :plate,
+        &helper
+      )
 
                                     #we duplicate each submission and reassign moved requests to it
     objects_to_move.each do |object|

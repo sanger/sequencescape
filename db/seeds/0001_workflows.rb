@@ -122,7 +122,8 @@ LibraryCreationPipeline.create!(:name => 'MX Library Preparation [NEW]') do |pip
     request_type.asset_type        = 'SampleTube'
     request_type.order             = 1
     request_type.multiples_allowed = false
-    request_type.request_class = MultiplexedLibraryCreationRequest
+    request_type.request_class     = MultiplexedLibraryCreationRequest
+    request_type.for_multiplexing  = true
   end
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'New MX Library Preparation') do |workflow|
@@ -530,7 +531,7 @@ CherrypickPipeline.create!(:name => 'Cherrypick') do |pipeline|
     request_type.target_asset_type = 'Well'
     request_type.asset_type        = 'Well'
     request_type.order             = 2
-    request_type.request_class = TransfertRequest
+    request_type.request_class     = Request
     request_type.multiples_allowed = false
   end
 
@@ -563,8 +564,9 @@ CherrypickForPulldownPipeline.create!(:name => 'Cherrypicking for Pulldown') do 
     request_type.target_asset_type = 'Well'
     request_type.asset_type        = 'Well'
     request_type.order             = 1
-    request_type.request_class = CherrypickForPulldownRequest
+    request_type.request_class     = CherrypickForPulldownRequest
     request_type.multiples_allowed = false
+    request_type.for_multiplexing  = false
   end
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'Cherrypicking for Pulldown').tap do |workflow|
@@ -615,7 +617,7 @@ GenotypingPipeline.create!(:name => 'Genotyping') do |pipeline|
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'Well'
     request_type.order             = 3
-    request_type.request_class     = TransfertRequest
+    request_type.request_class     = Request
     request_type.multiples_allowed = false
   end
 
@@ -644,8 +646,9 @@ PulldownMultiplexLibraryPreparationPipeline.create!(:name => 'Pulldown Multiplex
   pipeline.request_type = RequestType.create!(:workflow => next_gen_sequencing, :key => 'pulldown_multiplexing', :name => 'Pulldown Multiplex Library Preparation') do |request_type|
     request_type.asset_type        = 'Well'
     request_type.order             = 1
-    request_type.request_class = PulldownMultiplexedLibraryCreationRequest
+    request_type.request_class     = PulldownMultiplexedLibraryCreationRequest
     request_type.multiples_allowed = false
+    request_type.for_multiplexing  = true
   end
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'Pulldown Multiplex Library Preparation').tap do |workflow|
@@ -725,3 +728,33 @@ end.tap do |pipeline|
 end
 
 set_pipeline_flow_to('PacBio Sample Prep' => 'PacBio Sequencing')
+
+# Pulldown pipelines
+[
+  'WGS',
+  'SC',
+  'ISC'
+].each do |pipeline_type|
+  pipeline_name = "Pulldown #{pipeline_type}"
+  Pipeline.create!(:name => pipeline_name) do |pipeline|
+    pipeline.sorter     = Pipeline.maximum(:sorter) + 1
+    pipeline.automated  = false
+    pipeline.active     = true
+    pipeline.asset_type = 'LibraryTube'
+
+    pipeline.location   = Location.create!(:name => "#{pipeline_name} freezer")
+
+    pipeline.request_type = RequestType.create!(:workflow => next_gen_sequencing, :name => pipeline_name) do |request_type|
+      request_type.key               = pipeline_name.downcase.gsub(/\s+/, '_')
+      request_type.initial_state     = 'pending'
+      request_type.asset_type        = 'Well'
+      request_type.target_asset_type = 'MultiplexedLibraryTube'
+      request_type.order             = 1
+      request_type.multiples_allowed = false
+      request_type.request_class     = "Pulldown::Requests::#{pipeline_type.humanize}LibraryRequest".constantize
+      request_type.for_multiplexing  = true
+    end
+
+    pipeline.workflow = LabInterface::Workflow.create!(:name => pipeline_name)
+  end
+end

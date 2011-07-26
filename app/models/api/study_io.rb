@@ -1,4 +1,24 @@
 class Api::StudyIO < Api::Base
+  module Extensions
+    module ClassMethods
+      def render_class
+        Api::StudyIO
+      end
+    end
+
+    def self.included(base)
+      base.class_eval do
+        extend ClassMethods
+
+        named_scope :including_associations_for_json, { :include => [:uuid_object, { :study_metadata => [:faculty_sponsor, :reference_genome, :study_type, :data_release_study_type] } ] }
+      end
+    end
+
+    def render_class
+      Api::StudyIO
+    end
+  end
+
   renders_model(::Study)
 
   map_attribute_to_json_attribute(:uuid)

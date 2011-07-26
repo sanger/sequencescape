@@ -61,7 +61,7 @@
             <td width="15%"></td>
           <% end %>
           <% if @batch.display_tags? -%>
-            <% tag = request.tag %>
+            <% tag = request.target_asset.primary_aliquot.try(:tag) %>
             <% unless tag.blank? %>
               <td><%= link_to tag.map_id, tag_group_tag_path(tag.tag_group,tag) %></td>
             <% else %>

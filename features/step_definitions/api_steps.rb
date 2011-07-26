@@ -115,7 +115,13 @@ When /^I (POST|PUT) the following "([^\"]+)" to the API path "(\/[^\"]*)":$/ do 
   end
 end
 
-When /^I make an authorised (GET|PUT|POST|DELETE) the API path "(\/[^\"]*)"$/ do |action, path|
+When /^I make an authorised (GET|DELETE) (?:(?:for|of) )?the API path "(\/[^\"]*)"$/ do |action, path|
+  api_request(action, path, nil) do |headers|
+    headers['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] = 'cucumber'
+  end
+end
+
+When /^I make an authorised (PUT|POST) (?:to )?the API path "(\/[^\"]*)"$/ do |action, path|
   api_request(action, path, nil) do |headers|
     headers['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] = 'cucumber'
   end
@@ -149,7 +155,7 @@ end
 
 Then /^show me the HTTP response body$/ do
   $stderr.puts('=' * 80)
-  $stderr.puts page.body
+  $stderr.send(:pp, JSON.parse(page.body)) rescue $stderr.puts(page.body)
   $stderr.puts('=' * 80)
 end
 
@@ -224,7 +230,13 @@ end
 
 Then /^the HTTP response should be "([^\"]+)"$/ do |status|
   match = /^(\d+).*/.match(status) or raise StandardError, "Status #{status.inspect} should be an HTTP status code + message"
+  begin
   assert_equal(match[1].to_i, page.driver.status_code)
+  rescue Test::Unit::AssertionFailedError => e
+    Then %Q{show me the HTTP response body}
+    raise e
+  end
+
 end
 
 Then /^the HTTP "([^\"]+)" should be "([^\"]+)"$/ do |header,value|
@@ -240,10 +252,15 @@ Then /^the JSON should be an empty array$/ do
 end
 
 Then /^the JSON should not contain "([^\"]+)" within any element of "([^\"]+)"$/ do |name, path|
-  json   = decode_json(page.body, 'Received')
+  json = decode_json(page.body, 'Received')
   target = path.split('.').inject(json) { |s,p| s.try(:[], p) } or raise StandardError, "Could not find #{path.inspect} in JSON"
-  target.each_with_index do |record, index|
-    assert_nil(record[name], "Found #{name.inspect} in element #{index}")
+  case target
+  when Array
+    target.each_with_index do |record, index|
+      assert_nil(record[name], "Found #{name.inspect} in element #{index}")
+    end
+  when Hash
+    assert_nil(target[name], "Found #{name.inspect} in element #{target}")
   end
 end
 
@@ -269,7 +286,9 @@ end
 Given /^the sample "([^\"]+)" is in (\d+) sample tubes? with sequential IDs starting at (\d+)$/ do |name, count, base_id|
   sample = Sample.find_by_name(name) or raise StandardError, "Cannot find the sample #{name.inspect}"
   (1..count.to_i).each do |index|
-    Factory(:sample_tube, :name => "#{name} sample tube #{index}", :material => sample, :id => (base_id.to_i + index - 1))
+    Factory(:empty_sample_tube, :name => "#{name} sample tube #{index}", :id => (base_id.to_i + index - 1)).tap do |sample_tube|
+      sample_tube.aliquots.create!(:sample => sample)
+    end
   end
 end
 
@@ -319,9 +338,11 @@ Given /^the number of results returned by the API per page is (\d+)$/ do |count|
 end
 
 Given /^the "([^\"]+)" action on samples requires authorisation$/ do |action|
-  ::TestSampleEndpoint.model_handler.action_requires_authorisation(action.to_sym)
+  Core::Abilities::Application.unregistered { cannot(action.to_sym, TestSampleEndpoint::Model) }
+  Core::Abilities::Application.registered   { can(action.to_sym,    TestSampleEndpoint::Model) }
 end
 
 Given /^the "([^\"]+)" action on a sample requires authorisation$/ do |action|
-  ::TestSampleEndpoint.instance_handler.action_requires_authorisation(action.to_sym)
+  Core::Abilities::Application.unregistered { cannot(action.to_sym, TestSampleEndpoint::Instance) }
+  Core::Abilities::Application.registered   { can(action.to_sym,    TestSampleEndpoint::Instance) }
 end

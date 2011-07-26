@@ -17,8 +17,8 @@
   </td>
   <td>
     <% well = source_plate.find_well_by_name("A1") %>
-    <% if well.try(:sample) %>
-      <%= link_to well.sample.name, asset_path(well) %>
+    <% if well.try(:primary_aliquot).present? %>
+      <%= link_to well.primary_aliquot.sample.name, asset_path(well) %>
     <% end %>
   </td>
 </tr>

@@ -19,7 +19,7 @@ Given /^I have a released cherrypicking batch with (\d+) samples$/ do |number_of
 	When %Q{I select "Genotyping freezer" from "Location"}
 	And %Q{I press "Next step"}
 	When %Q{I press "Release this batch"}
-	Given %Q{the last batch has a barcode of "555"}
+	Given %Q{the last batch has a barcode of "550000555760"}
 end
 
 
@@ -60,7 +60,7 @@ Given /^I have a released cherrypicking batch with 3 plates$/ do
 	When %Q{I select "Genotyping freezer" from "Location"}
 	And %Q{I press "Next step"}
 	When %Q{I press "Release this batch"}
-	Given %Q{the last batch has a barcode of "555"}
+	Given %Q{the last batch has a barcode of "550000555760"}
 end
 
 Given /^I have a released cherrypicking batch with 1 plate which doesnt need buffer$/ do
@@ -74,14 +74,13 @@ Given /^user "([^"]*)" has a user barcode of "([^"]*)"$/ do |login, user_barcode
   user.update_attributes!(:barcode => user_barcode)
 end
 
-Given /^the last batch has a barcode of "([^"]*)"$/ do |batch_barcode|
-  batch = Batch.last
-  batch.update_attributes!(:barcode => batch_barcode)
+Transform /^the last batch$/ do |_|
+  Batch.last or raise StandardError, 'There appear to be no batches'
 end
 
 Then /^the downloaded tecan file for batch "([^"]*)" and plate "([^"]*)" is$/ do |batch_barcode, plate_barcode, tecan_file|
-  batch = Batch.find_by_barcode(Barcode.number_to_human(batch_barcode))
-  plate = Plate.find_from_machine_barcode(plate_barcode)
+  batch = Batch.find_by_barcode(Barcode.number_to_human(batch_barcode)) or raise StandardError, "Cannot find batch with barcode #{batch_barcode.inspect}"
+  plate = Plate.find_from_machine_barcode(plate_barcode)                or raise StandardError, "Cannot find plate with machine barcode #{plate_barcode.inspect}"
   generated_file = batch.tecan_gwl_file_as_text(plate.barcode, batch.total_volume_to_cherrypick, "ABgene_0765")
   generated_lines = generated_file.split(/\n/)
   generated_lines.shift(2)

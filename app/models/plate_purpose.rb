@@ -1,7 +1,61 @@
 class PlatePurpose < ActiveRecord::Base
+  class Relationship < ActiveRecord::Base
+    set_table_name('plate_purpose_relationships')
+    belongs_to :parent, :class_name => 'PlatePurpose'
+    belongs_to :child, :class_name => 'PlatePurpose'
+
+    module Associations
+      def self.included(base)
+        base.class_eval do
+          has_many :child_relationships, :class_name => 'PlatePurpose::Relationship', :foreign_key => :parent_id, :dependent => :destroy
+          has_many :child_plate_purposes, :through => :child_relationships, :source => :child
+
+          has_many :parent_relationships, :class_name => 'PlatePurpose::Relationship', :foreign_key => :child_id, :dependent => :destroy
+          has_many :parent_plate_purposes, :through => :parent_relationships, :source => :parent
+        end
+      end
+    end
+  end
+
+  module Associations
+    def self.included(base)
+      base.class_eval do
+        belongs_to :plate_purpose
+        named_scope :with_plate_purpose, lambda { |*purposes|
+          { :conditions => { :plate_purpose_id => purposes.flatten.map(&:id) } }
+        }
+      end
+    end
+
+    # Delegate the change of state to our plate purpose.
+    def transition_to(state, contents = nil)
+      plate_purpose.transition_to(self, state, contents)
+    end
+  end
+
+  include Relationship::Associations
+
+  # Updates the state of the specified plate to the specified state.  The basic implementation does this by updating
+  # all of the TransferRequest instances to the state specified.  If contents is blank then the change is assumed to 
+  # relate to all wells of the plate, otherwise only the selected ones are updated.
+  def transition_to(plate, state, contents = nil)
+    contents ||= []
+    plate.transfer_requests.each do |request|
+      request.update_attributes!(:state => state) if contents.empty? or contents.include?(request.target_asset.map.description)
+    end
+  end
+
+  include Api::PlatePurposeIO::Extensions
   cattr_reader :per_page
   @@per_page = 500
   include Uuid::Uuidable
+
+  # There's a barcode printer type that has to be used to print the labels for this type of plate.
+  belongs_to :barcode_printer_type
+
+  def barcode_type
+    barcode_printer_type.printer_type_id
+  end
 
   has_many :plates #, :class_name => "Asset"
   acts_as_audited :on => [:destroy, :update]
@@ -9,71 +63,49 @@ class PlatePurpose < ActiveRecord::Base
   validates_format_of :name, :with => /^\w[\s\w._-]+\w$/i
   validates_presence_of :name
   validates_uniqueness_of :name, :message => "already in use"
-  
-  def self.render_class
-    Api::PlatePurposeIO
-  end
-  
-  def url_name
-    "plate_purpose"
-  end
-  alias_method(:json_root, :url_name)
 
   def create_child_plates_from_scanned_plate(source_plate_barcode, current_user)
     plate = Asset.find_from_machine_barcode(source_plate_barcode) or raise ActiveRecord::RecordNotFound, "Could not find plate with machine barcode #{source_plate_barcode.inspect}"
-
-    new_child_plates = []
-    self.child_plate_purposes.each do |target_plate_purpose|
-      child_plate = target_plate_purpose.target_plate_type.constantize.create_plate_with_barcode(plate)
-      child_plate.plate_purpose = target_plate_purpose
-      child_plate.size   = plate.size
-      child_plate.location = plate.location
-      child_plate.name   = "#{target_plate_purpose.name} #{child_plate.barcode}"
-      child_plate.save!
-      
-      plate.events.create_plate!(target_plate_purpose, child_plate, current_user)
-
-      if plate.study
-        RequestFactory.create_assets_requests([child_plate.id], plate.study.id)
-      end
-      child_plate.delayed_stamp_samples_into_wells(plate.id)
-      AssetLink.create_edge!(plate,child_plate)
-      new_child_plates << child_plate
-    end
-
-    new_child_plates
+    create_child_plates_from(plate, current_user)
   end
 
-  def child_plate_purposes
-    [self]
+  def create_child_plates_from(plate, current_user)
+    child_plate_purposes.map do |target_plate_purpose|
+      target_plate_purpose.target_plate_type.constantize.create_with_barcode!(plate.barcode) do |child_plate|
+        child_plate.plate_purpose = target_plate_purpose
+        child_plate.size          = plate.size
+        child_plate.location      = plate.location
+        child_plate.name          = "#{target_plate_purpose.name} #{child_plate.barcode}"
+      end.tap do |child_plate|
+        plate.wells.each do |well|
+          child_plate.wells << well.clone.tap do |child_well|
+            child_well.aliquots = well.aliquots.map(&:clone)
+          end
+        end
+
+        RequestFactory.create_assets_requests([child_plate.id], plate.study.id) if plate.study.present?
+        AssetLink.create_edge!(plate, child_plate)
+
+        plate.events.create_plate!(target_plate_purpose, child_plate, current_user)
+      end
+    end
   end
 
   def sort_plates_by_plate_purpose(plates)
-    plates_by_plate_purpose = {}
-    plates.each do |plate|
-      unless plates_by_plate_purpose[plate.plate_purpose]
-        plates_by_plate_purpose[plate.plate_purpose] = []
-      end
-      plates_by_plate_purpose[plate.plate_purpose] << plate
+    plates.inject(Hash.new { |h,k| h[k] = [] }) do |plates_by_plate_purpose, plate|
+      plates_by_plate_purpose.tap { plates_by_plate_purpose[plate.plate_purpose] << plate }
     end
-
-    plates_by_plate_purpose
   end
 
   def create_barcode_labels_from_plates(plates)
-    printables = []
-    plates.each do |plate|
-      if plate.parent
-        parent_plate_barcode = plate.parent.barcode
-      end
-
-      printables.push PrintBarcode::Label.new({ :number => plate.barcode,
+    plates.map do |plate|
+      PrintBarcode::Label.new(
+        :number => plate.barcode,
         :study  => plate.find_study_abbreviation_from_parent,
-        :suffix => parent_plate_barcode,
-        :prefix => plate.barcode_prefix.prefix })
+        :suffix => plate.parent.try(:barcode),
+        :prefix => plate.barcode_prefix.prefix
+      )
     end
-
-    printables
   end
 
   def create_plates_and_print_barcodes(source_plate_barcodes, barcode_printer,current_user)
@@ -101,31 +133,15 @@ class PlatePurpose < ActiveRecord::Base
   end
 
   def create_plates(source_plate_barcodes, current_user)
-    new_plates = []
+    return [ plates.create_with_barcode! ] if source_plate_barcodes.blank?
 
-    if source_plate_barcodes.blank?
-      plate = Plate.create_plate_with_barcode
-      plate.plate_purpose = self
-      plate.save
-      new_plates << plate
-    else
-      source_plate_barcodes.scan(/\d+/).each do |source_plate_barcode|
-        child_plates = create_child_plates_from_scanned_plate(source_plate_barcode, current_user)
-        if child_plates
-          new_plates = new_plates | child_plates
-        end
-      end
-    end
-
-    new_plates
+    source_plate_barcodes.scan(/\d+/).map do |source_plate_barcode|
+      create_child_plates_from_scanned_plate(source_plate_barcode, current_user)
+    end.flatten.compact
   end
 
   def target_plate_type
-    if self.target_type.nil?
-      return "Plate"
-    end
-
-    self.target_type
+    self.target_type || 'Plate'
   end
   
   def self.stock_plate_purpose
@@ -133,11 +149,26 @@ class PlatePurpose < ActiveRecord::Base
     @stock_plate_purpose ||= PlatePurpose.find(2)
   end
 
-  def create!(locations_to_wells)
-    maps  = Hash[Map.where_description(locations_to_wells.keys).where_plate_size(96).all.map { |m| [m.description, m] }]
-    wells = locations_to_wells.map { |l,w| w.tap { w.update_attributes!(:map => maps[l]) } }
-    plates.create!(:wells => wells, :size => 96).tap do |plate|
-      wells.each { |well| AssetLink.create_edge!(plate, well) }
+  # TODO: For the moment I'm removing this but I need the code to remain whilst it's refactored.
+  #
+  # It was originally here for pipelines to create plates from pre-existing wells but I actually think that's the wrong
+  # way for things to work.  I think that plates are created completely empty, and then transfers are made from one container
+  # to the plate.  That's certainly how it feels for the pulldown pipeline.
+#  def create!(locations_to_wells)
+#    maps  = Hash[Map.where_description(locations_to_wells.keys).where_plate_size(96).all.map { |m| [m.description, m] }]
+#    wells = locations_to_wells.map { |l,w| w.tap { w.update_attributes!(:map => maps[l]) } }
+#    plates.create!(:wells => wells, :size => 96).tap do |plate|
+#      wells.each { |well| AssetLink.create_edge!(plate, well) }
+#    end
+#  end
+
+  def create!(*args, &block)
+    attributes          = args.extract_options!
+    do_not_create_wells = !!args.first
+
+    attributes[:size] ||= 96
+    plates.create_with_barcode!(attributes, &block).tap do |plate|
+      plate.wells.import(Map.where_plate_size(plate.size).all.map { |map| Well.new(:map => map) }) unless do_not_create_wells
     end
   end
 end

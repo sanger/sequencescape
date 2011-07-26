@@ -20,10 +20,10 @@ module Core::Initializable
   end
 
   def self.extended(base)
-    base.class_eval(%Q{
+    base.class_eval do
       include InstanceMethods
-      Initializer = Class.new(Core::Initializable::Initializer)
-    })
+      const_set(:Initializer, Class.new(Core::Initializable::Initializer))
+    end
   end
 
   def initialized_attr_reader(*names)

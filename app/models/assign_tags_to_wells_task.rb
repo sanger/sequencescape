@@ -38,14 +38,7 @@ class AssignTagsToWellsTask < Task
   def create_tag_instances_and_link_to_wells(requests, params)
     params[:tag].map do |well_id, tag_id|
       ActiveRecord::Base.transaction do     
-        well = Well.find(well_id)
-        if well.tag_instance.nil?
-          tag = Tag.find(tag_id)
-          tag_instance  = TagInstance.create!(:tag => tag)
-          AssetLink.create_edge!(well, tag_instance)
-        else
-          raise "Unable to add multiple tags to a well."
-        end
+        Tag.find(tag_id).tag!(Well.find(well_id))
       end
     end
   end
@@ -81,11 +74,7 @@ class AssignTagsToWellsTask < Task
 
   def unlink_tag_instances_from_wells(requests)
     requests.each do |request|
-      asset = request.asset
-      tag_instance = asset.tag_instance
-      next unless tag_instance
-      asset.children.delete(tag_instance)
-      asset.save!
+      request.asset.untag!
     end
   end
 

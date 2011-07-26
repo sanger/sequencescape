@@ -6,7 +6,7 @@ class Mongrel::HttpServer
     def null_outputter.puts(*args, &block)
       # Do nothing, we don't care
     end
-  end)
+  end) unless const_defined?(:STDERR)
 end
 
 class FakeSinatraService

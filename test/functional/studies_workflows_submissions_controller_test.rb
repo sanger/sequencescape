@@ -109,9 +109,9 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
         @study = Factory :study
         @project = Factory :project
 
-        @asset1 = Factory :asset, { :sample => Factory(:sample) }
-        @asset2 = Factory :asset, { :sample => Factory(:sample) }
-        @asset3 = Factory :asset, { :sample => Factory(:sample) }
+        @asset1 = Factory(:sample_tube)
+        @asset2 = Factory(:sample_tube)
+        @asset3 = Factory(:sample_tube)
         @asset_group = Factory :asset_group
         @asset_group.assets << [@asset1,@asset2,@asset3]
         @request_type = Factory :request_type, :name => "test type"
@@ -171,8 +171,7 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
               end
               context "and 1 sample in asset group has an accession and the rest dont" do
                 setup do
-                  @asset2.sample.sample_metadata.sample_ebi_accession_number = "ERS0000001"
-                  @asset2.sample.save!
+                  @asset2.primary_aliquot.sample.sample_metadata.update_attributes!(:sample_ebi_accession_number => 'ERS000001')
                   post :create, :submission => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
                 end
                 should "not have a successful submission" do
@@ -185,8 +184,7 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
               context "and all samples in asset group have accessions" do
                 setup do
                   @asset_group.assets.each do |asset|
-                    asset.sample.sample_metadata.sample_ebi_accession_number = "ERS0000001"
-                    asset.sample.save!
+                    asset.primary_aliquot.sample.sample_metadata.update_attributes!(:sample_ebi_accession_number => 'ERS000001')
                   end
                   post :create, :submission => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
                 end
@@ -233,7 +231,7 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
               end
               context "and 1 sample in asset group has an accession and the rest dont" do
                 setup do
-                  @asset2.sample.sample_metadata.sample_ebi_accession_number = "ERS0000001"
+                  @asset2.primary_aliquot.sample.sample_metadata.sample_ebi_accession_number = "ERS0000001"
                   post :create, :submission => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
                 end
                 should_have_successful_submission
@@ -241,7 +239,7 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
               context "and all samples in asset group have accessions" do
                 setup do
                   @asset_group.assets.each do |asset|
-                    asset.sample.sample_metadata.sample_ebi_accession_number = "ERS0000001"
+                    asset.primary_aliquot.sample.sample_metadata.sample_ebi_accession_number = "ERS0000001"
                   end
                   post :create, :submission => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
                 end

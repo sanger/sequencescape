@@ -1,6 +1,6 @@
 Given /^sequencescape is setup for 5004860$/ do
-  sample   = Factory :asset
-  library1 = Factory :asset, :qc_state => 'pending'
+  sample   = Factory(:sample_tube)
+  library1 = Factory(:library_tube, :qc_state => 'pending')
   library1.parents << sample
   lane = Factory :lane, :qc_state => 'pending'
   request_one = Factory :request, :asset => library1, :target_asset => lane

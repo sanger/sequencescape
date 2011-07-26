@@ -89,8 +89,10 @@ class SampleRegistrar < ActiveRecord::Base
   validates_presence_of :sample_tube
 
   before_validation do |record|
-    record.sample_tube.sample = record.sample
-    record.sample_tube.name   = record.sample.name
+    record.sample_tube.name = record.sample.name
+  end
+  after_create do |record|
+    record.sample_tube.aliquots.create!(:sample => record.sample)
   end
 
   # SampleTubes are registered within an AssetGroup, unless the AssetGroup is unspecified.

@@ -3,13 +3,29 @@ require File.expand_path(File.join(File.dirname(__FILE__), 'fake_sinatra_service
 class FakeBarcodeService < FakeSinatraService
   attr_reader :wsdl
 
+  # Ensure that the configuration is maintained, otherwise things start behaving badly
+  # when it comes to the features.
+  def self.install_hooks(target, tags)
+    target.instance_eval do
+      plate_url, service_url = configatron.plate_barcode_service, configatron.barcode_service_url
+      Before(tags) do |scenario|
+        host, port = FakeBarcodeService.instance.host, FakeBarcodeService.instance.port
+        configatron.plate_barcode_service = "http://#{host}:#{port}/plate_barcode_service/"
+        configatron.barcode_service_url   = "http://#{host}:#{port}/barcode_service.wsdl"
+        PlateBarcode.site                 = configatron.plate_barcode_service
+      end
+      After(tags) do |scenaro|
+        configatron.plate_barcode_service = plate_url
+        configatron.barcode_service_url   = service_url
+        PlateBarcode.site                 = configatron.plate_barcode_service
+      end
+    end
+
+    super
+  end
+
   def initialize(*args, &block)
     super
-    configatron.plate_barcode_service = "http://#{host}:#{port}/plate_barcode_service/"
-    configatron.barcode_service_url   = "http://#{host}:#{port}/barcode_service.wsdl"
-
-    # Make sure plate barcoding is properly hooked up to the service
-    PlateBarcode.site = configatron.plate_barcode_service
 
     # Make sure the WSDL is properly maintained!
     @wsdl = File.read(File.expand_path(File.join(File.dirname(__FILE__), 'barcode_service.wsdl'))).gsub(%r{http://localhost:9998}, "http://#{host}:#{port}")
