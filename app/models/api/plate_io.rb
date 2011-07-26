@@ -1,4 +1,24 @@
 class Api::PlateIO < Api::Base
+  module Extensions
+    module ClassMethods
+      def render_class
+        Api::PlateIO
+      end
+    end
+
+    def self.included(base)
+      base.class_eval do
+        extend ClassMethods
+
+        named_scope :including_associations_for_json, { :include => [:uuid_object, :plate_metadata, :barcode_prefix, { :plate_purpose => :uuid_object } ] }
+        alias_method(:json_root, :url_name)
+      end
+    end
+
+    def url_name
+      "plate"
+    end
+  end
   renders_model(::Plate)
 
   map_attribute_to_json_attribute(:uuid)

@@ -164,21 +164,21 @@ class Studies::WorkflowsController < ApplicationController
   end
 
    def group_sample_request(study, sample_ids=nil)
-     return [ ] if sample_ids && sample_ids.empty? # /|\ nis means all sample
+     return [ ] if sample_ids && sample_ids.empty? # /|\ nil means all sample
      group_count(@workflow.request_types) do |rt|
-      groups = study.requests.request_type(rt).count(:group => :sample_id, :having => (sample_ids && "sample_id in (#{sample_ids.join(', ')})"))
+      groups = study.requests.request_type(rt).join_asset.count(:group => :sample_id, :having => (sample_ids && "sample_id in (#{sample_ids.join(', ')})"))
      end
    end
    def group_sample_passed_request(study, sample_ids=nil)
      return [ ] if sample_ids && sample_ids.empty? # /|\ nis means all sample
      group_count(@workflow.request_types) do |rt|
-      groups = study.requests.request_type(rt).passed.count(:group => :sample_id, :having => (sample_ids && "sample_id in (#{sample_ids.join(', ')})"))
+      groups = study.requests.request_type(rt).passed.join_asset.count(:group => :sample_id, :having => (sample_ids && "sample_id in (#{sample_ids.join(', ')})"))
      end
    end
    def group_sample_failed_request(study, sample_ids=nil)
      return [ ] if sample_ids && sample_ids.empty? # /|\ nis means all sample
      group_count(@workflow.request_types) do |rt|
-      groups = study.requests.request_type(rt).failed.count(:group => :sample_id, :having => (sample_ids && "sample_id in (#{sample_ids.join(', ')})"))
+      groups = study.requests.request_type(rt).failed.join_asset.count(:group => :sample_id, :having => (sample_ids && "sample_id in (#{sample_ids.join(', ')})"))
      end
    end
    def group_asset_request(study, asset_ids = nil)

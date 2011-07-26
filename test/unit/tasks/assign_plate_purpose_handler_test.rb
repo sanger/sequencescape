@@ -18,20 +18,6 @@ class AssignPlatePurposeHandlerTest < ActiveSupport::TestCase
       @params               = "UNUSED_PARAMS"
     end
 
-    context "#render_assign_plate_purpose_task" do
-      setup do
-        dummy_plate_purpose = mock("PlatePurpose")
-        dummy_plate_purpose.stubs(:name)
-        dummy_plate_purpose.stubs(:id) # Currently this stub is not needed
-        PlatePurpose.stubs(:all).returns([dummy_plate_purpose])
-        @workflows_controller.render_assign_plate_purpose_task(@task,@params)
-      end
-
-      should "assign all plate_purposes to @potential_plate_purposes" do
-        assert_equal PlatePurpose.all, @workflows_controller.potential_plate_purposes
-      end
-    end
-
     context "#do_assign_plate_purpose_task" do
       setup do
         @params = {:assign_plate_purpose_task => {:plate_purpose_id => 1}, :batch_id => 1}

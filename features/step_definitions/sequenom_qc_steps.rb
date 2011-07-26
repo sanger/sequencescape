@@ -1,16 +1,10 @@
+# TODO: Remove these methods from Plate because it's bad to do this in a test
 class Plate
   def add_wells_to_plate(number_of_wells)
-    well_data = []
-    
     sample = Factory(:sample)
-    
     1.upto(number_of_wells.to_i) do |i|
-      well_data  << wells.new(
-        :map_id => i,
-        :sample => sample
-      )
+      wells.create!(:map_id => i).tap { |well| well.aliquots.create!(:sample => sample) }
     end
-    import_wells well_data
   end
 
   def self.create_source_plates(source_barcodes, first_well_gender=true, number_of_wells = 96)
@@ -19,7 +13,7 @@ class Plate
       plate.add_wells_to_plate(number_of_wells)
 
       # Unless we say otherwise give the first sample on the plate
-      plate.wells.first.material.sample_metadata.update_attributes!(
+      plate.wells.first.primary_aliquot.sample.sample_metadata.update_attributes!(
         :gender => "male"
       ) if first_well_gender
     end
@@ -60,11 +54,11 @@ When /^well "([^"]*)" should come from well "([^"]*)" on plate "([^"]*)"$/ do |s
     sequenom_plate = SequenomQcPlate.last
     sequenom_well  = sequenom_plate.find_well_by_name(seq_well_description)
 
-    assert sequenom_well
-    assert_equal source_well.sample, sequenom_well.sample
-    assert !  sequenom_well.sample.nil?
-    assert source_well.children.map{ |p| p.id }.include?(sequenom_well.id)
-    assert plate.children.map{ |p| p.id }.include?(sequenom_plate.id)
+    assert_not_nil sequenom_well
+    assert_not_nil sequenom_well.primary_aliquot
+    assert_equal source_well.primary_aliquot.sample, sequenom_well.primary_aliquot.sample
+    assert source_well.children.map(&:id).include?(sequenom_well.id)
+    assert plate.children.map(&:id).include?(sequenom_plate.id)
   end
 end
 

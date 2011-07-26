@@ -268,10 +268,10 @@ Feature: Creating submissions through the submission templates
     # appear here or we'd see the default values, and we'd have to push through to the sequencing request to see them.
     When I follow "<library_type> request"
     Then I should see the following request information:
-      |Fragment size required (from):|1     |
-      |Fragment size required (to):  |9999  |
-      |Library type:                 |Custom|
-      |Read length:                  |<read_length>|
+      | Read length:                   | <read_length> |
+      | Fragment size required (from): | 1             |
+      | Fragment size required (to):   | 9999          |
+      | Library type:                  | Custom        |
 
     Examples:
       |library_type                |sequencing_type             |read_length|
@@ -314,10 +314,10 @@ Feature: Creating submissions through the submission templates
 
     When I follow "Library creation request"
     Then I should see the following request information:
-      |Fragment size required (from):|1            |
-      |Fragment size required (to):  |9999         |
-      |Library type:                 |Custom       |
-      |Read length:                  |<read length>|
+      | Read length:                   | <read length> |
+      | Fragment size required (from): | 1             |
+      | Fragment size required (to):   | 9999          |
+      | Library type:                  | Custom        |
 
     Examples:
       | sequencing type             | read length |

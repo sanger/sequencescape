@@ -34,19 +34,9 @@ module StudyReport::StudyDetails
       #assets = Asset.find(asset_ids)
 
       # eager loading of well_attribute , can only be done on  wells ...
-      assets = Well.find(:all, :include => :well_attribute, :conditions => {:id => asset_ids})
-
-      # everything but well == SampleTube see test below)
-      assets += SampleTube.find(:all, :conditions => {:id => asset_ids})
-
-      # we can't do eager loading of polymorphich association. So we do it manualy
-      sample_ids = assets.map(&:sample_id).select { |a| a }
-      sample_map = Sample.find(sample_ids, :include => :sample_metadata).group_by { |s| s.id }
+      assets = Well.find(:all, :include => :well_attribute, :conditions => {:id => asset_ids}, :include => { :aliquots => :sample })
 
       assets.each do |asset|
-        asset.sample = sample_map[asset.sample_id].first if asset.sample_id
-
-        next if ! asset.is_a?(Well) 
         asset_progress_data = asset.qc_report
         next if asset_progress_data.nil?
 

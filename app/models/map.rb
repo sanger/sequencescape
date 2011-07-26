@@ -161,12 +161,21 @@ class Map < ActiveRecord::Base
       
     map.description
   end
-  
 
-  # Vertically walking the map locations goes A1, B1, C1, ... A2, B2, ...
-  def self.walk_plate_vertically(size, &block)
-    width, height = Map.plate_width(size), Map.plate_length(size)
-    positions     = Map.all(:conditions => {:asset_size => size}, :order => 'location_id ASC')
-    (0...size).map { |index| yield(positions[((index % height) * width) + (index / height)]) }
+  class << self
+    # Walking in column major order goes by the columns: A1, B1, C1, ... A2, B2, ...
+    def walk_plate_in_column_major_order(size, &block)
+      width, height = Map.plate_width(size), Map.plate_length(size)
+      positions     = Map.all(:conditions => {:asset_size => size}, :order => 'location_id ASC')
+      (0...size).map { |index| yield(positions[((index % height) * width) + (index / height)], index) }
+    end
+    alias_method(:walk_plate_vertically, :walk_plate_in_column_major_order)
+
+    # Walking in row major order goes by the rows: A1, A2, A3, ... B1, B2, B3 ....
+    def walk_plate_in_row_major_order(size, &block)
+      width, height = Map.plate_width(size), Map.plate_length(size)
+      positions     = Map.all(:conditions => {:asset_size => size}, :order => 'location_id ASC')
+      (0...size).map { |index| yield(positions[index], index) }
+    end
   end
 end

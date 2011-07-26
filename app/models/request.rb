@@ -1,6 +1,8 @@
 class Request < ActiveRecord::Base
   include ModelExtensions::Request
+  include Aliquot::DeprecatedBehaviours::Request
 
+  include Api::RequestIO::Extensions
   cattr_reader :per_page
   @@per_page = 500
 
@@ -10,77 +12,20 @@ class Request < ActiveRecord::Base
   include Commentable
   include Proxyable
   include StandardNamedScopes
+  include Request::Statemachine
 
   extend EventfulRecord
   has_many_events
   has_many_lab_events
-  
 
   self.inheritance_column = "sti_type"
-  def url_name
-    "request" # frozen for subclass of the API
-  end
-  alias_method(:json_root, :url_name)
 
   def self.delegate_validator
     DelegateValidation::AlwaysValidValidator
   end
 
-  ## State machine
-  aasm_column :state
-  aasm_state :pending
-  aasm_state :started
-  aasm_state :failed
-  aasm_state :passed
-  aasm_state :cancelled
-  aasm_state :blocked
-  aasm_state :hold
-  aasm_initial_state :pending
-
-  # State Machine events
-  aasm_event :start do
-    transitions :to => :started, :from => [:pending, :started, :hold]
-  end
-
-  aasm_event :pass do
-    transitions :to => :passed, :from => [:started, :passed, :pending, :failed]
-  end
-
-  aasm_event :fail do
-    transitions :to => :failed, :from => [:started, :pending, :failed, :passed]
-  end
-
-  aasm_event :block do
-    transitions :to => :blocked, :from => [:pending]
-  end
-
-  aasm_event :unblock do
-    transitions :to => :pending, :from => [:blocked]
-  end
-
-  aasm_event :detach do
-    transitions :to => :pending, :from => [:cancelled, :started, :pending]
-  end
-
-  aasm_event :reset do
-    transitions :to => :pending, :from => [:started, :pending, :passed, :failed, :hold]
-  end
-
-  aasm_event :cancel do
-    transitions :to => :cancelled, :from => [:started, :pending, :passed, :failed, :hold]
-  end
-
   belongs_to :pipeline
   belongs_to :item
-  belongs_to :sample
-
-  # deprecating sample, with should use through asset
-  deprecate :sample
-  
-  def sample_id
-    attributes["sample_id"]
-  end
-  deprecate :sample_id
   belongs_to :project
 
   has_many :failures, :as => :failable
@@ -97,6 +42,8 @@ class Request < ActiveRecord::Base
   belongs_to :submission
 
   #  validates_presence_of :study, :request_type#TODO, :submission
+
+  named_scope :between, lambda { |source,target| { :conditions => { :asset_id => source.id, :target_asset_id => target.id } } }
 
   # new version of combinable named_scope
   named_scope :for_state, lambda { |state| { :conditions => { :state => state } } }
@@ -128,11 +75,14 @@ class Request < ActiveRecord::Base
     {:conditions => { :request_type_id => id} }
   }
 
+  named_scope :where_is_a?,     lambda { |clazz| { :conditions => [ 'sti_type IN (?)',     [ clazz, *Class.subclasses_of(clazz) ].map(&:name) ] } }
+  named_scope :where_is_not_a?, lambda { |clazz| { :conditions => [ 'sti_type NOT IN (?)', [ clazz, *Class.subclasses_of(clazz) ].map(&:name) ] } }
+
   named_scope :full_inbox, :conditions => {:state => ["pending","hold"]}
 
   named_scope :with_asset, :conditions =>  'asset_id is not null'
   named_scope :with_target, :conditions =>  'target_asset_id is not null and (target_asset_id <> asset_id)'
-  named_scope :join_asset, :joins => :asset
+  named_scope :join_asset, :joins => { :asset => :aliquots }
 
   #Asset are Locatable (or at least some of them)
   belongs_to :location_association, :primary_key => :locatable_id, :foreign_key => :asset_id
@@ -151,9 +101,11 @@ class Request < ActiveRecord::Base
   named_scope :full_inbox, :conditions => {:state => ["pending","hold"]}
   named_scope :hold, :conditions => {:state => "hold"}
 
+  named_scope :ordered_for_ungrouped_inbox, :order => 'id DESC'
+  named_scope :ordered_for_submission_grouped_inbox, :order => 'submission_id DESC, id ASC'
+
   named_scope :for_asset_id, lambda { |id| { :conditions => { :asset_id => id } } }
   named_scope :for_study_id, lambda { |id| { :conditions => { :study_id => id } } }
-  named_scope :for_sample_id, lambda { |id| { :conditions => { :sample_id => id } } }
   named_scope :for_workflow, lambda { |workflow| { :joins => :workflow, :conditions => { :workflow => { :key => workflow } } } }
   named_scope :for_request_types, lambda { |types| { :joins => :request_type, :conditions => { :request_types => { :key => types } } } }
   
@@ -162,27 +114,7 @@ class Request < ActiveRecord::Base
   }
 
   named_scope :find_all_target_asset, lambda { |target_asset_id| { :conditions => [ 'target_asset_id = ?', "#{target_asset_id}" ] } }
-  named_scope :including_associations_for_json, { :include => [ :uuid_object, { :study => :uuid_object }, { :project => :uuid_object }, :user, {:asset => [ { :sample => :uuid_object }, :uuid_object, :barcode_prefix] }, { :target_asset => [ { :sample => :uuid_object }, :uuid_object, :barcode_prefix] }, :request_type, :request_metadata ] }
   named_scope :for_studies, lambda { |*studies| { :conditions => { :study_id => studies.map(&:id) } } }
-
-  #combining scopes
-  def self.for_pipeline(pipeline)
-    Rails.logger.warn('**** DEPRECATED: Request.for_pipeline(pipeline) is deprecated, use pipeline.requests.ready_in_storage ****')
-    pipeline.requests.ready_in_storage
-  end
-
-  def self.old_pending_without_asset(request_type)
-    self.for_request_type(request_type).without_asset.pipeline_pending
-  end
-
-  def self.old_all_pending_with_asset(request_type)
-    self.for_request_type(request_type).with_asset.pipeline_pending
-  end
-
-  def self.old_all_pending(request_type)
-    self.for_request_type(request_type).pipeline_pending
-  end
-
 
   #------
   #TODO: use eager loading association
@@ -301,62 +233,6 @@ class Request < ActiveRecord::Base
   def lab_events_for_batch(batch)
     self.lab_events.find_all_by_batch_id(batch.id)
   end
-
-  def tag_number
-    unless tag.blank?
-      return tag.map_id
-    end
-    ''
-  end
-
-  # tags and tag have been moved to the appropriate assets.
-  # I don't think that they are used anywhere else apart 
-  # from the batch xml and can therefore probably be removed.
-  # ---
-  def tag
-    if self.target_asset
-      parent = self.target_asset.parents.find_by_sti_type('TagInstance')
-      if parent
-        return parent.tag
-      end
-    end
-    nil
-  end
-
-  def tags
-    if self.asset.instance_of?(MultiplexedLibraryTube)
-      parents = self.asset.parents
-      
-      if parent = parents.detect{ |parent| parent.is_a_stock_asset? }
-        parent.parents
-      else
-        parents
-      end
-    else
-      []
-    end
-  end
-  # ---
-  
-  def sample_name
-    if self.sample
-      return self.sample.name
-    else
-      return ''
-    end
-  end
-  
-  def valid_request_for_pulldown_report?
-    well = self.asset
-    return false if self.study.nil?
-    return false if well.nil? || ! well.is_a?(Well)
-    return false if well.plate.nil? || well.map.nil?
-    return false if well.sample.nil?
-    return false if well.parent.nil? || ! well.parent.is_a?(Well)
-
-
-    true
-  end
   
 
   def event_with_key_value(k, v = nil)
@@ -381,27 +257,24 @@ class Request < ActiveRecord::Base
   end
 
   def next_requests(pipeline, &block)
-    return [] if sample.nil?
-    return self.related_pending_requests if pipeline.next_pipeline.try(:request_type_id).nil?
+    #TODO remove pipeline parameters
+    # we filter according to the next pipeline
+    next_pipeline = pipeline.next_pipeline
+    return [] unless next_pipeline
 
     block ||= PERMISSABLE_NEXT_REQUESTS
-    sample.requests.select { |r| pipeline.next_pipeline.request_type_id == r.request_type_id and block.call(r) }
-  end
+    eligible_requests = if target_asset.present?
+                          target_asset.requests
+                        else
+                          return [] if submission.nil?
+                          submission.next_requests(self)
+                        end
 
-  def previous_requests(pipeline, &block)
-    return [] if sample.nil?
-    return [] if pipeline.previous_pipeline.try(:request_type_id).nil?
-
-    block ||= PERMISSABLE_NEXT_REQUESTS
-    sample.requests.select { |r| pipeline.previous_pipeline.request_type_id == r.request_type_id and block.call(r) }
+    eligible_requests.select { |r| !next_pipeline || next_pipeline.request_type_id == r.request_type_id and block.call(r) }
   end
 
   def previous_failed_requests
     self.asset.requests.select { |previous_failed_request| (previous_failed_request.failed? or previous_failed_request.blocked?)}
-  end
-
-  def related_pending_requests
-    Request.find_all_by_submission_id_and_sample_id(self.submission_id, self.sample_id).select{ |r| r.pending? and (r.request_type_id != self.request_type_id) }
   end
 
   def self.unhold_requests(request_proxys, save = true)
@@ -448,8 +321,8 @@ class Request < ActiveRecord::Base
 
   def remove_unused_assets
     return if target_asset.nil?
-    self.related_pending_requests.each do |releated_request|
-      next unless releated_request.asset == self.target_asset
+    target_asset.requests do |related_request|
+      target_asset.remove_unused_assets
       releated_request.asset.destroy
       releated_request.asset_id = nil
       releated_request.save!
@@ -503,10 +376,6 @@ class Request < ActiveRecord::Base
       return true
     end
     false
-  end
-
-  def self.render_class
-    Api::RequestIO
   end
 
   def update_priority(pipeline)

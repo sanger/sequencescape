@@ -88,8 +88,14 @@ module User::Authentication
       base.named_scope :with_fresh_cookie, lambda { |c| { :conditions => [ 'cookie=? AND cookie_validated_at > ?', c, configatron.sanger_auth_freshness.minutes.ago ] } }
     end
 
-    def authenticate_by_sanger_cookie(cookie_value)
-      self.with_fresh_cookie(cookie_value).first || validate_user_with_single_sign_on_service(cookie_value)
+    if Rails.env == 'development'
+      def authenticate_by_sanger_cookie(cookie_value)
+        self.find_by_login(cookie_value)
+      end
+    else
+      def authenticate_by_sanger_cookie(cookie_value)
+        self.with_fresh_cookie(cookie_value).first || validate_user_with_single_sign_on_service(cookie_value)
+      end
     end
 
     def validate_user_with_single_sign_on_service(cookie_value)

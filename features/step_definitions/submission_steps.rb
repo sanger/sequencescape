@@ -2,7 +2,7 @@ Given /^I have a plate in study "([^"]*)" with samples with known sanger_sample_
   study = Study.find_by_name(study_name)
   plate = Plate.create!(:barcode => "1234567", :location => Location.find_by_name("Sample logistics freezer"))
   1.upto(4) do |i|
-    Well.create!(:plate => plate, :map_id => i, :sample => Sample.create!(:name => "Sample_#{i}", :sanger_sample_id => "ABC_#{i}"))
+    Well.create!(:plate => plate, :map_id => i).aliquots.create!(:sample => Sample.create!(:name => "Sample_#{i}", :sanger_sample_id => "ABC_#{i}"))
   end
 end
 

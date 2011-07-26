@@ -13,9 +13,9 @@
 						<% well = plate.find_well_by_name("#{row}#{column}") %>
 						<% if well %>
 							<% if well.sample%>
-                 <%= link_to well.sample.name, "#{configatron.studies_url}/samples	/#{well.sample.id}" %><br/>
+                <%= link_to well.sample.name, sample_path(well.sample) %><br/>
 							<% end %>
-							<%= link_to "#{row}#{column}",  "#{configatron.studies_url}/assets/#{well.id}"  %><br/>
+              <%= link_to "#{row}#{column}", asset_path(well) %><br/>
 							<% if p = well.parents.find_by_sti_type("Well") %>
 								Parent: <%= p.map.description %>
 							<% end %>

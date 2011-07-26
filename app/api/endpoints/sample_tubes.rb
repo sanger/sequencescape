@@ -1,11 +1,6 @@
-class ::Endpoints::SampleTubes < ::Core::Endpoint::Base
-  model do
-
-  end
-
+class ::Endpoints::SampleTubes < ::Endpoints::Tubes
   instance do
-    has_many(:library_tubes, :json => 'library_tubes', :to => 'library_tubes')
     has_many(:requests,      :json => 'requests',      :to => 'requests')
-    belongs_to(:sample,      :json => 'sample')
+    has_many(:library_tubes, :json => 'library_tubes', :to => 'library_tubes')
   end
 end

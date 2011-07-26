@@ -74,10 +74,12 @@ class SampleManifestTest < ActiveSupport::TestCase
         plate.add_and_save_well(Well.new, i%8, i%12)
       end
       plate.wells.each_with_index do |well,index|
-        well.sample = Factory(
-          :sample,
-          :name             => "Sample_#{offset+index}",
-          :sanger_sample_id => "ABC_123#{offset+index}"
+        well.aliquots.create!(
+          :sample => Factory(
+            :sample,
+            :name             => "Sample_#{offset+index}",
+            :sanger_sample_id => "ABC_123#{offset+index}"
+          )
         )
       end
 
@@ -128,13 +130,18 @@ class SampleManifestTest < ActiveSupport::TestCase
       end
       should "not try to add an event to a plate" do
         assert_nothing_raised do
-          SampleManifest::PlateBehaviour::Core.new(SampleManifest.new).updated_by!(@user,[@well_with_sample_and_plate.sample, @well_with_sample_and_without_plate.sample])
+          SampleManifest::PlateBehaviour::Core.new(SampleManifest.new).updated_by!(
+            @user, [
+              @well_with_sample_and_plate.primary_aliquot.sample,
+              @well_with_sample_and_without_plate.primary_aliquot.sample
+            ]
+          )
         end
       end
     end
     context "where a well has a plate" do
       should "add an event to the plate" do
-        SampleManifest::PlateBehaviour::Core.new(SampleManifest.new).updated_by!(@user,[@well_with_sample_and_plate.sample])
+        SampleManifest::PlateBehaviour::Core.new(SampleManifest.new).updated_by!(@user,[@well_with_sample_and_plate.primary_aliquot.sample])
         assert_equal Event.last, @well_with_sample_and_plate.plate.events.last
         assert_not_nil @well_with_sample_and_plate.plate.events.last
       end

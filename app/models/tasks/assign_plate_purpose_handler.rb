@@ -20,9 +20,12 @@ module Tasks::AssignPlatePurposeHandler
     @plate_purpose_options = plate_purpose_options()
   end
 
-  private
+  # Returns a list of valid plate purpose types based on the requests in the current batch.
   def plate_purpose_options
-    PlatePurpose.all.map { |purpose| [purpose.name,purpose.id] }.sort
+    requests       = @batch.requests.map { |r| r.submission.next_requests(r) }.flatten
+    plate_purposes = requests.map(&:request_type).compact.uniq.map(&:acceptable_plate_purposes).flatten.uniq
+    plate_purposes = PlatePurpose.all if plate_purposes.empty?  # Fallback situation for the moment
+    plate_purposes.map { |p| [p.name, p.id] }.sort
   end
-
+  private :plate_purpose_options
 end

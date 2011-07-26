@@ -116,21 +116,21 @@ class SequenomQcPlate < Plate
     source_well = plate.find_well_by_rowcol(row, col)
     return nil if source_well.nil?
 
-    cloned_well       = source_well.clone
-    cloned_well.plate = self
-    cloned_well.map   = destination_map_based_on_source_row_col_and_quadrant(quadrant, row, col)
-    
-    
-    # FIXME: This fix seems a bit dirty but it works
-    # Adding source_wells directly to cloned_well parents is broken so have to 
-    # use the an explict call to AssetLink.connect instead. Unfortunately I
-    # haven't been able to recreate the problem in testing. :(
-    
-    # cloned_well.parents << source_well
-    
-    cloned_well.save!
-    
-    AssetLink.create_edge!(source_well, cloned_well)
+    source_well.clone.tap do |cloned_well|
+      cloned_well.plate = self
+      cloned_well.map   = destination_map_based_on_source_row_col_and_quadrant(quadrant, row, col)
+      cloned_well.save!
+
+      cloned_well.aliquots = source_well.aliquots.map(&:clone)
+
+      # FIXME: This fix seems a bit dirty but it works
+      # Adding source_wells directly to cloned_well parents is broken so have to 
+      # use the an explict call to AssetLink.connect instead. Unfortunately I
+      # haven't been able to recreate the problem in testing. :(
+      
+      # cloned_well.parents << source_well
+      AssetLink.create_edge!(source_well, cloned_well)
+    end
   end
   
   

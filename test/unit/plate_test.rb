@@ -38,7 +38,7 @@ class PlateTest < ActiveSupport::TestCase
       setup do
         @plate = Factory :plate
         @sample = Factory :sample, :name=>"abc"
-        @well_asset = Well.new(:sample => @sample)
+        @well_asset = Well.create!.tap { |well| well.aliquots.create!(:sample => @sample) }
         @plate.add_and_save_well @well_asset
       end
       should "find the sample name if its valid" do
@@ -88,21 +88,12 @@ class PlateTest < ActiveSupport::TestCase
       @plate1 = Factory :plate
       @plate1.add_and_save_well(@well1)
       @request1 = Factory :request, :asset => @well1
-      @invalid_request_with_plate_asset = Factory :request, :asset => @plate1
     end
 
     context "with 1 request" do
       context "with a valid well asset" do
         should "return correct plate ids" do
           assert Plate.plate_ids_from_requests([@request1]).include?(@plate1.id)
-        end
-      end
-
-      context "with invalid inputs" do
-        should "not return plate ids" do
-          assert Plate.plate_ids_from_requests([]).empty?
-          assert @invalid_request_with_plate_asset.asset.is_a?(Plate)
-          assert Plate.plate_ids_from_requests([@invalid_request_with_plate_asset]).empty?
         end
       end
 

@@ -209,19 +209,19 @@ Feature: Beginning with the API progress through pulldown to sequencing
     Given I am on the show page for pipeline "HiSeq Cluster formation PE (no controls)"
     Then the pipeline inbox should be:
       | Available requests                                | Asset ID |  Asset type                     |  Study   |
-      | Select PulldownMultiplexedLibraryTube 1 for batch | 1        |  PulldownMultiplexedLibraryTube |  Study A |
-      | Select PulldownMultiplexedLibraryTube 1 for batch | 1        |  PulldownMultiplexedLibraryTube |  Study A |
-      | Select PulldownMultiplexedLibraryTube 1 for batch | 1        |  PulldownMultiplexedLibraryTube |  Study A |
-      | Select PulldownMultiplexedLibraryTube 1 for batch | 1        |  PulldownMultiplexedLibraryTube |  Study A |
-      | Select PulldownMultiplexedLibraryTube 1 for batch | 1        |  PulldownMultiplexedLibraryTube |  Study A |
-      | Select PulldownMultiplexedLibraryTube 1 for batch | 1        |  PulldownMultiplexedLibraryTube |  Study A |
-      | Select PulldownMultiplexedLibraryTube 1 for batch | 1        |  PulldownMultiplexedLibraryTube |  Study A |
-      | Select PulldownMultiplexedLibraryTube 2 for batch | 2        |  PulldownMultiplexedLibraryTube |  Study B |
-      | Select PulldownMultiplexedLibraryTube 2 for batch | 2        |  PulldownMultiplexedLibraryTube |  Study B |
-      | Select PulldownMultiplexedLibraryTube 2 for batch | 2        |  PulldownMultiplexedLibraryTube |  Study B |
-      | Select PulldownMultiplexedLibraryTube 2 for batch | 2        |  PulldownMultiplexedLibraryTube |  Study B |
-      | Select PulldownMultiplexedLibraryTube 2 for batch | 2        |  PulldownMultiplexedLibraryTube |  Study B |
       | Select PulldownMultiplexedLibraryTube 3 for batch | 3        |  PulldownMultiplexedLibraryTube |  Study C |
+      | Select PulldownMultiplexedLibraryTube 2 for batch | 2        |  PulldownMultiplexedLibraryTube |  Study B |
+      | Select PulldownMultiplexedLibraryTube 2 for batch | 2        |  PulldownMultiplexedLibraryTube |  Study B |
+      | Select PulldownMultiplexedLibraryTube 2 for batch | 2        |  PulldownMultiplexedLibraryTube |  Study B |
+      | Select PulldownMultiplexedLibraryTube 2 for batch | 2        |  PulldownMultiplexedLibraryTube |  Study B |
+      | Select PulldownMultiplexedLibraryTube 2 for batch | 2        |  PulldownMultiplexedLibraryTube |  Study B |
+      | Select PulldownMultiplexedLibraryTube 1 for batch | 1        |  PulldownMultiplexedLibraryTube |  Study A |
+      | Select PulldownMultiplexedLibraryTube 1 for batch | 1        |  PulldownMultiplexedLibraryTube |  Study A |
+      | Select PulldownMultiplexedLibraryTube 1 for batch | 1        |  PulldownMultiplexedLibraryTube |  Study A |
+      | Select PulldownMultiplexedLibraryTube 1 for batch | 1        |  PulldownMultiplexedLibraryTube |  Study A |
+      | Select PulldownMultiplexedLibraryTube 1 for batch | 1        |  PulldownMultiplexedLibraryTube |  Study A |
+      | Select PulldownMultiplexedLibraryTube 1 for batch | 1        |  PulldownMultiplexedLibraryTube |  Study A |
+      | Select PulldownMultiplexedLibraryTube 1 for batch | 1        |  PulldownMultiplexedLibraryTube |  Study A |
 
   Scenario: Create a multiple API submissions and progress all the way to sequencing
     Given I have an "active" study called "Study B"

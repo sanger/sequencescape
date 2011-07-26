@@ -135,7 +135,7 @@ Feature: display an overview of all plates going through QC in SLF
     And the UUID for the plate with ID 1000 is "00000000-1111-2222-3333-555555555555"
     And plate 1000 has is a stock plate
     Given the UUID of the next asset audit created will be "00000000-1111-2222-3333-444444444444"
-    When I POST the following JSON to the API path "/asset_audits":
+    When I make an authorised POST with the following JSON to the API path "/asset_audits":
       """
       {
         "asset_audit": {
@@ -162,8 +162,9 @@ Feature: display an overview of all plates going through QC in SLF
     Given the plate exists with ID 1000
     And the UUID for the plate with ID 1000 is "00000000-1111-2222-3333-555555555555"
     And plate 1000 has is a stock plate
+
     Given the UUID of the next asset audit created will be "00000000-1111-2222-3333-444444444444"
-    When I POST the following JSON to the API path "/asset_audits":
+    When I make an authorised POST with the following JSON to the API path "/asset_audits":
       """
       {
         "asset_audit": {
@@ -174,8 +175,10 @@ Feature: display an overview of all plates going through QC in SLF
         }
       }
       """
+    Then the HTTP response should be "201 Created"
+
     Given the UUID of the next asset audit created will be "00000000-1111-2222-3333-444444444444"
-    When I POST the following JSON to the API path "/asset_audits":
+    When I make an authorised POST with the following JSON to the API path "/asset_audits":
       """
       {
         "asset_audit": {
@@ -186,6 +189,8 @@ Feature: display an overview of all plates going through QC in SLF
         }
       }
       """
+    Then the HTTP response should be "201 Created"
+
     Given I am on the sample logistics homepage
     When I follow "QC overview"
     Then the overview of the plates should look like:

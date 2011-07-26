@@ -7,7 +7,6 @@ class PipelineTest < ActiveSupport::TestCase
     should_have_many :request_information_types, :through => :pipeline_request_information_types
     should_have_many :pipeline_request_information_types
     #should_require_attributes :name
-    should_have_instance_methods :get_input_requests
     
     context "#QC related batches" do
       setup do

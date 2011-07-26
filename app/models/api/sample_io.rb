@@ -1,4 +1,25 @@
 class Api::SampleIO < Api::Base
+  module Extensions
+    module ClassMethods
+      def render_class
+        Api::SampleIO
+      end
+    end
+
+    def self.included(base)
+      base.class_eval do
+        extend ClassMethods
+
+        named_scope :including_associations_for_json, { :include => [:uuid_object, { :sample_metadata => :reference_genome }, { :studies => [ :study_metadata, :uuid_object ] } ] }
+        alias_method(:json_root, :url_name)
+      end
+    end
+
+    def url_name
+      "sample"
+    end
+  end
+
   renders_model(::Sample)
 
   map_attribute_to_json_attribute(:uuid)
@@ -52,6 +73,8 @@ class Api::SampleIO < Api::Base
   # Whenever we create samples through the API we also need to register a sample tube too.  The user
   # can then retrieve the sample tube information through the API.
   def self.create!(parameters)
-    super.tap { |sample| SampleTube.create!(:sample => sample) }
+    super.tap do |sample|
+      SampleTube.create!.aliquots.create!(:sample => sample)
+    end
   end
 end

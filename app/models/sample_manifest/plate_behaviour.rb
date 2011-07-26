@@ -85,7 +85,7 @@ module SampleManifest::PlateBehaviour
 
     def io_samples
       samples.map do |sample|
-        container = sample.primary_well
+        container = sample.primary_receptacle
         {
           :sample    => sample,
           :container => {
@@ -97,7 +97,7 @@ module SampleManifest::PlateBehaviour
     end
 
     def print_labels(&block)
-      print_labels_for(self.samples.map { |s| s.primary_well.plate }.uniq, &block)
+      print_labels_for(self.samples.map { |s| s.primary_receptacle.plate }.uniq, &block)
     end
 
     def updated_by!(user, samples)
@@ -140,12 +140,12 @@ module SampleManifest::PlateBehaviour
 
     well_data = []
     plates    = (0...self.count).map do |_|
-      Plate.create_plate_with_barcode(:plate_purpose => stock_plate_purpose)
+      Plate.create_with_barcode!(:plate_purpose => stock_plate_purpose)
     end.sort_by(&:barcode).map do |plate|
       plate.tap do |plate|
         sanger_sample_ids = generate_sanger_ids(plate.size)
 
-        Map.walk_plate_vertically(plate.size) do |map|
+        Map.walk_plate_in_column_major_order(plate.size) do |map, _|
           sanger_sample_id           = sanger_sample_ids.shift
           generated_sanger_sample_id = SangerSampleId.generate_sanger_sample_id!(study_abbreviation, sanger_sample_id)
 
@@ -164,7 +164,9 @@ module SampleManifest::PlateBehaviour
   def generate_wells(wells_for_plate, plate)
     study_samples_data = wells_for_plate.map do |map,sanger_sample_id|
       create_sample(sanger_sample_id).tap do |sample|
-        plate.wells.create!(:map => map, :sample => sample, :well_attribute => WellAttribute.new)
+        plate.wells.create!(:map => map, :well_attribute => WellAttribute.new).tap do |well|
+          well.aliquots.create!(:sample => sample)
+        end
       end
     end
 

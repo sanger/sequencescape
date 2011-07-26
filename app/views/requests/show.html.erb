@@ -17,9 +17,6 @@
   <% if @request.study %>
     <%= link_to @request.study.name, study_path(@request.study) %> :
   <% end %>
-  <% if @request.sample %>
-    <%= link_to @request.sample.name, sample_path(@request.sample) %> : 
-  <% end %>
   Request: <%= @request.id %> 
   <% if @request.request_type %>
     (<%= @request.request_type.name %>)

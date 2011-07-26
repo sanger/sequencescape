@@ -23,7 +23,7 @@ class SearchesControllerTest < ActionController::TestCase
         @study2                   = Factory :study, :name => "Another study"
         @sample                   = Factory :sample, :name => "FindMeSample"
         @item                     = Factory :item, :name => "FindMeItem"
-        @asset                    = Factory :asset, :name => 'FindMeAsset', :material => @sample
+        @asset                    = Factory(:sample_tube, :name => 'FindMeAsset')
         @asset_group_to_find      = Factory :asset_group, :name => "FindMeAssetGroup", :study => @study
         @asset_group_to_not_find  = Factory :asset_group, :name => "IgnoreAssetGroup"
 

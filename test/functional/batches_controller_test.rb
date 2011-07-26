@@ -29,14 +29,13 @@ class BatchesControllerTest < ActionController::TestCase
         setup do
           pipeline = Factory :pipeline
 
+          @study, @project = Factory(:study), Factory(:project)
+          @sample = Factory :sample
+
           batch = Factory :batch, :pipeline => pipeline
-          sample   = Factory :sample
-          library1 = Factory :asset, :sample => sample
-          lane = Factory :asset, :sample => sample, :qc_state => "failed"
-          @request_one = pipeline.request_type.create!(
-            :asset => library1, :target_asset => lane,
-            :project => Factory(:project), :study => Factory(:study)
-          )
+          library1 = Factory(:empty_library_tube).tap { |library_tube| library_tube.aliquots.create!(:sample => @sample, :project => @project, :study => @study) }
+          lane = Factory(:empty_lane, :qc_state => 'failed').tap { |lane| lane.aliquots.create!(:sample => @sample, :project => @project, :study => @study) }
+          @request_one = pipeline.request_type.create!(:asset => library1, :target_asset => lane, :project => @project, :study => @study)
           batch.batch_requests.create!(:request => @request_one, :position => 1)
           get :show, :id => batch.id, :format => "xml"
         end
@@ -44,11 +43,9 @@ class BatchesControllerTest < ActionController::TestCase
         
         should "have api version attribute on root object" do
           assert_response :success
-          assert_not_nil @request_one.asset
-          assert_not_nil @request_one.asset.sample
-          assert_tag :tag => "library", :attributes => {:sample_id => @request_one.asset.sample.id, :request_id => @request_one.id, :id => @request_one.asset.id}
-          assert_tag :tag => "library", :attributes => {:project_id => @request_one.project_id, :study_id => @request_one.study_id}        
-          assert_tag :tag => "library", :attributes => {:qc_state => "fail"}    
+          assert_tag :tag => "library", :attributes => {:sample_id => @sample.id, :request_id => @request_one.id}
+          assert_tag :tag => "library", :attributes => {:project_id => @project.id, :study_id => @study.id}
+          assert_tag :tag => "library", :attributes => {:qc_state => "fail"}
         end
       end
       
@@ -66,10 +63,10 @@ class BatchesControllerTest < ActionController::TestCase
           @batch_one = Factory(:batch, :pipeline => @pipeline)
           @batch_two = Factory(:batch, :pipeline => @pipeline_qc)
 
-          @sample   = Factory :asset
-          @library1 = Factory :asset
+          @sample   = Factory :sample_tube
+          @library1 = Factory :empty_library_tube
           @library1.parents << @sample
-          @library2 = Factory :asset
+          @library2 = Factory :empty_library_tube
           @library2.parents << @sample
 
           @request_one = @pipeline.request_type.create!(:asset => @library1, :project => Factory(:project))
@@ -77,8 +74,6 @@ class BatchesControllerTest < ActionController::TestCase
           @request_two = @pipeline.request_type.create!(:asset => @library2, :project => Factory(:project))
           @batch_one.batch_requests.create!(:request => @request_two, :position => 2)
           @batch_one.reload
-
-          Request.any_instance.stubs(:sample).returns(@sample)
         end
 
         should "#index" do

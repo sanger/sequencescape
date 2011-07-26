@@ -11,6 +11,7 @@ module Core::Endpoint::BasicHandler::Actions
       include Core::Endpoint::BasicHandler::Actions::Factory
       include Core::Endpoint::BasicHandler::Actions::Guards
       include Core::Endpoint::BasicHandler::EndpointLookup
+      include Core::Abilities::ActionBehaviour
     end
   end
 
@@ -30,7 +31,7 @@ module Core::Endpoint::BasicHandler::Actions
         return handler.#{action}(request, rest, &block) unless self == handler
 
         check_request_io_class!(request)
-        check_guards!(#{action.inspect}, request, request.target)
+        check_authorisation!(self, #{action.inspect}, request, request.target)
         request.response do |response|
           response.status(#{status_code})
           _#{action}(request, response) do |handler, object|
@@ -51,16 +52,17 @@ module Core::Endpoint::BasicHandler::Actions
   end
 
   def does_not_require_an_io_class
-    self.singleton_class.class_eval(%Q{def check_request_io_class!(_) ; end})
+    self.singleton_class.class_eval(%Q{def check_request_io_class!(_) ; end}, __FILE__, __LINE__)
   end
 
   def disable(*actions)
     actions.each do |action|
+      line = __LINE__ + 1
       singleton_class.class_eval(%Q{
         def _#{action}(request, response)
           raise ::Core::Service::UnsupportedAction
         end
-      })
+      }, __FILE__, line)
       @actions.delete(action.to_sym)
     end
   end
@@ -81,19 +83,14 @@ module Core::Endpoint::BasicHandler::Actions
       when options[:to] then options[:to]
       else raise StandardError, "Block or :to option needed to declare action"
       end
-        
+
+    line = __LINE__ + 1
     singleton_class.class_eval(%Q{
       def _#{name}(request, response)
         object = #{action_implementation_method}(request, response)
-        yield(endpoint_for(object.class).instance_handler, object)
+        yield(endpoint_for_object(object).instance_handler, object)
       end
-    })
+    }, __FILE__, line)
   end
   private :declare_action
-
-  def action_requires_authorisation(*actions)
-    actions.each do |action|
-      action_guard(action.to_sym, :authorised?)
-    end
-  end
 end

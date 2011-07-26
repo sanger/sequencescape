@@ -35,7 +35,7 @@ Given /^the (sample|library) tube "([^\"]+)" has been involved in a "([^\"]+)" r
   project      = Project.find_by_name(project_name) or raise StandardError, "Cannot find the project named #{ project_name.inspect }"
   request_type = RequestType.find_by_name(request_type_name) or raise StandardError, "Cannot find request type #{ request_type_name.inspect }"
   asset = "#{ tube_type }_tube".camelize.constantize.find_by_name(tube_name) or raise StandardError, "Cannot find #{ tube_type } tube named #{ tube_name.inspect }"
-  target_asset = Factory(:asset, :sti_type => request_type.asset_type, :name => "#{ study_name } - Target asset")
+  target_asset = Factory(request_type.asset_type.underscore, :name => "#{ study_name } - Target asset")
 
   create_request(request_type, study, project, asset, target_asset)
 end
@@ -44,8 +44,8 @@ Given /^I have already made a "([^\"]+)" request within the study "([^\"]+)" for
   study        = Study.find_by_name(study_name) or raise StandardError, "Cannot find study named #{ study_name.inspect }"
   project      = Project.find_by_name(project_name) or raise StandardError, "Cannot find the project named #{ project_name.inspect }"
   request_type = RequestType.find_by_name(type) or raise StandardError, "Cannot find request type #{ type.inspect }"
-  asset = Factory(:asset, :sti_type => request_type.asset_type, :name => "#{ study_name } - Source asset")
-  target_asset = Factory(:asset, :sti_type => request_type.asset_type, :name => "#{ study_name } - Target asset")
+  asset = Factory(request_type.asset_type.underscore, :name => "#{ study_name } - Source asset")
+  target_asset = Factory(request_type.asset_type.underscore, :name => "#{ study_name } - Target asset")
 
   create_request(request_type, study, project, asset, target_asset)
 end
@@ -56,8 +56,8 @@ Given /^I have already made (\d+) "([^\"]+)" requests? with IDs starting at (\d+
   request_type = RequestType.find_by_name(type) or raise StandardError, "Cannot find request type #{ type.inspect }"
 
   (0...count.to_i).each do |index|
-    asset = Factory(:asset, :sti_type => request_type.asset_type, :name => "#{ study_name } - Source asset #{index+1}")
-    target_asset = Factory(:asset, :sti_type => request_type.asset_type, :name => "#{ study_name } - Target asset #{index+1}")
+    asset = Factory(request_type.asset_type.underscore, :name => "#{ study_name } - Source asset #{index+1}")
+    target_asset = Factory(request_type.asset_type.underscore, :name => "#{ study_name } - Target asset #{index+1}")
     create_request(request_type, study, project, asset, target_asset, :id => id.to_i + index)
   end
 end
@@ -82,9 +82,10 @@ Given /^the study "([^\"]+)" has an asset group of (\d+) samples in "([^\"]+)" c
   assets = (1..count.to_i).map do |i|
     Factory(
       asset_type.gsub(/[^a-z0-9_-]+/, '_'),
-      :name => "#{ group_name }, #{ asset_type } #{ i }",
-      :material => Factory(:sample, :name => "#{ group_name }, sample #{ i }".downcase.gsub(/[^a-z0-9_-]+/, '_'))
-    )
+      :name => "#{ group_name }, #{ asset_type } #{ i }"
+    ).tap do |asset|
+      asset.aliquots.create!(:sample => Factory(:sample, :name => "#{ group_name }, sample #{ i }".downcase.gsub(/[^a-z0-9_-]+/, '_')))
+    end
   end
   asset_group = Factory(:asset_group, :name => group_name, :study => study, :assets => assets)
 end

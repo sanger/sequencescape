@@ -438,3 +438,64 @@ PlatePurpose.import plate_purposes_data
 (1..5).each do |index|
   PlatePurpose.create!(:name => "Aliquot #{index}", :qc_display => true, :can_be_considered_a_stock_plate => true)
 end
+
+# Build the links between the parent and child plate purposes
+relationships = {
+  "Working Dilution"    => ["Working Dilution", "Pico Dilution"],
+  "Pico Dilution"       => ["Working Dilution", "Pico Dilution"],
+  "Pico Assay A"        => ["Pico Assay A", "Pico Assay B"],
+  "Pulldown"            => ["Pulldown Aliquot"],
+  "Dilution Plates"     => ["Working Dilution", "Pico Dilution"],
+  "Pico Assay Plates"   => ["Pico Assay A", "Pico Assay B"],
+  "Pico Assay B"        => ["Pico Assay A", "Pico Assay B"],
+  "Gel Dilution Plates" => ["Gel Dilution"],
+  "Pulldown Aliquot"    => ["Sonication"],
+  "Sonication"          => ["Run of Robot"],
+  "Run of Robot"        => ["EnRichment 1"],
+  "EnRichment 1"        => ["EnRichment 2"],
+  "EnRichment 2"        => ["EnRichment 3"],
+  "EnRichment 3"        => ["EnRichment 4"],
+  "EnRichment 4"        => ["Sequence Capture"],
+  "Sequence Capture"    => ["Pulldown PCR"],
+  "Pulldown PCR"        => ["Pulldown qPCR"]
+}
+
+ActiveRecord::Base.transaction do
+  # All of the PlatePurpose names specified in the keys of RELATIONSHIPS have complicated relationships.
+  # The others are simply maps to themselves.
+  PlatePurpose.all(:conditions => [ 'name NOT IN (?)', relationships.keys ]).each do |purpose|
+    purpose.child_relationships.create!(:child => purpose)
+  end
+
+  # Here are the complicated ones:
+  PlatePurpose.all(:conditions => { :name => relationships.keys }).each do |purpose|
+    PlatePurpose.all(:conditions => { :name => relationships[purpose.name] }).each do |child|
+      purpose.child_relationships.create!(:child => child)
+    end
+  end
+
+  # And here is pulldown
+  Pulldown::PlatePurposes::PULLDOWN_PLATE_PURPOSE_FLOWS.each do |flow|
+    # We're using a different plate purpose for each pipeline, which means we need to attach that plate purpose to the request
+    # type for it.  Then in the cherrypicking they'll only be able to pick the correct type from the list.
+    stock_plate_purpose = PlatePurpose.create!(:name => flow.shift, :default_state => 'passed', :can_be_considered_a_stock_plate => true)
+    pipeline_name       = /^([^\s]+)/.match(stock_plate_purpose.name)[1]  # Hack but works!
+    request_type        = RequestType.find_by_name("Pulldown #{pipeline_name}") or raise StandardError, "Cannot find pulldown pipeline for #{pipeline_name}"
+    request_type.acceptable_plate_purposes << stock_plate_purpose
+
+    # Now we can build from the stock plate through to the end
+    initial_purpose = stock_plate_purpose.child_plate_purposes.create!(:type => 'Pulldown::InitialPlatePurpose', :name => flow.shift)
+    flow.inject(initial_purpose) do |parent, child_plate_name|
+      options = { :name => child_plate_name }
+      options[:type] = 'Pulldown::LibraryPlatePurpose' if child_plate_name =~ /^(WGS|SC|ISC) library plate$/
+      parent.child_plate_purposes.create!(options)
+    end
+  end
+
+  qc_plate_purpose = PlatePurpose.create!(:name => 'Pulldown QC plate')
+
+  Pulldown::PlatePurposes::PULLDOWN_PLATE_PURPOSE_LEADING_TO_QC_PLATES.each do |name|
+    plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
+    plate_purpose.child_plate_purposes << qc_plate_purpose
+  end
+end

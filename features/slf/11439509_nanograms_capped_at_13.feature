@@ -50,7 +50,7 @@ Feature: Picking more than 13 minimum volume should render in tecan file
 		And I press "Next step"
     
     When I press "Release this batch"
-    Given the last batch has a barcode of "555"
+    Given the last batch has a barcode of "550000555760"
     Then the downloaded tecan file for batch "550000555760" and plate "1220099999705" is
     """
     C;

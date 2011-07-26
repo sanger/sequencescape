@@ -35,7 +35,7 @@ Feature: The Tecan file has the wrong buffer volumes, defaulting to 13 total vol
   	When I select "Genotyping freezer" from "Location"
   	And I press "Next step"
   	When I press "Release this batch"
-  	Given the last batch has a barcode of "555"
+  	Given the last batch has a barcode of "550000555760"
     And user "user" has a user barcode of "ID41440E"
 
     Given I am on the robot verification page
