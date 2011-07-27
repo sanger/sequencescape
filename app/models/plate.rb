@@ -505,7 +505,8 @@ class Plate < Asset
   end
 
   def valid_positions?(positions)
-    Map.where_description(positions).where_plate_size(self.size).all.map(&:description).sort == positions.sort
+    unique_positions_on_plate, unique_positions_from_caller = Map.where_description(positions).where_plate_size(self.size).all.map(&:description).sort.uniq, positions.sort.uniq
+    unique_positions_on_plate == unique_positions_from_caller
   end
 
   private
