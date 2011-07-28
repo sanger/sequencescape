@@ -1,6 +1,7 @@
 # An aliquot can be considered to be an amount of a material in a liquid.  The material could be the DNA
 # of a sample, or it might be a library (a combination of the DNA sample and a tag).
 class Aliquot < ActiveRecord::Base
+  include Uuid::Uuidable
   class Receptacle < Asset
     include Transfer::State
 
@@ -57,6 +58,14 @@ class Aliquot < ActiveRecord::Base
       aliquots
     end
     deprecate :tags
+
+    def primary_aliquot_if_unique
+      aliquots.first if aliquots.size == 1
+    end
+
+    def type
+      self.class.name.underscore
+    end
   end
 
   # Something that is aliquotable can be part of an aliquot.  So sample and tag are both examples.
@@ -96,8 +105,9 @@ class Aliquot < ActiveRecord::Base
     end
   end
 
+  include Api::AliquotIO::Extensions
   # An aliquot is held within a receptacle
-  belongs_to :receptacle, :class_name => 'Aliquot::Receptacle'
+  belongs_to :receptacle, :class_name => 'Asset'
   validates_presence_of :receptacle
 
   # An aliquot can belong to a study and a project.
