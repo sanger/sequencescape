@@ -274,6 +274,7 @@ ActionController::Routing::Routes.draw do |map|
       read_only.model :submissions, :controller => "api/submissions"
       read_only.model :tags, :controller => "api/tags"
       read_only.asset :wells, :controller => "api/wells"
+      read_only.model :aliquots, :controller => "api/aliquots"
     end
 
     # ... others are CRUD resources ...
