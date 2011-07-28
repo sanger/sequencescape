@@ -96,7 +96,7 @@ class Studies::WorkflowsController < ApplicationController
         @request_types = @workflow.request_types
         @request_type = @request_types[@summary - @basic_tabs.size]
 
-        @assets_to_filter = @study.assets
+        @assets_to_filter = @study.assets.all(:include => { :requests => :request_type })
         @assets_to_detail = @assets_to_filter.select do |asset|
           ! asset.requests.detect{ |r| r.request_type == @request_type }.nil?
         end

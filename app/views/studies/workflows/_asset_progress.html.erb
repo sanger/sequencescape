@@ -24,11 +24,7 @@
     <tr class="<%= label_asset_state(asset) %>">
       <td><%= link_to asset.name, asset_path(asset), :title => asset.label.capitalize  %></td>
       <td><%= asset.label %></td>
-      <% if asset.sample %>
-        <td><%= link_to asset.sample.name, asset.sample %></td>
-      <% else %>
-        <td></td>
-      <% end %>
+      <td><% if asset.is_a?(Aliquot::Receptacle) %><%= link_to(asset.sample.name, asset.sample) %><% end %></td>
       <td><%= asset.closed? ? 'Yes' : 'No' %></td>
 
       <% @workflow.request_types.each do |request_type| %>
