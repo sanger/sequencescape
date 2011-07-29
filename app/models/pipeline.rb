@@ -42,6 +42,11 @@ class Pipeline < ActiveRecord::Base
 
   belongs_to :next_pipeline,     :class_name => 'Pipeline'
   belongs_to :previous_pipeline, :class_name => 'Pipeline'
+
+  named_scope :externally_managed, :conditions => { :externally_managed => true }
+  named_scope :internally_managed, :conditions => { :externally_managed => false }
+  named_scope :active,   :conditions => { :active => true }
+  named_scope :inactive, :conditions => { :active => false }
   
   acts_as_audited :on => [:destroy, :update]
 

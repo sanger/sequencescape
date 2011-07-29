@@ -737,10 +737,11 @@ set_pipeline_flow_to('PacBio Sample Prep' => 'PacBio Sequencing')
 ].each do |pipeline_type|
   pipeline_name = "Pulldown #{pipeline_type}"
   Pipeline.create!(:name => pipeline_name) do |pipeline|
-    pipeline.sorter     = Pipeline.maximum(:sorter) + 1
-    pipeline.automated  = false
-    pipeline.active     = true
-    pipeline.asset_type = 'LibraryTube'
+    pipeline.sorter             = Pipeline.maximum(:sorter) + 1
+    pipeline.automated          = false
+    pipeline.active             = true
+    pipeline.asset_type         = 'LibraryTube'
+    pipeline.externally_managed = true
 
     pipeline.location   = Location.find_by_name('Pulldown freezer') or raise StandardError, "Pulldown freezer does not appear to exist!"
 
