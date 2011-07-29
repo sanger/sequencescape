@@ -3,9 +3,8 @@ class PipelinesController < ApplicationController
                                    :set_inbox, :training_batch, :show_comments, :activate, :deactivate, :destroy, :batches]
 
   def index
-    @pipelines = Pipeline.all(:order => "sorter ASC")
-    @manual_pipelines = @pipelines.select {|pipeline| pipeline.automated == false}
-    @automated_pipelines = @pipelines.select {|pipeline| pipeline.automated == true}
+    @pipelines = Pipeline.active.internally_managed.all(:order => "sorter ASC")
+    @grouping  = @pipelines.inject(Hash.new { |h,k| h[k] = [] }) { |h,p| h[p.group_name] << p ; h }
 
     respond_to do |format|
       format.html

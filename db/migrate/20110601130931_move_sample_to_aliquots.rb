@@ -97,7 +97,7 @@ class MoveSampleToAliquots < ActiveRecord::Migration
 
     set_table_name('assets')
 
-    has_many :requests_as_source, :class_name => 'MoveSampleToAliquots::Request', :foreign_key => :asset_id, :conditions => 'sti_type != "CreateAssetRequest" and state = "passed"'
+    has_many :requests_as_source, :class_name => 'MoveSampleToAliquots::Request', :foreign_key => :asset_id, :conditions => 'sti_type != "CreateAssetRequest"'
     has_many :requests_as_target, :class_name => 'MoveSampleToAliquots::Request', :foreign_key => :target_asset_id, :conditions => 'sti_type != "CreateAssetRequest"'
 
     # We're removing these ...

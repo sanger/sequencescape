@@ -13,6 +13,7 @@ class Request < ActiveRecord::Base
   include Proxyable
   include StandardNamedScopes
   include Request::Statemachine
+  extend Request::Statistics
 
   extend EventfulRecord
   has_many_events
@@ -260,7 +261,7 @@ class Request < ActiveRecord::Base
     #TODO remove pipeline parameters
     # we filter according to the next pipeline
     next_pipeline = pipeline.next_pipeline
-    return [] unless next_pipeline
+    #return [] if next_pipeline.nil?
 
     block ||= PERMISSABLE_NEXT_REQUESTS
     eligible_requests = if target_asset.present?
@@ -270,7 +271,7 @@ class Request < ActiveRecord::Base
                           submission.next_requests(self)
                         end
 
-    eligible_requests.select { |r| !next_pipeline || next_pipeline.request_type_id == r.request_type_id and block.call(r) }
+    eligible_requests.select { |r| (next_pipeline.nil? or next_pipeline.request_type_id == r.request_type_id) and block.call(r) }
   end
 
   def previous_failed_requests

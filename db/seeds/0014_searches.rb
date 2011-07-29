@@ -1,5 +1,5 @@
 # Here are a load of searches that can be performed through the API.
-Search::FindAssetByBarcode.create!(:name => 'Find asset by barcode')
+Search::FindAssetByBarcode.create!(:name => 'Find assets by barcode')
 Search::FindModelByName.create!(:name => 'Find project by name', :model_name => 'Project')
 Search::FindModelByName.create!(:name => 'Find study by name',   :model_name => 'Study')
 Search::FindModelByName.create!(:name => 'Find sample by name',  :model_name => 'Sample')

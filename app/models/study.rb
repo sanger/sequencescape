@@ -17,6 +17,7 @@ class Study < ActiveRecord::Base
   include Named
   include ReferenceGenome::Associations
   include SampleManifest::Associations
+  include Request::Statistics::DeprecatedMethods
 
   extend EventfulRecord
   has_many_events
@@ -315,35 +316,19 @@ class Study < ActiveRecord::Base
     self.submissions.select {|s| s.workflow.id == workflow.id}
   end
 
-
-  # TODO - Move these to named scope on Request
-  def total_requests(request_type)
-    self.requests.request_type(request_type).count
+  # Yields information on the state of all request types in a convenient fashion for displaying in a table.
+  def request_progress(&block)
+    yield(self.requests.progress_statistics)
   end
 
-  def completed_requests(request_type)
-    self.requests.request_type(request_type).completed.count
+  # Yields information on the state of all assets in a convenient fashion for displaying in a table.
+  def asset_progress(assets = nil, &block)
+    yield(self.requests.asset_statistics(:having => (assets && "asset_id IN (#{assets.map(&:id).join(',')})")))
   end
 
-  def passed_requests(request_type)
-    self.requests.request_type(request_type).passed.count
-  end
-
-  def failed_requests(request_type)
-    self.requests.request_type(request_type).failed.count
-  end
-
-  def pending_requests(request_type)
-    self.requests.request_type(request_type).pending.count
-  end
-
-
-  def started_requests(request_type)
-    self.requests.request_type(request_type).started.count
-  end
-
-  def cancelled_requests(request_type)
-    self.requests.request_type(request_type).cancelled.count
+  # Yields information on the state of all samples in a convenient fashion for displaying in a table.
+  def sample_progress(samples = nil, &block)
+    yield(self.requests.sample_statistics(:having => (samples && "sample_id IN (#{samples.map(&:id).join(',')})")))
   end
 
   def study_status
