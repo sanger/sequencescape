@@ -36,10 +36,10 @@ class LibraryCreationRequest < Request
   # insert size to the aliquots in the target asset and sets the library.  There's a minor complication in that
   # an MX library is also a type of library that might have libraries coming into it, therefore we only update the
   # information that is missing.
-  def on_passed
+  def on_started
     super
     target_asset.aliquots.each do |aliquot|
-      aliquot.library      ||= well
+      aliquot.library      ||= target_asset
       aliquot.library_type ||= library_type
       aliquot.insert_size  ||= insert_size
       aliquot.save!

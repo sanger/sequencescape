@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110725091045) do
+ActiveRecord::Schema.define(:version => 20110728155133) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -103,10 +103,13 @@ ActiveRecord::Schema.define(:version => 20110725091045) do
     t.decimal  "volume",                                :precision => 10, :scale => 2
     t.integer  "barcode_prefix_id"
     t.decimal  "concentration",                         :precision => 18, :scale => 8
+    t.integer  "legacy_sample_id"
+    t.integer  "legacy_tag_id"
   end
 
   add_index "assets", ["barcode"], :name => "index_assets_on_barcode"
   add_index "assets", ["barcode_prefix_id"], :name => "index_assets_on_barcode_prefix_id"
+  add_index "assets", ["legacy_sample_id"], :name => "index_assets_on_sample_id"
   add_index "assets", ["map_id"], :name => "index_assets_on_map_id"
   add_index "assets", ["sti_type", "updated_at"], :name => "index_assets_on_sti_type_and_updated_at"
   add_index "assets", ["sti_type"], :name => "index_assets_on_sti_type"
@@ -339,7 +342,6 @@ ActiveRecord::Schema.define(:version => 20110725091045) do
     t.string  "thumbnail"
     t.integer "db_file_id"
     t.string  "documentable_type", :limit => 50
-    t.text    "uploaded_file"
   end
 
   add_index "documents", ["documentable_id", "documentable_type"], :name => "index_documents_on_documentable_id_and_documentable_type"
@@ -555,6 +557,8 @@ ActiveRecord::Schema.define(:version => 20110725091045) do
     t.boolean  "summary",                            :default => true
     t.boolean  "group_by_study",                     :default => true
     t.integer  "max_number_of_groups"
+    t.boolean  "externally_managed",                 :default => false
+    t.string   "group_name"
   end
 
   add_index "pipelines", ["sorter"], :name => "index_pipelines_on_sorter"
@@ -1021,6 +1025,12 @@ ActiveRecord::Schema.define(:version => 20110725091045) do
 
   add_index "study_samples", ["sample_id"], :name => "index_project_samples_on_sample_id"
   add_index "study_samples", ["study_id"], :name => "index_project_samples_on_project_id"
+
+  create_table "study_samples_backup", :id => false, :force => true do |t|
+    t.integer "id",        :default => 0, :null => false
+    t.integer "study_id"
+    t.integer "sample_id"
+  end
 
   create_table "study_types", :force => true do |t|
     t.string   "name"

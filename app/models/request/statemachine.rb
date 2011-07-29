@@ -55,25 +55,22 @@ module Request::Statemachine
   # super in any method that you override so that they can be stacked.
   #++
 
+  # On starting a request the aliquots are copied from the source asset to the target 
+  # and updated with the project and study information from the request itself.
   def on_started
-
+    target_asset.aliquots.each do |aliquot|
+      aliquot.study   = study   || aliquot.study
+      aliquot.project = project || aliquot.project
+      aliquot.save!
+    end
   end
 
   def on_failed
 
   end
 
-  # By default we copy the aliquots of the source asset to the target one when the request
-  # is passed, as this suggests that the chemistry has been done.  The study & project of
-  # the aliquot is based on the request study if it has one, otherwise it is the aliquot's
-  # original study.
   def on_passed
-    target_asset.aliquots << asset.aliquots.map(&:clone).tap do |cloned_aliquots|
-      cloned_aliquots.each do |aliquot|
-        aliquot.study   = study   || aliquot.study
-        aliquot.project = project || aliquot.project
-      end
-    end if target_asset.present?
+
   end
 
   def on_cancelled

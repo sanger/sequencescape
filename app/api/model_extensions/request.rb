@@ -22,10 +22,10 @@ module ModelExtensions::Request
       named_scope :include_request_type, :include => :request_type
       named_scope :include_submission, :include => { :submission => :uuid_object }
 
-      belongs_to :target_asset, :class_name => 'Asset'
+      belongs_to :target_asset, :class_name => 'Aliquot::Receptacle'
       accepts_nested_attributes_for :target_asset, :update_only => true
 
-      belongs_to :asset, :class_name => 'Asset'
+      belongs_to :asset, :class_name => 'Aliquot::Receptacle'
       accepts_nested_attributes_for :asset, :update_only => true
     end
   end

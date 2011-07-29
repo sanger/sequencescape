@@ -1,6 +1,7 @@
 class Project < ActiveRecord::Base
   include Api::ProjectIO::Extensions
   include ModelExtensions::Project
+  include Request::Statistics::DeprecatedMethods
 
   cattr_reader :per_page
   @@per_page = 500
@@ -48,36 +49,6 @@ class Project < ActiveRecord::Base
   named_scope :for_search_query, lambda { |query|
     { :conditions => [ 'name LIKE ? OR id=?', "%#{query}%", query ] }
   }
-
-  # TODO - Move these to named scope on Request
-  def total_requests(request_type)
-    self.requests.request_type(request_type).count
-  end
-
-  def completed_requests(request_type)
-    self.requests.request_type(request_type).completed.count
-  end
-
-  def passed_requests(request_type)
-    self.requests.request_type(request_type).passed.count
-  end
-
-  def failed_requests(request_type)
-    self.requests.request_type(request_type).failed.count
-  end
-
-  def pending_requests(request_type)
-    self.requests.request_type(request_type).pending.count
-  end
-
-
-  def started_requests(request_type)
-    self.requests.request_type(request_type).started.count
-  end
-
-  def cancelled_requests(request_type)
-    self.requests.request_type(request_type).cancelled.count
-  end
 
 
   def used_quota(request_type)
