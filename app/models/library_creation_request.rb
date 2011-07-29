@@ -39,7 +39,7 @@ class LibraryCreationRequest < Request
   def on_started
     super
     target_asset.aliquots.each do |aliquot|
-      aliquot.library      ||= well
+      aliquot.library      ||= target_asset
       aliquot.library_type ||= library_type
       aliquot.insert_size  ||= insert_size
       aliquot.save!

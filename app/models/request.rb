@@ -13,6 +13,7 @@ class Request < ActiveRecord::Base
   include Proxyable
   include StandardNamedScopes
   include Request::Statemachine
+  extend Request::Statistics
 
   extend EventfulRecord
   has_many_events

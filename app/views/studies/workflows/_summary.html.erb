@@ -14,16 +14,18 @@
     </tr>
   </thead>
 
-  <% @study.assets.each do |asset| %>
-    <% closed = asset.closed? ? 'closed' : 'open'  %>
-    <tr class='<%= closed %>'>
-      <td><%= link_to asset.name, asset_path(asset), :title => asset.label.capitalize  %></td>
-      <td><%= asset.closed? ? 'No' : 'Yes' %></td>
-      <td><%= request_link(asset, asset.requests.select {|r| r.pending?}.size, nil, 'pending', {}, {:title => "#{asset.name} pending"}) %></td>
-      <td><%= request_link(asset, asset.requests.select {|r| r.started?}.size,  nil, 'started', {}, {:title => "#{asset.name} started"}) %></td>
-      <td><%= request_link(asset, asset.requests.select {|r| r.passed? }.size, nil, 'passed', {}, {:title => "#{asset.name} passed"}) %></td>
-      <td><%= request_link(asset, asset.requests.select {|r| r.failed? }.size, nil, 'failed', {}, {:title => "#{asset.name} failed"})  %></td>
-      <td><%= request_link(asset, asset.requests.select {|r|  r.cancelled? }.size,  nil, 'cancelled', {}, {:title => "#{asset.name} cancelled"})  %></td>
-    </tr>
+  <% @study.asset_progress do |statistics| %>
+    <% @study.assets.each do |asset| %>
+      <% asset_statistics = statistics[asset.id] %>
+      <tr class="<%= asset.closed? ? 'closed' : 'open' %>">
+        <td><%= link_to asset.name, asset_path(asset), :title => asset.label.capitalize  %></td>
+        <td><%= asset.closed? ? 'No' : 'Yes' %></td>
+        <td><%= request_link(asset, asset_statistics.pending,   nil, 'pending',   {}, {:title => "#{asset.name} pending"})   %></td>
+        <td><%= request_link(asset, asset_statistics.started,   nil, 'started',   {}, {:title => "#{asset.name} started"})   %></td>
+        <td><%= request_link(asset, asset_statistics.passed,    nil, 'passed',    {}, {:title => "#{asset.name} passed"})    %></td>
+        <td><%= request_link(asset, asset_statistics.failed,    nil, 'failed',    {}, {:title => "#{asset.name} failed"})    %></td>
+        <td><%= request_link(asset, asset_statistics.cancelled, nil, 'cancelled', {}, {:title => "#{asset.name} cancelled"}) %></td>
+      </tr>
+    <% end %>
   <% end %>
 </table>
