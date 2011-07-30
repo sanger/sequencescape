@@ -190,7 +190,7 @@ Then /^the worksheet for the last batch should be:$/ do |expected_results_table|
 end
 
 Then /^library "([^"]*)" should have (\d+) sequencing requests$/ do |library_barcode, number_of_sequencing_requests|
-  library = Asset.find_from_machine_barcode(library_barcode)
+  library = Asset.find_from_machine_barcode(library_barcode) or raise "Cannot find library with barcode #{library_barcode.inspect}"
   assert_equal number_of_sequencing_requests.to_i, SequencingRequest.count(:conditions => ["asset_id = #{library.id}"])
 end
 

@@ -12,13 +12,6 @@ module Tasks::AssignTagsHandler
       redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage -1).to_s
       return false
     end
-    target_request = @batch.requests.find_by_request_type_id(@batch.pipeline.request_type_id)
-    requests = Request.find_all_by_submission_id(target_request.submission_id).select { |r| r.asset.nil? and r.pending? and r.request_type_id != @batch.pipeline.request_type_id }
-    if target_request.nil? or requests.size == 0
-      flash[:warning] = "Unable to find sequencing request."
-      redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage -1).to_s
-      return false      
-    end
     if MultiplexedLibraryTube.find_all_by_name(params[:mx_library_name]).size > 0
       flash[:warning] = "Name already in use."
       redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage -1).to_s
@@ -36,17 +29,10 @@ module Tasks::AssignTagsHandler
 
         AssetLink.create_edge(request.target_asset, multiplexed_library)
         TransferRequest.create!(:asset => request.target_asset, :target_asset => multiplexed_library, :state => 'passed')
-      end
 
-      # Find a request to get the submission_id from to find the sequencing request
-      # TODO: Refactor in connection with Submission usage and Request#next_requests
-      target_request = @batch.requests.find_by_request_type_id(@batch.pipeline.request_type_id)
-
-      # Find based on item_id
-      requests = Request.find_all_by_submission_id(target_request.submission_id).select { |r| r.asset.nil? and r.pending? and r.request_type_id != @batch.pipeline.request_type_id }
-      requests.each do |target|
-        target.asset = multiplexed_library
-        target.save
+        request.next_requests(@batch.pipeline).each do |sequencing_request|
+          sequencing_request.update_attributes!(:asset => multiplexed_library)
+        end
       end
     end
 

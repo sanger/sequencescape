@@ -1,3 +1,3 @@
-class GenotypingRequest < Request
+class ControlRequest < Request
   include Request::HasNoTargetAsset
 end

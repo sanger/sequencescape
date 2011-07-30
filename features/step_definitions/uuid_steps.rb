@@ -176,7 +176,7 @@ end
 
 
 Given /^the (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) exists with ID (\d+) and the following attributes:$/ do |model, id, table|
-  attributes = table.hashes.inject ({}) { |h, att|  h.update(att["name"] => att["value"]) }
+  attributes = table.hashes.inject({}) { |h, att|  h.update(att["name"] => att["value"]) }
   attributes[:id] ||= id
   Factory(model.gsub(/\s+/, '_').to_sym, attributes)
 end

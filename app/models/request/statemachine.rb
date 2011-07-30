@@ -58,10 +58,11 @@ module Request::Statemachine
   # On starting a request the aliquots are copied from the source asset to the target 
   # and updated with the project and study information from the request itself.
   def on_started
-    target_asset.aliquots.each do |aliquot|
-      aliquot.study   = study   || aliquot.study
-      aliquot.project = project || aliquot.project
-      aliquot.save!
+    target_asset.aliquots << asset.aliquots.map do |aliquot|
+      aliquot.clone.tap do |clone|
+        clone.study   = study   || aliquot.study
+        clone.project = project || aliquot.project
+      end
     end
   end
 

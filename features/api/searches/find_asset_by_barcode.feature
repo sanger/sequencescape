@@ -8,7 +8,7 @@ Feature: Searching for assets by barcode
     
   @search_assets @single
   Scenario Outline: Looking up a single asset by barcode
-    Given the UUID for the search "Find asset by barcode" is "00000000-1111-2222-3333-444444444444"
+    Given the UUID for the search "Find assets by barcode" is "00000000-1111-2222-3333-444444444444"
 
     Given a <asset_type> called "Testing the API 1" with ID 1
       And the <asset_type> "Testing the API 1" has a barcode of "<barcode>"
@@ -53,7 +53,7 @@ Feature: Searching for assets by barcode
 
   @single @sample_tube @error
   Scenario: Looking up a non-existant barcode
-    Given the UUID for the search "Find asset by barcode" is "00000000-1111-2222-3333-444444444444"
+    Given the UUID for the search "Find assets by barcode" is "00000000-1111-2222-3333-444444444444"
 
     When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/first":
       """
@@ -71,7 +71,7 @@ Feature: Searching for assets by barcode
 
   @multiple @sample_tube
   Scenario: Looking up multiple assets by barcode
-    Given the UUID for the search "Find asset by barcode" is "00000000-1111-2222-3333-444444444444"
+    Given the UUID for the search "Find assets by barcode" is "00000000-1111-2222-3333-444444444444"
 
     Given a sample tube called "Testing the API 1" with ID 1
       And the sample tube "Testing the API 1" has a barcode of "3980012344750"
@@ -107,7 +107,7 @@ Feature: Searching for assets by barcode
 
   @multiple @sample_tube @error
   Scenario: Looking up a non-existant barcode with all
-    Given the UUID for the search "Find asset by barcode" is "00000000-1111-2222-3333-444444444444"
+    Given the UUID for the search "Find assets by barcode" is "00000000-1111-2222-3333-444444444444"
 
     When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/all":
       """

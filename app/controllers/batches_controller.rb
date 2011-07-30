@@ -389,7 +389,7 @@ class BatchesController < ApplicationController
     pipeline = control.pipeline
     limit = pipeline.item_limit
 
-    batch = pipeline.batches.create(:item_limit => limit, :user_id => current_user.id)
+    batch = pipeline.batches.create!(:item_limit => limit, :user_id => current_user.id)
     batch.add_control(control.name, pipeline.item_limit)
 
     flash[:notice] = 'Training batch created'
