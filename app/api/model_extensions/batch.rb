@@ -66,17 +66,15 @@ module ModelExtensions::Batch
         asset.barcode  = AssetBarcode.new_barcode unless [ Lane, Well ].include?(asset_type)
         asset.generate_name(request.asset.name)
       end.tap do |asset|
-        asset.aliquots = request.asset.aliquots.map(&:clone)
+#        asset.aliquots = request.asset.aliquots.map(&:clone)
       end
 
       downstream_requests_needing_asset(request) do |downstream_requests|
         requests_to_update.concat(downstream_requests.map { |r| [ r.id, target_asset.id ] })
       end
 
-      request.update_attributes!(
-        :state        => 'started',
-        :target_asset => target_asset 
-      )
+      request.update_attributes!(:target_asset => target_asset)
+#      request.start!
 
       # All links between the two assets as new, so we can bulk create them!
       asset_links << AssetLink.build_edge(request.asset, request.target_asset)

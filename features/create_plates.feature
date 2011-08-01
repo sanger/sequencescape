@@ -92,40 +92,40 @@ Feature: Printing new plate barcodes
     
     Given I am on the events page for asset with barcode "1221234567841"
     Then the events table should be:
-      | Message                                  | Content    | Created by | Created at           |
-      | Created child DilutionPlatePurpose plate | 2010-07-12 | jack       | Monday 12 July, 2010 |
-      | Created child DilutionPlatePurpose plate | 2010-07-12 | jack       | Monday 12 July, 2010 |
+      | Message                              | Content    | Created by | Created at           |
+      | Created child Working Dilution plate | 2010-07-12 | jack       | Monday 12 July, 2010 |
+      | Created child Pico Dilution plate    | 2010-07-12 | jack       | Monday 12 July, 2010 |
     Given I am on the events page for asset with barcode "1220001454858"
     Then the events table should be:
-      | Message                                  | Content    | Created by | Created at           |
-      | Created child PlatePurpose plate         | 2010-07-12 | jack       | Monday 12 July, 2010 |
+      | Message                         | Content    | Created by | Created at           |
+      | Created child Stock Plate plate | 2010-07-12 | jack       | Monday 12 July, 2010 |
     Given I am on the events page for asset with barcode "4361234567667"
     Then the events table should be:
-      | Message                                   | Content    | Created by | Created at           |
-      | Created DilutionPlatePurpose plate        | 2010-07-12 | jack       | Monday 12 July, 2010 |
-      | Created child PicoAssayPlatePurpose plate | 2010-07-12 | jack       | Monday 12 July, 2010 |
-      | Created child PicoAssayPlatePurpose plate | 2010-07-12 | jack       | Monday 12 July, 2010 |
+      | Message                          | Content    | Created by | Created at           |
+      | Created Pico Dilution plate      | 2010-07-12 | jack       | Monday 12 July, 2010 |
+      | Created child Pico Assay A plate | 2010-07-12 | jack       | Monday 12 July, 2010 |
+      | Created child Pico Assay B plate | 2010-07-12 | jack       | Monday 12 July, 2010 |
     Given I am on the events page for asset with barcode "6251234567836"
     Then the events table should be:
-      | Message                                         | Content    | Created by | Created at           |
-      | Created DilutionPlatePurpose plate              | 2010-07-12 | jack       | Monday 12 July, 2010 |
-      | Created child WorkingDilutionPlatePurpose plate | 2010-07-12 | jack       | Monday 12 July, 2010 |
+      | Message                          | Content    | Created by | Created at           |
+      | Created Working Dilution plate   | 2010-07-12 | jack       | Monday 12 July, 2010 |
+      | Created child Gel Dilution plate | 2010-07-12 | jack       | Monday 12 July, 2010 |
     Given I am on the events page for asset with barcode "4331234567653"
     Then the events table should be:
-      | Message                             | Content    | Created by | Created at           |
-      | Created PicoAssayPlatePurpose plate | 2010-07-12 | jack       | Monday 12 July, 2010 |
+      | Message                    | Content    | Created by | Created at           |
+      | Created Pico Assay A plate | 2010-07-12 | jack       | Monday 12 July, 2010 |
     Given I am on the events page for asset with barcode "4341234567737"
     Then the events table should be:
-      | Message                              | Content    | Created by | Created at           |
-       | Created PicoAssayPlatePurpose plate | 2010-07-12 | jack       | Monday 12 July, 2010 |
+       | Message                    | Content    | Created by | Created at           |
+       | Created Pico Assay B plate | 2010-07-12 | jack       | Monday 12 July, 2010 |
     Given I am on the events page for asset with barcode "1931234567771"
     Then the events table should be:
-      | Message                                   | Content    | Created by | Created at           |
-      | Created WorkingDilutionPlatePurpose plate | 2010-07-12 | jack       | Monday 12 July, 2010 |
+      | Message                    | Content    | Created by | Created at           |
+      | Created Gel Dilution plate | 2010-07-12 | jack       | Monday 12 July, 2010 |
     Given I am on the events page for asset with barcode "1220077777868"
     Then the events table should be:
-      | Message                    | Content    | Created by | Created at           |
-      | Created PlatePurpose plate | 2010-07-12 | jack       | Monday 12 July, 2010 |
+      | Message                   | Content    | Created by | Created at           |
+      | Created Stock Plate plate | 2010-07-12 | jack       | Monday 12 July, 2010 |
     
     Given I am on the pico dilution index page
     Then the XML response should be:

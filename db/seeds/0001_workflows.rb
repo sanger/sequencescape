@@ -617,7 +617,7 @@ GenotypingPipeline.create!(:name => 'Genotyping') do |pipeline|
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'Well'
     request_type.order             = 3
-    request_type.request_class     = Request
+    request_type.request_class     = GenotypingRequest
     request_type.multiples_allowed = false
   end
 
@@ -645,6 +645,7 @@ PulldownMultiplexLibraryPreparationPipeline.create!(:name => 'Pulldown Multiplex
 
   pipeline.request_type = RequestType.create!(:workflow => next_gen_sequencing, :key => 'pulldown_multiplexing', :name => 'Pulldown Multiplex Library Preparation') do |request_type|
     request_type.asset_type        = 'Well'
+    request_type.target_asset_type = 'PulldownMultiplexedLibraryTube'
     request_type.order             = 1
     request_type.request_class     = PulldownMultiplexedLibraryCreationRequest
     request_type.multiples_allowed = false

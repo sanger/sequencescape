@@ -11,7 +11,7 @@ Feature: Assigning bait libraries to a plate
 
     Given a user with UUID "99999999-8888-7777-6666-555555555555" exists
 
-    Given the UUID for the search "Find asset by barcode" is "33333333-4444-5555-6666-000000000001"
+    Given the UUID for the search "Find assets by barcode" is "33333333-4444-5555-6666-000000000001"
 
     Given the plate barcode webservice returns "1000001"
       And the plate barcode webservice returns "1000002"

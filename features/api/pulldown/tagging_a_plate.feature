@@ -12,7 +12,7 @@ Feature: Tagging the wells on a plate using a tag layout template
 
     Given a user with UUID "99999999-8888-7777-6666-555555555555" exists
 
-    Given the UUID for the search "Find asset by barcode" is "33333333-4444-5555-6666-000000000001"
+    Given the UUID for the search "Find assets by barcode" is "33333333-4444-5555-6666-000000000001"
 
     # Really this should be seed data but ...
     Given the tag layout template "Pulldown 8 tag set in column major order" exists

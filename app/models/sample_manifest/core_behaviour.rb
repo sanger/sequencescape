@@ -1,7 +1,7 @@
 module SampleManifest::CoreBehaviour
   def self.included(base)
     base.class_eval do
-      delegate :details, :to => :core_behaviour
+      delegate :details, :validate_sample_container, :to => :core_behaviour
       attr_accessor :rapid_generation
       alias_method(:rapid_generation?, :rapid_generation)
     end

@@ -15,7 +15,7 @@ Feature: Access searches through the API
 
   @read
   Scenario: Reading the JSON for a UUID
-    Given the UUID for the search "Find asset by barcode" is "00000000-1111-2222-3333-444444444444"
+    Given the UUID for the search "Find assets by barcode" is "00000000-1111-2222-3333-444444444444"
 
     When I GET the API path "/00000000-1111-2222-3333-444444444444"
     Then the HTTP response should be "200 OK"
@@ -31,7 +31,7 @@ Feature: Access searches through the API
           },
 
           "uuid": "00000000-1111-2222-3333-444444444444",
-          "name": "Find asset by barcode"
+          "name": "Find assets by barcode"
         }
       }
       """

@@ -17,16 +17,18 @@ Feature: Interacting with aliquot through the API
     Given the UUID for the last aliquot is "22222222-2222-3333-4444-ffffffffffff"
 
     When I GET the API path "/aliquots/22222222-2222-3333-4444-ffffffffffff"
-    Then ignoring "internal_id|descendant_internal_id|ancestor_internal_id|^id" the JSON should be:
+    Then ignoring "internal_id|id" the JSON should be:
     """
-      {
+    {
       "aliquot": {
          "created_at": "2010-09-16T13:45:00+01:00",
          "updated_at": "2010-09-16T13:45:00+01:00",
          "uuid": "22222222-2222-3333-4444-ffffffffffff",
          "receptacle_url": "http://localhost:3000/0_5/sample_tubes/aaaaaaaa-1111-2222-3333-000000000001",
-        "receptacle_uuid": "aaaaaaaa-1111-2222-3333-000000000001",
-         "receptacle_type": "sample_tube"}
-      
-       }
+         "receptacle_uuid": "aaaaaaaa-1111-2222-3333-000000000001",
+         "receptacle_type": "sample_tube",
+         "sample_url": "http://localhost:3000/0_5/samples/bbbbbbbb-1111-2222-3333-000000000001",
+         "sample_uuid": "bbbbbbbb-1111-2222-3333-000000000001"
+      }
+    }
     """

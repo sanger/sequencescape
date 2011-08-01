@@ -51,17 +51,23 @@ class AssignTagsToWellsTask < Task
     CherrypickGroupBySubmissionTask.new.group_requests_by_submission_id(requests).each do |requests_with_same_submission|
       sequencing_requests = find_sequencing_requests(requests_with_same_submission)
       raise 'Couldnt find sequencing request' if sequencing_requests.empty?
-      initial_sequencing_request = sequencing_requests.pop
-      initial_sequencing_request.create_assets_for_multiplexing if initial_sequencing_request.asset.nil? && initial_sequencing_request.target_asset.nil?
 
-      # allow for multiple lanes of the same library
-      sequencing_requests.each do |sequencing_request|
-        sequencing_request.update_attributes!(:asset => initial_sequencing_request.asset, :target_asset => initial_sequencing_request.target_asset)
-      end
-      
-      requests_with_same_submission.each do |request|
-        request.update_attributes!(:target_asset => initial_sequencing_request.asset)
-      end
+      # If the requests don't all end in the same tube!
+      raise 'Borked!' unless requests_with_same_submission.map(&:target_asset).compact.uniq.size == 1
+      sequencing_requests.each { |sequencing_request| sequencing_request.update_attributes!(:asset => requests_with_same_submission.first.target_asset) }
+
+
+#      initial_sequencing_request = sequencing_requests.pop
+#      initial_sequencing_request.create_assets_for_multiplexing if initial_sequencing_request.asset.nil? && initial_sequencing_request.target_asset.nil?
+#
+#      # allow for multiple lanes of the same library
+#      sequencing_requests.each do |sequencing_request|
+#        sequencing_request.update_attributes!(:asset => initial_sequencing_request.asset, :target_asset => initial_sequencing_request.target_asset)
+#      end
+#      
+#      requests_with_same_submission.each do |request|
+#        request.update_attributes!(:target_asset => initial_sequencing_request.asset)
+#      end
     end
   end
 

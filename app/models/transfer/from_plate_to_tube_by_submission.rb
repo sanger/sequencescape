@@ -62,7 +62,7 @@ class Transfer::FromPlateToTubeBySubmission < Transfer
     end
 
     tube_to_stock_wells.each do |tube, stock_wells|
-      tube.update_attributes!(:name => tube_name_for(stock_wells)) if tube.name.blank?
+      tube.update_attributes!(:name => tube_name_for(stock_wells))
     end
   end
   private :build_well_to_tube_transfers
