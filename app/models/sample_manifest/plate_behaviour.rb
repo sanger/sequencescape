@@ -37,6 +37,13 @@ module SampleManifest::PlateBehaviour
       end
     end
     private :generate_wells_for_plates
+
+    def validate_sample_container(sample, row, &block)
+      manifest_barcode, manifest_location = row['SANGER PLATE ID'], row['WELL']
+      primary_barcode, primary_location   = sample.primary_receptacle.plate.sanger_human_barcode, sample.primary_receptacle.map.description
+      return if primary_barcode == manifest_barcode and primary_location == manifest_location
+      yield("Well info for #{sample.sanger_sample_id} mismatch: expected #{primary_barcode} #{primary_location} but reported as #{manifest_barcode} #{manifest_location}")
+    end
   end
 
   #--

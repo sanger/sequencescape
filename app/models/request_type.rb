@@ -62,7 +62,7 @@ class RequestType < ActiveRecord::Base
   request_constructor(:new)
   alias_method(:new_request, :new)
 
-  request_constructor(:create_control!, :target => 'Request', :method => :create!)
+  request_constructor(:create_control!, :target => 'ControlRequest', :method => :create!)
 
   def request_class
     request_class_name.constantize

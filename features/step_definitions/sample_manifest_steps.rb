@@ -74,22 +74,23 @@ end
 
 Then /^the samples table should look like:$/ do |table|
   table.hashes.each do |expected_data|
-    sample = Sample.find_by_sanger_sample_id(expected_data[:sanger_sample_id])
-    assert_not_nil sample
+    sanger_sample_id = expected_data[:sanger_sample_id]
+    sample = Sample.find_by_sanger_sample_id(sanger_sample_id) or raise StandardError, "Could not find sample #{sanger_sample_id}"
+
     if expected_data[:empty_supplier_sample_name] == "true"
-      assert sample.empty_supplier_sample_name
+      assert(sample.empty_supplier_sample_name, "Supplier sample name not nil for #{sanger_sample_id}")
     else
-      assert ! sample.empty_supplier_sample_name
-      assert_equal  expected_data[:supplier_name], sample.sample_metadata.supplier_name
+      assert_equal(expected_data[:supplier_name], sample.sample_metadata.supplier_name, "Supplier sample name invalid for #{sanger_sample_id}")
     end
+
     if sample.sample_metadata.sample_taxon_id.blank?
-      assert_nil sample.sample_metadata.sample_taxon_id
+      assert_nil(sample.sample_metadata.sample_taxon_id, "Sample taxon ID not nil for #{sanger_sample_id}")
     else
-      assert_equal expected_data[:sample_taxon_id].to_i, sample.sample_metadata.sample_taxon_id
+      assert_equal(expected_data[:sample_taxon_id].to_i, sample.sample_metadata.sample_taxon_id, "Sample taxon ID invalid for #{sanger_sample_id}")
     end
-    
+
     unless expected_data[:common_name].blank?
-      assert_equal expected_data[:common_name], sample.sample_metadata.sample_common_name
+      assert_equal(expected_data[:common_name], sample.sample_metadata.sample_common_name, "Sample common name invalid for #{sanger_sample_id}")
     end
   end
 end

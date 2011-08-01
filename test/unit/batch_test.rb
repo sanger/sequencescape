@@ -104,8 +104,8 @@ class BatchTest < ActiveSupport::TestCase
   
   context "when batch is created" do
     setup do
-      @request1 = @pipeline.request_type.create!
-      @request2 = @pipeline.request_type.create!
+      @request1 = @pipeline.request_type.create!(:asset => Factory(:sample_tube), :target_asset => Factory(:empty_library_tube))
+      @request2 = @pipeline.request_type.create!(:asset => Factory(:sample_tube), :target_asset => Factory(:empty_library_tube))
 
       @batch = @pipeline.batches.create!(:requests => [ @request1, @request2 ])
     end

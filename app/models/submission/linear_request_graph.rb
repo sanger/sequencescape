@@ -32,14 +32,12 @@ module Submission::LinearRequestGraph
   end
   private :build_request_type_multiplier_pairs
 
-  def create_target_asset_for!(request_type)
+  def create_target_asset_for!(request_type, source_asset = nil)
     # TODO: What to do when the request type doesn't have an asset?  Returning nil might work!
     return nil if request_type.target_asset_type.blank?
     request_type.target_asset_type.constantize.create! do |asset|
       asset.generate_barcode
-
-      # TODO: How can we generate the name without knowing the source asset!
-      #asset.generate_name(source_asset.name)
+      asset.generate_name(source_asset.try(:name) || asset.barcode.to_s)
     end
   end
   private :create_target_asset_for!
@@ -58,7 +56,7 @@ module Submission::LinearRequestGraph
         if request_type.for_multiplexing?
           [ create_target_asset_for!(request_type) ] * assets.size
         else
-          (1..source_asset_item_pairs.size).map { |_| create_target_asset_for!(request_type) }
+          source_asset_item_pairs.map { |source_asset, _| create_target_asset_for!(request_type, source_asset) }
         end
 
       # Now we can iterate over the source assets and target assets building the requests between them.

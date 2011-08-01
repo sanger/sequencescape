@@ -18,7 +18,7 @@ Feature: The top of the pulldown pipeline
       And the plate barcode webservice returns "1000002"
 
       And the UUID for the transfer template "Transfer columns 1-12" is "22222222-3333-4444-5555-000000000001"
-      And the UUID for the search "Find asset by barcode" is "33333333-4444-5555-6666-000000000001"
+      And the UUID for the search "Find assets by barcode" is "33333333-4444-5555-6666-000000000001"
       And the UUID of the next plate creation created will be "55555555-6666-7777-8888-000000000001"
       And the UUID of the next state change created will be "44444444-5555-6666-7777-000000000001"
 
