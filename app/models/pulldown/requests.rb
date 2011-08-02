@@ -8,6 +8,10 @@ module Pulldown::Requests
         has_metadata :as => Request do
           include BaitLibrary::Associations
           association(:bait_library, :name)
+
+          # Redefine the fragment size attributes as they are fixed
+          attribute(:fragment_size_required_from, :required => true, :in => [ 100 ], :default => 100)
+          attribute(:fragment_size_required_to,   :required => true, :in => [ 400 ], :default => 400)
         end
         include Request::LibraryManufacture
       end
@@ -27,7 +31,11 @@ module Pulldown::Requests
     DEFAULT_LIBRARY_TYPE = 'Standard'
     LIBRARY_TYPES        = [ DEFAULT_LIBRARY_TYPE ]
 
-    has_metadata :as => Request
+    has_metadata :as => Request do
+      # Redefine the fragment size attributes as they are fixed
+      attribute(:fragment_size_required_from, :required => true, :in => [ 300 ], :default => 300)
+      attribute(:fragment_size_required_to,   :required => true, :in => [ 500 ], :default => 500)
+    end
     include Request::LibraryManufacture
   end
 

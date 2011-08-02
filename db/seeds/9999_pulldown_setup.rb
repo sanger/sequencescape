@@ -56,7 +56,6 @@ if ENV['PULLDOWN']
         :assets => stock_plate.wells,
         :request_options => {
           :read_length => 100,
-          :fragment_size_required_from => 100, :fragment_size_required_to => 200,
           :bait_library_name => BaitLibrary.first.name
         }
       ).built!
@@ -68,7 +67,6 @@ if ENV['PULLDOWN']
         :assets => stock_plate.wells.slice(0, 48),
         :request_options => {
           :read_length => 100,
-          :fragment_size_required_from => 100, :fragment_size_required_to => 200,
           :bait_library_name => BaitLibrary.first.name
         }
       ).built!
@@ -77,7 +75,6 @@ if ENV['PULLDOWN']
         :assets => stock_plate.wells.slice(48, 96),
         :request_options => {
           :read_length => 100,
-          :fragment_size_required_from => 100, :fragment_size_required_to => 200,
           :bait_library_name => BaitLibrary.first.name
         }
       ).built!
@@ -95,7 +92,6 @@ if ENV['PULLDOWN']
           :assets => wells_to_submit,
           :request_options => {
             :read_length => 100,
-            :fragment_size_required_from => 100, :fragment_size_required_to => 200,
             :bait_library_name => BaitLibrary.first.name
           }
         ).built!
