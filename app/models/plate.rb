@@ -61,6 +61,9 @@ class Plate < Asset
     Map.find_by_description_and_asset_size(description, size)
   end
 
+  def find_well_by_map_description(description)
+  end
+
   def find_well_by_rowcol(row, col)
     map = self.find_map_by_rowcol(row,col)
     return nil if map.nil?
@@ -160,6 +163,7 @@ class Plate < Asset
   def find_well_by_name(well_name)
     self.wells.position_name(well_name, self.size).first
   end
+  alias :find_well_by_map_description :find_well_by_name 
 
   def plate_header
     rows = [""]

@@ -146,6 +146,7 @@ class Request < ActiveRecord::Base
     }
   }
   named_scope :without_asset, :conditions =>  'asset_id is null'
+  named_scope :without_target, :conditions =>  'target_asset_id is null'
   named_scope :ordered, :order => ["id ASC"]
   named_scope :full_inbox, :conditions => {:state => ["pending","hold"]}
   named_scope :hold, :conditions => {:state => "hold"}
