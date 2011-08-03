@@ -6,6 +6,18 @@ DOT=RGL::DOT
 # Hack to work different version of sequencescape
 begin
 Aliquot
+
+Asset
+class Asset
+  def sample
+    nil
+  end
+
+  def tags
+    []
+  end
+
+end
 rescue
   class Aliquot < ActiveRecord::Base
     class Receptacle < Asset
@@ -396,10 +408,13 @@ Models = {
     Request => [:target_asset],
     Submission => [RequestByType],
     Aliquot::Receptacle => [:aliquots],
-    Aliquot => [:sample, :tag]},
+    Aliquot => [:sample, :tag],
+    Plate => [:wells]
+},
   :asset_up => AssetUp={ Asset => [:parents, :requests_as_target], 
     TagInstance => [:tag],
-    Request => [:asset]},
+    Request => [:asset],
+    Well => [:plate]},
   :asset_up_and_down => [AssetUp, AssetDown],
   :asset_down_and_up => [AssetDown, AssetUp],
   :full_asset => AssetUp.merge(AssetDown),
