@@ -9,16 +9,9 @@ xml.asset(api_data) {
   # A receptacle will have zero or more aliquots.  To support the legacy version of this XML we're displaying
   # the primary aliquot sample ID as sample_id in the XML, although it is not strictly true.  When the asset
   # is not a receptacle we simply output sample_id as nil, although it should not really be present at all.
-  if @assets.is_a?(Aliquot::Receptacle)
+  if @asset.is_a?(Aliquot::Receptacle)
     xml.sample_id @asset.primary_aliquot.try(:sample_id)
-    xml.aliquots {
-      @asset.aliquots.each do |aliquot|
-        xml.sample_id aliquot.sample_id
-        xml.tag_id    aliquot.tag_id
-      end
-    }
-  else
-    xml.sample_id nil
+    @asset.aliquots.each { |aliquot| output_aliquot(xml, aliquot) }
   end
 
   xml.children {

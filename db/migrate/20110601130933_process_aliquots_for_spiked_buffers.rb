@@ -28,11 +28,17 @@ class ProcessAliquotsForSpikedBuffers < ActiveRecord::Migration
       self.sti_type == 'SpikedBuffer'
     end
 
+    def is_library_tube?
+      self.sti_type == 'LibraryTube'
+    end
+
     def process(attributes, indent = 0, &io_method)
       io_method.call("#{'-*-'*indent} Processing #{self.id}(#{self.sti_type}) => #{attributes.inspect} ...")
 
       begin
-        attributes[:tag_id] = self.tag_instance.tag_id if self.tag_instance.present?
+        attributes[:sample_id]  = self.sample_id           unless self.sample_id.nil?
+        attributes[:tag_id]     = self.tag_instance.tag_id if self.tag_instance.present?
+        attributes[:library_id] = self.id                  if self.is_library_tube?
         aliquots.create!(attributes)
       rescue => exception
         io_method.call("WARNING: Looks like duplicate tags for #{self.id}, ignoring for now")
@@ -69,8 +75,9 @@ class ProcessAliquotsForSpikedBuffers < ActiveRecord::Migration
       # Walk down the child graph filling in the aliquots from the parent into the child until
       # we reach the end of the graph.  The first thing we're going to do is put in a phiX sample
       # that can then be used all the way down.
-      phiX_sample = Sample.create!(:name => 'phiX_for_spiked_buffers')
-      absolute_roots.shift.process(:sample_id => phiX_sample.id, &method(:say)) until absolute_roots.empty?
+      illumina_controls = Study.find_by_name('Illumina controls') or raise StandardError, "Cannot find illumina controls study"
+      phiX_sample       = Sample.create!(:name => 'phiX_for_spiked_buffers')
+      absolute_roots.shift.process(:sample_id => phiX_sample.id, :study_id => illumina_controls.id, &method(:say)) until absolute_roots.empty?
     end
   end
 
