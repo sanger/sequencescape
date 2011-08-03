@@ -13,7 +13,9 @@ xml.batch {
             "id"         => request.asset.id,
             "name"       => request.asset.name,
             "request_id" => request.id
-          )
+          ) {
+            request.asset.aliquots.each { |aliquot| output_aliquot(xml, aliquot) }
+          }
         elsif request.asset.aliquots.map(&:tag).compact.empty?
           xml.library(
             "id"         => request.asset_id,
@@ -23,7 +25,9 @@ xml.batch {
             "study_id"   => request.asset.primary_aliquot.study_id,
             "project_id" => request.asset.primary_aliquot.project_id,
             "qc_state"   => request.target_asset.compatible_qc_state
-          )
+          ) {
+            request.asset.aliquots.each { |aliquot| output_aliquot(xml, aliquot) }
+          }
         else
           xml.pool(
             "id"         => request.asset.id,
@@ -33,22 +37,7 @@ xml.batch {
             "project_id" => request.project_id,
             "qc_state"   => request.target_asset.compatible_qc_state
           ) {
-            request.asset.aliquots.each do |aliquot|
-              xml.sample(:sample_id => aliquot.sample.id,  :library_id => aliquot.library_id, :study_id => aliquot.study_id, :project_id => aliquot.project_id) {
-                # NOTE: XmlBuilder has a method called 'tag' so we have to say we want the element 'tag'!
-                xml.tag!(:tag, :tag_id => aliquot.tag.id) {
-                  xml.index             aliquot.tag.map_id
-                  xml.expected_sequence aliquot.tag.oligo
-                  xml.tag_group_id      aliquot.tag.tag_group_id
-                } unless aliquot.tag.nil?
-
-                xml.bait(:id => aliquot.bait_library.id) {
-                  xml.name aliquot.bait_library.name
-                } if aliquot.bait_library.present?
-
-                xml.insert_size(:from => aliquot.insert_size.from, :to => aliquot.insert_size.to) if aliquot.insert_size.present?
-              }
-            end
+            request.asset.aliquots.each { |aliquot| output_aliquot(xml, aliquot) }
           }
         end
 
@@ -57,13 +46,7 @@ xml.batch {
 
           xml.hyb_buffer("id" => hybridisation_buffer.id) {
             xml.control("id" => index.id, "name" => index.name) if index.present?
-
-            # NOTE: XmlBuilder has a method called 'tag' so we have to say we want the element 'tag'!
-            xml.tag!(:tag, :tag_id => aliquot.tag.id) {
-              xml.index             aliquot.tag.map_id
-              xml.expected_sequence aliquot.tag.oligo
-              xml.tag_group_id      aliquot.tag.tag_group_id
-            } unless aliquot.tag.nil?
+            output_aliquot(xml, aliquot)
           }
         end
       }
