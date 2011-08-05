@@ -54,6 +54,7 @@ module Request::Statistics
     end
 
     def progress
+      return 0 if self.passed.zero?  # If there are no passed then the progress is 0% by definition
       (self.passed * 100) / (self.total - self.failed)
     end
   end

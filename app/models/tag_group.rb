@@ -1,4 +1,6 @@
 class TagGroup < ActiveRecord::Base
+  include Uuid::Uuidable
+
   has_many :tags
   acts_as_audited :on => [:destroy, :update]
 
