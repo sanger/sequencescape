@@ -433,10 +433,11 @@ class Batch < ActiveRecord::Base
     first_control = [3, (self.item_limit - control_count)].min
 
     self.shift_item_positions(first_control+1, control_count)
-    requests << (1..control_count).map do |index|
-      self.pipeline.request_type.create_control!(:asset => asset, :study_id => 198).tap do |request|
-        request.set_position(self, first_control+index)
-      end
+    (1..control_count).each do |index|
+      self.batch_requests.create!(
+        :request  => self.pipeline.request_type.create_control!(:asset => asset, :study_id => 198),
+        :position => first_control+index
+      )
     end
     control_count
   end

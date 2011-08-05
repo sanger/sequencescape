@@ -141,7 +141,6 @@ class BatchTest < ActiveSupport::TestCase
     context "create requests" do
       setup do
         Request.any_instance.stubs(:mark_in_batch).returns(true)
-        Request.any_instance.stubs(:set_position).returns(true)
 
         @requests    = (1..4).map { |_| Factory(:request, :request_type => @pipeline.request_type) }
         @request_ids = @requests.map { |r| Request.new_proxy(r.id) }
@@ -292,7 +291,6 @@ class BatchTest < ActiveSupport::TestCase
     context "create requests" do
       setup do
         Request.any_instance.stubs(:mark_in_batch).returns(true)
-        Request.any_instance.stubs(:set_position).returns(true)
 
         @requests = (1..4).map { |_| Factory(:request, :request_type => @pipeline.request_type) }
         @request_ids = @requests.map { |r| Request.new_proxy(r.id) }
