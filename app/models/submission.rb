@@ -40,6 +40,17 @@ class Submission < ActiveRecord::Base
   cattr_reader :per_page
   @@per_page = 500
   named_scope :including_associations_for_json, { :include => [:uuid_object, {:assets => [:uuid_object] }, { :project => :uuid_object }, { :study => :uuid_object }, :user] }
+
+  # Before destroying this instance we should cancel all of the requests it has made
+  before_destroy :cancel_all_requests_on_destruction
+
+  def cancel_all_requests_on_destruction
+    requests.all.each do |request|
+      request.cancel!  # Cancel first to prevent event doing something stupid
+      request.events.create!(:message => "Submission #{self.id} as destroyed")
+    end
+  end
+  private :cancel_all_requests_on_destruction
   
   def self.render_class
     Api::SubmissionIO
