@@ -30,10 +30,13 @@ class AssignTagsToWellsTask < Task
     source_plates = source_wells.group_by(&:plate).map(&:first)
 
     well_to_tagged = {}
+    pooled_plate = nil
+    tube_to_pool = {}
 
     source_plates.each do |source_plate|
       library_plate =  Plate.create!(:size => source_plate.size)
       tag_plate = Plate.create!(:size => source_plate.size)
+      pooled_plate = Plate.create!(:size => source_plate.size) unless pooled_plate
       source_plate.wells.each do |well|
         library_well =  Well.create!
         TransferRequest.create!(:asset => well, :target_asset => library_well)
@@ -51,7 +54,22 @@ class AssignTagsToWellsTask < Task
       requests.each do |r|
         tagged_well = well_to_tagged[r.asset]
         raise  "Well no tagged" if tagged_well==nil
-        TransferRequest.create!(:asset => tagged_well, :target_asset => r.target_asset)
+        tube = r.target_asset
+
+        pooled_well = tube_to_pool[tube]
+        unless pooled_well
+          pooled_well = Well.create!
+          tube_to_pool[tube] = pooled_well
+          pooled_plate.add_well_by_map_description(pooled_well, tagged_well.map_description)
+        end
+
+        TransferRequest.create!(:asset => tagged_well, :target_asset => pooled_well)
+        # transfer between pooled_well and tube needs to be at the end, when all the aliquots are present
+        #TransferRequest.create!(:asset => pooled_well, :target_asset => tube)
+      end
+
+      tube_to_pool.each do |tube, pooled_well|
+        TransferRequest.create!(:asset => pooled_well, :target_asset => tube)
       end
 
       link_pulldown_indexed_libraries_to_multiplexed_library(requests)
