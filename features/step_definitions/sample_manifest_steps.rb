@@ -37,10 +37,21 @@ Then /^I should see the manifest table:$/ do |expected_results_table|
   expected_results_table.diff!(table(tableish('table#study_list tr', 'td,th')))
 end
 
+def sequence_sanger_sample_ids_for(plate)
+  plate.wells.walk_in_column_major_order do |well, index|
+    well.primary_aliquot.sample.update_attributes!(:sanger_sample_id => yield(index))
+  end
+end
+
 Given /^I reset all of the sanger sample ids to a known number sequence$/ do
-  Sample.all.each_with_index do |sample,index|
-    sample.sanger_sample_id = "sample_#{index}"
-    sample.save
+  raise StandardError, "Only works for plate manifests!" if Plate.count == 0
+
+  index = 0
+  Plate.all(:order => 'id ASC').each do |plate|
+    sequence_sanger_sample_ids_for(plate) do |well_index|
+      "sample_#{index+well_index}"
+    end
+    index += plate.size
   end
 end
 
@@ -63,22 +74,23 @@ end
 
 Then /^the samples table should look like:$/ do |table|
   table.hashes.each do |expected_data|
-    sample = Sample.find_by_sanger_sample_id(expected_data[:sanger_sample_id])
-    assert_not_nil sample
+    sanger_sample_id = expected_data[:sanger_sample_id]
+    sample = Sample.find_by_sanger_sample_id(sanger_sample_id) or raise StandardError, "Could not find sample #{sanger_sample_id}"
+
     if expected_data[:empty_supplier_sample_name] == "true"
-      assert sample.empty_supplier_sample_name
+      assert(sample.empty_supplier_sample_name, "Supplier sample name not nil for #{sanger_sample_id}")
     else
-      assert ! sample.empty_supplier_sample_name
-      assert_equal  expected_data[:supplier_name], sample.sample_metadata.supplier_name
+      assert_equal(expected_data[:supplier_name], sample.sample_metadata.supplier_name, "Supplier sample name invalid for #{sanger_sample_id}")
     end
+
     if sample.sample_metadata.sample_taxon_id.blank?
-      assert_nil sample.sample_metadata.sample_taxon_id
+      assert_nil(sample.sample_metadata.sample_taxon_id, "Sample taxon ID not nil for #{sanger_sample_id}")
     else
-      assert_equal expected_data[:sample_taxon_id].to_i, sample.sample_metadata.sample_taxon_id
+      assert_equal(expected_data[:sample_taxon_id].to_i, sample.sample_metadata.sample_taxon_id, "Sample taxon ID invalid for #{sanger_sample_id}")
     end
-    
+
     unless expected_data[:common_name].blank?
-      assert_equal expected_data[:common_name], sample.sample_metadata.sample_common_name
+      assert_equal(expected_data[:common_name], sample.sample_metadata.sample_common_name, "Sample common name invalid for #{sanger_sample_id}")
     end
   end
 end
@@ -119,8 +131,8 @@ When /^I visit the sample manifest new page without an asset type$/ do
 end
 
 Given /^plate "([^"]*)" has samples with known sanger_sample_ids$/ do |plate_barcode|
-  Plate.find_by_barcode(plate_barcode).wells.each_with_index do |well,i|
-    well.sample.update_attributes!(:sanger_sample_id => "ABC_#{i}")
+  sequence_sanger_sample_ids_for(Plate.find_by_barcode(plate_barcode)) do |index|
+    "ABC_#{index}"
   end
 end
 

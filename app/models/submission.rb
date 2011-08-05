@@ -30,8 +30,8 @@ class Submission < ActiveRecord::Base
   validates_presence_of :request_types
 
   # Created during the lifetime ...
-  has_many :items, :dependent => :destroy
-  has_many :requests, :through => :items
+  has_many :requests
+  has_many :items, :through => :requests
 
   serialize :item_options
 
@@ -40,6 +40,17 @@ class Submission < ActiveRecord::Base
   cattr_reader :per_page
   @@per_page = 500
   named_scope :including_associations_for_json, { :include => [:uuid_object, {:assets => [:uuid_object] }, { :project => :uuid_object }, { :study => :uuid_object }, :user] }
+
+  # Before destroying this instance we should cancel all of the requests it has made
+  before_destroy :cancel_all_requests_on_destruction
+
+  def cancel_all_requests_on_destruction
+    requests.all.each do |request|
+      request.cancel!  # Cancel first to prevent event doing something stupid
+      request.events.create!(:message => "Submission #{self.id} as destroyed")
+    end
+  end
+  private :cancel_all_requests_on_destruction
   
   def self.render_class
     Api::SubmissionIO
@@ -80,7 +91,7 @@ class Submission < ActiveRecord::Base
   end
 
   def process_submission!
-    RequestFactory.new(self).create_requests
+    build_request_graph!
   end
   alias_method(:create_requests, :process_submission!)
 
@@ -89,19 +100,9 @@ class Submission < ActiveRecord::Base
   end
 
   def is_asset_applicable_to_type?(request_type, asset)
-    request_type.asset_type == asset.label
+    request_type.asset_type == asset.asset_type_for_request_types.name
   end
   private :is_asset_applicable_to_type?
-
-  def assign_asset(request, request_type, asset)
-    return if asset.nil?
-    request.asset  = asset if is_asset_applicable_to_type?(request_type, asset)
-    request.sample = asset.sample
-  end
-
-  def are_requests_different(submission_to)
-    self.request_types != submission_to.request_types
-  end
 
   def multiplex_started_passed
     multiplex_started_passed_result = false
@@ -115,8 +116,21 @@ class Submission < ActiveRecord::Base
     return multiplex_started_passed_result
   end
 
-  def add_assets(assets)
-    self.assets << assets
+  def create_request_of_type!(request_type, attributes = {}, &block)
+    request_type.create!(attributes) do |request|
+      request.workflow                    = workflow
+      request.project                     = project
+      request.study                       = study
+      request.user                        = user
+      request.submission_id               = id
+      request.request_metadata_attributes = request_type.extract_metadata_from_hash(request_options)
+      request.state                       = initial_request_state(request_type)
+
+      if request.asset.present?
+        # TODO: This should really be an exception but not sure of the side-effects at the moment
+        request.asset  = nil unless is_asset_applicable_to_type?(request_type, request.asset)
+      end
+    end
   end
 
   def move_to_submission(assets, current_user, submission)
@@ -176,6 +190,7 @@ class Submission < ActiveRecord::Base
     )
 
   end
+  deprecate :move_assets
 
   #  attributes which are not saved for a submission but can be pre-set via SubmissionTemplate
   # return a list of request_types lists  (a sequence of choices) to display in the new view
@@ -219,6 +234,9 @@ class Submission < ActiveRecord::Base
         old_attribute = attributes[att.name]
         attributes[att.name] = att unless old_attribute and old_attribute.required? # required attributes have a priority
       end
+      request_type.request_class::Metadata.association_details.each do |att|
+        attributes[att.name] = att
+      end
     end
 
     attributes.values
@@ -243,12 +261,40 @@ class Submission < ActiveRecord::Base
   def initial_request_state(request_type)
     (request_options || {}).fetch(:initial_state, {}).fetch(request_type.id, request_type.initial_state).to_s
   end
+  private :initial_request_state
 
-  protected
+  def next_request_type_id(request_type_id)
+    request_type_ids = request_types.map(&:to_i)
+    request_type_ids[request_type_ids.index(request_type_id)+1]
+  end
+
+  def next_requests(request)
+    return request.target_asset.requests if request.target_asset
+
+    next_request_type_id = self.next_request_type_id(request.request_type_id)
+    sibling_requests = requests.select { |r| r.request_type_id == request.request_type_id}
+    next_possible_requests = requests.select { |r| r.request_type_id == next_request_type_id}
+
+    #we need to find the position of the request within its sibling and use the same index
+    #in the next_possible ones.
+
+    [sibling_requests, next_possible_requests].map do |request_list|
+      request_list.sort! { |a, b| a.id <=> b.id }
+    end
+
+    # The divergence_ratio should be equal to the multiplier if there is one and so the same for every requests
+    # should work also for convergent a request (ration < 1.0))
+
+    divergence_ratio = 1.0* next_possible_requests.size / sibling_requests.size
+    index = sibling_requests.index(request)
+
+    next_possible_requests[index*divergence_ratio,[ 1, divergence_ratio ].max]
+  end
 
   def compute_input_field_infos()
     request_attributes.uniq.map(&:to_field_info)
   end
+  protected :compute_input_field_infos
 end
 
 class Array

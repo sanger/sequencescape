@@ -1,31 +1,22 @@
 class Event < ActiveRecord::Base
+  include Api::EventIO::Extensions
+  include Uuid::Uuidable
   cattr_reader :per_page
   @@per_page = 500
   belongs_to :eventful, :polymorphic => true
   after_create :rescuing_update_request, :unless => :need_to_know_exceptions?
   after_create :update_request,          :if     => :need_to_know_exceptions?
-  include Uuid::Uuidable
   
   named_scope :family_pass_and_fail, :conditions => {:family =>  ["pass", "fail"]}, :order => 'id DESC'
   named_scope :npg_events, lambda { |*args| {:conditions => ["created_by='npg' and eventful_id = ? ", args[0]] }}
-  named_scope :including_associations_for_json, { :include => [:uuid_object, { :eventful => :uuid_object } ] }
   
   attr_writer :need_to_know_exceptions
   def need_to_know_exceptions?
     @need_to_know_exceptions
   end
 
-  def url_name
-    "event"
-  end
-  alias_method(:json_root, :url_name)
-
   def request?
     self.eventful_type == "Request" ? true : false
-  end
-
-  def self.render_class
-    Api::EventIO
   end
 
   private
@@ -62,9 +53,5 @@ class Event < ActiveRecord::Base
         end
       end
     end
-  end
-  
-  def render_class
-    Api::EventIO
   end
 end

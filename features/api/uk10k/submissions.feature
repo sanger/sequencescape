@@ -1003,23 +1003,6 @@ Feature: Creating submissions from submission templates
               "uuid": "22222222-3333-4444-5555-000000000001"
             },
 
-            "source_asset": null,
-            "target_asset": null,
-
-            "read_length": 76,
-            "fragment_size": {
-              "from": "100",
-              "to": "200"
-            },
-            "type": "Paired end sequencing"
-          }, {
-            "study": {
-              "uuid": "22222222-3333-4444-5555-000000000000"
-            },
-            "project": {
-              "uuid": "22222222-3333-4444-5555-000000000001"
-            },
-
             "source_asset": {
               "uuid": "33333333-4444-5555-6666-000000000002",
               "type": "sample_tubes"
@@ -1040,6 +1023,26 @@ Feature: Creating submissions from submission templates
               "uuid": "22222222-3333-4444-5555-000000000001"
             },
 
+            "source_asset": {
+              "uuid": "33333333-4444-5555-6666-000000000003",
+              "type": "sample_tubes"
+            },
+            "target_asset": null,
+
+            "fragment_size": {
+              "from": "100",
+              "to": "200"
+            },
+            "type": "Library creation",
+            "library_type": "qPCR only"
+          }, {
+            "study": {
+              "uuid": "22222222-3333-4444-5555-000000000000"
+            },
+            "project": {
+              "uuid": "22222222-3333-4444-5555-000000000001"
+            },
+
             "source_asset": null,
             "target_asset": null,
 
@@ -1057,18 +1060,15 @@ Feature: Creating submissions from submission templates
               "uuid": "22222222-3333-4444-5555-000000000001"
             },
 
-            "source_asset": {
-              "uuid": "33333333-4444-5555-6666-000000000003",
-              "type": "sample_tubes"
-            },
+            "source_asset": null,
             "target_asset": null,
 
+            "read_length": 76,
             "fragment_size": {
               "from": "100",
               "to": "200"
             },
-            "type": "Library creation",
-            "library_type": "qPCR only"
+            "type": "Paired end sequencing"
           }, {
             "study": {
               "uuid": "22222222-3333-4444-5555-000000000000"

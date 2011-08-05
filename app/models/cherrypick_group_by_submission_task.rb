@@ -1,8 +1,7 @@
-include Cherrypick::Task::PickByNanoGramsPerMicroLitre
-include Cherrypick::Task::PickByNanoGrams
-include Cherrypick::Task::PickByMicroLitre
-
 class CherrypickGroupBySubmissionTask < Task
+  include Cherrypick::Task::PickByNanoGramsPerMicroLitre
+  include Cherrypick::Task::PickByNanoGrams
+  include Cherrypick::Task::PickByMicroLitre
 
   class CherrypickGroupBySubmissionData < Task::RenderElement
     alias_attribute :well, :asset

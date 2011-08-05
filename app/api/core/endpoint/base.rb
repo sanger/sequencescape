@@ -13,7 +13,9 @@ class Core::Endpoint::Base
     end
 
     def instance(&block)
-      write_inheritable_attribute(:instance_handler, Class.new(Handler).new(&block))
+      handler = Class.new(Handler).tap { |handler| const_set(:Instance, handler) }.new(&block)
+      handler.instance_variable_set(:@name, name)
+      write_inheritable_attribute(:instance_handler, handler)
     end
   end
 
@@ -36,7 +38,7 @@ class Core::Endpoint::Base
           action_updates_for(options) { |updates| json['actions'].merge!(updates) }
           unless response.request.target.nil?
             model_io = ::Core::Io::Registry.instance.lookup(response.request.target)
-            handler  = endpoint_for(response.request.target).instance_handler
+            handler  = endpoint_for_class(response.request.target).instance_handler
             json[model_io.json_root.to_s.pluralize] = response.object.map { |o| handler.as_json(options.merge(:target => o)) }
           end
         end
@@ -48,7 +50,8 @@ class Core::Endpoint::Base
     end
 
     def model(&block)
-      write_inheritable_attribute(:model_handler, Class.new(Handler).new(&block))
+      handler = Class.new(Handler).tap { |handler| const_set(:Model, handler) }.new(&block)
+      write_inheritable_attribute(:model_handler, handler)
     end
   end
 
@@ -58,13 +61,4 @@ class Core::Endpoint::Base
   def self.root
     self.name.sub(/^(::)?Endpoints::/, '').underscore.pluralize
   end
-
-  def as_json(options = {})
-    raise 'what, why did i put this here?'
-  end
-
-#  def as_json(options = {})
-#    handler = options[:response].request.target.is_a?(Class) ? model_handler : instance_handler
-#    handler.as_json(options)
-#  end
 end

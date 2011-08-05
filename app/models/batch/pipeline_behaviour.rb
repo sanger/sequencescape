@@ -10,12 +10,9 @@ module Batch::PipelineBehaviour
       # The validations that the pipeline & batch are correct
       validates_presence_of :pipeline
 
-      validates_each(:requests, :allow_blank => true) do |batch, attr, requests|
-        pipeline = batch.pipeline
-        unless pipeline.nil?
-          batch.errors.add(attr, 'too many requests specified') if not pipeline.max_size.nil? and requests.size > pipeline.max_size
-          batch.errors.add(attr, 'has incorrect type')          if requests.map(&:request_type_id).uniq != [ pipeline.request_type_id ]
-        end
+      # Validation of some of the batch information is left to the pipeline that it belongs to
+      validate do |record|
+        record.pipeline.validation_of_batch(record) if record.pipeline.present?
       end
 
       # The batch requires positions on it's requests if the pipeline does

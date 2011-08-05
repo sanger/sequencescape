@@ -144,17 +144,6 @@ Factory.define :submission_workflow, :class => Submission::Workflow do |p|
   p.item_label  "library"
 end
 
-Factory.define :submission do |submission|
-    submission.workflow              {|workflow| workflow.association(:submission_workflow)}
-    submission.study                 {|study| study.association(:study)}
-    submission.project               {|project| project.association(:project)}
-    submission.user                  {|user| user.association(:user)}
-    submission.item_options          {}
-    submission.request_options       {}
-    submission.assets                []
-    submission.request_types         { [ Factory(:request_type).id ] }
-end
-
 Factory.define :submission_template do |submission_template|
   submission_template.submission_class_name Submission.name
   submission_template.name                  "my_template"
@@ -174,20 +163,25 @@ Factory.define :request_metadata, :class => Request::Metadata do |m|
   m.read_length 76
 end
 
-Factory.define :request do |r|
-  r.asset             {|asset|      asset.association(:asset)}
-  r.item              {|item|       item.association(:item)}
-  r.project           {|pr|         pr.association(:project)}
-  r.request_type      {|rt|         rt.association(:request_type)}
-  r.sample            {|sample|     sample.association(:sample)}
-  r.state             'pending'     
-  r.study             {|study|      study.association(:study)}
-  r.submission        {|submission| submission.association(:submission)}
-  r.target_asset      {|asset|      asset.association(:asset)}
-  r.user              {|user|       user.association(:user)}
-  r.workflow          {|workflow|   workflow.association(:submission_workflow)}
+Factory.define :request_without_assets, :class => Request do |request|
+  request.item              {|item|       item.association(:item)}
+  request.project           {|pr|         pr.association(:project)}
+  request.request_type      {|rt|         rt.association(:request_type)}
+  request.state             'pending'     
+  request.study             {|study|      study.association(:study)}
+  request.submission        {|submission| submission.association(:submission)}
+  request.user              {|user|       user.association(:user)}
+  request.workflow          {|workflow|   workflow.association(:submission_workflow)}
 
-  r.after_build { |request| request.request_metadata = Factory(:request_metadata, :request => request) }
+  request.after_build { |request| request.request_metadata = Factory(:request_metadata, :request => request) }
+end
+
+Factory.define :request, :parent => :request_without_assets do |r|
+  # The sample should be setup correctly and the assets should be valid
+  r.after_build do |request|
+    request.asset        ||= Factory(:sample_tube)
+    request.target_asset ||= Factory(:library_tube)
+  end
 end
 
 Factory.define :request_without_item, :class => "Request" do |r|
@@ -263,11 +257,12 @@ end
 
 Factory.define :multiplexed_library_creation_request_type, :class => RequestType do |rt|
   rt_value = Factory.next :request_type_id
-  rt.name           "Request type #{rt_value}"
-  rt.key            "request_type_#{rt_value}"
-  rt.request_class  MultiplexedLibraryCreationRequest
-  rt.order          1
-  rt.workflow    {|workflow| workflow.association(:submission_workflow)}
+  rt.name               "Request type #{rt_value}"
+  rt.key                "request_type_#{rt_value}"
+  rt.request_class      MultiplexedLibraryCreationRequest
+  rt.order              1
+  rt.for_multiplexing   true
+  rt.workflow           { |workflow| workflow.association(:submission_workflow)}
 end
 
 Factory.define :sample do |s|
@@ -365,7 +360,6 @@ Factory.define :asset_group_asset do |aga|
   aga.asset_group   {|asset_group| asset_group.association(:asset_group)}
 end
 
-
 Factory.define :fragment do |fragment|
 end
 
@@ -382,8 +376,11 @@ Factory.define :stock_multiplexed_library_tube do |a|
   a.name                {|a| Factory.next :asset_name }
 end
 
-Factory.define :library_tube do |library_tube|
-  library_tube.name {|_| Factory.next :asset_name }
+Factory.define(:empty_library_tube, :class => LibraryTube) do |library_tube|
+  library_tube.qc_state ''
+  library_tube.name     {|_| Factory.next :asset_name }
+end
+Factory.define :library_tube, :parent => :empty_library_tube do |library_tube|
 end
 
 # A library tube is created from a sample tube through a library creation request!
@@ -439,9 +436,12 @@ Factory.define :stock_sample_tube do |a|
   a.name                {|a| Factory.next :asset_name }
 end
 
-Factory.define :lane do |l|
-  l.name                {|l| Factory.next :asset_name }
-  l.external_release    nil
+Factory.define(:empty_lane, :class => Lane) do |lane|
+  lane.name                {|l| Factory.next :asset_name }
+  lane.external_release    nil
+end
+
+Factory.define(:lane, :parent => :empty_lane) do |l|
 end
 
 Factory.define :spiked_buffer do |a|

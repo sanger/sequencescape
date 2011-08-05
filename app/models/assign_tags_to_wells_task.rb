@@ -38,14 +38,7 @@ class AssignTagsToWellsTask < Task
   def create_tag_instances_and_link_to_wells(requests, params)
     params[:tag].map do |well_id, tag_id|
       ActiveRecord::Base.transaction do     
-        well = Well.find(well_id)
-        if well.tag_instance.nil?
-          tag = Tag.find(tag_id)
-          tag_instance  = TagInstance.create!(:tag => tag)
-          AssetLink.create_edge!(well, tag_instance)
-        else
-          raise "Unable to add multiple tags to a well."
-        end
+        Tag.find(tag_id).tag!(Well.find(well_id))
       end
     end
   end
@@ -58,17 +51,23 @@ class AssignTagsToWellsTask < Task
     CherrypickGroupBySubmissionTask.new.group_requests_by_submission_id(requests).each do |requests_with_same_submission|
       sequencing_requests = find_sequencing_requests(requests_with_same_submission)
       raise 'Couldnt find sequencing request' if sequencing_requests.empty?
-      initial_sequencing_request = sequencing_requests.pop
-      initial_sequencing_request.create_assets_for_multiplexing if initial_sequencing_request.asset.nil? && initial_sequencing_request.target_asset.nil?
 
-      # allow for multiple lanes of the same library
-      sequencing_requests.each do |sequencing_request|
-        sequencing_request.update_attributes!(:asset => initial_sequencing_request.asset, :target_asset => initial_sequencing_request.target_asset)
-      end
-      
-      requests_with_same_submission.each do |request|
-        request.update_attributes!(:target_asset => initial_sequencing_request.asset)
-      end
+      # If the requests don't all end in the same tube!
+      raise 'Borked!' unless requests_with_same_submission.map(&:target_asset).compact.uniq.size == 1
+      sequencing_requests.each { |sequencing_request| sequencing_request.update_attributes!(:asset => requests_with_same_submission.first.target_asset) }
+
+
+#      initial_sequencing_request = sequencing_requests.pop
+#      initial_sequencing_request.create_assets_for_multiplexing if initial_sequencing_request.asset.nil? && initial_sequencing_request.target_asset.nil?
+#
+#      # allow for multiple lanes of the same library
+#      sequencing_requests.each do |sequencing_request|
+#        sequencing_request.update_attributes!(:asset => initial_sequencing_request.asset, :target_asset => initial_sequencing_request.target_asset)
+#      end
+#      
+#      requests_with_same_submission.each do |request|
+#        request.update_attributes!(:target_asset => initial_sequencing_request.asset)
+#      end
     end
   end
 
@@ -81,11 +80,7 @@ class AssignTagsToWellsTask < Task
 
   def unlink_tag_instances_from_wells(requests)
     requests.each do |request|
-      asset = request.asset
-      tag_instance = asset.tag_instance
-      next unless tag_instance
-      asset.children.delete(tag_instance)
-      asset.save!
+      request.asset.untag!
     end
   end
 

@@ -217,7 +217,8 @@ class CherrypickTaskTest < ActiveSupport::TestCase
           [["A1","Sample_111"],["C1","Sample_222"],["E1","Sample_333"],["H1","Affy1"],["G1","Affy2"]].each do |description,value|
             map = Map.find_by_description_and_asset_size(description,96)
             sample = Factory :sample, :name=> value
-            @control_plate.add_and_save_well Well.new(:map => map,:value=>value,:sample => sample)
+            well = Well.create!(:map => map, :value => value).tap { |well| well.aliquots.create!(:sample => sample) }
+            @control_plate.add_and_save_well well
           end
 
           @control_request = @task.create_control_request(@batch,@plate,@template)
@@ -264,7 +265,8 @@ class CherrypickTaskTest < ActiveSupport::TestCase
           [["A1","Sample_111"],["C1","Sample_222"],["E1","Sample_333"]].each do |description,value|
             map = Map.find_by_description_and_asset_size(description,96)
             sample = Factory :sample, :name=> value
-            @plate.add_and_save_well Well.new(:map => map,:value=>value,:sample => sample)
+            well = Well.create!(:map => map, :value => value).tap { |well| well.aliquots.create!(:sample => sample) }
+            @plate.add_and_save_well well
           end
           @plate.reload
 
@@ -284,7 +286,8 @@ class CherrypickTaskTest < ActiveSupport::TestCase
           [["A1","Sample_111"],["C1","Sample_222"],["E1","Sample_333"],["H1","Affy1"],["G1","Affy2"]].each do |description,value|
             map = Map.find_by_description_and_asset_size(description,96)
             sample = Factory :sample, :name=> value
-            @plate.add_and_save_well Well.new(:map => map,:value=>value,:sample => sample)
+            well = Well.create!(:map => map, :value => value).tap { |well| well.aliquots.create!(:sample => sample) }
+            @plate.add_and_save_well well
           end
           @template = Factory :plate_template
           @template.add_and_save_well Well.new(:map=>Map.find_by_description_and_asset_size("A1",96))
@@ -356,9 +359,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
         @workflow.batch = @br.batch
         #@task = Factory :cherrypick_task
         @sample = Factory :sample
-        @well = Factory :well
-        @well.sample = @sample
-        @well.save
+        @well = Factory(:well).tap { |well| well.aliquots.create!(:sample => @sample) }
       end
       context "#create_control_request_and_add_to_batch(task,control_param)" do
         context "with valid inputs" do

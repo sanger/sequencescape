@@ -12,6 +12,43 @@ def list_combinations(llist)
   end
   ret
 end
+
+def create_pulldown_submission_templates
+  sequencing_request_type_names = [
+    "Single ended sequencing",
+    "Single ended hi seq sequencing",
+    "Paired end sequencing",
+    "HiSeq Paired end sequencing"
+  ]
+
+  request_types_to_defaults = {
+    'Pulldown WGS' => { :library_type => 'Standard',         :fragment_size_required_from => '300', :fragment_size_required_to => '500' },
+    'Pulldown SC'  => { :library_type => 'Agilent Pulldown', :fragment_size_required_from => '100', :fragment_size_required_to => '400' },
+    'Pulldown ISC' => { :library_type => 'Agilent Pulldown', :fragment_size_required_from => '100', :fragment_size_required_to => '400' }
+  }
+
+  workflow   = Submission::Workflow.find_by_key('short_read_sequencing') or raise StandardError, 'Cannot find Next-gen sequencing workflow'
+  cherrypick = RequestType.find_by_name('Cherrypicking for Pulldown')    or raise StandardError, 'Cannot find Cherrypicking for Pulldown request type'
+
+  request_types_to_defaults.each do |request_type_name, defaults|
+    pulldown_request_type = RequestType.find_by_name(request_type_name) or raise StandardError, "Cannot find #{request_type_name.inspect}"
+
+    RequestType.find_each(:conditions => { :name => sequencing_request_type_names }) do |sequencing_request_type|
+      submission                   = LinearSubmission.new
+      submission.request_type_ids  = [ cherrypick.id, pulldown_request_type.id, sequencing_request_type.id ]
+      submission.info_differential = workflow.id
+      submission.workflow          = workflow
+      submission.request_options   = defaults
+
+      SubmissionTemplate.new_from_submission("Cherrypick for pulldown - #{request_type_name} - #{sequencing_request_type.name}", submission).save!
+    end
+  end
+end
+
+# The pulldown submissions
+create_pulldown_submission_templates
+
+# Now generate the rest of the submission templates
 Submission::Workflow.all.each do |workflow|
   request_types_group = workflow.request_types.group_by {|rt| rt.order }.sort {|a, b| a[0] <=> b[0]  }
   request_type_ids_list = request_types_group.map { |o, rts| rts.map { |rt| rt.id } }
@@ -20,6 +57,7 @@ Submission::Workflow.all.each do |workflow|
     combinations = list_combinations(request_type_ids_list)
     combinations.each do |request_type_ids|
       name = request_type_ids.map {|id| RequestType.find(id).name}.join(" - ")
+      next if SubmissionTemplate.find_by_name(name)
 
       submission = LinearSubmission.new
       submission.request_type_ids = request_type_ids

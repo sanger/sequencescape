@@ -32,7 +32,11 @@ Given /^I have a plate "([^"]*)" in study "([^"]*)" with (\d+) samples in asset 
   plate = Factory(:plate, :barcode => plate_barcode, :location => Location.find_by_name("Sample logistics freezer"))
 
   asset_group = study.asset_groups.find_by_name(asset_group_name) || study.asset_groups.create!(:name => asset_group_name)
-  asset_group.assets << (1..number_of_samples.to_i).map { |index| Factory(:well, :name => "Well_#{plate_barcode}_#{index}", :plate => plate, :map_id => index, :sample => Factory(:sample, :name => "Sample_#{plate_barcode}_#{index}") ) }
+  asset_group.assets << (1..number_of_samples.to_i).map do |index|
+    Factory(:well, :name => "Well_#{plate_barcode}_#{index}", :plate => plate, :map_id => index).tap do |well|
+      well.aliquots.create!(:sample => Factory(:sample, :name => "Sample_#{plate_barcode}_#{index}"))
+    end
+  end
 end
 
 Given /^plate "([^"]*)" in study "([^"]*)" is in asset group "([^"]*)"$/ do |plate_barcode, study_name, asset_group_name|
@@ -104,16 +108,19 @@ end
 Given /^well "([^"]*)" on plate "([^"]*)" has a genotyping_done status of "([^"]*)"$/ do |well_description, plate_barcode, genotyping_status|
   plate = Plate.find_by_barcode(plate_barcode)
   well = plate.find_well_by_name(well_description)
-  well.sample.external_properties.create!(:key => 'genotyping_done', :value => genotyping_status)
+  well.primary_aliquot.sample.external_properties.create!(:key => 'genotyping_done', :value => genotyping_status)
 end
 
 
 Given /^well "([^"]*)" has a genotyping status of "([^"]*)"$/ do |well_name, genotyping_status|
   well =Well.find_by_name(well_name)
+
   sample = Factory(:sample, :name => well_name.gsub(/ /,'_'))
-  well.update_attributes!(:sample => sample)
-  well.sample.external_properties.create!(:key => 'genotyping_done', :value => genotyping_status)
-  well.sample.external_properties.create!(:key => 'genotyping_snp_plate_id')
+  sample.external_properties.create!(:key => 'genotyping_done', :value => genotyping_status)
+  sample.external_properties.create!(:key => 'genotyping_snp_plate_id')
+
+  well.aliquots.clear
+  well.aliquots.create!(:sample => sample)
 end
 
 
@@ -126,13 +133,20 @@ Given /^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)"
   project = Project.find_by_name(project_name)
   study = Study.find_by_name(study_name)
 
+  # Maintain the order of the wells as though they have been submitted by the user, rather than
+  # relying on the ordering within sequencescape.  Some of the plates are created with less than
+  # the total wells needed (which is bad).
+  wells = []
+  plate.wells.walk_in_column_major_order { |well, _| wells << well }
+  wells.compact!
+
   submission_template = SubmissionTemplate.find_by_name(submission_template_name)
   submission = submission_template.create!(
-    :study => study,
-    :project => project,
+    :study    => study,
+    :project  => project,
     :workflow => Submission::Workflow.find_by_key('microarray_genotyping'),
-    :user => User.last,
-    :assets => plate.wells
+    :user     => User.last,
+    :assets   => wells
     ).built!
   And %Q{1 pending delayed jobs are processed}
 end

@@ -5,7 +5,7 @@ class Core::Endpoint::BasicHandler
 
       { 'actions' => { } }.tap do |json|
         json['actions'] = Hash[@actions.map do |name, behaviour|
-          [ name, core_path(options) ] if accessible_action?(behaviour, request, options[:target])
+          [ name, core_path(options) ] if accessible_action?(self, behaviour, request, options[:target])
         end.compact]
       end
     end

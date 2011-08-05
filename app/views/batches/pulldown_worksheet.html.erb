@@ -35,11 +35,11 @@
       <% next unless well %>
       <% submission_colour = (well && well_submission_colours[well.id] ) ? "colour#{well_submission_colours[well.id]%12}"  : '' %>
     <tr>
-      <td class="<%= submission_colour %>"><%= request.target_asset.barcode if request.target_asset %></td>
-      <td class="<%= submission_colour %>"><%= well.plate.sanger_human_barcode if well.plate %></td>
-      <td class="<%= submission_colour %>"><%= well.map.description if well.map %></td>
-      <td class="<%= submission_colour %>"><%= well.tag_instance.tag.name  if well.tag_instance && well.tag_instance.tag %></td>
-      <td class="<%= submission_colour %>"><%= well.sample.name if well.sample %></td>
+      <td class="<%= submission_colour %>"><%= request.target_asset.barcode     if request.target_asset %></td>
+      <td class="<%= submission_colour %>"><%= well.plate.sanger_human_barcode  if well.plate %></td>
+      <td class="<%= submission_colour %>"><%= well.map.description             if well.map %></td>
+      <td class="<%= submission_colour %>"><%= well.primary_aliquot.tag.name    if well.primary_aliquot.present? and well.primary_aliquot.tag.present? %></td>
+      <td class="<%= submission_colour %>"><%= well.primary_aliquot.sample.name if well.primary_aliquot.present? and well.primary_aliquot.sample.present? %></td>
     </tr>
     <% end %>
   </tbody>

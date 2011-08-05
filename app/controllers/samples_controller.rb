@@ -44,7 +44,7 @@ class SamplesController < ApplicationController
   end
 
   def show
-    @sample  = Sample.find(params[:id])
+    @sample  = Sample.find(params[:id], :include => :assets)
     @studies = Study.all(:conditions => ["state = ? OR state = ?", "pending", "active"], :order => :name)
 
     respond_to do |format|

@@ -16,5 +16,6 @@
   Available pipelines
 </div>
 
-<%= render :partial => "pipelines", :locals => { :title => "Manual", :pipelines => @manual_pipelines } %>
-<%= render :partial => "pipelines", :locals => { :title => "Automated", :pipelines => @automated_pipelines } %>
+<% @grouping.each do |group_name, pipelines| %>
+  <%= render :partial => 'pipelines', :locals => { :title => group_name, :pipelines => pipelines } %>
+<% end %>

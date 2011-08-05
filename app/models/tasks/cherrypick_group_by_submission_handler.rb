@@ -11,12 +11,13 @@ module Tasks::CherrypickGroupBySubmissionHandler
     plate_purpose = PlatePurpose.find(params[:plate_purpose_id])
 
     begin
-      barcode = PlateBarcode.create.barcode
       batch = Batch.find(params[:batch_id], :include => [:requests, :pipeline, :lab_events])
       requests = batch.ordered_requests
       
       ActiveRecord::Base.transaction do
-        plate = Plate.create!(:name => "Cherrypicked #{barcode}", :barcode => barcode, :plate_purpose => plate_purpose)
+        plate = plate_purpose.create!(:do_not_create_wells) do |plate|
+          plate.name = "Cherrypicked #{plate.barcode}"
+        end
         if params[:cherrypick][:action] == 'nano_grams_per_micro_litre'
           task.pick_by_nano_grams_per_micro_litre(batch, requests, plate, plate_purpose, params)
         elsif params[:cherrypick][:action] == "nano_grams"
@@ -41,8 +42,12 @@ module Tasks::CherrypickGroupBySubmissionHandler
     @plate_purpose_options = plate_purpose_options()
   end
 
-  private
+  # Returns a list of valid plate purpose types based on the requests in the current batch.
   def plate_purpose_options
-    PlatePurpose.all.map { |purpose| [purpose.name,purpose.id] }.sort
+    requests       = @batch.requests.map { |r| r.submission.next_requests(r) }.flatten
+    plate_purposes = requests.map(&:request_type).compact.uniq.map(&:acceptable_plate_purposes).flatten.uniq
+    plate_purposes = PlatePurpose.all if plate_purposes.empty?  # Fallback situation for the moment
+    plate_purposes.map { |p| [p.name, p.id] }.sort
   end
+  private :plate_purpose_options
 end

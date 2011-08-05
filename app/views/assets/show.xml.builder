@@ -1,11 +1,19 @@
 xml.instruct!
 xml.asset(api_data) {
-  xml.id @asset.id
-  xml.type @asset.sti_type
-  xml.name @asset.name
+  xml.id          @asset.id
+  xml.type        @asset.sti_type
+  xml.name        @asset.name
   xml.public_name @asset.public_name
-  xml.sample_id @asset.material_id
-  xml.qc_state @asset.qc_state
+  xml.qc_state    @asset.qc_state
+
+  # A receptacle will have zero or more aliquots.  To support the legacy version of this XML we're displaying
+  # the primary aliquot sample ID as sample_id in the XML, although it is not strictly true.  When the asset
+  # is not a receptacle we simply output sample_id as nil, although it should not really be present at all.
+  if @asset.is_a?(Aliquot::Receptacle)
+    xml.sample_id @asset.primary_aliquot.try(:sample_id)
+    @asset.aliquots.each { |aliquot| output_aliquot(xml, aliquot) }
+  end
+
   xml.children {
     @asset.children.each do |child_asset|
       xml.id child_asset.id

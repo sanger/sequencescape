@@ -193,6 +193,20 @@ if false
 
 end
 
+    context "without a swipecard_code" do
+      setup do
+        @user = Factory :user
+      end
+
+      should "not have a swipecard code" do
+        assert_equal false, @user.swipecard_code?
+      end
+      should "be able to have one assigned" do
+        code = "code"
+        @user.swipecard_code=code
+      end
+    end
+
     context '#authenticate_by_sanger_cookie' do
       should 'use the user from the database if they have logged in recently' do
         user = User.create!(:login => 'john', :cookie => '123456789', :cookie_validated_at => 5.minutes.ago)

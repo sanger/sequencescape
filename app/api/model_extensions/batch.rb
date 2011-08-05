@@ -20,8 +20,8 @@ module ModelExtensions::Batch
         :requests => [
           :uuid_object, :study, :project, :request_metadata, :request_type,
           { :submission   => :uuid_object },
-          { :asset        => [ :uuid_object, :barcode_prefix, { :sample => :uuid_object } ] },
-          { :target_asset => [ :uuid_object, :barcode_prefix, { :sample => :uuid_object } ] }
+          { :asset        => [ :uuid_object, :barcode_prefix, { :aliquots => [ :sample, :tag ] } ] },
+          { :target_asset => [ :uuid_object, :barcode_prefix, { :aliquots => [ :sample, :tag ] } ] }
         ]
       }
       
@@ -60,21 +60,25 @@ module ModelExtensions::Batch
 
     asset_type = pipeline.asset_type.constantize
     requests(:reload).each do |request|
-      request.update_attributes!(
-        :state        => 'started',
-        :target_asset => asset_type.create! do |asset|
-          asset.sample  = request.asset.sample
-          asset.barcode = AssetBarcode.new_barcode unless [ Lane, Well ].include?(asset_type)
-          asset.generate_name(request.asset.name)
-        end
-      )
-      
+      # we need to call downstream request before setting the target_asset
+      # otherwise, the request use the target asset to find the next request
+      target_asset = asset_type.create! do |asset|
+        asset.barcode  = AssetBarcode.new_barcode unless [ Lane, Well ].include?(asset_type)
+        asset.generate_name(request.asset.name)
+      end.tap do |asset|
+#        asset.aliquots = request.asset.aliquots.map(&:clone)
+      end
+
+      downstream_requests_needing_asset(request) do |downstream_requests|
+        requests_to_update.concat(downstream_requests.map { |r| [ r.id, target_asset.id ] })
+      end
+
+      request.update_attributes!(:target_asset => target_asset)
+#      request.start!
+
       # All links between the two assets as new, so we can bulk create them!
       asset_links << AssetLink.build_edge(request.asset, request.target_asset)
 
-      downstream_requests_needing_asset(request) do |downstream_requests|
-        requests_to_update.concat(downstream_requests.map { |r| [ r.id, request.target_asset_id ] })
-      end
     end
 
     AssetLink.import(asset_links, :validate => false) unless asset_links.empty?

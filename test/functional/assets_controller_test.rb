@@ -17,7 +17,9 @@ class AssetsControllerTest < ActionController::TestCase
       @barcode  = Factory.next :barcode
 
       @json_data = json_new_asset(@barcode)
-      post :create, ActiveSupport::JSON.decode(@json_data).merge({'Content-Type' => 'application/json', 'Accept' => 'application/json'})
+
+      @request.accept = @request.env['CONTENT_TYPE'] = 'application/json'
+      post :create, ActiveSupport::JSON.decode(@json_data)
     end
 
     should_set_the_flash_to  /Asset was successfully created/
@@ -26,8 +28,8 @@ class AssetsControllerTest < ActionController::TestCase
 
   context "create request with JSON input" do
     setup do
-      @sample = Factory :sample
-      @asset = Factory :asset, :name => "Asset", :sample => @sample, :requests => []
+      @asset = Factory(:sample_tube)
+      @sample = @asset.primary_aliquot.sample
 
       @user = Factory :user
       @user.is_administrator
@@ -40,44 +42,49 @@ class AssetsControllerTest < ActionController::TestCase
       @quota = Factory :project_quota, :project_id => @project.id, :request_type_id => @request_type.id, :limit => 10
       @json_data = valid_json_create_request(@asset,@request_type,@study, @project)
 
-      post :create_request, ActiveSupport::JSON.decode(@json_data).merge({'Content-Type' => 'application/json', 'Accept' => 'application/json'})
+      @request.accept = @request.env['CONTENT_TYPE'] = 'application/json'
+      post :create_request, ActiveSupport::JSON.decode(@json_data)
     end
 
     should_change("Submission.count", :by => 1) { Submission.count }
   end
 
   def valid_json_create_request(asset,request_type,study, project)
-    '{
-    "api_version": '+"#{RELEASE.api_version}"+',
-    "api_key": "abc",
-    "study_id": '+"#{study.id}"+',
-    "project_id": '+"#{project.id}"+',
-    "request_type_id": '+"#{request_type.id}"+',
-    "count": 3,
-    "comments": "This is a request",
-    "id": '+"#{asset.id}"+',
-    "request":
-    {
-      "properties": {
-        "library_type": "Standard",
-        "fragment_size_required_from": 100,
-        "fragment_size_required_to": 500,
-        "read_length": 108
+    %Q{
+      {
+        "api_version": "#{RELEASE.api_version}",
+        "api_key": "abc",
+        "study_id": "#{study.id}",
+        "project_id": "#{project.id}",
+        "request_type_id": "#{request_type.id}",
+        "count": 3,
+        "comments": "This is a request",
+        "id": "#{asset.id}",
+        "request": {
+          "properties": {
+            "library_type": "Standard",
+            "fragment_size_required_from": 100,
+            "fragment_size_required_to": 500,
+            "read_length": 108
+          }
         }
       }
-    }'
+    }
   end
 
   def json_new_asset(barcode)
     #/assets
-    '{
-    "api_version": '+"#{RELEASE.api_version}"+',
-    "api_key": "abc",
-    "asset":{
-        "barcode": "'+"#{barcode}"+'",
-        "label": "SampleTube"
+    %Q{
+      {
+        "api_version": "#{RELEASE.api_version}",
+        "api_key": "abc",
+        "asset": {
+          "sti_type": "SampleTube",
+          "barcode": "#{barcode}",
+          "label": "SampleTube"
+        }
       }
-    }'
+    }
   end
 
 end

@@ -1,11 +1,10 @@
 class PipelinesController < ApplicationController
-  before_filter :find_pipeline_by_id, :only => [:edit, :update, :show, :quarantine_get_pending_assets, :setup_inbox,
+  before_filter :find_pipeline_by_id, :only => [:edit, :update, :show, :setup_inbox,
                                    :set_inbox, :training_batch, :show_comments, :activate, :deactivate, :destroy, :batches]
 
   def index
-    @pipelines = Pipeline.all(:order => "sorter ASC")
-    @manual_pipelines = @pipelines.select {|pipeline| pipeline.automated == false}
-    @automated_pipelines = @pipelines.select {|pipeline| pipeline.automated == true}
+    @pipelines = Pipeline.active.internally_managed.all(:order => "sorter ASC")
+    @grouping  = @pipelines.inject(Hash.new { |h,k| h[k] = [] }) { |h,p| h[p.group_name] << p ; h }
 
     respond_to do |format|
       format.html
@@ -101,20 +100,10 @@ class PipelinesController < ApplicationController
 
     unless @pipeline.qc?
       @information_types = @pipeline.request_information_types
-      @requests          = @pipeline.get_input_requests_checking_for_pagination(@show_held_requests,@current_page)
+      @requests          = @pipeline.requests.inbox(@show_held_requests,@current_page)
       @request_groups    = @pipeline.get_input_request_groups(@show_held_requests) if @pipeline.group_by_parent?
       @grouped_requests  = @requests.group_by(&:submission_id) if @pipeline.group_by_submission?
     end
-  end
-
-  def quarantine_get_pending_assets
-    @information_types = @pipeline.request_information_types
-    if @pipeline.group_by_parent
-      @assets = @pipeline.pending_assets.group_by { |a| a.parent }
-    else
-      @assets = @pipeline.pending_assets
-    end
-    render :partial => "assets"
   end
 
   def setup_inbox

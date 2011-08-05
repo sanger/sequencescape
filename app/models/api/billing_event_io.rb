@@ -1,4 +1,20 @@
 class Api::BillingEventIO < Api::Base
+  module Extensions
+    module ClassMethods
+      def render_class
+        Api::BillingEventIO
+      end
+    end
+
+    def self.included(base)
+      base.class_eval do
+        extend ClassMethods
+
+        named_scope :including_associations_for_json, { :include => [ :uuid_object, { :project =>[ { :project_metadata => :budget_division }, :uuid_object ] }, { :request => [ :request_metadata, :request_type, :uuid_object ] } ] }
+      end
+    end
+  end
+
   renders_model(::BillingEvent)
 
   map_attribute_to_json_attribute(:uuid)

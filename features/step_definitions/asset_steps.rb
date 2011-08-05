@@ -10,3 +10,7 @@ end
 Given /^(?:I have )?a (sample|library) tube called "([^\"]+)"$/ do |tube_type, name|
   Factory(:"#{ tube_type }_tube", :name => name)
 end
+
+Then /^the name of (the .+) should be "([^\"]+)"$/ do |asset, name|
+  assert_equal(name, asset.name)
+end

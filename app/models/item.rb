@@ -1,5 +1,5 @@
 class Item < ActiveRecord::Base
-
+  include Uuid::Uuidable
   include EventfulRecord
   include Workflowed
   extend EventfulRecord

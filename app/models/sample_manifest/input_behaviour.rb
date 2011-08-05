@@ -209,12 +209,22 @@ module SampleManifest::InputBehaviour
   def process(user_updating_manifest, override_sample_information = false)
     self.start!
 
-    samples_to_updated_attributes = []
+    samples_to_updated_attributes, sample_errors = [], []
     each_csv_row do |row|
       sanger_sample_id = row['SANGER SAMPLE ID']
       next if sanger_sample_id.blank?
 
-      sample = samples.find_by_sanger_sample_id(sanger_sample_id)
+      # Sanity check that the sample being updated is in the same container that it was defined against.
+      sample = samples.find_by_sanger_sample_id(sanger_sample_id, :include => :primary_receptacle)
+      if sample.primary_receptacle.nil?
+        sample_errors.push("Sample #{sanger_sample_id} appears to not have a receptacle defined! Contact PSD")
+        next
+      else
+        validate_sample_container(sample, row) do |message|
+          sample_errors.push(message)
+          next
+        end
+      end
 
       metadata = Hash[
         METADATA_ATTRIBUTES_TO_CSV_COLUMNS.map do |attribute, csv_column|
@@ -233,6 +243,8 @@ module SampleManifest::InputBehaviour
         }
       ])
     end
+
+    raise InvalidManifest, sample_errors unless sample_errors.empty?
 
     ActiveRecord::Base.transaction do 
       update_attributes!({

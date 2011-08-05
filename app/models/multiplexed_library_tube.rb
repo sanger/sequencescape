@@ -1,10 +1,26 @@
-class MultiplexedLibraryTube < Asset
-  include LocationAssociation::Locatable
-  named_scope :including_associations_for_json, { :include => [:uuid_object, :barcode_prefix ] }
-  @@per_page = 500
-  
-  def is_a_pool?
-    true
+class MultiplexedLibraryTube < Tube
+  include ModelExtensions::MultiplexedLibraryTube
+  include Api::MultiplexedLibraryTubeIO::Extensions
+  include Transfer::Associations
+
+  # Default states for MX library tubes is pending, always.
+  def default_state
+    'pending'
+  end
+
+  # Transfer requests into a tube are direct requests where the tube is the target.
+  def transfer_requests
+    requests_as_target.where_is_a?(TransferRequest).all
+  end
+
+  # Transitioning an MX library tube to a state involves updating the state of the transfer requests.  If the
+  # state is anything but "started" or "pending" then the pulldown library creation request should also be
+  # set to the same state
+  def transition_to(state, _ = nil)
+    update_all_requests = ![ 'started', 'pending' ].include?(state)
+    requests_as_target.each do |request|
+      request.update_attributes!(:state => state) if update_all_requests or request.is_a?(TransferRequest)
+    end
   end
 
   # A multiplexed library tube is created with the request options of it's parent library tubes.  In effect
@@ -21,45 +37,20 @@ class MultiplexedLibraryTube < Asset
     LibraryTube
   end
 
-  def has_stock_asset?
-    parent_asset_types = self.parents.map(&:sti_type)
-    if parent_asset_types.include?("StockMultiplexedLibraryTube")
-      return true
-    else
-      return false
-    end
-  end
+  has_one_as_child(:stock_asset, :conditions => { :sti_type => 'StockMultiplexedLibraryTube' })
 
   def is_a_stock_asset?
     false
   end
 
+  def create_stock_asset!(attributes = {}, &block)
+    StockMultiplexedLibraryTube.create!(attributes.reverse_merge(:name => "(s) #{self.name}", :barcode => AssetBarcode.new_barcode), &block).tap do |stock_asset|
+      stock_asset.aliquots = aliquots.map(&:clone)
+    end
+  end
+
   def new_stock_asset
     stock = StockMultiplexedLibraryTube.new(:name => "(s) #{self.name}", :barcode => AssetBarcode.new_barcode)
   end
-
-  def stock_asset
-    self.parents.detect{ |a| a.sti_type == "StockMultiplexedLibraryTube" }
-  end
-  
-  def related_resources
-      ['parents','children','requests']
-  end
-  
-  def self.render_class
-    Api::MultiplexedLibraryTubeIO
-  end
-  
-  def url_name
-    "multiplexed_library_tube"
-  end
-  alias_method(:json_root, :url_name)
-  
-  def tags
-    if parent = self.parents.detect{ |parent| parent.is_a_stock_asset? }
-        parent.parents
-    else
-      self.parents
-    end
-  end
+  deprecate :new_stock_asset
 end

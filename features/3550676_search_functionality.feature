@@ -25,6 +25,7 @@ Feature: Searching sequencescape
       | Item    | item    | Work item    |
       | Asset   | asset   | My Asset     |
 
+  @wip
   Scenario: Searching for a request
 
   Scenario: No matching results
