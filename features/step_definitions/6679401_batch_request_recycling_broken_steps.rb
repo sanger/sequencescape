@@ -83,18 +83,20 @@ def build_batch_for(name, count, &block)
   user = Factory(:user)
 
   assets = (1..count.to_i).map do |_|
-    asset_attributes = { :material => Factory(:sample) }
+    asset_attributes = { }
     if submission_details.key?(:holder_type)
       asset_attributes[:container] = Factory(submission_details[:holder_type], :location_id => pipeline.location_id)
     else
       asset_attributes[:location_id] = pipeline.location_id
     end
-    Factory(submission_details[:asset_type], asset_attributes)
+    Factory(submission_details[:asset_type], asset_attributes).tap do |asset|
+      asset.aliquots.create!(:sample => Factory(:sample))
+    end
   end
 
   # Build a submission that should end up in the appropriate inbox, once all of the assets have been
   # deemed as scanned into the lab!
-  Submission.build!(
+  LinearSubmission.build!(
     :study    => Factory(:study),
     :project  => Factory(:project),
     :workflow => pipeline.request_type.workflow,
@@ -111,13 +113,14 @@ def build_batch_for(name, count, &block)
 
   # Then build a batch that will hold all of these requests, ensuring that it appears to be at least started
   # in some form.
-  requests = Request.for_pipeline(pipeline).all
+  requests = pipeline.requests.ready_in_storage.all
+  raise StandardError, "Pipeline has #{requests.size} requests waiting rather than #{count}" if requests.size != count.to_i
   batch    = Batch.create!(:pipeline => pipeline, :user => user, :requests => requests)
 end
 
 def requests_for_pipeline(name, count, &block)
   pipeline          = Pipeline.find_by_name(name) or raise StandardError, "Cannot find pipeline #{name.inspect}"
-  requests_in_inbox = Request.for_pipeline(pipeline).full_inbox.all
+  requests_in_inbox = pipeline.requests.ready_in_storage.full_inbox.all
 
   # There should be requests in the inbox and they should be clones of original requests.
   assert_equal(count.to_i, requests_in_inbox.size, "Unexpected number of requests in the #{name.inspect} inbox")

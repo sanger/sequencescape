@@ -1,4 +1,46 @@
 class Api::RequestIO < Api::Base
+  module Extensions
+    module ClassMethods
+      def render_class
+        Api::RequestIO
+      end
+    end
+
+    def self.included(base)
+      base.class_eval do
+        extend ClassMethods
+
+        named_scope :including_associations_for_json, {
+          :include => [
+            :uuid_object,
+            :request_type,
+            :request_metadata,
+            :user, {
+              :study => :uuid_object,
+              :project => :uuid_object,
+              :asset => [
+                :uuid_object,
+                :barcode_prefix,
+                { :aliquots => { :sample => :uuid_object } }
+              ],
+              :target_asset => [
+                :uuid_object,
+                :barcode_prefix,
+                { :aliquots => { :sample => :uuid_object } }
+              ]
+            }
+          ]
+        }
+
+        alias_method(:json_root, :url_name)
+      end
+    end
+
+    def url_name
+      "request" # frozen for subclass of the API
+    end
+  end
+
   renders_model(::Request)
 
   map_attribute_to_json_attribute(:uuid)
@@ -39,7 +81,7 @@ class Api::RequestIO < Api::Base
     map_attribute_to_json_attribute(:id                     , 'source_asset_internal_id')
     map_attribute_to_json_attribute(:name                   , 'source_asset_name')
     map_attribute_to_json_attribute(:barcode                , 'source_asset_barcode')
-    map_attribute_to_json_attribute(:qc_state               , 'source_asset_state')
+    map_attribute_to_json_attribute(:compatible_qc_state    , 'source_asset_state')
     map_attribute_to_json_attribute(:closed                 , 'source_asset_closed')
     map_attribute_to_json_attribute(:two_dimensional_barcode, 'source_asset_two_dimensional_barcode')
 
@@ -47,11 +89,13 @@ class Api::RequestIO < Api::Base
       json_attributes["source_asset_type"] = object.sti_type.tableize unless object.nil?
     end
 
-    with_association(:sample) do
-      map_attribute_to_json_attribute(:uuid, 'source_asset_sample_uuid')
-      map_attribute_to_json_attribute(:id  , 'source_asset_sample_internal_id')
+    with_association(:primary_aliquot_if_unique) do
+      with_association(:sample) do
+        map_attribute_to_json_attribute(:uuid, 'source_asset_sample_uuid')
+        map_attribute_to_json_attribute(:id  , 'source_asset_sample_internal_id')
+      end
     end
-    
+
     with_association(:barcode_prefix) do
       map_attribute_to_json_attribute(:prefix, 'source_asset_barcode_prefix')
     end
@@ -62,7 +106,7 @@ class Api::RequestIO < Api::Base
     map_attribute_to_json_attribute(:id                     , 'target_asset_internal_id')
     map_attribute_to_json_attribute(:name                   , 'target_asset_name')
     map_attribute_to_json_attribute(:barcode                , 'target_asset_barcode')
-    map_attribute_to_json_attribute(:qc_state               , 'target_asset_state')
+    map_attribute_to_json_attribute(:compatible_qc_state   , 'target_asset_state')
     map_attribute_to_json_attribute(:closed                 , 'target_asset_closed')
     map_attribute_to_json_attribute(:two_dimensional_barcode, 'target_asset_two_dimensional_barcode')
 
@@ -70,11 +114,13 @@ class Api::RequestIO < Api::Base
       json_attributes["target_asset_type"] = object.sti_type.tableize unless object.nil?
     end
 
-    with_association(:sample) do
-      map_attribute_to_json_attribute(:uuid, 'target_asset_sample_uuid')
-      map_attribute_to_json_attribute(:id  , 'target_asset_sample_internal_id')
+    with_association(:primary_aliquot_if_unique) do
+      with_association(:sample) do
+        map_attribute_to_json_attribute(:uuid, 'target_asset_sample_uuid')
+        map_attribute_to_json_attribute(:id  , 'target_asset_sample_internal_id')
+      end
     end
-    
+
     with_association(:barcode_prefix) do
       map_attribute_to_json_attribute(:prefix, 'target_asset_barcode_prefix')
     end

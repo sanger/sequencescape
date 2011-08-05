@@ -1,8 +1,8 @@
 def set_uuid_for(object, uuid_value)
-  object.uuid_object.tap do |uuid|
-    uuid.external_id = uuid_value
-    uuid.save(false)
-  end
+  uuid   = object.uuid_object
+  uuid ||= object.build_uuid_object
+  uuid.external_id = uuid_value
+  uuid.save(false)
 end
 
 ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME = [
@@ -28,11 +28,15 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME = [
   'pico assay b plate',
   'pico assay plate',
   'pico dilution plate',
+  'plate purpose',
   'plate',
   'sequenom qc plate',
   'working dilution plate',
   'pipeline',
-  'supplier'
+  'supplier',
+  'transfer template',
+  'tag layout template',
+  'barcode printer'
 ]
 
 SINGULAR_MODELS_BASED_ON_NAME_REGEXP = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME.join('|')
@@ -67,6 +71,7 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
   'multiplexed library creation request',
   'sequencing request',
 
+  'user',
   'asset',
   'sample tube',
   'lane',
@@ -85,11 +90,23 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
 
   'submission',
 
-  'batch'
+  'batch',
+
+  'tag layout',
+  'plate creation',
+  'state change',
+
+  'aliquot'
+
+
 ]
 
 SINGULAR_MODELS_BASED_ON_ID_REGEXP = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID.join('|')
 PLURAL_MODELS_BASED_ON_ID_REGEXP   = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID.map(&:pluralize).join('|')
+
+Given /^a (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}|#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) with UUID "([^"]*)" exists$/ do |model,uuid_value|
+  set_uuid_for(Factory(model.gsub(/\s+/, '_').to_sym), uuid_value)
+end
 
 Given /^the UUID for the last (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}|#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) is "([^\"]+)"$/ do |model, uuid_value|
   set_uuid_for(model.gsub(/\s+/, '_').camelize.constantize.last, uuid_value)
@@ -100,8 +117,11 @@ Given /^the UUID for the (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) with ID (\d+) i
 end
 
 Given /^all (#{PLURAL_MODELS_BASED_ON_NAME_REGEXP}|#{PLURAL_MODELS_BASED_ON_ID_REGEXP}) have sequential UUIDs based on "([^\"]+)"$/ do |model,core_uuid|
+  core_uuid << '-' if core_uuid.length == 23
+  core_uuid << "%0#{36-core_uuid.length}d"
+
   model.singularize.gsub(/\s+/, '_').camelize.constantize.all.each_with_index do |object, index|
-    set_uuid_for(object, "#{core_uuid}-%012d" % (index+1))
+    set_uuid_for(object, core_uuid % (index+1))
   end
 end
 
@@ -120,11 +140,17 @@ Given /^the UUID of the next (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) created wil
   Uuid.new(:resource_type => root_class.sti_name, :resource_id => last_id+1, :external_id => uuid_value).save(false)
 end
 
+Given /^the UUID of the last (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) created is "([^\"]+)"$/ do |model,uuid_value|
+  target = model.gsub(/\s+/, '_').classify.constantize.last or raise StandardError, "There appear to be no #{model.pluralize}"
+  target.uuid_object.update_attributes!(:external_id => uuid_value)
+end
+
 Given /^(\d+) (#{PLURAL_MODELS_BASED_ON_ID_REGEXP}) exist with IDs starting at (\d+)$/ do |count, model, id|
   (0...count.to_i).each do |index|
     Given %Q{the #{model.singularize} exists with ID #{id.to_i+index}}
   end
 end
+
 
 # TODO: It's 'UUID' not xxxing 'uuid'.
 Given /^I have an (event|external release event) with uuid "([^"]*)"$/ do |model,uuid_value|
@@ -146,6 +172,13 @@ end
 
 Given /^the (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) exists with ID (\d+)$/ do |model, id|
   Factory(model.gsub(/\s+/, '_').to_sym, :id => id)
+end
+
+
+Given /^the (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) exists with ID (\d+) and the following attributes:$/ do |model, id, table|
+  attributes = table.hashes.inject({}) { |h, att|  h.update(att["name"] => att["value"]) }
+  attributes[:id] ||= id
+  Factory(model.gsub(/\s+/, '_').to_sym, attributes)
 end
 
 Given /^a asset_link with uuid "([^"]*)" exists and connects "([^"]*)" and "([^"]*)"$/ do |uuid_value, uuid_plate, uuid_well|

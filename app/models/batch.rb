@@ -5,6 +5,7 @@ require "tecan_file_generation"
 include Sanger::Robots::Tecan
 
 class Batch < ActiveRecord::Base
+  include Api::BatchIO::Extensions
   cattr_reader :per_page
   @@per_page = 500
   include AASM
@@ -37,8 +38,6 @@ class Batch < ActiveRecord::Base
     end
     { :conditions => conditions }
   }
-
-  named_scope :including_associations_for_json, { :include => [ :uuid_object, :user, :assignee, { :pipeline => :uuid_object }] }
 
   named_scope :includes_for_ui,    { :limit => 5, :include => :user }
   named_scope :pending_for_ui,     { :conditions => { :state => 'pending',   :production_state => nil    }, :order => 'created_at DESC' }
@@ -434,10 +433,9 @@ class Batch < ActiveRecord::Base
     first_control = [3, (self.item_limit - control_count)].min
 
     self.shift_item_positions(first_control+1, control_count)
-    1.upto(control_count) do |index|
+    requests << (1..control_count).map do |index|
       self.pipeline.request_type.create_control!(:asset => asset, :study_id => 198).tap do |request|
         request.set_position(self, first_control+index)
-        requests << request
       end
     end
     control_count
@@ -479,10 +477,6 @@ class Batch < ActiveRecord::Base
   def request_count
     BatchRequest.count(:conditions => "batch_id = #{self.id}")
   end
-  
-  def self.render_class
-    Api::BatchIO
-  end
 
   def pulldown_batch_report
     report_data = FasterCSV.generate( :row_sep => "\r\n") do |csv|
@@ -491,13 +485,14 @@ class Batch < ActiveRecord::Base
       self.requests.each do |request|
         raise 'Invalid request data' unless  request.valid_request_for_pulldown_report?
         well = request.asset
-
-        if well.tag_instance && well.tag_instance.tag
-          tag_name = well.tag_instance.tag.name
-          tag_expected_sequence = well.tag_instance.tag.oligo
-          tag_group_name = well.tag_instance.tag.tag_group.name if well.tag_instance.tag.tag_group 
+        tag_on_well = well.primary_aliquot.try(:tag)
+        if tag_on_well.present?
+          tag_name              = tag_on_well.name
+          tag_expected_sequence = tag_on_well.oligo
+          tag_group_name        = tag_on_well.tag_group.name if tag_on_well.tag_group.present?
         end
 
+        sample = well.primary_aliquot.try(:sample)
         csv << [ 
           well.plate.sanger_human_barcode,
           well.map.description,
@@ -506,7 +501,7 @@ class Batch < ActiveRecord::Base
           tag_group_name,
           tag_name,
           tag_expected_sequence,
-          well.sample.sanger_sample_id || well.sample.name,
+          sample.sanger_sample_id || sample.name,
           well.parent.well_attribute.measured_volume,
           well.parent.well_attribute.concentration
         ]

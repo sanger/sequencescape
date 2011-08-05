@@ -1,8 +1,17 @@
 <table width="100%" cellspacing="0" cellpadding="0">
   <% if @asset.respond_to?(:sample) && @asset.sample %>
   <tr>
-    <td class="item">Sample:</td>
-    <td><strong><%= link_to @asset.sample.name, sample_url(@asset.sample) %></strong></td>
+    <td class="item">Samples:</td>
+    <td>
+      <ul class="aliquots">
+        <% @asset.aliquots.each do |aliquot| %>
+          <li>
+            <strong><%= link_to(aliquot.sample.name, sample_url(aliquot.sample)) -%></strong>
+            <% if aliquot.tag.present? %>(tagged with <%= aliquot.tag.map_id -%>)<% end %>
+          </li>
+        <% end %>
+      </ul>
+    </td>
   </tr>
   <% end %>
   <tr>

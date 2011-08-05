@@ -1,22 +1,23 @@
-class Well < Asset
+class Well < Aliquot::Receptacle
+  include Api::WellIO::Extensions
   include Cherrypick::VolumeByNanoGrams
   include Cherrypick::VolumeByNanoGramsPerMicroLitre
   include Cherrypick::VolumeByMicroLitre
   include StudyReport::WellDetails
+  include Tag::Associations
+
+  named_scope :located_at, lambda { |plate, location|
+    { :joins => :map, :conditions => { :maps => { :description => location, :asset_size => plate.size } } }
+  }
 
   contained_by :plate
   delegate :location, :to => :container , :allow_nil => true
   @@per_page = 500
   has_one :well_attribute
 
-  # # TODO:  remove asset link and use tag_instance via content
-  #contains :tag_instance
-  has_one :tag_instance, :through => :links_as_parent, :source => :descendant, :conditions => { :sti_type => 'TagInstance' }
   after_create :create_well_attribute_if_not_exists
-  
-  named_scope :including_associations_for_json, { :include => [:uuid_object, :map, :well_attribute, :container, { :sample => :uuid_object } ] }
 
-  named_scope :with_blank_samples, { :conditions => { :samples => { :empty_supplier_sample_name => true } }, :joins => :sample }
+  named_scope :with_blank_samples, { :conditions => { :aliquots => { :samples => { :empty_supplier_sample_name => true } } }, :joins => { :aliquots => :sample } }
 
   class << self
     def delegate_to_well_attribute(attribute, options = {})
@@ -128,10 +129,10 @@ class Well < Asset
   end
 
   def create_child_sample_tube
-    sample_tube = SampleTube.create(:sample => self.sample, :map => self.map)
-    AssetLink.create_edge!(self, sample_tube)
-
-    sample_tube
+    SampleTube.create!(:map => self.map).tap do |sample_tube|
+      sample_tube.aliquots = aliquots.map(&:clone)
+      AssetLink.connect(self, sample_tube)
+    end
   end
 
   def qc_data
@@ -140,12 +141,6 @@ class Well < Asset
      :sequenom      => self.get_sequenom_pass,
      :concentration => self.get_concentration }
   end
-  
-  def self.render_class
-    Api::WellIO
-  end
-
-private
 
   def create_well_attribute_if_not_exists
     unless self.well_attribute
@@ -153,31 +148,27 @@ private
       self.save!
     end
   end
+  private :create_well_attribute_if_not_exists
 
- def buffer_required?
+  def buffer_required?
     get_buffer_volume > 0.0
   end
+  private :buffer_required?
 
-public
-    
   def find_child_plate
     self.children.reverse_each do |child_asset|
       return child_asset if child_asset.is_a?(Well)
     end
-    
     nil
   end
 
-  def get_tag_instance
-    self.tag_instance
+  def pool_id(&block)
+    return nil if requests_as_target.empty?
+    requests_as_target.map(&:submission_id).uniq.tap do |submission_ids|
+      raise StandardError, "Cannot handle no submissions" if submission_ids.empty?
+      raise StandardError, "Cannot handle multiple submissions (#{submission_ids.inspect})" if submission_ids.size > 1
+    end.first.tap do |pool_id|
+      yield(pool_id) if block_given?
+    end
   end
-  
-  def get_tag
-    self.tag_instance.try(:tag)
-  end
-
-  def tag
-    self.get_tag.try(:map_id) || ''
-  end
-
 end

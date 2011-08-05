@@ -23,7 +23,6 @@ Feature: Sample manifest
 
   Scenario: Create a plate manifest and upload a manifest file without processing it
     Given a manifest has been created for "Test study"
-    Given I reset all of the sanger sample ids to a known number sequence
     When I fill in "File to upload" with "test/data/test_blank_wells.csv"
     And I press "Upload manifest"
     When I follow "View all manifests"
@@ -82,6 +81,23 @@ Feature: Sample manifest
   Scenario: A plate should have a purpose of stock
     Given a manifest has been created for "Test study"
     Then plate "1234567" should have a purpose of "Stock Plate"
+
+  Scenario Outline: Upload a manifest that has mismatched information
+    Given a manifest has been created for "Test study"
+    When I fill in "File to upload" with "<filename>"
+    And I press "Upload manifest"
+    Given 1 pending delayed jobs are processed
+    When I follow "View all manifests"
+    Then I should see the manifest table:
+      | Contains | Study      | Supplier           | Manifest       | Upload          | Errors | State  | Created by |
+      | 1 plate  | Test study | Test supplier name | Blank manifest | Upload manifest | Errors | Failed | john       |
+    When I follow "Errors for manifest for Test study"
+    And I should see "Well info for sample_1 mismatch: expected DN1234567T B1 but reported as <barcode> <well>"
+
+    Scenarios:
+      | filename                                 | barcode    | well |
+      | test/data/manifests/mismatched_wells.csv | DN1234567T | A1   |
+      | test/data/manifests/mismatched_plate.csv | DN11111T   | B1   |
 
   Scenario: Upload a csv manifest with empty samples
     Given a manifest has been created for "Test study"
@@ -264,7 +280,6 @@ Feature: Sample manifest
   @is_control
   Scenario: Check is_control and is_resubmit are set properly in an uploaded manifest
     Given a manifest has been created for "Test study"
-    Given I reset all of the sanger sample ids to a known number sequence
     When I fill in "File to upload" with "test/data/test_is_control_is_resubmit.csv"
     And I press "Upload manifest"
     Given the manifests are successfully processed

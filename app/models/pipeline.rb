@@ -22,10 +22,31 @@ class Pipeline < ActiveRecord::Base
   belongs_to :request_type
   validates_presence_of :request_type
 
-  has_many :requests, :through => :request_type, :extend => Pipeline::RequestsInStorage
+  has_many :requests, :through => :request_type, :extend => Pipeline::RequestsInStorage do
+    def inbox(show_held_requests = true, current_page = 1)
+      # Build a list of methods to invoke to build the correct request list
+      actions = []
+      actions << ((proxy_owner.group_by_parent? or show_held_requests) ? :full_inbox : :pipeline_pending)
+      actions << [ (proxy_owner.group_by_parent? ? :holder_located : :located), proxy_owner.location_id ]
+      actions << (proxy_owner.group_by_submission? ? :ordered_for_submission_grouped_inbox : :ordered_for_ungrouped_inbox)
+      actions << [ :paginate, { :per_page => 50, :page => current_page } ] if proxy_owner.paginate?
+
+      actions.inject(self.include_request_metadata) { |context, action| context.send(*Array(action)) }
+    end
+
+    # Used by the Pipeline class to retrieve the list of requests that are coming into the pipeline.
+    def inputs(show_held_requests = false)
+      send(show_held_requests ? :full_inbox : :pipeline_pending)
+    end
+  end
 
   belongs_to :next_pipeline,     :class_name => 'Pipeline'
   belongs_to :previous_pipeline, :class_name => 'Pipeline'
+
+  named_scope :externally_managed, :conditions => { :externally_managed => true }
+  named_scope :internally_managed, :conditions => { :externally_managed => false }
+  named_scope :active,   :conditions => { :active => true }
+  named_scope :inactive, :conditions => { :active => false }
   
   acts_as_audited :on => [:destroy, :update]
 
@@ -34,7 +55,7 @@ class Pipeline < ActiveRecord::Base
   include SequencingQcPipeline
   include Uuid::Uuidable
   include Pipeline::InboxUngrouped
-  
+  include Pipeline::BatchValidation
 
   validates_presence_of :name
   validates_uniqueness_of :name, :on => :create, :message => "name already in use"
@@ -85,42 +106,8 @@ class Pipeline < ActiveRecord::Base
     request.remove_unused_assets
   end
 
-  def paginate?
-    paginate
-  end
-
-  def get_input_requests(show_held_requests=false)
-    if show_held_requests
-      Request.for_pipeline(self).full_inbox
-    else
-      Request.for_pipeline(self).pipeline_pending
-    end
-  end
-
   def get_input_request_groups(show_held_requests=true)
-    group_requests(get_input_requests(show_held_requests))
-  end
-
-  def get_output_request_groups
-    group_requests(get_output_requests)
-  end
-
-  def get_all_input_requests
-    @requests = Request.all_pending(self.request_type_id)
-  end
-
-  def get_input_requests_checking_for_pagination(show_held_requests=true,current_page=1)
-    if group_by_parent
-      get_input_requests(true).include_request_metadata
-    elsif paginate?
-      get_input_requests(show_held_requests).include_request_metadata.paginate({ :per_page => 50, :page => current_page, :order => 'id DESC' })
-    else
-      get_input_requests(show_held_requests).include_request_metadata
-    end
-  end
-
-  def pending_assets
-    @assets = Request.all_pending_with_asset(self.request_type_id).map { |r| r.asset }
+    group_requests(requests.inputs(show_held_requests))
   end
   
   # to overwrite by subpipeline if needed
@@ -139,27 +126,12 @@ class Pipeline < ActiveRecord::Base
     end
   end
 
-  # could cause problems
-  def group_by_study?
-    self.group_by_study
-  end
-
-  def request_to_group_key(request, *args)
-    holder_map  = args.first
-    group_key = []
-    if group_by_parent?
-      group_key << holder_map[request.id]
+  def request_to_group_key(request, holder_map)
+    [].tap do |group_key|
+      group_key << holder_map[request.id] if group_by_parent?
+      group_key << request.submission_id  if group_by_submission?
+      group_key << request.study_id       if group_by_study?
     end
-
-    if group_by_submission?
-      group_key << request.submission_id
-    end
-
-    if group_by_study?
-      group_key << request.study_id
-    end
-
-    group_key
   end
 
   def group_key_to_hash(group)

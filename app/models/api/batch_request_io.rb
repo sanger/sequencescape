@@ -1,4 +1,19 @@
 class Api::BatchRequestIO < Api::Base
+  module Extensions
+    module ClassMethods
+      def render_class
+        Api::BatchRequestIO
+      end
+    end
+
+    def self.included(base)
+      base.class_eval do
+        extend ClassMethods
+
+        named_scope :including_associations_for_json, { :include => [ :uuid_object, { :request => [ :uuid_object, :request_type, { :asset => :uuid_object }, { :target_asset => :uuid_object } ] }, { :batch => :uuid_object } ] }
+      end
+    end
+  end
   renders_model(::BatchRequest)
 
   map_attribute_to_json_attribute(:uuid)

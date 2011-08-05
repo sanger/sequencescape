@@ -100,6 +100,7 @@ module ModelExtensions::Submission
         json['library_type']                   = attributes[:library_type]
         json['fragment_size_required', 'from'] = attributes[:fragment_size_required_from]
         json['fragment_size_required', 'to']   = attributes[:fragment_size_required_to]
+        json['bait_library']                   = attributes[:bait_library_name]
         request_type_multiplier { |id| json['number_of_lanes'] = attributes[:multiplier, id] }
       end
     end.to_hash
@@ -131,6 +132,7 @@ module ModelExtensions::Submission
         attributes[:library_type]                = json['library_type'] 
         attributes[:fragment_size_required_from] = json['fragment_size_required', 'from'] 
         attributes[:fragment_size_required_to]   = json['fragment_size_required', 'to'] 
+        attributes[:bait_library_name]           = json['bait_library']
         request_type_multiplier { |id| attributes[:multiplier, id] = json['number_of_lanes'] }
       end
     end.to_hash

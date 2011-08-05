@@ -9,7 +9,24 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110707080726) do
+ActiveRecord::Schema.define(:version => 20110804154629) do
+
+  create_table "aliquots", :force => true do |t|
+    t.integer  "receptacle_id",    :null => false
+    t.integer  "study_id"
+    t.integer  "project_id"
+    t.integer  "library_id"
+    t.integer  "sample_id",        :null => false
+    t.integer  "tag_id"
+    t.string   "library_type"
+    t.integer  "insert_size_from"
+    t.integer  "insert_size_to"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "bait_library_id"
+  end
+
+  add_index "aliquots", ["receptacle_id", "tag_id"], :name => "aliquot_tags_are_unique_within_receptacle", :unique => true
 
   create_table "archived_properties", :force => true do |t|
     t.text    "value"
@@ -86,14 +103,14 @@ ActiveRecord::Schema.define(:version => 20110707080726) do
     t.decimal  "volume",                                :precision => 10, :scale => 2
     t.integer  "barcode_prefix_id"
     t.decimal  "concentration",                         :precision => 18, :scale => 8
-    t.integer  "sample_id"
-    t.integer  "tag_id"
+    t.integer  "legacy_sample_id"
+    t.integer  "legacy_tag_id"
   end
 
   add_index "assets", ["barcode"], :name => "index_assets_on_barcode"
   add_index "assets", ["barcode_prefix_id"], :name => "index_assets_on_barcode_prefix_id"
+  add_index "assets", ["legacy_sample_id"], :name => "index_assets_on_sample_id"
   add_index "assets", ["map_id"], :name => "index_assets_on_map_id"
-  add_index "assets", ["sample_id"], :name => "index_assets_on_sample_id"
   add_index "assets", ["sti_type", "updated_at"], :name => "index_assets_on_sti_type_and_updated_at"
   add_index "assets", ["sti_type"], :name => "index_assets_on_sti_type"
   add_index "assets", ["updated_at"], :name => "index_assets_on_updated_at"
@@ -120,6 +137,35 @@ ActiveRecord::Schema.define(:version => 20110707080726) do
   add_index "audits", ["auditable_id", "auditable_type"], :name => "auditable_index"
   add_index "audits", ["created_at"], :name => "index_audits_on_created_at"
   add_index "audits", ["user_id", "user_type"], :name => "user_index"
+
+  create_table "bait_libraries", :force => true do |t|
+    t.integer  "bait_library_supplier_id"
+    t.string   "name",                     :null => false
+    t.string   "supplier_identifier"
+    t.string   "target_species",           :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "bait_libraries", ["bait_library_supplier_id", "name"], :name => "bait_library_names_are_unique_within_a_supplier", :unique => true
+
+  create_table "bait_library_layouts", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "plate_id",                   :null => false
+    t.string   "layout",     :limit => 1024
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "bait_library_layouts", ["plate_id"], :name => "bait_libraries_are_laid_out_on_a_plate_once", :unique => true
+
+  create_table "bait_library_suppliers", :force => true do |t|
+    t.string   "name",       :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "bait_library_suppliers", ["name"], :name => "index_bait_library_suppliers_on_name", :unique => true
 
   create_table "barcode_prefixes", :force => true do |t|
     t.string "prefix", :limit => 3
@@ -212,12 +258,12 @@ ActiveRecord::Schema.define(:version => 20110707080726) do
   add_index "comments", ["commentable_id", "commentable_type"], :name => "index_comments_on_commentable_id_and_commentable_type"
 
   create_table "container_associations", :force => true do |t|
-    t.integer "container_id"
-    t.integer "content_id"
+    t.integer "container_id", :null => false
+    t.integer "content_id",   :null => false
   end
 
   add_index "container_associations", ["container_id"], :name => "index_container_associations_on_container_id"
-  add_index "container_associations", ["content_id"], :name => "index_container_associations_on_content_id"
+  add_index "container_associations", ["content_id"], :name => "container_association_content_is_unique", :unique => true
 
   create_table "controls", :force => true do |t|
     t.string   "name"
@@ -296,7 +342,6 @@ ActiveRecord::Schema.define(:version => 20110707080726) do
     t.string  "thumbnail"
     t.integer "db_file_id"
     t.string  "documentable_type", :limit => 50
-    t.text    "uploaded_file"
   end
 
   add_index "documents", ["documentable_id", "documentable_type"], :name => "index_documents_on_documentable_id_and_documentable_type"
@@ -512,9 +557,20 @@ ActiveRecord::Schema.define(:version => 20110707080726) do
     t.boolean  "summary",                            :default => true
     t.boolean  "group_by_study",                     :default => true
     t.integer  "max_number_of_groups"
+    t.boolean  "externally_managed",                 :default => false
+    t.string   "group_name"
   end
 
   add_index "pipelines", ["sorter"], :name => "index_pipelines_on_sorter"
+
+  create_table "plate_creations", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "parent_id"
+    t.integer  "child_plate_purpose_id"
+    t.integer  "child_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "plate_metadata", :force => true do |t|
     t.integer "plate_id"
@@ -523,15 +579,22 @@ ActiveRecord::Schema.define(:version => 20110707080726) do
 
   add_index "plate_metadata", ["plate_id"], :name => "index_plate_metadata_on_plate_id"
 
+  create_table "plate_purpose_relationships", :force => true do |t|
+    t.integer "parent_id"
+    t.integer "child_id"
+  end
+
   create_table "plate_purposes", :force => true do |t|
-    t.string   "name",                                                             :null => false
+    t.string   "name",                                                                 :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "type"
     t.string   "target_type",                     :limit => 30
     t.boolean  "qc_display",                                    :default => false
     t.boolean  "pulldown_display"
-    t.boolean  "can_be_considered_a_stock_plate",               :default => false, :null => false
+    t.boolean  "can_be_considered_a_stock_plate",               :default => false,     :null => false
+    t.string   "default_state",                                 :default => "pending"
+    t.integer  "barcode_printer_type_id",                       :default => 2
   end
 
   add_index "plate_purposes", ["qc_display"], :name => "index_plate_purposes_on_qc_display"
@@ -638,9 +701,17 @@ ActiveRecord::Schema.define(:version => 20110707080726) do
     t.string  "library_creation_complete"
     t.string  "sequencing_type"
     t.integer "insert_size"
+    t.integer "bait_library_id"
   end
 
   add_index "request_metadata", ["request_id"], :name => "index_request_metadata_on_request_id"
+
+  create_table "request_type_plate_purposes", :force => true do |t|
+    t.integer "request_type_id",  :null => false
+    t.integer "plate_purpose_id", :null => false
+  end
+
+  add_index "request_type_plate_purposes", ["request_type_id", "plate_purpose_id"], :name => "plate_purposes_are_unique_within_request_type", :unique => true
 
   create_table "request_types", :force => true do |t|
     t.string   "key",                :limit => 50
@@ -656,6 +727,7 @@ ActiveRecord::Schema.define(:version => 20110707080726) do
     t.string   "request_class_name"
     t.text     "request_parameters"
     t.integer  "morphology",                       :default => 0
+    t.boolean  "for_multiplexing",                 :default => false
   end
 
   create_table "requests", :force => true do |t|
@@ -667,7 +739,6 @@ ActiveRecord::Schema.define(:version => 20110707080726) do
     t.integer  "sample_pool_id"
     t.integer  "workflow_id"
     t.integer  "request_type_id"
-    t.integer  "sample_id"
     t.integer  "item_id"
     t.integer  "asset_id"
     t.integer  "target_asset_id"
@@ -682,7 +753,6 @@ ActiveRecord::Schema.define(:version => 20110707080726) do
   add_index "requests", ["asset_id"], :name => "index_requests_on_asset_id"
   add_index "requests", ["item_id"], :name => "index_request_on_item_id"
   add_index "requests", ["project_id"], :name => "index_requests_on_project_id"
-  add_index "requests", ["sample_id"], :name => "index_requests_on_sample_id"
   add_index "requests", ["state", "request_type_id", "study_id"], :name => "request_project_index"
   add_index "requests", ["study_id", "request_type_id", "state"], :name => "index_requests_on_project_id_and_request_type_id_and_state"
   add_index "requests", ["study_id"], :name => "index_request_on_project_id"
@@ -852,6 +922,16 @@ ActiveRecord::Schema.define(:version => 20110707080726) do
     t.string   "model_name"
   end
 
+  create_table "state_changes", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "target_id"
+    t.string   "contents",       :limit => 1024
+    t.string   "previous_state"
+    t.string   "target_state"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "studies", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -946,6 +1026,12 @@ ActiveRecord::Schema.define(:version => 20110707080726) do
   add_index "study_samples", ["sample_id"], :name => "index_project_samples_on_sample_id"
   add_index "study_samples", ["study_id"], :name => "index_project_samples_on_project_id"
 
+  create_table "study_samples_backup", :id => false, :force => true do |t|
+    t.integer "id",        :default => 0, :null => false
+    t.integer "study_id"
+    t.integer "sample_id"
+  end
+
   create_table "study_types", :force => true do |t|
     t.string   "name"
     t.boolean  "valid_type"
@@ -1036,6 +1122,23 @@ ActiveRecord::Schema.define(:version => 20110707080726) do
     t.datetime "updated_at"
   end
 
+  create_table "tag_layout_templates", :force => true do |t|
+    t.string   "layout_class_name"
+    t.integer  "tag_group_id"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "tag_layouts", :force => true do |t|
+    t.string   "sti_type"
+    t.integer  "tag_group_id"
+    t.integer  "plate_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "tags", :force => true do |t|
     t.string   "oligo"
     t.integer  "map_id"
@@ -1075,6 +1178,24 @@ ActiveRecord::Schema.define(:version => 20110707080726) do
   add_index "tasks", ["sorted"], :name => "index_tasks_on_sorted"
   add_index "tasks", ["sti_type"], :name => "index_tasks_on_sti_type"
 
+  create_table "transfer_templates", :force => true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "name"
+    t.string   "transfer_class_name"
+    t.string   "transfers",           :limit => 1024
+  end
+
+  create_table "transfers", :force => true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "sti_type"
+    t.integer  "source_id"
+    t.integer  "destination_id"
+    t.string   "destination_type"
+    t.string   "transfers",        :limit => 1024
+  end
+
   create_table "users", :force => true do |t|
     t.string   "login"
     t.string   "email"
@@ -1092,9 +1213,11 @@ ActiveRecord::Schema.define(:version => 20110707080726) do
     t.string   "barcode"
     t.string   "cookie"
     t.datetime "cookie_validated_at"
+    t.string   "encrypted_swipecard_code",  :limit => 40
   end
 
   add_index "users", ["barcode"], :name => "index_users_on_barcode"
+  add_index "users", ["encrypted_swipecard_code"], :name => "index_users_on_encrypted_swipecard_code"
   add_index "users", ["login"], :name => "index_users_on_login"
   add_index "users", ["pipeline_administrator"], :name => "index_users_on_pipeline_administrator"
 
@@ -1126,6 +1249,12 @@ ActiveRecord::Schema.define(:version => 20110707080726) do
   end
 
   add_index "well_attributes", ["well_id"], :name => "index_well_attributes_on_well_id"
+
+  create_table "well_to_tube_transfers", :force => true do |t|
+    t.integer "transfer_id",    :null => false
+    t.integer "destination_id", :null => false
+    t.string  "source"
+  end
 
   create_table "workflow_samples", :force => true do |t|
     t.text     "name"

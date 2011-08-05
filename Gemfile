@@ -42,13 +42,14 @@ gem "delayed_job", '~>2.0.4'
 
 gem "cbrunnkvist-psd_logger"
 
-gem "ruby_walk", :git => "git+ssh://git@github.com/sanger/ruby_walk"
+gem "ruby_walk",  ">= 0.0.2",:git => "git+ssh://git@github.com/sanger/ruby_walk"
 
 # For the API level
 gem "uuidtools"
 gem "sinatra", "~>1.1.0"
 gem "rack-acceptable", :require => 'rack/acceptable'
 gem "yajl-ruby", :require => 'yajl'
+gem "cancan"
 
 group :warehouse do
   #the most recent one that actually compiles
@@ -85,6 +86,8 @@ group :test do
   gem "timecop"
   gem "treetop", "~>1.2.5"
   gem 'parallel_tests'
+
+  gem 'rgl'
 end
 
 group :cucumber do

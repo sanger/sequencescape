@@ -34,7 +34,7 @@ Given /^plate "([^"]*)" has "([^"]*)" wells with samples$/ do |plate_barcode, nu
   1.upto(number_of_wells.to_i) do |i|
     well_data  << Well.new(:plate => plate, :map_id => i, :sample => Factory(:sample))
   end
-  plate.import_wells well_data
+  plate.wells.import well_data
 end
 
 
@@ -52,7 +52,7 @@ end
 
 Given /^plate "([^"]*)" has concentration and sequenom results$/ do |plate_barcode|
   plate = Plate.find_from_machine_barcode(plate_barcode)
-  plate.wells.each_with_index do |well,index|
+  plate.wells.walk_in_column_major_order do |well, index|
     well.well_attribute.update_attributes!(
       :pico_pass      => "Pass",
       :concentration  => 5 + (index%50),
@@ -75,10 +75,7 @@ end
 
 Given /^plate with barcode "([^"]*)" has a well$/ do |plate_barcode|
   plate = Plate.find_by_barcode(plate_barcode)
-  sample = Factory :sample, :name => "Sample1"
-  well = Factory :well
-  well.sample = sample
-  well.save!
+  well  = Factory(:empty_well).tap { |well| well.aliquots.create!(:sample => Factory(:sample, :name => 'Sample1')) }
   plate.add_and_save_well(well, 0, 0)
 end
 
@@ -105,6 +102,10 @@ Given /^plate (\d+) has is a stock plate$/ do |plate_id|
   Plate.find(plate_id).update_attributes(:plate_purpose => PlatePurpose.stock_plate_purpose)
 end
 
+Given /^the plate with ID (\d+) has a plate purpose of "([^\"]+)"$/ do |id, name|
+  purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
+  Plate.find(id).update_attributes!(:plate_purpose => purpose)
+end
 
 Given /^a plate with purpose "([^"]*)" and barcode "([^"]*)" exists$/ do |plate_purpose_name, machine_barcode|
   Plate.create!(:barcode =>Barcode.number_to_human("#{machine_barcode}"), :plate_purpose => PlatePurpose.find_by_name(plate_purpose_name))
@@ -147,7 +148,8 @@ end
 
 Given /^the well with ID (\d+) contains the sample "([^\"]+)"$/ do |well_id, name|
   sample = Sample.find_by_name(name) or raise StandardError, "Cannot find the sample #{name.inspect}"
-  Well.find(well_id).update_attributes!(:material => sample)
+  well   = Well.find(well_id)
+  well.aliquots.create!(:sample => sample)
 end
 
 Then /^the wells with the following UUIDs should all be related to the same plate:$/ do |well_uuids|
@@ -159,4 +161,20 @@ Then /^the wells with the following UUIDs should all be related to the same plat
   assert_equal(1, plates_by_holder.size, 'Incorrect plate count found for the wells')
   assert_equal(1, plates_by_parents.size, 'Incorrect parent count found for the wells')
   assert_equal(plates_by_holder, plates_by_parents, 'Plates and parents do not agree on well to plate relationship')
+end
+
+Given /^a "([^\"]+)" plate called "([^\"]+)" exists$/ do |name, plate_name|
+  plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
+  plate_purpose.create!(:name => plate_name)
+end
+
+Given /^a "([^\"]+)" plate called "([^\"]+)" with ID (\d+)$/ do |name, plate_name, id|
+  plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
+  plate_purpose.create!(:name => plate_name, :id => id)
+end
+
+Given /^all wells on (the plate "[^\"]+") have unique samples$/ do |plate|
+  plate.wells.each do |well|
+    well.aliquots.create!(:sample => Factory(:sample))
+  end
 end

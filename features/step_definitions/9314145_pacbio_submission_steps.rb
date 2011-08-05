@@ -1,9 +1,7 @@
 Given /^I have a sample tube "([^"]*)" in study "([^"]*)" in asset group "([^"]*)"$/ do |sample_tube_barcode, study_name, asset_group_name|
   study = Study.find_by_name(study_name)
   sample_tube = Factory(:sample_tube, :barcode => sample_tube_barcode, :location =>  Location.find_by_name('PacBio sample prep freezer'))
-  @updating_from_manifest = true
-  sample_tube.sample.name = "Sample_#{sample_tube_barcode}"
-  sample_tube.sample.save_without_validation!
+  sample_tube.primary_aliquot.sample.rename_to!("Sample_#{sample_tube_barcode}")
   asset_group = AssetGroup.find_by_name(asset_group_name)
   if asset_group.nil?
     asset_group = Factory(:asset_group, :name => asset_group_name, :study => study)
@@ -56,9 +54,9 @@ Given /^I have a fast PacBio sequencing batch$/ do
   Given %Q{the sample tubes are part of the study}
   Given %Q{I have a PacBio submission}
   location = Location.find_by_name("PacBio sequencing freezer")
-  library_1 = PacBioLibraryTube.create!(:location => location, :barcode => "333", :sample => SampleTube.find_by_barcode(111).sample )
+  library_1 = PacBioLibraryTube.create!(:location => location, :barcode => "333").tap { |tube| tube.aliquots.clear ; tube.aliquots = SampleTube.find_by_barcode(111).aliquots.map(&:clone) }
   library_1.pac_bio_library_tube_metadata.update_attributes!(:prep_kit_barcode => "999", :smrt_cells_available => 3)
-  library_2 = PacBioLibraryTube.create!(:location => location, :barcode => "444", :sample => SampleTube.find_by_barcode(222).sample)
+  library_2 = PacBioLibraryTube.create!(:location => location, :barcode => "444").tap { |tube| tube.aliquots.clear ; tube.aliquots = SampleTube.find_by_barcode(222).aliquots.map(&:clone) }
   library_2.pac_bio_library_tube_metadata.update_attributes!(:prep_kit_barcode => "999", :smrt_cells_available => 1)
   PacBioSequencingRequest.first.update_attributes!(:asset => library_1)
   PacBioSequencingRequest.last.update_attributes!(:asset => library_2)
@@ -93,16 +91,17 @@ end
 
 Given /^the sample tubes are part of the study$/ do
   sample_tube = SampleTube.find_by_barcode(111)
-  sample_tube.sample.sample_metadata.update_attributes!(:sample_common_name => "Homo Sapien", :sample_taxon_id => 9606)
-  Study.find_by_name('Test study').samples << sample_tube.sample
+  sample_tube.primary_aliquot.sample.sample_metadata.update_attributes!(:sample_common_name => "Homo Sapien", :sample_taxon_id => 9606)
+  Study.find_by_name('Test study').samples << sample_tube.primary_aliquot.sample
+
   sample_tube = SampleTube.find_by_barcode(222)
-  sample_tube.sample.sample_metadata.update_attributes!(:sample_common_name => "Flu", :sample_taxon_id => 123, :sample_strain_att => "H1N1")
-  Study.find_by_name('Test study').samples << sample_tube.sample
+  sample_tube.primary_aliquot.sample.sample_metadata.update_attributes!(:sample_common_name => "Flu", :sample_taxon_id => 123, :sample_strain_att => "H1N1")
+  Study.find_by_name('Test study').samples << sample_tube.primary_aliquot.sample
 end
 
 Given /^sample tube "([^"]*)" is part of study "([^"]*)"$/ do |barcode, study_name|
   sample_tube = SampleTube.find_by_barcode(barcode)
-  Study.find_by_name(study_name).samples << sample_tube.sample
+  Study.find_by_name(study_name).samples << sample_tube.primary_aliquot.sample
 end
 
 When /^set the location of PacBioLibraryTube "([^"]*)" to be in "([^"]*)"$/ do |barcode,freezer|
@@ -174,7 +173,7 @@ end
 
 Given /^the sample in tube "([^"]*)" has a reference genome of "([^"]*)"$/ do |barcode, reference_genome_name|
   sample_tube = SampleTube.find_by_barcode(barcode)
-  sample_tube.sample.sample_metadata.update_attributes!(:reference_genome => ReferenceGenome.find_by_name(reference_genome_name))
+  sample_tube.primary_aliquot.sample.sample_metadata.update_attributes!(:reference_genome => ReferenceGenome.find_by_name(reference_genome_name))
 end
 
 Then /^the sample reference sequence table should look like:$/ do |expected_results_table|

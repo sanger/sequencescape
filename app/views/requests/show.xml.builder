@@ -6,7 +6,7 @@ xml.request(api_data) {
   xml.project_id @request.project_id if @request.project
   xml.study_id @request.study.id if @request.study
   xml.study_name @request.study.try(:name) if @request.study
-  xml.sample_id @request.sample_id if @request.sample
+  xml.sample_id @request.samples.first.id if @request.samples.size == 1
   xml.template @request.request_type.name, :id => @request.request_type.id if @request.request_type
   xml.read_length(@request.request_metadata.read_length) unless @request.request_metadata.read_length.blank?
 	xml.asset_id @request.asset_id if @request.asset

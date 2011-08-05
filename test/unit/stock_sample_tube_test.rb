@@ -6,12 +6,6 @@ class StockSampleTubeTest < ActiveSupport::TestCase
       @stock_sample = Factory :stock_sample_tube
     end
     
-    context "#is_a_pool?" do
-      should "return false" do
-        assert ! @stock_sample.is_a_pool?
-      end
-    end
-    
     context "#has_stock_asset?" do
       should "return false" do
         assert ! @stock_sample.has_stock_asset?

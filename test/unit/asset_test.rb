@@ -26,17 +26,6 @@ class AssetTest < ActiveSupport::TestCase
         assert @result_hash.blank?
       end
     end
-
-    context "item that relates to an item in studies" do
-      setup do
-        @non_pool_item = LibraryTube.create({:name => "library tube"})
-        @pool_item = MultiplexedLibraryTube.create({:name => "MX library tube"})
-      end
-      should "return false for #is_a_pool?" do
-        assert_equal false, Asset.find(@non_pool_item.id).is_a_pool?
-        assert_equal true, Asset.find(@pool_item.id).is_a_pool?
-      end
-    end
     
     context "#scanned_in_date" do
       setup do
@@ -54,85 +43,6 @@ class AssetTest < ActiveSupport::TestCase
     end
   end
 
-  context "Create a sample tube" do
-    setup do
-      @sample_tube    = Factory :sample_tube
-    end
-    should "be a sample tube" do
-      assert @sample_tube.is_a?(SampleTube)
-    end
-    should "have a sample" do
-      assert @sample_tube.sample.is_a?(Sample)
-    end
-  end
-
-  context "create a tag instance" do
-    setup do
-      @tag_instance   = Factory :tag_instance
-    end
-    should "be a Tag Instance" do
-      assert @tag_instance.is_a?(TagInstance)
-    end
-    should "have a tag" do
-      assert @tag_instance.tag.is_a?(Tag)
-    end
-  end
-
-  context "assign sample to sample tube" do
-    setup do
-      @sample_tube = Factory :asset, :sti_type => "SampleTube"
-      @sample = Factory :sample
-      @sample_tube.sample = @sample
-    end
-    should "correctly assign a sample to a sample tube" do
-      assert @sample_tube.sample.is_a?(Sample)
-      assert @sample_tube.material.is_a?(Sample)
-    end
-
-    should "not be a tag" do
-      assert ! @sample_tube.sample.is_a?(Tag)
-      assert ! @sample_tube.material.is_a?(Tag)
-      assert_raise NoMethodError do
-        @sample_tube.tag
-      end
-    end
-  end
-
-  context "assign tag to tag instance" do
-    setup do
-      @tag_instance = Factory :asset, :sti_type => "TagInstance"
-      @tag_instance = @tag_instance.becomes(TagInstance)
-      @tag = Factory :tag
-      @tag_instance.tag = @tag
-    end
-    should "correctly assign a tag to a tag instance" do
-      assert @tag_instance.tag.is_a?(Tag)
-      assert @tag_instance.material.is_a?(Tag)
-    end
-
-    should "not be a sample" do
-      assert ! @tag_instance.tag.is_a?(Sample)
-      assert ! @tag_instance.material.is_a?(Sample)
-      assert_raise NoMethodError do
-        @tag_instance.sample
-      end
-    end
-  end
-  
-  context "assign sample as a tag" do
-    setup do
-      @tag_instance = Factory :asset, :sti_type => "TagInstance"
-      @tag_instance = @tag_instance.becomes(TagInstance)
-      @sample = Factory :sample
-    end
-  
-    should "raise an exception" do
-      assert_raise ActiveRecord::AssociationTypeMismatch do
-      @tag_instance.tag = @sample
-      end
-    end  
-  end
-
   context "move to asset_group" do
     setup do
       @current_user = Factory :user
@@ -143,15 +53,15 @@ class AssetTest < ActiveSupport::TestCase
       @study_to = Factory :study
       
       @sample = Factory :sample
-      @sample_tube = Factory :asset, :sti_type => "SampleTube", :material  => @sample
-      @library_tube = Factory :asset, :sti_type => "LibraryTube", :material  => @sample
+      @sample_tube  = Factory(:empty_sample_tube).tap { |sample_tube|  sample_tube.aliquots.create!(:sample => @sample)  }
+      @library_tube = Factory(:library_tube).tap      { |library_tube| library_tube.aliquots.create!(:sample => @sample) }
 
       @sample_2 = Factory :sample
-      @sample_tube_2 = Factory :asset, :sti_type => "SampleTube", :material  => @sample_2
-      @library_tube_2 = Factory :asset, :sti_type => "LibraryTube", :material  => @sample_2
+      @sample_tube_2  = Factory(:empty_sample_tube).tap { |sample_tube|  sample_tube.aliquots.create!(:sample => @sample_2)  }
+      @library_tube_2 = Factory(:library_tube).tap      { |library_tube| library_tube.aliquots.create!(:sample => @sample_2) }
 
-      @multiplex_tube = Factory :asset, :sti_type => "MultiplexedLibraryTube"
-      @lane = Factory :asset, :sti_type => "Lane"
+      @multiplex_tube = Factory :multiplexed_library_tube
+      @lane = Factory :lane, :sti_type => "Lane"
 
       @study_sample = Factory :study_sample, :study => @study, :sample => @sample
       @study_sample = Factory :study_sample, :study => @study_2, :sample => @sample_2
@@ -171,16 +81,16 @@ class AssetTest < ActiveSupport::TestCase
       @request_type = Factory :request_type
       @workflow     = Factory :submission_workflow
       
-      @request_sampletube  = Factory :request, :study => @study, :request_type => @request_type, :sample => @sample, :asset => @sample_tube, :submission => @submission, :workflow => @workflow
-      @request_librarytube = Factory :request, :study => @study, :request_type => @request_type, :sample => @sample, :asset => @library_tube, :submission => @submission, :workflow => @workflow
-      @request_sampletube2 = Factory :request, :study => @study, :request_type => @request_type, :sample => @sample_2, :asset => @sample_tube_2, :submission => @submission, :workflow => @workflow
-      @request_multiplex   = Factory :request, :study => @study, :request_type => @request_type, :sample => @sample, :asset => @multiplex_tube, :submission => @submission, :workflow => @workflow
-      @request_lane        = Factory :request, :study => @study, :request_type => @request_type, :sample => @sample, :asset => @lane, :submission => @submission, :workflow => @workflow
+      @request_sampletube  = Factory :request, :study => @study, :request_type => @request_type, :asset => @sample_tube, :submission => @submission, :workflow => @workflow
+      @request_librarytube = Factory :request, :study => @study, :request_type => @request_type, :asset => @library_tube, :submission => @submission, :workflow => @workflow
+      @request_sampletube2 = Factory :request, :study => @study, :request_type => @request_type, :asset => @sample_tube_2, :submission => @submission, :workflow => @workflow
+      @request_multiplex   = Factory :request, :study => @study, :request_type => @request_type, :asset => @multiplex_tube, :submission => @submission, :workflow => @workflow
+      @request_lane        = Factory :request, :study => @study, :request_type => @request_type, :asset => @lane, :submission => @submission, :workflow => @workflow
 
       @new_assets_name = ""
 
       @sample_to = Factory :sample
-      @asset_to = Factory :asset, :name => @sample_to.name, :material => @sample_to
+      @asset_to  = Factory(:empty_sample_tube, :name => @sample_to.name).tap  { |sample_tube|  sample_tube.aliquots.create!(:sample => @sample_to)  }
       @asset_group_to_new = Factory :asset_group, :name => "Asset_Exist_To", :study => @study_to
       @asset_group_asset_to = Factory :asset_group_asset, :asset => @asset_to , :asset_group => @asset_group_to_new
 
@@ -228,10 +138,10 @@ class AssetTest < ActiveSupport::TestCase
       @study_to = Factory :study
 
       @sample = Factory :sample
-      @sample_tube = Factory :asset, :sti_type => "SampleTube", :material  => @sample
-      @library_tube = Factory :asset, :sti_type => "LibraryTube", :material  => @sample
-      @library_tube_2 = Factory :asset, :sti_type => "LibraryTube", :material  => @sample
-      @multiplex_tube = Factory :asset, :sti_type => "MultiplexedLibraryTube"
+      @sample_tube    = Factory(:empty_sample_tube).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample) }
+      @library_tube   = Factory(:library_tube).tap      { |library_tube| library_tube.aliquots.create!(:sample => @sample) }
+      @library_tube_2 = Factory(:library_tube).tap      { |library_tube| library_tube.aliquots.create!(:sample => @sample) }
+      @multiplex_tube = Factory(:multiplexed_library_tube)
 
       @study_sample = Factory :study_sample, :study => @study, :sample => @sample
 
@@ -249,14 +159,14 @@ class AssetTest < ActiveSupport::TestCase
       @request_type = Factory :request_type
       @workflow     = Factory :submission_workflow
 
-      @request_sampletube  = Factory :request, :study => @study, :request_type => @request_type, :sample => @sample, :asset => @sample_tube, :submission => @submission, :workflow => @workflow
-      @request_librarytube = Factory :request, :study => @study, :request_type => @request_type, :sample => @sample, :asset => @library_tube, :submission => @submission, :workflow => @workflow
-      @request_multiplex   = Factory :request, :study => @study, :request_type => @request_type, :sample => @sample, :asset => @multiplex_tube, :submission => @submission, :workflow => @workflow
+      @request_sampletube  = Factory :request, :study => @study, :request_type => @request_type, :asset => @sample_tube, :submission => @submission, :workflow => @workflow
+      @request_librarytube = Factory :request, :study => @study, :request_type => @request_type, :asset => @library_tube, :submission => @submission, :workflow => @workflow
+      @request_multiplex   = Factory :request, :study => @study, :request_type => @request_type, :asset => @multiplex_tube, :submission => @submission, :workflow => @workflow
 
       @new_assets_name = ""
 
       @sample_to = Factory :sample
-      @asset_to = Factory :asset, :name => @sample_to.name, :material => @sample_to
+      @sample_tube = Factory(:empty_sample_tube, :name => @sample_to.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_to) }
       @asset_group_to_new = Factory :asset_group, :name => "Asset_Exist_To", :study => @study_to
       @asset_group_asset_to = Factory :asset_group_asset, :asset => @asset_to , :asset_group => @asset_group_to_new
 

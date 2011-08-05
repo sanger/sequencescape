@@ -134,7 +134,7 @@ class Uuid < ActiveRecord::Base
   # @param id [String,  Integer ]
   # @return [String] the uuid .
   def self.generate_uuids!(resource_type, resource_ids)
-    return if ids.empty?
+    return if resource_ids.empty?
     ids_missing_uuids = filter_uncreated_uuids(resource_type, resource_ids)
     uuids_to_create = ids_missing_uuids.map {|id| new(:resource_type => resource_type, :resource_id => id, :external_id => self.generate_uuid) }
     Uuid.import uuids_to_create unless uuids_to_create.empty?
@@ -145,7 +145,7 @@ class Uuid < ActiveRecord::Base
   # ids is a string of internal_ids
   def self.filter_uncreated_uuids(resource_type, resource_ids)
     existing_uuids = all(:conditions => { :resource_type => resource_type, :resource_id => resource_ids })
-    ids - existing_uuids.map(&:resource_id)
+    resource_ids - existing_uuids.map(&:resource_id)
   end
 
   def self.generate_all_uuids_for_class(base_class_name)

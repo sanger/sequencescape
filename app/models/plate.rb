@@ -1,26 +1,98 @@
 class Plate < Asset
+  include Api::PlateIO::Extensions
   include ModelExtensions::Plate
   include LocationAssociation::Locatable
+  include Transfer::Associations
+  include PlatePurpose::Associations
+  include Barcode::Barcodeable
 
-  contains :wells
+  # The default state for a plate comes from the plate purpose
+  delegate :default_state, :to => :plate_purpose, :allow_nil => true
+
+  # The type of the barcode is delegated to the plate purpose because that governs the number of wells
+  delegate :barcode_type, :to => :plate_purpose, :allow_nil => true
+
+  # Transfer requests into a plate are the requests leading into the wells of said plate.
+  def transfer_requests
+    wells.map(&:transfer_requests_as_target).flatten
+  end
+
+  # The iteration of a plate is defined as the number of times a plate of this type has been created
+  # from it's parent.
+  def iteration
+    return nil if parent.nil?  # No parent means no iteration, not a 0 iteration.
+
+    # NOTE: This is how to do row numbering with MySQL!  It essentially joins the assets and asset_links
+    # tables to find all of the child plates of our parent that have the same plate purpose, numbering
+    # those rows to give the iteration number for each plate.
+    iteration_of_plate = connection.select_one(%Q{
+      SELECT iteration 
+      FROM (
+        SELECT iteration_plates.id, @rownum:=@rownum+1 AS iteration
+        FROM (
+          SELECT assets.id
+          FROM asset_links
+          JOIN assets ON asset_links.descendant_id=assets.id
+          WHERE asset_links.direct=TRUE AND ancestor_id=#{parent.id} AND assets.sti_type='Plate' AND assets.plate_purpose_id=#{plate_purpose.id}
+          ORDER by assets.created_at ASC
+        ) AS iteration_plates,
+        (SELECT @rownum:=0) AS r
+      ) AS a
+      WHERE a.id=#{self.id}
+    }, "Plate #{self.id} iteration query")
+
+    iteration_of_plate['iteration'].try(:to_i)
+  end
+
+  contains :wells, :order => '`assets`.map_id ASC' do
+    def located_at(location)
+      super(proxy_owner, location)
+    end
+
+    # After importing wells we need to also create the AssetLink and WellAttribute information for them.
+    def post_import(links_data)
+      time_now = Time.now
+
+      AssetLink.import([:direct, :count, :ancestor_id, :descendant_id], links_data.map { |c| [true,1,*c] }, :validate => false)
+      WellAttribute.import([:well_id, :created_at, :updated_at], links_data.map { |c| [c.last, time_now, time_now] }, :validate => false, :timestamps => false)
+    end
+
+    # Walks the wells A1, B1, C1, ... A2, B2, C2, ... H12
+    def walk_in_column_major_order(&block)
+      locations_to_well = Hash[self.map { |well| [ well.map.description, well ] }]
+      Map.walk_plate_in_column_major_order(proxy_owner.size) do |map, index|
+        well = locations_to_well[map.description]
+        yield(well, index) if well.present?
+      end
+    end
+
+    # Walks the wells A1, A2, ... B1, B2, ... H12
+    def walk_in_row_major_order(&block)
+      locations_to_well = Hash[self.map { |well| [ well.map.description, well ] }]
+      Map.walk_plate_in_row_major_order(proxy_owner.size) do |map, index|
+        well = locations_to_well[map.description]
+        yield(well, index) if well.present?
+      end
+    end
+  end
+
   #has_many :wells, :as => :holder, :class_name => "Well"
   DEFAULT_SIZE = 96
   self.prefix = "DN"
   cattr_reader :per_page
   @@per_page = 50
 
-  # plate_purpose is the chip type to be used with this plate.
-  belongs_to :plate_purpose
-
   before_create :set_plate_name_and_size
 
-  named_scope :including_associations_for_json, { :include => [:uuid_object, :plate_metadata, :barcode_prefix, { :plate_purpose => :uuid_object } ] }
-  named_scope :qc_started_plates, { :select => "distinct assets.*",  :order => 'assets.id DESC',  :conditions => ["(events.family = 'create_dilution_plate_purpose' OR asset_audits.key = 'slf_receive_plates') AND plate_purpose_id = #{PlatePurpose.find_by_name('Stock Plate').id}" ], :joins => "LEFT OUTER JOIN `events` ON events.eventful_id = assets.id LEFT OUTER JOIN `asset_audits` ON asset_audits.asset_id = assets.id  " ,:include => [:events, :asset_audits] }
-
-  def url_name
-    "plate"
-  end
-  alias_method(:json_root, :url_name)
+  named_scope :qc_started_plates, lambda { 
+    {
+      :select => "distinct assets.*",
+      :order => 'assets.id DESC',
+      :conditions => ["(events.family = 'create_dilution_plate_purpose' OR asset_audits.key = 'slf_receive_plates') AND plate_purpose_id = ?", PlatePurpose.find_by_name('Stock Plate') ],
+      :joins => "LEFT OUTER JOIN `events` ON events.eventful_id = assets.id LEFT OUTER JOIN `asset_audits` ON asset_audits.asset_id = assets.id" ,
+      :include => [:events, :asset_audits]
+    }
+  }
 
   def wells_sorted_by_map_id
     wells.sorted
@@ -30,23 +102,12 @@ class Plate < Asset
     wells.sort { |a, b| block.call(a) <=> block.call(b) }
   end
 
-  def quarantine_combine(plates)
-    raise  Exception, "I thought this function wasn't used. It is ?"
-    # Need to fix the formula of this
-    1.upto(4) do |quadrant|
-      1.upto(96) do |map_id|
-        puts "--#{map_id}--#{map_id+(96*quadrant)}--"
-        well = self.children.find_by_map_id(map_id+(96*quadrant))
-        well.parents << plates[quadrant-1].children.find_by_map_id(map_id)
-      end
-    end
-  end
-  
   def children_and_holded
     ( children | wells )
   end
 
   def create_child
+    raise StandardError, "Kaboom! Don't use this method!"
     child = Plate.create({:size => self.size})
     self.children << child
 
@@ -55,10 +116,14 @@ class Plate < Asset
     end
     child
   end
+  deprecate :create_child
 
   def find_map_by_rowcol(row, col)
     description  = (?A+row).chr+"#{col+1}"
     Map.find_by_description_and_asset_size(description, size)
+  end
+
+  def find_well_by_map_description(description)
   end
 
   def find_well_by_rowcol(row, col)
@@ -90,76 +155,10 @@ class Plate < Asset
     well.save!
   end
 
-  def map_id_offset
-    first_map = Map.find_by_asset_size(size, :order => 'id ASC')
-    raise Exception, "No maps found for the plate size '#{size}'" unless first_map
-    return first_map.id - 1 # - so 1 + offset = 0
-  end
-
-  # TODO:  move to ContainerAssociation module
-  def import_wells(wells)
-    #Plate.benchmark("import #{wells.size} wells") do
-    # slow
-    # This is a hack to get the id of the imported wells
-    # we prefix all the name so we can found and reload the new created wells, by name
-    # We then only update with the real one
-    
-    thread_name = "%.5d-" % $PID
-    original_names = []
-    Plate.benchmark("import tweaking name") do
-    wells.each do |well|
-      original_names << well.name
-      well.name = "#{thread_name}#{well.name}"
-    end
-    end
-    
-    #Plate.benchmark("import importing #{wells.size}") do
-      Well.import wells
-    #end
-
-    sub_wells = []
-    Plate.benchmark("import reloading") do
-      sub_wells = Well.find(:all, :conditions => ["name LIKE ?", "#{thread_name}%"], :select => "id, name")
-      sub_wells.each do |sub_well|
-        sub_well.name = sub_well.name[thread_name.size, -1]
-      end
-    end
-    #Plate.benchmark("import renaming") do
-      # we can skip the validation, hoping that its been already done and partially on the name
-      # the fake name being already validated
-      Well.import [:id, :name], sub_wells, :on_duplicate_key_update => [:name], :validate => false
-    #end
-    associations = sub_wells.map { |w| ContainerAssociation.new(:container_id => id, :content_id => w.id) }
-    ContainerAssociation.import associations
-    #end
-  end
-
-  def create_wells_with_samples(samples, count = 96)
-    well_data = []
-
-    self.size  = count
-    offset = map_id_offset
-    1.upto(count) do |i|
-      well_data << Well.new(:plate => self, :map_id => i+offset, :sample => samples.shift)
-    end
-
-    import_wells(well_data)
-
-    self.save
-    self.reload
-    self.create_well_attributes(self.wells)
-
-    self.wells
-  end
-
-  def create_well_attributes(wells)
-    well_attributes = wells.map { |well| [ well.id ] }
-    WellAttribute.import [:well_id], well_attributes
-  end
-
   def find_well_by_name(well_name)
     self.wells.position_name(well_name, self.size).first
   end
+  alias :find_well_by_map_description :find_well_by_name 
 
   def plate_header
     rows = [""]
@@ -200,6 +199,13 @@ class Plate < Asset
     self.save
   end
 
+  def stock_plate_name
+    if self.get_plate_type == "Stock Plate" || self.get_plate_type.blank?
+      return "ABgene_0765"
+    end
+    self.get_plate_type
+  end
+
   def control_well_exists?
     wells.each do |well|
       request = Request.find_by_target_asset_id(well.id)
@@ -213,22 +219,11 @@ class Plate < Asset
     false
   end
 
-  def stock_plate_name
-    if self.get_plate_type == "Stock Plate" || self.get_plate_type.blank?
-      return "ABgene_0765"
-    end
-    self.get_plate_type
-  end
-
+  # A plate has a sample with the specified name if any of its wells have that sample.
   def sample?(sample_name)
-    self.wells.each do |well|
-      next if well.sample.nil?
-      next if well.sample.name.blank?
-      if well.sample.name == sample_name
-        return true
-      end
+    self.wells.any? do |well|
+      well.aliquots.any? { |aliquot| aliquot.sample.name == sample_name }
     end
-    false
   end
 
   def get_storage_location
@@ -321,7 +316,7 @@ class Plate < Asset
   end
 
   def create_plate_submission(project, study, user, current_time)
-    Submission.build!(
+    LinearSubmission.build!(
       :study => study,
       :project => project,
       :workflow => genotyping_submission_workflow,
@@ -357,16 +352,9 @@ class Plate < Asset
   
   # Should return true if any samples on the plate contains gender information
   def contains_gendered_samples?
-    genders_count = 0
-    
-    wells.each  do |well|
-      next if well.sample.nil?
-      # Does the sample in this well have a gender?
-      genders_count += 1 if !well.sample.sample_metadata.gender.blank?
+    wells.any? do |well|
+      well.aliquots.any? { |aliquot| aliquot.sample.present? and not aliquot.sample.sample_metadata.gender.blank? }
     end
-    
-    # So did we find any samples with a gender?
-    genders_count > 0
   end
 
   def generate_plate_submission(project, study, user, current_time)
@@ -381,10 +369,6 @@ class Plate < Asset
 
   def self.source_plate_types
     ["ABgene_0765","ABgene_0800"]
-  end
-
-  def self.render_class
-    Api::PlateIO
   end
 
   def create_sample_tubes
@@ -426,23 +410,15 @@ class Plate < Asset
   end
 
   def lookup_stock_plate
-    # TODO: correctly lookup stock plate via pico dilution from assay plate
     self.parents.each do |parent_plate|
-      next unless parent_plate.is_a?(Plate)
+      next unless parent_plate.is_a?(Plate)     # TODO: Do we need this?
       return parent_plate if parent_plate.stock_plate?
-
-      if parent_plate.parents
-        parent_plate.parents.each do |parent_parent_plate|
-          next unless parent_parent_plate.is_a?(Plate)
-          if parent_parent_plate.stock_plate?
-            return parent_parent_plate
-          end
-        end
-      end
+      parent_stock = parent_plate.send(:lookup_stock_plate)
+      return parent_stock if parent_stock.present?
     end
-
     nil
   end
+  private :lookup_stock_plate
 
   def child_dilution_plates_filtered_by_type(parent_model)
     self.children.select{ |p| p.is_a?(parent_model) }
@@ -465,30 +441,26 @@ class Plate < Asset
   end
 
   def find_study_abbreviation_from_parent
-    if self.parent && self.parent.wells.first && self.parent.wells.first.study
-      return self.parent.wells.first.study.abbreviation
-    end
-
-    nil
+    self.parent.try(:wells).try(:first).try(:study).try(:abbreviation)
   end
 
-  def self.create_plate_with_barcode(*args)
+  def self.create_with_barcode!(*args, &block)
     attributes = args.extract_options!
-    plate      = args.first
-    barcode    = plate.barcode if plate.present? and not find_by_barcode(plate.barcode)
+    barcode    = args.first || attributes[:barcode]
+    barcode    = nil if barcode.present? and find_by_barcode(barcode).present?
     barcode  ||= PlateBarcode.create.barcode
-    self.create(attributes.merge(:barcode => barcode))
+    create!(attributes.merge(:barcode => barcode), &block)
   end
 
   def self.plates_from_scanned_plate_barcodes(source_plate_barcodes)
-    source_plate_barcodes.scan(/\d+/).map{ |raw_barcode| self.find_from_machine_barcode(raw_barcode) }
+    source_plate_barcodes.scan(/\d+/).map(&method(:find_from_machine_barcode))
   end
 
   def self.plates_from_scanned_plates_and_typed_plate_ids(source_plate_barcodes)
-    scanned_plates = source_plate_barcodes.scan(/\d+/).map{ |raw_barcode| self.find_from_machine_barcode(raw_barcode) }
-    typed_plates = source_plate_barcodes.scan(/\d+/).map{ |barcode_number| self.find_by_barcode(barcode_number) }
+    scanned_plates = source_plate_barcodes.scan(/\d+/).map(&method(:find_from_machine_barcode))
+    typed_plates   = source_plate_barcodes.scan(/\d+/).map(&method(:find_by_barcode))
 
-    (scanned_plates | typed_plates).select{ |plates| ! plates.nil? }
+    (scanned_plates | typed_plates).compact
   end
 
   def self.create_default_plates_and_print_barcodes(source_plate_barcodes, barcode_printer, current_user)
@@ -503,17 +475,6 @@ class Plate < Asset
   def number_of_blank_samples
     self.wells.with_blank_samples.count
   end
-
-  def delayed_stamp_samples_into_wells(plate_id)
-    return if self.wells.size > 0
-    plate = Plate.find(plate_id)
-    plate.wells.each do |well|
-      cloned_well = well.clone
-      cloned_well.plate = self
-      cloned_well.save!
-    end
-  end
-  #handle_asynchronously :delayed_stamp_samples_into_wells
 
   def default_plate_size
     DEFAULT_SIZE
@@ -541,6 +502,11 @@ class Plate < Asset
 
   def buffer_required?
     wells.any?(&:buffer_required?)
+  end
+
+  def valid_positions?(positions)
+    unique_positions_on_plate, unique_positions_from_caller = Map.where_description(positions).where_plate_size(self.size).all.map(&:description).sort.uniq, positions.sort.uniq
+    unique_positions_on_plate == unique_positions_from_caller
   end
 
   private

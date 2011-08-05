@@ -1,10 +1,25 @@
 class RequestType < ActiveRecord::Base
+  class RequestTypePlatePurpose < ActiveRecord::Base
+    set_table_name('request_type_plate_purposes')
+
+    belongs_to :request_type
+    validates_presence_of :request_type
+    belongs_to :plate_purpose
+    validates_presence_of :plate_purpose
+    validates_uniqueness_of :plate_purpose_id, :scope => :request_type_id
+  end
+
   include Workflowed
   include Uuid::Uuidable
   include Named
 
   has_many :requests
   has_many :pipelines
+
+  # Defines the acceptable plate purposes or the request type.  Essentially this is used to limit the
+  # cherrypick plate types when going into pulldown to the correct list.
+  has_many :plate_purposes, :class_name => 'RequestType::RequestTypePlatePurpose'
+  has_many :acceptable_plate_purposes, :through => :plate_purposes, :source => :plate_purpose
 
   MORPHOLOGIES  = [
     LINEAR = 0,   # one-to-one
@@ -31,10 +46,11 @@ class RequestType < ActiveRecord::Base
 
     line = __LINE__ + 1
     class_eval(%Q{
-      def #{name}(attributes = nil)
+      def #{name}(attributes = nil, &block)
         attributes ||= {}
         #{target}.#{target_method}(attributes.merge(request_parameters || {})) do |request|
           request.request_type = self
+          yield(request) if block_given?
         end.tap do |request|
           requests << request
         end
@@ -46,7 +62,7 @@ class RequestType < ActiveRecord::Base
   request_constructor(:new)
   alias_method(:new_request, :new)
 
-  request_constructor(:create_control!, :target => 'Request', :method => :create!)
+  request_constructor(:create_control!, :target => 'ControlRequest', :method => :create!)
 
   def request_class
     request_class_name.constantize
@@ -54,10 +70,6 @@ class RequestType < ActiveRecord::Base
 
   def request_class=(request_class)
     self.request_class_name = request_class.name
-  end
-
-  def for_multiplexing?
-    request_class.ancestors.include?(MultiplexedLibraryCreationRequest) || request_class.ancestors.include?(PulldownMultiplexedLibraryCreationRequest) || request_class.ancestors.include?(CherrypickForPulldownRequest)
   end
 
   def quarantine_create_asset_at_submission_time?
@@ -93,6 +105,7 @@ class RequestType < ActiveRecord::Base
     return {} unless request_options
     attributes = request_options.symbolize_keys
     common_attributes = request_class::Metadata.attribute_details.map(&:name)
+    common_attributes.concat(request_class::Metadata.association_details.map(&:assignable_attribute_name))
     attributes.delete_if { |k,_| not common_attributes.include?(k) }
   end
 

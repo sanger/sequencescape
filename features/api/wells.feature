@@ -13,17 +13,6 @@ Feature: Access wells through the API
 
     Given I am using the latest version of the API
 
-  @read @error
-  Scenario: Reading the JSON for a UUID that does not exist
-    When I GET the API path "/00000000-1111-2222-3333-444444444444"
-    Then the HTTP response should be "404 Not Found"
-    And the JSON should be:
-      """
-      {
-        "general": [ "UUID does not exist" ]
-      }
-      """
-
   @read
   Scenario: Reading the JSON for a UUID
     Given the well exists with ID 1
@@ -51,17 +40,17 @@ Feature: Access wells through the API
               "read": "http://www.example.com/api/1/11111111-2222-3333-4444-555555555555"
             }
           },
-          "sample": {
-            "actions": {
-              "read": "http://www.example.com/api/1/22222222-3333-4444-5555-666666666666"
+
+          "aliquots": [
+            {
+              "sample": {
+
+              }
             }
-          },
+          ],
 
           "uuid": "00000000-1111-2222-3333-444444444444",
           "location": "A1"
-        },
-        "uuids_to_ids": {
-          "00000000-1111-2222-3333-444444444444": 1
         }
       }
       """

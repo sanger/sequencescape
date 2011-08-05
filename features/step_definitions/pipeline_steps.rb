@@ -79,9 +79,8 @@ When /^I check request "(\d+)" for pipeline "([^"]+)"/ do |request_number, pipel
   request_number = request_number.to_i
   pipeline = Pipeline.find_by_name(pipeline_name)
 
-  request = pipeline.get_input_requests[request_number-1]
+  request = pipeline.requests.inbox[request_number-1]
   check("request_#{request.id}")
-
 end
 
 When /^I check request_group "(\d+)" for pipeline "([^"]+)"/ do |request_number, pipeline_name|
@@ -107,7 +106,7 @@ When /^pipeline debug$/ do
   puts "Plate #{Plate.last.id} -- #{Plate.last.location_id}"
   puts "Plate #{Plate.last.id} -- #{Plate.last.container}"
   puts Pipeline.find_by_name("DNA QC").location_id
-  puts Request.for_pipeline(Pipeline.find_by_name("DNA QC")).pipeline_pending.size
+  puts Pipeline.find_by_name("DNA QC").requests.ready_in_storage.pipeline_pending.size
   save_and_open_page
   debugger
 end

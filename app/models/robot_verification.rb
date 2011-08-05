@@ -1,15 +1,10 @@
 class RobotVerification
-
-  def valid_barcode_params?(barcode_hash)
-    return false if barcode_hash.nil?
-    return false if barcode_hash[:batch_barcode].nil? || barcode_hash[:robot_barcode].nil? || barcode_hash[:destination_plate_barcode].nil? || barcode_hash[:user_barcode].nil?
-
-    return false unless Batch.valid_barcode?(barcode_hash[:batch_barcode])
-    return false unless Robot.valid_barcode?(barcode_hash[:robot_barcode])
-    return false unless User.valid_barcode?(barcode_hash[:user_barcode])
-    return false if Plate.find_by_barcode(Barcode.number_to_human(barcode_hash[:destination_plate_barcode])).nil?
-
-    true
+  def validate_barcode_params(barcode_hash)
+    return yield("No barcodes specified")      if barcode_hash.nil?
+    yield("Worksheet barcode invalid")         if barcode_hash[:batch_barcode].nil?             or not Batch.valid_barcode?(barcode_hash[:batch_barcode])
+    yield("Tecan robot barcode invalid")       if barcode_hash[:robot_barcode].nil?             or not Robot.valid_barcode?(barcode_hash[:robot_barcode])
+    yield("User barcode invalid")              if barcode_hash[:user_barcode].nil?              or not User.valid_barcode?(barcode_hash[:user_barcode])
+    yield("Destination plate barcode invalid") if barcode_hash[:destination_plate_barcode].nil? or Plate.find_by_barcode(Barcode.number_to_human(barcode_hash[:destination_plate_barcode])).nil?
   end
 
   def expected_layout(batch, destination_plate_barcode)

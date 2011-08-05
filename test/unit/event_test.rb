@@ -146,7 +146,7 @@ class EventTest < ActiveSupport::TestCase
         @pe_sequencing_request_type = Factory :request_type, :name => "Paired end sequencing", :key => "paired_end_sequencing"
         @dna_qc_request_type = Factory :request_type, :name => "DNA QC", :key => "dna_qc"
 
-        @control = Factory :asset, :resource => true
+        @control = Factory(:sample_tube, :resource => true)
 
         @library_creation_request = Factory :request, :request_type => @library_creation_request_type
         @multiplexed_library_creation_request = Factory :request, :request_type => @mx_library_creation_request_type

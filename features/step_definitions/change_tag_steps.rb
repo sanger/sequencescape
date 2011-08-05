@@ -11,11 +11,10 @@ Given /^I have the following library tubes with tags:$/ do |table|
   Given %Q{I have a tag group called "My tag group" with #{number_of_tubes} tags}
   Given %Q{I have #{number_of_tubes} library tubes without tag instances}
 
-  table.rows.each do |barcode, tag|
-    tube = LibraryTube.find_by_barcode(barcode)
-    tag = Tag.find_by_map_id(tag.match(/(\d+)/)[1].to_i)
-    tag_instance = TagInstance.create!(:tag => tag)
-    tube.tag_instance=tag_instance
+  table.rows.each do |barcode, tag_id|
+    tube = LibraryTube.find_by_barcode(barcode)              or raise StandardError, "Cannot find library tube with barcode #{barcode.inspect}"
+    tag  = Tag.find_by_map_id(tag_id.match(/(\d+)/)[1].to_i) or raise StandardError, "Cannot find tag #{tag_id.inspect}"
+    tag.tag!(tube)
   end
 end
 

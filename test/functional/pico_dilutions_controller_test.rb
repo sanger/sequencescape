@@ -26,7 +26,7 @@ class PicoDilutionsControllerTest < ActionController::TestCase
 
       context "#index" do
         setup do
-          @request.env['HTTP_ACCEPT'] = 'application/json'
+          @request.accept = 'application/json'
         end
 
 
