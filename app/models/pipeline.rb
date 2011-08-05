@@ -36,7 +36,7 @@ class Pipeline < ActiveRecord::Base
 
     # Used by the Pipeline class to retrieve the list of requests that are coming into the pipeline.
     def inputs(show_held_requests = false)
-      send(show_held_requests ? :full_inbox : :pipeline_pending)
+      ready_in_storage.send(show_held_requests ? :full_inbox : :pipeline_pending)
     end
   end
 
@@ -68,6 +68,10 @@ class Pipeline < ActiveRecord::Base
   
   def inbox_partial
     INBOX_PARTIAL
+  end
+
+  def display_next_pipeline?
+    false
   end
 
   def requires_position?

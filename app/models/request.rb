@@ -310,12 +310,6 @@ class Request < ActiveRecord::Base
     end
   end
 
-  def set_position(batch, pos)
-    batch.reload
-    batch_request = batch.batch_requests.detect { |br| br.request_id == self.id }
-    batch_request.move_to_position!(pos) if batch_request.present?
-  end
-
   def self.number_expected_for_submission_id_and_request_type_id(submission_id, request_type_id)
     Request.count(:conditions => "submission_id = #{submission_id} and request_type_id = #{request_type_id}")
   end
