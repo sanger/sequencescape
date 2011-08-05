@@ -31,7 +31,17 @@
   <tbody>
     <% well_submission_colours = AssignTagsToWellsTask.new.map_asset_ids_to_normalised_index_by_submission(@batch.requests) %>
     <% CherrypickGroupBySubmissionTask.new.sort_grouped_requests_by_submission_id(@batch.requests).each do |request| %>
-      <% well = request.asset %>
+      <% well = request.asset
+      # follow transfer request until the multiplexed one
+      while transfer_requests=well.requests.select { |r| r.is_a?(TransferRequest) }  and transfer_requests.size == 1
+        target_well = transfer_requests.first.target_asset
+        break unless target_well.is_a?(Well)
+        well=target_well
+        break if well.primary_aliquot.try(:tag)
+      end
+
+
+    %>
       <% next unless well %>
       <% submission_colour = (well && well_submission_colours[well.id] ) ? "colour#{well_submission_colours[well.id]%12}"  : '' %>
     <tr>
