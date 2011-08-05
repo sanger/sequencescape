@@ -24,6 +24,40 @@ class AssignTagsToWellsTask < Task
     workflow.do_assign_tags_to_wells_task(self, params)
   end
 
+  def assign_tags_to_wells(requests, well_id_tag_id_map) 
+    # to  be compliant with the new pulldown application we have to create intermediate plate and wells
+    source_wells = requests.map(&:asset)
+    source_plates = source_wells.group_by(&:plate).map(&:first)
+
+    well_to_tagged = {}
+
+    source_plates.each do |source_plate|
+      library_plate =  Plate.create!(:size => source_plate.size)
+      tag_plate = Plate.create!(:size => source_plate.size)
+      source_plate.wells.each do |well|
+        library_well =  Well.create!
+        TransferRequest.create!(:asset => well, :target_asset => library_well)
+        library_plate.add_well_by_map_description(library_well, well.map_description)
+
+        tagged_well = Well.create!
+        well_to_tagged[well] =tagged_well
+        TransferRequest.create!(:asset => library_well, :target_asset => tagged_well)
+        tag_plate.add_well_by_map_description(tagged_well, well.map_description)
+        tag_id=well_id_tag_id_map[well.id]
+        Tag.find(tag_id).tag!(tagged_well) if tag_id
+      end
+      [library_plate, tag_plate].map(&:save!)
+
+      requests.each do |r|
+        tagged_well = well_to_tagged[r.asset]
+        raise  "Well no tagged" if tagged_well==nil
+        TransferRequest.create!(:asset => tagged_well, :target_asset => r.target_asset)
+      end
+
+      link_pulldown_indexed_libraries_to_multiplexed_library(requests)
+    end
+  end
+
   def validate_returned_tags_are_not_repeated_in_submission!(requests, params)
     submission_to_tag = params[:tag].map do |well_id, tag_id|
       well_requests = requests.select{|request| request.asset_id == well_id.to_i}
@@ -34,6 +68,7 @@ class AssignTagsToWellsTask < Task
 
     nil
   end
+
 
   def create_tag_instances_and_link_to_wells(requests, params)
     params[:tag].map do |well_id, tag_id|
@@ -111,7 +146,4 @@ class AssignTagsToWellsTask < Task
     
     asset_ids_to_index
   end
-
-
-
 end

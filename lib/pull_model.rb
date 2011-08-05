@@ -108,15 +108,16 @@ class GraphRenderer < Renderer
 
       #hack
       all_requests = drawn_nodes.select { |n| n.is_a?(Request)}
+      all_requests = []
 
       all_requests.group_by(&:class).each do |klass, requests|
         subgraph = DOT::Subgraph.new("name" => "cluster_#{klass.name}", "style"=>"filled", "fillcolor"=>"gold", "color" => "goldenrod4")
         requests.each do |r|
-        subsubgraph = DOT::Subgraph.new("name" => "cluster_#{r.node_name}", "color"=>"none")
-        [r.asset.requests.size <=1 ? r.asset : nil, r, r.target_asset].compact.each do |o| 
-        subsubgraph << DOT::Node.new("name" => o.node_name)
-        graph << subsubgraph
-        end
+          subsubgraph = DOT::Subgraph.new("name" => "cluster_#{r.node_name}", "color"=>"none")
+          [r.asset.requests.size <=1 ? r.asset : nil, r, r.target_asset].compact.each do |o| 
+            subsubgraph << DOT::Node.new("name" => o.node_name)
+            graph << subsubgraph
+          end
         end
         graph << subgraph
       end
@@ -414,6 +415,8 @@ Models = {
   :asset_up => AssetUp={ Asset => [:parents, :requests_as_target], 
     TagInstance => [:tag],
     Request => [:asset],
+    Aliquot => [:sample, :tag],
+    Aliquot::Receptacle => [:aliquots],
     Well => [:plate]},
   :asset_up_and_down => [AssetUp, AssetDown],
   :asset_down_and_up => [AssetDown, AssetUp],
