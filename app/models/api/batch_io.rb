@@ -20,7 +20,7 @@ class Api::BatchIO < Api::Base
   map_attribute_to_json_attribute(:uuid)
   map_attribute_to_json_attribute(:id)
   map_attribute_to_json_attribute(:state)
-  map_attribute_to_json_attribute(:compatible_qc_state)
+  map_attribute_to_json_attribute(:qc_state)
   map_attribute_to_json_attribute(:production_state)
   map_attribute_to_json_attribute(:created_at)
   map_attribute_to_json_attribute(:updated_at)
