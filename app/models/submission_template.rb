@@ -21,11 +21,10 @@ class SubmissionTemplate < ActiveRecord::Base
     attributes = submission_attributes.deep_merge(params)
     infos      = SubmissionTemplate.unserialize(attributes.delete(:input_field_infos))
 
-    submission = submission_class.new(attributes)
-    submission.template_name = self.name
-    submission.set_input_field_infos(infos) unless infos.nil?
-
-    return submission
+    submission_class.new(attributes).tap do |submission|
+      submission.template_name = self.name
+      submission.set_input_field_infos(infos) unless infos.nil?
+    end
   end
 
   # TODO[xxx]: This is a hack just so I can move forward but the request_types stuff should come directly

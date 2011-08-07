@@ -24,6 +24,117 @@ class AssignTagsToWellsTask < Task
     workflow.do_assign_tags_to_wells_task(self, params)
   end
 
+  def assign_tags_to_wells(requests, well_id_tag_id_map) 
+    # If the tubes have been processed they will have aliquots.  That means that this is a retagging
+    # operation, otherwise we're initially tagging.
+    have_tagged_tubes_already = requests.map(&:target_asset).uniq.all? { |tube| not tube.aliquots.empty? }
+    have_tagged_tubes_already ? retag_tubes(requests, well_id_tag_id_map) : tag_tubes(requests, well_id_tag_id_map)
+  end
+
+  def retag_tubes(requests, well_id_tag_id_map)
+    # The first thing we do is build a graph of the transfers that have been made so that we can
+    # clean it out.  The assets themselves cannot be rebuilt as people may be relying on the assets
+    # remaining consistent.
+    source_well_to_intermediate_wells, requests_to_destroy = {}, []
+    requests.each do |request|
+      source_well, target_tube = request.asset, request.target_asset
+
+      source_to_library = source_well.requests_as_source.where_is_a?(TransferRequest).first
+      library_well      = source_to_library.target_asset
+
+      library_to_tagged = library_well.requests_as_source.where_is_a?(TransferRequest).first
+      tagged_well       = library_to_tagged.target_asset
+
+      tagged_to_pooled  = tagged_well.requests_as_source.where_is_a?(TransferRequest).first
+      pooled_well       = tagged_to_pooled.target_asset
+
+      requests_to_destroy.concat([ source_to_library, library_to_tagged, tagged_to_pooled ])
+      requests_to_destroy.concat(pooled_well.requests_as_source.where_is_a?(TransferRequest).all)
+
+      source_well_to_intermediate_wells[source_well] = [library_well, tagged_well, pooled_well, target_tube]
+    end
+    requests_to_destroy.uniq.map(&:destroy)
+
+    # Now we can clean out the aliquots of all of the various assets and rebuild the graph so that the
+    # correct tags are in place.
+    pooled_well_to_tube = {}
+    source_well_to_intermediate_wells.values.flatten.uniq.each { |well| well.aliquots.clear }
+    source_well_to_intermediate_wells.each do |source_well, assets|
+      library_well, tagged_well, pooled_well, tube = assets
+
+      TransferRequest.create!(:asset => source_well,  :target_asset => library_well, :state => 'passed')
+      library_well.aliquots.each { |aliquot| aliquot.update_attributes!(:library => library_well) }
+
+      TransferRequest.create!(:asset => library_well, :target_asset => tagged_well,  :state => 'passed')
+      tag_id = well_id_tag_id_map[source_well.id]
+      Tag.find(tag_id).tag!(tagged_well) if tag_id.present?
+
+      TransferRequest.create!(:asset => tagged_well,  :target_asset => pooled_well,  :state => 'passed')
+
+      raise StandardError, "Pooled well into different tube!" unless tube == (pooled_well_to_tube[pooled_well] || tube)
+      pooled_well_to_tube[pooled_well] = tube
+    end
+
+    pooled_well_to_tube.each { |well, tube| TransferRequest.create!(:asset => well, :target_asset => tube) }
+  end
+  private :retag_tubes
+
+  def tag_tubes(requests, well_id_tag_id_map)
+    # to  be compliant with the new pulldown application we have to create intermediate plate and wells
+    source_plates = requests.map(&:asset).map(&:plate).uniq
+    raise StandardError, "Can only tag based on one source plate" unless source_plates.size == 1
+    source_plate = source_plates.first
+
+    well_to_tagged = {}
+    tube_to_pool = {}
+
+    pooled_plate  = Plate.create!(:size => source_plate.size)
+    library_plate = Plate.create!(:size => source_plate.size)
+    tag_plate     = Plate.create!(:size => source_plate.size)
+
+    source_plate.wells.each do |well|
+      library_well =  Well.create!
+      TransferRequest.create!(:asset => well, :target_asset => library_well, :state => 'passed')
+      library_plate.add_well_by_map_description(library_well, well.map_description)
+      library_well.aliquots.each { |aliquot| aliquot.update_attributes!(:library => library_well) }
+
+      tagged_well = Well.create!
+      well_to_tagged[well] =tagged_well
+      TransferRequest.create!(:asset => library_well, :target_asset => tagged_well, :state => 'passed')
+      tag_plate.add_well_by_map_description(tagged_well, well.map_description)
+      tag_id=well_id_tag_id_map[well.id]
+      Tag.find(tag_id).tag!(tagged_well) if tag_id
+    end
+    [library_plate, tag_plate].map(&:save!)
+
+    # We could be retagging because someone has changed their minds.
+    requests.each { |request| request.target_asset.aliquots.clear }
+
+    requests.each do |r|
+      tagged_well = well_to_tagged[r.asset]
+      raise "Well not tagged" if tagged_well.nil?
+      tube = r.target_asset
+
+      pooled_well = tube_to_pool[tube]
+      unless pooled_well
+        pooled_well = Well.create!
+        tube_to_pool[tube] = pooled_well
+        pooled_plate.add_well_by_map_description(pooled_well, tagged_well.map_description)
+      end
+
+      TransferRequest.create!(:asset => tagged_well, :target_asset => pooled_well, :state => 'passed')
+      # transfer between pooled_well and tube needs to be at the end, when all the aliquots are present
+      #TransferRequest.create!(:asset => pooled_well, :target_asset => tube)
+    end
+
+    tube_to_pool.each do |tube, pooled_well|
+      TransferRequest.create!(:asset => pooled_well, :target_asset => tube, :state => 'passed')
+    end
+
+    link_pulldown_indexed_libraries_to_multiplexed_library(requests)
+  end
+  private :tag_tubes
+
   def validate_returned_tags_are_not_repeated_in_submission!(requests, params)
     submission_to_tag = params[:tag].map do |well_id, tag_id|
       well_requests = requests.select{|request| request.asset_id == well_id.to_i}
@@ -34,6 +145,7 @@ class AssignTagsToWellsTask < Task
 
     nil
   end
+
 
   def create_tag_instances_and_link_to_wells(requests, params)
     params[:tag].map do |well_id, tag_id|
@@ -111,7 +223,4 @@ class AssignTagsToWellsTask < Task
     
     asset_ids_to_index
   end
-
-
-
 end
