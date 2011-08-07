@@ -26,9 +26,14 @@ module Tasks::AssignTagsToWellsHandler
     end
     
     ActiveRecord::Base.transaction do
-      task.unlink_tag_instances_from_wells(requests)
-      task.create_tag_instances_and_link_to_wells(requests, params)
-      task.link_pulldown_indexed_libraries_to_multiplexed_library(requests)
+      well_id_tag_id_map = {}
+      params[:tag].each do |k,v|
+        well_id_tag_id_map[k.to_i] = v.to_i
+      end
+      task.assign_tags_to_wells(requests, well_id_tag_id_map)
+      #task.unlink_tag_instances_from_wells(requests)
+      #task.create_tag_instances_and_link_to_wells(requests, params)
+      #task.link_pulldown_indexed_libraries_to_multiplexed_library(requests)
     end
 
     true

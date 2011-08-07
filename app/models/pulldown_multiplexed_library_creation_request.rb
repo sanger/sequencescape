@@ -1,4 +1,7 @@
 class PulldownMultiplexedLibraryCreationRequest < Request
+  # override default behavior to not copy the aliquots
+  def on_started
+  end
   def valid_request_for_pulldown_report?
     well = self.asset
     return false if self.study.nil?
