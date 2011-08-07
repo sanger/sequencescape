@@ -43,9 +43,7 @@ Given /^"([^\"]+)" of (the plate .+) have been (submitted to "[^"]+")$/ do |rang
   create_submission_of_assets(
     template,
     plate.wells.select(&range.method(:include?)), {
-      :fragment_size_required_from => 100,
-      :fragment_size_required_to   => 200,
-      :read_length                 => 100
+      :read_length => 100
     }
   )
 end

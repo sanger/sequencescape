@@ -33,11 +33,7 @@ Feature: Creating submissions for pulldown
           "asset_group_name": "Testing the pulldown submissions",
           "request_options": {
             "read_length": 100,
-            "fragment_size_required": {
-              "from": 100,
-              "to": 200
-            },
-            "bait_library": "SureSelect Human all exon 50MB"
+            "bait_library_name": "Human all exon 50MB"
           }
         }
       }
@@ -92,9 +88,9 @@ Feature: Creating submissions for pulldown
     # Check that all of the library creation requests have the correct information on them
     Given all pending delayed jobs have been processed
     Then all "<pipeline>" requests should have the following details:
-      | fragment_size_required_from | 100                            |
-      | fragment_size_required_to   | 200                            |
-      | bait_library.name           | SureSelect Human all exon 50MB |
+      | fragment_size_required_from | 100                 |
+      | fragment_size_required_to   | 400                 |
+      | bait_library.name           | Human all exon 50MB |
 
     Scenarios:
       | pipeline     |
@@ -113,11 +109,7 @@ Feature: Creating submissions for pulldown
           "study": "22222222-3333-4444-5555-000000000000",
           "asset_group_name": "Testing the pulldown submissions",
           "request_options": {
-            "read_length": 100,
-            "fragment_size_required": {
-              "from": 100,
-              "to": 200
-            }
+            "read_length": 100
           }
         }
       }
@@ -172,6 +164,6 @@ Feature: Creating submissions for pulldown
     # Check that all of the library creation requests have the correct information on them
     Given all pending delayed jobs have been processed
     Then all "Pulldown WGS" requests should have the following details:
-      | fragment_size_required_from | 100            |
-      | fragment_size_required_to   | 200            |
+      | fragment_size_required_from | 300            |
+      | fragment_size_required_to   | 500            |
 

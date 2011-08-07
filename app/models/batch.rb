@@ -486,11 +486,19 @@ class Batch < ActiveRecord::Base
       self.requests.each do |request|
         raise 'Invalid request data' unless  request.valid_request_for_pulldown_report?
         well = request.asset
-        tag_on_well = well.primary_aliquot.try(:tag)
-        if tag_on_well.present?
-          tag_name              = tag_on_well.name
-          tag_expected_sequence = tag_on_well.oligo
-          tag_group_name        = tag_on_well.tag_group.name if tag_on_well.tag_group.present?
+        #TODO[mb14] DRY it
+        tagged_well = well
+        while transfer_requests=tagged_well.requests.select { |r| r.is_a?(TransferRequest) }  and transfer_requests.size == 1
+          target_well = transfer_requests.first.target_asset
+          break unless target_well.is_a?(Well)
+          tagged_well=target_well
+          tag_on_well = tagged_well.primary_aliquot.try(:tag)
+          if tag_on_well.present?
+            tag_name              = tag_on_well.name
+            tag_expected_sequence = tag_on_well.oligo
+            tag_group_name        = tag_on_well.tag_group.name if tag_on_well.tag_group.present?
+            break
+          end
         end
 
         sample = well.primary_aliquot.try(:sample)

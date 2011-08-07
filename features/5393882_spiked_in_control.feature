@@ -173,11 +173,13 @@ Feature: Creating Spiked phiX
       <library name="Asset 2" request_id="274" project_id="35" id="785" study_id="35" sample_id="274" qc_state=""/>
       <hyb_buffer id="780">
         <control name="indexed phiX" id="781"/>
-        <tag tag_id="19">
-          <index>168</index>
-          <expected_sequence>ACAACGCAAT</expected_sequence>
-          <tag_group_id>6</tag_group_id>
-        </tag>
+        <sample project_id="" study_id="" sample_id="5">
+          <tag tag_id="19">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
       </hyb_buffer>
     </lane>
     <lane position="3">
