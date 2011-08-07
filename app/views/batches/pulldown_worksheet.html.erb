@@ -31,15 +31,25 @@
   <tbody>
     <% well_submission_colours = AssignTagsToWellsTask.new.map_asset_ids_to_normalised_index_by_submission(@batch.requests) %>
     <% CherrypickGroupBySubmissionTask.new.sort_grouped_requests_by_submission_id(@batch.requests).each do |request| %>
-      <% well = request.asset %>
+      <% well, source_well = request.asset, request.asset
+      # follow transfer request until the multiplexed one
+      while transfer_requests=well.requests.select { |r| r.is_a?(TransferRequest) }  and transfer_requests.size == 1
+        target_well = transfer_requests.first.target_asset
+        break unless target_well.is_a?(Well)
+        well=target_well
+        break if well.primary_aliquot.try(:tag)
+      end
+
+
+    %>
       <% next unless well %>
       <% submission_colour = (well && well_submission_colours[well.id] ) ? "colour#{well_submission_colours[well.id]%12}"  : '' %>
     <tr>
-      <td class="<%= submission_colour %>"><%= request.target_asset.barcode     if request.target_asset %></td>
-      <td class="<%= submission_colour %>"><%= well.plate.sanger_human_barcode  if well.plate %></td>
-      <td class="<%= submission_colour %>"><%= well.map.description             if well.map %></td>
-      <td class="<%= submission_colour %>"><%= well.primary_aliquot.tag.name    if well.primary_aliquot.present? and well.primary_aliquot.tag.present? %></td>
-      <td class="<%= submission_colour %>"><%= well.primary_aliquot.sample.name if well.primary_aliquot.present? and well.primary_aliquot.sample.present? %></td>
+      <td class="<%= submission_colour %>"><%= request.target_asset.barcode            if request.target_asset %></td>
+      <td class="<%= submission_colour %>"><%= source_well.plate.sanger_human_barcode  if source_well.plate %></td>
+      <td class="<%= submission_colour %>"><%= source_well.map.description             if source_well.map %></td>
+      <td class="<%= submission_colour %>"><%= well.primary_aliquot.tag.name           if well.primary_aliquot.present? and well.primary_aliquot.tag.present? %></td>
+      <td class="<%= submission_colour %>"><%= well.primary_aliquot.sample.name        if well.primary_aliquot.present? and well.primary_aliquot.sample.present? %></td>
     </tr>
     <% end %>
   </tbody>
