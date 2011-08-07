@@ -55,7 +55,7 @@ Feature: NPG XML interface
     And the sample tube "Tube" has been involved in a "Library creation" request within the study "Study testing the NPG XML interface" for the project "Project testing the NPG XML interface"
 
     When I retrieve the XML for the asset called "Tube"
-    Then ignoring "id|sample_id" the XML response should be:
+    Then ignoring "id|sample_id|sample" the XML response should be:
       """
       <?xml version="1.0" encoding="UTF-8"?>
       <asset api_version="0.6">
