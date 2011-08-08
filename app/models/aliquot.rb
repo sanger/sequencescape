@@ -22,8 +22,8 @@ class Aliquot < ActiveRecord::Base
     named_scope :include_aliquots, :include => { :aliquots => [ :sample, :tag, :bait_library ] }
 
     # Provide some named scopes that will fit with what we've used in the past
-    named_scope :with_sample_id, lambda { |id|     { :conditions => { :aliquots => { :sample_id => id        } }, :joins => :aliquots } }
-    named_scope :with_sample,    lambda { |sample| { :conditions => { :aliquots => { :sample_id => sample.id } }, :joins => :aliquots } }
+    named_scope :with_sample_id, lambda { |id|     { :conditions => { :aliquots => { :sample_id => Array(id)               } }, :joins => :aliquots } }
+    named_scope :with_sample,    lambda { |sample| { :conditions => { :aliquots => { :sample_id => Array(sample).map(&:id) } }, :joins => :aliquots } }
 
     # TODO: Remove these at some point in the future as they're kind of wrong!
     has_one :sample, :through => :primary_aliquot
@@ -76,7 +76,7 @@ class Aliquot < ActiveRecord::Base
 
         has_many :aliquots
         has_many :receptacles, :through => :aliquots, :uniq => true
-        has_one :primary_receptacle, :through => :aliquots, :source => :receptacle, :order => 'assets.created_at'
+        has_one :primary_receptacle, :through => :aliquots, :source => :receptacle, :order => 'assets.created_at, assets.id ASC'
 
         # Unfortunately we cannot use has_many :through because it ends up being a through through a through.  Really we want:
         #   has_many :requests, :through => :assets

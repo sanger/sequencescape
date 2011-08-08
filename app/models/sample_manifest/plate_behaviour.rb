@@ -108,7 +108,9 @@ module SampleManifest::PlateBehaviour
     end
 
     def updated_by!(user, samples)
-      samples.map { |s| s.wells.map(&:plate) }.flatten.uniq.select{ |well_container| ! well_container.nil? }.each do |plate|
+      # It's more efficient to look for the wells with the samples than to look for the assets from the samples
+      # themselves as the former can use named_scopes where as the latter is an array that needs iterating over.
+      Well.with_sample(samples).map(&:plate).uniq.compact.each do |plate|
         plate.events.updated_using_sample_manifest!(user)
       end
     end
