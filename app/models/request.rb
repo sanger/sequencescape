@@ -351,7 +351,10 @@ class Request < ActiveRecord::Base
     events = []
     unless self.lab_events.empty?
       self.events.each do |event|
-        event.message.nil? ? message = "(No message was specified)" : message = event.message
+        next if event.family.nil?
+
+        message = event.message || "(No message was specified)"
+
         if event.family.downcase == "pass"
           events << {"event_id" => event.id, "status" => "pass", "message" => message, "created_at" => event.created_at}
         elsif event.family.downcase == "fail"
