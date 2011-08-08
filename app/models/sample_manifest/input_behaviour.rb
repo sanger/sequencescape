@@ -215,7 +215,9 @@ module SampleManifest::InputBehaviour
       next if sanger_sample_id.blank?
 
       # Sanity check that the sample being updated is in the same container that it was defined against.
-      sample = samples.find_by_sanger_sample_id(sanger_sample_id, :include => :primary_receptacle)
+      #
+      # NOTE: Do not include the primary_receptacle here as it will cause the wrong one to be loaded!
+      sample = samples.find_by_sanger_sample_id(sanger_sample_id)
       if sample.primary_receptacle.nil?
         sample_errors.push("Sample #{sanger_sample_id} appears to not have a receptacle defined! Contact PSD")
         next
