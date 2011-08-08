@@ -13,17 +13,15 @@
     <% @asset_group.assets.each do |asset| -%>
       <tr>
         <td><%= link_to asset.name, asset_path(asset) %></td>
-        <% if not asset.aliquots.empty? %>
-          <td>
+        <td>
+          <% if asset.is_a?(Aliquot::Receptacle) and not asset.aliquots.empty? %>
             <ul>
               <% asset.aliquots.each do |aliquot| %>
                 <li><%= link_to aliquot.sample.name, sample_path(aliquot.sample) %></li>
               <% end %>
             </ul>
-          </td>
-        <% else %>
-          <td></td>
-        <% end %>
+          <% end %>
+        </td>
         <td><%= asset.label %></td>
         <% unless asset.barcode.nil? %>
           <td><%= "Barcode: #{asset.barcode}" %></td>

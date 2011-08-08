@@ -4,8 +4,7 @@ module ModelExtensions::SampleManifest
       named_scope :include_samples, {
         :include => {
           :samples => [
-            :uuid_object,
-            :primary_receptacle, {
+            :uuid_object, {
               :sample_metadata => :reference_genome,
               :primary_study   => { :study_metadata => :reference_genome }
             }
