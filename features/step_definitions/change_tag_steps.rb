@@ -1,21 +1,15 @@
-Given /^I have (\d+) library tubes without tag instances$/ do |number_of_tubes|
-  tubes = [] 
-  1.upto(number_of_tubes.to_i) do |i|
-    tubes << Factory(:library_tube, :barcode => i)
-  end
-  #LibraryTube.import tubes
-end
-
-Given /^I have the following library tubes with tags:$/ do |table|
+Given /^I have the following library tubes with tags( multiplexed in a tube)?:$/ do |create_mx_tube, table|
   number_of_tubes = table.rows.size
   Given %Q{I have a tag group called "My tag group" with #{number_of_tubes} tags}
-  Given %Q{I have #{number_of_tubes} library tubes without tag instances}
 
+  mx_tube = Factory(:multiplexed_library_tube) if create_mx_tube
   table.hashes.each do |row|
     barcode, tag_id = ["barcode", "tag id"].map { |k| row[k] }
-    tube = LibraryTube.find_by_barcode(barcode)              or raise StandardError, "Cannot find library tube with barcode #{barcode.inspect}"
+    tube = Factory(:full_library_tube, :barcode => barcode.to_i)
     tag  = Tag.find_by_map_id(tag_id.match(/(\d+)/)[1].to_i) or raise StandardError, "Cannot find tag #{tag_id.inspect}"
-    tube.aliquots.create!(:tag => tag, :sample => Sample.create!(:name => "sample for tube #{tube.barcode}".gsub(" ","_")))
+    #tube.aliquots.create!(:tag => tag, :sample => Sample.create!(:name => "sample for tube #{tube.barcode}".gsub(" ","_")))
+    tag.tag!(tube)
+    TransferRequest.create!(:asset => tube, :target_asset => mx_tube) if mx_tube
   end
 end
 
@@ -52,4 +46,12 @@ When /^I change the tags of the library tubes:$/ do |table|
   end
   Then %Q{I press "Submit"}
   #done
+end
+
+Then /^the last multiplexed library tube should have the following tags:$/  do |tag_table|
+  mx_tube = MultiplexedLibraryTube.last
+
+  mx_tube_tag_ids = mx_tube.aliquots.map(&:tag_id)
+  expected_tag_ids = tag_table.rows.map { |r| r.first.to_i }
+  assert_equal expected_tag_ids.sort, mx_tube_tag_ids.sort
 end

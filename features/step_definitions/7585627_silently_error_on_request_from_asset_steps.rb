@@ -1,5 +1,5 @@
 Given /^an library tube named "([^"]*)"$/ do |name|
-  librarytube = Factory(:library_tube, :name => name) 
+  librarytube = Factory(:empty_library_tube, :name => name) 
 end
 
 Given /^library tube "([^"]*)" is bounded to the study "([^"]*)"$/ do |library_name,study_name|
