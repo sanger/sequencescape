@@ -23,7 +23,10 @@ class ChangeTag
     ActiveRecord::Base.transaction do 
       library_tubes_to_tags.each do |library_tube_id, tag_id|
         tube = LibraryTube.find(library_tube_id)
-        tube.aliquots.first.update_attributes!(:tag => Tag.find(tag_id))
+        new_tag = Tag.find(tag_id)
+        tube.aliquots.first.descendants(true).map do |aliquot| 
+          aliquot.update_attributes!(:tag => new_tag)
+        end
       end
     end
   end
