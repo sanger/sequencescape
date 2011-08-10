@@ -17,10 +17,16 @@ class Plate < Asset
     wells.map(&:transfer_requests_as_target).flatten
   end
 
+  def self.derived_classes
+    @derived_classes ||= [ self, *Class.subclasses_of(self) ].map(&:name)
+  end
+
   # The iteration of a plate is defined as the number of times a plate of this type has been created
   # from it's parent.
   def iteration
     return nil if parent.nil?  # No parent means no iteration, not a 0 iteration.
+
+    plate_classes = [ Plate, *Class.subclasses_of(Plate) ].map(&:name)
 
     # NOTE: This is how to do row numbering with MySQL!  It essentially joins the assets and asset_links
     # tables to find all of the child plates of our parent that have the same plate purpose, numbering
@@ -33,7 +39,7 @@ class Plate < Asset
           SELECT assets.id
           FROM asset_links
           JOIN assets ON asset_links.descendant_id=assets.id
-          WHERE asset_links.direct=TRUE AND ancestor_id=#{parent.id} AND assets.sti_type='Plate' AND assets.plate_purpose_id=#{plate_purpose.id}
+          WHERE asset_links.direct=TRUE AND ancestor_id=#{parent.id} AND assets.sti_type in (#{Plate.derived_classes.map(&:inspect).join(',')}) AND assets.plate_purpose_id=#{plate_purpose.id}
           ORDER by assets.created_at ASC
         ) AS iteration_plates,
         (SELECT @rownum:=0) AS r
@@ -41,7 +47,7 @@ class Plate < Asset
       WHERE a.id=#{self.id}
     }, "Plate #{self.id} iteration query")
 
-    iteration_of_plate['iteration'].try(:to_i)
+    iteration_of_plate['iteration'].to_i
   end
 
   contains :wells, :order => '`assets`.map_id ASC' do
