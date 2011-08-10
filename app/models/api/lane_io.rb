@@ -1,7 +1,7 @@
 class Api::LaneIO < Api::Base
   module Extensions
     module ClassMethods
-      def self.render_class
+      def render_class
         Api::LaneIO
       end
     end
