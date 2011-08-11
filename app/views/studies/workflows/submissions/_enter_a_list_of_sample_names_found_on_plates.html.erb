@@ -1,0 +1,8 @@
+<p>
+  <%= label_tag(:plate_purpose_id, 'Select plate type that holds the samples') %>:<br/>
+  <%= select_tag(:plate_purpose_id, options_from_collection_for_select(PlatePurpose.considered_stock_plate.all(:order => 'name ASC'), :id, :name, PlatePurpose.stock_plate_purpose.id)) %>
+</p>
+<p>
+  <%= label_tag(:sample_names, 'Enter a list of sample names') %>:<br/>
+  <%= text_area_tag(:sample_names, nil, :cols => 40, :rows =>5, :name => :sample_names) %>
+</p>
