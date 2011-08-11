@@ -117,11 +117,10 @@ class SequenomQcPlate < Plate
     return nil if source_well.nil?
 
     source_well.clone.tap do |cloned_well|
-      cloned_well.plate = self
-      cloned_well.map   = destination_map_based_on_source_row_col_and_quadrant(quadrant, row, col)
-      cloned_well.save!
-
+      cloned_well.plate    = self
+      cloned_well.map      = destination_map_based_on_source_row_col_and_quadrant(quadrant, row, col)
       cloned_well.aliquots = source_well.aliquots.map(&:clone)
+      cloned_well.save!
 
       # FIXME: This fix seems a bit dirty but it works
       # Adding source_wells directly to cloned_well parents is broken so have to 

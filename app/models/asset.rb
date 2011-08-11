@@ -536,10 +536,10 @@ class Asset < ActiveRecord::Base
     raise VolumeError, "not enough volume left" if volume <=0
 
     self.class.create!(:name => self.name) do |new_asset|
-      new_asset.volume = volume
+      new_asset.aliquots = self.aliquots.map(&:clone)
+      new_asset.volume   = volume
       update_attributes!(:volume => self.volume - volume)  # Update ourselves
     end.tap do |new_asset|
-      new_asset.aliquots = self.aliquots.map(&:clone)
       new_asset.add_parent(self)
     end
   end
