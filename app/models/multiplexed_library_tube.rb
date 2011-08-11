@@ -44,9 +44,11 @@ class MultiplexedLibraryTube < Tube
   end
 
   def create_stock_asset!(attributes = {}, &block)
-    StockMultiplexedLibraryTube.create!(attributes.reverse_merge(:name => "(s) #{self.name}", :barcode => AssetBarcode.new_barcode), &block).tap do |stock_asset|
-      stock_asset.aliquots = aliquots.map(&:clone)
-    end
+    StockMultiplexedLibraryTube.create!(attributes.reverse_merge(
+      :name     => "(s) #{self.name}",
+      :aliquots => aliquots.map(&:clone),
+      :barcode  => AssetBarcode.new_barcode
+    ), &block)
   end
 
   def new_stock_asset

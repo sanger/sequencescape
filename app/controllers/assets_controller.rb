@@ -94,8 +94,8 @@ class AssetsController < ApplicationController
 
                   # We must copy the aliquots of the 'extract' to the asset, otherwise the asset remains
                   # empty.
-                  asset.save!
                   asset.aliquots = parent.aliquots.map(&:clone)
+                  asset.save!
                 elsif asset.is_a?(SpikedBuffer) and !parent.is_a?(SpikedBuffer)
                   # error should have its own volume
                   flash[:error] = "Enter a volume"
