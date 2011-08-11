@@ -38,8 +38,8 @@ class Sample < ActiveRecord::Base
       self.detect { |asset| asset.is_a?(asset_class) }
     end
   end
-  receptacle_alias(:wells, :conditions => { :sti_type => 'Well' }, :class_name => 'Well')
-  receptacle_alias(:sample_tubes, :conditions => { :sti_type => 'SampleTube' }, :class_name => 'SampleTube')
+  receptacle_alias(:wells,        :class_name => 'Well')
+  receptacle_alias(:sample_tubes, :class_name => 'SampleTube')
 
   belongs_to :sample_manifest
 
