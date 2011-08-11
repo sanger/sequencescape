@@ -135,4 +135,29 @@ class Aliquot < ActiveRecord::Base
   # It can belong to a library asset
   belongs_to :library, :class_name => 'Aliquot::Receptacle'
   composed_of :insert_size, :mapping => [%w{insert_size_from from}, %w{insert_size_to to}], :class_name => 'Aliquot::InsertSize', :allow_nil => true
+  
+  # return all aliquots originated from the current one
+  # ie aliquots sharing the sample, tag information, descending the requess graph
+  def descendants(include_self=false)
+    (include_self ? self : requests).walk_objects({
+      Aliquot => :receptacle,
+      Receptacle => [:aliquots, :requests_as_source],
+      Request => :target_asset
+    }) do |object|
+      case object
+      when Aliquot
+        # we cut the walk if the new aliquot doesn't "match" the current one
+        object if object =~ self
+      else # other objects
+        [] # are walked but not returned
+      end
+    end
+  end
+
+  # Aliquot are similar if they share the same sample AND the same tag (if they have one: nil acts as a wildcard))
+  def =~(object)
+    a, b = [self, object].map { |o| [o.tag_id, o.sample_id] }
+    a.zip(b).all?  { |x, y|  (x || y) == (y || x)  }
+  end
+
 end

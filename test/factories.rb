@@ -381,6 +381,9 @@ Factory.define(:empty_library_tube, :class => LibraryTube) do |library_tube|
   library_tube.name     {|_| Factory.next :asset_name }
 end
 Factory.define :library_tube, :parent => :empty_library_tube do |library_tube|
+  library_tube.after_create do |library_tube|
+    library_tube.aliquots.create!(:sample => Factory(:sample))
+  end
 end
 
 # A library tube is created from a sample tube through a library creation request!
