@@ -135,7 +135,14 @@ class Aliquot < ActiveRecord::Base
   # It can belong to a library asset
   belongs_to :library, :class_name => 'Aliquot::Receptacle'
   composed_of :insert_size, :mapping => [%w{insert_size_from from}, %w{insert_size_to to}], :class_name => 'Aliquot::InsertSize', :allow_nil => true
-  
+
+  # Cloning an aliquot should unset the receptacle ID because otherwise it won't get reassigned.
+  def clone
+    super.tap do |cloned_aliquot|
+      cloned_aliquot.receptacle_id = nil
+    end
+  end
+
   # return all aliquots originated from the current one
   # ie aliquots sharing the sample, tag information, descending the requess graph
   def descendants(include_self=false)
