@@ -9,6 +9,8 @@ module Asset::Stock
         stock_asset_factory(:create_stock_asset!, :create!)
         stock_asset_factory(:new_stock_asset, :new)
         deprecate :new_stock_asset
+
+        delegate :is_a_stock_asset?, :to => 'self.class'
       end
     end
 
