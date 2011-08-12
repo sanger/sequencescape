@@ -89,7 +89,7 @@ Submission::Workflow.all.each do |workflow|
         submission.request_type_ids = request_type_ids
         submission.info_differential = workflow.id
         submission.request_options = { :initial_state => { request_type_ids.first => :pending }}
-        submission.asset_input_methods   = [ 'select an asset group', 'enter a list of sample names' ]
+        submission.asset_input_methods   = [ 'select an asset group', 'enter a list of sample names found on plates' ]
         submission.workflow = workflow
 
         SubmissionTemplate.new_from_submission(name, submission).save!
@@ -109,7 +109,7 @@ microarray_submission_workflow = Submission::Workflow.find_by_name('Microarray g
     LinearSubmission.new(
       :workflow              => microarray_submission_workflow,
       :request_options       => { :initial_state => { request_types.first.id => :pending } },
-      :asset_input_methods   => [ 'select an asset group', 'enter a list of sample names' ],
+      :asset_input_methods   => [ 'select an asset group', 'enter a list of sample names found on plates' ],
       :request_type_ids_list => request_types.map(&:id).map { |x| [x] },
       :info_differential     => microarray_submission_workflow.id
     )
@@ -128,7 +128,7 @@ seq_submission_workflow = Submission::Workflow.find_by_name('Next-gen sequencing
   SubmissionTemplate.new_from_submission(
     attributes[:name],
     LinearSubmission.new(
-      :asset_input_methods   => [ 'select an asset group', 'enter a list of sample names' ],
+      :asset_input_methods   => [ 'select an asset group', 'enter a list of sample names found on plates' ],
       :request_type_ids_list => request_types.map(&:id).map { |x| [x] },
       :info_differential     => seq_submission_workflow.id,
       :workflow              => seq_submission_workflow

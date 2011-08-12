@@ -59,6 +59,8 @@ class PlatePurpose < ActiveRecord::Base
 
   has_many :plates #, :class_name => "Asset"
   acts_as_audited :on => [:destroy, :update]
+
+  named_scope :considered_stock_plate, { :conditions => { :can_be_considered_a_stock_plate => true } }
   
   validates_format_of :name, :with => /^\w[\s\w._-]+\w$/i
   validates_presence_of :name
