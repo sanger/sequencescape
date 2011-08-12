@@ -16,17 +16,6 @@ class Asset < ActiveRecord::Base
   end
   include InstanceMethods
 
-  # Some assets are considered stock assets, that can be reused.
-  module Stock
-    def has_stock_asset?
-      false
-    end
-
-    def is_a_stock_asset?
-      true
-    end
-  end
-
   class VolumeError< StandardError
   end
 
