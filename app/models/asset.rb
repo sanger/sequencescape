@@ -58,6 +58,8 @@ class Asset < ActiveRecord::Base
   named_scope :position_name, lambda { |*args| { :joins => :map, :conditions => ["description = ? AND asset_size = ?", args[0], args[1]] }}
   named_scope :get_by_type, lambda {|*args| {:conditions => { :sti_type => args[0]} } }
 
+  named_scope :of_type, lambda { |*args| { :conditions => { :sti_type => args.map { |t| [t, Class.subclasses_of(t)] }.flatten.map(&:name) } } }
+
   has_many :studies, :class_name => "Study", :through => :requests, :source => :study, :uniq => true
 
   # Named scope for search by query string behaviour

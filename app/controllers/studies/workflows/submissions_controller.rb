@@ -122,22 +122,32 @@ class Studies::Workflows::SubmissionsController < ApplicationController
     when :asset_ids   then { :assets => Asset.find_all_by_id(params[:asset_ids].split).uniq }
     when :asset_names then { :assets => find_by_name(Asset, params[:asset_names]) }
     when :sample_names 
-      samples       = find_sample_by_name_or_sanger_sample_id(params[:sample_names])
-      request_type  = @request_type_ids.size >= 1 ? RequestType.find(@request_type_ids.first) : nil
-      { :assets => get_assets_from_samples(samples, request_type) } 
-    
+      asset_lookup_method = params[:plate_purpose_id].blank? ? :assets_of_request_type_for : :wells_on_specified_plate_purpose_for
+      { :assets => send(asset_lookup_method, find_sample_by_name_or_sanger_sample_id(params[:sample_names])) }
+
     else raise StandardError, "No way to determine assets for input choice #{input_choice.first.inspect}"
     end
   end
   private :asset_source_details_from_request_parameters
 
-  def get_assets_from_samples(samples, request_type)
+  def wells_on_specified_plate_purpose_for(samples)
+    plate_purpose = PlatePurpose.find(params[:plate_purpose_id])
+    samples.map do |sample|
+      sample.wells.all(:include => :plate).detect { |well| well.plate.plate_purpose_id == plate_purpose.id } or
+        raise InvalidInputException, "No #{plate_purpose.name} plate has sample #{sample.name}"
+    end
+  end
+  private :wells_on_specified_plate_purpose_for
+
+  def assets_of_request_type_for(samples)
+    request_type     = @request_type_ids.size >= 1 ? RequestType.find(@request_type_ids.first) : nil
     asset_type_class = (request_type.try(:asset_type) || 'Asset').constantize
     samples.map do |sample|
-      sample.assets.first_of_type(asset_type_class) or
+      sample.assets.of_type(asset_type_class).first or
         raise InvalidInputException, "No #{asset_type_class.name.downcase} found for sample #{sample.name}"
     end
   end
+  private :assets_of_request_type_for
 
   # The request_type parameter is intended to be an array, so we need to convert the numerically keyed hash
   # to an actual array.
