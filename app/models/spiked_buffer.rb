@@ -4,6 +4,16 @@ class SpikedBuffer < LibraryTube
   # and we definitely don't want that in the list.
   has_one_as_child(:index, :conditions => { :sti_type => 'LibraryTube' })
 
+  # Before the validations are run on creation we need to ensure that there is at least an aliquot of phiX
+  # in this tube.
+  before_validation(:on => :create) do |record|
+    record.aliquots.build(:sample => record.class.phiX_sample) if record.aliquots.empty?
+  end
+
+  def self.phiX_sample
+    @phiX_sample ||= Sample.find_by_name('phiX_for_spiked_buffers') or raise StandardError, "Cannot find phiX_for_spiked_buffers sample"
+  end
+
   def percentage_of_index
     return nil unless index
     100*index.volume/volume
