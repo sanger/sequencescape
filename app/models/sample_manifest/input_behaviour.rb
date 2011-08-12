@@ -7,12 +7,9 @@ module SampleManifest::InputBehaviour
       spreadsheet_offset.upto(csv.size-1) do |n|
         sanger_sample_id = SampleManifest.read_column_by_name(csv, n, 'SANGER SAMPLE ID', column_map)
         next if sanger_sample_id.blank?
-        sample = Sample.find_by_sanger_sample_id(sanger_sample_id)
-        next if sample.nil?
+        sample           = Sample.find_by_sanger_sample_id(sanger_sample_id) or next
         return sample.sample_manifest
       end
-      nil
-    rescue
       nil
     end
 
@@ -23,7 +20,9 @@ module SampleManifest::InputBehaviour
     end
 
     def compute_column_map(names)
-      Hash[names.each_with_index.map  { |name, index| [name && name.strip.gsub(/\s+/," "), index]}]
+      Hash[names.each_with_index.map  { |name, index| [name && name.strip.gsub(/\s+/," "), index]}].tap do |columns|
+        raise StandardError, "No 'SANGER SAMPLE ID' column in #{columns.keys.inspect}" unless columns.key?('SANGER SAMPLE ID')
+      end
     end
   end
 
