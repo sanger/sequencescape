@@ -446,15 +446,12 @@ class AssetsController < ApplicationController
   def create_stocks
     params[:assets].each do |id, params|
       asset = Asset.find(id)
-      unless asset.nil?
-        stock_asset = asset.create_stock_asset!(
-          :name          => params[:name],
-          :volume        => params[:volume],
-          :concentration => params[:concentration]
-        )
-        
-        stock_asset.assign_relationships(asset.parents, asset)
-      end
+      stock_asset = asset.create_stock_asset!(
+        :name          => params[:name],
+        :volume        => params[:volume],
+        :concentration => params[:concentration]
+      )
+      stock_asset.assign_relationships(asset.parents, asset)
     end
     
     batch = Batch.find(params[:batch_id])
