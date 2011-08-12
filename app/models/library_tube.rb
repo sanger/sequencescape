@@ -17,22 +17,9 @@ class LibraryTube < Tube
     creation_request.try(:request_options_for_creation) || {}
   end
 
-  has_one_as_child(:stock_asset, :conditions => { :sti_type => 'StockLibraryTube' })
-
-  def is_a_stock_asset?
-    false
+  def self.stock_asset_type
+    StockLibraryTube
   end
 
-  def create_stock_asset!(attributes = {}, &block)
-    StockLibraryTube.create!(attributes.reverse_merge(
-      :name     => "(s) #{self.name}",
-      :aliquots => aliquots.map(&:clone),
-      :barcode  => AssetBarcode.new_barcode
-    ), &block)
-  end
-
-  def new_stock_asset
-    StockLibraryTube.new(:name => "(s) #{self.name}", :sample_id => self.sample_id, :barcode => AssetBarcode.new_barcode)
-  end
-  deprecate :new_stock_asset
+  extend Asset::Stock::CanCreateStockAsset
 end

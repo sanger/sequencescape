@@ -37,22 +37,9 @@ class MultiplexedLibraryTube < Tube
     LibraryTube
   end
 
-  has_one_as_child(:stock_asset, :conditions => { :sti_type => 'StockMultiplexedLibraryTube' })
-
-  def is_a_stock_asset?
-    false
+  def self.stock_asset_type
+    StockMultiplexedLibraryTube
   end
 
-  def create_stock_asset!(attributes = {}, &block)
-    StockMultiplexedLibraryTube.create!(attributes.reverse_merge(
-      :name     => "(s) #{self.name}",
-      :aliquots => aliquots.map(&:clone),
-      :barcode  => AssetBarcode.new_barcode
-    ), &block)
-  end
-
-  def new_stock_asset
-    stock = StockMultiplexedLibraryTube.new(:name => "(s) #{self.name}", :barcode => AssetBarcode.new_barcode)
-  end
-  deprecate :new_stock_asset
+  extend Asset::Stock::CanCreateStockAsset
 end
