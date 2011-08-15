@@ -117,23 +117,24 @@ class BatchesController < ApplicationController
     end # of transaction
 
     respond_to do |format|
-      if @batch.save
+      format.html {
         if @pipeline.has_controls?
           flash[:notice] = 'Batch created - now add a control'
-          format.html { redirect_to :action => :control, :id => @batch.id }
-          format.xml  { head :created, :location => batch_url(@batch) }
+          redirect_to :action => :control, :id => @batch.id
         else
-          format.html { redirect_to :action => :show, :id => @batch.id  }
-          format.xml  { head :created, :location => batch_url(@batch) }
+          redirect_to :action => :show, :id => @batch.id
         end
-      else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @batch.errors.to_xml }
-      end
+      }
+      format.xml { head :created, :location => batch_url(@batch) }
     end
   rescue ActiveRecord::RecordInvalid => exception
-    flash[:error] = exception.record.errors.full_messages
-    redirect_to(pipeline_path(@pipeline))
+    respond_to do |format|
+      format.html {
+        flash[:error] = exception.record.errors.full_messages
+        redirect_to(pipeline_path(@pipeline))
+      }
+      format.xml  { render :xml => @batch.errors.to_xml }
+    end
   end
 
   def destroy

@@ -5,24 +5,21 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   def upload
     if (params[:sample_manifest].blank?) || (params[:sample_manifest] && params[:sample_manifest][:uploaded].blank? )
       flash[:error] = "No CSV file uploaded"
-      redirect_to sample_manifests_path
       return
     end
 
     @sample_manifest = SampleManifest.find_sample_manifest_from_uploaded_spreadsheet(params[:sample_manifest][:uploaded])
     if @sample_manifest.nil?
       flash[:error] = "Cannot find details about the sample manifest"
-      redirect_to sample_manifests_path
       return
     end
     
-    begin
-      @sample_manifest.update_attributes(params[:sample_manifest])
-      @sample_manifest.process(current_user, params[:sample_manifest][:override] == "1")
-      flash[:notice] = "Manifest being processed"
-    rescue FasterCSV::MalformedCSVError
-      flash[:error] = "Invalid CSV file"
-    end
+    @sample_manifest.update_attributes(params[:sample_manifest])
+    @sample_manifest.process(current_user, params[:sample_manifest][:override] == "1")
+    flash[:notice] = "Manifest being processed"
+  rescue FasterCSV::MalformedCSVError
+    flash[:error] = "Invalid CSV file"
+  ensure
     redirect_to sample_manifests_path
   end
 

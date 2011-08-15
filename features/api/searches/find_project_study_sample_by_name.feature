@@ -5,6 +5,7 @@ Feature: Searching for studies, projects and samples by name
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
+    Given there are no samples
 
   @single
   Scenario Outline: Looking for a single entry

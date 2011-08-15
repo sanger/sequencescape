@@ -104,3 +104,7 @@ Then /^I should see the following request information:$/ do |expected|
   expected.diff!(table(tableish('.info .property_group_general tr', 'td')))
 end
 
+Given /^all of the wells are on a "([^\"]+)" plate$/ do |plate_purpose_name|
+  plate_purpose = PlatePurpose.find_by_name(plate_purpose_name) or raise StandardError, "Cannot find plate purpose #{plate_purpose_name.inspect}"
+  plate_purpose.create!(true, :barcode => 'random_plate').wells << Well.all
+end

@@ -8,6 +8,7 @@ Feature: Creating submissions through the submission templates
     And I have an active study called "Study testing submission templates"
     And the study "Study testing submission templates" has an asset group of 10 samples called "Asset group for submission templates"
     And the study "Study testing submission templates" has an asset group of 10 samples in "well" called "Asset group of wells for submission templates"
+    And all of the wells are on a "Stock plate" plate
 
     Given all of this is happening at exactly "13-September-2010 09:30"
 

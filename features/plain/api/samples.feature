@@ -7,6 +7,8 @@ Feature: Interacting with samples through the API
 
     Given I am using version "0_5" of a legacy API
 
+    Given there are no samples
+
   Scenario: Attempting to create a sample without required fields
     When I POST the following JSON to the API path "/samples":
       """

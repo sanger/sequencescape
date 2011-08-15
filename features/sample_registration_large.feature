@@ -9,6 +9,8 @@ Feature: Sample registration from a spreadsheet containing many samples
   And to handle asset groups for 12 lanes
 
   Background:
+    Given there are no samples
+
     Given I am an "External" user logged in as "abc123"
     And I have an active study called "study A"
     And user "abc123" is a "manager" of study "study A"

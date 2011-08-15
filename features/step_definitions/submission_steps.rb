@@ -1,6 +1,6 @@
 Given /^I have a plate in study "([^"]*)" with samples with known sanger_sample_ids$/ do |study_name|
   study = Study.find_by_name(study_name)
-  plate = Plate.create!(:barcode => "1234567", :location => Location.find_by_name("Sample logistics freezer"))
+  plate = PlatePurpose.stock_plate_purpose.create!(true, :barcode => "1234567", :location => Location.find_by_name("Sample logistics freezer"))
   1.upto(4) do |i|
     Well.create!(:plate => plate, :map_id => i).aliquots.create!(:sample => Sample.create!(:name => "Sample_#{i}", :sanger_sample_id => "ABC_#{i}"))
   end
