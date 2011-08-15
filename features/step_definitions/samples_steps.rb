@@ -110,6 +110,12 @@ When /^I generate an? accession number for sample "([^\"]+)"$/ do |sample_name|
  When %Q{I follow "Generate Accession Number"}
 end
 
+When /^I update an? accession number for sample "([^\"]+)"$/ do |sample_name|
+ Then %Q{I am on the show page for sample "#{sample_name}"}
+ When %Q{I follow "Update EBI Sample data"}
+end
+
+
 Given /^sample "([^"]*)" came from a sample manifest$/ do |sample_name|
   sample = Sample.find_by_name(sample_name)
   sample_manifest = Factory(:sample_manifest, :id => 1)
