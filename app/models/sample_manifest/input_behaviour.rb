@@ -1,7 +1,7 @@
 module SampleManifest::InputBehaviour
   module ClassMethods
     def find_sample_manifest_from_uploaded_spreadsheet(spreadsheet_file)
-      csv  = FasterCSV.parse(spreadsheet_file.read)
+      csv        = FasterCSV.parse(spreadsheet_file.read)
       column_map = compute_column_map(csv[spreadsheet_header_row])
 
       spreadsheet_offset.upto(csv.size-1) do |n|

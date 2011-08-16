@@ -32,9 +32,8 @@ class Transfer::FromPlateToTubeBySubmission < Transfer
   #++
   def well_to_destination
     ActiveSupport::OrderedHash[
-      source.wells.map do |well|
-        stock_wells = locate_stock_wells_for(well)
-        tube        = locate_mx_library_tube_for(stock_wells.first)
+      locate_stock_wells_for(source).map do |well, stock_wells|
+        tube = locate_mx_library_tube_for(stock_wells.first)
         tube.nil? ? nil : [ well, [ tube, stock_wells ] ]
       end.compact
     ]

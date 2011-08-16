@@ -27,8 +27,8 @@ Feature: Interacting with aliquot through the API
          "receptacle_url": "http://localhost:3000/0_5/sample_tubes/aaaaaaaa-1111-2222-3333-000000000001",
          "receptacle_uuid": "aaaaaaaa-1111-2222-3333-000000000001",
          "receptacle_type": "sample_tube",
-         "sample_url": "http://localhost:3000/0_5/samples/bbbbbbbb-1111-2222-3333-000000000001",
-         "sample_uuid": "bbbbbbbb-1111-2222-3333-000000000001"
+         "sample_url": "http://localhost:3000/0_5/samples/bbbbbbbb-1111-2222-3333-000000000002",
+         "sample_uuid": "bbbbbbbb-1111-2222-3333-000000000002"
       }
     }
     """

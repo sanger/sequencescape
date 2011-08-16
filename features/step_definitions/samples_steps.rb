@@ -197,3 +197,7 @@ Given /^the dosage of the sample called "([^\"]+)" is (#{Sample::DOSE_REGEXP})/ 
   sample = Sample.find_by_name(name) or raise StandardError, "Cannot find the sample #{name.inspect}"
   sample.update_attributes!(:sample_metadata_attributes => { :dose => dose })
 end
+
+Given /^there are no samples$/ do
+  Sample.destroy_all
+end
