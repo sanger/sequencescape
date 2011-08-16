@@ -15,8 +15,7 @@ Feature: Access samples through the API
 
   @read
   Scenario: Reading the JSON for a UUID
-    Given a sample called "testing_the_api" with ID 1
-      And the UUID for the sample with ID 1 is "00000000-1111-2222-3333-444444444444"
+    Given a sample called "testing_the_api" with UUID "00000000-1111-2222-3333-444444444444"
       And the sample called "testing_the_api" is Male
       And the GC content of the sample called "testing_the_api" is Neutral
       And the DNA source of the sample called "testing_the_api" is Genomic
@@ -123,9 +122,6 @@ Feature: Access samples through the API
               "disease": "disease"
             }
           }
-        },
-        "uuids_to_ids": {
-          "00000000-1111-2222-3333-444444444444": 1
         }
       }
       """

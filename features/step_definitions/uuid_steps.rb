@@ -49,6 +49,10 @@ Given /^the UUID for the (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) "([^\"]+)" is
   set_uuid_for(object, uuid_value)
 end
 
+Given /^an? (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) called "([^\"]+)" with UUID "([^\"]+)"$/ do |model,name,uuid_value|
+  set_uuid_for(Factory(model.gsub(/\s+/, '_').to_sym, :name => name, :id => id), uuid_value)
+end
+
 Given /^an? (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) called "([^\"]+)" with ID (\d+)$/ do |model, name, id|
   Factory(model.gsub(/\s+/, '_').to_sym, :name => name, :id => id)
 end

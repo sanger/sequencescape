@@ -64,7 +64,7 @@ def work_pipeline_for(submissions, name)
   final_plate_type = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find #{name.inspect} plate type"
   template         = TransferTemplate.find_by_name('Pool wells based on submission') or raise StandardError, 'Cannot find pooling transfer template'
 
-  source_plates = submissions.map { |submission| submission.requests.first.asset.parent }.uniq
+  source_plates = submissions.map { |submission| submission.requests.first.asset.plate }.uniq
   raise StandardError, "Submissions appear to come from non-unique plates: #{source_plates.inspect}" unless source_plates.size == 1
   template.create!(:source => source_plates.first, :destination => final_plate_type.create!, :user => Factory(:user))
 end
