@@ -3,11 +3,6 @@ class AdminController < ApplicationController
   before_filter :admin_login_required
 
   def index
-    @studies = Study.count
-    @users = User.count
-    @samples = Sample.count
-    @items = Item.count
-    @requests = Request.count
   end
   
   def filter

@@ -363,6 +363,12 @@ When /^I generate an? accession number for study "([^\"]+)"$/ do |study_name|
  Then %Q{I am on the workflow page for study "#{study_name}"}
  When %Q{I follow "Generate Accession Number"}
 end
+
+When /^I update an? accession number for study "([^\"]+)"$/ do |study_name|
+ Then %Q{I am on the workflow page for study "#{study_name}"}
+ When %Q{I follow "Update EBI Study data"}
+end
+
 Given /^the study "([^\"]+)" has a valid policy$/ do |study_name|
     Given %Q{the policy for study "#{study_name}" is "I am the 'managed study'  policy"}
     And %Q{the dac accession number for study "#{study_name}" is "EGAC00000001"}

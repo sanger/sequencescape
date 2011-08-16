@@ -23,22 +23,22 @@ Feature: Cherrypicking for Pulldown pipeline
     And I follow "Batch Report"
     When I look at the pulldown report for the batch it should be:
      | Plate    | Well | Study      | Pooled Tube    | Tag Group | Tag | Expected Sequence | Sample Name      | Measured Volume | Measured Concentration |
-     | DN99999F | A1   | Test study |                |           |     |                   | Sample_1234567_1 | 0.0             | 1.0                    |
-     | DN99999F | B1   | Test study |                |           |     |                   | Sample_1234567_2 | 11.0            | 40.0                   |
-     | DN99999F | C1   | Test study |                |           |     |                   | Sample_1234567_3 | 22.0            | 80.0                   |
-     | DN99999F | D1   | Test study |                |           |     |                   | Sample_1234567_4 | 33.0            | 120.0                  |
-     | DN99999F | E1   | Test study |                |           |     |                   | Sample_1234567_5 | 44.0            | 160.0                  |
-     | DN99999F | F1   | Test study |                |           |     |                   | Sample_1234567_6 | 55.0            | 200.0                  |
-     | DN99999F | G1   | Test study |                |           |     |                   | Sample_1234567_7 | 66.0            | 240.0                  |
-     | DN99999F | H1   | Test study |                |           |     |                   | Sample_1234567_8 | 77.0            | 280.0                  |
-     | DN99999F | A2   | Study A    |                |           |     |                   | Sample_222_1     | 0.0             | 1.0                    |
-     | DN99999F | B2   | Study A    |                |           |     |                   | Sample_222_2     | 11.0            | 40.0                   |
-     | DN99999F | C2   | Study A    |                |           |     |                   | Sample_222_3     | 22.0            | 80.0                   |
-     | DN99999F | D2   | Study A    |                |           |     |                   | Sample_222_4     | 33.0            | 120.0                  |
-     | DN99999F | E2   | Study A    |                |           |     |                   | Sample_222_5     | 44.0            | 160.0                  |
-     | DN99999F | F2   | Study A    |                |           |     |                   | Sample_222_6     | 55.0            | 200.0                  |
-     | DN99999F | G2   | Study A    |                |           |     |                   | Sample_222_7     | 66.0            | 240.0                  |
-     | DN99999F | H2   | Study A    |                |           |     |                   | Sample_222_8     | 77.0            | 280.0                  |
+     | DN99999F | A1   | Test study | 200001         |           |     |                   | Sample_1234567_1 | 0.0             | 1.0                    |
+     | DN99999F | B1   | Test study | 200001         |           |     |                   | Sample_1234567_2 | 11.0            | 40.0                   |
+     | DN99999F | C1   | Test study | 200001         |           |     |                   | Sample_1234567_3 | 22.0            | 80.0                   |
+     | DN99999F | D1   | Test study | 200001         |           |     |                   | Sample_1234567_4 | 33.0            | 120.0                  |
+     | DN99999F | E1   | Test study | 200001         |           |     |                   | Sample_1234567_5 | 44.0            | 160.0                  |
+     | DN99999F | F1   | Test study | 200001         |           |     |                   | Sample_1234567_6 | 55.0            | 200.0                  |
+     | DN99999F | G1   | Test study | 200001         |           |     |                   | Sample_1234567_7 | 66.0            | 240.0                  |
+     | DN99999F | H1   | Test study | 200001         |           |     |                   | Sample_1234567_8 | 77.0            | 280.0                  |
+     | DN99999F | A2   | Study A    | 200002         |           |     |                   | Sample_222_1     | 0.0             | 1.0                    |
+     | DN99999F | B2   | Study A    | 200002         |           |     |                   | Sample_222_2     | 11.0            | 40.0                   |
+     | DN99999F | C2   | Study A    | 200002         |           |     |                   | Sample_222_3     | 22.0            | 80.0                   |
+     | DN99999F | D2   | Study A    | 200002         |           |     |                   | Sample_222_4     | 33.0            | 120.0                  |
+     | DN99999F | E2   | Study A    | 200002         |           |     |                   | Sample_222_5     | 44.0            | 160.0                  |
+     | DN99999F | F2   | Study A    | 200002         |           |     |                   | Sample_222_6     | 55.0            | 200.0                  |
+     | DN99999F | G2   | Study A    | 200002         |           |     |                   | Sample_222_7     | 66.0            | 240.0                  |
+     | DN99999F | H2   | Study A    | 200002         |           |     |                   | Sample_222_8     | 77.0            | 280.0                  |
      
   Scenario: Cherrypick and multiplex library prep for pulldown with 16 tags
     Given I have a tag group called "UK10K tag group" with 16 tags
