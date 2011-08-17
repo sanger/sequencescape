@@ -131,30 +131,8 @@ class Sample < ActiveRecord::Base
   end
 
   def has_submission_record?
-    has_submission_record = false
-
-    my_list_assets = []
-    self.assets.each do |asset|
-      my_list_assets << asset.id
-    end
-
-    list_assets = []
-    self.studies.each do |study|
-      if (! study.submissions.empty?)
-        study.submissions.each do |submission|
-          list_assets << submission.assets
-        end
-      end
-    end
-
-    list_assets.flatten!
-    my_list_assets.each do |myasset|
-      if list_assets.include?(myasset)
-        has_submission_record = true
-      end
-    end
-
-    return has_submission_record
+    assets_common_to_submissions = self.assets - self.studies.map(&:submission).flatten.map(&:assets).uniq
+    not assets_common_to_submissions.empty?
   end
 
   # TODO: remove as this is no longer needed (validation of name change will fail)
