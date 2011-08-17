@@ -20,7 +20,7 @@ class Transfer::BetweenPlatesBySubmission < Transfer
       wells_to_stocks = locate_stock_wells_for(source)
       groups = source.wells.group_by do |well|
         stock_well = wells_to_stocks[well].first
-        stock_well and stock_well.requests_as_source.detect { |r| r.submission_id.present? }.try(:submission_id)
+        stock_well and stock_well.requests_as_source.where_has_a_submission.first.try(:submission_id)
       end.delete_if { |k,_| k.nil? }.values
 
       # Submission group 1 will go into A1, group 2 into B1, group 3 C1, etc.
