@@ -74,11 +74,8 @@ class AssetsController < ApplicationController
       # Find the parent asset up front
       parent, parent_param = nil, first_param(:parent_asset)
       if parent_param.present?
-        parent = 
-          Asset.find_by_id(parent_param) or
-          Asset.find_from_machine_barcode(parent_param) or
-          Asset.find_by_name(parent_param) or
-            raise StandardError, "Cannot find the parent asset #{parent_param.inspect}"
+        parent = Asset.find_by_id(parent_param) || Asset.find_from_machine_barcode(parent_param) || Asset.find_by_name(parent_param)
+        raise StandardError, "Cannot find the parent asset #{parent_param.inspect}" if parent.nil?
       end
 
       # Find the tag up front
@@ -96,44 +93,46 @@ class AssetsController < ApplicationController
 
       ActiveRecord::Base.transaction do
         @assets = (1..count).map do |n|
-          asset_class.new(params[:asset]) do |asset|
+          asset = asset_class.new(params[:asset]) do |asset|
             asset.name += " ##{n}" if count !=1
-          end.tap do |asset|
-            # from asset
-            if parent.present?
-              parent_volume = params[:parent_volume]
-              if parent_volume.present? and parent_volume.first.present?
-                extract = parent.transfer(parent_volume.first)
+          end
 
-                if asset.volume
-                  parent = extract
-                  asset.save!
-                elsif asset.is_a?(SpikedBuffer) and !parent.is_a?(SpikedBuffer)
-                  raise StandardError, "Enter a volume"
-                else
-                  # Discard the 'asset' that was build initially as it is being replaced by the asset
-                  # created from the extraction process.
-                  extract.update_attributes!(:name => asset.name)
-                  asset, parent = extract, nil
-                end
+          # from asset
+          if parent.present?
+            parent_volume, parent_used = params[:parent_volume], parent
+            if parent_volume.present? and parent_volume.first.present?
+              extract = parent_used.transfer(parent_volume.first)
+
+              if asset.volume
+                parent_used = extract
+                asset.save!
+              elsif asset.is_a?(SpikedBuffer) and !parent_used.is_a?(SpikedBuffer)
+                raise StandardError, "Enter a volume"
+              else
+                # Discard the 'asset' that was build initially as it is being replaced by the asset
+                # created from the extraction process.
+                extract.update_attributes!(:name => asset.name)
+                asset, parent_used = extract, nil
               end
-
-              # We must copy the aliquots of the 'extract' to the asset, otherwise the asset remains empty.
-              asset.aliquots = parent.aliquots.map(&:clone) unless parent.nil?
-              asset.add_parent(parent)
-            else
-              # All new assets are assumed to have a phiX sample in them as that's the only asset that
-              # is created this way.
-              asset.save!
-              aliquot_attributes = { :sample => SpikedBuffer.phiX_sample, :study_id => 198 }
-              aliquot_attributes[:library] = asset if asset.is_a?(LibraryTube) or asset.is_a?(SpikedBuffer)
-              asset.aliquots.create!(aliquot_attributes)
             end
 
-            tag.tag!(asset) if tag.present?
-            asset.update_attributes!(:barcode => AssetBarcode.new_barcode) if asset.barcode.nil?
-            asset.comments.create!(:user => current_user, :description => "asset has been created by #{current_user.login}")
+            # We must copy the aliquots of the 'extract' to the asset, otherwise the asset remains empty.
+            asset.aliquots = parent_used.aliquots.map(&:clone) unless parent_used.nil?
+            asset.add_parent(parent_used)
+          else
+            # All new assets are assumed to have a phiX sample in them as that's the only asset that
+            # is created this way.
+            asset.save!
+            aliquot_attributes = { :sample => SpikedBuffer.phiX_sample, :study_id => 198 }
+            aliquot_attributes[:library] = asset if asset.is_a?(LibraryTube) or asset.is_a?(SpikedBuffer)
+            asset.aliquots.create!(aliquot_attributes)
           end
+
+          tag.tag!(asset) if tag.present?
+          asset.update_attributes!(:barcode => AssetBarcode.new_barcode) if asset.barcode.nil?
+          asset.comments.create!(:user => current_user, :description => "asset has been created by #{current_user.login}")
+
+          asset
         end
       end # transaction
     rescue Asset::VolumeError => ex
