@@ -40,13 +40,4 @@ module LabInterface::WorkflowsHelper
     select_tag("wells[#{request.id}][qc_state]", options_for_select({"Pass"=>"OK", "Fail"=>"Fail", "Weak"=>"Weak", "No Band"=>"Band Not Visible", "Degraded"=>"Degraded"}, status), html_options)
   end
 
-  def qc_select_box_old(request, pass=nil)
-    #TODO remove
-    pass = (request.qc_state != "fail") if pass.nil?
-    if pass
-      select_tag("#{request.id}[qc_state]", "<option selected='selected'>pass</option><option>fail</option>")
-    else
-      select_tag("#{request.id}[qc_state]", "<option>pass</option><option selected='selected'>fail</option>")
-    end
-  end
 end
