@@ -131,7 +131,7 @@ class Sample < ActiveRecord::Base
   end
 
   def has_submission_record?
-    assets_common_to_submissions = self.assets - self.studies.map(&:submission).flatten.map(&:assets).uniq
+    assets_common_to_submissions = self.assets - self.studies.map(&:submissions).flatten.map(&:assets).uniq
     not assets_common_to_submissions.empty?
   end
 
