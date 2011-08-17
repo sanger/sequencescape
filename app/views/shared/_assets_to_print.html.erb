@@ -11,7 +11,7 @@
       <% @assets.each do |asset| %>
         <tr>
           <td><%= check_box_tag "printables[#{asset.id}]", 'true', true %></td>
-          <td><%= asset.name.blank? ? "id: #{asset.id}" : asset.name %></td>
+          <td><%= link_to((asset.name.blank? ? "id: #{asset.id}" : asset.name), asset_path(asset)) %></td>
           <td><%= asset.sti_type %></td>
           <td><%= asset.created_at.to_formatted_s(:day_full_with_time) %>
         </tr>
