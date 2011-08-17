@@ -71,85 +71,69 @@ class AssetsController < ApplicationController
     saved = true
 
     begin
-      Asset.transaction do
-        @assets = []
-        sti_type = params[:asset].delete(:sti_type)
-        asset_class = sti_type.present? ?  sti_type.constantize : Asset
-        1.upto(count) do |n|
-          asset = asset_class.new(params[:asset]) do |asset|
-            asset.name += " ##{n}" if count !=1
-          end
+      # Find the parent asset up front
+      parent, parent_param = nil, first_param(:parent_asset)
+      if parent_param.present?
+        parent = 
+          Asset.find_by_id(parent_param) or
+          Asset.find_from_machine_barcode(parent_param) or
+          Asset.find_by_name(parent_param) or
+            raise StandardError, "Cannot find the parent asset #{parent_param.inspect}"
+      end
 
-          # from asset
-          parent_param = first_param(:parent_asset)
-          if parent_param.present?
-            parent = Asset.find_by_id(parent_param) || Asset.find_from_machine_barcode(parent_param) || Asset.find_by_name(parent_param)
+      # Find the tag up front
+      tag, tag_param = nil, first_param(:tag)
+      if tag_param.present?
+        conditions = { :map_id => tag_param }
+        oligo      = params[:tag_sequence]
+        conditions[:oligo] = oligo.first.upcase! if oligo.present? and oligo.first.present?
+
+        tag = Tag.first(:conditions => conditions) or raise StandardError, "Cannot find tag #{tag_param.inspect}"
+      end
+
+      sti_type    = params[:asset].delete(:sti_type) or raise StandardError, "No asset type specified"
+      asset_class = sti_type.constantize
+
+      ActiveRecord::Base.transaction do
+        @assets = (1..count).map do |n|
+          asset_class.new(params[:asset]) do |asset|
+            asset.name += " ##{n}" if count !=1
+          end.tap do |asset|
+            # from asset
             if parent.present?
               parent_volume = params[:parent_volume]
               if parent_volume.present? and parent_volume.first.present?
-                extract= parent.transfer(parent_volume.first)
+                extract = parent.transfer(parent_volume.first)
 
                 if asset.volume
                   parent = extract
-
-                  # We must copy the aliquots of the 'extract' to the asset, otherwise the asset remains
-                  # empty.
-                  asset.aliquots = parent.aliquots.map(&:clone)
                   asset.save!
                 elsif asset.is_a?(SpikedBuffer) and !parent.is_a?(SpikedBuffer)
-                  # error should have its own volume
-                  flash[:error] = "Enter a volume"
-                  saved = false
-                  break
-                else # 
+                  raise StandardError, "Enter a volume"
+                else
                   # Discard the 'asset' that was build initially as it is being replaced by the asset
                   # created from the extraction process.
                   extract.update_attributes!(:name => asset.name)
-                  asset = extract
-                  parent = nil
+                  asset, parent = extract, nil
                 end
               end
 
+              # We must copy the aliquots of the 'extract' to the asset, otherwise the asset remains empty.
+              asset.aliquots = parent.aliquots.map(&:clone) unless parent.nil?
               asset.add_parent(parent)
-            end
-          else
-            # We must save the asset now because the parent stuff isn't being executed.
-            asset.save!
-          end
-          #Study
-          
-          asset.update_attributes!(:barcode => AssetBarcode.new_barcode) if asset.barcode.nil?
-           
-          #TODO : add request or an event
-          asset.comments << Comment.new(:user => current_user, :description => "asset has been created by #{current_user.login}")
-
-          # Can't add the sample until after the asset has been created, and then only if it doesn't
-          # already have any aliquots in it.
-          sample_param = params[:sample]
-          sample = Sample.find_by_id(sample_param) || Sample.find_by_name(sample_param)
-          if sample.present?
-            raise StandardError, "Asset already has aliquots in it" unless asset.aliquots.empty?
-            asset.aliquots.create!(:sample => sample)
-          end
-
-          # associate tag 
-          # create a new tag instance or assign the tag is it's a tag instance
-          tag_param = first_param(:tag)
-          if tag_param.present?
-            conditions = { :map_id => tag_param }
-            oligo      = params[:tag_sequence]
-            conditions[:oligo] = oligo.first.upcase! if oligo.present? and oligo.first.present?
-
-            tag = Tag.first(:conditions => conditions)
-            unless tag.present?
-              flash[:error] = "Tag #{tag_param}:#{params[:tag_sequence]} not found"
-              saved = false
+            else
+              # All new assets are assumed to have a phiX sample in them as that's the only asset that
+              # is created this way.
+              asset.save!
+              aliquot_attributes = { :sample => SpikedBuffer.phiX_sample, :study_id => 198 }
+              aliquot_attributes[:library] = asset if asset.is_a?(LibraryTube) or asset.is_a?(SpikedBuffer)
+              asset.aliquots.create!(aliquot_attributes)
             end
 
-            asset.attach_tag(tag)
+            tag.tag!(asset) if tag.present?
+            asset.update_attributes!(:barcode => AssetBarcode.new_barcode) if asset.barcode.nil?
+            asset.comments.create!(:user => current_user, :description => "asset has been created by #{current_user.login}")
           end
-
-          @assets << asset
         end
       end # transaction
     rescue Asset::VolumeError => ex
