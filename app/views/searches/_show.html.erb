@@ -14,13 +14,6 @@
     </ul>
   <% end %>
 
-  <% unless @items.empty? %>
-    <h4><%= pluralize @items.size, "items" %></h4>
-    <ul>
-      <%= render :partial => "searches/show/item", :collection => @items %>
-    </ul>
-  <% end %>
-
   <% unless @assets.empty? %>
     <h4><%= pluralize @assets.size, "assets" %></h4>
     <ul>
