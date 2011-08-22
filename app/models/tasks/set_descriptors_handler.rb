@@ -129,14 +129,4 @@ module Tasks::SetDescriptorsHandler
 
   end
 
-  # been moved into workflow controller
-  def eventify_batch_quarantine(batch, task)
-    event = batch.lab_events.create({})
-    event.description = "Complete"
-    event.add_descriptor Descriptor.new({ :name => 'task_id', :value => task.id })
-    event.add_descriptor Descriptor.new({ :name => 'task', :value => task.name })
-    event.batch = batch
-    event.user  = current_user
-    event.save
-  end
 end
