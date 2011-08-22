@@ -1,27 +1,27 @@
 class WorkflowsController < ApplicationController
   before_filter :find_workflow_by_id, :only =>[:auto_batch, :show, :edit, :duplicate, :batches, :update, :destroy, :reorder_tasks]
 
-  include Tasks::TagGroupHandler
-  include Tasks::PlateTemplateHandler
+  include Tasks::AddSpikedInControlHandler
+  include Tasks::AssignPlatePurposeHandler
   include Tasks::AssignTagsHandler
   include Tasks::AssignTagsToWellsHandler
+  include Tasks::AssignTubesToWellsHandler
+  include Tasks::AttachInfiniumBarcodeHandler
+  include Tasks::BindingKitBarcodeHandler
+  include Tasks::CherrypickGroupBySubmissionHandler
   include Tasks::CherrypickHandler
   include Tasks::DnaQcHandler
-  include Tasks::SetLocationHandler
   include Tasks::GenerateManifestHandler
-  include Tasks::AttachInfiniumBarcodeHandler
-  include Tasks::AssignPlatePurposeHandler
-  include Tasks::SetDescriptorsHandler
-  include Tasks::AddSpikedInControlHandler
-  include Tasks::CherrypickGroupBySubmissionHandler
-  include Tasks::SamplePrepQcHandler
-  include Tasks::SmrtCellsHandler
-  include Tasks::PrepKitBarcodeHandler
-  include Tasks::BindingKitBarcodeHandler
-  include Tasks::AssignTubesToWellsHandler
   include Tasks::MovieLengthHandler
-  include Tasks::ValidateSampleSheetHandler
+  include Tasks::PlateTemplateHandler
+  include Tasks::PrepKitBarcodeHandler
   include Tasks::ReferenceSequenceHandler
+  include Tasks::SamplePrepQcHandler
+  include Tasks::SetDescriptorsHandler
+  include Tasks::SetLocationHandler
+  include Tasks::SmrtCellsHandler
+  include Tasks::TagGroupHandler
+  include Tasks::ValidateSampleSheetHandler
 
   def index
     @workflows = LabInterface::Workflow.all
