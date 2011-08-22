@@ -8,14 +8,16 @@ module LabInterface::WorkflowsHelper
 
     unless @values.nil?
       unless @values[descriptor.name].nil?
-        puts "NAME: #{descriptor.name}"
-        puts "VALUES: #{@values}"
         value = @values[descriptor.name]
       end
     end
 
     value
 
+  end
+
+  def link_to_comments(request)
+     link_to_if(request.comments.present?, pluralize(request.comments.size, 'comment'),  request_comments_url(request)) { "None"}
   end
 
   def shorten(string)
