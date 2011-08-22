@@ -1,23 +1,22 @@
 module LabInterface::WorkflowsHelper
 
+  # Returns descriptor from params, if it's not there try the @study.
+  # If @study's not set or it doesn't hold the descriptor, return a
+  # blank string...
   def descriptor_value(descriptor)
-    value = ""
-    unless @study.nil?
-      value = @study.descriptor_value(descriptor.name)
-    end
-
-    unless @values.nil?
-      unless @values[descriptor.name].nil?
-        value = @values[descriptor.name]
-      end
-    end
-
-    value
-
+    # Refactored to remove reliance on @values
+    params[:values].try(:[], descriptor.name) or 
+      @study.try(:descriptor_value,descriptor.name) or ""
   end
 
+  # Returns a link to any available request comments with "None" as a
+  # default value.
   def link_to_comments(request)
-     link_to_if(request.comments.present?, pluralize(request.comments.size, 'comment'),  request_comments_url(request)) { "None"}
+     link_to_if(
+       request.comments.present?,
+       pluralize(request.comments.size, 'comment'),
+       request_comments_url(request)
+     ) { "None" }
   end
 
   def shorten(string)
