@@ -105,6 +105,43 @@ class Aliquot < ActiveRecord::Base
     end
   end
 
+  # todo move in module
+  class BulkCreator 
+    def initialize
+      @receptacle_to_aliquots=Hash.new { |h,k| h[k] = [] }
+      if block_given?
+        yield(self)
+        flush!
+      end
+    end
+
+    def add(receptacle, aliquots)
+      return if aliquots.compact.blank?
+      @receptacle_to_aliquots[receptacle] << aliquots
+      aliquots.each do |aliquot|
+        #TODO , move this in the flush method if needed
+        receptacle.save! if receptacle.new_record?
+        aliquot.receptacle_id = receptacle.id
+      end
+    end
+
+    def aliquots
+      _aliquots =  @receptacle_to_aliquots.values
+      _aliquots.flatten!
+      _aliquots.uniq!
+      _aliquots.compact!
+      _aliquots
+    end
+
+    def flush!
+      #create all aliquots
+      Aliquot.benchmark "BENCH Aliquot::BulkCreator:flush" do
+        _aliquots = aliquots()
+        Aliquot.import(_aliquots) unless _aliquots.blank?
+      end
+    end
+  end
+
   include Api::AliquotIO::Extensions
   # An aliquot is held within a receptacle
   belongs_to :receptacle, :class_name => 'Asset'

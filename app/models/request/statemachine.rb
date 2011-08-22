@@ -46,6 +46,22 @@ module Request::Statemachine
       aasm_event :cancel do
         transitions :to => :cancelled, :from => [:started, :pending, :passed, :failed, :hold]
       end
+      @@aliquot_handler=nil
+      def self.UpdateRequestInBulk
+        Aliquot::BulkCreator.new do |handler|
+          @@aliquot_handler = handler
+          yield
+        end
+        @@aliquot_handler = nil
+      end
+      def self.add_aliquots(asset, aliquots)
+        if @@aliquot_handler
+          @@aliquot_handler.add(asset, aliquots)
+        else
+          asset.aliquots << aliquots
+        end
+        aliquots
+      end
     end
   end
 
@@ -58,13 +74,20 @@ module Request::Statemachine
   # On starting a request the aliquots are copied from the source asset to the target 
   # and updated with the project and study information from the request itself.
   def on_started
-    target_asset.aliquots << asset.aliquots.map do |aliquot|
+    add_aliquots(target_asset, asset.aliquots.map do |aliquot|
       aliquot.clone.tap do |clone|
         clone.study   = study   || aliquot.study
         clone.project = project || aliquot.project
-      end
+      end                                         
     end
+    )
   end
+
+  def add_aliquots(*args)
+    self.class.add_aliquots(*args)
+  end
+
+
 
   def on_failed
 

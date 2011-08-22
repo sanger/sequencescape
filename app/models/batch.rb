@@ -149,7 +149,9 @@ class Batch < ActiveRecord::Base
   end
 
   def start_requests
-    self.requests.each { |request| request.start! unless request.failed? }
+    Request::UpdateRequestInBulk() do
+      self.requests.each { |request| request.start! unless request.failed? }
+    end
   end
 
   def input_group
