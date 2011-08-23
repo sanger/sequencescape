@@ -362,7 +362,7 @@ Feature: Interacting with requests through the API
             "study_url": "http://localhost:3000/0_5/studies/22222222-2222-3333-4444-ffffffffffff",
             "project_name": "Project testing the JSON API",
             "study_uuid": "22222222-2222-3333-4444-ffffffffffff",
-            "target_asset_sample_uuid": "bbbbbbbb-1111-2222-3333-000000000002",
+            "target_asset_sample_uuid": "bbbbbbbb-1111-2222-3333-000000000003",
             "target_asset_name": "Study testing the JSON API - Target asset",
             "source_asset_state": "",
             "source_asset_name": "Tube",

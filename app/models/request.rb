@@ -78,6 +78,7 @@ class Request < ActiveRecord::Base
 
   named_scope :where_is_a?,     lambda { |clazz| { :conditions => [ 'sti_type IN (?)',     [ clazz, *Class.subclasses_of(clazz) ].map(&:name) ] } }
   named_scope :where_is_not_a?, lambda { |clazz| { :conditions => [ 'sti_type NOT IN (?)', [ clazz, *Class.subclasses_of(clazz) ].map(&:name) ] } }
+  named_scope :where_has_a_submission, { :conditions => 'submission_id IS NOT NULL' }
 
   named_scope :full_inbox, :conditions => {:state => ["pending","hold"]}
 

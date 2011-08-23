@@ -11,6 +11,8 @@ Feature: The API provides a lookup feature for legacy ID values to UUIDs
 
     Given I am using the latest version of the API
 
+    Given there are no samples
+
   @error
   Scenario Outline: Not authenticated if the WTSISignOn cookie is not sent
     Given no cookies are set for HTTP requests to the API

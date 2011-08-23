@@ -15,7 +15,7 @@ Feature: Interacting with library_tubes through the API
     And tube "Testing the JSON API" has a public name of "ABC"
 
     When I GET the API path "/library_tubes"
-    Then ignoring "id" the JSON should be:
+    Then ignoring "id|sample_name" the JSON should be:
       """
       [
         {
@@ -45,7 +45,7 @@ Feature: Interacting with library_tubes through the API
     Given a library tube called "Testing the JSON API" exists
     And the UUID for the library tube "Testing the JSON API" is "00000000-1111-2222-3333-444444444444"
     When I GET the API path "/library_tubes/00000000-1111-2222-3333-444444444444"
-    Then ignoring "id" the JSON should be:
+    Then ignoring "id|sample_name" the JSON should be:
       """
       {
         "library_tube": {

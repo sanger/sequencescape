@@ -81,7 +81,7 @@ class Api::RequestIO < Api::Base
     map_attribute_to_json_attribute(:id                     , 'source_asset_internal_id')
     map_attribute_to_json_attribute(:name                   , 'source_asset_name')
     map_attribute_to_json_attribute(:barcode                , 'source_asset_barcode')
-    map_attribute_to_json_attribute(:compatible_qc_state    , 'source_asset_state')
+    map_attribute_to_json_attribute(:qc_state               , 'source_asset_state')
     map_attribute_to_json_attribute(:closed                 , 'source_asset_closed')
     map_attribute_to_json_attribute(:two_dimensional_barcode, 'source_asset_two_dimensional_barcode')
 
@@ -106,7 +106,7 @@ class Api::RequestIO < Api::Base
     map_attribute_to_json_attribute(:id                     , 'target_asset_internal_id')
     map_attribute_to_json_attribute(:name                   , 'target_asset_name')
     map_attribute_to_json_attribute(:barcode                , 'target_asset_barcode')
-    map_attribute_to_json_attribute(:compatible_qc_state   , 'target_asset_state')
+    map_attribute_to_json_attribute(:qc_state               , 'target_asset_state')
     map_attribute_to_json_attribute(:closed                 , 'target_asset_closed')
     map_attribute_to_json_attribute(:two_dimensional_barcode, 'target_asset_two_dimensional_barcode')
 
