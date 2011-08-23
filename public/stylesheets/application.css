@@ -1,5 +1,13 @@
+a {
+  color:#0046BF;
+  text-decoration:none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
 div#tabs a, div#tabs a:link, div#tabs a:visited {
-text-transform: uppercase;
+
 text-decoration: none;
 color: #31353d;
 padding: 1px 15px 3px 15px;
@@ -72,6 +80,9 @@ list-style: none;
 }
 #header {
 background: #3e87b3;
+background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(0%, #004578), color-stop(100%, #0085bc));
+background-image: -moz-linear-gradient(top, #004578 0%, #0085bc 100%);
+background-image: linear-gradient(top, #004578 0%, #0085bc 100%);
 color: #efefef;
 }
 #help {
@@ -187,6 +198,8 @@ font-weight: bold;
 }
 #quick_links {
 background: #31353d;
+background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(0%, #31353d), color-stop(100%, #212429));
+background-image: -moz-linear-gradient(top, #31353d 0%, #212429 100%);
 color: #efefef;
 font-size: 12px;
 border-top: 3px solid #055694;
@@ -200,6 +213,8 @@ padding: 5px 0px 0px 0px;
 }
 #tab_bar {
 background: #aad4f4;
+-moz-box-shadow: 1px 1px 2px 0 #C3CEDA;
+box-shadow: 1px 1px 2px 0 #C3CEDA;
 border-bottom: 1px solid #bbb;
 }
 #tab_content {
@@ -231,7 +246,10 @@ font-size: 10px;
 line-height: 14px;
 }
 .callout {
-border-top: 1px solid #aad4f4;
+border: 1px solid #aad4f4;
+margin-bottom: 3px;
+-moz-border-radius: 5px;
+-webkit-border-radius: 5px;
 background: #d2e2f7;
 color: #222931;
 padding: 5px;
@@ -366,7 +384,7 @@ h1 {
 margin: 0px 0px 15px 0px;
 padding: 0px;
 font-size: 1.3em;
-text-transform: uppercase;
+
 font-weight: bold;
 }
 h2 {
