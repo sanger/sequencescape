@@ -151,9 +151,7 @@ class WorkflowsController < ApplicationController
     @rits = @batch.pipeline.request_information_types
     @requests = @batch.ordered_requests
 
-    unless @batch.started? || @batch.failed?
-      @batch.start!(current_user)
-    end
+    @batch.start!(current_user) unless @batch.started? or @batch.failed?
 
     @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
     @task = task

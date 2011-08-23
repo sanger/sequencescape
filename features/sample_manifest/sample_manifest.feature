@@ -56,7 +56,7 @@ Feature: Sample manifest
     Then I should see the manifest table:
       | Contains | Study      | Supplier           | Manifest       | Upload          | Errors | State                | Created by |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Upload manifest |        | No manifest uploaded | john       |
-    And I should see "Cannot find details about the sample manifest"
+    And I should see "Invalid CSV file"
 
   Scenario: Create a 1D tube manifest without processing the manifest
     When I follow "Create manifest for 1D tubes"

@@ -15,11 +15,9 @@
         <td><%= link_to asset.name, asset_path(asset) %></td>
         <td>
           <% if asset.is_a?(Aliquot::Receptacle) and not asset.aliquots.empty? %>
-            <ul>
               <% asset.aliquots.each do |aliquot| %>
-                <li><%= link_to aliquot.sample.name, sample_path(aliquot.sample) %></li>
+                <%= link_to aliquot.sample.name, sample_path(aliquot.sample) %> 
               <% end %>
-            </ul>
           <% end %>
         </td>
         <td><%= asset.label %></td>

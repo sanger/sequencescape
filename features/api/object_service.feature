@@ -15,6 +15,8 @@ Feature: Access objects through the API
 
     Given I am using the latest version of the API
 
+    Given there are no samples
+
   @create @error
   Scenario: Creating an object but sending the wrong 'Content-Type'
     When I POST the following "text/plain" to the API path "/samples":

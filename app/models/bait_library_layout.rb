@@ -52,10 +52,10 @@ class BaitLibraryLayout < ActiveRecord::Base
   private :layout_bait_libraries_on_plate
 
   def each_bait_library_assignment(&block)
-    plate.wells.walk_in_column_major_order do |well, _|
-      stock_well   = locate_stock_well_for(well) or next
-      bait_library = stock_well.requests.detect { |r| r.submission_id.present? }.try(:request_metadata).try(:bait_library)
-      yield(well, bait_library)
+    locate_stock_wells_for(plate).each do |well, stock_wells|
+      bait_library = stock_wells.map { |w| w.requests_as_source.where_is_not_a?(TransferRequest).where_has_a_submission.first }.compact.map(&:request_metadata).map(&:bait_library).uniq
+      raise StandardError, "Multiple bait libraries found for #{well.map.description} on plate #{well.plate.sanger_human_barcode}" if bait_library.size > 1
+      yield(well, bait_library.first)
     end
   end
   private :each_bait_library_assignment
