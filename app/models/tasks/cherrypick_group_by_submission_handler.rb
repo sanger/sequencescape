@@ -39,7 +39,7 @@ module Tasks::CherrypickGroupBySubmissionHandler
 
 
   def render_cherrypick_group_by_submission_task(task,params)
-    @plate_purpose_options = plate_purpose_options()
+    @plate_purpose_options = task.plate_purpose_options(@batch)
   end
 
   # Returns a list of valid plate purpose types based on the requests in the current batch.
