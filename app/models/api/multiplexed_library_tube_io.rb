@@ -32,7 +32,7 @@ class Api::MultiplexedLibraryTubeIO < Api::Base
   map_attribute_to_json_attribute(:barcode)
   map_attribute_to_json_attribute(:concentration)
   map_attribute_to_json_attribute(:volume)
-  map_attribute_to_json_attribute(:compatible_qc_state, 'qc_state')
+  map_attribute_to_json_attribute(:qc_state)
   map_attribute_to_json_attribute(:closed)
   map_attribute_to_json_attribute(:two_dimensional_barcode)
   map_attribute_to_json_attribute(:created_at)

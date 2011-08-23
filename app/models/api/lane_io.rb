@@ -24,7 +24,7 @@ class Api::LaneIO < Api::Base
   map_attribute_to_json_attribute(:id, 'internal_id')
   map_attribute_to_json_attribute(:name)
   map_attribute_to_json_attribute(:barcode)
-  map_attribute_to_json_attribute(:compatible_qc_state)
+  map_attribute_to_json_attribute(:qc_state)
   map_attribute_to_json_attribute(:external_release)
   map_attribute_to_json_attribute(:two_dimensional_barcode)
   map_attribute_to_json_attribute(:created_at)
