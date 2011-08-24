@@ -1,0 +1,64 @@
+<%= javascript_include_tag "characterisation.js"  %>
+<form id="default-values" action="#">
+  <fieldset>
+    <legend>Default Characterisation Values</legend>
+    <table>
+      <% @task.descriptors.each_with_index do |descriptor, index| -%>
+      <%= "<tr>" if (index + 1).odd?  %>
+        <th><%= label :"default-value-for-#{u(descriptor.name)}", descriptor.name %>:</th>
+        <td>
+          <%= text_field :"default-value-for-#{u(descriptor.name)}", u(descriptor.name), :class => "default-value", :'data-default-for' => descriptor.name.gsub(/\s/,'_'), :'data-descriptor-for' => descriptor.name.gsub(/\s/,'_') %>
+        </td>
+      <%= "</tr>" if (index + 1).even? %>
+    <% end %>
+    </table>
+    <%= submit_tag "Copy to descriptors", :id => "copy-defaults" %>
+    <%= submit_tag "Clear descriptors", :id => "clear-desrciptors" %>
+  </fieldset>
+</form>
+
+<% form_for :workflow, :url => { :action => "stage", :id => @stage }, :html => { :id => "stage_form"} do |form| %>
+
+<h2><%= pluralize(@batch.requests.count, @batch.requests.first.asset.sti_type.underscore.humanize) %> in total</h2>
+
+  <% @batch.requests.each do |request| %>
+    <h3>Batch item #<%= request.position(@batch) %></h3>
+    <div class="characterisation">
+    <h2>Sample: <%= request.sample_name -%></h2>
+        <table>
+          <tr> <th>Request:</th> <td><%= link_to request.id, request_url(request) %></td>
+          <th>Source:</th>  <td><%= link_to request.asset.sti_type.underscore.humanize + "\s" + request.asset.barcode, asset_url(request.asset) %></td> </tr>
+          <tr> <th>Target:</th>  <td><%= link_to request.target_asset.sti_type.underscore.humanize + "\s" +  request.asset.barcode, asset_url(request.target_asset) %></td>
+          <th>Comments:</th><td><%= link_to_comments(request) %></td> </tr>
+        </table>
+
+        <fieldset>
+          <legend>Characterisation Values</legend>
+          <table>
+          <% @task.descriptors.each_with_index do |descriptor, index| -%>
+            <%= "<tr>" if (index + 1).odd?  %>
+              <th><%= label "requests[#{request.id}][descriptors]".to_sym, descriptor.name %>:</th>
+              <td>
+                <%= text_field "requests[#{request.id}][descriptors]", u(descriptor.name), :class => "descriptor-value", :'data-descriptor-for' => descriptor.name.gsub(/\s/,'_') %>
+                <%= hidden_field "requests[#{request.id}][fields]", index + 1, :value => descriptor.name %>
+              </td>
+            <%= "</tr>" if (index + 1).even?  %>
+          <% end %>
+          </table>
+        </fieldset>
+    </div>
+  <% end %>
+
+
+  <%= hidden_field_tag "next_stage", "true" %>
+  <%= hidden_field_tag "workflow_id", @workflow.id %>
+  <%= hidden_field_tag "batch_id", @batch.id %>
+
+  <input type="submit" value="Next step" id="stage_button" onclick="submit_stage();" />
+  <span id="stage_loading" style="display: none;"><%= image_tag "ajax-loader.gif", :size => "10x10", :alt => "Saving" %> Saving</span>
+  <span id="stage_links"> or <%= link_to "cancel", workflows_url %>
+<% end # End of form_for %>
+
+
+
+
