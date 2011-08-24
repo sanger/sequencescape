@@ -64,7 +64,7 @@ class CreateMiseqPipeline < ActiveRecord::Migration
       submission.request_options   = {}
       ## Add custom fields for MiSeq
       library_type = FieldInfo.new(:default_value => "Standard", :kind => "Selection", :display_name => "Library type", :selection=>["NlaIII gene expression", "Standard", "Long range", "Small RNA", "DpnII gene expression", "qPCR only", "High complexity and double size selected", "Illumina cDNA protocol", "Custom", "High complexity", "Double size selected", "No PCR", "Agilent Pulldown", "ChiP-seq"], :key => "library_type")
-      fragment_from = FieldInfo.new(:default_value => "", :kind => "Text", :display_name => "Fragment size required (from)", :key => "fragment_size_required_from">, 
+      fragment_from = FieldInfo.new(:default_value => "", :kind => "Text", :display_name => "Fragment size required (from)", :key => "fragment_size_required_from")
       fragment_to => FieldInfo.new(:default_value => "", :kind => "Text", :display_name => "Fragment size required (to)", :key => "fragment_size_required_to")
       read_length = FieldInfo.new(:kind => "Selection", :key => "read_length", :display_name => "Read length", :default_value => "50", :selection => ["25","50","130","150"])
  
