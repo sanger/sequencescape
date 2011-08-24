@@ -864,3 +864,31 @@ background-color: #D0F5A9;
 td.orange {
 background-color: orange;
 }
+
+#default-values fieldset {
+  border-radius: 3px;
+  border: 1px solid #C0C0C0;
+  background:#F4F4F4;
+  background-image: -moz-linear-gradient(top,#F2F2F2,#fff, #F2F2F2);
+}
+
+div.characterisation {
+  clear:both;
+  padding: 0 15px 8px 15px;
+  margin: 0 10px 20px 10px;
+  display:inline-block;
+  border-radius: 3px;
+  border: 1px solid #C0C0C0;
+  background: #EBF4FF;
+  background-image: -moz-linear-gradient(top,#DFE7EF,#F1F8FF, #DFE7EF);
+  color: #3F3F3F;
+}
+
+div.characterisation h2 {
+  color:#222;
+}
+
+div.characterisation fieldset{
+  border-radius: 3px;
+  border: 1px solid #C0C0C0;
+}
