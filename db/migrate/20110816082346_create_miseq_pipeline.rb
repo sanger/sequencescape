@@ -68,7 +68,7 @@ class CreateMiseqPipeline < ActiveRecord::Migration
       fragment_to => FieldInfo.new(:default_value => "", :kind => "Text", :display_name => "Fragment size required (to)", :key => "fragment_size_required_to")
       read_length = FieldInfo.new(:kind => "Selection", :key => "read_length", :display_name => "Read length", :default_value => "50", :selection => ["25","50","130","150"])
  
-      submission.set_input_field_infos([fragment_from, fragment_to, library_type, insert_size])
+      submission.set_input_field_infos([fragment_from, fragment_to, library_type, read_length])
 
       SubmissionTemplate.new_from_submission("#{library_creation_request_type.name} - #{miseq_sequencing.name}", submission).save!
     end 
