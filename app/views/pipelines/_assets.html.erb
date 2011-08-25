@@ -28,7 +28,7 @@
             <% request_group_id = "request_group_#{ group_id.gsub(/[^a-z0-9]+/, '_') }" %>
             <%= label_tag(request_group_id, "Select #{ parent.sanger_human_barcode } for batch", :style => 'display:none') %>
             <%= label_tag(request_group_id, "Include request #{index+1}", :style => 'display:none') %>
-            <%= check_box(:request_group, group_id, :id => request_group_id, :onclick => 'check_grouped_request_count();') %>
+            <%= check_box(:request_group, group_id, :id => request_group_id, :class => 'grouped_checkbox', :'data-count' => requests.size) %>
             <%= hidden_field_tag("#{request_group_id}_size", "",  :value => requests.size)  %>
           </td>
           <td><%= parent.id %></td>
