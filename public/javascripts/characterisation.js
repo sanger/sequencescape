@@ -22,15 +22,12 @@ jQuery(document).ready(function(){
   jQuery("input.descriptor-value").bind("keydown", function(e) {
     var code=e.charCode || e.keyCode;
 
-    // Trap tab key to move to the next/previous similar descriptor field.
-    if (code == 9){
+    // Trap enter key to move to the next similar descriptor field.
+    if (code == 13){
       var descriptorFor = jQuery(this).data('descriptor-for');
       var field_index = jQuery('[data-descriptor-for=' + descriptorFor + ']' ).index(this);
 
-      // Move back if shift-tab
-      if (e.shiftKey) { field_index -=  1; }
-      // else move forward.
-      else            { field_index +=  1; }
+      field_index +=  1;
 
       // Set focus to new field
       jQuery('[data-descriptor-for=' + descriptorFor + ']')[field_index].focus();
