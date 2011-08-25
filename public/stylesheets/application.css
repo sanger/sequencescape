@@ -347,9 +347,10 @@ font-size: 11px;
 position: absolute;
 }
 .roweven {
-background-color: #ddd;
+background: #fff;
 }
 .rowodd {
+  background:#F0F0F6;
 }
 .section {
 margin: 5px 30px 15px 30px;
