@@ -1249,10 +1249,12 @@ table.sortable thead tr th {
   font-size: 10px;
 }
 
-.rowodd {}
+.rowodd {
+  background:#F0F0F6;
+}
 
 .roweven {
-  background:#dedede;
+  background:#fff;
 }
 
 .nested { 
