@@ -35,7 +35,7 @@ jQuery(document).ready(function(){
       // Set focus to new field
       jQuery('[data-descriptor-for=' + descriptorFor + ']')[field_index].focus();
 
-    }
     return false;
+    }
   });
 });

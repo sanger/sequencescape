@@ -18,6 +18,7 @@ class WorkflowsController < ApplicationController
   include Tasks::ReferenceSequenceHandler
   include Tasks::SamplePrepQcHandler
   include Tasks::SetDescriptorsHandler
+  include Tasks::SetCharacterisationDescriptorsHandler
   include Tasks::SetLocationHandler
   include Tasks::SmrtCellsHandler
   include Tasks::TagGroupHandler

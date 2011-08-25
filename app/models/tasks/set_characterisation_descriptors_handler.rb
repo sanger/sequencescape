@@ -1,17 +1,17 @@
-module Tasks::SetCharacterisationDescriptorsTask
-  def do_set_descriptors_task(task, params)
-    # @batch = Batch.find(params[:batch_id], :include => [:requests, :pipeline, :lab_events])
-    # @rits = @batch.pipeline.request_information_types
-    # @requests = @batch.ordered_requests
+module Tasks::SetCharacterisationDescriptorsHandler
+  def do_set_characterisation_descriptors_task(task, params)
+    @batch = Batch.find(params[:batch_id], :include => [:requests, :pipeline, :lab_events])
+    @rits = @batch.pipeline.request_information_types
+    @requests = @batch.ordered_requests
 
-    # unless @batch.started? || @batch.failed?
-    #   @batch.start!(current_user)
-    # end
+    unless @batch.started? || @batch.failed?
+      @batch.start!(current_user)
+    end
 
 
-    # @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
-    # @task = @workflow.tasks[params[:id].to_i]
-    # @stage = params[:id].to_i
+    @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
+    @task = @workflow.tasks[params[:id].to_i]
+    @stage = params[:id].to_i
     @count = 0
     if params[:values].nil?
       @values = {}
@@ -20,63 +20,57 @@ module Tasks::SetCharacterisationDescriptorsTask
     end
 
     # Perform the necessary updates if we've passed batch creation
-    # unless params[:next_stage].nil?
+    unless params[:next_stage].nil?
       updated = 0
 
       @batch.requests.each do |request|
-        unless params[:request].nil?
-          params[:request].keys.each do |checked|
-            if request.id == checked.to_i
 
-              event = LabEvent.new(:batch_id => @batch.id, :description => @task.name)
+        event = LabEvent.new(:batch_id => @batch.id, :description => @task.name)
 
-              unless params[:descriptors].nil?                
-                event.descriptors = params[:descriptors]
-                event.descriptor_fields = ordered_fields(params[:fields])
+        unless params[:descriptors].nil?                
+          event.descriptors = params[:descriptors]
+          event.descriptor_fields = ordered_fields(params[:fields])
 
-                # Cache values to populate the next request on the same stage
-                event.descriptors.each do |descriptor|
-                  @values[descriptor.name] = descriptor.value
-                end
-              end
-
-              if !params[:requests].nil? && !params[:requests]["#{request.id}"].nil? && !params[:requests]["#{request.id}"][:descriptors].nil?
-                # Descriptors: create description for event
-
-                event.descriptors = params[:requests]["#{request.id}"][:descriptors]
-                event.descriptor_fields = ordered_fields(params[:requests]["#{request.id}"][:fields])
-
-              end
-
-              unless params[:upload].nil?
-                params[:upload].each_key do |key|
-                  event.filename = params[:upload][key].original_filename.gsub(/[^a-zA-Z0-9.]/, '_')
-                  event.data = params[:upload][key].read
-                  event.add_descriptor Descriptor.new({:name => key, :value => event.filename})
-                end
-              end
-
-              event.save
-              current_user.lab_events << event
-              request.lab_events << event
-
-              if params[:asset]
-                params[:asset].keys.each do |key|
-                  asset = Asset.new()
-                  asset.sti_type = Family.find(params[:asset][key][:family_id]).name
-                  params[:asset][key].each_key do |field|
-                    asset.add_descriptor Descriptor.new({ :name => field, :value => params[:asset][key][field] })
-                  end
-                  asset.save
-                  asset.parents << request.asset
-                end
-              end
-
-              unless request.asset.try(:resource)
-                EventSender.send_request_update(request.id, "update", "Passed: #{@task.name}")
-              end
-            end
+          # Cache values to populate the next request on the same stage
+          event.descriptors.each do |descriptor|
+            @values[descriptor.name] = descriptor.value
           end
+        end
+
+        if !params[:requests].nil? && !params[:requests]["#{request.id}"].nil? && !params[:requests]["#{request.id}"][:descriptors].nil?
+          # Descriptors: create description for event
+
+          event.descriptors = params[:requests]["#{request.id}"][:descriptors]
+          event.descriptor_fields = ordered_fields(params[:requests]["#{request.id}"][:fields])
+
+        end
+
+        unless params[:upload].nil?
+          params[:upload].each_key do |key|
+            event.filename = params[:upload][key].original_filename.gsub(/[^a-zA-Z0-9.]/, '_')
+            event.data = params[:upload][key].read
+            event.add_descriptor Descriptor.new({:name => key, :value => event.filename})
+          end
+        end
+
+        event.save!
+        current_user.lab_events << event
+        request.lab_events << event
+
+        if params[:asset]
+          params[:asset].keys.each do |key|
+            asset = Asset.new()
+            asset.sti_type = Family.find(params[:asset][key][:family_id]).name
+            params[:asset][key].each_key do |field|
+              asset.add_descriptor Descriptor.new({ :name => field, :value => params[:asset][key][field] })
+            end
+            asset.save!
+            asset.parents << request.asset
+          end
+        end
+
+        unless request.asset.try(:resource)
+          EventSender.send_request_update(request.id, "update", "Passed: #{@task.name}")
         end
 
         if request.has_passed(@batch, @task) || request.failed?
@@ -84,7 +78,7 @@ module Tasks::SetCharacterisationDescriptorsTask
         end
       end
 
-    
+
       if updated == @batch.requests.count
         eventify_batch @batch, @task
         return true
@@ -95,11 +89,11 @@ module Tasks::SetCharacterisationDescriptorsTask
         redirect_to url_for(flatten_hash(@params))
       end
 
-    # end
+    end
     false
   end
 
-  def render_set_descriptors_task(task, params)
+  def render_set_characterisation_descriptors_task(task, params)
     @batch = Batch.find(params[:batch_id], :include => [:requests, :pipeline, :lab_events])
     @rits = @batch.pipeline.request_information_types
     @requests = @batch.ordered_requests
@@ -107,7 +101,7 @@ module Tasks::SetCharacterisationDescriptorsTask
     unless @batch.started? || @batch.failed?
       @batch.start!(current_user)
     end
-    
+
     @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
     @task = @workflow.tasks[params[:id].to_i]
     @stage = params[:id].to_i
