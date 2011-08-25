@@ -29,11 +29,27 @@ xml.batch {
         # so the lane is effectively empty.
         raise StandardError, "Empty lane #{request.target_asset.id} in batch #{@batch.id}" if not @batch.pending? and request.target_asset.aliquots.empty?
 
-        if request.target_asset.aliquots.empty?
+        target_asset_aliquots = request.target_asset.aliquots.all
+        if target_asset_aliquots.empty?
           # This is a batch that has yet to be started
           xml.comment!("This batch has yet to be started so no information about what's on this lane is available yet")
-        elsif request.target_asset.aliquots.map(&:tag).compact.empty?
-          # This is a lane that is not multiplexed
+        elsif target_asset_aliquots.map(&:tag).compact.size == target_asset_aliquots.size
+          # Any lane where every aliquot is tagged is considered to be a pool
+          xml.pool(
+            "id"         => request.asset.id,                                 # TODO: remove
+            "name"       => request.asset.name,                               # TODO: remove
+            "request_id" => request.id,
+            "study_id"   => request.target_asset.primary_aliquot.study_id,    # TODO: remove
+            "project_id" => request.target_asset.primary_aliquot.project_id,  # TODO: remove
+            "qc_state"   => request.target_asset.compatible_qc_state
+          ) {
+            non_spiked_phiX, spiked_in_phiX = target_asset_aliquots, request.target_asset.spiked_in_buffer
+            non_spiked_phiX.reject!(&spiked_in_phiX.primary_aliquot.method(:=~)) if spiked_in_phiX.present?
+            non_spiked_phiX.each { |aliquot| output_aliquot(xml, aliquot) }
+          }
+        else
+          # This is a lane that is not multiplexed.  It may have spiked in phiX in it, which is tagged, so we'll remove
+          # any aliquots that are tagged from the view.
           xml.library(
             "id"         => request.target_asset.primary_aliquot.library_id,  # TODO: remove
             "sample_id"  => request.target_asset.primary_aliquot.sample_id,   # TODO: remove
@@ -43,19 +59,9 @@ xml.batch {
             "project_id" => request.target_asset.primary_aliquot.project_id,  # TODO: remove
             "qc_state"   => request.target_asset.compatible_qc_state
           ) {
-            request.target_asset.aliquots.each { |aliquot| output_aliquot(xml, aliquot) }
-          }
-        else
-          # Anything else is assumed to be a multiplexed lane
-          xml.pool(
-            "id"         => request.asset.id,                                 # TODO: remove
-            "name"       => request.asset.name,                               # TODO: remove
-            "request_id" => request.id,
-            "study_id"   => request.target_asset.primary_aliquot.study_id,    # TODO: remove
-            "project_id" => request.target_asset.primary_aliquot.project_id,  # TODO: remove
-            "qc_state"   => request.target_asset.compatible_qc_state
-          ) {
-            request.target_asset.aliquots.each { |aliquot| output_aliquot(xml, aliquot) }
+            target_asset_aliquots.each do |aliquot|
+              output_aliquot(xml, aliquot) unless aliquot.tag.present?
+            end
           }
         end
 
