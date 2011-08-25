@@ -28,7 +28,7 @@
         <table>
           <tr> <th>Request:</th> <td><%= link_to request.id, request_url(request) %></td>
           <th>Source:</th>  <td><%= link_to request.asset.sti_type.underscore.humanize + "\s" + request.asset.barcode, asset_url(request.asset) %></td> </tr>
-          <tr> <th>Target:</th>  <td><%= link_to request.target_asset.sti_type.underscore.humanize + "\s" +  request.asset.barcode, asset_url(request.target_asset) %></td>
+          <tr> <th>Target:</th>  <td><%= link_to request.target_asset.sti_type.underscore.humanize + "\s" +  request.target_asset.barcode, asset_url(request.target_asset) %></td>
           <th>Comments:</th><td><%= link_to_comments(request) %></td> </tr>
         </table>
 
