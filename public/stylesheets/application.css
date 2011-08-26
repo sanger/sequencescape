@@ -18,8 +18,10 @@ padding: 1px 15px 3px 15px;
 font-weight: bold;
 }
 div#tabs a:hover {
-background: #3e87b3;
-color: #fff;
+  -moz-border-radius: 0 0 5px 5px;
+  border-radius: 0 0 5px 5px;
+  background: #066FA3;
+  color: #fff;
 }
 div#tabs ul {
 padding-top: 1px;
