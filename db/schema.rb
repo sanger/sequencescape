@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110816125241) do
+ActiveRecord::Schema.define(:version => 20110826125929) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -272,6 +272,49 @@ ActiveRecord::Schema.define(:version => 20110816125241) do
     t.integer  "pipeline_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "current_library_tubes", :id => false, :force => true do |t|
+    t.string   "uuid",                        :limit => 36
+    t.integer  "internal_id",                                                              :default => 0,     :null => false
+    t.string   "name"
+    t.string   "barcode"
+    t.string   "prefix",                      :limit => 3
+    t.boolean  "closed",                                                                   :default => false
+    t.integer  "sample_internal_id"
+    t.string   "sample_uuid",                 :limit => 36
+    t.decimal  "volume",                                    :precision => 10, :scale => 2
+    t.decimal  "concentration",                             :precision => 18, :scale => 8
+    t.string   "tag_uuid",                    :limit => 36
+    t.integer  "tag_internal_id",                                                          :default => 0
+    t.integer  "tag_map_id"
+    t.string   "expected_sequence"
+    t.string   "tag_group_name"
+    t.integer  "tag_group_internal_id",                                                    :default => 0
+    t.integer  "source_request_id",                                                        :default => 0
+    t.string   "source_request_uuid",         :limit => 36
+    t.string   "library_type"
+    t.integer  "fragment_size_required_from"
+    t.integer  "fragment_size_required_to"
+    t.string   "sample_name"
+    t.text     "scanned_in_date"
+    t.datetime "created"
+    t.string   "public_name"
+  end
+
+  create_table "current_plates", :id => false, :force => true do |t|
+    t.string   "uuid",                      :limit => 36
+    t.integer  "internal_id",                             :default => 0, :null => false
+    t.string   "name"
+    t.string   "barcode"
+    t.string   "barcode_prefix",            :limit => 3
+    t.integer  "plate_size"
+    t.datetime "created"
+    t.integer  "plate_purpose_internal_id"
+    t.string   "plate_purpose_name"
+    t.string   "plate_purpose_uuid",        :limit => 36
+    t.string   "location"
+    t.string   "infinium_barcode"
   end
 
   create_table "custom_texts", :force => true do |t|
@@ -894,6 +937,15 @@ ActiveRecord::Schema.define(:version => 20110816125241) do
     t.integer "asset_group_id"
   end
 
+  create_table "sample_study_reference_genome", :id => false, :force => true do |t|
+    t.integer "sample_internal_id",                    :default => 0, :null => false
+    t.string  "sample_uuid",             :limit => 36
+    t.integer "study_internal_id"
+    t.string  "study_uuid",              :limit => 36
+    t.string  "study_reference_genome"
+    t.string  "sample_reference_genome"
+  end
+
   create_table "samples", :force => true do |t|
     t.string   "name"
     t.boolean  "new_name_format",            :default => true
@@ -1117,6 +1169,68 @@ ActiveRecord::Schema.define(:version => 20110816125241) do
   add_index "suppliers", ["name"], :name => "index_suppliers_on_name"
   add_index "suppliers", ["updated_at"], :name => "index_suppliers_on_updated_at"
 
+  create_table "tableau_test", :id => false, :force => true do |t|
+    t.string   "SPLEX",                     :limit => 5,   :default => "", :null => false
+    t.integer  "Study ID",                                 :default => 0,  :null => false
+    t.string   "Study Name"
+    t.datetime "Study Created Date"
+    t.string   "Study Type"
+    t.string   "Faculty Sponsor"
+    t.string   "Study State",               :limit => 20
+    t.datetime "Study State Date"
+    t.string   "Manager",                   :limit => 511
+    t.integer  "Sample ID",                                :default => 0,  :null => false
+    t.string   "Sample Name"
+    t.datetime "Sample Creation Date"
+    t.integer  "Sample Tube ID",                           :default => 0,  :null => false
+    t.string   "Sample Tube Name"
+    t.string   "Sample Common Name",                       :default => "", :null => false
+    t.datetime "Sample Tube Created Date"
+    t.text     "Sample Tube Scanned_in",                                   :null => false
+    t.integer  "Submission ID"
+    t.integer  "LibR reqID"
+    t.string   "Lib Request Type"
+    t.datetime "Lib Req Date"
+    t.string   "Lib Inbox",                 :limit => 10
+    t.string   "LibR State",                :limit => 20
+    t.datetime "Libr State Date"
+    t.integer  "Lib Batch"
+    t.integer  "Lib Batch Position"
+    t.datetime "Lib Batch Created Date"
+    t.string   "Lib Batch Creator"
+    t.string   "Lib Batch State",           :limit => 20
+    t.datetime "Lib Batch State Date"
+    t.binary   "Mplex Tube ID",             :limit => 11
+    t.string   "Mplex Tube Name"
+    t.binary   "Tag Group ID",              :limit => 11,                  :null => false
+    t.string   "Tag Group Name"
+    t.binary   "Tag ID",                    :limit => 11,                  :null => false
+    t.binary   "Tag Map ID",                :limit => 11
+    t.string   "Tag Sequence"
+    t.integer  "Library Tube ID"
+    t.string   "Library Name"
+    t.datetime "Library Tube Created Date"
+    t.string   "Library Tube State",        :limit => 20
+    t.datetime "Library Tube State Date"
+    t.string   "Library Type"
+    t.string   "Lib size from"
+    t.string   "Lib size to"
+    t.text     "Library Tube Scanned_in"
+    t.string   "Seq Inbox",                 :limit => 10
+    t.integer  "SeqR reqID"
+    t.string   "Seq Req Type"
+    t.datetime "Seq Req"
+    t.string   "SeqR State",                :limit => 20
+    t.datetime "Seqr State Date"
+    t.integer  "Readlength"
+    t.integer  "Seq Batch ID"
+    t.integer  "Lane Position"
+    t.datetime "Seq Batch Created Date"
+    t.string   "Seq Batch Creator"
+    t.string   "Seq Batch State",           :limit => 20
+    t.datetime "Seq Batch State Date"
+  end
+
   create_table "tag_groups", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -1230,6 +1344,30 @@ ActiveRecord::Schema.define(:version => 20110816125241) do
 
   add_index "uuids", ["external_id"], :name => "index_uuids_on_external_id"
   add_index "uuids", ["resource_type", "resource_id"], :name => "index_uuids_on_resource_type_and_resource_id"
+
+  create_table "view_data_release", :id => false, :force => true do |t|
+    t.integer "id",                                       :default => 0, :null => false
+    t.string  "external_id",                :limit => 36,                :null => false
+    t.string  "name"
+    t.string  "study_study_title"
+    t.string  "contains_human_dna"
+    t.string  "study_ebi_accession_number"
+    t.string  "data_release_study_type"
+    t.string  "data_release_strategy"
+    t.string  "data_release_timing"
+    t.string  "data_release_delay_period"
+    t.string  "data_release_delay_reason"
+    t.string  "study_sra_hold"
+    t.text    "study_description"
+    t.text    "study_abstract"
+  end
+
+  create_table "view_data_release_contacts", :id => false, :force => true do |t|
+    t.string  "login"
+    t.string  "email"
+    t.string  "role"
+    t.integer "study_id"
+  end
 
   create_table "well_attributes", :force => true do |t|
     t.integer  "well_id"
