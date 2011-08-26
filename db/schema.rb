@@ -1117,6 +1117,68 @@ ActiveRecord::Schema.define(:version => 20110816125241) do
   add_index "suppliers", ["name"], :name => "index_suppliers_on_name"
   add_index "suppliers", ["updated_at"], :name => "index_suppliers_on_updated_at"
 
+  create_table "tableau_test", :id => false, :force => true do |t|
+    t.string   "SPLEX",                     :limit => 5,   :default => "", :null => false
+    t.integer  "Study ID",                                 :default => 0,  :null => false
+    t.string   "Study Name"
+    t.datetime "Study Created Date"
+    t.string   "Study Type"
+    t.string   "Faculty Sponsor"
+    t.string   "Study State",               :limit => 20
+    t.datetime "Study State Date"
+    t.string   "Manager",                   :limit => 511
+    t.integer  "Sample ID",                                :default => 0,  :null => false
+    t.string   "Sample Name"
+    t.datetime "Sample Creation Date"
+    t.integer  "Sample Tube ID",                           :default => 0,  :null => false
+    t.string   "Sample Tube Name"
+    t.string   "Sample Common Name",                       :default => "", :null => false
+    t.datetime "Sample Tube Created Date"
+    t.text     "Sample Tube Scanned_in",                                   :null => false
+    t.integer  "Submission ID"
+    t.integer  "LibR reqID"
+    t.string   "Lib Request Type"
+    t.datetime "Lib Req Date"
+    t.string   "Lib Inbox",                 :limit => 10
+    t.string   "LibR State",                :limit => 20
+    t.datetime "Libr State Date"
+    t.integer  "Lib Batch"
+    t.integer  "Lib Batch Position"
+    t.datetime "Lib Batch Created Date"
+    t.string   "Lib Batch Creator"
+    t.string   "Lib Batch State",           :limit => 20
+    t.datetime "Lib Batch State Date"
+    t.binary   "Mplex Tube ID",             :limit => 11
+    t.string   "Mplex Tube Name"
+    t.binary   "Tag Group ID",              :limit => 11,                  :null => false
+    t.string   "Tag Group Name"
+    t.binary   "Tag ID",                    :limit => 11,                  :null => false
+    t.binary   "Tag Map ID",                :limit => 11
+    t.string   "Tag Sequence"
+    t.integer  "Library Tube ID"
+    t.string   "Library Name"
+    t.datetime "Library Tube Created Date"
+    t.string   "Library Tube State",        :limit => 20
+    t.datetime "Library Tube State Date"
+    t.string   "Library Type"
+    t.string   "Lib size from"
+    t.string   "Lib size to"
+    t.text     "Library Tube Scanned_in"
+    t.string   "Seq Inbox",                 :limit => 10
+    t.integer  "SeqR reqID"
+    t.string   "Seq Req Type"
+    t.datetime "Seq Req"
+    t.string   "SeqR State",                :limit => 20
+    t.datetime "Seqr State Date"
+    t.integer  "Readlength"
+    t.integer  "Seq Batch ID"
+    t.integer  "Lane Position"
+    t.datetime "Seq Batch Created Date"
+    t.string   "Seq Batch Creator"
+    t.string   "Seq Batch State",           :limit => 20
+    t.datetime "Seq Batch State Date"
+  end
+
   create_table "tag_groups", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
