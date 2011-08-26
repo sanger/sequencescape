@@ -6,6 +6,10 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+a:visited {
+  color:#00158C;
+}
 div#tabs a, div#tabs a:link, div#tabs a:visited {
 
 text-decoration: none;
@@ -172,7 +176,13 @@ color: white;
 }
 #message_notice {
 background: green;
-border-color: 1px solid ##d81f2a;
+border-color: 1px solid #d81f2a;
+-webkit-border-radius: 3px;
+-moz-border-radius: 3px;
+border-radius: 3px;
+box-shadow: 1px 1px 2px #C3CEDA;
+-moz-box-shadow: 1px 1px 2px 0 #C3CEDA;
+margin: 0 0 3px 0;
 color: white;
 }
 #message_warning {
@@ -379,6 +389,7 @@ body {
 margin: 0px;
 padding: 0px;
 font-family: 'Lucida Grande',helvetica,arial,sans-serif;
+color: #171717;
 background: #e3eefc;
 }
 h1 {
@@ -867,6 +878,7 @@ background-color: orange;
 }
 
 #default-values fieldset {
+  clear:both;
   border-radius: 3px;
   border: 1px solid #C0C0C0;
   background:#F4F4F4;
