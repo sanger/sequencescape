@@ -713,6 +713,8 @@ div.link_title {
   -moz-border-radius:    5px;
   -webkit-border-radius: 5px;
   border-radius:         5px;
+  box-shadow: 1px 1px 2px #D6E1EE;
+  -moz-box-shadow: 1px 2px 1px #CAD9E9;
 }
 
 #menu {
@@ -1195,7 +1197,7 @@ div.user_guide {
   padding: 10px;
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
-  border: 1px solid #00DE7B;
+  border: 1px solid #9FFC87;
   color: black;
   margin-bottom: 15px;
   font-size:1em;
