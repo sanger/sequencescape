@@ -1,6 +1,8 @@
 class AssignPlatePurposeTask < Task
   # Checks that request has an asset and if so returns a new
   # AssignPlatePurposeData using request.
+
+  include Tasks::PlatePurposeBehavior
   def create_render_element(request)
   end
   
@@ -26,4 +28,5 @@ class AssignPlatePurposeTask < Task
   def plate_purpose_id
     2
   end
+
 end
