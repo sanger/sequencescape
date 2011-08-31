@@ -45,7 +45,7 @@ end
 Then /^the tags assigned to the plate "([^"]+)" should be:$/ do |name, table|
   plate                    = Plate.find_by_name(name) or raise StandardError, "Cannot find plate #{name.inspect}"
   expected_wells_to_oligos = Hash[table.hashes.map { |a| [ a['well'], a['tag'] ] }]
-  wells_to_oligos          = Hash[plate.wells.map { |w| [ w.map.description, w.primary_aliquot.tag.oligo ] }]
+  wells_to_oligos          = Hash[plate.wells.map { |w| [ w.map.description, w.primary_aliquot.tag.try(:oligo) ] }]
   if expected_wells_to_oligos != wells_to_oligos
     plate_view_of_oligos('Expected', expected_wells_to_oligos)
     plate_view_of_oligos('Got',      wells_to_oligos)
@@ -57,3 +57,16 @@ Given /^the UUID for the plate associated with the tag layout with ID (\d+) is "
   set_uuid_for(TagLayout.find(id).plate, uuid_value)
 end
 
+# This fakes out the transfers so that they look like they came from different submissions, effectively meaning
+# that the source plate is pooled in columns to the destination plate (it's not actually pooled, it's just the
+# indication of what pools will occur).
+Given /^the wells for (the plate.+) have been pooled in columns to (the plate.+)$/ do |source, destination|
+  # Pair up the wells and then pool them in columns
+  paired_wells, pooled = source.wells.zip(destination.wells), (1..12).map { |_| [] }
+  paired_wells.each_with_index { |pair, index| pooled[index%12] << pair }
+
+  # Each pool has a unique submission ID that we'll consider to be their index!
+  pooled.each_with_index do |pool, submission_id|
+    pool.each { |left, right| TransferRequest.create!(:asset => left, :target_asset => right, :submission_id => submission_id) }
+  end
+end
