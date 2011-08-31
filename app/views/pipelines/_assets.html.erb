@@ -21,7 +21,8 @@
       <%- #beware , the group will be destructed after the shift operation %>
       <%  parent  = @pipeline.group_by_parent? && ( pid = group.shift ) && Asset.find(pid) %>
       <% submission_id = @pipeline.group_by_submission? && group.shift  %>
-      <% study = @pipeline.group_by_study? && Study.find(group.shift) %>
+      <% study_id = @pipeline.group_by_study? && group.shift %>
+      <% study =  study_id && Study.find(study_id) %>
       <% unless parent.nil? %>
         <tr>
           <td class="request center" width='5%'>
@@ -41,7 +42,7 @@
         		<% end -%>
 					</td>
 					<td>
-          	<% if @pipeline.group_by_study? -%>
+          	<% if @pipeline.group_by_study? && study -%>
             	<%= link_to study.name,"#{configatron.studies_url}/studies/#{study.id}" %>
         		<% end -%>
 					</td>
