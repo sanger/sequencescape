@@ -31,10 +31,15 @@ class TagLayout < ActiveRecord::Base
   end
   private :layout_tags_into_wells
 
+  def walk_wells(&block)
+    plate.wells.send(:"walk_in_#{direction}_major_order", &block)
+  end
+  private :walk_wells
+
   # Convenience mechanism for laying out tags in a particular fashion.
   def layout_tags_into_wells
     tags = tag_group.tags.sort_by(&:map_id)
-    plate.wells.send(:"walk_in_#{direction}_major_order") do |well, index|
+    walk_wells do |well, index|
       tags[index % tags.length].tag!(well) unless well.aliquots.empty?
     end
 
