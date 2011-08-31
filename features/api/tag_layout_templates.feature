@@ -52,7 +52,7 @@ Feature: Access tag layout templates through the API
 
   @tag_layout @create @barcode-service
   Scenario: Creating a tag layout from a tag layout template
-    Given the plate barcode webservice returns "1000001"
+    Given the plate barcode webservice returns "1000001..1000002"
 
     Given the tag layout template "Test tag layout" exists
       And the UUID for the tag layout template "Test tag layout" is "00000000-1111-2222-3333-444444444444"
@@ -70,8 +70,12 @@ Feature: Access tag layout templates through the API
       And the UUID of the next tag layout created will be "00000000-1111-2222-3333-000000000002"
 
     Given a "Stock plate" plate called "Testing the API" exists
-      And the UUID for the plate "Testing the API" is "11111111-2222-3333-4444-000000000001"
+      And the UUID for the plate "Testing the API" is "11111111-2222-3333-4444-000000000002"
       And all wells on the plate "Testing the API" have unique samples
+
+    Given a "Stock plate" plate called "Testing the tagging" exists
+      And the UUID for the plate "Testing the tagging" is "11111111-2222-3333-4444-000000000001"
+      And the wells for the plate "Testing the API" have been pooled in columns to the plate "Testing the tagging"
 
     When I make an authorised POST with the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
       """
@@ -115,7 +119,7 @@ Feature: Access tag layout templates through the API
       }
       """
 
-    Then the tags assigned to the plate "Testing the API" should be:
+    Then the tags assigned to the plate "Testing the tagging" should be:
       | well | tag  |
       | A1   | AAAA |
       | B1   | CCCC |
