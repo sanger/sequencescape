@@ -26,7 +26,6 @@ Feature: Interacting with multiplexed_library_tubes through the API
             "barcode_prefix": "NT", 
             "scanned_in_date": "",
             "public_name": "ABC",
-            "qc_state": "",
             "lanes": "http://localhost:3000/0_5/multiplexed_library_tubes/00000000-1111-2222-3333-444444444444/lanes",
             "requests": "http://localhost:3000/0_5/multiplexed_library_tubes/00000000-1111-2222-3333-444444444444/requests",
 
@@ -54,7 +53,6 @@ Feature: Interacting with multiplexed_library_tubes through the API
           "uuid": "00000000-1111-2222-3333-444444444444",
           "barcode_prefix": "NT", 
           "scanned_in_date": "",
-          "qc_state": "",
           "lanes": "http://localhost:3000/0_5/multiplexed_library_tubes/00000000-1111-2222-3333-444444444444/lanes",
           "requests": "http://localhost:3000/0_5/multiplexed_library_tubes/00000000-1111-2222-3333-444444444444/requests",
 
