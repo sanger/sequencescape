@@ -26,7 +26,6 @@ Feature: Interacting with pulldown_multiplexed_library_tubes through the API
             "barcode_prefix": "NT", 
             "scanned_in_date": "",
             "public_name": "ABC",
-            "qc_state": "",
 
             "internal_id": 1
           }
@@ -53,7 +52,6 @@ Feature: Interacting with pulldown_multiplexed_library_tubes through the API
           "barcode_prefix": "NT", 
           "scanned_in_date": "",
           "public_name": "ABC",
-          "qc_state": "",
 
           "internal_id": 1
         }
