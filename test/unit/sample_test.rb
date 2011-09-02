@@ -17,11 +17,12 @@ class SampleTest < ActiveSupport::TestCase
         @study_from = Factory :study
         @study_to   = Factory :study
         @sample_from = Factory :sample
+          @sample_from_ok = Factory(:sample,:studies => [@study_from])
         @workflow = Factory :submission_workflow
         @new_assets_name = ""
         @current_user = Factory :user
 
-        @asset_1 = Factory(:empty_sample_tube, :name => @sample_from.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_from) }
+        @asset_1 = Factory(:sample_tube, :name => @sample_from.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_from) }
         
         @asset_group = Factory :asset_group, :name => "not mx"
         @asset_group_asset = Factory :asset_group_asset, :asset_id => @asset_1.id, :asset_group_id => @asset_group.id
@@ -42,14 +43,14 @@ class SampleTest < ActiveSupport::TestCase
 
       context "only valid assets and without submissions" do
         setup do
-          @sample_from_ok = Factory :sample
-          @asset_from = Factory(:empty_sample_tube, :name => @sample_from_ok.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_from_ok) }
+          @asset_from = Factory(:empty_sample_tube, :name => @sample_from_ok.name, :sample => @sample_from_ok).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_from_ok) }
           @asset_group_from_new = Factory :asset_group, :name => "Asset_Sample_New", :study => @study_from
           @asset_group_asset_from = Factory :asset_group_asset, :asset_id => @asset_from.id, :asset_group_id => @asset_group_from_new.id
 
 
           @asset_from.studies << @study_from
-          @asset_from.save
+          @asset_from.aliquots.each {|a| a.study= @study_from}
+          @asset_from.save!
 
           @sample_to = Factory :sample         
           @asset_to = Factory(:empty_sample_tube, :name => @sample_to.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_to) }
@@ -62,6 +63,11 @@ class SampleTest < ActiveSupport::TestCase
           @result = @sample_from_ok.move(@study_from, @study_to, @asset_group_to_new, @new_assets_name, @current_user, "0")
           assert_equal true, @result
           assert_equal @asset_group_to_new.id, @sample_from_ok.assets.first.asset_group_assets.first.asset_group_id
+        end
+
+        should "move aliquots" do
+          @result = @sample_from_ok.move(@study_from, @study_to, @asset_group_to_new, @new_assets_name, @current_user, "0")
+          assert @asset_from.aliquots(true).all? {|a| a.study  == @study_to}
         end
       end      
 
