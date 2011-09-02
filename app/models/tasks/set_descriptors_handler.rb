@@ -34,10 +34,14 @@ module Tasks::SetDescriptorsHandler
       @batch.requests.each do |request|
         unless params[:request].nil?
           params[:request].keys.each do |checked|
+            # This is used to see if any check boxes are set on when the page is rendered with
+            # with a single set of descriptor fields is shared between all the requests...
             if request.id == checked.to_i
 
               event = LabEvent.new(:batch_id => @batch.id, :description => @task.name)
 
+              # This is called when a single set of fields is used
+              # and called over and over based on the select boxs
               unless params[:descriptors].nil?                
                 event.descriptors = params[:descriptors]
                 event.descriptor_fields = ordered_fields(params[:fields])
@@ -129,14 +133,4 @@ module Tasks::SetDescriptorsHandler
 
   end
 
-  # been moved into workflow controller
-  def eventify_batch_quarantine(batch, task)
-    event = batch.lab_events.create({})
-    event.description = "Complete"
-    event.add_descriptor Descriptor.new({ :name => 'task_id', :value => task.id })
-    event.add_descriptor Descriptor.new({ :name => 'task', :value => task.name })
-    event.batch = batch
-    event.user  = current_user
-    event.save
-  end
 end

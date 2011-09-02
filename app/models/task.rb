@@ -132,6 +132,7 @@ class Task < ActiveRecord::Base
   def render_task(controller, params) 
     controller.render_task(self, params)
   end
+
   def create_render_element(request)
     request && RenderElement.new(request)
   end
