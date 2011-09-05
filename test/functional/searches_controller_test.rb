@@ -22,7 +22,6 @@ class SearchesControllerTest < ActionController::TestCase
         @study                    = Factory :study, :name => "FindMeStudy"
         @study2                   = Factory :study, :name => "Another study"
         @sample                   = Factory :sample, :name => "FindMeSample"
-        @item                     = Factory :item, :name => "FindMeItem"
         @asset                    = Factory(:sample_tube, :name => 'FindMeAsset')
         @asset_group_to_find      = Factory :asset_group, :name => "FindMeAssetGroup", :study => @study
         @asset_group_to_not_find  = Factory :asset_group, :name => "IgnoreAssetGroup"
@@ -54,10 +53,6 @@ class SearchesControllerTest < ActionController::TestCase
 
           should "contain a link to the sample that was found" do
             assert_link_to sample_path(@sample)
-          end
-
-          should "contain a link to the item that was found" do
-            assert_link_to item_path(@item)
           end
 
           should 'contain a link to the asset that was found' do
