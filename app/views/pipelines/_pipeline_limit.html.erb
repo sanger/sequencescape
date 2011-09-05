@@ -1,10 +1,14 @@
 <div id="limit_info">
-<% batch_limit = @pipeline.item_limit || @pipeline.max_size %>
-<% if batch_limit -%>
-  <p>This pipelines has a limit of <strong><%= batch_limit %></strong> requests in a batch.
-<% else -%>
-  <p>This pipeline does not have a limit set on the number of requests in a batch.</p>
-<% end -%>
-<p>There are <%= @requests.size %> requests available.</p>
-<p id="selection_count"><span></span></p>
+  <% batch_limit = @pipeline.item_limit || @pipeline.max_size %>
+  <% if batch_limit -%>
+    <p>
+      This pipelines has a limit of <strong><%= batch_limit %></strong> requests in a batch.  Any requests that would
+      take you over this limit will be disabled and appear faded.
+    </p>
+  <% else -%>
+    <p>This pipeline does not have a limit set on the number of requests in a batch.</p>
+  <% end -%>
+
+  <p>There are <%= @requests.size %> requests available.</p>
+  <p>You have <span id="selection_count">no</span> requests selected.</p>
 </div>

@@ -15,8 +15,42 @@
 
 <%= render :partial => @pipeline.inbox_partial, :locals => { :pipeline => @pipeline } %>
 
-<script>
-Event.observe(window, 'load', function() {
-  Inbox.setup_dynamic_interface();
-});
+<script type="text/javascript">
+  /*
+   * When someone clicks on a request group checkbox we ensure that the count of the number of requests selected is
+   * updated and, if the pipeline has a limit, that any group requests that would take us over that limit are disabled.
+   */
+  (function($, undefined) {
+    var batch_size = 0;
+    var top_of_the_inbox = $('#pipeline_inbox > tbody'), counter = $('#selection_count');
+
+    /* Handle updating the current size of the batch */
+    top_of_the_inbox.delegate('.grouped_checkbox', 'change', function(event) {
+      var element = $(this);
+      batch_size += (this.checked ? 1 : -1) * parseInt(element.attr('data-count'));
+      counter.html('' + (batch_size === 0 ? 'no' : batch_size));
+    });
+
+<% if (batch_size = @pipeline.item_limit || @pipeline.max_size).present? %>
+    /* Handle disabling the inappropriate grouped requests */
+    var maximum_batch_size       = <%= @pipeline.item_limit || @pipeline.max_size %>;
+    var updateSelectableRequests = function(event) {
+      var remaining = maximum_batch_size - batch_size;
+      $('.grouped_checkbox:not(:checked)').each(function(index, value) {
+        var checkbox = $(value);
+        var parent   = checkbox.parents('tr');
+        if (parseInt(checkbox.attr('data-count')) > remaining) {
+          checkbox.attr('disabled', 'disabled');
+          parent.fadeTo(150, 0.25);
+        } else {
+          checkbox.removeAttr('disabled');
+          parent.fadeTo(150, 1);
+        }
+      });
+    }
+
+    top_of_the_inbox.delegate('.grouped_checkbox', 'change', updateSelectableRequests);
+    updateSelectableRequests();
+<% end %>
+  })(jQuery);
 </script>
