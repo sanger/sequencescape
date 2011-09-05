@@ -1344,3 +1344,7 @@ table.checktext_field td {
   padding-left: 0;
   margin-left: 0;
 }
+
+#pipeline_inbox {
+  background-color: white;
+}
