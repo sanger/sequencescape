@@ -19,7 +19,7 @@ Given /^the last batch is for the "([^\"]+)" pipeline$/ do |name|
   pipeline.batches << batch
 end
 
-Given /^the last batch has (\d+) requests$/ do |count|
+Given /^the last batch has (\d+) requests?$/ do |count|
   batch          = Batch.last or raise StandardError, 'There appear to be no batches'
   batch.requests = (1..count.to_i).map { |_| Factory(:request, :request_type => batch.pipeline.request_type) }
 end

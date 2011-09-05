@@ -1,21 +1,22 @@
 module LabInterface::WorkflowsHelper
 
+  # Returns descriptor from params, if it's not there try the @study.
+  # If @study's not set or it doesn't hold the descriptor, return a
+  # blank string...
   def descriptor_value(descriptor)
-    value = ""
-    unless @study.nil?
-      value = @study.descriptor_value(descriptor.name)
-    end
+    # Refactored to remove reliance on @values
+    params[:values].try(:[], descriptor.name) or 
+      @study.try(:descriptor_value,descriptor.name) or ""
+  end
 
-    unless @values.nil?
-      unless @values[descriptor.name].nil?
-        puts "NAME: #{descriptor.name}"
-        puts "VALUES: #{@values}"
-        value = @values[descriptor.name]
-      end
-    end
-
-    value
-
+  # Returns a link to any available request comments with "None" as a
+  # default value.
+  def link_to_comments(request)
+     link_to_if(
+       request.comments.present?,
+       pluralize(request.comments.size, 'comment'),
+       request_comments_url(request)
+     ) { "None" }
   end
 
   def shorten(string)
@@ -40,13 +41,4 @@ module LabInterface::WorkflowsHelper
     select_tag("wells[#{request.id}][qc_state]", options_for_select({"Pass"=>"OK", "Fail"=>"Fail", "Weak"=>"Weak", "No Band"=>"Band Not Visible", "Degraded"=>"Degraded"}, status), html_options)
   end
 
-  def qc_select_box_old(request, pass=nil)
-    #TODO remove
-    pass = (request.qc_state != "fail") if pass.nil?
-    if pass
-      select_tag("#{request.id}[qc_state]", "<option selected='selected'>pass</option><option>fail</option>")
-    else
-      select_tag("#{request.id}[qc_state]", "<option>pass</option><option selected='selected'>fail</option>")
-    end
-  end
 end
