@@ -281,6 +281,11 @@ Given /^the (well|library tube|plate) "([^\"]+)" is a child of the (well|sample 
   parent = parent_model.gsub(/\s+/, '_').classify.constantize.find_by_name(parent_name) or raise StandardError, "Cannot find the #{parent_model} #{parent_name.inspect}"
   child  = child_model.gsub(/\s+/, '_').classify.constantize.find_by_name(child_name) or raise StandardError, "Cannot find the #{child_model} #{child_name.inspect}"
   parent.children << child
+  if [parent, child].all? {|a| a.is_a?(Aliquot::Receptacle)}
+    child.aliquots = []
+    TransferRequest.create!(:asset => parent, :target_asset => child)
+    child.save!
+  end
 end
 
 Given /^the sample "([^\"]+)" is in (\d+) sample tubes? with sequential IDs starting at (\d+)$/ do |name, count, base_id|
