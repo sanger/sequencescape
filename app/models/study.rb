@@ -530,11 +530,13 @@ class Study < ActiveRecord::Base
   def decide_if_object_should_be_taken(study_from, sample, object)
     case study_from.affiliated_with?(object)
     when true
-      # don't propagate asset from another sample
-      return object unless object.is_a?(Aliquot::Receptacle)
-      object_sample = object.primary_aliquot.try(:sample)
-      (object_sample.present? and object_sample != sample) ? nil : object
 
+      case object
+      when Aliquot
+        return object.sample == sample && object
+      else
+        object
+      end
     when false then nil # we skip the object and its dependencies
     else [] # don't return the object but check it's dependencies
     end
@@ -553,6 +555,7 @@ class Study < ActiveRecord::Base
       sample.walk_objects(
         :sample     => [:receptacles, :study_samples],
         :request    => :item,
+        :"aliquot::receptacle" => :aliquots,
         :asset      => [ :requests, :parents, :children ],
         :well       => :plate,
         &helper
