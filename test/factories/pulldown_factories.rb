@@ -60,7 +60,7 @@ end
 
 # Tag layouts and their templates
 Factory.define(:tag_layout_template) do |tag_layout_template|
-  tag_layout_template.layout_class_name 'TagLayout::InColumns'
+  tag_layout_template.layout_class_name 'TagLayout::ByPools'
   tag_layout_template.tag_group { |target| target.association(:tag_group_for_layout) }
 end
 

@@ -270,8 +270,7 @@ class Batch < ActiveRecord::Base
   end
 
   def ordered_requests(options=nil)
-    br = batch_requests.find(:all, options).sort { |a, b| a.position.to_i <=> b.position.to_i }.map {|br| br.request }
-    br.compact
+    batch_requests.ordered.all(options).map(&:request).compact
   end
 
   def assets
