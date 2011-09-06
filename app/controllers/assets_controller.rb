@@ -350,11 +350,7 @@ class AssetsController < ApplicationController
       @studies.each do |study|
         study.name = study.name + " (" + study.id.to_s + ")"
       end
-      if (@asset.is_a?(Plate) || @asset.is_a?(Well))
-        @studies_from = @asset.studies
-      else  
-        @studies_from = @asset.studies_list
-      end
+      @studies_from = @asset.studies
       @studies_from.each do |study|
         study.name = study.name + " (" + study.id.to_s + ")"
       end
