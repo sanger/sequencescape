@@ -13,6 +13,7 @@ class LibraryCreationRequest < Request
     "Small RNA",
     "Double size selected",
     "DpnII gene expression",
+    "TraDIS", 
     "qPCR only"
   ]
 
