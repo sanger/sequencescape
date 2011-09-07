@@ -249,48 +249,12 @@ class Asset < ActiveRecord::Base
     self.set_external_release(self.qc_state) 
   end
 
-  def underlying_sampletube
-    return
-  end
-
   def move_asset_group(study_from, asset_group)
     return
   end
 
   def move_study_sample(study_from, study_to, current_user)
     return
-  end
-
-  def list_sample_tube(asset_visited, sampletube_list)
-    unless asset_visited.include?(self.id)
-      asset_visited << self.id
-      self.children.each do |child|
-        unless asset_visited.include?(child.id)
-          child.list_sample_tube(asset_visited, sampletube_list)
-        end
-      end
-
-      self.parents.each do |parent|
-        unless asset_visited.include?(parent.id)
-          parent.list_sample_tube(asset_visited, sampletube_list)
-        end
-      end
-      sampletube_list << self  unless self.underlying_sampletube.nil?
-    end
-  end
-
-  def studies_list
-    asset_visited = []
-    sampletube_list = []
-    @studies = []
-    self.list_sample_tube(asset_visited, sampletube_list)
-
-    sampletube_list.each do |sampletube|
-     @studies << sampletube.studies
-    end
-
-    @studies = @studies.flatten.uniq
-    return @studies
   end
 
   def move_all_asset_group(study_from, study_to, asset_visited, asset_group, current_user)
