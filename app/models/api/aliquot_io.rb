@@ -64,6 +64,7 @@ class Api::AliquotIO < Api::Base
   with_association(:library) do
     map_attribute_to_json_attribute(:url , 'library_url')
     map_attribute_to_json_attribute(:uuid, 'library_uuid')
+    map_attribute_to_json_attribute(:id, 'library_internal_id')
   end
   #self.related_resources = [ :library_tubes, :requests ]
 end
