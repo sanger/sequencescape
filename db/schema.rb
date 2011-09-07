@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110905131736) do
+ActiveRecord::Schema.define(:version => 20110907131420) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -1117,68 +1117,6 @@ ActiveRecord::Schema.define(:version => 20110905131736) do
   add_index "suppliers", ["name"], :name => "index_suppliers_on_name"
   add_index "suppliers", ["updated_at"], :name => "index_suppliers_on_updated_at"
 
-  create_table "tableau_test", :id => false, :force => true do |t|
-    t.string   "SPLEX",                     :limit => 5,   :default => "", :null => false
-    t.integer  "Study ID",                                 :default => 0,  :null => false
-    t.string   "Study Name"
-    t.datetime "Study Created Date"
-    t.string   "Study Type"
-    t.string   "Faculty Sponsor"
-    t.string   "Study State",               :limit => 20
-    t.datetime "Study State Date"
-    t.string   "Manager",                   :limit => 511
-    t.integer  "Sample ID",                                :default => 0,  :null => false
-    t.string   "Sample Name"
-    t.datetime "Sample Creation Date"
-    t.integer  "Sample Tube ID",                           :default => 0,  :null => false
-    t.string   "Sample Tube Name"
-    t.string   "Sample Common Name",                       :default => "", :null => false
-    t.datetime "Sample Tube Created Date"
-    t.text     "Sample Tube Scanned_in",                                   :null => false
-    t.integer  "Submission ID"
-    t.integer  "LibR reqID"
-    t.string   "Lib Request Type"
-    t.datetime "Lib Req Date"
-    t.string   "Lib Inbox",                 :limit => 10
-    t.string   "LibR State",                :limit => 20
-    t.datetime "Libr State Date"
-    t.integer  "Lib Batch"
-    t.integer  "Lib Batch Position"
-    t.datetime "Lib Batch Created Date"
-    t.string   "Lib Batch Creator"
-    t.string   "Lib Batch State",           :limit => 20
-    t.datetime "Lib Batch State Date"
-    t.binary   "Mplex Tube ID",             :limit => 255
-    t.string   "Mplex Tube Name"
-    t.binary   "Tag Group ID",              :limit => 255,                 :null => false
-    t.string   "Tag Group Name"
-    t.binary   "Tag ID",                    :limit => 255,                 :null => false
-    t.binary   "Tag Map ID",                :limit => 255
-    t.string   "Tag Sequence"
-    t.integer  "Library Tube ID"
-    t.string   "Library Name"
-    t.datetime "Library Tube Created Date"
-    t.string   "Library Tube State",        :limit => 20
-    t.datetime "Library Tube State Date"
-    t.string   "Library Type"
-    t.string   "Lib size from"
-    t.string   "Lib size to"
-    t.text     "Library Tube Scanned_in"
-    t.string   "Seq Inbox",                 :limit => 10
-    t.integer  "SeqR reqID"
-    t.string   "Seq Req Type"
-    t.datetime "Seq Req"
-    t.string   "SeqR State",                :limit => 20
-    t.datetime "Seqr State Date"
-    t.integer  "Readlength"
-    t.integer  "Seq Batch ID"
-    t.integer  "Lane Position"
-    t.datetime "Seq Batch Created Date"
-    t.string   "Seq Batch Creator"
-    t.string   "Seq Batch State",           :limit => 20
-    t.datetime "Seq Batch State Date"
-  end
-
   create_table "tag_groups", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -1292,6 +1230,28 @@ ActiveRecord::Schema.define(:version => 20110905131736) do
 
   add_index "uuids", ["external_id"], :name => "index_uuids_on_external_id"
   add_index "uuids", ["resource_type", "resource_id"], :name => "index_uuids_on_resource_type_and_resource_id"
+
+  create_table "view_aliquots", :id => false, :force => true do |t|
+    t.string   "uuid",                   :limit => 36
+    t.integer  "internal_id",                          :default => 0, :null => false
+    t.string   "receptacle_uuid",        :limit => 36
+    t.integer  "receptacle_internal_id",                              :null => false
+    t.string   "study_uuid",             :limit => 36
+    t.integer  "study_internal_id"
+    t.string   "project_uuid",           :limit => 36
+    t.integer  "project_internal_id"
+    t.string   "library_uuid",           :limit => 36
+    t.integer  "library_internal_id"
+    t.string   "sample_uuid",            :limit => 36
+    t.integer  "sample_internal_id",                                  :null => false
+    t.string   "tag_uuid",               :limit => 36
+    t.integer  "tag_internal_id"
+    t.string   "receptacle_type",        :limit => 50
+    t.string   "library_type"
+    t.integer  "insert_size_from"
+    t.integer  "insert_size_to"
+    t.datetime "created"
+  end
 
   create_table "view_asset_links", :id => false, :force => true do |t|
     t.string  "ancestor_uuid",          :limit => 36
