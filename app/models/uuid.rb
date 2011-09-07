@@ -95,7 +95,7 @@ class Uuid < ActiveRecord::Base
   def self.translate_uuids_to_ids_in_params(params)
     params.keys.each do |key|
       next unless params[key] =~ ValidRegexp
-      params[key] = self.find_id(params[key]) || params[key]
+      params[key] = self.find_id(params[key])
     end
   end
 

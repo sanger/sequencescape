@@ -36,8 +36,9 @@
         <% request_asset_comments = request.asset.comments -%>
         <tr>
           <td class="request center" width='5%'>
-          <label for="request_<%= request.id %>"><%=  "Select #{request.asset.sti_type} #{request.asset.barcode} for batch" %></label>
-          <%= check_box :request, request.id, :value => request.id, :onclick => "Inbox.update_selected_requests();", :class => 'request_checkbox' %></td>
+            <label for="request_<%= request.id %>"><%=  "Select #{request.asset.sti_type} #{request.asset.barcode} for batch" %></label>
+            <%= check_box :request, request.id, :value => request.id, :class => 'grouped_checkbox request_checkbox', :'data-count' => 1 %>
+          </td>
           <% if current_user.is_lab_manager? %>
             <td  style="display:none" width='5%' id="flag_value_<%= request.id.to_s %>"><%= request.priority %></td>
             <td  style='text-align: center' width='5%'>
