@@ -443,7 +443,9 @@ class BatchesController < ApplicationController
     request = @batch.requests.first
     unless request.tag_number.nil?
       if ! request.target_asset.nil? && ! request.target_asset.children.empty?
-        children = request.target_asset.children.last.children
+        # We are trying to find the MX library tube or the stock MX library
+        # tube. I've added a filter so it doesn't pick up Lanes.
+        children = request.target_asset.children.last.children.select { |a| a.is_a?(Tube) } 
         if children.empty?
           @asset = request.target_asset.children.last
         else
