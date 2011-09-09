@@ -46,7 +46,8 @@ Feature: Access tag layouts through the API
               "1": "ACGT",
               "2": "TGCA"
             }
-          }
+          },
+          "substitutions": { }
         }
       }
       """

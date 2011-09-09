@@ -14,9 +14,14 @@ class TagLayout < ActiveRecord::Base
   belongs_to :user
   validates_presence_of :user
 
-  # The tag group to layout on the plate
+  # The tag group to layout on the plate, along with the substitutions that should be made
   belongs_to :tag_group
   validates_presence_of :tag_group
+  serialize :substitutions
+
+  before_validation do |record|
+    record.substitutions ||= {}
+  end
 
   # The plate we'll be laying out the tags into
   belongs_to :plate
@@ -38,7 +43,10 @@ class TagLayout < ActiveRecord::Base
 
   # Convenience mechanism for laying out tags in a particular fashion.
   def layout_tags_into_wells
-    tags = tag_group.tags.sort_by(&:map_id)
+    # Make sure that the substitutions requested by the user are handled before applying the tags
+    # to the wells.
+    tag_map_id_to_tag = ActiveSupport::OrderedHash[tag_group.tags.sort_by(&:map_id).map { |tag| [tag.map_id.to_s, tag] }]
+    tags              = tag_map_id_to_tag.map { |k,tag| substitutions.key?(k) ? tag_map_id_to_tag[substitutions[k]] : tag }
     walk_wells do |well, index|
       tags[index % tags.length].tag!(well) unless well.aliquots.empty?
     end
