@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110831130628) do
+ActiveRecord::Schema.define(:version => 20110909083958) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -1148,12 +1148,12 @@ ActiveRecord::Schema.define(:version => 20110831130628) do
     t.string   "Lib Batch Creator"
     t.string   "Lib Batch State",           :limit => 20
     t.datetime "Lib Batch State Date"
-    t.binary   "Mplex Tube ID",             :limit => 11
+    t.binary   "Mplex Tube ID",             :limit => 255
     t.string   "Mplex Tube Name"
-    t.binary   "Tag Group ID",              :limit => 11,                  :null => false
+    t.binary   "Tag Group ID",              :limit => 255,                 :null => false
     t.string   "Tag Group Name"
-    t.binary   "Tag ID",                    :limit => 11,                  :null => false
-    t.binary   "Tag Map ID",                :limit => 11
+    t.binary   "Tag ID",                    :limit => 255,                 :null => false
+    t.binary   "Tag Map ID",                :limit => 255
     t.string   "Tag Sequence"
     t.integer  "Library Tube ID"
     t.string   "Library Name"
@@ -1200,6 +1200,7 @@ ActiveRecord::Schema.define(:version => 20110831130628) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "substitutions"
   end
 
   create_table "tags", :force => true do |t|
