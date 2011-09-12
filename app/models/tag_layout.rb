@@ -37,7 +37,27 @@ class TagLayout < ActiveRecord::Base
   private :layout_tags_into_wells
 
   def walk_wells(&block)
-    plate.wells.send(:"walk_in_#{direction}_major_order", &block)
+    # Adjust each of the groups so that any wells that are in the same pool as those at the same position
+    # in the group to the left are moved to a non-clashing position.  Effectively this makes the view of the
+    # plate slightly jagged.
+    wells_in_groups = plate.wells.send(:"in_#{direction.pluralize}").map { |wells| wells.map { |well| [ well, well.pool_id ] } }
+    wells_in_groups.each_with_index do |current_group, group|
+      next if group == 0
+      prior_group = wells_in_groups[group-1]
+
+      current_group.each_with_index do |well_and_pool, index|
+        break if prior_group.size <= index
+        next unless prior_group[index].last == well_and_pool.last
+
+        current_group.push(well_and_pool)                # Move the well to the end of the group
+        current_group[index] = [nil, well_and_pool.last] # Blank out the well at the current position but maintain the pool
+      end
+    end
+
+    # Now we can walk the wells in the groups, skipping any that have been nil'd by the above code.
+    wells_in_groups.each do |group|
+      group.each_with_index { |(well, _), index| yield(well, index) unless well.nil? }
+    end
   end
   private :walk_wells
 
