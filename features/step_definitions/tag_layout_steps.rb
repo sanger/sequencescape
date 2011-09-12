@@ -1,3 +1,7 @@
+Given /^the column order tag layout template "([^"]+)" exists$/ do |name|
+  Factory(:column_order_tag_layout_template, :name => name)
+end
+
 Given /^the tag layout template "([^"]+)" exists$/ do |name|
   Factory(:tag_layout_template, :name => name)
 end
@@ -57,16 +61,26 @@ Given /^the UUID for the plate associated with the tag layout with ID (\d+) is "
   set_uuid_for(TagLayout.find(id).plate, uuid_value)
 end
 
+def pool_by_strategy(source, destination, pooling_strategy)
+  raise StandardError, "Pooling strategy does not fit plate size #{source.size}: #{pooling_strategy.inspect}" unless pooling_strategy.sum == source.size
+
+  source_wells, destination_wells = [], []
+  source.wells.walk_in_column_major_order { |well,_| source_wells << well }
+  destination.wells.walk_in_column_major_order { |well,_| destination_wells << well }
+
+  pooling_strategy.each_with_index do |pool, submission_id|
+    wells_for_source, wells_for_destination = source_wells.slice!(0, pool), destination_wells.slice!(0, pool)
+    wells_for_source.zip(wells_for_destination).each { |w| TransferRequest.create!(:asset => w.first, :target_asset => w.last, :submission_id => submission_id) }
+  end
+end
+
 # This fakes out the transfers so that they look like they came from different submissions, effectively meaning
 # that the source plate is pooled in columns to the destination plate (it's not actually pooled, it's just the
 # indication of what pools will occur).
 Given /^the wells for (the plate.+) have been pooled in columns to (the plate.+)$/ do |source, destination|
-  # Pair up the wells and then pool them in columns
-  paired_wells, pooled = source.wells.zip(destination.wells), (1..12).map { |_| [] }
-  paired_wells.each_with_index { |pair, index| pooled[index%12] << pair }
+  pool_by_strategy(source, destination, [ 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8 ])
+end
 
-  # Each pool has a unique submission ID that we'll consider to be their index!
-  pooled.each_with_index do |pool, submission_id|
-    pool.each { |left, right| TransferRequest.create!(:asset => left, :target_asset => right, :submission_id => submission_id) }
-  end
+Given /^the wells for (the plate.+) have been pooled to (the plate.+) according to the pooling strategy (\d+(?:,\s*\d+)*)$/ do |source, destination, pooling_strategy|
+  pool_by_strategy(source, destination, pooling_strategy.split(',').map(&:to_i))
 end

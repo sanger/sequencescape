@@ -63,6 +63,10 @@ Factory.define(:tag_layout_template) do |tag_layout_template|
   tag_layout_template.layout_class_name 'TagLayout::ByPools'
   tag_layout_template.tag_group { |target| target.association(:tag_group_for_layout) }
 end
+Factory.define(:column_order_tag_layout_template, :class => TagLayoutTemplate) do |tag_layout_template|
+  tag_layout_template.layout_class_name 'TagLayout::InColumns'
+  tag_layout_template.tag_group { |target| target.association(:tag_group_for_layout) }
+end
 
 Factory.define(:tag_layout, :class => TagLayout::InColumns) do |tag_layout|
   tag_layout.user      { |target| target.association(:user) }
