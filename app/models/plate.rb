@@ -80,6 +80,28 @@ class Plate < Asset
         yield(well, index) if well.present?
       end
     end
+
+    # Returns the wells grouped into columns
+    def in_columns
+      width, height = Map.plate_width(proxy_owner.size), Map.plate_length(proxy_owner.size)
+      wells_in_columns, position = (1..width).map { |_| [] }, 0
+      self.walk_in_column_major_order do |well, _|
+        wells_in_columns[position / height] << well
+        position += 1
+      end
+      wells_in_columns
+    end
+
+    # Returns the wells grouped into rows
+    def in_rows
+      width, height = Map.plate_width(proxy_owner.size), Map.plate_length(proxy_owner.size)
+      wells_in_rows, position = (1..height).map { |_| [] }, 0
+      self.walk_in_row_major_order do |well, _|
+        wells_in_rows[position / width] << well
+        position += 1
+      end
+      wells_in_rows
+    end
   end
 
   #has_many :wells, :as => :holder, :class_name => "Well"
