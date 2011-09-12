@@ -9,7 +9,13 @@ module BatchesHelper
 
   # Used by both assets/show.xml.builder and batches/show.xml.builder
   def output_aliquot(xml, aliquot)
-    xml.sample(:sample_id => aliquot.sample.id,  :library_id => aliquot.library_id, :study_id => aliquot.study_id, :project_id => aliquot.project_id) {
+    xml.sample(
+      :sample_id    => aliquot.sample.id,
+      :library_id   => aliquot.library_id,
+      :library_name => aliquot.library.try(:name),
+      :study_id     => aliquot.study_id,
+      :project_id   => aliquot.project_id
+    ) {
       # NOTE: XmlBuilder has a method called 'tag' so we have to say we want the element 'tag'!
       xml.tag!(:tag, :tag_id => aliquot.tag.id) {
         xml.index             aliquot.tag.map_id
