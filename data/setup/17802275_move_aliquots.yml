@@ -1,0 +1,1675 @@
+--- 
+- :class: Aliquot
+  :attributes: 
+    id: 165438
+    receptacle_id: 2316888
+    sample_id: 1103232
+  :id: 165438
+- :class: AssetGroup
+  :attributes: 
+    name: AssetGroup_4727_name
+    id: 4727
+    study_id: 700
+  :id: 4727
+- :class: LinearSubmission
+  :attributes: 
+    request_types: 
+    - "5"
+    - "3"
+    comments: ""
+    project_id: 678
+    template_name: LinearSubmission_9566_template_name
+    request_options: !map:HashWithIndifferentAccess 
+      multiplier: !map:HashWithIndifferentAccess 
+        5: 1
+        3: 1
+      read_length: "76"
+      fragment_size_required_to: "700"
+      fragment_size_required_from: "200"
+      library_type: No PCR
+    id: 9566
+    asset_group_id: 4727
+    user_id: 7
+    study_id: 700
+    workflow_id: 1
+    sti_type: LinearSubmission
+    state: ready
+  :id: 9566
+- :class: Item
+  :attributes: 
+    name: Item_91717_name
+    submission_id: 9566
+    id: 91717
+    version: 1
+    workflow_id: 1
+  :id: 91717
+- :class: Tag
+  :attributes: 
+    oligo: ACAGTGGTAT
+    tag_group_id: 7
+    id: 2691
+    map_id: 5
+  :id: 2691
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2691
+    project_id: 678
+    insert_size_from: 200
+    id: 165439
+    study_id: 700
+    receptacle_id: 2317168
+    sample_id: 1103232
+    library_id: 2317168
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165439
+- :class: Aliquot
+  :attributes: 
+    id: 165422
+    receptacle_id: 2316884
+    sample_id: 1103228
+  :id: 165422
+- :class: Item
+  :attributes: 
+    name: Item_91713_name
+    submission_id: 9566
+    id: 91713
+    version: 1
+    workflow_id: 1
+  :id: 91713
+- :class: Tag
+  :attributes: 
+    oligo: ATCACGTTAT
+    tag_group_id: 7
+    id: 2651
+    map_id: 1
+  :id: 2651
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2651
+    project_id: 678
+    insert_size_from: 200
+    id: 165423
+    study_id: 700
+    receptacle_id: 2317164
+    sample_id: 1103228
+    library_id: 2317164
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165423
+- :class: Request::Metadata
+  :attributes: 
+    request_id: 3481172
+    id: 2970557
+  :id: 2970557
+- :class: TransferRequest
+  :attributes: 
+    target_asset_id: 2317176
+    priority: 0
+    id: 3481172
+    sti_type: TransferRequest
+    state: passed
+    asset_id: 2317164
+  :id: 3481172
+- :class: LibraryTube
+  :attributes: 
+    name: LibraryTube_2317164_name
+    barcode: "231945"
+    id: 2317164
+    legacy_sample_id: 1103228
+    barcode_prefix_id: 4
+    sti_type: LibraryTube
+  :id: 2317164
+- :class: LibraryCreationRequest::Metadata
+  :attributes: 
+    request_id: 3118446
+    read_length: 76
+    id: 2655430
+    fragment_size_required_to: "700"
+    fragment_size_required_from: "200"
+    library_type: No PCR
+  :id: 2655430
+- :class: User
+  :attributes: 
+    barcode: ID247D
+    api_key: 3c15e7fe76988-4873cf59afdece4c587a4c2770ac362e
+    id: 7
+    workflow_id: 1
+    last_name: User_7_last_name
+    login: User_7_login
+    first_name: User_7_first_name
+    email: User_7_email
+  :id: 7
+- :class: MultiplexedLibraryCreationRequest
+  :attributes: 
+    request_type_id: 5
+    project_id: 678
+    target_asset_id: 2317164
+    priority: 0
+    submission_id: 9566
+    id: 3118446
+    user_id: 7
+    study_id: 700
+    workflow_id: 1
+    item_id: 91713
+    sti_type: MultiplexedLibraryCreationRequest
+    state: passed
+    asset_id: 2316884
+  :id: 3118446
+- :class: SampleTube
+  :attributes: 
+    name: SampleTube_2316884_name
+    barcode: "2316884"
+    id: 2316884
+    legacy_sample_id: 1103228
+    barcode_prefix_id: 4
+    qc_state: pending
+    two_dimensional_barcode: ""
+    sti_type: SampleTube
+  :id: 2316884
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2651
+    project_id: 678
+    insert_size_from: 200
+    id: 165425
+    study_id: 700
+    receptacle_id: 2332263
+    sample_id: 1103228
+    library_id: 2317164
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165425
+- :class: Aliquot
+  :attributes: 
+    id: 165426
+    receptacle_id: 2316885
+    sample_id: 1103229
+  :id: 165426
+- :class: Item
+  :attributes: 
+    name: Item_91714_name
+    submission_id: 9566
+    id: 91714
+    version: 1
+    workflow_id: 1
+  :id: 91714
+- :class: Tag
+  :attributes: 
+    oligo: CGATGTTTAT
+    tag_group_id: 7
+    id: 2661
+    map_id: 2
+  :id: 2661
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2661
+    project_id: 678
+    insert_size_from: 200
+    id: 165427
+    study_id: 700
+    receptacle_id: 2317165
+    sample_id: 1103229
+    library_id: 2317165
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165427
+- :class: Request::Metadata
+  :attributes: 
+    request_id: 3481173
+    id: 2970558
+  :id: 2970558
+- :class: TransferRequest
+  :attributes: 
+    target_asset_id: 2317176
+    priority: 0
+    id: 3481173
+    sti_type: TransferRequest
+    state: passed
+    asset_id: 2317165
+  :id: 3481173
+- :class: LibraryTube
+  :attributes: 
+    name: LibraryTube_2317165_name
+    barcode: "231946"
+    id: 2317165
+    legacy_sample_id: 1103229
+    barcode_prefix_id: 4
+    sti_type: LibraryTube
+  :id: 2317165
+- :class: LibraryCreationRequest::Metadata
+  :attributes: 
+    request_id: 3118447
+    read_length: 76
+    id: 2655431
+    fragment_size_required_to: "700"
+    fragment_size_required_from: "200"
+    library_type: No PCR
+  :id: 2655431
+- :class: MultiplexedLibraryCreationRequest
+  :attributes: 
+    request_type_id: 5
+    project_id: 678
+    target_asset_id: 2317165
+    priority: 0
+    submission_id: 9566
+    id: 3118447
+    user_id: 7
+    study_id: 700
+    workflow_id: 1
+    item_id: 91714
+    sti_type: MultiplexedLibraryCreationRequest
+    state: passed
+    asset_id: 2316885
+  :id: 3118447
+- :class: SampleTube
+  :attributes: 
+    name: SampleTube_2316885_name
+    barcode: "2316885"
+    id: 2316885
+    legacy_sample_id: 1103229
+    barcode_prefix_id: 4
+    qc_state: pending
+    two_dimensional_barcode: ""
+    sti_type: SampleTube
+  :id: 2316885
+- :class: Study
+  :attributes: 
+    name: Study_605_name
+    enforce_data_release: true
+    reference_genome_id: 1
+    id: 605
+    enforce_accessioning: true
+    user_id: 29
+    state: active
+  :id: 605
+- :class: Study
+  :attributes: 
+    name: Study_700_name
+    enforce_data_release: true
+    reference_genome_id: 1
+    id: 700
+    enforce_accessioning: true
+    user_id: 29
+    state: active
+  :id: 700
+- :class: StudySample
+  :attributes: 
+    id: 1105477
+    study_id: 700
+    sample_id: 1103229
+  :id: 1105477
+- :class: Sample
+  :attributes: 
+    name: Sample_1103229_name
+    new_name_format: true
+    id: 1103229
+  :id: 1103229
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2661
+    project_id: 678
+    insert_size_from: 200
+    id: 165429
+    study_id: 700
+    receptacle_id: 2332263
+    sample_id: 1103229
+    library_id: 2317165
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165429
+- :class: Aliquot
+  :attributes: 
+    id: 165430
+    receptacle_id: 2316886
+    sample_id: 1103230
+  :id: 165430
+- :class: Item
+  :attributes: 
+    name: Item_91715_name
+    submission_id: 9566
+    id: 91715
+    version: 1
+    workflow_id: 1
+  :id: 91715
+- :class: Tag
+  :attributes: 
+    oligo: TTAGGCATAT
+    tag_group_id: 7
+    id: 2671
+    map_id: 3
+  :id: 2671
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2671
+    project_id: 678
+    insert_size_from: 200
+    id: 165431
+    study_id: 700
+    receptacle_id: 2317166
+    sample_id: 1103230
+    library_id: 2317166
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165431
+- :class: Request::Metadata
+  :attributes: 
+    request_id: 3481174
+    id: 2970559
+  :id: 2970559
+- :class: TransferRequest
+  :attributes: 
+    target_asset_id: 2317176
+    priority: 0
+    id: 3481174
+    sti_type: TransferRequest
+    state: passed
+    asset_id: 2317166
+  :id: 3481174
+- :class: LibraryTube
+  :attributes: 
+    name: LibraryTube_2317166_name
+    barcode: "231947"
+    id: 2317166
+    legacy_sample_id: 1103230
+    barcode_prefix_id: 4
+    sti_type: LibraryTube
+  :id: 2317166
+- :class: LibraryCreationRequest::Metadata
+  :attributes: 
+    request_id: 3118448
+    read_length: 76
+    id: 2655432
+    fragment_size_required_to: "700"
+    fragment_size_required_from: "200"
+    library_type: No PCR
+  :id: 2655432
+- :class: MultiplexedLibraryCreationRequest
+  :attributes: 
+    request_type_id: 5
+    project_id: 678
+    target_asset_id: 2317166
+    priority: 0
+    submission_id: 9566
+    id: 3118448
+    user_id: 7
+    study_id: 700
+    workflow_id: 1
+    item_id: 91715
+    sti_type: MultiplexedLibraryCreationRequest
+    state: passed
+    asset_id: 2316886
+  :id: 3118448
+- :class: SampleTube
+  :attributes: 
+    name: SampleTube_2316886_name
+    barcode: "2316886"
+    id: 2316886
+    legacy_sample_id: 1103230
+    barcode_prefix_id: 4
+    qc_state: pending
+    two_dimensional_barcode: ""
+    sti_type: SampleTube
+  :id: 2316886
+- :class: StudySample
+  :attributes: 
+    id: 1105478
+    study_id: 700
+    sample_id: 1103230
+  :id: 1105478
+- :class: Sample
+  :attributes: 
+    name: Sample_1103230_name
+    new_name_format: true
+    id: 1103230
+  :id: 1103230
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2671
+    project_id: 678
+    insert_size_from: 200
+    id: 165433
+    study_id: 700
+    receptacle_id: 2332263
+    sample_id: 1103230
+    library_id: 2317166
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165433
+- :class: Aliquot
+  :attributes: 
+    id: 165434
+    receptacle_id: 2316887
+    sample_id: 1103231
+  :id: 165434
+- :class: Item
+  :attributes: 
+    name: Item_91716_name
+    submission_id: 9566
+    id: 91716
+    version: 1
+    workflow_id: 1
+  :id: 91716
+- :class: Tag
+  :attributes: 
+    oligo: TGACCACTAT
+    tag_group_id: 7
+    id: 2681
+    map_id: 4
+  :id: 2681
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2681
+    project_id: 678
+    insert_size_from: 200
+    id: 165435
+    study_id: 700
+    receptacle_id: 2317167
+    sample_id: 1103231
+    library_id: 2317167
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165435
+- :class: Request::Metadata
+  :attributes: 
+    request_id: 3481175
+    id: 2970560
+  :id: 2970560
+- :class: TransferRequest
+  :attributes: 
+    target_asset_id: 2317176
+    priority: 0
+    id: 3481175
+    sti_type: TransferRequest
+    state: passed
+    asset_id: 2317167
+  :id: 3481175
+- :class: LibraryTube
+  :attributes: 
+    name: LibraryTube_2317167_name
+    barcode: "231948"
+    id: 2317167
+    legacy_sample_id: 1103231
+    barcode_prefix_id: 4
+    sti_type: LibraryTube
+  :id: 2317167
+- :class: LibraryCreationRequest::Metadata
+  :attributes: 
+    request_id: 3118449
+    read_length: 76
+    id: 2655433
+    fragment_size_required_to: "700"
+    fragment_size_required_from: "200"
+    library_type: No PCR
+  :id: 2655433
+- :class: MultiplexedLibraryCreationRequest
+  :attributes: 
+    request_type_id: 5
+    project_id: 678
+    target_asset_id: 2317167
+    priority: 0
+    submission_id: 9566
+    id: 3118449
+    user_id: 7
+    study_id: 700
+    workflow_id: 1
+    item_id: 91716
+    sti_type: MultiplexedLibraryCreationRequest
+    state: passed
+    asset_id: 2316887
+  :id: 3118449
+- :class: SampleTube
+  :attributes: 
+    name: SampleTube_2316887_name
+    barcode: "2316887"
+    id: 2316887
+    legacy_sample_id: 1103231
+    barcode_prefix_id: 4
+    qc_state: pending
+    two_dimensional_barcode: ""
+    sti_type: SampleTube
+  :id: 2316887
+- :class: StudySample
+  :attributes: 
+    id: 1105479
+    study_id: 700
+    sample_id: 1103231
+  :id: 1105479
+- :class: Sample
+  :attributes: 
+    name: Sample_1103231_name
+    new_name_format: true
+    id: 1103231
+  :id: 1103231
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2681
+    project_id: 678
+    insert_size_from: 200
+    id: 165437
+    study_id: 700
+    receptacle_id: 2332263
+    sample_id: 1103231
+    library_id: 2317167
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165437
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2691
+    project_id: 678
+    insert_size_from: 200
+    id: 165441
+    study_id: 700
+    receptacle_id: 2332263
+    sample_id: 1103232
+    library_id: 2317168
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165441
+- :class: Aliquot
+  :attributes: 
+    id: 165442
+    receptacle_id: 2316889
+    sample_id: 1103233
+  :id: 165442
+- :class: Item
+  :attributes: 
+    name: Item_91718_name
+    submission_id: 9566
+    id: 91718
+    version: 1
+    workflow_id: 1
+  :id: 91718
+- :class: Tag
+  :attributes: 
+    oligo: GCCAATGTAT
+    tag_group_id: 7
+    id: 2701
+    map_id: 6
+  :id: 2701
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2701
+    project_id: 678
+    insert_size_from: 200
+    id: 165443
+    study_id: 700
+    receptacle_id: 2317169
+    sample_id: 1103233
+    library_id: 2317169
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165443
+- :class: Request::Metadata
+  :attributes: 
+    request_id: 3481177
+    id: 2970562
+  :id: 2970562
+- :class: TransferRequest
+  :attributes: 
+    target_asset_id: 2317176
+    priority: 0
+    id: 3481177
+    sti_type: TransferRequest
+    state: passed
+    asset_id: 2317169
+  :id: 3481177
+- :class: LibraryTube
+  :attributes: 
+    name: LibraryTube_2317169_name
+    barcode: "231950"
+    id: 2317169
+    legacy_sample_id: 1103233
+    barcode_prefix_id: 4
+    sti_type: LibraryTube
+  :id: 2317169
+- :class: LibraryCreationRequest::Metadata
+  :attributes: 
+    request_id: 3118451
+    read_length: 76
+    id: 2655435
+    fragment_size_required_to: "700"
+    fragment_size_required_from: "200"
+    library_type: No PCR
+  :id: 2655435
+- :class: MultiplexedLibraryCreationRequest
+  :attributes: 
+    request_type_id: 5
+    project_id: 678
+    target_asset_id: 2317169
+    priority: 0
+    submission_id: 9566
+    id: 3118451
+    user_id: 7
+    study_id: 700
+    workflow_id: 1
+    item_id: 91718
+    sti_type: MultiplexedLibraryCreationRequest
+    state: passed
+    asset_id: 2316889
+  :id: 3118451
+- :class: SampleTube
+  :attributes: 
+    name: SampleTube_2316889_name
+    barcode: "2316889"
+    id: 2316889
+    legacy_sample_id: 1103233
+    barcode_prefix_id: 4
+    qc_state: pending
+    two_dimensional_barcode: ""
+    sti_type: SampleTube
+  :id: 2316889
+- :class: StudySample
+  :attributes: 
+    id: 1105481
+    study_id: 700
+    sample_id: 1103233
+  :id: 1105481
+- :class: Sample
+  :attributes: 
+    name: Sample_1103233_name
+    new_name_format: true
+    id: 1103233
+  :id: 1103233
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2701
+    project_id: 678
+    insert_size_from: 200
+    id: 165445
+    study_id: 700
+    receptacle_id: 2332263
+    sample_id: 1103233
+    library_id: 2317169
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165445
+- :class: Aliquot
+  :attributes: 
+    id: 165446
+    receptacle_id: 2316890
+    sample_id: 1103234
+  :id: 165446
+- :class: Item
+  :attributes: 
+    name: Item_91719_name
+    submission_id: 9566
+    id: 91719
+    version: 1
+    workflow_id: 1
+  :id: 91719
+- :class: Tag
+  :attributes: 
+    oligo: CAGATCTGAT
+    tag_group_id: 7
+    id: 2711
+    map_id: 7
+  :id: 2711
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2711
+    project_id: 678
+    insert_size_from: 200
+    id: 165447
+    study_id: 700
+    receptacle_id: 2317170
+    sample_id: 1103234
+    library_id: 2317170
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165447
+- :class: Request::Metadata
+  :attributes: 
+    request_id: 3481178
+    id: 2970563
+  :id: 2970563
+- :class: TransferRequest
+  :attributes: 
+    target_asset_id: 2317176
+    priority: 0
+    id: 3481178
+    sti_type: TransferRequest
+    state: passed
+    asset_id: 2317170
+  :id: 3481178
+- :class: LibraryTube
+  :attributes: 
+    name: LibraryTube_2317170_name
+    barcode: "231951"
+    id: 2317170
+    legacy_sample_id: 1103234
+    barcode_prefix_id: 4
+    sti_type: LibraryTube
+  :id: 2317170
+- :class: LibraryCreationRequest::Metadata
+  :attributes: 
+    request_id: 3118452
+    read_length: 76
+    id: 2655436
+    fragment_size_required_to: "700"
+    fragment_size_required_from: "200"
+    library_type: No PCR
+  :id: 2655436
+- :class: MultiplexedLibraryCreationRequest
+  :attributes: 
+    request_type_id: 5
+    project_id: 678
+    target_asset_id: 2317170
+    priority: 0
+    submission_id: 9566
+    id: 3118452
+    user_id: 7
+    study_id: 700
+    workflow_id: 1
+    item_id: 91719
+    sti_type: MultiplexedLibraryCreationRequest
+    state: passed
+    asset_id: 2316890
+  :id: 3118452
+- :class: SampleTube
+  :attributes: 
+    name: SampleTube_2316890_name
+    barcode: "2316890"
+    id: 2316890
+    legacy_sample_id: 1103234
+    barcode_prefix_id: 4
+    qc_state: pending
+    two_dimensional_barcode: ""
+    sti_type: SampleTube
+  :id: 2316890
+- :class: StudySample
+  :attributes: 
+    id: 1105482
+    study_id: 700
+    sample_id: 1103234
+  :id: 1105482
+- :class: Sample
+  :attributes: 
+    name: Sample_1103234_name
+    new_name_format: true
+    id: 1103234
+  :id: 1103234
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2711
+    project_id: 678
+    insert_size_from: 200
+    id: 165449
+    study_id: 700
+    receptacle_id: 2332263
+    sample_id: 1103234
+    library_id: 2317170
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165449
+- :class: Aliquot
+  :attributes: 
+    id: 165450
+    receptacle_id: 2316891
+    sample_id: 1103235
+  :id: 165450
+- :class: Item
+  :attributes: 
+    name: Item_91720_name
+    submission_id: 9566
+    id: 91720
+    version: 1
+    workflow_id: 1
+  :id: 91720
+- :class: Tag
+  :attributes: 
+    oligo: ACTTGATGAT
+    tag_group_id: 7
+    id: 2721
+    map_id: 8
+  :id: 2721
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2721
+    project_id: 678
+    insert_size_from: 200
+    id: 165451
+    study_id: 700
+    receptacle_id: 2317171
+    sample_id: 1103235
+    library_id: 2317171
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165451
+- :class: Request::Metadata
+  :attributes: 
+    request_id: 3481179
+    id: 2970564
+  :id: 2970564
+- :class: TransferRequest
+  :attributes: 
+    target_asset_id: 2317176
+    priority: 0
+    id: 3481179
+    sti_type: TransferRequest
+    state: passed
+    asset_id: 2317171
+  :id: 3481179
+- :class: LibraryTube
+  :attributes: 
+    name: LibraryTube_2317171_name
+    barcode: "231952"
+    id: 2317171
+    legacy_sample_id: 1103235
+    barcode_prefix_id: 4
+    sti_type: LibraryTube
+  :id: 2317171
+- :class: LibraryCreationRequest::Metadata
+  :attributes: 
+    request_id: 3118453
+    read_length: 76
+    id: 2655437
+    fragment_size_required_to: "700"
+    fragment_size_required_from: "200"
+    library_type: No PCR
+  :id: 2655437
+- :class: MultiplexedLibraryCreationRequest
+  :attributes: 
+    request_type_id: 5
+    project_id: 678
+    target_asset_id: 2317171
+    priority: 0
+    submission_id: 9566
+    id: 3118453
+    user_id: 7
+    study_id: 700
+    workflow_id: 1
+    item_id: 91720
+    sti_type: MultiplexedLibraryCreationRequest
+    state: passed
+    asset_id: 2316891
+  :id: 3118453
+- :class: SampleTube
+  :attributes: 
+    name: SampleTube_2316891_name
+    barcode: "2316891"
+    id: 2316891
+    legacy_sample_id: 1103235
+    barcode_prefix_id: 4
+    qc_state: pending
+    two_dimensional_barcode: ""
+    sti_type: SampleTube
+  :id: 2316891
+- :class: StudySample
+  :attributes: 
+    id: 1105483
+    study_id: 700
+    sample_id: 1103235
+  :id: 1105483
+- :class: Sample
+  :attributes: 
+    name: Sample_1103235_name
+    new_name_format: true
+    id: 1103235
+  :id: 1103235
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2721
+    project_id: 678
+    insert_size_from: 200
+    id: 165453
+    study_id: 700
+    receptacle_id: 2332263
+    sample_id: 1103235
+    library_id: 2317171
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165453
+- :class: Aliquot
+  :attributes: 
+    id: 165454
+    receptacle_id: 2316892
+    sample_id: 1103236
+  :id: 165454
+- :class: Item
+  :attributes: 
+    name: Item_91721_name
+    submission_id: 9566
+    id: 91721
+    version: 1
+    workflow_id: 1
+  :id: 91721
+- :class: Tag
+  :attributes: 
+    oligo: GATCAGCGAT
+    tag_group_id: 7
+    id: 2731
+    map_id: 9
+  :id: 2731
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2731
+    project_id: 678
+    insert_size_from: 200
+    id: 165455
+    study_id: 700
+    receptacle_id: 2317172
+    sample_id: 1103236
+    library_id: 2317172
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165455
+- :class: Request::Metadata
+  :attributes: 
+    request_id: 3481180
+    id: 2970565
+  :id: 2970565
+- :class: TransferRequest
+  :attributes: 
+    target_asset_id: 2317176
+    priority: 0
+    id: 3481180
+    sti_type: TransferRequest
+    state: passed
+    asset_id: 2317172
+  :id: 3481180
+- :class: LibraryTube
+  :attributes: 
+    name: LibraryTube_2317172_name
+    barcode: "231953"
+    id: 2317172
+    legacy_sample_id: 1103236
+    barcode_prefix_id: 4
+    sti_type: LibraryTube
+  :id: 2317172
+- :class: LibraryCreationRequest::Metadata
+  :attributes: 
+    request_id: 3118454
+    read_length: 76
+    id: 2655438
+    fragment_size_required_to: "700"
+    fragment_size_required_from: "200"
+    library_type: No PCR
+  :id: 2655438
+- :class: MultiplexedLibraryCreationRequest
+  :attributes: 
+    request_type_id: 5
+    project_id: 678
+    target_asset_id: 2317172
+    priority: 0
+    submission_id: 9566
+    id: 3118454
+    user_id: 7
+    study_id: 700
+    workflow_id: 1
+    item_id: 91721
+    sti_type: MultiplexedLibraryCreationRequest
+    state: passed
+    asset_id: 2316892
+  :id: 3118454
+- :class: SampleTube
+  :attributes: 
+    name: SampleTube_2316892_name
+    barcode: "2316892"
+    id: 2316892
+    legacy_sample_id: 1103236
+    barcode_prefix_id: 4
+    qc_state: pending
+    two_dimensional_barcode: ""
+    sti_type: SampleTube
+  :id: 2316892
+- :class: StudySample
+  :attributes: 
+    id: 1105484
+    study_id: 700
+    sample_id: 1103236
+  :id: 1105484
+- :class: Sample
+  :attributes: 
+    name: Sample_1103236_name
+    new_name_format: true
+    id: 1103236
+  :id: 1103236
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2731
+    project_id: 678
+    insert_size_from: 200
+    id: 165457
+    study_id: 700
+    receptacle_id: 2332263
+    sample_id: 1103236
+    library_id: 2317172
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165457
+- :class: Aliquot
+  :attributes: 
+    id: 165458
+    receptacle_id: 2316893
+    sample_id: 1103237
+  :id: 165458
+- :class: Item
+  :attributes: 
+    name: Item_91722_name
+    submission_id: 9566
+    id: 91722
+    version: 1
+    workflow_id: 1
+  :id: 91722
+- :class: Tag
+  :attributes: 
+    oligo: TAGCTTGTAT
+    tag_group_id: 7
+    id: 2741
+    map_id: 10
+  :id: 2741
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2741
+    project_id: 678
+    insert_size_from: 200
+    id: 165459
+    study_id: 700
+    receptacle_id: 2317173
+    sample_id: 1103237
+    library_id: 2317173
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165459
+- :class: Request::Metadata
+  :attributes: 
+    request_id: 3481181
+    id: 2970566
+  :id: 2970566
+- :class: TransferRequest
+  :attributes: 
+    target_asset_id: 2317176
+    priority: 0
+    id: 3481181
+    sti_type: TransferRequest
+    state: passed
+    asset_id: 2317173
+  :id: 3481181
+- :class: LibraryTube
+  :attributes: 
+    name: LibraryTube_2317173_name
+    barcode: "231954"
+    id: 2317173
+    legacy_sample_id: 1103237
+    barcode_prefix_id: 4
+    sti_type: LibraryTube
+  :id: 2317173
+- :class: LibraryCreationRequest::Metadata
+  :attributes: 
+    request_id: 3118455
+    read_length: 76
+    id: 2655439
+    fragment_size_required_to: "700"
+    fragment_size_required_from: "200"
+    library_type: No PCR
+  :id: 2655439
+- :class: MultiplexedLibraryCreationRequest
+  :attributes: 
+    request_type_id: 5
+    project_id: 678
+    target_asset_id: 2317173
+    priority: 0
+    submission_id: 9566
+    id: 3118455
+    user_id: 7
+    study_id: 700
+    workflow_id: 1
+    item_id: 91722
+    sti_type: MultiplexedLibraryCreationRequest
+    state: passed
+    asset_id: 2316893
+  :id: 3118455
+- :class: SampleTube
+  :attributes: 
+    name: SampleTube_2316893_name
+    barcode: "2316893"
+    id: 2316893
+    legacy_sample_id: 1103237
+    barcode_prefix_id: 4
+    qc_state: pending
+    two_dimensional_barcode: ""
+    sti_type: SampleTube
+  :id: 2316893
+- :class: StudySample
+  :attributes: 
+    id: 1105485
+    study_id: 700
+    sample_id: 1103237
+  :id: 1105485
+- :class: Sample
+  :attributes: 
+    name: Sample_1103237_name
+    new_name_format: true
+    id: 1103237
+  :id: 1103237
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2741
+    project_id: 678
+    insert_size_from: 200
+    id: 165461
+    study_id: 700
+    receptacle_id: 2332263
+    sample_id: 1103237
+    library_id: 2317173
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165461
+- :class: Aliquot
+  :attributes: 
+    id: 165462
+    receptacle_id: 2316894
+    sample_id: 1103238
+  :id: 165462
+- :class: Item
+  :attributes: 
+    name: Item_91723_name
+    submission_id: 9566
+    id: 91723
+    version: 1
+    workflow_id: 1
+  :id: 91723
+- :class: Tag
+  :attributes: 
+    oligo: GGCTACAGAT
+    tag_group_id: 7
+    id: 2751
+    map_id: 11
+  :id: 2751
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2751
+    project_id: 678
+    insert_size_from: 200
+    id: 165463
+    study_id: 700
+    receptacle_id: 2317174
+    sample_id: 1103238
+    library_id: 2317174
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165463
+- :class: Request::Metadata
+  :attributes: 
+    request_id: 3481182
+    id: 2970567
+  :id: 2970567
+- :class: TransferRequest
+  :attributes: 
+    target_asset_id: 2317176
+    priority: 0
+    id: 3481182
+    sti_type: TransferRequest
+    state: passed
+    asset_id: 2317174
+  :id: 3481182
+- :class: LibraryTube
+  :attributes: 
+    name: LibraryTube_2317174_name
+    barcode: "231955"
+    id: 2317174
+    legacy_sample_id: 1103238
+    barcode_prefix_id: 4
+    sti_type: LibraryTube
+  :id: 2317174
+- :class: LibraryCreationRequest::Metadata
+  :attributes: 
+    request_id: 3118456
+    read_length: 76
+    id: 2655440
+    fragment_size_required_to: "700"
+    fragment_size_required_from: "200"
+    library_type: No PCR
+  :id: 2655440
+- :class: MultiplexedLibraryCreationRequest
+  :attributes: 
+    request_type_id: 5
+    project_id: 678
+    target_asset_id: 2317174
+    priority: 0
+    submission_id: 9566
+    id: 3118456
+    user_id: 7
+    study_id: 700
+    workflow_id: 1
+    item_id: 91723
+    sti_type: MultiplexedLibraryCreationRequest
+    state: passed
+    asset_id: 2316894
+  :id: 3118456
+- :class: SampleTube
+  :attributes: 
+    name: SampleTube_2316894_name
+    barcode: "2316894"
+    id: 2316894
+    legacy_sample_id: 1103238
+    barcode_prefix_id: 4
+    qc_state: pending
+    two_dimensional_barcode: ""
+    sti_type: SampleTube
+  :id: 2316894
+- :class: StudySample
+  :attributes: 
+    id: 1105486
+    study_id: 700
+    sample_id: 1103238
+  :id: 1105486
+- :class: Sample
+  :attributes: 
+    name: Sample_1103238_name
+    new_name_format: true
+    id: 1103238
+  :id: 1103238
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2751
+    project_id: 678
+    insert_size_from: 200
+    id: 165465
+    study_id: 700
+    receptacle_id: 2332263
+    sample_id: 1103238
+    library_id: 2317174
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165465
+- :class: Aliquot
+  :attributes: 
+    id: 165466
+    receptacle_id: 2316895
+    sample_id: 1103239
+  :id: 165466
+- :class: Item
+  :attributes: 
+    name: Item_91724_name
+    submission_id: 9566
+    id: 91724
+    version: 1
+    workflow_id: 1
+  :id: 91724
+- :class: Tag
+  :attributes: 
+    oligo: CTTGTACTAT
+    tag_group_id: 7
+    id: 2761
+    map_id: 12
+  :id: 2761
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2761
+    project_id: 678
+    insert_size_from: 200
+    id: 165467
+    study_id: 700
+    receptacle_id: 2317175
+    sample_id: 1103239
+    library_id: 2317175
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165467
+- :class: Request::Metadata
+  :attributes: 
+    request_id: 3481183
+    id: 2970568
+  :id: 2970568
+- :class: TransferRequest
+  :attributes: 
+    target_asset_id: 2317176
+    priority: 0
+    id: 3481183
+    sti_type: TransferRequest
+    state: passed
+    asset_id: 2317175
+  :id: 3481183
+- :class: LibraryTube
+  :attributes: 
+    name: LibraryTube_2317175_name
+    barcode: "231956"
+    id: 2317175
+    legacy_sample_id: 1103239
+    barcode_prefix_id: 4
+    sti_type: LibraryTube
+  :id: 2317175
+- :class: LibraryCreationRequest::Metadata
+  :attributes: 
+    request_id: 3118457
+    read_length: 76
+    id: 2655441
+    fragment_size_required_to: "700"
+    fragment_size_required_from: "200"
+    library_type: No PCR
+  :id: 2655441
+- :class: MultiplexedLibraryCreationRequest
+  :attributes: 
+    request_type_id: 5
+    project_id: 678
+    target_asset_id: 2317175
+    priority: 0
+    submission_id: 9566
+    id: 3118457
+    user_id: 7
+    study_id: 700
+    workflow_id: 1
+    item_id: 91724
+    sti_type: MultiplexedLibraryCreationRequest
+    state: passed
+    asset_id: 2316895
+  :id: 3118457
+- :class: SampleTube
+  :attributes: 
+    name: SampleTube_2316895_name
+    barcode: "2316895"
+    id: 2316895
+    legacy_sample_id: 1103239
+    barcode_prefix_id: 4
+    qc_state: pending
+    two_dimensional_barcode: ""
+    sti_type: SampleTube
+  :id: 2316895
+- :class: StudySample
+  :attributes: 
+    id: 1105487
+    study_id: 700
+    sample_id: 1103239
+  :id: 1105487
+- :class: Sample
+  :attributes: 
+    name: Sample_1103239_name
+    new_name_format: true
+    id: 1103239
+  :id: 1103239
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2761
+    project_id: 678
+    insert_size_from: 200
+    id: 165469
+    study_id: 700
+    receptacle_id: 2332263
+    sample_id: 1103239
+    library_id: 2317175
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165469
+- :class: Lane
+  :attributes: 
+    name: Lane_2332263_name
+    id: 2332263
+    barcode_prefix_id: 4
+    qc_state: passed
+    sti_type: Lane
+    external_release: true
+  :id: 2332263
+- :class: StudySample
+  :attributes: 
+    id: 1105476
+    study_id: 700
+    sample_id: 1103228
+  :id: 1105476
+- :class: Sample
+  :attributes: 
+    name: Sample_1103228_name
+    new_name_format: true
+    id: 1103228
+  :id: 1103228
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2651
+    project_id: 678
+    insert_size_from: 200
+    id: 165424
+    study_id: 700
+    receptacle_id: 2317176
+    sample_id: 1103228
+    library_id: 2317164
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165424
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2661
+    project_id: 678
+    insert_size_from: 200
+    id: 165428
+    study_id: 700
+    receptacle_id: 2317176
+    sample_id: 1103229
+    library_id: 2317165
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165428
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2671
+    project_id: 678
+    insert_size_from: 200
+    id: 165432
+    study_id: 700
+    receptacle_id: 2317176
+    sample_id: 1103230
+    library_id: 2317166
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165432
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2681
+    project_id: 678
+    insert_size_from: 200
+    id: 165436
+    study_id: 700
+    receptacle_id: 2317176
+    sample_id: 1103231
+    library_id: 2317167
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165436
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2691
+    project_id: 678
+    insert_size_from: 200
+    id: 165440
+    study_id: 700
+    receptacle_id: 2317176
+    sample_id: 1103232
+    library_id: 2317168
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165440
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2701
+    project_id: 678
+    insert_size_from: 200
+    id: 165444
+    study_id: 700
+    receptacle_id: 2317176
+    sample_id: 1103233
+    library_id: 2317169
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165444
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2711
+    project_id: 678
+    insert_size_from: 200
+    id: 165448
+    study_id: 700
+    receptacle_id: 2317176
+    sample_id: 1103234
+    library_id: 2317170
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165448
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2721
+    project_id: 678
+    insert_size_from: 200
+    id: 165452
+    study_id: 700
+    receptacle_id: 2317176
+    sample_id: 1103235
+    library_id: 2317171
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165452
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2731
+    project_id: 678
+    insert_size_from: 200
+    id: 165456
+    study_id: 700
+    receptacle_id: 2317176
+    sample_id: 1103236
+    library_id: 2317172
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165456
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2741
+    project_id: 678
+    insert_size_from: 200
+    id: 165460
+    study_id: 700
+    receptacle_id: 2317176
+    sample_id: 1103237
+    library_id: 2317173
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165460
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2751
+    project_id: 678
+    insert_size_from: 200
+    id: 165464
+    study_id: 700
+    receptacle_id: 2317176
+    sample_id: 1103238
+    library_id: 2317174
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165464
+- :class: Aliquot
+  :attributes: 
+    tag_id: 2761
+    project_id: 678
+    insert_size_from: 200
+    id: 165468
+    study_id: 700
+    receptacle_id: 2317176
+    sample_id: 1103239
+    library_id: 2317175
+    library_type: No PCR
+    insert_size_to: 700
+  :id: 165468
+- :class: SequencingRequest::Metadata
+  :attributes: 
+    request_id: 3118458
+    read_length: 76
+    id: 2655442
+    fragment_size_required_to: "700"
+    fragment_size_required_from: "200"
+  :id: 2655442
+- :class: SequencingRequest
+  :attributes: 
+    request_type_id: 3
+    project_id: 678
+    target_asset_id: 2332263
+    priority: 0
+    submission_id: 9566
+    id: 3118458
+    user_id: 7
+    study_id: 700
+    workflow_id: 1
+    sti_type: SequencingRequest
+    state: passed
+    asset_id: 2317176
+  :id: 3118458
+- :class: MultiplexedLibraryTube
+  :attributes: 
+    name: MultiplexedLibraryTube_2317176_name
+    barcode: "231957"
+    id: 2317176
+    barcode_prefix_id: 4
+    qc_state: pending
+    sti_type: MultiplexedLibraryTube
+  :id: 2317176
+- :class: Request::Metadata
+  :attributes: 
+    request_id: 3481176
+    id: 2970561
+  :id: 2970561
+- :class: TransferRequest
+  :attributes: 
+    target_asset_id: 2317176
+    priority: 0
+    id: 3481176
+    sti_type: TransferRequest
+    state: passed
+    asset_id: 2317168
+  :id: 3481176
+- :class: LibraryTube
+  :attributes: 
+    name: LibraryTube_2317168_name
+    barcode: "231949"
+    id: 2317168
+    legacy_sample_id: 1103232
+    barcode_prefix_id: 4
+    sti_type: LibraryTube
+  :id: 2317168
+- :class: LibraryCreationRequest::Metadata
+  :attributes: 
+    request_id: 3118450
+    read_length: 76
+    id: 2655434
+    fragment_size_required_to: "700"
+    fragment_size_required_from: "200"
+    library_type: No PCR
+  :id: 2655434
+- :class: MultiplexedLibraryCreationRequest
+  :attributes: 
+    request_type_id: 5
+    project_id: 678
+    target_asset_id: 2317168
+    priority: 0
+    submission_id: 9566
+    id: 3118450
+    user_id: 7
+    study_id: 700
+    workflow_id: 1
+    item_id: 91717
+    sti_type: MultiplexedLibraryCreationRequest
+    state: passed
+    asset_id: 2316888
+  :id: 3118450
+- :class: SampleTube
+  :attributes: 
+    name: SampleTube_2316888_name
+    barcode: "2316888"
+    id: 2316888
+    legacy_sample_id: 1103232
+    barcode_prefix_id: 4
+    qc_state: pending
+    two_dimensional_barcode: ""
+    sti_type: SampleTube
+  :id: 2316888
+- :class: StudySample
+  :attributes: 
+    id: 1105480
+    study_id: 700
+    sample_id: 1103232
+  :id: 1105480
+- :class: Sample
+  :attributes: 
+    name: Sample_1103232_name
+    new_name_format: true
+    id: 1103232
+  :id: 1103232

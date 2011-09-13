@@ -383,15 +383,6 @@ end
 # Model descriptions can be specified for subclass.
 # use :skip_super to not include superclass association
 Models = {
-  :sample_with_assets =>  {
-  Sample => [:assets, :study_samples],
-  StudySample => [:study],
-  Asset => [:requests, :children, :parents],
-  Well => [:container_association],
-  ContainerAssociation => [:container, :content] ,
-  Request => [:submission, :asset,:item,  :target_asset, :request_metadata, :user],
-  Submission => [:asset_group]
-},
   :submission => [{
   Submission => [:study, :project, RequestByType=lambda { |s|  s.requests.group_by(&:request_type_id).values }, :asset_group],
   Request => [:asset, :target_asset],
@@ -418,6 +409,15 @@ Models = {
     Aliquot => [:sample, :tag],
     Aliquot::Receptacle => [:aliquots],
     Well => [:plate]},
+  :sample_with_assets => AssetDown.merge(
+  Sample => [:assets, :study_samples],
+  StudySample => [:study],
+  Asset => [:requests, :children, :parents],
+  Well => [:container_association],
+  ContainerAssociation => [:container, :content] ,
+  Request => [:submission, :asset,:item,  :target_asset, :request_metadata, :user],
+  Submission => [:asset_group]
+),
   :asset_up_and_down => [AssetUp, AssetDown],
   :asset_down_and_up => [AssetDown, AssetUp],
   :full_asset => AssetUp.merge(AssetDown),
