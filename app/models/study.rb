@@ -518,6 +518,9 @@ class Study < ActiveRecord::Base
   # return true if yes, false if not , and nil if we don't know
   def affiliated_with?(object)
     case
+    when object.is_a?(Asset) && object.study_ids.blank?
+      #special case, no study assing we propagate to aliquot
+      nil
     when object.respond_to?(:study_id)
       self.id == object.study_id
     when object.respond_to?(:study_ids)
@@ -530,7 +533,6 @@ class Study < ActiveRecord::Base
   def decide_if_object_should_be_taken(study_from, sample, object)
     case study_from.affiliated_with?(object)
     when true
-
       case object
       when Aliquot
         return object.sample == sample && object

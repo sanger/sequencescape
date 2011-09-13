@@ -141,7 +141,7 @@ Feature: move samples and assets between studies
     Then I should not see "Plate" within "#assets"
 
   @wip
-  Scenario: niel bug
+  Scenario: Niel bug
     Given data are preloaded from "RT211312" renaming:
       | old name | new name |
       | Study_1700_name | study from |
@@ -149,3 +149,16 @@ Feature: move samples and assets between studies
       | Sample_1115606_name | sample_to_move |
     When I move samples between studies using the spreadsheet "RT211312_samples_to_move.xls"
     Then the sample "sample_to_move" should belong to the study named "study 17878 to"
+
+  # The aliquot on the lane of a multiplexed library should change study
+  Scenario: Niel other bug
+    Given data are preloaded from "17802275_move_aliquots" renaming:
+      | old_name | new_name |
+      | Study_700_name | study_from |
+      | Study_605_name | study_to |
+      | Sample_1103232_name | sample_to_move |
+    Then the aliquot 165441 should belong to the study named "study_from"
+    When I move samples between studies using the spreadsheet "17802275_samples_to_move.xls"
+    Then the sample "sample_to_move" should belong to the study named "study_to"
+    Then the aliquot 165441 should belong to the study named "study_to"
+       
