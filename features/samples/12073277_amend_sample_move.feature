@@ -157,8 +157,8 @@ Feature: move samples and assets between studies
       | Study_700_name | study_from |
       | Study_605_name | study_to |
       | Sample_1103232_name | sample_to_move |
-    Then the aliquot 165441 should belong to the study named "study_from"
     When I move samples between studies using the spreadsheet "17802275_samples_to_move.xls"
+    Then I should not see "Caution, errors were found"
     Then the sample "sample_to_move" should belong to the study named "study_to"
-    Then the aliquot 165441 should belong to the study named "study_to"
+    And the aliquot 165441 should belong to the study named "study_to"
        
