@@ -12,6 +12,11 @@ Then /^the aliquots of (the .+) should be the same as the wells "([^\"]+)" of (t
   )
 end
 
+Then /^the aliquot (\d+) should belong to the study named "([^"]*)"$/ do |aliquot_id, study_name|
+  aliquot = Aliquot.find(aliquot_id) or raise StandardError, "Cannot find aliquot #{aliquot_id}"
+  study  = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
+  assert aliquot.study == study
+end
 Given /^the sample tube "([^\"]+)" has (\d+) aliquots$/ do |tube_name, number|
   tube = SampleTube.find_by_name(tube_name) or raise "Can't find SampleTube named #{tube_name}"
   1.upto(number.to_i-tube.aliquots.size).each do |i|

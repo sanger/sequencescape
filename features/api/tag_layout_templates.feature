@@ -217,3 +217,521 @@ Feature: Access tag layout templates through the API
       | F12  | TTGG |
       | G12  | AATT |
       | H12  | CCGG |
+
+  @tag_layout @create @barcode-service
+  Scenario: Creating a tag layout with substitutions from a tag layout template
+    Given the plate barcode webservice returns "1000001..1000002"
+
+    Given the tag layout template "Test tag layout" exists
+      And the UUID for the tag layout template "Test tag layout" is "00000000-1111-2222-3333-444444444444"
+      And the tag group for tag layout template "Test tag layout" is called "Tag group 1"
+      And the tag group for tag layout template "Test tag layout" contains the following tags:
+        | index | oligo |
+        | 1     | AAAA  |
+        | 2     | CCCC  |
+        | 3     | TTTT  |
+        | 4     | GGGG  |
+        | 5     | AACC  |
+        | 6     | TTGG  |
+        | 7     | AATT  |
+        | 8     | CCGG  |
+      And the UUID of the next tag layout created will be "00000000-1111-2222-3333-000000000002"
+
+    Given a "Stock plate" plate called "Testing the API" exists
+      And the UUID for the plate "Testing the API" is "11111111-2222-3333-4444-000000000002"
+      And all wells on the plate "Testing the API" have unique samples
+
+    Given a "Stock plate" plate called "Testing the tagging" exists
+      And the UUID for the plate "Testing the tagging" is "11111111-2222-3333-4444-000000000001"
+      And the wells for the plate "Testing the API" have been pooled in columns to the plate "Testing the tagging"
+
+    When I make an authorised POST with the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
+      """
+      {
+        "tag_layout": {
+          "plate": "11111111-2222-3333-4444-000000000001",
+          "substitutions": {
+            "8": "7",
+            "7": "8"
+          }
+        }
+      }
+      """
+    Then the HTTP response should be "201 Created"
+     And the JSON should match the following for the specified fields:
+      """
+      {
+        "tag_layout": {
+          "actions": {
+            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-000000000002"
+          },
+          "plate": {
+            "actions": {
+              "read": "http://www.example.com/api/1/11111111-2222-3333-4444-000000000001"
+            }
+          },
+
+          "uuid": "00000000-1111-2222-3333-000000000002",
+          "direction": "column",
+
+          "tag_group": {
+            "name": "Tag group 1",
+            "tags": {
+              "1": "AAAA",
+              "2": "CCCC",
+              "3": "TTTT",
+              "4": "GGGG",
+              "5": "AACC",
+              "6": "TTGG",
+              "7": "AATT",
+              "8": "CCGG"
+            }
+          },
+          "substitutions": {
+            "8": "7",
+            "7": "8"
+          }
+        }
+      }
+      """
+
+    Then the tags assigned to the plate "Testing the tagging" should be:
+      | well | tag  |
+      | A1   | AAAA |
+      | B1   | CCCC |
+      | C1   | TTTT |
+      | D1   | GGGG |
+      | E1   | AACC |
+      | F1   | TTGG |
+      | G1   | CCGG |
+      | H1   | AATT |
+      | A2   | AAAA |
+      | B2   | CCCC |
+      | C2   | TTTT |
+      | D2   | GGGG |
+      | E2   | AACC |
+      | F2   | TTGG |
+      | G2   | CCGG |
+      | H2   | AATT |
+      | A3   | AAAA |
+      | B3   | CCCC |
+      | C3   | TTTT |
+      | D3   | GGGG |
+      | E3   | AACC |
+      | F3   | TTGG |
+      | G3   | CCGG |
+      | H3   | AATT |
+      | A4   | AAAA |
+      | B4   | CCCC |
+      | C4   | TTTT |
+      | D4   | GGGG |
+      | E4   | AACC |
+      | F4   | TTGG |
+      | G4   | CCGG |
+      | H4   | AATT |
+      | A5   | AAAA |
+      | B5   | CCCC |
+      | C5   | TTTT |
+      | D5   | GGGG |
+      | E5   | AACC |
+      | F5   | TTGG |
+      | G5   | CCGG |
+      | H5   | AATT |
+      | A6   | AAAA |
+      | B6   | CCCC |
+      | C6   | TTTT |
+      | D6   | GGGG |
+      | E6   | AACC |
+      | F6   | TTGG |
+      | G6   | CCGG |
+      | H6   | AATT |
+      | A7   | AAAA |
+      | B7   | CCCC |
+      | C7   | TTTT |
+      | D7   | GGGG |
+      | E7   | AACC |
+      | F7   | TTGG |
+      | G7   | CCGG |
+      | H7   | AATT |
+      | A8   | AAAA |
+      | B8   | CCCC |
+      | C8   | TTTT |
+      | D8   | GGGG |
+      | E8   | AACC |
+      | F8   | TTGG |
+      | G8   | CCGG |
+      | H8   | AATT |
+      | A9   | AAAA |
+      | B9   | CCCC |
+      | C9   | TTTT |
+      | D9   | GGGG |
+      | E9   | AACC |
+      | F9   | TTGG |
+      | G9   | CCGG |
+      | H9   | AATT |
+      | A10  | AAAA |
+      | B10  | CCCC |
+      | C10  | TTTT |
+      | D10  | GGGG |
+      | E10  | AACC |
+      | F10  | TTGG |
+      | G10  | CCGG |
+      | H10  | AATT |
+      | A11  | AAAA |
+      | B11  | CCCC |
+      | C11  | TTTT |
+      | D11  | GGGG |
+      | E11  | AACC |
+      | F11  | TTGG |
+      | G11  | CCGG |
+      | H11  | AATT |
+      | A12  | AAAA |
+      | B12  | CCCC |
+      | C12  | TTTT |
+      | D12  | GGGG |
+      | E12  | AACC |
+      | F12  | TTGG |
+      | G12  | CCGG |
+      | H12  | AATT |
+
+  @tag_layout @create @barcode-service
+  Scenario: Creating a tag layout where the pools are factors of the number of rows on the plate
+    Given the plate barcode webservice returns "1000001..1000002"
+
+    Given the column order tag layout template "Test tag layout" exists
+      And the UUID for the tag layout template "Test tag layout" is "00000000-1111-2222-3333-444444444444"
+      And the tag group for tag layout template "Test tag layout" is called "Tag group 1"
+      And the tag group for tag layout template "Test tag layout" contains the following tags:
+        | index | oligo |
+        | 1     | AAAA  |
+        | 2     | CCCC  |
+        | 3     | TTTT  |
+        | 4     | GGGG  |
+        | 5     | AACC  |
+        | 6     | TTGG  |
+        | 7     | AATT  |
+        | 8     | CCGG  |
+        | 9     | GAGA  |
+        | 10    | CACA  |
+      And the UUID of the next tag layout created will be "00000000-1111-2222-3333-000000000002"
+
+    Given a "Stock plate" plate called "Testing the API" exists
+      And the UUID for the plate "Testing the API" is "11111111-2222-3333-4444-000000000002"
+      And all wells on the plate "Testing the API" have unique samples
+
+    Given a "Stock plate" plate called "Testing the tagging" exists
+      And the UUID for the plate "Testing the tagging" is "11111111-2222-3333-4444-000000000001"
+      And the wells for the plate "Testing the API" have been pooled to the plate "Testing the tagging" according to the pooling strategy 8, 4, 8, 4, 8, 4, 8, 4, 8, 4, 8, 4, 8, 4, 8, 4
+
+    When I make an authorised POST with the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
+      """
+      {
+        "tag_layout": {
+          "plate": "11111111-2222-3333-4444-000000000001"
+        }
+      }
+      """
+    Then the HTTP response should be "201 Created"
+     And the JSON should match the following for the specified fields:
+      """
+      {
+        "tag_layout": {
+          "actions": {
+            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-000000000002"
+          },
+          "plate": {
+            "actions": {
+              "read": "http://www.example.com/api/1/11111111-2222-3333-4444-000000000001"
+            }
+          },
+
+          "uuid": "00000000-1111-2222-3333-000000000002",
+          "direction": "column",
+
+          "tag_group": {
+            "name": "Tag group 1",
+            "tags": {
+              "1": "AAAA",
+              "2": "CCCC",
+              "3": "TTTT",
+              "4": "GGGG",
+              "5": "AACC",
+              "6": "TTGG",
+              "7": "AATT",
+              "8": "CCGG"
+            }
+          },
+          "substitutions": { }
+        }
+      }
+      """
+
+    Then the tags assigned to the plate "Testing the tagging" should be:
+      | well | tag  |
+      | A1   | AAAA |
+      | B1   | CCCC |
+      | C1   | TTTT |
+      | D1   | GGGG |
+      | E1   | AACC |
+      | F1   | TTGG |
+      | G1   | AATT |
+      | H1   | CCGG |
+      | A2   | AAAA |
+      | B2   | CCCC |
+      | C2   | TTTT |
+      | D2   | GGGG |
+      | E2   | AACC |
+      | F2   | TTGG |
+      | G2   | AATT |
+      | H2   | CCGG |
+      | A3   | AAAA |
+      | B3   | CCCC |
+      | C3   | TTTT |
+      | D3   | GGGG |
+      | E3   | AACC |
+      | F3   | TTGG |
+      | G3   | AATT |
+      | H3   | CCGG |
+      | A4   | AAAA |
+      | B4   | CCCC |
+      | C4   | TTTT |
+      | D4   | GGGG |
+      | E4   | AACC |
+      | F4   | TTGG |
+      | G4   | AATT |
+      | H4   | CCGG |
+      | A5   | AAAA |
+      | B5   | CCCC |
+      | C5   | TTTT |
+      | D5   | GGGG |
+      | E5   | AACC |
+      | F5   | TTGG |
+      | G5   | AATT |
+      | H5   | CCGG |
+      | A6   | AAAA |
+      | B6   | CCCC |
+      | C6   | TTTT |
+      | D6   | GGGG |
+      | E6   | AACC |
+      | F6   | TTGG |
+      | G6   | AATT |
+      | H6   | CCGG |
+      | A7   | AAAA |
+      | B7   | CCCC |
+      | C7   | TTTT |
+      | D7   | GGGG |
+      | E7   | AACC |
+      | F7   | TTGG |
+      | G7   | AATT |
+      | H7   | CCGG |
+      | A8   | AAAA |
+      | B8   | CCCC |
+      | C8   | TTTT |
+      | D8   | GGGG |
+      | E8   | AACC |
+      | F8   | TTGG |
+      | G8   | AATT |
+      | H8   | CCGG |
+      | A9   | AAAA |
+      | B9   | CCCC |
+      | C9   | TTTT |
+      | D9   | GGGG |
+      | E9   | AACC |
+      | F9   | TTGG |
+      | G9   | AATT |
+      | H9   | CCGG |
+      | A10  | AAAA |
+      | B10  | CCCC |
+      | C10  | TTTT |
+      | D10  | GGGG |
+      | E10  | AACC |
+      | F10  | TTGG |
+      | G10  | AATT |
+      | H10  | CCGG |
+      | A11  | AAAA |
+      | B11  | CCCC |
+      | C11  | TTTT |
+      | D11  | GGGG |
+      | E11  | AACC |
+      | F11  | TTGG |
+      | G11  | AATT |
+      | H11  | CCGG |
+      | A12  | AAAA |
+      | B12  | CCCC |
+      | C12  | TTTT |
+      | D12  | GGGG |
+      | E12  | AACC |
+      | F12  | TTGG |
+      | G12  | AATT |
+      | H12  | CCGG |
+
+  @tag_layout @create @barcode-service
+  Scenario: Creating a tag layout where the pools are awkwardly sized and cause overlaps
+    Given the plate barcode webservice returns "1000001..1000002"
+
+    Given the column order tag layout template "Test tag layout" exists
+      And the UUID for the tag layout template "Test tag layout" is "00000000-1111-2222-3333-444444444444"
+      And the tag group for tag layout template "Test tag layout" is called "Tag group 1"
+      And the tag group for tag layout template "Test tag layout" contains the following tags:
+        | index | oligo |
+        | 1     | AAAA  |
+        | 2     | CCCC  |
+        | 3     | TTTT  |
+        | 4     | GGGG  |
+        | 5     | AACC  |
+        | 6     | TTGG  |
+        | 7     | AATT  |
+        | 8     | CCGG  |
+        | 9     | GAGA  |
+        | 10    | CACA  |
+      And the UUID of the next tag layout created will be "00000000-1111-2222-3333-000000000002"
+
+    Given a "Stock plate" plate called "Testing the API" exists
+      And the UUID for the plate "Testing the API" is "11111111-2222-3333-4444-000000000002"
+      And all wells on the plate "Testing the API" have unique samples
+
+    Given a "Stock plate" plate called "Testing the tagging" exists
+      And the UUID for the plate "Testing the tagging" is "11111111-2222-3333-4444-000000000001"
+      And the wells for the plate "Testing the API" have been pooled to the plate "Testing the tagging" according to the pooling strategy 8, 2, 10, 4, 8, 2, 10, 4, 8, 2, 10, 4, 8, 8, 8
+
+    When I make an authorised POST with the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
+      """
+      {
+        "tag_layout": {
+          "plate": "11111111-2222-3333-4444-000000000001"
+        }
+      }
+      """
+    Then the HTTP response should be "201 Created"
+     And the JSON should match the following for the specified fields:
+      """
+      {
+        "tag_layout": {
+          "actions": {
+            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-000000000002"
+          },
+          "plate": {
+            "actions": {
+              "read": "http://www.example.com/api/1/11111111-2222-3333-4444-000000000001"
+            }
+          },
+
+          "uuid": "00000000-1111-2222-3333-000000000002",
+          "direction": "column",
+
+          "tag_group": {
+            "name": "Tag group 1",
+            "tags": {
+              "1": "AAAA",
+              "2": "CCCC",
+              "3": "TTTT",
+              "4": "GGGG",
+              "5": "AACC",
+              "6": "TTGG",
+              "7": "AATT",
+              "8": "CCGG"
+            }
+          },
+          "substitutions": { }
+        }
+      }
+      """
+
+    Then the tags assigned to the plate "Testing the tagging" should be:
+      | well | tag  |
+      | A1   | AAAA |
+      | B1   | CCCC |
+      | C1   | TTTT |
+      | D1   | GGGG |
+      | E1   | AACC |
+      | F1   | TTGG |
+      | G1   | AATT |
+      | H1   | CCGG |
+      | A2   | AAAA |
+      | B2   | CCCC |
+      | C2   | TTTT |
+      | D2   | GGGG |
+      | E2   | AACC |
+      | F2   | TTGG |
+      | G2   | AATT |
+      | H2   | CCGG |
+      | A3   | AAAA |
+      | B3   | CCCC |
+      | C3   | GAGA |
+      | D3   | CACA |
+      | E3   | AACC |
+      | F3   | TTGG |
+      | G3   | AATT |
+      | H3   | CCGG |
+      | A4   | AAAA |
+      | B4   | CCCC |
+      | C4   | TTTT |
+      | D4   | GGGG |
+      | E4   | AACC |
+      | F4   | TTGG |
+      | G4   | AATT |
+      | H4   | CCGG |
+      | A5   | AAAA |
+      | B5   | CCCC |
+      | C5   | TTTT |
+      | D5   | GGGG |
+      | E5   | AACC |
+      | F5   | TTGG |
+      | G5   | AATT |
+      | H5   | CCGG |
+      | A6   | AAAA |
+      | B6   | CCCC |
+      | C6   | GAGA |
+      | D6   | CACA |
+      | E6   | AACC |
+      | F6   | TTGG |
+      | G6   | AATT |
+      | H6   | CCGG |
+      | A7   | AAAA |
+      | B7   | CCCC |
+      | C7   | TTTT |
+      | D7   | GGGG |
+      | E7   | AACC |
+      | F7   | TTGG |
+      | G7   | AATT |
+      | H7   | CCGG |
+      | A8   | AAAA |
+      | B8   | CCCC |
+      | C8   | TTTT |
+      | D8   | GGGG |
+      | E8   | AACC |
+      | F8   | TTGG |
+      | G8   | AATT |
+      | H8   | CCGG |
+      | A9   | AAAA |
+      | B9   | CCCC |
+      | C9   | GAGA |
+      | D9   | CACA |
+      | E9   | AACC |
+      | F9   | TTGG |
+      | G9   | AATT |
+      | H9   | CCGG |
+      | A10  | AAAA |
+      | B10  | CCCC |
+      | C10  | TTTT |
+      | D10  | GGGG |
+      | E10  | AACC |
+      | F10  | TTGG |
+      | G10  | AATT |
+      | H10  | CCGG |
+      | A11  | AAAA |
+      | B11  | CCCC |
+      | C11  | TTTT |
+      | D11  | GGGG |
+      | E11  | AACC |
+      | F11  | TTGG |
+      | G11  | AATT |
+      | H11  | CCGG |
+      | A12  | AAAA |
+      | B12  | CCCC |
+      | C12  | TTTT |
+      | D12  | GGGG |
+      | E12  | AACC |
+      | F12  | TTGG |
+      | G12  | AATT |
+      | H12  | CCGG |
