@@ -510,6 +510,29 @@ ActiveRecord::Schema.define(:version => 20110930201202) do
   add_index "maps", ["description", "asset_size"], :name => "index_maps_on_description_and_asset_size"
   add_index "maps", ["description"], :name => "index_maps_on_description"
 
+  create_table "orders", :force => true do |t|
+    t.integer  "study_id"
+    t.integer  "workflow_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "state_to_delete",   :limit => 20
+    t.string   "message_to_delete"
+    t.integer  "user_id"
+    t.text     "item_options"
+    t.text     "request_types"
+    t.text     "request_options"
+    t.text     "comments"
+    t.integer  "project_id"
+    t.string   "sti_type"
+    t.string   "template_name"
+    t.integer  "asset_group_id"
+    t.string   "asset_group_name"
+    t.integer  "submission_id"
+  end
+
+  add_index "orders", ["state_to_delete"], :name => "index_submissions_on_state"
+  add_index "orders", ["study_id"], :name => "index_submissions_on_project_id"
+
   create_table "pac_bio_library_tube_metadata", :force => true do |t|
     t.integer "smrt_cells_available"
     t.string  "prep_kit_barcode"
@@ -1073,26 +1096,26 @@ ActiveRecord::Schema.define(:version => 20110930201202) do
   end
 
   create_table "submissions", :force => true do |t|
-    t.integer  "study_id"
-    t.integer  "workflow_id"
+    t.integer  "study_id_to_delete"
+    t.integer  "workflow_id_to_delete"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "state",            :limit => 20
+    t.string   "state",                      :limit => 20
     t.string   "message"
-    t.integer  "user_id"
-    t.text     "item_options"
+    t.integer  "user_id_to_delete"
+    t.text     "item_options_to_delete"
     t.text     "request_types"
     t.text     "request_options"
-    t.text     "comments"
-    t.integer  "project_id"
-    t.string   "sti_type"
-    t.string   "template_name"
-    t.integer  "asset_group_id"
-    t.string   "asset_group_name"
+    t.text     "comments_to_delete"
+    t.integer  "project_id_to_delete"
+    t.string   "sti_type_to_delete"
+    t.string   "template_name_to_delete"
+    t.integer  "asset_group_id_to_delete"
+    t.string   "asset_group_name_to_delete"
   end
 
   add_index "submissions", ["state"], :name => "index_submissions_on_state"
-  add_index "submissions", ["study_id"], :name => "index_submissions_on_project_id"
+  add_index "submissions", ["study_id_to_delete"], :name => "index_submissions_on_project_id"
 
   create_table "submitted_assets", :force => true do |t|
     t.integer  "submission_id"
