@@ -1,6 +1,6 @@
 # this class it simplified version of Submission which is just a chain of request types
 # without any choices
-class LinearSubmission < Submission
+class LinearSubmission < Order
   include Submission::LinearRequestGraph
 
   def request_type_ids=(id_list)
