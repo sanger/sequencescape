@@ -1,7 +1,7 @@
 class TagGroup < ActiveRecord::Base
   include Uuid::Uuidable
 
-  has_many :tags
+  has_many :tags, :order => 'map_id ASC'
   acts_as_audited :on => [:destroy, :update]
 
   validates_presence_of :name
