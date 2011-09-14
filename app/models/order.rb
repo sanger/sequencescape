@@ -1,7 +1,5 @@
 class Order < ActiveRecord::Base
   include Uuid::Uuidable
-  extend  Submission::StateMachine
-  include Submission::DelayedJobBehaviour
   include Submission::AssetGroupBehaviour
   include Submission::QuotaBehaviour
   include Submission::RequestOptionsBehaviour
@@ -25,10 +23,14 @@ class Order < ActiveRecord::Base
   belongs_to :workflow, :class_name => 'Submission::Workflow'
   validates_presence_of :workflow
 
+  belongs_to :submission
+  validates_presence_of :submission
+
   serialize :request_types
   validates_presence_of :request_types
 
   serialize :item_options
+
 
   named_scope :for_studies, lambda {|*args| {:conditions => { :study_id => args[0]} } }
   
