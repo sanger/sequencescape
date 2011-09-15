@@ -1,11 +1,16 @@
 Factory.define :submission do |submission|
-    submission.workflow              {|workflow| workflow.association(:submission_workflow)}
-    submission.study                 {|study| study.association(:study)}
-    submission.project               {|project| project.association(:project)}
-    submission.user                  {|user| user.association(:user)}
-    submission.item_options          {}
-    submission.request_options       {}
-    submission.assets                []
-    submission.request_types         { [ Factory(:request_type).id ] }
+end
+
+#TODO move in a separate file
+#easier to keep it here at the moment because we are moving stuff between both
+Factory.define :order do |order|
+    order.study                 {|study| study.association(:study)}
+    order.workflow              {|workflow| workflow.association(:submission_workflow)}
+    order.project               {|project| project.association(:project)}
+    order.user                  {|user| user.association(:user)}
+    order.item_options          {}
+    order.request_options       {}
+    order.assets                []
+    order.request_types         { [ Factory(:request_type).id ] }
 end
 
