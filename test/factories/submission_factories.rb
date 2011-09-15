@@ -1,5 +1,16 @@
-Factory.define :submission do |submission|
+Factory.define :submission__ do |submission|
+  #raise "call Factory::submission instead "
 end
+
+Factory.define :submission_without_order , :class => Submission do
+end
+
+class Factory
+  def self.submission(*args)
+    Factory(:order_with_submission, *args).submission
+  end
+end
+
 
 #TODO move in a separate file
 #easier to keep it here at the moment because we are moving stuff between both
@@ -12,5 +23,10 @@ Factory.define :order do |order|
     order.request_options       {}
     order.assets                []
     order.request_types         { [ Factory(:request_type).id ] }
+end
+
+
+Factory.define :order_with_submission, :parent => :order do |order|
+  order.submission { |o| o.association(:submission_without_order) }
 end
 
