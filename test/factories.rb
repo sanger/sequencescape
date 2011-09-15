@@ -163,13 +163,24 @@ Factory.define :request_metadata, :class => Request::Metadata do |m|
   m.read_length 76
 end
 
-Factory.define :request_without_assets, :class => Request do |request|
+Factory.define :request_with_submission, :class => Request do |request|
+  request.after_build do |request|
+    request.submission = Submission.build!(:workflow => request.workflow,
+                                          :study => request.study,
+                                          :project => request.project,
+                                          :request_types => [request.request_type],
+                                          :user => request.user
+                                          )
+  end
+end
+
+#Factory.define :request_without_assets, :class => Request do |request|
+Factory.define :request_without_assets, :parent => :request_with_submission do |request|
   request.item              {|item|       item.association(:item)}
   request.project           {|pr|         pr.association(:project)}
   request.request_type      {|rt|         rt.association(:request_type)}
   request.state             'pending'     
   request.study             {|study|      study.association(:study)}
-  request.submission        {|submission| submission.association(:submission)}
   request.user              {|user|       user.association(:user)}
   request.workflow          {|workflow|   workflow.association(:submission_workflow)}
 

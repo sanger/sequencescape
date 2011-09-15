@@ -6,15 +6,17 @@ class Submission < ActiveRecord::Base
 
   include DelayedJobEx
 
-
-
+  #TODO hack
+  def worklow=(workflow)
+    @workflow = workflow
+  end
   # Created during the lifetime ...
   has_many :requests
   has_many :items, :through => :requests
 
   has_one :order
   def orders
-    [order]
+    [order].compact
   end
   
   cattr_reader :per_page
@@ -43,14 +45,15 @@ class Submission < ActiveRecord::Base
   
   # TODO[xxx]: I don't like the name but this should disappear once the UI has been fixed
   def self.prepare!(options)
+    raise "Not implemented yet, to remove ?"
     constructor = options.delete(:template) || self
     constructor.create!(options.merge(:assets => options.fetch(:assets, [])))
   end
 
   def self.build!(options)
     ActiveRecord::Base.transaction do
-      order = self.prepare!(options)
-      order.submission.built!
+      order = Order.prepare!(options)
+      order.create_submission.built!
       order.submission
     end
   end
@@ -140,6 +143,7 @@ class Submission < ActiveRecord::Base
  #Order needs to have the 'structure'
  def check_orders_are_compatible()
    orders.map(&:request_types).uniq.size <= 1
+   orders.map(&:worklow_id).compact.uniq.size <= 1
  end
 
  private :check_orders_are_compatible
