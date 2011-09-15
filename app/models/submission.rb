@@ -6,15 +6,11 @@ class Submission < ActiveRecord::Base
 
   include DelayedJobEx
 
-  #TODO hack
-  def worklow=(workflow)
-    @workflow = workflow
-  end
   # Created during the lifetime ...
   has_many :requests
   has_many :items, :through => :requests
 
-  has_one :order
+  has_one :order, :inverse_of => :submission
   def orders
     [order].compact
   end
@@ -143,7 +139,7 @@ class Submission < ActiveRecord::Base
  #Order needs to have the 'structure'
  def check_orders_are_compatible()
    orders.map(&:request_types).uniq.size <= 1
-   orders.map(&:worklow_id).compact.uniq.size <= 1
+   orders.map(&:workflow_id).compact.uniq.size <= 1
  end
 
  private :check_orders_are_compatible
@@ -152,7 +148,7 @@ class Submission < ActiveRecord::Base
   #so we can take the first one
   def request_type_ids
     return [] unless orders.present?
-    orders.first.request_types.map(&:to_i)
+    order.request_types.map(&:to_i)
   end
 
 

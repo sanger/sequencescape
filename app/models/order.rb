@@ -23,7 +23,7 @@ class Order < ActiveRecord::Base
   belongs_to :workflow, :class_name => 'Submission::Workflow'
   validates_presence_of :workflow
 
-  belongs_to :submission
+  belongs_to :submission, :inverse_of => :order
   #validates_presence_of :submission
 
   serialize :request_types
@@ -167,6 +167,11 @@ class Order < ActiveRecord::Base
     request_attributes.uniq.map(&:to_field_info)
   end
   protected :compute_input_field_infos
+
+
+  def complete_building
+    #nothing just so mixin can use super
+  end
 end
 
 
