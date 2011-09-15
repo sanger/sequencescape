@@ -70,7 +70,7 @@ class Order < ActiveRecord::Base
   private :is_asset_applicable_to_type?
 
 
-  delegate :create_request_of_types!, :to => :submission
+  delegate :create_request_of_types!, :left_building_state?, :to => :submission
 
 
   def duplicate(&block)
