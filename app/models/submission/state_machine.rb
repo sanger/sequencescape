@@ -24,7 +24,7 @@ module Submission::StateMachine
     # TODO[xxx]: ... to here
 
     def complete_building
-      # Does nothing by default!
+      orders.complete_building
     end
 
     def process_submission!

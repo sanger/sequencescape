@@ -2,11 +2,7 @@ class Submission < ActiveRecord::Base
   include Uuid::Uuidable
   extend  Submission::StateMachine
   include Submission::DelayedJobBehaviour
-  include Submission::AssetGroupBehaviour
-  include Submission::QuotaBehaviour
-  include Submission::RequestOptionsBehaviour
-  include Submission::AccessionBehaviour
-  include ModelExtensions::Submission
+  #include ModelExtensions::Submission
 
   include DelayedJobEx
 
@@ -71,7 +67,10 @@ class Submission < ActiveRecord::Base
   end
 
   def process_submission!
-    build_request_graph!
+    # for now, we just delegate the requests creation to orders
+    ActiveRecord::Base.transaction do
+      orders.each(&:build_request_graph!)
+    end
   end
   alias_method(:create_requests, :process_submission!)
 
