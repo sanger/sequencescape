@@ -24,7 +24,7 @@ class Order < ActiveRecord::Base
   validates_presence_of :workflow
 
   belongs_to :submission
-  validates_presence_of :submission
+  #validates_presence_of :submission
 
   serialize :request_types
   validates_presence_of :request_types
@@ -70,7 +70,7 @@ class Order < ActiveRecord::Base
   private :is_asset_applicable_to_type?
 
 
-  delegate :create_request_of_types!, :left_building_state?, :to => :submission
+  delegate :create_request_of_types!, :left_building_state?, :to => :submission, :allow_nil => true
 
 
   def duplicate(&block)
