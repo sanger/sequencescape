@@ -60,7 +60,7 @@ class Study < ActiveRecord::Base
   belongs_to :user
 
   has_many :study_samples #, :group => 'study_id, sample_id', :conditions => 'sample_id IS NOT NULL'
-  has_many :submissions
+  has_many :orders
   has_many :samples, :through => :study_samples
   has_many :batches
   has_many :requests
@@ -344,11 +344,8 @@ class Study < ActiveRecord::Base
   end
 
   def unprocessed_submissions?
-    unless study.submissions.unprocessed.all.size == 0
-      true
-    else
-      false
-    end
+    #TODO[mb14] optimize if needed
+    study.orders.any? { |o| o.submission.nil?  || o.submission.unprocessed?}
   end
   ### TODO - Everything below should be treated as legacy until cleaned
 
