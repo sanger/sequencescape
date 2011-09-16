@@ -36,7 +36,7 @@ class SampleTest < ActiveSupport::TestCase
 
         @request_options = {"read_length"=>"108", "fragment_size_required_from"=>"150", "fragment_size_required_to"=>"200"}
 
-        @submission_to = Factory :submission, :study => @study_to, :workflow => @workflow, :assets => [ @asset_1 ],
+        @submission_to = Factory::submission :study => @study_to, :workflow => @workflow, :assets => [ @asset_1 ],
                          :request_types => @request_type_ids, :request_options => @request_options
 
       end
@@ -85,7 +85,7 @@ class SampleTest < ActiveSupport::TestCase
 
           @request_type_ids_from = [@request_type_2.id, @request_type_3.id]
           @item = Factory :item
-          @submission_from_1 = Factory :submission, :study => @study_from, :workflow => @workflow, :assets => [ @asset_from ],
+          @submission_from_1 = Factory::submission :study => @study_from, :workflow => @workflow, :assets => [ @asset_from ],
                            :request_types => @request_type_ids_from, :request_options => @request_options
           @asset_from.studies << @study_from
           @asset_from.save
@@ -125,14 +125,14 @@ class SampleTest < ActiveSupport::TestCase
           
           @request_type_ids_both = [@request_type_2.id, @request_type_3.id]
           @item = Factory :item
-          @submission_from_1 = Factory :submission, :study => @study_from, :workflow => @workflow, :assets => [ @asset_from ],
+          @submission_from_1 = Factory::submission :study => @study_from, :workflow => @workflow, :assets => [ @asset_from ],
                            :request_types => @request_type_ids_both, :request_options => @request_options
           @asset_from.studies << @study_from
           @asset_from.save
           @request = Factory :request, :submission => @submission_from_1, :request_type => @request_type1, :study => @study_from, :workflow => @workflow, :item => @item
 
           @item_to = Factory :item
-          @submission_to_1 = Factory :submission, :study => @study_to, :workflow => @workflow, :assets => [ @asset_to ],
+          @submission_to_1 = Factory::submission :study => @study_to, :workflow => @workflow, :assets => [ @asset_to ],
                              :request_types => @request_type_ids_both, :request_options => @request_options
           @request = Factory :request, :submission => @submission_to_1, :request_type => @request_type1, :study => @study_to, :workflow => @workflow, :item => @item_to
         end
