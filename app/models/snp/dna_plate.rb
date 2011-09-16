@@ -7,4 +7,4 @@ class Snp::DnaPlate < ActiveRecord::Base
   set_table_name "dna_plate"
 
   alias_attribute :id, :id_dnaplate
-end
+end if false
