@@ -101,7 +101,7 @@ module Submission::LinearRequestGraph
     return item if item.present?
 
     asset_name = asset.name ? asset.name : "#{asset.sti_type} #{asset.id}"
-    Item.create!(:workflow => workflow, :name => "#{asset_name} #{id.to_s}", :submission => self)
+    Item.create!(:workflow => workflow, :name => "#{asset_name} #{id.to_s}", :submission => self.submission)
   end
   private :create_item_for!
 end

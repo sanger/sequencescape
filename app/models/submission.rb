@@ -14,6 +14,11 @@ class Submission < ActiveRecord::Base
   def orders
     [order].compact
   end
+
+  #TODO clean up if not neede
+  def comments
+    order.comments
+  end
   
   cattr_reader :per_page
   @@per_page = 500
@@ -39,13 +44,6 @@ class Submission < ActiveRecord::Base
   end
   alias_method(:json_root, :url_name)
   
-  # TODO[xxx]: I don't like the name but this should disappear once the UI has been fixed
-  def self.prepare!(options)
-    raise "Not implemented yet, to remove ?"
-    constructor = options.delete(:template) || self
-    constructor.create!(options.merge(:assets => options.fetch(:assets, [])))
-  end
-
   def self.build!(options)
     ActiveRecord::Base.transaction do
       order = Order.prepare!(options)
@@ -89,24 +87,6 @@ class Submission < ActiveRecord::Base
     end
     return multiplex_started_passed_result
   end
-
-  def create_request_of_type!(request_type, attributes = {}, &block)
-    request_type.create!(attributes) do |request|
-      request.workflow                    = workflow
-      request.project                     = project
-      request.study                       = study
-      request.user                        = user
-      request.submission_id               = id
-      request.request_metadata_attributes = request_type.extract_metadata_from_hash(request_options)
-      request.state                       = initial_request_state(request_type)
-
-      if request.asset.present?
-        # TODO: This should really be an exception but not sure of the side-effects at the moment
-        request.asset  = nil unless is_asset_applicable_to_type?(request_type, request.asset)
-      end
-    end
-  end
-
 
   def duplicate(&block)
     raise "Not implemented yet"

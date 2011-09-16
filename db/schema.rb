@@ -1118,7 +1118,7 @@ ActiveRecord::Schema.define(:version => 20110930201202) do
   add_index "submissions", ["study_id_to_delete"], :name => "index_submissions_on_project_id"
 
   create_table "submitted_assets", :force => true do |t|
-    t.integer  "submission_id"
+    t.integer  "order_id"
     t.integer  "asset_id"
     t.datetime "created_at"
     t.datetime "updated_at"
