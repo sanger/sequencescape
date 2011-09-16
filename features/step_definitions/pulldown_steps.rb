@@ -73,13 +73,13 @@ end
 # pipelines back to the stock plate directly.  Eventually these can grow into a proper work through of
 # a pipeline.
 Given /^(all submissions) have been worked until the last plate of the "Pulldown WGS" pipeline$/ do |submissions|
-  work_pipeline_for(submissions, 'WGS pooled amplified library plate')
+  work_pipeline_for(submissions, 'WGS lib pool')
 end
 Given /^(all submissions) have been worked until the last plate of the "Pulldown SC" pipeline$/ do |submissions|
-  work_pipeline_for(submissions, 'SC pooled captured library plate')
+  work_pipeline_for(submissions, 'SC cap lib pool')
 end
 Given /^(all submissions) have been worked until the last plate of the "Pulldown ISC" pipeline$/ do |submissions|
-  work_pipeline_for(submissions, 'ISC pooled captured library plate')
+  work_pipeline_for(submissions, 'ISC cap lib pool')
 end
 
 Transform /^the (sample|library) tube "([^\"]+)"$/ do |type, name|
