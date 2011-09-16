@@ -1,8 +1,8 @@
 @api @json @single-sign-on @new-api
 Feature: Tagging the wells on a plate using a tag layout template
   There are several points in the pulldown laboratory workflow where the contents of a plate are tagged.  Taking
-  WGS as an example: the user will create a WGS library PCR plate from a WGS library plate, they will then start
-  that WGS library PCR plate, then assign the tags, do the PCR reaction, and then pass the WGS library PCR plate.
+  WGS as an example: the user will create a WGS lib PCR from a WGS lib, they will then start
+  that WGS lib PCR, then assign the tags, do the PCR reaction, and then pass the WGS lib PCR.
 
   Background:
     Given all HTTP requests to the API have the cookie "WTSISignOn" set to "I-am-authenticated"
@@ -266,8 +266,8 @@ Feature: Tagging the wells on a plate using a tag layout template
 
     Scenarios:
       | parent plate type         | child plate type              |
-      | WGS library plate         | WGS library PCR plate         |
-      | SC captured library plate | SC captured library PCR plate |
-      | ISC library plate         | ISC library PCR plate         |
+      | WGS lib         | WGS lib PCR         |
+      | SC cap lib | SC cap lib PCR |
+      | ISC lib         | ISC lib PCR         |
 
 

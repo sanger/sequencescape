@@ -18,11 +18,11 @@ Feature: Assigning bait libraries to a plate
 
     # Setup the plates so that they flow appropriately.  This is a bit of a cheat in that it's only
     # a direct link and that we're faking out the pipeline work but it suffices.
-    Given a "SC stock plate" plate called "Testing bait libraries" exists
+    Given a "SC stock DNA" plate called "Testing bait libraries" exists
       And all wells on the plate "Testing bait libraries" have unique samples
       And the UUID for the plate "Testing bait libraries" is "00000000-1111-2222-3333-000000000001"
 
-    Given a "SC hybridisation plate" plate called "Target for bait libraries" exists
+    Given a "SC hyb" plate called "Target for bait libraries" exists
       And the "Transfer columns 1-12" transfer template has been used between "Testing bait libraries" and "Target for bait libraries"
       And the UUID for the plate "Target for bait libraries" is "00000000-1111-2222-3333-000000000002"
 

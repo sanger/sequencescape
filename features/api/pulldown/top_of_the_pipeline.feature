@@ -24,8 +24,8 @@ Feature: The top of the pulldown pipeline
 
   @authorised
   Scenario Outline: Dealing with the initial plate in the pipeline
-    Given the UUID for the plate purpose "<pipeline> stock plate" is "11111111-2222-3333-4444-000000000001"
-      And a "<pipeline> stock plate" plate called "Testing the API" exists
+    Given the UUID for the plate purpose "<pipeline> stock DNA" is "11111111-2222-3333-4444-000000000001"
+      And a "<pipeline> stock DNA" plate called "Testing the API" exists
       And the UUID for the plate "Testing the API" is "00000000-1111-2222-3333-000000000001"
       And all wells on the plate "Testing the API" have unique samples
 
@@ -315,6 +315,6 @@ Feature: The top of the pulldown pipeline
 
     Scenarios:
       | pipeline | plate purpose           |
-      | WGS      | WGS fragmentation plate |
-      | SC       | SC fragmentation plate  |
-      | ISC      | ISC fragmentation plate |
+      | WGS      | WGS Covaris |
+      | SC       | SC Covaris  |
+      | ISC      | ISC Covaris |
