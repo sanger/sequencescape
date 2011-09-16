@@ -63,6 +63,13 @@ class Order < ActiveRecord::Base
     #call submission with appropriate Order subclass
     Submission.build!({:template => self}.merge(options))
   end
+  def self.extended(base)
+    class_eval do
+      def self.build!(*args)
+        Order::build!(*args)
+      end
+    end
+  end
 
 
   def multiplexed?
@@ -75,8 +82,24 @@ class Order < ActiveRecord::Base
   private :is_asset_applicable_to_type?
 
 
-  delegate :create_request_of_types!, :left_building_state?, :to => :submission, :allow_nil => true
+  delegate :left_building_state?, :to => :submission, :allow_nil => true
 
+  def create_request_of_type!(request_type, attributes = {}, &block)
+    request_type.create!(attributes) do |request|
+      request.workflow                    = workflow
+      request.project                     = project
+      request.study                       = study
+      request.user                        = user
+      request.submission_id               = submission_id
+      request.request_metadata_attributes = request_type.extract_metadata_from_hash(request_options)
+      request.state                       = initial_request_state(request_type)
+
+      if request.asset.present?
+        # TODO: This should really be an exception but not sure of the side-effects at the moment
+        request.asset  = nil unless is_asset_applicable_to_type?(request_type, request.asset)
+      end
+    end
+  end
 
   def duplicate(&block)
     create_parameters = template_parameters

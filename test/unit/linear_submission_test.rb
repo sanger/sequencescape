@@ -18,7 +18,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
         @study = Factory :study
         @project = Factory :project
         @workflow = Factory :submission_workflow
-        @submission_template = Factory :submission_template, :name => @workflow.name
+        @submission_template = Factory :submission_template, :name => @workflow.name, :submission_class_name => "linear_submission"
         @user = Factory :user
 
         @request_type_1 = Factory :request_type, :name => "request type 1"
@@ -36,7 +36,6 @@ class LinearSubmissionTest < ActiveSupport::TestCase
           @mpx_request_type_ids = [@mpx_request_type.id, @sequencing_request_type.id]
 
           @mpx_submission = LinearSubmission.build!(
-            :template         => nil,
             :study            => @study,
             :project          => @project,
             :workflow         => @workflow,
@@ -73,7 +72,6 @@ class LinearSubmissionTest < ActiveSupport::TestCase
               @mpx_request_type_ids = [@mpx_request_type.id, @sequencing_request_type_2.id, @sequencing_request_type.id]
 
               @multiple_mpx_submission = LinearSubmission.build!(
-                :template         => nil,
                 :study            => @study,
                 :project          => @project,
                 :workflow         => @workflow,
@@ -95,7 +93,6 @@ class LinearSubmissionTest < ActiveSupport::TestCase
       context 'normal submission' do
         setup do
           @submission = LinearSubmission.build!(
-            :template         => nil,
             :study            => @study,
             :project          => @project,
             :workflow         => @workflow,
@@ -113,8 +110,8 @@ class LinearSubmissionTest < ActiveSupport::TestCase
         end
 
         should "save request_types as array of Fixnums" do
-          assert_kind_of Array, @submission.request_types
-          assert @submission.request_types.all? {|sample| sample.kind_of?(Fixnum) }
+          assert_kind_of Array, @submission.order.request_types
+          assert @submission.order.request_types.all? {|sample| sample.kind_of?(Fixnum) }
         end
 
         should "save a comment if there's one passed in" do
@@ -213,7 +210,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
           :request_types    => @request_type_ids,
           :request_options  => @request_options,
           :comments         => 'This is a comment'
-        )
+        ).create_submission
         @mpx_submission = LinearSubmission.prepare!(
           :template         => @submission_template,
           :study            => @study,
@@ -223,7 +220,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
           :assets           => @mpx_assets,
           :request_types    => @mpx_request_type_ids,
           :request_options  => @request_options
-        )
+        ).create_submission
       end
 
       context "when quotas are being enforced" do
@@ -314,7 +311,6 @@ class LinearSubmissionTest < ActiveSupport::TestCase
         Factory :project_quota, :project => @project, :limit => 0, :request_type => @se_request_type 
 
         @submission_with_multiplication_factor = LinearSubmission.build!(
-          :template         => nil,
           :study            => @study,
           :project          => @project,
           :workflow         => @workflow,
@@ -325,7 +321,6 @@ class LinearSubmissionTest < ActiveSupport::TestCase
           :comments         => ''
         )
         @mx_submission_with_multiplication_factor = LinearSubmission.build!(
-          :template         => nil,
           :study            => @study,
           :project          => @project,
           :workflow         => @workflow,

@@ -37,14 +37,15 @@ class AddOrder < ActiveRecord::Migration
 
     rename_columns(:orders, SUBMISSION_ONLY) { |c| [c, "#{c}_to_delete"] }
     rename_columns(:submissions, ORDER_ONLY) { |c| [c, "#{c}_to_delete"] }
+    rename_column(:submitted_assets, :submission_id, :order_id)
 
     end
   end
 
   def self.down
-    return
     ActiveRecord::Base.transaction do
       drop_table :orders
+      #rename_column(:submitted_assets, :order_id, :submission_id)
       rename_columns(:submissions, ORDER_ONLY) { |c| ["#{c}_to_delete", c] }
     end
   end
