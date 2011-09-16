@@ -2,7 +2,7 @@ require 'exception/quota_exception'
 
 class Submission::Workflow < ActiveRecord::Base
   has_many :request_types
-  has_many :submissions
+  has_many :orders
   has_many :items
 
   FIELDS_TO_WORKFLOWS = {    'Microarray genotyping' => [

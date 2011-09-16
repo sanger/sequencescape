@@ -31,6 +31,9 @@ module Submission::StateMachine
     def process_submission!
       # Does nothing by default!
     end
+    def unprocessed?
+      UnprocessedStates.include?(state)
+    end
   end
 
   def configure_state_machine
@@ -60,9 +63,11 @@ module Submission::StateMachine
   end
   private :configure_state_machine
 
+  UnprocessedStates = ["building", "pending", "processing"]
   def configure_named_scopes
-    named_scope :unprocessed, :conditions => {:state => ["building", "pending", "processing"]}
+    named_scope :unprocessed, :conditions => {:state => UnprocessedStates}
     named_scope :processed, :conditions => {:state => ["ready", "failed"]}
   end
+
   private :configure_named_scopes
 end

@@ -6,8 +6,15 @@ Factory.define :submission_without_order , :class => Submission do
 end
 
 class Factory
-  def self.submission(*args)
-    Factory(:order_with_submission, *args).submission
+  def self.submission(options)
+    state = options.delete(:state)
+    submission = Factory(:order_with_submission, options).submission
+    #trying to skip StateMachine 
+    if state
+      submission.state =state if state
+      submission.save!
+    end
+    submission
   end
 end
 
