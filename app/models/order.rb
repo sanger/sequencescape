@@ -58,6 +58,11 @@ class Order < ActiveRecord::Base
     constructor.create!(options.merge(:assets => options.fetch(:assets, [])))
   end
 
+  # only needed to note 
+  def self.build!(options)
+    #call submission with appropriate Order subclass
+    Submission.build!({:template => self}.merge(options))
+  end
 
 
   def multiplexed?
@@ -172,6 +177,7 @@ class Order < ActiveRecord::Base
   def complete_building
     #nothing just so mixin can use super
   end
+
 end
 
 

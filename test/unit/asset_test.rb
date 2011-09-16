@@ -77,7 +77,7 @@ class AssetTest < ActiveSupport::TestCase
       @asset_link = Factory :asset_link, :ancestor => @library_tube_2, :descendant => @multiplex_tube
       @asset_link = Factory :asset_link, :ancestor => @multiplex_tube, :descendant => @lane
 
-      @submission   = Factory :submission, :study => @study
+      @submission   = Factory::submission :study => @study
       @request_type = Factory :request_type
       @workflow     = Factory :submission_workflow
       
@@ -155,7 +155,7 @@ class AssetTest < ActiveSupport::TestCase
       @asset_link = Factory :asset_link, :ancestor => @library_tube_2, :descendant => @multiplex_tube
 
 
-      @submission   = Factory :submission, :study => @study
+      @submission   = Factory::submission :study => @study
       @request_type = Factory :request_type
       @workflow     = Factory :submission_workflow
 
