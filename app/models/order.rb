@@ -1,4 +1,10 @@
 class Order < ActiveRecord::Base
+  module InstanceMethods
+    def complete_building
+      #nothing just so mixin can use super
+    end
+  end
+  include InstanceMethods
   include Uuid::Uuidable
   include Submission::AssetGroupBehaviour
   include Submission::QuotaBehaviour
@@ -197,9 +203,6 @@ class Order < ActiveRecord::Base
   protected :compute_input_field_infos
 
 
-  def complete_building
-    #nothing just so mixin can use super
-  end
 
 end
 
