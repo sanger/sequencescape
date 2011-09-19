@@ -61,6 +61,7 @@ class Study < ActiveRecord::Base
 
   has_many :study_samples #, :group => 'study_id, sample_id', :conditions => 'sample_id IS NOT NULL'
   has_many :orders
+  has_many :submissions, :through => :orders
   has_many :samples, :through => :study_samples
   has_many :batches
   has_many :requests
@@ -313,9 +314,12 @@ class Study < ActiveRecord::Base
   end
 
   def submissions_for_workflow(workflow)
-    self.submissions.select {|s| s.workflow.id == workflow.id}
+    orders_for_workflow(workflow).map(&:submission).uniq
   end
 
+  def orders_for_workflow(workflow)
+    self.orders.select {|s| s.workflow.id == workflow.id}
+  end
   # Yields information on the state of all request types in a convenient fashion for displaying in a table.
   def request_progress(&block)
     yield(self.requests.progress_statistics)
