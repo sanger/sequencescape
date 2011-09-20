@@ -10,17 +10,9 @@ class Studies::Workflows::SubmissionsController < ApplicationController
     @assets          = []
     @request_types   = []
 
-    @submission_template_id = params[:submission_template_id] || if @submission
-      template = SubmissionTemplate.find_by_name(@submission.template_name)
+    @submission_template_id = params[:submission_template_id] || if @submission && @submission.order
+      template = SubmissionTemplate.find_by_name(@submission.order.template_name)
       template && template.id
-    end
-
-    unless @submission.assets.nil?
-      @assets = Asset.find(@submission.assets)
-    end
-
-    unless @submission.request_types.nil?
-      @request_types = RequestType.find(@submission.request_types)
     end
   end
 

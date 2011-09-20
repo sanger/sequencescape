@@ -48,6 +48,7 @@ class Submission < ActiveRecord::Base
     ActiveRecord::Base.transaction do
       order = Order.prepare!(options)
       order.create_submission.built!
+      order.save! #doesn't save submission id otherwise
       order.submission
     end
   end
