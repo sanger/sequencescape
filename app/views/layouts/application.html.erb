@@ -105,13 +105,13 @@
         </div>
         <div id="menu" class="yui-b">
           <div class="callout">
-            <%= image_tag "information.png", :size => "16x16" %><span style="vertical-align: middle;">If you need help using Sequencescape please email:</span> <span style="text-align: center"><%= help_email_link %></span>
-          </div>
-          <div class="callout">
-            <%= @title %>
+            <h3><%= @title %></h3>
             <div id="links">
               <%= render :partial => "/menu" %>
             </div>
+          </div>
+          <div class="callout">
+            <%= image_tag "information.png", :size => "16x16" %><span style="vertical-align: middle;">If you need help using Sequencescape please email:</span> <span style="text-align: center"><%= help_email_link %></span>
           </div>
         </div>
       </div>
