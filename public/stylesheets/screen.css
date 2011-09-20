@@ -114,6 +114,13 @@ div.callout p {
   color: #880000;
 }
 
+#header {
+  background: #3e87b3;
+  background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(100%, #004578), color-stop(0%, #0085bc));
+  background-image: -moz-linear-gradient(top, #0085bc 0%, #004578 100%);
+  background-image: linear-gradient(top, #0085bc 0%, #004578 100%);
+  color: #efefef;
+}
 #header ul {
   padding: 0px;
   margin: 0px;
@@ -578,6 +585,8 @@ div.detail {
 
 #quick_links {
   background: #31353d;
+  background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(0%, #31353d), color-stop(100%, #212429));
+  background-image: -moz-linear-gradient(top, #31353d 0%, #212429 100%);
   color: #efefef;
   font-size: 12px;
   border-top: 3px solid #055694;
@@ -713,8 +722,8 @@ div.link_title {
   -moz-border-radius:    5px;
   -webkit-border-radius: 5px;
   border-radius:         5px;
-  box-shadow: 1px 1px 1px #D6E1EE;
-  -moz-box-shadow: 1px 1px 1px #CAD9E9;
+  box-shadow: 0 1px 5px #D6E1EE;
+  -moz-box-shadow: 0 1px 5px #D6E1EE;
 }
 
 #menu {

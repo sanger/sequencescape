@@ -1,13 +1,27 @@
+a {
+  color:#0046BF;
+  text-decoration:none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:visited {
+  color:#00158C;
+}
 div#tabs a, div#tabs a:link, div#tabs a:visited {
-text-transform: uppercase;
+
 text-decoration: none;
 color: #31353d;
 padding: 1px 15px 3px 15px;
 font-weight: bold;
 }
 div#tabs a:hover {
-background: #3e87b3;
-color: #fff;
+  -moz-border-radius: 0 0 5px 5px;
+  border-radius: 0 0 5px 5px;
+  background: #066FA3;
+  color: #fff;
 }
 div#tabs ul {
 padding-top: 1px;
@@ -70,10 +84,7 @@ padding: 0px;
 margin: 0px;
 list-style: none;
 }
-#header {
-background: #3e87b3;
-color: #efefef;
-}
+
 #help {
 background: #A0D6FC;
 padding: 5px 5px 5px 10px;
@@ -161,7 +172,13 @@ color: white;
 }
 #message_notice {
 background: green;
-border-color: 1px solid ##d81f2a;
+border-color: 1px solid #d81f2a;
+-webkit-border-radius: 3px;
+-moz-border-radius: 3px;
+border-radius: 3px;
+box-shadow: 1px 1px 2px #C3CEDA;
+-moz-box-shadow: 1px 1px 2px 0 #C3CEDA;
+margin: 0 0 3px 0;
 color: white;
 }
 #message_warning {
@@ -200,6 +217,8 @@ padding: 5px 0px 0px 0px;
 }
 #tab_bar {
 background: #aad4f4;
+-moz-box-shadow: 1px 1px 2px 0 #C3CEDA;
+box-shadow: 1px 1px 2px 0 #C3CEDA;
 border-bottom: 1px solid #bbb;
 }
 #tab_content {
@@ -332,9 +351,10 @@ font-size: 11px;
 position: absolute;
 }
 .roweven {
-background-color: #ddd;
+background: #fff;
 }
 .rowodd {
+  background:#F0F0F6;
 }
 .section {
 margin: 5px 30px 15px 30px;
@@ -363,13 +383,14 @@ body {
 margin: 0px;
 padding: 0px;
 font-family: 'Lucida Grande',helvetica,arial,sans-serif;
+color: #171717;
 background: #e3eefc;
 }
 h1 {
 margin: 0px 0px 15px 0px;
 padding: 0px;
 font-size: 1.3em;
-text-transform: uppercase;
+
 font-weight: bold;
 }
 h2 {
