@@ -36,24 +36,27 @@
     <p>Your submission is in an unknown state (contact support).</p>
   <% end %>
 
-  <% unless @assets.empty? %>
-    <h3>Assets</h3>
-    <ul>
-      <% @assets.each do |asset| -%>
-        <li><%= link_to(h(asset.display_name), asset_path(asset)) %></li>
-      <% end -%>
-    </ul>
-  <% end %>
+  <% @submission.orders.each do |order| %>
+    <% unless order.assets.empty? %>
+      <h3>Assets</h3>
+      <ul>
+        <% order.assets.each do |asset| -%>
+          <li><%= link_to(h(asset.display_name), asset_path(asset)) %></li>
+        <% end -%>
+      </ul>
+    <% end %>
 
-  <% unless @request_types.empty? %>
-    <h3>Request types</h3>
-    <ul id="request_types_for_submission">
-      <% @request_types.each do |request_type| %>
-        <li><%= request_type.name %></li>
-      <% end %>
-    </ul>
-  <% end %>
+    <% unless order.request_types.empty? %>
+      <h3>Request types</h3>
+      <ul id="request_types_for_submission">
+        <% RequestType.find(order.request_types).each do |request_type| %>
+          <li><%= request_type.name %></li>
+        <% end %>
+      </ul>
+    <% end %>
+  <%end%>
 </div>
+
 
 
 
