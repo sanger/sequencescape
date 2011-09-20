@@ -164,12 +164,15 @@ Factory.define :request_metadata, :class => Request::Metadata do |m|
 end
 
 Factory.define :request_with_submission, :class => Request do |request|
-  request.after_build do |request|
+  # We use after_create so this is called after the after_build of derived class
+  # That leave a chance to children factory to build asset beforehand
+  request.after_create do |request|
     request.submission = Submission.build!(:workflow => request.workflow,
                                           :study => request.study,
                                           :project => request.project,
                                           :request_types => [request.request_type.id.to_s],
-                                          :user => request.user
+                                          :user => request.user,
+                                          :assets => [request.asset]
                                           ) unless request.submission
   end
 end
