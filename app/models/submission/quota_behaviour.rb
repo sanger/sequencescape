@@ -1,5 +1,9 @@
 module Submission::QuotaBehaviour
+
+  #after_create :book_quota_available_for_request_types!
+
   def complete_building
+    check_project_details!
     quota_check! unless assets.blank?
     super
   end
@@ -13,7 +17,9 @@ module Submission::QuotaBehaviour
   def quota_check!
     return unless project.enforce_quotas?
     check_project_details!
-    check_quota_available_for_request_types!
+    #check_quota_available_for_request_types!
+    # not needed anymore as quota are book at creation time
+    # and quota are checked when creating request
   end
   private :quota_check!
 
@@ -25,17 +31,31 @@ module Submission::QuotaBehaviour
   end
   private :check_project_details!
 
-  def check_quota_available_for_request_types!
-    request_type_records = RequestType.find(self.request_types)
-    multiplexed          = !request_type_records.detect(&:for_multiplexing?).nil?
-    request_type_records.each do |request_type|
-      # If the user requires multiple runs of this request type then we need to count for that in the quota.
-      # If we're not multiplexing in general, or for this individual request type, then we have to have enough
-      # quote for all of the assets.  Otherwise they can be considered to be a single asset (i.e. a pool of them)
-      quota_required  = multiplier_for(request_type)
-      quota_required *= assets.size if not multiplexed or request_type.for_multiplexing?
-      raise QuotaException, "Insufficient quota for #{request_type.name}" unless project.has_quota?(request_type, quota_required)
+  def book_quota_available_for_request_types!
+    Order.transaction do
+      request_type_records = RequestType.find(self.request_types)
+      multiplexed          = !request_type_records.detect(&:for_multiplexing?).nil?
+      request_type_records.each do |request_type|
+        # If the user requires multiple runs of this request type then we need to count for that in the quota.
+        # If we're not multiplexing in general, or for this individual request type, then we have to have enough
+        # quote for all of the assets.  Otherwise they can be considered to be a single asset (i.e. a pool of them)
+        quota_required  = multiplier_for(request_type)
+        quota_required *= assets.size if not multiplexed or request_type.for_multiplexing?
+        book_quota(request_type, quota_required)
+      end
     end
   end
-  private :check_quota_available_for_request_types!
+  private :book_quota_available_for_request_types!
+
+  def use_quota!(request, unbook=true)
+    return unless project
+    project.quota_for!(request.request_type_id).add_request!(request,unbook)
+  end
+
+  delegate :book_quota, :unbook_quota, :quota_for!, :to => :project
+  def self.included(base)
+    base.class_eval do
+      after_create :book_quota_available_for_request_types!
+    end
+  end
 end

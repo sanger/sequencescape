@@ -27,12 +27,14 @@ class Request < ActiveRecord::Base
 
   belongs_to :pipeline
   belongs_to :item
-  belongs_to :project
 
   has_many :failures, :as => :failable
   has_many :batch_requests
   has_many :batches, :through => :batch_requests
   has_many :billing_events
+
+  has_many :request_quotas
+  has_many :quotas, :through => :request_quotas
 
   belongs_to :study
   belongs_to :request_type
@@ -49,7 +51,7 @@ class Request < ActiveRecord::Base
   # new version of combinable named_scope
   named_scope :for_state, lambda { |state| { :conditions => { :state => state } } }
 
-  named_scope :completed, :conditions => {:state => ["passed", "failed"]}
+  named_scope :completed, :conditions => {:state => COMPLETED_STATE =["passed", "failed"]}
   named_scope :passed, :conditions => {:state => "passed"}
   named_scope :failed, :conditions => {:state => "failed"}
   named_scope :pipeline_pending, :conditions => {:state => "pending"} #  we don't want the blocked one here
@@ -59,10 +61,10 @@ class Request < ActiveRecord::Base
   named_scope :cancelled, :conditions => {:state => "cancelled"}
   named_scope :aborted, :conditions => {:state => "aborted"}
 
-  named_scope :open, :conditions => {:state => ["pending", "blocked", "started"]}
+  named_scope :open, :conditions => {:state => OPENED_STATE=["pending", "blocked", "started"]}
   named_scope :closed, :conditions => {:state => ["passed", "failed", "cancelled", "aborted"]}
-  named_scope :quota_counted, :conditions => {:state => ["passed", "pending", "blocked", "started"]}
-  named_scope :quota_exempted, :conditions => {:state => ["failed", "cancelled", "aborted"]}
+  named_scope :quota_counted, :conditions => {:state => QUOTA_COUNTED=["passed", "pending", "blocked", "started"]}
+  named_scope :quota_exempted, :conditions => {:state => QUOTA_EXEMPTED=["failed", "cancelled", "aborted"]}
   named_scope :hold, :conditions => {:state => "hold"}
 
   # TODO: Really need to be consistent in who our named scopes behave
@@ -424,4 +426,8 @@ class Request < ActiveRecord::Base
   # NOTE: With properties Request#name would have been silently sent through to the property.  With metadata
   # we now need to be explicit in how we want it delegated.
   delegate :name, :to => :request_metadata
+  def has_quota?(number)
+    #no if one project doesn't have the quota
+    not quotas.map(&:project).any? {|p| p.has_quota?(request_type_id, number) == false}
+  end
 end
