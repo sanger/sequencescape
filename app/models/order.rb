@@ -22,6 +22,7 @@ class Order < ActiveRecord::Base
 
   belongs_to :project
   validates_presence_of :project
+  has_many :quotas, :through => :project
 
   belongs_to :user
   validates_presence_of :user
@@ -93,13 +94,13 @@ class Order < ActiveRecord::Base
   def create_request_of_type!(request_type, attributes = {}, &block)
     request_type.create!(attributes) do |request|
       request.workflow                    = workflow
-      request.project                     = project
       request.study                       = study
       request.user                        = user
       request.submission_id               = submission_id
       request.request_metadata_attributes = request_type.extract_metadata_from_hash(request_options)
       request.state                       = initial_request_state(request_type)
 
+      use_quota!(request, true)
       if request.asset.present?
         # TODO: This should really be an exception but not sure of the side-effects at the moment
         request.asset  = nil unless is_asset_applicable_to_type?(request_type, request.asset)
