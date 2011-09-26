@@ -40,6 +40,8 @@ en:
       <<: *REQUEST
     sequencing_request:
       <<: *REQUEST
+    mi_seq_sequencing_request:
+      <<: *REQUEST
     hi_seq_sequencing_request:
       <<: *REQUEST
     transfer_request:
