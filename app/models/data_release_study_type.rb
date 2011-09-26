@@ -3,17 +3,20 @@ class DataReleaseStudyType < ActiveRecord::Base
   
   validates_presence_of  :name
   validates_uniqueness_of :name, :message => "of data release study type already present in database"
+
+  UNSPECIFIED = 'not specified'
+  TYPES = ['transcriptomics','other sequencing-based-assay','genotyping or cytogenetics' ]
   
   def for_select_dropdown
     [self.name, self.id]
   end  
  
   def is_not_specified?
-      self.name == "not specified"
+    self.name == UNSPECIFIED
   end
 
   def include_type?
-    return ['transcriptomics','other sequencing-based-assay','genotyping or cytogenetics' ].include?(self.name)
+    TYPES.include?(self.name)
   end
   
   module Associations
