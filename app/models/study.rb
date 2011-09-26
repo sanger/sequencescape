@@ -518,7 +518,7 @@ class Study < ActiveRecord::Base
   # return true if yes, false if not , and nil if we don't know
   def affiliated_with?(object)
     case
-    when object.is_a?(Asset) && object.study_ids.blank?
+    when object.is_a?(Asset) && !object.is_a?(SampleTube)
       #special case, no study assing we propagate to aliquot
       nil
     when object.respond_to?(:study_id)
