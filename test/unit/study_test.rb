@@ -156,8 +156,11 @@ class StudyTest < ActiveSupport::TestCase
       setup do
         @study, @request_type = Factory(:study), Factory(:request_type)
         (1..2).each { |_| @study.requests << Factory(:passed_request, :request_type => @request_type) }
-        (1..2).each { |_| @study.projects << Factory(:project, :enforce_quotas => true) }
-        @study.projects.each { |project| Factory(:project_quota, :project => project, :request_type => @request_type, :limit => 10) }
+        (1..2).each { |_| Factory(:order, :study => @study ) }
+        @study.projects.each do |project|
+          project.enforce_quotas=true
+          Factory(:project_quota, :project => project, :request_type => @request_type, :limit => 10)
+        end
         @study.save!
 
         # All that has happened to this point is just prelude

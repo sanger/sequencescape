@@ -49,7 +49,7 @@ module Submission::QuotaBehaviour
 
   def use_quota!(request, unbook=true)
     return unless project
-    project.quota_for!(request.request_type_id).add_request!(request,unbook)
+    project.use_quota!(request, unbook)
   end
 
   delegate :book_quota, :unbook_quota, :quota_for!, :to => :project

@@ -9,6 +9,9 @@ class Quota < ActiveRecord::Base
   has_many :request_quotas
   has_many :requests, :through => :request_quotas
 
+  validates_presence_of :request_type
+  validates_uniqueness_of :request_type_id, :scope => :project_id
+
   acts_as_audited :on => [:destroy, :update]
 
   named_scope :request_type, lambda {|*args| {:conditions => { :request_type_id => args[0]} } }
@@ -18,7 +21,7 @@ class Quota < ActiveRecord::Base
   end
 
   def remaining
-    used - limit
+    limit - used
   end
 
   def update_limit_to__used!
@@ -31,6 +34,7 @@ class Quota < ActiveRecord::Base
   # actually creating the request
   # The booking is released when the request is effectively associated to the quota
   def book_request!(number)
+    return if number == 0
     self.preordered_count+=number
     save!
   end
@@ -40,12 +44,16 @@ class Quota < ActiveRecord::Base
     save!
   end
 
-  def add_request!(request, unbook=false)
+  def add_request!(request, unbook=false, check_quota=true)
     #TODO[mb14] validate enough quota remaining here
     #but we don't want to break old behavior yet.
-    requests << request
-    unbook_request!(1) if unbook
-    save!
+    return if self.request_ids.include?(request.id) or !request.quota_counted?
+    Quota.transaction do 
+      unbook_request!(1) if unbook
+      raise QuotaException, "Insuficcient quota of request type #{request_type}"  if check_quota && remaining <= 0
+      requests << request
+      save!
+    end
   end
 
 end

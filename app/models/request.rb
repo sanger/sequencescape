@@ -44,6 +44,25 @@ class Request < ActiveRecord::Base
 
   belongs_to :submission
 
+  #temporary hack
+  # project is read only so we can set it everywhere
+  # but it will be only used in specific and controlled place
+  belongs_to :initial_project, :class_name => "Project"
+
+  def project_id=(project_id)
+    raise RuntimeError "Initial project already set" if initial_project_id
+    self.initial_project_id = project_id
+    #use quota if neeed
+    # if assets are empty the order hasn't booked anything, so there is no need to unbook quota
+    # Should happen in real life but might in test
+    self.initial_project.orders.each { |o| o.use_quota!(self, o.assets.present?) }
+  end
+
+  def project=(project)
+    return unless project
+    self.project_id=project.id
+  end
+
   #  validates_presence_of :study, :request_type#TODO, :submission
 
   named_scope :between, lambda { |source,target| { :conditions => { :asset_id => source.id, :target_asset_id => target.id } } }
