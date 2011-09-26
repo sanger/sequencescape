@@ -47,6 +47,8 @@ class Quota < ActiveRecord::Base
   def add_request!(request, unbook=false, check_quota=true)
     #TODO[mb14] validate enough quota remaining here
     #but we don't want to break old behavior yet.
+    #even though the quota knows it project and could ask if enforce quota , we
+    #let the caller decide if check or not
     return if self.request_ids.include?(request.id) or !request.quota_counted?
     Quota.transaction do 
       unbook_request!(1) if unbook
