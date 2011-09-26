@@ -134,6 +134,10 @@ Factory.define :project do |p|
   p.after_build { |project| project.project_metadata = Factory(:project_metadata, :project => project) }
 end
 
+Factory.define :project_with_order , :parent => :project do |p|
+  p.after_build { |project| project.orders = [Factory :order, :project => project] }
+end
+
 Factory.define :study_sample do |ps|
   ps.study       {|study| study.association(:study)}
   ps.sample      {|sample| sample.association(:sample)}
