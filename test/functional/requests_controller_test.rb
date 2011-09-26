@@ -59,8 +59,10 @@ class RequestsControllerTest < ActionController::TestCase
       end
       
       should "when no quotas - copy failed" do
-         @request_initial_2= Factory :request, :user => @user, :request_type => Factory(:request_type), :study => Factory(:study, :name => "ReqCon XXX"), 
-                                  :workflow => Factory(:submission_workflow), :project => Factory(:project, :name => 'Prj1', :enforce_quotas => true)
+        @project =  Factory(:project_with_order, :name => 'Prj1')
+        @request_initial_2= Factory :request, :user => @user, :request_type => Factory(:request_type), :study => Factory(:study, :name => "ReqCon XXX"), 
+          :workflow => Factory(:submission_workflow), :project => @project
+        @project.update_attributes!(:enforce_quotas=>true)
 
          get :copy, :id => @request_initial_2.id
 
@@ -106,8 +108,9 @@ class RequestsControllerTest < ActionController::TestCase
         @controller.stubs(:logged_in?).returns(@user)
         @controller.stubs(:current_user).returns(@user)
 
+        @project =  Factory(:project_with_order, :name => 'Prj1')
          @reqwest= Factory :request, :user => @user, :request_type => Factory(:request_type), :study => Factory(:study, :name => "ReqCon XXX"), 
-                                  :workflow => Factory(:submission_workflow), :project => Factory(:project, :name => 'Prj1', :enforce_quotas => true)
+                                  :workflow => Factory(:submission_workflow), :project => @project
       end
 
       context "update invalid and failed" do

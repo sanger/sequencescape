@@ -57,9 +57,6 @@ class Admin::StudiesController < ApplicationController
   def managed_update
     @study = Study.find(params[:id])
     redirect_if_not_owner_or_admin(@study)
-    @request_types = RequestType.all(:order => "name ASC")
-    # Cleans submitted quotas. Does not accept 0 quotas
-    new_request_types = []
 
     Document.create!(:documentable => @study, :uploaded_data => params[:study][:uploaded_data]) unless params[:study][:uploaded_data].blank?
     params[:study].delete(:uploaded_data)
@@ -83,12 +80,6 @@ class Admin::StudiesController < ApplicationController
       @studies = @studies.sort_by { |study| study.user_id }
     end
     render :partial => "studies"
-  end
-
-  def reset_quota
-    Quota.delete_all("request_type_id = #{params[:request_type]} AND study_id = #{params[:id]}")
-    flash[:notice] = "Study's quota was updated"
-    redirect_to :action => "update", :id => params[:id]
   end
 
   private
