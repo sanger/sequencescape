@@ -10,7 +10,7 @@ class RequestFactory
         request_copy.created_at      = Time.now
 
         request.quotas.each do |q|
-          q.add_request!(request_copy, false)
+          q.add_request!(request_copy, false, q.project.enforce_quotas?)
         end
       end
     end
