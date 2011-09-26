@@ -3,6 +3,9 @@ class Submission < ActiveRecord::Base
   extend  Submission::StateMachine
   include Submission::DelayedJobBehaviour
   #include ModelExtensions::Submission
+  #TODO[mb14] check if really needed. We use them in project_test
+  include Request::Statistics::DeprecatedMethods
+
 
   include DelayedJobEx
 
