@@ -64,7 +64,7 @@ module Request::Statemachine
     target_asset.aliquots << asset.aliquots.map do |aliquot|
       aliquot.clone.tap do |clone|
         clone.study   = study   || aliquot.study
-        clone.project = aliquot.project
+        clone.project = initial_project || aliquot.project
       end
     end
   end
@@ -74,9 +74,7 @@ module Request::Statemachine
   end
 
   def release_unneeded_quotas!
-    if Request::QUOTA_COUNTED.include?(state)
-      self.request_quotas.destroy
-    end
+    self.request_quotas.destroy if quota_counted?
   end
 
   def on_passed
@@ -93,6 +91,10 @@ module Request::Statemachine
 
   def on_hold
 
+  end
+
+  def quota_counted?
+    return Request::QUOTA_COUNTED.include?(state)
   end
 
 end

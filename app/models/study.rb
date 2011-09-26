@@ -80,8 +80,11 @@ class Study < ActiveRecord::Base
   # this reduces the requests for this study down to unique projects, and then
   # says use those unique projects.  That knocks times down to 0.15s for the same
   # studies!
-  has_many :project_requests, :class_name => 'Request', :group => 'study_id, project_id', :conditions => 'project_id IS NOT NULL'
-  has_many :projects, :class_name => "Project", :through => :project_requests, :source => :project, :uniq => true
+  #has_many :project_requests, :class_name => 'Request', :group => 'study_id, project_id', :conditions => 'project_id IS NOT NULL'
+  #has_many :projects, :class_name => "Project", :through => :project_requests, :source => :initial_project, :uniq => true
+
+  #New version
+  has_many :projects,:through => :orders, :uniq => true
 
   has_many :comments, :as => :commentable
   has_many :events, :as => :eventful

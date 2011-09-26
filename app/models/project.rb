@@ -86,12 +86,16 @@ class Project < ActiveRecord::Base
   end
 
   def book_quota(request_type,number=1)
-    raise "Project '#{name}' has insuficcient quota of request type #{request_type}"  unless has_quota?(request_type, number)
+    raise QuotaException, "Project '#{name}' has insuficcient quota of request type #{request_type}"  unless has_quota?(request_type, number)
     quota_for!(request_type).book_request!(number) 
   end
 
   def unbook_quota(request_type, number=1)
     quota_for!(request_type).unbook_request
+  end
+
+  def use_quota!(request, unbook=true)
+      quota_for!(request.request_type_id).add_request!(request, unbook, enforce_quotas?)
   end
 
   # Frees remaining quotas on the current project
@@ -189,6 +193,12 @@ class Project < ActiveRecord::Base
         end
       end
     end
+  end
+
+  def set_available_quotas!(request_type, number)
+    quota = quota_for!(request_type)
+    quota.limit += number+quota.used
+    quota.save!
   end
   
   def owners
