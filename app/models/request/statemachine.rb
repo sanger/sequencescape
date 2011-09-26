@@ -74,7 +74,7 @@ module Request::Statemachine
   end
 
   def release_unneeded_quotas!
-    self.request_quotas.destroy if quota_counted?
+    self.request_quotas(true).destroy_all if quota_counted?
   end
 
   def on_passed
