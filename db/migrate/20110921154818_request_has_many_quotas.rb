@@ -35,12 +35,12 @@ class RequestHasManyQuotas < ActiveRecord::Migration
       end
     end
     #remove project_id
-    rename_column :requests, :project_id, :project_id_to_delete
+    rename_column :requests, :project_id, :initial_project_id
   end
 
   def self.down
     remove_column :quotas, :preordered_count, :integer
-    rename_column :requests, :project_id_to_delete, :project_id
+    rename_column :requests, :initial_project_id, :project_id
     drop_table :request_quotas
   end
 end

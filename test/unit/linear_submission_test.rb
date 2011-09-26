@@ -200,8 +200,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
 
         @request_options = {"read_length"=>"108", "fragment_size_required_from"=>"150", "fragment_size_required_to"=>"200"}
 
-        @submission = LinearSubmission.prepare!(
-          :template         => @submission_template,
+        @submission_params = {
           :study            => @study,
           :project          => @project,
           :workflow         => @workflow,
@@ -210,9 +209,8 @@ class LinearSubmissionTest < ActiveSupport::TestCase
           :request_types    => @request_type_ids,
           :request_options  => @request_options,
           :comments         => 'This is a comment'
-        ).create_submission
-        @mpx_submission = LinearSubmission.prepare!(
-          :template         => @submission_template,
+        }
+        @mpx_submission_params = {
           :study            => @study,
           :project          => @project,
           :workflow         => @workflow,
@@ -220,7 +218,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
           :assets           => @mpx_assets,
           :request_types    => @mpx_request_type_ids,
           :request_options  => @request_options
-        ).create_submission
+        }
       end
 
       context "when quotas are being enforced" do
@@ -231,30 +229,30 @@ class LinearSubmissionTest < ActiveSupport::TestCase
         context "when quotas have been set up" do
           setup do
             @request_types.each do |request_type|
-              @project.quotas.create!(:request_type => request_type, :limit => @assets.length)
+              @project.set_available_quotas!(request_type, @assets.length)
             end
-            @project.quotas.create!(:request_type => @mpx_request_type, :limit => @mpx_assets.length)
-            @project.quotas.create!(:request_type => @request_type_3, :limit => 1)
+            @project.set_available_quotas!(@mpx_request_type, @mpx_assets.length)
+            @project.set_available_quotas!(@request_type_3, 1)
           end
 
           should 'allow the normal submission to build' do
-            @submission.built!
+            LinearSubmission.build!(@submission_params)
           end
 
           should 'allow the multiplexed submission to build' do
-            @mpx_submission.built!
+            LinearSubmission.build!(@mpx_submission_params)
           end
         end
 
         context "when quotas have been set to 0" do
           setup do
             @request_types.each do |request_type|
-              @project.quotas.create(:request_type => request_type, :limit => 0)
+              @project.quota_for!(request_type).update_attributes!(:limit =>0, :preordered_count => 0)
             end
           end
 
           should 'not allow the normal submission to build' do
-            assert_raises(QuotaException) { @submission.built! }
+            assert_raises(QuotaException) { LinearSubmission.build!(@submission_params) }
           end
 
           context 'when quotas are not being enforced' do
@@ -263,14 +261,14 @@ class LinearSubmissionTest < ActiveSupport::TestCase
             end
 
             should 'allow the normal submission to build' do
-              @submission.built!
+              LinearSubmission.build!(@submission_params)
             end
           end
         end
 
         context "when quotas have not been set up" do
           should 'not allow the normal submission to build' do
-            assert_raises(QuotaException) { @submission.built! }
+            assert_raises(QuotaException) { LinearSubmission.build!(@submission_params) }
           end
 
           context 'when quotas are not being enforced' do
@@ -279,7 +277,25 @@ class LinearSubmissionTest < ActiveSupport::TestCase
             end
 
             should 'allow the normal submission to build' do
-              @submission.built!
+              LinearSubmission.build!(@submission_params)
+            end
+
+            context 'then' do
+              setup do
+                @submission = LinearSubmission.build!(@submission_params)
+              end
+              should 'allow the submission to be processed' do
+                @submission.process!
+              end
+              context 'when the quota have been enforced' do
+
+                setup do
+                @project.enforce_quotas = true
+                end
+              should 'not allow the submission to be processed' do
+                assert_raises(QuotaException) { @submission.process! }
+              end
+              end
             end
           end
         end

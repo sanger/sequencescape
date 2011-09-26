@@ -164,11 +164,13 @@ Factory.define :request_metadata, :class => Request::Metadata do |m|
 end
 
 Factory.define :request_with_submission, :class => Request do |request|
+  request.request_type      {|rt|         rt.association(:request_type)}
   # We use after_create so this is called after the after_build of derived class
   # That leave a chance to children factory to build asset beforehand
   request.after_create do |request|
     request.submission = Factory::submission(:workflow => request.workflow,
                                           :study => request.study,
+                                          :project => request.initial_project,
                                           :request_types => [request.request_type.id.to_s],
                                           :user => request.user,
                                           :assets => [request.asset]
@@ -179,6 +181,7 @@ end
 #Factory.define :request_without_assets, :class => Request do |request|
 Factory.define :request_without_assets, :parent => :request_with_submission do |request|
   request.item              {|item|       item.association(:item)}
+  request.project           {|pr|         pr.association(:project)}
   request.request_type      {|rt|         rt.association(:request_type)}
   request.state             'pending'     
   request.study             {|study|      study.association(:study)}
@@ -211,6 +214,7 @@ Factory.define :request_without_item, :class => "Request" do |r|
   r.workflow        {|workflow| workflow.association(:submission_workflow)}
   r.state           'pending'
   r.after_build { |request| request.submission = Factory::submission(:study => request.study,
+                                                                           :project => request.initial_project,
                                                                            :user => request.user,
                                                                            :request_types => [request.request_type.id.to_s],
                                                                            :workflow => request.workflow
@@ -261,6 +265,7 @@ Factory.define :request_type do |rt|
   rt.request_class  Request
   rt.order          1
   rt.workflow    {|workflow| workflow.association(:submission_workflow)}
+  rt.initial_state   "pending"
 end
 
 Factory.define :library_creation_request_type, :class => RequestType do |rt|
