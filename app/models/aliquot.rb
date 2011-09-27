@@ -119,8 +119,13 @@ class Aliquot < ActiveRecord::Base
   validates_presence_of :sample
 
   # It may have a tag but not necessarily.  If it does, however, that tag needs to be unique within the receptacle.
+  # To ensure that there can only be one untagged aliquot present in a receptacle we use a special value for tag_id,
+  # rather than NULL which does not work in MySQL.  It also works because the unassigned tag ID never gets matched
+  # for a Tag and so the result is nil!
+  UNASSIGNED_TAG = -1
   belongs_to :tag
-  validates_uniqueness_of :tag_id, :scope => :receptacle_id, :allow_nil => true, :allow_blank => true
+  validates_uniqueness_of :tag_id, :scope => :receptacle_id
+  before_validation { |record| record.tag_id ||= UNASSIGNED_TAG }
 
   # It may have a bait library but not necessarily.
   belongs_to :bait_library
