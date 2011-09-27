@@ -24,7 +24,7 @@ module Submission::QuotaBehaviour
   private :quota_check!
 
   def check_project_details!
-    raise QuotaException, "Quotas are being enforced but have not been setup"       if project.quotas.all.empty?
+    raise QuotaException, "Quotas are being enforced but have not been setup"       if project.quotas.all.empty? || project.quotas.all? { |q| q.limit == 0 }
     raise QuotaException, "Project #{project.name} is not approved"                 unless project.approved?
     raise QuotaException, "Project #{project.name} is not active"                   unless project.active?
     raise QuotaException, "Project #{project.name} does not have a budget division" unless project.actionable?
@@ -35,12 +35,17 @@ module Submission::QuotaBehaviour
     Order.transaction do
       request_type_records = RequestType.find(self.request_types)
       multiplexed          = !request_type_records.detect(&:for_multiplexing?).nil?
+      project_checked= false
       request_type_records.each do |request_type|
         # If the user requires multiple runs of this request type then we need to count for that in the quota.
         # If we're not multiplexing in general, or for this individual request type, then we have to have enough
         # quote for all of the assets.  Otherwise they can be considered to be a single asset (i.e. a pool of them)
         quota_required  = multiplier_for(request_type)
         quota_required *= assets.size if not multiplexed or request_type.for_multiplexing?
+        if quota_required>0 && !project_checked
+          check_project_details!
+          project_checked = true
+        end
         book_quota(request_type, quota_required)
       end
     end
