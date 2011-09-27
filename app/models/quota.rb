@@ -33,11 +33,17 @@ class Quota < ActiveRecord::Base
   # this used by order to increase the amount of used quota before
   # actually creating the request
   # The booking is released when the request is effectively associated to the quota
-  def book_request!(number)
+  def book_request!(number, check_quota)
     return if number == 0
+    check_enough_quota_for!(number)  if check_quota
     self.preordered_count+=number
     save!
   end
+
+  def check_enough_quota_for!(number)
+      raise QuotaException, "Insufficient quota for #{request_type.name}"  if remaining < number
+  end
+  private :check_enough_quota_for!
 
   def unbook_request!(number)
     self.preordered_count-=[number, preordered_count].min
@@ -52,7 +58,7 @@ class Quota < ActiveRecord::Base
     return if self.request_ids.include?(request.id) or !request.quota_counted?
     Quota.transaction do 
       unbook_request!(1) if unbook
-      raise QuotaException, "Insuficcient quota of request type #{request_type}"  if check_quota && remaining <= 0
+      check_enough_quota_for!(number)  if check_quota
       requests << request
       save!
     end
