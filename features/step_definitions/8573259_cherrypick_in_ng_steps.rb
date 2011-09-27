@@ -18,7 +18,7 @@ Given /^I have a "([^"]*)" submission with plate "([^"]*)"$/ do |submission_temp
     :user     => User.last,
     :assets   => wells,
     :request_options => {"multiplier"=>{"1"=>"1", "3"=>"1"}, "read_length"=>"100", "fragment_size_required_to"=>"300", "fragment_size_required_from"=>"250", "library_type"=>"Illumina cDNA protocol"}
-  ).built!
+  ).create_submission.built!
   And %Q{1 pending delayed jobs are processed}
 end
 
@@ -34,7 +34,7 @@ Given /^I have a cherrypicking submission for plate "([^"]*)"$/ do |plate_barcod
     :workflow => Submission::Workflow.find_by_key('microarray_genotyping'),
     :user => User.last,
     :assets => plate.wells
-  ).built!
+  ).create_submission.built!
   And %Q{1 pending delayed jobs are processed}
 
 end

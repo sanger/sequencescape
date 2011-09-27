@@ -147,7 +147,7 @@ Given /^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)"
     :workflow => Submission::Workflow.find_by_key('microarray_genotyping'),
     :user     => User.last,
     :assets   => wells
-    ).built!
+    ).create_submission.built!
   And %Q{1 pending delayed jobs are processed}
 end
 
@@ -164,7 +164,7 @@ Given /^I have a Cherrypicking submission for asset group "([^"]*)"$/ do |asset_
     :workflow => Submission::Workflow.find_by_key('microarray_genotyping'),
     :user => User.last,
     :assets => asset_group.assets
-    ).built!
+    ).create_submission.built!
   And %Q{1 pending delayed jobs are processed}
 end
 
