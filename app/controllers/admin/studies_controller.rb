@@ -66,7 +66,6 @@ class Admin::StudiesController < ApplicationController
 
     ActiveRecord::Base.transaction do
       @study.update_attributes!(params[:study])
-      @study.study_metadata.update_attributes!(:reference_genome_id => params[:study][:reference_genome_id])
       flash[:notice] = "Your study has been updated"
       redirect_to :controller => "admin/studies", :action => "update", :id => @study.id
     end
