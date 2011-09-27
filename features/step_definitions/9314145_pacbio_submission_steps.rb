@@ -23,7 +23,7 @@ Given /^I have a PacBio submission$/ do
     :user => User.last,
     :assets => SampleTube.all,
     :request_options => {"multiplier"=>{"1"=>"1", "3"=>"1"}, "insert_size"=>"250", "sequencing_type"=>"Standard"}
-    ).built!
+    ).create_submission.built!
   And %Q{1 pending delayed jobs are processed}
 end
 

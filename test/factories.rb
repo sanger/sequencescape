@@ -177,7 +177,7 @@ Factory.define :request_with_submission, :class => Request do |request|
                                           :project => request.initial_project,
                                           :request_types => [request.request_type.id.to_s],
                                           :user => request.user,
-                                          :assets => [request.asset]
+                                          :assets => [request.asset].compact
                                           ) unless request.submission
   end
 end
@@ -227,14 +227,13 @@ Factory.define :request_without_item, :class => "Request" do |r|
   }
 end
 
-Factory.define :request_without_project, :class => "Request" do |r|
+Factory.define :request_without_project, :class => Request do |r|
   r.study         {|pr| pr.association(:study)}
   r.item            {|item| item.association(:item)}
   r.user            {|user|     user.association(:user)}
   r.request_type    {|request_type| request_type.association(:request_type)}
   r.workflow        {|workflow| workflow.association(:submission_workflow)}
   r.state           'pending'
-  r.submission      {|submission| submission.association(:submission)}
 end
 
 Factory.define :failed_request, :class => Request do |r|

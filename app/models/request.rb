@@ -52,11 +52,27 @@ class Request < ActiveRecord::Base
   def project_id=(project_id)
     raise RuntimeError "Initial project already set" if initial_project_id
     self.initial_project_id = project_id
+
+    
     #use quota if neeed
+    #we can't use quota now, because if we are building the request, the request type might
+    # haven't been assigned yet. 
+    # We use in instance variable instead and book the request in a before_save callback
+    # 
+    @orders_to_book = self.initial_project.orders
+    book_quotas unless new_record?
+    #self.initial_project.orders.each { |o| o.use_quota!(self, o.assets.present?) }
+  end
+
+  def book_quotas
+    return unless @orders_to_book
     # if assets are empty the order hasn't booked anything, so there is no need to unbook quota
     # Should happen in real life but might in test
-    self.initial_project.orders.each { |o| o.use_quota!(self, o.assets.present?) }
+    @orders_to_book.each { |o| o.use_quota!(self, o.assets.present?) }
+    @orders_to_book = nil
   end
+  private :book_quotas
+  after_create :book_quotas
 
   def project=(project)
     return unless project
@@ -425,7 +441,7 @@ class Request < ActiveRecord::Base
     return false unless self.pending?
     request_type = RequestType.find(new_request_type) 
     return true if self.request_type_id == request_type.id
-    self.project.has_quota?(request_type, 1)
+    self.has_quota?(1)
   end
 
   extend Metadata
