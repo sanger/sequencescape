@@ -5,33 +5,30 @@
   <% if creation %>
     <tr>
       <td width="40%" class="item"><%= form.label(:name, 'Study name:', :class => 'required') %></td>
-      <td width="60%"><%= form.text_field :name %></td>
+      <td width="40%"><%= form.text_field :name %></td>
+      <td class="help_field">&nbsp;</td>
     </tr>
   <% end %>
   <tr>
     <td width="40%" class="item"><%= label_tag(:study_owner_id, 'Study owner:') %></td>
-    <td width="60%"><%= select_tag "study_owner_id", options_for_select([[" " , "0" ]] + User.owners.map { |user| [user.name, user.id] }) %></td>
+    <td width="40%"><%= select_tag "study_owner_id", options_for_select([[" " , "0" ]] + User.owners.map { |user| [user.name, user.id] }) %></td>
+    <td class="help_field">&nbsp;</td>
   </tr>
-  <tr>
-  <td width="40%" class="item"><label for='study_reference_genome_id' class='required'>Reference genome</label>:</td>
 
-  <% unless study.id.nil?%>
-    <td width="60%"><%= form.select "reference_genome_id", options_for_select([[@study.reference_genome.name,@study.reference_genome_id ]] + ReferenceGenome.all.map { |reference_genome| [reference_genome.name, reference_genome.id] }) %></td>
-  <% else %>
-  <td width="60%"><%= form.select "reference_genome_id", options_for_select(ReferenceGenome.all.map { |reference_genome| [reference_genome.name, reference_genome.id] }) %></td>
-  <% end %>
-  </tr>  
-  
-  
-
-  
   <% unless creation %>
-  <tr>
-    <td width="40%" class="item"><%= form.label("Related studies:") %></td>
-    <td><%=link_to "edit", related_studies_study_path(@study)%></td>
-  </tr>
-<% end %>
+    <tr>
+      <td width="40%" class="item"><%= form.label("Related studies:") %></td>
+      <td><%=link_to "edit", related_studies_study_path(@study)%></td>
+      <td class="help_field">&nbsp;</td>
+    </tr>
+  <% end %>
 </table>
+
+<% fields_for(study) do |form| %>
+  <% form.fields_for(:study_metadata, :builder => Metadata::FormBuilder) do |metadata_fields| %>
+    <%= metadata_fields.select_by_association(:reference_genome) %>
+  <% end %>
+<% end %>
 
 <h3>Properties</h3>
 <%= render :partial => 'shared/metadata/edit/study', :locals => { :study => study } %>

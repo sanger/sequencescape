@@ -1,4 +1,6 @@
 class DataReleaseStudyType < ActiveRecord::Base 
+  extend Attributable::Association::Target
+
   has_many :study
   
   validates_presence_of  :name
@@ -6,10 +8,6 @@ class DataReleaseStudyType < ActiveRecord::Base
 
   UNSPECIFIED = 'not specified'
   TYPES = ['transcriptomics','other sequencing-based-assay','genotyping or cytogenetics' ]
-  
-  def for_select_dropdown
-    [self.name, self.id]
-  end  
  
   def is_not_specified?
     self.name == UNSPECIFIED

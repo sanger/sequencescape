@@ -224,8 +224,7 @@ class Sample < ActiveRecord::Base
   extend Metadata
   has_metadata do
     include ReferenceGenome::Associations
-    association(:reference_genome, :name)  
-    #attribute(:reference_genome_id)
+    association(:reference_genome, :name, :required => true)
     
     attribute(:organism)
     attribute(:cohort)
