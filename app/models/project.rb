@@ -86,8 +86,7 @@ class Project < ActiveRecord::Base
   end
 
   def book_quota(request_type,number=1)
-    raise QuotaException, "Project '#{name}' has insuficcient quota of request type #{request_type}"  unless has_quota?(request_type, number)
-    quota_for!(request_type).book_request!(number) 
+    quota_for!(request_type).book_request!(number, enforce_quotas?) 
   end
 
   def unbook_quota(request_type, number=1)
