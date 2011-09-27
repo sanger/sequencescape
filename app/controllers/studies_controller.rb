@@ -100,7 +100,6 @@ class StudiesController < ApplicationController
   def edit
     @study = Study.find(params[:id])
     @users   = User.all
-    @reference_genome = ReferenceGenome.find(:first, :conditions => {:id => @study.reference_genome_id})
     redirect_if_not_owner_or_admin
   end
 
@@ -110,7 +109,6 @@ class StudiesController < ApplicationController
     parameters = params[:study]
     ActiveRecord::Base.transaction do
       @study.update_attributes!(parameters)
-      @study.study_metadata.update_attributes!(:reference_genome_id => params[:study][:reference_genome_id])
       flash[:notice] = "Your study has been updated"
 
       redirect_to study_path(@study)
@@ -157,7 +155,6 @@ class StudiesController < ApplicationController
 
   def properties
     @study = Study.find(params[:id])
-    @reference_genome = ReferenceGenome.find(:first, :conditions => {:id => @study.reference_genome_id})
 
     respond_to do |format|
       format.html
