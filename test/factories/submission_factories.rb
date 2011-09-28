@@ -7,12 +7,17 @@ end
 
 class Factory
   def self.submission(options)
+    submission_options = {}
+    [:message, :state].each do |option|
+      value = options.delete(option)
+      submission_options[option] = value if value
+    end
     state = options.delete(:state)
+    message = options.delete(:message)
     submission = Factory(:order_with_submission, options).submission
     #trying to skip StateMachine 
-    if state
-      submission.state =state if state
-      submission.save!
+    if submission_options.present?
+      submission.update_attributes!(submission_options)
     end
     submission
   end

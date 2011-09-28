@@ -11,6 +11,16 @@
     id: 4727
     study_id: 700
   :id: 4727
+- :class: Submission
+  :attributes: 
+    id: 9566
+    state: ready
+  :id: 9566
+- :class: Project
+  :attributes:
+    id: 678
+    enforce_quotas: false
+  :id: 678
 - :class: LinearSubmission
   :attributes: 
     request_types: 
@@ -33,7 +43,7 @@
     study_id: 700
     workflow_id: 1
     sti_type: LinearSubmission
-    state: ready
+    submission_id: 9566
   :id: 9566
 - :class: Item
   :attributes: 
