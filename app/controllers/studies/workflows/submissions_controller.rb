@@ -65,7 +65,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
 
     # NOTE[xxx]: Quick hack to get this working for the features and into production.  Basically lookup by ID if the project
     # project name was not specified and the project_id is specified.  Should handle the Ajax stuff.
-    @project   = Project.find_by_name(params[:project_name]) 
+    @project   = Project.find_by_name(params[:project_name])  if params[:project_name].present?
     @project ||= Project.find_by_id(params[:project_id]) if params[:project_id].present?
   end
 
