@@ -682,6 +682,7 @@ ActiveRecord::Schema.define(:version => 20111011150028) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "request_type_id"
+    t.integer  "preordered_count", :default => 0
   end
 
   add_index "quotas", ["request_type_id", "project_id"], :name => "index_quotas_on_request_type_id_and_project_id"
@@ -734,6 +735,13 @@ ActiveRecord::Schema.define(:version => 20111011150028) do
 
   add_index "request_metadata", ["request_id"], :name => "index_request_metadata_on_request_id"
 
+  create_table "request_quotas", :force => true do |t|
+    t.integer "request_id"
+    t.integer "quota_id"
+  end
+
+  add_index "request_quotas", ["quota_id", "request_id"], :name => "index_request_quotas_on_quota_id_and_request_id"
+
   create_table "request_type_plate_purposes", :force => true do |t|
     t.integer "request_type_id",  :null => false
     t.integer "plate_purpose_id", :null => false
@@ -763,7 +771,7 @@ ActiveRecord::Schema.define(:version => 20111011150028) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
-    t.string   "state",           :limit => 20, :default => "pending"
+    t.string   "state",              :limit => 20, :default => "pending"
     t.integer  "sample_pool_id"
     t.integer  "workflow_id"
     t.integer  "request_type_id"
@@ -773,14 +781,14 @@ ActiveRecord::Schema.define(:version => 20111011150028) do
     t.integer  "pipeline_id"
     t.integer  "submission_id"
     t.boolean  "charge"
-    t.integer  "project_id"
-    t.integer  "priority",                      :default => 0
+    t.integer  "initial_project_id"
+    t.integer  "priority",                         :default => 0
     t.string   "sti_type"
   end
 
   add_index "requests", ["asset_id"], :name => "index_requests_on_asset_id"
+  add_index "requests", ["initial_project_id"], :name => "index_requests_on_project_id"
   add_index "requests", ["item_id"], :name => "index_request_on_item_id"
-  add_index "requests", ["project_id"], :name => "index_requests_on_project_id"
   add_index "requests", ["state", "request_type_id", "study_id"], :name => "request_project_index"
   add_index "requests", ["study_id", "request_type_id", "state"], :name => "index_requests_on_project_id_and_request_type_id_and_state"
   add_index "requests", ["study_id"], :name => "index_request_on_project_id"
