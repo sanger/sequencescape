@@ -43,7 +43,9 @@ module Attributable
   end
 
   def required?(field)
-    self.class.attribute_details.detect { |attribute| attribute.name == field }.try(:required?)
+    attribute   = self.class.attribute_details.detect { |attribute| attribute.name == field }
+    attribute ||= self.class.association_details.detect { |association| :"#{association.name}_id" == field }
+    attribute.try(:required?)
   end
 
   module ClassMethods
@@ -53,8 +55,8 @@ module Attributable
       attribute_details.push(attribute)
     end
     
-    def association(name, instance_method)
-      association = Association.new(self, name, instance_method)
+    def association(name, instance_method, options = {})
+      association = Association.new(self, name, instance_method, options)
       association.configure(self)
       association_details.push(association)
     end
@@ -75,10 +77,37 @@ module Attributable
   end
   
   class Association
+    module Target
+      def self.extended(base)
+        base.class_eval do
+          include InstanceMethods
+        end
+      end
+
+      def for_select_association
+        all(:order => 'name ASC').map(&:for_select_dropdown).compact
+      end
+
+      module InstanceMethods
+        def for_select_dropdown
+          [ self.name, self.id ]
+        end
+      end
+    end
+
     attr_reader :name
     
-    def initialize(owner, name, method)
+    def initialize(owner, name, method, options = {})
       @owner, @name, @method = owner, name, method
+      @required = !!options.delete(:required) || false
+    end
+
+    def required?
+      @required
+    end
+
+    def optional?
+      not self.required?
     end
 
     def assignable_attribute_name
@@ -169,12 +198,12 @@ module Attributable
         end
       end
 
-        unless save_blank_value
-          model.before_validation do |record|
-            value = record.send(name)
-            record.send("#{name}=", nil) if value and value.blank?
-          end
+      unless save_blank_value
+        model.before_validation do |record|
+          value = record.send(name)
+          record.send("#{name}=", nil) if value and value.blank?
         end
+      end
 
       unless (condition = conditions[:if]).nil?
         model.before_validation do |record|

@@ -161,9 +161,8 @@ class RequestTest < ActiveSupport::TestCase
     context "#state" do
       setup do
         @study = Factory :study
-        @item         = Factory :item
-        @request = Factory :request, :study => @study, :item => @item
-        # @item_request = Factory :request_item, :item => @item, :request => @request
+        @item  = Factory :item
+        @request = Factory :request_suitable_for_starting, :study => @study, :item => @item
         @user = Factory :admin
         @user.has_role 'owner', @study
       end

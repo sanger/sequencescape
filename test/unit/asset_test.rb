@@ -53,12 +53,12 @@ class AssetTest < ActiveSupport::TestCase
       @study_to = Factory :study
       
       @sample = Factory :sample
-      @sample_tube  = Factory(:empty_sample_tube).tap { |sample_tube|  sample_tube.aliquots.create!(:sample => @sample)  }
-      @library_tube = Factory(:library_tube).tap      { |library_tube| library_tube.aliquots.create!(:sample => @sample) }
+      @sample_tube  = Factory(:empty_sample_tube).tap  { |sample_tube|  sample_tube.aliquots.create!(:sample => @sample)  }
+      @library_tube = Factory(:empty_library_tube).tap { |library_tube| library_tube.aliquots.create!(:sample => @sample) }
 
       @sample_2 = Factory :sample
-      @sample_tube_2  = Factory(:empty_sample_tube).tap { |sample_tube|  sample_tube.aliquots.create!(:sample => @sample_2)  }
-      @library_tube_2 = Factory(:library_tube).tap      { |library_tube| library_tube.aliquots.create!(:sample => @sample_2) }
+      @sample_tube_2  = Factory(:empty_sample_tube).tap  { |sample_tube|  sample_tube.aliquots.create!(:sample => @sample_2)  }
+      @library_tube_2 = Factory(:empty_library_tube).tap { |library_tube| library_tube.aliquots.create!(:sample => @sample_2) }
 
       @multiplex_tube = Factory :multiplexed_library_tube
       @lane = Factory :lane, :sti_type => "Lane"
@@ -138,9 +138,9 @@ class AssetTest < ActiveSupport::TestCase
       @study_to = Factory :study
 
       @sample = Factory :sample
-      @sample_tube    = Factory(:empty_sample_tube).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample) }
-      @library_tube   = Factory(:library_tube).tap      { |library_tube| library_tube.aliquots.create!(:sample => @sample) }
-      @library_tube_2 = Factory(:library_tube).tap      { |library_tube| library_tube.aliquots.create!(:sample => @sample) }
+      @sample_tube    = Factory(:empty_sample_tube).tap  { |sample_tube|  sample_tube.aliquots.create!(:sample => @sample) }
+      @library_tube   = Factory(:empty_library_tube).tap { |library_tube| library_tube.aliquots.create!(:sample => @sample) }
+      @library_tube_2 = Factory(:empty_library_tube).tap { |library_tube| library_tube.aliquots.create!(:sample => @sample) }
       @multiplex_tube = Factory(:multiplexed_library_tube)
 
       @study_sample = Factory :study_sample, :study => @study, :sample => @sample

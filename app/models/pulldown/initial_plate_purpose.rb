@@ -1,5 +1,5 @@
 # Specialised implementation of the plate purpose for the initial plate types in the Pulldown pipelines:
-# WGS fragmentation plate, SC fragmentation plate, ISC fragmentation plate.
+# WGS Covaris, SC Covaris, ISC Covaris.
 class Pulldown::InitialPlatePurpose < PlatePurpose
   include Pulldown::WorksOnLibraryRequests
 

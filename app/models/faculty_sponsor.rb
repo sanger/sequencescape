@@ -1,4 +1,6 @@
 class FacultySponsor < ActiveRecord::Base
+  extend Attributable::Association::Target
+
   default_scope :order => :name
   
   validates_presence_of  :name
@@ -12,10 +14,6 @@ class FacultySponsor < ActiveRecord::Base
   
   def studies
     Study.find(:all, :joins => { :study_metadata => :faculty_sponsor }, :conditions => { :study_metadata => { :faculty_sponsor_id => self.id } })
-  end
-  
-  def for_select_dropdown
-    [self.name, self.id]
   end
   
   module Associations

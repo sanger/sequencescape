@@ -150,10 +150,10 @@ class Study < ActiveRecord::Base
     include ReferenceGenome::Associations
     include FacultySponsor::Associations
     
-    association(:study_type, :name)
-    association(:data_release_study_type, :name)
-    association(:reference_genome, :name)
-    association(:faculty_sponsor, :name)
+    association(:study_type, :name, :required => true)
+    association(:data_release_study_type, :name, :required => true)
+    association(:reference_genome, :name, :required => true)
+    association(:faculty_sponsor, :name, :required => true)
     
     attribute(:study_description, :required => true)
     attribute(:contaminated_human_dna, :required => true, :in => YES_OR_NO)
@@ -518,7 +518,7 @@ class Study < ActiveRecord::Base
   # return true if yes, false if not , and nil if we don't know
   def affiliated_with?(object)
     case
-    when object.is_a?(Asset) && object.study_ids.blank?
+    when object.is_a?(Asset) && !object.is_a?(SampleTube)
       #special case, no study assing we propagate to aliquot
       nil
     when object.respond_to?(:study_id)
