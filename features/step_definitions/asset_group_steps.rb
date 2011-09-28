@@ -26,9 +26,10 @@ Then /^the assets in the asset group "([^\"]+)" should only be in that group$/ d
   assert_equal([ asset_group ], asset_group.assets.map(&:asset_groups).flatten.uniq, "Assets in more asset groups")
 end
 
-Then /^the asset group with the name from the last submission UUID value contains the assets for the following samples:$/ do |table|
-  submission  = Submission.last or raise StandardError, "There are no submissions!"
-  asset_group = AssetGroup.find_by_name(submission.uuid) or raise StandardError, "Could not find the asset group for the last submission"
+Then /^the asset group with the name from the last order UUID value contains the assets for the following samples:$/ do |table|
+  #TODO[mb14] rename 
+  order  = Order.last or raise StandardError, "There are no order!"
+  asset_group = AssetGroup.find_by_name(order.uuid) or raise StandardError, "Could not find the asset group for the last submission"
   assets      = Sample.all(:conditions => { :name => table.raw.map(&:first) }).map(&:assets).flatten
   assert_equal(assets.map(&:id), asset_group.assets.map(&:id), "Assets in the asset group are not correct")
 end

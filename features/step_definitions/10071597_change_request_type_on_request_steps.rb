@@ -7,7 +7,7 @@ Given /^sequencescape is setup for 10071597$/ do
  project.update_attributes!(:enforce_quotas => true)
 end
 
-Given /^last request the state "([^"]*)"$/ do |state|
+Given /^last request the state "([^\"]*)"$/ do |state|
  request = Request.last
  request.state = state
  request.save
@@ -15,7 +15,9 @@ end
 
 Given /^last request enough quota$/ do
   request = Request.last
-  request.project.enforce_quotas = false
-  request.project.save  
+  request.quotas.each do |quota|
+    quota.project.enforce_quotas = false
+    quota.project.save  
+  end
 end
 

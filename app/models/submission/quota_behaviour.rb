@@ -4,7 +4,6 @@ module Submission::QuotaBehaviour
 
   def complete_building
     check_project_details!
-    quota_check! unless assets.blank?
     super
   end
 
@@ -14,16 +13,8 @@ module Submission::QuotaBehaviour
   end
   private :multiplier_for
 
-  def quota_check!
-    return unless project.enforce_quotas?
-    check_project_details!
-    #check_quota_available_for_request_types!
-    # not needed anymore as quota are book at creation time
-    # and quota are checked when creating request
-  end
-  private :quota_check!
-
   def check_project_details!
+    return unless project.enforce_quotas?
     raise QuotaException, "Quotas are being enforced but have not been setup"       if project.quotas.all.empty? || project.quotas.all? { |q| q.limit == 0 }
     raise QuotaException, "Project #{project.name} is not approved"                 unless project.approved?
     raise QuotaException, "Project #{project.name} is not active"                   unless project.active?
