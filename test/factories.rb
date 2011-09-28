@@ -184,6 +184,14 @@ Factory.define :request, :parent => :request_without_assets do |r|
   end
 end
 
+# A request that has an input asset with something in it, and an empty start asset.
+Factory.define :request_suitable_for_starting, :parent => :request_without_assets do |request|
+  request.after_build do |request|
+    request.asset        ||= Factory(:sample_tube)
+    request.target_asset ||= Factory(:empty_library_tube)
+  end
+end
+
 Factory.define :request_without_item, :class => "Request" do |r|
   r.study         {|pr| pr.association(:study)}
   r.project         {|pr| pr.association(:project)}

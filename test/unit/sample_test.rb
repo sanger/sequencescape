@@ -22,7 +22,7 @@ class SampleTest < ActiveSupport::TestCase
         @new_assets_name = ""
         @current_user = Factory :user
 
-        @asset_1 = Factory(:sample_tube, :name => @sample_from.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_from) }
+        @asset_1 = Factory(:empty_sample_tube, :name => @sample_from.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_from) }
         
         @asset_group = Factory :asset_group, :name => "not mx"
         @asset_group_asset = Factory :asset_group_asset, :asset_id => @asset_1.id, :asset_group_id => @asset_group.id
@@ -43,7 +43,7 @@ class SampleTest < ActiveSupport::TestCase
 
       context "only valid assets and without submissions" do
         setup do
-          @asset_from = Factory(:empty_sample_tube, :name => @sample_from_ok.name, :sample => @sample_from_ok).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_from_ok) }
+          @asset_from = Factory(:empty_sample_tube, :name => @sample_from_ok.name).tap { |sample_tube| sample_tube.aliquots.create!(:sample => @sample_from_ok) }
           @asset_group_from_new = Factory :asset_group, :name => "Asset_Sample_New", :study => @study_from
           @asset_group_asset_from = Factory :asset_group_asset, :asset_id => @asset_from.id, :asset_group_id => @asset_group_from_new.id
 
