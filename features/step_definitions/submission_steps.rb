@@ -61,7 +61,9 @@ end
 def submission_in_state(state, attributes = {})
   study    = Study.first or raise StandardError, "There are no studies!"
   workflow = Submission::Workflow.first or raise StandardError, "There are no workflows!"
-  Submission.new(attributes.merge(:study => study, :workflow => workflow, :state => state)).save(false)
+  submission = Factory::submission(attributes.merge(:study => study, :workflow => workflow))
+  submission.state = state
+  submission.save(false)
 end
 
 Given /^I have a submission in the "([^\"]+)" state$/ do |state|

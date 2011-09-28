@@ -48,9 +48,14 @@ class Submission < ActiveRecord::Base
   alias_method(:json_root, :url_name)
   
   def self.build!(options)
+    submission_options = {}
+    [:message].each do |option|
+      value = options.delete(option)
+      submission_options[option] = value if value
+    end
     ActiveRecord::Base.transaction do
       order = Order.prepare!(options)
-      order.create_submission.built!
+      order.create_submission(submission_options).built!
       order.save! #doesn't save submission id otherwise
       order.submission
     end

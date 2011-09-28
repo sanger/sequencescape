@@ -41,7 +41,7 @@ class Quota < ActiveRecord::Base
   end
 
   def check_enough_quota_for!(number)
-      raise QuotaException, "Insufficient quota for #{request_type.name}"  if remaining < number
+      raise QuotaException, "Insufficient quota for #{request_type.name}"  if number > remaining
   end
   private :check_enough_quota_for!
 
@@ -58,7 +58,7 @@ class Quota < ActiveRecord::Base
     return if self.request_ids.include?(request.id) or !request.quota_counted?
     Quota.transaction do 
       unbook_request!(1) if unbook
-      check_enough_quota_for!(number)  if check_quota
+      check_enough_quota_for!(1)  if check_quota
       requests << request
       save!
     end
