@@ -24,7 +24,7 @@ class FakeTagsOnMultipleUntaggedAliquots < ActiveRecord::Migration
       }).in_groups_of(500) do |details|
         details.compact!
         next if details.empty?
-        self.all(options.merge(:condition => { :id => details.map { |d| d['id'] } })).each(&block)
+        self.all(options.merge(:conditions => { :id => details.map { |d| d['id'] } })).each(&block)
       end
     end
   end
