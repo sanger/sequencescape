@@ -12,7 +12,7 @@ Given /^a batch in "MX Library Preparation \[NEW\]" has been setup for feature 4
   pipeline = Pipeline.find_by_name("MX Library Preparation [NEW]") or raise StandardError, "Cannot find pipeline '#{ name }'"
   batch    = Factory :batch, :pipeline => pipeline, :state => :started
   
-  submission = Factory :submission, :request_types => [
+  submission = Factory::submission :request_types => [
     RequestType.find_by_key('multiplexed_library_creation'),
     RequestType.find_by_key('paired_end_sequencing')
   ].map(&:id)
