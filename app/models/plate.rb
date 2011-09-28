@@ -63,6 +63,15 @@ class Plate < Asset
       WellAttribute.import([:well_id, :created_at, :updated_at], links_data.map { |c| [c.last, time_now, time_now] }, :validate => false, :timestamps => false)
     end
 
+    def map_from_locations
+      {}.tap do |location_to_well|
+        self.walk_in_column_major_order do |well, _|
+          raise "Duplicated well at #{well.map.description}" if location_to_well.key?(well.map)
+          location_to_well[well.map] = well
+        end
+      end
+    end
+
     # Walks the wells A1, B1, C1, ... A2, B2, C2, ... H12
     def walk_in_column_major_order(&block)
       locations_to_well = Hash[self.map { |well| [ well.map.description, well ] }]
@@ -103,6 +112,8 @@ class Plate < Asset
       wells_in_rows
     end
   end
+
+  named_scope :include_wells_and_attributes, { :include => { :wells => [ :map, :well_attribute ] } }
 
   #has_many :wells, :as => :holder, :class_name => "Well"
   DEFAULT_SIZE = 96

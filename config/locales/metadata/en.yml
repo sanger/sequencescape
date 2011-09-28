@@ -40,6 +40,8 @@ en:
       <<: *REQUEST
     sequencing_request:
       <<: *REQUEST
+    mi_seq_sequencing_request:
+      <<: *REQUEST
     hi_seq_sequencing_request:
       <<: *REQUEST
     transfer_request:
@@ -230,6 +232,9 @@ en:
 
     study:
       metadata:
+        reference_genome_id:
+          label: Reference genome
+
         faculty_sponsor_id:
           label: Faculty Sponsor
           

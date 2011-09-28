@@ -1,4 +1,6 @@
 class StudyType < ActiveRecord::Base 
+  extend Attributable::Association::Target
+
   has_many :study
 
   validates_presence_of  :name

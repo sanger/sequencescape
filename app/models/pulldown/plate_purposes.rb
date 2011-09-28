@@ -1,57 +1,57 @@
 module Pulldown::PlatePurposes
   PULLDOWN_PLATE_PURPOSE_FLOWS = [
     [
-      'WGS stock plate',
-      'WGS fragmentation plate',
-      'WGS fragment purification plate',
-      'WGS library preparation plate',
-      'WGS library plate',
-      'WGS library PCR plate',
-      'WGS amplified library plate',
-      'WGS pooled amplified library plate'
+      'WGS stock DNA',
+      'WGS Covaris',
+      'WGS post-Cov',
+      'WGS post-Cov-XP',
+      'WGS lib',
+      'WGS lib PCR',
+      'WGS lib PCR-XP',
+      'WGS lib pool'
     ], [
-      'SC stock plate',
-      'SC fragmentation plate',
-      'SC fragment purification plate',
-      'SC library preparation plate',
-      'SC library plate',
-      'SC library PCR plate',
-      'SC amplified library plate',
-      'SC hybridisation plate',
-      'SC captured library plate',
-      'SC captured library PCR plate',
-      'SC amplified captured library plate',
-      'SC pooled captured library plate'
+      'SC stock DNA',
+      'SC Covaris',
+      'SC post-Cov',
+      'SC post-Cov-XP',
+      'SC lib',
+      'SC lib PCR',
+      'SC lib PCR-XP',
+      'SC hyb',
+      'SC cap lib',
+      'SC cap lib PCR',
+      'SC cap lib PCR-XP',
+      'SC cap lib pool'
     ], [
-      'ISC stock plate',
-      'ISC fragmentation plate',
-      'ISC fragment purification plate',
-      'ISC library preparation plate',
-      'ISC library plate',
-      'ISC library PCR plate',
-      'ISC amplified library plate',
-      'ISC pooled amplified library plate',
-      'ISC hybridisation plate',
-      'ISC captured library plate',
-      'ISC captured library PCR plate',
-      'ISC amplified captured library plate',
-      'ISC pooled captured library plate'
+      'ISC stock DNA',
+      'ISC Covaris',
+      'ISC post-Cov',
+      'ISC post-Cov-XP',
+      'ISC lib',
+      'ISC lib PCR',
+      'ISC lib PCR-XP',
+      'ISC lib pool',
+      'ISC hyb',
+      'ISC cap lib',
+      'ISC cap lib PCR',
+      'ISC cap lib PCR-XP',
+      'ISC cap lib pool'
     ]
   ]
 
   PULLDOWN_PLATE_PURPOSE_LEADING_TO_QC_PLATES = [
-    'WGS fragment purification plate',
-    'WGS library preparation plate',
-    'WGS amplified library plate',
+    'WGS post-Cov',
+    'WGS post-Cov-XP',
+    'WGS lib PCR-XP',
 
-    'SC fragment purification plate',
-    'SC library preparation plate',
-    'SC amplified library plate',
-    'SC amplified captured library plate',
+    'SC post-Cov',
+    'SC post-Cov-XP',
+    'SC lib PCR-XP',
+    'SC cap lib PCR-XP',
 
-    'ISC fragment purification plate',
-    'ISC library preparation plate',
-    'ISC amplified library plate',
-    'ISC amplified captured library plate'
+    'ISC post-Cov',
+    'ISC post-Cov-XP',
+    'ISC lib PCR-XP',
+    'ISC cap lib PCR-XP'
   ]
 end

@@ -8,7 +8,6 @@ Feature: Searching sequencescape
     And a study named "My Study" exists
     And a sample named "SampleForMy" exists
     And sample "SampleForMy" is in a sample tube named "My Asset"
-    And an item named "My Item" exists
 
   Scenario Outline: Searching
     When I fill in "Search for" with "<search>"
@@ -22,7 +21,6 @@ Feature: Searching sequencescape
       | Project | project | My Project   |
       | Study   | study   | My Study     |
       | Sample  | sample  | SampleForMy  |
-      | Item    | item    | Work item    |
       | Asset   | asset   | My Asset     |
 
   @wip
@@ -43,5 +41,4 @@ Feature: Searching sequencescape
       | project | My Project  |
       | study   | My Study    |
       | sample  | SampleForMy |
-      | item    | Work item   |
       | asset   | My Asset    |

@@ -146,17 +146,17 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     Given plate "333" with 3 samples in study "Study C" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission
     Given I am on the show page for pipeline "Cherrypicking for Pulldown"
     When I check "Select DN1234567T for batch"
-    Then I should see "You have selected 2"
+    Then I should see "You have 2 requests selected"
     When I check "Select DN222J for batch"
-    Then I should see "You have selected 3"
+    Then I should see "You have 3 requests selected"
     When I check "Select DN333P for batch"
-    Then I should see "You have selected 6"
+    Then I should see "You have 6 requests selected"
     When I uncheck "Select DN222J for batch"
-    Then I should see "You have selected 5"
+    Then I should see "You have 5 requests selected"
     When I uncheck "Select DN1234567T for batch"
-    Then I should see "You have selected 3"
+    Then I should see "You have 3 requests selected"
     When I uncheck "Select DN333P for batch"
-    Then I should see "You have selected 0"
+    Then I should see "You have no requests selected"
 
   Scenario: Print tube barcodes for pulldown multiplexing
     Given I have a project called "Test project"

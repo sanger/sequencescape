@@ -1,12 +1,10 @@
 class ProjectManager < ActiveRecord::Base 
+  extend Attributable::Association::Target
+
   has_many :project
   
   validates_presence_of  :name
   validates_uniqueness_of :name, :message => "of project manager already present in database"
-  
-  def for_select_dropdown
-    [self.name, self.id]
-  end  
 
   module Associations
     def self.included(base)
