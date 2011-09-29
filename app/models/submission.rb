@@ -57,6 +57,8 @@ class Submission < ActiveRecord::Base
       order = Order.prepare!(options)
       order.create_submission(submission_options).built!
       order.save! #doesn't save submission id otherwise
+      study_name = order.try(:study).name
+      order.submission.update_attributes!(:name=>study_name) if study_name
       order.submission
     end
   end

@@ -80,7 +80,7 @@
     <tr>
       <td><%= link_to(request.id, request, :title => "#{ request.request_type.try(:name) || 'Unknown' } request") %></td>
       <td><%= request.request_type and request.request_type.name %></td>
-      <td><%= request.study ? request.study.name : "NA" %></td>
+      <td><%= request.submission ? request.submission.name : "NA" %></td>
       <td><%= request_status(request) %></td>
       <td>
       <% request.batch_ids.each do |batch_id| %>

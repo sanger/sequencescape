@@ -177,16 +177,6 @@ class Asset < ActiveRecord::Base
 
   end
 
-  def move_quaratine(study, user)
-    self.events << Event.new({:message => "Moved to study #{study.id}", :created_by => user.login, :family => "Update"})
-    # Move all requests
-    self.requests.each do |request|
-      request.events << Event.new({:message => "Moved from study #{request.study_id} to study #{study.id}", :created_by => user.login, :family => "Update"})
-      request.study_id = study.id
-      request.save
-    end
-  end
-
   after_create :generate_name_with_id, :if => :name_needs_to_be_generated?
 
   def name_needs_to_be_generated?
@@ -280,7 +270,7 @@ class Asset < ActiveRecord::Base
   def move_asset_requests(study_from, study_to)
     requests = self.requests.find_all_by_study_id(study_from.id)
     requests.each do |request|
-      request.study_id = study_to.id
+      request.initial_study_id = study_to.id
       request.save!
     end
     #puts self.id
