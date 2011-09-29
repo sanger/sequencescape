@@ -504,7 +504,7 @@ class Batch < ActiveRecord::Base
         csv << [ 
           well.plate.sanger_human_barcode,
           well.map.description,
-          request.study.name,
+          request.submission.name,
           request.target_asset.try(:barcode),
           tag_group_name,
           tag_name,

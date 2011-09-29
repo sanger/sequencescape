@@ -438,7 +438,7 @@ class AssetsController < ApplicationController
       # Move all requests
       self.requests.each do |request|
         request.events << Event.new({:message => "Moved from 1D tube #{source_asset.id} to 2D tube #{destination_asset.id}", :created_by => user.login, :family => "Update"})
-        request.study_id = study.id
+        request.initial_study_id = study.id
       end
     end
   end

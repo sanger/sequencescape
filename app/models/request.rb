@@ -36,7 +36,6 @@ class Request < ActiveRecord::Base
   has_many :request_quotas
   has_many :quotas, :through => :request_quotas
 
-  belongs_to :study
   belongs_to :request_type
   belongs_to :workflow, :class_name => "Submission::Workflow"
 
@@ -64,6 +63,7 @@ class Request < ActiveRecord::Base
     #self.initial_project.orders.each { |o| o.use_quota!(self, o.assets.present?) }
   end
 
+
   def book_quotas
     return unless @orders_to_book
     # if assets are empty the order hasn't booked anything, so there is no need to unbook quota
@@ -78,6 +78,20 @@ class Request < ActiveRecord::Base
     return unless project
     self.project_id=project.id
   end
+
+  #same as project with study
+  belongs_to :initial_study, :class_name => "Study"
+
+  def study_id=(study_id)
+    raise RuntimeError "Initial study already set" if initial_study_id
+    self.initial_study_id = study_id
+  end
+
+  def study=(study)
+    return unless study
+    self.study_id=study.id
+  end
+
 
   #  validates_presence_of :study, :request_type#TODO, :submission
 

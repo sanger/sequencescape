@@ -14,8 +14,8 @@
 <%- add :back_menu, "Back to asset" => asset_path(@request.asset) if @request.asset %>
 
 <h1>
-  <% if @request.study %>
-    <%= link_to @request.study.name, study_path(@request.study) %> :
+  <% if @request.submission %>
+    <%= link_to @request.submission.name, submission_path(@request.study) %> :
   <% end %>
   Request: <%= @request.id %> 
   <% if @request.request_type %>

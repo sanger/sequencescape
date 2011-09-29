@@ -21,7 +21,7 @@ class Quota < ActiveRecord::Base
   end
 
   def remaining
-    limit - used
+    [limit - used, 0].max
   end
 
   def update_limit_to__used!
