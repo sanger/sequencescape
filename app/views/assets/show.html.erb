@@ -102,8 +102,8 @@
       <td><%= link_to(request.id, request_url(request), :title => "#{ request.request_type.try(:name) || 'Unknown' } request") %></td>
       <td><%= request.request_type and request.request_type.name %></td>
       <td>
-        <% if request.study %>
-          <%= link_to(request.study.name, study_path(request.study) ) %>
+        <% if request.submission %>
+          <%= link_to(request.submission.name, submission_path(request.submission) ) %>
         <% else %>
           NA
         <% end %>

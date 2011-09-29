@@ -122,7 +122,7 @@ class RequestsController < ApplicationController
 
   def additional
     @request    = Request.find(params[:id])
-    @additional = @request.request_type.create!(:study => @request.study, :items => @request.items)
+    @additional = @request.request_type.create!(:initial_study => @request.study, :items => @request.items)
     redirect_to request_path(@additional)
   end
 
