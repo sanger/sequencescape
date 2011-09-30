@@ -36,7 +36,7 @@ Given /^study "([^"]*)" has a plate "([^"]*)"$/ do |study_name, plate_barcode|
   study = Study.find_by_name(study_name)
   RequestFactory.create_assets_requests(plate.wells.map(&:id), study.id)
 
-  study.assets.each do |asset|
+  study.assets_through_requests(true).each do |asset|
     next unless asset.is_a?(Well)
     asset.well_attribute.update_attributes!(
       :gender_markers => [ 'F', 'F', 'F', 'F' ],
@@ -47,9 +47,9 @@ Given /^study "([^"]*)" has a plate "([^"]*)"$/ do |study_name, plate_barcode|
     )
   end
 
-  study.assets[0].primary_aliquot.sample.external_properties.create!(:key => 'genotyping_done', :value => "DNAlab completed: 13")
-  study.assets[1].primary_aliquot.sample.external_properties.create!(:key => 'genotyping_done', :value => "Imported to Illumina: 123")
-  study.assets[2].primary_aliquot.sample.external_properties.create!(:key => 'genotyping_done', :value => "Imported to Illumina: 51| DNAlab completed: 17")
+  study.assets_through_requests[0].primary_aliquot.sample.external_properties.create!(:key => 'genotyping_done', :value => "DNAlab completed: 13")
+  study.assets_through_requests[1].primary_aliquot.sample.external_properties.create!(:key => 'genotyping_done', :value => "Imported to Illumina: 123")
+  study.assets_through_requests[2].primary_aliquot.sample.external_properties.create!(:key => 'genotyping_done', :value => "Imported to Illumina: 51| DNAlab completed: 17")
 end
 
 
