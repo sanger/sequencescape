@@ -45,6 +45,24 @@ class PlatePurpose < ActiveRecord::Base
     end
   end
 
+  # Returns a pool ID for the given well.  By default this is based on the one request that leads to the well but,
+  # in the case of the pulldown pipeline, it can be overridden by the derived plate purpose.
+  def pool_id_for_well(well, &block)
+    pooling_requests = requests_for_pool(well)
+    return nil if pooling_requests.empty?
+    pooling_requests.map(&:submission_id).uniq.tap do |submission_ids|
+      raise StandardError, "Cannot handle no submissions" if submission_ids.empty?
+      raise StandardError, "Cannot handle multiple submissions (#{submission_ids.inspect})" if submission_ids.size > 1
+    end.first.tap do |pool_id|
+      yield(pool_id) if block_given?
+    end
+  end
+
+  def requests_for_pool(well)
+    well.requests_as_target
+  end
+  private :requests_for_pool
+
   include Api::PlatePurposeIO::Extensions
   cattr_reader :per_page
   @@per_page = 500
