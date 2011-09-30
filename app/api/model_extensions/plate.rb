@@ -33,6 +33,7 @@ module ModelExtensions::Plate
     base.class_eval do
       named_scope :include_plate_purpose, :include => :plate_purpose
       named_scope :include_wells_with_aliquots, :include => ::ModelExtensions::Plate::PLATE_INCLUDES
+      delegate :pool_id_for_well, :to => :plate_purpose, :allow_nil => true
     end
   end
 
@@ -43,10 +44,8 @@ module ModelExtensions::Plate
   # Returns a hash from the submission for the pools to the wells that form that pool on this plate.  This is
   # not necessarily efficient but it is correct.
   def pools
-    ActiveSupport::OrderedHash.new { |h,k| h[k] = [] }.tap do |pools|
-      wells.walk_in_column_major_order do |well, _|
-        well.pool_id { |pool_id| pools[pool_id] << well.map.description }
-      end
+    ActiveSupport::OrderedHash.new.tap do |pools|
+      wells.walk_in_pools { |pool_id, wells| pools[pool_id] = wells.map(&:map).map(&:description) }
     end
   end
 end
