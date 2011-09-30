@@ -160,14 +160,4 @@ class Well < Aliquot::Receptacle
     end
     nil
   end
-
-  def pool_id(&block)
-    return nil if requests_as_target.empty?
-    requests_as_target.map(&:submission_id).uniq.tap do |submission_ids|
-      raise StandardError, "Cannot handle no submissions" if submission_ids.empty?
-      raise StandardError, "Cannot handle multiple submissions (#{submission_ids.inspect})" if submission_ids.size > 1
-    end.first.tap do |pool_id|
-      yield(pool_id) if block_given?
-    end
-  end
 end

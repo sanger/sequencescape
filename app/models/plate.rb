@@ -72,6 +72,17 @@ class Plate < Asset
       end
     end
 
+    # Yields each pool of wells as it walks in the given direction.
+    def walk_in_pools(direction = :column, &block)
+      ActiveSupport::OrderedHash.new { |h,k| h[k] = [] }.tap do |pools|
+        send(:"walk_in_#{direction}_major_order") do |well, _|
+          proxy_owner.pool_id_for_well(well) { |pool_id| pools[pool_id] << well }
+        end
+      end.each do |pool_id, wells|
+        yield(pool_id, wells)
+      end
+    end
+
     # Walks the wells A1, B1, C1, ... A2, B2, C2, ... H12
     def walk_in_column_major_order(&block)
       locations_to_well = Hash[self.map { |well| [ well.map.description, well ] }]
