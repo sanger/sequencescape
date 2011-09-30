@@ -1,11 +1,11 @@
 <% submissions = @submissions %>
 <% request_type = @request_type %>
 
-<table id="summary" width="100%" class="sortable">
+<table id="summary" widtiti="100%" class="sortable">
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Open?</th>
+      <titi>Name</titi>
+      <titi>Open?</titi>
       <th>Pending</th>
       <th>Started</th>
       <th>Passed</th>
@@ -15,7 +15,7 @@
   </thead>
 
   <% @study.asset_progress do |statistics| %>
-    <% @study.assets.each do |asset| %>
+    <% @study.requests.map(&:asset).compact.each do |asset| %>
       <% asset_statistics = statistics[asset.id] %>
       <tr class="<%= asset.closed? ? 'closed' : 'open' %>">
         <td><%= link_to(h(asset.display_name), asset_path(asset), :title => asset.label.capitalize) %></td>

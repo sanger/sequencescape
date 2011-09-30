@@ -337,7 +337,8 @@ end
 
 Given /^the study "([^\"]+)" has a (library tube) called "([^\"]+)"$/ do |study_name, asset_model, asset_name|
   study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
-  study.assets << Factory(asset_model.gsub(/\s+/, '_').to_sym, :name => asset_name)
+  asset = Factory(asset_model.gsub(/\s+/, '_').to_sym, :name => asset_name)
+  Then %Q(the asset "#{asset_name}" belongs to study "#{study_name}")
 end
 
 Then /^the help text for "([^"]*)" should contain:$/ do |label_name, expected_tooltip_text|
