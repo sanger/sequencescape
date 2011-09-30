@@ -5,15 +5,6 @@ class AssetsController < ApplicationController
   def index
     @assets_without_requests = []
     @assets_with_requests = []
-    if params[:study_id]
-      @study = Study.find(params[:study_id])
-      @assets_with_requests = @study.assets.paginate :page => params[:page], :order => 'created_at DESC'
-      assets = []
-      @study.asset_groups.each{|ag| assets << ag.assets }
-      assets.flatten!
-      @assets = assets # for print
-      @assets_without_requests = assets - @assets_with_requests
-    end
 
     respond_to do |format|
       if params[:print]

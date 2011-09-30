@@ -70,7 +70,10 @@ class Study < ActiveRecord::Base
 
   #load all the associated requests with attemps and request type
   has_many :eager_items , :class_name => "Item", :include => [{:requests => [:request_type]}], :through => :requests, :source => :item # , :uniq => true
-  has_many :assets , :class_name => "Asset", :through => :requests, :source => :asset, :uniq => true 
+
+  has_many :aliquots
+  has_many :assets_through_aliquots, :class_name => "Asset", :through => :aliquots, :source => :receptacle, :uniq => :true
+  has_many :assets_through_requests, :class_name => "Asset", :through => :requests, :source => :asset, :uniq => :true
 
   has_many :items , :through => :requests, :uniq => true
 
