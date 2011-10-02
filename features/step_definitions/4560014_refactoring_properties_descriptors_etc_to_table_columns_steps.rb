@@ -83,9 +83,7 @@ Given /^the study "([^\"]+)" has an asset group of (\d+) samples in "([^\"]+)" c
     Factory(
       asset_type.gsub(/[^a-z0-9_-]+/, '_'),
       :name => "#{ group_name }, #{ asset_type } #{ i }"
-    ).tap do |asset|
-      asset.aliquots.create!(:sample => Factory(:sample, :name => "#{ group_name }, sample #{ i }".downcase.gsub(/[^a-z0-9_-]+/, '_')))
-    end
+    )
   end
   asset_group = Factory(:asset_group, :name => group_name, :study => study, :assets => assets)
 end

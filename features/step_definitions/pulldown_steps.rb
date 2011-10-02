@@ -66,7 +66,10 @@ def work_pipeline_for(submissions, name)
 
   source_plates = submissions.map { |submission| submission.requests.first.asset.plate }.uniq
   raise StandardError, "Submissions appear to come from non-unique plates: #{source_plates.inspect}" unless source_plates.size == 1
-  template.create!(:source => source_plates.first, :destination => final_plate_type.create!, :user => Factory(:user))
+
+  source_plate = source_plates.first
+  source_plate.wells.each { |w| Factory(:tag).tag!(w) unless w.primary_aliquot.tag.present? } # Ensure wells are tagged
+  template.create!(:source => source_plate, :destination => final_plate_type.create!, :user => Factory(:user))
 end
 
 # A bit of a fudge but it'll work for the moment.  We essentially link the last plate of the different

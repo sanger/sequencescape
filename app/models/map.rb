@@ -162,20 +162,33 @@ class Map < ActiveRecord::Base
     map.description
   end
 
+  named_scope :in_row_major_order, { :order => 'row_order ASC' }
+  named_scope :in_reverse_row_major_order, { :order => 'row_order DESC' }
+  named_scope :in_column_major_order, { :order => 'column_order ASC' }
+  named_scope :in_reverse_column_major_order, { :order => 'column_order DESC' }
+
   class << self
+    def plate_dimensions(plate_size)
+      case plate_size
+      when 96  then yield(12, 8)
+      when 384 then yield(24, 16)
+      else raise StandardError, "Cannot determine plate dimensions for #{plate_size}"
+      end
+    end
+
     # Walking in column major order goes by the columns: A1, B1, C1, ... A2, B2, ...
     def walk_plate_in_column_major_order(size, &block)
-      width, height = Map.plate_width(size), Map.plate_length(size)
-      positions     = Map.all(:conditions => {:asset_size => size}, :order => 'location_id ASC')
-      (0...size).map { |index| yield(positions[((index % height) * width) + (index / height)], index) }
+      self.all(:conditions => { :asset_size => size }, :order => 'column_order ASC').each do |position|
+        yield(position, position.column_order)
+      end
     end
     alias_method(:walk_plate_vertically, :walk_plate_in_column_major_order)
 
     # Walking in row major order goes by the rows: A1, A2, A3, ... B1, B2, B3 ....
     def walk_plate_in_row_major_order(size, &block)
-      width, height = Map.plate_width(size), Map.plate_length(size)
-      positions     = Map.all(:conditions => {:asset_size => size}, :order => 'location_id ASC')
-      (0...size).map { |index| yield(positions[index], index) }
+      self.all(:conditions => { :asset_size => size }, :order => 'row_order ASC').each do |position|
+        yield(position, position.row_order)
+      end
     end
   end
 end
