@@ -18,7 +18,10 @@ class Transfer < ActiveRecord::Base
   end
 
   module State
-    ALL_STATES = [ 'pending', 'started', 'passed', 'failed', 'cancelled' ].sort
+    # These are all of the valid states but keep them in a priority order: in other words, 'started' is more important
+    # than 'pending' when there are multiple requests (like a plate where half the wells have been started, the others
+    # are failed).
+    ALL_STATES = [ 'started', 'pending', 'passed', 'failed', 'cancelled' ]
 
     def self.included(base)
       base.class_eval do
@@ -27,7 +30,7 @@ class Transfer < ActiveRecord::Base
 
           # If all of the states are present there is no point in actually adding this set of conditions because we're
           # basically looking for all of the plates.
-          if states.sort != ALL_STATES
+          if states.sort != ALL_STATES.sort
             # Note that 'state IS NULL' is included here for plates that are stock plates, because they will not have any 
             # transfer requests coming into their wells and so we can assume they are pending (from the perspective of
             # pulldown at least).
@@ -60,23 +63,15 @@ class Transfer < ActiveRecord::Base
     # The state of an asset is based on the transfer requests for the asset.  If they are all in the same
     # state then it takes that state.  Otherwise we take the "most optimum"!
     def state
-      state_requests = self.transfer_requests
+      state_from(self.transfer_requests)
+    end
 
-      # If there is only one state then it's obviously that ...
+    def state_from(state_requests)
       unique_states = state_requests.map(&:state).uniq
       return unique_states.first if unique_states.size == 1
-
-      # These are the prioritised states.  Started overrides pending, which overrides passed, which
-      # overrides failed or cancelled (we don't really care which!).
-      case
-      when unique_states.include?('started')   then 'started'
-      when unique_states.include?('pending')   then 'pending'
-      when unique_states.include?('passed')    then 'passed'
-      when unique_states.include?('failed')    then 'failed'
-      when unique_states.include?('cancelled') then 'cancelled'
-      else self.default_state || 'unknown'
-      end
+      ALL_STATES.detect { |s| unique_states.include?(s) } || self.default_state || 'unknown'
     end
+    private :state_from
   end
 
   # The transfers are described in some manner, like direct transfers of one well to the same well on
