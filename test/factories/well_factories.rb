@@ -22,6 +22,12 @@ Factory.define :well_with_sample_and_without_plate, :parent => :empty_well do |w
   end
 end
 
+Factory.define :tagged_well, :parent => :empty_well do |well|
+  well.after_create do |well|
+    well.aliquots.create!(:sample => Factory(:sample), :tag => Factory(:tag))
+  end
+end
+
 Factory.define :well_with_sample_and_plate, :parent => :well_with_sample_and_without_plate do |well|
   well.plate { |plate| plate.association(:plate) }
 end

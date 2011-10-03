@@ -45,23 +45,16 @@ class PlatePurpose < ActiveRecord::Base
     end
   end
 
-  # Returns a pool ID for the given well.  By default this is based on the one request that leads to the well but,
-  # in the case of the pulldown pipeline, it can be overridden by the derived plate purpose.
-  def pool_id_for_well(well, &block)
-    pooling_requests = requests_for_pool(well)
-    return nil if pooling_requests.empty?
-    pooling_requests.map(&:submission_id).uniq.tap do |submission_ids|
-      raise StandardError, "Cannot handle no submissions" if submission_ids.empty?
-      raise StandardError, "Cannot handle multiple submissions (#{submission_ids.inspect})" if submission_ids.size > 1
-    end.first.tap do |pool_id|
-      yield(pool_id) if block_given?
+  def pool_wells(wells)
+    _pool_wells(wells).all(:select => 'assets.*, submission_id AS pool_id').tap do |wells_with_pool|
+      raise StandardError, "Cannot deal with a well in multiple pools" if wells_with_pool.group_by(&:id).any? { |_, multiple_pools| multiple_pools.uniq.size > 1 }
     end
   end
 
-  def requests_for_pool(well)
-    well.requests_as_target
+  def _pool_wells(wells)
+    wells.pooled_as_target_by(TransferRequest)
   end
-  private :requests_for_pool
+  private :_pool_wells
 
   include Api::PlatePurposeIO::Extensions
   cattr_reader :per_page
@@ -188,7 +181,7 @@ class PlatePurpose < ActiveRecord::Base
 
     attributes[:size] ||= 96
     plates.create_with_barcode!(attributes, &block).tap do |plate|
-      plate.wells.import(Map.where_plate_size(plate.size).all.map { |map| Well.new(:map => map) }) unless do_not_create_wells
+      plate.wells.import(Map.where_plate_size(plate.size).in_reverse_row_major_order.all.map { |map| Well.new(:map => map) }) unless do_not_create_wells
     end
   end
 end

@@ -22,12 +22,6 @@ Feature: Assigning bait libraries to a plate
       And all wells on the plate "Testing bait libraries" have unique samples
       And the UUID for the plate "Testing bait libraries" is "00000000-1111-2222-3333-000000000001"
 
-    Given a "SC hyb" plate called "Target for bait libraries" exists
-      And the "Transfer columns 1-12" transfer template has been used between "Testing bait libraries" and "Target for bait libraries"
-      And the UUID for the plate "Target for bait libraries" is "00000000-1111-2222-3333-000000000002"
-
-    # Make a submission of the stock plate so that we can define the bait libraries.  We make two
-    # distinct submissions here in order to check that the right bait libraries are assigned.
     Given "A1-H6" of the plate with UUID "00000000-1111-2222-3333-000000000001" have been submitted to "Pulldown SC - HiSeq Paired end sequencing" with the following request options:
       | read_length                 | 100                 |
       | bait_library_name           | Human all exon 50MB |
@@ -35,6 +29,10 @@ Feature: Assigning bait libraries to a plate
     Given "A7-H12" of the plate with UUID "00000000-1111-2222-3333-000000000001" have been submitted to "Pulldown SC - HiSeq Paired end sequencing" with the following request options:
       | read_length                 | 100            |
       | bait_library_name           | Mouse all exon |
+
+    Given a "SC hyb" plate called "Target for bait libraries" exists
+      And the "Transfer columns 1-12" transfer template has been used between "Testing bait libraries" and "Target for bait libraries"
+      And the UUID for the plate "Target for bait libraries" is "00000000-1111-2222-3333-000000000002"
 
   Scenario: Previewing the assignment of the bait libraries
     When I make an authorised POST with the following JSON to the API path "/bait_library_layouts/preview":
