@@ -8,6 +8,9 @@ class Plate < Asset
 
   # The default state for a plate comes from the plate purpose
   delegate :default_state, :to => :plate_purpose, :allow_nil => true
+  def state
+    plate_purpose.state_of(self)
+  end
 
   # The type of the barcode is delegated to the plate purpose because that governs the number of wells
   delegate :barcode_type, :to => :plate_purpose, :allow_nil => true

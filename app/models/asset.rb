@@ -40,6 +40,8 @@ class Asset < ActiveRecord::Base
   has_many :requests_as_source, :class_name => 'Request', :foreign_key => :asset_id, :include => :request_metadata
   has_many :requests_as_target, :class_name => 'Request', :foreign_key => :target_asset_id, :include => :request_metadata
 
+  named_scope :requests_as_source_is_a?, lambda { |t| { :joins => :requests_as_source, :conditions => { :requests => { :sti_type => [ t, *Class.subclasses_of(t) ].map(&:name) } } } }
+
   extend ContainerAssociation::Extension
 
   # to override in subclass
