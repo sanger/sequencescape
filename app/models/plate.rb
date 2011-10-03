@@ -50,7 +50,7 @@ class Plate < Asset
     iteration_of_plate['iteration'].to_i
   end
 
-  contains :wells, :order => '`assets`.map_id ASC' do
+  contains :wells do #, :order => '`assets`.map_id ASC' do
     def located_at(location)
       super(proxy_owner, location)
     end
@@ -72,55 +72,24 @@ class Plate < Asset
       end
     end
 
-    # Yields each pool of wells as it walks in the given direction.
-    def walk_in_pools(direction = :column, &block)
-      ActiveSupport::OrderedHash.new { |h,k| h[k] = [] }.tap do |pools|
-        send(:"walk_in_#{direction}_major_order") do |well, _|
-          proxy_owner.pool_id_for_well(well) { |pool_id| pools[pool_id] << well }
-        end
-      end.each do |pool_id, wells|
-        yield(pool_id, wells)
-      end
+    # Returns the wells with their pool identifier included
+    def with_pool_id
+      proxy_owner.plate_purpose.pool_wells(self)
+    end
+
+    # Yields each pool and the wells that are in it
+    def walk_in_pools(&block)
+      with_pool_id.group_by(&:pool_id).each(&block)
     end
 
     # Walks the wells A1, B1, C1, ... A2, B2, C2, ... H12
     def walk_in_column_major_order(&block)
-      locations_to_well = Hash[self.map { |well| [ well.map.description, well ] }]
-      Map.walk_plate_in_column_major_order(proxy_owner.size) do |map, index|
-        well = locations_to_well[map.description]
-        yield(well, index) if well.present?
-      end
+      self.in_column_major_order.each { |well| yield(well, well.map.column_order) }
     end
 
     # Walks the wells A1, A2, ... B1, B2, ... H12
     def walk_in_row_major_order(&block)
-      locations_to_well = Hash[self.map { |well| [ well.map.description, well ] }]
-      Map.walk_plate_in_row_major_order(proxy_owner.size) do |map, index|
-        well = locations_to_well[map.description]
-        yield(well, index) if well.present?
-      end
-    end
-
-    # Returns the wells grouped into columns
-    def in_columns
-      width, height = Map.plate_width(proxy_owner.size), Map.plate_length(proxy_owner.size)
-      wells_in_columns, position = (1..width).map { |_| [] }, 0
-      self.walk_in_column_major_order do |well, _|
-        wells_in_columns[position / height] << well
-        position += 1
-      end
-      wells_in_columns
-    end
-
-    # Returns the wells grouped into rows
-    def in_rows
-      width, height = Map.plate_width(proxy_owner.size), Map.plate_length(proxy_owner.size)
-      wells_in_rows, position = (1..height).map { |_| [] }, 0
-      self.walk_in_row_major_order do |well, _|
-        wells_in_rows[position / width] << well
-        position += 1
-      end
-      wells_in_rows
+      self.in_row_major_order.each { |well| yield(well, well.map.row_order) }
     end
   end
 

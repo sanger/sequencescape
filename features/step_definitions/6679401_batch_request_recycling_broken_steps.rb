@@ -89,9 +89,7 @@ def build_batch_for(name, count, &block)
     else
       asset_attributes[:location_id] = pipeline.location_id
     end
-    Factory(submission_details[:asset_type], asset_attributes).tap do |asset|
-      asset.aliquots.create!(:sample => Factory(:sample))
-    end
+    Factory(submission_details[:asset_type], asset_attributes)
   end
 
   # Build a submission that should end up in the appropriate inbox, once all of the assets have been

@@ -30,17 +30,14 @@ class TagLayout < ActiveRecord::Base
   # After creating the instance we can layout the tags into the wells.
   after_create :layout_tags_into_wells
 
-  # Subclasses override this method to provide the implementation of the tag layout
-  def layout_tags_into_wells
-    raise StandardError, 'Specific implementation required'
-  end
-  private :layout_tags_into_wells
-
   def walk_wells(&block)
     # Adjust each of the groups so that any wells that are in the same pool as those at the same position
     # in the group to the left are moved to a non-clashing position.  Effectively this makes the view of the
     # plate slightly jagged.
-    wells_in_groups = plate.wells.send(:"in_#{direction.pluralize}").map { |wells| wells.map { |well| [ well, plate.pool_id_for_well(well) ] } }
+    group_size      = direction.to_sym == :column ? Map.plate_length(plate.size) : Map.plate_width(plate.size)
+    wells_in_groups = plate.wells.send(:"in_#{direction}_major_order").with_pool_id.in_groups_of(group_size).map do |wells|
+      wells.map { |well| [ well, well.pool_id ] }
+    end
     wells_in_groups.each_with_index do |current_group, group|
       next if group == 0
       prior_group = wells_in_groups[group-1]

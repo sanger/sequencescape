@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110930120355) do
+ActiveRecord::Schema.define(:version => 20110930201202) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -500,9 +500,11 @@ ActiveRecord::Schema.define(:version => 20110930120355) do
   end
 
   create_table "maps", :force => true do |t|
-    t.string  "description", :limit => 4
+    t.string  "description",  :limit => 4
     t.integer "asset_size"
     t.integer "location_id"
+    t.integer "row_order"
+    t.integer "column_order"
   end
 
   add_index "maps", ["description", "asset_size"], :name => "index_maps_on_description_and_asset_size"

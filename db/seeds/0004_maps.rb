@@ -9,13 +9,28 @@
 #
 map_data = []
 [ 96, 384 ].each do |plate_size|
-  (1..plate_size).map do |index|
-    map_data << [
-         index, 
-         Map.horizontal_plate_position_to_description(index, plate_size), 
-         plate_size]
+  Map.plate_dimensions(plate_size) do |width, height|
+    details = (0...plate_size).map do |index|
+      {
+        :location_id => index + 1,
+        :description => Map.horizontal_plate_position_to_description(index+1, plate_size),
+        :asset_size  => plate_size
+      }
+    end
+
+    (0...plate_size).each do |index|
+      details[((index % height)*width)+(index/height)][:column_order] = index
+      details[index][:row_order] = index
+    end
+
+    map_data.concat(details)
   end
 end
 
-Map.import [:location_id, :description, :asset_size], map_data, :validate => false
+COLUMNS = [:location_id, :description, :asset_size, :column_order, :row_order]
+Map.import(
+  COLUMNS,
+  map_data.map { |details| COLUMNS.map { |k| details[k] } },
+  :validate => false
+)
 

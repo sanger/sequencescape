@@ -21,7 +21,7 @@ end
 
 Given /^the last batch has (\d+) requests?$/ do |count|
   batch          = Batch.last or raise StandardError, 'There appear to be no batches'
-  batch.requests = (1..count.to_i).map { |_| Factory(:request, :request_type => batch.pipeline.request_type) }
+  batch.requests = (1..count.to_i).map { |_| Factory(:request_suitable_for_starting, :request_type => batch.pipeline.request_type) }
 end
 
 Given /^"([^\"]+)" is the owner of batch with ID (\d+)$/ do |login, id|

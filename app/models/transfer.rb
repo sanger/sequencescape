@@ -88,11 +88,6 @@ class Transfer < ActiveRecord::Base
         validates_presence_of :transfers, :allow_blank => false
       end
     end
-
-    def well_from(plate, location)
-      plate.wells.detect { |well| well.map.description == location }
-    end
-    private :well_from
   end
 
   # The transfer goes from the source to a specified destination and this can only happen once.
@@ -136,7 +131,7 @@ class Transfer < ActiveRecord::Base
     # on, just that they are all of equal depth.
     def locate_stock_wells_for(plate)
       # Optimisation: if the plate is a stock plate then it's wells are it's stock wells!
-      return Hash[plate.wells.map { |w| [w,[w]] }] if plate.stock_plate?
+      return Hash[plate.wells.with_pool_id.map { |w| [w,[w]] }] if plate.stock_plate?
 
       # Find the first well on the plate that has something in it.  Then find the distance from that well
       # to it's stock well.  We'll use that as the stock well depth to find.
@@ -156,9 +151,11 @@ class Transfer < ActiveRecord::Base
       # One plate well can come from many stock wells, which means that we build a list.  But first,
       # let's load the wells themselves with some efficiency!
       (Hash.new { |h,k| h[k] = [] }).tap do |plate_wells_to_stock_wells|
-        eager_loaded_wells = Hash[Well.find(results.map { |r| [r['plate_well_id'],r['stock_well_id']] }.flatten.uniq).map { |w| [w.id.to_i,w] }]
+        plate_well_ids, stock_well_ids = results.map { |r| r['plate_well_id'].to_i }, results.map { |r| r['stock_well_id'].to_i }
+        eager_loaded_plate_wells       = Hash[plate.wells.with_pool_id.select { |w| plate_well_ids.include?(w.id.to_i) }.map { |w| [w.id.to_i,w] }]
+        eager_loaded_stock_wells       = Hash[Well.find(stock_well_ids).map { |w| [w.id.to_i,w] }]
         results.each do |r|
-          plate_wells_to_stock_wells[eager_loaded_wells[r['plate_well_id'].to_i]] << eager_loaded_wells[r['stock_well_id'].to_i]
+          plate_wells_to_stock_wells[eager_loaded_plate_wells[r['plate_well_id'].to_i]] << eager_loaded_stock_wells[r['stock_well_id'].to_i]
         end
       end
     end
