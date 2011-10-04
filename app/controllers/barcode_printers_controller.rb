@@ -81,7 +81,7 @@ class BarcodePrintersController < ApplicationController
         asset.barcode = AssetBarcode.new_barcode
         asset.save!
         end
-        printables.push PrintBarcode::Label.new({ :number => asset.barcode, :study => "#{asset.tube_name}", :suffix => "" })
+        printables.push PrintBarcode::Label.new({ :number => asset.barcode, :study => "#{asset.tube_name}", :prefix => prefix, :suffix => "" })
        end
 
        unless printables.empty?
@@ -92,6 +92,7 @@ class BarcodePrintersController < ApplicationController
     redirect_to succes_url
 
     rescue SOAP::FaultError
+    logger.error($!)
     flash[:warning] = "There is a problem with the selected printer. Please report it to Systems."
     redirect_to failure_url
   end
