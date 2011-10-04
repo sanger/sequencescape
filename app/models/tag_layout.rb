@@ -44,6 +44,10 @@ class TagLayout < ActiveRecord::Base
 
       current_group.each_with_index do |well_and_pool, index|
         break if prior_group.size <= index
+
+        # Assume that, if the current well isn't in a pool, that it is in the same pool as the well prior
+        # to it in the group.  That way empty wells are treated as though they are part of the pool.
+        well_and_pool[-1] ||= (index.zero? ? prior_group.last : current_group[index-1]).last
         next unless prior_group[index].last == well_and_pool.last
 
         current_group.push(well_and_pool)                # Move the well to the end of the group

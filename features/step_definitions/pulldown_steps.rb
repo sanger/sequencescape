@@ -48,6 +48,13 @@ Given /^"([^\"]+)" of (the plate .+) have been (submitted to "[^"]+")$/ do |rang
   )
 end
 
+Given /^"([^\"]+)" of (the plate .+) have been failed$/ do |range, plate|
+  plate.wells.select(&range.method(:include?)).each do |well|
+    well.aliquots.clear
+    well.requests_as_target.map(&:destroy)
+  end
+end
+
 Given /^"([^\"]+)" of (the plate .+) have been (submitted to "[^\"]+") with the following request options:$/ do |range, plate, template, table|
   create_submission_of_assets(
     template,
