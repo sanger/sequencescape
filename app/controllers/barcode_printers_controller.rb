@@ -69,7 +69,6 @@ class BarcodePrintersController < ApplicationController
   # This module define common behavior used by other controller to print things
   module Print
   def print_asset_labels(succes_url, failure_url)
-    debugger
     assets = params[:printables]
     prefix = nil
     unless assets.nil?
