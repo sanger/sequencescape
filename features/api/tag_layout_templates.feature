@@ -219,6 +219,353 @@ Feature: Access tag layout templates through the API
       | H12  | CCGG |
 
   @tag_layout @create @barcode-service
+  Scenario: Creating a tag layout from a tag layout template where wells have been failed
+    Given the plate barcode webservice returns "1000001..1000002"
+
+    Given the column order tag layout template "Test tag layout" exists
+      And the UUID for the tag layout template "Test tag layout" is "00000000-1111-2222-3333-444444444444"
+      And the tag group for tag layout template "Test tag layout" is called "Tag group 1"
+      And the tag group for tag layout template "Test tag layout" contains the following tags:
+        | index | oligo    |
+        | 1     | TAGCTTGT |
+        | 2     | CGATGTTT |
+        | 3     | GCCAATGT |
+        | 4     | ACAGTGGT |
+        | 5     | ATCACGTT |
+        | 6     | GATCAGCG |
+        | 7     | CAGATCTG |
+        | 8     | TTAGGCAT |
+        | 9     | GGCTACAG |
+        | 10    | CTTGTACT |
+        | 11    | ACTTGATG |
+        | 12    | TGACCACT |
+        | 13    | TGGTTGTT |
+        | 14    | TCTCGGTT |
+        | 15    | TAAGCGTT |
+        | 16    | TCCGTCTT |
+        | 17    | TGTACCTT |
+        | 18    | TTCTGTGT |
+        | 19    | TCTGCTGT |
+        | 20    | TTGGAGGT |
+        | 21    | TCGAGCGT |
+        | 22    | TGATACGT |
+        | 23    | TGCATAGT |
+        | 24    | TTGACTCT |
+        | 25    | TGCGATCT |
+        | 26    | TTCCTGCT |
+        | 27    | TAGTGACT |
+        | 28    | TACAGGAT |
+        | 29    | TCCTCAAT |
+        | 30    | TGTGGTTG |
+        | 31    | TAGTCTTG |
+        | 32    | TTCCATTG |
+        | 33    | TCGAAGTG |
+        | 34    | TAACGCTG |
+        | 35    | TTGGTATG |
+        | 36    | TGAACTGG |
+        | 37    | TACTTCGG |
+        | 38    | TCTCACGG |
+        | 39    | TCAGGAGG |
+        | 40    | TAAGTTCG |
+        | 41    | TCCAGTCG |
+        | 42    | TGTATGCG |
+        | 43    | TCATTGAG |
+        | 44    | TGGCTCAG |
+        | 45    | TATGCCAG |
+        | 46    | TCAGATTC |
+        | 47    | TACTAGTC |
+        | 48    | TTCAGCTC |
+        | 49    | TGTCTATC |
+        | 50    | TATGTGGC |
+        | 51    | TTACTCGC |
+        | 52    | TCGTTAGC |
+        | 53    | TACCGAGC |
+        | 54    | TGTTCTCC |
+        | 55    | TTCGCACC |
+        | 56    | TTGCGTAC |
+        | 57    | TCTACGAC |
+        | 58    | TGACAGAC |
+        | 59    | TAGAACAC |
+        | 60    | TCATCCTA |
+        | 61    | TGCTGATA |
+        | 62    | TAGACGGA |
+        | 63    | TGTGAAGA |
+        | 64    | TCTCTTCA |
+        | 65    | TTGTTCCA |
+        | 66    | TGAAGCCA |
+        | 67    | TACCACCA |
+        | 68    | TGCGTGAA |
+        | 69    | GGTGAGTT |
+        | 70    | GATCTCTT |
+        | 71    | GTGTCCTT |
+        | 72    | GACGGATT |
+        | 73    | GCAACATT |
+        | 74    | GGTCGTGT |
+        | 75    | GAATCTGT |
+        | 76    | GTACATCT |
+        | 77    | GAGGTGCT |
+        | 78    | GCATGGCT |
+        | 79    | GTTAGCCT |
+        | 80    | GTCGCTAT |
+        | 81    | GGAATGAT |
+        | 82    | GAGCCAAT |
+        | 83    | GCTCCTTG |
+        | 84    | GTAAGGTG |
+        | 85    | GAGGATGG |
+        | 86    | GTTGTCGG |
+        | 87    | GGATTAGG |
+        | 88    | GATAGAGG |
+        | 89    | GTGTGTCG |
+        | 90    | GCAATCCG |
+        | 91    | GACCTTAG |
+        | 92    | GCCTGTTC |
+        | 93    | GCACTGTC |
+        | 94    | GCTAACTC |
+        | 95    | GATTCATC |
+        | 96    | GTCTTGGC |
+
+      And the UUID of the next tag layout created will be "00000000-1111-2222-3333-000000000002"
+
+    Given a "Stock plate" plate called "Testing the API" exists
+      And the UUID for the plate "Testing the API" is "11111111-2222-3333-4444-000000000002"
+      And all wells on the plate "Testing the API" have unique samples
+
+    Given a "Stock plate" plate called "Testing the tagging" exists
+      And the UUID for the plate "Testing the tagging" is "11111111-2222-3333-4444-000000000001"
+      And the wells for the plate "Testing the API" have been pooled to the plate "Testing the tagging" according to the pooling strategy 96
+      And "F11-F12" of the plate "Testing the tagging" have been failed
+      And "G12-G12" of the plate "Testing the tagging" have been failed
+
+    When I make an authorised POST with the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
+      """
+      {
+        "tag_layout": {
+          "plate": "11111111-2222-3333-4444-000000000001"
+        }
+      }
+      """
+    Then the HTTP response should be "201 Created"
+     And the JSON should match the following for the specified fields:
+      """
+      {
+        "tag_layout": {
+          "actions": {
+            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-000000000002"
+          },
+          "plate": {
+            "actions": {
+              "read": "http://www.example.com/api/1/11111111-2222-3333-4444-000000000001"
+            }
+          },
+
+          "uuid": "00000000-1111-2222-3333-000000000002",
+          "direction": "column",
+
+          "tag_group": {
+            "name": "Tag group 1",
+            "tags": {
+              "1":  "TAGCTTGT",
+              "2":  "CGATGTTT",
+              "3":  "GCCAATGT",
+              "4":  "ACAGTGGT",
+              "5":  "ATCACGTT",
+              "6":  "GATCAGCG",
+              "7":  "CAGATCTG",
+              "8":  "TTAGGCAT",
+              "9":  "GGCTACAG",
+              "10": "CTTGTACT",
+              "11": "ACTTGATG",
+              "12": "TGACCACT",
+              "13": "TGGTTGTT",
+              "14": "TCTCGGTT",
+              "15": "TAAGCGTT",
+              "16": "TCCGTCTT",
+              "17": "TGTACCTT",
+              "18": "TTCTGTGT",
+              "19": "TCTGCTGT",
+              "20": "TTGGAGGT",
+              "21": "TCGAGCGT",
+              "22": "TGATACGT",
+              "23": "TGCATAGT",
+              "24": "TTGACTCT",
+              "25": "TGCGATCT",
+              "26": "TTCCTGCT",
+              "27": "TAGTGACT",
+              "28": "TACAGGAT",
+              "29": "TCCTCAAT",
+              "30": "TGTGGTTG",
+              "31": "TAGTCTTG",
+              "32": "TTCCATTG",
+              "33": "TCGAAGTG",
+              "34": "TAACGCTG",
+              "35": "TTGGTATG",
+              "36": "TGAACTGG",
+              "37": "TACTTCGG",
+              "38": "TCTCACGG",
+              "39": "TCAGGAGG",
+              "40": "TAAGTTCG",
+              "41": "TCCAGTCG",
+              "42": "TGTATGCG",
+              "43": "TCATTGAG",
+              "44": "TGGCTCAG",
+              "45": "TATGCCAG",
+              "46": "TCAGATTC",
+              "47": "TACTAGTC",
+              "48": "TTCAGCTC",
+              "49": "TGTCTATC",
+              "50": "TATGTGGC",
+              "51": "TTACTCGC",
+              "52": "TCGTTAGC",
+              "53": "TACCGAGC",
+              "54": "TGTTCTCC",
+              "55": "TTCGCACC",
+              "56": "TTGCGTAC",
+              "57": "TCTACGAC",
+              "58": "TGACAGAC",
+              "59": "TAGAACAC",
+              "60": "TCATCCTA",
+              "61": "TGCTGATA",
+              "62": "TAGACGGA",
+              "63": "TGTGAAGA",
+              "64": "TCTCTTCA",
+              "65": "TTGTTCCA",
+              "66": "TGAAGCCA",
+              "67": "TACCACCA",
+              "68": "TGCGTGAA",
+              "69": "GGTGAGTT",
+              "70": "GATCTCTT",
+              "71": "GTGTCCTT",
+              "72": "GACGGATT",
+              "73": "GCAACATT",
+              "74": "GGTCGTGT",
+              "75": "GAATCTGT",
+              "76": "GTACATCT",
+              "77": "GAGGTGCT",
+              "78": "GCATGGCT",
+              "79": "GTTAGCCT",
+              "80": "GTCGCTAT",
+              "81": "GGAATGAT",
+              "82": "GAGCCAAT",
+              "83": "GCTCCTTG",
+              "84": "GTAAGGTG",
+              "85": "GAGGATGG",
+              "86": "GTTGTCGG",
+              "87": "GGATTAGG",
+              "88": "GATAGAGG",
+              "89": "GTGTGTCG",
+              "90": "GCAATCCG",
+              "91": "GACCTTAG",
+              "92": "GCCTGTTC",
+              "93": "GCACTGTC",
+              "94": "GCTAACTC",
+              "95": "GATTCATC",
+              "96": "GTCTTGGC"
+            }
+          }
+        }
+      }
+      """
+
+    Then the tags assigned to the plate "Testing the tagging" should be:
+      | well | tag      |
+      | A1   | TAGCTTGT |
+      | B1   | CGATGTTT |
+      | C1   | GCCAATGT |
+      | D1   | ACAGTGGT |
+      | E1   | ATCACGTT |
+      | F1   | GATCAGCG |
+      | G1   | CAGATCTG |
+      | H1   | TTAGGCAT |
+      | A2   | GGCTACAG |
+      | B2   | CTTGTACT |
+      | C2   | ACTTGATG |
+      | D2   | TGACCACT |
+      | E2   | TGGTTGTT |
+      | F2   | TCTCGGTT |
+      | G2   | TAAGCGTT |
+      | H2   | TCCGTCTT |
+      | A3   | TGTACCTT |
+      | B3   | TTCTGTGT |
+      | C3   | TCTGCTGT |
+      | D3   | TTGGAGGT |
+      | E3   | TCGAGCGT |
+      | F3   | TGATACGT |
+      | G3   | TGCATAGT |
+      | H3   | TTGACTCT |
+      | A4   | TGCGATCT |
+      | B4   | TTCCTGCT |
+      | C4   | TAGTGACT |
+      | D4   | TACAGGAT |
+      | E4   | TCCTCAAT |
+      | F4   | TGTGGTTG |
+      | G4   | TAGTCTTG |
+      | H4   | TTCCATTG |
+      | A5   | TCGAAGTG |
+      | B5   | TAACGCTG |
+      | C5   | TTGGTATG |
+      | D5   | TGAACTGG |
+      | E5   | TACTTCGG |
+      | F5   | TCTCACGG |
+      | G5   | TCAGGAGG |
+      | H5   | TAAGTTCG |
+      | A6   | TCCAGTCG |
+      | B6   | TGTATGCG |
+      | C6   | TCATTGAG |
+      | D6   | TGGCTCAG |
+      | E6   | TATGCCAG |
+      | F6   | TCAGATTC |
+      | G6   | TACTAGTC |
+      | H6   | TTCAGCTC |
+      | A7   | TGTCTATC |
+      | B7   | TATGTGGC |
+      | C7   | TTACTCGC |
+      | D7   | TCGTTAGC |
+      | E7   | TACCGAGC |
+      | F7   | TGTTCTCC |
+      | G7   | TTCGCACC |
+      | H7   | TTGCGTAC |
+      | A8   | TCTACGAC |
+      | B8   | TGACAGAC |
+      | C8   | TAGAACAC |
+      | D8   | TCATCCTA |
+      | E8   | TGCTGATA |
+      | F8   | TAGACGGA |
+      | G8   | TGTGAAGA |
+      | H8   | TCTCTTCA |
+      | A9   | TTGTTCCA |
+      | B9   | TGAAGCCA |
+      | C9   | TACCACCA |
+      | D9   | TGCGTGAA |
+      | E9   | GGTGAGTT |
+      | F9   | GATCTCTT |
+      | G9   | GTGTCCTT |
+      | H9   | GACGGATT |
+      | A10  | GCAACATT |
+      | B10  | GGTCGTGT |
+      | C10  | GAATCTGT |
+      | D10  | GTACATCT |
+      | E10  | GAGGTGCT |
+      | F10  | GCATGGCT |
+      | G10  | GTTAGCCT |
+      | H10  | GTCGCTAT |
+      | A11  | GGAATGAT |
+      | B11  | GAGCCAAT |
+      | C11  | GCTCCTTG |
+      | D11  | GTAAGGTG |
+      | E11  | GAGGATGG |
+      | F11  |          |
+      | G11  | GGATTAGG |
+      | H11  | GATAGAGG |
+      | A12  | GTGTGTCG |
+      | B12  | GCAATCCG |
+      | C12  | GACCTTAG |
+      | D12  | GCCTGTTC |
+      | E12  | GCACTGTC |
+      | F12  |          |
+      | G12  |          |
+      | H12  | GTCTTGGC |
+
+  @tag_layout @create @barcode-service
   Scenario: Creating a tag layout with substitutions from a tag layout template
     Given the plate barcode webservice returns "1000001..1000002"
 
