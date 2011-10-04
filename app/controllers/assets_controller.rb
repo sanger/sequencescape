@@ -215,17 +215,8 @@ class AssetsController < ApplicationController
   end
 
   def print_assets
-    printables = []
-    printables.push PrintBarcode::Label.new({ :number => @asset.barcode, :study => "#{@asset.barcode}_#{@asset.name.gsub("_", " ")}", :suffix => "" })
-    unless printables.empty?
-      BarcodePrinter.print(printables, params[:printer])
-    end
-
-    flash[:notice] = "Your labels have been sent to printer #{params[:printer]}."
-    redirect_to asset_url(@asset)
-  rescue SOAP::FaultError
-    flash[:warning] = "There is a problem with the selected printer. Please report it to Systems."
-    redirect_to asset_url(@asset)
+    params[:printables]={@asset =>1}
+    return print_asset_labels(asset_url(@asset), asset_url(@asset))
   end
   def submit_wells
     @asset = Asset.find params[:id]
