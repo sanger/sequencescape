@@ -69,6 +69,7 @@ class BarcodePrintersController < ApplicationController
   # This module define common behavior used by other controller to print things
   module Print
   def print_asset_labels(succes_url, failure_url)
+    debugger
     assets = params[:printables]
     prefix = nil
     unless assets.nil?
@@ -81,7 +82,7 @@ class BarcodePrintersController < ApplicationController
         asset.barcode = AssetBarcode.new_barcode
         asset.save!
         end
-        printables.push PrintBarcode::Label.new({ :number => asset.barcode, :study => "#{asset.tube_name}", :suffix => "" })
+        printables.push PrintBarcode::Label.new({ :number => asset.barcode, :study => "#{asset.tube_name}", :prefix => prefix, :suffix => "" })
        end
 
        unless printables.empty?
@@ -92,6 +93,7 @@ class BarcodePrintersController < ApplicationController
     redirect_to succes_url
 
     rescue SOAP::FaultError
+    logger.error($!)
     flash[:warning] = "There is a problem with the selected printer. Please report it to Systems."
     redirect_to failure_url
   end
