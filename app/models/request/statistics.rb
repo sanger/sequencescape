@@ -83,7 +83,13 @@ module Request::Statistics
   # Returns a hash that maps from the RequestType to the information about the number of requests in various
   # states.  This is effectively summary data that can be displayed in a tabular format for the user.
   def progress_statistics
-    counters  = self.all(:select => 'request_type_id, state, count(*) as total', :group => 'request_type_id, state')
+    counters  = Request.find_by_sql(%Q(
+    SELECT request_type_id, state, count(*) as total
+    FROM requests r
+    INNER JOIN (assets AS a, aliquots AS al)
+       ON (r.asset_id = a.id AND  al.receptacle_id = a.id) 
+    WHERE al.study_id = #{id}
+    GROUP BY request_type_id, state))
     tabulated = Hash.new { |h,k| h[k] = Counter.new }
     tabulated.tap do
       counters.each do |request_type_state_count|
