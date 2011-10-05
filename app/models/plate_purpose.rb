@@ -35,6 +35,11 @@ class PlatePurpose < ActiveRecord::Base
 
   include Relationship::Associations
 
+  # The state of a plate is based on the transfer requests.
+  def state_of(plate)
+    plate.send(:state_from, plate.transfer_requests)
+  end
+
   # Updates the state of the specified plate to the specified state.  The basic implementation does this by updating
   # all of the TransferRequest instances to the state specified.  If contents is blank then the change is assumed to 
   # relate to all wells of the plate, otherwise only the selected ones are updated.
@@ -44,6 +49,17 @@ class PlatePurpose < ActiveRecord::Base
       request.update_attributes!(:state => state) if contents.empty? or contents.include?(request.target_asset.map.description)
     end
   end
+
+  def pool_wells(wells)
+    _pool_wells(wells).all(:select => 'assets.*, submission_id AS pool_id').tap do |wells_with_pool|
+      raise StandardError, "Cannot deal with a well in multiple pools" if wells_with_pool.group_by(&:id).any? { |_, multiple_pools| multiple_pools.uniq.size > 1 }
+    end
+  end
+
+  def _pool_wells(wells)
+    wells.pooled_as_target_by(TransferRequest)
+  end
+  private :_pool_wells
 
   include Api::PlatePurposeIO::Extensions
   cattr_reader :per_page
@@ -170,7 +186,7 @@ class PlatePurpose < ActiveRecord::Base
 
     attributes[:size] ||= 96
     plates.create_with_barcode!(attributes, &block).tap do |plate|
-      plate.wells.import(Map.where_plate_size(plate.size).all.map { |map| Well.new(:map => map) }) unless do_not_create_wells
+      plate.wells.import(Map.where_plate_size(plate.size).in_reverse_row_major_order.all.map { |map| Well.new(:map => map) }) unless do_not_create_wells
     end
   end
 end

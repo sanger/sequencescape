@@ -28,15 +28,22 @@ class Transfer::BetweenPlates < Transfer
   # an entire plate.  Subsequent plates are therefore only partially complete.
   #++
   def each_transfer(&block)
-    transfers_we_did_not_make = []
-    transfers.each do |source_location, destination_location|
-      source_well = well_from(source, source_location)
-      if source_well.nil? or source_well.aliquots.empty? or source_well.failed? or source_well.cancelled?
-        transfers_we_did_not_make.push(source_location)
-      else
-        yield(well_from(source, source_location), well_from(destination, destination_location))
-      end
+    # Partition the source plate wells into ones that are good and others that are bad.  The
+    # bad wells will be eliminated after we've done the transfers for the good ones.
+    bad_wells, good_wells = source.wells.located_at_position(transfers.keys).with_pool_id.partition do |well|
+      well.nil? or well.aliquots.empty? or well.failed? or well.cancelled?
     end
+
+    source_wells          = Hash[good_wells.map { |well| [well.map.description, well] }]
+    destination_locations = source_wells.keys.map { |p| transfers[p] }
+    destination_wells     = Hash[destination.wells.located_at_position(destination_locations).map { |well| [well.map.description, well] }]
+
+    source_wells.each do |location, source_well|
+      yield(source_well, destination_wells[transfers[location]])
+    end
+
+    # Eliminate any of the transfers that were not made because of the bad source wells
+    transfers_we_did_not_make = bad_wells.map { |well| well.map.description }
     transfers.delete_if { |k,_| transfers_we_did_not_make.include?(k) }
   end
   private :each_transfer

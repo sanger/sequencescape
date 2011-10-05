@@ -18,7 +18,10 @@ class Transfer < ActiveRecord::Base
   end
 
   module State
-    ALL_STATES = [ 'pending', 'started', 'passed', 'failed', 'cancelled' ].sort
+    # These are all of the valid states but keep them in a priority order: in other words, 'started' is more important
+    # than 'pending' when there are multiple requests (like a plate where half the wells have been started, the others
+    # are failed).
+    ALL_STATES = [ 'started', 'pending', 'passed', 'failed', 'cancelled' ]
 
     def self.included(base)
       base.class_eval do
@@ -27,7 +30,7 @@ class Transfer < ActiveRecord::Base
 
           # If all of the states are present there is no point in actually adding this set of conditions because we're
           # basically looking for all of the plates.
-          if states.sort != ALL_STATES
+          if states.sort != ALL_STATES.sort
             # Note that 'state IS NULL' is included here for plates that are stock plates, because they will not have any 
             # transfer requests coming into their wells and so we can assume they are pending (from the perspective of
             # pulldown at least).
@@ -60,23 +63,15 @@ class Transfer < ActiveRecord::Base
     # The state of an asset is based on the transfer requests for the asset.  If they are all in the same
     # state then it takes that state.  Otherwise we take the "most optimum"!
     def state
-      state_requests = self.transfer_requests
+      state_from(self.transfer_requests)
+    end
 
-      # If there is only one state then it's obviously that ...
+    def state_from(state_requests)
       unique_states = state_requests.map(&:state).uniq
       return unique_states.first if unique_states.size == 1
-
-      # These are the prioritised states.  Started overrides pending, which overrides passed, which
-      # overrides failed or cancelled (we don't really care which!).
-      case
-      when unique_states.include?('started')   then 'started'
-      when unique_states.include?('pending')   then 'pending'
-      when unique_states.include?('passed')    then 'passed'
-      when unique_states.include?('failed')    then 'failed'
-      when unique_states.include?('cancelled') then 'cancelled'
-      else self.default_state || 'unknown'
-      end
+      ALL_STATES.detect { |s| unique_states.include?(s) } || self.default_state || 'unknown'
     end
+    private :state_from
   end
 
   # The transfers are described in some manner, like direct transfers of one well to the same well on
@@ -88,11 +83,6 @@ class Transfer < ActiveRecord::Base
         validates_presence_of :transfers, :allow_blank => false
       end
     end
-
-    def well_from(plate, location)
-      plate.wells.detect { |well| well.map.description == location }
-    end
-    private :well_from
   end
 
   # The transfer goes from the source to a specified destination and this can only happen once.
@@ -136,7 +126,7 @@ class Transfer < ActiveRecord::Base
     # on, just that they are all of equal depth.
     def locate_stock_wells_for(plate)
       # Optimisation: if the plate is a stock plate then it's wells are it's stock wells!
-      return Hash[plate.wells.map { |w| [w,[w]] }] if plate.stock_plate?
+      return Hash[plate.wells.with_pool_id.map { |w| [w,[w]] }] if plate.stock_plate?
 
       # Find the first well on the plate that has something in it.  Then find the distance from that well
       # to it's stock well.  We'll use that as the stock well depth to find.
@@ -156,9 +146,11 @@ class Transfer < ActiveRecord::Base
       # One plate well can come from many stock wells, which means that we build a list.  But first,
       # let's load the wells themselves with some efficiency!
       (Hash.new { |h,k| h[k] = [] }).tap do |plate_wells_to_stock_wells|
-        eager_loaded_wells = Hash[Well.find(results.map { |r| [r['plate_well_id'],r['stock_well_id']] }.flatten.uniq).map { |w| [w.id.to_i,w] }]
+        plate_well_ids, stock_well_ids = results.map { |r| r['plate_well_id'].to_i }, results.map { |r| r['stock_well_id'].to_i }
+        eager_loaded_plate_wells       = Hash[plate.wells.with_pool_id.select { |w| plate_well_ids.include?(w.id.to_i) }.map { |w| [w.id.to_i,w] }]
+        eager_loaded_stock_wells       = Hash[Well.find(stock_well_ids).map { |w| [w.id.to_i,w] }]
         results.each do |r|
-          plate_wells_to_stock_wells[eager_loaded_wells[r['plate_well_id'].to_i]] << eager_loaded_wells[r['stock_well_id'].to_i]
+          plate_wells_to_stock_wells[eager_loaded_plate_wells[r['plate_well_id'].to_i]] << eager_loaded_stock_wells[r['stock_well_id'].to_i]
         end
       end
     end

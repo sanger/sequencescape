@@ -27,6 +27,6 @@ end
 Given /^the sample tube "([^\"]+)" has (\d+) aliquots$/ do |tube_name, number|
   tube = SampleTube.find_by_name(tube_name) or raise "Can't find SampleTube named #{tube_name}"
   1.upto(number.to_i-tube.aliquots.size).each do |i|
-    tube.aliquots.create!(:sample => Factory(:sample, :name => "sample_#{i}_for_tube_#{tube_name}"))
+    tube.aliquots.create!(:sample => Factory(:sample, :name => "sample_#{i}_for_tube_#{tube_name}"), :tag => Factory(:tag))
   end
 end

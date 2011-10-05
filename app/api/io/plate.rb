@@ -6,7 +6,7 @@ class Io::Plate < Io::Asset
   define_attribute_and_json_mapping(%Q{
                                     size <=> size
                       plate_purpose.name  => plate_purpose.name
-                                   wells  => wells
+                wells.in_row_major_order  => wells
 
                                    state  => state
                                iteration  => iteration
