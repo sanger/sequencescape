@@ -54,8 +54,12 @@ end
 
 
 Given /^study "([^"]*)" has a plate "([^"]*)" to be volume checked$/ do |study_name, plate_barcode|
+  
   plate = Plate.create!(:barcode => plate_barcode)
-  plate.wells.import((1..24).map { |i| Well.new(:map_id => i) })
+  1.upto(24) do |i|
+    well = Well.create!(:plate => plate, :map_id => i)
+    well.aliquots.create!(:sample => Sample.create!(:name => "Sample_#{plate_barcode}_#{i}"))
+  end
 
   study = Study.find_by_name(study_name)
   RequestFactory.create_assets_requests(plate.wells.map(&:id), study.id)
