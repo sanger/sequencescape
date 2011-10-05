@@ -34,7 +34,8 @@ Given /^I have a plate "([^"]*)" in study "([^"]*)" with (\d+) samples in asset 
   asset_group = study.asset_groups.find_by_name(asset_group_name) || study.asset_groups.create!(:name => asset_group_name)
   asset_group.assets << (1..number_of_samples.to_i).map do |index|
     Factory(:well, :name => "Well_#{plate_barcode}_#{index}", :plate => plate, :map_id => index).tap do |well|
-      well.aliquots.create!(:sample => Factory(:sample, :name => "Sample_#{plate_barcode}_#{index}"))
+      well.aliquots.create!(:sample => Factory(:sample, :name => "Sample_#{plate_barcode}_#{index}"),
+                                              :study => study)
     end
   end
 end
