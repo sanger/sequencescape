@@ -130,12 +130,14 @@ class Study < ActiveRecord::Base
   ]
   DATA_RELEASE_PREVENTION_REASONS = [
     'data validity',
-    'legal'
+    'legal',
+    'replication of data subset'
   ]
 
   DATA_RELEASE_DELAY_FOR_OTHER = 'other'
   DATA_RELEASE_DELAY_REASONS = [
     'phd study',
+    'assay of no other use',
     DATA_RELEASE_DELAY_FOR_OTHER
   ]
 
