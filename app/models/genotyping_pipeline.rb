@@ -1,4 +1,5 @@
 class GenotypingPipeline < Pipeline
+  include Pipeline::InboxGroupedBySubmission
   INBOX_PARTIAL               = 'group_by_parent'
   ALWAYS_SHOW_RELEASE_ACTIONS = true
   

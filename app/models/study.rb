@@ -64,7 +64,13 @@ class Study < ActiveRecord::Base
   has_many :submissions, :through => :orders
   has_many :samples, :through => :study_samples
   has_many :batches
-  has_many :requests
+  has_many :requests, :finder_sql => %q(
+    SELECT DISTINCT (r.id)
+    FROM requests AS r
+      INNER JOIN (assets AS a, aliquots AS al)
+       ON (r.asset_id = a.id AND  al.receptacle_id = a.id) 
+    WHERE al.study_id = #{id}
+  )
   has_many :asset_groups
   has_many :study_reports
 

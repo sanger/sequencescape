@@ -1,11 +1,10 @@
 module StudyReport::StudyDetails
   
   def each_asset_id_in_batches(&block)
-    Asset.find_in_batches(:joins => :requests,
-                          :conditions => {:requests => { :study_id => self.id}},
-                          :select => "DISTINCT assets.id"
+    Aliquot.find_in_batches( :conditions => {:study_id => self.id},
+                          :select => "DISTINCT receptacle_id"
                          ) do |asset_object_ids|
-      asset_ids = asset_object_ids.map(&:id)
+      asset_ids = asset_object_ids.map(&:receptacle_id)
       block.call(asset_ids)
     end
   end

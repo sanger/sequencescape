@@ -50,10 +50,11 @@ end
 
 Given /^plate "([^"]*)" has (\d+) blank samples$/ do |plate_barcode, number_of_blanks|
   plate = Plate.find_by_barcode(plate_barcode)
+  study = plate.study # we need to propagate the study to the new aliquots
   plate.wells.each_with_index do |well,index|
     break if index >= number_of_blanks.to_i
     well.aliquots.clear
-    well.aliquots.create!(:sample => Sample.create!(:name => "#{plate_barcode}_#{index}", :empty_supplier_sample_name => true))
+    well.aliquots.create!(:sample => Sample.create!(:name => "#{plate_barcode}_#{index}", :empty_supplier_sample_name => true), :study => study)
   end
 end
 
