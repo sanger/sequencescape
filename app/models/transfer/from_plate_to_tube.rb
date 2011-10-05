@@ -14,9 +14,16 @@ class Transfer::FromPlateToTube < Transfer
   end
 
   def each_transfer(&block)
-    transfers.each do |location|
-      yield(well_from(source, location), destination)
+    # Partition the source plate wells into ones that are good and others that are bad.  The
+    # bad wells will be eliminated after we've done the transfers for the good ones.
+    bad_wells, good_wells = source.wells.located_at_position(transfers).with_pool_id.partition do |well|
+      well.nil? or well.aliquots.empty? or well.failed? or well.cancelled?
     end
+
+    good_wells.each { |well| yield(well, destination) }
+
+    # Eliminate any of the transfers that were not made because of the bad source wells
+    self.transfers = self.transfers - bad_wells.map { |well| well.map.description }
   end
   private :each_transfer
 end

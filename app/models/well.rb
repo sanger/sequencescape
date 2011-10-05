@@ -10,10 +10,29 @@ class Well < Aliquot::Receptacle
     { :joins => :map, :conditions => { :maps => { :description => location, :asset_size => plate.size } } }
   }
 
+  named_scope :located_at_position, lambda { |position| { :joins => :map, :readonly => false, :conditions => { :maps => { :description => position } } } }
+
   contained_by :plate
   delegate :location, :to => :container , :allow_nil => true
   @@per_page = 500
   has_one :well_attribute
+
+  named_scope :pooled_as_target_by, lambda { |type|
+    {
+      :joins      => 'LEFT JOIN requests ON assets.id=target_asset_id',
+      :conditions => [ '(requests.sti_type IS NULL OR requests.sti_type IN (?))', [ type, *Class.subclasses_of(type) ].map(&:name) ],
+      :select     => 'assets.*, submission_id AS pool_id'
+    }
+  }
+  named_scope :pooled_as_source_by, lambda { |type|
+    {
+      :joins      => 'LEFT JOIN requests ON assets.id=asset_id',
+      :conditions => [ '(requests.sti_type IS NULL OR requests.sti_type IN (?))', [ type, *Class.subclasses_of(type) ].map(&:name) ],
+      :select     => 'assets.*, submission_id AS pool_id'
+    }
+  }
+  named_scope :in_column_major_order, { :joins => :map, :order => 'column_order ASC' }
+  named_scope :in_row_major_order, { :joins => :map, :order => 'row_order ASC' }
 
   after_create :create_well_attribute_if_not_exists
 
@@ -159,15 +178,5 @@ class Well < Aliquot::Receptacle
       return child_asset if child_asset.is_a?(Well)
     end
     nil
-  end
-
-  def pool_id(&block)
-    return nil if requests_as_target.empty?
-    requests_as_target.map(&:submission_id).uniq.tap do |submission_ids|
-      raise StandardError, "Cannot handle no submissions" if submission_ids.empty?
-      raise StandardError, "Cannot handle multiple submissions (#{submission_ids.inspect})" if submission_ids.size > 1
-    end.first.tap do |pool_id|
-      yield(pool_id) if block_given?
-    end
   end
 end

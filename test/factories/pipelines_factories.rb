@@ -27,6 +27,7 @@ Factory.define :asset do |a|
 end
 
 Factory.define :plate do |a|
+  a.plate_purpose { |_| PlatePurpose.find_by_name('Stock plate') }
   a.name                "Plate name"
   a.value               ""
   a.qc_state            ""
@@ -35,8 +36,8 @@ Factory.define :plate do |a|
   a.barcode             {|a| Factory.next :barcode_number }
 end
 
-
 Factory.define :control_plate do |a|
+  a.plate_purpose { |_| PlatePurpose.find_by_name('Stock plate') }
   a.name                "Control Plate name"
   a.value               ""
   a.descriptors         []
@@ -48,27 +49,35 @@ Factory.define :control_plate do |a|
 end
 
 Factory.define :dilution_plate do |a|
+  a.plate_purpose { |_| PlatePurpose.find_by_name('Stock plate') }
   a.barcode             {|a| Factory.next :barcode_number }
 end
 Factory.define :gel_dilution_plate do |a|
+  a.plate_purpose { |_| PlatePurpose.find_by_name('Gel Dilution') }
   a.barcode             {|a| Factory.next :barcode_number }
 end
 Factory.define :pico_assay_a_plate do |a|
+  a.plate_purpose { |_| PlatePurpose.find_by_name('Pico Assay A') }
   a.barcode             {|a| Factory.next :barcode_number }
 end
 Factory.define :pico_assay_b_plate do |a|
+  a.plate_purpose { |_| PlatePurpose.find_by_name('Pico Assay B') }
   a.barcode             {|a| Factory.next :barcode_number }
 end
 Factory.define :pico_assay_plate do |a|
+  a.plate_purpose { |_| PlatePurpose.find_by_name('Stock plate') }
   a.barcode             {|a| Factory.next :barcode_number }
 end
 Factory.define :pico_dilution_plate do |a|
+  a.plate_purpose { |_| PlatePurpose.find_by_name('Pico Dilution') }
   a.barcode             {|a| Factory.next :barcode_number }
 end
 Factory.define :sequenom_qc_plate do |a|
+  a.plate_purpose { |_| PlatePurpose.find_by_name('Sequenom') }
   a.barcode             {|a| Factory.next :barcode_number }
 end
 Factory.define :working_dilution_plate do |a|
+  a.plate_purpose { |_| PlatePurpose.find_by_name('Working Dilution') }
   a.barcode             {|a| Factory.next :barcode_number }
 end
 

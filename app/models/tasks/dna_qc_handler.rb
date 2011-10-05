@@ -2,18 +2,17 @@ module Tasks::DnaQcHandler
   def render_dna_qc_task(task, params)
     @batch = Batch.find(params[:batch_id], :include => [{ :requests => :request_metadata }, :pipeline, :lab_events])
     @rits = @batch.pipeline.request_information_types
-    @requests = @batch.ordered_requests(
+    @requests = @batch.requests.all(
       :include => {
-        :request => {
-          :asset => [
-            :external_properties,
-            :map,
-            :container,
-            :well_attribute,
-            { :aliquots => [ :tag, { :sample => :sample_metadata } ] }
-          ]
-        }
-      }
+        :source_well => [
+          :external_properties,
+          :map,
+          :plate,
+          :well_attribute,
+          { :aliquots => [ :tag, { :sample => :sample_metadata } ] }
+        ]
+      },
+      :order => 'maps.column_order ASC'
     )
 
     unless @batch.started? || @batch.failed?

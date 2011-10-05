@@ -30,23 +30,24 @@ class TagLayout < ActiveRecord::Base
   # After creating the instance we can layout the tags into the wells.
   after_create :layout_tags_into_wells
 
-  # Subclasses override this method to provide the implementation of the tag layout
-  def layout_tags_into_wells
-    raise StandardError, 'Specific implementation required'
-  end
-  private :layout_tags_into_wells
-
   def walk_wells(&block)
     # Adjust each of the groups so that any wells that are in the same pool as those at the same position
     # in the group to the left are moved to a non-clashing position.  Effectively this makes the view of the
     # plate slightly jagged.
-    wells_in_groups = plate.wells.send(:"in_#{direction.pluralize}").map { |wells| wells.map { |well| [ well, well.pool_id ] } }
+    group_size      = direction.to_sym == :column ? Map.plate_length(plate.size) : Map.plate_width(plate.size)
+    wells_in_groups = plate.wells.send(:"in_#{direction}_major_order").with_pool_id.in_groups_of(group_size).map do |wells|
+      wells.map { |well| [ well, well.pool_id ] }
+    end
     wells_in_groups.each_with_index do |current_group, group|
       next if group == 0
       prior_group = wells_in_groups[group-1]
 
       current_group.each_with_index do |well_and_pool, index|
         break if prior_group.size <= index
+
+        # Assume that, if the current well isn't in a pool, that it is in the same pool as the well prior
+        # to it in the group.  That way empty wells are treated as though they are part of the pool.
+        well_and_pool[-1] ||= (index.zero? ? prior_group.last : current_group[index-1]).last
         next unless prior_group[index].last == well_and_pool.last
 
         current_group.push(well_and_pool)                # Move the well to the end of the group
@@ -73,8 +74,8 @@ class TagLayout < ActiveRecord::Base
 
     # We can now check that the pools do not contain duplicate tags.
     pool_to_tag = Hash.new { |h,k| h[k] = [] }
-    plate.wells.walk_in_column_major_order do |well, _|
-      well.pool_id { |pool_id| pool_to_tag[pool_id] << well.aliquots.map(&:tag).uniq }
+    plate.wells.walk_in_pools do |pool_id, wells|
+      pool_to_tag[pool_id] = wells.map { |well| well.aliquots.map(&:tag).uniq }.flatten
     end
     errors.add_to_base('duplicate tags within a pool') if pool_to_tag.any? { |_,t| t.uniq.size > 1 }
   end
