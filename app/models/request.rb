@@ -158,7 +158,7 @@ class Request < ActiveRecord::Base
   named_scope :ordered_for_submission_grouped_inbox, :order => 'submission_id DESC, id ASC'
 
   named_scope :for_asset_id, lambda { |id| { :conditions => { :asset_id => id } } }
-  named_scope :for_study_id, lambda { |id| { :conditions => { :study_id => id } } }
+  named_scope :for_study_id, lambda { |id| { :conditions => { :initial_study_id => id } } }
   named_scope :for_workflow, lambda { |workflow| { :joins => :workflow, :conditions => { :workflow => { :key => workflow } } } }
   named_scope :for_request_types, lambda { |types| { :joins => :request_type, :conditions => { :request_types => { :key => types } } } }
   
@@ -167,7 +167,7 @@ class Request < ActiveRecord::Base
   }
 
   named_scope :find_all_target_asset, lambda { |target_asset_id| { :conditions => [ 'target_asset_id = ?', "#{target_asset_id}" ] } }
-  named_scope :for_studies, lambda { |*studies| { :conditions => { :study_id => studies.map(&:id) } } }
+  named_scope :for_studies, lambda { |*studies| { :conditions => { :initial_study_id => studies.map(&:id) } } }
 
   #------
   #TODO: use eager loading association

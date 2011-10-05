@@ -65,7 +65,7 @@ class Study < ActiveRecord::Base
   has_many :samples, :through => :study_samples
   has_many :batches
   has_many :requests, :finder_sql => %q(
-    SELECT DISTINCT (r.id)
+    SELECT DISTINCT r.*
     FROM requests AS r
       INNER JOIN (assets AS a, aliquots AS al)
        ON (r.asset_id = a.id AND  al.receptacle_id = a.id) 
