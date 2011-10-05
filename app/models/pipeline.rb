@@ -134,7 +134,6 @@ class Pipeline < ActiveRecord::Base
     [].tap do |group_key|
       group_key << holder_map[request.id] if group_by_parent?
       group_key << request.submission_id  if group_by_submission?
-      group_key << request.study_id       if group_by_study?
     end
   end
 

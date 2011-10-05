@@ -399,16 +399,24 @@ class Batch < ActiveRecord::Base
     self.studies.first
   end
 
-  # TODO: Er, can't these be replaced by:
-  # has_many :studies, :through => :requests, :group => :study_id
-  # has_many :projects, :through => :requests, :group => :project_id
+  #TODO has_many :aliquots, :finder_sql => ...
+  def aliquots
+    self.requests.map(&:asset).compact.map(&:aliquots).flatten.compact
+  end
 
+  #TODO has_many :orders, :finder_sql => ...
+  def orders
+    self.requests.map(&:submission).compact.map(&:orders).flatten.compact
+  end
+
+  #not efficient, but not used often
   def studies
-    self.requests.find(:all, :group => :study_id).select{ |a| a.study.nil? == false }.map{ |request| request.study }
+    #we use order and not aliquots because aliquots can be empty
+    self.orders.map(&:study).compact
   end
 
   def projects
-    self.requests.find(:all, :group => :project_id).select{ |a| a.project.nil? == false }.map{ |request| request.project }
+    self.orders.map(&:project).compact
   end
 
   def requests_by_study(*args)
@@ -504,7 +512,7 @@ class Batch < ActiveRecord::Base
         csv << [ 
           well.plate.sanger_human_barcode,
           well.map.description,
-          request.submission.name,
+          well.study.try(:name),
           request.target_asset.try(:barcode),
           tag_group_name,
           tag_name,

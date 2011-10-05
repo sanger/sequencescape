@@ -173,7 +173,7 @@ Factory.define :request_with_submission, :class => Request do |request|
   # That leave a chance to children factory to build asset beforehand
   request.after_create do |request|
     request.submission = Factory::submission(:workflow => request.workflow,
-                                          :study => request.study,
+                                          :study => request.initial_study,
                                           :project => request.initial_project,
                                           :request_types => [request.request_type.id.to_s],
                                           :user => request.user,

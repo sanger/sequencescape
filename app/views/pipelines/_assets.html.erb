@@ -6,8 +6,8 @@
 			<th class='label'><%= link_to "Barcode", "javascript:void(0);" %></th>
       <th class='label'><%= link_to "Wells", "javascript:void(0);" %></th>
       <% if @pipeline.display_next_pipeline? %><th class="label"><%= link_to "Next Pipeline", "javascript:void(0);" %></th><% end %>
-			<th class='label'><% if @pipeline.group_by_submission? -%><%= link_to "Submission", "javascript:void(0);" %><% end -%></th>
-			<th class='label'><% if @pipeline.group_by_study? %><%= link_to "Study", "javascript:void(0);" %><% end%></th>
+			<th class='label'><%= link_to "Submission", "javascript:void(0);" %></th>
+			<th class='label'><%= link_to "Study", "javascript:void(0);" %></th>
       <th class='label'></th>
     </tr>
   </thead>
@@ -21,8 +21,7 @@
       <%- #beware , the group will be destructed after the shift operation %>
       <%  parent  = @pipeline.group_by_parent? && ( pid = group.shift ) && Asset.find(pid) %>
       <% submission_id = @pipeline.group_by_submission? && group.shift  %>
-      <% study_id = @pipeline.group_by_study? && group.shift %>
-      <% study =  study_id && Study.find(study_id) %>
+      <% submission =  submission_id && Submission.find(submission_id) %>
       <% unless parent.nil? %>
         <tr>
           <td class="request center" width='5%'>
@@ -42,8 +41,8 @@
         		<% end -%>
 					</td>
 					<td>
-          	<% if @pipeline.group_by_study? && study -%>
-            	<%= link_to study.name,"#{configatron.studies_url}/studies/#{study.id}" %>
+          	<% if submission -%>
+            	<%= submission.name %>
         		<% end -%>
 					</td>
           <td><%= link_to 'Show plate', show_plate_asset_url(parent) %></td>
