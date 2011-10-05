@@ -62,8 +62,13 @@ class Asset < ActiveRecord::Base
 
   named_scope :of_type, lambda { |*args| { :conditions => { :sti_type => args.map { |t| [t, Class.subclasses_of(t)] }.flatten.map(&:name) } } }
 
-  has_many :studies, :class_name => "Study", :through => :requests, :source => :study, :uniq => true
+  def studies
+    []
+  end
 
+  def study_ids
+    []
+  end
   # Named scope for search by query string behaviour
   named_scope :for_search_query, lambda { |query|
     {

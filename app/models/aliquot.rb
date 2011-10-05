@@ -66,6 +66,8 @@ class Aliquot < ActiveRecord::Base
     def type
       self.class.name.underscore
     end
+
+    has_many :studies, :through => :aliquots
   end
 
   # Something that is aliquotable can be part of an aliquot.  So sample and tag are both examples.

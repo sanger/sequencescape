@@ -10,10 +10,19 @@ Given /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" su
   Plate.find_by_barcode(plate_barcode).wells.walk_in_column_major_order { |well, _| wells << well }
   wells.compact!
 
+  study = Study.find_by_name(study_name)
+  project = Project.find_by_name("Test project")
+  #we need to set the study on aliquots
+  wells.each do |well|
+    well.aliquots.each do |a|
+      a.update_attributes!(:study_id => study.id, :project_id => project.id)
+    end
+  end
+
   submission_template = SubmissionTemplate.find_by_name(submission_name)
   submission = submission_template.create!(
-    :study    => Study.find_by_name(study_name),
-    :project  => Project.find_by_name("Test project"),
+    :study    => study,
+    :project  => project,
     :workflow => Submission::Workflow.find_by_key('short_read_sequencing'),
     :user     => User.last,
     :assets   => wells,

@@ -92,6 +92,8 @@ ActionController::Routing::Routes.draw do |map|
 
   end
 
+  map.resources :submissions, :controller => "studies/workflows/submissions"
+
   map.resources :properties  do |property|
     property.resources :documents, :controller => "properties/documents", :only => [:show]
   end

@@ -8,7 +8,7 @@ module Pipeline::InboxGroupedBySubmission
   end
 
   # Always group by submission
-  def group_by_submission
+  def group_by_submission?
     true
   end
 
