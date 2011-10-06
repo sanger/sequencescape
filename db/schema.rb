@@ -567,7 +567,7 @@ ActiveRecord::Schema.define(:version => 20111011150028) do
   create_table "pipelines", :force => true do |t|
     t.string   "name"
     t.boolean  "automated"
-    t.boolean  "active",                             :default => true
+    t.boolean  "active",                                      :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "next_pipeline_id"
@@ -575,17 +575,17 @@ ActiveRecord::Schema.define(:version => 20111011150028) do
     t.integer  "location_id"
     t.integer  "request_type_id"
     t.boolean  "group_by_parent"
-    t.string   "asset_type",           :limit => 50
-    t.boolean  "group_by_submission"
+    t.string   "asset_type",                    :limit => 50
+    t.boolean  "group_by_submission_to_delete"
     t.boolean  "multiplexed"
-    t.string   "sti_type",             :limit => 50
+    t.string   "sti_type",                      :limit => 50
     t.integer  "sorter"
-    t.boolean  "paginate",                           :default => false
+    t.boolean  "paginate",                                    :default => false
     t.integer  "max_size"
-    t.boolean  "summary",                            :default => true
-    t.boolean  "group_by_study",                     :default => true
+    t.boolean  "summary",                                     :default => true
+    t.boolean  "group_by_study_to_delete",                    :default => true
     t.integer  "max_number_of_groups"
-    t.boolean  "externally_managed",                 :default => false
+    t.boolean  "externally_managed",                          :default => false
     t.string   "group_name"
   end
 
@@ -767,7 +767,7 @@ ActiveRecord::Schema.define(:version => 20111011150028) do
   end
 
   create_table "requests", :force => true do |t|
-    t.integer  "study_id"
+    t.integer  "initial_study_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
@@ -788,10 +788,10 @@ ActiveRecord::Schema.define(:version => 20111011150028) do
 
   add_index "requests", ["asset_id"], :name => "index_requests_on_asset_id"
   add_index "requests", ["initial_project_id"], :name => "index_requests_on_project_id"
+  add_index "requests", ["initial_study_id", "request_type_id", "state"], :name => "index_requests_on_project_id_and_request_type_id_and_state"
+  add_index "requests", ["initial_study_id"], :name => "index_request_on_project_id"
   add_index "requests", ["item_id"], :name => "index_request_on_item_id"
-  add_index "requests", ["state", "request_type_id", "study_id"], :name => "request_project_index"
-  add_index "requests", ["study_id", "request_type_id", "state"], :name => "index_requests_on_project_id_and_request_type_id_and_state"
-  add_index "requests", ["study_id"], :name => "index_request_on_project_id"
+  add_index "requests", ["state", "request_type_id", "initial_study_id"], :name => "request_project_index"
   add_index "requests", ["submission_id"], :name => "index_requests_on_submission_id"
   add_index "requests", ["target_asset_id"], :name => "index_requests_on_target_asset_id"
   add_index "requests", ["updated_at"], :name => "index_requests_on_updated_at"
@@ -1122,6 +1122,7 @@ ActiveRecord::Schema.define(:version => 20111011150028) do
     t.string   "template_name_to_delete"
     t.integer  "asset_group_id_to_delete"
     t.string   "asset_group_name_to_delete"
+    t.string   "name"
   end
 
   add_index "submissions", ["state"], :name => "index_submissions_on_state"
