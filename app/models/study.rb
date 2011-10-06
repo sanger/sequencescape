@@ -67,7 +67,7 @@ class Study < ActiveRecord::Base
   
   # requests read only so no need to use has_many
   # this return a proper namescope which can be nicely chained
-  def requests
+  def requests(reload=nil)
     Request.for_study(self)
   end
   has_many :asset_groups
