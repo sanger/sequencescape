@@ -1,7 +1,7 @@
 <%- add :title, "Requests" %>
-<% if @requests.empty? && ! @study.nil?  %>
+<% if @study.nil? == false  %>
   <% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(@study) -%>
-<% elsif @requests.size > 1 && ! @requests.first.study.nil?  %>
+<% elsif @requests.size > 1 && ! @requests.first.asset.try(:study).nil?  %>
   <% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(@requests.first.study) -%>
 <% end %>
 
@@ -64,7 +64,7 @@
         <td><%= link_to request.id, request_path(request) %></td>
         <td><%= request.request_type.name unless request.request_type.nil? %></td>
         <td><%= request.user.login unless request.user.blank? %></td>
-        <td><%= link_to(request.submission.name, study_path(request.study)) if request.study %></td>
+        <td><%= link_to(request.submission.name, submission_path(request.submission)) if request.submission %></td>
         <td><%= request.created_at.to_formatted_s(:sortable) %></td>
         <td><%= display_status(request.state) %></td>
       </tr>
