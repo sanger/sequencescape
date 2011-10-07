@@ -1,6 +1,6 @@
 <%= 
   select_tag(
     field_info_id(path, field),
-    options_for_select(field.selection , (field.value && field.value))
+    options_for_select(field.selection.map(&:to_s), field.value.to_s)
   )
 -%>

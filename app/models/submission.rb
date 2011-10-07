@@ -292,7 +292,8 @@ class Submission < ActiveRecord::Base
   end
 
   def compute_input_field_infos()
-    request_attributes.uniq.map(&:to_field_info)
+    details = OpenStruct.new(self.request_options)
+    request_attributes.uniq.map { |attribute| attribute.to_field_info(details) }
   end
   protected :compute_input_field_infos
 end

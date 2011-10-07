@@ -53,16 +53,8 @@ class Studies::Workflows::SubmissionsController < ApplicationController
       options = {}
       options["workflow_id"] = params[:workflow_id]
 
-      @item            = Item.new(options)
-
       # temporary hack to make properties not filtered if we are in the wrong forklow
       current_user.workflow = @workflow
-
-      @field_infos = @submission.input_field_infos
-
-      @request_types_list   = @submission.request_types_list
-
-      @asset_groups    = @study.asset_groups
 
       if current_user.projects.empty?
         flash[:error] = "You do not manage any financial projects.  Please create one or ask an administrator to assign you as manager to a project."
@@ -173,6 +165,8 @@ class Studies::Workflows::SubmissionsController < ApplicationController
       return
     end
 
+    params[:user_id] = current_user.id
+
     respond_to do |format|
       begin
         request_type_multiplier = {}
@@ -185,14 +179,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
           end
         end
 
-        asset_details = asset_source_details_from_request_parameters
-
-        if params[:submission][:comments]
-          @comments = params[:submission][:comments]
-        end
-
-        params[:user_id] = current_user.id
-
+        @comments = params[:submission][:comments] if params[:submission][:comments]
         @properties = params.fetch(:request, {}).fetch(:properties, {})
         @properties[:multiplier] = request_type_multiplier unless request_type_multiplier.empty?
 
@@ -200,8 +187,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
         # there is no way to differentiate betwween an empti array and an empty hash in she controller paramters, so the controller can send us an empty array
         @properties = {} if @properties == []
 
-        @submission = LinearSubmission.build!(asset_details.merge(
-          :template        => @submission_template,
+        @submission = @submission_template.new_submission(
           :study           => @study,
           :project         => @project,
           :workflow        => @workflow,
@@ -209,24 +195,29 @@ class Studies::Workflows::SubmissionsController < ApplicationController
           :request_types   => @request_type_ids,
           :request_options => @properties,
           :comments        => @comments
-        ))
+        )
+        asset_source_details_from_request_parameters.each { |k,v| @submission.send(:"#{k}=", v) }
+        @submission.save!
+        @submission.built!
 
         flash[:notice] = "Submission successfully created"
-        format.html { redirect_to study_workflow_submission_path(@study, @workflow, @submission, :submission_template_id => template_id) }
+        format.html { redirect_to study_workflow_submission_path(@study, @workflow, @submission) }
       rescue QuotaException => quota_exception
-        flash[:error] = quota_exception.message
-        format.html { redirect_to new_study_workflow_submission_path(@study, @workflow, :submission_template_id => template_id) }
+        action_flash[:error] = quota_exception.message
+        raise
       rescue InvalidInputException => input_exception
-        flash[:error] = input_exception.message
-        format.html { redirect_to new_study_workflow_submission_path(@study, @workflow, :submission_template_id => template_id) }
+        action_flash[:error] = input_exception.message
+        raise
       rescue IncorrectParamsException => exception
-        flash[:error] = exception.message
-        format.html { redirect_to new_study_workflow_submission_path(@study, @workflow, :submission_template_id => template_id) }
+        action_flash[:error] = exception.message
+        raise
       rescue ActiveRecord::RecordInvalid => exception
-        flash[:error] = exception.record.errors.full_messages.join(', ')
-        format.html { redirect_to new_study_workflow_submission_path(@study, @workflow, :submission_template_id => template_id) }
+        action_flash[:error] = exception.record.errors.full_messages.join(', ')
+        raise
       end
     end
+  rescue StandardError, QuotaException => exception
+    return render(:action => 'new')
   end
 
   def destroy

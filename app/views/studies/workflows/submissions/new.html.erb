@@ -47,7 +47,7 @@ Please remember once you have made a submission, any changes to the assets group
         <% if input_method.blank? %>
           <td class="separator" width="10%"> or </td>
         <% else %>
-          <td><%= render(:partial => input_method.gsub(/\s+/, '_'), :locals => { :form => form }) %></td>
+          <td><%= render(:partial => input_method.gsub(/\s+/, '_'), :locals => { :form => form, :submission => @submission }) %></td>
         <% end %>
       <% end %>
     </tr>
@@ -67,7 +67,7 @@ Please remember once you have made a submission, any changes to the assets group
         <tr>
           <td class="center">&darr;</td>
         </tr>
-        <% @request_types_list.each_with_index do |request_types, order| %>
+        <% @submission.request_types_list.each_with_index do |request_types, order| %>
           <tr>
             <% if request_types.size == 1 %>
               <td class='center'>
@@ -128,9 +128,9 @@ Please remember once you have made a submission, any changes to the assets group
     </div>
   </div>
 </div>
-<% unless @field_infos.empty? %>
+<% unless (field_infos = @submission.input_field_infos).empty? %>
   <div class="yui-u">
-    <%= render :partial => "parameters", :locals => {:field_infos => @field_infos } -%>
+    <%= render :partial => "parameters", :locals => {:field_infos => field_infos } -%>
   </div>
 <% end %>
 <div class="yui-u">
