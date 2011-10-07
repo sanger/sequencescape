@@ -141,6 +141,10 @@ class Asset < ActiveRecord::Base
     studies.first
   end
 
+  def study_id
+    study.try(:id)
+  end
+
   has_one :creation_request, :class_name => 'Request', :foreign_key => :target_asset_id
 
   def label
@@ -273,7 +277,7 @@ class Asset < ActiveRecord::Base
 
 
   def move_asset_requests(study_from, study_to)
-    requests = self.requests.find_all_by_study_id(study_from.id)
+    requests = self.requests.for_study(study_from)
     requests.each do |request|
       request.initial_study_id = study_to.id
       request.save!
@@ -289,6 +293,8 @@ class Asset < ActiveRecord::Base
         move_all_asset_group(study_from, study_to, asset_visited, asset_group, current_user)
       end
       rescue Exception => exception
+        debugger
+        
         msg = exception.record.class.name + " id: " + exception.record.id.to_s + ": " + exception.message
         self.errors.add("Move:", msg)
         move_result = false

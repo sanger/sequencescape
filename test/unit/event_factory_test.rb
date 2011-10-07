@@ -268,7 +268,6 @@ class EventFactoryTest < ActiveSupport::TestCase
         ::ActionMailer::Base.deliveries = []
         role = Factory :manager_role, :authorizable => @project
         role.users << @user
-        @request = Factory :request
         @user1 = Factory :user, :login => "north"
         @request.user = @user1 
         follower = Factory :role, :name => "follower"
@@ -276,8 +275,7 @@ class EventFactoryTest < ActiveSupport::TestCase
         @user2.roles << follower
         @study = Factory :study, :user => @user2
         @submission = Factory::submission :project => @project, :study => @study
-        @request.study = @study
-        @request.submission = @submission
+        @request = Factory :request, :study => @study,  :submission => @submission
         @user3 = Factory :user, :login => "east"
         message = "An error has occurred"
         EventFactory.request_update_note_to_manager(@request, @user3, message)
