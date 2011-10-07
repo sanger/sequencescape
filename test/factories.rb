@@ -236,28 +236,10 @@ Factory.define :request_without_project, :class => Request do |r|
   r.state           'pending'
 end
 
-Factory.define :failed_request, :class => Request do |r|
-  r.user            {|user|     user.association(:user)}
-  r.request_type    {|request_type| request_type.association(:request_type)}
-  r.state           'failed'
+%w(failed passed pending cancelled).each do |state|
+Factory.define :"#{state}_request", :parent =>  :request do |r|
+  r.after_create { |request| request.update_attributes!(:state =>state) }
 end
-
-Factory.define :passed_request, :class => Request do |r|
-  r.user            {|user|     user.association(:user)}
-  r.request_type    {|request_type| request_type.association(:request_type)}
-  r.state           'passed'
-end
-
-Factory.define :pending_request, :class => Request do |r|
-  r.user            {|user|     user.association(:user)}
-  r.request_type    {|request_type| request_type.association(:request_type)}
-  r.state           'pending'
-end
-
-Factory.define :cancelled_request, :class => Request do |r|
-  r.user            {|user|     user.association(:user)}
-  r.request_type    {|request_type| request_type.association(:request_type)}
-  r.state           'cancelled'
 end
 
 
