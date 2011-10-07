@@ -3,7 +3,7 @@ require "test_helper"
 class RequestTest < ActiveSupport::TestCase
   include AASM
   context "A Request" do
-    should_belong_to :study, :user, :request_type, :item
+    should_belong_to :user, :request_type, :item
     should_have_many :events
     should_have_instance_methods :pending?, :start, :started?, :fail, :failed?, :pass, :passed?, :reset, :workflow_id
 
