@@ -598,7 +598,13 @@ class Study < ActiveRecord::Base
     # we don't check if the object is related to study from. because this can change 
     # if the object is  related through and we have just changed the association
     # (example asset and via Request)
-    if object.respond_to?(:study=)
+    case
+    when object.is_a?(Request)
+      # We shouldn't do study= because it's deprecated
+      # However we need to update the initial_study
+      # to do as if it was set this way initialy
+      object.initial_study = self
+    when object.respond_to?(:study=)
       object.study = self
     end
 
