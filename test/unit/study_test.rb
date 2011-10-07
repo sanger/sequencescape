@@ -13,23 +13,31 @@ class StudyTest < ActiveSupport::TestCase
         @request_type    = Factory :request_type
         @request_type_2  = Factory :request_type, :name => "request_type_2", :key => "request_type_2"
         @request_type_3  = Factory :request_type, :name => "request_type_3", :key => "request_type_3"
+        requests = []
         # Failed
-        @study.requests << (Factory :cancelled_request, :study => @study, :request_type => @request_type)
-        @study.requests << (Factory :cancelled_request, :study => @study, :request_type => @request_type)
-        @study.requests << (Factory :cancelled_request, :study => @study, :request_type => @request_type)
+        requests << (Factory :cancelled_request, :study => @study, :request_type => @request_type)
+        requests << (Factory :cancelled_request, :study => @study, :request_type => @request_type)
+        requests << (Factory :cancelled_request, :study => @study, :request_type => @request_type)
 
         # Failed
-        @study.requests << (Factory :failed_request, :study => @study, :request_type => @request_type)
+        requests << (Factory :failed_request, :study => @study, :request_type => @request_type)
         # Passed
-        @study.requests << (Factory :passed_request, :study => @study, :request_type => @request_type)
-        @study.requests << (Factory :passed_request, :study => @study, :request_type => @request_type)
-        @study.requests << (Factory :passed_request, :study => @study, :request_type => @request_type)
-        @study.requests << (Factory :passed_request, :study => @study, :request_type => @request_type_2)
-        @study.requests << (Factory :passed_request, :study => @study, :request_type => @request_type_3)
-        @study.requests << (Factory :passed_request, :study => @study, :request_type => @request_type_3)
+        requests << (Factory :passed_request, :study => @study, :request_type => @request_type)
+        requests << (Factory :passed_request, :study => @study, :request_type => @request_type)
+        requests << (Factory :passed_request, :study => @study, :request_type => @request_type)
+        requests << (Factory :passed_request, :study => @study, :request_type => @request_type_2)
+        requests << (Factory :passed_request, :study => @study, :request_type => @request_type_3)
+        requests << (Factory :passed_request, :study => @study, :request_type => @request_type_3)
         # Pending
-        @study.requests << (Factory :pending_request, :study => @study, :request_type => @request_type)
-        @study.requests << (Factory :pending_request, :study => @study, :request_type => @request_type_3)
+        requests << (Factory :pending_request, :study => @study, :request_type => @request_type)
+        requests << (Factory :pending_request, :study => @study, :request_type => @request_type_3)
+
+        #we have to hack t 
+        requests.each do |request|
+          request.asset.aliquots.each do |a|
+            a.update_attributes(:study => @study)
+          end
+        end
         @study.save!
       end
 
