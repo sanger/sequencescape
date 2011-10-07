@@ -217,7 +217,8 @@ class EventFactory
     )
 
     recipients = []
-    request.study.projects.each do |project|
+    #TODO [mb14] do properly when switchign to multi order
+    request.submission.order.study.projects.each do |project|
       recipients << project.manager.email if project.manager
     end
 
