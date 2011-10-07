@@ -176,10 +176,10 @@ class AssetTest < ActiveSupport::TestCase
       assert_equal true, @result
 
       @request_sampletube.reload
-      assert_equal @request_sampletube.study_id, @study_to.id
+      assert_equal @request_sampletube.study, @study_to.id
 
       @request_librarytube.reload 
-      assert_equal @request_librarytube.study_id, @study_to.id
+      assert_equal @request_librarytube.study, @study_to
 
       @sample.reload
       assert_not_equal @sample.study_samples.find_all_by_study_id(@study_to.id), []
