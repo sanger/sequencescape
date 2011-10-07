@@ -1,5 +1,5 @@
 <p>
-Plate <%= @asset.name %> Barcode <%= @asset.sanger_human_barcode  %>
+Plate <%= h(@asset.display_name) %> Barcode <%= @asset.sanger_human_barcode  %>
 </p>
 
 <% plate    = @asset %>

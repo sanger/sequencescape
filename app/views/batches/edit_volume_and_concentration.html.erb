@@ -15,14 +15,14 @@
           <% if request.target_asset %>
             <% if request.target_asset.has_stock_asset? %>
               <tr>
-                <td><%= link_to request.target_asset.stock_asset.name, asset_path(request.target_asset.stock_asset) %>
+                <td><%= link_to(h(request.target_asset.stock_asset.display_name), asset_path(request.target_asset.stock_asset)) %>
                 <td><%= request.target_asset.stock_asset.sti_type %></td>
                 <td><%= text_field_tag "assets[#{request.target_asset.stock_asset.id}][volume]", "#{request.target_asset.stock_asset.volume}" %></td>
                 <td><%= text_field_tag "assets[#{request.target_asset.stock_asset.id}][concentration]", "#{request.target_asset.stock_asset.concentration}" %></td>
               </tr>     
             <% end %>     
             <tr>
-              <td><%= link_to request.target_asset.name, asset_path(request.target_asset) %>
+              <td><%= link_to(h(request.target_asset.display_name), asset_path(request.target_asset)) %>
               <td><%= request.target_asset.sti_type %></td>
               <td><%= text_field_tag "assets[#{request.target_asset_id}][volume]", "#{request.target_asset.volume}" %></td>
               <td><%= text_field_tag "assets[#{request.target_asset_id}][concentration]", "#{request.target_asset.concentration}" %></td>

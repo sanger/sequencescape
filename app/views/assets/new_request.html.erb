@@ -1,4 +1,4 @@
-<h1>New request for <%= @asset.label %> "<%= @asset.name %>"</h1>
+<h1>New request for <%= @asset.label %> "<%= h(@asset.display_name) %>"</h1>
 
 <% form_for(@asset, :url => create_request_asset_url(@asset), :html => {:method => :post}) do |f| %>
   <%= f.error_messages %>

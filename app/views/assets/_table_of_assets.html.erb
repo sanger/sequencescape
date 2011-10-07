@@ -9,8 +9,8 @@
   </thead>
   <tbody>
 <% assets.each do |asset| -%>
-    <tr id="asset_<%= asset.name.try(:downcase).try(:gsub, /[^a-z0-9]+/, '_') -%>">
-      <td><%= link_to asset.name, asset_url(asset) %></td>
+    <tr id="asset_<%= asset.display_name.downcase.gsub(/[^a-z0-9]+/, '_') -%>">
+      <td><%= link_to(h(asset.display_name), asset_url(asset)) %></td>
       <td>
         <% if asset.created_at %>
           <%= asset.created_at.to_formatted_s(:day_full_with_time) %>

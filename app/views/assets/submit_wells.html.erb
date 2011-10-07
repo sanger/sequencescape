@@ -14,7 +14,7 @@
 <h3> Create an new asset group </h3> 
 <% @study_list = @current_user.interesting_studies  %>
 <% form_for :asset_group, :url => create_wells_group_asset_path(@asset)  do |f| %>
-  <p> Enter a asset group name : <%= f.text_field :name, :value => "#{@asset.name} Wells" %> </p>
+  <p> Enter a asset group name : <%= f.text_field :name, :value => "#{@asset.display_name} Wells" %> </p>
   <p> Select a Study : <%= f.collection_select(:study_id, @study_list, :id, :name, :prompt => true) %></p>
   <p> <%= f.submit "Create" %> </p>
 

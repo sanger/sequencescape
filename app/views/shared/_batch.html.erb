@@ -38,7 +38,7 @@
           <td width="5%"><%= request.position(@batch) %></td>
 
           <% if request.asset %>
-            <td width="7%"><%= request.asset.name %></td>
+            <td width="7%"><%= h(request.asset.display_name) %></td>
           <% else %>
             <td width="7%"></td>
           <% end %>

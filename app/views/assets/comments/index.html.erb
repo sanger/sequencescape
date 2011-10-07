@@ -1,7 +1,7 @@
 <% add :title, I18n.t("studies.about") -%>
 <% add :back_menu,I18n.t("navigation.menu.back_to_asset") => asset_path(@asset) -%>
 
-<h1><%= @asset.label %> <%= @asset.name %> : Comments</h1>
+<h1><%= @asset.label %> <%= h(@asset.display_name) %> : Comments</h1>
 <div class='subtitle'>
   Study <%= @asset.id %>
 </div>

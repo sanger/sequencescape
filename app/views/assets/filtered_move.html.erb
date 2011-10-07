@@ -1,6 +1,6 @@
 <% add :title, "Move Asset" -%>
 
-<h1>Move <%= @asset.name %></h1>
+<h1>Move <%= h(@asset.display_name) %></h1>
 <div class='help'>
   <h2>Important notice</h2>
     For any help moving asset, please email <%= help_email_link %><br />

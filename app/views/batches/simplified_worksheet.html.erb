@@ -35,7 +35,7 @@
         <tr>
           <td width="20%">Lane <%= request.position(@batch) %></td>
           <td><strong><%= request.asset.barcode unless request.asset.resource? %></strong></td>
-          <td><strong><%= request.asset.name %></strong></td>
+          <td><strong><%= h(request.asset.display_name) %></strong></td>
           <td><%= (request.lab_events_for_batch(@batch).size > 0) ? request. lab_events_for_batch(@batch).first.descriptor_value("Concentration") + "&#x3BC;l" : "&nbsp" %></td>
           <td><%= request.value_for("Read length") unless request.asset.resource? %></td>
         </tr>

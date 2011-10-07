@@ -32,7 +32,7 @@
             <%= request.asset.barcode %>
           </td>
           <td>
-            <%= request.asset.name %>
+            <%= h(request.asset.display_name) %>
           </td>
           <td>
             <%= request.id %>
