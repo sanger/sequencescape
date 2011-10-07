@@ -54,22 +54,22 @@ class ProjectTest < ActiveSupport::TestCase
         @quota_3         = Factory :project_quota, :project => @project, :request_type => @request_type_3, :limit => 14
         @submission       = Factory::submission :project => @project
         # Failed
-        @submission.requests << (Factory :cancelled_request, :project => @project, :request_type => @request_type)
-        @submission.requests << (Factory :cancelled_request, :project => @project, :request_type => @request_type)
-        @submission.requests << (Factory :cancelled_request, :project => @project, :request_type => @request_type)
+        Factory :cancelled_request, :project => @project, :request_type => @request_type, :submission => @submission
+        Factory :cancelled_request, :project => @project, :request_type => @request_type, :submission => @submission
+        Factory :cancelled_request, :project => @project, :request_type => @request_type, :submission => @submission
 
         # Failed
-        @submission.requests << (Factory :failed_request, :project => @project, :request_type => @request_type)
+        Factory :failed_request, :project => @project, :request_type => @request_type, :submission => @submission
         # Passed
-        @submission.requests << (Factory :passed_request, :project => @project, :request_type => @request_type)
-        @submission.requests << (Factory :passed_request, :project => @project, :request_type => @request_type)
-        @submission.requests << (Factory :passed_request, :project => @project, :request_type => @request_type)
-        @submission.requests << (Factory :passed_request, :project => @project, :request_type => @request_type_2)
-        @submission.requests << (Factory :passed_request, :project => @project, :request_type => @request_type_3)
-        @submission.requests << (Factory :passed_request, :project => @project, :request_type => @request_type_3)
+        Factory :passed_request, :project => @project, :request_type => @request_type, :submission => @submission
+        Factory :passed_request, :project => @project, :request_type => @request_type, :submission => @submission
+        Factory :passed_request, :project => @project, :request_type => @request_type, :submission => @submission
+        Factory :passed_request, :project => @project, :request_type => @request_type_2, :submission => @submission
+        Factory :passed_request, :project => @project, :request_type => @request_type_3, :submission => @submission
+        Factory :passed_request, :project => @project, :request_type => @request_type_3, :submission => @submission
         # Pending
-        @submission.requests << (Factory :pending_request, :project => @project, :request_type => @request_type)
-        @submission.requests << (Factory :pending_request, :project => @project, :request_type => @request_type_3)
+        Factory :pending_request, :project => @project, :request_type => @request_type, :submission => @submission
+        Factory :pending_request, :project => @project, :request_type => @request_type_3, :submission => @submission
         @submission.save!
       end
 
@@ -92,7 +92,6 @@ class ProjectTest < ActiveSupport::TestCase
 
       context "#Quotas" do
         should "Calculate correctly" do
-          $stop = true
           assert_equal 4, @project.used_quota(@request_type) # Include pending
           assert_equal 3, @submission.passed_requests(@request_type)
           assert_equal 1, @submission.pending_requests(@request_type)
