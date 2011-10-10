@@ -32,7 +32,7 @@ class AddOrder < ActiveRecord::Migration
     #We do it only for Order as we haven't rename the subclasses yet
     {:Submission => :Order 
     }.each do |old, new|
-      conn.execute <<-EOS
+      connection.execute <<-EOS
           UPDATE orders SET sti_type = '#{new}' WHERE  sti_type = '#{old}'
           EOS
     end
