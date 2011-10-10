@@ -12,7 +12,7 @@
     </thead>
     <% @asset_group.assets.each do |asset| -%>
       <tr>
-        <td><%= link_to asset.name, asset_path(asset) %></td>
+        <td><%= link_to(h(asset.display_name), asset_path(asset)) %></td>
         <td>
           <% if asset.is_a?(Aliquot::Receptacle) and not asset.aliquots.empty? %>
               <% asset.aliquots.each do |aliquot| %>

@@ -7,7 +7,7 @@
 
 
 	<% @assets.each do |asset| %>
-    <%= check_box :asset, asset.id, :value => asset.id %> <%= label(:asset, asset.id, "#{asset.name} #{asset.label}") %><br/>
+    <%= check_box :asset, asset.id, :value => asset.id %> <%= label(:asset, asset.id, "#{asset.display_name} #{asset.label}") %><br/>
 	<% end %>
 
   <p>
