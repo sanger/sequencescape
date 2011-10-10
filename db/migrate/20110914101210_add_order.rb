@@ -24,16 +24,18 @@ class AddOrder < ActiveRecord::Migration
       INSERT INTO orders SELECT *, id FROM submissions;
     EOS
 
-    # we don't do it right now, as we are not changing any name
-    # 
+    #we don't do it right now, as we are not changing any name
     #{:Submission => :Order ,
       #:LinearSubmission => :LinearOrder,
       #:ReRequestSubmission => :ReRequestOrder
-    #}.each do |old, new|
-      #conn.execute <<-EOS
-          #UPDATE orders SET sti_type = '#{new}' WHERE  sti_type = '#{old}'
-          #EOS
-    #end
+    
+    #We do it only for Order as we haven't rename the subclasses yet
+    {:Submission => :Order 
+    }.each do |old, new|
+      conn.execute <<-EOS
+          UPDATE orders SET sti_type = '#{new}' WHERE  sti_type = '#{old}'
+          EOS
+    end
 
     rename_columns(:orders, SUBMISSION_ONLY) { |c| [c, "#{c}_to_delete"] }
     rename_columns(:submissions, ORDER_ONLY) { |c| [c, "#{c}_to_delete"] }
@@ -45,6 +47,12 @@ class AddOrder < ActiveRecord::Migration
   def self.down
     ActiveRecord::Base.transaction do
       drop_table :orders
+    {:Submission => :Order ,
+    }.each do |old, new|
+      conn.execute <<-EOS
+          UPDATE orders SET sti_type = '#{old}' WHERE  sti_type = '#{new}'
+          EOS
+    end
       #rename_column(:submitted_assets, :order_id, :submission_id)
       rename_columns(:submissions, ORDER_ONLY) { |c| ["#{c}_to_delete", c] }
     end
