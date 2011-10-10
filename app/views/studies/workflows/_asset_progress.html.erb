@@ -7,10 +7,8 @@
       <th>Type</th>
       <th>Sample</th>
       <th>Closed?</th>
-      <% @workflow.request_types.each do |request_type| %>
-        <% if @total_requests[request_type] > 0 %>
-          <th class='label'><center><%= request_type.name %></center></th>
-        <% end %>
+      <% @request_types.each do |request_type| %>
+        <th class='label'><center><%= request_type.name %></center></th>
       <% end %>
       <th>Latest update</th>
       <th>Update date</th>
