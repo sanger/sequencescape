@@ -116,8 +116,7 @@ class Study < ActiveRecord::Base
   
   DATA_RELEASE_STRATEGY_OPEN = 'open'
   DATA_RELEASE_STRATEGY_MANAGED = 'managed'
-  DATA_RELEASE_STRATEGY_NOT_APPLICABLE = 'not applicable'
-  DATA_RELEASE_STRATEGIES = [ DATA_RELEASE_STRATEGY_OPEN, DATA_RELEASE_STRATEGY_MANAGED, DATA_RELEASE_STRATEGY_NOT_APPLICABLE ]
+  DATA_RELEASE_STRATEGIES = [ DATA_RELEASE_STRATEGY_OPEN, DATA_RELEASE_STRATEGY_MANAGED ]
 
   DATA_RELEASE_TIMING_STANDARD = 'standard'
   DATA_RELEASE_TIMING_NEVER    = 'never'
@@ -168,7 +167,7 @@ class Study < ActiveRecord::Base
     attribute(:commercially_available, :required => true, :in => YES_OR_NO)    
     attribute(:study_name_abbreviation)
 
-    attribute(:data_release_strategy, :required => true, :in => DATA_RELEASE_STRATEGIES)
+    attribute(:data_release_strategy, :required => true, :in => DATA_RELEASE_STRATEGIES, :default => DATA_RELEASE_STRATEGY_MANAGED)
     attribute(:data_release_standard_agreement, :default => YES, :in => YES_OR_NO, :if => :managed?)
 
     attribute(:data_release_timing, :required => true, :default => DATA_RELEASE_TIMING_STANDARD, :in => DATA_RELEASE_TIMINGS)
@@ -261,10 +260,6 @@ class Study < ActiveRecord::Base
     def study_type_valid?
       self.errors.add(:study_type, "is not specified")  if study_type.name == "Not specified"
     end
-    
-    def data_release_study_type_valid?
-      self.errors.add(:data_release_study_type, "is not specified")  if data_release_study_type.name == "not specified"
-    end
 
     with_options(:if => :validating_ena_required_fields?) do |ena_required_fields|
       ena_required_fields.validates_presence_of :data_release_strategy
@@ -273,7 +268,6 @@ class Study < ActiveRecord::Base
       ena_required_fields.validates_presence_of :study_abstract
       ena_required_fields.validates_presence_of :study_study_title
       ena_required_fields.validate :study_type_valid?
-      ena_required_fields.validate :data_release_study_type_valid? 
     end
 
     def snp_parent_study
@@ -490,18 +484,6 @@ class Study < ActiveRecord::Base
     elsif data_release_strategy == "managed"
       return EgaAccessionService.new
     end
-  end
-
-
-
-  def accession_service
-    if data_release_strategy == "open"
-      return EraAccessionService.new
-    elsif data_release_strategy == "managed"
-      return EgaAccessionService.new
-    end
-    
-    nil
   end
 
   def validate_ena_required_fields!

@@ -88,6 +88,10 @@ module Attributable
         all(:order => 'name ASC').map(&:for_select_dropdown).compact
       end
 
+      def default
+        nil
+      end
+
       module InstanceMethods
         def for_select_dropdown
           [ self.name, self.id ]

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110930201202) do
+ActiveRecord::Schema.define(:version => 20111010141533) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -288,6 +288,7 @@ ActiveRecord::Schema.define(:version => 20110930201202) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "for_array_express", :default => false
+    t.boolean  "is_default",        :default => false
   end
 
   create_table "db_files", :force => true do |t|
