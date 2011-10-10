@@ -166,10 +166,15 @@ class Request < ActiveRecord::Base
            AND  al.receptacle_id = a.id 
            AND al.study_id IN (#{ids.join(", ")}))
              ),
-             :group => "requests.id"
-
+       :group => "requests.id"
     }
-  }
+  } do
+    #fix a bug in rail, the group clause if removed
+    #therefor we need to the DISTINCT parameter
+    def count
+      super('requests.id',:distinct =>true)
+    end
+  end
 
   def self.for_study_id (study_id)
     for_study_ids([study_id])

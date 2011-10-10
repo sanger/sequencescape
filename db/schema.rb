@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110930201202) do
+ActiveRecord::Schema.define(:version => 20111010144613) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(:version => 20110930201202) do
 
   add_index "aliquots", ["receptacle_id", "tag_id"], :name => "aliquot_tags_are_unique_within_receptacle", :unique => true
   add_index "aliquots", ["sample_id"], :name => "index_aliquots_on_sample_id"
+  add_index "aliquots", ["study_id"], :name => "index_aliquots_on_study_id"
 
   create_table "archived_properties", :force => true do |t|
     t.text    "value"
