@@ -20,7 +20,7 @@ class BulkSubmissionsController < ApplicationController
       #Submission.all(:conditions => ["created_at > :lastminute", { :lastminute => Time.now - 1.day}])
  
     else
-      flash[:error] = "There was a problem with your upload"
+      #flash[:error] = "There was a problem with your upload"
       # apparently this should redirect_to rather than render, but then the errors don't show up properly
       render :action => "new"
     end

@@ -31,27 +31,26 @@ class BulkSubmission < ActiveRecord::Base
     columns << ActiveRecord::ConnectionAdapters::Column.new(name.to_s, default, sql_type.to_s, null)
   end
   
- 
+  # The only column is the spreadsheet, which needs to be validated before submitting in one big transaction
   column :spreadsheet, :binary
 
   validates_presence_of :spreadsheet 
   validate :process_file
 
   def process_file
-    # Slightly inelegant file-type checking - really need to test whether file is empty as well as verify parsable
-    
-    
+    # Slightly inelegant file-type checking
+    #TODO (jr) Find a better way of verifying the CSV file?
     if File.size(spreadsheet) == 0 
-      errors.add(:spreadsheet, "was an empty file") 
+      errors.add(:spreadsheet, "The supplied file was empty") 
     else
       if /^.*\.csv$/.match(spreadsheet.original_filename)
         process FasterCSV.parse(spreadsheet.read)
       else
-        errors.add(:spreadsheet, "was not a CSV file")
+        errors.add(:spreadsheet, "The supplied file was not a CSV file")
       end
     end
   rescue FasterCSV::MalformedCSVError
-      errors.add(:spreadsheet, "was not a valid CSV file")
+      errors.add(:spreadsheet, "The supplied file was not a valid CSV file (try opening it with MS Excel)")
   end
 
   COMMON_FIELDS = [
@@ -81,7 +80,7 @@ class BulkSubmission < ActiveRecord::Base
     if (headers & COMMON_FIELDS).length == 0
       puts "***************"
       puts "we have no valid headers"
-      errors.add(:spreadsheet, "does not contain a valid header row")
+      errors.add(:spreadsheet, "The supplied file does not contain a valid header row (try downloading a template)")
     else
       submission_details = csv_rows.each_with_index.map do |row, index|
         Hash[headers.each_with_index.map { |header, pos| [ header, row[pos].try(:strip) ] }].merge('row' => index+2)
@@ -172,7 +171,7 @@ class BulkSubmission < ActiveRecord::Base
           rescue => exception
             Rails.logger.debug("****************** #{exception.message}")
           
-            errors.add :spreadsheet, "has a problem on rows #{details['rows']}: \t#{exception.message}"
+            errors.add :spreadsheet, "There were problems on rows #{details['rows']}: \t#{exception.message}"
             # errors.add :spreadsheet, "\tDetails: #{details.inspect}"
             # errors.add :spreadsheet, "\thad an error: #{exception.message}"
 
