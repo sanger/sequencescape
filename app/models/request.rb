@@ -159,12 +159,15 @@ class Request < ActiveRecord::Base
 
   named_scope :for_asset_id, lambda { |id| { :conditions => { :asset_id => id } } }
   named_scope :for_study_ids, lambda { |ids|
-    { :joins =>  %Q(
+    {
+      :joins =>  %Q(
       INNER JOIN (assets AS a, aliquots AS al)
        ON (requests.asset_id = a.id
            AND  al.receptacle_id = a.id 
            AND al.study_id IN (#{ids.join(", ")}))
-             )
+             ),
+             :group => "requests.id"
+
     }
   }
 
