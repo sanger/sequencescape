@@ -1,2 +1,10 @@
-study_types = [["not specified"], ["genomic sequencing"], ["transcriptomics"], ["other sequencing-based assay"], ["genotyping or cytogenetics"]]
-DataReleaseStudyType.import [ :name ], study_types, :validate => false
+DataReleaseStudyType.import(
+  [  :name,                         :is_default ],
+  [
+    ["genomic sequencing",           false],
+    ["transcriptomics",              false],
+    ["other sequencing-based assay", false],
+    ["genotyping or cytogenetics",   true]
+  ],
+  :validate => false
+)

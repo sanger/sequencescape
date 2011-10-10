@@ -22,24 +22,26 @@ class Metadata::FormBuilder < Metadata::BuilderBase
   end
   
   def select_by_association(association, options={})
-    select(:"#{association}_id", association.to_s.classify.constantize.for_select_association)
+    association_target, options = association.to_s.classify.constantize, { }
+    options[:selected] = association_target.default.for_select_dropdown.last if association_target.default.present?
+    select(:"#{association}_id", association_target.for_select_association, options)
   end
 
   def checktext_field(field, options = {})
-      render_view(:checktext, field, options)
+    render_view(:checktext, field, options)
   end
 
   # We wrap each of the following field types (text_field, select, etc) within a special
   # layout for our properties
   #
   {
-    :document_field => :document,
-    :text_area      => :field,
-    :text_field     => :field,
-    :select         => :field,
-    :file_field     => :field,
-    :check_box      => :field,
-    :checktext_field    => :field
+    :document_field  => :document,
+    :text_area       => :field,
+    :text_field      => :field,
+    :select          => :field,
+    :file_field      => :field,
+    :check_box       => :field,
+    :checktext_field => :field
   }.each do |field, type|
     class_eval <<-END_OF_METHOD
       def #{ field }_with_property_field_wrapper(method, *args, &block)
