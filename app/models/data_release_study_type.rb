@@ -6,6 +6,9 @@ class DataReleaseStudyType < ActiveRecord::Base
   validates_presence_of  :name
   validates_uniqueness_of :name, :message => "of data release study type already present in database"
 
+  named_scope :assay_types, { :conditions => { :is_assay_type => true } }
+  named_scope :non_assay_types, { :conditions => { :is_assay_type => false } }
+
   TYPES = ['transcriptomics','other sequencing-based-assay','genotyping or cytogenetics' ]
  
   def is_not_specified?

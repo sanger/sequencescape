@@ -67,7 +67,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase
   def related_fields(options, &block)
     options.symbolize_keys!
 
-    values = options.fetch(:in, [ options[:when] ]).compact.map { |v| v.downcase.gsub(/[^a-z0-9]+/, '_') }
+    values  = (options.fetch(:in, Array(options[:when])) - Array(options[:not])).map { |v| v.to_s.downcase.gsub(/[^a-z0-9]+/, '_') }
     content = capture(&block)
     concat(content_tag(:div, content, :class => [ :related_to, options[:to], values ].flatten.join(' ')))
 

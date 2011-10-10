@@ -20,7 +20,6 @@ class ::Sample
       studies.enforce_accessioning = TRUE AND NOT (
         (
           studies.enforce_data_release = FALSE OR NOT (
-            trea_drst.name = :unspecified_study_type OR
             ((trea_sm.data_release_timing IS NULL) OR (trea_sm.data_release_timing IS NOT NULL AND TRIM(trea_sm.data_release_timing) = ''))
           )
         ) AND (
@@ -29,7 +28,6 @@ class ::Sample
         )
       )
     }, {
-      :unspecified_study_type       => DataReleaseStudyType::UNSPECIFIED,
       :data_release_timing          => [ 'never', 'delayed' ],
       :data_release_study_type      => DataReleaseStudyType::TYPES,
       :data_release_managed_or_open => [ Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED ]

@@ -116,7 +116,8 @@ class Study < ActiveRecord::Base
   
   DATA_RELEASE_STRATEGY_OPEN = 'open'
   DATA_RELEASE_STRATEGY_MANAGED = 'managed'
-  DATA_RELEASE_STRATEGIES = [ DATA_RELEASE_STRATEGY_OPEN, DATA_RELEASE_STRATEGY_MANAGED ]
+  DATA_RELEASE_STRATEGY_NOT_APPLICABLE = 'not applicable'
+  DATA_RELEASE_STRATEGIES = [ DATA_RELEASE_STRATEGY_OPEN, DATA_RELEASE_STRATEGY_MANAGED, DATA_RELEASE_STRATEGY_NOT_APPLICABLE ]
 
   DATA_RELEASE_TIMING_STANDARD = 'standard'
   DATA_RELEASE_TIMING_NEVER    = 'never'
@@ -124,8 +125,7 @@ class Study < ActiveRecord::Base
   DATA_RELEASE_TIMINGS = [
     DATA_RELEASE_TIMING_STANDARD,
     'immediate',
-    DATA_RELEASE_TIMING_DELAYED,
-    DATA_RELEASE_TIMING_NEVER
+    DATA_RELEASE_TIMING_DELAYED
   ]
   DATA_RELEASE_PREVENTION_REASONS = [
     'data validity',
@@ -134,7 +134,11 @@ class Study < ActiveRecord::Base
   ]
 
   DATA_RELEASE_DELAY_FOR_OTHER = 'other'
-  DATA_RELEASE_DELAY_REASONS = [
+  DATA_RELEASE_DELAY_REASONS_STANDARD = [
+    'phd study',
+    DATA_RELEASE_DELAY_FOR_OTHER
+  ]
+  DATA_RELEASE_DELAY_REASONS_ASSAY = [
     'phd study',
     'assay of no other use',
     DATA_RELEASE_DELAY_FOR_OTHER
@@ -170,8 +174,8 @@ class Study < ActiveRecord::Base
     attribute(:data_release_strategy, :required => true, :in => DATA_RELEASE_STRATEGIES, :default => DATA_RELEASE_STRATEGY_MANAGED)
     attribute(:data_release_standard_agreement, :default => YES, :in => YES_OR_NO, :if => :managed?)
 
-    attribute(:data_release_timing, :required => true, :default => DATA_RELEASE_TIMING_STANDARD, :in => DATA_RELEASE_TIMINGS)
-    attribute(:data_release_delay_reason, :required => true, :in => DATA_RELEASE_DELAY_REASONS, :if => :delayed_release?)
+    attribute(:data_release_timing, :required => true, :default => DATA_RELEASE_TIMING_STANDARD, :in => DATA_RELEASE_TIMINGS + [ DATA_RELEASE_TIMING_NEVER ])
+    attribute(:data_release_delay_reason, :required => true, :in => DATA_RELEASE_DELAY_REASONS_ASSAY, :if => :delayed_release?)
     attribute(:data_release_delay_period, :required => true, :in => DATA_RELEASE_DELAY_PERIODS, :if => :delayed_release?)
     attribute(:bam, :default => true)
 
