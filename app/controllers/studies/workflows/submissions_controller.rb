@@ -11,7 +11,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
     @request_types   = []
 
     @study ||= @submission.order.study unless @study
-    @workflow ||= current_user.workflow 
+    @workflow ||= @submission.order.workflow 
 
     @submission_template_id = params[:submission_template_id] || if @submission && @submission.order
       template = SubmissionTemplate.find_by_name(@submission.order.template_name)
