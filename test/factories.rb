@@ -217,7 +217,7 @@ Factory.define :request_without_item, :class => "Request" do |r|
   r.request_type    {|request_type| request_type.association(:request_type)}
   r.workflow        {|workflow| workflow.association(:submission_workflow)}
   r.state           'pending'
-  r.after_build { |request| request.submission = Factory::submission(:study => request.study,
+  r.after_build { |request| request.submission = Factory::submission(:study => request.initial_study,
                                                                            :project => request.initial_project,
                                                                            :user => request.user,
                                                                            :request_types => [request.request_type.id.to_s],
