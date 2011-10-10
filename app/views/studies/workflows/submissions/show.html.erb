@@ -46,7 +46,7 @@
       </ul>
     <% end %>
 
-    <% unless order.request_types.empty? %>
+    <% unless order.request_types.blank? %>
       <h3>Request types</h3>
       <ul id="request_types_for_submission">
         <% RequestType.find(order.request_types).each do |request_type| %>
