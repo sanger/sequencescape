@@ -178,8 +178,9 @@ class BulkSubmission < ActiveRecord::Base
             failures = true
           end
         end
-
-        errors.add :spreadsheet, 'Failed with errors' if failures
+        
+        # This error doesn't really help the user
+        #errors.add :spreadsheet, 'Failed with errors' if failures
         raise 'Not doing anything as requested' if ENV['DO_NOTHING']
         
         
