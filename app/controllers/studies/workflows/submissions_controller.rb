@@ -4,11 +4,14 @@ class Studies::Workflows::SubmissionsController < ApplicationController
   InvalidInputException      = Class.new(SubmissionsControllerError)
   
   def show
-    @study         = Study.find(params[:study_id])
-    @workflow        = Submission::Workflow.find(params[:workflow_id])
+    @study         = Study.find(params[:study_id]) if params[:study_id]
+    @workflow        = Submission::Workflow.find(params[:workflow_id]) if params[:workflow_id]
     @submission      = Submission.find(params[:id])
     @assets          = []
     @request_types   = []
+
+    @study ||= @submission.order.study unless @study
+    @workflow ||= current_user.workflow 
 
     @submission_template_id = params[:submission_template_id] || if @submission && @submission.order
       template = SubmissionTemplate.find_by_name(@submission.order.template_name)
