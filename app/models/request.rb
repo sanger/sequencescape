@@ -135,7 +135,7 @@ class Request < ActiveRecord::Base
 
   named_scope :with_asset, :conditions =>  'asset_id is not null'
   named_scope :with_target, :conditions =>  'target_asset_id is not null and (target_asset_id <> asset_id)'
-  named_scope :join_asset, :joins => { :asset => :aliquots }
+  named_scope :join_asset, :joins => [ :asset ]
 
   #Asset are Locatable (or at least some of them)
   belongs_to :location_association, :primary_key => :locatable_id, :foreign_key => :asset_id
