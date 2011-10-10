@@ -32,7 +32,7 @@
 
             <% if  request.asset %>
               <td width="7%"><%= request.asset.barcode %></td>
-              <td width="15%"><%= request.asset.name %></td>
+              <td width="15%"><%= h(request.asset.display_name) %></td>
             <% else %>
               <td width="7%"></td>
               <td width="15%"></td>

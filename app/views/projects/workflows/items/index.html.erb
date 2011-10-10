@@ -29,7 +29,7 @@
     <tr>
       <td><%= check_box_tag "printable[#{item.id}]" %></td>
       <td><%= asset.created_at.to_formatted_s(:day_full_with_time) %></td>
-      <td><%= link_to(asset.name, asset_path(assets)) %></td>
+      <td><%= link_to(h(asset.display_name), asset_path(assets)) %></td>
       <td><%= link_to 'New request',new_study_workflow_item_request_path(@study, @workflow, item) %></td>
     </tr>
     <% end -%>
