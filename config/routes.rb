@@ -91,6 +91,9 @@ ActionController::Routing::Routes.draw do |map|
     study.resources :documents, :controller => "studies/documents", :only => [:index, :new, :create, :show, :destroy]
 
   end
+  
+  # TODO (jr16) move to a more appropriate location
+  map.connect "bulk_submissions", :controller => "bulk_submissions", :action => "new"
 
   map.resources :properties  do |property|
     property.resources :documents, :controller => "properties/documents", :only => [:show]

@@ -1,0 +1,13 @@
+<h2>Create a bulk submission:</h2> 
+
+<p class="info">Upload a completed submission file (csv format):</p>
+
+<% form_for (@bulk_submission, 
+    :url => {:action => "create"},
+    :html => {:multipart => true }) do |form|  %>
+    <%= error_messages_for :bulk_submission %>
+    <%= label_tag('Bulk submission spreadsheet') %>:
+    <%= form.file_field(:spreadsheet) %>
+<%= form.submit 'Upload spreadsheet' %>
+
+<% end %>
