@@ -162,7 +162,7 @@ class Request < ActiveRecord::Base
     {
       :joins =>  %Q(
       INNER JOIN (assets AS a, aliquots AS al)
-       ON ((requests.asset_id = a.id OR requests.target_asset_id = a.id)
+       ON (requests.asset_id = a.id
            AND  al.receptacle_id = a.id 
            AND al.study_id IN (#{ids.join(", ")}))
              ),
