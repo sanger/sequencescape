@@ -20,6 +20,7 @@ class User < ActiveRecord::Base
   has_many :batches
 
   before_save :encrypt_password
+  before_create { |record| record.new_api_key if record.api_key.blank? }
 
   validates_presence_of :login
   validates_confirmation_of :password, :if => :password_required?
@@ -62,24 +63,24 @@ class User < ActiveRecord::Base
     end
   end
 
+  def profile_incomplete?
+    name_incomplete? or email.blank?
+  end
+
   def profile_complete?
-    complete = true
-    complete = false if self.first_name.blank?
-    complete = false if self.last_name.blank?
-    complete = false if self.email.blank?
-    if self.api_key.blank?
-      self.api_key = self.new_api_key
-      self.save
-    end
-    complete
+    not profile_incomplete?
+  end
+
+  def name_incomplete?
+    first_name.blank? or last_name.blank?
+  end
+
+  def name_complete?
+    not name_incomplete?
   end
 
   def name
-    if profile_complete?
-      "#{ self.first_name } #{ self.last_name }"
-    else
-      self.login
-    end
+    name_incomplete? ? self.login : "#{self.first_name} #{self.last_name}"
   end
 
   def projects
