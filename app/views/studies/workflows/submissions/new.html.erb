@@ -89,7 +89,7 @@ Please remember once you have made a submission, any changes to the assets group
             <td class='center'>
               &times; 
               <%= hidden_label_tag_for_testing(:"request_type_#{ order }_number", "Multiplier for step #{ order+1 }") %>
-              <%= text_field_tag "request_type[#{order}][number]", :number, :value => 1, :size => 1 %>
+              <%= text_field_tag "request_type[#{order}][number]", :number, :value => params[:request_type].try(:[], order).try(:[], :number) || 1, :size => 1 %>
             </td>
           </tr>
         <% else %>
