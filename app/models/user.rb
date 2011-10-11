@@ -21,6 +21,7 @@ class User < ActiveRecord::Base
 
   before_save :encrypt_password
   before_create { |record| record.new_api_key if record.api_key.blank? }
+  before_create { |record| record.workflow ||= Submission::Workflow.default_workflow }
 
   validates_presence_of :login
   validates_confirmation_of :password, :if => :password_required?

@@ -193,6 +193,17 @@ if false
 
 end
 
+  context 'workflow' do
+    should 'have "Next-gen sequencing" workflow set' do
+      assert_not_nil(User.create!(:login => 'foo').workflow, 'workflow has not been defaulted')
+    end
+
+    should 'not override the user choice' do
+      workflow = Factory(:submission_workflow)
+      assert_equal(workflow, User.create!(:login => 'foo', :workflow => workflow).workflow, 'workflow differs from what was requested')
+    end
+  end
+
     context "without a swipecard_code" do
       setup do
         @user = Factory :user
