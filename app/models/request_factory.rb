@@ -1,7 +1,7 @@
 class RequestFactory
   def self.copy_request(request)
     ActiveRecord::Base.transaction do
-      raise QuotaException.new, "Insufficient quota for #{request.request_type.name}" unless request.has_quota?(1)
+      raise Quota::Error.new, "Insufficient quota for #{request.request_type.name}" unless request.has_quota?(1)
 
       request.class.create!(request.attributes) do |request_copy|
         request_copy.target_asset_id = nil

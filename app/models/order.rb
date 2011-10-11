@@ -10,7 +10,7 @@ class Order < ActiveRecord::Base
   include Submission::QuotaBehaviour
   include Submission::RequestOptionsBehaviour
   include Submission::AccessionBehaviour
-  include ModelExtensions::Submission
+  include ModelExtensions::Order
 
   include Workflowed
 

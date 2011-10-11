@@ -255,7 +255,7 @@ class AssetsController < ApplicationController
       format.html { redirect_to new_request_for_current_asset }
       format.json { render :json => submission.requests, :status => :created }
     end
-  rescue QuotaException => exception
+  rescue Quota::Error => exception
     respond_to do |format|
       flash[:error] = exception.message
       format.html { redirect_to new_request_for_current_asset }

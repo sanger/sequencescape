@@ -208,7 +208,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
 
         flash[:notice] = "Submission successfully created"
         format.html { redirect_to study_workflow_submission_path(@study, @workflow, @submission, :submission_template_id => template_id) }
-      rescue QuotaException => quota_exception
+      rescue Quota::Error => quota_exception
         flash[:error] = quota_exception.message
         format.html { redirect_to new_study_workflow_submission_path(@study, @workflow, :submission_template_id => template_id) }
       rescue InvalidInputException => input_exception

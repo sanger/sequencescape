@@ -46,7 +46,7 @@ class RequestFactoryTest < ActiveSupport::TestCase
 
           should 'fail if we request more than available' do
             RequestFactory.copy_request(@request)
-            assert_raises(QuotaException) { RequestFactory.copy_request(@request) }
+            assert_raises(Quota::Error) { RequestFactory.copy_request(@request) }
           end
         end
 
@@ -56,7 +56,7 @@ class RequestFactoryTest < ActiveSupport::TestCase
           end
 
           should 'raise an exception' do
-            assert_raises(QuotaException) { RequestFactory.copy_request(@request) }
+            assert_raises(Quota::Error) { RequestFactory.copy_request(@request) }
           end
         end
       end

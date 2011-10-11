@@ -15,10 +15,10 @@ module Submission::QuotaBehaviour
 
   def check_project_details!
     return unless project.enforce_quotas?
-    raise QuotaException, "Quotas are being enforced but have not been setup"       if project.quotas.all.empty? || project.quotas.all? { |q| q.limit == 0 }
-    raise QuotaException, "Project #{project.name} is not approved"                 unless project.approved?
-    raise QuotaException, "Project #{project.name} is not active"                   unless project.active?
-    raise QuotaException, "Project #{project.name} does not have a budget division" unless project.actionable?
+    raise Quota::Error, "Quotas are being enforced but have not been setup"       if project.quotas.all.empty? || project.quotas.all? { |q| q.limit == 0 }
+    raise Quota::Error, "Project #{project.name} is not approved"                 unless project.approved?
+    raise Quota::Error, "Project #{project.name} is not active"                   unless project.active?
+    raise Quota::Error, "Project #{project.name} does not have a budget division" unless project.actionable?
   end
   private :check_project_details!
 

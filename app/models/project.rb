@@ -38,6 +38,7 @@ class Project < ActiveRecord::Base
   has_many :roles, :as => :authorizable
   has_many :orders
   has_many :studies, :class_name => "Study", :through => :orders, :source => :study, :uniq => true
+  has_many :submissions, :through => :orders, :source => :submission, :uniq => true
   has_many :sample_manifests
 
   validates_presence_of :name
