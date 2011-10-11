@@ -73,13 +73,20 @@ class BulkSubmission < ActiveRecord::Base
   def process(csv_rows)
      @submissions = []
      @submission_details = {}
+  
     # Ensure that the keys of the rows are downcased for consistency.
     # Group each of the rows by the asset group name, as this governs the submissions that are being created.
     # Then we take the common details and essentially merge the assets into a list.
-    headers            = csv_rows.shift.map(&:downcase)
+    
+    if (csv_rows[0][0] == "This row is guidance only")
+      help = csv_rows.shift
+      headers = csv_rows.shift.map(&:downcase)
+    else
+      headers = csv_rows.shift.map(&:downcase)
+    end
+    
+    # Detect that the CSV does not have any items from our known fields in the first row using an intersection
     if (headers & COMMON_FIELDS).length == 0
-      puts "***************"
-      puts "we have no valid headers"
       errors.add(:spreadsheet, "The supplied file does not contain a valid header row (try downloading a template)")
     else
       submission_details = csv_rows.each_with_index.map do |row, index|
@@ -127,7 +134,7 @@ class BulkSubmission < ActiveRecord::Base
             begin
               attributes[:asset_group] = study.asset_groups.find_by_id_or_name(details['asset group id'], details['asset group name'])
             rescue ActiveRecord::RecordNotFound => exception
-              puts "Could not find asset group, assuming it needs to be created for rows #{details['rows']}"
+              # puts "Could not find asset group, assuming it needs to be created for rows #{details['rows']}"
 
               attributes[:asset_group_name] = details['asset group name']
 
