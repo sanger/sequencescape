@@ -48,35 +48,25 @@ class StudiesController < ApplicationController
   ## Create the Study from new with the details from its form.
   ## Redirect to the index page with a notice.
   def create
-    # TODO[5002619]: this should be in a before_create (possibly even before_validation?) callback of Study...
-    @study = Study.new(params["study"])
-
-    current_user.has_role('manager', @study)
-    @study.user = current_user
-    
-    if params[:study_owner_id]
-      owner = User.find_by_id(params[:study_owner_id])
-      owner.has_role("owner", @study) if owner
+    ActiveRecord::Base.transaction do
+      @study = Study.new(params['study'].merge(:user => current_user))
+      @study.save!
+      current_user.has_role('manager', @study)
+      User.find(params[:study_owner_id]).has_role('owner', @study) unless params[:study_owner_id].blank?
     end
-    # TODO[5002619]: ... to here
 
-    if @study.save
-      # Creates an event when a new Study is created
-      #EventFactory.new_study(@study, current_user)
-
-      flash[:notice] = "Your study has been created"
-      respond_to do |format|
-        format.html { redirect_to study_path(@study) }
-        format.xml  { render :xml  => @study, :status => :created, :location => @study }
-        format.json { render :json => @study, :status => :created, :location => @study }
-      end
-    else
-      action_flash[:error] = "Problems creating your new study"
-      respond_to do |format|
-        format.html { render :action => "new" }
-        format.xml  { render :xml  => @study.errors, :status => :unprocessable_entity }
-        format.json { render :json => @study.errors, :status => :unprocessable_entity }
-      end
+    flash[:notice] = "Your study has been created"
+    respond_to do |format|
+      format.html { redirect_to study_path(@study) }
+      format.xml  { render :xml  => @study, :status => :created, :location => @study }
+      format.json { render :json => @study, :status => :created, :location => @study }
+    end
+  rescue ActiveRecord::RecordInvalid => exception
+    action_flash[:error] = "Problems creating your new study"
+    respond_to do |format|
+      format.html { render :action => "new" }
+      format.xml  { render :xml  => @study.errors, :status => :unprocessable_entity }
+      format.json { render :json => @study.errors, :status => :unprocessable_entity }
     end
   end
 
@@ -106,9 +96,17 @@ class StudiesController < ApplicationController
   def update
     @study = Study.find(params[:id])
     redirect_if_not_owner_or_admin
-    parameters = params[:study]
+
     ActiveRecord::Base.transaction do
-      @study.update_attributes!(parameters)
+      @study.update_attributes!(params[:study])
+      unless params[:study_owner_id].blank?
+        owner = User.find(params[:study_owner_id])
+        unless owner.is_owner?(@study)
+          @study.owners.first.has_no_role('owner', @study) if @study.owners.size == 1
+          owner.has_role('owner', @study)
+        end
+      end
+
       flash[:notice] = "Your study has been updated"
 
       redirect_to study_path(@study)
