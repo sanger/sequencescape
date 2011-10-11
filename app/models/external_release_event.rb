@@ -17,7 +17,8 @@ class ExternalReleaseEvent < Event
   end
   
   def physically_send_email
-    study = Asset.find(self.eventful_id).source_request.study
-    EventfulMailer.deliver_confirm_external_release_event(study.mailing_list_of_managers, self.eventful, self.message, self.content, "No Milestone")
+    study = Asset.find(self.eventful_id).studies.map do |study|
+      EventfulMailer.deliver_confirm_external_release_event(study.mailing_list_of_managers, self.eventful, self.message, self.content, "No Milestone")
+    end
   end
 end
