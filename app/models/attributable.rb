@@ -118,7 +118,7 @@ module Attributable
       record.send(@name).send(@method)
     end
     
-    def to_field_info
+    def to_field_info(*args)
       FieldInfo.new(
         :display_name  => Attribute::find_display_name(@owner,  name),
         :key           => self.name,

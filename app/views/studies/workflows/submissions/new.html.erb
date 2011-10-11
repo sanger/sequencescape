@@ -24,11 +24,11 @@ Please read and accept the following <%= link_to 'requirements', info_study_work
     <% if @user_projects.size <= 8 %>
       <div class="yui-u first centered">
         <%= label_tag(:project_id, 'Select a financial project') %>:
-        <%= select_tag :project_id, options_for_select( current_user.sorted_project_names_and_ids )  %>
+        <%= select_tag(:project_id, options_for_select(current_user.sorted_project_names_and_ids, @submission.project_id || params[:project_id]))  %>
       </div>
     <% else %>
       <%= hidden_label_tag_for_testing("project_name", "Project Name") %>
-      <input type="text" id="project_name" name="project_name" maxlength=256 size=50% />
+      <input type="text" id="project_name" name="project_name" maxlength=256 size=50% value="<%= @submission.project.try(:name) || params[:project_name] %>" />
       <div class="auto_complete" id="project_name_results"></div>
       <script language="JavaScript" type="text/javascript">
         new Autocompleter.Local('project_name','project_name_results', <%= @user_projects.map(&:first).inspect %>);
