@@ -6,10 +6,10 @@ class Endpoints::Submissions < Core::Endpoint::Base
   instance do
     has_many(
       :requests, :json => 'requests', :to => 'requests',
-      :include => [ :study, :project, :source_asset, :target_asset ]
+      :include => [ :source_asset, :target_asset ]
     )
-    belongs_to(:project, :json => 'project')
-    belongs_to(:study,   :json => 'study')
+    belongs_to(:project, :through => :order, :json => 'project')
+    belongs_to(:study,   :through => :order, :json => 'study')
 
     action(:update, :to => :standard_update!, :if => :building?)
 

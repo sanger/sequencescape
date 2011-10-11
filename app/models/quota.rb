@@ -1,4 +1,6 @@
 class Quota < ActiveRecord::Base
+  Error = Class.new(Exception)
+
   include Api::QuotaIO::Extensions
   cattr_reader :per_page
   @@per_page = 500
@@ -41,7 +43,7 @@ class Quota < ActiveRecord::Base
   end
 
   def check_enough_quota_for!(number)
-      raise QuotaException, "Insufficient quota for #{request_type.name}"  if number > remaining
+    raise Quota::Error, "Insufficient quota for #{request_type.name}"  if number > remaining
   end
   private :check_enough_quota_for!
 

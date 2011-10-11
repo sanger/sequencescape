@@ -51,13 +51,6 @@ Feature: Access requests through the API
               "to": "1"
             },
 
-            "study": {
-              "name": "Testing the requests API"
-            },
-            "project": {
-              "name": "My project"
-            },
-
             "source_asset": {
               "type": "<asset type>",
               "name": "Testing the requests API - Source asset 1"

@@ -8,10 +8,11 @@ end
 
 Given /^I have a submission created with the following details based on the template "([^\"]+)":$/ do |name, details|
   template = SubmissionTemplate.find_by_name(name) or raise StandardError, "Cannot find submission template #{name.inspect}"
-  attributes = details.rows_hash.map do |k,v| 
+  order_attributes, submission_attributes = details.rows_hash.partition { |k,_| k != 'state' }
+  order_attributes.map! do |k,v| 
     v =
       case k
-      when 'state', 'asset_group_name' then v
+      when 'asset_group_name' then v
       when 'request_options' then Hash[v.split(',').map { |p| p.split(':').map(&:strip) }]
       when 'assets' then Uuid.with_external_id(v.split(',').map(&:strip)).all.map(&:resource)
       else Uuid.include_resource.with_external_id(v).first.try(:resource) 
@@ -19,13 +20,14 @@ Given /^I have a submission created with the following details based on the temp
     [ k.to_sym, v ]
   end
 
-  template.create_with_submission!({ :user => User.first }.merge(Hash[attributes]))
+  order = template.create_with_submission!({ :user => User.first }.merge(Hash[order_attributes]))
+  order.submission.update_attributes!(Hash[submission_attributes]) unless submission_attributes.empty?
 end
 
 Then /^the request options for the submission with UUID "([^\"]+)" should be:$/ do |uuid, options_table|
   submission = Uuid.with_external_id(uuid).first.try(:resource) or raise StandardError, "Could not find submission with UUID #{uuid.inspect}"
   options_table.rows_hash.each do |k,v|
-    assert_equal(v, submission.request_options[k.to_sym].to_s, "Request option #{k.inspect} is unexpected")
+    assert_equal(v, submission.order.request_options[k.to_sym].to_s, "Request option #{k.inspect} is unexpected")
   end
 end
 

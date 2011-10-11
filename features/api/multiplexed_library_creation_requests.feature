@@ -44,20 +44,7 @@ Feature: Access multiplexed library creation requests through the API
             "from": "999",
             "to": "1"
           },
-          "state": "pending",
-
-          "study": {
-            "actions": {
-              "read": "http://www.example.com/api/1/11111111-2222-3333-4444-000000000000"
-            },
-            "name": "Testing the sequencing requests API"
-          },
-          "project": {
-            "actions": {
-              "read": "http://www.example.com/api/1/11111111-1111-2222-3333-444444444444"
-            },
-            "name": "My project"
-          }
+          "state": "pending"
         },
         "uuids_to_ids": {
           "00000000-1111-2222-3333-444444444444": 1

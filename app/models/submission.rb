@@ -2,7 +2,7 @@ class Submission < ActiveRecord::Base
   include Uuid::Uuidable
   extend  Submission::StateMachine
   include Submission::DelayedJobBehaviour
-  #include ModelExtensions::Submission
+  include ModelExtensions::Submission
   #TODO[mb14] check if really needed. We use them in project_test
   include Request::Statistics::DeprecatedMethods
 
@@ -14,6 +14,7 @@ class Submission < ActiveRecord::Base
   has_many :items, :through => :requests
 
   has_one :order, :inverse_of => :submission
+  accepts_nested_attributes_for :order, :update_only => true
   def orders
     [order].compact
   end

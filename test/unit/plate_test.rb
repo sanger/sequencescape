@@ -185,7 +185,7 @@ class PlateTest < ActiveSupport::TestCase
             @project.save
           end
           should "raise quota exception" do
-            assert_raise QuotaException do
+            assert_raise Quota::Error do
               @plate1.generate_plate_submission(@project, @study, @user, @current_time)
             end
           end
