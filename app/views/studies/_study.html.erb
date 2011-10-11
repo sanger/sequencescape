@@ -11,7 +11,7 @@
   <% end %>
   <tr>
     <td width="40%" class="item"><%= label_tag(:study_owner_id, 'Study owner:') %></td>
-    <td width="40%"><%= select_tag "study_owner_id", options_for_select([[" " , "0" ]] + User.owners.map { |user| [user.name, user.id] }) %></td>
+    <td width="40%"><%= select_tag "study_owner_id", options_for_select([[" " , "0" ]] + User.owners.map { |user| [user.name, user.id] }, study.owners.first.try(:id) || params[:study_owner_id].to_i) %></td>
     <td class="help_field">&nbsp;</td>
   </tr>
 
