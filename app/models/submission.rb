@@ -18,6 +18,7 @@ class Submission < ActiveRecord::Base
     [order].compact
   end
 
+
   #TODO clean up if not neede
   def comments
     order.comments
@@ -25,7 +26,11 @@ class Submission < ActiveRecord::Base
   
   cattr_reader :per_page
   @@per_page = 500
-  named_scope :including_associations_for_json, { :include => [:uuid_object, {:assets => [:uuid_object] }, { :project => :uuid_object }, { :study => :uuid_object }, :user] }
+  named_scope :including_associations_for_json, { :include => [:uuid_object,
+    {:assets => [:uuid_object] },
+    {:orders => { :project => :uuid_object,
+       :study => :uuid_object }},
+      :user] }
 
   # Before destroying this instance we should cancel all of the requests it has made
   before_destroy :cancel_all_requests_on_destruction
@@ -168,6 +173,10 @@ class Submission < ActiveRecord::Base
     index = sibling_requests.index(request)
 
     next_possible_requests[index*divergence_ratio,[ 1, divergence_ratio ].max]
+  end
+
+  def name
+    attributes[:name] || orders.map {|o| o.try(:study).try(:name) }.compact.join("|")
   end
 
 end
