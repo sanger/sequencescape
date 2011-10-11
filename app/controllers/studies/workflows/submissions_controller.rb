@@ -187,18 +187,20 @@ class Studies::Workflows::SubmissionsController < ApplicationController
         # there is no way to differentiate betwween an empti array and an empty hash in she controller paramters, so the controller can send us an empty array
         @properties = {} if @properties == []
 
-        @submission = @submission_template.new_submission(
-          :study           => @study,
-          :project         => @project,
-          :workflow        => @workflow,
-          :user            => current_user,
-          :request_types   => @request_type_ids,
-          :request_options => @properties,
-          :comments        => @comments
-        )
-        asset_source_details_from_request_parameters.each { |k,v| @submission.send(:"#{k}=", v) }
-        @submission.save!
-        @submission.built!
+        ActiveRecord::Base.transaction do
+          @submission = @submission_template.new_submission(
+            :study           => @study,
+            :project         => @project,
+            :workflow        => @workflow,
+            :user            => current_user,
+            :request_types   => @request_type_ids,
+            :request_options => @properties,
+            :comments        => @comments
+          )
+          asset_source_details_from_request_parameters.each { |k,v| @submission.send(:"#{k}=", v) }
+          @submission.save!
+          @submission.built!
+        end
 
         flash[:notice] = "Submission successfully created"
         format.html { redirect_to study_workflow_submission_path(@study, @workflow, @submission) }
