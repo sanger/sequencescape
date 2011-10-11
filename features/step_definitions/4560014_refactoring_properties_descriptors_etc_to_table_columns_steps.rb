@@ -80,10 +80,14 @@ Given /^the study "([^\"]+)" has an asset group of (\d+) samples in "([^\"]+)" c
   study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study named #{ study_name.inspect }"
 
   assets = (1..count.to_i).map do |i|
-    Factory(
-      asset_type.gsub(/[^a-z0-9_-]+/, '_'),
-      :name => "#{ group_name }, #{ asset_type } #{ i }"
-    )
+    sample_name = "#{group_name} sample #{i}".gsub(/\s+/, '_').downcase
+    Factory(asset_type.gsub(/[^a-z0-9_-]+/, '_'), :name => "#{ group_name }, #{ asset_type } #{ i }").tap do |asset|
+      if asset.primary_aliquot.present?
+        asset.primary_aliquot.sample.tap { |s| s.name = sample_name ; s.save(false) }
+      else
+        asset.aliquots.create!(:sample => Factory(:sample, :name => sample_name))
+      end
+    end
   end
   asset_group = Factory(:asset_group, :name => group_name, :study => study, :assets => assets)
 end

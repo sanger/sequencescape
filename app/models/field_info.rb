@@ -39,4 +39,8 @@ class FieldInfo
     self.kind = SELECTION
     self.parameters[:selection] = selection
   end
+
+  def reapply(object)
+    self.default_value = object.try(self.key) || self.default_value
+  end
 end
