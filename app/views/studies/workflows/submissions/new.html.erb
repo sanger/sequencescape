@@ -24,11 +24,11 @@ Please read and accept the following <%= link_to 'requirements', info_study_work
     <% if @user_projects.size <= 8 %>
       <div class="yui-u first centered">
         <%= label_tag(:project_id, 'Select a financial project') %>:
-        <%= select_tag :project_id, options_for_select( current_user.sorted_project_names_and_ids )  %>
+        <%= select_tag(:project_id, options_for_select(current_user.sorted_project_names_and_ids, @submission.project_id || params[:project_id]))  %>
       </div>
     <% else %>
       <%= hidden_label_tag_for_testing("project_name", "Project Name") %>
-      <input type="text" id="project_name" name="project_name" maxlength=256 size=50% />
+      <input type="text" id="project_name" name="project_name" maxlength=256 size=50% value="<%= @submission.project.try(:name) || params[:project_name] %>" />
       <div class="auto_complete" id="project_name_results"></div>
       <script language="JavaScript" type="text/javascript">
         new Autocompleter.Local('project_name','project_name_results', <%= @user_projects.map(&:first).inspect %>);
@@ -47,7 +47,7 @@ Please remember once you have made a submission, any changes to the assets group
         <% if input_method.blank? %>
           <td class="separator" width="10%"> or </td>
         <% else %>
-          <td><%= render(:partial => input_method.gsub(/\s+/, '_'), :locals => { :form => form }) %></td>
+          <td><%= render(:partial => input_method.gsub(/\s+/, '_'), :locals => { :form => form, :submission => @submission }) %></td>
         <% end %>
       <% end %>
     </tr>
@@ -67,7 +67,7 @@ Please remember once you have made a submission, any changes to the assets group
         <tr>
           <td class="center">&darr;</td>
         </tr>
-        <% @request_types_list.each_with_index do |request_types, order| %>
+        <% @submission.request_types_list.each_with_index do |request_types, order| %>
           <tr>
             <% if request_types.size == 1 %>
               <td class='center'>
@@ -89,7 +89,7 @@ Please remember once you have made a submission, any changes to the assets group
             <td class='center'>
               &times; 
               <%= hidden_label_tag_for_testing(:"request_type_#{ order }_number", "Multiplier for step #{ order+1 }") %>
-              <%= text_field_tag "request_type[#{order}][number]", :number, :value => 1, :size => 1 %>
+              <%= text_field_tag "request_type[#{order}][number]", :number, :value => params[:request_type].try(:[], order).try(:[], :number) || 1, :size => 1 %>
             </td>
           </tr>
         <% else %>
@@ -105,7 +105,7 @@ Please remember once you have made a submission, any changes to the assets group
     </table>
   <% end %>
 
-  <h3>4. Add comments (if required)</h3>
+  <h3>5. Add comments (if required)</h3>
   <div class="yui-g">
     <div class="yui-u first centered">
       <%= form.text_area :comments, :cols => 40, :rows => 5 %>
@@ -113,7 +113,7 @@ Please remember once you have made a submission, any changes to the assets group
     </div>
   </div>
 
-  <h3>5. Double check and create your submission</h3>
+  <h3>6. Double check and create your submission</h3>
   <div class="first centered">
     <div id="create_option">
       <p>
@@ -128,9 +128,9 @@ Please remember once you have made a submission, any changes to the assets group
     </div>
   </div>
 </div>
-<% unless @field_infos.empty? %>
+<% unless (field_infos = @submission.input_field_infos).empty? %>
   <div class="yui-u">
-    <%= render :partial => "parameters", :locals => {:field_infos => @field_infos } -%>
+    <%= render :partial => "parameters", :locals => {:field_infos => field_infos } -%>
   </div>
 <% end %>
 <div class="yui-u">
