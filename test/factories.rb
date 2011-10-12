@@ -175,7 +175,7 @@ Factory.define :request_with_submission, :class => Request do |request|
     request.submission = Factory::submission(:workflow => request.workflow,
                                           :study => request.initial_study,
                                           :project => request.initial_project,
-                                          :request_types => [request.request_type.id.to_s],
+                                          :request_types => [request.request_type.try(:id)].compact.map(&:to_s),
                                           :user => request.user,
                                           :assets => [request.asset].compact
                                           ) unless request.submission
@@ -192,7 +192,10 @@ Factory.define :request_without_assets, :parent => :request_with_submission do |
   request.user              {|user|       user.association(:user)}
   request.workflow          {|workflow|   workflow.association(:submission_workflow)}
 
-  request.after_build { |request| request.request_metadata = Factory(:request_metadata, :request => request) }
+  request.after_build do |request|
+    request.request_metadata = Factory(:request_metadata, :request => request)
+    request.sti_type =  request.request_type.request_class_name
+  end
 end
 
 Factory.define :request, :parent => :request_without_assets do |r|

@@ -46,6 +46,9 @@ Feature: Interacting with requests through the API
             "source_asset_uuid": "aaaaaaaa-1111-2222-3333-000000000001",
             "study_url": "http://localhost:3000/0_5/studies/22222222-2222-3333-4444-ffffffffffff",
             "study_uuid": "22222222-2222-3333-4444-ffffffffffff",
+
+            "user": "abc123",
+
             "source_asset_sample_uuid": "bbbbbbbb-1111-2222-3333-000000000001",
             "target_asset_name": "Study testing the JSON API - Target asset",
             "source_asset_state": "",
@@ -54,7 +57,6 @@ Feature: Interacting with requests through the API
 						"target_asset_barcode_prefix": "DN",
 						"fragment_size_required_to": "1",
 						"fragment_size_required_from": "999",
-
             "library_type": "Standard",
             
             "priority": 0,
@@ -98,6 +100,9 @@ Feature: Interacting with requests through the API
             "updated_at": "2010-09-16T16:15:00+01:00",
             "target_asset_type": "library_tubes",
             "study_name": "Study testing the JSON API",
+
+            "user": "abc123",
+
             "target_asset_two_dimensional_barcode": null,
             "source_asset_closed": false,
             "target_asset_uuid": "aaaaaaaa-1111-2222-3333-000000000002",
@@ -148,6 +153,8 @@ Feature: Interacting with requests through the API
           "study_uuid": "22222222-2222-3333-4444-ffffffffffff",
           "study_url": "http://localhost:3000/0_5/studies/22222222-2222-3333-4444-ffffffffffff",
           "study_name": "Study testing the JSON API",
+
+          "user": "abc123",
 
           "source_asset_uuid": "aaaaaaaa-1111-2222-3333-000000000001",
           "source_asset_name": "Study testing the JSON API - Source asset",
@@ -208,6 +215,7 @@ Feature: Interacting with requests through the API
           "study_uuid": "22222222-2222-3333-4444-ffffffffffff",
           "study_url": "http://localhost:3000/0_5/studies/22222222-2222-3333-4444-ffffffffffff",
           "study_name": "Study testing the JSON API",
+          "user": "abc123",
 
           "source_asset_uuid": "aaaaaaaa-1111-2222-3333-000000000001",
           "source_asset_name": "Study testing the JSON API - Source asset",
@@ -334,6 +342,7 @@ Feature: Interacting with requests through the API
             "updated_at": "2010-09-16T16:15:00+01:00",
             "target_asset_type": "sample_tubes",
             "study_name": "Study testing the JSON API",
+            "user": "abc123",
             "target_asset_two_dimensional_barcode": null,
             "source_asset_closed": false,
             "target_asset_uuid": "aaaaaaaa-1111-2222-3333-000000000002",

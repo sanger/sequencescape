@@ -1,10 +1,11 @@
 # NOTE: The UUIDs for the requests are generated as sequential numbers from the study UUID
 def create_request(request_type, study, project, asset, target_asset, additional_options = {})
-  request = request_type.new_request(
+  request = Factory(:request,
     additional_options.merge(
       :study => study, :project => project,
       :asset => asset, 
-      :target_asset => target_asset
+      :target_asset => target_asset,
+      :request_type => request_type
     )
   )
   request.id = additional_options[:id] if additional_options.key?(:id)    # Force ID hack!
@@ -22,7 +23,7 @@ def create_request(request_type, study, project, asset, target_asset, additional
   uuid_parts = study.uuid.match(/^(.+)-([\da-f]{12})$/) or raise StandardError, "UUID invalid (#{study.uuid.inspect})"
   uuid_root, uuid_index = uuid_parts[1], uuid_parts[2].to_i(0x10)
 
-  study.requests(true).each_with_index do |request, index|
+  Request.find_all_by_initial_study_id(study.id, :order => :id).each_with_index do |request, index|
     request.uuid_object.tap do |uuid|
       uuid.external_id = "#{uuid_root}-%012x" % (uuid_index + 1 + index)
       uuid.save(false)
