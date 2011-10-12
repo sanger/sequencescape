@@ -50,7 +50,6 @@ class Request < ActiveRecord::Base
     order_via_submission.try(:study)
   end
 
-  #temporary hack
   # project is read only so we can set it everywhere
   # but it will be only used in specific and controlled place
   belongs_to :initial_project, :class_name => "Project"
