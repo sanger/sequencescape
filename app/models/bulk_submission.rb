@@ -184,6 +184,9 @@ class BulkSubmission < ActiveRecord::Base
 
             failures = true
           end
+          rescue QuotaException => exception
+            errors.add :spreadsheet, "There was a quota problem: #{exception.message}"
+          end
         end
         
         # This error doesn't really help the user
