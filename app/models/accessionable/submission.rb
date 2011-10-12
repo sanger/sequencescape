@@ -1,7 +1,6 @@
 class Accessionable::Submission < Accessionable::Base
-
-
   attr_reader :broker, :alias, :date, :accessionables, :contact
+
   def initialize(service, user, *accessionables)
     @service = service
     @contact = Contact.new(user)
@@ -31,20 +30,21 @@ class Accessionable::Submission < Accessionable::Base
     ) {
       xml.CONTACTS { self.contact.build(xml) }
       xml.ACTIONS {
-        accessionables.each do |accessionable|
+        # You can only perform additions with protect or hold, or you can do a modification.  So separate the
+        # accessionable instances into additions and modifications.
+        additions, modifications = accessionables.partition { |accessionable| accessionable.accession_number.blank? }
+
+        additions.each do |accessionable|
           xml.ACTION {
-            if accessionable.accession_number.blank?
-              xml.ADD(:source => accessionable.file_name,  :schema => accessionable.schema_type)
-            else
-              xml.MODIFY(:source => accessionable.file_name, :schema => accessionable.schema_type, :target => accessionable.accession_number)
-            end
+            xml.ADD(:source => accessionable.file_name,  :schema => accessionable.schema_type)
           }
           xml.ACTION {
-            if accessionable.protect?(@service)
-              xml.PROTECT
-            else
-              xml.HOLD
-            end
+            xml.tag!(accessionable.protect?(@service) ? 'PROTECT' : 'HOLD')
+          }
+        end
+        modifications.each do |accessionable|
+          xml.ACTION {
+            xml.MODIFY(:source => accessionable.file_name, :schema => accessionable.schema_type, :target => accessionable.accession_number)
           }
         end
       }

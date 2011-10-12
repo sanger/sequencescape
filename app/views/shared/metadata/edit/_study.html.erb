@@ -36,22 +36,46 @@
       <%= metadata_fields.text_field(:array_express_accession_number) if study.for_array_express? %>
       <% end %>
 
-      <%= group.select(:data_release_timing, Study::DATA_RELEASE_TIMINGS) %>
-      <% metadata_fields.related_fields(:to => :data_release_timing, :when => Study::DATA_RELEASE_TIMING_DELAYED) do %>
-        <%= group.select(:data_release_delay_reason, Study::DATA_RELEASE_DELAY_REASONS) %>
-          <%= group.select(:data_release_delay_period, Study::DATA_RELEASE_DELAY_PERIODS) %>
-        <% metadata_fields.related_fields(:to => :data_release_delay_reason, :when => Study::DATA_RELEASE_DELAY_FOR_OTHER) do %>
-          <%= group.text_area(:data_release_delay_other_comment) %>
-          <% metadata_fields.related_fields(:to => :data_release_delay_period, :in => Study::DATA_RELEASE_DELAY_PERIODS) do %>
-            <%= group.select(:data_release_delay_approval, Study::YES_OR_NO) %>
-            <%= group.text_area(:data_release_delay_reason_comment) %>
-          <% end %>
-        <% end %>
-      <% end %>
-      <% metadata_fields.related_fields(:to => :data_release_timing, :when => Study::DATA_RELEASE_TIMING_NEVER) do %>
+      <% metadata_fields.related_fields(:to => :data_release_strategy, :when => Study::DATA_RELEASE_STRATEGY_NOT_APPLICABLE) do %>
+        <%= group.select(:data_release_timing, [ Study::DATA_RELEASE_TIMING_NEVER ]) %>
         <%= group.select(:data_release_prevention_reason, Study::DATA_RELEASE_PREVENTION_REASONS) %>
         <%= group.select(:data_release_prevention_approval, Study::YES_OR_NO) %>
         <%= group.text_area(:data_release_prevention_reason_comment) %>
+      <% end %>
+      <% metadata_fields.related_fields(:to => :data_release_strategy, :in => Study::DATA_RELEASE_STRATEGIES, :not => Study::DATA_RELEASE_STRATEGY_NOT_APPLICABLE) do %>
+        <%= group.select(:data_release_timing, Study::DATA_RELEASE_TIMINGS) %>
+        <% metadata_fields.related_fields(:to => :data_release_timing, :when => Study::DATA_RELEASE_TIMING_DELAYED) do %>
+          <%= group.select(:data_release_delay_reason, Study::DATA_RELEASE_DELAY_REASONS_STANDARD) %>
+
+          <%# This should be in a helper method to change the options on a generic select but I've wasted enough time on this %>
+          <%# for the moment.  So it's hard coded here until I have to change it, again.                                      %>
+          <script type="text/javascript">
+            (function($, undefined) {
+              var values = { };
+              <% DataReleaseStudyType.assay_types.map(&:id).each do |type| %>
+                values[<%= type.to_s.inspect %>] = <%= Study::DATA_RELEASE_DELAY_REASONS_ASSAY.inspect %>;
+              <% end %>
+              <% DataReleaseStudyType.non_assay_types.map(&:id).each do |type| %>
+                values[<%= type.to_s.inspect %>] = <%= Study::DATA_RELEASE_DELAY_REASONS_STANDARD.inspect %>;
+              <% end %>
+              $('#study_study_metadata_attributes_data_release_study_type_id').change(function() {
+                select_to_change_options_in = $('#study_study_metadata_attributes_data_release_delay_reason');
+                options = values[this.value].map(function(value) { return '<option value="' + value + '">' + value + '</option>'; });
+                select_to_change_options_in.html(options.join(''));
+                select_to_change_options_in.trigger('change');
+              });
+            })(jQuery);
+          </script>
+
+          <%= group.select(:data_release_delay_period, Study::DATA_RELEASE_DELAY_PERIODS) %>
+          <% metadata_fields.related_fields(:to => :data_release_delay_reason, :when => Study::DATA_RELEASE_DELAY_FOR_OTHER) do %>
+            <%= group.text_area(:data_release_delay_other_comment) %>
+            <% metadata_fields.related_fields(:to => :data_release_delay_period, :in => Study::DATA_RELEASE_DELAY_PERIODS) do %>
+              <%= group.select(:data_release_delay_approval, Study::YES_OR_NO) %>
+              <%= group.text_area(:data_release_delay_reason_comment) %>
+            <% end %>
+          <% end %>
+        <% end %>
       <% end %>
     <% end %>
     <% metadata_fields.finalize_related_fields %>

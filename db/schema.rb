@@ -288,6 +288,8 @@ ActiveRecord::Schema.define(:version => 20111011150028) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "for_array_express", :default => false
+    t.boolean  "is_default",        :default => false
+    t.boolean  "is_assay_type",     :default => false
   end
 
   create_table "db_files", :force => true do |t|
