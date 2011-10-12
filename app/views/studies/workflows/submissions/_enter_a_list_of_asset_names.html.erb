@@ -1,2 +1,2 @@
 <%= label_tag(:asset_ids, 'Enter a list of asset names') %>
-<%= text_area_tag(:asset_names, nil, :cols => 40, :rows =>5, :name => :asset_names) %>
+<%= text_area_tag(:asset_names, params[:asset_names], :cols => 40, :rows =>5, :name => :asset_names) %>

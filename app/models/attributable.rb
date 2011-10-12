@@ -88,6 +88,10 @@ module Attributable
         all(:order => 'name ASC').map(&:for_select_dropdown).compact
       end
 
+      def default
+        nil
+      end
+
       module InstanceMethods
         def for_select_dropdown
           [ self.name, self.id ]
@@ -118,7 +122,7 @@ module Attributable
       record.send(@name).send(@method)
     end
     
-    def to_field_info
+    def to_field_info(*args)
       FieldInfo.new(
         :display_name  => Attribute::find_display_name(@owner,  name),
         :key           => self.name,
@@ -226,12 +230,12 @@ module Attributable
       end
     end
 
-    def to_field_info
+    def to_field_info(object = nil)
       options = {
         # TODO[xxx]: currently only working for metadata, the only place attributes are used
         :display_name  => Attribute::find_display_name(@owner,  name),
         :key           => self.name,
-        :default_value => self.default,
+        :default_value => object.try(self.name) || self.default,
         :kind          => FieldInfo::TEXT
       }
       options.update(:kind => FieldInfo::SELECTION, :selection => self.selection_values) if self.selection?

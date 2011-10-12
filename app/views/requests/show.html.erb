@@ -54,7 +54,7 @@
 		<% if @request.asset %>
 		<tr>
 			<td><%= link_to @request.asset.id, asset_url(@request.asset) %></td>
-			<td><%= link_to @request.asset.name, asset_url(@request.asset) %></td>
+			<td><%= link_to(h(@request.asset.display_name), asset_url(@request.asset)) %></td>
 			<td><%= @request.asset.label %></td>
 			<td>Source</td>
 		</tr>
@@ -62,7 +62,7 @@
 		<% if @request.target_asset %>
 		<tr>
 			<td><%= link_to @request.target_asset.id, asset_url(@request.target_asset) %></td>
-			<td><%= link_to @request.target_asset.name, asset_url(@request.target_asset) %></td>
+			<td><%= link_to(h(@request.target_asset.display_name), asset_url(@request.target_asset)) %></td>
 			<td><%= @request.target_asset.label %></td>
 			<td>Target</td>
 		</tr>

@@ -3,17 +3,8 @@
     The following parameters will be applied to all the samples in the group
   </p>
 
-  <%# TODO[xxx]: This needs to render the appropriate metadata template, probably item %>
-  <%# Except that Item doesn't exist and doesn't have any properties! %>
   <div id="template_form_body">
-    <%#= render :partial => "shared/edit_properties", :locals => { :item => @item } %>
-    <%#= render :partial => 'shared/metadata/edit/request', :locals => { :request => @request } %>
-  </div>
-
-  <div id="template_form_body">
-    <%= render :partial => "shared/edit_fields", :locals => { :field_infos => @field_infos, :path => [:request, :properties] } %>
-    <%# TODO[xxx]: looks like this needs to be using the partial below %>
-    <%#= render :partial => 'shared/metadata/edit/request', :locals => { :request => @request } %>
+    <%= render :partial => "shared/edit_fields", :locals => { :field_infos => field_infos, :path => [:request, :properties] } %>
   </div>
   <br />
 </div>

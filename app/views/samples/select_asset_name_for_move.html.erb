@@ -5,7 +5,7 @@
   %>">
 <option value="0">- Select an existing Asset Group from this study -</option>
 <% @assets.each do |asset| %>
-  <option value="<%= asset.id %>"> <%= asset.name %> </option>
+  <option value="<%= asset.id %>"> <%= h(asset.display_name) %> </option>
 <% end %>
 </select>
 or enter the new name:  <%= text_field_tag "new_assets_name" %> &nbsp; <INPUT type="button" value="Help me!"  onClick="createNameAsset()">

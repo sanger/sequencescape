@@ -1,8 +1,13 @@
 <p>
   <%= label_tag(:plate_purpose_id, 'Select plate type that holds the samples') %>:<br/>
-  <%= select_tag(:plate_purpose_id, options_from_collection_for_select(PlatePurpose.considered_stock_plate.all(:order => 'name ASC'), :id, :name, PlatePurpose.stock_plate_purpose.id)) %>
+  <%= 
+    select_tag(
+      :plate_purpose_id,
+      options_from_collection_for_select(
+        PlatePurpose.considered_stock_plate.all(:order => 'name ASC'), :id, :name,
+        params[:plate_purpose_id].blank? ? PlatePurpose.stock_plate_purpose.id : params[:plate_purpose_id].to_i
+      )
+    )
+  %>
 </p>
-<p>
-  <%= label_tag(:sample_names, 'Enter a list of sample names') %>:<br/>
-  <%= text_area_tag(:sample_names, nil, :cols => 40, :rows =>5, :name => :sample_names) %>
-</p>
+<%= render(:partial => 'enter_a_list_of_sample_names') %>

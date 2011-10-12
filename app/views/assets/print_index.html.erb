@@ -28,7 +28,7 @@ Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(
     <% @assets.each do |asset| -%>
     <tr>
       <td><%= check_box_tag "printable[#{asset.id}]" %></td>
-      <td><%= link_to(asset.name, asset_path(asset)) %></td>
+      <td><%= link_to(h(asset.display_name), asset_path(asset)) %></td>
       <td><%= asset.label %></td>
       <td><%= asset.barcode %></td>
     </tr>

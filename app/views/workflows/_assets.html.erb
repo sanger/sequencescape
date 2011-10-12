@@ -16,7 +16,7 @@
   </tr>
   <% @batch.assets.each do |asset| -%>
   <tr>
-    <td><%= asset.name %></td>
+    <td><%= h(asset.display_name) %></td>
     <% family.descriptors.each do |descriptor| -%>
     <td><%= asset.descriptor_value descriptor.name %></td>
     <% end -%>

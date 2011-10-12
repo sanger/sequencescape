@@ -217,11 +217,7 @@ class Asset < ActiveRecord::Base
   end
 
   def display_name
-    if self.name.nil? || self.name.empty?
-      return "#{self.sti_type} #{self.id}"
-    else
-      self.name
-    end
+    self.name.blank? ? "#{self.sti_type} #{self.id}" : self.name
   end
 
   QC_STATES =  [

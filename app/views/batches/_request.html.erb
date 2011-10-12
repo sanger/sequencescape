@@ -15,7 +15,7 @@
   </thead>
   <tbody>
     <tr>
-      <td style="background: #d0d0d0;"><%= (request.asset.name if request) || "&nbsp;" -%></td>
+      <td style="background: #d0d0d0;"><%= (h(request.asset.display_name) if request) || "&nbsp;" -%></td>
       <% keys.each do |key| -%>
       <td style="background: #d0d0d0;"><%= (request.value_for(key) if request) || "&nbsp;" -%></td>
       <% end -%>

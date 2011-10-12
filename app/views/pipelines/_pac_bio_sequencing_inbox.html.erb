@@ -39,7 +39,7 @@
     		  </td>
               <td class="request" width='2%'><a href="javascript:void(0)" onclick="showElement(<%=  request_item.item_id %>,<%= requests.size %>); return false;"><%= image_tag "information.png", :size =>"13x13" %></a></td>
               <td class="request" width='5%'>&nbsp;</td>
-              <td class='request' width='10%'><%= request.asset.name %></td>
+              <td class='request' width='10%'><%= h(request.asset.display_name) %></td>
               <td class='request' width='15%'>&nbsp;</td>
               <td class='request' width='10%'>&nbsp;</td>
               <% @information_types.each do |information_type| %>
