@@ -165,6 +165,14 @@ end
 
 Factory.define :request_metadata, :class => Request::Metadata do |m|
   m.read_length 76
+  m.after_build do |m|
+    # we can't test the request has class has it might not be set properly yet
+    case m.request.request_type.request_class_name
+    when "SequencingRequest" 
+      m.fragment_size_required_from ||= 1
+      m.fragment_size_required_to ||= 20
+    end
+  end
 end
 
 Factory.define :request_with_submission, :class => Request do |request|
