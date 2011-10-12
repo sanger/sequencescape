@@ -64,22 +64,3 @@ Feature: Update the data release fields for creating a study
       | delay_period |
       | 3 months     |
       | 12 months    |
-
-  Scenario: Add not applicable to data release strategy when never release selected (4695252)
-    Then the help text for "What is the data release strategy for this study? help text" should contain:
-    """
-    Data generated at the Institute will be made available to the public or to other researchers via a managed access procedure, when this is necessary to protect confidentiality and the privacy of research participants, or to respect the terms of their consent.
-    Open: Open access data will be available to the public.
-    Managed: Managed access data will remain open to the research community and the procedure for granting access should be transparent (i.e., clearly established and published on the project and/or database website, with reasons for any refusal of access to be made explicit). Different projects may have different requirements and access provisions may need to be agreed with collaborators providing samples and the relevant ethics bodies for the study, but, insofar as is possible, access should be granted to all appropriately qualified researchers under the terms of a data access agreement that is based on WTSI’s research community access policy (please see data sharing guidelines).
-    Not applicable: Only select if the data is never to be released.
-    """
-    When I fill in the following:
-  	    | Study name                                                                                  | new study       |
-  	    | Study description                                                                           | writing cukes   |
-  	And I select "Jack Sponsor" from "Faculty Sponsor"
-    And I select "Yes" from "Do any of the samples in this study contain human DNA?"
-    And I select "No" from "Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?"
-    And I select "not applicable" from "What is the data release strategy for this study?"
-    When I press "Create"
-    Then I should be on the study workflow page for "new study"
-
