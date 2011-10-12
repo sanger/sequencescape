@@ -246,8 +246,10 @@ class Submission < ActiveRecord::Base
   # meant to be overidden
   # the default use request property
   def input_field_infos()
-    return @input_field_infos if @input_field_infos
-    return compute_input_field_infos
+    @input_field_infos = compute_input_field_infos if @input_field_infos.blank?
+    values = OpenStruct.new(self.request_options)
+    @input_field_infos.each { |f| f.reapply(values) }
+    return @input_field_infos
   end
 
   # we don't call it input_field_infos= because it has a slightly different meanings
@@ -256,7 +258,6 @@ class Submission < ActiveRecord::Base
   def set_input_field_infos(infos)
     @input_field_infos = infos
   end
-
 
   def initial_request_state(request_type)
     (request_options || {}).fetch(:initial_state, {}).fetch(request_type.id, request_type.initial_state).to_s
@@ -292,7 +293,7 @@ class Submission < ActiveRecord::Base
   end
 
   def compute_input_field_infos()
-    request_attributes.uniq.map(&:to_field_info)
+    request_attributes.uniq.map { |attribute| attribute.to_field_info }
   end
   protected :compute_input_field_infos
 end

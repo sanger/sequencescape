@@ -53,7 +53,7 @@
           <td class="request" width='5%'><%= link_to request.submission_id,study_workflow_submission_path(request.study, current_user.workflow, request.submission) %></td>
           <td class="request" width='5%'>&nbsp;</td>
           <td style="display:none" class='request' width='5%'><%= link_to request.submission_id,study_workflow_submission_path(request.study, current_user.workflow, request.submission) %></td>
-          <td class='request' width='10%'><%= request.asset.name %></td>
+          <td class='request' width='10%'><%= h(request.asset.display_name) %></td>
           <td class='request' width='15%'>&nbsp;</td>
           <td class='request' width='10%'>&nbsp;</td>
           <td class='request' width='15%'>&nbsp;</td>
@@ -93,7 +93,7 @@
           <% end %>
           <td class="request" width='5%'><%= link_to request.submission_id,study_workflow_submission_path(request.study, current_user.workflow, request.submission) %></td>
           <td class='request' width='5%'><%= link_to request.id, request_path(request) %></td>
-          <td class='request' width='10%'><%= link_to request_asset.name, asset_path(request.asset) %></td>
+          <td class='request' width='10%'><%= link_to(h(request_asset.display_name), asset_path(request.asset)) %></td>
           <% unless request_comments.empty? -%>
             <%= render :partial => "request_comments", :locals => { :request => request, :comments => request_comments } %>
           <% else -%>

@@ -32,7 +32,7 @@
           <td width="5%"><%= request.position(@batch) %></td>
           <td width="7%"><%= request.sample_name %></td>
           <td width="7%"><%= request.asset.barcode %></td>
-          <td width="15%"><%= link_to request.asset.name, asset_url(request.asset), :target => "_blank" %></td>
+          <td width="15%"><%= link_to(h(request.asset.display_name), asset_url(request.asset), :target => "_blank") %></td>
 
           <% @rits.each do |rit| -%>
             <td width="10%"><%= display_request_information(request, rit) %></td>
@@ -51,7 +51,7 @@
             <td width='7%'></td>
           <% end %>
           <td width="7%"><%= request.asset.barcode  %></td>
-          <td width="15%"><%= link_to request.asset.name, asset_url(request.asset), :target => "_blank" %></td>
+          <td width="15%"><%= link_to(h(request.asset.display_name), asset_url(request.asset), :target => "_blank") %></td>
       
           <% @rits.each do |rit| -%>
             <td width="10%"><%= display_request_information(request, rit) %></td>

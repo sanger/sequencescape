@@ -31,7 +31,7 @@
       <tbody>
         <% @batch.requests.each do |request| -%>
           <tr>
-            <td><%= request.asset.name %></td>
+            <td><%= h(request.asset.display_name) %></td>
             <td><%= request.asset.barcode %></td>
             <td><%= request.target_asset.barcode %></td>
             <td><%= request.id %></td>

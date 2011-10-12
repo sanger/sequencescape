@@ -2,35 +2,37 @@
   document.observe('dom:loaded', function() {
     (function(undefined) {
       var hide = function(elements) {
-        elements.each(function(e) {
+        elements.each(function(index) {
           // TODO[xxx]: Ideally want to disable any input/select/textarea fields to prevent them being sent back
-          e.hide();
+          $(this).hide();
         });
       };
       var show = function(elements) {
-        elements.each(function(e) {
+        elements.each(function(index) {
           // TODO[xxx]: Enable the input/select/textarea fields
-          e.show();
+          $(this).show();
         });
       };
 
       var valueFrom = function(element) { return element.value.toLowerCase().replace(/[^a-z0-9]+/, '_'); };
 
       observe = function(id) {
-        var selectRelatedFor = function(value) { return $$('.related_to.' + id + '.' + value); }
-        element = $('<%= root %>_' + id);
+        var selectRelatedFor = function(value) { return jQuery('.related_to.' + id + '.' + value); }
+        element = $('<%= root %>_' + id) || $('<%= root %>_' + id + '_id');
 
-        var previousValue = valueFrom(element);
-        element.observe('change', function() {
-          value = valueFrom(this);
-          if (previousValue != undefined) { hide(selectRelatedFor(previousValue)); }
-          show(selectRelatedFor(value));
-          previousValue = value;
+        // Hide all of the DIVs and then show the current value.  We assume that the first identified element
+        // is the one we're supposed to be using and that, if there are multiple fields, then they have the
+        // same initial value.
+        hide(jQuery('.related_to.' + id));
+        show(selectRelatedFor(valueFrom(element)));
+
+        // Now we can delegate handling of the click to the body element of the document.  This enables us to
+        // handle multiple different fields with the same identifier as though they were one, hopefully.
+        selector = '[id=<%= root %>_' + id + '],[id=<%= root %>_' + id + '_id]';
+        jQuery('body').delegate(selector, 'change', function() {
+          hide(jQuery('.related_to.' + id));
+          show(selectRelatedFor(valueFrom(this)));
         });
-
-        // Hide all of the DIVs and then show the current value
-        hide($$('.related_to.' + id));
-        show(selectRelatedFor(previousValue));
       };
 
     <% related.each do |field| %>

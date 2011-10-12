@@ -5,7 +5,7 @@
   <% if @current_user.administrator? %>
       <tr><td>Name: <%= f.text_field :name %></td></tr>
   <% else %>
-      <tr><td>Name: <%= @asset.name %></td></tr>
+      <tr><td>Name: <%= h(@asset.display_name) %></td></tr>
   <% end %>
 
   <% if @asset.location %>

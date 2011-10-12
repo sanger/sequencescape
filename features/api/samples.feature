@@ -20,7 +20,7 @@ Feature: Access samples through the API
       And the GC content of the sample called "testing_the_api" is Neutral
       And the DNA source of the sample called "testing_the_api" is Genomic
       And the SRA status of the sample called "testing_the_api" is Hold
-      And the sample called "testing_the_api" is 10 minutes old
+      And the sample called "testing_the_api" is 10 weeks old
       And the dosage of the sample called "testing_the_api" is 10 something
       And the fields of the sample_metadata for the sample called "testing_the_api" are prepopulated
 
@@ -101,7 +101,7 @@ Feature: Access samples through the API
             "metagenomics": {
               "genotype": "genotype",
               "phenotype": "phenotype",
-              "age": "10 minutes",
+              "age": "10 weeks",
               "developmental_stage": "developmental_stage",
               "cell_type": "cell_type",
               "disease_state": "disease_state",

@@ -21,7 +21,7 @@
   <form action="/assets/print_assets" method="POST">
     <tr>
       <td width="35%" class="item"><%= @asset.label %>: <input type="hidden" name="printable[<%= @asset.id %>]" /></td>
-      <td width="65%"><strong><%= @asset.name %></strong></td>
+      <td width="65%"><strong><%= h(@asset.display_name) %></strong></td>
     </tr>
   <tr>
     <td width="35%" class="item">Print to: </td>

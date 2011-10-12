@@ -1,6 +1,6 @@
 <%- add :title, "Asset summary" %>
 
-<h1>Summary of <%= @asset.name %></h1>
+<h1>Summary of <%= h(@asset.display_name) %></h1>
 <div class='subtitle'>
   <%= @asset.sti_type %> <%= @asset.id %> &middot; Created on <%= @asset.created_at.to_formatted_s(:long) %>
 </div>

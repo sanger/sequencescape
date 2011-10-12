@@ -8,7 +8,8 @@
       <%= field %>
     </td>
     <td class="help_field">
-      <% help_text("#{sections.label} help text") do %><%= sections.help %><% end %>
+      <%# We know that the field itself can vary for the same attribute, hence we provide a suggested ID here %>
+      <% help_text("#{sections.label} help text", field.hash) do %><%= sections.help %><% end %>
     </td>
   </tr>
 </table>

@@ -40,7 +40,7 @@
     <h3>Assets</h3>
     <ul>
       <% @assets.each do |asset| -%>
-        <li><%= asset.name or "#{asset.sti_type} #{asset.id}" %></li>
+        <li><%= link_to(h(asset.display_name), asset_path(asset)) %></li>
       <% end -%>
     </ul>
   <% end %>

@@ -1,5 +1,5 @@
 <tr class="<%= cycle("rowodd", "roweven") %>">
-  <td><%= link_to asset.name, asset_url(asset), :target => "_blank" %></td>
+  <td><%= link_to(h(asset.display_name), asset_url(asset), :target => "_blank") %></td>
   <td><%= asset.sanger_human_barcode %></td>
   <% unless asset.requests.empty? %>
     <td colspan="3">

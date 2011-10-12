@@ -18,7 +18,7 @@
           <td width="35%" class="item">Label for completed multiplexed library:</td>
         </tr>
         <tr>
-          <td width="35%" class="item"><%= @asset.name %></td>
+          <td width="35%" class="item"><%= h(@asset.display_name) %></td>
           <td width="65%"><input type='checkbox' checked='on' name='printable[<%= @asset.id %>]'></td>
           <td></td>
         </tr>

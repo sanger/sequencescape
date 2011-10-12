@@ -332,7 +332,6 @@ en:
 
         data_release_delay_period:
           label: Delay for
-          help: Approval is required to delay data release for more than 3 months.
 
         data_release_delay_approval:
           label: Has the delay period been approved by the data sharing committee for this project?

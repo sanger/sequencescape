@@ -5,9 +5,7 @@
       <th>Name</th>
       <th>Update date</th>
       <% @request_types.each do |request_type| %>
-        <% if @total_requests[request_type] > 0 %>
-          <th><center><%= request_type.name %></center></th>
-        <% end %>
+        <th><center><%= request_type.name %></center></th>
       <% end %>
     </tr>
   </thead>

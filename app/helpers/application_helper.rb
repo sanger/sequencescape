@@ -111,7 +111,7 @@ module ApplicationHelper
 
   def request_count_link(study, asset, state, request_type)
     matching_requests   = asset.requests.select { |request| (request.request_type == request_type) and request.send(:"#{ state }?") }
-    html_options, count = { :title => "#{ asset.name } #{ state }" }, matching_requests.size
+    html_options, count = { :title => "#{ asset.display_name } #{ state }" }, matching_requests.size
 
     # 0 requests => no link, just '0'
     # 1 request  => request summary page
@@ -313,7 +313,7 @@ module ApplicationHelper
     label_tag(name, text, options.merge(:style => 'display:none;'))
   end
 
-  def help_text(label_text = nil, &block)
+  def help_text(label_text = nil, suggested_id = nil, &block)
     content = capture(&block)
 
     # TODO: This regexp isn't obvious until you stare at it for a while but:
@@ -329,7 +329,7 @@ module ApplicationHelper
       concat(content)
     else
       concat(shortened_text)
-      tooltip_id = "prop_#{ content.hash }_help"
+      tooltip_id = "prop_#{suggested_id || content.hash}_help"
       concat(label_tag("tooltip_content_#{tooltip_id}", label_text, :style => 'display:none;'))
 
       tooltip('...', :id => tooltip_id, &block)
