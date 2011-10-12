@@ -19,7 +19,7 @@ Given /^I have a submission created with the following details based on the temp
     [ k.to_sym, v ]
   end
 
-  template.create!({ :user => User.first }.merge(Hash[attributes])).create_submission.built!
+  template.create_with_submission!({ :user => User.first }.merge(Hash[attributes]))
 end
 
 Then /^the request options for the submission with UUID "([^\"]+)" should be:$/ do |uuid, options_table|
