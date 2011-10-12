@@ -19,6 +19,11 @@ def create_request(request_type, study, project, asset, target_asset, additional
     }
   )
 
+  #should be on target asset when we'll use target_asset
+  asset.aliquots.each do |a|
+    a.update_attributes!(:study_id=>study.id)
+  end
+
   # The UUID for the requests needs to be sequentially generated from the study UUID
   uuid_parts = study.uuid.match(/^(.+)-([\da-f]{12})$/) or raise StandardError, "UUID invalid (#{study.uuid.inspect})"
   uuid_root, uuid_index = uuid_parts[1], uuid_parts[2].to_i(0x10)
