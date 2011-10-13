@@ -6,6 +6,8 @@ class Plate < Asset
   include PlatePurpose::Associations
   include Barcode::Barcodeable
 
+  SOURCE_PLATE_TYPES = ["ABgene 0765","ABgene 0800"]
+
   # The default state for a plate comes from the plate purpose
   delegate :default_state, :to => :plate_purpose, :allow_nil => true
   def state
@@ -389,9 +391,9 @@ class Plate < Asset
     end
   end
 
-  SOURCE_PLATE_TYPES = ["ABgene 0765","ABgene 0800"]
-
+  # <b>DEPRECATED:</b> Please use <tt>Plate::SOURCE_PLATE_TYPES</tt> instead.
   def self.source_plate_types
+    ActiveSupport::Deprecation.warn "Plate.source_plate_types is deprecated. Please use Plate::SOURCE_PLATE_TYPES instead."
     SOURCE_PLATE_TYPES
   end
 
