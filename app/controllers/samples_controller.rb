@@ -367,11 +367,7 @@ class SamplesController < ApplicationController
 
   def select_asset_name_for_move
     @sample = Sample.find(params[:sample_id])
-    study = Study.find_by_id(params[:study_id_to])
-    @assets = []
-    unless study.nil?
-      @assets = study.asset_groups
-    end
+    @asset_groups = Study.find_by_id(params[:study_id_to]).try(:asset_groups) || []
     render :layout => false
   end
 
