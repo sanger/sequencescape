@@ -25,7 +25,7 @@ module Batch::TecanBehaviour
       destination_barcode = request.target_asset.plate.barcode
       next unless destination_barcode == target_barcode
 
-      source_plate_name = request.asset.plate.stock_plate_name
+      source_plate_name = request.asset.plate.stock_plate_name.gsub(/_/, "\s")
       if override_plate_type
         source_plate_name = override_plate_type
       end
@@ -34,7 +34,7 @@ module Batch::TecanBehaviour
         data_object["source"][source_barcode]  = {"name" => source_plate_name, "plate_size" => request.asset.plate.size}
       end
       if data_object["destination"][destination_barcode].nil?
-        data_object["destination"][destination_barcode] = {"name" => Plate::SOURCE_PLATE_TYPES.last, "plate_size" => request.target_asset.plate.size }
+        data_object["destination"][destination_barcode] = {"name" => Plate::SOURCE_PLATE_TYPES.last.gsub(/_/, "\s"), "plate_size" => request.target_asset.plate.size }
       end
       if data_object["destination"][destination_barcode]["mapping"].nil?
         data_object["destination"][destination_barcode]["mapping"] = []
