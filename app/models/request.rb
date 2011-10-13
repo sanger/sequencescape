@@ -42,14 +42,20 @@ class Request < ActiveRecord::Base
   belongs_to :user
 
   belongs_to :submission
+  def order_via_submission
+    submission.try(:order)
+  end
 
-  #temporary hack
+  def study_via_order
+    order_via_submission.try(:study)
+  end
+
   # project is read only so we can set it everywhere
   # but it will be only used in specific and controlled place
   belongs_to :initial_project, :class_name => "Project"
 
   def project_id=(project_id)
-    raise RuntimeError "Initial project already set" if initial_project_id
+    raise RuntimeError, "Initial project already set" if initial_project_id
     self.initial_project_id = project_id
 
     
@@ -83,7 +89,7 @@ class Request < ActiveRecord::Base
   belongs_to :initial_study, :class_name => "Study"
 
   def study_id=(study_id)
-    raise RuntimeError "Initial study already set" if initial_study_id
+    raise RuntimeError, "Initial study already set" if initial_study_id
     self.initial_study_id = study_id
   end
 
@@ -91,7 +97,6 @@ class Request < ActiveRecord::Base
     return unless study
     self.study_id=study.id
   end
-
 
   #  validates_presence_of :study, :request_type#TODO, :submission
 

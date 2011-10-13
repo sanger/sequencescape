@@ -167,15 +167,48 @@ Factory.define :request_metadata, :class => Request::Metadata do |m|
   m.read_length 76
 end
 
+Factory.define :request_metadata_for_library_manufacture, :parent => :request_metadata do |m|
+  m.fragment_size_required_from   1
+  m.fragment_size_required_to     20
+  m.library_type                  "Standard"
+end
+
+# definef request_metadata_for ... factory for request types needing default metadata fragment size
+Request::LibraryManufacture.included_in_classes.each do |klass|
+  factory_name =  :"request_metadata_for_#{klass.name.underscore}"
+  next if Factory.factories[factory_name]
+  Factory.define factory_name , :parent => :request_metadata_for_library_manufacture  do
+  end
+end
+
+Factory.define :request_metadata_for_sequencing, :parent => :request_metadata do |m|
+  m.fragment_size_required_from   1
+  m.fragment_size_required_to     21
+end
+
+# set default  metadata factories to every request types which have been defined yet
+RequestType.all.each do |rt|
+  factory_name =  :"request_metadata_for_#{rt.request_class_name.underscore}"
+  next if Factory.factories[factory_name]
+  case factory_name.to_s
+  when  /sequencing/
+    Factory.define factory_name , :parent => :request_metadata_for_sequencing do
+    end
+  else
+    Factory.define factory_name , :parent => :request_metadata do
+    end
+  end
+end
+
 Factory.define :request_with_submission, :class => Request do |request|
   request.request_type      {|rt|         rt.association(:request_type)}
   # We use after_create so this is called after the after_build of derived class
   # That leave a chance to children factory to build asset beforehand
-  request.after_create do |request|
+  request.after_build do |request|
     request.submission = Factory::submission(:workflow => request.workflow,
                                           :study => request.initial_study,
                                           :project => request.initial_project,
-                                          :request_types => [request.request_type.id.to_s],
+                                          :request_types => [request.request_type.try(:id)].compact.map(&:to_s),
                                           :user => request.user,
                                           :assets => [request.asset].compact
                                           ) unless request.submission
@@ -192,7 +225,10 @@ Factory.define :request_without_assets, :parent => :request_with_submission do |
   request.user              {|user|       user.association(:user)}
   request.workflow          {|workflow|   workflow.association(:submission_workflow)}
 
-  request.after_build { |request| request.request_metadata = Factory(:request_metadata, :request => request) }
+  request.after_build do |request|
+    request.request_metadata = Factory(:"request_metadata_for_#{request.request_type.request_class_name.underscore}", :request => request)
+    request.sti_type =  request.request_type.request_class_name
+  end
 end
 
 Factory.define :request, :parent => :request_without_assets do |r|

@@ -3,20 +3,6 @@ Feature: Display QC data for a plate in a grid
 
   Background:
     Given I am logged in as "user"
-
-  Scenario: An asset has a request with a study
-    Given a study named "Study A" exists
-      And I have a Sample Tube "my tube" with a request in "Study A"
-      And I am on the show page for asset "my tube"
-    When I follow "Study A"
-    Then I should be on the study workflow page for "Study A"
-
-  Scenario: An asset has a request without a study
-    Given a study named "Study A" exists
-      And I have a Sample Tube "my tube" with a request without a study
-      And I am on the show page for asset "my tube"
-    Then I should see "NA"
-
   Scenario: A plate has holded wells
     Given a "Stock Plate" plate purpose and of type "Plate" with barcode "1220000123724" exists
       And plate "123" has "3" wells
