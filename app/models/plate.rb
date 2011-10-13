@@ -223,7 +223,7 @@ class Plate < Asset
 
   def stock_plate_name
     if self.get_plate_type == "Stock Plate" || self.get_plate_type.blank?
-      return "ABgene_0765"
+      return SOURCE_PLATE_TYPES.first
     end
     self.get_plate_type
   end
@@ -389,8 +389,10 @@ class Plate < Asset
     end
   end
 
+  SOURCE_PLATE_TYPES = ["ABgene 0765","ABgene 0800"]
+
   def self.source_plate_types
-    ["ABgene_0765","ABgene_0800"]
+    SOURCE_PLATE_TYPES
   end
 
   def create_sample_tubes
