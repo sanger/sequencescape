@@ -6,7 +6,7 @@ class Plate < Asset
   include PlatePurpose::Associations
   include Barcode::Barcodeable
 
-  SOURCE_PLATE_TYPES = ["ABgene 0765","ABgene 0800"]
+  SOURCE_PLATE_TYPES = ["ABgene_0765","ABgene_0800"]
 
   # The default state for a plate comes from the plate purpose
   delegate :default_state, :to => :plate_purpose, :allow_nil => true
