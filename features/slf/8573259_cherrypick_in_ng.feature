@@ -1,4 +1,4 @@
-@nano_grams @cherrypicking_for_pulldown @cherrypicking @barcode-service @pulldown
+@nano_grams @cherrypicking_for_pulldown @cherrypicking @barcode-service @pulldown @tecan
 Feature: Pick a ng quantity using the Tecan robot
 
   Background: 
@@ -48,84 +48,84 @@ Feature: Pick a ng quantity using the Tecan robot
     Then the downloaded tecan file for batch "550000555760" and plate "1220099999705" is
     """
     C;
-    A;SCRC1;;ABgene_0765;2;;10.0
-    D;DEST1;;ABgene_0800;1;;10.0
+    A;SCRC1;;ABgene 0765;2;;10.0
+    D;DEST1;;ABgene 0800;1;;10.0
     W;
-    A;SCRC1;;ABgene_0765;10;;9.0
-    D;DEST1;;ABgene_0800;2;;9.0
+    A;SCRC1;;ABgene 0765;10;;9.0
+    D;DEST1;;ABgene 0800;2;;9.0
     W;
-    A;SCRC1;;ABgene_0765;18;;8.0
-    D;DEST1;;ABgene_0800;3;;8.0
+    A;SCRC1;;ABgene 0765;18;;8.0
+    D;DEST1;;ABgene 0800;3;;8.0
     W;
-    A;SCRC1;;ABgene_0765;26;;7.0
-    D;DEST1;;ABgene_0800;4;;7.0
+    A;SCRC1;;ABgene 0765;26;;7.0
+    D;DEST1;;ABgene 0800;4;;7.0
     W;
-    A;SCRC1;;ABgene_0765;34;;6.0
-    D;DEST1;;ABgene_0800;5;;6.0
+    A;SCRC1;;ABgene 0765;34;;6.0
+    D;DEST1;;ABgene 0800;5;;6.0
     W;
-    A;SCRC1;;ABgene_0765;42;;5.0
-    D;DEST1;;ABgene_0800;6;;5.0
+    A;SCRC1;;ABgene 0765;42;;5.0
+    D;DEST1;;ABgene 0800;6;;5.0
     W;
-    A;SCRC2;;ABgene_0765;19;;30.0
-    D;DEST1;;ABgene_0800;7;;30.0
+    A;SCRC2;;ABgene 0765;19;;30.0
+    D;DEST1;;ABgene 0800;7;;30.0
     W;
-    A;SCRC2;;ABgene_0765;27;;1.0
-    D;DEST1;;ABgene_0800;8;;1.0
+    A;SCRC2;;ABgene 0765;27;;1.0
+    D;DEST1;;ABgene 0800;8;;1.0
     W;
-    A;SCRC2;;ABgene_0765;35;;2.0
-    D;DEST1;;ABgene_0800;9;;2.0
+    A;SCRC2;;ABgene 0765;35;;2.0
+    D;DEST1;;ABgene 0800;9;;2.0
     W;
-    A;SCRC2;;ABgene_0765;43;;2.0
-    D;DEST1;;ABgene_0800;10;;2.0
+    A;SCRC2;;ABgene 0765;43;;2.0
+    D;DEST1;;ABgene 0800;10;;2.0
     W;
-    A;SCRC2;;ABgene_0765;51;;2.0
-    D;DEST1;;ABgene_0800;11;;2.0
+    A;SCRC2;;ABgene 0765;51;;2.0
+    D;DEST1;;ABgene 0800;11;;2.0
     W;
-    A;SCRC2;;ABgene_0765;59;;2.0
-    D;DEST1;;ABgene_0800;12;;2.0
+    A;SCRC2;;ABgene 0765;59;;2.0
+    D;DEST1;;ABgene 0800;12;;2.0
     W;
-    A;SCRC2;;ABgene_0765;4;;10.0
-    D;DEST1;;ABgene_0800;13;;10.0
+    A;SCRC2;;ABgene 0765;4;;10.0
+    D;DEST1;;ABgene 0800;13;;10.0
     W;
-    A;SCRC2;;ABgene_0765;12;;10.0
-    D;DEST1;;ABgene_0800;14;;10.0
+    A;SCRC2;;ABgene 0765;12;;10.0
+    D;DEST1;;ABgene 0800;14;;10.0
     W;
-    A;SCRC2;;ABgene_0765;20;;15.0
-    D;DEST1;;ABgene_0800;15;;15.0
+    A;SCRC2;;ABgene 0765;20;;15.0
+    D;DEST1;;ABgene 0800;15;;15.0
     W;
-    A;SCRC2;;ABgene_0765;28;;20.0
-    D;DEST1;;ABgene_0800;16;;20.0
+    A;SCRC2;;ABgene 0765;28;;20.0
+    D;DEST1;;ABgene 0800;16;;20.0
     W;
     C;
     A;BUFF;;96-TROUGH;2;;1.0
-    D;DEST1;;ABgene_0800;2;;1.0
+    D;DEST1;;ABgene 0800;2;;1.0
     W;
     A;BUFF;;96-TROUGH;3;;2.0
-    D;DEST1;;ABgene_0800;3;;2.0
+    D;DEST1;;ABgene 0800;3;;2.0
     W;
     A;BUFF;;96-TROUGH;4;;3.0
-    D;DEST1;;ABgene_0800;4;;3.0
+    D;DEST1;;ABgene 0800;4;;3.0
     W;
     A;BUFF;;96-TROUGH;5;;4.0
-    D;DEST1;;ABgene_0800;5;;4.0
+    D;DEST1;;ABgene 0800;5;;4.0
     W;
     A;BUFF;;96-TROUGH;6;;5.0
-    D;DEST1;;ABgene_0800;6;;5.0
+    D;DEST1;;ABgene 0800;6;;5.0
     W;
     A;BUFF;;96-TROUGH;8;;9.0
-    D;DEST1;;ABgene_0800;8;;9.0
+    D;DEST1;;ABgene 0800;8;;9.0
     W;
     A;BUFF;;96-TROUGH;9;;8.0
-    D;DEST1;;ABgene_0800;9;;8.0
+    D;DEST1;;ABgene 0800;9;;8.0
     W;
     A;BUFF;;96-TROUGH;10;;8.0
-    D;DEST1;;ABgene_0800;10;;8.0
+    D;DEST1;;ABgene 0800;10;;8.0
     W;
     A;BUFF;;96-TROUGH;11;;8.0
-    D;DEST1;;ABgene_0800;11;;8.0
+    D;DEST1;;ABgene 0800;11;;8.0
     W;
     A;BUFF;;96-TROUGH;12;;8.0
-    D;DEST1;;ABgene_0800;12;;8.0
+    D;DEST1;;ABgene 0800;12;;8.0
     W;
     C;
     C; SCRC1 = 222
