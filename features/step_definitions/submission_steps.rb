@@ -19,7 +19,7 @@ Given /^I have a submission created with the following details based on the temp
     [ k.to_sym, v ]
   end
 
-  template.new_submission({ :user => User.first }.merge(Hash[attributes])).save!
+  template.create_with_submission!({ :user => User.first }.merge(Hash[attributes]))
 end
 
 Then /^the request options for the submission with UUID "([^\"]+)" should be:$/ do |uuid, options_table|
@@ -148,14 +148,14 @@ end
 
 Given /^the sample tubes are part of submission "([^"]*)"$/ do |submission_uuid|
   submission = Uuid.find_by_external_id(submission_uuid).resource or raise StandardError, "Couldnt find object for UUID"
-  Asset.all.map{ |asset| submission.assets << asset } 
+  Asset.all.map{ |asset| submission.order.assets << asset } 
 end
 
 Given /^submission "([^"]*)" has old format request options$/ do |submission_uuid|
-  submission = Uuid.find_by_external_id(submission_uuid).resource or raise StandardError, "Couldnt find object for UUID"
-  submission.request_options["read_length"] = { 'value' =>  submission.request_options["read_length"] }
-  submission.request_options["library_type"] = { 'value' =>  submission.request_options["library_type"] }
-  submission.request_options["fragment_size_required_from"] = { 'value' =>  submission.request_options["fragment_size_required_from"] }
-  submission.request_options["fragment_size_required_to"] = { 'value' =>  submission.request_options["fragment_size_required_to"] }
-  submission.save(false)
+  order = Uuid.find_by_external_id(submission_uuid).resource.order or raise StandardError, "Couldnt find object for UUID"
+  order.request_options["read_length"] = { 'value' =>  order.request_options["read_length"] }
+  order.request_options["library_type"] = { 'value' =>  order.request_options["library_type"] }
+  order.request_options["fragment_size_required_from"] = { 'value' =>  order.request_options["fragment_size_required_from"] }
+  order.request_options["fragment_size_required_to"] = { 'value' =>  order.request_options["fragment_size_required_to"] }
+  order.save(false)
 end

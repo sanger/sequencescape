@@ -13,7 +13,16 @@ class SubmissionTemplate < ActiveRecord::Base
   acts_as_audited :on => [:destroy, :update]
 
   def create!(attributes)
-    self.new_submission(attributes).tap { |submission| submission.save! }
+    self.new_submission(attributes).tap do |submission|
+      yield(submission) if block_given?
+      submission.save! 
+    end
+  end
+
+  def create_with_submission!(attributes)
+    self.create!(attributes) do |order|
+      order.create_submission
+    end
   end
 
   # create a new submission of the good subclass and with pre-set attributes
