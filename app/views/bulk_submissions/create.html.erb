@@ -1,0 +1,24 @@
+<h2>Bulk submission successfully made</h2>
+
+<h2>Your submissions:</h2>
+  <div class='quota_title'>
+    <strong>Submissions</strong>
+  </div>
+  <div class="quota">
+    <table width='100%' cellpadding='3' cellspacing='0' class='sortable'>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Study</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <% @these_subs.each do |submission| %>
+        <tr>
+          <td><%= link_to submission.id, study_workflow_submission_path(submission.study_id, submission.workflow_id, submission.id) %></td>
+          <td><%= link_to @study_names[submission.study_id], study_path(submission.study_id) %>
+          <td><%= @sub_details[submission.id] %></td>
+        </tr>
+      <% end %>
+      </table>
+  </div>
