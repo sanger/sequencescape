@@ -4,8 +4,8 @@
     :with => "'asset_group_id='+escape($('asset_group_id').value)+'&study_id_to='+escape($('study_id_to').value)+'&sample_id="+@sample.id.to_s+"'" )
   %>">
 <option value="0">- Select an existing Asset Group from this study -</option>
-<% @assets.each do |asset| %>
-  <option value="<%= asset.id %>"> <%= h(asset.display_name) %> </option>
+<% @asset_groups.each do |group| %>
+  <option value="<%= group.id %>"> <%= h(group.name) %> </option>
 <% end %>
 </select>
 or enter the new name:  <%= text_field_tag "new_assets_name" %> &nbsp; <INPUT type="button" value="Help me!"  onClick="createNameAsset()">
