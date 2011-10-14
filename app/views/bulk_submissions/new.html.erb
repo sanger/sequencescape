@@ -5,9 +5,11 @@
 <% semantic_form_for @bulk_submission, :url => {:action => "create"}, :html => {:multipart => true } do |form|  %>
     <% form.inputs do %>
       <%= form.input :spreadsheet, :as => :file, :label => 'Spreadsheet' %>
+      
     <% end %>
     <% form.buttons do %>
       <%= form.commit_button %>
+      
     <% end %>
 
 <% end %>

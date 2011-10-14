@@ -1,4 +1,5 @@
 class BulkSubmissionsController < ApplicationController
+  Formtastic::SemanticFormBuilder.inline_errors = :list
 
   def index
     redirect_to :action => "new"

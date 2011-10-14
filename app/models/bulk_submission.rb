@@ -177,10 +177,12 @@ class BulkSubmission < ActiveRecord::Base
             @submission_details[submission.id] = "Submission #{submission.id} built from rows #{details['rows']} (should make #{number_of_lanes} lanes)"
           rescue => exception
             Rails.logger.debug("****************** #{exception.message}")
-          
-            errors.add :spreadsheet, "There were problems on rows #{details['rows']}: \t#{exception.message}"
+           
+           
+            errors.add :spreadsheet, "There was a problem on row #{details['rows']}: #{exception.message}"
             # errors.add :spreadsheet, "\tDetails: #{details.inspect}"
             # errors.add :spreadsheet, "\thad an error: #{exception.message}"
+            puts errors.inspect
 
             failures = true
           rescue QuotaException => exception
