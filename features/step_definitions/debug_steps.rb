@@ -4,4 +4,5 @@ end
 
 Then /^launch the debugger$/ do
   debugger
+  puts
 end
