@@ -13,26 +13,27 @@
 
 <table width='100%' cellspacing='0' cellpadding='0'>
   <tbody>
-  <tr>
-    <td class="item" width="40%">Name:</td>
-    <td><strong><%=h @study.name %></strong></td>
-  </tr>
-  <tr>
-    <td class="item">Created at:</td>
-    <td><strong><%=h @study.created_at.to_formatted_s(:day_full_with_time) %></strong></td>
-  </tr>
-  <tr>
-    <td class="item">Study reference genome:</td>
-    <td><strong><%= h(@study.study_metadata.reference_genome.name) %></strong></td>
-  </tr>
-  </tbody
+    <tr>
+      <td class="item" width="40%">Name:</td>
+      <td><strong><%=h @study.name %></strong></td>
+    </tr>
+    <tr>
+      <td class="item">Created at:</td>
+      <td><strong><%=h @study.created_at.to_formatted_s(:day_full_with_time) %></strong></td>
+    </tr>
+    <tr>
+      <td class="item">Study reference genome:</td>
+      <td><strong><%= h(@study.study_metadata.reference_genome.name) %></strong></td>
+    </tr>
+  </tbody>
 </table>
+
 <div id="template_form_body">
   <%= render :partial => 'shared/metadata/show/study', :locals => { :study => @study } %>
 </div>
-<h1>
-  Related Studies
-</h2>
+
+<h1>Related Studies</h2>
+
 <table width='100%' class='sortable'>
   <thead>
     <tr>
@@ -43,18 +44,18 @@
   <tbody>
     <% @study.study_relations.each do |relation| %>
       <% rs = relation.related_study %>
-    <tr>
-      <td><%=relation.name %></td>
-      <td><%= link_to "#{(rs.name or "").titleize} #{rs.id}", study_url(rs) %></td>
-    </tr>
+      <tr>
+        <td><%=relation.name %></td>
+        <td><%= link_to "#{(rs.name or "").titleize} #{rs.id}", study_url(rs) %></td>
+      </tr>
     <% end %>
     <% @study.reversed_study_relations.each do |relation| %>
       <% rs = relation.study %>
-    <tr>
-      <td><%=  relation.reversed_name %></td>
-      <td><%= link_to "#{(rs.name or "").titleize} #{rs.id}", study_url(rs) %></td>
-    </tr>
+      <tr>
+        <td><%=  relation.reversed_name %></td>
+        <td><%= link_to "#{(rs.name or "").titleize} #{rs.id}", study_url(rs) %></td>
+      </tr>
     <% end %>
   </tbody>
- </table>
+</table>
 
