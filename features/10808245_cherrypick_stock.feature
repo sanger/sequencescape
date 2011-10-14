@@ -1,4 +1,4 @@
-@micro_litres @cherrypicking @barcode-service
+@micro_litres @cherrypicking @barcode-service @tecan
 Feature: Pick by micro litre (stock transfer) using the Tecan robot
 
   Background:
@@ -45,53 +45,53 @@ Feature: Pick by micro litre (stock transfer) using the Tecan robot
     Then the downloaded tecan file for batch "550000555760" and plate "1220099999705" is
     """
     C;
-    A;SCRC1;;ABgene_0765;2;;<volume>.0
-    D;DEST1;;ABgene_0800;1;;<volume>.0
+    A;SCRC1;;ABgene 0765;2;;<volume>.0
+    D;DEST1;;ABgene 0800;1;;<volume>.0
     W;
-    A;SCRC1;;ABgene_0765;10;;<volume>.0
-    D;DEST1;;ABgene_0800;2;;<volume>.0
+    A;SCRC1;;ABgene 0765;10;;<volume>.0
+    D;DEST1;;ABgene 0800;2;;<volume>.0
     W;
-    A;SCRC1;;ABgene_0765;18;;<volume>.0
-    D;DEST1;;ABgene_0800;3;;<volume>.0
+    A;SCRC1;;ABgene 0765;18;;<volume>.0
+    D;DEST1;;ABgene 0800;3;;<volume>.0
     W;
-    A;SCRC1;;ABgene_0765;26;;<volume>.0
-    D;DEST1;;ABgene_0800;4;;<volume>.0
+    A;SCRC1;;ABgene 0765;26;;<volume>.0
+    D;DEST1;;ABgene 0800;4;;<volume>.0
     W;
-    A;SCRC1;;ABgene_0765;34;;<volume>.0
-    D;DEST1;;ABgene_0800;5;;<volume>.0
+    A;SCRC1;;ABgene 0765;34;;<volume>.0
+    D;DEST1;;ABgene 0800;5;;<volume>.0
     W;
-    A;SCRC1;;ABgene_0765;42;;<volume>.0
-    D;DEST1;;ABgene_0800;6;;<volume>.0
+    A;SCRC1;;ABgene 0765;42;;<volume>.0
+    D;DEST1;;ABgene 0800;6;;<volume>.0
     W;
-    A;SCRC2;;ABgene_0765;19;;<volume>.0
-    D;DEST1;;ABgene_0800;7;;<volume>.0
+    A;SCRC2;;ABgene 0765;19;;<volume>.0
+    D;DEST1;;ABgene 0800;7;;<volume>.0
     W;
-    A;SCRC2;;ABgene_0765;27;;<volume>.0
-    D;DEST1;;ABgene_0800;8;;<volume>.0
+    A;SCRC2;;ABgene 0765;27;;<volume>.0
+    D;DEST1;;ABgene 0800;8;;<volume>.0
     W;
-    A;SCRC2;;ABgene_0765;35;;<volume>.0
-    D;DEST1;;ABgene_0800;9;;<volume>.0
+    A;SCRC2;;ABgene 0765;35;;<volume>.0
+    D;DEST1;;ABgene 0800;9;;<volume>.0
     W;
-    A;SCRC2;;ABgene_0765;43;;<volume>.0
-    D;DEST1;;ABgene_0800;10;;<volume>.0
+    A;SCRC2;;ABgene 0765;43;;<volume>.0
+    D;DEST1;;ABgene 0800;10;;<volume>.0
     W;
-    A;SCRC2;;ABgene_0765;51;;<volume>.0
-    D;DEST1;;ABgene_0800;11;;<volume>.0
+    A;SCRC2;;ABgene 0765;51;;<volume>.0
+    D;DEST1;;ABgene 0800;11;;<volume>.0
     W;
-    A;SCRC2;;ABgene_0765;59;;<volume>.0
-    D;DEST1;;ABgene_0800;12;;<volume>.0
+    A;SCRC2;;ABgene 0765;59;;<volume>.0
+    D;DEST1;;ABgene 0800;12;;<volume>.0
     W;
-    A;SCRC2;;ABgene_0765;4;;<volume>.0
-    D;DEST1;;ABgene_0800;13;;<volume>.0
+    A;SCRC2;;ABgene 0765;4;;<volume>.0
+    D;DEST1;;ABgene 0800;13;;<volume>.0
     W;
-    A;SCRC2;;ABgene_0765;12;;<volume>.0
-    D;DEST1;;ABgene_0800;14;;<volume>.0
+    A;SCRC2;;ABgene 0765;12;;<volume>.0
+    D;DEST1;;ABgene 0800;14;;<volume>.0
     W;
-    A;SCRC2;;ABgene_0765;20;;<volume>.0
-    D;DEST1;;ABgene_0800;15;;<volume>.0
+    A;SCRC2;;ABgene 0765;20;;<volume>.0
+    D;DEST1;;ABgene 0800;15;;<volume>.0
     W;
-    A;SCRC2;;ABgene_0765;28;;<volume>.0
-    D;DEST1;;ABgene_0800;16;;<volume>.0
+    A;SCRC2;;ABgene 0765;28;;<volume>.0
+    D;DEST1;;ABgene 0800;16;;<volume>.0
     W;
     C;
     C; SCRC1 = 222
@@ -187,23 +187,23 @@ Feature: Pick by micro litre (stock transfer) using the Tecan robot
     Then the downloaded tecan file for batch "550000555760" and plate "1220099999705" is
     """
     C;
-    A;SCRC1;;ABgene_0765;1;;<volume>.0
-    D;DEST1;;ABgene_0800;1;;<volume>.0
+    A;SCRC1;;ABgene 0765;1;;<volume>.0
+    D;DEST1;;ABgene 0800;1;;<volume>.0
     W;
-    A;SCRC1;;ABgene_0765;9;;<volume>.0
-    D;DEST1;;ABgene_0800;2;;<volume>.0
+    A;SCRC1;;ABgene 0765;9;;<volume>.0
+    D;DEST1;;ABgene 0800;2;;<volume>.0
     W;
-    A;SCRC2;;ABgene_0765;1;;<volume>.0
-    D;DEST1;;ABgene_0800;3;;<volume>.0
+    A;SCRC2;;ABgene 0765;1;;<volume>.0
+    D;DEST1;;ABgene 0800;3;;<volume>.0
     W;
-    A;SCRC2;;ABgene_0765;9;;<volume>.0
-    D;DEST1;;ABgene_0800;4;;<volume>.0
+    A;SCRC2;;ABgene 0765;9;;<volume>.0
+    D;DEST1;;ABgene 0800;4;;<volume>.0
     W;
-    A;SCRC3;;ABgene_0765;1;;<volume>.0
-    D;DEST1;;ABgene_0800;5;;<volume>.0
+    A;SCRC3;;ABgene 0765;1;;<volume>.0
+    D;DEST1;;ABgene 0800;5;;<volume>.0
     W;
-    A;SCRC3;;ABgene_0765;9;;<volume>.0
-    D;DEST1;;ABgene_0800;6;;<volume>.0
+    A;SCRC3;;ABgene 0765;9;;<volume>.0
+    D;DEST1;;ABgene 0800;6;;<volume>.0
     W;
     C;
     C; SCRC1 = 1
