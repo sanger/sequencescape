@@ -20,6 +20,7 @@ Feature: Creating submissions from submission templates
 
     Given the UUID for the submission template "Library creation - Paired end sequencing" is "00000000-1111-2222-3333-444444444444"
     And the UUID of the next submission created will be "11111111-2222-3333-4444-555555555555"
+    And the UUID of the next order created will be "11111111-2222-3333-4444-666666666666"
 
     Given the UUID for the request type "Library creation" is "99999999-1111-2222-3333-000000000000"
     And the UUID for the request type "Paired end sequencing" is "99999999-1111-2222-3333-000000000001"
@@ -421,11 +422,11 @@ Feature: Creating submissions from submission templates
       """
 
     Scenarios: Checking the individual fields
-      | template name                            | invalid options                             | errors                                                             |
-      | Library Creation - Paired end sequencing | "read_length": "foo"                        | read_length": [ "is not a number", "is not included in the list" ] |
-      | Library Creation - Paired end sequencing | "fragment_size_required": { "from": "foo" } | fragment_size_required.from": [ "is not a number" ]                |
-      | Library Creation - Paired end sequencing | "fragment_size_required": { "to": "foo" }   | fragment_size_required.to": [ "is not a number" ]                  |
-      | Library Creation - Paired end sequencing | "library_type": "One with books"            | library_type": [ "is not included in the list" ]                   |
+      | template name                            | invalid options                             | errors                                              |
+      | Library Creation - Paired end sequencing | "read_length": "foo"                        | read_length": [ "is not included in the list" ]     |
+      | Library Creation - Paired end sequencing | "fragment_size_required": { "from": "foo" } | fragment_size_required.from": [ "is not a number" ] |
+      | Library Creation - Paired end sequencing | "fragment_size_required": { "to": "foo" }   | fragment_size_required.to": [ "is not a number" ]   |
+      | Library Creation - Paired end sequencing | "library_type": "One with books"            | library_type": [ "is not included in the list" ]    |
 
     Scenarios: Where the read length does not match the list for the particular sequencing request
       | template name                                  | invalid options    | errors                                          |
@@ -571,25 +572,76 @@ Feature: Creating submissions from submission templates
       | ready      |
       | failed     |
 
-  # "TODO": This should be an outline for all quota failures but heck, need to just get this done ...
   @submit @error @project
-  Scenario: Attempting to submit a submission that has a project that is not active
+  Scenario: Attempting to create a submission that has a project that is not active
     Given 3 sample tubes exist with names based on "sampletube" and IDs starting at 1
     And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"
 
     Given project "Testing submission creation" approval is "inactive"
     And the project "Testing submission creation" has quotas and quotas are enforced
 
-    Given I have a submission created with the following details based on the template "Library creation - Paired end sequencing":
-      | study           | 22222222-3333-4444-5555-000000000000                                                                       |
-      | project         | 22222222-3333-4444-5555-000000000001                                                                       |
-      | request_options | read_length: 76, fragment_size_required_from: 100, fragment_size_required_to: 200, library_type: qPCR only |
-      | assets          | 33333333-4444-5555-6666-000000000001                                                                       |
+    When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/submissions":
+      """
+      {
+        "submission": {
+          "project": "22222222-3333-4444-5555-000000000001",
+          "study": "22222222-3333-4444-5555-000000000000",
+          "assets": [ "33333333-4444-5555-6666-000000000001" ]
+        }
+      }
+      """
+    Then the HTTP response should be "501 Not Implemented"
+    And the JSON should match the following for the specified fields:
+      """
+      {
+        "general": [ "Project Testing submission creation is not approved" ]
+      }
+      """
+
+  @submit @error @project
+  Scenario: Building a submission that results in an error because of quota
+    Given 3 sample tubes exist with names based on "sampletube" and IDs starting at 1
+    And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"
+
+    Given project "Testing submission creation" approval is "inactive"
+    And the project "Testing submission creation" has quotas and quotas are enforced
+
+    When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/submissions":
+      """
+      {
+        "submission": {
+          "project": "22222222-3333-4444-5555-000000000001",
+          "study": "22222222-3333-4444-5555-000000000000"
+        }
+      }
+      """
+    Then the HTTP response should be "201 Created"
+
+    When I PUT the following JSON to the API path "/11111111-2222-3333-4444-555555555555":
+      """
+      {
+        "submission": {
+          "assets": [
+            "33333333-4444-5555-6666-000000000001",
+            "33333333-4444-5555-6666-000000000002",
+            "33333333-4444-5555-6666-000000000003"
+          ],
+          "request_options": {
+            "read_length": 76,
+            "fragment_size_required": {
+              "from": 100,
+              "to": 200
+            },
+            "library_type": "qPCR only"
+          }
+        }
+      }
+      """
+    Then the HTTP response should be "200 OK"
 
     When I POST the following JSON to the API path "/11111111-2222-3333-4444-555555555555/submit":
       """
       """
-    Then the HTTP response should be "501 Not Implemented"
     And the JSON should match the following for the specified fields:
       """
       {
@@ -669,9 +721,10 @@ Feature: Creating submissions from submission templates
     # Check that the asset group really has been created!
     Then the asset group "<asset group name to check>" should only contain sample tube "sampletube-1"
 
-    Examples: 
+    # NOTE: The UUID used here comes from the order now, rather than the submission.
+    Examples:
       | asset group name | asset group name to check            |
-      |                  | 11111111-2222-3333-4444-555555555555 |
+      |                  | 11111111-2222-3333-4444-666666666666 |
       | my group         | my group                             |
 
   @full-workflow @create @update @submit @read
@@ -976,13 +1029,6 @@ Feature: Creating submissions from submission templates
         }, 
         "requests": [
           {
-            "study": {
-              "uuid": "22222222-3333-4444-5555-000000000000"
-            },
-            "project": {
-              "uuid": "22222222-3333-4444-5555-000000000001"
-            },
-
             "source_asset": {
               "uuid": "33333333-4444-5555-6666-000000000001",
               "type": "sample_tubes"
@@ -996,13 +1042,6 @@ Feature: Creating submissions from submission templates
             "type": "Library creation",
             "library_type": "qPCR only"
           }, {
-            "study": {
-              "uuid": "22222222-3333-4444-5555-000000000000"
-            },
-            "project": {
-              "uuid": "22222222-3333-4444-5555-000000000001"
-            },
-
             "source_asset": {
               "uuid": "33333333-4444-5555-6666-000000000002",
               "type": "sample_tubes"
@@ -1016,13 +1055,6 @@ Feature: Creating submissions from submission templates
             "type": "Library creation",
             "library_type": "qPCR only"
           }, {
-            "study": {
-              "uuid": "22222222-3333-4444-5555-000000000000"
-            },
-            "project": {
-              "uuid": "22222222-3333-4444-5555-000000000001"
-            },
-
             "source_asset": {
               "uuid": "33333333-4444-5555-6666-000000000003",
               "type": "sample_tubes"
@@ -1036,13 +1068,6 @@ Feature: Creating submissions from submission templates
             "type": "Library creation",
             "library_type": "qPCR only"
           }, {
-            "study": {
-              "uuid": "22222222-3333-4444-5555-000000000000"
-            },
-            "project": {
-              "uuid": "22222222-3333-4444-5555-000000000001"
-            },
-
             "source_asset": null,
             "target_asset": null,
 
@@ -1053,13 +1078,6 @@ Feature: Creating submissions from submission templates
             },
             "type": "Paired end sequencing"
           }, {
-            "study": {
-              "uuid": "22222222-3333-4444-5555-000000000000"
-            },
-            "project": {
-              "uuid": "22222222-3333-4444-5555-000000000001"
-            },
-
             "source_asset": null,
             "target_asset": null,
 
@@ -1070,13 +1088,6 @@ Feature: Creating submissions from submission templates
             },
             "type": "Paired end sequencing"
           }, {
-            "study": {
-              "uuid": "22222222-3333-4444-5555-000000000000"
-            },
-            "project": {
-              "uuid": "22222222-3333-4444-5555-000000000001"
-            },
-
             "source_asset": null,
             "target_asset": null,
 

@@ -18,7 +18,7 @@ module ModelExtensions::Batch
       named_scope :include_user, :include => :user
       named_scope :include_requests, :include => {
         :requests => [
-          :uuid_object, :study, :project, :request_metadata, :request_type,
+          :uuid_object, :request_metadata, :request_type,
           { :submission   => :uuid_object },
           { :asset        => [ :uuid_object, :barcode_prefix, { :aliquots => [ :sample, :tag ] } ] },
           { :target_asset => [ :uuid_object, :barcode_prefix, { :aliquots => [ :sample, :tag ] } ] }

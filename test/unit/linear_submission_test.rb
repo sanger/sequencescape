@@ -252,7 +252,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
           end
 
           should 'not allow the normal submission to build' do
-            assert_raises(QuotaException) { LinearSubmission.build!(@submission_params) }
+            assert_raises(Quota::Error) { LinearSubmission.build!(@submission_params) }
           end
 
           context 'when quotas are not being enforced' do
@@ -268,7 +268,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
 
         context "when quotas have not been set up" do
           should 'not allow the normal submission to build' do
-            assert_raises(QuotaException) { LinearSubmission.build!(@submission_params) }
+            assert_raises(Quota::Error) { LinearSubmission.build!(@submission_params) }
           end
 
           context 'when quotas are not being enforced' do
@@ -293,7 +293,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
                 @project.enforce_quotas = true
                 end
               should 'not allow the submission to be processed' do
-                assert_raises(QuotaException) { @submission.process! }
+                assert_raises(Quota::Error) { @submission.process! }
               end
               end
             end
@@ -375,7 +375,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
 
           context "insufficient quota" do
             should "build will raise an exception" do
-              assert_raise QuotaException do
+              assert_raise Quota::Error do
                 LinearSubmission.build!(
                   :template         => @submission_template,
                   :study            => @study,
