@@ -19,23 +19,25 @@ class PlatesController < ApplicationController
   end
   
   def create
-    plate_purpose = PlatePurpose.find(params[:plates][:plate_purpose])
-    barcode_printer = BarcodePrinter.find(params[:plates][:barcode_printer])
-    source_plate_barcodes = params[:plates][:source_plates]
-    
-    user_barcode = Barcode.barcode_to_human(params[:plates][:user_barcode])
-    scanned_user = User.find_by_barcode(user_barcode) if user_barcode
-    
-    respond_to do |format|
-      if scanned_user.nil?
-        flash[:error] = 'Please scan your user barcode'
-        format.html { redirect_to(new_plate_path) }
-      elsif plate_purpose.create_plates_and_print_barcodes(source_plate_barcodes, barcode_printer, scanned_user)
-        flash[:notice] = 'Created plates and printed barcodes'
-        format.html { redirect_to(new_plate_path) }
-      else
-        flash[:error] = 'Failed to create plates'
-        format.html { redirect_to(new_plate_path) }
+    ActiveRecord::Base.transaction do
+      plate_purpose = PlatePurpose.find(params[:plates][:plate_purpose])
+      barcode_printer = BarcodePrinter.find(params[:plates][:barcode_printer])
+      source_plate_barcodes = params[:plates][:source_plates]
+
+      user_barcode = Barcode.barcode_to_human(params[:plates][:user_barcode])
+      scanned_user = User.find_by_barcode(user_barcode) if user_barcode
+
+      respond_to do |format|
+        if scanned_user.nil?
+          flash[:error] = 'Please scan your user barcode'
+          format.html { redirect_to(new_plate_path) }
+        elsif plate_purpose.create_plates_and_print_barcodes(source_plate_barcodes, barcode_printer, scanned_user)
+          flash[:notice] = 'Created plates and printed barcodes'
+          format.html { redirect_to(new_plate_path) }
+        else
+          flash[:error] = 'Failed to create plates'
+          format.html { redirect_to(new_plate_path) }
+        end
       end
     end
   end

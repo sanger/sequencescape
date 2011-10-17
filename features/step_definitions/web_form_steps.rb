@@ -107,3 +107,16 @@ end
 Then /^"([^\"]+)" should be selected from "([^\"]+)"$/ do |value, name|
   assert_equal([ value ], find_field(name).value, "Field #{name.inspect} does not have the correct value selected")
 end
+
+Then /^I expect an exception to be raised when I press "([^"]*)"(?: within "([^"]*)")?$/ do |button, selector|
+  begin
+    with_scope(selector) do
+      click_button(button)
+    end
+    fail("No exception raised!")
+  rescue RuntimeError => exception  # 'fail' raises, so we need to check that
+    raise
+  rescue => exception
+    # Good, that was expected
+  end
+end
