@@ -128,23 +128,11 @@ class PlatePurpose < ActiveRecord::Base
 
   def create_plates_and_print_barcodes(source_plate_barcodes, barcode_printer,current_user)
     new_plates = create_plates(source_plate_barcodes, current_user)
-    if new_plates.empty?
-      return false
-    end
+    return false if new_plates.empty?
 
-    #TODO don't find again the printer by it's name, just use it
-    barcode_printer_name = barcode_printer.name
     sort_plates_by_plate_purpose(new_plates).each do |plate_purpose, plates|
-      printables = create_barcode_labels_from_plates(plates)
-
-      begin
-        unless printables.empty?
-          barcode_printer = BarcodePrinter.find_by_name(barcode_printer_name) or raise ActiveRecord::RecordNotFound, "Could not find barcode printer #{barcode_printer_name.inspect}"
-          barcode_printer.print_labels(printables, Plate.prefix, "long", "#{plate_purpose.name}", current_user.login)
-        end
-      rescue => exception
-        return false
-      end
+      printables = create_barcode_labels_from_plates(plates) or next
+      barcode_printer.print_labels(printables, Plate.prefix, "long", "#{plate_purpose.name}", current_user.login)
     end
 
     true
@@ -166,19 +154,6 @@ class PlatePurpose < ActiveRecord::Base
     # IDs copied from SNP
     @stock_plate_purpose ||= PlatePurpose.find(2)
   end
-
-  # TODO: For the moment I'm removing this but I need the code to remain whilst it's refactored.
-  #
-  # It was originally here for pipelines to create plates from pre-existing wells but I actually think that's the wrong
-  # way for things to work.  I think that plates are created completely empty, and then transfers are made from one container
-  # to the plate.  That's certainly how it feels for the pulldown pipeline.
-#  def create!(locations_to_wells)
-#    maps  = Hash[Map.where_description(locations_to_wells.keys).where_plate_size(96).all.map { |m| [m.description, m] }]
-#    wells = locations_to_wells.map { |l,w| w.tap { w.update_attributes!(:map => maps[l]) } }
-#    plates.create!(:wells => wells, :size => 96).tap do |plate|
-#      wells.each { |well| AssetLink.create_edge!(plate, well) }
-#    end
-#  end
 
   def create!(*args, &block)
     attributes          = args.extract_options!
