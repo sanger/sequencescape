@@ -8,7 +8,7 @@ end
 
 Given /^an accessioning service exists which returns an array express accession number "([^\"]+)"/ do |ae_an|
   FakeAccessionService.instance.success("Study", "EGAS00001000241", <<-XML)
-  <EXT_ID accession="#{ae_an}" type="array express"/>
+  <EXT_ID accession="#{ae_an}" type="ArrayExpress"/>
   XML
 
 end
