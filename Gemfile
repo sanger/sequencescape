@@ -20,6 +20,7 @@ gem "mysql"
 gem "spreadsheet"
 gem "will_paginate"
 gem 'net-ldap'
+gem 'carrierwave', "~>0.4.0"
 
 # This was once a plugin, now it's a gem:
 gem 'catch_cookie_exception', :git => 'git+ssh://git@github.com/mhartl/catch_cookie_exception.git'
