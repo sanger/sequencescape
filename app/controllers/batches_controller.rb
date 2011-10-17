@@ -418,24 +418,23 @@ class BatchesController < ApplicationController
   
   def print_plate_labels
     @pipeline = @batch.pipeline
-    @output_assets = []
     @output_barcodes = []
 
-    @output_assets = @batch.plate_group_barcodes
-    if @output_assets.blank?
-      flash[:error] = "Output plates do not have barcodes to print"
-      redirect_to :controller => 'batches', :action => 'show', :id => @batch.id
-    else
-      @output_assets.each do |assets|
-        assets.each do |parent, children|
-          unless parent.nil?
-            plate_barcode = parent.barcode
-            unless plate_barcode.blank?
-              @output_barcodes << plate_barcode
-            end
+    @output_assets = @batch.plate_group_barcodes || []
+    @output_assets.each do |assets|
+      assets.each do |parent, children|
+        unless parent.nil?
+          plate_barcode = parent.barcode
+          unless plate_barcode.blank?
+            @output_barcodes << plate_barcode
           end
         end
       end
+    end
+    if @output_barcodes.blank?
+      flash[:error] = "Output plates do not have barcodes to print"
+      redirect_to :controller => 'batches', :action => 'show', :id => @batch.id
+    else
     end
   end
 
