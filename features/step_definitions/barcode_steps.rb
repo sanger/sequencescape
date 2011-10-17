@@ -11,6 +11,11 @@ Given /^a plate barcode webservice is available and returns "(\d+)"$/ do |barcod
   Given %Q{the plate barcode webservice returns "#{barcode}"}
 end
 
+Given /^the plate barcode printing service will error$/ do
+  FakeBarcodeService.instance.push_printing_error
+end
+
+
 Given /^the plate barcode webservice returns "([1-9][0-9]*)\.\.([1-9][0-9]*)"$/ do |start, finish|
   (start.to_i..finish.to_i).each { |i| Given %Q{the plate barcode webservice returns "#{i}"} }
 end
