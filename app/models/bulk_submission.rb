@@ -122,7 +122,7 @@ class BulkSubmission < ActiveRecord::Base
                 :library_type                => details['library type'],
               }
             }
-            number_of_lanes = details['number of lanes'] || 1
+            number_of_lanes = details.fetch('number of lanes', 1).to_i
             attributes[:request_options][:fragment_size_required_from] = details['fragment size from'] unless details['fragment size from'].blank?
             attributes[:request_options][:fragment_size_required_to]   = details['fragment size to']   unless details['fragment size to'].blank?
 
@@ -175,6 +175,8 @@ class BulkSubmission < ActiveRecord::Base
             # Collect the IDs of successful submissions
             @submissions.push submission.id
             @submission_details[submission.id] = "Submission #{submission.id} built from rows #{details['rows']} (should make #{number_of_lanes} lanes)"
+          rescue ArgumentError
+            raise
           rescue => exception
             Rails.logger.debug("****************** #{exception.message}")
            
@@ -187,6 +189,7 @@ class BulkSubmission < ActiveRecord::Base
             failures = true
           rescue QuotaException => exception
                                 errors.add :spreadsheet, "There was a quota problem: #{exception.message}"
+          
           end
           
           
