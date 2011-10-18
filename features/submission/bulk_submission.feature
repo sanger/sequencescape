@@ -38,11 +38,11 @@ Feature: Bulk Submission
 
   Scenario: Uploading an invalid file with 1 submissions
     When I upload a file with invalid data for 1 submissions
-    Then I should see "There were problems on rows"
+    Then I should see "There was a problem on row(s)"
     
   Scenario: Uploading an invalid file with 2 submissions
     When I upload a file with invalid data for 2 submissions
-    Then I should see "There were problems on rows"
+    Then I should see "There was a problem on row(s)"
     
   Scenario: Uploading an empty file
     When I upload an empty file
@@ -51,4 +51,8 @@ Feature: Bulk Submission
   Scenario: Uploading a file without a (valid) header row
     When I upload a file with an invalid header row
     Then I should see "The supplied file does not contain a valid header row"
+    
+  Scenario: Leaving the file field blank
+    When I submit an empty form
+    Then I should see "can't be blank"
   
