@@ -33,20 +33,22 @@ class BulkSubmission < ActiveRecord::Base
   
   # The only column is the spreadsheet, which needs to be validated before submitting in one big transaction
   column :spreadsheet, :binary
-
+  
   validates_presence_of :spreadsheet 
   validate :process_file
 
   def process_file
     # Slightly inelegant file-type checking
     #TODO (jr) Find a better way of verifying the CSV file?
-    if File.size(spreadsheet) == 0 
-      errors.add(:spreadsheet, "The supplied file was empty") 
-    else
-      if /^.*\.csv$/.match(spreadsheet.original_filename)
-        process FasterCSV.parse(spreadsheet.read)
+    unless spreadsheet.blank?
+      if File.size(spreadsheet) == 0 
+        errors.add(:spreadsheet, "The supplied file was empty") 
       else
-        errors.add(:spreadsheet, "The supplied file was not a CSV file")
+        if /^.*\.csv$/.match(spreadsheet.original_filename)
+          process FasterCSV.parse(spreadsheet.read)
+        else
+          errors.add(:spreadsheet, "The supplied file was not a CSV file")
+        end
       end
     end
   rescue FasterCSV::MalformedCSVError
@@ -181,7 +183,7 @@ class BulkSubmission < ActiveRecord::Base
             Rails.logger.debug("****************** #{exception.message}")
            
            
-            errors.add :spreadsheet, "There was a problem on row #{details['rows']}: #{exception.message}"
+            errors.add :spreadsheet, "There was a problem on row(s) #{details['rows']}: #{exception.message}"
             # errors.add :spreadsheet, "\tDetails: #{details.inspect}"
             # errors.add :spreadsheet, "\thad an error: #{exception.message}"
             puts errors.inspect
