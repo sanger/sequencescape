@@ -95,15 +95,13 @@ class Order < ActiveRecord::Base
     request_type.create!(attributes) do |request|
       request.workflow                    = workflow
       request.study                       = study
-      request.project                     = project # uncomment use_quota if you remove this line
+      request.initial_project             = project # don't trigger the use_quota which is called below
       request.user                        = user
       request.submission_id               = submission_id
       request.request_metadata_attributes = request_type.extract_metadata_from_hash(request_options)
       request.state                       = initial_request_state(request_type)
 
-      #we don't need now as it's done by setting project  above
-      #put it back when removing Request#project=
-      #use_quota!(request, true)
+      use_quota!(request, true)
 
       if request.asset.present?
         # TODO: This should really be an exception but not sure of the side-effects at the moment
