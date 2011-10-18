@@ -226,6 +226,7 @@ Factory.define :request_without_assets, :parent => :request_with_submission do |
   request.workflow          {|workflow|   workflow.association(:submission_workflow)}
 
   request.after_build do |request|
+    next unless request.request_type
     request.request_metadata = Factory(:"request_metadata_for_#{request.request_type.request_class_name.underscore}", :request => request)
     request.sti_type =  request.request_type.request_class_name
   end
