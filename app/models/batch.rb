@@ -412,7 +412,7 @@ class Batch < ActiveRecord::Base
   #not efficient, but not used often
   def studies
     #we use order and not aliquots because aliquots can be empty
-    self.orders.map(&:study).compact
+    self.orders.map(&:study).compact.uniq
   end
 
   def projects
