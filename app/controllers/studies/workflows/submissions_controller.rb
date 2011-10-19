@@ -210,7 +210,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
         raise
       end
     end
-  rescue StandardError, QuotaException => exception
+  rescue StandardError, Quota::Error => exception
     return render(:action => 'new')
   end
 
