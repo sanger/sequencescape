@@ -88,7 +88,7 @@ class SampleTest < ActiveSupport::TestCase
           @item = Factory :item
           @submission_from_1 = Factory::submission :study => @study_from, :workflow => @workflow, :assets => [ @asset_from ],
                            :request_types => @request_type_ids_from, :request_options => @request_options
-          @request = Factory :request, :submission => @submission_from_1, :request_type => @request_type1, :study => @study_from, :workflow => @workflow, :item => @item
+          @request = Factory :request, :submission => @submission_from_1, :request_type => @request_type_1, :study => @study_from, :workflow => @workflow, :item => @item
         end
 
         should "return true" do
@@ -129,12 +129,12 @@ class SampleTest < ActiveSupport::TestCase
           @item = Factory :item
           @submission_from_1 = Factory::submission :study => @study_from, :workflow => @workflow, :assets => [ @asset_from ],
                            :request_types => @request_type_ids_both, :request_options => @request_options
-          @request = Factory :request, :submission => @submission_from_1, :request_type => @request_type1, :study => @study_from, :workflow => @workflow, :item => @item
+          @request = Factory :request, :submission => @submission_from_1, :request_type => @request_type_1, :study => @study_from, :workflow => @workflow, :item => @item
 
           @item_to = Factory :item
           @submission_to_1 = Factory::submission :study => @study_to, :workflow => @workflow, :assets => [ @asset_to ],
                              :request_types => @request_type_ids_both, :request_options => @request_options
-          @request = Factory :request, :submission => @submission_to_1, :request_type => @request_type1, :study => @study_to, :workflow => @workflow, :item => @item_to
+          @request = Factory :request, :submission => @submission_to_1, :request_type => @request_type_1, :study => @study_to, :workflow => @workflow, :item => @item_to
         end
 
         should "return true" do
