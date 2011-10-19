@@ -3,57 +3,17 @@ module CarrierWave
 
     # Database storage - puts the file contents in a database table
     class Database < Abstract
-
-      def initialize(*args,&block)
-         super
-          puts "**********Initialise storage***************"
-          puts args.inspect
-          
-          # uploader.inspect
-          
-      end
-      
+      # Store: Takes a file object, passes it to a file wrapper class which handles storage in the DB
       def store!(file)
-      # file storage:
-        # path = ::File.expand_path(uploader.store_path, uploader.root)
-        #         file.copy_to(path, uploader.permissions)
-      # gridfs storage
-        # stored = CarrierWave::Storage::GridFS::File.new(uploader, uploader.store_path)
-        #                stored.write(file)
-        #                stored
-        
-        # We have the uploader, and the uploader.store_path
-        
-        puts "Store---------------"
-        puts "file #{file.inspect}"
-        puts "self #{self.inspect}"
         temp_data = file.read
-        
         f = CarrierWave::Storage::Database::File.new(uploader, self, uploader.store_path)
         f.store(temp_data)
         f
-        puts "/Store--------------"
-        
       end
 
+      # Retrieve: Returns a file wrapper which accesses the database via the passed model
       def retrieve!(identifier)
-        
-        puts "called retrieve--------------"
-        puts "identifier #{identifier}"
         CarrierWave::Storage::Database::File.new(uploader, self, uploader.store_path(identifier))
-        # Ported from paperclip
-        # tempfile = Tempfile.new (uploader.model.name)
-        #        puts uploader.model.inspect
-        #        tempfile.write uploader.model.read_file
-        #(uploader.model[uploader.mounted_as])
-       
-        # puts uploader.inspect
-        # outp = CarrierWave::SanitizedFile.new(tempfile)
-        # path = "#{uploader.cache_dir}/#{identifier}.tmp"
-        #         outp.move_to(path)
-        # puts "end retrieve - ctype: #{outp.inspect}"
-        # outp
-        
       end
       
       class File
@@ -69,11 +29,6 @@ module CarrierWave
         end
 
         # Reads the contents of the file
-        #
-        # === Returns
-        #
-        # [String] contents of the file
-        #
         def read
           current_data
         end
@@ -83,36 +38,28 @@ module CarrierWave
           destroy_file
         end
 
-        # Returns the url on Amazon's S3 service
-        #
-        # === Returns
-        #
-        # [String] file's url
-        #
+        # Returns the url
         def url
           "url pending implementation"
         end
 
+        # Stores the file in the DbFiles model - split across many rows if size > 200KB 
         def store(file)
           each_slice(file) do |start, finish|
             @uploader.model.db_files.create!(:data => file.slice(start, finish))
           end
           
-          slices = find_slices(file)
-          # slices.each do |slice|
-          #            db_file = @uploader.model.db_files.build
-          #            db_file.data = file.slice(*slice)
-          #            db_file.save!
-          # #                self.class.update_all ['db_file_id = ?', self.db_file_id = db_file.id], ['id = ?', id]
-          #           end
+          # Old code from attachment_fu: doesn't seem to be needed
+          # #  self.class.update_all ['db_file_id = ?', self.db_file_id = db_file.id], ['id = ?', id]
         end
 
+        # This is also duplicated in the Document model
         def content_type
-          "ctype pending implementation"
+          @uploader.model.content_type
         end
 
         def content_type=(type)
-          "ctype pending implementation"
+          @uploader.model.content_type=type unless type.nil?
         end
         
         private
@@ -128,28 +75,17 @@ module CarrierWave
             end
           end
           
+          # Yields the partitions for the file with the max_part_size boundary
           def each_slice(data)
             max_part_size = 200.kilobytes
-            max_part_size ||=1.megabyte
             beginning =0;
             left = data.size
-            
-          end
-          
-          def find_slices(data)
-            slices = []
-            max_part_size = 200.kilobytes
-            max_part_size ||=1.megabyte
-            beginning =0;
-            left = data.size
-            while  left>0
+            while left>0
               part_size = [left, max_part_size].min
-              slices << [beginning, part_size]
+              yield beginning, part_size
               beginning += part_size
               left -= part_size
             end
-            
-            slices
           end
       end
     end # Database 
@@ -159,17 +95,26 @@ end # CarrierWave
 class DocumentUploader < CarrierWave::Uploader::Base
   
   storage CarrierWave::Storage::Database
-  def initialize(*args,&block)
-     super
-      puts "**********Initialise uploader***************"
-      args.inspect
-      # uploader.inspect
-      
+  
+  # Note: all uploaded files will get put here on upload
+  # See https://github.com/jnicklas/carrierwave/wiki/How-to%3A-Delete-cache-garbage-directories
+  def cache_dir
+     "#{Rails.root}/tmp/uploads"
   end
-  # Override the directory where uploaded files will be stored
-  # This is a sensible default for uploaders that are meant to be mounted:
-  def store_dir
-    "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
+  
+  before :store, :remember_cache_id
+  after :store, :delete_tmp_dir
+
+  # store! nil's the cache_id after it finishes so we need to remember it for deletition
+  def remember_cache_id(new_file)
+    @cache_id_was = cache_id
+  end
+
+  def delete_tmp_dir(new_file)
+    # make sure we don't delete other things accidentally by checking the name pattern
+    if @cache_id_was.present? && @cache_id_was =~ /\A[\d]{8}\-[\d]{4}\-[\d]+\-[\d]{4}\z/
+      FileUtils.rm_rf(File.join(cache_dir, @cache_id_was))
+    end
   end
 
 end
