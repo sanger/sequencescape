@@ -174,6 +174,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
           end
         end
 
+        asset_details = asset_source_details_from_request_parameters
         @comments = params[:submission][:comments] if params[:submission][:comments]
         @properties = params.fetch(:request, {}).fetch(:properties, {})
         @properties[:multiplier] = request_type_multiplier unless request_type_multiplier.empty?
@@ -182,20 +183,16 @@ class Studies::Workflows::SubmissionsController < ApplicationController
         # there is no way to differentiate betwween an empti array and an empty hash in she controller paramters, so the controller can send us an empty array
         @properties = {} if @properties == []
 
-        ActiveRecord::Base.transaction do
-          @submission = @submission_template.new_submission(
-            :study           => @study,
-            :project         => @project,
-            :workflow        => @workflow,
-            :user            => current_user,
-            :request_types   => @request_type_ids,
-            :request_options => @properties,
-            :comments        => @comments
-          )
-          asset_source_details_from_request_parameters.each { |k,v| @submission.send(:"#{k}=", v) }
-          @submission.save!
-          @submission.built!
-        end
+        @submission = Submission.build!(
+          {:template        => @submission_template,
+          :study           => @study,
+          :project         => @project,
+          :workflow        => @workflow,
+          :user            => current_user,
+          :request_types   => @request_type_ids,
+          :request_options => @properties,
+          :comments        => @comments}.merge(asset_details)
+        )
 
         flash[:notice] = "Submission successfully created"
         format.html { redirect_to study_workflow_submission_path(@study, @workflow, @submission) }
