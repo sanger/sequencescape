@@ -535,6 +535,10 @@ class Plate < Asset
     unique_positions_on_plate == unique_positions_from_caller
   end
 
+  def name_for_label
+    self.name
+  end
+
   private
   def set_plate_name_and_size
     self.name = "Plate #{barcode}" if self.name.blank?
