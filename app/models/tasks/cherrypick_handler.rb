@@ -118,7 +118,10 @@ module Tasks::CherrypickHandler
     # Remove requests not put on plates.
     requests_to_pass, requests_to_remove = @batch.requests.partition { |r| not used_request_ids[r.id].nil? }
     requests_to_pass.each { |r| r.pass! }
-    requests_to_remove.each { |r| r.recycle_from_batch!(@batch) }
+    requests_to_remove.each do |r| 
+      r.recycle_from_batch!(@batch)
+      r.target_asset.aliquot.clear
+    end
   end
 
   def create_control_request_and_add_to_batch(task,control_param)
