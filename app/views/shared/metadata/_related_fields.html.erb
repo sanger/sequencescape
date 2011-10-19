@@ -40,4 +40,16 @@
     <% end %>
     })();
   });
+
+<% changing_fields.each do |field, options| %>
+  (function($, undefined) {
+    var values = {<%= options[:values].map { |k,v| "#{k.inspect}: #{v.inspect}" }.join(',') %>};
+    $('#<%= root %>_<%= options[:when] %>').change(function() {
+      select_to_change_options_in = $('#<%= root %>_<%= field %>');
+      options = values[this.value].map(function(value) { return '<option value="' + value + '">' + value + '</option>'; });
+      select_to_change_options_in.html(options.join(''));
+      select_to_change_options_in.trigger('change');
+    }).trigger('change');
+  })(jQuery);
+<% end %>
 </script>
