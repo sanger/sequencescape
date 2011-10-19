@@ -1,4 +1,4 @@
-@study @creation
+@study @creation @javascript
 Feature: Study creation
   So sequencing on DNA samples can be requested
   And tracked by users, managers and administrative staff
