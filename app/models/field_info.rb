@@ -41,6 +41,9 @@ class FieldInfo
   end
 
   def reapply(object)
-    self.default_value = object.try(self.key) || self.default_value
+    value = nil
+    value = object.send(self.key) unless object.nil? or self.key.blank?
+    value ||= self.default_value
+    self.default_value = value
   end
 end

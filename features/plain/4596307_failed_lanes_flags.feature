@@ -41,13 +41,6 @@ Feature: Pipeline shows status of requests in pipeline
     Then I should see "Priority Study"
     And I should see "SampleToPass"
 
-  Scenario: I put the requests into two separate batches
-    Given I am on the show page for pipeline "Library preparation"
-    When I check request "1" for pipeline "Library preparation"
-    And I select "Create Batch" from "action_on_requests"
-    And I press "Submit"
-    Then I should see "Started"
-
   Scenario:  I see the failed Library preparation request for the study
     Given I am visiting study "Priority Study" homepage
     Then the page should contain the following
