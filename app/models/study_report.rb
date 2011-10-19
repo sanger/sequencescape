@@ -6,6 +6,11 @@ class StudyReport < ActiveRecord::Base
   cattr_reader :per_page
   @@per_page = 50
   
+  # New file storage section:
+  has_one :db_file, :as => :documentable
+
+  
+  # Old file storage section:
   has_attached_file :report, :storage => :database
   default_scope select_without_file_columns_for(:report)
   
@@ -13,6 +18,8 @@ class StudyReport < ActiveRecord::Base
   attr_accessor :report_content_type
   attr_accessor :report_file_size
   attr_accessor :report_updated_at
+  
+  
   
   belongs_to :study
   belongs_to :user

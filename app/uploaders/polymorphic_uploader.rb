@@ -1,7 +1,7 @@
 module CarrierWave
   module Storage
     # Database storage - puts the file contents in a database table
-    class DocumentDatabase < Abstract
+    class DirectDatabase < Abstract
       # Store: Takes a file object, passes it to a file wrapper class which handles storage in the DB
       def store!(file)
         temp_data = file.read
@@ -45,7 +45,7 @@ module CarrierWave
         # Stores the file in the DbFiles model - split across many rows if size > 200KB 
         def store(file)
           each_slice(file) do |start, finish|
-            @uploader.model.db_files.create!(:data => file.slice(start, finish))
+            @uploader.model.file.create!(:data => file.slice(start, finish))
           end
           
           # Old code from attachment_fu: doesn't seem to be needed
@@ -90,37 +90,16 @@ module CarrierWave
     end # Database 
   end # Storage
 end # CarrierWave
+class PolymorphicUploader < CarrierWave::Uploader::Base
 
-class DocumentUploader < CarrierWave::Uploader::Base
-  
-  def initialize(*args,&block)
-    super
-    # Should really fix this and use it
-    # raise Error unless model.documents.exists?
-  end
-  
-  storage CarrierWave::Storage::DocumentDatabase
-  
-  # Note: all uploaded files will get put in cache_dir on upload
-  # See https://github.com/jnicklas/carrierwave/wiki/How-to%3A-Delete-cache-garbage-directories
-  def cache_dir
-     "#{Rails.root}/tmp/uploads"
-  end
-  
-    
-  before :store, :remember_cache_id
-  after :store, :delete_tmp_dir
+  # Choose what kind of storage to use for this uploader
+  storage :file
+  #     storage :s3
 
-  # store! nil's the cache_id after it finishes so we need to remember it for deletition
-  def remember_cache_id(new_file)
-    @cache_id_was = cache_id
-  end
-
-  def delete_tmp_dir(new_file)
-    # make sure we don't delete other things accidentally by checking the name pattern
-    if @cache_id_was.present? && @cache_id_was =~ /\A[\d]{8}\-[\d]{4}\-[\d]+\-[\d]{4}\z/
-      FileUtils.rm_rf(File.join(cache_dir, @cache_id_was))
-    end
+  # Override the directory where uploaded files will be stored
+  # This is a sensible default for uploaders that are meant to be mounted:
+  def store_dir
+    "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
   end
 
 end

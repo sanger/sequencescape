@@ -1,19 +1,12 @@
 class Document < ActiveRecord::Base
-  
-  class DbFile < ActiveRecord::Base
-    # This is the storage itself! Documents are stored here instead of in the filesystem
-    set_table_name "db_files"
-    belongs_to :document
-    # Note: We are constrained by the database to split files into 200kbyte partitions
-  end
 
   # Polymorphic relationship
   belongs_to :documentable, :polymorphic => true
   
   # Creates document.db_files association so when the file is split we can get all the chunks
-  has_many  :db_files, :class_name => "Document::DbFile"
+  has_many  :db_files, :as => :owner
 
-  #CarrierWave uploader - gets the uploaded_data file, but saves the identifier to the "filename" column
+  # CarrierWave uploader - gets the uploaded_data file, but saves the identifier to the "filename" column
   mount_uploader :uploaded_data, DocumentUploader, :mount_on => "filename"
   
   # Method provided for backwards compatibility
