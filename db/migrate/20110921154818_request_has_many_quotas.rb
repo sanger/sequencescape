@@ -28,6 +28,7 @@ class RequestHasManyQuotas < ActiveRecord::Migration
       FROM requests r, quotas q
       WHERE r.project_id =  q.project_id
       AND q.request_type_id = #{rt_id}
+      AND r.request_type_id = #{rt_id}
       AND (#{
         %w[passed pending blocked started].map{ |s| "r.state = '#{s}'" }.join(" OR ")
       })
@@ -39,7 +40,7 @@ class RequestHasManyQuotas < ActiveRecord::Migration
   end
 
   def self.down
-    remove_column :quotas, :preordered_count, :integer
+    remove_column :quotas, :preordered_count
     rename_column :requests, :initial_project_id, :project_id
     drop_table :request_quotas
   end
