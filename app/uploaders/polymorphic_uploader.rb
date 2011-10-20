@@ -5,14 +5,14 @@ module CarrierWave
       # Store: Takes a file object, passes it to a file wrapper class which handles storage in the DB
       def store!(file)
         temp_data = file.read
-        f = CarrierWave::Storage::Database::File.new(uploader, self, uploader.store_path)
+        f = CarrierWave::Storage::DirectDatabase::File.new(uploader, self, uploader.store_path)
         f.store(temp_data)
         f
       end
 
       # Retrieve: Returns a file wrapper which accesses the database via the passed model
       def retrieve!(identifier)
-        CarrierWave::Storage::Database::File.new(uploader, self, uploader.store_path(identifier))
+        CarrierWave::Storage::DirectDatabase::File.new(uploader, self, uploader.store_path(identifier))
       end
       
       class File
@@ -34,31 +34,34 @@ module CarrierWave
         
         # Remove the file
         def delete
+          puts "Deleting file from database"
           destroy_file
         end
 
         # Returns the url
-        def url
-          "url pending implementation"
-        end
+        # def url
+        #   "url pending implementation"
+        # end
 
         # Stores the file in the DbFiles model - split across many rows if size > 200KB 
         def store(file)
           each_slice(file) do |start, finish|
-            @uploader.model.file.create!(:data => file.slice(start, finish))
+            @uploader.model.db_files.create!(:data => file.slice(start, finish))
           end
           
           # Old code from attachment_fu: doesn't seem to be needed
           # #  self.class.update_all ['db_file_id = ?', self.db_file_id = db_file.id], ['id = ?', id]
         end
 
-        # This is also duplicated in the Document model
+        # Error handling should help if uploader was mounted to a model with no content_type
         def content_type
-          @uploader.model.content_type
+          @uploader.model.content_type if @uploader.model.respond_to? :content_type
         end
 
         def content_type=(type)
-          @uploader.model.content_type=type unless type.nil?
+          if @uploader.model.respond_to? :content_type
+            @uploader.model.content_type=type unless type.nil?
+          end
         end
         
         private
@@ -92,14 +95,40 @@ module CarrierWave
 end # CarrierWave
 class PolymorphicUploader < CarrierWave::Uploader::Base
 
+  def initialize(*args, &block)
+    super
+    # puts "*************POLYMORPHIC UPLOADER"
+    #    puts args.inspect
+  end
+  
+  def exists?
+    @column.blank?
+  end
+  
   # Choose what kind of storage to use for this uploader
-  storage :file
-  #     storage :s3
+  # storage :file
+  storage CarrierWave::Storage::DirectDatabase
+  
+  def cache_dir
+     "#{Rails.root}/tmp/uploads"
+  end
+  
+  before :store, :remember_cache_id
+  after :store, :delete_tmp_dir
 
-  # Override the directory where uploaded files will be stored
-  # This is a sensible default for uploaders that are meant to be mounted:
-  def store_dir
-    "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
+  # store! nil's the cache_id after it finishes so we need to remember it for deletition
+  def remember_cache_id(new_file)
+    @cache_id_was = cache_id
   end
 
+  def delete_tmp_dir(new_file)
+    # make sure we don't delete other things accidentally by checking the name pattern
+    if @cache_id_was.present? && @cache_id_was =~ /\A[\d]{8}\-[\d]{4}\-[\d]+\-[\d]{4}\z/
+      FileUtils.rm_rf(File.join(cache_dir, @cache_id_was))
+    end
+  end
+  
+  
 end
+
+

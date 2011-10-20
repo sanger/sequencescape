@@ -6,21 +6,16 @@ class StudyReport < ActiveRecord::Base
   cattr_reader :per_page
   @@per_page = 50
   
-  # New file storage section:
-  has_one :db_file, :as => :documentable
-
-  
-  # Old file storage section:
-  has_attached_file :report, :storage => :database
-  default_scope select_without_file_columns_for(:report)
-  
-  attr_accessor :report_file_name
-  attr_accessor :report_content_type
-  attr_accessor :report_file_size
-  attr_accessor :report_updated_at
-  
-  
-  
+  # New file storage:
+    has_many :db_files, :as => :owner
+    #   Mount Carrierwave on report field
+    mount_uploader :report, PolymorphicUploader, :mount_on => "report_filename"
+    
+  # Old file storage :
+    # has_attached_file :report, :storage => :database
+    #     default_scope select_without_file_columns_for(:report)
+    #     attr_accessor :report_file_name
+    #     attr_accessor :report_content_type
   belongs_to :study
   belongs_to :user
   validates_presence_of :study
