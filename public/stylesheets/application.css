@@ -736,6 +736,64 @@ background-color: #F5A9F2;
 background-color: #F5A9D0;
 }
 
+
+/* New style CSS plate this needs to slowly replace the existing table style */
+.new-plate {
+  -moz-box-shadow:    gray 0 1px 6px;
+  -webkit-box-shadow: gray 0 1px 6px;
+  -o-box-shadow:      gray 0 1px 6px;
+  box-shadow:         gray 0 1px 6px;
+
+  -moz-border-radius:    15px;
+  -webkit-border-radius: 15px;
+  -o-border-radius:      15px;
+  -ms-border-radius:     15px;
+  -khtml-border-radius:  15px;
+  border-radius:         15px;
+
+  -moz-border-radius-topleft:     0;
+  -webkit-border-top-left-radius: 0;
+  -o-border-top-left-radius:      0;
+  -ms-border-top-left-radius:     0;
+  -khtml-border-top-left-radius:  0;
+  border-top-left-radius:         0;
+
+  /* Use transparency for the background color or FF ridge will look bad... */
+  border: 1px ridge rgba(11, 35, 75, 0.5);
+  vertical-align: middle;
+  text-align: center;
+  background: #003557;
+  padding: 0px;
+  color: #fff;
+}
+
+.new-plate th {
+  text-align: center;
+}
+
+.new-plate .well {
+  height: 15px;
+  padding:  15px 1px 15px 1px;
+  text-align: center;
+  border: 1px ridge rgba(5, 19, 40, 0.1);
+  background: -webkit-gradient(radial, 0% 0%, 0, 0% 0%, 100, color-stop(0%, #002a46), color-stop(100%, #003353));
+  background: -webkit-radial-gradient(top left, #002a46, #003353);
+  background: -moz-radial-gradient(top left, #002a46, #003353);
+  background: -o-radial-gradient(top left, #002a46, #003353);
+  background: -ms-radial-gradient(top left, #002a46, #003353);
+  background: radial-gradient(top left, #002a46, #003353);
+  -moz-border-radius: 7px;
+  -webkit-border-radius: 7px;
+  -o-border-radius: 7px;
+  -ms-border-radius: 7px;
+  -khtml-border-radius: 7px;
+  border-radius: 7px;
+}
+
+.new-plate select {
+  font-size: 9px;
+  width: 73px;
+}
 .plate_import{
   	padding: 2px;
 	margin: 2px;
