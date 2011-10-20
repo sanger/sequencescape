@@ -81,7 +81,7 @@ class BarcodePrintersController < ApplicationController
         asset.barcode = AssetBarcode.new_barcode
         asset.save!
         end
-        printables.push PrintBarcode::Label.new({ :number => asset.barcode, :study => "#{asset.tube_name}", :prefix => prefix, :suffix => "" })
+        printables.push PrintBarcode::Label.new({ :number => asset.barcode, :study => asset.name_for_label.to_s, :prefix => prefix, :suffix => "" })
        end
 
        unless printables.empty?
