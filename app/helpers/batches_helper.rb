@@ -16,6 +16,12 @@ module BatchesHelper
       :study_id     => aliquot.study_id,
       :project_id   => aliquot.project_id
     ) {
+      # Expose the library information for this aliquot
+      xml.library(:id => aliquot.library_id) {
+        xml.name(aliquot.library.name) if aliquot.library.present?
+        xml.type(aliquot.library_type) if aliquot.library_type.present?
+      }
+
       # NOTE: XmlBuilder has a method called 'tag' so we have to say we want the element 'tag'!
       xml.tag!(:tag, :tag_id => aliquot.tag.id) {
         xml.index             aliquot.tag.map_id
