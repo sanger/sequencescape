@@ -95,7 +95,8 @@ class DocumentUploader < CarrierWave::Uploader::Base
   
   def initialize(*args,&block)
     super
-    # Should really fix this and use it
+    puts args.inspect
+    # Should really use this to predict problems
     # raise Error unless model.documents.exists?
   end
   
