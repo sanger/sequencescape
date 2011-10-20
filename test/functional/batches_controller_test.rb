@@ -61,9 +61,7 @@ class BatchesControllerTest < ActionController::TestCase
         end
 
         should 'expose the library information correctly' do
-          assert_tag :tag => 'sample', :attributes => { :library_id => @library.id, :library_name => @library.name }
-          assert_tag :tag => 'library', :parent => { :tag => 'sample' }, :attributes => { :id => @library.id }, :child => { :tag => 'name', :content => @library.name }
-          assert_tag :tag => 'library', :parent => { :tag => 'sample' }, :attributes => { :id => @library.id }, :child => { :tag => 'type', :content => 'Standard'    }
+          assert_tag :tag => 'sample', :attributes => { :library_id => @library.id, :library_name => @library.name, :library_type => 'Standard' }
         end
       end
       
