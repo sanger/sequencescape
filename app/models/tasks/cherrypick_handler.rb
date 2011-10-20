@@ -120,7 +120,7 @@ module Tasks::CherrypickHandler
     requests_to_pass.each { |r| r.pass! }
     requests_to_remove.each do |r| 
       r.recycle_from_batch!(@batch)
-      r.target_asset.aliquot.clear
+      r.target_asset.aliquots.clear
     end
   end
 
