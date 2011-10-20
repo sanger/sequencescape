@@ -1,4 +1,4 @@
-@barcode-service @wip
+@barcode-service
 Feature: Printing new plate barcodes in pulldown
   Background:
     Given I am logged in as "user"

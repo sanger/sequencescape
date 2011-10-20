@@ -20,20 +20,22 @@ class Pulldown::PlatesController < Pulldown::BaseController
   end
   
   def create
-    barcode_printer = BarcodePrinter.find(params[:plates][:barcode_printer])
-    source_plate_barcodes = params[:plates][:source_plates]
+    ActiveRecord::Base.transaction do
+      barcode_printer = BarcodePrinter.find(params[:plates][:barcode_printer])
+      source_plate_barcodes = params[:plates][:source_plates]
 
-    respond_to do |format|
-      if Plate.create_default_plates_and_print_barcodes(source_plate_barcodes, barcode_printer, current_user)
-        flash[:notice] = 'Created plates and printed barcodes'
-        format.html { redirect_to('/pulldown/plates/new') }
-        format.xml  { render :xml  => new_plates, :status => :created}
-        format.json { render :json => new_plates, :status => :created}
-      else
-        flash[:error] = 'Failed to create plates'
-        format.html { redirect_to('/pulldown/plates/new') }
-        format.xml  { render :xml  => flash.to_xml, :status => :unprocessable_entity }
-        format.json { render :json => flash.to_json, :status => :unprocessable_entity }
+      respond_to do |format|
+        if Plate.create_default_plates_and_print_barcodes(source_plate_barcodes, barcode_printer, current_user)
+          flash[:notice] = 'Created plates and printed barcodes'
+          format.html { redirect_to('/pulldown/plates/new') }
+          format.xml  { render :xml  => new_plates, :status => :created}
+          format.json { render :json => new_plates, :status => :created}
+        else
+          flash[:error] = 'Failed to create plates'
+          format.html { redirect_to('/pulldown/plates/new') }
+          format.xml  { render :xml  => flash.to_xml, :status => :unprocessable_entity }
+          format.json { render :json => flash.to_json, :status => :unprocessable_entity }
+        end
       end
     end
   end
