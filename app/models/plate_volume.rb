@@ -1,10 +1,9 @@
 class PlateVolume < ActiveRecord::Base
-  has_attached_file :uploaded, :storage => :database
-  default_scope select_without_file_columns_for(:uploaded)
-
-  attr_accessor :uploaded_content_type
-  attr_accessor :uploaded_file_size
-  attr_accessor :uploaded_updated_at
+  
+  # New file storage:
+  has_many :db_files, :as => :owner
+  #  Mount Carrierwave on report field
+  mount_uploader :uploaded, PolymorphicUploader, :mount_on => "uploaded_file_name"
 
   OFFSET = 1
 
