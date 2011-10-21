@@ -172,7 +172,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
             end
           end
 
-        asset_details = asset_source_details_from_request_parameters
+          @asset_details = asset_source_details_from_request_parameters
           @comments = params[:submission][:comments] if params[:submission][:comments]
           @properties = params.fetch(:request, {}).fetch(:properties, {})
           @properties[:multiplier] = request_type_multiplier unless request_type_multiplier.empty?
@@ -190,7 +190,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
           :user            => current_user,
           :request_types   => @request_type_ids,
           :request_options => @properties,
-          :comments        => @comments}.merge(asset_details)
+          :comments        => @comments}.merge(@asset_details)
         )
           end
 
@@ -222,7 +222,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
               :request_options => @properties,
               :comments        => @comments
             )
-            asset_source_details_from_request_parameters.each { |k,v| @submission.send(:"#{k}=", v) }
+            (@asset_details||[]).each { |k,v| @submission.send(:"#{k}=", v) }
       return render(:action => 'new')
     end
   end
