@@ -13,6 +13,7 @@ module BatchesHelper
       :sample_id    => aliquot.sample.id,
       :library_id   => aliquot.library_id,
       :library_name => aliquot.library.try(:name),
+      :library_type => aliquot.library_type,
       :study_id     => aliquot.study_id,
       :project_id   => aliquot.project_id
     ) {

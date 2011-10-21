@@ -39,6 +39,7 @@ Feature: display an overview of all plates going through QC in SLF
        | A1   | 2011-02-14      |
   
 
+   @barcode-service
    Scenario: A plate has had pico assays created but not analysed
      When I follow "SLF Lab view"
      And I follow "Print plate barcodes"
@@ -50,6 +51,7 @@ Feature: display an overview of all plates going through QC in SLF
      | Study      | Stock   | QC started        | Pico Analysed | Gel Analysed | Sequenom Stamp |
      | Test Study | 1234567 | 2011-02-14        |               |              |                |
 
+   @barcode-service
    Scenario: A plate has had pico assays and has been analysed
      When I follow "SLF Lab view"
      And I follow "Print plate barcodes"
@@ -62,6 +64,7 @@ Feature: display an overview of all plates going through QC in SLF
      | Study      | Stock   | QC started        | Pico Analysed | Gel Analysed | Sequenom Stamp |
      | Test Study | 1234567 | 2011-02-14        | 2011-02-14    |              |                |
 
+   @barcode-service
    Scenario: A plate has only completed Gel
      When I follow "SLF Lab view"
      And I follow "Print plate barcodes"
@@ -74,6 +77,7 @@ Feature: display an overview of all plates going through QC in SLF
      | Study      | Stock   | QC started        | Pico Analysed | Gel Analysed | Sequenom Stamp |
      | Test Study | 1234567 | 2011-02-14        |               | 2011-02-14   |                |
 
+   @barcode-service
    Scenario: A plate hasnt had a sequenom plate generated
      When I follow "SLF Lab view"
      And I follow "Print plate barcodes"

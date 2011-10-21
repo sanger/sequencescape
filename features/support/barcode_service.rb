@@ -38,6 +38,11 @@ class FakeBarcodeService < FakeSinatraService
   def clear
     @barcodes = []
     @printed_labels = []
+    @printer_responses = []
+  end
+
+  def printer_responses
+    @printer_responses ||= []
   end
 
   def barcode(barcode)
@@ -74,6 +79,38 @@ class FakeBarcodeService < FakeSinatraService
     @printed_labels.pop
   end
 
+  def printer_response
+    printer_responses.shift || good_printer_response
+  end
+
+  def push_printing_error
+    printer_responses.push(%Q{
+      <?xml version="1.0"?>
+      <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" xmlns:xsd="http://www.w3.org/1999/XMLSchema">
+        <soap:Body>
+          <soap:Fault>
+            <faultcode xsi:type="xsd:string">soap:Client</faultcode>
+            <faultstring xsi:stype="xsd:string">Broken at the request of the test</faultstring>
+          </soap:Fault>
+        </soap:Body>
+      </soap:Envelope>
+    }.strip)
+  end
+
+  def good_printer_response
+    %Q{
+      <?xml version="1.0"?>
+      <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+        <soap:Body>
+          <m:printLabels xmlns:m="urn:Barcode/Service" soap:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+            <m:printLabelsReturn>true</m:printLabelsReturn>
+          </m:printLabels>
+        </soap:Body>
+      </soap:Envelope>
+    }.strip
+  end
+  private :good_printer_response
+
   class Service < FakeSinatraService::Base
     get('/barcode_service.wsdl') do
       headers('Content-Type' => 'text/xml')
@@ -86,15 +123,7 @@ class FakeBarcodeService < FakeSinatraService
       FakeBarcodeService.instance.printed_labels << data
       status(200)
       headers('Content-Type' => 'text/xml')
-      body(%Q{<?xml version="1.0"?>
-        <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-          <soap:Body>
-            <m:printLabels xmlns:m="urn:Barcode/Service" soap:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
-              <m:printLabelsReturn>true</m:printLabelsReturn>
-            </m:printLabels>
-          </soap:Body>
-        </soap:Envelope>
-      })
+      body(FakeBarcodeService.instance.printer_response)
     end
 
     post('/plate_barcode_service/plate_barcodes.xml') do

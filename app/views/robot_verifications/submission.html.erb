@@ -28,7 +28,7 @@
          <%   next_field = "bed_barcodes_#{bed_label.to_i + 1}" %>
         <% end %>
         <td><%= text_field_tag "plate_barcodes[#{plate_label}]", display_hash_value(params, :plate_barcodes, "#{plate_label}"), :onkeypress => "return disable_cr_and_change_focus(event,'plate_barcodes_#{plate_label}','#{next_field}')" %></td>
-<td><%= select_tag("source_plate_types[#{plate_label}]", options_for_select(Plate.source_plate_types)) %></td>
+        <td><%= select_tag("source_plate_types[#{plate_label}]", options_for_select(Plate::SOURCE_PLATE_TYPES)) %></td>
       </tr>
     <% count = count +1 %>
     <% end %>
@@ -47,7 +47,7 @@
        <%   next_field = "destination_bed_barcodes_#{bed_label.to_i +1}" %>
       <% end %>
       <td><%= text_field_tag "destination_plate_barcodes[#{destination_label}]", display_hash_value(params,  :destination_plate_barcodes, "#{destination_label}"), :onkeypress => "return disable_cr_and_change_focus(event,'destination_plate_barcodes_#{destination_label}','#{next_field}')" %></td>
-			<td>ABgene_0800</td>
+			<td><%= Plate::SOURCE_PLATE_TYPES.last %></td>
     </tr>
     <% end %>
   <% end %>

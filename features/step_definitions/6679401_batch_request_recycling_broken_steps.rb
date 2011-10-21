@@ -142,7 +142,7 @@ SEQUENCING_PIPELINES = [
   'HiSeq Cluster formation PE (no controls)'
 ].map(&Regexp.method(:escape)).join('|')
 
-Given /^I have a batch with (\d+) requests for the "(#{SEQUENCING_PIPELINES})" pipeline$/ do |count, name|
+Given /^I have a batch with (\d+) requests? for the "(#{SEQUENCING_PIPELINES})" pipeline$/ do |count, name|
   build_batch_for(name, count.to_i) do |pipeline|
     {
       :asset_type => :library_tube,
@@ -170,7 +170,7 @@ LIBRARY_CREATION_PIPELINES = [
   'Pulldown library preparation'
 ].map(&Regexp.method(:escape)).join('|')
 
-Given /^I have a batch with (\d+) requests for the "(#{LIBRARY_CREATION_PIPELINES})" pipeline$/ do |count, name|
+Given /^I have a batch with (\d+) requests? for the "(#{LIBRARY_CREATION_PIPELINES})" pipeline$/ do |count, name|
   build_batch_for(name, count.to_i) do |pipeline|
     {
       :asset_type => :sample_tube,
@@ -197,7 +197,7 @@ GENOTYPING_PIPELINES = [
   'Genotyping'
 ].map(&Regexp.method(:escape)).join('|')
 
-Given /^I have a batch with (\d+) requests for the "(#{GENOTYPING_PIPELINES})" pipeline$/ do |count, name|
+Given /^I have a batch with (\d+) requests? for the "(#{GENOTYPING_PIPELINES})" pipeline$/ do |count, name|
   build_batch_for(name, count.to_i) do |pipeline|
     {
       :asset_type => :well,

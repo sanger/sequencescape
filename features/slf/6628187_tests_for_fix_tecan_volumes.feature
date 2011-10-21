@@ -78,42 +78,42 @@ Feature: The Tecan file has the wrong buffer volumes, defaulting to 13 total vol
     Then the downloaded tecan file for batch "550000555760" and plate "1220099999705" is
     """
     C;
-    A;SCRC1;;ABgene_0765;1;;16.0
-    D;DEST1;;ABgene_0800;1;;16.0
+    A;SCRC1;;ABgene 0765;1;;16.0
+    D;DEST1;;ABgene 0800;1;;16.0
     W;
-    A;SCRC1;;ABgene_0765;9;;16.0
-    D;DEST1;;ABgene_0800;2;;16.0
+    A;SCRC1;;ABgene 0765;9;;16.0
+    D;DEST1;;ABgene 0800;2;;16.0
     W;
-    A;SCRC2;;ABgene_0765;1;;16.0
-    D;DEST1;;ABgene_0800;3;;16.0
+    A;SCRC2;;ABgene 0765;1;;16.0
+    D;DEST1;;ABgene 0800;3;;16.0
     W;
-    A;SCRC2;;ABgene_0765;9;;16.0
-    D;DEST1;;ABgene_0800;4;;16.0
+    A;SCRC2;;ABgene 0765;9;;16.0
+    D;DEST1;;ABgene 0800;4;;16.0
     W;
-    A;SCRC3;;ABgene_0765;1;;16.0
-    D;DEST1;;ABgene_0800;5;;16.0
+    A;SCRC3;;ABgene 0765;1;;16.0
+    D;DEST1;;ABgene 0800;5;;16.0
     W;
-    A;SCRC3;;ABgene_0765;9;;16.0
-    D;DEST1;;ABgene_0800;6;;16.0
+    A;SCRC3;;ABgene 0765;9;;16.0
+    D;DEST1;;ABgene 0800;6;;16.0
     W;
     C;
     A;BUFF;;96-TROUGH;1;;49.0
-    D;DEST1;;ABgene_0800;1;;49.0
+    D;DEST1;;ABgene 0800;1;;49.0
     W;
     A;BUFF;;96-TROUGH;2;;49.0
-    D;DEST1;;ABgene_0800;2;;49.0
+    D;DEST1;;ABgene 0800;2;;49.0
     W;
     A;BUFF;;96-TROUGH;3;;49.0
-    D;DEST1;;ABgene_0800;3;;49.0
+    D;DEST1;;ABgene 0800;3;;49.0
     W;
     A;BUFF;;96-TROUGH;4;;49.0
-    D;DEST1;;ABgene_0800;4;;49.0
+    D;DEST1;;ABgene 0800;4;;49.0
     W;
     A;BUFF;;96-TROUGH;5;;49.0
-    D;DEST1;;ABgene_0800;5;;49.0
+    D;DEST1;;ABgene 0800;5;;49.0
     W;
     A;BUFF;;96-TROUGH;6;;49.0
-    D;DEST1;;ABgene_0800;6;;49.0
+    D;DEST1;;ABgene 0800;6;;49.0
     W;
     C;
     C; SCRC1 = 1
