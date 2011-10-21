@@ -106,7 +106,7 @@ class GeneratorTest < ActiveSupport::TestCase
           @expected_output = (testcase)[:expected_output]
         end
 
-        context "when mappingwells from 1 96 well source plate to 1 96 well destination plate" do
+        context "when mapping wells from 1 96 well source plate to 1 96 well destination plate" do
           should "return a String object" do
             assert_kind_of String, Generator.mapping(@data_object,  13)
           end
