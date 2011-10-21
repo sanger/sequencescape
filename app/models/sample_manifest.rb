@@ -49,7 +49,6 @@ class ColumnMap
     end
 end
 
-
 class SampleManifest < ActiveRecord::Base
   include Uuid::Uuidable
   include ModelExtensions::SampleManifest
@@ -67,27 +66,19 @@ class SampleManifest < ActiveRecord::Base
     end
   end
 
-  has_attached_file :uploaded, :storage => :database
-  has_attached_file :generated, :storage => :database
-  default_scope select_without_file_columns_for(:uploaded, :generated)
-
+  has_many :uploaded,  :class_name => "DbFile", :as => :owner, :conditions => {:owner_type_extended => 'uploaded'}
+  has_many :generated, :class_name => "DbFile", :as => :owner, :conditions => {:owner_type_extended => 'generated'}
+   
+   # #  Mount Carrierwave on report field
+   #   mount_uploader :uploaded, PolymorphicUploader, :mount_on => "uploaded_filename"
+   #   mount_uploader :generated, PolymorphicUploader, :mount_on => "generated_filename"
+  
   class_inheritable_accessor :spreadsheet_offset
   class_inheritable_accessor :spreadsheet_header_row
   self.spreadsheet_offset = 9
   self.spreadsheet_header_row = 8
   
-
-
-  # Problem with paperclip
-  attr_accessor :uploaded_file_name
-  attr_accessor :uploaded_content_type
-  attr_accessor :uploaded_file_size
-  attr_accessor :uploaded_updated_at
-
-  attr_accessor :generated_file_name
-  attr_accessor :generated_content_type
-  attr_accessor :generated_file_size
-  attr_accessor :generated_updated_at
+  acts_as_audited :on => [:destroy, :update]
   
   attr_accessor :override
   attr_reader :manifest_errors

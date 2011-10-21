@@ -10,16 +10,9 @@ class StudyReport < ActiveRecord::Base
   named_scope :for_user, lambda { |user| { :conditions => { :user_id => user.id } } }
   named_scope :without_files, lambda { select_without_file_columns_for(:report) }
 
-  # New file storage:
-    has_many :db_files, :as => :owner
-    #   Mount Carrierwave on report field
-    mount_uploader :report, PolymorphicUploader, :mount_on => "report_filename"
-
-  # Old file storage :
-    # has_attached_file :report, :storage => :database
-    #     default_scope select_without_file_columns_for(:report)
-    #     attr_accessor :report_file_name
-    #     attr_accessor :report_content_type
+  has_many :db_files, :as => :owner
+  #   Mount Carrierwave on report field
+  mount_uploader :report, PolymorphicUploader, :mount_on => "report_filename"
 
   belongs_to :study
   belongs_to :user
