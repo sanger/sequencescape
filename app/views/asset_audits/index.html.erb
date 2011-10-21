@@ -1,11 +1,14 @@
 <script type="text/javascript">
-$$("div.yui-b")[0].setStyle({
-  marginRight: '0em'
-});
-$$("div#menu.yui-b")[0].setStyle({
-  display: 'none'
-});
+  (function($){
+    $(function(){
+      // Set the activity monitors iframe to fill the yield window
+      $('#yield').height(800);
+      $('#activity-logging').height(800);
+
+    });
+  })(jQuery);
 </script>
 
-<iframe src="<%= configatron.asset_audits_url  %>" width="100%" height="800">
+<%- add :title, "Activity Logging" %>
+<iframe id="activity-logging" src="<%= configatron.asset_audits_url  %>">
 </iframe>
