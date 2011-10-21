@@ -5,6 +5,10 @@ class AssetsController < ApplicationController
   def index
     @assets_without_requests = []
     @assets_with_requests = []
+    if params[:study_id]
+      @study = Study.find(params[:study_id])
+      @assets = @study.assets_through_aliquots.all(:order => 'name ASC').paginate(:page => params[:page])
+    end
 
     respond_to do |format|
       if params[:print]
@@ -13,7 +17,7 @@ class AssetsController < ApplicationController
         format.html
       end
       if params[:study_id]
-        format.xml  { render :xml => Study.find(params[:study_id]).assets.to_xml }
+        format.xml  { render :xml => Study.find(params[:study_id]).assets_through_requests.to_xml }
       elsif params[:sample_id]
           format.xml  { render :xml => Sample.find(params[:sample_id]).assets.to_xml }
       elsif params[:asset_id]
