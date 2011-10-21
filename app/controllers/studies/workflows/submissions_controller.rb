@@ -196,7 +196,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
 
           flash[:notice] = "Submission successfully created"
           format.html { redirect_to study_workflow_submission_path(@study, @workflow, @submission) }
-        rescue QuotaException => quota_exception
+        rescue Quota::Error => quota_exception
           action_flash[:error] = quota_exception.message
           raise
         rescue InvalidInputException => input_exception
@@ -211,6 +211,18 @@ class Studies::Workflows::SubmissionsController < ApplicationController
         end
       end
     rescue StandardError, Quota::Error => exception
+      #Yes, that's not a submission but an order
+      #should be changed anyway with the new submission interface
+            @submission = @submission_template.new_submission(
+              :study           => @study,
+              :project         => @project,
+              :workflow        => @workflow,
+              :user            => current_user,
+              :request_types   => @request_type_ids,
+              :request_options => @properties,
+              :comments        => @comments
+            )
+            asset_source_details_from_request_parameters.each { |k,v| @submission.send(:"#{k}=", v) }
       return render(:action => 'new')
     end
   end
