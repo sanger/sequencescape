@@ -27,25 +27,41 @@ class BatchesControllerTest < ActionController::TestCase
 
       context "NPG xml view" do
         setup do
-          pipeline = Factory :pipeline
+          pipeline = Pipeline.find_by_name('Cluster formation PE (no controls)') or raise StandardError, "Cannot find 'Cluster formation PE (no controls)' pipeline"
 
           @study, @project = Factory(:study), Factory(:project)
           @sample = Factory :sample
 
+          @library = Factory(:empty_library_tube).tap do |library_tube|
+            library_tube.aliquots.create!(:sample => @sample, :project => @project, :study => @study, :library => library_tube, :library_type => 'Standard')
+          end
+          @lane        = Factory(:empty_lane, :qc_state => 'failed')
+          @request_one = pipeline.request_type.create!(
+            :asset => @library, :target_asset => @lane,
+            :project => @project, :study => @study, :priority => 99,
+            :request_metadata_attributes => { :fragment_size_required_from => 100, :fragment_size_required_to => 200, :read_length => 76 }
+          )
+
           batch = Factory :batch, :pipeline => pipeline
-          library1 = Factory(:empty_library_tube).tap { |library_tube| library_tube.aliquots.create!(:sample => @sample, :project => @project, :study => @study) }
-          lane = Factory(:empty_lane, :qc_state => 'failed').tap { |lane| lane.aliquots.create!(:sample => @sample, :project => @project, :study => @study) }
-          @request_one = pipeline.request_type.create!(:asset => library1, :target_asset => lane, :project => @project, :study => @study)
           batch.batch_requests.create!(:request => @request_one, :position => 1)
+          batch.reload
+          batch.start!(Factory(:user))
+
           get :show, :id => batch.id, :format => "xml"
         end
+
         should_respond_with_content_type :xml
-        
+
         should "have api version attribute on root object" do
           assert_response :success
+          assert_tag :tag => 'lane', :attributes => { :position => 1, :id => @lane.id, :priority => 99 }
           assert_tag :tag => "library", :attributes => {:sample_id => @sample.id, :request_id => @request_one.id}
           assert_tag :tag => "library", :attributes => {:project_id => @project.id, :study_id => @study.id}
           assert_tag :tag => "library", :attributes => {:qc_state => "fail"}
+        end
+
+        should 'expose the library information correctly' do
+          assert_tag :tag => 'sample', :attributes => { :library_id => @library.id, :library_name => @library.name, :library_type => 'Standard' }
         end
       end
       

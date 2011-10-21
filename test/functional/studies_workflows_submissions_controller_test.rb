@@ -162,10 +162,8 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
                 end
                 
                 should "not have a successful submission" do
-                  assert_not_nil @controller.session[:flash][:error].grep /Study and all samples must have accession numbers/
+                  assert_contains(@controller.action_flash.values, 'Study and all samples must have accession numbers')
                   assert_equal @submission_count, Submission.count
-                  assert_response :redirect
-                  assert_redirected_to @submission_template ?  new_study_workflow_submission_path(@study, @workflow, :submission_template_id => @submission_template.id): new_study_workflow_submission_path(@study, @workflow) 
                 end
 
               end
@@ -175,10 +173,8 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
                   post :create, :submission => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
                 end
                 should "not have a successful submission" do
-                  assert_not_nil @controller.session[:flash][:error].grep /Study and all samples must have accession numbers/
+                  assert_contains(@controller.action_flash.values, 'Study and all samples must have accession numbers')
                   assert_equal @submission_count, Submission.count
-                  assert_response :redirect
-                  assert_redirected_to @submission_template ?  new_study_workflow_submission_path(@study, @workflow, :submission_template_id => @submission_template.id): new_study_workflow_submission_path(@study, @workflow) 
                 end
               end
               context "and all samples in asset group have accessions" do
@@ -196,10 +192,8 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
                 post :create, :submission => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
               end
               should "not have a successful submission" do
-                assert_not_nil @controller.session[:flash][:error].grep /Study and all samples must have accession numbers/
+                assert_contains(@controller.action_flash.values, 'Study and all samples must have accession numbers')
                 assert_equal @submission_count, Submission.count
-                assert_response :redirect
-                assert_redirected_to @submission_template ?  new_study_workflow_submission_path(@study, @workflow, :submission_template_id => @submission_template.id): new_study_workflow_submission_path(@study, @workflow) 
               end
             end
           end
@@ -281,20 +275,50 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
           @project.save!
           @study.save!
           @project.quotas.create(:request_type => @request_type, :limit => 0)
+          #we add a dummy quota so the project seems to have been setup
+          @project.quotas.create(:request_type => Factory(:request_type), :limit => 1)
           post :create, :submission => {}, :asset_group => @asset_group.id.to_s, :project_name => @project.name, :study_id => @study.id, :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
         end
         should "not have a successful submission" do
-          assert_not_nil @controller.session[:flash][:error].grep /Insufficient quota for test type/
+          assert_contains(@controller.action_flash.values, 'Insufficient quota for test type')
           assert_equal @submission_count, Submission.count
-          assert_response :redirect
-          assert_redirected_to @submission_template ?  new_study_workflow_submission_path(@study, @workflow, :submission_template_id => @submission_template.id): new_study_workflow_submission_path(@study, @workflow) 
         end
       end
 
-      context "empty params" do
-        should "raise an error" do
-          assert_raise ActiveRecord::RecordNotFound do
-            post :create, :submission => {}, :asset_group => "" ,:project_name => @project.name, :study_id => "", :workflow_id => "", "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}},  :request => ""
+      context "one submission when no quota have been setup" do
+        setup do
+          @study.enforce_data_release = false
+          @study.enforce_accessioning = false
+          @project.enforce_quotas = true
+          @project.save!
+          @study.save!
+          @project.quotas.create(:request_type => @request_type, :limit => 0)
+          post :create, :submission => {}, :asset_group => @asset_group.id.to_s, :project_name => @project.name, :study_id => @study.id, :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
+        end
+        should "not have a successful submission" do
+          assert_contains(@controller.action_flash.values, 'Quotas are being enforced but have not been setup')
+          assert_equal @submission_count, Submission.count
+        end
+      end
+      context 'required but empty parameters' do
+        setup do
+          @valid_parameters = {
+            :submission => {},
+            :asset_group => @asset_group.id.to_s,
+            :study_id => @study.id,
+            :project_name => @project.name,
+            :workflow_id => @workflow.id,
+            "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}},
+            :request => @request_params,
+            :submission_template_id => @submission_template.id
+          }
+        end
+
+        [ :study_id, :workflow_id ].each do |parameter|
+          should "raise an error if #{parameter.inspect} is blank" do
+            assert_raise ActiveRecord::RecordNotFound do
+              post :create, @valid_parameters.merge(parameter => '')
+            end
           end
         end
       end

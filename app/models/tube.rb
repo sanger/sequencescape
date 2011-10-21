@@ -12,4 +12,8 @@ class Tube < Aliquot::Receptacle
   end
 
   delegate :barcode_type, :to => 'self.class'
+
+  def name_for_label
+    (primary_aliquot.nil? or primary_aliquot.sample.sanger_sample_id.blank?) ? self.name : primary_aliquot.sample.shorten_sanger_sample_id
+  end
 end

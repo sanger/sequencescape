@@ -3,8 +3,9 @@ xml.batch {
   xml.id     @batch.id
   xml.status @batch.state
   xml.lanes {
-    @batch.ordered_requests.each do |request|
-      xml.lane("position" => request.position(@batch)) {
+    @batch.batch_requests.ordered.each do |batch_request|
+      request = batch_request.request
+      xml.lane("position" => batch_request.position, 'id' => request.target_asset_id, 'priority' => request.priority) {
         # This batch seems very broken!
         if request.asset.nil?
           xml.comment!("The request #{request.id} has no source asset which is very bad!")
