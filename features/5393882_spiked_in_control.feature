@@ -159,17 +159,17 @@ Feature: Creating Spiked phiX
     And I press "Next step"
 
     When I get the XML for the last batch
-    Then ignoring "library|\bid|tag_id" the XML response should be:
+    Then ignoring "library|\bid|tag_id|sample_id" the XML response should be:
   """
 <?xml version="1.0" encoding="UTF-8"?>
 <batch>
   <id>35</id>
   <status>started</status>
   <lanes>
-    <lane position="1">
+    <lane position="1" priority="0">
       <library name="Asset 1" request_id="273" project_id="35" id="784" study_id="35" sample_id="273" qc_state=""/>
     </lane>
-    <lane position="2">
+    <lane position="2" priority="0">
       <library name="Asset 2" request_id="274" project_id="35" id="785" study_id="35" sample_id="274" qc_state=""/>
       <hyb_buffer id="780">
         <control name="indexed phiX" id="781"/>
@@ -182,22 +182,22 @@ Feature: Creating Spiked phiX
         </sample>
       </hyb_buffer>
     </lane>
-    <lane position="3">
+    <lane position="3" priority="0">
       <library name="Asset 3" request_id="275" project_id="35" id="786" study_id="35" sample_id="275" qc_state=""/>
     </lane>
-    <lane position="4">
+    <lane position="4" priority="0">
       <library name="Asset 4" request_id="276" project_id="35" id="787" study_id="35" sample_id="276" qc_state=""/>
     </lane>
-    <lane position="5">
+    <lane position="5" priority="0">
       <library name="Asset 5" request_id="277" project_id="35" id="788" study_id="35" sample_id="277" qc_state=""/>
     </lane>
-    <lane position="6">
+    <lane position="6" priority="0">
       <library name="Asset 6" request_id="278" project_id="35" id="789" study_id="35" sample_id="278" qc_state=""/>
     </lane>
-    <lane position="7">
+    <lane position="7" priority="0">
       <library name="Asset 7" request_id="279" project_id="35" id="790" study_id="35" sample_id="279" qc_state=""/>
     </lane>
-    <lane position="8">
+    <lane position="8" priority="0">
       <library name="Asset 8" request_id="280" project_id="35" id="791" study_id="35" sample_id="280" qc_state=""/>
     </lane>
   </lanes>

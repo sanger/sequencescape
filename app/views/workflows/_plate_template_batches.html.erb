@@ -47,7 +47,7 @@
 		<table cellspacing='0' cellpadding='0'>
 			<tr>
 				<td>Source Plates Type:</td>
-				<td><%= select_tag "plate_type", options_for_select(["ABgene_0765","ABgene_0800"]) %></td>
+				<td><%= select_tag "plate_type", options_for_select(Plate::SOURCE_PLATE_TYPES) %></td>
 			</tr>
 			<tr>
 				<td>Picking Robot:</td>

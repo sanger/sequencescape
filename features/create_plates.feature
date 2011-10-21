@@ -15,6 +15,16 @@ Feature: Printing new plate barcodes
     And I select "xyz" from "Barcode printer"
     And I press "Submit"
     Then I should see "Please scan your user barcode"
+
+  Scenario: Creating plates where the barcode service errors
+    Given the plate barcode printing service will error
+    Given I am on the new plate page
+    Then I should see "Create Plates"
+    And I should see "Barcode printer"
+    When I select "Pulldown" from "plates_plate_purpose"
+    And I fill in "User barcode" with "2470000100730"
+    And I select "xyz" from "Barcode printer"
+    Then I expect an exception to be raised when I press "Submit"
     
   Scenario: Creating plates where the scanner appends a carriage return
     Given I am on the new plate page
