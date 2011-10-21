@@ -12,10 +12,6 @@ body {
   margin: 0px;
 }
 
-img {
-  border: 0px;
-}
-
 div.main {
   font-size: 13px;
 }
@@ -33,14 +29,6 @@ span.annotation_container {
 #content a, #content a:link, #content a:visited {
   color: #000088;
   text-decoration: none;
-}
-
-div.callout {
-  border-top: 1px solid #aad4f4;
-  background: #d2e2f7;
-  color: #222931;
-  padding: 5px;
-  font-size: 12px;
 }
 
 #callout_alert a, #callout_alert a:link, #callout_alert a:visited {
@@ -131,25 +119,11 @@ div.callout p {
   display: inline;
 }
 
-#tabs a, #tabs a:link, #tabs a:visited {
-  text-decoration: none;
-  color: #31353d;
-  padding: 1px 15px 3px 15px;
-  font-weight: bold;
-}
 
 th {
   text-align: left;
 }
 
-#tabs a:hover {
-  background: #3e87b3;
-  color: #fff;
-}
-
-#tabs ul {
-  padding-top: 1px;
-}
 
 td.blank {
   color: #888;
@@ -312,28 +286,6 @@ td.total {
 
 div.title a, div.title a:link, div.title a:visited div.title a:hover {
   text-decoration: none;
-}
-
-#tab_bar {
-  background: #aad4f4;
-  border-bottom: 1px solid #bbb;
-  clear:both;
-}
-
-#tabs {
-  background: #aad4f4;
-  color: #31353d;
-  font-size: 12px;
-  float: left;
-}
-
-#search {
-  float: right;
-  text-align: right;
-  font-size: 11px;
-  padding-top: 4px;
-  padding-right: 5px;
-  text-shadow: 0 -1px 1px #00131C;
 }
 
 div.settings {
@@ -629,13 +581,6 @@ div.detail {
   padding: 0px 3px 3px 3px;
 }
 
-#sequencescape_logo {
-  background-color: #307CC9;
-  width: 98px;
-  height: 24px;
-  padding: 5px 0px 0px 0px;
-}
-
 #user_links {
   float: right;
   width: 45%;
@@ -709,25 +654,6 @@ div.link_title {
   text-transform: uppercase;
   padding-top: 15px;
   font-weight: bold;
-}
-
-#yield h1 {
-  margin: 0px;
-}
-
-#yield {
-  background: #fff;
-  border: 1px solid #ccc;
-  padding: 10px 10px 25px 10px;
-  font-size: 12px;
-  min-height: 600px;
-  line-height: 17px;
-  
-  -moz-border-radius:    5px;
-  -webkit-border-radius: 5px;
-  border-radius:         5px;
-  box-shadow: 0 1px 5px #D6E1EE;
-  -moz-box-shadow: 0 1px 5px #D6E1EE;
 }
 
 #menu {

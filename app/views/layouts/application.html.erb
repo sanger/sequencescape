@@ -7,9 +7,8 @@
 <% add(:tab, I18n.t('navigation.tabs.labview')   => lab_view_path) -%>
 <% add(:tab, I18n.t('navigation.tabs.labsearch') => new_search_path) -%>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html>
 
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
@@ -37,7 +36,7 @@
       <div id="hd">
         <div id="logo_container">
           <div id="sequencescape_logo">
-            <%= link_to image_tag("sequencescape.gif", :size => "98x24"), :controller => root_path %>
+            <%= link_to image_tag("sequencescape.gif"), :controller => root_path %>
           </div>
         </div>
         <div id="quick_links">
@@ -80,7 +79,7 @@
             </div>
           <%- end -%>
             
-            <div id='search'>
+            <div id="search">
             <% form_tag searches_path, :method => :get do %>Search <%= text_field_tag :q, "", :size => 20, :type => "search", :placeholder => "samples, studies", :id => 'layout_search' %> <% end %>
             </div>
           </div>
