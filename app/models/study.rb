@@ -190,7 +190,7 @@ class Study < ActiveRecord::Base
     attribute(:array_express_accession_number)
 
     with_options(:if => :delayed_for_long_time?, :required => true) do |required|
-      required.attribute(:data_release_delay_approval, :in => YES_OR_NO)
+      required.attribute(:data_release_delay_approval, :in => YES_OR_NO, :default => NO)
     end
 
     with_options(:if => :never_release?, :required => true) do |required|
