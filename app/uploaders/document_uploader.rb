@@ -1,7 +1,7 @@
 module CarrierWave
   module Storage
     # Database storage - puts the file contents in a database table
-    class DocumentDatabase < Abstract
+    class Database < Abstract
       # Store: Takes a file object, passes it to a file wrapper class which handles storage in the DB
       def store!(file)
         temp_data = file.read
@@ -100,7 +100,7 @@ class DocumentUploader < CarrierWave::Uploader::Base
     # raise Error unless model.documents.exists?
   end
   
-  storage CarrierWave::Storage::DocumentDatabase
+  storage CarrierWave::Storage::Database
   
   # Note: all uploaded files will get put in cache_dir on upload
   # See https://github.com/jnicklas/carrierwave/wiki/How-to%3A-Delete-cache-garbage-directories
