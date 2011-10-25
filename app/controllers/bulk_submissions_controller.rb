@@ -17,7 +17,6 @@ class BulkSubmissionsController < ApplicationController
       flash[:notice]  = "File was processed successfully"
       sub_ids,@sub_details = @bulk_submission.completed_submissions
       @these_subs     = Submission.find(sub_ids)
-      @study_names    = Hash[Study.all.map { |s| [s.id, s.name]}]
       #Submission.all(:conditions => ["created_at > :lastminute", { :lastminute => Time.now - 1.day}])
  
     else
