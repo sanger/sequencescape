@@ -66,30 +66,28 @@ class SampleManifest < ActiveRecord::Base
     end
   end
 
-  # Options for mounting files :-
-  #  1. has_many relations using extra 
-  # has_many :uploaded,  :class_name => "DbFile", :as => :owner, :conditions => {:owner_type_extended => 'uploaded'}
-  #  has_many :generated, :class_name => "DbFile", :as => :owner, :conditions => {:owner_type_extended => 'generated'}
-   has_one :uploaded_document, :class_name => "Document", :as => :documentable, :conditions => {:documentable_extended => 'uploaded'}
-   has_one :generated_document, :class_name => "Document", :as => :documentable, :conditions => {:documentable_extended => 'generated'}
+# Options for mounting files :-
+#  1. has_many relations using extra 
+# has_many :uploaded,  :class_name => "DbFile", :as => :owner, :conditions => {:owner_type_extended => 'uploaded'}
+#  has_many :generated, :class_name => "DbFile", :as => :owner, :conditions => {:owner_type_extended => 'generated'}
+ has_one :uploaded_document,  :class_name => "Document", :as => :documentable, :conditions => {:documentable_extended => 'uploaded'}
+ has_one :generated_document, :class_name => "Document", :as => :documentable, :conditions => {:documentable_extended => 'generated'}
+
+ def uploaded=(file)
+   create_uploaded_document(:uploaded_data => file, :documentable_extended => 'uploaded') unless file.blank?
+ end
+
+ def uploaded
+   Document.first(:conditions => ["documentable_id = ? AND documentable_extended = ?", id, 'uploaded'])
+ end
+
+ def generated=(file)
+   create_generated_document(:uploaded_data => file, :documentable_extended => 'generated') unless file.blank?
+ end
    
-   def uploaded=(file)
-     create_uploaded_document(:uploaded_data => file, :documentable_extended => 'uploaded') unless file.blank?
-     
-    # uploaded_document = Document.new(:documentable_extended => "uploaded", uploaded_data)
-   end
-   
-   def uploaded
-     uploaded_document
-   end
-   
-   def generated=(file)
-     create_generated_document(:uploaded_data => file, :documentable_extended => 'generated') unless file.blank?
-   end
-   
-   def generated
-      generated_document
-    end
+  def generated 
+     Document.first(:conditions => ["documentable_id = ? AND documentable_extended = ?", id, 'generated'])
+  end
    
    # #  Mount Carrierwave on report field
    # mount_uploader :uploaded, PolymorphicUploader, :mount# _on => "uploaded_filename"
