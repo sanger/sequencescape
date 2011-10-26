@@ -130,8 +130,8 @@ class SampleManifest < ActiveRecord::Base
     "Manifest_#{self.id}"
   end
 
-  named_scope :pending_manifests,   { :order => 'id DESC',         :conditions => 'uploaded_file IS NULL'     }
-  named_scope :completed_manifests, { :order => 'updated_at DESC', :conditions => 'uploaded_file IS NOT NULL' }
+  named_scope :pending_manifests,   { :order => 'id DESC',         :conditions => 'uploaded_filename IS NULL'     }
+  named_scope :completed_manifests, { :order => 'updated_at DESC', :conditions => 'uploaded_filename IS NOT NULL' }
   
   def generate
     @manifest_errors = []

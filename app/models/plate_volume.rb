@@ -32,7 +32,7 @@ class PlateVolume < ActiveRecord::Base
 
   def extract_well_volumes
     return if self.uploaded.blank?
-    csv = FasterCSV.parse(self.uploaded_file)
+    csv = FasterCSV.parse(self.uploaded.file.read)
     (OFFSET...csv.size).map { |row| [ csv[row][1], csv[row][2] ] }
   end
   private :extract_well_volumes
