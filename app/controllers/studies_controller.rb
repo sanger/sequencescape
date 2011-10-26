@@ -8,6 +8,8 @@ class StudiesController < ApplicationController
   before_filter :admin_login_required, :only => [:new_plate_submission, :create_plate_submission, :settings, :administer, :manage, :managed_update, :grant_role, :remove_role]
   before_filter :manager_login_required, :only => [ :close, :open, :related_studies, :relate_study, :unrelate_study]
 
+  around_filter :rescue_validation, :only => [:close, :open]
+
   def setup_studies_from_scope(exclude_nested_resource = false)
     if logged_in? and not exclude_nested_resource
       @alternatives = [
@@ -477,5 +479,15 @@ class StudiesController < ApplicationController
     end
 
     return studies.newest_first
+  end
+
+  def rescue_validation
+    begin
+      yield
+    rescue ActiveRecord::RecordInvalid
+      logger.warn "Failed to update attributes: #{@study.errors.map {|e| e.to_s }}"
+      flash[:error] = "Failed to update attributes for study!"
+      render :action => "edit", :id => @study.id
+    end
   end
 end
