@@ -94,7 +94,10 @@ module CarrierWave
   end # Storage
 end # CarrierWave
 class PolymorphicUploader < CarrierWave::Uploader::Base
-
+  
+  # Temporary fix
+  ensure_multipart_form = false
+  
   def initialize(*args, &block)
     super
     # puts "*************POLYMORPHIC UPLOADER"

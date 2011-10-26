@@ -48,9 +48,5 @@ class StudyReport < ActiveRecord::Base
    #job = Delayed::PerformableMethod.new(self, :synchronous_perform, [])
    #elayed::Job.enqueue(job, priority)
   end
-
-  def report?
-    self.report.exists?
-  end
-
+  
 end
