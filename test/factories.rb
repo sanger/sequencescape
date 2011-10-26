@@ -531,14 +531,19 @@ Factory.define :sample_manifest do |a|
   a.count     1
 end
 
+Factory.define :db_file do |f|
+  f.data "blahblahblah"
+end
+
 Factory.define :pending_study_report, :class => 'StudyReport' do |a|
   a.study    {|wa| wa.association(:study)}
 end
 
 Factory.define :completed_study_report, :class => 'StudyReport' do |study_report|
-  study_report.study    {|wa| wa.association(:study)}
+  study_report.study      {|wa| wa.association(:study)}
+  study_report.report_filename   "progress_report.csv"
   study_report.after_build { |study_report_file|
-    study_report_file.report = Tempfile.open("progress_report.csv")
+    Factory :db_file, :owner => study_report_file, :data => Tempfile.open("progress_report.csv").read
   }
 end
 
