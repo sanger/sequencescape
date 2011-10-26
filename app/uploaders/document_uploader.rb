@@ -26,6 +26,10 @@ module CarrierWave
         def path
           @path
         end
+        
+        def size
+          current_data.size
+        end
 
         # Reads the contents of the file
         def read
