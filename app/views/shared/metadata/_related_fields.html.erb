@@ -14,7 +14,10 @@
         });
       };
 
-      var valueFrom = function(element) { return element.value.toLowerCase().replace(/[^a-z0-9]+/, '_'); };
+      var valueFrom = function(element) {
+        var value = element.value.toLowerCase().replace(/[^a-z0-9]+/, '_');
+        return (value.length == 0) ? 'blank' : value;
+      };
 
       observe = function(id) {
         var selectRelatedFor = function(value) { return jQuery('.related_to.' + id + '.' + value); }
