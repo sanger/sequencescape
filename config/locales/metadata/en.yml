@@ -232,6 +232,9 @@ en:
 
     study:
       metadata:
+        number_of_gigabases_per_sample:
+          label: Number of gigabases per sample (minimum 0.15)
+
         reference_genome_id:
           label: Reference genome
 
