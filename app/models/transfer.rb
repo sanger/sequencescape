@@ -37,9 +37,12 @@ class Transfer < ActiveRecord::Base
             query_conditions = 'transfer_requests_as_target.state IN (?)'
             query_conditions << ' OR transfer_requests_as_target.state IS NULL' if states.include?('pending')
 
+            # NOTE: The use of STRAIGHT_JOIN here forces the most optimum query on MySQL, where it is better to reduce
+            # assets to the plates, then look for the wells, rather than vice-versa.  The former query takes fractions
+            # of a second, the latter over 60.
             {
               :joins      => [
-                "INNER JOIN `container_associations` ON (`assets`.`id` = `container_associations`.`container_id`)",
+                "STRAIGHT_JOIN `container_associations` ON (`assets`.`id` = `container_associations`.`container_id`)",
                 "INNER JOIN `assets` wells_assets ON (`wells_assets`.`id` = `container_associations`.`content_id`) AND (`wells_assets`.`sti_type` = 'Well')",
                 "LEFT OUTER JOIN `requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = wells_assets.id AND (transfer_requests_as_target.`sti_type` = 'TransferRequest')"
               ],
