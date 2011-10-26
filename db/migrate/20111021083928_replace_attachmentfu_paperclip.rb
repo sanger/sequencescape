@@ -36,11 +36,8 @@ class ReplaceAttachmentfuPaperclip < ActiveRecord::Migration
     end
     
     say "Plate volumes migration"
-    # Plate volumes
-    change_table :plate_volumes do |t|
-      t.column :uploaded_file_name, :string
-    end
-    #   Create files from existing plate volume data
+    # Plate volumes already have filenames
+    # Create files from existing plate volume data
     PlateVolume.all.each do |p|
       DbFile.create!(:data => p.uploaded_file, :owner => p)
       p.uploaded_file_name="#{p.id}.csv"
@@ -73,31 +70,30 @@ class ReplaceAttachmentfuPaperclip < ActiveRecord::Migration
 
   def self.down
     
-    # # Sample manifests
-    #     change_table :sample_manifests do |t|
-    #       
-    #     end
-    #     
-    #     # Restore data column to study reports
-    #     change_table :study_reports do |t|
-    #       t.column :report_file, :binary
-    #     end
-    #     # Create files from existing reports
-    #     StudyReport.all.each do |r|
-    #       r.report_file=r.report.file.read
-    #       r.db_files.each { |f| f.destroy }
-    #       r.save
-    #     end
-    #     # Remove metadata columns
-    #     change_table :study_reports do |t|
-    #      t.remove :report_filename, :content_type
-    #    end
-    #    
+    # Sample manifests
+    change_table :sample_manifests do |t|
+      t.binary :uploaded_file, :generated_file
+    end
+    
+    # Restore data column to study reports
+    change_table :study_reports do |t|
+      t.column :report_file, :binary
+    end
+    # Create files from existing reports
+    StudyReport.all.each do |r|
+      r.report_file=r.report.file.read
+      r.db_files.each { |f| f.destroy }
+      r.save
+    end
+    # Remove metadata columns
+    change_table :study_reports do |t|
+     t.remove :report_filename, :content_type
+   end
+   
    # Plate volumes
    #  Replace old data column
    change_table :plate_volumes do |t|
-     # t.column :uploaded_file, :binary
-     t.remove :uploaded_file_name
+      t.column :uploaded_file, :binary
    end
    #  Create files from existing plate volume data
    PlateVolume.all.each do |p|

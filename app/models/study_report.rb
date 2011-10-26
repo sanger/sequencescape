@@ -45,8 +45,4 @@ class StudyReport < ActiveRecord::Base
    #elayed::Job.enqueue(job, priority)
   end
   
-  def report?
-    self.report.exists?
-  end
-  
 end
