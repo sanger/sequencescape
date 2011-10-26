@@ -2,6 +2,7 @@
 <% fields_for(study) do |form| %>
   <% form.fields_for(:study_metadata, :builder => Metadata::FormBuilder) do |metadata_fields| %>
     <%= metadata_fields.select_by_association(:faculty_sponsor)%>
+    <%= metadata_fields.text_field(:number_of_gigabases_per_sample) %>
 
     <% metadata_fields.with_options(:grouping => 'ENA requirement') do |group| %>
       <%= group.text_field(:study_study_title) %>
@@ -14,7 +15,6 @@
     <%= metadata_fields.select(:contains_human_dna, Study::YES_OR_NO) %>
     <%= metadata_fields.select(:contaminated_human_dna, Study::YES_OR_NO) %>
     <%= metadata_fields.select(:commercially_available, Study::YES_OR_NO) %>
-    
 
     <%= metadata_fields.text_field(:study_project_id, :grouping => 'SRA') %>
     <%= metadata_fields.text_field(:study_ebi_accession_number, :grouping => 'SRA AN') %>
@@ -70,6 +70,7 @@
         <% end %>
       <% end %>
     <% end %>
+
     <% metadata_fields.finalize_related_fields %>
   <% end %>
 <% end %>
