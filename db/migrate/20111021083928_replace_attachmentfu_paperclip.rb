@@ -17,7 +17,7 @@ class ReplaceAttachmentfuPaperclip < ActiveRecord::Migration
       
     end
     
-    say "Study reports migration"
+    say "Study reports migration to using CarrierWave"
     # Add metadata columns for study reports
     change_table :study_reports do |t|
       t.column :report_filename, :string
@@ -43,7 +43,7 @@ class ReplaceAttachmentfuPaperclip < ActiveRecord::Migration
     #   Create files from existing plate volume data
     PlateVolume.all.each do |p|
       DbFile.create!(:data => p.uploaded_file, :owner => p)
-      p.uploaded_file_name=p.id
+      p.uploaded_file_name="#{p.id}.csv"
       p.save
     end
     # Remove old data column
@@ -57,46 +57,46 @@ class ReplaceAttachmentfuPaperclip < ActiveRecord::Migration
       t.column :uploaded_filename, :string
       t.column :generated_filename, :string
     end
-    # SampleManifest.all.each do |s|
-    #       DbFile.create!(:data => s.uploaded_file, :owner => s, :owner_type_extended => "uploaded")
-    #       DbFile.create!(:data => s.generated_file, :owner => s, :owner_type_extended => "generated")
-    #       s.generated_filename=s.id
-    #       s.uploaded_filename=s.id
-    #     end
-    # change_table :sample_manifests do |t|
-    #      t.remove :uploaded_file, :generated_file
-    #    end
-    #    
+    SampleManifest.all.each do |s|
+             DbFile.create!(:data => s.uploaded_file, :owner => s, :owner_type_extended => "uploaded")
+             DbFile.create!(:data => s.generated_file, :owner => s, :owner_type_extended => "generated")
+             s.generated_filename="#{s.id}_generated.xls"
+             s.uploaded_filename="#{s.id}_uploaded.csv"
+           end
+    change_table :sample_manifests do |t|
+      t.remove :uploaded_file, :generated_file
+    end
+          
   end
 
 
 
   def self.down
     
-    # Sample manifests
-    change_table :sample_manifests do |t|
-      
-    end
-    
-    # Restore data column to study reports
-    change_table :study_reports do |t|
-      t.column :report_file, :binary
-    end
-    # Create files from existing reports
-    StudyReport.all.each do |r|
-      r.report_file=r.report.file.read
-      r.db_files.each { |f| f.destroy }
-      r.save
-    end
-    # Remove metadata columns
-    change_table :study_reports do |t|
-     t.remove :report_filename, :content_type
-   end
-   
+    # # Sample manifests
+    #     change_table :sample_manifests do |t|
+    #       
+    #     end
+    #     
+    #     # Restore data column to study reports
+    #     change_table :study_reports do |t|
+    #       t.column :report_file, :binary
+    #     end
+    #     # Create files from existing reports
+    #     StudyReport.all.each do |r|
+    #       r.report_file=r.report.file.read
+    #       r.db_files.each { |f| f.destroy }
+    #       r.save
+    #     end
+    #     # Remove metadata columns
+    #     change_table :study_reports do |t|
+    #      t.remove :report_filename, :content_type
+    #    end
+    #    
    # Plate volumes
    #  Replace old data column
    change_table :plate_volumes do |t|
-     t.column :uploaded_file, :binary
+     # t.column :uploaded_file, :binary
      t.remove :uploaded_file_name
    end
    #  Create files from existing plate volume data
