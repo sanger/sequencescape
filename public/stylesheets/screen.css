@@ -1,9 +1,3 @@
-body {
-  margin: 0px;
-  padding: 0px 0px 0px 0px;
-  background: #e3eefc;
-}
-
 #bd {
   padding: 10px;
 }
@@ -101,24 +95,6 @@ div.callout p {
 #footer a:hover {
   color: #880000;
 }
-
-#header {
-  background: #3e87b3;
-  background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(100%, #004578), color-stop(0%, #0085bc));
-  background-image: -moz-linear-gradient(top, #0085bc 0%, #004578 100%);
-  background-image: linear-gradient(top, #0085bc 0%, #004578 100%);
-  color: #fff;
-}
-#header ul {
-  padding: 0px;
-  margin: 0px;
-  list-style: none;
-}
-
-#header li {
-  display: inline;
-}
-
 
 th {
   text-align: left;
@@ -241,14 +217,6 @@ td.total {
   height: 30px;
 }
 
-#app_name {
-  padding: 10px 0px 12px 8px;
-  font-size: 8px;
-  letter-spacing: 3px;
-  float: left;
-  text-shadow: 0 -1px 1px #00131C;
-}
-
 #app-info-box {
   font-size: 12px;
   float: left;
@@ -266,7 +234,7 @@ td.total {
   
   color: #000;
   background: #FFE138 ;
-  font-family:'Century Gothic','Lucida Grande',helvetica,arial,sans-serif;;
+  font-family:'Century Gothic','Lucida Grande',helvetica,arial,sans-serif;
 }
 
 #app-info-box a {
@@ -309,23 +277,6 @@ div.message {
   margin: 0 auto;
   padding: 5px 10px 5px 10px;
   margin-right: 250px;
-  display: block;
-  line-height: 16px;
-  font-size: 12px;
-}
-
-div.flash {
-  background: #6CF;
-  -moz-border-radius-topright: 3px;
-  -webkit-border-top-right-radius: 3px;
-  -moz-border-radius-topleft: 3px;
-  -webkit-border-top-left-radius: 3px;
-  border-top: 1px solid #57B2DF;
-  border-left: 1px solid #57B2DF;
-  border-right: 1px solid #57B2DF;
-  color: #fff;
-  font-weight: bold;
-  padding: 5px 10px 5px 10px;
   display: block;
   line-height: 16px;
   font-size: 12px;
@@ -410,12 +361,6 @@ div.flash {
   text-decoration: underline;
 }
 
-div.info {
-  margin: 5px 30px 15px 30px;
-  padding-bottom: 5px;
-  border-bottom: 1px solid #ccc;
-}
-
 div.section {
   margin: 5px 30px 15px 30px;
   padding-bottom: 5px;
@@ -463,10 +408,6 @@ div.helper_links {
 
 div.helper_links a, div.helper_links a:link, div.helper_links a:visited {
   color: #888;
-}
-
-td {
-  vertical-align: top;
 }
 
 td.note {
@@ -627,16 +568,6 @@ div.bar li {
   background: #A0D6FC;
   padding: 5px 5px 5px 10px;
   font-size: 12px;
-}
-
-div.help {
-  background: #FBFFC7;
-  padding: 5px;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border: 1px solid #FC6;
-  color: #A65200;
-  margin-bottom: 15px;
 }
 
 #links ul {
