@@ -316,14 +316,16 @@ end
 Given /^asset with barcode "([^"]*)" belongs to study "([^"]*)"$/ do |raw_barcode, study_name|
   study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   asset = Asset.find_from_machine_barcode(raw_barcode) or raise StandardError, "Cannot find asset with machine barcode #{raw_barcode.inspect}"
-  asset_ids = asset.respond_to?(:wells) ? asset.wells.map(&:id) :[asset.id]
+  asset_ids = [asset.id]
+  asset_ids += asset.well_ids if asset.respond_to?(:wells)
   RequestFactory.create_assets_requests(asset_ids, study.id)
 end
 
 Given /^the asset "([^\"]+)" belongs to study "([^\"]+)"$/ do |asset_name, study_name|
   study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   asset = Asset.find_by_name(asset_name) or raise StandardError, "Cannot find asset #{asset_name.inspect}"
-  asset_ids = asset.respond_to?(:wells) ? asset.wells.map(&:id) :[asset.id]
+  asset_ids = [asset.id]
+  asset_ids += asset.well_ids if asset.respond_to?(:wells)
   RequestFactory.create_assets_requests(asset_ids, study.id)
 end
 
