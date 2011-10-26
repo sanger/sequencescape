@@ -25,7 +25,7 @@ end
 Then /^the last report for "([^"]*)" should be:$/ do |study_name, expected_results_table|
   study  = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   report = study.study_reports.last or raise StandardError, "Study #{study_name.inspect} has no study reports"
-  expected_results_table.diff!(FasterCSV.parse(report.report.data))
+  expected_results_table.diff!(FasterCSV.parse(report.report.read))
 end
 
 Given /^study "([^"]*)" has a plate "([^"]*)"$/ do |study_name, plate_barcode|
@@ -76,7 +76,7 @@ Then /^each sample name and sanger ID exists in study "([^"]*)"$/ do |study_name
   study  = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   report = study.study_reports.last or raise StandardError, "Study #{study_name.inspect} has no study reports"
 
-  FasterCSV.parse(report.report.data).each_with_index do |row, index|
+  FasterCSV.parse(report.report.read).each_with_index do |row, index|
     next if row[1].empty? || index == 0
     assert_not_nil study.samples.find_by_sanger_sample_id(row[3])
   end
