@@ -44,3 +44,18 @@
 
   <%= render :partial => "next_stage_submit" %>
 <% end %>
+
+<script type="text/javascript">
+  function update_qc_row(select_id, row_id) {
+    var select = document.getElementById(select_id);
+    var row = $(row_id);
+    var new_state = "qc_"+select.value;
+
+    row.className = row.className.replace(/qc_\S*/, new_state);
+    return;
+    row.className = row.className.replace(/\s*qc_\S*\s*/, "");
+    //new Effect.Morph(row_id, { style : "background: #fff", duration: 1.0, transition: Effect.Transitions.reverse});
+    new Effect.Morph(row_id, { style: new_state , duration: 0.15, transition: Effect.Transitions.sinoidal});
+    return;
+  }
+</script>

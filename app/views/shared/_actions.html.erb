@@ -24,3 +24,30 @@
     <% end -%>
   </p>
 </div>
+
+<script type="text/javascript">
+  function check_count_before_start(){
+    var item_limit = $('batch_item_limit').value;
+    var underrun = $('underrun').value;
+    var mod = Math.abs(underrun);
+
+    if ($('batch_item_limit')) {
+      if (underrun > 0) {
+        alert('Batch size is limited to ' + item_limit + '.  Please edit the batch and add ' + mod + ' or more libraries before continuing');
+        return false;
+      }
+
+      else if (underrun < 0) {
+        alert('Batch size is limited to ' + item_limit + '.  Please edit the batch and remove ' + mod + ' or more libraries before continuing');
+        return false;
+      }
+
+      else if (underrun == 0) {
+      return true;
+      }
+    }
+    else {
+      return true;
+    }
+  }
+</script>
