@@ -202,6 +202,8 @@ class Study < ActiveRecord::Base
     # SNP information
     attribute(:snp_study_id, :integer => true)
     attribute(:snp_parent_study_id, :integer => true)
+
+    attribute(:number_of_gigabases_per_sample)
     
     REMAPPED_ATTRIBUTES = {
       :contaminated_human_dna     => YES_OR_NO,
@@ -244,6 +246,8 @@ class Study < ActiveRecord::Base
     def delayed_for_long_time?
       DATA_RELEASE_DELAY_PERIODS.include?(self.data_release_delay_period)
     end
+
+    validates_numericality_of :number_of_gigabases_per_sample, :greater_than_or_equal_to => 0.15, :allow_blank => true, :allow_nil => true
 
     has_one :data_release_non_standard_agreement, :class_name => 'Document', :as => :documentable
     accepts_nested_attributes_for :data_release_non_standard_agreement
