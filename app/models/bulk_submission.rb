@@ -191,11 +191,8 @@ class BulkSubmission < ActiveRecord::Base
           
         end
         
-        # This error doesn't really help the user
-        #errors.add :spreadsheet, 'Failed with errors' if failures
-        raise 'Not doing anything as requested' if ENV['DO_NOTHING']
-        
-        
+        # If there are any errors then the transaction needs to be rolled back.
+        raise ActiveRecord::Rollback if failures
       end
     end
   end #process
