@@ -384,7 +384,6 @@ padding-left: 12px;
 }
 
 .info {
-  margin: 5px 30px 15px 30px;
   padding-bottom: 5px;
   border-bottom: 1px solid #ccc;
 }
@@ -487,6 +486,7 @@ border: 0px;
 input#stage_button {
 margin-top: 50px;
 margin-left: 30px;
+}
 }
 td.bar {
 border-right: 1px solid #ccc;
@@ -614,13 +614,27 @@ td.total {
 border-top: 1px solid #ccc;
 }
 
-td {
-  vertical-align: top;
+
+table.request-grid {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-th {
-text-align: left;
+.request-grid th.order {
+  width: 30px;
+  text-align: left;
 }
+
+.request-grid th, td {
+  padding: 3px 5px;
+  text-align: center;
+}
+
+.request-asset-name {
+  width: 50px;
+  padding: 3px 15px;
+}
+
 tr.second_attempt {
 color: #ff0000;
 }
