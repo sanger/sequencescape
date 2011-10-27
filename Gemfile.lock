@@ -114,14 +114,14 @@ GEM
     flog (2.5.1)
       ruby_parser (~> 2.0)
       sexp_processor (~> 3.0)
-    formtastic (1.1.0)
-      actionpack (>= 2.3.0)
-      activesupport (>= 2.3.0)
-      i18n (>= 0.4.0)
+    formtastic (1.2.4)
+      actionpack (>= 2.3.7)
+      activesupport (>= 2.3.7)
+      i18n (~> 0.4)
     gem_plugin (0.2.3)
     gherkin (2.3.6)
       json (>= 1.4.6)
-    i18n (0.5.0)
+    i18n (0.6.0)
     json (1.5.1)
     json_pure (1.5.1)
     launchy (0.4.0)
@@ -184,7 +184,7 @@ GEM
     shoulda (2.10.3)
     sinatra (1.1.4)
       rack (~> 1.1)
-      tilt (< 2.0, >= 1.2.2)
+      tilt (>= 1.2.2, < 2.0)
     spreadsheet (0.6.5.4)
       ruby-ole (>= 1.0)
     stomp (1.1.8)
@@ -232,7 +232,7 @@ DEPENDENCIES
   fastercsv (~> 1.4.0)
   flay
   flog
-  formtastic (= 1.1.0)
+  formtastic (~> 1.2.0)
   launchy
   log4r
   mocha
