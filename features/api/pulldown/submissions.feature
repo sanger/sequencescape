@@ -33,7 +33,7 @@ Feature: Creating submissions for pulldown
           "asset_group_name": "Testing the pulldown submissions",
           "request_options": {
             "read_length": 100,
-            "bait_library_name": "Human all exon 50MB"
+            "bait_library": "Human all exon 50MB"
           }
         }
       }
@@ -167,3 +167,41 @@ Feature: Creating submissions for pulldown
       | fragment_size_required_from | 300            |
       | fragment_size_required_to   | 500            |
 
+
+  @create
+  Scenario Outline: Attempting to set the fragment sizes to anything other than the acceptable values is an error
+    Given the UUID for the submission template "Pulldown <pipeline> - HiSeq paired end sequencing" is "00000000-1111-2222-3333-444444444444"
+
+    When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/submissions":
+      """
+      {
+        "submission": {
+          "project": "22222222-3333-4444-5555-000000000001",
+          "study": "22222222-3333-4444-5555-000000000000",
+          "asset_group_name": "Testing the pulldown submissions",
+          "request_options": {
+            "read_length": 100,
+            "fragment_size_required": {
+              "from": 99,
+              "to": 999
+            }
+          }
+        }
+      }
+      """
+    Then the HTTP response should be "422 Unprocessable Entity"
+     And the JSON should be:
+      """
+      {
+        "content": {
+          "request_options.fragment_size_required.to": ["is not included in the list"],
+          "request_options.fragment_size_required.from": ["is not included in the list"]
+        }
+      }
+      """
+
+    Examples:
+      | pipeline |
+      | WGS      |
+      | SC       |
+      | ISC      |

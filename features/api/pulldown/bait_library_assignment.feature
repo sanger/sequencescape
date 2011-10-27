@@ -23,12 +23,12 @@ Feature: Assigning bait libraries to a plate
       And the UUID for the plate "Testing bait libraries" is "00000000-1111-2222-3333-000000000001"
 
     Given "A1-H6" of the plate with UUID "00000000-1111-2222-3333-000000000001" have been submitted to "Pulldown SC - HiSeq Paired end sequencing" with the following request options:
-      | read_length                 | 100                 |
-      | bait_library_name           | Human all exon 50MB |
+      | read_length       | 100                 |
+      | bait_library_name | Human all exon 50MB |
 
     Given "A7-H12" of the plate with UUID "00000000-1111-2222-3333-000000000001" have been submitted to "Pulldown SC - HiSeq Paired end sequencing" with the following request options:
-      | read_length                 | 100            |
-      | bait_library_name           | Mouse all exon |
+      | read_length       | 100            |
+      | bait_library_name | Mouse all exon |
 
     Given a "SC hyb" plate called "Target for bait libraries" exists
       And the "Transfer columns 1-12" transfer template has been used between "Testing bait libraries" and "Target for bait libraries"

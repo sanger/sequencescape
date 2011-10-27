@@ -482,8 +482,13 @@ class Plate < Asset
     source_plate_barcodes.scan(/\d+/).map(&method(:find_from_machine_barcode))
   end
 
+  #--
+  # NOTE: I'm getting odd behaviour where '&method(:find_from_machine_barcode)' raises a SecurityError.  I haven't
+  # been able to track down why, and it only happens under 'rake cucumber', so somewhere something is doing something
+  # nasty.
+  #++
   def self.plates_from_scanned_plates_and_typed_plate_ids(source_plate_barcodes)
-    scanned_plates = source_plate_barcodes.scan(/\d+/).map(&method(:find_from_machine_barcode))
+    scanned_plates = source_plate_barcodes.scan(/\d+/).map { |v| find_from_machine_barcode(v) }
     typed_plates   = source_plate_barcodes.scan(/\d+/).map(&method(:find_by_barcode))
 
     (scanned_plates | typed_plates).compact

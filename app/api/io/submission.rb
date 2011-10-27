@@ -3,7 +3,8 @@ class ::Io::Submission < ::Core::Io::Base
     :read_length                 => 'read_length',
     :library_type                => 'library_type',
     :fragment_size_required_from => 'fragment_size_required.from',
-    :fragment_size_required_to   => 'fragment_size_required.to'
+    :fragment_size_required_to   => 'fragment_size_required.to',
+    :bait_library_name           => 'bait_library'
   }.map { |k,v| [ k, "request_options.#{v}"] }]
 
   def self.json_field_for(attribute)
