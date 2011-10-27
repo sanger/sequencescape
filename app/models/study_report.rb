@@ -6,7 +6,7 @@ class StudyReport < ActiveRecord::Base
   cattr_reader :per_page
   @@per_page = 50
   
-  has_many :db_files, :as => :owner
+  has_many :db_files, :as => :owner, :dependent => :destroy
   #   Mount Carrierwave on report field
   mount_uploader :report, PolymorphicUploader, :mount_on => "report_filename"
     
