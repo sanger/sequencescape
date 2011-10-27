@@ -66,12 +66,8 @@ class SampleManifest < ActiveRecord::Base
     end
   end
 
-# Options for mounting files :-
-#  1. has_many relations using extra 
-# has_many :uploaded,  :class_name => "DbFile", :as => :owner, :conditions => {:owner_type_extended => 'uploaded'}
-#  has_many :generated, :class_name => "DbFile", :as => :owner, :conditions => {:owner_type_extended => 'generated'}
- has_one :uploaded_document,  :class_name => "Document", :as => :documentable, :conditions => {:documentable_extended => 'uploaded'}
- has_one :generated_document, :class_name => "Document", :as => :documentable, :conditions => {:documentable_extended => 'generated'}
+ has_one :uploaded_document,  :class_name => "Document", :as => :documentable, :conditions => {:documentable_extended => 'uploaded'}, :dependent => :destroy
+ has_one :generated_document, :class_name => "Document", :as => :documentable, :conditions => {:documentable_extended => 'generated'}, :dependent => :destroy
 
  def uploaded=(file)
    create_uploaded_document(:uploaded_data => file, :documentable_extended => 'uploaded') unless file.blank?

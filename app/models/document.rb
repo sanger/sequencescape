@@ -4,10 +4,10 @@ class Document < ActiveRecord::Base
   belongs_to :documentable, :polymorphic => true
   
   # Creates document.db_files association so when the file is split we can get all the chunks
-  has_many  :db_files, :as => :owner
+  has_many  :db_files, :as => :owner, :dependent => :destroy
 
   # CarrierWave uploader - gets the uploaded_data file, but saves the identifier to the "filename" column
-  mount_uploader :uploaded_data, DocumentUploader, :mount_on => "filename"
+  mount_uploader :uploaded_data, PolymorphicUploader, :mount_on => "filename"
   
   # Method provided for backwards compatibility
   def current_data

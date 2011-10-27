@@ -1,7 +1,7 @@
 class PlateVolume < ActiveRecord::Base
   
   # New file storage:
-  has_many :db_files, :as => :owner
+  has_many :db_files, :as => :owner, :dependent => :delete_all
   #  Mount Carrierwave on report field
   mount_uploader :uploaded, PolymorphicUploader, :mount_on => "uploaded_file_name"
 

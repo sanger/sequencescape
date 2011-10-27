@@ -10,7 +10,8 @@ class StudyReport < ActiveRecord::Base
   named_scope :for_user, lambda { |user| { :conditions => { :user_id => user.id } } }
   named_scope :without_files, lambda { select_without_file_columns_for(:report) }
 
-  has_many :db_files, :as => :owner
+  has_many :db_files, :as => :owner, :dependent => :destroy
+
   #   Mount Carrierwave on report field
   mount_uploader :report, PolymorphicUploader, :mount_on => "report_filename"
 
@@ -48,5 +49,5 @@ class StudyReport < ActiveRecord::Base
    #job = Delayed::PerformableMethod.new(self, :synchronous_perform, [])
    #elayed::Job.enqueue(job, priority)
   end
-  
+
 end
