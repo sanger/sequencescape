@@ -689,12 +689,14 @@ border: 2px solid #E82E34;
 background-color: #FFBCC2;
 -moz-border-radius: 5px;
 -webkit-border-radius: 5px;
+border-radius: 5px;
 }
 div#available {
 border: 2px solid #2FB81B;
 background-color: #C5FFCB;
 -moz-border-radius: 5px;
 -webkit-border-radius: 5px;
+border-radius: 5px;
 }
 
 table.bed_verification{
@@ -1018,6 +1020,8 @@ background-color: orange;
 #default-values fieldset {
   clear:both;
   border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
   border: 1px solid #C0C0C0;
   background:#F4F4F4;
   background-image: -moz-linear-gradient(top,#F2F2F2,#fff, #F2F2F2);
@@ -1028,6 +1032,8 @@ div.characterisation {
   padding: 0 15px 8px 15px;
   margin: 0 10px 20px 10px;
   display:inline-block;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
   border-radius: 3px;
   border: 1px solid #C0C0C0;
   background: #EBF4FF;
@@ -1040,6 +1046,8 @@ div.characterisation h2 {
 }
 
 div.characterisation fieldset{
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
   border-radius: 3px;
   border: 1px solid #C0C0C0;
 }
