@@ -6,7 +6,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase
     view_for(:document, 'shared/metadata/edit_document_field')
     view_for(:checktext, 'shared/metadata/edit_checktext_field')
 
-    @related_fields = []
+    @related_fields, @changing = [], []
   end
 
   # Creates a file upload field that will be properly handled by Document instances.  It's a bit of
@@ -23,7 +23,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase
   
   def select_by_association(association, options={})
     association_target, options = association.to_s.classify.constantize, { }
-    options[:selected] = association_target.default.for_select_dropdown.last if association_target.default.present?
+    options[:selected] = association_target.default.for_select_dropdown.last if @object.send(association).nil? and association_target.default.present?
     select(:"#{association}_id", association_target.for_select_association, options)
   end
 
@@ -75,14 +75,25 @@ class Metadata::FormBuilder < Metadata::BuilderBase
     content
   end
 
+  # Allows the options of the specified 'field' to be changed based on the value of another field.
+  def change_select_options_for(field, options)
+    options[:values] = options[:values].inject({}) do |values, (key, value)|
+      values.tap do
+        Array(key).each { |k| values[k.to_s] = Array(value) }
+      end
+    end
+    @changing.push([ field, options ])
+  end
+
   # Renders the Javascript for dealing with showing and hiding the related fields.
   def finalize_related_fields(&block)
     related = @related_fields.compact.uniq.map(&:to_s)
     concat(render(
       :partial => 'shared/metadata/related_fields', 
       :locals => { 
-        :root => sanitized_object_name,
-        :related => related 
+        :root            => sanitized_object_name,
+        :related         => related,
+        :changing_fields => @changing
       }
     )) unless related.empty?
   end

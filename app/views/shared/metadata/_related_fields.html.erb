@@ -14,7 +14,10 @@
         });
       };
 
-      var valueFrom = function(element) { return element.value.toLowerCase().replace(/[^a-z0-9]+/, '_'); };
+      var valueFrom = function(element) {
+        var value = element.value.toLowerCase().replace(/[^a-z0-9]+/, '_');
+        return (value.length == 0) ? 'blank' : value;
+      };
 
       observe = function(id) {
         var selectRelatedFor = function(value) { return jQuery('.related_to.' + id + '.' + value); }
@@ -40,4 +43,20 @@
     <% end %>
     })();
   });
+
+  (function($, undefined) {
+<% changing_fields.reverse.each do |field, options| %>
+    attach_option_updater(<%= field.to_s.inspect %>, <%= options[:when].to_s.inspect %>, {<%= options[:values].map { |k,v| "#{k.inspect}:#{v.inspect}" }.join(',') %>});
+<% end %>
+
+    function attach_option_updater(target, source, values) {
+      $('#<%= root %>_' + source).change(function() {
+        select_to_change_options_in = $('#<%= root %>_' + target);
+        selected_option = select_to_change_options_in.val();
+        options = values[this.value].map(function(value) { return '<option value="' + value + '">' + value + '</option>'; });
+        select_to_change_options_in.html(options.join('')).val(selected_option);
+        select_to_change_options_in.trigger('change');
+      }).trigger('change');
+    };
+  })(jQuery);
 </script>

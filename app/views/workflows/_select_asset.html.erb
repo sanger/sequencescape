@@ -42,3 +42,14 @@
   <br /><br />
 <% end %>
 <% end %>
+<script type="text/javascript">
+  function toggle_fragments(){
+    if ($('fragments').style.display == 'none'){
+      Element.show('fragments');
+      $('toggle_fragments_link').innerHTML = 'Hide';
+    } else{
+      Element.hide('fragments');
+      $('toggle_fragments_link').innerHTML = 'Expand';
+    }
+  }
+</script>

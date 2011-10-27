@@ -13,14 +13,6 @@ Given /^I have a "([^\"]*)" batch in "([^\"]*)"$/ do |state, pipeline|
   @batch = Factory :batch, :pipeline => Pipeline.find_by_name(pipeline), :state => state, :production_state => nil
 end
 
-Given /^I have a batch with (\d+) requests? in "([^\"]*)"$/ do |count, pipeline|
-  batch = Given %Q{I have a batch in "#{pipeline}"}
-  count.to_i.times do
-    batch.requests << Then(%Q{I have a request for "#{pipeline}"})
-  end
-  batch.save!
-
-end
 Given /^I have a control called "([^\"]*)" for "([^\"]*)"$/ do |name, pipeline_name|
   control = Factory :control, :name => name, :pipeline => Pipeline.find_by_name(pipeline_name)
 end
