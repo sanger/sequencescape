@@ -553,6 +553,7 @@ class Study < ActiveRecord::Base
         :"aliquot::receptacle" => :aliquots,
         :asset      => [ :requests, :parents, :children ],
         :well       => :plate,
+        :spikedbuffer => :skip_super,
         &helper
     )
 
