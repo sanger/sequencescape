@@ -773,7 +773,7 @@ display: inline;
 padding-bottom: 1px;
 }
 
-.pagination a, .pagination a:visited{
+.pagination a, .pagination a:visited {
 padding: 0 5px;
 border: 1px solid #9aafe5;
 text-decoration: none;
@@ -783,7 +783,7 @@ color: #2e6ab1;
 .pagination {
   text-align: center;
 }
-.pagination a:hover, .pagination a:active{
+.pagination a:hover, .pagination a:active {
 border: 1px solid #2b66a5;
 color: #000;
 background-color: #FFFF80;
@@ -797,7 +797,7 @@ font-weight: bold;
 cursor: default;
 }
 
-.pagination a.disablelink, .pagination a.disablelink:hover{
+.pagination a.disablelink, .pagination a.disablelink:hover {
 background-color: white;
 cursor: default;
 color: #929292;
@@ -901,6 +901,7 @@ div.grouper, div.setup {
   border: 1px solid #ccc;
   border-radius: 3px;
   -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
 }
 
 div.setup {
@@ -1036,6 +1037,7 @@ div.error {
   padding: 0px 5px 0px 20px;
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
+  border-radius: 3px;
   border: 2px solid red;
   color: black;
   margin-bottom:20px;
@@ -1069,6 +1071,7 @@ div.user_guide {
   padding: 10px;
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
+  border-radius: 3px;
   border: 1px solid #9FFC87;
   color: black;
   margin-bottom: 15px;
@@ -1082,6 +1085,7 @@ div.user_error {
   padding: 10px;
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
+  border-radius: 3px;
   border: 1px solid #d00;
   color: black;
   margin-bottom: 15px;
@@ -1162,14 +1166,11 @@ padding-bottom:7px;
 #property_group_SRArequirement  {
   border-top: 1px solid #ccc;
   padding-top: 5px;
-  #margin: 5px 30px 0px 30px;
-#  background: #ffcccc;
 }
 
 #property_group_SRAAN {
   border-top: 1px solid #ccc;
   padding-top: 5px;
-  #margin: 5px 30px 0px 30px;
   background: #ccc;
 }
 
@@ -1177,7 +1178,6 @@ padding-bottom:7px;
 {
   border-top: 1px solid #ccc;
   padding-top: 5px;
-  #margin: 5px 30px 0px 30px;
   background: #ccc;
 }
 
