@@ -1,12 +1,11 @@
 @reference_genome @admin 
 Feature: Add interface to update reference genomes
 
-Background: 
-	Given I am a "administrator" user logged in as "user"
-	And I am on the homepage
+  Background:
+    Given I am a "administrator" user logged in as "user"
+    And I am on the homepage
 	
   Scenario: Can I create a reference genome
-
     Then I should see "Admin"
     When I follow "Admin"
     Then I should see "Reference genome management"
@@ -18,7 +17,6 @@ Background:
     Then I should see "Reference genome was successfully created."
 
   Scenario: Can I edit a reference genome
-
     Then I should see "Admin"
     When I follow "Admin"
     Then I should see "Reference genome management"
@@ -36,6 +34,7 @@ Background:
     When I follow "Back"
     Then I should see "Listing reference genomes"
 
+  @javascript
   Scenario: Can I see and add a reference genome when creating a study
     Given a faculty sponsor called "Jack Sponsor" exists
     Given a reference genome table

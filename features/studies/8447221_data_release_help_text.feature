@@ -18,7 +18,8 @@ Feature: Update the data release fields for creating a study
       This data has been described in the following article [doi or ref] and its further analysis can be freely submitted for publication. For information on the proper use of data shared by the Wellcome Trust Sanger Institute (including information on acknowledgement), please see http://www.sanger.ac.uk/datasharing/
       """
 
-  Scenario: Add help text opposite delay drop down (4044305)
+  Scenario Outline: Add help text opposite delay drop down (4044305)
+    When I select "<release strategy>" from "What is the data release strategy for this study?"
     When I select "delayed" from "How is the data release to be timed?"
     Then the help text for "Reason for delaying release help text" should contain:
       """
@@ -33,7 +34,13 @@ Feature: Update the data release fields for creating a study
       Reason(s) for delaying data release
       """
 
+    Examples:
+      | release strategy |
+      | managed          |
+      | open             |
+
   Scenario: Add help text to has this been approved for never release (4044343)
+    When I select "not applicable" from "What is the data release strategy for this study?"
     When I select "never" from "How is the data release to be timed?"
     Then the help text for "Has this been approved? help text" should contain:
       """

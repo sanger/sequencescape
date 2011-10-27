@@ -31,4 +31,17 @@ module BatchesHelper
       xml.insert_size(:from => aliquot.insert_size.from, :to => aliquot.insert_size.to) if aliquot.insert_size.present?
     }
   end
+
+  def workflow_name(batch)
+    return unless batch and batch.workflow
+    wname = batch.workflow.name
+
+    name = ""
+    name = "HiSeq " if wname.include?("HiSeq")
+    case wname
+    when /PE/ then name += "PE"
+    when /SE/ then name += "SE"
+    end
+    name
+  end
 end

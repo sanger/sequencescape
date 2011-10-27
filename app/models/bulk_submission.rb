@@ -180,14 +180,8 @@ class BulkSubmission < ActiveRecord::Base
           rescue ArgumentError
             raise
           rescue => exception
-            Rails.logger.debug("****************** #{exception.message}")
-           
-           
             errors.add :spreadsheet, "There was a problem on row(s) #{details['rows']}: #{exception.message}"
-            # errors.add :spreadsheet, "\tDetails: #{details.inspect}"
-            # errors.add :spreadsheet, "\thad an error: #{exception.message}"
-            puts errors.inspect
-
+           
             failures = true
           rescue QuotaException => exception
                                 errors.add :spreadsheet, "There was a quota problem: #{exception.message}"

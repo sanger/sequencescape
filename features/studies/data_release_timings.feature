@@ -1,4 +1,4 @@
-@study @data_release
+@javascript @study @data_release
 Feature: Studies have timings for release of their data
   Background:
     Given I am an "administrator" user logged in as "John Smith"
@@ -26,7 +26,6 @@ Feature: Studies have timings for release of their data
     And I should see "Your study has been created"
   
 
-  @javascript
   Scenario: When the data release is delayed for PhD study
     Given I select "delayed" from "How is the data release to be timed?"
       And I select "phd study" from "Reason for delaying release"
@@ -36,7 +35,7 @@ Feature: Studies have timings for release of their data
     Then I should be on the study workflow page for "Testing data release strategies"
       And I should see "Your study has been created"
 
-  Scenario Outline: When the data release is delayed but not reasons are provided
+  Scenario Outline: When the data release is delayed but no reasons are provided
     Given I select "delayed" from "How is the data release to be timed?"
     And I select "other" from "Reason for delaying release"
     And I fill in "Please explain the reason for delaying release (e.g., pre-existing collaborative agreement)" with "Some reason"
@@ -51,7 +50,6 @@ Feature: Studies have timings for release of their data
       | 6 months  |
       | 9 months  |
       | 12 months |
-  
 
   Scenario Outline: When the data release is delayed and the reasons are provided
     Given I select "delayed" from "How is the data release to be timed?"
@@ -69,19 +67,18 @@ Feature: Studies have timings for release of their data
       | 6 months  |
       | 9 months  |
       | 12 months |
-  
 
   Scenario: When the data release is never but the comment is not supplied
-    Given I select "never" from "How is the data release to be timed?"
+    When I select "not applicable" from "What is the data release strategy for this study?"
+    And I select "never" from "How is the data release to be timed?"
     When I press "Create"
     Then I should be on the studies page
     And I should see "Data release prevention reason comment can't be blank"
-  
 
   Scenario: When the data release is never and the comment is supplied
-    Given I select "never" from "How is the data release to be timed?"
+    When I select "not applicable" from "What is the data release strategy for this study?"
+    And I select "never" from "How is the data release to be timed?"
     And I fill in "Comment regarding prevention of data release and approval" with "Some reason"
     When I press "Create"
     Then I should be on the study workflow page for "Testing data release strategies"
     And I should see "Your study has been created"
-  

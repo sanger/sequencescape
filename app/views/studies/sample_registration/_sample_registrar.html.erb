@@ -83,33 +83,34 @@
             <% end %>
             
             <%= metadata_fields.header(:reference_genome) %>
-    <!-- array express field -->
-    <%metadata_fields.with_options(:grouping => 'Array Express') do |group| %>
-    <%= group.header(:genotype) %>
-    <%= group.header(:phenotype) %>
-    <%= group.header(:age) %>
-    <%= group.header(:developmental_stage) %>
-    <%= group.header(:cell_type) %>
-    <%= group.header(:disease_state) %>
-    <%= group.header(:compound) %>
-    <%= group.header(:dose) %>
-    <%= group.header(:immunoprecipitate) %>
-    <%= group.header(:growth_condition) %>
-    <%= group.header(:rnai) %>
-    <%= group.header(:organism_part) %>
-    <%= group.header(:time_point) %>
-  <% end %>
 
-    <!-- EGA field -->
-    <%metadata_fields.with_options(:grouping => 'EGA') do |group| %>
-    <%= group.header(:subject) %>
-    <%= group.header(:disease) %>
-    <%= group.header(:treatment)%>
-  <% end %>
+            <!-- array express field -->
+            <%metadata_fields.with_options(:grouping => 'Array Express') do |group| %>
+              <%= group.header(:genotype) %>
+              <%= group.header(:phenotype) %>
+              <%= group.header(:age) %>
+              <%= group.header(:developmental_stage) %>
+              <%= group.header(:cell_type) %>
+              <%= group.header(:disease_state) %>
+              <%= group.header(:compound) %>
+              <%= group.header(:dose) %>
+              <%= group.header(:immunoprecipitate) %>
+              <%= group.header(:growth_condition) %>
+              <%= group.header(:rnai) %>
+              <%= group.header(:organism_part) %>
+              <%= group.header(:time_point) %>
+            <% end %>
 
+            <!-- EGA field -->
+            <%metadata_fields.with_options(:grouping => 'EGA') do |group| %>
+              <%= group.header(:subject) %>
+              <%= group.header(:disease) %>
+              <%= group.header(:treatment)%>
+            <% end %>
           <% end %>
         <% end %>
       </tr>
+
     </thead>
     <tbody>
     <% @sample_registrars.each_with_index do |registrar, index| %>
@@ -301,7 +302,95 @@
   });
 })();
 
-fix_firefox_tooltip_layout();
+// Fix Firefox tooltip layout
+Element.setStyle($('property_sample_name'),"overflow:auto;");
 </script>
 
 <%= organism_validation_javascript %>
+
+<script type="text/javascript">
+  function resetColumnVisibility(classname)
+  {
+    var template_node = $$(classname)[0];
+    var cell_styles = Element.getElementsBySelector(template_node,"div")
+    var row_number = $$(classname).length;
+    for(var r = 1; r< row_number; r++)
+    {
+      var new_row_details = $$(classname)[r];
+      var new_row_styles = Element.getElementsBySelector(new_row_details,"div");
+      for(var c = 0; c < cell_styles.length; c++)
+      {
+        if(Element.getStyle(cell_styles[c],"display") == "none")
+        {
+          Element.hide(new_row_styles[c]);
+          new_row_styles[c].style.display = 'none';
+        }
+        else
+        {
+          Element.show(new_row_styles[c]);
+          new_row_styles[c].style.display = '';
+        }
+      }
+    }
+  }
+
+  function toggleGroupVisibility(group_name, visible)
+  {
+    toggleCellVisibility('td', 'property_group_'+group_name, group_name, visible);
+    toggleCellVisibility('th', 'property_group_'+group_name, group_name, visible);
+    resetColumnVisibility("#samples_to_register tbody > tr");
+  }
+
+  function toggleCellVisibility(tag, classname, group_name,visible)
+  {
+    var cells = $$(''+tag+' div.cell_'+classname+'');
+
+    for(var i =0; i< cells.length; i++)
+    {
+      var td = cells[i];
+      if (visible)
+      {
+        if(tag =="th")
+        {
+          //Element.appear(td);
+          td.style.display = '';
+        }
+        else
+        {
+          td.style.display = '';
+        }
+      }
+      else
+      {
+        if(tag =="th")
+        {
+          //Element.fold(td);
+          td.style.display = 'none';
+        }
+        else
+        {
+          td.style.display = 'none';
+        }
+      }
+    }
+
+    var cells = $$(''+tag+' div.collapse_'+classname+'')
+    for(var i =0; i< cells.length; i++)
+    {
+      var td = cells[i];
+      if (visible)
+      {
+        //Element.fold(td);
+        td.style.display = 'none';
+      }
+      else
+      {
+        if(i ==0)
+        {
+          //Element.appear(td);
+          td.style.display = '';
+        }
+      }
+    }
+  }
+</script>

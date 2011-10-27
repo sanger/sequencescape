@@ -1,4 +1,4 @@
-@study @creation @study_bam
+@javascript @study @creation @study_bam
 Feature: Study creation with a checkbox for BAM file.
 
   Background:

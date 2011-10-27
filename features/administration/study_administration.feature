@@ -25,6 +25,7 @@ Feature: Study administration
     Given I am visiting study "Study B" homepage
     Then I should not see "Manage"
 
+  @javascript
   Scenario: Administrator edits study properties
     Given I am an "administrator" user logged in as "xyz1"
     Given I am visiting study "Study B" homepage
@@ -53,9 +54,11 @@ Feature: Study administration
     Then I should see "Your study has been updated"
     And option "pending" in the menu labeled "State" should be selected
 
+  @javascript
   Scenario: Administrator edits study ethical approval
     Given I am an "administrator" user logged in as "xyz1"
-    Given I am on the management page for study "Study B"
+    Given I am on the show page for study "Study B"
+    And I follow "Manage"
     When I attach the relative file "test/data/blah.fasta" to "study_uploaded_data"
     And I press "Update"
     Then I should see "Your study has been updated"
