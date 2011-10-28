@@ -61,17 +61,6 @@ class Studies::Workflows::SubmissionsController < ApplicationController
     end #:end
   end
 
-  def set_variables_for_create
-    @workflow = Submission::Workflow.find(params[:workflow_id])
-    @study    = Study.find(params[:study_id])
-    @comments = nil
-
-    # NOTE[xxx]: Quick hack to get this working for the features and into production.  Basically lookup by ID if the project
-    # project name was not specified and the project_id is specified.  Should handle the Ajax stuff.
-    @project   = Project.find_by_name(params[:project_name])  if params[:project_name].present?
-    @project ||= Project.find_by_id(params[:project_id]) if params[:project_id].present?
-  end
-
   def find_by_name(klass, text)
       names = text.lines.map(&:chomp).reject { |l| l.blank? }
       names = names.map{ |n| n.strip }
@@ -151,29 +140,39 @@ class Studies::Workflows::SubmissionsController < ApplicationController
   private :request_type_from_hash_to_array
 
   def create
-    set_variables_for_create
-    template_id= params[:submission_template_id]
-    @submission_template = SubmissionTemplate.find_by_id(template_id)
-    if @submission_template.nil?
-      flash[:error] = "Invalid template id"
-      redirect_to template_chooser_study_workflow_submissions_path(@study, @workflow)
-      return
-    end
+    @workflow = Submission::Workflow.find(params[:workflow_id])
+    @study    = Study.find(params[:study_id])
 
-    params[:user_id] = current_user.id
+    begin
+      @comments = nil
 
-    respond_to do |format|
-      begin
-        request_type_multiplier = {}
+      # NOTE[xxx]: Quick hack to get this working for the features and into production.  Basically lookup by ID if the project
+      # project name was not specified and the project_id is specified.  Should handle the Ajax stuff.
+      @project   = Project.find_by_name(params[:project_name])  if params[:project_name].present?
+      @project ||= Project.find_by_id(params[:project_id]) if params[:project_id].present?
 
-        if params[:request_type]
-          @request_type_ids = []
-          params[:request_type].each do |details|
-            @request_type_ids << details[:request_type_id]
-            request_type_multiplier[details[:request_type_id].to_i] = details[:number].to_i unless details[:number].blank?
+      @submission_template = SubmissionTemplate.find_by_id(params[:submission_template_id])
+      if @submission_template.nil?
+        flash[:error] = "Invalid template id"
+        redirect_to template_chooser_study_workflow_submissions_path(@study, @workflow)
+        return
+      end
+
+      params[:user_id] = current_user.id
+
+      respond_to do |format|
+        begin
+          request_type_multiplier = {}
+
+          if params[:request_type]
+            @request_type_ids = []
+            params[:request_type].each do |details|
+              @request_type_ids << details[:request_type_id]
+              request_type_multiplier[details[:request_type_id].to_i] = details[:number].to_i unless details[:number].blank?
+            end
           end
-        end
 
+<<<<<<< HEAD
         asset_details = asset_source_details_from_request_parameters
         @comments = params[:submission][:comments] if params[:submission][:comments]
         @properties = params.fetch(:request, {}).fetch(:properties, {})
@@ -209,9 +208,9 @@ class Studies::Workflows::SubmissionsController < ApplicationController
         action_flash[:error] = exception.record.errors.full_messages.join(', ')
         raise
       end
+    rescue StandardError, Quota::Error => exception
+      return render(:action => 'new')
     end
-  rescue StandardError, Quota::Error => exception
-    return render(:action => 'new')
   end
 
   def destroy

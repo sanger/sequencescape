@@ -15,13 +15,13 @@ class GeneratorTest < ActiveSupport::TestCase
       "time" => "Tue Sep 29 11:00:42 2009",
       "source" => {
         "95020" => {
-          "name" => "ABgene_0765",
+          "name" => "ABgene 0765",
           "plate_size" => 96,
           }
         },
         "destination" => {
           "119572" => {
-            "name" => "ABgene_0800",
+            "name" => "ABgene 0800",
             "plate_size" => 96,
             "mapping" => [
               { "src_well" =>  ["95020", "B7"], "dst_well" => "A1", "volume" => 13,   },
@@ -70,21 +70,21 @@ class GeneratorTest < ActiveSupport::TestCase
         "time" => "Fri Nov 27 10:11:13 2009",
         "source" => {
           "122289" => {
-            "name" => "ABgene_0765",
+            "name" => "ABgene 0765",
             "plate_size" => 96,
           },
           "80785" =>{
-            "name" => "ABgene_0765",
+            "name" => "ABgene 0765",
             "plate_size" => 96,
           },
           "122290" => {
-            "name" => "ABgene_0765",
+            "name" => "ABgene 0765",
             "plate_size" => 96,
           }
         },
         "destination" => {
           "127073" => {
-            "name" => "ABgene_0800",
+            "name" => "ABgene 0800",
             "plate_size" => 96,
             "mapping" => [
                 { "src_well" =>  ["122289", "G7"], "dst_well" => "D4", "volume" => 3.33   },
@@ -106,7 +106,7 @@ class GeneratorTest < ActiveSupport::TestCase
           @expected_output = (testcase)[:expected_output]
         end
 
-        context "when mappingwells from 1 96 well source plate to 1 96 well destination plate" do
+        context "when mapping wells from 1 96 well source plate to 1 96 well destination plate" do
           should "return a String object" do
             assert_kind_of String, Generator.mapping(@data_object,  13)
           end
