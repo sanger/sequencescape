@@ -43,7 +43,7 @@ class CarrierwaveData < ActiveRecord::Migration
       StudyReport.all.each do |r|
         say "Migrating study report: #{r.id}"
         # DbFile.create!(:data => r.report_file, :owner_type => "StudyReport", :owner_id => r.id)
-        DbFileStorage.store(r.report_file, r.id, "StudyReport")
+        DbFileStorage.store(r.report_file, r.id, "StudyReport") unless r.report_file.nil?
         r.report_filename="#{r.id}_progress_report.csv"
         r.content_type="text/csv"
         r.save
