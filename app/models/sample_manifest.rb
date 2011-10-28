@@ -85,10 +85,6 @@ class SampleManifest < ActiveRecord::Base
      Document.first(:conditions => ["documentable_id = ? AND documentable_extended = ?", id, 'generated'])
   end
    
-   # #  Mount Carrierwave on report field
-   # mount_uploader :uploaded, PolymorphicUploader, :mount# _on => "uploaded_filename"
-   #    mount_uploader :generated, PolymorphicUploader, :mount_on => "generated_filename"
-   
   class_inheritable_accessor :spreadsheet_offset
   class_inheritable_accessor :spreadsheet_header_row
   self.spreadsheet_offset = 9
