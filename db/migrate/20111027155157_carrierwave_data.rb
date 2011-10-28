@@ -51,16 +51,20 @@ class CarrierwaveData < ActiveRecord::Migration
    
       SampleManifest.all.each do |s| 
         say "Migrating sample manifest: #{s.id}"
-        uploaded = Tempfile.new("sm-uploaded-#{s.id}.csv")
-        File.open(uploaded.path, 'wb') do |f|
-          f.write s.uploaded_file
+        unless s.uploaded_file.nil?
+          uploaded = Tempfile.new("sm-uploaded-#{s.id}.csv")
+          File.open(uploaded.path, 'wb') do |f|
+            f.write s.uploaded_file
+          end
+          Document.create!(:uploaded_data => uploaded,  :documentable_id => s.id, :documentable_type => "SampleManifest", :documentable_extended => "uploaded" )
         end
-        generated = Tempfile.new("sm-generated-#{s.id}.xls")
-        File.open(generated.path, 'wb') do |f|
-          f.write s.generated_file
+        unless s.generated_file.nil?
+          generated = Tempfile.new("sm-generated-#{s.id}.xls")
+          File.open(generated.path, 'wb') do |f|
+            f.write s.generated_file
+          end
+          Document.create!(:uploaded_data => generated, :documentable_id => s.id, :documentable_type => "SampleManifest", :documentable_extended => "generated")
         end
-        Document.create!(:uploaded_data => uploaded,  :documentable_id => s.id, :documentable_type => "SampleManifest", :documentable_extended => "uploaded" )
-        Document.create!(:uploaded_data => generated, :documentable_id => s.id, :documentable_type => "SampleManifest", :documentable_extended => "generated")
         s.generated_filename="#{s.id}_generated.xls" #This is just so carrierwave thinks there is a file
         s.uploaded_filename="#{s.id}_uploaded.csv" #This is just so carrierwave thinks there is a file
       end
@@ -69,7 +73,7 @@ class CarrierwaveData < ActiveRecord::Migration
        # Create files from existing plate volume data
       PlateVolume.all.each do |p|
         say "Migrating plate volume: #{p.id}"
-        DbFileStorage.store(p.uploaded_file, p.id, "PlateVolume")
+        DbFileStorage.store(p.uploaded_file, p.id, "PlateVolume") unless p.uploaded_file.nil?
         # DbFile.create!(:data => p.uploaded_file, :owner => p)
        #  p.save
       end
