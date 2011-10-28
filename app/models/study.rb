@@ -527,6 +527,8 @@ class Study < ActiveRecord::Base
     case study_from.affiliated_with?(object)
     when true
       case object
+      when SpikedBuffer
+        nil
       when Aliquot
         object.sample == sample ? object : nil
       else
@@ -553,7 +555,6 @@ class Study < ActiveRecord::Base
         :"aliquot::receptacle" => :aliquots,
         :asset      => [ :requests, :parents, :children ],
         :well       => :plate,
-        :spikedbuffer => :skip_super,
         &helper
     )
 
