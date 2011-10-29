@@ -205,7 +205,6 @@ class RequestTest < ActiveSupport::TestCase
           end
 
           should 'to fail' do
-            # @request.expects(:send_notification_email).returns(true)
             @request.state = 'started'
             @request.fail!
           end
@@ -257,7 +256,6 @@ class RequestTest < ActiveSupport::TestCase
 
       context "when failed" do
         setup do
-          # @request.expects(:send_notification_email).returns(true)
           @request.state = "started"
           @request.fail!
         end

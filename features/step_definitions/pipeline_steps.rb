@@ -75,6 +75,16 @@ When /^I check request "(\d+)" for pipeline "([^"]+)"/ do |request_number, pipel
   check("request_#{request.id}")
 end
 
+Then /^the requests from "([^\"]+)" batches should not be in the inbox$/ do |name|
+  pipeline = Pipeline.find_by_name(name) or raise StandardError, "Cannot find pipeline #{name.inspect}"
+  raise StandardError, "There are no batches in #{name.inspect}" if pipeline.batches.empty?
+  pipeline.batches.each do |batch|
+    batch.requests.each do |request|
+      assert page.has_no_xpath?("//*[@id='request_#{request.id}']")
+    end
+  end
+end
+
 When /^I check request_group "(\d+)" for pipeline "([^"]+)"/ do |request_number, pipeline_name|
   #TODO find the request checkboxes in the current page (by name "request_... ") so we don't need
   # do give the pipelin name
