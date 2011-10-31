@@ -111,6 +111,10 @@ Feature: The XML for the sequencescape API
             <value>standard</value>
           </descriptor>
           <descriptor>
+            <name>Number of gigabases per sample (minimum 0.15)</name>
+            <value></value>
+          </descriptor>
+          <descriptor>
             <name>Abstract</name>
             <value></value>
           </descriptor>
