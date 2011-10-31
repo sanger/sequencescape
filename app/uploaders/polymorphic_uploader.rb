@@ -99,13 +99,8 @@ module CarrierWave
 end # CarrierWave
 class PolymorphicUploader < CarrierWave::Uploader::Base
   
-  # Temporary fix
-  ensure_multipart_form = false
-  
   def initialize(*args, &block)
     super
-    # puts "*************POLYMORPHIC UPLOADER"
-    #    puts args.inspect
   end
   
   def exists?
@@ -123,7 +118,7 @@ class PolymorphicUploader < CarrierWave::Uploader::Base
   before :store, :remember_cache_id
   after :store, :delete_tmp_dir
 
-  # store! nil's the cache_id after it finishes so we need to remember it for deletition
+  # store! nils the cache_id after it finishes so we need to remember it for deletion
   def remember_cache_id(new_file)
     @cache_id_was = cache_id
   end

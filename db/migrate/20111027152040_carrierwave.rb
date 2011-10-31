@@ -3,8 +3,9 @@ class Carrierwave < ActiveRecord::Migration
     say "Changing documents table - can now have multiple 1-1 relationships on a model with documents"
     # Documents has extra column for multiple 1-1 relationships
     change_table :documents do |t|
-      t.column :documentable_extended, :string
+      t.column :documentable_extended, :string, :limit => 50
     end
+    change_column :documents, :documentable_type, :string, :limit => 25
 
     say "Making db_files polymorphic"
     change_table :db_files do |t|
