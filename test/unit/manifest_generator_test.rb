@@ -186,15 +186,15 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
           end
         end
         context "with external value set" do
-          ["male","female"].each do |gender|
-            context "to a valid value #{gender}" do
-              setup do
-                @sample.sample_metadata.update_attributes!(:gender => gender.titlecase)
-              end
-              should "return external value" do
-                control = ManifestGenerator.well_sample_gender(@well)
-                assert_equal gender, control
-                assert control.is_a?(String)
+          {
+            'M'       => 'Male',
+            'F'       => 'Female',
+            'unknown' => [ 'not applicable', 'mixed', 'hermaphrodite', nil ]
+          }.each do |expected, genders|
+            Array(genders).each do |gender|
+              should "see #{gender.inspect} as #{expected.inspect}" do
+                @sample.sample_metadata.update_attributes!(:gender => gender)
+                assert_equal(expected, ManifestGenerator.well_sample_gender(@well))
               end
             end
           end
@@ -272,25 +272,25 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
       end
       context "with rows from a real manifest" do
         [["WG0109325-DNA","A1",0,"141865","MIG683233","Homo sapiens","female",13,50,
-          "WG0109325-DNA,A01,0,141865_A01_MIG683233,Homo sapiens,female,,13,50,-,,0,,,,-"],
+          "WG0109325-DNA,A01,0,141865_A01_MIG683233,Homo sapiens,F,,13,50,-,,0,,,,-"],
          ["WG0109326-DNA","G12",0,"141864","MIG683178","Homo sapiens","male",13,50,
-          "WG0109326-DNA,G12,0,141864_G12_MIG683178,Homo sapiens,male,,13,50,-,,0,,,,-"],
+          "WG0109326-DNA,G12,0,141864_G12_MIG683178,Homo sapiens,M,,13,50,-,,0,,,,-"],
          ["WG0110521-DNA","D2",0,"135653","ALSPAC09892966","Homo sapiens","male",13,50,
-          "WG0110521-DNA,D02,0,135653_D02_ALSPAC09892966,Homo sapiens,male,,13,50,-,,0,,,,-"],
+          "WG0110521-DNA,D02,0,135653_D02_ALSPAC09892966,Homo sapiens,M,,13,50,-,,0,,,,-"],
          ["WG0109379-DNA","F1",0,"135649","Exo_2302555","Homo sapiens","female",13,50,
-          "WG0109379-DNA,F01,0,135649_F01_Exo_2302555,Homo sapiens,female,,13,50,-,,0,,,,-"],
+          "WG0109379-DNA,F01,0,135649_F01_Exo_2302555,Homo sapiens,F,,13,50,-,,0,,,,-"],
          ["WG0017826-DNA","C2",0,"124189","MET_MAG954712","Homo sapiens","female",13,50,
-          "WG0017826-DNA,C02,0,124189_C02_MET_MAG954712,Homo sapiens,female,,13,50,-,,0,,,,-"],
+          "WG0017826-DNA,C02,0,124189_C02_MET_MAG954712,Homo sapiens,F,,13,50,-,,0,,,,-"],
          ["WG0017827-DNA","F12",0,"124188","WTCCCT480976","Homo sapiens","female",30,50,
-          "WG0017827-DNA,F12,0,124188_F12_WTCCCT480976,Homo sapiens,female,,30,50,-,,0,,,,-"],
+          "WG0017827-DNA,F12,0,124188_F12_WTCCCT480976,Homo sapiens,F,,30,50,-,,0,,,,-"],
          ["WG0011534-DNA","A10",0,"122849","MET_T2D974341","Homo sapiens","female",30,50,
-          "WG0011534-DNA,A10,0,122849_A10_MET_T2D974341,Homo sapiens,female,,30,50,-,,0,,,,-"],
+          "WG0011534-DNA,A10,0,122849_A10_MET_T2D974341,Homo sapiens,F,,30,50,-,,0,,,,-"],
          ["WG0011534-DNA","E3",0,"122849","MET_T2D974238","Homo sapiens","male",13,50,
-          "WG0011534-DNA,E03,0,122849_E03_MET_T2D974238,Homo sapiens,male,,13,50,-,,0,,,,-"],
+          "WG0011534-DNA,E03,0,122849_E03_MET_T2D974238,Homo sapiens,M,,13,50,-,,0,,,,-"],
          ["WG0017831-DNA","F11",0,"124184","WTCCCT480968","Homo sapiens","male",30,50,
-          "WG0017831-DNA,F11,0,124184_F11_WTCCCT480968,Homo sapiens,male,,30,50,-,,0,,,,-"],
+          "WG0017831-DNA,F11,0,124184_F11_WTCCCT480968,Homo sapiens,M,,30,50,-,,0,,,,-"],
          ["WG0109327-DNA","D6",0,"141863","MIG682626","Homo sapiens","female",13,50,
-          "WG0109327-DNA,D06,0,141863_D06_MIG682626,Homo sapiens,female,,13,50,-,,0,,,,-"]
+          "WG0109327-DNA,D06,0,141863_D06_MIG682626,Homo sapiens,F,,13,50,-,,0,,,,-"]
           ].each do |plate_label,map_description,control,plate_barcode,sample_name,species,gender,volume,concentration,target_row|
           context "for #{plate_label} #{map_description} #{sample_name}" do
             setup do
