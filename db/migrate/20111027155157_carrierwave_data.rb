@@ -1,5 +1,4 @@
-
-  
+# Local class definitions
 class StudyReport < ActiveRecord::Base
   has_many :db_files, :as => :owner, :dependent => :destroy
   #   Mount Carrierwave on report field
@@ -16,9 +15,8 @@ end
 class SampleManifest < ActiveRecord::Base
 end
 
-
-
 class CarrierwaveData < ActiveRecord::Migration
+  # This module is a copy of code in the Polymorphic uploader.
    module DbFileStorage
      def self.store(file, o_id, o_type)
        each_slice(file) do |start, finish|
@@ -65,13 +63,13 @@ class CarrierwaveData < ActiveRecord::Migration
           end
           Document.create!(:uploaded_data => generated, :documentable_id => s.id, :documentable_type => "SampleManifest", :documentable_extended => "generated")
         end
-        s.generated_filename="#{s.id}_generated.xls" #This is just so carrierwave thinks there is a file
-        s.uploaded_filename="#{s.id}_uploaded.csv" #This is just so carrierwave thinks there is a file
+        # Carrierwave needs something in the filename column for it to work
+        s.generated_filename="#{s.id}_generated.xls" 
+        s.uploaded_filename="#{s.id}_uploaded.csv" 
         s.save
       end
       
-       # Plate volumes already have filenames
-       # Create files from existing plate volume data
+      # Create files from existing plate volume data
       PlateVolume.all.each do |p|
         say "Migrating plate volume: #{p.id}"
         DbFileStorage.store(p.uploaded_file, p.id, "PlateVolume") unless p.uploaded_file.nil?
