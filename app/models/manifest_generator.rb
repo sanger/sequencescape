@@ -80,11 +80,15 @@ class ManifestGenerator
 
   def self.well_sample_gender(well)
     check_well_sample_exists(well)
-    gender = well.primary_aliquot.sample.sample_metadata.gender
-    gender = "male" if gender == "M"
-    gender = "female" if gender == "F"
-    gender = "Unknown" if ! ["Male","Female", "male","female"].include?(gender)
-    gender.downcase
+    case gender = well.primary_aliquot.sample.sample_metadata.gender.try(:downcase)
+    when 'male'           then 'M'
+    when 'female'         then 'F'
+    when 'not applicable' then 'unknown'
+    when 'mixed'          then 'unknown'
+    when 'hermaphrodite'  then 'unknown'
+    when nil              then 'unknown'
+    else raise StandardError, "Unknown gender type #{gender.inspect}"
+    end
   end
 
   def self.well_sample_is_control(well)
