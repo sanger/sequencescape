@@ -9,7 +9,7 @@ class Studies::WorkflowsController < ApplicationController
 
     @request_types  = @workflow.request_types.all(:order => "`order` ASC").reject { |r| @total_requests[r].zero? }
 
-    @basic_tabs = ["Summary", "Sample progress", "Assets progress", "Project quotas"]
+    @basic_tabs = ["Summary", "Sample progress", "Project quotas"]
     @summaries = @basic_tabs + @request_types.map(&:name)
   end
   private :setup_tabs
@@ -61,12 +61,6 @@ class Studies::WorkflowsController < ApplicationController
         @page_elements  = @study.samples.paginate(page_params)
         sample_ids      = @page_elements.map(&:id)
         render :partial => "sample_progress"
-      when "Assets progress"
-        @page_elements= @study.assets.paginate(page_params)
-        asset_ids = @page_elements.map { |e| e.id }
-
-        @cache.merge!(:passed => @passed_asset_request, :failed => @failed_asset_request)
-        render :partial => "asset_progress"
       when "Summary"
         render :partial => "summary"
       when "Project quotas"
@@ -74,11 +68,7 @@ class Studies::WorkflowsController < ApplicationController
         render :partial => "shared/project_listing_quotas"
       else
         @request_type = @request_types[@summary - @basic_tabs.size]
-
-        @assets_to_filter = @study.assets.all(:include => { :requests => :request_type })
-        @assets_to_detail = @assets_to_filter.select do |asset|
-          ! asset.requests.detect{ |r| r.request_type == @request_type }.nil?
-        end
+        @assets_to_detail = @study.requests.request_type(@request_type).with_asset.all(:include =>:asset).map(&:asset)
 
         unless @assets_to_detail.empty?
           render :partial => "summary_for_request_type"

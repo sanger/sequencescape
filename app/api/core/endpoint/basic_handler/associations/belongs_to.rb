@@ -4,6 +4,7 @@ module Core::Endpoint::BasicHandler::Associations::BelongsTo
 
     def initialize(name, options, &block)
       @name, @options = name, options
+      @throughs = Array(options[:through])
     end
 
     def as_json(options = {})
@@ -17,7 +18,7 @@ module Core::Endpoint::BasicHandler::Associations::BelongsTo
     end
 
     def endpoint_details(options)
-      object = options[:target].send(@name)
+      object = @throughs.inject(options[:target]) { |t,s| t.send(s) }.send(@name)
       return { @options[:json].to_s => nil } if object.nil?
       yield(endpoint_for_object(object), object)
     end

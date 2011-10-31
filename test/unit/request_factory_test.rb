@@ -6,7 +6,8 @@ class RequestFactoryTest < ActiveSupport::TestCase
       setup do
         @project = Factory(:project)
         @project.project_metadata.update_attributes!(:budget_division => BudgetDivision.create!(:name => 'Test'))
-        @request = Factory(:request_type).requests.create!(:project => @project, :asset => Factory(:well), :target_asset => Factory(:well))
+        @order = Factory(:order, :project => @project)
+        @request = Factory(:request, :request_type => Factory(:request_type), :project => @project, :asset => Factory(:well), :target_asset => Factory(:well))
       end
 
       context 'without quotas' do
@@ -35,7 +36,7 @@ class RequestFactoryTest < ActiveSupport::TestCase
 
         context 'when has enough quota' do
           setup do
-            @project.quotas.create!(:request_type => @request.request_type, :limit => 2)
+            @project.quota_for!(@request.request_type).update_attributes!(:limit => 2, :preordered_count =>0)
             @request.reload
           end
 
@@ -45,17 +46,17 @@ class RequestFactoryTest < ActiveSupport::TestCase
 
           should 'fail if we request more than available' do
             RequestFactory.copy_request(@request)
-            assert_raises(QuotaException) { RequestFactory.copy_request(@request) }
+            assert_raises(Quota::Error) { RequestFactory.copy_request(@request) }
           end
         end
 
         context 'when insufficient quota' do
           setup do
-            @project.quotas.destroy_all
+            @project.quota_for!(@request.request_type).update_attributes!(:limit => 1, :preordered_count =>0)
           end
 
           should 'raise an exception' do
-            assert_raises(QuotaException) { RequestFactory.copy_request(@request) }
+            assert_raises(Quota::Error) { RequestFactory.copy_request(@request) }
           end
         end
       end

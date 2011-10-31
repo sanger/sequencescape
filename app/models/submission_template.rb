@@ -13,7 +13,16 @@ class SubmissionTemplate < ActiveRecord::Base
   acts_as_audited :on => [:destroy, :update]
 
   def create!(attributes)
-    self.new_submission(attributes).tap { |submission| submission.save! }
+    self.new_submission(attributes).tap do |submission|
+      yield(submission) if block_given?
+      submission.save! 
+    end
+  end
+
+  def create_with_submission!(attributes)
+    self.create!(attributes) do |order|
+      order.create_submission
+    end
   end
 
   # create a new submission of the good subclass and with pre-set attributes
@@ -49,7 +58,10 @@ class SubmissionTemplate < ActiveRecord::Base
   end
 
   def submission_class
-    submission_class_name.constantize
+    klass = submission_class_name.constantize
+    #TODO[mb14] Hack. This is to avoid to have to rename it in database or seen 
+    #The hack is not needed for subclasses as they inherits from Order
+    klass == Submission ? Order  : klass
   end
 
   private 

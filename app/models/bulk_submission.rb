@@ -171,8 +171,7 @@ class BulkSubmission < ActiveRecord::Base
             lane_request_type = request_types.detect { |t| t.target_asset_type == 'Lane' or t.name =~ /\ssequencing$/ }
             attributes[:request_options][:multiplier] = { lane_request_type.id => number_of_lanes } if lane_request_type.present?
 
-            submission = template.create!(attributes)
-            submission.built!
+            submission = Submission.build!(attributes.merge(:template => template))
             
             # Collect the IDs of successful submissions
             @submissions.push submission.id

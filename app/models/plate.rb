@@ -54,6 +54,13 @@ class Plate < Asset
 
     iteration_of_plate['iteration'].to_i
   end
+  def study
+    wells.first.try(:study)
+  end
+
+  def studies
+    wells.map(&:study)
+  end
 
   contains :wells do #, :order => '`assets`.map_id ASC' do
     def located_at(location)

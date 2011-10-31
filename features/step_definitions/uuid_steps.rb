@@ -93,6 +93,7 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
   'sample manifest',
 
   'submission',
+  'order',
 
   'batch',
 

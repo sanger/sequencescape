@@ -134,6 +134,10 @@ Factory.define :project do |p|
   p.after_build { |project| project.project_metadata = Factory(:project_metadata, :project => project) }
 end
 
+Factory.define :project_with_order , :parent => :project do |p|
+  p.after_build { |project| project.orders = [Factory :order, :project => project] }
+end
+
 Factory.define :study_sample do |ps|
   ps.study       {|study| study.association(:study)}
   ps.sample      {|sample| sample.association(:sample)}
@@ -163,28 +167,79 @@ Factory.define :request_metadata, :class => Request::Metadata do |m|
   m.read_length 76
 end
 
-Factory.define :request_without_assets, :class => Request do |request|
+Factory.define :request_metadata_for_library_manufacture, :parent => :request_metadata do |m|
+  m.fragment_size_required_from   1
+  m.fragment_size_required_to     20
+  m.library_type                  "Standard"
+end
+
+# definef request_metadata_for ... factory for request types needing default metadata fragment size
+Request::LibraryManufacture.included_in_classes.each do |klass|
+  factory_name =  :"request_metadata_for_#{klass.name.underscore}"
+  next if Factory.factories[factory_name]
+  Factory.define factory_name , :parent => :request_metadata_for_library_manufacture  do
+  end
+end
+
+Factory.define :request_metadata_for_sequencing, :parent => :request_metadata do |m|
+  m.fragment_size_required_from   1
+  m.fragment_size_required_to     21
+end
+
+# set default  metadata factories to every request types which have been defined yet
+RequestType.all.each do |rt|
+  factory_name =  :"request_metadata_for_#{rt.request_class_name.underscore}"
+  next if Factory.factories[factory_name]
+  case factory_name.to_s
+  when  /sequencing/
+    Factory.define factory_name , :parent => :request_metadata_for_sequencing do
+    end
+  else
+    Factory.define factory_name , :parent => :request_metadata do
+    end
+  end
+end
+
+Factory.define :request_with_submission, :class => Request do |request|
+  request.request_type      {|rt|         rt.association(:request_type)}
+  # We use after_create so this is called after the after_build of derived class
+  # That leave a chance to children factory to build asset beforehand
+  request.after_build do |request|
+    request.submission = Factory::submission(:workflow => request.workflow,
+                                          :study => request.initial_study,
+                                          :project => request.initial_project,
+                                          :request_types => [request.request_type.try(:id)].compact.map(&:to_s),
+                                          :user => request.user,
+                                          :assets => [request.asset].compact
+                                          ) unless request.submission
+  end
+end
+
+#Factory.define :request_without_assets, :class => Request do |request|
+Factory.define :request_without_assets, :parent => :request_with_submission do |request|
   request.item              {|item|       item.association(:item)}
   request.project           {|pr|         pr.association(:project)}
   request.request_type      {|rt|         rt.association(:request_type)}
   request.state             'pending'     
   request.study             {|study|      study.association(:study)}
-  request.submission        {|submission| submission.association(:submission)}
   request.user              {|user|       user.association(:user)}
   request.workflow          {|workflow|   workflow.association(:submission_workflow)}
 
-  request.after_build { |request| request.request_metadata = Factory(:request_metadata, :request => request) }
+  request.after_build do |request|
+    next unless request.request_type
+    request.request_metadata = Factory(:"request_metadata_for_#{request.request_type.request_class_name.underscore}", :request => request)
+    request.sti_type =  request.request_type.request_class_name
+  end
 end
 
 Factory.define :request, :parent => :request_without_assets do |r|
-  # The sample should be setup correctly and the assets should be valid
+  # the sample should be setup correctly and the assets should be valid
   r.after_build do |request|
     request.asset        ||= Factory(:sample_tube)
     request.target_asset ||= Factory(:library_tube)
   end
 end
 
-# A request that has an input asset with something in it, and an empty start asset.
 Factory.define :request_suitable_for_starting, :parent => :request_without_assets do |request|
   request.after_build do |request|
     request.asset        ||= Factory(:sample_tube)
@@ -199,41 +254,29 @@ Factory.define :request_without_item, :class => "Request" do |r|
   r.request_type    {|request_type| request_type.association(:request_type)}
   r.workflow        {|workflow| workflow.association(:submission_workflow)}
   r.state           'pending'
-  r.submission      {|submission| submission.association(:submission)}
+  r.after_build { |request| request.submission = Factory::submission(:study => request.initial_study,
+                                                                           :project => request.initial_project,
+                                                                           :user => request.user,
+                                                                           :request_types => [request.request_type.id.to_s],
+                                                                           :workflow => request.workflow
+
+                                                                          )
+  }
 end
 
-Factory.define :request_without_project, :class => "Request" do |r|
+Factory.define :request_without_project, :class => Request do |r|
   r.study         {|pr| pr.association(:study)}
   r.item            {|item| item.association(:item)}
   r.user            {|user|     user.association(:user)}
   r.request_type    {|request_type| request_type.association(:request_type)}
   r.workflow        {|workflow| workflow.association(:submission_workflow)}
   r.state           'pending'
-  r.submission      {|submission| submission.association(:submission)}
 end
 
-Factory.define :failed_request, :class => Request do |r|
-  r.user            {|user|     user.association(:user)}
-  r.request_type    {|request_type| request_type.association(:request_type)}
-  r.state           'failed'
+%w(failed passed pending cancelled).each do |state|
+Factory.define :"#{state}_request", :parent =>  :request do |r|
+  r.after_create { |request| request.update_attributes!(:state =>state) }
 end
-
-Factory.define :passed_request, :class => Request do |r|
-  r.user            {|user|     user.association(:user)}
-  r.request_type    {|request_type| request_type.association(:request_type)}
-  r.state           'passed'
-end
-
-Factory.define :pending_request, :class => Request do |r|
-  r.user            {|user|     user.association(:user)}
-  r.request_type    {|request_type| request_type.association(:request_type)}
-  r.state           'pending'
-end
-
-Factory.define :cancelled_request, :class => Request do |r|
-  r.user            {|user|     user.association(:user)}
-  r.request_type    {|request_type| request_type.association(:request_type)}
-  r.state           'cancelled'
 end
 
 
@@ -244,6 +287,7 @@ Factory.define :request_type do |rt|
   rt.request_class  Request
   rt.order          1
   rt.workflow    {|workflow| workflow.association(:submission_workflow)}
+  rt.initial_state   "pending"
 end
 
 Factory.define :library_creation_request_type, :class => RequestType do |rt|

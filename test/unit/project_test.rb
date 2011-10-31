@@ -52,24 +52,25 @@ class ProjectTest < ActiveSupport::TestCase
         @quota           = Factory :project_quota, :project => @project, :request_type => @request_type, :limit => 5
         @quota_2         = Factory :project_quota, :project => @project, :request_type => @request_type_2, :limit => 7
         @quota_3         = Factory :project_quota, :project => @project, :request_type => @request_type_3, :limit => 14
+        @submission       = Factory::submission :project => @project
         # Failed
-        @project.requests << (Factory :cancelled_request, :project => @project, :request_type => @request_type)
-        @project.requests << (Factory :cancelled_request, :project => @project, :request_type => @request_type)
-        @project.requests << (Factory :cancelled_request, :project => @project, :request_type => @request_type)
+        Factory :cancelled_request, :project => @project, :request_type => @request_type, :submission => @submission
+        Factory :cancelled_request, :project => @project, :request_type => @request_type, :submission => @submission
+        Factory :cancelled_request, :project => @project, :request_type => @request_type, :submission => @submission
 
         # Failed
-        @project.requests << (Factory :failed_request, :project => @project, :request_type => @request_type)
+        Factory :failed_request, :project => @project, :request_type => @request_type, :submission => @submission
         # Passed
-        @project.requests << (Factory :passed_request, :project => @project, :request_type => @request_type)
-        @project.requests << (Factory :passed_request, :project => @project, :request_type => @request_type)
-        @project.requests << (Factory :passed_request, :project => @project, :request_type => @request_type)
-        @project.requests << (Factory :passed_request, :project => @project, :request_type => @request_type_2)
-        @project.requests << (Factory :passed_request, :project => @project, :request_type => @request_type_3)
-        @project.requests << (Factory :passed_request, :project => @project, :request_type => @request_type_3)
+        Factory :passed_request, :project => @project, :request_type => @request_type, :submission => @submission
+        Factory :passed_request, :project => @project, :request_type => @request_type, :submission => @submission
+        Factory :passed_request, :project => @project, :request_type => @request_type, :submission => @submission
+        Factory :passed_request, :project => @project, :request_type => @request_type_2, :submission => @submission
+        Factory :passed_request, :project => @project, :request_type => @request_type_3, :submission => @submission
+        Factory :passed_request, :project => @project, :request_type => @request_type_3, :submission => @submission
         # Pending
-        @project.requests << (Factory :pending_request, :project => @project, :request_type => @request_type)
-        @project.requests << (Factory :pending_request, :project => @project, :request_type => @request_type_3)
-        @project.save!
+        Factory :pending_request, :project => @project, :request_type => @request_type, :submission => @submission
+        Factory :pending_request, :project => @project, :request_type => @request_type_3, :submission => @submission
+        @submission.save!
       end
 
       should "Be valid" do
@@ -77,23 +78,23 @@ class ProjectTest < ActiveSupport::TestCase
       end
 
       should "Calculate correctly" do
-        assert_equal 3, @project.cancelled_requests(@request_type)
-        assert_equal 4, @project.completed_requests(@request_type)
-        assert_equal 1, @project.completed_requests(@request_type_2)
-        assert_equal 2, @project.completed_requests(@request_type_3)
-        assert_equal 3, @project.passed_requests(@request_type)
-        assert_equal 1, @project.failed_requests(@request_type)
-        assert_equal 1, @project.pending_requests(@request_type)
-        assert_equal 0, @project.pending_requests(@request_type_2)
-        assert_equal 1, @project.pending_requests(@request_type_3)
-        assert_equal 8, @project.total_requests(@request_type)
+        assert_equal 3, @submission.cancelled_requests(@request_type)
+        assert_equal 4, @submission.completed_requests(@request_type)
+        assert_equal 1, @submission.completed_requests(@request_type_2)
+        assert_equal 2, @submission.completed_requests(@request_type_3)
+        assert_equal 3, @submission.passed_requests(@request_type)
+        assert_equal 1, @submission.failed_requests(@request_type)
+        assert_equal 1, @submission.pending_requests(@request_type)
+        assert_equal 0, @submission.pending_requests(@request_type_2)
+        assert_equal 1, @submission.pending_requests(@request_type_3)
+        assert_equal 8, @submission.total_requests(@request_type)
       end
 
       context "#Quotas" do
         should "Calculate correctly" do
           assert_equal 4, @project.used_quota(@request_type) # Include pending
-          assert_equal 3, @project.passed_requests(@request_type)
-          assert_equal 1, @project.pending_requests(@request_type)
+          assert_equal 3, @submission.passed_requests(@request_type)
+          assert_equal 1, @submission.pending_requests(@request_type)
           assert_equal 1, @project.projected_remaining_quota(@request_type)
           assert_equal 5, @project.total_quota(@request_type)
           assert_equal 5, @project.quota_limit_for(@request_type)

@@ -9,14 +9,14 @@
       <thead>
         <tr>
           <th>ID</th>
-          <th>Study</th>
+          <th>Name</th>
           <th>Details</th>
         </tr>
       </thead>
       <% @these_subs.each do |submission| %>
         <tr>
-          <td><%= link_to submission.id, study_workflow_submission_path(submission.study_id, submission.workflow_id, submission.id) %></td>
-          <td><%= link_to @study_names[submission.study_id], study_path(submission.study_id) %>
+          <td><%= link_to submission.id, submission_path(submission.id) %></td>
+          <td><%= submission.name %>
           <td><%= @sub_details[submission.id] %></td>
         </tr>
       <% end %>

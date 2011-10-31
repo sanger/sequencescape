@@ -60,16 +60,25 @@ class Study < ActiveRecord::Base
   belongs_to :user
 
   has_many :study_samples #, :group => 'study_id, sample_id', :conditions => 'sample_id IS NOT NULL'
-  has_many :submissions
+  has_many :orders
+  has_many :submissions, :through => :orders
   has_many :samples, :through => :study_samples
   has_many :batches
-  has_many :requests
+  
+  # requests read only so no need to use has_many
+  # this return a proper namescope which can be nicely chained
+  def requests(reload=nil)
+    Request.for_study(self)
+  end
   has_many :asset_groups
   has_many :study_reports
 
   #load all the associated requests with attemps and request type
   has_many :eager_items , :class_name => "Item", :include => [{:requests => [:request_type]}], :through => :requests, :source => :item # , :uniq => true
-  has_many :assets , :class_name => "Asset", :through => :requests, :source => :asset, :uniq => true 
+
+  has_many :aliquots
+  has_many :assets_through_aliquots, :class_name => "Asset", :through => :aliquots, :source => :receptacle, :uniq => :true
+  has_many :assets_through_requests, :class_name => "Asset", :through => :requests, :source => :asset, :uniq => :true
 
   has_many :items , :through => :requests, :uniq => true
 
@@ -79,8 +88,11 @@ class Study < ActiveRecord::Base
   # this reduces the requests for this study down to unique projects, and then
   # says use those unique projects.  That knocks times down to 0.15s for the same
   # studies!
-  has_many :project_requests, :class_name => 'Request', :group => 'study_id, project_id', :conditions => 'project_id IS NOT NULL'
-  has_many :projects, :class_name => "Project", :through => :project_requests, :source => :project, :uniq => true
+  #has_many :project_requests, :class_name => 'Request', :group => 'study_id, project_id', :conditions => 'project_id IS NOT NULL'
+  #has_many :projects, :class_name => "Project", :through => :project_requests, :source => :initial_project, :uniq => true
+
+  #New version
+  has_many :projects,:through => :orders, :uniq => true
 
   has_many :comments, :as => :commentable
   has_many :events, :as => :eventful
@@ -317,9 +329,12 @@ class Study < ActiveRecord::Base
   end
 
   def submissions_for_workflow(workflow)
-    self.submissions.select {|s| s.workflow.id == workflow.id}
+    orders_for_workflow(workflow).map(&:submission).uniq
   end
 
+  def orders_for_workflow(workflow)
+    self.orders.select {|s| s.workflow.id == workflow.id}
+  end
   # Yields information on the state of all request types in a convenient fashion for displaying in a table.
   def request_progress(&block)
     yield(self.requests.progress_statistics)
@@ -348,11 +363,8 @@ class Study < ActiveRecord::Base
   end
 
   def unprocessed_submissions?
-    unless study.submissions.unprocessed.all.size == 0
-      true
-    else
-      false
-    end
+    #TODO[mb14] optimize if needed
+    study.orders.any? { |o| o.submission.nil?  || o.submission.unprocessed?}
   end
   ### TODO - Everything below should be treated as legacy until cleaned
 
@@ -590,7 +602,13 @@ class Study < ActiveRecord::Base
     # we don't check if the object is related to study from. because this can change 
     # if the object is  related through and we have just changed the association
     # (example asset and via Request)
-    if object.respond_to?(:study=)
+    case
+    when object.is_a?(Request)
+      # We shouldn't do study= because it's deprecated
+      # However we need to update the initial_study
+      # to do as if it was set this way initialy
+      object.initial_study = self
+    when object.respond_to?(:study=)
       object.study = self
     end
 

@@ -3,7 +3,7 @@ require "test_helper"
 class RequestTest < ActiveSupport::TestCase
   include AASM
   context "A Request" do
-    should_belong_to :study, :user, :request_type, :item
+    should_belong_to :user, :request_type, :item
     should_have_many :events
     should_have_instance_methods :pending?, :start, :started?, :fail, :failed?, :pass, :passed?, :reset, :workflow_id
 
@@ -13,7 +13,8 @@ class RequestTest < ActiveSupport::TestCase
 
         @genotyping_request_type = Factory :request_type, :name => "genotyping"
         @cherrypick_request_type = Factory :request_type, :name => "cherrypick", :target_asset_type => nil
-        @submission  = Factory :submission, :request_types => [@cherrypick_request_type, @genotyping_request_type].map(&:id)
+        #@submission  = Factory(:order_with_submission, :request_types => [@cherrypick_request_type, @genotyping_request_type].map(&:id)).submission
+        @submission  = Factory::submission(:request_types => [@cherrypick_request_type, @genotyping_request_type].map(&:id))
         @item = Factory :item, :submission => @submission
         
         @genotype_pipeline = Factory :pipeline, :name =>"genotyping pipeline", :request_type => @genotyping_request_type

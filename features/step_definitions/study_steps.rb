@@ -316,13 +316,17 @@ end
 Given /^asset with barcode "([^"]*)" belongs to study "([^"]*)"$/ do |raw_barcode, study_name|
   study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   asset = Asset.find_from_machine_barcode(raw_barcode) or raise StandardError, "Cannot find asset with machine barcode #{raw_barcode.inspect}"
-  RequestFactory.create_assets_requests([asset.id], study.id)
+  asset_ids = [asset.id]
+  asset_ids += asset.well_ids if asset.respond_to?(:wells)
+  RequestFactory.create_assets_requests(asset_ids, study.id)
 end
 
 Given /^the asset "([^\"]+)" belongs to study "([^\"]+)"$/ do |asset_name, study_name|
   study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   asset = Asset.find_by_name(asset_name) or raise StandardError, "Cannot find asset #{asset_name.inspect}"
-  RequestFactory.create_assets_requests([asset.id], study.id)
+  asset_ids = [asset.id]
+  asset_ids += asset.well_ids if asset.respond_to?(:wells)
+  RequestFactory.create_assets_requests(asset_ids, study.id)
 end
 
 Then /^abbreviation for Study "([^"]*)" should be "([^"]*)"$/ do |study_name, abbreviation_regex|
@@ -337,7 +341,8 @@ end
 
 Given /^the study "([^\"]+)" has a (library tube) called "([^\"]+)"$/ do |study_name, asset_model, asset_name|
   study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
-  study.assets << Factory(asset_model.gsub(/\s+/, '_').to_sym, :name => asset_name)
+  asset = Factory(asset_model.gsub(/\s+/, '_').to_sym, :name => asset_name)
+  Then %Q(the asset "#{asset_name}" belongs to study "#{study_name}")
 end
 
 Then /^the help text for "([^"]*)" should contain:$/ do |label_name, expected_tooltip_text|

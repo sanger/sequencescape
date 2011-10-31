@@ -4,7 +4,7 @@ class Io::Request < ::Core::Io::Base
   set_eager_loading do |model|
     model.
       include_request_type.include_request_metadata.
-      include_study.include_project.include_submission.
+      include_submission.
       include_source_asset.include_target_asset
   end
 
@@ -15,9 +15,6 @@ class Io::Request < ::Core::Io::Base
                                            state <=> state
 
                                  submission.uuid  => submission.uuid
-
-                                      study.name  => study.name
-                                    project.name  => project.name
 
                                            asset <=> source_asset
                          asset.sti_type.tableize  => source_asset.type

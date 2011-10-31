@@ -57,7 +57,8 @@ module AssetsHelper
   def current_user_can_request_additional_sequencing_on?(asset)
     return false unless asset.is_sequenceable?                      # Asset must be sequenceable ...
     return true if current_user.is_administrator?                   # ... user could be an administrator ...
-    asset.studies.any? { |study| current_user.is_manager?(study) }  # ... or a manager of any study related to the asset
+    return true if current_user.is_manager?
+    #asset.studies.any? { |study| current_user.is_manager?(study) }  # ... or a manager of any study related to the asset
   end
 
   # Returns true if the current user can request an additional library on the asset, otherwise false
@@ -76,7 +77,7 @@ module AssetsHelper
 
     # Bit of a hack in that we want to provide the same interface as would be seen if this were an
     # ActiveRecord model rather than an array.
-    asset.studies.select { |study| current_user.is_manager?(study) }.tap do |results|
+    Study.all.select { |study| current_user.is_manager?(study) }.tap do |results|
       def results.sorted_by_name
         sort_by(&:name)
       end
