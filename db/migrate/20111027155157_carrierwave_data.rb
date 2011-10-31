@@ -67,6 +67,7 @@ class CarrierwaveData < ActiveRecord::Migration
         end
         s.generated_filename="#{s.id}_generated.xls" #This is just so carrierwave thinks there is a file
         s.uploaded_filename="#{s.id}_uploaded.csv" #This is just so carrierwave thinks there is a file
+        s.save
       end
       
        # Plate volumes already have filenames
@@ -74,7 +75,6 @@ class CarrierwaveData < ActiveRecord::Migration
       PlateVolume.all.each do |p|
         say "Migrating plate volume: #{p.id}"
         DbFileStorage.store(p.uploaded_file, p.id, "PlateVolume") unless p.uploaded_file.nil?
-        # DbFile.create!(:data => p.uploaded_file, :owner => p)
        #  p.save
       end
     end
