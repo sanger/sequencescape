@@ -53,18 +53,18 @@ class AssetTest < ActiveSupport::TestCase
       @study_to = Factory :study
       
       @sample = Factory :sample
-      @sample_tube  = Factory(:empty_sample_tube).tap  { |sample_tube|  sample_tube.aliquots.create!(:sample => @sample)  }
-      @library_tube = Factory(:empty_library_tube).tap { |library_tube| library_tube.aliquots.create!(:sample => @sample) }
+      @sample_tube  = Factory(:empty_sample_tube).tap  { |sample_tube|  sample_tube.aliquots.create!(:sample => @sample, :study => @study)  }
+      @library_tube = Factory(:empty_library_tube).tap { |library_tube| library_tube.aliquots.create!(:sample => @sample, :study => @study) }
 
       @sample_2 = Factory :sample
-      @sample_tube_2  = Factory(:empty_sample_tube).tap  { |sample_tube|  sample_tube.aliquots.create!(:sample => @sample_2)  }
-      @library_tube_2 = Factory(:empty_library_tube).tap { |library_tube| library_tube.aliquots.create!(:sample => @sample_2) }
+      @sample_tube_2  = Factory(:empty_sample_tube).tap  { |sample_tube|  sample_tube.aliquots.create!(:sample => @sample_2, :study => @study, :tag => Factory(:tag))  }
+      @library_tube_2 = Factory(:empty_library_tube).tap { |library_tube| library_tube.aliquots.create!(:sample => @sample_2, :study => @study) }
 
       @multiplex_tube = Factory :multiplexed_library_tube
       @lane = Factory :lane, :sti_type => "Lane"
 
       @study_sample = Factory :study_sample, :study => @study, :sample => @sample
-      @study_sample = Factory :study_sample, :study => @study_2, :sample => @sample_2
+      @study_sample = Factory :study_sample, :study => @study, :sample => @sample_2
 
       @asset_group_to         = Factory :asset_group, :study => @study
       @asset_group_asset_to   = Factory :asset_group_asset, :asset =>  @sample_tube, :asset_group => @asset_group_to
@@ -77,7 +77,7 @@ class AssetTest < ActiveSupport::TestCase
       @asset_link = Factory :asset_link, :ancestor => @library_tube_2, :descendant => @multiplex_tube
       @asset_link = Factory :asset_link, :ancestor => @multiplex_tube, :descendant => @lane
 
-      @submission   = Factory :submission, :study => @study
+      @submission   = Factory::submission :study => @study
       @request_type = Factory :request_type
       @workflow     = Factory :submission_workflow
       
@@ -87,6 +87,11 @@ class AssetTest < ActiveSupport::TestCase
       @request_multiplex   = Factory :request, :study => @study, :request_type => @request_type, :asset => @multiplex_tube, :submission => @submission, :workflow => @workflow
       @request_lane        = Factory :request, :study => @study, :request_type => @request_type, :asset => @lane, :submission => @submission, :workflow => @workflow
 
+
+      #Create TransfertRequest to create 'missing' aliquots
+      TransferRequest.create!(:asset => @sample_tube, :target_asset => @multiplex_tube)
+      TransferRequest.create!(:asset => @sample_tube_2, :target_asset => @multiplex_tube)
+      TransferRequest.create!(:asset => @multiplex_tube, :target_asset => @lane)
       @new_assets_name = ""
 
       @sample_to = Factory :sample
@@ -138,9 +143,9 @@ class AssetTest < ActiveSupport::TestCase
       @study_to = Factory :study
 
       @sample = Factory :sample
-      @sample_tube    = Factory(:empty_sample_tube).tap  { |sample_tube|  sample_tube.aliquots.create!(:sample => @sample) }
-      @library_tube   = Factory(:empty_library_tube).tap { |library_tube| library_tube.aliquots.create!(:sample => @sample) }
-      @library_tube_2 = Factory(:empty_library_tube).tap { |library_tube| library_tube.aliquots.create!(:sample => @sample) }
+      @sample_tube    = Factory(:empty_sample_tube).tap  { |sample_tube|  sample_tube.aliquots.create!(:sample => @sample, :study => @study) }
+      @library_tube   = Factory(:empty_library_tube).tap { |library_tube| library_tube.aliquots.create!(:sample => @sample, :study => @study) }
+      @library_tube_2 = Factory(:empty_library_tube).tap { |library_tube| library_tube.aliquots.create!(:sample => @sample, :study => @study) }
       @multiplex_tube = Factory(:multiplexed_library_tube)
 
       @study_sample = Factory :study_sample, :study => @study, :sample => @sample
@@ -155,7 +160,7 @@ class AssetTest < ActiveSupport::TestCase
       @asset_link = Factory :asset_link, :ancestor => @library_tube_2, :descendant => @multiplex_tube
 
 
-      @submission   = Factory :submission, :study => @study
+      @submission   = Factory::submission :study => @study
       @request_type = Factory :request_type
       @workflow     = Factory :submission_workflow
 
@@ -176,10 +181,10 @@ class AssetTest < ActiveSupport::TestCase
       assert_equal true, @result
 
       @request_sampletube.reload
-      assert_equal @request_sampletube.study_id, @study_to.id
+      assert_equal @request_sampletube.study, @study_to
 
       @request_librarytube.reload 
-      assert_equal @request_librarytube.study_id, @study_to.id
+      assert_equal @request_librarytube.study, @study_to
 
       @sample.reload
       assert_not_equal @sample.study_samples.find_all_by_study_id(@study_to.id), []

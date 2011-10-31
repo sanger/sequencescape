@@ -16,8 +16,6 @@ class Api::RequestIO < Api::Base
             :request_type,
             :request_metadata,
             :user, {
-              :study => :uuid_object,
-              :project => :uuid_object,
               :asset => [
                 :uuid_object,
                 :barcode_prefix,
@@ -27,7 +25,8 @@ class Api::RequestIO < Api::Base
                 :uuid_object,
                 :barcode_prefix,
                 { :aliquots => { :sample => :uuid_object } }
-              ]
+              ],
+              :submission =>{ :order => [:study =>:uuid_object,] }
             }
           ]
         }
@@ -62,18 +61,15 @@ class Api::RequestIO < Api::Base
     map_attribute_to_json_attribute(:login , 'user')
   end
 
-  with_association(:study) do
-    map_attribute_to_json_attribute(:url , 'study_url')
-    map_attribute_to_json_attribute(:uuid, 'study_uuid')
-    map_attribute_to_json_attribute(:id  , 'study_internal_id')
-    map_attribute_to_json_attribute(:name, 'study_name')
-  end
-
-  with_association(:project) do
-    map_attribute_to_json_attribute(:url , 'project_url')
-    map_attribute_to_json_attribute(:uuid, 'project_uuid')
-    map_attribute_to_json_attribute(:id  , 'project_internal_id')
-    map_attribute_to_json_attribute(:name, 'project_name')
+  with_association(:submission) do
+    with_association(:order) do
+      with_association(:study) do
+        map_attribute_to_json_attribute(:url , 'study_url')
+        map_attribute_to_json_attribute(:uuid, 'study_uuid')
+        map_attribute_to_json_attribute(:id  , 'study_internal_id')
+        map_attribute_to_json_attribute(:name, 'study_name')
+      end
+    end
   end
 
   with_association(:asset) do

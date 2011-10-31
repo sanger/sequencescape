@@ -7,12 +7,7 @@ class AssetsController < ApplicationController
     @assets_with_requests = []
     if params[:study_id]
       @study = Study.find(params[:study_id])
-      @assets_with_requests = @study.assets.paginate :page => params[:page], :order => 'created_at DESC'
-      assets = []
-      @study.asset_groups.each{|ag| assets << ag.assets }
-      assets.flatten!
-      @assets = assets # for print
-      @assets_without_requests = assets - @assets_with_requests
+      @assets = @study.assets_through_aliquots.all(:order => 'name ASC').paginate(:page => params[:page])
     end
 
     respond_to do |format|
@@ -22,7 +17,7 @@ class AssetsController < ApplicationController
         format.html
       end
       if params[:study_id]
-        format.xml  { render :xml => Study.find(params[:study_id]).assets.to_xml }
+        format.xml  { render :xml => Study.find(params[:study_id]).assets_through_requests.to_xml }
       elsif params[:sample_id]
           format.xml  { render :xml => Sample.find(params[:sample_id]).assets.to_xml }
       elsif params[:asset_id]
@@ -264,7 +259,7 @@ class AssetsController < ApplicationController
       format.html { redirect_to new_request_for_current_asset }
       format.json { render :json => submission.requests, :status => :created }
     end
-  rescue QuotaException => exception
+  rescue Quota::Error => exception
     respond_to do |format|
       flash[:error] = exception.message
       format.html { redirect_to new_request_for_current_asset }
@@ -438,7 +433,7 @@ class AssetsController < ApplicationController
       # Move all requests
       self.requests.each do |request|
         request.events << Event.new({:message => "Moved from 1D tube #{source_asset.id} to 2D tube #{destination_asset.id}", :created_by => user.login, :family => "Update"})
-        request.study_id = study.id
+        request.initial_study_id = study.id
       end
     end
   end

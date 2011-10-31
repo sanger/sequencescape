@@ -275,6 +275,8 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
           @project.save!
           @study.save!
           @project.quotas.create(:request_type => @request_type, :limit => 0)
+          #we add a dummy quota so the project seems to have been setup
+          @project.quotas.create(:request_type => Factory(:request_type), :limit => 1)
           post :create, :submission => {}, :asset_group => @asset_group.id.to_s, :project_name => @project.name, :study_id => @study.id, :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
         end
         should "not have a successful submission" do
@@ -283,6 +285,21 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
         end
       end
 
+      context "one submission when no quota have been setup" do
+        setup do
+          @study.enforce_data_release = false
+          @study.enforce_accessioning = false
+          @project.enforce_quotas = true
+          @project.save!
+          @study.save!
+          @project.quotas.create(:request_type => @request_type, :limit => 0)
+          post :create, :submission => {}, :asset_group => @asset_group.id.to_s, :project_name => @project.name, :study_id => @study.id, :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
+        end
+        should "not have a successful submission" do
+          assert_contains(@controller.action_flash.values, 'Quotas are being enforced but have not been setup')
+          assert_equal @submission_count, Submission.count
+        end
+      end
       context 'required but empty parameters' do
         setup do
           @valid_parameters = {

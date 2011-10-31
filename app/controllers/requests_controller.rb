@@ -122,7 +122,7 @@ class RequestsController < ApplicationController
 
   def additional
     @request    = Request.find(params[:id])
-    @additional = @request.request_type.create!(:study => @request.study, :items => @request.items)
+    @additional = @request.request_type.create!(:initial_study => @request.study, :items => @request.items)
     redirect_to request_path(@additional)
   end
 
@@ -211,7 +211,7 @@ class RequestsController < ApplicationController
 
   def copy
     old_request = Request.find(params[:id])
-    if old_request.project.has_quota?(old_request.request_type, 1)
+    if old_request.has_quota?(1)
       new_request = old_request.copy
       flash[:notice] = "Created request #{new_request.id}"
       redirect_to asset_url(new_request.asset)

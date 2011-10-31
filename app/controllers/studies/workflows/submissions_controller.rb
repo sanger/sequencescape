@@ -4,23 +4,18 @@ class Studies::Workflows::SubmissionsController < ApplicationController
   InvalidInputException      = Class.new(SubmissionsControllerError)
   
   def show
-    @study         = Study.find(params[:study_id])
-    @workflow        = Submission::Workflow.find(params[:workflow_id])
+    @study         = Study.find(params[:study_id]) if params[:study_id]
+    @workflow        = Submission::Workflow.find(params[:workflow_id]) if params[:workflow_id]
     @submission      = Submission.find(params[:id])
     @assets          = []
     @request_types   = []
 
-    @submission_template_id = params[:submission_template_id] || if @submission
-      template = SubmissionTemplate.find_by_name(@submission.template_name)
+    @study ||= @submission.order.study unless @study
+    @workflow ||= @submission.order.workflow 
+
+    @submission_template_id = params[:submission_template_id] || if @submission && @submission.order
+      template = SubmissionTemplate.find_by_name(@submission.order.template_name)
       template && template.id
-    end
-
-    unless @submission.assets.nil?
-      @assets = Asset.find(@submission.assets)
-    end
-
-    unless @submission.request_types.nil?
-      @request_types = RequestType.find(@submission.request_types)
     end
   end
 
@@ -153,7 +148,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
 
       # NOTE[xxx]: Quick hack to get this working for the features and into production.  Basically lookup by ID if the project
       # project name was not specified and the project_id is specified.  Should handle the Ajax stuff.
-      @project   = Project.find_by_name(params[:project_name]) 
+      @project   = Project.find_by_name(params[:project_name])  if params[:project_name].present?
       @project ||= Project.find_by_id(params[:project_id]) if params[:project_id].present?
 
       @submission_template = SubmissionTemplate.find_by_id(params[:submission_template_id])
@@ -177,6 +172,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
             end
           end
 
+          @asset_details = asset_source_details_from_request_parameters
           @comments = params[:submission][:comments] if params[:submission][:comments]
           @properties = params.fetch(:request, {}).fetch(:properties, {})
           @properties[:multiplier] = request_type_multiplier unless request_type_multiplier.empty?
@@ -186,23 +182,21 @@ class Studies::Workflows::SubmissionsController < ApplicationController
           @properties = {} if @properties == []
 
           ActiveRecord::Base.transaction do
-            @submission = @submission_template.new_submission(
+            @submission = Submission.build!(
+              {:template        => @submission_template,
               :study           => @study,
               :project         => @project,
               :workflow        => @workflow,
               :user            => current_user,
               :request_types   => @request_type_ids,
               :request_options => @properties,
-              :comments        => @comments
+              :comments        => @comments}.merge(@asset_details)
             )
-            asset_source_details_from_request_parameters.each { |k,v| @submission.send(:"#{k}=", v) }
-            @submission.save!
-            @submission.built!
           end
 
           flash[:notice] = "Submission successfully created"
           format.html { redirect_to study_workflow_submission_path(@study, @workflow, @submission) }
-        rescue QuotaException => quota_exception
+        rescue Quota::Error => quota_exception
           action_flash[:error] = quota_exception.message
           raise
         rescue InvalidInputException => input_exception
@@ -216,7 +210,19 @@ class Studies::Workflows::SubmissionsController < ApplicationController
           raise
         end
       end
-    rescue StandardError, QuotaException => exception
+    rescue StandardError, Quota::Error => exception
+      #Yes, that's not a submission but an order
+      #should be changed anyway with the new submission interface
+            @submission = @submission_template.new_submission(
+              :study           => @study,
+              :project         => @project,
+              :workflow        => @workflow,
+              :user            => current_user,
+              :request_types   => @request_type_ids,
+              :request_options => @properties,
+              :comments        => @comments
+            )
+            (@asset_details||[]).each { |k,v| @submission.send(:"#{k}=", v) }
       return render(:action => 'new')
     end
   end

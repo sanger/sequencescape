@@ -32,7 +32,7 @@ def create_submission_of_assets(template, assets, request_options = {})
     :project         => Factory(:project),
     :assets          => assets,
     :request_options => request_options
-  )
+  ).create_submission
   submission.save!
   submission.built!
 

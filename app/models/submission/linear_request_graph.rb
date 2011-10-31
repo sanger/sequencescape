@@ -100,7 +100,7 @@ module Submission::LinearRequestGraph
     item = asset.requests.first.item unless asset.requests.empty?
     return item if item.present?
 
-    Item.create!(:workflow => workflow, :name => "#{asset.display_name} #{id.to_s}", :submission => self)
+    Item.create!(:workflow => workflow, :name => "#{asset.display_name} #{id.to_s}", :submission => self.submission)
   end
   private :create_item_for!
 end

@@ -11,7 +11,7 @@ Feature: Upload Pico Green concentration results from the Pico Green application
   @qc_event @study_report @qc_study_report 
   Scenario: upload concentration results from the pico application
     Given a stock plate with barcode "1221234567841" exists
-    And plate "1234567" has "96" wells
+    And plate "1234567" has "96" wells with aliquots
     # Create pico standard, dilution and pico assay plates.
     # NOTE: We have to create the "Pico Standard" in this manner as it relies on the barcode service being
     # up and running, which appears not to be the case for backgrounds (oddly).

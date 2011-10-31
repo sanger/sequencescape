@@ -30,33 +30,36 @@ end
 
 Given /^study "([^"]*)" has a plate "([^"]*)"$/ do |study_name, plate_barcode|
   plate = Plate.create!(:barcode => plate_barcode)
+  samples = []
   1.upto(3) do |i|
-    Well.create!(:plate => plate, :map_id => i).aliquots.create!(:sample => Sample.create!(:name => "Sample_#{plate_barcode}_#{i}"))
-  end
-  study = Study.find_by_name(study_name)
-  RequestFactory.create_assets_requests(plate.wells.map(&:id), study.id)
-
-  study.assets.each do |asset|
-    next unless asset.is_a?(Well)
-    asset.well_attribute.update_attributes!(
+    well = Well.create!(:plate => plate, :map_id => i)
+    well.aliquots.create!(:sample => Sample.create!(:name => "Sample_#{plate_barcode}_#{i}"))
+    well.well_attribute.update_attributes!(
       :gender_markers => [ 'F', 'F', 'F', 'F' ],
       :sequenom_count => 29,
       :concentration  => 1,
       :pico_pass      => "Pass",
       :gel_pass       => "Pass"
     )
+    samples << well.primary_aliquot.sample
   end
+  study = Study.find_by_name(study_name)
+  RequestFactory.create_assets_requests(plate.wells.map(&:id), study.id)
 
-  study.assets[0].primary_aliquot.sample.external_properties.create!(:key => 'genotyping_done', :value => "DNAlab completed: 13")
-  study.assets[1].primary_aliquot.sample.external_properties.create!(:key => 'genotyping_done', :value => "Imported to Illumina: 123")
-  study.assets[2].primary_aliquot.sample.external_properties.create!(:key => 'genotyping_done', :value => "Imported to Illumina: 51| DNAlab completed: 17")
+  samples[0].external_properties.create!(:key => 'genotyping_done', :value => "DNAlab completed: 13")
+  samples[1].external_properties.create!(:key => 'genotyping_done', :value => "Imported to Illumina: 123")
+  samples[2].external_properties.create!(:key => 'genotyping_done', :value => "Imported to Illumina: 51| DNAlab completed: 17")
 end
 
 
 
 Given /^study "([^"]*)" has a plate "([^"]*)" to be volume checked$/ do |study_name, plate_barcode|
+  
   plate = Plate.create!(:barcode => plate_barcode)
-  plate.wells.import((1..24).map { |i| Well.new(:map_id => i) })
+  1.upto(24) do |i|
+    well = Well.create!(:plate => plate, :map_id => i)
+    well.aliquots.create!(:sample => Sample.create!(:name => "Sample_#{plate_barcode}_#{i}"))
+  end
 
   study = Study.find_by_name(study_name)
   RequestFactory.create_assets_requests(plate.wells.map(&:id), study.id)

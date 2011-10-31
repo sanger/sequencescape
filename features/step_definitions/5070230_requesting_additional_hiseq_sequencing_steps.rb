@@ -18,7 +18,7 @@ end
 Given /^the project "([^\"]+)" has a "([^\"]+)" quota of (\d+)$/ do |name, type, quota|
   project      = Project.find_by_name(name) or raise StandardError, "Cannot find project with name #{ name.inspect }"
   request_type = RequestType.find_by_name(type) or raise StandardError, "Cannot find request type #{ type.inspect }"
-  project.quotas.create!(:request_type => request_type, :limit => quota)
+  project.quota_for!(request_type).update_attributes!(:limit => quota)
 end
 
 When /^I follow the "([^\"]+)" request$/ do |request_type|

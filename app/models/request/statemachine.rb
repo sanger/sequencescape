@@ -46,6 +46,9 @@ module Request::Statemachine
       aasm_event :cancel do
         transitions :to => :cancelled, :from => [:started, :pending, :passed, :failed, :hold]
       end
+
+      after_save :release_unneeded_quotas!
+
     end
   end
 
@@ -60,14 +63,18 @@ module Request::Statemachine
   def on_started
     target_asset.aliquots << asset.aliquots.map do |aliquot|
       aliquot.clone.tap do |clone|
-        clone.study   = study   || aliquot.study
-        clone.project = project || aliquot.project
+        clone.study   = initial_study || aliquot.study
+        clone.project = initial_project || aliquot.project
       end
     end
   end
 
   def on_failed
 
+  end
+
+  def release_unneeded_quotas!
+    self.request_quotas(true).destroy_all unless quota_counted?
   end
 
   def on_passed
@@ -85,4 +92,9 @@ module Request::Statemachine
   def on_hold
 
   end
+
+  def quota_counted?
+    return Request::QUOTA_COUNTED.include?(state)
+  end
+
 end

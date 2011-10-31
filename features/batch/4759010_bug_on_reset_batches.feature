@@ -5,7 +5,7 @@ Feature: Resetting a batch and creating an "identical" batch
     Given I am logged in as "John Smith"
     And I am an administrator
 
-  Scenario: 
+  Scenario: bug on reset batch
     Given a batch in "MX Library Preparation [NEW]" has been setup for feature 4759010
     When I go to the edit page for the last batch
     And I press "Reset"

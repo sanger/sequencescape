@@ -12,22 +12,27 @@ class ::Io::Submission < ::Core::Io::Base
 
   set_model_for_input(::Submission)
   set_json_root(:submission)
-  set_eager_loading { |model| model.include_study.include_project.include_assets }
+  set_eager_loading { |model| model.include_order }
   
   define_attribute_and_json_mapping(%Q{
                                           state  => state
-                                          study <=  study
-                                     study.name  => study.name
 
-                                        project <=  project
-                                   project.name  => project.name
+                                    order.study <=  study
+                               order.study.name  => study.name
+
+                                  order.project <=  project
+                             order.project.name  => project.name
        
-                                    asset_group <=  asset_group
-                               asset_group_name <=  asset_group_name
+                              order.asset_group <=  asset_group
+                         order.asset_group_name <=  asset_group_name
 
-                                         assets <=> assets
+                                   order.assets <=> assets
 
-                           request_type_objects  => request_types
-                     request_options_structured <=> request_options
+                     order.request_type_objects  => request_types
+               order.request_options_structured <=> request_options
   })
+
+  def self.json_field_for(attribute)
+    super.sub(/^order\./, '')
+  end
 end
