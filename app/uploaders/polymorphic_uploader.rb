@@ -74,7 +74,7 @@ module CarrierWave
             @uploader.model.db_files.map(&:data).join
           end
           
-          # Destroys the file.  Called in the after_destroy callback
+          # Destroys the file. Called in the after_destroy callback
           def destroy_file
             @uploader.model.db_files.each do |db_file|
               db_file.delete
@@ -107,10 +107,9 @@ class PolymorphicUploader < CarrierWave::Uploader::Base
     @column.blank?
   end
   
-  # Choose what kind of storage to use for this uploader
-  # storage :file
   storage CarrierWave::Storage::DirectDatabase
   
+  # This is where files are stored on upload. We are using callbacks to empty it after upload
   def cache_dir
      "#{Rails.root}/tmp/uploads"
   end
