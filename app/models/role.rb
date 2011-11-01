@@ -7,13 +7,10 @@ class Role < ActiveRecord::Base
   belongs_to :authorizable, :polymorphic => true
 
   validates_presence_of :name
+  named_scope :general_roles, :conditions => "authorizable_type IS NULL"
   
   def self.keys
     Role.all.map { |r| r.name }.uniq
-  end
-
-  def self.general_roles
-    Role.all.select{|role| role.authorizable.nil?}
   end
 
   # Include this module into your ActiveRecord model and get has_many roles and some
