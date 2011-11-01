@@ -235,26 +235,10 @@ class Request < ActiveRecord::Base
     self.batch_request.nil? && (pending? || blocked?)
   end
 
-  def update_priority(pipeline)
-    priority = ( self.priority + 1 ) % 2
-    @asset = self.asset
-    @asset.requests.each do |request|
-      request.priority = priority
-      request.save!
-      next_request = request.next_requests(pipeline)
-      next_request.each do |request_next|
-        request_next.priority = priority
-        request_next.save!
-      end
-    end
-  end
-
-  def update_priority_mx
-    requests = Request.find_all_by_submission_id(self.submission_id)
-    priority  = ( self.priority + 1 ) % 2
-    requests.each do |request|
-      request.priority = priority
-      request.save!
+  def update_priority
+    priority = (self.priority + 1) % 2
+    submission.requests.each do |request|
+      request.update_attributes!(:priority => priority)
     end
   end
   
