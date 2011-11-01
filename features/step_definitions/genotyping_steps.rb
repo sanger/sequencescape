@@ -163,7 +163,7 @@ Given /^I have a Cherrypicking submission for asset group "([^"]*)"$/ do |asset_
     :project => project,
     :workflow => Submission::Workflow.find_by_key('microarray_genotyping'),
     :user => User.last,
-    :assets => asset_group.assets
+    :asset_group => asset_group
     ).built!
   And %Q{1 pending delayed jobs are processed}
 end
