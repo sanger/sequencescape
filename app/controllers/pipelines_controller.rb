@@ -161,6 +161,9 @@ class PipelinesController < ApplicationController
 
   def finish
     @batch.complete!(current_user)
+  rescue ActiveRecord::RecordInvalid => exception
+    flash[:error] = exception.record.errors.full_messages
+    redirect_to(url_for(:controller => 'batches', :action => 'show', :id => @batch.id))
   end
 
   def release

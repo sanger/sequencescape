@@ -120,3 +120,7 @@ Then /^I expect an exception to be raised when I press "([^"]*)"(?: within "([^"
     # Good, that was expected
   end
 end
+
+When /^I accept the action$/ do
+  page.driver.browser.switch_to.alert.accept
+end
