@@ -916,7 +916,17 @@ class BatchTest < ActiveSupport::TestCase
         end
       end
     end
-    
-    
+  end
+
+  context "completing a batch" do
+    setup do
+      @batch, @user = Factory(:batch), Factory(:user)
+      @batch.start!(@user)
+    end
+
+    should "check that with the pipeline that the batch is valid" do
+      @batch.pipeline.expects(:validation_of_batch_for_completion).with(@batch)
+      @batch.complete!(@user)
+    end
   end
 end
