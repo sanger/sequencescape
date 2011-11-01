@@ -14,6 +14,10 @@ module Request::Statemachine
       aasm_state :hold,      :enter => :on_hold
       aasm_initial_state :pending
 
+      aasm_event :hold do
+        transitions :to => :hold, :from => [ :pending ]
+      end
+
       # State Machine events
       aasm_event :start do
         transitions :to => :started, :from => [:pending, :started, :hold]
@@ -46,6 +50,25 @@ module Request::Statemachine
       aasm_event :cancel do
         transitions :to => :cancelled, :from => [:started, :pending, :passed, :failed, :hold]
       end
+
+      # new version of combinable named_scope
+      named_scope :for_state, lambda { |state| { :conditions => { :state => state } } }
+
+      named_scope :completed, :conditions => {:state => ["passed", "failed"]}
+      named_scope :passed, :conditions => {:state => "passed"}
+      named_scope :failed, :conditions => {:state => "failed"}
+      named_scope :pipeline_pending, :conditions => {:state => "pending"} #  we don't want the blocked one here
+      named_scope :pending, :conditions => {:state => ["pending", "blocked"]} # block is a kind of substate of pending
+
+      named_scope :started, :conditions => {:state => "started"}
+      named_scope :cancelled, :conditions => {:state => "cancelled"}
+      named_scope :aborted, :conditions => {:state => "aborted"}
+
+      named_scope :open, :conditions => {:state => ["pending", "blocked", "started"]}
+      named_scope :closed, :conditions => {:state => ["passed", "failed", "cancelled", "aborted"]}
+      named_scope :quota_counted, :conditions => {:state => ["passed", "pending", "blocked", "started"]}
+      named_scope :quota_exempted, :conditions => {:state => ["failed", "cancelled", "aborted"]}
+      named_scope :hold, :conditions => {:state => "hold"}
     end
   end
 
@@ -84,5 +107,17 @@ module Request::Statemachine
 
   def on_hold
 
+  end
+
+  def finished?
+    self.passed? || self.failed?
+  end
+
+  def closed?
+    ["passed", "failed", "cancelled", "aborted"].include?(self.state)
+  end
+
+  def open?
+    ["pending", "started"].include?(self.state)
   end
 end

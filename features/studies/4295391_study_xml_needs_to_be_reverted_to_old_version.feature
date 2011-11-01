@@ -51,6 +51,10 @@ Feature: The XML for the sequencescape API
         <updated_at>2010-10-03 18:21:11 +0100</updated_at>
         <descriptors>
           <descriptor>
+            <name>Number of gigabases per sample (minimum 0.15)</name>
+            <value></value>
+          </descriptor>
+          <descriptor>
             <name>Reason for delaying release</name>
             <value></value>
           </descriptor>

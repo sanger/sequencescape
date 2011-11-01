@@ -6,6 +6,8 @@ class LabEvent < ActiveRecord::Base
   
   before_validation :unescape_for_descriptors
 
+  named_scope :with_descriptor, lambda { |k,v| { :conditions => [ 'descriptors LIKE ?', "%#{k.to_s}: #{v.to_s}%" ] } }
+
   named_scope :barcode_code, lambda { |*args| {:conditions => ["description = 'Cluster generation' and eventful_type = 'Request' and descriptors like ? ", args[0]] }}
                                            
 

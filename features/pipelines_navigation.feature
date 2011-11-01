@@ -18,6 +18,15 @@ Feature: Pipeline navigation
     When I press "Create batch"
     Then I should see "Edit batch"
 
+  Scenario: Creating a batch removes the request from the inbox
+		Given I have a request for "Library preparation"
+    Given I am on the show page for pipeline "Library preparation"
+		When I check request "1" for pipeline "Library preparation"
+    When I press "Submit"
+
+    When I am on the show page for pipeline "Library preparation"
+    Then the requests from "Library preparation" batches should not be in the inbox
+
   Scenario: a user logs into the system
 		Given I have a batch in "Library preparation"
 		Given I have a request for "Library preparation"
