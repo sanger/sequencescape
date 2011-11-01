@@ -479,7 +479,7 @@ class Plate < Asset
   end
 
   def self.plates_from_scanned_plate_barcodes(source_plate_barcodes)
-    source_plate_barcodes.scan(/\d+/).map(&method(:find_from_machine_barcode))
+    source_plate_barcodes.scan(/\d+/).map { |barcode| find_from_machine_barcode(barcode) }
   end
 
   #--
