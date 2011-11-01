@@ -16,7 +16,11 @@ class Submission < ActiveRecord::Base
   has_many :orders, :inverse_of => :submission
   accepts_nested_attributes_for :orders, :update_only => true
 
-  has_many :comments, :through => :orders
+  def comments
+    # has_many throug doesn't work. Comments is a column (string) of order
+    # not an ActiveRecord
+    orders.map(&:comments).flatten(1).compact
+  end
   
   cattr_reader :per_page
   @@per_page = 500
@@ -62,7 +66,7 @@ class Submission < ActiveRecord::Base
       order.save! #doesn't save submission id otherwise
       study_name = order.try(:study).name
       order.submission.update_attributes!(:name=>study_name) if study_name
-      order.submission
+      order.submission.reload
     end
   end
   # TODO[xxx]: ... to here really!
