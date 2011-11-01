@@ -118,53 +118,14 @@ Feature: Interacting with submissions through the API
             "asset_uuids": [],
             "request_options":
             {
-              "read_length": "76",
+              "read_length": 76,
               "fragment_size_required": 
               {
-                "from": "100", 
-                "to": "200"
+                "from": 100, 
+                "to": 200
               },
              "library_type": "qPCR only"
             }
           }
         }
       """
-
-  Scenario: Retrieving the JSON for a submission with request options in old format
-    Given I have a submission created with the following details based on the template "Library creation - Paired end sequencing":
-      | study   | 22222222-3333-4444-5555-000000000000 |
-      | project | 22222222-3333-4444-5555-000000000001 |
-      | assets  | 33333333-4444-5555-6666-000000000001 |
-      | request_options  | read_length: 76, fragment_size_required_from: 100, fragment_size_required_to: 200, library_type: qPCR only |
-    And submission "11111111-2222-3333-4444-555555555555" has old format request options
-    When I GET the API path "/submissions/11111111-2222-3333-4444-555555555555"
-    Then ignoring "internal_id" the JSON should be:
-      """
-        { 
-          "submission":
-          {
-            "uuid": "11111111-2222-3333-4444-555555555555",
-            "created_at": "2010-09-16T13:45:00+01:00",
-            "updated_at": "2010-09-16T13:45:00+01:00",
-            "created_by": "abc123",
-            "template_name":"Library creation - Paired end sequencing",
-            "state": "building",
-            "study_name": "Testing submission creation",
-            "study_uuid": "22222222-3333-4444-5555-000000000000",
-            "project_name": "Testing submission creation", 
-            "project_uuid": "22222222-3333-4444-5555-000000000001",
-            "asset_uuids": [],
-            "request_options":
-            {
-              "read_length": "76",
-              "fragment_size_required": 
-              {
-                "from": "100",
-                "to": "200"
-              },
-             "library_type": "qPCR only"
-            }
-          }
-        }
-      """
-
