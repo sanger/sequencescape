@@ -13,24 +13,17 @@ class Submission < ActiveRecord::Base
   has_many :requests
   has_many :items, :through => :requests
 
-  has_one :order, :inverse_of => :submission
-  accepts_nested_attributes_for :order, :update_only => true
-  def orders
-    [order].compact
-  end
+  has_many :orders, :inverse_of => :submission
+  accepts_nested_attributes_for :orders, :update_only => true
 
-
-  #TODO clean up if not neede
-  def comments
-    order.comments
-  end
+  has_many :comments, :through => :orders
   
   cattr_reader :per_page
   @@per_page = 500
   named_scope :including_associations_for_json, {
     :include => [
       :uuid_object,
-      {:order => [
+      {:orders => [
          {:project => :uuid_object},
          {:assets => :uuid_object },
          {:study => :uuid_object },
@@ -148,8 +141,8 @@ class Submission < ActiveRecord::Base
   #for the moment we consider that request types should be the same for all order
   #so we can take the first one
   def request_type_ids
-    return [] unless orders.present?
-    order.request_types.map(&:to_i)
+    return [] unless orders.size >= 1
+    orders.first.request_types.map(&:to_i)
   end
 
 

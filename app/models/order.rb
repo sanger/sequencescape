@@ -30,7 +30,7 @@ class Order < ActiveRecord::Base
   belongs_to :workflow, :class_name => 'Submission::Workflow'
   validates_presence_of :workflow
 
-  belongs_to :submission, :inverse_of => :order
+  belongs_to :submission, :inverse_of => :orders
   #validates_presence_of :submission
 
   serialize :request_types

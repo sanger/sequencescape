@@ -41,13 +41,6 @@ class Request < ActiveRecord::Base
   belongs_to :user
 
   belongs_to :submission
-  def order_via_submission
-    submission.try(:order)
-  end
-
-  def study_via_order
-    order_via_submission.try(:study)
-  end
 
   # project is read only so we can set it everywhere
   # but it will be only used in specific and controlled place

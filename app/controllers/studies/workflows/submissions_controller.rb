@@ -10,11 +10,14 @@ class Studies::Workflows::SubmissionsController < ApplicationController
     @assets          = []
     @request_types   = []
 
-    @study ||= @submission.order.study unless @study
-    @workflow ||= @submission.order.workflow 
+    order = @submission.orders.try(:first)
+    if order
+      @study ||= order.study unless @study
+      @workflow ||= order.workflow 
+    end
 
-    @submission_template_id = params[:submission_template_id] || if @submission && @submission.order
-      template = SubmissionTemplate.find_by_name(@submission.order.template_name)
+    @submission_template_id = params[:submission_template_id] || if order
+      template = SubmissionTemplate.find_by_name(order.template_name)
       template && template.id
     end
   end
