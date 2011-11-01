@@ -9,7 +9,6 @@
         <th class='{sorter: false}'>Available requests</th>
         <% if current_user.is_lab_manager? %>
           <th id="priority_flag"  style='text-align: center'><%= link_to image_tag("icon_0_flag.png", :size=>"16x16"), "javascript:void(0);" %></th>
-          <th style="display:none">&nbsp;</th>
           <th><%= link_to "Previous requests", "javascript:void(0);" %></th>
         <% end %>
         <th><%= link_to "Submission ID", "javascript:void(0);" %></th>
@@ -40,15 +39,12 @@
             <%= check_box :request, request.id, :value => request.id, :class => 'grouped_checkbox request_checkbox', :'data-count' => 1 %>
           </td>
           <% if current_user.is_lab_manager? %>
-            <td  style="display:none" width='5%' id="flag_value_<%= request.id.to_s %>"><%= request.priority %></td>
             <td  style='text-align: center' width='5%'>
-                <a href="javascript:void(0)" >
-                <%= image_tag "icon_"+request.priority.to_s+"_flag.png", :size =>"16x16", :class =>"flag_image", :data_request_id => request.id.to_s, :data_priority_column => "flag_value_#{request.id.to_s}" %></a>
+              <%= image_tag "icon_#{request.priority}_flag.png", 'alt' => request.priority, :size => '16x16', :class => 'flag_image', "data-priority" => request.priority, 'data-request-id' => request.id %>
             </td>
             <td  width='10%'>
               <%= render :partial => "previous_failed_requests", :locals => { :request => request } %>
-             </td>
-             
+            </td>
           <% end %>
           <td class="request" width='5%'><%= link_to request.submission_id,study_workflow_submission_path(request.study, current_user.workflow, request.submission) %></td>
           <td  width='5%'><%= link_to request.id, request_path(request) %></td>
@@ -88,81 +84,42 @@
   </table>
 <script type="text/javascript" id="js">
 (function($) {
-        
-$.tablesorter.addWidget({
+  $.tablesorter.addWidget({
     id: 'jFilter',
-    format: function(element){
-        var __jFilter = this;
+    format: function(element) {
+      var __jFilter = this;
 
-        $('#filter-for-'+$(element).attr('id')).bind('keyup',function(ev){
-            __jFilter.jFilterRun(element,$('#filter-for-'+$(element).attr('id')).val());
-        });
+      $('#filter-for-'+$(element).attr('id')).bind('keyup',function(ev){
+        __jFilter.jFilterRun(element,$('#filter-for-'+$(element).attr('id')).val());
+      });
     },
     jFilterRun: function(table, s){
-        $('tbody tr:hidden', table).show();
-        $('tbody tr',$(table)).each(function(n,r){
-            var content = false;
-            $('td',$(r)).each(function(i,f){
-                if (($(f).html() || $(f).text()).toLowerCase().indexOf(s.toLowerCase()) >= 0)
-                  if (f.title=='read_length')
-                     content = true;
-            });
-            if (content) $(r).show(); else $(r).hide();
+      $('tbody tr:hidden', table).show();
+      $('tbody tr',$(table)).each(function(n,r){
+        var content = false;
+        $('td',$(r)).each(function(i,f){
+          if (($(f).html() || $(f).text()).toLowerCase().indexOf(s.toLowerCase()) >= 0)
+            if (f.title=='read_length')
+              content = true;
         });
-        }
-});   
+        if (content) $(r).show(); else $(r).hide();
+      });
+    }
+  });
 
   $(document).ready(function() {
     $("#pipeline_inbox").tablesorter({ 
-        sortList: [[1,1], [2,0]],
-        widgets: ['zebra','jFilter'] 
+      sortList: [[1,1], [2,0]],
+      widgets: ['zebra', 'jFilter'],
+
+      textExtraction: function(node) {
+        // If the node has an IMG element underneath it then its 'alt' attribute is used, otherwise it's the innerHTML of the node.
+        var imgNode = $('img', node);
+        return (imgNode.size() > 0 ? imgNode.attr('alt') : $(node).text());
+      },
     });
-    
-
-
-   $("#priority_flag").click(function() {
-        $("#pipeline_inbox").trigger("reSort");
-        $("#pipeline_inbox").trigger("appendCache");
-        return false; 
-   });
-   
-
-   $(".flag_image").bind("click", function() { 
-       img = $(this);
-       flag_value = $("#"+img.attr("data_priority_column"));
-       
-       if (img.attr("src").indexOf("icon_0_flag.png")>0) { 
-         image_on_success ="/images/icon_1_flag.png";
-         flag_value_on_success = '1';
-       } else { 
-         image_on_success = "/images/icon_0_flag.png";
-         flag_value_on_success = '0';
-       }
-
-       answer = true;
-       if (img.attr("src").indexOf("icon_1_flag.png")>0)
-         answer = confirm ("Are you sure you want to set this to normal priority ?");
-       
-       if (answer) {
-         jQuery.ajax( 
-               { 
-                 url: '/pipelines/update_priority',
-                 type: 'POST',
-                 data: 'request_id='+img.attr("data_request_id")+'&pipeline_id='+<%= @pipeline.id%>,
-                 success: function(){
-                            img.attr("src", image_on_success);
-                            flag_value.text(flag_value_on_success);
-                          },
-                 error  : function(){
-                            alert("The request can't be saved properly. Flag not updated.");
-                         }
-                }
-          );
-      } 
-   });
-   
-
-  }); 
+  });
 })(jQuery);
 </script>
 
+<%= javascript_include_tag 'pipeline.js' %>

@@ -26,143 +26,42 @@ function showElement(elementId, size) {
   }
 }
 
-function setFlagPriorityField(elementIdName, request_id)
-{
-  var element;
-  var elementRequest;
-  var elementReqName;
+(function($, undefined) {
+  // Whenever someone clicks on a priority flag we need to change the request priority.  For the multiplexed requests
+  // this will trigger all of them to be updated.
+  var inbox = $('#pipeline_inbox');
+  inbox.delegate('.flag_image', 'click', function() {
+    var element = $(this);
 
-  elementReqName="setFlagPriority";
-
-  if (document.all)
-  {
-    element = document.all[elementIdName];
-    elementRequest =  document.all[elementReqName];
-  }
-  else
-  {
-    element = document.getElementById(elementIdName);
-    elementRequest = document.getElementById(elementReqName);
-  }
-
-  elementRequest.value = request_id;
-  element.value = parseInt(element.value) + 1;
-
-}
-
-function changeFlag(request_id)
-{
+    var priority = !!parseInt(element.attr('data-priority'));
     var answer = true;
-    var element;
-    var mycel;
-    var myceltext;
+    if (priority) {
+      answer = confirm('Are you sure you want to set this to normal priority?');
+    }
 
-    elementIdName = "flag_" + request_id;
-    flag_value = "flag_value_" + request_id;
-    if (document.all)
-     {
-      element = document.all[elementIdName];
-      mycel = document.all[flag_value];
-      }
-    else
-      {
-        element = document.getElementById(elementIdName);
-        mycel = document.getElementById(flag_value);
-      }
-
-    myceltext = mycel.childNodes.item(0);
-
-    if (element.src.indexOf("icon_1_flag.png")>0)
-      answer = confirm ("Are you sure you want to set this to normal priority ?")
-
-    if (answer == true)
-    {
-       mycel.removeChild(myceltext);
-
-       if (element.src.indexOf("icon_1_flag.png")>0)
-        {
-         element.src = "/images/icon_0_flag.png"
-         var newtxt = document.createTextNode("0");
-         mycel.appendChild(newtxt);
+    if (answer) {
+      $.ajax({
+        url: '/pipelines/update_priority',
+        type: 'POST',
+        data: {
+          request_id:  element.attr('data-request-id')
+        },
+        success: function() {
+          new_priority = priority ? '0' : '1';  // NOTE: Inverted at this point!
+          element.attr('data-priority', new_priority).attr('alt', new_priority).attr('src', '/images/icon_' + new_priority + '_flag.png');
+          inbox.trigger('priorityChange', element);
+        },
+        error: function() {
+          alert('The request cannot be saved properly. Flag not updated.');
         }
-       else
-        {
-         element.src = "/images/icon_1_flag.png"
-         var newtxt = document.createTextNode("1");
-         mycel.appendChild(newtxt);
-        }
-
-       //event on upFlag to call ruby script. 
-       setFlagPriorityField("upFlag", request_id);
+      });
     }
-}
+  });
 
-function changeFlagMxLibraryChildren(item_id, size)
-{
-  var element;
-  size=size+1
-  for (var i=1;i<size;i++)
-    {
-      elementIdName = "flag_" +item_id+"_"+i;
-      if (document.all)
-        element = document.all[elementIdName];
-      else if (document.getElementById)
-        element = document.getElementById(elementIdName);
-      
-      if (element.src.indexOf("icon_1_flag.png")>0)
-        element.src = "/images/icon_0_flag.png"
-      else
-        element.src = "/images/icon_1_flag.png"
-
-    }
-}
-
-function changeFlagMxLibrary(request_id, item_id, size)
-{
-    var answer = true;
-    var element;
-    var mycel;
-    var myceltext;
-
-    elementIdName = "flag_" + item_id;
-    flag_value = "flag_value_" + request_id;
-
-    if (document.all)
-     {
-      element = document.all[elementIdName];
-      mycel = document.all[flag_value];
-      }
-    else
-      {
-        element = document.getElementById(elementIdName);
-        mycel = document.getElementById(flag_value);
-      }
-
-     myceltext = mycel.childNodes.item(0);
- 
-    if (element.src.indexOf("icon_1_flag.png")>0)
-      answer = confirm ("Are you sure you want to set this to normal priority ?")
-
-    if (answer == true)
-    {
-       mycel.removeChild(myceltext);
-       if (element.src.indexOf("icon_1_flag.png")>0)
-       {
-         element.src = "/images/icon_0_flag.png"
-         var newtxt = document.createTextNode("0");
-         mycel.appendChild(newtxt);
-       }
-       else
-       {
-         element.src = "/images/icon_1_flag.png"
-         var newtxt = document.createTextNode("1");
-         mycel.appendChild(newtxt);
-       }
-
-      changeFlagMxLibraryChildren(item_id, size);
-
-      //event on upFlag to call ruby script.
-      setFlagPriorityField("upFlag", request_id);
-    }
-
-}
+  // This handles the priority changing event by signalling table resorting and updating any related flags.
+  inbox.bind('priorityChange', function(event, element) {
+    element = $(element);
+    inbox.trigger('updateCell', element.parent('td')).trigger('reSort');
+    $('.related_flag_image[data-submission-id=' + element.attr('data-submission-id') + ']').attr('src', element.attr('src')).attr('alt', element.attr('alt'));
+  });
+})(jQuery);
