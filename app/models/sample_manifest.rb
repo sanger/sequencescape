@@ -59,32 +59,17 @@ class SampleManifest < ActiveRecord::Base
   include SampleManifest::PlateBehaviour
   include SampleManifest::InputBehaviour
   extend SampleManifest::StateMachine
-
+  extend Document::Associations
+  
   module Associations
     def self.included(base)
       base.has_many(:sample_manifests)
     end
   end
 
- has_one :uploaded_document,  :class_name => "Document", :as => :documentable, :conditions => {:documentable_extended => 'uploaded'}, :dependent => :destroy
- has_one :generated_document, :class_name => "Document", :as => :documentable, :conditions => {:documentable_extended => 'generated'}, :dependent => :destroy
+  has_uploaded_document :uploaded
+  has_uploaded_document :generated
 
- def uploaded=(file)
-   create_uploaded_document(:uploaded_data => file, :documentable_extended => 'uploaded') unless file.blank?
- end
-
- def uploaded
-   Document.first(:conditions => ["documentable_id = ? AND documentable_extended = ?", id, 'uploaded'])
- end
-
- def generated=(file)
-   create_generated_document(:uploaded_data => file, :documentable_extended => 'generated') unless file.blank?
- end
-   
-  def generated 
-     Document.first(:conditions => ["documentable_id = ? AND documentable_extended = ?", id, 'generated'])
-  end
-   
   class_inheritable_accessor :spreadsheet_offset
   class_inheritable_accessor :spreadsheet_header_row
   self.spreadsheet_offset = 9
