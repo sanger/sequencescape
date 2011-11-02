@@ -13,8 +13,7 @@ class Studies::DocumentsController < ApplicationController
 
   def create
     document_settings = params[:document]
-    document_settings[:documentable_id] = @study.id
-    document_settings[:documentable_type] = "Study"
+    document_settings[:documentable] = @study
     @document = Document.new(document_settings)
     begin
       if @document.save
