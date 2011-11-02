@@ -55,7 +55,5 @@
 		</table>
 	<% end -%>
 
-  <%= form.submit 'Next step' %>
-  <span id='stage_loading' style='display: none;'><%= image_tag 'ajax-loader.gif', :size => "10x10", :alt => 'Saving' %> Saving</span>
-  <span id="stage_links"> or <%= link_to "cancel", pipeline_path( @batch.pipeline) %>
+  <%= render(:partial => 'next_stage_submit') %>
 <% end %>

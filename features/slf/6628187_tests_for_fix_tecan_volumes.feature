@@ -29,7 +29,7 @@ Feature: The Tecan file has the wrong buffer volumes, defaulting to 13 total vol
   Scenario: volume of 65 is required
     When I fill in "Volume Required" with "65"
     When I press "Next step"
-  	When I press "Submit"
+  	When I press "Next step"
   	When I select "Infinium 670k" from "Plate Purpose"
   	And I press "Next step"
   	When I select "Genotyping freezer" from "Location"
