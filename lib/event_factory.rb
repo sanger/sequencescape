@@ -217,9 +217,8 @@ class EventFactory
     )
 
     recipients = []
-    #TODO [mb14] do properly when switchign to multi order
-    (request.submission.try(:order).try(:study).try(:projects)||[]).each do |project|
-      recipients << project.manager.email if project.manager
+    request.quotas.map(&:project).each do |project|
+      recipients << project.manager.email if project && project.manager
     end
 
     EventfulMailer.deliver_confirm_event(recipients, request_event.eventful, request_event.message, request_event.content, "No Milestone")    

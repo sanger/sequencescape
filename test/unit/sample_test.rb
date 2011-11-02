@@ -94,7 +94,7 @@ class SampleTest < ActiveSupport::TestCase
         should "return true" do
           @result = @sample_from_ok.move(@study_from, @study_to, @asset_group_to_new, @new_assets_name, @current_user, "0")
           @new_sub_to = Submission.last
-          asset_submission_to = @new_sub_to.order.assets
+          asset_submission_to = @new_sub_to.orders.first.assets
           assert_equal true, @result
           #the assets of submission_from is now in submission_to
           assert_equal asset_submission_to, [ @asset_from ]
