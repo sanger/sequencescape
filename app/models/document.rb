@@ -1,13 +1,36 @@
 class Document < ActiveRecord::Base
-
+  extend DbFile::Uploader
+  
+  module Associations
+    # Adds accessors for named fields and attaches documents to them
+    
+    def has_uploaded_document(field, options={})
+      # Options
+      #  differentiator - this is a string used to separate uploaded documents with a relationship to your model
+      #     for example, you can have both a "generated" and an "uploaded" document in one Sample Manifest
+      differentiator = options.fetch(:differentiator, "#{field}")
+      
+      line = __LINE__ + 1
+      class_eval(%Q{
+        has_one(:#{field}_document, :class_name => "Document", :as => :documentable, :conditions => {:documentable_extended => differentiator}, :dependent => :destroy
+          )
+        
+        def #{field}
+          Document.first(:conditions => ["documentable_id = ? AND documentable_extended = ?", id, differentiator])
+        end
+        
+        def #{field}=(file)
+          create_#{field}_document(:uploaded_data => file, :documentable_extended => differentiator) unless file.blank?
+        end
+      }, __FILE__, line)
+    end
+  end
+  
   # Polymorphic relationship
   belongs_to :documentable, :polymorphic => true
-  
-  # Creates document.db_files association so when the file is split we can get all the chunks
-  has_many  :db_files, :as => :owner, :dependent => :destroy
 
   # CarrierWave uploader - gets the uploaded_data file, but saves the identifier to the "filename" column
-  mount_uploader :uploaded_data, PolymorphicUploader, :mount_on => "filename"
+  has_uploaded :uploaded_data, {:serialization_column => "filename"}
   
   # Method provided for backwards compatibility
   def current_data

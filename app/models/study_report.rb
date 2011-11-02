@@ -1,15 +1,13 @@
 class StudyReport < ActiveRecord::Base
-
+  extend DbFile::Uploader
   include DelayedJobEx # add send_later_with_priority. need for delayed job 2.0.x
   class ProcessingError < Exception
   end
   cattr_reader :per_page
   @@per_page = 50
   
-  has_many :db_files, :as => :owner, :dependent => :destroy
-  #   Mount Carrierwave on report field
-  mount_uploader :report, PolymorphicUploader, :mount_on => "report_filename"
-    
+  has_uploaded :report, {:serialization_column => "report_filename"}
+  
   belongs_to :study
   belongs_to :user
   validates_presence_of :study
