@@ -49,7 +49,6 @@ class ColumnMap
     end
 end
 
-
 class SampleManifest < ActiveRecord::Base
   include Uuid::Uuidable
   include ModelExtensions::SampleManifest
@@ -60,16 +59,16 @@ class SampleManifest < ActiveRecord::Base
   include SampleManifest::PlateBehaviour
   include SampleManifest::InputBehaviour
   extend SampleManifest::StateMachine
-
+  extend Document::Associations
+  
   module Associations
     def self.included(base)
       base.has_many(:sample_manifests)
     end
   end
 
-  has_attached_file :uploaded, :storage => :database
-  has_attached_file :generated, :storage => :database
-  default_scope select_without_file_columns_for(:uploaded, :generated)
+  has_uploaded_document :uploaded
+  has_uploaded_document :generated
 
   class_inheritable_accessor :spreadsheet_offset
   class_inheritable_accessor :spreadsheet_header_row
@@ -77,17 +76,6 @@ class SampleManifest < ActiveRecord::Base
   self.spreadsheet_header_row = 8
   
   acts_as_audited :on => [:destroy, :update]
-
-  # Problem with paperclip
-  attr_accessor :uploaded_file_name
-  attr_accessor :uploaded_content_type
-  attr_accessor :uploaded_file_size
-  attr_accessor :uploaded_updated_at
-
-  attr_accessor :generated_file_name
-  attr_accessor :generated_content_type
-  attr_accessor :generated_file_size
-  attr_accessor :generated_updated_at
   
   attr_accessor :override
   attr_reader :manifest_errors
@@ -117,8 +105,8 @@ class SampleManifest < ActiveRecord::Base
     "Manifest_#{self.id}"
   end
 
-  named_scope :pending_manifests,   { :order => 'id DESC',         :conditions => 'uploaded_file IS NULL'     }
-  named_scope :completed_manifests, { :order => 'updated_at DESC', :conditions => 'uploaded_file IS NOT NULL' }
+  named_scope :pending_manifests,   { :order => 'id DESC',         :conditions => 'uploaded_filename IS NULL'     }
+  named_scope :completed_manifests, { :order => 'updated_at DESC', :conditions => 'uploaded_filename IS NOT NULL' }
   
   def generate
     @manifest_errors = []

@@ -1,18 +1,12 @@
 class StudyReport < ActiveRecord::Base
-
+  extend DbFile::Uploader
   include DelayedJobEx # add send_later_with_priority. need for delayed job 2.0.x
   class ProcessingError < Exception
   end
   cattr_reader :per_page
   @@per_page = 50
   
-  has_attached_file :report, :storage => :database
-  default_scope select_without_file_columns_for(:report)
-  
-  attr_accessor :report_file_name
-  attr_accessor :report_content_type
-  attr_accessor :report_file_size
-  attr_accessor :report_updated_at
+  has_uploaded :report, {:serialization_column => "report_filename"}
   
   belongs_to :study
   belongs_to :user
@@ -47,10 +41,6 @@ class StudyReport < ActiveRecord::Base
    
    #job = Delayed::PerformableMethod.new(self, :synchronous_perform, [])
    #elayed::Job.enqueue(job, priority)
-  end
-  
-  def report?
-    self.report.exists?
   end
   
 end

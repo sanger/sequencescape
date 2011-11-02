@@ -28,7 +28,7 @@
       </td>
       <td><%= link_to "Blank manifest", export_sample_manifest_path(manifest) %></td>
       <td>
-        <% if manifest.failed? || (! manifest.uploaded.data) %>
+        <% if manifest.failed? || (! manifest.uploaded_document) %>
           <%= link_to 'Upload manifest', sample_manifest_path(manifest) %>
         <% else %>
           <%= link_to 'Completed manifest', uploaded_spreadsheet_sample_manifest_path(manifest) %>
@@ -39,7 +39,7 @@
         <%= link_to 'Errors', sample_manifest_path(manifest), :title => "Errors for manifest for #{manifest.study.name}" %>
       <% end %>
       </td>
-      <td><% if ! manifest.uploaded.data %>
+      <td><% if ! manifest.uploaded_document %>
         No manifest uploaded
         <% else %>
           <%= manifest.state.titleize %>
