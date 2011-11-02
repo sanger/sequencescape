@@ -45,7 +45,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
         redirect_to template_chooser_study_workflow_submissions_path(@study, @workflow)
         throw :end
       end
-      @submission = @submission_template.new_submission 
+      @submission = @submission_template.new_order 
 
 
       options = {}
@@ -216,7 +216,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
     rescue StandardError, Quota::Error => exception
       #Yes, that's not a submission but an order
       #should be changed anyway with the new submission interface
-            @submission = @submission_template.new_submission(
+            @submission = @submission_template.new_order(
               :study           => @study,
               :project         => @project,
               :workflow        => @workflow,
@@ -269,7 +269,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
       return
     end
 
-    @submission = @submission_template.new_submission
+    @submission = @submission_template.new_order
     if @submission.info_differential.nil?
       redirect_to new_study_workflow_submission_path(@study, @workflow, :submission_template_id => submission_template_id)
       return
