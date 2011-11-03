@@ -1,5 +1,10 @@
 module Tasks::CherrypickHandler
   def render_cherrypick_task(task, params)
+    unless flash[:error].blank?
+      redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage -1).to_s
+      return
+    end
+
     plate_template = nil
     unless params[:plate_template].blank?
       plate_template = PlateTemplate.find(params[:plate_template]["0"].to_i)

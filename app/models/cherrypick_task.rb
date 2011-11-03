@@ -200,6 +200,9 @@ class CherrypickTask < Task
 
   def do_task(workflow, params)
     workflow.do_cherrypick_task(self, params)
+  rescue Cherrypick::Error => exception
+    workflow.send(:flash)[:error] = exception.message
+    return false
   end
 
   def self.parse_uploaded_spreadsheet_layout(layout_data,plate_size)
