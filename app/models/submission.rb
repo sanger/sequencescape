@@ -178,7 +178,8 @@ class Submission < ActiveRecord::Base
   end
 
   def name
-    attributes[:name] || orders.map {|o| o.try(:study).try(:name) }.compact.join("|")
+    name = attributes[:name] || orders.map {|o| o.try(:study).try(:name) }.compact.join("|")
+    name.present? ? name : "##{id}"
   end
 
 end

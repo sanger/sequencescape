@@ -45,7 +45,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
         redirect_to template_chooser_study_workflow_submissions_path(@study, @workflow)
         throw :end
       end
-      @submission = @submission_template.new_order 
+      @order = @submission_template.new_order 
 
 
       options = {}
@@ -142,6 +142,8 @@ class Studies::Workflows::SubmissionsController < ApplicationController
   end
   private :request_type_from_hash_to_array
 
+  # WARNING, this method doesn't create a submission but an order.
+  # TODO[mb14] refactor
   def create
     @workflow = Submission::Workflow.find(params[:workflow_id])
     @study    = Study.find(params[:study_id])
@@ -176,7 +178,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
           end
 
           @asset_details = asset_source_details_from_request_parameters
-          @comments = params[:submission][:comments] if params[:submission][:comments]
+          @comments = params[:order][:comments] if params[:order][:comments]
           @properties = params.fetch(:request, {}).fetch(:properties, {})
           @properties[:multiplier] = request_type_multiplier unless request_type_multiplier.empty?
 
@@ -184,21 +186,33 @@ class Studies::Workflows::SubmissionsController < ApplicationController
           # there is no way to differentiate betwween an empti array and an empty hash in she controller paramters, so the controller can send us an empty array
           @properties = {} if @properties == []
 
+          @submission = Submission.find_by_id(params[:submission_id]) if params[:submission_id]
+
           ActiveRecord::Base.transaction do
-            @submission = Submission.build!(
-              {:template        => @submission_template,
-              :study           => @study,
-              :project         => @project,
-              :workflow        => @workflow,
-              :user            => current_user,
-              :request_types   => @request_type_ids,
-              :request_options => @properties,
-              :comments        => @comments}.merge(@asset_details)
+            @submission ||= Submission.create!
+            @order = @submission_template.new_order(
+              { :study           => @study,
+                :project         => @project,
+                :workflow        => @workflow,
+                :user            => current_user,
+                :request_types   => @request_type_ids,
+                :request_options => @properties,
+                :comments        => @comments,
+                :submission       => @submission
+              }.merge(@asset_details)
+              # we don't save the order now, so it's available in the next view
+              # in validation fails
             )
+            @order.save!
           end
 
-          flash[:notice] = "Submission successfully created"
-          format.html { redirect_to study_workflow_submission_path(@study, @workflow, @submission) }
+          if params.fetch(:build_submission, false)
+            flash[:notice] = "Submission successfully created"
+            redirect_to new_study_workflow_submissions_path(@study, @workflow, :submission_id => @submission_id, :submission_template_id => submission_template_id)
+          else
+            flash[:notice] = "Order successfully created. Create a new order or #{link_to 'build the submission', submission_path(@submission)}" 
+            format.html { redirect_to study_workflow_submission_path(@study, @workflow, @submission) }
+          end
         rescue Quota::Error => quota_exception
           action_flash[:error] = quota_exception.message
           raise
@@ -214,18 +228,6 @@ class Studies::Workflows::SubmissionsController < ApplicationController
         end
       end
     rescue StandardError, Quota::Error => exception
-      #Yes, that's not a submission but an order
-      #should be changed anyway with the new submission interface
-            @submission = @submission_template.new_order(
-              :study           => @study,
-              :project         => @project,
-              :workflow        => @workflow,
-              :user            => current_user,
-              :request_types   => @request_type_ids,
-              :request_options => @properties,
-              :comments        => @comments
-            )
-            (@asset_details||[]).each { |k,v| @submission.send(:"#{k}=", v) }
       return render(:action => 'new')
     end
   end
