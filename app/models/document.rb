@@ -6,7 +6,7 @@ class Document < ActiveRecord::Base
     
     def has_uploaded_document(field, options={})
       # Options
-      #  differentiator - this is a string used to separate uploaded documents with a relationship to your model
+      #  differentiator - this is a string used to separate multiple documents related to your model
       #     for example, you can have both a "generated" and an "uploaded" document in one Sample Manifest
       differentiator = options.fetch(:differentiator, "#{field}")
       
@@ -16,7 +16,7 @@ class Document < ActiveRecord::Base
           )
         
         def #{field}
-          Document.first(:conditions => ["documentable_id = ? AND documentable_extended = ?", id, differentiator])
+          self.#{field}_document
         end
         
         def #{field}=(file)
