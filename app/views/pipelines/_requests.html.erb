@@ -116,7 +116,7 @@
         // If the node has an IMG element underneath it then its 'alt' attribute is used, otherwise it's the innerHTML of the node.
         var imgNode = $('img', node);
         return (imgNode.size() > 0 ? imgNode.attr('alt') : $(node).text());
-      },
+      }
     });
   });
 })(jQuery);
