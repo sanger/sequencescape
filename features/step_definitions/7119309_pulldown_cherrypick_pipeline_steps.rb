@@ -44,13 +44,13 @@ Given /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" su
   wells.compact!
 
   submission_template = SubmissionTemplate.find_by_name(submission_name)
-  submission = submission_template.create!(
+  submission = submission_template.create_and_build_submission!(
     :study    => Study.find_by_name(study_name),
     :project  => Project.find_by_name("Test project"),
     :workflow => Submission::Workflow.find_by_key('short_read_sequencing'),
     :user     => User.last,
     :assets   => wells
-    ).create_submission.built!
+    )
   And %Q{1 pending delayed jobs are processed}
 end
 

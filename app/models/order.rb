@@ -65,6 +65,10 @@ class Order < ActiveRecord::Base
     constructor.create_order!(options.merge(:assets => options.fetch(:assets, [])))
   end
 
+  class << self
+    alias_method :create_order!, :create!
+  end
+
   # only needed to note 
   def self.build!(options)
     #call submission with appropriate Order subclass
