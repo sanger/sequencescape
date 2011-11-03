@@ -14,6 +14,7 @@ class Request < ActiveRecord::Base
   include StandardNamedScopes
   include Request::Statemachine
   extend Request::Statistics
+  include Batch::RequestBehaviour
 
   extend EventfulRecord
   has_many_events
@@ -29,8 +30,6 @@ class Request < ActiveRecord::Base
   belongs_to :item
 
   has_many :failures, :as => :failable
-  has_many :batch_requests
-  has_many :batches, :through => :batch_requests
   has_many :billing_events
 
   has_many :request_quotas
@@ -101,25 +100,6 @@ class Request < ActiveRecord::Base
   #  validates_presence_of :study, :request_type#TODO, :submission
 
   named_scope :between, lambda { |source,target| { :conditions => { :asset_id => source.id, :target_asset_id => target.id } } }
-
-  # new version of combinable named_scope
-  named_scope :for_state, lambda { |state| { :conditions => { :state => state } } }
-
-  named_scope :completed, :conditions => {:state => COMPLETED_STATE =["passed", "failed"]}
-  named_scope :passed, :conditions => {:state => "passed"}
-  named_scope :failed, :conditions => {:state => "failed"}
-  named_scope :pipeline_pending, :conditions => {:state => "pending"} #  we don't want the blocked one here
-  named_scope :pending, :conditions => {:state => ["pending", "blocked"]} # block is a kind of substate of pending
-
-  named_scope :started, :conditions => {:state => "started"}
-  named_scope :cancelled, :conditions => {:state => "cancelled"}
-  named_scope :aborted, :conditions => {:state => "aborted"}
-
-  named_scope :open, :conditions => {:state => OPENED_STATE=["pending", "blocked", "started"]}
-  named_scope :closed, :conditions => {:state => ["passed", "failed", "cancelled", "aborted"]}
-  named_scope :quota_counted, :conditions => {:state => QUOTA_COUNTED=["passed", "pending", "blocked", "started"]}
-  named_scope :quota_exempted, :conditions => {:state => QUOTA_EXEMPTED=["failed", "cancelled", "aborted"]}
-  named_scope :hold, :conditions => {:state => "hold"}
 
   # TODO: Really need to be consistent in who our named scopes behave
   named_scope :request_type, lambda { |request_type|
@@ -245,21 +225,6 @@ class Request < ActiveRecord::Base
     {}
   end
 
-  def recycle_from_batch!(batch)
-    self.detach!
-    self.batches.delete(batch)
-    #self.detach
-    #self.batches -= [ batch ]
-  end
-
-  def study_item
-    Item.find(:first, :conditions => {:id => self.item_id})
-  end
-
-  def finished?
-    self.passed? || self.failed?
-  end
-
   def get_value(request_information_type)
     return '' unless self.request_metadata.respond_to?(request_information_type.key.to_sym)
     value = self.request_metadata.send(request_information_type.key.to_sym)
@@ -269,73 +234,24 @@ class Request < ActiveRecord::Base
 
   def value_for(name, batch = nil)
     rit = RequestInformationType.find_by_name(name)
-    if rit
-      rit_value = self.get_value(rit)
+    rit_value = self.get_value(rit) if rit.present?
+    return rit_value if rit_value.present?
 
-      if rit_value.blank?
-        self.value_for_decriptor(name, batch)
-      else
-        rit_value
-      end
-    else
-      self.value_for_decriptor(name, batch)
-    end
-  end
-
-  def value_for_decriptor(name, batch)
-    desc = nil
-    list = self.lab_events
-    if batch
-      list = self.lab_events_for_batch(batch)
-    end
-    list.each do |event|
-      desc = event.descriptor_value_for(name)
-      unless desc.nil?
-        return desc
-      end
-    end
-    unless desc.nil?
-      desc
-    else
-      ""
-    end
-  end
-
-  def mark_in_batch(batch, save_request=true)
-    # =================
-    # WARNING, this method should be called in batch#create_request but is "inlined" there instead (for performance reasons)
-    # So make sure your update batch#create_requests accordingly
-    # ===============
-    # To ensure that the request isn't still viewable in the inbox.
-    self.state = "started"
-    self.save if save_request
+    list = (batch.present? ? self.lab_events_for_batch(batch) : self.lab_events)
+    list.each { |event| desc = event.descriptor_value_for(name) and return desc }
+    ""
   end
 
   def has_passed(batch, task)
-    self.lab_events_for_batch(batch).each do |event|
-      if event.description == task.name
-        return true
-      end
-    end
-    false
+    self.lab_events_for_batch(batch).any? { |event| event.description == task.name }
   end
 
   def lab_events_for_batch(batch)
     self.lab_events.find_all_by_batch_id(batch.id)
   end
-  
 
   def event_with_key_value(k, v = nil)
-    r = false
-    unless v.nil?
-      r = self.lab_events.all(:conditions => ["descriptors LIKE ?", "%#{k.to_s}: #{v.to_s}%" ])
-      if r.empty?
-        r = nil
-      else
-        r = r.first
-      end
-    end
-    r
+    v.nil? ? false : self.lab_events.with_descriptor(k, v).first
   end
 
   # This is used for the default next or previous request check.  It means that if the caller does not specify a
@@ -367,36 +283,8 @@ class Request < ActiveRecord::Base
     self.asset.requests.select { |previous_failed_request| (previous_failed_request.failed? or previous_failed_request.blocked?)}
   end
 
-  def self.unhold_requests(request_proxys, save = true)
-    request_proxys.each do |proxy|
-      begin
-        request = proxy.object
-        if request.state == "hold"
-          request.set_state("pending", save)
-        end
-      rescue
-        next
-      end
-    end
-  end
-
-
   def add_comment(comment, current_user)
     self.comments.create({:description => comment, :user_id => current_user.id})
-  end
-
-  def set_state(new_state, save=true)
-    self.state = new_state
-    self.save if save
-  end
-
-  def position(batch)
-    batch.batch_requests.each do |br|
-      if br.request_id == self.id
-        return br.position
-      end
-      0
-    end
   end
 
   def self.number_expected_for_submission_id_and_request_type_id(submission_id, request_type_id)
@@ -416,42 +304,15 @@ class Request < ActiveRecord::Base
     self.save!
   end
 
-  def asset_parent_id
-    AssetLink.ancestor_id asset_id if asset_id
-  end
-
-  def closed?
-    ["passed", "failed", "cancelled", "aborted"].include?(self.state)
-  end
-
-  def open?
-    ["pending", "started"].include?(self.state)
-  end
-
-  def batch_ids
-    batch_requests.map { |br| br.batch_id }
-  end
-
-  def send_notification_email
-    EventfulMailer.deliver_notify_request_fail(self.study.user.login, self.item, self, "Too many attempts")
-  end
-
   def format_qc_information
-    events = []
-    unless self.lab_events.empty?
-      self.events.each do |event|
-        next if event.family.nil?
+    return [] if self.lab_events.empty?
 
-        message = event.message || "(No message was specified)"
+    self.events.map do |event|
+      next if event.family.nil? or not [ 'pass', 'fail' ].include?(event.family.downcase)
 
-        if event.family.downcase == "pass"
-          events << {"event_id" => event.id, "status" => "pass", "message" => message, "created_at" => event.created_at}
-        elsif event.family.downcase == "fail"
-          events << {"event_id" => event.id, "status" => "fail", "message" => message, "created_at" => event.created_at}
-        end
-      end
-    end
-    events
+      message = event.message || "(No message was specified)"
+      {"event_id" => event.id, "status" => event.family.downcase, "message" => message, "created_at" => event.created_at}
+    end.compact
   end
 
   def copy
@@ -459,32 +320,13 @@ class Request < ActiveRecord::Base
   end
   
   def cancelable?
-    if self.batch_requests.size == 0 && (pending? || blocked?)
-      return true
-    end
-    false
+    self.batch_request.nil? && (pending? || blocked?)
   end
 
-  def update_priority(pipeline)
-    priority = ( self.priority + 1 ) % 2
-    @asset = self.asset
-    @asset.requests.each do |request|
-      request.priority = priority
-      request.save!
-      next_request = request.next_requests(pipeline)
-      next_request.each do |request_next|
-        request_next.priority = priority
-        request_next.save!
-      end
-    end
-  end
-
-  def update_priority_mx
-    requests = Request.find_all_by_submission_id(self.submission_id)
-    priority  = ( self.priority + 1 ) % 2
-    requests.each do |request|
-      request.priority = priority
-      request.save
+  def update_priority
+    priority = (self.priority + 1) % 2
+    submission.requests.each do |request|
+      request.update_attributes!(:priority => priority)
     end
   end
   

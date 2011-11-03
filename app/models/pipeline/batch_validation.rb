@@ -16,4 +16,10 @@ module Pipeline::BatchValidation
     yield('has incorrect type')          if requests.map(&:request_type_id).uniq != [ request_type_id ]
   end
   private :validation_of_requests
+
+  # Overridden by pipeline implementations to ensure that the batch is valid for completion.  By
+  # default this does nothing.
+  def validation_of_batch_for_completion(batch)
+
+  end
 end

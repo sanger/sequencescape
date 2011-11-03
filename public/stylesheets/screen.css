@@ -1367,3 +1367,7 @@ table.checktext_field td {
 #pipeline_inbox {
   background-color: white;
 }
+
+.flag_image {
+  cursor: pointer;
+}

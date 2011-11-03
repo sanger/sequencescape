@@ -565,25 +565,28 @@ class Study < ActiveRecord::Base
         :"aliquot::receptacle" => :aliquots,
         :asset      => [ :requests, :parents, :children ],
         :well       => :plate,
+        :spikedbuffer => :skip_super,
         &helper
     )
 
-    #we duplicate each submission and reassign moved requests to it
-    objects_to_move.each do |object|
-      take_object(object, user, study_from)
-      begin
-        object.save!
-      rescue Exception => ex
-        errors << ex.message
+    Study.transaction do
+      #we duplicate each submission and reassign moved requests to it
+      objects_to_move.each do |object|
+        take_object(object, user, study_from)
+        begin
+          object.save!
+        rescue Exception => ex
+          errors << ex.message
+        end
       end
-    end
 
-    if asset_group
-      assets_to_move.each do |asset|
-        asset_groups = asset.asset_groups.reject { |ag| ag.study == study_from }
-        asset_groups << asset_group
-        asset.asset_groups = asset_groups
-        asset.save
+      if asset_group
+        assets_to_move.each do |asset|
+          asset_groups = asset.asset_groups.reject { |ag| ag.study == study_from }
+          asset_groups << asset_group
+          asset.asset_groups = asset_groups
+          asset.save
+        end
       end
     end
     if errors.present?

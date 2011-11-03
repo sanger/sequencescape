@@ -1,4 +1,4 @@
-@batch
+@batch @javascript
 Feature: Resetting a batch and creating an "identical" batch
   Background:
     Given sequencescape is setup for 4759010
@@ -9,9 +9,10 @@ Feature: Resetting a batch and creating an "identical" batch
     Given a batch in "MX Library Preparation [NEW]" has been setup for feature 4759010
     When I go to the edit page for the last batch
     And I press "Reset"
+    And I accept the action
     Then I should be on the "MX Library Preparation [NEW]" pipeline page
 
-    When I select all requests
+    When I check "Select Request Group 0"
     And I select "Create Batch" from "Action to perform"
     And I press "Submit"
 

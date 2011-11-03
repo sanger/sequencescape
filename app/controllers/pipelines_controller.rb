@@ -161,6 +161,9 @@ class PipelinesController < ApplicationController
 
   def finish
     @batch.complete!(current_user)
+  rescue ActiveRecord::RecordInvalid => exception
+    flash[:error] = exception.record.errors.full_messages
+    redirect_to(url_for(:controller => 'batches', :action => 'show', :id => @batch.id))
   end
 
   def release
@@ -211,21 +214,13 @@ class PipelinesController < ApplicationController
 
   # to modify when next_request will be ready
   def update_priority
-    request = Request.find(params[:request_id])
-    pipeline = Pipeline.find(params[:pipeline_id])
+    request  = Request.find(params[:request_id])
     ActiveRecord::Base.transaction do 
-      request.update_priority(pipeline)
+      request.update_priority
       render :text => '', :layout => false 
     end
   rescue ActiveRecord::RecordInvalid => exception
     render :text => '', :layout => false, :status => :unprocessable_entity
-  end
-
-  # to modify when next_request will be ready
-  def update_priority_mx
-    @request  = Request.find(params[:request_id])
-    @request.update_priority_mx
-    render :layout => false
   end
 
   private

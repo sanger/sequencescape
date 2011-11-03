@@ -30,6 +30,8 @@ module ModelExtensions::Order
     base.class_eval do
       include Validations
 
+      before_validation :merge_in_structured_request_options
+
       named_scope :include_study,   :include => { :study => :uuid_object }
       named_scope :include_project, :include => { :project => :uuid_object }
       named_scope :include_assets,  :include => { :assets => :uuid_object }
@@ -59,7 +61,7 @@ module ModelExtensions::Order
   class NonNilHash 
     def initialize(key_style_operation = :symbolize_keys)
       @key_style_operation = key_style_operation
-      @store = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+      @store = {}
     end
 
     def deep_merge(hash)
@@ -77,13 +79,18 @@ module ModelExtensions::Order
       node_and_leaf(*keys_and_values) { |node, leaf| node[leaf] = value }
     end
 
+    def fetch(*keys_and_default)
+      default = keys_and_default.pop
+      node_and_leaf(*keys_and_default) { |node, left| node.fetch(left, default) }
+    end
+
     def to_hash
       Hash.new.deep_merge(@store)
     end
 
     def node_and_leaf(*keys, &block)
       leaf = keys.pop
-      node = keys.inject(@store) { |h,k| h[k] }
+      node = keys.inject(@store) { |h,k| h[k] ||= {} }
       yield(node, leaf)
     end
     private :node_and_leaf
@@ -96,47 +103,39 @@ module ModelExtensions::Order
   def request_options_structured
     NonNilHash.new(:stringify_keys).tap do |json|
       NonNilHash.new.deep_merge(self.request_options).tap do |attributes|
-        json['read_length']                    = attributes[:read_length]
+        json['read_length']                    = attributes[:read_length].try(:to_i)
         json['library_type']                   = attributes[:library_type]
-        json['fragment_size_required', 'from'] = attributes[:fragment_size_required_from]
-        json['fragment_size_required', 'to']   = attributes[:fragment_size_required_to]
+        json['fragment_size_required', 'from'] = attributes[:fragment_size_required_from].try(:to_i)
+        json['fragment_size_required', 'to']   = attributes[:fragment_size_required_to].try(:to_i)
         json['bait_library']                   = attributes[:bait_library_name]
+        json['sequencing_type']                = attributes[:sequencing_type]
+        json['insert_size']                    = attributes[:insert_size].try(:to_i)
         request_type_multiplier { |id| json['number_of_lanes'] = attributes[:multiplier, id] }
       end
     end.to_hash
   end
-  
-  def request_options_structioned_normalised
-    structured_options = request_options_structured
-    return nil if structured_options.blank?
-    ['read_length', 'library_type'].each do |attribute_name|
-      structured_options[attribute_name] = structured_options[attribute_name]['value'] if contains_value_attribute?(structured_options[attribute_name])
-    end
-    ['to', 'from'].each do |attribute_name|
-      structured_options['fragment_size_required'][attribute_name] = structured_options['fragment_size_required'][attribute_name]['value'] if structured_options['fragment_size_required'] && contains_value_attribute?(structured_options['fragment_size_required'][attribute_name])
-    end
-
-    structured_options
-  end
-  
-  def contains_value_attribute?(request_option)
-    return true if ! request_option.blank? && request_option.is_a?(Hash) && request_option['value']
-    
-    false
-  end
 
   def request_options_structured=(values)
-    self.request_options = NonNilHash.new.tap do |attributes|
+    @request_options_structured = NonNilHash.new.tap do |attributes|
       NonNilHash.new(:stringify_keys).deep_merge(values).tap do |json|
-        attributes[:read_length]                 = json['read_length'] 
-        attributes[:library_type]                = json['library_type'] 
-        attributes[:fragment_size_required_from] = json['fragment_size_required', 'from'] 
-        attributes[:fragment_size_required_to]   = json['fragment_size_required', 'to'] 
+        attributes[:read_length]                 = json['read_length']
+        attributes[:library_type]                = json['library_type']
+        attributes[:fragment_size_required_from] = json['fragment_size_required', 'from']
+        attributes[:fragment_size_required_to]   = json['fragment_size_required', 'to']
         attributes[:bait_library_name]           = json['bait_library']
+        attributes[:sequencing_type]             = json['sequencing_type']
+        attributes[:insert_size]                 = json['insert_size']
         request_type_multiplier { |id| attributes[:multiplier, id] = json['number_of_lanes'] }
       end
     end.to_hash
   end
+
+  def merge_in_structured_request_options
+    self.request_options ||= {}
+    self.request_options = self.request_options.deep_merge(@request_options_structured || {})
+    true
+  end
+  private :merge_in_structured_request_options
 
   def request_type_objects
     return [] if self.request_types.blank?

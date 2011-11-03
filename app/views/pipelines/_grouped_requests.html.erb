@@ -1,20 +1,10 @@
-<table width="100%" bgcolor="#edf5ff" cellpadding="2" cellspacing="0" class="sortable">
+<table width="100%" bgcolor="#edf5ff" cellpadding="2" cellspacing="0" class="sortable" id="pipeline_inbox">
   <thead>
     <tr>
       <th class='label' style='text-align: left' width='2%'>&nbsp;</th>
       <th class='label' style='text-align: left' width='2%'>&nbsp;</th>
       <% if current_user.is_lab_manager? %>
-          <th id="priority_flag" class='label' style='text-align: center' width='5%'><%= link_to image_tag("icon_0_flag.png", :size=>"16x16"), "javascript:void(0);" %></th>
-          <th class='label' style="display:none">
-           <input type="hidden" id="upFlag" value = 0>
-           <input type="hidden" id = "setFlagPriority" value="0">
-           <%= observe_field 'upFlag',
-            :url => { :action => :update_priority_mx, :controller => :pipelines },
-            :frequency => 0.5,
-            :update => "setFlagPriority",
-            :with => "'request_id='+ escape($('setFlagPriority').value)+'&pipeline_id="+@pipeline.id.to_s+"'"
-           -%>
-        </th>
+        <th id="priority_flag" class='label' style='text-align: center' width='5%'><%= link_to image_tag("icon_0_flag.png", :size=>"16x16"), "javascript:void(0);" %></th>
       <% end %>
       <th class='label' width='5%'><%= link_to "Item ID", "javascript:void(0);" %></th>
       <th style="display:none" class='label' width='5%'><%= link_to "", "javascript:void(0);" %></th>
@@ -47,8 +37,9 @@
 		      </td>
           <td class="request" width='2%'><a href="javascript:void(0)" onclick="showElement(<%=  request.submission_id %>,<%= requests.size %>); return false;"><%= image_tag "information.png", :size =>"13x13" %></a></td>
           <% if current_user.is_lab_manager? %>
-             <td class='request' style="display:none" width='5%' id="flag_value_<%= request.id.to_s %>"><%= request.priority %></td>
-             <td class='request' style='text-align: center' width='5%'><a href="javascript:void(0)" onclick="changeFlagMxLibrary(<%= request.id %>,<%= request.submission_id %>, <%= requests.size %>); return false;"><%= image_tag "icon_"+request.priority.to_s+"_flag.png", :size =>"16x16", :id => "flag_"+ request.submission_id.to_s %></a></td>
+            <td class='request' style='text-align: center' width='5%'>
+              <%= image_tag "icon_#{request.priority}_flag.png", 'alt' => request.priority, :size => '16x16', :class => 'flag_image', "data-priority" => request.priority, 'data-request-id' => request.id, 'data-submission-id' => request.submission_id %>
+            </td>
           <% end %>
           <td class="request" width='5%'><%= link_to request.submission_id,study_workflow_submission_path(request.study, current_user.workflow, request.submission) %></td>
           <td class="request" width='5%'>&nbsp;</td>
@@ -89,7 +80,9 @@
 		  </td>
           <td style="display:none" class="request" width='5%'><%= link_to request.submission_id,study_workflow_submission_path(request.study, current_user.workflow, request.submission) %></td>
           <% if current_user.is_lab_manager? %>
-           <td class='request' style='text-align: center' width='5%'><%= image_tag "icon_"+request.priority.to_s+"_flag.png", :size =>"16x16", :id => "flag_"+request.submission_id.to_s+"_"+progr.to_s %></a></td>
+            <td class='request' style='text-align: center' width='5%'>
+              <%= image_tag "icon_#{request.priority}_flag.png", 'alt' => request.priority, :size => '16x16', :class => 'related_flag_image', 'data-submission-id' => request.submission_id %>
+            </td>
           <% end %>
           <td class="request" width='5%'><%= link_to request.submission_id,study_workflow_submission_path(request.study, current_user.workflow, request.submission) %></td>
           <td class='request' width='5%'><%= link_to request.id, request_path(request) %></td>

@@ -27,9 +27,9 @@ GIT
 
 GIT
   remote: git+ssh://git@github.com/sanger/ruby_walk
-  revision: 13ce5efd3a8d147a1fe39077fbda5936aba5f9d2
+  revision: 6e86c0413ab508933de899d7a3c6bc3b415e2acb
   specs:
-    ruby_walk (0.0.2)
+    ruby_walk (0.0.3)
 
 GIT
   remote: git+ssh://git@github.com/sanger/sanger_barcode.git
@@ -249,7 +249,7 @@ DEPENDENCIES
   roodi
   ruby-debug
   ruby-oci8 (= 1.0.7)
-  ruby_walk (>= 0.0.2)!
+  ruby_walk (>= 0.0.3)!
   sanger_barcode!
   shoulda (~> 2.10.0)
   sinatra (~> 1.1.0)

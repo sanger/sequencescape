@@ -40,11 +40,13 @@ def create_submission_of_assets(template, assets, request_options = {})
 end
 
 Given /^"([^\"]+)" of (the plate .+) have been (submitted to "[^"]+")$/ do |range, plate, template|
+  request_options = { :read_length => 100 }
+  request_options[:bait_library_name] = 'Human all exon 50MB' if template.name =~ /Pulldown I?SC/
+
   create_submission_of_assets(
     template,
-    plate.wells.select(&range.method(:include?)), {
-      :read_length => 100
-    }
+    plate.wells.select(&range.method(:include?)),
+    request_options
   )
 end
 
@@ -125,7 +127,11 @@ Then /^all "([^\"]+)" requests should have the following details:$/ do |name, ta
       [ attribute, attribute.split('.').inject(request.request_metadata) { |m, s| m.send(s) } ]
     end]
   end.uniq!
-  assert_equal([Hash[table.raw]], results, "Request details are not identical")
+  expected = Hash[table.raw.map do |attribute, value|
+    value = value.to_i if [ 'fragment_size_required_from', 'fragment_size_required_to' ].include?(attribute)
+    [ attribute, value ]
+  end]
+  assert_equal([ expected ], results, "Request details are not identical")
 end
 
 Given /^"([^\"]+-[^\"]+)" of the plate with ID (\d+) are empty$/ do |range, id|

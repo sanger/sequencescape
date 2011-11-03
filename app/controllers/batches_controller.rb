@@ -65,7 +65,7 @@ class BatchesController < ApplicationController
     request_proxies.each do |proxy|
       request = proxy.object
       next if request.nil?
-      request.set_state("hold")
+      request.hold!
     end
 
     respond_to do |format|

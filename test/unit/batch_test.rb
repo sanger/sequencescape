@@ -140,8 +140,6 @@ class BatchTest < ActiveSupport::TestCase
 
     context "create requests" do
       setup do
-        Request.any_instance.stubs(:mark_in_batch).returns(true)
-
         @requests    = (1..4).map { |_| Factory(:request, :request_type => @pipeline.request_type) }
         @request_ids = @requests.map { |r| Request.new_proxy(r.id) }
         @batch       = @pipeline.batches.create!(:requests => @requests)
@@ -290,8 +288,6 @@ class BatchTest < ActiveSupport::TestCase
 
     context "create requests" do
       setup do
-        Request.any_instance.stubs(:mark_in_batch).returns(true)
-
         @requests = (1..4).map { |_| Factory(:request, :request_type => @pipeline.request_type) }
         @request_ids = @requests.map { |r| Request.new_proxy(r.id) }
         @batch = @pipeline.batches.create!(:requests => @requests)
@@ -916,7 +912,17 @@ class BatchTest < ActiveSupport::TestCase
         end
       end
     end
-    
-    
+  end
+
+  context "completing a batch" do
+    setup do
+      @batch, @user = Factory(:batch), Factory(:user)
+      @batch.start!(@user)
+    end
+
+    should "check that with the pipeline that the batch is valid" do
+      @batch.pipeline.expects(:validation_of_batch_for_completion).with(@batch)
+      @batch.complete!(@user)
+    end
   end
 end

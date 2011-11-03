@@ -107,7 +107,7 @@ end.tap do |pipeline|
   create_request_information_types(pipeline, 'fragment_size_required_from', 'fragment_size_required_to', 'library_type')
 end
 
-LibraryCreationPipeline.create!(:name => 'MX Library Preparation [NEW]') do |pipeline|
+MultiplexedLibraryCreationPipeline.create!(:name => 'MX Library Preparation [NEW]') do |pipeline|
   pipeline.asset_type          = 'LibraryTube'
   pipeline.sorter              = 0
   pipeline.automated           = false

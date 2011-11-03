@@ -9,8 +9,9 @@ class Api::SubmissionIO < Api::Base
   map_attribute_to_json_attribute(:message)
   
   with_association(:order) do
-  map_attribute_to_json_attribute(:template_name)
-  map_attribute_to_json_attribute(:comments)
+    map_attribute_to_json_attribute(:template_name)
+    map_attribute_to_json_attribute(:comments)
+
     with_association(:project) do
       map_attribute_to_json_attribute(:uuid  , 'project_uuid')
       map_attribute_to_json_attribute(:id  , 'project_internal_id')
@@ -28,7 +29,7 @@ class Api::SubmissionIO < Api::Base
 
     extra_json_attributes do |object, json_attributes|
       json_attributes["asset_uuids"] = object.asset_uuids
-      json_attributes["request_options"] =  object.request_options_structioned_normalised unless object.request_options.blank?
+      json_attributes["request_options"] =  object.request_options_structured unless object.request_options_structured.blank?
     end
   end
 
