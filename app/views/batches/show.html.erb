@@ -12,11 +12,15 @@
   <% elsif @pipeline.is_a?(CherrypickingPipeline) || @pipeline.is_a?(GenotypingPipeline) || @pipeline.is_a?(PacBioSequencingPipeline) -%>
     <% add :menu, "Print plate labels" => url_for(:controller => :batches, :action => :print_plate_labels, :id => @batch.id) -%>
   <% elsif (!@pipeline.is_a?(SequencingPipeline)) -%>
-    <% add :menu, "Print stock labels" => url_for(:controller => :batches, :action => :print_stock_labels, :id => @batch.id) -%>
+    <% if @batch.pipeline.can_create_stock_assets? %>
+      <% add :menu, "Print stock labels" => url_for(:controller => :batches, :action => :print_stock_labels, :id => @batch.id) -%>
+    <% end %>
     <% add :menu, "Print labels" => url_for(:controller => :batches, :action => :print_labels, :id => @batch.id) -%>
   <% end -%>
   <% unless @pipeline.is_a?(SequencingPipeline) -%>
     <% add :menu, "Vol' & Conc'"  => url_for(:controller => :batches, :action => :edit_volume_and_concentration, :id => @batch.id) -%>
+  <% end %>
+  <% if @batch.pipeline.can_create_stock_assets? %>
     <% add :menu, "Create stock tubes"  => url_for(:controller => :batches, :action => :new_stock_assets, :id => @batch.id) -%>
   <% end %>
 
