@@ -14,6 +14,7 @@ class Submission < ActiveRecord::Base
   has_many :items, :through => :requests
 
   has_many :orders, :inverse_of => :submission
+  has_many :studies, :through => :orders
   accepts_nested_attributes_for :orders, :update_only => true
 
   def comments
@@ -178,7 +179,7 @@ class Submission < ActiveRecord::Base
   end
 
   def name
-    name = attributes[:name] || orders.map {|o| o.try(:study).try(:name) }.compact.join("|")
+    name = attributes[:name] || orders.map {|o| o.try(:study).try(:name) }.compact.sort.uniq.join("|")
     name.present? ? name : "##{id}"
   end
 

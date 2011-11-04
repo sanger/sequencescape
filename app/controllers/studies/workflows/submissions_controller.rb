@@ -2,11 +2,21 @@ class Studies::Workflows::SubmissionsController < ApplicationController
   SubmissionsControllerError = Class.new(StandardError)
   IncorrectParamsException   = Class.new(SubmissionsControllerError)
   InvalidInputException      = Class.new(SubmissionsControllerError)
-  
-  def show
+
+  before_filter :discover_study_workflow#,  :only => [:show, :index, :new, :create, :destroy, :template_chooser, :info]
+  before_filter :discover_submission,  :only => [:show, :index, :destroy, :build, :edit]
+
+  def  discover_study_workflow
     @study         = Study.find(params[:study_id]) if params[:study_id]
     @workflow        = Submission::Workflow.find(params[:workflow_id]) if params[:workflow_id]
+  end
+
+  def  discover_submission
     @submission      = Submission.find(params[:id])
+  end
+
+
+  def show
     @assets          = []
     @request_types   = []
 
@@ -23,15 +33,11 @@ class Studies::Workflows::SubmissionsController < ApplicationController
   end
 
   def index
-    @study         = Study.find(params[:study_id])
-    @workflow        = Submission::Workflow.find(params[:workflow_id])
-    @submissions     = @study.submissions
   end
 
   def new
     catch :end do
-      @workflow       = Submission::Workflow.find(params[:workflow_id])
-      @study          = Study.find(params[:study_id])     
+    debugger
       if @study.inactive? # || @study.pending?
         flash[:error] = "Study '#{@study.name}' is inactive, no submissions can be added"
         redirect_to studies_url
@@ -145,9 +151,6 @@ class Studies::Workflows::SubmissionsController < ApplicationController
   # WARNING, this method doesn't create a submission but an order.
   # TODO[mb14] refactor
   def create
-    @workflow = Submission::Workflow.find(params[:workflow_id])
-    @study    = Study.find(params[:study_id])
-
     begin
       @comments = nil
 
@@ -206,12 +209,14 @@ class Studies::Workflows::SubmissionsController < ApplicationController
             @order.save!
           end
 
-          if params.fetch(:build_submission, false)
+          debugger
+          if params.fetch(:build_submission, "no") == "yes"
             flash[:notice] = "Submission successfully created"
-            redirect_to new_study_workflow_submissions_path(@study, @workflow, :submission_id => @submission_id, :submission_template_id => submission_template_id)
+            format.html { redirect_to edit_submissions_path(@submission, :submission_template_id => submission_template_id) 
+            }
           else
             flash[:notice] = "Order successfully created. Create a new order or #{link_to 'build the submission', submission_path(@submission)}" 
-            format.html { redirect_to study_workflow_submission_path(@study, @workflow, @submission) }
+            format.html { redirect_to new_study_workflow_submissions_path(@study, @workflow, :submission_template_id => submission_template.id, :id => @submission.id) }
           end
         rescue Quota::Error => quota_exception
           action_flash[:error] = quota_exception.message
@@ -232,10 +237,28 @@ class Studies::Workflows::SubmissionsController < ApplicationController
     end
   end
 
+  def edit
+    #Hack
+    order = @submission.orders.try(:first)
+    if order
+      @study ||= order.study unless @study
+      @workflow ||= order.workflow 
+    end
+  end
+
+  def build
+    begin
+      @submission.built!
+      flash[:notice] = "Submission succesfully built"
+    rescue ActiveRecord::RecordInvalid => exception
+      action_flash[:error] = exception.record.errors.full_messages.join(', ')
+      flash[:error] = @submission.errors
+    end
+    redirect_to study_workflow_submissions_path(@study, @workflow,  :id => @submission.id)
+    #render(:action => 'show')
+  end
+
   def destroy
-    @submission = Submission.find(params[:id])
-    @study = @submission.study
-    @workflow = @submission.workflow
     # Checks if anything is not pending
     unless @submission.safe_to_delete?
       flash[:error] = "You can not delete a submission that has started"
@@ -254,15 +277,10 @@ class Studies::Workflows::SubmissionsController < ApplicationController
   end
 
   def template_chooser
-    @study         = Study.find(params[:study_id])
-    @workflow = Submission::Workflow.find(params[:workflow_id])
     @template_list = SubmissionTemplate.all
   end
 
   def info
-
-    @workflow = Submission::Workflow.find(params[:workflow_id])
-    @study = Study.find(params[:study_id])
     submission_template_id = params[:submission_template_id]
     if submission_template_id
       @submission_template = SubmissionTemplate.find(submission_template_id)

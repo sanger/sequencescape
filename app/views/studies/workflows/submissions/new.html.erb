@@ -8,8 +8,8 @@
 <h1>
 <% if  @submission && !@submission.new_record?%>
   Add a new order to the submission
-  <%= link_to @submission.name, submission_path(@submission) %>
-  or build <%= link_to 'it', submission_path(@submission) %>
+  <%= link_to @submission.name, submission_path(@submission) %> 
+  or <%= link_to 'build', edit_submission_path(@submission) %> it
 <% else %>
 Create an new order and a new submission.
 <% end %>
@@ -25,7 +25,7 @@ Create an new order and a new submission.
 Please read and accept the following <%= link_to 'requirements', info_study_workflow_submissions_path(@study, @workflow, :submission_template_id => @submission_template.id) %>.
 
 <% form_for :order, :url => study_workflow_submissions_path(@study, @workflow,
-                                                            :submission_template_id => @submission_template.id, :submission_id => @submission.id),
+                                                            :submission_template_id => @submission_template.id, :id => @submission.try(:id)),
 :html => {:method => :post, :id => "submission_form"
 } do |form| -%>
 

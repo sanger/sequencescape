@@ -84,7 +84,11 @@ ActionController::Routing::Routes.draw do |map|
     end
 
     study.resources :workflows, :controller => "studies/workflows", :member => { :summary => :get, :show_summary => :get } do |workflow|
-      workflow.resources :submissions, :controller => "studies/workflows/submissions", :collection => { :info => [:get, :put], :template_chooser => :get, :new => [:get, :put] }
+      workflow.resources :submissions, :controller => "studies/workflows/submissions",
+        :collection => { :info => [:get, :put], 
+          :template_chooser => :get, :new => [:get, :put], 
+          :bedit => [:get, :post],
+          :build => [:post] }
       workflow.resources :assets, :collection => { :print => :post }
     end
 
