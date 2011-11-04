@@ -163,7 +163,7 @@ Feature: Pick a ng quantity using the Tecan robot
       | Maximum Volume    | 50   |
       | Quantity to pick  | 1000 |
     And I press "Next step"
-    Then I should see "Missing measured concentration for Well"
+    Then I should see "Missing measured concentration for well DN222J:B2"
   
    Scenario: Try to cherrypick where 1 well has no volume
      Given a plate barcode webservice is available and returns "99999"
@@ -182,7 +182,7 @@ Feature: Pick a ng quantity using the Tecan robot
        | Maximum Volume    | 50   |
        | Quantity to pick  | 1000 |
      And I press "Next step"
-     Then I should see "Missing measured volume for Well"
+    Then I should see "Missing measured volume for well DN222J:B2"
      
    Scenario Outline: Invalid picking options
      Given I have a plate "222" with the following wells:
