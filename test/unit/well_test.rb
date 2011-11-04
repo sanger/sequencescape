@@ -183,7 +183,7 @@ class WellTest < ActiveSupport::TestCase
       
       context "with no source concentration" do
         should "raise an error" do
-          assert_raises RuntimeError do
+          assert_raises Cherrypick::ConcentrationError do
             @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(1.1, 2.2, 0.0)
             @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(1.2, 2.2, "")
           end
