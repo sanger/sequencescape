@@ -13,7 +13,7 @@ Given /^I have a released cherrypicking batch with (\d+) samples$/ do |number_of
 	And %Q{I fill in "Volume Required" with "13"}
 	And %Q{I fill in "Concentration Required" with "50"}
 	When %Q{I press "Next step"}
-	When %Q{I press "Submit"}
+	When %Q{I press "Next step"}
 	When %Q{I select "Infinium 670k" from "Plate Purpose"}
 	And %Q{I press "Next step"}
 	When %Q{I select "Genotyping freezer" from "Location"}
@@ -54,7 +54,7 @@ Given /^I have a released cherrypicking batch with 3 plates$/ do
 	And %Q{I fill in "Volume Required" with "13"}
 	And %Q{I fill in "Concentration Required" with "50"}
 	When %Q{I press "Next step"}
-	When %Q{I press "Submit"}
+	When %Q{I press "Next step"}
 	When %Q{I select "Infinium 670k" from "Plate Purpose"}
 	And %Q{I press "Next step"}
 	When %Q{I select "Genotyping freezer" from "Location"}

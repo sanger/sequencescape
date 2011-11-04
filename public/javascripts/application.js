@@ -58,33 +58,6 @@ function deselect_all(){
   });
 }
 
-function samples_are_selected() {
-  var checkboxes = $$('input[type="checkbox"].sample_check');
-  var selected = $$('input[type="checkbox"]:checked.sample_check');
-  var found = false;
-  if (selected.length > 0){
-    found = true;
-  }
-  if (checkboxes.length == 0) {
-    found = true;
-  }
-  return found;
-}
-
-function submit_stage() {
-  if (samples_are_selected() == true) {
-    $('stage_button').disabled = true;
-    $('stage_links').style.display = 'none';
-    $('stage_loading').style.display = 'inline';
-    document.getElementById('stage_form').submit();
-
-    // alert(form);
-    // $('stage_form').submit();
-  } else {
-    alert('Please select one or more items.');
-  }
-}
-
 function disable_cr_and_change_focus(event, current_field, next_field) {
 	if (event.keyCode !=13) { return; }
   $(next_field).focus();

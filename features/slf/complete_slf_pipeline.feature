@@ -203,7 +203,7 @@ Feature: I wish to create samples and push them all the way through QC in SLF
 		And I fill in "Volume Required" with "13"
 		And I fill in "Concentration Required" with "50"
 		When I press "Next step"
-		When I press "Submit"
+		When I press "Next step"
 
 		When I select "Infinium 670k" from "Plate Purpose"
 		And I press "Next step"
