@@ -9,7 +9,7 @@ class Document < ActiveRecord::Base
       #  differentiator - this is a string used to separate multiple documents related to your model
       #     for example, you can have both a "generated" and an "uploaded" document in one Sample Manifest
       differentiator = options.fetch(:differentiator, "#{field}")
-      
+     
       line = __LINE__ + 1
       class_eval(%Q{
         has_one(:#{field}_document, :class_name => "Document", :as => :documentable, :conditions => {:documentable_extended => differentiator}, :dependent => :destroy
@@ -20,10 +20,12 @@ class Document < ActiveRecord::Base
         end
         
         def #{field}=(file)
-          create_#{field}_document(:uploaded_data => file, :documentable_extended => differentiator) unless file.blank?
+          create_#{field}_document(:uploaded_data => file, :documentable_extended => #{differentiator}) unless file.blank?
         end
       }, __FILE__, line)
     end
+    
+   
   end
   
   # Polymorphic relationship

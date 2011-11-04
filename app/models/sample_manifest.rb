@@ -67,8 +67,8 @@ class SampleManifest < ActiveRecord::Base
     end
   end
 
-  has_uploaded_document :uploaded
-  has_uploaded_document :generated
+  has_uploaded_document :uploaded, {:differentiator => "uploaded"}
+  has_uploaded_document :generated, {:differentiator => "generated"}
 
   class_inheritable_accessor :spreadsheet_offset
   class_inheritable_accessor :spreadsheet_header_row

@@ -63,9 +63,6 @@ class CarrierwaveData < ActiveRecord::Migration
           end
           Document.create!(:uploaded_data => generated, :documentable_id => s.id, :documentable_type => "SampleManifest", :documentable_extended => "generated")
         end
-        # Carrierwave needs something in the filename column for it to work
-        s.generated_filename="#{s.id}_generated.xls" 
-        s.uploaded_filename="#{s.id}_uploaded.csv" 
         s.save
       end
       
