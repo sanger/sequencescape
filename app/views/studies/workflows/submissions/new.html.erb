@@ -9,7 +9,9 @@
 <% if  @submission && !@submission.new_record?%>
   Add a new order to the submission
   <%= link_to @submission.name, submission_path(@submission) %> 
-  or <%= link_to 'build', edit_submission_path(@submission) %> it
+  <% if @submission.editable? %>
+    or <%= link_to 'submit', edit_submission_path(@submission) %> it
+  <%end%>
 <% else %>
 Create an new order and a new submission.
 <% end %>
@@ -130,7 +132,7 @@ Please remember once you have created an order, any changes to the assets group 
   <div class="first centered">
     <div id="create_option">
       <p>
-      <%= label_tag(:build_submission, "Finish and build submission")%>
+      <%= label_tag(:build_submission, "Finish and submit")%>
       <%= radio_button_tag(:build_submission, :yes) %>
       </p> <p>
       <%= label_tag(:build_submission, "create an new order")%>
@@ -141,7 +143,7 @@ Please remember once you have created an order, any changes to the assets group 
         or go <%= link_to I18n.t("navigation.menu.back_to_study"), study_path(@study) %>
       <% else%>
         , go <%= link_to I18n.t("navigation.menu.back_to_study"), study_path(@study) %>
-        or check the submission,<%= submission_path(@order)%>
+        or <%= link_to :build, edit_submission_path(@submission)%> the submission.
       <% end %>
       </p>
     </div>

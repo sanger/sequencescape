@@ -86,9 +86,7 @@ ActionController::Routing::Routes.draw do |map|
     study.resources :workflows, :controller => "studies/workflows", :member => { :summary => :get, :show_summary => :get } do |workflow|
       workflow.resources :submissions, :controller => "studies/workflows/submissions",
         :collection => { :info => [:get, :put], 
-          :template_chooser => :get, :new => [:get, :put], 
-          :bedit => [:get, :post],
-          :build => [:post] }
+          :template_chooser => :get, :new => [:get, :put] } 
       workflow.resources :assets, :collection => { :print => :post }
     end
 
@@ -99,7 +97,7 @@ ActionController::Routing::Routes.draw do |map|
   # TODO (jr16) move to a more appropriate location
   map.connect "bulk_submissions", :controller => "bulk_submissions", :action => "new"
 
-  map.resources :submissions, :controller => "studies/workflows/submissions"
+  map.resources :submissions, :controller => "studies/workflows/submissions", :member =>{:submit => :post}
 
   map.resources :properties  do |property|
     property.resources :documents, :controller => "properties/documents", :only => [:show]

@@ -4,7 +4,8 @@ class Studies::Workflows::SubmissionsController < ApplicationController
   InvalidInputException      = Class.new(SubmissionsControllerError)
 
   before_filter :discover_study_workflow#,  :only => [:show, :index, :new, :create, :destroy, :template_chooser, :info]
-  before_filter :discover_submission,  :only => [:show, :index, :destroy, :build, :edit]
+  before_filter :discover_submission,  :only => [:show, :index, :destroy, :submit, :edit, :create, :new]
+  before_filter :guess_paramater_from_submission, :only => [:show, :edit]
 
   def  discover_study_workflow
     @study         = Study.find(params[:study_id]) if params[:study_id]
@@ -12,14 +13,10 @@ class Studies::Workflows::SubmissionsController < ApplicationController
   end
 
   def  discover_submission
-    @submission      = Submission.find(params[:id])
+    @submission      = Submission.find(params[:id]) if params[:id]
   end
 
-
-  def show
-    @assets          = []
-    @request_types   = []
-
+  def guess_paramater_from_submission
     order = @submission.orders.try(:first)
     if order
       @study ||= order.study unless @study
@@ -32,12 +29,17 @@ class Studies::Workflows::SubmissionsController < ApplicationController
     end
   end
 
+
+  def show
+    @assets          = []
+    @request_types   = []
+  end
+
   def index
   end
 
   def new
     catch :end do
-    debugger
       if @study.inactive? # || @study.pending?
         flash[:error] = "Study '#{@study.name}' is inactive, no submissions can be added"
         redirect_to studies_url
@@ -189,10 +191,13 @@ class Studies::Workflows::SubmissionsController < ApplicationController
           # there is no way to differentiate betwween an empti array and an empty hash in she controller paramters, so the controller can send us an empty array
           @properties = {} if @properties == []
 
-          @submission = Submission.find_by_id(params[:submission_id]) if params[:submission_id]
-
           ActiveRecord::Base.transaction do
+            debugger
             @submission ||= Submission.create!
+            if @submission.editable? == false
+              flash[:error] = "Submission can't be modified. Create a new submission instead."
+              raise StandardError
+            end
             @order = @submission_template.new_order(
               { :study           => @study,
                 :project         => @project,
@@ -209,14 +214,13 @@ class Studies::Workflows::SubmissionsController < ApplicationController
             @order.save!
           end
 
-          debugger
           if params.fetch(:build_submission, "no") == "yes"
             flash[:notice] = "Submission successfully created"
-            format.html { redirect_to edit_submissions_path(@submission, :submission_template_id => submission_template_id) 
+            format.html { redirect_to edit_submission_path(@submission, :submission_template_id => @submission_template_id) 
             }
           else
-            flash[:notice] = "Order successfully created. Create a new order or #{link_to 'build the submission', submission_path(@submission)}" 
-            format.html { redirect_to new_study_workflow_submissions_path(@study, @workflow, :submission_template_id => submission_template.id, :id => @submission.id) }
+            flash[:notice] = "Order successfully created. Create a new order or #{link_to 'submit', edit_submission_path(@submission)} the submission." 
+            format.html { redirect_to new_study_workflow_submissions_path(@study, @workflow, :submission_template_id => @submission_template.id, :id => @submission.id) }
           end
         rescue Quota::Error => quota_exception
           action_flash[:error] = quota_exception.message
@@ -239,14 +243,9 @@ class Studies::Workflows::SubmissionsController < ApplicationController
 
   def edit
     #Hack
-    order = @submission.orders.try(:first)
-    if order
-      @study ||= order.study unless @study
-      @workflow ||= order.workflow 
-    end
   end
 
-  def build
+  def submit
     begin
       @submission.built!
       flash[:notice] = "Submission succesfully built"
@@ -254,7 +253,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
       action_flash[:error] = exception.record.errors.full_messages.join(', ')
       flash[:error] = @submission.errors
     end
-    redirect_to study_workflow_submissions_path(@study, @workflow,  :id => @submission.id)
+    redirect_to submission_path(@submission)
     #render(:action => 'show')
   end
 
