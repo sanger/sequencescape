@@ -6,12 +6,16 @@
   <% add :menu, "Print stock pool label" => url_for(:controller => :batches, :action => :print_stock_multiplex_labels, :id => @batch.id) -%>
   <% add :menu, "Print labels" => url_for(:controller => :batches, :action => :print_labels, :id => @batch.id) -%>
 <% else -%>
-  <% add :menu, "Print stock labels" => url_for(:controller => :batches, :action => :print_stock_labels, :id => @batch.id) -%>
+  <% if @batch.pipeline.can_create_stock_assets? %>
+    <% add :menu, "Print stock labels" => url_for(:controller => :batches, :action => :print_stock_labels, :id => @batch.id) -%>
+  <% end %>
   <% add :menu, "Print labels" => url_for(:controller => :batches, :action => :print_labels, :id => @batch.id) -%>
 <% end -%>
 
 <% add :menu, "Vol' & Conc'" => url_for(:controller => :assets, :action => :find_by_barcode) -%>
+<% if @batch.pipeline.can_create_stock_assets? %>
 <% add :menu, "Create stock tubes"  => url_for(:controller => :batches, :action => :new_stock_assets, :id => @batch.id) -%>
+<% end %>
 <% add :menu, "Fail batch" => url_for(:controller => :batches, :action => :fail, :id => @batch.id) %>
 
 <% if @batch.workflow.locale == "Internal" && ! @batch.pipeline.sequencing? %> 
