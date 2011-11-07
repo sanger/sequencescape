@@ -20,8 +20,7 @@ module SampleManifest::PlateBehaviour
     def print_labels_for(plates, &block)
       plates              = plates.sort_by(&:barcode)
       stock_plate_purpose = PlatePurpose.stock_plate_purpose
-      printables          = stock_plate_purpose.create_barcode_labels_from_plates(plates)
-      yield(printables, Plate.prefix, "long", stock_plate_purpose.name.to_s)
+      yield(plates.map(&:barcode_label_for_printing), Plate.prefix, "long", stock_plate_purpose.name.to_s)
     end
 
     # This method ensures that each of the plates is handled by an individual job.  If it doesn't do this we run

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111102140039) do
+ActiveRecord::Schema.define(:version => 20111107214502) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -576,6 +576,22 @@ ActiveRecord::Schema.define(:version => 20111102140039) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "plate_creator_purposes", :force => true do |t|
+    t.integer  "plate_creator_id", :null => false
+    t.integer  "plate_purpose_id", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "plate_creators", :force => true do |t|
+    t.string   "name",             :null => false
+    t.integer  "plate_purpose_id", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "plate_creators", ["name"], :name => "index_plate_creators_on_name", :unique => true
 
   create_table "plate_metadata", :force => true do |t|
     t.integer "plate_id"
