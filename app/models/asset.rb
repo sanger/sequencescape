@@ -40,6 +40,10 @@ class Asset < ActiveRecord::Base
   has_many :requests_as_source, :class_name => 'Request', :foreign_key => :asset_id, :include => :request_metadata
   has_many :requests_as_target, :class_name => 'Request', :foreign_key => :target_asset_id, :include => :request_metadata
 
+  #Orders
+  has_many :submitted_assets
+  has_many :orders, :through => :submitted_assets
+
   named_scope :requests_as_source_is_a?, lambda { |t| { :joins => :requests_as_source, :conditions => { :requests => { :sti_type => [ t, *Class.subclasses_of(t) ].map(&:name) } } } }
 
   extend ContainerAssociation::Extension
@@ -68,6 +72,11 @@ class Asset < ActiveRecord::Base
 
   def study_ids
     []
+  end
+
+  # All studies related to this asset
+  def related_studies
+    (orders.map(&:study)+studies).compact.uniq
   end
   # Named scope for search by query string behaviour
   named_scope :for_search_query, lambda { |query|
