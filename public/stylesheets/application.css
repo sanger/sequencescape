@@ -1,3 +1,5 @@
+/* This is the canonical CSS file for Sequencescape. */
+/* Please use it instead of screen.css which is deprecated. */
 a {
   color:#0046BF;
   text-decoration:none;
