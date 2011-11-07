@@ -83,10 +83,10 @@ class ManifestGenerator
     case gender = well.primary_aliquot.sample.sample_metadata.gender.try(:downcase)
     when 'male'           then 'M'
     when 'female'         then 'F'
-    when 'not applicable' then 'unknown'
-    when 'mixed'          then 'unknown'
-    when 'hermaphrodite'  then 'unknown'
-    when nil              then 'unknown'
+    when 'not applicable' then 'U'
+    when 'mixed'          then 'U'
+    when 'hermaphrodite'  then 'U'
+    when nil              then 'U'
     else raise StandardError, "Unknown gender type #{gender.inspect}"
     end
   end
