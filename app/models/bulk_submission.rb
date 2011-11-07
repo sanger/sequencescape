@@ -59,7 +59,7 @@ class BulkSubmission < ActiveRecord::Base
     # Needed to construct the submission ...
     'template name',
     'study id', 'study name',
-    'project id', 'project name',
+    'project id', 'project name', 'submission_name',
     'user login',
 
     # Needed to identify the assets and what happens to them ...
@@ -73,6 +73,7 @@ class BulkSubmission < ActiveRecord::Base
   ]
   
   def process(csv_rows)
+    # Store the details of the successful submissions so the user can be presented with a summary
      @submissions = []
      @submission_details = {}
   
@@ -93,7 +94,7 @@ class BulkSubmission < ActiveRecord::Base
       
     elsif not headers.include? "submission name"
       errors.add :spreadsheet, "You submitted an incompatible spreadsheet. Please ensure your spreadsheet contains the 'submission name' column"
-      
+
     else
       submission_details = csv_rows.each_with_index.map do |row, index|
         Hash[headers.each_with_index.map { |header, pos| [ header, row[pos].try(:strip) ] }].merge('row' => index+2)
