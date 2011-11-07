@@ -78,9 +78,7 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
             @workflow = Factory :submission_workflow
             @submission_template = Factory :submission_template
 
-            $stop = true
             get :new, :study_id => @study.id, :workflow_id => @workflow.id, :submission_template_id => @submission_template.id
-            $stop = false
           end
 
           should "respond successfully and render the new template" do
@@ -158,7 +156,7 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
               end
               context "and no samples in asset group have accessions" do
                 setup do
-                  post :create, :submission => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name, :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
+                  post :create, :order => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name, :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
                 end
                 
                 should "not have a successful submission" do
@@ -170,7 +168,7 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
               context "and 1 sample in asset group has an accession and the rest dont" do
                 setup do
                   @asset2.primary_aliquot.sample.sample_metadata.update_attributes!(:sample_ebi_accession_number => 'ERS000001')
-                  post :create, :submission => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
+                  post :create, :order => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
                 end
                 should "not have a successful submission" do
                   assert_contains(@controller.action_flash.values, 'Study and all samples must have accession numbers')
@@ -182,14 +180,14 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
                   @asset_group.assets.each do |asset|
                     asset.primary_aliquot.sample.sample_metadata.update_attributes!(:sample_ebi_accession_number => 'ERS000001')
                   end
-                  post :create, :submission => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
+                  post :create, :order => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
                 end
                 should_have_successful_submission
               end
             end
             context "study doesnt have accession number" do
               setup do
-                post :create, :submission => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
+                post :create, :order => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
               end
               should "not have a successful submission" do
                 assert_contains(@controller.action_flash.values, 'Study and all samples must have accession numbers')
@@ -219,14 +217,14 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
               end
               context "and no samples in asset group have accessions" do
                 setup do
-                  post :create, :submission => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
+                  post :create, :order => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
                 end
                 should_have_successful_submission
               end
               context "and 1 sample in asset group has an accession and the rest dont" do
                 setup do
                   @asset2.primary_aliquot.sample.sample_metadata.sample_ebi_accession_number = "ERS0000001"
-                  post :create, :submission => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
+                  post :create, :order => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
                 end
                 should_have_successful_submission
               end
@@ -235,7 +233,7 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
                   @asset_group.assets.each do |asset|
                     asset.primary_aliquot.sample.sample_metadata.sample_ebi_accession_number = "ERS0000001"
                   end
-                  post :create, :submission => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
+                  post :create, :order => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
                 end
                 should_have_successful_submission
               end
@@ -243,7 +241,7 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
 
             context "study doesnt have accession number" do
               setup do
-                post :create, :submission => {}, :asset_group => @asset_group.id.to_s, :project_name => @project.name,  :study_id => @study.id, :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
+                post :create, :order => {}, :asset_group => @asset_group.id.to_s, :project_name => @project.name,  :study_id => @study.id, :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
               end
               should_have_successful_submission
             end
@@ -258,7 +256,7 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
             setup do
               @study.enforce_data_release = false
               @study.save!
-              post :create, :submission => {}, :asset_group => @asset_group.id.to_s,:project_name => @project.name, :study_id => @study.id, :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
+              post :create, :order => {}, :asset_group => @asset_group.id.to_s,:project_name => @project.name, :study_id => @study.id, :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
             end
             should_have_successful_submission
           end
@@ -277,7 +275,7 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
           @project.quotas.create(:request_type => @request_type, :limit => 0)
           #we add a dummy quota so the project seems to have been setup
           @project.quotas.create(:request_type => Factory(:request_type), :limit => 1)
-          post :create, :submission => {}, :asset_group => @asset_group.id.to_s, :project_name => @project.name, :study_id => @study.id, :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
+          post :create, :order => {}, :asset_group => @asset_group.id.to_s, :project_name => @project.name, :study_id => @study.id, :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
         end
         should "not have a successful submission" do
           assert_contains(@controller.action_flash.values, 'Insufficient quota for test type')
@@ -293,7 +291,7 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
           @project.save!
           @study.save!
           @project.quotas.create(:request_type => @request_type, :limit => 0)
-          post :create, :submission => {}, :asset_group => @asset_group.id.to_s, :project_name => @project.name, :study_id => @study.id, :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
+          post :create, :order => {}, :asset_group => @asset_group.id.to_s, :project_name => @project.name, :study_id => @study.id, :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
         end
         should "not have a successful submission" do
           assert_contains(@controller.action_flash.values, 'Quotas are being enforced but have not been setup')
@@ -303,7 +301,7 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
       context 'required but empty parameters' do
         setup do
           @valid_parameters = {
-            :submission => {},
+            :order => {},
             :asset_group => @asset_group.id.to_s,
             :study_id => @study.id,
             :project_name => @project.name,
@@ -333,7 +331,7 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
           assert_nothing_raised do
             post(
               :create,
-              :submission => {},
+              :order => {},
               :asset_group => @asset_group.id.to_s,
               :project_name => @project.name,
               :study_id => @study.id,

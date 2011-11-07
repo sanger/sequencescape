@@ -192,7 +192,6 @@ class Studies::Workflows::SubmissionsController < ApplicationController
           @properties = {} if @properties == []
 
           ActiveRecord::Base.transaction do
-            debugger
             @submission ||= Submission.create!
             if @submission.editable? == false
               flash[:error] = "Submission can't be modified. Create a new submission instead."
@@ -207,10 +206,12 @@ class Studies::Workflows::SubmissionsController < ApplicationController
                 :request_options => @properties,
                 :comments        => @comments,
                 :submission       => @submission
-              }.merge(@asset_details)
+              }
+
               # we don't save the order now, so it's available in the next view
               # in validation fails
             )
+            @order.update_attributes(@asset_details)
             @order.save!
           end
 
