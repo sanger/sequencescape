@@ -181,15 +181,15 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
         context "and no external value set" do
           should "return default value" do
             control = ManifestGenerator.well_sample_gender(@well)
-            assert_equal "unknown", control
+            assert_equal "U", control
             assert control.is_a?(String)
           end
         end
         context "with external value set" do
           {
-            'M'       => 'Male',
-            'F'       => 'Female',
-            'unknown' => [ 'not applicable', 'mixed', 'hermaphrodite', nil ]
+            'M' => 'Male',
+            'F' => 'Female',
+            'U' => [ 'not applicable', 'mixed', 'hermaphrodite', nil ]
           }.each do |expected, genders|
             Array(genders).each do |gender|
               should "see #{gender.inspect} as #{expected.inspect}" do
@@ -366,9 +366,9 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
       end
 
       should "Create a single manifest file" do
-        data =  "1,#{@plate1.infinium_barcode},A01,0,#{@plate1.barcode}_A01_#{@sample1.sanger_sample_id},Species 1,unknown,,15,50,-,,0,,,,-\n"
-        data += "2,#{@plate1.infinium_barcode},A02,0,#{@plate1.barcode}_A02_#{@sample2.sanger_sample_id},Homo sapiens,unknown,,15,50,-,,0,,,,-\n"
-        data += "3,#{@plate1.infinium_barcode},B01,0,#{@plate1.barcode}_B01_#{@sample3.sanger_sample_id},Homo sapiens,unknown,,15,50,-,,0,,,,-\n"
+        data =  "1,#{@plate1.infinium_barcode},A01,0,#{@plate1.barcode}_A01_#{@sample1.sanger_sample_id},Species 1,U,,15,50,-,,0,,,,-\n"
+        data += "2,#{@plate1.infinium_barcode},A02,0,#{@plate1.barcode}_A02_#{@sample2.sanger_sample_id},Homo sapiens,U,,15,50,-,,0,,,,-\n"
+        data += "3,#{@plate1.infinium_barcode},B01,0,#{@plate1.barcode}_B01_#{@sample3.sanger_sample_id},Homo sapiens,U,,15,50,-,,0,,,,-\n"
 
         template = headers + data
 
@@ -406,12 +406,12 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
         end
 
         should "Create a single manifest file" do
-          data =  "1,#{@plate1.infinium_barcode},A01,0,#{@plate1.barcode}_A01_#{@sample1.sanger_sample_id},Species 1,unknown,,15,50,-,,0,,,,-\n"
-          data += "2,#{@plate1.infinium_barcode},A02,0,#{@plate1.barcode}_A02_#{@sample2.sanger_sample_id},Homo sapiens,unknown,,15,50,-,,0,,,,-\n"
-          data += "3,#{@plate1.infinium_barcode},B01,0,#{@plate1.barcode}_B01_#{@sample3.sanger_sample_id},Homo sapiens,unknown,,15,50,-,,0,,,,-\n"
-          data += "4,#{@plate2.infinium_barcode},A01,0,#{@plate2.barcode}_A01_#{@sample4.sanger_sample_id},Homo sapiens,unknown,,15,50,-,,0,,,,-\n"
-          data += "5,#{@plate2.infinium_barcode},A02,0,#{@plate2.barcode}_A02_#{@sample4.sanger_sample_id},Homo sapiens,unknown,,15,50,-,,0,,,,-\n"
-          data += "6,#{@plate2.infinium_barcode},B01,0,#{@plate2.barcode}_B01_#{@sample4.sanger_sample_id},Homo sapiens,unknown,,15,50,-,,0,,,,-\n"
+          data =  "1,#{@plate1.infinium_barcode},A01,0,#{@plate1.barcode}_A01_#{@sample1.sanger_sample_id},Species 1,U,,15,50,-,,0,,,,-\n"
+          data += "2,#{@plate1.infinium_barcode},A02,0,#{@plate1.barcode}_A02_#{@sample2.sanger_sample_id},Homo sapiens,U,,15,50,-,,0,,,,-\n"
+          data += "3,#{@plate1.infinium_barcode},B01,0,#{@plate1.barcode}_B01_#{@sample3.sanger_sample_id},Homo sapiens,U,,15,50,-,,0,,,,-\n"
+          data += "4,#{@plate2.infinium_barcode},A01,0,#{@plate2.barcode}_A01_#{@sample4.sanger_sample_id},Homo sapiens,U,,15,50,-,,0,,,,-\n"
+          data += "5,#{@plate2.infinium_barcode},A02,0,#{@plate2.barcode}_A02_#{@sample4.sanger_sample_id},Homo sapiens,U,,15,50,-,,0,,,,-\n"
+          data += "6,#{@plate2.infinium_barcode},B01,0,#{@plate2.barcode}_B01_#{@sample4.sanger_sample_id},Homo sapiens,U,,15,50,-,,0,,,,-\n"
 
           template = headers + data
           assert_equal template.split(/\n/), remove_date(@manifest).split(/\n/)
