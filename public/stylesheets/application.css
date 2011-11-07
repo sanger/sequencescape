@@ -1,8 +1,11 @@
 /* This is the canonical CSS file for Sequencescape. */
 /* Please use it instead of screen.css which is deprecated. */
 a {
-  color:#0046BF;
+  color: #0046BF;
   text-decoration:none;
+  -moz-transition: all 0.2s ease-in-out 0s;
+  -webkit-transition: all 0.2s ease-in-out 0s;
+  transition: all 0.3s ease-in-out 0s;
 }
 
 a:hover {
@@ -44,11 +47,12 @@ a:visited {
 }
 
 #tabs a:hover {
-  -moz-border-radius: 0 0 5px 5px;
-  border-radius: 0 0 5px 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
   background: #066FA3;
+  background: rgba(0, 69, 120,0.3);
   color: #fff;
-  text-shadow:-1px 1px 1px rgba(102, 106, 109,0.4);
+  text-shadow:-1px 1px 1px rgba(102, 106, 109,1);
 }
 
 #tabs ul {
@@ -627,14 +631,9 @@ table.request-grid {
   text-align: left;
 }
 
-.request-grid th, td {
+th.request-grid, td.request-grid {
   padding: 3px 5px;
   text-align: center;
-}
-
-.request-asset-name {
-  width: 50px;
-  padding: 3px 15px;
 }
 
 tr.second_attempt {
