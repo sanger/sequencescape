@@ -2,8 +2,7 @@ class PlatesController < ApplicationController
   before_filter :login_required, :except => [:upload_pico_results]
   
   def new
-    @plate_purposes = PlatePurpose.find_all_by_qc_display(true)
-    
+    @plate_creators   = Plate::Creator.all(:order => 'name ASC')
     @barcode_printers = BarcodePrinterType.find_by_name("96 Well Plate").barcode_printers
     @barcode_printers = BarcodePrinter.find(:all, :order => "name asc") if @barcode_printers.blank?
 
@@ -20,8 +19,8 @@ class PlatesController < ApplicationController
   
   def create
     ActiveRecord::Base.transaction do
-      plate_purpose = PlatePurpose.find(params[:plates][:plate_purpose])
-      barcode_printer = BarcodePrinter.find(params[:plates][:barcode_printer])
+      plate_creator         = Plate::Creator.find(params[:plates][:creator_id])
+      barcode_printer       = BarcodePrinter.find(params[:plates][:barcode_printer])
       source_plate_barcodes = params[:plates][:source_plates]
 
       user_barcode = Barcode.barcode_to_human(params[:plates][:user_barcode])
@@ -31,7 +30,7 @@ class PlatesController < ApplicationController
         if scanned_user.nil?
           flash[:error] = 'Please scan your user barcode'
           format.html { redirect_to(new_plate_path) }
-        elsif plate_purpose.create_plates_and_print_barcodes(source_plate_barcodes, barcode_printer, scanned_user)
+        elsif plate_creator.execute(source_plate_barcodes, barcode_printer, scanned_user)
           flash[:notice] = 'Created plates and printed barcodes'
           format.html { redirect_to(new_plate_path) }
         else

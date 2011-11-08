@@ -495,11 +495,11 @@ class Plate < Asset
   end
 
   def self.create_default_plates_and_print_barcodes(source_plate_barcodes, barcode_printer, current_user)
+    # NOTE: Temporary change as this code is going to disappear in the future
     return false if source_plate_barcodes.blank? || barcode_printer.blank?
-    self.plates_from_scanned_plate_barcodes(source_plate_barcodes).each do |plate|
-      plate.plate_purpose.create_plates_and_print_barcodes(plate.generate_machine_barcode, barcode_printer, current_user)
+    self.plates_from_scanned_plate_barcodes(source_plate_barcodes).group_by(&:plate_purpose).each do |plate_purpose, plates|
+      Plate::Creator.new(:plate_purposes => plate_purpose.child_plate_purposes).execute(plates.map(&:generate_machine_barcode).join("\n"), barcode_printer, current_user)
     end
-
     true
   end
 
@@ -544,17 +544,24 @@ class Plate < Asset
     self.name
   end
 
-  private
   def set_plate_name_and_size
     self.name = "Plate #{barcode}" if self.name.blank?
     self.size = default_plate_size if self.size.nil?
     self.location = Location.find_by_name("Sample logistics freezer") if self.location.nil?
   end
-
-
+  private :set_plate_name_and_size
 
   extend Metadata
   has_metadata do
     attribute(:infinium_barcode)
+  end
+
+  def barcode_label_for_printing
+    PrintBarcode::Label.new(
+      :number => self.barcode,
+      :study  => self.find_study_abbreviation_from_parent,
+      :suffix => self.parent.try(:barcode),
+      :prefix => self.barcode_prefix.prefix
+    )
   end
 end
