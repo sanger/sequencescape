@@ -36,9 +36,11 @@ class Studies::Workflows::SubmissionsController < ApplicationController
   end
 
   def index
+    @submissions = @study.submissions
   end
 
   def new
+    @study         = Study.find(params[:study_id])
     catch :end do
       if @study.inactive? # || @study.pending?
         flash[:error] = "Study '#{@study.name}' is inactive, no submissions can be added"
