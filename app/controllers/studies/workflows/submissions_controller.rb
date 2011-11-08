@@ -251,7 +251,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
   def submit
     begin
       @submission.built!
-      flash[:notice] = "Submission succesfully built"
+      flash[:notice] = "Submission successfully built"
     rescue ActiveRecord::RecordInvalid => exception
       action_flash[:error] = exception.record.errors.full_messages.join(', ')
       flash[:error] = @submission.errors

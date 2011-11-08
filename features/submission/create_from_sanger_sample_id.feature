@@ -21,7 +21,7 @@ Feature: Create a submission based on the sanger_sample_id
 		ABC_3
 		ABC_4
 		"""
-		And I press "Create Submission"
+		And I create the order and submit the submission
 		Given 1 pending delayed jobs are processed
 		Given I am on the show page for pipeline "DNA QC"
 		Then the pipeline inbox should be:
@@ -36,7 +36,7 @@ Feature: Create a submission based on the sanger_sample_id
 		ABC_1
 		ABC_2
 		"""
-		And I press "Create Submission"
+		And I create the order and submit the submission
 		Given 1 pending delayed jobs are processed
 		Given I am on the show page for pipeline "DNA QC"
 		Then the pipeline inbox should be:
@@ -53,7 +53,7 @@ Feature: Create a submission based on the sanger_sample_id
 		ABC_3 
 		ABC_4	
 		"""
-		And I press "Create Submission"
+		And I create the order and submit the submission
 		Given 1 pending delayed jobs are processed
 		Given I am on the show page for pipeline "DNA QC"
 		Then the pipeline inbox should be:

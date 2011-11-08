@@ -37,8 +37,8 @@ Feature: Creating submissions through the submission templates
 
     When I select "Project testing submission templates" from "Select a financial project"
     And I select "Asset group for submission templates" from "Select a group to submit"
-    And I press "Create Submission"
-    Then I should see "Submission successfully created"
+    And I create the order and submit the submission
+    Then I should see "Submission successfully built"
 
   Scenario: Requesting multiple sequencing requests, which exceeds the quota
     Given the project "Project testing submission templates" has a "Single ended sequencing" quota of 49
@@ -56,7 +56,7 @@ Feature: Creating submissions through the submission templates
 
     When I select "Project testing submission templates" from "Select a financial project"
     And I select "Asset group for submission templates" from "Select a group to submit"
-    And I press "Create Submission"
+    And I press "Create Order"
 
     Then I should see "Insufficient quota for Single ended sequencing"
   
@@ -75,7 +75,7 @@ Feature: Creating submissions through the submission templates
 
     When I select "Project testing submission templates" from "Select a financial project"
     And I select "Asset group for submission templates" from "Select a group to submit"
-    When I press "Create Submission"
+    When I press "Create Order"
 
     Then I should see "Insufficient quota for <library_type>"
 
@@ -100,7 +100,7 @@ Feature: Creating submissions through the submission templates
 
     When I select "Project testing submission templates" from "Select a financial project"
     And I select "Asset group for submission templates" from "Select a group to submit"
-    When I press "Create Submission"
+    When I press "Create Order"
 
     Then I should see "Insufficient quota for <sequencing_type>"
 
@@ -125,9 +125,9 @@ Feature: Creating submissions through the submission templates
 
     When I select "Project testing submission templates" from "Select a financial project"
     And I select "Asset group for submission templates" from "Select a group to submit"
-    When I press "Create Submission"
+    And I create the order and submit the submission
 
-    Then I should see "Submission successfully created"
+    Then I should see "Submission successfully built"
     And I should see "Your submission is currently pending"
     And I should see "Submission created at: Monday 13 September, 2010 09:30"
     And I should see the submission request types of:
@@ -161,9 +161,9 @@ Feature: Creating submissions through the submission templates
     When I select "Project testing submission templates" from "Select a financial project"
     And I select "Asset group for submission templates" from "Select a group to submit"
 
-    When I press "Create Submission"
+    And I create the order and submit the submission
 
-    Then I should see "Submission successfully created"
+    Then I should see "Submission successfully built"
     And I should see "Your submission is currently pending"
     And I should see "Submission created at: Monday 13 September, 2010 09:30"
     And I should see the submission request types of:
@@ -196,9 +196,10 @@ Feature: Creating submissions through the submission templates
       asset_group_of_wells_for_submission_templates_sample_5
       """
 
-    When I press "Create Submission"
+    And I create the order and submit the submission
 
-    Then I should see "Submission successfully created"
+    Then I should see "Submission successfully built"
+
     And I should see "Your submission is currently pending"
     And I should see "Submission created at: Monday 13 September, 2010 09:30"
     And I should see the submission request types of:
@@ -227,7 +228,7 @@ Feature: Creating submissions through the submission templates
 
     When I select "Project testing submission templates" from "Select a financial project"
     And I select "Asset group for submission templates" from "Select a group to submit"
-    When I press "Create Submission"
+    When I press "Create Order"
 
     Then I should see "Insufficient quota for <request_type>"
 
@@ -251,9 +252,9 @@ Feature: Creating submissions through the submission templates
     And I fill in "Fragment size required (from)" with "1"
     And I select "Custom" from "Library type"
     And I select "<read_length>" from "Read length"
-    When I press "Create Submission"
+    And I create the order and submit the submission
 
-    Then I should see "Submission successfully created"
+    Then I should see "Submission successfully built"
 
     # Forces the submission to become a set of requests
     Given the last "pending" submission is made
@@ -300,9 +301,9 @@ Feature: Creating submissions through the submission templates
     And I fill in "Fragment size required (from)" with "1"
     And I select "Custom" from "Library type"
     And I select "<read length>" from "Read length"
-    When I press "Create Submission"
+    And I create the order and submit the submission
 
-    Then I should see "Submission successfully created"
+    Then I should see "Submission successfully built"
 
     # Forces the submission to become a set of requests
     Given the last "pending" submission is made
