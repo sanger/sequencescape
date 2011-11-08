@@ -122,7 +122,7 @@ class BulkSubmission < ActiveRecord::Base
             attributes = {
               :study   => study,
               :project => Project.find_by_id_or_name(details['project id'], details['project name']),
-
+              :submission => details['submission name'],
               :comments => details['comments'],
               :request_options => {
                 :read_length                 => details['read length'],
@@ -175,7 +175,7 @@ class BulkSubmission < ActiveRecord::Base
             request_types     = RequestType.all(:conditions => { :id => template.submission_parameters[:request_type_ids_list].flatten })
             lane_request_type = request_types.detect { |t| t.target_asset_type == 'Lane' or t.name =~ /\ssequencing$/ }
             attributes[:request_options][:multiplier] = { lane_request_type.id => number_of_lanes } if lane_request_type.present?
-
+            
             submission = Submission.build!(attributes.merge(:template => template))
             
             # Collect the IDs of successful submissions
