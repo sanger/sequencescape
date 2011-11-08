@@ -474,6 +474,10 @@ ActiveRecord::Base.transaction do
     end
   end
 
+  # A couple of legacy pulldown types
+  PlatePurpose.create!(:name => 'SEQCAP WG', :cherrypickable_target => false)  # Superceded by Pulldown WGS below (here for transition period)
+  PlatePurpose.create!(:name => 'SEQCAP SC')
+
   # And here is pulldown
   Pulldown::PlatePurposes::PULLDOWN_PLATE_PURPOSE_FLOWS.each do |flow|
     # We're using a different plate purpose for each pipeline, which means we need to attach that plate purpose to the request
@@ -486,7 +490,7 @@ ActiveRecord::Base.transaction do
     # Now we can build from the stock plate through to the end
     initial_purpose = stock_plate_purpose.child_plate_purposes.create!(:type => 'Pulldown::InitialPlatePurpose', :name => flow.shift)
     flow.inject(initial_purpose) do |parent, child_plate_name|
-      options = { :name => child_plate_name }
+      options = { :name => child_plate_name, :cherrypickable_target => false }
       options[:type] = 'Pulldown::LibraryPlatePurpose' if child_plate_name =~ /^(WGS|SC|ISC) library plate$/
       parent.child_plate_purposes.create!(options)
     end
