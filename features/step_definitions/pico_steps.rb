@@ -19,7 +19,7 @@ Then /^the Stock Plate's Pico pass state is "([^"]*)"$/ do |pico_status|
 end
 
 Given /^the "([^\"]+)" plate is created from the plate with barcode "([^\"]+)"$/ do |plate_purpose_name, barcode|
-  plate_purpose = PlatePurpose.find_by_name(plate_purpose_name) or raise StandardError, "Cannot find plate purpose #{plate_purpose_name.inspect}"
-  plates = plate_purpose.create_plates(barcode,User.last)
+  creator = Plate::Creator.find_by_name(plate_purpose_name) or raise StandardError, "Cannot find plate purpose #{plate_purpose_name.inspect}"
+  plates = creator.send(:create_plates, barcode, User.last)
   raise StandardError, "Appears that plates could not be created" if plates.blank?
 end
