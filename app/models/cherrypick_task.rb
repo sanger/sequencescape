@@ -102,11 +102,13 @@ class CherrypickTask < Task
   end
 
   def map_wells_to_plates(requests, template, robot, batch, partial_plate)
+    max_plates = robot_max_plates(robot)
+    raise StandardError, 'The chosen robot has no beds!' if max_plates.zero?
+
     control_well_required = control_well_required?(partial_plate, template)
     num_wells = template.size
 
     empty_wells = map_empty_wells(template,partial_plate)
-    max_plates = robot_max_plates(robot)
     plates_hash = build_plate_wells_from_requests(requests,num_wells)
 
     plates =[]
@@ -200,6 +202,9 @@ class CherrypickTask < Task
 
   def do_task(workflow, params)
     workflow.do_cherrypick_task(self, params)
+  rescue Cherrypick::Error => exception
+    workflow.send(:flash)[:error] = exception.message
+    return false
   end
 
   def self.parse_uploaded_spreadsheet_layout(layout_data,plate_size)

@@ -3,18 +3,16 @@
 <table id="scratch_pad" class="plate" width="100%">
 	<% (plate_rows/2).times do |row| %>
 		<tr id="<%= "scratch_[#{row}" %>]">
-			<% (plate_cols+1).times do |col| %>
-					<td id="" class="empty">Empty</td>
-			<% end %>
+			<% (plate_cols+1).times do |col| %><td id="" class="empty">Empty</td><% end %>
 		</tr>
+    <% plate_ids << "scratch_[#{row}]" %>
 	<% end %>
 </table>
 
-<% control_plate = ControlPlate.first %>
-<% if control_plate%>
-<h3>Controls</h3>
+<% if (control_plate = ControlPlate.first).present? %>
+  <h3>Controls</h3>
   <%= render :partial => 'control_table', :locals => {:table_name => "Illumina", :wells => control_plate.illumina_wells, :control_plate => control_plate,  :plate_class => plate_class, :row_number => 0} %>
-
   <%= render :partial => 'control_table', :locals => {:table_name => "Affy", :wells => control_plate.affy_wells, :control_plate => control_plate,  :plate_class => plate_class, :row_number => 1} %>
+  <% plate_ids << 'control_[0]' << 'control_[1]' %>
 <% end %>
 

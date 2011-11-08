@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111102140039) do
+ActiveRecord::Schema.define(:version => 20111108085356) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -601,6 +601,22 @@ ActiveRecord::Schema.define(:version => 20111102140039) do
     t.datetime "updated_at"
   end
 
+  create_table "plate_creator_purposes", :force => true do |t|
+    t.integer  "plate_creator_id", :null => false
+    t.integer  "plate_purpose_id", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "plate_creators", :force => true do |t|
+    t.string   "name",             :null => false
+    t.integer  "plate_purpose_id", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "plate_creators", ["name"], :name => "index_plate_creators_on_name", :unique => true
+
   create_table "plate_metadata", :force => true do |t|
     t.integer "plate_id"
     t.string  "infinium_barcode"
@@ -624,6 +640,7 @@ ActiveRecord::Schema.define(:version => 20111102140039) do
     t.boolean  "can_be_considered_a_stock_plate",               :default => false,     :null => false
     t.string   "default_state",                                 :default => "pending"
     t.integer  "barcode_printer_type_id",                       :default => 2
+    t.boolean  "cherrypickable_target",                         :default => true,      :null => false
   end
 
   add_index "plate_purposes", ["qc_display"], :name => "index_plate_purposes_on_qc_display"

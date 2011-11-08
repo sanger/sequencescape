@@ -26,5 +26,5 @@ Feature: Display the errors that occur during cherrypicking for pulldown
     And I press "Next step"
 
     Then I should see "Cherrypick Group By Submission"
-    And I should see "Invalid parameter for working out what volume to cherrypick"
+    And I should see "Source concentration (nil) is invalid for cherrypick by nano grams per micro litre"
 

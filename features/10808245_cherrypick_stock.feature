@@ -177,7 +177,7 @@ Feature: Pick by micro litre (stock transfer) using the Tecan robot
         | Volume  |  <volume>  |
       
      And I press "Next step"
-   	 And I press "Submit"
+   	 And I press "Next step"
    	 And I select "Infinium 670k" from "Plate Purpose"
    	 And I press "Next step"
    	 And I select "Genotyping freezer" from "Location"

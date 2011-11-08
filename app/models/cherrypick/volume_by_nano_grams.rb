@@ -1,16 +1,18 @@
 module Cherrypick::VolumeByNanoGrams
-  
   def check_inputs_to_volume_to_cherrypick_by_nano_grams!(minimum_volume, maximum_volume, target_ng, source_well)
-    raise "Well not found" if source_well.nil?
-    raise "Invalid volumes" if minimum_volume.blank? || minimum_volume <= 0.0 || maximum_volume.blank? || maximum_volume <= 0.0
-    raise "Invalid target nano grams" if target_ng.blank? || target_ng <= 0.0
-    source_concentration = source_well.well_attribute.concentration
-    source_volume = source_well.well_attribute.measured_volume
-    raise "Missing measured volume for Well #{source_well.id}" if source_volume.blank? || source_volume <= 0.0
-    raise "Missing measured concentration for Well #{source_well.id}" if source_concentration.blank? || source_concentration <= 0.0 
-    
-    nil
+    raise "Source well not found" if source_well.nil?
+
+    raise Cherrypick::VolumeError, "Minimum volume (#{minimum_volume.inspect}) is invalid for cherrypick by nano grams"          if minimum_volume.blank? || minimum_volume <= 0.0
+    raise Cherrypick::VolumeError, "Maximum volume (#{maximum_volume.inspect}) is invalid for cherrypick by nano grams"          if maximum_volume.blank? || maximum_volume <= 0.0
+    raise Cherrypick::VolumeError, "Maximum volume (#{maximum_volume.inspect}) is less than minimum (#{minimum_volume.inspect})" if maximum_volume < minimum_volume
+
+    raise Cherrypick::AmountError, "Target nano grams (#{target_ng.inspect}) is invalid for cherrypick by nano grams" if target_ng.blank? || target_ng <= 0.0
+
+    source_concentration, source_volume = source_well.well_attribute.concentration, source_well.well_attribute.measured_volume
+    raise Cherrypick::VolumeError, "Missing measured volume for well #{source_well.display_name}(#{source_well.id})"        if source_volume.blank? || source_volume <= 0.0
+    raise Cherrypick::ConcentrationError, "Missing measured concentration for well #{source_well.display_name}(#{source_well.id})" if source_concentration.blank? || source_concentration <= 0.0 
   end
+  private :check_inputs_to_volume_to_cherrypick_by_nano_grams!
   
   def volume_to_cherrypick_by_nano_grams(minimum_volume, maximum_volume, target_ng, source_well)
     check_inputs_to_volume_to_cherrypick_by_nano_grams!(minimum_volume, maximum_volume, target_ng, source_well)
@@ -32,6 +34,5 @@ module Cherrypick::VolumeByNanoGrams
     
     requested_volume
   end
-  
 end
 
