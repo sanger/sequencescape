@@ -40,8 +40,6 @@ xml.batch {
             "id"         => request.asset.id,                                 # TODO: remove
             "name"       => request.asset.name,                               # TODO: remove
             "request_id" => request.id,
-            "study_id"   => request.target_asset.primary_aliquot.study_id,    # TODO: remove
-            "project_id" => request.target_asset.primary_aliquot.project_id,  # TODO: remove
             "qc_state"   => request.target_asset.compatible_qc_state
           ) {
             non_spiked_phiX, spiked_in_phiX = target_asset_aliquots, request.target_asset.spiked_in_buffer
@@ -53,11 +51,8 @@ xml.batch {
           # any aliquots that are tagged from the view.
           xml.library(
             "id"         => request.target_asset.primary_aliquot.library_id,  # TODO: remove
-            "sample_id"  => request.target_asset.primary_aliquot.sample_id,   # TODO: remove
             "name"       => request.asset.name,                               # TODO: remove
             "request_id" => request.id,
-            "study_id"   => request.target_asset.primary_aliquot.study_id,    # TODO: remove
-            "project_id" => request.target_asset.primary_aliquot.project_id,  # TODO: remove
             "qc_state"   => request.target_asset.compatible_qc_state
           ) {
             target_asset_aliquots.each do |aliquot|

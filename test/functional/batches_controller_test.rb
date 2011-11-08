@@ -55,9 +55,7 @@ class BatchesControllerTest < ActionController::TestCase
         should "have api version attribute on root object" do
           assert_response :success
           assert_tag :tag => 'lane', :attributes => { :position => 1, :id => @lane.id, :priority => 99 }
-          assert_tag :tag => "library", :attributes => {:sample_id => @sample.id, :request_id => @request_one.id}
-          assert_tag :tag => "library", :attributes => {:project_id => @project.id, :study_id => @study.id}
-          assert_tag :tag => "library", :attributes => {:qc_state => "fail"}
+          assert_tag :tag => "library", :attributes => {:request_id => @request_one.id, :qc_state => 'fail'}
         end
 
         should 'expose the library information correctly' do
