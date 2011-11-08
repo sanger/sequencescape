@@ -19,25 +19,21 @@
     <% @plate_rows.times { |row_index| plate_ids << "plate[#{index}][#{row_index}]" } %>
   <% end -%>
 
-  <%= render :partial => "scratch_pad", :locals => {:plate_cols =>@plate_cols, :plate_rows => @plate_rows,:plate_class => plate_class} %>
+  <%= render :partial => "scratch_pad", :locals => {:plate_cols =>@plate_cols, :plate_rows => @plate_rows,:plate_class => plate_class, :plate_ids => plate_ids } %>
 
-  <% (@plate_rows/2).times { |row_index| plate_ids << "scratch_[#{row_index}]" } %>
-  <% plate_ids << "control_[0]" -%>
-  <% plate_ids << "control_[1]" -%>
-
-  <% if @plate.nil? -%>
-    <script type="text/javascript">
-      window.onload = (function() {
-          /* 
-           * Sortable only supports direct child elements, which have to have an 'id' attribute.  Hence this Sortable's of each
-           * row in the the plate tables, and allows dragging between them and the scratch pad.
-           */
-          <% plate_ids.each do |plate| %>
-            Sortable.create('<%= plate %>', { containment: ['<%= plate_ids.join("','") %>'], tag: 'td', overlap: 'horizontal' });
-          <% end%>
-          })();
-    </script>
-  <% end -%>
+<% if @plate.nil? -%>
+  <script type="text/javascript">
+    (function($, undefined) {
+      /* 
+       * Sortable only supports direct child elements, which have to have an 'id' attribute.  Hence this Sortable's of each
+       * row in the the plate tables, and allows dragging between them and the scratch pad.
+       */
+      <% plate_ids.each do |plate| %>
+      Sortable.create('<%= plate %>', { containment: ['<%= plate_ids.join("','") %>'], tag: 'td', overlap: 'horizontal' });
+      <% end%>
+    })($);
+  </script>
+<% end -%>
 
   <%= hidden_field_tag 'minimum_volume', @minimum_volume    %>
   <%= hidden_field_tag 'maximum_volume', @maximum_volume    %>
@@ -47,53 +43,36 @@
   <%= hidden_field_tag 'volume_required', @volume_required %>
   <%= hidden_field_tag 'concentration_required', @concentration_required %>
   <%= hidden_field_tag 'micro_litre_volume_required', @micro_litre_volume_required %>
-  <input type='button' value="Submit" id='stage_button' onclick='verifyplate(<%= @plate_cols %>,<%= @plate_rows %>,<%= @plates.size %>)' />
-  <span id='stage_loading' style='display: none;'><%= image_tag 'ajax-loader.gif', :size => "10x10", :alt => 'Saving' %> Saving</span>
-  <span id="stage_links"> or <%= link_to "cancel", pipeline_path(@batch.pipeline) %></span>
+
+  <%= render(:partial => 'next_stage_submit', :locals => { :check_selection => true }) %>
 <% end %>
 
 <script type="text/javascript">
+  (function($, undefined) {
+    return $('#stage_button').click(function() {
+      return verifyplate(<%= @plate_cols %>, <%= @plate_rows %>, <%= @plates.size %>);
+    });
+  })(jQuery);
+
+  // WARNING: '$' is using prototype *not* jQuery, and it's as ugly as hell!
   function verifyplate(num_cols,num_rows,num_plates) {
-    var r=0;
-    var p=0;
-    var c=0;
-    var returnvalues ="";
-    for(p =0; p< num_plates; p++)
-    {
-      for(r = 0 ; r< num_rows; r++)
-      {
+    var hiddenFields = '';
+    for(var p =0; p < num_plates; p++) {
+      for(var r = 0 ; r < num_rows; r++) {
         var col_length = $('plate['+p+']['+r+']').children.length;
-        if((col_length-1) > num_cols)
-        {
+        if((col_length-1) > num_cols) {
           alert('All rows must have '+num_cols+' wells ');
-          return;
+          return false;
         }
 
-        for(c =1; c<=num_cols; c++)
-        {
-          var plate_values =document.createElement("input");
-          plate_values.setAttribute("type", "hidden");
-          plate_values.setAttribute("name", 'plate['+p+']['+r+']['+(c-1)+']');
-          if(c >= col_length )
-          {
-            plate_values.setAttribute("value", "");
-          }
-          else
-          {
-            plate_values.setAttribute("value", $('plate['+p+']['+r+']').children[c].id);
-          }
-          $('stage_form').appendChild(plate_values)
+        for(var c = 1; c <= num_cols; c++) {
+          var value = (c >= col_length) ? '' : $('plate['+p+']['+r+']').children[c].id;
+          hiddenFields += '<input type="hidden" name="plate['+p+']['+r+']['+(c-1)+']" value="'+value+'"/>';
         }
       }
     }
 
-    if (samples_are_selected() == true) {
-      $('stage_links').style.display = 'none';
-      $('stage_loading').style.display = 'inline';
-      document.getElementById('stage_form').submit();
-
-    } else {
-      alert('Please select one or more items.')
-    }
+    jQuery('#stage_form').append(hiddenFields);
+    return true;
   }
 </script>

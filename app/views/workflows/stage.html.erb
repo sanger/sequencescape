@@ -6,12 +6,16 @@
   <% add :menu, "Print stock pool label" => url_for(:controller => :batches, :action => :print_stock_multiplex_labels, :id => @batch.id) -%>
   <% add :menu, "Print labels" => url_for(:controller => :batches, :action => :print_labels, :id => @batch.id) -%>
 <% else -%>
-  <% add :menu, "Print stock labels" => url_for(:controller => :batches, :action => :print_stock_labels, :id => @batch.id) -%>
+  <% if @batch.pipeline.can_create_stock_assets? %>
+    <% add :menu, "Print stock labels" => url_for(:controller => :batches, :action => :print_stock_labels, :id => @batch.id) -%>
+  <% end %>
   <% add :menu, "Print labels" => url_for(:controller => :batches, :action => :print_labels, :id => @batch.id) -%>
 <% end -%>
 
 <% add :menu, "Vol' & Conc'" => url_for(:controller => :assets, :action => :find_by_barcode) -%>
+<% if @batch.pipeline.can_create_stock_assets? %>
 <% add :menu, "Create stock tubes"  => url_for(:controller => :batches, :action => :new_stock_assets, :id => @batch.id) -%>
+<% end %>
 <% add :menu, "Fail batch" => url_for(:controller => :batches, :action => :fail, :id => @batch.id) %>
 
 <% if @batch.workflow.locale == "Internal" && ! @batch.pipeline.sequencing? %> 
@@ -27,35 +31,26 @@
 <% add :back_menu, "Back to pipeline" => pipeline_path(@batch.pipeline) %>
 
 <h1>BATCH <%= @batch.id %>: <%= @task.name %> <% if @batch.failed? %><span style="color: red">(failed)</span><% end %></h1>
-  <%unless @task.partial.blank? %>
+<% if not @task.partial.blank? %>
   <%= render :partial => @task.partial, :locals => { :requests => @batch.requests } %>
-  <% else %>
-    <% unless @batch.processing_in_manual_qc? %>
-      <% form_for :workflow, :url => { :action => "stage", :id => @stage }, :html => { :id => "stage_form"} do |form| %>
-        <%= render :partial => "shared/batch", :locals => { :requests => @batch.ordered_requests, :edit => false, :stage => true } %>
-        <br />
-        <h1>TASK DETAILS</h1>
-          <div class="content">
-            <div class="info">
-              Required fields are marked with a <%= required_marker %>
-            </div>
-            <div id="sample">
-              <%= render :partial => "descriptors" %>
-            </div>
-            <% unless @task.families.empty? -%>
-              <%= render :partial => "assets" %>
-            <% end %>
-          </div>
+<% elsif not @batch.processing_in_manual_qc? %>
+  <% form_for :workflow, :url => { :action => "stage", :id => @stage }, :html => { :id => "stage_form"} do |form| %>
+    <%= render :partial => "shared/batch", :locals => { :requests => @batch.ordered_requests, :edit => false, :stage => true } %>
 
-        <%= hidden_field_tag "next_stage", "true" %>
-        <%= hidden_field_tag "workflow_id", @workflow.id %>
-        <%= hidden_field_tag "batch_id", @batch.id %>
+    <br />
+    <h1>TASK DETAILS</h1>
+    <div class="content">
+      <div class="info">Required fields are marked with a <%= required_marker %></div>
+      <div id="sample"><%= render :partial => "descriptors" %></div>
+      <% unless @task.families.empty? -%><%= render :partial => "assets" %><% end %>
+    </div>
 
-        <input type="submit" value="Next step" id="stage_button" onclick="submit_stage();" />
-        <span id="stage_loading" style="display: none;"><%= image_tag "ajax-loader.gif", :size => "10x10", :alt => "Saving" %> Saving</span>
-        <span id="stage_links"> or <%= link_to "cancel", workflows_url %>
-      <% end %>
-    <% else %>
-      <%= render :partial => "manual_qc_batches", :locals => { :requests => @batch.ordered_requests } %>
-    <% end %>
+    <%= hidden_field_tag "next_stage", "true" %>
+    <%= hidden_field_tag "workflow_id", @workflow.id %>
+    <%= hidden_field_tag "batch_id", @batch.id %>
+
+    <%= render(:partial => 'next_stage_submit', :locals => { :check_selection => true }) %>
+  <% end %>
+<% else %>
+  <%= render :partial => "manual_qc_batches", :locals => { :requests => @batch.ordered_requests } %>
 <% end %>

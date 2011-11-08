@@ -6,10 +6,10 @@ class PlatesControllerTest < ActionController::TestCase
       @controller = PlatesController.new
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
-      
-      @pico_assay_plates_purpose = PlatePurpose.find_by_name("Pico Assay Plates")
-      @dilution_plates_purpose = PlatePurpose.find_by_name("Dilution Plates")
-      @gel_dilution_plates_purpose = PlatePurpose.find_by_name("Gel Dilution Plates")
+
+      @pico_assay_plate_creator    = Plate::Creator.find_by_name('Pico Assay Plates')
+      @dilution_plates_creator     = Plate::Creator.find_by_name('Dilution Plates')
+      @gel_dilution_plates_creator = Plate::Creator.find_by_name('Gel Dilution Plates')
 
       @barcode_printer = mock("printer abc")
       @barcode_printer.stubs(:id).returns(1)
@@ -48,7 +48,7 @@ class PlatesControllerTest < ActionController::TestCase
 
        context "with no source plates" do
           setup do
-            post :create, :plates => {:plate_purpose => @gel_dilution_plates_purpose.id, :barcode_printer => @barcode_printer.id, :user_barcode => '2470000100730'}
+            post :create, :plates => {:creator_id => @gel_dilution_plates_creator.id, :barcode_printer => @barcode_printer.id, :user_barcode => '2470000100730'}
           end
 
           should_change("Plate.count", :by => 1) { Plate.count }
@@ -61,7 +61,7 @@ class PlatesControllerTest < ActionController::TestCase
           context "with one source plate" do
             setup do
               @parent_raw_barcode = Barcode.calculate_barcode(Plate.prefix, @parent_plate.barcode.to_i)
-              post :create, :plates => {:plate_purpose => @pico_assay_plates_purpose.id, :barcode_printer => @barcode_printer.id, :source_plates =>"#{@parent_raw_barcode}", :user_barcode => '2470000100730' }
+              post :create, :plates => {:creator_id => @pico_assay_plate_creator.id, :barcode_printer => @barcode_printer.id, :source_plates =>"#{@parent_raw_barcode}", :user_barcode => '2470000100730' }
             end
             should_change("PicoAssayPlate.count", :by => 2) { PicoAssayPlate.count }
             should "add a child to the parent plate" do
@@ -77,7 +77,7 @@ class PlatesControllerTest < ActionController::TestCase
               @parent_raw_barcode  = Barcode.calculate_barcode(Plate.prefix, @parent_plate.barcode.to_i)
               @parent_raw_barcode2 = Barcode.calculate_barcode(Plate.prefix, @parent_plate2.barcode.to_i)
               @parent_raw_barcode3 = Barcode.calculate_barcode(Plate.prefix, @parent_plate3.barcode.to_i)
-              post :create, :plates => {:plate_purpose => @pico_assay_plates_purpose.id, :barcode_printer => @barcode_printer.id, :source_plates =>"#{@parent_raw_barcode}\n#{@parent_raw_barcode2}\t#{@parent_raw_barcode3}", :user_barcode => '2470000100730'}
+              post :create, :plates => {:creator_id => @pico_assay_plate_creator.id, :barcode_printer => @barcode_printer.id, :source_plates =>"#{@parent_raw_barcode}\n#{@parent_raw_barcode2}\t#{@parent_raw_barcode3}", :user_barcode => '2470000100730'}
             end
             should_change("PicoAssayPlate.count", :by => 6) { PicoAssayPlate.count }
             should "have child plates" do
@@ -95,7 +95,7 @@ class PlatesControllerTest < ActionController::TestCase
           context "with one source plate" do
             setup do
               @parent_raw_barcode = Barcode.calculate_barcode(Plate.prefix, @parent_plate.barcode.to_i)
-              post :create, :plates => {:plate_purpose => @dilution_plates_purpose.id, :barcode_printer => @barcode_printer.id, :source_plates =>"#{@parent_raw_barcode}", :user_barcode => '2470000100730'}
+              post :create, :plates => {:creator_id => @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id, :source_plates =>"#{@parent_raw_barcode}", :user_barcode => '2470000100730'}
             end
             should_change("WorkingDilutionPlate.count", :by => 1) { WorkingDilutionPlate.count }
             should_change("PicoDilutionPlate.count", :by => 1) { PicoDilutionPlate.count }
@@ -113,7 +113,7 @@ class PlatesControllerTest < ActionController::TestCase
               @parent_raw_barcode  = Barcode.calculate_barcode(Plate.prefix, @parent_plate.barcode.to_i)
               @parent_raw_barcode2 = Barcode.calculate_barcode(Plate.prefix, @parent_plate2.barcode.to_i)
               @parent_raw_barcode3 = Barcode.calculate_barcode(Plate.prefix, @parent_plate3.barcode.to_i)
-              post :create, :plates => {:plate_purpose => @dilution_plates_purpose.id, :barcode_printer => @barcode_printer.id, :source_plates =>"#{@parent_raw_barcode}\n#{@parent_raw_barcode2}\t#{@parent_raw_barcode3}", :user_barcode => '2470000100730'}
+              post :create, :plates => {:creator_id => @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id, :source_plates =>"#{@parent_raw_barcode}\n#{@parent_raw_barcode2}\t#{@parent_raw_barcode3}", :user_barcode => '2470000100730'}
             end
             should_change("WorkingDilutionPlate.count", :by => 3) { WorkingDilutionPlate.count }
             should_change("PicoDilutionPlate.count", :by => 3) { PicoDilutionPlate.count }
@@ -128,23 +128,5 @@ class PlatesControllerTest < ActionController::TestCase
         end
       end
     end
-
-    context "with assay plates " do
-      setup do
-        pico_assay_a_plate_purpose = PlatePurpose.find_by_name("Pico Assay A")
-        pico_assay_b_plate_purpose = PlatePurpose.find_by_name("Pico Assay B")
-
-        plate_purpose = PlatePurpose.find_by_name("Stock Plate")
-        @stock_plate = Factory :plate, :barcode => "1111", :plate_purpose => plate_purpose, :size => 96
-        @pico_dilution_plate = Factory :plate, :barcode => "2222"
-        @assay_plate_a = Factory :plate, :barcode => "9999", :plate_purpose => pico_assay_a_plate_purpose
-        @assay_plate_b = Factory :plate, :barcode => "8888", :plate_purpose => pico_assay_b_plate_purpose
-        AssetLink.create_edge!(@stock_plate,@pico_dilution_plate)
-        AssetLink.create_edge!(@pico_dilution_plate,@assay_plate_a)
-        AssetLink.create_edge!(@pico_dilution_plate,@assay_plate_b)
-      end
-    end
   end
-  
-
 end

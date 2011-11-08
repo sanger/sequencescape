@@ -38,7 +38,7 @@ Feature: Recycling requests in the Cherrypicking pipeline
     And I press "Next step"
 
     When I drag <number to remove> wells to the scratch pad
-    When I press "Submit"
+    When I press "Next step"
 
     # The requests in the Cherrypick inbox are grouped by their parent asset, the plate
     When I am on the "Cherrypick" pipeline page

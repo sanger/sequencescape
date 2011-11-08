@@ -35,7 +35,7 @@
         <% request_asset_comments = request.asset.comments -%>
         <tr>
           <td class="request center" width='5%'>
-            <label for="request_<%= request.id %>"><%=  "Select #{request.asset.sti_type} #{request.asset.barcode} for batch" %></label>
+            <%= hidden_label_tag_for_testing("request_#{request.id}", "Select #{request.asset.sti_type} #{request.asset.barcode} for batch") %>
             <%= check_box :request, request.id, :value => request.id, :class => 'grouped_checkbox request_checkbox', :'data-count' => 1 %>
           </td>
           <% if current_user.is_lab_manager? %>
@@ -116,7 +116,7 @@
         // If the node has an IMG element underneath it then its 'alt' attribute is used, otherwise it's the innerHTML of the node.
         var imgNode = $('img', node);
         return (imgNode.size() > 0 ? imgNode.attr('alt') : $(node).text());
-      },
+      }
     });
   });
 })(jQuery);

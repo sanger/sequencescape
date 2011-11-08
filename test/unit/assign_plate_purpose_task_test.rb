@@ -12,6 +12,12 @@ class AssignPlatePurposeTaskTest < ActiveSupport::TestCase
       @params = {:batch_id => @batch.id, :workflow_id => @workflow.id}
     end
 
+    context "#plate_purpose_options" do
+      should 'return only the cherrypickable plate purposes' do
+        assert_equal(PlatePurpose.cherrypickable.all.map { |p| [p.name, p.id] }.sort, @assign_plate_purpose_task.plate_purpose_options(@batch))
+      end
+    end
+
     context "#partial" do
       should "return the name of the partial used to display this task, 'assign_plate_purpose'" do
         assert_equal 'assign_plate_purpose', @assign_plate_purpose_task.partial

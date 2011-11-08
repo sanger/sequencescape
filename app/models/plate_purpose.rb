@@ -35,6 +35,8 @@ class PlatePurpose < ActiveRecord::Base
 
   include Relationship::Associations
 
+  named_scope :cherrypickable, :conditions => { :cherrypickable_target => true }
+
   # The state of a plate is based on the transfer requests.
   def state_of(plate)
     plate.send(:state_from, plate.transfer_requests)
@@ -81,70 +83,6 @@ class PlatePurpose < ActiveRecord::Base
   validates_format_of :name, :with => /^\w[\s\w._-]+\w$/i
   validates_presence_of :name
   validates_uniqueness_of :name, :message => "already in use"
-
-  def create_child_plates_from_scanned_plate(source_plate_barcode, current_user)
-    plate = Asset.find_from_machine_barcode(source_plate_barcode) or raise ActiveRecord::RecordNotFound, "Could not find plate with machine barcode #{source_plate_barcode.inspect}"
-    create_child_plates_from(plate, current_user)
-  end
-
-  def create_child_plates_from(plate, current_user)
-    child_plate_purposes.map do |target_plate_purpose|
-      target_plate_purpose.target_plate_type.constantize.create_with_barcode!(plate.barcode) do |child_plate|
-        child_plate.plate_purpose = target_plate_purpose
-        child_plate.size          = plate.size
-        child_plate.location      = plate.location
-        child_plate.name          = "#{target_plate_purpose.name} #{child_plate.barcode}"
-      end.tap do |child_plate|
-        plate.wells.each do |well|
-          child_plate.wells << well.clone.tap do |child_well|
-            child_well.aliquots = well.aliquots.map(&:clone)
-          end
-        end
-
-        RequestFactory.create_assets_requests([child_plate.id], plate.study.id) if plate.study.present?
-        AssetLink.create_edge!(plate, child_plate)
-
-        plate.events.create_plate!(target_plate_purpose, child_plate, current_user)
-      end
-    end
-  end
-
-  def sort_plates_by_plate_purpose(plates)
-    plates.inject(Hash.new { |h,k| h[k] = [] }) do |plates_by_plate_purpose, plate|
-      plates_by_plate_purpose.tap { plates_by_plate_purpose[plate.plate_purpose] << plate }
-    end
-  end
-
-  def create_barcode_labels_from_plates(plates)
-    plates.map do |plate|
-      PrintBarcode::Label.new(
-        :number => plate.barcode,
-        :study  => plate.find_study_abbreviation_from_parent,
-        :suffix => plate.parent.try(:barcode),
-        :prefix => plate.barcode_prefix.prefix
-      )
-    end
-  end
-
-  def create_plates_and_print_barcodes(source_plate_barcodes, barcode_printer,current_user)
-    new_plates = create_plates(source_plate_barcodes, current_user)
-    return false if new_plates.empty?
-
-    sort_plates_by_plate_purpose(new_plates).each do |plate_purpose, plates|
-      printables = create_barcode_labels_from_plates(plates) or next
-      barcode_printer.print_labels(printables, Plate.prefix, "long", "#{plate_purpose.name}", current_user.login)
-    end
-
-    true
-  end
-
-  def create_plates(source_plate_barcodes, current_user)
-    return [ plates.create_with_barcode! ] if source_plate_barcodes.blank?
-
-    source_plate_barcodes.scan(/\d+/).map do |source_plate_barcode|
-      create_child_plates_from_scanned_plate(source_plate_barcode, current_user)
-    end.flatten.compact
-  end
 
   def target_plate_type
     self.target_type || 'Plate'

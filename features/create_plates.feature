@@ -11,7 +11,7 @@ Feature: Printing new plate barcodes
     Given I am on the new plate page
     Then I should see "Create Plates"
     And I should see "Barcode printer"
-    When I select "Pulldown" from "plates_plate_purpose"
+    When I select "Pulldown" from "Plate purpose"
     And I select "xyz" from "Barcode printer"
     And I press "Submit"
     Then I should see "Please scan your user barcode"
@@ -21,7 +21,7 @@ Feature: Printing new plate barcodes
     Given I am on the new plate page
     Then I should see "Create Plates"
     And I should see "Barcode printer"
-    When I select "Pulldown" from "plates_plate_purpose"
+    When I select "Pulldown" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
     And I select "xyz" from "Barcode printer"
     Then I expect an exception to be raised when I press "Submit"
@@ -33,7 +33,7 @@ Feature: Printing new plate barcodes
     2470000100730
 
     """
-    When I select "Stock Plate" from "plates_plate_purpose"
+    When I select "Stock Plate" from "Plate purpose"
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
     And I should be on the new plate page
@@ -44,7 +44,7 @@ Feature: Printing new plate barcodes
     
   Scenario Outline: Creating plates
     Given I am on the new plate page
-    When I select "<plate_purpose>" from "plates_plate_purpose"
+    When I select "<plate_purpose>" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"

@@ -23,4 +23,8 @@ class LibraryCreationPipeline < Pipeline
     end
     batch
   end
+
+  def can_create_stock_assets?
+    true
+  end
 end

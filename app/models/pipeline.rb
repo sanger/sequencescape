@@ -251,4 +251,7 @@ class Pipeline < ActiveRecord::Base
     true
   end
 
+  def can_create_stock_assets?
+    false
+  end
 end

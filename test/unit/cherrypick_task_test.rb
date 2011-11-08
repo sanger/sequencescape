@@ -147,6 +147,14 @@ class CherrypickTaskTest < ActiveSupport::TestCase
         @plate.add_and_save_well @parentasset3
       end
 
+      context '#map_wells_to_plates with invalid robot' do
+        should 'raise an exception when the robot has no beds' do
+          assert_raise(StandardError) do
+            @task.map_wells_to_plates([], nil, Factory(:robot), @batch, nil)
+          end
+        end
+      end
+
       context "#map_wells_to_plates with 2 requests" do
         setup do
           @map  = Map.find_by_description_and_asset_size("A1",96)
