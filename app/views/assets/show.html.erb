@@ -104,6 +104,9 @@
       <td>
         <% if request.submission %>
           <%= link_to(request.submission.name, submission_path(request.submission) ) %>
+        <% elsif @asset.studies.present? %>
+          <% first_study = @asset.studies.first %>
+          Study: <%= link_to(first_study.name, study_path(first_study)) %>
         <% else %>
           NA
         <% end %>
