@@ -72,7 +72,7 @@ class BulkSubmission < ActiveRecord::Base
     'number of lanes'
   ]
   
-  # Process the csv rows into a structure
+  # Process CSV into a structure
   #  this creates an array containing a hash for each distinct "submission name" 
   #    "submission name" => array of orders
   #    where each order is a hash of headers to values (grouped by "asset group name")
@@ -95,6 +95,9 @@ class BulkSubmission < ActiveRecord::Base
       Hash[submission_name, order]
     end
   end
+  
+  # This instance variable is used to determine whether to rollback
+  @failures = false
   
   # Returns an order for the given details
   def prepare_order(details)
@@ -155,7 +158,7 @@ class BulkSubmission < ActiveRecord::Base
       request_types     = RequestType.all(:conditions => { :id => template.submission_parameters[:request_type_ids_list].flatten })
       lane_request_type = request_types.detect { |t| t.target_asset_type == 'Lane' or t.name =~ /\ssequencing$/ }
       attributes[:request_options][:multiplier] = { lane_request_type.id => number_of_lanes } if lane_request_type.present?
-
+      @orders =  "Order created from rows #{details['rows']} (should make #{number_of_lanes} lanes)"
       return Order.new(attributes.merge(:template => template))
     rescue ArgumentError
       raise
@@ -163,6 +166,7 @@ class BulkSubmission < ActiveRecord::Base
       errors.add :spreadsheet, "There was a problem on row(s) #{details['rows']}: #{exception.message}"
 
       @failures = true
+      debugger
       nil
     rescue QuotaException => exception
       errors.add :spreadsheet, "There was a quota problem: #{exception.message}"
@@ -177,7 +181,7 @@ class BulkSubmission < ActiveRecord::Base
   
     # Ensure that the keys of the rows are downcased for consistency.
     if (csv_rows[0][0] == "This row is guidance only")
-      help = csv_rows.shift
+      help_row = csv_rows.shift
       headers = csv_rows.shift.map(&:downcase)
     else
       headers = csv_rows.shift.map(&:downcase)
@@ -196,15 +200,14 @@ class BulkSubmission < ActiveRecord::Base
       # Within a single transaction process each of the rows of the CSV file as a separate submission.  Any name
       # fields need to be mapped to IDs, and the 'assets' field needs to be split up and processed if present.
       ActiveRecord::Base.transaction do
-        @failures = false
 
         submission_details.each do |submissions|
           submissions.each do |submission_name,orders|
             puts "submission #{submission_name}:............................"
-            submission = Submission.create!(:name=>submission_name, :order => orders.map(&method(:prepare_order)).compact)
+            submission = Submission.create!(:name=>submission_name, :orders => orders.map(&method(:prepare_order)).compact)
             # Collect the successful submissions
             @submissions.push submission.id
-            @submission_details[order.id] = "Submission #{submission.id} built from rows #{details['rows']} (should make #{number_of_lanes} lanes)"
+            @submission_details[submission.id] = "Submission #{submission.id} built."
           end
         end
         
