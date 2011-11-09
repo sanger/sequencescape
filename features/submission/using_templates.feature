@@ -207,7 +207,7 @@ Feature: Creating submissions through the submission templates
       |Genotyping|
 
     # Ensure that a new asset group has been created
-    Then the asset group with the name from the last submission UUID value contains the assets for the following samples:
+    Then the asset group with the name from the last order UUID value contains the assets for the following samples:
       | asset_group_of_wells_for_submission_templates_sample_1 |
       | asset_group_of_wells_for_submission_templates_sample_2 |
       | asset_group_of_wells_for_submission_templates_sample_3 |

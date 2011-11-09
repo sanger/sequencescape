@@ -2,8 +2,7 @@ Given /^study "([^"]+)" has a registered sample "([^"]+)"$/ do |study_name,sampl
   study  = Study.first(:conditions => { :name => study_name }) or raise "No study defined with name '#{ study_name }'"
   sample = study.samples.create!(:name => sample_name)
 
-  Factory(
-    :submission,
+  Factory::submission(
     :study => study,
     :assets => [ SampleTube.create!.tap { |sample_tube| sample_tube.aliquots.create!(:sample => sample) } ],
     :workflow => @current_user.workflow,
@@ -20,9 +19,16 @@ Given /^study "([^"]+)" has made the following "([^"]+)" requests:$/ do |study_n
     asset  = Asset.first(:conditions => { :name => asset_name }) or raise "No asset defined with name '#{ asset_name }'"
     sample = Sample.first(:conditions => { :name => sample_name }) or raise "No sample defined with name '#{ sample_name }'"
 
+    if asset.respond_to?(:aliquots)
+      asset.aliquots.each do |aliquot|
+        aliquot.update_attributes!(:study_id => study.id)
+      end
+    end
+
     count = (row['count'] == 'none') ? 0 : row['count'].to_i
     if count == 0
-      Request.for_study_id(study.id).for_asset_id(asset.id).for_state(state).select { |r| r.samples.include?(sample)}.map(&:destraoy)
+      requests = study.requests.for_asset_id(asset.id).for_state(state)
+      requests.select { |r| r.samples.include?(sample)}.map(&:destroy) if requests.present?
     else
       count.to_i.times do |index| 
         Factory(

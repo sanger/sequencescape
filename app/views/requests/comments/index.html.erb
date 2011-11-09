@@ -1,6 +1,8 @@
 <% add :title, I18n.t("studies.about") -%>
 <%- add :back_menu, "Back to request" => request_path(@request) -%>
-<% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(@request.study) -%>
+<% @request.asset.studies.uniq.each do |study| %>
+<% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(study) -%>
+<% end %>
 <% add :admin_option, "Administer studies" => index_studies_path -%>
 
 <h1>Request <%= @request.id %> : Comments</h1>

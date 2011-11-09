@@ -28,18 +28,74 @@ class Request < ActiveRecord::Base
 
   belongs_to :pipeline
   belongs_to :item
-  belongs_to :project
 
   has_many :failures, :as => :failable
   has_many :billing_events
 
-  belongs_to :study
+  has_many :request_quotas
+  has_many :quotas, :through => :request_quotas
+
   belongs_to :request_type
   belongs_to :workflow, :class_name => "Submission::Workflow"
 
   belongs_to :user
 
   belongs_to :submission
+  def order_via_submission
+    submission.try(:order)
+  end
+
+  def study_via_order
+    order_via_submission.try(:study)
+  end
+
+  # project is read only so we can set it everywhere
+  # but it will be only used in specific and controlled place
+  belongs_to :initial_project, :class_name => "Project"
+
+  def project_id=(project_id)
+    raise RuntimeError, "Initial project already set" if initial_project_id
+    self.initial_project_id = project_id
+
+    
+    #use quota if neeed
+    #we can't use quota now, because if we are building the request, the request type might
+    # haven't been assigned yet. 
+    # We use in instance variable instead and book the request in a before_save callback
+    # 
+    @orders_to_book = self.initial_project.orders
+    book_quotas unless new_record?
+    #self.initial_project.orders.each { |o| o.use_quota!(self, o.assets.present?) }
+  end
+
+
+  def book_quotas
+    return unless @orders_to_book
+    # if assets are empty the order hasn't booked anything, so there is no need to unbook quota
+    # Should happen in real life but might in test
+    @orders_to_book.each { |o| o.use_quota!(self, o.assets.present?) }
+    @orders_to_book = nil
+  end
+  private :book_quotas
+  after_create :book_quotas
+
+  def project=(project)
+    return unless project
+    self.project_id=project.id
+  end
+
+  #same as project with study
+  belongs_to :initial_study, :class_name => "Study"
+
+  def study_id=(study_id)
+    raise RuntimeError, "Initial study already set" if initial_study_id
+    self.initial_study_id = study_id
+  end
+
+  def study=(study)
+    return unless study
+    self.study_id=study.id
+  end
 
   #  validates_presence_of :study, :request_type#TODO, :submission
 
@@ -64,7 +120,7 @@ class Request < ActiveRecord::Base
 
   named_scope :with_asset, :conditions =>  'asset_id is not null'
   named_scope :with_target, :conditions =>  'target_asset_id is not null and (target_asset_id <> asset_id)'
-  named_scope :join_asset, :joins => { :asset => :aliquots }
+  named_scope :join_asset, :joins => [ :asset ]
 
   #Asset are Locatable (or at least some of them)
   belongs_to :location_association, :primary_key => :locatable_id, :foreign_key => :asset_id
@@ -87,7 +143,39 @@ class Request < ActiveRecord::Base
   named_scope :ordered_for_submission_grouped_inbox, :order => 'submission_id DESC, id ASC'
 
   named_scope :for_asset_id, lambda { |id| { :conditions => { :asset_id => id } } }
-  named_scope :for_study_id, lambda { |id| { :conditions => { :study_id => id } } }
+  named_scope :for_study_ids, lambda { |ids|
+    {
+      :joins =>  %Q(
+      INNER JOIN (assets AS a, aliquots AS al)
+       ON (requests.asset_id = a.id
+           AND  al.receptacle_id = a.id 
+           AND al.study_id IN (#{ids.join(", ")}))
+             ),
+       :group => "requests.id"
+    }
+  } do
+    #fix a bug in rail, the group clause if removed
+    #therefor we need to the DISTINCT parameter
+    def count
+      super('requests.id',:distinct =>true)
+    end
+  end
+
+  def self.for_study_id (study_id)
+    for_study_ids([study_id])
+  end
+  def self.for_study(study)
+    Request.for_study_id(study.id)
+  end
+  def self.for_studies(studies)
+    for_study_ids(studies.map(&:id))
+  end
+
+
+
+
+  delegate :study, :study_id, :to => :asset, :allow_nil => true
+
   named_scope :for_workflow, lambda { |workflow| { :joins => :workflow, :conditions => { :workflow => { :key => workflow } } } }
   named_scope :for_request_types, lambda { |types| { :joins => :request_type, :conditions => { :request_types => { :key => types } } } }
   
@@ -96,7 +184,7 @@ class Request < ActiveRecord::Base
   }
 
   named_scope :find_all_target_asset, lambda { |target_asset_id| { :conditions => [ 'target_asset_id = ?', "#{target_asset_id}" ] } }
-  named_scope :for_studies, lambda { |*studies| { :conditions => { :study_id => studies.map(&:id) } } }
+  named_scope :for_studies, lambda { |*studies| { :conditions => { :initial_study_id => studies.map(&:id) } } }
 
   #------
   #TODO: use eager loading association
@@ -246,7 +334,7 @@ class Request < ActiveRecord::Base
     return false unless self.pending?
     request_type = RequestType.find(new_request_type) 
     return true if self.request_type_id == request_type.id
-    self.project.has_quota?(request_type, 1)
+    self.has_quota?(1)
   end
 
   extend Metadata
@@ -266,4 +354,8 @@ class Request < ActiveRecord::Base
   # NOTE: With properties Request#name would have been silently sent through to the property.  With metadata
   # we now need to be explicit in how we want it delegated.
   delegate :name, :to => :request_metadata
+  def has_quota?(number)
+    #no if one project doesn't have the quota
+    not quotas.map(&:project).any? {|p| p.has_quota?(request_type_id, number) == false}
+  end
 end

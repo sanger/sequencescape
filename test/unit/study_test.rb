@@ -13,23 +13,31 @@ class StudyTest < ActiveSupport::TestCase
         @request_type    = Factory :request_type
         @request_type_2  = Factory :request_type, :name => "request_type_2", :key => "request_type_2"
         @request_type_3  = Factory :request_type, :name => "request_type_3", :key => "request_type_3"
+        requests = []
         # Failed
-        @study.requests << (Factory :cancelled_request, :study => @study, :request_type => @request_type)
-        @study.requests << (Factory :cancelled_request, :study => @study, :request_type => @request_type)
-        @study.requests << (Factory :cancelled_request, :study => @study, :request_type => @request_type)
+        requests << (Factory :cancelled_request, :study => @study, :request_type => @request_type)
+        requests << (Factory :cancelled_request, :study => @study, :request_type => @request_type)
+        requests << (Factory :cancelled_request, :study => @study, :request_type => @request_type)
 
         # Failed
-        @study.requests << (Factory :failed_request, :study => @study, :request_type => @request_type)
+        requests << (Factory :failed_request, :study => @study, :request_type => @request_type)
         # Passed
-        @study.requests << (Factory :passed_request, :study => @study, :request_type => @request_type)
-        @study.requests << (Factory :passed_request, :study => @study, :request_type => @request_type)
-        @study.requests << (Factory :passed_request, :study => @study, :request_type => @request_type)
-        @study.requests << (Factory :passed_request, :study => @study, :request_type => @request_type_2)
-        @study.requests << (Factory :passed_request, :study => @study, :request_type => @request_type_3)
-        @study.requests << (Factory :passed_request, :study => @study, :request_type => @request_type_3)
+        requests << (Factory :passed_request, :study => @study, :request_type => @request_type)
+        requests << (Factory :passed_request, :study => @study, :request_type => @request_type)
+        requests << (Factory :passed_request, :study => @study, :request_type => @request_type)
+        requests << (Factory :passed_request, :study => @study, :request_type => @request_type_2)
+        requests << (Factory :passed_request, :study => @study, :request_type => @request_type_3)
+        requests << (Factory :passed_request, :study => @study, :request_type => @request_type_3)
         # Pending
-        @study.requests << (Factory :pending_request, :study => @study, :request_type => @request_type)
-        @study.requests << (Factory :pending_request, :study => @study, :request_type => @request_type_3)
+        requests << (Factory :pending_request, :study => @study, :request_type => @request_type)
+        requests << (Factory :pending_request, :study => @study, :request_type => @request_type_3)
+
+        #we have to hack t 
+        requests.each do |request|
+          request.asset.aliquots.each do |a|
+            a.update_attributes(:study => @study)
+          end
+        end
         @study.save!
       end
 
@@ -128,9 +136,9 @@ class StudyTest < ActiveSupport::TestCase
       end
       context "with submissions still unprocessed" do
         setup do
-          Factory :submission, :study => @study, :state => 'building'
-          Factory :submission, :study => @study, :state => "pending", :assets => [@asset]
-          Factory :submission, :study => @study, :state => "processing", :assets => [@asset]
+          Factory::submission :study => @study, :state => 'building'
+          Factory::submission :study => @study, :state => "pending", :assets => [@asset]
+          Factory::submission :study => @study, :state => "processing", :assets => [@asset]
         end
         should "return true" do
           assert @study.unprocessed_submissions?
@@ -138,8 +146,8 @@ class StudyTest < ActiveSupport::TestCase
       end
       context "with no submissions unprocessed" do
         setup do
-          Factory :submission, :study => @study, :state => "ready", :assets => [@asset]
-          Factory :submission, :study => @study, :state => "failed", :assets => [@asset]
+          Factory::submission :study => @study, :state => "ready", :assets => [@asset]
+          Factory::submission :study => @study, :state => "failed", :assets => [@asset]
         end
         should "return false" do
           assert ! @study.unprocessed_submissions?
@@ -156,8 +164,11 @@ class StudyTest < ActiveSupport::TestCase
       setup do
         @study, @request_type = Factory(:study), Factory(:request_type)
         (1..2).each { |_| @study.requests << Factory(:passed_request, :request_type => @request_type) }
-        (1..2).each { |_| @study.projects << Factory(:project, :enforce_quotas => true) }
-        @study.projects.each { |project| Factory(:project_quota, :project => project, :request_type => @request_type, :limit => 10) }
+        (1..2).each { |_| Factory(:order, :study => @study ) }
+        @study.projects.each do |project|
+          project.enforce_quotas=true
+          Factory(:project_quota, :project => project, :request_type => @request_type, :limit => 10)
+        end
         @study.save!
 
         # All that has happened to this point is just prelude

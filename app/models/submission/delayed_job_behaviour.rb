@@ -14,7 +14,7 @@ module Submission::DelayedJobBehaviour
 
   def build_batch
     finalize_build!
-  rescue QuotaException => quota_exception
+  rescue Quota::Error => quota_exception
     fail_set_message_and_save(quota_exception.message)
   rescue => exception
     fail_set_message_and_save($!.to_yaml)

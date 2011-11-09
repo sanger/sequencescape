@@ -123,6 +123,7 @@ Feature: Registering samples
   @wip
   Scenario: Setting a 2D barcode on the sample, with no asset group
 
+    @wip @to_fix
   Scenario: Setting a 2D barcode on the sample which goes into an asset group
     When I fill in "Sample name for sample 0" with "sample_with_barcode"
     And I fill in "2D barcode for sample 0" with "12345"

@@ -21,7 +21,7 @@
       <td><%= asset.barcode %></td>
       <td><%= asset.primary_aliquot.sample.sample_reference_genome.try(:name) %></td>
       <td><%= select_tag "asset[#{asset.id}]", options_for_select(asset.protocols_for_select) %></td>
-      <td><%= asset.study.name %></td>
+      <td><%= asset.study.try(:name) %></td>
       <td><%= asset.primary_aliquot.sample.sample_metadata.sample_common_name %></td>
       <td><%= asset.primary_aliquot.sample.sample_metadata.sample_taxon_id %></td>
       <td><%= asset.primary_aliquot.sample.sample_metadata.sample_strain_att %></td>

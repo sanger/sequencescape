@@ -40,6 +40,10 @@ class Asset < ActiveRecord::Base
   has_many :requests_as_source, :class_name => 'Request', :foreign_key => :asset_id, :include => :request_metadata
   has_many :requests_as_target, :class_name => 'Request', :foreign_key => :target_asset_id, :include => :request_metadata
 
+  #Orders
+  has_many :submitted_assets
+  has_many :orders, :through => :submitted_assets
+
   named_scope :requests_as_source_is_a?, lambda { |t| { :joins => :requests_as_source, :conditions => { :requests => { :sti_type => [ t, *Class.subclasses_of(t) ].map(&:name) } } } }
 
   extend ContainerAssociation::Extension
@@ -62,8 +66,18 @@ class Asset < ActiveRecord::Base
 
   named_scope :of_type, lambda { |*args| { :conditions => { :sti_type => args.map { |t| [t, Class.subclasses_of(t)] }.flatten.map(&:name) } } }
 
-  has_many :studies, :class_name => "Study", :through => :requests, :source => :study, :uniq => true
+  def studies
+    []
+  end
 
+  def study_ids
+    []
+  end
+
+  # All studies related to this asset
+  def related_studies
+    (orders.map(&:study)+studies).compact.uniq
+  end
   # Named scope for search by query string behaviour
   named_scope :for_search_query, lambda { |query|
     {
@@ -136,6 +150,10 @@ class Asset < ActiveRecord::Base
     studies.first
   end
 
+  def study_id
+    study.try(:id)
+  end
+
   has_one :creation_request, :class_name => 'Request', :foreign_key => :target_asset_id
 
   def label
@@ -175,16 +193,6 @@ class Asset < ActiveRecord::Base
 
     asset_group
 
-  end
-
-  def move_quaratine(study, user)
-    self.events << Event.new({:message => "Moved to study #{study.id}", :created_by => user.login, :family => "Update"})
-    # Move all requests
-    self.requests.each do |request|
-      request.events << Event.new({:message => "Moved from study #{request.study_id} to study #{study.id}", :created_by => user.login, :family => "Update"})
-      request.study_id = study.id
-      request.save
-    end
   end
 
   after_create :generate_name_with_id, :if => :name_needs_to_be_generated?
@@ -278,10 +286,18 @@ class Asset < ActiveRecord::Base
 
 
   def move_asset_requests(study_from, study_to)
-    requests = self.requests.find_all_by_study_id(study_from.id)
+    requests = self.requests.for_study(study_from)
+    # apparently requests here are read only
+    requests = Request.find(:all, requests.map(&:id))
     requests.each do |request|
-      request.study_id = study_to.id
+      request.initial_study_id = study_to.id
       request.save!
+
+      #redundant with code in sample move ? (Study#take_sample)
+      (request.asset.try(:aliquots) ||[]).each do |aliquot|
+        next if aliquot.study != study_from
+        aliquot.update_attributes!(:study => study_to) if aliquot
+      end
     end
     #puts self.id
   end

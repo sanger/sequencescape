@@ -46,7 +46,7 @@
               <%= render :partial => "previous_failed_requests", :locals => { :request => request } %>
             </td>
           <% end %>
-          <td class="request" width='5%'><%= link_to request.submission_id,study_workflow_submission_path(request.study, current_user.workflow, request.submission) %></td>
+          <td class="request" width='5%'><%= link_to request.submission_id, submission_path(request.submission) %></td>
           <td  width='5%'><%= link_to request.id, request_path(request) %></td>
           <td  width='10%'><%= link_to request.asset.try(:name), asset_path(request.asset) %></td>
           
@@ -76,7 +76,7 @@
               <%= h(request.request_metadata[information_type.key]) %>
             </td>
           <% end %>
-          <td  width='15%'><%= request.study.name %></td>
+          <td  width='15%'><%= request.try(:submission).try(:name) %></td>
         </tr>
       <%- end -%>
       </div>

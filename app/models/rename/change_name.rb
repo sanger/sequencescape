@@ -38,7 +38,6 @@ class Rename::ChangeName
   
   def reload_objects
     self.study.samples.reload
-    self.study.assets.reload
   end
   
   def execute!

@@ -1,18 +1,21 @@
 def sort_arrays(xml_data)
   if xml_data.is_a?(Hash)
-    xml_data.inject({}) do |hash,(key,value)|
-      hash[key] = sort_arrays(value)
-      hash
-    end
+    Hash[xml_data.map { |k,v| [k, sort_arrays(v)] }]
   elsif xml_data.is_a?(Array)
     # Kind of a hack but works for the cases where Hash elements exist
-    xml_data.map { |e| sort_arrays(e) }.sort { |a,b| a.to_a <=> b.to_a }
+    xml_data.map { |e| sort_arrays(e) }.sort_by(&:to_a)
   else
     xml_data
   end
 end
 
 def assert_xml_strings_equal(str1, str2)
+  $stderr.puts "Expected:"
+  $stderr.puts Hash.from_xml(str1).inspect
+
+  $stderr.puts "Received:"
+  $stderr.puts Hash.from_xml(str2).inspect
+
   expected = sort_arrays(Hash.from_xml(str1))
   received = sort_arrays(Hash.from_xml(str2))
   assert_hash_equal(expected, received, 'XML differs when decoded')

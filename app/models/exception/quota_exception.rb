@@ -1,2 +1,0 @@
-class QuotaException < Exception
-end
