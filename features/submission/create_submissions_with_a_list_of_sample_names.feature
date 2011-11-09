@@ -28,7 +28,7 @@ Feature: Creating submissions through the submission templates
 
     When I select "Project testing submission templates" from "Select a financial project"
     And I fill in "sample_names" with "asset_group_for_submission_templates_sample_1"
-    When I create an order and submit the submission
+    When I create the order and submit the submission
 
     Then I should see "Submission successfully built"
     And I should see "Your submission is currently pending"
