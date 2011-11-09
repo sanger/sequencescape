@@ -3,9 +3,6 @@
 a {
   color: #0046BF;
   text-decoration:none;
-  -moz-transition: all 0.2s ease-in-out 0s;
-  -webkit-transition: all 0.2s ease-in-out 0s;
-  transition: all 0.3s ease-in-out 0s;
 }
 
 a:hover {
