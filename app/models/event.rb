@@ -45,7 +45,7 @@ class Event < ActiveRecord::Base
               BillingEvent.generate_fail_event(request)
             end
           end
-        elsif self.family == "pass" && !request.project.nil?
+        elsif self.family == "pass"# && !request.project.nil?
           request.pass!
           unless request.asset.resource 
             BillingEvent.generate_pass_event(request)

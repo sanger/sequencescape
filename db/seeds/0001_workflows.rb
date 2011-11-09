@@ -112,7 +112,6 @@ MultiplexedLibraryCreationPipeline.create!(:name => 'MX Library Preparation [NEW
   pipeline.sorter              = 0
   pipeline.automated           = false
   pipeline.active              = true
-  pipeline.group_by_submission = true
   pipeline.multiplexed         = true
 
   pipeline.location = Location.first(:conditions => { :name => 'Library creation freezer' }) or raise StandardError, "Cannot find 'Library creation freezer' location"
@@ -522,7 +521,6 @@ CherrypickPipeline.create!(:name => 'Cherrypick') do |pipeline|
   pipeline.automated           = false
   pipeline.active              = true
   pipeline.group_by_parent     = true
-  pipeline.group_by_submission = true
 
   pipeline.location = Location.first(:conditions => { :name => 'Sample logistics freezer' }) or raise StandardError, "Cannot find 'Sample logistics freezer' location"
 
@@ -554,7 +552,6 @@ CherrypickForPulldownPipeline.create!(:name => 'Cherrypicking for Pulldown') do 
   pipeline.automated           = false
   pipeline.active              = true
   pipeline.group_by_parent     = true
-  pipeline.group_by_submission = true
   pipeline.max_size            = 96
 
   pipeline.location = Location.first(:conditions => { :name => 'Sample logistics freezer' }) or raise StandardError, "Cannot find 'Sample logistics freezer' location"
@@ -584,7 +581,6 @@ DnaQcPipeline.create!(:name => 'DNA QC') do |pipeline|
   pipeline.automated           = false
   pipeline.active              = true
   pipeline.group_by_parent     = true
-  pipeline.group_by_submission = true
 
   pipeline.location = Location.first(:conditions => { :name => 'Sample logistics freezer' }) or raise StandardError, "Cannot find 'Sample logistics freezer' location"
 
@@ -637,7 +633,6 @@ PulldownMultiplexLibraryPreparationPipeline.create!(:name => 'Pulldown Multiplex
   pipeline.automated            = false
   pipeline.active               = true
   pipeline.group_by_parent      = true
-  pipeline.group_by_study       = false
   pipeline.max_size             = 96
   pipeline.max_number_of_groups = 1
 
@@ -701,7 +696,6 @@ PacBioSequencingPipeline.create!(:name => 'PacBio Sequencing') do |pipeline|
   pipeline.max_size             = 96
   pipeline.asset_type           = 'Well'
   pipeline.group_by_parent = false
-  pipeline.group_by_submission = true
 
   pipeline.location = Location.first(:conditions => { :name => 'PacBio sequencing freezer' }) or raise StandardError, "Cannot find 'PacBio sequencing freezer' location"
 

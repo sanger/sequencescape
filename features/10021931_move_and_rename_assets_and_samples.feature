@@ -1,4 +1,4 @@
-@study @asset @sample @javascript
+@study @asset @sample @javascript @wip @to_fix @or_delete
 Feature: Rename Asset and Sample
   Background: 
     Given I am a "administrator" user logged in as "user"

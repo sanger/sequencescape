@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(:version => 20111108085356) do
 
   add_index "aliquots", ["receptacle_id", "tag_id"], :name => "aliquot_tags_are_unique_within_receptacle", :unique => true
   add_index "aliquots", ["sample_id"], :name => "index_aliquots_on_sample_id"
+  add_index "aliquots", ["study_id"], :name => "index_aliquots_on_study_id"
 
   create_table "archived_properties", :force => true do |t|
     t.text    "value"
@@ -512,6 +513,29 @@ ActiveRecord::Schema.define(:version => 20111108085356) do
   add_index "maps", ["description", "asset_size"], :name => "index_maps_on_description_and_asset_size"
   add_index "maps", ["description"], :name => "index_maps_on_description"
 
+  create_table "orders", :force => true do |t|
+    t.integer  "study_id"
+    t.integer  "workflow_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "state_to_delete",   :limit => 20
+    t.string   "message_to_delete"
+    t.integer  "user_id"
+    t.text     "item_options"
+    t.text     "request_types"
+    t.text     "request_options"
+    t.text     "comments"
+    t.integer  "project_id"
+    t.string   "sti_type"
+    t.string   "template_name"
+    t.integer  "asset_group_id"
+    t.string   "asset_group_name"
+    t.integer  "submission_id"
+  end
+
+  add_index "orders", ["state_to_delete"], :name => "index_submissions_on_state"
+  add_index "orders", ["study_id"], :name => "index_submissions_on_project_id"
+
   create_table "pac_bio_library_tube_metadata", :force => true do |t|
     t.integer "smrt_cells_available"
     t.string  "prep_kit_barcode"
@@ -544,7 +568,7 @@ ActiveRecord::Schema.define(:version => 20111108085356) do
   create_table "pipelines", :force => true do |t|
     t.string   "name"
     t.boolean  "automated"
-    t.boolean  "active",                             :default => true
+    t.boolean  "active",                                      :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "next_pipeline_id"
@@ -552,17 +576,17 @@ ActiveRecord::Schema.define(:version => 20111108085356) do
     t.integer  "location_id"
     t.integer  "request_type_id"
     t.boolean  "group_by_parent"
-    t.string   "asset_type",           :limit => 50
-    t.boolean  "group_by_submission"
+    t.string   "asset_type",                    :limit => 50
+    t.boolean  "group_by_submission_to_delete"
     t.boolean  "multiplexed"
-    t.string   "sti_type",             :limit => 50
+    t.string   "sti_type",                      :limit => 50
     t.integer  "sorter"
-    t.boolean  "paginate",                           :default => false
+    t.boolean  "paginate",                                    :default => false
     t.integer  "max_size"
-    t.boolean  "summary",                            :default => true
-    t.boolean  "group_by_study",                     :default => true
+    t.boolean  "summary",                                     :default => true
+    t.boolean  "group_by_study_to_delete",                    :default => true
     t.integer  "max_number_of_groups"
-    t.boolean  "externally_managed",                 :default => false
+    t.boolean  "externally_managed",                          :default => false
     t.string   "group_name"
   end
 
@@ -676,6 +700,7 @@ ActiveRecord::Schema.define(:version => 20111108085356) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "request_type_id"
+    t.integer  "preordered_count", :default => 0
   end
 
   add_index "quotas", ["request_type_id", "project_id"], :name => "index_quotas_on_request_type_id_and_project_id"
@@ -728,6 +753,13 @@ ActiveRecord::Schema.define(:version => 20111108085356) do
 
   add_index "request_metadata", ["request_id"], :name => "index_request_metadata_on_request_id"
 
+  create_table "request_quotas", :force => true do |t|
+    t.integer "request_id"
+    t.integer "quota_id"
+  end
+
+  add_index "request_quotas", ["quota_id", "request_id"], :name => "index_request_quotas_on_quota_id_and_request_id"
+
   create_table "request_type_plate_purposes", :force => true do |t|
     t.integer "request_type_id",  :null => false
     t.integer "plate_purpose_id", :null => false
@@ -753,11 +785,11 @@ ActiveRecord::Schema.define(:version => 20111108085356) do
   end
 
   create_table "requests", :force => true do |t|
-    t.integer  "study_id"
+    t.integer  "initial_study_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
-    t.string   "state",           :limit => 20, :default => "pending"
+    t.string   "state",              :limit => 20, :default => "pending"
     t.integer  "sample_pool_id"
     t.integer  "workflow_id"
     t.integer  "request_type_id"
@@ -767,17 +799,17 @@ ActiveRecord::Schema.define(:version => 20111108085356) do
     t.integer  "pipeline_id"
     t.integer  "submission_id"
     t.boolean  "charge"
-    t.integer  "project_id"
-    t.integer  "priority",                      :default => 0
+    t.integer  "initial_project_id"
+    t.integer  "priority",                         :default => 0
     t.string   "sti_type"
   end
 
   add_index "requests", ["asset_id"], :name => "index_requests_on_asset_id"
+  add_index "requests", ["initial_project_id"], :name => "index_requests_on_project_id"
+  add_index "requests", ["initial_study_id", "request_type_id", "state"], :name => "index_requests_on_project_id_and_request_type_id_and_state"
+  add_index "requests", ["initial_study_id"], :name => "index_request_on_project_id"
   add_index "requests", ["item_id"], :name => "index_request_on_item_id"
-  add_index "requests", ["project_id"], :name => "index_requests_on_project_id"
-  add_index "requests", ["state", "request_type_id", "study_id"], :name => "request_project_index"
-  add_index "requests", ["study_id", "request_type_id", "state"], :name => "index_requests_on_project_id_and_request_type_id_and_state"
-  add_index "requests", ["study_id"], :name => "index_request_on_project_id"
+  add_index "requests", ["state", "request_type_id", "initial_study_id"], :name => "request_project_index"
   add_index "requests", ["submission_id"], :name => "index_requests_on_submission_id"
   add_index "requests", ["target_asset_id"], :name => "index_requests_on_target_asset_id"
   add_index "requests", ["updated_at"], :name => "index_requests_on_updated_at"
@@ -1093,29 +1125,30 @@ ActiveRecord::Schema.define(:version => 20111108085356) do
   end
 
   create_table "submissions", :force => true do |t|
-    t.integer  "study_id"
-    t.integer  "workflow_id"
+    t.integer  "study_id_to_delete"
+    t.integer  "workflow_id_to_delete"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "state",            :limit => 20
+    t.string   "state",                      :limit => 20
     t.string   "message"
-    t.integer  "user_id"
-    t.text     "item_options"
+    t.integer  "user_id_to_delete"
+    t.text     "item_options_to_delete"
     t.text     "request_types"
     t.text     "request_options"
-    t.text     "comments"
-    t.integer  "project_id"
-    t.string   "sti_type"
-    t.string   "template_name"
-    t.integer  "asset_group_id"
-    t.string   "asset_group_name"
+    t.text     "comments_to_delete"
+    t.integer  "project_id_to_delete"
+    t.string   "sti_type_to_delete"
+    t.string   "template_name_to_delete"
+    t.integer  "asset_group_id_to_delete"
+    t.string   "asset_group_name_to_delete"
+    t.string   "name"
   end
 
   add_index "submissions", ["state"], :name => "index_submissions_on_state"
-  add_index "submissions", ["study_id"], :name => "index_submissions_on_project_id"
+  add_index "submissions", ["study_id_to_delete"], :name => "index_submissions_on_project_id"
 
   create_table "submitted_assets", :force => true do |t|
-    t.integer  "submission_id"
+    t.integer  "order_id"
     t.integer  "asset_id"
     t.datetime "created_at"
     t.datetime "updated_at"

@@ -14,20 +14,14 @@
 <%- add :back_menu, "Back to asset" => asset_path(@request.asset) if @request.asset %>
 
 <h1>
-  <% if @request.study %>
-    <%= link_to @request.study.name, study_path(@request.study) %> :
+  <% if @request.submission %>
+    <%= link_to @request.submission.name, submission_path(@request.submission) %> :
   <% end %>
   Request: <%= @request.id %> 
   <% if @request.request_type %>
     (<%= @request.request_type.name %>)
   <% end %>
 </h1>
-
-<% if @request.study_id %>
-<div class='subtitle'>
-  Study <%= @request.study.id %> &middot; Created on <%= @request.study.created_at.to_formatted_s(:long) %> &middot; <%= @request.study.state.capitalize %>
-</div>
-<% end %>
 
 <% if @request.request_type %>
 <div class="info">

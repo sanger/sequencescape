@@ -54,8 +54,10 @@ class AssignTagsTaskTest < TaskTestBase
         @library        = Factory(:library_tube).tap { |tube| tube.aliquots = @sample_tube.aliquots.map(&:clone) }
         @sample_tube.children << @library
           
-        @mx_request     = Factory :request, :request_type_id => 1, :submission_id => 1, :asset => @sample_tube, :target_asset => @library
-        @cf_request     = Factory :request_without_assets, :request_type_id => 2, :submission_id => 1, :asset => nil
+        submission = Submission.last # probably built in batch ...?
+        @mx_request     = Factory :request, :request_type_id => 1, :submission => submission, :asset => @sample_tube, :target_asset => @library
+        $stop = true
+        @cf_request     = Factory :request_without_assets, :request_type_id => 2, :submission => submission, :asset => nil
         @batch.requests << [@mx_request, @cf_request]
         @controller.batch = @batch
           

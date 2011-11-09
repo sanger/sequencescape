@@ -4,7 +4,7 @@ module Pipeline::InboxUngrouped
   end
 
   # Never group by submission
-  def group_by_submission
+  def group_by_submission?
     false
   end
 end

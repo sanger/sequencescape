@@ -34,7 +34,8 @@ Given /^I have a plate "([^"]*)" in study "([^"]*)" with (\d+) samples in asset 
   asset_group = study.asset_groups.find_by_name(asset_group_name) || study.asset_groups.create!(:name => asset_group_name)
   asset_group.assets << (1..number_of_samples.to_i).map do |index|
     Factory(:well, :name => "Well_#{plate_barcode}_#{index}", :plate => plate, :map_id => index).tap do |well|
-      well.aliquots.create!(:sample => Factory(:sample, :name => "Sample_#{plate_barcode}_#{index}"))
+      well.aliquots.create!(:sample => Factory(:sample, :name => "Sample_#{plate_barcode}_#{index}"),
+                                              :study => study)
     end
   end
 end
@@ -147,7 +148,7 @@ Given /^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)"
     :workflow => Submission::Workflow.find_by_key('microarray_genotyping'),
     :user     => User.last,
     :assets   => wells
-    ).built!
+    ).create_submission.built!
   And %Q{1 pending delayed jobs are processed}
 end
 
@@ -164,7 +165,7 @@ Given /^I have a Cherrypicking submission for asset group "([^"]*)"$/ do |asset_
     :workflow => Submission::Workflow.find_by_key('microarray_genotyping'),
     :user => User.last,
     :asset_group => asset_group
-    ).built!
+    ).create_submission.built!
   And %Q{1 pending delayed jobs are processed}
 end
 

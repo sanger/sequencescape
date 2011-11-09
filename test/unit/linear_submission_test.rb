@@ -18,7 +18,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
         @study = Factory :study
         @project = Factory :project
         @workflow = Factory :submission_workflow
-        @submission_template = Factory :submission_template, :name => @workflow.name
+        @submission_template = Factory :submission_template, :name => @workflow.name, :submission_class_name => "linear_submission"
         @user = Factory :user
 
         @request_type_1 = Factory :request_type, :name => "request type 1"
@@ -36,7 +36,6 @@ class LinearSubmissionTest < ActiveSupport::TestCase
           @mpx_request_type_ids = [@mpx_request_type.id, @sequencing_request_type.id]
 
           @mpx_submission = LinearSubmission.build!(
-            :template         => nil,
             :study            => @study,
             :project          => @project,
             :workflow         => @workflow,
@@ -73,7 +72,6 @@ class LinearSubmissionTest < ActiveSupport::TestCase
               @mpx_request_type_ids = [@mpx_request_type.id, @sequencing_request_type_2.id, @sequencing_request_type.id]
 
               @multiple_mpx_submission = LinearSubmission.build!(
-                :template         => nil,
                 :study            => @study,
                 :project          => @project,
                 :workflow         => @workflow,
@@ -95,7 +93,6 @@ class LinearSubmissionTest < ActiveSupport::TestCase
       context 'normal submission' do
         setup do
           @submission = LinearSubmission.build!(
-            :template         => nil,
             :study            => @study,
             :project          => @project,
             :workflow         => @workflow,
@@ -113,8 +110,8 @@ class LinearSubmissionTest < ActiveSupport::TestCase
         end
 
         should "save request_types as array of Fixnums" do
-          assert_kind_of Array, @submission.request_types
-          assert @submission.request_types.all? {|sample| sample.kind_of?(Fixnum) }
+          assert_kind_of Array, @submission.order.request_types
+          assert @submission.order.request_types.all? {|sample| sample.kind_of?(Fixnum) }
         end
 
         should "save a comment if there's one passed in" do
@@ -203,8 +200,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
 
         @request_options = {"read_length"=>"108", "fragment_size_required_from"=>"150", "fragment_size_required_to"=>"200"}
 
-        @submission = LinearSubmission.prepare!(
-          :template         => @submission_template,
+        @submission_params = {
           :study            => @study,
           :project          => @project,
           :workflow         => @workflow,
@@ -213,9 +209,8 @@ class LinearSubmissionTest < ActiveSupport::TestCase
           :request_types    => @request_type_ids,
           :request_options  => @request_options,
           :comments         => 'This is a comment'
-        )
-        @mpx_submission = LinearSubmission.prepare!(
-          :template         => @submission_template,
+        }
+        @mpx_submission_params = {
           :study            => @study,
           :project          => @project,
           :workflow         => @workflow,
@@ -223,7 +218,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
           :assets           => @mpx_assets,
           :request_types    => @mpx_request_type_ids,
           :request_options  => @request_options
-        )
+        }
       end
 
       context "when quotas are being enforced" do
@@ -234,30 +229,30 @@ class LinearSubmissionTest < ActiveSupport::TestCase
         context "when quotas have been set up" do
           setup do
             @request_types.each do |request_type|
-              @project.quotas.create!(:request_type => request_type, :limit => @assets.length)
+              @project.set_available_quotas!(request_type, @assets.length)
             end
-            @project.quotas.create!(:request_type => @mpx_request_type, :limit => @mpx_assets.length)
-            @project.quotas.create!(:request_type => @request_type_3, :limit => 1)
+            @project.set_available_quotas!(@mpx_request_type, @mpx_assets.length)
+            @project.set_available_quotas!(@request_type_3, 1)
           end
 
           should 'allow the normal submission to build' do
-            @submission.built!
+            LinearSubmission.build!(@submission_params)
           end
 
           should 'allow the multiplexed submission to build' do
-            @mpx_submission.built!
+            LinearSubmission.build!(@mpx_submission_params)
           end
         end
 
         context "when quotas have been set to 0" do
           setup do
             @request_types.each do |request_type|
-              @project.quotas.create(:request_type => request_type, :limit => 0)
+              @project.quota_for!(request_type).update_attributes!(:limit =>0, :preordered_count => 0)
             end
           end
 
           should 'not allow the normal submission to build' do
-            assert_raises(QuotaException) { @submission.built! }
+            assert_raises(Quota::Error) { LinearSubmission.build!(@submission_params) }
           end
 
           context 'when quotas are not being enforced' do
@@ -266,14 +261,14 @@ class LinearSubmissionTest < ActiveSupport::TestCase
             end
 
             should 'allow the normal submission to build' do
-              @submission.built!
+              LinearSubmission.build!(@submission_params)
             end
           end
         end
 
         context "when quotas have not been set up" do
           should 'not allow the normal submission to build' do
-            assert_raises(QuotaException) { @submission.built! }
+            assert_raises(Quota::Error) { LinearSubmission.build!(@submission_params) }
           end
 
           context 'when quotas are not being enforced' do
@@ -282,7 +277,25 @@ class LinearSubmissionTest < ActiveSupport::TestCase
             end
 
             should 'allow the normal submission to build' do
-              @submission.built!
+              LinearSubmission.build!(@submission_params)
+            end
+
+            context 'then' do
+              setup do
+                @submission = LinearSubmission.build!(@submission_params)
+              end
+              should 'allow the submission to be processed' do
+                @submission.process!
+              end
+              context 'when the quota have been enforced' do
+
+                setup do
+                @project.enforce_quotas = true
+                end
+              should 'not allow the submission to be processed' do
+                assert_raises(Quota::Error) { @submission.process! }
+              end
+              end
             end
           end
         end
@@ -314,7 +327,6 @@ class LinearSubmissionTest < ActiveSupport::TestCase
         Factory :project_quota, :project => @project, :limit => 0, :request_type => @se_request_type 
 
         @submission_with_multiplication_factor = LinearSubmission.build!(
-          :template         => nil,
           :study            => @study,
           :project          => @project,
           :workflow         => @workflow,
@@ -325,7 +337,6 @@ class LinearSubmissionTest < ActiveSupport::TestCase
           :comments         => ''
         )
         @mx_submission_with_multiplication_factor = LinearSubmission.build!(
-          :template         => nil,
           :study            => @study,
           :project          => @project,
           :workflow         => @workflow,
@@ -364,7 +375,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
 
           context "insufficient quota" do
             should "build will raise an exception" do
-              assert_raise QuotaException do
+              assert_raise Quota::Error do
                 LinearSubmission.build!(
                   :template         => @submission_template,
                   :study            => @study,

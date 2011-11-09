@@ -1,4 +1,4 @@
-class ReRequestSubmission < Submission
+class ReRequestSubmission < Order
   include Submission::LinearRequestGraph
 
   def is_asset_applicable_to_type?(request_type, asset)

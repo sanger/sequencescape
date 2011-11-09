@@ -1,7 +1,6 @@
 class Project < ActiveRecord::Base
   include Api::ProjectIO::Extensions
   include ModelExtensions::Project
-  include Request::Statistics::DeprecatedMethods
 
   cattr_reader :per_page
   @@per_page = 500
@@ -34,13 +33,12 @@ class Project < ActiveRecord::Base
     transitions :to => :inactive, :from => [:pending, :active]
   end
 
-  has_many :requests
-  has_many :quotas
+  has_many :quotas 
   has_many :billing_events
   has_many :roles, :as => :authorizable
-  has_many :assets, :class_name => "Asset", :through => :requests, :source => :asset, :uniq => true
-  has_many :target_assets, :class_name => "Asset", :through => :requests, :source => :target_asset, :uniq => true
-  has_many :studies, :class_name => "Study", :through => :requests, :source => :study, :uniq => true
+  has_many :orders
+  has_many :studies, :class_name => "Study", :through => :orders, :source => :study, :uniq => true
+  has_many :submissions, :through => :orders, :source => :submission, :uniq => true
   has_many :sample_manifests
 
   validates_presence_of :name
@@ -52,7 +50,7 @@ class Project < ActiveRecord::Base
 
 
   def used_quota(request_type)
-    self.requests.quota_counted.request_type(request_type).count
+    quota_for(request_type).try(:used) || 0
   end
 
   def has_quota?(request_type, number)
@@ -65,36 +63,49 @@ class Project < ActiveRecord::Base
   end
 
   def projected_remaining_quota(request_type)
-    requests_using_quota = self.used_quota(request_type)
-    total_quota(request_type) - requests_using_quota
+    quota_for(request_type).try(:remaining) || 0
   end
 
-  def total_quota(request_type)
-    quota = self.quotas.find_by_request_type_id(request_type.id)
-    if quota
-      quota.limit
-    else
-      0
-    end
-  end
+
   def quota_limit_for(request_type)
-    quota = quota_for(request_type)
-    quota = quota.limit unless quota.nil?
-    quota ||= 0
+    quota_for(request_type).try(:limit) || 0
   end
+
+  alias total_quota quota_limit_for
 
   def quota_for(request_type)
-    self.quotas.find_by_request_type_id(request_type)
+    request_type_id = request_type.is_a?(RequestType) ? request_type.id  : request_type
+    self.quotas.find_by_request_type_id(request_type_id)
+  end
+
+  # create a quota if missing
+  def quota_for!(request_type)
+    quota = quota_for(request_type)
+    quota || quotas.create(:request_type_id => request_type.is_a?(RequestType) ? request_type.id : request_type,
+      :limit => 0,
+      :preordered_count => 0)
+  end
+
+  def book_quota(request_type,number=1)
+    quota_for!(request_type).book_request!(number, enforce_quotas?) 
+  end
+
+  def unbook_quota(request_type, number=1)
+    quota_for!(request_type).unbook_request
+  end
+
+  def use_quota!(request, unbook=true)
+      quota_for!(request.request_type_id).add_request!(request, unbook, enforce_quotas?)
   end
 
   # Frees remaining quotas on the current project
   # Sets quota limit to the used quota level on each request type
-  def quota_limit_equals_quota_used
+  def quota_limit_equals_quota_used!
     self.quotas.each do |quota|
-      quota.limit = self.used_quota(quota.request_type)
-      quota.save!
+      quota.update_limit_to_used!
     end
   end
+
   def ended_billable_lanes(ended)
     events = []
     self.samples.each do |sample|
@@ -182,6 +193,12 @@ class Project < ActiveRecord::Base
         end
       end
     end
+  end
+
+  def set_available_quotas!(request_type, number)
+    quota = quota_for!(request_type)
+    quota.limit += number+quota.used
+    quota.save!
   end
   
   def owners

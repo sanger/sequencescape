@@ -8,10 +8,11 @@ end
 
 Given /^I have a submission created with the following details based on the template "([^\"]+)":$/ do |name, details|
   template = SubmissionTemplate.find_by_name(name) or raise StandardError, "Cannot find submission template #{name.inspect}"
-  attributes = details.rows_hash.map do |k,v| 
+  order_attributes, submission_attributes = details.rows_hash.partition { |k,_| k != 'state' }
+  order_attributes.map! do |k,v| 
     v =
       case k
-      when 'state', 'asset_group_name' then v
+      when 'asset_group_name' then v
       when 'request_options' then Hash[v.split(',').map { |p| p.split(':').map(&:strip) }]
       when 'assets' then Uuid.with_external_id(v.split(',').map(&:strip)).all.map(&:resource)
       else Uuid.include_resource.with_external_id(v).first.try(:resource) 
@@ -19,13 +20,14 @@ Given /^I have a submission created with the following details based on the temp
     [ k.to_sym, v ]
   end
 
-  template.new_submission({ :user => User.first }.merge(Hash[attributes])).save!
+  order = template.create_with_submission!({ :user => User.first }.merge(Hash[order_attributes]))
+  order.submission.update_attributes!(Hash[submission_attributes]) unless submission_attributes.empty?
 end
 
 Then /^the request options for the submission with UUID "([^\"]+)" should be:$/ do |uuid, options_table|
   submission = Uuid.with_external_id(uuid).first.try(:resource) or raise StandardError, "Could not find submission with UUID #{uuid.inspect}"
   options_table.rows_hash.each do |k,v|
-    assert_equal(v, submission.request_options[k.to_sym].to_s, "Request option #{k.inspect} is unexpected")
+    assert_equal(v, submission.order.request_options[k.to_sym].to_s, "Request option #{k.inspect} is unexpected")
   end
 end
 
@@ -61,7 +63,9 @@ end
 def submission_in_state(state, attributes = {})
   study    = Study.first or raise StandardError, "There are no studies!"
   workflow = Submission::Workflow.first or raise StandardError, "There are no workflows!"
-  Submission.new(attributes.merge(:study => study, :workflow => workflow, :state => state)).save(false)
+  submission = Factory::submission(attributes.merge(:study => study, :workflow => workflow))
+  submission.state = state
+  submission.save(false)
 end
 
 Given /^I have a submission in the "([^\"]+)" state$/ do |state|
@@ -145,5 +149,5 @@ end
 
 Given /^the sample tubes are part of submission "([^"]*)"$/ do |submission_uuid|
   submission = Uuid.find_by_external_id(submission_uuid).resource or raise StandardError, "Couldnt find object for UUID"
-  Asset.all.map{ |asset| submission.assets << asset } 
+  Asset.all.map{ |asset| submission.order.assets << asset } 
 end

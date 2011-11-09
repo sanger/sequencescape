@@ -10,15 +10,24 @@ Given /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" su
   Plate.find_by_barcode(plate_barcode).wells.walk_in_column_major_order { |well, _| wells << well }
   wells.compact!
 
+  study = Study.find_by_name(study_name)
+  project = Project.find_by_name("Test project")
+  #we need to set the study on aliquots
+  wells.each do |well|
+    well.aliquots.each do |a|
+      a.update_attributes!(:study_id => study.id, :project_id => project.id)
+    end
+  end
+
   submission_template = SubmissionTemplate.find_by_name(submission_name)
   submission = submission_template.create!(
-    :study    => Study.find_by_name(study_name),
-    :project  => Project.find_by_name("Test project"),
+    :study    => study,
+    :project  => project,
     :workflow => Submission::Workflow.find_by_key('short_read_sequencing'),
     :user     => User.last,
     :assets   => wells,
     :request_options => {"multiplier"=>{"1"=>"1", "3"=>"1"}, "read_length"=>"100", "fragment_size_required_to"=>"400", "fragment_size_required_from"=>"300", "library_type"=>"Standard"}
-    ).built!
+    ).create_submission.built!
   And %Q{1 pending delayed jobs are processed}
 end
 
@@ -41,7 +50,7 @@ Given /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" su
     :workflow => Submission::Workflow.find_by_key('short_read_sequencing'),
     :user     => User.last,
     :assets   => wells
-    ).built!
+    ).create_submission.built!
   And %Q{1 pending delayed jobs are processed}
 end
 
@@ -224,7 +233,7 @@ Given /^I have a "([^"]*)" submission with 2 plates$/ do |submission_template_na
       :user => User.last,
       :assets => Well.all,
       :request_options => {"multiplier"=>{"1"=>"1", "3"=>"1"}, "read_length"=>"100", "fragment_size_required_to"=>"300", "fragment_size_required_from"=>"250", "library_type"=>"Illumina cDNA protocol"}
-      ).built!
+      ).create_submission.built!
     And %Q{1 pending delayed jobs are processed}
 end
 

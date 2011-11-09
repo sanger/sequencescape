@@ -19,7 +19,7 @@ class SequencingRequest < Request
 
   class RequestOptionsValidator < DelegateValidation::Validator
     delegate_attribute :read_length, :to => :target, :type_cast => :to_i
-    validates_numericality_of :read_length, :integer_only => true, :greater_than => 0
+#    validates_numericality_of :read_length, :integer_only => true, :greater_than => 0
     validates_inclusion_of :read_length, :in => SequencingRequest::READ_LENGTHS
     
     delegate :fragment_size_required_from, :fragment_size_required_to, :to => :target
