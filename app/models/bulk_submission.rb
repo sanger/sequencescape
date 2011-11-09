@@ -72,6 +72,104 @@ class BulkSubmission < ActiveRecord::Base
     'number of lanes'
   ]
   
+  # Process the csv rows into a structure
+  #  this creates an array containing a hash for each distinct "submission name" 
+  #    "submission name" => array of orders
+  #    where each order is a hash of headers to values (grouped by "asset group name")
+  def submission_structure(headers,csv_rows)
+    csv_rows.each_with_index.map do |row, index|
+      Hash[headers.each_with_index.map { |header, pos| [ header, row[pos].try(:strip) ] }].merge('row' => index+2)
+    end.group_by do |details|
+      details['submission name']
+    end.map do |submission_name, rows|
+      order = rows.group_by do |details|
+        details["asset group name"]
+      end.map do |group_name, rows|
+        Hash[COMMON_FIELDS.map { |f| [ f, rows.first[f] ] }].tap do |details|
+          details['rows']          = rows.comma_separate_field_list('row')
+          details['asset ids']     = rows.comma_separate_field_list('asset id', 'asset ids')
+          details['asset names']   = rows.comma_separate_field_list('asset name', 'asset names')
+          details['plate well']    = rows.comma_separate_field_list('plate well')
+        end.delete_if { |_,v| v.blank? }
+      end
+      Hash[submission_name, order]
+    end
+  end
+  
+  # Returns an order for the given details
+  def prepare_order(details)
+    begin
+      study = Study.find_by_id_or_name(details['study id'], details['study name'])
+      attributes = {
+        :study   => study,
+        :project => Project.find_by_id_or_name(details['project id'], details['project name']),
+
+        :comments => details['comments'],
+        :request_options => {
+          :read_length                 => details['read length'],
+          :library_type                => details['library type'],
+        }
+      }
+      number_of_lanes = details.fetch('number of lanes', 1).to_i
+      attributes[:request_options][:fragment_size_required_from] = details['fragment size from'] unless details['fragment size from'].blank?
+      attributes[:request_options][:fragment_size_required_to]   = details['fragment size to']   unless details['fragment size to'].blank?
+
+      # User lookup ...
+      attributes[:user] = User.find_by_login(details['user login']) or raise StandardError, "Cannot find user #{details['user login'].inspect}"
+
+      # Deal with the asset group: either it's one we should be loading, or one we should be creating.
+      begin
+        attributes[:asset_group] = study.asset_groups.find_by_id_or_name(details['asset group id'], details['asset group name'])
+      rescue ActiveRecord::RecordNotFound => exception
+        # puts "Could not find asset group, assuming it needs to be created for rows #{details['rows']}"
+
+        attributes[:asset_group_name] = details['asset group name']
+
+        # Locate either the assets by name or ID, or find the plate and it's well
+        if not details['plate barcode'].blank? and not details['plate well'].blank?
+          match = /^([A-Z]{2})(\d+)[A-Z]$/.match(details['plate barcode']) or raise StandardError, "Plate barcode should be human readable (e.g. DN111111K)"
+          prefix = BarcodePrefix.find_by_prefix(match[1]) or raise StandardError, "Cannot find barcode prefix #{match[1].inspect} for #{details['rows']}"
+          plate  = Plate.find_by_barcode_prefix_id_and_barcode(prefix.id, match[2]) or raise StandardError, "Cannot find plate with barcode #{details['plate barcode']} for #{details['rows']}"
+
+          wells, well_locations = [], details['plate well'].split(',').map(&:strip)
+          plate.wells.walk_in_column_major_order { |well, _| wells << well if well_locations.include?(well.map.description) }
+          raise StandardError, "Too few wells found for #{details['rows']}: #{wells.map(&:map).map(&:description).inspect}" if wells.size != well_locations.size
+          attributes[:assets] = wells
+        else
+          asset_ids, asset_names = details.fetch('asset ids', '').split(','), details.fetch('asset names', '').split(',')
+          attributes[:assets]    = Asset.find_all_by_id_or_name(asset_ids, asset_names).uniq
+
+          assets_found, expecting = attributes[:assets].map { |asset| "#{asset.name}(#{asset.id})" }, asset_ids.size + asset_names.size
+          raise StandardError, "Too few assets found for #{details['rows']}: #{assets_found.inspect}"  if assets_found.size < expecting
+          raise StandardError, "Too many assets found for #{details['rows']}: #{assets_found.inspect}" if assets_found.size > expecting
+        end
+
+        assets_not_in_study = attributes[:assets].select { |asset| not asset.aliquots.map(&:sample).map(&:studies).flatten.uniq.include?(study) }
+        raise StandardError, "Assets not in study for #{details['rows']}: #{assets_not_in_study.inspect}" unless assets_not_in_study.empty?
+
+        puts "\tDebugging info: assets found for #{details['rows']}: #{assets_found.inspect}" if ENV['DO_NOTHING']
+      end
+
+      # Create and build the submission.  Ensure that the number of lanes is correctly set.
+      template          = SubmissionTemplate.find_by_name(details['template name']) or raise StandardError, "Cannot find template #{details['template name']}"
+      request_types     = RequestType.all(:conditions => { :id => template.submission_parameters[:request_type_ids_list].flatten })
+      lane_request_type = request_types.detect { |t| t.target_asset_type == 'Lane' or t.name =~ /\ssequencing$/ }
+      attributes[:request_options][:multiplier] = { lane_request_type.id => number_of_lanes } if lane_request_type.present?
+
+      return Order.new(attributes.merge(:template => template))
+    rescue ArgumentError
+      raise
+    rescue => exception
+      errors.add :spreadsheet, "There was a problem on row(s) #{details['rows']}: #{exception.message}"
+
+      @failures = true
+      nil
+    rescue QuotaException => exception
+      errors.add :spreadsheet, "There was a quota problem: #{exception.message}"
+      nil
+    end
+  end
+  
   def process(csv_rows)
     # Store the details of the successful submissions so the user can be presented with a summary
      @submissions = []
@@ -93,248 +191,31 @@ class BulkSubmission < ActiveRecord::Base
       errors.add :spreadsheet, "You submitted an incompatible spreadsheet. Please ensure your spreadsheet contains the 'submission name' column"
 
     else
-      # Group each of the rows by the asset group name, as this governs the submissions that are being created.
-      # Then we take the common details and essentially merge the assets into a list.
-      # submission_details = csv_rows.each_with_index.map do |row, index|
-      #         Hash[headers.each_with_index.map { |header, pos| [ header, row[pos].try(:strip) ] }].merge('row' => index+2)
-      #       end.group_by do |details|
-      #         details['asset group name']
-      #       end.map do |group_name, rows|
-      #         Hash[COMMON_FIELDS.map { |f| [ f, rows.first[f] ] }].tap do |details|
-      #           details['rows']          = rows.comma_separate_field_list('row')
-      #           details['asset ids']     = rows.comma_separate_field_list('asset id', 'asset ids')
-      #           details['asset names']   = rows.comma_separate_field_list('asset name', 'asset names')
-      #           details['plate well']    = rows.comma_separate_field_list('plate well')
-      #         end.delete_if { |_,v| v.blank? }
-      #       end
-
-      submission_details = csv_rows.each_with_index.map do |row, index|
-        Hash[headers.each_with_index.map { |header, pos| [ header, row[pos].try(:strip) ] }].merge('row' => index+2)
-      end.group_by do |details|
-        details['submission name']
-      end.map do |submission_name, rows|
-        order = rows.group_by do |details|
-          details["asset group name"]
-        end.map do |group_name, rows|
-          Hash[COMMON_FIELDS.map { |f| [ f, rows.first[f] ] }].tap do |details|
-            details['rows']          = rows.comma_separate_field_list('row')
-            details['asset ids']     = rows.comma_separate_field_list('asset id', 'asset ids')
-            details['asset names']   = rows.comma_separate_field_list('asset name', 'asset names')
-            details['plate well']    = rows.comma_separate_field_list('plate well')
-          end.delete_if { |_,v| v.blank? }
-        end
-        Hash[submission_name, order]
-      end
-        # end.map do |group_name, rows|
-        #          Hash[COMMON_FIELDS.map { |f| [ f, rows.first[f] ] }].tap do |details|
-        #            details['rows']          = rows.comma_separate_field_list('row')
-        #            details['asset ids']     = rows.comma_separate_field_list('asset id', 'asset ids')
-        #            details['asset names']   = rows.comma_separate_field_list('asset name', 'asset names')
-        #            details['plate well']    = rows.comma_separate_field_list('plate well')
-        #          end.delete_if { |_,v| v.blank? }
-        #        end
-        #      end
-      debugger
-      
-    
-    # Rails.logger.debug(submission_details.inspect)
+      submission_details = submission_structure(headers, csv_rows)   
+       
       # Within a single transaction process each of the rows of the CSV file as a separate submission.  Any name
       # fields need to be mapped to IDs, and the 'assets' field needs to be split up and processed if present.
       ActiveRecord::Base.transaction do
-        failures = false
+        @failures = false
 
         submission_details.each do |submissions|
-          submissions.each do |submission,orders|
-            puts "submission #{submission}:............................"
-            orders.each do |details|
-              begin
-                study = Study.find_by_id_or_name(details['study id'], details['study name'])
-                attributes = {
-                  :study   => study,
-                  :project => Project.find_by_id_or_name(details['project id'], details['project name']),
-                               
-                  :comments => details['comments'],
-                  :request_options => {
-                    :read_length                 => details['read length'],
-                    :library_type                => details['library type'],
-                  }
-                }
-                number_of_lanes = details.fetch('number of lanes', 1).to_i
-                attributes[:request_options][:fragment_size_required_from] = details['fragment size from'] unless details['fragment size from'].blank?
-                attributes[:request_options][:fragment_size_required_to]   = details['fragment size to']   unless details['fragment size to'].blank?
-                
-                # User lookup ...
-                attributes[:user] = User.find_by_login(details['user login']) or raise StandardError, "Cannot find user #{details['user login'].inspect}"
-                
-                # Deal with the asset group: either it's one we should be loading, or one we should be creating.
-                begin
-                  attributes[:asset_group] = study.asset_groups.find_by_id_or_name(details['asset group id'], details['asset group name'])
-                rescue ActiveRecord::RecordNotFound => exception
-                  # puts "Could not find asset group, assuming it needs to be created for rows #{details['rows']}"
-                  
-                  attributes[:asset_group_name] = details['asset group name']
-                  
-                  # Locate either the assets by name or ID, or find the plate and it's well
-                  if not details['plate barcode'].blank? and not details['plate well'].blank?
-                    match = /^([A-Z]{2})(\d+)[A-Z]$/.match(details['plate barcode']) or raise StandardError, "Plate barcode should be human readable (e.g. DN111111K)"
-                    prefix = BarcodePrefix.find_by_prefix(match[1]) or raise StandardError, "Cannot find barcode prefix #{match[1].inspect} for #{details['rows']}"
-                    plate  = Plate.find_by_barcode_prefix_id_and_barcode(prefix.id, match[2]) or raise StandardError, "Cannot find plate with barcode #{details['plate barcode']} for #{details['rows']}"
-                  
-                    wells, well_locations = [], details['plate well'].split(',').map(&:strip)
-                    plate.wells.walk_in_column_major_order { |well, _| wells << well if well_locations.include?(well.map.description) }
-                    raise StandardError, "Too few wells found for #{details['rows']}: #{wells.map(&:map).map(&:description).inspect}" if wells.size != well_locations.size
-                    attributes[:assets] = wells
-                  else
-                    asset_ids, asset_names = details.fetch('asset ids', '').split(','), details.fetch('asset names', '').split(',')
-                    attributes[:assets]    = Asset.find_all_by_id_or_name(asset_ids, asset_names).uniq
-                  
-                    assets_found, expecting = attributes[:assets].map { |asset| "#{asset.name}(#{asset.id})" }, asset_ids.size + asset_names.size
-                    raise StandardError, "Too few assets found for #{details['rows']}: #{assets_found.inspect}"  if assets_found.size < expecting
-                    raise StandardError, "Too many assets found for #{details['rows']}: #{assets_found.inspect}" if assets_found.size > expecting
-                  end
-                  
-                  assets_not_in_study = attributes[:assets].select { |asset| not asset.aliquots.map(&:sample).map(&:studies).flatten.uniq.include?(study) }
-                  raise StandardError, "Assets not in study for #{details['rows']}: #{assets_not_in_study.inspect}" unless assets_not_in_study.empty?
-                  
-                  puts "\tDebugging info: assets found for #{details['rows']}: #{assets_found.inspect}" if ENV['DO_NOTHING']
-                end
-                
-                # Create and build the submission.  Ensure that the number of lanes is correctly set.
-                template          = SubmissionTemplate.find_by_name(details['template name']) or raise StandardError, "Cannot find template #{details['template name']}"
-                request_types     = RequestType.all(:conditions => { :id => template.submission_parameters[:request_type_ids_list].flatten })
-                lane_request_type = request_types.detect { |t| t.target_asset_type == 'Lane' or t.name =~ /\ssequencing$/ }
-                attributes[:request_options][:multiplier] = { lane_request_type.id => number_of_lanes } if lane_request_type.present?
-              
-                submission = Submission.build!(attributes.merge(:template => template))
-                
-                # Collect the IDs of successful submissions
-                # @submissions.push submission.id
-                @submission_details[submission.id] = "Submission #{submission.id} built from rows #{details['rows']} (should make #{number_of_lanes} lanes)"
-                rescue ArgumentError
-                  raise
-                rescue => exception
-                  errors.add :spreadsheet, "There was a problem on row(s) #{details['rows']}: #{exception.message}"
-                                           
-                  failures = true
-                rescue QuotaException => exception
-                  errors.add :spreadsheet, "There was a quota problem: #{exception.message}"
-                                          
-                end
-                                          
-                                          
-                end
-              end
-            end
-
-            # Create and build the submission.  Ensure that the number of lanes is correctly set.
-            template          = SubmissionTemplate.find_by_name(details['template name']) or raise StandardError, "Cannot find template #{details['template name']}"
-            request_types     = RequestType.all(:conditions => { :id => template.submission_parameters[:request_type_ids_list].flatten })
-            lane_request_type = request_types.detect { |t| t.target_asset_type == 'Lane' or t.name =~ /\ssequencing$/ }
-            attributes[:request_options][:multiplier] = { lane_request_type.id => number_of_lanes } if lane_request_type.present?
-            
-            submission = Submission.build!(attributes.merge(:template => template))
-            
-            # Collect the IDs of successful submissions
+          submissions.each do |submission_name,orders|
+            puts "submission #{submission_name}:............................"
+            submission = Submission.create!(:name=>submission_name, :order => orders.map(&method(:prepare_order)).compact)
+            # Collect the successful submissions
             @submissions.push submission.id
-            @submission_details[submission.id] = "Submission #{submission.id} built from rows #{details['rows']} (should make #{number_of_lanes} lanes)"
-          rescue ArgumentError
-            raise
-          rescue => exception
-            errors.add :spreadsheet, "There was a problem on row(s) #{details['rows']}: #{exception.message}"
-           
-            failures = true
-          rescue Quota::Error => exception
-                                errors.add :spreadsheet, "There was a quota problem: #{exception.message}"
-          
+            @submission_details[order.id] = "Submission #{submission.id} built from rows #{details['rows']} (should make #{number_of_lanes} lanes)"
           end
         end
-          # submission_details.each_with_index do |details, submission_row|
-          #             begin
-          #               # Map the various columns correctly to objects ...
-          #               study = Study.find_by_id_or_name(details['study id'], details['study name'])
-          #               attributes = {
-          #                 :study   => study,
-          #                 :project => Project.find_by_id_or_name(details['project id'], details['project name']),
-          #               
-          #                 :comments => details['comments'],
-          #                 :request_options => {
-          #                   :read_length                 => details['read length'],
-          #                   :library_type                => details['library type'],
-          #                 }
-          #               }
-          #               number_of_lanes = details.fetch('number of lanes', 1).to_i
-          #               attributes[:request_options][:fragment_size_required_from] = details['fragment size from'] unless details['fragment size from'].blank?
-          #               attributes[:request_options][:fragment_size_required_to]   = details['fragment size to']   unless details['fragment size to'].blank?
-          # 
-          #               # User lookup ...
-          #               attributes[:user] = User.find_by_login(details['user login']) or raise StandardError, "Cannot find user #{details['user login'].inspect}"
-          # 
-          # 
-          #               # Deal with the asset group: either it's one we should be loading, or one we should be creating.
-          #               begin
-          #                 attributes[:asset_group] = study.asset_groups.find_by_id_or_name(details['asset group id'], details['asset group name'])
-          #               rescue ActiveRecord::RecordNotFound => exception
-          #                 # puts "Could not find asset group, assuming it needs to be created for rows #{details['rows']}"
-          # 
-          #                 attributes[:asset_group_name] = details['asset group name']
-          # 
-          #                 # Locate either the assets by name or ID, or find the plate and it's well
-          #                 if not details['plate barcode'].blank? and not details['plate well'].blank?
-          #                   match = /^([A-Z]{2})(\d+)[A-Z]$/.match(details['plate barcode']) or raise StandardError, "Plate barcode should be human readable (e.g. DN111111K)"
-          #                   prefix = BarcodePrefix.find_by_prefix(match[1]) or raise StandardError, "Cannot find barcode prefix #{match[1].inspect} for #{details['rows']}"
-          #                   plate  = Plate.find_by_barcode_prefix_id_and_barcode(prefix.id, match[2]) or raise StandardError, "Cannot find plate with barcode #{details['plate barcode']} for #{details['rows']}"
-          # 
-          #                   wells, well_locations = [], details['plate well'].split(',').map(&:strip)
-          #                   plate.wells.walk_in_column_major_order { |well, _| wells << well if well_locations.include?(well.map.description) }
-          #                   raise StandardError, "Too few wells found for #{details['rows']}: #{wells.map(&:map).map(&:description).inspect}" if wells.size != well_locations.size
-          #                   attributes[:assets] = wells
-          #                 else
-          #                   asset_ids, asset_names = details.fetch('asset ids', '').split(','), details.fetch('asset names', '').split(',')
-          #                   attributes[:assets]    = Asset.find_all_by_id_or_name(asset_ids, asset_names).uniq
-          # 
-          #                   assets_found, expecting = attributes[:assets].map { |asset| "#{asset.name}(#{asset.id})" }, asset_ids.size + asset_names.size
-          #                   raise StandardError, "Too few assets found for #{details['rows']}: #{assets_found.inspect}"  if assets_found.size < expecting
-          #                   raise StandardError, "Too many assets found for #{details['rows']}: #{assets_found.inspect}" if assets_found.size > expecting
-          #                 end
-          # 
-          #                 assets_not_in_study = attributes[:assets].select { |asset| not asset.aliquots.map(&:sample).map(&:studies).flatten.uniq.include?(study) }
-          #                 raise StandardError, "Assets not in study for #{details['rows']}: #{assets_not_in_study.inspect}" unless assets_not_in_study.empty?
-          # 
-          #                 puts "\tDebugging info: assets found for #{details['rows']}: #{assets_found.inspect}" if ENV['DO_NOTHING']
-          #               end
-          # 
-          #               # Create and build the submission.  Ensure that the number of lanes is correctly set.
-          #               template          = SubmissionTemplate.find_by_name(details['template name']) or raise StandardError, "Cannot find template #{details['template name']}"
-          #               request_types     = RequestType.all(:conditions => { :id => template.submission_parameters[:request_type_ids_list].flatten })
-          #               lane_request_type = request_types.detect { |t| t.target_asset_type == 'Lane' or t.name =~ /\ssequencing$/ }
-          #               attributes[:request_options][:multiplier] = { lane_request_type.id => number_of_lanes } if lane_request_type.present?
-          #             
-          #               submission = Submission.build!(attributes.merge(:template => template))
-          #               debugger
-          #               # Collect the IDs of successful submissions
-          #               # @submissions.push submission.id
-          #               @submission_details[submission.id] = "Submission #{submission.id} built from rows #{details['rows']} (should make #{number_of_lanes} lanes)"
-          #             rescue ArgumentError
-          #               raise
-          #             rescue => exception
-          #               errors.add :spreadsheet, "There was a problem on row(s) #{details['rows']}: #{exception.message}"
-          #            
-          #               failures = true
-          #             rescue QuotaException => exception
-          #                                   errors.add :spreadsheet, "There was a quota problem: #{exception.message}"
-          #           
-          #             end
-          #           
-          #           
-          #           end
         
         # If there are any errors then the transaction needs to be rolled back.
-        raise ActiveRecord::Rollback if failures
+        raise ActiveRecord::Rollback if @failures
       end
       
     end
   end #process
   
+  # This is used to present a list of successes
   def completed_submissions
     return @submissions, @submission_details
   end
