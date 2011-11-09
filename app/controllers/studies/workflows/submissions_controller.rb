@@ -100,7 +100,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
   #--
   # NOTE[xxx]: The view says 'OR' but the code originally did 'AND', so I changed it!
   #++
-  def asset_source_details_from_request_parameters
+  def asset_source_details_from_request_parameters!
     # Raise an error if someone tries to do multiple things all at once!
     input_choice = [ :asset_group, :asset_ids, :asset_names, :sample_names ].select { |k| not params[k].blank? }
     raise InvalidInputException, "No assets found" if input_choice.empty?
@@ -117,7 +117,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
     else raise StandardError, "No way to determine assets for input choice #{input_choice.first.inspect}"
     end
   end
-  private :asset_source_details_from_request_parameters
+  private :asset_source_details_from_request_parameters!
 
   def wells_on_specified_plate_purpose_for(samples)
     plate_purpose = PlatePurpose.find(params[:plate_purpose_id])
@@ -184,7 +184,6 @@ class Studies::Workflows::SubmissionsController < ApplicationController
             end
           end
 
-          @asset_details = asset_source_details_from_request_parameters
           @comments = params[:order][:comments] if params[:order][:comments]
           @properties = params.fetch(:request, {}).fetch(:properties, {})
           @properties[:multiplier] = request_type_multiplier unless request_type_multiplier.empty?
@@ -213,7 +212,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
               # we don't save the order now, so it's available in the next view
               # in validation fails
             )
-            @order.update_attributes(@asset_details)
+            @order.update_attributes(asset_source_details_from_request_parameters!)
             @order.save!
           end
 
