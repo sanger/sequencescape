@@ -74,11 +74,7 @@ class Studies::WorkflowsController < ApplicationController
         render :partial => "shared/project_listing_quotas"
       else
         @request_type = @request_types[@summary - @basic_tabs.size]
-
-        @assets_to_filter = @study.assets.all(:include => { :requests => :request_type })
-        @assets_to_detail = @assets_to_filter.select do |asset|
-          ! asset.requests.detect{ |r| r.request_type == @request_type }.nil?
-        end
+        @assets_to_detail = @study.requests.request_type(@request_type).with_asset.all(:include =>:asset).map(&:asset)
 
         unless @assets_to_detail.empty?
           render :partial => "summary_for_request_type"
