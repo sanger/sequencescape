@@ -122,11 +122,26 @@ padding-bottom: 0px;
 color: #666;
 }
 
-#header {
+/* Adjustable based on the environment in which Sequencescape is running */
+body #header {  /* Covers all environments not specifically identified (purples) */
+  background: #A74A86;
+  background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(100%, #492255), color-stop(0%, #603E7D));
+  background-image: -moz-linear-gradient(top, #613976 0%, #492255 100%);
+  background-image: linear-gradient(top, #603E7D 0%, #492255 100%);
+  color: #fff;
+}
+body.production #header {  /* Specific for production environment (blues) */
   background: #3e87b3;
   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(100%, #004578), color-stop(0%, #0085bc));
   background-image: -moz-linear-gradient(top, #006BAF 0%, #004578 100%);
   background-image: linear-gradient(top, #0085bc 0%, #004578 100%);
+  color: #fff;
+}
+body.production.failover #header {  /* Specific for production failover environment (blues) */
+  background: #DF5D12;
+  background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(100%, #712106), color-stop(0%, #AF380C));
+  background-image: -moz-linear-gradient(top, #A33C0C 0%, #712106 100%);
+  background-image: linear-gradient(top, #AF380C 0%, #712106 100%);
   color: #fff;
 }
 
