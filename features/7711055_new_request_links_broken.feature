@@ -9,8 +9,8 @@ Feature: Creating new requests from an asset
 
     Given I am logged in as "John Smith"
 
-  @administrator @wip @to_fix @to_delete
-  Scenario Outline: List of all assets 
+  @administrator
+  Scenario Outline: List of all assets
     Given user "John Smith" is an administrator
       And the asset "Sample tube for testing new request" belongs to study "Study testing new request"
 
