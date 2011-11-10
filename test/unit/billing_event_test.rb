@@ -248,7 +248,30 @@ class BillingEventTest < ActiveSupport::TestCase
         assert_equal [], BillingEvent.refunds_for_reference(@reference)
         assert BillingEvent.charge_internally_for_reference(@reference)
       end
-    end
+    end 
+    context "without an initial project" do
+      setup do
+        @request = Factory :request
+        project = @request.initial_project
+        @request.asset.aliquots.each do |al|
+          al.project = project
+          al.save!
+        end
+        @request.initial_project=nil
+        @request.save!
+        @reference = BillingEvent.build_reference(@request)
+      end
+      context "passing" do
+        setup do
+          BillingEvent.generate_pass_event @request
+        end
+        should "generate a charge event" do
+          assert BillingEvent.charge_for_reference(@reference)
+          assert_equal [], BillingEvent.refunds_for_reference(@reference)
+          assert_nil BillingEvent.charge_internally_for_reference(@reference)
+        end
+      end
+    end 
   end
   context "A request" do
     setup do
@@ -290,5 +313,6 @@ class BillingEventTest < ActiveSupport::TestCase
         end
       end
     end
+
   end
 end

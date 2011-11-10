@@ -102,7 +102,7 @@ class BillingEvent < ActiveRecord::Base
   def self.construct_from_request(kind, event_type, request, entry_date=Time.now)
     description = "#{request.request_type.name} #{event_type}"
     #TODO create on event per Aliquot
-    project_id = request.try(:asset).try(:primary_aliquot).try(:project)  || request.initial_project_id
+    project_id = request.try(:asset).try(:primary_aliquot).try(:project_id)  || request.initial_project_id
 
     self.new :kind => kind,
       :reference => self.build_reference(request),
