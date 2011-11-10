@@ -59,7 +59,14 @@ class Plate < Asset
   end
 
   def studies
-    wells.map(&:study)
+    Study.find_by_sql([ %Q{
+SELECT DISTINCT s.*
+FROM container_associations c
+INNER JOIN assets w ON c.content_id=w.id
+INNER JOIN aliquots a ON a.receptacle_id=w.id
+INNER JOIN studies s ON a.study_id=s.id
+WHERE c.container_id=?
+}, self.id ])
   end
 
   contains :wells do #, :order => '`assets`.map_id ASC' do
