@@ -28,9 +28,9 @@ Feature: Creating submissions through the submission templates
 
     When I select "Project testing submission templates" from "Select a financial project"
     And I fill in "sample_names" with "asset_group_for_submission_templates_sample_1"
-    When I press "Create Submission"
+    When I create the order and submit the submission
 
-    Then I should see "Submission successfully created"
+    Then I should see "Submission successfully built"
     And I should see "Your submission is currently pending"
     And I should see "Submission created at: Monday 13 September, 2010 09:30"
     And I should see the submission request types of:
@@ -57,7 +57,7 @@ Feature: Creating submissions through the submission templates
     When I select "Project testing submission templates" from "Select a financial project"
     And I fill in "sample_names" with "foo"
 
-    But I press "Create Submission"
+    But I press "Create Order"
 
-    Then I should not see "Submission successfully created"
+    Then I should not see "Order successfully created"
     Then I should see "samples foo not found"

@@ -1225,4 +1225,24 @@ table.checktext_field td {
 
 .flag_image {
   cursor: pointer;
+
+div.order_in_submission {
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 10px 10px 25px 10px;
+  font-size: 12px;
+  min-height: 600px;
+  line-height: 17px;
+  
+  -moz-border-radius:    5px;
+  -webkit-border-radius: 5px;
+  border-radius:         5px;
+  box-shadow: 0 1px 5px #D6E1EE;
+  -moz-box-shadow: 0 1px 5px #D6E1EE;
+}
+
+div.order_in_submission h2 {
+  margin-top : 0px;
+  border-bottom: 1px solid #ccc;
+
 }

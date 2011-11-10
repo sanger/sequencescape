@@ -62,7 +62,7 @@ class Api::RequestIO < Api::Base
   end
 
   with_association(:submission) do
-    with_association(:order) do
+    with_association(:orders) do
       with_association(:study) do
         map_attribute_to_json_attribute(:url , 'study_url')
         map_attribute_to_json_attribute(:uuid, 'study_uuid')

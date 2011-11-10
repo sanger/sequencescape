@@ -329,7 +329,7 @@ class Study < ActiveRecord::Base
   end
 
   def submissions_for_workflow(workflow)
-    orders_for_workflow(workflow).map(&:submission).uniq
+    orders_for_workflow(workflow).map(&:submission).compact.uniq
   end
 
   def orders_for_workflow(workflow)

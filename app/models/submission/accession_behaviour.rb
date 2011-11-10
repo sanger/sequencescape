@@ -1,7 +1,7 @@
 module Submission::AccessionBehaviour
   def self.included(base)
     base.class_eval do
-      validate :check_data_release_and_accession_for_submission, :if => :left_building_state?
+      validate :check_data_release_and_accession_for_submission#, :if => :left_building_state?
     end
   end
 

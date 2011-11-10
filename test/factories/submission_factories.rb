@@ -19,7 +19,7 @@ class Factory
     if submission_options.present?
       submission.update_attributes!(submission_options)
     end
-    submission
+    submission.reload
   end
 end
 

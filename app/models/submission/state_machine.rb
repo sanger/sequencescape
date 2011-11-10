@@ -6,6 +6,11 @@ module Submission::StateMachine
 
       configure_state_machine
       configure_named_scopes
+
+      def editable?
+        state=="building"
+      end
+
     end
   end
 

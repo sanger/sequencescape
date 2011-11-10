@@ -8,10 +8,9 @@ class Api::SubmissionIO < Api::Base
   map_attribute_to_json_attribute(:state)
   map_attribute_to_json_attribute(:message)
   
-  with_association(:order) do
-    map_attribute_to_json_attribute(:template_name)
-    map_attribute_to_json_attribute(:comments)
-
+  with_association(:orders) do
+  map_attribute_to_json_attribute(:template_name)
+  map_attribute_to_json_attribute(:comments)
     with_association(:project) do
       map_attribute_to_json_attribute(:uuid  , 'project_uuid')
       map_attribute_to_json_attribute(:id  , 'project_internal_id')

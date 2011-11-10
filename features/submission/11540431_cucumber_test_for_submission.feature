@@ -37,11 +37,11 @@ Feature: Added a new js version. Check that submission continues to work and Pro
       | Project_Example_1 |
       | Project_Example_2 |
     When I fill in "Project Name" with "Project B"
-    And I should see "Double check and create your submission"
+    And I should see "Double check and create your order"
     When I select "asset_group_1" from "Select a group to submit"
     And I fill in "Fragment size required (from)" with "1"
     And I fill in "Fragment size required (to)" with "999"
     And I select "Custom" from "Library type"
     And I select "76" from "Read length"
-    And I press "Create Submission"
-    Then I should see "Submission successfully created"
+    And I create the order and submit the submission
+    Then I should see "Submission successfully built"

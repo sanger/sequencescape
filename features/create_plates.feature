@@ -34,6 +34,7 @@ Feature: Printing new plate barcodes
 
     """
     When I select "Stock Plate" from "Plate purpose"
+    And I select "xyz" from "Barcode printer"
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
     And I should be on the new plate page
@@ -46,6 +47,7 @@ Feature: Printing new plate barcodes
     Given I am on the new plate page
     When I select "<plate_purpose>" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
+    And I select "xyz" from "Barcode printer"
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
     And I should be on the new plate page
@@ -68,6 +70,7 @@ Feature: Printing new plate barcodes
 
     When I select "Pico Standard" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
+    And I select "xyz" from "Barcode printer"
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
 
@@ -75,24 +78,28 @@ Feature: Printing new plate barcodes
     When I fill in the field labeled "Source plates" with "1220001454858"
     When I select "Stock Plate" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
+    And I select "xyz" from "Barcode printer"
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
 
     When I fill in the field labeled "Source plates" with "1221234567841"
     When I select "Dilution Plates" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
+    And I select "xyz" from "Barcode printer"
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
 
     When I fill in the field labeled "Source plates" with "4361234567667"
     When I select "Pico Assay Plates" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
+    And I select "xyz" from "Barcode printer"
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
 
     When I fill in the field labeled "Source plates" with "6251234567836"
     When I select "Gel Dilution Plates" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
+    And I select "xyz" from "Barcode printer"
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
     And plate with barcode "4331234567653" should exist

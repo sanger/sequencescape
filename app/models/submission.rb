@@ -13,16 +13,14 @@ class Submission < ActiveRecord::Base
   has_many :requests
   has_many :items, :through => :requests
 
-  has_one :order, :inverse_of => :submission
-  accepts_nested_attributes_for :order, :update_only => true
-  def orders
-    [order].compact
-  end
+  has_many :orders, :inverse_of => :submission
+  has_many :studies, :through => :orders
+  accepts_nested_attributes_for :orders, :update_only => true
 
-
-  #TODO clean up if not neede
   def comments
-    order.comments
+    # has_many throug doesn't work. Comments is a column (string) of order
+    # not an ActiveRecord
+    orders.map(&:comments).flatten(1).compact
   end
   
   cattr_reader :per_page
@@ -30,7 +28,7 @@ class Submission < ActiveRecord::Base
   named_scope :including_associations_for_json, {
     :include => [
       :uuid_object,
-      {:order => [
+      {:orders => [
          {:project => :uuid_object},
          {:assets => :uuid_object },
          {:study => :uuid_object },
@@ -69,7 +67,7 @@ class Submission < ActiveRecord::Base
       order.save! #doesn't save submission id otherwise
       study_name = order.try(:study).name
       order.submission.update_attributes!(:name=>study_name) if study_name
-      order.submission
+      order.submission.reload
     end
   end
   # TODO[xxx]: ... to here really!
@@ -148,8 +146,8 @@ class Submission < ActiveRecord::Base
   #for the moment we consider that request types should be the same for all order
   #so we can take the first one
   def request_type_ids
-    return [] unless orders.present?
-    order.request_types.map(&:to_i)
+    return [] unless orders.size >= 1
+    orders.first.request_types.map(&:to_i)
   end
 
 
@@ -181,7 +179,8 @@ class Submission < ActiveRecord::Base
   end
 
   def name
-    attributes[:name] || orders.map {|o| o.try(:study).try(:name) }.compact.join("|")
+    name = attributes[:name] || orders.map {|o| o.try(:study).try(:name) }.compact.sort.uniq.join("|")
+    name.present? ? name : "##{id}"
   end
 
 end

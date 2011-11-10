@@ -7,7 +7,7 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
     end
 
     should "be able to create a new order" do
-      order = @template.new_submission
+      order = @template.new_order
       assert order
       assert order.is_a?(Order)
 
@@ -63,7 +63,7 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
         end
 
         should "load the parameters properly" do
-          order = @loaded_template.new_submission
+          order = @loaded_template.new_order
           assert_equal 1, order.input_field_infos.size
           assert_equal @field.selection, order.input_field_infos.first.selection
         end

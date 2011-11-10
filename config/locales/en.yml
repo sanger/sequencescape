@@ -52,6 +52,9 @@ en:
       back_to_asset: "Back to asset"
       back_to_new_submission: "Back to new submission"
       new_similar_submission: "New similar submission"
+      add_new_order: "Add new order"
+      edit_submission: "Edit Submission"
+
     tabs:
       studies: "Studies"
       projects: "Projects"

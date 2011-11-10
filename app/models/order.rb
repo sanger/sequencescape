@@ -30,7 +30,7 @@ class Order < ActiveRecord::Base
   belongs_to :workflow, :class_name => 'Submission::Workflow'
   validates_presence_of :workflow
 
-  belongs_to :submission, :inverse_of => :order
+  belongs_to :submission, :inverse_of => :orders
   #validates_presence_of :submission
 
   serialize :request_types
@@ -62,7 +62,11 @@ class Order < ActiveRecord::Base
   # TODO[xxx]: I don't like the name but this should disappear once the UI has been fixed
   def self.prepare!(options)
     constructor = options.delete(:template) || self
-    constructor.create!(options.merge(:assets => options.fetch(:assets, [])))
+    constructor.create_order!(options.merge(:assets => options.fetch(:assets, [])))
+  end
+
+  class << self
+    alias_method :create_order!, :create!
   end
 
   # only needed to note 

@@ -4,6 +4,7 @@
 <% if current_user.is_administrator? || current_user.is_manager?(@study) %>
   <% add :back_menu, I18n.t("navigation.menu.new_similar_submission") => new_study_workflow_submission_path(@study, @workflow, :submission_template_id => @submission_template_id) if @submission_template_id -%>
   <% add :back_menu, I18n.t("navigation.menu.back_to_new_submission") => template_chooser_study_workflow_submissions_path(@study, @workflow) -%>
+  <% add :back_menu, I18n.t("navigation.menu.edit_submission") => edit_submission_path(@submission) if @submission.editable? -%>
 <% end %>
 <% end -%>
 

@@ -274,8 +274,8 @@ class EventFactoryTest < ActiveSupport::TestCase
         @user2 = Factory :user, :login => "west"
         @user2.roles << follower
         @study = Factory :study, :user => @user2
-        @submission = Factory::submission :project => @project, :study => @study
-        @request = Factory :request, :study => @study,  :submission => @submission
+        @submission = Factory::submission :project => @project, :study => @study, :assets => [Factory :library_tube]
+        @request = Factory :request, :study => @study, :project => @project,  :submission => @submission
         @user3 = Factory :user, :login => "east"
         message = "An error has occurred"
         EventFactory.request_update_note_to_manager(@request, @user3, message)

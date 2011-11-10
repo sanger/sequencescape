@@ -26,7 +26,7 @@ Feature: Push samples through the PacBio pipeline with javascript
     And I select "2000" from "Insert size"
     And I select "Standard" from "Sequencing type"
     And I fill in "Multiplier for step 2" with "22"
-    And I press "Create Submission"
+    And I create the order and submit the submission
     Given 1 pending delayed jobs are processed
     Given I am on the show page for pipeline "PacBio Sample Prep"
     When I check "Select SampleTube 111 for batch"
