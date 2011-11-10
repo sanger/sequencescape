@@ -62,8 +62,7 @@ class Plate < Asset
     Study.find_by_sql([ %Q{
 SELECT DISTINCT s.*
 FROM container_associations c
-INNER JOIN assets w ON c.content_id=w.id
-INNER JOIN aliquots a ON a.receptacle_id=w.id
+INNER JOIN aliquots a ON a.receptacle_id=c.content_id
 INNER JOIN studies s ON a.study_id=s.id
 WHERE c.container_id=?
 }, self.id ])
