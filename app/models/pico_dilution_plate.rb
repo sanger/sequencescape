@@ -9,8 +9,7 @@ class PicoDilutionPlate < DilutionPlate
   end
 
   def study_name
-    return "" if studies.blank?
-    studies.first.name
+    study.try(:name) || ""
   end
   
   def to_hash
