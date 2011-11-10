@@ -45,7 +45,7 @@ class BulkSubmission < ActiveRecord::Base
         errors.add(:spreadsheet, "The supplied file was empty") 
       else
         if /^.*\.csv$/.match(spreadsheet.original_filename)
-          process FasterCSV.parse(spreadsheet.read)
+          process(FasterCSV.parse(spreadsheet.read))
         else
           errors.add(:spreadsheet, "The supplied file was not a CSV file")
         end
@@ -106,11 +106,10 @@ class BulkSubmission < ActiveRecord::Base
       attributes = {
         :study   => study,
         :project => Project.find_by_id_or_name(details['project id'], details['project name']),
-
         :comments => details['comments'],
         :request_options => {
-          :read_length                 => details['read length'],
-          :library_type                => details['library type'],
+          :read_length  => details['read length'],
+          :library_type => details['library type'],
         }
       }
       number_of_lanes = details.fetch('number of lanes', 1).to_i
@@ -158,16 +157,16 @@ class BulkSubmission < ActiveRecord::Base
       request_types     = RequestType.all(:conditions => { :id => template.submission_parameters[:request_type_ids_list].flatten })
       lane_request_type = request_types.detect { |t| t.target_asset_type == 'Lane' or t.name =~ /\ssequencing$/ }
       attributes[:request_options][:multiplier] = { lane_request_type.id => number_of_lanes } if lane_request_type.present?
-      @orders.push "Order created from rows #{details['rows']} (should make #{number_of_lanes} lanes)"
+      
+      #TODO[xxx] Present successful orders info to users if desired
+      # @orders.push "Order created from rows #{details['rows']} (should make #{number_of_lanes} lanes)"
     
       return template.new_order(attributes)
     rescue ArgumentError
       raise
     rescue => exception
       errors.add :spreadsheet, "There was a problem on row(s) #{details['rows']}: #{exception.message}"
-
       @failures = true
-      debugger
       nil
     rescue QuotaException => exception
       errors.add :spreadsheet, "There was a quota problem: #{exception.message}"
@@ -181,7 +180,8 @@ class BulkSubmission < ActiveRecord::Base
      @orders = []
      @submission_details = {}
   
-    # Ensure that the keys of the rows are downcased for consistency.
+    # Discard the help row if the spreadsheet uses the template
+    #  Then ensure that the keys of the rows are downcased for consistency.
     if (csv_rows[0][0] == "This row is guidance only")
       help_row = csv_rows.shift
       headers = csv_rows.shift.map(&:downcase)
@@ -189,7 +189,7 @@ class BulkSubmission < ActiveRecord::Base
       headers = csv_rows.shift.map(&:downcase)
     end
     
-    # Detect that the CSV does not have any items from our known fields in the first row using an intersection
+    # Detect if the CSV does not have any items from our known fields in the first row using an intersection
     if (headers & COMMON_FIELDS).length == 0
       errors.add(:spreadsheet, "The supplied file does not contain a valid header row (try downloading a template)")
       
@@ -202,14 +202,12 @@ class BulkSubmission < ActiveRecord::Base
       # Within a single transaction process each of the rows of the CSV file as a separate submission.  Any name
       # fields need to be mapped to IDs, and the 'assets' field needs to be split up and processed if present.
       ActiveRecord::Base.transaction do
-
         submission_details.each do |submissions|
           submissions.each do |submission_name,orders|
-            puts "submission #{submission_name}:............................"
             submission = Submission.create!(:name=>submission_name, :orders => orders.map(&method(:prepare_order)).compact)
-            # Collect the successful submissions
+            # Collect successful submissions
             @submissions.push submission.id
-            @submission_details[submission.id] = "Submission #{submission.id} built."
+            @submission_details[submission.id] = "Submission #{submission.id} built (#{submission.orders.count} orders)"
           end
         end
         
@@ -225,6 +223,4 @@ class BulkSubmission < ActiveRecord::Base
     return @submissions, @submission_details
   end
   
-
-
 end
