@@ -41,13 +41,16 @@ a:visited {
   padding: 1px 15px 3px 15px;
   font-weight: bold;
   text-shadow:-1px 1px 1px rgba(102, 106, 109,0.4);
+  -moz-transition:    all 0.3s ease-in-out 0s;
+  -webkit-transition: all 0.3s ease-in-out 0s;
+  transition:         all 0.3s ease-in-out 0s;
 }
 
 #tabs a:hover {
   -moz-border-radius: 5px;
   border-radius: 5px;
   background: #066FA3;
-  background: rgba(0, 69, 120,0.3);
+  background: rgba(0, 69, 120,0.5);
   color: #fff;
   text-shadow:-1px 1px 1px rgba(102, 106, 109,1);
 }
