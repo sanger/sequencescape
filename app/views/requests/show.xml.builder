@@ -3,7 +3,6 @@ xml.request(api_data) {
   xml.id @request.id
   xml.created_at @request.created_at
   xml.updated_at @request.updated_at
-  xml.submission_name @request.submission.try(:name)
   xml.sample_id @request.samples.first.id if @request.samples.size == 1
   xml.template @request.request_type.name, :id => @request.request_type.id if @request.request_type
   xml.read_length(@request.request_metadata.read_length) unless @request.request_metadata.read_length.blank?
