@@ -44,7 +44,7 @@ class PlateCreation < ActiveRecord::Base
   private :connect_parent_and_child
 
   def connect_child_to_parent_study
-    RequestFactory.create_asset_requests([ self.child.id ], self.parent.study.id) if self.parent.study.present?
+    RequestFactory.create_assets_requests([ self.child.id ], self.parent.study.id) if self.parent.study.present?
   end
   private :connect_child_to_parent_study
 
