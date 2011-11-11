@@ -91,7 +91,7 @@ class Project < ActiveRecord::Base
   end
 
   def unbook_quota(request_type, number=1)
-    quota_for!(request_type).unbook_request
+    quota_for!(request_type).unbook_request!(number)
   end
 
   def use_quota!(request, unbook=true)
