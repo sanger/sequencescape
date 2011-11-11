@@ -1,14 +1,12 @@
 module StudyReport::StudyDetails
   
   def each_asset_id_in_batches(&block)
-    # /|\ Warning, this does return a list of Aliqutos
-    # but a list of fake Asset
-    # TODO use study.assets_through_aliquots (or study.requests.map(&:asset_id))
+    ids = []
     Aliquot.find_in_batches( :conditions => {:study_id => self.id},
-                          :select => "DISTINCT receptacle_id AS id",
-                          :readonly => true
-                         ) do |asset_object_ids|
-      asset_ids = asset_object_ids.map(&:id)
+                            :readonly => true) do |aliquots|
+      ids = ids + aliquots.map(&:receptacle_id)
+    end
+    ids.uniq.each_slice(100) do |asset_ids|
       block.call(asset_ids)
     end
   end
