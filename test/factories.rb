@@ -153,6 +153,11 @@ Factory.define :submission_template do |submission_template|
   submission_template.name                  "my_template"
   submission_template.submission_parameters({ :workflow_id => 1, :request_type_ids_list => [] })
 end
+Factory.define :order_template, :class => SubmissionTemplate do |submission_template|
+  submission_template.submission_class_name Submission.name
+  submission_template.name                  "my_template"
+  submission_template.submission_parameters({ :workflow_id => 1, :request_type_ids_list => [] })
+end
 
 Factory.define :project_quota, :class => Quota do |quota|
   quota.project         {|project| project.association(:project)}
