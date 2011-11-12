@@ -34,7 +34,6 @@ Feature: Interacting with submissions through the API
       And I GET the API path "/orders/11111111-2222-3333-4444-666666666666"
     Then ignoring "internal_id|uuid" the JSON should be:
       """
-      """
         { 
           "order":
           {
@@ -49,6 +48,7 @@ Feature: Interacting with submissions through the API
             "asset_uuids": []
           }
         }
+      """
       
 
     When I GET the API path "/submissions"

@@ -237,19 +237,15 @@ Factory.define :request_without_assets, :parent => :request_with_submission do |
   end
 end
 
-Factory.define :request, :parent => :request_without_assets do |r|
+Factory.define :request, :parent => :request_without_assets do |request|
   # the sample should be setup correctly and the assets should be valid
-  r.after_build do |request|
-    request.asset        ||= Factory(:sample_tube)
-    request.target_asset ||= Factory(:library_tube)
-  end
+  request.asset        { |asset| asset.association(:sample_tube)  }
+  request.target_asset { |asset| asset.association(:library_tube) }
 end
 
 Factory.define :request_suitable_for_starting, :parent => :request_without_assets do |request|
-  request.after_build do |request|
-    request.asset        ||= Factory(:sample_tube)
-    request.target_asset ||= Factory(:empty_library_tube)
-  end
+  request.asset        { |asset| asset.association(:sample_tube)        }
+  request.target_asset { |asset| asset.association(:empty_library_tube) }
 end
 
 Factory.define :request_without_item, :class => "Request" do |r|

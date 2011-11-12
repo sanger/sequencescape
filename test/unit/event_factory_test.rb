@@ -242,7 +242,7 @@ class EventFactoryTest < ActiveSupport::TestCase
         @user2 = Factory :user, :login => "west"
         @user2.roles << follower
         @study = Factory :study, :user => @user2
-        @submission = Factory::submission :project => @project, :study => @study
+        @submission = Factory::submission :project => @project, :study => @study, :asset_group_name => 'to prevent asset errors'
         @samples = []
         @samples[0] = Factory :sample, :name => "NewSample-1"
         @samples[1] = Factory :sample, :name => "NewSample-2"
