@@ -12,7 +12,7 @@ class Api::RootService < ::Core::Service
       def @owner.each(&block)
         json = Hash[
           object.map do |model_in_json,endpoint|
-            [model_in_json, endpoint.model_handler.as_json(:response => self, :endpoint => endpoint)] 
+            [model_in_json, endpoint.model_handler.as_json(:response => self, :endpoint => endpoint, :target => endpoint.model_handler)] 
           end +
           [ [ 'revision', 2 ] ]
         ]

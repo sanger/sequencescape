@@ -209,8 +209,10 @@ class Order < ActiveRecord::Base
   end
   protected :compute_input_field_infos
 
-
-
+  # Are we still able to modify this instance?
+  def building?
+    self.submission.nil?
+  end
 end
 
 

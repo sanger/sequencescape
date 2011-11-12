@@ -334,7 +334,7 @@ Given /^the infinium barcode for plate "([^"]*)" is "([^"]*)"$/ do |plate_name, 
   plate.plate_metadata.update_attributes!(:infinium_barcode => infinium_barcode)
 end
 
-Given /^no (submission template|plate purpose|request type)s exist$/ do |model|
+Given /^no (plate purpose|request type)s exist$/ do |model|
   model.gsub(/\s+/, '_').camelize.constantize.destroy_all
 end
 
