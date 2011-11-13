@@ -325,6 +325,9 @@ Feature: Creating orders for UK10K
 
   @update @error
   Scenario Outline: Trying to update invalid request options
+    Given 3 sample tubes exist with names based on "sampletube" and IDs starting at 1
+    And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"
+
     Given I have an order created with the following details based on the template "<template name>":
       | study   | 22222222-3333-4444-5555-000000000000 |
       | project | 22222222-3333-4444-5555-000000000001 |
@@ -391,6 +394,9 @@ Feature: Creating orders for UK10K
 
   @update
   Scenario Outline: Updating the request options
+    Given 3 sample tubes exist with names based on "sampletube" and IDs starting at 1
+    And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"
+
     Given the study "Testing submission creation" has an asset group called "Existing asset group"
     And the UUID for the asset group "Existing asset group" is "88888888-1111-2222-3333-000000000000"
 

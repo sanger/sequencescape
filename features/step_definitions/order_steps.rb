@@ -17,8 +17,8 @@ Given /^I have an order created with the following details based on the template
       case k
       when 'asset_group_name' then v
       when 'request_options' then Hash[v.split(',').map { |p| p.split(':').map(&:strip) }]
-      when 'assets' then Uuid.with_external_id(v.split(',').map(&:strip)).all.map(&:resource)
-      else Uuid.include_resource.with_external_id(v).first.try(:resource) 
+      when 'assets' then Uuid.lookup_many_uuids(v.split(',').map(&:strip)).map(&:resource)
+      else Uuid.include_resource.lookup_single_uuid(v).resource
       end
     [ k.to_sym, v ]
   end
