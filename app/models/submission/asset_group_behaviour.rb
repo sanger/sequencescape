@@ -31,7 +31,7 @@ module Submission::AssetGroupBehaviour
   private :asset_group?
 
   def pull_assets_from_asset_group
-    self.assets = self.asset_group.assets
+    self.assets = self.asset_group.assets unless self.asset_group.assets.empty?
   end
   private :pull_assets_from_asset_group
 
