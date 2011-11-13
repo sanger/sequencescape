@@ -15,24 +15,6 @@ Given /^all submissions have been built$/ do
   Given "all pending delayed jobs are processed"
 end
 
-#Given /^I have a submission created with the following details based on the template "([^\"]+)":$/ do |name, details|
-#  template = SubmissionTemplate.find_by_name(name) or raise StandardError, "Cannot find submission template #{name.inspect}"
-#  order_attributes, submission_attributes = details.rows_hash.partition { |k,_| k != 'state' }
-#  order_attributes.map! do |k,v| 
-#    v =
-#      case k
-#      when 'asset_group_name' then v
-#      when 'request_options' then Hash[v.split(',').map { |p| p.split(':').map(&:strip) }]
-#      when 'assets' then Uuid.with_external_id(v.split(',').map(&:strip)).all.map(&:resource)
-#      else Uuid.include_resource.with_external_id(v).first.try(:resource) 
-#      end
-#    [ k.to_sym, v ]
-#  end
-#
-#  order = template.create_with_submission!({ :user => User.first }.merge(Hash[order_attributes]))
-#  order.submission.update_attributes!(Hash[submission_attributes]) unless submission_attributes.empty?
-#end
-
 When /^the state of the submission with UUID "([^"]+)" is "([^"]+)"$/ do |uuid, state|
   submission = Uuid.with_external_id(uuid).first.try(:resource) or raise StandardError, "Could not find submission with UUID #{uuid.inspect}"
   submission.update_attributes!(:state => state)
