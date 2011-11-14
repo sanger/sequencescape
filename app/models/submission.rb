@@ -9,6 +9,9 @@ class Submission < ActiveRecord::Base
 
   include DelayedJobEx
 
+  belongs_to :user
+  validates_presence_of :user
+
   # Created during the lifetime ...
   has_many :requests
   has_many :items, :through => :requests
