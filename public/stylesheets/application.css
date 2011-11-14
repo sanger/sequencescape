@@ -584,7 +584,7 @@ font-size: 11px;
 td.item {
 text-align: right;
 padding-right: 15px;
-padding-bottom: 10px;
+line-height: 20px;
 }
 td.label,th.label,th.nosort {
 border-bottom: 1px solid #888;
