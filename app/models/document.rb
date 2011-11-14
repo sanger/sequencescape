@@ -21,6 +21,7 @@ class Document < ActiveRecord::Base
         
         def #{field}=(file)
           create_#{field}_document(:uploaded_data => file, :documentable_extended => #{differentiator}) unless file.blank?
+          "#{field}_filename" = file.original_filename if self.column_names.include? "#{field}_filename"
         end
       }, __FILE__, line)
     end

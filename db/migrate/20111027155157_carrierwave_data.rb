@@ -50,18 +50,32 @@ class CarrierwaveData < ActiveRecord::Migration
       SampleManifest.all.each do |s| 
         say "Migrating sample manifest: #{s.id}"
         unless s.uploaded_file.nil?
-          uploaded = Tempfile.new("sm-uploaded-#{s.id}.csv")
-          File.open(uploaded.path, 'wb') do |f|
-            f.write s.uploaded_file
+          default_filename = "sm-uploaded-#{s.id}.csv"
+          uploaded = Tempfile.new(default_filename)
+          begin
+            File.open(uploaded.path, 'wb') do |f|
+              f.write s.uploaded_file
+            end
+            Document.create!(:uploaded_data => uploaded,  :documentable => s, :documentable_extended => "uploaded" )
+            s.uploaded_filename = default_filename
+          ensure
+            uploaded.close
+            uploaded.unlink # delete the tempfile
           end
-          Document.create!(:uploaded_data => uploaded,  :documentable_id => s.id, :documentable_type => "SampleManifest", :documentable_extended => "uploaded" )
         end
         unless s.generated_file.nil?
-          generated = Tempfile.new("sm-generated-#{s.id}.xls")
-          File.open(generated.path, 'wb') do |f|
-            f.write s.generated_file
+          default_filename = "sm-generated-#{s.id}.xls"
+          generated = Tempfile.new(default_filename)
+          begin
+            File.open(generated.path, 'wb') do |f|
+              f.write s.generated_file
+            end
+            Document.create!(:uploaded_data => generated, :documentable => s, :documentable_extended => "generated")
+            s.generated_filename = default_filename
+          ensure
+            generated.close
+            generated.unlink # delete tempfile
           end
-          Document.create!(:uploaded_data => generated, :documentable_id => s.id, :documentable_type => "SampleManifest", :documentable_extended => "generated")
         end
         s.save
       end
@@ -78,7 +92,7 @@ class CarrierwaveData < ActiveRecord::Migration
   def self.down
     ActiveRecord::Base.transaction do
       SampleManifest.all.each do |sm|
-        uploaded_doc  = Document.first(:conditions => ["documentable_id = ? AND documentable_extended = ?", sm.id, 'uploaded'])
+        uploaded_doc  = Document.first(:conditions => ["documentable_id = ? AND documentable_type = ? AND documentable_extended = ?", sm.id, 'SampleManifest', 'uploaded'])
         generated_doc = Document.first(:conditions => ["documentable_id = ? AND documentable_extended = ?", sm.id, 'generated'])
         say "Migrating sample manifest: #{sm.id}"
         unless uploaded_doc.nil?
