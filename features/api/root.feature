@@ -133,14 +133,20 @@ Feature: The entry point for the API gives directions to the other actions
           }
         },
 
-        "submission_templates": {
+        "order_templates": {
           "actions": {
-            "read": "http://www.example.com/api/1/submission_templates"
+            "read": "http://www.example.com/api/1/order_templates"
           }
         },
         "submissions": {
           "actions": {
-            "read": "http://www.example.com/api/1/submissions"
+            "read": "http://www.example.com/api/1/submissions",
+            "create": "http://www.example.com/api/1/submissions"
+          }
+        },
+        "orders": {
+          "actions": {
+            "read": "http://www.example.com/api/1/orders"
           }
         },
 
@@ -341,14 +347,20 @@ Feature: The entry point for the API gives directions to the other actions
           }
         },
 
-        "submission_templates": {
+        "order_templates": {
           "actions": {
-            "read": "http://www.example.com/api/1/submission_templates"
+            "read": "http://www.example.com/api/1/order_templates"
           }
         },
         "submissions": {
           "actions": {
-            "read": "http://www.example.com/api/1/submissions"
+            "read": "http://www.example.com/api/1/submissions",
+            "create": "http://www.example.com/api/1/submissions"
+          }
+        },
+        "orders": {
+          "actions": {
+            "read": "http://www.example.com/api/1/orders"
           }
         },
 

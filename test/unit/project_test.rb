@@ -52,7 +52,7 @@ class ProjectTest < ActiveSupport::TestCase
         @quota           = Factory :project_quota, :project => @project, :request_type => @request_type, :limit => 5
         @quota_2         = Factory :project_quota, :project => @project, :request_type => @request_type_2, :limit => 7
         @quota_3         = Factory :project_quota, :project => @project, :request_type => @request_type_3, :limit => 14
-        @submission       = Factory::submission :project => @project
+        @submission       = Factory::submission :project => @project, :asset_group_name => 'to avoid asset errors'
         # Failed
         Factory :cancelled_request, :project => @project, :request_type => @request_type, :submission => @submission
         Factory :cancelled_request, :project => @project, :request_type => @request_type, :submission => @submission

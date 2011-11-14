@@ -12,6 +12,8 @@ class SubmissionTemplate < ActiveRecord::Base
   serialize :submission_parameters
   acts_as_audited :on => [:destroy, :update]
 
+  has_many :orders
+
   def create_and_build_submission!(attributes)
     Submission.build!(attributes.merge(:template => self))
   end

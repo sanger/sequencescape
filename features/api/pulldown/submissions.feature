@@ -19,15 +19,16 @@ Feature: Creating submissions for pulldown
       And the UUID for the asset group "Testing the pulldown submissions" is "88888888-1111-2222-3333-000000000000"
 
     Given the UUID of the next submission created will be "11111111-2222-3333-4444-555555555555"
+      And the UUID of the next order created will be "11111111-2222-3333-4444-666666666666"
 
   @create
   Scenario Outline: A submission for a pulldown pipeline that uses bait libraries
     Given the UUID for the submission template "<pipeline> - HiSeq paired end sequencing" is "00000000-1111-2222-3333-444444444444"
 
-    When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/submissions":
+    When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/orders":
       """
       {
-        "submission": {
+        "order": {
           "project": "22222222-3333-4444-5555-000000000001",
           "study": "22222222-3333-4444-5555-000000000000",
           "asset_group_name": "Testing the pulldown submissions",
@@ -42,11 +43,10 @@ Feature: Creating submissions for pulldown
      And the JSON should match the following for the specified fields:
       """
       {
-        "submission": {
+        "order": {
           "actions": {
-            "read": "http://www.example.com/api/1/11111111-2222-3333-4444-555555555555",
-            "update": "http://www.example.com/api/1/11111111-2222-3333-4444-555555555555",
-            "submit": "http://www.example.com/api/1/11111111-2222-3333-4444-555555555555/submit"
+            "read": "http://www.example.com/api/1/11111111-2222-3333-4444-666666666666",
+            "update": "http://www.example.com/api/1/11111111-2222-3333-4444-666666666666"
           },
           "study": {
             "actions": {
@@ -60,6 +60,36 @@ Feature: Creating submissions for pulldown
             },
             "name": "Testing submission creation"
           }
+        }
+      }
+      """
+
+    When I POST the following JSON to the API path "/submissions":
+      """
+      {
+        "submission": {
+          "orders": [
+            "11111111-2222-3333-4444-666666666666"
+          ]
+        }
+      }
+      """
+    Then the HTTP response should be "201 Created"
+     And the JSON should match the following for the specified fields:
+      """
+      {
+        "submission": {
+          "actions": {
+            "read": "http://www.example.com/api/1/11111111-2222-3333-4444-555555555555",
+            "update": "http://www.example.com/api/1/11111111-2222-3333-4444-555555555555",
+            "submit": "http://www.example.com/api/1/11111111-2222-3333-4444-555555555555/submit"
+          },
+          "state": "building",
+          "orders": [ 
+            {
+              "uuid": "11111111-2222-3333-4444-666666666666"
+            }
+          ]
         }
       }
       """
@@ -101,10 +131,10 @@ Feature: Creating submissions for pulldown
   Scenario: A submission for pulldown whole genome shotgun
     Given the UUID for the submission template "Pulldown WGS - HiSeq paired end sequencing" is "00000000-1111-2222-3333-444444444444"
 
-    When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/submissions":
+    When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/orders":
       """
       {
-        "submission": {
+        "order": {
           "project": "22222222-3333-4444-5555-000000000001",
           "study": "22222222-3333-4444-5555-000000000000",
           "asset_group_name": "Testing the pulldown submissions",
@@ -118,11 +148,10 @@ Feature: Creating submissions for pulldown
      And the JSON should match the following for the specified fields:
       """
       {
-        "submission": {
+        "order": {
           "actions": {
-            "read": "http://www.example.com/api/1/11111111-2222-3333-4444-555555555555",
-            "update": "http://www.example.com/api/1/11111111-2222-3333-4444-555555555555",
-            "submit": "http://www.example.com/api/1/11111111-2222-3333-4444-555555555555/submit"
+            "read": "http://www.example.com/api/1/11111111-2222-3333-4444-666666666666",
+            "update": "http://www.example.com/api/1/11111111-2222-3333-4444-666666666666"
           },
           "study": {
             "actions": {
@@ -136,6 +165,36 @@ Feature: Creating submissions for pulldown
             },
             "name": "Testing submission creation"
           }
+        }
+      }
+      """
+
+    When I POST the following JSON to the API path "/submissions":
+      """
+      {
+        "submission": {
+          "orders": [
+            "11111111-2222-3333-4444-666666666666"
+          ]
+        }
+      }
+      """
+    Then the HTTP response should be "201 Created"
+     And the JSON should match the following for the specified fields:
+      """
+      {
+        "submission": {
+          "actions": {
+            "read": "http://www.example.com/api/1/11111111-2222-3333-4444-555555555555",
+            "update": "http://www.example.com/api/1/11111111-2222-3333-4444-555555555555",
+            "submit": "http://www.example.com/api/1/11111111-2222-3333-4444-555555555555/submit"
+          },
+          "state": "building",
+          "orders": [ 
+            {
+              "uuid": "11111111-2222-3333-4444-666666666666"
+            }
+          ]
         }
       }
       """
@@ -167,15 +226,14 @@ Feature: Creating submissions for pulldown
       | fragment_size_required_from | 300            |
       | fragment_size_required_to   | 500            |
 
-
   @create
   Scenario Outline: Attempting to set the fragment sizes to anything other than the acceptable values is an error
     Given the UUID for the submission template "Pulldown <pipeline> - HiSeq paired end sequencing" is "00000000-1111-2222-3333-444444444444"
 
-    When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/submissions":
+    When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/orders":
       """
       {
-        "submission": {
+        "order": {
           "project": "22222222-3333-4444-5555-000000000001",
           "study": "22222222-3333-4444-5555-000000000000",
           "asset_group_name": "Testing the pulldown submissions",

@@ -282,8 +282,7 @@ Feature: Access pipelines through the API
       {
         "batch": {
           "actions": {
-            "read": "http://www.example.com/api/1/22222222-3333-4444-5555-666666666666",
-            "update": "http://www.example.com/api/1/22222222-3333-4444-5555-666666666666"
+            "read": "http://www.example.com/api/1/22222222-3333-4444-5555-666666666666"
           },
           "pipeline": {
             "actions": {

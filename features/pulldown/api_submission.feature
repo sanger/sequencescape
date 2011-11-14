@@ -43,126 +43,42 @@ Feature: Beginning with the API progress through pulldown to sequencing
     And the UUID for the well "Well_333_3" is "44444444-2222-3333-4444-000000000009"
 
     Given the UUID for the submission template "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" is "00000000-1111-2222-3333-444444444444"
-    And the UUID of the next submission created will be "11111111-2222-3333-4444-555555555555"
 
-    When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/submissions":
-      """
-      {
-        "submission": {
-          "project": "22222222-3333-4444-5555-000000000001",
-          "study": "22222222-3333-4444-5555-000000000000"
-        }
-      }
-      """
-    Then the HTTP response should be "201 Created"
-    When I PUT the following JSON to the API path "/11111111-2222-3333-4444-555555555555":
-        """
-        {
-          "submission": {
-            "assets": [
-              "44444444-2222-3333-4444-000000000001",
-              "44444444-2222-3333-4444-000000000002",
-              "44444444-2222-3333-4444-000000000003"
-            ],
-            "request_options": {
-              "read_length": 100,
-              "fragment_size_required": {
-                "from": 100,
-                "to": 200
-              },
-              "number_of_lanes": 7,
-              "library_type": "Standard"
-            }
-          }
-        }
-        """
-    Then the HTTP response should be "200 OK"
-    When I POST the following JSON to the API path "/11111111-2222-3333-4444-555555555555/submit":
-     """
-     """
-    Then the HTTP response should be "200 OK"
-    Given all pending delayed jobs are processed
+    Given the UUID of the next submission created will be "11111111-2222-3333-4444-555555555555"
+      And the UUID of the next order created will be "11111111-2222-3333-4444-666666666665"
+
+    Given I have an order created with the following details based on the template "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing":
+      | study           | 22222222-3333-4444-5555-000000000000                                                                             |
+      | project         | 22222222-3333-4444-5555-000000000001                                                                             |
+      | request_options | read_length: 100, fragment_size_required_from: 100, fragment_size_required_to: 200, library_type: Standard       |
+      | assets          | 44444444-2222-3333-4444-000000000001, 44444444-2222-3333-4444-000000000002, 44444444-2222-3333-4444-000000000003 |
+    Given the order with UUID "11111111-2222-3333-4444-666666666665" is for 7 "HiSeq Paired end sequencing" requests
+    When the order with UUID "11111111-2222-3333-4444-666666666665" has been added to a submission
+
+    Given the UUID of the next submission created will be "11111111-2222-3333-4444-555555555556"
+      And the UUID of the next order created will be "11111111-2222-3333-4444-666666666666"
+
+    Given I have an order created with the following details based on the template "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing":
+      | study           | 22222222-3333-4444-6666-000000000000                                                                             |
+      | project         | 22222222-3333-4444-5555-000000000001                                                                             |
+      | request_options | read_length: 100, fragment_size_required_from: 100, fragment_size_required_to: 200, library_type: Standard       |
+      | assets          | 44444444-2222-3333-4444-000000000004, 44444444-2222-3333-4444-000000000005, 44444444-2222-3333-4444-000000000006 |
+    Given the order with UUID "11111111-2222-3333-4444-666666666666" is for 5 "HiSeq Paired end sequencing" requests
+    When the order with UUID "11111111-2222-3333-4444-666666666666" has been added to a submission
+
+    Given the UUID of the next submission created will be "11111111-2222-3333-4444-555555555557"
+      And the UUID of the next order created will be "11111111-2222-3333-4444-666666666667"
+
+    Given I have an order created with the following details based on the template "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing":
+      | study           | 22222222-3333-4444-7777-000000000000                                                                             |
+      | project         | 22222222-3333-4444-5555-000000000001                                                                             |
+      | request_options | read_length: 100, fragment_size_required_from: 100, fragment_size_required_to: 200, library_type: Standard       |
+      | assets          | 44444444-2222-3333-4444-000000000007, 44444444-2222-3333-4444-000000000008, 44444444-2222-3333-4444-000000000009 |
+    When the order with UUID "11111111-2222-3333-4444-666666666667" has been added to a submission
+
+    Given all submissions have been built
     Then the submission with UUID "11111111-2222-3333-4444-555555555555" is ready
-
-    And the UUID of the next submission created will be "11111111-2222-3333-4444-555555555556"
-
-    When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/submissions":
-     """
-     {
-       "submission": {
-         "project": "22222222-3333-4444-5555-000000000001",
-         "study": "22222222-3333-4444-6666-000000000000"
-       }
-     }
-     """
-    Then the HTTP response should be "201 Created"
-    When I PUT the following JSON to the API path "/11111111-2222-3333-4444-555555555556":
-         """
-         {
-           "submission": {
-             "assets": [
-               "44444444-2222-3333-4444-000000000004",
-               "44444444-2222-3333-4444-000000000005",
-               "44444444-2222-3333-4444-000000000006"
-             ],
-             "request_options": {
-               "read_length": 100,
-               "fragment_size_required": {
-                 "from": 100,
-                 "to": 200
-               },
-               "number_of_lanes": 5,
-               "library_type": "Standard"
-             }
-           }
-         }
-         """
-    Then the HTTP response should be "200 OK"
-    When I POST the following JSON to the API path "/11111111-2222-3333-4444-555555555556/submit":
-      """
-      """
-    Then the HTTP response should be "200 OK"
-    Given all pending delayed jobs are processed
     Then the submission with UUID "11111111-2222-3333-4444-555555555556" is ready
-
-    And the UUID of the next submission created will be "11111111-2222-3333-4444-555555555557"
-
-    When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/submissions":
-      """
-      {
-        "submission": {
-          "project": "22222222-3333-4444-5555-000000000001",
-          "study": "22222222-3333-4444-7777-000000000000"
-        }
-      }
-      """
-    Then the HTTP response should be "201 Created"
-    When I PUT the following JSON to the API path "/11111111-2222-3333-4444-555555555557":
-        """
-        {
-          "submission": {
-            "assets": [
-              "44444444-2222-3333-4444-000000000007",
-              "44444444-2222-3333-4444-000000000008",
-              "44444444-2222-3333-4444-000000000009"
-            ],
-            "request_options": {
-              "read_length": 100,
-              "fragment_size_required": {
-                "from": 100,
-                "to": 200
-              },
-              "library_type": "Standard"
-            }
-          }
-        }
-        """
-    Then the HTTP response should be "200 OK"
-    When I POST the following JSON to the API path "/11111111-2222-3333-4444-555555555557/submit":
-      """
-      """
-    Then the HTTP response should be "200 OK"
-    Given all pending delayed jobs are processed
     Then the submission with UUID "11111111-2222-3333-4444-555555555557" is ready
 
     Given I have a tag group called "UK10K tag group" with 3 tags
@@ -239,125 +155,39 @@ Feature: Beginning with the API progress through pulldown to sequencing
     And the UUID for the well "Well_333_2" is "44444444-2222-3333-4444-000000000008"
     And the UUID for the well "Well_333_3" is "44444444-2222-3333-4444-000000000009"
 
-    Given the UUID for the submission template "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" is "00000000-1111-2222-3333-444444444444"
-    And the UUID of the next submission created will be "11111111-2222-3333-4444-555555555555"
+    Given the UUID of the next submission created will be "11111111-2222-3333-4444-555555555555"
+      And the UUID of the next order created will be "11111111-2222-3333-4444-666666666665"
 
-    When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/submissions":
-      """
-      {
-        "submission": {
-          "project": "22222222-3333-4444-5555-000000000001",
-          "study": "22222222-3333-4444-5555-000000000000"
-        }
-      }
-      """
-    Then the HTTP response should be "201 Created"
-    When I PUT the following JSON to the API path "/11111111-2222-3333-4444-555555555555":
-        """
-        {
-          "submission": {
-            "assets": [
-              "44444444-2222-3333-4444-000000000001",
-              "44444444-2222-3333-4444-000000000002",
-              "44444444-2222-3333-4444-000000000003"
-            ],
-            "request_options": {
-              "read_length": 100,
-              "fragment_size_required": {
-                "from": 100,
-                "to": 200
-              },
-              "library_type": "Standard"
-            }
-          }
-        }
-        """
-    Then the HTTP response should be "200 OK"
-    When I POST the following JSON to the API path "/11111111-2222-3333-4444-555555555555/submit":
-     """
-     """
-    Then the HTTP response should be "200 OK"
-    Given all pending delayed jobs are processed
+    Given I have an order created with the following details based on the template "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing":
+      | study           | 22222222-3333-4444-5555-000000000000                                                                             |
+      | project         | 22222222-3333-4444-5555-000000000001                                                                             |
+      | request_options | read_length: 100, fragment_size_required_from: 100, fragment_size_required_to: 200, library_type: Standard       |
+      | assets          | 44444444-2222-3333-4444-000000000001, 44444444-2222-3333-4444-000000000002, 44444444-2222-3333-4444-000000000003 |
+    When the order with UUID "11111111-2222-3333-4444-666666666665" has been added to a submission
+
+    Given the UUID of the next submission created will be "11111111-2222-3333-4444-555555555556"
+      And the UUID of the next order created will be "11111111-2222-3333-4444-666666666666"
+
+    Given I have an order created with the following details based on the template "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing":
+      | study           | 22222222-3333-4444-6666-000000000000                                                                             |
+      | project         | 22222222-3333-4444-5555-000000000001                                                                             |
+      | request_options | read_length: 100, fragment_size_required_from: 100, fragment_size_required_to: 200, library_type: Standard       |
+      | assets          | 44444444-2222-3333-4444-000000000004, 44444444-2222-3333-4444-000000000005, 44444444-2222-3333-4444-000000000006 |
+    When the order with UUID "11111111-2222-3333-4444-666666666666" has been added to a submission
+
+    Given the UUID of the next submission created will be "11111111-2222-3333-4444-555555555557"
+      And the UUID of the next order created will be "11111111-2222-3333-4444-666666666667"
+
+    Given I have an order created with the following details based on the template "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing":
+      | study           | 22222222-3333-4444-7777-000000000000                                                                             |
+      | project         | 22222222-3333-4444-5555-000000000001                                                                             |
+      | request_options | read_length: 100, fragment_size_required_from: 100, fragment_size_required_to: 200, library_type: Standard       |
+      | assets          | 44444444-2222-3333-4444-000000000007, 44444444-2222-3333-4444-000000000008, 44444444-2222-3333-4444-000000000009 |
+    When the order with UUID "11111111-2222-3333-4444-666666666667" has been added to a submission
+
+    Given all submissions have been built
     Then the submission with UUID "11111111-2222-3333-4444-555555555555" is ready
-
-    And the UUID of the next submission created will be "11111111-2222-3333-4444-555555555556"
-
-    When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/submissions":
-     """
-     {
-       "submission": {
-         "project": "22222222-3333-4444-5555-000000000001",
-         "study": "22222222-3333-4444-6666-000000000000"
-       }
-     }
-     """
-    Then the HTTP response should be "201 Created"
-    When I PUT the following JSON to the API path "/11111111-2222-3333-4444-555555555556":
-         """
-         {
-           "submission": {
-             "assets": [
-               "44444444-2222-3333-4444-000000000004",
-               "44444444-2222-3333-4444-000000000005",
-               "44444444-2222-3333-4444-000000000006"
-             ],
-             "request_options": {
-               "read_length": 100,
-               "fragment_size_required": {
-                 "from": 100,
-                 "to": 200
-               },
-               "library_type": "Standard"
-             }
-           }
-         }
-         """
-    Then the HTTP response should be "200 OK"
-    When I POST the following JSON to the API path "/11111111-2222-3333-4444-555555555556/submit":
-      """
-      """
-    Then the HTTP response should be "200 OK"
-    Given all pending delayed jobs are processed
     Then the submission with UUID "11111111-2222-3333-4444-555555555556" is ready
-
-    And the UUID of the next submission created will be "11111111-2222-3333-4444-555555555557"
-
-    When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/submissions":
-      """
-      {
-        "submission": {
-          "project": "22222222-3333-4444-5555-000000000001",
-          "study": "22222222-3333-4444-7777-000000000000"
-        }
-      }
-      """
-    Then the HTTP response should be "201 Created"
-    When I PUT the following JSON to the API path "/11111111-2222-3333-4444-555555555557":
-        """
-        {
-          "submission": {
-            "assets": [
-              "44444444-2222-3333-4444-000000000007",
-              "44444444-2222-3333-4444-000000000008",
-              "44444444-2222-3333-4444-000000000009"
-            ],
-            "request_options": {
-              "read_length": 100,
-              "fragment_size_required": {
-                "from": 100,
-                "to": 200
-              },
-              "library_type": "Standard"
-            }
-          }
-        }
-        """
-    Then the HTTP response should be "200 OK"
-    When I POST the following JSON to the API path "/11111111-2222-3333-4444-555555555557/submit":
-      """
-      """
-    Then the HTTP response should be "200 OK"
-    Given all pending delayed jobs are processed
     Then the submission with UUID "11111111-2222-3333-4444-555555555557" is ready
 
     Given I have a tag group called "UK10K tag group" with 3 tags
@@ -409,11 +239,12 @@ Feature: Beginning with the API progress through pulldown to sequencing
   Scenario Outline: Create a single API submission and progress all the way to sequencing
     Given the UUID for the submission template "<submission_template_name>" is "00000000-1111-2222-3333-444444444444"
     And the UUID of the next submission created will be "11111111-2222-3333-4444-555555555555"
+    And the UUID of the next order created will be "11111111-2222-3333-4444-666666666666"
 
-    When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/submissions":
+    When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/orders":
       """
       {
-        "submission": {
+        "order": {
           "project": "22222222-3333-4444-5555-000000000001",
           "study": "22222222-3333-4444-5555-000000000000"
         }
@@ -423,11 +254,10 @@ Feature: Beginning with the API progress through pulldown to sequencing
     And the JSON should match the following for the specified fields:
       """
       {
-        "submission": {
+        "order": {
           "actions": {
-            "read": "http://www.example.com/api/1/11111111-2222-3333-4444-555555555555",
-            "update": "http://www.example.com/api/1/11111111-2222-3333-4444-555555555555",
-            "submit": "http://www.example.com/api/1/11111111-2222-3333-4444-555555555555/submit"
+            "read": "http://www.example.com/api/1/11111111-2222-3333-4444-666666666666",
+            "update": "http://www.example.com/api/1/11111111-2222-3333-4444-666666666666"
           },
           "study": {
             "actions": {
@@ -441,19 +271,14 @@ Feature: Beginning with the API progress through pulldown to sequencing
             },
             "name": "Testing submission creation"
           },
-          "assets": [],
-          "requests": {
-            "actions": {
-              "read": "http://www.example.com/api/1/11111111-2222-3333-4444-555555555555/requests"
-            }
-          }
+          "assets": []
         }
       }
       """
-    When I PUT the following JSON to the API path "/11111111-2222-3333-4444-555555555555":
+    When I PUT the following JSON to the API path "/11111111-2222-3333-4444-666666666666":
         """
         {
-          "submission": {
+          "order": {
             "assets": [
               "44444444-2222-3333-4444-000000000001",
               "44444444-2222-3333-4444-000000000002",
@@ -471,6 +296,17 @@ Feature: Beginning with the API progress through pulldown to sequencing
         }
         """
      Then the HTTP response should be "200 OK"
+     When I POST the following JSON to the API path "/submissions":
+      """
+      {
+        "submission": {
+          "orders": [
+            "11111111-2222-3333-4444-666666666666"
+          ]
+        }
+      }
+      """
+     Then the HTTP response should be "201 Created"
      When I POST the following JSON to the API path "/11111111-2222-3333-4444-555555555555/submit":
        """
        """

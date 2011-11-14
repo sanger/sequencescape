@@ -1,5 +1,6 @@
 Given /^I have a project called "([^\"]*)"$/ do |project|
-  proj = Factory :project_with_order, :name => project
+#  proj = Factory :project_with_order, :name => project
+  Factory(:project, :name => project)
 end
 
 Given /^project "([^\"]*)" approval is "([^\"]*)"$/ do |project, approval|
