@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111108085356) do
+ActiveRecord::Schema.define(:version => 20111114132700) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -1131,7 +1131,7 @@ ActiveRecord::Schema.define(:version => 20111108085356) do
     t.datetime "updated_at"
     t.string   "state",                      :limit => 20
     t.string   "message"
-    t.integer  "user_id_to_delete"
+    t.integer  "user_id"
     t.text     "item_options_to_delete"
     t.text     "request_types"
     t.text     "request_options"
