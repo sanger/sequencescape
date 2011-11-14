@@ -8,6 +8,10 @@ class Api::SubmissionIO < Api::Base
   map_attribute_to_json_attribute(:state)
   map_attribute_to_json_attribute(:message)
   
+  with_association(:user) do 
+    map_attribute_to_json_attribute(:login  , 'created_by')
+  end
+
   self.related_resources = [:orders]
 
 end

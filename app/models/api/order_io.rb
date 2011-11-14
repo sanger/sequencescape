@@ -25,6 +25,13 @@ class Api::OrderIO < Api::Base
     map_attribute_to_json_attribute(:id  , 'study_internal_id')
     map_attribute_to_json_attribute(:name  , 'study_name')
   end
+
+  with_association(:submission) do 
+    map_attribute_to_json_attribute(:uuid  , 'submission_uuid')
+    map_attribute_to_json_attribute(:id  , 'submission_internal_id')
+    #map_attribute_to_json_attribute(:name  , 'submission_name')
+  end
+
   with_association(:user) do 
     map_attribute_to_json_attribute(:login  , 'created_by')
   end
