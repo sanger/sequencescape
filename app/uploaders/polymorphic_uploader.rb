@@ -4,9 +4,8 @@ module CarrierWave
     class DirectDatabase < Abstract
       # Store: Takes a file object, passes it to a file wrapper class which handles storage in the DB
       def store!(file)
-        temp_data = file.read
         f = CarrierWave::Storage::DirectDatabase::File.new(uploader, self, uploader.store_path)
-        f.store(temp_data)
+        f.store(file.read)
         f
       end
 
