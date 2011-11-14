@@ -149,7 +149,7 @@ end
 
 Given /^the sample tubes are part of submission "([^"]*)"$/ do |submission_uuid|
   submission = Uuid.find_by_external_id(submission_uuid).resource or raise StandardError, "Couldnt find object for UUID"
-  Asset.all.map{ |asset| submission.order.assets << asset } 
+  Asset.all.map{ |asset| submission.orders.first.assets << asset } 
 end
 
 Then /^I create the order and submit the submission/ do

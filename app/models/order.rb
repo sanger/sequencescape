@@ -47,7 +47,7 @@ class Order < ActiveRecord::Base
 
   
   def self.render_class
-    Api::SubmissionIO
+    Api::OrderIO
   end
   
   def url_name

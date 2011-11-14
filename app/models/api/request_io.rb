@@ -26,7 +26,7 @@ class Api::RequestIO < Api::Base
                 :barcode_prefix,
                 { :aliquots => { :sample => :uuid_object } }
               ],
-              :submission =>{ :orders => {:study =>:uuid_object, :project -> uuid_objects} }
+              :submission =>{ :orders => {:study =>:uuid_object, :project => :uuid_objects} }
             }
           ]
         }
