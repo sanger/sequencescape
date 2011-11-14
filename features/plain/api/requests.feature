@@ -35,7 +35,6 @@ Feature: Interacting with requests through the API
 
             "target_asset_closed": false,
             "target_asset_state": "",
-            "project_url": "http://localhost:3000/0_5/projects/11111111-2222-3333-4444-ffffffffffff",
             "created_at": "2010-09-16T16:15:00+01:00",
             "source_asset_two_dimensional_barcode": null,
             "updated_at": "2010-09-16T16:15:00+01:00",
@@ -92,7 +91,6 @@ Feature: Interacting with requests through the API
 
             "target_asset_closed": false,
             "target_asset_state": "",
-            "project_url": "http://localhost:3000/0_5/projects/11111111-2222-3333-4444-ffffffffffff",
             "created_at": "2010-09-16T16:15:00+01:00",
             "source_asset_two_dimensional_barcode": null,
             "updated_at": "2010-09-16T16:15:00+01:00",
@@ -319,7 +317,6 @@ Feature: Interacting with requests through the API
 
             "target_asset_closed": false,
             "target_asset_state": "",
-            "project_url": "http://localhost:3000/0_5/projects/11111111-2222-3333-4444-ffffffffffff",
             "created_at": "2010-09-16T16:15:00+01:00",
             "source_asset_two_dimensional_barcode": null,
             "updated_at": "2010-09-16T16:15:00+01:00",
@@ -347,7 +344,6 @@ Feature: Interacting with requests through the API
 
             "id": "ignored in test because it varies uncontrollably & you should use uuid instead",
             "target_asset_internal_id": "ignored in test because it varies uncontrollably & you should use target_asset_uuid instead",
-            "project_internal_id": "ignored in test because it varies uncontrollably & you should use project_uuid instead",
             "source_asset_internal_id": "ignored in test because it varies uncontrollably & you should use source_asset_uuid instead",
             "source_asset_sample_internal_id": "ignored in test because it varies uncontrollably & you should use source_asset_sample_uuid instead"
           }
