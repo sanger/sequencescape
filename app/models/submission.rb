@@ -66,7 +66,7 @@ class Submission < ActiveRecord::Base
     end
     ActiveRecord::Base.transaction do
       order = Order.prepare!(options)
-      order.create_submission(submission_options).built!
+      order.create_submission({:user_id => order.user_id}.merge(submission_options)).built!
       order.save! #doesn't save submission id otherwise
       study_name = order.try(:study).name
       order.submission.update_attributes!(:name=>study_name) if study_name

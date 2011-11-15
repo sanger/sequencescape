@@ -193,7 +193,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
           @properties = {} if @properties == []
 
           ActiveRecord::Base.transaction do
-            @submission ||= Submission.create!
+            @submission ||= Submission.create!(:user => current_user)
             if @submission.editable? == false
               flash[:error] = "Submission can't be modified. Create a new submission instead."
               raise StandardError

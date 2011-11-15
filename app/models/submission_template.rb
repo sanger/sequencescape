@@ -24,7 +24,7 @@ class SubmissionTemplate < ActiveRecord::Base
 
   def create_with_submission!(attributes)
     self.create_order!(attributes) do |order|
-      order.create_submission
+      order.create_submission(:user_id => order.user_id)
     end
   end
 

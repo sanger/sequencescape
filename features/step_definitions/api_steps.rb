@@ -161,8 +161,13 @@ end
 
 Then /^ignoring "([^\"]+)" the JSON should be:$/ do |key_list, serialised_json|
   regexp = Regexp.new(key_list)
-  assert_json_equal(serialised_json, page.body) do |key|
-    key.to_s =~ regexp
+  begin
+    assert_json_equal(serialised_json, page.body) do |key|
+      key.to_s =~ regexp
+    end
+  rescue
+    puts page.body
+    raise
   end
 end
 
