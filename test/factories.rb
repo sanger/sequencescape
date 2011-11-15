@@ -135,7 +135,7 @@ Factory.define :project do |p|
 end
 
 Factory.define :project_with_order , :parent => :project do |p|
-  p.after_build { |project| project.orders = [Factory :order, :project => project] }
+  p.after_build { |project| project.orders ||= [Factory :order, :project => project] }
 end
 
 Factory.define :study_sample do |ps|

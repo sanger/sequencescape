@@ -35,20 +35,14 @@ Feature: Interacting with requests through the API
 
             "target_asset_closed": false,
             "target_asset_state": "",
-            "project_url": "http://localhost:3000/0_5/projects/11111111-2222-3333-4444-ffffffffffff",
             "created_at": "2010-09-16T16:15:00+01:00",
             "source_asset_two_dimensional_barcode": null,
             "updated_at": "2010-09-16T16:15:00+01:00",
             "target_asset_type": "sample_tubes",
-            "project_uuid": "11111111-2222-3333-4444-ffffffffffff",
-            "study_name": "Study testing the JSON API",
             "target_asset_two_dimensional_barcode": null,
             "source_asset_closed": false,
             "target_asset_uuid": "aaaaaaaa-1111-2222-3333-000000000002",
             "source_asset_uuid": "aaaaaaaa-1111-2222-3333-000000000001",
-            "study_url": "http://localhost:3000/0_5/studies/22222222-2222-3333-4444-ffffffffffff",
-            "project_name": "Project testing the JSON API",
-            "study_uuid": "22222222-2222-3333-4444-ffffffffffff",
 
             "user": "abc123",
 
@@ -71,8 +65,7 @@ Feature: Interacting with requests through the API
             "target_asset_internal_id": "ignored in test because it varies uncontrollably & you should use target_asset_uuid instead",
             "project_internal_id": "ignored in test because it varies uncontrollably & you should use project_uuid instead",
             "source_asset_internal_id": "ignored in test because it varies uncontrollably & you should use source_asset_uuid instead",
-            "source_asset_sample_internal_id": "ignored in test because it varies uncontrollably & you should use source_asset_sample_uuid instead",
-            "study_internal_id": "ignored in test because it varies uncontrollably & you should use study_uuid instead"
+            "source_asset_sample_internal_id": "ignored in test because it varies uncontrollably & you should use source_asset_sample_uuid instead"
           }
         }
       ]
@@ -98,13 +91,10 @@ Feature: Interacting with requests through the API
 
             "target_asset_closed": false,
             "target_asset_state": "",
-            "project_url": "http://localhost:3000/0_5/projects/11111111-2222-3333-4444-ffffffffffff",
             "created_at": "2010-09-16T16:15:00+01:00",
             "source_asset_two_dimensional_barcode": null,
             "updated_at": "2010-09-16T16:15:00+01:00",
             "target_asset_type": "library_tubes",
-            "project_uuid": "11111111-2222-3333-4444-ffffffffffff",
-            "study_name": "Study testing the JSON API",
 
             "user": "abc123",
 
@@ -112,9 +102,6 @@ Feature: Interacting with requests through the API
             "source_asset_closed": false,
             "target_asset_uuid": "aaaaaaaa-1111-2222-3333-000000000002",
             "source_asset_uuid": "aaaaaaaa-1111-2222-3333-000000000001",
-            "study_url": "http://localhost:3000/0_5/studies/22222222-2222-3333-4444-ffffffffffff",
-            "project_name": "Project testing the JSON API",
-            "study_uuid": "22222222-2222-3333-4444-ffffffffffff",
             "target_asset_name": "Study testing the JSON API - Target asset",
             "source_asset_state": "",
             "source_asset_name": "Tube",
@@ -132,9 +119,7 @@ Feature: Interacting with requests through the API
 
             "id": "ignored in test because it varies uncontrollably & you should use uuid instead",
             "target_asset_internal_id": "ignored in test because it varies uncontrollably & you should use target_asset_uuid instead",
-            "project_internal_id": "ignored in test because it varies uncontrollably & you should use project_uuid instead",
-            "source_asset_internal_id": "ignored in test because it varies uncontrollably & you should use source_asset_uuid instead",
-            "study_internal_id": "ignored in test because it varies uncontrollably & you should use study_uuid instead"
+            "source_asset_internal_id": "ignored in test because it varies uncontrollably & you should use source_asset_uuid instead"
           }
         }
       ]
@@ -157,13 +142,6 @@ Feature: Interacting with requests through the API
           "created_at": "2010-09-16T16:15:00+01:00",
           "updated_at": "2010-09-16T16:15:00+01:00",
 
-          "project_uuid": "11111111-2222-3333-4444-ffffffffffff",
-          "project_url": "http://localhost:3000/0_5/projects/11111111-2222-3333-4444-ffffffffffff",
-          "project_name": "Project testing the JSON API",
-
-          "study_uuid": "22222222-2222-3333-4444-ffffffffffff",
-          "study_url": "http://localhost:3000/0_5/studies/22222222-2222-3333-4444-ffffffffffff",
-          "study_name": "Study testing the JSON API",
 
           "user": "abc123",
 
@@ -195,8 +173,7 @@ Feature: Interacting with requests through the API
           "id": "ignored in test because it varies uncontrollably & you should use uuid instead",
           "target_asset_internal_id": "ignored in test because it varies uncontrollably & you should use target_asset_uuid instead",
           "project_internal_id": "ignored in test because it varies uncontrollably & you should use project_uuid instead",
-          "source_asset_internal_id": "ignored in test because it varies uncontrollably & you should use source_asset_uuid instead",
-          "study_internal_id": "ignored in test because it varies uncontrollably & you should use study_uuid instead"
+          "source_asset_internal_id": "ignored in test because it varies uncontrollably & you should use source_asset_uuid instead"
         }
       }
       """
@@ -223,13 +200,6 @@ Feature: Interacting with requests through the API
           "created_at": "2010-09-16T16:15:00+01:00",
           "updated_at": "2010-09-16T16:15:00+01:00",
 
-          "project_uuid": "11111111-2222-3333-4444-ffffffffffff",
-          "project_url": "http://localhost:3000/0_5/projects/11111111-2222-3333-4444-ffffffffffff",
-          "project_name": "Project testing the JSON API",
-
-          "study_uuid": "22222222-2222-3333-4444-ffffffffffff",
-          "study_url": "http://localhost:3000/0_5/studies/22222222-2222-3333-4444-ffffffffffff",
-          "study_name": "Study testing the JSON API",
           "user": "abc123",
 
           "source_asset_uuid": "aaaaaaaa-1111-2222-3333-000000000001",
@@ -261,8 +231,7 @@ Feature: Interacting with requests through the API
           "id": "ignored in test because it varies uncontrollably & you should use uuid instead",
           "target_asset_internal_id": "ignored in test because it varies uncontrollably & you should use target_asset_uuid instead",
           "project_internal_id": "ignored in test because it varies uncontrollably & you should use project_uuid instead",
-          "source_asset_internal_id": "ignored in test because it varies uncontrollably & you should use source_asset_uuid instead",
-          "study_internal_id": "ignored in test because it varies uncontrollably & you should use study_uuid instead"
+          "source_asset_internal_id": "ignored in test because it varies uncontrollably & you should use source_asset_uuid instead"
         }
       }
       """
@@ -292,13 +261,6 @@ Feature: Interacting with requests through the API
           "created_at": "2010-09-16T16:15:00+01:00",
           "updated_at": "2010-09-16T16:15:00+01:00",
 
-          "project_uuid": "11111111-2222-3333-4444-ffffffffffff",
-          "project_url": "http://localhost:3000/0_5/projects/11111111-2222-3333-4444-ffffffffffff",
-          "project_name": "Project testing the JSON API",
-
-          "study_uuid": "22222222-2222-3333-4444-ffffffffffff",
-          "study_url": "http://localhost:3000/0_5/studies/22222222-2222-3333-4444-ffffffffffff",
-          "study_name": "Study testing the JSON API",
 
           "source_asset_uuid": "aaaaaaaa-1111-2222-3333-000000000001",
           "source_asset_name": "Study testing the JSON API - Source asset",
@@ -330,8 +292,7 @@ Feature: Interacting with requests through the API
           "id": "ignored in test because it varies uncontrollably & you should use uuid instead",
           "target_asset_internal_id": "ignored in test because it varies uncontrollably & you should use target_asset_uuid instead",
           "project_internal_id": "ignored in test because it varies uncontrollably & you should use project_uuid instead",
-          "source_asset_internal_id": "ignored in test because it varies uncontrollably & you should use source_asset_uuid instead",
-          "study_internal_id": "ignored in test because it varies uncontrollably & you should use study_uuid instead"
+          "source_asset_internal_id": "ignored in test because it varies uncontrollably & you should use source_asset_uuid instead"
         }
       }
       """
@@ -356,21 +317,15 @@ Feature: Interacting with requests through the API
 
             "target_asset_closed": false,
             "target_asset_state": "",
-            "project_url": "http://localhost:3000/0_5/projects/11111111-2222-3333-4444-ffffffffffff",
             "created_at": "2010-09-16T16:15:00+01:00",
             "source_asset_two_dimensional_barcode": null,
             "updated_at": "2010-09-16T16:15:00+01:00",
             "target_asset_type": "sample_tubes",
-            "project_uuid": "11111111-2222-3333-4444-ffffffffffff",
-            "study_name": "Study testing the JSON API",
             "user": "abc123",
             "target_asset_two_dimensional_barcode": null,
             "source_asset_closed": false,
             "target_asset_uuid": "aaaaaaaa-1111-2222-3333-000000000002",
             "source_asset_uuid": "aaaaaaaa-1111-2222-3333-000000000001",
-            "study_url": "http://localhost:3000/0_5/studies/22222222-2222-3333-4444-ffffffffffff",
-            "project_name": "Project testing the JSON API",
-            "study_uuid": "22222222-2222-3333-4444-ffffffffffff",
             "target_asset_sample_uuid": "bbbbbbbb-1111-2222-3333-000000000003",
             "target_asset_name": "Study testing the JSON API - Target asset",
             "source_asset_state": "",
@@ -389,10 +344,8 @@ Feature: Interacting with requests through the API
 
             "id": "ignored in test because it varies uncontrollably & you should use uuid instead",
             "target_asset_internal_id": "ignored in test because it varies uncontrollably & you should use target_asset_uuid instead",
-            "project_internal_id": "ignored in test because it varies uncontrollably & you should use project_uuid instead",
             "source_asset_internal_id": "ignored in test because it varies uncontrollably & you should use source_asset_uuid instead",
-            "source_asset_sample_internal_id": "ignored in test because it varies uncontrollably & you should use source_asset_sample_uuid instead",
-            "study_internal_id": "ignored in test because it varies uncontrollably & you should use study_uuid instead"
+            "source_asset_sample_internal_id": "ignored in test because it varies uncontrollably & you should use source_asset_sample_uuid instead"
           }
         }
       ]

@@ -2,7 +2,8 @@ Factory.define :submission__ do |submission|
   #raise "call Factory::submission instead "
 end
 
-Factory.define :submission_without_order , :class => Submission do
+Factory.define :submission_without_order , :class => Submission do |submission|
+    submission.user                  {|user| user.association(:user)}
 end
 
 class Factory
@@ -39,6 +40,6 @@ end
 
 
 Factory.define :order_with_submission, :parent => :order do |order|
-  order.submission { |o| o.association(:submission_without_order) }
+  order.after_build { |o| o.create_submission(:user_id => o.user_id) }
 end
 
