@@ -24,71 +24,27 @@ Feature: Interacting with submissions through the API
     When I GET the API path "/submissions"
     Then the JSON should be an empty array
 
-  Scenario: Listing all of the submissions that exist for a submission without assets
-    Given I have an order created with the following details based on the template "Library creation - Paired end sequencing":
-      | study   | 22222222-3333-4444-5555-000000000000 |
-      | project | 22222222-3333-4444-5555-000000000001 |
-      | assets  | 33333333-4444-5555-6666-000000000001 |
-      And the order with UUID "11111111-2222-3333-4444-666666666666" has been added to a submission
-
-      And I GET the API path "/orders/11111111-2222-3333-4444-666666666666"
-    Then ignoring "internal_id|uuid" the JSON should be:
-      """
-        { 
-          "order":
-          {
-            "created_at": "2010-09-16T13:45:00+01:00",
-            "updated_at": "2010-09-16T13:45:00+01:00",
-            "created_by": "abc123",
-            "template_name":"Library creation - Paired end sequencing",
-            "study_name": "Testing submission creation",
-            "study_uuid": "22222222-3333-4444-5555-000000000000",
-            "project_name": "Testing submission creation", 
-            "project_uuid": "22222222-3333-4444-5555-000000000001",
-            "asset_uuids": []
-          }
-        }
-      """
-      
-
-    When I GET the API path "/submissions"
-    Then ignoring "internal_id" the JSON should be:
-      """
-      [
-        { 
-          "submission":
-          {
-            "uuid": "11111111-2222-3333-4444-555555555555",
-            "created_at": "2010-09-16T13:45:00+01:00",
-            "updated_at": "2010-09-16T13:45:00+01:00",
-            "created_by": "abc123",
-            "state": "building",
-            "orders": "http://localhost:3000/0_5/submissions/11111111-2222-3333-4444-555555555555/orders"
-          }
-        }
-      ]
-      """
   Scenario: Retrieving the JSON for a submission that does not exist
     When I GET the API path "/submissions/00000000-1111-2222-3333-444444444444"
     Then the HTTP response should be "404 Not Found"
 
   Scenario: Retrieving the JSON for a particular submission with 3 assets
+    Given 3 sample tubes exist with names based on "sampletube" and IDs starting at 1
+      And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"
+
     Given I have an order created with the following details based on the template "Library creation - Paired end sequencing":
       | study   | 22222222-3333-4444-5555-000000000000 |
       | project | 22222222-3333-4444-5555-000000000001 |
-      | assets  | 33333333-4444-5555-6666-000000000001 |
+      | assets  | 33333333-4444-5555-6666-000000000001,33333333-4444-5555-6666-000000000002,33333333-4444-5555-6666-000000000003 |
       And the order with UUID "11111111-2222-3333-4444-666666666666" has been added to a submission
       
-    Given 3 sample tubes exist with names based on "sampletube" and IDs starting at 1
-      And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"
-      And the sample tubes are part of submission "11111111-2222-3333-4444-555555555555"
-
-    When I GET the API path "/orders/11111111-2222-3333-4444-555555555555"
-    Then ignoring "internal_id|uuid" the JSON should be:
+    When I GET the API path "/orders/11111111-2222-3333-4444-666666666666"
+    Then ignoring "internal_id" the JSON should be:
       """
-            [{
+            {
           "order":
           {
+            "uuid": "11111111-2222-3333-4444-666666666666",
             "created_at": "2010-09-16T13:45:00+01:00",
             "updated_at": "2010-09-16T13:45:00+01:00",
             "created_by": "abc123",
@@ -97,13 +53,14 @@ Feature: Interacting with submissions through the API
             "study_uuid": "22222222-3333-4444-5555-000000000000",
             "project_name": "Testing submission creation", 
             "project_uuid": "22222222-3333-4444-5555-000000000001",
+            "submission_uuid": "11111111-2222-3333-4444-555555555555",
             "asset_uuids": [  
               "33333333-4444-5555-6666-000000000001",
               "33333333-4444-5555-6666-000000000002",
               "33333333-4444-5555-6666-000000000003"
             ]
           }
-         } ]
+         } 
       """
     When I GET the API path "/submissions/11111111-2222-3333-4444-555555555555"
     Then ignoring "internal_id" the JSON should be:
@@ -122,6 +79,9 @@ Feature: Interacting with submissions through the API
       """
       
   Scenario: Retrieving the JSON for a submission with request options
+    Given 3 sample tubes exist with names based on "sampletube" and IDs starting at 1
+      And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"
+
     Given I have an order created with the following details based on the template "Library creation - Paired end sequencing":
       | study           | 22222222-3333-4444-5555-000000000000                                                                       |
       | project         | 22222222-3333-4444-5555-000000000001                                                                       |
@@ -135,6 +95,7 @@ Feature: Interacting with submissions through the API
         { 
           "order":
           {
+            "uuid": "11111111-2222-3333-4444-666666666666",
             "created_at": "2010-09-16T13:45:00+01:00",
             "updated_at": "2010-09-16T13:45:00+01:00",
             "created_by": "abc123",
@@ -143,7 +104,8 @@ Feature: Interacting with submissions through the API
             "study_uuid": "22222222-3333-4444-5555-000000000000",
             "project_name": "Testing submission creation", 
             "project_uuid": "22222222-3333-4444-5555-000000000001",
-            "asset_uuids": [],
+            "submission_uuid": "11111111-2222-3333-4444-555555555555",
+            "asset_uuids": [  "33333333-4444-5555-6666-000000000001" ],
             "request_options":
             {
               "read_length": 76,
