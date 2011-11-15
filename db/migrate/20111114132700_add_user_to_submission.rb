@@ -1,5 +1,6 @@
 class AddUserToSubmission < ActiveRecord::Migration
   def self.up
+      rename_column(:submissions, :user_id_to_delete, :user_id)
     Submission.transaction do
       ActiveRecord::Base.connection.execute %Q{
       UPDATE submissions
