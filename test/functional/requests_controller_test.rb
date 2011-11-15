@@ -11,7 +11,6 @@ class RequestsControllerTest < ActionController::TestCase
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
       @user = Factory :admin
-      @our_request = Factory :request_without_item, :user => @user, :request_type => Factory(:request_type), :study => Factory(:study, :name => "ReqCon"), :workflow => Factory(:submission_workflow)
     end
 
     should_require_login
@@ -77,6 +76,7 @@ class RequestsControllerTest < ActionController::TestCase
         @prop_value_before = "999"
         @prop_value_after = 666
 
+        @our_request = Factory :request, :user => @user, :request_type => Factory(:request_type), :study => Factory(:study, :name => "ReqCon"), :workflow => Factory(:submission_workflow)
         @params = { :request_metadata_attributes => { :read_length => "37" }, :state => 'pending', :request_type_id => @our_request.request_type_id }
       end
 

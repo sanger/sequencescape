@@ -38,7 +38,7 @@ module ModelExtensions::Order
 
       has_many :submitted_assets
       has_many :assets, :through => :submitted_assets do
-        def replace(new_values)
+        def replace(*args, &block)
           raise StandardError, 'requested action is not supported on this resource' if not proxy_owner.new_record? and  proxy_owner.send(:asset_group?) and not empty?
           super
         end
