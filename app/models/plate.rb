@@ -502,7 +502,7 @@ WHERE c.container_id=?
   #++
   def self.plates_from_scanned_plates_and_typed_plate_ids(source_plate_barcodes)
     scanned_plates = source_plate_barcodes.scan(/\d+/).map { |v| find_from_machine_barcode(v) }
-    typed_plates   = source_plate_barcodes.scan(/\d+/).map(&method(:find_by_barcode))
+    typed_plates   = source_plate_barcodes.scan(/\d+/).map { |v| find_by_barcode(v) }
 
     (scanned_plates | typed_plates).compact
   end
