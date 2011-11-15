@@ -1,6 +1,9 @@
 class Endpoints::Submissions < Core::Endpoint::Base
   model do
-
+    action(:create) do |request, _|
+      attributes = ::Io::Submission.map_parameters_to_attributes(request.json)
+      request.target.create!(attributes.merge(:user => request.user))
+    end
   end
 
   instance do
@@ -8,8 +11,6 @@ class Endpoints::Submissions < Core::Endpoint::Base
       :requests, :json => 'requests', :to => 'requests',
       :include => [ :source_asset, :target_asset ]
     )
-    belongs_to(:project, :through => :order, :json => 'project')
-    belongs_to(:study,   :through => :order, :json => 'study')
 
     action(:update, :to => :standard_update!, :if => :building?)
 
