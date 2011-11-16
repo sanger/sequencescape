@@ -163,6 +163,12 @@ class Studies::Workflows::SubmissionsController < ApplicationController
       @project   = Project.find_by_name(params[:project_name])  if params[:project_name].present?
       @project ||= Project.find_by_id(params[:project_id]) if params[:project_id].present?
 
+      # order study is the study used to create the order
+      # while @study is the original study to where the user can go bck
+      debugger
+      @order_study   = Study.find_by_name(params[:order_study_name])  if params[:order_study_name].present?
+      @order_study ||= Study.find_by_id(params[:order_study_id]) if params[:order_study_id].present?
+
       @submission_template = SubmissionTemplate.find_by_id(params[:submission_template_id])
       if @submission_template.nil?
         flash[:error] = "Invalid template id"
@@ -199,7 +205,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
               raise StandardError
             end
             @order = @submission_template.new_order(
-              { :study           => @study,
+              { :study           => @order_study,
                 :project         => @project,
                 :workflow        => @workflow,
                 :user            => current_user,

@@ -105,6 +105,9 @@ class User < ActiveRecord::Base
     self.projects.sort{|x,y| (x.name || "") <=> (y.name || "")}.map{|p| [p.name, p.id] }
   end
 
+  def sorted_study_names_and_ids
+    self.interesting_studies.sort{|x,y| (x.name || "") <=> (y.name || "")}.map{|p| [p.name, p.id] }
+  end
   def workflow_name
     self.workflow and self.workflow.name
   end
