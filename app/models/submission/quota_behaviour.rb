@@ -24,7 +24,8 @@ module Submission::QuotaBehaviour
 
   def book_quota_available_for_request_types!(mode=:book)
     Order.transaction do
-      request_type_records = RequestType.find(self.request_types)
+      # Not optimal but preserve the order of the request_types
+      request_type_records = self.request_types.map { |rt_id|  RequestType.find(rt_id) }
       multiplexed          = !request_type_records.detect(&:for_multiplexing?).nil?
       project_checked= false
       request_type_records.each do |request_type|
