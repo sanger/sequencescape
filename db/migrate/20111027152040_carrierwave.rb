@@ -22,11 +22,11 @@ class Carrierwave < ActiveRecord::Migration
       t.column :content_type, :string,  :default => "text/csv"
     end
     
-    say "Sample Manifests = filename columns"
-    change_table :sample_manifests do |t|
-      t.column :uploaded_filename, :string
-      t.column :generated_filename, :string
-    end
+    # say "Sample Manifests = filename columns"
+    #    change_table :sample_manifests do |t|
+    #      t.column :uploaded_filename, :string
+    #      t.column :generated_filename, :string
+    #    end
   end
   
   def self.down
