@@ -287,6 +287,19 @@ class Studies::Workflows::SubmissionsController < ApplicationController
     @template_list = SubmissionTemplate.all
   end
 
+  def asset_inputs
+    @study = nil
+    @study   = Study.find_by_name(params[:order_study_name])  if params[:order_study_name].present?
+    @study ||= Study.find_by_id(params[:order_study_id]) if params[:order_study_id].present?
+    @order = Order.new
+    #respond_to do |format|
+      #format.xhr do 
+      render :partial => "select_an_asset_group"
+      #render(:partial => input_method.gsub(/\s+/, '_'), :locals => { :form => form, :submission => @order })
+    #end 
+    #end
+  end
+
   def info
     submission_template_id = params[:submission_template_id]
     if submission_template_id

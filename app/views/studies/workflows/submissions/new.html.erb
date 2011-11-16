@@ -81,7 +81,11 @@ Please remember once you have created an order, any changes to the assets group 
         <% if input_method.blank? %>
           <td class="separator" width="10%"> or </td>
         <% else %>
-          <td><%= render(:partial => input_method.gsub(/\s+/, '_'), :locals => { :form => form, :submission => @order }) %></td>
+          <td>
+            <div id="asset_inputs">
+              <%= render(:partial => input_method.gsub(/\s+/, '_'), :locals => { :form => form, :submission => @order }) %>
+            </div>
+          </td>
         <% end %>
       <% end %>
     </tr>
@@ -201,5 +205,18 @@ Please remember once you have created an order, any changes to the assets group 
     });
   });
 })();
+(function ($) {
+  $(function (){
+    $("#order_study_id, #order_study_name").bind("change",
+      function (ev){
+      //var path = "/studies/"+study_id+"/workflows/<%=@workflow.id%>/asset_inputs".value.value.value
+      var path = "<%=asset_inputs_study_workflow_submissions_path(@study, @workflow)%>"+"?"+this.name+"="+$(this).val();
+        $.get(path,function (data){
+          $("#asset_inputs").html(data);
+        }
+        )
+      })
+  });
+})(jQuery);
 </script>
 
