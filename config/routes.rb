@@ -83,10 +83,10 @@ ActionController::Routing::Routes.draw do |map|
       plate.resources :wells, :except => [:destroy, :edit], :controller => "studies/plates/wells"
     end
 
-    study.resources :workflows, :controller => "studies/workflows", :member => { :summary => :get, :show_summary => :get } do |workflow|
+    study.resources :workflows, :controller => "studies/workflows", :member => { :summary => :get, :show_summary => :get} do |workflow|
       workflow.resources :submissions, :controller => "studies/workflows/submissions",
         :collection => { :info => [:get, :put], 
-          :template_chooser => :get, :new => [:get, :put] } 
+          :template_chooser => :get, :new => [:get, :put] , :asset_inputs => :get } 
       workflow.resources :assets, :collection => { :print => :post }
     end
 
