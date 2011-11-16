@@ -35,7 +35,8 @@ Please read and accept the following <%= link_to 'requirements', info_study_work
   <%= form.hidden_field :template_id, :value => params[:submission_template_id] %>
   <h3><%= bullet_number+=1%>. Select a study</h3>
   <div class="yui-g">
-    <% @user_studys = current_user.sorted_study_names_and_ids %>
+    <% @user_studys = current_user.sorted_study_names_and_ids << @study %>
+    <% @user_studys.uniq! %>
     <% if @user_studys.size <= 8 %>
       <div class="yui-u first centered">
         <%= label_tag(:order_study_id, 'Select a study') %>:

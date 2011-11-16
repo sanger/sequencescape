@@ -165,7 +165,6 @@ class Studies::Workflows::SubmissionsController < ApplicationController
 
       # order study is the study used to create the order
       # while @study is the original study to where the user can go bck
-      debugger
       @order_study   = Study.find_by_name(params[:order_study_name])  if params[:order_study_name].present?
       @order_study ||= Study.find_by_id(params[:order_study_id]) if params[:order_study_id].present?
 
