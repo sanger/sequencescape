@@ -105,8 +105,10 @@ class SampleManifest < ActiveRecord::Base
     "Manifest_#{self.id}"
   end
 
-  named_scope :pending_manifests,   { :order => 'id DESC',         :conditions => 'uploaded_filename IS NULL'     }
-  named_scope :completed_manifests, { :order => 'updated_at DESC', :conditions => 'uploaded_filename IS NOT NULL' }
+  #TODO[xxx] Optimise the SQL or add an index to make it faster
+  named_scope :pending_manifests,   { :order => 'id DESC',         :conditions => "sample_manifests.id NOT IN (SELECT documentable_id FROM documents WHERE documents.documentable_type = 'SampleManifest' AND documents.documentable_extended = 'uploaded')"     }
+  named_scope :completed_manifests, { :order => 'updated_at DESC', :conditions => "sample_manifests.id IN (SELECT documentable_id FROM documents WHERE documents.documentable_type = 'SampleManifest' AND documents.documentable_extended = 'uploaded')" }
+  
   
   def generate
     @manifest_errors = []

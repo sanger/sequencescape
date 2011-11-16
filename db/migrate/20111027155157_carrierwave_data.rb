@@ -57,7 +57,7 @@ class CarrierwaveData < ActiveRecord::Migration
               f.write s.uploaded_file
             end
             Document.create!(:uploaded_data => uploaded,  :documentable => s, :documentable_extended => "uploaded" )
-            s.uploaded_filename = default_filename
+            # s.uploaded_filename = default_filename
           ensure
             uploaded.close
             uploaded.unlink # delete the tempfile
@@ -71,7 +71,7 @@ class CarrierwaveData < ActiveRecord::Migration
               f.write s.generated_file
             end
             Document.create!(:uploaded_data => generated, :documentable => s, :documentable_extended => "generated")
-            s.generated_filename = default_filename
+            # s.generated_filename = default_filename
           ensure
             generated.close
             generated.unlink # delete tempfile
