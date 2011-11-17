@@ -6,7 +6,10 @@
 <%# TODO[xxx]: need to use fields_for in this %>
 
 <h1>
-<% if  @submission && !@submission.new_record?%>
+  <%
+    # we can't use @submission.new_record as it will return true even though the 
+    # creation of the object failed
+  if  @submission && @submission.id%>
   Add a new order to the submission
   <%= link_to @submission.name, submission_path(@submission) %> 
   <% if @submission.editable? %>
@@ -163,7 +166,7 @@ Please remember once you have created an order, any changes to the assets group 
       <%= radio_button_tag(:build_submission, :no, true) %>
       </p> <p>
       <%= form.submit 'Create Order', :id => "submission_button", :disabled => false %>
-      <% if @order.new_record?%>
+      <% if @order.id.nil?%>
         or go <%= link_to I18n.t("navigation.menu.back_to_study"), study_path(@study) %>
       <% else%>
         , go <%= link_to I18n.t("navigation.menu.back_to_study"), study_path(@study) %>

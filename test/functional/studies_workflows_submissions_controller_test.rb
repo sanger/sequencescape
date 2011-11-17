@@ -8,7 +8,7 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
   # of submission build directly
   def create_and_submit(args)
     last_submission = Submission.last
-    post :create,  args.merge(:build_submission => "yes")
+    post :create,  args.merge(:build_submission => "yes", :order_study_id => args[:study_id])
     if submission=Submission.last && submission != last_submission
       post :submit, :id => submission.id
     end
