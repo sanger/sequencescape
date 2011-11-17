@@ -198,7 +198,10 @@ class Studies::Workflows::SubmissionsController < ApplicationController
           @properties = {} if @properties == []
 
           ActiveRecord::Base.transaction do
-            @submission ||= Submission.create!(:user => current_user)
+            unless @submission
+              @submission_is_new = true
+              @submission = Submission.create!(:user => current_user)
+            end
             if @submission.editable? == false
               flash[:error] = "Submission can't be modified. Create a new submission instead."
               raise StandardError
@@ -226,7 +229,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
             format.html { redirect_to edit_submission_path(@submission, :submission_template_id => @submission_template_id) 
             }
           else
-            flash[:notice] = "Order successfully created. Create a new order or #{link_to 'submit', edit_submission_path(@submission)} the submission." 
+            flash[:notice] = "Order successfully created." 
             format.html { redirect_to new_study_workflow_submissions_path(@study, @workflow, :submission_template_id => @submission_template.id, :id => @submission.id) }
           end
         rescue Quota::Error => quota_exception
@@ -244,6 +247,12 @@ class Studies::Workflows::SubmissionsController < ApplicationController
         end
       end
     rescue StandardError, Quota::Error => exception
+      if @submission_is_new
+        # the submission hasn't been saved, therefore if it's a new one
+        # it doesn't exist in the database and it's ID is invalid
+        @submission.id = nil
+        @order.id = nil
+      end
       return render(:action => 'new')
     end
   end
