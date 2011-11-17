@@ -25,9 +25,7 @@ Create an new order and a new submission.
 <div class='subtitle'>
   Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(:long) %> &middot; <%= @study.state.capitalize %>
 </div>
-
-<%= bullet_number=0 %>
-<h3><%= bullet_number+=1%>. Requirements</h3>
+<h3><%= bullet_number=1%>. Requirements</h3>
 Please read and accept the following <%= link_to 'requirements', info_study_workflow_submissions_path(@study, @workflow, :submission_template_id => @submission_template.id) %>.
 
 <% form_for :order, :url => study_workflow_submissions_path(@study, @workflow,
@@ -162,7 +160,7 @@ Please remember once you have created an order, any changes to the assets group 
       <%= label_tag(:build_submission, "Finish and submit")%>
       <%= radio_button_tag(:build_submission, :yes) %>
       </p> <p>
-      <%= label_tag(:build_submission, "create an new order")%>
+      <%= label_tag(:build_submission, "Create a new order")%>
       <%= radio_button_tag(:build_submission, :no, true) %>
       </p> <p>
       <%= form.submit 'Create Order', :id => "submission_button", :disabled => false %>
