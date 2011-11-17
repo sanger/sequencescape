@@ -504,7 +504,7 @@ input#stage_button {
 margin-top: 50px;
 margin-left: 30px;
 }
-}
+
 td.bar {
 border-right: 1px solid #ccc;
 border-left: 1px solid #ccc;
@@ -965,6 +965,16 @@ td.commentable a {
 #submission_form #project_name_results {
   border: 1px solid #ccc;
   border-top: none;
+}
+
+.breadcrum-list li{
+  border: 1px solid #000;
+  border-radius: 5px;
+  display: inline-block;
+  list-style: none;
+  background: gray;
+  color: white;
+  padding: 50px;
 }
 
 #asset_input_methods td { vertical-align: top; }
