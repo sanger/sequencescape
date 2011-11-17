@@ -3,20 +3,27 @@
 
 <h1>New Submission</h1>
 
-<% semantic_form_for @submission_presenter, { :as => "submission", :url => submissions_path } do |f| -%>
+<% semantic_form_for :submission, @submission_presenter, :url => submissions_path do |f| -%>
 
   <% f.inputs do %>
     <%= f.input :project_name,
-      :hint => "enter the first few characters of the financial project name"
+      :input_html => {
+        :placeholder => "enter the first few characters of the financial project name"
+    }
      %>
      <div class="auto_complete" id="project_name_results"></div>
 
-    <%= f.input :study_name %>
+     <%= f.input :study_name,
+      :input_html => {
+        :placeholder => "enter the first few characters of the study name"
+      }
+      %>
     <div class="auto_complete" id="study_name_results"></div>
 
     <%= f.input :submission_template_id,
                 :as         => :select,
-                :collection => @submission_presenter.templates
+                :collection => @submission_presenter.templates,
+                :prompt => "Please select a template..."
     %>
   <% end -%>
 
@@ -30,13 +37,13 @@
 <script language="JavaScript" type="text/javascript">
   // Autocompleter is part of Scriptaculous
   new Autocompleter.Local(
-      'submission_presenter_project_name',
+      'submission_project_name',
       'project_name_results',
       <%= stringify_array(@submission_presenter.user_projects) %>
   );
 
   new Autocompleter.Local(
-    'submission_presenter_study_name',
+    'submission_study_name',
     'study_name_results',
     <%= stringify_array(@submission_presenter.studies) %>
   )
