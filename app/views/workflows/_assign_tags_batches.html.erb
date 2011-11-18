@@ -6,6 +6,8 @@
         No items found. <%= link_to "Create the first one", :action => "new" %>
       </div>
     <% else -%>
+    <% @requests_by_submission.map do |submission, requests| %>
+    <h2>Submission <% "#{submission.name}"%></h2>
       <table class="request-grid sortable">
         <thead>
           <tr>
@@ -23,10 +25,11 @@
             <th class='label'><%= link_to 'Tag', "javascript:void(0);" %></th>
           </tr>
         </thead>
-        <tbody id="item_list">
+      
+        <tbody id="item_list_<%= "#{submission.id}" %>">
           <% tag_options = @tags.collect { |t| ["Tag #{t.map_id}", t.id] } %>
-
-          <% @requests.each_with_index do |request,index| -%>
+          <%
+          requests.each_with_index do |request,index| -%>
             <tr id="request_<%= request.id %>" class="<%= cycle("rowodd", "roweven") %>">
               <th class="order"><%= request.position(@batch) %></th>
               <td><%= request.sample_name %></td>
@@ -61,7 +64,9 @@
             </tr>
           <% end -%>
         </tbody>
+        
       </table>
+      <% end -%>
     <% end -%>
   </div>
   <br />
