@@ -30,7 +30,7 @@
             <tr id="request_<%= request.id %>" class="<%= cycle("rowodd", "roweven") %>">
               <th class="order"><%= request.position(@batch) %></th>
               <td><%= request.sample_name %></td>
-              <td><%= link_to request.id, "#{configatron.studies_url}/@requests/#{request.id}" %></td>
+              <td><%= link_to request.id, request_url(request) %></td>
               <% if request.asset  %>
                 <td class="request-asset-name">
                   <%= link_to "#{request.asset.display_name} #{request.asset.barcode}", asset_url(request.asset), :target => "_blank" %>
