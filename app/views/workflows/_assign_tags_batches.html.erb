@@ -6,23 +6,28 @@
         No items found. <%= link_to "Create the first one", :action => "new" %>
       </div>
     <% else -%>
-    <% @requests_by_submission.map do |submission, requests| %>
-    <h2>Submission <% "#{submission.name}"%></h2>
-      <table class="request-grid sortable">
+    <% 
+    # This keeps track of the next request - because now they are separated into submissions
+    #   otherwise it would re-use tags in different submissions
+      next_request = 0 
+      @requests_by_submission.map do |submission, requests| 
+    %>
+    <h2>Submission <%= "#{submission.id} (#{submission.name})"%></h2>
+      <table class="request-grid">
         <thead>
           <tr>
-            <th class='label'><%= link_to 'Order', "javascript:void(0);" %></th>
-            <th class='label'><%= link_to 'Sample', "javascript:void(0);" %></th>
-            <th class='label'><%= link_to 'Request', "javascript:void(0);" %></th>
-            <th class='label'><%= link_to 'Source', "javascript:void(0);" %></th>
-            <th class='label'><%= link_to 'Target', "javascript:void(0);" %></th>
+            <th class='label'>Order</th>
+            <th class='label'>Sample</th>
+            <th class='label'>Request</th>
+            <th class='label'>Source</th>
+            <th class='label'>Target</th>
             <% if @batch.multiplexed? %>
-              <th class='label'><%= link_to 'Sample name', "javascript:void(0);" %></th>
-              <th class='label'><%= link_to 'Tag #', "javascript:void(0);" %></th>
+              <th class='label'>Sample name</th>
+              <th class='label'>Tag #</th>
             <% end %>
-            <th class='label'><%= link_to 'State', "javascript:void(0);" %></th>
-            <th class='label'><%= link_to 'QC', "javascript:void(0);" %></th>
-            <th class='label'><%= link_to 'Tag', "javascript:void(0);" %></th>
+            <th class='label'>State</th>
+            <th class='label'>QC</th>
+            <th class='label'>Tag</th>
           </tr>
         </thead>
       
@@ -57,12 +62,14 @@
               <% end %>
               <td>
                 <% if request.tag_number.blank? %>
-                  <%= select "tag", request.id, tag_options, :selected =>tag_options[index%tag_options.size] %>
+                  <%= select "tag", request.id, tag_options, {:selected =>tag_options[next_request%tag_options.size]}, {:class => "tagchoice"} %>
                 <% end %>
               </td>
 
             </tr>
-          <% end -%>
+          <%   
+            next_request+=1
+            end -%>
         </tbody>
         
       </table>
@@ -84,3 +91,9 @@
   <%= hidden_field_tag 'tag_group', @tag_group.id %>
   <%= render :partial => "next_stage_submit" %>
 <% end %>
+
+<script type="text/javascript">
+    jQuery('.tagchoice').change(function() {
+      alert('Handler for .change() called.');
+    });
+</script>
