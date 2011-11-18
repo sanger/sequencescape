@@ -26,6 +26,7 @@ Feature: Creating submissions through the submission templates
     Then I should not see "The following parameters will be applied to all the samples in the group"
     Then I should see "Enter a list of sample name"
 
+    When I select "Study testing submission templates" from "Select a study"
     When I select "Project testing submission templates" from "Select a financial project"
     And I fill in "sample_names" with "asset_group_for_submission_templates_sample_1"
     When I create the order and submit the submission
@@ -54,6 +55,7 @@ Feature: Creating submissions through the submission templates
     Then I should not see "The following parameters will be applied to all the samples in the group"
     Then I should see "Enter a list of sample name"
 
+    When I select "Study testing submission templates" from "Select a study"
     When I select "Project testing submission templates" from "Select a financial project"
     And I fill in "sample_names" with "foo"
 

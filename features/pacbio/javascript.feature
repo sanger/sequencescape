@@ -21,6 +21,7 @@ Feature: Push samples through the PacBio pipeline with javascript
     When I follow "Create Submission"
     When I select "PacBio" from "Template"
     And I press "Next"
+    When I select "Test study" from "Select a study"
     When I select "Test project" from "Select a financial project"
     And I select "Test study group" from "Select a group to submit"
     And I select "2000" from "Insert size"
