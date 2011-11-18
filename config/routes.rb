@@ -98,7 +98,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect "bulk_submissions", :controller => "bulk_submissions", :action => "new"
 
   # map.resources :submissions, :controller => "studies/workflows/submissions", :member =>{:submit => :post}
-  map.resources :submissions, :controller => "submissions"
+  map.resources :submissions, :collection => { :requirements => :get }
 
   map.resources :properties  do |property|
     property.resources :documents, :controller => "properties/documents", :only => [:show]
