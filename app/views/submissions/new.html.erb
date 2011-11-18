@@ -2,15 +2,13 @@
 
 
 <h1>New Submission</h1>
-<div>
-  <ul id="submission-breadcrumbs" class="breadcrumb-list">
-    <li>Select a project</li>
+  <ul id="submission-breadcrumbs" class="progress-list">
+    <li class="active-stage">Select a project</li>
     <li>Select a study</li>
     <li>Choose a template</li>
     <li>Agree to requirements</li>
     <li>Set Submission parameters</li>
   </ul>
-</div>
 
 <% semantic_form_for :submission, @submission_presenter, :url => submissions_path do |f| -%>
 
@@ -36,6 +34,10 @@
     %>
   <% end -%>
 
+  <div id="sumbmission-requirements">
+    <div id="requirements-document"></div>
+    <%= f.input :agree_requirements, :as => :boolean %>
+  </div>
   <%= f.submit "Start Submission" %>
 
 <% end -%>
@@ -44,7 +46,7 @@
 
 
 <script language="JavaScript" type="text/javascript">
-  // Autocompleter is part of Scriptaculous
+  // Autocompleter is part of Scriptaculous should be replaced.
   new Autocompleter.Local(
       'submission_project_name',
       'project_name_results',
@@ -55,6 +57,22 @@
     'submission_study_name',
     'study_name_results',
     <%= stringify_array(@submission_presenter.studies) %>
-  )
+  );
+
+
+(function($, undefined){
+ var requirementsHandler = function(event){
+  $.get(
+    '/submissions/requirements',
+    { submission: {submission_template_id: $(this).val()} },
+     function(data) { $('#requirements-document').html(data); }
+  );
+ }
+
+ $(function(){
+   $('#submission_submission_template_id').change(requirementsHandler);
+
+   });
+ })(jQuery);
 </script>
 
