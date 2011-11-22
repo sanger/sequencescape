@@ -4,40 +4,69 @@
 <h1>New Submission</h1>
   <ul id="submission-breadcrumbs" class="progress-list">
     <li class="active-stage">Select a project</li>
-    <li>Select a study</li>
-    <li>Choose a template</li>
-    <li>Agree to requirements</li>
-    <li>Set Submission parameters</li>
+    <li>Choose a template and set order parameters</li>
+    <li>Comments</li>
+    <li>Choose Study and Assets</li>
   </ul>
 
 <% semantic_form_for :submission, @submission_presenter, :url => submissions_path do |f| -%>
 
-  <% f.inputs do %>
-    <%= f.input :project_name,
-      :input_html => {
-        :placeholder => "enter the first few characters of the financial project name"
-    }
-     %>
-     <div class="auto_complete" id="project_name_results"></div>
-
-     <%= f.input :study_name,
-      :input_html => {
-        :placeholder => "enter the first few characters of the study name"
+  <ul class="wizard">
+    <li>
+      <% f.inputs do -%>
+      <%= f.input :project_name,
+        :input_html => {
+          :placeholder => "enter the first few characters of the financial project name"
       }
+       %>
+       <div class="auto_complete" id="project_name_results"></div>
+
+      <% end -%>
+    </li>
+
+    <li>
+      <% f.inputs do -%>
+      <%= f.input :submission_template_id,
+        :as         => :select,
+        :collection => @submission_presenter.templates,
+        :prompt     => "Please select a template..."
+       %>
+
+
+      <div id="submission-requirements" style="display:none">
+        <div id="requirements-document"></div>
+      <div id="submission-parameters"></div>
+        <b>Next tab button</b>
+      </div>
+
+      <% end -%>
+    </li>
+
+    <li>
+
+      <%= f.input :comments,
+        :as => :text,
+        :input_html => {
+          :cols => 70,
+          :rows => 5
+        }
       %>
-    <div class="auto_complete" id="study_name_results"></div>
 
-    <%= f.input :submission_template_id,
-                :as         => :select,
-                :collection => @submission_presenter.templates,
-                :prompt => "Please select a template..."
-    %>
-  <% end -%>
+    </li>
 
-  <div id="sumbmission-requirements">
-    <div id="requirements-document"></div>
-    <%= f.input :agree_requirements, :as => :boolean %>
-  </div>
+    <li>
+    <% f.inputs do -%>
+       <%= f.input :study_name,
+        :input_html => {
+          :placeholder => "enter the first few characters of the study name"
+        }
+        %>
+      <div class="auto_complete" id="study_name_results"></div>
+    <% end -%>
+    </li>
+  </ul>
+
+
   <%= f.submit "Start Submission" %>
 
 <% end -%>
@@ -61,18 +90,37 @@
 
 
 (function($, undefined){
- var requirementsHandler = function(event){
-  $.get(
-    '/submissions/requirements',
-    { submission: {submission_template_id: $(this).val()} },
-     function(data) { $('#requirements-document').html(data); }
-  );
- }
+  var requirementsHandler = function(event){
+    var submission_details = {
+      submission: {
+        submission_template_id: $(this).val()
+      }
+    };
 
- $(function(){
+    // Get the requirements for the template...
+    $.get(
+      '/submissions/requirements',
+      submission_details,
+      function(data) {
+        $('#requirements-document').html(data);
+        $('#submission-requirements').fadeIn();
+      }
+    );
+
+    // Load the parameters for the new order
+    $.get(
+      '/submissions/order_parameters',
+      submission_details,
+      function(data) {
+        $('#submission-parameters').html(data).fadeIn();
+      }
+    );
+  }
+
+  $(function(){
    $('#submission_submission_template_id').change(requirementsHandler);
+  });
 
-   });
- })(jQuery);
+})(jQuery);
 </script>
 

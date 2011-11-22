@@ -979,8 +979,8 @@ td.commentable a {
 
 .progress-list li.active-stage{
   border: 3px solid black;
-  -moz-box-shadow: 0 2px 5px 0 #C3CEDA;
-  box-shadow: 0 2px 5px 0 #C3CEDA;
+  -moz-box-shadow: 0 1px 4px 0 #C3CEDA;
+  box-shadow: 0 1px 5px 0 #C3CEDA;
   color:black;
 }
 
