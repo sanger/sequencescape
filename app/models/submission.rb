@@ -1,4 +1,6 @@
 class Submission < ActiveRecord::Base
+  class Error < Exception
+  end
   include Uuid::Uuidable
   extend  Submission::StateMachine
   include Submission::DelayedJobBehaviour
@@ -25,7 +27,7 @@ class Submission < ActiveRecord::Base
     # not an ActiveRecord
     orders.map(&:comments).flatten(1).compact
   end
-  
+
   cattr_reader :per_page
   @@per_page = 500
   named_scope :including_associations_for_json, {
@@ -143,11 +145,33 @@ class Submission < ActiveRecord::Base
 
  #Order needs to have the 'structure'
  def check_orders_are_compatible()
-   orders.map(&:request_types).uniq.size <= 1
-   orders.map(&:workflow_id).compact.uniq.size <= 1
+   return true if orders.size < 2
+   orders[1..-1].zip(orders) do |a,b|
+     raise Submission::Error  unless orders_compatible?(a,b)
+  end
+ end
+ private :check_orders_are_compatible
+
+ # this method is part of the submission
+  # not order, because it is submission 
+ # which decide if orders are compatible or not
+ def self.orders_compatible?(a,b)
+   a.request_types == b.request_types &&
+     a.request_options == b.request_options &&
+     a.item_options == b.item_options &&
+     studies_compatible?(a.study, b.study) &&
+     samples_compatible?(a,b)
  end
 
- private :check_orders_are_compatible
+ def self.studies_compatible?(a,b)
+   a.study_metadata.contaminated_human_dna == b.study_metadata.contaminated_human_dna
+ end
+
+ def self.samples_compatible?(a,b)
+   debugger if $stop
+   reference_genomes = [a, b].map(&:samples).flatten.uniq.group_by(&:sample_reference_genome)
+   return reference_genomes.size <= 1
+ end
 
   #for the moment we consider that request types should be the same for all order
   #so we can take the first one
