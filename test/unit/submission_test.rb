@@ -2,6 +2,20 @@ require "test_helper"
 
 class SubmissionTest < ActiveSupport::TestCase
 
+  def orders_compatible?(a, b, key=nil)
+    begin
+      submission = Submission.new(:user => Factory(:user),:orders => [a,b])
+      submission.save!
+      true
+    rescue ActiveRecord::RecordInvalid
+      if key
+        !submission.errors[key]
+      else
+        false
+      end
+    end
+  end
+
   context "#orders compatible" do
     setup do
       @study1 =  Factory :study
@@ -33,16 +47,17 @@ class SubmissionTest < ActiveSupport::TestCase
         end
 
         should "be compatible" do
-          assert Submission.orders_compatible?(@order1, @order2)
+          assert orders_compatible?(@order1, @order2)
         end
 
         context "and sample with a different reference genome" do
           setup do
-            @asset2.aliquots.first.sample.sample_metadata.reference_genome=@reference_genome2
+            @asset2.aliquots.first.sample.sample_metadata.update_attributes!(:reference_genome=>@reference_genome2)
           end
         should "be incompatible" do
           $stop = true
-          assert_equal false, Submission.orders_compatible?(@order1, @order2)
+          assert_equal false, orders_compatible?(@order1, @order2)
+          $stop = false
         end
         end
       end
@@ -53,7 +68,17 @@ class SubmissionTest < ActiveSupport::TestCase
         end
 
         should "be incompatible" do
-          assert_equal false, Submission.orders_compatible?(@order1, @order2)
+          assert_equal false, orders_compatible?(@order1, @order2)
+        end
+      end
+
+      context "and incompatible request options" do
+        setup do
+          @order1.request_options = {:option => "value"}
+        end
+
+        should "be incompatible" do
+          assert_equal false, orders_compatible?(@order1, @order2, :request_options)
         end
       end
     end

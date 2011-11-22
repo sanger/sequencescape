@@ -1,6 +1,4 @@
 class Submission < ActiveRecord::Base
-  class Error < Exception
-  end
   include Uuid::Uuidable
   extend  Submission::StateMachine
   include Submission::DelayedJobBehaviour
@@ -141,36 +139,35 @@ class Submission < ActiveRecord::Base
 
 
  #Required at initial construction time ...
- validate :check_orders_are_compatible
+ validate :validate_orders_are_compatible
 
  #Order needs to have the 'structure'
- def check_orders_are_compatible()
-   return true if orders.size < 2
-   orders[1..-1].zip(orders) do |a,b|
-     raise Submission::Error  unless orders_compatible?(a,b)
-  end
+ def validate_orders_are_compatible()
+    return true if orders.size < 2
+    # check every order agains the first one
+    first_order = orders.first
+    orders[1..-1].each { |o| check_orders_compatible?(o,first_order) }
  end
- private :check_orders_are_compatible
+ private :validate_orders_are_compatible
 
  # this method is part of the submission
   # not order, because it is submission 
  # which decide if orders are compatible or not
- def self.orders_compatible?(a,b)
-   a.request_types == b.request_types &&
-     a.request_options == b.request_options &&
-     a.item_options == b.item_options &&
-     studies_compatible?(a.study, b.study) &&
-     samples_compatible?(a,b)
+ def check_orders_compatible?(a,b)
+    errors.add(:request_types, "are incompatible") if a.request_types != b.request_types
+    errors.add(:request_options, "are incompatible") if a.request_options != b.request_options
+    errors.add(:item_options, "are incompatible") if a.item_options != b.item_options
+    check_studies_compatible?(a.study, b.study) 
+    check_samples_compatible?(a,b)
  end
 
- def self.studies_compatible?(a,b)
-   a.study_metadata.contaminated_human_dna == b.study_metadata.contaminated_human_dna
+ def check_studies_compatible?(a,b)
+    errors.add(:study, "Can't mix contaminated and non contaminated human DNA") unless a.study_metadata.contaminated_human_dna == b.study_metadata.contaminated_human_dna
  end
 
- def self.samples_compatible?(a,b)
-   debugger if $stop
-   reference_genomes = [a, b].map(&:samples).flatten.uniq.group_by(&:sample_reference_genome)
-   return reference_genomes.size <= 1
+ def check_samples_compatible?(a,b)
+    reference_genomes = [a, b].map(&:samples).flatten.uniq.group_by(&:sample_reference_genome).keys
+    errors.add(:samples, "Can't mix reference genenome") if  reference_genomes.size > 1
  end
 
   #for the moment we consider that request types should be the same for all order
