@@ -95,47 +95,69 @@ class BillingEvent < ActiveRecord::Base
     BillingEvent.find_all_by_reference_and_kind(ref, "refund")
   end
 
-  def self.build_reference(request)
-    "R#{request.id}"
+  def self.build_reference(request, aliquot_info=nil)
+    aliquot_indice = aliquot_info.try(:indice) || 1
+    reference = "R#{request.id}"
+    # We need to have a unique reference for every aliquot within the same request
+    # so we had the aliquot number in it.
+    # However, in order to be able to refund billing event generated with the previous scheme
+    # (.i.e data already in the database before we change this method)
+    # we don't append anything when it's 1
+    reference += "/#{aliquot_indice}" if aliquot_indice>1
+    reference
   end
 
-  def self.construct_from_request(kind, event_type, request, entry_date=Time.now)
+  def self.construct_from_request(kind, event_type, request, aliquot_info, entry_date=Time.now)
     description = "#{request.request_type.name} #{event_type}"
     #TODO create on event per Aliquot
-    project_id = request.try(:asset).try(:primary_aliquot).try(:project_id)  || request.initial_project_id
+    project_id = aliquot_info.aliquot.try(:project_id)  || request.initial_project_id
 
     self.new :kind => kind,
-      :reference => self.build_reference(request),
+      :reference => self.build_reference(request, aliquot_info),
       :project_id => project_id,
       :entry_date => entry_date,
       :created_by => request.user ? request.user.name : "Unknown",
       :description => description,
+      :quantity    => 1.0/aliquot_info.number,
       :request    => request
   end
 
+  def self.map_for_each_aliquot(request, &block)
+    aliquots = request.asset.try(:aliquots) || [nil]
+    number_of_aliquots = aliquots.size
+    aliquots.each_with_index.map do |a,i|
+      info = OpenStruct.new(:aliquot => a, :indice => i, :number => number_of_aliquots)
+      block.call(info)
+    end
+  end
+
   def self.generate_pass_event(request)
-    reference = BillingEvent.build_reference(request)
+    map_for_each_aliquot(request) do |aliquot_info|
+      reference = BillingEvent.build_reference(request, aliquot_info)
 
-    #check if  a billing event already exist
-    matching_event = BillingEvent.charge_for_reference(reference)
-    raise BillingException::DuplicateCharge if matching_event
+      #check if  a billing event already exist
+      matching_event = BillingEvent.charge_for_reference(reference)
+      raise BillingException::DuplicateCharge if matching_event
 
-    b = construct_from_request("charge", "passed", request)
-    b.save!
-    b
+      b = construct_from_request("charge", "passed", request, aliquot_info)
+      b.save!
+      b
+    end
   end
 
   def self.generate_fail_event(request)
-    reference = BillingEvent.build_reference(request)
+    map_for_each_aliquot(request) do |aliquot_info|
+      reference = BillingEvent.build_reference(request, aliquot_info)
 
-    charged_event = BillingEvent.charge_for_reference(reference)
-    refund = BillingEvent.cancel_charged_event_by_reference(reference)
-    matching_event = BillingEvent.charge_internally_for_reference(reference)
-    raise BillingException::DuplicateChargeInternally if matching_event
-    b = construct_from_request("charge_internally", "failed", request)
-    b.quantity = refund.quantity if refund
-    b.save!
-    b
+      charged_event = BillingEvent.charge_for_reference(reference)
+      refund = BillingEvent.cancel_charged_event_by_reference(reference)
+      matching_event = BillingEvent.charge_internally_for_reference(reference)
+      raise BillingException::DuplicateChargeInternally if matching_event
+      b = construct_from_request("charge_internally", "failed", request, aliquot_info)
+      b.quantity = refund.quantity if refund
+      b.save!
+      b
+    end
   end
 
   def self.cancel_charged_event_by_reference(reference)

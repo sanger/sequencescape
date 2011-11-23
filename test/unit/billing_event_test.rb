@@ -308,8 +308,9 @@ class BillingEventTest < ActiveSupport::TestCase
         end
 
         should "be refund for the quantity left when failling" do
-          new_refund = BillingEvent.generate_fail_event @request
-          assert_equal 3, new_refund.quantity
+          new_refunds = BillingEvent.generate_fail_event @request
+          assert_equal 1, new_refunds.size
+          assert_equal 3, new_refunds.first.quantity
         end
       end
     end

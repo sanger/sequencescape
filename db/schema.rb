@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111114132700) do
+ActiveRecord::Schema.define(:version => 20111123110814) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -232,7 +232,7 @@ ActiveRecord::Schema.define(:version => 20111114132700) do
     t.integer  "project_id",                             :null => false
     t.string   "reference",                              :null => false
     t.string   "description", :default => "Unspecified"
-    t.integer  "quantity",    :default => 1
+    t.float    "quantity",    :default => 1.0
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "request_id"
