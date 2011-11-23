@@ -90,6 +90,10 @@ class BulkSubmission < ActiveRecord::Base
     # Detect that the CSV does not have any items from our known fields in the first row using an intersection
     if (headers & COMMON_FIELDS).length == 0
       errors.add(:spreadsheet, "The supplied file does not contain a valid header row (try downloading a template)")
+      
+    elsif not headers.include? "submission name"
+      errors.add :spreadsheet, "You submitted an incompatible spreadsheet. Please ensure your spreadsheet contains the 'submission name' column"
+      
     else
       submission_details = csv_rows.each_with_index.map do |row, index|
         Hash[headers.each_with_index.map { |header, pos| [ header, row[pos].try(:strip) ] }].merge('row' => index+2)
@@ -182,7 +186,7 @@ class BulkSubmission < ActiveRecord::Base
             errors.add :spreadsheet, "There was a problem on row(s) #{details['rows']}: #{exception.message}"
            
             failures = true
-          rescue QuotaException => exception
+          rescue Quota::Error => exception
                                 errors.add :spreadsheet, "There was a quota problem: #{exception.message}"
           
           end
@@ -193,6 +197,7 @@ class BulkSubmission < ActiveRecord::Base
         # If there are any errors then the transaction needs to be rolled back.
         raise ActiveRecord::Rollback if failures
       end
+      
     end
   end #process
   
