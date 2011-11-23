@@ -135,9 +135,9 @@ body #header {  /* Covers all environments not specifically identified (purples)
 }
 body.production #header {  /* Specific for production environment (blues) */
   background: #3e87b3;
-  background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(100%, #004578), color-stop(0%, #0085bc));
+  background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(100%, #004578), color-stop(0%, #006BAF));
   background-image: -moz-linear-gradient(top, #006BAF 0%, #004578 100%);
-  background-image: linear-gradient(top, #0085bc 0%, #004578 100%);
+  background-image: linear-gradient(top, #006BAF 0%, #004578 100%);
   color: #fff;
 }
 body.production.failover #header {  /* Specific for production failover environment (blues) */
@@ -969,20 +969,99 @@ td.commentable a {
 
 .progress-list li{
   border-radius: 15px;
-  border: 3px solid #c3ceda;
   display: inline-block;
   list-style: none;
   background: white;
-  color: #c3ceda;
   padding: 25px;
+  border: 3px solid #333129;
+  -moz-box-shadow: 0 1px 4px 0 #C3CEDA;
+  box-shadow: 0 1px 5px 0 #C3CEDA;
+  color:#333129;
+  opacity: 0.2;
+	-moz-transition:    all 0.3s ease-in-out 0s;
+  -webkit-transition: all 0.3s ease-in-out 0s;
+  transition:         all 0.3s ease-in-out 0s;
 }
 
 .progress-list li.active-stage{
-  border: 3px solid black;
+  opacity: 1;
+	-moz-transition:    all 0.3s ease-in-out 0s;
+  -webkit-transition: all 0.3s ease-in-out 0s;
+  transition:         all 0.3s ease-in-out 0s;
+}
+
+#submission-wizard {
+  color:#333129;
+}
+
+/* This overly verbose rule is needed to override formtastic styling  */
+#submission-wizard li.wizard-pane {
+  width: 900px;
+  height: 300px;
+  border: 3px solid #333129;
+  border-radius: 15px;
+  -moz-border-radius: 15px;
   -moz-box-shadow: 0 1px 4px 0 #C3CEDA;
   box-shadow: 0 1px 5px 0 #C3CEDA;
-  color:black;
+  padding: 30px;
+  margin: 15px;
+  display:none;
+  color:#333129;
 }
+/*color-stop(100%, #004578), color-stop(0%, #006BAF));*/
+#submission-wizard .wizard-button {
+	-moz-box-shadow:inset 0px 1px 0px 0px #bbdaf7;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #bbdaf7;
+	box-shadow:inset 0px 1px 0px 0px #bbdaf7;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #0066B8), color-stop(1, #00498C) );
+	background:-moz-linear-gradient( center top, #79bbff 5%, #378de5 100% );
+	background-color:#79bbff;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	border-radius:6px;
+	border:1px solid #84bbf3;
+	display:inline-block;
+	color:#ffffff;
+	font-size:15px;
+	font-weight:bold;
+	padding:6px 24px;
+	text-decoration:none;
+	text-shadow: 0px -1px 0px #1B3752;
+	-moz-transition:    all 0.3s ease-in-out 0s;
+  -webkit-transition: all 0.3s ease-in-out 0s;
+  transition:         all 0.3s ease-in-out 0s;
+  
+}
+
+#submission-wizard .wizard-button:hover {
+	color:#FFE21A;
+}
+
+#submission-wizard .wizard-button[disabled] {
+	-moz-box-shadow: 0 0 0 0;
+	-webkit-box-shadow: 0 0 0 0;
+	box-shadow: 0 0 0 0;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #BABCBA), color-stop(1, #ACACAC) );
+	background:-moz-linear-gradient( center top, #BABCBA 5%, #ACACAC 100% );
+	background-color:#FEFFFE;
+
+	border-color:#6E6E6E;
+	text-shadow:0px 0px 0px #528ecc;
+}
+
+#submission-wizard .wizard-button[disabled]:hover {
+  color: #ffffff;
+}
+
+
+.my-arrow {
+  line-height: 75px;
+  font-size: 75px;
+  display: block;
+  text-align: center;
+  font-weight:bold;
+}
+
 
 #asset_input_methods td { vertical-align: top; }
 #asset_input_methods td.separator { vertical-align: middle; }

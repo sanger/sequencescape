@@ -3,16 +3,17 @@
 
 <h1>New Submission</h1>
   <ul id="submission-breadcrumbs" class="progress-list">
-    <li class="active-stage">Select a project</li>
-    <li>Choose a template and set order parameters</li>
-    <li>Comments</li>
-    <li>Choose Study and Assets</li>
+    <li class="active-stage">Select a project<span class="my-arrow">➧</span></li>
+    <li>Choose a template and set order parameters<span class="my-arrow">➧</span></li>
+    <li>Comments<span class="my-arrow">➧</span></li>
+    <li>Choose Study and Assets<span class="my-arrow">➧</span></li>
   </ul>
 
 <% semantic_form_for :submission, @submission_presenter, :url => submissions_path do |f| -%>
 
-  <ul class="wizard">
-    <li>
+  <ul id="submission-wizard">
+    <li class="wizard-pane" style="display:block;">
+    1
       <% f.inputs do -%>
       <%= f.input :project_name,
         :input_html => {
@@ -24,7 +25,8 @@
       <% end -%>
     </li>
 
-    <li>
+    <li class="wizard-pane">
+    2
       <% f.inputs do -%>
       <%= f.input :submission_template_id,
         :as         => :select,
@@ -35,15 +37,15 @@
 
       <div id="submission-requirements" style="display:none">
         <div id="requirements-document"></div>
-      <div id="submission-parameters"></div>
-        <b>Next tab button</b>
+        <div id="submission-parameters"></div>
       </div>
 
       <% end -%>
     </li>
 
-    <li>
-
+    <li class="wizard-pane">
+3
+    <% f.inputs do -%>
       <%= f.input :comments,
         :as => :text,
         :input_html => {
@@ -51,10 +53,12 @@
           :rows => 5
         }
       %>
+    <% end -%>
 
     </li>
 
-    <li>
+    <li class="wizard-pane">
+    4
     <% f.inputs do -%>
        <%= f.input :study_name,
         :input_html => {
@@ -64,11 +68,10 @@
       <div class="auto_complete" id="study_name_results"></div>
     <% end -%>
     </li>
+    <%= f.submit "Previous", :class => "wizard-button", :id => "wizard-previous", :disabled => true %>
+    <%= f.submit "Next", :class => "wizard-button", :id => "wizard-next" %>
+    <%= f.submit "Start Submission", :id => "start-submission", :class => "wizard-button", :disabled => true %>
   </ul>
-
-
-  <%= f.submit "Start Submission" %>
-
 <% end -%>
 
 
@@ -117,8 +120,63 @@
     );
   }
 
+  var checkButtons = function(pane) {
+    // Check for then Next button
+    if ($(pane).next('li').length == 0) {
+      $('#wizard-next').attr('disabled', 'disabled');
+      $('#start-submission').removeAttr('disabled');
+    } else {
+      $('#wizard-next').removeAttr('disabled');
+      $('#start-submission').attr('disabled', 'disabled');
+    }
+
+    // Check for the Previous button
+    if ($(pane).prev('li').length == 0) {
+      $('#wizard-previous').attr('disabled', 'disabled');
+    } else {
+      $('#wizard-previous').removeAttr('disabled');
+    }
+  }
+
+  var nextPaneHandler = function(event){
+    $(this).attr('disabled','disabled');
+
+    $('#submission-breadcrumbs li.active-stage').
+      removeClass('active-stage').
+      next().
+      addClass('active-stage');
+
+    $('.wizard-pane:visible').fadeOut(300, function(){
+        $(this).next().fadeIn(300, function(){
+          checkButtons(this);
+        });
+    });
+
+    return false;
+  }
+
+  var previousPaneHandler = function(event){
+    $(this).attr('disabled','disabled');
+
+    $('#submission-breadcrumbs li.active-stage').
+      removeClass('active-stage').
+      prev().
+      addClass('active-stage');
+
+
+    $('.wizard-pane:visible').fadeOut(300, function(){
+        $(this).prev().fadeIn(300, function(){
+          checkButtons(this);
+        });
+    });
+
+    return false;
+  }
+
   $(function(){
-   $('#submission_submission_template_id').change(requirementsHandler);
+    $('#submission_submission_template_id').change(requirementsHandler);
+    $('#wizard-next').click(nextPaneHandler);
+    $('#wizard-previous').click(previousPaneHandler);
   });
 
 })(jQuery);
