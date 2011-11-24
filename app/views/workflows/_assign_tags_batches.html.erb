@@ -54,6 +54,7 @@
               <td>
                 <% if request.tag_number.blank? %>
                   <%= select "tag", request.id, tag_options, {:selected =>tag_options[index%tag_options.size]}, {:class => "tagchoice"} %>
+                  <input type="checkbox" id="continue_down_<%= "#{request.id}" %>" />Continue downwards
                 <% end %>
               </td>
 
@@ -80,3 +81,4 @@
 <% end %>
 
 <script type="text/javascript" src="/javascripts/assigntags.js"></script>
+<script type="text/javascript" src="/javascripts/jquery.color.min.js"></script>
