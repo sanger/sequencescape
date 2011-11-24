@@ -465,12 +465,6 @@ td.faint {
   color: #666;
 }
 
-td.item {
-  text-align: right;
-  padding-right: 15px;
-  padding-bottom: 10px;
-}
-
 div.detail {
   margin: 5px 30px 15px 30px;
   padding-bottom: 5px;
