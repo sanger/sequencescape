@@ -5,6 +5,7 @@ class TagGroup < ActiveRecord::Base
   acts_as_audited :on => [:destroy, :update]
 
   validates_presence_of :name
+  validates_uniqueness_of :name 
 
   def create_tags(tags_properties)
     return if tags_properties.blank?
