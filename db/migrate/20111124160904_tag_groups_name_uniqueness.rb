@@ -9,11 +9,15 @@ class TagGroupsNameUniqueness < ActiveRecord::Migration
   def self.up
     
     names = TagGroup.all.collect(&:name)
-    unique_names = names.uniq
     
-    if (names.size!=unique_names.size)
+    if (names.size!=names.uniq.size)
       dup_hash(names).map { |d|
-        tag_groups = TagGroup.all :conditions => { :name => d[0] }
+        suffix = 1
+        TagGroup.all(:conditions => { :name => d[0] }).each { |tg|
+          tg.name = "#{tg.name}#{suffix}"
+          tg.save
+          suffix += 1
+          }
       }
       
       
@@ -26,5 +30,9 @@ class TagGroupsNameUniqueness < ActiveRecord::Migration
   end
 
   def self.down
+    execute <<-SQL
+      ALTER TABLE tag_groups
+      REMOVE CONSTRAINT unique_name
+    SQL
   end
 end
