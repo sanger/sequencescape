@@ -967,27 +967,77 @@ td.commentable a {
   border-top: none;
 }
 
+.progress-list {
+  padding: 0;
+}
+
 .progress-list li{
   border-radius: 15px;
   display: inline-block;
   list-style: none;
   background: white;
-  padding: 25px;
+  padding: 0 0 0 20px;
+	margin: 0 18px 0 0;
+	width: 200px;
+	height: 100px;
   border: 3px solid #333129;
+  color:#333129;
+  opacity: 0.1;
+	-moz-transition:    all 0.3s ease-in-out 0s;
+  -webkit-transition: all 0.3s ease-in-out 0s;
+  transition:         all 0.3s ease-in-out 0s;
+	position: relative;
+}
+
+.progress-list li p {
+	position: absolute;
+	font-weight: bold;
+}
+
+.progress-list li.completed-stage{
+  opacity: 0.6;
+	border-color:#003E00;
+	color:#003E00;
+}
+.progress-list li.active-stage{
+  opacity: 1;
+	border-color: #00498C;
+	color: #00498C;
   -moz-box-shadow: 0 1px 4px 0 #C3CEDA;
   box-shadow: 0 1px 5px 0 #C3CEDA;
-  color:#333129;
-  opacity: 0.2;
 	-moz-transition:    all 0.3s ease-in-out 0s;
   -webkit-transition: all 0.3s ease-in-out 0s;
   transition:         all 0.3s ease-in-out 0s;
 }
 
-.progress-list li.active-stage{
-  opacity: 1;
+.progress-list li span.badge {
+	display: none;
+  position: absolute;
 	-moz-transition:    all 0.3s ease-in-out 0s;
   -webkit-transition: all 0.3s ease-in-out 0s;
   transition:         all 0.3s ease-in-out 0s;
+}
+
+.progress-list li.completed-stage span.badge {
+	width: 35px;
+  line-height: 35px;
+  font-size: 	 25px;
+	top:  -18px;
+	right: -18px;
+	background:	#003E00;
+	background: -moz-radial-gradient(top left, cover, #00B200 0%, #003E00 100%);
+	background: -webkit-radial-gradient(top left, cover, #00B200 0%, #003E00 100%);
+	color: white;
+	text-align: center;
+	text-shadow: 0 -1px 0 #002800;
+	box-shadow: 0 1px 3px #aaaaaa;
+	border-radius: 35px;
+	display: block;
+}
+
+.progress-list li p{
+	display:block;
+	height: 100px;
 }
 
 #submission-wizard {
@@ -998,23 +1048,23 @@ td.commentable a {
 #submission-wizard li.wizard-pane {
   width: 900px;
   height: 300px;
-  border: 3px solid #333129;
+  border: 3px solid #00498C;
   border-radius: 15px;
   -moz-border-radius: 15px;
   -moz-box-shadow: 0 1px 4px 0 #C3CEDA;
   box-shadow: 0 1px 5px 0 #C3CEDA;
   padding: 30px;
-  margin: 15px;
+  margin: 15px 0;
   display:none;
-  color:#333129;
+  color:#00498C;
 }
-/*color-stop(100%, #004578), color-stop(0%, #006BAF));*/
+
 #submission-wizard .wizard-button {
 	-moz-box-shadow:inset 0px 1px 0px 0px #bbdaf7;
 	-webkit-box-shadow:inset 0px 1px 0px 0px #bbdaf7;
 	box-shadow:inset 0px 1px 0px 0px #bbdaf7;
 	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #0066B8), color-stop(1, #00498C) );
-	background:-moz-linear-gradient( center top, #79bbff 5%, #378de5 100% );
+	background:-moz-linear-gradient( center top, #0066B8 5%, #00498C 100% );
 	background-color:#79bbff;
 	-moz-border-radius:6px;
 	-webkit-border-radius:6px;
@@ -1041,9 +1091,7 @@ td.commentable a {
 	-moz-box-shadow: 0 0 0 0;
 	-webkit-box-shadow: 0 0 0 0;
 	box-shadow: 0 0 0 0;
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #BABCBA), color-stop(1, #ACACAC) );
-	background:-moz-linear-gradient( center top, #BABCBA 5%, #ACACAC 100% );
-	background-color:#FEFFFE;
+	background:#ACACAC;
 
 	border-color:#6E6E6E;
 	text-shadow:0px 0px 0px #528ecc;
@@ -1054,13 +1102,6 @@ td.commentable a {
 }
 
 
-.my-arrow {
-  line-height: 75px;
-  font-size: 75px;
-  display: block;
-  text-align: center;
-  font-weight:bold;
-}
 
 
 #asset_input_methods td { vertical-align: top; }

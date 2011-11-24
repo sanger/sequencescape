@@ -3,17 +3,16 @@
 
 <h1>New Submission</h1>
   <ul id="submission-breadcrumbs" class="progress-list">
-    <li class="active-stage">Select a project<span class="my-arrow">➧</span></li>
-    <li>Choose a template and set order parameters<span class="my-arrow">➧</span></li>
-    <li>Comments<span class="my-arrow">➧</span></li>
-    <li>Choose Study and Assets<span class="my-arrow">➧</span></li>
+    <li class="active-stage"><span id="complete-badge" class="badge">✔</span><p>Select a project</p></li>
+    <li><span id="complete-badge" class="badge">✔</span><p>Choose a template and set order parameters</p></li>
+    <li><span id="complete-badge" class="badge">✔</span><p>Comments</p></li>
+    <li><span id="complete-badge" class="badge">✔</span><p>Choose Study and Assets</p></li>
   </ul>
 
 <% semantic_form_for :submission, @submission_presenter, :url => submissions_path do |f| -%>
 
   <ul id="submission-wizard">
     <li class="wizard-pane" style="display:block;">
-    1
       <% f.inputs do -%>
       <%= f.input :project_name,
         :input_html => {
@@ -26,7 +25,6 @@
     </li>
 
     <li class="wizard-pane">
-    2
       <% f.inputs do -%>
       <%= f.input :submission_template_id,
         :as         => :select,
@@ -44,7 +42,6 @@
     </li>
 
     <li class="wizard-pane">
-3
     <% f.inputs do -%>
       <%= f.input :comments,
         :as => :text,
@@ -58,7 +55,6 @@
     </li>
 
     <li class="wizard-pane">
-    4
     <% f.inputs do -%>
        <%= f.input :study_name,
         :input_html => {
@@ -143,6 +139,7 @@
 
     $('#submission-breadcrumbs li.active-stage').
       removeClass('active-stage').
+      addClass('completed-stage').
       next().
       addClass('active-stage');
 
@@ -161,6 +158,7 @@
     $('#submission-breadcrumbs li.active-stage').
       removeClass('active-stage').
       prev().
+      removeClass('completed-stage').
       addClass('active-stage');
 
 
