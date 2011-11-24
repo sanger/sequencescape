@@ -126,7 +126,7 @@ class BillingEvent < ActiveRecord::Base
     aliquots = request.asset.try(:aliquots) || [nil]
     number_of_aliquots = aliquots.size
     aliquots.each_with_index.map do |a,i|
-      info = OpenStruct.new(:aliquot => a, :indice => i, :number => number_of_aliquots)
+      info = OpenStruct.new(:aliquot => a, :indice => i+1, :number => number_of_aliquots)
       block.call(info)
     end
   end
