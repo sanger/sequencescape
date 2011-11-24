@@ -11,32 +11,39 @@
     // This callback will indicate other rows using the same tag
     function highlightDuplicates() {
         var duplicates = {};
+        var duplicatesPresent = false;
         taggers.each(function(index){
             var chosenTagIndex = $(this).prop("selectedIndex");
-            if (duplicates[chosenTagIndex] != null)
-                duplicates[chosenTagIndex].push(index);
-            else
+            if (duplicates[chosenTagIndex] == null)
             {
                 duplicates[chosenTagIndex] = new Array();
                 duplicates[chosenTagIndex].push(index);
-            }   
+            }
+            else
+                duplicates[chosenTagIndex].push(index);
             
         });
         taggers.each(function(index){
-            var thisTagAssignments = duplicates[$(this).prop("selectedIndex")];
-            if (thisTagAssignments.length >1)
+            var requestsAssigned = duplicates[$(this).prop("selectedIndex")];
+            var quantityOfRequests = requestsAssigned.size();
+            if (quantityOfRequests >1)
             {
-                for (var i=0, len = thisTagAssignments.size(); i<len; i++)
+                duplicatesPresent = true;
+                for (var i=0; i<quantityOfRequests; i++)
                 {
-                    var tableRow = $(taggers[thisTagAssignments[i]]).parent().parent();
+                    var tableRow = $(taggers[requestsAssigned[i]]).parent().parent();
                     tableRow.css("background", "#FFB0B0");
                 }
             }
             else
             {
-                $(taggers[thisTagAssignments[0]]).parent().parent().css("background", "white");
+                $(taggers[requestsAssigned[0]]).parent().parent().css("background", "white");
             }   
         });
+        if (duplicatesPresent)
+            $('#stage_button').attr("disabled", true);
+        else
+            $('#stage_button').attr("disabled", false);
     }
     
     $('select.tagchoice').change(function() {   
@@ -47,10 +54,10 @@
             remainingTaggers(taggers.index($(this))).each(function()
             {
                     $(this).prop("selectedIndex",chosenTagIndex+1);
-					// A little animation to highlight the changed rows
+                    // A little animation to highlight the changed rows
                     $(this).parent().parent().animate({
                         backgroundColor: '#FFF3B0'
-                    }, 2000).animate({
+                    }, 500).animate({
                         backgroundColor: '#ffffff'
                     }, 2000);
                     chosenTagIndex++;
