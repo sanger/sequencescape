@@ -33,10 +33,7 @@
        %>
 
 
-      <div id="submission-requirements" style="display:none">
-        <div id="requirements-document"></div>
-        <div id="submission-parameters"></div>
-      </div>
+      <div id="submission-parameters" style="display:none"></div>
 
       <% end -%>
     </li>
@@ -76,9 +73,9 @@
 <script language="JavaScript" type="text/javascript">
   // Autocompleter is part of Scriptaculous should be replaced.
   new Autocompleter.Local(
-      'submission_project_name',
-      'project_name_results',
-      <%= stringify_array(@submission_presenter.user_projects) %>
+    'submission_project_name',
+    'project_name_results',
+    <%= stringify_array(@submission_presenter.user_projects) %>
   );
 
   new Autocompleter.Local(
@@ -89,22 +86,12 @@
 
 
 (function($, undefined){
-  var requirementsHandler = function(event){
+  var orderParameterHandler = function(event){
     var submission_details = {
       submission: {
         submission_template_id: $(this).val()
       }
     };
-
-    // Get the requirements for the template...
-    $.get(
-      '/submissions/requirements',
-      submission_details,
-      function(data) {
-        $('#requirements-document').html(data);
-        $('#submission-requirements').fadeIn();
-      }
-    );
 
     // Load the parameters for the new order
     $.get(
@@ -172,7 +159,7 @@
   }
 
   $(function(){
-    $('#submission_submission_template_id').change(requirementsHandler);
+    $('#submission_submission_template_id').change(orderParameterHandler);
     $('#wizard-next').click(nextPaneHandler);
     $('#wizard-previous').click(previousPaneHandler);
   });

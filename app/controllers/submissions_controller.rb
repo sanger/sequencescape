@@ -73,20 +73,13 @@ class SubmissionsController < ApplicationController
 
   def create
     @submission_presenter = SubmissionPresenter.new(current_user, params[:submission])
+    debugger
 
     @submission_presenter.save!
 
   end
 
-  # Renders the requirements document based on the SubmissionTemplate.
   # TODO[sd9]: Move this to a separate name spaced controller
-  def requirements
-    # TODO[sd9]: Change this to an attribute on the presenter
-    @submission_template = SubmissionTemplate.find(params[:submission][:submission_template_id])
-
-    render :partial => 'submissions/requirements', :layout => false
-  end
-
   def order_parameters
     @submission_presenter = SubmissionPresenter.new(current_user, params[:submission])
 

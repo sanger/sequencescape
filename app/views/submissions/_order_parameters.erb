@@ -1,3 +1,6 @@
+<h2>Requirements for <%= @submission_presenter.template.name %></h2>
+<%= custom_text("submission_info") %>
+
 <ul>
 <% @submission_presenter.order_parameters.each do |order_param| -%>
   <li><%= order_input_label(order_param) %>: <%= order_input_tag(order_param) %></li>
