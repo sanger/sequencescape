@@ -4,6 +4,6 @@ class MultipleBillingEvents < ActiveRecord::Migration
   end
 
   def self.down
-    change_column :billing_events, :quantity
+    change_column :billing_events, :quantity, :integer
   end
 end
