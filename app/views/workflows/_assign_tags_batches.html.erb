@@ -6,13 +6,6 @@
         No items found. <%= link_to "Create the first one", :action => "new" %>
       </div>
     <% else -%>
-    <% 
-    # This keeps track of the next request - because now they are separated into submissions
-    #   otherwise it would re-use tags in different submissions
-      next_request = 0 
-      @requests_by_submission.map do |submission, requests| 
-    %>
-    <h2>Submission <%= "#{submission.id} (#{submission.name})"%></h2>
       <table class="request-grid">
         <thead>
           <tr>
@@ -30,11 +23,9 @@
             <th class='label'>Tag</th>
           </tr>
         </thead>
-      
-        <tbody id="item_list_<%= "#{submission.id}" %>">
+        <tbody id="item_list">
           <% tag_options = @tags.collect { |t| ["Tag #{t.map_id}", t.id] } %>
-          <%
-          requests.each_with_index do |request,index| -%>
+          <% @requests.each_with_index do |request,index| -%>
             <tr id="request_<%= request.id %>" class="<%= cycle("rowodd", "roweven") %>">
               <th class="order"><%= request.position(@batch) %></th>
               <td><%= request.sample_name %></td>
@@ -62,18 +53,14 @@
               <% end %>
               <td>
                 <% if request.tag_number.blank? %>
-                  <%= select "tag", request.id, tag_options, {:selected =>tag_options[next_request%tag_options.size]}, {:class => "tagchoice"} %>
+                  <%= select "tag", request.id, tag_options, {:selected =>tag_options[index%tag_options.size]}, {:class => "tagchoice"} %>
                 <% end %>
               </td>
 
             </tr>
-          <%   
-            next_request+=1
-            end -%>
+          <% end -%>
         </tbody>
-        
       </table>
-      <% end -%>
     <% end -%>
   </div>
   <br />
@@ -92,8 +79,4 @@
   <%= render :partial => "next_stage_submit" %>
 <% end %>
 
-<script type="text/javascript">
-    jQuery('.tagchoice').change(function() {
-      alert('Handler for .change() called.');
-    });
-</script>
+<script type="text/javascript" src="/javascripts/assigntags.js"></script>
