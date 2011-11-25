@@ -1058,6 +1058,7 @@ td.commentable a {
   margin: 15px 0;
   display:none;
   color:#00498C;
+  list-style: none outside none;
 }
 
 #submission-wizard .wizard-button {
