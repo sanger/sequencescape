@@ -1,5 +1,5 @@
 class SubmissionPresenter
-  ATTRIBUTES = [ :submission_template_id, :study_name, :project_name, :comments ]
+  ATTRIBUTES = [ :template_id, :study_name, :project_name, :comments ]
 
   attr_accessor *ATTRIBUTES
 
@@ -44,14 +44,15 @@ class SubmissionPresenter
     @study ||= Study.find_by_name(@study_name)
   end
 
-  # Returns an array of the names of all studies
+  # Returns an array of the names of all the non-inactive studies
+  # TODO[sd9] filter this via the database rather than in memory
   def studies
-    @studies ||= Study.all.map(&:name)
+    @studies ||= Study.all.reject(&:inactive?).map(&:name)
   end
 
   # Returns the SubmissionTemplate (OrderTemplate) to be used for this Submission.
   def template
-    @template ||= SubmissionTemplate.find(submission_template_id)
+    @template ||= SubmissionTemplate.find(@template_id)
   end
 
   def templates
@@ -64,6 +65,9 @@ class SubmissionPresenter
     @user_projects ||= @user.sorted_project_names_and_ids.map(&:first)
   end
 end
+
+
+
 
 class SubmissionsController < ApplicationController
 

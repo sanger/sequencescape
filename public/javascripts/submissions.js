@@ -2,7 +2,7 @@
   var orderParameterHandler = function(event){
     var submission_details = {
       submission: {
-        submission_template_id: $(this).val()
+        template_id: $(this).val()
       }
     };
 
@@ -72,7 +72,12 @@
   }
 
   $(function(){
-    $('#submission_submission_template_id').change(orderParameterHandler);
+    $('#submission_project_name').autocomplete({
+      source: SCAPE.user_projects,
+      minLength: 3
+
+    });
+    $('#submission_template_id').change(orderParameterHandler);
     $('#wizard-next').click(nextPaneHandler);
     $('#wizard-previous').click(previousPaneHandler);
   });

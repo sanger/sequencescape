@@ -9,57 +9,37 @@
     <li><span id="complete-badge" class="badge">✔</span><p>Choose Study and Assets</p></li>
   </ul>
 
-<% semantic_form_for :submission, @submission_presenter, :url => submissions_path do |f| -%>
+<% form_for :submission, @submission_presenter, :url => submissions_path do |f| -%>
 
   <ul id="submission-wizard">
     <li class="wizard-pane" style="display:block;">
-      <% f.inputs do -%>
-      <%= f.input :project_name,
-        :input_html => {
+      <%= f.text_field :project_name,
           :placeholder => "enter the first few characters of the financial project name"
-      }
        %>
-       <div class="auto_complete" id="project_name_results"></div>
 
-      <% end -%>
     </li>
 
     <li class="wizard-pane">
-      <% f.inputs do -%>
-      <%= f.input :submission_template_id,
-        :as         => :select,
-        :collection => @submission_presenter.templates,
-        :prompt     => "Please select a template..."
-       %>
+        <%= f.collection_select :template_id,
+          @submission_presenter.templates, :id, :name,
+          :prompt     => "Please select a template..."
+         %>
 
-
-      <div id="submission-parameters" style="display:none"></div>
-
-      <% end -%>
+         <div id="submission-parameters" style="display:none;"></div>
     </li>
 
     <li class="wizard-pane">
-    <% f.inputs do -%>
-      <%= f.input :comments,
-        :as => :text,
-        :input_html => {
+      <%= f.text_area :comments,
           :cols => 70,
           :rows => 5
-        }
       %>
-    <% end -%>
 
     </li>
 
     <li class="wizard-pane">
-    <% f.inputs do -%>
-       <%= f.input :study_name,
-        :input_html => {
+       <%= f.text_area :study_name,
           :placeholder => "enter the first few characters of the study name"
-        }
         %>
-      <div class="auto_complete" id="study_name_results"></div>
-    <% end -%>
     </li>
     <%= f.submit "Previous", :class => "wizard-button", :id => "wizard-previous", :disabled => true %>
     <%= f.submit "Next", :class => "wizard-button", :id => "wizard-next" %>
@@ -68,18 +48,25 @@
 <% end -%>
 
 <script type="text/javascript">
-  // Autocompleter is part of Scriptaculous should be replaced.
-  new Autocompleter.Local(
-    'submission_project_name',
-    'project_name_results',
-    <%= stringify_array(@submission_presenter.user_projects) %>
-  );
+(function($, undefined){
+  // Check for the SCAPE object.  This is the only place in the global
+  // namespace we should be storing things.
+ if (window.SCAPE == undefined) { window.SCAPE = {}; }
 
-  new Autocompleter.Local(
-    'submission_study_name',
-    'study_name_results',
-    <%= stringify_array(@submission_presenter.studies) %>
-  );
+ SCAPE.user_projects = <%= stringify_array(@submission_presenter.user_projects) %>;
+ SCAPE.user_studies = <%= stringify_array(@submission_presenter.studies) %>;
+})(jQuery);
+
+  // Autocompleter is part of Scriptaculous should be replaced.
+//    new Autocompleter.Local(
+//      'submission_project_name',
+//      'project_name_results',
+//    );
+//
+//    new Autocompleter.Local(
+//      'submission_study_name',
+//      'study_name_results',
+//    );
 
 
 </script>
