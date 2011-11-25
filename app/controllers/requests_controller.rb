@@ -32,7 +32,7 @@ class RequestsController < ApplicationController
     if params[:study_id]
       @no_filter_params = false
       @study            = Study.find(params[:study_id])
-      request_source    = request_source.for_study_id(params[:study_id])
+      request_source    = request_source.for_initial_study_id(params[:study_id])
     end
     if params[:state]
       @no_filter_params = false
