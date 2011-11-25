@@ -204,7 +204,8 @@ class BulkSubmission < ActiveRecord::Base
       ActiveRecord::Base.transaction do
         submission_details.each do |submissions|
           submissions.each do |submission_name,orders|
-            submission = Submission.create!(:name=>submission_name, :orders => orders.map(&method(:prepare_order)).compact)
+            user = User.find_by_login(orders.first["user login"]) or raise StandardError, "Cannot find user #{details['user login'].inspect}"
+            submission = Submission.create!(:name=>submission_name, :user => user, :orders => orders.map(&method(:prepare_order)).compact)
             # Collect successful submissions
             @submissions.push submission.id
             @submission_details[submission.id] = "Submission #{submission.id} built (#{submission.orders.count} orders)"
