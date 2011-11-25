@@ -19,10 +19,10 @@ $ cp config/config.yml.example config/config.yml
 $ $EDITOR config/config.yml
 $ gem install bundler
 $ bundle install
-$ rake db:schema:load
-$ rake db:seed
-$ ./script/delayed_job start
-$ ./script/server
+$ bundle exec rake db:schema:load
+$ bundle exec rake db:seed
+$ bundle exec ./script/delayed_job start
+$ bundle exec ./script/server
 # Login as admin/admin
 
 === Data model ===

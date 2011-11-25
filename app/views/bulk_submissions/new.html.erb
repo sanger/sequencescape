@@ -11,34 +11,52 @@
       <%= form.commit_button %>
       
     <% end %>
+    <div id="being_created" style="display: none;">
+      <p>Your spreadsheet is being processed...</p>
+      <%= loading_bar %>
+    </div>
 
 <% end %>
 
 <h3>Templates &amp; Guidance</h3>
 <p>A blank sample spreadsheet template is <%= link_to "available here", "/data/bulk_submission/blank_template.xls" %>.</p>
 <p>
-It contains the following, fairly obvious, columns:
+  It contains the following, fairly obvious, columns:
 </p>
 <ul>
   <li><strong>'User login'</strong> which should be filled in with your login, or the person requesting the submission.</li>
-<li><strong>'template name'</strong> which is the submission template name that you would normally select from the submission drop down.</li>
-<li><strong>'project name'</strong> and <strong>'study name'</strong> are the project and study names to use</li>
-<li><strong>'submission name'</strong> is mandatory. Several orders belong to one submission</li>
-<li><strong>'fragment size from'</strong> and <strong>'fragment size to'</strong> are the insert size</li>
-<li><strong>'read length'</strong> is the read length being requested</li>
-<li><strong>'number of lanes'</strong> is the number of lanes in the request</li>
-<li><strong>'comments'</strong> is any comment to add to the submission</li>
+  <li><strong>'template name'</strong> which is the submission template name that you would normally select from the submission drop down.</li>
+  <li><strong>'project name'</strong> and <strong>'study name'</strong> are the project and study names to use</li>
+  <li><strong>'submission name'</strong> is mandatory. Several orders belong to one submission</li>
+  <li><strong>'fragment size from'</strong> and <strong>'fragment size to'</strong> are the insert size</li>
+  <li><strong>'read length'</strong> is the read length being requested</li>
+  <li><strong>'number of lanes'</strong> is the number of lanes in the request</li>
+  <li><strong>'comments'</strong> is any comment to add to the submission</li>
 </ul>
 <p>The remaining columns are mutually exclusive, although they are all present in the template and the unused ones can be left blank (or removed completely):
 </p>
 <ul>
-<li><strong>'plate barcode'</strong> and <strong>'plate well'</strong> are used in tandem when submitting plates: the first is the human barcode (so 'DN1234567K' for example) of the plate, and the latter is the well location (as in 'A1' or 'G5').</li>
-<li><strong>'asset ids'</strong> is one (or more, if comma separated) asset IDs to use.  Note that asset IDs are the unique identifiers either found on the asset page or in the URL for the asset and <em>not</em> the name or the barcode, as some people have referred to.</li>
-<li><strong>'asset names'</strong> is one (or more, if comma separated) asset names to use.  Be wary of this as there are some assets that have identical names but are physically different (although the interface should error if it finds these cases).</li>
+  <li><strong>'plate barcode'</strong> and <strong>'plate well'</strong> are used in tandem when submitting plates: the first is the human barcode (so 'DN1234567K' for example) of the plate, and the latter is the well location (as in 'A1' or 'G5').</li>
+  <li><strong>'asset ids'</strong> is one (or more, if comma separated) asset IDs to use.  Note that asset IDs are the unique identifiers either found on the asset page or in the URL for the asset and <em>not</em> the name or the barcode, as some people have referred to.</li>
+  <li><strong>'asset names'</strong> is one (or more, if comma separated) asset names to use.  Be wary of this as there are some assets that have identical names but are physically different (although the interface should error if it finds these cases).</li>
+</ul>
 <p>
-The complexity comes between these 3 columns: you can specify asset IDs, or asset names, or plate/well combinations.
+  The complexity comes between these 3 columns: you can specify asset IDs, or asset names, or plate/well combinations.
 </p>
 <p>Finally there is:</p>
 <ul>
-<li><strong>'asset group name'</strong> which is the name of a pre-existing asset group to use, in which case you cannot use the asset columns described above, or the name of the asset group to create if one does not exist, in which case the asset group is populated with the submitted assets.</li></ul>
+  <li><strong>'asset group name'</strong> which is the name of a pre-existing asset group to use, in which case you cannot use the asset columns described above, or the name of the asset group to create if one does not exist, in which case the asset group is populated with the submitted assets.</li>
+</ul>
 <p>The important thing is that a single submission can be described on one row, where you list the asset IDs or asset names, or across multiple rows, which you must currently do for the plate/well combinations.  If your submission spans multiple rows then the 'asset group name' is used to group them together, so must be identical for each row that forms a submission.  In this latter case the submission details must be duplicated on each line.</p>
+
+<script>
+(function(undefined) {
+  document.observe('dom:loaded', function() {
+    $('new_bulk_submission').observe('submit', function() {
+      Element.hide('bulk_submission_submit');
+      Element.show('being_created');
+      Element.show('loading');
+    });
+  });
+})();
+</script>

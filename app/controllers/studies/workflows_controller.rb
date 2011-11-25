@@ -9,7 +9,7 @@ class Studies::WorkflowsController < ApplicationController
 
     @request_types  = @workflow.request_types.all(:order => "`order` ASC").reject { |r| @total_requests[r].zero? }
 
-    @basic_tabs = ["Summary", "Sample progress", "Project quotas"]
+    @basic_tabs = ["Summary", "Sample progress", "Assets progress", "Project quotas"]
     @summaries = @basic_tabs + @request_types.map(&:name)
   end
   private :setup_tabs
@@ -61,6 +61,12 @@ class Studies::WorkflowsController < ApplicationController
         @page_elements  = @study.samples.paginate(page_params)
         sample_ids      = @page_elements.map(&:id)
         render :partial => "sample_progress"
+      when "Assets progress"
+        @page_elements= @study.assets_through_aliquots.paginate(page_params)
+        asset_ids = @page_elements.map { |e| e.id }
+
+        @cache.merge!(:passed => @passed_asset_request, :failed => @failed_asset_request)
+        render :partial => "asset_progress"
       when "Summary"
         render :partial => "summary"
       when "Project quotas"

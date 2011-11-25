@@ -1,23 +1,18 @@
 module StudyReport::StudyDetails
-  
-  def each_asset_id_in_batches(&block)
-    Aliquot.find_in_batches( :conditions => {:study_id => self.id},
-                          :select => "DISTINCT receptacle_id"
-                         ) do |asset_object_ids|
-      asset_ids = asset_object_ids.map(&:receptacle_id)
-      block.call(asset_ids)
+
+  # This will pull out all well ids from stock plates in the study
+  def each_stock_well_id_in_study_in_batches(&block)
+    Asset.find_in_batches(:select => "assets.id",
+                          :from => 'assets, aliquots a, assets plate, container_associations ca',
+                          :conditions => ["assets.sti_type='Well' and plate.sti_type='Plate' and " +
+                                         "a.study_id=? and a.receptacle_id=assets.id and " +
+                                         "ca.container_id=plate.id and ca.content_id=assets.id and " +
+                                         "plate.plate_purpose_id in (2, 84, 85, 86, 87, 88)", self.id]
+                         ) do |well_ids|
+                           block.call(well_ids)
     end
   end
 
-  def each_asset(&block)
-    each_asset_id_in_batches do |asset_ids|
-      assets = Asset.find(asset_ids)
-      assets.each do |asset|
-        block.call(asset)
-      end
-    end
-  end
-  
   def progress_report_header
     [
       "Status","Study","Supplier","Sanger Sample Name","Supplier Sample Name","Plate","Well","Supplier Volume",
@@ -29,8 +24,7 @@ module StudyReport::StudyDetails
 
   def progress_report_on_all_assets (&block)
     block.call(progress_report_header)
-    each_asset_id_in_batches do |asset_ids|
-      #assets = Asset.find(asset_ids)
+    each_stock_well_id_in_study_in_batches do |asset_ids|
 
       # eager loading of well_attribute , can only be done on  wells ...
       assets = Well.find(:all, :include => :well_attribute, :conditions => {:id => asset_ids}, :include => { :aliquots => :sample })
