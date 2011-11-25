@@ -6,6 +6,11 @@
       }
     };
 
+    if ($(this).val() === "") { 
+      $('#submission-parameters').html('');
+      return false;
+    }
+
     // Load the parameters for the new order
     $.get(
       '/submissions/order_parameters',
