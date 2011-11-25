@@ -164,6 +164,9 @@ class Request < ActiveRecord::Base
     for_study_ids(studies.map(&:id))
   end
 
+  named_scope :for_initial_study_id, lambda { |id| { :conditions  => {:initial_study_id => id } }
+}
+
 
 
 
