@@ -4,7 +4,6 @@ module Tasks::AssignTagsHandler
     @requests = @batch.ordered_requests
     @tags = @tag_group.tags.sorted
     @rits = @batch.pipeline.request_information_types
-    debugger
   end
 
   def do_assign_tags_task(task, params)

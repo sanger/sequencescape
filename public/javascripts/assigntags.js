@@ -32,12 +32,12 @@
                 for (var i=0; i<quantityOfRequests; i++)
                 {
                     var tableRow = $(taggers[requestsAssigned[i]]).parent().parent();
-                    tableRow.css("background", "#FFB0B0");
+                    tableRow.addClass('duplicate-error');
                 }
             }
             else
             {
-                $(taggers[requestsAssigned[0]]).parent().parent().css("background", "white");
+                $(taggers[requestsAssigned[0]]).parent().parent().removeClass('duplicate-error');
             }   
         });
         if (duplicatesPresent)
@@ -55,7 +55,7 @@
             {
                     $(this).prop("selectedIndex",chosenTagIndex+1);
                     // A little animation to highlight the changed rows
-                    $(this).parent().parent().effect('highlight','3000');
+                    $(this).parent().parent().effect('highlight',3000);
                     chosenTagIndex++;
             });
         }
