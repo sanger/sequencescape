@@ -980,7 +980,7 @@ td.commentable a {
 	margin: 0 18px 0 0;
 	width: 200px;
 	height: 100px;
-  border: 3px solid #333129;
+  border: 3px solid #014f93;
   color:#333129;
   opacity: 0.1;
 	-moz-transition:    all 0.3s ease-in-out 0s;
@@ -1042,13 +1042,14 @@ td.commentable a {
 
 #submission-wizard {
   color:#333129;
+  padding: 0;
 }
 
 /* This overly verbose rule is needed to override formtastic styling  */
 #submission-wizard li.wizard-pane {
   width: 900px;
   height: 300px;
-  border: 3px solid #00498C;
+  border: 3px solid #014f93;
   border-radius: 15px;
   -moz-border-radius: 15px;
   -moz-box-shadow: 0 1px 4px 0 #C3CEDA;
@@ -1126,6 +1127,7 @@ div.auto_complete {
   width:100%; 
   background: #fff;
   z-index: 250;
+  border: 1px solid gray;
 }
 
 div.auto_complete ul { 
