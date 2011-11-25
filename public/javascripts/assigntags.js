@@ -55,11 +55,7 @@
             {
                     $(this).prop("selectedIndex",chosenTagIndex+1);
                     // A little animation to highlight the changed rows
-                    $(this).parent().parent().animate({
-                        backgroundColor: '#FFF3B0'
-                    }, 500).animate({
-                        backgroundColor: '#ffffff'
-                    }, 2000);
+                    $(this).parent().parent().effect('highlight','3000');
                     chosenTagIndex++;
             });
         }
