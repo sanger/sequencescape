@@ -33,13 +33,13 @@
           :cols => 70,
           :rows => 5
       %>
-
     </li>
 
     <li class="wizard-pane">
-       <%= f.text_area :study_name,
+       <%= f.text_field :study_name,
           :placeholder => "enter the first few characters of the study name"
         %>
+      <div id="study-assets"></div>
     </li>
     <%= f.submit "Previous", :class => "wizard-button", :id => "wizard-previous", :disabled => true %>
     <%= f.submit "Next", :class => "wizard-button", :id => "wizard-next" %>
@@ -53,23 +53,10 @@
   // namespace we should be storing things.
  if (window.SCAPE == undefined) { window.SCAPE = {}; }
 
- SCAPE.user_projects = <%= stringify_array(@submission_presenter.user_projects) %>;
- SCAPE.user_studies = <%= stringify_array(@submission_presenter.studies) %>;
+ SCAPE.user_project_names =  <%= stringify_array(@submission_presenter.user_projects) %>;
+ SCAPE.study_names        =  <%= stringify_array(@submission_presenter.studies) %>;
 })(jQuery);
-
-  // Autocompleter is part of Scriptaculous should be replaced.
-//    new Autocompleter.Local(
-//      'submission_project_name',
-//      'project_name_results',
-//    );
-//
-//    new Autocompleter.Local(
-//      'submission_study_name',
-//      'study_name_results',
-//    );
-
-
 </script>
-<%= javascript_include_tag 'submissions' %>
 
+<%= javascript_include_tag 'submissions' %>
 

@@ -87,7 +87,13 @@ class SubmissionsController < ApplicationController
   def order_parameters
     @submission_presenter = SubmissionPresenter.new(current_user, params[:submission])
 
-    render :partial => 'submissions/order_parameters', :layout => false
+    render :partial => 'order_parameters', :layout => false
+  end
+
+  def study_assets
+    @submission_presenter = SubmissionPresenter.new(current_user, params[:submission])
+
+    render :partial => 'study_assets', :layout => false
   end
 end
 
