@@ -22,9 +22,10 @@ module Submission::QuotaBehaviour
   end
   private :check_project_details!
 
-  def book_quota_available_for_request_types!
+  def book_quota_available_for_request_types!(mode=:book)
     Order.transaction do
-      request_type_records = RequestType.find(self.request_types)
+      # Not optimal but preserve the order of the request_types
+      request_type_records = self.request_types.map { |rt_id|  RequestType.find(rt_id) }
       multiplexed          = !request_type_records.detect(&:for_multiplexing?).nil?
       project_checked= false
       request_type_records.each do |request_type|
@@ -37,11 +38,19 @@ module Submission::QuotaBehaviour
           check_project_details!
           project_checked = true
         end
-        book_quota(request_type, quota_required)
+        if mode == :unbook
+          unbook_quota(request_type, quota_required)
+        else
+          book_quota(request_type, quota_required)
+        end
       end
     end
   end
   private :book_quota_available_for_request_types!
+  def unbook_quota_available_for_request_types!
+    book_quota_available_for_request_types!(:unbook)
+  end
+
 
   def use_quota!(request, unbook=true)
     return unless project

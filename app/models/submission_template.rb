@@ -32,8 +32,7 @@ class SubmissionTemplate < ActiveRecord::Base
 
   # create a new submission of the good subclass and with pre-set attributes
   def new_order(params={})
-    restructured_params = Marshal.load(Marshal.dump(params))
-    attributes = submission_attributes.deep_merge(restructured_params)
+    attributes = submission_attributes.deep_merge(safely_duplicate(params))
     infos      = SubmissionTemplate.unserialize(attributes.delete(:input_field_infos))
 
     submission_class.new(attributes).tap do |order|
@@ -51,6 +50,28 @@ class SubmissionTemplate < ActiveRecord::Base
     submission_attributes
   end
   private :submission_attributes
+
+  # Takes in the parameters passed for the order and safely duplicates it so that it can be modified
+  # without affecting the caller version.
+  #
+  # NOTE: You cannot use Marshal.load(Marshal.dump(params)) here because it causes all kinds of problems with
+  # the ActiveRecord::Base derived classes when params contains their instances.  It'll appear as insecure
+  # method errors somewhere else in the code.
+  def safely_duplicate(params)
+    params.inject({}) do |cloned, (k,v)|
+      if v.is_a?(ActiveRecord::Base)
+        cloned[k] = v
+      elsif v.is_a?(Array) and v.first.is_a?(ActiveRecord::Base)
+        cloned[k] = v.dup                           # Duplicate the array, but not the contents
+      elsif v.is_a?(Array) or v.is_a?(Hash)
+        cloned[k] = Marshal.load(Marshal.dump(v))   # Make safe copies of arrays and hashes
+      else
+        cloned[k] = v
+      end
+      cloned
+    end
+  end
+  private :safely_duplicate
 
   # create a new template from a submission
   def self.new_from_submission(name, submission)

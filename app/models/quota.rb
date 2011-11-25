@@ -38,18 +38,20 @@ class Quota < ActiveRecord::Base
   def book_request!(number, check_quota)
     return if number == 0
     check_enough_quota_for!(number)  if check_quota
-    self.preordered_count+=number
-    save!
+    # We need increment to be atomic to not interfere with other rails instance
+    Quota.update_counters self, :preordered_count => number
+    reload
   end
 
   def check_enough_quota_for!(number)
+    lock!
     raise Quota::Error, "Insufficient quota for #{request_type.name}"  if number > remaining
   end
   private :check_enough_quota_for!
 
   def unbook_request!(number)
-    self.preordered_count-=[number, preordered_count].min
-    save!
+    Quota.update_counters self, :preordered_count => -number
+    reload
   end
 
   def add_request!(request, unbook=false, check_quota=true)
@@ -59,6 +61,7 @@ class Quota < ActiveRecord::Base
     #let the caller decide if check or not
     return if self.request_ids.include?(request.id) or !request.quota_counted?
     Quota.transaction do 
+      lock! # we lock until the end of the transactio
       unbook_request!(1) if unbook
       check_enough_quota_for!(1)  if check_quota
       requests << request
