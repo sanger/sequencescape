@@ -88,7 +88,10 @@ class Submission < ActiveRecord::Base
   def process_submission!
     # for now, we just delegate the requests creation to orders
     ActiveRecord::Base.transaction do
-      orders.each(&:build_request_graph!)
+      multiplexing_assets = nil
+      orders.each do |order|
+        order.build_request_graph!(multiplexing_assets) { |a| multiplexing_assets ||= a }
+      end
     end
   end
   alias_method(:create_requests, :process_submission!)
