@@ -101,12 +101,28 @@
 
   };
 
+  var projectSelectHandler = function(event) {
+    debugger;
+    SCAPE.submission.project_name = $(this).val();
+
+    $.get(
+      '/submissions/project_details',
+      { submission : SCAPE.submission },
+      function(data) {
+        $('#project-details').html(data).fadeIn();
+      }
+    );
+  };
+
 
   // Document Ready stuff...
   $(function(){
+    $('#submission_template_id').change(orderParameterHandler);
+
     $('#submission_project_name').autocomplete({
       source    : SCAPE.user_project_names,
-      minLength : 3
+      minLength : 3,
+      select    : projectSelectHandler
     });
 
     $('#submission_study_name').autocomplete({
@@ -115,7 +131,6 @@
       select    : studiesSelectHandler
     });
 
-    $('#submission_template_id').change(orderParameterHandler);
     $('#wizard-next').click(nextPaneHandler);
     $('#wizard-previous').click(previousPaneHandler);
   });

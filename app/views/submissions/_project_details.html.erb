@@ -1,0 +1,22 @@
+<%= @submission_presenter.project.name %>
+
+<% if @submission_presenter.project_valid? -%>
+  <script type="text/javascript">SCAPE.submission.order_project_valid = true;</script>
+
+  <h2>This project is cleared for sequencing.</h2>
+
+
+<% else -%>
+  <%# Looks like this project can't be used at the moment... -%>
+  <h2>Sorry but this project cannot currently be used due to 
+    <%=  pluralize(@submission_presenter.order.errors.count, "error") %>
+  </h2>
+  <ul>
+  <% @submission_presenter.order.errors.full_messages.each do |error_message| -%>
+    <li><%= error_message %></li>
+  <% end -%>
+  </ul>
+<% end -%>
+
+
+

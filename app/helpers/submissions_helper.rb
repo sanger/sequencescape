@@ -7,7 +7,7 @@ module SubmissionsHelper
   end
 
   def order_input_label(field_info)
-    label("submission[order][#{field_info.key}]", field_info.display_name)
+    label("submission[order][parameters][#{field_info.key}]", field_info.display_name)
   end
 
   # Returns a either a text input or a selection tag based on the 'kind'
@@ -20,12 +20,9 @@ module SubmissionsHelper
     end
   end
 
-  # TODO[sd9]: the form path probably needs to change here.  This tag is
-  # based on the dodgy assumption that we'll creating one order per
-  # time rather than using a collection...
   def order_selection_tag(field_info)
     select_tag(
-      "submission[order][#{field_info.key}]",
+      "submission[order][parameters][#{field_info.key}]",
       options_for_select(field_info.selection, field_info.value)
     )
   end
@@ -33,7 +30,7 @@ module SubmissionsHelper
 
   def order_text_tag(field_info)
     text_field_tag(
-      "submission[order][#{field_info.key}]",
+      "submission[order][parameters][#{field_info.key}]",
       field_info.value
     )
   end
