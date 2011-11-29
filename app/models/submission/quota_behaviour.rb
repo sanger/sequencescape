@@ -1,4 +1,23 @@
 module Submission::QuotaBehaviour
+  def self.included(base)
+    base.class_eval do
+      validates_each(:project, :if => :checking_quotas?) do |record, attr, project|
+        record.errors.add_to_base('Quotas are being enforced but have not been setup')       if     project.quotas.all.empty? || project.quotas.map(&:limit).all?(&:zero?)
+        record.errors.add_to_base("Project #{project.name} is not approved")                 unless project.approved?
+        record.errors.add_to_base("Project #{project.name} is not active")                   unless project.active? 
+        record.errors.add_to_base("Project #{project.name} does not have a budget division") unless project.actionable?
+      end
+
+      validate(:if => :checking_quotas?) do |record|
+        record.send(:quota_calculator) do |request_type, quota_required|
+          record.errors.add_to_base("Not enough quota for #{request_type.name}") unless record.project.has_quota?(request_type, quota_required)
+        end
+      end
+
+      delegate :book_quota, :unbook_quota, :quota_for!, :to => :project
+      after_create :book_quota_available_for_request_types!
+    end
+  end
 
   #after_create :book_quota_available_for_request_types!
 
@@ -7,60 +26,63 @@ module Submission::QuotaBehaviour
     super
   end
 
+  def check_project_details!
+    raise Quota::Error, self.errors.full_messages unless self.is_submittable?
+  end
+  private :check_project_details!
+
   def multiplier_for(request_type)
     return 1 if self.request_options.blank? or not self.request_options.key?(:multiplier)
     self.request_options[:multiplier][request_type.id.to_i] || 1
   end
   private :multiplier_for
 
-  def check_project_details!
-    return unless project.enforce_quotas?
-    raise Quota::Error, "Quotas are being enforced but have not been setup"       if project.quotas.all.empty? || project.quotas.all? { |q| q.limit == 0 }
-    raise Quota::Error, "Project #{project.name} is not approved"                 unless project.approved?
-    raise Quota::Error, "Project #{project.name} is not active"                   unless project.active?
-    raise Quota::Error, "Project #{project.name} does not have a budget division" unless project.actionable?
+  def checking_quotas?
+    project.enforce_quotas? && @checking_quotas
   end
-  private :check_project_details!
+  private :checking_quotas?
 
-  def book_quota_available_for_request_types!(mode=:book)
+  def submittable?
+    @checking_quotas = true
+    valid?
+  ensure
+    @checking_quotas = false
+  end
+
+  def quota_calculator(&block)
     Order.transaction do
+      # If there are no assets then we do not need to check the quota as none will be used, regardless.
+      return if assets.empty?
+
       # Not optimal but preserve the order of the request_types
       request_type_records = self.request_types.map { |rt_id|  RequestType.find(rt_id) }
-      multiplexed          = !request_type_records.detect(&:for_multiplexing?).nil?
-      project_checked= false
+      multiplexed          = request_type_records.detect(&:for_multiplexing?).present?
+
       request_type_records.each do |request_type|
         # If the user requires multiple runs of this request type then we need to count for that in the quota.
         # If we're not multiplexing in general, or for this individual request type, then we have to have enough
         # quote for all of the assets.  Otherwise they can be considered to be a single asset (i.e. a pool of them)
         quota_required  = multiplier_for(request_type)
-        quota_required *= assets.size if not multiplexed or request_type.for_multiplexing?
-        if quota_required>0 && !project_checked
-          check_project_details!
-          project_checked = true
-        end
-        if mode == :unbook
-          unbook_quota(request_type, quota_required)
-        else
-          book_quota(request_type, quota_required)
-        end
+        quota_required *= assets.size if not multiplexed
+        yield(request_type, quota_required)
       end
     end
   end
-  private :book_quota_available_for_request_types!
-  def unbook_quota_available_for_request_types!
-    book_quota_available_for_request_types!(:unbook)
-  end
+  private :quota_calculator
 
+  def book_quota_available_for_request_types!
+    check_project_details!
+    quota_calculator(&method(:book_quota))
+  end
+  private :book_quota_available_for_request_types!
+
+  def unbook_quota_available_for_request_types!
+    check_project_details!
+    quota_calculator(&method(:unbook_quota))
+  end
 
   def use_quota!(request, unbook=true)
     return unless project
     project.use_quota!(request, unbook)
-  end
-
-  delegate :book_quota, :unbook_quota, :quota_for!, :to => :project
-  def self.included(base)
-    base.class_eval do
-      after_create :book_quota_available_for_request_types!
-    end
   end
 end

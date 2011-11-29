@@ -54,12 +54,8 @@ class Project < ActiveRecord::Base
   end
 
   def has_quota?(request_type, number)
-    if self.enforce_quotas?
-      self.actionable? && (self.projected_remaining_quota(request_type) >= number)
-    else
-      # No quotas, no need to check
-      true
-    end
+    return true unless self.enforce_quotas?  # Quotas not being enforced so assume it does
+    self.actionable? && (self.projected_remaining_quota(request_type) >= number)
   end
 
   def projected_remaining_quota(request_type)
