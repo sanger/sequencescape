@@ -30,10 +30,6 @@
     // Check for then Next button
     if ($(pane).next('li').length === 0) {
       $('#wizard-next').attr('disabled', 'disabled');
-      $('#start-submission').removeAttr('disabled');
-    } else {
-      $('#wizard-next').removeAttr('disabled');
-      $('#start-submission').attr('disabled', 'disabled');
     }
 
     // Check for the Previous button
@@ -42,6 +38,34 @@
     } else {
       $('#wizard-previous').removeAttr('disabled');
     }
+  };
+
+  var completeStage = function() {
+    var remainingStages = $('.wizard-pane:visible').next('li').length;
+
+    $('#submission-breadcrumbs li.active-stage').addClass('completed-stage');
+
+    if ( remainingStages === 0) {
+      // We're on the last pane of the wizard...
+      $('#wizard-next').attr('disabled', 'disabled');
+      $('#start-submission').removeAttr('disabled');
+
+      return true;
+
+    } else if ( remainingStages >= 1) {
+      // We've just completed one of the other panes...
+      $('#wizard-next').removeAttr('disabled');
+      $('#start-submission').attr('disabled', 'disabled');
+      return true;
+    }
+
+    // Well we're not in Kansas anymore...
+    return false;
+  };
+
+  var uncompleteStage = function() {
+    $('#submission-breadcrumbs li.active-stage').removeClass('completed-stage');
+    $('#wizard-next, #start-submission').attr('disabled', 'disabled');
   };
 
   var nextPaneHandler = function(event){
@@ -108,9 +132,24 @@
       '/submissions/project_details',
       { submission : SCAPE.submission },
       function(data) {
-        $('#project-details').html(data).fadeIn();
+        $('#project-details').html(data);
+        $('#start-submission').removeAttr('disabled');
       }
     );
+  };
+
+  var validateSelection = function(event) {
+    var incompleteFieldCount = $('.wizard-pane:visible').
+      find('input, select').
+      filter(function(){
+        return $(this).val() === "";
+      }).length;
+
+    if (incompleteFieldCount === 0) {
+      completeStage();
+    } else if (incompleteFieldCount >= 1) {
+      uncompleteStage();
+    }
   };
 
 
@@ -129,6 +168,7 @@
 
     $('#wizard-next').click(nextPaneHandler);
     $('#wizard-previous').click(previousPaneHandler);
+    $('.required').live('change',  validateSelection);
   });
 
 })(jQuery);
