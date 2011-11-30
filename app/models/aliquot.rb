@@ -20,6 +20,7 @@ class Aliquot < ActiveRecord::Base
 
     # Named scopes for the future
     named_scope :include_aliquots, :include => { :aliquots => [ :sample, :tag, :bait_library ] }
+    named_scope :with_aliquots, :joins => :aliquots
 
     # Provide some named scopes that will fit with what we've used in the past
     named_scope :with_sample_id, lambda { |id|     { :conditions => { :aliquots => { :sample_id => Array(id)               } }, :joins => :aliquots } }
@@ -128,6 +129,15 @@ class Aliquot < ActiveRecord::Base
   belongs_to :tag
   validates_uniqueness_of :tag_id, :scope => :receptacle_id
   before_validation { |record| record.tag_id ||= UNASSIGNED_TAG }
+
+  def untagged?
+    self.tag_id.nil? or self.tag_id == UNASSIGNED_TAG
+  end
+
+  def tag_with_unassigned_behaviour
+    untagged? ? nil : tag_without_unassigned_behaviour
+  end
+  alias_method_chain(:tag, :unassigned_behaviour)
 
   # It may have a bait library but not necessarily.
   belongs_to :bait_library
