@@ -7,7 +7,7 @@ module SubmissionsHelper
   end
 
   def order_input_label(field_info)
-    label("submission[order][parameters][#{field_info.key}]", field_info.display_name)
+    label("submission[order_params][#{field_info.key}]", field_info.display_name)
   end
 
   # Returns a either a text input or a selection tag based on the 'kind'
@@ -22,7 +22,7 @@ module SubmissionsHelper
 
   def order_selection_tag(field_info)
     select_tag(
-      "submission[order][parameters][#{field_info.key}]",
+      "submission[order_params][#{field_info.key}]",
       options_for_select(field_info.selection, field_info.value)
     )
   end
@@ -30,9 +30,23 @@ module SubmissionsHelper
 
   def order_text_tag(field_info)
     text_field_tag(
-      "submission[order][parameters][#{field_info.key}]",
+      "submission[order_params][#{field_info.key}]",
       field_info.value
     )
   end
   private :order_text_tag
+
+
+  def studies_select(form, studies)
+    prompt = case studies.count
+             when 0 then "You are not managing any Studies at this time"
+             else "Please select a Study for this Submission..."
+             end
+
+    form.collection_select( :study_id,
+        studies, :id, :name,
+        { :prompt => prompt },
+        { :disabled => (studies.count == 0) }
+    )
+  end
 end

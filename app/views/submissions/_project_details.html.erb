@@ -1,7 +1,7 @@
 <%= @submission_presenter.project.name %>
 
-<% if @submission_presenter.project_valid? -%>
-  <script type="text/javascript">SCAPE.submission.order_project_valid = true;</script>
+<% if @submission_presenter.order.valid? -%>
+  <script type="text/javascript">SCAPE.submission.order_valid = true;</script>
 
   <h2>This project is cleared for sequencing.</h2>
 

@@ -3,21 +3,34 @@
 
 <h1>New Submission</h1>
   <ul id="submission-breadcrumbs" class="progress-list">
-    <li class="active-stage"><span id="complete-badge" class="badge">✔</span><p>Choose a template for orders on this Submission</p></li>
+    <li class="active-stage"><span id="complete-badge" class="badge">✔</span><p>Select a Study and create an initial order for your Submission</p></li>
+    <li><span id="complete-badge" class="badge">✔</span><p>Choose a template for orders on this Submission</p></li>
     <li><span id="complete-badge" class="badge">✔</span><p>Select a Financial Project</p></li>
-    <li><span id="complete-badge" class="badge">✔</span><p>Select a Study and create an initial order for your Submission</p></li>
   </ul>
 
 <% form_for :submission, @submission_presenter, :url => submissions_path do |f| -%>
 
   <ul id="submission-wizard">
     <li class="wizard-pane" style="display:block;">
-        <%= f.collection_select :template_id,
-          @submission_presenter.templates, :id, :name,
-          :prompt     => "Please select a template..."
-         %>
+      <%= f.label :study_id, "Studies you manage:" %>
+      <%= studies_select(f, @submission_presenter.studies) %>
+      <div id="study-assets"></div>
+    </li>
+
+    <li class="wizard-pane">
+      <%= f.collection_select :template_id,
+        @submission_presenter.templates, :id, :name,
+        :prompt     => "Please select a template..."
+      %>
 
          <div id="submission-parameters" style="display:none;"></div>
+      <%= text_area_tag(
+        'submission[comments]',
+        "",
+        :cols        => 70,
+        :rows        => 5,
+        :placeholder => "Optionally, please add comments for this order here..."
+      ) %>
     </li>
 
     <li class="wizard-pane">
@@ -27,20 +40,6 @@
 
        <div id="project-details" style="dislay:none;"></div>
 
-    </li>
-
-    <li class="wizard-pane">
-       <%= f.text_field :study_name,
-          :placeholder => "enter the first few characters of the study name"
-        %>
-      <div id="study-assets"></div>
-      <%= text_area_tag(
-        'submission[order][comments]',
-        "",
-        :cols        => 70,
-        :rows        => 5,
-        :placeholder => "Optionally, please add comments for this order here..."
-      ) %>
     </li>
     <%= f.submit "Previous", :class => "wizard-button", :id => "wizard-previous", :disabled => true %>
     <%= f.submit "Next", :class => "wizard-button", :id => "wizard-next" %>
