@@ -84,8 +84,8 @@
   };
 
   // This handler depends on the study template being set earlier in the wizard.
-  var studiesSelectHandler = function(event) {
-    SCAPE.submission.study_name = $(this).val();
+  var studySelectHandler = function(event) {
+    SCAPE.submission.study_id = $(this).val();
 
     // $(event.target).attr('disabled', 'true');
 
@@ -102,7 +102,6 @@
   };
 
   var projectSelectHandler = function(event) {
-    debugger;
     SCAPE.submission.project_name = $(this).val();
 
     $.get(
@@ -125,11 +124,8 @@
       select    : projectSelectHandler
     });
 
-    $('#submission_study_name').autocomplete({
-      source    : SCAPE.study_names,
-      minLength : 3,
-      select    : studiesSelectHandler
-    });
+    $('#submission_study_id').change(studySelectHandler);
+
 
     $('#wizard-next').click(nextPaneHandler);
     $('#wizard-previous').click(previousPaneHandler);
