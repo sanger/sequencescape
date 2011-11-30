@@ -23,7 +23,8 @@ module SubmissionsHelper
   def order_selection_tag(field_info)
     select_tag(
       "submission[order_params][#{field_info.key}]",
-      options_for_select(field_info.selection, field_info.value)
+      options_for_select(field_info.selection, field_info.value),
+      :class => "required"
     )
   end
   private :order_selection_tag
@@ -31,22 +32,43 @@ module SubmissionsHelper
   def order_text_tag(field_info)
     text_field_tag(
       "submission[order_params][#{field_info.key}]",
-      field_info.value
+      field_info.value,
+      :class => "required"
     )
   end
   private :order_text_tag
 
 
-  def studies_select(form, studies)
+  def studies_select(studies)
     prompt = case studies.count
              when 0 then "You are not managing any Studies at this time"
              else "Please select a Study for this Submission..."
              end
 
-    form.collection_select( :study_id,
-        studies, :id, :name,
-        { :prompt => prompt },
-        { :disabled => (studies.count == 0) }
+    collection_select(
+      :submission,
+      :study_id,
+      studies, :id, :name,
+      { :prompt => prompt },
+      { :disabled => (studies.count == 0) }
+    )
+  end
+
+  def asset_group_select(asset_groups)
+    prompt = case asset_groups.size
+             when 0 then "There are no Asset Groups associcated with this Study"
+             else 'Please select an asset group for this order.'
+             end
+
+    collection_select(
+      :submission,
+      :asset_group,
+      asset_groups, :id, :name,
+      { :prompt => prompt },
+      {
+        :class => 'required',
+        :disabled => (asset_groups.size == 0)
+      }
     )
   end
 end

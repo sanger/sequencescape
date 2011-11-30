@@ -8,18 +8,18 @@
     <li><span id="complete-badge" class="badge">✔</span><p>Select a Financial Project</p></li>
   </ul>
 
-<% form_for :submission, @submission_presenter, :url => submissions_path do |f| -%>
+<% form_for :submission, @presenter, :url => submissions_path do |f| -%>
 
   <ul id="submission-wizard">
     <li class="wizard-pane" style="display:block;">
-      <%= f.label :study_id, "Studies you manage:" %>
-      <%= studies_select(f, @submission_presenter.studies) %>
+      <%= f.label :study_id, "Study for Submission:" %>
+      <%= studies_select(@presenter.studies) %>
       <div id="study-assets"></div>
     </li>
 
     <li class="wizard-pane">
       <%= f.collection_select :template_id,
-        @submission_presenter.templates, :id, :name,
+        @presenter.templates, :id, :name,
         :prompt     => "Please select a template..."
       %>
 
@@ -42,7 +42,7 @@
 
     </li>
     <%= f.submit "Previous", :class => "wizard-button", :id => "wizard-previous", :disabled => true %>
-    <%= f.submit "Next", :class => "wizard-button", :id => "wizard-next" %>
+    <%= f.submit "Next", :class => "wizard-button", :id => "wizard-next", :disabled => true %>
     <%= f.submit "Start Submission", :id => "start-submission", :class => "wizard-button", :disabled => true %>
   </ul>
 <% end -%>
@@ -53,8 +53,7 @@
   // namespace we should be storing things.
  if (window.SCAPE == undefined) { window.SCAPE = {}; }
 
- SCAPE.user_project_names =  <%= stringify_array(@submission_presenter.user_projects) %>;
- SCAPE.study_names        =  <%= stringify_array(@submission_presenter.studies) %>;
+ SCAPE.user_project_names =  <%= stringify_array(@presenter.user_projects) %>;
 })(jQuery);
 </script>
 

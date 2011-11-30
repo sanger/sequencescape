@@ -1,4 +1,4 @@
-class SubmissionPresenter
+class SubmissionCreater
   ATTRIBUTES = [
     :submission_id,
     :template_id,
@@ -128,13 +128,13 @@ end
 class SubmissionsController < ApplicationController
 
   def new
-    @submission_presenter = SubmissionPresenter.new(current_user)
+    @presenter = SubmissionCreater.new(current_user)
   end
 
   def create
-    @submission_presenter = SubmissionPresenter.new(current_user, params[:submission])
+    @presenter = SubmissionCreater.new(current_user, params[:submission])
 
-    @submission_presenter.save!
+    @presenter.save!
 
     redirect_to :edit
   end
@@ -143,19 +143,19 @@ class SubmissionsController < ApplicationController
   ###################################################               AJAX ROUTES
   # TODO[sd9]: These AJAX routes could be re-factored
   def project_details
-    @submission_presenter = SubmissionPresenter.new(current_user, params[:submission])
+    @presenter = SubmissionCreater.new(current_user, params[:submission])
 
     render :partial => 'project_details', :layout => false
   end
 
   def order_parameters
-    @submission_presenter = SubmissionPresenter.new(current_user, params[:submission])
+    @presenter = SubmissionCreater.new(current_user, params[:submission])
 
     render :partial => 'order_parameters', :layout => false
   end
 
   def study_assets
-    @submission_presenter = SubmissionPresenter.new(current_user, params[:submission])
+    @presenter = SubmissionCreater.new(current_user, params[:submission])
 
     render :partial => 'study_assets', :layout => false
   end

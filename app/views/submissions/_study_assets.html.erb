@@ -1,8 +1,3 @@
 <%= label_tag(:asset_group, 'Asset Group') %>
-<%= collection_select(
-  'submission',
-  :asset_group,
-  @submission_presenter.study.asset_groups, :id, :name,
-  :prompt => 'Please select an asset group for this order.'
-) %>
+<%= asset_group_select(@presenter.study.asset_groups) %>
 
