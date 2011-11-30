@@ -19,7 +19,7 @@
               <th class='label'>Tag #</th>
             <% end %>
             <th class='label'>State</th>
-            <th class='label'>QC</th>
+            
             <th class='label'>Tag</th>
           </tr>
         </thead>
@@ -46,11 +46,7 @@
                 <td><%= request.tag_number.blank? ? '-' : request.tag_number %></td>
               <% end %>
               <td><%= request.state.humanize %></td>
-              <% if request.asset %>
-                <td><%= display_boolean_results(request.asset.qc_state) %></td>
-              <% else %>
-                <td></td>
-              <% end %>
+              
               <td>
                 <% if request.tag_number.blank? %>
                   <%= select "tag", request.id, tag_options, {:selected =>tag_options[index%tag_options.size]}, {:class => "tagchoice"} %>
