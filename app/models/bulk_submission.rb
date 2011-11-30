@@ -120,13 +120,14 @@ class BulkSubmission < ActiveRecord::Base
 
               :comments => details['comments'],
               :request_options => {
-                :read_length                 => details['read length'],
-                :library_type                => details['library type'],
+                :read_length => details['read length']
               }
             }
             number_of_lanes = details.fetch('number of lanes', 1).to_i
+            attributes[:request_options][:library_type]                = details['library type']       unless details['library type'].blank?
             attributes[:request_options][:fragment_size_required_from] = details['fragment size from'] unless details['fragment size from'].blank?
             attributes[:request_options][:fragment_size_required_to]   = details['fragment size to']   unless details['fragment size to'].blank?
+            attributes[:request_options][:bait_library_name]           = details['bait library name']  unless details['bait library name'].blank?
 
             # User lookup ...
             attributes[:user] = User.find_by_login(details['user login']) or raise StandardError, "Cannot find user #{details['user login'].inspect}"
