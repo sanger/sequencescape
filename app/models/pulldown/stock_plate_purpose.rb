@@ -11,8 +11,12 @@ class Pulldown::StockPlatePurpose < PlatePurpose
   # for the plate to be 'passed', otherwise it is 'pending'.  An empty plate is also considered
   # to be pending.
   def state_of(plate)
-    state_and_requests = plate.wells.map { |well| [ !well.aliquots.empty?, well.requests_as_source.where_is_a?(Pulldown::Requests::LibraryCreation).empty? ] }
-    return 'pending' if state_and_requests.all? { |full_well, _| not full_well }   # Pending if all of the wells are empty
-    state_and_requests.any? { |full_well, no_requests| full_well and no_requests } ? 'pending' : 'passed'
+    # If there are no wells with aliquots we're pending
+    wells_with_aliquots = plate.wells.with_aliquots.all
+    return 'pending' if wells_with_aliquots.empty?
+
+    # All of the wells with aliquots must have requests for us to be considered passed
+    full_wells_with_requests = plate.wells.requests_as_source_is_a?(Pulldown::Requests::LibraryCreation).count(:conditions => { :id => wells_with_aliquots.map(&:id) })
+    full_wells_with_requests == wells_with_aliquots.size ? 'passed' : 'pending'
   end
 end

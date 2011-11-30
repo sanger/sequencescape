@@ -1,5 +1,6 @@
 class Well < Aliquot::Receptacle
   include Api::WellIO::Extensions
+  include ModelExtensions::Well
   include Cherrypick::VolumeByNanoGrams
   include Cherrypick::VolumeByNanoGramsPerMicroLitre
   include Cherrypick::VolumeByMicroLitre
