@@ -10,8 +10,7 @@ class HiSeqSequencingRequest < SequencingRequest
 
   class RequestOptionsValidator < DelegateValidation::Validator
     delegate_attribute :read_length, :to => :target, :type_cast => :to_i
-    validates_numericality_of :read_length, :integer_only => true, :greater_than => 0
-    validates_inclusion_of :read_length, :in => HiSeqSequencingRequest::READ_LENGTHS
+    validates_inclusion_of :read_length, :in => HiSeqSequencingRequest::READ_LENGTHS, :if => :read_length_needs_checking?
   end
 
   def self.delegate_validator

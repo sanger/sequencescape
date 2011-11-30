@@ -20,6 +20,7 @@ module DelegateValidation
 
     attr_reader :target
     protected :target
+    delegate :include_unset_values?, :to => :target
 
     #--
     # Hack the errors returned from the target object so that they do not get cleared when we are validating.
@@ -51,6 +52,10 @@ module DelegateValidation
 
           def #{attribute}
             #{attribute}_before_type_cast#{type_cast}
+          end
+
+          def #{attribute}_needs_checking?
+            #{attribute}_before_type_cast.present? or include_unset_values?
           end
         }, __FILE__, line)
       end
