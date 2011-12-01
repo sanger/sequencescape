@@ -1,8 +1,7 @@
 class TidyTagGroups < ActiveRecord::Migration
   def self.up
     # add_column :tag_groups, :visible, :boolean, :default => true
-    hide_this = TagGroup.all(:conditions => { :name => 'Old 12 TagTubes - do not use'}).first
-    unless hide_this.nil?
+    TagGroup.find_each(:conditions => "name LIKE '%do not use%'") do |hide_this|
       hide_this.visible = false
       hide_this.save!
     end
