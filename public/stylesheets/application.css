@@ -981,7 +981,7 @@ td.commentable a {
 	width: 200px;
 	height: 100px;
   border: 3px solid #014f93;
-  color:#333129;
+	color: #00498C;
   opacity: 0.1;
 	-moz-transition:    all 0.3s ease-in-out 0s;
   -webkit-transition: all 0.3s ease-in-out 0s;
@@ -995,14 +995,12 @@ td.commentable a {
 }
 
 .progress-list li.completed-stage{
-  opacity: 0.6;
-	border-color:#003E00;
-	color:#003E00;
+  opacity: 0.5;
+	border-color:#017802;
+	color:#017802;
 }
 .progress-list li.active-stage{
   opacity: 1;
-	border-color: #00498C;
-	color: #00498C;
   -moz-box-shadow: 0 1px 4px 0 #C3CEDA;
   box-shadow: 0 1px 5px 0 #C3CEDA;
 	-moz-transition:    all 0.3s ease-in-out 0s;
@@ -1061,10 +1059,16 @@ td.commentable a {
   list-style: none outside none;
 }
 
+
+#submission-wizard li.wizard-pane.completed {
+  border-color: #017802;
+	color:#017802;
+}
+
 #submission-wizard .wizard-button {
 	-moz-box-shadow:inset 0px 1px 0px 0px #bbdaf7;
 	-webkit-box-shadow:inset 0px 1px 0px 0px #bbdaf7;
-	box-shadow:inset 0px 1px 0px 0px #0048B4;
+	box-shadow:inset 0px 1px 0px 0px #395F94;
 	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #0066B8), color-stop(1, #00498C) );
 	background:-moz-linear-gradient( center top, #0066B8 5%, #00498C 100% );
 	background-color:#00498C;

@@ -27,9 +27,9 @@
   };
 
   var checkButtons = function(pane) {
-    // Check for then Next button
-    if ($(pane).next('li').length === 0) {
-      $('#wizard-next').attr('disabled', 'disabled');
+
+    if ($(pane).hasClass('completed')) {
+      $('#wizard-next').removeAttr('disabled');
     }
 
     // Check for the Previous button
@@ -40,11 +40,14 @@
     }
   };
 
-  var completeStage = function() {
+  var markStageComplete = function(pane) {
     var remainingStages = $('.wizard-pane:visible').next('li').length;
+
+    $(pane).addClass('completed');
 
     $('#submission-breadcrumbs li.active-stage').addClass('completed-stage');
 
+    //TODO should be part of checkButtons
     if ( remainingStages === 0) {
       // We're on the last pane of the wizard...
       $('#wizard-next').attr('disabled', 'disabled');
@@ -63,7 +66,8 @@
     return false;
   };
 
-  var uncompleteStage = function() {
+  var markStageIncomplete = function(pane) {
+    $(pane).removeClass('completed');
     $('#submission-breadcrumbs li.active-stage').removeClass('completed-stage');
     $('#wizard-next, #start-submission').attr('disabled', 'disabled');
   };
@@ -93,7 +97,6 @@
     $('#submission-breadcrumbs li.active-stage').
       removeClass('active-stage').
       prev().
-      removeClass('completed-stage').
       addClass('active-stage');
 
 
@@ -111,17 +114,21 @@
   var studySelectHandler = function(event) {
     SCAPE.submission.study_id = $(this).val();
 
-    // $(event.target).attr('disabled', 'true');
 
-    // Load asset groups for the selected study
-    $.get(
-      '/submissions/study_assets',
-      { submission : SCAPE.submission },
-      function(data) {
-        $('#study-assets').html(data).fadeIn();
-      }
-    );
-    return true;
+    if ($(this).val().length > 0) {
+      // Load asset groups for the selected study
+      $.get(
+        '/submissions/study_assets',
+        { submission : SCAPE.submission },
+        function(data) {
+          $('#study-assets').fadeOut().html(data).fadeIn();
+        }
+      );
+      return true;
+    } else {
+      $('#study-assets').fadeOut().html("");
+      return false;
+    }
 
   };
 
@@ -133,22 +140,26 @@
       { submission : SCAPE.submission },
       function(data) {
         $('#project-details').html(data);
-        $('#start-submission').removeAttr('disabled');
+        if (SCAPE.submission.order_valid) {
+          markStageComplete();
+        }
       }
     );
   };
 
   var validateSelection = function(event) {
-    var incompleteFieldCount = $('.wizard-pane:visible').
+    var currentPane = $('.wizard-pane:visible');
+
+    var incompleteFieldCount = currentPane.
       find('input, select').
       filter(function(){
         return $(this).val() === "";
       }).length;
 
     if (incompleteFieldCount === 0) {
-      completeStage();
+      markStageComplete(currentPane);
     } else if (incompleteFieldCount >= 1) {
-      uncompleteStage();
+      markStageIncomplete(currentPane);
     }
   };
 
@@ -161,7 +172,14 @@
       source    : SCAPE.user_project_names,
       minLength : 3,
       select    : projectSelectHandler
+
+      // change event needs to check whether the select event fired...
+      // change    : function() { 
+      //   $('#project-details').fadeOut().html(""); 
+      //   markStageIncomplete();
+      // }
     });
+
 
     $('#submission_study_id').change(studySelectHandler);
 
