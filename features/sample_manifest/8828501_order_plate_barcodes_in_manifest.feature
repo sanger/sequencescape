@@ -21,6 +21,10 @@ Also print out the barcodes in the same order as they appear in the manifest
     
     Scenario: Out of order barcodes should be sorted in the manifest
       When I follow "Create manifest for plates"
+       And I select "default layout" from "Template"
+       And I select "Test study" from "Study"
+       And I select "Test supplier name" from "Supplier"
+       And I select "xyz" from "Barcode printer"
         And I fill in "Count" with "3"
         And I press "Create manifest and print labels"
       Then I should see "Download Blank Manifest"

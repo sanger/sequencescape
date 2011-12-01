@@ -10,12 +10,9 @@ Feature: Printing new plate barcodes in pulldown
     Given I am on the pulldown homepage
     And a plate of type "<plate_type>" with barcode "<barcode>" exists
     And asset with barcode "<barcode>" belongs to study "Test study"
-    Then I should see "Create Plates"
     When I follow "Create Plates"
-    Then I should see "Create new plates"
-    And I should see "Source plates"
-    And I should see "Barcode printer"
     When I fill in the field labeled "Source plates" with "<barcode>"
+    When I select "xyz" from "Barcode printer"
     When I press "Submit"
     Then plate "<barcode>" should have a child plate of type "<child_plate_type>"
     Then I should see "Created plates and printed barcodes"
@@ -23,8 +20,6 @@ Feature: Printing new plate barcodes in pulldown
     When I follow "Pulldown Home"
     Then I should see barcode "<child_barcode>"
     When I follow "Verify Plates"
-    Then I should see "Source plate"
-    And I should see "Target plate"
     When I fill in the field labeled "Source plate" with "<barcode>"
     When I fill in the field labeled "Target plate" with "<child_barcode>"
     When I press "Submit"
@@ -47,9 +42,7 @@ Feature: Printing new plate barcodes in pulldown
     Given I am on the pulldown homepage
     Then I should see "Create Plates"
     When I follow "Create Plates"
-    Then I should see "Create new plates"
-    And I should see "Source plates"
-    And I should see "Barcode printer"
+    When I select "xyz" from "Barcode printer"
     When I press "Submit"
     Then I should see "Failed to create plates"
     And I should not see "Created plates and printed barcodes"
