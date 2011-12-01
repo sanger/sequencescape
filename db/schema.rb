@@ -1474,48 +1474,23 @@ ActiveRecord::Schema.define(:version => 20111206152534) do
     t.string   "reference_genome"
   end
 
-  create_table "view_studies", :id => false, :force => true do |t|
-    t.string   "uuid",                           :limit => 36
-    t.integer  "internal_id",                                   :default => 0,     :null => false
-    t.string   "name"
-    t.boolean  "ethically_approved",                            :default => false
-    t.string   "faculty_sponsor",                :limit => 511
-    t.string   "state",                          :limit => 20
-    t.string   "study_type"
-    t.text     "abstract"
-    t.string   "abbreviation"
-    t.string   "accession_number"
-    t.text     "description"
-    t.datetime "created"
-    t.string   "contains_human_dna"
-    t.string   "data_release_strategy"
-    t.string   "data_release_sort_of_study"
-    t.string   "ena_project_id"
-    t.string   "study_title"
-    t.string   "study_visibility"
-    t.string   "ega_dac_accession_number"
-    t.string   "array_express_accession_number"
-    t.string   "ega_policy_accession_number"
-    t.string   "reference_genome"
-  end
-
   create_table "view_tags", :id => false, :force => true do |t|
     t.string   "uuid",                  :limit => 36
-    t.integer  "internal_id",                         :default => 0, :null => false
+    t.integer  "internal_id"
     t.string   "expected_sequence"
     t.integer  "map_id"
     t.string   "tag_group_name"
-    t.integer  "tag_group_internal_id",               :default => 0
+    t.integer  "tag_group_internal_id"
     t.string   "tag_group_uuid",        :limit => 36
     t.datetime "created"
   end
 
   create_table "view_wells", :id => false, :force => true do |t|
     t.string   "uuid",                 :limit => 36
-    t.integer  "internal_id",                        :default => 0,          :null => false
+    t.integer  "internal_id"
     t.string   "name"
     t.string   "map",                  :limit => 4
-    t.integer  "plate_internal_id",                  :default => 0
+    t.integer  "plate_internal_id"
     t.string   "plate_barcode"
     t.string   "plate_barcode_prefix", :limit => 3
     t.string   "sample_uuid",          :limit => 36
@@ -1527,7 +1502,7 @@ ActiveRecord::Schema.define(:version => 20111206152534) do
     t.float    "buffer_volume"
     t.float    "requested_volume"
     t.float    "picked_volume"
-    t.string   "pico_pass",                          :default => "ungraded"
+    t.string   "pico_pass"
     t.datetime "created"
     t.string   "plate_uuid",           :limit => 36
     t.float    "measured_volume"

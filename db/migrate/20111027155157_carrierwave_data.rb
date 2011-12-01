@@ -38,16 +38,17 @@ class CarrierwaveData < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do 
       # Create files from existing study reports
-      StudyReport.all.each do |r|
+      StudyReport.find_each do |r|
         say "Migrating study report: #{r.id}"
-        # DbFile.create!(:data => r.report_file, :owner_type => "StudyReport", :owner_id => r.id)
-        DbFileStorage.store(r.report_file, r.id, "StudyReport") unless r.report_file.nil?
-        r.report_filename="#{r.id}_progress_report.csv"
-        r.content_type="text/csv"
-        r.save
+        unless r.report_file.nil?
+          DbFileStorage.store(r.report_file, r.id, "StudyReport")
+          r.report_filename="#{r.id}_progress_report.csv"
+          r.content_type="text/csv"
+          r.save
+        end
       end
    
-      SampleManifest.all.each do |s| 
+      SampleManifest.find_each do |s| 
         say "Migrating sample manifest: #{s.id}"
         unless s.uploaded_file.nil?
           default_filename = "sm-uploaded-#{s.id}.csv"
@@ -57,7 +58,6 @@ class CarrierwaveData < ActiveRecord::Migration
               f.write s.uploaded_file
             end
             Document.create!(:uploaded_data => uploaded,  :documentable => s, :documentable_extended => "uploaded" )
-            # s.uploaded_filename = default_filename
           ensure
             uploaded.close
             uploaded.unlink # delete the tempfile
@@ -71,7 +71,6 @@ class CarrierwaveData < ActiveRecord::Migration
               f.write s.generated_file
             end
             Document.create!(:uploaded_data => generated, :documentable => s, :documentable_extended => "generated")
-            # s.generated_filename = default_filename
           ensure
             generated.close
             generated.unlink # delete tempfile
@@ -81,17 +80,16 @@ class CarrierwaveData < ActiveRecord::Migration
       end
       
       # Create files from existing plate volume data
-      PlateVolume.all.each do |p|
+      PlateVolume.find_each do |p|
         say "Migrating plate volume: #{p.id}"
         DbFileStorage.store(p.uploaded_file, p.id, "PlateVolume") unless p.uploaded_file.nil?
-       #  p.save
       end
     end
   end
 
   def self.down
     ActiveRecord::Base.transaction do
-      SampleManifest.all.each do |sm|
+      SampleManifest.find_each do |sm|
         uploaded_doc  = Document.first(:conditions => ["documentable_id = ? AND documentable_type = ? AND documentable_extended = ?", sm.id, 'SampleManifest', 'uploaded'])
         generated_doc = Document.first(:conditions => ["documentable_id = ? AND documentable_extended = ?", sm.id, 'generated'])
         say "Migrating sample manifest: #{sm.id}"
@@ -107,17 +105,17 @@ class CarrierwaveData < ActiveRecord::Migration
       end
    
       #  Create files from existing plate volume data
-      PlateVolume.all.each do |p|
+      PlateVolume.find_each do |p|
         say "Migrating plate volume: #{p.id}"
-        p.uploaded_file=p.uploaded.file.read
+        p.uploaded_file=p.uploaded.file.read unless p.uploaded.file.nil?
         p.db_files.each { |f| f.destroy }
         p.save
       end
     
       # Create files from existing reports
-      StudyReport.all.each do |r|
+      StudyReport.find_each do |r|
         say "Reverting study report: #{r.id}"
-        r.report_file=r.report.file.read
+        r.report_file=r.report.file.read unless r.report.file.nil?
        #  files = DbFile.find :all, :conditions => ["owner_type = \'StudyReport\' AND owner_id = ?", r.id]
         # files.each { |f| f.destroy }
         r.db_files.each { |f| f.destroy }
