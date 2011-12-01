@@ -32,10 +32,12 @@ class SubmissionCreater
 
   def order
     @order ||= template.new_order(
-      :study       => study,
-      :project     => project,
-      :user        => @user,
-      :asset_group => find_asset_group
+      :study           => study,
+      :project         => project,
+      :user            => @user,
+      :request_options => order_params,
+      :comments        => comments,
+      :asset_group     => find_asset_group
     )
   end
 
@@ -57,7 +59,7 @@ class SubmissionCreater
     ActiveRecord::Base.transaction do
       submission = Submission.create!(:user => @user)
 
-      order = template.new_order(
+      new_order = template.new_order(
         :study           => study,
         :project         => project,
         :user            => @user,
@@ -69,7 +71,7 @@ class SubmissionCreater
 
       # order.update_attributes()
 
-      order.save!
+      new_order.save!
 
     end
   end
@@ -100,10 +102,6 @@ class SubmissionCreater
 
   def studies
     @studies ||= @user.interesting_studies
-  end
-
-  def submission
-    @submission ||= Submission.find(@submission_id)
   end
 
   # Returns the SubmissionTemplate (OrderTemplate) to be used for this Submission.
