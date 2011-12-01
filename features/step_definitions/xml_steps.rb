@@ -10,12 +10,6 @@ def sort_arrays(xml_data)
 end
 
 def assert_xml_strings_equal(str1, str2)
-  $stderr.puts "Expected:"
-  $stderr.puts Hash.from_xml(str1).inspect
-
-  $stderr.puts "Received:"
-  $stderr.puts Hash.from_xml(str2).inspect
-
   expected = sort_arrays(Hash.from_xml(str1))
   received = sort_arrays(Hash.from_xml(str2))
   assert_hash_equal(expected, received, 'XML differs when decoded')
