@@ -6,6 +6,7 @@
 
 
   var orderParameterHandler = function(event){
+    markStageIncomplete();
     // When there's nothing selected reset the parameters element and exit without 
     if ($(this).val() === "") {
       delete SCAPE.submission.template_id;
@@ -67,7 +68,7 @@
   };
 
   var markStageIncomplete = function(pane) {
-    $(pane).removeClass('completed');
+    $('.wizard-pane:visible').removeClass('completed');
     $('#submission-breadcrumbs li.active-stage').removeClass('completed-stage');
     $('#wizard-next, #start-submission').attr('disabled', 'disabled');
   };
@@ -116,6 +117,8 @@
 
 
     if ($(this).val().length > 0) {
+      markStageIncomplete();
+
       // Load asset groups for the selected study
       $.get(
         '/submissions/study_assets',
@@ -134,6 +137,7 @@
 
   var projectSelectHandler = function(event) {
     SCAPE.submission.project_name = $(this).val();
+    SCAPE.submission.asset_group_id = $('#submission_asset_group_id').val();
 
     $.get(
       '/submissions/project_details',
@@ -157,6 +161,20 @@
       }).length;
 
     if (incompleteFieldCount === 0) {
+
+      // Replace order_params just incase there's any old ones in there...
+      SCAPE.submission.order_params = {};
+
+      // If we find any order_params load the values into the submission object.
+      $('#order-params input, #order-params select').
+        each(function(){ 
+        SCAPE.submission.order_params[ $(this).attr('id').replace('submission_order_params_','') ] = $(this).val();
+      });
+
+      if ($('#submission_lanes_of_sequencing').val()) {
+        SCAPE.submission.lanes_of_sequencing = $('#submission_lanes_of_sequencing').val();
+      }
+
       markStageComplete(currentPane);
     } else if (incompleteFieldCount >= 1) {
       markStageIncomplete(currentPane);

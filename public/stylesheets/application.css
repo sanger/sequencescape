@@ -1066,41 +1066,40 @@ td.commentable a {
 }
 
 #submission-wizard .wizard-button {
-	-moz-box-shadow:inset 0px 1px 0px 0px #bbdaf7;
-	-webkit-box-shadow:inset 0px 1px 0px 0px #bbdaf7;
-	box-shadow:inset 0px 1px 0px 0px #395F94;
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #0066B8), color-stop(1, #00498C) );
-	background:-moz-linear-gradient( center top, #0066B8 5%, #00498C 100% );
-	background-color:#00498C;
-	-moz-border-radius:6px;
-	-webkit-border-radius:6px;
-	border-radius:6px;
-	border:1px solid #002C5C;
-	display:inline-block;
-	color:#ffffff;
-	font-size:15px;
-	font-weight:bold;
-	padding:6px 24px;
-	text-decoration:none;
-	text-shadow: 0px -1px 0px #1B3752;
-	-moz-transition:    all 0.3s ease-in-out 0s;
+  -moz-box-shadow:inset 0px 1px 0px 0px #bbdaf7;
+  -webkit-box-shadow:inset 0px 1px 0px 0px #bbdaf7;
+  box-shadow:inset 0px 1px 0px 0px #395F94;
+  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #0066B8), color-stop(1, #00498C) );
+  background:-moz-linear-gradient( center top, #0066B8 5%, #00498C 100% );
+  background-color:#00498C;
+  -moz-border-radius:6px;
+  -webkit-border-radius:6px;
+  border-radius: 9px;
+  border:1px solid #002C5C;
+  display:inline-block;
+  color:#ffffff;
+  font-size:15px;
+  font-weight:bold;
+  padding:6px 24px;
+  text-decoration:none;
+  text-shadow: 0px -1px 0px #1B3752;
+  -moz-transition:    all 0.3s ease-in-out 0s;
   -webkit-transition: all 0.3s ease-in-out 0s;
   transition:         all 0.3s ease-in-out 0s;
-  
 }
 
 #submission-wizard .wizard-button:hover {
-	color:#FFE21A;
+  color:#FFE21A;
 }
 
 #submission-wizard .wizard-button[disabled] {
-	-moz-box-shadow: 0 0 0 0;
-	-webkit-box-shadow: 0 0 0 0;
-	box-shadow: 0 0 0 0;
-	background:#ACACAC;
+  -moz-box-shadow: 0 0 0 0;
+  -webkit-box-shadow: 0 0 0 0;
+  box-shadow: 0 0 0 0;
+  background:#ACACAC;
 
-	border-color:#6E6E6E;
-	text-shadow:0px 0px 0px #528ecc;
+  border-color:#6E6E6E;
+  text-shadow:0px 0px 0px #528ecc;
 }
 
 #submission-wizard .wizard-button[disabled]:hover {

@@ -1,11 +1,11 @@
 <h2>Requirements for <%= @presenter.template.name %></h2>
 <%= custom_text("submission_info") %>
 
-<ul>
+<ul id="order-params">
 <% @presenter.order_parameters.each do |order_param| -%>
   <li><%= order_input_label(order_param) %>: <%= order_input_tag(order_param) %></li>
 <% end -%>
 </ul>
 
-<%= label 'submission[lanes_of_sequencing]', 'Lanes of sequencing required' %>
+<%= label 'submission[lanes_of_sequencing_required]', 'Lanes of sequencing required' %>
 <%= text_field_tag 'submission[lanes_of_sequencing]', 1 %>

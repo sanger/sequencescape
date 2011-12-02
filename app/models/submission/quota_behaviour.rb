@@ -8,12 +8,6 @@ module Submission::QuotaBehaviour
         record.errors.add_to_base("Project #{project.name} does not have a budget division") unless project.actionable?
       end
 
-      validate(:if => :checking_quotas?) do |record|
-        record.send(:quota_calculator) do |request_type, quota_required|
-          record.errors.add_to_base("Not enough quota for #{request_type.name}") unless record.project.has_quota?(request_type, quota_required)
-        end
-      end
-
       delegate :book_quota, :unbook_quota, :quota_for!, :to => :project
       after_create :book_quota_available_for_request_types!
     end
@@ -41,13 +35,6 @@ module Submission::QuotaBehaviour
     project.enforce_quotas? && @checking_quotas
   end
   private :checking_quotas?
-
-  def submittable?
-    @checking_quotas = true
-    valid?
-  ensure
-    @checking_quotas = false
-  end
 
   def quota_calculator(&block)
     Order.transaction do
