@@ -123,7 +123,8 @@ class BillingEvent < ActiveRecord::Base
   end
 
   def self.map_for_each_aliquot(request, &block)
-    aliquots = request.asset.try(:aliquots) || [nil]
+    aliquots = request.asset.try(:aliquots)
+    aliquots = [nil]  if aliquots.blank?
     number_of_aliquots = aliquots.size
     aliquots.each_with_index.map do |a,i|
       info = OpenStruct.new(:aliquot => a, :indice => i+1, :number => number_of_aliquots)

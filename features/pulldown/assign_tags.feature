@@ -388,6 +388,7 @@ Feature: Cherrypicking for Pulldown pipeline
     When I follow "Create Submission"
     When I select "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - Paired end sequencing" from "Template"
     And I press "Next"
+    When I select "Test study" from "Select a study"
     When I select "Test project" from "Select a financial project"
     And I select "Plate asset group 1234567" from "Select a group to submit"
     And I fill in "Fragment size required (from)" with "300"

@@ -35,6 +35,7 @@ Feature: Creating submissions through the submission templates
     And I select "Custom" from "Library type"
     And I select "76" from "Read length"
 
+    When I select "Study testing submission templates" from "Select a study"
     When I select "Project testing submission templates" from "Select a financial project"
     And I select "Asset group for submission templates" from "Select a group to submit"
     And I create the order and submit the submission
@@ -54,6 +55,7 @@ Feature: Creating submissions through the submission templates
     And I select "Custom" from "Library type"
     And I select "76" from "Read length"
 
+    When I select "Study testing submission templates" from "Select a study"
     When I select "Project testing submission templates" from "Select a financial project"
     And I select "Asset group for submission templates" from "Select a group to submit"
     And I press "Create Order"
@@ -73,6 +75,7 @@ Feature: Creating submissions through the submission templates
     And I select "Custom" from "Library type"
     And I select "76" from "Read length"
 
+    When I select "Study testing submission templates" from "Select a study"
     When I select "Project testing submission templates" from "Select a financial project"
     And I select "Asset group for submission templates" from "Select a group to submit"
     When I press "Create Order"
@@ -98,6 +101,7 @@ Feature: Creating submissions through the submission templates
     And I select "Custom" from "Library type"
     And I select "<read length>" from "Read length"
 
+    When I select "Study testing submission templates" from "Select a study"
     When I select "Project testing submission templates" from "Select a financial project"
     And I select "Asset group for submission templates" from "Select a group to submit"
     When I press "Create Order"
@@ -123,6 +127,7 @@ Feature: Creating submissions through the submission templates
     And I select "Custom" from "Library type"
     And I select "<read length>" from "Read length"
 
+    When I select "Study testing submission templates" from "Select a study"
     When I select "Project testing submission templates" from "Select a financial project"
     And I select "Asset group for submission templates" from "Select a group to submit"
     And I create the order and submit the submission
@@ -158,6 +163,7 @@ Feature: Creating submissions through the submission templates
     # Microarray genotyping has no extra information attached to its request types
     Then I should not see "The following parameters will be applied to all the samples in the group"
 
+    When I select "Study testing submission templates" from "Select a study"
     When I select "Project testing submission templates" from "Select a financial project"
     And I select "Asset group for submission templates" from "Select a group to submit"
 
@@ -186,6 +192,7 @@ Feature: Creating submissions through the submission templates
     # Microarray genotyping has no extra information attached to its request types
     Then I should not see "The following parameters will be applied to all the samples in the group"
 
+    When I select "Study testing submission templates" from "Select a study"
     When I select "Project testing submission templates" from "Select a financial project"
     And I fill in "Enter a list of sample names" with the multiline text:
       """
@@ -226,6 +233,7 @@ Feature: Creating submissions through the submission templates
     When I select "Microarray genotyping" from "Template"
     And I press "Next"
 
+    When I select "Study testing submission templates" from "Select a study"
     When I select "Project testing submission templates" from "Select a financial project"
     And I select "Asset group for submission templates" from "Select a group to submit"
     When I press "Create Order"
@@ -246,6 +254,7 @@ Feature: Creating submissions through the submission templates
     When I select "<library_type> - <sequencing_type>" from "Template"
     And I press "Next"
 
+    When I select "Study testing submission templates" from "Select a study"
     When I select "Project testing submission templates" from "Select a financial project"
     And I select "Asset group for submission templates" from "Select a group to submit"
     And I fill in "Fragment size required (to)" with "9999"
@@ -295,6 +304,7 @@ Feature: Creating submissions through the submission templates
     When I select "Library creation - <sequencing type>" from "Template"
     And I press "Next"
 
+    When I select "Study testing submission templates" from "Select a study"
     When I select "Project testing submission templates" from "Select a financial project"
     And I select "Asset group for submission templates" from "Select a group to submit"
     And I fill in "Fragment size required (to)" with "9999"

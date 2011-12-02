@@ -6,3 +6,8 @@ Then /^launch the debugger$/ do
   debugger
   puts
 end
+
+Then /^stop$/ do
+  Then %q{show me the page}
+  And %q{launch the debugger}
+end
