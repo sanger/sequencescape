@@ -11,6 +11,7 @@ Feature: Create a submission based on the sanger_sample_id
 		When I follow "Create Submission"
 		When I select "DNA QC" from "Template"
 		And I press "Next"
+		When I select "Test study" from "Select a study"
 		When I select "Test project" from "Select a financial project"
 		
 	Scenario: Submission with sanger sample ids and sample names for different samples

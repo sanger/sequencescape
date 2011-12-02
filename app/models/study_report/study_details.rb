@@ -2,6 +2,7 @@ module StudyReport::StudyDetails
 
   # This will pull out all well ids from stock plates in the study
   def each_stock_well_id_in_study_in_batches(&block)
+    #TODO remove hardcoded plate purpose id
     Asset.find_in_batches(:select => "assets.id",
                           :from => 'assets, aliquots a, assets plate, container_associations ca',
                           :conditions => ["assets.sti_type='Well' and plate.sti_type='Plate' and " +
