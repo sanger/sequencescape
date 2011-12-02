@@ -7,7 +7,7 @@ class ActiveRecord::Base
     end
 
     def find_all_by_id_or_name(ids, names)
-      return find(*ids) unless ids.blank?
+      return find_all_by_id(:all, *ids) unless ids.blank?
       raise StandardError, "Must specify at least an ID or a name" if names.blank?
       find_all_by_name(names).tap do |found|
         missing = names - found.map(&:name)
@@ -16,24 +16,26 @@ class ActiveRecord::Base
     end
   end
 end
+
 class Array
   def comma_separate_field_list(*fields)
     map { |row| fields.map { |field| row[field] } }.flatten.delete_if(&:blank?).join(',')
   end
 end
+
 class BulkSubmission < ActiveRecord::Base
-  
+
   # Using table-less pattern - all columns are specified in the model rather than the DBMS
   # see http://codetunes.com/2008/07/20/tableless-models-in-rails
   def self.columns() @columns ||= []; end
-  
+
   def self.column(name, sql_type = nil, default = nil, null = true)
     columns << ActiveRecord::ConnectionAdapters::Column.new(name.to_s, default, sql_type.to_s, null)
   end
-  
+
   # The only column is the spreadsheet, which needs to be validated before submitting in one big transaction
   column :spreadsheet, :binary
-  
+
   validates_presence_of :spreadsheet 
   validate :process_file
 
