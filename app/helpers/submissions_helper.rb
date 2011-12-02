@@ -62,7 +62,7 @@ module SubmissionsHelper
 
     collection_select(
       :submission,
-      :asset_group,
+      :asset_group_id,
       asset_groups, :id, :name,
       { :prompt => prompt },
       {

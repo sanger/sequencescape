@@ -7,7 +7,7 @@ class SubmissionCreater
     :lanes_of_sequencing_required,
     :comments,
     :order_params,
-    :asset_group
+    :asset_group_id
   ]
 
   attr_accessor *ATTRIBUTES
@@ -26,8 +26,7 @@ class SubmissionCreater
   end
 
   def find_asset_group
-    return nil if asset_group.blank?
-    AssetGroup.find(asset_group)
+    AssetGroup.find(asset_group_id) if asset_group_id.present?
   end
 
   def order
@@ -39,6 +38,19 @@ class SubmissionCreater
       :comments        => comments,
       :asset_group     => find_asset_group
     )
+
+    if order_params
+      @order.request_type_multiplier do |sequencing_request_type_id|
+        @order.request_options[:multiplier][sequencing_request_type_id] = (lanes_of_sequencing_required || 1)
+      end
+    end
+
+    @order
+  end
+
+  def order_params
+    @order_params[:multiplier] = {} if (@order_params && @order_params[:multiplier].nil?)
+    @order_params
   end
 
   # These parameters should be defined by the submission template (to be renamed
@@ -50,30 +62,20 @@ class SubmissionCreater
   end
 
   def project
+
     @project ||= Project.find_by_name(@project_name)
   end
 
   # Creates a new submission and adds an initial order on the submission using
   # the parameters
   def save!
+
     ActiveRecord::Base.transaction do
-      submission = Submission.create!(:user => @user)
-
-      new_order = template.new_order(
-        :study           => study,
-        :project         => project,
-        :user            => @user,
-        :request_options => order_params,
-        :submission      => submission,
-        :comments        => comments,
-        :asset_group     => find_asset_group
-      )
-
-      # order.update_attributes()
-
-      new_order.save!
-
+      new_submission = order.create_submission(:user => order.user)
+      new_submission.save!
+      order.save!
     end
+
   end
 
 
@@ -123,6 +125,8 @@ end
 
 
 
+
+
 class SubmissionsController < ApplicationController
 
   def new
@@ -134,9 +138,12 @@ class SubmissionsController < ApplicationController
 
     @presenter.save!
 
-    redirect_to :edit
+    # redirect_to :edit
   end
 
+  def edit
+    
+  end
 
   ###################################################               AJAX ROUTES
   # TODO[sd9]: These AJAX routes could be re-factored
