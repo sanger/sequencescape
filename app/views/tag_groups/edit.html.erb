@@ -9,6 +9,10 @@
     <%= f.label :name %><br />
     <%= f.text_field :name %>
   </p>
+  <p>
+    <%= f.label :visible %>
+    <%= f.select(:visible, [["Yes",true],["No",false]]) %>
+  </p>
 
 <%= render :partial => "shared/tags_list", :locals => { :tag_group => @tag_group, :tags => @tag_group.tags } %>
 	

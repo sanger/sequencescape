@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111123110814) do
+ActiveRecord::Schema.define(:version => 20111130163154) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -1176,7 +1176,10 @@ ActiveRecord::Schema.define(:version => 20111123110814) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "visible",    :default => true
   end
+
+  add_index "tag_groups", ["name"], :name => "unique_name", :unique => true
 
   create_table "tag_layout_templates", :force => true do |t|
     t.string   "layout_class_name"
