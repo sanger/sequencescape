@@ -79,7 +79,10 @@
   };
 
   var markStageComplete = function(pane) {
-    $(pane).addClass('completed').removeClass('active');
+    $(pane).
+      addClass('completed').
+      removeClass('active').
+      find('input, select').attr('disabled', 'true');
 
     $(pane).next('li').
       addClass('active').
