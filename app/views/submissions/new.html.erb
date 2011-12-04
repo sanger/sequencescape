@@ -1,50 +1,68 @@
-<% add :title, "Start new Submission" -%>
+<% add :title, "Starting a new Submission" -%>
 
 
 <h1>New Submission</h1>
-  <ul id="submission-breadcrumbs" class="progress-list">
-    <li class="active-stage"><span id="complete-badge" class="badge">✔</span><p>Select a Study and Assets for your initial Order</p></li>
-    <li><span id="complete-badge" class="badge">✔</span><p>Choose a template for orders on this Submission</p></li>
-    <li><span id="complete-badge" class="badge">✔</span><p>Select a Financial Project</p></li>
-  </ul>
+
+<ul id="orders" class>
+  <li id="order-template" class="active">
+    <span class="badge">✔</span>
+    <h2>Order Template</h2>
+    <%= collection_select :submission,
+      :template_id,
+      @presenter.templates, :id, :name,
+      :prompt     => "Please select a template..."
+    %>
+
+    <div id="order-parameters" style="display:none;"></div>
+  </li>
+
+  <li class="order">
+    <span class="badge">✔</span>
+    <span class="invalid badge">X</span>
+    <h2>New Order</h2>
+
+    <ul>
+      <li class="assets">
+        <h3>Assets</h3>
+        <%= label :study_id, "Study for Order:" %>
+        <%= studies_select(@presenter.studies) %>
+        <div id="study-assets" style="display:none;"></div>
+      </li>
+
+      <li class="project">
+        <h3>Project</h3>
+        <%= label 'submission[project_name]', "Project for Order:" %>
+        <%= text_field :submission,
+          :project_name,
+          :placeholder => "enter the first few characters of the financial project name" ,
+          :disabled => true
+        %>
+      </li>
+    </ul>
+
+    <%= text_area_tag(
+      'submission[comments]',
+      "",
+      :rows        => 5,
+      :placeholder => "Optionally, please add comments for this order here...",
+      :class       => 'comments',
+      :disabled    => true
+      ) %>
+
+
+<%= label 'submission[lanes_of_sequencing_required]', 'Lanes of sequencing required' %>
+<%= text_field_tag 'submission[lanes_of_sequencing]', 1 %>
+
+    <div id="project-details" style="dislay:none;"></div>
+  </li>
+</ul>
+
 
 <% form_for :submission, @presenter, :url => submissions_path do |f| -%>
 
-  <ul id="submission-wizard">
-    <li class="wizard-pane" style="display:block;">
-      <%= f.label :study_id, "Study for Submission:" %>
-      <%= studies_select(@presenter.studies) %>
-      <div id="study-assets" style="display:none;"></div>
-    </li>
 
-    <li class="wizard-pane">
-      <%= f.collection_select :template_id,
-        @presenter.templates, :id, :name,
-        :prompt     => "Please select a template..."
-      %>
 
-         <div id="submission-parameters" style="display:none;"></div>
-      <%= text_area_tag(
-        'submission[comments]',
-        "",
-        :cols        => 70,
-        :rows        => 5,
-        :placeholder => "Optionally, please add comments for this order here..."
-      ) %>
-    </li>
-
-    <li class="wizard-pane">
-      <%= f.text_field :project_name,
-          :placeholder => "enter the first few characters of the financial project name"
-       %>
-
-       <div id="project-details" style="dislay:none;"></div>
-
-    </li>
-    <%= f.submit "Previous", :class => "wizard-button", :id => "wizard-previous", :disabled => true %>
-    <%= f.submit "Next", :class => "wizard-button", :id => "wizard-next", :disabled => true %>
-    <%= f.submit "Start Submission", :id => "start-submission", :class => "wizard-button", :disabled => true %>
-  </ul>
+    <%= f.submit "Build Submission", :id => "start-submission", :class => "button", :disabled => true %>
 <% end -%>
 
 <script type="text/javascript">
