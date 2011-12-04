@@ -36,6 +36,13 @@ module Submission::QuotaBehaviour
   end
   private :checking_quotas?
 
+  def submittable?
+    @checking_quotas = true
+    valid?
+  ensure
+    @checking_quotas = false
+  end
+
   def quota_calculator(&block)
     Order.transaction do
       # If there are no assets then we do not need to check the quota as none will be used, regardless.

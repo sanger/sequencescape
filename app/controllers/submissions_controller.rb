@@ -99,7 +99,7 @@ class SubmissionCreater
   # private :asset_source_details_from_request_parameters!
 
   def study
-    @study ||= Study.find(@study_id)
+    @study ||= (Study.find(@study_id) if @study_id.present?)
   end
 
   def studies

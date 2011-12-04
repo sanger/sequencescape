@@ -50,7 +50,7 @@ module SubmissionsHelper
       :study_id,
       studies, :id, :name,
       { :prompt => prompt },
-      { :disabled => (studies.count == 0) }
+      { :disabled => true }
     )
   end
 

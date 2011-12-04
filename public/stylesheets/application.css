@@ -967,105 +967,129 @@ td.commentable a {
   border-top: none;
 }
 
-.progress-list {
+
+ul#orders {
+  color:#333129;
   padding: 0;
+  clear: both;
+  margin: 15px 0;
 }
 
-.progress-list li{
-  border-radius: 15px;
-  display: inline-block;
-  list-style: none;
-  background: white;
-  padding: 0 0 0 20px;
-	margin: 0 18px 0 0;
-	width: 200px;
-	height: 100px;
+
+/* This overly verbose rule is needed to override formtastic styling  */
+ul#orders li {
+  width: 900px;
   border: 3px solid #014f93;
-	color: #00498C;
-  opacity: 0.1;
-	-moz-transition:    all 0.3s ease-in-out 0s;
-  -webkit-transition: all 0.3s ease-in-out 0s;
-  transition:         all 0.3s ease-in-out 0s;
-	position: relative;
-}
-
-.progress-list li p {
-	position: absolute;
-	font-weight: bold;
-}
-
-.progress-list li.completed-stage{
-  opacity: 0.5;
-	border-color:#017802;
-	color:#017802;
-}
-.progress-list li.active-stage{
-  opacity: 1;
+  border-radius: 15px;
+  -moz-border-radius: 15px;
   -moz-box-shadow: 0 1px 4px 0 #C3CEDA;
-  box-shadow: 0 1px 5px 0 #C3CEDA;
+   box-shadow: 0 1px 5px 0 #C3CEDA;
+  padding: 15px;
+  margin: 15px 0;
+  color:#00498C;
+  list-style: none outside none;
+  opacity: 0.1;
+  position: relative;
 	-moz-transition:    all 0.3s ease-in-out 0s;
   -webkit-transition: all 0.3s ease-in-out 0s;
   transition:         all 0.3s ease-in-out 0s;
 }
 
-.progress-list li span.badge {
+
+ul#orders li.completed{
+	border-color:#017802;
+	background: #F4FFF0;
+	color:#017802;
+  opacity: 0.6;
+ -moz-box-shadow: 0 0 0 0 #C3CEDA;
+  box-shadow: 0 0 0 0 #C3CEDA;
+}
+
+ul#orders li.active {
+  opacity: 1;
+}
+
+
+#orders span.badge {
 	display: none;
   position: absolute;
-	-moz-transition:    all 0.3s ease-in-out 0s;
-  -webkit-transition: all 0.3s ease-in-out 0s;
-  transition:         all 0.3s ease-in-out 0s;
-}
-
-.progress-list li.completed-stage span.badge {
 	width: 35px;
   line-height: 35px;
   font-size: 	 25px;
 	top:  -18px;
 	right: -18px;
+	text-align: center;
+	border-radius: 35px;
+	-moz-transition:    all 0.3s ease-in-out 0s;
+  -webkit-transition: all 0.3s ease-in-out 0s;
+  transition:         all 0.3s ease-in-out 0s;
+}
+
+#orders li.completed span.badge {
 	background:	#003E00;
 	background: -moz-radial-gradient(top left, cover, #00B200 0%, #003E00 100%);
 	background: -webkit-radial-gradient(top left, cover, #00B200 0%, #003E00 100%);
 	color: white;
-	text-align: center;
 	text-shadow: 0 -1px 0 #002800;
 	box-shadow: 0 1px 3px #aaaaaa;
-	border-radius: 35px;
 	display: block;
 }
 
-.progress-list li p{
-	display:block;
-	height: 100px;
+#orders li.invalid span.invalid.badge {
+	background:	#003E00;
+	background: -moz-radial-gradient(top left, cover, #00B200 0%, #003E00 100%);
+	background: -webkit-radial-gradient(top left, cover, #00B200 0%, #003E00 100%);
+	color: white;
+	text-shadow: 0 -1px 0 #002800;
+	box-shadow: 0 1px 3px #aaaaaa;
+	display: block;
 }
 
-#submission-wizard {
-  color:#333129;
+#orders li#order-template {
+}
+
+ul#orders li table {
+  width: 100%;
+}
+
+
+ul#orders li th {
+  text-align: right;
+}
+
+ul#orders li ul {
   padding: 0;
 }
 
-/* This overly verbose rule is needed to override formtastic styling  */
-#submission-wizard li.wizard-pane {
-  width: 900px;
-  height: 250px;
-  border: 3px solid #014f93;
-  border-radius: 15px;
-  -moz-border-radius: 15px;
-  -moz-box-shadow: 0 1px 4px 0 #C3CEDA;
-  box-shadow: 0 1px 5px 0 #C3CEDA;
-  padding: 30px;
-  margin: 15px 0;
-  display:none;
-  color:#00498C;
-  list-style: none outside none;
+ul#orders li li {
+  width: 412px;
+  opacity: 1;
+  border: none;
+  box-shadow: inset 0px 1px 1px grey;
+  margin: 10px 0;
+  float: left;
+  height: 100px;
+  border-radius: 4px;
+}
+
+#orders .assets {
+  margin: 10px 15px 10px 0;
+}
+
+#orders h2, #orders h3 {
+  position: absolute;
+  top: -25px;
+  left: 13px;
+  background: white;
+  padding: 0 4px;
+}
+
+#orders .comments {
+  width: 100%;
 }
 
 
-#submission-wizard li.wizard-pane.completed {
-  border-color: #017802;
-	color:#017802;
-}
-
-#submission-wizard .wizard-button {
+.button {
   -moz-box-shadow:inset 0px 1px 0px 0px #bbdaf7;
   -webkit-box-shadow:inset 0px 1px 0px 0px #bbdaf7;
   box-shadow:inset 0px 1px 0px 0px #395F94;
@@ -1074,7 +1098,7 @@ td.commentable a {
   background-color:#00498C;
   -moz-border-radius:6px;
   -webkit-border-radius:6px;
-  border-radius: 9px;
+  border-radius: 8px;
   border:1px solid #002C5C;
   display:inline-block;
   color:#ffffff;
@@ -1088,11 +1112,11 @@ td.commentable a {
   transition:         all 0.3s ease-in-out 0s;
 }
 
-#submission-wizard .wizard-button:hover {
+.button:hover {
   color:#FFE21A;
 }
 
-#submission-wizard .wizard-button[disabled] {
+.button[disabled] {
   -moz-box-shadow: 0 0 0 0;
   -webkit-box-shadow: 0 0 0 0;
   box-shadow: 0 0 0 0;
@@ -1102,7 +1126,7 @@ td.commentable a {
   text-shadow:0px 0px 0px #528ecc;
 }
 
-#submission-wizard .wizard-button[disabled]:hover {
+.button[disabled]:hover {
   color: #ffffff;
 }
 
