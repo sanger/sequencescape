@@ -1180,6 +1180,8 @@ ActiveRecord::Schema.define(:version => 20111130163154) do
     t.boolean  "visible",    :default => true
   end
 
+  add_index "tag_groups", ["name"], :name => "tag_groups_unique_name", :unique => true
+
   create_table "tag_layout_templates", :force => true do |t|
     t.string   "layout_class_name"
     t.integer  "tag_group_id"
