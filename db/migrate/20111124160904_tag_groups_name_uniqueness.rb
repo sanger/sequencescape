@@ -10,7 +10,7 @@ class TagGroupsNameUniqueness < ActiveRecord::Migration
   def self.down
     execute <<-SQL
       ALTER TABLE tag_groups
-      REMOVE CONSTRAINT unique_name
+      DROP INDEX unique_name
     SQL
   end
 end
