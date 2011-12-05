@@ -6,7 +6,7 @@
 
 
   var templateChangeHandler = function(event){
-    markStageIncomplete();
+    markPaneIncomplete();
     // When there's nothing selected reset the parameters element and exit without 
     if ($(this).val() === "") {
       delete SCAPE.submission.template_id;
@@ -30,9 +30,8 @@
 
   // This handler depends on the study template being set earlier in the wizard.
   var studySelectHandler = function(event) {
-    markStageIncomplete();
+    markPaneIncomplete();
     SCAPE.submission.study_id = $(this).val();
-
 
     if ($(this).val().length > 0) {
 
@@ -56,14 +55,16 @@
     SCAPE.submission.project_name = $(this).val();
     SCAPE.submission.asset_group_id = $('#submission_asset_group_id').val();
 
-    $.get(
-      '/submissions/project_details',
+    var currentPane = $(this).closest('.order');
+
+    $.post(
+      '/submissions',
       { submission : SCAPE.submission },
       function(data) {
-        $('#project-details').html(data);
-        if (SCAPE.submission.order_valid) {
-          markStageComplete();
-        }
+        currentPane.find('.project-details').html(data);
+
+        SCAPE.submission.order_valid?
+          markPaneComplete(currentPane) : markPaneInvalid(currentPane);
       }
     );
   };
@@ -78,7 +79,7 @@
       every(function(element){ return $(element).val(); });
   };
 
-  var markStageComplete = function(pane) {
+  var markPaneComplete = function(pane) {
     $(pane).
       addClass('completed').
       removeClass('active').
@@ -86,20 +87,25 @@
 
     $(pane).next('li').
       addClass('active').
+      // find('.assets').
       find('input, select').removeAttr('disabled');
     return true;
   };
 
-  var markStageIncomplete = function(pane) {
+  var markPaneIncomplete = function(pane) {
     $(pane).removeClass('completed');
     return false;
+  };
+
+  var markPaneInvalid = function(pane) {
+    $(pane).addClass('invalid');
   };
 
   var validateSection = function(event) {
     var currentPane = $(this).closest('#orders li');
 
     return allFieldsComplete(currentPane)?
-      markStageComplete(currentPane) : markStageIncomplete(currentPane);
+      markPaneComplete(currentPane) : markPaneIncomplete(currentPane);
   };
 
 
@@ -118,6 +124,11 @@
 
 
     $('#order-parameters .required').live('change',  validateSection);
+
+    $(".order").live("scape.order.valid", function(event){
+      $(this).addClass('completed');
+    });
+
   });
 
 })(jQuery);

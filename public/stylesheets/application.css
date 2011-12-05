@@ -982,8 +982,8 @@ ul#orders li {
   border: 4px solid #014f93;
   border-radius: 15px;
   -moz-border-radius: 15px;
-  -moz-box-shadow: 0 1px 4px 0 #C3CEDA;
-   box-shadow: 0 1px 5px 0 #C3CEDA;
+  -moz-box-shadow: 0 2px 4px #C3CEDA;
+   box-shadow:     0 2px 4px #C3CEDA;
   padding: 15px;
   margin: 15px 0;
   color:#00498C;
@@ -1010,11 +1010,6 @@ ul#orders li.active {
 }
 
 
-#orders li.invalid span.invalid.badge {
-  color: red;
-  border-color: red;
-}
-
 #orders span.badge {
 	display: none;
   position: absolute;
@@ -1025,28 +1020,29 @@ ul#orders li.active {
 	right: -18px;
 	text-align: center;
 	border-radius: 35px;
+	color: white;
+	text-shadow: 0 -1px 0 #002800;
+	box-shadow: 0 1px 3px #aaaaaa;
 	-moz-transition:    all 0.3s ease-in-out 0s;
   -webkit-transition: all 0.3s ease-in-out 0s;
   transition:         all 0.3s ease-in-out 0s;
 }
 
-#orders li.completed span.badge {
+ul#orders li.completed span.badge {
 	background:	#003E00;
 	background: -moz-radial-gradient(top left, cover, #00B200 0%, #003E00 100%);
 	background: -webkit-radial-gradient(top left, cover, #00B200 0%, #003E00 100%);
-	color: white;
-	text-shadow: 0 -1px 0 #002800;
-	box-shadow: 0 1px 3px #aaaaaa;
 	display: block;
 }
 
+ul#orders li.invalid {
+  border-color: #920000;
+}
+
 #orders li.invalid span.invalid.badge {
-	background:	#003E00;
-	background: -moz-radial-gradient(top left, cover, #00B200 0%, #003E00 100%);
-	background: -webkit-radial-gradient(top left, cover, #00B200 0%, #003E00 100%);
-	color: white;
-	text-shadow: 0 -1px 0 #002800;
-	box-shadow: 0 1px 3px #aaaaaa;
+	background:	#920000;
+	background: -moz-radial-gradient(top left, cover, #B60000 0%, #710000 100%);
+	background: -webkit-radial-gradient(top left, cover, #B60000 0%, #710000 100%);
 	display: block;
 }
 
@@ -1094,7 +1090,7 @@ ul#orders ul.sub-panel li {
 }
 
 h2.error {
-  color: red;
+  color: #920000;
 }
 
 ul#orders ul.errors li {
@@ -1105,8 +1101,8 @@ ul#orders ul.errors li {
   height: auto;
   width: auto;
   float: none;
-  color: red;
   opacity: 1;
+  position: initial;
 }
 
 

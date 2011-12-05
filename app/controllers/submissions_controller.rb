@@ -1,4 +1,8 @@
 class SubmissionCreater
+  SubmissionsCreaterError  = Class.new(StandardError)
+  IncorrectParamsException = Class.new(SubmissionsCreaterError)
+  InvalidInputException    = Class.new(SubmissionsCreaterError)
+
   ATTRIBUTES = [
     :submission_id,
     :template_id,
@@ -68,14 +72,28 @@ class SubmissionCreater
 
   # Creates a new submission and adds an initial order on the submission using
   # the parameters
-  def save!
+  def save
+    begin
+      ActiveRecord::Base.transaction do
+        new_submission = order.create_submission(:user => order.user)
+        new_submission.save!
+        order.save!
+      end
 
-    ActiveRecord::Base.transaction do
-      new_submission = order.create_submission(:user => order.user)
-      new_submission.save!
-      order.save!
+    rescue Quota::Error => quota_exception
+      order.errors.add_to_base(quota_exception.message)
+    rescue InvalidInputException => input_exception
+      order.errors.add_to_base(input_exception.message)
+    rescue IncorrectParamsException => exception
+      order.errors.add_to_base(exception.message)
+    rescue ActiveRecord::RecordInvalid => exception
+      exception.record.errors.full_messages.each do |message|
+        order.errors.add_to_base(message)
+      end
     end
 
+    # Having got through that lot return whether we were able to save or not.
+    order.errors.empty?
   end
 
 
@@ -135,24 +153,20 @@ class SubmissionsController < ApplicationController
 
   def create
     @presenter = SubmissionCreater.new(current_user, params[:submission])
+     
+    if @presenter.save
+      render :partial => 'order', :layout => false
+    else
+      render :partial => 'order_errors', :layout => false
+    end
 
-    @presenter.save!
-
-    # redirect_to :edit
   end
 
   def edit
-    
   end
 
   ###################################################               AJAX ROUTES
   # TODO[sd9]: These AJAX routes could be re-factored
-  def project_details
-    @presenter = SubmissionCreater.new(current_user, params[:submission])
-
-    render :partial => 'project_details', :layout => false
-  end
-
   def order_parameters
     @presenter = SubmissionCreater.new(current_user, params[:submission])
 

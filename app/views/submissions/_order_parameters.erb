@@ -2,7 +2,7 @@
 <%= custom_text("submission_info") %>
 
 <table>
-<% @presenter.order_parameters.each_with_index do |order_param, index| -%>
+  <% @presenter.order_parameters.sort {|a, b| a.display_name <=> b.display_name }.each_with_index do |order_param, index| -%>
   <%= "<tr>" if index.even? %>
     <th><%= order_input_label(order_param) %></th>
     <td><%= order_input_tag(order_param) %></td>
