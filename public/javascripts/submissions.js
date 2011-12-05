@@ -81,19 +81,21 @@
 
   var markPaneComplete = function(pane) {
     $(pane).
-      addClass('completed').
-      removeClass('active').
-      find('input, select').attr('disabled', 'true');
+      addClass('completed');
+      // find('input, select').attr('disabled', 'true');
 
-    $(pane).next('li').
-      addClass('active').
-      // find('.assets').
-      find('input, select').removeAttr('disabled');
+    // $(pane).next('li').
+    //   addClass('active').
+    //   // find('.assets').
+    //   find('input, select').removeAttr('disabled');
+    $('#add-order').removeAttr('disabled');
+
     return true;
   };
 
   var markPaneIncomplete = function(pane) {
     $(pane).removeClass('completed');
+    $('#add-order').attr('disabled',true);
     return false;
   };
 

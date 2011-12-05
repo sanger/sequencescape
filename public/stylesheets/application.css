@@ -969,27 +969,27 @@ td.commentable a {
 
 
 ul#orders {
+  width: 950px;
   color:#333129;
   padding: 0;
   clear: both;
   margin: 15px 0;
+  text-align: right;
 }
 
 
 /* This overly verbose rule is needed to override formtastic styling  */
 ul#orders li {
-  width: 900px;
   border: 4px solid #014f93;
   border-radius: 15px;
   -moz-border-radius: 15px;
-  -moz-box-shadow: 0 2px 4px #C3CEDA;
-   box-shadow:     0 2px 4px #C3CEDA;
   padding: 15px;
   margin: 15px 0;
   color:#00498C;
   list-style: none outside none;
   opacity: 0.1;
   position: relative;
+  text-align: left;
 	-moz-transition:    all 0.3s ease-in-out 0s;
   -webkit-transition: all 0.3s ease-in-out 0s;
   transition:         all 0.3s ease-in-out 0s;
@@ -1000,13 +1000,12 @@ ul#orders li.completed{
 	border-color:#017802;
 	background: #EBFFEB;
 	color:#017802;
-  opacity: 0.6;
- -moz-box-shadow: 0 0 0 0 #C3CEDA;
-  box-shadow: 0 0 0 0 #C3CEDA;
 }
 
 ul#orders li.active {
   opacity: 1;
+  -moz-box-shadow: 0 2px 4px #C3CEDA;
+  box-shadow:     0 2px 4px #C3CEDA;
 }
 
 
@@ -1063,18 +1062,18 @@ ul#orders ul.sub-panel {
 }
 
 ul#orders ul.sub-panel li {
-  width: 412px;
+  width: 395px;
   opacity: 1;
   border: none;
   box-shadow: inset 0px 1px 1px grey;
   margin: 10px 0;
-  float: left;
-  height: 100px;
+  float: right;
+  height: 30px;
   border-radius: 4px;
 }
 
 #orders ul.sub-panel .assets {
-  margin: 10px 15px 10px 0;
+  float:left;
 }
 
 #orders h2, #orders h3 {
@@ -1124,13 +1123,15 @@ ul#orders ul.errors li {
   padding:6px 24px;
   text-decoration:none;
   text-shadow: 0px -1px 0px #1B3752;
-  -moz-transition:    all 0.3s ease-in-out 0s;
-  -webkit-transition: all 0.3s ease-in-out 0s;
-  transition:         all 0.3s ease-in-out 0s;
+  -moz-transition:    all 0.5s ease-in-out 0s;
+  -webkit-transition: all 0.5s ease-in-out 0s;
+  transition:         all 0.5s ease-in-out 0s;
 }
 
 .button:hover {
   color:#FFE21A;
+  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #00498C), color-stop(1, #004390) );
+  background:-moz-linear-gradient( center top, #00498C 5%, #004390 100% );
 }
 
 .button[disabled] {
@@ -1141,10 +1142,10 @@ ul#orders ul.errors li {
 
   border-color:#6E6E6E;
   text-shadow:0px 0px 0px #528ecc;
+  color: #ddd;
 }
 
 .button[disabled]:hover {
-  color: #ffffff;
 }
 
 
