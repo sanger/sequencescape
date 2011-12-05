@@ -84,8 +84,10 @@ class BulkSubmission < ActiveRecord::Base
     
     if (csv_rows[0][0] == "This row is guidance only")
       help = csv_rows.shift
+      start_row = 3
       headers = csv_rows.shift.map(&:downcase)
     else
+      start_row = 2
       headers = csv_rows.shift.map(&:downcase)
     end
     
@@ -94,7 +96,7 @@ class BulkSubmission < ActiveRecord::Base
       errors.add(:spreadsheet, "The supplied file does not contain a valid header row (try downloading a template)")
     else
       submission_details = csv_rows.each_with_index.map do |row, index|
-        Hash[headers.each_with_index.map { |header, pos| [ header, row[pos].try(:strip) ] }].merge('row' => index+2)
+        Hash[headers.each_with_index.map { |header, pos| [ header, row[pos].try(:strip) ] }].merge('row' => index+start_row)
       end.group_by do |details|
         details['asset group name']
       end.map do |group_name, rows|
