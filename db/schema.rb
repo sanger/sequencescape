@@ -1178,7 +1178,7 @@ ActiveRecord::Schema.define(:version => 20111115133228) do
     t.datetime "updated_at"
   end
 
-  add_index "tag_groups", ["name"], :name => "unique_name", :unique => true
+  add_index "tag_groups", ["name"], :name => "tag_groups_unique_name", :unique => true
 
   create_table "tag_layout_templates", :force => true do |t|
     t.string   "layout_class_name"
