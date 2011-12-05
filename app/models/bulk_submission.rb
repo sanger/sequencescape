@@ -110,7 +110,6 @@ class BulkSubmission < ActiveRecord::Base
       # Within a single transaction process each of the rows of the CSV file as a separate submission.  Any name
       # fields need to be mapped to IDs, and the 'assets' field needs to be split up and processed if present.
       ActiveRecord::Base.transaction do
-        failures = false
 
         submission_details.each_with_index do |details, submission_row|
           begin
@@ -181,20 +180,19 @@ class BulkSubmission < ActiveRecord::Base
             @submission_details[submission.id] = "Submission #{submission.id} built from rows #{details['rows']} (should make #{number_of_lanes} lanes)"
           rescue ArgumentError
             raise
+
           rescue => exception
             errors.add :spreadsheet, "There was a problem on row(s) #{details['rows']}: #{exception.message}"
-           
-            failures = true
+
           rescue Quota::Error => exception
-                                errors.add :spreadsheet, "There was a quota problem: #{exception.message}"
-          
+            errors.add :spreadsheet, "There was a quota problem: #{exception.message}"
+
           end
-          
           
         end
         
         # If there are any errors then the transaction needs to be rolled back.
-        raise ActiveRecord::Rollback if failures
+        raise ActiveRecord::Rollback if errors.count > 0
       end
     end
   end #process
