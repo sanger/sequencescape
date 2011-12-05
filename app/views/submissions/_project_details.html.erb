@@ -1,5 +1,3 @@
-<%= @presenter.project.name %>
-
 <% if @presenter.order.submittable? -%>
   <script type="text/javascript">SCAPE.submission.order_valid = true;</script>
 
@@ -9,10 +7,10 @@
 <% else -%>
   <%# Looks like this project can't be used at the moment... -%>
   <script type="text/javascript">SCAPE.submission.order_valid = false;</script>
-  <h2>Sorry but this project cannot currently be used due to 
+  <h2 class="error">Sorry but this project cannot currently be used due to 
     <%=  pluralize(@presenter.order.errors.count, "error") %>
   </h2>
-  <ul>
+  <ul class="errors">
   <% @presenter.order.errors.full_messages.each do |error_message| -%>
     <li><%= error_message %></li>
   <% end -%>
