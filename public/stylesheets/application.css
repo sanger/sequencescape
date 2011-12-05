@@ -1010,6 +1010,11 @@ ul#orders li.active {
 }
 
 
+#orders li.invalid span.invalid.badge {
+  color: red;
+  border-color: red;
+}
+
 #orders span.badge {
 	display: none;
   position: absolute;
@@ -1057,11 +1062,11 @@ ul#orders li th {
   text-align: right;
 }
 
-ul#orders li ul {
+ul#orders ul.sub-panel {
   padding: 0;
 }
 
-ul#orders li li {
+ul#orders ul.sub-panel li {
   width: 412px;
   opacity: 1;
   border: none;
@@ -1072,7 +1077,7 @@ ul#orders li li {
   border-radius: 4px;
 }
 
-#orders .assets {
+#orders ul.sub-panel .assets {
   margin: 10px 15px 10px 0;
 }
 
@@ -1086,6 +1091,22 @@ ul#orders li li {
 
 #orders .comments {
   width: 100%;
+}
+
+h2.error {
+  color: red;
+}
+
+ul#orders ul.errors li {
+  width: 100%;
+  border: none;
+  padding: 0px;
+  box-shadow: none;
+  height: auto;
+  width: auto;
+  float: none;
+  color: red;
+  opacity: 1;
 }
 
 
