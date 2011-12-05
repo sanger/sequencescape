@@ -1,0 +1,12 @@
+<script type="text/javascript">SCAPE.submission.order_valid = false;</script>
+
+<h2 class="error">Sorry but this project cannot currently be used due to 
+  <%=  pluralize(@presenter.order.errors.count, "error") %>
+</h2>
+<ul class="errors">
+  <%# Validations seem to be run twice... -%>
+  <% @presenter.order.errors.full_messages.uniq.each do |error_message| -%>
+    <li><%= error_message %></li>
+  <% end -%>
+</ul>
+
