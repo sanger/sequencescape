@@ -26,6 +26,7 @@ Feature: Creating submissions
     Given the UUID for the request type "Library creation" is "99999999-1111-2222-3333-000000000000"
     And the UUID for the request type "Paired end sequencing" is "99999999-1111-2222-3333-000000000001"
 
+    @multiple_order
   Scenario: Creating a submission with multiple orders
     Given 4 sample tubes exist with names based on "sampletube" and IDs starting at 1
     And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"
