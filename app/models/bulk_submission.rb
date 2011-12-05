@@ -7,7 +7,7 @@ class ActiveRecord::Base
     end
 
     def find_all_by_id_or_name(ids, names)
-      return find_all_by_id(:all, *ids) unless ids.blank?
+      return Array(find(*ids)) unless ids.blank?
       raise StandardError, "Must specify at least an ID or a name" if names.blank?
       find_all_by_name(names).tap do |found|
         missing = names - found.map(&:name)
