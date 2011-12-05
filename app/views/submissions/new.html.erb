@@ -15,10 +15,15 @@
 
     <div id="order-parameters" style="display:none;"></div>
   </li>
+  <%= submit_tag "✚ Add Order",
+    :id       => "add-order",
+    :class    => "button",
+    :disabled => true
+  %>
 
   <li class="order">
     <span class="badge">✔</span>
-    <span class="invalid badge">X</span>
+    <span class="invalid badge">✘</span>
     <h2>New Order</h2>
 
     <ul class="sub-panel">
@@ -55,15 +60,9 @@
 <%= text_field_tag 'submission[lanes_of_sequencing]', 1 %>
 
   </li>
+    <%= submit_tag "Build Submission", :id => "start-submission", :class => "button", :disabled => true %>
 </ul>
 
-
-<% form_for :submission, @presenter, :url => submissions_path do |f| -%>
-
-
-
-    <%= f.submit "Build Submission", :id => "start-submission", :class => "button", :disabled => true %>
-<% end -%>
 
 <script type="text/javascript">
 (function($, undefined){
