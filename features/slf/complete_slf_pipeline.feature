@@ -44,6 +44,7 @@ Feature: I wish to create samples and push them all the way through QC in SLF
     Given I am on the sample db homepage
     When I follow "Create manifest for plates"
     When I select "Test study" from "Study"
+    And I select "default layout" from "Template"
     And I select "Test supplier name" from "Supplier"
     And I select "xyz" from "Barcode printer"
     And I fill in "Count" with "1"

@@ -19,9 +19,15 @@ module ModelExtensions::Order
       DelegateValidation::CompositeValidator::CompositeValidator(*::RequestType.find(self.request_types.flatten).map(&:delegate_validator))
     end
 
+    # If this returns true then we check values that have not been set, otherwise we can ignore them.  This would
+    # mean that we should not require values that are unset, until we're moving out of the building state.
+    def include_unset_values?
+      self.left_building_state?
+    end
+
     def request_options_for_validation
       OpenStruct.new({ :owner => self }.reverse_merge(self.request_options || {})).tap do |v|
-        v.class.delegate :errors, :to => :owner
+        v.class.delegate(:errors, :include_unset_values?, :to => :owner)
       end 
     end
   end
