@@ -1,18 +1,18 @@
 # Local class definitions
 class StudyReport < ActiveRecord::Base
-  has_many :db_files, :as => :owner, :dependent => :destroy
-  #   Mount Carrierwave on report field
-  mount_uploader :report, PolymorphicUploader, :mount_on => "report_filename"
+  extend DbFile::Uploader
+  has_uploaded :report, {:serialization_column => "report_filename"}
 end
 
 class PlateVolume < ActiveRecord::Base
-  # New file storage:
-  has_many :db_files, :as => :owner, :dependent => :delete_all
-  #  Mount Carrierwave on report field
-  mount_uploader :uploaded, PolymorphicUploader, :mount_on => "uploaded_file_name"
+  extend DbFile::Uploader
+  has_uploaded :uploaded, { :serialization_column => "uploaded_file_name" }
 end
 
 class SampleManifest < ActiveRecord::Base
+  extend Document::Associations
+  has_uploaded_document :uploaded, {:differentiator => "uploaded"}
+  has_uploaded_document :generated, {:differentiator => "generated"}
 end
 
 class CarrierwaveData < ActiveRecord::Migration
@@ -25,9 +25,9 @@ class CarrierwaveData < ActiveRecord::Migration
      end
      def self.each_slice(data)
        max_part_size = 200.kilobytes
-       beginning =0;
+       beginning = 0;
        left = data.size
-       while left>0
+       while left > 0
          part_size = [left, max_part_size].min
          yield beginning, part_size
          beginning += part_size
@@ -39,18 +39,22 @@ class CarrierwaveData < ActiveRecord::Migration
     ActiveRecord::Base.transaction do 
       # Create files from existing study reports
       StudyReport.find_each do |r|
-        say "Migrating study report: #{r.id}"
+        
         unless r.report_file.nil?
+          say "Migrating study report: #{r.id}"
           DbFileStorage.store(r.report_file, r.id, "StudyReport")
           r.report_filename="#{r.id}_progress_report.csv"
           r.content_type="text/csv"
           r.save
         end
+        
       end
-   
+
       SampleManifest.find_each do |s| 
-        say "Migrating sample manifest: #{s.id}"
+        
+        # Temp files are created so that Document.create has a file object to save
         unless s.uploaded_file.nil?
+          say "Migrating sample manifest: #{s.id}"
           default_filename = "sm-uploaded-#{s.id}.csv"
           uploaded = Tempfile.new(default_filename)
           begin
@@ -60,9 +64,10 @@ class CarrierwaveData < ActiveRecord::Migration
             Document.create!(:uploaded_data => uploaded,  :documentable => s, :documentable_extended => "uploaded" )
           ensure
             uploaded.close
-            uploaded.unlink # delete the tempfile
+            uploaded.unlink # delete tempfile
           end
         end
+
         unless s.generated_file.nil?
           default_filename = "sm-generated-#{s.id}.xls"
           generated = Tempfile.new(default_filename)

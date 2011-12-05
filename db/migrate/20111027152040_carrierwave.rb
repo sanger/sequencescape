@@ -1,54 +1,36 @@
 class Carrierwave < ActiveRecord::Migration
   def self.up
-    say "Changing documents table - can now have multiple 1-1 relationships on a model with documents"
+    say "Updating documents to allow multiple 1-1 relationships"
     # Documents has extra column for multiple 1-1 relationships
-    change_table :documents do |t|
-      t.column :documentable_extended, :string, :limit => 50
-    end
-    change_column :documents, :documentable_type, :string, :limit => 25
+    add_column :documents, :documentable_extended, :string, :limit => 25, :null => false
+    change_column :documents, :documentable_type, :string, :limit => 50
 
     say "Making db_files polymorphic"
-    change_table :db_files do |t|
-      t.column :owner_type, :string, :default => 'Document'
-      # extra field in case 1-1 mapping needed on multiple fields
-      t.column :owner_type_extended, :string 
-      t.rename :document_id, :owner_id
-    end
+    add_column :db_files, :owner_type, :string, :default => 'Document', :limit => 25, :null => false
+    # extra field in case 1-1 mapping needed on multiple fields
+    add_column :db_files, :owner_type_extended, :string 
+    rename_column :db_files, :document_id, :owner_id
     
     # Add metadata columns for study reports
-    say "Study reports - extra columns"
-    change_table :study_reports do |t|
-      t.column :report_filename, :string
-      t.column :content_type, :string,  :default => "text/csv"
-    end
+    say "Study reports gain metadata columns"
+    add_column :study_reports, :report_filename, :string
+    add_column :study_reports, :content_type, :string, :default => "text/csv"
     
-    # say "Sample Manifests = filename columns"
-    #    change_table :sample_manifests do |t|
-    #      t.column :uploaded_filename, :string
-    #      t.column :generated_filename, :string
-    #    end
+    # These indexes will help speed up queries for files
+    add_index :db_files, [ :owner_type, :owner_id]
+    add_index :documents, [ :documentable_type, :documentable_id]
   end
   
   def self.down
-    
     # Remove metadata columns
-    change_table :study_reports do |t|
-      t.remove :report_filename, :content_type
-    end
-    
+    remove_column :study_reports, :report_filename, :content_type
+
     # Restore db_files so no longer polymorphic
-    change_table :db_files do |t|
-      t.remove :owner_type, :owner_type_extended
-      t.rename :owner_id, :document_id
-    end
+    remove_column :db_files, :owner_type, :owner_type_extended
+    rename_column :db_files, :owner_id,   :document_id
 
     # Documents has extra column for multiple 1-1 relationships
-    change_table :documents do |t|
-      t.remove :documentable_extended
-    end
-    
-    change_table :sample_manifests do |t|
-      t.remove :uploaded_filename, :generated_filename
-    end
+    remove_column :documents, :documentable_extended
+
   end
 end
