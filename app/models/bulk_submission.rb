@@ -7,7 +7,7 @@ class ActiveRecord::Base
     end
 
     def find_all_by_id_or_name(ids, names)
-      return find(*ids) unless ids.blank?
+      return Array(find(*ids)) unless ids.blank?
       raise StandardError, "Must specify at least an ID or a name" if names.blank?
       find_all_by_name(names).tap do |found|
         missing = names - found.map(&:name)
@@ -16,24 +16,26 @@ class ActiveRecord::Base
     end
   end
 end
+
 class Array
   def comma_separate_field_list(*fields)
     map { |row| fields.map { |field| row[field] } }.flatten.delete_if(&:blank?).join(',')
   end
 end
+
 class BulkSubmission < ActiveRecord::Base
-  
+
   # Using table-less pattern - all columns are specified in the model rather than the DBMS
   # see http://codetunes.com/2008/07/20/tableless-models-in-rails
   def self.columns() @columns ||= []; end
-  
+
   def self.column(name, sql_type = nil, default = nil, null = true)
     columns << ActiveRecord::ConnectionAdapters::Column.new(name.to_s, default, sql_type.to_s, null)
   end
-  
+
   # The only column is the spreadsheet, which needs to be validated before submitting in one big transaction
   column :spreadsheet, :binary
-  
+
   validates_presence_of :spreadsheet 
   validate :process_file
 
@@ -82,8 +84,10 @@ class BulkSubmission < ActiveRecord::Base
     
     if (csv_rows[0][0] == "This row is guidance only")
       help = csv_rows.shift
+      start_row = 3
       headers = csv_rows.shift.map(&:downcase)
     else
+      start_row = 2
       headers = csv_rows.shift.map(&:downcase)
     end
     
@@ -92,7 +96,7 @@ class BulkSubmission < ActiveRecord::Base
       errors.add(:spreadsheet, "The supplied file does not contain a valid header row (try downloading a template)")
     else
       submission_details = csv_rows.each_with_index.map do |row, index|
-        Hash[headers.each_with_index.map { |header, pos| [ header, row[pos].try(:strip) ] }].merge('row' => index+2)
+        Hash[headers.each_with_index.map { |header, pos| [ header, row[pos].try(:strip) ] }].merge('row' => index+start_row)
       end.group_by do |details|
         details['asset group name']
       end.map do |group_name, rows|
@@ -108,7 +112,6 @@ class BulkSubmission < ActiveRecord::Base
       # Within a single transaction process each of the rows of the CSV file as a separate submission.  Any name
       # fields need to be mapped to IDs, and the 'assets' field needs to be split up and processed if present.
       ActiveRecord::Base.transaction do
-        failures = false
 
         submission_details.each_with_index do |details, submission_row|
           begin
@@ -179,20 +182,19 @@ class BulkSubmission < ActiveRecord::Base
             @submission_details[submission.id] = "Submission #{submission.id} built from rows #{details['rows']} (should make #{number_of_lanes} lanes)"
           rescue ArgumentError
             raise
+
           rescue => exception
             errors.add :spreadsheet, "There was a problem on row(s) #{details['rows']}: #{exception.message}"
-           
-            failures = true
+
           rescue Quota::Error => exception
-                                errors.add :spreadsheet, "There was a quota problem: #{exception.message}"
-          
+            errors.add :spreadsheet, "There was a quota problem: #{exception.message}"
+
           end
-          
           
         end
         
         # If there are any errors then the transaction needs to be rolled back.
-        raise ActiveRecord::Rollback if failures
+        raise ActiveRecord::Rollback if errors.count > 0
       end
     end
   end #process
