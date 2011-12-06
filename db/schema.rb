@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111123110814) do
+ActiveRecord::Schema.define(:version => 20111130163154) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -206,6 +206,7 @@ ActiveRecord::Schema.define(:version => 20111123110814) do
 
   add_index "batch_requests", ["batch_id"], :name => "index_batch_requests_on_batch_id"
   add_index "batch_requests", ["request_id"], :name => "index_batch_requests_on_request_id"
+  add_index "batch_requests", ["request_id"], :name => "request_id", :unique => true
   add_index "batch_requests", ["updated_at"], :name => "index_batch_requests_on_updated_at"
 
   create_table "batches", :force => true do |t|
@@ -1176,7 +1177,10 @@ ActiveRecord::Schema.define(:version => 20111123110814) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "visible",    :default => true
   end
+
+  add_index "tag_groups", ["name"], :name => "tag_groups_unique_name", :unique => true
 
   create_table "tag_layout_templates", :force => true do |t|
     t.string   "layout_class_name"

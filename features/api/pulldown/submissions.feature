@@ -21,6 +21,71 @@ Feature: Creating submissions for pulldown
     Given the UUID of the next submission created will be "11111111-2222-3333-4444-555555555555"
       And the UUID of the next order created will be "11111111-2222-3333-4444-666666666666"
 
+  Scenario: A submission should error if you set an incorrect request option on construction
+    Given the UUID for the submission template "Pulldown WGS - HiSeq paired end sequencing" is "00000000-1111-2222-3333-444444444444"
+
+    When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/submissions":
+      """
+      {
+        "submission": {
+          "project": "22222222-3333-4444-5555-000000000001",
+          "study": "22222222-3333-4444-5555-000000000000",
+          "asset_group_name": "Testing the pulldown submissions",
+          "request_options": {
+            "read_length": 22
+          }
+        }
+      }
+      """
+    Then the HTTP response should be "422 Unprocessable Entity"
+    And the JSON should be:
+      """
+      {
+        "content": {
+          "request_options.read_length": [ "is not included in the list" ]
+        }
+      }
+      """
+
+  @create @error
+  Scenario Outline: A submission should not error if you create it without required options, but does if you build it
+    Given the UUID for the submission template "<pipeline> - HiSeq paired end sequencing" is "00000000-1111-2222-3333-444444444444"
+
+    When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/submissions":
+      """
+      {
+        "submission": {
+          "project": "22222222-3333-4444-5555-000000000001",
+          "study": "22222222-3333-4444-5555-000000000000",
+          "asset_group_name": "Testing the pulldown submissions"
+        }
+      }
+      """
+    Then the HTTP response should be "201 Created"
+
+    When I POST the following JSON to the API path "/11111111-2222-3333-4444-555555555555/submit":
+      """
+      {
+        "submission": {
+        }
+      }
+      """
+    Then the HTTP response should be "422 Unprocessable Entity"
+    And the JSON should be:
+      """
+      {
+        "content": {
+          "request_options.read_length": [ "is not included in the list" ]
+        }
+      }
+      """
+
+    Scenarios:
+      | pipeline     |
+      | Pulldown WGS |
+      | Pulldown SC  |
+      | Pulldown ISC |
+
   @create
   Scenario Outline: A submission for a pulldown pipeline that uses bait libraries
     Given the UUID for the submission template "<pipeline> - HiSeq paired end sequencing" is "00000000-1111-2222-3333-444444444444"

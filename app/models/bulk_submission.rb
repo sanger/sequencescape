@@ -7,7 +7,7 @@ class ActiveRecord::Base
     end
 
     def find_all_by_id_or_name(ids, names)
-      return find(*ids) unless ids.blank?
+      return Array(find(*ids)) unless ids.blank?
       raise StandardError, "Must specify at least an ID or a name" if names.blank?
       find_all_by_name(names).tap do |found|
         missing = names - found.map(&:name)
@@ -16,11 +16,13 @@ class ActiveRecord::Base
     end
   end
 end
+
 class Array
   def comma_separate_field_list(*fields)
     map { |row| fields.map { |field| row[field] } }.flatten.delete_if(&:blank?).join(',')
   end
 end
+
 class BulkSubmission < ActiveRecord::Base
   
   # Using table-less pattern - all columns are specified in the model rather than the DBMS
@@ -55,6 +57,56 @@ class BulkSubmission < ActiveRecord::Base
       errors.add(:spreadsheet, "The supplied file was not a valid CSV file (try opening it with MS Excel)")
   end
 
+  def process(csv_rows)
+    # Store the details of the successful submissions so the user can be presented with a summary
+     @submission_ids = []
+     @completed_submissions = {}
+  
+    # Discard the help row if the spreadsheet uses the template
+    #  Then ensure that the keys of the rows are downcased for consistency.
+    if (csv_rows[0][0] == "This row is guidance only")
+      help_row = csv_rows.shift
+      start_row = 3
+      headers = csv_rows.shift.map(&:downcase)
+    else
+      start_row = 2
+      headers = csv_rows.shift.map(&:downcase)
+    end
+
+    # Detect if the CSV does not have any items from our known fields in the first row using an intersection
+    if (headers & COMMON_FIELDS).length == 0
+      errors.add(:spreadsheet, "The supplied file does not contain a valid header row (try downloading a template)")
+
+    elsif not headers.include? "submission name"
+      errors.add :spreadsheet, "You submitted an incompatible spreadsheet. Please ensure your spreadsheet contains the 'submission name' column"
+
+    else
+      submission_details = submission_structure(headers, csv_rows, start_row)   
+
+      # Within a single transaction process each of the rows of the CSV file as a separate submission.  Any name
+      # fields need to be mapped to IDs, and the 'assets' field needs to be split up and processed if present.
+      ActiveRecord::Base.transaction do
+        submission_details.each do |submissions|
+          submissions.each do |submission_name,orders|
+            if (user = User.find_by_login(orders.first["user login"]))
+              submission = Submission.create!(:name=>submission_name, :user => user, :orders => orders.map(&method(:prepare_order)).compact)
+              submission.built!
+              # Collect successful submissions
+              @submission_ids << submission.id
+              @completed_submissions[submission.id] = "Submission #{submission.id} built (#{submission.orders.count} orders)"
+            else
+              errors.add :spreadsheet, "Cannot find user #{orders.first["user login"].inspect}"
+            end
+          end
+        end
+        
+        # If there are any errors then the transaction needs to be rolled back.
+        raise ActiveRecord::Rollback if errors.count > 0
+      end
+      
+    end
+  end #process
+  
   COMMON_FIELDS = [
     # Needed to construct the submission ...
     'template name',
@@ -76,9 +128,9 @@ class BulkSubmission < ActiveRecord::Base
   #  this creates an array containing a hash for each distinct "submission name" 
   #    "submission name" => array of orders
   #    where each order is a hash of headers to values (grouped by "asset group name")
-  def submission_structure(headers,csv_rows)
+  def submission_structure(headers, csv_rows, start_row)
     csv_rows.each_with_index.map do |row, index|
-      Hash[headers.each_with_index.map { |header, pos| [ header, row[pos].try(:strip) ] }].merge('row' => index+2)
+      Hash[headers.each_with_index.map { |header, pos| [ header, row[pos].try(:strip) ] }].merge('row' => index+start_row)
     end.group_by do |details|
       details['submission name']
     end.map do |submission_name, rows|
@@ -96,34 +148,36 @@ class BulkSubmission < ActiveRecord::Base
     end
   end
   
-  # This instance variable is used to determine whether to rollback
-  @failures = false
-  
   # Returns an order for the given details
   def prepare_order(details)
     begin
-      study = Study.find_by_id_or_name(details['study id'], details['study name'])
+      
+      # Retrieve common attributes
+      study   = Study.find_by_id_or_name(details['study id'], details['study name'])
+      project = Project.find_by_id_or_name(details['project id'], details['project name'])
+      user    = User.find_by_login(details['user login']) or raise StandardError, "Cannot find user #{details['user login'].inspect}"
+      
+      # The order attributes are initially
       attributes = {
         :study   => study,
-        :project => Project.find_by_id_or_name(details['project id'], details['project name']),
+        :project => project,
+        :user => user,
         :comments => details['comments'],
         :request_options => {
-          :read_length  => details['read length'],
-          :library_type => details['library type'],
+          :read_length  => details['read length']
         }
       }
-      number_of_lanes = details.fetch('number of lanes', 1).to_i
+      
+      attributes[:request_options][:library_type]                = details['library type']       unless details['library type'].blank?
       attributes[:request_options][:fragment_size_required_from] = details['fragment size from'] unless details['fragment size from'].blank?
       attributes[:request_options][:fragment_size_required_to]   = details['fragment size to']   unless details['fragment size to'].blank?
-
-      # User lookup ...
-      attributes[:user] = User.find_by_login(details['user login']) or raise StandardError, "Cannot find user #{details['user login'].inspect}"
+      attributes[:request_options][:bait_library_name]           = details['bait library name']  unless details['bait library name'].blank?
 
       # Deal with the asset group: either it's one we should be loading, or one we should be creating.
       begin
         attributes[:asset_group] = study.asset_groups.find_by_id_or_name(details['asset group id'], details['asset group name'])
+
       rescue ActiveRecord::RecordNotFound => exception
-        # puts "Could not find asset group, assuming it needs to be created for rows #{details['rows']}"
 
         attributes[:asset_group_name] = details['asset group name']
 
@@ -137,6 +191,7 @@ class BulkSubmission < ActiveRecord::Base
           plate.wells.walk_in_column_major_order { |well, _| wells << well if well_locations.include?(well.map.description) }
           raise StandardError, "Too few wells found for #{details['rows']}: #{wells.map(&:map).map(&:description).inspect}" if wells.size != well_locations.size
           attributes[:assets] = wells
+          
         else
           asset_ids, asset_names = details.fetch('asset ids', '').split(','), details.fetch('asset names', '').split(',')
           attributes[:assets]    = Asset.find_all_by_id_or_name(asset_ids, asset_names).uniq
@@ -144,89 +199,40 @@ class BulkSubmission < ActiveRecord::Base
           assets_found, expecting = attributes[:assets].map { |asset| "#{asset.name}(#{asset.id})" }, asset_ids.size + asset_names.size
           raise StandardError, "Too few assets found for #{details['rows']}: #{assets_found.inspect}"  if assets_found.size < expecting
           raise StandardError, "Too many assets found for #{details['rows']}: #{assets_found.inspect}" if assets_found.size > expecting
+          
         end
 
         assets_not_in_study = attributes[:assets].select { |asset| not asset.aliquots.map(&:sample).map(&:studies).flatten.uniq.include?(study) }
         raise StandardError, "Assets not in study for #{details['rows']}: #{assets_not_in_study.inspect}" unless assets_not_in_study.empty?
 
-        puts "\tDebugging info: assets found for #{details['rows']}: #{assets_found.inspect}" if ENV['DO_NOTHING']
       end
 
-      # Create and build the submission.  Ensure that the number of lanes is correctly set.
-      template          = SubmissionTemplate.find_by_name(details['template name']) or raise StandardError, "Cannot find template #{details['template name']}"
       request_types     = RequestType.all(:conditions => { :id => template.submission_parameters[:request_type_ids_list].flatten })
       lane_request_type = request_types.detect { |t| t.target_asset_type == 'Lane' or t.name =~ /\ssequencing$/ }
+      number_of_lanes   = details.fetch('number of lanes', 1).to_i
       attributes[:request_options][:multiplier] = { lane_request_type.id => number_of_lanes } if lane_request_type.present?
       
-      #TODO[xxx] Present successful orders info to users if desired
-      # @orders.push "Order created from rows #{details['rows']} (should make #{number_of_lanes} lanes)"
-    
+      # Create the order.  Ensure that the number of lanes is correctly set.
+      template          = SubmissionTemplate.find_by_name(details['template name']) or raise StandardError, "Cannot find template #{details['template name']}"
       return template.new_order(attributes)
+
     rescue ArgumentError
       raise
+
     rescue => exception
       errors.add :spreadsheet, "There was a problem on row(s) #{details['rows']}: #{exception.message}"
-      @failures = true
       nil
+
     rescue QuotaException => exception
       errors.add :spreadsheet, "There was a quota problem: #{exception.message}"
       nil
+
     end
   end
-  
-  def process(csv_rows)
-    # Store the details of the successful submissions so the user can be presented with a summary
-     @submissions = []
-     @orders = []
-     @submission_details = {}
-  
-    # Discard the help row if the spreadsheet uses the template
-    #  Then ensure that the keys of the rows are downcased for consistency.
-    if (csv_rows[0][0] == "This row is guidance only")
-      help_row = csv_rows.shift
-      headers = csv_rows.shift.map(&:downcase)
-    else
-      headers = csv_rows.shift.map(&:downcase)
-    end
-    
-    # Detect if the CSV does not have any items from our known fields in the first row using an intersection
-    if (headers & COMMON_FIELDS).length == 0
-      errors.add(:spreadsheet, "The supplied file does not contain a valid header row (try downloading a template)")
-      
-    elsif not headers.include? "submission name"
-      errors.add :spreadsheet, "You submitted an incompatible spreadsheet. Please ensure your spreadsheet contains the 'submission name' column"
 
-    else
-      submission_details = submission_structure(headers, csv_rows)   
-       
-      # Within a single transaction process each of the rows of the CSV file as a separate submission.  Any name
-      # fields need to be mapped to IDs, and the 'assets' field needs to be split up and processed if present.
-      ActiveRecord::Base.transaction do
-        submission_details.each do |submissions|
-          submissions.each do |submission_name,orders|
-            if (user = User.find_by_login(orders.first["user login"]))
-              submission = Submission.create!(:name=>submission_name, :user => user, :orders => orders.map(&method(:prepare_order)).compact)
-              submission.built!
-              # Collect successful submissions
-              @submissions.push submission.id
-              @submission_details[submission.id] = "Submission #{submission.id} built (#{submission.orders.count} orders)"
-            else
-              errors.add :spreadsheet, "Cannot find user #{orders.first["user login"].inspect}"
-              @failures = true
-            end
-          end
-        end
-        
-        # If there are any errors then the transaction needs to be rolled back.
-        raise ActiveRecord::Rollback if @failures
-      end
-      
-    end
-  end #process
-  
   # This is used to present a list of successes
   def completed_submissions
-    return @submissions, @submission_details
+    return @submission_ids, @completed_submissions
   end
   
 end

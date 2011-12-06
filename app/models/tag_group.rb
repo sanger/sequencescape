@@ -4,7 +4,10 @@ class TagGroup < ActiveRecord::Base
   has_many :tags, :order => 'map_id ASC'
   acts_as_audited :on => [:destroy, :update]
 
+  named_scope :visible, :conditions => {:visible => true}
+  
   validates_presence_of :name
+  validates_uniqueness_of :name 
 
   def create_tags(tags_properties)
     return if tags_properties.blank?
