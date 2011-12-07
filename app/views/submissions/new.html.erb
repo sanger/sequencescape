@@ -3,75 +3,89 @@
 
 <h1>New Submission</h1>
 
-<ul id="orders" class>
-  <li id="order-template" class="active">
-    <span class="badge">✔</span>
-    <h2>Order Template</h2>
-    <%= collection_select :submission,
-      :template_id,
-      @presenter.templates, :id, :name,
-      :prompt     => "Please select a template..."
-    %>
-
-    <div id="order-parameters" style="display:none;"></div>
-  </li>
-  <%= submit_tag "✚ Add Order",
-    :id       => "add-order",
-    :class    => "button",
-    :disabled => true
+<ul id="orders">
+  <li id="order-template" class="box active">
+  <span class="badge">✔</span>
+  <h2>Order Template</h2>
+  <%= collection_select :submission,
+    :template_id,
+    @presenter.templates, :id, :name,
+    :prompt     => "Please select a template..."
   %>
 
-  <li class="order">
-    <span class="badge">✔</span>
-    <span class="invalid badge">✘</span>
-    <h2>New Order</h2>
-
-    <ul class="sub-panel">
-      <li class="assets">
-        <h3>Assets</h3>
-        <%= label :study_id, "Study:" %>
-        <%= studies_select(@presenter.studies) %>
-        <div id="study-assets" style="display:none;"></div>
-      </li>
-
-      <li class="project">
-        <h3>Project</h3>
-        <%= label 'submission[project_name]', "Project Name:" %>
-        <%= text_field :submission,
-          :project_name,
-          :placeholder => "enter the first few characters of the financial project name" ,
-          :disabled => true
-        %>
-      </li>
-    </ul>
-        <div class="project-details" style="dislay:none;"></div>
-
-    <%= text_area_tag(
-      'submission[comments]',
-      "",
-      :rows        => 5,
-      :placeholder => "Optionally, please add comments for this order here...",
-      :class       => 'comments',
-      :disabled    => true
-      ) %>
-
-
-<%= label 'submission[lanes_of_sequencing_required]', 'Lanes of sequencing required' %>
-<%= text_field_tag 'submission[lanes_of_sequencing]', 1 %>
-
+  <div id="order-parameters" style="display:none;"></div>
   </li>
-    <%= submit_tag "Build Submission", :id => "start-submission", :class => "button", :disabled => true %>
+  <li id="order-controls" class="buttons">
+    <%= submit_tag "✚ Add Order",
+      :id       => "add-order",
+      :class    => "button",
+      :disabled => true
+    %>
+  </li>
+
+  <li id="blank-order" class="box order">
+  <span class="invalid badge">✘</span>
+  <span class="badge">✔</span>
+  <h2>New Order</h2>
+
+  <ul class="sub-panel">
+    <li class="assets">
+    <h3>Assets</h3>
+    <%= label :study_id, "Study:" %>
+    <%= studies_select(@presenter.studies) %>
+    <div class="study-assets" style="display:none;"></div>
+    </li>
+
+    <li class="project">
+    <h3>Project</h3>
+    <%= label 'submission[project_name]', "Project Name:" %>
+    <%= text_field :submission,
+      :project_name,
+      :class => 'submission_project_name',
+      :placeholder => "enter the first few characters of the financial project name" ,
+      :disabled => true
+    %>
+    </li>
+  </ul>
+  <div class="project-details" style="dislay:none;"></div>
+
+  <%= text_area_tag(
+    'submission[comments]',
+    "",
+    :rows        => 5,
+    :placeholder => "Optionally, please add comments for this order here...",
+    :class       => 'comments',
+    :disabled    => true
+  ) %>
+
+
+  <%= label 'submission[lanes_of_sequencing_required]', 'Lanes of sequencing required' %>
+  <%= text_field_tag 'submission[lanes_of_sequencing]', 1 %>
+
+
+    <%= submit_tag "✔ Save Order",
+      :class    => "save-order button",
+      :disabled => true
+    %>
+  </li>
+  <li class="buttons">
+    <%= submit_tag "Build Submission",
+      :id       => "start-submission",
+      :class    => "button",
+      :disabled => true
+    %>
+  </li>
 </ul>
 
 
 <script type="text/javascript">
-(function($, undefined){
-  // Check for the SCAPE object.  This is the only place in the global
-  // namespace we should be storing things.
- if (window.SCAPE == undefined) { window.SCAPE = {}; }
+  (function($, undefined){
+   // Check for the SCAPE object.  This is the only place in the global
+   // namespace we should be storing things.
+   if (window.SCAPE == undefined) { window.SCAPE = {}; }
 
- SCAPE.user_project_names =  <%= stringify_array(@presenter.user_projects) %>;
-})(jQuery);
+   SCAPE.user_project_names =  <%= stringify_array(@presenter.user_projects) %>;
+   })(jQuery);
 </script>
 
 <%= javascript_include_tag 'submissions' %>
