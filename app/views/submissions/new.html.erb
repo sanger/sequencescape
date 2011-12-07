@@ -4,8 +4,9 @@
 <h1>New Submission</h1>
 
 <ul id="orders">
-  <li id="order-template" class="box active">
-  <span class="badge">✔</span>
+  <li id="order-template" class="pane active">
+  <span class="completed badge">✔</span>
+  <span class="invalid badge">✘</span>
   <h2>Order Template</h2>
   <%= collection_select :submission,
     :template_id,
@@ -23,9 +24,9 @@
     %>
   </li>
 
-  <li id="blank-order" class="box order">
+  <li id="blank-order" class="pane order">
   <span class="invalid badge">✘</span>
-  <span class="badge">✔</span>
+  <span class="completed badge">✔</span>
   <h2>New Order</h2>
 
   <ul class="sub-panel">
@@ -71,7 +72,7 @@
   <li class="buttons">
     <%= submit_tag "Build Submission",
       :id       => "start-submission",
-      :class    => "button",
+      :class    => "final button",
       :disabled => true
     %>
   </li>
