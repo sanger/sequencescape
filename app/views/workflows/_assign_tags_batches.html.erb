@@ -6,6 +6,7 @@
         No items found. <%= link_to "Create the first one", :action => "new" %>
       </div>
     <% else -%>
+    <p id="increment-tags-info"><label for="increment-tags">When you change a tag, the subsequent tags will be incremented according to your selection. Uncheck this if you wish manually assign all tags.</label><input type="checkbox" checked id="increment-tags" /></p>
       <table class="request-grid">
         <thead>
           <tr>
@@ -46,11 +47,9 @@
                 <td><%= request.tag_number.blank? ? '-' : request.tag_number %></td>
               <% end %>
               <td><%= request.state.humanize %></td>
-              
               <td>
                 <% if request.tag_number.blank? %>
                   <%= select "tag", request.id, tag_options, {:selected =>tag_options[index%tag_options.size]}, {:class => "tagchoice"} %>
-                  <input type="checkbox" id="continue_down_<%= "#{request.id}" %>" />Increment down
                 <% end %>
               </td>
 

@@ -47,7 +47,7 @@
     }
     
     $('select.tagchoice').change(function() {   
-        if ($(this).siblings('input:checkbox').is(':checked'))
+        if ($('#increment-tags:checkbox').is(':checked'))
         {
             chosenTagIndex = $(this).prop("selectedIndex");
             // Set subsequent tags to increment from the chosen value

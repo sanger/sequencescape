@@ -1089,3 +1089,6 @@ tr.duplicate-error {
   background: #FFB0B0;
 }
 
+#increment-tags-info {
+  right:0;
+}
