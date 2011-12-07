@@ -974,25 +974,34 @@ ul#orders {
   padding: 0;
   clear: both;
   margin: 15px 0;
-  text-align: right;
+	-moz-transition:    all 0.3s ease-in-out 0s;
+  -webkit-transition: all 0.3s ease-in-out 0s;
+  transition:         all 0.3s ease-in-out 0s;
 }
 
 
 /* This overly verbose rule is needed to override formtastic styling  */
-ul#orders li {
-  border: 4px solid #014f93;
-  border-radius: 15px;
-  -moz-border-radius: 15px;
+ul#orders > li {
   padding: 15px;
   margin: 15px 0;
   color:#00498C;
+  background: #fff;
   list-style: none outside none;
-  opacity: 0.1;
+  text-align: right;
   position: relative;
+}
+
+ul#orders li.box {
+  border: 4px solid #014f93;
+  border-radius: 15px;
+  -moz-border-radius: 15px;
+  opacity: 0.2;
   text-align: left;
-	-moz-transition:    all 0.3s ease-in-out 0s;
-  -webkit-transition: all 0.3s ease-in-out 0s;
-  transition:         all 0.3s ease-in-out 0s;
+  background: #fff;
+}
+
+ul#orders li.box .button {
+  float: right;
 }
 
 
@@ -1000,14 +1009,22 @@ ul#orders li.completed{
 	border-color:#017802;
 	background: #EBFFEB;
 	color:#017802;
+  opacity: 0.6;
 }
 
 ul#orders li.active {
   opacity: 1;
-  -moz-box-shadow: 0 2px 4px #C3CEDA;
-  box-shadow:     0 2px 4px #C3CEDA;
+  -moz-box-shadow: 0 2px 5px #C3CEDA;
+  box-shadow:     0 2px 5px #C3CEDA;
 }
 
+ul#orders  li.order.invalid {
+  border-color: #920000;
+}
+
+ul#orders .errors li {
+  color: #920000;
+}
 
 #orders span.badge {
 	display: none;
@@ -1034,10 +1051,6 @@ ul#orders li.completed span.badge {
 	display: block;
 }
 
-ul#orders li.invalid {
-  border-color: #920000;
-}
-
 #orders li.invalid span.invalid.badge {
 	background:	#920000;
 	background: -moz-radial-gradient(top left, cover, #B60000 0%, #710000 100%);
@@ -1062,14 +1075,19 @@ ul#orders ul.sub-panel {
 }
 
 ul#orders ul.sub-panel li {
-  width: 395px;
+  width: 420px;
+  height: 50px;
   opacity: 1;
-  border: none;
-  box-shadow: inset 0px 1px 1px grey;
+  border: 1px solid hsl(0, 0%, 63%);
   margin: 10px 0;
   float: right;
   height: 30px;
   border-radius: 4px;
+
+  padding: 15px;
+  list-style: none outside none;
+  text-align: right;
+  position: relative;
 }
 
 #orders ul.sub-panel .assets {
@@ -1079,9 +1097,23 @@ ul#orders ul.sub-panel li {
 #orders h2, #orders h3 {
   position: absolute;
   top: -25px;
-  left: 13px;
-  background: white;
+  left: 10px;
   padding: 0 4px;
+  background: inherit;
+  background: #fff;
+}
+
+#orders h3 {
+  left: 5px;
+}
+
+#orders li.active h2, #orders li.active h3 {
+  text-shadow: 0 1px 0px hsl(211, 24%, 81%);
+}
+
+
+#orders li.completed h3, #orders li.completed textarea, #orders li.completed input {
+	background: #EBFFEB;
 }
 
 #orders .comments {
@@ -1104,6 +1136,9 @@ ul#orders ul.errors li {
   position: initial;
 }
 
+ul#orders > li.buttons {
+  padding: 0;
+}
 
 .button {
   -moz-box-shadow:inset 0px 1px 0px 0px #bbdaf7;
@@ -1143,6 +1178,7 @@ ul#orders ul.errors li {
   border-color:#6E6E6E;
   text-shadow:0px 0px 0px #528ecc;
   color: #ddd;
+  opacity: 0.2;
 }
 
 .button[disabled]:hover {

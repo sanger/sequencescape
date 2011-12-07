@@ -28,9 +28,13 @@
   };
 
 
+
   // This handler depends on the study template being set earlier in the wizard.
   var studySelectHandler = function(event) {
-    markPaneIncomplete();
+    var currentPane = $(this).closest('#orders > li');
+
+    markPaneIncomplete(currentPane);
+
     SCAPE.submission.study_id = $(this).val();
 
     if ($(this).val().length > 0) {
@@ -40,22 +44,28 @@
         '/submissions/study_assets',
         { submission : SCAPE.submission },
         function(data) {
-          $('#study-assets').fadeOut().html(data).fadeIn();
+          currentPane.find('.study-assets').fadeOut(function(){
+            $(this).html(data).fadeIn();
+          });
         }
       );
       return true;
     } else {
-      $('#study-assets').fadeOut().html("");
+      currentPane.find('.study-assets').fadeOut(function(){
+        $(this).html("");
+      });
       return false;
     }
 
   };
 
   var projectSelectHandler = function(event) {
-    SCAPE.submission.project_name = $(this).val();
+    var currentPane                 = $(this).closest('.order');
+    var projectNameElement          = currentPane.find('.submission_project_name');
+
+    SCAPE.submission.project_name   = projectNameElement.val();
     SCAPE.submission.asset_group_id = $('#submission_asset_group_id').val();
 
-    var currentPane = $(this).closest('.order');
 
     $.post(
       '/submissions',
@@ -63,14 +73,24 @@
       function(data) {
         currentPane.find('.project-details').html(data);
 
-        SCAPE.submission.order_valid?
-          markPaneComplete(currentPane) : markPaneInvalid(currentPane);
+        if(SCAPE.submission.order_valid) {
+          currentPane.fadeOut(function(){
+            currentPane.detach().removeClass('active');
+            markPaneComplete(currentPane);
+            $('#order-controls').before(currentPane);
+            currentPane.fadeIn();
+            $('#blank-order').fadeIn();
+          });
+        } else {
+          markPaneInvalid(currentPane);
+        }
       }
     );
   };
 
 
-  // Returns true if all the input fields in a pane have a value
+  // Change to jQuery method
+  // Returns true if a') the input fields in a pane have a value
   var allFieldsComplete = function(pane) {
       // This won't work in old IE versions <9.
       // If we need to support old IE add a conditional enhancement
@@ -79,57 +99,74 @@
       every(function(element){ return $(element).val(); });
   };
 
+  // Change to jQuery method
   var markPaneComplete = function(pane) {
     $(pane).
-      addClass('completed');
-      // find('input, select').attr('disabled', 'true');
+      addClass('completed').
+      removeClass('invalid').
+      find('input, select').attr('disabled', 'true');
 
-    // $(pane).next('li').
-    //   addClass('active').
-    //   // find('.assets').
-    //   find('input, select').removeAttr('disabled');
+    $(pane).find('.save-order').fadeOut();
+
     $('#add-order').removeAttr('disabled');
 
     return true;
   };
 
+  // Change to jQuery method
   var markPaneIncomplete = function(pane) {
     $(pane).removeClass('completed');
     $('#add-order').attr('disabled',true);
     return false;
   };
 
+  // Change to jQuery method
   var markPaneInvalid = function(pane) {
     $(pane).addClass('invalid');
   };
 
-  var validateSection = function(event) {
+  var validateOrderParams = function(event) {
     var currentPane = $(this).closest('#orders li');
 
     return allFieldsComplete(currentPane)?
       markPaneComplete(currentPane) : markPaneIncomplete(currentPane);
   };
 
+  var addOrderHandler = function(event) {
+    $('.active').removeClass('active');
+
+    $('#add-order').attr('disabled', true);
+
+    var newOrder = $('<li>').
+      html($('#blank-order').html()).
+      addClass('box active order').hide();
+
+    newOrder.find('input, select').removeAttr('disabled');
+
+    newOrder.find('.submission_project_name').autocomplete({
+      source    : SCAPE.user_project_names,
+      minLength : 3
+    });
+
+    newOrder.find('.save-order').click(projectSelectHandler);
+
+    $('#blank-order').before(newOrder).fadeOut('fast',function(){
+      newOrder.fadeIn();
+    });
+  };
 
   // Document Ready stuff...
   $(function(){
     $('#submission_template_id').change(templateChangeHandler);
 
-    $('#submission_project_name').autocomplete({
-      source    : SCAPE.user_project_names,
-      minLength : 3,
-      select    : projectSelectHandler
-    });
+
+    // $('.study_id').live('change', studySelectHandler);
+    $('ul#orders').delegate('.study_id','change', studySelectHandler);
 
 
-    $('#submission_study_id').change(studySelectHandler);
+    $('#order-parameters .required').live('change',  validateOrderParams);
 
-
-    $('#order-parameters .required').live('change',  validateSection);
-
-    $(".order").live("scape.order.valid", function(event){
-      $(this).addClass('completed');
-    });
+    $('#add-order').live('click', addOrderHandler);
 
   });
 

@@ -50,7 +50,8 @@ module SubmissionsHelper
       :study_id,
       studies, :id, :name,
       { :prompt => prompt },
-      { :disabled => true }
+      { :disabled => true,
+        :class => 'study_id' }
     )
   end
 
@@ -66,7 +67,7 @@ module SubmissionsHelper
       asset_groups, :id, :name,
       { :prompt => prompt },
       {
-        :class => 'required',
+        :class => 'asset_group_id required',
         :disabled => (asset_groups.size == 0)
       }
     )
