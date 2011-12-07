@@ -1,43 +1,33 @@
-(function($,undefined){
+(function ($, undefined) {
     var taggers = $('select.tagchoice');
- 
-    // This will return all the tag drop-downs after the current index
-    function remainingTaggers(currentIndex) {
-        return taggers.filter(function(index) {
-          return index > currentIndex;
-        });
-      }
   
     // This callback will indicate other rows using the same tag
     function highlightDuplicates() {
-        var duplicates = {};
-        var duplicatesPresent = false;
-        taggers.each(function(index){
+        var duplicates = {},
+            duplicatesPresent = false;
+        // Identify the duplicates:
+        taggers.each(function (index) {
             var chosenTagIndex = $(this).prop("selectedIndex");
-            if (duplicates[chosenTagIndex] == null)
-            {
-                duplicates[chosenTagIndex] = new Array();
+            if (duplicates[chosenTagIndex])
                 duplicates[chosenTagIndex].push(index);
-            }
             else
-                duplicates[chosenTagIndex].push(index);
-            
+                duplicates[chosenTagIndex] = [index];
         });
-        taggers.each(function(index){
-            var requestsAssigned = duplicates[$(this).prop("selectedIndex")];
-            var quantityOfRequests = requestsAssigned.size();
-            if (quantityOfRequests >1)
+        // Highlight those rows which have duplicate tags
+        taggers.each(function (index) {
+            var requestsAssigned = duplicates[$(this).prop("selectedIndex")],
+                quantityOfRequests = requestsAssigned.size();
+            if (quantityOfRequests > 1)
             {
                 duplicatesPresent = true;
                 for (var i=0; i<quantityOfRequests; i++)
                 {
-                    var tableRow = $(taggers[requestsAssigned[i]]).parent().parent();
-                    tableRow.addClass('duplicate-error');
+                    $(taggers[requestsAssigned[i]]).closest('tr').addClass('duplicate-error');
                 }
             }
             else
             {
-                $(taggers[requestsAssigned[0]]).parent().parent().removeClass('duplicate-error');
+                $(taggers[requestsAssigned[0]]).closest('tr').removeClass('duplicate-error');
             }   
         });
         if (duplicatesPresent)
@@ -46,13 +36,12 @@
             $('#stage_button').attr("disabled", false);
     }
     
-    $('select.tagchoice').change(function() {   
+    $('select.tagchoice').change(function () {   
         if ($('#increment-tags:checkbox').is(':checked'))
         {
             chosenTagIndex = $(this).prop("selectedIndex");
             // Set subsequent tags to increment from the chosen value
-            remainingTaggers(taggers.index($(this))).each(function()
-            {
+            taggers.slice(taggers.index($(this)) + 1).each(function () {
                     $(this).prop("selectedIndex",chosenTagIndex+1);
                     // A little animation to highlight the changed rows
                     $(this).parent().parent().effect('highlight',3000);
