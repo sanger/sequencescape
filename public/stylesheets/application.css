@@ -991,7 +991,7 @@ ul#orders > li {
   position: relative;
 }
 
-ul#orders li.box {
+ul#orders li.pane {
   border: 4px solid #014f93;
   border-radius: 15px;
   -moz-border-radius: 15px;
@@ -1000,7 +1000,7 @@ ul#orders li.box {
   background: #fff;
 }
 
-ul#orders li.box .button {
+ul#orders li.pane .button {
   float: right;
 }
 
@@ -1044,14 +1044,13 @@ ul#orders .errors li {
   transition:         all 0.3s ease-in-out 0s;
 }
 
-ul#orders li.completed span.badge {
+ul#orders li.completed span.completed {
 	background:	#003E00;
 	background: -moz-radial-gradient(top left, cover, #00B200 0%, #003E00 100%);
 	background: -webkit-radial-gradient(top left, cover, #00B200 0%, #003E00 100%);
 	display: block;
 }
-
-#orders li.invalid span.invalid.badge {
+ul#orders li.invalid span.invalid {
 	background:	#920000;
 	background: -moz-radial-gradient(top left, cover, #B60000 0%, #710000 100%);
 	background: -webkit-radial-gradient(top left, cover, #B60000 0%, #710000 100%);
@@ -1164,9 +1163,15 @@ ul#orders > li.buttons {
 }
 
 .button:hover {
-  color:#FFE21A;
+  color:#FDFF4C;
   background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #00498C), color-stop(1, #004390) );
   background:-moz-linear-gradient( center top, #00498C 5%, #004390 100% );
+}
+.button.final {
+  border-color: #1C7C00;
+  background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, hsl(102, 100%, 61%)), color-stop(1, hsl(120, 100%, 33%)) );
+  background: -moz-linear-gradient( center top, #288200 5%, #003E00 100% );
+  background-color: #1C7C00;
 }
 
 .button[disabled] {
