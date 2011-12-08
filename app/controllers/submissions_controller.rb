@@ -209,10 +209,12 @@ class SubmissionsController < ApplicationController
   
   def index
     @submissions = Submission.all
+    
   end
 
   def show
     @submission = Submission.find(params[:id])
+    @presenter = SubmissionPresenter.new(current_user, params[:id])
   end
 
   ###################################################               AJAX ROUTES
