@@ -148,7 +148,9 @@
       { submission : SCAPE.submission },
       function(data) {
 
-        // Ugly hack...
+        // Ugly hack to load the order_valid flag before the returned
+        // html is displayed.
+        // Got to go....
         var tempResult = $('<div>').html(data);
 
         if(SCAPE.submission.order_valid) {
@@ -213,18 +215,39 @@
       html( $('#blank-order').html() ).
       addClass('pane active order').hide();
 
-    newOrder.find('input, select').removeAttr('disabled');
+    newOrder.find('input, select, textarea').removeAttr('disabled');
 
     newOrder.find('.submission_project_name').autocomplete({
       source    : SCAPE.user_project_names,
       minLength : 3
     });
 
-    newOrder.find('.save-order').click(saveOrderHandler);
 
     $('#blank-order').before(newOrder).fadeOut('fast',function(){
       newOrder.fadeIn();
     });
+  };
+
+
+  var deleteOrderHandler = function(event) {
+    var currentPane = $(event.target).submission('currentPane');
+
+     $.post(
+       '/orders',
+       { 
+         _method: 'delete',
+         id : currentPane.find('.delete-order').val()
+       },
+       function(response) {
+         currentPane.slideUp(function(){
+           currentPane.remove();
+           $('#add-order').removeAttr('disabled');
+
+           if ($('.order.completed').length === 0) {
+             $('#start-submission').attr('disabled', true);
+           }
+         });
+       });
   };
 
 
@@ -238,6 +261,9 @@
 
     $('ul#orders').delegate('.study_id','change', studySelectHandler);
 
+    $('ul#orders').delegate('.save-order', 'click', saveOrderHandler);
+
+    $('ul#orders').delegate('.delete-order', 'click', deleteOrderHandler);
   });
 
 })(jQuery);
