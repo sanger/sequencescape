@@ -3,7 +3,9 @@
 <% add :manager_option, "Start a Bulk Submission" => {:controller => "/bulk_submissions", :action => "new"} -%>
 <h1>Unbuilt Submissions</h1>
 
+
 <% unless @submissions.empty? %>
+<h1>All Submissions</h1>
   <div class='quota_title'>
     <strong>Submissions</strong>
   </div>
