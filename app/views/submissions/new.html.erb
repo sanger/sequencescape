@@ -48,7 +48,6 @@
     %>
     </li>
   </ul>
-  <div class="project-details" style="dislay:none;"></div>
 
   <%= text_area_tag(
     'submission[comments]',
@@ -63,6 +62,7 @@
   <%= label 'submission[lanes_of_sequencing_required]', 'Lanes of sequencing required' %>
   <%= text_field_tag 'submission[lanes_of_sequencing]', 1 %>
 
+  <span class="project-details" style="dislay:none;"></span>
 
     <%= submit_tag "✔ Save Order",
       :class    => "save-order button",
