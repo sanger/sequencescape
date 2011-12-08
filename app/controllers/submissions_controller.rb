@@ -28,7 +28,9 @@ class SubmissionCreater
 
   def build_submission!
     begin
+      debugger
       submission.built!
+      
     rescue ActiveRecord::RecordInvalid => exception
       exception.record.errors.full_messages.each do |message|
         submission.errors.add_to_base(message) # this is probably not the right place to put them
@@ -203,6 +205,14 @@ class SubmissionsController < ApplicationController
     @presenter.build_submission!
 
     redirect_to submission_path(@submission)
+  end
+  
+  def index
+    @submissions = Submission.all
+  end
+
+  def show
+    @submission = Submission.find(params[:id])
   end
 
   ###################################################               AJAX ROUTES
