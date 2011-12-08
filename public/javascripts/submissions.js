@@ -35,7 +35,7 @@
     markPaneComplete : function() {
       this.addClass('completed').
         removeClass('invalid').
-        find('input, select').attr('disabled', 'true');
+        find('input, select');
 
       // Move this to an initialised callback
       this.find('.save-order').fadeOut();
@@ -72,6 +72,8 @@
 
 
   var templateChangeHandler = function(event){
+    var currentPane = $(event.target).submission('currentPane');
+
     // When there's nothing selected reset the parameters element and exit without 
     if ($(event.target).val() === "") {
       delete SCAPE.submission.template_id;
@@ -86,7 +88,13 @@
       '/submissions/order_parameters',
       { submission: SCAPE.submission },
       function(data) {
-        $('#order-parameters').html(data).fadeIn();
+        $('#order-parameters').
+          html(data);
+
+        currentPane.submission('allFieldsComplete')?
+          currentPane.submission('markPaneComplete') : currentPane.submission('markPaneIncomplete');
+
+        $('#order-parameters').fadeIn();
       }
     );
     return true;
@@ -165,6 +173,8 @@
 
 
   var addOrderHandler = function(event) {
+    $('#order-template').find('select, input').attr('disabled',true);
+
     $('.active').removeClass('active');
     $('#start-submission').attr('disabled',true);
 
