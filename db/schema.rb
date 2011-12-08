@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111130163154) do
+ActiveRecord::Schema.define(:version => 20111206152534) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -696,7 +696,7 @@ ActiveRecord::Schema.define(:version => 20111130163154) do
   add_index "projects", ["updated_at"], :name => "index_projects_on_updated_at"
 
   create_table "quotas", :force => true do |t|
-    t.integer  "limit"
+    t.integer  "limit",            :default => 0
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
