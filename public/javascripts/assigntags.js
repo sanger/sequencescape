@@ -1,5 +1,32 @@
 (function ($, undefined) {
     var taggers = $('select.tagchoice');
+
+	$(document).ready(function() 
+	    { 
+		$.tablesorter.defaults.widgets = ['zebra'];
+		$.tablesorter.addParser({ 
+	        // set a unique id 
+	        id: 'assets', 
+	        is: function(s) { 
+	            // return false so this parser is not auto detected 
+	            return false; 
+	        }, 
+	        format: function(s) { 
+	            // format your data for normalization
+	            return s.replace(/(\d+)\s(\w+)/i,"$1"); 
+	        }, 
+	        // set type, either numeric or text 
+	        type: 'numeric' 
+	    });
+	        $("#tag-assignment").tablesorter({
+				headers: { 
+				                3: { 
+				                    sorter:'assets' 
+				                } 
+				            }
+			});
+	    } 
+	);
   
     // This callback will indicate other rows using the same tag
     function highlightDuplicates() {

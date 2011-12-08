@@ -7,7 +7,7 @@
       </div>
     <% else -%>
     <p id="increment-tags-info"><label for="increment-tags">When you change a tag, the subsequent tags will be incremented according to your selection. Uncheck this if you wish manually assign all tags.</label><input type="checkbox" checked id="increment-tags" /></p>
-      <table class="request-grid">
+      <table id="tag-assignment" class="request-grid tablesorter">
         <thead>
           <tr>
             <th class='label'>Order</th>
@@ -32,8 +32,7 @@
               <td><%= request.sample_name %></td>
               <td><%= link_to request.id, request_url(request) %></td>
               <% if request.asset  %>
-                <td class="request-asset-name">
-                  <%= link_to "#{request.asset.display_name} #{request.asset.barcode}", asset_url(request.asset), :target => "_blank" %>
+                <td class="request-asset-name"><%= link_to "#{request.asset.barcode} #{request.asset.display_name}", asset_url(request.asset), :target => "_blank" %>
                 </td>
                 <td class="request-asset-name">
                   <%= link_to(request.target_asset.display_name, asset_url(request.target_asset), :target => "_blank") if request.target_asset %>
