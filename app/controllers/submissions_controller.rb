@@ -29,6 +29,10 @@ class SubmissionCreater
   def build_submission!
     raise "NOT IMPLEMENTED YET"
   end
+  
+  def find_submission()
+    Submission.find(submission_id) if submission_id.present?
+  end
 
   def find_asset_group
     AssetGroup.find(asset_group_id) if asset_group_id.present?
@@ -188,6 +192,12 @@ class SubmissionsController < ApplicationController
 
   def edit
     @presenter = SubmissionPresenter.new(current_user, params[:submission])
+  end
+
+  # This method will build a submission
+  # decide between calling built here or in the presenter?
+  def update
+    @presenter = SubmissionCreater.new(current_user, params[:submission])
   end
 
   ###################################################               AJAX ROUTES
