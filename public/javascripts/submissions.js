@@ -68,7 +68,11 @@
   // Name spacing stuff...
   if ( window.SCAPE === undefined) { window.SCAPE = {}; }
 
-  if ( SCAPE.submission === undefined) { SCAPE.submission = {}; }
+  if ( SCAPE.submission === undefined) { 
+    SCAPE.submission = {
+      order_params : {}
+    };
+  }
 
 
   var templateChangeHandler = function(event){
@@ -182,7 +186,15 @@
   };
 
 
+  var getParamName = function(param) {
+    return $(param).attr('id').replace('submission_order_params_','');
+  };
+
   var addOrderHandler = function(event) {
+    $('#order-parameters').find('select, input').each(function(){
+      SCAPE.submission.order_params[getParamName(this)] = $(this).val();
+    });
+
     $('#order-template').find('select, input').attr('disabled',true);
 
     $('.active').removeClass('active');
@@ -208,10 +220,6 @@
     });
   };
 
-  // var startSubmissionHandler = function(event) {
-  //   $('#submission_id').val(SCAPE.submission.id);
-  //   return true;
-  // };
 
   // Document Ready stuff...
   $(function() {
@@ -223,7 +231,6 @@
 
     $('ul#orders').delegate('.study_id','change', studySelectHandler);
 
-    // $('#start-submission').live('click', startSubmissionHandler);
   });
 
 })(jQuery);
