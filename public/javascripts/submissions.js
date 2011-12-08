@@ -147,14 +147,20 @@
       '/submissions',
       { submission : SCAPE.submission },
       function(data) {
-        currentPane.find('.project-details').html(data);
+
+        // Ugly hack...
+        var tempResult = $('<div>').html(data);
 
         if(SCAPE.submission.order_valid) {
           currentPane.fadeOut(function(){
-            currentPane.detach().removeClass('active');
+            // Ugly, ugly, ugly...
+            currentPane.find('.project-details').html(tempResult.html());
+
+            currentPane.detach().removeClass('active invalid');
 
             currentPane.submission('markPaneComplete').
-              find('input, select').attr('disabled',true);
+              find('input, select').not('.delete-order').
+              attr('disabled',true);
 
             $('#order-controls').before(currentPane);
             currentPane.fadeIn();
@@ -171,6 +177,7 @@
           });
 
         } else {
+          currentPane.find('.project-details').html(data);
           currentPane.submission('markPaneInvalid');
         }
       }

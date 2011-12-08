@@ -1111,7 +1111,7 @@ ul#orders ul.sub-panel li {
 }
 
 
-#orders li.completed h3, #orders li.completed textarea, #orders li.completed input {
+#orders li.completed h3, #orders li.completed textarea, #orders li.completed input:not(.delete-order) {
 	background: #EBFFEB;
 }
 
