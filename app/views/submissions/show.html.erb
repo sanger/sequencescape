@@ -26,30 +26,27 @@
   <% end %>
   
 
-
-  <ul class="sub-panel">
-    <li >
-    <h3>Assets</h3>
+    <h4>Asset Group:</h4>
     <% if order.assets.empty? %>
      <p>There are no assets in this order!</p>
     <% else %>
-      
-        <% order.assets.each do |asset| -%>
-          <%= link_to(h(asset.display_name), asset_path(asset)) %>
-        <% end -%>
-      
+      <%= link_to(h(order.asset_group.name), study_asset_group_path(order.study, order.asset_group)) %>
     <% end %>
-    <div class="study-assets" style="display:none;"></div>
-    </li>
-
-    <li >
-    <h3>Project</h3>
+  
+    <h4>Project:</h4>
     <%= order.project.name %>
-    </li>
+    
+    <%= "<p>#{order.comments}</p>" unless order.comments.nil? %>
+
+    <% unless order.request_types.blank? %>
+      <h4>Request types</h4>
+      <ul id="request_types_for_submission">
+        <% RequestType.find(order.request_types).each do |request_type| %>
+          <li><%= request_type.name %></li>
+        <% end %>
+      </ul>
+    <% end %>
   </ul>
-  <div class="project-details" style="dislay:none;"></div>
-  <%= "<p>#{order.comments}</p>" unless order.comments.nil? %>
-  </li>
 
 </ul>
 <% end %>
@@ -61,48 +58,3 @@
 </script>
 
 <%= javascript_include_tag 'submissions' %>
-
-
-
-
-
-
-
-<div class="info">
-  Submission created at: <strong><%=h @submission.created_at.to_formatted_s(:day_full_with_time) %></strong>
-  <% if @submission.building? %>
-    <p><%= display_user_guide('Your submission is still being built.') %></p>
-  <% elsif @submission.pending? %>
-    <p><%= display_user_guide( "Your submission is currently pending.") %></p>
-    <p>It should be processed approximately 10 minutes after you have submitted it, however sometimes this may take longer.</p>
-  <% elsif @submission.processing? %>
-    <p><%= display_user_guide("Your submission is currently being processed.  This should take no longer than five minutes.") %></p>
-  <% elsif @submission.failed? %>
-    <p>Your submission has failed:</p>
-    <p><strong><%= @submission.message %></strong></p>
-  <% elsif @submission.ready? %>
-    <p>Your submission has been <strong>processed</strong>.</p>
-  <% else %>
-    <p>Your submission is in an unknown state (contact support).</p>
-  <% end %>
-
-  <% @submission.orders.each do |order| %>
-    <% unless order.assets.empty? %>
-      <h3>Assets</h3>
-      <ul>
-        <% order.assets.each do |asset| -%>
-          <li><%= link_to(h(asset.display_name), asset_path(asset)) %></li>
-        <% end -%>
-      </ul>
-    <% end %>
-
-    <% unless order.request_types.blank? %>
-      <h3>Request types</h3>
-      <ul id="request_types_for_submission">
-        <% RequestType.find(order.request_types).each do |request_type| %>
-          <li><%= request_type.name %></li>
-        <% end %>
-      </ul>
-    <% end %>
-  <%end%>
-</div>
