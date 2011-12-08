@@ -37,6 +37,10 @@ class Submission < ActiveRecord::Base
          {:study => :uuid_object },
          :user]}
   ]}
+  
+  named_scope :building, :conditions => { :state => "building" }
+  named_scope :pending, :conditions => { :state => "pending" }
+  named_scope :ready, :conditions => { :state => "ready" }
 
   # Before destroying this instance we should cancel all of the requests it has made
   before_destroy :cancel_all_requests_on_destruction

@@ -204,12 +204,14 @@ class SubmissionsController < ApplicationController
 
     @presenter.build_submission!
 
-    redirect_to submission_path(@submission)
+    redirect_to submission_path(@presenter.submission)
   end
   
   def index
     @submissions = Submission.all
-    
+    @building = Submission.building
+    @pending = Submission.pending
+    @ready = Submission.ready
   end
 
   def show
