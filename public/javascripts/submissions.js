@@ -38,7 +38,7 @@
         find('input, select');
 
       // Move this to an initialised callback
-      this.find('.save-order').fadeOut();
+      this.find('.save-order').hide();
 
       // Move this to an initialised callback
       $('#add-order').removeAttr('disabled');
@@ -68,7 +68,7 @@
   // Name spacing stuff...
   if ( window.SCAPE === undefined) { window.SCAPE = {}; }
 
-  if ( SCAPE.submission_details === undefined) { SCAPE.submission = {}; }
+  if ( SCAPE.submission === undefined) { SCAPE.submission = {}; }
 
 
   var templateChangeHandler = function(event){
@@ -148,14 +148,24 @@
         if(SCAPE.submission.order_valid) {
           currentPane.fadeOut(function(){
             currentPane.detach().removeClass('active');
-            currentPane.submission('markPaneComplete');
+
+            currentPane.submission('markPaneComplete').
+              find('input, select').attr('disabled',true);
+
             $('#order-controls').before(currentPane);
             currentPane.fadeIn();
+
             $('#blank-order').fadeIn();
 
+            $('#submission_id').val(SCAPE.submission.id);
             $('#start-submission').removeAttr('disabled');
+
             $('.pane').not('#blank-order').addClass('active');
+
+            // This temporarily limits the order to one per submission...
+            $('#add-order').attr('disabled', true);
           });
+
         } else {
           currentPane.submission('markPaneInvalid');
         }
@@ -181,7 +191,7 @@
     $('#add-order').attr('disabled', true);
 
     var newOrder = $('<li>').
-      html($('#blank-order').html()).
+      html( $('#blank-order').html() ).
       addClass('pane active order').hide();
 
     newOrder.find('input, select').removeAttr('disabled');
@@ -198,6 +208,10 @@
     });
   };
 
+  // var startSubmissionHandler = function(event) {
+  //   $('#submission_id').val(SCAPE.submission.id);
+  //   return true;
+  // };
 
   // Document Ready stuff...
   $(function() {
@@ -208,6 +222,8 @@
     $('#add-order').live('click', addOrderHandler);
 
     $('ul#orders').delegate('.study_id','change', studySelectHandler);
+
+    // $('#start-submission').live('click', startSubmissionHandler);
   });
 
 })(jQuery);

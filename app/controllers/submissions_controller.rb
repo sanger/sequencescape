@@ -4,7 +4,7 @@ class SubmissionCreater
   InvalidInputException    = Class.new(SubmissionsCreaterError)
 
   ATTRIBUTES = [
-    :submission_id,
+    :id,
     :template_id,
     :study_id,
     :submission_id,
@@ -78,6 +78,8 @@ class SubmissionCreater
         new_submission = order.create_submission(:user => order.user)
         new_submission.save!
         order.save!
+
+        @submission = new_submission
       end
 
     rescue Quota::Error => quota_exception
@@ -124,7 +126,7 @@ class SubmissionCreater
   end
 
   def submission
-    @submission ||= Submission.find(submission_id)
+    @submission ||= Submission.find(id)
   end
 
   # Returns the SubmissionTemplate (OrderTemplate) to be used for this Submission.
@@ -144,7 +146,26 @@ class SubmissionCreater
 end
 
 
+# TODO[sd9]: Refactor these presenters to a shared base class...
+class SubmissionPresenter
+  ATTRIBUTES = [ :id ]
 
+  attr_accessor *ATTRIBUTES
+
+  def initialize(user, submission_attributes = {})
+    @user = user
+
+    ATTRIBUTES.each do |attribute|
+      send("#{attribute}=", submission_attributes[attribute])
+    end
+
+  end
+
+  def submission
+    @submission ||= Submission.find(id)
+  end
+
+end
 
 
 
@@ -156,7 +177,7 @@ class SubmissionsController < ApplicationController
 
   def create
     @presenter = SubmissionCreater.new(current_user, params[:submission])
-     
+
     if @presenter.save
       render :partial => 'order', :layout => false
     else
@@ -166,7 +187,7 @@ class SubmissionsController < ApplicationController
   end
 
   def edit
-    @presenter = SubmissionCreater.new(current_user, params[:submission])
+    @presenter = SubmissionPresenter.new(current_user, params[:submission])
   end
 
   ###################################################               AJAX ROUTES
