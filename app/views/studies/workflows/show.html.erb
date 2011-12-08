@@ -43,7 +43,7 @@
   <% add :menu, "Edit" => edit_study_url(@study) -%>
 <% end %>
 <% add :admin_option, "Manage" => url_for(:controller => "admin/studies", :action => "show", :id => @study.id) -%>
-<% add :menu, "Submissions" => study_workflow_submissions_path(@study, @workflow) -%>
+<% add :menu, "Submissions" => submissions_path -%>
 
 <% add :menu, "Qc Reports" => study_reports_study_path(@study) -%>
 
@@ -88,7 +88,7 @@
           <br />
           <%= render :partial => "items", :locals => {:summary => @summary} %>
         <% else -%>
-          <%= display_user_guide(I18n.t('studies.guidance.now_create_submission'), template_chooser_study_workflow_submissions_path(@study, @workflow)) %>
+          <%= display_user_guide(I18n.t('studies.guidance.now_create_submission'), new_submission_path) %>
           <% @workflows.each do |workflow| -%>
             <% if workflow != @workflow %>
               <%= display_user_guide("Or maybe you want to view #{link_to workflow.name, study_workflow_path(@study, workflow) }")%>
