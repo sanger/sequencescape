@@ -1077,11 +1077,11 @@ ul#orders ul.sub-panel li {
   width: 420px;
   height: 50px;
   opacity: 1;
-  border: 1px solid hsl(0, 0%, 63%);
+  border: 2px solid hsl(0, 0%, 86%);
   margin: 10px 0;
   float: right;
   height: 30px;
-  border-radius: 4px;
+  border-radius: 8px;
 
   padding: 15px;
   list-style: none outside none;
@@ -1169,8 +1169,15 @@ ul#orders > li.buttons {
 }
 .button.final {
   border-color: #1C7C00;
-  background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, hsl(102, 100%, 27%)), color-stop(1, hsl(120, 100%, 20%)) );
-  background: -moz-linear-gradient( center top, hsl(102, 100%, 27%) 5%, hsl(120, 100%, 20%) 100% );
+  background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, hsl(102, 100%, 21%)), color-stop(1, hsl(120, 100%, 14%)) );
+  background: -moz-linear-gradient( center top, hsl(102, 100%, 21%) 5%, hsl(120, 100%, 14%) 100% );
+  background-color: #1C7C00;
+}
+
+.button.final:hover {
+  color: hsl(56, 32%, 97%);
+  background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, hsl(102, 100%, 14%)), color-stop(1, hsl(120, 100%, 16%)) );
+  background: -moz-linear-gradient( center top, hsl(102, 100%, 14%) 5%, hsl(120, 100%, 16%) 100% );
   background-color: #1C7C00;
 }
 
