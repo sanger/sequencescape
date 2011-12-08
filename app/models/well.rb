@@ -21,14 +21,14 @@ class Well < Aliquot::Receptacle
   named_scope :pooled_as_target_by, lambda { |type|
     {
       :joins      => 'LEFT JOIN requests ON assets.id=target_asset_id',
-      :conditions => [ '(requests.sti_type IS NULL OR requests.sti_type IN (?))', [ type, *Class.subclasses_of(type) ].map(&:name) ],
+      :conditions => [ '(requests.sti_type IS NULL OR requests.sti_type IN (?)) AND requests.submission_id IS NOT NULL', [ type, *Class.subclasses_of(type) ].map(&:name) ],
       :select     => 'assets.*, submission_id AS pool_id'
     }
   }
   named_scope :pooled_as_source_by, lambda { |type|
     {
       :joins      => 'LEFT JOIN requests ON assets.id=asset_id',
-      :conditions => [ '(requests.sti_type IS NULL OR requests.sti_type IN (?))', [ type, *Class.subclasses_of(type) ].map(&:name) ],
+      :conditions => [ '(requests.sti_type IS NULL OR requests.sti_type IN (?)) AND requests.submission_id IS NOT NULL', [ type, *Class.subclasses_of(type) ].map(&:name) ],
       :select     => 'assets.*, submission_id AS pool_id'
     }
   }
