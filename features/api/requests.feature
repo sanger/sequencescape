@@ -47,8 +47,8 @@ Feature: Access requests through the API
 
             "type": "<request type name>",
             "fragment_size": {
-              "from": "999",
-              "to": "1"
+              "from": "<fragment size from>",
+              "to": "<fragment size to>"
             },
 
             "source_asset": {
@@ -68,9 +68,9 @@ Feature: Access requests through the API
       """
 
     Examples:
-      | request type                 | request type name            | asset type    |
-      | library creation             | Library creation             | sample_tubes  |
-      | multiplexed library creation | Multiplexed library creation | sample_tubes  |
-      | sequencing                   | Paired end sequencing        | library_tubes |
-      | sequencing                   | Single ended sequencing      | library_tubes |
+      | request type                 | request type name            | asset type    | fragment size from | fragment size to |
+      | library creation             | Library creation             | sample_tubes  | 1                  | 20               |
+      | multiplexed library creation | Multiplexed library creation | sample_tubes  | 1                  | 20               |
+      | sequencing                   | Paired end sequencing        | library_tubes | 1                  | 21               |
+      | sequencing                   | Single ended sequencing      | library_tubes | 1                  | 21               |
 

@@ -15,6 +15,12 @@ Given /^a batch in "MX Library Preparation \[NEW\]" has been setup for feature 4
 
   submission = Factory::submission(
     :asset_group   => asset_group,
+    :request_options => {
+      :read_length => 76,
+      :fragment_size_required_from => 1,
+      :fragment_size_required_to => 20,
+      :library_type => 'Standard'
+    },
     :request_types => [
       RequestType.find_by_key('multiplexed_library_creation'),
       RequestType.find_by_key('paired_end_sequencing')

@@ -58,8 +58,8 @@ Feature: Interacting with requests through the API
             "source_asset_name": "Tube",
 						"source_asset_barcode_prefix": "NT",
 						"target_asset_barcode_prefix": "DN",
-						"fragment_size_required_to": "1",
-						"fragment_size_required_from": "999",
+						"fragment_size_required_to": "20",
+						"fragment_size_required_from": "1",
             "library_type": "Standard",
             
             "priority": 0,
@@ -120,8 +120,8 @@ Feature: Interacting with requests through the API
             "source_asset_name": "Tube",
 						"source_asset_barcode_prefix": "NT",
 						"target_asset_barcode_prefix": "DN",
-						"fragment_size_required_to": "1",
-						"fragment_size_required_from": "999",
+						"fragment_size_required_to": "21",
+						"fragment_size_required_from": "1",
 
             "read_length": 76,
             
@@ -182,8 +182,8 @@ Feature: Interacting with requests through the API
           "target_asset_closed": false,
 					"source_asset_barcode_prefix": "DN",
 					"target_asset_barcode_prefix": "DN",
-					"fragment_size_required_to": "1",
-					"fragment_size_required_from": "999",
+					"fragment_size_required_to": "20",
+					"fragment_size_required_from": "1",
 
           "library_type": "Standard",
           
@@ -248,8 +248,8 @@ Feature: Interacting with requests through the API
 
 					"source_asset_barcode_prefix": "DN",
 					"target_asset_barcode_prefix": "DN",
-					"fragment_size_required_to": "1",
-					"fragment_size_required_from": "999",
+					"fragment_size_required_to": "21",
+					"fragment_size_required_from": "1",
 
           "read_length": 76,
           
@@ -316,8 +316,8 @@ Feature: Interacting with requests through the API
 
 					"source_asset_barcode_prefix": "DN",
 					"target_asset_barcode_prefix": "DN",
-					"fragment_size_required_to": "1",
-					"fragment_size_required_from": "999",
+					"fragment_size_required_to": "21",
+					"fragment_size_required_from": "1",
 
           "read_length": 76,
           
@@ -377,8 +377,8 @@ Feature: Interacting with requests through the API
             "source_asset_name": "Tube",
 						"source_asset_barcode_prefix": "NT",
 						"target_asset_barcode_prefix": "DN",
-						"fragment_size_required_to": "1",
-						"fragment_size_required_from": "999",
+						"fragment_size_required_to": "20",
+						"fragment_size_required_from": "1",
 
             "library_type": "Standard",
             

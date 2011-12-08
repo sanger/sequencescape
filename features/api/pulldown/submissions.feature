@@ -24,10 +24,10 @@ Feature: Creating submissions for pulldown
   Scenario: A submission should error if you set an incorrect request option on construction
     Given the UUID for the submission template "Pulldown WGS - HiSeq paired end sequencing" is "00000000-1111-2222-3333-444444444444"
 
-    When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/submissions":
+    When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/orders":
       """
       {
-        "submission": {
+        "order": {
           "project": "22222222-3333-4444-5555-000000000001",
           "study": "22222222-3333-4444-5555-000000000000",
           "asset_group_name": "Testing the pulldown submissions",
@@ -51,10 +51,10 @@ Feature: Creating submissions for pulldown
   Scenario Outline: A submission should not error if you create it without required options, but does if you build it
     Given the UUID for the submission template "<pipeline> - HiSeq paired end sequencing" is "00000000-1111-2222-3333-444444444444"
 
-    When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/submissions":
+    When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/orders":
       """
       {
-        "submission": {
+        "order": {
           "project": "22222222-3333-4444-5555-000000000001",
           "study": "22222222-3333-4444-5555-000000000000",
           "asset_group_name": "Testing the pulldown submissions"
@@ -63,10 +63,13 @@ Feature: Creating submissions for pulldown
       """
     Then the HTTP response should be "201 Created"
 
-    When I POST the following JSON to the API path "/11111111-2222-3333-4444-555555555555/submit":
+    When I POST the following JSON to the API path "/submissions":
       """
       {
         "submission": {
+          "orders": [
+            "11111111-2222-3333-4444-666666666666"
+          ]
         }
       }
       """
@@ -75,7 +78,7 @@ Feature: Creating submissions for pulldown
       """
       {
         "content": {
-          "request_options.read_length": [ "is not included in the list" ]
+          "orders.request_options.read_length": [ "is not included in the list" ]
         }
       }
       """

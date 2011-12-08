@@ -36,6 +36,7 @@ Feature: Interacting with submissions through the API
       | study   | 22222222-3333-4444-5555-000000000000 |
       | project | 22222222-3333-4444-5555-000000000001 |
       | assets  | 33333333-4444-5555-6666-000000000001,33333333-4444-5555-6666-000000000002,33333333-4444-5555-6666-000000000003 |
+      | request_options | read_length: 76, fragment_size_required_from: 100, fragment_size_required_to: 200, library_type: qPCR only |
       And the order with UUID "11111111-2222-3333-4444-666666666666" has been added to a submission
       
     When I GET the API path "/orders/11111111-2222-3333-4444-666666666666"
@@ -58,7 +59,17 @@ Feature: Interacting with submissions through the API
               "33333333-4444-5555-6666-000000000001",
               "33333333-4444-5555-6666-000000000002",
               "33333333-4444-5555-6666-000000000003"
-            ]
+            ],
+            "request_options":
+            {
+              "read_length": 76,
+              "fragment_size_required": 
+              {
+                "from": 100, 
+                "to": 200
+              },
+             "library_type": "qPCR only"
+            }
           }
          } 
       """

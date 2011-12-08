@@ -172,51 +172,68 @@ Factory.define :request_metadata, :class => Request::Metadata do |m|
   m.read_length 76
 end
 
+# Automatically generated request types
+Factory.define(:request_metadata_for_request_type_, :parent => :request_metadata) {}
+
+# Pre-HiSeq sequencing
+Factory.define :request_metadata_for_standard_sequencing, :parent => :request_metadata do |m|
+  m.fragment_size_required_from   1
+  m.fragment_size_required_to     21
+  m.read_length                   76
+end
+Factory.define(:request_metadata_for_single_ended_sequencing, :parent => :request_metadata_for_standard_sequencing) {}
+Factory.define(:request_metadata_for_paired_end_sequencing, :parent => :request_metadata_for_standard_sequencing) {}
+
+# HiSeq sequencing
+Factory.define :request_metadata_for_hiseq_sequencing, :parent => :request_metadata do |m|
+  m.fragment_size_required_from   1
+  m.fragment_size_required_to     21
+  m.read_length                   100
+end
+Factory.define(:request_metadata_for_hiseq_paired_end_sequencing, :parent => :request_metadata_for_hiseq_sequencing) {}
+Factory.define(:request_metadata_for_single_ended_hi_seq_sequencing, :parent => :request_metadata_for_hiseq_sequencing) {}
+
+# Library manufacture
 Factory.define :request_metadata_for_library_manufacture, :parent => :request_metadata do |m|
   m.fragment_size_required_from   1
   m.fragment_size_required_to     20
   m.library_type                  "Standard"
 end
-
-# definef request_metadata_for ... factory for request types needing default metadata fragment size
-Request::LibraryManufacture.included_in_classes.each do |klass|
-  factory_name =  :"request_metadata_for_#{klass.name.underscore}"
-  next if Factory.factories[factory_name]
-  Factory.define factory_name , :parent => :request_metadata_for_library_manufacture  do
-  end
-end
-
-Factory.define :request_metadata_for_sequencing, :parent => :request_metadata do |m|
-  m.fragment_size_required_from   1
-  m.fragment_size_required_to     21
-end
+Factory.define(:request_metadata_for_library_creation, :parent => :request_metadata_for_library_manufacture) {}
+Factory.define(:request_metadata_for_multiplexed_library_creation, :parent => :request_metadata_for_library_manufacture) {}
+Factory.define(:request_metadata_for_mx_library_preparation_new, :parent => :request_metadata_for_library_manufacture) {}
+Factory.define(:request_metadata_for_pulldown_library_creation, :parent => :request_metadata_for_library_manufacture) {}
+Factory.define(:request_metadata_for_pulldown_multiplex_library_preparation, :parent => :request_metadata_for_library_manufacture) {}
 
 # set default  metadata factories to every request types which have been defined yet
 RequestType.all.each do |rt|
-  factory_name =  :"request_metadata_for_#{rt.request_class_name.underscore}"
+  factory_name =  :"request_metadata_for_#{rt.name.downcase.gsub(/[^a-z]+/, '_')}"
   next if Factory.factories[factory_name]
-  case factory_name.to_s
-  when  /sequencing/
-    Factory.define factory_name , :parent => :request_metadata_for_sequencing do
-    end
-  else
-    Factory.define factory_name , :parent => :request_metadata do
-    end
-  end
+  Factory.define(factory_name, :parent => :request_metadata) {}
 end
 
 Factory.define :request_with_submission, :class => Request do |request|
-  request.request_type      {|rt|         rt.association(:request_type)}
+  request.request_type { |rt| rt.association(:request_type) }
+
+  # Ensure that the request metadata is correctly setup based on the request type
+  request.after_build do |request|
+    next if request.request_type.nil?
+    request.request_metadata = Factory.build(:"request_metadata_for_#{request.request_type.name.downcase.gsub(/[^a-z]+/, '_')}") if request.request_metadata.new_record?
+    request.sti_type = request.request_type.request_class_name
+  end
+
   # We use after_create so this is called after the after_build of derived class
   # That leave a chance to children factory to build asset beforehand
   request.after_build do |request|
-    request.submission = Factory::submission(:workflow => request.workflow,
-                                          :study => request.initial_study,
-                                          :project => request.initial_project,
-                                          :request_types => [request.request_type.try(:id)].compact.map(&:to_s),
-                                          :user => request.user,
-                                          :assets => [request.asset].compact
-                                          ) unless request.submission
+    request.submission = Factory::submission(
+      :workflow => request.workflow,
+      :study => request.initial_study,
+      :project => request.initial_project,
+      :request_types => [request.request_type.try(:id)].compact.map(&:to_s),
+      :user => request.user,
+      :assets => [request.asset].compact,
+      :request_options => request.request_metadata.attributes
+    ) unless request.submission
   end
 end
 
@@ -229,12 +246,6 @@ Factory.define :request_without_assets, :parent => :request_with_submission do |
   request.study             {|study|      study.association(:study)}
   request.user              {|user|       user.association(:user)}
   request.workflow          {|workflow|   workflow.association(:submission_workflow)}
-
-  request.after_build do |request|
-    next unless request.request_type
-    request.request_metadata = Factory(:"request_metadata_for_#{request.request_type.request_class_name.underscore}", :request => request)
-    request.sti_type =  request.request_type.request_class_name
-  end
 end
 
 Factory.define :request, :parent => :request_without_assets do |request|

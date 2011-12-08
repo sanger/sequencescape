@@ -5,7 +5,7 @@ class BatchTest < ActiveSupport::TestCase
     @pipeline = Pipeline.create!(
       :name => 'Test pipeline',
       :workflow => LabInterface::Workflow.create!(:item_limit => 8),
-      :request_type => RequestType.create!(:request_class => Request, :order => 1)
+      :request_type => Factory(:request_type, :request_class => Request, :order => 1)
     )
   end
 
@@ -680,58 +680,42 @@ class BatchTest < ActiveSupport::TestCase
     end
 
     context "#swap" do
-      setup do
-        @batch = Factory :batch, :pipeline => @pipeline
-        @batch_2 = Factory :batch, :pipeline => @pipeline
+      # We must test swapping requests at different and same positions, as well as ones which would clash if not adjusted
+      [
+        [ 3, 4 ],
+        [ 4, 4 ],
+        [ 2, 1 ]
+      ].each do |left_position, right_position|
+        context "when swapping #{left_position} and #{right_position}" do
+          setup do
+            # Create a batch with a couple of requests positioned appropriately
+            @left_batch            = Factory :batch, :pipeline => @pipeline
+            @original_left_request = Factory :batch_request, :batch_id => @left_batch.id, :position => left_position
+            Factory :batch_request, :batch_id => @left_batch.id, :position => 1
 
-        @user = Factory :user
+            # Now create another batch that we'll swap the requests between
+            @right_batch            = Factory :batch, :pipeline => @pipeline
+            @original_right_request = Factory :batch_request, :batch_id => @right_batch.id, :position => right_position
+            Factory :batch_request, :batch_id => @right_batch.id, :position => 2
 
-        @started_request = mock("Request")
-        @started_request.stubs(:save).returns(true)
-        @cancelled_request = mock("Request")
-        @asset1 = Factory :asset
-        @asset2 = Factory :asset
+            @user = Factory :user
+          end
 
-        @batch_request1 = Factory :batch_request, :batch_id => @batch.id, :position => 1
-        @batch_request2 = Factory :batch_request, :batch_id => @batch.id, :position => 3
-        @batch_2_request1 = Factory :batch_request, :batch_id => @batch_2.id, :position => 2
-        @batch_2_request2 = Factory :batch_request, :batch_id => @batch_2.id, :position => 4
+          should "swap lanes given 2 batches and swap requests." do
+            assert(
+              @left_batch.swap(
+                @user, {
+                  "batch_1" => {"id" => @left_batch.id.to_s,  "lane" => left_position.to_s },
+                  "batch_2" => {"id" => @right_batch.id.to_s, "lane" => right_position.to_s }
+                }
+             )
+            )
 
-        @batch.stubs(:requests).returns([@cancelled_request, @started_request])
-        @batch.stubs(:batch_requests).returns([@batch_request1, @batch_request2])
-        @batch_2.stubs(:requests).returns([@cancelled_request, @started_request])
-        @batch_2.stubs(:batch_requests).returns([@batch_2_request1, @batch_2_request2])
-
-        @started_request.stubs(:state).returns("started")
-        @started_request.stubs(:target_asset).returns(@asset1)
-        @cancelled_request.stubs(:target_asset).returns(@asset2)
-        @cancelled_request.stubs(:state).returns("cancelled")
-        @started_request.stubs(:state=).returns(true)
-        @number_of_batch_requests = BatchRequest.count
-        @number_of_assets = Asset.count
-      end
-
-      should "swap lanes given 2 batches and swap requests." do
-        assert ! @batch.batch_requests.empty?
-
-        @request_id_1= @batch_request2.request_id
-        @request_id_2= @batch_2_request2.request_id
-
-        assert @batch.swap(@user, {
-                            "batch_1" => {"id" => "#{@batch.id}", "lane" => "#{@batch_request2.position}" },
-                            "batch_2" => {"id" => "#{@batch_2.id}", "lane" => "#{@batch_2_request2.position}"}
-                            })
-        @batch = Batch.find(@batch)
-        @batch_2 = Batch.find(@batch_2)
-
-        @new_request_id_1 = @batch.batch_requests.select { |br| br if br.position==@batch_request2.position}.first
-        @new_request_id_2 = @batch_2.batch_requests.select { |br| br if br.position==@batch_2_request2.position}.first
-
-        assert  @new_request_id_1.request_id, @request_id_2
-        assert_equal 2, @batch.batch_requests.size
-
-        assert  @new_request_id_2.request_id, @request_id_1
-        assert_equal 2, @batch_2.batch_requests.size
+            # The two requests should have been swapped
+            assert_equal(@original_right_request.request, @left_batch.batch_requests.at_position(left_position).first.request)
+            assert_equal(@original_left_request.request,  @right_batch.batch_requests.at_position(right_position).first.request)
+          end
+        end
       end
     end
 

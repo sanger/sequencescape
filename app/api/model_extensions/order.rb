@@ -11,7 +11,7 @@ module ModelExtensions::Order
     # request options have been specified.  Once they are specified they are always checked, unless they are
     # completely blanked.
     def validate_request_options?
-      self.left_building_state? or not self.request_options.blank?
+      not building? or not self.request_options.blank?
     end
     private :validate_request_options?
 
@@ -22,7 +22,7 @@ module ModelExtensions::Order
     # If this returns true then we check values that have not been set, otherwise we can ignore them.  This would
     # mean that we should not require values that are unset, until we're moving out of the building state.
     def include_unset_values?
-      self.left_building_state?
+      not building?
     end
 
     def request_options_for_validation
