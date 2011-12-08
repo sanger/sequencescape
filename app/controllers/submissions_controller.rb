@@ -7,6 +7,7 @@ class SubmissionCreater
     :submission_id,
     :template_id,
     :study_id,
+    :submission_id,
     :project_name,
     :lanes_of_sequencing_required,
     :comments,
@@ -66,7 +67,6 @@ class SubmissionCreater
   end
 
   def project
-
     @project ||= Project.find_by_name(@project_name)
   end
 
@@ -96,7 +96,6 @@ class SubmissionCreater
     order.errors.empty?
   end
 
-
   # def asset_source_details_from_request_parameters!
   #   # Raise an error if someone tries to do multiple things all at once!
   #   input_choice = [ :asset_group, :asset_ids, :asset_names, :sample_names ].select { |k| not params[k].blank? }
@@ -122,6 +121,10 @@ class SubmissionCreater
 
   def studies
     @studies ||= @user.interesting_studies
+  end
+
+  def submission
+    @submission ||= Submission.find(submission_id)
   end
 
   # Returns the SubmissionTemplate (OrderTemplate) to be used for this Submission.
@@ -163,6 +166,7 @@ class SubmissionsController < ApplicationController
   end
 
   def edit
+    @presenter = SubmissionCreater.new(current_user, params[:submission])
   end
 
   ###################################################               AJAX ROUTES
