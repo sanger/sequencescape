@@ -1,4 +1,4 @@
 <% add :title, "Submission Inbox" -%>
 <% add :manager_option, "Start a new Submission" => new_submission_path -%>
-
+<% add :manager_option, "Start a Bulk Submission" => {:controller => "/bulk_submissions", :action => "new"} -%>
 <h1>Unbuilt Submissions</h1>
