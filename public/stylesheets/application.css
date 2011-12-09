@@ -1001,7 +1001,12 @@ ul#orders li.pane {
 }
 
 ul#orders li.pane .button {
-  float: right;
+}
+
+ul#orders li.order .save-buttons {
+  position: absolute;
+  bottom: -20px;
+  right: 10px;
 }
 
 
