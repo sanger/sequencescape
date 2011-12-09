@@ -207,9 +207,9 @@ class SubmissionsController < ApplicationController
   end
   
   def index
-    @building = Submission.building(:order => "created_at DESC")
-    @pending = Submission.pending(:order => "created_at DESC")
-    @ready = Submission.ready(:order => "updated_at DESC", :limit => 10)
+    @building = Submission.building.find(:all, :order => "created_at DESC", :conditions => { :user_id => current_user.id })
+    @pending = Submission.pending.find(:all, :order => "created_at DESC", :conditions => { :user_id => current_user.id })
+    @ready = Submission.ready.find(:all, :limit => 10, :order => "created_at DESC", :conditions => { :user_id => current_user.id })
   end
 
   def show
