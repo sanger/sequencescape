@@ -13,6 +13,10 @@ Transform /^tag layout with ID (\d+)$/ do |id|
   TagLayout.find(id)
 end
 
+Given /^the tag group for (tag layout template .+) has (\d+) tags$/ do |template, count|
+  (1..count.to_i).each { |index| template.tag_group.tags.create!(:map_id => index, :oligo => "TAG#{index}") }
+end
+
 Given /^the tag group for (#{TAG_LAYOUT_TEMPLATE_REGEXP}|#{TAG_LAYOUT_REGEXP}) is called "([^"]+)"$/ do |target, group_name|
   target.tag_group.update_attributes!(:name => group_name)
 end
@@ -58,7 +62,7 @@ Given /^the UUID for the plate associated with the tag layout with ID (\d+) is "
 end
 
 def pool_by_strategy(source, destination, pooling_strategy)
-  raise StandardError, "Pooling strategy does not fit plate size #{source.size}: #{pooling_strategy.inspect}" unless pooling_strategy.sum == source.size
+  Rails.logger.info("Pooling strategy does not fit plate size #{source.size}: #{pooling_strategy.inspect}") unless pooling_strategy.sum == source.size
 
   source_wells, destination_wells = [], []
   source.wells.walk_in_column_major_order { |well,_| source_wells << well }

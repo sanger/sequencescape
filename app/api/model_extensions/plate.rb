@@ -42,10 +42,13 @@ module ModelExtensions::Plate
   end
 
   # Returns a hash from the submission for the pools to the wells that form that pool on this plate.  This is
-  # not necessarily efficient but it is correct.
+  # not necessarily efficient but it is correct.  Unpooled wells, those without submissions, are completely
+  # ignored within the returned result.
   def pools
     ActiveSupport::OrderedHash.new.tap do |pools|
-      wells.walk_in_pools { |pool_id, wells| pools[pool_id] = wells.map(&:map).map(&:description) }
+      wells.walk_in_pools do |pool_id, wells|
+        pools[pool_id] = wells.map(&:map).map(&:description).compact unless pool_id.blank?
+      end
     end
   end
 end
