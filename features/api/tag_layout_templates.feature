@@ -1082,3 +1082,258 @@ Feature: Access tag layout templates through the API
       | F12  | TTGG |
       | G12  | AATT |
       | H12  | CCGG |
+
+  @tag_layout @create @barcode-service
+  Scenario: Creating a tag layout of an entire plate using 96 tags
+    Given the plate barcode webservice returns "1000001..1000002"
+
+    Given the column order tag layout template "Test tag layout" exists
+      And the UUID for the tag layout template "Test tag layout" is "00000000-1111-2222-3333-444444444444"
+      And the tag group for tag layout template "Test tag layout" is called "Tag group 1"
+      And the tag group for tag layout template "Test tag layout" has 96 tags
+      And the UUID of the next tag layout created will be "00000000-1111-2222-3333-000000000002"
+
+    Given a "Stock plate" plate called "Testing the API" exists
+      And the UUID for the plate "Testing the API" is "11111111-2222-3333-4444-000000000002"
+      And all wells on the plate "Testing the API" have unique samples
+
+    Given a "Stock plate" plate called "Testing the tagging" exists
+      And the UUID for the plate "Testing the tagging" is "11111111-2222-3333-4444-000000000001"
+      And the wells for the plate "Testing the API" have been pooled to the plate "Testing the tagging" according to the pooling strategy 96
+
+    When I make an authorised POST with the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
+      """
+      {
+        "tag_layout": {
+          "plate": "11111111-2222-3333-4444-000000000001"
+        }
+      }
+      """
+    Then the HTTP response should be "201 Created"
+
+    Then the tags assigned to the plate "Testing the tagging" should be:
+      | well | tag   |
+      | A1   | TAG1  |
+      | B1   | TAG2  |
+      | C1   | TAG3  |
+      | D1   | TAG4  |
+      | E1   | TAG5  |
+      | F1   | TAG6  |
+      | G1   | TAG7  |
+      | H1   | TAG8  |
+      | A2   | TAG9  |
+      | B2   | TAG10 |
+      | C2   | TAG11 |
+      | D2   | TAG12 |
+      | E2   | TAG13 |
+      | F2   | TAG14 |
+      | G2   | TAG15 |
+      | H2   | TAG16 |
+      | A3   | TAG17 |
+      | B3   | TAG18 |
+      | C3   | TAG19 |
+      | D3   | TAG20 |
+      | E3   | TAG21 |
+      | F3   | TAG22 |
+      | G3   | TAG23 |
+      | H3   | TAG24 |
+      | A4   | TAG25 |
+      | B4   | TAG26 |
+      | C4   | TAG27 |
+      | D4   | TAG28 |
+      | E4   | TAG29 |
+      | F4   | TAG30 |
+      | G4   | TAG31 |
+      | H4   | TAG32 |
+      | A5   | TAG33 |
+      | B5   | TAG34 |
+      | C5   | TAG35 |
+      | D5   | TAG36 |
+      | E5   | TAG37 |
+      | F5   | TAG38 |
+      | G5   | TAG39 |
+      | H5   | TAG40 |
+      | A6   | TAG41 |
+      | B6   | TAG42 |
+      | C6   | TAG43 |
+      | D6   | TAG44 |
+      | E6   | TAG45 |
+      | F6   | TAG46 |
+      | G6   | TAG47 |
+      | H6   | TAG48 |
+      | A7   | TAG49 |
+      | B7   | TAG50 |
+      | C7   | TAG51 |
+      | D7   | TAG52 |
+      | E7   | TAG53 |
+      | F7   | TAG54 |
+      | G7   | TAG55 |
+      | H7   | TAG56 |
+      | A8   | TAG57 |
+      | B8   | TAG58 |
+      | C8   | TAG59 |
+      | D8   | TAG60 |
+      | E8   | TAG61 |
+      | F8   | TAG62 |
+      | G8   | TAG63 |
+      | H8   | TAG64 |
+      | A9   | TAG65 |
+      | B9   | TAG66 |
+      | C9   | TAG67 |
+      | D9   | TAG68 |
+      | E9   | TAG69 |
+      | F9   | TAG70 |
+      | G9   | TAG71 |
+      | H9   | TAG72 |
+      | A10  | TAG73 |
+      | B10  | TAG74 |
+      | C10  | TAG75 |
+      | D10  | TAG76 |
+      | E10  | TAG77 |
+      | F10  | TAG78 |
+      | G10  | TAG79 |
+      | H10  | TAG80 |
+      | A11  | TAG81 |
+      | B11  | TAG82 |
+      | C11  | TAG83 |
+      | D11  | TAG84 |
+      | E11  | TAG85 |
+      | F11  | TAG86 |
+      | G11  | TAG87 |
+      | H11  | TAG88 |
+      | A12  | TAG89 |
+      | B12  | TAG90 |
+      | C12  | TAG91 |
+      | D12  | TAG92 |
+      | E12  | TAG93 |
+      | F12  | TAG94 |
+      | G12  | TAG95 |
+      | H12  | TAG96 |
+
+  @tag_layout @create @barcode-service
+  Scenario: Creating a tag layout where one of the wells is empty
+    Given the plate barcode webservice returns "1000001..1000002"
+
+    Given the column order tag layout template "Test tag layout" exists
+      And the UUID for the tag layout template "Test tag layout" is "00000000-1111-2222-3333-444444444444"
+      And the tag group for tag layout template "Test tag layout" is called "Tag group 1"
+      And the tag group for tag layout template "Test tag layout" has 96 tags
+      And the UUID of the next tag layout created will be "00000000-1111-2222-3333-000000000002"
+
+    Given a "Stock plate" plate called "Testing the API" exists
+      And the UUID for the plate "Testing the API" is "11111111-2222-3333-4444-000000000002"
+      And all wells on the plate "Testing the API" have unique samples
+      And H12 on the plate "Testing the API" is empty
+
+    Given a "Stock plate" plate called "Testing the tagging" exists
+      And the UUID for the plate "Testing the tagging" is "11111111-2222-3333-4444-000000000001"
+      And the wells for the plate "Testing the API" have been pooled to the plate "Testing the tagging" according to the pooling strategy 95
+
+    When I make an authorised POST with the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
+      """
+      {
+        "tag_layout": {
+          "plate": "11111111-2222-3333-4444-000000000001"
+        }
+      }
+      """
+    Then the HTTP response should be "201 Created"
+
+    Then the tags assigned to the plate "Testing the tagging" should be:
+      | well | tag   |
+      | A1   | TAG1  |
+      | B1   | TAG2  |
+      | C1   | TAG3  |
+      | D1   | TAG4  |
+      | E1   | TAG5  |
+      | F1   | TAG6  |
+      | G1   | TAG7  |
+      | H1   | TAG8  |
+      | A2   | TAG9  |
+      | B2   | TAG10 |
+      | C2   | TAG11 |
+      | D2   | TAG12 |
+      | E2   | TAG13 |
+      | F2   | TAG14 |
+      | G2   | TAG15 |
+      | H2   | TAG16 |
+      | A3   | TAG17 |
+      | B3   | TAG18 |
+      | C3   | TAG19 |
+      | D3   | TAG20 |
+      | E3   | TAG21 |
+      | F3   | TAG22 |
+      | G3   | TAG23 |
+      | H3   | TAG24 |
+      | A4   | TAG25 |
+      | B4   | TAG26 |
+      | C4   | TAG27 |
+      | D4   | TAG28 |
+      | E4   | TAG29 |
+      | F4   | TAG30 |
+      | G4   | TAG31 |
+      | H4   | TAG32 |
+      | A5   | TAG33 |
+      | B5   | TAG34 |
+      | C5   | TAG35 |
+      | D5   | TAG36 |
+      | E5   | TAG37 |
+      | F5   | TAG38 |
+      | G5   | TAG39 |
+      | H5   | TAG40 |
+      | A6   | TAG41 |
+      | B6   | TAG42 |
+      | C6   | TAG43 |
+      | D6   | TAG44 |
+      | E6   | TAG45 |
+      | F6   | TAG46 |
+      | G6   | TAG47 |
+      | H6   | TAG48 |
+      | A7   | TAG49 |
+      | B7   | TAG50 |
+      | C7   | TAG51 |
+      | D7   | TAG52 |
+      | E7   | TAG53 |
+      | F7   | TAG54 |
+      | G7   | TAG55 |
+      | H7   | TAG56 |
+      | A8   | TAG57 |
+      | B8   | TAG58 |
+      | C8   | TAG59 |
+      | D8   | TAG60 |
+      | E8   | TAG61 |
+      | F8   | TAG62 |
+      | G8   | TAG63 |
+      | H8   | TAG64 |
+      | A9   | TAG65 |
+      | B9   | TAG66 |
+      | C9   | TAG67 |
+      | D9   | TAG68 |
+      | E9   | TAG69 |
+      | F9   | TAG70 |
+      | G9   | TAG71 |
+      | H9   | TAG72 |
+      | A10  | TAG73 |
+      | B10  | TAG74 |
+      | C10  | TAG75 |
+      | D10  | TAG76 |
+      | E10  | TAG77 |
+      | F10  | TAG78 |
+      | G10  | TAG79 |
+      | H10  | TAG80 |
+      | A11  | TAG81 |
+      | B11  | TAG82 |
+      | C11  | TAG83 |
+      | D11  | TAG84 |
+      | E11  | TAG85 |
+      | F11  | TAG86 |
+      | G11  | TAG87 |
+      | H11  | TAG88 |
+      | A12  | TAG89 |
+      | B12  | TAG90 |
+      | C12  | TAG91 |
+      | D12  | TAG92 |
+      | E12  | TAG93 |
+      | F12  | TAG94 |
+      | G12  | TAG95 |
+      | H12  |       |
