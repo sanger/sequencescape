@@ -161,7 +161,7 @@
             currentPane.detach().removeClass('active invalid');
 
             currentPane.submission('markPaneComplete').
-              find('input, select').not('.delete-order').
+              find('input, select, textarea').not('.delete-order').
               attr('disabled',true);
 
             $('#order-controls').before(currentPane);
@@ -233,10 +233,10 @@
     var currentPane = $(event.target).submission('currentPane');
 
      $.post(
-       '/orders',
-       { 
-         _method: 'delete',
-         id : currentPane.find('.delete-order').val()
+       '/orders/' + currentPane.find('.order-id').val(),
+       {
+       _method : 'delete',
+       id      : currentPane.find('.order-id').val()
        },
        function(response) {
          currentPane.slideUp(function(){
@@ -253,7 +253,12 @@
 
   // Document Ready stuff...
   $(function() {
-    $('#submission_template_id').change(templateChangeHandler);
+    // Form reset stuff for Firefox...
+    $('#start-submission').attr('disabled', true);
+
+    $('#submission_template_id').
+      val('Please select a template...').attr('selected', true).
+      removeAttr('disabled').change(templateChangeHandler);
 
     $('#order-parameters .required').live('change',  validateOrderParams);
 

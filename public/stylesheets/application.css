@@ -1163,7 +1163,7 @@ ul#orders > li.buttons {
 }
 
 .button:hover {
-  color:#FDFF4C;
+  color: hsl(61, 64%, 73%);
   background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #00498C), color-stop(1, #004390) );
   background:-moz-linear-gradient( center top, #00498C 5%, #004390 100% );
 }
