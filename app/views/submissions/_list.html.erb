@@ -1,0 +1,30 @@
+<% unless submissions.empty? %>
+  <div class="quota">
+    <table width='100%' cellpadding='3' cellspacing='0' class='sortable'>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Created at</th>
+          <th></th>
+          <% if @current_user.is_administrator? %>
+          <th></th>
+          <% end %>
+        </tr>
+      </thead>
+      <% submissions.each do |submission| %>
+        <tr>
+          <td><%= link_to submission.id, submission_path(submission) %></td>
+          <td><%= submission.created_at.to_formatted_s(:day_full_with_time) %></td>
+          <td><%= link_to "View", submission_path(submission) %></td>
+          <% if @current_user.is_administrator? %>
+            <td><%= link_to("<span style='color:red;'>Delete</span>", submission_path(submission), :method => :delete, :confirm => "Are you sure?") if current_user.administrator? %></td>
+          <% end %>
+        </tr>
+      <% end %>
+      </table>
+  </div>
+<% else %>
+  <% if current_user.is_administrator? %>
+    <%= display_user_guide(I18n.t('studies.guidance.now_create_submission'), new_submission_path) %>
+  <% end %>
+<% end %>

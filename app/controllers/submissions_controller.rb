@@ -27,7 +27,14 @@ class SubmissionCreater
   end
 
   def build_submission!
-    raise "NOT IMPLEMENTED YET"
+    begin
+      submission.built!
+      
+    rescue ActiveRecord::RecordInvalid => exception
+      exception.record.errors.full_messages.each do |message|
+        submission.errors.add_to_base(message) # this is probably not the right place to put them
+      end
+    end
   end
 
   def find_asset_group
@@ -188,6 +195,27 @@ class SubmissionsController < ApplicationController
 
   def edit
     @presenter = SubmissionPresenter.new(current_user, params[:submission])
+  end
+
+  # This method will build a submission then redirect to the submission on completion
+  def update
+    @presenter = SubmissionCreater.new(current_user, params[:submission])
+
+    @presenter.build_submission!
+
+    redirect_to @presenter.submission
+  end
+  
+  def index
+    @submissions = Submission.all
+    @building = Submission.building
+    @pending = Submission.pending
+    @ready = Submission.ready
+  end
+
+  def show
+    @submission = Submission.find(params[:id])
+    @presenter = SubmissionPresenter.new(current_user, params[:id])
   end
 
   ###################################################               AJAX ROUTES
