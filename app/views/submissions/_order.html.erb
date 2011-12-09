@@ -5,12 +5,13 @@
 
 <h2>Order Saved!</h2>
 
-<%= hidden_field_tag :order_id,
-  @presenter.order.id,
-  :class => 'order-id' %>
+<div class="save-buttons">
+  <%= hidden_field_tag :order_id,
+    @presenter.order.id,
+    :class => 'order-id' %>
 
-<%= submit_tag "♻ Delete Order",
-  :class    => "delete-order button"
-%>
-<br/>
+  <%= submit_tag "♻  Delete Order",
+    :class    => "delete-order button"
+  %>
+</div>
 

@@ -242,7 +242,9 @@
 
     currentPane.slideUp(function(){
       currentPane.remove();
-      $('#add-order').removeAttr('disabled');
+      $('#blank-order').slideDown(function(){
+        $('#add-order').removeAttr('disabled');
+      });
     });
   };
 

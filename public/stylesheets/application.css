@@ -1003,6 +1003,11 @@ ul#orders li.pane {
 ul#orders li.pane .button {
 }
 
+ul#orders li.order .save-buttons {
+  position: absolute;
+  bottom: -20px;
+  right: 10px;
+}
 
 ul#orders li.completed{
 	border-color:#017802;
