@@ -207,15 +207,20 @@ class SubmissionsController < ApplicationController
   end
   
   def index
-    @submissions = Submission.all
-    @building = Submission.building
-    @pending = Submission.pending
-    @ready = Submission.ready
+    @building = Submission.building(:order => "created_at DESC")
+    @pending = Submission.pending(:order => "created_at DESC")
+    @ready = Submission.ready(:order => "updated_at DESC", :limit => 10)
   end
 
   def show
     @submission = Submission.find(params[:id])
     @presenter = SubmissionPresenter.new(current_user, params[:id])
+  end
+  
+  def study
+    @study = Study.find(params[:id])
+    @submissions = @study.submissions
+    
   end
 
   ###################################################               AJAX ROUTES

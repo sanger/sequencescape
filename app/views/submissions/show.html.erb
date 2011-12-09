@@ -1,8 +1,17 @@
 <% add :title, "Viewing Submission" -%>
 
 
-<h1>Submission <%= @submission.name %></h1>
-<p>Submission created at: <strong><%=h @submission.created_at.to_formatted_s(:day_full_with_time) %></strong></p>
+<h1>Submission <%= @submission.id %></h1>
+
+<div class='subtitle'>
+ Submission created at: <strong><%=h @submission.created_at.to_formatted_s(:day_full_with_time) %></strong>
+  
+</div>
+<div class='help'>
+  <h2>Important notice</h2>
+  This submission describes the work you have requested. If you want to cancel it or alter it, <%= help_email_link %>.<br />
+  If the information is correct then you can leave this page now or follow the progress for the relevant order on its study status page.
+</div>
 
 <% @submission.orders.each do |order| %>
 <ul id="orders">
@@ -35,6 +44,7 @@
   
     <h4>Project:</h4>
     <%= order.project.name %>
+    <!-- link_to order.project.name, order -->
     
     <%= "<p>#{order.comments}</p>" unless order.comments.nil? %>
 

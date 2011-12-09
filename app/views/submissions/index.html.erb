@@ -1,18 +1,18 @@
 <% add :title, "Submission Inbox" -%>
 <% add :manager_option, "Start a new Submission" => new_submission_path -%>
 <% add :manager_option, "Start a Bulk Submission" => {:controller => "/bulk_submissions", :action => "new"} -%>
-<h1>Submissions</h1>
+<h1>Submission Inbox</h1>
 
 
 
-<h2>Building...</h2>
+<h2>Currently Building</h2>
 <%= render :partial => "list", :locals => 
   { :submissions => @building } %>
 
-<h2>Pending...</h2>
+<h2>Pending (built, but not ready)</h2>
 <%= render :partial => "list", :locals => 
   { :submissions => @pending } %>
 
-<h2>Completed...</h2>
+<h2>Last 10 Completed</h2>
 <%= render :partial => "list", :locals => 
   { :submissions => @ready } %>
