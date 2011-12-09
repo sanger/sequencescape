@@ -69,6 +69,10 @@ Given /^the plate (.+) has been submitted to "([^"]+)"$/ do |info, template|
   Given %Q{"A1-H12" of the plate #{info} have been submitted to "#{template}"}
 end
 
+Given /^H12 on (the plate .+) is empty$/ do |plate|
+  plate.wells.located_at('H12').first.aliquots.clear
+end
+
 def work_pipeline_for(submissions, name)
   final_plate_type = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find #{name.inspect} plate type"
   template         = TransferTemplate.find_by_name('Pool wells based on submission') or raise StandardError, 'Cannot find pooling transfer template'
