@@ -25,49 +25,57 @@
   </li>
 
   <li id="blank-order" class="pane order">
-  <span class="invalid badge">✘</span>
-  <span class="completed badge">✔</span>
-  <h2>New Order</h2>
+    <span class="invalid badge">✘</span>
+    <span class="completed badge">✔</span>
 
-  <ul class="sub-panel">
-    <li class="assets">
-    <h3>Assets</h3>
-    <%= label :study_id, "Study:" %>
-    <%= studies_select(@presenter.studies) %>
-    <div class="study-assets" style="display:none;"></div>
-    </li>
+    <h2>New Order</h2>
 
-    <li class="project">
-    <h3>Project</h3>
-    <%= label 'submission[project_name]', "Project Name:" %>
-    <%= text_field :submission,
-      :project_name,
-      :class => 'submission_project_name',
-      :placeholder => "enter the first few characters of the financial project name" ,
-      :disabled => true
-    %>
-    </li>
-  </ul>
+    <ul class="sub-panel">
+      <li class="assets">
+        <h3>Assets</h3>
+        <%= label :study_id, "Study:" %>
+        <%= studies_select(@presenter.studies) %>
+        <div class="study-assets" style="display:none;"></div>
+      </li>
 
-  <%= text_area_tag(
-    'submission[comments]',
-    "",
-    :rows        => 5,
-    :placeholder => "Optionally, please add comments for this order here...",
-    :class       => 'comments',
-    :disabled    => true
-  ) %>
+      <li class="project">
+        <h3>Project</h3>
+        <%= label 'submission[project_name]', "Project Name:" %>
+        <%= text_field :submission,
+          :project_name,
+          :class => 'submission_project_name',
+          :placeholder => "enter the first few characters of the financial project name",
+          :disabled => true
+        %>
+      </li>
+    </ul>
+
+    <%= text_area_tag(
+      'submission[comments]',
+      "",
+      :rows        => 5,
+      :placeholder => "Optionally, please add comments for this order here...",
+      :class       => 'comments',
+      :disabled    => true
+    ) %>
 
 
-  <%= label 'submission[lanes_of_sequencing_required]', 'Lanes of sequencing required' %>
-  <%= text_field_tag 'submission[lanes_of_sequencing]', 1 %>
+    <%= label 'submission[lanes_of_sequencing_required]', 'Lanes of sequencing required' %>
+    <%= text_field_tag 'submission[lanes_of_sequencing]', 1 %>
 
-  <span class="project-details" style="dislay:none;"></span>
+    <span class="project-details" style="dislay:none;"></span>
 
-    <%= submit_tag "&#10004; Save Order",
-      :class    => "save-order button",
-      :disabled => true
-    %>
+    <div style="float: right">
+      <%= submit_tag "Cancel",
+        :class    => "cancel-order button",
+        :disabled => true
+      %>
+
+      <%= submit_tag "&#10004; Save Order",
+        :class    => "save-order button",
+        :disabled => true
+      %>
+    </div>
   </li>
 
   <li class="buttons">

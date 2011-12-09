@@ -38,7 +38,7 @@
         find('input, select');
 
       // Move this to an initialised callback
-      this.find('.save-order').hide();
+      this.find('.save-order, .cancel-order').hide();
 
       // Move this to an initialised callback
       $('#add-order').removeAttr('disabled');
@@ -155,7 +155,7 @@
 
         if(SCAPE.submission.order_valid) {
           currentPane.fadeOut(function(){
-            // Ugly, ugly, ugly...
+            //                                        vvvvvvvvvv-- Ugly, ugly, ugly...
             currentPane.find('.project-details').html(tempResult.html());
 
             currentPane.detach().removeClass('active invalid');
@@ -200,13 +200,20 @@
   };
 
   var addOrderHandler = function(event) {
+    // Loads this order's parameters into the SCAPE.submission object...
     $('#order-parameters').find('select, input').each(function(){
       SCAPE.submission.order_params[getParamName(this)] = $(this).val();
     });
 
+    // Mask out the order template parameters so that they can't be
+    // changed once an order has been added.
     $('#order-template').find('select, input').attr('disabled',true);
 
+
     $('.active').removeClass('active');
+
+    // Stop the submission from being built until new the order is either
+    // saved or cancelled...
     $('#start-submission').attr('disabled',true);
 
     $('#add-order').attr('disabled', true);
@@ -215,7 +222,9 @@
       html( $('#blank-order').html() ).
       addClass('pane active order').hide();
 
-    newOrder.find('input, select, textarea').removeAttr('disabled');
+    // Remove the disable from the form inputs
+    newOrder.find('input, select, textarea').
+      removeAttr('disabled');
 
     newOrder.find('.submission_project_name').autocomplete({
       source    : SCAPE.user_project_names,
@@ -224,10 +233,18 @@
 
 
     $('#blank-order').before(newOrder).fadeOut('fast',function(){
-      newOrder.fadeIn();
+      newOrder.slideDown();
     });
   };
 
+  var cancelOrderHandler = function(event) {
+    var currentPane = $(event.target).submission('currentPane');
+
+    currentPane.slideUp(function(){
+      currentPane.remove();
+      $('#add-order').removeAttr('disabled');
+    });
+  };
 
   var deleteOrderHandler = function(event) {
     var currentPane = $(event.target).submission('currentPane');
@@ -265,6 +282,8 @@
     $('#add-order').live('click', addOrderHandler);
 
     $('ul#orders').delegate('.study_id','change', studySelectHandler);
+
+    $('ul#orders').delegate('.cancel-order', 'click', cancelOrderHandler);
 
     $('ul#orders').delegate('.save-order', 'click', saveOrderHandler);
 
