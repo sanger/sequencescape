@@ -208,9 +208,9 @@ class SubmissionsController < ApplicationController
   
   def index
     @submissions = Submission.all
-    @building = Submission.building
-    @pending = Submission.pending
-    @ready = Submission.ready
+    @building = Submission.building(:order => "created_at DESC")
+    @pending = Submission.pending(:order => "created_at DESC")
+    @ready = Submission.ready(:order => "updated_at DESC")
   end
 
   def show
