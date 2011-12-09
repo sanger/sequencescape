@@ -16,6 +16,6 @@
   </div>
 
   <center>
-  <%= link_to 'Accept and continue', new_study_workflow_submission_path(@study, @workflow, :submission_template_id => @submission_template.id) %> or <%= link_to I18n.t("navigation.menu.back_to_study"), study_workflow_path(@study, @workflow)%>
+  <%= link_to 'Accept and continue', new_submission_path %> or <%= link_to I18n.t("navigation.menu.back_to_study"), study_workflow_path(@study, @workflow)%>
   </center>
 </div>
