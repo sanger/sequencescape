@@ -28,7 +28,6 @@ class SubmissionCreater
 
   def build_submission!
     begin
-      debugger
       submission.built!
       
     rescue ActiveRecord::RecordInvalid => exception
@@ -204,7 +203,7 @@ class SubmissionsController < ApplicationController
 
     @presenter.build_submission!
 
-    redirect_to submission_path(@presenter.submission)
+    redirect_to @presenter.submission
   end
   
   def index
