@@ -2,8 +2,8 @@
 <% unless awaiting_submissions.empty? %>
 <% last_awaiting_sub = awaiting_submissions.last %>
   <%= case last_awaiting_sub.state
-  when "pending" then  display_user_guide(I18n.t('studies.submissions.pending_submission_waiting'), study_workflow_submission_path(@study, @workflow, last_awaiting_sub))
-  when "failed" then display_user_error(I18n.t('studies.submissions.last_submission_failed'), study_workflow_submission_path(@study, @workflow, last_awaiting_sub))
+  when "pending" then  display_user_guide(I18n.t('studies.submissions.pending_submission_waiting'), last_awaiting_sub)
+  when "failed" then display_user_error(I18n.t('studies.submissions.last_submission_failed'), last_awaiting_sub)
   end
   %>
 <% end  %>
