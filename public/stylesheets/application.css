@@ -1065,6 +1065,10 @@ ul#orders li.invalid span.invalid {
 #orders li#order-template {
 }
 
+ul#orders li#blank-order {
+  display: none;
+}
+
 ul#orders li table {
   width: 100%;
 }
@@ -1079,23 +1083,18 @@ ul#orders ul.sub-panel {
 }
 
 ul#orders ul.sub-panel li {
-  width: 420px;
-  height: 50px;
   opacity: 1;
   border: 2px solid hsl(0, 0%, 86%);
   margin: 10px 0;
-  float: right;
-  height: 30px;
   border-radius: 8px;
 
   padding: 15px;
   list-style: none outside none;
-  text-align: right;
   position: relative;
 }
 
 #orders ul.sub-panel .assets {
-  float:left;
+  height: 90px;
 }
 
 #orders h2, #orders h3 {

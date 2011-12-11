@@ -138,10 +138,13 @@
 
 
   var saveOrderHandler = function(event) {
-    var currentPane                 = $(this).submission('currentPane');
-    var projectNameElement          = currentPane.find('.submission_project_name');
-    SCAPE.submission.project_name   = projectNameElement.val();
-    SCAPE.submission.asset_group_id = $('#submission_asset_group_id').val();
+    var currentPane                    = $(this).submission('currentPane');
+    // refactor this little lot!
+    SCAPE.submission.project_name      = currentPane.find('.submission_project_name').val();
+    SCAPE.submission.asset_group_id    = currentPane.find('#submission_asset_group_id').val();
+    SCAPE.submission.sample_names_text = currentPane.find('#submission_sample_names_text').val();
+    SCAPE.submission.plate_purpose_id  = currentPane.find('#submission_plate_purpose_id').val();
+
 
     $.post(
       '/submissions',
@@ -158,7 +161,12 @@
             //                                        vvvvvvvvvv-- Ugly, ugly, ugly...
             currentPane.find('.project-details').html(tempResult.html());
 
-            currentPane.detach().removeClass('active invalid');
+            debugger;
+
+            currentPane.
+              detach().
+              removeClass('active invalid').
+              find('.asset-input-toggle').remove();
 
             currentPane.submission('markPaneComplete').
               find('input, select, textarea').not('.delete-order').
@@ -166,8 +174,6 @@
 
             $('#order-controls').before(currentPane);
             currentPane.fadeIn();
-
-            $('#blank-order').fadeIn();
 
             $('#submission_id').val(SCAPE.submission.id);
             $('#start-submission').removeAttr('disabled');
@@ -242,9 +248,7 @@
 
     currentPane.slideUp(function(){
       currentPane.remove();
-      $('#blank-order').slideDown(function(){
-        $('#add-order').removeAttr('disabled');
-      });
+      $('#add-order').removeAttr('disabled');
     });
   };
 
@@ -269,27 +273,48 @@
        });
   };
 
+  // Toggle the asset selector panels.
+  // TODO: replace this with a jQuery UI tabview.  Needs the order IDs
+  // sorting out for that though....
+  var assetSelectorToggle = function(event) {
+    var currentAssetsPanel      = $(event.target).closest('.assets');
+
+    var nextAssetPanel =
+      currentAssetsPanel.siblings(':hidden').first();
+
+    currentAssetsPanel.fadeOut(function(){
+      nextAssetPanel.find('input, textarea, select').val('');
+      nextAssetPanel.fadeIn();
+    });
+  };
 
   // Document Ready stuff...
   $(function() {
-    // Form reset stuff for Firefox...
-    $('#start-submission').attr('disabled', true);
+    // Initialise the #start-submission button.
+    $('#start-submission').
+      attr('disabled', true);
 
+    // Initialise the template selector and attach a change handler to
+    // it.
     $('#submission_template_id').
-      val('Please select a template...').attr('selected', true).
-      removeAttr('disabled').change(templateChangeHandler);
+      val('Please select a template...').
+      attr('selected', true).
+      removeAttr('disabled').
+      change(templateChangeHandler);
 
-    $('#order-parameters .required').live('change',  validateOrderParams);
+    $('#order-parameters .required').
+      live('change',  validateOrderParams);
 
-    $('#add-order').live('click', addOrderHandler);
+    $('#add-order').
+      live('click', addOrderHandler);
 
-    $('ul#orders').delegate('.study_id','change', studySelectHandler);
-
-    $('ul#orders').delegate('.cancel-order', 'click', cancelOrderHandler);
-
-    $('ul#orders').delegate('.save-order', 'click', saveOrderHandler);
-
-    $('ul#orders').delegate('.delete-order', 'click', deleteOrderHandler);
+    // Most of the event handlers can be hung from the orders list...
+    $('ul#orders').
+      delegate('.study_id',     'change', studySelectHandler).
+      delegate('.cancel-order', 'click',  cancelOrderHandler).
+      delegate('.save-order',   'click',  saveOrderHandler).
+      delegate('.delete-order', 'click',  deleteOrderHandler).
+      delegate('.assets a',     'click',  assetSelectorToggle);
   });
 
 })(jQuery);
