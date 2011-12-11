@@ -6,11 +6,14 @@ class SubmissionCreater
   ATTRIBUTES = [
     :id,
     :template_id,
+    :sample_names_text,
     :study_id,
     :submission_id,
     :project_name,
+    :plate_purpose_id,
     :lanes_of_sequencing_required,
     :comments,
+    :orders,
     :order_params,
     :asset_group_id
   ]
@@ -29,7 +32,7 @@ class SubmissionCreater
   def build_submission!
     begin
       submission.built!
-      
+
     rescue ActiveRecord::RecordInvalid => exception
       exception.record.errors.full_messages.each do |message|
         submission.errors.add_to_base(message) # this is probably not the right place to put them
@@ -47,8 +50,7 @@ class SubmissionCreater
       :project         => project,
       :user            => @user,
       :request_options => order_params,
-      :comments        => comments,
-      :asset_group     => find_asset_group
+      :comments        => comments
     )
 
     if order_params
@@ -82,6 +84,9 @@ class SubmissionCreater
   def save
     begin
       ActiveRecord::Base.transaction do
+        # Add assets to the order...
+        order.update_attributes(order_assets)
+
         new_submission = order.create_submission(:user => order.user)
         new_submission.save!
         order.save!
@@ -89,6 +94,7 @@ class SubmissionCreater
         @submission = new_submission
       end
 
+      # Exception handling for flow control is forced by the model :(
     rescue Quota::Error => quota_exception
       order.errors.add_to_base(quota_exception.message)
     rescue InvalidInputException => input_exception
@@ -101,28 +107,52 @@ class SubmissionCreater
       end
     end
 
-    # Having got through that lot return whether we were able to save or not.
+    # Having got through that lot, return whether the save was successful or not
     order.errors.empty?
   end
 
-  # def asset_source_details_from_request_parameters!
-  #   # Raise an error if someone tries to do multiple things all at once!
-  #   input_choice = [ :asset_group, :asset_ids, :asset_names, :sample_names ].select { |k| not params[k].blank? }
-  #   raise InvalidInputException, "No assets found" if input_choice.empty?
-  #   raise InvalidInputException, "Cannot handle choosing multiple asset sources" unless input_choice.size == 1
+  def order_assets
+    input_methods = [ :asset_group_id, :sample_names_text ].select { |input_method| send(input_method).present? }
 
-  #   return  case input_choice.first
-  #           when :asset_group then { :asset_group => AssetGroup.find(params[:asset_group]) }
-  #           when :asset_ids   then { :assets => Asset.find_all_by_id(params[:asset_ids].split).uniq }
-  #           when :asset_names then { :assets => find_by_name(Asset, params[:asset_names]) }
-  #           when :sample_names
-  #             asset_lookup_method = params[:plate_purpose_id].blank? ? :assets_of_request_type_for : :wells_on_specified_plate_purpose_for
-  #             { :assets => send(asset_lookup_method, find_sample_by_name_or_sanger_sample_id(params[:sample_names])) }
+    raise InvalidInputException, "No Samples found" if input_methods.empty?
+    raise InvalidInputException, "Samples cannot be added from multiple sources at the same time." unless input_methods.size == 1
 
-  #           else raise StandardError, "No way to determine assets for input choice #{input_choice.first.inspect}"
-  #           end
-  # end
-  # private :asset_source_details_from_request_parameters!
+
+    return  case input_methods.first
+            when :asset_group_id then { :asset_group => find_asset_group }
+            when :sample_names_text then
+              { :assets => wells_on_specified_plate_purpose_for(plate_purpose, find_samples_from_text(sample_names_text)) }
+
+            else raise StandardError, "No way to determine assets for input choice #{input_choice.first}"
+            end
+  end
+
+  # This is a legacy of the old controller...
+  def wells_on_specified_plate_purpose_for(plate_purpose, samples)
+    samples.map do |sample|
+      sample.wells.all(:include => :plate).detect { |well| well.plate.plate_purpose_id == plate_purpose.id } or
+        raise InvalidInputException, "No #{plate_purpose.name} plate found with sample: #{sample.name}"
+    end
+  end
+
+  def plate_purpose
+    @plate_purpose ||= PlatePurpose.find(plate_purpose_id)
+  end
+
+  # Returns Samples based on Sample name or Sanger ID
+  # This is a legacy of the old controller...
+  def find_samples_from_text(sample_text)
+    names = sample_text.lines.map(&:chomp).reject(&:blank?).map(&:strip)
+
+    samples = Sample.all(:include => :assets, :conditions => [ 'name IN (:names) OR sanger_sample_id IN (:names)', { :names => names } ])
+
+    name_set  = Set.new(names)
+    found_set = Set.new(samples.map { |s| [ s.name, s.sanger_sample_id ] }.flatten)
+    not_found = name_set - found_set
+    raise InvalidInputException, "#{Sample.table_name} #{not_found.to_a.join(", ")} not found" unless not_found.empty?
+    return samples
+  end
+  private :find_samples_from_text
 
   def study
     @study ||= (Study.find(@study_id) if @study_id.present?)
@@ -186,7 +216,7 @@ class SubmissionsController < ApplicationController
     @presenter = SubmissionCreater.new(current_user, params[:submission])
 
     if @presenter.save
-      render :partial => 'order', :layout => false
+      render :partial => 'order_response', :layout => false
     else
       render :partial => 'order_errors', :layout => false
     end
