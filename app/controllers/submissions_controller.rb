@@ -1,9 +1,33 @@
-class SubmissionCreater
+class PresenterSkeleton
+  class_inheritable_reader :attributes
+  write_inheritable_attribute :attributes,  []
+
+  def initialize(user, submission_attributes = {})
+    @user = user
+
+    attributes.each do |attribute|
+      send("#{attribute}=", submission_attributes[attribute])
+    end
+
+  end
+
+  def method_missing(name, *args, &block)
+    name_without_assignment = name.to_s.sub(/=$/, '').to_sym
+    return super unless attributes.include?(name_without_assignment)
+
+    instance_variable_name = :"@#{name_without_assignment}"
+    return instance_variable_get(instance_variable_name) if name_without_assignment == name.to_sym
+    instance_variable_set(instance_variable_name, args.first)
+  end
+  protected :method_missing
+end
+
+class SubmissionCreater < PresenterSkeleton
   SubmissionsCreaterError  = Class.new(StandardError)
   IncorrectParamsException = Class.new(SubmissionsCreaterError)
   InvalidInputException    = Class.new(SubmissionsCreaterError)
 
-  ATTRIBUTES = [
+  write_inheritable_attribute :attributes,  [
     :id,
     :template_id,
     :sample_names_text,
@@ -18,16 +42,6 @@ class SubmissionCreater
     :asset_group_id
   ]
 
-  attr_accessor *ATTRIBUTES
-
-  def initialize(user, submission_attributes = {})
-    @user = user
-
-    ATTRIBUTES.each do |attribute|
-      send("#{attribute}=", submission_attributes[attribute])
-    end
-
-  end
 
   def build_submission!
     begin
@@ -184,19 +198,8 @@ end
 
 
 # TODO[sd9]: Refactor these presenters to a shared base class...
-class SubmissionPresenter
-  ATTRIBUTES = [ :id ]
-
-  attr_accessor *ATTRIBUTES
-
-  def initialize(user, submission_attributes = {})
-    @user = user
-
-    ATTRIBUTES.each do |attribute|
-      send("#{attribute}=", submission_attributes[attribute])
-    end
-
-  end
+class SubmissionPresenter < PresenterSkeleton
+  write_inheritable_attribute :attributes, [ :id ]
 
   def submission
     @submission ||= Submission.find(id)
