@@ -1010,8 +1010,8 @@ ul#orders li.order .save-buttons {
 }
 
 
-ul#orders li.completed{
-	border-color:#017802;
+ul#orders li.completed {
+	border-color: hsl(121, 98%, 24%);
 	background: #EBFFEB;
 	color:#017802;
   opacity: 0.6;
@@ -1050,9 +1050,10 @@ ul#orders .errors li {
 }
 
 ul#orders li.completed span.completed {
-	background:	#003E00;
-	background: -moz-radial-gradient(top left, cover, #00B200 0%, #003E00 100%);
-	background: -webkit-radial-gradient(top left, cover, #00B200 0%, #003E00 100%);
+	background:	hsl(120, 59%, 35%);
+  background: -moz-radial-gradient(top left, cover, hsl(120, 59%, 35%) 0%, hsl(120, 59%, 12%) 100%);
+  background: -webkit-radial-gradient(top left, cover, hsl(120, 59%, 35%) 0%, hsl(120, 59%, 12%) 100%);
+
 	display: block;
 }
 ul#orders li.invalid span.invalid {
