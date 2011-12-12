@@ -78,30 +78,33 @@
   var templateChangeHandler = function(event){
     var currentPane = $(event.target).submission('currentPane');
 
-    // When there's nothing selected reset the parameters element and exit without 
-    if ($(event.target).val() === "") {
-      delete SCAPE.submission.template_id;
-      $('#order-parameters').html('');
-      return false;
-    }
+    delete SCAPE.submission.template_id;
 
-    SCAPE.submission.template_id = $(event.target).val();
+    $('#order-parameters').slideUp(function(){
+      $(this).html('');
+      currentPane.submission('markPaneIncomplete');
 
-    // Load the parameters for the new order
-    $.get(
-      '/submissions/order_parameters',
-      { submission: SCAPE.submission },
-      function(data) {
-        $('#order-parameters').
-          html(data);
+      if ($(event.target).val()) {
 
-        currentPane.submission('allFieldsComplete')?
-          currentPane.submission('markPaneComplete') : currentPane.submission('markPaneIncomplete');
+        SCAPE.submission.template_id = $(event.target).val();
 
-        $('#order-parameters').fadeIn();
+        // Load the parameters for the new order
+        $.get(
+          '/submissions/order_parameters',
+          { submission: SCAPE.submission },
+          function(data) {
+            $('#order-parameters').html(data);
+
+            currentPane.submission('allFieldsComplete')?
+              currentPane.submission('markPaneComplete'):
+              currentPane.submission('markPaneIncomplete');
+
+            $('#order-parameters').slideDown();
+          }
+        );
+        return true;
       }
-    );
-    return true;
+    });
   };
 
 
@@ -124,14 +127,12 @@
           });
         }
       );
-      return true;
     } else {
       // The study selector has been reset so fade out and reset the field.
       currentPane.find('.study-assets').fadeOut(function(){
         $(this).html("");
       });
 
-      return false;
     }
 
   };
@@ -241,9 +242,8 @@
     });
 
 
-    $('#blank-order').before(newOrder).fadeOut('fast',function(){
-      newOrder.slideDown();
-    });
+    $('#blank-order').before(newOrder);
+    newOrder.slideDown();
   };
 
   var cancelOrderHandler = function(event) {
