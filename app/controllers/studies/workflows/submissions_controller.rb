@@ -222,6 +222,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
             )
             @order.update_attributes(asset_source_details_from_request_parameters!)
             @order.save!
+            @submission.save! #TODO move validation in order
           end
 
           if params.fetch(:build_submission, "no") == "yes"

@@ -38,6 +38,11 @@ class Order < ActiveRecord::Base
 
   serialize :item_options
 
+  def samples
+    #naive way
+    assets.map(&:aliquots).flatten.map(&:sample).uniq
+  end
+  
 
   named_scope :for_studies, lambda {|*args| {:conditions => { :study_id => args[0]} } }
   
