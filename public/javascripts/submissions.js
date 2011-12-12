@@ -248,6 +248,13 @@
 
     currentPane.slideUp(function(){
       currentPane.remove();
+      if ($('.order.completed').length === 0) {
+        $('#order-template').
+          addClass('active').
+          find('select, input').
+          removeAttr('disabled');
+      }
+
       $('#add-order').removeAttr('disabled');
     });
   };
@@ -267,6 +274,11 @@
            $('#add-order').removeAttr('disabled');
 
            if ($('.order.completed').length === 0) {
+             $('#order-template').
+               addClass('active').
+               find('select, input').
+               removeAttr('disabled');
+
              $('#start-submission').attr('disabled', true);
            }
          });
@@ -303,12 +315,15 @@
       change(templateChangeHandler);
 
     $('#order-parameters .required').
-      live('change',  validateOrderParams);
+      live('keypress',  validateOrderParams).
+      live('blur',  validateOrderParams);
 
     $('#add-order').
       live('click', addOrderHandler);
 
     // Most of the event handlers can be hung from the orders list...
+    // NB. If we upgrade from jQuery 1.6.x to >= 1.7 then we may want to swap
+    // out .delegate() to use the .on() function instead.
     $('ul#orders').
       delegate('.study_id',     'change', studySelectHandler).
       delegate('.cancel-order', 'click',  cancelOrderHandler).

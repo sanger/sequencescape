@@ -24,7 +24,8 @@ module SubmissionsHelper
     select_tag(
       "submission[order_params][#{field_info.key}]",
       options_for_select(field_info.selection, field_info.value),
-      :class => "required"
+      :class => "required",
+      :disabled => (field_info.selection.size == 1)
     )
   end
   private :order_selection_tag
