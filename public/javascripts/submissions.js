@@ -190,6 +190,9 @@
         }
       }
     );
+
+    // don't forget to stop the form submitting...
+    return false;
   };
 
 
@@ -257,6 +260,9 @@
 
       $('#add-order').removeAttr('disabled');
     });
+
+    // don't forget to stop the form submitting...
+    return false;
   };
 
   var deleteOrderHandler = function(event) {
@@ -283,6 +289,9 @@
            }
          });
        });
+
+    // don't forget to stop the form submitting...
+    return false;
   };
 
   // Toggle the asset selector panels.
