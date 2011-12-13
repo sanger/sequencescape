@@ -7,12 +7,17 @@
 
     // Returns true if the input fields in a pane have a value
     allFieldsComplete : function(pane) {
-      // This won't work in old IE versions <9.
-      // If we need to support old IE add a conditional enhancement
-      // to the start of the module...
-      return this.find('input, select').toArray().every(function(element){ 
-        return $(element).val(); 
+      // This is not very pretty but it is IE safe...
+      var validationResult = true;
+
+      this.find('input').each(function(element){ 
+
+        if (!$(this).val().match(/^\d+$/)){
+          validationResult = false;
+        }
       });
+
+      return validationResult;
     },
 
     currentPane : function() {
