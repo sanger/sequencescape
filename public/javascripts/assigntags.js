@@ -13,32 +13,17 @@
             }, 
             format: function(s) { 
                 // replace asset ID and name with just ID
-				// console.log("parse:",s,s.match(/^(\d+)/));
                 return s.replace(/(\d+)\s(\w+)/i,"$1"); 
             }, 
             // set type, either numeric or text 
             type: 'numeric' 
         });
-		$.tablesorter.addParser({ 
-            // set a unique id 
-            id: 'samplename', 
-            is: function(s) { 
-                // return false so this parser is not auto detected 
-                return false; 
-            }, 
-            format: function(s) { 
-                // replace asset ID and name with just ID
-                return s.replace(/(\d+)\s(\w+)/i,"$1"); 
-            }, 
-            // set type, either numeric or text 
-            type: 'numeric' 
-        });
-            $("#tag-assignment").tablesorter({
+        $("#tag-assignment").tablesorter({
                 headers: { 
                   3: { 
                     sorter:'assets' 
                   },
-				  4: { 
+				          4: { 
                     sorter:'assets' 
                   }
                 }
