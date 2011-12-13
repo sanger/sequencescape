@@ -151,7 +151,7 @@ class WorkflowsController < ApplicationController
     @batch = Batch.find(params[:batch_id], :include => [:requests, :pipeline, :lab_events])
     @rits = @batch.pipeline.request_information_types
     @requests = @batch.ordered_requests
-
+    @requests_by_submission = @requests.group_by(&:submission)
     @batch.start!(current_user) unless @batch.started? or @batch.failed?
 
     @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])

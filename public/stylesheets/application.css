@@ -650,7 +650,6 @@ th.request-grid, td.request-grid {
   padding: 3px 5px;
   text-align: center;
 }
-
 tr.second_attempt {
 color: #ff0000;
 }
@@ -1085,4 +1084,11 @@ div.characterisation fieldset{
 #activity-logging {
   width: 100%;
   border: none;
+}
+tr.duplicate-error {
+  background: #FFB0B0;
+}
+
+#increment-tags-info {
+  right:0;
 }
