@@ -236,7 +236,12 @@
     newOrder.find('input, select, textarea').
       removeAttr('disabled');
 
-    newOrder.find('.submission_project_name').autocomplete({
+    // if this is not a sequencing order remove the lanes_of_sequencing_required stuff
+    if (SCAPE.submission.is_a_sequencing_order === false) {
+      newOrder.find('.lanes-of-sequencing').remove();
+    }
+
+    newOrder.find('.submission-project-name').autocomplete({
       source    : SCAPE.user_project_names,
       minLength : 3
     });
