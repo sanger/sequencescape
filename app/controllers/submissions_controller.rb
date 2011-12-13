@@ -9,6 +9,14 @@ class PresenterSkeleton
       send("#{attribute}=", submission_attributes[attribute])
     end
 
+    def id
+      @id
+    end
+
+    def id=(submission_id)
+      @id = submission_id
+    end
+
   end
 
   def method_missing(name, *args, &block)
