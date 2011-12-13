@@ -241,7 +241,7 @@
       newOrder.find('.lanes-of-sequencing').remove();
     }
 
-    newOrder.find('.submission-project-name').autocomplete({
+    newOrder.find('.submission_project_name').autocomplete({
       source    : SCAPE.user_project_names,
       minLength : 3
     });
@@ -249,6 +249,7 @@
 
     $('#blank-order').before(newOrder);
     newOrder.slideDown();
+
   };
 
   var cancelOrderHandler = function(event) {
@@ -344,6 +345,7 @@
       delegate('.save-order',   'click',  saveOrderHandler).
       delegate('.delete-order', 'click',  deleteOrderHandler).
       delegate('.assets a',     'click',  assetSelectorToggle);
+
   });
 
 })(jQuery);
