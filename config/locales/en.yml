@@ -174,3 +174,6 @@ en:
 
   formtastic:
     submit: "Submit"
+    
+  submissions:
+    no_submissions: "There are no submissions yet. Please create one."
