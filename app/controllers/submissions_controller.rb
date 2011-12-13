@@ -77,7 +77,7 @@ class SubmissionCreater < PresenterSkeleton
 
     if order_params
       @order.request_type_multiplier do |sequencing_request_type_id|
-        @order.request_options[:multiplier][sequencing_request_type_id] = (lanes_of_sequencing_required || 1)
+        @order.request_options['multiplier'][sequencing_request_type_id] = (lanes_of_sequencing_required || 1)
       end
     end
 
