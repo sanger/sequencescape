@@ -213,6 +213,16 @@ class Order < ActiveRecord::Base
   def building?
     self.submission.nil?
   end
+
+
+  # Returns true if this is an order for sequencing
+  def is_a_sequencing_order?
+    [
+     PacBioSequencingRequest,
+     SequencingRequest,
+     *Class.subclasses_of(SequencingRequest)
+    ].include?(request_types_list.flatten.last.request_class)
+  end
 end
 
 
