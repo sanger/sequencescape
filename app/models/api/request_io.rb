@@ -63,6 +63,9 @@ class Api::RequestIO < Api::Base
   end
 
   with_association(:submission) do
+        map_attribute_to_json_attribute(:uuid, 'submission_uuid')
+        map_attribute_to_json_attribute(:id  , 'submission_internal_id')
+        map_attribute_to_json_attribute(:url , 'submission_url')
   end
 
   with_association(:initial_study) do
