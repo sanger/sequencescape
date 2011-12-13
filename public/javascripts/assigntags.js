@@ -1,32 +1,50 @@
 (function ($, undefined) {
     var taggers = $('select.tagchoice');
 
-	$(document).ready(function() 
-	    { 
-		$.tablesorter.defaults.widgets = ['zebra'];
+    $(document).ready(function() 
+        { 
+        $.tablesorter.defaults.widgets = ['zebra'];
+        $.tablesorter.addParser({ 
+            // set a unique id 
+            id: 'assets', 
+            is: function(s) { 
+                // return false so this parser is not auto detected 
+                return false; 
+            }, 
+            format: function(s) { 
+                // replace asset ID and name with just ID
+				// console.log("parse:",s,s.match(/^(\d+)/));
+                return s.replace(/(\d+)\s(\w+)/i,"$1"); 
+            }, 
+            // set type, either numeric or text 
+            type: 'numeric' 
+        });
 		$.tablesorter.addParser({ 
-	        // set a unique id 
-	        id: 'assets', 
-	        is: function(s) { 
-	            // return false so this parser is not auto detected 
-	            return false; 
-	        }, 
-	        format: function(s) { 
-	            // format your data for normalization
-	            return s.replace(/(\d+)\s(\w+)/i,"$1"); 
-	        }, 
-	        // set type, either numeric or text 
-	        type: 'numeric' 
-	    });
-	        $("#tag-assignment").tablesorter({
-				headers: { 
-				                3: { 
-				                    sorter:'assets' 
-				                } 
-				            }
-			});
-	    } 
-	);
+            // set a unique id 
+            id: 'samplename', 
+            is: function(s) { 
+                // return false so this parser is not auto detected 
+                return false; 
+            }, 
+            format: function(s) { 
+                // replace asset ID and name with just ID
+                return s.replace(/(\d+)\s(\w+)/i,"$1"); 
+            }, 
+            // set type, either numeric or text 
+            type: 'numeric' 
+        });
+            $("#tag-assignment").tablesorter({
+                headers: { 
+                  3: { 
+                    sorter:'assets' 
+                  },
+				  4: { 
+                    sorter:'assets' 
+                  }
+                }
+            });
+        } 
+    );
   
     // This callback will indicate other rows using the same tag
     function highlightDuplicates() {

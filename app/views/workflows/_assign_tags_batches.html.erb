@@ -32,10 +32,9 @@
               <td><%= request.sample_name %></td>
               <td><%= link_to request.id, request_url(request) %></td>
               <% if request.asset  %>
-                <td class="request-asset-name"><%= link_to "#{request.asset.barcode} #{request.asset.display_name}", asset_url(request.asset), :target => "_blank" %>
+                <td class="request-asset-name"><%= link_to "#{request.asset.id} #{request.asset.display_name}", asset_url(request.asset), :target => "_blank" %>
                 </td>
-                <td class="request-asset-name">
-                  <%= link_to(request.target_asset.display_name, asset_url(request.target_asset), :target => "_blank") if request.target_asset %>
+                <td class="request-asset-name"><%= link_to("#{request.target_asset.id} #{request.target_asset.display_name}", asset_url(request.target_asset), :target => "_blank") if request.target_asset %>
                 </td>
               <% else %>
                 <td class="request-asset-name">&nbsp;</td>
