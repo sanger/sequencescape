@@ -1325,7 +1325,10 @@ div.characterisation fieldset{
   border: none;
 }
 tr.duplicate-error {
-  background: #FFB0B0;
+  background: #FFB0B0 !important
+}
+tr.duplicate-error td {
+  background: #FFB0B0 !important
 }
 
 #increment-tags-info {

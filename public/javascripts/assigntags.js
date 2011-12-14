@@ -74,7 +74,7 @@
             taggers.slice(taggers.index($(this)) + 1).each(function () {
                     $(this).prop("selectedIndex",chosenTagIndex+1);
                     // A little animation to highlight the changed rows
-                    $(this).closest('tr').effect('highlight',3000);
+                    $(this).closest('tr').find("td").effect('highlight',3000);
                     chosenTagIndex++;
             });
         }
