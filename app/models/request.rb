@@ -41,13 +41,6 @@ class Request < ActiveRecord::Base
   belongs_to :user
 
   belongs_to :submission
-  def order_via_submission
-    submission.try(:order)
-  end
-
-  def study_via_order
-    order_via_submission.try(:study)
-  end
 
   # project is read only so we can set it everywhere
   # but it will be only used in specific and controlled place
@@ -170,6 +163,9 @@ class Request < ActiveRecord::Base
   def self.for_studies(studies)
     for_study_ids(studies.map(&:id))
   end
+
+  named_scope :for_initial_study_id, lambda { |id| { :conditions  => {:initial_study_id => id } }
+}
 
 
 

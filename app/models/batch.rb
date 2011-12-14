@@ -345,54 +345,30 @@ class Batch < ActiveRecord::Base
 
   def swap(current_user, batch_info = {})
     return false if batch_info.empty?
-    @batch1 = Batch.find(batch_info["batch_1"]["id"]) rescue nil
-    if !(@batch1.nil?)
-      batch_request_1 = @batch1.batch_requests.select{|br| br if br.position.to_s == batch_info["batch_1"]["lane"]}.first
-    else
-      self.errors.add("Swap: ", "The first batch doesn't exist")
+
+    # Find the two lanes that are to be swapped
+    batch_request_left  = BatchRequest.find_by_batch_id_and_position(batch_info['batch_1']['id'], batch_info['batch_1']['lane']) or self.errors.add("Swap: ", "The first lane cannot be found")
+    batch_request_right = BatchRequest.find_by_batch_id_and_position(batch_info['batch_2']['id'], batch_info['batch_2']['lane']) or self.errors.add("Swap: ", "The second lane cannot be found")
+    return unless batch_request_left.present? and batch_request_right.present?
+
+    ActiveRecord::Base.transaction do
+      # Update the lab events for the request so that they reference the batch that the request is moving to
+      batch_request_left.request.lab_events.each  { |event| event.update_attributes!(:batch_id => batch_request_right.batch_id) if event.batch_id == batch_request_left.batch_id  }
+      batch_request_right.request.lab_events.each { |event| event.update_attributes!(:batch_id => batch_request_left.batch_id)  if event.batch_id == batch_request_right.batch_id }
+
+      # Swap the two batch requests so that they are correct.  This involves swapping both the batch and the lane but ensuring that the
+      # two requests don't clash on position by removing one of them.
+      original_left_batch_id, original_left_position, original_right_request_id = batch_request_left.batch_id, batch_request_left.position, batch_request_right.request_id
+      batch_request_right.destroy
+      batch_request_left.update_attributes!(:batch_id => batch_request_right.batch_id, :position => batch_request_right.position)
+      batch_request_right = BatchRequest.create!(:batch_id => original_left_batch_id, :position => original_left_position, :request_id => original_right_request_id)
+
+      # Finally record the fact that the batch was swapped
+      batch_request_left.batch.lab_events.create!(:description => "Lane swap", :message => "Lane #{batch_request_right.position} moved to #{batch_request_left.batch_id} lane #{batch_request_left.position}", :user_id => current_user.id)
+      batch_request_right.batch.lab_events.create!(:description => "Lane swap", :message => "Lane #{batch_request_left.position} moved to #{batch_request_right.batch_id} lane #{batch_request_right.position}", :user_id => current_user.id)
     end
 
-    @batch2 = Batch.find(batch_info["batch_2"]["id"]) rescue nil
-    if !(@batch2.nil?)
-      batch_request_2 = @batch2.batch_requests.select{|br| br if br.position.to_s == batch_info["batch_2"]["lane"]}.first
-    else
-      self.errors.add("Swap: ", "The second batch doesn't exist")
-    end
-
-    br1_position = batch_request_1.position unless batch_request_1.nil?
-    br2_position = batch_request_2.position unless batch_request_2.nil?
-
-    if !(br1_position.nil?) && !(br2_position.nil?)
-
-      @batch1.lab_events.create(:description => "Lane swap", :message => "Lane #{batch_request_1.position} moved to #{@batch2.id} lane #{br2_position}", :user_id => current_user.id)
-      @batch2.lab_events.create(:description => "Lane swap", :message => "Lane #{batch_request_2.position} moved to #{@batch1.id} lane #{br1_position}", :user_id => current_user.id)
-
-      #don't change the order. 1 step. Extract data to modify.
-      @list_events_br1=batch_request_1.request.lab_events
-      @list_events_batch_1=@list_events_br1.select{|l| l if l.batch_id == @batch1.id}
-
-      @list_events_br2=batch_request_2.request.lab_events
-      @list_events_batch_2=@list_events_br2.select{|l| l if l.batch_id == @batch2.id}
-
-      @list_events_batch_1.each do |event|
-          event.update_attribute("batch_id",@batch2.id)
-      end
-
-      @list_events_batch_2.each do |event|
-       event.update_attribute("batch_id",@batch1.id)
-      end
-
-      # 2. step. Swap values.
-      tmp_swap=batch_request_1.request_id
-      batch_request_1.request_id=batch_request_2.request_id
-      batch_request_2.request_id = tmp_swap
-
-      batch_request_1.save && batch_request_2.save
-
-    else
-      self.errors.add("Swap:", "Lanes are incorrect. ")
-      return false
-    end
+    return true
   end
 
   def study

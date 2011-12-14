@@ -161,8 +161,13 @@ end
 
 Then /^ignoring "([^\"]+)" the JSON should be:$/ do |key_list, serialised_json|
   regexp = Regexp.new(key_list)
-  assert_json_equal(serialised_json, page.body) do |key|
-    key.to_s =~ regexp
+  begin
+    assert_json_equal(serialised_json, page.body) do |key|
+      key.to_s =~ regexp
+    end
+  rescue
+    puts page.body
+    raise
   end
 end
 
@@ -334,7 +339,7 @@ Given /^the infinium barcode for plate "([^"]*)" is "([^"]*)"$/ do |plate_name, 
   plate.plate_metadata.update_attributes!(:infinium_barcode => infinium_barcode)
 end
 
-Given /^no (submission template|plate purpose|request type)s exist$/ do |model|
+Given /^no (plate purpose|request type)s exist$/ do |model|
   model.gsub(/\s+/, '_').camelize.constantize.destroy_all
 end
 

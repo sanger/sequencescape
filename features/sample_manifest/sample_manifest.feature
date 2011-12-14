@@ -37,6 +37,7 @@ Feature: Sample manifest
     When I visit the sample manifest new page without an asset type
     Then I should see "Barcode printer"
     When I select "Test study" from "Study"
+    And I select "default layout" from "Template"
     And I select "Test supplier name" from "Supplier"
     And I select "xyz" from "Barcode printer"
     And I select "default layout" from "Template"
@@ -63,6 +64,7 @@ Feature: Sample manifest
     When I follow "Create manifest for 1D tubes"
     Then I should see "Barcode printer"
     When I select "Test study" from "Study"
+    And I select "default layout" from "Template"
     And I select "Test supplier name" from "Supplier"
     And I select "xyz" from "Barcode printer"
     And I select "default layout" from "Template"

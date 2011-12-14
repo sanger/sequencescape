@@ -30,7 +30,7 @@ Feature: move samples and assets between studies
     # Checking that the asset has moved
     When I am on the show page for asset "sample_tube_to_move"
     Then I should see "study to"
-    And I should not see "study from"
+    And I should not see "study from" within "#requests_table"
 
     When I am on the events page for asset "sample_tube_to_move"
     Then I should see "is moved from Study"
@@ -52,11 +52,11 @@ Feature: move samples and assets between studies
     Then I should see "Sample has been moved"
     When I am on the show page for asset "sample_tube_to_move"
     Then I should see "study to"
-    And I should not see "study from"
+    And I should not see "study from" within "#requests_table"
 
     When I am on the show page for asset "sample_tube_to_stay"
     Then I should see "to_stay study"
-    And I should not see "study from"
+    And I should not see "study from" within "#requests_table"
 
   Scenario: move all assets (including tag instance)
     Given a study called "study from" exists
@@ -78,12 +78,12 @@ Feature: move samples and assets between studies
     # Checking that the asset has moved
     When I am on the show page for asset "sample_tube_to_move"
     Then I should see "study to"
-    And I should not see "study from"
+    And I should not see "study from" within "#requests_table"
 
     #checking library tube
     When I am on the show page for asset "library_tube_to_move"
     Then I should see "study to"
-    And I should not see "study from"
+    And I should not see "study from" within "#requests_table"
 
   Scenario: move a sample with one asset to a new asset group
     Given a study called "study from" exists
@@ -102,7 +102,7 @@ Feature: move samples and assets between studies
     # Checking that the asset has moved
     When I am on the show page for asset "sample_tube_to_move"
     Then I should see "study to"
-    And I should not see "study from"
+    And I should not see "study from" within "#requests_table"
 
     #Given data are preloaded from "12073277"
   @production_sample @wip @to_fix

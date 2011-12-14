@@ -2,20 +2,18 @@
 module Submission::LinearRequestGraph
   # TODO: When Item dies this code will not need to hand it around so much!
 
-  # Builds the entire request graph for this submission.
-  def build_request_graph!
+  # Builds the entire request graph for this submission.  If you want to reuse the multiplexing assets then
+  # pass them in as the 'multiplexing_assets' parameter; specify a block if you want to know when they have
+  # been used.
+  def build_request_graph!(multiplexing_assets = nil, &block)
     ActiveRecord::Base.transaction do
       create_request_chain!(
         build_request_type_multiplier_pairs,
-        assets.map { |asset| [ asset, create_item_for!(asset) ] }
+        assets.map { |asset| [ asset, create_item_for!(asset) ] },
+        multiplexing_assets,
+        &block
       )
     end
-  rescue => exception
-    $stderr.puts self.inspect
-
-    $stderr.puts exception.message
-    exception.backtrace.map(&$stderr.method(:puts))
-    raise
   end
 
   # Generates a list of RequestType and multiplier pairs for the instance.
@@ -45,7 +43,7 @@ module Submission::LinearRequestGraph
   # Creates the next step in the request graph, taking the first request type specified and building
   # enough requests for the source requests.  It will recursively call itself if there are more requests
   # that need creating.
-  def create_request_chain!(request_type_and_multiplier_pairs, source_asset_item_pairs)
+  def create_request_chain!(request_type_and_multiplier_pairs, source_asset_item_pairs, multiplexing_assets, &block)
     raise StandardError, 'No request types specified!' if request_type_and_multiplier_pairs.empty?
     request_type, multiplier = request_type_and_multiplier_pairs.shift
 
@@ -54,10 +52,11 @@ module Submission::LinearRequestGraph
       # Otherwise there are the same number of target assets as source.
       target_assets =
         if request_type.for_multiplexing?
-          [ create_target_asset_for!(request_type) ] * assets.size
+          multiplexing_assets || ([ create_target_asset_for!(request_type) ] * assets.size)
         else
           source_asset_item_pairs.map { |source_asset, _| create_target_asset_for!(request_type, source_asset) }
         end
+      yield(target_assets) if block_given? and request_type.for_multiplexing?
 
       # Now we can iterate over the source assets and target assets building the requests between them.
       # Ensure that the request has the correct comments on it, and that the aliquots of the source asset
@@ -89,7 +88,7 @@ module Submission::LinearRequestGraph
         else
           target_assets.each_with_index.map { |asset,index| [ asset || source_asset_item_pairs[index].first, source_asset_item_pairs[index].last ] }
         end
-      create_request_chain!(request_type_and_multiplier_pairs.dup, target_assets)
+      create_request_chain!(request_type_and_multiplier_pairs.dup, target_assets, multiplexing_assets, &block)
     end
   end
   private :create_request_chain!

@@ -37,12 +37,12 @@ Feature: NPG XML interface
               <property>
                 <key>fragment_size_required_from</key>
                 <name>Fragment size required (from)</name>
-                <value>999</value>
+                <value>1</value>
               </property>
               <property>
                 <key>fragment_size_required_to</key>
                 <name>Fragment size required (to)</name>
-                <value>1</value>
+                <value>21</value>
               </property>
             </properties>
           </request>
@@ -87,12 +87,12 @@ Feature: NPG XML interface
               <property>
                 <key>fragment_size_required_from</key>
                 <name>Fragment size required (from)</name>
-                <value>999</value>
+                <value>1</value>
               </property>
               <property>
                 <key>fragment_size_required_to</key>
                 <name>Fragment size required (to)</name>
-                <value>1</value>
+                <value>20</value>
               </property>
             </properties>
           </request>

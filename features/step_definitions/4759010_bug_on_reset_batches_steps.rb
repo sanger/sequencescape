@@ -9,15 +9,23 @@ Given /^a batch in "Cluster formation PE" has been setup for feature 4759010$/ d
 end
 
 Given /^a batch in "MX Library Preparation \[NEW\]" has been setup for feature 4759010$/ do         
-  pipeline = Pipeline.find_by_name("MX Library Preparation [NEW]") or raise StandardError, "Cannot find pipeline '#{ name }'"
-  batch    = Factory :batch, :pipeline => pipeline, :state => :started
-  
-  submission = Factory::submission :request_types => [
-    RequestType.find_by_key('multiplexed_library_creation'),
-    RequestType.find_by_key('paired_end_sequencing')
-  ].map(&:id)
-  
+  pipeline    = Pipeline.find_by_name("MX Library Preparation [NEW]") or raise StandardError, "Cannot find pipeline '#{ name }'"
+  batch       = Factory :batch, :pipeline => pipeline, :state => :started
   asset_group = Factory(:asset_group)
+
+  submission = Factory::submission(
+    :asset_group   => asset_group,
+    :request_options => {
+      :read_length => 76,
+      :fragment_size_required_from => 1,
+      :fragment_size_required_to => 20,
+      :library_type => 'Standard'
+    },
+    :request_types => [
+      RequestType.find_by_key('multiplexed_library_creation'),
+      RequestType.find_by_key('paired_end_sequencing')
+    ].map(&:id)
+  )
 
   asset_type = pipeline_name_to_asset_type(pipeline.name)
 

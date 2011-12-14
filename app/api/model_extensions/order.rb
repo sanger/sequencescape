@@ -11,7 +11,7 @@ module ModelExtensions::Order
     # request options have been specified.  Once they are specified they are always checked, unless they are
     # completely blanked.
     def validate_request_options?
-      self.left_building_state? or not self.request_options.blank?
+      not building? or not self.request_options.blank?
     end
     private :validate_request_options?
 
@@ -22,7 +22,7 @@ module ModelExtensions::Order
     # If this returns true then we check values that have not been set, otherwise we can ignore them.  This would
     # mean that we should not require values that are unset, until we're moving out of the building state.
     def include_unset_values?
-      self.left_building_state?
+      not building?
     end
 
     def request_options_for_validation
@@ -44,7 +44,7 @@ module ModelExtensions::Order
 
       has_many :submitted_assets
       has_many :assets, :through => :submitted_assets do
-        def replace(new_values)
+        def replace(*args, &block)
           raise StandardError, 'requested action is not supported on this resource' if not proxy_owner.new_record? and  proxy_owner.send(:asset_group?) and not empty?
           super
         end
@@ -57,7 +57,10 @@ module ModelExtensions::Order
       # The API can create submissions but we have to prevent someone from changing the study
       # and the project once they have been set.
       validates_each(:study, :project) do |record, attr, value|
-        record.errors.add(attr, 'cannot be changed') if not record.new_record? and record.send(:"#{attr}_id_was") != record.send(:"#{attr}_id")
+        # NOTE: This can get called after the record has been saved but before it has been completely saved, i.e. after_create for
+        # the quota checking.  In this case the original value of the attribute will be nil, so we account for that here.
+        attr_value_was, attr_value_is = record.send(:"#{attr}_id_was"), record.send(:"#{attr}_id")
+        record.errors.add(attr, 'cannot be changed') if not record.new_record? and attr_value_was != attr_value_is and attr_value_was.present?
       end
 
       extend ClassMethods

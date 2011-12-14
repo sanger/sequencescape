@@ -14,7 +14,7 @@ class RequestTest < ActiveSupport::TestCase
         @genotyping_request_type = Factory :request_type, :name => "genotyping"
         @cherrypick_request_type = Factory :request_type, :name => "cherrypick", :target_asset_type => nil
         #@submission  = Factory(:order_with_submission, :request_types => [@cherrypick_request_type, @genotyping_request_type].map(&:id)).submission
-        @submission  = Factory::submission(:request_types => [@cherrypick_request_type, @genotyping_request_type].map(&:id))
+        @submission  = Factory::submission(:request_types => [@cherrypick_request_type, @genotyping_request_type].map(&:id), :asset_group_name => 'to avoid asset errors')
         @item = Factory :item, :submission => @submission
         
         @genotype_pipeline = Factory :pipeline, :name =>"genotyping pipeline", :request_type => @genotyping_request_type

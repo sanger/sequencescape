@@ -39,11 +39,11 @@ Feature: Samples submission
     Then I should see "Please select a submission template"
     When I press "Next"
     Then I should see "Select a group to submit"
-    And I should see "Double check and create your submission"
+    And I should see "Double check and create your order"
     When I select "asset_group_1" from "Select a group to submit"
     And I fill in "Fragment size required (from)" with "1"
     And I fill in "Fragment size required (to)" with "999"
     And I select "Custom" from "Library type"
     And I select "76" from "Read length"
-    And I press "Create Submission"
+    And I create the order and submit the submission
     Then I should see "Submission successfully created"

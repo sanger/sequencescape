@@ -9,33 +9,38 @@ class Submission < ActiveRecord::Base
 
   include DelayedJobEx
 
+  belongs_to :user
+  validates_presence_of :user
+
   # Created during the lifetime ...
   has_many :requests
   has_many :items, :through => :requests
 
-  has_one :order, :inverse_of => :submission
-  accepts_nested_attributes_for :order, :update_only => true
-  def orders
-    [order].compact
-  end
+  has_many :orders, :inverse_of => :submission
+  has_many :studies, :through => :orders
+  accepts_nested_attributes_for :orders, :update_only => true
 
-
-  #TODO clean up if not neede
   def comments
-    order.comments
+    # has_many throug doesn't work. Comments is a column (string) of order
+    # not an ActiveRecord
+    orders.map(&:comments).flatten(1).compact
   end
-  
+
   cattr_reader :per_page
   @@per_page = 500
   named_scope :including_associations_for_json, {
     :include => [
       :uuid_object,
-      {:order => [
+      {:orders => [
          {:project => :uuid_object},
          {:assets => :uuid_object },
          {:study => :uuid_object },
          :user]}
   ]}
+  
+  named_scope :building, :conditions => { :state => "building" }
+  named_scope :pending, :conditions => { :state => "pending" }
+  named_scope :ready, :conditions => { :state => "ready" }
 
   # Before destroying this instance we should cancel all of the requests it has made
   before_destroy :cancel_all_requests_on_destruction
@@ -65,11 +70,11 @@ class Submission < ActiveRecord::Base
     end
     ActiveRecord::Base.transaction do
       order = Order.prepare!(options)
-      order.create_submission(submission_options).built!
+      order.create_submission({:user_id => order.user_id}.merge(submission_options)).built!
       order.save! #doesn't save submission id otherwise
       study_name = order.try(:study).name
       order.submission.update_attributes!(:name=>study_name) if study_name
-      order.submission
+      order.submission.reload
     end
   end
   # TODO[xxx]: ... to here really!
@@ -87,7 +92,10 @@ class Submission < ActiveRecord::Base
   def process_submission!
     # for now, we just delegate the requests creation to orders
     ActiveRecord::Base.transaction do
-      orders.each(&:build_request_graph!)
+      multiplexing_assets = nil
+      orders.each do |order|
+        order.build_request_graph!(multiplexing_assets) { |a| multiplexing_assets ||= a }
+      end
     end
   end
   alias_method(:create_requests, :process_submission!)
@@ -135,21 +143,42 @@ class Submission < ActiveRecord::Base
 
 
  #Required at initial construction time ...
- validate :check_orders_are_compatible
+ validate :validate_orders_are_compatible
 
  #Order needs to have the 'structure'
- def check_orders_are_compatible()
-   orders.map(&:request_types).uniq.size <= 1
-   orders.map(&:workflow_id).compact.uniq.size <= 1
+ def validate_orders_are_compatible()
+    return true if orders.size < 2
+    # check every order agains the first one
+    first_order = orders.first
+    orders[1..-1].each { |o| check_orders_compatible?(o,first_order) }
+ end
+ private :validate_orders_are_compatible
+
+ # this method is part of the submission
+  # not order, because it is submission 
+ # which decide if orders are compatible or not
+ def check_orders_compatible?(a,b)
+    errors.add(:request_types, "are incompatible") if a.request_types != b.request_types
+    errors.add(:request_options, "are incompatible") if a.request_options != b.request_options
+    errors.add(:item_options, "are incompatible") if a.item_options != b.item_options
+    check_studies_compatible?(a.study, b.study) 
+    check_samples_compatible?(a,b)
  end
 
- private :check_orders_are_compatible
+ def check_studies_compatible?(a,b)
+    errors.add(:study, "Can't mix contaminated and non contaminated human DNA") unless a.study_metadata.contaminated_human_dna == b.study_metadata.contaminated_human_dna
+ end
+
+ def check_samples_compatible?(a,b)
+    reference_genomes = [a, b].map(&:samples).flatten.uniq.group_by(&:sample_reference_genome).keys
+    errors.add(:samples, "Can't mix reference genenome") if  reference_genomes.size > 1
+ end
 
   #for the moment we consider that request types should be the same for all order
   #so we can take the first one
   def request_type_ids
-    return [] unless orders.present?
-    order.request_types.map(&:to_i)
+    return [] unless orders.size >= 1
+    orders.first.request_types.map(&:to_i)
   end
 
 
@@ -181,7 +210,8 @@ class Submission < ActiveRecord::Base
   end
 
   def name
-    attributes[:name] || orders.map {|o| o.try(:study).try(:name) }.compact.join("|")
+    name = attributes[:name] || orders.map {|o| o.try(:study).try(:name) }.compact.sort.uniq.join("|")
+    name.present? ? name : "##{id}"
   end
 
 end

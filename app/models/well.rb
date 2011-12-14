@@ -184,6 +184,6 @@ class Well < Aliquot::Receptacle
   def display_name
     return self.name unless self.name.blank?
     plate_name = self.plate.present? ? self.plate.sanger_human_barcode : '(not on a plate)'
-    "#{plate_name}:#{map.description}"
+    "#{plate_name}:#{map ? map.description : ''}"
   end
 end

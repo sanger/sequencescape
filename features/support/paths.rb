@@ -151,9 +151,14 @@ module NavigationHelpers
       study      = Study.first(:conditions => { :name => study_name }) or raise StandardError, "No study defined with name '#{ study_name }'"
       study_sample_registration_index_path(study)
 
+    when /the Submissions Inbox page/
+      submissions_path
+
     when /the show page for the last submission/
       submission = Submission.last or raise StandardError, "There are no submissions!"
-      study_workflow_submission_path(submission.order.study, submission.order.workflow, submission)
+      order = submission.orders.first
+      #study_workflow_submission_path(order.study, order.workflow, submission)
+      submission_path(submission)
 
     when /the submissions page for study "([^\"]+)"/
       study    = Study.find_by_name($1) or raise StandardError, "No study defined with name #{ $1.inspect }"

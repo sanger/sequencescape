@@ -21,12 +21,13 @@ Feature: Push samples through the PacBio pipeline with javascript
     When I follow "Create Submission"
     When I select "PacBio" from "Template"
     And I press "Next"
+    When I select "Test study" from "Select a study"
     When I select "Test project" from "Select a financial project"
     And I select "Test study group" from "Select a group to submit"
     And I select "2000" from "Insert size"
     And I select "Standard" from "Sequencing type"
     And I fill in "Multiplier for step 2" with "22"
-    And I press "Create Submission"
+    And I create the order and submit the submission
     Given 1 pending delayed jobs are processed
     Given I am on the show page for pipeline "PacBio Sample Prep"
     When I check "Select SampleTube 111 for batch"
