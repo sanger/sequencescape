@@ -120,6 +120,7 @@ class BulkSubmission < ActiveRecord::Base
     'fragment size from', 'fragment size to',
     'read length',
     'library type',
+    'bait library name',
     'comments',
     'number of lanes'
   ]
