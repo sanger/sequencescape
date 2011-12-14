@@ -11,6 +11,7 @@ class BatchRequest < ActiveRecord::Base
   validates_presence_of :request
 
   named_scope :ordered, :order => 'position ASC'
+  named_scope :at_position, lambda { |position| { :conditions => { :position => position } } }
 
   # Ensure that any requests that are added have a position that is unique and incremental in the batch,
   # unless we're moving them around in the batch, in which case we assume it'll be valid.

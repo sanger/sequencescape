@@ -17,7 +17,7 @@ Given /^I have a "([^\"]+)" submission of asset group "([^\"]+)" under project "
   When %Q{I press "Next"}
   When %Q{I select "#{project_name}" from "Select a financial project"}
   When %Q{I select "#{group_name}" from "Select a group to submit"}
-  When %Q{I press "Create Submission"}
+  And %Q{I create the order and submit the submission}
 
   Given %Q{all pending delayed jobs are processed}
 end

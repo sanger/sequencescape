@@ -16,14 +16,14 @@ Given /^I have a PacBio submission$/ do
   study = Study.find_by_name("Test study")
   
   submission_template = SubmissionTemplate.find_by_name('PacBio')
-  submission = submission_template.create!(
+  submission = submission_template.create_and_build_submission!(
     :study => study,
     :project => project,
     :workflow => Submission::Workflow.find_by_key('short_read_sequencing'),
     :user => User.last,
     :assets => SampleTube.all,
     :request_options => {"multiplier"=>{"1"=>"1", "3"=>"1"}, "insert_size"=>"250", "sequencing_type"=>"Standard"}
-    ).create_submission.built!
+    )
   And %Q{1 pending delayed jobs are processed}
 end
 

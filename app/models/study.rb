@@ -94,6 +94,8 @@ class Study < ActiveRecord::Base
   #New version
   has_many :projects,:through => :orders, :uniq => true
 
+  has_many :initial_requests, :class_name => "Request", :foreign_key => :initial_study_id
+
   has_many :comments, :as => :commentable
   has_many :events, :as => :eventful
   has_many :documents, :as => :documentable
@@ -329,7 +331,7 @@ class Study < ActiveRecord::Base
   end
 
   def submissions_for_workflow(workflow)
-    orders_for_workflow(workflow).map(&:submission).uniq
+    orders_for_workflow(workflow).map(&:submission).compact.uniq
   end
 
   def orders_for_workflow(workflow)
@@ -337,14 +339,14 @@ class Study < ActiveRecord::Base
   end
   # Yields information on the state of all request types in a convenient fashion for displaying in a table.
   def request_progress(&block)
-    yield(self.requests.progress_statistics)
+    yield(self.initial_requests.progress_statistics)
   end
 
   # Yields information on the state of all assets in a convenient fashion for displaying in a table.
   def asset_progress(assets = nil, &block)
     conditions = { }
     conditions[:having] = "asset_id IN (#{assets.map(&:id).join(',')})" unless assets.blank?
-    yield(self.requests.asset_statistics(conditions))
+    yield(self.initial_requests.asset_statistics(conditions))
   end
 
   # Yields information on the state of all samples in a convenient fashion for displaying in a table.

@@ -388,12 +388,13 @@ Feature: Cherrypicking for Pulldown pipeline
     When I follow "Create Submission"
     When I select "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - Paired end sequencing" from "Template"
     And I press "Next"
+    When I select "Test study" from "Select a study"
     When I select "Test project" from "Select a financial project"
     And I select "Plate asset group 1234567" from "Select a group to submit"
     And I fill in "Fragment size required (from)" with "300"
     And I fill in "Fragment size required (to)" with "400"
     And I select "108" from "Read length"
-    And I press "Create Submission"
+    And I create the order and submit the submission
     Given 1 pending delayed jobs are processed
     Given I am on the show page for pipeline "Cherrypicking for Pulldown"
     When I check "Select DN1234567T for batch"

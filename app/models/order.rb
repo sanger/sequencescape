@@ -30,7 +30,7 @@ class Order < ActiveRecord::Base
   belongs_to :workflow, :class_name => 'Submission::Workflow'
   validates_presence_of :workflow
 
-  belongs_to :submission, :inverse_of => :order
+  belongs_to :submission, :inverse_of => :orders
   #validates_presence_of :submission
 
   serialize :request_types
@@ -38,6 +38,11 @@ class Order < ActiveRecord::Base
 
   serialize :item_options
 
+  def samples
+    #naive way
+    assets.map(&:aliquots).flatten.map(&:sample).uniq
+  end
+  
 
   named_scope :for_studies, lambda {|*args| {:conditions => { :study_id => args[0]} } }
   
@@ -47,7 +52,7 @@ class Order < ActiveRecord::Base
 
   
   def self.render_class
-    Api::SubmissionIO
+    Api::OrderIO
   end
   
   def url_name
@@ -62,7 +67,11 @@ class Order < ActiveRecord::Base
   # TODO[xxx]: I don't like the name but this should disappear once the UI has been fixed
   def self.prepare!(options)
     constructor = options.delete(:template) || self
-    constructor.create!(options.merge(:assets => options.fetch(:assets, [])))
+    constructor.create_order!(options.merge(:assets => options.fetch(:assets, [])))
+  end
+
+  class << self
+    alias_method :create_order!, :create!
   end
 
   # only needed to note 
@@ -205,8 +214,20 @@ class Order < ActiveRecord::Base
   end
   protected :compute_input_field_infos
 
+  # Are we still able to modify this instance?
+  def building?
+    self.submission.nil?
+  end
 
 
+  # Returns true if this is an order for sequencing
+  def is_a_sequencing_order?
+    [
+     PacBioSequencingRequest,
+     SequencingRequest,
+     *Class.subclasses_of(SequencingRequest)
+    ].include?(request_types_list.flatten.last.request_class)
+  end
 end
 
 

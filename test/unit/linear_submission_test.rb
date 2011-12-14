@@ -110,12 +110,12 @@ class LinearSubmissionTest < ActiveSupport::TestCase
         end
 
         should "save request_types as array of Fixnums" do
-          assert_kind_of Array, @submission.order.request_types
-          assert @submission.order.request_types.all? {|sample| sample.kind_of?(Fixnum) }
+          assert_kind_of Array, @submission.orders.first.request_types
+          assert @submission.orders.first.request_types.all? {|sample| sample.kind_of?(Fixnum) }
         end
 
         should "save a comment if there's one passed in" do
-          assert_equal "This is a comment", @submission.comments
+          assert_equal ["This is a comment"], @submission.comments
         end
 
         context '#process!' do
@@ -223,7 +223,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
 
       context "when quotas are being enforced" do
         setup do
-          @project.enforce_quotas = true
+          @project.update_attributes(:enforce_quotas => true)
         end
 
         context "when quotas have been set up" do
@@ -257,7 +257,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
 
           context 'when quotas are not being enforced' do
             setup do
-              @project.enforce_quotas = false
+              @project.update_attributes!(:enforce_quotas => false)
             end
 
             should 'allow the normal submission to build' do
@@ -273,7 +273,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
 
           context 'when quotas are not being enforced' do
             setup do
-              @project.enforce_quotas = false
+              @project.update_attributes!(:enforce_quotas => false)
             end
 
             should 'allow the normal submission to build' do
@@ -283,18 +283,18 @@ class LinearSubmissionTest < ActiveSupport::TestCase
             context 'then' do
               setup do
                 @submission = LinearSubmission.build!(@submission_params)
+
               end
               should 'allow the submission to be processed' do
                 @submission.process!
               end
               context 'when the quota have been enforced' do
-
                 setup do
-                @project.enforce_quotas = true
+                @project.update_attributes!(:enforce_quotas => true)
                 end
-              should 'not allow the submission to be processed' do
-                assert_raises(Quota::Error) { @submission.process! }
-              end
+                should 'not allow the submission to be processed' do
+                  assert_raises(Quota::Error) { @submission.process!}
+                end
               end
             end
           end

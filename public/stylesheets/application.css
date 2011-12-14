@@ -41,13 +41,16 @@ a:visited {
   padding: 1px 15px 3px 15px;
   font-weight: bold;
   text-shadow:-1px 1px 1px rgba(102, 106, 109,0.4);
+  -moz-transition:    all 0.3s ease-in-out 0s;
+  -webkit-transition: all 0.3s ease-in-out 0s;
+  transition:         all 0.3s ease-in-out 0s;
 }
 
 #tabs a:hover {
   -moz-border-radius: 5px;
   border-radius: 5px;
   background: #066FA3;
-  background: rgba(0, 69, 120,0.3);
+  background: rgba(0, 69, 120,0.5);
   color: #fff;
   text-shadow:-1px 1px 1px rgba(102, 106, 109,1);
 }
@@ -132,9 +135,9 @@ body #header {  /* Covers all environments not specifically identified (purples)
 }
 body.production #header {  /* Specific for production environment (blues) */
   background: #3e87b3;
-  background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(100%, #004578), color-stop(0%, #0085bc));
+  background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(100%, #004578), color-stop(0%, #006BAF));
   background-image: -moz-linear-gradient(top, #006BAF 0%, #004578 100%);
-  background-image: linear-gradient(top, #0085bc 0%, #004578 100%);
+  background-image: linear-gradient(top, #006BAF 0%, #004578 100%);
   color: #fff;
 }
 body.production.failover #header {  /* Specific for production failover environment (blues) */
@@ -494,10 +497,6 @@ font-size: 1.2em;
 font-weight: bold;
 }
 
-h1,h2,h3 {
-  text-shadow:-1px 1px 1px rgba(102, 106, 109,0.2);
-}
-
 img {
 border: 0px;
 }
@@ -505,7 +504,7 @@ input#stage_button {
 margin-top: 50px;
 margin-left: 30px;
 }
-}
+
 td.bar {
 border-right: 1px solid #ccc;
 border-left: 1px solid #ccc;
@@ -581,7 +580,7 @@ font-size: 11px;
 td.item {
 text-align: right;
 padding-right: 15px;
-padding-bottom: 10px;
+line-height: 20px;
 }
 td.label,th.label,th.nosort {
 border-bottom: 1px solid #888;
@@ -647,7 +646,6 @@ th.request-grid, td.request-grid {
   padding: 3px 5px;
   text-align: center;
 }
-
 tr.second_attempt {
 color: #ff0000;
 }
@@ -968,6 +966,248 @@ td.commentable a {
   border-top: none;
 }
 
+/* fix for autocomplete menu size */
+body.yui-skin-sam ul.ui-menu {
+  font-size: 12px;
+}
+
+ul#orders {
+  width: 950px;
+  color:#333129;
+  padding: 0;
+  clear: both;
+  margin: 15px 0;
+	-moz-transition:    all 0.3s ease-in-out 0s;
+  -webkit-transition: all 0.3s ease-in-out 0s;
+  transition:         all 0.3s ease-in-out 0s;
+}
+
+
+/* This overly verbose rule is needed to override formtastic styling  */
+ul#orders > li {
+  padding: 15px;
+  margin: 15px 0;
+  color:#00498C;
+  background: #fff;
+  list-style: none outside none;
+  text-align: right;
+  position: relative;
+}
+
+ul#orders li.pane {
+  border: 4px solid #014f93;
+  border-radius: 15px;
+  -moz-border-radius: 15px;
+  opacity: 0.2;
+  text-align: left;
+  background: #fff;
+}
+
+ul#orders li.pane .button {
+}
+
+ul#orders li.order .save-buttons {
+  position: absolute;
+  bottom: -20px;
+  right: 10px;
+}
+
+
+ul#orders li.completed {
+	border-color: hsl(121, 98%, 24%);
+	background: #EBFFEB;
+	color:#017802;
+  opacity: 0.6;
+}
+
+ul#orders li.active {
+  opacity: 1;
+  -moz-box-shadow: 0 2px 5px #C3CEDA;
+  box-shadow:     0 2px 5px #C3CEDA;
+}
+
+ul#orders  li.order.invalid {
+  border-color: #920000;
+}
+
+ul#orders .errors li {
+  color: #920000;
+}
+
+#orders span.badge {
+	display: none;
+  position: absolute;
+	width: 35px;
+  line-height: 35px;
+  font-size: 	 25px;
+	top:  -18px;
+	right: -18px;
+	text-align: center;
+	border-radius: 35px;
+	color: white;
+	text-shadow: 0 -1px 0 #002800;
+	box-shadow: 0 1px 3px #aaaaaa;
+	-moz-transition:    all 0.3s ease-in-out 0s;
+  -webkit-transition: all 0.3s ease-in-out 0s;
+  transition:         all 0.3s ease-in-out 0s;
+}
+
+ul#orders li.completed span.completed {
+	background:	hsl(120, 59%, 35%);
+  background: -moz-radial-gradient(top left, cover, hsl(120, 59%, 35%) 0%, hsl(120, 59%, 12%) 100%);
+  background: -webkit-radial-gradient(top left, cover, hsl(120, 59%, 35%) 0%, hsl(120, 59%, 12%) 100%);
+
+	display: block;
+}
+ul#orders li.invalid span.invalid {
+	background:	#920000;
+	background: -moz-radial-gradient(top left, cover, #B60000 0%, #710000 100%);
+	background: -webkit-radial-gradient(top left, cover, #B60000 0%, #710000 100%);
+	display: block;
+}
+
+#orders li#order-template {
+}
+
+ul#orders li#blank-order {
+  display: none;
+}
+
+ul#orders li table {
+  width: 100%;
+}
+
+
+ul#orders li th {
+  text-align: right;
+}
+
+ul#orders ul.sub-panel {
+  padding: 0;
+}
+
+ul#orders ul.sub-panel li {
+  opacity: 1;
+  border: 2px solid hsl(0, 0%, 86%);
+  margin: 10px 0;
+  border-radius: 8px;
+
+  padding: 15px;
+  list-style: none outside none;
+  position: relative;
+}
+
+#orders ul.sub-panel .assets {
+  height: 90px;
+}
+
+#orders h2, #orders h3 {
+  position: absolute;
+  top: -25px;
+  left: 10px;
+  padding: 0 4px;
+  background: inherit;
+  background: #fff;
+}
+
+#orders h3 {
+  left: 5px;
+}
+
+#orders li.active h2, #orders li.active h3 {
+  text-shadow: 0 1px 0px hsl(211, 24%, 81%);
+}
+
+
+#orders li.completed h3, #orders li.completed textarea, #orders li.completed input:not(.delete-order) {
+	background: #EBFFEB;
+}
+
+#orders .comments {
+  width: 100%;
+}
+
+h2.error {
+  color: #920000;
+}
+
+ul#orders ul.errors li {
+  width: 100%;
+  border: none;
+  padding: 0px;
+  box-shadow: none;
+  height: auto;
+  width: auto;
+  float: none;
+  opacity: 1;
+  position: initial;
+}
+
+ul#orders > li.buttons {
+  padding: 0;
+  margin-top: 30px;
+}
+
+.button {
+  -moz-box-shadow:inset 0px 1px 0px 0px #bbdaf7;
+  -webkit-box-shadow:inset 0px 1px 0px 0px #bbdaf7;
+  box-shadow:inset 0px 1px 0px 0px #395F94;
+  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #0066B8), color-stop(1, #00498C) );
+  background:-moz-linear-gradient( center top, #0066B8 5%, #00498C 100% );
+  background-color:#00498C;
+  -moz-border-radius:6px;
+  -webkit-border-radius:6px;
+  border-radius: 8px;
+  border:1px solid #002C5C;
+  display:inline-block;
+  color:#ffffff;
+  font-size:15px;
+  font-weight:bold;
+  padding:6px 24px;
+  text-decoration:none;
+  text-shadow: 0px -1px 0px #1B3752;
+  -moz-transition:    all 0.5s ease-in-out 0s;
+  -webkit-transition: all 0.5s ease-in-out 0s;
+  transition:         all 0.5s ease-in-out 0s;
+}
+
+.button:hover {
+  color: hsl(61, 64%, 73%);
+  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #00498C), color-stop(1, #004390) );
+  background:-moz-linear-gradient( center top, #00498C 5%, #004390 100% );
+}
+.button.final {
+  border-color: #1C7C00;
+  background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, hsl(102, 100%, 21%)), color-stop(1, hsl(120, 100%, 14%)) );
+  background: -moz-linear-gradient( center top, hsl(102, 100%, 21%) 5%, hsl(120, 100%, 14%) 100% );
+  background-color: #1C7C00;
+}
+
+.button.final:hover {
+  color: hsl(56, 32%, 97%);
+  background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, hsl(102, 100%, 14%)), color-stop(1, hsl(120, 100%, 16%)) );
+  background: -moz-linear-gradient( center top, hsl(102, 100%, 14%) 5%, hsl(120, 100%, 16%) 100% );
+  background-color: #1C7C00;
+}
+
+.button[disabled] {
+  -moz-box-shadow: 0 0 0 0;
+  -webkit-box-shadow: 0 0 0 0;
+  box-shadow: 0 0 0 0;
+  background:#ACACAC;
+
+  border-color:#6E6E6E;
+  text-shadow:0px 0px 0px #528ecc;
+  color: #ddd;
+  opacity: 0.2;
+}
+
+.button[disabled]:hover {
+}
+
+
+
+
 #asset_input_methods td { vertical-align: top; }
 #asset_input_methods td.separator { vertical-align: middle; }
 
@@ -990,6 +1230,7 @@ div.auto_complete {
   width:100%; 
   background: #fff;
   z-index: 250;
+  border: 1px solid gray;
 }
 
 div.auto_complete ul { 
@@ -1082,4 +1323,14 @@ div.characterisation fieldset{
 #activity-logging {
   width: 100%;
   border: none;
+}
+tr.duplicate-error {
+  background: #FFB0B0 !important
+}
+tr.duplicate-error td {
+  background: #FFB0B0 !important
+}
+
+#increment-tags-info {
+  right:0;
 }

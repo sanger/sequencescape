@@ -136,7 +136,7 @@ class StudyTest < ActiveSupport::TestCase
       end
       context "with submissions still unprocessed" do
         setup do
-          Factory::submission :study => @study, :state => 'building'
+          Factory::submission :study => @study, :state => 'building', :assets => [@asset]
           Factory::submission :study => @study, :state => "pending", :assets => [@asset]
           Factory::submission :study => @study, :state => "processing", :assets => [@asset]
         end

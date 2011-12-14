@@ -83,8 +83,10 @@ ActionController::Routing::Routes.draw do |map|
       plate.resources :wells, :except => [:destroy, :edit], :controller => "studies/plates/wells"
     end
 
-    study.resources :workflows, :controller => "studies/workflows", :member => { :summary => :get, :show_summary => :get } do |workflow|
-      workflow.resources :submissions, :controller => "studies/workflows/submissions", :collection => { :info => [:get, :put], :template_chooser => :get, :new => [:get, :put] }
+    study.resources :workflows, :controller => "studies/workflows", :member => { :summary => :get, :show_summary => :get} do |workflow|
+      workflow.resources :submissions, :controller => "studies/workflows/submissions",
+        :collection => { :info => [:get, :put], 
+          :template_chooser => :get, :new => [:get, :put] , :asset_inputs => :get } 
       workflow.resources :assets, :collection => { :print => :post }
     end
 
@@ -95,7 +97,8 @@ ActionController::Routing::Routes.draw do |map|
   # TODO (jr16) move to a more appropriate location
   map.connect "bulk_submissions", :controller => "bulk_submissions", :action => "new"
 
-  map.resources :submissions, :controller => "studies/workflows/submissions"
+  map.resources :submissions, :collection => { :study_assets => :get, :order_parameters => :get, :project_details => :get }
+  map.resources :orders, :only => [:destroy]
 
   map.resources :properties  do |property|
     property.resources :documents, :controller => "properties/documents", :only => [:show]
@@ -276,7 +279,10 @@ ActionController::Routing::Routes.draw do |map|
         sample_tube.model :requests, :controller => "api/requests"
       end
       read_only.model :study_samples, :controller => "api/study_samples"
-      read_only.model :submissions, :controller => "api/submissions"
+      read_only.model :submissions, :controller => "api/submissions" do |submission|
+        submission.model :orders, :controller => "api/orders"
+      end
+      read_only.model :orders, :controller => "api/orders"
       read_only.model :tags, :controller => "api/tags"
       read_only.asset :wells, :controller => "api/wells"
       read_only.model :aliquots, :controller => "api/aliquots"

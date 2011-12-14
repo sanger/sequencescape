@@ -96,15 +96,6 @@ class PlateTest < ActiveSupport::TestCase
           assert Plate.plate_ids_from_requests([@request1]).include?(@plate1.id)
         end
       end
-
-      context "and a nil asset" do
-        setup do
-          @request_with_nil_asset = Factory :request, :asset => nil
-        end
-        should "not return plate ids" do
-          assert Plate.plate_ids_from_requests([@request_with_nil_asset]).empty?
-        end
-      end
     end
 
     context "with 2 requests on the same plate" do

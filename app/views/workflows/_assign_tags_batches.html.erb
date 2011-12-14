@@ -6,37 +6,35 @@
         No items found. <%= link_to "Create the first one", :action => "new" %>
       </div>
     <% else -%>
-      <table class="request-grid sortable">
+    <p id="increment-tags-info"><label for="increment-tags">When you change a tag, the subsequent tags will be incremented according to your selection. Uncheck this if you wish manually assign all tags.</label><input type="checkbox" checked id="increment-tags" /></p>
+      <table id="tag-assignment" class="request-grid tablesorter">
         <thead>
           <tr>
-            <th class='label'><%= link_to 'Order', "javascript:void(0);" %></th>
-            <th class='label'><%= link_to 'Sample', "javascript:void(0);" %></th>
-            <th class='label'><%= link_to 'Request', "javascript:void(0);" %></th>
-            <th class='label'><%= link_to 'Source', "javascript:void(0);" %></th>
-            <th class='label'><%= link_to 'Target', "javascript:void(0);" %></th>
+            <th class='label'>Order</th>
+            <th class='label'>Sample</th>
+            <th class='label'>Request</th>
+            <th class='label'>Source</th>
+            <th class='label'>Target</th>
             <% if @batch.multiplexed? %>
-              <th class='label'><%= link_to 'Sample name', "javascript:void(0);" %></th>
-              <th class='label'><%= link_to 'Tag #', "javascript:void(0);" %></th>
+              <th class='label'>Sample name</th>
+              <th class='label'>Tag #</th>
             <% end %>
-            <th class='label'><%= link_to 'State', "javascript:void(0);" %></th>
-            <th class='label'><%= link_to 'QC', "javascript:void(0);" %></th>
-            <th class='label'><%= link_to 'Tag', "javascript:void(0);" %></th>
+            <th class='label'>State</th>
+            
+            <th class='label'>Tag</th>
           </tr>
         </thead>
         <tbody id="item_list">
           <% tag_options = @tags.collect { |t| ["Tag #{t.map_id}", t.id] } %>
-
           <% @requests.each_with_index do |request,index| -%>
             <tr id="request_<%= request.id %>" class="<%= cycle("rowodd", "roweven") %>">
               <th class="order"><%= request.position(@batch) %></th>
               <td><%= request.sample_name %></td>
-              <td><%= link_to request.id, "#{configatron.studies_url}/@requests/#{request.id}" %></td>
+              <td><%= link_to request.id, request_url(request) %></td>
               <% if request.asset  %>
-                <td class="request-asset-name">
-                  <%= link_to "#{request.asset.display_name} #{request.asset.barcode}", asset_url(request.asset), :target => "_blank" %>
+                <td class="request-asset-name"><%= link_to "#{request.asset.id} #{request.asset.display_name}", asset_url(request.asset), :target => "_blank" %>
                 </td>
-                <td class="request-asset-name">
-                  <%= link_to(request.target_asset.display_name, asset_url(request.target_asset), :target => "_blank") if request.target_asset %>
+                <td class="request-asset-name"><%= link_to("#{request.target_asset.id} #{request.target_asset.display_name}", asset_url(request.target_asset), :target => "_blank") if request.target_asset %>
                 </td>
               <% else %>
                 <td class="request-asset-name">&nbsp;</td>
@@ -47,14 +45,9 @@
                 <td><%= request.tag_number.blank? ? '-' : request.tag_number %></td>
               <% end %>
               <td><%= request.state.humanize %></td>
-              <% if request.asset %>
-                <td><%= display_boolean_results(request.asset.qc_state) %></td>
-              <% else %>
-                <td></td>
-              <% end %>
               <td>
                 <% if request.tag_number.blank? %>
-                  <%= select "tag", request.id, tag_options, :selected =>tag_options[index%tag_options.size] %>
+                  <%= select "tag", request.id, tag_options, {:selected =>tag_options[index%tag_options.size]}, {:class => "tagchoice"} %>
                 <% end %>
               </td>
 
@@ -79,3 +72,4 @@
   <%= hidden_field_tag 'tag_group', @tag_group.id %>
   <%= render :partial => "next_stage_submit" %>
 <% end %>
+<%= javascript_include_tag "assigntags" %>

@@ -51,33 +51,34 @@ if ENV['PULLDOWN']
       $stderr.puts "\t#{pipeline}"
 
       $stderr.puts "\t\tFull plate"
-      SubmissionTemplate.find_by_name("Cherrypick for pulldown - #{pipeline} - HiSeq Paired end sequencing").create!(
+      SubmissionTemplate.find_by_name("Cherrypick for pulldown - #{pipeline} - HiSeq Paired end sequencing").create_with_submission!(
         :user => user, :study => study, :project => project,
         :assets => stock_plate.wells,
         :request_options => {
           :read_length => 100,
           :bait_library_name => BaitLibrary.first.name
         }
-      ).built!
+      )
 
       # Submit the plate in two halves
       $stderr.puts "\t\tTwo halves"
-      SubmissionTemplate.find_by_name("Cherrypick for pulldown - #{pipeline} - HiSeq Paired end sequencing").create!(
+      SubmissionTemplate.find_by_name("Cherrypick for pulldown - #{pipeline} - HiSeq Paired end sequencing").create_with_submission!(
         :user => user, :study => study, :project => project,
         :assets => stock_plate.wells.slice(0, 48),
         :request_options => {
           :read_length => 100,
           :bait_library_name => BaitLibrary.first.name
         }
-      ).built!
-      SubmissionTemplate.find_by_name("Cherrypick for pulldown - #{pipeline} - HiSeq Paired end sequencing").create!(
+      )
+
+      SubmissionTemplate.find_by_name("Cherrypick for pulldown - #{pipeline} - HiSeq Paired end sequencing").create_with_submission!(
         :user => user, :study => study, :project => project,
         :assets => stock_plate.wells.slice(48, 96),
         :request_options => {
           :read_length => 100,
           :bait_library_name => BaitLibrary.first.name
         }
-      ).built!
+      )
 
       # Submit the plate in columns
       (1..12).each do |column|
@@ -87,23 +88,25 @@ if ENV['PULLDOWN']
           wells_to_submit << well if well.map.description =~ /^[A-H]#{column}$/
         end
 
-        SubmissionTemplate.find_by_name("Cherrypick for pulldown - #{pipeline} - HiSeq Paired end sequencing").create!(
+        SubmissionTemplate.find_by_name("Cherrypick for pulldown - #{pipeline} - HiSeq Paired end sequencing").create_with_submission!(
           :user => user, :study => study, :project => project,
           :assets => wells_to_submit,
           :request_options => {
             :read_length => 100,
             :bait_library_name => BaitLibrary.first.name
           }
-        ).built!
+        )
       end
     end
 
-    $stderr.puts "\tBuilding submission request graphs ..."
-    Delayed::Worker.new.work_off(Delayed::Job.count * 2)
+    $stderr.puts "\tBuilding submission request graphs. This might take some time..."
+    LinearSubmission.all.each(&:build_request_graph!)
 
     $stderr.puts "Fudging 7 additional HiSeq requests so that they are available"
-    LinearSubmission.new(:study => Study.first, :project => Project.first, :user => User.first, :workflow_id => 1).save_without_validation
-    submission = LinearSubmission.last
+    LinearSubmission.new(:study => Study.first, :request_types => [ 8 ], :project => Project.first, :user => User.first, :workflow_id => 1).save_without_validation
+
+    submission = LinearSubmission.last.create_submission
+
     (1..7).each do |i|
       tube    = MultiplexedLibraryTube.create!(:location => Location.find(2)).tap { |t| t.aliquots.create!(:sample => Sample.create!(:name => "fudge_#{i}")) }
       request = RequestType.find(8).create!(:asset => tube, :study => Study.first, :submission => submission, :request_metadata_attributes => { :fragment_size_required_from => 100, :fragment_size_required_to => 200, :read_length => 100 })

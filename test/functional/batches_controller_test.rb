@@ -169,11 +169,14 @@ class BatchesControllerTest < ActionController::TestCase
           setup do
             @old_count = Batch.count
             @user.expects(:batches).returns(Batch.all)
+
+            @request_three = @pipeline.request_type.create!(:asset => @library1, :project => Factory(:project))
+            @request_four  = @pipeline.request_type.create!(:asset => @library2, :project => Factory(:project))
           end
 
           context "redirect to #show new batch" do
             setup do
-              post :create, :id => @pipeline.id, :request => {@request_one.id => "0", @request_two.id => "1"}
+              post :create, :id => @pipeline.id, :request => {@request_three.id => "0", @request_four.id => "1"}
             end
 
             should "create_batch  with no controls" do
@@ -186,7 +189,7 @@ class BatchesControllerTest < ActionController::TestCase
             setup do
               @cn = Factory :control, :name => "Control 1", :item_id => 2, :pipeline => @pipeline
               @pipeline.controls << @cn
-              post :create, :id => @pipeline.id, :request => {@request_one.id => "0", @request_two.id => "1"}
+              post :create, :id => @pipeline.id, :request => {@request_three.id => "0", @request_four.id => "1"}
             end
 
             should "if pipeline has controls" do
@@ -208,7 +211,7 @@ class BatchesControllerTest < ActionController::TestCase
           context "create and assign requests" do
             setup do
               @old_count = Batch.count
-              post :create, :id => @pipeline.id, :request => {@request_one.id => "1", @request_two.id => "1"}
+              post :create, :id => @pipeline.id, :request => {@request_three.id => "1", @request_four.id => "1"}
               @batch = Batch.last
             end
       

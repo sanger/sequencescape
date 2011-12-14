@@ -11,6 +11,8 @@ Feature: Interacting with requests through the API
     Given I have an active study called "Study testing the JSON API"
     And the UUID for the study "Study testing the JSON API" is "22222222-2222-3333-4444-ffffffffffff"
 
+  And the UUID of the next submission created will be "11111111-2222-3333-4444-111111111111"
+
   Scenario: The list of requests is always empty if no type of tube is requested
     When I retrieve the JSON for all requests
     Then the JSON should be an empty array
@@ -23,7 +25,7 @@ Feature: Interacting with requests through the API
     And all samples have sequential UUIDs based on "bbbbbbbb-1111-2222-3333"
 
     When I retrieve the JSON for all requests related to the sample tube "Tube"
-    Then ignoring "((source_asset|source_asset_sample|target_asset|project|study)_(internal_id|barcode)|id)" the JSON should be:
+    Then ignoring "((source_asset|source_asset_sample|target_asset|project|study|submission)_(internal_id|barcode)|id)" the JSON should be:
       """
       [
         {
@@ -35,12 +37,12 @@ Feature: Interacting with requests through the API
 
             "target_asset_closed": false,
             "target_asset_state": "",
-            "project_url": "http://localhost:3000/0_5/projects/11111111-2222-3333-4444-ffffffffffff",
             "created_at": "2010-09-16T16:15:00+01:00",
             "source_asset_two_dimensional_barcode": null,
             "updated_at": "2010-09-16T16:15:00+01:00",
             "target_asset_type": "sample_tubes",
             "project_uuid": "11111111-2222-3333-4444-ffffffffffff",
+            "project_url": "http://localhost:3000/0_5/projects/11111111-2222-3333-4444-ffffffffffff",
             "study_name": "Study testing the JSON API",
             "target_asset_two_dimensional_barcode": null,
             "source_asset_closed": false,
@@ -50,6 +52,8 @@ Feature: Interacting with requests through the API
             "project_name": "Project testing the JSON API",
             "study_uuid": "22222222-2222-3333-4444-ffffffffffff",
 
+            "submission_uuid": "11111111-2222-3333-4444-111111111111",
+            "submission_url": "http://localhost:3000/0_5/submissions/11111111-2222-3333-4444-111111111111",
             "user": "abc123",
 
             "source_asset_sample_uuid": "bbbbbbbb-1111-2222-3333-000000000001",
@@ -58,8 +62,8 @@ Feature: Interacting with requests through the API
             "source_asset_name": "Tube",
 						"source_asset_barcode_prefix": "NT",
 						"target_asset_barcode_prefix": "DN",
-						"fragment_size_required_to": "1",
-						"fragment_size_required_from": "999",
+						"fragment_size_required_to": "20",
+						"fragment_size_required_from": "1",
             "library_type": "Standard",
             
             "priority": 0,
@@ -86,7 +90,7 @@ Feature: Interacting with requests through the API
     And all samples have sequential UUIDs based on "bbbbbbbb-1111-2222-3333"
 
     When I retrieve the JSON for all requests related to the library tube "Tube"
-    Then ignoring "((source_asset|target_asset|project|study)_(internal_id|barcode)|id)" the JSON should be:
+    Then ignoring "((source_asset|target_asset|project|study|submission)_(internal_id|barcode)|id)" the JSON should be:
       """
       [
         {
@@ -98,12 +102,12 @@ Feature: Interacting with requests through the API
 
             "target_asset_closed": false,
             "target_asset_state": "",
-            "project_url": "http://localhost:3000/0_5/projects/11111111-2222-3333-4444-ffffffffffff",
             "created_at": "2010-09-16T16:15:00+01:00",
             "source_asset_two_dimensional_barcode": null,
             "updated_at": "2010-09-16T16:15:00+01:00",
             "target_asset_type": "library_tubes",
             "project_uuid": "11111111-2222-3333-4444-ffffffffffff",
+            "project_url": "http://localhost:3000/0_5/projects/11111111-2222-3333-4444-ffffffffffff",
             "study_name": "Study testing the JSON API",
 
             "user": "abc123",
@@ -115,13 +119,15 @@ Feature: Interacting with requests through the API
             "study_url": "http://localhost:3000/0_5/studies/22222222-2222-3333-4444-ffffffffffff",
             "project_name": "Project testing the JSON API",
             "study_uuid": "22222222-2222-3333-4444-ffffffffffff",
+            "submission_uuid": "11111111-2222-3333-4444-111111111111",
+            "submission_url": "http://localhost:3000/0_5/submissions/11111111-2222-3333-4444-111111111111",
             "target_asset_name": "Study testing the JSON API - Target asset",
             "source_asset_state": "",
             "source_asset_name": "Tube",
 						"source_asset_barcode_prefix": "NT",
 						"target_asset_barcode_prefix": "DN",
-						"fragment_size_required_to": "1",
-						"fragment_size_required_from": "999",
+						"fragment_size_required_to": "21",
+						"fragment_size_required_from": "1",
 
             "read_length": 76,
             
@@ -146,7 +152,7 @@ Feature: Interacting with requests through the API
     And all assets have sequential UUIDs based on "aaaaaaaa-1111-2222-3333"
 
     When I retrieve the JSON for the last request in the study "Study testing the JSON API"
-    Then ignoring "((source_asset|target_asset|project|study)_(internal_id|barcode)|id)" the JSON should be:
+    Then ignoring "((source_asset|target_asset|project|study|submission)_(internal_id|barcode)|id)" the JSON should be:
       """
       {
         "request": {
@@ -165,6 +171,9 @@ Feature: Interacting with requests through the API
           "study_url": "http://localhost:3000/0_5/studies/22222222-2222-3333-4444-ffffffffffff",
           "study_name": "Study testing the JSON API",
 
+            "submission_uuid": "11111111-2222-3333-4444-111111111111",
+            "submission_url": "http://localhost:3000/0_5/submissions/11111111-2222-3333-4444-111111111111",
+
           "user": "abc123",
 
           "source_asset_uuid": "aaaaaaaa-1111-2222-3333-000000000001",
@@ -182,8 +191,8 @@ Feature: Interacting with requests through the API
           "target_asset_closed": false,
 					"source_asset_barcode_prefix": "DN",
 					"target_asset_barcode_prefix": "DN",
-					"fragment_size_required_to": "1",
-					"fragment_size_required_from": "999",
+					"fragment_size_required_to": "20",
+					"fragment_size_required_from": "1",
 
           "library_type": "Standard",
           
@@ -212,7 +221,7 @@ Feature: Interacting with requests through the API
     And all assets have sequential UUIDs based on "aaaaaaaa-1111-2222-3333"
 
     When I retrieve the JSON for the last request in the study "Study testing the JSON API"
-    Then ignoring "((source_asset|target_asset|project|study)_(internal_id|barcode)|id)" the JSON should be:
+    Then ignoring "((source_asset|target_asset|project|study|submission)_(internal_id|barcode)|id)" the JSON should be:
       """
       {
         "request": {
@@ -231,6 +240,8 @@ Feature: Interacting with requests through the API
           "study_url": "http://localhost:3000/0_5/studies/22222222-2222-3333-4444-ffffffffffff",
           "study_name": "Study testing the JSON API",
           "user": "abc123",
+            "submission_uuid": "11111111-2222-3333-4444-111111111111",
+            "submission_url": "http://localhost:3000/0_5/submissions/11111111-2222-3333-4444-111111111111",
 
           "source_asset_uuid": "aaaaaaaa-1111-2222-3333-000000000001",
           "source_asset_name": "Study testing the JSON API - Source asset",
@@ -248,8 +259,8 @@ Feature: Interacting with requests through the API
 
 					"source_asset_barcode_prefix": "DN",
 					"target_asset_barcode_prefix": "DN",
-					"fragment_size_required_to": "1",
-					"fragment_size_required_from": "999",
+					"fragment_size_required_to": "21",
+					"fragment_size_required_from": "1",
 
           "read_length": 76,
           
@@ -281,7 +292,7 @@ Feature: Interacting with requests through the API
      And all requests have a priority flag
 
     When I retrieve the JSON for the last request in the study "Study testing the JSON API"
-    Then ignoring "((source_asset|target_asset|project|study)_(internal_id|barcode)|id)" the JSON should be:
+    Then ignoring "((source_asset|target_asset|project|study|submission)_(internal_id|barcode)|id)" the JSON should be:
       """
       {
         "request": {
@@ -299,6 +310,8 @@ Feature: Interacting with requests through the API
           "study_uuid": "22222222-2222-3333-4444-ffffffffffff",
           "study_url": "http://localhost:3000/0_5/studies/22222222-2222-3333-4444-ffffffffffff",
           "study_name": "Study testing the JSON API",
+            "submission_uuid": "11111111-2222-3333-4444-111111111111",
+            "submission_url": "http://localhost:3000/0_5/submissions/11111111-2222-3333-4444-111111111111",
 
           "source_asset_uuid": "aaaaaaaa-1111-2222-3333-000000000001",
           "source_asset_name": "Study testing the JSON API - Source asset",
@@ -316,8 +329,8 @@ Feature: Interacting with requests through the API
 
 					"source_asset_barcode_prefix": "DN",
 					"target_asset_barcode_prefix": "DN",
-					"fragment_size_required_to": "1",
-					"fragment_size_required_from": "999",
+					"fragment_size_required_to": "21",
+					"fragment_size_required_from": "1",
 
           "read_length": 76,
           
@@ -344,7 +357,7 @@ Feature: Interacting with requests through the API
     And all samples have sequential UUIDs based on "bbbbbbbb-1111-2222-3333"
 
     When I retrieve the JSON for all requests related to the sample tube "Tube"
-    Then ignoring "^((source_asset.*|target_asset.*|project|study)_(internal_id|barcode)|id)" the JSON should be:
+    Then ignoring "^((source_asset.*|target_asset.*|project|study|submission)_(internal_id|barcode)|id)" the JSON should be:
       """
       [
         {
@@ -356,7 +369,6 @@ Feature: Interacting with requests through the API
 
             "target_asset_closed": false,
             "target_asset_state": "",
-            "project_url": "http://localhost:3000/0_5/projects/11111111-2222-3333-4444-ffffffffffff",
             "created_at": "2010-09-16T16:15:00+01:00",
             "source_asset_two_dimensional_barcode": null,
             "updated_at": "2010-09-16T16:15:00+01:00",
@@ -369,16 +381,19 @@ Feature: Interacting with requests through the API
             "target_asset_uuid": "aaaaaaaa-1111-2222-3333-000000000002",
             "source_asset_uuid": "aaaaaaaa-1111-2222-3333-000000000001",
             "study_url": "http://localhost:3000/0_5/studies/22222222-2222-3333-4444-ffffffffffff",
+            "project_url": "http://localhost:3000/0_5/projects/11111111-2222-3333-4444-ffffffffffff",
             "project_name": "Project testing the JSON API",
             "study_uuid": "22222222-2222-3333-4444-ffffffffffff",
+            "submission_uuid": "11111111-2222-3333-4444-111111111111",
+            "submission_url": "http://localhost:3000/0_5/submissions/11111111-2222-3333-4444-111111111111",
             "target_asset_sample_uuid": "bbbbbbbb-1111-2222-3333-000000000003",
             "target_asset_name": "Study testing the JSON API - Target asset",
             "source_asset_state": "",
             "source_asset_name": "Tube",
 						"source_asset_barcode_prefix": "NT",
 						"target_asset_barcode_prefix": "DN",
-						"fragment_size_required_to": "1",
-						"fragment_size_required_from": "999",
+						"fragment_size_required_to": "20",
+						"fragment_size_required_from": "1",
 
             "library_type": "Standard",
             
@@ -389,7 +404,6 @@ Feature: Interacting with requests through the API
 
             "id": "ignored in test because it varies uncontrollably & you should use uuid instead",
             "target_asset_internal_id": "ignored in test because it varies uncontrollably & you should use target_asset_uuid instead",
-            "project_internal_id": "ignored in test because it varies uncontrollably & you should use project_uuid instead",
             "source_asset_internal_id": "ignored in test because it varies uncontrollably & you should use source_asset_uuid instead",
             "source_asset_sample_internal_id": "ignored in test because it varies uncontrollably & you should use source_asset_sample_uuid instead",
             "study_internal_id": "ignored in test because it varies uncontrollably & you should use study_uuid instead"

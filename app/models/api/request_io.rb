@@ -26,7 +26,8 @@ class Api::RequestIO < Api::Base
                 :barcode_prefix,
                 { :aliquots => { :sample => :uuid_object } }
               ],
-              :submission =>{ :order => [:study =>:uuid_object, :project => :uuid_object] }
+              :initial_study =>:uuid_object,
+              :initial_project => :uuid_object 
             }
           ]
         }
@@ -62,20 +63,23 @@ class Api::RequestIO < Api::Base
   end
 
   with_association(:submission) do
-    with_association(:order) do
-      with_association(:study) do
+        map_attribute_to_json_attribute(:uuid, 'submission_uuid')
+        map_attribute_to_json_attribute(:id  , 'submission_internal_id')
+        map_attribute_to_json_attribute(:url , 'submission_url')
+  end
+
+  with_association(:initial_study) do
         map_attribute_to_json_attribute(:url , 'study_url')
         map_attribute_to_json_attribute(:uuid, 'study_uuid')
         map_attribute_to_json_attribute(:id  , 'study_internal_id')
         map_attribute_to_json_attribute(:name, 'study_name')
-      end
-      with_association(:project) do
+  end
+
+  with_association(:initial_project) do
         map_attribute_to_json_attribute(:url , 'project_url')
         map_attribute_to_json_attribute(:uuid, 'project_uuid')
         map_attribute_to_json_attribute(:id  , 'project_internal_id')
         map_attribute_to_json_attribute(:name, 'project_name')
-      end
-    end
   end
 
   with_association(:asset) do

@@ -11,6 +11,7 @@ Feature: Create a submission based on the sanger_sample_id
 		When I follow "Create Submission"
 		When I select "DNA QC" from "Template"
 		And I press "Next"
+		When I select "Test study" from "Select a study"
 		When I select "Test project" from "Select a financial project"
 		
 	Scenario: Submission with sanger sample ids and sample names for different samples
@@ -21,7 +22,7 @@ Feature: Create a submission based on the sanger_sample_id
 		ABC_3
 		ABC_4
 		"""
-		And I press "Create Submission"
+		And I create the order and submit the submission
 		Given 1 pending delayed jobs are processed
 		Given I am on the show page for pipeline "DNA QC"
 		Then the pipeline inbox should be:
@@ -36,7 +37,7 @@ Feature: Create a submission based on the sanger_sample_id
 		ABC_1
 		ABC_2
 		"""
-		And I press "Create Submission"
+		And I create the order and submit the submission
 		Given 1 pending delayed jobs are processed
 		Given I am on the show page for pipeline "DNA QC"
 		Then the pipeline inbox should be:
@@ -53,7 +54,7 @@ Feature: Create a submission based on the sanger_sample_id
 		ABC_3 
 		ABC_4	
 		"""
-		And I press "Create Submission"
+		And I create the order and submit the submission
 		Given 1 pending delayed jobs are processed
 		Given I am on the show page for pipeline "DNA QC"
 		Then the pipeline inbox should be:

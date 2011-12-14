@@ -26,15 +26,13 @@ Transform /^([A-H]\d+)-([A-H]\d+)$/ do |start, finish|
 end
 
 def create_submission_of_assets(template, assets, request_options = {})
-  submission = template.new_submission(
-    :user            => Factory(:user),
-    :study           => Factory(:study),
-    :project         => Factory(:project),
-    :assets          => assets,
-    :request_options => request_options
-  ).create_submission
-  submission.save!
-  submission.built!
+      template.create_and_build_submission!(
+        :user            => Factory(:user),
+        :study           => Factory(:study),
+        :project         => Factory(:project),
+        :assets          => assets,
+        :request_options => request_options
+      )
 
   Given 'all pending delayed jobs are processed'
 end

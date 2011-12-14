@@ -41,8 +41,8 @@ Feature: Access multiplexed library creation requests through the API
           "type": "Multiplexed library creation",
           "library_type": "Standard",
           "fragment_size": {
-            "from": "999",
-            "to": "1"
+            "from": "1",
+            "to": "20"
           },
           "state": "pending"
         },

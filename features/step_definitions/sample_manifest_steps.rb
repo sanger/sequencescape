@@ -98,6 +98,7 @@ end
 Given /^a manifest has been created for "([^"]*)"$/ do |study_name|
   When %Q{I follow "Create manifest for plates"}
 	When %Q{I select "#{study_name}" from "Study"}
+  When %Q{I select "default layout" from "Template"}
 	And %Q{I select "Test supplier name" from "Supplier"}
 	And %Q{I select "xyz" from "Barcode printer"}
 	And %Q{I fill in the field labeled "Count" with "1"}

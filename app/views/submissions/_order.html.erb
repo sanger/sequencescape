@@ -1,0 +1,79 @@
+<ul class="sub-panel">
+    <li>
+    <h3>Study</h3>
+      <%= label :study_id, "Study:" %>
+      <%= studies_select(@presenter.studies) %>
+    </li>
+  <li class="assets">
+    <h3>Add Samples from Study asset group</h3>
+    <div class="study-assets">First select a study for this order...</div>
+    <p><a class="asset-input-toggle" href="#">Switch to Sample selector...</a></p>
+  </li>
+
+  <li class="assets" style="display:none;">
+    <h3>Add Samples from Plate</h3>
+  <table>
+      <th>
+        <%= label_tag(:plate_purpose_id, 'Type of Plate:') %>
+      </th>
+      <td>
+        <%= collection_select :submission, :plate_purpose_id,
+          PlatePurpose.considered_stock_plate.all(:order => 'name ASC'), :id, :name,
+          { :value => PlatePurpose.stock_plate_purpose.id }
+        %>
+      </td>
+      <th>
+        <%= label_tag('submission[sample_names_text]', 'Names of samples:') %>
+      </th>
+      <td>
+        <%= text_area_tag('submission[sample_names_text]', "", :cols => 40, :rows => 4) %>
+      </td> 
+  </table>
+    <a class="asset-input-toggle" href="#">Switch to Study asset selector...</a>
+  </li>
+
+  <li class="project">
+    <h3>Project</h3>
+    <%= label 'submission[project_name]', "Project Name:" %>
+    <%= text_field :submission,
+      :project_name,
+      :class       => 'submission_project_name',
+      :size        => 100,
+      :placeholder => "enter the first few characters of the financial project name",
+      :disabled    => true
+    %>
+  </li>
+
+  <li>
+    <h3>Comments</h3>
+    <%= text_area_tag(
+      'submission[comments]',
+      "",
+      :rows        => 5,
+      :placeholder => "Optionally, please add comments for this order here...",
+      :class       => 'comments',
+      :disabled    => true
+    ) %>
+  </li>
+</ul>
+
+
+<div class="lanes-of-sequencing">
+  <%= label 'submission[lanes_of_sequencing_required]', 'Lanes of sequencing required' %>
+  <%= text_field_tag 'submission[lanes_of_sequencing]', 1 %>
+</div>
+
+<span class="project-details" style="dislay:none;"></span>
+
+<div class="save-buttons">
+  <%= submit_tag "Cancel",
+    :class    => "cancel-order button",
+    :disabled => true
+  %>
+
+  <%= submit_tag "&#10004; Save Order",
+    :class    => "save-order final button",
+    :disabled => true
+  %>
+</div>
+

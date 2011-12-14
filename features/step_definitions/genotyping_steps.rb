@@ -142,13 +142,13 @@ Given /^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)"
   wells.compact!
 
   submission_template = SubmissionTemplate.find_by_name(submission_template_name)
-  submission = submission_template.create!(
+  submission = submission_template.create_and_build_submission!(
     :study    => study,
     :project  => project,
     :workflow => Submission::Workflow.find_by_key('microarray_genotyping'),
     :user     => User.last,
     :assets   => wells
-    ).create_submission.built!
+    )
   And %Q{1 pending delayed jobs are processed}
 end
 
@@ -159,13 +159,13 @@ Given /^I have a Cherrypicking submission for asset group "([^"]*)"$/ do |asset_
   asset_group = AssetGroup.find_by_name(asset_group_name)
 
   submission_template = SubmissionTemplate.find_by_name('Cherrypick')
-  submission = submission_template.create!(
+  submission = submission_template.create_and_build_submission!(
     :study => study,
     :project => project,
     :workflow => Submission::Workflow.find_by_key('microarray_genotyping'),
     :user => User.last,
-    :asset_group => asset_group
-    ).create_submission.built!
+    :assets => asset_group.assets
+    )
   And %Q{1 pending delayed jobs are processed}
 end
 

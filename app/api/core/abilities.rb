@@ -106,7 +106,9 @@ module Core::Abilities
 
     authenticated do
       # Submissions should be createable & updateable by anyone
-      can(:create, Endpoints::SubmissionTemplates::Instance::Submissions)
+      can(:create, Endpoints::Submissions::Model)
+      can(:create, Endpoints::OrderTemplates::Instance::Orders)
+      can(:update, Endpoints::Orders::Instance)
       can(:create, Endpoints::Submissions::Instance::Submit)
       can(:update, Endpoints::Submissions::Instance)
 
@@ -114,9 +116,6 @@ module Core::Abilities
       can(:update, Endpoints::SampleManifests::Instance)
       can(:create, Endpoints::Studies::Instance::SampleManifests::CreateForPlates)
       can(:create, Endpoints::Studies::Instance::SampleManifests::CreateForTubes)
-
-      # User can also create asset audits
-      can(:create, Endpoints::AssetAudits)
     end
 
     def registered?

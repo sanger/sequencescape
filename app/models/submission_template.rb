@@ -12,27 +12,32 @@ class SubmissionTemplate < ActiveRecord::Base
   serialize :submission_parameters
   acts_as_audited :on => [:destroy, :update]
 
-  def create!(attributes)
-    self.new_submission(attributes).tap do |submission|
-      yield(submission) if block_given?
-      submission.save! 
+  has_many :orders
+
+  def create_and_build_submission!(attributes)
+    Submission.build!(attributes.merge(:template => self))
+  end
+  def create_order!(attributes)
+    self.new_order(attributes).tap do |order|
+      yield(order) if block_given?
+      order.save! 
     end
   end
 
   def create_with_submission!(attributes)
-    self.create!(attributes) do |order|
-      order.create_submission
+    self.create_order!(attributes) do |order|
+      order.create_submission(:user_id => order.user_id)
     end
   end
 
   # create a new submission of the good subclass and with pre-set attributes
-  def new_submission(params={})
+  def new_order(params={})
     attributes = submission_attributes.deep_merge(safely_duplicate(params))
     infos      = SubmissionTemplate.unserialize(attributes.delete(:input_field_infos))
 
-    submission_class.new(attributes).tap do |submission|
-      submission.template_name = self.name
-      submission.set_input_field_infos(infos) unless infos.nil?
+    submission_class.new(attributes).tap do |order|
+      order.template_name = self.name
+      order.set_input_field_infos(infos) unless infos.nil?
     end
   end
 
