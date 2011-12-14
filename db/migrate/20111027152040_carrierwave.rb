@@ -2,8 +2,8 @@ class Carrierwave < ActiveRecord::Migration
   def self.up
     say "Updating documents to allow multiple 1-1 relationships"
     # Documents has extra column for multiple 1-1 relationships
-    add_column :documents, :documentable_extended, :string, :limit => 25, :null => false
-    change_column :documents, :documentable_type, :string, :limit => 50
+    add_column :documents, :documentable_extended, :string, :limit => 50
+    change_column :documents, :documentable_type, :string, :limit => 50, :null => false
 
     say "Making db_files polymorphic"
     add_column :db_files, :owner_type, :string, :default => 'Document', :limit => 25, :null => false
