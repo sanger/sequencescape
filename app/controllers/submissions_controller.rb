@@ -181,7 +181,7 @@ class SubmissionCreater < PresenterSkeleton
   end
 
   def studies
-    @studies ||= study if study.present?
+    @studies ||= [ study ] if study.present?
     @studies ||= @user.interesting_studies.sort {|a,b| a.name <=> b.name }
   end
 
