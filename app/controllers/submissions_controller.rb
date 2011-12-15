@@ -236,7 +236,16 @@ class SubmissionsController < ApplicationController
   end
 
   def edit
-    @presenter = SubmissionPresenter.new(current_user, params[:submission])
+    submission = Submission.find(params[:id])
+    begin
+      submission.built!
+
+    rescue ActiveRecord::RecordInvalid => exception
+      exception.record.errors.full_messages.each do |message|
+        submission.errors.add_to_base(message) # this is probably not the right place to put them
+      end
+    end
+    redirect_to submission
   end
 
   # This method will build a submission then redirect to the submission on completion
@@ -244,13 +253,13 @@ class SubmissionsController < ApplicationController
     @presenter = SubmissionCreater.new(current_user, params[:submission])
 
     @presenter.build_submission!
-
+    
     redirect_to @presenter.submission
   end
   
   def index
     @building = Submission.building.find(:all, :order => "created_at DESC", :conditions => { :user_id => current_user.id })
-    @pending = Submission.pending.find(:all, :order => "created_at DESC", :conditions => { :user_id => current_user.id })
+    @pending = Submission.pending.find(:all, :order => "updated_at DESC", :conditions => { :user_id => current_user.id })
     @ready = Submission.ready.find(:all, :limit => 10, :order => "created_at DESC", :conditions => { :user_id => current_user.id })
   end
 

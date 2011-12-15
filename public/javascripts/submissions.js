@@ -167,7 +167,7 @@
             //                                        vvvvvvvvvv-- Ugly, ugly, ugly...
             currentPane.find('.project-details').html(tempResult.html());
 
-            debugger;
+             //debugger
 
             currentPane.
               detach().
