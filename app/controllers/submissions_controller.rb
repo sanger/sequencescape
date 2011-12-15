@@ -226,8 +226,9 @@ class SubmissionsController < ApplicationController
 
   def create
     @presenter = SubmissionCreater.new(current_user, params[:submission])
-
+    
     if @presenter.save
+      @presenter.build_submission!
       render :partial => 'order_response', :layout => false
     else
       render :partial => 'order_errors', :layout => false
@@ -243,7 +244,7 @@ class SubmissionsController < ApplicationController
   def update
     @presenter = SubmissionCreater.new(current_user, params[:submission])
 
-    @presenter.build_submission!
+    #@presenter.build_submission! temporarily disabled
 
     redirect_to @presenter.submission
   end
