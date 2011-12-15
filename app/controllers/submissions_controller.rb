@@ -152,7 +152,7 @@ class SubmissionCreater < PresenterSkeleton
   # This is a legacy of the old controller...
   def wells_on_specified_plate_purpose_for(plate_purpose, samples)
     samples.map do |sample|
-      sample.wells.all(:include => :plate).detect { |well| well.plate.plate_purpose_id == plate_purpose.id } or
+      sample.wells.all(:include => :plate).detect { |well| well.plate.present? and (well.plate.plate_purpose_id == plate_purpose.id) } or
         raise InvalidInputException, "No #{plate_purpose.name} plate found with sample: #{sample.name}"
     end
   end
