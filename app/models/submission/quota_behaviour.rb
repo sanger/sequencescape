@@ -32,7 +32,7 @@ module Submission::QuotaBehaviour
   private :multiplier_for
 
   def checking_quotas?
-    project.enforce_quotas? && @checking_quotas
+    project && project.enforce_quotas? && @checking_quotas
   end
   private :checking_quotas?
 
