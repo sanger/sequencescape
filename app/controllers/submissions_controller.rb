@@ -181,6 +181,7 @@ class SubmissionCreater < PresenterSkeleton
   end
 
   def studies
+    @studies ||= study if study.present?
     @studies ||= @user.interesting_studies.sort {|a,b| a.name <=> b.name }
   end
 
@@ -220,7 +221,7 @@ end
 class SubmissionsController < ApplicationController
 
   def new
-    @presenter = SubmissionCreater.new(current_user)
+    @presenter = SubmissionCreater.new(current_user, :study_id => params[:study_id])
   end
 
   def create
