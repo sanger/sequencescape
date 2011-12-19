@@ -67,7 +67,7 @@ class SequenomQcPlatesController < ApplicationController
   end
   
   def index
-    @sequenom_qc_plates = SequenomQcPlate.paginate(:page => params[:page], :order => "updated_at desc")
+    @sequenom_qc_plates = SequenomQcPlate.paginate(:page => params[:page], :order => "created_at desc")
   end
   
   private
