@@ -342,6 +342,11 @@
     $('#add-order').
       live('click', addOrderHandler);
 
+    $('.submission_project_name').autocomplete({
+      source    : SCAPE.user_project_names,
+      minLength : 3
+    });
+
     // Most of the event handlers can be hung from the orders list...
     // NB. If we upgrade from jQuery 1.6.x to >= 1.7 then we may want to swap
     // out .delegate() to use the .on() function instead.

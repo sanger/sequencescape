@@ -57,7 +57,7 @@ class SubmissionCreater < PresenterSkeleton
 
     rescue ActiveRecord::RecordInvalid => exception
       exception.record.errors.full_messages.each do |message|
-        submission.errors.add_to_base(message) # this is probably not the right place to put them
+        submission.errors.add_to_base(message)
       end
     end
   end
