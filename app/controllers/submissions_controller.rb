@@ -57,7 +57,7 @@ class SubmissionCreater < PresenterSkeleton
 
     rescue ActiveRecord::RecordInvalid => exception
       exception.record.errors.full_messages.each do |message|
-        submission.errors.add_to_base(message) # this is probably not the right place to put them
+        submission.errors.add_to_base(message)
       end
     end
   end
@@ -152,7 +152,7 @@ class SubmissionCreater < PresenterSkeleton
   # This is a legacy of the old controller...
   def wells_on_specified_plate_purpose_for(plate_purpose, samples)
     samples.map do |sample|
-      sample.wells.all(:include => :plate).detect { |well| well.plate.plate_purpose_id == plate_purpose.id } or
+      sample.wells.all(:include => :plate).detect { |well| well.plate.present? and (well.plate.plate_purpose_id == plate_purpose.id) } or
         raise InvalidInputException, "No #{plate_purpose.name} plate found with sample: #{sample.name}"
     end
   end
@@ -181,6 +181,7 @@ class SubmissionCreater < PresenterSkeleton
   end
 
   def studies
+    @studies ||= [ study ] if study.present?
     @studies ||= @user.interesting_studies.sort {|a,b| a.name <=> b.name }
   end
 
@@ -220,13 +221,14 @@ end
 class SubmissionsController < ApplicationController
 
   def new
-    @presenter = SubmissionCreater.new(current_user)
+    @presenter = SubmissionCreater.new(current_user, :study_id => params[:study_id])
   end
 
   def create
     @presenter = SubmissionCreater.new(current_user, params[:submission])
-
+    
     if @presenter.save
+      @presenter.build_submission!
       render :partial => 'order_response', :layout => false
     else
       render :partial => 'order_errors', :layout => false
@@ -242,7 +244,7 @@ class SubmissionsController < ApplicationController
   def update
     @presenter = SubmissionCreater.new(current_user, params[:submission])
 
-    @presenter.build_submission!
+    #@presenter.build_submission! temporarily disabled
 
     redirect_to @presenter.submission
   end

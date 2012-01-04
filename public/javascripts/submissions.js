@@ -20,6 +20,15 @@
       return validationResult;
     },
 
+    hasAssets : function() {
+      if (this.find('.asset_group_id').val() ||
+          this.find('.sample_names_text').val() ) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+
     currentPane : function() {
       return this.closest('#orders > li');
     },
@@ -56,13 +65,10 @@
   $.fn.submission = function(method) {
     if (methods[method]) {
       return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
-
     } else if (typeof method === 'Object' || !method) {
-
       return methods.init.apply(this, arguments);
     } else {
-
-      return $.error('Method ' +  method + ' does not exist on jQuery.submission');
+      return $.error('Method '+method+' does not exist on jQuery.submission');
     }
   };
 })(jQuery);
@@ -150,6 +156,7 @@
     SCAPE.submission.asset_group_id    = currentPane.find('#submission_asset_group_id').val();
     SCAPE.submission.sample_names_text = currentPane.find('#submission_sample_names_text').val();
     SCAPE.submission.plate_purpose_id  = currentPane.find('#submission_plate_purpose_id').val();
+    SCAPE.submission.comments          = currentPane.find('#submission_comments').val();
 
 
     $.post(
@@ -166,8 +173,6 @@
           currentPane.fadeOut(function(){
             //                                        vvvvvvvvvv-- Ugly, ugly, ugly...
             currentPane.find('.project-details').html(tempResult.html());
-
-            debugger;
 
             currentPane.
               detach().
@@ -210,6 +215,24 @@
   };
 
 
+  // Validate that an order has a Project, Study and some Assets.
+  var validateOrder = function(event) {
+    var currentPane = $(event.target).submission('currentPane');
+
+    var studyId     = currentPane.find('.study_id').val();
+    var projectName = currentPane.find('.submission_project_name').val();
+    var hasAssets   = currentPane.submission('hasAssets');
+
+
+    if (studyId && projectName && hasAssets) {
+      currentPane.find('.save-order').removeAttr('disabled');
+    } else {
+      currentPane.find('.save-order').attr('disabled', true);
+    }
+
+  };
+
+
   var getParamName = function(param) {
     return $(param).attr('id').replace('submission_order_params_','');
   };
@@ -238,8 +261,12 @@
       addClass('pane active order').hide();
 
     // Remove the disable from the form inputs
+    // but leave the save button disabled
     newOrder.find('input, select, textarea').
+      css('opacity', 1).
+      not('.save-order').
       removeAttr('disabled');
+
 
     // if this is not a sequencing order remove the lanes_of_sequencing_required stuff
     if (SCAPE.submission.is_a_sequencing_order === false) {
@@ -334,12 +361,25 @@
       removeAttr('disabled').
       change(templateChangeHandler);
 
+    // Validate the order-parameters
     $('#order-parameters .required').
       live('keypress',  validateOrderParams).
       live('blur',  validateOrderParams);
 
     $('#add-order').
       live('click', addOrderHandler);
+
+    $('.submission_project_name').autocomplete({
+      source    : SCAPE.user_project_names,
+      minLength : 3,
+      select : validateOrder
+    });
+
+    $('ul#orders').
+      delegate('li.order select, li.order input, li.order textarea', 'blur', validateOrder).
+      // Validate on sample name keypresses
+      delegate('.sample_names_text', 'keypress', validateOrder).
+      delegate('li.order select', 'change', validateOrder);
 
     // Most of the event handlers can be hung from the orders list...
     // NB. If we upgrade from jQuery 1.6.x to >= 1.7 then we may want to swap
