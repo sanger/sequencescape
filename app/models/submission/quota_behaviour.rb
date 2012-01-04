@@ -44,23 +44,7 @@ module Submission::QuotaBehaviour
   end
 
   def quota_calculator(&block)
-    Order.transaction do
-      # If there are no assets then we do not need to check the quota as none will be used, regardless.
-      return if assets.empty?
-
-      # Not optimal but preserve the order of the request_types
-      request_type_records = self.request_types.map { |rt_id|  RequestType.find(rt_id) }
-      multiplexed          = request_type_records.detect(&:for_multiplexing?).present?
-
-      request_type_records.each do |request_type|
-        # If the user requires multiple runs of this request type then we need to count for that in the quota.
-        # If we're not multiplexing in general, or for this individual request type, then we have to have enough
-        # quote for all of the assets.  Otherwise they can be considered to be a single asset (i.e. a pool of them)
-        quota_required  = multiplier_for(request_type)
-        quota_required *= assets.size if not multiplexed
-        yield(request_type, quota_required)
-      end
-    end
+    raise NotImplemented
   end
   private :quota_calculator
 
