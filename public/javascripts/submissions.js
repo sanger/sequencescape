@@ -377,7 +377,8 @@
 
     $('ul#orders').
       delegate('li.order select, li.order input, li.order textarea', 'blur', validateOrder).
-      delegate('li.order input, li.order textarea', 'keypress', validateOrder).
+      // Validate on sample name keypresses
+      delegate('.sample_names_text', 'keypress', validateOrder).
       delegate('li.order select', 'change', validateOrder);
 
     // Most of the event handlers can be hung from the orders list...
