@@ -1,4 +1,4 @@
-@javascript @submission
+@javascript @submission @bulk_submissions
 Feature: Bulk Submission
   So that biological work can be requested
   in a large batch rather than separate 
@@ -18,11 +18,7 @@ Feature: Bulk Submission
     # And I have a sample tube called "testing123" registered under study
     And study "abc123_study" has assets registered
    # And the sample tube "testing123" is in the asset group "assetgroup123"
-    When I go to the study workflow page for "abc123_study"
-    Then I should see "abc123_study"
-    When I follow "Create Submission"
-    Then I should see "use the bulk uploader"
-    When I follow "Upload a bulk submission"
+    When I go to the create bulk submissions page
     Then I should see "Create a bulk submission"
    
 
