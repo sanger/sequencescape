@@ -22,10 +22,15 @@ Feature: Bulk Submission
     Then I should see "Create a bulk submission"
    
 
-  Scenario: Uploading a valid file with 1 submissions
+  Scenario: Uploading a valid file with 1 submission
     When I upload a file with valid data for 1 submissions
     Then I should see "Bulk submission successfully made"
     And I should see "Your submissions:"
+    And the preordered quota for project "Test project" should be:
+        | RequestType                 | preordered | 
+        | Cherrypicking for Pulldown     | 10         | 
+        | Pulldown WGS                | 1          | 
+        | HiSeq Paired end sequencing | 1          | 
     
   Scenario: Uploading a valid file with 2 submissions
     When I upload a file with valid data for 2 submissions
