@@ -375,9 +375,12 @@
       select : validateOrder
     });
 
+    // NB.  There seems to being some odd behaviour related to the
+    // autocompleter select callback fireing.  As a cludgy fix validation is
+    // triggered on field keypresses as a supplimentry validation.
     $('ul#orders').
       delegate('li.order select, li.order input, li.order textarea', 'blur', validateOrder).
-      delegate('li.order input, li.order textarea', 'keypress', validateOrder).
+      delegate('.sample_names_text, li.order input', 'keypress', validateOrder).
       delegate('li.order select', 'change', validateOrder);
 
     // Most of the event handlers can be hung from the orders list...
