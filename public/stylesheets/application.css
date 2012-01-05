@@ -997,10 +997,10 @@ ul#orders {
 
 
 /* This overly verbose rule is needed to override formtastic styling  */
-ul#orders > li {
+ul#orders li.order, ul#orders li.buttons, #order-template {
   padding: 15px;
   margin: 15px 0;
-  color:#00498C;
+  color: #00498C;
   background: #fff;
   list-style: none outside none;
   text-align: right;

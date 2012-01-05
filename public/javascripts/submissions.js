@@ -30,7 +30,7 @@
     },
 
     currentPane : function() {
-      return this.closest('#orders > li');
+      return this.closest('li.pane');
     },
 
     markPaneIncomplete : function() {

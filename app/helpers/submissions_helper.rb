@@ -40,14 +40,13 @@ module SubmissionsHelper
   private :order_text_tag
 
 
-  def studies_select(studies)
+  def studies_select(form, studies)
     prompt = case studies.count
              when 0 then "You are not managing any Studies at this time"
              else "Please select a Study for this Submission..."
              end
 
-    collection_select(
-      :submission,
+    form.collection_select(
       :study_id,
       studies, :id, :name,
       { :prompt => prompt },

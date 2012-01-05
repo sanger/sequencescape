@@ -97,6 +97,11 @@ class SubmissionCreater < PresenterSkeleton
     order.input_field_infos
   end
 
+  # Return the submission's orders or a blank array
+  def orders
+    submission.try(:orders) || []
+  end
+
   def project
     @project ||= Project.find_by_name(@project_name)
   end
@@ -186,6 +191,7 @@ class SubmissionCreater < PresenterSkeleton
   end
 
   def submission
+    return nil unless id.present? || @submission
     @submission ||= Submission.find(id)
   end
 

@@ -1,9 +1,15 @@
+<span class="invalid badge">✘</span>
+<span class="completed badge">✔</span>
+
+<h2>New Order</h2>
+
 <ul class="sub-panel">
-    <li>
+  <li>
     <h3>Study</h3>
-      <%= label :study_id, "Study:" %>
-      <%= studies_select(@presenter.studies) %>
-    </li>
+    <%= form.label :study_id, "Study:" %>
+    <%= studies_select(form, @presenter.studies) %>
+  </li>
+
   <li class="assets">
     <h3>Add Samples from Study asset group</h3>
     <div class="study-assets">First select a study for this order...</div>
@@ -12,22 +18,21 @@
 
   <li class="assets" style="display:none;">
     <h3>Add Samples from Plate</h3>
-  <table>
+    <table>
       <th>
-        <%= label_tag(:plate_purpose_id, 'Type of Plate:') %>
+        <%= form.label :plate_purpose_id, 'Type of Plate:' %>
       </th>
       <td>
-        <%= collection_select :submission, :plate_purpose_id,
+        <%= form.collection_select :plate_purpose_id,
           PlatePurpose.considered_stock_plate.all, :id, :name,
           { :selected => PlatePurpose.stock_plate_purpose.id }
         %>
       </td>
       <th>
-        <%= label_tag('submission[sample_names_text]', 'Names of samples:') %>
+        <%= form.label :sample_names_text, 'Names of samples:' %>
       </th>
       <td>
-        <%= text_area_tag 'submission[sample_names_text]', 
-          "",
+        <%= form.text_area :sample_names_text,
           :cols  => 40,
           :rows  => 4,
           :class => "sample_names_text"
@@ -39,11 +44,10 @@
 
   <li class="project">
     <h3>Project</h3>
-    <%= label 'submission[project_name]', "Project Name:" %>
-    <%= text_field :submission,
-      :project_name,
+    <%= form.label :project_name, "Project Name:" %>
+    <%= form.text_field :project_name,
       :class       => 'submission_project_name',
-      :size        => 100,
+      :size        => 150,
       :placeholder => "enter the first few characters of the financial project name",
       :disabled    => true
     %>
@@ -51,21 +55,19 @@
 
   <li>
     <h3>Comments</h3>
-    <%= text_area_tag(
-      'submission[comments]',
-      "",
+    <%= form.text_area :comments,
       :rows        => 5,
       :placeholder => "Optionally, please add comments for this order here...",
       :class       => 'comments',
       :disabled    => true
-    ) %>
+    %>
   </li>
 </ul>
 
 
 <div class="lanes-of-sequencing">
-  <%= label 'submission[lanes_of_sequencing_required]', 'Lanes of sequencing required' %>
-  <%= text_field_tag 'submission[lanes_of_sequencing]', 1, :class => 'lanes_of_sequencing' %>
+  <%= form.label :lanes_of_sequencing, 'Lanes of sequencing required' %>
+  <%= form.text_field :lanes_of_sequencing, :class => 'lanes_of_sequencing', :value => 1 %>
 </div>
 
 <span class="project-details" style="dislay:none;"></span>
