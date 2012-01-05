@@ -19,7 +19,7 @@
       <td>
         <%= collection_select :submission, :plate_purpose_id,
           PlatePurpose.considered_stock_plate.all, :id, :name,
-          { :value => PlatePurpose.stock_plate_purpose.id }
+          { :selected => PlatePurpose.stock_plate_purpose.id }
         %>
       </td>
       <th>
