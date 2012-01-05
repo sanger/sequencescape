@@ -55,6 +55,7 @@ module Submission::QuotaBehaviour
   private :book_quota_available_for_request_types!
 
   def unbook_quota_available_for_request_types!
+    debugger
     check_project_details!
     quota_calculator(&method(:unbook_quota))
   end
@@ -62,5 +63,13 @@ module Submission::QuotaBehaviour
   def use_quota!(request, unbook=true)
     return unless project
     project.use_quota!(request, unbook)
+  end
+
+  # can that be put as a hook ?
+  def before_destroy
+    # We need to unbook preordered quota
+    # but not if it's already been done'
+    
+    unbook_quota_available_for_request_types! unless submission && submission.state == "failed"
   end
 end
