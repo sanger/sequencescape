@@ -36,6 +36,7 @@ class Quota < ActiveRecord::Base
   # actually creating the request
   # The booking is released when the request is effectively associated to the quota
   def book_request!(number, check_quota)
+    logger.warn "Book #{self.inspect} #{number}"
     return if number == 0
     check_enough_quota_for!(number)  if check_quota
     # We need increment to be atomic to not interfere with other rails instance
@@ -50,6 +51,7 @@ class Quota < ActiveRecord::Base
   private :check_enough_quota_for!
 
   def unbook_request!(number)
+    logger.warn "Unbook #{self.inspect} #{number}"
     Quota.update_counters self, :preordered_count => -number
     reload
   end

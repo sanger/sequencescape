@@ -1,4 +1,4 @@
-@javascript @submission
+@javascript @submission @bulk_submissions
 Feature: Bulk Submission
   So that biological work can be requested
   in a large batch rather than separate 
@@ -18,18 +18,19 @@ Feature: Bulk Submission
     # And I have a sample tube called "testing123" registered under study
     And study "abc123_study" has assets registered
    # And the sample tube "testing123" is in the asset group "assetgroup123"
-    When I go to the study workflow page for "abc123_study"
-    Then I should see "abc123_study"
-    When I follow "Create Submission"
-    Then I should see "use the bulk uploader"
-    When I follow "Upload a bulk submission"
+    When I go to the create bulk submissions page
     Then I should see "Create a bulk submission"
    
 
-  Scenario: Uploading a valid file with 1 submissions
+  Scenario: Uploading a valid file with 1 submission
     When I upload a file with valid data for 1 submissions
     Then I should see "Bulk submission successfully made"
     And I should see "Your submissions:"
+    And the preordered quota for project "Test project" should be:
+        | RequestType                 | preordered | 
+        | Cherrypicking for Pulldown     | 10         | 
+        | Pulldown WGS                | 1          | 
+        | HiSeq Paired end sequencing | 1          | 
     
   Scenario: Uploading a valid file with 2 submissions
     When I upload a file with valid data for 2 submissions
