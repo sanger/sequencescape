@@ -44,7 +44,7 @@ module Submission::QuotaBehaviour
   end
 
   def quota_calculator(&block)
-    raise NotImplemented
+    raise NotImplementedError if self.respond_to?(:build_request_graph!)
   end
   private :quota_calculator
 

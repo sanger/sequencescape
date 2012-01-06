@@ -8,6 +8,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
 
       @mpx_assets = (1..10).map { |i| Factory(:sample_tube, :name => "MX-asset#{ i }") }
       @mpx_asset_group = Factory :asset_group, :name => "MPX", :assets => @mpx_assets
+      @workflow = Factory :submission_workflow
     end
 
     should_belong_to :study
@@ -17,8 +18,6 @@ class LinearSubmissionTest < ActiveSupport::TestCase
       setup do
         @study = Factory :study
         @project = Factory :project
-        @workflow = Factory :submission_workflow
-        @submission_template = Factory :submission_template, :name => @workflow.name, :submission_class_name => "linear_submission"
         @user = Factory :user
 
         @request_type_1 = Factory :request_type, :name => "request type 1"
@@ -375,9 +374,9 @@ class LinearSubmissionTest < ActiveSupport::TestCase
 
           context "insufficient quota" do
             should "build will raise an exception" do
+              $stop = true
               assert_raise Quota::Error do
                 LinearSubmission.build!(
-                  :template         => @submission_template,
                   :study            => @study,
                   :project          => @project,
                   :workflow         => @workflow,
