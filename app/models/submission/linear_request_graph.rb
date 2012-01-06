@@ -102,4 +102,23 @@ module Submission::LinearRequestGraph
     Item.create!(:workflow => workflow, :name => "#{asset.display_name} #{id.to_s}", :submission => self.submission)
   end
   private :create_item_for!
+
+  def quota_calculator(&block)
+    Order.transaction do
+      # If there are no assets then we do not need to check the quota as none will be used, regardless.
+      return if assets.empty?
+
+      # Not optimal but preserve the order of the request_types
+      request_type_records = self.request_types.map { |rt_id|  RequestType.find(rt_id) }
+      quota_required = assets.size
+
+      request_type_records.each do |request_type|
+        quota_required  *= multiplier_for(request_type)
+        yield(request_type, quota_required)
+        # should have the same behavior as the chain_request call
+        quota_required = 1 if request_type.for_multiplexing?
+      end
+    end
+  end
+  private :quota_calculator
 end
