@@ -26,8 +26,13 @@
         <%= label_tag('submission[sample_names_text]', 'Names of samples:') %>
       </th>
       <td>
-        <%= text_area_tag('submission[sample_names_text]', "", :cols => 40, :rows => 4) %>
-      </td> 
+        <%= text_area_tag 'submission[sample_names_text]', 
+          "",
+          :cols  => 40,
+          :rows  => 4,
+          :class => "sample_names_text"
+        %>
+      </td>
   </table>
     <a class="asset-input-toggle" href="#">Switch to Study asset selector...</a>
   </li>
