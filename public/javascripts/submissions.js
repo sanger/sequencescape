@@ -364,8 +364,8 @@
 
     // Validate the order-parameters
     $('#order-parameters .required').
-      live('keypress',  validateOrderParams).
-      live('blur',  validateOrderParams);
+      live('keypress', validateOrderParams).
+      live('blur',     validateOrderParams);
 
     $('#add-order').click(addOrderHandler);
 

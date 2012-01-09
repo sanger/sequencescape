@@ -24,8 +24,8 @@
       <% @presenter.orders.each_with_index do |order, index| -%>
         <% f.fields_for :orders, order do |orders_fields| -%>
           <% orders_fields.fields_for index.to_s, order  do |order_form| -%>
-            <li class="pane order">
-              <%= render :partial => 'order', :locals => { :form => order_form, :presenter => @presenter } %>
+            <li class="pane order completed">
+              <%= render :partial => 'order', :locals => { :form => order_form, :order => order, :presenter => @presenter } %>
             </li>
           <% end -%>
         <% end -%>

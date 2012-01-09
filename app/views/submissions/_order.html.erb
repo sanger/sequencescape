@@ -73,14 +73,27 @@
 <span class="project-details" style="dislay:none;"></span>
 
 <div class="save-buttons">
-  <%= submit_tag "Cancel",
-    :class    => "cancel-order button",
-    :disabled => true
-  %>
+  <% if order.present? -%>
+    <%= hidden_field_tag :order_id,
+      order.id,
+      :class => 'order-id' %>
 
-  <%= submit_tag "&#10004; Save Order",
-    :class    => "save-order final button",
-    :disabled => true
-  %>
+    <%= submit_tag "♻  Delete Order",
+      :class    => "delete-order button"
+    %>
+
+  <% else -%>
+    <%= submit_tag "Cancel",
+      :class    => "cancel-order button",
+      :disabled => true
+    %>
+
+    <%= submit_tag "&#10004; Save Order",
+      :class    => "save-order final button",
+      :disabled => true
+    %>
+  <% end -%>
+
+
 </div>
 
