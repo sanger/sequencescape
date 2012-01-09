@@ -1203,6 +1203,14 @@ ul#orders > li.buttons {
 }
 
 .button[disabled]:hover {
+  -moz-box-shadow: 0 0 0 0;
+  -webkit-box-shadow: 0 0 0 0;
+  box-shadow: 0 0 0 0;
+  background:#ACACAC;
+
+  border-color:#6E6E6E;
+  text-shadow:0px 0px 0px #528ecc;
+  color: #ddd;
 }
 
 
