@@ -29,7 +29,7 @@ module Submission::StateMachine
     # TODO[xxx]: ... to here
 
     def complete_building
-      orders.all?(&:complete_building)
+      orders(true).all?(&:complete_building)
 
     end
 
