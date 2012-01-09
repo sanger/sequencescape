@@ -985,7 +985,7 @@ body.yui-skin-sam ul.ui-menu {
 }
 
 ul#orders {
-  width: 950px;
+  max-width: 950px;
   color:#333129;
   padding: 0;
   clear: both;
