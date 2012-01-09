@@ -21,7 +21,7 @@ module Submission::QuotaBehaviour
   end
 
   def check_project_details!
-    raise Quota::Error, self.errors.full_messages unless self.submittable?
+    raise Quota::Error, self.errors.full_messages.join("\n") unless self.submittable?
   end
   private :check_project_details!
 
