@@ -1,0 +1,53 @@
+<ul id="orders">
+
+  <li id="order-template" class="pane active">
+  <span class="completed badge">✔</span>
+  <span class="invalid badge">✘</span>
+  <h2>Order Template</h2>
+  <%= collection_select :submission,
+    :template_id,
+    @presenter.templates, :id, :name,
+    :prompt => "Please select a template..."
+  %>
+
+  <div id="order-parameters" style="display:none;"></div>
+  </li>
+  <li id="order-controls" class="buttons">
+    <%= submit_tag "✚ Add Order",
+      :id       => "add-order",
+      :class    => "button",
+      :disabled => true
+    %>
+  </li>
+
+    <% form_for :submission, @presenter do |f| -%>
+      <% @presenter.orders.each_with_index do |order, index| -%>
+        <% f.fields_for :orders, order do |orders_fields| -%>
+          <% orders_fields.fields_for index.to_s, order  do |order_form| -%>
+            <li class="pane order">
+              <%= render :partial => 'order', :locals => { :form => order_form, :presenter => @presenter } %>
+            </li>
+          <% end -%>
+        <% end -%>
+      <% end -%>
+    <% end -%>
+
+    <% form_for :blank_order, @presenter do |f| -%>
+      <li id="blank-order" class="pane order">
+        <%= render :partial => 'order', :locals => { :form => f, :presenter => @presenter } %>
+      </li>
+    <% end -%>
+
+
+  <li class="buttons">
+  <% form_for :submission, @presenter, :url => {:action => :update}  do |f| -%>
+    <%= f.hidden_field :id %>
+
+    <%= submit_tag "⚙ Build Submission",
+      :id       => "start-submission",
+      :class    => "final button",
+      :disabled => true
+    %>
+ <% end -%>
+  </li>
+</ul>

@@ -3,6 +3,8 @@ class PresenterSkeleton
   write_inheritable_attribute :attributes,  []
 
   def initialize(user, submission_attributes = {})
+    submission_attributes = {} if submission_attributes.blank?
+
     @user = user
 
     attributes.each do |attribute|
@@ -28,6 +30,28 @@ class PresenterSkeleton
     instance_variable_set(instance_variable_name, args.first)
   end
   protected :method_missing
+end
+
+class OrderPresenter
+  ATTRIBUTES = [
+    :study_id,
+    :project_name,
+    :plate_purpose_id,
+    :sample_names_text,
+    :lanes_of_sequencing_required,
+    :comments,
+  ]
+
+  attr_accessor *ATTRIBUTES
+
+  def initialize(order)
+    @target_order = order
+  end
+
+  def method_missing(method, *args, &block)
+    @target.send(method, *args, &block)
+  end
+
 end
 
 class SubmissionCreater < PresenterSkeleton
@@ -99,7 +123,8 @@ class SubmissionCreater < PresenterSkeleton
 
   # Return the submission's orders or a blank array
   def orders
-    submission.try(:orders) || []
+    return [] unless submission.present?
+    submission.try(:orders).map {|o| OrderPresenter.new(o) }
   end
 
   def project
@@ -121,7 +146,6 @@ class SubmissionCreater < PresenterSkeleton
         @submission = new_submission
       end
 
-      # Exception handling for flow control is forced by the model :(
     rescue Quota::Error => quota_exception
       order.errors.add_to_base(quota_exception.message)
     rescue InvalidInputException => input_exception
@@ -243,7 +267,7 @@ class SubmissionsController < ApplicationController
   end
 
   def edit
-    @presenter = SubmissionPresenter.new(current_user, params[:submission])
+    @presenter = SubmissionCreater.new(current_user,  :id => params[:id] )
   end
 
   # This method will build a submission then redirect to the submission on completion

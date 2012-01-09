@@ -367,8 +367,7 @@
       live('keypress',  validateOrderParams).
       live('blur',  validateOrderParams);
 
-    $('#add-order').
-      live('click', addOrderHandler);
+    $('#add-order').click(addOrderHandler);
 
     $('.submission_project_name').autocomplete({
       source    : SCAPE.user_project_names,
