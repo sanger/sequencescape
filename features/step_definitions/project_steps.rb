@@ -68,3 +68,13 @@ Given /^the project "([^\"]*)" a budget division "([^\"]*)"$/ do |project_name, 
     :budget_division  => budget_division
   })
 end
+
+Given /^the preordered quota for project "([^\"]*)" should be:/ do |project_name, table|
+  project = Project.find_by_name(project_name) or raise StandardError, "Cannot find project #{ project_name.inspect }"
+  table.rows.each do |rt_name ,count |
+    rt = RequestType.find_by_name(rt_name) or raise RuntimeError, "Cannot find request_type '#{rt_name}'"
+    quota = project.quota_for(rt)
+    assert_equal count.to_i, quota.preordered_count
+  end
+
+end

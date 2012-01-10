@@ -153,7 +153,8 @@ module NavigationHelpers
 
     when /the Submissions Inbox page/
       submissions_path
-
+    when /the create bulk submissions page/
+      "/bulk_submissions"
     when /the show page for the last submission/
       submission = Submission.last or raise StandardError, "There are no submissions!"
       order = submission.orders.first
