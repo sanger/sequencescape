@@ -113,11 +113,11 @@ class SubmissionCreater < PresenterSkeleton
     @order_params
   end
 
-  # These parameters should be defined by the submission template (to be renamed
+  # These fields should be defined by the submission template (to be renamed
   # order template) the old view code gets them by generating a new instance of
   # Order and then calling Order#input_field_infos.  This is a wrapper around
   # until I can refactor it out.
-  def order_parameters
+  def order_fields
     order.input_field_infos
   end
 
@@ -298,10 +298,10 @@ class SubmissionsController < ApplicationController
 
   ###################################################               AJAX ROUTES
   # TODO[sd9]: These AJAX routes could be re-factored
-  def order_parameters
+  def order_fields
     @presenter = SubmissionCreater.new(current_user, params[:submission])
 
-    render :partial => 'order_parameters', :layout => false
+    render :partial => 'order_fields', :layout => false
   end
 
   def study_assets

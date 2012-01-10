@@ -101,7 +101,7 @@
 
         // Load the parameters for the new order
         $.get(
-          '/submissions/order_parameters',
+          '/submissions/order_fields',
           { submission: SCAPE.submission },
           function(data) {
             $('#order-parameters').html(data);

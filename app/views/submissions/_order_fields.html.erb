@@ -1,13 +1,13 @@
-<h2><%= @presenter.template.name %> template</h2>
+<h2><%= @presenter.order.template_name %> template</h2>
 <%= custom_text("submission_info") %>
 
-<% if @presenter.order_parameters.present? -%>
+<% if @presenter.order_fields.present? -%>
   <table>
-    <% @presenter.order_parameters.sort {|a, b| a.display_name <=> b.display_name }.each_with_index do |order_param, index| -%>
+    <% @presenter.order_fields.sort {|a, b| a.display_name <=> b.display_name }.each_with_index do |order_param, index| -%>
       <%= "<tr>" if index.even? %>
         <th><%= order_input_label(order_param) %></th>
         <td><%= order_input_tag(order_param) %></td>
-        <%= "</tr>" if index.odd? || index + 1 == @presenter.order_parameters.size %>
+        <%= "</tr>" if index.odd? || index + 1 == @presenter.order_fields.size %>
     <% end -%>
   </table>
 <% end -%>
