@@ -23,12 +23,14 @@ if ENV['PULLDOWN']
     TagLayoutTemplate.create!(
       :name => 'Pulldown test 96 template',
       :tag_group => TagGroup.create!(:name => 'Pulldown 96 tags').tap { |g| g.tags << (1..96).map { |i| Tag.create!(:map_id => (g.id*100)+i, :oligo => "ACGT#{i}") } },
-      :layout_class_name => 'TagLayout::InColumns'
+      :direction_algorithm => 'TagLayout::InColumns',
+      :walking_algorithm => 'TagLayout::WalkWellsOfPlate'
     )
     TagLayoutTemplate.create!(
       :name => 'Pulldown test 8 template (in columns)',
       :tag_group => TagGroup.create!(:name => 'Pulldown 8 tags').tap { |g| g.tags << (1..8).map { |i| Tag.create!(:map_id => (g.id*100)+i, :oligo => "ACGT#{i}") } },
-      :layout_class_name => 'TagLayout::InColumns'
+      :direction_algorithm => 'TagLayout::InColumns',
+      :walking_algorithm => 'TagLayout::WalkWellsByPools'
     )
 
     # Rubbish data we need
