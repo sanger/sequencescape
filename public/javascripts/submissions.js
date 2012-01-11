@@ -77,9 +77,9 @@
 // Submission page code...
 (function($, undefined){
   // Name spacing stuff...
-  if ( window.SCAPE === undefined) { window.SCAPE = {}; }
+  if ( window.SCAPE === undefined) window.SCAPE = {};
 
-  if ( SCAPE.submission === undefined) { 
+  if ( SCAPE.submission === undefined) {
     SCAPE.submission = {
       order_params : {}
     };
