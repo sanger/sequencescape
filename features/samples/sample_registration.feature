@@ -41,6 +41,16 @@ Feature: Registering samples
     And I follow "asset_group_for_sample"
     Then I should see "sample_for_asset_group"
 
+  Scenario: Asset group has whitespace before and or after name
+    When I fill in "Sample name for sample 0" with "sample_for_asset_group"
+    And I fill in "Asset group name for sample 0" with " asset_group_for_sample"
+    And I press "Register samples"
+    Then I should be on the study workflow page for "Testing registering samples"
+
+    When I follow "Asset groups"
+    And I follow "asset_group_for_sample"
+    Then I should see "sample_for_asset_group"
+
   # NOTE: The behaviour here is slightly different to what the browser will do if you ignore a sample.
   # The browser has it's fields disabled and should be prevented from sending those fields in the 
   # request.  However, webrat doesn't execute the Javascript so it does send the fields but includes
