@@ -1,3 +1,25 @@
+class OrderPresenter
+  ATTRIBUTES = [
+    :study_id,
+    :project_name,
+    :plate_purpose_id,
+    :sample_names_text,
+    :lanes_of_sequencing_required,
+    :comments,
+  ]
+
+  attr_accessor *ATTRIBUTES
+
+  def initialize(order)
+    @target_order = order
+  end
+
+  def method_missing(method, *args, &block)
+    @target.send(method, *args, &block)
+  end
+
+end
+
 class PresenterSkeleton
   class_inheritable_reader :attributes
   write_inheritable_attribute :attributes,  []
@@ -30,28 +52,6 @@ class PresenterSkeleton
     instance_variable_set(instance_variable_name, args.first)
   end
   protected :method_missing
-end
-
-class OrderPresenter
-  ATTRIBUTES = [
-    :study_id,
-    :project_name,
-    :plate_purpose_id,
-    :sample_names_text,
-    :lanes_of_sequencing_required,
-    :comments,
-  ]
-
-  attr_accessor *ATTRIBUTES
-
-  def initialize(order)
-    @target_order = order
-  end
-
-  def method_missing(method, *args, &block)
-    @target.send(method, *args, &block)
-  end
-
 end
 
 class SubmissionCreater < PresenterSkeleton
