@@ -14,6 +14,12 @@ class OrderPresenter
     @target_order = order
   end
 
+  # id needs to be defined to stop Object#id being called on the OrderPresenter
+  # instance.
+  def id
+    @target_order.id
+  end
+
   def method_missing(method, *args, &block)
     @target.send(method, *args, &block)
   end
@@ -91,6 +97,8 @@ class SubmissionCreater < PresenterSkeleton
   end
 
   def order
+    return submission.orders.first if submission.present?
+
     @order ||= template.new_order(
       :study           => study,
       :project         => project,
@@ -113,11 +121,11 @@ class SubmissionCreater < PresenterSkeleton
     @order_params
   end
 
-  # These fields should be defined by the submission template (to be renamed
-  # order template) the old view code gets them by generating a new instance of
-  # Order and then calling Order#input_field_infos.  This is a wrapper around
-  # until I can refactor it out.
   def order_fields
+    if order.input_field_infos.flatten.empty?
+      order.request_type_ids_list = order.request_types.map { |rt| [rt] }
+    end
+
     order.input_field_infos
   end
 
@@ -169,13 +177,13 @@ class SubmissionCreater < PresenterSkeleton
     raise InvalidInputException, "Samples cannot be added from multiple sources at the same time." unless input_methods.size == 1
 
 
-    return  case input_methods.first
-            when :asset_group_id then { :asset_group => find_asset_group }
-            when :sample_names_text then
-              { :assets => wells_on_specified_plate_purpose_for(plate_purpose, find_samples_from_text(sample_names_text)) }
+    return case input_methods.first
+           when :asset_group_id    then { :asset_group => find_asset_group }
+           when :sample_names_text then 
+             { :assets => wells_on_specified_plate_purpose_for(plate_purpose, find_samples_from_text(sample_names_text)) }
 
-            else raise StandardError, "No way to determine assets for input choice #{input_choice.first}"
-            end
+           else raise StandardError, "No way to determine assets for input choice #{input_choice.first}"
+           end
   end
 
   # This is a legacy of the old controller...
@@ -221,11 +229,16 @@ class SubmissionCreater < PresenterSkeleton
 
   # Returns the SubmissionTemplate (OrderTemplate) to be used for this Submission.
   def template
+    @template = submission.orders.first.try(:template) if submission
     @template ||= SubmissionTemplate.find(@template_id)
   end
 
   def templates
     @templates ||= SubmissionTemplate.all
+  end
+
+  def template_id
+    submission.try(:orders).try(:first).try(:id)
   end
 
   # Returns an array of all the names of studies associated with the current
@@ -258,7 +271,6 @@ class SubmissionsController < ApplicationController
     @presenter = SubmissionCreater.new(current_user, params[:submission])
     
     if @presenter.save
-      @presenter.build_submission!
       render :partial => 'order_response', :layout => false
     else
       render :partial => 'order_errors', :layout => false
@@ -274,7 +286,7 @@ class SubmissionsController < ApplicationController
   def update
     @presenter = SubmissionCreater.new(current_user, params[:submission])
 
-    #@presenter.build_submission! temporarily disabled
+    @presenter.build_submission!
 
     redirect_to @presenter.submission
   end

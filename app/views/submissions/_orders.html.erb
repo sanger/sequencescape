@@ -3,15 +3,31 @@
   <li id="order-template" class="pane active">
   <span class="completed badge">✔</span>
   <span class="invalid badge">✘</span>
+  <% form_for :submission, @presenter do |f| -%>
   <h2>Order Template</h2>
-  <%= collection_select :submission,
-    :template_id,
-    @presenter.templates, :id, :name,
-    :prompt => "Please select a template..."
-  %>
+    <%= f.collection_select :template_id,
+      @presenter.templates, :id, :name,
+      :prompt => "Please select a template..."
+    %>
 
-  <div id="order-parameters" style="display:none;"></div>
+    
+    <div id="order-parameters" >
+      <%= render :partial => 'order_fields' if @presenter.submission.present? %>
+    </div>
   </li>
+
+    <% @presenter.orders.each_with_index do |order, index| -%>
+      <% f.fields_for :orders, order do |orders_fields| -%>
+        <% orders_fields.fields_for index.to_s, order  do |order_form| -%>
+          <li class="pane order active completed">
+            <%= render :partial => 'order', :locals => { :form => order_form, :order => order, :presenter => @presenter } %>
+          </li>
+        <% end -%>
+      <% end -%>
+    <% end -%>
+
+  <% end -%>
+
   <li id="order-controls" class="buttons">
     <%= submit_tag "✚ Add Order",
       :id       => "add-order",
@@ -20,23 +36,11 @@
     %>
   </li>
 
-    <% form_for :submission, @presenter do |f| -%>
-      <% @presenter.orders.each_with_index do |order, index| -%>
-        <% f.fields_for :orders, order do |orders_fields| -%>
-          <% orders_fields.fields_for index.to_s, order  do |order_form| -%>
-            <li class="pane order completed">
-              <%= render :partial => 'order', :locals => { :form => order_form, :order => order, :presenter => @presenter } %>
-            </li>
-          <% end -%>
-        <% end -%>
-      <% end -%>
-    <% end -%>
-
+  <li id="blank-order" class="pane order">
     <% form_for :blank_order, @presenter do |f| -%>
-      <li id="blank-order" class="pane order">
         <%= render :partial => 'order', :locals => { :form => f, :presenter => @presenter } %>
-      </li>
     <% end -%>
+  </li>
 
 
   <li class="buttons">

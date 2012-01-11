@@ -66,7 +66,6 @@ module Submission::QuotaBehaviour
   private :book_quota_available_for_request_types!
 
   def unbook_quota_available_for_request_types!
-    debugger
     check_project_details!
     quota_calculator(&method(:unbook_quota))
   end
