@@ -204,7 +204,7 @@ class SampleRegistrar < ActiveRecord::Base
 
       used_definitions.each_with_index do |handler, index|
         next if handler.nil?
-        value = worksheet.cell(row,index).to_s.gsub(/\000/,'').gsub(/\.0/,'')
+        value = worksheet.cell(row,index).to_s.gsub(/\000/,'').gsub(/\.0/,'').strip
         handler.call(attributes, value) unless value.blank?
       end
       next if attributes[:sample_attributes][:name].blank?
