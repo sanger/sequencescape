@@ -9,7 +9,7 @@ module Submission::QuotaBehaviour
       end
 
       delegate :book_quota, :unbook_quota, :quota_for!, :to => :project
-      after_create :book_quota_available_for_request_types!
+      after_create :book_quota_available_for_request_types! 
     end
   end
 
@@ -36,6 +36,7 @@ module Submission::QuotaBehaviour
   end
   private :checking_quotas?
 
+
   def submittable?
     @checking_quotas = true
     valid?
@@ -48,7 +49,17 @@ module Submission::QuotaBehaviour
   end
   private :quota_calculator
 
+
+  # Hack to be able to build order
+  # from pulled data
+  def save_after_unmarshalling
+      @saving_without_validation=true
+      save_without_validation
+      @saving_without_validation=false
+  end
+
   def book_quota_available_for_request_types!
+    return if @saving_without_validation
     check_project_details!
     quota_calculator(&method(:book_quota))
   end

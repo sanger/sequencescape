@@ -22,8 +22,11 @@ module ImportPulledData
       end
 
       object = klass.new(attributes) { |r| r.id = object_id }
-      object.save_without_validation
-
+      if object.respond_to? :save_after_unmarshalling
+        object.save_after_unmarshalling
+      else
+        object.save_without_validation
+      end
     end
   end
 
