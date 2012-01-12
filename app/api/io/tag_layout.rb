@@ -9,5 +9,6 @@ class ::Io::TagLayout < ::Core::Io::Base
     substitutions <=> substitutions
         tag_group  => tag_group
         direction  => direction
+       walking_by  => walking_by
   })
 end
