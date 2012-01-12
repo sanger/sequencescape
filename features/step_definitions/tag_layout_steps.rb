@@ -1,4 +1,4 @@
-Given /^the ((?:column order )?tag layout template) "([^"]+)" exists$/ do |style, name|
+Given /^the ((?:entire plate )?tag layout template) "([^"]+)" exists$/ do |style, name|
   Factory(style.gsub(/ /, '_'), :name => name)
 end
 
@@ -21,11 +21,20 @@ Given /^the tag group for (#{TAG_LAYOUT_TEMPLATE_REGEXP}|#{TAG_LAYOUT_REGEXP}) i
   target.tag_group.update_attributes!(:name => group_name)
 end
 
-Given /^the tag group for (#{TAG_LAYOUT_TEMPLATE_REGEXP}) contains the following tags:$/ do |template, table|
+def replace_tag_layout_tags(template, index_to_oligo)
   template.tag_group.tags.destroy_all
-  table.hashes.each do |tag_attributes|
+  index_to_oligo.each do |tag_attributes|
     template.tag_group.tags.create!(:map_id => tag_attributes[:index], :oligo => tag_attributes[:oligo])
   end
+end
+
+Given /^the tag group for (#{TAG_LAYOUT_TEMPLATE_REGEXP}) contains the following tags:$/ do |template, table|
+  replace_tag_layout_tags(template, table.hashes)
+end
+
+Given /^the tag group for (#{TAG_LAYOUT_TEMPLATE_REGEXP}) has tags (\d+)\.\.(\d+)$/ do |template, low, high|
+  tag_range = Range.new(low.to_i, high.to_i)
+  replace_tag_layout_tags(template, tag_range.map { |index| { :index => index, :oligo => "TAG#{index}" } })
 end
 
 # assert simply isn't good enough for displaying the oligos and working out what has gone wrong so this
@@ -46,15 +55,36 @@ def plate_view_of_oligos(label, mapping)
   plate_layout.map(&:inspect).map(&$stderr.method(:puts))
 end
 
-Then /^the tags assigned to the plate "([^"]+)" should be:$/ do |name, table|
-  plate                    = Plate.find_by_name(name) or raise StandardError, "Cannot find plate #{name.inspect}"
-  expected_wells_to_oligos = Hash[table.hashes.map { |a| [ a['well'], a['tag'] ] }]
-  wells_to_oligos          = Hash[plate.wells.map { |w| [ w.map.description, w.primary_aliquot.try(:tag).try(:oligo) || "" ] }]
+def check_tag_layout(name, well_range, expected_wells_to_oligos)
+  plate           = Plate.find_by_name(name) or raise StandardError, "Cannot find plate #{name.inspect}"
+  wells_to_oligos = Hash[
+    plate.wells.map do |w|
+      next unless well_range.include?(w)
+      [ w.map.description, w.primary_aliquot.try(:tag).try(:oligo) || "" ]
+    end.compact
+  ]
   if expected_wells_to_oligos != wells_to_oligos
     plate_view_of_oligos('Expected', expected_wells_to_oligos)
     plate_view_of_oligos('Got',      wells_to_oligos)
     assert(false, 'Tag assignment appears to be invalid')
   end
+end
+
+Then /^the tags assigned to the plate "([^"]+)" should be:$/ do |name, table|
+  check_tag_layout(
+    name, WellRange.new('A1', 'H12'),
+    Hash[table.hashes.map { |a| [ a['well'], a['tag'] ] }]
+  )
+end
+
+Then /^the tags assigned to the plate "([^"]+)" should be (\d+)\.\.(\d+) for wells "([^"]+)"$/ do |name, low, high, range|
+  tag_range = Range.new(low.to_i, high.to_i)
+  raise StandardError, "Tag range #{tag_range.inspect} is not the same size as well range #{range.inspect}" unless tag_range.to_a.size == range.size
+
+  check_tag_layout(
+    name, range,
+    Hash[range.to_a.zip(tag_range.to_a.map { |v| "TAG#{v}" })]
+  )
 end
 
 Given /^the UUID for the plate associated with the tag layout with ID (\d+) is "([^"]+)"$/ do |id, uuid_value|
