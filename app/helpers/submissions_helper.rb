@@ -71,4 +71,23 @@ module SubmissionsHelper
       }
     )
   end
+
+  def submission_status_message(submission)
+    case @submission.state
+    when 'building' then
+      display_user_guide('Your submission is still being built.')
+    when 'pending' then
+      display_user_guide( "Your submission is currently pending.")
+      content_tag(:p, 'It should be processed approximately 10 minutes after you have submitted it, however sometimes this may take longer.')
+    when 'processing' then
+      display_user_guide("Your submission is currently being processed.  This should take no longer than five minutes.")
+    when 'failed' then
+      h('<p>Your submission has failed:</p>' + "<p>#{@submission.message}</p>")
+    when 'ready'
+      content_tag(:p, h('Your submission has been <strong>processed</strong>.'))
+    else 
+      content_tag(:p, 'Your submission is in an unknown state (contact support).')
+    end 
+  end
+
 end

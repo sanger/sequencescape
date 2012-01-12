@@ -192,8 +192,6 @@
 
             $('.pane').not('#blank-order').addClass('active');
 
-            // This temporarily limits the order to one per submission...
-            $('#add-order').attr('disabled', true);
           });
 
         } else {

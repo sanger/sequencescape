@@ -97,9 +97,10 @@ class SubmissionCreater < PresenterSkeleton
   end
 
   def order
+    return @order if @order.present?
     return submission.orders.first if submission.present?
 
-    @order ||= template.new_order(
+    @order = template.new_order(
       :study           => study,
       :project         => project,
       :user            => @user,
@@ -147,8 +148,14 @@ class SubmissionCreater < PresenterSkeleton
         # Add assets to the order...
         order.update_attributes(order_assets)
 
-        new_submission = order.create_submission(:user => order.user)
+        if submission.present?
+          new_submission = submission
+        else
+          new_submission = order.create_submission(:user => order.user)
+        end
+
         new_submission.save!
+
         order.save!
 
         @submission = new_submission
