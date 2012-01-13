@@ -75,7 +75,10 @@ module SubmissionsHelper
   def submission_status_message(submission)
     case @submission.state
     when 'building' then
-      display_user_guide('Your submission is still being built.')
+      display_user_guide(
+        'This submission is still open for editing, further orders can still be added...',
+        edit_submission_path(submission)
+      ) + button_to("Edit Submission", edit_submission_path(submission), :method => :get, :class => 'button')
     when 'pending' then
       display_user_guide( "Your submission is currently pending.")
       content_tag(:p, 'It should be processed approximately 10 minutes after you have submitted it, however sometimes this may take longer.')
