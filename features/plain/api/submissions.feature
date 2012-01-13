@@ -84,6 +84,10 @@ Feature: Interacting with submissions through the API
             "updated_at": "2010-09-16T13:45:00+01:00",
             "created_by": "abc123",
             "state": "building",
+            "study_name": "Testing submission creation",
+            "study_uuid": "22222222-3333-4444-5555-000000000000",
+            "project_name": "Testing submission creation", 
+            "project_uuid": "22222222-3333-4444-5555-000000000001",
             "orders": "http://localhost:3000/0_5/submissions/11111111-2222-3333-4444-555555555555/orders"
           }
         }
@@ -141,6 +145,10 @@ Feature: Interacting with submissions through the API
         "updated_at": "2010-09-16T13:45:00+01:00",
             "created_by": "abc123",
             "state": "building",
+            "study_name": "Testing submission creation",
+            "study_uuid": "22222222-3333-4444-5555-000000000000",
+            "project_name": "Testing submission creation", 
+            "project_uuid": "22222222-3333-4444-5555-000000000001",
             "orders": "http://localhost:3000/0_5/submissions/11111111-2222-3333-4444-555555555555/orders"
           }
         }

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111206152534) do
+ActiveRecord::Schema.define(:version => 20120111142240) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -1183,21 +1183,23 @@ ActiveRecord::Schema.define(:version => 20111206152534) do
   add_index "tag_groups", ["name"], :name => "tag_groups_unique_name", :unique => true
 
   create_table "tag_layout_templates", :force => true do |t|
-    t.string   "layout_class_name"
+    t.string   "direction_algorithm"
     t.integer  "tag_group_id"
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "walking_algorithm",   :default => "TagLayout::WalkWellsByPools"
   end
 
   create_table "tag_layouts", :force => true do |t|
-    t.string   "sti_type"
+    t.string   "direction_algorithm"
     t.integer  "tag_group_id"
     t.integer  "plate_id"
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "substitutions"
+    t.string   "walking_algorithm",   :default => "TagLayout::WalkWellsByPools"
   end
 
   create_table "tags", :force => true do |t|
