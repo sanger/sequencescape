@@ -219,6 +219,10 @@
     var currentPane = $(event.target).submission('currentPane');
 
     var studyId     = currentPane.find('.study_id').val();
+
+    // TODO This should validate that the project name is in the list but the
+    // autocomplete callback doesn't seem to fire properly so this is a bit of
+    // a kludge around that.
     var projectName = currentPane.find('.submission_project_name').val();
     var hasAssets   = currentPane.submission('hasAssets');
 
@@ -366,6 +370,11 @@
       live('blur',     validateOrderParams);
 
     $('#add-order').click(addOrderHandler);
+
+    // If there are any completed orders then enable the add-order button so we
+    // can add more...
+    if ($('.order.completed').length) $('#add-order').removeAttr('disabled');
+
 
     $('.submission_project_name').autocomplete({
       source    : SCAPE.user_project_names,

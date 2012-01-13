@@ -100,7 +100,12 @@ class SubmissionCreater < PresenterSkeleton
     return @order if @order.present?
     return submission.orders.first if submission.present?
 
-    @order = template.new_order(
+    @order = create_order
+
+  end
+
+  def create_order
+    new_order = template.new_order(
       :study           => study,
       :project         => project,
       :user            => @user,
@@ -108,14 +113,14 @@ class SubmissionCreater < PresenterSkeleton
       :comments        => comments
     )
 
-    if order_params
-      @order.request_type_multiplier do |sequencing_request_type_id|
-        @order.request_options['multiplier'][sequencing_request_type_id] = (lanes_of_sequencing_required || 1)
-      end
-    end
+    # TODO test for nonsequencing reqests
+    new_order.request_type_multiplier do |sequencing_request_type_id|
+      new_order.request_options['multiplier'][sequencing_request_type_id] = (lanes_of_sequencing_required || 1)
+    end if order_params
 
-    @order
+    new_order
   end
+  private :create_order
 
   def order_params
     @order_params[:multiplier] = {} if (@order_params && @order_params[:multiplier].nil?)
@@ -146,19 +151,16 @@ class SubmissionCreater < PresenterSkeleton
     begin
       ActiveRecord::Base.transaction do
         # Add assets to the order...
-        order.update_attributes(order_assets)
+        new_order = create_order
+        new_order.update_attributes!(order_assets)
 
         if submission.present?
-          new_submission = submission
+          submission.orders << new_order
         else
-          new_submission = order.create_submission(:user => order.user)
+          @submission = new_order.create_submission(:user => order.user)
         end
 
-        new_submission.save!
-
-        order.save!
-
-        @submission = new_submission
+        new_order.save!
       end
 
     rescue Quota::Error => quota_exception
@@ -236,7 +238,9 @@ class SubmissionCreater < PresenterSkeleton
 
   # Returns the SubmissionTemplate (OrderTemplate) to be used for this Submission.
   def template
-    @template = submission.orders.first.try(:template) if submission
+    # We can't get the template from a saved order, have to find by name.... :(
+    template_name = submission.orders.first.template_name
+    @template =  SubmissionTemplate.find_by_name(template_name) if submission.orders.present?
     @template ||= SubmissionTemplate.find(@template_id)
   end
 
@@ -276,7 +280,7 @@ class SubmissionsController < ApplicationController
 
   def create
     @presenter = SubmissionCreater.new(current_user, params[:submission])
-    
+
     if @presenter.save
       render :partial => 'order_response', :layout => false
     else
