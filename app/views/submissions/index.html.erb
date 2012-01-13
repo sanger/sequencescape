@@ -4,13 +4,18 @@
 <h1>Submissions Inbox for <%= current_user.login %></h1>
 
 <h2>Currently Building</h2>
-<%= render :partial => "list", :locals => 
-  { :submissions => @building } %>
+<%= render :partial => "list",
+  :locals => { :submissions => @building }
+%>
+<br/>
 
 <h2>Pending (built, but not ready)</h2>
-<%= render :partial => "list", :locals => 
-  { :submissions => @pending } %>
+<%= render :partial => "list",
+  :locals => { :submissions => @pending }
+%>
+<br/>
 
 <h2>Last 10 Completed</h2>
-<%= render :partial => "list", :locals => 
-  { :submissions => @ready } %>
+<%= render :partial => "list",
+  :locals => { :submissions => @ready }
+%>

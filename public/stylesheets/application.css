@@ -1015,6 +1015,7 @@ ul#orders li.pane {
   opacity: 0.2;
   text-align: left;
   background: #fff;
+  margin-bottom: 30px;
   behavior: url(/stylesheets/PIE.htc);
 }
 
@@ -1110,7 +1111,6 @@ ul#orders ul.sub-panel li {
   margin: 10px 0;
   border-radius: 8px;
   -moz-border-radius: 8px;
-
 
   padding: 15px;
   list-style: none outside none;
