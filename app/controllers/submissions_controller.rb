@@ -101,7 +101,6 @@ class SubmissionCreater < PresenterSkeleton
     return submission.orders.first if submission.present?
 
     @order = create_order
-
   end
 
   def create_order
@@ -151,8 +150,7 @@ class SubmissionCreater < PresenterSkeleton
     begin
       ActiveRecord::Base.transaction do
         # Add assets to the order...
-        new_order = create_order
-        new_order.update_attributes!(order_assets)
+        new_order = create_order.tap { |o| o.update_attributes!(order_assets) }
 
         if submission.present?
           submission.orders << new_order
@@ -187,12 +185,17 @@ class SubmissionCreater < PresenterSkeleton
 
 
     return case input_methods.first
-           when :asset_group_id    then { :asset_group => find_asset_group }
-           when :sample_names_text then 
-             { :assets => wells_on_specified_plate_purpose_for(plate_purpose, find_samples_from_text(sample_names_text)) }
+      when :asset_group_id    then { :asset_group => find_asset_group }
+      when :sample_names_text then 
+        {
+          :assets => wells_on_specified_plate_purpose_for(
+            plate_purpose,
+            find_samples_from_text(sample_names_text)
+          )
+        }
 
-           else raise StandardError, "No way to determine assets for input choice #{input_choice.first}"
-           end
+      else raise StandardError, "No way to determine assets for input choice #{input_choice.first}"
+    end
   end
 
   # This is a legacy of the old controller...
@@ -239,8 +242,7 @@ class SubmissionCreater < PresenterSkeleton
   # Returns the SubmissionTemplate (OrderTemplate) to be used for this Submission.
   def template
     # We can't get the template from a saved order, have to find by name.... :(
-    template_name = submission.orders.first.template_name
-    @template =  SubmissionTemplate.find_by_name(template_name) if submission.orders.present?
+    @template =  SubmissionTemplate.find_by_name(order.template_name) if try(:submission).try(:orders).present?
     @template ||= SubmissionTemplate.find(@template_id)
   end
 

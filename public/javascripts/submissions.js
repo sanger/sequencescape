@@ -373,7 +373,7 @@
 
     // If there are any completed orders then enable the add-order button so we
     // can add more...
-    if ($('.order.completed').length) $('#add-order').removeAttr('disabled');
+    if ($('.order.completed').length) $('#add-order, #start-submission').removeAttr('disabled');
 
 
     $('.submission_project_name').autocomplete({
