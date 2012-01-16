@@ -76,7 +76,7 @@ module SubmissionsHelper
   end
 
   def submission_status_message(submission)
-    case @submission.state
+    case submission.state
     when 'building' then
       display_user_guide(
         'This submission is still open for editing, further orders can still be added...',
@@ -88,7 +88,7 @@ module SubmissionsHelper
     when 'processing' then
       display_user_guide("Your submission is currently being processed.  This should take no longer than five minutes.")
     when 'failed' then
-      h('<p>Your submission has failed:</p>' + "<p>#{@submission.message}</p>")
+      h('<p>Your submission has failed:</p>' + "<p>#{submission.message}</p>")
     when 'ready'
       content_tag(:p, h('Your submission has been <strong>processed</strong>.'))
     else 

@@ -159,45 +159,33 @@
     SCAPE.submission.lanes_of_sequencing_required = currentPane.find('.lanes_of_sequencing').val();
     SCAPE.submission.comments                     = currentPane.find('#submission_comments').val();
 
+    currentPane.ajaxError(function(event, jqXHR, ajaxSettings, thrownError) {
+      currentPane.find('.project-details').html(jqXHR.responseText);
+      currentPane.submission('markPaneInvalid');
+    });
 
     $.post(
       '/submissions',
       { submission : SCAPE.submission },
       function(data) {
 
-        // Ugly hack to load the order_valid flag before the returned
-        // html is displayed.
-        // Got to go....
-        var tempResult = $('<div>').html(data);
+        currentPane.fadeOut(function(){
+          currentPane.
+            detach().
+            html(data).
+            submission('markPaneComplete').
+            removeClass('active invalid');
 
-        if(SCAPE.submission.order_valid) {
-          currentPane.fadeOut(function(){
-            //                                        vvvvvvvvvv-- Ugly, ugly, ugly...
-            currentPane.find('.project-details').html(tempResult.html());
+          $('#order-controls').before(currentPane);
+          currentPane.fadeIn();
 
-            currentPane.
-              detach().
-              removeClass('active invalid').
-              find('.asset-input-toggle').remove();
+          $('#submission_id').val(SCAPE.submission.id);
+          $('#start-submission').removeAttr('disabled');
 
-            currentPane.submission('markPaneComplete').
-              find('input, select, textarea').not('.delete-order').
-              attr('disabled',true);
+          $('.pane').not('#blank-order').addClass('active');
 
-            $('#order-controls').before(currentPane);
-            currentPane.fadeIn();
+        });
 
-            $('#submission_id').val(SCAPE.submission.id);
-            $('#start-submission').removeAttr('disabled');
-
-            $('.pane').not('#blank-order').addClass('active');
-
-          });
-
-        } else {
-          currentPane.find('.project-details').html(data);
-          currentPane.submission('markPaneInvalid');
-        }
       }
     );
 

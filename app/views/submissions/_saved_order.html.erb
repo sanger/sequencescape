@@ -7,17 +7,17 @@
 
   <h4>
     Study:
-    <%= link_to(order.study.name, order.study) %>
+    <%= link_to(order.study.name, order.study, :target => "_blank") %>
   </h4>
 
   <h4>
     Project:
-    <%= link_to(order.project.name, order.project) %>
+    <%= link_to(order.project.name, order.project, :target => "_blank") %>
   </h4>
 
   <h4>
     Asset Group:
-    <%= link_to(h(order.asset_group.name), study_asset_group_path(order.study, order.asset_group)) %>
+    <%= link_to(h(order.asset_group.name), study_asset_group_path(order.study, order.asset_group), :target => "_blank") %>
   </h4>
 
   <%= "<p>#{order.comments}</p>" unless order.comments.nil? %>
@@ -42,3 +42,7 @@
       %>
     </div>
   <% end -%>
+
+<script type="text/javascript">
+  SCAPE.submission.id = <%= @presenter.submission.id %>;
+</script>

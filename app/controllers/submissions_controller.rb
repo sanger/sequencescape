@@ -161,7 +161,9 @@ class SubmissionCreater < PresenterSkeleton
         end
 
         new_order.save!
+        @order = new_order
       end
+
 
     rescue Quota::Error => quota_exception
       order.errors.add_to_base(quota_exception.message)
@@ -286,9 +288,14 @@ class SubmissionsController < ApplicationController
     @presenter = SubmissionCreater.new(current_user, params[:submission])
 
     if @presenter.save
-      render :partial => 'order_response', :layout => false
+      render :partial => 'saved_order',
+        :locals => {
+          :order => @presenter.order,
+          :form => :dummy_form_symbol
+        },
+        :layout => false
     else
-      render :partial => 'order_errors', :layout => false
+      render :partial => 'order_errors', :layout => false, :status => 422
     end
 
   end
@@ -313,8 +320,7 @@ class SubmissionsController < ApplicationController
   end
 
   def show
-    @submission = Submission.find(params[:id])
-    @presenter = SubmissionPresenter.new(current_user, params[:id])
+    @presenter = SubmissionPresenter.new(current_user, :id => params[:id])
   end
 
   # TODO: This looks like it's not used...?

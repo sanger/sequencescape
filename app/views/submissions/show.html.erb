@@ -1,14 +1,14 @@
 <% add :title, "Viewing Submission" -%>
 
 
-<h1>Submission: <%= @submission.id %></h1>
+<h1>Submission: <%= @presenter.submission.id %></h1>
 <div class='subtitle'>
- Submission created at: <strong><%=h @submission.created_at.to_formatted_s(:day_full_with_time) %></strong>
+ Submission created at: <strong><%=h @presenter.submission.created_at.to_formatted_s(:day_full_with_time) %></strong>
 </div>
-<%= submission_status_message(@submission) %>
+<%= submission_status_message(@presenter.submission) %>
 
 
-<% if @submission.pending? -%>
+<% if @presenter.submission.pending? -%>
   <div class='help'>
     <h2>Important notice</h2>
     This submission describes the work you have requested. If you want to cancel it or alter it, <%= help_email_link %>.<br />
@@ -17,7 +17,7 @@
 <% end -%>
 
 <ul id="orders">
-<% @submission.orders.each do |order| %>
+<% @presenter.submission.orders.each do |order| %>
   <li class="pane order active completed">
   <%= render :partial => 'saved_order', :locals => { :order => order } %>
   </li>
