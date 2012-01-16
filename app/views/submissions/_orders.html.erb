@@ -16,11 +16,12 @@
     </div>
   </li>
 
+    <%# Render completed Orders %>
     <% @presenter.orders.each_with_index do |order, index| -%>
       <% f.fields_for :orders, order do |orders_fields| -%>
         <% orders_fields.fields_for index.to_s, order  do |order_form| -%>
-          <li class="pane order active completed">
-            <%= render :partial => 'order', :locals => { :form => order_form, :order => order, :presenter => @presenter } %>
+          <li class="pane order completed">
+            <%= render :partial => 'saved_order', :locals => { :form => order_form, :order => order } %>
           </li>
         <% end -%>
       <% end -%>
@@ -36,6 +37,7 @@
     %>
   </li>
 
+  <%# Render a single blank Order %>
   <li id="blank-order" class="pane order">
     <% form_for :blank_order, @presenter do |f| -%>
         <%= render :partial => 'order', :locals => { :form => f, :presenter => @presenter } %>

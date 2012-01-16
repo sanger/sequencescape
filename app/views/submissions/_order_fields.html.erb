@@ -7,7 +7,7 @@
       <% @presenter.order_fields.sort {|a, b| a.display_name <=> b.display_name }.each_with_index do |order_param, index| -%>
         <%= "<tr>" if index.even? %>
           <th><%= order_input_label(order_param) %></th>
-          <td><%= order_input_tag(order_param) %></td>
+          <td><%= order_input_tag(@presenter.order, order_param) %></td>
           <%= "</tr>" if index.odd? || index + 1 == @presenter.order_fields.size %>
       <% end -%>
     </table>
@@ -20,6 +20,7 @@
     <% unless @presenter.order.new_record? -%>
     $(function(){
       $('#order-template').
+        removeClass('active').
         addClass('completed').
         find('input, select, textarea').not('.delete-order').
         attr('disabled',true);

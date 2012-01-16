@@ -21,7 +21,7 @@ class OrderPresenter
   end
 
   def method_missing(method, *args, &block)
-    @target.send(method, *args, &block)
+    @target_order.send(method, *args, &block)
   end
 
 end
@@ -96,6 +96,8 @@ class SubmissionCreater < PresenterSkeleton
     AssetGroup.find(asset_group_id) if asset_group_id.present?
   end
 
+  # Returns the either the first order associated with the submission or
+  # creates a new blank order.
   def order
     return @order if @order.present?
     return submission.orders.first if submission.present?
@@ -186,7 +188,7 @@ class SubmissionCreater < PresenterSkeleton
 
     return case input_methods.first
       when :asset_group_id    then { :asset_group => find_asset_group }
-      when :sample_names_text then 
+      when :sample_names_text then
         {
           :assets => wells_on_specified_plate_purpose_for(
             plate_purpose,
@@ -303,7 +305,7 @@ class SubmissionsController < ApplicationController
 
     redirect_to @presenter.submission
   end
-  
+
   def index
     @building = Submission.building.find(:all, :order => "created_at DESC", :conditions => { :user_id => current_user.id })
     @pending = Submission.pending.find(:all, :order => "created_at DESC", :conditions => { :user_id => current_user.id })
@@ -314,11 +316,12 @@ class SubmissionsController < ApplicationController
     @submission = Submission.find(params[:id])
     @presenter = SubmissionPresenter.new(current_user, params[:id])
   end
-  
+
+  # TODO: This looks like it's not used...?
   def study
     @study = Study.find(params[:id])
     @submissions = @study.submissions
-    
+
   end
 
   ###################################################               AJAX ROUTES

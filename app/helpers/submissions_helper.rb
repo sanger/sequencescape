@@ -13,27 +13,30 @@ module SubmissionsHelper
   # Returns a either a text input or a selection tag based on the 'kind'
   # of the order parameter passed in.
   # field_info is expected to be FieldInfo [sic]
-  def order_input_tag(field_info)
+  def order_input_tag(order, field_info)
     case field_info.kind
-    when "Selection" then order_selection_tag(field_info)
-    when "Text"      then order_text_tag(field_info)
+    when "Selection" then order_selection_tag(order, field_info)
+    when "Text"      then order_text_tag(order, field_info)
     end
   end
 
-  def order_selection_tag(field_info)
+  def order_selection_tag(order, field_info)
     select_tag(
       "submission[order_params][#{field_info.key}]",
-      options_for_select(field_info.selection, field_info.value),
+      options_for_select(
+        field_info.selection.map(&:to_s),
+        order.request_options.try(:[], field_info.key)
+      ),
       :class => "required",
       :disabled => (field_info.selection.size == 1)
     )
   end
   private :order_selection_tag
 
-  def order_text_tag(field_info)
+  def order_text_tag(order, field_info)
     text_field_tag(
       "submission[order_params][#{field_info.key}]",
-      field_info.value,
+      order.request_options.try(:[], field_info.key),
       :class => "required"
     )
   end

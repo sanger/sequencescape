@@ -379,7 +379,7 @@
     $('.submission_project_name').autocomplete({
       source    : SCAPE.user_project_names,
       minLength : 3,
-      select : validateOrder
+      select    : validateOrder
     });
 
     // NB.  There seems to being some odd behaviour related to the

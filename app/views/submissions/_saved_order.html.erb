@@ -1,0 +1,44 @@
+<%- form ||= nil %>
+  <span class="completed badge">✔</span>
+  <h2>
+    Order added to submission at: <%=h order.created_at.to_formatted_s(:day_full_with_time) %>
+  </h2>
+
+
+  <h4>
+    Study:
+    <%= link_to(order.study.name, order.study) %>
+  </h4>
+
+  <h4>
+    Project:
+    <%= link_to(order.project.name, order.project) %>
+  </h4>
+
+  <h4>
+    Asset Group:
+    <%= link_to(h(order.asset_group.name), study_asset_group_path(order.study, order.asset_group)) %>
+  </h4>
+
+  <%= "<p>#{order.comments}</p>" unless order.comments.nil? %>
+
+  <% unless order.request_types.blank? %>
+    <h4>Request types:</h4>
+    <ul id="request_types_for_submission">
+      <% RequestType.find(order.request_types).each do |request_type| %>
+        <li><%= request_type.name %></li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <% if form.present? -%>
+    <div class="save-buttons">
+      <%= hidden_field_tag :order_id,
+        order.id,
+        :class => 'order-id' %>
+
+      <%= submit_tag "♻  Delete Order",
+        :class    => "delete-order button"
+      %>
+    </div>
+  <% end -%>
