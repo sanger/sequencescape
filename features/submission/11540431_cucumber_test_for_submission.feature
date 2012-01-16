@@ -1,4 +1,4 @@
-@submission @javascript @autocomplete
+@submission @javascript @autocomplete @wip @old_submission_ui
 Feature: Added a new js version. Check that submission continues to work and Project is filled properly
 
   Background:

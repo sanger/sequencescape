@@ -1,4 +1,4 @@
-@submission @new_submission
+@submission @new_submission @wip
 Feature: Submission and Order Creation
 	As a Project Manager I want to be able to create a submission from a Study, a Project and some Assets,
 	adding orders to the Submission before submitting it.
