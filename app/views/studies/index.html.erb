@@ -1,7 +1,9 @@
 <%- add :title, I18n.t("studies.about") %>
 <%- add :manager_option, "<strong>Create study</strong>" => new_study_path %>
 <%- add :manager_option, "<strong>Create project</strong>" => new_project_path %>
-
+<%- add :manager_option, "<strong>Start a Bulk Submission</strong>" => {:controller => "/bulk_submissions", :action => "new"} %>
+<%- add :manager_option, "<strong>Start a New Submission</strong>" => new_submission_path %>
+<%- add :manager_option, "<strong>All Submissions</strong>" => submissions_path %>
 <h1>
 <% if params[:scope] %>
   <%= @alternatives[params[:scope].to_i].capitalize  %> studies

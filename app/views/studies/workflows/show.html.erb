@@ -1,6 +1,7 @@
 <% add :title, "This page details the current status of a workflow." -%>
 <% if @study.approved? && @study.active? -%>
   <% add :manager_option, "<strong>Create Submission</strong>" => new_submission_path(:study_id => @study.id) -%>
+    <% add :manager_option, "<strong>Start a Bulk Submission" => {:controller => "/bulk_submissions", :action => "new"} -%>
 <% end -%>
 <% add :admin_option, "Submit plates" => new_plate_submission_study_path(@study) -%>
 <% if current_user.is_administrator? || current_user.is_manager?(@study) %>
