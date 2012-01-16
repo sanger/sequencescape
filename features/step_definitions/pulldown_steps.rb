@@ -16,9 +16,29 @@ class WellRange
   end
 
   def include?(well)
-    well_match = WELL_REGEXP.match(well.map.description)
-    @rows.include?(well_match[1]) and @columns.include?(well_match[2].to_i)
+		include_well_location?(well.map.description)
   end
+
+	def include_well_location?(location)
+    well_match = WELL_REGEXP.match(location)
+    @rows.include?(well_match[1]) and @columns.include?(well_match[2].to_i)
+	end
+	private :include_well_location?
+
+	def to_a(&block)
+		[].tap do |wells|
+			(1..12).each do |column|
+				('A'..'H').each do |row|
+					well = "#{row}#{column}"
+					wells << well if include_well_location?(well)
+				end
+			end
+		end
+	end
+
+	def size
+		to_a.size
+	end
 end
 
 Transform /^([A-H]\d+)-([A-H]\d+)$/ do |start, finish|

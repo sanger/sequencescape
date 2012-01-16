@@ -7,5 +7,6 @@ class ::Io::TagLayoutTemplate < ::Core::Io::Base
                  name  => name
             tag_group  => tag_group
             direction  => direction
+           walking_by  => walking_by
   })
 end
