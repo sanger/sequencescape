@@ -1,5 +1,8 @@
 # Lays out the tags so that they are column ordered.
-class TagLayout::InColumns < TagLayout
-  class_inheritable_reader :direction
-  write_inheritable_attribute(:direction, 'column')
+module TagLayout::InColumns
+  extend self
+
+  def direction
+    'column'
+  end
 end

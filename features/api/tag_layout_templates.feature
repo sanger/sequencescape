@@ -38,6 +38,7 @@ Feature: Access tag layout templates through the API
           "uuid": "00000000-1111-2222-3333-444444444444",
           "name": "Test tag layout",
           "direction": "column",
+          "walking_by": "wells in pools",
 
           "tag_group": {
             "name": "Tag group 1",
@@ -219,10 +220,63 @@ Feature: Access tag layout templates through the API
       | H12  | CCGG |
 
   @tag_layout @create @barcode-service
+  Scenario: Creating a tag layout from a tag layout template which ignores pools
+    Given the plate barcode webservice returns "1000001..1000002"
+
+    Given the entire plate tag layout template "Test tag layout" exists
+      And the UUID for the tag layout template "Test tag layout" is "00000000-1111-2222-3333-444444444444"
+      And the tag group for tag layout template "Test tag layout" is called "Tag group 1"
+      And the tag group for tag layout template "Test tag layout" has tags 1..96
+      And the UUID of the next tag layout created will be "00000000-1111-2222-3333-000000000002"
+
+    Given a "Stock plate" plate called "Testing the API" exists
+      And the UUID for the plate "Testing the API" is "11111111-2222-3333-4444-000000000002"
+      And all wells on the plate "Testing the API" have unique samples
+
+    Given a "Stock plate" plate called "Testing the tagging" exists
+      And the UUID for the plate "Testing the tagging" is "11111111-2222-3333-4444-000000000001"
+      And the wells for the plate "Testing the API" have been pooled in columns to the plate "Testing the tagging"
+
+    When I make an authorised POST with the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
+      """
+      {
+        "tag_layout": {
+          "plate": "11111111-2222-3333-4444-000000000001"
+        }
+      }
+      """
+    Then the HTTP response should be "201 Created"
+     And the JSON should match the following for the specified fields:
+      """
+      {
+        "tag_layout": {
+          "actions": {
+            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-000000000002"
+          },
+          "plate": {
+            "actions": {
+              "read": "http://www.example.com/api/1/11111111-2222-3333-4444-000000000001"
+            }
+          },
+
+          "uuid": "00000000-1111-2222-3333-000000000002",
+          "direction": "column",
+          "walking_by": "wells of plate",
+
+          "tag_group": {
+            "name": "Tag group 1"
+          }
+        }
+      }
+      """
+
+    Then the tags assigned to the plate "Testing the tagging" should be 1..96 for wells "A1-H12"
+
+  @tag_layout @create @barcode-service
   Scenario: Creating a tag layout from a tag layout template where wells have been failed
     Given the plate barcode webservice returns "1000001..1000002"
 
-    Given the column order tag layout template "Test tag layout" exists
+    Given the tag layout template "Test tag layout" exists
       And the UUID for the tag layout template "Test tag layout" is "00000000-1111-2222-3333-444444444444"
       And the tag group for tag layout template "Test tag layout" is called "Tag group 1"
       And the tag group for tag layout template "Test tag layout" contains the following tags:
@@ -745,7 +799,7 @@ Feature: Access tag layout templates through the API
   Scenario: Creating a tag layout where the pools are factors of the number of rows on the plate
     Given the plate barcode webservice returns "1000001..1000002"
 
-    Given the column order tag layout template "Test tag layout" exists
+    Given the tag layout template "Test tag layout" exists
       And the UUID for the tag layout template "Test tag layout" is "00000000-1111-2222-3333-444444444444"
       And the tag group for tag layout template "Test tag layout" is called "Tag group 1"
       And the tag group for tag layout template "Test tag layout" contains the following tags:
@@ -916,7 +970,7 @@ Feature: Access tag layout templates through the API
   Scenario: Creating a tag layout where the pools are awkwardly sized and cause overlaps
     Given the plate barcode webservice returns "1000001..1000002"
 
-    Given the column order tag layout template "Test tag layout" exists
+    Given the tag layout template "Test tag layout" exists
       And the UUID for the tag layout template "Test tag layout" is "00000000-1111-2222-3333-444444444444"
       And the tag group for tag layout template "Test tag layout" is called "Tag group 1"
       And the tag group for tag layout template "Test tag layout" contains the following tags:
@@ -1087,7 +1141,7 @@ Feature: Access tag layout templates through the API
   Scenario: Creating a tag layout of an entire plate using 96 tags
     Given the plate barcode webservice returns "1000001..1000002"
 
-    Given the column order tag layout template "Test tag layout" exists
+    Given the tag layout template "Test tag layout" exists
       And the UUID for the tag layout template "Test tag layout" is "00000000-1111-2222-3333-444444444444"
       And the tag group for tag layout template "Test tag layout" is called "Tag group 1"
       And the tag group for tag layout template "Test tag layout" has 96 tags
@@ -1214,7 +1268,7 @@ Feature: Access tag layout templates through the API
   Scenario: Creating a tag layout where one of the wells is empty
     Given the plate barcode webservice returns "1000001..1000002"
 
-    Given the column order tag layout template "Test tag layout" exists
+    Given the tag layout template "Test tag layout" exists
       And the UUID for the tag layout template "Test tag layout" is "00000000-1111-2222-3333-444444444444"
       And the tag group for tag layout template "Test tag layout" is called "Tag group 1"
       And the tag group for tag layout template "Test tag layout" has 96 tags

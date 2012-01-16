@@ -68,18 +68,27 @@ end
 
 # Tag layouts and their templates
 Factory.define(:tag_layout_template) do |tag_layout_template|
-  tag_layout_template.layout_class_name 'TagLayout::ByPools'
+  tag_layout_template.direction_algorithm 'TagLayout::InColumns'
+  tag_layout_template.walking_algorithm   'TagLayout::WalkWellsByPools'
   tag_layout_template.tag_group { |target| target.association(:tag_group_for_layout) }
 end
-Factory.define(:column_order_tag_layout_template, :class => TagLayoutTemplate) do |tag_layout_template|
-  tag_layout_template.layout_class_name 'TagLayout::InColumns'
+Factory.define(:entire_plate_tag_layout_template, :class => TagLayoutTemplate) do |tag_layout_template|
+  tag_layout_template.direction_algorithm 'TagLayout::InColumns'
+  tag_layout_template.walking_algorithm   'TagLayout::WalkWellsOfPlate'
   tag_layout_template.tag_group { |target| target.association(:tag_group_for_layout) }
 end
 
-Factory.define(:tag_layout, :class => TagLayout::InColumns) do |tag_layout|
+Factory.define(:tag_layout) do |tag_layout|
   tag_layout.user      { |target| target.association(:user) }
   tag_layout.plate     { |target| target.association(:full_plate_with_samples) }
   tag_layout.tag_group { |target| target.association(:tag_group_for_layout)    }
+
+  tag_layout.direction_algorithm 'TagLayout::InColumns'
+  tag_layout.walking_algorithm   'TagLayout::WalkWellsByPools'
+
+  # Factory girl builds things in bits, rather than all at once, so we need to trigger the after_initialize call
+  # after the instance has been built so that the correct behaviours are installed.
+  tag_layout.after_build { |tag_layout| tag_layout.after_initialize }
 end
 
 # Plate creations
