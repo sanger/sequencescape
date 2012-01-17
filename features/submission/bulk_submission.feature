@@ -29,7 +29,7 @@ Feature: Bulk Submission
     And the preordered quota for project "Test project" should be:
         | RequestType                 | preordered | 
         | Cherrypicking for Pulldown     | 10         | 
-        | Pulldown WGS                | 1          | 
+        | Pulldown WGS                | 10          | 
         | HiSeq Paired end sequencing | 1          | 
     
   Scenario: Uploading a valid file with 2 submissions
