@@ -179,7 +179,7 @@
           $('#order-controls').before(currentPane);
           currentPane.fadeIn();
 
-          $('#submission_id').val(SCAPE.submission.id);
+          $('#build-form').attr('action', '/submissions/'+ SCAPE.submission.id);
           $('#start-submission').removeAttr('disabled');
 
           $('.pane').not('#blank-order').addClass('active');
@@ -288,6 +288,10 @@
       }
 
       $('#add-order').removeAttr('disabled');
+
+      if ($('.order.completed').length !== 0) {
+        $('#start-submission').removeAttr('disabled');
+      }
     });
 
     // don't forget to stop the form submitting...

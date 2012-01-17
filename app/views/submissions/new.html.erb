@@ -6,15 +6,3 @@
 
 <%= render :partial => 'orders' %>
 
-<script type="text/javascript">
-  (function($, undefined){
-   // Check for the SCAPE object.  This is the only place in the global
-   // namespace we should be storing things.
-   if (window.SCAPE == undefined) window.SCAPE = {};
-
-   SCAPE.user_project_names =  <%= stringify_array(@presenter.user_projects) %>;
-   })(jQuery);
-</script>
-
-<%= javascript_include_tag 'submissions' %>
-

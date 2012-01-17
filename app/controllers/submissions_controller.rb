@@ -263,6 +263,10 @@ class SubmissionCreater < PresenterSkeleton
   def user_projects
     @user_projects ||= @user.sorted_project_names_and_ids.map(&:first)
   end
+
+  def url(view)
+    view.send(:submission_path, submission.present? ? submission : { :id => 'DUMMY_ID' })
+  end
 end
 
 
@@ -306,7 +310,7 @@ class SubmissionsController < ApplicationController
 
   # This method will build a submission then redirect to the submission on completion
   def update
-    @presenter = SubmissionCreater.new(current_user, params[:submission])
+    @presenter = SubmissionCreater.new(current_user, :id => params[:id])
 
     @presenter.build_submission!
 

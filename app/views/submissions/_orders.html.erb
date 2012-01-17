@@ -1,3 +1,15 @@
+<script type="text/javascript">
+  (function($, undefined){
+   // Check for the SCAPE object.  This is the only place in the global
+   // namespace we should be storing things.
+   if (window.SCAPE == undefined) window.SCAPE = {};
+
+   SCAPE.user_project_names =  <%= stringify_array(@presenter.user_projects) %>;
+   })(jQuery);
+</script>
+
+<%= javascript_include_tag 'submissions' %>
+
 <ul id="orders">
 
   <li id="order-template" class="pane active">
@@ -10,7 +22,7 @@
       :prompt => "Please select a template..."
     %>
 
-
+    
     <div id="order-parameters" >
       <%= render :partial => 'order_fields' if @presenter.submission.present? %>
     </div>
@@ -46,8 +58,7 @@
 
 
   <li class="buttons">
-  <% form_for :submission, @presenter, :url => {:action => :update}  do |f| -%>
-    <%= f.hidden_field :id %>
+  <% form_for :submission, @presenter, :url => @presenter.url(self) , :html => { :id => 'build-form', :method => :put }   do |f| -%>
 
     <%= submit_tag "⚙ Build Submission",
       :id       => "start-submission",
@@ -57,3 +68,4 @@
  <% end -%>
   </li>
 </ul>
+
