@@ -26,8 +26,5 @@
       </table>
   </div>
 <% else %>
-<p>You currently don't have any submissions.</p>
-  <% if current_user.is_administrator? %>
-    <%= display_user_guide(I18n.t('submissions.no_submissions'), new_submission_path) %>
-  <% end %>
+  <p>You currently have no submissions in this state.</p>
 <% end %>
