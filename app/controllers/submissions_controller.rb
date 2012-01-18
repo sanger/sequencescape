@@ -39,6 +39,14 @@ class SubmissionsController < ApplicationController
     @ready = Submission.ready.find(:all, :limit => 10, :order => "created_at DESC", :conditions => { :user_id => current_user.id })
   end
 
+  def destroy
+      submission = SubmissionPresenter.new(current_user, :id => params[:id])
+      submission.destroy
+
+      flash[:notice] = "Submission successfully deleted!"
+      redirect_to :action => :index
+  end
+
   def show
     @presenter = SubmissionPresenter.new(current_user, :id => params[:id])
   end

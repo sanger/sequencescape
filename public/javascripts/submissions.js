@@ -314,6 +314,7 @@
            $('#add-order').removeAttr('disabled');
 
            if ($('.order.completed').length === 0) {
+             delete SCAPE.submission.id;
              $('#order-template').
                addClass('active').
                find('select, input').

@@ -250,5 +250,10 @@ class SubmissionPresenter < PresenterSkeleton
     @submission ||= Submission.find(id)
   end
 
+  # Deleting a Submission should also delete all associated Orders.
+  def destroy
+    submission.orders.destroy_all
+    submission.destroy
+  end
 end
 
