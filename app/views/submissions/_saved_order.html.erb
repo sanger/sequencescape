@@ -15,10 +15,21 @@
     <%= link_to(order.project.name, order.project, :target => "_blank") %>
   </h4>
 
-  <h4>
-    Asset Group:
-    <%= link_to(h(order.asset_group.name), study_asset_group_path(order.study, order.asset_group), :target => "_blank") %>
-  </h4>
+  <% if order.asset_group.present? -%>
+    <h4>
+      Asset Group:
+      <%= link_to(h(order.asset_group.name), study_asset_group_path(order.study, order.asset_group), :target => "_blank") %>
+    </h4>
+  <% elsif order.assets.present? -%>
+    <div class="sub-panel">
+      <h4>Assets:</h4>
+      <% order.assets.each do |asset| -%>
+        <%= link_to(asset.name, asset) %>
+      <% end -%>
+    </div>
+  <% else -%>
+    <h4>There are no assets in this order, it maybe damaged!</h4>
+  <% end -%>
 
   <%= "<p>#{order.comments}</p>" unless order.comments.nil? %>
 
