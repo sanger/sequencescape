@@ -43,13 +43,6 @@ class SubmissionsController < ApplicationController
     @presenter = SubmissionPresenter.new(current_user, :id => params[:id])
   end
 
-  # TODO: This looks like it's not used...?
-  def study
-    @study = Study.find(params[:id])
-    @submissions = @study.submissions
-
-  end
-
   ###################################################               AJAX ROUTES
   # TODO[sd9]: These AJAX routes could be re-factored
   def order_fields
