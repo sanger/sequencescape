@@ -69,7 +69,7 @@ module SubmissionsHelper
       asset_groups, :id, :name,
       { :prompt => prompt },
       {
-        :class => 'asset_group_id required',
+        :class => 'submission_asset_group_id required',
         :disabled => (asset_groups.size == 0)
       }
     )
@@ -83,12 +83,12 @@ module SubmissionsHelper
         edit_submission_path(submission)
       ) + button_to("Edit Submission", edit_submission_path(submission), :method => :get, :class => 'button')
     when 'pending' then
-      display_user_guide( "Your submission is currently pending.")
+      display_user_guide( "Your submission is currently pending.") +
       content_tag(:p, 'It should be processed approximately 10 minutes after you have submitted it, however sometimes this may take longer.')
     when 'processing' then
       display_user_guide("Your submission is currently being processed.  This should take no longer than five minutes.")
     when 'failed' then
-      h('<p>Your submission has failed:</p>' + "<p>#{submission.message}</p>")
+      h('<h2>Your submission has failed:</h2>' + "<p>#{submission.message}</p>")
     when 'ready'
       content_tag(:p, h('Your submission has been <strong>processed</strong>.'))
     else 
@@ -96,4 +96,7 @@ module SubmissionsHelper
     end 
   end
 
+  def order_sample_names(order)
+    order.assets.map(&:aliquots).flatten.map(&:sample).map(&:name).join(', ')
+  end
 end

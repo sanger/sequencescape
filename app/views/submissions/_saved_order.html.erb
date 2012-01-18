@@ -21,11 +21,9 @@
       <%= link_to(h(order.asset_group.name), study_asset_group_path(order.study, order.asset_group), :target => "_blank") %>
     </h4>
   <% elsif order.assets.present? -%>
+    <h4>Samples:</h4>
     <div class="sub-panel">
-      <h4>Assets:</h4>
-      <% order.assets.each do |asset| -%>
-        <%= link_to(asset.name, asset) %>
-      <% end -%>
+      <p><%= order_sample_names(order) %></p>
     </div>
   <% else -%>
     <h4>There are no assets in this order, it maybe damaged!</h4>

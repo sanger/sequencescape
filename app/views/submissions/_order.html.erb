@@ -25,7 +25,8 @@
       <td>
         <%= form.collection_select :plate_purpose_id,
           PlatePurpose.considered_stock_plate.all, :id, :name,
-          { :selected => PlatePurpose.stock_plate_purpose.id }
+          { :selected => PlatePurpose.stock_plate_purpose.id },
+          :class => 'submission_plate_purpose_id'
         %>
       </td>
       <th>
@@ -35,7 +36,7 @@
         <%= form.text_area :sample_names_text,
           :cols  => 40,
           :rows  => 4,
-          :class => "sample_names_text"
+          :class => "submission_sample_names_text"
         %>
       </td>
   </table>

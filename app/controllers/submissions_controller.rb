@@ -124,7 +124,7 @@ class SubmissionCreater < PresenterSkeleton
   private :create_order
 
   def order_params
-    @order_params[:multiplier] = {} if (@order_params && @order_params[:multiplier].nil?)
+    @order_params[:multiplier] = {} if @order_params && @order_params[:multiplier].nil?
     @order_params
   end
 
@@ -139,7 +139,7 @@ class SubmissionCreater < PresenterSkeleton
   # Return the submission's orders or a blank array
   def orders
     return [] unless submission.present?
-    submission.try(:orders).map {|o| OrderPresenter.new(o) }
+    submission.try(:orders).map { |o| OrderPresenter.new(o) }
   end
 
   def project
@@ -219,7 +219,10 @@ class SubmissionCreater < PresenterSkeleton
   def find_samples_from_text(sample_text)
     names = sample_text.lines.map(&:chomp).reject(&:blank?).map(&:strip)
 
-    samples = Sample.all(:include => :assets, :conditions => [ 'name IN (:names) OR sanger_sample_id IN (:names)', { :names => names } ])
+    samples = Sample.all(
+      :include => :assets,
+      :conditions => [ 'name IN (:names) OR sanger_sample_id IN (:names)', { :names => names } ]
+    )
 
     name_set  = Set.new(names)
     found_set = Set.new(samples.map { |s| [ s.name, s.sanger_sample_id ] }.flatten)

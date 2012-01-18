@@ -21,8 +21,8 @@
     },
 
     hasAssets : function() {
-      if (this.find('.asset_group_id').val() ||
-          this.find('.sample_names_text').val() ) {
+      if (this.find('.submission_asset_group_id').val() ||
+          this.find('.submission_sample_names_text').val() ) {
         return true;
       } else {
         return false;
@@ -153,11 +153,12 @@
     var currentPane = $(this).submission('currentPane');
     // refactor this little lot!
     SCAPE.submission.project_name                 = currentPane.find('.submission_project_name').val();
-    SCAPE.submission.asset_group_id               = currentPane.find('#submission_asset_group_id').val();
-    SCAPE.submission.sample_names_text            = currentPane.find('#submission_sample_names_text').val();
-    SCAPE.submission.plate_purpose_id             = currentPane.find('#submission_plate_purpose_id').val();
+    SCAPE.submission.asset_group_id               = currentPane.find('.submission_asset_group_id').val();
+    SCAPE.submission.sample_names_text            = currentPane.find('.submission_sample_names_text').val();
+    SCAPE.submission.plate_purpose_id             = currentPane.find('.submission_plate_purpose_id').val();
+    SCAPE.submission.comments                     = currentPane.find('.submission_comments').val();
     SCAPE.submission.lanes_of_sequencing_required = currentPane.find('.lanes_of_sequencing').val();
-    SCAPE.submission.comments                     = currentPane.find('#submission_comments').val();
+
 
     currentPane.ajaxError(function(event, jqXHR, ajaxSettings, thrownError) {
       currentPane.find('.project-details').html(jqXHR.responseText);
