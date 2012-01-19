@@ -1044,6 +1044,7 @@ ul#orders .errors li {
 	right: -18px;
 	text-align: center;
 	border-radius: 35px;
+	-moz-border-radius: 35px;
 	color: white;
 	text-shadow: 0 -1px 0 #002800;
 	box-shadow: 0 1px 3px #aaaaaa;
