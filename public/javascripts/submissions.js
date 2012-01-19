@@ -1,5 +1,7 @@
 // Submission workflow jQuery Plugin...
 (function($,undefined){
+  "use strict";
+
   var methods = {
     init : function(options) {
       return this;
