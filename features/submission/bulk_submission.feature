@@ -27,11 +27,25 @@ Feature: Bulk Submission
     Then I should see "Bulk submission successfully made"
     And I should see "Your submissions:"
     And the preordered quota for project "Test project" should be:
-        | RequestType                 | preordered | 
-        | Cherrypicking for Pulldown     | 10         | 
-        | Pulldown WGS                | 10          | 
-        | HiSeq Paired end sequencing | 1          | 
-    
+         | RequestType                 | preordered | 
+         | Cherrypicking for Pulldown  | 10         | 
+         | Pulldown WGS                | 10         | 
+         | HiSeq Paired end sequencing | 1          | 
+
+  Scenario: Uploading a valid file where the project has no quotas but quota is enforced
+    Given project "Test project" has enforced quotas
+      And project "Test project" has no quotas
+    When I upload a file with valid data for 1 submissions
+    Then I should see "There was a quota problem"
+
+  Scenario: Uploading a valid file where there is insufficent quota
+    Given project "Test project" has enforced quotas
+      And project "Test project" has 10 units of "Cherrypicking for Pulldown" quota
+      And project "Test project" has 2 units of "Pulldown WGS" quota
+      And project "Test project" has 1 units of "HiSeq Paired end sequencing" quota
+    When I upload a file with valid data for 1 submissions
+    Then I should see "Insufficient quota for Pulldown WGS"
+
   Scenario: Uploading a valid file with 2 submissions
     When I upload a file with valid data for 2 submissions
     Then I should see "Bulk submission successfully made"
