@@ -34,6 +34,17 @@ Given /^project "([^\"]*)" has enforced quotas$/ do |name|
   project.update_attributes!(:enforce_quotas => true)
 end
 
+Given /^project "([^\"]+)" has no quotas$/ do |name|
+  project = Project.find_by_name(name) or raise StandardError, "Cannot find project with name #{ name.inspect }"
+	project.quotas.clear
+end
+
+Given /^project "([^\"]+)" has (\d+) units of "([^\"]+)" quota$/ do |project_name, units, request_type_name|
+  project = Project.find_by_name(project_name) or raise StandardError, "Cannot find project with name #{ project_name.inspect }"
+	request_type = RequestType.find_by_name(request_type_name) or raise StandardError, "Cannot find request type #{request_type_name.inspect}"
+	project.add_quotas(request_type.id.to_s => units.to_i)
+end
+
 Given /^the project "([^\"]*)" has quotas and quotas are enforced$/ do |project|
   Given %Q(project "#{project}" has enough quotas)
   Given %Q(project "#{project}" has enforced quotas)
