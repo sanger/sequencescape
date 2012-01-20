@@ -4,7 +4,6 @@ Feature: Study creation with a checkbox for BAM file.
   Background:
    Given I am a "administrator" user logged in as "user"
    When I go to the homepage
-   Given a faculty sponsor called "Jack Sponsor" exists
 
 
   Scenario: A study is created with a BAM property as true

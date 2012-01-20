@@ -32,20 +32,22 @@ Feature: Manage a list of faculty sponsors
       And I am a "administrator" user logged in as "user"
       And I am on the faculty sponsor homepage
     Then the faculty sponsor index page should look like:
-      | Name       | Number of Studies |
-      | Adam Apple | 0                 |
-      | Barry Ball | 0                 |
-      | Conor Cone | 0                 |
+      | Name         | Number of Studies |
+      | Adam Apple   | 0                 |
+      | Barry Ball   | 0                 |
+      | Conor Cone   | 0                 |
+      | Jack Sponsor | 0                 |
       
     Given I create study "Big study" with faculty sponsor "Barry Ball"
       And I create study "Another Big study" with faculty sponsor "Barry Ball"
       And I create study "Small study" with faculty sponsor "Conor Cone"
       And I am on the faculty sponsor homepage
     Then the faculty sponsor index page should look like:
-      | Name       | Number of Studies |
-      | Adam Apple | 0                 |
-      | Barry Ball | 2                 |
-      | Conor Cone | 1                 |
+      | Name         | Number of Studies |
+      | Adam Apple   | 0                 |
+      | Barry Ball   | 2                 |
+      | Conor Cone   | 1                 |
+      | Jack Sponsor | 0                 |
 
     When I follow "View Barry Ball"
     Then the list of studies should be:
@@ -73,7 +75,6 @@ Feature: Manage a list of faculty sponsors
     
   @javascript
   Scenario: Update the faculty sponsor on an existing study
-    Given a faculty sponsor called "Jack Sponsor" exists
     Given I am a "administrator" user logged in as "user"
       And I have an active study called "Test study"
       And I am on the show page for study "Test study"

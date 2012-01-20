@@ -11,8 +11,12 @@ class Projects::Workflows::QuotasControllerTest < ActionController::TestCase
       @response   = ActionController::TestResponse.new
       @workflow   = Factory :submission_workflow
       @quota      = Factory :project_quota
-
-      Factory(:admin, :email => 'admin1@example.com')
+      
+      @admin = Role.find_by_name('administrator')
+      raise Exception, "No administrator role found, check seeds" if @admin==nil
+      Factory(:user, :email => 'admin1@example.com').roles << @admin
+      
+      #Factory(:admin, :email => 'admin1@example.com')
 
       user = Factory(:user, :workflow => @workflow)
       @controller.stubs(:current_user).returns(user)

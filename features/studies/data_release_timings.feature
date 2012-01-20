@@ -2,7 +2,6 @@
 Feature: Studies have timings for release of their data
   Background:
     Given I am an "administrator" user logged in as "John Smith"
-    Given a faculty sponsor called "Jack Sponsor" exists
 
     Given I am on the study creation page
     And I fill in "Study name" with "Testing data release strategies"

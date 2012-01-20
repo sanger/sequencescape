@@ -79,7 +79,7 @@ Feature: create a report on the current state of a study going through QC
 
   @delayed_job @admin
 	Scenario: Create a study report and check it appears in on the list
-	  Given I am a "administrator" user logged in as "admin"
+	  Given I am a "administrator" user logged in as "admin2"
 	  Given study "Study B" has a plate "1234567"
 	  Given I am on the Qc reports homepage
 		Then I should see "New report for"

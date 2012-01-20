@@ -81,8 +81,8 @@ if defined?(ActiveRecord::Base)
     # then you're certainly doing something wrong!
     require 'database_cleaner/active_record/truncation'
     class TruncateWithinReason < DatabaseCleaner::ActiveRecord::Truncation
-      def initialize
-        @seeded = determine_seeded_tables
+      def initialize(tables_to_unique_columns)
+        @seeded = determine_seeded_tables(standardise_unique_columns_for_tables(tables_to_unique_columns))
         super(:except => @seeded.keys)
       end
 
@@ -91,30 +91,56 @@ if defined?(ActiveRecord::Base)
         clean_seeded_tables
       end
 
-    private
+      # Ensures that there is a Hash which returns 'id' for undefined tables, otherwise it returns
+      # a specific case, including the 'schema_migration' table which should use 'version'.
+      def standardise_unique_columns_for_tables(tables_to_unique_columns)
+        Hash.new { |h,k| h[k] = 'id' }.tap do |standard_unique_columns|
+          standard_unique_columns['schema_migrations'] = 'version'
+          standard_unique_columns.merge!(tables_to_unique_columns)
+        end
+      end
+      private :standardise_unique_columns_for_tables
 
       # Determine all of the current rows in the seeded tables.  This way we can destroy any new rows
       # that are added by any scenarios after they have been run.  Note that "uniqueness" is done
       # based on specific columns for the tables, which may be the ID but might not for some tables.
-      def determine_seeded_tables
+      def determine_seeded_tables(tables_to_unique_columns)
         Hash[
           connection_klass.connection.select_all('SHOW TABLE STATUS WHERE Rows > 0').map do |row|
             table_name    = row['Name']
-            unique_column = (table_name == 'schema_migrations') ? 'version' : 'id'
-            unique_identifiers_in_table = connection_klass.connection.select_all("SELECT #{unique_column} FROM #{table_name}").map { |r| r[unique_column] }
-            unique_identifiers_in_table.blank? ? nil : [ table_name, "`#{unique_column}` NOT IN (#{ unique_identifiers_in_table.join(',') })" ]
+            unique_columns = Array(tables_to_unique_columns[table_name])
+
+            unique_identifiers_in_table = connection_klass.connection.select_all("SELECT #{unique_columns.join(',')} FROM #{table_name}").map do |results|
+              Hash[unique_columns.map { |unique_column| [unique_column, results[unique_column]] }]
+            end
+
+            if unique_identifiers_in_table.blank?
+              nil
+            elsif unique_columns.size == 1
+              [ table_name, "#{unique_columns.first} NOT IN (#{ unique_identifiers_in_table.map(&:values).flatten.join(',') })" ]
+            else
+              # There are multiple conditions for a row to be unique so we need to AND them, and then OR
+              # the conditions for each row to correctly identify what needs removing.
+              and_conditions = unique_identifiers_in_table.map { |single_row| "(#{single_row.map { |k,v| "#{k}=#{v}" }.join(" AND ")})" }
+              [ table_name, and_conditions.join(" OR ") ]
+            end
           end.compact
         ]
       end
+      private :determine_seeded_tables
 
       def clean_seeded_tables
         @seeded.each do |table, delete_conditions|
           connection_klass.connection.update("DELETE FROM `#{table}` WHERE #{delete_conditions}")
         end
       end
+      private :clean_seeded_tables
     end
-  
-    DatabaseCleaner.strategy = TruncateWithinReason.new
+
+    # Some of tables have, effectively, composite keys
+    DatabaseCleaner.strategy = TruncateWithinReason.new(
+      'roles_users' => [ 'role_id', 'user_id' ]
+    )
   rescue LoadError => ignore_if_database_cleaner_not_present
   end
 end

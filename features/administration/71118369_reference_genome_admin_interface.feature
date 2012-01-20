@@ -36,7 +36,6 @@ Feature: Add interface to update reference genomes
 
   @javascript
   Scenario: Can I see and add a reference genome when creating a study
-    Given a faculty sponsor called "Jack Sponsor" exists
     Given a reference genome table
     Then I should see "Studies"
     When I follow "Studies"

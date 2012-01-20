@@ -6,7 +6,6 @@ Feature: I wish to create samples and push them all the way through QC in SLF
     Given I am a "administrator" user logged in as "user"
     And the "96 Well Plate" barcode printer "xyz" exists
     Given user "jack" exists with barcode "ID100I"
-    Given a faculty sponsor called "Jack Sponsor" exists
 
     # NOTE: The first barcode is used for all of the child plates, except one, but the code still
     # seems to need the additional barcodes for some reason.  Can't quite work that one out at the
