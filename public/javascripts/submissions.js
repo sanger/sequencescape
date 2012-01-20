@@ -104,7 +104,7 @@
               currentPane.submission('markPaneComplete'):
               currentPane.submission('markPaneIncomplete');
 
-            $('#order-parameters').slideDown();
+            $('#order-parameters').show(500);
           }
         );
         return true;
