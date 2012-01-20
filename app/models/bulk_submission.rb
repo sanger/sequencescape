@@ -88,14 +88,20 @@ class BulkSubmission < ActiveRecord::Base
       ActiveRecord::Base.transaction do
         submission_details.each do |submissions|
           submissions.each do |submission_name,orders|
-            if (user = User.find_by_login(orders.first["user login"]))
+            user = User.find_by_login(orders.first['user login'])
+            if user.nil?
+              errors.add :spreadsheet, "Cannot find user #{orders.first["user login"].inspect}"
+              next
+            end
+
+            begin
               submission = Submission.create!(:name=>submission_name, :user => user, :orders => orders.map(&method(:prepare_order)).compact)
               submission.built!
               # Collect successful submissions
               @submission_ids << submission.id
               @completed_submissions[submission.id] = "Submission #{submission.id} built (#{submission.orders.count} orders)"
-            else
-              errors.add :spreadsheet, "Cannot find user #{orders.first["user login"].inspect}"
+            rescue Quota::Error => exception
+              errors.add :spreadsheet, "There was a quota problem: #{exception.message}"
             end
           end
         end
@@ -219,11 +225,6 @@ class BulkSubmission < ActiveRecord::Base
     rescue => exception
       errors.add :spreadsheet, "There was a problem on row(s) #{details['rows']}: #{exception.message}"
       nil
-
-    rescue QuotaException => exception
-      errors.add :spreadsheet, "There was a quota problem: #{exception.message}"
-      nil
-
     end
   end
 
