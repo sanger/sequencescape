@@ -53,6 +53,7 @@ a:visited {
   background: rgba(0, 69, 120,0.5);
   color: #fff;
   text-shadow:-1px 1px 1px rgba(102, 106, 109,1);
+  behavior: url(/stylesheets/PIE.htc);
 }
 
 #tabs ul {
@@ -64,11 +65,13 @@ a:visited {
   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(100%, #aad4f4), color-stop(0%, #8CBCDF));
   background-image: -moz-linear-gradient(top, #aad4f4 0%, #8CBCDF 100%);
   background-image: linear-gradient(top, #aad4f4 0%, #8CBCDF 100%);
+  -pie-background: linear-gradient(#aad4f4, #8CBCDF);
   clear:both;
   font-size: 12px;
   -moz-box-shadow: 1px 1px 2px 0 #C3CEDA;
   box-shadow: 1px 1px 2px 0 #C3CEDA;
   border-bottom: 1px solid #bbb;
+  behavior: url(/stylesheets/PIE.htc);
 }
 
 #tab_content {
@@ -131,21 +134,27 @@ body #header {  /* Covers all environments not specifically identified (purples)
   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(100%, #492255), color-stop(0%, #603E7D));
   background-image: -moz-linear-gradient(top, #613976 0%, #492255 100%);
   background-image: linear-gradient(top, #603E7D 0%, #492255 100%);
+  -pie-background: linear-gradient(#603E7D , #492255);
   color: #fff;
+  behavior: url(/stylesheets/PIE.htc);
 }
 body.production #header {  /* Specific for production environment (blues) */
   background: #3e87b3;
   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(100%, #004578), color-stop(0%, #006BAF));
   background-image: -moz-linear-gradient(top, #006BAF 0%, #004578 100%);
   background-image: linear-gradient(top, #006BAF 0%, #004578 100%);
+  -pie-background: linear-gradient(#006BAF, #004578);
   color: #fff;
+  behavior: url(/stylesheets/PIE.htc);
 }
 body.production.failover #header {  /* Specific for production failover environment (blues) */
   background: #DF5D12;
   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(100%, #712106), color-stop(0%, #AF380C));
   background-image: -moz-linear-gradient(top, #A33C0C 0%, #712106 100%);
   background-image: linear-gradient(top, #AF380C 0%, #712106 100%);
+  -pie-background: linear-gradient(#AF380C, #712106);
   color: #fff;
+  behavior: url(/stylesheets/PIE.htc);
 }
 
 #header ul {
@@ -253,6 +262,7 @@ box-shadow: 1px 1px 2px #C3CEDA;
 -moz-box-shadow: 1px 1px 2px 0 #C3CEDA;
 margin: 0 0 3px 0;
 color: white;
+  behavior: url(/stylesheets/PIE.htc);
 }
 #message_warning {
 background: yellow;
@@ -329,6 +339,7 @@ color: #E85C00;
 
   box-shadow: 0 1px 5px #D6E1EE;
   -moz-box-shadow: 0 1px 5px #D6E1EE;
+  behavior: url(/stylesheets/PIE.htc);
 }
 
 .callout p {
@@ -349,6 +360,7 @@ color: #E85C00;
   color: #222931;
   padding: 5px;
   font-size: 12px;
+  behavior: url(/stylesheets/PIE.htc);
 }
 .center {
 text-align: center;
@@ -365,17 +377,21 @@ border: 2px solid #FC6;
 background: white;
 -moz-border-radius: 3px;
 -webkit-border-radius: 3px;
+border-radius: 3px;
 width: 200px;
 padding: 2px;
 margin: 2px;
+  behavior: url(/stylesheets/PIE.htc);
 }
 
 .flash {
   background: #6CF;
   -moz-border-radius-topright: 3px;
   -webkit-border-top-right-radius: 3px;
+  border-top-right-radius: 3px;
   -moz-border-radius-topleft: 3px;
   -webkit-border-top-left-radius: 3px;
+  border-top-left-radius: 3px;
   border-top: 1px solid #57B2DF;
   border-left: 1px solid #57B2DF;
   border-right: 1px solid #57B2DF;
@@ -385,6 +401,7 @@ margin: 2px;
   display: block;
   line-height: 16px;
   font-size: 12px;
+  behavior: url(/stylesheets/PIE.htc);
 }
 
 .helper {
@@ -402,6 +419,7 @@ padding-left: 12px;
   border: 1px solid #FC6;
   color: #A65200;
   margin-bottom: 15px;
+  behavior: url(/stylesheets/PIE.htc);
 }
 
 .info {
@@ -715,6 +733,7 @@ background-color: #FFBCC2;
 -moz-border-radius: 5px;
 -webkit-border-radius: 5px;
 border-radius: 5px;
+  behavior: url(/stylesheets/PIE.htc);
 }
 div#available {
 border: 2px solid #2FB81B;
@@ -722,6 +741,7 @@ background-color: #C5FFCB;
 -moz-border-radius: 5px;
 -webkit-border-radius: 5px;
 border-radius: 5px;
+  behavior: url(/stylesheets/PIE.htc);
 }
 
 table.bed_verification{
@@ -854,21 +874,14 @@ background-color: #F5A9D0;
 .new-plate {
   -moz-box-shadow:    gray 0 1px 6px;
   -webkit-box-shadow: gray 0 1px 6px;
-  -o-box-shadow:      gray 0 1px 6px;
   box-shadow:         gray 0 1px 6px;
 
   -moz-border-radius:    15px;
   -webkit-border-radius: 15px;
-  -o-border-radius:      15px;
-  -ms-border-radius:     15px;
-  -khtml-border-radius:  15px;
   border-radius:         15px;
 
   -moz-border-radius-topleft:     0;
   -webkit-border-top-left-radius: 0;
-  -o-border-top-left-radius:      0;
-  -ms-border-top-left-radius:     0;
-  -khtml-border-top-left-radius:  0;
   border-top-left-radius:         0;
 
   /* Use transparency for the background color or FF ridge will look bad... */
@@ -878,6 +891,7 @@ background-color: #F5A9D0;
   background: #003557;
   padding: 0px;
   color: #fff;
+  behavior: url(/stylesheets/PIE.htc);
 }
 
 .new-plate th {
@@ -897,10 +911,8 @@ background-color: #F5A9D0;
   background: radial-gradient(top left, #002a46, #003353);
   -moz-border-radius: 7px;
   -webkit-border-radius: 7px;
-  -o-border-radius: 7px;
-  -ms-border-radius: 7px;
-  -khtml-border-radius: 7px;
   border-radius: 7px;
+  behavior: url(/stylesheets/PIE.htc);
 }
 
 .new-plate select {
@@ -998,9 +1010,11 @@ ul#orders li.pane {
   border: 4px solid #014f93;
   border-radius: 15px;
   -moz-border-radius: 15px;
+  -webkit-border-radius: 15px;
   opacity: 0.2;
   text-align: left;
   background: #fff;
+  behavior: url(/stylesheets/PIE.htc);
 }
 
 ul#orders li.pane .button {
@@ -1014,7 +1028,7 @@ ul#orders li.order .save-buttons {
 
 
 ul#orders li.completed {
-	border-color: hsl(121, 98%, 24%);
+	border-color: #017903;
 	background: #EBFFEB;
 	color:#017802;
   opacity: 0.6;
@@ -1051,10 +1065,12 @@ ul#orders .errors li {
 	-moz-transition:    all 0.3s ease-in-out 0s;
   -webkit-transition: all 0.3s ease-in-out 0s;
   transition:         all 0.3s ease-in-out 0s;
+  font-family: 'MS Mincho';
+  behavior: url(/stylesheets/PIE.htc);
 }
 
 ul#orders li.completed span.completed {
-	background:	hsl(120, 59%, 35%);
+	background:	#017903;
   background: -moz-radial-gradient(top left, cover, hsl(120, 59%, 35%) 0%, hsl(120, 59%, 12%) 100%);
   background: -webkit-radial-gradient(top left, cover, hsl(120, 59%, 35%) 0%, hsl(120, 59%, 12%) 100%);
 
@@ -1089,13 +1105,16 @@ ul#orders ul.sub-panel {
 
 ul#orders ul.sub-panel li {
   opacity: 1;
-  border: 2px solid hsl(0, 0%, 86%);
+  border: 2px solid #DBDBDB;
   margin: 10px 0;
   border-radius: 8px;
+  -moz-border-radius: 8px;
+
 
   padding: 15px;
   list-style: none outside none;
   position: relative;
+  behavior: url(/stylesheets/PIE.htc);
 }
 
 #orders ul.sub-panel .assets {
@@ -1158,7 +1177,7 @@ ul#orders > li.buttons {
   background-color:#00498C;
   -moz-border-radius:6px;
   -webkit-border-radius:6px;
-  border-radius: 8px;
+  border-radius: 6px;
   border:1px solid #002C5C;
   display:inline-block;
   color:#ffffff;
@@ -1170,10 +1189,11 @@ ul#orders > li.buttons {
   -moz-transition:    all 0.5s ease-in-out 0s;
   -webkit-transition: all 0.5s ease-in-out 0s;
   transition:         all 0.5s ease-in-out 0s;
+  behavior: url(/stylesheets/PIE.htc);
 }
 
 .button:hover {
-  color: hsl(61, 64%, 73%);
+  color: #E5E68E;
   background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #00498C), color-stop(1, #004390) );
   background:-moz-linear-gradient( center top, #00498C 5%, #004390 100% );
 }
@@ -1185,7 +1205,7 @@ ul#orders > li.buttons {
 }
 
 .button.final:hover {
-  color: hsl(56, 32%, 97%);
+  color: #FAF9F5;
   background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, hsl(102, 100%, 14%)), color-stop(1, hsl(120, 100%, 16%)) );
   background: -moz-linear-gradient( center top, hsl(102, 100%, 14%) 5%, hsl(120, 100%, 16%) 100% );
   background-color: #1C7C00;
@@ -1198,9 +1218,10 @@ ul#orders > li.buttons {
   background:#ACACAC;
 
   border-color:#6E6E6E;
-  text-shadow:0px 0px 0px #528ecc;
+  text-shadow:none;
   color: #ddd;
   opacity: 0.2;
+  behavior: url(/stylesheets/PIE.htc);
 }
 
 .button[disabled]:hover {
@@ -1302,6 +1323,7 @@ background-color: orange;
   border: 1px solid #C0C0C0;
   background:#F4F4F4;
   background-image: -moz-linear-gradient(top,#F2F2F2,#fff, #F2F2F2);
+  behavior: url(/stylesheets/PIE.htc);
 }
 
 div.characterisation {
@@ -1316,6 +1338,7 @@ div.characterisation {
   background: #EBF4FF;
   background-image: -moz-linear-gradient(top,#DFE7EF,#F1F8FF, #DFE7EF);
   color: #3F3F3F;
+  behavior: url(/stylesheets/PIE.htc);
 }
 
 div.characterisation h2 {
@@ -1327,6 +1350,7 @@ div.characterisation fieldset{
   -webkit-border-radius: 3px;
   border-radius: 3px;
   border: 1px solid #C0C0C0;
+  behavior: url(/stylesheets/PIE.htc);
 }
 
 #activity-logging {
