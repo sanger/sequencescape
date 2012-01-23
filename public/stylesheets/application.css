@@ -900,6 +900,7 @@ background-color: #F5A9D0;
 
 .new-plate .well {
   height: 15px;
+  min-width: 60px;
   padding:  15px 1px 15px 1px;
   text-align: center;
   border: 1px ridge rgba(5, 19, 40, 0.1);
@@ -1114,7 +1115,6 @@ ul#orders ul.sub-panel li {
   padding: 15px;
   list-style: none outside none;
   position: relative;
-  behavior: url(/stylesheets/PIE.htc);
 }
 
 #orders ul.sub-panel .assets {
@@ -1175,6 +1175,7 @@ ul#orders > li.buttons {
   background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #0066B8), color-stop(1, #00498C) );
   background:-moz-linear-gradient( center top, #0066B8 5%, #00498C 100% );
   background-color:#00498C;
+  position: relative;
   -moz-border-radius:6px;
   -webkit-border-radius:6px;
   border-radius: 6px;
