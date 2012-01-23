@@ -104,3 +104,6 @@ class SubmissionTemplate < ActiveRecord::Base
     end
   end
 end
+
+# SubmissionTemplate is really OrderTemplate, and the only place that actually cares is the API, so alias
+OrderTemplate = SubmissionTemplate
