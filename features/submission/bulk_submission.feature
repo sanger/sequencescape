@@ -38,6 +38,14 @@ Feature: Bulk Submission
     When I upload a file with valid data for 1 submissions
     Then I should see "There was a quota problem"
 
+  Scenario: Uploading a valid file with bait library specified should set the bait library name
+    Given I have a sample tube called "testing123"
+      And the sample in sample tube "testing123" is registered under the study "abc123_study"
+    When I upload a file with 2 valid SC submissions
+    Then I should see "Your submissions:"
+     And there should be an order with the bait library name set to "Bait library 1"
+     And there should be an order with the bait library name set to "Bait library 2"
+
   Scenario: Uploading a valid file where there is insufficent quota
     Given project "Test project" has enforced quotas
       And project "Test project" has 10 units of "Cherrypicking for Pulldown" quota
