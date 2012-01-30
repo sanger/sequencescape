@@ -82,6 +82,7 @@ LibraryCreationPipeline.create!(:name => 'Library preparation') do |pipeline|
   pipeline.location = Location.first(:conditions => { :name => 'Library creation freezer' }) or raise StandardError, "Cannot find 'Library creation freezer' location"
 
   pipeline.request_type = RequestType.create!(:workflow => next_gen_sequencing, :key => 'library_creation', :name => 'Library creation') do |request_type|
+    request_type.billable          = true
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'SampleTube'
     request_type.order             = 1
@@ -117,6 +118,7 @@ MultiplexedLibraryCreationPipeline.create!(:name => 'MX Library Preparation [NEW
   pipeline.location = Location.first(:conditions => { :name => 'Library creation freezer' }) or raise StandardError, "Cannot find 'Library creation freezer' location"
 
   pipeline.request_type = RequestType.create!(:workflow => next_gen_sequencing, :key => 'multiplexed_library_creation', :name => 'Multiplexed library creation') do |request_type|
+    request_type.billable          = true
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'SampleTube'
     request_type.order             = 1
@@ -152,6 +154,7 @@ PulldownLibraryCreationPipeline.create!(:name => 'Pulldown library preparation')
   pipeline.location = Location.first(:conditions => { :name => 'Library creation freezer' }) or raise StandardError, "Cannot find 'Library creation freezer' location"
 
   pipeline.request_type = RequestType.create!(:workflow => next_gen_sequencing, :key => 'pulldown_library_creation', :name => 'Pulldown library creation') do |request_type|
+    request_type.billable          = true
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'SampleTube'
     request_type.order             = 1
@@ -176,6 +179,7 @@ PulldownLibraryCreationPipeline.create!(:name => 'Pulldown library preparation')
 end
 
 cluster_formation_se_request_type = RequestType.create!(:workflow => next_gen_sequencing, :key => 'single_ended_sequencing', :name => 'Single ended sequencing') do |request_type|
+  request_type.billable          = true
   request_type.initial_state     = 'pending'
   request_type.asset_type        = 'LibraryTube'
   request_type.order             = 2
@@ -266,6 +270,7 @@ end.tap do |pipeline|
 end
 
 single_ended_hi_seq_sequencing = RequestType.create!(:workflow => next_gen_sequencing, :key => 'single_ended_hi_seq_sequencing', :name => 'Single ended hi seq sequencing') do |request_type|
+  request_type.billable          = true
   request_type.initial_state     = 'pending'
   request_type.asset_type        = 'LibraryTube'
   request_type.order             = 2
@@ -328,6 +333,7 @@ end.tap do |pipeline|
 end
 
 cluster_formation_pe_request_type = RequestType.create!(:workflow => next_gen_sequencing, :key => 'paired_end_sequencing', :name => 'Paired end sequencing') do |request_type|
+  request_type.billable          = true
   request_type.initial_state     = 'pending'
   request_type.asset_type        = 'LibraryTube'
   request_type.order             = 2
@@ -480,6 +486,7 @@ SequencingPipeline.create!(:name => 'HiSeq Cluster formation PE (no controls)') 
   pipeline.location        = Location.first(:conditions => { :name => 'Cluster formation freezer' }) or raise StandardError, "Cannot find 'Cluster formation freezer' location"
 
   pipeline.request_type = RequestType.create!(:workflow => next_gen_sequencing, :key => 'hiseq_paired_end_sequencing', :name => 'HiSeq Paired end sequencing') do |request_type|
+    request_type.billable          = true
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'LibraryTube'
     request_type.order             = 2
@@ -639,6 +646,7 @@ PulldownMultiplexLibraryPreparationPipeline.create!(:name => 'Pulldown Multiplex
   pipeline.location = Location.first(:conditions => { :name => 'Pulldown freezer' }) or raise StandardError, "Cannot find 'Pulldown freezer' location"
 
   pipeline.request_type = RequestType.create!(:workflow => next_gen_sequencing, :key => 'pulldown_multiplexing', :name => 'Pulldown Multiplex Library Preparation') do |request_type|
+    request_type.billable          = true
     request_type.asset_type        = 'Well'
     request_type.target_asset_type = 'PulldownMultiplexedLibraryTube'
     request_type.order             = 1
@@ -741,6 +749,7 @@ set_pipeline_flow_to('PacBio Sample Prep' => 'PacBio Sequencing')
     pipeline.location   = Location.find_by_name('Pulldown freezer') or raise StandardError, "Pulldown freezer does not appear to exist!"
 
     pipeline.request_type = RequestType.create!(:workflow => next_gen_sequencing, :name => pipeline_name) do |request_type|
+      request_type.billable          = true
       request_type.key               = pipeline_name.downcase.gsub(/\s+/, '_')
       request_type.initial_state     = 'pending'
       request_type.asset_type        = 'Well'
