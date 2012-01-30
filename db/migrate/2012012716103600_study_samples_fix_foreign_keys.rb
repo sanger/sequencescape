@@ -1,7 +1,7 @@
-# 2012012716103600_study_sample_constraint_dml.rb
+# 2012012716103600_study_samples_fix_foreign_keys.rb
 # samples and studies that have disappeared
 
-class FixStudySamplesAddForeignKeys < ActiveRecord::Migration
+class StudySamplesFixForeignKeys < ActiveRecord::Migration
 def self.up
   	execute "UPDATE study_samples SET study_id = (SELECT id FROM studies WHERE name = 'Example project') WHERE study_id IN (4, 36)";
 		execute "UPDATE study_samples SET sample_id = (SELECT id FROM samples WHERE name = 'Example sample') WHERE sample_id IN (3396, 3447, 3448, 3466,  3467,  29775, 29777,  29779)";
