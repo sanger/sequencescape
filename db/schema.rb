@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120111142240) do
+ActiveRecord::Schema.define(:version => 2012012716103615) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -206,7 +206,6 @@ ActiveRecord::Schema.define(:version => 20120111142240) do
 
   add_index "batch_requests", ["batch_id"], :name => "index_batch_requests_on_batch_id"
   add_index "batch_requests", ["request_id"], :name => "index_batch_requests_on_request_id"
-  add_index "batch_requests", ["request_id"], :name => "request_id", :unique => true
   add_index "batch_requests", ["updated_at"], :name => "index_batch_requests_on_updated_at"
 
   create_table "batches", :force => true do |t|
@@ -515,7 +514,7 @@ ActiveRecord::Schema.define(:version => 20120111142240) do
   add_index "maps", ["description"], :name => "index_maps_on_description"
 
   create_table "orders", :force => true do |t|
-    t.integer  "study_id"
+    t.integer  "study_id",                        :null => false
     t.integer  "workflow_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -526,7 +525,7 @@ ActiveRecord::Schema.define(:version => 20120111142240) do
     t.text     "request_types"
     t.text     "request_options"
     t.text     "comments"
-    t.integer  "project_id"
+    t.integer  "project_id",                      :null => false
     t.string   "sti_type"
     t.string   "template_name"
     t.integer  "asset_group_id"
@@ -534,6 +533,7 @@ ActiveRecord::Schema.define(:version => 20120111142240) do
     t.integer  "submission_id"
   end
 
+  add_index "orders", ["project_id"], :name => "fk_orders_on_project_id"
   add_index "orders", ["state_to_delete"], :name => "index_submissions_on_state"
   add_index "orders", ["study_id"], :name => "index_submissions_on_project_id"
 
@@ -1075,8 +1075,8 @@ ActiveRecord::Schema.define(:version => 20120111142240) do
   add_index "study_reports", ["user_id"], :name => "index_study_reports_on_user_id"
 
   create_table "study_samples", :force => true do |t|
-    t.integer "study_id"
-    t.integer "sample_id"
+    t.integer "study_id",  :null => false
+    t.integer "sample_id", :null => false
   end
 
   add_index "study_samples", ["sample_id"], :name => "index_project_samples_on_sample_id"
