@@ -10,18 +10,15 @@ Feature: Create a submission for the pacbio pipeline
     Given I am on the show page for study "Test study"
     Given the plate barcode webservice returns "99999"
 
-  @worksheet
+  @worksheet @old_submission @wip
   Scenario Outline: Valid submission with different options
-    When I follow "Create Submission"
-    When I select "PacBio" from "Template"
-    And I press "Next"
-    When I select "Test study" from "Select a study"
-    When I select "Test project" from "Select a financial project"
-    And I select "Test study group" from "Select a group to submit"
-    And I select "<insert_size>" from "Insert size"
-    And I select "<sequencing_type>" from "Sequencing type"
-    And I fill in "Multiplier for step 2" with "<number_of_smart_cells>"
-    And I create the order and submit the submission
+   When I have a "PacBio" submission with the following setup:
+        |Study | Test study |
+        | Project | Test project |
+        | Asset Group | Test study group |
+        | Insert size | <insert_size> |
+        | Sequencing type | <sequencing_type> |
+        | multiplier#2 |  <smart_cells_requested> |
     Given 1 pending delayed jobs are processed
     Then I should have <number_of_smart_cells> PacBioSequencingRequests
     Given I am on the show page for pipeline "PacBio Sample Prep"
@@ -98,16 +95,13 @@ Feature: Create a submission for the pacbio pipeline
     And the PacBioSamplePrepRequests for "111" should be "failed"
 
   Scenario Outline: The number of SMRTcells that can be made is less than the number requested
-    When I follow "Create Submission"
-    When I select "PacBio" from "Template"
-    And I press "Next"
-    When I select "Test study" from "Select a study"
-    When I select "Test project" from "Select a financial project"
-    And I select "Test study group" from "Select a group to submit"
-    And I select "250" from "Insert size"
-    And I select "Standard" from "Sequencing type"
-    And I fill in "Multiplier for step 2" with "<smart_cells_requested>"
-    And I create the order and submit the submission
+   When I have a "PacBio" submission with the following setup:
+        |Study | Test study |
+        | Project | Test project |
+        | Asset Group | Test study group |
+        | Insert size | 250 |
+        | Sequencing type | Standard |
+        | multiplier#2 |  <smart_cells_requested> |
     Given 1 pending delayed jobs are processed
     Given I am on the show page for pipeline "PacBio Sample Prep"
     When I check "Select SampleTube 111 for batch"

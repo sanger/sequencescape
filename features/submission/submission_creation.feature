@@ -1,4 +1,4 @@
-@javascript @submission
+@javascript @submission @wip @old_submission
 Feature: Submission creation
   So that biological work can be requested
   And tracked by users, managers and administrative staff

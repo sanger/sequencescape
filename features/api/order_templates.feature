@@ -16,6 +16,12 @@ Feature: Access order templates through the API
     Given no order templates exist
 
   @read
+  Scenario: Reading all of the order templates that the system has
+    Given an order template called "Simple sequencing" with UUID "00000000-1111-2222-3333-444444444444"
+    When I GET the API path "/order_templates"
+    Then the HTTP response should be "200 OK"
+
+  @read
   Scenario: Reading the JSON for a UUID
     Given an order template called "Simple sequencing" with UUID "00000000-1111-2222-3333-444444444444"
 

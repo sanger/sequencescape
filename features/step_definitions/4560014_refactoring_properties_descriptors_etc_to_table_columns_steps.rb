@@ -75,6 +75,12 @@ Given /^the project "([^\"]+)" has no "([^\"]+)" quota$/ do |name, type|
   project.quotas.delete(*project.quotas.all(:conditions => { :request_type_id => request_type.id }))
 end
 
+Given /^the sample in sample tube "([^\"]+)" is registered under the study "([^\"]+)"$/ do |tube_name, study_name|
+  tube = SampleTube.find_by_name(tube_name) or raise StandardError, "Cannot find sample tube #{tube_name.inspect}"
+  study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
+  study.samples << tube.aliquots.map(&:sample)
+end
+
 Given /^the study "([^\"]+)" has an asset group of (\d+) samples called "([^\"]+)"$/ do |study_name, count, group_name|
   When %Q{the study "#{study_name}" has an asset group of #{count} samples in "sample tube" called "#{group_name}"}
 end
