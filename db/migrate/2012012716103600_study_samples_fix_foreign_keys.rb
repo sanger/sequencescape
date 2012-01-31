@@ -1,19 +1,20 @@
-# 2012012716103600_study_samples_fix_foreign_keys.rb
-# samples and studies that have disappeared
-
 class StudySamplesFixForeignKeys < ActiveRecord::Migration
 def self.up
-  	execute "UPDATE study_samples SET study_id = (SELECT id FROM studies WHERE name = 'Example project') WHERE study_id IN (4, 36)";
-		execute "UPDATE study_samples SET sample_id = (SELECT id FROM samples WHERE name = 'Example sample') WHERE sample_id IN (3396, 3447, 3448, 3466,  3467,  29775, 29777,  29779)";
-		execute "ALTER TABLE study_samples MODIFY column study_id int(11) NOT NULL";
-		execute "ALTER TABLE study_samples MODIFY column sample_id int(11) NOT NULL";
+  	#execute "UPDATE study_samples SET study_id = (SELECT id FROM studies WHERE name = 'Example project') WHERE sample_id = 457";
+		#execute "UPDATE study_samples SET sample_id = (SELECT id FROM samples WHERE name = 'Example sample') WHERE study_id  = 85";
+    ActiveRecord::Base.transaction do
+      StudySample.find_by_id(1).update_attributes!(:study_id => 85)
+      StudySample.find_by_id(1119669).update_attributes(:sample_id => 457)
+    end
   end
 
   def self.down
-		execute "ALTER TABLE study_samples MODIFY column study_id int(11) DEFAULT NULL";
-		execute "ALTER TABLE study_samples MODIFY column sample_id int(11) DEFAULT NULL";
-  	execute "UPDATE study_samples SET study_id = NULL WHERE study_id IN (4, 36)";
-		execute "UPDATE study_samples SET sample_id = NULL WHERE sample_id IN (3396, 3447, 3448, 3466,  3467,  29775, 29777,  29779)";
+  	#execute "UPDATE study_samples SET study_id = 0 WHERE sample_id = 457";
+		#execute "UPDATE study_samples SET sample_id = 0 WHERE study_id = 85";
+    ActiveRecord::Base.transaction do
+      StudySample.find_by_id(1).update_attributes!(:study_id => 0)
+      StudySample.find_by_id(1119669).update_attributes!(:sample_id => 0)
+    end
   end
 end
 
