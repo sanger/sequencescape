@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 2012012716103615) do
+ActiveRecord::Schema.define(:version => 2012012716103617) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -206,6 +206,7 @@ ActiveRecord::Schema.define(:version => 2012012716103615) do
 
   add_index "batch_requests", ["batch_id"], :name => "index_batch_requests_on_batch_id"
   add_index "batch_requests", ["request_id"], :name => "index_batch_requests_on_request_id"
+  add_index "batch_requests", ["request_id"], :name => "request_id", :unique => true
   add_index "batch_requests", ["updated_at"], :name => "index_batch_requests_on_updated_at"
 
   create_table "batches", :force => true do |t|
@@ -455,6 +456,12 @@ ActiveRecord::Schema.define(:version => 2012012716103615) do
   add_index "items", ["workflow_id"], :name => "index_items_on_workflow_id"
   add_index "items", ["workflow_sample_id"], :name => "index_items_on_sample_id"
 
+  create_table "keep_study_samples", :id => false, :force => true do |t|
+    t.integer "id",        :default => 0, :null => false
+    t.integer "study_id"
+    t.integer "sample_id"
+  end
+
   create_table "lab_events", :force => true do |t|
     t.text     "description"
     t.text     "descriptors"
@@ -667,7 +674,7 @@ ActiveRecord::Schema.define(:version => 2012012716103615) do
   end
 
   create_table "project_metadata", :force => true do |t|
-    t.integer "project_id"
+    t.integer "project_id",                                   :null => false
     t.string  "project_cost_code"
     t.string  "funding_comments"
     t.string  "collaborators"
@@ -1322,13 +1329,6 @@ ActiveRecord::Schema.define(:version => 2012012716103615) do
     t.string  "descendant_uuid",        :limit => 36
     t.integer "descendant_internal_id"
     t.string  "descendant_type",        :limit => 50
-  end
-
-  create_table "view_genotyping_statuses", :id => false, :force => true do |t|
-    t.integer "sample_internal_id"
-    t.string  "sample_uuid",             :limit => 36
-    t.string  "genotyping_status"
-    t.string  "genotyping_snp_plate_id"
   end
 
   create_table "view_lanes", :id => false, :force => true do |t|
