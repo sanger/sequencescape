@@ -3,7 +3,9 @@ class RequestQuota < ActiveRecord::Base ; end
 
 class RemoveBadRecordsInRequestQuotas < ActiveRecord::Migration
   def self.up
-    ActiveRecord::Base.trascaction do
+    ActiveRecord::Base.transaction do
+      say 'Removing broken join records from request_quotas table...'
+
       bad_request_quotas = RequestQuota.find_by_sql(<<END_OF_SQL
 select request_quotas.*, requests.id as missing_id
 from request_quotas
