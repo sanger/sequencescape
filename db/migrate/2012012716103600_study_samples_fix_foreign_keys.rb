@@ -1,20 +1,11 @@
 class StudySamplesFixForeignKeys < ActiveRecord::Migration
 def self.up
-  	#execute "UPDATE study_samples SET study_id = (SELECT id FROM studies WHERE name = 'Example project') WHERE sample_id = 457";
-		#execute "UPDATE study_samples SET sample_id = (SELECT id FROM samples WHERE name = 'Example sample') WHERE study_id  = 85";
-    ActiveRecord::Base.transaction do
-      StudySample.find_by_id(1).update_attributes!(:study_id => 85)
-      StudySample.find_by_id(1119669).update_attributes(:sample_id => 457)
-    end
-  end
+    execute "CREATE TABLE keep_study_samples AS SELECT *  FROM study_samples WHERE id IN (2, 163, 2750, 2786, 2787, 2797, 2798, 21063, 21065, 21067)"
+    execute "DELETE from study_samples where id in (1, 2, 163, 2750, 2786, 2787, 2797, 2798, 21063, 21065, 21067, 1119669)"
+end
 
   def self.down
-  	#execute "UPDATE study_samples SET study_id = 0 WHERE sample_id = 457";
-		#execute "UPDATE study_samples SET sample_id = 0 WHERE study_id = 85";
-    ActiveRecord::Base.transaction do
-      StudySample.find_by_id(1).update_attributes!(:study_id => 0)
-      StudySample.find_by_id(1119669).update_attributes!(:sample_id => 0)
-    end
+  	raise ActiveRecord::IrreversibleMigration, "The deleted study_sample rows are in the table keep_study_samples, but note that they cannot be put back in without altering the ids relied upon by this migration"
   end
 end
 
