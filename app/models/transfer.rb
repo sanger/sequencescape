@@ -31,23 +31,25 @@ class Transfer < ActiveRecord::Base
           # If all of the states are present there is no point in actually adding this set of conditions because we're
           # basically looking for all of the plates.
           if states.sort != ALL_STATES.sort
+            # NOTE: The use of STRAIGHT_JOIN here forces the most optimum query on MySQL, where it is better to reduce
+            # assets to the plates, then look for the wells, rather than vice-versa.  The former query takes fractions
+            # of a second, the latter over 60.
+            query_conditions, joins = 'transfer_requests_as_target.state IN (?)', [
+              "STRAIGHT_JOIN `container_associations` ON (`assets`.`id` = `container_associations`.`container_id`)",
+              "INNER JOIN `assets` wells_assets ON (`wells_assets`.`id` = `container_associations`.`content_id`) AND (`wells_assets`.`sti_type` = 'Well')",
+              "LEFT OUTER JOIN `requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = wells_assets.id AND (transfer_requests_as_target.`sti_type` = 'TransferRequest')"
+            ]
+
             # Note that 'state IS NULL' is included here for plates that are stock plates, because they will not have any 
             # transfer requests coming into their wells and so we can assume they are pending (from the perspective of
             # pulldown at least).
             query_conditions = 'transfer_requests_as_target.state IN (?)'
-            query_conditions << ' OR transfer_requests_as_target.state IS NULL' if states.include?('pending')
+            if states.include?('pending')
+              joins << "INNER JOIN `plate_purposes` ON (`plate_purposes`.`id` = `assets`.`plate_purpose_id`)"
+              query_conditions << ' OR (transfer_requests_as_target.state IS NULL AND plate_purposes.can_be_considered_a_stock_plate=TRUE)'
+            end
 
-            # NOTE: The use of STRAIGHT_JOIN here forces the most optimum query on MySQL, where it is better to reduce
-            # assets to the plates, then look for the wells, rather than vice-versa.  The former query takes fractions
-            # of a second, the latter over 60.
-            {
-              :joins      => [
-                "STRAIGHT_JOIN `container_associations` ON (`assets`.`id` = `container_associations`.`container_id`)",
-                "INNER JOIN `assets` wells_assets ON (`wells_assets`.`id` = `container_associations`.`content_id`) AND (`wells_assets`.`sti_type` = 'Well')",
-                "LEFT OUTER JOIN `requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = wells_assets.id AND (transfer_requests_as_target.`sti_type` = 'TransferRequest')"
-              ],
-              :conditions => [ query_conditions, states ]
-            }
+            { :joins => joins, :conditions => [ query_conditions, states ] }
           else
             { }
           end

@@ -1,7 +1,7 @@
 <% if current_user.is_administrator? || current_user.is_manager?(@study) %>
   <%- add :menu, "New asset group" => new_study_asset_group_path(@study) -%>
   <% if @study.approved? && @study.active? -%>
-    <% add :menu, "<strong>Create Submission</strong>" => info_study_workflow_submissions_path(@study, @current_user.workflow) -%>
+    <% add :menu, "<strong>Create Submission</strong>" => new_submission_path -%>
   <% end -%>
   <%- add :menu, "<strong>New asset group from existing plates</strong>" => study_plates_path(@study) -%>
 <% end %>  

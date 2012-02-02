@@ -18,7 +18,7 @@
       </th>
       <td>
         <%= collection_select :submission, :plate_purpose_id,
-          PlatePurpose.considered_stock_plate.all(:order => 'name ASC'), :id, :name,
+          PlatePurpose.considered_stock_plate.all, :id, :name,
           { :value => PlatePurpose.stock_plate_purpose.id }
         %>
       </td>
@@ -65,7 +65,7 @@
 
 <div class="lanes-of-sequencing">
   <%= label 'submission[lanes_of_sequencing_required]', 'Lanes of sequencing required' %>
-  <%= text_field_tag 'submission[lanes_of_sequencing]', 1 %>
+  <%= text_field_tag 'submission[lanes_of_sequencing]', 1, :class => 'lanes_of_sequencing' %>
 </div>
 
 <span class="project-details" style="dislay:none;"></span>
