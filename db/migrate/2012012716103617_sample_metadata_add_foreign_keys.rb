@@ -6,7 +6,7 @@ class SampleMetadataAddForeignKeys < ActiveRecord::Migration
   end
 
   def self.down
-		execute "ALTER TABLE sample_metadata DROP FOREIGN KEY fk_sample_metadata_on_sample_id"
+		execute "ALTER TABLE sample_metadata DROP FOREIGN KEY sample_metadata_ibfk_1"
   end
 end
 

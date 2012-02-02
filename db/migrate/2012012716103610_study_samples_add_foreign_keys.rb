@@ -7,8 +7,8 @@ class StudySamplesAddForeignKeys < ActiveRecord::Migration
   end
 
   def self.down
-		execute "ALTER TABLE study_samples DROP FOREIGN KEY fk_study_samples_on_study_id";
-		execute "ALTER TABLE study_samples DROP FOREIGN KEY fk_study_samples_on_sample_id";
+		execute "ALTER TABLE study_samples DROP FOREIGN KEY study_samples_ibfk_1";
+		execute "ALTER TABLE study_samples DROP FOREIGN KEY study_samples_ibfk_2";
   end
 end
 
