@@ -67,14 +67,3 @@ cucumber:
 ### Training
 ### Production
 
-# my live copy
-constraint:
-   adapter: mysql
-   encoding: utf8
-   reconnect: false
-   database: sequencescape_constraint_kt6
-   pool: 5
-   username: psdd
-   password: psdd
-   host: mcs6
-   port: 3321
