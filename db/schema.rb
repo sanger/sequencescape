@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120111142240) do
+ActiveRecord::Schema.define(:version => 2012012716103617) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -456,6 +456,12 @@ ActiveRecord::Schema.define(:version => 20120111142240) do
   add_index "items", ["workflow_id"], :name => "index_items_on_workflow_id"
   add_index "items", ["workflow_sample_id"], :name => "index_items_on_sample_id"
 
+  create_table "keep_study_samples", :id => false, :force => true do |t|
+    t.integer "id",        :default => 0, :null => false
+    t.integer "study_id"
+    t.integer "sample_id"
+  end
+
   create_table "lab_events", :force => true do |t|
     t.text     "description"
     t.text     "descriptors"
@@ -515,7 +521,7 @@ ActiveRecord::Schema.define(:version => 20120111142240) do
   add_index "maps", ["description"], :name => "index_maps_on_description"
 
   create_table "orders", :force => true do |t|
-    t.integer  "study_id"
+    t.integer  "study_id",                        :null => false
     t.integer  "workflow_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -526,7 +532,7 @@ ActiveRecord::Schema.define(:version => 20120111142240) do
     t.text     "request_types"
     t.text     "request_options"
     t.text     "comments"
-    t.integer  "project_id"
+    t.integer  "project_id",                      :null => false
     t.string   "sti_type"
     t.string   "template_name"
     t.integer  "asset_group_id"
@@ -534,6 +540,7 @@ ActiveRecord::Schema.define(:version => 20120111142240) do
     t.integer  "submission_id"
   end
 
+  add_index "orders", ["project_id"], :name => "fk_orders_on_project_id"
   add_index "orders", ["state_to_delete"], :name => "index_submissions_on_state"
   add_index "orders", ["study_id"], :name => "index_submissions_on_project_id"
 
@@ -667,7 +674,7 @@ ActiveRecord::Schema.define(:version => 20120111142240) do
   end
 
   create_table "project_metadata", :force => true do |t|
-    t.integer "project_id"
+    t.integer "project_id",                                   :null => false
     t.string  "project_cost_code"
     t.string  "funding_comments"
     t.string  "collaborators"
@@ -1075,8 +1082,8 @@ ActiveRecord::Schema.define(:version => 20120111142240) do
   add_index "study_reports", ["user_id"], :name => "index_study_reports_on_user_id"
 
   create_table "study_samples", :force => true do |t|
-    t.integer "study_id"
-    t.integer "sample_id"
+    t.integer "study_id",  :null => false
+    t.integer "sample_id", :null => false
   end
 
   add_index "study_samples", ["sample_id"], :name => "index_project_samples_on_sample_id"
@@ -1322,13 +1329,6 @@ ActiveRecord::Schema.define(:version => 20120111142240) do
     t.string  "descendant_uuid",        :limit => 36
     t.integer "descendant_internal_id"
     t.string  "descendant_type",        :limit => 50
-  end
-
-  create_table "view_genotyping_statuses", :id => false, :force => true do |t|
-    t.integer "sample_internal_id"
-    t.string  "sample_uuid",             :limit => 36
-    t.string  "genotyping_status"
-    t.string  "genotyping_snp_plate_id"
   end
 
   create_table "view_lanes", :id => false, :force => true do |t|
