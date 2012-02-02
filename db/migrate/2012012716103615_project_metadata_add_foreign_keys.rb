@@ -6,7 +6,7 @@ class ProjectMetadataAddForeignKeys < ActiveRecord::Migration
   end
 
   def self.down
-		execute "ALTER TABLE project_metadata DROP FOREIGN KEY fk_project_metadata_on_project_id";
+		execute "ALTER TABLE project_metadata DROP FOREIGN KEY project_metadata_ibfk_1";
   end
 end
 

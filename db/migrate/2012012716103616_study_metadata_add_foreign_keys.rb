@@ -6,7 +6,7 @@ class StudyMetadataAddForeignKeys < ActiveRecord::Migration
   end
 
   def self.down
-		execute "ALTER TABLE study_metadata DROP FOREIGN KEY fk_study_metadata_on_study_id"
+		execute "ALTER TABLE study_metadata DROP FOREIGN KEY study_metadata_ibfk_1"
   end
 end
 
