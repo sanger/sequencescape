@@ -3,6 +3,8 @@
 
 <h2>New Order</h2>
 
+<span class="project-details" style="dislay:none;"></span>
+
 <ul class="sub-panel">
   <li>
     <h3>Study</h3>
@@ -70,8 +72,6 @@
   <%= form.label :lanes_of_sequencing, 'Lanes of sequencing required' %>
   <%= form.text_field :lanes_of_sequencing, :class => 'lanes_of_sequencing', :value => 1 %>
 </div>
-
-<span class="project-details" style="dislay:none;"></span>
 
 <div class="save-buttons">
   <% if order.present? -%>

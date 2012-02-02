@@ -37,6 +37,9 @@ class SubmissionCreater < PresenterSkeleton
   IncorrectParamsException = Class.new(SubmissionsCreaterError)
   InvalidInputException    = Class.new(SubmissionsCreaterError)
 
+  # Remove this Exception if you enable multiple orders per submission
+  MultipleOrdersException = Class.new(Exception)
+
   write_inheritable_attribute :attributes,  [
     :id,
     :template_id,
@@ -126,7 +129,17 @@ class SubmissionCreater < PresenterSkeleton
         new_order = create_order.tap { |o| o.update_attributes!(order_assets) }
 
         if submission.present?
-          submission.orders << new_order
+          # This code shouldn't get run, as the client should stop this but...
+          # This exception is thrown if we try to add multiple orders to a submission.
+          # The submission should be destroyed if we delete the last order on it so
+          # we shouldn't see any empty submissions.
+          # Remove the raise and recue block to enable multiple submissions.
+          # You'll also need to renable them in the submission.js file.
+          raise MultipleOrdersException
+
+
+          # uncomment this line to enable multiple orders
+          # submission.orders << new_order
         else
           @submission = new_order.create_submission(:user => order.user)
         end
@@ -136,6 +149,8 @@ class SubmissionCreater < PresenterSkeleton
       end
 
 
+    rescue MultipleOrdersException => exception
+      order.errors.add_to_base('Sorry, multiple orders per submission are not supported at the current time.')
     rescue Quota::Error => quota_exception
       order.errors.add_to_base(quota_exception.message)
     rescue InvalidInputException => input_exception

@@ -173,6 +173,11 @@
       function(data) {
 
         currentPane.fadeOut(function(){
+
+          // Hack to stop multiple orders per submission.
+          // Remove to enable again...
+          $('#add-order').attr('id', 'disabled-add-order');
+
           currentPane.
             detach().
             html(data).
@@ -323,6 +328,12 @@
                removeAttr('disabled');
 
              $('#start-submission').attr('disabled', true);
+
+             // Hack to stop multiple orders per submission.
+             // Remove to enable again...
+             $('#disabled-add-order').
+               attr('id', 'add-order').
+               removeAttr('disabled');
            }
          });
        });
@@ -369,7 +380,7 @@
 
     // If there are any completed orders then enable the add-order button so we
     // can add more...
-    if ($('.order.completed').length) $('#add-order, #start-submission').removeAttr('disabled');
+    // if ($('.order.completed').length) $('#add-order, #start-submission').removeAttr('disabled');
 
 
     $('.submission_project_name').autocomplete({
