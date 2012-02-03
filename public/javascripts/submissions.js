@@ -1,5 +1,5 @@
 // Submission workflow jQuery Plugin...
-(function($,undefined){
+(function(window, $, undefined){
   "use strict";
 
   var methods = {
@@ -73,11 +73,13 @@
       return $.error('Method '+method+' does not exist on jQuery.submission');
     }
   };
-})(jQuery);
+})(window, jQuery);
 
 
 // Submission page code...
-(function($, undefined){
+(function(window, $, undefined){
+  "use strict";
+
   // Name spacing stuff...
   if ( window.SCAPE === undefined) window.SCAPE = {};
 
@@ -277,7 +279,6 @@
       minLength : 3
     });
 
-
     $('#blank-order').before(newOrder);
     newOrder.slideDown();
 
@@ -321,7 +322,15 @@
            $('#add-order').removeAttr('disabled');
 
            if ($('.order.completed').length === 0) {
+             // If we're on an edit page and someone deletes the last order
+             // then the submission has also been deleted so redirect them to
+             // the submission inbox.
+             if (window.location.pathname.match(/\/submissions\/\d+\/edit/)) {
+               window.location.replace(SCAPE.submissions_inbox_url);
+             }
+
              delete SCAPE.submission.id;
+
              $('#order-template').
                addClass('active').
                find('select, input').
@@ -380,6 +389,8 @@
 
     // If there are any completed orders then enable the add-order button so we
     // can add more...
+    if ($('.order.completed').length) $('#start-submission').removeAttr('disabled');
+    // Uncomment for multiple orders
     // if ($('.order.completed').length) $('#add-order, #start-submission').removeAttr('disabled');
 
 
@@ -390,8 +401,8 @@
     });
 
     // NB.  There seems to being some odd behaviour related to the
-    // autocompleter select callback fireing.  As a cludgy fix validation is
-    // triggered on field keypresses as a supplimentry validation.
+    // autocompleter select callback firing.  As a kludgey fix validation is
+    // triggered on field key presses as a supplementary validation.
     $('ul#orders').
       delegate('li.order select, li.order input, li.order textarea', 'blur', validateOrder).
       delegate('.sample_names_text, li.order input', 'keypress', validateOrder).
@@ -409,5 +420,5 @@
 
   });
 
-})(jQuery);
+})(window, jQuery);
 
