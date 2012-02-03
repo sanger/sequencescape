@@ -1,11 +1,13 @@
 <script type="text/javascript">
-  (function($, undefined){
+  (function(window, $, undefined){
+   "use strict";
+
    // Check for the SCAPE object.  This is the only place in the global
    // namespace we should be storing things.
    if (window.SCAPE == undefined) window.SCAPE = {};
 
    SCAPE.user_project_names =  <%= stringify_array(@presenter.user_projects) %>;
-   })(jQuery);
+   })(window, jQuery);
 </script>
 
 <%= javascript_include_tag 'submissions' %>
@@ -13,8 +15,8 @@
 <ul id="orders">
 
   <li id="order-template" class="pane active">
-  <span class="completed badge">✔</span>
-  <span class="invalid badge">✘</span>
+  <span class="completed badge" >&#10004;</span>
+  <span class="invalid badge"   >&#10006;</span>
   <% form_for :submission, @presenter do |f| -%>
   <h2>Order Template</h2>
     <%= f.collection_select :template_id,
@@ -42,7 +44,7 @@
   <% end -%>
 
   <li id="order-controls" class="buttons">
-    <%= submit_tag "✚ Add Order",
+    <%= submit_tag "&#10010; Add Order",
       :id       => "add-order",
       :class    => "button",
       :disabled => true
@@ -60,7 +62,7 @@
   <li class="buttons">
   <% form_for :submission, @presenter, :url => @presenter.url(self) , :html => { :id => 'build-form', :method => :put }   do |f| -%>
 
-    <%= submit_tag "⚙ Build Submission",
+    <%= submit_tag "&#10034; Build Submission",
       :id       => "start-submission",
       :class    => "final button",
       :disabled => true
