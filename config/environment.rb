@@ -59,8 +59,8 @@ Rails::Initializer.run do |config|
   # Force all environments to use the same logger level
   # (by default production uses :info, the others :debug)
   # config.log_level = :debug
-  expected_env = ENV['RAILS_ENV'] || 'development' || 'constraint'
-  unless ['development','cucumber','test', 'constraint'].include? expected_env #Rails.env.development?
+  expected_env = ENV['RAILS_ENV'] || 'development'
+  unless ['development','cucumber','test'].include? expected_env #Rails.env.development?
     require 'psd_logger'
     config.logger = PsdLogger.new
     config.active_record.colorize_logging = false
