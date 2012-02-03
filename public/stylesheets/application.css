@@ -1067,7 +1067,7 @@ ul#orders .errors li {
 	-moz-transition:    all 0.3s ease-in-out 0s;
   -webkit-transition: all 0.3s ease-in-out 0s;
   transition:         all 0.3s ease-in-out 0s;
-  font-family: 'MS Mincho';
+  font-family: 'MS Mincho', 'Lucida Sans Unicode', 'Symbol';
   behavior: url(/stylesheets/PIE.htc);
 }
 

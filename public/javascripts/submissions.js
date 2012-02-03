@@ -176,15 +176,12 @@
 
         currentPane.fadeOut(function(){
 
-          // Hack to stop multiple orders per submission.
-          // Remove to enable again...
-          $('#add-order').attr('id', 'disabled-add-order');
-
           currentPane.
             detach().
             html(data).
             submission('markPaneComplete').
             removeClass('active invalid');
+
 
           $('#order-controls').before(currentPane);
           currentPane.fadeIn();
@@ -194,6 +191,9 @@
 
           $('.pane').not('#blank-order').addClass('active');
 
+          // Hack to stop multiple orders per submission.
+          // Remove to enable again...
+          $('#add-order').attr('disabled', true);
         });
 
       }
@@ -338,11 +338,6 @@
 
              $('#start-submission').attr('disabled', true);
 
-             // Hack to stop multiple orders per submission.
-             // Remove to enable again...
-             $('#disabled-add-order').
-               attr('id', 'add-order').
-               removeAttr('disabled');
            }
          });
        });
