@@ -6,8 +6,8 @@
 <ul id="orders">
 
   <li id="order-template" class="pane active">
-  <span class="completed badge">✔</span>
-  <span class="invalid badge">✘</span>
+  <span class="completed badge">&#10004;</span>
+  <span class="invalid badge">&#10006;</span>
   <h2>Order Template</h2>
   <%= collection_select :submission,
     :template_id,
@@ -18,7 +18,7 @@
   <div id="order-parameters" style="display:none;"></div>
   </li>
   <li id="order-controls" class="buttons">
-    <%= submit_tag "✚ Add Order",
+    <%= submit_tag ("&#10010; Add Order"),
       :id       => "add-order",
       :class    => "button",
       :disabled => true
@@ -26,8 +26,8 @@
   </li>
 
   <li id="blank-order" class="pane order">
-    <span class="invalid badge">✘</span>
-    <span class="completed badge">✔</span>
+  <span class="completed badge">&#10004;</span>
+  <span class="invalid badge">&#10006;</span>
 
     <h2>New Order</h2>
     <%= render :partial => 'order', :locals => { :presenter => @presenter } %>
@@ -37,7 +37,7 @@
   <% form_for :submission, @presenter, :url => {:action => :update}  do |f| -%>
     <%= f.hidden_field :id %>
 
-    <%= submit_tag "⚙ Build Submission",
+    <%= submit_tag "&#10034;  Build Submission",
       :id       => "start-submission",
       :class    => "final button",
       :disabled => true
