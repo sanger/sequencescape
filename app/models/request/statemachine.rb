@@ -8,6 +8,7 @@ module Request::Statemachine
 
   def self.included(base)
     base.class_eval do
+      include Request::BillingStrategy
 
       ## State machine
       aasm_column :state
@@ -30,11 +31,14 @@ module Request::Statemachine
       end
 
       aasm_event :pass do
-        transitions :to => :passed, :from => [:started, :passed, :pending, :failed]
+        transitions :to => :passed, :from => [:passed, :pending]
+        transitions :to => :passed, :from => [:started, :failed], :on_transition => :charge_to_project
       end
 
       aasm_event :fail do
-        transitions :to => :failed, :from => [:started, :pending, :failed, :passed]
+        transitions :to => :failed, :from => [:pending, :failed]
+        transitions :to => :failed, :from => [:started], :on_transition => :charge_internally
+        transitions :to => :failed, :from => [:passed],  :on_transition => :refund_project
       end
 
       aasm_event :block do
