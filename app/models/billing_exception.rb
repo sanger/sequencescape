@@ -17,5 +17,7 @@ module BillingException
   end                                     
 #rescue BillingException::DuplicateCharge => exception  
 #rescue BillingException::Base => exception 
+
+  IllegalRefund = Class.new(Base)
 end
 

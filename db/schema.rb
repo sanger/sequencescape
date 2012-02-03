@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120111142240) do
+ActiveRecord::Schema.define(:version => 20120126111428) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -783,6 +783,7 @@ ActiveRecord::Schema.define(:version => 20120111142240) do
     t.text     "request_parameters"
     t.integer  "morphology",                       :default => 0
     t.boolean  "for_multiplexing",                 :default => false
+    t.boolean  "billable",                         :default => false
   end
 
   create_table "requests", :force => true do |t|
