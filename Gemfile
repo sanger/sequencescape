@@ -9,7 +9,7 @@ gem "db-charmer"
 # 1.1 activated by rails
 #gem "rack", "~>1.2"
 
-gem "aasm", "2.1.5"
+gem "aasm", "~>2.4.0"
 gem "acts_as_audited"
 gem "ar-extensions"
 gem "configatron"

@@ -43,7 +43,8 @@ GEM
   remote: http://gems.github.com/
   specs:
     Platform (0.4.0)
-    aasm (2.1.5)
+    aasm (2.4.0)
+      activerecord
     actionmailer (2.3.11)
       actionpack (= 2.3.11)
     actionpack (2.3.11)
@@ -209,7 +210,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  aasm (= 2.1.5)
+  aasm (~> 2.4.0)
   activemessaging
   activerecord-oracle_enhanced-adapter (= 1.2.3)
   acts-as-dag!

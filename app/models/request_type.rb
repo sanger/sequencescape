@@ -16,6 +16,10 @@ class RequestType < ActiveRecord::Base
   has_many :requests
   has_many :pipelines
 
+  # Couple of named scopes for finding billable types
+  named_scope :billable, { :conditions => { :billable => true } }
+  named_scope :non_billable, { :conditions => { :billable => false } }
+
   # Defines the acceptable plate purposes or the request type.  Essentially this is used to limit the
   # cherrypick plate types when going into pulldown to the correct list.
   has_many :plate_purposes, :class_name => 'RequestType::RequestTypePlatePurpose'
