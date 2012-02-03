@@ -16,7 +16,7 @@ end
 Given /^a billing event to the request$/ do
  lane = Lane.find_by_name("NPG_Action_Lane_Test")
  request = lane.source_request
- BillingEvent.map_for_each_aliquot(request) do |aliquot_info|
+ BillingEvent.send(:map_for_each_aliquot, request) do |aliquot_info|
    reference = BillingEvent.build_reference(request, aliquot_info)
    Factory :billing_event, :reference => reference,  :quantity => 1, :kind => "charge"
    Factory :billing_event, :reference => reference,  :quantity => 1, :kind => "refund"

@@ -99,7 +99,10 @@ def work_pipeline_for(submissions, name)
   raise StandardError, "Submissions appear to come from non-unique plates: #{source_plates.inspect}" unless source_plates.size == 1
 
   source_plate = source_plates.first
-  source_plate.wells.each { |w| Factory(:tag).tag!(w) unless w.primary_aliquot.tag.present? } # Ensure wells are tagged
+  source_plate.wells.each do |w|
+    Factory(:tag).tag!(w) unless w.primary_aliquot.tag.present? # Ensure wells are tagged
+    w.requests_as_source.first.start!                           # Ensure request is considered started
+  end
   template.create!(:source => source_plate, :destination => final_plate_type.create!, :user => Factory(:user))
 end
 
@@ -158,4 +161,10 @@ end
 
 Given /^"([^\"]+-[^\"]+)" of the plate with ID (\d+) are empty$/ do |range, id|
   Plate.find(id).wells.select(&range.method(:include?)).each { |well| well.aliquots.clear }
+end
+
+Then /^all of the pulldown library creation requests to (the multiplexed library tube .+) should be billed to their project$/ do |tube|
+  requests = tube.requests_as_target.where_is_a?(Pulldown::Requests::LibraryCreation).all
+  assert(!requests.empty?, "There are expected to be a number of pulldown requests")
+  assert(requests.all? { |r| not r.billing_events.charged_to_project.empty? }, "There are requests that have not billed the project")
 end
