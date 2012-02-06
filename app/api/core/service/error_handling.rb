@@ -87,6 +87,11 @@ class ActiveRecord::ConfigurationError
   self.api_error_code = 500
 end
 
+class ActiveRecord::ReadOnlyRecord
+  include ::Core::Service::Error::Behaviour
+  self.api_error_code = 500
+end
+
 class ActiveRecord::RecordInvalid
   def api_error(response)
     io_handler = ::Core::Io::Registry.instance.lookup_for_object(self.record)
