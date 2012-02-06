@@ -1,70 +1,29 @@
-<% add :title, "Viewing Submission" -%>
+<%- add :title, "Viewing Submission" -%>
+<%- add :manager_option, "<strong>Submissions Inbox</strong>" => submissions_path -%>
 
 
-<h1>Submission <%= @submission.id %></h1>
-
+<h1>Submission: <%= @presenter.submission.id %></h1>
 <div class='subtitle'>
- Submission created at: <strong><%=h @submission.created_at.to_formatted_s(:day_full_with_time) %></strong>
-  
+ Submission created at: <strong><%=h @presenter.submission.created_at.to_formatted_s(:day_full_with_time) %></strong>
 </div>
-<div class='help'>
-  <h2>Important notice</h2>
-  This submission describes the work you have requested. If you want to cancel it or alter it, <%= help_email_link %>.<br />
-  If the information is correct then you can leave this page now or follow the progress for the relevant order on its study status page.
-</div>
+<%= submission_status_message(@presenter.submission) %>
 
-<% @submission.orders.each do |order| %>
+
+<% if @presenter.submission.pending? -%>
+  <div class='help'>
+    <h2>Important notice</h2>
+    This submission describes the work you have requested. If you want to cancel it or alter it, <%= help_email_link %>.<br />
+    If the information is correct then you can leave this page now or follow the progress for the relevant order on its study status page.
+  </div>
+<% end -%>
+
 <ul id="orders">
-  <li id="order-template" class="pane active completed">
-  <span class="completed badge">✔</span>
-  <h2>Order created at: <%=h order.created_at.to_formatted_s(:day_full_with_time) %></h2>
-  <% if @submission.building? %>
-    <p><%= display_user_guide('Your submission is still being built.') %></p>
-  <% elsif @submission.pending? %>
-    <p><%= display_user_guide( "Your submission is currently pending.") %></p>
-    <p>It should be processed approximately 10 minutes after you have submitted it, however sometimes this may take longer.</p>
-  <% elsif @submission.processing? %>
-    <p><%= display_user_guide("Your submission is currently being processed.  This should take no longer than five minutes.") %></p>
-  <% elsif @submission.failed? %>
-    <p>Your submission has failed:</p>
-    <p><strong><%= @submission.message %></strong></p>
-  <% elsif @submission.ready? %>
-    <p>Your submission has been <strong>processed</strong>.</p>
-  <% else %>
-    <p>Your submission is in an unknown state (contact support).</p>
-  <% end %>
-  
-
-    <h4>Asset Group:</h4>
-    <% if order.assets.empty? %>
-     <p>There are no assets in this order!</p>
-    <% else %>
-      <%= link_to(h(order.asset_group.name), study_asset_group_path(order.study, order.asset_group)) %>
-    <% end %>
-  
-    <h4>Project:</h4>
-    <%= order.project.name %>
-    <!-- link_to order.project.name, order -->
-    
-    <%= "<p>#{order.comments}</p>" unless order.comments.nil? %>
-
-    <% unless order.request_types.blank? %>
-      <h4>Request types</h4>
-      <ul id="request_types_for_submission">
-        <% RequestType.find(order.request_types).each do |request_type| %>
-          <li><%= request_type.name %></li>
-        <% end %>
-      </ul>
-    <% end %>
-  </ul>
-
-</ul>
+<% @presenter.submission.orders.each do |order| %>
+  <li class="pane order active completed">
+  <%= render :partial => 'saved_order', :locals => { :order => order } %>
+  </li>
 <% end %>
-
-<script type="text/javascript">
-  (function($, undefined){
-   
-   })(jQuery);
-</script>
+</ul>
 
 <%= javascript_include_tag 'submissions' %>
+

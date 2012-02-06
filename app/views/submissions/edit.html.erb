@@ -1,1 +1,21 @@
-Test edit page....
+<%- add :title, "Editing a saved Submission" -%>
+<%- add :manager_option, "<strong>Submissions Inbox</strong>" => submissions_path -%>
+
+
+<h1>Edit Submission</h1>
+<%= render :partial => 'orders' %>
+
+<script type="text/javascript">
+  (function(window, $, undefined) {
+   "use strict";
+
+   // Check for the SCAPE namespace object.
+   if (window.SCAPE == undefined) window.SCAPE = {};
+
+   // Used for redirecting if we delete the last order on the submission.
+   SCAPE.submissions_inbox_url = <%= submissions_url.inspect %>;
+
+   })(window, jQuery);
+</script>
+<%=  %>
+

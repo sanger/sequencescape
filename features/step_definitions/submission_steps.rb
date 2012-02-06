@@ -147,3 +147,35 @@ Then /^I create the order and submit the submission/ do
   Then %q{I press "Create Order"}
   And %q{I press "Submit"}
 end
+
+
+Given /^I have a "([^\"]*)" submission with the following setup:$/ do |template_name, table|
+  submission_template = SubmissionTemplate.find_by_name(template_name)
+  params = table.rows_hash
+  request_options = {} 
+  request_type_ids = submission_template.new_order.request_types
+
+  params.each do |k,v|
+    case k
+    when /^multiplier#(\d+)/
+      multiplier_hash = request_options[:multiplier]
+      multiplier_hash = request_options[:multiplier]={} unless multiplier_hash
+      index = $1.to_i-1
+      multiplier_hash[request_type_ids[index]]=v.to_i
+    else
+      key = k.underscore.gsub(/\W+/,"_")
+      request_options[key]=v
+    end
+  end
+  Submission.build!(
+    :template=>submission_template,
+    :project => Project.find_by_name(params['Project']),
+    :study => Study.find_by_name(params['Study']),
+    :asset_group => AssetGroup.find_by_name(params['Asset Group']),
+    :workflow => Submission::Workflow.first,
+    :user => @current_user,
+    :request_options => request_options
+  )
+
+  #And %Q{1 pending delayed jobs are processed}
+end

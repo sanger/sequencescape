@@ -1,4 +1,4 @@
-@submission @sanger_sample_id
+@submission @sanger_sample_id @wip @old_submission
 Feature: Create a submission based on the sanger_sample_id
 
 	Background:

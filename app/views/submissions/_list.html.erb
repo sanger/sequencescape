@@ -19,15 +19,12 @@
           <td><%= link_to "View", submission_path(submission) %></td>
           <% if @current_user.is_administrator? %>
             <td><%= link_to("Edit", edit_submission_path(submission)) unless submission.ready? || submission.pending? %></td>
-            <td><%= link_to("<span style='color:red;'>Delete</span>", submission_path(submission), :method => :delete, :confirm => "Are you sure?") if current_user.administrator? %></td>
+            <td><%= link_to("<span style='color:red;'>Delete</span>", submission_path(submission), :method => :delete, :confirm => "Are you sure?") if current_user.administrator? && submission.building? %></td>
           <% end %>
         </tr>
       <% end %>
       </table>
   </div>
 <% else %>
-<p>You currently don't have any submissions.</p>
-  <% if current_user.is_administrator? %>
-    <%= display_user_guide(I18n.t('submissions.no_submissions'), new_submission_path) %>
-  <% end %>
+  <p>You currently have no submissions in this state.</p>
 <% end %>

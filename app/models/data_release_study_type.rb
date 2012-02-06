@@ -9,7 +9,7 @@ class DataReleaseStudyType < ActiveRecord::Base
   named_scope :assay_types, { :conditions => { :is_assay_type => true } }
   named_scope :non_assay_types, { :conditions => { :is_assay_type => false } }
 
-  TYPES = ['transcriptomics','other sequencing-based-assay','genotyping or cytogenetics' ]
+  TYPES = ['genotyping or cytogenetics' ]
  
   def is_not_specified?
     false
