@@ -985,7 +985,7 @@ body.yui-skin-sam ul.ui-menu {
 }
 
 ul#orders {
-  width: 950px;
+  max-width: 950px;
   color:#333129;
   padding: 0;
   clear: both;
@@ -997,10 +997,10 @@ ul#orders {
 
 
 /* This overly verbose rule is needed to override formtastic styling  */
-ul#orders > li {
+ul#orders li.order, ul#orders li.buttons, #order-template {
   padding: 15px;
   margin: 15px 0;
-  color:#00498C;
+  color: #00498C;
   background: #fff;
   list-style: none outside none;
   text-align: right;
@@ -1015,6 +1015,7 @@ ul#orders li.pane {
   opacity: 0.2;
   text-align: left;
   background: #fff;
+  margin-bottom: 30px;
   behavior: url(/stylesheets/PIE.htc);
 }
 
@@ -1032,7 +1033,7 @@ ul#orders li.completed {
 	border-color: #017903;
 	background: #EBFFEB;
 	color:#017802;
-  opacity: 0.6;
+  opacity: 0.95;
 }
 
 ul#orders li.active {
@@ -1066,7 +1067,7 @@ ul#orders .errors li {
 	-moz-transition:    all 0.3s ease-in-out 0s;
   -webkit-transition: all 0.3s ease-in-out 0s;
   transition:         all 0.3s ease-in-out 0s;
-  font-family: 'MS Mincho';
+  font-family: 'MS Mincho', 'Lucida Sans Unicode', 'Symbol';
   behavior: url(/stylesheets/PIE.htc);
 }
 
@@ -1111,7 +1112,6 @@ ul#orders ul.sub-panel li {
   border-radius: 8px;
   -moz-border-radius: 8px;
 
-
   padding: 15px;
   list-style: none outside none;
   position: relative;
@@ -1147,6 +1147,13 @@ ul#orders ul.sub-panel li {
   width: 100%;
 }
 
+div.sub-panel {
+  border: 2px solid hsl(0, 0%, 86%);
+  border-radius: 8px;
+  padding: 0 15px 15px;
+  margin: 15px;
+}
+
 h2.error {
   color: #920000;
 }
@@ -1171,7 +1178,7 @@ ul#orders > li.buttons {
 .button {
   -moz-box-shadow:inset 0px 1px 0px 0px #bbdaf7;
   -webkit-box-shadow:inset 0px 1px 0px 0px #bbdaf7;
-  box-shadow:inset 0px 1px 0px 0px #395F94;
+  box-shadow:inset 0px 1px 0px 0px #395F94, 0 1px 3px #999;
   background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #0066B8), color-stop(1, #00498C) );
   background:-moz-linear-gradient( center top, #0066B8 5%, #00498C 100% );
   background-color:#00498C;
@@ -1184,7 +1191,7 @@ ul#orders > li.buttons {
   color:#ffffff;
   font-size:15px;
   font-weight:bold;
-  padding:6px 24px;
+  padding:4px 15px;
   text-decoration:none;
   text-shadow: 0px -1px 0px #1B3752;
   -moz-transition:    all 0.5s ease-in-out 0s;
@@ -1207,9 +1214,10 @@ ul#orders > li.buttons {
 
 .button.final:hover {
   color: #FAF9F5;
-  background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, hsl(102, 100%, 14%)), color-stop(1, hsl(120, 100%, 16%)) );
-  background: -moz-linear-gradient( center top, hsl(102, 100%, 14%) 5%, hsl(120, 100%, 16%) 100% );
   background-color: #1C7C00;
+  background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, hsl(120, 100%, 14%)), color-stop(1, hsl(120, 100%, 16%)) );
+  background: -moz-linear-gradient( center top, hsl(120, 100%, 14%) 5%, hsl(120, 100%, 16%) 100% );
+
 }
 
 .button[disabled] {

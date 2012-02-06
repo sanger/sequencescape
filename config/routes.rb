@@ -97,7 +97,7 @@ ActionController::Routing::Routes.draw do |map|
   # TODO (jr16) move to a more appropriate location
   map.connect "bulk_submissions", :controller => "bulk_submissions", :action => "new"
 
-  map.resources :submissions, :collection => { :study_assets => :get, :order_parameters => :get, :project_details => :get }
+  map.resources :submissions, :collection => { :study_assets => :get, :order_fields => :get, :project_details => :get }
   map.resources :orders, :only => [:destroy]
 
   map.resources :properties  do |property|

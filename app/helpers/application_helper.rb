@@ -65,10 +65,10 @@ module ApplicationHelper
   end
   
   def display_user_guide(display_text, link=nil)
-    unless link.nil?
-      content_tag(:div, link_to(display_text, link), :class => "user_guide")
-    else
+    if link.nil?
       content_tag(:div, display_text, :class => "user_guide")
+    else
+      content_tag(:div, link_to(display_text, link), :class => "user_guide")
    end
   end
   
