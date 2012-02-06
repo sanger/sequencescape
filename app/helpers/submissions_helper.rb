@@ -36,7 +36,7 @@ module SubmissionsHelper
   def order_text_tag(order, field_info)
     text_field_tag(
       "submission[order_params][#{field_info.key}]",
-      order.request_options.try(:[], field_info.key),
+      order.request_options.try(:[], field_info.key) || field_info.default_value,
       :class => "required"
     )
   end
