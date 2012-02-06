@@ -169,7 +169,7 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
                 end
                 
                 should "not have a successful submission" do
-                  assert_contains(@controller.action_flash.values, 'Study and all samples must have accession numbers')
+                  assert_contains(@controller.action_flash[:error], 'Study and all samples must have accession numbers')
                   assert_equal @submission_count, Submission.count
                 end
 
@@ -180,7 +180,7 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
                   create_and_submit  :order => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
                 end
                 should "not have a successful submission" do
-                  assert_contains(@controller.action_flash.values, 'Study and all samples must have accession numbers')
+                  assert_contains(@controller.action_flash[:error], 'Study and all samples must have accession numbers')
                   assert_equal @submission_count, Submission.count
                 end
               end
@@ -198,7 +198,7 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
                 create_and_submit :order => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
               end
               should "not have a successful submission" do
-                assert_contains(@controller.action_flash.values, 'Study and all samples must have accession numbers')
+                assert_contains(@controller.action_flash[:error], 'Study and all samples must have accession numbers')
                 assert_equal @submission_count, Submission.count
               end
             end
@@ -302,7 +302,7 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
           create_and_submit  :order => {}, :asset_group => @asset_group.id.to_s, :project_name => @project.name, :study_id => @study.id, :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
         end
         should "not have a successful submission" do
-          assert_contains(@controller.action_flash.values, 'Quotas are being enforced but have not been setup')
+          assert_contains(@controller.action_flash[:error], 'Quotas are being enforced but have not been setup')
           assert_equal @submission_count, Submission.count
         end
       end

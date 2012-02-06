@@ -1,4 +1,4 @@
-@submission @submission_template
+@submission @submission_template @wip @old_submission
 Feature: Creating submissions through the submission templates
   Background:
     Given I am an "administrator" user logged in as "John Smith"

@@ -1,0 +1,32 @@
+<% if @presenter.order.present? -%>
+  <h2><%= @presenter.order.template_name %> template</h2>
+  <%= custom_text("submission_info") %>
+
+  <% if @presenter.order_fields.present? -%>
+    <table>
+      <% @presenter.order_fields.sort {|a, b| a.display_name <=> b.display_name }.each_with_index do |order_param, index| -%>
+        <%= "<tr>" if index.even? %>
+          <th><%= order_input_label(order_param) %></th>
+          <td><%= order_input_tag(@presenter.order, order_param) %></td>
+          <%= "</tr>" if index.odd? || index + 1 == @presenter.order_fields.size %>
+      <% end -%>
+    </table>
+  <% end -%>
+
+  <script type="text/javascript">
+  (function(window,$,undefined) {
+    SCAPE.submission.is_a_sequencing_order = <%= @presenter.order.is_a_sequencing_order? %>;
+
+    <% unless @presenter.order.new_record? -%>
+    $(function(){
+      $('#order-template').
+        removeClass('active').
+        addClass('completed').
+        find('input, select, textarea').not('.delete-order').
+        attr('disabled',true);
+    });
+    <% end -%>
+  })(window,jQuery);
+  </script>
+<% end -%>
+

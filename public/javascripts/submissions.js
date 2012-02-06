@@ -1,5 +1,7 @@
 // Submission workflow jQuery Plugin...
-(function($,undefined){
+(function(window, $, undefined){
+  "use strict";
+
   var methods = {
     init : function(options) {
       return this;
@@ -21,8 +23,8 @@
     },
 
     hasAssets : function() {
-      if (this.find('.asset_group_id').val() ||
-          this.find('.sample_names_text').val() ) {
+      if (this.find('.submission_asset_group_id').val() ||
+          this.find('.submission_sample_names_text').val() ) {
         return true;
       } else {
         return false;
@@ -30,7 +32,7 @@
     },
 
     currentPane : function() {
-      return this.closest('#orders > li');
+      return this.closest('li.pane');
     },
 
     markPaneIncomplete : function() {
@@ -71,15 +73,17 @@
       return $.error('Method '+method+' does not exist on jQuery.submission');
     }
   };
-})(jQuery);
+})(window, jQuery);
 
 
 // Submission page code...
-(function($, undefined){
-  // Name spacing stuff...
-  if ( window.SCAPE === undefined) { window.SCAPE = {}; }
+(function(window, $, undefined){
+  "use strict";
 
-  if ( SCAPE.submission === undefined) { 
+  // Name spacing stuff...
+  if ( window.SCAPE === undefined) window.SCAPE = {};
+
+  if ( SCAPE.submission === undefined) {
     SCAPE.submission = {
       order_params : {}
     };
@@ -101,7 +105,7 @@
 
         // Load the parameters for the new order
         $.get(
-          '/submissions/order_parameters',
+          '/submissions/order_fields',
           { submission: SCAPE.submission },
           function(data) {
             $('#order-parameters').html(data);
@@ -153,53 +157,45 @@
     var currentPane = $(this).submission('currentPane');
     // refactor this little lot!
     SCAPE.submission.project_name                 = currentPane.find('.submission_project_name').val();
-    SCAPE.submission.asset_group_id               = currentPane.find('#submission_asset_group_id').val();
-    SCAPE.submission.sample_names_text            = currentPane.find('#submission_sample_names_text').val();
-    SCAPE.submission.plate_purpose_id             = currentPane.find('#submission_plate_purpose_id').val();
+    SCAPE.submission.asset_group_id               = currentPane.find('.submission_asset_group_id').val();
+    SCAPE.submission.sample_names_text            = currentPane.find('.submission_sample_names_text').val();
+    SCAPE.submission.plate_purpose_id             = currentPane.find('.submission_plate_purpose_id').val();
+    SCAPE.submission.comments                     = currentPane.find('.submission_comments').val();
     SCAPE.submission.lanes_of_sequencing_required = currentPane.find('.lanes_of_sequencing').val();
-    SCAPE.submission.comments                     = currentPane.find('#submission_comments').val();
 
+
+    currentPane.ajaxError(function(event, jqXHR, ajaxSettings, thrownError) {
+      currentPane.find('.project-details').html(jqXHR.responseText);
+      currentPane.submission('markPaneInvalid');
+    });
 
     $.post(
       '/submissions',
       { submission : SCAPE.submission },
       function(data) {
 
-        // Ugly hack to load the order_valid flag before the returned
-        // html is displayed.
-        // Got to go....
-        var tempResult = $('<div>').html(data);
+        currentPane.fadeOut(function(){
 
-        if(SCAPE.submission.order_valid) {
-          currentPane.fadeOut(function(){
-            //                                        vvvvvvvvvv-- Ugly, ugly, ugly...
-            currentPane.find('.project-details').html(tempResult.html());
+          currentPane.
+            detach().
+            html(data).
+            submission('markPaneComplete').
+            removeClass('active invalid');
 
-            currentPane.
-              detach().
-              removeClass('active invalid').
-              find('.asset-input-toggle').remove();
 
-            currentPane.submission('markPaneComplete').
-              find('input, select, textarea').not('.delete-order').
-              attr('disabled',true);
+          $('#order-controls').before(currentPane);
+          currentPane.fadeIn();
 
-            $('#order-controls').before(currentPane);
-            currentPane.fadeIn();
+          $('#build-form').attr('action', '/submissions/'+ SCAPE.submission.id);
+          $('#start-submission').removeAttr('disabled');
 
-            $('#submission_id').val(SCAPE.submission.id);
-            $('#start-submission').removeAttr('disabled');
+          $('.pane').not('#blank-order').addClass('active');
 
-            $('.pane').not('#blank-order').addClass('active');
+          // Hack to stop multiple orders per submission.
+          // Remove to enable again...
+          $('#add-order').attr('disabled', true);
+        });
 
-            // This temporarily limits the order to one per submission...
-            $('#add-order').attr('disabled', true);
-          });
-
-        } else {
-          currentPane.find('.project-details').html(data);
-          currentPane.submission('markPaneInvalid');
-        }
       }
     );
 
@@ -221,6 +217,10 @@
     var currentPane = $(event.target).submission('currentPane');
 
     var studyId     = currentPane.find('.study_id').val();
+
+    // TODO This should validate that the project name is in the list but the
+    // autocomplete callback doesn't seem to fire properly so this is a bit of
+    // a kludge around that.
     var projectName = currentPane.find('.submission_project_name').val();
     var hasAssets   = currentPane.submission('hasAssets');
 
@@ -279,7 +279,6 @@
       minLength : 3
     });
 
-
     $('#blank-order').before(newOrder);
     newOrder.slideDown();
 
@@ -298,6 +297,10 @@
       }
 
       $('#add-order').removeAttr('disabled');
+
+      if ($('.order.completed').length !== 0) {
+        $('#start-submission').removeAttr('disabled');
+      }
     });
 
     // don't forget to stop the form submitting...
@@ -319,12 +322,22 @@
            $('#add-order').removeAttr('disabled');
 
            if ($('.order.completed').length === 0) {
+             // If we're on an edit page and someone deletes the last order
+             // then the submission has also been deleted so redirect them to
+             // the submission inbox.
+             if (window.location.pathname.match(/\/submissions\/\d+\/edit/)) {
+               window.location.replace(SCAPE.submissions_inbox_url);
+             }
+
+             delete SCAPE.submission.id;
+
              $('#order-template').
                addClass('active').
                find('select, input').
                removeAttr('disabled');
 
              $('#start-submission').attr('disabled', true);
+
            }
          });
        });
@@ -364,21 +377,27 @@
 
     // Validate the order-parameters
     $('#order-parameters .required').
-      live('keypress',  validateOrderParams).
-      live('blur',  validateOrderParams);
+      live('keypress', validateOrderParams).
+      live('blur',     validateOrderParams);
 
-    $('#add-order').
-      live('click', addOrderHandler);
+    $('#add-order').click(addOrderHandler);
+
+    // If there are any completed orders then enable the add-order button so we
+    // can add more...
+    if ($('.order.completed').length) $('#start-submission').removeAttr('disabled');
+    // Uncomment for multiple orders
+    // if ($('.order.completed').length) $('#add-order, #start-submission').removeAttr('disabled');
+
 
     $('.submission_project_name').autocomplete({
       source    : SCAPE.user_project_names,
       minLength : 3,
-      select : validateOrder
+      select    : validateOrder
     });
 
     // NB.  There seems to being some odd behaviour related to the
-    // autocompleter select callback fireing.  As a cludgy fix validation is
-    // triggered on field keypresses as a supplimentry validation.
+    // autocompleter select callback firing.  As a kludgey fix validation is
+    // triggered on field key presses as a supplementary validation.
     $('ul#orders').
       delegate('li.order select, li.order input, li.order textarea', 'blur', validateOrder).
       delegate('.sample_names_text, li.order input', 'keypress', validateOrder).
@@ -396,5 +415,5 @@
 
   });
 
-})(jQuery);
+})(window, jQuery);
 
