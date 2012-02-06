@@ -53,7 +53,7 @@ class PlatePurpose < ActiveRecord::Base
   end
 
   def pool_wells(wells)
-    _pool_wells(wells).all(:select => 'assets.*, submission_id AS pool_id').tap do |wells_with_pool|
+    _pool_wells(wells).all(:select => 'assets.*, submission_id AS pool_id', :readonly => false).tap do |wells_with_pool|
       raise StandardError, "Cannot deal with a well in multiple pools" if wells_with_pool.group_by(&:id).any? { |_, multiple_pools| multiple_pools.uniq.size > 1 }
     end
   end
