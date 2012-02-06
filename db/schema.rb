@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120126111428) do
+ActiveRecord::Schema.define(:version => 20120206113135) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -755,11 +755,12 @@ ActiveRecord::Schema.define(:version => 20120126111428) do
   add_index "request_metadata", ["request_id"], :name => "index_request_metadata_on_request_id"
 
   create_table "request_quotas", :force => true do |t|
-    t.integer "request_id"
-    t.integer "quota_id"
+    t.integer "request_id", :null => false
+    t.integer "quota_id",   :null => false
   end
 
   add_index "request_quotas", ["quota_id", "request_id"], :name => "index_request_quotas_on_quota_id_and_request_id"
+  add_index "request_quotas", ["request_id"], :name => "fk_request_quotas_to_requests"
 
   create_table "request_type_plate_purposes", :force => true do |t|
     t.integer "request_type_id",  :null => false
