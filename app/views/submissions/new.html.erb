@@ -1,60 +1,9 @@
-<% add :title, "Starting a new Submission" -%>
+<%- add :title, "Starting a new Submission" -%>
+<%- add :manager_option, "<strong>Submissions Inbox</strong>" => submissions_path -%>
 
 
 <h1>New Submission</h1>
 
-<ul id="orders">
 
-  <li id="order-template" class="pane active">
-  <span class="completed badge">&#10004;</span>
-  <span class="invalid badge">&#10006;</span>
-  <h2>Order Template</h2>
-  <%= collection_select :submission,
-    :template_id,
-    @presenter.templates, :id, :name,
-    :prompt => "Please select a template..."
-  %>
-
-  <div id="order-parameters" style="display:none;"></div>
-  </li>
-  <li id="order-controls" class="buttons">
-    <%= submit_tag ("&#10010; Add Order"),
-      :id       => "add-order",
-      :class    => "button",
-      :disabled => true
-    %>
-  </li>
-
-  <li id="blank-order" class="pane order">
-  <span class="completed badge">&#10004;</span>
-  <span class="invalid badge">&#10006;</span>
-
-    <h2>New Order</h2>
-    <%= render :partial => 'order', :locals => { :presenter => @presenter } %>
-  </li>
-
-  <li class="buttons">
-  <% form_for :submission, @presenter, :url => {:action => :update}  do |f| -%>
-    <%= f.hidden_field :id %>
-
-    <%= submit_tag "&#10034;  Build Submission",
-      :id       => "start-submission",
-      :class    => "final button",
-      :disabled => true
-    %>
- <% end -%>
-  </li>
-</ul>
-
-<script type="text/javascript">
-  (function($, undefined){
-   // Check for the SCAPE object.  This is the only place in the global
-   // namespace we should be storing things.
-   if (window.SCAPE == undefined) { window.SCAPE = {}; }
-
-   SCAPE.user_project_names =  <%= stringify_array(@presenter.user_projects) %>;
-   })(jQuery);
-</script>
-
-<%= javascript_include_tag 'submissions' %>
+<%= render :partial => 'orders' %>
 
