@@ -49,9 +49,10 @@ module Attributable
   end
 
   module ClassMethods
-    def attribute(name, options = {})
+    def attribute(name, options = {}, override_previous = false)
       attribute = Attribute.new(self, name, options)
       attribute.configure(self)
+      attribute_details.delete_if { |a| a.name == name } if override_previous
       attribute_details.push(attribute)
     end
     
