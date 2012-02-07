@@ -35,6 +35,22 @@
       return this.closest('li.pane');
     },
 
+    loadStudyAssets : function(submission) {
+      var element = this;
+
+      $.get(
+        '/submissions/study_assets',
+        { submission : submission },
+        function(data) {
+          element.find('.study-assets').fadeOut(function(){
+            $(this).html(data).fadeIn();
+          });
+        }
+      );
+
+      return this;
+    },
+
     markPaneIncomplete : function() {
       this.removeClass('completed');
 
@@ -133,15 +149,7 @@
 
     if ($(event.target).val().length > 0) {
       // Load asset groups for the selected study
-      $.get(
-        '/submissions/study_assets',
-        { submission : SCAPE.submission },
-        function(data) {
-          currentPane.find('.study-assets').fadeOut(function(){
-            $(this).html(data).fadeIn();
-          });
-        }
-      );
+      currentPane.submission('loadStudyAssets', SCAPE.submission);
     } else {
       // The study selector has been reset so fade out and reset the field.
       currentPane.find('.study-assets').fadeOut(function(){
@@ -151,7 +159,6 @@
     }
 
   };
-
 
   var saveOrderHandler = function(event) {
     var currentPane = $(this).submission('currentPane');
@@ -279,6 +286,13 @@
       minLength : 3
     });
 
+    // If we already have a study id set then load the asset_group for it.
+    // e.g. someone coming to the page directly from a study page rather than
+    // the submission inbox.
+    if (SCAPE.submission.study_id) {
+      newOrder.submission('loadStudyAssets', SCAPE.submission);
+    }
+
     $('#blank-order').before(newOrder);
     newOrder.slideDown();
 
@@ -390,9 +404,9 @@
 
 
     $('.submission_project_name').autocomplete({
-      source    : SCAPE.user_project_names,
-      minLength : 3,
-      select    : validateOrder
+      source:    SCAPE.user_project_names,
+      minLength: 3,
+      select:    validateOrder
     });
 
     // NB.  There seems to being some odd behaviour related to the
