@@ -51,6 +51,15 @@ en:
     pulldown_library_creation:
       <<: *REQUEST
 
+    pulldown:
+      requests:
+        wgs_library_request:
+          <<: *REQUEST
+        sc_library_request:
+          <<: *REQUEST
+        isc_library_request:
+          <<: *REQUEST
+
     sample:
       metadata:
         organism:
