@@ -127,13 +127,15 @@ module ModelExtensions::Order
   def request_options_structured=(values)
     @request_options_structured = NonNilHash.new.tap do |attributes|
       NonNilHash.new(:stringify_keys).deep_merge(values).tap do |json|
-        attributes[:read_length]                 = json['read_length']
-        attributes[:library_type]                = json['library_type']
-        attributes[:fragment_size_required_from] = json['fragment_size_required', 'from']
-        attributes[:fragment_size_required_to]   = json['fragment_size_required', 'to']
-        attributes[:bait_library_name]           = json['bait_library']
-        attributes[:sequencing_type]             = json['sequencing_type']
-        attributes[:insert_size]                 = json['insert_size']
+        # NOTE: Be careful with the names here to ensure that they match up, exactly with what is in a template.
+        # If the template uses symbol names then these need to be symbols too.
+        attributes[:read_length]                  = json['read_length']
+        attributes['library_type']                = json['library_type']
+        attributes['fragment_size_required_from'] = json['fragment_size_required', 'from']
+        attributes['fragment_size_required_to']   = json['fragment_size_required', 'to']
+        attributes[:bait_library_name]            = json['bait_library']
+        attributes[:sequencing_type]              = json['sequencing_type']
+        attributes[:insert_size]                  = json['insert_size']
         request_type_multiplier { |id| attributes[:multiplier, id] = json['number_of_lanes'] }
       end
     end.to_hash
