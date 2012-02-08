@@ -17,9 +17,10 @@ class Quota < ActiveRecord::Base
   acts_as_audited :on => [:destroy, :update]
 
   named_scope :request_type, lambda {|*args| {:conditions => { :request_type_id => args[0]} } }
+  named_scope :counted_, lambda {|*args| {:conditions => { :request_type_id => args[0]} } }
 
   def used
-    self.request_quotas.count + self.preordered_count
+    self.requests.quota_counted.count + self.preordered_count
   end
 
   def remaining
