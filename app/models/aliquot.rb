@@ -153,10 +153,13 @@ class Aliquot < ActiveRecord::Base
   belongs_to :library, :class_name => 'Aliquot::Receptacle'
   composed_of :insert_size, :mapping => [%w{insert_size_from from}, %w{insert_size_to to}], :class_name => 'Aliquot::InsertSize', :allow_nil => true
 
-  # Cloning an aliquot should unset the receptacle ID because otherwise it won't get reassigned.
+  # Cloning an aliquot should unset the receptacle ID because otherwise it won't get reassigned.  We should
+  # also reset the timestamp information as this is a new aliquot really.
   def clone
     super.tap do |cloned_aliquot|
       cloned_aliquot.receptacle_id = nil
+      cloned_aliquot.created_at = nil
+      cloned_aliquot.updated_at = nil
     end
   end
 
