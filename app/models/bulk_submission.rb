@@ -175,11 +175,11 @@ class BulkSubmission < ActiveRecord::Base
         }
       }
       
-      attributes[:request_options][:library_type]                  = details['library type']       unless details['library type'].blank?
-      attributes[:request_options][:fragment_size_required_from]   = details['fragment size from'] unless details['fragment size from'].blank?
-      attributes[:request_options][:fragment_size_required_to]     = details['fragment size to']   unless details['fragment size to'].blank?
-      attributes[:request_options][:bait_library_name]             = details['bait library name']  unless details['bait library name'].blank?
-      attributes[:request_options][:bait_library_name]           ||= details['bait library']       unless details['bait library'].blank?
+      attributes[:request_options]['library_type']                  = details['library type']       unless details['library type'].blank?
+      attributes[:request_options]['fragment_size_required_from']   = details['fragment size from'] unless details['fragment size from'].blank?
+      attributes[:request_options]['fragment_size_required_to']     = details['fragment size to']   unless details['fragment size to'].blank?
+      attributes[:request_options][:bait_library_name]              = details['bait library name']  unless details['bait library name'].blank?
+      attributes[:request_options][:bait_library_name]            ||= details['bait library']       unless details['bait library'].blank?
 
       # Deal with the asset group: either it's one we should be loading, or one we should be creating.
       begin
