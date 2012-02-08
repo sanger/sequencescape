@@ -90,7 +90,7 @@ module SubmissionsHelper
     when 'failed' then
       h('<h2>Your submission has failed:</h2>' + "<p>#{submission.message}</p>")
     when 'ready'
-      content_tag(:p, h('Your submission has been <strong>processed</strong>.'))
+      content_tag(:p, 'Your submission has been <strong>processed</strong>.')
     else 
       content_tag(:p, 'Your submission is in an unknown state (contact support).')
     end 
