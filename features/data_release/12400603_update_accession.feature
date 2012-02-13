@@ -11,7 +11,7 @@ Feature: object with an accession should be modifiable
     When I update an accession number for study "study"
 
     When I am on the event history page for study "study"
-    Then I should see "accession data have been updated by user me"
+    Then I should see "accession data has been updated by user me"
 
   Scenario: A sample with already an accession number should add updated in the history
     Given a sample named "sample" exists for accession
@@ -20,4 +20,4 @@ Feature: object with an accession should be modifiable
     When I update an accession number for sample "sample"
 
     When I am on the event history page for sample "sample"
-    Then I should see "accession data have been updated by user me"
+    Then I should see "accession data has been updated by user me"
