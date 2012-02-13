@@ -81,3 +81,9 @@ Then /^the state of transfer requests (to|from) "([^\"]+)" on (the plate .+) sho
     assert_request_state(state, well, direction, TransferRequest)
   end
 end
+
+Then /^the state of pulldown library creation requests (to|from) "([^\"]+)" on (the plate .+) should be "([^\"]+)"$/ do |direction, range, plate, state|
+  plate.wells.select(&range.method(:include?)).each do |well|
+    assert_request_state(state, well, direction, Pulldown::Requests::LibraryCreation)
+  end
+end

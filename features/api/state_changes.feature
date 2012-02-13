@@ -24,6 +24,8 @@ Feature: Access state changes through the API
       And the UUID for the plate "Source plate" is "00000000-1111-2222-3333-000000000001"
       And the UUID for the plate "Destination plate" is "00000000-1111-2222-3333-000000000002"
       And the "Transfer columns 1-12" transfer template has been used between "Source plate" and "Destination plate"
+      And "A1-H12" of the plate "Source plate" have been submitted to "Pulldown WGS - HiSeq paired end sequencing"
+      And all requests are in the last submission
 
   @create
   Scenario Outline: Creating a state change on a plate
@@ -60,13 +62,17 @@ Feature: Access state changes through the API
 
     Then the state of the plate "Destination plate" should be "<state>"
      And the state of all the transfer requests to the plate "Destination plate" should be "<state>"
+     And the state of all the pulldown library creation requests from the plate "Source plate" should be "<library state>"
 
     Scenarios:
-      | state   |
-      | pending |
-      | started |
-      | passed  |
-      | failed  |
+      | state   | library state | 
+      | pending | pending       | 
+      | started | pending       | 
+      | passed  | pending       | 
+
+    Scenarios:
+      | state   | library state | 
+      | failed  | failed        | 
 
   @create
   Scenario: Changing the state of only one well on the plate
@@ -105,7 +111,9 @@ Feature: Access state changes through the API
 
     Then the state of the plate "Destination plate" should be "pending"
      And the state of transfer requests to "A1-A1" on the plate "Destination plate" should be "failed"
+     And the state of pulldown library creation requests from "A1-A1" on the plate "Source plate" should be "failed"
      And the state of transfer requests to "A2-H12" on the plate "Destination plate" should be "pending"
+     And the state of pulldown library creation requests from "A2-H12" on the plate "Source plate" should be "pending"
 
   @read @wip
   Scenario: Reading the JSON for a UUID
