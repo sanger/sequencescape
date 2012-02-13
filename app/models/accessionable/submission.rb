@@ -38,13 +38,24 @@ class Accessionable::Submission < Accessionable::Base
           xml.ACTION {
             xml.ADD(:source => accessionable.file_name,  :schema => accessionable.schema_type)
           }
+
           xml.ACTION {
             xml.tag!(accessionable.protect?(@service) ? 'PROTECT' : 'HOLD')
           }
         end
+
+
         modifications.each do |accessionable|
           xml.ACTION {
-            xml.MODIFY(:source => accessionable.file_name, :schema => accessionable.schema_type, :target => accessionable.accession_number)
+            xml.MODIFY(
+              :source => accessionable.file_name,
+              :schema => accessionable.schema_type,
+              :target => accessionable.accession_number
+            )
+          }
+
+          xml.ACTION {
+            xml.tag!(accessionable.protect?(@service) ? 'PROTECT' : 'HOLD')
           }
         end
       }
