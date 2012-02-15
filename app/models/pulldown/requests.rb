@@ -48,14 +48,11 @@ module Pulldown::Requests
       class_eval do
         has_metadata :as => Request do
           # Redefine the fragment size attributes as they are fixed
-          attribute(:fragment_size_required_from, :required => true, :in => [ minimum ], :default => minimum, :integer => true)
-          attribute(:fragment_size_required_to,   :required => true, :in => [ maximum ], :default => maximum, :integer => true)
+          attribute(:fragment_size_required_from, { :required => true, :default => minimum, :integer => true })
+          attribute(:fragment_size_required_to,   { :required => true, :default => maximum, :integer => true })
         end
+
         include Request::LibraryManufacture
-      end
-      const_get(:RequestOptionsValidator).class_eval do
-        validates_inclusion_of :fragment_size_required_from, :in => [ minimum ], :allow_blank => true
-        validates_inclusion_of :fragment_size_required_to,   :in => [ maximum ], :allow_blank => true
       end
       const_get(:Metadata).class_eval do
         def fragment_size_required_from

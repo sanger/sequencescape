@@ -49,10 +49,16 @@ module Attributable
   end
 
   module ClassMethods
-    def attribute(name, options = {})
+    def attribute(name, options = {}, override_previous = false)
       attribute = Attribute.new(self, name, options)
       attribute.configure(self)
-      attribute_details.push(attribute)
+
+      if override_previous
+        attribute_details.delete_if { |a| a.name == name }
+        attribute_details.push(attribute)
+      elsif attribute_details.detect { |a| a.name == name }.nil?
+        attribute_details.push(attribute)
+      end
     end
     
     def association(name, instance_method, options = {})
