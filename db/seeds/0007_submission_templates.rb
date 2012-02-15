@@ -22,9 +22,9 @@ def create_pulldown_submission_templates
   ]
 
   request_types_to_defaults = {
-    'Pulldown WGS' => { :library_type => 'Standard',         :fragment_size_required_from => 300, :fragment_size_required_to => 500 },
-    'Pulldown SC'  => { :library_type => 'Agilent Pulldown', :fragment_size_required_from => 100, :fragment_size_required_to => 400 },
-    'Pulldown ISC' => { :library_type => 'Agilent Pulldown', :fragment_size_required_from => 100, :fragment_size_required_to => 400 }
+    'Pulldown WGS' => { 'library_type' => 'Standard',         'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 },
+    'Pulldown SC'  => { 'library_type' => 'Agilent Pulldown', 'fragment_size_required_from' => 100, 'fragment_size_required_to' => 400 },
+    'Pulldown ISC' => { 'library_type' => 'Agilent Pulldown', 'fragment_size_required_from' => 100, 'fragment_size_required_to' => 400 }
   }
 
   workflow   = Submission::Workflow.find_by_key('short_read_sequencing') or raise StandardError, 'Cannot find Next-gen sequencing workflow'
