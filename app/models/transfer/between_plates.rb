@@ -30,10 +30,7 @@ class Transfer::BetweenPlates < Transfer
   def each_transfer(&block)
     # Partition the source plate wells into ones that are good and others that are bad.  The
     # bad wells will be eliminated after we've done the transfers for the good ones.
-    bad_wells, good_wells = source.wells.located_at_position(transfers.keys).with_pool_id.partition do |well|
-      well.nil? or well.aliquots.empty? or well.failed? or well.cancelled?
-    end
-
+    bad_wells, good_wells = source.wells.located_at_position(transfers.keys).with_pool_id.partition(&method(:should_well_not_be_transferred?))
     source_wells          = Hash[good_wells.map { |well| [well.map.description, well] }]
     destination_locations = source_wells.keys.map { |p| transfers[p] }
     destination_wells     = Hash[destination.wells.located_at_position(destination_locations).map { |well| [well.map.description, well] }]
