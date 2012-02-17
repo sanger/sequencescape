@@ -21,8 +21,8 @@ Given /^the UUID for the (source|destination) of the transfer (#{TRANSFER_TYPES_
   set_uuid_for(transfer_model(model).find(id).send(target), uuid_value)
 end
 
-Given /^the transfer template called "([^\"]+)" exists$/ do |name|
-  Factory(:transfer_template, :name => name)
+Given /^the ((?:pooling )?transfer template) called "([^\"]+)" exists$/ do |type, name|
+  Factory(type.gsub(/\s/, '_').to_sym, :name => name)
 end
 
 Then /^the transfers from (the plate .+) to (the plate .+) should be:$/ do |source, destination, table|
@@ -80,4 +80,19 @@ Then /^the state of transfer requests (to|from) "([^\"]+)" on (the plate .+) sho
   plate.wells.select(&range.method(:include?)).each do |well|
     assert_request_state(state, well, direction, TransferRequest)
   end
+end
+
+Then /^the state of pulldown library creation requests (to|from) "([^\"]+)" on (the plate .+) should be "([^\"]+)"$/ do |direction, range, plate, state|
+  plate.wells.select(&range.method(:include?)).each do |well|
+    assert_request_state(state, well, direction, Pulldown::Requests::LibraryCreation)
+  end
+end
+
+Given /the wells "([^\"]+)" on (the plate .+) are empty$/ do |range, plate|
+  plate.wells.select(&range.method(:include?)).each { |well| well.aliquots.clear }
+end
+
+Given /^(the plate .+) is a "([^\"]+)"$/ do |plate, name|
+  plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find the plate purpose #{name.inspect}"
+  plate.update_attributes!(:plate_purpose => plate_purpose)
 end

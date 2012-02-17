@@ -48,7 +48,9 @@ class PlatePurpose < ActiveRecord::Base
   def transition_to(plate, state, contents = nil)
     contents ||= []
     plate.transfer_requests.each do |request|
-      request.update_attributes!(:state => state) if contents.empty? or contents.include?(request.target_asset.map.description)
+      next unless contents.empty? or contents.include?(request.target_asset.map.description)
+      request.update_attributes!(:state => state)
+      Request.where_is_not_a?(TransferRequest).for_submission_id(request.submission_id).for_asset_id(request.asset.stock_wells.map(&:id)).map(&:fail!) if state == 'failed'
     end
   end
 
