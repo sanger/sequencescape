@@ -35,7 +35,7 @@
     <h4>Request types:</h4>
     <ul id="request_types_for_submission">
       <% RequestType.find(order.request_types).each do |request_type| %>
-        <li><%= request_type.name %></li>
+        <li><%= request_description(order, request_type) %></li>
       <% end %>
     </ul>
   <% end %>
