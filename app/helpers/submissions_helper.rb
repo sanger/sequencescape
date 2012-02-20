@@ -99,4 +99,12 @@ module SubmissionsHelper
   def order_sample_names(order)
     order.assets.map(&:aliquots).flatten.map(&:sample).map(&:name).join(', ')
   end
+
+  def request_description(order, request_type)
+    request_type_name = content_tag(:em, request_type.name.titleize)
+
+    return request_type_name unless request_type.request_class_name =~ /SequencingRequest$/
+
+    pluralize(order.request_options[:multiplier][request_type.id.to_s], 'Lane') + " of #{request_type_name}"
+  end
 end
