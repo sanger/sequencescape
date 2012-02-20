@@ -54,6 +54,10 @@ Factory.define(:transfer_template) do |transfer_template|
   transfer_template.transfers('A1' => 'A1', 'B1' => 'B1')
 end
 
+Factory.define(:pooling_transfer_template, :class => TransferTemplate) do |transfer_template|
+  transfer_template.transfer_class_name 'Transfer::BetweenPlatesBySubmission'
+end
+
 # A tag group that works for the tag layouts
 Factory.sequence(:tag_group_for_layout_name) { |n| "Tag group #{n}" }
 Factory.define(:tag_group_for_layout, :class => TagGroup) do |tag_group|

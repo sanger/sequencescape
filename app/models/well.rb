@@ -39,6 +39,19 @@ class Well < Aliquot::Receptacle
 
   named_scope :with_blank_samples, { :conditions => { :aliquots => { :samples => { :empty_supplier_sample_name => true } } }, :joins => { :aliquots => :sample } }
 
+  def stock_wells
+    wells_to_walk, stock_wells = [ self ], []
+    until wells_to_walk.empty?
+      current_well = wells_to_walk.shift or next
+      if current_well.plate.stock_plate?
+        stock_wells << current_well
+      else
+        wells_to_walk.concat(current_well.requests_as_target.where_is_a?(TransferRequest).map(&:asset))
+      end
+    end
+    stock_wells
+  end
+
   class << self
     def delegate_to_well_attribute(attribute, options = {})
       class_eval <<-END_OF_METHOD_DEFINITION
