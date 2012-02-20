@@ -20,7 +20,7 @@
 <ul id="orders">
 <% @presenter.submission.orders.each do |order| %>
   <li class="pane order active completed">
-  <%= render :partial => 'saved_order', :locals => { :order => order } %>
+  <%= render :partial => 'saved_order', :locals => { :presenter => @presenter, :order => order } %>
   </li>
 <% end %>
 </ul>
