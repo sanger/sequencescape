@@ -39,6 +39,7 @@ class PipelinesController < ApplicationController
     @rits = @pipeline.request_information_types
   end
 
+  # FIXME[sd9]: This create logic is just broken
   def create
     unless current_user.is_administrator?
       flash[:error]  = "User #{current_user.name} can't create a new pipeline"
