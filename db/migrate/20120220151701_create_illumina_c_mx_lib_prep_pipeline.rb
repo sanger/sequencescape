@@ -16,11 +16,12 @@ class CreateIlluminaCMxLibPrepPipeline < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
       MultiplexedLibraryCreationPipeline.create!(:name => 'Illumina-C MX Library Preparation') do |pipeline|
-        pipeline.asset_type          = 'LibraryTube'
-        pipeline.sorter              = 0
-        pipeline.automated           = false
-        pipeline.active              = true
-        pipeline.multiplexed         = true
+        pipeline.asset_type  = 'LibraryTube'
+        pipeline.sorter      = 0
+        pipeline.automated   = false
+        pipeline.active      = true
+        pipeline.multiplexed = true
+        pipeline.group_name  = "Library creation"
 
         pipeline.location = Location.first(
           :conditions => { :name => 'Library creation freezer' }
@@ -64,7 +65,8 @@ class CreateIlluminaCMxLibPrepPipeline < ActiveRecord::Migration
 
       LabInterface::Workflow.find_by_name('Illumina-C MX Library Preparation workflow').destroy
 
-      PipelineRequestInformationType.find_all_by_pipeline(pipeline).each(&:destroy)
+      PipelineRequestInformationType.find_all_by_pipeline_id(pipeline.id).each(&:destroy)
+      pipeline.destroy
     end
 
   end
