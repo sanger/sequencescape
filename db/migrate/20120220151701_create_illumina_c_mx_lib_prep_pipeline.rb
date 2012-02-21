@@ -27,7 +27,20 @@ class CreateIlluminaCMxLibPrepPipeline < ActiveRecord::Migration
           :conditions => { :name => 'Library creation freezer' }
         ) or raise StandardError, "Cannot find 'Library creation freezer' location"
 
-        pipeline.request_type = RequestType.find_by_name('Multiplexed library creation')
+        pipeline.request_type = RequestType.create!(
+          :workflow => Submission::Workflow.find_by_key('short_read_sequencing'),
+          :key      => 'illumina_c_multiplexed_library_creation',
+          :name     => 'Illumina-C Multiplexed Library Creation'
+        ) do |request_type|
+          request_type.billable          = true
+          request_type.initial_state     = 'pending'
+          request_type.asset_type        = 'SampleTube'
+          request_type.order             = 1
+          request_type.multiples_allowed = false
+          request_type.request_class     = MultiplexedLibraryCreationRequest
+          request_type.for_multiplexing  = true
+        end
+
 
         pipeline.workflow = LabInterface::Workflow.create!(:name => 'Illumina-C MX Library Preparation workflow') do |workflow|
           workflow.locale   = 'External'
