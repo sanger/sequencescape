@@ -28,7 +28,9 @@ class Transfer::BetweenPlatesBySubmission < Transfer
         next unless index < groups.size
         destination_well = destination.wells.located_at(position.description).first or
           raise StandardError, "The destination does not have a well at #{position.description}"
-        groups[index].each { |source| sources_to_target[source] = destination_well }
+        groups[index].each do |source|
+          sources_to_target[source] = destination_well unless should_well_not_be_transferred?(source)
+        end
       end
     end
   end

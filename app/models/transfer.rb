@@ -206,4 +206,10 @@ class Transfer < ActiveRecord::Base
       end
     end
   end
+
+  # Determines if the well should not be transferred.
+  def should_well_not_be_transferred?(well)
+    well.nil? or well.aliquots.empty? or well.failed? or well.cancelled?
+  end
+  private :should_well_not_be_transferred?
 end
