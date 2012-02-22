@@ -42,7 +42,7 @@ class CreateIlluminaCMxLibPrepPipeline < ActiveRecord::Migration
         end
 
 
-        pipeline.workflow = LabInterface::Workflow.create!(:name => 'Illumina-C MX Library Preparation workflow') do |workflow|
+        pipeline.workflow = LabInterface::Workflow.create!(:name => 'Illumina-C MX Library Preparation') do |workflow|
           workflow.locale   = 'External'
         end.tap do |workflow|
           {
@@ -76,7 +76,7 @@ class CreateIlluminaCMxLibPrepPipeline < ActiveRecord::Migration
     ActiveRecord::Base.transaction do
       pipeline = MultiplexedLibraryCreationPipeline.find_by_name('Illumina-C MX Library Preparation')
 
-      LabInterface::Workflow.find_by_name('Illumina-C MX Library Preparation workflow').destroy
+      LabInterface::Workflow.find_by_name('Illumina-C MX Library Preparation').destroy
 
       PipelineRequestInformationType.find_all_by_pipeline_id(pipeline.id).each(&:destroy)
       pipeline.destroy
