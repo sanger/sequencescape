@@ -259,4 +259,7 @@ private
     end
   end
 
+  def private?
+    false
+  end
 end
