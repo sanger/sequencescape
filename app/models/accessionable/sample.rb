@@ -23,8 +23,8 @@ module Accessionable
       end
 
       #TODO maybe unify this with the previous loop
-      # Only send AE data to EGA
-      if sample.accession_service.private?
+      # Don't send managed AE data to SRA
+      if !sample.accession_service.private?
         ::Sample::ArrayExpressFields.each do |datum|
           value = sample.sample_metadata.send(datum)
           next unless value.present?
