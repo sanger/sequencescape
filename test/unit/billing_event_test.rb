@@ -221,7 +221,13 @@ end
 context "A request with no billing events " do
   setup do
     @request = Factory :request
-    assert_equal 0, BillingEvent.all.size
+
+    @request.asset.aliquots.each do |aliquot|
+      aliquot.project = Factory(:project)
+      aliquot.save(false)
+    end
+    @request.asset.aliquots(true)
+
     @reference = BillingEvent.build_reference(@request)
   end
 
@@ -233,16 +239,23 @@ context "A request with no billing events " do
     setup do
       BillingEvent.generate_pass_event @request
     end
-    should "generate a charge event" do
-      assert BillingEvent.charge_for_reference(@reference)
+    
+    should 'not generate any refunds or internal charges' do
       assert_equal [], BillingEvent.refunds_for_reference(@reference)
       assert_nil BillingEvent.charge_internally_for_reference(@reference)
+    end
+
+    should "generate a charge event" do
+      charge = BillingEvent.charge_for_reference(@reference)
+      assert_not_nil charge
+      assert_equal @request.initial_project_id, charge.project_id
     end
   end
   context "failing" do
     setup do
       BillingEvent.generate_fail_event @request
     end
+
     should "generate a charge internally event" do
       assert_nil BillingEvent.charge_for_reference(@reference)
       assert_equal [], BillingEvent.refunds_for_reference(@reference)
@@ -251,24 +264,25 @@ context "A request with no billing events " do
   end 
   context "without an initial project" do
     setup do
-      @request = Factory :request
-      project = @request.initial_project
-      @request.asset.aliquots.each do |al|
-        al.project = project
-        al.save!
-      end
-      @request.initial_project=nil
-      @request.save!
+      @request.initial_project = nil
+      @request.save(false)
+
       @reference = BillingEvent.build_reference(@request)
     end
     context "passing" do
       setup do
         BillingEvent.generate_pass_event @request
       end
-      should "generate a charge event" do
-        assert BillingEvent.charge_for_reference(@reference)
+      
+      should 'not generate any refunds or internal charges' do
         assert_equal [], BillingEvent.refunds_for_reference(@reference)
         assert_nil BillingEvent.charge_internally_for_reference(@reference)
+      end
+
+      should "generate a charge event" do
+        charge = BillingEvent.charge_for_reference(@reference)
+        assert_not_nil charge
+        assert_equal @request.asset.aliquots.first.project_id, charge.project_id
       end
     end
   end 
