@@ -101,10 +101,10 @@ module SubmissionsHelper
   end
 
   def request_description(presenter, request_type)
-    request_type_name = content_tag(:em, request_type.name.titleize)
+    request_type_name = request_type.name.titleize
 
     return request_type_name unless request_type.request_class_name =~ /SequencingRequest$/
 
-    pluralize(presenter.lanes_of_sequencing, 'Lane') + " of #{request_type_name}"
+    content_tag(:em, pluralize(presenter.lanes_of_sequencing, 'Lane') + ' of ') + request_type_name
   end
 end

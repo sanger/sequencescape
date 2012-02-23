@@ -28,17 +28,22 @@ class PresenterSkeleton
   end
 
   def lanes_from_request_options
-    sequencing_request = RequestType.find(order.request_types).detect do |rt|
-      rt.request_class_name =~ /SequencingRequest/
-    end
+    library_request       = RequestType.find(order.request_types.first)
+    sequencing_request    = RequestType.find(order.request_types.last)
+    sequencing_multiplier = order.request_options[:multiplier][sequencing_request.id.to_s].to_i
 
-    order.request_options[:multiplier][sequencing_request.id.to_s]
+    if library_request.for_multiplexing?
+      sequencing_multiplier
+    else
+      order.assets.count * sequencing_multiplier
+    end
   end
   private :lanes_from_request_options
 
   def lanes_from_request_counting
-    sequencing_requests = submission.requests.select { |r| r.class.ancestors.include?(SequencingRequest) }
-    sequencing_requests.count / submission.orders.map(&:assets).flatten.count
+    submission.requests.select do |r|
+      r.class.ancestors.include?(SequencingRequest)
+    end.count
   end
   private :lanes_from_request_counting
 
@@ -284,6 +289,10 @@ class SubmissionPresenter < PresenterSkeleton
 
   def submission
     @submission ||= Submission.find(id)
+  end
+
+  def template_name
+    submission.orders.first.template_name
   end
 
   def order
