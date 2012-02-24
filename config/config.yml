@@ -1,4 +1,5 @@
 development:
+    amqp_url: amqp://localhost:5672/
     accession_login: "accession_login"
     accession_url: http://localhost:9999/accession_service/
     accession_view_url: http://localhost:9999/view_accession/
