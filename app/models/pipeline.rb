@@ -19,8 +19,13 @@ class Pipeline < ActiveRecord::Base
   has_many :tasks, :through => :workflows
   belongs_to :location
 
-  belongs_to :request_type
-  validates_presence_of :request_type
+  has_and_belongs_to_many :request_types
+  validate :has_request_types
+
+  def has_request_types
+    errors.add_to_base('A Pipeline must have at least one associcated RequestType') if self.request_types.blank?
+  end
+
 
   has_many :requests, :through => :request_type, :extend => Pipeline::RequestsInStorage do
     def inbox(show_held_requests = true, current_page = 1, action = nil)
