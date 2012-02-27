@@ -15,6 +15,8 @@ class CreateIlluminaCMxLibPrepPipeline < ActiveRecord::Migration
 
   def self.up
     ActiveRecord::Base.transaction do
+      product_line = ProductLine.find_by_name('Illumina-C')
+
       MultiplexedLibraryCreationPipeline.create!(:name => 'Illumina-C MX Library Preparation') do |pipeline|
         pipeline.asset_type  = 'LibraryTube'
         pipeline.sorter      = 0
@@ -39,6 +41,7 @@ class CreateIlluminaCMxLibPrepPipeline < ActiveRecord::Migration
           request_type.multiples_allowed = false
           request_type.request_class     = MultiplexedLibraryCreationRequest
           request_type.for_multiplexing  = true
+          request_type.product_line      = product_line
         end
 
 
