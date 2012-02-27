@@ -15,6 +15,7 @@ class RequestType < ActiveRecord::Base
 
   has_many :requests
   has_many :pipelines
+  belongs_to :product_line
 
   # Couple of named scopes for finding billable types
   named_scope :billable, { :conditions => { :billable => true } }
