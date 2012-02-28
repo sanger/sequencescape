@@ -4,8 +4,9 @@ class CreateIlluminaCSubmissionTemplates < ActiveRecord::Migration
       @ill_c_pipeline ||= Pipeline.find_by_name('Illumina-C MX Library Preparation')
     end
 
+    # Returns the last request_type added to the Illumina_C pipeline
     def illumina_c_req_id
-      @ill_c_req_id ||= illumina_c_pipeline.request_type.id
+      @ill_c_req_id ||= illumina_c_pipeline.request_types.last.id
     end
 
     # Remove the Illumina-B MX libray prep request_id and replaces it with the Illumina-C MX request

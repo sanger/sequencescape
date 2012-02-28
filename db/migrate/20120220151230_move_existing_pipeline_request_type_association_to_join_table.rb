@@ -10,11 +10,24 @@ SELECT id AS pipeline_id, `request_type_id`
 FROM pipelines
 EO_SQL
     )
+
+    remove_column :pipelines, :request_type_id
   end
 
   def self.down
-    say 'Removing all records from pipelines_request_types'
+    add_column :pipelines, :request_type_id
 
+    connection.execute(<<-EO_SQL
+      UPDATE pipelines
+      SET pipelines.request_type_id = (
+        SELECT pipelines_request_types.id
+        FROM pipelines_request_types
+        WHERE pipelines_request_types.pipeline_id = pipelines.id limit 1
+      )
+      EO_SQL
+    )
+
+    say 'Removing all records from pipelines_request_types'
     PipelinesRequestType.destroy_all
   end
 end
