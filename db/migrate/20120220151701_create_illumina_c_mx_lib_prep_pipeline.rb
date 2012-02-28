@@ -29,7 +29,7 @@ class CreateIlluminaCMxLibPrepPipeline < ActiveRecord::Migration
           :conditions => { :name => 'Library creation freezer' }
         ) or raise StandardError, "Cannot find 'Library creation freezer' location"
 
-        pipeline.request_type = RequestType.create!(
+        pipeline.request_types << RequestType.create!(
           :workflow => Submission::Workflow.find_by_key('short_read_sequencing'),
           :key      => 'illumina_c_multiplexed_library_creation',
           :name     => 'Illumina-C Multiplexed Library Creation'
@@ -78,6 +78,7 @@ class CreateIlluminaCMxLibPrepPipeline < ActiveRecord::Migration
   def self.down
     ActiveRecord::Base.transaction do
       pipeline = MultiplexedLibraryCreationPipeline.find_by_name('Illumina-C MX Library Preparation')
+      # pipeline.request_types.each(&:destroy)
 
       LabInterface::Workflow.find_by_name('Illumina-C MX Library Preparation').destroy
 
