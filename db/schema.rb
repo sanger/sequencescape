@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120419104221) do
+ActiveRecord::Schema.define(:version => 20120227103826) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -586,7 +586,6 @@ ActiveRecord::Schema.define(:version => 20120419104221) do
     t.integer  "next_pipeline_id"
     t.integer  "previous_pipeline_id"
     t.integer  "location_id"
-    t.integer  "request_type_id"
     t.boolean  "group_by_parent"
     t.string   "asset_type",                    :limit => 50
     t.boolean  "group_by_submission_to_delete"
@@ -603,6 +602,14 @@ ActiveRecord::Schema.define(:version => 20120419104221) do
   end
 
   add_index "pipelines", ["sorter"], :name => "index_pipelines_on_sorter"
+
+  create_table "pipelines_request_types", :id => false, :force => true do |t|
+    t.integer "pipeline_id",     :null => false
+    t.integer "request_type_id", :null => false
+  end
+
+  add_index "pipelines_request_types", ["pipeline_id"], :name => "fk_pipelines_request_types_to_pipelines"
+  add_index "pipelines_request_types", ["request_type_id"], :name => "fk_pipelines_request_types_to_request_types"
 
   create_table "plate_creations", :force => true do |t|
     t.integer  "user_id"
@@ -670,6 +677,10 @@ ActiveRecord::Schema.define(:version => 20120419104221) do
   end
 
   add_index "plate_volumes", ["uploaded_file_name"], :name => "index_plate_volumes_on_uploaded_file_name"
+
+  create_table "product_lines", :force => true do |t|
+    t.string "name", :null => false
+  end
 
   create_table "project_managers", :force => true do |t|
     t.string   "name"
@@ -796,6 +807,7 @@ ActiveRecord::Schema.define(:version => 20120419104221) do
     t.integer  "morphology",                       :default => 0
     t.boolean  "for_multiplexing",                 :default => false
     t.boolean  "billable",                         :default => false
+    t.integer  "product_line_id"
   end
 
   create_table "requests", :force => true do |t|
