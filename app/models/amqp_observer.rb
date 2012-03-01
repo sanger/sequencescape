@@ -1,9 +1,17 @@
 class AmqpObserver < ActiveRecord::Observer
   observe :study, :project, :study_sample, :sample, :asset_link, :request, :asset, :aliquot
 
-  def after_save(record)
+  # The basic behaviour is to buffer any record that we receive for broadcast.
+  def buffer_record(record)
     buffer << record
   end
+  private :buffer_record
+
+  # Ensure we capture records being saved as well as deleted.
+  #
+  # NOTE: Oddly you can't alias_method the after_destroy, it has to be physically defined!
+  alias_method(:after_save, :buffer_record)
+  def after_destroy(record) ; buffer_record(record) ; end
 
   def transaction(&block)
     Thread.current[:buffer] ||= (current_buffer = [])
