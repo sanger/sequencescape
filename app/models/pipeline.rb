@@ -33,6 +33,7 @@ class Pipeline < ActiveRecord::Base
     errors.add_to_base('A Pipeline must have at least one associcated RequestType') if self.request_types.blank?
   end
   private :has_request_types
+<<<<<<< HEAD
 
   belongs_to :control_request_type, :class_name => 'RequestType'
 
@@ -60,6 +61,10 @@ class Pipeline < ActiveRecord::Base
       requests.send(name, *args, &block)
     end
     protected :method_missing
+=======
+
+  belongs_to :control_request_type, :class_name => 'RequestType'
+>>>>>>> Fixed request_types collections in seeds
 
     def inbox(show_held_requests = true, current_page = 1)
       # Build a list of methods to invoke to build the correct request list
