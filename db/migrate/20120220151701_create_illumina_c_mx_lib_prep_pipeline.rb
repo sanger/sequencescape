@@ -1,3 +1,7 @@
+require 'request_type_factory'
+
+Pipeline.send(:include, RequestTypeFactory)
+
 class CreateIlluminaCMxLibPrepPipeline < ActiveRecord::Migration
 
   REQUEST_INFORMATION_TYPES = Hash[RequestInformationType.all.map { |t| [ t.key, t ] }].freeze
@@ -44,6 +48,7 @@ class CreateIlluminaCMxLibPrepPipeline < ActiveRecord::Migration
           request_type.product_line      = product_line
         end
 
+        pipeline.add_control_request_type
 
         pipeline.workflow = LabInterface::Workflow.create!(:name => 'Illumina-C MX Library Preparation') do |workflow|
           workflow.locale   = 'External'

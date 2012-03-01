@@ -142,7 +142,7 @@ Factory.define :pipeline, :class => Pipeline do |p|
   p.next_pipeline_id      nil
   p.previous_pipeline_id  nil
   p.location              {|location| location.association(:location)}
-  p.request_type          {|request_type| request_type.association(:request_type) }
+  p.after_build          {|pipeline| pipeline.request_types << Factory(:request_type ) }
 
   p.after_build do |pipeline|
     pipeline.build_workflow(:name => pipeline.name, :item_limit => 2, :locale => 'Internal') if pipeline.workflow.nil?
