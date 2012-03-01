@@ -36,7 +36,7 @@ class BatchesControllerTest < ActionController::TestCase
             library_tube.aliquots.create!(:sample => @sample, :project => @project, :study => @study, :library => library_tube, :library_type => 'Standard')
           end
           @lane        = Factory(:empty_lane, :qc_state => 'failed')
-          @request_one = pipeline.request_type.create!(
+          @request_one = pipeline.request_types.first.create!(
             :asset => @library, :target_asset => @lane,
             :project => @project, :study => @study, :priority => 99,
             :request_metadata_attributes => { :fragment_size_required_from => 100, :fragment_size_required_to => 200, :read_length => 76 }
@@ -83,9 +83,10 @@ class BatchesControllerTest < ActionController::TestCase
           @library2 = Factory :empty_library_tube
           @library2.parents << @sample
 
-          @request_one = @pipeline.request_type.create!(:asset => @library1, :project => Factory(:project))
+          # todo add a control_request_type to pipeline...
+          @request_one = @pipeline.request_types.first.create!(:asset => @library1, :project => Factory(:project))
           @batch_one.batch_requests.create!(:request => @request_one, :position => 1)
-          @request_two = @pipeline.request_type.create!(:asset => @library2, :project => Factory(:project))
+          @request_two = @pipeline.request_types.first.create!(:asset => @library2, :project => Factory(:project))
           @batch_one.batch_requests.create!(:request => @request_two, :position => 2)
           @batch_one.reload
         end
@@ -170,8 +171,8 @@ class BatchesControllerTest < ActionController::TestCase
             @old_count = Batch.count
             @user.expects(:batches).returns(Batch.all)
 
-            @request_three = @pipeline.request_type.create!(:asset => @library1, :project => Factory(:project))
-            @request_four  = @pipeline.request_type.create!(:asset => @library2, :project => Factory(:project))
+            @request_three = @pipeline.request_types.first.create!(:asset => @library1, :project => Factory(:project))
+            @request_four  = @pipeline.request_types.first.create!(:asset => @library2, :project => Factory(:project))
           end
 
           context "redirect to #show new batch" do
