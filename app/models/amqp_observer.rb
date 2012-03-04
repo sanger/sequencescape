@@ -1,5 +1,10 @@
 class AmqpObserver < ActiveRecord::Observer
-  observe :study, :project, :study_sample, :sample, :asset_link, :request, :asset, :aliquot
+  observe(
+    :order, :submission, :request,
+    :study, :study_sample, :sample, :aliquot, :tag,
+    :project,
+    :asset, :asset_link
+  )
 
   # The basic behaviour is to buffer any record that we receive for broadcast.
   def buffer_record(record)
