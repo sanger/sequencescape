@@ -1,5 +1,3 @@
-class PipelinesRequestType < ActiveRecord::Base; end
-
 class MoveExistingPipelineRequestTypeAssociationToJoinTable < ActiveRecord::Migration
   def self.up
     say 'Copying pipeline request_type_ids into pipeline_request_types'

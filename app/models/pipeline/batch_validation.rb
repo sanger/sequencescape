@@ -9,6 +9,11 @@ module Pipeline::BatchValidation
     end
   end
 
+  def request_types_including_controls
+    request_types + [ control_request_type ]
+  end
+  private :request_types_including_controls
+
   def validation_of_requests(requests, &block)
     throw :no_requests_in_batch if requests.blank?
 
