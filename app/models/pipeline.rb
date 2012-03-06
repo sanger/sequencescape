@@ -89,6 +89,10 @@ class Pipeline < ActiveRecord::Base
     RequestsProxy.new(self)
   end
 
+  def request_types_including_controls
+    [ control_request_type ] + request_types
+  end
+
   belongs_to :next_pipeline,     :class_name => 'Pipeline'
   belongs_to :previous_pipeline, :class_name => 'Pipeline'
 

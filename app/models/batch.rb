@@ -327,17 +327,18 @@ class Batch < ActiveRecord::Base
   def reset!(current_user)
     ActiveRecord::Base.transaction do
       self.requests.each do |request|
-        @submission_id =  request.submission_id
         self.remove_link(request) # Remove link in all types of pipelines
         self.detach_request(request, current_user)
       end
-      unless @submission_id.nil?
-        requests = Request.find_all_by_submission_id(@submission_id).select { |r| r.pending? and r.request_type_id != self.pipeline.request_type_id }
+
+      if requests.last.submission_id.present?
+        requests = Request.find_all_by_submission_id(submission_id, :conditions => [['state = ?', 'pendiing'], ['request_type_id IN ?', self.pipeline.request_type_ids]])
         requests.each do |request|
           request.asset_id = nil
           request.save!
         end
       end
+
       self.destroy
     end
   end
@@ -417,7 +418,7 @@ class Batch < ActiveRecord::Base
     self.shift_item_positions(first_control+1, control_count)
     (1..control_count).each do |index|
       self.batch_requests.create!(
-        :request  => self.pipeline.request_type.create_control!(:asset => asset, :study_id => 198),
+        :request  => self.pipeline.control_request_type.create_control!(:asset => asset, :study_id => 198),
         :position => first_control+index
       )
     end
