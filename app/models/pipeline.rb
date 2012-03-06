@@ -90,6 +90,10 @@ class Pipeline < ActiveRecord::Base
     RequestsProxy.new(self)
   end
 
+  def request_types_including_controls
+    [ control_request_type ] + request_types
+  end
+
   def custom_inbox_actions
     []
   end
