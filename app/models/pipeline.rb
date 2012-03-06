@@ -1,3 +1,8 @@
+class PipelinesRequestType < ActiveRecord::Base
+  belongs_to :pipeline
+  belongs_to :request_type
+end
+
 class Pipeline < ActiveRecord::Base
   include ::ModelExtensions::Pipeline
 
@@ -20,7 +25,8 @@ class Pipeline < ActiveRecord::Base
   has_many :tasks, :through => :workflows
   belongs_to :location
 
-  has_and_belongs_to_many :request_types
+  has_many :pipelines_request_types
+  has_many :request_types, :through => :pipelines_request_types
   validate :has_request_types
 
   def has_request_types
@@ -30,8 +36,32 @@ class Pipeline < ActiveRecord::Base
 
   belongs_to :control_request_type, :class_name => 'RequestType'
 
-  has_many :requests, :through => :request_type, :extend => Pipeline::RequestsInStorage do
-    def inbox(show_held_requests = true, current_page = 1, action = nil)
+  class RequestsProxy
+    include Pipeline::RequestsInStorage
+
+    def initialize(pipeline)
+      @pipeline = pipeline
+    end
+
+    attr_reader :pipeline
+    alias_method(:proxy_owner, :pipeline)
+    private :proxy_owner
+
+    def requests
+      Request.for_pipeline(proxy_owner)
+    end
+    private :requests
+
+    def respond_to?(name, include_private = false)
+      super or requests.respond_to?(name, include_private)
+    end
+
+    def method_missing(name, *args, &block)
+      requests.send(name, *args, &block)
+    end
+    protected :method_missing
+
+    def inbox(show_held_requests = true, current_page = 1)
       # Build a list of methods to invoke to build the correct request list
       actions = [ :unbatched ]
       actions.concat(proxy_owner.custom_inbox_actions)
@@ -47,13 +77,17 @@ class Pipeline < ActiveRecord::Base
         actions << [ :paginate, { :per_page => 50, :page => current_page } ]
       end
 
-      actions.inject(self.include_request_metadata) { |context, action| context.send(*Array(action)) }
+      actions.inject(requests.include_request_metadata) { |context, action| context.send(*Array(action)) }
     end
 
     # Used by the Pipeline class to retrieve the list of requests that are coming into the pipeline.
     def inputs(show_held_requests = false)
       ready_in_storage.send(show_held_requests ? :full_inbox : :pipeline_pending)
     end
+  end
+
+  def requests
+    RequestsProxy.new(self)
   end
 
   def custom_inbox_actions

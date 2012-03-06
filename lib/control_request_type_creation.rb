@@ -1,4 +1,4 @@
-module RequestTypeFactory
+module ControlRequestTypeCreation
   def control_type_name
     key_name.titleize
   end

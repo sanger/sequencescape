@@ -1,6 +1,6 @@
 class AddRequestTypePipelineMToMAssociation < ActiveRecord::Migration
   def self.up
-    create_table :pipelines_request_types, :id => false do |t|
+    create_table :pipelines_request_types do |t|
       t.integer :pipeline_id,     :null => false
       t.integer :request_type_id, :null => false
     end

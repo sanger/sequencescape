@@ -1,3 +1,8 @@
+require 'control_request_type_creation'
+
+Pipeline.send(:include, ControlRequestTypeCreation)
+Pipeline.send(:before_save, :add_control_request_type)
+
 ##################################################################################################################
 # Submission workflows and their associated pipelines.
 ##################################################################################################################
@@ -63,6 +68,7 @@ REQUEST_INFORMATION_TYPES = Hash[RequestInformationType.all.map { |t| [ t.key, t
 def create_request_information_types(pipeline, *keys)
   PipelineRequestInformationType.create!(keys.map { |k| { :pipeline => pipeline, :request_information_type => REQUEST_INFORMATION_TYPES[k] } })
 end
+
 
 ##################################################################################################################
 # Next-gen sequencing

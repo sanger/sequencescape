@@ -25,6 +25,13 @@ class Request < ActiveRecord::Base
     DelegateValidation::AlwaysValidValidator
   end
 
+    named_scope :for_pipeline, lambda { |pipeline|
+      {
+        :joins => [ 'LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id' ],
+        :conditions => [ 'prt.pipeline_id=?', pipeline.id]
+      }
+    }
+
   belongs_to :pipeline
   belongs_to :item
 
