@@ -597,11 +597,12 @@ ActiveRecord::Schema.define(:version => 20120227103826) do
     t.integer  "max_number_of_groups"
     t.boolean  "externally_managed",                          :default => false
     t.string   "group_name"
+    t.integer  "control_request_type_id",                                        :null => false
   end
 
   add_index "pipelines", ["sorter"], :name => "index_pipelines_on_sorter"
 
-  create_table "pipelines_request_types", :id => false, :force => true do |t|
+  create_table "pipelines_request_types", :force => true do |t|
     t.integer "pipeline_id",     :null => false
     t.integer "request_type_id", :null => false
   end
