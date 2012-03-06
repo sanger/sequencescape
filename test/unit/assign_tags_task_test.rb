@@ -15,7 +15,7 @@ class AssignTagsTaskTest < TaskTestBase
       @workflow = Factory :lab_workflow_for_pipeline
       @user = Factory :user
       @controller.stubs(:current_user).returns(@user)
-      @pipeline       = Factory :pipeline, :request_type_id => 1
+      @pipeline       = Factory :pipeline
       @batch          = Factory :batch, :pipeline => @pipeline
       @br        = Factory :batch_request
       @batch.batch_requests << @br
@@ -47,7 +47,7 @@ class AssignTagsTaskTest < TaskTestBase
 
     context "#do_task" do
       setup do
-        @pipeline       = Factory :pipeline, :request_type_id => 1
+        @pipeline       = Factory :pipeline
         @batch          = Factory :batch, :pipeline => @pipeline
         # TODO: Move this into factory. Create library and sample_tube factory
         @sample_tube    = Factory(:sample_tube)

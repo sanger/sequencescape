@@ -2,11 +2,10 @@ require "test_helper"
 
 class BatchTest < ActiveSupport::TestCase
   def setup
-    @pipeline = Pipeline.create!(
-      :name => 'Test pipeline',
-      :workflow => LabInterface::Workflow.create!(:item_limit => 8),
-      :request_type => Factory(:request_type, :request_class => Request, :order => 1)
-    )
+    @pipeline = Factory :pipeline,
+      :name          => 'Test pipeline',
+      :workflow      => LabInterface::Workflow.create!(:item_limit => 8),
+      :request_types => [ Factory(:request_type, :request_class      => Request, :order => 1) ]
   end
 
   context "A batch" do
@@ -63,7 +62,7 @@ class BatchTest < ActiveSupport::TestCase
 
   context 'modifying request positions within a batch' do
     setup do
-      @requests = (1..10).map { |_| @pipeline.request_type.create! }
+      @requests = (1..10).map { |_| @pipeline.request_types.last.create! }
       @batch    = @pipeline.batches.create!(:requests => @requests)
     end
 
@@ -104,8 +103,8 @@ class BatchTest < ActiveSupport::TestCase
   
   context "when batch is created" do
     setup do
-      @request1 = @pipeline.request_type.create!(:asset => Factory(:sample_tube), :target_asset => Factory(:empty_library_tube))
-      @request2 = @pipeline.request_type.create!(:asset => Factory(:sample_tube), :target_asset => Factory(:empty_library_tube))
+      @request1 = @pipeline.request_types.last.create!(:asset => Factory(:sample_tube), :target_asset => Factory(:empty_library_tube))
+      @request2 = @pipeline.request_types.last.create!(:asset => Factory(:sample_tube), :target_asset => Factory(:empty_library_tube))
 
       @batch = @pipeline.batches.create!(:requests => [ @request1, @request2 ])
     end
@@ -140,7 +139,7 @@ class BatchTest < ActiveSupport::TestCase
 
     context "create requests" do
       setup do
-        @requests    = (1..4).map { |_| Factory(:request, :request_type => @pipeline.request_type) }
+        @requests    = (1..4).map { |_| Factory(:request, :request_type => @pipeline.request_types.last) }
         @request_ids = @requests.map { |r| Request.new_proxy(r.id) }
         @batch       = @pipeline.batches.create!(:requests => @requests)
       end
@@ -199,7 +198,7 @@ class BatchTest < ActiveSupport::TestCase
     context "with 1 request" do
       setup do
         @study2 = Factory :study
-        @request1 = @batch.requests.create!(:request_type => @pipeline.request_type, :study => @study1)
+        @request1 = @batch.requests.create!(:request_type => @pipeline.request_types.last, :study => @study1)
       end
 
       should "return correct studies" do
@@ -217,8 +216,8 @@ class BatchTest < ActiveSupport::TestCase
       setup do
         @study2 = Factory :study
         @study3 = Factory :study
-        @request1 = @batch.requests.create!(:request_type => @pipeline.request_type, :study => @study1)
-        @request2 = @batch.requests.create!(:request_type => @pipeline.request_type, :study => @study2)
+        @request1 = @batch.requests.create!(:request_type => @pipeline.request_types.last, :study => @study1)
+        @request2 = @batch.requests.create!(:request_type => @pipeline.request_types.last, :study => @study2)
       end
 
       should "return correct studies" do
@@ -258,8 +257,8 @@ class BatchTest < ActiveSupport::TestCase
         @well2 = Factory :well, :plate => @plate2
       
         @batch.requests = [
-          @pipeline.request_type.create!(:study => @study1, :asset => @well1),
-          @pipeline.request_type.create!(:study => @study1, :asset => @well2)
+          @pipeline.request_types.last.create!(:study => @study1, :asset => @well1),
+          @pipeline.request_types.last.create!(:study => @study1, :asset => @well2)
         ]
       end
       should "return 1 plate id where they are in given study" do
@@ -288,7 +287,7 @@ class BatchTest < ActiveSupport::TestCase
 
     context "create requests" do
       setup do
-        @requests = (1..4).map { |_| Factory(:request, :request_type => @pipeline.request_type) }
+        @requests = (1..4).map { |_| Factory(:request, :request_type => @pipeline.request_types.last) }
         @request_ids = @requests.map { |r| Request.new_proxy(r.id) }
         @batch = @pipeline.batches.create!(:requests => @requests)
       end
@@ -319,8 +318,8 @@ class BatchTest < ActiveSupport::TestCase
 
         @batch = @pipeline.batches.create!
         @request1, @request2 = @batch.requests = [
-          @pipeline.request_type.create!,
-          @pipeline.request_type.create!(:asset => @control)
+          @pipeline.request_types.last.create!,
+          @pipeline.request_types.last.create!(:asset => @control)
         ]
 
         @reason = "PCR not enough"
@@ -353,8 +352,8 @@ class BatchTest < ActiveSupport::TestCase
       setup do
         @batch = @pipeline.batches.create!
         @request1, @request2 = @batch.requests = [
-          @pipeline.request_type.create!,
-          @pipeline.request_type.create!
+          @pipeline.request_types.last.create!,
+          @pipeline.request_types.last.create!
         ]
 
         @reason = "PCR not enough"
@@ -413,8 +412,8 @@ class BatchTest < ActiveSupport::TestCase
         @asset1 = Factory :sample_tube, :barcode => "123456"
         @asset2 = Factory :sample_tube, :barcode => "654321"
 
-        @request1 = @pipeline.request_type.create!(:asset => @asset1)
-        @request2 = @pipeline.request_type.create!(:asset => @asset2)
+        @request1 = @pipeline.request_types.last.create!(:asset => @asset1)
+        @request2 = @pipeline.request_types.last.create!(:asset => @asset2)
 
         @batch = @pipeline.batches.create!
         @batch.batch_requests.create!(:request => @request1, :position => 2)
@@ -464,7 +463,7 @@ class BatchTest < ActiveSupport::TestCase
       context 'with control' do
         setup do
           @control = Factory :sample_tube, :resource => true
-          @request = @pipeline.request_type.create!(:asset => @control)
+          @request = @pipeline.request_types.last.create!(:asset => @control)
           @batch.batch_requests.create!(:request => @request, :position => 3)
         end
 
@@ -491,9 +490,9 @@ class BatchTest < ActiveSupport::TestCase
         end
 
         should "return NEGATIVE difference between batch.request_limit and batch.request_count" do
-          @batch.batch_requests.create!(:request => @pipeline.request_type.create!, :position => 3)
-          @batch.batch_requests.create!(:request => @pipeline.request_type.create!, :position => 4)
-          @batch.batch_requests.create!(:request => @pipeline.request_type.create!, :position => 5)
+          @batch.batch_requests.create!(:request => @pipeline.request_types.last.create!, :position => 3)
+          @batch.batch_requests.create!(:request => @pipeline.request_types.last.create!, :position => 4)
+          @batch.batch_requests.create!(:request => @pipeline.request_types.last.create!, :position => 5)
           assert_equal(-1, @batch.underrun)
         end
       end
@@ -534,11 +533,11 @@ class BatchTest < ActiveSupport::TestCase
           @library1 = Factory :sample_tube
           @library2 = Factory :sample_tube
           @batch.batch_requests.create!(
-            :request  => @pipeline.request_type.create!(:asset => @library1, :target_asset => Factory(:library_tube)),
+            :request  => @pipeline.request_types.last.create!(:asset => @library1, :target_asset => Factory(:library_tube)),
             :position => 1
           )
           @batch.batch_requests.create!(
-            :request  => @pipeline.request_type.create!(:asset => @library2, :target_asset => Factory(:library_tube)),
+            :request  => @pipeline.request_types.last.create!(:asset => @library2, :target_asset => Factory(:library_tube)),
             :position => 2
           )
 
@@ -646,8 +645,8 @@ class BatchTest < ActiveSupport::TestCase
     context "#reset!" do
       setup do
         @batch = @pipeline.batches.create!
-        @started_request   = @pipeline.request_type.create!(:state => 'pending',   :target_asset => Factory(:sample_tube))
-        @cancelled_request = @pipeline.request_type.create!(:state => 'cancelled', :target_asset => Factory(:sample_tube))
+        @started_request   = @pipeline.request_types.last.create!(:state => 'pending',   :target_asset => Factory(:sample_tube))
+        @cancelled_request = @pipeline.request_types.last.create!(:state => 'cancelled', :target_asset => Factory(:sample_tube))
         @batch.requests << @started_request << @cancelled_request
 
         @batch.expects(:destroy)    # Always gets destroyed
@@ -791,8 +790,8 @@ class BatchTest < ActiveSupport::TestCase
         @task3 = Factory :task, :workflow => @library_prep_pipeline.workflow, :name => "Task 3", :sorted => 2
 
         @batch = @library_prep_pipeline.batches.create!(:state => 'started')
-        @batch.requests << @library_prep_pipeline.request_type.create!(:state => 'started')
-        @batch.requests << @library_prep_pipeline.request_type.create!(:state => 'started')
+        @batch.requests << @library_prep_pipeline.request_types.last.create!(:state => 'started')
+        @batch.requests << @library_prep_pipeline.request_types.last.create!(:state => 'started')
 
         @desc1 = mock("Descriptor")
         @desc1.stubs(:name).returns("task_id")

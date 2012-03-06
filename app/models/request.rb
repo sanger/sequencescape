@@ -280,7 +280,11 @@ class Request < ActiveRecord::Base
                           submission.next_requests(self)
                         end
 
-    eligible_requests.select { |r| (next_pipeline.nil? or next_pipeline.request_type_id == r.request_type_id) and block.call(r) }
+    eligible_requests.select do |r|
+      ( next_pipeline.nil? or
+        next_pipeline.request_types_including_controls.include?(r.request_type_id)
+      ) and block.call(r)
+    end
   end
 
   def previous_failed_requests

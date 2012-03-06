@@ -24,7 +24,7 @@ class AttachInfiniumBarcodeTest < TaskTestBase
 
     context "#do_task" do
       setup do
-        @pipeline       = Factory :pipeline, :request_type_id => 1
+        @pipeline       = Factory :pipeline
         @batch          = Factory :batch, :pipeline => @pipeline
         @plate1 = Factory :plate
         @plate2 = Factory :plate
