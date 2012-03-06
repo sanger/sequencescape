@@ -1,6 +1,6 @@
-require 'request_type_factory'
+require 'control_request_type_creation'
 
-Pipeline.send(:include, RequestTypeFactory)
+Pipeline.send(:include, ControlRequestTypeCreation)
 
 class CreateIlluminaCMxLibPrepPipeline < ActiveRecord::Migration
 
