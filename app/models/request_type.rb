@@ -14,7 +14,8 @@ class RequestType < ActiveRecord::Base
   include Named
 
   has_many :requests
-  has_and_belongs_to_many :pipelines
+  has_many :pipelines_request_types
+  has_many :pipelines, :through => :pipelines_request_types
 
   # Returns a collect of pipelines for which this RequestType is valid control.
   # ...so only valid for ControlRequest producing RequestTypes...

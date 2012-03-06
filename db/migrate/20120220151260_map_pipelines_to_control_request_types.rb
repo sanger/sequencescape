@@ -1,5 +1,5 @@
-require 'request_type_factory'
-Pipeline.send(:include, RequestTypeFactory)
+require 'control_request_type_creation'
+Pipeline.send(:include, ControlRequestTypeCreation)
 
 # class Pipeline < ActiveRecord::Base
 #   has_and_belongs_to_many :request_types
