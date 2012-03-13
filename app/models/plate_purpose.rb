@@ -46,12 +46,23 @@ class PlatePurpose < ActiveRecord::Base
   # all of the TransferRequest instances to the state specified.  If contents is blank then the change is assumed to 
   # relate to all wells of the plate, otherwise only the selected ones are updated.
   def transition_to(plate, state, contents = nil)
-    contents ||= []
-    plate.transfer_requests.each do |request|
-      next unless contents.empty? or contents.include?(request.target_asset.map.description)
-      request.update_attributes!(:state => state)
-      Request.where_is_not_a?(TransferRequest).for_submission_id(request.submission_id).for_asset_id(request.asset.stock_wells.map(&:id)).map(&:fail!) if state == 'failed'
+    wells = plate.wells
+    wells = wells.located_at(contents) unless contents.blank?
+
+    well_to_requests = wells.map { |well| [well, well.requests_as_target] }.reject { |_,r| r.empty? }
+    Request.update_all("state=#{state.inspect}", [ 'id IN (?)', well_to_requests.map(&:last).flatten ])
+    return unless state == 'failed'
+
+    # Load all of the requests that come from the stock wells that should be failed.  Note that we can't simply change
+    # their state, we have to actually use the statemachine method to do this to get the correct behaviour.
+    conditions, parameters = [], []
+    well_to_requests.each do |well, requests|
+      submission_ids, stock_wells = requests.map(&:submission_id), well.stock_wells.map(&:id)
+      next if stock_wells.empty?
+      conditions << '(submission_id IN (?) AND asset_id IN (?))'
+      parameters.concat([ submission_ids, stock_wells ])
     end
+    Request.where_is_not_a?(TransferRequest).all(:conditions => [ "(#{conditions.join(' OR ')})", *parameters ]).map(&:fail!)
   end
 
   def pool_wells(wells)
