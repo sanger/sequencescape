@@ -1,5 +1,5 @@
 class PipelinesController < ApplicationController
-  before_filter :find_pipeline_by_id, :only => [:edit, :update, :show, :setup_inbox,
+  before_filter :find_pipeline_by_id, :only => [ :show, :setup_inbox,
                                    :set_inbox, :training_batch, :show_comments, :activate, :deactivate, :destroy, :batches]
 
   def index
@@ -10,81 +10,6 @@ class PipelinesController < ApplicationController
       format.html
       format.xml { render :xml => @pipelines.to_xml}
     end
-  end
-
-  def new
-    unless current_user.is_administrator?
-      flash[:error]  = "User #{current_user.name} can't create a new pipeline"
-      redirect_to :action => "index"
-      return
-    end
-
-    @pipeline  = Pipeline.new
-    @workflows = LabInterface::Workflow.find(:all)
-    @pipelines = Pipeline.all
-    @all_rits  = RequestInformationType.all(:order => "name ASC")
-    @rits      = []
-  end
-
-  def edit
-    unless current_user.is_administrator?
-      flash[:error]  = "User #{current_user.name} can't edit a pipeline definition"
-      redirect_to :action => "index"
-      return
-    end
-
-    @workflows = LabInterface::Workflow.all
-    @pipelines = Pipeline.all
-    @all_rits = RequestInformationType.all(:order => "name ASC")
-    @rits = @pipeline.request_information_types
-  end
-
-  # FIXME[sd9]: This create logic is just broken
-  def create
-    unless current_user.is_administrator?
-      flash[:error]  = "User #{current_user.name} can't create a new pipeline"
-      redirect_to :action => "index"
-      return
-    end
-    
-    @pipeline = Pipeline.new(params[:pipeline])
-
-    if @pipeline.save
-      workflow = LabInterface::Workflow.find(params[:workflow][:id])
-      workflow.pipeline = @pipeline
-      workflow.save
-      flash[:notice] = 'Pipeline was successfully created.'
-      redirect_to :action => "setup_inbox", :id => @pipeline.id
-    else
-      pipeline_name = params[:pipeline][:name]
-      flash[:error]  = "Pipeline could not be created"
-      flash[:error] << ": '#{pipeline_name}' already exists" if Pipeline.find_by_name(pipeline_name)
-      redirect_to :action => "new"
-    end
-  end
-
-  def update
-    workflow = @pipeline.workflows.first
-    unless workflow.nil?
-      workflow.pipeline = nil
-    end
-    if  params["request_information_type_id"]
-      request_information_type = params["request_information_type_id"].reject {|k,v| v == "0"}
-      @pipeline.request_information_types.clear
-      @pipeline.request_information_types << RequestInformationType.find(request_information_type.keys)
-      @pipeline.reload
-    end
-    if @pipeline.update_attributes(params[:pipeline])
-      workflow = LabInterface::Workflow.find(params[:workflow][:id])
-      workflow.pipeline = @pipeline
-      workflow.save
-      flash[:notice] = "Pipeline details updated"
-      redirect_to :action => "setup_inbox", :id => @pipeline.id
-    else
-      flash[:notice] = "Failed to update attributes for pipeline"
-      render :action => "edit", :id => @pipeline.id
-    end
-
   end
 
   def show
