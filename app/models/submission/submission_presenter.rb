@@ -30,7 +30,7 @@ class PresenterSkeleton
   def lanes_from_request_options
     library_request       = RequestType.find(order.request_types.first)
     sequencing_request    = RequestType.find(order.request_types.last)
-    sequencing_multiplier = order.request_options[:multiplier][sequencing_request.id.to_s].to_i
+    sequencing_multiplier = order.request_options.fetch('multiplier', {}).fetch(sequencing_request.id.to_s, 1)
 
     if library_request.for_multiplexing?
       sequencing_multiplier
