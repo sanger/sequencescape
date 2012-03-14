@@ -1,6 +1,6 @@
 Given /^I have a pipeline called "([^\"]*)"$/ do |name|
   request_type = Factory :request_type
-  pipeline = Factory :pipeline, :name => name, :request_type => request_type
+  pipeline = Factory :pipeline, :name => name, :request_types => [request_type]
   pipeline.workflow.update_attributes!(:item_limit => 8)
   task = Factory :task, :name => "Task1", :workflow => pipeline.workflow
 end
@@ -28,7 +28,7 @@ end
 def create_request_for_pipeline(pipeline_name, options = {})
   pipeline = Pipeline.find_by_name(pipeline_name) or raise StandardError, "Cannot find pipeline #{pipeline_name.inspect}"
   request_metadata_attributes = { :read_length => 76, :fragment_size_required_from => 100, :fragment_size_required_to => 200, :library_type => 'Standard' }
-  Factory(:request, options.merge(:request_type => pipeline.request_type, :asset => Factory(pipeline_name_to_asset_type(pipeline_name)), :request_metadata_attributes => request_metadata_attributes)).tap do |request|
+  Factory(:request, options.merge(:request_type => pipeline.request_types.last, :asset => Factory(pipeline_name_to_asset_type(pipeline_name)), :request_metadata_attributes => request_metadata_attributes)).tap do |request|
     request.asset.update_attributes!(:location => pipeline.location)
   end
 end

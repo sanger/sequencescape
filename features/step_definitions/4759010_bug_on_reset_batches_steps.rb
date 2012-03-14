@@ -31,7 +31,7 @@ Given /^a batch in "MX Library Preparation \[NEW\]" has been setup for feature 4
 
   10.times do |_|
     # Ensure that the source and destination assets are setup correctly
-    source      = Factory(pipeline.request_type.asset_type.underscore, :location => pipeline.location)
+    source      = Factory(pipeline.request_types.last.asset_type.underscore, :location => pipeline.location)
     destination = Factory("empty_#{pipeline.asset_type.underscore}")
 
     request  = Factory :request, :request_type => pipeline.request_type, :submission_id => submission.id, :asset => source, :target_asset => destination
