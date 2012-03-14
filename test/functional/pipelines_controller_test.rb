@@ -34,14 +34,6 @@ class PipelinesControllerTest < ActionController::TestCase
         should_respond_with :success
       end
 
-      context "#edit" do
-        setup do
-          @pipeline = Factory :pipeline
-          get :edit, :id => @pipeline.id.to_s
-        end
-
-        should_respond_with :success
-      end
     end
 
     context "#user is not administrator" do
@@ -58,15 +50,6 @@ class PipelinesControllerTest < ActionController::TestCase
         should_respond_with :redirect
       end
 
-      context "#edit" do
-        setup do
-          @pipeline = Factory :pipeline
-          get :edit, :id => @pipeline.id.to_s
-        end
-
-        should_respond_with :redirect
-      end
-      
       context "#create" do
         setup do
           @pipeline = Factory :pipeline
