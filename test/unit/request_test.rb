@@ -16,9 +16,9 @@ class RequestTest < ActiveSupport::TestCase
         #@submission  = Factory(:order_with_submission, :request_types => [@cherrypick_request_type, @genotyping_request_type].map(&:id)).submission
         @submission  = Factory::submission(:request_types => [@cherrypick_request_type, @genotyping_request_type].map(&:id), :asset_group_name => 'to avoid asset errors')
         @item = Factory :item, :submission => @submission
-
-        @genotype_pipeline = Factory :pipeline, :name =>"genotyping pipeline", :request_type => @genotyping_request_type
-        @cherrypick_pipeline = Factory :pipeline, :name => "cherrypick pipeline", :request_type => @cherrypick_request_type, :next_pipeline_id => @genotype_pipeline.id, :asset_type => 'LibraryTube'
+        
+        @genotype_pipeline = Factory :pipeline, :name =>"genotyping pipeline", :request_types => [ @genotyping_request_type ]
+        @cherrypick_pipeline = Factory :pipeline, :name => "cherrypick pipeline", :request_types => [ @cherrypick_request_type ], :next_pipeline_id => @genotype_pipeline.id, :asset_type => 'LibraryTube'
 
         @request1 = Factory(
           :request_without_assets,
@@ -210,11 +210,10 @@ class RequestTest < ActiveSupport::TestCase
             @request.fail!
           end
 
-          # should 'to reset' do
-          #   @request.state = 'started'
-          #   @request.reset!
-          # end
-
+          should 'to reset' do
+            @request.state = 'started'
+            @request.reset!
+          end
         end
       end
 

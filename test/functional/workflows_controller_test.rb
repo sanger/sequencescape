@@ -116,9 +116,9 @@ class WorkflowsControllerTest < ActionController::TestCase
         @lane2  = Factory :lane
         @lane2.parents << @library2
 
-        @item1 = @pipeline.request_type.create!(:asset => @library1, :target_asset => @lane1)
+        @item1 = @pipeline.request_types.last.create!(:asset => @library1, :target_asset => @lane1)
         @batch.batch_requests.create!(:request => @item1, :position => 1)
-        @item2 = @pipeline.request_type.create!(:asset => @library2, :target_asset => @lane2)
+        @item2 = @pipeline.request_types.last.create!(:asset => @library2, :target_asset => @lane2)
         @batch.batch_requests.create!(:request => @item2, :position => 2)
 
         Factory :descriptor, :task => @task2, :name => "Chip Barcode", :kind => "ExternalBarcode", :selection => {}

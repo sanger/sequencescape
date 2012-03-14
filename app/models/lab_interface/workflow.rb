@@ -50,6 +50,7 @@ class LabInterface::Workflow < ActiveRecord::Base
 
         #copy of the pipeline
         new_workflow.build_pipeline(self.pipeline.attributes.merge(:workflow => new_workflow))
+        new_workflow.pipeline.request_types = self.pipeline.request_types
         new_workflow.pipeline.name += suffix
         new_workflow.pipeline.save!
       end
