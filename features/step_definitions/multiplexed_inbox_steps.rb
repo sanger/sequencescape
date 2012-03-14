@@ -8,7 +8,7 @@ Given /^that there are (\d+) requests in that pipeline$/ do |number_requests|
   number_requests.to_i.times do
     request  = Factory(
       :request,
-      :request_type => @pipeline.request_type,
+      :request_type => @pipeline.request_types.last,
       :asset        => Factory(asset_type)
     )
 
