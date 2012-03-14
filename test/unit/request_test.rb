@@ -59,7 +59,6 @@ class RequestTest < ActiveSupport::TestCase
           @request2.reload
         end
         should "set the target asset of request 1 to be the asset of request 2" do
-          debugger
           assert_equal @request1.target_asset, @request2.asset
         end
       end
