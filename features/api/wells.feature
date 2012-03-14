@@ -35,11 +35,6 @@ Feature: Access wells through the API
           "actions": {
             "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
           },
-          "plate": {
-            "actions": {
-              "read": "http://www.example.com/api/1/11111111-2222-3333-4444-555555555555"
-            }
-          },
 
           "aliquots": [
             {

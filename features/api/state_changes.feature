@@ -20,7 +20,7 @@ Feature: Access state changes through the API
 
     Given a "Stock plate" plate called "Source plate" exists
       And all wells on the plate "Source plate" have unique samples
-      And a "Stock plate" plate called "Destination plate" exists
+      And a "Pulldown QC plate" plate called "Destination plate" exists
       And the UUID for the plate "Source plate" is "00000000-1111-2222-3333-000000000001"
       And the UUID for the plate "Destination plate" is "00000000-1111-2222-3333-000000000002"
       And the "Transfer columns 1-12" transfer template has been used between "Source plate" and "Destination plate"
