@@ -172,7 +172,7 @@ ActionController::Routing::Routes.draw do |map|
   # TODO: Decide if this route and the associated controller are actually required (used by library prep pipeline)
   map.connect 'pipelines/assets/new/:id', :controller => 'pipelines/assets', :action => 'new', :conditions => { :method => :get }
 
-  map.resources :pipelines, :member => { :reception => :get, :show_comments => :get}, :collection => { :update_priority => :post }
+  map.resources :pipelines, :member => { :reception => :get, :show_comments => :get}, :collection => { :update_priority => :post }, :except => [ :edit, :update, :create, :new ]
 
   map.resource :search, :controller => 'search', :only => [:new, :index]
 
