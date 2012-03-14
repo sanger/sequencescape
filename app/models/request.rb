@@ -297,7 +297,7 @@ class Request < ActiveRecord::Base
 
     eligible_requests.select do |r|
       ( next_pipeline.nil? or
-        next_pipeline.request_types_including_controls.include?(r.request_type_id)
+        next_pipeline.request_types_including_controls.include?(r.request_type)
       ) and block.call(r)
     end
   end
