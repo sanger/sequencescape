@@ -149,7 +149,7 @@ Given /^I have a batch with (\d+) requests? for the "(#{SEQUENCING_PIPELINES})" 
       :request_options => {
         :fragment_size_required_from => 1,
         :fragment_size_required_to   => 100,
-        :read_length                 => pipeline.request_type.request_class_name.constantize::Metadata.attribute_details_for(:read_length).to_field_info.selection.first
+        :read_length                 => pipeline.request_types.last.request_class_name.constantize::Metadata.attribute_details_for(:read_length).to_field_info.selection.first
       }
     }
   end

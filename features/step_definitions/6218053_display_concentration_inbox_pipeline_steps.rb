@@ -3,7 +3,7 @@ Given /^Pipeline "([^"]*)" and a setup for 6218053$/ do |name|
 asset_type = pipeline_name_to_asset_type(name)
 
  1.times do                                
-   request  = Factory :request, :request_type => pipeline.request_type, :asset => Factory(asset_type)
+   request  = Factory :request, :request_type => pipeline.request_type.last, :asset => Factory(asset_type)
    request.asset.location    = pipeline.location
    request.asset.save!
  end
