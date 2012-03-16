@@ -15,8 +15,9 @@ class AmqpObserver < ActiveRecord::Observer
   # Ensure we capture records being saved as well as deleted.
   #
   # NOTE: Oddly you can't alias_method the after_destroy, it has to be physically defined!
-  alias_method(:after_save, :buffer_record)
-  def after_destroy(record) ; buffer_record(record) ; end
+  [ :after_save, :after_destroy ].each do |name|
+    class_eval(%Q{def #{name}(record) ; buffer_record(record) ; end})
+  end
 
   def transaction(&block)
     Thread.current[:buffer] ||= (current_buffer = [])
