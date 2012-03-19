@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120227103826) do
+ActiveRecord::Schema.define(:version => 20120319145254) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -1142,6 +1142,7 @@ ActiveRecord::Schema.define(:version => 20120227103826) do
     t.text     "submission_parameters"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "visible",               :default => true, :null => false
   end
 
   add_index "submission_templates", ["name"], :name => "index_submission_templates_on_name"
