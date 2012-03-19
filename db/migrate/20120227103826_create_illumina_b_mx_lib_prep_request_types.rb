@@ -31,6 +31,9 @@ class CreateIlluminaBMxLibPrepRequestTypes < ActiveRecord::Migration
         :for_multiplexing  => true,
         :product_line      => product_line
       )
+      
+      pipeline.add_control_request_type
+      
     end
   end
 
