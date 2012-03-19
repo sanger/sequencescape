@@ -332,8 +332,8 @@ class Batch < ActiveRecord::Base
         self.detach_request(request, current_user)
       end
 
-      if requests.last.submission_id.present?
-        requests = Request.find_all_by_submission_id(submission_id, :conditions => [['state = ?', 'pendiing'], ['request_type_id IN ?', self.pipeline.request_type_ids]])
+      if self.requests.last.submission_id.present?
+        requests = Request.find_all_by_submission_id(self.requests.last.submission_id, :conditions => ['state = ? AND request_type_id NOT IN (?)', 'pending', self.pipeline.request_type_ids])
         requests.each do |request|
           request.asset_id = nil
           request.save!
