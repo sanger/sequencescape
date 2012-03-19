@@ -4,7 +4,7 @@
 # across two.
 module Pipeline::InboxGroupedBySubmission
   def self.included(base)
-    base.has_many :inbox, :through => :request_type, :source => :requests, :extend => [ Pipeline::RequestsInStorage, Pagination ]
+    base.has_many :inbox, :class_name => 'Request', :extend => [ Pipeline::RequestsInStorage, Pagination ]
   end
 
   # Always group by submission

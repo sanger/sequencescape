@@ -1,6 +1,6 @@
 module Pipeline::InboxUngrouped
   def self.included(base)
-    base.has_many :inbox, :through => :request_type, :source => :requests, :extend => Pipeline::RequestsInStorage
+    base.has_many :inbox, :class_name => 'Request', :extend => Pipeline::RequestsInStorage
   end
 
   # Never group by submission
