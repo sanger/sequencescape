@@ -39,7 +39,7 @@ end
 
 Given /^I have (\d+) requests for "([^"]*)" that are part of the same submission$/ do |count, pipeline_name|
   pipeline   = Pipeline.find_by_name(pipeline_name) or raise StandardError, "Cannot find pipeline #{pipeline_name.inspect}"
-  submission = Factory(:submission, :request_types => [ pipeline.request_type.id ])
+  submission = Factory(:submission, :request_types => [ pipeline.request_types.last.id ])
   (1..count.to_i).each do |_|
     create_request_for_pipeline(pipeline_name, :submission => submission)
   end
@@ -175,7 +175,7 @@ end
 Given /^the pipeline "([^\"]+)" accepts "([^\"]+)" requests$/ do |pipeline_name, request_name|
   pipeline     = Pipeline.find_by_name(pipeline_name) or raise StandardError, "Cannot find pipeline #{pipeline_name.inspect}"
   request_type = RequestType.find_by_name(request_name) or raise StandardError, "Cannot find request type #{request_name.inspect}"
-  pipeline.update_attributes!(:request_type => request_type)
+  pipeline.update_attributes!(:request_types => [request_type])
 end
 
 Given /^the last request is in the "([^\"]+)" state$/ do |state|
