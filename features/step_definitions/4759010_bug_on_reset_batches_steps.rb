@@ -8,8 +8,8 @@ Given /^a batch in "Cluster formation PE" has been setup for feature 4759010$/ d
   pending
 end
 
-Given /^a batch in "MX Library Preparation \[NEW\]" has been setup for feature 4759010$/ do         
-  pipeline    = Pipeline.find_by_name("MX Library Preparation [NEW]") or raise StandardError, "Cannot find pipeline '#{ name }'"
+Given /^a batch in "Illumina-B MX Library Preparation" has been setup for feature 4759010$/ do
+  pipeline    = Pipeline.find_by_name("Illumina-B MX Library Preparation") or raise StandardError, "Cannot find pipeline 'Illumina-B MX Library Preparation'"
   batch       = Factory :batch, :pipeline => pipeline, :state => :started
   asset_group = Factory(:asset_group)
 
@@ -22,7 +22,7 @@ Given /^a batch in "MX Library Preparation \[NEW\]" has been setup for feature 4
       :library_type => 'Standard'
     },
     :request_types => [
-      RequestType.find_by_key('multiplexed_library_creation'),
+      RequestType.find_by_key('illumina_b_multiplexed_library_creation'),
       RequestType.find_by_key('paired_end_sequencing')
     ].map(&:id)
   )
@@ -34,7 +34,7 @@ Given /^a batch in "MX Library Preparation \[NEW\]" has been setup for feature 4
     source      = Factory(pipeline.request_types.last.asset_type.underscore, :location => pipeline.location)
     destination = Factory("empty_#{pipeline.asset_type.underscore}")
 
-    request  = Factory :request, :request_type => pipeline.request_type, :submission_id => submission.id, :asset => source, :target_asset => destination
+    request  = Factory :request, :request_type => pipeline.request_types.last, :submission_id => submission.id, :asset => source, :target_asset => destination
 
     batch.requests << request 
     asset_group.assets << source
@@ -43,11 +43,11 @@ Given /^a batch in "MX Library Preparation \[NEW\]" has been setup for feature 4
                                                      
   pipeline = Pipeline.find_by_name("Cluster formation PE") or raise StandardError, "Cannot find pipeline '#{ name }'"
   
-  request  = Factory :request, :request_type => pipeline.request_type, :submission_id => submission.id, :asset => Factory(asset_type)
+  request  = Factory :request, :request_type => pipeline.request_types.last, :submission_id => submission.id, :asset => Factory(asset_type)
   request.asset.location    = pipeline.location
   request.asset.save!
   batch.requests << request
-  asset_group.assets << request.asset       
+  asset_group.assets << request.asset
 end    
  
 When /^I select all requests$/ do 

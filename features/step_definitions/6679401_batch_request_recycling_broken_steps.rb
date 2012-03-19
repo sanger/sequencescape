@@ -97,12 +97,12 @@ def build_batch_for(name, count, &block)
   LinearSubmission.build!(
     :study    => Factory(:study),
     :project  => Factory(:project),
-    :workflow => pipeline.request_type.workflow,
+    :workflow => pipeline.request_types.last.workflow,
     :user     => user,
 
     # Setup the assets so that they have samples and they are scanned into the correct lab.
     :assets        => assets,
-    :request_types => [ pipeline.request_type.id ],
+    :request_types => pipeline.request_type_ids,
 
     # Request parameter options
     :request_options => submission_details[:request_options]
