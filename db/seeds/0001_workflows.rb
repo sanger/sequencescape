@@ -114,7 +114,7 @@ end.tap do |pipeline|
   create_request_information_types(pipeline, 'fragment_size_required_from', 'fragment_size_required_to', 'library_type')
 end
 
-MultiplexedLibraryCreationPipeline.create!(:name => 'MX Library Preparation [NEW]') do |pipeline|
+MultiplexedLibraryCreationPipeline.create!(:name => 'Illumina-B MX Library Preparation') do |pipeline|
   pipeline.asset_type          = 'LibraryTube'
   pipeline.sorter              = 0
   pipeline.automated           = false
@@ -123,7 +123,25 @@ MultiplexedLibraryCreationPipeline.create!(:name => 'MX Library Preparation [NEW
 
   pipeline.location = Location.first(:conditions => { :name => 'Library creation freezer' }) or raise StandardError, "Cannot find 'Library creation freezer' location"
 
-  pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'multiplexed_library_creation', :name => 'Multiplexed library creation') do |request_type|
+  pipeline.request_types << RequestType.create!(
+    :workflow => next_gen_sequencing,
+    :key => 'multiplexed_library_creation',
+    :name => 'Multiplexed library creation'
+  ) do |request_type|
+    request_type.billable          = true
+    request_type.initial_state     = 'pending'
+    request_type.asset_type        = 'SampleTube'
+    request_type.order             = 1
+    request_type.multiples_allowed = false
+    request_type.request_class     = MultiplexedLibraryCreationRequest
+    request_type.for_multiplexing  = true
+  end
+  
+  pipeline.request_types << RequestType.create!(
+    :workflow => Submission::Workflow.find_by_key('short_read_sequencing'),
+    :key      => 'illumina_b_multiplexed_library_creation',
+    :name     => 'Illumina-B Multiplexed Library Creation'
+  ) do |request_type|
     request_type.billable          = true
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'SampleTube'
@@ -133,7 +151,7 @@ MultiplexedLibraryCreationPipeline.create!(:name => 'MX Library Preparation [NEW
     request_type.for_multiplexing  = true
   end
 
-  pipeline.workflow = LabInterface::Workflow.create!(:name => 'New MX Library Preparation') do |workflow|
+  pipeline.workflow = LabInterface::Workflow.create!(:name => 'Illumina-B MX Library Preparation') do |workflow|
     workflow.locale   = 'External'
   end.tap do |workflow|
     [
