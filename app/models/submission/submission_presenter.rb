@@ -266,7 +266,7 @@ class SubmissionCreater < PresenterSkeleton
   end
 
   def templates
-    @templates ||= SubmissionTemplate.all
+    @templates ||= SubmissionTemplate.visible
   end
 
   def template_id
