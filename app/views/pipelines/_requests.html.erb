@@ -11,6 +11,7 @@
           <th id="priority_flag"  style='text-align: center'><%= link_to image_tag("icon_0_flag.png", :size=>"16x16"), "javascript:void(0);" %></th>
           <th><%= link_to "Previous requests", "javascript:void(0);" %></th>
         <% end %>
+        <th><%= link_to 'Product Line', 'javascript:void(0);' %></th>
         <th><%= link_to "Submission ID", "javascript:void(0);" %></th>
         <th><%= link_to "Request ID", "javascript:void(0);" %></th>
         <th><%= link_to "Name", "javascript:void(0);" %></th>
@@ -46,8 +47,15 @@
               <%= render :partial => "previous_failed_requests", :locals => { :request => request } %>
             </td>
           <% end %>
-          <td class="request" width='5%'><%= link_to request.submission_id, submission_path(request.submission) %></td>
-          <td  width='5%'><%= link_to request.id, request_path(request) %></td>
+          <td>
+            <%= request.request_type.product_line.try(:name) %>
+          </td>
+          <td class="request" width='5%'>
+            <%= link_to request.submission_id, submission_path(request.submission) %>
+          </td>
+          <td  width='5%'>
+            <%= link_to request.id, request_path(request) %>
+          </td>
           <td  width='10%'><%= link_to request.asset.try(:name), asset_path(request.asset) %></td>
           
           <% unless request_comments.empty? -%>
