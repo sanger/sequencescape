@@ -1,4 +1,4 @@
-class CreateIlluminaCSubmissionTemplates < ActiveRecord::Migration
+class CreateMoreIlluminaCSubmissionTemplates < ActiveRecord::Migration
   def self.up
     SubmissionTemplate.find(:all, :conditions => ['name LIKE ?','Library creation%']).each do |submission_template|
       submission_parameters = submission_template.submission_parameters[:request_type_ids_list]
