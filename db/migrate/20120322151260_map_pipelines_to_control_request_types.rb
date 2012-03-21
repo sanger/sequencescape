@@ -14,6 +14,7 @@ class MapPipelinesToControlRequestTypes < ActiveRecord::Migration
         add_column(:pipelines, :control_request_type_id, :integer, :null => false)
 
         Pipeline.all.each do |pipeline|
+          say "Adding Control RequestType to pipeline: #{pipeline.name}"
           pipeline.add_control_request_type.save!
         end
       end
@@ -21,6 +22,7 @@ class MapPipelinesToControlRequestTypes < ActiveRecord::Migration
 
     def down
       remove_column(:pipelines, :control_request_type_id)
+      say "Removing Control RequestTypes"
       RequestType.find_all_by_request_class_name(ControlRequest.to_s).each(&:destroy)
     end
   end
