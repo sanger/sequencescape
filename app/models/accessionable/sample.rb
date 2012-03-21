@@ -23,15 +23,13 @@ module Accessionable
       end
 
       #TODO maybe unify this with the previous loop
-      ::Sample::ArrayExpressFields.each do |datum|
-        value = sample.sample_metadata.send(datum)
-        next unless value.present?
-        @tags << ArrayExpressTag.new(label_scope, datum, value)
-      end
-      ::Sample::EgaFields.each do |datum|
-        value = sample.sample_metadata.send(datum)
-        next unless value.present?
-        @tags << EgaTag.new(label_scope, datum, value)
+      # Don't send managed AE data to SRA
+      if !sample.accession_service.private?
+        ::Sample::ArrayExpressFields.each do |datum|
+          value = sample.sample_metadata.send(datum)
+          next unless value.present?
+          @tags << ArrayExpressTag.new(label_scope, datum, value)
+        end
       end
 
       sample_hold = sample.sample_metadata.sample_sra_hold
