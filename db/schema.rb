@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120319145254) do
+ActiveRecord::Schema.define(:version => 20120320165133) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -482,7 +482,7 @@ ActiveRecord::Schema.define(:version => 20120319145254) do
 
   add_index "lab_events", ["batch_id"], :name => "index_lab_events_on_batch_id"
   add_index "lab_events", ["created_at"], :name => "index_lab_events_on_created_at"
-  add_index "lab_events", ["description", "eventful_type"], :name => "index_lab_events_find_flowcell", :length => {"eventful_type"=>nil, "description"=>"20"}
+  add_index "lab_events", ["description", "eventful_type"], :name => "index_lab_events_find_flowcell", :length => {"description"=>"20", "eventful_type"=>nil}
   add_index "lab_events", ["eventful_id"], :name => "index_lab_events_on_eventful_id"
   add_index "lab_events", ["eventful_type"], :name => "index_lab_events_on_eventful_type"
 
@@ -1285,6 +1285,8 @@ ActiveRecord::Schema.define(:version => 20120319145254) do
     t.string   "destination_type"
     t.string   "transfers",        :limit => 1024
   end
+
+  add_index "transfers", ["source_id"], :name => "source_id_idx"
 
   create_table "users", :force => true do |t|
     t.string   "login"
