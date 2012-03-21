@@ -4,7 +4,7 @@ class CreateIlluminaASubmissionTemplates < ActiveRecord::Migration
       submission_parameters = submission_template.submission_parameters.dup
       old_request_type = RequestType.find(submission_parameters[:request_type_ids_list].last.first)
       new_request_type = RequestType.find_by_key("illumina_a_#{old_request_type.key}")
-      submission_parameters[:request_type_ids_list][-1] = [new_request_type.id]
+      submission_parameters[:request_type_ids_list].last = [new_request_type.id]
 
       SubmissionTemplate.create!({
         :name => "Illumina-A - #{submission_template.name}",
@@ -16,8 +16,6 @@ class CreateIlluminaASubmissionTemplates < ActiveRecord::Migration
   end
 
   def self.down
-    SubmissionTemplate.find(:all, :conditions => ['name LIKE ?', 'Illumina-A - %']).each do |submission_template|
-      submission_template.destroy!
-    end
+    SubmissionTemplate.find(:all, :conditions => ['name LIKE ?', 'Illumina-A - %']).each(&:destroy)
   end
 end
