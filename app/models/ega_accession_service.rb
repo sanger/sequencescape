@@ -27,6 +27,11 @@ class  EgaAccessionService < AccessionService
     policy =  Accessionable::Policy.new(study)
     submit(user, policy)
   end
+
+  def private?
+    true
+  end
+
   #def submit(user, *accessionables)
     #accessionables.each(&:protect)
 

@@ -126,6 +126,11 @@ class AccessionService
   def dac_visibility(study)
     Protect
   end
+
+  def private?
+    false
+  end
+
 private
 
   def accession_study_set_xml_quarantine(study, studydata)
