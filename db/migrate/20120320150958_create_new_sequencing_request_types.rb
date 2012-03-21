@@ -4,7 +4,7 @@ class CreateNewSequencingRequestTypes < ActiveRecord::Migration
       existing_request_type = sequencing_pipeline.request_types.last
 
       ProductLine.all.each do |product_line|
-        sequencing_pipeline.request_types.create!(
+        sequencing_pipeline.request_types << RequestType.find_or_create_by_key(
           {
             'key'          => "#{product_line.name.underscore}_#{existing_request_type.key}",
             'name'         => "#{product_line.name} #{existing_request_type.name}",
