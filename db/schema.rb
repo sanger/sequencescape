@@ -473,7 +473,7 @@ ActiveRecord::Schema.define(:version => 20120322151260) do
 
   add_index "lab_events", ["batch_id"], :name => "index_lab_events_on_batch_id"
   add_index "lab_events", ["created_at"], :name => "index_lab_events_on_created_at"
-  add_index "lab_events", ["description", "eventful_type"], :name => "index_lab_events_find_flowcell", :length => {"description"=>"20", "eventful_type"=>nil}
+  add_index "lab_events", ["description", "eventful_type"], :name => "index_lab_events_find_flowcell", :length => {"eventful_type"=>nil, "description"=>"20"}
   add_index "lab_events", ["eventful_id"], :name => "index_lab_events_on_eventful_id"
   add_index "lab_events", ["eventful_type"], :name => "index_lab_events_on_eventful_type"
 
