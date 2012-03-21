@@ -79,7 +79,7 @@ next_gen_sequencing = Submission::Workflow.create! do |workflow|
   workflow.item_label = 'library'
 end
 
-LibraryCreationPipeline.create!(:name => 'Library preparation') do |pipeline|
+LibraryCreationPipeline.create!(:name => 'Illumina-C Library preparation') do |pipeline|
   pipeline.asset_type = 'LibraryTube'
   pipeline.sorter     = 0
   pipeline.automated  = false
