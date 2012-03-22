@@ -38,12 +38,13 @@ class Pulldown::RequestsTest < ActiveSupport::TestCase
       end
 
       should 'have bait_library_types if appropriate' do
-       BillingEvent.each do |billing_event|
-         if [:sc,:isc].includes?(request_type)
-           assert billing_event.request.request_metadata.bait_library.bait_library_type
-         else
-           assert billing_event.request.request_metadata.bait_library == nil
-         end
+        BillingEvent.all.each do |billing_event|
+          if [:sc,:isc].includes?(request_type)
+            assert billing_event.request.request_metadata.bait_library.bait_library_type
+          else
+            assert billing_event.request.request_metadata.bait_library == nil
+          end
+        end
       end
 
     end

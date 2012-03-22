@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class BaitLibraryTypeTest < ActiveSupport::TestCase
-  # Replace this with your real tests.
+
   context 'When a bait library exists' do
   
     setup do
