@@ -7,5 +7,6 @@ class Io::BaitLibrary < Core::Io::Base
            supplier_identifier  => supplier.identifier
                           name  => name
                 target_species  => target.species
+        bait_library_type.name  => bait_library_type
   })
 end
