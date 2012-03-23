@@ -26,8 +26,7 @@ Feature: Manage a list of bait libraries
 
   Scenario: Administrators should be able to edit bait libraries
     Given I am a "administrator" user logged in as "admin"
-      And I am on the admin page
-      And I follow "Bait library management"
+      And I go to the bait library management page
       And I follow "Edit Human all exon 50MB"
     Then I should see "Editing Bait Library"
     When I fill in "Name" with "Dragon all exon"
@@ -42,12 +41,12 @@ Feature: Manage a list of bait libraries
       And I should see "Custom - Pipeline"
       And I should not see "Human all exon 50MB"
 
-  Scenario: Administrators should be able to add bait libraries
+  Scenario: Administrators should be able to add and remove bait libraries
     Given I am a "administrator" user logged in as "admin"
-      And I am on the admin page
-      And I follow "Bait library management"
+      And I go to the bait library management page
       And I follow "New Bait Library"
-      And I fill in "Name" with "Centaur all exon"
+    Then I should see "New Bait Library"
+    When I fill in "Name" with "Centaur all exon"
       And I select "Agilent" from "Supplier"
       And I fill in "Target species" with "Centaur(Greek)"
       And I select "Custom - Customer" from "Bait library type"
@@ -56,11 +55,13 @@ Feature: Manage a list of bait libraries
       And I should see "Centaur all exon"
       And I should see "Centaur(Greek)"
       And I should see "Custom - Customer"
+    When I follow "Delete Centaur all exon"
+    Then I should see "Bait Library was successfully deleted."
+      And I should not see "Centaur all exon"
       
   Scenario: Invalid attempts should fail cleanly
     Given I am a "administrator" user logged in as "admin"
-      And I am on the admin page
-      And I follow "Bait library management"
+      And I go to the bait library management page
       And I follow "New Bait Library"
       And I fill in "Name" with ""
       And I press "Create"
@@ -76,5 +77,59 @@ Feature: Manage a list of bait libraries
       And I should see "Name can't be blank"
     When I go to the bait library management page
       Then I should be on the bait library management page
-      And I should not see "Custom - Pipeline"
+      And I should not see "Custom - Pipeline" within "#bait_library_list"
       And I should see "Human all exon 50MB"
+      
+  Scenario: Administrators should be able to view library types and suppliers
+    Given I am an "administrator" user logged in as "admin"
+      And I am on the bait library management page
+    Then  I should see "Listing All Bait Library Types" 
+      And I should see "Listing All Bait Library Suppliers"
+      And the bait library supplier index should look like:
+        | Name    | Edit | Delete |
+        | Agilent | Edit | Delete |
+      And the bait library type index should look like: 
+        | Name              | Edit | Delete |
+        | Standard          | Edit | Delete |
+        | Custom - Pipeline | Edit | Delete |
+        | Custom - Customer | Edit | Delete |
+
+  Scenario: Administrators should be able to edit and create suppliers
+    Given I am an "administrator" user logged in as "admin"
+      And I am on the bait library management page
+      And I follow "Edit Agilent"
+    Then I should see "Editing Bait Library Supplier"
+    When I fill in "Name" with "Other Supplier"
+      And I press "Update"
+    Then I should see "Supplier was successfully updated."
+      And I should see "Other Supplier"
+      And I should not see "Agilent"
+    When I follow "New Bait Library Supplier"
+    Then I should see "New Bait Library Supplier"
+    When I fill in "Name" with "New Supplier"
+      And I press "Create"
+    Then I should see "Supplier was successfully created."
+      And I should see "New Supplier"
+    When I follow "Delete New Supplier"
+    Then I should see "Supplier was successfully deleted."
+      And I should not see "New Supplier"
+
+  Scenario: Administrators should be able to edit and create types
+    Given I am an "administrator" user logged in as "admin"
+      And I am on the bait library management page
+      And I follow "Edit Standard"
+    Then I should see "Editing Bait Library Type"
+    When I fill in "Name" with "Normal"
+      And I press "Update"
+    Then I should see "Bait Library Type was successfully updated."
+      And I should see "Normal"
+      And I should not see "Standard"
+    When I follow "New Bait Library Type"
+    Then I should see "New Bait Library Type"
+    When I fill in "Name" with "Rare"
+      And I press "Create"
+    Then I should see "Bait Library Type was successfully created."
+      And I should see "Rare"
+    When I follow "Delete Rare"
+    Then I should see "Bait Library Type was successfully deleted."
+      And I should not see "Rare"

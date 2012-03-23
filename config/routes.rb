@@ -151,6 +151,8 @@ ActionController::Routing::Routes.draw do |map|
   end
   map.resources :robots, :controller => "admin/robots", :path_prefix => "/admin", :has_many => :robot_properties
   map.resources :bait_libraries, :controller => "admin/bait_libraries", :path_prefix => "/admin"
+  map.resources :bait_library_types, :controller => "admin/bait_libraries/bait_library_types", :path_prefix => "/admin"
+  map.resources :bait_library_suppliers, :controller => "admin/bait_libraries/bait_library_suppliers", :path_prefix => "/admin"
 
   ## From pipelines
 
