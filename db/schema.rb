@@ -147,7 +147,7 @@ ActiveRecord::Schema.define(:version => 20120321132536) do
     t.string   "target_species",           :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "bait_library_type_id"
+    t.integer  "bait_library_type_id",     :null => false
   end
 
   add_index "bait_libraries", ["bait_library_supplier_id", "name"], :name => "bait_library_names_are_unique_within_a_supplier", :unique => true
@@ -171,10 +171,12 @@ ActiveRecord::Schema.define(:version => 20120321132536) do
   add_index "bait_library_suppliers", ["name"], :name => "index_bait_library_suppliers_on_name", :unique => true
 
   create_table "bait_library_types", :force => true do |t|
-    t.string   "name"
+    t.string   "name",       :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "bait_library_types", ["name"], :name => "index_bait_library_types_on_name", :unique => true
 
   create_table "barcode_prefixes", :force => true do |t|
     t.string "prefix", :limit => 3
