@@ -14,7 +14,8 @@ class LibraryCreationRequest < Request
     "Double size selected",
     "DpnII gene expression",
     "TraDIS", 
-    "qPCR only"
+    "qPCR only",
+    "Pre-quality controlled"
   ]
 
   DEFAULT_LIBRARY_TYPE = 'Standard'
