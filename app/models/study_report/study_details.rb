@@ -3,15 +3,20 @@ module StudyReport::StudyDetails
   # This will pull out all well ids from stock plates in the study
   def each_stock_well_id_in_study_in_batches(&block)
     #TODO remove hardcoded plate purpose id
-    Asset.find_in_batches(:select => "assets.id",
-                          :from => 'assets, aliquots a, assets plate, container_associations ca',
-                          :conditions => ["assets.sti_type='Well' and plate.sti_type='Plate' and " +
-                                         "a.study_id=? and a.receptacle_id=assets.id and " +
-                                         "ca.container_id=plate.id and ca.content_id=assets.id and " +
-                                         "plate.plate_purpose_id in (2, 84, 85, 86, 87, 88)", self.id]
-                         ) do |well_ids|
-                           block.call(well_ids)
-    end
+    Asset.find_in_batches(
+      :select => 'DISTINCT assets.id',
+      :joins => [
+        "INNER JOIN container_associations ON assets.id=container_associations.content_id",
+        "INNER JOIN assets AS plates ON container_associations.container_id=plates.id AND plates.sti_type='Plate'",
+        "INNER JOIN requests ON requests.asset_id=assets.id"
+      ],
+      :conditions => [
+        'plates.plate_purpose_id IN (?) AND requests.initial_study_id=?',
+        [2,84,85,86,87,88],
+        self.id
+      ],
+      &block
+    )
   end
 
   def progress_report_header
