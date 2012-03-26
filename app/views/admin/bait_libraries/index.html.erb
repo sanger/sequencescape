@@ -1,0 +1,33 @@
+<h1>Listing All Bait Libraries</h1>
+<table id="bait_library_list" width="100%" class="sortable" cellpadding="3" cellspacing="0">
+  <thead>
+    <tr>
+      <th><%= link_to "Name", "javascript:void(0);" %></th>
+      <th><%= link_to "Supplier", "javascript:void(0);" %></th>
+      <th><%= link_to "Target Species", "javascript:void(0);" %></th>
+      <th><%= link_to "Bait Library Type", "javascript:void(0);" %></th>
+      <th>Edit</th>
+      <th>Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% for bait_library in @bait_libraries %>
+    <tr>
+      <td><%= bait_library.name %></td>
+      <td><%= bait_library.bait_library_supplier.name %></td>
+      <td><%= bait_library.target_species %></td>
+      <td><%= bait_library.bait_library_type.name %></td>
+      <td><%= link_to 'Edit', edit_bait_library_path(bait_library), :title => "Edit #{bait_library.name}" %></td>
+      <td><%= link_to 'Delete', bait_library, :title => "Delete #{bait_library.name}", :confirm => 'Are you sure?', :method => :delete %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<br />
+
+<%= link_to 'New Bait Library', new_bait_library_path %>
+<br />
+<%= render :partial => "supplier_index" %>
+<br />
+<%= render :partial => "type_index" %>

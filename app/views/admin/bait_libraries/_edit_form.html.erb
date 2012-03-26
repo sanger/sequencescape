@@ -1,0 +1,16 @@
+<p>
+  <%= f.label :name %><br />
+  <%= f.text_field :name %>
+</p>
+<p>
+  <%= f.label :bait_library_supplier_id, 'Supplier' %></br>
+  <%= f.select(:bait_library_supplier_id, BaitLibrary::Supplier.all.collect {|bt| [ bt.name, bt.id ] } ) %>
+</p>
+<p>
+  <%= f.label :target_species %><br />
+  <%= f.text_field :target_species %>
+</p>
+<p>
+  <%= f.label :bait_library_type_id, 'Bait library type' %></br>
+  <%= f.select(:bait_library_type_id, BaitLibraryType.all.collect {|bt| [ bt.name, bt.id ] } ) %>
+</p>
