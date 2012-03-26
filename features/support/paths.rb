@@ -26,7 +26,7 @@ module NavigationHelpers
       root_path
     when /login/
       login_path
-    when /admin/
+    when /the admin page/
       admin_path
 
     when /the new (study|project|asset) page/, /the (study|project|asset) creation page/
