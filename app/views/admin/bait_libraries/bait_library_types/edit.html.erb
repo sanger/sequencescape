@@ -1,0 +1,12 @@
+<h1>Editing Bait Library Type</h1>
+
+<% form_for(@bait_library_type) do |f| %>
+  <%= f.error_messages %>
+  
+  <%= render :partial => "edit_form", :locals => {:f => f } %>
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', bait_libraries_path %>
