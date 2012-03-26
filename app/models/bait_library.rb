@@ -32,4 +32,8 @@ class BaitLibrary < ActiveRecord::Base
 
   # All bait libraries target a specific species and cannot be mixed
   validates_presence_of :target_species
+
+  # All bait libraries have a bait library type
+  belongs_to :bait_library_type
+
 end
