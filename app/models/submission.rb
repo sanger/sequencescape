@@ -97,6 +97,9 @@ class Submission < ActiveRecord::Base
         order.build_request_graph!(multiplexing_assets) { |a| multiplexing_assets ||= a }
       end
     end
+
+    errors.add("No requests  have been created for this submission") if !self.requests.present? 
+
   end
   alias_method(:create_requests, :process_submission!)
 
@@ -131,20 +134,9 @@ class Submission < ActiveRecord::Base
     return new_submission
   end
 
-
-
-
-
-
-
-
-
-
-
-
  #Required at initial construction time ...
  validate :validate_orders_are_compatible
-
+ 
  #Order needs to have the 'structure'
  def validate_orders_are_compatible()
     return true if orders.size < 2
