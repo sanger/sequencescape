@@ -102,11 +102,18 @@ class User < ActiveRecord::Base
   end
 
   def sorted_project_names_and_ids
-    self.projects.sort{|x,y| (x.name || "") <=> (y.name || "")}.map{|p| [p.name, p.id] }
+    self.projects.sort_by(&:name).map{|p| [p.name, p.id] }
   end
+  def sorted_valid_project_names_and_ids
+    self.projects.select(&method(:valid_project)).sort_by(&:name).map{|p| [p.name, p.id] }
+  end
+  def valid_project(project)
+    project.active? && project.approved?
+  end
+  private :valid_project
 
   def sorted_study_names_and_ids
-    self.interesting_studies.sort{|x,y| (x.name || "") <=> (y.name || "")}.map{|p| [p.name, p.id] }
+    self.interesting_studies.sort_by(&:name).map{|p| [p.name, p.id] }
   end
   def workflow_name
     self.workflow and self.workflow.name
