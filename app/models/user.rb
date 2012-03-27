@@ -104,6 +104,9 @@ class User < ActiveRecord::Base
   def sorted_project_names_and_ids
     self.projects.sort{|x,y| (x.name || "") <=> (y.name || "")}.map{|p| [p.name, p.id] }
   end
+  def sorted_valid_project_names_and_ids
+    self.projects.select{|p| p.state == "active" && p.approved? }.sort{|x,y| (x.name || "") <=> (y.name || "")}.map{|p| [p.name, p.id] }
+  end
 
   def sorted_study_names_and_ids
     self.interesting_studies.sort{|x,y| (x.name || "") <=> (y.name || "")}.map{|p| [p.name, p.id] }

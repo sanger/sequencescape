@@ -26,6 +26,8 @@ module NavigationHelpers
       root_path
     when /login/
       login_path
+    when /the admin page/
+      admin_path
 
     when /the new (study|project|asset) page/, /the (study|project|asset) creation page/
       send(:"new_#{ $1 }_path")
@@ -293,6 +295,8 @@ module NavigationHelpers
 
     when /the faculty sponsor homepage/
       faculty_sponsors_path
+    when /the bait library management/
+      bait_libraries_path
 
     # Add more page name => path mappings above here
     else

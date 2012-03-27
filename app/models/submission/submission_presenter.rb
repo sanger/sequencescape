@@ -273,10 +273,10 @@ class SubmissionCreater < PresenterSkeleton
     submission.try(:orders).try(:first).try(:id)
   end
 
-  # Returns an array of all the names of studies associated with the current
-  # user.
-  def user_projects
-    @user_projects ||= @user.sorted_project_names_and_ids.map(&:first)
+  # Returns an array of all the names of active projects associated with the
+  # current user.
+  def user_valid_projects
+    @user_active_projects ||= @user.sorted_valid_project_names_and_ids.map(&:first)
   end
 
   def url(view)

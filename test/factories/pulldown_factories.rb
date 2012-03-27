@@ -119,8 +119,12 @@ end
 Factory.define(:bait_library_supplier, :class => BaitLibrary::Supplier) do |supplier|
   supplier.name 'bait library supplier'
 end
+Factory.define(:bait_library_type) do |bait_library_type|
+  bait_library_type.name 'bait library type'
+end
 Factory.define(:bait_library) do |bait_library|
   bait_library.bait_library_supplier { |target| target.association(:bait_library_supplier) }
+  bait_library.bait_library_type { |target| target.association(:bait_library_type) }
   bait_library.name 'bait library!'
   bait_library.target_species 'Human'
 end
