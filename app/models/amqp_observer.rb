@@ -34,7 +34,11 @@ class AmqpObserver < ActiveRecord::Observer
   private :buffer
 
   def <<(record)
-    exchange.publish(record.to_json, :key => "#{Rails.env}.saved.#{record.class.name.underscore}.#{record.id}")
+    exchange.publish(
+      record.to_json,
+      :key        => "#{Rails.env}.saved.#{record.class.name.underscore}.#{record.id}",
+      :persistent => true
+    )
   rescue Qrack::ConnectionTimeout, StandardError => exception
     Rails.log.debug { "Unable to broadcast #{record.class.name}(#{record.id}): #{exception.message}\n#{exception.backtrace.join("\n")}" }
   end
