@@ -19,6 +19,8 @@ class Api::StudySampleIO < Api::Base
 
   map_attribute_to_json_attribute(:uuid)
   map_attribute_to_json_attribute(:id)
+  map_attribute_to_json_attribute(:created_at)
+  map_attribute_to_json_attribute(:updated_at)
 
   with_association(:sample) do
     map_attribute_to_json_attribute(:id  , 'sample_internal_id')
