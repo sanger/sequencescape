@@ -35,7 +35,7 @@
       <% f.fields_for :orders, order do |orders_fields| -%>
         <% orders_fields.fields_for index.to_s, order  do |order_form| -%>
           <li class="pane order completed">
-            <%= render :partial => 'saved_order', :locals => { :form => order_form, :order => order } %>
+          <%= render :partial => 'saved_order', :locals => { :presenter => @presenter, :form => order_form, :order => order } %>
           </li>
         <% end -%>
       <% end -%>

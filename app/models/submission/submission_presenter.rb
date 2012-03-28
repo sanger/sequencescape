@@ -11,15 +11,41 @@ class PresenterSkeleton
       send("#{attribute}=", submission_attributes[attribute])
     end
 
-    def id
-      @id
-    end
-
-    def id=(submission_id)
-      @id = submission_id
-    end
-
   end
+
+  # id accessors need to be explicitly defined...
+  def id
+    @id
+  end
+
+  def id=(submission_id)
+    @id = submission_id
+  end
+
+  def lanes_of_sequencing
+    return lanes_from_request_options if %{building pending}.include?(submission.state)
+    lanes_from_request_counting
+  end
+
+  def lanes_from_request_options
+    library_request       = RequestType.find(order.request_types.first)
+    sequencing_request    = RequestType.find(order.request_types.last)
+    sequencing_multiplier = order.request_options.fetch('multiplier', {}).fetch(sequencing_request.id.to_s, 1)
+
+    if library_request.for_multiplexing?
+      sequencing_multiplier
+    else
+      order.assets.count * sequencing_multiplier
+    end
+  end
+  private :lanes_from_request_options
+
+  def lanes_from_request_counting
+    submission.requests.select do |r|
+      r.class.ancestors.include?(SequencingRequest)
+    end.count
+  end
+  private :lanes_from_request_counting
 
   def method_missing(name, *args, &block)
     name_without_assignment = name.to_s.sub(/=$/, '').to_sym
@@ -265,10 +291,19 @@ class SubmissionPresenter < PresenterSkeleton
     @submission ||= Submission.find(id)
   end
 
+  def template_name
+    submission.orders.first.template_name
+  end
+
+  def order
+    submission.orders.first
+  end
+
   # Deleting a Submission should also delete all associated Orders.
   def destroy
     submission.orders.destroy_all
     submission.destroy
   end
+
 end
 
