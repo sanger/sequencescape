@@ -2,7 +2,7 @@
 <%- add :manager_option, "<strong>Submissions Inbox</strong>" => submissions_path -%>
 
 
-<h1>Submission: <%= @presenter.submission.id %></h1>
+<h1>Submission: <%= @presenter.submission.id %> - <%= @presenter.template_name %></h1>
 <div class='subtitle'>
  Submission created at: <strong><%=h @presenter.submission.created_at.to_formatted_s(:day_full_with_time) %></strong>
 </div>
@@ -20,7 +20,7 @@
 <ul id="orders">
 <% @presenter.submission.orders.each do |order| %>
   <li class="pane order active completed">
-  <%= render :partial => 'saved_order', :locals => { :order => order } %>
+  <%= render :partial => 'saved_order', :locals => { :presenter => @presenter, :order => order } %>
   </li>
 <% end %>
 </ul>
