@@ -22,7 +22,9 @@ class AmqpObserver < ActiveRecord::Observer
   def transaction(&block)
     Thread.current[:buffer] ||= (current_buffer = [])
     yield.tap do
-      current_buffer.map(&method(:<<)) unless current_buffer.nil?
+      activate_exchange do
+        current_buffer.map(&method(:<<))
+      end unless current_buffer.nil?
     end
   ensure
     Thread.current[:buffer] = nil unless current_buffer.nil?
@@ -39,22 +41,28 @@ class AmqpObserver < ActiveRecord::Observer
       :key        => "#{Rails.env}.saved.#{record.class.name.underscore}.#{record.id}",
       :persistent => true
     )
-  rescue Qrack::ConnectionTimeout, StandardError => exception
-    Rails.log.debug { "Unable to broadcast #{record.class.name}(#{record.id}): #{exception.message}\n#{exception.backtrace.join("\n")}" }
   end
 
-  def exchange
-    @exchange ||= configure_exchange
-    @exchange
-  end
+  attr_reader :exchange
   private :exchange
 
-  def configure_exchange
+  # The combination of Bunny & Mongrel means that, unless you start & stop the Bunny connection,
+  # the Mongrel process will start killing threads because of too many open files.  This method,
+  # therefore, enables transactional support for connecting to the exchange.
+  def activate_exchange(&block)
     client = Bunny.new(configatron.amqp_url, :spec => '09')
-    client.start
-    client.exchange('psd.sequencescape', :passive => true)
+    begin
+      client.start
+      @exchange = client.exchange('psd.sequencescape', :passive => true)
+      yield
+    ensure
+      @exchange = nil
+      client.stop
+    end
+  rescue Qrack::ConnectionTimeout, StandardError => exception
+    Rails.log.debug { "Unable to broadcast: #{exception.message}\n#{exception.backtrace.join("\n")}" }
   end
-  private :configure_exchange
+  private :activate_exchange
 end
 
 class ActiveRecord::Base
