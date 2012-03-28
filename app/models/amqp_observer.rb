@@ -60,7 +60,7 @@ class AmqpObserver < ActiveRecord::Observer
       client.stop
     end
   rescue Qrack::ConnectionTimeout, StandardError => exception
-    Rails.log.debug { "Unable to broadcast: #{exception.message}\n#{exception.backtrace.join("\n")}" }
+    Rails.logger.debug { "Unable to broadcast: #{exception.message}\n#{exception.backtrace.join("\n")}" }
   end
   private :activate_exchange
 end
