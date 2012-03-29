@@ -118,14 +118,14 @@ module Tasks::CherrypickHandler
         end
  
       end
-    end
 
-    # Remove requests not put on plates.
-    requests_to_pass, requests_to_remove = @batch.requests.partition { |r| not used_request_ids[r.id].nil? }
-    requests_to_pass.each { |r| r.pass! }
-    requests_to_remove.each do |r| 
-      r.recycle_from_batch!(@batch)
-      r.target_asset.aliquots.clear
+      # Remove requests not put on plates.
+      requests_to_pass, requests_to_remove = @batch.requests.partition { |r| not used_request_ids[r.id].nil? }
+      requests_to_pass.each { |r| r.pass! }
+      requests_to_remove.each do |r| 
+        r.recycle_from_batch!(@batch)
+        r.target_asset.aliquots.clear
+      end
     end
   end
 
