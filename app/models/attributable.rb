@@ -110,6 +110,7 @@ module Attributable
     def initialize(owner, name, method, options = {})
       @owner, @name, @method = owner, name, method
       @required = !!options.delete(:required) || false
+      @if = options[:if] || lambda {|a| true }
     end
 
     def required?
@@ -133,7 +134,7 @@ module Attributable
         :display_name  => Attribute::find_display_name(@owner,  name),
         :key           => assignable_attribute_name,
         :kind          => FieldInfo::SELECTION,
-        :selection     => @owner.reflections[@name.to_sym].klass.all.map(&@method.to_sym).sort
+        :selection     => @owner.reflections[@name.to_sym].klass.all.select(&@if).map(&@method.to_sym).sort
       )
     end
 

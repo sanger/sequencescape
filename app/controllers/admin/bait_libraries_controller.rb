@@ -3,9 +3,9 @@ class Admin::BaitLibrariesController < ApplicationController
   before_filter :discover_bait_library, :only => [:edit, :update, :destroy]
 
   def index
-    @bait_libraries = BaitLibrary.all
-    @bait_library_types = BaitLibraryType.all
-    @bait_library_suppliers = BaitLibrary::Supplier.all
+    @bait_libraries = BaitLibrary.find_all_by_visible(true)
+    @bait_library_types = BaitLibraryType.find_all_by_visible(true)
+    @bait_library_suppliers = BaitLibrary::Supplier.find_all_by_visible(true)
   end
 
   def new
@@ -40,7 +40,7 @@ class Admin::BaitLibrariesController < ApplicationController
   end
 
   def destroy
-    @bait_library.destroy
+    @bait_library.update_attributes(:visible => false)
     respond_to do |format|
       flash[:notice] = 'Bait Library was successfully deleted.'
       format.html { redirect_to(bait_libraries_path) }

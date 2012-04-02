@@ -9,7 +9,7 @@ module Pulldown::Requests
       end
       base::Metadata.class_eval do
         include BaitLibrary::Associations
-        association(:bait_library, :name)
+        association(:bait_library, :name, :if => lambda {|a| a.visible })
         validates_presence_of :bait_library
       end
     end

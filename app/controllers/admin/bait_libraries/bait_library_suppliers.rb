@@ -33,10 +33,22 @@ class Admin::BaitLibraries::BaitLibrarySuppliersController < ApplicationControll
   end
 
   def destroy
-    @bait_library_supplier.destroy
-    respond_to do |format|
-      flash[:notice] = 'Supplier was successfully deleted.'
-      format.html { redirect_to(bait_libraries_path) }
+    bait_libraries = BaitLibrary.find(
+      :all,
+      :conditions => ["visible = ? AND bait_library_supplier_id =?", true, @bait_library_supplier.id]
+    )
+    if bait_libraries.length > 0
+      respond_to do |format|
+        flash[:error] = "Can not delete '#{@bait_library_supplier.name}', supplier is in use.<br/>
+        Supplier for: #{bait_libraries.map(&:name).join(', ')}."
+        format.html { redirect_to(bait_libraries_path) }
+      end
+    else
+      @bait_library_supplier.update_attributes(:visible => false)
+      respond_to do |format|
+        flash[:notice] = 'Supplier was successfully deleted.'
+        format.html { redirect_to(bait_libraries_path) }
+      end
     end
   end
   private

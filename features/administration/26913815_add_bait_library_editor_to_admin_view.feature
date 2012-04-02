@@ -34,7 +34,7 @@ Feature: Manage a list of bait libraries
       And I fill in "Target species" with "Dracos"
       And I select "Custom - Pipeline" from "Bait library type"
       And I press "Update"
-    Then I should see "Bait Library was successfully updated." 
+    Then I should see "Bait Library was successfully updated."
       And I should be on the bait library management page
       And I should see "Dragon all exon"
       And I should see "Dracos"
@@ -58,7 +58,7 @@ Feature: Manage a list of bait libraries
     When I follow "Delete Centaur all exon"
     Then I should see "Bait Library was successfully deleted."
       And I should not see "Centaur all exon"
-      
+
   Scenario: Invalid attempts should fail cleanly
     Given I am a "administrator" user logged in as "admin"
       And I go to the bait library management page
@@ -79,16 +79,16 @@ Feature: Manage a list of bait libraries
       Then I should be on the bait library management page
       And I should not see "Custom - Pipeline" within "#bait_library_list"
       And I should see "Human all exon 50MB"
-      
+
   Scenario: Administrators should be able to view library types and suppliers
     Given I am an "administrator" user logged in as "admin"
       And I am on the bait library management page
-    Then  I should see "Listing All Bait Library Types" 
+    Then  I should see "Listing All Bait Library Types"
       And I should see "Listing All Bait Library Suppliers"
       And the bait library supplier index should look like:
         | Name    | Edit | Delete |
         | Agilent | Edit | Delete |
-      And the bait library type index should look like: 
+      And the bait library type index should look like:
         | Name              | Edit | Delete |
         | Standard          | Edit | Delete |
         | Custom - Pipeline | Edit | Delete |
