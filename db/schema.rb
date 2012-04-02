@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120321132536) do
+ActiveRecord::Schema.define(:version => 20120330080235) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -142,12 +142,13 @@ ActiveRecord::Schema.define(:version => 20120321132536) do
 
   create_table "bait_libraries", :force => true do |t|
     t.integer  "bait_library_supplier_id"
-    t.string   "name",                     :null => false
+    t.string   "name",                                       :null => false
     t.string   "supplier_identifier"
-    t.string   "target_species",           :null => false
+    t.string   "target_species",                             :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "bait_library_type_id",     :null => false
+    t.integer  "bait_library_type_id",                       :null => false
+    t.boolean  "visible",                  :default => true, :null => false
   end
 
   add_index "bait_libraries", ["bait_library_supplier_id", "name"], :name => "bait_library_names_are_unique_within_a_supplier", :unique => true
@@ -163,17 +164,19 @@ ActiveRecord::Schema.define(:version => 20120321132536) do
   add_index "bait_library_layouts", ["plate_id"], :name => "bait_libraries_are_laid_out_on_a_plate_once", :unique => true
 
   create_table "bait_library_suppliers", :force => true do |t|
-    t.string   "name",       :null => false
+    t.string   "name",                         :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "visible",    :default => true, :null => false
   end
 
   add_index "bait_library_suppliers", ["name"], :name => "index_bait_library_suppliers_on_name", :unique => true
 
   create_table "bait_library_types", :force => true do |t|
-    t.string   "name",       :null => false
+    t.string   "name",                         :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "visible",    :default => true, :null => false
   end
 
   add_index "bait_library_types", ["name"], :name => "index_bait_library_types_on_name", :unique => true
@@ -482,7 +485,7 @@ ActiveRecord::Schema.define(:version => 20120321132536) do
 
   add_index "lab_events", ["batch_id"], :name => "index_lab_events_on_batch_id"
   add_index "lab_events", ["created_at"], :name => "index_lab_events_on_created_at"
-  add_index "lab_events", ["description", "eventful_type"], :name => "index_lab_events_find_flowcell", :length => {"eventful_type"=>nil, "description"=>"20"}
+  add_index "lab_events", ["description", "eventful_type"], :name => "index_lab_events_find_flowcell", :length => {"description"=>"20", "eventful_type"=>nil}
   add_index "lab_events", ["eventful_id"], :name => "index_lab_events_on_eventful_id"
   add_index "lab_events", ["eventful_type"], :name => "index_lab_events_on_eventful_type"
 
