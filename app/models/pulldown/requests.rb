@@ -11,6 +11,11 @@ module Pulldown::Requests
         include BaitLibrary::Associations
         association(:bait_library, :name, :if => lambda {|a| a.visible })
         validates_presence_of :bait_library
+        validate :bait_library_valid?
+
+        def bait_library_valid?
+          raise ActiveRecord::RecordNotFound, "Validation failed: Bait library is no longer available." unless bait_library.visible
+        end
       end
     end
   end

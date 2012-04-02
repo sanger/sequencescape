@@ -47,3 +47,13 @@ end
 Given /^the last bait library is hidden$/ do
   BaitLibrary.last.update_attributes(:visible => false)
 end
+
+Then /^the submission with UUID "([^"]*)" should not be ready$/ do |uuid|
+  submission = Uuid.with_external_id(uuid).first.try(:resource) or raise StandardError, "Could not find submission with UUID #{uuid.inspect}"
+  assert(!submission.ready?, "Submission is ready (#{submission.state.inspect})")
+end
+
+Then /^the submission with UUID "([^\"]*)" should have the error "([^"]*)"$/ do |uuid, error|
+  submission = Uuid.with_external_id(uuid).first.try(:resource) or raise StandardError, "Could not find submission with UUID #{uuid.inspect}"
+  assert submission.message.include?(error)
+end
