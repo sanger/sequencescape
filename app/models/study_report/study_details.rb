@@ -2,22 +2,41 @@ module StudyReport::StudyDetails
 
   # This will pull out all well ids from stock plates in the study
   def each_stock_well_id_in_study_in_batches(&block)
+    # Stock wells are determined by the requests leading from the stock plate
+    handle_wells(
+      "INNER JOIN requests ON requests.asset_id=assets.id",
+      "requests.initial_study_id",
+      2,
+      &block
+    )
+
+    # Aliquot 1,2,3,4 & 5 plates are determined by the aliquots in their wells
+    handle_wells(
+      "INNER JOIN aliquots ON aliquots.receptacle_id=assets.id",
+      "aliquots.study_id",
+      [84,85,86,87,88],
+      &block
+    )
+  end
+
+  def handle_wells(join, study_condition, plate_purpose_id, &block)
     #TODO remove hardcoded plate purpose id
     Asset.find_in_batches(
       :select => 'DISTINCT assets.id',
       :joins => [
         "INNER JOIN container_associations ON assets.id=container_associations.content_id",
         "INNER JOIN assets AS plates ON container_associations.container_id=plates.id AND plates.sti_type='Plate'",
-        "INNER JOIN requests ON requests.asset_id=assets.id"
+        join
       ],
       :conditions => [
-        'plates.plate_purpose_id IN (?) AND requests.initial_study_id=?',
-        [2,84,85,86,87,88],
+        "plates.plate_purpose_id IN (?) AND #{study_condition}=?",
+        plate_purpose_id,
         self.id
       ],
       &block
     )
   end
+  private :handle_wells
 
   def progress_report_header
     [
@@ -33,9 +52,7 @@ module StudyReport::StudyDetails
     each_stock_well_id_in_study_in_batches do |asset_ids|
 
       # eager loading of well_attribute , can only be done on  wells ...
-      assets = Well.find(:all, :include => :well_attribute, :conditions => {:id => asset_ids}, :include => { :aliquots => :sample })
-
-      assets.each do |asset|
+      Well.for_study_report.all(:conditions => {:id => asset_ids}).each do |asset|
         asset_progress_data = asset.qc_report
         next if asset_progress_data.nil?
 
