@@ -10,7 +10,7 @@ class Api::SampleTubeIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        named_scope :including_associations_for_json, { :include => [ :uuid_object, :barcode_prefix, { :aliquots => { :sample => :uuid_object } } ] }
+        named_scope :including_associations_for_json, { :include => [ :uuid_object, :barcode_prefix, { :primary_aliquot => { :sample => :uuid_object } } ] }
       end
     end
   end
