@@ -1,23 +1,23 @@
 <h1>Listing All Bait Library Types</h1>
 <table id="bait_library_types_list" width="100%" class="sortable" cellpadding="3" cellspacing="0">
-    <thead>
-      <tr>
-        <th><%= link_to "Name", "javascript:void(0);" %></th>
-        <th>Edit</th>
-        <th>Delete</th>
-      </tr>
-    </thead>
-    <tbody>
-    <% for bait_library_type in @bait_library_types %>
-      <tr>
-        <td><%= bait_library_type.name %></td>
-        <td><%= link_to 'Edit', edit_bait_library_type_path(bait_library_type), :title => "Edit #{bait_library_type.name}" %></td>
-        <td><%= link_to 'Delete', bait_library_type, :title => "Delete #{bait_library_type.name}", :confirm => 'Are you sure?', :method => :delete %></td>
-      </tr>
-    <% end %>
-    </tbody>
-  </table>
+  <thead>
+    <tr>
+      <th><%= link_to "Name", "javascript:void(0);" %></th>
+      <th>Edit</th>
+      <th>Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% for bait_library_type in @bait_library_types %>
+    <tr>
+      <td><%= bait_library_type.name %></td>
+      <td><%= link_to 'Edit', edit_bait_library_type_path(bait_library_type), :title => "Edit #{bait_library_type.name}" %></td>
+      <td><%= link_to 'Delete', bait_library_type, :title => "Delete #{bait_library_type.name}", :confirm => 'Are you sure?', :method => :delete %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
 
-  <br />
+<br />
 
-  <%= link_to 'New Bait Library Type', new_bait_library_type_path %>
+<%= link_to 'New Bait Library Type', new_bait_library_type_path %>

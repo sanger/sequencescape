@@ -9,8 +9,13 @@ module Pulldown::Requests
       end
       base::Metadata.class_eval do
         include BaitLibrary::Associations
-        association(:bait_library, :name)
+        association(:bait_library, :name, :scope => :visible)
         validates_presence_of :bait_library
+        validate :bait_library_valid
+
+        def bait_library_valid
+          errors.add(:bait_library_id, "Validation failed: Bait library is no longer available.") unless bait_library.visible?
+        end
       end
     end
   end

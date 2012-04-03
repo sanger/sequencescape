@@ -33,10 +33,18 @@ class Admin::BaitLibraries::BaitLibraryTypesController < ApplicationController
   end
 
   def destroy
-    @bait_library_type.destroy
-    respond_to do |format|
-      flash[:notice] = 'Bait Library Type was successfully deleted.'
-      format.html { redirect_to(bait_libraries_path) }
+    if @bait_library_type.bait_libraries.visible.count > 0
+      respond_to do |format|
+        flash[:error] = "Can not delete '#{@bait_library_type.name}', bait library type is in use by #{@bait_library_type.bait_libraries.visible.count} libraries."
+        format.html { redirect_to(bait_libraries_path) }
+      end
+    else
+      respond_to do |format|
+        if @bait_library_type.hide
+          flash[:notice] = 'Bait Library Type was successfully deleted.'
+        end
+        format.html { redirect_to(bait_libraries_path) }
+      end
     end
   end
   private
