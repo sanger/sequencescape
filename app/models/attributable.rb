@@ -21,7 +21,7 @@ module Attributable
       write_inheritable_attribute(:association_details, [])
     end
   end
-  
+
   def attribute_details_for(*args)
     self.class.attribute_details_for(*args)
   end
@@ -31,7 +31,7 @@ module Attributable
       hash.tap { hash[attribute] = attribute.from(self) }
     end
   end
-  
+
   def association_value_pairs
      self.class.association_details.inject({}) do |hash, attribute|
        hash.tap { hash[attribute] = attribute.from(self) }
@@ -60,7 +60,7 @@ module Attributable
         attribute_details.push(attribute)
       end
     end
-    
+
     def association(name, instance_method, options = {})
       association = Association.new(self, name, instance_method, options)
       association.configure(self)
@@ -76,12 +76,12 @@ module Attributable
     def attribute_names
       attribute_details.map(&:name)
     end
-    
+
     def attribute_details_for(attribute_name)
       attribute_details.detect { |d| d.name.to_sym == attribute_name.to_sym } or raise StandardError, "Unknown attribute #{attribute_name}"
     end
   end
-  
+
   class Association
     module Target
       def self.extended(base)
@@ -106,10 +106,11 @@ module Attributable
     end
 
     attr_reader :name
-    
+
     def initialize(owner, name, method, options = {})
       @owner, @name, @method = owner, name, method
       @required = !!options.delete(:required) || false
+      @scope = Array(options.delete(:scope))
     end
 
     def required?
@@ -123,19 +124,24 @@ module Attributable
     def assignable_attribute_name
       :"#{@name}_#{@method}"
     end
-    
+
     def from(record)
       record.send(@name).send(@method)
     end
-    
+
     def to_field_info(*args)
       FieldInfo.new(
         :display_name  => Attribute::find_display_name(@owner,  name),
         :key           => assignable_attribute_name,
         :kind          => FieldInfo::SELECTION,
-        :selection     => @owner.reflections[@name.to_sym].klass.all.map(&@method.to_sym).sort
+        :selection     => get_scoped_selection.all.map(&@method.to_sym).sort
       )
     end
+
+    def get_scoped_selection
+      @scope.inject(@owner.reflections[@name.to_sym].klass){|k,v| k.send(v.to_sym) }
+    end
+    private :get_scoped_selection
 
     def configure(target)
       target.class_eval(%Q{
@@ -161,7 +167,7 @@ module Attributable
       @default  = options.delete(:default)
       @required = !!options.delete(:required) || false
     end
-    
+
     def from(record)
       record[self.name]
     end
@@ -197,7 +203,7 @@ module Attributable
     def configure(model)
       conditions = @options.slice(:if)
       save_blank_value = @options.delete(:save_blank)
-      allow_blank = save_blank_value 
+      allow_blank = save_blank_value
 
       model.with_options(conditions) do |object|
         object.validates_presence_of(name) if self.required?
