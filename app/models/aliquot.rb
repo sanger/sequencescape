@@ -61,7 +61,7 @@ class Aliquot < ActiveRecord::Base
     deprecate :tags
 
     def primary_aliquot_if_unique
-      aliquots.first if aliquots.size == 1
+      primary_aliquot if aliquots.count == 1
     end
 
     def type

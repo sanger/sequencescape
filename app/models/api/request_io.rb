@@ -19,12 +19,12 @@ class Api::RequestIO < Api::Base
               :asset => [
                 :uuid_object,
                 :barcode_prefix,
-                { :aliquots => { :sample => :uuid_object } }
+                { :primary_aliquot => { :sample => :uuid_object } }
               ],
               :target_asset => [
                 :uuid_object,
                 :barcode_prefix,
-                { :aliquots => { :sample => :uuid_object } }
+                { :primary_aliquot => { :sample => :uuid_object } }
               ],
               :initial_study =>:uuid_object,
               :initial_project => :uuid_object 
