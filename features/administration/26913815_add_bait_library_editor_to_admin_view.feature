@@ -164,12 +164,10 @@ Feature: Manage a list of bait libraries
       And the last bait library has supplier "Gone Bankrupt Inc."
       And I go to the bait library management page
     When I follow "Delete Active Type"
-    Then I should see "Can not delete 'Active Type', bait library type is in use." within "#message_error"
-      And I should see "Bait library type for: Dragon all exon." within "#message_error"
+    Then I should see "Can not delete 'Active Type', bait library type is in use by 1 libraries." within "#message_error"
       And I should see "Active Type" within "#bait_library_types_list"
     When I follow "Delete Gone Bankrupt Inc."
-    Then I should see "Can not delete 'Gone Bankrupt Inc.', supplier is in use." within "#message_error"
-      And I should see "Supplier for: Dragon all exon." within "#message_error"
+    Then I should see "Can not delete 'Gone Bankrupt Inc.', supplier is in use by 1 libraries." within "#message_error"
       And I should see "Gone Bankrupt Inc."
 
   @javascript
