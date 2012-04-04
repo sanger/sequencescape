@@ -12,7 +12,6 @@
       </tr>
     </thead>
     <% @study.request_progress do |results| %>
-      <% debugger; puts -%>
       <% @workflow.request_types.each do |request_type| %>
         <% statistics = results[request_type] %>
         <% next if statistics.total.zero? -%>
