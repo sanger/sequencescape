@@ -9,7 +9,7 @@ class TransferRequestTest < ActiveSupport::TestCase
 
         @destination = LibraryTube.create!
 
-        TransferRequest.create!(:asset => @source, :target_asset => @destination)
+        @transfer_request = TransferRequest.create!(:asset => @source, :target_asset => @destination)
       end
 
       should 'duplicate the aliquots' do
@@ -17,11 +17,17 @@ class TransferRequestTest < ActiveSupport::TestCase
         target_aliquots   = @destination.aliquots.map { |a| [ a.sample_id, a.tag_id ] }
         assert_equal(expected_aliquots, target_aliquots)
       end
+
+      should 'have a request type' do
+        assert @transfer_request.request_type == RequestType.find_by_key('transfer')
+      end
+
     end
 
     should 'not permit transfers to the same asset' do
       asset = Factory(:sample_tube)
       assert_raises(ActiveRecord::RecordInvalid) { TransferRequest.create!(:asset => asset, :target_asset => asset) }
     end
+
   end
 end
