@@ -113,4 +113,4 @@ class ActiveRecord::Base
     end
     alias_method_chain(:transaction, :amqp)
   end
-end
+end if ActiveRecord::Base.observers.include?(:amqp_observer)

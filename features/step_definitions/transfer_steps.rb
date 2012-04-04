@@ -60,6 +60,11 @@ def assert_request_state(state, targets, direction, request_class)
   )
 end
 
+def change_request_state(state, targets, direction, request_class)
+  association = (direction == 'to') ? :requests_as_target : :requests_as_source
+  Request.update_all("state=#{state.inspect}", [ 'id IN (?)', Array(targets).map(&association).flatten.select { |r| r.is_a?(request_class) }.map(&:id) ])
+end
+
 {
   'plate'                    => 'target.wells',
   'multiplexed library tube' => 'target'
@@ -72,6 +77,10 @@ end
 
     Then /^the state of all the pulldown library creation requests (to|from) (the #{target} .+) should be "([^"]+)"$/ do |direction, target, state|
       assert_request_state(state, #{request_holder}, direction, Pulldown::Requests::LibraryCreation)
+    end
+
+    Given /^the state of all the pulldown library creation requests (to|from) (the #{target} .+) is "([^"]+)"$/ do |direction, target, state|
+      change_request_state(state, #{request_holder}, direction, Pulldown::Requests::LibraryCreation)
     end
   }, __FILE__, line)
 end
