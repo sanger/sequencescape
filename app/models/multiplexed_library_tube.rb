@@ -21,7 +21,7 @@ class MultiplexedLibraryTube < Tube
   def transition_to(state, _ = nil)
     update_all_requests = ![ 'started', 'pending' ].include?(state)
     event               = STATE_TO_STATEMACHINE_EVENT[state] or raise StandardError, "Illegal state #{state.inspect}"
-    requests_as_target.each do |request|
+    requests_as_target.open.each do |request|
       request.send(event) if update_all_requests or request.is_a?(TransferRequest)
     end
   end
