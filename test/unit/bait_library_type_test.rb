@@ -28,8 +28,8 @@ class BaitLibraryTypeTest < ActiveSupport::TestCase
       @submission  = Factory::submission(:request_types => [@pulldown_request_type, @sequencing_request_type].map(&:id), :asset_group_name => 'to avoid asset errors')
       @item = Factory :item, :submission => @submission
       
-      @genotype_pipeline = Factory :pipeline, :name =>"Cluster formation SE2", :request_type => @sequencing_request_type
-      @pulldown_pipeline = Factory :pipeline, :name => "Bait Pulldown", :request_type => @pulldown_request_type, :next_pipeline_id => @genotype_pipeline.id, :asset_type => 'LibraryTube'
+      @genotype_pipeline = Factory :pipeline, :name =>"Cluster formation SE2", :request_types => [@sequencing_request_type]
+      @pulldown_pipeline = Factory :pipeline, :name => "Bait Pulldown", :request_types => [@pulldown_request_type], :next_pipeline_id => @genotype_pipeline.id, :asset_type => 'LibraryTube'
 
       @request1 = Factory(
         :request_without_assets,
