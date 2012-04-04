@@ -8,6 +8,10 @@ Then /^the request type of all the transfer requests (to|from) the (the multiple
   assert_request_type(type, target, direction, TransferRequest)
 end
 
+Then /^the request type of all the transfer requests (to|from) the (the plate .+) should be "([^"]*)"$/ do |direction, target, type|
+  assert_request_type(type, target.wells, direction, TransferRequest)
+end
+
 def assert_request_type(type, targets, direction, request_class)
   association = (direction == 'to') ? :requests_as_target : :requests_as_source
   assert_equal(

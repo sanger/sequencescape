@@ -95,13 +95,17 @@ class RequestType < ActiveRecord::Base
     # TODO: this should either be an attribute in the request_types table or a specific class hierarchy is required
     [ :single_ended_sequencing, :paired_end_sequencing ].include?(self.key.to_sym)
   end
-  
+
   def self.dna_qc
     RequestType.find_by_key("dna_qc")
   end
-  
+
   def self.genotyping
     RequestType.find_by_key("genotyping")
+  end
+
+  def self.transfer
+    RequestType.find_by_key("transfer")
   end
 
   def extract_metadata_from_hash(request_options)

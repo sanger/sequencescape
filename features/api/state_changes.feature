@@ -60,7 +60,7 @@ Feature: Access state changes through the API
 
     Then the state of the plate "Destination plate" should be "<state>"
      And the state of all the transfer requests to the plate "Destination plate" should be "<state>"
-     And the request type of all the transfer requests to the the plate "Destination plate"should be "Transfer"
+     And the request type of all the transfer requests to the the plate "Destination plate" should be "Transfer"
      And the state of all the pulldown library creation requests from the plate "Source plate" should be "<library state>"
 
     Scenarios:

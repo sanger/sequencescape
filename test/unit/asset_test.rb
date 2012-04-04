@@ -89,9 +89,9 @@ class AssetTest < ActiveSupport::TestCase
 
 
       #Create TransfertRequest to create 'missing' aliquots
-      TransferRequest.create!(:asset => @sample_tube, :target_asset => @multiplex_tube)
-      TransferRequest.create!(:asset => @sample_tube_2, :target_asset => @multiplex_tube)
-      TransferRequest.create!(:asset => @multiplex_tube, :target_asset => @lane)
+      RequestType.transfer.new(:asset => @sample_tube, :target_asset => @multiplex_tube)
+      RequestType.transfer.new(:asset => @sample_tube_2, :target_asset => @multiplex_tube)
+      RequestType.transfer.new(:asset => @multiplex_tube, :target_asset => @lane)
       @new_assets_name = ""
 
       @sample_to = Factory :sample

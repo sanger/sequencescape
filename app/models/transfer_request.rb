@@ -46,7 +46,7 @@ class TransferRequest < Request
 
   before_create(:add_request_type)
   def add_request_type
-    self.request_type = RequestType.find_by_key('transfer') # Need to update
+    self.request_type ||= RequestType.transfer
   end
   private :add_request_type
 

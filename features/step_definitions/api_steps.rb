@@ -288,7 +288,7 @@ Given /^the (well|library tube|plate) "([^\"]+)" is a child of the (well|sample 
   parent.children << child
   if [parent, child].all? {|a| a.is_a?(Aliquot::Receptacle)}
     child.aliquots = []
-    TransferRequest.create!(:asset => parent, :target_asset => child)
+    RequestType.transfer.new(:asset => parent, :target_asset => child)
     child.save!
   end
 end

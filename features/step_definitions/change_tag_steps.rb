@@ -9,7 +9,7 @@ Given /^I have the following library tubes with tags( multiplexed in a tube)?:$/
     tag  = Tag.find_by_map_id(tag_id.match(/(\d+)/)[1].to_i) or raise StandardError, "Cannot find tag #{tag_id.inspect}"
     #tube.aliquots.create!(:tag => tag, :sample => Sample.create!(:name => "sample for tube #{tube.barcode}".gsub(" ","_")))
     tag.tag!(tube)
-    TransferRequest.create!(:asset => tube, :target_asset => mx_tube) if mx_tube
+    RequestType.transfer.new(:asset => tube, :target_asset => mx_tube) if mx_tube
   end
 end
 
