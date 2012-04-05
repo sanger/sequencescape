@@ -10,11 +10,10 @@ class CreateIlluminaCSubmissionTemplates < ActiveRecord::Migration
           SubmissionTemplate.create!(
             {
               :name                  => "Illumina-C - #{submission_template.name}",
-              :submission_parameters => submission_parameters
+              :submission_parameters => submission_parameters,
+              :visible               => true
             }.reverse_merge(submission_template.attributes).except!('created_at','updated_at')
           )
-
-          submission_template.update_attributes(:visible => false)
         end
       end
     end
