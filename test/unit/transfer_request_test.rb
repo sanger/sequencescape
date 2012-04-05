@@ -27,7 +27,7 @@ class TransferRequestTest < ActiveSupport::TestCase
     should 'not permit transfers to the same asset' do
       asset = Factory(:sample_tube)
       assert_raises(ActiveRecord::RecordInvalid) { TransferRequest.create!(:asset => asset, :target_asset => asset) }
-      assert_raises(ActiveRecord::RecordInvalid) { RequestType.transfer.new(:asset => asset, :target_asset => asset) }
+      assert_raises(ActiveRecord::RecordInvalid) { RequestType.transfer.create!(:asset => asset, :target_asset => asset) }
     end
 
     context 'when using the constuctor' do
@@ -37,7 +37,7 @@ class TransferRequestTest < ActiveSupport::TestCase
 
         @destination = LibraryTube.create!
 
-        @transfer_request = RequestType.transfer.new(:asset => @source, :target_asset => @destination)
+        @transfer_request = RequestType.transfer.create!(:asset => @source, :target_asset => @destination)
       end
 
       should 'duplicate the aliquots' do

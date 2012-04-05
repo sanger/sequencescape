@@ -3,7 +3,7 @@ require "test_helper"
 class AssetTest < ActiveSupport::TestCase
 
   context "An asset" do
-    
+
     context "with a barcode" do
       setup do
         @asset = Factory :asset
@@ -16,7 +16,7 @@ class AssetTest < ActiveSupport::TestCase
         assert @result_hash[:created_at].is_a?(ActiveSupport::TimeWithZone)
       end
     end
-    
+
     context "without a barcode" do
       setup do
         @asset = Factory :asset, :barcode => nil
@@ -26,17 +26,17 @@ class AssetTest < ActiveSupport::TestCase
         assert @result_hash.blank?
       end
     end
-    
+
     context "#scanned_in_date" do
       setup do
         @scanned_in_asset = Factory :asset
         @unscanned_in_asset = Factory :asset
         @scanned_in_event = Factory :event, :content => Date.today.to_s, :message => "scanned in", :family => "scanned_into_lab", :eventful_type => "Asset", :eventful_id => @scanned_in_asset.id
       end
-      should "return a date if it has been scanned in" do 
+      should "return a date if it has been scanned in" do
         assert_equal Date.today.to_s, @scanned_in_asset.scanned_in_date
       end
-      
+
       should "return nothing if it hasn't been scanned in" do
         assert @unscanned_in_asset.scanned_in_date.blank?
       end
@@ -51,7 +51,7 @@ class AssetTest < ActiveSupport::TestCase
       @study_2 = Factory :study
 
       @study_to = Factory :study
-      
+
       @sample = Factory :sample
       @sample_tube  = Factory(:empty_sample_tube).tap  { |sample_tube|  sample_tube.aliquots.create!(:sample => @sample, :study => @study)  }
       @library_tube = Factory(:empty_library_tube).tap { |library_tube| library_tube.aliquots.create!(:sample => @sample, :study => @study) }
@@ -80,7 +80,7 @@ class AssetTest < ActiveSupport::TestCase
       @submission   = Factory::submission :study => @study, :asset_group_name => 'to prevent asset errors'
       @request_type = Factory :request_type
       @workflow     = Factory :submission_workflow
-      
+
       @request_sampletube  = Factory :request, :study => @study, :request_type => @request_type, :asset => @sample_tube, :submission => @submission, :workflow => @workflow
       @request_librarytube = Factory :request, :study => @study, :request_type => @request_type, :asset => @library_tube, :submission => @submission, :workflow => @workflow
       @request_sampletube2 = Factory :request, :study => @study, :request_type => @request_type, :asset => @sample_tube_2, :submission => @submission, :workflow => @workflow
@@ -89,9 +89,9 @@ class AssetTest < ActiveSupport::TestCase
 
 
       #Create TransfertRequest to create 'missing' aliquots
-      RequestType.transfer.new(:asset => @sample_tube, :target_asset => @multiplex_tube)
-      RequestType.transfer.new(:asset => @sample_tube_2, :target_asset => @multiplex_tube)
-      RequestType.transfer.new(:asset => @multiplex_tube, :target_asset => @lane)
+      RequestType.transfer.create!(:asset => @sample_tube, :target_asset => @multiplex_tube)
+      RequestType.transfer.create!(:asset => @sample_tube_2, :target_asset => @multiplex_tube)
+      RequestType.transfer.create!(:asset => @multiplex_tube, :target_asset => @lane)
       @new_assets_name = ""
 
       @sample_to = Factory :sample
@@ -106,19 +106,19 @@ class AssetTest < ActiveSupport::TestCase
 
       @request_sampletube.reload
       assert_equal @request_sampletube.study_id, @study_to.id
-      
-      @request_librarytube.reload 
-      assert_equal @request_librarytube.study_id, @study_to.id  
 
-      @request_sampletube2.reload 
-      assert_equal @request_sampletube2.study_id, @study_to.id   
+      @request_librarytube.reload
+      assert_equal @request_librarytube.study_id, @study_to.id
 
-      @request_multiplex.reload 
-      assert_equal @request_multiplex.study_id, @study_to.id   
+      @request_sampletube2.reload
+      assert_equal @request_sampletube2.study_id, @study_to.id
+
+      @request_multiplex.reload
+      assert_equal @request_multiplex.study_id, @study_to.id
 
       @request_lane.reload
       assert_equal @request_lane.study_id, @study_to.id
-      
+
       @sample_tube.reload
       assert_equal @sample_tube.asset_groups.find_all_by_study_id(@study_to.id).first, @asset_group_to_new
 
@@ -127,11 +127,11 @@ class AssetTest < ActiveSupport::TestCase
 
       @sample.reload
       assert_not_equal @sample.study_samples.find_all_by_study_id(@study_to.id), []
-      
+
       @sample_2.reload
       assert_not_equal @sample_2.study_samples.find_all_by_study_id(@study_to.id), []
     end
-    
+
   end
 
 
@@ -183,14 +183,14 @@ class AssetTest < ActiveSupport::TestCase
       @request_sampletube.reload
       assert_equal @request_sampletube.study, @study_to
 
-      @request_librarytube.reload 
+      @request_librarytube.reload
       assert_equal @request_librarytube.study, @study_to
 
       @sample.reload
       assert_not_equal @sample.study_samples.find_all_by_study_id(@study_to.id), []
     end
   end
-  
+
   context "#assign_relationships" do
     context "with the correct arguments" do
       setup do
@@ -199,27 +199,27 @@ class AssetTest < ActiveSupport::TestCase
         @parent_asset_2 = Factory :asset
         @parents = [@parent_asset_1, @parent_asset_2]
         @child_asset = Factory :asset
-  
+
         @asset.assign_relationships(@parents, @child_asset)
       end
-  
+
       should "add 2 parents to the asset" do
         assert_equal 2, @asset.parents.size
       end
-  
+
       should "add 1 child to the asset" do
         assert_equal 1, @asset.children.size
       end
-  
+
       should "set the correct child" do
         assert_equal @child_asset, @asset.children.first
       end
-  
+
       should "set the correct parents" do
         assert_equal @parents, @asset.parents
       end
     end
-  
+
     context "with the wrong arguments" do
       setup do
         @asset = Factory :asset
@@ -227,14 +227,14 @@ class AssetTest < ActiveSupport::TestCase
         @parent_asset_2 = Factory :asset
         @parents = [@parent_asset_1, @parent_asset_2]
         @child_asset = Factory :asset
-  
+
         @asset.assign_relationships(@parent_asset_2, [])
       end
-  
+
       should "not create any parents" do
         assert @asset.parents.empty?
       end
-  
+
       should "not create any children" do
         assert @asset.child.nil?
       end

@@ -40,7 +40,7 @@ class Transfer < ActiveRecord::Base
               "LEFT OUTER JOIN `requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = wells_assets.id AND (transfer_requests_as_target.`sti_type` = 'TransferRequest')"
             ]
 
-            # Note that 'state IS NULL' is included here for plates that are stock plates, because they will not have any 
+            # Note that 'state IS NULL' is included here for plates that are stock plates, because they will not have any
             # transfer requests coming into their wells and so we can assume they are pending (from the perspective of
             # pulldown at least).
             query_conditions = 'transfer_requests_as_target.state IN (?)'
@@ -193,7 +193,7 @@ class Transfer < ActiveRecord::Base
   def create_transfer_requests
     # TODO: This is probably actually a submission, which means we'll need project & study too
     each_transfer do |source, destination|
-      RequestType.transfer.new(:asset => source, :target_asset => destination, :submission_id => source.pool_id)
+      RequestType.transfer.create!(:asset => source, :target_asset => destination, :submission_id => source.pool_id)
     end
   end
   private :create_transfer_requests
