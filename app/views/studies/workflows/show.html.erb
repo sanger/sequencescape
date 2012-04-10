@@ -89,7 +89,11 @@
           <br />
           <%= render :partial => "items", :locals => {:summary => @summary} %>
         <% else -%>
-          <%= display_user_guide(I18n.t('studies.guidance.now_create_submission'), new_submission_path) %>
+          <% if @study.active? %>
+            <%= display_user_guide(I18n.t('studies.guidance.now_create_submission'), new_submission_path(:study_id => @study.id)) %>
+          <% else %>
+            <%= display_user_guide(I18n.t('studies.status.not_active')) %>
+          <% end %>
           <% @workflows.each do |workflow| -%>
             <% if workflow != @workflow %>
               <%= display_user_guide("Or maybe you want to view #{link_to workflow.name, study_workflow_path(@study, workflow) }")%>
