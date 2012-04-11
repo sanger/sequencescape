@@ -8,7 +8,13 @@ class Admin::ProjectsController < ApplicationController
 
   def show
     @project = Project.find(params[:id])
-    @request_types = RequestType.all(:order => "name ASC")
+
+    # Filter the RequestTypes to hide Controls
+    @request_types = RequestType.all(
+      :order => 'name ASC',
+      :conditions  => ['request_class_name != ?', 'ControlRequest']
+    )
+
     unless @project.quotas.empty?
       @project.quotas.each do |p|
         @request_types.delete_if{|t| t.id == p.request_type_id}
