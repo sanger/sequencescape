@@ -473,7 +473,7 @@ ActiveRecord::Schema.define(:version => 20120411094036) do
 
   add_index "lab_events", ["batch_id"], :name => "index_lab_events_on_batch_id"
   add_index "lab_events", ["created_at"], :name => "index_lab_events_on_created_at"
-  add_index "lab_events", ["description", "eventful_type"], :name => "index_lab_events_find_flowcell", :length => {"description"=>"20", "eventful_type"=>nil}
+  add_index "lab_events", ["description", "eventful_type"], :name => "index_lab_events_find_flowcell", :length => {"eventful_type"=>nil, "description"=>"20"}
   add_index "lab_events", ["eventful_id"], :name => "index_lab_events_on_eventful_id"
   add_index "lab_events", ["eventful_type"], :name => "index_lab_events_on_eventful_type"
 
@@ -960,7 +960,7 @@ ActiveRecord::Schema.define(:version => 20120411094036) do
     t.boolean  "control"
     t.boolean  "empty_supplier_sample_name", :default => false
     t.boolean  "updated_by_manifest",        :default => false
-    t.boolean  "consent_withdrawn",          :default => false
+    t.boolean  "consent_withdrawn",          :default => false, :null => false
   end
 
   add_index "samples", ["created_at"], :name => "index_samples_on_created_at"
