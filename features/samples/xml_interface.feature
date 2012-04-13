@@ -7,7 +7,7 @@ Feature: The XML interface to the samples
 
   Scenario: Retrieving the XML for a specific sample
     When I get the XML for the sample "testing_the_xml_interface"
-    Then ignoring "id|consent_withdrawn" the XML response should be:
+    Then ignoring "id" the XML response should be:
       """
       <?xml version="1.0" encoding="UTF-8"?>
       <sample api_version="0.6">
