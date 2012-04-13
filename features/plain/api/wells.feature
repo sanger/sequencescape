@@ -22,6 +22,7 @@ Feature: Interacting with wells through the API
         {
           "well": {
             "name": "Testing the JSON API",
+            "display_name": "Testing the JSON API",
             "created_at": "2010-09-16T13:45:00+01:00",
             "updated_at": "2010-09-16T13:45:00+01:00",
             "uuid": "00000000-1111-2222-3333-444444444444",
@@ -60,6 +61,7 @@ Feature: Interacting with wells through the API
       {
         "well": {
           "name": "Testing the JSON API",
+          "display_name": "Testing the JSON API",
           "created_at": "2010-09-16T13:45:00+01:00",
           "updated_at": "2010-09-16T13:45:00+01:00",
           "uuid": "00000000-1111-2222-3333-444444444444",
