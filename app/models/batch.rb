@@ -7,7 +7,6 @@ class Batch < ActiveRecord::Base
   include Api::BatchIO::Extensions
   cattr_reader :per_page
   @@per_page = 500
-  include AASM
   include SequencingQcBatch
   include Commentable
   include Uuid::Uuidable

@@ -59,7 +59,7 @@ class SampleManifest < ActiveRecord::Base
   include SampleManifest::CoreBehaviour
   include SampleManifest::PlateBehaviour
   include SampleManifest::InputBehaviour
-  extend SampleManifest::StateMachine
+  extend SampleManifest::Statemachine
 
   module Associations
     def self.included(base)

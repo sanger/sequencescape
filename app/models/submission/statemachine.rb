@@ -1,16 +1,12 @@
-module Submission::StateMachine
+module Submission::Statemachine
   def self.extended(base)
     base.class_eval do
-      include AASM
       include InstanceMethods
 
       configure_state_machine
+      alias :editable? building?
+
       configure_named_scopes
-
-      def editable?
-        state=="building"
-      end
-
     end
   end
 
@@ -40,7 +36,7 @@ module Submission::StateMachine
     def fail_orders!
       # TODO we need to find a cleaner way release
       # book quota and especially not release them twice
-      return if state == "failed"  # don't do it twice
+      return if failed?  # don't do it twice
       orders.each(&:unbook_quota_available_for_request_types!)
     end
 
@@ -50,29 +46,30 @@ module Submission::StateMachine
   end
 
   def configure_state_machine
-    aasm_column :state
-    aasm_initial_state :building
-    aasm_state :building, :exit => :valid_for_leaving_building_state
-    aasm_state :pending, :enter => :complete_building
-    aasm_state :processing, :enter => :process_submission!
-    aasm_state :ready
-    aasm_state :failed, :enter => :fail_orders!
+    state_machine :state, :initial => :building do
+      event :build do
+        transition :from => [ :building ], :to => :pending
+      end
 
-    aasm_event :built do
-      transitions :to => :pending, :from => [ :building ]
+      event :process do
+        transition :from => [:processing, :failed, :pending], :to => :processing
+      end
+
+      event :ready do
+        transition :to => :ready, :from => [:processing, :failed]
+      end
+
+      event :fail! do
+        transition :to => :failed, :from => [:processing, :failed, :pending]
+      end
+
+      # after_transition from_state => to_state
+      after_transition :building => all,         :do => :valid_for_leaving_building_state
+      after_transition       all => :pending,    :do => :complete_building
+      after_transition       all => :processing, :do => :process_submission!
+      after_transition       all => :failed,     :do => :fail_orders!
     end
 
-    aasm_event :process do
-      transitions :to => :processing, :from => [:processing, :failed, :pending]
-    end
-
-    aasm_event :ready do
-      transitions :to => :ready, :from => [:processing, :failed]
-    end
-
-    aasm_event :fail do
-      transitions :to => :failed, :from => [:processing, :failed, :pending]
-    end
   end
   private :configure_state_machine
 

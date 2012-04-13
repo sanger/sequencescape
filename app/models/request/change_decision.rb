@@ -69,6 +69,7 @@ class Request::ChangeDecision
   end
 
   def valid_states_for_select
+    raise "This needs to be reimplemented for state_machine"
     @request.aasm_states_for_select_from_current_state.map(&:last) - [@request.state]
   end                                                                 
 

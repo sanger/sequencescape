@@ -1,25 +1,24 @@
 module Batch::StateMachineBehaviour
   def self.included(base)
     base.class_eval do
-      aasm_column :state
-      aasm_initial_state :pending
-      aasm_state :pending
-      aasm_state :started, :enter => :start_requests
-      aasm_state :completed
-      aasm_state :released
+      state_machine :state, :initial => :pending do
 
-      # State Machine events
-      aasm_event :start do
-        transitions :to => :started, :from => [:pending, :started, :completed, :released]
+        # State Machine events
+        event :start do
+          transition :to => :started, :from => [:pending, :started, :completed, :released]
+        end
+
+        event :complete do
+          transition :to => :completed, :from => [:started, :pending, :completed]
+        end
+
+        event :release do
+          transition :to => :released, :from => [:completed, :started, :pending, :released]
+        end
+
+        after_transition all => :started, :do => :start_requests
       end
 
-      aasm_event :complete do
-        transitions :to => :completed, :from => [:started, :pending, :completed]
-      end
-
-      aasm_event :release do
-        transitions :to => :released, :from => [:completed, :started, :pending, :released]
-      end
 
       # Some named scopes needed for finding the batches in a particular state
       named_scope :pending,   :conditions => {:state => "pending"}
