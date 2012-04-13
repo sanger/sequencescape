@@ -1,6 +1,6 @@
 class Submission < ActiveRecord::Base
   include Uuid::Uuidable
-  extend  Submission::StateMachine
+  extend  Submission::Statemachine
   include Submission::DelayedJobBehaviour
   include ModelExtensions::Submission
   #TODO[mb14] check if really needed. We use them in project_test

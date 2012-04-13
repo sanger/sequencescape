@@ -9,7 +9,9 @@ gem "db-charmer"
 # 1.1 activated by rails
 #gem "rack", "~>1.2"
 
-gem "aasm", "~>2.4.0"
+# New state machine gem to eventually replace aasm
+gem 'state_machine', '~> 1.0'
+
 gem "acts_as_audited"
 gem "ar-extensions"
 gem "configatron"
@@ -18,7 +20,7 @@ gem "fastercsv", "~>1.4.0"
 gem "formtastic", "~>1.2.0"
 gem "mysql"
 gem "spreadsheet"
-gem "will_paginate"
+gem "will_paginate", '~>2.3.15'
 gem 'net-ldap'
 
 # This was once a plugin, now it's a gem:

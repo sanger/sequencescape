@@ -7,7 +7,6 @@ class Request < ActiveRecord::Base
   @@per_page = 500
 
   include Uuid::Uuidable
-  include AASM
   include Commentable
   include Proxyable
   include StandardNamedScopes

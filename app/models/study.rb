@@ -10,7 +10,6 @@ class Study < ActiveRecord::Base
   include Uuid::Uuidable
 
   include EventfulRecord
-  include AASM
   include DataRelease
   include Commentable
   include Identifiable
@@ -25,22 +24,21 @@ class Study < ActiveRecord::Base
   
   acts_as_authorizable
 
-  aasm_column :state
-  aasm_initial_state :pending
-  aasm_state :pending
-  aasm_state :active, :enter => :mark_active
-  aasm_state :inactive, :enter => :mark_deactive
+  state_machine :state, :initial => :pending do
+    event :reset do
+      transition :to => :pending, :from => [:inactive, :active]
+    end
 
-  aasm_event :reset do
-    transitions :to => :pending, :from => [:inactive, :active]
-  end
+    event :activate do
+      transition :to => :active, :from => [:pending, :inactive]
+    end
 
-  aasm_event :activate do
-    transitions :to => :active, :from => [:pending, :inactive]
-  end
+    event :deactivate do
+      transition :to => :inactive, :from => [:pending, :active]
+    end
 
-  aasm_event :deactivate do
-    transitions :to => :inactive, :from => [:pending, :active]
+    after_transition all =>  :active,   :do => :mark_active
+    after_transition all =>  :inactive, :do => :mark_deactive
   end
 
   attr_accessor :approval

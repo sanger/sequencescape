@@ -14,9 +14,9 @@ class BatchTest < ActiveSupport::TestCase
     end
 
     should "have begin in pending then change to started" do
-      assert_equal @batch.aasm_current_state, :pending
+      assert_equal @batch.state, :pending
       @batch.start!(Factory(:user))
-      assert_equal @batch.aasm_current_state, :started
+      assert_equal @batch.state, :started
       assert_equal @batch.started?, true
     end
     
@@ -115,10 +115,10 @@ class BatchTest < ActiveSupport::TestCase
     end
 
     should "have initially have a pending status for batch requests" do
-      assert_equal :pending, @batch.requests.first.aasm_current_state
+      assert_equal :pending, @batch.requests.first.state
       @batch.start!(Factory(:user))
-      assert_equal :started, @batch.aasm_current_state
-      assert_equal :started, @batch.requests(true).first.aasm_current_state
+      assert_equal :started, @batch.state
+      assert_equal :started, @batch.requests.first(true).state
     end
     
     context "#remove_request_ids" do

@@ -10,57 +10,57 @@ module Request::Statemachine
     base.class_eval do
       include Request::BillingStrategy
 
+      StateMachine::Machine.ignore_method_conflicts = true
+
       ## State machine
-      aasm_column :state
-      aasm_state :pending
-      aasm_state :started,   :enter => :on_started
-      aasm_state :failed,    :enter => :on_failed
-      aasm_state :passed,    :enter => :on_passed
-      aasm_state :cancelled, :enter => :on_cancelled
-      aasm_state :blocked,   :enter => :on_blocked
-      aasm_state :hold,      :enter => :on_hold
-      aasm_initial_state :pending
+      state_machine :state, :initial => :pending do
+        event :hold do
+          transition :to => :hold, :from => [ :pending ]
+        end
 
-      aasm_event :hold do
-        transitions :to => :hold, :from => [ :pending ]
-      end
+        # State Machine events
+        event :start do
+          transition :to => :started, :from => [:pending, :started, :hold]
+        end
 
-      # State Machine events
-      aasm_event :start do
-        transitions :to => :started, :from => [:pending, :hold]
-      end
+        event :pass do
+          transition :to => :passed, :from => [:passed, :pending]
+          transition :to => :passed, :from => [:started, :failed], :on_transition => :charge_to_project
+        end
 
-      aasm_event :pass do
-        transitions :to => :passed, :from => [:started], :on_transition => :charge_to_project
-      end
+        # As Object#fail is already defined I'm renaming event to fail!
+        event :fail do
+          transition :to => :failed, :from => [:pending, :failed]
+          transition :to => :failed, :from => [:started], :on_transition => :charge_internally
+          transition :to => :failed, :from => [:passed],  :on_transition => :refund_project
+        end
 
-      aasm_event :fail do
-        transitions :to => :failed, :from => [:started], :on_transition => :charge_internally
-      end
+        event :block do
+          transition :to => :blocked, :from => [:pending]
+        end
 
-      aasm_event :change_decision do
-        transitions :to => :failed, :from => [:passed],  :on_transition => :refund_project
-        transitions :to => :passed, :from => [:failed], :on_transition => :charge_to_project
-      end
+        event :unblock do
+          transition :to => :pending, :from => [:blocked]
+        end
 
-      aasm_event :block do
-        transitions :to => :blocked, :from => [:pending]
-      end
+        event :detach do
+          transition :to => :pending, :from => [:cancelled, :started, :pending]
+        end
 
-      aasm_event :unblock do
-        transitions :to => :pending, :from => [:blocked]
-      end
+        event :reset do
+          transition :to => :pending, :from => [:started, :pending, :passed, :failed, :hold]
+        end
 
-      aasm_event :detach do
-        transitions :to => :pending, :from => [:cancelled]
-      end
+        event :cancel do
+          transition :to => :cancelled, :from => [:started, :pending, :passed, :failed, :hold]
+        end
 
-      aasm_event :reset do
-        transitions :to => :pending, :from => [:hold]
-      end
-
-      aasm_event :cancel do
-        transitions :to => :cancelled, :from => [:started, :hold]
+        after_transition all => :started,   :do => :on_started
+        after_transition all => :failed,    :do => :on_failed
+        after_transition all => :passed,    :do => :on_passed
+        after_transition all => :cancelled, :do => :on_cancelled
+        after_transition all => :blocked,   :do => :on_blocked
+        after_transition all => :hold,      :do => :on_hold
       end
 
       aasm_event :return do

@@ -1,7 +1,6 @@
 require "test_helper"
 
 class RequestTest < ActiveSupport::TestCase
-  include AASM
   context "A Request" do
     should_belong_to :user, :request_type, :item
     should_have_many :events
@@ -246,7 +245,7 @@ class RequestTest < ActiveSupport::TestCase
 
           should "to started" do
             # At least we'll know when and where it's blowing up.
-            assert_raise(AASM::InvalidTransition) { @request.start! }
+            assert_raise(StateMachine::InvalidTransition) { @request.start! }
           end
         end
       end
