@@ -7,12 +7,14 @@ Feature: The XML interface to the samples
 
   Scenario: Retrieving the XML for a specific sample
     When I get the XML for the sample "testing_the_xml_interface"
-    Then ignoring "id" the XML response should be:
+    Then show me the page
+    Then ignoring "id|consent_withdrawn" the XML response should be:
       """
       <?xml version="1.0" encoding="UTF-8"?>
       <sample api_version="0.6">
         <id>1</id>
         <name>testing_the_xml_interface</name>
+        <consent_withdrawn>false</consent_withdrawn>
         <properties>
           <property><name>Cohort</name><value/></property>
           <property><name>Common Name</name><value>John's Gene</value></property>
