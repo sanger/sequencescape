@@ -4,20 +4,6 @@ class CherrypickTask < Task
   def create_render_element(request)
   end
 
-  def map_empty_wells(template,plate)
-    empty_wells = {}
-    unless plate.nil?
-      plate.children.each do |well|
-        empty_wells[Map.description_to_horizontal_plate_position(well.map.description,well.map.asset_size)] = well.map.description
-      end
-    end
-
-    template.children.each do |well|
-      empty_wells[Map.pipelines_map_id_to_snp_map_id(well.map_id)] = well.map.description
-    end
-    return empty_wells
-  end
-
   def robot_max_plates(robot)
     return 0 if robot.nil?
     robot.max_beds
@@ -41,23 +27,6 @@ class CherrypickTask < Task
     workflow.pipeline.request_type.create_control!(:asset => well, :target_asset => target_well)
   end
 
-  def control_well_required?(partial_plate, template)
-    return false if template.nil?
-    unless partial_plate.nil?
-      unless partial_plate.control_well_exists?
-        if template.control_well?
-          return true
-        end
-      end
-    else
-      if template.control_well?
-        return true
-      end
-    end
-
-    false
-  end
-
   def get_well_from_control_param(control_param)
     control_param.scan(/([\d]+)/)
     well_id = $1.to_i
@@ -77,28 +46,13 @@ class CherrypickTask < Task
     return [control_request.id,control_request.asset.parent.barcode,control_request.asset.map.description]
   end
 
+  TEMPLATE_EMPTY_WELL = [0,'---','']
+
   def add_template_empty_wells(empty_wells, current_plate, num_wells)
-    template_empty_well = [0,"---",""]
     while ! empty_wells[Map.vertical_to_horizontal(current_plate.size+1,num_wells)].nil?
-      current_plate << template_empty_well
+      current_plate << TEMPLATE_EMPTY_WELL
     end
     return current_plate
-  end
-
-  def add_empty_wells_to_end_of_plate(current_plate, num_wells)
-    while current_plate.size < num_wells
-      current_plate << EMPTY_WELL
-    end
-    return current_plate
-  end
-
-  def add_plate_id_to_source_plates(source_plates,plate_id)
-    if source_plates[plate_id].nil?
-      source_plates[plate_id] =1
-    else
-      source_plates[plate_id] +=1
-    end
-    return source_plates
   end
 
   def map_wells_to_plates(requests, template, robot, batch, partial_plate)
@@ -109,59 +63,45 @@ class CherrypickTask < Task
     num_wells = template.size
 
     empty_wells = map_empty_wells(template,partial_plate)
-    plates_hash = build_plate_wells_from_requests(requests,num_wells)
+    plates_hash = build_plate_wells_from_requests(requests)
 
     plates =[]
-    source_plates = {}
-    source_plate_index = {}
+    source_plates = Set.new
     current_plate = []
     control = false
 
-    plates_hash.sort.each do |pid,plate|
-      plate.sort.each do |mid,well|
-        if current_plate.size >= num_wells
-          plates << current_plate
-          current_plate = []
-          control = false
-          source_plate_index = source_plate_index.merge(source_plates)
-          source_plates = {}
-        end
-        current_plate = add_template_empty_wells(empty_wells, current_plate,num_wells)
+    push_completed_plate = lambda do
+      plates << current_plate
+      current_plate.clear
+      control = false
+    end
 
-        if current_plate.size >= num_wells
-          plates << current_plate
-          current_plate = []
-          control = false
-          source_plate_index = source_plate_index.merge(source_plates)
-          source_plates ={}
-        end
+    plates_hash.each do |request_id, plate_barcode, well_location|
+      push_completed_plate.call if current_plate.size >= num_wells
 
-        if current_plate.size > (num_wells-empty_wells.size)/2 && (control_well_required)
-          unless control
-            control = true
-            current_plate << create_control_request_view_details(batch, partial_plate, template)
-            current_plate = add_template_empty_wells(empty_wells, current_plate,num_wells)
-          end
-        end
+      add_template_empty_wells(empty_wells, current_plate,num_wells)
 
-        source_plates = add_plate_id_to_source_plates(source_plates,pid)
+      push_completed_plate.call if current_plate.size >= num_wells
 
-        if source_plates.size >=max_plates
-          current_plate = add_empty_wells_to_end_of_plate(current_plate, num_wells)
-          plates << current_plate
-          current_plate = []
-          control = false
-          source_plate_index = source_plate_index.merge(source_plates)
-          source_plates ={}
-        end
-
-        current_plate << [well[0],pid,well[1]]
+      if !control and current_plate.size > (num_wells-empty_wells.size)/2 && (control_well_required)
+        control = true
+        current_plate << create_control_request_view_details(batch, partial_plate, template)
+        add_template_empty_wells(empty_wells, current_plate,num_wells)
       end
+
+      source_plates << plate_barcode
+
+      if (source_plates.size % max_plates).zero?
+        add_empty_wells_to_end_of_plate(current_plate, num_wells)
+        push_completed_plate.call
+      end
+
+      current_plate << [request_id, plate_barcode, well_location]
     end
 
     if current_plate.size > 0 && current_plate.size <= num_wells
       if  (! control) && control_well_required
-        current_plate = add_template_empty_wells(empty_wells, current_plate,num_wells)
+        add_template_empty_wells(empty_wells, current_plate,num_wells)
         control = true
         current_plate << create_control_request_view_details(batch, partial_plate, template)
       end
@@ -169,26 +109,9 @@ class CherrypickTask < Task
       plates << current_plate
     end
 
-    if control_well_required
-      source_plates = add_plate_id_to_source_plates(source_plates,ControlPlate.first.barcode)
-    end
-    source_plate_index = source_plate_index.merge(source_plates)
+    source_plates << ControlPlate.first.barcode if control_well_required
 
-    [plates,source_plate_index.keys]
-  end
-
-  def build_plate_wells_from_requests(requests,num_wells)
-    plates = {}
-    requests.each do |request|
-      plate_id = request.asset.plate.barcode
-      if plates[plate_id].nil?
-        plates[plate_id] = {}
-      end
-      charnum_well = Map.find(request.asset.map_id).description
-      vert_map_id = Map.description_to_vertical_plate_position(charnum_well,num_wells)
-      plates[plate_id][vert_map_id] = [request.id, charnum_well, vert_map_id, plate_id]
-    end
-    plates
+    [plates,source_plates]
   end
 
   def partial
@@ -276,4 +199,36 @@ class CherrypickTask < Task
     [plates,source_plate_index.keys]
   end
 
+  # STUFF I HAVE TIDIED:
+
+  def map_empty_wells(template,plate)
+    {}.tap do |empty_wells|
+      empty_wells.merge!(Hash[plate.wells.map { |w| [w.map.horizontal_plate_position,w.map.description] }]) unless plate.nil?
+      empty_wells.merge!(Hash[template.wells.map { |w| [w.map.snp_id, w.map.description] }])
+    end
+  end
+  private :map_empty_wells
+
+  def build_plate_wells_from_requests(requests)
+    requests.sort do |left, right|
+      sorted = left.asset.plate.barcode <=> right.asset.plate.barcode
+      sorted = left.asset.map.vertical_plate_position <=> right.asset.map.vertical_plate_position if sorted.zero?
+      sorted
+    end.map do |request|
+      [request.id, request.asset.plate.barcode, request.asset.map.description]
+    end
+  end
+  private :build_plate_wells_from_requests
+
+  def control_well_required?(partial_plate, template)
+    return false if template.nil?
+    return template.control_well? if partial_plate.nil?
+    return !partial_plate.control_well_exists? && template.control_well?
+  end
+  private :control_well_required?
+
+  def add_empty_wells_to_end_of_plate(current_plate, num_wells)
+    current_plate.concat([ EMPTY_WELL ] * (num_wells - current_plate.size))
+  end
+  private :add_empty_wells_to_end_of_plate
 end

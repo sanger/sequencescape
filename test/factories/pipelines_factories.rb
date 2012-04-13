@@ -278,6 +278,9 @@ end
 Factory.define :map do |a|
   a.description      "A2"
   a.asset_size       "96"
+  a.location_id      2
+  a.row_order        1
+  a.column_order     8
 end
 
 Factory.define :plate_template do |p|

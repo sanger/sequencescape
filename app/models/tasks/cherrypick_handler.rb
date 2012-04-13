@@ -66,75 +66,109 @@ module Tasks::CherrypickHandler
     plates = params[:plate]
     size = params[:plate_size]
     plate_type = params[:plate_type]
-    plate_barcode = params[:plate_barcode]
-    volume_required= params[:volume_required]
-    concentration_required = params[:concentration_required]
-    cherrypick_action = params[:cherrypick_action]
 
-    used_request_ids = {}
     ActiveRecord::Base.transaction do
+      # Determine if there is a standard plate to use.
+      standard_plate, plate_barcode = nil, params[:plate_barcode]
+      unless plate_barcode.nil?
+        standard_plate = Plate.find_by_barcode(plate_barcode) or raise ActiveRecord::RecordNotFound, "No plate with barcode #{plate_barcode.inspect}"
+      end
+
+      # Configure the cherrypicking action based on the parameters
+      cherrypicker = case params[:cherrypick_action]
+        when 'nano_grams_per_micro_litre' then create_nano_grams_per_micro_litre_picker(params)
+        when 'nano_grams'                 then create_nano_grams_picker(params)
+        when 'micro_litre'                then create_micro_litre_picker(params)
+        else raise StandardError, "Invalid cherrypicking type #{params[:cherrypick_action]}"
+      end
+
+      # We can preload the well locations so that we can do efficient lookup later.
+      well_locations = Hash[Map.where_plate_size(standard_plate.try(:size) || size).in_row_major_order.map do |location|
+        [location.description, location]
+      end]
+
+      # All of the requests we're going to be using should be part of the batch.  If they are not
+      # then we have an error, so we can pre-map them for quick lookup.
+      used_requests, requests = [], Hash[@batch.requests.map { |r| [r.id.to_i, r] }]
       plates.each do |id, plate_params|
-        plate = nil
-        if plate_barcode.nil?
-          # Plate barcode service must be running
+        # The first time round this loop we'll either have a plate, from the standard_plate, or we'll
+        # be needing to create a new one.
+        plate = standard_plate
+        if plate.nil?
           barcode = PlateBarcode.create.barcode
-          plate = Plate.create(:name => "Cherrypicked #{barcode}", :size => size, :barcode => barcode)
-        else
-          plate = Plate.find_by_barcode(plate_barcode)
+          plate   = Plate.create!(:name => "Cherrypicked #{barcode}", :size => size, :barcode => barcode)
+        end
+
+        # Set the plate type, regardless of what it was.  This may change the standard plate.
+        unless plate_type.nil?
+          plate.set_plate_type(plate_type)
+          plate.save!
         end
  
         plate_params.each do |row, row_params|
           row = row.to_i
           row_params.each do |col, request_id|
-            if request_id.match(/control/)
-              request_id = create_control_request_and_add_to_batch(task, request_id)
+            request = case
+              when request_id.blank?           then next
+              when request_id.match(/control/) then create_control_request_and_add_to_batch(task, request_id)
+              else requests[request_id.to_i] or raise ActiveRecord::RecordNotFound, "Cannot find request #{request_id.inspect}"
             end
  
-            request_id = request_id.to_i
-            next if request_id == 0
-            col = col.to_i
- 
-            request = Request.find request_id
-            raise Exception.new, "No target asset for request: #{request_id}" unless request
-            well = request.target_asset
-            used_request_ids[request_id] = well
- 
-            if params[:cherrypick_action] == 'nano_grams_per_micro_litre'
-              well.volume_to_cherrypick_by_nano_grams_per_micro_litre(volume_required.to_f,concentration_required.to_f,request.asset.get_concentration)
-            elsif params[:cherrypick_action] == "nano_grams"
-              well.volume_to_cherrypick_by_nano_grams(params[:minimum_volume].to_f, params[:maximum_volume].to_f, params[:total_nano_grams].to_f ,request.asset)
-            elsif params[:cherrypick_action] == "micro_litre"
-              well.volume_to_cherrypick_by_micro_litre(params[:micro_litre_volume_required].to_f)
-            else
-              raise 'Invalid cherrypicking type'
+            request.target_asset.tap do |well|
+              well.map = well_locations[Map.location_from_row_and_column(row, col.to_i+1)]
+              plate.wells << well
+              cherrypicker.call(well, request)
             end
-            
-            plate.add_well(well, row, col)
-            well.save!
+
+            used_requests << request
           end
- 
-          plate.set_plate_type(plate_type) unless plate_type.nil?
-          plate.save!
         end
- 
+
+        # At this point we can consider ourselves finished with the standard plate
+        standard_plate = nil
       end
 
-      # Remove requests not put on plates.
-      requests_to_pass, requests_to_remove = @batch.requests.partition { |r| not used_request_ids[r.id].nil? }
-      requests_to_pass.each { |r| r.pass! }
-      requests_to_remove.each do |r| 
-        r.recycle_from_batch!(@batch)
-        r.target_asset.aliquots.clear
+      # Save all of the updated wells and pass their related requests, before removing all of the 
+      # unused requests and recycling them to the inbox.
+      used_requests.each do |r|
+        r.target_asset.save!
+        r.pass!
+      end
+      (@batch.requests-used_requests).each do |unused_request|
+        unused_request.recycle_from_batch!(@batch)
+        unused_request.target_asset.aliquots.clear
       end
     end
   end
 
   def create_control_request_and_add_to_batch(task,control_param)
-    control_request  = task.create_control_request_from_well(control_param)
-    raise "Control request not created" if control_request.nil?
-    @batch.requests << control_request
-
-    control_request.id
+    task.create_control_request_from_well(control_param).tap do |control_request|
+      raise StandardError, "Control request not created!" if control_request.nil?
+      @batch.requests << control_request
+    end
   end
 
+  def create_nano_grams_per_micro_litre_picker(params)
+    volume, concentration = params[:volume_required].to_f, params[:concentration_required].to_f
+    lambda do |well, request|
+      well.volume_to_cherrypick_by_nano_grams_per_micro_litre(volume, concentration, request.asset.get_concentration)
+    end
+  end
+  private :create_nano_grams_per_micro_litre_picker
+
+  def create_nano_grams_picker(params)
+    min_vol, max_vol, nano_grams = params[:minimum_volume].to_f, params[:maximum_volume].to_f, params[:total_nano_grams].to_f
+    lambda do |well, request|
+      well.volume_to_cherrypick_by_nano_grams(min_vol, max_vol, nano_grams, request.asset)
+    end
+  end
+  private :create_nano_grams_picker
+
+  def create_micro_litre_picker(params)
+    volume = params[:micro_litre_volume_required].to_f
+    lambda do |well, _|
+      well.volume_to_cherrypick_by_micro_litre(volume)
+    end
+  end
+  private :create_micro_litre_picker
 end

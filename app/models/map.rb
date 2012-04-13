@@ -11,6 +11,22 @@ class Map < ActiveRecord::Base
   named_scope :where_description, lambda { |*descriptions| { :conditions => { :description => descriptions.flatten } } }
   named_scope :where_plate_size,  lambda { |size| { :conditions => { :asset_size => size } } }
 
+  def vertical_plate_position
+    self.column_order + 1
+  end
+
+  def horizontal_plate_position
+    self.row_order + 1
+  end
+
+  def snp_id
+    self.horizontal_plate_position
+  end
+
+  def self.location_from_row_and_column(row, column)
+    "#{(?A+row).chr}#{column}"
+  end
+
   def self.next_map_position(current_map_id)
     map = Map.find(current_map_id)
     map_position = Map.description_to_horizontal_plate_position(map.description,map.asset_size)
