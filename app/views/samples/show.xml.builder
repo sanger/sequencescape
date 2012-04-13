@@ -4,6 +4,7 @@ xml.sample(api_data) {
   xml.id @sample.id
   xml.name @sample.name
   xml.study_id @sample.studies.first.id unless @sample.studies.empty?
+  xml.consent_withdrawn @sample.consent_withdrawn?
   # Descriptors
 
   xml.properties {
