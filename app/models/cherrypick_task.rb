@@ -71,7 +71,7 @@ class CherrypickTask < Task
     control = false
 
     push_completed_plate = lambda do
-      plates << current_plate
+      plates << current_plate.dup
       current_plate.clear
       control = false
     end

@@ -4,8 +4,6 @@ class ContainerAssociation < ActiveRecord::Base
   belongs_to :container , :class_name => "Asset"
   belongs_to :content , :class_name => "Asset"
 
-  # An object can only be contained once
-  validates_uniqueness_of :content_id
   validates_presence_of :container_id
   validates_presence_of :content_id
 

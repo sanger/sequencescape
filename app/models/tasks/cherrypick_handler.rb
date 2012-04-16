@@ -69,9 +69,9 @@ module Tasks::CherrypickHandler
 
     ActiveRecord::Base.transaction do
       # Determine if there is a standard plate to use.
-      standard_plate, plate_barcode = nil, params[:plate_barcode]
+      partial_plate, plate_barcode = nil, params[:plate_barcode]
       unless plate_barcode.nil?
-        standard_plate = Plate.find_by_barcode(plate_barcode) or raise ActiveRecord::RecordNotFound, "No plate with barcode #{plate_barcode.inspect}"
+        partial_plate = Plate.find_by_barcode(plate_barcode) or raise ActiveRecord::RecordNotFound, "No plate with barcode #{plate_barcode.inspect}"
       end
 
       # Configure the cherrypicking action based on the parameters
@@ -83,7 +83,7 @@ module Tasks::CherrypickHandler
       end
 
       # We can preload the well locations so that we can do efficient lookup later.
-      well_locations = Hash[Map.where_plate_size(standard_plate.try(:size) || size).in_row_major_order.map do |location|
+      well_locations = Hash[Map.where_plate_size(partial_plate.try(:size) || size).in_row_major_order.map do |location|
         [location.description, location]
       end]
 
@@ -91,9 +91,9 @@ module Tasks::CherrypickHandler
       # then we have an error, so we can pre-map them for quick lookup.
       used_requests, requests = [], Hash[@batch.requests.map { |r| [r.id.to_i, r] }]
       plates.each do |id, plate_params|
-        # The first time round this loop we'll either have a plate, from the standard_plate, or we'll
+        # The first time round this loop we'll either have a plate, from the partial_plate, or we'll
         # be needing to create a new one.
-        plate = standard_plate
+        plate = partial_plate
         if plate.nil?
           barcode = PlateBarcode.create.barcode
           plate   = Plate.create!(:name => "Cherrypicked #{barcode}", :size => size, :barcode => barcode)
@@ -114,9 +114,8 @@ module Tasks::CherrypickHandler
               else requests[request_id.to_i] or raise ActiveRecord::RecordNotFound, "Cannot find request #{request_id.inspect}"
             end
  
-            request.target_asset.tap do |well|
+            plate.wells << request.target_asset.tap do |well|
               well.map = well_locations[Map.location_from_row_and_column(row, col.to_i+1)]
-              plate.wells << well
               cherrypicker.call(well, request)
             end
 
@@ -124,8 +123,8 @@ module Tasks::CherrypickHandler
           end
         end
 
-        # At this point we can consider ourselves finished with the standard plate
-        standard_plate = nil
+        # At this point we can consider ourselves finished with the partial plate
+        partial_plate = nil
       end
 
       # Save all of the updated wells and pass their related requests, before removing all of the 
