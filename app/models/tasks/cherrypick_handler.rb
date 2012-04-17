@@ -88,8 +88,11 @@ module Tasks::CherrypickHandler
       end]
 
       # All of the requests we're going to be using should be part of the batch.  If they are not
-      # then we have an error, so we can pre-map them for quick lookup.
-      used_requests, requests = [], Hash[@batch.requests.map { |r| [r.id.to_i, r] }]
+      # then we have an error, so we can pre-map them for quick lookup.  We're going to pre-cache a
+      # whole load of wells so that they can be retrieved quickly and easily.
+      wells = Hash[Well.find(@batch.request.map(&:target_asset_id), :include => :well_attribute).map { |w| [w.id,w] }]
+      request_and_well = Hash[@batch.requests.map { |r| [r.id.to_i, [r, wells[r.target_asset_id]]] }]
+      used_requests, plates_and_wells = [], Hash.new { |h,k| h[k] = [] }
       plates.each do |id, plate_params|
         # The first time round this loop we'll either have a plate, from the partial_plate, or we'll
         # be needing to create a new one.
@@ -108,17 +111,19 @@ module Tasks::CherrypickHandler
         plate_params.each do |row, row_params|
           row = row.to_i
           row_params.each do |col, request_id|
-            request = case
+            request, well = case
               when request_id.blank?           then next
               when request_id.match(/control/) then create_control_request_and_add_to_batch(task, request_id)
-              else requests[request_id.to_i] or raise ActiveRecord::RecordNotFound, "Cannot find request #{request_id.inspect}"
+              else request_and_well[request_id.to_i] or raise ActiveRecord::RecordNotFound, "Cannot find request #{request_id.inspect}"
             end
  
-            plate.wells << request.target_asset.tap do |well|
-              well.map = well_locations[Map.location_from_row_and_column(row, col.to_i+1)]
-              cherrypicker.call(well, request)
-            end
-
+            # NOTE: Performance enhancement here
+            # This collects the wells together for the plate they should be on, and modifies
+            # the values in the well data.  It *does not* save either of these, which means that 
+            # SELECT & INSERT/UPDATE are not interleaved, which affects the cache
+            well.map = well_locations[Map.location_from_row_and_column(row, col.to_i+1)]
+            cherrypicker.call(well, request)
+            plates_and_wells[plate] << well
             used_requests << request
           end
         end
@@ -126,6 +131,9 @@ module Tasks::CherrypickHandler
         # At this point we can consider ourselves finished with the partial plate
         partial_plate = nil
       end
+
+      # Import the wells into their plate for maximum efficiency.
+      plates_and_wells.each { |plate, wells| plate.import(wells) }
 
       # Save all of the updated wells and pass their related requests, before removing all of the 
       # unused requests and recycling them to the inbox.
@@ -141,10 +149,9 @@ module Tasks::CherrypickHandler
   end
 
   def create_control_request_and_add_to_batch(task,control_param)
-    task.create_control_request_from_well(control_param).tap do |control_request|
-      raise StandardError, "Control request not created!" if control_request.nil?
-      @batch.requests << control_request
-    end
+    control_request = task.create_control_request_from_well(control_param) or raise StandardError, "Control request not created!"
+    @batch.requests << control_request
+    [control_request, control_request.target_asset]
   end
 
   def create_nano_grams_per_micro_litre_picker(params)
