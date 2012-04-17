@@ -24,12 +24,16 @@ class ContainerAssociation < ActiveRecord::Base
               #{class_name}.import(records)
 
               sub_query = #{class_name}.send(:construct_finder_sql, :select => 'id', :order => 'id DESC')
-              links_data = #{class_name}.connection.select_all(%Q{
-                SELECT id FROM (\#{sub_query}) AS a LIMIT \#{records.size}
-              }).map { |r| [ proxy_owner.id, r['id'] ] }
+              records   = #{class_name}.connection.select_all(%Q{SELECT id FROM (\#{sub_query}) AS a LIMIT \#{records.size}})
+              attach(records)
+              post_import(records.map { |r| [proxy_owner.id, r['id']] })
+            end
+          end
 
+          def attach(records)
+            ActiveRecord::Base.transaction do
+              links_data = records.map { |r| [proxy_owner.id, r['id']] }
               ContainerAssociation.import([:container_id, :content_id], links_data, :validate => false)
-              post_import(links_data)
             end
           end
         }, __FILE__, line)

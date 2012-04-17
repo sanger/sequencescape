@@ -90,7 +90,7 @@ module Tasks::CherrypickHandler
       # All of the requests we're going to be using should be part of the batch.  If they are not
       # then we have an error, so we can pre-map them for quick lookup.  We're going to pre-cache a
       # whole load of wells so that they can be retrieved quickly and easily.
-      wells = Hash[Well.find(@batch.request.map(&:target_asset_id), :include => :well_attribute).map { |w| [w.id,w] }]
+      wells = Hash[Well.find(@batch.requests.map(&:target_asset_id), :include => :well_attribute).map { |w| [w.id,w] }]
       request_and_well = Hash[@batch.requests.map { |r| [r.id.to_i, [r, wells[r.target_asset_id]]] }]
       used_requests, plates_and_wells = [], Hash.new { |h,k| h[k] = [] }
       plates.each do |id, plate_params|
@@ -133,7 +133,7 @@ module Tasks::CherrypickHandler
       end
 
       # Import the wells into their plate for maximum efficiency.
-      plates_and_wells.each { |plate, wells| plate.import(wells) }
+      plates_and_wells.each { |plate, wells| plate.wells.attach(wells) }
 
       # Save all of the updated wells and pass their related requests, before removing all of the 
       # unused requests and recycling them to the inbox.
