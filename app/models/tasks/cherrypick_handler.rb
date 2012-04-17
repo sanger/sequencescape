@@ -91,7 +91,7 @@ module Tasks::CherrypickHandler
       # then we have an error, so we can pre-map them for quick lookup.  We're going to pre-cache a
       # whole load of wells so that they can be retrieved quickly and easily.
       wells = Hash[Well.find(@batch.requests.map(&:target_asset_id), :include => :well_attribute).map { |w| [w.id,w] }]
-      request_and_well = Hash[@batch.requests.map { |r| [r.id.to_i, [r, wells[r.target_asset_id]]] }]
+      request_and_well = Hash[@batch.requests.all(:include => :request_metadata).map { |r| [r.id.to_i, [r, wells[r.target_asset_id]]] }]
       used_requests, plates_and_wells = [], Hash.new { |h,k| h[k] = [] }
       plates.each do |id, plate_params|
         # The first time round this loop we'll either have a plate, from the partial_plate, or we'll
@@ -118,8 +118,7 @@ module Tasks::CherrypickHandler
             # This collects the wells together for the plate they should be on, and modifies
             # the values in the well data.  It *does not* save either of these, which means that 
             # SELECT & INSERT/UPDATE are not interleaved, which affects the cache
-            well.map = well_locations[Map.location_from_row_and_column(row, col.to_i+1)] or
-              raise StandardError, "Cannot find location (#{row.inspect},#{col.to_i+1})"
+            well.map = well_locations[Map.location_from_row_and_column(row, col.to_i+1)]
             cherrypicker.call(well, request)
             plates_and_wells[plate] << well
             used_requests << request

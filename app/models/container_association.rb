@@ -4,6 +4,17 @@ class ContainerAssociation < ActiveRecord::Base
   belongs_to :container , :class_name => "Asset"
   belongs_to :content , :class_name => "Asset"
 
+  # NOTE: This was originally on the content asset but this causes massive performance issues.
+  # It causes the plate and it's metadata to be loaded for each well, which would be cached if 
+  # it were not for inserts/updates being performed.  I'm disabling this as it should be caught
+  # in tests and we've not seen it in production.
+  #
+#  # We check if the parent has already been saved. if not the saving will not work.
+#  before_save do |content|
+#    container = content.container
+#    raise RuntimeError, "Container should be saved before saving #{self.inspect}" if container && container.new_record?
+#  end
+
   module Extension
     def contains(content_name, options = {}, &block)
       class_name = content_name ? content_name.to_s.classify : Asset.name
@@ -65,12 +76,6 @@ class ContainerAssociation < ActiveRecord::Base
       has_one(container_name, :class_name => class_name, :through => :container_association, :source => :container, &block)
 
       #delegate :location, :to => :container
-
-      before_save do |content|
-        # We check if the parent has already been saved. if not the saving will not work.
-        container = content.container
-        raise RuntimeError, "Container should be saved befor saving #{self.inspect}" if container && container.new_record?
-      end
     end
   end
 end
