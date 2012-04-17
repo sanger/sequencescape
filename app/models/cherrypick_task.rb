@@ -89,11 +89,15 @@ class CherrypickTask < Task
         add_template_empty_wells(empty_wells, current_plate,num_wells)
       end
 
-      source_plates << plate_barcode
+      # Doing this here ensures that the plate_barcode being processed will be the first
+      # well on the new plate.
+      unless source_plates.include?(plate_barcode)
+        source_plates << plate_barcode
 
-      if (source_plates.size % max_plates).zero?
-        add_empty_wells_to_end_of_plate(current_plate, num_wells)
-        push_completed_plate.call
+        if (source_plates.size % max_plates).zero? and not current_plate.empty?
+          add_empty_wells_to_end_of_plate(current_plate, num_wells)
+          push_completed_plate.call
+        end
       end
 
       current_plate << [request_id, plate_barcode, well_location]
@@ -210,12 +214,18 @@ class CherrypickTask < Task
   private :map_empty_wells
 
   def build_plate_wells_from_requests(requests)
-    requests.sort do |left, right|
-      sorted = left.asset.plate.barcode <=> right.asset.plate.barcode
-      sorted = left.asset.map.vertical_plate_position <=> right.asset.map.vertical_plate_position if sorted.zero?
-      sorted
-    end.map do |request|
-      [request.id, request.asset.plate.barcode, request.asset.map.description]
+    Request.all(
+      :select => 'requests.id AS id, plates.barcode AS barcode, maps.description AS description',
+      :joins => [
+        'INNER JOIN assets wells ON requests.asset_id=wells.id',
+        'INNER JOIN container_associations ON container_associations.content_id=wells.id',
+        'INNER JOIN assets plates ON plates.id=container_associations.container_id',
+        'INNER JOIN maps ON wells.map_id=maps.id'
+      ],
+      :order => 'plates.barcode ASC, maps.column_order ASC',
+      :conditions => { :requests => { :id => requests.map(&:id) } }
+    ).map do |request|
+      [request.id, request.barcode, request.description]
     end
   end
   private :build_plate_wells_from_requests
