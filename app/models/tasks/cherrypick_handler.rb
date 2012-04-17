@@ -103,10 +103,7 @@ module Tasks::CherrypickHandler
         end
 
         # Set the plate type, regardless of what it was.  This may change the standard plate.
-        unless plate_type.nil?
-          plate.set_plate_type(plate_type)
-          plate.save!
-        end
+        plate.set_plate_type(plate_type) unless plate_type.nil?
  
         plate_params.each do |row, row_params|
           row = row.to_i
@@ -121,7 +118,8 @@ module Tasks::CherrypickHandler
             # This collects the wells together for the plate they should be on, and modifies
             # the values in the well data.  It *does not* save either of these, which means that 
             # SELECT & INSERT/UPDATE are not interleaved, which affects the cache
-            well.map = well_locations[Map.location_from_row_and_column(row, col.to_i+1)]
+            well.map = well_locations[Map.location_from_row_and_column(row, col.to_i+1)] or
+              raise StandardError, "Cannot find location (#{row.inspect},#{col.to_i+1})"
             cherrypicker.call(well, request)
             plates_and_wells[plate] << well
             used_requests << request
@@ -132,15 +130,14 @@ module Tasks::CherrypickHandler
         partial_plate = nil
       end
 
-      # Import the wells into their plate for maximum efficiency.
-      plates_and_wells.each { |plate, wells| plate.wells.attach(wells) }
-
-      # Save all of the updated wells and pass their related requests, before removing all of the 
-      # unused requests and recycling them to the inbox.
-      used_requests.each do |r|
-        r.target_asset.save!
-        r.pass!
+      # Attach the wells into their plate for maximum efficiency.
+      plates_and_wells.each do |plate, wells|
+        plate.wells.attach(wells)
+        wells.map(&:save!)
       end
+
+      # Now pass each of the requests we used and ditch any there weren't back into the inbox.
+      used_requests.map(&:pass!)
       (@batch.requests-used_requests).each do |unused_request|
         unused_request.recycle_from_batch!(@batch)
         unused_request.target_asset.aliquots.clear
