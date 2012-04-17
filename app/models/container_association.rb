@@ -4,9 +4,6 @@ class ContainerAssociation < ActiveRecord::Base
   belongs_to :container , :class_name => "Asset"
   belongs_to :content , :class_name => "Asset"
 
-  validates_presence_of :container_id
-  validates_presence_of :content_id
-
   module Extension
     def contains(content_name, options = {}, &block)
       class_name = content_name ? content_name.to_s.classify : Asset.name
