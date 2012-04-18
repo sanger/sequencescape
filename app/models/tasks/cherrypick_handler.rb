@@ -1,4 +1,10 @@
 module Tasks::CherrypickHandler
+  def self.included(base)
+    base.class_eval do
+      include Cherrypick::Task::PickHelpers
+    end
+  end
+
   def render_cherrypick_task(task, params)
     unless flash[:error].blank?
       redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage -1).to_s
@@ -131,8 +137,8 @@ module Tasks::CherrypickHandler
 
       # Attach the wells into their plate for maximum efficiency.
       plates_and_wells.each do |plate, wells|
+        wells.map { |w| w.well_attribute.save! ; w.save! }
         plate.wells.attach(wells)
-        wells.map(&:save!)
       end
 
       # Now pass each of the requests we used and ditch any there weren't back into the inbox.
@@ -149,28 +155,4 @@ module Tasks::CherrypickHandler
     @batch.requests << control_request
     [control_request, control_request.target_asset]
   end
-
-  def create_nano_grams_per_micro_litre_picker(params)
-    volume, concentration = params[:volume_required].to_f, params[:concentration_required].to_f
-    lambda do |well, request|
-      well.volume_to_cherrypick_by_nano_grams_per_micro_litre(volume, concentration, request.asset.get_concentration)
-    end
-  end
-  private :create_nano_grams_per_micro_litre_picker
-
-  def create_nano_grams_picker(params)
-    min_vol, max_vol, nano_grams = params[:minimum_volume].to_f, params[:maximum_volume].to_f, params[:total_nano_grams].to_f
-    lambda do |well, request|
-      well.volume_to_cherrypick_by_nano_grams(min_vol, max_vol, nano_grams, request.asset)
-    end
-  end
-  private :create_nano_grams_picker
-
-  def create_micro_litre_picker(params)
-    volume = params[:micro_litre_volume_required].to_f
-    lambda do |well, _|
-      well.volume_to_cherrypick_by_micro_litre(volume)
-    end
-  end
-  private :create_micro_litre_picker
 end

@@ -1,7 +1,5 @@
 class CherrypickGroupBySubmissionTask < Task
-  include Cherrypick::Task::PickByNanoGramsPerMicroLitre
-  include Cherrypick::Task::PickByNanoGrams
-  include Cherrypick::Task::PickByMicroLitre
+  include Cherrypick::Task::PickHelpers
   include Tasks::PlatePurposeBehavior
 
   class CherrypickGroupBySubmissionData < Task::RenderElement
