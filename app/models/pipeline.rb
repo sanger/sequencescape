@@ -113,39 +113,11 @@ class Pipeline < ActiveRecord::Base
   def get_input_request_groups(show_held_requests=true)
     group_requests(requests.inputs(show_held_requests))
   end
-  
-  # to overwrite by subpipeline if needed
-  def group_requests(requests, option={})
-    ids = requests.map { |r| r.id }
-    if option[:by_target]
-      holder_map = Request.get_target_holder_asset_id_map ids
-    else
-      holder_map = Request.get_holder_asset_id_map ids
-    end
 
-    if option[:group_by_holder_only]
-      requests.group_by { |r|  [holder_map[r.id]] }
-    else
-      requests.group_by { |r|  request_to_group_key(r, holder_map) }
-    end
-  end
-
-  def request_to_group_key(request, holder_map)
-    [].tap do |group_key|
-      group_key << holder_map[request.id] if group_by_parent?
-      group_key << request.submission_id  if group_by_submission?
-    end
-  end
-
-  def group_key_to_hash(group)
-    group  = group.dup # we don't want to modify the original group
-    hash = {}
-    [:parent, :submission, :study].each do |s|
-      if  self.send("group_by_#{s}?")
-        hash[s] = group.shift
-      end
-    end
-    hash
+  def get_input_requests_for_group(group)
+    #TODO add named_scope to load only the required requests
+    key = hash_to_group_key(group)
+    get_input_request_groups[key]
   end
 
   def hash_to_group_key(hash)
@@ -162,10 +134,32 @@ class Pipeline < ActiveRecord::Base
     group.map {|e| e.to_i}
   end
 
-  def get_input_requests_for_group(group)
-    #TODO add named_scope to load only the required requests
-    key = hash_to_group_key(group)
-    get_input_request_groups[key]
+  def grouping_function(option = {})
+    return lambda { |r| [r.container_id] } if option[:group_by_holder_only]
+
+    lambda do |request|
+      [].tap do |group_key|
+        group_key << request.container_id  if group_by_parent?
+        group_key << request.submission_id if group_by_submission?
+      end
+    end
+  end
+  private :grouping_function
+  
+  # to overwrite by subpipeline if needed
+  def group_requests(requests, option={})
+    requests.group_requests(:all, option).group_by(&grouping_function(option))
+  end
+
+  def group_key_to_hash(group)
+    group  = group.dup # we don't want to modify the original group
+    hash = {}
+    [:parent, :submission, :study].each do |s|
+      if  self.send("group_by_#{s}?")
+        hash[s] = group.shift
+      end
+    end
+    hash
   end
 
   def finish_batch(batch, user)
@@ -207,44 +201,35 @@ class Pipeline < ActiveRecord::Base
     false
   end
 
+  def grouping_parser(option = {})
+    grouper_class = option[:group_by_holder_only] ? GrouperByHolderOnly : GrouperForPipeline
+    grouper_class.new(self)
+  end
+  private :grouping_parser
 
-  def extract_request_ids_from_input_params(params ={})
-    request_ids = []
-    if params["request"]
-      request_ids = params["request"].map {|a| a[1] == "1" ? a[0] : nil }.select {|a| !a.nil? }.collect{|x| x.to_i }.sort
-    elsif params["request_group"]
-      request_groups = params["request_group"]
-      # we load all the request group and then filter them. Can be optimized by fitering when loading
-      input_request_groups = self.get_input_request_groups(true)
+  def selected_values_from(browser_options)
+    browser_options.select { |_, v| v == '1' }
+  end
+  private :selected_values_from
 
-      input_request_groups.each do |group|
-        key, requests = group
-        group_key = key.join ", "
-        request_ids += requests.map { |r| r.id } if request_groups[group_key] == "1"
-      end
+  def extract_requests_from_input_params(params ={})
+    if (request_ids = params["request"]).present?
+      requests.inputs(true).find(selected_values_from(request_ids).map(&:first), :order => 'id ASC')
+    elsif (selected_groups = params["request_group"]).present?
+      grouping_parser.all(selected_values_from(selected_groups))
+    else
+      raise StandardError, "Unknown manner in which to extract requests!"
     end
+  end
 
-    request_ids
+  def max_number_of_groups
+    self[:max_number_of_groups] || 0
   end
   
   def valid_number_of_checked_request_groups?(params ={})
-    return true if self.max_number_of_groups.nil? ||  self.max_number_of_groups == 0
-    
-    number_of_groups = 0
-    if params[:request_group]
-      request_groups = params[:request_group]
-      input_request_groups = self.get_input_request_groups(true)
-
-      input_request_groups.each do |group|
-        key, requests = group
-        group_key = key.join ", "
-        number_of_groups += 1 if request_groups[group_key] == "1"
-      end
-    end
-    
-    return false if number_of_groups > self.max_number_of_groups
-
-    true
+    return true if max_number_of_groups.zero?
+    return true if (selected_groups = params['request_group']).blank?
+    grouping_parser.count(selected_values_from(selected_groups)) <= max_number_of_groups
   end
   
   def all_requests_from_submissions_selected?(request_ids)

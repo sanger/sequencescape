@@ -4,11 +4,6 @@ class CherrypickTask < Task
   def create_render_element(request)
   end
 
-  def robot_max_plates(robot)
-    return 0 if robot.nil?
-    robot.max_beds
-  end
-
   def create_control_request(batch, partial_plate, template)
     return nil unless control_well_required?(partial_plate, template)
     control_plate = ControlPlate.first
@@ -56,7 +51,7 @@ class CherrypickTask < Task
   end
 
   def map_wells_to_plates(requests, template, robot, batch, partial_plate)
-    max_plates = robot_max_plates(robot)
+    max_plates = robot.max_beds
     raise StandardError, 'The chosen robot has no beds!' if max_plates.zero?
 
     control_well_required = control_well_required?(partial_plate, template)
@@ -75,6 +70,10 @@ class CherrypickTask < Task
       current_plate.clear
       control = false
     end
+    fill_plate_and_push = lambda do
+      add_empty_wells_to_end_of_plate(current_plate, num_wells)
+      push_completed_plate.call
+    end
 
     plates_hash.each do |request_id, plate_barcode, well_location|
       push_completed_plate.call if current_plate.size >= num_wells
@@ -83,7 +82,7 @@ class CherrypickTask < Task
 
       push_completed_plate.call if current_plate.size >= num_wells
 
-      if !control and current_plate.size > (num_wells-empty_wells.size)/2 && (control_well_required)
+      if !control and control_well_required and current_plate.size > (num_wells-empty_wells.size)/2
         control = true
         current_plate << create_control_request_view_details(batch, partial_plate, template)
         add_template_empty_wells(empty_wells, current_plate,num_wells)
@@ -101,16 +100,17 @@ class CherrypickTask < Task
       end
 
       current_plate << [request_id, plate_barcode, well_location]
+
+      fill_plate_and_push.call if (source_plates.size % max_plates).zero?
     end
 
     if current_plate.size > 0 && current_plate.size <= num_wells
-      if  (! control) && control_well_required
+      if !control and control_well_required
         add_template_empty_wells(empty_wells, current_plate,num_wells)
         control = true
         current_plate << create_control_request_view_details(batch, partial_plate, template)
       end
-      current_plate = add_empty_wells_to_end_of_plate(current_plate, num_wells)
-      plates << current_plate
+      fill_plate_and_push.call
     end
 
     source_plates << ControlPlate.first.barcode if control_well_required

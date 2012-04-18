@@ -11,26 +11,6 @@ class CherrypickTaskTest < ActiveSupport::TestCase
       @task = CherrypickTask.new(:workflow => pipeline.workflow)
     end 
 
-    context "#robot_max_plates with valid inputs" do
-      setup do
-        @robot  = Factory :robot
-        @robot.robot_properties.create(:key=> 'max_plates', :value => 15)
-        @robot.save
-      end
-      should "return max_plates" do
-        assert_equal 15, @task.robot_max_plates(@robot)
-      end
-    end
-
-    context "#robot_max_plates with invalid inputs" do
-      setup do
-        @robot2  = Factory :robot
-      end
-      should "return 0 when max_plates is missing" do
-        assert_equal 0, @task.robot_max_plates(@robot2)
-      end
-    end
-
     context "#map_empty_wells with 1 empty_well" do
       setup do
         @template = Factory :plate_template
