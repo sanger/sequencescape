@@ -484,7 +484,7 @@ ActiveRecord::Schema.define(:version => 20120330080235) do
 
   add_index "lab_events", ["batch_id"], :name => "index_lab_events_on_batch_id"
   add_index "lab_events", ["created_at"], :name => "index_lab_events_on_created_at"
-  add_index "lab_events", ["description", "eventful_type"], :name => "index_lab_events_find_flowcell", :length => {"eventful_type"=>nil, "description"=>"20"}
+  add_index "lab_events", ["description", "eventful_type"], :name => "index_lab_events_find_flowcell", :length => {"description"=>"20", "eventful_type"=>nil}
   add_index "lab_events", ["eventful_id"], :name => "index_lab_events_on_eventful_id"
   add_index "lab_events", ["eventful_type"], :name => "index_lab_events_on_eventful_type"
 
@@ -1102,10 +1102,8 @@ ActiveRecord::Schema.define(:version => 20120330080235) do
   add_index "study_reports", ["user_id"], :name => "index_study_reports_on_user_id"
 
   create_table "study_samples", :force => true do |t|
-    t.integer  "study_id"
-    t.integer  "sample_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer "study_id"
+    t.integer "sample_id"
   end
 
   add_index "study_samples", ["sample_id"], :name => "index_project_samples_on_sample_id"
