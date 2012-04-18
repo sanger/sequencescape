@@ -22,7 +22,8 @@ class CreateIlluminaCSubmissionTemplates < ActiveRecord::Migration
       # Remember to pull the id out of the wrapping array...
       old_request_type = RequestType.find(old_request_type_id_arr.first)
 
-      RequestType.find_by_key("illumina_c_#{old_request_type.key}")
+      RequestType.find_by_key("illumina_c_#{old_request_type.key}") or
+      raise "A RequestType with key: illumina_c_#{old_request_type.key} can't be found"
     end
 
     def new_request_types(old_request_types_list)
@@ -32,15 +33,8 @@ class CreateIlluminaCSubmissionTemplates < ActiveRecord::Migration
       [ [new_lib_request_type.id], [new_sequencing_request_type.id] ]
     end
 
-    # Return the id original multiplexed library creation request type
-    def orig_req_id
-      @orig_req_id ||= RequestType.find_by_key('multiplexed_library_creation').id
-    end
-
     def mx_submission_templates
-      @mx_templates ||= SubmissionTemplate.all.select do |template|
-        template.submission_parameters[:request_type_ids_list].include?([orig_req_id])
-      end
+     @mx_templates ||= SubmissionTemplate.all(:conditions => ['name RLIKE ?', '^(Multiplexed )?Library Creation'])
     end
 
     def down

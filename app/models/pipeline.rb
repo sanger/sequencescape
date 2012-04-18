@@ -105,7 +105,14 @@ class Pipeline < ActiveRecord::Base
   named_scope :internally_managed, :conditions => { :externally_managed => false }
   named_scope :active,   :conditions => { :active => true }
   named_scope :inactive, :conditions => { :active => false }
-  
+
+  named_scope :for_request_type, lambda { |rt|
+    { 
+      :joins => [ 'LEFT JOIN pipelines_request_types prt ON prt.pipeline_id = pipelines.id' ],
+      :conditions => ['prt.request_type_id = ?', rt.id]
+    }
+  }
+
   acts_as_audited :on => [:destroy, :update]
 
   self.inheritance_column = "sti_type"
