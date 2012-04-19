@@ -155,7 +155,7 @@ class Pipeline < ActiveRecord::Base
   
   # to overwrite by subpipeline if needed
   def group_requests(requests, option={})
-    requests.group_requests(:all, option).group_by(&grouping_function(option))
+    requests.unbatched.group_requests(:all, option).group_by(&grouping_function(option))
   end
 
   def group_key_to_hash(group)
