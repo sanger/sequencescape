@@ -23,13 +23,20 @@ class Pipeline < ActiveRecord::Base
   validates_presence_of :request_type
 
   has_many :requests, :through => :request_type, :extend => Pipeline::RequestsInStorage do
-    def inbox(show_held_requests = true, current_page = 1)
+    def inbox(show_held_requests = true, current_page = 1, action = nil)
       # Build a list of methods to invoke to build the correct request list
       actions = [ :unbatched ]
       actions << ((proxy_owner.group_by_parent? or show_held_requests) ? :full_inbox : :pipeline_pending)
       actions << [ (proxy_owner.group_by_parent? ? :holder_located : :located), proxy_owner.location_id ]
-      actions << (proxy_owner.group_by_submission? ? :ordered_for_submission_grouped_inbox : :ordered_for_ungrouped_inbox)
-      actions << [ :paginate, { :per_page => 50, :page => current_page } ] if proxy_owner.paginate?
+      if action != :count
+        actions << (proxy_owner.group_by_submission? ? :ordered_for_submission_grouped_inbox : :ordered_for_ungrouped_inbox)
+        actions << :loaded_for_inbox_display
+      end
+      if action.present?
+        actions << [ action ]
+      elsif proxy_owner.paginate?
+        actions << [ :paginate, { :per_page => 50, :page => current_page } ]
+      end
 
       actions.inject(self.include_request_metadata) { |context, action| context.send(*Array(action)) }
     end
