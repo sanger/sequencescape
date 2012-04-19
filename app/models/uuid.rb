@@ -10,7 +10,7 @@ class Uuid < ActiveRecord::Base
         # It seems better not to do this but the performance of the API is directly affected by having to
         # create these instances when they do not exist.
         has_one :uuid_object, :class_name => 'Uuid', :as => :resource, :dependent => :destroy
-        after_create { |record| record.create_uuid_object if record.uuid_object(true).nil? }
+        after_create { |record| record.uuid_object = Uuid.create!(:resource => record) }
 
         # Some named scopes ...
         named_scope :include_uuid, { :include => :uuid_object }
@@ -60,14 +60,11 @@ class Uuid < ActiveRecord::Base
   end
 
   ValidRegexp = /^[\da-f]{8}(-[\da-f]{4}){3}-[\da-f]{12}$/
-  validates_presence_of :external_id
   validates_format_of :external_id, :with => ValidRegexp
 
   # It is more efficient to check the individual parts of the resource association than it is to check the
   # association itself as the latter causes the record to be reloaded
   belongs_to :resource, :polymorphic => true
-  validates_presence_of :resource_type
-  validates_presence_of :resource_id
 
   # TODO[xxx]: remove this and use resource everywhere!
   def object

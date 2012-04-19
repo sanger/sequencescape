@@ -118,7 +118,7 @@ class Pipeline < ActiveRecord::Base
   end
 
   def get_input_request_groups(show_held_requests=true)
-    group_requests(requests.inputs(show_held_requests))
+    group_requests(requests.inputs(show_held_requests).unbatched)
   end
 
   def get_input_requests_for_group(group)
@@ -155,7 +155,7 @@ class Pipeline < ActiveRecord::Base
   
   # to overwrite by subpipeline if needed
   def group_requests(requests, option={})
-    requests.unbatched.group_requests(:all, option).group_by(&grouping_function(option))
+    requests.group_requests(:all, option).group_by(&grouping_function(option))
   end
 
   def group_key_to_hash(group)

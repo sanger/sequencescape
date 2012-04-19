@@ -173,8 +173,10 @@ class PipelinesController < ApplicationController
   end
 
   def release
-    @batch = Batch.find(params[:id])
-    @batch.release!(current_user)
+    ActiveRecord::Base.transaction do
+      @batch = Batch.find(params[:id])
+      @batch.release!(current_user)
+    end
 
     flash[:notice] = 'Batch released!'
     redirect_to :controller => "batches", :action => "show", :id => @batch.id
