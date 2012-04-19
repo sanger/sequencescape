@@ -13,9 +13,13 @@ class AddProductLines < ActiveRecord::Migration
         ProductLine.create!(:name => product_line_name)
       end
     end
+
+    say 'Adding ProductLine assocication column to SubmissionTemplate'
+    add_column :submission_templates, :product_line_id, :integer
   end
 
   def self.down
+    remove_column :submission_templates, :product_line_id
     drop_table :product_lines
   end
 end

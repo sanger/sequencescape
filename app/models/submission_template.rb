@@ -13,6 +13,7 @@ class SubmissionTemplate < ActiveRecord::Base
   acts_as_audited :on => [:destroy, :update]
 
   has_many :orders
+  belongs_to :product_line
 
   named_scope :visible, :order => 'name ASC', :conditions => { :visible => true }
 

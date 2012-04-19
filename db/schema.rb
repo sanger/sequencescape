@@ -1144,6 +1144,7 @@ ActiveRecord::Schema.define(:version => 20120330080235) do
     t.text     "submission_parameters"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "product_line_id"
     t.boolean  "visible",               :default => true, :null => false
   end
 
