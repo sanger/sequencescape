@@ -2,7 +2,14 @@ class PipelinesRequestType < ActiveRecord::Base; end
 
 class CreateNewLibraryPrepRequestTypes < ActiveRecord::Migration
   LIB_PREP_REQUEST_TYPES = {
-    'Illumina-A' => [ 'Pulldown library creation', 'Pulldown WGS', 'Pulldown SC', 'Pulldown ISC' ],
+    'Illumina-A' => [ 
+      'Pulldown library creation',
+      'Cherrypicking for Pulldown',
+      'Pulldown Multiplex Library Preparation',
+      'Pulldown WGS',
+      'Pulldown SC',
+      'Pulldown ISC'
+  ],
     'Illumina-C' => [ 'Library creation' ]
   }
 

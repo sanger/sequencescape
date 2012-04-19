@@ -1,36 +1,13 @@
 class CreateIlluminaCSubmissionTemplates < ActiveRecord::Migration
+  extend SubmissionTemplateMaker
+
   class << self
     def up
       ActiveRecord::Base.transaction do
-        mx_submission_templates.each do |submission_template|
-          submission_parameters = submission_template.submission_parameters.dup
+        illumina_c = ProductLine.find_by_name('Illumina-C')
 
-          submission_parameters[:request_type_ids_list] = new_request_types(submission_parameters[:request_type_ids_list])
-
-          SubmissionTemplate.create!(
-            {
-              :name                  => "Illumina-C - #{submission_template.name}",
-              :submission_parameters => submission_parameters,
-              :visible               => true
-            }.reverse_merge(submission_template.attributes).except!('created_at','updated_at')
-          )
-        end
+        mx_submission_templates.each { |old_template| make_new_templates!(illumina_c, old_template) }
       end
-    end
-
-    def new_request_type(old_request_type_id_arr)
-      # Remember to pull the id out of the wrapping array...
-      old_request_type = RequestType.find(old_request_type_id_arr.first)
-
-      RequestType.find_by_key("illumina_c_#{old_request_type.key}") or
-      raise "A RequestType with key: illumina_c_#{old_request_type.key} can't be found"
-    end
-
-    def new_request_types(old_request_types_list)
-      new_lib_request_type        = new_request_type(old_request_types_list.first)
-      new_sequencing_request_type = new_request_type(old_request_types_list.last)
-
-      [ [new_lib_request_type.id], [new_sequencing_request_type.id] ]
     end
 
     def mx_submission_templates
