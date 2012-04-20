@@ -205,6 +205,10 @@ Factory.define(:request_metadata_for_mx_library_preparation_new, :parent => :req
 Factory.define(:request_metadata_for_pulldown_library_creation, :parent => :request_metadata_for_library_manufacture) {}
 Factory.define(:request_metadata_for_pulldown_multiplex_library_preparation, :parent => :request_metadata_for_library_manufacture) {}
 
+# Bait libraries
+Factory.define(:request_metadata_for_bait_pulldown, :parent => :request_metadata) do |m|
+  m.bait_library_id  {|bait_library| bait_library.association(:bait_library).id}
+end
 # set default  metadata factories to every request types which have been defined yet
 RequestType.all.each do |rt|
   factory_name =  :"request_metadata_for_#{rt.name.downcase.gsub(/[^a-z]+/, '_')}"

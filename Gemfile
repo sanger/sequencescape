@@ -33,10 +33,6 @@ gem "acts-as-dag", :git => "git+ssh://git@github.com/sanger/acts-as-dag.git", :b
 # Better table alterations
 gem "alter_table", :git => "git+ssh://git@github.com/sanger/alter_table.git"
 
-# QC poller / ActiveMQ
-gem "activemessaging"
-gem "stomp"
-
 # For background processing
 gem "delayed_job", '~>2.0.4'
 
@@ -50,6 +46,9 @@ gem "sinatra", "~>1.1.0"
 gem "rack-acceptable", :require => 'rack/acceptable'
 gem "yajl-ruby", :require => 'yajl'
 gem "cancan"
+
+gem "bunny"
+#gem "amqp", "~> 0.9.2"
 
 group :warehouse do
   #the most recent one that actually compiles

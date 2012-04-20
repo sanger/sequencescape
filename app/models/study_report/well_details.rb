@@ -1,4 +1,11 @@
 module StudyReport::WellDetails
+  def self.included(base)
+    base.class_eval do
+      named_scope :for_study_report, { :include => [
+        :map, :well_attribute, { :plate => :plate_purpose, :primary_aliquot => { :sample => :sample_metadata } }
+      ] }
+    end
+  end
 
   def dna_qc_request_status
     requests_status = dna_qc_requests_status

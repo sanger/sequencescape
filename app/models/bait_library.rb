@@ -14,8 +14,15 @@ class BaitLibrary < ActiveRecord::Base
     validates_presence_of :name
     validates_uniqueness_of :name
 
+    named_scope :visible, :conditions => { :visible => true }
+
     # They supply many bait libraries
     has_many :bait_libraries, :foreign_key => :bait_library_supplier_id
+
+    def hide
+      self.visible = false
+      save!
+    end
   end
 
   # All bait libraries belong to a supplier
@@ -32,4 +39,15 @@ class BaitLibrary < ActiveRecord::Base
 
   # All bait libraries target a specific species and cannot be mixed
   validates_presence_of :target_species
+
+  # All bait libraries have a bait library type
+  belongs_to :bait_library_type
+
+  named_scope :visible, :conditions => { :visible => true }
+
+  def hide
+    self.visible = false
+    save!
+  end
+
 end

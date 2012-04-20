@@ -34,6 +34,8 @@ class Well < Aliquot::Receptacle
   }
   named_scope :in_column_major_order, { :joins => :map, :order => 'column_order ASC' }
   named_scope :in_row_major_order, { :joins => :map, :order => 'row_order ASC' }
+  named_scope :in_inverse_column_major_order, { :joins => :map, :order => 'column_order DESC' }
+  named_scope :in_inverse_row_major_order, { :joins => :map, :order => 'row_order DESC' }
 
   after_create :create_well_attribute_if_not_exists
 

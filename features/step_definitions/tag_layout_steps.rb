@@ -1,4 +1,4 @@
-Given /^the ((?:entire plate )?tag layout template) "([^"]+)" exists$/ do |style, name|
+Given /^the ((?:entire plate |inverted )?tag layout template) "([^"]+)" exists$/ do |style, name|
   Factory(style.gsub(/ /, '_'), :name => name)
 end
 

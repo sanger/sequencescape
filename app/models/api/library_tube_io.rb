@@ -15,7 +15,7 @@ class Api::LibraryTubeIO < Api::Base
             :uuid_object,
             :barcode_prefix, {
               :source_request => [:uuid_object, :request_metadata],
-              :aliquots => [ :sample, { :tag => [ :uuid_object, { :tag_group => :uuid_object } ] } ]
+              :primary_aliquot => { :sample => :uuid_object, :tag => [ :uuid_object, { :tag_group => :uuid_object } ] }
             }
           ]
         }

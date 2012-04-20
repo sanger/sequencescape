@@ -1,5 +1,4 @@
 require 'timeout'
-require "activemessaging/processor"
 require "tecan_file_generation"
 
 include Sanger::Robots::Tecan

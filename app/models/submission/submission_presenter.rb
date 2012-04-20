@@ -30,7 +30,7 @@ class PresenterSkeleton
   def lanes_from_request_options
     library_request       = RequestType.find(order.request_types.first)
     sequencing_request    = RequestType.find(order.request_types.last)
-    sequencing_multiplier = order.request_options.fetch('multiplier', {}).fetch(sequencing_request.id.to_s, 1)
+    sequencing_multiplier = order.request_options.fetch('multiplier', {}).fetch(sequencing_request.id.to_s, 1).to_i
 
     if library_request.for_multiplexing?
       sequencing_multiplier
@@ -273,10 +273,10 @@ class SubmissionCreater < PresenterSkeleton
     submission.try(:orders).try(:first).try(:id)
   end
 
-  # Returns an array of all the names of studies associated with the current
-  # user.
-  def user_projects
-    @user_projects ||= @user.sorted_project_names_and_ids.map(&:first)
+  # Returns an array of all the names of active projects associated with the
+  # current user.
+  def user_valid_projects
+    @user_active_projects ||= @user.sorted_valid_project_names_and_ids.map(&:first)
   end
 
   def url(view)

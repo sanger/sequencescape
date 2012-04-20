@@ -13,7 +13,10 @@ class Api::AliquotIO < Api::Base
         named_scope :including_associations_for_json, { :include => [
             :uuid_object,
             { :sample => :uuid_object} ,
+            { :study => :uuid_object },
             { :project => :uuid_object },
+            { :tag => :uuid_object },
+            { :library => :uuid_object },
             { :receptacle => :uuid_object }
           ]
         }

@@ -76,6 +76,11 @@ Factory.define(:tag_layout_template) do |tag_layout_template|
   tag_layout_template.walking_algorithm   'TagLayout::WalkWellsByPools'
   tag_layout_template.tag_group { |target| target.association(:tag_group_for_layout) }
 end
+Factory.define(:inverted_tag_layout_template, :class => TagLayoutTemplate) do |tag_layout_template|
+  tag_layout_template.direction_algorithm 'TagLayout::InInverseColumns'
+  tag_layout_template.walking_algorithm   'TagLayout::WalkWellsOfPlate'
+  tag_layout_template.tag_group { |target| target.association(:tag_group_for_layout) }
+end
 Factory.define(:entire_plate_tag_layout_template, :class => TagLayoutTemplate) do |tag_layout_template|
   tag_layout_template.direction_algorithm 'TagLayout::InColumns'
   tag_layout_template.walking_algorithm   'TagLayout::WalkWellsOfPlate'
@@ -119,8 +124,12 @@ end
 Factory.define(:bait_library_supplier, :class => BaitLibrary::Supplier) do |supplier|
   supplier.name 'bait library supplier'
 end
+Factory.define(:bait_library_type) do |bait_library_type|
+  bait_library_type.name 'bait library type'
+end
 Factory.define(:bait_library) do |bait_library|
   bait_library.bait_library_supplier { |target| target.association(:bait_library_supplier) }
+  bait_library.bait_library_type { |target| target.association(:bait_library_type) }
   bait_library.name 'bait library!'
   bait_library.target_species 'Human'
 end

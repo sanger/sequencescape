@@ -36,6 +36,17 @@ class Pulldown::RequestsTest < ActiveSupport::TestCase
         assert_equal(1, BillingEvent.charged_internally.count, "Expected charge to be internal")
         assert_equal(1, BillingEvent.refunded_to_project.count, "Expected project to be refunded")
       end
+
+      should 'have bait_library_types if appropriate' do
+        BillingEvent.all.each do |billing_event|
+          if [:sc,:isc].includes?(request_type)
+            assert billing_event.request.request_metadata.bait_library.bait_library_type
+          else
+            assert billing_event.request.request_metadata.bait_library == nil
+          end
+        end
+      end
+
     end
   end
 end

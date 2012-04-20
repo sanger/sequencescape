@@ -51,7 +51,9 @@ class Api::BillingEventIO < Api::Base
     with_association(:request_metadata) do 
       map_attribute_to_json_attribute(:read_length, 'price')
       map_attribute_to_json_attribute(:library_type, 'library_type')
+      extra_json_attributes do |object, json_attributes|
+        json_attributes["bait_library_type"] = BaitLibrary.find(object.bait_library_id).bait_library_type.name if object.bait_library_id.present?
+      end
     end
   end
-  
 end

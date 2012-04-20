@@ -169,6 +169,12 @@ Then /^all of the pulldown library creation requests to (the multiplexed library
   assert(requests.all? { |r| not r.billing_events.charged_to_project.empty? }, "There are requests that have not billed the project")
 end
 
+Then /^all of the pulldown library creation requests to (the multiplexed library tube .+) should not have billing$/ do |tube|
+  requests = tube.requests_as_target.where_is_a?(Pulldown::Requests::LibraryCreation).all
+  assert(!requests.empty?, "There are expected to be a number of pulldown requests")
+  assert(requests.all? { |r| r.billing_events.empty? }, "There are requests that have billing events")
+end
+
 Given /^all requests are in the last submission$/ do
 	submission = Submission.last or raise StandardError, "There are no submissions!"
 	Request.update_all("submission_id=#{submission.id}")
