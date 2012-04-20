@@ -33,6 +33,11 @@ class TagLayout < ActiveRecord::Base
     extend(walking_algorithm.constantize)   unless walking_algorithm.blank?
   end
 
+  def wells_in_walking_order
+    plate.wells.send(:"in_#{direction.gsub(' ', '_')}_major_order")
+  end
+  private :wells_in_walking_order
+
   # After creating the instance we can layout the tags into the wells.
   after_create :layout_tags_into_wells
 

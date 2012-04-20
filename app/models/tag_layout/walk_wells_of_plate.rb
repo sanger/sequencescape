@@ -8,7 +8,7 @@ module TagLayout::WalkWellsOfPlate
   end
 
   def walk_wells(&block)
-    plate.wells.send(:"in_#{direction}_major_order").each_with_index do |well, index|
+    wells_in_walking_order.each_with_index do |well, index|
       yield(well, index) unless well.nil?
     end
   end
