@@ -220,6 +220,174 @@ Feature: Access tag layout templates through the API
       | H12  | CCGG |
 
   @tag_layout @create @barcode-service
+  Scenario: Creating a tag layout from an inverted tag layout template
+    Given the plate barcode webservice returns "1000001..1000002"
+
+    Given the inverted tag layout template "Test inverted tag layout" exists
+      And the UUID for the tag layout template "Test inverted tag layout" is "00000000-1111-2222-3333-444444444444"
+      And the tag group for tag layout template "Test inverted tag layout" is called "Tag group 1"
+      And the tag group for tag layout template "Test inverted tag layout" contains the following tags:
+        | index | oligo |
+        | 1     | AAAA  |
+        | 2     | CCCC  |
+        | 3     | TTTT  |
+        | 4     | GGGG  |
+        | 5     | AACC  |
+        | 6     | TTGG  |
+        | 7     | AATT  |
+        | 8     | CCGG  |
+      And the UUID of the next tag layout created will be "00000000-1111-2222-3333-000000000002"
+
+    Given a "Stock plate" plate called "Testing the API" exists
+      And the UUID for the plate "Testing the API" is "11111111-2222-3333-4444-000000000002"
+      And all wells on the plate "Testing the API" have unique samples
+
+    Given a "Stock plate" plate called "Testing the tagging" exists
+      And the UUID for the plate "Testing the tagging" is "11111111-2222-3333-4444-000000000001"
+      And the wells for the plate "Testing the API" have been pooled in columns to the plate "Testing the tagging"
+
+    When I make an authorised POST with the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
+      """
+      {
+        "tag_layout": {
+          "plate": "11111111-2222-3333-4444-000000000001"
+        }
+      }
+      """
+    Then the HTTP response should be "201 Created"
+     And the JSON should match the following for the specified fields:
+      """
+      {
+        "tag_layout": {
+          "actions": {
+            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-000000000002"
+          },
+          "plate": {
+            "actions": {
+              "read": "http://www.example.com/api/1/11111111-2222-3333-4444-000000000001"
+            }
+          },
+
+          "uuid": "00000000-1111-2222-3333-000000000002",
+          "direction": "inverse column",
+
+          "tag_group": {
+            "name": "Tag group 1",
+            "tags": {
+              "1": "AAAA",
+              "2": "CCCC",
+              "3": "TTTT",
+              "4": "GGGG",
+              "5": "AACC",
+              "6": "TTGG",
+              "7": "AATT",
+              "8": "CCGG"
+            }
+          }
+        }
+      }
+      """
+
+    Then the tags assigned to the plate "Testing the tagging" should be:
+      | well | tag  |
+      | A1   | CCGG |
+      | B1   | AATT |
+      | C1   | TTGG |
+      | D1   | AACC |
+      | E1   | GGGG |
+      | F1   | TTTT |
+      | G1   | CCCC |
+      | H1   | AAAA |
+      | A2   | CCGG |
+      | B2   | AATT |
+      | C2   | TTGG |
+      | D2   | AACC |
+      | E2   | GGGG |
+      | F2   | TTTT |
+      | G2   | CCCC |
+      | H2   | AAAA |
+      | A3   | CCGG |
+      | B3   | AATT |
+      | C3   | TTGG |
+      | D3   | AACC |
+      | E3   | GGGG |
+      | F3   | TTTT |
+      | G3   | CCCC |
+      | H3   | AAAA |
+      | A4   | CCGG |
+      | B4   | AATT |
+      | C4   | TTGG |
+      | D4   | AACC |
+      | E4   | GGGG |
+      | F4   | TTTT |
+      | G4   | CCCC |
+      | H4   | AAAA |
+      | A5   | CCGG |
+      | B5   | AATT |
+      | C5   | TTGG |
+      | D5   | AACC |
+      | E5   | GGGG |
+      | F5   | TTTT |
+      | G5   | CCCC |
+      | H5   | AAAA |
+      | A6   | CCGG |
+      | B6   | AATT |
+      | C6   | TTGG |
+      | D6   | AACC |
+      | E6   | GGGG |
+      | F6   | TTTT |
+      | G6   | CCCC |
+      | H6   | AAAA |
+      | A7   | CCGG |
+      | B7   | AATT |
+      | C7   | TTGG |
+      | D7   | AACC |
+      | E7   | GGGG |
+      | F7   | TTTT |
+      | G7   | CCCC |
+      | H7   | AAAA |
+      | A8   | CCGG |
+      | B8   | AATT |
+      | C8   | TTGG |
+      | D8   | AACC |
+      | E8   | GGGG |
+      | F8   | TTTT |
+      | G8   | CCCC |
+      | H8   | AAAA |
+      | A9   | CCGG |
+      | B9   | AATT |
+      | C9   | TTGG |
+      | D9   | AACC |
+      | E9   | GGGG |
+      | F9   | TTTT |
+      | G9   | CCCC |
+      | H9   | AAAA |
+      | A10  | CCGG |
+      | B10  | AATT |
+      | C10  | TTGG |
+      | D10  | AACC |
+      | E10  | GGGG |
+      | F10  | TTTT |
+      | G10  | CCCC |
+      | H10  | AAAA |
+      | A11  | CCGG |
+      | B11  | AATT |
+      | C11  | TTGG |
+      | D11  | AACC |
+      | E11  | GGGG |
+      | F11  | TTTT |
+      | G11  | CCCC |
+      | H11  | AAAA |
+      | A12  | CCGG |
+      | B12  | AATT |
+      | C12  | TTGG |
+      | D12  | AACC |
+      | E12  | GGGG |
+      | F12  | TTTT |
+      | G12  | CCCC |
+      | H12  | AAAA |
+
+  @tag_layout @create @barcode-service
   Scenario: Creating a tag layout from a tag layout template which ignores pools
     Given the plate barcode webservice returns "1000001..1000002"
 
