@@ -3,7 +3,6 @@
   <% if @study.approved? && @study.active? -%>
     <% add :menu, "<strong>Create Submission</strong>" => new_submission_path -%>
   <% end -%>
-  <%- add :menu, "<strong>New asset group from existing plates</strong>" => study_plates_path(@study) -%>
 <% end %>  
 <%- add :menu, "Back to Study" => study_path(@study) -%>
 
