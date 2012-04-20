@@ -98,6 +98,7 @@ en:
       duplicate_refund_attempt: "You can not create a second refund for a charge!"
     status:
       not_approved: "This study has not been approved yet."
+      not_active: "This study has not been activated yet."
     guidance:
       nothing_interesting: "You don't have any studies you own, manage or are following. Please create your first study"
       now_create_submission: "There are no submissions on this study yet. Please create your first submission"
