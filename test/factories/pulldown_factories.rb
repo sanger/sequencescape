@@ -76,6 +76,11 @@ Factory.define(:tag_layout_template) do |tag_layout_template|
   tag_layout_template.walking_algorithm   'TagLayout::WalkWellsByPools'
   tag_layout_template.tag_group { |target| target.association(:tag_group_for_layout) }
 end
+Factory.define(:inverted_tag_layout_template, :class => TagLayoutTemplate) do |tag_layout_template|
+  tag_layout_template.direction_algorithm 'TagLayout::InInverseColumns'
+  tag_layout_template.walking_algorithm   'TagLayout::WalkWellsOfPlate'
+  tag_layout_template.tag_group { |target| target.association(:tag_group_for_layout) }
+end
 Factory.define(:entire_plate_tag_layout_template, :class => TagLayoutTemplate) do |tag_layout_template|
   tag_layout_template.direction_algorithm 'TagLayout::InColumns'
   tag_layout_template.walking_algorithm   'TagLayout::WalkWellsOfPlate'
