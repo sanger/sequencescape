@@ -4,50 +4,26 @@ class CherrypickTask < Task
   def create_render_element(request)
   end
 
-  def create_control_request(batch, partial_plate, template)
-    return nil unless control_well_required?(partial_plate, template)
-    control_plate = ControlPlate.first
-    control_wells = control_plate.illumina_wells
-    selected_well = control_wells.sample
-    request = generate_control_request(selected_well)
-    batch.requests << request
-
-    request
-  end
-
   def generate_control_request(well)
     # TODO: create a genotyping request for the control request
     #Request.create(:state => "pending", :sample => well.sample, :asset => well, :target_asset => Well.create(:sample => well.sample, :name => well.sample.name))
     target_well = Well.create!(:name => well.primary_aliquot.sample.name, :aliquots => well.aliquots.map(&:clone))
     workflow.pipeline.request_type.create_control!(:asset => well, :target_asset => target_well)
   end
+  private :generate_control_request
 
   def get_well_from_control_param(control_param)
     control_param.scan(/([\d]+)/)
     well_id = $1.to_i
     Well.find_by_id(well_id)
   end
+  private :get_well_from_control_param
 
   def create_control_request_from_well(control_param)
     return nil unless control_param.match(/control/)
     well = get_well_from_control_param(control_param)
     return nil if well.nil?
-    self.generate_control_request(well)
-  end
-
-  def create_control_request_view_details(batch, partial_plate, template)
-    control_request = create_control_request(batch, partial_plate, template)
-    return nil if control_request.nil?
-    return [control_request.id,control_request.asset.parent.barcode,control_request.asset.map.description]
-  end
-
-  TEMPLATE_EMPTY_WELL = [0,'---','']
-
-  def add_template_empty_wells(empty_wells, current_plate, num_wells)
-    while ! empty_wells[Map.vertical_to_horizontal(current_plate.size+1,num_wells)].nil?
-      current_plate << TEMPLATE_EMPTY_WELL
-    end
-    return current_plate
+    generate_control_request(well)
   end
 
   def map_wells_to_plates(requests, template, robot, batch, partial_plate)
@@ -55,11 +31,10 @@ class CherrypickTask < Task
     raise StandardError, 'The chosen robot has no beds!' if max_plates.zero?
 
     control_well_required = control_well_required?(partial_plate, template)
-    num_wells = template.size
-
     empty_wells = map_empty_wells(template,partial_plate)
     plates_hash = build_plate_wells_from_requests(requests)
 
+    num_wells = template.size
     plates =[]
     source_plates = Set.new
     current_plate = []
@@ -69,6 +44,11 @@ class CherrypickTask < Task
       plates << current_plate.dup
       current_plate.clear
       control = false
+
+      # Reset the control well information
+      partial_plate = nil
+      control_well_required = control_well_required?(nil, template)
+      empty_wells = map_empty_wells(template, nil)
     end
     fill_plate_and_push = lambda do
       add_empty_wells_to_end_of_plate(current_plate, num_wells)
@@ -84,7 +64,7 @@ class CherrypickTask < Task
 
       if !control and control_well_required and current_plate.size > (num_wells-empty_wells.size)/2
         control = true
-        current_plate << create_control_request_view_details(batch, partial_plate, template)
+        create_control_request_view_details(batch, partial_plate, template) { |c| current_plate << c }
         add_template_empty_wells(empty_wells, current_plate,num_wells)
       end
 
@@ -108,7 +88,7 @@ class CherrypickTask < Task
       if !control and control_well_required
         add_template_empty_wells(empty_wells, current_plate,num_wells)
         control = true
-        current_plate << create_control_request_view_details(batch, partial_plate, template)
+        create_control_request_view_details(batch, partial_plate, template) { |c| current_plate << c }
       end
       fill_plate_and_push.call
     end
@@ -231,9 +211,7 @@ class CherrypickTask < Task
   private :build_plate_wells_from_requests
 
   def control_well_required?(partial_plate, template)
-    return false if template.nil?
-    return template.control_well? if partial_plate.nil?
-    return !partial_plate.control_well_exists? && template.control_well?
+    template.present? && template.control_well? && (partial_plate.nil? || !partial_plate.control_well_exists?)
   end
   private :control_well_required?
 
@@ -241,4 +219,28 @@ class CherrypickTask < Task
     current_plate.concat([ EMPTY_WELL ] * (num_wells - current_plate.size))
   end
   private :add_empty_wells_to_end_of_plate
+
+  def create_control_request_view_details(batch, partial_plate, template, &block)
+    create_control_request(batch, partial_plate, template) do |control_request|
+      yield([control_request.id,control_request.asset.parent.barcode,control_request.asset.map.description])
+    end
+  end
+  private :create_control_request_view_details
+
+  def create_control_request(batch, partial_plate, template, &block)
+    raise StandardError, "Did not expect request for control well" unless control_well_required?(partial_plate, template)
+
+    generate_control_request(ControlPlate.first.illumina_wells.sample).tap do |request|
+      batch.requests << request
+      yield(request)
+    end
+  end
+  private :create_control_request
+
+  TEMPLATE_EMPTY_WELL = [0,'---','']
+
+  def add_template_empty_wells(empty_wells, current_plate, num_wells)
+    current_plate << TEMPLATE_EMPTY_WELL until empty_wells[Map.vertical_to_horizontal(current_plate.size+1, num_wells)].nil?
+  end
+  private :add_template_empty_wells
 end
