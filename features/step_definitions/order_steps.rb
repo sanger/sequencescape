@@ -41,9 +41,9 @@ end
 
 Then /^the (string |)request options for the order with UUID "([^\"]+)" should be:$/ do |string,uuid, options_table|
   order = Uuid.with_external_id(uuid).first.try(:resource) or raise StandardError, "Could not find order with UUID #{uuid.inspect}"
+  stringified_options = order.request_options.stringify_keys # Needed because of inconsistencies in keys (symbols & strings)
   options_table.rows_hash.each do |k,v|
-    opt = string==("string ") ? k : k.to_sym
-    assert_equal(v, order.request_options[opt].to_s, "Request option #{k.inspect} is unexpected")
+    assert_equal(v, stringified_options[k].to_s, "Request option #{k.inspect} is unexpected")
   end
 end
 
