@@ -28,9 +28,7 @@ Factory.sequence :barcode do |n|
   "DN#{n}"
 end
 
-Factory.sequence :request_type_id do |n|
-  n
-end
+Factory.sequence(:request_type_name) {|n| "Request Type #{n}"}
 
 Factory.sequence :billing_reference do |ref|
   ref.to_s
@@ -299,40 +297,25 @@ end
 
 
 Factory.define :request_type do |rt|
-  rt_value = Factory.next :request_type_id
-  rt.name           "Request type #{rt_value}"
-  rt.key            "request_type_#{rt_value}"
+  rt.name { Factory.next :request_type_name }
+  rt.key { |a| a.name.downcase.gsub(/\s/, '_') }
   rt.request_class  Request
   rt.order          1
   rt.workflow    {|workflow| workflow.association(:submission_workflow)}
   rt.initial_state   "pending"
 end
 
-Factory.define :library_creation_request_type, :class => RequestType do |rt|
-  rt_value = Factory.next :request_type_id
-  rt.name           "Request type #{rt_value}"
-  rt.key            "request_type_#{rt_value}"
+Factory.define :library_creation_request_type, :parent => :request_type do |rt|
   rt.request_class  LibraryCreationRequest
-  rt.order          1
-  rt.workflow    {|workflow| workflow.association(:submission_workflow)}
-end
-Factory.define :sequencing_request_type, :class => RequestType do |rt|
-  rt_value = Factory.next :request_type_id
-  rt.name           "Request type #{rt_value}"
-  rt.key            "request_type_#{rt_value}"
-  rt.request_class  SequencingRequest
-  rt.order          1
-  rt.workflow    {|workflow| workflow.association(:submission_workflow)}
 end
 
-Factory.define :multiplexed_library_creation_request_type, :class => RequestType do |rt|
-  rt_value = Factory.next :request_type_id
-  rt.name               "Request type #{rt_value}"
-  rt.key                "request_type_#{rt_value}"
+Factory.define :sequencing_request_type, :parent => :request_type do |rt|
+  rt.request_class  SequencingRequest
+end
+
+Factory.define :multiplexed_library_creation_request_type, :parent => :request_type do |rt|
   rt.request_class      MultiplexedLibraryCreationRequest
-  rt.order              1
   rt.for_multiplexing   true
-  rt.workflow           { |workflow| workflow.association(:submission_workflow)}
 end
 
 Factory.define :sample do |s|
