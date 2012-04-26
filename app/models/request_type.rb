@@ -40,7 +40,8 @@ class RequestType < ActiveRecord::Base
     # we don't do many-to-many so far
   ]
 
-  validates_presence_of :order
+  validates_presence_of :order, :name
+  validates_uniqueness_of :name
   validates_numericality_of :order, :integer_only => true
   validates_numericality_of :morphology, :in => MORPHOLOGIES
   validates_presence_of :request_class_name

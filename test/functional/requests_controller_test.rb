@@ -109,16 +109,16 @@ class RequestsControllerTest < ActionController::TestCase
         @controller.stubs(:current_user).returns(@user)
 
         @project =  Factory(:project_with_order, :name => 'Prj1')
-         @reqwest= Factory :request, :user => @user, :request_type => Factory(:request_type), :study => Factory(:study, :name => "ReqCon XXX"), 
+         @request= Factory :request, :user => @user, :request_type => Factory(:request_type), :study => Factory(:study, :name => "ReqCon XXX"), 
                                   :workflow => Factory(:submission_workflow), :project => @project
       end
 
       context "update invalid and failed" do
         setup do
           @params = { :request_metadata_attributes => { :read_length => "37" }, :state => 'invalid' }
-          put :update, :id => @reqwest.id, :request => @params
+          put :update, :id => @request.id, :request => @params
         end            
-        should_redirect_to("request path") { request_path(@reqwest) }
+        should_redirect_to("request path") { request_path(@request) }
       end
       
 
@@ -126,10 +126,10 @@ class RequestsControllerTest < ActionController::TestCase
         setup do
           @prop_value_after = 666
           @params = { :request_metadata_attributes => { :read_length => "37" }, :state => 'failed' }
-          put :update, :id => @reqwest.id, :request => @params
+          put :update, :id => @request.id, :request => @params
         end
         should_set_the_flash_to Regexp.new("has been failed")
-        should_redirect_to("request path") { request_path(@reqwest) }
+        should_redirect_to("request path") { request_path(@request) }
       end
     end
   end

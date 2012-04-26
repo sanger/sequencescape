@@ -47,7 +47,7 @@ module Submission::Statemachine
 
   def configure_state_machine
     state_machine :state, :initial => :building do
-      event :build do
+      event :built do
         transition :from => [ :building ], :to => :pending
       end
 

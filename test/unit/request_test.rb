@@ -299,7 +299,8 @@ class RequestTest < ActiveSupport::TestCase
         assert_equal 6, @all_states.size
 
         @all_states.each do |state|
-          Factory :request, :state => state
+          # Factory :request, :state => state
+          Factory.build(:request, :state => state).save(false)
         end
 
         assert_equal 6, Request.count
@@ -327,7 +328,8 @@ class RequestTest < ActiveSupport::TestCase
         assert_equal 6, @all_states.size
 
         @all_states.each do |state|
-          Factory :request, :state => state
+          # Factory :request, :state => state
+          Factory.build(:request, :state => state).save(false)
         end
 
         assert_equal 6, Request.count

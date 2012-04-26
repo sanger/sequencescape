@@ -142,10 +142,11 @@ class EventTest < ActiveSupport::TestCase
 
     context "when created with a" do
       setup do
-        @library_creation_request_type = Factory :request_type, :name => "Library creation", :key => "library_creation"
-        @mx_library_creation_request_type = Factory :request_type, :name => "Multiplexed library creation", :key => "multiplexed_library_creation"
-        @pe_sequencing_request_type = Factory :request_type, :name => "Paired end sequencing", :key => "paired_end_sequencing"
-        @dna_qc_request_type = Factory :request_type, :name => "DNA QC", :key => "dna_qc"
+        # RequestTypes should be provided by the seeds...
+        @library_creation_request_type    =  RequestType.find_by_key('library_creation')
+        @mx_library_creation_request_type =  RequestType.find_by_key("multiplexed_library_creation")
+        @pe_sequencing_request_type       =  RequestType.find_by_key("paired_end_sequencing")
+        @dna_qc_request_type              =  RequestType.find_by_key("dna_qc")
 
         @control = Factory(:sample_tube, :resource => true)
 

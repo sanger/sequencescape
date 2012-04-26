@@ -10,10 +10,9 @@ module Request::Statemachine
     base.class_eval do
       include Request::BillingStrategy
 
-      StateMachine::Machine.ignore_method_conflicts = true
 
       ## State machine
-      state_machine :state, :initial => :pending do
+      state_machine :initial => :pending do
         event :hold do
           transition :to => :hold, :from => [ :pending ]
         end
@@ -24,15 +23,13 @@ module Request::Statemachine
         end
 
         event :pass do
-          transition :to => :passed, :from => [:passed, :pending]
-          transition :to => :passed, :from => [:started, :failed], :on_transition => :charge_to_project
+          transition :to => :passed, :from => [:passed, :pending, :started, :failed]
         end
 
-        # As Object#fail is already defined I'm renaming event to fail!
         event :fail do
           transition :to => :failed, :from => [:pending, :failed]
-          transition :to => :failed, :from => [:started], :on_transition => :charge_internally
-          transition :to => :failed, :from => [:passed],  :on_transition => :refund_project
+          transition :to => :failed, :from => [:started]
+          transition :to => :failed, :from => [:passed]
         end
 
         event :block do
@@ -56,8 +53,14 @@ module Request::Statemachine
         end
 
         after_transition all => :started,   :do => :on_started
-        after_transition all => :failed,    :do => :on_failed
-        after_transition all => :passed,    :do => :on_passed
+
+        after_transition :started => :failed,    :do => :charge_internally
+        after_transition :passed  => :failed,    :do => :refund_project
+        after_transition      all => :failed,    :do => :on_failed
+
+        after_transition [:started, :failed] => :passed,    :do => :charge_to_project
+        after_transition                 all => :passed,    :do => :on_passed
+
         after_transition all => :cancelled, :do => :on_cancelled
         after_transition all => :blocked,   :do => :on_blocked
         after_transition all => :hold,      :do => :on_hold

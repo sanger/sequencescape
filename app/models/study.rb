@@ -3,6 +3,7 @@ class Study < ActiveRecord::Base
 
   include StudyReport::StudyDetails
   include ModelExtensions::Study
+  include StateMachineExtensions
 
   include Api::StudyIO::Extensions
   cattr_reader :per_page

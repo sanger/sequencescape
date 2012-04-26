@@ -796,13 +796,13 @@ ActiveRecord::Schema.define(:version => 20120506092548) do
 
   create_table "request_types", :force => true do |t|
     t.string   "key",                :limit => 50
-    t.string   "name"
+    t.string   "name",                                                    :null => false
     t.integer  "workflow_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "asset_type"
     t.integer  "order"
-    t.string   "initial_state",      :limit => 20
+    t.string   "initial_state",                    :default => "pending", :null => false
     t.string   "target_asset_type"
     t.boolean  "multiples_allowed",                :default => false
     t.string   "request_class_name"
