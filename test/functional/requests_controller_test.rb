@@ -8,7 +8,7 @@ class RequestsControllerTest < ActionController::TestCase
   context "Request controller" do
     setup do
       @controller = RequestsController.new
-      @request    = ActionController::TestRequest.new
+      @scape_request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
       @user = Factory :admin
     end
@@ -45,12 +45,12 @@ class RequestsControllerTest < ActionController::TestCase
       setup do
         @controller.stubs(:logged_in?).returns(@user)
         @controller.stubs(:current_user).returns(@user)
-        #@request_initial= Factory :request, :user => @user, :request_type => Factory(:request_type), :study => Factory(:study, :name => "ReqCon2"), :workflow => Factory(:submission_workflow)
+        #@scape_request_initial= Factory :request, :user => @user, :request_type => Factory(:request_type), :study => Factory(:study, :name => "ReqCon2"), :workflow => Factory(:submission_workflow)
       end
       
       should "when quotas is copied and redirect" do
-        @request_initial= Factory :request, :user => @user, :request_type => Factory(:request_type), :study => Factory(:study, :name => "ReqCon2"), :workflow => Factory(:submission_workflow)
-         get :copy, :id => @request_initial.id
+        @scape_request_initial= Factory :request, :user => @user, :request_type => Factory(:request_type), :study => Factory(:study, :name => "ReqCon2"), :workflow => Factory(:submission_workflow)
+         get :copy, :id => @scape_request_initial.id
 
          @new_request = Request.last
          assert_equal flash[:notice], "Created request #{@new_request.id}"
@@ -59,11 +59,11 @@ class RequestsControllerTest < ActionController::TestCase
       
       should "when no quotas - copy failed" do
         @project =  Factory(:project_with_order, :name => 'Prj1')
-        @request_initial_2= Factory :request, :user => @user, :request_type => Factory(:request_type), :study => Factory(:study, :name => "ReqCon XXX"), 
+        @scape_request_initial_2= Factory :request, :user => @user, :request_type => Factory(:request_type), :study => Factory(:study, :name => "ReqCon XXX"), 
           :workflow => Factory(:submission_workflow), :project => @project
         @project.update_attributes!(:enforce_quotas=>true)
 
-         get :copy, :id => @request_initial_2.id
+         get :copy, :id => @scape_request_initial_2.id
 
          @new_request = Request.last
          assert_equal flash[:error], "Insufficient quota."
@@ -109,27 +109,29 @@ class RequestsControllerTest < ActionController::TestCase
         @controller.stubs(:current_user).returns(@user)
 
         @project =  Factory(:project_with_order, :name => 'Prj1')
-         @request= Factory :request, :user => @user, :request_type => Factory(:request_type), :study => Factory(:study, :name => "ReqCon XXX"), 
+         @scape_request = Factory :request, :user => @user, :request_type => Factory(:request_type), :study => Factory(:study, :name => "ReqCon XXX"), 
                                   :workflow => Factory(:submission_workflow), :project => @project
       end
 
       context "update invalid and failed" do
         setup do
           @params = { :request_metadata_attributes => { :read_length => "37" }, :state => 'invalid' }
-          put :update, :id => @request.id, :request => @params
-        end            
-        should_redirect_to("request path") { request_path(@request) }
+          put :update, :id => @scape_request.id, :request => @params
+        end
+        should 'catch an invalid state exception.' do
+          assert_match('State is invalid', flash[:error])
+        end
       end
-      
+
 
       context "update to state 'failed'" do
         setup do
           @prop_value_after = 666
           @params = { :request_metadata_attributes => { :read_length => "37" }, :state => 'failed' }
-          put :update, :id => @request.id, :request => @params
+          put :update, :id => @scape_request.id, :request => @params
         end
         should_set_the_flash_to Regexp.new("has been failed")
-        should_redirect_to("request path") { request_path(@request) }
+        should_redirect_to("request path") { request_path(@scape_request) }
       end
     end
   end

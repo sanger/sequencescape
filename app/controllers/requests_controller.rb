@@ -86,10 +86,8 @@ class RequestsController < ApplicationController
       end
    end
 
-    parameters = params[:request]
-#    parameters[:properties] = params[:request][:properties] if params[:request][:properties]
     begin
-      if @request.update_attributes(parameters)
+      if @request.update_attributes!(params[:request])
         flash[:notice] = "Request details have been updated"
         if params[:request][:state] == "failed"
           flash[:notice] = "Request #{params[:id]} has been failed"
