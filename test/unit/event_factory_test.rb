@@ -9,7 +9,8 @@ class EventFactoryTest < ActiveSupport::TestCase
       #@project = Factory :project, :name => "hello world", :user => @user
       role = Factory :owner_role, :authorizable => @project
       role.users << @user
-      @request_type = Factory :request_type, :key => "library_creation", :name => "Library creation"
+      # RequestTypes should be provide by the seeds file...
+      @request_type = RequestType.find_by_key('library_creation')
       @request = Factory :request, :request_type => @request_type, :user => @user, :project => @project
     end
 

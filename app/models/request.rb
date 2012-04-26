@@ -1,6 +1,7 @@
 class Request < ActiveRecord::Base
   include ModelExtensions::Request
   include Aliquot::DeprecatedBehaviours::Request
+  include StateMachineExtensions
 
   include Api::RequestIO::Extensions
   cattr_reader :per_page

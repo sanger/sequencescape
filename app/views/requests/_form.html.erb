@@ -5,7 +5,7 @@
   <tr>
     <tr>
       <td width="40%" class="item"><label for='request_state'>State: </label></td>
-      <td width="60%"><%= form.select :state, Request.aasm_states_for_select %></td>
+      <td width="60%"><%= form.select :state, Request.states_for_select %></td>
       <td></td>
     </tr>
     <% if @request.pending? %>

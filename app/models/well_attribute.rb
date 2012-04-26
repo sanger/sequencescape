@@ -3,7 +3,7 @@ class WellAttribute < ActiveRecord::Base
 
   serialize :gender_markers
 
-  state_machine :state, :initial => :ungraded do
+  state_machine :pico_pass, :initial => :ungraded do
 
     # These states are originally used in SNP
     event :pass_pico_test do

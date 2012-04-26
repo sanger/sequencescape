@@ -13,7 +13,7 @@ class Projects::Workflows::QuotasController < ApplicationController
 
   def all
     @request_types = @workflow.request_types
-    render :partial => "all", :locals =>{:workflow => @workflow}
+    render :partial => "all", :locals =>{:workflow => @workflow, :project => @project}
   end
 
   private

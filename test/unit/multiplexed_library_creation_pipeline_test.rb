@@ -20,7 +20,7 @@ class MultiplexedLibraryCreationPipelineTest < ActiveSupport::TestCase
       should 'add errors if there are untagged target asset aliquots' do
         @batch.requests.map(&:target_asset).map(&:untag!)
 
-        assert_raise(ActiveRecord::RecordInvalid) do
+        assert_raise(StateMachine::InvalidTransition) do
           @batch.complete!(@user)
         end
 

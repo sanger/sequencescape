@@ -14,10 +14,10 @@ class BatchTest < ActiveSupport::TestCase
     end
 
     should "have begin in pending then change to started" do
-      assert_equal @batch.state, :pending
+      assert @batch.pending?
+      assert_equal @batch.started?, false
       @batch.start!(Factory(:user))
-      assert_equal @batch.state, :started
-      assert_equal @batch.started?, true
+      assert @batch.started?
     end
     
     context "with a pipeline" do
@@ -115,10 +115,10 @@ class BatchTest < ActiveSupport::TestCase
     end
 
     should "have initially have a pending status for batch requests" do
-      assert_equal :pending, @batch.requests.first.state
+      assert @batch.requests.first.pending?
       @batch.start!(Factory(:user))
-      assert_equal :started, @batch.state
-      assert_equal :started, @batch.requests.first.state
+      assert @batch.started?
+      assert @batch.requests.first.started?
     end
     
     context "#remove_request_ids" do
