@@ -71,17 +71,11 @@ class CherrypickTask < Task
       # Doing this here ensures that the plate_barcode being processed will be the first
       # well on the new plate.
       unless source_plates.include?(plate_barcode)
+        fill_plate_and_push.call if (source_plates.size % max_plates).zero? and not current_plate.empty?
         source_plates << plate_barcode
-
-        if (source_plates.size % max_plates).zero? and not current_plate.empty?
-          add_empty_wells_to_end_of_plate(current_plate, num_wells)
-          push_completed_plate.call
-        end
       end
 
       current_plate << [request_id, plate_barcode, well_location]
-
-      fill_plate_and_push.call if (source_plates.size % max_plates).zero?
     end
 
     if current_plate.size > 0 && current_plate.size <= num_wells
