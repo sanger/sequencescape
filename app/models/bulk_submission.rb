@@ -211,7 +211,7 @@ class BulkSubmission < ActiveRecord::Base
         end
 
         assets_not_in_study = attributes[:assets].select { |asset| not asset.aliquots.map(&:sample).map(&:studies).flatten.uniq.include?(study) }
-        raise StandardError, "Assets not in study for #{details['rows']}: #{assets_not_in_study.inspect}" unless assets_not_in_study.empty?
+        raise StandardError, "Assets not in study #{study.name.inspect} for #{details['rows']}: #{assets_not_in_study.map(&:display_name).inspect}" unless assets_not_in_study.empty?
 
       end
 
