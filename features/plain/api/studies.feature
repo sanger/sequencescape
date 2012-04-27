@@ -39,6 +39,7 @@ Feature: Interacting with studies through the API
             "commercially_available": "No",
             "data_release_sort_of_study": "genomic sequencing",
             "data_release_strategy": "open",
+            "data_release_timing": "standard",
             "study_visibility": "Hold",
             "array_express_accession_number": "AE111",
             "ega_policy_accession_number": "EGA222",
@@ -85,6 +86,7 @@ Feature: Interacting with studies through the API
           "study_visibility": "Hold",
           "data_release_sort_of_study": "genomic sequencing",
           "data_release_strategy": "open",
+          "data_release_timing": "standard",
           "projects": "http://localhost:3000/0_5/studies/00000000-1111-2222-3333-444444444444/projects",
           "samples": "http://localhost:3000/0_5/studies/00000000-1111-2222-3333-444444444444/samples",
 
