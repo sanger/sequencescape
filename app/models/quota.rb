@@ -47,7 +47,7 @@ class Quota < ActiveRecord::Base
 
   def check_enough_quota_for!(number)
     lock!
-    raise Quota::Error, "Insufficient quota for #{request_type.name}"  if number > remaining
+    raise Quota::Error, "Insufficient quota for #{request_type.name} (require #{number} but only #{remaining} remaining)"  if number > remaining
   end
   private :check_enough_quota_for!
 
