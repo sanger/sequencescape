@@ -68,7 +68,7 @@ end
 Given /^a study report is generated for study "([^"]*)"$/ do |study_name|
   study_report = StudyReport.create!(:study => Study.find_by_name(study_name))
   study_report.perform
-  Given %Q{1 pending delayed jobs are processed}
+  step %Q{1 pending delayed jobs are processed}
 end
 
 

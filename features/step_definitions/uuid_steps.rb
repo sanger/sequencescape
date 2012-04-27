@@ -59,13 +59,13 @@ end
 
 Given /^(\d+) (#{PLURAL_MODELS_BASED_ON_NAME_REGEXP}) exist with names based on "([^\"]+)" and IDs starting at (\d+)$/ do |count, model, name, id|
   (0...count.to_i).each do |index|
-    Given %Q{a #{model.singularize} called "#{name}-#{index+1}" with ID #{id.to_i+index}}
+    step %Q{a #{model.singularize} called "#{name}-#{index+1}" with ID #{id.to_i+index}}
   end
 end
 
 Given /^(\d+) (#{PLURAL_MODELS_BASED_ON_NAME_REGEXP}) exist with names based on "([^\"]+)"$/ do |count, model, name|
   (0...count.to_i).each do |index|
-    Given %Q{a #{model.singularize} called "#{name}-#{index+1}"}
+    step %Q{a #{model.singularize} called "#{name}-#{index+1}"}
   end
 end
 
@@ -152,7 +152,7 @@ end
 
 Given /^(\d+) (#{PLURAL_MODELS_BASED_ON_ID_REGEXP}) exist with IDs starting at (\d+)$/ do |count, model, id|
   (0...count.to_i).each do |index|
-    Given %Q{the #{model.singularize} exists with ID #{id.to_i+index}}
+    step %Q{the #{model.singularize} exists with ID #{id.to_i+index}}
   end
 end
 
@@ -164,7 +164,7 @@ end
 
 Given /^I have a billing event with UUID "([^\"]+)"$/ do |uuid_value|
   project = Factory :project, :name => "Test Project"
-  Given %Q{the project "Test Project" a budget division "Human variation"}
+  step %Q{the project "Test Project" a budget division "Human variation"}
   request = Request.create!(:request_type => RequestType.find_by_key('paired_end_sequencing'))
   request.request_metadata.update_attributes!(:read_length => 100, :library_type => "Standard" )
   billing_event = Factory :billing_event, :project => project, :request => request
@@ -194,7 +194,7 @@ end
 
 Given /^there are (\d+) "([^\"]+)" requests with IDs starting at (\d+)$/ do |count, type, id|
   (0...count.to_i).each do |index|
-    Given %Q{a "#{type}" request with ID #{id.to_i+index}}
+    step %Q{a "#{type}" request with ID #{id.to_i+index}}
   end
 end
 

@@ -10,14 +10,14 @@ Given /^project "([^\"]*)" approval is "([^\"]*)"$/ do |project, approval|
 end
 
 Given /^I have an "([^\"]*)" project called "([^\"]*)"$/ do |approval, project|
-  Given "I have a project called \"#{project}\""
-  And "project \"#{project}\" approval is \"#{approval}\""
+  step "I have a project called \"#{project}\""
+  step "project \"#{project}\" approval is \"#{approval}\""
 end
 
 Given /^I have (\d+) "([^\"]+)" projects based on "([^\"]+)" with enough quotas$/ do |count, approval, name|
   (1..count.to_i).each do |index|
-    Given %Q{I have an "#{approval}" project called "#{name}-#{index}"}
-    Given %Q{project "#{name}-#{index}" has enough quotas}
+    step %Q{I have an "#{approval}" project called "#{name}-#{index}"}
+    step %Q{project "#{name}-#{index}" has enough quotas}
   end
 end
 
@@ -46,12 +46,12 @@ Given /^project "([^\"]+)" has (\d+) units of "([^\"]+)" quota$/ do |project_nam
 end
 
 Given /^the project "([^\"]*)" has quotas and quotas are enforced$/ do |project|
-  Given %Q(project "#{project}" has enough quotas)
-  Given %Q(project "#{project}" has enforced quotas)
+  step %Q(project "#{project}" has enough quotas)
+  step %Q(project "#{project}" has enforced quotas)
 end
 
 Given /^last submission is processed$/ do
-  Given %Q{1 pending delayed jobs are processed}
+  step %Q{1 pending delayed jobs are processed}
 end
 
 Given /^the project quotas table should be:$/ do |expected_table|
@@ -60,7 +60,7 @@ Given /^the project quotas table should be:$/ do |expected_table|
 end
 
 Given /^the project "([^\"]+)" has an active study called "([^\"]+)"$/ do |project_name, study_name|
-  Given %Q{I have an "active" study called "#{ study_name }"}
+  step %Q{I have an "active" study called "#{ study_name }"}
 
   project = Project.find_by_name(project_name) or raise StandardError, "Cannot find project #{ project_name.inspect }"
   study   = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{ study_name.inspect }"

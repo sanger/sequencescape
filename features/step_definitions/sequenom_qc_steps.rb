@@ -37,9 +37,9 @@ Given /^I have a source plate which contains samples which have no gender inform
 end
 
 When /^I try to create a Sequenom QC plate from the input plate$/ do
-  When %Q{I fill in "Plate 1" with "1220125054743"}
-  And %Q{I fill in "User barcode" with "2470000100730"}
-  And %Q{I press "Create new Plate"}
+  step %Q{I fill in "Plate 1" with "1220125054743"}
+  step %Q{I fill in "User barcode" with "2470000100730"}
+  step %Q{I press "Create new Plate"}
 end
 
 

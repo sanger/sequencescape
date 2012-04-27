@@ -34,11 +34,11 @@ end
 
 # TODO[xxx]: table cells don't appear to play nicely!
 Then /^I should see "([^\"]+)" set to "([^\"]+)"$/ do |property_name,value|
-  Then %Q{I should see "#{ property_name }"}
-  Then %Q{I should see "#{ value }"}
+  step %Q{I should see "#{ property_name }"}
+  step %Q{I should see "#{ value }"}
 end
 
 Then /^I should not see "([^\"]+)" set to "([^\"]+)"$/ do |property_name,value|
-  Then %Q{I should not see "#{ property_name }"}
-  Then %Q{I should not see "#{ value }"}
+  step %Q{I should not see "#{ property_name }"}
+  step %Q{I should not see "#{ value }"}
 end

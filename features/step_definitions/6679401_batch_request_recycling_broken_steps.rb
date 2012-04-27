@@ -11,15 +11,15 @@ Given /^I have a "([^\"]+)" submission of asset group "([^\"]+)" under project "
   asset_group = AssetGroup.find_by_name(group_name) or raise StandardError, "Cannot find the asset group #{group_name.inspect}"
 
   # NOTE: Working with Submission from the code at this point is a nightmare, so use the UI!
-  Given %Q{I am on the show page for study "#{asset_group.study.name}"}
-  When %Q{I follow "Create Submission"}
-  When %Q{I select "#{template_name}" from "Template"}
-  When %Q{I press "Next"}
-  When %Q{I select "#{project_name}" from "Select a financial project"}
-  When %Q{I select "#{group_name}" from "Select a group to submit"}
-  And %Q{I create the order and submit the submission}
+  step %Q{I am on the show page for study "#{asset_group.study.name}"}
+  step %Q{I follow "Create Submission"}
+  step %Q{I select "#{template_name}" from "Template"}
+  step %Q{I press "Next"}
+  step %Q{I select "#{project_name}" from "Select a financial project"}
+  step %Q{I select "#{group_name}" from "Select a group to submit"}
+  step %Q{I create the order and submit the submission}
 
-  Given %Q{all pending delayed jobs are processed}
+  step %Q{all pending delayed jobs are processed}
 end
 
 Given /^all assets for requests in the "([^\"]+)" pipeline have been scanned into the lab$/ do |name|
@@ -29,7 +29,7 @@ end
 
 When /^I check "([^\"]+)" for (\d+) to (\d+)$/ do |label_root, start, finish|
   (start.to_i..finish.to_i).each do |i|
-    When %Q{I check "#{label_root} #{i}"}
+    step %Q{I check "#{label_root} #{i}"}
   end
 end
 
@@ -107,7 +107,7 @@ def build_batch_for(name, count, &block)
     # Request parameter options
     :request_options => submission_details[:request_options]
   )
-  Given %Q{all pending delayed jobs are processed}
+  step %Q{all pending delayed jobs are processed}
 
   # Then build a batch that will hold all of these requests, ensuring that it appears to be at least started
   # in some form.

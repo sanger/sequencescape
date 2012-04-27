@@ -22,14 +22,14 @@ end
 
 Then /^(.+) asset (?:called|named) "([^\"]+)"(.*)$/ do |pre, name, post|
   asset = Asset.find_by_name(name) or raise StandardError, "Cannot find asset #{name.inspect}"
-  Then %Q{#{pre} asset "#{asset.id}"#{post}}
+  step %Q{#{pre} asset "#{asset.id}"#{post}}
 end
 
 Given /^(.+) the (\w+) asset of the asset "([^\"]+)"(.*)$/ do |pre,relation, id, post|
   asset  = Asset.find(id)
   related = asset.send(relation)
 
-  Then %Q{#{pre} the asset "#{related.id}"#{post}}
+  step %Q{#{pre} the asset "#{related.id}"#{post}}
 
 end
   
