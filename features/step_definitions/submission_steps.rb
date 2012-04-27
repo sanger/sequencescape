@@ -12,7 +12,7 @@ end
 
 Given /^all submissions have been built$/ do
   Submission.all.map(&:built!)
-  Given "all pending delayed jobs are processed"
+  step "all pending delayed jobs are processed"
 end
 
 When /^the state of the submission with UUID "([^"]+)" is "([^"]+)"$/ do |uuid, state|
@@ -22,7 +22,7 @@ end
 
 
 Then /^there should be no submissions to be processed$/ do
-  Then %Q{there should be no delayed jobs to be processed}
+  step %Q{there should be no delayed jobs to be processed}
 end
 
 Then /^the submission with UUID "([^\"]+)" is ready$/ do |uuid|
@@ -143,9 +143,9 @@ Given /^the sample tubes are part of submission "([^\"]*)"$/ do |submission_uuid
 end
 
 Then /^I create the order and submit the submission/ do
-  Then %q{I choose "build_submission_yes"}
-  Then %q{I press "Create Order"}
-  And %q{I press "Submit"}
+  step %q{I choose "build_submission_yes"}
+  step %q{I press "Create Order"}
+  step %q{I press "Submit"}
 end
 
 
@@ -177,5 +177,5 @@ Given /^I have a "([^\"]*)" submission with the following setup:$/ do |template_
     :request_options => request_options
   )
 
-  #And %Q{1 pending delayed jobs are processed}
+  #step %Q{1 pending delayed jobs are processed}
 end

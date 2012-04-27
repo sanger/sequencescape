@@ -20,8 +20,8 @@ Given /^study "([^\"]*)" status is "([^\"]*)"$/ do |study, status|
 end
 
 Given /^I have an "([^\"]*)" study called "([^\"]*)"$/ do |status, study|
-  Given 'I have a study called "'+ study +'"'
-  Given 'study "' + study + '" status is "' + status + '"'
+  step 'I have a study called "'+ study +'"'
+  step 'study "' + study + '" status is "' + status + '"'
 end
 
 #Given /^study "([^\"]*)" has enough quotas$/ do |study|
@@ -92,8 +92,8 @@ Given /^user "([^\"]*)" is an? "([^\"]*)" of study "([^\"]*)"$/ do |login, role_
 end
 
 Given /^I have an active study called "([^\"]*)"$/ do |study_name|
-  Given 'I have a study called "'+study_name+'"'
-  Given 'study "'+study_name+'" status is "active"'
+  step 'I have a study called "'+study_name+'"'
+  step 'study "'+study_name+'" status is "active"'
 end
 
 Given /^I am visiting "([^\"]*)" page with ID "([^\"]*)" homepage$/ do |page, id|
@@ -237,7 +237,7 @@ end
 
 Given /^the study "([^\"]*)" has the following contacts$/ do |study, table|
   table.hashes.each do |hash|
-    Given 'user "'+hash['login']+'" is a "'+hash['role']+'" of study "'+study+'"'
+    step 'user "'+hash['login']+'" is a "'+hash['role']+'" of study "'+study+'"'
   end
 end
 
@@ -295,7 +295,7 @@ end
 ####################################################################################################################
 Given /^studies will appear in the following study lists:$/ do |table|
   table.raw.each do |study_list|
-    Given %Q{a study will appear in the study list "#{ study_list }"}
+    step %Q{a study will appear in the study list "#{ study_list }"}
   end
 end
 
@@ -305,12 +305,12 @@ end
 
 Then /^I should see the studies for the following study lists:$/ do |table|
   table.raw.each do |study_list|
-    Then %Q{I should see the study for study list "#{ study_list }"}
+    step %Q{I should see the study for study list "#{ study_list }"}
   end
 end
 
 Then /^I should see the study for study list "([^\"]+)"$/ do |study_list|
-  Then %Q{I should see "Study: #{ study_list }"}
+  step %Q{I should see "Study: #{ study_list }"}
 end
 
 Given /^asset with barcode "([^"]*)" belongs to study "([^"]*)"$/ do |raw_barcode, study_name|
@@ -342,7 +342,7 @@ end
 Given /^the study "([^\"]+)" has a (library tube) called "([^\"]+)"$/ do |study_name, asset_model, asset_name|
   study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   asset = Factory(asset_model.gsub(/\s+/, '_').to_sym, :name => asset_name)
-  Then %Q(the asset "#{asset_name}" belongs to study "#{study_name}")
+  step %Q(the asset "#{asset_name}" belongs to study "#{study_name}")
 end
 
 Then /^the help text for "([^"]*)" should contain:$/ do |label_name, expected_tooltip_text|
@@ -360,28 +360,28 @@ end
 
 When /^I generate an? (dac|policy|array express) accession number for study "([^\"]+)"$/ do |type, study_name|
  type = {"dac" => "DAC", "policy" => "Policy", "array express" => ""}.fetch(type, type)
- Then %Q{I am on the workflow page for study "#{study_name}"}
- When %Q{I follow "Generate #{type} Accession Number"}.gsub(/  +/, " ")
+ step %Q{I am on the workflow page for study "#{study_name}"}
+ step %Q{I follow "Generate #{type} Accession Number"}.gsub(/  +/, " ")
 end
 
 When /^I generate an? accession number for study "([^\"]+)"$/ do |study_name|
- Then %Q{I am on the workflow page for study "#{study_name}"}
- When %Q{I follow "Generate Accession Number"}
+ step %Q{I am on the workflow page for study "#{study_name}"}
+ step %Q{I follow "Generate Accession Number"}
 end
 
 When /^I update an? accession number for study "([^\"]+)"$/ do |study_name|
- Then %Q{I am on the workflow page for study "#{study_name}"}
- When %Q{I follow "Update EBI Study data"}
+ step %Q{I am on the workflow page for study "#{study_name}"}
+ step %Q{I follow "Update EBI Study data"}
 end
 
 Given /^the study "([^\"]+)" has a valid policy$/ do |study_name|
-    Given %Q{the policy for study "#{study_name}" is "I am the 'managed study'  policy"}
-    And %Q{the dac accession number for study "#{study_name}" is "EGAC00000001"}
+    step %Q{the policy for study "#{study_name}" is "I am the 'managed study'  policy"}
+    step %Q{the dac accession number for study "#{study_name}" is "EGAC00000001"}
 end
 
 Given /^the study "([^\"]+)" has a valid dac$/ do |study_name|
-  Given %Q{user "dac" exists}
-  And %Q{user "dac" is an "Data Access Contact" of study "#{study_name}"}
+  step %Q{user "dac" exists}
+  step %Q{user "dac" is an "Data Access Contact" of study "#{study_name}"}
 end
 
 Given /^the study "([^\"]+)" is "([^\"]+)" of study "([^\"]+)"/ do |related_study_name, relation_name, study_name|
@@ -391,16 +391,16 @@ Given /^the study "([^\"]+)" is "([^\"]+)" of study "([^\"]+)"/ do |related_stud
 end
 
 Given /^a study named "([^\"]+)" exists for accession/ do |study_name|
-    Given %Q{a study named "#{study_name}" exists}
-    Given %Q{an accession number is required for study "#{study_name}"}
-    And   %Q{the title of study "#{study_name}" is "Testing accession numbers"}
-    And   %Q{the description of study "#{study_name}" is "To find out if something is broken"}
-    And   %Q{the abstract of study "#{study_name}" is "Ok, not ok?"}
-  And   %Q{the study "#{study_name}" is a "Whole Genome Sequencing" study}
+    step %Q{a study named "#{study_name}" exists}
+    step %Q{an accession number is required for study "#{study_name}"}
+    step %Q{the title of study "#{study_name}" is "Testing accession numbers"}
+    step %Q{the description of study "#{study_name}" is "To find out if something is broken"}
+    step %Q{the abstract of study "#{study_name}" is "Ok, not ok?"}
+  step %Q{the study "#{study_name}" is a "Whole Genome Sequencing" study}
   end
 Given /^a study named "([^\"]+)" exists for array express/ do |study_name|
-  Given %Q{a study named "#{study_name}" exists for accession}
-  And   %Q{the study "#{study_name}" is a "Whole Genome Sequencing" study}
+  step %Q{a study named "#{study_name}" exists for accession}
+  step %Q{the study "#{study_name}" is a "Whole Genome Sequencing" study}
 end
 
 
@@ -415,13 +415,13 @@ Given /^study "([^"]*)" has an ENA project ID of "([^"]*)"$/ do |study_name, ena
 end
 
 Given /^I create study "([^"]*)" with faculty sponsor "([^"]*)"$/ do |study_name, faculty_sponsor|
-  Given %Q{I am on the homepage}
-  When %Q{I follow "Create study"}
-  And %Q{I fill in "Study name" with "#{study_name}"}
-  And %Q{I select "Not suitable for alignment" from "Reference genome"}
-  And %Q{I fill in "Study description" with "some description"}
-  And %Q{I select "#{faculty_sponsor}" from "Faculty Sponsor"}
-  And %Q{I press "Create"}
+  step %Q{I am on the homepage}
+  step %Q{I follow "Create study"}
+  step %Q{I fill in "Study name" with "#{study_name}"}
+  step %Q{I select "Not suitable for alignment" from "Reference genome"}
+  step %Q{I fill in "Study description" with "some description"}
+  step %Q{I select "#{faculty_sponsor}" from "Faculty Sponsor"}
+  step %Q{I press "Create"}
 end
 
 

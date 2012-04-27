@@ -1,6 +1,6 @@
 Given /^I have the following library tubes with tags( multiplexed in a tube)?:$/ do |create_mx_tube, table|
   number_of_tubes = table.rows.size
-  Given %Q{I have a tag group called "My tag group" with #{number_of_tubes} tags}
+  step %Q{I have a tag group called "My tag group" with #{number_of_tubes} tags}
 
   mx_tube = Factory(:multiplexed_library_tube) if create_mx_tube
   table.hashes.each do |row|
@@ -37,14 +37,14 @@ When /^I change the tags of the library tubes:$/ do |table|
     tube_to_tags[tube.id] = tag.name
   end
 
-  Given "I am on the tag changing page"
-  Given %Q{I fill in "change_tags_library_tube_ids" with "#{library_tubes.map(&:id).join('\n')}"}
-  Then %Q{I press "Submit"}
+  step "I am on the tag changing page"
+  step %Q{I fill in "change_tags_library_tube_ids" with "#{library_tubes.map(&:id).join('\n')}"}
+  step %Q{I press "Submit"}
   # assign the correct tag
   tube_to_tags.each do|tube_id, tag_name| 
-    Then %Q{I select "#{tag_name}" from "change_tags_library_tubes[#{tube_id}]"}
+    step %Q{I select "#{tag_name}" from "change_tags_library_tubes[#{tube_id}]"}
   end
-  Then %Q{I press "Submit"}
+  step %Q{I press "Submit"}
   #done
 end
 

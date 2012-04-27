@@ -54,7 +54,7 @@ def create_submission_of_assets(template, assets, request_options = {})
         :request_options => request_options
       )
 
-  Given 'all pending delayed jobs are processed'
+  step 'all pending delayed jobs are processed'
 end
 
 Given /^"([^\"]+)" of (the plate .+) have been (submitted to "[^"]+")$/ do |range, plate, template|
@@ -84,7 +84,7 @@ Given /^"([^\"]+)" of (the plate .+) have been (submitted to "[^\"]+") with the 
 end
 
 Given /^the plate (.+) has been submitted to "([^"]+)"$/ do |info, template|
-  Given %Q{"A1-H12" of the plate #{info} have been submitted to "#{template}"}
+  step %Q{"A1-H12" of the plate #{info} have been submitted to "#{template}"}
 end
 
 Given /^H12 on (the plate .+) is empty$/ do |plate|

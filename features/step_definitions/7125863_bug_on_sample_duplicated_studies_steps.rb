@@ -9,7 +9,7 @@ Given /^the sample named "([^"]*)" belongs to the study named "([^"]*)"$/ do |na
 end
 
 Given /^an import SNP with study "([^"]*)" bounded to sample "([^"]*)"$/ do |study_name, name_sample|
-  Given %Q{a study named "#{study_name}" to the sample named "#{name_sample}"}  
+  step %Q{a study named "#{study_name}" to the sample named "#{name_sample}"}  
 end
 
 When /^I try to set the sample named "([^"]*)" as belonging to the study named "([^"]*)"$/ do |sample_name, study_name|
@@ -26,7 +26,7 @@ Then /^the sample "([^"]*)" should belong to the study named "([^"]*)" only once
 end
 
 Then /^(?:|I )should see one link with text "([^"]*)"$/ do |regexp|
-  Then %Q{I should see 1 links with text "#{regexp}"}
+  step %Q{I should see 1 links with text "#{regexp}"}
 end
 
 Then /^(?:|I )should see (\d+) links with text "([^"]*)"$/ do |count, regexp|

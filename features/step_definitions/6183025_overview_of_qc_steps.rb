@@ -3,11 +3,11 @@ Then /^the overview of the plates should look like:$/ do |expected_results_table
 end
 
 Then /^I create a "([^"]*)" from plate "([^"]*)"$/ do |plate_types, source_plate|
-  When %Q{I fill in "Source plates" with "#{source_plate}"}
-  When %Q{I select "#{plate_types}" from "Plate purpose"}
-  And %Q{I select "xyz" from "Barcode printer"}
-  And %Q{I fill in "User barcode" with "2470000100730"}
-  And %Q{I press "Submit"}
+  step %Q{I fill in "Source plates" with "#{source_plate}"}
+  step %Q{I select "#{plate_types}" from "Plate purpose"}
+  step %Q{I select "xyz" from "Barcode printer"}
+  step %Q{I fill in "User barcode" with "2470000100730"}
+  step %Q{I press "Submit"}
 end
 
 Given /^plate "([^"]*)" has had pico analysis results uploaded$/ do |barcode|

@@ -24,5 +24,5 @@ Then /^I should see a field marked "([^\"]+)"$/ do |field_label_text|
 end
 
 When /^I fill in "([^\"]+)" with the human barcode "(..)(.+)."$/ do |field,prefix,number|
-  When %Q{I fill in "#{ field }" with "#{ Barcode.calculate_barcode(prefix, number.to_i) }"}
+  step %Q{I fill in "#{ field }" with "#{ Barcode.calculate_barcode(prefix, number.to_i) }"}
 end

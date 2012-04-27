@@ -96,19 +96,19 @@ Then /^the samples table should look like:$/ do |table|
 end
 
 Given /^a manifest has been created for "([^"]*)"$/ do |study_name|
-  When %Q{I follow "Create manifest for plates"}
-	When %Q{I select "#{study_name}" from "Study"}
-  When %Q{I select "default layout" from "Template"}
-	And %Q{I select "Test supplier name" from "Supplier"}
-	And %Q{I select "xyz" from "Barcode printer"}
-	And %Q{I fill in the field labeled "Count" with "1"}
-  And %Q{I select "default layout" from "Template"}
-	When %Q{I press "Create manifest and print labels"}
-	Then %Q{I should see "Manifest_"}
-	Then %Q{I should see "Download Blank Manifest"}
-	Given %Q{3 pending delayed jobs are processed}
-	Then %Q{study "#{study_name}" should have 96 samples}
-	Given %Q{I reset all of the sanger sample ids to a known number sequence}
+  step %Q{I follow "Create manifest for plates"}
+	step %Q{I select "#{study_name}" from "Study"}
+  step %Q{I select "default layout" from "Template"}
+	step %Q{I select "Test supplier name" from "Supplier"}
+	step %Q{I select "xyz" from "Barcode printer"}
+	step %Q{I fill in the field labeled "Count" with "1"}
+  step %Q{I select "default layout" from "Template"}
+	step %Q{I press "Create manifest and print labels"}
+	step %Q{I should see "Manifest_"}
+	step %Q{I should see "Download Blank Manifest"}
+	step %Q{3 pending delayed jobs are processed}
+	step %Q{study "#{study_name}" should have 96 samples}
+	step %Q{I reset all of the sanger sample ids to a known number sequence}
 end
 
 Then /^the sample controls and resubmits should look like:$/ do |table|
@@ -176,5 +176,5 @@ end
 Given /^the sample manifest with ID (\d+) has been processed$/ do |id|
   manifest = SampleManifest.find(id)
   manifest.generate
-  Given %Q{3 pending delayed jobs are processed}
+  step %Q{3 pending delayed jobs are processed}
 end

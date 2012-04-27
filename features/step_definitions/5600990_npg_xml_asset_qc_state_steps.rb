@@ -31,14 +31,14 @@ end
    
 When /^I (POST|PUT) following XML to change the QC state on the last asset:$/ do |action, xml|
  lane = Lane.last 
- When %Q{I #{action} the following XML to "/npg_actions/assets/#{lane.id}/fail_qc_state":}, xml
+ step %Q{I #{action} the following XML to "/npg_actions/assets/#{lane.id}/fail_qc_state":}, xml
 end
 
 When /^I (POST|PUT) following XML to change in passed the QC state on the last asset:$/ do |action, xml|
  lane = Lane.last 
- When %Q{I #{action} the following XML to "/npg_actions/assets/#{lane.id}/pass_qc_state":}, xml
+ step %Q{I #{action} the following XML to "/npg_actions/assets/#{lane.id}/pass_qc_state":}, xml
 end
 
 When /^I (POST|PUT) following XML to change the QC state on the asset that does not exist:$/ do |action, xml|
- When %Q{I #{action} the following XML to "/npg_actions/assets/9999999999/fail_qc_state":}, xml
+ step %Q{I #{action} the following XML to "/npg_actions/assets/9999999999/fail_qc_state":}, xml
 end
