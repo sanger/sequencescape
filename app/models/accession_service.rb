@@ -240,7 +240,7 @@ private
 
         curl.proxy_url= configatron.proxy
         # UA required to get through Sanger proxy
-        curl.headers["User-Agent"] = "Internet Explorer 5.0"
+        curl.headers["User-Agent"] = "Sequencescape Accession Client (#{RAILS_ENV})"
         curl.proxy_tunnel = true
         curl.verbose = true
       end
