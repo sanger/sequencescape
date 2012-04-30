@@ -94,9 +94,10 @@ end
 group :cucumber do
   # We only need to bind cucumber-rails here, the rest are its dependencies which means it should be
   # making sensible choices.  Should ...
-  gem "capybara", "~>0.3.9", :require => false
+  # gem "capybara", "~>0.3.9", :require => false
+  gem "capybara", :require => false
   gem "database_cleaner", :require => false
-  gem "cucumber", :require => false
+  gem "cucumber", '~>1.1.0', :require => false
   gem "cucumber-rails", "~>0.3.2", :require => false
 end
 
