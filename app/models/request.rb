@@ -123,7 +123,7 @@ class Request < ActiveRecord::Base
   #Use container location
   named_scope :holder_located, lambda { |location_id|
     {
-      :joins => ["INNER JOIN container_associations ON content_id = asset_id", "INNER JOIN location_associations ON location_associations.locatable_id = container_id"],
+      :joins => ["INNER JOIN container_associations hl ON hl.content_id = asset_id", "INNER JOIN location_associations ON location_associations.locatable_id = hl.container_id"],
       :conditions => ['location_associations.location_id = ?', location_id ] 
     }
   }
@@ -133,8 +133,22 @@ class Request < ActiveRecord::Base
   named_scope :full_inbox, :conditions => {:state => ["pending","hold"]}
   named_scope :hold, :conditions => {:state => "hold"}
 
+  named_scope :loaded_for_inbox_display, :include => [:comments, {:submission => {:orders =>:study}, :asset => [:scanned_into_lab_event,:comments,:studies]}]
   named_scope :ordered_for_ungrouped_inbox, :order => 'id DESC'
   named_scope :ordered_for_submission_grouped_inbox, :order => 'submission_id DESC, id ASC'
+
+  named_scope :group_conditions, lambda { |conditions, variables| {
+    :conditions => [ conditions.join(' OR '), *variables ]
+  } }
+  def self.group_requests(finder_method, options = {})
+    target = options[:by_target] ? 'target_asset_id' : 'asset_id'
+
+    send(finder_method, options.slice(:group).merge(
+      :select  => "requests.*, tca.container_id AS container_id, tca.content_id AS content_id",
+      :joins   => "INNER JOIN container_associations tca ON tca.content_id=#{target}",
+      :include => :request_metadata
+    ))
+  end
 
   named_scope :for_submission_id, lambda { |id| { :conditions => { :submission_id => id } } }
   named_scope :for_asset_id, lambda { |id| { :conditions => { :asset_id => id } } }

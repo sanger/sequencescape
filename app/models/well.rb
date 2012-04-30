@@ -149,19 +149,6 @@ class Well < Aliquot::Receptacle
 
     true
   end
-  
-  def set_buffer_required(requested_volume, minimum_volume)
-    if requested_volume < minimum_volume
-      set_buffer_volume(calculate_buffer_required(minimum_volume, requested_volume))
-    else
-      set_buffer_volume(0.0)
-    end
-  end
-  
-  def calculate_buffer_required(total_volume, requested_volume)
-    buffer_volume = (total_volume*100 - requested_volume*100)
-    (buffer_volume.to_i.to_f)/100
-  end
 
   def create_child_sample_tube
     SampleTube.create!(:map => self.map, :aliquots => aliquots.map(&:clone)).tap do |sample_tube|

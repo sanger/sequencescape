@@ -100,9 +100,15 @@ class PipelinesController < ApplicationController
 
     unless @pipeline.qc?
       @information_types = @pipeline.request_information_types
-      @requests          = @pipeline.requests.inbox(@show_held_requests,@current_page)
-      @request_groups    = @pipeline.get_input_request_groups(@show_held_requests) if @pipeline.group_by_parent?
-      @grouped_requests  = @requests.group_by(&:submission_id) if @pipeline.group_by_submission?
+      @requests_waiting  = @pipeline.requests.inbox(@show_held_requests, @current_page, :count)
+
+      if @pipeline.group_by_parent?
+        @request_groups = @pipeline.get_input_request_groups(@show_held_requests)
+      elsif @pipeline.group_by_submission?
+        @grouped_requests  = @pipeline.requests.inbox(@show_held_requests,@current_page).group_by(&:submission_id)
+      else
+        @requests = @pipeline.requests.inbox(@show_held_requests,@current_page)
+      end
     end
   end
 
@@ -167,8 +173,10 @@ class PipelinesController < ApplicationController
   end
 
   def release
-    @batch = Batch.find(params[:id])
-    @batch.release!(current_user)
+    ActiveRecord::Base.transaction do
+      @batch = Batch.find(params[:id])
+      @batch.release!(current_user)
+    end
 
     flash[:notice] = 'Batch released!'
     redirect_to :controller => "batches", :action => "show", :id => @batch.id
