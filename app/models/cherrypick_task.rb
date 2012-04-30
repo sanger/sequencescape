@@ -37,12 +37,13 @@ class CherrypickTask < Task
     num_wells = template.size
     plates =[]
     source_plates = Set.new
-    current_plate = []
+    current_plate, current_sources = [], Set.new
     control = false
 
     push_completed_plate = lambda do
       plates << current_plate.dup
       current_plate.clear
+      current_sources.clear
       control = false
 
       # Reset the control well information
@@ -70,9 +71,10 @@ class CherrypickTask < Task
 
       # Doing this here ensures that the plate_barcode being processed will be the first
       # well on the new plate.
-      unless source_plates.include?(plate_barcode)
-        fill_plate_and_push.call if (source_plates.size % max_plates).zero? and not current_plate.empty?
-        source_plates << plate_barcode
+      unless current_sources.include?(plate_barcode)
+        fill_plate_and_push.call if (current_sources.size % max_plates).zero? and not current_plate.empty?
+        source_plates   << plate_barcode
+        current_sources << plate_barcode
       end
 
       current_plate << [request_id, plate_barcode, well_location]
