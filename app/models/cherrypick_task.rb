@@ -4,191 +4,94 @@ class CherrypickTask < Task
   def create_render_element(request)
   end
 
-  def map_empty_wells(template,plate)
-    empty_wells = {}
-    unless plate.nil?
-      plate.children.each do |well|
-        empty_wells[Map.description_to_horizontal_plate_position(well.map.description,well.map.asset_size)] = well.map.description
-      end
-    end
-
-    template.children.each do |well|
-      empty_wells[Map.pipelines_map_id_to_snp_map_id(well.map_id)] = well.map.description
-    end
-    return empty_wells
-  end
-
-  def robot_max_plates(robot)
-    return 0 if robot.nil?
-    robot.max_beds
-  end
-
-  def create_control_request(batch, partial_plate, template)
-    return nil unless control_well_required?(partial_plate, template)
-    control_plate = ControlPlate.first
-    control_wells = control_plate.illumina_wells
-    selected_well = control_wells.sample
-    request = generate_control_request(selected_well)
-    batch.requests << request
-
-    request
-  end
-
   def generate_control_request(well)
     # TODO: create a genotyping request for the control request
     #Request.create(:state => "pending", :sample => well.sample, :asset => well, :target_asset => Well.create(:sample => well.sample, :name => well.sample.name))
     target_well = Well.create!(:name => well.primary_aliquot.sample.name, :aliquots => well.aliquots.map(&:clone))
     workflow.pipeline.request_type.create_control!(:asset => well, :target_asset => target_well)
   end
-
-  def control_well_required?(partial_plate, template)
-    return false if template.nil?
-    unless partial_plate.nil?
-      unless partial_plate.control_well_exists?
-        if template.control_well?
-          return true
-        end
-      end
-    else
-      if template.control_well?
-        return true
-      end
-    end
-
-    false
-  end
+  private :generate_control_request
 
   def get_well_from_control_param(control_param)
     control_param.scan(/([\d]+)/)
     well_id = $1.to_i
     Well.find_by_id(well_id)
   end
+  private :get_well_from_control_param
 
   def create_control_request_from_well(control_param)
     return nil unless control_param.match(/control/)
     well = get_well_from_control_param(control_param)
     return nil if well.nil?
-    self.generate_control_request(well)
-  end
-
-  def create_control_request_view_details(batch, partial_plate, template)
-    control_request = create_control_request(batch, partial_plate, template)
-    return nil if control_request.nil?
-    return [control_request.id,control_request.asset.parent.barcode,control_request.asset.map.description]
-  end
-
-  def add_template_empty_wells(empty_wells, current_plate, num_wells)
-    template_empty_well = [0,"---",""]
-    while ! empty_wells[Map.vertical_to_horizontal(current_plate.size+1,num_wells)].nil?
-      current_plate << template_empty_well
-    end
-    return current_plate
-  end
-
-  def add_empty_wells_to_end_of_plate(current_plate, num_wells)
-    while current_plate.size < num_wells
-      current_plate << EMPTY_WELL
-    end
-    return current_plate
-  end
-
-  def add_plate_id_to_source_plates(source_plates,plate_id)
-    if source_plates[plate_id].nil?
-      source_plates[plate_id] =1
-    else
-      source_plates[plate_id] +=1
-    end
-    return source_plates
+    generate_control_request(well)
   end
 
   def map_wells_to_plates(requests, template, robot, batch, partial_plate)
-    max_plates = robot_max_plates(robot)
+    max_plates = robot.max_beds
     raise StandardError, 'The chosen robot has no beds!' if max_plates.zero?
 
     control_well_required = control_well_required?(partial_plate, template)
-    num_wells = template.size
-
     empty_wells = map_empty_wells(template,partial_plate)
-    plates_hash = build_plate_wells_from_requests(requests,num_wells)
+    plates_hash = build_plate_wells_from_requests(requests)
 
+    num_wells = template.size
     plates =[]
-    source_plates = {}
-    source_plate_index = {}
-    current_plate = []
+    source_plates = Set.new
+    current_plate, current_sources = [], Set.new
     control = false
 
-    plates_hash.sort.each do |pid,plate|
-      plate.sort.each do |mid,well|
-        if current_plate.size >= num_wells
-          plates << current_plate
-          current_plate = []
-          control = false
-          source_plate_index = source_plate_index.merge(source_plates)
-          source_plates = {}
-        end
-        current_plate = add_template_empty_wells(empty_wells, current_plate,num_wells)
+    push_completed_plate = lambda do
+      plates << current_plate.dup
+      current_plate.clear
+      current_sources.clear
+      control = false
 
-        if current_plate.size >= num_wells
-          plates << current_plate
-          current_plate = []
-          control = false
-          source_plate_index = source_plate_index.merge(source_plates)
-          source_plates ={}
-        end
+      # Reset the control well information
+      partial_plate = nil
+      control_well_required = control_well_required?(nil, template)
+      empty_wells = map_empty_wells(template, nil)
+    end
+    fill_plate_and_push = lambda do
+      add_empty_wells_to_end_of_plate(current_plate, num_wells)
+      push_completed_plate.call
+    end
 
-        if current_plate.size > (num_wells-empty_wells.size)/2 && (control_well_required)
-          unless control
-            control = true
-            current_plate << create_control_request_view_details(batch, partial_plate, template)
-            current_plate = add_template_empty_wells(empty_wells, current_plate,num_wells)
-          end
-        end
+    plates_hash.each do |request_id, plate_barcode, well_location|
+      push_completed_plate.call if current_plate.size >= num_wells
 
-        source_plates = add_plate_id_to_source_plates(source_plates,pid)
+      add_template_empty_wells(empty_wells, current_plate,num_wells)
 
-        if source_plates.size >=max_plates
-          current_plate = add_empty_wells_to_end_of_plate(current_plate, num_wells)
-          plates << current_plate
-          current_plate = []
-          control = false
-          source_plate_index = source_plate_index.merge(source_plates)
-          source_plates ={}
-        end
+      push_completed_plate.call if current_plate.size >= num_wells
 
-        current_plate << [well[0],pid,well[1]]
+      if !control and control_well_required and current_plate.size > (num_wells-empty_wells.size)/2
+        control = true
+        create_control_request_view_details(batch, partial_plate, template) { |c| current_plate << c }
+        add_template_empty_wells(empty_wells, current_plate,num_wells)
       end
+
+      # Doing this here ensures that the plate_barcode being processed will be the first
+      # well on the new plate.
+      unless current_sources.include?(plate_barcode)
+        fill_plate_and_push.call if (current_sources.size % max_plates).zero? and not current_plate.empty?
+        source_plates   << plate_barcode
+        current_sources << plate_barcode
+      end
+
+      current_plate << [request_id, plate_barcode, well_location]
     end
 
     if current_plate.size > 0 && current_plate.size <= num_wells
-      if  (! control) && control_well_required
-        current_plate = add_template_empty_wells(empty_wells, current_plate,num_wells)
+      if !control and control_well_required
+        add_template_empty_wells(empty_wells, current_plate,num_wells)
         control = true
-        current_plate << create_control_request_view_details(batch, partial_plate, template)
+        create_control_request_view_details(batch, partial_plate, template) { |c| current_plate << c }
       end
-      current_plate = add_empty_wells_to_end_of_plate(current_plate, num_wells)
-      plates << current_plate
+      fill_plate_and_push.call
     end
 
-    if control_well_required
-      source_plates = add_plate_id_to_source_plates(source_plates,ControlPlate.first.barcode)
-    end
-    source_plate_index = source_plate_index.merge(source_plates)
+    source_plates << ControlPlate.first.barcode if control_well_required
 
-    [plates,source_plate_index.keys]
-  end
-
-  def build_plate_wells_from_requests(requests,num_wells)
-    plates = {}
-    requests.each do |request|
-      plate_id = request.asset.plate.barcode
-      if plates[plate_id].nil?
-        plates[plate_id] = {}
-      end
-      charnum_well = Map.find(request.asset.map_id).description
-      vert_map_id = Map.description_to_vertical_plate_position(charnum_well,num_wells)
-      plates[plate_id][vert_map_id] = [request.id, charnum_well, vert_map_id, plate_id]
-    end
-    plates
+    [plates,source_plates]
   end
 
   def partial
@@ -276,4 +179,64 @@ class CherrypickTask < Task
     [plates,source_plate_index.keys]
   end
 
+  # STUFF I HAVE TIDIED:
+
+  def map_empty_wells(template,plate)
+    {}.tap do |empty_wells|
+      empty_wells.merge!(Hash[plate.wells.map { |w| [w.map.horizontal_plate_position,w.map.description] }]) unless plate.nil?
+      empty_wells.merge!(Hash[template.wells.map { |w| [w.map.snp_id, w.map.description] }])
+    end
+  end
+  private :map_empty_wells
+
+  def build_plate_wells_from_requests(requests)
+    Request.all(
+      :select => 'requests.id AS id, plates.barcode AS barcode, maps.description AS description',
+      :joins => [
+        'INNER JOIN assets wells ON requests.asset_id=wells.id',
+        'INNER JOIN container_associations ON container_associations.content_id=wells.id',
+        'INNER JOIN assets plates ON plates.id=container_associations.container_id',
+        'INNER JOIN maps ON wells.map_id=maps.id'
+      ],
+      :order => 'plates.barcode ASC, maps.column_order ASC',
+      :conditions => { :requests => { :id => requests.map(&:id) } }
+    ).map do |request|
+      [request.id, request.barcode, request.description]
+    end
+  end
+  private :build_plate_wells_from_requests
+
+  def control_well_required?(partial_plate, template)
+    template.present? && template.control_well? && (partial_plate.nil? || !partial_plate.control_well_exists?)
+  end
+  private :control_well_required?
+
+  def add_empty_wells_to_end_of_plate(current_plate, num_wells)
+    current_plate.concat([ EMPTY_WELL ] * (num_wells - current_plate.size))
+  end
+  private :add_empty_wells_to_end_of_plate
+
+  def create_control_request_view_details(batch, partial_plate, template, &block)
+    create_control_request(batch, partial_plate, template) do |control_request|
+      yield([control_request.id,control_request.asset.parent.barcode,control_request.asset.map.description])
+    end
+  end
+  private :create_control_request_view_details
+
+  def create_control_request(batch, partial_plate, template, &block)
+    raise StandardError, "Did not expect request for control well" unless control_well_required?(partial_plate, template)
+
+    generate_control_request(ControlPlate.first.illumina_wells.sample).tap do |request|
+      batch.requests << request
+      yield(request)
+    end
+  end
+  private :create_control_request
+
+  TEMPLATE_EMPTY_WELL = [0,'---','']
+
+  def add_template_empty_wells(empty_wells, current_plate, num_wells)
+    current_plate << TEMPLATE_EMPTY_WELL until empty_wells[Map.vertical_to_horizontal(current_plate.size+1, num_wells)].nil?
+  end
+  private :add_template_empty_wells
 end

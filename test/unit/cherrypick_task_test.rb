@@ -11,33 +11,13 @@ class CherrypickTaskTest < ActiveSupport::TestCase
       @task = CherrypickTask.new(:workflow => pipeline.workflow)
     end 
 
-    context "#robot_max_plates with valid inputs" do
-      setup do
-        @robot  = Factory :robot
-        @robot.robot_properties.create(:key=> 'max_plates', :value => 15)
-        @robot.save
-      end
-      should "return max_plates" do
-        assert_equal 15, @task.robot_max_plates(@robot)
-      end
-    end
-
-    context "#robot_max_plates with invalid inputs" do
-      setup do
-        @robot2  = Factory :robot
-      end
-      should "return 0 when max_plates is missing" do
-        assert_equal 0, @task.robot_max_plates(@robot2)
-      end
-    end
-
     context "#map_empty_wells with 1 empty_well" do
       setup do
         @template = Factory :plate_template
         @template.add_and_save_well Well.new(:map=>Map.find_by_description_and_asset_size("A1",96))
       end
       should "return a hash with the empty wells" do
-        empty_wells = @task.map_empty_wells(@template,nil)
+        empty_wells = @task.send(:map_empty_wells, @template,nil)
         assert_equal 1,empty_wells.size
         assert empty_wells.is_a?(Hash)
         assert_equal "A1", empty_wells[1]
@@ -52,7 +32,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
         @template.add_and_save_well Well.new(:map=>Map.find_by_description_and_asset_size("C1",96))
       end
       should "return a hash with the empty wells" do
-        empty_wells = @task.map_empty_wells(@template,nil)
+        empty_wells = @task.send(:map_empty_wells, @template,nil)
         assert_equal 3,empty_wells.size
         assert empty_wells.is_a?(Hash)
         assert_equal "A1", empty_wells[1]
@@ -66,7 +46,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
           @plate.add_and_save_well Well.new(:map => Map.find_by_description("D2"))
         end
         should "return a hash with the empty wells" do
-          empty_wells = @task.map_empty_wells(@template,@plate)
+          empty_wells = @task.send(:map_empty_wells, @template,@plate)
           assert_equal 4,empty_wells.size
           assert empty_wells.is_a?(Hash)
           assert_equal "D2", empty_wells[38]
@@ -81,7 +61,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
           @plate.add_and_save_well Well.new(:map => Map.find_by_description("D2"))
         end
         should "return a hash with the empty wells" do
-          empty_wells = @task.map_empty_wells(@template,@plate)
+          empty_wells = @task.send(:map_empty_wells, @template,@plate)
           assert_equal 5,empty_wells.size
           assert empty_wells.is_a?(Hash)
           assert_equal "D2", empty_wells[38]
@@ -91,46 +71,6 @@ class CherrypickTaskTest < ActiveSupport::TestCase
       end
     end
 
-    context "#build_plate_wells_from_requests with a single request" do
-      setup do
-        @parentasset = Factory :well
-        @request =  Factory :request, :asset => @parentasset
-        @plate = Factory :plate
-        @plate.add_and_save_well @parentasset
-
-        @map = Factory :map
-        @request.asset.map_id = @map.id
-        @requests = [@request]
-      end
-      should "return correct hash of wells to plates" do
-        plate_wells = @task.build_plate_wells_from_requests(@requests, 96)
-        assert_equal [@request.id, "A2", 9, @request.asset.parent.barcode],plate_wells[@request.asset.parent.barcode][9]
-        assert plate_wells.is_a?(Hash)
-      end
-    end
-
-    context "#build_plate_wells_from_requests with 2 requests request" do
-      setup do
-        @parentasset  = Factory :well
-        @parentasset2 = Factory :well
-        @request  =  Factory :request, :asset => @parentasset
-        @request2 =  Factory :request, :asset => @parentasset2
-        @plate = Factory :plate
-        @plate.add_and_save_well @parentasset
-        @plate.add_and_save_well @parentasset2
-        @map  = Factory :map
-        @map2 = Factory :map, :description => "B1"
-        @request.asset.map_id  = @map.id
-        @request2.asset.map_id = @map2.id
-        @requests = [@request,@request2]
-      end
-      should "return correct hash of wells to plates" do
-        plate_wells = @task.build_plate_wells_from_requests(@requests, 96)
-        assert_equal [@request.id, @map.description, 9, @request.asset.parent.barcode],plate_wells[@request.asset.parent.barcode][9]
-        assert_equal [@request2.id, @map2.description, 2, @request2.asset.parent.barcode],plate_wells[@request2.asset.parent.barcode][2]
-        assert plate_wells.is_a?(Hash)
-      end
-    end
     context "a cherrypick task" do
       setup do
         pipeline = Factory :pipeline, :name => 'Starting pipeline'
@@ -373,10 +313,6 @@ class CherrypickTaskTest < ActiveSupport::TestCase
         context "with valid inputs" do
           setup do
             @request_id = @workflow.create_control_request_and_add_to_batch(@task,"control[#{@well.id}]")
-          end
-          should "return a request id" do
-            assert @request_id.is_a?(Integer)
-            assert_not_nil @request_id
           end
           should_change("Request.count", :by => 1) { Request.count }
           should_change("Well.count", :by => 1) { Well.count }

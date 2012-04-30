@@ -5,10 +5,7 @@ class BatchRequest < ActiveRecord::Base
   include Uuid::Uuidable
 
   belongs_to :batch
-  validates_presence_of :batch
-
   belongs_to :request
-  validates_presence_of :request
 
   named_scope :ordered, :order => 'position ASC'
   named_scope :at_position, lambda { |position| { :conditions => { :position => position } } }

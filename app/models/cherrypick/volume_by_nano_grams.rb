@@ -18,21 +18,21 @@ module Cherrypick::VolumeByNanoGrams
     check_inputs_to_volume_to_cherrypick_by_nano_grams!(minimum_volume, maximum_volume, target_ng, source_well)
     
     source_concentration = source_well.well_attribute.concentration.to_f
-    source_volume = source_well.well_attribute.measured_volume.to_f
-    
-    target_volume = (target_ng.to_f/source_concentration).ceil
-    requested_volume = (target_volume <= source_volume)  ? target_volume : source_volume
-    set_buffer_required(requested_volume, minimum_volume)
-    
-    if requested_volume > maximum_volume
-      requested_volume = maximum_volume 
-    end
-    
-    set_current_volume(minimum_volume)
-    set_requested_volume(minimum_volume)
-    set_picked_volume(requested_volume)
-    
+    source_volume        = source_well.well_attribute.measured_volume.to_f
+    requested_volume     = [ source_volume, (target_ng.to_f/source_concentration).ceil ].min
+    buffer_volume        = requested_volume < minimum_volume ? buffer_volume_required(minimum_volume, requested_volume) : 0.0
+    requested_volume     = maximum_volume if requested_volume > maximum_volume
+
+    well_attribute.current_volume   = minimum_volume
+    well_attribute.requested_volume = minimum_volume
+    well_attribute.picked_volume    = requested_volume
+    well_attribute.buffer_volume    = buffer_volume
+
     requested_volume
   end
-end
 
+  def buffer_volume_required(minimum_volume, requested_volume)
+    (minimum_volume*100 - requested_volume*100).to_i.to_f / 100
+  end
+  private :buffer_volume_required
+end
