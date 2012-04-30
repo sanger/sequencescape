@@ -18,7 +18,6 @@ require 'cucumber/web/tableish'
 require 'capybara/rails'
 require 'capybara/cucumber'
 require 'capybara/session'
-require 'cucumber/rails/capybara_javascript_emulation' # Lets you click links with onclick javascript handlers without using @culerity or @javascript
 require 'timecop'
 
 
@@ -126,3 +125,13 @@ After do |s|
   # Tell Cucumber to quit after this scenario is done - if it failed.
   # Cucumber.wants_to_quit = true if s.failed?
 end
+
+class Capybara::Session
+  def xml_body
+    Hash.from_xml(body)['html']['body']
+  end
+
+end
+
+
+
