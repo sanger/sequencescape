@@ -11,11 +11,12 @@ class EventFactoryTest < ActiveSupport::TestCase
       role.users << @user
       @request_type = Factory :request_type, :key => "library_creation", :name => "Library creation"
       @request = Factory :request, :request_type => @request_type, :user => @user, :project => @project
+      @countadmins = Role.find_by_name('administrator').users.count
     end
 
     context "#request increase in quota" do
       setup do
-        admin = Factory :role, :name => "administrator"
+        admin = Role.find_by_name('administrator')
         user1 = Factory :user, :login => "bla"
         user2 = Factory :user, :login => "wow"
         user2.roles << admin
@@ -43,7 +44,7 @@ class EventFactoryTest < ActiveSupport::TestCase
 
     context "#quota updated" do
       setup do
-        admin = Factory :role, :name => "administrator"
+        admin = Role.find_by_name('administrator')
         user1 = Factory :user, :login => "abc123"
         user1.roles << admin
         EventFactory.quota_updated(@project, @user)
@@ -52,11 +53,11 @@ class EventFactoryTest < ActiveSupport::TestCase
       should_change("Event.count", :by => 1) { Event.count }
       
       should "sends 2 emails to 2 recipient" do
-        assert_sent_email do |email| 
+        assert_sent_email do |email|
           email.subject =~ /Project quota approved/ \
             && email.bcc.include?("abc123@example.com") \
             && email.bcc.include?("south@example.com") \
-            && email.bcc.size == 2 \
+            && email.bcc.size == @countadmins + 2 \
             && email.body =~ /Project quota approved by #{@user.login}/
         end
       end
@@ -64,7 +65,7 @@ class EventFactoryTest < ActiveSupport::TestCase
     
     context "#new_project" do
       setup do
-        admin = Factory :role, :name => "administrator"
+        admin = Role.find_by_name('administrator')
         user1 = Factory :user, :login => "abc123"
         user1.roles << admin
         EventFactory.new_project(@project, @user)
@@ -73,10 +74,10 @@ class EventFactoryTest < ActiveSupport::TestCase
       should_change("Event.count", :by => 1) { Event.count }
       
       should "send 1 email to 1 recipient" do
-        assert_sent_email do |email| 
+        assert_sent_email do |email|
           email.subject =~ /Project/ \
             && email.bcc.include?("abc123@example.com") \
-            && email.bcc.size == 1 \
+            && email.bcc.size == @countadmins + 1 \
             && email.body =~ /Project registered/
         end
       end
@@ -84,7 +85,7 @@ class EventFactoryTest < ActiveSupport::TestCase
     
     context "#new_sample" do
       setup do
-        admin = Factory :role, :name => "administrator"
+        admin = Role.find_by_name('administrator')
         user1 = Factory :user, :login => "abc123"
         user1.roles << admin
         @sample = Factory :sample, :name => "NewSample"
@@ -98,10 +99,10 @@ class EventFactoryTest < ActiveSupport::TestCase
         should_change("Event.count", :by => 1) { Event.count }
         
         should "send an email to one recipient" do
-          assert_sent_email do |email| 
+          assert_sent_email do |email|
             email.subject =~ /Sample/ \
               && email.bcc.include?("abc123@example.com") \
-              && email.bcc.size == 1 \
+              && email.bcc.size == @countadmins + 1 \
               && email.body =~ /New '#{@sample.name}' registered by #{@user.login}/
           end
         end
@@ -115,17 +116,17 @@ class EventFactoryTest < ActiveSupport::TestCase
         should_change("Event.count", :by => 2) { Event.count }
         
         should "send 2 emails each to one recipient" do
-          assert_sent_email do |email| 
+          assert_sent_email do |email|
             email.subject =~ /Sample/ \
               && email.bcc.include?("abc123@example.com") \
-              && email.bcc.size == 1 \
+              && email.bcc.size == @countadmins + 1 \
               && email.body =~ /New '#{@sample.name}' registered by #{@user.login}/
           end
           
           assert_sent_email do |email| 
             email.subject =~ /Project/ \
               && email.bcc.include?("abc123@example.com") \
-              && email.bcc.size == 1 \
+              && email.bcc.size == @countadmins + 1 \
               && email.body =~ /New '#{@sample.name}' registered by #{@user.login}: #{@sample.name}. This sample was assigned to the '#{@project.name}' project./
           end
         end
@@ -159,7 +160,7 @@ class EventFactoryTest < ActiveSupport::TestCase
     context "#project_approved by administrator" do
       setup do
         ::ActionMailer::Base.deliveries = [] # reset the queue
-        admin = Factory :role, :name => "administrator"
+        admin = Role.find_by_name('administrator')
         @user1 = Factory :user, :login => "west"
         @user1.roles << admin
         @user2 = Factory :user, :login => "north"
@@ -172,7 +173,7 @@ class EventFactoryTest < ActiveSupport::TestCase
       should_change("Event.count", :by => 1) { Event.count }
       
       should ": send emails to the (two) administrators" do
-        assert_sent_email do |email| 
+        assert_sent_email do |email|
           email.subject =~ /Project/ \
             && email.subject =~ /Project approved/ \
             && email.bcc.include?("#{@user1.login}@example.com") \
@@ -202,7 +203,7 @@ class EventFactoryTest < ActiveSupport::TestCase
     context "#project_approved but not by administrator" do
       setup do
         ::ActionMailer::Base.deliveries = []
-        admin = Factory :role, :name => "administrator"
+        admin = Role.find_by_name('administrator')
         @user1 = Factory :user, :login => "west"
         @user1.roles << admin
         follower = Factory :role, :name => "follower"

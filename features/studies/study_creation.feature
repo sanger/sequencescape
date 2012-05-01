@@ -7,7 +7,6 @@ Feature: Study creation
 
   Background:
    Given I am a "administrator" user logged in as "user"
-   Given a faculty sponsor called "Jack Sponsor" exists
    When I go to the homepage
    When I follow "Create study"
    Then I should be on the new study page

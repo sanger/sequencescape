@@ -3,7 +3,6 @@ Feature: Update the data release fields for creating a study
 
   Background:
     Given I am a "manager" user logged in as "user"
-    Given a faculty sponsor called "Jack Sponsor" exists
     And I am on the new study page
 
   Scenario: Add help text to study description (8348119)

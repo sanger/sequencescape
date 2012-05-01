@@ -12,7 +12,7 @@ Feature: Searching for users by swipecard code
 
   @single
     Scenario: looking for an existing user by swipecard code
-    Given the user exists with ID 1 and the following attributes:
+    Given the user exists with the following attributes:
       | name | value |
       | first_name | me |
       | swipecard_code | code |

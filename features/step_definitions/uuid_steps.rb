@@ -186,6 +186,12 @@ Given /^the (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) exists with ID (\d+) and the
   Factory(model.gsub(/\s+/, '_').to_sym, attributes)
 end
 
+Given /^the (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) exists with the following attributes:$/ do |model, table|
+  attributes = table.hashes.inject({}) { |h, att|  h.update(att["name"] => att["value"]) }
+  #attributes[:id] ||= id
+  Factory(model.gsub(/\s+/, '_').to_sym, attributes)
+end
+
 Given /^a asset_link with uuid "([^"]*)" exists and connects "([^"]*)" and "([^"]*)"$/ do |uuid_value, uuid_plate, uuid_well|
   plate = Plate.find(Uuid.find_id(uuid_plate))
   well  = Well.find(Uuid.find_id(uuid_well))

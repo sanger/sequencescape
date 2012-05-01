@@ -3,7 +3,13 @@ def sort_arrays(xml_data)
     Hash[xml_data.map { |k,v| [k, sort_arrays(v)] }]
   elsif xml_data.is_a?(Array)
     # Kind of a hack but works for the cases where Hash elements exist
-    xml_data.map { |e| sort_arrays(e) }.sort_by(&:to_a)
+    xml_data.map { |e| sort_arrays(e) }.sort do |l,r|
+      if l.is_a?(Hash) and r.is_a?(Hash)
+        l.map { |k,v| [k]+[v].compact } <=> r.map { |k,v| [k]+[v].compact }
+      else
+        l.to_a <=> r.to_a
+      end
+    end
   else
     xml_data
   end

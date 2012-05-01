@@ -1,7 +1,7 @@
 <%# NOTE[xxx]: Kind of a hack because we need 'study[study_metadata_attributes][X]' -%>
 <% fields_for(study) do |form| %>
   <% form.fields_for(:study_metadata, :builder => Metadata::FormBuilder) do |metadata_fields| %>
-    <%= metadata_fields.select_by_association(:faculty_sponsor)%>
+    <%= metadata_fields.select_by_association(:faculty_sponsor, :include_blank => true)%>
     <%= metadata_fields.text_field(:number_of_gigabases_per_sample) %>
 
     <% metadata_fields.with_options(:grouping => 'ENA requirement') do |group| %>

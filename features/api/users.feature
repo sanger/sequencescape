@@ -17,14 +17,14 @@ Feature: Access users through the API
 
   @read
   Scenario: Reading the JSON for a user UUID
-    Given the user exists with ID 1 and the following attributes:
+    Given the user exists with the following attributes:
       | name       | value            |
       | login      | user_login       |
       | email      | user@example.com |
       | first_name | John             |
       | last_name  | Smith            |
 
-    And the UUID for the user with ID 1 is "00000000-1111-2222-3333-444444444444"
+    And the UUID for the last user is "00000000-1111-2222-3333-444444444444"
 
     When I GET the API path "/00000000-1111-2222-3333-444444444444"
     Then the HTTP response should be "200 OK"
@@ -43,23 +43,20 @@ Feature: Access users through the API
           "has_a_swipecard_code": false,
 
           "uuid": "00000000-1111-2222-3333-444444444444"
-        },
-        "uuids_to_ids": {
-          "00000000-1111-2222-3333-444444444444": 1
         }
       }
       """
       And the JSON should not contain "update" within any element of "user.actions"
 
   Scenario: Reading the JSON for a user UUID with an authorised application
-    Given the user exists with ID 1 and the following attributes:
+    Given the user exists with the following attributes:
       | name       | value            |
       | login      | user_login       |
       | email      | user@example.com |
       | first_name | John             |
       | last_name  | Smith            |
 
-    And the UUID for the user with ID 1 is "00000000-1111-2222-3333-444444444444"
+    And the UUID for the last user is "00000000-1111-2222-3333-444444444444"
 
     When I make an authorised GET the API path "/00000000-1111-2222-3333-444444444444"
     Then the HTTP response should be "200 OK"
@@ -75,14 +72,14 @@ Feature: Access users through the API
       """
 
   Scenario: Updating the JSON for a user UUID from an unauthorised application
-    Given the user exists with ID 1 and the following attributes:
+    Given the user exists with the following attributes:
       | name       | value            |
       | login      | user_login       |
       | email      | user@example.com |
       | first_name | John             |
       | last_name  | Smith            |
 
-    And the UUID for the user with ID 1 is "00000000-1111-2222-3333-444444444444"
+    And the UUID for the last user is "00000000-1111-2222-3333-444444444444"
     When I PUT the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
        """
        {
@@ -103,14 +100,14 @@ Feature: Access users through the API
     """
 
   Scenario: Updating the JSON for a user UUID
-    Given the user exists with ID 1 and the following attributes:
+    Given the user exists with the following attributes:
       | name       | value            |
       | login      | user_login       |
       | email      | user@example.com |
       | first_name | John             |
       | last_name  | Smith            |
 
-    And the UUID for the user with ID 1 is "00000000-1111-2222-3333-444444444444"
+    And the UUID for the last user is "00000000-1111-2222-3333-444444444444"
     When I make an authorised PUT with the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
        """
        {

@@ -10,7 +10,7 @@ Feature: The XML for the sequencescape API
       | manager | I am       | The Manager |
 
     Given I have an active study called "Study for XML"
-    And the faculty sponsor for study "Study for XML" is "Jack Sponsor"
+    And the faculty sponsor for study "Study for XML" is "John Sponsor"
     
     And the study "Study for XML" has samples contaminated with human DNA
     And the study "Study for XML" does not contain samples commercially available
@@ -152,7 +152,7 @@ Feature: The XML for the sequencescape API
           </descriptor>
           <descriptor>
             <name>Faculty Sponsor</name>
-            <value>Jack Sponsor</value>
+            <value>John Sponsor</value>
           </descriptor>
           <descriptor>
             <name>Please explain the reason for delaying release (e.g., pre-existing collaborative agreement)</name>

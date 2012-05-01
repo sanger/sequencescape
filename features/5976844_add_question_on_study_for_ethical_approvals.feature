@@ -7,7 +7,6 @@ Feature: Added property "commercially_available". Add and edit this value. Pendi
 
 
   Scenario Outline: A study is created and it appears in Pending ethical approval true
-    Given a faculty sponsor called "Jack Sponsor" exists
     When I follow "Create study"
     Then I should be on the new study page
     Then I should see "CREATE STUDY"
