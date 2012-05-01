@@ -95,8 +95,8 @@ module Request::Statemachine
   def on_started
     target_asset.aliquots << asset.aliquots.map do |aliquot|
       aliquot.clone.tap do |clone|
-        clone.study   = initial_study || aliquot.study
-        clone.project = initial_project || aliquot.project
+        clone.study_id   = initial_study_id   || aliquot.study_id
+        clone.project_id = initial_project_id || aliquot.project_id
       end
     end
   end
