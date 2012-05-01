@@ -18,7 +18,7 @@ Feature: Interacting with studies through the API
     And the dac accession number for study "Testing the JSON API" is "DAC333"
 
     When I GET the API path "/studies"
-    Then ignoring "id" the JSON should be:
+    Then ignoring "updated_at|id" the JSON should be:
       """
       [
         {
@@ -48,8 +48,7 @@ Feature: Interacting with studies through the API
             "samples": "http://localhost:3000/0_5/studies/00000000-1111-2222-3333-444444444444/samples",
 
             "id": 1,
-            "created_at": "2010-09-16T13:45:00+01:00",
-            "updated_at": "2010-09-16T13:45:00+01:00"
+            "created_at": "2010-09-16T13:45:00+01:00"
           }
         }
       ]
@@ -65,7 +64,7 @@ Feature: Interacting with studies through the API
     And the faculty sponsor for study "Testing the JSON API" is "John Smith"
 
     When I GET the API path "/studies/00000000-1111-2222-3333-444444444444"
-    Then ignoring "id" the JSON should be:
+    Then ignoring "updated_at|id" the JSON should be:
       """
       {
         "study": {
@@ -91,8 +90,7 @@ Feature: Interacting with studies through the API
           "samples": "http://localhost:3000/0_5/studies/00000000-1111-2222-3333-444444444444/samples",
 
           "id": 1,
-          "created_at": "2010-09-16T13:45:00+01:00",
-          "updated_at": "2010-09-16T13:45:00+01:00"
+          "created_at": "2010-09-16T13:45:00+01:00"
         }
       }
       """
