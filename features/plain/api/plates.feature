@@ -16,7 +16,7 @@ Feature: Interacting with plates through the API
     And the infinium barcode for plate "Testing the JSON API" is "WG123456"
 
     When I GET the API path "/plates"
-    Then ignoring "id|barcode|plate_purpose_uuid|plate_purpose_internal_id" the JSON should be:
+    Then ignoring "updated_at|id|barcode|plate_purpose_uuid|plate_purpose_internal_id" the JSON should be:
       """
       [
         {
@@ -29,7 +29,6 @@ Feature: Interacting with plates through the API
             "location": "Sample logistics freezer",
             
             "created_at": "2010-09-16T13:45:00+01:00",
-            "updated_at": "2010-09-16T13:45:00+01:00",
             "uuid": "00000000-1111-2222-3333-444444444444",
             "barcode": "2",
             "plate_purpose_uuid": "34567",
@@ -50,7 +49,7 @@ Feature: Interacting with plates through the API
     And the infinium barcode for plate "Testing the JSON API" is "WG123456"
 
     When I GET the API path "/plates/00000000-1111-2222-3333-444444444444"
-    Then ignoring "id|barcode|plate_purpose_uuid|plate_purpose_internal_id" the JSON should be:
+    Then ignoring "updated_at|id|barcode|plate_purpose_uuid|plate_purpose_internal_id" the JSON should be:
       """
       {
         "plate": {
@@ -62,7 +61,6 @@ Feature: Interacting with plates through the API
           "location": "Sample logistics freezer",
           
           "created_at": "2010-09-16T13:45:00+01:00",
-          "updated_at": "2010-09-16T13:45:00+01:00",
           "uuid": "00000000-1111-2222-3333-444444444444",
           "barcode": "2",
           "plate_purpose_uuid": "34567",

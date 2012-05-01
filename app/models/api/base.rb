@@ -42,7 +42,9 @@ class Api::Base
         json_attributes[ json_attribute ] = object.send(attribute)
       end
       self.associations.each do |association, helper|
-        json_attributes.update(helper.to_hash(object.send(association)))
+        value = object.send(association)
+        json_attributes.update(helper.to_hash(value))
+        helper.newer_than(value, json_attributes['updated_at']) { |timestamp| json_attributes['updated_at'] = timestamp }
       end
       self.related_resources.each do |relation|
         json_attributes[ relation.to_s ] = File.join(object.url, relation.to_s)
@@ -131,6 +133,16 @@ class Api::Base
   # Contains the mapping from the ActiveRecord association to the I/O object that can output it.
   class_inheritable_reader :associations
   write_inheritable_attribute :associations, {}
+
+  def self.newer_than(object, timestamp, &block)
+    return if object.nil? or timestamp.nil?
+    modified = false
+    timestamp, modified = object.updated_at, true if object.respond_to?(:updated_at) and object.updated_at > timestamp
+    self.associations.each do |association, helper|
+      helper.newer_than(object.send(association), timestamp) { |t| timestamp, modified = t, true }
+    end
+    yield(timestamp) if modified
+  end
 
   # Returns the default object to use (by default this is 'nil') and can be overridden by passing
   # ':if_nil_use => :some_function_that_returns_default_object' to with_association.
