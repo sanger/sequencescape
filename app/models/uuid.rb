@@ -10,12 +10,26 @@ class Uuid < ActiveRecord::Base
         # It seems better not to do this but the performance of the API is directly affected by having to
         # create these instances when they do not exist.
         has_one :uuid_object, :class_name => 'Uuid', :as => :resource, :dependent => :destroy
-        after_create { |record| record.uuid_object = Uuid.create!(:resource => record) }
+        after_create :ensure_uuid_created
 
         # Some named scopes ...
         named_scope :include_uuid, { :include => :uuid_object }
       end
     end
+
+    # In the test environment we need to have a slightly different behaviour, as we can predefine
+    # the UUID for a record to make things predictable.  In production new records always have new
+    # UUIDs.
+    if ['test', 'cucumber'].include?(RAILS_ENV)
+      def ensure_uuid_created
+        self.uuid_object ||= Uuid.create!(:resource => self)
+      end
+    else
+      def ensure_uuid_created
+        self.uuid_object = Uuid.create!(:resource => self)
+      end
+    end
+    private :ensure_uuid_created
 
     #--
     # You cannot give a UUID to something that hasn't been saved, which means that the UUID can't be

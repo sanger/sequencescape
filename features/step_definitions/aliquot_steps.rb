@@ -30,3 +30,8 @@ Given /^the sample tube "([^\"]+)" has (\d+) aliquots$/ do |tube_name, number|
     tube.aliquots.create!(:sample => Factory(:sample, :name => "sample_#{i}_for_tube_#{tube_name}"), :tag => Factory(:tag))
   end
 end
+
+Given /^the aliquots in the library tube called "([^\"]+)" have been modified$/ do |name|
+  tube = LibraryTube.find_by_name(name) or raise "Can't find library tube named #{name.inspect}"
+  tube.aliquots.each { |a| a.updated_at = Time.now ; a.save(false) }
+end

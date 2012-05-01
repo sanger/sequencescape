@@ -11,7 +11,7 @@ Feature: Interacting with requests through the API
     Given I have an active study called "Study testing the JSON API"
     And the UUID for the study "Study testing the JSON API" is "22222222-2222-3333-4444-ffffffffffff"
 
-  And the UUID of the next submission created will be "11111111-2222-3333-4444-111111111111"
+    Given the UUID of the next submission created will be "11111111-2222-3333-4444-111111111111"
 
   Scenario: The list of requests is always empty if no type of tube is requested
     When I retrieve the JSON for all requests
@@ -25,7 +25,7 @@ Feature: Interacting with requests through the API
     And all samples have sequential UUIDs based on "bbbbbbbb-1111-2222-3333"
 
     When I retrieve the JSON for all requests related to the sample tube "Tube"
-    Then ignoring "((source_asset|source_asset_sample|target_asset|project|study|submission)_(internal_id|barcode)|id)" the JSON should be:
+    Then ignoring "((source_asset|source_asset_sample|target_asset|project|study|submission)_(internal_id|barcode)|id|updated_at)" the JSON should be:
       """
       [
         {
@@ -39,7 +39,6 @@ Feature: Interacting with requests through the API
             "target_asset_state": "",
             "created_at": "2010-09-16T16:15:00+01:00",
             "source_asset_two_dimensional_barcode": null,
-            "updated_at": "2010-09-16T16:15:00+01:00",
             "target_asset_type": "sample_tubes",
             "project_uuid": "11111111-2222-3333-4444-ffffffffffff",
             "project_url": "http://localhost:3000/0_5/projects/11111111-2222-3333-4444-ffffffffffff",
@@ -90,7 +89,7 @@ Feature: Interacting with requests through the API
     And all samples have sequential UUIDs based on "bbbbbbbb-1111-2222-3333"
 
     When I retrieve the JSON for all requests related to the library tube "Tube"
-    Then ignoring "((source_asset|target_asset|project|study|submission)_(internal_id|barcode)|id)" the JSON should be:
+    Then ignoring "((source_asset|target_asset|project|study|submission)_(internal_id|barcode)|id|updated_at)" the JSON should be:
       """
       [
         {
@@ -104,7 +103,6 @@ Feature: Interacting with requests through the API
             "target_asset_state": "",
             "created_at": "2010-09-16T16:15:00+01:00",
             "source_asset_two_dimensional_barcode": null,
-            "updated_at": "2010-09-16T16:15:00+01:00",
             "target_asset_type": "library_tubes",
             "project_uuid": "11111111-2222-3333-4444-ffffffffffff",
             "project_url": "http://localhost:3000/0_5/projects/11111111-2222-3333-4444-ffffffffffff",
@@ -152,7 +150,7 @@ Feature: Interacting with requests through the API
     And all assets have sequential UUIDs based on "aaaaaaaa-1111-2222-3333"
 
     When I retrieve the JSON for the last request in the study "Study testing the JSON API"
-    Then ignoring "((source_asset|target_asset|project|study|submission)_(internal_id|barcode)|id)" the JSON should be:
+    Then ignoring "((source_asset|target_asset|project|study|submission)_(internal_id|barcode)|id|updated_at)" the JSON should be:
       """
       {
         "request": {
@@ -161,7 +159,6 @@ Feature: Interacting with requests through the API
 
           "request_type": "<request type>",
           "created_at": "2010-09-16T16:15:00+01:00",
-          "updated_at": "2010-09-16T16:15:00+01:00",
 
           "project_uuid": "11111111-2222-3333-4444-ffffffffffff",
           "project_url": "http://localhost:3000/0_5/projects/11111111-2222-3333-4444-ffffffffffff",
@@ -221,7 +218,7 @@ Feature: Interacting with requests through the API
     And all assets have sequential UUIDs based on "aaaaaaaa-1111-2222-3333"
 
     When I retrieve the JSON for the last request in the study "Study testing the JSON API"
-    Then ignoring "((source_asset|target_asset|project|study|submission)_(internal_id|barcode)|id)" the JSON should be:
+    Then ignoring "((source_asset|target_asset|project|study|submission)_(internal_id|barcode)|id|updated_at)" the JSON should be:
       """
       {
         "request": {
@@ -230,7 +227,6 @@ Feature: Interacting with requests through the API
 
           "request_type": "<request type>",
           "created_at": "2010-09-16T16:15:00+01:00",
-          "updated_at": "2010-09-16T16:15:00+01:00",
 
           "project_uuid": "11111111-2222-3333-4444-ffffffffffff",
           "project_url": "http://localhost:3000/0_5/projects/11111111-2222-3333-4444-ffffffffffff",
@@ -292,7 +288,7 @@ Feature: Interacting with requests through the API
      And all requests have a priority flag
 
     When I retrieve the JSON for the last request in the study "Study testing the JSON API"
-    Then ignoring "((source_asset|target_asset|project|study|submission)_(internal_id|barcode)|id)" the JSON should be:
+    Then ignoring "((source_asset|target_asset|project|study|submission)_(internal_id|barcode)|id|updated_at)" the JSON should be:
       """
       {
         "request": {
@@ -301,7 +297,6 @@ Feature: Interacting with requests through the API
 
           "request_type": "Single ended sequencing",
           "created_at": "2010-09-16T16:15:00+01:00",
-          "updated_at": "2010-09-16T16:15:00+01:00",
 
           "project_uuid": "11111111-2222-3333-4444-ffffffffffff",
           "project_url": "http://localhost:3000/0_5/projects/11111111-2222-3333-4444-ffffffffffff",
@@ -357,7 +352,7 @@ Feature: Interacting with requests through the API
     And all samples have sequential UUIDs based on "bbbbbbbb-1111-2222-3333"
 
     When I retrieve the JSON for all requests related to the sample tube "Tube"
-    Then ignoring "^((source_asset.*|target_asset.*|project|study|submission)_(internal_id|barcode)|id)" the JSON should be:
+    Then ignoring "^((source_asset.*|target_asset.*|project|study|submission)_(internal_id|barcode)|id|updated_at)" the JSON should be:
       """
       [
         {
@@ -371,7 +366,6 @@ Feature: Interacting with requests through the API
             "target_asset_state": "",
             "created_at": "2010-09-16T16:15:00+01:00",
             "source_asset_two_dimensional_barcode": null,
-            "updated_at": "2010-09-16T16:15:00+01:00",
             "target_asset_type": "sample_tubes",
             "project_uuid": "11111111-2222-3333-4444-ffffffffffff",
             "study_name": "Study testing the JSON API",
