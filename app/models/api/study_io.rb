@@ -40,7 +40,7 @@ class Api::StudyIO < Api::Base
     json_attributes["abbreviation"] = object.abbreviation
 
     object.roles.each do |role|
-      json_attributes[role.name.underscore] = role.users.map do |user|
+      json_attributes[role.name.gsub(/\s+/, '_')] = role.users.map do |user|
         { :login => user.login, :email => user.email, :name  => user.name }
       end
     end if object.respond_to?(:roles)
