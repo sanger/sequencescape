@@ -15,7 +15,8 @@ module BatchesHelper
       :library_name => aliquot.library.try(:name),
       :library_type => aliquot.library_type,
       :study_id     => aliquot.study_id,
-      :project_id   => aliquot.project_id
+      :project_id   => aliquot.project_id,
+      :consent_withdrawn => aliquot.sample.consent_withdrawn?
     ) {
       # NOTE: XmlBuilder has a method called 'tag' so we have to say we want the element 'tag'!
       xml.tag!(:tag, :tag_id => aliquot.tag.id) {

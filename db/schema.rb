@@ -971,6 +971,7 @@ ActiveRecord::Schema.define(:version => 20120419104221) do
     t.boolean  "control"
     t.boolean  "empty_supplier_sample_name", :default => false
     t.boolean  "updated_by_manifest",        :default => false
+    t.boolean  "consent_withdrawn",          :default => false, :null => false
   end
 
   add_index "samples", ["created_at"], :name => "index_samples_on_created_at"

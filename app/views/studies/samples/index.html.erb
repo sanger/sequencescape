@@ -16,9 +16,9 @@
     </thead>
     <tbody>
     <% @samples.each do |sample| -%>
-      <tr class="<%= cycle("rowodd", "roweven") %>">
+      <tr class="<%= cycle("rowodd", "roweven") %><%= " withdrawn" if sample.consent_withdrawn? %>">
         <td><%= link_to sample.id, sample_path(sample) %></td>
-        <td><%= sample.name %></td>
+        <td><%= sample.name %><%= " - Consent withdrawn" if sample.consent_withdrawn? %></td>
       </tr>
     <% end %>
     </tbody>

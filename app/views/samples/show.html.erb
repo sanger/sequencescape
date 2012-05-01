@@ -32,6 +32,11 @@
     Spaces are not allowed.<br />
     For any help editing or creating new samples, please email <%= help_email_link %>
 </div>
+<% if @sample.consent_withdrawn? %>
+  <div class='error'>
+    Patient consent has been withdrawn for this sample.
+  </div>
+<% end %>
 <div class='info'>
   <table width="100%" cellspacing="0" cellpadding="0">
     <tr>
