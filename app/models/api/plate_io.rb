@@ -10,7 +10,7 @@ class Api::PlateIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        named_scope :including_associations_for_json, { :include => [:uuid_object, :plate_metadata, :barcode_prefix, { :plate_purpose => :uuid_object } ] }
+        named_scope :including_associations_for_json, { :include => [:uuid_object, :plate_metadata, :barcode_prefix, :location, { :plate_purpose => :uuid_object } ] }
         alias_method(:json_root, :url_name)
       end
     end
