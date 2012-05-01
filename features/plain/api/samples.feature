@@ -31,7 +31,7 @@ Feature: Interacting with samples through the API
       }
       """
     Then the HTTP response should be "201 Created"
-    And ignoring "id|uuid|sample_tubes" the JSON should be:
+    And ignoring "updated_at|id|uuid|sample_tubes" the JSON should be:
       """
       {
         "sample": {
@@ -64,7 +64,6 @@ Feature: Interacting with samples through the API
           "updated_by_manifest": null,
 
           "created_at": "2010-09-08T09:00:00+01:00",
-          "updated_at": "2010-09-08T09:00:00+01:00",
 
           "id": "1",
           "uuid": "00000000-1111-2222-3333-444444444444",
@@ -88,7 +87,7 @@ Feature: Interacting with samples through the API
 
     When I GET the API path "/samples"
     Then the HTTP response should be "200 OK"
-    And ignoring "id" the JSON should be:
+    And ignoring "updated_at|id" the JSON should be:
       """
       [
         {
@@ -126,7 +125,6 @@ Feature: Interacting with samples through the API
             "updated_by_manifest": null,
 
             "created_at": "2010-09-08T09:00:00+01:00",
-            "updated_at": "2010-09-08T09:00:00+01:00",
             "new_name_format": true,
 
             "id": 1
@@ -144,7 +142,7 @@ Feature: Interacting with samples through the API
 
     When I GET the API path "/studies/00000000-1111-2222-3333-555555555555/samples"
     Then the HTTP response should be "200 OK"
-    And ignoring "id" the JSON should be:
+    And ignoring "updated_at|id" the JSON should be:
       """
       [
         {
@@ -179,7 +177,6 @@ Feature: Interacting with samples through the API
             "updated_by_manifest": null,
 
             "created_at": "2010-09-08T09:00:00+01:00",
-            "updated_at": "2010-09-08T09:00:00+01:00",
             "new_name_format": true,
 
             "id": 1
@@ -194,7 +191,7 @@ Feature: Interacting with samples through the API
 
     When I GET the API path "/samples/00000000-1111-2222-3333-444444444444"
     Then the HTTP response should be "200 OK"
-    And ignoring "id" the JSON should be:
+    And ignoring "updated_at|id" the JSON should be:
       """
       {
         "sample": {
@@ -228,7 +225,6 @@ Feature: Interacting with samples through the API
           "updated_by_manifest": null,
 
           "created_at": "2010-09-08T09:00:00+01:00",
-          "updated_at": "2010-09-08T09:00:00+01:00",
           "new_name_format": true,
 
           "id": 1
@@ -246,7 +242,7 @@ Feature: Interacting with samples through the API
     And the sanger sample id for sample "00000000-1111-2222-3333-444444444444" is "1STDY123"
 
     When I GET the API path "/samples/00000000-1111-2222-3333-444444444444"
-    Then ignoring "id" the JSON should be:
+    Then ignoring "updated_at|id" the JSON should be:
       """
       {
         "sample": {
@@ -283,7 +279,6 @@ Feature: Interacting with samples through the API
           "updated_by_manifest": null,
 
           "created_at": "2010-09-08T09:00:00+01:00",
-          "updated_at": "2010-09-08T09:00:00+01:00",
           "new_name_format": true,
 
           "id": 1
@@ -303,7 +298,7 @@ Feature: Interacting with samples through the API
     And the sample "sample_testing_the_json_api" has a supplier name of "My sample"
 
     When I retrieve the JSON for the sample "sample_testing_the_json_api"
-    Then ignoring "id" the JSON should be:
+    Then ignoring "updated_at|id" the JSON should be:
       """
       {
         "sample": {
@@ -340,7 +335,6 @@ Feature: Interacting with samples through the API
           "updated_by_manifest": null,
 
           "created_at": "2010-09-08T09:00:00+01:00",
-          "updated_at": "2010-09-08T09:00:00+01:00",
           "new_name_format": true,
 
           "id": 1

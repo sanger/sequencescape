@@ -40,14 +40,13 @@ Feature: Interacting with submissions through the API
       And the order with UUID "11111111-2222-3333-4444-666666666666" has been added to a submission
       
     When I GET the API path "/orders/11111111-2222-3333-4444-666666666666"
-    Then ignoring "internal_id" the JSON should be:
+    Then ignoring "updated_at|internal_id" the JSON should be:
       """
             {
           "order":
           {
             "uuid": "11111111-2222-3333-4444-666666666666",
             "created_at": "2010-09-16T13:45:00+01:00",
-            "updated_at": "2010-09-16T13:45:00+01:00",
             "created_by": "abc123",
             "template_name":"Library creation - Paired end sequencing",
             "study_name": "Testing submission creation",
@@ -74,14 +73,13 @@ Feature: Interacting with submissions through the API
          } 
       """
     When I GET the API path "/submissions/11111111-2222-3333-4444-555555555555"
-    Then ignoring "internal_id" the JSON should be:
+    Then ignoring "updated_at|internal_id" the JSON should be:
       """
         { 
           "submission":
           {
             "uuid": "11111111-2222-3333-4444-555555555555",
             "created_at": "2010-09-16T13:45:00+01:00",
-            "updated_at": "2010-09-16T13:45:00+01:00",
             "created_by": "abc123",
             "state": "building",
             "study_name": "Testing submission creation",
@@ -105,14 +103,13 @@ Feature: Interacting with submissions through the API
       And the order with UUID "11111111-2222-3333-4444-666666666666" has been added to a submission
 
     When I GET the API path "/orders/11111111-2222-3333-4444-666666666666"
-    Then ignoring "internal_id" the JSON should be:
+    Then ignoring "updated_at|internal_id" the JSON should be:
       """
         { 
           "order":
           {
             "uuid": "11111111-2222-3333-4444-666666666666",
             "created_at": "2010-09-16T13:45:00+01:00",
-            "updated_at": "2010-09-16T13:45:00+01:00",
             "created_by": "abc123",
             "template_name":"Library creation - Paired end sequencing",
             "study_name": "Testing submission creation",
@@ -135,14 +132,13 @@ Feature: Interacting with submissions through the API
         }
       """
     When I GET the API path "/submissions/11111111-2222-3333-4444-555555555555"
-    Then ignoring "internal_id" the JSON should be:
+    Then ignoring "updated_at|internal_id" the JSON should be:
       """
         { 
           "submission":
           {
             "uuid": "11111111-2222-3333-4444-555555555555",
             "created_at": "2010-09-16T13:45:00+01:00",
-        "updated_at": "2010-09-16T13:45:00+01:00",
             "created_by": "abc123",
             "state": "building",
             "study_name": "Testing submission creation",

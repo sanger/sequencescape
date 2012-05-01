@@ -13,7 +13,7 @@ Feature: Interacting with billing_events through the API
     Given I have a billing event with UUID "00000000-1111-2222-3333-444444444444"
 
     When I GET the API path "/billing_events"
-    Then ignoring "internal_id|project_internal_id|project_uuid|request_uuid|request_internal_id|reference" the JSON should be:
+    Then ignoring "updated_at|internal_id|project_internal_id|project_uuid|request_uuid|request_internal_id|reference" the JSON should be:
       """
       [
         {
@@ -28,7 +28,6 @@ Feature: Interacting with billing_events through the API
 						"project_cost_code": "Some Cost Code",
 						"entry_date": "2010-09-16T13:45:00+01:00",
             "created_at": "2010-09-16T13:45:00+01:00",
-            "updated_at": "2010-09-16T13:45:00+01:00",
             "price": 100,
             "request_type": "Paired end sequencing",
             "library_type": "Standard",
@@ -52,7 +51,7 @@ Feature: Interacting with billing_events through the API
     Given I have a billing event with UUID "00000000-1111-2222-3333-444444444444"
 
     When I GET the API path "/billing_events/00000000-1111-2222-3333-444444444444"
-    Then ignoring "internal_id|project_internal_id|project_uuid|request_uuid|request_internal_id|reference" the JSON should be:
+    Then ignoring "updated_at|internal_id|project_internal_id|project_uuid|request_uuid|request_internal_id|reference" the JSON should be:
       """
       {
         "billing_event": {
@@ -66,7 +65,6 @@ Feature: Interacting with billing_events through the API
 					"project_cost_code": "Some Cost Code",
 					"entry_date": "2010-09-16T13:45:00+01:00",
           "created_at": "2010-09-16T13:45:00+01:00",
-          "updated_at": "2010-09-16T13:45:00+01:00",
           "price": 100,
           "request_type": "Paired end sequencing",
           "library_type": "Standard",

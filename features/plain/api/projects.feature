@@ -15,7 +15,7 @@ Feature: Interacting with projects through the API
     And the UUID for the project "Testing the JSON API" is "00000000-1111-2222-3333-444444444444"
 
     When I GET the API path "/projects"
-    Then ignoring "id" the JSON should be:
+    Then ignoring "updated_at|id" the JSON should be:
       """
       [
         {
@@ -25,7 +25,6 @@ Feature: Interacting with projects through the API
 				        "collaborators": "No collaborators",
 				        "funding_comments": "External funding",
 				        "uuid": "00000000-1111-2222-3333-444444444444",
-				        "updated_at": "2010-09-16T13:45:00+01:00",
 
 				        "approved": true,
 				        "funding_model": "Internal",
@@ -55,7 +54,7 @@ Feature: Interacting with projects through the API
     And project "Testing the JSON API" has an owner called "abc123"
     And the UUID for the project "Testing the JSON API" is "00000000-1111-2222-3333-444444444444"
     When I GET the API path "/projects/00000000-1111-2222-3333-444444444444"
-    Then ignoring "id" the JSON should be:
+    Then ignoring "updated_at|id" the JSON should be:
       """
       {
 			    "project": {
@@ -64,7 +63,6 @@ Feature: Interacting with projects through the API
 			        "collaborators": "No collaborators",
 			        "funding_comments": "External funding",
 			        "uuid": "00000000-1111-2222-3333-444444444444",
-			        "updated_at": "2010-09-16T13:45:00+01:00",
 
 			        "approved": true,
 			        "funding_model": "Internal",
