@@ -2,14 +2,12 @@ module Cherrypick::VolumeByMicroLitre
   def volume_to_cherrypick_by_micro_litre(volume_required)
     check_inputs_to_volume_to_cherrypick_by_micro_litre!(volume_required)
 
-    set_current_volume(volume_required)
-    set_requested_volume(volume_required)
-    
-    volume_to_pick= (((volume_required).ceil).to_f)
-    set_buffer_volume(0)
-    set_picked_volume(volume_to_pick)
-    
-    volume_to_pick
+    volume_required.ceil.to_f.tap do |volume_to_pick|
+      well_attribute.current_volume   = volume_required.to_f
+      well_attribute.requested_volume = volume_required.to_f
+      well_attribute.buffer_volume    = 0
+      well_attribute.picked_volume    = volume_to_pick
+    end
   end
   
   def check_inputs_to_volume_to_cherrypick_by_micro_litre!(volume_required)

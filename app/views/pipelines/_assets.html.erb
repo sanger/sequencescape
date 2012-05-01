@@ -12,7 +12,6 @@
     </tr>
   </thead>
   <tbody>
-    <!-- <%= @request_groups.inspect -%> -->
     <% @request_groups.each_with_index do |(group, requests),index| -%>
       <% if group.blank? -%><tr><td colspan="7">Null Group</td></tr><% next; end -%>
 

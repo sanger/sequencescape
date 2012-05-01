@@ -37,15 +37,26 @@ class AmqpObserver < ActiveRecord::Observer
   # with ActiveRecord.
   class MostRecentBuffer
     def initialize
-      @buffer = Set.new
+      @updated, @deleted = Set.new, Set.new
     end
 
-    delegate :map, :to => :@buffer
+    def map(&block)
+      @updated.group_by(&:first).each do |model, pairs|
+        model = model.including_associations_for_json if model.respond_to?(:including_associations_for_json)
+        pairs.map(&:last).in_groups_of(configatron.amqp.burst_size).each { |group| model.find(group).map(&block) }
+      end
+      @deleted.map(&block)
+    end
 
     def <<(record)
       self.tap do
-        @buffer.delete(record)
-        @buffer << record
+        pair = [ record.class, record.id ]
+        if record.destroyed?
+          @updated.delete(pair)
+          @deleted << record
+        else
+          @updated << pair
+        end
       end
     end
   end

@@ -4,12 +4,14 @@
   <% plate_class = {}%>
   <h4>Source Plates</h4>
   <table id="source_plates" class="plate">
-    <tr>
-      <% @source_plate_ids.each_with_index do |source_plate_id,index| -%>
-        <% plate_class[source_plate_id] = "colour#{index%12}" -%>
-        <td class="<%= plate_class[source_plate_id] %>"><%= source_plate_id %></td>
-      <% end %>
-    </tr>
+    <% @source_plate_ids.to_a.in_groups_of(12).each do |plate_ids| -%>
+      <tr>
+        <% plate_ids.compact.each_with_index do |source_plate_id,index| -%>
+          <% plate_class[source_plate_id] = "colour#{index%12}" -%>
+          <td class="<%= plate_class[source_plate_id] %>"><%= source_plate_id %></td>
+        <% end %>
+      </tr>
+    <% end %>
   </table>
 
   <% plate_ids = [] %>

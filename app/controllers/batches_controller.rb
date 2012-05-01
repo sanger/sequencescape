@@ -80,37 +80,20 @@ class BatchesController < ApplicationController
     Batch.benchmark "BENCH Batch:WorkflowController:create", Logger::INFO, false do
     @pipeline = Pipeline.find(params[:id])
 
-
     unless @pipeline.valid_number_of_checked_request_groups?(params)
       return pipeline_error_on_batch_creation("Too many request groups selected, maximum is #{@pipeline.max_number_of_groups}")
     end
 
-    request_ids = Batch.benchmark "BENCH Batch:WorkflowController:create - finding request_ids", Logger::INFO, false do
-      @pipeline.extract_request_ids_from_input_params(params)
+    requests = Batch.benchmark "BENCH Batch:WorkflowController:create - finding requests", Logger::INFO, false do
+      @pipeline.extract_requests_from_input_params(params)
     end
 
-    if @pipeline.max_size && request_ids.size > @pipeline.max_size
-      return pipeline_error_on_batch_creation("Maximum batch size is #{@pipeline.max_size}")
-    end
-    
-    unless @pipeline.all_requests_from_submissions_selected?(request_ids)
-      return pipeline_error_on_batch_creation("All plates in a submission must be selected")
-    end
+    return pipeline_error_on_batch_creation("Maximum batch size is #{@pipeline.max_size}") if @pipeline.max_size && requests.size > @pipeline.max_size
+    return pipeline_error_on_batch_creation("All plates in a submission must be selected") unless @pipeline.all_requests_from_submissions_selected?(requests)
 
-    pre_load_request = false
-    
-    request_proxies = if pre_load_request
-                        Request.find(request_ids).map {|r| r.proxy }
-                      else
-                        Request.new_proxy_list(request_ids)
-                      end
+    return hide_from_inbox(requests) if params[:action_on_requests] == "hide_from_inbox"
 
-    if params[:action_on_requests] == "hide_from_inbox"
-      return hide_from_inbox(request_proxies)
-    end
-
-    @batch = @pipeline.batches.create!(:requests => request_proxies.map(&:object))
-    current_user.batches << @batch
+    @batch = @pipeline.batches.create!(:requests => requests, :user => current_user)
     # we exclude the rendering bit from the usefull code
     # the global time is anyway already in the Rails log
     end # of benchmak

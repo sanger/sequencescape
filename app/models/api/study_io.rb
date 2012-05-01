@@ -10,7 +10,14 @@ class Api::StudyIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        named_scope :including_associations_for_json, { :include => [:uuid_object, { :study_metadata => [:faculty_sponsor, :reference_genome, :study_type, :data_release_study_type] } ] }
+        named_scope :including_associations_for_json, {
+          :include => [
+            :uuid_object, {
+              :study_metadata => [:faculty_sponsor, :reference_genome, :study_type, :data_release_study_type],
+              :roles => :users
+            }
+          ]
+        }
       end
     end
 
@@ -28,9 +35,16 @@ class Api::StudyIO < Api::Base
   map_attribute_to_json_attribute(:state)
   map_attribute_to_json_attribute(:created_at)
   map_attribute_to_json_attribute(:updated_at)
+
   extra_json_attributes do |object, json_attributes|
-     json_attributes["abbreviation"] = object.abbreviation
-   end
+    json_attributes["abbreviation"] = object.abbreviation
+
+    object.roles.each do |role|
+      json_attributes[role.name.underscore] = role.users.map do |user|
+        { :login => user.login, :email => user.email, :name  => user.name }
+      end
+    end if object.respond_to?(:roles)
+  end
 
   with_association(:study_metadata) do
     with_association(:faculty_sponsor, :lookup_by => :name) do
@@ -62,6 +76,10 @@ class Api::StudyIO < Api::Base
     map_attribute_to_json_attribute(:ega_dac_accession_number)
     map_attribute_to_json_attribute(:array_express_accession_number)
     map_attribute_to_json_attribute(:ega_policy_accession_number)
+
+    map_attribute_to_json_attribute(:data_release_timing)
+    map_attribute_to_json_attribute(:data_release_delay_period)
+    map_attribute_to_json_attribute(:data_release_delay_reason)
   end
 
   self.related_resources = [ :samples, :projects ]

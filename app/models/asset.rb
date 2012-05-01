@@ -89,7 +89,7 @@ class Asset < ActiveRecord::Base
 
   named_scope :with_name, lambda { |*names| { :conditions => { :name => names.flatten } } }
 
-  acts_as_audited :on => [:destroy, :update]
+  acts_as_audited :on => [:destroy]
   
 
   extend EventfulRecord
