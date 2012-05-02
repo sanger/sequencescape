@@ -75,6 +75,7 @@ class BaitLibraryLayout < ActiveRecord::Base
   def self.preview!(attributes = {}, &block)
     new(attributes, &block).tap do |layout|
       raise ActiveRecord::RecordInvalid, layout unless layout.valid?
+      layout.unsaved_uuid!
       layout.send(:generate_for_preview)
     end
   end
