@@ -23,7 +23,7 @@ module Submission::DelayedJobBehaviour
     # retry later. Therefore the DelayedJob should fail
     raise sql_exception
   rescue => exception
-    fail_set_message_and_save($!.to_yaml)
+    fail_set_message_and_save("#{exception.message}\n#{exception.backtrace.join("\n")}")
   end
   
   def finalize_build!
