@@ -22,7 +22,7 @@ class Uuid < ActiveRecord::Base
     # UUIDs.
     if ['test', 'cucumber'].include?(RAILS_ENV)
       def ensure_uuid_created
-        self.uuid_object ||= Uuid.create!(:resource => self)
+        self.uuid_object = Uuid.create!(:resource => self) if self.uuid_object(true).nil?
       end
     else
       def ensure_uuid_created
@@ -30,6 +30,16 @@ class Uuid < ActiveRecord::Base
       end
     end
     private :ensure_uuid_created
+
+    # Marks a record as being unsaved and hence the UUID is not present.  This is not something we
+    # want to actually happen without being explicitly told; hence, the 'uuid' method below will
+    # error if the record is unsaved as that's exactly what should happen.
+    #
+    # It also means that marking a record by calling this method, and then attempting to save it,
+    # will result in another validation exception.  Again, exactly what we want.
+    def unsaved_uuid!
+      self.uuid_object = Uuid.new(:external_id => nil)
+    end
 
     #--
     # You cannot give a UUID to something that hasn't been saved, which means that the UUID can't be
