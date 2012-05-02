@@ -66,7 +66,7 @@ class SequenomQcPlate < Plate
       return false unless at_least_one_source_plate?(input_plate_names) and input_plates_exist?(input_plate_names)
 
       # Plate name e.g. QC1234_1235_1236_1237_20100801
-      self.name = "#{plate_prefix}#{plate_number(input_plate_names)}#{plate_date}"
+      self.name = "#{plate_prefix}#{plate_number(input_plate_names)}_#{plate_date}"
       self.plate_purpose = PlatePurpose.find_by_name("Sequenom")
       self.barcode = PlateBarcode.create.barcode
       connect_input_plates(input_plate_names)
@@ -246,10 +246,10 @@ end
   
   #  ...to give "plate1_plate2_plate3_plate4"
   def plate_number(input_plate_names)
-    input_plate_names.inject("") do |return_value, (index, barcode)|
-      human_plate_name = Barcode.number_to_human(barcode) || ""
-      return_value << human_plate_name << "_"   
-    end
+    input_plate_names.
+      sort.
+      map { |b| Barcode.number_to_human(b.last) || '' }.
+      join('_')
   end
 
 
