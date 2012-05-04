@@ -47,21 +47,21 @@ class Submission < ActiveRecord::Base
 
   def cancel_all_requests_on_destruction
     requests.all.each do |request|
-      request.cancel!  # Cancel first to prevent event doing something stupid
+      request.cancel_before_started!  # Cancel first to prevent event doing something stupid
       request.events.create!(:message => "Submission #{self.id} as destroyed")
     end
   end
   private :cancel_all_requests_on_destruction
-  
+
   def self.render_class
     Api::SubmissionIO
   end
-  
+
   def url_name
     "submission"
   end
   alias_method(:json_root, :url_name)
-  
+
   def self.build!(options)
     submission_options = {}
     [:message].each do |option|

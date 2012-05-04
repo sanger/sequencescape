@@ -36,7 +36,7 @@ module Request::Statemachine
       end
 
       aasm_event :fail do
-        transitions :to => :failed, :from => [:failed]
+        transitions :to => :failed, :from => [:failed, :pending]
         transitions :to => :failed, :from => [:started], :on_transition => :charge_internally
       end
 
@@ -62,7 +62,7 @@ module Request::Statemachine
       end
 
       aasm_event :cancel do
-        transitions :to => :cancelled, :from => [:started, :pending, :hold]
+        transitions :to => :cancelled, :from => [:started, :hold]
       end
 
       aasm_event :return do
@@ -73,8 +73,12 @@ module Request::Statemachine
         transitions :to => :cancelled, :from => [:failed, :passed]
       end
 
-      aasm_event :failed_upstream do
-        transitions :to => :failed, :from => [:pending]
+      aasm_event :cancel_from_upstream do
+        transitions :to => :cancelled, :from => [:pending]
+      end
+
+      aasm_event :cancel_before_started do
+        transitions :to => :cancelled, :from => [:pending, :blocked]
       end
 
       after_save :release_unneeded_quotas!
