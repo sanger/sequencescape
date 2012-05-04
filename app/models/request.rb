@@ -8,7 +8,7 @@ class Request < ActiveRecord::Base
 
   include Uuid::Uuidable
   include AASM
-  include AasmExtensions
+  #include AasmExtensions
   include Commentable
   include Proxyable
   include StandardNamedScopes
