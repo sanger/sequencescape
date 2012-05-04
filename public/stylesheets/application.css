@@ -1376,3 +1376,29 @@ tr.duplicate-error td {
 #increment-tags-info {
   right:0;
 }
+
+.options_group {
+  border: 1px solid #bbbbbb;
+  box-shadow: 0 1px 5px #E1E1E1;
+  -moz-box-shadow: 0 1px 5px #E1E1E1;
+  margin: 3px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  background: #e2e2e2;
+  color: #000000;
+  padding: 1em;
+  behavior: url(/stylesheets/PIE.htc);
+}
+
+ul.options {
+  list-style: none;
+  margin:0;
+}
+ul.options label {
+  font-weight: bold;
+}
+ul.options li {
+  margin:0.3em;
+}
+}
