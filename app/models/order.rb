@@ -241,11 +241,11 @@ class Order < ActiveRecord::Base
 
   # Returns true if this is an order for sequencing
   def is_a_sequencing_order?
-    [
-     PacBioSequencingRequest,
-     SequencingRequest,
-     *Class.subclasses_of(SequencingRequest)
-    ].include?(RequestType.find(request_types).last.request_class)
+    ([
+       PacBioSequencingRequest,
+       SequencingRequest,
+       *Class.subclasses_of(SequencingRequest)
+    ] & RequestType.find(request_types).map(&:request_class)).present?
   end
 end
 
