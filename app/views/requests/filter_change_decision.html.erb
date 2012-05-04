@@ -11,7 +11,7 @@
       <li class="options_group"><h2><%= label_tag(:request_state_name, 'Request State') %></h2>
         <ul class="options">
           <li><label>Current State:</label> <%= @request.state %></li>
-          <li><%= form.label('change_decision_check_box', 'Change Decision' ) %>:
+          <li><%= form.label('change_decision_check_box', 'Change decision:' ) %>:
               <%= form.check_box('change_decision_check_box')  %></li>
           <li class="help">This status needs to be updated where a decision has been made to reverse a decision from passed to failed or visa versa.
               This change will be reflected in Sequencescape on the asset status page and ensure details are up to date.
@@ -21,7 +21,7 @@
       <% if @request.try(:target_asset).try(:qc_state) %>
       <li class="options_group"><h2><%= label_tag(:asset_qc_state, 'Asset QC State') %></h2>
         <ul class="options">
-          <li><%= label('change_decision_asset_qc_state','check_box', 'Update Asset QC State') %>
+          <li><%= label('change_decision_asset_qc_state','check_box', 'Update Asset QC State:') %>
                <%= form.check_box('asset_qc_state_check_box', { 'data-field' => 'change_decision_asset_qc_state'}, '1') %></li>
           <li><%= @request.try(:target_asset).try(:qc_state) %></li>
           <li><%= label('change_decision','asset_qc_state', 'Asset QC State Available', :style => 'display:none;') %>
