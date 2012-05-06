@@ -22,6 +22,7 @@ Feature: Interacting with wells through the API
         {
           "well": {
             "name": "Testing the JSON API",
+            "display_name": "Testing the JSON API",
             "created_at": "2010-09-16T13:45:00+01:00",
             "updated_at": "2010-09-16T13:45:00+01:00",
             "uuid": "00000000-1111-2222-3333-444444444444",
@@ -60,6 +61,7 @@ Feature: Interacting with wells through the API
       {
         "well": {
           "name": "Testing the JSON API",
+          "display_name": "Testing the JSON API",
           "created_at": "2010-09-16T13:45:00+01:00",
           "updated_at": "2010-09-16T13:45:00+01:00",
           "uuid": "00000000-1111-2222-3333-444444444444",
@@ -122,4 +124,40 @@ Feature: Interacting with wells through the API
         }
       ]
       """
+      
+  Scenario: Convenient well naming format is exposed in the warehouse
+     Given the nameless well exists with ID 1
+      And the UUID for the well with ID 1 is "00000000-1111-2222-3333-444444444444"
+      Given the plate exists with ID 2
+      And the plate with ID 2 has a barcode of "1220123456808"
+      And the UUID for the plate with ID 2 is "UUID-1234567890"
+      Given the well with ID 1 is at position "B1" on the plate with ID 2
+      When I GET the API path "/wells/00000000-1111-2222-3333-444444444444"
+      Then ignoring "internal_id" the JSON should be:
+        """
+        {
+          "well": {
+            "display_name": "DN123456P:B1",
+            "created_at": "2010-09-16T13:45:00+01:00",
+            "updated_at": "2010-09-16T13:45:00+01:00",
+            "uuid": "00000000-1111-2222-3333-444444444444",
+            "lanes": "http://localhost:3000/0_5/wells/00000000-1111-2222-3333-444444444444/lanes",
+            "requests": "http://localhost:3000/0_5/wells/00000000-1111-2222-3333-444444444444/requests",
+            "pico_pass": "ungraded",
+            "concentration": 23.2, 
+            "current_volume": 15.0,
+            "measured_volume": null,
+            "sequenom_count": null,
+            "gender_markers": null,
+            "map":"B1",
+
+            "plate_uuid": "UUID-1234567890",
+            "plate_barcode_prefix": "DN",
+
+            "plate_barcode": "123456",
+            "internal_id": 1
+          }
+        }
+        """
+    
     
