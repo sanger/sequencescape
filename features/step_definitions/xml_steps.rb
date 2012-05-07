@@ -20,14 +20,14 @@ Then /^ignoring "([^\"]+)" the XML response should be:$/ do |key_regexp, seriali
   block  = lambda { |key| key.to_s =~ regexp }
   assert_hash_equal(
     sort_arrays(walk_hash_structure(Hash.from_xml(serialized_xml), &block)),
-    sort_arrays(walk_hash_structure(Hash.from_xml(page.body), &block)),
+    sort_arrays(walk_hash_structure(page.xml_body, &block)),
     'XML differs when decoded'
   )
 end
 
 
 Then /^the XML response should be:/ do |serialized_xml|
-  assert_xml_strings_equal(serialized_xml, page.body)
+  assert_equal(Hash.from_xml(serialized_xml), page.xml_body)
 end
 
 Then /^the value of the "([^"]+)" attribute of the XML element "([^"]+)" should be "([^"]+)"/ do |attribute, xpath, value|

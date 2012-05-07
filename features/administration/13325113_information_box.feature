@@ -17,14 +17,14 @@ Feature:  Site Wide Information Box
       And the field labeled "Custom text content type" should contain "text/html"
   
   Scenario: Entering a new message    
-    Given I fill in "Custom text content" with "Something, something, darkside..."
+    Given I fill in "Custom text content:" with "Something, something, darkside..."
       And I press "Save changes"
     When I go to the homepage
     Then the application information box should contain "Something, something, darkside..."
   
   
   Scenario: Entering a blank message should hide the application information box
-    Given I fill in "Custom text content" with ""
+    Given I fill in "Custom text content:" with ""
       And I press "Save changes"
     When I go to the homepage
     Then the application information box is not shown
