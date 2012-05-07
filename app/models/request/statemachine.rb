@@ -10,7 +10,6 @@ module Request::Statemachine
     base.class_eval do
       include Request::BillingStrategy
 
-
       ## State machine
       state_machine :initial => :pending do
         event :hold do
@@ -102,6 +101,7 @@ module Request::Statemachine
       named_scope :quota_counted, :conditions => {:state => QUOTA_COUNTED}
       named_scope :quota_exempted, :conditions => {:state => QUOTA_EXEMPTED}
       named_scope :hold, :conditions => {:state => "hold"}
+
     end
   end
 

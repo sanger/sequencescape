@@ -38,6 +38,8 @@ class Request < ActiveRecord::Base
   has_many :failures, :as => :failable
   has_many :billing_events
 
+  has_many :request_events
+
   has_many :request_quotas
   has_many :quotas, :through => :request_quotas
 
