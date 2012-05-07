@@ -11,7 +11,10 @@ class Request < ActiveRecord::Base
   include Commentable
   include Proxyable
   include StandardNamedScopes
+
+  attr_protected :state
   include Request::Statemachine
+
   extend Request::Statistics
   include Batch::RequestBehaviour
 
@@ -20,6 +23,7 @@ class Request < ActiveRecord::Base
   has_many_lab_events
 
   self.inheritance_column = "sti_type"
+
 
   def self.delegate_validator
     DelegateValidation::AlwaysValidValidator

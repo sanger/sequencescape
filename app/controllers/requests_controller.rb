@@ -71,12 +71,6 @@ class RequestsController < ApplicationController
     if redirect_if_not_owner_or_admin
       return
     end
-    
-    if params[:request][:state] == "cancelled" && !@request.cancelable?
-      flash[:notice] = "You can not cancel a request that is in progress."
-      redirect_to request_path(@request)
-      return
-    end
 
     unless params[:request][:request_type_id].nil?
       unless @request.request_type_updatable?(params[:request][:request_type_id])
@@ -89,10 +83,6 @@ class RequestsController < ApplicationController
     begin
       if @request.update_attributes!(params[:request])
         flash[:notice] = "Request details have been updated"
-        if params[:request][:state] == "failed"
-          flash[:notice] = "Request #{params[:id]} has been failed"
-          EventFactory.request_update_note_to_manager(@request, current_user, flash[:notice])
-        end 
         redirect_to request_path(@request)
       else
         flash[:error] = "Request was not updated. No change specified ?"
