@@ -69,6 +69,8 @@ class Study < ActiveRecord::Base
   def requests(reload=nil)
     Request.for_study(self)
   end
+  has_many :request_events
+
   has_many :asset_groups
   has_many :study_reports
 

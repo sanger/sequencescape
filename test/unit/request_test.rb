@@ -1,10 +1,20 @@
 require "test_helper"
 
 class RequestTest < ActiveSupport::TestCase
-  context "A Request" do
+  context "Request" do
     should_belong_to :user, :request_type, :item
     should_have_many :events
     should_have_instance_methods :pending?, :start, :started?, :fail, :failed?, :pass, :passed?, :reset, :workflow_id
+
+    context 'new requests' do
+      setup do
+        @request = Request.create!
+      end
+
+      should 'have an intial state of "pending"'do
+        assert 'pending', @request.pending?
+      end
+    end
 
     context "#next_request" do
       setup do

@@ -25,7 +25,8 @@ Factory.sequence :keys do |n|
 end
 
 Factory.sequence :barcode do |n|
-  "DN#{n}"
+  srand(n)
+  "DN#{rand(0x10000)}"
 end
 
 Factory.sequence(:request_type_name) {|n| "Request Type #{n}"}
@@ -246,7 +247,6 @@ Factory.define :request_without_assets, :parent => :request_with_submission do |
   request.item              {|item|       item.association(:item)}
   request.project           {|pr|         pr.association(:project)}
   request.request_type      {|rt|         rt.association(:request_type)}
-  request.state             'pending'     
   request.study             {|study|      study.association(:study)}
   request.user              {|user|       user.association(:user)}
   request.workflow          {|workflow|   workflow.association(:submission_workflow)}
@@ -432,7 +432,9 @@ end
 Factory.define(:empty_library_tube, :class => LibraryTube) do |library_tube|
   library_tube.qc_state ''
   library_tube.name     {|_| Factory.next :asset_name }
+  library_tube.barcode {Factory.next :barcode}
 end
+
 Factory.define :library_tube, :parent => :empty_library_tube do |library_tube|
   library_tube.after_create do |library_tube|
     library_tube.aliquots.create!(:sample => Factory(:sample))

@@ -39,6 +39,7 @@ class Project < ActiveRecord::Base
   has_many :studies, :class_name => "Study", :through => :orders, :source => :study, :uniq => true
   has_many :submissions, :through => :orders, :source => :submission, :uniq => true
   has_many :sample_manifests
+  has_many :request_events
 
   validates_presence_of :name
   validates_uniqueness_of :name, :on => :create, :message => "already in use (#{self.name})"
