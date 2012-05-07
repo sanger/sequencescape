@@ -51,8 +51,8 @@ Feature: Manage users
     And I press "Add <up_case_class> role" within "div#<downcase_class>_role"
     Then I should see "Administrator"
     Then the role list table should look like:
-      | Role          | Type    | Name         |
-      | Administrator | <up_case_class> | Test <downcase_class> |
+       | Role          | Type            | Name                  |
+       | Administrator | <up_case_class> | Test <downcase_class> |
     Examples:
       | up_case_class | downcase_class |
       | Project       | project        |

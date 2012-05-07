@@ -38,7 +38,10 @@ end
 
 When /^(?:|I )fill in "([^"]*)" with "([^"]*)"(?: within "([^"]*)")?$/ do |field, value, selector|
   with_scope(selector) do
-    fill_in(field, :with => value)
+    # fill_in seems to have problems locating the field, not sure why.
+    # Stop gap using find_field instead...
+    # fill_in(field, :with => value)
+    find_field(field).set(value)
   end
 end
 

@@ -486,7 +486,7 @@ ActiveRecord::Schema.define(:version => 20120501102834) do
 
   add_index "lab_events", ["batch_id"], :name => "index_lab_events_on_batch_id"
   add_index "lab_events", ["created_at"], :name => "index_lab_events_on_created_at"
-  add_index "lab_events", ["description", "eventful_type"], :name => "index_lab_events_find_flowcell", :length => {"description"=>"20", "eventful_type"=>nil}
+  add_index "lab_events", ["description", "eventful_type"], :name => "index_lab_events_find_flowcell", :length => {"eventful_type"=>nil, "description"=>"20"}
   add_index "lab_events", ["eventful_id"], :name => "index_lab_events_on_eventful_id"
   add_index "lab_events", ["eventful_type"], :name => "index_lab_events_on_eventful_type"
 
@@ -739,14 +739,16 @@ ActiveRecord::Schema.define(:version => 20120501102834) do
   end
 
   create_table "request_events", :force => true do |t|
-    t.integer "request_id", :null => false
-    t.string  "from_state"
-    t.string  "to_state",   :null => false
-    t.string  "event_name", :null => false
-    t.integer "user_id"
+    t.integer  "request_id", :null => false
+    t.string   "event_name", :null => false
+    t.string   "from_state"
+    t.string   "to_state",   :null => false
+    t.integer  "study_id"
+    t.integer  "project_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
-
-  add_index "request_events", ["request_id"], :name => "fk_request_id"
 
   create_table "request_information_types", :force => true do |t|
     t.string   "name"
