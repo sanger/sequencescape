@@ -37,7 +37,7 @@ class Submission < ActiveRecord::Base
          {:study => :uuid_object },
          :user]}
   ]}
-  
+
   named_scope :building, :conditions => { :state => "building" }
   named_scope :pending, :conditions => { :state => "pending" }
   named_scope :ready, :conditions => { :state => "ready" }
@@ -46,22 +46,24 @@ class Submission < ActiveRecord::Base
   before_destroy :cancel_all_requests_on_destruction
 
   def cancel_all_requests_on_destruction
-    requests.all.each do |request|
-      request.cancel!  # Cancel first to prevent event doing something stupid
-      request.events.create!(:message => "Submission #{self.id} as destroyed")
+    ActiveRecord::Base.transaction do
+      requests.all.each do |request|
+        request.cancel_before_started!  # Cancel first to prevent event doing something stupid
+        request.events.create!(:message => "Submission #{self.id} as destroyed")
+      end
     end
   end
   private :cancel_all_requests_on_destruction
-  
+
   def self.render_class
     Api::SubmissionIO
   end
-  
+
   def url_name
     "submission"
   end
   alias_method(:json_root, :url_name)
-  
+
   def self.build!(options)
     submission_options = {}
     [:message].each do |option|
@@ -155,13 +157,13 @@ class Submission < ActiveRecord::Base
  private :validate_orders_are_compatible
 
  # this method is part of the submission
-  # not order, because it is submission 
+  # not order, because it is submission
  # which decide if orders are compatible or not
  def check_orders_compatible?(a,b)
     errors.add(:request_types, "are incompatible") if a.request_types != b.request_types
     errors.add(:request_options, "are incompatible") if a.request_options != b.request_options
     errors.add(:item_options, "are incompatible") if a.item_options != b.item_options
-    check_studies_compatible?(a.study, b.study) 
+    check_studies_compatible?(a.study, b.study)
     check_samples_compatible?(a,b)
  end
 
@@ -187,26 +189,32 @@ class Submission < ActiveRecord::Base
   end
 
   def next_requests(request)
-    return request.target_asset.requests if request.target_asset
+    # We should never be receiving requests that are not part of our request graph.
+    raise RuntimeError, "Request #{request.id} is not part of submission #{id}" unless request.submission_id == self.id
+    return request.target_asset.requests if request.target_asset.present?
 
+    # Pick out the siblings of the request, so we can work out where it is in the list, and all of
+    # the requests in the subsequent request type, so that we can tie them up.  We order by ID
+    # here so that the earliest requests, those created by the submission build, are always first;
+    # any additional requests will have come from a sequencing batch being reset.
     next_request_type_id = self.next_request_type_id(request.request_type_id)
-    sibling_requests = requests.select { |r| r.request_type_id == request.request_type_id}
-    next_possible_requests = requests.select { |r| r.request_type_id == next_request_type_id}
+    all_requests = requests.with_request_type_id([ request.request_type_id, next_request_type_id ]).all(:order => 'id ASC')
+    sibling_requests, next_possible_requests = all_requests.partition { |r| r.request_type_id == request.request_type_id }
 
-    #we need to find the position of the request within its sibling and use the same index
-    #in the next_possible ones.
+    # Determine the number of requests that should come next from the multipliers in the orders.
+    #
+    # NOTE: This used to be done by calculating the ratio of the sibling_request and next_possible_requests
+    # but that fails when the library creation requests can go through in two batches at different
+    # times, and there could be sequencing failures for the first batch from library creation.  This
+    # causes new requests to be added so the graph actually changes from what that ratio expects.
+    #
+    # NOTE: This will only work whilst you order the same number of requests.
+    multipliers = orders.map { |o| o.request_options[:multiplier].try(:[], next_request_type_id.to_s) || 1 }.compact.uniq
+    raise RuntimeError, "Mismatched multiplier information for submission #{id}" if multipliers.size != 1
 
-    [sibling_requests, next_possible_requests].map do |request_list|
-      request_list.sort! { |a, b| a.id <=> b.id }
-    end
-
-    # The divergence_ratio should be equal to the multiplier if there is one and so the same for every requests
-    # should work also for convergent a request (ration < 1.0))
-
-    divergence_ratio = 1.0* next_possible_requests.size / sibling_requests.size
-    index = sibling_requests.index(request)
-
-    next_possible_requests[index*divergence_ratio,[ 1, divergence_ratio ].max]
+    # Now we can take the group of requests from next_possible_requests that tie up.
+    divergence_ratio, index = multipliers.first, sibling_requests.index(request)
+    next_possible_requests[index*divergence_ratio, [1,divergence_ratio].max]
   end
 
   def name

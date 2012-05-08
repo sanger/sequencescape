@@ -17,6 +17,8 @@ class Api::AssetLinkIO < Api::Base
   renders_model(::AssetLink)
 
   map_attribute_to_json_attribute(:uuid)
+  map_attribute_to_json_attribute(:created_at)
+  map_attribute_to_json_attribute(:updated_at)
 
   with_association(:ancestor) do 
     map_attribute_to_json_attribute(:uuid, 'ancestor_uuid')

@@ -36,8 +36,6 @@ gem "alter_table", :git => "git+ssh://git@github.com/sanger/alter_table.git"
 # For background processing
 gem "delayed_job", '~>2.0.4'
 
-gem "cbrunnkvist-psd_logger"
-
 gem "ruby_walk",  ">= 0.0.3",:git => "git+ssh://git@github.com/sanger/ruby_walk"
 
 # For the API level
@@ -100,5 +98,6 @@ end
 
 group :deployment do
   gem "mongrel_cluster"
+  gem "cbrunnkvist-psd_logger"
 end
 
