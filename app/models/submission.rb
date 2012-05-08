@@ -209,7 +209,7 @@ class Submission < ActiveRecord::Base
     # causes new requests to be added so the graph actually changes from what that ratio expects.
     #
     # NOTE: This will only work whilst you order the same number of requests.
-    multipliers = orders.map { |o| o.request_options[:multiplier].fetch(next_request_type_id.to_s, 1) }.compact.uniq
+    multipliers = orders.map { |o| o.request_options[:multiplier].try(:[], next_request_type_id.to_s) || 1 }.compact.uniq
     raise RuntimeError, "Mismatched multiplier information for submission #{id}" if multipliers.size != 1
 
     # Now we can take the group of requests from next_possible_requests that tie up.
