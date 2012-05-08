@@ -16,7 +16,7 @@ class RequestTest < ActiveSupport::TestCase
         #@submission  = Factory(:order_with_submission, :request_types => [@cherrypick_request_type, @genotyping_request_type].map(&:id)).submission
         @submission  = Factory::submission(:request_types => [@cherrypick_request_type, @genotyping_request_type].map(&:id), :asset_group_name => 'to avoid asset errors')
         @item = Factory :item, :submission => @submission
-        
+
         @genotype_pipeline = Factory :pipeline, :name =>"genotyping pipeline", :request_type => @genotyping_request_type
         @cherrypick_pipeline = Factory :pipeline, :name => "cherrypick pipeline", :request_type => @cherrypick_request_type, :next_pipeline_id => @genotype_pipeline.id, :asset_type => 'LibraryTube'
 
@@ -242,13 +242,13 @@ class RequestTest < ActiveSupport::TestCase
         should "be passed" do
           assert @request.passed?
         end
-        
+
         context "do not allow the transition" do
           setup do
             @request.state = "passed"
           end
-          
-          should "to started" do 
+
+          should "to started" do
             # At least we'll know when and where it's blowing up.
             assert_raise(AASM::InvalidTransition) { @request.start! }
           end
@@ -282,8 +282,11 @@ class RequestTest < ActiveSupport::TestCase
         end
 
         should "not allow transition to passed" do
-          assert_nothing_raised do
+          assert_raise(AASM::InvalidTransition) do
             @request.pass!
+          end
+          assert_nothing_raised do
+            @request.change_decision!
           end
         end
       end

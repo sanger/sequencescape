@@ -280,15 +280,17 @@ class Studies::Workflows::SubmissionsController < ApplicationController
       flash[:error] = "You can not delete a submission that has started"
       redirect_to study_workflow_path(@study, @workflow)
     else
-      @submission.destroy
-      flash[:notice] = "Successfully deleted submission #{@submission.id} and related data"
-      @study.events.create(
-        :message => "Submission #{@submission.id} and all related data was deleted",
-        :created_by => current_user.login,
-        :content => "",
-        :of_interest_to => "administrators"
-      )
-      redirect_to study_workflow_path(@study, @workflow)
+      ActiveRecord::Base.transaction do
+        @submission.destroy
+        flash[:notice] = "Successfully deleted submission #{@submission.id} and related data"
+        @study.events.create(
+          :message => "Submission #{@submission.id} and all related data was deleted",
+          :created_by => current_user.login,
+          :content => "",
+          :of_interest_to => "administrators"
+        )
+        redirect_to study_workflow_path(@study, @workflow)
+      end
     end
   end
 
@@ -302,10 +304,10 @@ class Studies::Workflows::SubmissionsController < ApplicationController
     @study ||= Study.find_by_id(params[:order_study_id]) if params[:order_study_id].present?
     @order = Order.new
     #respond_to do |format|
-      #format.xhr do 
+      #format.xhr do
       render :partial => "select_an_asset_group"
       #render(:partial => input_method.gsub(/\s+/, '_'), :locals => { :form => form, :submission => @order })
-    #end 
+    #end
     #end
   end
 

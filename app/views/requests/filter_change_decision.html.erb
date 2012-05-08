@@ -3,98 +3,63 @@
 
 <h1>Request <%= @request.id %></h1>
 
-<div class="info">
-Change decision has to used after that production is finished. 
-</div>
+<% if @request.finished? %>
 <div id="study">
-  <% form_for(:change_decision, :url => change_decision_request_path(@change_decision.request), :html => {:method => :put}) do |form| -%> 
-<%= error_messages_for :change_decision %> 
-    <table width="100%" cellspacing="20" cellpadding="0">
-        <tr>      
-            <td width="5%" >
-               <%= label('change_decision_request_state','check_box', 'Request State Checkbox', :style => 'display:none;') %>
-               <%= form.check_box('request_state_check_box', { 'data-field' => 'change_decision_state'},'1')  %>
-            </td>
-            <td width="15%"><%= label_tag(:request_state_name, 'Request State:') %></td> 
-            <td width="50%"><%= @request.state %> </td>  
-            <td width="20%" >
-               <%= label('change_decision','state', 'Request State Available', :style => 'display:none;') %>
-               <%= form.select(:state, [ "", @change_decision.valid_states_for_select].flatten)%>
-            </td>
-            <td class="help_field">
-                <% help_text do %>This status needs to be updated where a decision has been made to reverse a decision from passed to failed or visa versa.   This change will be reflected in Sequencescape on the asset status page and ensure details are up to date. A description in 'Reason for this action is mandatory'<% end %>
-            </td> 
-        </tr>
-        <% if @request.try(:target_asset).try(:qc_state) %>
-        <tr>
-            <td width="5%" >
-               <%= label('change_decision_asset_qc_state','check_box', 'Asset QC State Checkbox', :style => 'display:none;') %>
-               <%= form.check_box('asset_qc_state_check_box', { 'data-field' => 'change_decision_asset_qc_state'}, '1') %>
-            </td> 
-            <td width="15%"><%= label_tag(:asset_qc_state, 'Asset QC State:') %></td> 
-            <td width="50%"><%= @request.try(:target_asset).try(:qc_state) %></td>
-            <td width="20%">
-               <%= label('change_decision','asset_qc_state', 'Asset QC State Available', :style => 'display:none;') %>
-               <%= form.select("asset_qc_state", ["","pending", "failed", "passed"] )   %>
-            </td>
-            <td class="help_field">
-                <% help_text do %>This status must be updated where a decision has been made to reverse a decision from passed to failed or visa versa.   This updates the QC status as opposed to the request status and will be reflected in NPG.   A description in 'Reason for this action is mandatory'.<% end %>
-            </td>
-        </tr>
-        <% end %>
-        <% if @change_decision.billing.size > 0 %> 
-        <tr>
-            <td width="5%" >
-               <%= label('change_decision_billing_state','check_box', 'Billing Checkbox', :style => 'display:none;') %>
-               <%= form.check_box("billing_state_check_box", { 'data-field' => 'change_decision_billing_event_kind'}, '1') %>
-            </td> 
-            <td width="15%"><%= label_tag(:billing_name, 'Billing :') %></td> 
-            <% if @change_decision.billing.size >0 %>
-              <td width="50%">
-                 <table>    
-                  <% @change_decision.billing.each do |billing| %>
-                      <tr>
-                        <td><b><%= billing.kind %></b> </td>
-                        <td><%= billing.description %></td>
-                      </tr>
-                  <% end %>
-                 </table>    
-             </td>
-            <% else %>
-               <td width="50%">&nbsp;</td>
-            <% end%>
-            <td width="20%">
-               <%= label('change_decision','billing_event_kind', 'Billing State Available', :style => 'display:none;') %>
-               <%= form.select("billing_event_kind", ["", "refund"] )   %>
-            </td>
-            <td class="help_field">
-                <% help_text do %>In cases where a pass becomes a fail a refund will be required and this option must be selected.     A description for billing event must be entered and the original description will be displayed so can be cut and paste and 'refund' added at the end.  For situations where a fail becomes a pass there is an internal charge which needs to be refunded and then a full charge needs to be created.  This isn't included in this interface at the moment and is a manual process.<% end %>
-            </td>
-        </tr>
-        <tr> 
-            <td colspan=2 width="20%"><%= label_tag("change_decision_description_billing", 'Description for billing event:') %></td> 
-            <td colspan=2 width="70%"><%= form.text_area "description_billing", {:size => "50x2"} %></td>
-            <td class="help_field">
-                <% help_text do %>...<% end %>
-            </td>
-        </tr>
-        <% end %>
-        <tr><td><br><td></tr>   
-        <tr> 
-            <td colspan=2 width="20%"><%= label_tag("change_decision_comment", 'Reason for this action:') %></td> 
-            <td colspan=2 width="70%"><%= form.text_area "comment", {:size => "50x5"} %></td>
-            <td class="help_field">
-                <% help_text do %>A description for changing Request State or Asset QC State or Billing is mandatory.<% end %>
-            </td>
-        </tr>
-        <tr><td><br><td></tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td colspan=3>
-                <%= submit_tag %> or <%= link_to "cancel", request_path(@request) %>
-            </td>
-        </tr>
-    </table>   
+  <% form_for(:change_decision, :url => change_decision_request_path(@change_decision.request), :html => {:method => :put}) do |form| -%>
+  <%= error_messages_for :change_decision %>
+    <ul class="options">
+      <li class="options_group"><h2><%= label_tag(:request_state_name, 'Request State') %></h2>
+        <ul class="options">
+          <li><label>Current State:</label> <%= @request.state %></li>
+          <li><%= form.label('change_decision_check_box', 'Change decision:' ) %>:
+              <%= form.check_box('change_decision_check_box')  %></li>
+          <li class="help">This status needs to be updated where a decision has been made to reverse a decision from passed to failed or visa versa.
+              This change will be reflected in Sequencescape on the asset status page and ensure details are up to date.
+              A description in 'Reason for this action is mandatory'</li>
+        </ul>
+      </li>
+      <% if @request.try(:target_asset).try(:qc_state) %>
+      <li class="options_group"><h2><%= label_tag(:asset_qc_state, 'Asset QC State') %></h2>
+        <ul class="options">
+          <li><%= label('change_decision_asset_qc_state','check_box', 'Update Asset QC State:') %>
+               <%= form.check_box('asset_qc_state_check_box', { 'data-field' => 'change_decision_asset_qc_state'}, '1') %></li>
+          <li><%= @request.try(:target_asset).try(:qc_state) %></li>
+          <li><%= label('change_decision','asset_qc_state', 'Asset QC State Available', :style => 'display:none;') %>
+               <%= form.select("asset_qc_state", ["","pending", "failed", "passed"] )   %></li>
+        </ul>
+      </li>
+      <% end %>
+      <% if @change_decision.billing.size > 0 %>
+      <li class="options_group"><h2><%= label_tag(:billing_name, 'Billing') %></h2>
+        <ul class="options">
+          <li>Billing events
+            <ul class="options">
+              <% @change_decision.billing.each do |billing| %>
+                <li><strong><%= billing.kind %></strong> <%= billing.description %></li>
+              <% end %>
+            </ul></li>
+          <li><%= label('change_decision_billing_state','check_box', 'Update Billing:') %>
+              <%= form.check_box("billing_state_check_box", { 'data-field' => 'change_decision_billing_event_kind'}, '1') %></li>
+          <li><%= label('change_decision','billing_event_kind', 'Billing State Available', :style => 'display:none;') %>
+              <%= form.select("billing_event_kind", ["", "refund"] )   %></li>
+          <li class="help">In cases where a pass becomes a fail a refund will be required and this option must be selected.
+              A description for billing event must be entered and the original description will be displayed so can be cut and paste
+              and 'refund' added at the end.  For situations where a fail becomes a pass there is an internal charge which needs to be
+              refunded and then a full charge needs to be created.  This isn't included in this interface at the moment and is a manual process.</li>
+          <li><%= label_tag("change_decision_description_billing", 'Description for billing event:') %><br/>
+              <%= form.text_area "description_billing", {:size => "50x2"} %></li>
+        </ul>
+      </li>
+      <% end %>
+      <li class="options_group">
+        <ul class="options">
+          <li><%= label_tag("change_decision_comment", 'Reason for this action:') %><br/>
+              <%= form.text_area "comment", {:size => "50x5"} %></li>
+          <li class="help">A description for changing Request State or Asset QC State or Billing is mandatory.</li>
+          <li><%= submit_tag %> or <%= link_to "cancel", request_path(@request) %></li>
+        </ul>
+      </li>
+    </ul>
   <% end %>
 </div>
 
@@ -102,14 +67,22 @@ Change decision has to used after that production is finished.
 (function(undefined) {
  document.observe('dom:loaded', function() {
    $$('input[type=checkbox]').each(function(checkbox) {
-     var field = $(checkbox.readAttribute('data-field'));
-     field.disabled = !checkbox.checked;    
-
-     checkbox.observe('click', function() {  
+     if (checkbox.readAttribute('data-field')!== null) {
+       var field = $(checkbox.readAttribute('data-field'));
        field.disabled = !checkbox.checked;
-       if (!checkbox.checked)  {field[0].selected = true;}    
-     });
+
+       checkbox.observe('click', function() {
+         field.disabled = !checkbox.checked;
+         if (!checkbox.checked)  {field[0].selected = true;}
+       });
+     }
    });
  });
 })();
-</script> 
+</script>
+
+<% else %>
+<div class="info">
+Change decision can only be used used on passed or failed plates.
+</div>
+<% end %>
