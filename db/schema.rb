@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120419104221) do
+ActiveRecord::Schema.define(:version => 20120506092548) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -72,10 +72,12 @@ ActiveRecord::Schema.define(:version => 20120419104221) do
   end
 
   create_table "asset_links", :force => true do |t|
-    t.integer "ancestor_id"
-    t.integer "descendant_id"
-    t.boolean "direct"
-    t.integer "count"
+    t.integer  "ancestor_id"
+    t.integer  "descendant_id"
+    t.boolean  "direct"
+    t.integer  "count"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
   end
 
   add_index "asset_links", ["ancestor_id", "direct"], :name => "index_asset_links_on_ancestor_id_and_direct"

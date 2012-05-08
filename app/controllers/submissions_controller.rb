@@ -41,11 +41,13 @@ class SubmissionsController < ApplicationController
   end
 
   def destroy
+    ActiveRecord::Base.transaction do
       submission = SubmissionPresenter.new(current_user, :id => params[:id])
       submission.destroy
 
       flash[:notice] = "Submission successfully deleted!"
       redirect_to :action => :index
+    end
   end
 
   def show

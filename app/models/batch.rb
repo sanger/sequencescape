@@ -13,7 +13,7 @@ class Batch < ActiveRecord::Base
   include Uuid::Uuidable
   include ModelExtensions::Batch
   include StandardNamedScopes
-  
+
   extend EventfulRecord
   has_many_events
   has_many_lab_events
@@ -28,7 +28,7 @@ class Batch < ActiveRecord::Base
   belongs_to :assignee, :class_name => "User", :foreign_key => "assignee_id"
 
   has_many :failures, :as => :failable
-  
+
   # Named scope for search by query string behavior
   named_scope :for_search_query, lambda { |query|
     conditions = [ 'id=?', query ]
@@ -52,12 +52,14 @@ class Batch < ActiveRecord::Base
     # create failures
     self.failures.create(:reason => reason, :comment => comment, :notify_remote => false)
     unless ignore_requests
+
       self.requests.each do |request|
         request.failures.create(:reason => reason, :comment => comment, :notify_remote => true)
         unless request.asset && request.asset.resource?
           EventSender.send_fail_event(request.id, reason, comment, self.id)
         end
       end
+
     end
     self.production_state = "fail"
     self.save!
@@ -71,9 +73,11 @@ class Batch < ActiveRecord::Base
       if value == "on"
         logger.debug "SENDING FAIL FOR REQUEST #{key}, BATCH #{self.id}, WITH REASON #{reason}"
         unless key == "control"
-          request = self.requests.find_by_id(key)
-          request.failures.create(:reason => reason, :comment => comment, :notify_remote => true)
-          EventSender.send_fail_event(request.id, reason, comment, self.id)
+          ActiveRecord::Base.transaction do
+            request = self.requests.find(key)
+            request.failures.create(:reason => reason, :comment => comment, :notify_remote => true)
+            EventSender.send_fail_event(request.id, reason, comment, self.id)
+          end
         end
       else
         checkpoint = false
@@ -188,26 +192,26 @@ class Batch < ActiveRecord::Base
       #requests.target_asset_id = assets.id and
       #assets.holder_id = plate_assets.id group by plate_assets.barcode")
   end
-  
+
   # Returns the plate_purpose of the first output plate associated with the batch,
   # this is currently assumed to the same for all output plates.
   def output_plate_purpose
     output_plates[0].plate_purpose unless output_plates[0].nil?
   end
-  
+
   # Set the plate_purpose of all output plates associated with this batch
   def set_output_plate_purpose(plate_purpose)
     raise "This batch has no output plates to assign a purpose to!" if output_plates.blank?
-    
-    output_plates.each { |plate| 
+
+    output_plates.each { |plate|
       plate.plate_purpose = plate_purpose
       plate.save!
     }
-    
+
     true
   end
-  
-  
+
+
 
   def output_plate_in_batch?(barcode)
     return false if barcode.nil?
@@ -484,7 +488,7 @@ class Batch < ActiveRecord::Base
         end
 
         sample = well.primary_aliquot.try(:sample)
-        csv << [ 
+        csv << [
           well.plate.sanger_human_barcode,
           well.map.description,
           well.study.try(:name),
@@ -519,7 +523,7 @@ class Batch < ActiveRecord::Base
         if (event.nil?)
           complete = false
         end
-      end  
+      end
     end
 
     if complete
