@@ -1,6 +1,6 @@
 class SubmissionWorkflowsController < ApplicationController
   before_filter :admin_login_required
-  
+
   # GET /submission_workflows
   # GET /submission_workflows.xml
   def index
@@ -77,7 +77,9 @@ class SubmissionWorkflowsController < ApplicationController
   # DELETE /submission_workflows/1.xml
   def destroy
     @submission_workflow = Submission::Workflow.find(params[:id])
-    @submission_workflow.destroy
+    ActiveRecord::Base.transaction do
+      @submission_workflow.destroy
+    end
 
     respond_to do |format|
       format.html { redirect_to(submission_workflows_url) }
