@@ -197,7 +197,7 @@ class Submission < ActiveRecord::Base
     # the requests in the subsequent request type, so that we can tie them up.  We order by ID
     # here so that the earliest requests, those created by the submission build, are always first;
     # any additional requests will have come from a sequencing batch being reset.
-    next_request_type_id = self.next_request_type_id(request.request_type_id)
+    next_request_type_id = self.next_request_type_id(request.request_type_id) or return []
     all_requests = requests.with_request_type_id([ request.request_type_id, next_request_type_id ]).all(:order => 'id ASC')
     sibling_requests, next_possible_requests = all_requests.partition { |r| r.request_type_id == request.request_type_id }
 
