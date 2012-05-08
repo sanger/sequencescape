@@ -74,7 +74,7 @@ class Batch < ActiveRecord::Base
         logger.debug "SENDING FAIL FOR REQUEST #{key}, BATCH #{self.id}, WITH REASON #{reason}"
         unless key == "control"
           ActiveRecord::Base.transaction do
-            request = self.requests.find_by_id(key)
+            request = self.requests.find(key)
             request.failures.create(:reason => reason, :comment => comment, :notify_remote => true)
             EventSender.send_fail_event(request.id, reason, comment, self.id)
           end
