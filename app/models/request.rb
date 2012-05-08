@@ -105,6 +105,7 @@ class Request < ActiveRecord::Base
       end
     {:conditions => { :request_type_id => id} }
   }
+  named_scope :with_request_type_id, lambda { |id| { :conditions => { :request_type_id => id } } }
 
   named_scope :where_is_a?,     lambda { |clazz| { :conditions => [ 'sti_type IN (?)',     [ clazz, *Class.subclasses_of(clazz) ].map(&:name) ] } }
   named_scope :where_is_not_a?, lambda { |clazz| { :conditions => [ 'sti_type NOT IN (?)', [ clazz, *Class.subclasses_of(clazz) ].map(&:name) ] } }
