@@ -193,28 +193,24 @@ class Submission < ActiveRecord::Base
     raise RuntimeError, "Request #{request.id} is not part of submission #{id}" unless request.submission_id == self.id
     return request.target_asset.requests if request.target_asset.present?
 
-    # Pick out the siblings of the request, so we can work out where it is in the list, and all of
-    # the requests in the subsequent request type, so that we can tie them up.  We order by ID
-    # here so that the earliest requests, those created by the submission build, are always first;
-    # any additional requests will have come from a sequencing batch being reset.
-    next_request_type_id = self.next_request_type_id(request.request_type_id) or return []
-    all_requests = requests.with_request_type_id([ request.request_type_id, next_request_type_id ]).all(:order => 'id ASC')
-    sibling_requests, next_possible_requests = all_requests.partition { |r| r.request_type_id == request.request_type_id }
+    next_request_type_id = self.next_request_type_id(request.request_type_id)
+    sibling_requests = requests.select { |r| r.request_type_id == request.request_type_id}
+    next_possible_requests = requests.select { |r| r.request_type_id == next_request_type_id}
 
-    # Determine the number of requests that should come next from the multipliers in the orders.
-    #
-    # NOTE: This used to be done by calculating the ratio of the sibling_request and next_possible_requests
-    # but that fails when the library creation requests can go through in two batches at different
-    # times, and there could be sequencing failures for the first batch from library creation.  This
-    # causes new requests to be added so the graph actually changes from what that ratio expects.
-    #
-    # NOTE: This will only work whilst you order the same number of requests.
-    multipliers = orders.map { |o| (o.request_options[:multiplier].try(:[], next_request_type_id.to_s) || 1).to_i }.compact.uniq
-    raise RuntimeError, "Mismatched multiplier information for submission #{id}" if multipliers.size != 1
+    #we need to find the position of the request within its sibling and use the same index
+    #in the next_possible ones.
 
-    # Now we can take the group of requests from next_possible_requests that tie up.
-    divergence_ratio, index = multipliers.first, sibling_requests.index(request)
-    next_possible_requests[index*divergence_ratio, [1,divergence_ratio].max]
+    [sibling_requests, next_possible_requests].map do |request_list|
+      request_list.sort! { |a, b| a.id <=> b.id }
+    end
+
+    # The divergence_ratio should be equal to the multiplier if there is one and so the same for every requests
+    # should work also for convergent a request (ration < 1.0))
+
+    divergence_ratio = 1.0* next_possible_requests.size / sibling_requests.size
+    index = sibling_requests.index(request)
+
+    next_possible_requests[index*divergence_ratio,[ 1, divergence_ratio ].max]
   end
 
   def name
