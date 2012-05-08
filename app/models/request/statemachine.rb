@@ -54,7 +54,7 @@ module Request::Statemachine
       end
 
       aasm_event :detach do
-        transitions :to => :pending, :from => [:started, :pending]
+        transitions :to => :pending, :from => [:started, :pending, :cancelled]
       end
 
       aasm_event :reset do
@@ -66,7 +66,7 @@ module Request::Statemachine
       end
 
       aasm_event :return do
-        transitions :to => :pending, :from => [:failed, :passed, :cancelled]
+        transitions :to => :pending, :from => [:failed, :passed]
       end
 
       aasm_event :cancel_completed do
