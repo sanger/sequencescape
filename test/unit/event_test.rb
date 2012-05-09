@@ -70,7 +70,7 @@ class EventTest < ActiveSupport::TestCase
       setup do
         @item = Factory :item
         @study = Factory :study
-        @request = Factory :request, :study => @study, :item => @item, :state => "pending"
+        @request = Factory :request, :study => @study, :item => @item, :state => "started"
         @settings = { :eventful_id => @request.id,
                       :eventful_type => "Request",
                       :identifier => "ID",
@@ -78,7 +78,7 @@ class EventTest < ActiveSupport::TestCase
                       :message => "updating request"
                     }
 
-        assert @request.pending?
+        assert @request.started?
       end
 
       context "when pass" do
