@@ -97,13 +97,14 @@ class EventTest < ActiveSupport::TestCase
 
 
         context "when passed twice" do
-          should "not raise an exception" do
-            assert_nothing_raised do
+          should "should raise an exception" do
+            # This behaviour has changed.
+            assert_raise(AASM::InvalidTransition) do
               event = Event.create(@settings)
               event = Event.create(@settings)
             end
           end
-        end  
+        end
 
       end
 
@@ -210,7 +211,7 @@ class EventTest < ActiveSupport::TestCase
 
           @request_for_control.state = "started"
           @request_with_no_attempts = @requests.first
-          
+
 #          @failure_property_def = PropertyDefinition(:name => "Failure", :key => "failure", :relates_to => Request.to_s)
 #          @pass_property_def = PropertyDefinition(:name => "Pass", :key => "pass", :relates_to => Request.to_s)
 
@@ -269,10 +270,10 @@ class EventTest < ActiveSupport::TestCase
           assert @multiplexed_library_creation_request.started?
           assert @pe_sequencing_request.started?
           assert @dna_qc_request.started?
-          
+
         end
 
-      end      
+      end
     end
   end
 end
