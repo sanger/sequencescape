@@ -76,7 +76,7 @@ module Request::Statemachine
       end
 
       aasm_event :cancel_before_started do
-        transitions :to => :cancelled, :from => [:pending, :blocked]
+        transitions :to => :cancelled, :from => [:pending]
       end
 
       after_save :release_unneeded_quotas!
