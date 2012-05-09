@@ -61,12 +61,8 @@ class BatchesController < ApplicationController
     end
   end
 
-  def hide_from_inbox(request_proxies)
-    request_proxies.each do |proxy|
-      request = proxy.object
-      next if request.nil?
-      request.hold!
-    end
+  def hide_from_inbox(requests)
+    requests.map(&:hold!)
 
     respond_to do |format|
       flash[:notice] = 'Requests hidden from inbox'
