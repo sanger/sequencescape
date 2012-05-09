@@ -197,6 +197,9 @@ class Request < ActiveRecord::Base
   named_scope :find_all_target_asset, lambda { |target_asset_id| { :conditions => [ 'target_asset_id = ?', "#{target_asset_id}" ] } }
   named_scope :for_studies, lambda { |*studies| { :conditions => { :initial_study_id => studies.map(&:id) } } }
 
+  named_scope :with_assets_for_starting_requests, :include => [:request_metadata,{:asset=>:aliquots,:target_asset=>:aliquots}]
+  named_scope :not_failed, :conditions => ['state != ?', 'failed']
+
   #------
   #TODO: use eager loading association
   def self.get_holder_asset_id_map(request_ids)
