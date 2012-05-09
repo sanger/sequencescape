@@ -40,7 +40,7 @@ GIT
 
 GIT
   remote: git@github.com:sanger/psd_logger.git
-  revision: b2c8ec71a53a9b676b24cab68071e58b1af90080
+  revision: e16d106be39ea096f95787a927b8ce24ec522bde
   specs:
     psd_logger (0.1.5)
 
