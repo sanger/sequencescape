@@ -126,8 +126,8 @@ class Pipeline < ActiveRecord::Base
     group_requests( inbox_scope_on(requests.inputs(show_held_requests).unbatched))
   end
 
-  def inbox_scope_on(scpe)
-    custom_inbox_actions.inject(scpe) { |context, action| context.send(action) }
+  def inbox_scope_on(inbox_scope)
+    custom_inbox_actions.inject(inbox_scope) { |context, action| context.send(action) }
   end
   private :inbox_scope_on
 

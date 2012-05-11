@@ -128,8 +128,8 @@ class Request < ActiveRecord::Base
   }
   named_scope :holder_not_control, lambda {
     {
-      :joins => ["INNER JOIN container_associations hl ON hl.content_id = asset_id", "INNER JOIN assets AS container ON container.id = hl.container_id"],
-      :conditions => ['container.sti_type != ?', 'ControlPlate' ]
+      :joins => ["INNER JOIN container_associations hncca ON hncca.content_id = asset_id", "INNER JOIN assets AS hncc ON hncc.id = hncca.container_id"],
+      :conditions => ['hncc.sti_type != ?', 'ControlPlate' ]
     }
   }
   named_scope :without_asset, :conditions =>  'asset_id is null'
