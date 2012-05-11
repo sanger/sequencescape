@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120511081438) do
+ActiveRecord::Schema.define(:version => 20120511131123) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -1010,7 +1010,7 @@ ActiveRecord::Schema.define(:version => 20120511081438) do
     t.integer  "user_id"
     t.boolean  "blocked",                            :default => false
     t.string   "state",                :limit => 20
-    t.string   "ethically_approved",                 :default => "No"
+    t.boolean  "ethically_approved"
     t.boolean  "enforce_data_release",               :default => true
     t.boolean  "enforce_accessioning",               :default => true
     t.integer  "reference_genome_id",                :default => 1

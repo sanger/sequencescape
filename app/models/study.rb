@@ -108,11 +108,28 @@ class Study < ActiveRecord::Base
   validates_uniqueness_of :name, :on => :create, :message => "already in use (#{self.name})"
   validates_format_of :abbreviation, :with => /^[\w_-]+$/i, :allow_blank => false, :message => 'cannot contain spaces or be blank'
 
+  validate :valid_ethically_approved
+  def valid_ethically_approved
+    if (self.ethical_approval_required? && !ethically_approved.nil?) || (!self.ethical_approval_required? && ethically_approved != false)
+      return true
+    end
+    message = self.ethical_approval_required? ? "must be either yes or no for this study." : "is not applicable to this study."
+    errors.add(:ethically_approved, message)
+    false
+  end
+
+  before_validation :set_default_ethical_approval
+  def set_default_ethical_approval
+    self.ethically_approved ||= self.ethical_approval_required? ? false : nil #unless self.ethically_approved
+    true
+  end
+  private :set_default_ethical_approval
+
   named_scope :for_search_query, lambda { |query|
     { :conditions => [ 'name LIKE ? OR id=?', "%#{query}%", query ] }
   }
 
-
+  named_scope :with_no_ethical_approval, { :conditions => { :ethically_approved => false } }
 
   named_scope :is_active,   { :conditions => { :state => 'active'   } }
   named_scope :is_inactive, { :conditions => { :state => 'inactive' } }
@@ -123,12 +140,10 @@ class Study < ActiveRecord::Base
 
   YES = 'Yes'
   NO  = 'No'
-  NA = 'N/A'
   YES_OR_NO = [ YES, NO ]
-  YES_OR_NO_OR_NA = [ YES, NO, NA ]
   Other_type = "Other"
 
-  named_scope :with_no_ethical_approval, { :conditions => { :ethically_approved => Study::NO } }
+
   named_scope :with_ethical_approval_required, {
       :joins => :study_metadata,
       :conditions => {
@@ -253,6 +268,7 @@ class Study < ActiveRecord::Base
         record[attribute] = nil if record[attribute].blank? # Empty strings should be nil
       end
     end
+
   end
   class Metadata
     def managed?
@@ -454,7 +470,7 @@ class Study < ActiveRecord::Base
   named_scope :awaiting_ethical_approval, {
     :joins => :study_metadata,
     :conditions => {
-      :ethically_approved => NO,
+      :ethically_approved => false,
       :study_metadata => {
         :contains_human_dna => Study::YES,
         :contaminated_human_dna => Study::NO,
