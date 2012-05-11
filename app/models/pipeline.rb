@@ -26,6 +26,7 @@ class Pipeline < ActiveRecord::Base
     def inbox(show_held_requests = true, current_page = 1, action = nil)
       # Build a list of methods to invoke to build the correct request list
       actions = [ :unbatched ]
+      actions.concat(proxy_owner.custom_inbox_actions)
       actions << ((proxy_owner.group_by_parent? or show_held_requests) ? :full_inbox : :pipeline_pending)
       actions << [ (proxy_owner.group_by_parent? ? :holder_located : :located), proxy_owner.location_id ]
       if action != :count
@@ -45,6 +46,10 @@ class Pipeline < ActiveRecord::Base
     def inputs(show_held_requests = false)
       ready_in_storage.send(show_held_requests ? :full_inbox : :pipeline_pending)
     end
+  end
+
+  def custom_inbox_actions
+    []
   end
 
   belongs_to :next_pipeline,     :class_name => 'Pipeline'
@@ -118,8 +123,13 @@ class Pipeline < ActiveRecord::Base
   end
 
   def get_input_request_groups(show_held_requests=true)
-    group_requests(requests.inputs(show_held_requests).unbatched)
+    group_requests( inbox_scope_on(requests.inputs(show_held_requests).unbatched))
   end
+
+  def inbox_scope_on(inbox_scope)
+    custom_inbox_actions.inject(inbox_scope) { |context, action| context.send(action) }
+  end
+  private :inbox_scope_on
 
   def get_input_requests_for_group(group)
     #TODO add named_scope to load only the required requests
