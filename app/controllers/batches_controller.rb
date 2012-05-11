@@ -62,7 +62,9 @@ class BatchesController < ApplicationController
   end
 
   def hide_from_inbox(requests)
-    requests.map(&:hold!)
+    ActiveRecord::Base.transaction do
+      requests.map(&:hold!)
+    end
 
     respond_to do |format|
       flash[:notice] = 'Requests hidden from inbox'

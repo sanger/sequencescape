@@ -123,13 +123,15 @@ class Request < ActiveRecord::Base
   named_scope :holder_located, lambda { |location_id|
     {
       :joins => ["INNER JOIN container_associations hl ON hl.content_id = asset_id", "INNER JOIN location_associations ON location_associations.locatable_id = hl.container_id"],
-      :conditions => ['location_associations.location_id = ?', location_id ]
+      :conditions => ['location_associations.location_id = ?', location_id ],
+      :readonly => false
     }
   }
   named_scope :holder_not_control, lambda {
     {
       :joins => ["INNER JOIN container_associations hncca ON hncca.content_id = asset_id", "INNER JOIN assets AS hncc ON hncc.id = hncca.container_id"],
-      :conditions => ['hncc.sti_type != ?', 'ControlPlate' ]
+      :conditions => ['hncc.sti_type != ?', 'ControlPlate' ],
+      :readonly => false
     }
   }
   named_scope :without_asset, :conditions =>  'asset_id is null'
