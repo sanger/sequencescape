@@ -108,7 +108,7 @@ class Pipeline < ActiveRecord::Base
 
   # This is the old behaviour for every other pipeline.
   def detach_request_from_batch(batch, request)
-    request.detach!
+    request.return_for_inbox!
     self.update_detached_request(batch, request)
     request.save!
   end

@@ -152,7 +152,7 @@ class Batch < ActiveRecord::Base
   end
 
   def start_requests
-    self.requests.all(:include => [:request_metadata,{:asset=>:aliquots,:target_asset=>:aliquots}]).reject(&:failed?).map(&:start!)
+    self.requests.with_assets_for_starting_requests.not_failed.map(&:start!)
   end
 
   def input_group

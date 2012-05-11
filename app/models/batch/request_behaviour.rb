@@ -22,10 +22,19 @@ module Batch::RequestBehaviour
   end
 
   def recycle_from_batch!(batch)
-    self.detach!
-    self.batches.delete(batch)
+    ActiveRecord::Base.transaction do
+      self.return_for_inbox!
+      self.batches.delete(batch)
+    end
     #self.detach
     #self.batches -= [ batch ]
+  end
+
+  def return_for_inbox!
+    # Valid for started, cancelled and pending batches
+    # Will raise an exception outside of this
+    self.cancel! if self.started?
+    self.detach! unless self.pending?
   end
 
   def create_batch_request!(attributes)
