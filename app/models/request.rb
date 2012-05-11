@@ -126,6 +126,12 @@ class Request < ActiveRecord::Base
       :conditions => ['location_associations.location_id = ?', location_id ]
     }
   }
+  named_scope :holder_not_control, lambda {
+    {
+      :joins => ["INNER JOIN container_associations hncca ON hncca.content_id = asset_id", "INNER JOIN assets AS hncc ON hncc.id = hncca.container_id"],
+      :conditions => ['hncc.sti_type != ?', 'ControlPlate' ]
+    }
+  }
   named_scope :without_asset, :conditions =>  'asset_id is null'
   named_scope :without_target, :conditions =>  'target_asset_id is null'
   named_scope :ordered, :order => ["id ASC"]
