@@ -48,6 +48,7 @@ class PlatePurpose < ActiveRecord::Base
 
   # Pulled from other assets. May need to be changed.
   STATE_TO_STATEMACHINE_EVENT = { 'started' => 'start!', 'passed' => 'pass!', 'failed' => 'fail!', 'cancelled' => 'cancel!', 'pending' => 'detach!' }
+  STATE_TO_STATE_STATEMACHINE_EVENT = { 'passed' => { 'failed' => 'change_decision!' }, 'failed' => { 'passed' => 'change_decision!' }}
   # NOTE: Now changed to ensure transitions are ALWAYS used
   def transition_to(plate, state, contents = nil)
     wells = plate.wells
@@ -55,8 +56,12 @@ class PlatePurpose < ActiveRecord::Base
 
     well_to_requests = wells.map { |well| [well, well.requests_as_target] }.reject { |_,r| r.empty? }
     requests = Request.find(:all, :conditions => [ 'id IN (?)', well_to_requests.map(&:last).flatten ])
-    event    = STATE_TO_STATEMACHINE_EVENT[state] or raise StandardError, "Illegal transition state #{state.inspect}"
-    requests.each {|request| request.send(event)}
+    ActiveRecord::Base.transaction do
+      requests.each do |request|
+        event = find_state_change(request.state,state) or raise StandardError, "Illegal transition state #{state.inspect}"
+        request.send(event)
+      end
+    end
     return unless state == 'failed'
 
     # Load all of the requests that come from the stock wells that should be failed.  Note that we can't simply change
@@ -70,6 +75,11 @@ class PlatePurpose < ActiveRecord::Base
     end
     Request.where_is_not_a?(TransferRequest).all(:conditions => [ "(#{conditions.join(' OR ')})", *parameters ]).map(&:fail!)
   end
+
+  def find_state_change(from, to)
+    STATE_TO_STATE_STATEMACHINE_EVENT[from].try(:[],to)||STATE_TO_STATEMACHINE_EVENT[to]
+  end
+  private :find_state_change
 
   def pool_wells(wells)
     _pool_wells(wells).all(:select => 'assets.*, submission_id AS pool_id', :readonly => false).tap do |wells_with_pool|
