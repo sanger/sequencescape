@@ -4,9 +4,7 @@ class RequestEventTest < ActiveSupport::TestCase
 
   context "When using Non-Pulldown RequestTypes" do
     setup do
-      @request_types = RequestType.all(
-        :conditions => ['`key` NOT LIKE ?', '%Pulldown%']
-      )
+      @request_types = RequestType.all
 
       @requests = []
 

@@ -65,8 +65,6 @@ class RequestType < ActiveRecord::Base
         #{target}.#{target_method}(attributes.merge(request_parameters || {})) do |request|
           request.request_type = self
           yield(request) if block_given?
-        end.tap do |request|
-          requests << request
         end
       end
     }, __FILE__, line)
