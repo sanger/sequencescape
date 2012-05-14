@@ -251,6 +251,8 @@ class Study < ActiveRecord::Base
 
     attribute(:number_of_gigabases_per_sample)
 
+    attribute(:hmdmc_approval_number)
+
     REMAPPED_ATTRIBUTES = {
       :contaminated_human_dna     => YES_OR_NO,
       :study_sra_hold             => STUDY_SRA_HOLDS,
