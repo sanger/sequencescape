@@ -118,7 +118,7 @@ class BatchTest < ActiveSupport::TestCase
       assert_equal :pending, @batch.requests.first.aasm_current_state
       @batch.start!(Factory(:user))
       assert_equal :started, @batch.aasm_current_state
-      assert_equal :started, @batch.requests.first.aasm_current_state
+      assert_equal :started, @batch.requests(true).first.aasm_current_state
     end
     
     context "#remove_request_ids" do

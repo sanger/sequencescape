@@ -210,10 +210,6 @@ class RequestTest < ActiveSupport::TestCase
             @request.fail!
           end
 
-          should 'to reset' do
-            @request.state = 'started'
-            @request.reset!
-          end
         end
       end
 
