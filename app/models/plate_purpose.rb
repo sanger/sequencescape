@@ -43,14 +43,20 @@ class PlatePurpose < ActiveRecord::Base
   end
 
   # Updates the state of the specified plate to the specified state.  The basic implementation does this by updating
-  # all of the TransferRequest instances to the state specified.  If contents is blank then the change is assumed to 
+  # all of the TransferRequest instances to the state specified.  If contents is blank then the change is assumed to
   # relate to all wells of the plate, otherwise only the selected ones are updated.
+
+  # Pulled from other assets. May need to be changed.
+  STATE_TO_STATEMACHINE_EVENT = { 'started' => 'start!', 'passed' => 'pass!', 'failed' => 'fail!', 'cancelled' => 'cancel!', 'pending' => 'detach!' }
+  # NOTE: Now changed to ensure transitions are ALWAYS used
   def transition_to(plate, state, contents = nil)
     wells = plate.wells
     wells = wells.located_at(contents) unless contents.blank?
 
     well_to_requests = wells.map { |well| [well, well.requests_as_target] }.reject { |_,r| r.empty? }
-    Request.update_all("state=#{state.inspect}", [ 'id IN (?)', well_to_requests.map(&:last).flatten ])
+    requests = Request.find(:all, :conditions => [ 'id IN (?)', well_to_requests.map(&:last).flatten ])
+    event    = STATE_TO_STATEMACHINE_EVENT[state] or raise StandardError, "Illegal transition state #{state.inspect}"
+    requests.each {|request| request.send(event)}
     return unless state == 'failed'
 
     # Load all of the requests that come from the stock wells that should be failed.  Note that we can't simply change
@@ -92,7 +98,7 @@ class PlatePurpose < ActiveRecord::Base
   acts_as_audited :on => [:destroy, :update]
 
   named_scope :considered_stock_plate, { :conditions => { :can_be_considered_a_stock_plate => true } }
-  
+
   validates_format_of :name, :with => /^\w[\s\w._-]+\w$/i
   validates_presence_of :name
   validates_uniqueness_of :name, :message => "already in use"
@@ -100,7 +106,7 @@ class PlatePurpose < ActiveRecord::Base
   def target_plate_type
     self.target_type || 'Plate'
   end
-  
+
   def self.stock_plate_purpose
     # IDs copied from SNP
     @stock_plate_purpose ||= PlatePurpose.find(2)

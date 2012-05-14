@@ -123,7 +123,15 @@ class Request < ActiveRecord::Base
   named_scope :holder_located, lambda { |location_id|
     {
       :joins => ["INNER JOIN container_associations hl ON hl.content_id = asset_id", "INNER JOIN location_associations ON location_associations.locatable_id = hl.container_id"],
-      :conditions => ['location_associations.location_id = ?', location_id ]
+      :conditions => ['location_associations.location_id = ?', location_id ],
+      :readonly => false
+    }
+  }
+  named_scope :holder_not_control, lambda {
+    {
+      :joins => ["INNER JOIN container_associations hncca ON hncca.content_id = asset_id", "INNER JOIN assets AS hncc ON hncc.id = hncca.container_id"],
+      :conditions => ['hncc.sti_type != ?', 'ControlPlate' ],
+      :readonly => false
     }
   }
   named_scope :without_asset, :conditions =>  'asset_id is null'
@@ -196,6 +204,9 @@ class Request < ActiveRecord::Base
 
   named_scope :find_all_target_asset, lambda { |target_asset_id| { :conditions => [ 'target_asset_id = ?', "#{target_asset_id}" ] } }
   named_scope :for_studies, lambda { |*studies| { :conditions => { :initial_study_id => studies.map(&:id) } } }
+
+  named_scope :with_assets_for_starting_requests, :include => [:request_metadata,{:asset=>:aliquots,:target_asset=>:aliquots}]
+  named_scope :not_failed, :conditions => ['state != ?', 'failed']
 
   #------
   #TODO: use eager loading association

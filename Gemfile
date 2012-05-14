@@ -98,6 +98,6 @@ end
 
 group :deployment do
   gem "mongrel_cluster"
-  gem "cbrunnkvist-psd_logger"
+  gem "psd_logger", :git => "git@github.com:sanger/psd_logger.git"
 end
 
