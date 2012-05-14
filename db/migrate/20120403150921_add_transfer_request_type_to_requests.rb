@@ -11,20 +11,14 @@ class AddTransferRequestTypeToRequests < ActiveRecord::Migration
 
   def self.up
     ActiveRecord::Base.transaction do
-      transfer_request_type = RequestType.find_by_key('transfer')
-      Requests.transfer_requests.each do |request|
-        request.request_type = transfer_request_type
-        request.save!
-      end
+      transfer_request_type = RequestType.find_by_key('transfer').id
+      Requests.update_all({:request_type_id => transfer_request_type}, ["sti_type = ?",'TransferRequest'])
     end
   end
 
   def self.down
     ActiveRecord::Base.transaction do
-      Requests.transfer_requests.each do |request|
-        request.request_type = nil
-        request.save!
-      end
+      Requests.update_all({:request_type_id => nil}, ["sti_type = ?",'TransferRequest'])
     end
   end
 end
