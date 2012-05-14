@@ -117,7 +117,7 @@ class Study < ActiveRecord::Base
   end
 
   def valid_ethically_approved?
-    (self.ethical_approval_required? && !ethically_approved.nil?) || (!self.ethical_approval_required? && ethically_approved != false)
+    self.ethical_approval_required? ? !ethically_approved.nil? : ethically_approved != false
   end
   private :valid_ethically_approved?
 
@@ -145,18 +145,6 @@ class Study < ActiveRecord::Base
   NO  = 'No'
   YES_OR_NO = [ YES, NO ]
   Other_type = "Other"
-
-
-  named_scope :with_ethical_approval_required, {
-      :joins => :study_metadata,
-      :conditions => {
-        :study_metadata => {
-          :contaminated_human_dna => Study::NO,
-          :contains_human_dna => Study::YES,
-          :commercially_available => Study::NO
-          }
-        }
-      }
 
   STUDY_SRA_HOLDS = [ 'Hold', 'Public' ]
 
