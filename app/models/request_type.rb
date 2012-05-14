@@ -1,4 +1,6 @@
 class RequestType < ActiveRecord::Base
+  class DeprecatedError < RuntimeError; end
+
   class RequestTypePlatePurpose < ActiveRecord::Base
     set_table_name('request_type_plate_purposes')
 
@@ -57,6 +59,7 @@ class RequestType < ActiveRecord::Base
     line = __LINE__ + 1
     class_eval(%Q{
       def #{name}(attributes = nil, &block)
+        raise RequestType::DeprecatedError if self.deprecated
         attributes ||= {}
         #{target}.#{target_method}(attributes.merge(request_parameters || {})) do |request|
           request.request_type = self

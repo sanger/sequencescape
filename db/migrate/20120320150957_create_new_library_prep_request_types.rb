@@ -45,6 +45,9 @@ class CreateNewLibraryPrepRequestTypes < ActiveRecord::Migration
             p.request_types << new_rtype
             say "Adding RequestType: #{new_rtype.name} to Pipeline: #{p.name}"
           end
+
+          say "Deprecating old RequestType: #{rt.name}"
+          rt.update_attributes(:deprecated => true)
         end
       end
 
@@ -65,6 +68,13 @@ class CreateNewLibraryPrepRequestTypes < ActiveRecord::Migration
       ).each(&:destroy)
 
       rtypes.each(&:destroy)
+
+      LIB_PREP_REQUEST_TYPES.values.flatten.each do |rt_name|
+        RequestType.find_by_name(rt_name).tap do |rt|
+          say "Undeprecating old RequestType: #{rt.name}"
+          rt.update_attributes(:deprecated => false)
+        end
+      end
     end
   end
 end

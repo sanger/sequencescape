@@ -302,6 +302,7 @@ Factory.define :request_type do |rt|
   rt_value = Factory.next :request_type_id
   rt.name           "Request type #{rt_value}"
   rt.key            "request_type_#{rt_value}"
+  rt.deprecated     false
   rt.request_class  Request
   rt.order          1
   rt.workflow    {|workflow| workflow.association(:submission_workflow)}

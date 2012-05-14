@@ -27,7 +27,11 @@ class CreateNewSequencingRequestTypes < ActiveRecord::Migration
 
           sequencing_pipeline.request_types << request_type
         end
+
+        say "Deprecating old RequestType: #{existing_request_type.name}"
+        existing_request_type.update_attributes(:deprecated => true)
       end
+
     end
   end
 
