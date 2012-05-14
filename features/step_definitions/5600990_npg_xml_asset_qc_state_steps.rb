@@ -1,15 +1,15 @@
 Given /^sequencescape is setup for 5600990$/ do
  lane = Factory :lane, :name => "NPG_Action_Lane_Test", :qc_state => 'passed', :external_release => 1
- library_tube = Factory :empty_library_tube 
- request = Factory :request, :asset => library_tube, :target_asset => lane
- 
+ library_tube = Factory :empty_library_tube
+ request = Factory :request, :asset => library_tube, :target_asset => lane, :state => 'started'
+
  batch = Factory :batch, :state => 'started', :qc_state => 'qc_manual'
- Factory :batch_request, :request => request, :batch => batch, :position => 1 
+ Factory :batch_request, :request => request, :batch => batch, :position => 1
 end
 
 Given /^a second request$/ do
  lane = Lane.find_by_name("NPG_Action_Lane_Test")
- library_tube = Factory :empty_library_tube 
+ library_tube = Factory :empty_library_tube
  request = Factory :request, :asset => library_tube, :target_asset => lane
 end
 
