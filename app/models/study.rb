@@ -22,7 +22,7 @@ class Study < ActiveRecord::Base
   extend EventfulRecord
   has_many_events
   has_many_lab_events
-  
+
   acts_as_authorizable
 
   aasm_column :state
@@ -64,7 +64,7 @@ class Study < ActiveRecord::Base
   has_many :submissions, :through => :orders
   has_many :samples, :through => :study_samples
   has_many :batches
-  
+
   # requests read only so no need to use has_many
   # this return a proper namescope which can be nicely chained
   def requests(reload=nil)
@@ -108,6 +108,26 @@ class Study < ActiveRecord::Base
   validates_uniqueness_of :name, :on => :create, :message => "already in use (#{self.name})"
   validates_format_of :abbreviation, :with => /^[\w_-]+$/i, :allow_blank => false, :message => 'cannot contain spaces or be blank'
 
+  validate :validate_ethically_approved
+  def validate_ethically_approved
+    return true if valid_ethically_approved?
+    message = self.ethical_approval_required? ? "should be either true or false for this study." : "should be not applicable (null) not false."
+    errors.add(:ethically_approved, message)
+    false
+  end
+
+  def valid_ethically_approved?
+    self.ethical_approval_required? ? !ethically_approved.nil? : ethically_approved != false
+  end
+  private :valid_ethically_approved?
+
+  before_validation :set_default_ethical_approval
+  def set_default_ethical_approval
+    self.ethically_approved ||= self.ethical_approval_required? ? false : nil
+    true
+  end
+  private :set_default_ethical_approval
+
   named_scope :for_search_query, lambda { |query|
     { :conditions => [ 'name LIKE ? OR id=?', "%#{query}%", query ] }
   }
@@ -127,7 +147,7 @@ class Study < ActiveRecord::Base
   Other_type = "Other"
 
   STUDY_SRA_HOLDS = [ 'Hold', 'Public' ]
-  
+
   DATA_RELEASE_STRATEGY_OPEN = 'open'
   DATA_RELEASE_STRATEGY_MANAGED = 'managed'
   DATA_RELEASE_STRATEGY_NOT_APPLICABLE = 'not applicable'
@@ -168,12 +188,12 @@ class Study < ActiveRecord::Base
     include DataReleaseStudyType::Associations
     include ReferenceGenome::Associations
     include FacultySponsor::Associations
-    
+
     association(:study_type, :name, :required => true)
     association(:data_release_study_type, :name, :required => true)
     association(:reference_genome, :name, :required => true)
     association(:faculty_sponsor, :name, :required => true)
-    
+
     attribute(:study_description, :required => true)
     attribute(:contaminated_human_dna, :required => true, :in => YES_OR_NO)
     attribute(:study_project_id)
@@ -182,7 +202,7 @@ class Study < ActiveRecord::Base
     attribute(:study_ebi_accession_number)
     attribute(:study_sra_hold, :required => true, :default => 'Hold', :in => STUDY_SRA_HOLDS)
     attribute(:contains_human_dna, :required => true, :in => YES_OR_NO)
-    attribute(:commercially_available, :required => true, :in => YES_OR_NO)    
+    attribute(:commercially_available, :required => true, :in => YES_OR_NO)
     attribute(:study_name_abbreviation)
 
     attribute(:data_release_strategy, :required => true, :in => DATA_RELEASE_STRATEGIES, :default => DATA_RELEASE_STRATEGY_MANAGED)
@@ -218,7 +238,9 @@ class Study < ActiveRecord::Base
     attribute(:snp_parent_study_id, :integer => true)
 
     attribute(:number_of_gigabases_per_sample)
-    
+
+    attribute(:hmdmc_approval_number)
+
     REMAPPED_ATTRIBUTES = {
       :contaminated_human_dna     => YES_OR_NO,
       :study_sra_hold             => STUDY_SRA_HOLDS,
@@ -239,6 +261,7 @@ class Study < ActiveRecord::Base
         record[attribute] = nil if record[attribute].blank? # Empty strings should be nil
       end
     end
+
   end
   class Metadata
     def managed?
@@ -461,7 +484,7 @@ class Study < ActiveRecord::Base
   def self.all_awaiting_ethical_approval
     self.awaiting_ethical_approval
   end
- 
+
   def self.all_contaminated_with_human_dna
     self.contaminated_with_human_dna
   end
@@ -487,7 +510,7 @@ class Study < ActiveRecord::Base
   end
 
   def abbreviation
-    abbreviation = self.study_metadata.study_name_abbreviation 
+    abbreviation = self.study_metadata.study_name_abbreviation
     abbreviation.blank? ?  "#{self.id}STDY" : abbreviation
   end
 
@@ -499,7 +522,13 @@ class Study < ActiveRecord::Base
     #TODO remove
     true
   end
-  
+
+  def ethical_approval_required?
+    (self.study_metadata.contains_human_dna == Study::YES &&
+    self.study_metadata.contaminated_human_dna == Study::NO &&
+    self.study_metadata.commercially_available == Study::NO)
+  end
+
   def accession_service
     if data_release_strategy == "open"
       return EraAccessionService.new
@@ -514,7 +543,7 @@ class Study < ActiveRecord::Base
   ensure
     self.validating_ena_required_fields = false
   end
-  
+
   def mailing_list_of_managers
     receiver = self.managers.map(&:email).compact.uniq
     receiver =  User.all_administrators_emails if receiver.empty?
@@ -560,7 +589,7 @@ class Study < ActiveRecord::Base
 
     raise RuntimeError, "study_from not specified. Can't move a sample to a new study" unless study_from
     helper = lambda { |object| decide_if_object_should_be_taken(study_from, sample, object) }
-    objects_to_move = 
+    objects_to_move =
       sample.walk_objects(
         :sample     => [:receptacles, :study_samples],
         :request    => :item,
@@ -601,10 +630,10 @@ class Study < ActiveRecord::Base
 
 
   private
-  # beware , this method change the study of an object but doesn't look at some 
+  # beware , this method change the study of an object but doesn't look at some
   #  eventual dependencies.
   def take_object(object, user, study_from)
-    # we don't check if the object is related to study from. because this can change 
+    # we don't check if the object is related to study from. because this can change
     # if the object is  related through and we have just changed the association
     # (example asset and via Request)
     case
@@ -617,7 +646,7 @@ class Study < ActiveRecord::Base
       object.study = self
     end
 
-    if object.respond_to?(:events) 
+    if object.respond_to?(:events)
       object.events.create(
         :message => (study_from ? "#{object.class.name} #{object.id} is moved from Study  #{study_from.id} to Study #{self.id}" :  "#{object.class.name} #{object.id} is moved to Study #{self.id}"),
         :created_by => user.login,
