@@ -108,19 +108,22 @@ class Study < ActiveRecord::Base
   validates_uniqueness_of :name, :on => :create, :message => "already in use (#{self.name})"
   validates_format_of :abbreviation, :with => /^[\w_-]+$/i, :allow_blank => false, :message => 'cannot contain spaces or be blank'
 
-  validate :valid_ethically_approved
-  def valid_ethically_approved
-    if (self.ethical_approval_required? && !ethically_approved.nil?) || (!self.ethical_approval_required? && ethically_approved != false)
-      return true
-    end
-    message = self.ethical_approval_required? ? "must be either yes or no for this study." : "is not applicable to this study."
+  validate :validate_ethically_approved
+  def validate_ethically_approved
+    return true if valid_ethically_approved?
+    message = self.ethical_approval_required? ? "should be either true or false for this study." : "should be not applicable (null) not false."
     errors.add(:ethically_approved, message)
     false
   end
 
+  def valid_ethically_approved?
+    (self.ethical_approval_required? && !ethically_approved.nil?) || (!self.ethical_approval_required? && ethically_approved != false)
+  end
+  private :valid_ethically_approved?
+
   before_validation :set_default_ethical_approval
   def set_default_ethical_approval
-    self.ethically_approved ||= self.ethical_approval_required? ? false : nil #unless self.ethically_approved
+    self.ethically_approved ||= self.ethical_approval_required? ? false : nil
     true
   end
   private :set_default_ethical_approval
