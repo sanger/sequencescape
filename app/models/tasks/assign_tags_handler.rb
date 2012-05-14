@@ -15,7 +15,7 @@ module Tasks::AssignTagsHandler
     if MultiplexedLibraryTube.find_all_by_name(params[:mx_library_name]).size > 0
       flash[:warning] = "Name already in use."
       redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage -1).to_s
-      return false      
+      return false
     end
 
     @tag_group = TagGroup.find(params[:tag_group])
@@ -28,7 +28,7 @@ module Tasks::AssignTagsHandler
         tag.tag!(request.target_asset)
 
         AssetLink.create_edge(request.target_asset, multiplexed_library)
-        TransferRequest.create!(:asset => request.target_asset, :target_asset => multiplexed_library, :state => 'passed')
+        RequestType.transfer.create!(:asset => request.target_asset, :target_asset => multiplexed_library, :state => 'passed')
 
         request.next_requests(@batch.pipeline).each do |sequencing_request|
           sequencing_request.update_attributes!(:asset => multiplexed_library)
