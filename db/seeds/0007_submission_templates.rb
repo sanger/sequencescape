@@ -40,7 +40,12 @@ def create_pulldown_submission_templates
       submission.workflow          = workflow
       submission.request_options   = defaults
 
-      SubmissionTemplate.new_from_submission("Cherrypick for pulldown - #{request_type_name} - #{sequencing_request_type.name}", submission).save!
+      SubmissionTemplate.new_from_submission(
+        "Cherrypick for pulldown - #{request_type_name} - #{sequencing_request_type.name}",
+        submission
+      ).tap { |template| template.visible = false }.save!
+
+      SubmissionTemplate.new_from_submission("Illumina-A - Cherrypick for pulldown - #{request_type_name} - #{sequencing_request_type.name}", submission).save!
     end
     RequestType.find_each(:conditions => { :name => sequencing_request_type_names }) do |sequencing_request_type|
       submission                   = LinearSubmission.new
