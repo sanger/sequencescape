@@ -13,6 +13,7 @@ Feature: The XML interface to the samples
       <sample api_version="0.6">
         <id>1</id>
         <name>testing_the_xml_interface</name>
+        <consent_withdrawn>false</consent_withdrawn>
         <properties>
           <property><name>Cohort</name><value/></property>
           <property><name>Common Name</name><value>John's Gene</value></property>

@@ -26,7 +26,7 @@ class Order < ActiveRecord::Base
 
   belongs_to :user
   validates_presence_of :user
-  
+
   belongs_to :workflow, :class_name => 'Submission::Workflow'
   validates_presence_of :workflow
 
@@ -38,28 +38,47 @@ class Order < ActiveRecord::Base
 
   serialize :item_options
 
+  validate :no_consent_withdrawl
+
+  def no_consent_withdrawl
+    return true unless all_samples.detect(&:consent_withdrawn?)
+    errors.add(:samples,"in this submission have had patient consent withdrawn.")
+    false
+  end
+  private :no_consent_withdrawl
+
   def samples
     #naive way
     assets.map(&:aliquots).flatten.map(&:sample).uniq
   end
-  
+
+  def all_samples
+    # slightly less naive way
+    all_assets.map do |asset|
+      asset.respond_to?(:aliquots) ? asset.aliquots : []
+    end.flatten.map(&:sample).uniq
+  end
+
+  def all_assets
+    (asset_group.try(:assets) || []).concat(assets)
+  end
 
   named_scope :for_studies, lambda {|*args| {:conditions => { :study_id => args[0]} } }
-  
+
   cattr_reader :per_page
   @@per_page = 500
   named_scope :including_associations_for_json, { :include => [:uuid_object, {:assets => [:uuid_object] }, { :project => :uuid_object }, { :study => :uuid_object }, :user] }
 
-  
+
   def self.render_class
     Api::OrderIO
   end
-  
+
   def url_name
     "order"
   end
   alias_method(:json_root, :url_name)
-  
+
   def asset_uuids
     assets.select{ |asset| ! asset.nil? }.map(&:uuid) if assets
   end
@@ -74,7 +93,7 @@ class Order < ActiveRecord::Base
     alias_method :create_order!, :create!
   end
 
-  # only needed to note 
+  # only needed to note
   def self.build!(options)
     #call submission with appropriate Order subclass
     Submission.build!({:template => self}.merge(options))
@@ -136,7 +155,7 @@ class Order < ActiveRecord::Base
   # return a list of request_types lists  (a sequence of choices) to display in the new view
   attr_accessor_with_default :request_type_ids_list, [[]]
   attr_accessor :info_differential # aggrement text to display when creating a new submission
-  attr_accessor :customize_partial # the name of a partial to render. 
+  attr_accessor :customize_partial # the name of a partial to render.
   DefaultAssetInputMethods = ["select an asset group"]
   #DefaultAssetInputMethods = ["select an asset group", "enter a list of asset ids", "enter a list of asset names", "enter a list of sample names"]
   attr_accessor_with_default :asset_input_methods, DefaultAssetInputMethods

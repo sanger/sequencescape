@@ -388,6 +388,9 @@ en:
         "sra public study":
           ebi_db: ENA-STUDY
 
+        hmdmc_approval_number:
+          label: HMDMC approval number
+
     project:
       metadata:
         project_manager_id:

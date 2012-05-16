@@ -159,7 +159,7 @@ Feature: Creating Spiked phiX
     And I press "Next step"
 
     When I get the XML for the last batch
-    Then ignoring "library|\bid|tag_id|sample_id" the XML response should be:
+    Then ignoring "library|\bid|tag_id|sample_id|consent_withdrawn" the XML response should be:
   """
 <?xml version="1.0" encoding="UTF-8"?>
 <batch>

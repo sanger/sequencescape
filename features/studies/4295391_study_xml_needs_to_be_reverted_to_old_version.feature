@@ -166,6 +166,10 @@ Feature: The XML for the sequencescape API
             <name>SNP study ID</name>
             <value></value>
           </descriptor>
+          <descriptor>
+            <name>HMDMC approval number</name>
+            <value></value>
+          </descriptor>
           <descriptor><name>EGA DAC Accession Number</name></descriptor>
           <descriptor><name>EGA Policy Accession Number</name></descriptor>
           <descriptor><name>Policy</name></descriptor>
