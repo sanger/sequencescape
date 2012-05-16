@@ -80,7 +80,6 @@ GEM
       rack-test (>= 0.5.4)
       selenium-webdriver (~> 2.0)
       xpath (~> 0.1.4)
-    cbrunnkvist-psd_logger (0.1.5)
     cgi_multipart_eof_fix (2.5.0)
     childprocess (0.3.2)
       ffi (~> 1.0.6)

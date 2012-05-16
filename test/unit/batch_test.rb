@@ -117,13 +117,8 @@ class BatchTest < ActiveSupport::TestCase
     should "have initially have a pending status for batch requests" do
       assert @batch.requests.first.pending?
       @batch.start!(Factory(:user))
-<<<<<<< HEAD
-      assert_equal :started, @batch.state
-      assert_equal :started, @batch.requests.first(true).state
-=======
       assert @batch.started?
-      assert @batch.requests.first.started?
->>>>>>> Fixed tests
+      assert @batch.requests(true).first.started?
     end
     
     context "#remove_request_ids" do

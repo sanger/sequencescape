@@ -58,13 +58,11 @@ class Request::ChangeDecision
     @billing || []
   end
 
-  def valid_states_for_select
-    raise "This needs to be reimplemented for state_machine"
-    @request.aasm_states_for_select_from_current_state.map(&:last) - [@request.state]
-  end                                                                 
+  # def valid_states_for_select
+  #   raise "This needs to be reimplemented for state_machine"
+  #   @request.aasm_states_for_select_from_current_state.map(&:last) - [@request.state]
+  # end                                                                 
 
-  def state_absent?
-    self.request_state_check_box == "0" || self.request_state_check_box.nil?
   def state_change?
     self.change_decision_check_box == "1"
   end

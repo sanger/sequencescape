@@ -13,72 +13,73 @@ module Request::Statemachine
       ## State machine
       state_machine :initial => :pending do
         event :hold do
-          transition :to => :hold, :from => [ :pending ]
+          transition :to => :hold, :from => :pending
         end
 
         # State Machine events
         event :start do
-          transition :to => :started, :from => [:pending, :started, :hold]
+          transition :to => :started, :from => [:pending, :hold]
         end
 
+
         event :pass do
-          transition :to => :passed, :from => [:passed, :pending, :started, :failed]
+          transition :to => :passed, :from => :started
         end
 
         event :fail do
-          transition :to => :failed, :from => [:pending, :failed]
-          transition :to => :failed, :from => [:started]
-          transition :to => :failed, :from => [:passed]
+          transition :to => :failed, :from => :started
         end
 
-        event :block do
-          transition :to => :blocked, :from => [:pending]
-        end
 
-        event :unblock do
-          transition :to => :pending, :from => [:blocked]
-        end
-
-        event :detach do
-          transition :to => :pending, :from => [:cancelled, :started, :pending]
-        end
-
-        event :reset do
-          transition :to => :pending, :from => [:started, :pending, :passed, :failed, :hold]
-        end
-
-        event :cancel do
-          transition :to => :cancelled, :from => [:started, :pending, :passed, :failed, :hold]
+        event :change_decition do
+          transition :to => :failed, :from => :passed
+          transition :to => :passed, :from => :failed
         end
 
         after_transition all => :started,   :do => :on_started
+        after_transition :started => :passed, :do => :charge_to_project
+        after_transition :passed  => :failed, :do => :refund_project
+        after_transition :started => :failed, :do => :charge_internally
 
-        after_transition :started => :failed,    :do => :charge_internally
-        after_transition :passed  => :failed,    :do => :refund_project
-        after_transition      all => :failed,    :do => :on_failed
 
-        after_transition [:started, :failed] => :passed,    :do => :charge_to_project
-        after_transition                 all => :passed,    :do => :on_passed
+        event :block do
+          transition :to => :blocked, :from => :pending
+        end
 
-        after_transition all => :cancelled, :do => :on_cancelled
-        after_transition all => :blocked,   :do => :on_blocked
-        after_transition all => :hold,      :do => :on_hold
-      end
 
-      aasm_event :return do
-        transitions :to => :pending, :from => [:failed, :passed]
-      end
+        event :unblock do
+          transition :to => :pending, :from => :blocked
+        end
 
-      aasm_event :cancel_completed do
-        transitions :to => :cancelled, :from => [:failed, :passed]
-      end
+        event :detach do
+          transition :to => :pending, :from => :cancelled
+        end
 
-      aasm_event :cancel_from_upstream do
-        transitions :to => :cancelled, :from => [:pending]
-      end
+        event :reset do
+          transition :to => :pending, :from => :hold
+        end
 
-      aasm_event :cancel_before_started do
-        transitions :to => :cancelled, :from => [:pending]
+        event :cancel do
+          transition :to => :cancelled, :from => [:started, :hold]
+        end
+
+        event :return do
+          transition :to => :pending, :from => [:failed, :passed]
+        end
+
+        event :cancel_completed do
+          transition :to => :cancelled, :from => [:failed, :passed]
+        end
+
+        event :cancel_from_upstream do
+          transition :to => :cancelled, :from => :pending
+        end
+
+        event :cancel_before_started do
+          transition :to => :cancelled, :from => :pending
+        end
+
+
       end
 
       after_save :release_unneeded_quotas!
@@ -122,28 +123,8 @@ module Request::Statemachine
     end
   end
 
-  def on_failed
-
-  end
-
   def release_unneeded_quotas!
     self.request_quotas(true).destroy_all unless quota_counted?
-  end
-
-  def on_passed
-
-  end
-
-  def on_cancelled
-
-  end
-
-  def on_blocked
-
-  end
-
-  def on_hold
-
   end
 
   def quota_counted?
