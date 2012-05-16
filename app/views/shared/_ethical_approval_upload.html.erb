@@ -1,9 +1,14 @@
 <h3>Ethical approval</h3>
 <table width="100%" cellspacing="0" cellpadding="0">
   <tr>
-    <td width="40%" class="item"><%= form.label :ethically_approved, "Ethically approved" %>:</td>
+    <td width="40%" class="item"><%= form.label :ethically_approved, "HMDMC approved" %></td>
     <td width="60%"><%= form.check_box :ethically_approved %></td>
   </tr>
+</table>
+  <% form.fields_for(:study_metadata, :builder => Metadata::FormBuilder) do |metadata_fields| %>
+    <%= metadata_fields.text_field :hmdmc_approval_number %>
+  <% end %>
+<table width="100%" cellspacing="0" cellpadding="0">
   <% unless study.documents.empty? %>
     <tr>
       <td width="40%" class="item">Listing <%= pluralize(study.documents.size, "document") %>:</label></td>
@@ -21,7 +26,7 @@
     </tr>
   <% end %>
   <tr>
-    <td width="40%" class="item"><%= form.label :uploaded_data, "Attach a document" %></td>
+    <td width="40%" class="item"><%= form.label :uploaded_data, "Attach HMDMC approval" %></td>
     <td width="60%"><%= form.file_field :uploaded_data %></td>
   </tr>
 </table>

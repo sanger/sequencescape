@@ -1,4 +1,4 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file, 
+# This file is auto-generated from the current state of the database. Instead of editing this file,
 # please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120506092548) do
+ActiveRecord::Schema.define(:version => 20120511152809) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -486,7 +486,7 @@ ActiveRecord::Schema.define(:version => 20120506092548) do
 
   add_index "lab_events", ["batch_id"], :name => "index_lab_events_on_batch_id"
   add_index "lab_events", ["created_at"], :name => "index_lab_events_on_created_at"
-  add_index "lab_events", ["description", "eventful_type"], :name => "index_lab_events_find_flowcell", :length => {"eventful_type"=>nil, "description"=>"20"}
+  add_index "lab_events", ["description", "eventful_type"], :name => "index_lab_events_find_flowcell", :length => {"description"=>"20", "eventful_type"=>nil}
   add_index "lab_events", ["eventful_id"], :name => "index_lab_events_on_eventful_id"
   add_index "lab_events", ["eventful_type"], :name => "index_lab_events_on_eventful_type"
 
@@ -973,6 +973,7 @@ ActiveRecord::Schema.define(:version => 20120506092548) do
     t.boolean  "control"
     t.boolean  "empty_supplier_sample_name", :default => false
     t.boolean  "updated_by_manifest",        :default => false
+    t.boolean  "consent_withdrawn",          :default => false, :null => false
   end
 
   add_index "samples", ["created_at"], :name => "index_samples_on_created_at"
@@ -1009,7 +1010,7 @@ ActiveRecord::Schema.define(:version => 20120506092548) do
     t.integer  "user_id"
     t.boolean  "blocked",                            :default => false
     t.string   "state",                :limit => 20
-    t.boolean  "ethically_approved",                 :default => false
+    t.boolean  "ethically_approved"
     t.boolean  "enforce_data_release",               :default => true
     t.boolean  "enforce_accessioning",               :default => true
     t.integer  "reference_genome_id",                :default => 1
@@ -1057,6 +1058,7 @@ ActiveRecord::Schema.define(:version => 20120506092548) do
     t.string  "commercially_available",                 :default => "No"
     t.integer "faculty_sponsor_id"
     t.float   "number_of_gigabases_per_sample"
+    t.string  "hmdmc_approval_number"
   end
 
   add_index "study_metadata", ["faculty_sponsor_id"], :name => "index_study_metadata_on_faculty_sponsor_id"

@@ -381,4 +381,9 @@ class Sample < ActiveRecord::Base
       nil
     end
   end
+
+  def withdraw_consent
+    self.update_attribute(:consent_withdrawn, true)
+  end
+
 end

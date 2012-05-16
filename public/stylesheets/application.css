@@ -568,6 +568,9 @@ td.error {
 background: #ffcccc;
 padding: 10px;
 }
+tr.withdrawn {
+background: #ffcccc;
+}
 
 span.error {
 background: #ffcccc;
