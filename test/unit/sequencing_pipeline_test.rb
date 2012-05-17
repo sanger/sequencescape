@@ -21,9 +21,8 @@ class SequencingPipelineTest < ActiveSupport::TestCase
             :fragment_size_required_from => 100,
             :fragment_size_required_to   => 200,
             :read_length                 => 76
-          },
-          :state => 'started'
-        )
+          }
+        ).tap { |r| r.state = 'started'}
 
         clone = @pipeline.detach_request_from_batch(batch, request)
         assert_equal('pending', clone.state)

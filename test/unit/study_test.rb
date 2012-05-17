@@ -13,24 +13,26 @@ class StudyTest < ActiveSupport::TestCase
         @request_type    = Factory :request_type
         @request_type_2  = Factory :request_type, :name => "request_type_2", :key => "request_type_2"
         @request_type_3  = Factory :request_type, :name => "request_type_3", :key => "request_type_3"
-        requests = []
-        # Failed
-        requests << (Factory :cancelled_request, :study => @study, :request_type => @request_type)
-        requests << (Factory :cancelled_request, :study => @study, :request_type => @request_type)
-        requests << (Factory :cancelled_request, :study => @study, :request_type => @request_type)
 
-        # Failed
-        requests << (Factory :failed_request, :study => @study, :request_type => @request_type)
-        # Passed
-        requests << (Factory :passed_request, :study => @study, :request_type => @request_type)
-        requests << (Factory :passed_request, :study => @study, :request_type => @request_type)
-        requests << (Factory :passed_request, :study => @study, :request_type => @request_type)
-        requests << (Factory :passed_request, :study => @study, :request_type => @request_type_2)
-        requests << (Factory :passed_request, :study => @study, :request_type => @request_type_3)
-        requests << (Factory :passed_request, :study => @study, :request_type => @request_type_3)
-        # Pending
-        requests << (Factory :pending_request, :study => @study, :request_type => @request_type)
-        requests << (Factory :pending_request, :study => @study, :request_type => @request_type_3)
+        requests = [
+          [3, 'cancelled', @request_type   ],
+          [1, 'failed',    @request_type   ],
+          [3, 'passed',    @request_type   ],
+          [1, 'passed',    @request_type_2 ],
+          [2, 'passed',    @request_type_3 ],
+          [1, 'pending',   @request_type   ],
+          [1, 'pending',   @request_type_3 ]
+        ].inject([]) do |requests, (count, state, request_type)|
+          count.times do
+           requests << Factory(
+             :"#{state}_request",
+             :state        => state,
+             :study        => @study,
+             :request_type => request_type
+           )
+          end
+          requests
+        end
 
         #we have to hack t 
         requests.each do |request|

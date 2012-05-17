@@ -287,7 +287,7 @@ class RequestTest < ActiveSupport::TestCase
         end
 
         should "not allow transition to passed" do
-          assert_raise(AASM::InvalidTransition) do
+          assert_raise(StateMachine::InvalidTransition) do
             @request.pass!
           end
           assert_nothing_raised do

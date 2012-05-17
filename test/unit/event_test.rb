@@ -99,7 +99,7 @@ class EventTest < ActiveSupport::TestCase
         context "when passed twice" do
           should "should raise an exception" do
             # This behaviour has changed.
-            assert_raise(AASM::InvalidTransition) do
+            assert_raise(StateMachine::InvalidTransition) do
               event = Event.create(@settings)
               event = Event.create(@settings)
             end

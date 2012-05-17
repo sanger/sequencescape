@@ -11,7 +11,11 @@ class SequencingPipeline < Pipeline
 
     # Note that the request metadata also needs to be cloned for this to work.
     request.clone.tap do |request_clone|
-      request_clone.update_attributes!(:state => 'pending', :target_asset_id => nil, :request_metadata => request.request_metadata.clone)
+      request_clone.state            = 'pending'
+      request_clone.target_asset_id  = nil
+      request_clone.request_metadata = request.request_metadata.clone
+    end.tap do |request_clone|
+      request_clone.save!
       request_clone.comments.create!(:description => "Automatically created clone of request #{request.id} which was removed from Batch #{batch.id} at #{DateTime.now()}")
       request.comments.create!(:description => "The request #{request_clone.id} is an automatically created clone of this one")
     end

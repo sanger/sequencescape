@@ -10,14 +10,14 @@ class Pulldown::RequestsTest < ActiveSupport::TestCase
 
 
       should "charge the project when being passed from started" do
-        @request.update_attributes!(:state => 'started')
+        @request.tap {|r| r.state = 'started'}.save!
         @request.pass!
 
         assert_equal(1, BillingEvent.count, "Expected billing events")
         assert_equal(1, BillingEvent.charged_to_project.count, "Expected the project to be charged")
       end
       should "charge the project when being passed from failed" do
-        @request.update_attributes!(:state => 'failed')
+        @request.tap {|r| r.state = 'failed'}.save!
         @request.change_decision!
 
         assert_equal(1, BillingEvent.count, "Expected billing events")
@@ -27,7 +27,7 @@ class Pulldown::RequestsTest < ActiveSupport::TestCase
 
 
       should 'charge internally when failing from started' do
-        @request.update_attributes!(:state => 'started')
+        @request.tap {|r| r.state = 'started'}.save!
         @request.fail!
 
         assert_equal(1, BillingEvent.count, "Expected billing events")

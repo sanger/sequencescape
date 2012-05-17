@@ -54,19 +54,19 @@ class ProjectTest < ActiveSupport::TestCase
         @quota_3         = Factory :project_quota, :project => @project, :request_type => @request_type_3, :limit => 14
         @submission       = Factory::submission :project => @project, :asset_group_name => 'to avoid asset errors'
         # Failed
-        Factory :cancelled_request, :project => @project, :request_type => @request_type, :submission => @submission
-        Factory :cancelled_request, :project => @project, :request_type => @request_type, :submission => @submission
-        Factory :cancelled_request, :project => @project, :request_type => @request_type, :submission => @submission
+        Factory :cancelled_request, :state => 'cancelled', :project => @project, :request_type => @request_type, :submission => @submission
+        Factory :cancelled_request, :state => 'cancelled', :project => @project, :request_type => @request_type, :submission => @submission
+        Factory :cancelled_request, :state => 'cancelled', :project => @project, :request_type => @request_type, :submission => @submission
 
         # Failed
-        Factory :failed_request, :project => @project, :request_type => @request_type, :submission => @submission
+        Factory :failed_request, :state => 'failed', :project => @project, :request_type => @request_type, :submission => @submission
         # Passed
-        Factory :passed_request, :project => @project, :request_type => @request_type, :submission => @submission
-        Factory :passed_request, :project => @project, :request_type => @request_type, :submission => @submission
-        Factory :passed_request, :project => @project, :request_type => @request_type, :submission => @submission
-        Factory :passed_request, :project => @project, :request_type => @request_type_2, :submission => @submission
-        Factory :passed_request, :project => @project, :request_type => @request_type_3, :submission => @submission
-        Factory :passed_request, :project => @project, :request_type => @request_type_3, :submission => @submission
+        Factory :passed_request, :state => 'passed', :project => @project, :request_type => @request_type, :submission => @submission
+        Factory :passed_request, :state => 'passed', :project => @project, :request_type => @request_type, :submission => @submission
+        Factory :passed_request, :state => 'passed', :project => @project, :request_type => @request_type, :submission => @submission
+        Factory :passed_request, :state => 'passed', :project => @project, :request_type => @request_type_2, :submission => @submission
+        Factory :passed_request, :state => 'passed', :project => @project, :request_type => @request_type_3, :submission => @submission
+        Factory :passed_request, :state => 'passed', :project => @project, :request_type => @request_type_3, :submission => @submission
         # Pending
         Factory :pending_request, :project => @project, :request_type => @request_type, :submission => @submission
         Factory :pending_request, :project => @project, :request_type => @request_type_3, :submission => @submission

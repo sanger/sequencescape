@@ -31,13 +31,14 @@ module Request::Statemachine
         end
 
 
-        event :change_decition do
+        event :change_decision do
           transition :to => :failed, :from => :passed
           transition :to => :passed, :from => :failed
         end
 
         after_transition all => :started,   :do => :on_started
         after_transition :started => :passed, :do => :charge_to_project
+        after_transition :failed =>  :passed, :do => :charge_to_project
         after_transition :passed  => :failed, :do => :refund_project
         after_transition :started => :failed, :do => :charge_internally
 
