@@ -44,6 +44,12 @@ class TransferRequest < Request
     end
   end
 
+  before_create(:add_request_type)
+  def add_request_type
+    self.request_type ||= RequestType.transfer
+  end
+  private :add_request_type
+
   after_create(:perform_transfer_of_contents)
 
   def perform_transfer_of_contents

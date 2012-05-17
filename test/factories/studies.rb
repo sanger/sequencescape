@@ -29,9 +29,10 @@ Factory.define(:study_metadata_for_study_list_pending_ethical_approval, :parent 
 end
 Factory.define(:study_for_study_list_pending_ethical_approval, :parent => :study) do |study|
   study.name               'Study: Pending ethical approval'
-  study.ethically_approved false
+  #study.ethically_approved false
   study.after_create do |study|
-    study.study_metadata.update_attributes!(Factory.attributes_for(:study_metadata_for_study_list_pending_ethical_approval, :study => study, :faculty_sponsor => study.study_metadata.faculty_sponsor)) 
+    study.study_metadata.update_attributes!(Factory.attributes_for(:study_metadata_for_study_list_pending_ethical_approval, :study => study, :faculty_sponsor => study.study_metadata.faculty_sponsor))
+    study.save # Required to re-force before_validation event
   end
 end
 
