@@ -6,11 +6,12 @@
     <thead>
     <div class='label'>
       <tr>
-        <th class='{sorter: false}'>Available requests</th>
+        <th class='{sorter: false}'>&nbsp;</th>
         <% if current_user.is_lab_manager? %>
           <th id="priority_flag"  style='text-align: center'><%= link_to image_tag("icon_0_flag.png", :size=>"16x16"), "javascript:void(0);" %></th>
           <th><%= link_to "Previous requests", "javascript:void(0);" %></th>
         <% end %>
+        <th><%= link_to 'Product Line', 'javascript:void(0);' %></th>
         <th><%= link_to "Submission ID", "javascript:void(0);" %></th>
         <th><%= link_to "Request ID", "javascript:void(0);" %></th>
         <th><%= link_to "Name", "javascript:void(0);" %></th>
@@ -18,7 +19,7 @@
         <th><%= link_to "Asset type", "javascript:void(0);" %></th>
         <th><%= link_to "Asset ID", "javascript:void(0);" %></th>
         <th><%= link_to "Asset comments", "javascript:void(0);" %></th>
-        <th><%= link_to "Concentration", "javascript:void(0);" %></th>
+        <th><%= link_to "Conc", "javascript:void(0);" %></th>
         <th><%= link_to "Scanned in (Y-M-D)", "javascript:void(0);" %></th>        
         <% @information_types.each do |information_type| %>
           <% next if information_type.hide_in_inbox %>
@@ -34,21 +35,28 @@
         <% request_comments = request.comments -%>
         <% request_asset_comments = request.asset.comments -%>
         <tr>
-          <td class="request center" width='5%'>
+          <td class="request center">
             <%= hidden_label_tag_for_testing("request_#{request.id}", "Select #{request.asset.sti_type} #{request.asset.barcode} for batch") %>
             <%= check_box :request, request.id, :value => request.id, :class => 'grouped_checkbox request_checkbox', :'data-count' => 1 %>
           </td>
           <% if current_user.is_lab_manager? %>
-            <td  style='text-align: center' width='5%'>
+            <td  style='text-align: center'>
               <%= image_tag "icon_#{request.priority}_flag.png", 'alt' => request.priority, :size => '16x16', :class => 'flag_image', "data-priority" => request.priority, 'data-request-id' => request.id %>
             </td>
-            <td  width='10%'>
+            <td>
               <%= render :partial => "previous_failed_requests", :locals => { :request => request } %>
             </td>
           <% end %>
-          <td class="request" width='5%'><%= link_to request.submission_id, submission_path(request.submission) %></td>
-          <td  width='5%'><%= link_to request.id, request_path(request) %></td>
-          <td  width='10%'><%= link_to request.asset.try(:name), asset_path(request.asset) %></td>
+          <td>
+            <%= request.request_type.product_line.try(:name) %>
+          </td>
+          <td class="request">
+            <%= link_to request.submission_id, submission_path(request.submission) %>
+          </td>
+          <td>
+            <%= link_to request.id, request_path(request) %>
+          </td>
+          <td><%= link_to request.asset.try(:name), asset_path(request.asset) %></td>
           
           <% unless request_comments.empty? -%>
             <%= render :partial => "request_comments", :locals => { :request => request, :comments => request_comments } %>
@@ -56,15 +64,15 @@
             <td>&nbsp;</td>
           <% end -%>
           <% if request.asset %>
-            <td  width='10%'><%=  request.asset.sti_type %></td>
-            <td  width='10%'><%=  link_to "#{request.asset.barcode}", asset_path(request.asset) %></td>
+            <td><%=  request.asset.sti_type %></td>
+            <td><%=  link_to "#{request.asset.barcode}", asset_path(request.asset) %></td>
             <% unless request_asset_comments.empty? -%>
               <%= render :partial => "asset_comments", :locals => { :request => request, :comments => request_asset_comments } %>
             <% else -%>
               <td>&nbsp;</td>
             <% end -%>
-            <td  width='10%'><%=  request.asset.concentration %></td>
-            <td  width='10%'><%= request.asset.scanned_in_date %></td>
+            <td><%=  request.asset.concentration %></td>
+            <td><%= request.asset.scanned_in_date %></td>
           <% else %>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
@@ -72,11 +80,11 @@
           <% end %>
           <% @information_types.each do |information_type| %>
             <% next if information_type.hide_in_inbox %>
-            <td  title='<%="#{information_type.key}"%>' width='<%="#{information_type.width}%"%>'>
+            <td  title='<%="#{information_type.key}"%>'>
               <%= h(request.request_metadata[information_type.key]) %>
             </td>
           <% end %>
-          <td  width='15%'><%= request.try(:submission).try(:name) %></td>
+          <td width=100px><%= truncate(request.try(:submission).try(:name), :separator => ' ') %></td>
         </tr>
       <%- end -%>
       </div>

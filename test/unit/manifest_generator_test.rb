@@ -357,9 +357,9 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
         @pipeline = Factory(:pipeline)
         @batch = @pipeline.batches.create!
         @batch.requests = [
-          @pipeline.request_type.create!(:study => @study1, :asset => @well),
-          @pipeline.request_type.create!(:study => @study1, :asset => @well2),
-          @pipeline.request_type.create!(:study => @study1, :asset => @well3)
+          @pipeline.request_types.last.create!(:study => @study1, :asset => @well),
+          @pipeline.request_types.last.create!(:study => @study1, :asset => @well2),
+          @pipeline.request_types.last.create!(:study => @study1, :asset => @well3)
         ]
 
         @manifest = ManifestGenerator.generate_manifests(@batch,@study1)
@@ -397,9 +397,9 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
           @plate2.add_and_save_well(@well6, 1, 0)
 
           @batch.requests.concat([
-            @pipeline.request_type.create!(:study => @study1, :asset => @well4),
-            @pipeline.request_type.create!(:study => @study1, :asset => @well5),
-            @pipeline.request_type.create!(:study => @study1, :asset => @well6)
+            @pipeline.request_types.last.create!(:study => @study1, :asset => @well4),
+            @pipeline.request_types.last.create!(:study => @study1, :asset => @well5),
+            @pipeline.request_types.last.create!(:study => @study1, :asset => @well6)
           ])
 
           @manifest = ManifestGenerator.generate_manifests(@batch,@study1)

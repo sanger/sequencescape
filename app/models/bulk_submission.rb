@@ -216,7 +216,7 @@ class BulkSubmission < ActiveRecord::Base
       end
 
       # Create the order.  Ensure that the number of lanes is correctly set.
-      template          = SubmissionTemplate.find_by_name(details['template name']) or raise StandardError, "Cannot find template #{details['template name']}"
+      template          = find_template(details['template name'])
       request_types     = RequestType.all(:conditions => { :id => template.submission_parameters[:request_type_ids_list].flatten })
       lane_request_type = request_types.detect { |t| t.target_asset_type == 'Lane' or t.name =~ /\ssequencing$/ }
       number_of_lanes   = details.fetch('number of lanes', 1).to_i
@@ -227,6 +227,13 @@ class BulkSubmission < ActiveRecord::Base
       errors.add :spreadsheet, "There was a problem on row(s) #{details['rows']}: #{exception.message}"
       nil
     end
+  end
+
+  # Returns the SubmissionTemplate and checks that it is valid
+  def find_template(template_name)
+    template = SubmissionTemplate.find_by_name(template_name) or raise StandardError, "Cannot find template #{template_name}"
+    raise(StandardError, "Template: '#{template_name}' is deprecated and no longer in use.") unless template.visible
+    template
   end
 
   # This is used to present a list of successes

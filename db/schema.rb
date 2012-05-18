@@ -588,7 +588,6 @@ ActiveRecord::Schema.define(:version => 20120511152809) do
     t.integer  "next_pipeline_id"
     t.integer  "previous_pipeline_id"
     t.integer  "location_id"
-    t.integer  "request_type_id"
     t.boolean  "group_by_parent"
     t.string   "asset_type",                    :limit => 50
     t.boolean  "group_by_submission_to_delete"
@@ -602,9 +601,18 @@ ActiveRecord::Schema.define(:version => 20120511152809) do
     t.integer  "max_number_of_groups"
     t.boolean  "externally_managed",                          :default => false
     t.string   "group_name"
+    t.integer  "control_request_type_id",                                        :null => false
   end
 
   add_index "pipelines", ["sorter"], :name => "index_pipelines_on_sorter"
+
+  create_table "pipelines_request_types", :force => true do |t|
+    t.integer "pipeline_id",     :null => false
+    t.integer "request_type_id", :null => false
+  end
+
+  add_index "pipelines_request_types", ["pipeline_id"], :name => "fk_pipelines_request_types_to_pipelines"
+  add_index "pipelines_request_types", ["request_type_id"], :name => "fk_pipelines_request_types_to_request_types"
 
   create_table "plate_creations", :force => true do |t|
     t.integer  "user_id"
@@ -672,6 +680,10 @@ ActiveRecord::Schema.define(:version => 20120511152809) do
   end
 
   add_index "plate_volumes", ["uploaded_file_name"], :name => "index_plate_volumes_on_uploaded_file_name"
+
+  create_table "product_lines", :force => true do |t|
+    t.string "name", :null => false
+  end
 
   create_table "project_managers", :force => true do |t|
     t.string   "name"
@@ -798,6 +810,8 @@ ActiveRecord::Schema.define(:version => 20120511152809) do
     t.integer  "morphology",                       :default => 0
     t.boolean  "for_multiplexing",                 :default => false
     t.boolean  "billable",                         :default => false
+    t.integer  "product_line_id"
+    t.boolean  "deprecated",                       :default => false, :null => false
   end
 
   create_table "requests", :force => true do |t|
@@ -1132,6 +1146,8 @@ ActiveRecord::Schema.define(:version => 20120511152809) do
     t.text     "submission_parameters"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "product_line_id"
+    t.boolean  "visible",               :default => true, :null => false
   end
 
   add_index "submission_templates", ["name"], :name => "index_submission_templates_on_name"

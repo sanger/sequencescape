@@ -1,7 +1,4 @@
 <% add :title, "Pipelines" -%>
-<% if current_user.is_administrator? %>
-  <% add :menu, "Create new pipeline" => new_pipeline_url -%>
-<% end %>
 <% add :menu, "Create Plate Barcodes" => new_plate_path -%>
 <% if current_user.slf_manager? || current_user.slf_gel?|| current_user.manager_or_administrator? %>
   <% add :menu, "Sample Logistics" => sample_logistics_path -%>

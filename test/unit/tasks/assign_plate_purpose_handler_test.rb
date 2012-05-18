@@ -22,7 +22,6 @@ class AssignPlatePurposeHandlerTest < ActiveSupport::TestCase
       setup do
         @params = {:assign_plate_purpose_task => {:plate_purpose_id => 1}, :batch_id => 1}
         @plate_purpose = 'A_PLATE_PURPOSE_INSTANCE'
-        PlatePurpose.expects(:find).with(1).returns(@plate_purpose)
         @workflows_controller.batch = mock("Batch")
       end
       context "when @batch has no output plates" do
@@ -42,6 +41,7 @@ class AssignPlatePurposeHandlerTest < ActiveSupport::TestCase
 
       context "when @batch has output plates, assign the selected plate_purpose_id to all of @batch's output plates and" do
         setup do
+          PlatePurpose.expects(:find).with(1).returns(@plate_purpose)
           @workflows_controller.batch.expects(:output_plates).returns(['A_PLATE_INSTANCE'])
           @workflows_controller.batch.expects(:set_output_plate_purpose).with(@plate_purpose)
           @workflows_controller.batch.expects(:save!).returns(true)

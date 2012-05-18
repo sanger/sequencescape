@@ -99,7 +99,7 @@ module ModelExtensions::Batch
   end
 
   def need_target_assets_on_requests?
-    not pipeline.asset_type.blank? and pipeline.request_type.try(:target_asset_type).blank?
+    pipeline.asset_type.present? and pipeline.request_types.detect { |rt| rt.target_asset_type.blank? }.present?
   end
   private :need_target_assets_on_requests?
 end
