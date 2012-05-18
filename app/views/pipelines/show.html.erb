@@ -1,5 +1,4 @@
 <% add :title, "Pipelines" %>
-<% add :admin_option, "Edit pipeline" => edit_pipeline_url(@pipeline) %>
 <% add :menu, "Make training batch" => url_for(:action => "training_batch", :id => @pipeline.id) %>
 <% add :menu, "View all pipeline batches" => url_for(:action => "batches", :id => @pipeline.id) %>
 <% if @pipeline.multiplexed? %>

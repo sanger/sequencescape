@@ -9,7 +9,7 @@
     </tr>
   </thead>
   <tbody>
-  <% workflow.request_types.each do |request_type| -%>
+    <% request_types_sorted_by_total(workflow,project).each do |request_type| -%>
     <tr>
       <td><%= request_type.name %></td>
       <td><%= project.total_quota(request_type) %></td>

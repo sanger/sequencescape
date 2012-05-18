@@ -13,6 +13,9 @@ class SubmissionTemplate < ActiveRecord::Base
   acts_as_audited :on => [:destroy, :update]
 
   has_many :orders
+  belongs_to :product_line
+
+  named_scope :visible, :order => 'product_line_id ASC', :conditions => { :visible => true }
 
   def create_and_build_submission!(attributes)
     Submission.build!(attributes.merge(:template => self))

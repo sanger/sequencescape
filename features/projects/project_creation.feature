@@ -73,6 +73,8 @@ Feature: Creating projects
       | Request type                           | Total quota | Used quota | Remaining quota | Change quota |
       | Library creation                       | 0           | 0          | 0               | Request more |
       | Multiplexed library creation           | 0           | 0          | 0               | Request more |
+      | Illumina-B Multiplexed Library Creation| 0           | 0          | 0               | Request more |
+      | Illumina-C Multiplexed Library Creation| 0           | 0          | 0               | Request more |
       | Pulldown library creation              | 0           | 0          | 0               | Request more |
       | Single ended sequencing                | 0           | 0          | 0               | Request more |
       | Single ended hi seq sequencing         | 0           | 0          | 0               | Request more |

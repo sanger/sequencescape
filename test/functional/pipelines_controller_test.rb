@@ -20,63 +20,6 @@ class PipelinesControllerTest < ActionController::TestCase
       should_respond_with :success
     end
 
-    context "#user is administrator" do
-      setup do
-        admin = Factory :role, :name => "administrator"
-        @user.roles << admin
-      end
-
-      context "#new" do
-        setup do
-          get :new
-        end
-
-        should_respond_with :success
-      end
-
-      context "#edit" do
-        setup do
-          @pipeline = Factory :pipeline
-          get :edit, :id => @pipeline.id.to_s
-        end
-
-        should_respond_with :success
-      end
-    end
-
-    context "#user is not administrator" do
-      setup do
-        admin = Factory :role, :name => "follower"
-        @user.roles << admin
-      end
-
-      context "#new" do
-        setup do
-          get :new
-        end
-
-        should_respond_with :redirect
-      end
-
-      context "#edit" do
-        setup do
-          @pipeline = Factory :pipeline
-          get :edit, :id => @pipeline.id.to_s
-        end
-
-        should_respond_with :redirect
-      end
-      
-      context "#create" do
-        setup do
-          @pipeline = Factory :pipeline
-          get :create, :id => @pipeline.id.to_s
-        end
-        
-        should_redirect_to("index") {pipelines_path}
-      end
-    end
-
     context "#batches" do
       setup do
         @pipeline = Factory :pipeline

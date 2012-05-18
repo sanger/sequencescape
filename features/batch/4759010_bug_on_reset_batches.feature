@@ -6,11 +6,11 @@ Feature: Resetting a batch and creating an "identical" batch
     And I am an administrator
 
   Scenario: bug on reset batch
-    Given a batch in "MX Library Preparation [NEW]" has been setup for feature 4759010
+    Given a batch in "Illumina-B MX Library Preparation" has been setup for feature 4759010
     When I go to the edit page for the last batch
     And I press "Reset"
     And I accept the action
-    Then I should be on the "MX Library Preparation [NEW]" pipeline page
+    Then I should be on the "Illumina-B MX Library Preparation" pipeline page
 
     When I check "Select Request Group 0"
     And I select "Create Batch" from "Action to perform"

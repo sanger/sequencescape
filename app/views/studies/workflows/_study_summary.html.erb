@@ -14,6 +14,7 @@
     <% @study.request_progress do |results| %>
       <% @workflow.request_types.each do |request_type| %>
         <% statistics = results[request_type] %>
+        <% next if statistics.total.zero? -%>
         <tr>
           <td><%= request_type.name %></td>
           <td><%= request_link(@study, statistics.total, request_type) %></td>
