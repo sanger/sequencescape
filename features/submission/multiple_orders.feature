@@ -31,7 +31,7 @@ Feature: Creating a submissin with many orders
     And the UUID of the next order created will be "11111111-2222-3333-4444-666666666666"
 
   Scenario Outline: Creating a submission with multiple orders
-    Given 4 sample tubes exist with names based on "sampletube" and IDs starting at 1
+    Given 4 sample tubes exist with names based on "sampletube"
     And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"
     Given the UUID for the order template "<template_name>" is "00000000-1111-2222-3333-444444444444"
     Given I have an order created with the following details based on the template "<template_name>":
