@@ -57,20 +57,29 @@ class BulkSubmission < ActiveRecord::Base
       errors.add(:spreadsheet, "The supplied file was not a valid CSV file (try opening it with MS Excel)")
   end
 
-  def find_csv_sections(csv_rows)
-    csv_rows.shift if csv_rows[0][0] == "This row is guidance only"
-    csv_rows.each_with_index do |row, index|
-      if header_row?(row)
-        csv_rows.slice!(0,index)
-        headers = csv_rows.shift
-        return [index+2,headers,csv_rows]
-      end
+  def find_csv_sections
+    [
+      @csv_rows.fetch(header_index),
+      @csv_rows.slice(header_index+1...@csv_rows.length)
+    ] if header_index
+  end
+  private :find_csv_sections
+
+  def header_index
+    @header_index ||= @csv_rows.each_with_index do |row, index|
+      next if index == 0 && row[0] == "This row is guidance only"
+      return index if header_row?(row)
     end
     # We've got through all rows without finding a header
     errors.add(:spreadsheet, "The supplied file does not contain a valid header row (try downloading a template)")
-    [nil,nil,nil]
+    nil
   end
-  private :find_csv_sections
+  private :header_index
+
+  def start_row
+    header_index + 2
+  end
+  private :start_row
 
   def header_row?(row)
     row.each {|col| col.try(:downcase!)}
@@ -94,12 +103,11 @@ class BulkSubmission < ActiveRecord::Base
     # Store the details of the successful submissions so the user can be presented with a summary
     @submission_ids = []
     @completed_submissions = {}
-
-
-    start_row, @headers, @csv_data_rows = *find_csv_sections(FasterCSV.parse(spreadsheet.read))
+    @csv_rows = FasterCSV.parse(spreadsheet.read)
+    @headers, @csv_data_rows = *find_csv_sections
 
     if spreadsheet_valid?
-      submission_details = submission_structure(start_row)
+      submission_details = submission_structure
       # Within a single transaction process each of the rows of the CSV file as a separate submission.  Any name
       # fields need to be mapped to IDs, and the 'assets' field needs to be split up and processed if present.
       ActiveRecord::Base.transaction do
@@ -158,7 +166,7 @@ class BulkSubmission < ActiveRecord::Base
   #  this creates an array containing a hash for each distinct "submission name"
   #    "submission name" => array of orders
   #    where each order is a hash of headers to values (grouped by "asset group name")
-  def submission_structure(start_row)
+  def submission_structure
     @csv_data_rows.each_with_index.map do |row, index|
       Hash[@headers.each_with_index.map { |header, pos| validate_entry(header,pos,row,index+start_row) }].merge('row' => index+start_row)
     end.group_by do |details|
