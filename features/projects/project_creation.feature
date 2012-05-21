@@ -85,6 +85,6 @@ Feature: Creating projects
       | Pulldown SC                            | 0           | 0          | 0               | Request more |
       | Pulldown WGS                           | 0           | 0          | 0               | Request more |
       | Pulldown library creation              | 0           | 0          | 0               | Request more |
-      | Single ended sequencing                | 0           | 0          | 0               | Request more |
       | Single ended hi seq sequencing         | 0           | 0          | 0               | Request more |
+      | Single ended sequencing                | 0           | 0          | 0               | Request more |
       
