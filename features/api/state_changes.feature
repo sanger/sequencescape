@@ -61,7 +61,7 @@ Feature: Access state changes through the API
     Then the state of the plate "Destination plate" should be "<state>"
      And the state of all the transfer requests to the plate "Destination plate" should be "<state>"
      And the request type of all the transfer requests to the the plate "Destination plate" should be "Transfer"
-     And the state of all the pulldown library creation requests from the plate "Source plate" should be "<library state>"
+     #And the state of all the pulldown library creation requests from the plate "Source plate" should be "<library state>"
 
     Scenarios:
       | state   |
@@ -134,7 +134,7 @@ Feature: Access state changes through the API
     Given the UUID of the next state change created will be "11111111-2222-3333-4444-000000000001"
       And "A1-H12" of the plate "Source plate" have been submitted to "Pulldown WGS - HiSeq paired end sequencing"
       And all requests are in the last submission
-
+      And all the "Pulldown::Requests::WgsLibraryRequest" requests in the last submission have been started
     When I make an authorised POST with the following JSON to the API path "/state_changes":
       """
       {
@@ -170,7 +170,7 @@ Feature: Access state changes through the API
      And the state of transfer requests to "A1-A1" on the plate "Destination plate" should be "failed"
      And the state of transfer requests to "A2-H12" on the plate "Destination plate" should be "pending"
      And the state of pulldown library creation requests from "A1-A1" on the plate "Source plate" should be "failed"
-     And the state of pulldown library creation requests from "A2-H12" on the plate "Source plate" should be "pending"
+     And the state of pulldown library creation requests from "A2-H12" on the plate "Source plate" should be "started"
 
   @create
   Scenario Outline: Creating a state change on a plate with pulldown requests
