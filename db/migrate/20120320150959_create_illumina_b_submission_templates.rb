@@ -17,7 +17,7 @@ class CreateIlluminaBSubmissionTemplates < ActiveRecord::Migration
     def mx_submission_templates
       @mx_templates ||= SubmissionTemplate.all.select do |template|
         template.submission_parameters[:request_type_ids_list].include?([orig_req_id])
-      end
+      end.reject {|t| t.name =~ /MiSeq/}
     end
 
     def down
