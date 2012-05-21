@@ -57,13 +57,15 @@ class BulkSubmission < ActiveRecord::Base
       errors.add(:spreadsheet, "The supplied file was not a valid CSV file (try opening it with MS Excel)")
   end
 
-  def find_csv_sections
-    [
-      @csv_rows.fetch(header_index),
-      @csv_rows.slice(header_index+1...@csv_rows.length)
-    ] if header_index
+  def headers
+    @headers ||= @csv_rows.fetch(header_index)
   end
-  private :find_csv_sections
+  private :headers
+
+  def csv_data_rows
+    @csv_rows.slice(header_index+1...@csv_rows.length)
+  end
+  private :csv_data_rows
 
   def header_index
     @header_index ||= @csv_rows.each_with_index do |row, index|
@@ -87,15 +89,15 @@ class BulkSubmission < ActiveRecord::Base
   end
   private :header_row?
 
+  def valid_header?
+    return true if headers.include? "submission name"
+    errors.add :spreadsheet, "You submitted an incompatible spreadsheet. Please ensure your spreadsheet contains the 'submission name' column"
+    false
+  end
+
   def spreadsheet_valid?
-    if errors.count > 0
-      return false
-    elsif !@headers.include? "submission name"
-      errors.add :spreadsheet, "You submitted an incompatible spreadsheet. Please ensure your spreadsheet contains the 'submission name' column"
-      return false
-    else
-      true
-    end
+    valid_header?
+    errors.count == 0
   end
   private :spreadsheet_valid?
 
@@ -104,7 +106,6 @@ class BulkSubmission < ActiveRecord::Base
     @submission_ids = []
     @completed_submissions = {}
     @csv_rows = FasterCSV.parse(spreadsheet.read)
-    @headers, @csv_data_rows = *find_csv_sections
 
     if spreadsheet_valid?
       submission_details = submission_structure
@@ -167,8 +168,8 @@ class BulkSubmission < ActiveRecord::Base
   #    "submission name" => array of orders
   #    where each order is a hash of headers to values (grouped by "asset group name")
   def submission_structure
-    @csv_data_rows.each_with_index.map do |row, index|
-      Hash[@headers.each_with_index.map { |header, pos| validate_entry(header,pos,row,index+start_row) }].merge('row' => index+start_row)
+    csv_data_rows.each_with_index.map do |row, index|
+      Hash[headers.each_with_index.map { |header, pos| validate_entry(header,pos,row,index+start_row) }].merge('row' => index+start_row)
     end.group_by do |details|
       details['submission name']
     end.map do |submission_name, rows|
