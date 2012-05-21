@@ -61,7 +61,7 @@ class Pipeline < ActiveRecord::Base
     end
     protected :method_missing
 
-    def inbox(show_held_requests = true, current_page = 1)
+    def inbox(show_held_requests = true, current_page = 1, action = nil)
       # Build a list of methods to invoke to build the correct request list
       actions = [ :unbatched ]
       actions.concat(proxy_owner.custom_inbox_actions)
@@ -107,7 +107,7 @@ class Pipeline < ActiveRecord::Base
   named_scope :inactive, :conditions => { :active => false }
 
   named_scope :for_request_type, lambda { |rt|
-    { 
+    {
       :joins => [ 'LEFT JOIN pipelines_request_types prt ON prt.pipeline_id = pipelines.id' ],
       :conditions => ['prt.request_type_id = ?', rt.id]
     }
@@ -126,11 +126,11 @@ class Pipeline < ActiveRecord::Base
   validates_uniqueness_of :name, :on => :create, :message => "name already in use"
 
   INBOX_PARTIAL               = 'default_inbox'
-  
+
   # Override this in subclasses if you want to display action links
   # for released batches
   ALWAYS_SHOW_RELEASE_ACTIONS = false
-  
+
   def inbox_partial
     INBOX_PARTIAL
   end
@@ -155,7 +155,7 @@ class Pipeline < ActiveRecord::Base
   def genotyping?
     false
   end
-  
+
   def sequencing?
     false
   end
@@ -215,7 +215,7 @@ class Pipeline < ActiveRecord::Base
     end
   end
   private :grouping_function
-  
+
   # to overwrite by subpipeline if needed
   def group_requests(requests, option={})
     requests.group_requests(:all, option).group_by(&grouping_function(option))
@@ -295,13 +295,13 @@ class Pipeline < ActiveRecord::Base
   def max_number_of_groups
     self[:max_number_of_groups] || 0
   end
-  
+
   def valid_number_of_checked_request_groups?(params ={})
     return true if max_number_of_groups.zero?
     return true if (selected_groups = params['request_group']).blank?
     grouping_parser.count(selected_values_from(selected_groups)) <= max_number_of_groups
   end
-  
+
   def all_requests_from_submissions_selected?(request_ids)
     true
   end

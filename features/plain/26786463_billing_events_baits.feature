@@ -8,7 +8,7 @@ Feature: Interacting with billing_events that include bait_libraries through the
   Scenario: Retrieving the JSON for a particular billing_event
 
     When I GET the API path "/billing_events/00000000-1111-2222-3333-444444444444"
-    Then ignoring "internal_id|project_internal_id|project_uuid|request_uuid|request_internal_id|reference" the JSON should be:
+    Then ignoring "internal_id|project_internal_id|project_uuid|request_uuid|request_internal_id|reference|updated_at" the JSON should be:
       """
       {
         "billing_event": {
@@ -53,7 +53,7 @@ Feature: Interacting with billing_events that include bait_libraries through the
     And all samples have sequential UUIDs based on "bbbbbbbb-1111-2222-3333"
 
     When I retrieve the JSON for all requests related to the sample tube "Tube"
-    Then ignoring "((source_asset|source_asset_sample|target_asset|project|study|submission)_(internal_id|barcode)|id)" the JSON should be:
+    Then ignoring "((source_asset|source_asset_sample|target_asset|project|study|submission)_(internal_id|barcode)|id)|updated_at" the JSON should be:
       """
       [
         {

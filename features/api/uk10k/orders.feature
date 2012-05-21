@@ -441,9 +441,10 @@ Feature: Creating orders for UK10K
     # We need to actually check that the underlying request options are correct because the JSON structure is different!
     Then the request options for the order with UUID "11111111-2222-3333-4444-666666666666" should be:
       | read_length                 | 76        |
+    Then the string request options for the order with UUID "11111111-2222-3333-4444-666666666666" should be:
+      | library_type                | qPCR only |
       | fragment_size_required_from | 100       |
       | fragment_size_required_to   | 200       |
-      | library_type                | qPCR only |
 
     Scenarios: When the asset group is being created by the order
       | attribute        | value           |

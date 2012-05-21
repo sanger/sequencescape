@@ -14,10 +14,10 @@ Feature: If a batch is released, the section Action/Task shouldn't be shown unle
     | pipeline                               | batch_state | should_or_should_not |
     | Cluster formation PE                   | released    | should not           |
     | Illumina-B MX Library Preparation      | released    | should not           |
-    | Library preparation                    | released    | should not           |
+    | Illumina-C Library preparation         | released    | should not           |
     | Cluster formation PE                   | pending     | should               |
     | Illumina-B MX Library Preparation      | pending     | should               |
-    | Library preparation                    | pending     | should               |
+    | Illumina-C Library preparation         | pending     | should               |
     | Pulldown Multiplex Library Preparation | released    | should               |
     | Cherrypicking for Pulldown             | released    | should               |
     | Genotyping                             | released    | should               |
