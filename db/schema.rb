@@ -1,4 +1,4 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file,
+# This file is auto-generated from the current state of the database. Instead of editing this file, 
 # please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
@@ -486,7 +486,7 @@ ActiveRecord::Schema.define(:version => 20120511152809) do
 
   add_index "lab_events", ["batch_id"], :name => "index_lab_events_on_batch_id"
   add_index "lab_events", ["created_at"], :name => "index_lab_events_on_created_at"
-  add_index "lab_events", ["description", "eventful_type"], :name => "index_lab_events_find_flowcell", :length => {"description"=>"20", "eventful_type"=>nil}
+  add_index "lab_events", ["description", "eventful_type"], :name => "index_lab_events_find_flowcell", :length => {"eventful_type"=>nil, "description"=>"20"}
   add_index "lab_events", ["eventful_id"], :name => "index_lab_events_on_eventful_id"
   add_index "lab_events", ["eventful_type"], :name => "index_lab_events_on_eventful_type"
 
@@ -1294,6 +1294,8 @@ ActiveRecord::Schema.define(:version => 20120511152809) do
     t.string   "transfers",        :limit => 1024
   end
 
+  add_index "transfers", ["source_id"], :name => "source_id_idx"
+
   create_table "users", :force => true do |t|
     t.string   "login"
     t.string   "email"
@@ -1327,245 +1329,6 @@ ActiveRecord::Schema.define(:version => 20120511152809) do
 
   add_index "uuids", ["external_id"], :name => "index_uuids_on_external_id"
   add_index "uuids", ["resource_type", "resource_id"], :name => "index_uuids_on_resource_type_and_resource_id"
-
-  create_table "view_aliquots", :id => false, :force => true do |t|
-    t.string   "uuid",                   :limit => 36
-    t.integer  "internal_id",                          :default => 0, :null => false
-    t.string   "receptacle_uuid",        :limit => 36
-    t.integer  "receptacle_internal_id",                              :null => false
-    t.string   "study_uuid",             :limit => 36
-    t.integer  "study_internal_id"
-    t.string   "project_uuid",           :limit => 36
-    t.integer  "project_internal_id"
-    t.string   "library_uuid",           :limit => 36
-    t.integer  "library_internal_id"
-    t.string   "sample_uuid",            :limit => 36
-    t.integer  "sample_internal_id",                                  :null => false
-    t.string   "tag_uuid",               :limit => 36
-    t.integer  "tag_internal_id"
-    t.string   "receptacle_type",        :limit => 50
-    t.string   "library_type"
-    t.integer  "insert_size_from"
-    t.integer  "insert_size_to"
-    t.datetime "created"
-  end
-
-  create_table "view_asset_links", :id => false, :force => true do |t|
-    t.string  "ancestor_uuid",          :limit => 36
-    t.integer "ancestor_internal_id"
-    t.string  "ancestor_type",          :limit => 50
-    t.string  "descendant_uuid",        :limit => 36
-    t.integer "descendant_internal_id"
-    t.string  "descendant_type",        :limit => 50
-  end
-
-  create_table "view_genotyping_statuses", :id => false, :force => true do |t|
-    t.integer "sample_internal_id"
-    t.string  "sample_uuid",             :limit => 36
-    t.string  "genotyping_status"
-    t.string  "genotyping_snp_plate_id"
-  end
-
-  create_table "view_lanes", :id => false, :force => true do |t|
-    t.integer  "internal_id",                    :default => 0, :null => false
-    t.string   "name"
-    t.boolean  "external_release"
-    t.datetime "created"
-    t.string   "uuid",             :limit => 36
-    t.string   "state",            :limit => 20
-  end
-
-  create_table "view_library_tubes", :id => false, :force => true do |t|
-    t.string   "uuid",                        :limit => 36
-    t.integer  "internal_id",                                                              :default => 0,     :null => false
-    t.string   "name"
-    t.string   "barcode"
-    t.string   "barcode_prefix",              :limit => 3
-    t.boolean  "closed",                                                                   :default => false
-    t.integer  "sample_internal_id"
-    t.string   "sample_uuid",                 :limit => 36
-    t.decimal  "volume",                                    :precision => 10, :scale => 2
-    t.decimal  "concentration",                             :precision => 18, :scale => 8
-    t.string   "tag_uuid",                    :limit => 36
-    t.integer  "tag_internal_id",                                                          :default => 0
-    t.integer  "tag_map_id"
-    t.string   "expected_sequence"
-    t.string   "tag_group_name"
-    t.integer  "tag_group_internal_id",                                                    :default => 0
-    t.integer  "source_request_internal_id",                                               :default => 0
-    t.string   "source_request_uuid",         :limit => 36
-    t.string   "library_type"
-    t.integer  "fragment_size_required_from"
-    t.integer  "fragment_size_required_to"
-    t.string   "sample_name"
-    t.text     "scanned_in_date"
-    t.datetime "created"
-    t.string   "public_name"
-  end
-
-  create_table "view_plates", :id => false, :force => true do |t|
-    t.string   "uuid",                      :limit => 36
-    t.integer  "internal_id",                             :default => 0, :null => false
-    t.string   "name"
-    t.string   "barcode"
-    t.string   "barcode_prefix",            :limit => 3
-    t.integer  "plate_size"
-    t.datetime "created"
-    t.integer  "plate_purpose_internal_id"
-    t.string   "plate_purpose_name"
-    t.string   "plate_purpose_uuid",        :limit => 36
-    t.string   "location"
-    t.string   "infinium_barcode"
-  end
-
-  create_table "view_requests", :id => false, :force => true do |t|
-    t.string   "uuid",                            :limit => 36
-    t.integer  "internal_id",                                   :default => 0,         :null => false
-    t.string   "request_type"
-    t.string   "fragment_size_from"
-    t.string   "fragment_size_to"
-    t.integer  "read_length"
-    t.string   "library_type"
-    t.string   "study_uuid",                      :limit => 36
-    t.integer  "study_internal_id",                             :default => 0
-    t.string   "study_name"
-    t.string   "project_uuid",                    :limit => 36
-    t.integer  "project_internal_id",                           :default => 0
-    t.string   "project_name"
-    t.string   "source_asset_uuid",               :limit => 36
-    t.integer  "source_asset_internal_id",                      :default => 0
-    t.string   "source_asset_name"
-    t.string   "source_asset_type",               :limit => 50
-    t.string   "source_asset_barcode"
-    t.string   "source_asset_barcode_prefix",     :limit => 3
-    t.boolean  "source_asset_closed",                           :default => false
-    t.string   "source_asset_sample_uuid",        :limit => 36
-    t.integer  "source_asset_sample_internal_id"
-    t.string   "target_asset_uuid",               :limit => 36
-    t.integer  "target_asset_internal_id",                      :default => 0
-    t.string   "target_asset_name"
-    t.string   "target_asset_type",               :limit => 50
-    t.string   "target_asset_barcode"
-    t.string   "target_asset_barcode_prefix",     :limit => 3
-    t.boolean  "target_asset_closed",                           :default => false
-    t.datetime "created"
-    t.string   "state",                           :limit => 20, :default => "pending"
-    t.integer  "priority",                                      :default => 0
-  end
-
-  create_table "view_sample_study_reference_genome", :id => false, :force => true do |t|
-    t.integer "sample_internal_id",                    :default => 0, :null => false
-    t.string  "sample_uuid",             :limit => 36
-    t.integer "study_internal_id"
-    t.string  "study_uuid",              :limit => 36
-    t.string  "study_reference_genome"
-    t.string  "sample_reference_genome"
-  end
-
-  create_table "view_sample_tubes", :id => false, :force => true do |t|
-    t.string   "uuid",               :limit => 36
-    t.integer  "internal_id",                                                     :default => 0,     :null => false
-    t.string   "name"
-    t.string   "barcode"
-    t.boolean  "closed",                                                          :default => false
-    t.string   "sample_uuid",        :limit => 36
-    t.integer  "sample_internal_id"
-    t.string   "sample_name"
-    t.text     "scanned_in_date"
-    t.decimal  "volume",                           :precision => 10, :scale => 2
-    t.decimal  "concentration",                    :precision => 18, :scale => 8
-    t.datetime "created"
-    t.string   "barcode_prefix",     :limit => 3
-  end
-
-  create_table "view_samples", :id => false, :force => true do |t|
-    t.string   "uuid",                       :limit => 36
-    t.integer  "internal_id",                              :default => 0,     :null => false
-    t.string   "name"
-    t.string   "organism"
-    t.string   "accession_number"
-    t.string   "common_name"
-    t.text     "description"
-    t.integer  "taxon_id"
-    t.string   "father"
-    t.string   "mother"
-    t.string   "replicate"
-    t.string   "ethnicity"
-    t.string   "gender"
-    t.string   "cohort"
-    t.string   "country_of_origin"
-    t.string   "geographical_region"
-    t.datetime "created"
-    t.string   "sanger_sample_id"
-    t.boolean  "control"
-    t.boolean  "empty_supplier_sample_name",               :default => false
-    t.boolean  "updated_by_manifest",                      :default => false
-    t.string   "supplier_name"
-    t.string   "public_name"
-    t.string   "sample_visibility"
-    t.string   "strain"
-    t.string   "reference_genome"
-  end
-
-  create_table "view_studies", :id => false, :force => true do |t|
-    t.string   "uuid",                           :limit => 36
-    t.integer  "internal_id",                                   :default => 0,     :null => false
-    t.string   "name"
-    t.boolean  "ethically_approved",                            :default => false
-    t.string   "faculty_sponsor",                :limit => 511
-    t.string   "state",                          :limit => 20
-    t.string   "study_type"
-    t.text     "abstract"
-    t.string   "abbreviation"
-    t.string   "accession_number"
-    t.text     "description"
-    t.datetime "created"
-    t.string   "contains_human_dna"
-    t.string   "data_release_strategy"
-    t.string   "data_release_sort_of_study"
-    t.string   "ena_project_id"
-    t.string   "study_title"
-    t.string   "study_visibility"
-    t.string   "ega_dac_accession_number"
-    t.string   "array_express_accession_number"
-    t.string   "ega_policy_accession_number"
-    t.string   "reference_genome"
-  end
-
-  create_table "view_tags", :id => false, :force => true do |t|
-    t.string   "uuid",                  :limit => 36
-    t.integer  "internal_id",                         :default => 0, :null => false
-    t.string   "expected_sequence"
-    t.integer  "map_id"
-    t.string   "tag_group_name"
-    t.integer  "tag_group_internal_id",               :default => 0
-    t.string   "tag_group_uuid",        :limit => 36
-    t.datetime "created"
-  end
-
-  create_table "view_wells", :id => false, :force => true do |t|
-    t.string   "uuid",                 :limit => 36
-    t.integer  "internal_id",                        :default => 0,          :null => false
-    t.string   "name"
-    t.string   "map",                  :limit => 4
-    t.integer  "plate_internal_id",                  :default => 0
-    t.string   "plate_barcode"
-    t.string   "plate_barcode_prefix", :limit => 3
-    t.string   "sample_uuid",          :limit => 36
-    t.integer  "sample_internal_id"
-    t.string   "sample_name"
-    t.string   "gel_pass",             :limit => 20
-    t.float    "concentration"
-    t.float    "current_volume"
-    t.float    "buffer_volume"
-    t.float    "requested_volume"
-    t.float    "picked_volume"
-    t.string   "pico_pass",                          :default => "ungraded"
-    t.datetime "created"
-    t.string   "plate_uuid",           :limit => 36
-    t.float    "measured_volume"
-    t.integer  "sequenom_count"
-  end
 
   create_table "well_attributes", :force => true do |t|
     t.integer  "well_id"

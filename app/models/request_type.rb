@@ -49,7 +49,16 @@ class RequestType < ActiveRecord::Base
 
   delegate :delegate_validator, :to => :request_class
 
-  named_scope :applicable_for_asset, lambda { |asset| { :conditions => { :asset_type => asset.asset_type_for_request_types.name } } }
+  named_scope :applicable_for_asset, lambda { |asset| 
+    {
+      :conditions => [
+        'asset_type = ?
+         AND request_class_name != "ControlRequest"
+         AND deprecated IS FALSE',
+         asset.asset_type_for_request_types.name
+      ]
+    }
+  }
 
   # Helper method for generating a request constructor, like 'create!'
   def self.request_constructor(name, options = {})

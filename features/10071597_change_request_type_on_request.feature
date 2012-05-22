@@ -31,3 +31,4 @@ Feature: if request is pending and there is enough quota the admin could change 
      When I select "Single ended sequencing" from "Request Type:"   
      And I press "Save changes"
      Then I should see "Request details have been updated"          
+
