@@ -1,4 +1,6 @@
 class PacBioLibraryTube < Tube
+  include Api::PacBioLibraryTubeIO::Extensions
+
   extend Metadata
   has_metadata do
     attribute(:prep_kit_barcode)
