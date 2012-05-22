@@ -7,8 +7,18 @@ class CreateIlluminaASubmissionTemplates < ActiveRecord::Migration
 
       # Find the SubmissionTemplates you want to update...
       SubmissionTemplate.all(
-        :conditions => ['name RLIKE ?', '[Pp]ulldown']
+        :conditions => ['`name` RLIKE ?', 'Pulldown (WGS|SC|ISC)']
       ).each { |old_template| make_new_templates!(illumina_a, old_template) }
+
+
+      # Hide the old Pulldown SubmissionTemplates
+      SubmissionTemplate.all(
+        :conditions => [
+          '`name` RLIKE ? AND `name` NOT RLIKE ?',
+          'Pulldown',
+          'WGS|SC|ISC'
+        ]
+      ).each { |old_template| old_template.update_attributes(:visible => false)}
     end
   end
 

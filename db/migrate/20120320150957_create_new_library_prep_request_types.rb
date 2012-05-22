@@ -3,9 +3,7 @@ class PipelinesRequestType < ActiveRecord::Base; end
 class CreateNewLibraryPrepRequestTypes < ActiveRecord::Migration
   LIB_PREP_REQUEST_TYPES = {
     'Illumina-A' => [ 
-      'Pulldown library creation',
       'Cherrypicking for Pulldown',
-      'Pulldown Multiplex Library Preparation',
       'Pulldown WGS',
       'Pulldown SC',
       'Pulldown ISC'
@@ -51,6 +49,14 @@ class CreateNewLibraryPrepRequestTypes < ActiveRecord::Migration
         end
       end
 
+    end
+    # Deprecate old RequestTypes...
+
+    [
+      'Pulldown library creation',
+      'Pulldown Multiplex Library Preparation',
+    ].each do |old_request_type|
+      RequestType.find_by_name(old_request_type).update_attributes(:deprecated => true)
     end
   end
 

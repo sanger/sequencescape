@@ -21,6 +21,7 @@ class CreateNewSequencingRequestTypes < ActiveRecord::Migration
         existing_request_type = sequencing_pipeline.request_types.last
 
         ProductLine.all.each do |product_line|
+          next if product_line.name != 'Illumina-C' && existing_request_type.name =~ /MiSeq/
           request_type = product_lined_request_type(product_line, existing_request_type)
 
           next if sequencing_pipeline.request_types.include?(request_type)
