@@ -183,7 +183,7 @@ class StudyTest < ActiveSupport::TestCase
     context "#unprocessed_submissions?" do
       setup do
         @study = Factory :study
-        @asset = Factory :asset
+        @asset = Factory :sample_tube
       end
       context "with submissions still unprocessed" do
         setup do
