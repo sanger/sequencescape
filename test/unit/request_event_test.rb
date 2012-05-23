@@ -6,10 +6,14 @@ class RequestEventTest < ActiveSupport::TestCase
     setup do
       @request_types = RequestType.all
 
+      well_with_sample_and_without_plate = Factory(:well_with_sample_and_without_plate)
+      empty_well                         = Factory(:empty_well)
       @requests = []
 
       @request_types.each do |request_type|
         @requests << request_type.new.tap do |r| 
+          r.asset        = well_with_sample_and_without_plate
+          r.target_asset = empty_well
           r.stubs(:valid?).returns(true)
           r.save!
         end
