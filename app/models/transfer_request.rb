@@ -25,7 +25,7 @@ class TransferRequest < Request
   end
 
   aasm_event :fail do
-    transitions :to => :failed, :from => [:pending, :started, :failed]
+    transitions :to => :failed, :from => [:pending, :started, :passed]
   end
 
   aasm_event :cancel do
