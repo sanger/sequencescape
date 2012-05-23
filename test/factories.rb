@@ -202,6 +202,8 @@ end
 Factory.define(:request_metadata_for_library_creation, :parent => :request_metadata_for_library_manufacture) {}
 Factory.define(:request_metadata_for_multiplexed_library_creation, :parent => :request_metadata_for_library_manufacture) {}
 Factory.define(:request_metadata_for_mx_library_preparation_new, :parent => :request_metadata_for_library_manufacture) {}
+Factory.define(:request_metadata_for_illumina_b_multiplexed_library_creation, :parent => :request_metadata_for_library_manufacture) {}
+Factory.define(:request_metadata_for_illumina_c_multiplexed_library_creation, :parent => :request_metadata_for_library_manufacture) {}
 Factory.define(:request_metadata_for_pulldown_library_creation, :parent => :request_metadata_for_library_manufacture) {}
 Factory.define(:request_metadata_for_pulldown_multiplex_library_preparation, :parent => :request_metadata_for_library_manufacture) {}
 
@@ -300,6 +302,7 @@ Factory.define :request_type do |rt|
   rt_value = Factory.next :request_type_id
   rt.name           "Request type #{rt_value}"
   rt.key            "request_type_#{rt_value}"
+  rt.deprecated     false
   rt.request_class  Request
   rt.order          1
   rt.workflow    {|workflow| workflow.association(:submission_workflow)}

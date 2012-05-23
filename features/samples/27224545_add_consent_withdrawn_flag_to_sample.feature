@@ -54,7 +54,7 @@ Feature: Patients should be able to withdraw consent
     And the sanger sample id for sample "00000000-1111-2222-4444-555555555555" is "1STDY124"
     
     When I GET the API path "/samples/00000000-1111-2222-4444-444444444444"
-    And ignoring "id" the JSON should be:
+    And ignoring "id|updated_at" the JSON should be:
     """
       {
         "sample": {
@@ -97,7 +97,7 @@ Feature: Patients should be able to withdraw consent
       }
     """
     When I GET the API path "/samples/00000000-1111-2222-4444-555555555555"
-    And ignoring "id" the JSON should be:
+    And ignoring "id|updated_at" the JSON should be:
     """
       {
         "sample": {

@@ -97,12 +97,12 @@ def build_batch_for(name, count, &block)
   LinearSubmission.build!(
     :study    => Factory(:study),
     :project  => Factory(:project),
-    :workflow => pipeline.request_type.workflow,
+    :workflow => pipeline.request_types.last.workflow,
     :user     => user,
 
     # Setup the assets so that they have samples and they are scanned into the correct lab.
     :assets        => assets,
-    :request_types => [ pipeline.request_type.id ],
+    :request_types => pipeline.request_type_ids,
 
     # Request parameter options
     :request_options => submission_details[:request_options]
@@ -149,7 +149,7 @@ Given /^I have a batch with (\d+) requests? for the "(#{SEQUENCING_PIPELINES})" 
       :request_options => {
         :fragment_size_required_from => 1,
         :fragment_size_required_to   => 100,
-        :read_length                 => pipeline.request_type.request_class_name.constantize::Metadata.attribute_details_for(:read_length).to_field_info.selection.first
+        :read_length                 => pipeline.request_types.last.request_class_name.constantize::Metadata.attribute_details_for(:read_length).to_field_info.selection.first
       }
     }
   end
@@ -165,8 +165,12 @@ end
 
 LIBRARY_CREATION_PIPELINES = [
   'Library preparation',
+  'Illumina-C Library preparation',
+  'Illumina-B Library preparation',
+  'Illumina-A Library preparation',
   'MX Library creation',
   'MX Library Preparation [NEW]',
+  'Illumina-B MX Library Preparation',
   'Pulldown library preparation'
 ].map(&Regexp.method(:escape)).join('|')
 

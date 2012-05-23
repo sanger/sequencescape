@@ -1,4 +1,6 @@
 class RequestType < ActiveRecord::Base
+  class DeprecatedError < RuntimeError; end
+
   class RequestTypePlatePurpose < ActiveRecord::Base
     set_table_name('request_type_plate_purposes')
 
@@ -14,7 +16,13 @@ class RequestType < ActiveRecord::Base
   include Named
 
   has_many :requests
-  has_many :pipelines
+  has_many :pipelines_request_types
+  has_many :pipelines, :through => :pipelines_request_types
+
+  # Returns a collect of pipelines for which this RequestType is valid control.
+  # ...so only valid for ControlRequest producing RequestTypes...
+  has_many :control_pipelines, :class_name => 'Pipeline', :foreign_key => :control_request_type_id
+  belongs_to :product_line
 
   # Couple of named scopes for finding billable types
   named_scope :billable, { :conditions => { :billable => true } }
@@ -41,7 +49,16 @@ class RequestType < ActiveRecord::Base
 
   delegate :delegate_validator, :to => :request_class
 
-  named_scope :applicable_for_asset, lambda { |asset| { :conditions => { :asset_type => asset.asset_type_for_request_types.name } } }
+  named_scope :applicable_for_asset, lambda { |asset| 
+    {
+      :conditions => [
+        'asset_type = ?
+         AND request_class_name != "ControlRequest"
+         AND deprecated IS FALSE',
+         asset.asset_type_for_request_types.name
+      ]
+    }
+  }
 
   # Helper method for generating a request constructor, like 'create!'
   def self.request_constructor(name, options = {})
@@ -51,6 +68,7 @@ class RequestType < ActiveRecord::Base
     line = __LINE__ + 1
     class_eval(%Q{
       def #{name}(attributes = nil, &block)
+        raise RequestType::DeprecatedError if self.deprecated
         attributes ||= {}
         #{target}.#{target_method}(attributes.merge(request_parameters || {})) do |request|
           request.request_type = self
