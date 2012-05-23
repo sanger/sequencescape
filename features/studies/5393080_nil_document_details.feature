@@ -14,7 +14,7 @@ Feature: Managing a study or project should not attach nil documents
     And I should not find any nil documents
 
   Scenario: Managing a study and attaching a file
-    When I attach the relative file "test/data/blah.fasta" to "Attach a document"
+    When I attach the relative file "test/data/blah.fasta" to "Attach HMDMC approval"
     And I press "Update"
     Then I should see "Your study has been updated"
     And I should see "Listing 1 document"

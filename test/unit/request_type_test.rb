@@ -28,5 +28,27 @@ class RequestTypeTest < ActiveSupport::TestCase
         end
       end
     end
+
+    context 'when not deprecated,' do
+      setup do
+        @deprecated_request_type = Factory(:request_type)
+      end
+
+      should 'create deprecated requests' do
+          @deprecated_request_type.create!
+      end
+    end
+
+    context 'when deprecated,' do
+      setup do
+        @deprecated_request_type = Factory(:request_type, :deprecated => true)
+      end
+
+      should 'not create deprecated requests' do
+        assert_raise RequestType::DeprecatedError do
+          @deprecated_request_type.create!
+        end
+      end
+    end
   end
 end

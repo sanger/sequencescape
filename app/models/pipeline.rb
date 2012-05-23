@@ -1,3 +1,8 @@
+class PipelinesRequestType < ActiveRecord::Base
+  belongs_to :pipeline
+  belongs_to :request_type
+end
+
 class Pipeline < ActiveRecord::Base
   include ::ModelExtensions::Pipeline
 
@@ -15,14 +20,47 @@ class Pipeline < ActiveRecord::Base
 
   has_many :controls
   has_many :pipeline_request_information_types
+
   has_many :request_information_types, :through => :pipeline_request_information_types
   has_many :tasks, :through => :workflows
   belongs_to :location
 
-  belongs_to :request_type
-  validates_presence_of :request_type
+  has_many :pipelines_request_types
+  has_many :request_types, :through => :pipelines_request_types
+  validate :has_request_types
 
-  has_many :requests, :through => :request_type, :extend => Pipeline::RequestsInStorage do
+  def has_request_types
+    errors.add_to_base('A Pipeline must have at least one associcated RequestType') if self.request_types.blank?
+  end
+  private :has_request_types
+
+  belongs_to :control_request_type, :class_name => 'RequestType'
+
+  class RequestsProxy
+    include Pipeline::RequestsInStorage
+
+    def initialize(pipeline)
+      @pipeline = pipeline
+    end
+
+    attr_reader :pipeline
+    alias_method(:proxy_owner, :pipeline)
+    private :proxy_owner
+
+    def requests
+      Request.for_pipeline(proxy_owner)
+    end
+    private :requests
+
+    def respond_to?(name, include_private = false)
+      super or requests.respond_to?(name, include_private)
+    end
+
+    def method_missing(name, *args, &block)
+      requests.send(name, *args, &block)
+    end
+    protected :method_missing
+
     def inbox(show_held_requests = true, current_page = 1, action = nil)
       # Build a list of methods to invoke to build the correct request list
       actions = [ :unbatched ]
@@ -39,13 +77,21 @@ class Pipeline < ActiveRecord::Base
         actions << [ :paginate, { :per_page => 50, :page => current_page } ]
       end
 
-      actions.inject(self.include_request_metadata) { |context, action| context.send(*Array(action)) }
+      actions.inject(requests.include_request_metadata) { |context, action| context.send(*Array(action)) }
     end
 
     # Used by the Pipeline class to retrieve the list of requests that are coming into the pipeline.
     def inputs(show_held_requests = false)
       ready_in_storage.send(show_held_requests ? :full_inbox : :pipeline_pending)
     end
+  end
+
+  def requests
+    RequestsProxy.new(self)
+  end
+
+  def request_types_including_controls
+    [ control_request_type ] + request_types
   end
 
   def custom_inbox_actions
@@ -59,7 +105,14 @@ class Pipeline < ActiveRecord::Base
   named_scope :internally_managed, :conditions => { :externally_managed => false }
   named_scope :active,   :conditions => { :active => true }
   named_scope :inactive, :conditions => { :active => false }
-  
+
+  named_scope :for_request_type, lambda { |rt|
+    {
+      :joins => [ 'LEFT JOIN pipelines_request_types prt ON prt.pipeline_id = pipelines.id' ],
+      :conditions => ['prt.request_type_id = ?', rt.id]
+    }
+  }
+
   acts_as_audited :on => [:destroy, :update]
 
   self.inheritance_column = "sti_type"
@@ -73,11 +126,11 @@ class Pipeline < ActiveRecord::Base
   validates_uniqueness_of :name, :on => :create, :message => "name already in use"
 
   INBOX_PARTIAL               = 'default_inbox'
-  
+
   # Override this in subclasses if you want to display action links
   # for released batches
   ALWAYS_SHOW_RELEASE_ACTIONS = false
-  
+
   def inbox_partial
     INBOX_PARTIAL
   end
@@ -102,7 +155,7 @@ class Pipeline < ActiveRecord::Base
   def genotyping?
     false
   end
-  
+
   def sequencing?
     false
   end
@@ -162,7 +215,7 @@ class Pipeline < ActiveRecord::Base
     end
   end
   private :grouping_function
-  
+
   # to overwrite by subpipeline if needed
   def group_requests(requests, option={})
     requests.group_requests(:all, option).group_by(&grouping_function(option))
@@ -242,13 +295,13 @@ class Pipeline < ActiveRecord::Base
   def max_number_of_groups
     self[:max_number_of_groups] || 0
   end
-  
+
   def valid_number_of_checked_request_groups?(params ={})
     return true if max_number_of_groups.zero?
     return true if (selected_groups = params['request_group']).blank?
     grouping_parser.count(selected_values_from(selected_groups)) <= max_number_of_groups
   end
-  
+
   def all_requests_from_submissions_selected?(request_ids)
     true
   end

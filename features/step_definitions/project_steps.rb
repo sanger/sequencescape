@@ -82,7 +82,16 @@ end
 
 Given /^the preordered quota for project "([^\"]*)" should be:/ do |project_name, table|
   project = Project.find_by_name(project_name) or raise StandardError, "Cannot find project #{ project_name.inspect }"
-  table.rows.each do |rt_name ,count |
+
+  # This little hack is to fix hash ordering in up to date versions of
+  # ruby.
+  # It's not needed with up to date versions of cucumber... :)
+
+  # table.rows.each do |rt_name ,count |
+    table.hashes.map do |hash|
+      hash.values_at *table.headers
+    end.each do |rt_name,count|
+
     rt = RequestType.find_by_name(rt_name) or raise RuntimeError, "Cannot find request_type '#{rt_name}'"
     quota = project.quota_for(rt)
     assert_equal count.to_i, quota.preordered_count

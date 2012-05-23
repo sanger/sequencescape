@@ -21,6 +21,11 @@ Feature: Bulk Submission
     When I go to the create bulk submissions page
     Then I should see "Create a bulk submission"
    
+  Scenario: Uploading a valid file with 1 submission but a deprecated template
+    # When I upload a file with valid data for 1 submissions but deprecated template
+    When I upload a file with deprecated data for 1 submissions
+    Then I should see "Template: 'Cherrypick for pulldown - Pulldown WGS - HiSeq Paired end sequencing' is deprecated and no longer in use."
+
 
   Scenario: Uploading a valid file with 1 submission
     When I upload a file with valid data for 1 submissions
@@ -54,6 +59,7 @@ Feature: Bulk Submission
     When I upload a file with valid data for 1 submissions
     Then I should see "Insufficient quota for Pulldown WGS"
 
+  @this
   Scenario: Uploading a valid file with 2 submissions
     When I upload a file with valid data for 2 submissions
     Then I should see "Bulk submission successfully made"
