@@ -9,7 +9,7 @@ Given /^I have the following library tubes with tags( multiplexed in a tube)?:$/
     tag  = Tag.find_by_map_id(tag_id.match(/(\d+)/)[1].to_i) or raise StandardError, "Cannot find tag #{tag_id.inspect}"
     #tube.aliquots.create!(:tag => tag, :sample => Sample.create!(:name => "sample for tube #{tube.barcode}".gsub(" ","_")))
     tag.tag!(tube)
-    TransferRequest.create!(:asset => tube, :target_asset => mx_tube) if mx_tube
+    RequestType.transfer.create!(:asset => tube, :target_asset => mx_tube) if mx_tube
   end
 end
 
@@ -41,7 +41,7 @@ When /^I change the tags of the library tubes:$/ do |table|
   step %Q{I fill in "change_tags_library_tube_ids" with "#{library_tubes.map(&:id).join('\n')}"}
   step %Q{I press "Submit"}
   # assign the correct tag
-  tube_to_tags.each do|tube_id, tag_name| 
+  tube_to_tags.each do|tube_id, tag_name|
     step %Q{I select "#{tag_name}" from "change_tags_library_tubes[#{tube_id}]"}
   end
   step %Q{I press "Submit"}

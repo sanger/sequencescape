@@ -1,4 +1,4 @@
-# This may create invalid UUID external_id values but it means that we don't have to conform to the 
+# This may create invalid UUID external_id values but it means that we don't have to conform to the
 # standard in our features.
 def recursive_diff(h1, h2)
   if h1.is_a?(Hash) && h2.is_a?(Hash)
@@ -290,7 +290,7 @@ Given /^the (well|library tube|plate) "([^\"]+)" is a child of the (well|sample 
   parent.children << child
   if [parent, child].all? {|a| a.is_a?(Aliquot::Receptacle)}
     child.aliquots = []
-    TransferRequest.create!(:asset => parent, :target_asset => child)
+    RequestType.transfer.create!(:asset => parent, :target_asset => child)
     child.save!
   end
 end
@@ -308,7 +308,7 @@ Given /^the pathogen project called "([^"]*)" exists$/ do |project_name|
   project = Factory :project, :name => project_name, :approved => true, :state => "active"
   project.update_attributes!(:project_metadata_attributes => {
     :project_manager => ProjectManager.find_by_name('Unallocated'),
-    :project_cost_code => "ABC", 
+    :project_cost_code => "ABC",
     :funding_comments => "External funding",
     :collaborators  => "No collaborators",
     :external_funding_source  => "EU",

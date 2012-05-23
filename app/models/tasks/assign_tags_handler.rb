@@ -28,10 +28,7 @@ module Tasks::AssignTagsHandler
         tag.tag!(request.target_asset)
 
         AssetLink.create_edge(request.target_asset, multiplexed_library)
-        TransferRequest.create!(
-          :asset => request.target_asset,
-          :target_asset => multiplexed_library
-        ).tap do |tr|
+        RequestType.transfer.create!(:asset => request.target_asset, :target_asset => multiplexed_library).tap do |tr|
           tr.state = 'passed'
           tr.save!
         end

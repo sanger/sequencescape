@@ -12,9 +12,9 @@ Feature: Pipeline shows status of requests in pipeline
     And I have an associated workflow "Next-gen sequencing"
     And I have an "active" study called "Priority Study"
     And I have a control called "PhiX" for "Cluster formation SE"
-    And I have a batch in "Library preparation"
-    And I have a batch in "Library preparation"
-    And I have a request for "Library preparation"
+    And I have a batch in "Illumina-C Library preparation"
+    And I have a batch in "Illumina-C Library preparation"
+    And I have a request for "Illumina-C Library preparation"
 
     And study "Priority Study" has asset and assetgroup
     And study "Priority Study" has a registered sample "SampleToFail"
@@ -41,7 +41,7 @@ Feature: Pipeline shows status of requests in pipeline
     Then I should see "Priority Study"
     And I should see "SampleToPass"
 
-  Scenario:  I see the failed Library preparation request for the study
+  Scenario:  I see the failed Illumina-C Library preparation request for the study
     Given I am visiting study "Priority Study" homepage
     Then the page should contain the following
       | request type        | requested | pending | started | passed | failed | cancelled |

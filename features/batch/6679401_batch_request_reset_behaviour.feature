@@ -20,7 +20,7 @@ Feature: Resetting batches and their requests across the various pipelines
     @wip
     Scenarios: Library creation pipelines
       | pipeline                          | workflow            |
-      | Library preparation               | Next-gen sequencing |
+      | Illumina-C Library preparation    | Next-gen sequencing |
       | Illumina-B MX Library Preparation | Next-gen sequencing |
 #     | Pulldown library preparation | Next-gen sequencing |    # Unused prototype?
 #     | MX Library creation          | Next-gen sequencing |    # Unused

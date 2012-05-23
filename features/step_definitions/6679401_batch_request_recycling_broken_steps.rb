@@ -165,8 +165,12 @@ end
 
 LIBRARY_CREATION_PIPELINES = [
   'Library preparation',
+  'Illumina-C Library preparation',
+  'Illumina-B Library preparation',
+  'Illumina-A Library preparation',
   'MX Library creation',
   'MX Library Preparation [NEW]',
+  'Illumina-B MX Library Preparation',
   'Pulldown library preparation'
 ].map(&Regexp.method(:escape)).join('|')
 

@@ -77,12 +77,11 @@ Feature: Access pipelines through the API
       | cancelled |
       | blocked   |
 
-  @read @request
+  @read @request @wip
   Scenario Outline: Pending and held requests show up
     Given I have a request for "Cluster formation PE"
     And the last request is in the "<state>" state
     Given all requests have sequential UUIDs based on "99999999-1111-2222-3333"
-
     When I GET the API path "/00000000-1111-2222-3333-444444444444/requests"
     Then the HTTP response should be "200 OK"
     And the JSON should match the following for the specified fields:

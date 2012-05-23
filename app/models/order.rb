@@ -55,12 +55,12 @@ class Order < ActiveRecord::Base
   def all_samples
     # slightly less naive way
     all_assets.map do |asset|
-      asset.respond_to?(:aliquots) ? asset.aliquots : []
+      asset.aliquots
     end.flatten.map(&:sample).uniq
   end
 
   def all_assets
-    (asset_group.try(:assets) || []).concat(assets)
+    ((asset_group.try(:assets) || []) + (assets)).uniq
   end
 
   named_scope :for_studies, lambda {|*args| {:conditions => { :study_id => args[0]} } }

@@ -31,11 +31,14 @@ Feature: Study administration
     Given I am visiting study "Study B" homepage
     When I follow "Manage"
     Then I should see "Manage study: Study B"
-    And the checkbox labeled "Ethically approved" should not be checked
-    When I check "Ethically approved"
+    And the checkbox labeled "HMDMC approved" should not be checked
+    And the field labeled "HMDMC approval number" should contain ""
+    When I check "HMDMC approved"
+    And I fill in "HMDMC approval number" with "XX/XXX"
     And I press "Update"
     Then I should see "Your study has been updated"
-    And the checkbox labeled "Ethically approved" should be checked
+    And the checkbox labeled "HMDMC approved" should be checked
+    And the field labeled "HMDMC approval number" should contain "XX/XXX" 
     When I press "Update"
     Then I should see "Your study has been updated"
 

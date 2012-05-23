@@ -24,7 +24,7 @@ class AssignTagsToWellsTask < Task
     workflow.do_assign_tags_to_wells_task(self, params)
   end
 
-  def assign_tags_to_wells(requests, well_id_tag_id_map) 
+  def assign_tags_to_wells(requests, well_id_tag_id_map)
     # If the tubes have been processed they will have aliquots.  That means that this is a retagging
     # operation, otherwise we're initially tagging.
     have_tagged_tubes_already = requests.map(&:target_asset).uniq.all? { |tube| not tube.aliquots.empty? }
@@ -62,20 +62,20 @@ class AssignTagsToWellsTask < Task
     source_well_to_intermediate_wells.each do |source_well, assets|
       library_well, tagged_well, pooled_well, tube = assets
 
-      TransferRequest.create!(:asset => source_well,  :target_asset => library_well, :state => 'passed')
+      RequestType.transfer.create!(:asset => source_well,  :target_asset => library_well, :state => 'passed')
       library_well.aliquots.each { |aliquot| aliquot.update_attributes!(:library => library_well) }
 
-      TransferRequest.create!(:asset => library_well, :target_asset => tagged_well,  :state => 'passed')
+      RequestType.transfer.create!(:asset => library_well, :target_asset => tagged_well,  :state => 'passed')
       tag_id = well_id_tag_id_map[source_well.id]
       Tag.find(tag_id).tag!(tagged_well) if tag_id.present?
 
-      TransferRequest.create!(:asset => tagged_well,  :target_asset => pooled_well,  :state => 'passed')
+      RequestType.transfer.create!(:asset => tagged_well,  :target_asset => pooled_well,  :state => 'passed')
 
       raise StandardError, "Pooled well into different tube!" unless tube == (pooled_well_to_tube[pooled_well] || tube)
       pooled_well_to_tube[pooled_well] = tube
     end
 
-    pooled_well_to_tube.each { |well, tube| TransferRequest.create!(:asset => well, :target_asset => tube) }
+    pooled_well_to_tube.each { |well, tube| RequestType.transfer.create!(:asset => well, :target_asset => tube) }
   end
   private :retag_tubes
 
@@ -94,13 +94,13 @@ class AssignTagsToWellsTask < Task
 
     source_plate.wells.each do |well|
       library_well =  Well.create!
-      TransferRequest.create!(:asset => well, :target_asset => library_well, :state => 'passed')
+      RequestType.transfer.create!(:asset => well, :target_asset => library_well, :state => 'passed')
       library_plate.add_well_by_map_description(library_well, well.map_description)
       library_well.aliquots.each { |aliquot| aliquot.update_attributes!(:library => library_well) }
 
       tagged_well = Well.create!
       well_to_tagged[well] =tagged_well
-      TransferRequest.create!(:asset => library_well, :target_asset => tagged_well, :state => 'passed')
+      RequestType.transfer.create!(:asset => library_well, :target_asset => tagged_well, :state => 'passed')
       tag_plate.add_well_by_map_description(tagged_well, well.map_description)
       tag_id=well_id_tag_id_map[well.id]
       Tag.find(tag_id).tag!(tagged_well) if tag_id
@@ -122,13 +122,13 @@ class AssignTagsToWellsTask < Task
         pooled_plate.add_well_by_map_description(pooled_well, tagged_well.map_description)
       end
 
-      TransferRequest.create!(:asset => tagged_well, :target_asset => pooled_well, :state => 'passed')
+      RequestType.transfer.create!(:asset => tagged_well, :target_asset => pooled_well, :state => 'passed')
       # transfer between pooled_well and tube needs to be at the end, when all the aliquots are present
-      #TransferRequest.create!(:asset => pooled_well, :target_asset => tube)
+      #RequestType.transfer.create!(:asset => pooled_well, :target_asset => tube)
     end
 
     tube_to_pool.each do |tube, pooled_well|
-      TransferRequest.create!(:asset => pooled_well, :target_asset => tube, :state => 'passed')
+      RequestType.transfer.create!(:asset => pooled_well, :target_asset => tube, :state => 'passed')
     end
 
     link_pulldown_indexed_libraries_to_multiplexed_library(requests)
@@ -149,7 +149,7 @@ class AssignTagsToWellsTask < Task
 
   def create_tag_instances_and_link_to_wells(requests, params)
     params[:tag].map do |well_id, tag_id|
-      ActiveRecord::Base.transaction do     
+      ActiveRecord::Base.transaction do
         Tag.find(tag_id).tag!(Well.find(well_id))
       end
     end
@@ -176,7 +176,7 @@ class AssignTagsToWellsTask < Task
 #      sequencing_requests.each do |sequencing_request|
 #        sequencing_request.update_attributes!(:asset => initial_sequencing_request.asset, :target_asset => initial_sequencing_request.target_asset)
 #      end
-#      
+#
 #      requests_with_same_submission.each do |request|
 #        request.update_attributes!(:target_asset => initial_sequencing_request.asset)
 #      end
@@ -220,7 +220,7 @@ class AssignTagsToWellsTask < Task
     asset_ids_to_index = {}
     requests.map{|request| request.submission_id }.uniq.each_with_index{ |submission_id, index| submissions_to_index[submission_id] = index }
     requests.map{|request| asset_ids_to_index[request.asset_id] = submissions_to_index[request.submission_id] }
-    
+
     asset_ids_to_index
   end
 end

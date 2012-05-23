@@ -1,3 +1,5 @@
+class PipelinesRequestType < ActiveRecord::Base; end
+
 class MoveExistingPipelineRequestTypeAssociationToJoinTable < ActiveRecord::Migration
   def self.up
     say 'Copying pipeline request_type_ids into pipeline_request_types'
@@ -13,7 +15,7 @@ EO_SQL
   end
 
   def self.down
-    add_column :pipelines, :request_type_id
+    add_column :pipelines, :request_type_id, :integer
 
     connection.execute(<<-EO_SQL
       UPDATE pipelines

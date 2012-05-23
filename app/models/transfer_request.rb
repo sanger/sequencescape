@@ -14,7 +14,7 @@ class TransferRequest < Request
     end
 
     event :fail do
-      transition :to => :failed, :from => [:pending, :started, :failed]
+      transition :to => :failed, :from => [:pending, :started, :pending]
     end
 
     event :cancel do
@@ -35,6 +35,12 @@ class TransferRequest < Request
       record.errors.add(:target_asset, 'cannot be the same as the source')
     end
   end
+
+  before_create(:add_request_type)
+  def add_request_type
+    self.request_type ||= RequestType.transfer
+  end
+  private :add_request_type
 
   after_create(:perform_transfer_of_contents)
 

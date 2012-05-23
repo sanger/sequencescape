@@ -4,7 +4,7 @@ Feature: Fragment archive in library preparation batch
     Given I am logged in as "user" 
 
   Scenario: Add a fragment to batch
-    Given I have a batch with 1 request for the "Library preparation" pipeline
+    Given I have a batch with 1 request for the "Illumina-C Library preparation" pipeline
     Given I on batch page
     Then I should see "Gel"
     When I follow "Gel"

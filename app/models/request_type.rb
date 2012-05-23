@@ -45,12 +45,21 @@ class RequestType < ActiveRecord::Base
   validates_numericality_of :order, :integer_only => true
   validates_numericality_of :morphology, :in => MORPHOLOGIES
   validates_presence_of :request_class_name
-  
+
   serialize :request_parameters
 
   delegate :delegate_validator, :to => :request_class
 
-  named_scope :applicable_for_asset, lambda { |asset| { :conditions => { :asset_type => asset.asset_type_for_request_types.name } } }
+  named_scope :applicable_for_asset, lambda { |asset| 
+    {
+      :conditions => [
+        'asset_type = ?
+         AND request_class_name != "ControlRequest"
+         AND deprecated IS FALSE',
+         asset.asset_type_for_request_types.name
+      ]
+    }
+  }
 
   # Helper method for generating a request constructor, like 'create!'
   def self.request_constructor(name, options = {})
@@ -103,13 +112,17 @@ class RequestType < ActiveRecord::Base
     # TODO: this should either be an attribute in the request_types table or a specific class hierarchy is required
     [ :single_ended_sequencing, :paired_end_sequencing ].include?(self.key.to_sym)
   end
-  
+
   def self.dna_qc
-    RequestType.find_by_key("dna_qc")
+    @dna_qc ||= RequestType.find_by_key("dna_qc")
   end
-  
+
   def self.genotyping
-    RequestType.find_by_key("genotyping")
+    @genotyping ||= RequestType.find_by_key("genotyping")
+  end
+
+  def self.transfer
+    @transfer ||= RequestType.find_by_key("transfer")
   end
 
   def extract_metadata_from_hash(request_options)

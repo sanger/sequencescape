@@ -34,7 +34,7 @@ class StudyTest < ActiveSupport::TestCase
           requests
         end
 
-        #we have to hack t 
+        #we have to hack t
         requests.each do |request|
           request.asset.aliquots.each do |a|
             a.update_attributes(:study => @study)
@@ -58,7 +58,7 @@ class StudyTest < ActiveSupport::TestCase
       end
 
     end
-    
+
     context "Role system" do
       setup do
         @study = Factory :study, :name => "role test1"
@@ -103,6 +103,7 @@ class StudyTest < ActiveSupport::TestCase
       context "when contains human DNA" do
         setup do
           @study.study_metadata.contains_human_dna = Study::YES
+          @study.ethically_approved = false
           @study.save!
         end
 
@@ -110,6 +111,7 @@ class StudyTest < ActiveSupport::TestCase
           setup do
             @study.study_metadata.contaminated_human_dna = Study::NO
             @study.study_metadata.commercially_available = Study::NO
+            @study.ethically_approved = false
             @study.save!
           end
           should "be in the awaiting ethical approval list" do
@@ -120,21 +122,70 @@ class StudyTest < ActiveSupport::TestCase
         context "and is contaminated with human DNA" do
           setup do
             @study.study_metadata.contaminated_human_dna = Study::YES
+            @study.ethically_approved = nil
             @study.save!
           end
           should "not appear in the awaiting ethical approval list" do
             assert_does_not_contain(Study.all_awaiting_ethical_approval, @study)
           end
         end
-
       end
+
+      context "when needing ethical approval" do
+        setup do
+          @study.study_metadata.contains_human_dna = Study::YES
+          @study.study_metadata.contaminated_human_dna = Study::NO
+          @study.study_metadata.commercially_available = Study::NO
+        end
+
+        should "not be set to not applicable" do
+          @study.ethically_approved = nil
+          @study.valid?
+          assert @study.ethically_approved == false
+        end
+
+        should "be valid with true" do
+          @study.ethically_approved = true
+          assert @study.valid?
+        end
+
+        should "be valid with false" do
+          @study.ethically_approved = false
+          assert @study.valid?
+        end
+      end
+
+      context "when not needing ethical approval" do
+        setup do
+          @study.study_metadata.contains_human_dna = Study::YES
+          @study.study_metadata.contaminated_human_dna = Study::YES
+          @study.study_metadata.commercially_available = Study::NO
+        end
+
+        should "be valid with not applicable" do
+          @study.ethically_approved = nil
+          assert @study.valid?
+        end
+
+        should "be valid with true" do
+          @study.ethically_approved = true
+          assert @study.valid?
+        end
+
+        should "not be set to false" do
+          @study.ethically_approved = false
+          @study.valid?
+          assert @study.ethically_approved == nil
+        end
+      end
+
     end
 
 
     context "#unprocessed_submissions?" do
       setup do
         @study = Factory :study
-        @asset = Factory :asset
+        @asset = Factory :sample_tube
       end
       context "with submissions still unprocessed" do
         setup do
