@@ -88,12 +88,12 @@ module SubmissionsHelper
     when 'processing' then
       display_user_guide("Your submission is currently being processed.  This should take no longer than five minutes.")
     when 'failed' then
-      h('<h2>Your submission has failed:</h2>' + "<p>#{submission.message}</p>")
+      display_user_error("<h2>Your submission has failed:</h2><p> #{h(submission.message)} </p>")
     when 'ready'
       content_tag(:p, 'Your submission has been <strong>processed</strong>.')
-    else 
+    else
       content_tag(:p, 'Your submission is in an unknown state (contact support).')
-    end 
+    end
   end
 
   def order_sample_names(order)
