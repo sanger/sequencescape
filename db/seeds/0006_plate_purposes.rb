@@ -422,7 +422,7 @@ plate_purposes = <<-EOS
   type: PulldownQpcrPlatePurpose
   target_type: PulldownQpcrPlate
   EOS
-  
+
 plate_purposes_data = []
 YAML::load(plate_purposes).each do |plate_purpose|
   if plate_purpose["type"].blank?
@@ -502,4 +502,42 @@ ActiveRecord::Base.transaction do
     plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
     plate_purpose.child_plate_purposes << qc_plate_purpose
   end
+
+  #Illumina B Seeds
+  illumina_b_barcode_printer_type_id = BarcodePrinterType.find_by_type('BarcodePrinterType96Plate').id
+  illumina_b_plate_purposes = [
+      {
+        :name => 'ILB_STD_INPUT',
+        :type => IlluminaB::StockPlatePurpose,
+        :qc_display => 0,
+        :can_be_considered_a_stock_plate => 1,
+        :default_state => 'passed',
+        :barcode_printer_type_id => illumina_b_barcode_printer_type_id,
+        :cherrypickable_target => 1,
+        :row_orientated => true
+      },
+      {
+        :name => 'ILB_STD_PCRXP',
+        :type => IlluminaB::TaggedPlatePurpose,
+        :qc_display => 0,
+        :can_be_considered_a_stock_plate => 0,
+        :default_state => 'pending',
+        :barcode_printer_type_id => illumina_b_barcode_printer_type_id,
+        :cherrypickable_target => 0,
+        :row_orientated => true
+      }
+    ]
+  illumina_b_child_plate_purposes = {
+    'ILB_STD_INPUT' => 'ILB_STD_PCRXP'
+  }
+
+  illumina_b_plate_purposesplate_purposes.each do |config|
+    config[:type].create!(config)
+  end
+  illumina_b_child_plate_purposes.each do |parent,child|
+    PlatePurpose.find_by_name(parent).child_plate_purposes << PlatePurpose.find_by_name(child)
+  end
+
+
+
 end
