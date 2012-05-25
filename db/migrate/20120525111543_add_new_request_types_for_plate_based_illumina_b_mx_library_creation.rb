@@ -23,18 +23,14 @@ class AddNewRequestTypesForPlateBasedIlluminaBMxLibraryCreation < ActiveRecord::
       :product_line_id => @product_line_id
     }
   ]
-  @old_request_type = 'illumina_b_multiplexed_library_creation'
 
   def self.up
     ActiveRecord::Base.transaction do
-
       @request_types.each do |config|
         RequestType.create!(config).tap do |request_type|
           request_type.acceptable_plate_purposes  << @plate_purpose
         end
       end
-
-      RequestType.update_all({:deprecated => true}, ['`key` = ?', @old_request_type])
     end
   end
 
@@ -43,7 +39,6 @@ class AddNewRequestTypesForPlateBasedIlluminaBMxLibraryCreation < ActiveRecord::
       @request_types.each do |config|
         RequestType.find_by_key(config[:key]).destroy
       end
-      RequestType.update_all({:deprecated => false}, ['`key` = ?', @old_request_type])
     end
   end
 end
