@@ -161,10 +161,9 @@ module SampleManifest::PlateBehaviour
         end
       end
     end
-
     core_behaviour.generate_wells(well_data, plates)
     self.barcodes = plates.map(&:sanger_human_barcode)
-    RequestFactory.create_assets_requests(plates.map(&:id), self.study.id)
+    #RequestFactory.create_assets_requests(plates.map(&:id), self.study.id)
 
     save!
   end
