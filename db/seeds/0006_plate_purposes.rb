@@ -504,8 +504,6 @@ ActiveRecord::Base.transaction do
   end
 
   #Illumina B Seeds
-
-  illumina_b_barcode_printer_type_id = BarcodePrinterType.find_by_type('BarcodePrinterType96Plate').id
   illumina_b_plate_purposes = [
       {
         :name => 'ILB_STD_INPUT',
@@ -513,7 +511,6 @@ ActiveRecord::Base.transaction do
         :qc_display => 0,
         :can_be_considered_a_stock_plate => 1,
         :default_state => 'passed',
-        :barcode_printer_type_id => illumina_b_barcode_printer_type_id,
         :cherrypickable_target => 1,
         :cherrypick_direction => 'row'
       },
@@ -523,7 +520,6 @@ ActiveRecord::Base.transaction do
         :qc_display => 0,
         :can_be_considered_a_stock_plate => 0,
         :default_state => 'pending',
-        :barcode_printer_type_id => illumina_b_barcode_printer_type_id,
         :cherrypickable_target => 0,
         :cherrypick_direction => 'row'
       },
@@ -533,7 +529,6 @@ ActiveRecord::Base.transaction do
         :qc_display => 0,
         :can_be_considered_a_stock_plate => 0,
         :default_state => 'pending',
-        :barcode_printer_type_id => illumina_b_barcode_printer_type_id,
         :cherrypickable_target => 0,
         :cherrypick_direction => 'row'
       }
