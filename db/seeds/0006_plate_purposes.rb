@@ -549,4 +549,5 @@ ActiveRecord::Base.transaction do
     PlatePurpose.find_by_name(parent).child_plate_purposes << PlatePurpose.find_by_name(child)
   end
 
+
 end
