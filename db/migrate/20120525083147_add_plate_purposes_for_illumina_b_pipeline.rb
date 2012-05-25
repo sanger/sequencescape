@@ -1,32 +1,32 @@
 class AddPlatePurposesForIlluminaBPipeline < ActiveRecord::Migration
 
-  def plate_purposes
+  def self.plate_purposes
     [
       {
         :name => 'ILB_STD_INPUT',
         :type => IlluminaB::StockPlatePurpose,
         :can_be_considered_a_stock_plate => 1,
         :default_state => 'passed',
-        :barcode_printer_type_id => BarcodePrinterType.find_by_type('BarcodePrinterType96Plate').id,
+        :barcode_printer_type => BarcodePrinterType.find_by_type('BarcodePrinterType96Plate'),
         :cherrypickable_target => 1,
         :cherrypick_direction => 'row'
       },
       {
         :name => 'ILB_STD_COVARIS',
         :type => IlluminaB::CovarisPlatePurpose,
-        :barcode_printer_type_id => BarcodePrinterType.find_by_type('BarcodePrinterType96Plate').id,
+        :barcode_printer_type => BarcodePrinterType.find_by_type('BarcodePrinterType96Plate'),
         :cherrypick_direction => 'row'
       },
       {
         :name => 'ILB_STD_PCRXP',
         :type => IlluminaB::TaggedPlatePurpose,
-        :barcode_printer_type => BarcodePrinterType.find_by_type('BarcodePrinterType96Plate').id,
+        :barcode_printer_type => BarcodePrinterType.find_by_type('BarcodePrinterType96Plate'),
         :cherrypick_direction => 'row'
       }
     ]
   end
 
-  def child_plate_purposes
+  def self.child_plate_purposes
     {
       'ILB_STD_INPUT' => 'ILB_STD_COVARIS',
       'ILB_STD_COVARIS' => 'ILB_STD_PCRXP'
