@@ -1,4 +1,3 @@
-
 class AddPlatePurposesForIlluminaBPipeline < ActiveRecord::Migration
 
   def plate_purposes
