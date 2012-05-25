@@ -1,4 +1,23 @@
 class PlatePurpose < ActiveRecord::Base
+  class Relationship < ActiveRecord::Base
+    set_table_name('plate_purpose_relationships')
+    belongs_to :parent, :class_name => 'PlatePurpose'
+    belongs_to :child, :class_name => 'PlatePurpose'
+
+    module Associations
+      def self.included(base)
+        base.class_eval do
+          has_many :child_relationships, :class_name => 'PlatePurpose::Relationship', :foreign_key => :parent_id, :dependent => :destroy
+          has_many :child_plate_purposes, :through => :child_relationships, :source => :child
+
+          has_many :parent_relationships, :class_name => 'PlatePurpose::Relationship', :foreign_key => :child_id, :dependent => :destroy
+          has_many :parent_plate_purposes, :through => :parent_relationships, :source => :parent
+        end
+      end
+    end
+  end
+  include Relationship::Associations
+
 end
 class IlluminaB::StockPlatePurpose < PlatePurpose
 end
@@ -30,10 +49,17 @@ class AddPlatePurposesForIlluminaBPipeline < ActiveRecord::Migration
         :row_orientated => true
       }
     ]
+  @child_plate_purposes = {
+    'ILB_STD_INPUT' => 'ILB_STD_PCRXP'
+  }
+
   def self.up
     ActiveRecord::Base.transaction do
       @plate_purposes.each do |config|
         config[:type].create!(config)
+      end
+      @child_plate_purposes.each do |parent,child|
+        PlatePurpose.find_by_name(parent).child_plate_purposes << PlatePurpose.find_by_name(child)
       end
     end
   end
