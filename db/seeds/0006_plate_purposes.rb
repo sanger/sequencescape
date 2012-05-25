@@ -531,12 +531,17 @@ ActiveRecord::Base.transaction do
     'ILB_STD_INPUT' => 'ILB_STD_PCRXP'
   }
 
+  illumina_b_request_type = RequestType.find_by_key('illumina_b_std')
+
   illumina_b_plate_purposes.each do |config|
-    config[:type].create!(config)
+    config[:type].create!(config).tap do |plate_purpose|
+      illumina_b_request_type.acceptable_plate_purposes  << plate_purpose
+    end
   end
   illumina_b_child_plate_purposes.each do |parent,child|
     PlatePurpose.find_by_name(parent).child_plate_purposes << PlatePurpose.find_by_name(child)
   end
+
 
 
 
