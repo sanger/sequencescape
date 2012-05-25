@@ -1,13 +1,13 @@
 class AddPlateOrientationFlagToPlatePurposes < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
-      add_column :plate_purposes, :row_orientated, :boolean, :null => false, :default => false
+      add_column :plate_purposes, :cherrypick_direction, :string, :null => false, :default => 'column'
     end
   end
 
   def self.down
     ActiveRecord::Base.transaction do
-      remove_column :plate_purposes, :row_orientated
+      remove_column :plate_purposes, :cherrypick_direction
     end
   end
 end
