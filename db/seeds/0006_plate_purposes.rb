@@ -507,6 +507,8 @@ ActiveRecord::Base.transaction do
   end
 
   #Illumina B Seeds
+
+  illumina_b_barcode_printer_type_id = BarcodePrinterType.find_by_type('BarcodePrinterType96Plate').id
   illumina_b_plate_purposes = [
       {
         :name => 'ILB_STD_INPUT',
@@ -514,6 +516,7 @@ ActiveRecord::Base.transaction do
         :qc_display => 0,
         :can_be_considered_a_stock_plate => 1,
         :default_state => 'passed',
+        :barcode_printer_type_id => illumina_b_barcode_printer_type_id,
         :cherrypickable_target => 1,
         :cherrypick_direction => 'row'
       },
@@ -523,7 +526,7 @@ ActiveRecord::Base.transaction do
         :qc_display => 0,
         :can_be_considered_a_stock_plate => 0,
         :default_state => 'pending',
-        :barcode_printer_type_id => @barcode_printer_type_id,
+        :barcode_printer_type_id => illumina_b_barcode_printer_type_id,
         :cherrypickable_target => 0,
         :cherrypick_direction => 'row'
       },
@@ -533,6 +536,7 @@ ActiveRecord::Base.transaction do
         :qc_display => 0,
         :can_be_considered_a_stock_plate => 0,
         :default_state => 'pending',
+        :barcode_printer_type_id => illumina_b_barcode_printer_type_id,
         :cherrypickable_target => 0,
         :cherrypick_direction => 'row'
       }
@@ -541,17 +545,13 @@ ActiveRecord::Base.transaction do
     'ILB_STD_INPUT' => 'ILB_STD_PCRXP'
   }
 
-  illumina_b_request_type = RequestType.find_by_key('illumina_b_std')
-
   illumina_b_plate_purposes.each do |config|
     config[:type].create!(config)
   end
-  illumina_b_request_type.acceptable_plate_purposes  << PlatePurpose.find_by_name('ILB_STD_INPUT')
+  RequestType.find_by_key('illumina_b_std').acceptable_plate_purposes  << PlatePurpose.find_by_name('ILB_STD_INPUT')
+
   illumina_b_child_plate_purposes.each do |parent,child|
     PlatePurpose.find_by_name(parent).child_plate_purposes << PlatePurpose.find_by_name(child)
   end
-
-
-
 
 end
