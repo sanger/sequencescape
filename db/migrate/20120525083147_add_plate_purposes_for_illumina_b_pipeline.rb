@@ -36,7 +36,7 @@ class AddPlatePurposesForIlluminaBPipeline < ActiveRecord::Migration
         :default_state => 'passed',
         :barcode_printer_type_id => @barcode_printer_type_id,
         :cherrypickable_target => 1,
-        :row_orientated => true
+        :cherrypick_direction => 'row'
       },
       {
         :name => 'ILB_STD_PCRXP',
@@ -46,7 +46,7 @@ class AddPlatePurposesForIlluminaBPipeline < ActiveRecord::Migration
         :default_state => 'pending',
         :barcode_printer_type_id => @barcode_printer_type_id,
         :cherrypickable_target => 0,
-        :row_orientated => true
+        :cherrypick_direction => 'row'
       }
     ]
   @child_plate_purposes = {

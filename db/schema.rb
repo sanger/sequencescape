@@ -663,7 +663,7 @@ ActiveRecord::Schema.define(:version => 20120525083147) do
     t.string   "default_state",                                 :default => "pending"
     t.integer  "barcode_printer_type_id",                       :default => 2
     t.boolean  "cherrypickable_target",                         :default => true,      :null => false
-    t.boolean  "row_orientated",                                :default => false,     :null => false
+    t.string   "cherrypick_direction",                          :default => "column",  :null => false
   end
 
   add_index "plate_purposes", ["qc_display"], :name => "index_plate_purposes_on_qc_display"
