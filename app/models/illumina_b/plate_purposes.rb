@@ -6,7 +6,7 @@ module IlluminaB::PlatePurposes
     ]
   ]
 
+  # Don't have ILllumina B QC plates at the momnet...
   PULLDOWN_PLATE_PURPOSE_LEADING_TO_QC_PLATES = [
-    'ILB_STD_PCRXP'
   ]
 end
