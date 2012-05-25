@@ -318,7 +318,7 @@ Given /^asset with barcode "([^"]*)" belongs to study "([^"]*)"$/ do |raw_barcod
   asset = Asset.find_from_machine_barcode(raw_barcode) or raise StandardError, "Cannot find asset with machine barcode #{raw_barcode.inspect}"
   asset_ids = [asset.id]
   asset_ids += asset.well_ids if asset.respond_to?(:wells)
-  RequestFactory.create_assets_requests(asset_ids, study.id)
+  RequestFactory.create_assets_requests(asset_ids, study.id) if asset.is_a?(SampleTube) || (asset.is_a?(Well) && asset.plate.stock_plate?)
 end
 
 Given /^the asset "([^\"]+)" belongs to study "([^\"]+)"$/ do |asset_name, study_name|
@@ -326,7 +326,7 @@ Given /^the asset "([^\"]+)" belongs to study "([^\"]+)"$/ do |asset_name, study
   asset = Asset.find_by_name(asset_name) or raise StandardError, "Cannot find asset #{asset_name.inspect}"
   asset_ids = [asset.id]
   asset_ids += asset.well_ids if asset.respond_to?(:wells)
-  RequestFactory.create_assets_requests(asset_ids, study.id)
+  RequestFactory.create_assets_requests(asset_ids, study.id) if asset.is_a?(SampleTube) || (asset.is_a?(Well) && asset.plate.stock_plate?)
 end
 
 Then /^abbreviation for Study "([^"]*)" should be "([^"]*)"$/ do |study_name, abbreviation_regex|
