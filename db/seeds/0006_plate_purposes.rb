@@ -515,7 +515,7 @@ ActiveRecord::Base.transaction do
         :can_be_considered_a_stock_plate => 1,
         :default_state => 'passed',
         :cherrypickable_target => 1,
-        :row_orientated => true
+        :cherrypick_direction => 'row'
       },
       {
         :name => 'ILB_STD_PCRXP',
@@ -524,7 +524,7 @@ ActiveRecord::Base.transaction do
         :can_be_considered_a_stock_plate => 0,
         :default_state => 'pending',
         :cherrypickable_target => 0,
-        :row_orientated => true
+        :cherrypick_direction => 'row'
       }
     ]
   illumina_b_child_plate_purposes = {
