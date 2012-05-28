@@ -6,6 +6,7 @@ class AddNewIlluminaBSubmissionTemplates < ActiveRecord::Migration
     ActiveRecord::Base.transaction do
       illumina_b_templates.each do |old_template|
         make_new_template!(old_template)
+        old_template.update_attributes!(:visible,false)
       end
     end
   end
@@ -14,6 +15,10 @@ class AddNewIlluminaBSubmissionTemplates < ActiveRecord::Migration
     ActiveRecord::Base.transaction do
       new_illumina_b_templates.each do |new_template|
         new_template.destroy
+      end
+      illumina_b_templates.each do |old_template|
+        make_new_template!(old_template)
+        old_template.update_attributes!(:visible,true)
       end
     end
   end
