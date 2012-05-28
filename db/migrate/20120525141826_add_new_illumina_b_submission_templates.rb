@@ -1,12 +1,13 @@
 class AddNewIlluminaBSubmissionTemplates < ActiveRecord::Migration
 
   @product_line_id = ProductLine.find_by_name('Illumina-B').id
+  @cherrypick_request_type_id = RequestType.find_by_key('cherrypick_for_pulldown').id
 
   def self.up
     ActiveRecord::Base.transaction do
       illumina_b_templates.each do |old_template|
         make_new_template!(old_template)
-        old_template.update_attributes!(:visible,false)
+        old_template.update_attributes!(:visible => false)
       end
     end
   end
@@ -17,8 +18,7 @@ class AddNewIlluminaBSubmissionTemplates < ActiveRecord::Migration
         new_template.destroy
       end
       illumina_b_templates.each do |old_template|
-        make_new_template!(old_template)
-        old_template.update_attributes!(:visible,true)
+        old_template.update_attributes!(:visible => true)
       end
     end
   end
@@ -32,18 +32,19 @@ class AddNewIlluminaBSubmissionTemplates < ActiveRecord::Migration
   end
 
   def self.new_template_name(old_template)
-    old_template.name.gsub(/Multiplexed Library Creation/,'Multiplexed WGS')
+    old_template.name.gsub(/Multiplexed library creation/,'Multiplexed WGS')
   end
 
   def self.make_new_template!(old_template)
     submission_parameters = old_template.submission_parameters.dup
 
-    submission_parameters[:request_type_ids_list] = substitute_request_type(
+    submission_parameters[:request_type_ids_list] = update_request_types(
       submission_parameters[:request_type_ids_list],
       RequestType.find_by_key('illumina_b_multiplexed_library_creation').id,
       RequestType.find_by_key('illumina_b_std').id
       )
-      say "Creating #{new_template_name(old_template)}"
+
+    say "Creating #{new_template_name(old_template)}"
     SubmissionTemplate.create!(
       {
         :name                  => "#{new_template_name(old_template)}",
@@ -55,7 +56,10 @@ class AddNewIlluminaBSubmissionTemplates < ActiveRecord::Migration
   end
 
   def self.substitute_request_type(list,old_id,new_id)
-    list.map {|id| id = new_id if id == old_id}
+    list.map {|id| id == [old_id] ? [new_id] : id }
   end
 
+  def self.update_request_types(list,old_id,new_id)
+    substitute_request_type(list,old_id,new_id).unshift([@cherrypick_request_type_id])
+  end
 end
