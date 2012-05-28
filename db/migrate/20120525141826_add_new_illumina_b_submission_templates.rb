@@ -1,7 +1,6 @@
 class AddNewIlluminaBSubmissionTemplates < ActiveRecord::Migration
 
   @product_line_id = ProductLine.find_by_name('Illumina-B').id
-  @cherrypick_request_type_id = RequestType.find_by_key('cherrypick_for_pulldown').id
 
   def self.up
     ActiveRecord::Base.transaction do
@@ -62,4 +61,5 @@ class AddNewIlluminaBSubmissionTemplates < ActiveRecord::Migration
   def self.update_request_types(list,old_id,new_id)
     substitute_request_type(list,old_id,new_id).unshift([@cherrypick_request_type_id])
   end
+
 end
