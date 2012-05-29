@@ -39,6 +39,16 @@ class AddPlatePurposesForIlluminaBPipeline < ActiveRecord::Migration
         :cherrypick_direction => 'row'
       },
       {
+        :name => 'ILB_STD_COVARIS',
+        :type => IlluminaB::CovarisPlatePurpose,
+        :qc_display => 0,
+        :can_be_considered_a_stock_plate => 0,
+        :default_state => 'pending',
+        :barcode_printer_type_id => @barcode_printer_type_id,
+        :cherrypickable_target => 0,
+        :cherrypick_direction => 'row'
+      },
+      {
         :name => 'ILB_STD_PCRXP',
         :type => IlluminaB::TaggedPlatePurpose,
         :qc_display => 0,
@@ -50,7 +60,8 @@ class AddPlatePurposesForIlluminaBPipeline < ActiveRecord::Migration
       }
     ]
   @child_plate_purposes = {
-    'ILB_STD_INPUT' => 'ILB_STD_PCRXP'
+    'ILB_STD_INPUT' => 'ILB_STD_COVARIS',
+    'ILB_STD_COVARIS' => 'ILB_STD_PCRXP'
   }
 
   def self.up

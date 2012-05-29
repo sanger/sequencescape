@@ -4,6 +4,5 @@
 # and the library, allowing subsequent requests to be made on the plate.
 # This behaviour can be split up later.
 class IlluminaB::TaggedPlatePurpose < PlatePurpose
-  include PlatePurpose::Initial
   include PlatePurpose::Library
 end
