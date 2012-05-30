@@ -28,7 +28,8 @@ class Request < ActiveRecord::Base
     named_scope :for_pipeline, lambda { |pipeline|
       {
         :joins => [ 'LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id' ],
-        :conditions => [ 'prt.pipeline_id=?', pipeline.id]
+        :conditions => [ 'prt.pipeline_id=?', pipeline.id],
+        :readonly => false
       }
     }
 
@@ -124,7 +125,7 @@ class Request < ActiveRecord::Base
 
   #Asset are Locatable (or at least some of them)
   belongs_to :location_association, :primary_key => :locatable_id, :foreign_key => :asset_id
-  named_scope :located, lambda {|location_id| { :joins => :location_association, :conditions =>  ['location_associations.location_id = ?', location_id ] } }
+  named_scope :located, lambda {|location_id| { :joins => :location_association, :conditions =>  ['location_associations.location_id = ?', location_id ], :readonly => false } }
 
   #Use container location
   named_scope :holder_located, lambda { |location_id|
@@ -160,6 +161,7 @@ class Request < ActiveRecord::Base
     send(finder_method, options.slice(:group).merge(
       :select  => "requests.*, tca.container_id AS container_id, tca.content_id AS content_id",
       :joins   => "INNER JOIN container_associations tca ON tca.content_id=#{target}",
+      :readonly => false,
       :include => :request_metadata
     ))
   end
