@@ -35,8 +35,10 @@ class StateChange < ActiveRecord::Base
   private :record_current_state_of_target
 
   # After creation update the state of the target asset, leaving it to do the right thing.
+  # After state change, update the owner
   after_create :update_state_of_target
   def update_state_of_target
+    target.owner = user
     target.transition_to(target_state, contents)
   end
   private :update_state_of_target
