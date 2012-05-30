@@ -160,6 +160,7 @@ class Request < ActiveRecord::Base
     send(finder_method, options.slice(:group).merge(
       :select  => "requests.*, tca.container_id AS container_id, tca.content_id AS content_id",
       :joins   => "INNER JOIN container_associations tca ON tca.content_id=#{target}",
+      :readonly => false,
       :include => :request_metadata
     ))
   end
