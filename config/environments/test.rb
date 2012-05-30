@@ -25,5 +25,8 @@ config.action_controller.allow_forgery_protection    = false
 config.action_mailer.delivery_method = :test
 config.reload_plugins = true
 
+# Activate observers that should always be running
+config.active_record.observers = :request_observer
+
 # On MacOS X we've got a buggy LibXML version and Nokogiri complains!
 I_KNOW_I_AM_USING_AN_OLD_AND_BUGGY_VERSION_OF_LIBXML2 = true

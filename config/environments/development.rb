@@ -20,3 +20,6 @@ config.action_controller.allow_forgery_protection    = false
 config.action_mailer.raise_delivery_errors = false
 
 config.log_level = :debug
+
+# Activate observers that should always be running
+config.active_record.observers = :request_observer
