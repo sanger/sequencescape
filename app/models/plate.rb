@@ -15,7 +15,7 @@ class Plate < Asset
   has_one :owner, :source => :user, :through => :plate_owner
   named_scope :for_user, lambda { |user_id|
     {
-      :joins => "LEFT OUTER JOIN `plate_owner` AS `fusr_plate_owner` ON `fusr_plate_owner`.plate_id = assets.id",
+      :joins => "LEFT OUTER JOIN `plate_owners` AS `fusr_plate_owner` ON `fusr_plate_owner`.plate_id = assets.id",
       :conditions => ["`fusr_plate_owner`.user_id = ?", user_id]
     }
   }
