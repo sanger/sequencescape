@@ -243,16 +243,9 @@ WHERE c.container_id=?
   end
 
   def control_well_exists?
-    wells.each do |well|
-      request = Request.find_by_target_asset_id(well.id)
-      unless request.nil?
-        source_well = request.asset
-        if source_well.parent.is_a?(ControlPlate)
-          return true
-        end
-      end
-    end
-    false
+		Request.into_by_id(well_ids).any? do |request|
+			request.asset.plate.is_a?(ControlPlate)
+		end
   end
 
   # A plate has a sample with the specified name if any of its wells have that sample.
