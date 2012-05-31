@@ -7,3 +7,6 @@ Search::FindSourceAssetsByDestinationAssetBarcode.create!(:name => 'Find source 
 Search::FindUserByLogin.create!(:name => 'Find user by login')
 Search::FindUserBySwipecardCode.create!(:name => 'Find user by swipecard code')
 Search::FindPulldownPlates.create!(:name => 'Find pulldown plates')
+Search::FindIlluminaBPlates.create!(:name=>'Find illumina-b plates')
+Search::FindIlluminaBPlatesForUser.create!(:name=>'Find illumina-b plates for user')
+Search::FindIlluminaBStockPlates.create!(:name=>'Find illumina-b stock plates')
