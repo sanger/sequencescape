@@ -14,8 +14,26 @@ class ::Endpoints::TransferTemplates < ::Core::Endpoint::Base
       end
     end
 
+    def user_from_request(request)
+      User.find(Uuid.find_id(request.json["transfer"]["user"]))
+    end
+
+    def source_plate_from_request(request)
+      plate_from_uuid(request.json["transfer"]["source"])
+    end
+
+    def destination_plate_from_request(request)
+      plate_from_uuid(request.json["transfer"]["destination"])
+    end
+
+    def plate_from_uuid(uuid)
+      Plate.find(Uuid.find_id(uuid))
+    end
+
     action(:create) do |request,response|
       response.status(201)
+      source_plate_from_request(request).owner = user_from_request(request)
+      destination_plate_from_request(request).owner = user_from_request(request)
       build_transfer(request, &request.target.method(:create!))
     end
     bind_action(:create, :as => 'preview', :to => 'preview') do |request,response|
