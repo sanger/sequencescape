@@ -16,7 +16,7 @@ class AddNewRequestTypesForPlateBasedIlluminaBMxLibraryCreation < ActiveRecord::
       :initial_state => 'pending',
       :target_asset_type => 'MultiplexedLibraryTube',
       :multiples_allowed => 0,
-      :request_class_name => 'Pulldown::Requests::LibraryCreation',
+      :request_class_name => 'IlluminaB::Requests::StdLibraryRequest',
       :morphology => 0,
       :for_multiplexing => 1,
       :billable => 1,
