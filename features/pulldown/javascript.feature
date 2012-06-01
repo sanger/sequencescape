@@ -158,6 +158,7 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     When I uncheck "Select DN333P for batch"
     Then I should see "You have no requests selected"
 
+  @wip
   Scenario: Print tube barcodes for pulldown multiplexing
     Given I have a project called "Test project"
     And project "Test project" has enough quotas
