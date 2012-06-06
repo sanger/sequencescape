@@ -28,10 +28,43 @@ class CherrypickTask < Task
   # and be a partial plate, and so when wells are picked into it we need to ensure that we don't hit
   # the template/partial wells.
   class PickTarget
-    def initialize(batch, template, partial)
+    def self.for(plate_purpose)
+      cherrypick_direction = plate_purpose.nil? ? 'column' : plate_purpose.cherrypick_direction
+      const_get("by_#{cherrypick_direction}".classify)
+    end
+
+    def initialize(batch, template, partial = nil)
       @wells, @size, @batch = [], template.size, batch
       initialize_already_occupied_wells_from(template, partial)
       add_any_wells_from_template_or_partial(@wells)
+    end
+
+    # Deals with generating the pick plate by travelling in a row direction, so A1, A2, A3 ...
+    class ByRow < PickTarget
+      def well_position(wells)
+        (wells.size+1) > @size ? nil : wells.size+1
+      end
+      private :well_position
+
+      def completed_view
+        @wells.dup.tap do |wells|
+          complete(wells)
+        end.each_with_index.inject([]) do |wells, (well, index)|
+          wells.tap { wells[Map.horizontal_to_vertical(index+1, @size)] = well }
+        end.compact
+      end
+    end
+
+    # Deals with generating the pick plate by travelling in a column direction, so A1, B1, C1 ...
+    class ByColumn < PickTarget
+      def well_position(wells)
+        Map.vertical_to_horizontal(wells.size+1, @size)
+      end
+      private :well_position
+
+      def completed_view
+        @wells.dup.tap { |wells| complete(wells) }
+      end
     end
 
     def empty?
@@ -48,13 +81,6 @@ class CherrypickTask < Task
       self
     end
 
-    # Returns an array that represents the complete pick plate as it would be at the current time.
-    # This is not necessarily the final version, as you can continue to pick to the plate, but it is
-    # a snapshot in time.
-    def completed_view
-      @wells.dup.tap { |wells| complete(wells) }
-    end
-
     # Completes the given well array such that it looks like the plate has been completely picked.
     def complete(wells)
       until wells.size == @size
@@ -69,9 +95,11 @@ class CherrypickTask < Task
     # pick.
     def initialize_already_occupied_wells_from(template, partial)
       @used_wells = {}.tap do |wells|
-        partial.wells.each  { |w| wells[w.map.horizontal_plate_position] = w.map.description } unless partial.nil?
-        template.wells.each { |w| wells[w.map.snp_id] = w.map.description }
+        [partial, template].compact.each do |plate|
+          plate.wells.each { |w| wells[w.map.horizontal_plate_position] = w.map.description }
+        end
       end
+
       @control_well_required = template.control_well? && (partial.nil? || !partial.control_well_exists?)
     end
     private :initialize_already_occupied_wells_from
@@ -80,7 +108,7 @@ class CherrypickTask < Task
     # checked to see if subsequent wells are already taken.  In other words, after calling this method
     # the next position on the pick plate is known to be empty.
     def add_any_wells_from_template_or_partial(wells)
-      wells << CherrypickTask::TEMPLATE_EMPTY_WELL until wells.size == @size or @used_wells[Map.vertical_to_horizontal(wells.size+1, @size)].nil?
+      wells << CherrypickTask::TEMPLATE_EMPTY_WELL until wells.size == @size or @used_wells[well_position(wells)].nil?
       return unless @control_well_required and wells.size == (@size-1)
 
       # Control well is always in the bottom right corner of the plate
@@ -97,19 +125,35 @@ class CherrypickTask < Task
     private :add_empty_well
   end
 
-  def map_wells_to_plates(requests, template, robot, batch, partial_plate)
+  def pick_new_plate(requests, template, robot, batch, plate_purpose)
+    target_type = PickTarget.for(plate_purpose)
+    perform_pick(requests, robot, batch) do |batch|
+      target_type.new(batch, template)
+    end
+  end
+
+  def pick_onto_partial_plate(requests, template, robot, batch, partial_plate)
+    target_type = PickTarget.for(partial_plate.plate_purpose)
+    perform_pick(requests, robot, batch) do |batch|
+      target_type.new(batch, template, partial_plate).tap do
+        partial_plate = nil  # Ensure that subsequent calls have no partial plate
+      end
+    end
+  end
+
+  def perform_pick(requests, robot, batch, &block)
     max_plates = robot.max_beds
     raise StandardError, 'The chosen robot has no beds!' if max_plates.zero?
 
     batch                          = BatchWrapper.new(self, batch)
-    plates, current_plate          = [], PickTarget.new(batch, template, partial_plate)
+    plates, current_plate          = [], yield(batch)
     source_plates, current_sources = Set.new, Set.new
     plates_hash                    = build_plate_wells_from_requests(requests)
 
     push_completed_plate = lambda do
       plates << current_plate.completed_view
       current_sources.clear
-      current_plate = PickTarget.new(batch, template, nil)
+      current_plate = yield(batch)
     end
 
     plates_hash.each do |request_id, plate_barcode, well_location|
@@ -132,6 +176,7 @@ class CherrypickTask < Task
 
     [plates, source_plates]
   end
+  private :perform_pick
 
   def partial
     "cherrypick_batches"
@@ -147,75 +192,6 @@ class CherrypickTask < Task
   rescue Cherrypick::Error => exception
     workflow.send(:flash)[:error] = exception.message
     return false
-  end
-
-  def self.parse_uploaded_spreadsheet_layout(layout_data,plate_size)
-    parsed_plates = {}
-    source_plate_index = {}
-    begin
-      FasterCSV.parse(layout_data) do |row|
-        well_layout = self.parse_spreadsheet_row(row,plate_size)
-        next if well_layout.nil?
-        plate_key, request_id, index_of_well_on_plate = well_layout
-        if parsed_plates[plate_key].nil?
-          parsed_plates[plate_key] = {}
-        end
-        parsed_plates[plate_key][index_of_well_on_plate] = request_id
-      end
-    rescue
-      raise FasterCSV::MalformedCSVError
-      return nil
-    end
-
-    parsed_plates
-  end
-
-  def self.parse_spreadsheet_row(row,plate_size)
-    return nil if row.blank?
-    request_id,asset_name,plate_key,destination_well = row
-    return nil if request_id.blank? || request_id.to_i == 0
-    if plate_key.blank?
-      plate_key = "default plate 1"
-    end
-    return nil if destination_well.blank? || destination_well.to_i > 0
-    return nil if Map.find_by_description_and_asset_size(destination_well,plate_size).nil?
-    index_of_well_on_plate = Map.description_to_vertical_plate_position(destination_well,plate_size)
-    return nil if index_of_well_on_plate.nil?
-
-    return [plate_key, request_id.to_i, index_of_well_on_plate]
-  end
-
-  def self.generate_spreadsheet(batch)
-    csv_string = FasterCSV.generate( :row_sep => "\r\n") do |csv|
-      csv << ["Request ID","Sample Name","Plate","Destination Well"]
-      batch.requests.each{ |r| csv << [r.id,r.asset.sample.name,"",""]}
-    end
-  end
-
-  def self.map_parsed_spreadsheet_to_plate(mapped_plate_wells,batch,plate_size)
-    plates = []
-    source_plate_index = {}
-    mapped_plate_wells.each do |plate_key, mapped_wells|
-      current_plate = []
-      1.upto(plate_size) do |i|
-        if mapped_wells[i]
-          begin
-            source_plate_barcode = batch.requests.find(mapped_wells[i]).asset.plate.barcode
-            unless source_plate_index[source_plate_barcode]
-              source_plate_index[source_plate_barcode] = 1
-            end
-            current_plate << [mapped_wells[i], source_plate_barcode, Map.vertical_plate_position_to_description(i,plate_size)]
-          rescue
-            current_plate << EMPTY_WELL
-          end
-        else
-          current_plate << EMPTY_WELL
-        end
-      end
-      plates << current_plate
-    end
-
-    [plates,source_plate_index.keys]
   end
 
   def build_plate_wells_from_requests(requests)
