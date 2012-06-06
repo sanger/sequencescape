@@ -1,7 +1,5 @@
 class Event::PlateCreationEvent < Event
   def self.create_for_asset!(asset, plate_purpose, child_plate, user)
-    asset.owner = user
-    child_plate.owner = user
     self.create!(
       :eventful => asset,
       :message => "Created child #{plate_purpose.name} plate",
