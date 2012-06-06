@@ -2,6 +2,7 @@ module IlluminaB::PlatePurposes
   PLATE_PURPOSE_FLOWS = [
     [
       'ILB_STD_INPUT',
+      'ILB_STD_COVARIS',
       'ILB_STD_PCRXP'
     ]
   ]
