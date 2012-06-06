@@ -7,7 +7,7 @@ class Search::FindPulldownPlates < Search
 
   def self.pulldown_plate_purposes
     @plate_purposes ||= PlatePurpose.find_all_by_name(
-      Pulldown::PlatePurposes::PULLDOWN_PLATE_PURPOSE_FLOWS.flatten
+      Pulldown::PlatePurposes::PLATE_PURPOSE_FLOWS.flatten
     )
   end
   delegate :pulldown_plate_purposes, :to => 'self.class'
