@@ -3,6 +3,7 @@
 class PlateCreation < ActiveRecord::Base
   include Uuid::Uuidable
   include ModelExtensions::PlateCreation
+  include Plate::Ownership::ChangeOwner
 
   belongs_to :user
   validates_presence_of :user
@@ -26,6 +27,7 @@ class PlateCreation < ActiveRecord::Base
   # This is the child that is created from the parent.  It cannot be assigned before validation.
   belongs_to :child, :class_name => 'Plate'
   validates_unassigned(:child)
+  alias :target_for_ownership :child
 
   # Before creating an instance we create the child plate and ensure the asset link is present.  This doesn't
   # copy any of the wells as the plate itself is initially empty.

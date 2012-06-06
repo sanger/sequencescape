@@ -8,6 +8,9 @@ class Transfer::BetweenPlatesBySubmission < Transfer
   include TransfersToKnownDestination
   include ControlledDestinations
 
+  include Plate::Ownership::ChangeOwner
+  alias :target_for_ownership :destination
+
   #--
   # Track back from the specified well to the stock plate well that has been transfered here.  Then
   # find the non-transfer request where the stock well was the source asset, and from there the submission

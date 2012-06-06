@@ -7,6 +7,7 @@
 class TagLayout < ActiveRecord::Base
   include Uuid::Uuidable
   include ModelExtensions::TagLayout
+  include Plate::Ownership::ChangeOwner
 
   self.inheritance_column = "sti_type"
 
@@ -26,6 +27,7 @@ class TagLayout < ActiveRecord::Base
   # The plate we'll be laying out the tags into
   belongs_to :plate
   validates_presence_of :plate
+  alias :target_for_ownership :plate
 
   # After loading the record from the database, inject the behaviour.
   def after_initialize
@@ -59,4 +61,5 @@ class TagLayout < ActiveRecord::Base
     errors.add_to_base('duplicate tags within a pool') if pool_to_tag.any? { |_,t| t.uniq.size > 1 }
   end
   private :layout_tags_into_wells
+
 end
