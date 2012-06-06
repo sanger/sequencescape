@@ -1,5 +1,5 @@
 module Pulldown::PlatePurposes
-  PULLDOWN_PLATE_PURPOSE_FLOWS = [
+  PLATE_PURPOSE_FLOWS = [
     [
       'WGS stock DNA',
       'WGS Covaris',
@@ -39,7 +39,7 @@ module Pulldown::PlatePurposes
     ]
   ]
 
-  PULLDOWN_PLATE_PURPOSE_LEADING_TO_QC_PLATES = [
+  PLATE_PURPOSE_LEADING_TO_QC_PLATES = [
     'WGS post-Cov',
     'WGS post-Cov-XP',
     'WGS lib PCR-XP',
