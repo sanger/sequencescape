@@ -3,6 +3,7 @@ module IlluminaB::PlatePurposes
     [
       'ILB_STD_INPUT',
       'ILB_STD_COVARIS',
+      'ILB_STD_PREPCR',
       'ILB_STD_PCRXP'
     ]
   ]
