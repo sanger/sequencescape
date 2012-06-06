@@ -105,37 +105,38 @@ class Map < ActiveRecord::Base
   end
 
   def self.horizontal_to_vertical(well_position,plate_size)
-    desc = self.horizontal_plate_position_to_description(well_position,plate_size)
-    self.description_to_vertical_plate_position(desc,plate_size)
+    alternate_position(well_position, *PLATE_DIMENSIONS[plate_size])
   end
 
   def self.vertical_to_horizontal(well_position,plate_size)
-    desc = self.vertical_plate_position_to_description(well_position,plate_size)
-    self.description_to_horizontal_plate_position(desc,plate_size)
+    alternate_position(well_position, *PLATE_DIMENSIONS[plate_size].reverse)
   end
 
-  def self.plate_width(plate_size)
-    return nil unless plate_size.is_a? Integer
-    if plate_size == 96
-      width  = 12
-    elsif plate_size == 384
-      width = 24
-    else
-      return nil
+  class << self
+    # Given the well position described in terms of a direction (vertical or horizontal) this function
+    # will map it to the alternate positional representation, i.e. a vertical position will be mapped
+    # to a horizontal one.  It does this with the divisor and multiplier, which will be reversed for
+    # the alternate.
+    #
+    # NOTE: I don't like this, it just makes things clearer than it was!
+    def alternate_position(well_position, divisor, multiplier)
+      column, row = (well_position-1).divmod(divisor)
+      (row * multiplier) + column + 1
     end
-    width
+    private :alternate_position
+  end
+
+  PLATE_DIMENSIONS = Hash.new { |h,k| [] }.merge(
+    96  => [ 12, 8 ],
+    384 => [ 24, 16 ]
+  )
+
+  def self.plate_width(plate_size)
+    PLATE_DIMENSIONS[plate_size].first
   end
 
   def self.plate_length(plate_size)
-    return nil unless plate_size.is_a? Integer
-    if plate_size == 96
-      length  = 8
-    elsif plate_size == 384
-      length = 16
-    else
-      return nil
-    end
-    length
+    PLATE_DIMENSIONS[plate_size].last
   end
 
   def self.valid_plate_size?(plate_size)
