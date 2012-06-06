@@ -18,8 +18,14 @@ class AddPlatePurposesForIlluminaBPipeline < ActiveRecord::Migration
         :cherrypick_direction => 'row'
       },
       {
-        :name => 'ILB_STD_PCRXP',
+        :name => 'ILB_STD_PREPCR',
         :type => IlluminaB::TaggedPlatePurpose,
+        :barcode_printer_type => BarcodePrinterType.find_by_type('BarcodePrinterType96Plate'),
+        :cherrypick_direction => 'row'
+      },
+      {
+        :name => 'ILB_STD_PCRXP',
+        :type => PlatePurpose,
         :barcode_printer_type => BarcodePrinterType.find_by_type('BarcodePrinterType96Plate'),
         :cherrypick_direction => 'row'
       }
@@ -29,7 +35,8 @@ class AddPlatePurposesForIlluminaBPipeline < ActiveRecord::Migration
   def self.child_plate_purposes
     {
       'ILB_STD_INPUT' => 'ILB_STD_COVARIS',
-      'ILB_STD_COVARIS' => 'ILB_STD_PCRXP'
+      'ILB_STD_COVARIS' => 'ILB_STD_PREPCR',
+      'ILB_STD_PREPCR' => 'ILB_STD_PCRXP'
     }
   end
 
