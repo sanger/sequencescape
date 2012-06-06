@@ -17,4 +17,8 @@ class Tube < Aliquot::Receptacle
   def name_for_label
     (primary_aliquot.nil? or primary_aliquot.sample.sanger_sample_id.blank?) ? self.name : primary_aliquot.sample.shorten_sanger_sample_id
   end
+
+  def change_owner_to(owner)
+    # Do nothing
+  end
 end
