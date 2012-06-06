@@ -1,8 +1,5 @@
 class AddNewIlluminaBSubmissionTemplates < ActiveRecord::Migration
 
-  @product_line_id = ProductLine.find_by_name('Illumina-B').id
-  @cherrypick_request_type_id = RequestType.find_by_key('cherrypick_for_pulldown').id
-
   def self.up
     ActiveRecord::Base.transaction do
       illumina_b_templates.each do |old_template|
@@ -49,7 +46,7 @@ class AddNewIlluminaBSubmissionTemplates < ActiveRecord::Migration
       {
         :name                  => "#{new_template_name(old_template)}",
         :submission_parameters => submission_parameters,
-        :product_line_id       => @product_line_id,
+        :product_line       => ProductLine.find_by_name('Illumina-B'),
         :visible               => true
       }.reverse_merge(old_template.attributes).except!('created_at','updated_at')
     )
@@ -60,6 +57,6 @@ class AddNewIlluminaBSubmissionTemplates < ActiveRecord::Migration
   end
 
   def self.update_request_types(list,old_id,new_id)
-    substitute_request_type(list,old_id,new_id).unshift([@cherrypick_request_type_id])
+    substitute_request_type(list,old_id,new_id).unshift([RequestType.find_by_key('cherrypick_for_pulldown').id])
   end
 end
