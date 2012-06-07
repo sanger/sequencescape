@@ -17,6 +17,9 @@ class StateChange < ActiveRecord::Base
   belongs_to :target, :class_name => 'Asset'
   validates_presence_of :target
 
+  include Asset::Ownership::ChangesOwner
+  set_target_for_owner(:target)
+
   # Some targets can have "contents" updated (notably plates).  The meaning of this is is dealt with by the
   # target being updated.
   serialize :contents
@@ -38,7 +41,6 @@ class StateChange < ActiveRecord::Base
   # After state change, update the owner
   after_create :update_state_of_target
   def update_state_of_target
-    target.owner = user
     target.transition_to(target_state, contents)
   end
   private :update_state_of_target

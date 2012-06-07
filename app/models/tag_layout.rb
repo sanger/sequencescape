@@ -27,6 +27,9 @@ class TagLayout < ActiveRecord::Base
   belongs_to :plate
   validates_presence_of :plate
 
+  include Asset::Ownership::ChangesOwner
+  set_target_for_owner(:plate)
+
   # After loading the record from the database, inject the behaviour.
   def after_initialize
     extend(direction_algorithm.constantize) unless direction_algorithm.blank?
@@ -59,4 +62,5 @@ class TagLayout < ActiveRecord::Base
     errors.add_to_base('duplicate tags within a pool') if pool_to_tag.any? { |_,t| t.uniq.size > 1 }
   end
   private :layout_tags_into_wells
+
 end

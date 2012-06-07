@@ -2,6 +2,7 @@ class Tube < Aliquot::Receptacle
   include LocationAssociation::Locatable
   include Barcode::Barcodeable
   include Tag::Associations
+  include Asset::Ownership::Unowned
 
   named_scope :include_scanned_into_lab_event, :include => :scanned_into_lab_event
 
@@ -17,4 +18,5 @@ class Tube < Aliquot::Receptacle
   def name_for_label
     (primary_aliquot.nil? or primary_aliquot.sample.sanger_sample_id.blank?) ? self.name : primary_aliquot.sample.shorten_sanger_sample_id
   end
+
 end
