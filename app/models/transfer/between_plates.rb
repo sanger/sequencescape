@@ -9,7 +9,7 @@ class Transfer::BetweenPlates < Transfer
   include TransfersBySchema
   include TransfersToKnownDestination
 
-  include Asset::Ownership::ChangeOwner
+  include Asset::Ownership::ChangesOwner
   set_target_for_owner(:destination)
 
   # The values in the transfers must be a hash and must be valid well positions on both the
