@@ -1,7 +1,7 @@
 
 module Asset::Ownership
 
-  module ChangeOwner
+  module ChangesOwner
 
     # Included in events which change ownership of plates
     def self.included(base)
