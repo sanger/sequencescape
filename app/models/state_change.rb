@@ -9,7 +9,6 @@
 #++
 class StateChange < ActiveRecord::Base
   include Uuid::Uuidable
-  include Plate::Ownership::ChangeOwner
 
   belongs_to :user
   validates_presence_of :user
@@ -17,7 +16,9 @@ class StateChange < ActiveRecord::Base
   # This is the target asset for which to update the state
   belongs_to :target, :class_name => 'Asset'
   validates_presence_of :target
-  alias :target_for_ownership :target
+
+  include Asset::Ownership::ChangeOwner
+  set_target_for_owner(:target)
 
   # Some targets can have "contents" updated (notably plates).  The meaning of this is is dealt with by the
   # target being updated.

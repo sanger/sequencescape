@@ -5,7 +5,7 @@ class Plate < Asset
   include Transfer::Associations
   include PlatePurpose::Associations
   include Barcode::Barcodeable
-  include Plate::Ownership
+  include Asset::Ownership::Owned
 
   SOURCE_PLATE_TYPES = ["ABgene_0765","ABgene_0800"]
 
