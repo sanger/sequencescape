@@ -8,8 +8,8 @@ class Transfer::BetweenPlatesBySubmission < Transfer
   include TransfersToKnownDestination
   include ControlledDestinations
 
-  include Plate::Ownership::ChangeOwner
-  alias :target_for_ownership :destination
+  include Asset::Ownership::ChangeOwner
+  set_target_for_owner(:destination)
 
   #--
   # Track back from the specified well to the stock plate well that has been transfered here.  Then

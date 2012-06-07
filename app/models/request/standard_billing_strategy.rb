@@ -1,6 +1,6 @@
 # This is the billing strategy for the pulldown requests, which mimics the behaviour of the
 # general billing behaviour.
-module PulldownLikeInterface::BillingStrategy
+module Request::StandardBillingStrategy
   def charge_to_project
     BillingEvent.bill_projects_for(self) if request_type.billable?
   end

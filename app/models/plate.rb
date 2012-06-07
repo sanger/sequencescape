@@ -5,7 +5,7 @@ class Plate < Asset
   include Transfer::Associations
   include PlatePurpose::Associations
   include Barcode::Barcodeable
-  include Plate::Ownership
+  include Asset::Ownership::Owned
 
   # The default state for a plate comes from the plate purpose
   delegate :default_state, :to => :plate_purpose, :allow_nil => true
