@@ -27,7 +27,7 @@ class TagLayout < ActiveRecord::Base
   belongs_to :plate
   validates_presence_of :plate
 
-  include Asset::Ownership::ChangeOwner
+  include Asset::Ownership::ChangesOwner
   set_target_for_owner(:plate)
 
   # After loading the record from the database, inject the behaviour.

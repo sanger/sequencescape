@@ -33,6 +33,7 @@ module Asset::Ownership
   end
 
   module Owned
+    # Currently only plates can be owned.
 
     class Owner < ActiveRecord::Base
       set_table_name('plate_owners')
