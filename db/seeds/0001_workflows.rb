@@ -603,7 +603,7 @@ RequestType.create!(
   request_type.target_asset_type = 'MultiplexedLibraryTube'
   request_type.order             = 1
   request_type.multiples_allowed = false
-  request_type.request_class =  Pulldown::Requests::LibraryCreation
+  request_type.request_class =  IlluminaB::Requests::StdLibraryRequest
   request_type.product_line = ProductLine.find_by_name('Illumina-B')
 end
 

@@ -7,7 +7,7 @@ class Search::FindIlluminaBPlates < Search
 
   def self.illumina_b_plate_purposes
     @plate_purposes ||= PlatePurpose.find_all_by_name(
-      IlluminaB::PlatePurposes::PULLDOWN_PLATE_PURPOSE_FLOWS.flatten
+      IlluminaB::PlatePurposes::PLATE_PURPOSE_FLOWS.flatten
     )
   end
   delegate :illumina_b_plate_purposes, :to => 'self.class'

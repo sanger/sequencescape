@@ -479,7 +479,7 @@ ActiveRecord::Base.transaction do
   PlatePurpose.create!(:name => 'SEQCAP SC')
 
   # And here is pulldown
-  Pulldown::PlatePurposes::PULLDOWN_PLATE_PURPOSE_FLOWS.each do |flow|
+  Pulldown::PlatePurposes::PLATE_PURPOSE_FLOWS.each do |flow|
     # We're using a different plate purpose for each pipeline, which means we need to attach that plate purpose to the request
     # type for it.  Then in the cherrypicking they'll only be able to pick the correct type from the list.
     stock_plate_purpose = Pulldown::StockPlatePurpose.create!(:name => flow.shift, :default_state => 'passed', :can_be_considered_a_stock_plate => true)
@@ -498,57 +498,55 @@ ActiveRecord::Base.transaction do
 
   qc_plate_purpose = PlatePurpose.create!(:name => 'Pulldown QC plate')
 
-  Pulldown::PlatePurposes::PULLDOWN_PLATE_PURPOSE_LEADING_TO_QC_PLATES.each do |name|
+  Pulldown::PlatePurposes::PLATE_PURPOSE_LEADING_TO_QC_PLATES.each do |name|
     plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
     plate_purpose.child_plate_purposes << qc_plate_purpose
   end
 
   #Illumina B Seeds
   illumina_b_plate_purposes = [
-      {
-        :name => 'ILB_STD_INPUT',
-        :type => IlluminaB::StockPlatePurpose,
-        :qc_display => 0,
-        :can_be_considered_a_stock_plate => 1,
-        :default_state => 'passed',
-        :cherrypickable_target => 1,
-        :cherrypick_direction => 'row'
-      },
-      {
-        :name => 'ILB_STD_COVARIS',
-        :type => IlluminaB::CovarisPlatePurpose,
-        :qc_display => 0,
-        :can_be_considered_a_stock_plate => 0,
-        :default_state => 'pending',
-        :barcode_printer_type_id => @barcode_printer_type_id,
-        :cherrypickable_target => 0,
-        :cherrypick_direction => 'row'
-      },
-      {
-        :name => 'ILB_STD_PCRXP',
-        :type => IlluminaB::TaggedPlatePurpose,
-        :qc_display => 0,
-        :can_be_considered_a_stock_plate => 0,
-        :default_state => 'pending',
-        :cherrypickable_target => 0,
-        :cherrypick_direction => 'row'
-      }
+    {
+      :name => 'ILB_STD_INPUT',
+      :type => IlluminaB::StockPlatePurpose,
+      :can_be_considered_a_stock_plate => 1,
+      :default_state => 'passed',
+      :barcode_printer_type => BarcodePrinterType.find_by_type('BarcodePrinterType96Plate'),
+      :cherrypickable_target => 1,
+      :cherrypick_direction => 'row'
+    },
+    {
+      :name => 'ILB_STD_COVARIS',
+      :type => IlluminaB::CovarisPlatePurpose,
+      :barcode_printer_type => BarcodePrinterType.find_by_type('BarcodePrinterType96Plate'),
+      :cherrypick_direction => 'row'
+    },
+    {
+      :name => 'ILB_STD_PREPCR',
+      :type => PlatePurpose,
+      :barcode_printer_type => BarcodePrinterType.find_by_type('BarcodePrinterType96Plate'),
+      :cherrypick_direction => 'row'
+    },
+    {
+      :name => 'ILB_STD_PCRXP',
+      :type => IlluminaB::TaggedPlatePurpose,
+      :barcode_printer_type => BarcodePrinterType.find_by_type('BarcodePrinterType96Plate'),
+      :cherrypick_direction => 'row'
+    }
     ]
-  illumina_b_child_plate_purposes = {
-    'ILB_STD_INPUT' => 'ILB_STD_PCRXP'
-  }
-
-  illumina_b_request_type = RequestType.find_by_key('illumina_b_std')
+  illumina_b_child_plate_purposes =   {
+      'ILB_STD_INPUT' => 'ILB_STD_COVARIS',
+      'ILB_STD_COVARIS' => 'ILB_STD_PREPCR',
+      'ILB_STD_PREPCR' => 'ILB_STD_PCRXP'
+    }
 
   illumina_b_plate_purposes.each do |config|
     config[:type].create!(config)
   end
-  illumina_b_request_type.acceptable_plate_purposes  << PlatePurpose.find_by_name('ILB_STD_INPUT')
+
+  RequestType.find_by_key('illumina_b_std').acceptable_plate_purposes  << PlatePurpose.find_by_name('ILB_STD_INPUT')
+
   illumina_b_child_plate_purposes.each do |parent,child|
     PlatePurpose.find_by_name(parent).child_plate_purposes << PlatePurpose.find_by_name(child)
   end
-
-
-
 
 end

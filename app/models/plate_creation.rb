@@ -27,6 +27,9 @@ class PlateCreation < ActiveRecord::Base
   belongs_to :child, :class_name => 'Plate'
   validates_unassigned(:child)
 
+  include Asset::Ownership::ChangesOwner
+  set_target_for_owner(:child)
+
   # Before creating an instance we create the child plate and ensure the asset link is present.  This doesn't
   # copy any of the wells as the plate itself is initially empty.
   before_create :create_child_plate
