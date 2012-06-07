@@ -7,14 +7,14 @@ module Asset::Ownership
     def self.included(base)
       base.class_eval do
         extend ClassMethods
-        after_create :assign_plate_owner
+        after_create :assign_owner
       end
     end
 
-    def assign_plate_owner
+    def assign_owner
       target_for_ownership.change_owner_to(user)
     end
-    private :assign_plate_owner
+    private :assign_owner
 
     module ClassMethods
       def set_target_for_owner(target)
