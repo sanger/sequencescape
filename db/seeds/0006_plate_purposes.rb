@@ -506,50 +506,28 @@ ActiveRecord::Base.transaction do
     plate_purpose.child_plate_purposes << qc_plate_purpose
   end
 
-  #Illumina B Seeds
-  illumina_b_plate_purposes = [
-    {
-      :name => 'ILB_STD_INPUT',
-      :type => IlluminaB::StockPlatePurpose,
-      :can_be_considered_a_stock_plate => 1,
+  # We only have one flow at the moment
+  IlluminaB::PlatePurposes::PLATE_PURPOSE_FLOWS.each do |flow|
+
+    stock_plate = IlluminaB::PlatePurposes.stock_plate_class.create!(
+      :name => flow.shift,
+      :can_be_considered_a_stock_plate => true,
       :default_state => 'passed',
-      :barcode_printer_type => BarcodePrinterType.find_by_type('BarcodePrinterType96Plate'),
-      :cherrypickable_target => 1,
-      :cherrypick_direction => 'row'
-    },
-    {
-      :name => 'ILB_STD_COVARIS',
-      :type => IlluminaB::CovarisPlatePurpose,
-      :barcode_printer_type => BarcodePrinterType.find_by_type('BarcodePrinterType96Plate'),
-      :cherrypick_direction => 'row'
-    },
-    {
-      :name => 'ILB_STD_PREPCR',
-      :type => PlatePurpose,
-      :barcode_printer_type => BarcodePrinterType.find_by_type('BarcodePrinterType96Plate'),
-      :cherrypick_direction => 'row'
-    },
-    {
-      :name => 'ILB_STD_PCRXP',
-      :type => IlluminaB::TaggedPlatePurpose,
-      :barcode_printer_type => BarcodePrinterType.find_by_type('BarcodePrinterType96Plate'),
-      :cherrypick_direction => 'row'
-    }
-    ]
-  illumina_b_child_plate_purposes =   {
-      'ILB_STD_INPUT' => 'ILB_STD_COVARIS',
-      'ILB_STD_COVARIS' => 'ILB_STD_PREPCR',
-      'ILB_STD_PREPCR' => 'ILB_STD_PCRXP'
-    }
+      :cherrypickable_target => true,
+      :cherrypick_direction => IlluminaB::PlatePurposes.plate_direction
+      )
 
-  illumina_b_plate_purposes.each do |config|
-    config[:type].create!(config)
-  end
+    IlluminaB::PlatePurposes.request_type_for(stock_plate).acceptable_plate_purposes  << stock_plate
 
-  RequestType.find_by_key('illumina_b_std').acceptable_plate_purposes  << PlatePurpose.find_by_name('ILB_STD_INPUT')
-
-  illumina_b_child_plate_purposes.each do |parent,child|
-    PlatePurpose.find_by_name(parent).child_plate_purposes << PlatePurpose.find_by_name(child)
+    flow.inject(stock_plate) do |previous,plate_purpose_name|
+      new_purpose = IlluminaB::PlatePurposes::PLATE_PURPOSE_TYPE[plate_purpose_name].create!(
+        :name => plate_purpose_name,
+        :cherrypickable_target => false,
+        :cherrypick_direction => IlluminaB::PlatePurposes.plate_direction
+        )
+      previous.child_plate_purposes << new_purpose
+      new_purpose
+    end
   end
 
 end

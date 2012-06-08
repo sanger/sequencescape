@@ -1,61 +1,44 @@
 class AddPlatePurposesForIlluminaBPipeline < ActiveRecord::Migration
 
-  def self.plate_purposes
-    [
-      {
-        :name => 'ILB_STD_INPUT',
-        :type => IlluminaB::StockPlatePurpose,
-        :can_be_considered_a_stock_plate => 1,
-        :default_state => 'passed',
-        :barcode_printer_type => BarcodePrinterType.find_by_type('BarcodePrinterType96Plate'),
-        :cherrypickable_target => 1,
-        :cherrypick_direction => 'row'
-      },
-      {
-        :name => 'ILB_STD_COVARIS',
-        :type => IlluminaB::CovarisPlatePurpose,
-        :barcode_printer_type => BarcodePrinterType.find_by_type('BarcodePrinterType96Plate'),
-        :cherrypick_direction => 'row'
-      },
-      {
-        :name => 'ILB_STD_PREPCR',
-        :type => PlatePurpose,
-        :barcode_printer_type => BarcodePrinterType.find_by_type('BarcodePrinterType96Plate'),
-        :cherrypick_direction => 'row'
-      },
-      {
-        :name => 'ILB_STD_PCRXP',
-        :type => IlluminaB::TaggedPlatePurpose,
-        :barcode_printer_type => BarcodePrinterType.find_by_type('BarcodePrinterType96Plate'),
-        :cherrypick_direction => 'row'
-      }
-    ]
-  end
-
-  def self.child_plate_purposes
-    {
-      'ILB_STD_INPUT' => 'ILB_STD_COVARIS',
-      'ILB_STD_COVARIS' => 'ILB_STD_PREPCR',
-      'ILB_STD_PREPCR' => 'ILB_STD_PCRXP'
-    }
-  end
-
   def self.up
     ActiveRecord::Base.transaction do
-      plate_purposes.each do |config|
-        config[:type].create!(config)
+      IlluminaB::PlatePurposes::PLATE_PURPOSE_FLOWS.each do |flow|
+
+        stock_plate = IlluminaB::PlatePurposes.stock_plate_class.create!(
+          :name => flow.shift,
+          :can_be_considered_a_stock_plate => true,
+          :default_state => 'passed',
+          :cherrypickable_target => true,
+          :cherrypick_direction => IlluminaB::PlatePurposes.plate_direction,
+          :barcode_printer_type => BarcodePrinterType.find_by_type('BarcodePrinterType96Plate')
+          )
+
+        IlluminaB::PlatePurposes.request_type_for(stock_plate).acceptable_plate_purposes << stock_plate
+
+        flow.inject(stock_plate) do |previous,plate_purpose_name|
+          new_purpose = IlluminaB::PlatePurposes::PLATE_PURPOSE_TYPE[plate_purpose_name].create!(
+            :name => plate_purpose_name,
+            :cherrypickable_target => false,
+            :cherrypick_direction => IlluminaB::PlatePurposes.plate_direction,
+            :barcode_printer_type => BarcodePrinterType.find_by_type('BarcodePrinterType96Plate')
+            )
+          previous.child_plate_purposes << new_purpose
+          new_purpose
+        end
       end
-      child_plate_purposes.each do |parent,child|
-        PlatePurpose.find_by_name(parent).child_plate_purposes << PlatePurpose.find_by_name(child)
-      end
+
     end
   end
 
   def self.down
+
     ActiveRecord::Base.transaction do
-      plate_purposes.each do |config|
-        PlatePurpose.find_by_name(config[:name]).destroy
+      IlluminaB::PlatePurposes::PLATE_PURPOSE_FLOWS.each do |flow|
+        flow.each do |name|
+          PlatePurpose.find_by_name(name).destroy
+        end
       end
     end
+
   end
 end
