@@ -8,12 +8,13 @@ module Cherrypick::Task::PickHelpers
   end
 
   def cherrypick_wells_grouped_by_submission(requests, plate, &picker)
-    # Sort the requests so that the cherrypick robot picks up in columns.
+    # NOTE: This sorts the wells within a submission by row, which just seems nuts but it's the behaviour
+    # that was there previously!
     sorted_requests = group_requests_by_submission_id(requests).map do |requests_in_a_submission|
-      requests_in_a_submission.sort { |a,b| a.asset.map.column_order <=> b.asset.map.column_order }
+      requests_in_a_submission.sort { |a,b| a.asset.map.row_order <=> b.asset.map.row_order }
     end.flatten
 
-    positions       = Map.where_plate_size(plate.size).send("in_#{plate.plate_purpose.cherrypick_direction}_major_order").slice(0, sorted_requests.size)
+    positions = Map.where_plate_size(plate.size).send("in_#{plate.plate_purpose.cherrypick_direction}_major_order").slice(0, sorted_requests.size)
 
     wells_and_requests = sorted_requests.zip(positions).map do |request, position|
       well     = request.target_asset

@@ -2,6 +2,7 @@ module Tasks::PlateTemplateHandler
   def render_plate_template_task(task, params)
     @plate_templates = PlateTemplate.all
     @robots = Robot.all
+    @plate_purpose_options = task.plate_purpose_options(@batch)
   end
 
   def do_plate_template_task(task, params)

@@ -10,11 +10,10 @@ Given /^I have a released cherrypicking batch with (\d+) samples$/ do |number_of
   Given %Q{plate "1221234567841" has concentration and volume results}
 	When %Q{I follow "Start batch"}
 	When %Q{I select "testtemplate" from "Plate Template"}
+	When %Q{I select "Infinium 670k" from "Output plate purpose"}
 	And %Q{I fill in "Volume Required" with "13"}
 	And %Q{I fill in "Concentration Required" with "50"}
 	When %Q{I press "Next step"}
-	When %Q{I press "Next step"}
-	When %Q{I select "Infinium 670k" from "Plate Purpose"}
 	And %Q{I press "Next step"}
 	When %Q{I select "Genotyping freezer" from "Location"}
 	And %Q{I press "Next step"}
@@ -51,11 +50,10 @@ Given /^I have a released cherrypicking batch with 3 plates$/ do
   
 	When %Q{I follow "Start batch"}
 	When %Q{I select "testtemplate" from "Plate Template"}
+	When %Q{I select "Infinium 670k" from "Output plate purpose"}
 	And %Q{I fill in "Volume Required" with "13"}
 	And %Q{I fill in "Concentration Required" with "50"}
 	When %Q{I press "Next step"}
-	When %Q{I press "Next step"}
-	When %Q{I select "Infinium 670k" from "Plate Purpose"}
 	And %Q{I press "Next step"}
 	When %Q{I select "Genotyping freezer" from "Location"}
 	And %Q{I press "Next step"}

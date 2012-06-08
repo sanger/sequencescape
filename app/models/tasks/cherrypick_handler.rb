@@ -23,6 +23,9 @@ module Tasks::CherrypickHandler
 
     setup_input_params_for_pass_through
 
+    @batch = Batch.find(params[:batch_id], :include => [:requests, :pipeline, :lab_events])
+    @requests = @batch.ordered_requests
+
     @plate_barcode = params[:existing_plate]
     @plate = nil
     unless @plate_barcode.blank?
@@ -34,10 +37,12 @@ module Tasks::CherrypickHandler
         redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage -1).to_s
         return
       end
+
+      action_flash[:warning] = I18n.t("cherrypick.picking_by_row") if @plate.plate_purpose.cherrypick_in_rows?
     end
 
-    @batch = Batch.find(params[:batch_id], :include => [:requests, :pipeline, :lab_events])
-    @requests = @batch.ordered_requests
+    @plate_purpose = PlatePurpose.find(params[:plate_purpose_id])
+    action_flash[:warning] = I18n.t("cherrypick.picking_by_row") if @plate_purpose.cherrypick_in_rows?
 
     unless @batch.started? || @batch.failed?
       @batch.start!(current_user)
@@ -68,6 +73,7 @@ module Tasks::CherrypickHandler
     @maximum_volume = params[:maximum_volume]
     @total_nano_grams = params[:total_nano_grams]
     @cherrypick_action = params[:cherrypick][:action]
+    @plate_purpose_id = params[:plate_purpose_id]
   end
 
   def do_cherrypick_task(task, params)
@@ -81,6 +87,9 @@ module Tasks::CherrypickHandler
       unless plate_barcode.nil?
         partial_plate = Plate.find_by_barcode(plate_barcode) or raise ActiveRecord::RecordNotFound, "No plate with barcode #{plate_barcode.inspect}"
       end
+
+      # Ensure that we have a plate purpose for any plates we are creating
+      plate_purpose = PlatePurpose.find(params[:plate_purpose_id])
 
       # Configure the cherrypicking action based on the parameters
       cherrypicker = case params[:cherrypick_action]
@@ -107,7 +116,7 @@ module Tasks::CherrypickHandler
         plate = partial_plate
         if plate.nil?
           barcode = PlateBarcode.create.barcode
-          plate   = Plate.create!(:name => "Cherrypicked #{barcode}", :size => size, :barcode => barcode)
+          plate   = plate_purpose.create!(:do_not_create_wells, :name => "Cherrypicked #{barcode}", :size => size, :barcode => barcode)
         end
 
         # Set the plate type, regardless of what it was.  This may change the standard plate.

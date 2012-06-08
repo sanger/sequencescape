@@ -98,11 +98,11 @@ class Map < ActiveRecord::Base
   end
 
   def self.horizontal_to_vertical(well_position,plate_size)
-    alternate_position(well_position, *PLATE_DIMENSIONS[plate_size])
+    alternate_position(well_position, plate_size, :width, :length)
   end
 
   def self.vertical_to_horizontal(well_position,plate_size)
-    alternate_position(well_position, *PLATE_DIMENSIONS[plate_size].reverse)
+    alternate_position(well_position, plate_size, :length, :width)
   end
 
   class << self
@@ -112,9 +112,15 @@ class Map < ActiveRecord::Base
     # the alternate.
     #
     # NOTE: I don't like this, it just makes things clearer than it was!
-    def alternate_position(well_position, divisor, multiplier)
+    # NOTE: I hate the nil returns but external code would take too long to change this time round
+    def alternate_position(well_position, size, *dimensions)
+      return nil unless valid_well_position?(well_position)
+      divisor, multiplier = dimensions.map { |n| send("plate_#{n}", size) }
+      return nil if divisor.nil? or multiplier.nil?
       column, row = (well_position-1).divmod(divisor)
-      (row * multiplier) + column + 1
+      return nil unless (0...multiplier).include?(column)
+      return nil unless (0...divisor).include?(row)
+      alternate = (row * multiplier) + column + 1
     end
     private :alternate_position
   end
