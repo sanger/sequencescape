@@ -13,4 +13,25 @@ module IlluminaB::PlatePurposes
   # Don't have ILllumina B QC plates at the momnet...
   PLATE_PURPOSE_LEADING_TO_QC_PLATES = [
   ]
+
+  def self.stock_plate_class
+    IlluminaB::StockPlatePurpose
+  end
+
+  def self.plate_direction
+    'row'
+  end
+
+  PLATE_PURPOSE_TYPE = {
+    'ILB_STD_INPUT' => IlluminaB::StockPlatePurpose,
+    'ILB_STD_COVARIS' => IlluminaB::CovarisPlatePurpose,
+    'ILB_STD_PREPCR' => PlatePurpose,
+    'ILB_STD_PCRXP' => IlluminaB::TaggedPlatePurpose
+  }
+
+  def self.request_type_for(stock_plate)
+    # Only have one at the moment
+    RequestType.find_by_key('illumina_b_std')
+  end
+
 end
