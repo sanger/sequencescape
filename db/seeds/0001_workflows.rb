@@ -640,7 +640,6 @@ CherrypickPipeline.create!(:name => 'Cherrypick') do |pipeline|
     [
       { :class => PlateTemplateTask,      :name => "Select Plate Template",              :sorted => 1, :batched => true },
       { :class => CherrypickTask,         :name => "Approve Plate Layout",               :sorted => 2, :batched => true },
-      { :class => AssignPlatePurposeTask, :name => "Assign a Purpose for Output Plates", :sorted => 3 },
       { :class => SetLocationTask,        :name => "Set Location",                       :sorted => 4 }
     ].each do |details|
       details.delete(:class).create!(details.merge(:workflow => workflow))

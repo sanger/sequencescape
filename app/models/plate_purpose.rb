@@ -123,4 +123,8 @@ class PlatePurpose < ActiveRecord::Base
       plate.wells.construct! unless do_not_create_wells
     end
   end
+
+  def cherrypick_in_rows?
+    cherrypick_direction == 'row'
+  end
 end
