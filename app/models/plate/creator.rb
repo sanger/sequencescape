@@ -60,7 +60,6 @@ class Plate::Creator < ActiveRecord::Base
           end
         end
 
-        #RequestFactory.create_assets_requests([child_plate.id], plate.study.id) if plate.study.present?
         AssetLink.create_edge!(plate, child_plate)
 
         plate.events.create_plate!(target_plate_purpose, child_plate, current_user)
