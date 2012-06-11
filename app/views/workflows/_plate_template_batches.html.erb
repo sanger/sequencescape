@@ -1,70 +1,64 @@
 <% add :menu, "New/Edit Plate Templates" => plate_templates_path -%>
 
 <% form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form", :multipart => true} do |form| %>
-
   <h2>Step 1: Layout wells on plates</h2>
-	<fieldset>
-		<legend>Automatic</legend>
-		<table cellspacing='0' cellpadding='0'>
-			<tr>
-				<td><strong>Optional: </strong>Scan partial plate:</td>
-				<td><%= text_field_tag 'existing_plate' %></td>
-			</tr>
-			<tr>
-				<td><label for="plate_template_0">Plate Template</label>:</td>
-				<td>
-				<% unless @plate_templates.nil? -%>
-					<%= select("plate_template", "0", @plate_templates.collect {|p| [ (p.control_well? ? p.name+" - control well" : p.name), p.id ] })  %>
-				<% end -%>
-				</td>
-			</tr>
-		</table>
-		<p>Templates define which wells to leave empty on a plate when you cherrypick samples. You can add to an existing partial plate by scanning the barcode, or entering the plate ID.  The plate must have been previously picked in SequenceScape.  Wells can be rearranged in the next step.</p>
-	</fieldset>
+  <fieldset>
+    <legend>Automatic</legend>
+    <table cellspacing='0' cellpadding='0'>
+      <tr>
+        <td><label for="plate_purpose_id">Output plate purpose</label>:</td>
+        <td><%= select_tag("plate_purpose_id", options_for_select(@plate_purpose_options, PlatePurpose.stock_plate_purpose.id)) %></td>
+      </tr>
+      <tr>
+        <td><strong>Optional: </strong>Scan partial plate:</td>
+        <td><%= text_field_tag 'existing_plate' %></td>
+      </tr>
+      <tr>
+        <td><label for="plate_template_0">Plate Template</label>:</td>
+        <td><%= select("plate_template", "0", @plate_templates.collect {|p| [ (p.control_well? ? p.name+" - control well" : p.name), p.id ] })  %></td>
+      </tr>
+    </table>
+    <p>Templates define which wells to leave empty on a plate when you cherrypick samples. You can add to an existing partial plate by scanning the barcode, or entering the plate ID.  The plate must have been previously picked in SequenceScape.  Wells can be rearranged in the next step.</p>
+  </fieldset>
 
-	<h3>OR</h3>
+  <h3>OR</h3>
 
-	<fieldset>
-		<legend>Manual</legend>
-		<table cellspacing='0' cellpadding='0'>
-		<tr>
-			<td></td>
-			<td><%= link_to "Download spreadsheet", url_for(:controller => :batches, :action => :download_spreadsheet, :id => @batch.id) %></td>
-		</tr>
-		<tr>
-			<td></td>
-			<td>
-		    <%= file_field_tag "file", :size => 50 %>
-			</td>
-		</tr>
-		</table>
-		<p><%= link_to "Download the file", url_for(:controller => :batches, :action => :download_spreadsheet, :id => @batch.id) %>, enter the destination wells (A1,B2...), save as CSV, then upload.  If there are any errors with the uploaded wells, the wells wont be cherrypicked and will be put back in the inbox.  Wells can be rearranged in the next step.</p>
-	</fieldset>
+  <fieldset>
+    <legend>Manual</legend>
+    <table cellspacing='0' cellpadding='0'>
+      <tr>
+        <td></td>
+        <td><%= link_to "Download spreadsheet", url_for(:controller => :batches, :action => :download_spreadsheet, :id => @batch.id) %></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>
+          <%= file_field_tag "file", :size => 50 %>
+        </td>
+      </tr>
+    </table>
+    <p><%= link_to "Download the file", url_for(:controller => :batches, :action => :download_spreadsheet, :id => @batch.id) %>, enter the destination wells (A1,B2...), save as CSV, then upload.  If there are any errors with the uploaded wells, the wells wont be cherrypicked and will be put back in the inbox.  Wells can be rearranged in the next step.</p>
+  </fieldset>
 
   <h2>Step 2</h2>
-	<fieldset>
-		<legend>Cherrypicking robot</legend>
-		<table cellspacing='0' cellpadding='0'>
-			<tr>
-				<td>Source Plates Type:</td>
-				<td><%= select_tag "plate_type", options_for_select(Plate::SOURCE_PLATE_TYPES) %></td>
-			</tr>
-			<tr>
-				<td>Picking Robot:</td>
-				<td>
-				<% unless @robots.nil? -%>
-					<%= select("robot", "0", @robots.collect {|p| [ p.name, p.id ] })  %>
-				<% end -%>
-				</td>
-			</tr>
-		</table>
+  <fieldset>
+    <legend>Cherrypicking robot</legend>
+    <table cellspacing='0' cellpadding='0'>
+      <tr>
+        <td>Source Plates Type:</td>
+        <td><%= select_tag "plate_type", options_for_select(Plate::SOURCE_PLATE_TYPES) %></td>
+      </tr>
+      <tr>
+        <td>Picking Robot:</td>
+        <td><%= select("robot", "0", @robots.collect {|p| [ p.name, p.id ] })  %></td>
+      </tr>
+    </table>
   </fieldset>
-  
+
   <h2>Step 3</h2>
 
-<%= render :partial => 'cherrypicking_volume_parameters' %>
-<br />	
-	
+  <%= render :partial => 'cherrypicking_volume_parameters' %>
+  <br />
 
   <%= render :partial => "next_stage_submit" %>
 <% end %>

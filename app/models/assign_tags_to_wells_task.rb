@@ -1,4 +1,5 @@
 class AssignTagsToWellsTask < Task
+  include Request::GroupingHelpers
 
   class AssignTagsToWellsData < Task::RenderElement
     alias_attribute :well, :asset
@@ -160,7 +161,7 @@ class AssignTagsToWellsTask < Task
   end
 
   def link_pulldown_indexed_libraries_to_multiplexed_library(requests)
-    CherrypickGroupBySubmissionTask.new.group_requests_by_submission_id(requests).each do |requests_with_same_submission|
+    group_requests_by_submission_id(requests).each do |requests_with_same_submission|
       sequencing_requests = find_sequencing_requests(requests_with_same_submission)
       raise 'Couldnt find sequencing request' if sequencing_requests.empty?
 
