@@ -38,7 +38,7 @@ Feature: Pick by micro litre (stock transfer) using the Tecan robot
      And I choose "Pick by µl"
      And I fill in the following:
         | Volume  | <volume>   |
-     And I select "Pulldown Aliquot" from "Plate Purpose"
+     And I select "Pulldown" from "Plate Purpose"
      And I press "Next step"
      And I press "Release this batch"
     Given the last batch has a barcode of "550000555760"
@@ -171,14 +171,13 @@ Feature: Pick by micro litre (stock transfer) using the Tecan robot
      And I press "Submit"
     	And I follow "Start batch"
     	And I select "testtemplate" from "Plate Template"
+   	 And I select "Infinium 670k" from "Output plate purpose"
     	
     When I choose "Pick by µl"
      And I fill in the following:
         | Volume  |  <volume>  |
       
-     And I press "Next step"
    	 And I press "Next step"
-   	 And I select "Infinium 670k" from "Plate Purpose"
    	 And I press "Next step"
    	 And I select "Genotyping freezer" from "Location"
    	 And I press "Next step"

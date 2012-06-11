@@ -41,7 +41,7 @@ Feature: Pick a ng quantity using the Tecan robot
       | Minimum Volume    | 10   |
       | Maximum Volume    | 50   |
       | Quantity to pick  | 1000 |
-    And I select "Pulldown Aliquot" from "Plate Purpose"
+    And I select "Pulldown" from "Plate Purpose"
     And I press "Next step"
     When I press "Release this batch"
     Given the last batch has a barcode of "550000555760"

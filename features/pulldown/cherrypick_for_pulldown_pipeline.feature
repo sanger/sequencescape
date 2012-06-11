@@ -56,11 +56,10 @@ Feature: Cherrypicking for Pulldown pipeline
    When I follow "Start batch"
    When I fill in "Volume Required" with "13"
    And I fill in "Concentration Required" with "50"
-   And I select "Pulldown Aliquot" from "Plate Purpose"
+   And I select "Pulldown" from "Plate Purpose"
    And I press "Next step"
    When I press "Release this batch"
    Then I should see "Batch released!"
-   And I should see "Pulldown Aliquot"
    Given the last batch has a barcode of "550000555760"
    Then the downloaded tecan file for batch "550000555760" and plate "1220099999705" is
    """

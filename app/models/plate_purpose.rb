@@ -121,4 +121,8 @@ class PlatePurpose < ActiveRecord::Base
       plate.wells.import(Map.where_plate_size(plate.size).in_reverse_row_major_order.all.map { |map| Well.new(:map => map) }) unless do_not_create_wells
     end
   end
+
+  def cherrypick_in_rows?
+    cherrypick_direction == 'row'
+  end
 end

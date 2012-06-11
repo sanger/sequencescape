@@ -81,9 +81,8 @@ end
 When /^I complete the cherrypicking batch with "([^"]*)" plate purpose but dont release it$/ do |plate_purpose_name|
   When %Q{I follow "Start batch"}
   When %Q{I select "testtemplate" from "Plate Template"}
+  When %Q{I select "#{plate_purpose_name}" from "Output plate purpose"}
   When %Q{I press "Next step"}
-  When %Q{I press "Next step"}
-  When %Q{I select "#{plate_purpose_name}" from "Plate Purpose"}
   And %Q{I press "Next step"}
   When %Q{I select "Genotyping freezer" from "Location"}
   And %Q{I press "Next step"}
