@@ -49,7 +49,7 @@ module ModelExtensions::Plate
       wells.walk_in_pools do |pool_id, wells|
         next if pool_id.blank?
         pool_information = { :wells => wells.map(&:map).map(&:description) }
-
+        wells.first.stock_wells.first.requests_as_source.each { |request| request.update_pool_information(pool_information) }
         pools[pool_id] = pool_information
       end
     end
