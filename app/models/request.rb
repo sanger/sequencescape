@@ -396,4 +396,9 @@ class Request < ActiveRecord::Base
     #no if one project doesn't have the quota
     not quotas.map(&:project).any? {|p| p.has_quota?(request_type_id, number) == false}
   end
+
+  # Adds any pool information to the structure so that it can be reported to client applications
+  def update_pool_information(pool_information)
+    # Does not need anything here
+  end
 end
