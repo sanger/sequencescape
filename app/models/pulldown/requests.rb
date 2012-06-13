@@ -22,6 +22,14 @@ module Pulldown::Requests
 
   class LibraryCreation < Request::LibraryCreation
 
+    # Add common pool information, like insert size and library type
+    def update_pool_information(pool_information)
+      pool_information.merge!(
+        :insert_size  => { :from => insert_size.from, :to => insert_size.to },
+        :library_type => { :name => library_type }
+      )
+    end
+
     # Convenience helper for ensuring that the fragment size information is properly treated.
     # The columns in the database are strings and we need them to be integers, hence we force
     # that here.
