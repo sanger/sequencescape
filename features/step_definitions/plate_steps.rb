@@ -143,7 +143,7 @@ Given /^well "([^"]*)" is holded by plate "([^"]*)"$/ do |well_uuid, plate_uuid|
 end
 
 Then /^plate "([^"]*)" should have a purpose of "([^"]*)"$/ do |plate_barcode, plate_purpose_name|
-  assert_equal plate_purpose_name, Plate.find_by_barcode("1234567").plate_purpose.name 
+  assert_equal plate_purpose_name, Plate.find_by_barcode("1234567").plate_purpose.name
 end
 
 Given /^the well with ID (\d+) contains the sample "([^\"]+)"$/ do |well_id, name|
@@ -184,3 +184,20 @@ Given /^plate "([^"]*)" has "([^"]*)" wells with aliquots$/ do |plate_barcode, n
     Well.create!(:plate => plate, :map_id => i).aliquots.create!(:sample => Factory(:sample))
   end
 end
+
+Given /^the plate "([^"]*)" is owned by "([^"]*)"$/ do |plate_name, user_name|
+  Plate.find_by_name(plate_name).change_owner_to(User.find_by_login(user_name))
+end
+
+Given /^(passed|started|pending|failed) transfer requests exist between (\d+) wells on "([^"]*)" and "([^"]*)"$/ do |state, count, source_name, dest_name|
+  source = Plate.find_by_name(source_name)
+  destination = Plate.find_by_name(dest_name)
+  (0...count.to_i).each do |i|
+    RequestType.transfer.create!(:asset => source.wells.in_row_major_order[i], :target_asset => destination.wells.in_row_major_order[i], :state=>state)
+  end
+end
+
+
+
+
+
