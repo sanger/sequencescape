@@ -63,7 +63,14 @@ Feature: The top of the pulldown pipeline
                 "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
                 "G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9", "G10", "G11", "G12",
                 "H1", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "H9", "H10", "H11", "H12"
-              ]
+              ],
+              "insert_size": {
+                "from": <insert_size_from>,
+                "to": <insert_size_to>
+              },
+              "library_type": {
+                "name": "<library_type>"
+              }
             }
           }
         }
@@ -329,7 +336,7 @@ Feature: The top of the pulldown pipeline
      And the state of all the pulldown library creation requests from the plate with UUID "00000000-1111-2222-3333-000000000001" should be "started"
 
     Scenarios:
-      | pipeline | plate purpose           |
-      | WGS      | WGS Covaris |
-      | SC       | SC Covaris  |
-      | ISC      | ISC Covaris |
+      | pipeline | plate purpose | insert_size_from | insert_size_to | library_type     |
+      | WGS      | WGS Covaris   | 300              | 500            | Standard         |
+      | SC       | SC Covaris    | 100              | 400            | Agilent Pulldown |
+      | ISC      | ISC Covaris   | 100              | 400            | Agilent Pulldown |
