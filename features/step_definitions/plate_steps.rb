@@ -185,9 +185,12 @@ Given /^plate "([^"]*)" has "([^"]*)" wells with aliquots$/ do |plate_barcode, n
   end
 end
 
-Given /^the plate "([^"]*)" is owned by "([^"]*)"$/ do |plate_name, user_name|
-  Plate.find_by_name(plate_name).change_owner_to(User.find_by_login(user_name))
+Given /^the plate "([^"]*)" is (passed|started|pending|failed) by "([^"]*)"$/ do |state, plate_name, user_name|
+  plate = Plate.find_by_name(plate_name)
+  user = User.find_by_login(user_name)
+  StateChange.create(:user => user, :target => plate, :target_state => state)
 end
+
 
 Given /^(passed|started|pending|failed) transfer requests exist between (\d+) wells on "([^"]*)" and "([^"]*)"$/ do |state, count, source_name, dest_name|
   source = Plate.find_by_name(source_name)
