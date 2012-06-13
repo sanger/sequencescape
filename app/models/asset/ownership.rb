@@ -8,11 +8,12 @@ module Asset::Ownership
       base.class_eval do
         extend ClassMethods
         after_create :assign_owner
+        has_many :owners, :as => :eventable
       end
     end
 
     def assign_owner
-      target_for_ownership.change_owner_to(user)
+      target_for_ownership.change_owner_to(user,self)
     end
     private :assign_owner
 
@@ -26,7 +27,7 @@ module Asset::Ownership
 
   module Unowned
 
-    def change_owner_to(owner)
+    def change_owner_to(owner,source_event)
       # Do nothing
     end
 
@@ -39,6 +40,9 @@ module Asset::Ownership
       set_table_name('plate_owners')
       belongs_to :user
       belongs_to :plate
+      belongs_to :eventable, :polymorphic => true
+
+      validates_presence_of :eventable
     end
 
     def self.included(base)
@@ -55,8 +59,12 @@ module Asset::Ownership
       end
     end
 
-    def change_owner_to(owner)
-      update_attributes!(:owner => owner)
+    def change_owner_to(owner,source_event)
+      if plate_owner.nil?
+        update_attributes!(:plate_owner => Owner.create!(:user => owner, :eventable => source_event, :plate => self))
+      else
+        plate_owner.update_attributes!(:user => owner, :eventable => source_event)
+      end
     end
 
   end
