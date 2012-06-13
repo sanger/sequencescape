@@ -8,7 +8,7 @@ module Pulldown::Requests
         fragment_size_details(100, 400)
       end
       base::Metadata.class_eval do
-        include Pulldown::Requests::BaitLibraryRequest::Metadata
+        include Pulldown::Requests::BaitLibraryRequest::BaitMetadata
       end
     end
 
@@ -18,7 +18,7 @@ module Pulldown::Requests
       pool_information[:bait_library] = request_metadata.bait_library
     end
 
-    module Metadata
+    module BaitMetadata
       def self.included(base)
         base.class_eval do
           include BaitLibrary::Associations
