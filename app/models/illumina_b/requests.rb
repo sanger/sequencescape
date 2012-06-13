@@ -22,6 +22,7 @@ module IlluminaB::Requests
     ]
 
     DEFAULT_LIBRARY_TYPE = 'Standard'
+    fragment_size_details(:no_default, :no_default)
 
     # NOTE: Do not alter the order here:
     #
