@@ -135,7 +135,7 @@ Feature: Searching for assets by barcode
         Given user "plateless" exists with barcode "plateless"
         Given the UUID of the last user created is "00000000-1111-2222-3333-100000000002"
         Then launch the debugger
-        Given the plate "Testing the API B" is owned by "plate_owner"
+        Given the plate "Testing the API B" is started by "plate_owner"
         
          When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444446/all":
            """
