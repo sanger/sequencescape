@@ -12,6 +12,12 @@ module Pulldown::Requests
       end
     end
 
+    # Ensure that the bait library information is also included in the pool information.
+    def update_pool_information(pool_information)
+      super
+      pool_information[:bait_library] = request_metadata.bait_library
+    end
+
     module Metadata
       def self.included(base)
         base.class_eval do
