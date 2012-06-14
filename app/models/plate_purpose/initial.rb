@@ -15,7 +15,7 @@ module PlatePurpose::Initial
   # Ensure that the pulldown library creation request is started
   def start_pulldown_library_requests(plate)
     each_well_and_its_library_request(plate) do |_, request|
-      request.start! unless request.started?
+      request.start! if request.pending?
     end
   end
   private :start_pulldown_library_requests
