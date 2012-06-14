@@ -353,27 +353,6 @@ ActiveRecord::Base.transaction do
   end
 
   # We only have one flow at the moment
-  IlluminaB::PlatePurposes::PLATE_PURPOSE_FLOWS.each do |flow|
-
-    stock_plate = IlluminaB::PlatePurposes.stock_plate_class.create!(
-      :name => flow.shift,
-      :can_be_considered_a_stock_plate => true,
-      :default_state => 'passed',
-      :cherrypickable_target => true,
-      :cherrypick_direction => IlluminaB::PlatePurposes.plate_direction
-      )
-
-    IlluminaB::PlatePurposes.request_type_for(stock_plate).acceptable_plate_purposes  << stock_plate
-
-    flow.inject(stock_plate) do |previous,plate_purpose_name|
-      new_purpose = IlluminaB::PlatePurposes::PLATE_PURPOSE_TYPE[plate_purpose_name].create!(
-        :name => plate_purpose_name,
-        :cherrypickable_target => false,
-        :cherrypick_direction => IlluminaB::PlatePurposes.plate_direction
-        )
-      previous.child_plate_purposes << new_purpose
-      new_purpose
-    end
-  end
+  IlluminaBPlatePurposes.create_plate_purposes
 
 end
