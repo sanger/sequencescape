@@ -34,7 +34,10 @@ module Batch::TecanBehaviour
         data_object["source"][source_barcode]  = {"name" => source_plate_name, "plate_size" => request.asset.plate.size}
       end
       if data_object["destination"][destination_barcode].nil?
-        data_object["destination"][destination_barcode] = {"name" => Plate::SOURCE_PLATE_TYPES.last.gsub(/_/, "\s"), "plate_size" => request.target_asset.plate.size }
+        data_object["destination"][destination_barcode] = {
+          "name" => PlatePurpose.cherrypickable_default_type.first.name.gsub(/_/, "\s"),
+          "plate_size" => request.target_asset.plate.size
+        }
       end
       if data_object["destination"][destination_barcode]["mapping"].nil?
         data_object["destination"][destination_barcode]["mapping"] = []
