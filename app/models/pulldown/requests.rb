@@ -20,15 +20,7 @@ module Pulldown::Requests
     end
   end
 
-  # Override the behaviour of Request so that we do not copy the aliquots from our source asset
-  # to the target when we are passed.  This is actually done by the TransferRequest from plate
-  # to plate as it goes through being processed.
   class LibraryCreation < Request::LibraryCreation
-    include Request::StandardBillingStrategy
-
-    def on_started
-      # Override the default behaviour to not do the transfer
-    end
 
     # Convenience helper for ensuring that the fragment size information is properly treated.
     # The columns in the database are strings and we need them to be integers, hence we force

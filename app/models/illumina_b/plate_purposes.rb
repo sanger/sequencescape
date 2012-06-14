@@ -3,10 +3,15 @@ module IlluminaB::PlatePurposes
     [
       'ILB_STD_INPUT',
       'ILB_STD_COVARIS',
-      'ILB_STD_PREPCR',
+      'ILB_STD_SH',
+      'ILB_STD_PCR',
       'ILB_STD_PCRXP'
     ]
   ]
+
+  BRANCHES = {
+    'ILB_STD_SH' => 'ILB_STD_PREPCR'
+  }
 
   STOCK_PLATE_PURPOSE = 'ILB_STD_INPUT'
 
@@ -26,7 +31,9 @@ module IlluminaB::PlatePurposes
     'ILB_STD_INPUT' => IlluminaB::StockPlatePurpose,
     'ILB_STD_COVARIS' => IlluminaB::CovarisPlatePurpose,
     'ILB_STD_PREPCR' => PlatePurpose,
-    'ILB_STD_PCRXP' => IlluminaB::TaggedPlatePurpose
+    'ILB_STD_PCRXP' => IlluminaB::TaggedPlatePurpose,
+    'ILB_STD_SH' => PlatePurpose,
+    'ILB_STD_PCR' => PlatePurpose
   }
 
   def self.request_type_for(stock_plate)
