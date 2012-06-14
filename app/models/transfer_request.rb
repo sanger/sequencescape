@@ -5,6 +5,32 @@ class TransferRequest < Request
   instance_variable_set(:@aasm, nil)
   AASM::StateMachine[self] = AASM::StateMachine.new('')
 
+  TRANSITIONS = {
+    'started' => {
+      'passed' => :pass!,
+      'cancelled' => :cancel!,
+      'failed' => :fail!
+    },
+    'pending' =>{
+      'started' => :start!,
+      'passed' => :pass!,
+      'failed' => :fail!,
+      'pending' => :detach!
+    },
+    'passed' => {
+      'failed' => :fail!
+    },
+    'cancelled' => {
+    },
+    'failed' => {
+      'passed' => :pass!
+    },
+    'hold' => {
+    },
+    'blocked' => {
+    }
+  }
+
   # The statemachine for transfer requests is more promiscuous than normal requests, as well
   # as being more concise as it has less states.
   aasm_column :state
@@ -35,6 +61,11 @@ class TransferRequest < Request
   aasm_event :detach do
     transitions :to => :pending, :from => [:pending]
   end
+
+  def transition_method_to(target_state)
+    TransferRequest::TRANSITIONS[state][target_state]
+  end
+  private :transition_method_to
 
   # Ensure that the source and the target assets are not the same, otherwise bad things will happen!
   validate do |record|
