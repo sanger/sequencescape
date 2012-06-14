@@ -15,7 +15,8 @@ class TransferRequest < Request
       'started' => :start!,
       'passed' => :pass!,
       'failed' => :fail!,
-      'pending' => :detach!
+      'pending' => :detach!,
+      'cancelled' => :cancel_before_started!
     },
     'passed' => {
       'failed' => :fail!
@@ -56,6 +57,10 @@ class TransferRequest < Request
 
   aasm_event :cancel do
     transitions :to => :cancelled, :from => [:started]
+  end
+
+  aasm_event :cancel_before_started do
+    transitions :to => :cancelled, :from => [:pending]
   end
 
   aasm_event :detach do

@@ -25,7 +25,7 @@ module Request::Statemachine
       'cancelled' => :cancel_completed!
     },
     'cancelled' => {
-      'pending' => :detatch!
+      'pending' => :detach!
     },
     'failed' => {
       'passed' => :change_decision!,
