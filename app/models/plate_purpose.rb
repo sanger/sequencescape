@@ -35,7 +35,9 @@ class PlatePurpose < ActiveRecord::Base
 
   include Relationship::Associations
 
-  named_scope :cherrypickable, :conditions => { :cherrypickable_target => true }
+  named_scope :cherrypickable_as_target, :conditions => { :cherrypickable_target => true }
+  named_scope :cherrypickable_as_source, :conditions => { :cherrypickable_source => true }
+  named_scope :cherrypickable_default_type, :conditions => { :cherrypickable_target => true, :cherrypickable_source => true }
 
   # The state of a plate is based on the transfer requests.
   def state_of(plate)
