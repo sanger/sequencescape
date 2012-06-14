@@ -1,4 +1,4 @@
-if ENV['PULLDOWN']
+if ENV['PULLDOWN']||ENV['ILLUMINAB']
   # This is a temporary file because I got tired of typing it every time I wanted to test the Pulldown pipelines!
   class PlateBarcode
     def self.create
@@ -10,8 +10,24 @@ if ENV['PULLDOWN']
     end
   end
 
+chosen_pipeline = ENV['PULLDOWN'] ? 'Pulldown' : 'Illumina b'
+
+options_hash = {
+  'Pulldown' => {
+    :pipelines_array => [
+      'Pulldown WGS',
+      'Pulldown SC',
+      'Pulldown ISC'
+    ]
+  },
+  'Illumina b' => {
+    :pipelines_array => [
+      'Illumina-B STD'
+    ]
+  }
+}
   ActiveRecord::Base.transaction do
-    $stderr.puts "Building submissions for all of the pulldown pipelines ..."
+    $stderr.puts "Building submissions for all of the #{chosen_pipeline} pipelines ..."
 
     # Printers we need
     BarcodePrinterType.find(1).barcode_printers.create!(:name => 'h126bc')  # 1D tube printer
@@ -21,22 +37,22 @@ if ENV['PULLDOWN']
 
     # Tag layout templates
     TagLayoutTemplate.create!(
-      :name => 'Pulldown test 96 template',
-      :tag_group => TagGroup.create!(:name => 'Pulldown 96 tags').tap { |g| g.tags << (1..96).map { |i| Tag.create!(:map_id => (g.id*100)+i, :oligo => "ACGT#{i}") } },
+      :name => '#{chosen_pipeline} test 96 template',
+      :tag_group => TagGroup.create!(:name => '#{chosen_pipeline} 96 tags').tap { |g| g.tags << (1..96).map { |i| Tag.create!(:map_id => (g.id*100)+i, :oligo => "ACGT#{i}") } },
       :direction_algorithm => 'TagLayout::InColumns',
       :walking_algorithm => 'TagLayout::WalkWellsOfPlate'
     )
     TagLayoutTemplate.create!(
-      :name => 'Pulldown test 8 template (in columns)',
+      :name => '#{chosen_pipeline} test 8 template (in columns)',
       :tag_group => TagGroup.create!(:name => 'Pulldown 8 tags').tap { |g| g.tags << (1..8).map { |i| Tag.create!(:map_id => (g.id*100)+i, :oligo => "ACGT#{i}") } },
       :direction_algorithm => 'TagLayout::InColumns',
       :walking_algorithm => 'TagLayout::WalkWellsByPools'
     )
 
     # Rubbish data we need
-    study       = Study.new(:name => 'Pulldown study', :state => 'active').tap { |t| t.save_without_validation }
-    project     = Project.create!(:name => 'Pulldown project', :enforce_quotas => false, :project_metadata_attributes => { :project_cost_code => '1111' })
-    user        = User.create!(:login => 'Pulldown user', :password => 'foobar', :swipecard_code => 'abcdef', :workflow_id => 1).tap do |u|
+    study       = Study.new(:name => "#{chosen_pipeline} study", :state => 'active').tap { |t| t.save_without_validation }
+    project     = Project.create!(:name => "#{chosen_pipeline} project", :enforce_quotas => false, :project_metadata_attributes => { :project_cost_code => '1111' })
+    user        = User.create!(:login => "#{chosen_pipeline} user", :password => 'foobar', :swipecard_code => 'abcdef', :workflow_id => 1).tap do |u|
       u.roles.create!(:name => 'administrator')
     end
 
@@ -45,11 +61,7 @@ if ENV['PULLDOWN']
       plate.wells.each { |w| w.aliquots.create!(:sample => Sample.create!(:name => "sample_in_stock_well_#{w.map.description}")) }
     end
 
-    [
-      'Pulldown WGS',
-      'Pulldown SC',
-      'Pulldown ISC'
-    ].each do |pipeline|
+    options_hash[chosen_pipeline][:pipelines_array].each do |pipeline|
       $stderr.puts "\t#{pipeline}"
 
       $stderr.puts "\t\tFull plate"
