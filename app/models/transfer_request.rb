@@ -65,6 +65,7 @@ class TransferRequest < Request
   def transition_method_to(target_state)
     TransferRequest::TRANSITIONS[state][target_state]
   end
+  private :transition_method_to
 
   # Ensure that the source and the target assets are not the same, otherwise bad things will happen!
   validate do |record|

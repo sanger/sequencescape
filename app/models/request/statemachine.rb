@@ -147,6 +147,7 @@ module Request::Statemachine
   def transition_method_to(target_state)
     TRANSITIONS[state][target_state]
   end
+  private :transition_method_to
   #--
   # These are the callbacks that will be made on entry to a given state.  This allows
   # derived classes to override these and add custom behaviour.  You are advised to call
