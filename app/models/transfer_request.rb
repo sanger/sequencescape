@@ -12,7 +12,7 @@ class TransferRequest < Request
   aasm_state :started
   aasm_state :failed,    :enter => :on_failed
   aasm_state :passed
-  aasm_state :cancelled
+  aasm_state :cancelled, :enter => :on_cancelled
   aasm_initial_state :pending
 
   # State Machine events
@@ -58,6 +58,11 @@ class TransferRequest < Request
   private :perform_transfer_of_contents
 
   def on_failed
+    self.target_asset.remove_downstream_aliquots
+  end
+  private :on_failed
+  
+  def on_cancelled
     self.target_asset.remove_downstream_aliquots
   end
   private :on_failed
