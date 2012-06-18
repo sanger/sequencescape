@@ -10,7 +10,7 @@ class TransferRequest < Request
   aasm_column :state
   aasm_state :pending
   aasm_state :started
-  aasm_state :failed
+  aasm_state :failed,    :enter => :on_failed
   aasm_state :passed
   aasm_state :cancelled
   aasm_initial_state :pending
@@ -56,4 +56,9 @@ class TransferRequest < Request
     target_asset.aliquots << asset.aliquots.map(&:clone) unless asset.failed? or asset.cancelled?
   end
   private :perform_transfer_of_contents
+
+  def on_failed
+    self.target_asset.remove_downstream_aliquots
+  end
+  private :on_failed
 end
