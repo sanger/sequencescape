@@ -2,8 +2,10 @@
 # of a sample, or it might be a library (a combination of the DNA sample and a tag).
 class Aliquot < ActiveRecord::Base
   include Uuid::Uuidable
+
   class Receptacle < Asset
     include Transfer::State
+    include Aliquot::Remover
 
     has_many :transfer_requests, :class_name => 'TransferRequest', :foreign_key => :target_asset_id
     has_many :transfer_requests_as_source, :class_name => 'TransferRequest', :foreign_key => :asset_id
@@ -182,6 +184,18 @@ class Aliquot < ActiveRecord::Base
   def =~(object)
     a, b = [self, object].map { |o| [o.tag_id, o.sample_id] }
     a.zip(b).all?  { |x, y|  (x || y) == (y || x)  }
+  end
+
+  def tagged?
+    @tag_id != -1
+  end
+
+  def matches?(object)
+    return false if self.sample_id != object.sample_id
+    if self.tagged? && object.tagged?
+      return false if self.tag_id != object.tag_id
+    end
+    true
   end
 
 end
