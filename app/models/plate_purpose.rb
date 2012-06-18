@@ -68,7 +68,10 @@ class PlatePurpose < ActiveRecord::Base
       conditions << '(submission_id IN (?) AND asset_id IN (?))'
       parameters.concat([ submission_ids, stock_wells ])
     end
-    Request.where_is_not_a?(TransferRequest).all(:conditions => [ "(#{conditions.join(' OR ')})", *parameters ]).map(&:fail!)
+    Request.where_is_not_a?(TransferRequest).all(:conditions => [ "(#{conditions.join(' OR ')})", *parameters ]).map do |request|
+      # This can probably be switched for an each, as I don't think the array is actually used for anything.
+      request.passed? ? request.change_decision! : request.fail!
+    end
   end
 
   def pool_wells(wells)
