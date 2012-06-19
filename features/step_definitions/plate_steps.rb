@@ -185,10 +185,10 @@ Given /^plate "([^"]*)" has "([^"]*)" wells with aliquots$/ do |plate_barcode, n
   end
 end
 
-Given /^the plate "([^"]*)" is (passed|started|pending|failed) by "([^"]*)"$/ do |state, plate_name, user_name|
+Given /^the plate "([^"]*)" is (passed|started|pending|failed) by "([^"]*)"$/ do |plate_name, state, user_name|
   plate = Plate.find_by_name(plate_name)
   user = User.find_by_login(user_name)
-  StateChange.create(:user => user, :target => plate, :target_state => state)
+  StateChange.create!(:user => user, :target => plate, :target_state => state)
 end
 
 
