@@ -44,17 +44,10 @@ class Well < Aliquot::Receptacle
 
   named_scope :with_blank_samples, { :conditions => { :aliquots => { :samples => { :empty_supplier_sample_name => true } } }, :joins => { :aliquots => :sample } }
 
+  include Transfer::WellHelpers
+
   def stock_wells
-    wells_to_walk, stock_wells = [ self ], []
-    until wells_to_walk.empty?
-      current_well = wells_to_walk.shift or next
-      if current_well.plate.stock_plate?
-        stock_wells << current_well
-      else
-        wells_to_walk.concat(current_well.requests_as_target.where_is_a?(TransferRequest).map(&:asset))
-      end
-    end
-    stock_wells
+    locate_stock_wells_for(plate)[self]
   end
 
   class << self
