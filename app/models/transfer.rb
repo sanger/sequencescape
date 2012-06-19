@@ -135,12 +135,11 @@ class Transfer < ActiveRecord::Base
 
       # Find the first well on the plate that has something in it.  Then find the distance from that well
       # to it's stock well.  We'll use that as the stock well depth to find.
-      content_well     = plate.wells.detect { |well| not well.aliquots.empty? } or raise StandardError, "Cannot find a well with contents on #{plate.id}"
-      stock_well_depth = calculate_stock_well_depth_for(content_well)
+      stock_well_depth = plate.ancestors.all(:order => 'created_at DESC').index(plate.stock_plate) or raise StandardError, "Cannot find a well with contents on #{plate.id}"
 
       # Now build a query that will find all of the stock wells for the wells on the plate.  This is done
       # by joining the requests table over-and-over again.
-      joins   = (0...stock_well_depth).map { |index| "LEFT JOIN requests r#{index+1} ON r#{index}.asset_id=r#{index+1}.target_asset_id AND r#{index+1}.sti_type='#{TransferRequest.name}'" }
+      joins   = (1..stock_well_depth).map { |index| "LEFT JOIN requests r#{index} ON r#{index-1}.asset_id=r#{index}.target_asset_id AND r#{index}.sti_type='#{TransferRequest.name}'" }
       results = Request.connection.select_all(%Q{
         SELECT r0.target_asset_id AS plate_well_id,r#{stock_well_depth}.asset_id AS stock_well_id
         FROM requests r0
