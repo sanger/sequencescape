@@ -72,7 +72,11 @@ class PlatePurpose < ActiveRecord::Base
   end
 
   def pool_wells(wells)
-    _pool_wells(wells).all(:select => 'assets.*, submission_id AS pool_id', :readonly => false).tap do |wells_with_pool|
+    _pool_wells(wells).all(
+      :joins    => 'LEFT OUTER JOIN uuids AS pool_uuids ON pool_uuids.resource_type="Submission" AND pool_uuids.resource_id=submission_id',
+      :select   => 'DISTINCT assets.*, pool_uuids.resource_id AS pool_id, pool_uuids.external_id AS pool_uuid',
+      :readonly => false
+    ).tap do |wells_with_pool|
       raise StandardError, "Cannot deal with a well in multiple pools" if wells_with_pool.group_by(&:id).any? { |_, multiple_pools| multiple_pools.uniq.size > 1 }
     end
   end

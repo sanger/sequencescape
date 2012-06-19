@@ -441,13 +441,7 @@ WHERE c.container_id=?
   end
 
   def lookup_stock_plate
-    self.parents.each do |parent_plate|
-      next unless parent_plate.is_a?(Plate)     # TODO: Do we need this?
-      return parent_plate if parent_plate.stock_plate?
-      parent_stock = parent_plate.send(:lookup_stock_plate)
-      return parent_stock if parent_stock.present?
-    end
-    nil
+    self.ancestors.all(:order => 'created_at DESC').detect(&:stock_plate?)
   end
   private :lookup_stock_plate
 

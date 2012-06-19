@@ -8,43 +8,35 @@ module Pulldown::Requests
         fragment_size_details(100, 400)
       end
       base::Metadata.class_eval do
-        include BaitLibrary::Associations
-        association(:bait_library, :name, :scope => :visible)
-        validates_presence_of :bait_library
-        validate :bait_library_valid
+        include Pulldown::Requests::BaitLibraryRequest::BaitMetadata
+      end
+    end
 
-        def bait_library_valid
-          errors.add(:bait_library_id, "Validation failed: Bait library is no longer available.") unless bait_library.visible?
+    # Ensure that the bait library information is also included in the pool information.
+    def update_pool_information(pool_information)
+      super
+      pool_information[:bait_library] = request_metadata.bait_library
+    end
+
+    module BaitMetadata
+      def self.included(base)
+        base.class_eval do
+          include BaitLibrary::Associations
+          association(:bait_library, :name, :scope => :visible)
+          validates_presence_of :bait_library
+          validate :bait_library_valid
         end
       end
+
+      def bait_library_valid
+        errors.add(:bait_library_id, "Validation failed: Bait library is no longer available.") unless bait_library.visible?
+      end
+      private :bait_library_valid
     end
   end
 
   class LibraryCreation < Request::LibraryCreation
 
-    # Convenience helper for ensuring that the fragment size information is properly treated.
-    # The columns in the database are strings and we need them to be integers, hence we force
-    # that here.
-    def self.fragment_size_details(minimum, maximum)
-      class_eval do
-        has_metadata :as => Request do
-          # Redefine the fragment size attributes as they are fixed
-          attribute(:fragment_size_required_from, { :required => true, :default => minimum, :integer => true })
-          attribute(:fragment_size_required_to,   { :required => true, :default => maximum, :integer => true })
-        end
-
-        include Request::LibraryManufacture
-      end
-      const_get(:Metadata).class_eval do
-        def fragment_size_required_from
-          self[:fragment_size_required_from].try(:to_i)
-        end
-
-        def fragment_size_required_to
-          self[:fragment_size_required_to].try(:to_i)
-        end
-      end
-    end
   end
 
   class WgsLibraryRequest < LibraryCreation
