@@ -191,11 +191,14 @@ class Aliquot < ActiveRecord::Base
   end
 
   def matches?(object)
-    return false if self.sample_id != object.sample_id
-    if self.tagged? && object.tagged?
-      return false if self.tag_id != object.tag_id
+    # Note: This funtion is direction, and assumes that the downstream aliquot
+    # is checking the upstream aliquot (or the AliquotRecord)
+    case
+    when self.sample_id != object.sample_id then return false # The samples don't match
+    when !self.tagged? && object.tagged? then raise "Tag missing from downstream aliquot" # The downstream aliquot is untagged, but is tagged upstream. Something is wrong!
+    when !object.tagged? then return true # Thhe upstream aliquot was untagged, we don't need to check tags
+    else self.tag_id == object.tag_id # Both aliquots are tagged, we need to check if they match
     end
-    true
   end
 
 end
