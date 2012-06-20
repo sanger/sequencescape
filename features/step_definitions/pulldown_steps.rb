@@ -118,6 +118,9 @@ end
 Given /^(all submissions) have been worked until the last plate of the "Pulldown ISC" pipeline$/ do |submissions|
   work_pipeline_for(submissions, 'ISC cap lib pool')
 end
+Given /^(all submissions) have been worked until the last plate of the "Illumina-B STD" pipeline$/ do |submissions|
+  work_pipeline_for(submissions, 'ILB_STD_PCRXP')
+end
 
 Transform /^the (sample|library) tube "([^\"]+)"$/ do |type, name|
   "#{type}_tube".classify.constantize.find_by_name(name) or raise StandardError, "Could not find the #{type} tube #{name.inspect}"
@@ -171,6 +174,18 @@ end
 
 Then /^all of the pulldown library creation requests to (the multiplexed library tube .+) should not have billing$/ do |tube|
   requests = tube.requests_as_target.where_is_a?(Pulldown::Requests::LibraryCreation).all
+  assert(!requests.empty?, "There are expected to be a number of pulldown requests")
+  assert(requests.all? { |r| r.billing_events.empty? }, "There are requests that have billing events")
+end
+
+Then /^all of the illumina-b library creation requests to (the multiplexed library tube .+) should be billed to their project$/ do |tube|
+  requests = tube.requests_as_target.where_is_a?(IlluminaB::Requests::StdLibraryRequest).all
+  assert(!requests.empty?, "There are expected to be a number of pulldown requests")
+  assert(requests.all? { |r| not r.billing_events.charged_to_project.empty? }, "There are requests that have not billed the project")
+end
+
+Then /^all of the illumina-b library creation requests to (the multiplexed library tube .+) should not have billing$/ do |tube|
+  requests = tube.requests_as_target.where_is_a?(IlluminaB::Requests::StdLibraryRequest).all
   assert(!requests.empty?, "There are expected to be a number of pulldown requests")
   assert(requests.all? { |r| r.billing_events.empty? }, "There are requests that have billing events")
 end

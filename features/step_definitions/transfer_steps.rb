@@ -82,6 +82,14 @@ end
     Given /^the state of all the pulldown library creation requests (to|from) (the #{target} .+) is "([^"]+)"$/ do |direction, target, state|
       change_request_state(state, #{request_holder}, direction, Pulldown::Requests::LibraryCreation)
     end
+
+    Then /^the state of all the illumina-b library creation requests (to|from) (the #{target} .+) should be "([^"]+)"$/ do |direction, target, state|
+      assert_request_state(state, #{request_holder}, direction, IlluminaB::Requests::StdLibraryRequest)
+    end
+
+    Given /^the state of all the illumina-b library creation requests (to|from) (the #{target} .+) is "([^"]+)"$/ do |direction, target, state|
+      change_request_state(state, #{request_holder}, direction, IlluminaB::Requests::StdLibraryRequest)
+    end
   }, __FILE__, line)
 end
 
