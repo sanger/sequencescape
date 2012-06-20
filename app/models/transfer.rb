@@ -5,6 +5,7 @@ class Transfer < ActiveRecord::Base
         include Transfer::State
 
         has_many :transfers_as_source,     :class_name => 'Transfer', :foreign_key => :source_id,      :order => 'created_at ASC'
+        has_many :transfers_to_tubes,      :class_name => 'Transfer::FromPlateToTubeBySubmission', :foreign_key => :source_id, :order => 'created_at ASC'
         has_one  :transfer_as_destination, :class_name => 'Transfer', :foreign_key => :destination_id
 
         # This looks odd but it's a LEFT OUTER JOIN, meaning that the rows we would be interested in have no source_id.
@@ -185,6 +186,7 @@ class Transfer < ActiveRecord::Base
   # You can only transfer from one plate to another once, anything else is an error.
   belongs_to :source, :class_name => 'Plate'
   validates_presence_of :source
+  named_scope :include_source, :include => { :source => ModelExtensions::Plate::PLATE_INCLUDES }
 
   # Before creating an instance of this class the appropriate transfers need to be made from a source
   # asset to the destination one.
