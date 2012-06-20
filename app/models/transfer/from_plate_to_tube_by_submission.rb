@@ -8,7 +8,7 @@ class Transfer::FromPlateToTubeBySubmission < Transfer
     belongs_to :transfer, :class_name => 'Transfer::FromPlateToTubeBySubmission'
     validates_presence_of :transfer
 
-    belongs_to :destination, :class_name => 'Asset'
+    belongs_to :destination, :class_name => 'Tube'
     validates_presence_of :destination
 
     validates_presence_of :source
@@ -18,6 +18,26 @@ class Transfer::FromPlateToTubeBySubmission < Transfer
 
   # Records the transfers from the wells on the plate to the assets they have gone into.
   has_many :well_to_tubes, :class_name => 'Transfer::FromPlateToTubeBySubmission::WellToTube', :foreign_key => :transfer_id
+  named_scope :include_transfers, :include => {
+    :well_to_tubes => {
+      :destination => [
+        :uuid_object, {
+          :aliquots => [
+            :uuid_object,
+            :bait_library, {
+              :tag => :tag_group,
+              :sample => [
+                :uuid_object, {
+                  :primary_study   => { :study_metadata => :reference_genome },
+                  :sample_metadata => :reference_genome
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
 
   def transfers
     Hash[well_to_tubes.map { |t| [ t.source, t.destination ] }]
