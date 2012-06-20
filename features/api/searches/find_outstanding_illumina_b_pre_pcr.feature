@@ -7,7 +7,7 @@ Feature: The search interface should return outstanding Pre-PCR plates
 
   Given I am using the latest version of the API
 
-  Given the UUID for the search "Find outstanding illumina-b pre-pcr plates" is "00000000-1111-2222-3333-444444444444"
+  Given the UUID for the search "Find outstanding Illumina-B pre-PCR plates" is "00000000-1111-2222-3333-444444444444"
 
   Given the plate barcode webservice returns "1000001"
     And the plate barcode webservice returns "1000002"
