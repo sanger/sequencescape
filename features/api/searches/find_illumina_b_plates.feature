@@ -134,7 +134,8 @@ Feature: Searching for assets by barcode
         Given the UUID of the last user created is "00000000-1111-2222-3333-100000000001"
         Given user "plateless" exists with barcode "plateless"
         Given the UUID of the last user created is "00000000-1111-2222-3333-100000000002"
-        And all wells on the plate "Testing the API B" have unique samples
+        And there is an asset link between "Stock Plate" and "Testing the API B"
+
         Given the plate "Testing the API B" is started by "plate_owner"
         
          When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444446/all":

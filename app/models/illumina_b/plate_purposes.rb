@@ -31,7 +31,7 @@ module IlluminaB::PlatePurposes
     'ILB_STD_INPUT' => IlluminaB::StockPlatePurpose,
     'ILB_STD_COVARIS' => IlluminaB::CovarisPlatePurpose,
     'ILB_STD_PREPCR' => PlatePurpose,
-    'ILB_STD_PCRXP' => IlluminaB::TaggedPlatePurpose,
+    'ILB_STD_PCRXP' => IlluminaB::FinalPlatePurpose,
     'ILB_STD_SH' => PlatePurpose,
     'ILB_STD_PCR' => IlluminaB::PcrPlatePurpose
   }
