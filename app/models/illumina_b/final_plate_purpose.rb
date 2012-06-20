@@ -1,5 +1,5 @@
 
-class IlluminaB::TaggedPlatePurpose < PlatePurpose
+class IlluminaB::FinalPlatePurpose < PlatePurpose
   include PlatePurpose::Library
 
   def transition_to(plate, state, contents = nil)
