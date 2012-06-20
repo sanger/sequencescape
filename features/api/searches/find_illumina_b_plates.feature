@@ -7,9 +7,9 @@ Feature: Searching for assets by barcode
 
     Given I am using the latest version of the API
     
-    Given the UUID for the search "Find illumina-b plates" is "00000000-1111-2222-3333-444444444444"
-    Given the UUID for the search "Find illumina-b stock plates" is "00000000-1111-2222-3333-444444444445"
-    Given the UUID for the search "Find illumina-b plates for user" is "00000000-1111-2222-3333-444444444446"
+    Given the UUID for the search "Find Illumina-B plates" is "00000000-1111-2222-3333-444444444444"
+    Given the UUID for the search "Find Illumina-B stock plates" is "00000000-1111-2222-3333-444444444445"
+    Given the UUID for the search "Find Illumina-B plates for user" is "00000000-1111-2222-3333-444444444446"
     
     Given the plate barcode webservice returns "1000001"
       And the plate barcode webservice returns "1000002"
