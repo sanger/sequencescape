@@ -2,7 +2,7 @@
 Feature: The bottom of the illumina_b pipeline
   At the bottom of the illumina_b pipeline individual wells of the final plate are transferred into the
   MX library tubes on a 1:1 basis.  Once an MX library tube has been processed the act of changing its
-  state to "passed" (or "failed", or whatever really), causes the pulldown library creation requests,
+  state to "passed" (or "failed", or whatever really), causes the illumin_b library creation requests,
   that run from the wells of the stock plate to the tube, to also be updated.
 
   Background:
@@ -117,11 +117,11 @@ Feature: The bottom of the illumina_b pipeline
     Then the state of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "started"
      And the state of all the transfer requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "started"
      And the request type of all the transfer requests to the the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "Transfer"
-     And the state of all the pulldown library creation requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "started"
+     And the state of all the illumina-b library creation requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "started"
 
     Then the state of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000002" should be "pending"
      And the state of all the transfer requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000002" should be "pending"
-     And the state of all the pulldown library creation requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000002" should be "started"
+     And the state of all the illumina-b library creation requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000002" should be "started"
 
     # Now passing should adjust the state of the pulldown library creation request
     Then log "Now passing should adjust the state of the pulldown library creation request" for debugging
@@ -151,8 +151,8 @@ Feature: The bottom of the illumina_b pipeline
 
     Then the state of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "passed"
      And the state of all the transfer requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "passed"
-     And the state of all the pulldown library creation requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "passed"
-     And all of the pulldown library creation requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be billed to their project
+     And the state of all the illumina-b library creation requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "passed"
+     And all of the illumina-b library creation requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be billed to their project
 
 
   @authorised
@@ -218,7 +218,7 @@ Feature: The bottom of the illumina_b pipeline
      And the name of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000002" should be "DN1000001M A7:H12"
 
     # Change the state of the requests to the tube so that they are in the initial state
-    Given the state of all the pulldown library creation requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" is "<state>"
+    Given the state of all the illumina-b library creation requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" is "<state>"
     Then log "Change the state of one tube to ensure it doesn't affect the other" for debugging
     When I make an authorised POST with the following JSON to the API path "/state_changes":
       """
@@ -246,8 +246,8 @@ Feature: The bottom of the illumina_b pipeline
 
     Then the state of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "passed"
      And the state of all the transfer requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "passed"
-     And the state of all the pulldown library creation requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "<state>"
-     And all of the pulldown library creation requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should not have billing
+     And the state of all the illumina-b library creation requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "<state>"
+     And all of the illumina-b library creation requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should not have billing
 
     Scenarios:
       | state     | 

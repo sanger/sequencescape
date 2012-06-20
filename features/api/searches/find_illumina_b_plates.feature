@@ -25,7 +25,7 @@ Feature: Searching for assets by barcode
       And the plate with UUID "00000000-1111-2222-3333-000000000001" has been submitted to "Illumina-B STD - HiSeq Paired end sequencing"
       And a "ILB_STD_COVARIS" plate called "Testing the API B" exists
       And the UUID for the plate "Testing the API B" is "00000000-1111-2222-3333-000000000002"
-      And a "ILB_STD_PREPCR" plate called "Testing the API C" exists
+      And a "ILB_STD_PCR" plate called "Testing the API C" exists
       And the UUID for the plate "Testing the API C" is "00000000-1111-2222-3333-000000000003"
       And a "ILB_STD_PCRXP" plate called "Testing the API D" exists
       And the UUID for the plate "Testing the API D" is "00000000-1111-2222-3333-000000000004"
@@ -64,7 +64,7 @@ Feature: Searching for assets by barcode
               "state":"pending"},
               {"name":"Testing the API C",
               "created_at":"2012-06-12T23:00:00+01:00",
-              "plate_purpose":{"name":"ILB_STD_PREPCR"},
+              "plate_purpose":{"name":"ILB_STD_PCR"},
               "uuid":"00000000-1111-2222-3333-000000000003",
               "updated_at":"2012-06-12T23:00:00+01:00",
               "state":"pending"},
@@ -134,7 +134,7 @@ Feature: Searching for assets by barcode
         Given the UUID of the last user created is "00000000-1111-2222-3333-100000000001"
         Given user "plateless" exists with barcode "plateless"
         Given the UUID of the last user created is "00000000-1111-2222-3333-100000000002"
-        Then launch the debugger
+        And all wells on the plate "Testing the API B" have unique samples
         Given the plate "Testing the API B" is started by "plate_owner"
         
          When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444446/all":
@@ -157,7 +157,7 @@ Feature: Searching for assets by barcode
               "plate_purpose":{"name":"ILB_STD_COVARIS"},
               "uuid":"00000000-1111-2222-3333-000000000002",
               "updated_at":"2012-06-12T23:00:00+01:00",
-              "state":"pending"}
+              "state":"started"}
               ]
            }
           """

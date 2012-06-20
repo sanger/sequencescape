@@ -24,9 +24,10 @@ module IlluminaBPlatePurposes
     IlluminaB::PlatePurposes::PLATE_PURPOSE_TYPE[plate_purpose_name].create!(
       :name => plate_purpose_name,
       :cherrypickable_target => false,
-      :cherrypick_direction => IlluminaB::PlatePurposes.plate_direction,
-      :barcode_printer_type => BarcodePrinterType.find_by_type('BarcodePrinterType96Plate')
-      )
+      :cherrypick_direction => IlluminaB::PlatePurposes.plate_direction
+      ).tap do |plate_purpose|
+        plate_purpose.barcode_printer_type = BarcodePrinterType.find_by_type('BarcodePrinterType96Plate')||plate_purpose.barcode_printer_type
+      end
   end
 
   def self.create_stock_purpose(plate_purpose_name)
@@ -35,8 +36,9 @@ module IlluminaBPlatePurposes
       :can_be_considered_a_stock_plate => true,
       :default_state => 'passed',
       :cherrypickable_target => true,
-      :cherrypick_direction => IlluminaB::PlatePurposes.plate_direction,
-      :barcode_printer_type => BarcodePrinterType.find_by_type('BarcodePrinterType96Plate')
-      )
+      :cherrypick_direction => IlluminaB::PlatePurposes.plate_direction
+      ).tap do |plate_purpose|
+        plate_purpose.barcode_printer_type = BarcodePrinterType.find_by_type('BarcodePrinterType96Plate')||plate_purpose.barcode_printer_type
+      end
   end
 end

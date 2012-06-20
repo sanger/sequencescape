@@ -3,7 +3,7 @@ Feature: The top of the Illumina-B pipeline
   At the top of the illumina b pipeline a stock plate arrives and an illumina-b is processed.
   "Processed" means that the plate is created from the stock plate, the entire contents of the stock
   plate is transferred to it, and the plate is started.  The act of starting the plate should change the
-  state of the pulldown library creation requests it is the source asset for, but any other state changes
+  state of the illumina b library creation requests it is the source asset for, but any other state changes
   should have no affect on these requests.
 
   Background:
@@ -279,7 +279,7 @@ Feature: The top of the Illumina-B pipeline
     # Check all of the states are correct
     Then the state of the plate with UUID "00000000-1111-2222-3333-000000000002" should be "started"
      And the state of all the transfer requests to the plate with UUID "00000000-1111-2222-3333-000000000002" should be "started"
-     And the state of all the pulldown library creation requests from the plate with UUID "00000000-1111-2222-3333-000000000001" should be "started"
+     And the state of all the illumina-b library creation requests from the plate with UUID "00000000-1111-2222-3333-000000000001" should be "started"
 
     # Now change the state of the plate to passed
     When I make an authorised POST with the following JSON to the API path "/state_changes":
@@ -311,4 +311,4 @@ Feature: The top of the Illumina-B pipeline
     # Check all of the states are correct
     Then the state of the plate with UUID "00000000-1111-2222-3333-000000000002" should be "passed"
      And the state of all the transfer requests to the plate with UUID "00000000-1111-2222-3333-000000000002" should be "passed"
-     And the state of all the pulldown library creation requests from the plate with UUID "00000000-1111-2222-3333-000000000001" should be "started"
+     And the state of all the illumina-b library creation requests from the plate with UUID "00000000-1111-2222-3333-000000000001" should be "started"
