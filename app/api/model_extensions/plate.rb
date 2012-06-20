@@ -46,11 +46,13 @@ module ModelExtensions::Plate
   # ignored within the returned result.
   def pools
     ActiveSupport::OrderedHash.new.tap do |pools|
-      wells.walk_in_pools do |pool_id, wells|
+      wells.walk_in_pools do |_, wells|
+        pool_id = wells.first.pool_uuid
         next if pool_id.blank?
-        pool_information = { :wells => wells.map(&:map).map(&:description) }
+
+        pool_information = { :wells => Map.find(wells.map(&:map_id)).map(&:description) }
         wells.first.stock_wells.first.requests_as_source.each { |request| request.update_pool_information(pool_information) }
-        pools[wells.first.pool_uuid] = pool_information
+        pools[pool_id] = pool_information
       end
     end
   end
