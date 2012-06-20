@@ -27,8 +27,8 @@ module Aliquot::Remover
   end
 
   def on_downstream_aliquots(aliquots_to_remove)
-    requests_as_source.each do |request|
-      request.target_asset.try(:process_aliquots,aliquots_to_remove)
+    requests_as_source.with_target.each do |request|
+      request.target_asset.process_aliquots(aliquots_to_remove)
     end
   end
 
