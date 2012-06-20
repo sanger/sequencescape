@@ -20,7 +20,7 @@ class Plate < Asset
 
   # Transfer requests into a plate are the requests leading into the wells of said plate.
   def transfer_requests
-    wells.map(&:transfer_requests_as_target).flatten
+    wells.all(:include => :transfer_requests_as_target).map(&:transfer_requests_as_target).flatten
   end
 
   def self.derived_classes
@@ -441,7 +441,7 @@ WHERE c.container_id=?
   end
 
   def lookup_stock_plate
-    self.ancestors.all(:order => 'created_at DESC').detect(&:stock_plate?)
+    self.ancestors.all(:order => 'created_at DESC', :include => :plate_purpose).detect(&:stock_plate?)
   end
   private :lookup_stock_plate
 
