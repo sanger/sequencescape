@@ -1,4 +1,4 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file, 
+# This file is auto-generated from the current state of the database. Instead of editing this file,
 # please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
@@ -647,10 +647,12 @@ ActiveRecord::Schema.define(:version => 20120619142710) do
   add_index "plate_metadata", ["plate_id"], :name => "index_plate_metadata_on_plate_id"
 
   create_table "plate_owners", :force => true do |t|
-    t.integer  "user_id",    :null => false
-    t.integer  "plate_id",   :null => false
+    t.integer  "user_id",        :null => false
+    t.integer  "plate_id",       :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "eventable_id",   :null => false
+    t.string   "eventable_type", :null => false
   end
 
   add_index "plate_owners", ["plate_id"], :name => "fk_plate_owners_to_plates"
