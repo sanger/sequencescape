@@ -4,17 +4,18 @@ module Sanger
       class Generator
         def self.mapping(data_object, total_volume)
           raise ArgumentError, "data_object needs to conform to an interface. WIP" if data_object.nil?
-          dest_barcode_index = barcode_to_plate_index(data_object["destination"])
-          source_barcode_index = source_barcode_to_plate_index(data_object["destination"])
 
-          buffer_data = buffers(data_object, total_volume,dest_barcode_index)
-          output_file_contents = [ header(data_object), dyn_mappings(data_object, source_barcode_index,dest_barcode_index)]
+          dest_barcode_index = barcode_to_plate_index(data_object["destination"])
+
+          source_barcode_index = source_barcode_to_plate_index(data_object["destination"])
+          buffer_data = buffers(data_object, total_volume)
+          output_file_contents = [ header(data_object), dyn_mappings(data_object)]
           unless buffer_data.blank?
             output_file_contents << buffer_seperator
             output_file_contents << buffer_data
           end
           output_file_contents << footer(source_barcode_index,dest_barcode_index)
-          
+
           output_file_contents.join("\n").gsub(/\n\n/,"\n")
         end
 
@@ -46,7 +47,7 @@ module Sanger
           "C;\nC; This file created by #{data_object["user"]} on #{data_object["time"]}\nC;"
         end
 
-        def self.dyn_mappings(data_object, source_barcode_index,dest_barcode_index)
+        def self.dyn_mappings(data_object)
           dyn_mappings = ""
           data_object["destination"].each do |dest_plate_barcode,plate_details|
             mapping_by_well = {}
@@ -56,13 +57,13 @@ module Sanger
             end
 
             mapping_by_well.sort{|a,b| a[0]<=>b[0]}.each do |dest_position, mapping|
-              source_index = source_barcode_index["#{mapping["src_well"][0]}"]
+              source_barcode = "#{mapping["src_well"][0]}"
               source_name = data_object["source"]["#{mapping["src_well"][0]}"]["name"]
               source_position  = Map.description_to_vertical_plate_position(mapping["src_well"][1],data_object["source"]["#{mapping["src_well"][0]}"]["plate_size"])
               destination_position = Map.description_to_vertical_plate_position(mapping["dst_well"],plate_details["plate_size"])
               temp = [
-                "A;SCRC#{source_index};;#{source_name};#{source_position};;#{mapping["volume"]}",
-                "D;DEST#{dest_barcode_index[dest_plate_barcode]};;#{plate_details["name"]};#{destination_position};;#{mapping["volume"]}",
+                "A;#{source_barcode};;#{source_name};#{source_position};;#{mapping["volume"]}",
+                "D;#{dest_plate_barcode};;#{plate_details["name"]};#{destination_position};;#{mapping["volume"]}",
                 "W;\n"].join("\n")
               dyn_mappings  += temp
             end
@@ -74,7 +75,7 @@ module Sanger
           "C;"
         end
 
-        def self.buffers(data_object, total_volume,dest_barcode_index)
+        def self.buffers(data_object, total_volume)
           buffer = []
           data_object["destination"].each do |destination_barcode,destination_details|
             mapping_by_well = {}
@@ -86,9 +87,8 @@ module Sanger
               if total_volume  > mapping["volume"]
                 dest_name = data_object["destination"][destination_barcode]["name"]
                 volume = ((total_volume*100) - (mapping["volume"]*100)).to_i.to_f/100
-                dest_index = dest_barcode_index[destination_barcode]
                 vert_map_id = Map.description_to_vertical_plate_position(mapping["dst_well"],destination_details["plate_size"])
-                buffer << "A;BUFF;;96-TROUGH;#{vert_map_id};;#{volume}\nD;DEST#{dest_index};;#{dest_name};#{vert_map_id};;#{volume}\nW;"
+                buffer << "A;BUFF;;96-TROUGH;#{vert_map_id};;#{volume}\nD;#{destination_barcode};;#{dest_name};#{vert_map_id};;#{volume}\nW;"
               end
             end
           end
