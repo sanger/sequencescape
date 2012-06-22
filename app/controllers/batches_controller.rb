@@ -37,7 +37,7 @@ class BatchesController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml  { render :layout => false }
+      format.xml  { render :layout => false ; cache_page }
     end
   end
 
