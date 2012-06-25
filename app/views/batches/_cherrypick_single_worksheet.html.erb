@@ -12,6 +12,7 @@
      <thead>
        <tr>
          <th>Bed</th>
+         <th>Plate name</th>
          <th>Barcode</th>
 				 <th>Storage Area</th>
 				 <th>Freezer</th>
@@ -21,10 +22,12 @@
      <tbody>
 			 <% source_plate_colour = {} %>
        <% robot_plate_layout[1].sort{|a,b| a[1]<=>b[1]}.each do |barcode,index| -%>
-			   <% location_data = Plate.find_by_barcode(Barcode.split_barcode(barcode)[1]).get_storage_location -%>
+         <% plate = Plate.with_machine_barcode(barcode).first %>
+         <% location_data = plate.get_storage_location %>
 				 <% source_plate_colour["#{barcode}"] = "colour#{index%12}" %>
        <tr>
          <td>SCRC<%= index %></td>
+         <td><%= plate.barcode %></td>
          <td><strong><%= barcode %></strong></td>
 				 <td><%= location_data["storage_area"] %></td>
 				 <td><%= location_data["storage_device"] %></td>
@@ -41,13 +44,16 @@
      <thead>
        <tr>
          <th>Bed</th>
+         <th>Plate name</th>
          <th>Barcode</th>
        </tr>
      </thead>
      <tbody>
        <% robot_plate_layout[0].sort{|a,b| a[1]<=>b[1]}.each do |barcode,index| -%>
+         <% plate = Plate.with_machine_barcode(barcode).first %>
        <tr>
          <td>DEST<%= index %></td>
+         <th><%= plate.barcode %></td>
          <td><strong><%= barcode %></strong></td>
        </tr>
        <% end -%>
@@ -91,7 +97,7 @@
 							<% if source_well.plate.is_a?(ControlPlate) %>
 							  <td class="control">
 							<% elsif source_well.is_a?(Well) %>
-								<td class="<%= source_plate_colour[source_well.plate.barcode]%> ">
+								<td class="<%= source_plate_colour[source_well.plate.ean13_barcode.to_s]%> ">
 							<% else %>
 								<td>
 							<% end -%>
