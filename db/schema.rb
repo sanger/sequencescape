@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120511152809) do
+ActiveRecord::Schema.define(:version => 20120621123158) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -663,6 +663,7 @@ ActiveRecord::Schema.define(:version => 20120511152809) do
     t.string   "default_state",                                 :default => "pending"
     t.integer  "barcode_printer_type_id",                       :default => 2
     t.boolean  "cherrypickable_target",                         :default => true,      :null => false
+    t.boolean  "cherrypickable_source",                         :default => false,     :null => false
   end
 
   add_index "plate_purposes", ["qc_display"], :name => "index_plate_purposes_on_qc_display"

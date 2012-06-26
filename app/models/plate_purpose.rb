@@ -35,7 +35,9 @@ class PlatePurpose < ActiveRecord::Base
 
   include Relationship::Associations
 
-  named_scope :cherrypickable, :conditions => { :cherrypickable_target => true }
+  named_scope :cherrypickable_as_target, :conditions => { :cherrypickable_target => true }
+  named_scope :cherrypickable_as_source, :conditions => { :cherrypickable_source => true }
+  named_scope :cherrypickable_default_type, :conditions => { :cherrypickable_target => true, :cherrypickable_source => true }
 
   # The state of a plate is based on the transfer requests.
   def state_of(plate)
@@ -56,7 +58,7 @@ class PlatePurpose < ActiveRecord::Base
     well_to_requests = wells.map { |well| [well, well.requests_as_target] }.reject { |_,r| r.empty? }
     requests = Request.find(:all, :conditions => [ 'id IN (?)', well_to_requests.map(&:last).flatten ])
     event    = STATE_TO_STATEMACHINE_EVENT[state] or raise StandardError, "Illegal transition state #{state.inspect}"
-    requests.each {|request| request.send(event)}
+    requests.each {|request| request.transition_to(state)}
     return unless state == 'failed'
 
     # Load all of the requests that come from the stock wells that should be failed.  Note that we can't simply change

@@ -27,3 +27,5 @@ config.reload_plugins = true
 
 # On MacOS X we've got a buggy LibXML version and Nokogiri complains!
 I_KNOW_I_AM_USING_AN_OLD_AND_BUGGY_VERSION_OF_LIBXML2 = true
+
+config.active_record.observers = [ :batch_cache_sweeper ]

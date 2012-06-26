@@ -6,6 +6,42 @@ module Request::Statemachine
   QUOTA_COUNTED   = [ 'passed', 'pending', 'blocked', 'started' ]
   QUOTA_EXEMPTED  = [ 'failed', 'cancelled', 'aborted' ]
 
+  # Bit of an ugly reproduction of the state machine, but shan't be in here for long.
+  TRANSITIONS = {
+    'started' => {
+      'passed' => :pass!,
+      'cancelled' => :cancel!,
+      'failed' => :fail!
+    },
+    'pending' =>{
+      'started' => :start!,
+      'cancelled' => :cancel_before_started!,
+      'hold' => :hold!,
+      'blocked' => :block!
+    },
+    'passed' => {
+      'failed' => :change_decision!,
+      'pending' => :return!,
+      'cancelled' => :cancel_completed!
+    },
+    'cancelled' => {
+      'pending' => :detach!
+    },
+    'failed' => {
+      'passed' => :change_decision!,
+      'pending' => :return!,
+      'cancelled' => :cancel_completed!
+    },
+    'hold' => {
+      'started' => :start!,
+      'pending' => :reset!,
+      'cancelled' => :cancel!
+    },
+    'blocked' => {
+      'pending' => :unblock!
+    }
+  }
+
   def self.included(base)
     base.class_eval do
       include Request::BillingStrategy
@@ -102,6 +138,16 @@ module Request::Statemachine
     end
   end
 
+  def transition_to(target_state)
+    method = transition_method_to(target_state)
+    raise AASM::InvalidTransition, "Can not transition from #{state} to #{target_state}" if method.nil?
+    self.send(method)
+  end
+
+  def transition_method_to(target_state)
+    TRANSITIONS[state][target_state]
+  end
+  private :transition_method_to
   #--
   # These are the callbacks that will be made on entry to a given state.  This allows
   # derived classes to override these and add custom behaviour.  You are advised to call
