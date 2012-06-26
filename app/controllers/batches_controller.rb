@@ -37,7 +37,7 @@ class BatchesController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml  { render :layout => false ; cache_page }
+      format.xml  { render :layout => false ; cache_page(response.body, url_for(:controller => 'batches', :action => 'show', :id => @batch.id, :format => :xml, :only_path => true)) }
     end
   end
 
