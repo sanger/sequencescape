@@ -1,9 +1,11 @@
 class AmqpObserver < ActiveRecord::Observer
+  # Observe not only the records but their metadata too, otherwise we may miss changes.
   observe(
     :order, :submission, :request,
     :study, :study_sample, :sample, :aliquot, :tag,
     :project,
-    :asset, :asset_link
+    :asset, :asset_link, :well_attribute,
+    Metadata::Base
   )
 
   # Ensure we capture records being saved as well as deleted.
@@ -17,7 +19,7 @@ class AmqpObserver < ActiveRecord::Observer
   # will be written to during changes.  But transactions can be nested, which means that only the
   # very outter one should do any publishing.
   def transaction(&block)
-    Thread.current[:buffer] ||= (current_buffer = MostRecentBuffer.new)
+    Thread.current[:buffer] ||= (current_buffer = MostRecentBuffer.new(self))
     yield.tap do
       activate_exchange do
         current_buffer.map(&method(:publish))
@@ -32,13 +34,25 @@ class AmqpObserver < ActiveRecord::Observer
     self  # Ensure we can chain these if necessary!
   end
 
+  # Converts metadata entries to their owner records, if necessary
+  def determine_record_to_broadcast(record)
+    case
+    when record.is_a?(WellAttribute)  then record.well
+    when record.is_a?(Metadata::Base) then record.owner
+    else record
+    end
+  end
+  private :determine_record_to_broadcast
+
   # A simple buffer class that will only retain the most recent version of any object pushed
   # into it.  Assumes that equality is what you want for checking for things, which works fine
   # with ActiveRecord.
   class MostRecentBuffer
-    def initialize
-      @updated, @deleted = Set.new, Set.new
+    def initialize(observer)
+      @observer, @updated, @deleted = observer, Set.new, Set.new
     end
+
+    delegate :determine_record_to_broadcast, :to => :@observer
 
     def map(&block)
       @updated.group_by(&:first).each do |model, pairs|
@@ -50,7 +64,8 @@ class AmqpObserver < ActiveRecord::Observer
 
     def <<(record)
       self.tap do
-        pair = [ record.class, record.id ]
+        record_to_broadcast = determine_record_to_broadcast(record)
+        pair                = [ record_to_broadcast.class, record_to_broadcast.id ]
         if record.destroyed?
           @updated.delete(pair)
           @deleted << record
@@ -58,6 +73,10 @@ class AmqpObserver < ActiveRecord::Observer
           @updated << pair
         end
       end
+    end
+
+    def blank?
+      @updated.empty? and @deleted.empty?
     end
   end
 
@@ -69,11 +88,11 @@ class AmqpObserver < ActiveRecord::Observer
       @observer = observer
     end
 
-    delegate :activate_exchange, :publish, :to => :@observer
+    delegate :activate_exchange, :publish, :determine_record_to_broadcast, :to => :@observer
     private :activate_exchange, :publish
 
     def <<(record)
-      activate_exchange { publish(record) }
+      activate_exchange { publish(determine_record_to_broadcast(record)) }
     end
   end
 
