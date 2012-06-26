@@ -6,8 +6,6 @@ class Plate < Asset
   include PlatePurpose::Associations
   include Barcode::Barcodeable
 
-  SOURCE_PLATE_TYPES = ["ABgene_0765","ABgene_0800"]
-
   # The default state for a plate comes from the plate purpose
   delegate :default_state, :to => :plate_purpose, :allow_nil => true
   def state
@@ -235,10 +233,7 @@ WHERE c.container_id=?
   end
 
   def stock_plate_name
-    if self.get_plate_type == "Stock Plate" || self.get_plate_type.blank?
-      return SOURCE_PLATE_TYPES.first
-    end
-    self.get_plate_type
+    (self.get_plate_type == "Stock Plate" || self.get_plate_type.blank?) ? PlatePurpose.cherrypickable_as_source.first.name : self.get_plate_type
   end
 
   def control_well_exists?
@@ -400,12 +395,6 @@ WHERE c.container_id=?
       self.events.create!(:message => I18n.t('studies.submissions.plate.event.failed', :barcode => self.barcode), :created_by => user.login)
       study.errors.add("plate_barcode", "Couldnt create submission for plate #{plate_barcode}")
     end
-  end
-
-  # <b>DEPRECATED:</b> Please use <tt>Plate::SOURCE_PLATE_TYPES</tt> instead.
-  def self.source_plate_types
-    ActiveSupport::Deprecation.warn "Plate.source_plate_types is deprecated. Please use Plate::SOURCE_PLATE_TYPES instead."
-    SOURCE_PLATE_TYPES
   end
 
   def create_sample_tubes

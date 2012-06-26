@@ -14,6 +14,7 @@ module Batch::TecanBehaviour
   def generate_tecan_data(target_barcode, override_plate_type = nil)
     # very slow
     #return nil unless validate_for_tecan(target_barcode)
+
     data_object = {
        "user" => user.login ,
        "time" => Time.now,
@@ -21,27 +22,33 @@ module Batch::TecanBehaviour
        "destination" => {}
     }
     requests.find_all_by_state("passed").each do |request|
-      source_barcode = request.asset.plate.barcode
+
       destination_barcode = request.target_asset.plate.barcode
       next unless destination_barcode == target_barcode
+
+      full_source_barcode = request.asset.plate.ean13_barcode
+      full_destination_barcode = request.target_asset.plate.ean13_barcode
 
       source_plate_name = request.asset.plate.stock_plate_name.gsub(/_/, "\s")
       if override_plate_type
         source_plate_name = override_plate_type
       end
 
-      if data_object["source"][source_barcode].nil?
-        data_object["source"][source_barcode]  = {"name" => source_plate_name, "plate_size" => request.asset.plate.size}
+      if data_object["source"][full_source_barcode].nil?
+        data_object["source"][full_source_barcode]  = {"name" => source_plate_name, "plate_size" => request.asset.plate.size}
       end
-      if data_object["destination"][destination_barcode].nil?
-        data_object["destination"][destination_barcode] = {"name" => Plate::SOURCE_PLATE_TYPES.last.gsub(/_/, "\s"), "plate_size" => request.target_asset.plate.size }
+      if data_object["destination"][full_destination_barcode].nil?
+        data_object["destination"][full_destination_barcode] = {
+          "name" => PlatePurpose.cherrypickable_default_type.first.name.gsub(/_/, "\s"),
+          "plate_size" => request.target_asset.plate.size
+        }
       end
-      if data_object["destination"][destination_barcode]["mapping"].nil?
-        data_object["destination"][destination_barcode]["mapping"] = []
+      if data_object["destination"][full_destination_barcode]["mapping"].nil?
+        data_object["destination"][full_destination_barcode]["mapping"] = []
       end
 
-      data_object["destination"][destination_barcode]["mapping"] << {
-        "src_well"  => [source_barcode, request.asset.map.description],
+      data_object["destination"][full_destination_barcode]["mapping"] << {
+        "src_well"  => [full_source_barcode, request.asset.map.description],
         "dst_well"  => request.target_asset.map.description,
         "volume"    => (request.target_asset.get_picked_volume)  }
     end

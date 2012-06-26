@@ -26,8 +26,7 @@ class RobotVerification
       expected_bed_barcode = robot.robot_properties.find_by_key("#{bed_prefix}#{bed_number}")
       return false if expected_bed_barcode.nil?
       return false if scanned_bed_barcode != expected_bed_barcode.value
-      scanned_plate_barcode = Barcode.number_to_human(plates[plate_barcode])
-      return false if scanned_plate_barcode != plate_barcode
+      return false if plates[plate_barcode] != plate_barcode
     end
 
     true
