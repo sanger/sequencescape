@@ -72,12 +72,15 @@ class Admin::ProjectsController < ApplicationController
     redirect_if_not_owner_or_admin(@project)
     @request_types = RequestType.all(:order => "name ASC")
     # Cleans submitted quotas. Does not accept 0 quotas
-    new_request_types = []
+
+    quota_updates = {}
     if params[:quota]
-      new_request_types = params[:quota].delete_if{|g,k| k == "0"}
+      quota_updates = params[:quota].delete_if{|g,k| k == "0"}
     end
-    quota_params = params[:project].delete(:quotas)
     params.delete(:quota)
+
+    existing_quota_changes = params[:project].delete(:quotas)||{}
+    quota_updates.merge!(existing_quota_changes)
 
     unless params[:project][:uploaded_data].blank?
       document_settings = {}
@@ -95,15 +98,10 @@ class Admin::ProjectsController < ApplicationController
         EventFactory.project_approved(@project, current_user)
       end
 
-      if new_request_types.size > 0
-        @project.add_quotas(new_request_types)
-      end
-
-      unless @project.compare_quotas(quota_params)
+      unless @project.compare_quotas( quota_updates )
+        @project.add_quotas(quota_updates)
         EventFactory.quota_updated(@project, current_user)
       end
-
-      @project.add_quotas(quota_params)
 
       flash[:notice] = "Your project has been updated"
       redirect_to :controller => "admin/projects", :action => "update", :id => @project.id
