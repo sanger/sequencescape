@@ -58,7 +58,7 @@ class BulkSubmission < ActiveRecord::Base
   end
 
   def headers
-    @headers ||= @csv_rows.fetch(header_index)
+    @headers ||= @csv_rows.fetch(header_index) unless header_index.nil?
   end
   private :headers
 
@@ -90,6 +90,7 @@ class BulkSubmission < ActiveRecord::Base
   private :header_row?
 
   def valid_header?
+    return false if headers.nil?
     return true if headers.include? "submission name"
     errors.add :spreadsheet, "You submitted an incompatible spreadsheet. Please ensure your spreadsheet contains the 'submission name' column"
     false
