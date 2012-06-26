@@ -3,7 +3,12 @@
 class TransferRequest < Request
   # The statemachine for transfer requests is more promiscuous than normal requests, as well
   # as being more concise as it has less states.
-  state_machine :state, :initial => :pending do
+ state_machine :state, :initial => :pending do
+   state :started do
+     def on_started(*args)
+     end
+   end
+
     # State Machine events
     event :start do
       transition :to => :started, :from => :pending
