@@ -21,6 +21,7 @@ class Admin::ProjectsControllerTest < ActionController::TestCase
         role = Factory :owner_role, :authorizable => @project
         role.users << @user
         @request_type = Factory :request_type
+        @other_request_type = Factory :request_type
         @controller.stubs(:current_user).returns(@user)
         @controller.stubs(:logged_in?).returns(@user)
         @emails = ActionMailer::Base.deliveries
@@ -43,6 +44,24 @@ class Admin::ProjectsControllerTest < ActionController::TestCase
       context "#managed_update (with new quota update)" do
         setup do
           get :managed_update, :id => @project.id, :quota => { "#{@request_type.id}" => "50" }, :project => { :name => @project.name }
+        end
+
+        should_set_the_flash_to "Your project has been updated"
+
+        should "send an email" do
+          assert_sent_email do |email|
+            email.subject  =~ /Project/ && email.subject =~ /[TEST]/ && email.bcc.include?(@project.owner.email)
+            email.bcc.size == 2
+            email.body     =~ /Project quota approved by/
+          end
+        end
+        should_redirect_to("admin project") { "/admin/projects/#{@project.id}" }
+      end
+
+      context "#managed_update (with new quota update and existing other request_type quota)" do
+        setup do
+          @quota = Factory :project_quota, :project => @project, :request_type => @other_request_type, :limit => 10
+          get :managed_update, :id => @project.id, :quota => { "#{@request_type.id}" => "50" }, :project => { :quotas => { "#{@other_request_type.id}" => "10" }, :name => @project.name }
         end
 
         should_set_the_flash_to "Your project has been updated"
