@@ -449,7 +449,7 @@ class StudiesController < ApplicationController
      
    def study_reports
      @study = Study.find(params[:id])
-     @study_reports = StudyReport.paginate(:conditions => ["study_id=?",@study.id],  :page => params[:page], :order => "id desc")
+     @study_reports = StudyReport.without_files.for_study(@study).paginate(:page => params[:page], :order => 'id DESC')
    end
    
 
