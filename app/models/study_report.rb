@@ -7,7 +7,10 @@ class StudyReport < ActiveRecord::Base
   @@per_page = 50
 
   has_attached_file :report, :storage => :database
-  default_scope select_without_file_columns_for(:report)
+
+  named_scope :for_study, lambda { |study| { :conditions => { :study_id => study.id } } }
+  named_scope :for_user, lambda { |user| { :conditions => { :user_id => user.id } } }
+  named_scope :without_files, lambda { select_without_file_columns_for(:report) }
 
   attr_accessor :report_file_name
   attr_accessor :report_content_type
