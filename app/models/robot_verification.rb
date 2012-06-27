@@ -63,13 +63,10 @@ class RobotVerification
   end
 
   def set_plate_types(plate_types_params)
-    return nil if plate_types_params.blank?
     plate_types_params.each do |plate_barcode, plate_type|
       next if plate_barcode.blank? || plate_type.blank?
-      plate = Plate.find_by_barcode(plate_barcode)
-      next if plate.nil?
+      plate = Plate.with_machine_barcode(plate_barcode).first or raise "Unable to locate plate #{plate_barcode.inspect} for robot verification"
       plate.set_plate_type(plate_type)
     end
   end
-
 end
