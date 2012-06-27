@@ -42,7 +42,7 @@ class UsersController < ApplicationController
   
   def study_reports
     @user = User.find(params[:id])
-    @study_reports = StudyReport.paginate(:conditions => ["user_id=?",@user.id],  :page => params[:page], :order => "id desc")
+    @study_reports = StudyReport.without_files.for_user(@user).paginate(:page => params[:page], :order => "id desc")
   end
 
 end
