@@ -19,7 +19,7 @@ class TransferRequest < Request
     end
 
     event :fail do
-      transition :to => :failed, :from => [:pending, :started, :pending]
+      transition :to => :failed, :from => [:pending, :started, :passed]
     end
 
     event :cancel do
