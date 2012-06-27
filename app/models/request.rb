@@ -45,6 +45,8 @@ class Request < ActiveRecord::Base
   delegate :billable?, :to => :request_type, :allow_nil => true
   belongs_to :workflow, :class_name => "Submission::Workflow"
 
+  named_scope :for_billing, :include => [ :initial_project, :request_type, { :target_asset => :aliquots } ]
+
   belongs_to :user
 
   belongs_to :submission

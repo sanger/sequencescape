@@ -153,7 +153,7 @@ class Transfer < ActiveRecord::Base
       (Hash.new { |h,k| h[k] = [] }).tap do |plate_wells_to_stock_wells|
         plate_well_ids, stock_well_ids = results.map { |r| r['plate_well_id'].to_i }, results.map { |r| r['stock_well_id'].to_i }
         eager_loaded_plate_wells       = Hash[plate.wells.with_pool_id.select { |w| plate_well_ids.include?(w.id.to_i) }.map { |w| [w.id.to_i,w] }]
-        eager_loaded_stock_wells       = Hash[Well.find(stock_well_ids).map { |w| [w.id.to_i,w] }]
+        eager_loaded_stock_wells       = Hash[Well.find(stock_well_ids, :include => [:plate, :map, { :requests_as_source => :target_asset }]).map { |w| [w.id.to_i,w] }]
         results.each do |r|
           plate_wells_to_stock_wells[eager_loaded_plate_wells[r['plate_well_id'].to_i]] << eager_loaded_stock_wells[r['stock_well_id'].to_i]
         end
