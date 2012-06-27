@@ -54,9 +54,10 @@ class PlatePurpose < ActiveRecord::Base
   def transition_to(plate, state, contents = nil)
     wells = plate.wells
     wells = wells.located_at(contents) unless contents.blank?
+    wells = wells.all(:include => { :requests_as_target => { :asset => :aliquots, :target_asset => :aliquots } })
 
     well_to_requests = wells.map { |well| [well, well.requests_as_target] }.reject { |_,r| r.empty? }
-    requests = Request.find(:all, :conditions => [ 'id IN (?)', well_to_requests.map(&:last).flatten ])
+    requests = well_to_requests.map(&:last).flatten
     event    = STATE_TO_STATEMACHINE_EVENT[state] or raise StandardError, "Illegal transition state #{state.inspect}"
     requests.each {|request| request.transition_to(state)}
     return unless state == 'failed'
