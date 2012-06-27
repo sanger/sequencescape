@@ -75,10 +75,10 @@ class Transfer::FromPlateToTubeBySubmission < Transfer
   after_create :build_well_to_tube_transfers
   def build_well_to_tube_transfers
     tube_to_stock_wells = Hash.new { |h,k| h[k] = [] }
-    @transfers.each do |source, (destination, stock_wells)|
-      self.well_to_tubes.create!(:source => source, :destination => destination)
+    self.well_to_tubes.build(@transfers.map do |source, (destination, stock_wells)|
       tube_to_stock_wells[destination].concat(stock_wells)
-    end
+      { :source => source, :destination => destination }
+    end).map(&:save!)
 
     tube_to_stock_wells.each do |tube, stock_wells|
       tube.update_attributes!(:name => tube_name_for(stock_wells))
