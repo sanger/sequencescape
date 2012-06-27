@@ -13,7 +13,7 @@ GIT
 
 GIT
   remote: git+ssh://git@github.com/sanger/alter_table.git
-  revision: 989472251f496a8503e9c2db68b2f0d3e78f492b
+  revision: 5799d3c8ba38009f269f44c0d6b3a0730b752ecc
   specs:
     alter_table (0.0.1)
       rails (~> 2.3.11)
