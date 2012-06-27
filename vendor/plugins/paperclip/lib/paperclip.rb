@@ -358,7 +358,7 @@ module Paperclip
     def setup_file_columns name
       (attachment_definitions[name][:file_columns] = file_columns(name)).each do | style, column |
         raise PaperclipError.new("#{name} is not an allowed column name; please choose another column name.") if column == name.to_s
-        raise PaperclipError.new("#{self} model does not have required column '#{column}'") unless column_names.include? column
+        #raise PaperclipError.new("#{self} model does not have required column '#{column}'") unless column_names.include? column
       end
     end
     
