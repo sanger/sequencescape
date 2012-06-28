@@ -1,5 +1,5 @@
 class Io::Tube < Io::Asset
-  set_model_for_input(::LibraryTube)
+  set_model_for_input(::Tube)
   set_json_root(:tube)
   set_eager_loading { |model| model.include_aliquots.include_scanned_into_lab_event }
 
