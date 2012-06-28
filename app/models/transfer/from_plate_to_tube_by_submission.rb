@@ -2,6 +2,25 @@
 # into MX library tubes.  Each well is effectively a pool of the stock wells, once they've been
 # through the pipeline, so the mapping needs to be based on the original submissions.
 class Transfer::FromPlateToTubeBySubmission < Transfer
+  DESTINATION_INCLUDES = {
+    :destination => [
+      :uuid_object, {
+        :aliquots => [
+          :uuid_object,
+          :bait_library, {
+            :tag => :tag_group,
+            :sample => [
+              :uuid_object, {
+                :primary_study   => { :study_metadata => :reference_genome },
+                :sample_metadata => :reference_genome
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+
   class WellToTube < ActiveRecord::Base
     set_table_name('well_to_tube_transfers')
 
@@ -12,35 +31,18 @@ class Transfer::FromPlateToTubeBySubmission < Transfer
     validates_presence_of :destination
 
     validates_presence_of :source
+
+    named_scope :include_destination, :include => Transfer::FromPlateToTubeBySubmission::DESTINATION_INCLUDES
   end
 
   include ControlledDestinations
 
   # Records the transfers from the wells on the plate to the assets they have gone into.
   has_many :well_to_tubes, :class_name => 'Transfer::FromPlateToTubeBySubmission::WellToTube', :foreign_key => :transfer_id
-  named_scope :include_transfers, :include => {
-    :well_to_tubes => {
-      :destination => [
-        :uuid_object, {
-          :aliquots => [
-            :uuid_object,
-            :bait_library, {
-              :tag => :tag_group,
-              :sample => [
-                :uuid_object, {
-                  :primary_study   => { :study_metadata => :reference_genome },
-                  :sample_metadata => :reference_genome
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  }
+  named_scope :include_transfers, :include => { :well_to_tubes => DESTINATION_INCLUDES }
 
   def transfers
-    Hash[well_to_tubes.map { |t| [ t.source, t.destination ] }]
+    Hash[well_to_tubes.include_destination.map { |t| [t.source, t.destination] }]
   end
 
   #--
