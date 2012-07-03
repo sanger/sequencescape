@@ -41,7 +41,7 @@ class Api::WellIO < Api::Base
     map_attribute_to_json_attribute(:pico_pass, 'pico_pass')
     map_attribute_to_json_attribute(:measured_volume, 'measured_volume')
     map_attribute_to_json_attribute(:sequenom_count, 'sequenom_count')
-    map_attribute_to_json_attribute(:gender_markers, 'gender_markers')
+    map_attribute_to_json_attribute(:gender_markers_string, 'gender_markers')
   end
 
   with_association(:map) do
