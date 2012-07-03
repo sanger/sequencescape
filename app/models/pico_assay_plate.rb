@@ -47,12 +47,10 @@ class PicoAssayPlate < Plate
   
   def upload_pico_results(state, well_details)
     return false if state.nil? || well_details.blank? || stock_plate().nil?
-    stock_plate.events.create_pico!(state)
 
-    well_details.each do |details|
-      well_detail = WellDetail.new(details[:well], self)
-      
-      well_detail.grade_as!(state) 
+    ActiveRecord::Base.transaction do
+      stock_plate.events.create_pico!(state)
+      well_details.each { |details| WellDetail.new(details[:well], self).grade_as!(state) }
     end
   end
   
