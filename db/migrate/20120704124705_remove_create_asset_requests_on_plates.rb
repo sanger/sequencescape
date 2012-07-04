@@ -13,6 +13,7 @@ class RemoveCreateAssetRequestsOnPlates < ActiveRecord::Migration
           ]
         }
       }).map(&:destroy)
+      #(2154.6816s)
 
       # execute <<-SQL
       # DELETE `requests`
