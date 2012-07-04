@@ -52,7 +52,7 @@ options_hash = {
     # Rubbish data we need
     study       = Study.new(:name => "#{chosen_pipeline} study", :state => 'active').tap { |t| t.save_without_validation }
     project     = Project.create!(:name => "#{chosen_pipeline} project", :enforce_quotas => false, :project_metadata_attributes => { :project_cost_code => '1111' })
-    user        = User.create!(:login => "#{chosen_pipeline} user", :password => 'foobar', :swipecard_code => 'abcdef', :workflow_id => 1).tap do |u|
+    user        = User.create!(:login => "testuser", :password => 'testuser', :swipecard_code => 'abcdef', :workflow_id => 1).tap do |u|
       u.roles.create!(:name => 'administrator')
     end
 
