@@ -2,7 +2,7 @@ class RemoveCreateAssetRequestsOnPlates < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
 
-      CreateAssetRequest.find(
+      CreateAssetRequest.find_each(
       :all,
       :joins => 'LEFT OUTER JOIN `assets` ON `assets`.id = `requests`.`asset_id`',
       :conditions => {
@@ -12,7 +12,9 @@ class RemoveCreateAssetRequestsOnPlates < ActiveRecord::Migration
           'PicoAssayBPlate','PicoDilutionPlate','SequenomQcPlate','WorkingDilutionPlate'
           ]
         }
-      }).map(&:destroy)
+      }) do |request|
+        request.destroy
+      end
       #(2154.6816s)
 
       # execute <<-SQL
