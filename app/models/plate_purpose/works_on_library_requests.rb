@@ -9,6 +9,7 @@ module PlatePurpose::WorksOnLibraryRequests
     well_to_stock_id = Hash[locate_stock_wells_for(plate).map { |well,stock_wells| [well.id, stock_wells.first.id] }]
     requests         = Request::LibraryCreation.for_asset_id(well_to_stock_id.values).include_request_metadata.group_by(&:asset_id)
     plate.wells.all(:include => { :aliquots => :library }).each do |well|
+      next if well.aliquots.empty?
       stock_id       = well_to_stock_id[well.id] or raise "No stock well for #{well.id.inspect} (#{well_to_stock_id.inspect})"
       stock_requests = requests[stock_id]        or raise "No requests for stock well #{stock_id.inspect} (#{requests.inspect})"
       yield(well, stock_requests.first)
