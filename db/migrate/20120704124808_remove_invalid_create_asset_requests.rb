@@ -4,7 +4,6 @@ class RemoveInvalidCreateAssetRequests < ActiveRecord::Migration
       say "Removing create asset requests for wells on non-stock plates"
 
       CreateAssetRequest.find_each(
-      :all,
       :joins => [
         'LEFT OUTER JOIN `assets` ON `assets`.id = `requests`.asset_id',
         'LEFT OUTER JOIN `container_associations` ON `content_id` = `assets`.id',
