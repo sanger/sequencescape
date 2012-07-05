@@ -3,7 +3,6 @@ class RemoveCreateAssetRequestsOnPlates < ActiveRecord::Migration
     ActiveRecord::Base.transaction do
 
       CreateAssetRequest.find_each(
-      :all,
       :joins => 'LEFT OUTER JOIN `assets` ON `assets`.id = `requests`.`asset_id`',
       :conditions => {
         :sti_type => 'CreateAssetRequest',
