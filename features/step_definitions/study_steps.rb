@@ -161,7 +161,7 @@ GivenStudyMetadata(:data_release_timing,        /^the study "([^\"]+)" data rele
 GivenStudyMetadata(:study_ebi_accession_number, /^the study "([^\"]+)" has the accession number "([^\"]+)"$/)
 
 def GivenStudyTypeStudyMetadata(attribute, regexp)
-  Given(regexp) do |name,value|       
+  Given(regexp) do |name,value|
     study = Study.find_by_name(name) or raise StandardError, "There appears to be no study named '#{ name }'"
     study_type = StudyType.find_by_name(value) or raise StandardError, "Study type not valid: '#{ value}'"
     study.study_metadata.send(:"#{ attribute }=", study_type)
@@ -169,10 +169,10 @@ def GivenStudyTypeStudyMetadata(attribute, regexp)
   end
 end
 
-GivenStudyTypeStudyMetadata(:study_type,              /^the study "([^\"]+)" is a "([^\"]*)" study$/) 
+GivenStudyTypeStudyMetadata(:study_type,              /^the study "([^\"]+)" is a "([^\"]*)" study$/)
 
 def GivenStudyDataReleaseTypeStudyMetadata(attribute, regexp)
-  Given(regexp) do |name,value|       
+  Given(regexp) do |name,value|
     study = Study.find_by_name(name) or raise StandardError, "There appears to be no study named '#{ name }'"
     study_type_dr = DataReleaseStudyType.find_by_name(value) or raise StandardError, "Data Release Study type not valid: '#{ value}'"
     study.study_metadata.send(:"#{ attribute }=", study_type_dr)
@@ -183,7 +183,7 @@ end
 GivenStudyDataReleaseTypeStudyMetadata(:data_release_study_type, /^the study "([^\"]+)" is a "([^\"]+)" study for data release$/)
 
 def GivenReferenceGenomeStudyMetadata(attribute, regexp)
-  Given(regexp) do |name,value|       
+  Given(regexp) do |name,value|
     study = Study.find_by_name(name) or raise StandardError, "There appears to be no study named '#{ name }'"
     ref_genome = ReferenceGenome.find_by_name(value) or raise StandardError, "Study type not valid: '#{ value}'"
     study.study_metadata.send(:"#{ attribute }=", ref_genome)
@@ -192,7 +192,7 @@ def GivenReferenceGenomeStudyMetadata(attribute, regexp)
 end
 
 def GivenFacultySponsor(attribute, regexp)
-  Given(regexp) do |name,value|       
+  Given(regexp) do |name,value|
     study = Study.find_by_name(name) or raise StandardError, "There appears to be no study named '#{ name }'"
     faculty_sponsor = FacultySponsor.create!({:name => value})
     study.study_metadata.send(:"#{ attribute }=", faculty_sponsor)
@@ -202,7 +202,7 @@ end
 
 GivenFacultySponsor(:faculty_sponsor,                /^the faculty sponsor for study "([^\"]+)" is "([^\"]+)"$/)
 
-GivenReferenceGenomeStudyMetadata(:reference_genome, /^the reference genome for study "([^\"]+)" is "([^\"]+)"$/) 
+GivenReferenceGenomeStudyMetadata(:reference_genome, /^the reference genome for study "([^\"]+)" is "([^\"]+)"$/)
 
 GivenStudyMetadata(:dac_policy, /^the policy for study "([^\"]+)" is "([^\"]+)"$/)
 GivenStudyMetadata(:ega_dac_accession_number, /^the dac accession number for study "([^\"]+)" is "([^\"]+)"$/)
@@ -327,9 +327,9 @@ def assign_asset_to_study(asset,study_name)
   study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   asset_ids = [asset.id]
   asset_ids = asset.well_ids if asset.respond_to?(:wells)
-  RequestFactory.create_assets_requests(asset_ids, study.id) if asset.is_a?(SampleTube) || (asset.stock_plate?)
-  # If our well isn't on a stock plate, we can't rely on create_asset_request to set its study_id
-  if (asset.respond_to?(:wells)) && (!asset.stock_plate?)
+  if asset.can_be_created? || (asset.respond_to?(:wells) && (asset.stock_plate?))
+    RequestFactory.create_assets_requests(asset_ids, study.id)
+  else
     Asset.find(asset_ids).each do |asset|
       asset.try(:aliquots).try(:each) do |aliquot|
         aliquot.update_attributes!(:study_id => study.id)

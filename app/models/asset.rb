@@ -516,18 +516,22 @@ class Asset < ActiveRecord::Base
   def spiked_in_buffer
     return nil
   end
-  
+
   def has_stock_asset?
     return false
   end
-  
-    
+
+
   def has_many_requests?
     Request.find_all_target_asset(self.id).size > 1
   end
-  
+
   def is_a_resource
    self.resource == true
+  end
+
+  def can_be_created?
+    false
   end
 
   private
@@ -536,5 +540,5 @@ class Asset < ActiveRecord::Base
       self.barcode_prefix = BarcodePrefix.find_by_prefix(self.prefix)
     end
   end
-  
+
 end
