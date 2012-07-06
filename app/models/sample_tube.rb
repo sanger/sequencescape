@@ -61,4 +61,9 @@ class SampleTube < Tube
       :of_interest_to => "administrators"
     )
   end
+
+  def can_be_created?
+    true
+  end
+
 end
