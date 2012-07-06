@@ -63,7 +63,7 @@ Given /^I have a cherrypicking batch with (\d+) samples$/ do |number_of_samples|
 
   Given %Q{I have a Cherrypicking submission for asset group "Plate asset group"}
   Given %Q{I am on the show page for pipeline "Cherrypick"}
-  
+
   When %Q{I check "Select DN1234567T for batch"}
   And %Q{I select "Create Batch" from "action_on_requests"}
   And %Q{I press "Submit"}
@@ -96,7 +96,7 @@ When /^I complete the cherrypicking batch with "([^"]*)" plate purpose$/ do |pla
   Then %Q{I should see "Batch released"}
 end
 
-Given /^I have a cherrypicked plate with barcode "([^"]*)" and plate purpose "([^"]*)"$/ do |plate_barcode, plate_purpose_name|  
+Given /^I have a cherrypicked plate with barcode "([^"]*)" and plate purpose "([^"]*)"$/ do |plate_barcode, plate_purpose_name|
   Given %Q{I have a Cherrypicking submission for asset group "Plate asset group"}
   Given %Q{I am on the show page for pipeline "Cherrypick"}
   When %Q{I check "Select DN1234567T for batch"}
@@ -178,10 +178,10 @@ Given /^the internal QC plates are created$/ do
   And %Q{I press "Submit"}
   When %Q{I fill in "Source plates" with "1221234567841"}
   And %Q{I fill in "User barcode" with "2470000100730"}
-  When %Q{I select "Dilution Plates" from "Plate purpose"}
+  When %Q{I select "Working dilution" from "Plate purpose"}
   And %Q{I select "xyz" from "Barcode printer"}
   And %Q{I press "Submit"}
-  When %Q{I fill in "Source plates" with "4361234567667"}
+  When %Q{I fill in "Source plates" with "6251234567836"}
   And %Q{I fill in "User barcode" with "2470000100730"}
   When %Q{I select "Pico Assay Plates" from "Plate purpose"}
   And %Q{I select "xyz" from "Barcode printer"}
