@@ -13,7 +13,7 @@ class CreateAssetRequest < Request
   # stock plates.
   validate :on_valid_asset?
   def on_valid_asset?
-    return true if asset.is_a?(SampleTube) || (asset.is_a?(Well) && asset.plate.stock_plate?)
+    return true if asset.can_be_created?
     errors.add :asset, "should be either a sample tube, or a well on a stock plate."
     false
   end

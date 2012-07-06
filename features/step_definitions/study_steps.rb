@@ -329,9 +329,9 @@ def assign_asset_to_study(asset,study_name)
   study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   asset_ids = [asset.id]
   asset_ids = asset.well_ids if asset.respond_to?(:wells)
-  RequestFactory.create_assets_requests(asset_ids, study.id) if asset.is_a?(SampleTube) || (asset.stock_plate?)
-  # If our well isn't on a stock plate, we can't rely on create_asset_request to set its study_id
-  if (asset.respond_to?(:wells)) && (!asset.stock_plate?)
+  if asset.can_be_created? || (asset.respond_to?(:wells) && (asset.stock_plate?))
+    RequestFactory.create_assets_requests(asset_ids, study.id)
+  else
     Asset.find(asset_ids).each do |asset|
       asset.try(:aliquots).try(:each) do |aliquot|
         aliquot.update_attributes!(:study_id => study.id)
