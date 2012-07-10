@@ -1,39 +1,37 @@
 # Every request "moving" an asset from somewhere to somewhere else without really transforming it
 # (chemically) as, cherrypicking, pooling, spreading on the floor etc
 class TransferRequest < Request
-  # Destroy all evidence of the statemachine we've inherited!  Ugly, but it works!
-  instance_variable_set(:@aasm, nil)
-  AASM::StateMachine[self] = AASM::StateMachine.new('')
+  redefine_state_machine do
+    # The statemachine for transfer requests is more promiscuous than normal requests, as well
+    # as being more concise as it has less states.
+    aasm_column :state
+    aasm_state :pending
+    aasm_state :started
+    aasm_state :failed
+    aasm_state :passed
+    aasm_state :cancelled
+    aasm_initial_state :pending
 
-  # The statemachine for transfer requests is more promiscuous than normal requests, as well
-  # as being more concise as it has less states.
-  aasm_column :state
-  aasm_state :pending
-  aasm_state :started
-  aasm_state :failed
-  aasm_state :passed
-  aasm_state :cancelled
-  aasm_initial_state :pending
+    # State Machine events
+    aasm_event :start do
+      transitions :to => :started, :from => [:pending]
+    end
 
-  # State Machine events
-  aasm_event :start do
-    transitions :to => :started, :from => [:pending]
-  end
+    aasm_event :pass do
+      transitions :to => :passed, :from => [:pending, :started, :failed]
+    end
 
-  aasm_event :pass do
-    transitions :to => :passed, :from => [:pending, :started, :failed]
-  end
+    aasm_event :fail do
+      transitions :to => :failed, :from => [:pending, :started, :passed]
+    end
 
-  aasm_event :fail do
-    transitions :to => :failed, :from => [:pending, :started, :passed]
-  end
+    aasm_event :cancel do
+      transitions :to => :cancelled, :from => [:started]
+    end
 
-  aasm_event :cancel do
-    transitions :to => :cancelled, :from => [:started]
-  end
-
-  aasm_event :detach do
-    transitions :to => :pending, :from => [:pending]
+    aasm_event :detach do
+      transitions :to => :pending, :from => [:pending]
+    end
   end
 
   # Ensure that the source and the target assets are not the same, otherwise bad things will happen!
