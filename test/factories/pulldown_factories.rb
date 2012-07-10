@@ -2,10 +2,6 @@
 Factory.define(:transfer_plate, :class => Plate) do |plate|
   plate.size 96
 
-  plate.after_build do |plate|
-    plate.plate_purpose = PlatePurpose.find_by_name('Parent plate purpose') || Factory(:parent_plate_purpose)
-  end
-
   plate.after_create do |plate|
     plate.wells.import(
       [ 'A1', 'B1' ].map do |location|
@@ -13,6 +9,17 @@ Factory.define(:transfer_plate, :class => Plate) do |plate|
         Factory(:tagged_well, :map => map)
       end
     )
+  end
+end
+
+Factory.define(:source_transfer_plate, :parent => :transfer_plate) do |plate|
+  plate.after_build do |plate|
+    plate.plate_purpose = PlatePurpose.find_by_name('Parent plate purpose') || Factory(:parent_plate_purpose)
+  end
+end
+Factory.define(:destination_transfer_plate, :parent => :transfer_plate) do |plate|
+  plate.after_build do |plate|
+    plate.plate_purpose = PlatePurpose.find_by_name('Child plate purpose') || Factory(:child_plate_purpose)
   end
 end
 
@@ -37,14 +44,14 @@ end
 # Transfers and their templates
 Factory.define(:transfer_between_plates, :class => Transfer::BetweenPlates) do |transfer|
   transfer.user        { |target| target.association(:user) }
-  transfer.source      { |target| target.association(:transfer_plate) }
-  transfer.destination { |target| target.association(:transfer_plate) }
+  transfer.source      { |target| target.association(:source_transfer_plate) }
+  transfer.destination { |target| target.association(:destination_transfer_plate) }
   transfer.transfers('A1' => 'A1', 'B1' => 'B1')
 end
 
 Factory.define(:transfer_from_plate_to_tube, :class => Transfer::FromPlateToTube) do |transfer|
   transfer.user        { |target| target.association(:user) }
-  transfer.source      { |target| target.association(:transfer_plate) }
+  transfer.source      { |target| target.association(:source_transfer_plate) }
   transfer.destination { |target| target.association(:library_tube)   }
   transfer.transfers([ 'A1', 'B1' ])
 end
@@ -105,7 +112,7 @@ Factory.define(:parent_plate_purpose, :class => PlatePurpose) do |plate_purpose|
   plate_purpose.name 'Parent plate purpose'
 
   plate_purpose.after_create do |plate_purpose|
-    plate_purpose.child_plate_purposes << Factory(:child_plate_purpose)
+    plate_purpose.child_relationships.create!(:child => Factory(:child_plate_purpose), :transfer_request_type => RequestType.transfer)
   end
 end
 Factory.define(:child_plate_purpose, :class => PlatePurpose) do |plate_purpose|

@@ -103,7 +103,13 @@ def work_pipeline_for(submissions, name)
     Factory(:tag).tag!(w) unless w.primary_aliquot.tag.present? # Ensure wells are tagged
     w.requests_as_source.first.start!                           # Ensure request is considered started
   end
-  template.create!(:source => source_plate, :destination => final_plate_type.create!, :user => Factory(:user))
+
+  source_plate.plate_purpose.child_relationships.create!(:child => final_plate_type, :transfer_request_type => RequestType.transfer)
+
+  final_plate_type.create!.tap do |final_plate|
+    AssetLink.create!(:ancestor => source_plate, :descendant => final_plate)
+    template.create!(:source => source_plate, :destination => final_plate, :user => Factory(:user))
+  end
 end
 
 # A bit of a fudge but it'll work for the moment.  We essentially link the last plate of the different

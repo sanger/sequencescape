@@ -668,6 +668,7 @@ ActiveRecord::Schema.define(:version => 20121011104935) do
   create_table "plate_purpose_relationships", :force => true do |t|
     t.integer "parent_id"
     t.integer "child_id"
+    t.integer "transfer_request_type_id", :null => false
   end
 
   create_table "plate_purposes", :force => true do |t|

@@ -115,15 +115,15 @@ class RequestType < ActiveRecord::Base
   end
 
   def self.dna_qc
-    RequestType.find_by_key("dna_qc")
+    find_by_key("dna_qc")
   end
 
   def self.genotyping
-    RequestType.find_by_key("genotyping")
+    find_by_key("genotyping")
   end
 
   def self.transfer
-    RequestType.find_by_key("transfer")
+    find_by_key("transfer")
   end
 
   def extract_metadata_from_hash(request_options)
