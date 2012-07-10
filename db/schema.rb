@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120620151926) do
+ActiveRecord::Schema.define(:version => 20120710084727) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -661,6 +661,7 @@ ActiveRecord::Schema.define(:version => 20120620151926) do
   create_table "plate_purpose_relationships", :force => true do |t|
     t.integer "parent_id"
     t.integer "child_id"
+    t.integer "transfer_request_type_id", :null => false
   end
 
   create_table "plate_purposes", :force => true do |t|

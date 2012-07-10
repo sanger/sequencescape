@@ -104,4 +104,10 @@ class Transfer::FromPlateToTubeBySubmission < Transfer
     "#{stock_plates.first.sanger_human_barcode} #{first}:#{last}"
   end
   private :tube_name_for
+
+  # Request type is based on the destination tube from the source plate
+  def request_type_between(_, destination)
+    destination.transfer_request_type_from(source)
+  end
+  private :request_type_between
 end

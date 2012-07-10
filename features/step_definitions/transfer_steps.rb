@@ -39,8 +39,8 @@ Given /^a transfer plate exists with ID (\d+)$/ do |id|
   Factory(:transfer_plate, :id => id)
 end
 
-Given /^a transfer plate called "([^\"]+)" exists$/ do |name|
-  Factory(:transfer_plate, :name => name)
+Given /^a (source|destination) transfer plate called "([^\"]+)" exists$/ do |type, name|
+  Factory("#{type}_transfer_plate", :name => name)
 end
 
 Given /^the "([^\"]+)" transfer template has been used between "([^\"]+)" and "([^\"]+)"$/ do |template_name, source_name, destination_name|
@@ -112,4 +112,11 @@ end
 Given /^(the plate .+) is a "([^\"]+)"$/ do |plate, name|
   plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find the plate purpose #{name.inspect}"
   plate.update_attributes!(:plate_purpose => plate_purpose)
+end
+
+Given /^transfers between "([^\"]+)" and "([^\"]+)" plates are done by "([^\"]+)" requests$/ do |source, destination, typename|
+  source_plate_purpose      = PlatePurpose.find_by_name(source)      or raise StandardError, "Cannot find the plate purpose #{source.inspect}"
+  destination_plate_purpose = PlatePurpose.find_by_name(destination) or raise StandardError, "Cannot find the plate purpose #{destination.inspect}"
+  request_type              = RequestType.find_by_name(typename)     or raise StandardError, "Cannot find request type #{typename.inspect}"
+  source_plate_purpose.child_relationships.create!(:child => destination_plate_purpose, :transfer_request_type => request_type)
 end

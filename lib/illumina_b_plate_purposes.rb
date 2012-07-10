@@ -8,15 +8,15 @@ module IlluminaBPlatePurposes
       IlluminaB::PlatePurposes.request_type_for(stock_plate).acceptable_plate_purposes  << stock_plate
 
       flow.inject(stock_plate) do |previous,plate_purpose_name|
-        new_purpose = create_purpose(plate_purpose_name)
-        previous.child_plate_purposes << new_purpose
-        new_purpose
+        create_purpose(plate_purpose_name).tap do |new_purpose|
+          previous.child_relationships.create!(:child => new_purpose, :transfer_request_type => RequestType.transfer)
+        end
       end
     end
 
     IlluminaB::PlatePurposes::BRANCHES.each do |parent,child|
       new_purpose = create_purpose(child)
-      PlatePurpose.find_by_name(parent).child_plate_purposes << new_purpose
+      PlatePurpose.find_by_name(parent).child_relationships.create!(:child => new_purpose, :transfer_request_type => RequestType.transfer)
     end
   end
 

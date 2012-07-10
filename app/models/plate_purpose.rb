@@ -4,6 +4,10 @@ class PlatePurpose < ActiveRecord::Base
     belongs_to :parent, :class_name => 'PlatePurpose'
     belongs_to :child, :class_name => 'PlatePurpose'
 
+    belongs_to :transfer_request_type, :class_name => 'RequestType'
+
+    named_scope :with_parent, lambda { |plate_purpose| { :conditions => { :parent_id => plate_purpose.id } } }
+
     module Associations
       def self.included(base)
         base.class_eval do
@@ -13,6 +17,11 @@ class PlatePurpose < ActiveRecord::Base
           has_many :parent_relationships, :class_name => 'PlatePurpose::Relationship', :foreign_key => :child_id, :dependent => :destroy
           has_many :parent_plate_purposes, :through => :parent_relationships, :source => :parent
         end
+      end
+
+      # Returns the transfer request type to use between this plate purpose and the parent given
+      def transfer_request_type_from(parent_plate_purpose)
+        parent_relationships.with_parent(parent_plate_purpose).first.transfer_request_type
       end
     end
   end
@@ -30,6 +39,11 @@ class PlatePurpose < ActiveRecord::Base
     # Delegate the change of state to our plate purpose.
     def transition_to(state, contents = nil)
       plate_purpose.transition_to(self, state, contents)
+    end
+
+    # Delegate the transfer request type determination to our plate purpose
+    def transfer_request_type_from(source)
+      plate_purpose.transfer_request_type_from(source.plate_purpose)
     end
   end
 

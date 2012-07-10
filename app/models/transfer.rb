@@ -133,6 +133,7 @@ class Transfer < ActiveRecord::Base
     def locate_stock_wells_for(plate)
       # Optimisation: if the plate is a stock plate then it's wells are it's stock wells!
       return Hash[plate.wells.with_pool_id.map { |w| [w,[w]] }] if plate.stock_plate?
+      raise "No stock plate associated with #{plate.id}" if plate.stock_plate.nil?
 
       # Find the first well on the plate that has something in it.  Then find the distance from that well
       # to it's stock well.  We'll use that as the stock well depth to find.
@@ -194,7 +195,11 @@ class Transfer < ActiveRecord::Base
   def create_transfer_requests
     # TODO: This is probably actually a submission, which means we'll need project & study too
     each_transfer do |source, destination|
-      RequestType.transfer.create!(:asset => source, :target_asset => destination, :submission_id => source.pool_id)
+      request_type_between(source, destination).create!(
+        :asset         => source,
+        :target_asset  => destination,
+        :submission_id => source.pool_id
+      )
     end
   end
   private :create_transfer_requests
