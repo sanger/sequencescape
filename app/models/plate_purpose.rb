@@ -7,6 +7,7 @@ class PlatePurpose < ActiveRecord::Base
     belongs_to :transfer_request_type, :class_name => 'RequestType'
 
     named_scope :with_parent, lambda { |plate_purpose| { :conditions => { :parent_id => plate_purpose.id } } }
+    named_scope :with_child,  lambda { |plate_purpose| { :conditions => { :child_id  => plate_purpose.id } } }
 
     module Associations
       def self.included(base)

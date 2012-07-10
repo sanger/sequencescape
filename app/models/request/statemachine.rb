@@ -42,8 +42,18 @@ module Request::Statemachine
     }
   }
 
+  module ClassMethods
+    def redefine_state_machine(&block)
+      # Destroy all evidence of the statemachine we've inherited!  Ugly, but it works!
+      instance_variable_set(:@aasm, nil)
+      AASM::StateMachine[self] = AASM::StateMachine.new('')
+      instance_eval(&block)
+    end
+  end
+
   def self.included(base)
     base.class_eval do
+      extend ClassMethods
       include Request::BillingStrategy
 
       ## State machine

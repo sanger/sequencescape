@@ -19,6 +19,12 @@ module IlluminaB::PlatePurposes
   PLATE_PURPOSE_LEADING_TO_QC_PLATES = [
   ]
 
+  PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
+    [ 'ILB_STD_COVARIS', 'ILB_STD_SH',    'IlluminaB::Requests::CovarisToSheared' ],
+    [ 'ILB_STD_PREPCR',  'ILB_STD_PCR',   'IlluminaB::Requests::PrePcrToPcr' ],
+    [ 'ILB_STD_PCR',     'ILB_STD_PCRXP', 'IlluminaB::Requests::PcrToPcrXp' ]
+  ]
+
   def self.stock_plate_class
     IlluminaB::StockPlatePurpose
   end
@@ -28,12 +34,12 @@ module IlluminaB::PlatePurposes
   end
 
   PLATE_PURPOSE_TYPE = {
-    'ILB_STD_INPUT' => IlluminaB::StockPlatePurpose,
+    'ILB_STD_INPUT'   => IlluminaB::StockPlatePurpose,
     'ILB_STD_COVARIS' => IlluminaB::CovarisPlatePurpose,
-    'ILB_STD_PREPCR' => PlatePurpose,
-    'ILB_STD_PCRXP' => IlluminaB::FinalPlatePurpose,
-    'ILB_STD_SH' => PlatePurpose,
-    'ILB_STD_PCR' => IlluminaB::PcrPlatePurpose
+    'ILB_STD_SH'      => PlatePurpose,
+    'ILB_STD_PREPCR'  => PlatePurpose,
+    'ILB_STD_PCR'     => IlluminaB::PcrPlatePurpose,
+    'ILB_STD_PCRXP'   => IlluminaB::FinalPlatePurpose
   }
 
   def self.request_type_for(stock_plate)
