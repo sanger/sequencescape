@@ -7,6 +7,11 @@
   <%= f.select(:bait_library_supplier_id, BaitLibrary::Supplier.visible.collect {|bt| [ bt.name, bt.id ] } ) %>
 </p>
 <p>
+  <%= f.label :supplier_identifier, 'Supplier Identifier' %></br>
+  <%= f.text_field :supplier_identifier %>
+</p>
+
+<p>
   <%= f.label :target_species %><br />
   <%= f.text_field :target_species %>
 </p>
