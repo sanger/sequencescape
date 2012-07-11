@@ -60,29 +60,29 @@ class PlatePurpose < ActiveRecord::Base
   # Updates the state of the specified plate to the specified state.  The basic implementation does this by updating
   # all of the TransferRequest instances to the state specified.  If contents is blank then the change is assumed to
   # relate to all wells of the plate, otherwise only the selected ones are updated.
-
-  # Pulled from other assets. May need to be changed.
-  STATE_TO_STATEMACHINE_EVENT = { 'started' => 'start!', 'passed' => 'pass!', 'failed' => 'fail!', 'cancelled' => 'cancel!', 'pending' => 'detach!' }
-  # NOTE: Now changed to ensure transitions are ALWAYS used
   def transition_to(plate, state, contents = nil)
     wells = plate.wells
     wells = wells.located_at(contents) unless contents.blank?
     wells = wells.all(:include => { :requests_as_target => { :asset => :aliquots, :target_asset => :aliquots } })
-
-    well_to_requests = wells.map { |well| [well, well.requests_as_target] }.reject { |_,r| r.empty? }
-    requests = well_to_requests.map(&:last).flatten
-    event    = STATE_TO_STATEMACHINE_EVENT[state] or raise StandardError, "Illegal transition state #{state.inspect}"
-    requests.each {|request| request.send(event)}
+    wells.each { |w| w.requests_as_target.map { |r| r.transition_to(state) } }
     return unless state == 'failed'
 
     # Load all of the requests that come from the stock wells that should be failed.  Note that we can't simply change
     # their state, we have to actually use the statemachine method to do this to get the correct behaviour.
     conditions, parameters = [], []
-    well_to_requests.each do |well, requests|
-      submission_ids, stock_wells = requests.map(&:submission_id), well.stock_wells.map(&:id)
+    wells.each do |well|
+      submission_ids = well.requests_as_target.map(&:submission_id)
+      next if submission_ids.empty?
+
+      stock_wells = well.stock_wells.map(&:id)
       next if stock_wells.empty?
-      conditions << '(submission_id IN (?) AND asset_id IN (?))'
-      parameters.concat([ submission_ids, stock_wells ])
+
+      # Efficiency gain to be had using '=' over 'IN' when there is only one value to consider.
+      condition, args = [], []
+      condition[0], args[0] = (submission_ids.size == 1) ? ['submission_id=?',submission_ids.first] : ['submission_id IN (?)',submission_ids]
+      condition[1], args[1] = (stock_wells.size == 1)    ? ['asset_id=?',stock_wells.first] : ['asset_id IN (?)',stock_wells]
+      conditions << "(#{condition[0]} AND #{condition[1]})"
+      parameters.concat(args)
     end
     Request.where_is_not_a?(TransferRequest).all(:conditions => [ "(#{conditions.join(' OR ')})", *parameters ]).map(&:fail!)
   end
