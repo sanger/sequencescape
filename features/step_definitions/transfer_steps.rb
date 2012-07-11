@@ -43,6 +43,11 @@ Given /^a (source|destination) transfer plate called "([^\"]+)" exists$/ do |typ
   Factory("#{type}_transfer_plate", :name => name)
 end
 
+Given /^a destination transfer plate called "([^\"]+)" exists as a child of "([^\"]+)"$/ do |name, parent|
+  parent_plate = Plate.find_by_name(parent) or raise "Cannot find parent plate #{parent.inspect}"
+  AssetLink.create!(:ancestor => parent_plate, :descendant => Factory(:destination_transfer_plate, :name => name))
+end
+
 Given /^the "([^\"]+)" transfer template has been used between "([^\"]+)" and "([^\"]+)"$/ do |template_name, source_name, destination_name|
   template    = TransferTemplate.find_by_name(template_name) or raise StandardError, "Could not find transfer template #{template_name.inspect}"
   source      = Plate.find_by_name(source_name)              or raise StandardError, "Could not find source plate #{source_name.inspect}"

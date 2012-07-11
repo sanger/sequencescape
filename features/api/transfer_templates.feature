@@ -160,8 +160,9 @@ Feature: Access transfer templates through the API
     Given a source transfer plate called "Source plate" exists
       And the plate "Source plate" is a "Stock plate"
       And the UUID for the plate "Source plate" is "11111111-2222-3333-4444-000000000001"
-      And a destination transfer plate called "Destination plate" exists
+      And a destination transfer plate called "Destination plate" exists as a child of "Source plate"
       And the UUID for the plate "Destination plate" is "11111111-2222-3333-4444-000000000002"
+      And transfers between "Stock plate" and "Child plate purpose" plates are done by "Transfer" requests
 
     Given "A1-B1" of the plate "Source plate" have been submitted to "Pulldown WGS - HiSeq Paired end sequencing"
 
@@ -207,8 +208,9 @@ Feature: Access transfer templates through the API
       And the plate "Source plate" is a "Stock plate"
       And the UUID for the plate "Source plate" is "11111111-2222-3333-4444-000000000001"
       And the wells "A1-A1" on the plate "Source plate" are empty
-      And a destination transfer plate called "Destination plate" exists
+      And a destination transfer plate called "Destination plate" exists as a child of "Source plate"
       And the UUID for the plate "Destination plate" is "11111111-2222-3333-4444-000000000002"
+      And transfers between "Stock plate" and "Child plate purpose" plates are done by "Transfer" requests
 
     Given "A1-B1" of the plate "Source plate" have been submitted to "Pulldown WGS - HiSeq Paired end sequencing"
 

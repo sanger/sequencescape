@@ -7,5 +7,5 @@ Transform /^the plate purpose "([^\"]+)"$/ do |name|
 end
 
 Given /^(the plate purpose "[^"]+") is a parent of (the plate purpose "[^"]+")$/ do |parent, child|
-  parent.child_plate_purposes << child
+  parent.child_relationships.create!(:child => child, :transfer_request_type => RequestType.transfer)
 end
