@@ -354,6 +354,6 @@ ActiveRecord::Base.transaction do
   end
 
   # We only have one flow at the moment
-  IlluminaBPlatePurposes.create_plate_purposes
+  IlluminaB::PlatePurposes.create_plate_purposes
 
 end
