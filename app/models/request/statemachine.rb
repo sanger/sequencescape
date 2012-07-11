@@ -6,8 +6,30 @@ module Request::Statemachine
   QUOTA_COUNTED   = [ 'passed', 'pending', 'blocked', 'started' ]
   QUOTA_EXEMPTED  = [ 'failed', 'cancelled', 'aborted' ]
 
+  module ClassMethods
+    def redefine_state_machine(&block)
+      # Destroy all evidence of the statemachine we've inherited!  Ugly, but it works!
+      instance_variable_set(:@aasm, nil)
+      AASM::StateMachine[self] = AASM::StateMachine.new('')
+      instance_eval(&block)
+    end
+
+    # Determines the most likely event that should be fired when transitioning between the two states.  If there is
+    # only one option then that is what is returned, otherwise an exception is raised.
+    def suggested_transition_between(current, target)
+      aasm_events.select do |name, event|
+        event.transitions_from_state(current.to_sym).any? do |transition|
+          transition.to == target.to_sym
+        end
+      end.tap do |events|
+        raise StandardError, "No obvious transition from #{current.inspect} to #{target.inspect}" unless events.size == 1
+      end.first.first
+    end
+  end
+
   def self.included(base)
     base.class_eval do
+      extend ClassMethods
       include Request::BillingStrategy
 
       ## State machine
@@ -157,5 +179,9 @@ module Request::Statemachine
 
   def open?
     ["pending", "started"].include?(self.state)
+  end
+
+  def transition_to(target_state)
+    send("#{self.class.suggested_transition_between(self.state, target_state)}!")
   end
 end
