@@ -310,13 +310,13 @@ ActiveRecord::Base.transaction do
   # All of the PlatePurpose names specified in the keys of RELATIONSHIPS have complicated relationships.
   # The others are simply maps to themselves.
   PlatePurpose.all(:conditions => [ 'name NOT IN (?)', relationships.keys ]).each do |purpose|
-    purpose.child_relationships.create!(:child => purpose)
+    purpose.child_relationships.create!(:child => purpose, :transfer_request_type => RequestType.transfer)
   end
 
   # Here are the complicated ones:
   PlatePurpose.all(:conditions => { :name => relationships.keys }).each do |purpose|
     PlatePurpose.all(:conditions => { :name => relationships[purpose.name] }).each do |child|
-      purpose.child_relationships.create!(:child => child)
+      purpose.child_relationships.create!(:child => child, :transfer_request_type => RequestType.transfer)
     end
   end
 
@@ -334,11 +334,15 @@ ActiveRecord::Base.transaction do
     request_type.acceptable_plate_purposes << stock_plate_purpose
 
     # Now we can build from the stock plate through to the end
-    initial_purpose = stock_plate_purpose.child_plate_purposes.create!(:type => 'Pulldown::InitialPlatePurpose', :name => flow.shift)
+    initial_purpose = Pulldown::InitialPlatePurpose.create!(:name => flow.shift).tap do |plate_purpose|
+      stock_plate_purpose.child_relationships.create!(:child => plate_purpose, :transfer_request_type => RequestType.transfer)
+    end
     flow.inject(initial_purpose) do |parent, child_plate_name|
       options = { :name => child_plate_name, :cherrypickable_target => false }
       options[:type] = 'Pulldown::LibraryPlatePurpose' if child_plate_name =~ /^(WGS|SC|ISC) library plate$/
-      parent.child_plate_purposes.create!(options)
+      PlatePurpose.create!(options).tap do |plate_purpose|
+        parent.child_relationships.create!(:child => plate_purpose, :transfer_request_type => RequestType.transfer)
+      end
     end
   end
 
@@ -346,10 +350,10 @@ ActiveRecord::Base.transaction do
 
   Pulldown::PlatePurposes::PLATE_PURPOSE_LEADING_TO_QC_PLATES.each do |name|
     plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
-    plate_purpose.child_plate_purposes << qc_plate_purpose
+    plate_purpose.child_relationships.create!(:child => qc_plate_purpose, :transfer_request_type => RequestType.transfer)
   end
 
   # We only have one flow at the moment
-  IlluminaBPlatePurposes.create_plate_purposes
+  IlluminaB::PlatePurposes.create_plate_purposes
 
 end
