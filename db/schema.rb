@@ -1046,6 +1046,7 @@ ActiveRecord::Schema.define(:version => 20121011104935) do
     t.string   "target_state"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "reason"
   end
 
   create_table "studies", :force => true do |t|
