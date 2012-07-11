@@ -1,4 +1,3 @@
-
 class IlluminaB::PcrPlatePurpose < PlatePurpose
   def transition_to(plate, state, contents = nil)
     nudge_parent_plate(plate, start, contents)
