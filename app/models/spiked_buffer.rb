@@ -4,6 +4,10 @@ class SpikedBuffer < LibraryTube
   # and we definitely don't want that in the list.
   has_one_as_child(:index, :conditions => { :sti_type => 'LibraryTube' })
 
+  def library_prep?
+    false
+  end
+
   # Before the validations are run on creation we need to ensure that there is at least an aliquot of phiX
   # in this tube.
   before_validation(:on => :create) do |record|

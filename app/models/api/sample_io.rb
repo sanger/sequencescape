@@ -75,7 +75,7 @@ class Api::SampleIO < Api::Base
   # can then retrieve the sample tube information through the API.
   def self.create!(parameters)
     super.tap do |sample|
-      SampleTube.create!.aliquots.create!(:sample => sample)
+      Tube::Purpose.standard_sample_tube.create!.aliquots.create!(:sample => sample)
     end
   end
 end

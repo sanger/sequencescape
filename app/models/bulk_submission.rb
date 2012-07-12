@@ -250,7 +250,7 @@ class BulkSubmission < ActiveRecord::Base
       # Create the order.  Ensure that the number of lanes is correctly set.
       template          = find_template(details['template name'])
       request_types     = RequestType.all(:conditions => { :id => template.submission_parameters[:request_type_ids_list].flatten })
-      lane_request_type = request_types.detect { |t| t.target_asset_type == 'Lane' or t.name =~ /\ssequencing$/ }
+      lane_request_type = request_types.detect(&:targets_lanes?)
       number_of_lanes   = details.fetch('number of lanes', 1).to_i
       attributes[:request_options][:multiplier] = { lane_request_type.id => number_of_lanes } if lane_request_type.present?
 
