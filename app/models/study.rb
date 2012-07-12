@@ -483,12 +483,25 @@ class Study < ActiveRecord::Base
     }
   }
 
+  named_scope :with_remove_x_and_autosomes, {
+    :joins => :study_metadata,
+    :conditions => {
+      :study_metadata => {
+        :remove_x_and_autosomes => Study::YES
+      }
+    }
+  }
+
   def self.all_awaiting_ethical_approval
     self.awaiting_ethical_approval
   end
 
   def self.all_contaminated_with_human_dna
     self.contaminated_with_human_dna
+  end
+
+  def self.all_with_remove_x_and_autosomes
+    self.with_remove_x_and_autosomes
   end
 
   def ebi_accession_number
