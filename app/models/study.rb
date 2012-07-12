@@ -196,6 +196,7 @@ class Study < ActiveRecord::Base
 
     attribute(:study_description, :required => true)
     attribute(:contaminated_human_dna, :required => true, :in => YES_OR_NO)
+    attribute(:remove_x_and_autosomes, :required => true, :default => 'No', :in => YES_OR_NO)
     attribute(:study_project_id)
     attribute(:study_abstract)
     attribute(:study_study_title)
@@ -243,6 +244,7 @@ class Study < ActiveRecord::Base
 
     REMAPPED_ATTRIBUTES = {
       :contaminated_human_dna     => YES_OR_NO,
+      :remove_x_and_autosomes     => YES_OR_NO,
       :study_sra_hold             => STUDY_SRA_HOLDS,
       :contains_human_dna         => YES_OR_NO,
       :commercially_available     => YES_OR_NO
