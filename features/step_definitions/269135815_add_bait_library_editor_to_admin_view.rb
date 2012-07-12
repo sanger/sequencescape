@@ -19,6 +19,10 @@ Given /^I have a bait library called "([^"]*)"$/ do |name|
     )
 end
 
+Then /^the supplier_identifier for "([^"]*)" should be nil$/ do |name|
+  assert BaitLibrary.find_by_name(name).supplier_identifier.nil?
+end
+
 Given /^I have a bait library type called "([^"]*)"$/ do |name|
   BaitLibraryType.create!(:name => name)
 end
