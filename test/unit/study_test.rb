@@ -182,14 +182,16 @@ class StudyTest < ActiveSupport::TestCase
     context "which needs x and autosomal DNA removed" do
       setup do
         @study_remove = Factory :study
-        @study_remove.remove_x_and_autosomal = Study::YES
+        @study_remove.study_metadata.remove_x_and_autosomes = Study::YES
+        @study_remove.save!
         @study_keep = Factory :study
-        @study_keep.remove_x_and_autosomal = Study::NO
+        @study_keep.study_metadata.remove_x_and_autosomes = Study::NO
+        @study_keep.save!
       end
 
       should "show in the filters" do
-        assert Study.all_with_remove_x_and_autosomal.include?(@study_remove)
-        assert !Study.all_with_remove_x_and_autosomal.include?(@study_keep)
+        assert Study.all_with_remove_x_and_autosomes.include?(@study_remove)
+        assert !Study.all_with_remove_x_and_autosomes.include?(@study_keep)
       end
     end
 
