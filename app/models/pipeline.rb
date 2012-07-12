@@ -91,7 +91,7 @@ class Pipeline < ActiveRecord::Base
   end
 
   def request_types_including_controls
-    [ control_request_type ] + request_types
+    ([ control_request_type ] + request_types).compact
   end
 
   def custom_inbox_actions

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120511152809) do
+ActiveRecord::Schema.define(:version => 20120704121357) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -663,6 +663,7 @@ ActiveRecord::Schema.define(:version => 20120511152809) do
     t.string   "default_state",                                 :default => "pending"
     t.integer  "barcode_printer_type_id",                       :default => 2
     t.boolean  "cherrypickable_target",                         :default => true,      :null => false
+    t.boolean  "cherrypickable_source",                         :default => false,     :null => false
   end
 
   add_index "plate_purposes", ["qc_display"], :name => "index_plate_purposes_on_qc_display"
@@ -1118,12 +1119,13 @@ ActiveRecord::Schema.define(:version => 20120511152809) do
   add_index "study_reports", ["user_id"], :name => "index_study_reports_on_user_id"
 
   create_table "study_samples", :force => true do |t|
-    t.integer  "study_id"
-    t.integer  "sample_id"
+    t.integer  "study_id",   :null => false
+    t.integer  "sample_id",  :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "study_samples", ["sample_id", "study_id"], :name => "unique_samples_in_studies_idx", :unique => true
   add_index "study_samples", ["sample_id"], :name => "index_project_samples_on_sample_id"
   add_index "study_samples", ["study_id"], :name => "index_project_samples_on_project_id"
 
