@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120627095520) do
+ActiveRecord::Schema.define(:version => 20120712110736) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -1074,6 +1074,7 @@ ActiveRecord::Schema.define(:version => 20120627095520) do
     t.integer "faculty_sponsor_id"
     t.float   "number_of_gigabases_per_sample"
     t.string  "hmdmc_approval_number"
+    t.string  "remove_x_and_autosomes",                 :default => "No", :null => false
   end
 
   add_index "study_metadata", ["faculty_sponsor_id"], :name => "index_study_metadata_on_faculty_sponsor_id"
