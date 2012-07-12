@@ -23,6 +23,7 @@ Feature: Study creation with a checkbox for BAM file.
     And I select "Jack Sponsor" from "Faculty Sponsor"
     And I select "Yes" from "Do any of the samples in this study contain human DNA?"
     And I select "No" from "Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?"
+    And I select "No" from "Does this study require the removal of X chromosome and autosome sequence?"
     And I select "open" from "What is the data release strategy for this study?"
     When I press "Create"
     Then I should be on the study workflow page for "new study"
