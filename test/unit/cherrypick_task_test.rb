@@ -23,7 +23,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
     context '#pick_onto_partial_plate' do
       setup do
-        plate     = PlatePurpose.find(2).create!(:barcode => (@barcode += 1))
+        plate     = PlatePurpose.stock_plate_purpose.create!(:barcode => (@barcode += 1))
         @requests = plate.wells.map { |w| Factory(:request, :asset => w) }
       end
 
@@ -31,7 +31,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
         robot = mock('robot')
         robot.stubs(:max_beds).returns(0)
 
-        partial = PlatePurpose.find(2).create!(:barcode => (@barcode += 1)).tap do |partial|
+        partial = PlatePurpose.stock_plate_purpose.create!(:barcode => (@barcode += 1)).tap do |partial|
           partial.wells -= partial.wells.in_column_major_order.slice(48, 48)
         end
 
@@ -42,7 +42,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
       context 'that is column picked and has left 6 columns filled' do
         setup do
-          plate_purpose = PlatePurpose.find(2)
+          plate_purpose = PlatePurpose.stock_plate_purpose
           plate_purpose.update_attributes!(:cherrypick_direction => 'column')
           @partial = plate_purpose.create!(:barcode => (@barcode += 1)).tap do |partial|
             partial.wells -= partial.wells.in_column_major_order.slice(48, 48)
@@ -75,7 +75,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
       context 'that is row picked and has top 4 rows filled' do
         setup do
-          plate_purpose = PlatePurpose.find(2)
+          plate_purpose = PlatePurpose.stock_plate_purpose
           plate_purpose.update_attributes!(:cherrypick_direction => 'row')
           @partial = plate_purpose.create!(:barcode => (@barcode += 1)).tap do |partial|
             partial.wells -= partial.wells.in_row_major_order.slice(48, 48)
@@ -111,7 +111,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
       context 'with left & right columns filled' do
         setup do
-          @partial = PlatePurpose.find(2).create!(:barcode => (@barcode += 1)).tap do |partial|
+          @partial = PlatePurpose.stock_plate_purpose.create!(:barcode => (@barcode += 1)).tap do |partial|
             partial.wells -= partial.wells.in_column_major_order.slice(8, 80)
           end
         end
@@ -127,7 +127,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
         end
 
         should 'not pick on top of any wells that are already present' do
-          plate    = PlatePurpose.find(2).create!(:barcode => (@barcode += 1))
+          plate    = PlatePurpose.stock_plate_purpose.create!(:barcode => (@barcode += 1))
           requests = plate.wells.in_column_major_order.map { |w| Factory(:request, :asset => w) }
 
           expected_partial = []
@@ -145,7 +145,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
       context 'where the template defines a control well' do
         setup do
-          @partial = PlatePurpose.find(2).create!(:barcode => (@barcode += 1)).tap do |partial|
+          @partial = PlatePurpose.stock_plate_purpose.create!(:barcode => (@barcode += 1)).tap do |partial|
             partial.wells -= partial.wells.in_column_major_order.slice(24, 72)
           end
           @expected_partial = [CherrypickTask::TEMPLATE_EMPTY_WELL] * @partial.wells.size
@@ -198,10 +198,10 @@ class CherrypickTaskTest < ActiveSupport::TestCase
     context '#pick_new_plate' do
       context 'with a plate purpose' do
         setup do
-          plate     = PlatePurpose.find(2).create!(:barcode => (@barcode += 1))
+          plate     = PlatePurpose.stock_plate_purpose.create!(:barcode => (@barcode += 1))
           @requests = plate.wells.in_column_major_order.map { |w| Factory(:request, :asset => w) }
 
-          @target_purpose = PlatePurpose.find(2)
+          @target_purpose = PlatePurpose.stock_plate_purpose
         end
 
         teardown do
@@ -234,7 +234,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
       context 'with limited number of source beds' do
         setup do
-          plates = (1..3).map { |_| PlatePurpose.find(2).create!(:barcode => (@barcode += 1)) }
+          plates = (1..3).map { |_| PlatePurpose.stock_plate_purpose.create!(:barcode => (@barcode += 1)) }
           @requests = plates.map { |p| Factory(:request, :asset => p.wells.first) }
           @expected = @requests.map do |request|
             [request.id, request.asset.plate.barcode, request.asset.map.description]

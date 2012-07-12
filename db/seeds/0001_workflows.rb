@@ -600,7 +600,7 @@ RequestType.create!(
   request_type.billable          = true
   request_type.initial_state     = 'pending'
   request_type.asset_type        = 'Well'
-  request_type.target_asset_type = 'MultiplexedLibraryTube'
+  request_type.target_purpose    = Tube::Purpose.standard_mx_tube
   request_type.order             = 1
   request_type.multiples_allowed = false
   request_type.request_class =  IlluminaB::Requests::StdLibraryRequest
@@ -847,7 +847,7 @@ set_pipeline_flow_to('PacBio Sample Prep' => 'PacBio Sequencing')
       request_type.key               = pipeline_name.downcase.gsub(/\s+/, '_')
       request_type.initial_state     = 'pending'
       request_type.asset_type        = 'Well'
-      request_type.target_asset_type = 'MultiplexedLibraryTube'
+      request_type.target_purpose    = Tube::Purpose.standard_mx_tube
       request_type.order             = 1
       request_type.multiples_allowed = false
       request_type.request_class     = "Pulldown::Requests::#{pipeline_type.humanize}LibraryRequest".constantize

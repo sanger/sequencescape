@@ -76,7 +76,7 @@ module SampleManifest::SampleTubeBehaviour
 
     tubes, samples_data = [], []
     (0...self.count).each do |_|
-      sample_tube = SampleTube.create!
+      sample_tube = Tube::Purpose.standard_sample_tube.create!
       sanger_sample_id = SangerSampleId.generate_sanger_sample_id!(study_abbreviation, sanger_ids.shift)
 
       tubes << sample_tube

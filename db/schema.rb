@@ -839,6 +839,7 @@ ActiveRecord::Schema.define(:version => 20121011104935) do
     t.integer  "product_line_id"
     t.boolean  "deprecated",                       :default => false, :null => false
     t.boolean  "no_target_asset",                  :default => false, :null => false
+    t.integer  "target_purpose_id"
   end
 
   create_table "requests", :force => true do |t|
