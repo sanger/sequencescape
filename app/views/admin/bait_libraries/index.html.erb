@@ -3,6 +3,7 @@
   <thead>
     <tr>
       <th><%= link_to "Name", "javascript:void(0);" %></th>
+      <th><%= link_to "Supplier Identifier", "javascript:void(0);" %></th>
       <th><%= link_to "Supplier", "javascript:void(0);" %></th>
       <th><%= link_to "Target Species", "javascript:void(0);" %></th>
       <th><%= link_to "Bait Library Type", "javascript:void(0);" %></th>
@@ -14,6 +15,7 @@
   <% for bait_library in @bait_libraries %>
     <tr>
       <td><%= bait_library.name %></td>
+      <td><%= bait_library.supplier_identifier %></td>
       <td><%= bait_library.bait_library_supplier.name %></td>
       <td><%= bait_library.target_species %></td>
       <td><%= bait_library.bait_library_type.name %></td>
