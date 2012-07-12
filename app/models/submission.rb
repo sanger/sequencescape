@@ -169,6 +169,7 @@ class Submission < ActiveRecord::Base
 
  def check_studies_compatible?(a,b)
     errors.add(:study, "Can't mix contaminated and non contaminated human DNA") unless a.study_metadata.contaminated_human_dna == b.study_metadata.contaminated_human_dna
+    errors.add(:study, "Can't mix X and autosome removal with non-removal") unless a.study_metadata.remove_x_and_autosome == b.study_metadata.remove_x_and_autosome
  end
 
  def check_samples_compatible?(a,b)
