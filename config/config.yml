@@ -13,7 +13,7 @@ development:
     array_express_accession_login:
     asset_audits_url: http://localhost:3014/process_plates/new
     auth_cookie:
-    authentication: 'ldap'
+    authentication: local
     barcode_images_url: http://localhost:10000
     barcode_prefix: CT
     barcode_service_url: http://localhost:9998/barcode_service.wsdl
