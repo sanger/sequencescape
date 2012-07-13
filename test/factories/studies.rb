@@ -46,6 +46,16 @@ Factory.define(:study_for_study_list_contaminated_with_human_dna, :parent => :st
   end
 end
 
+Factory.define(:study_metadata_for_study_list_remove_x_and_autosomes, :parent => :study_metadata) do |metadata|
+  metadata.remove_x_and_autosomes 'Yes'
+end
+Factory.define(:study_for_study_list_remove_x_and_autosomes, :parent => :study) do |study|
+  study.name           'Study: Remove x and autosomes'
+  study.after_create do |study|
+    study.study_metadata.update_attributes!(Factory.attributes_for(:study_metadata_for_study_list_remove_x_and_autosomes, :study => study, :faculty_sponsor => study.study_metadata.faculty_sponsor))
+  end
+end
+
 # These have to build a user list
 Factory.define(:study_for_study_list_managed_active, :parent => :study) do |study|
   study.name  'Study: Managed & active'
