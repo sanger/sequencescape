@@ -38,7 +38,7 @@ class Transfer < ActiveRecord::Base
             query_conditions, joins = 'transfer_requests_as_target.state IN (?)', [
               "STRAIGHT_JOIN `container_associations` ON (`assets`.`id` = `container_associations`.`container_id`)",
               "INNER JOIN `assets` wells_assets ON (`wells_assets`.`id` = `container_associations`.`content_id`) AND (`wells_assets`.`sti_type` = 'Well')",
-              "LEFT OUTER JOIN `requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = wells_assets.id AND (transfer_requests_as_target.`sti_type` = 'TransferRequest')"
+              "LEFT OUTER JOIN `requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = wells_assets.id AND (transfer_requests_as_target.`sti_type` IN (#{[TransferRequest, *Class.subclasses_of(TransferRequest)].map(&:name).map(&:inspect).join(',')}))"
             ]
 
             # Note that 'state IS NULL' is included here for plates that are stock plates, because they will not have any
@@ -141,12 +141,12 @@ class Transfer < ActiveRecord::Base
 
       # Now build a query that will find all of the stock wells for the wells on the plate.  This is done
       # by joining the requests table over-and-over again.
-      joins   = (1..stock_well_depth).map { |index| "LEFT JOIN requests r#{index} ON r#{index-1}.asset_id=r#{index}.target_asset_id AND r#{index}.sti_type='#{TransferRequest.name}'" }
+      joins   = (1..stock_well_depth).map { |index| "LEFT JOIN requests r#{index} ON r#{index-1}.asset_id=r#{index}.target_asset_id AND r#{index}.sti_type IN (#{[TransferRequest, *Class.subclasses_of(TransferRequest)].map(&:name).map(&:inspect).join(',')})" }
       results = Request.connection.select_all(%Q{
         SELECT r0.target_asset_id AS plate_well_id,r#{stock_well_depth}.asset_id AS stock_well_id
         FROM requests r0
         #{joins.join("\n")}
-        WHERE r0.target_asset_id IN (#{plate.wells.map(&:id).join(',')}) AND r0.sti_type='#{TransferRequest.name}'
+        WHERE r0.target_asset_id IN (#{plate.wells.map(&:id).join(',')}) AND r0.sti_type IN (#{[TransferRequest, *Class.subclasses_of(TransferRequest)].map(&:name).map(&:inspect).join(',')})
       }, "Query for stock wells of #{plate.id}")
 
       # One plate well can come from many stock wells, which means that we build a list.  But first,
