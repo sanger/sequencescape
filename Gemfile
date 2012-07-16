@@ -15,7 +15,8 @@ gem "configatron"
 gem "curb"
 gem "fastercsv", "~>1.4.0"
 gem "formtastic", "~>1.2.0"
-gem "mysql"
+gem "jdbc-mysql"
+gem "activerecord-jdbc-adapter"
 gem "spreadsheet"
 gem "will_paginate"
 gem 'net-ldap'
@@ -50,9 +51,9 @@ gem "bunny"
 
 group :warehouse do
   #the most recent one that actually compiles
-  gem "ruby-oci8", "1.0.7" 
+  #gem "ruby-oci8"
   #any newer version requires ruby-oci8 => 2.0.1
-  gem "activerecord-oracle_enhanced-adapter" , "1.2.3" 
+  gem "activerecord-oracle_enhanced-adapter"
 end
 
 group :development do
@@ -62,7 +63,6 @@ group :development do
   gem "flay"
   gem "flog"
   gem "roodi"
-  gem "rcov", :require => false
   #gem "rcov_rails" # gem only for Rails 3, plugin for Rails 2.3 :-/
   # ./script/plugin install http://svn.codahale.com/rails_rcov
 
