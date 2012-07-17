@@ -59,6 +59,9 @@ GEM
     activerecord (2.3.11)
       activesupport (= 2.3.11)
     activerecord-jdbc-adapter (1.2.2)
+    activerecord-jdbcmysql-adapter (1.2.2)
+      activerecord-jdbc-adapter (~> 1.2.2)
+      jdbc-mysql (~> 5.1.0)
     activerecord-oracle_enhanced-adapter (1.4.1)
     activeresource (2.3.11)
       activesupport (= 2.3.11)
@@ -100,7 +103,6 @@ GEM
     cucumber-rails (0.3.2)
       cucumber (>= 0.8.0)
     culerity (0.2.15)
-    curb (0.7.15)
     daemons (1.0.10)
     database_cleaner (0.8.0)
     db-charmer (1.7.1)
@@ -121,18 +123,15 @@ GEM
     flog (2.5.3)
       ruby_parser (~> 2.0)
       sexp_processor (~> 3.0)
-    formtastic (1.2.4)
-      actionpack (>= 2.3.7)
-      activesupport (>= 2.3.7)
-      i18n (~> 0.4)
-    gem_plugin (0.2.3)
+    formtastic (1.2.5)
+      i18n (~> 0.4.0)
     gherkin (2.11.1-java)
       json (>= 1.4.6)
     gmetric (0.1.3)
 	i18n (0.6.0)
     jdbc-mysql (5.1.13)
     json (1.7.3-java)
-	json_pure (1.5.1)
+    json_pure (1.7.3)
     launchy (2.1.0-java)
       addressable (~> 2.2.6)
       ffi (~> 1.0.9)
@@ -144,11 +143,6 @@ GEM
     mime-types (1.19)
     mocha (0.12.0)
       metaclass (~> 0.0.1)
-    mongrel (1.1.5-java)
-      gem_plugin (>= 0.2.3)
-    mongrel_cluster (1.0.5)
-      gem_plugin (>= 0.2.3)
-      mongrel (>= 1.0.2)
     multi_json (1.3.6)
     net-ldap (0.3.1)
     nokogiri (1.5.5-java)
@@ -205,11 +199,10 @@ GEM
       Platform (>= 0.4.0)
       aws-s3 (>= 0.4.0)
       wirble (>= 0.1.2)
-    uuidtools (2.1.2)
-    will_paginate (3.0.3)
+    uuidtools (2.1.3)
+    will_paginate (2.3.16)
     wirble (0.1.3)
     xml-simple (1.1.1)
-    yajl-ruby (1.1.0)
     yamler (0.1.0)
 
 PLATFORMS
@@ -218,6 +211,7 @@ PLATFORMS
 DEPENDENCIES
   aasm (~> 2.4.0)
   activerecord-jdbc-adapter
+  activerecord-jdbcmysql-adapter
   activerecord-oracle_enhanced-adapter
   acts-as-dag!
   alter_table!
@@ -231,7 +225,6 @@ DEPENDENCIES
   configatron
   cucumber
   cucumber-rails (~> 0.3.2)
-  curb
   database_cleaner
   db-charmer
   delayed_job (~> 2.0.4)
@@ -241,11 +234,10 @@ DEPENDENCIES
   flog
   formtastic (~> 1.2.0)
   jdbc-mysql
+  json_pure
   launchy
   log4r
   mocha
-  mongrel (~> 1.1.5)
-  mongrel_cluster
   net-ldap
   nokogiri
   parallel_tests
@@ -264,5 +256,4 @@ DEPENDENCIES
   treetop (~> 1.2.5)
   utility_belt
   uuidtools
-  will_paginate
-  yajl-ruby
+  will_paginate (~> 2.3.15)

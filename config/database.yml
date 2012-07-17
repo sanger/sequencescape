@@ -6,7 +6,7 @@
 <% suffix = "_#{File.read(File.join(Rails.root, 'database_suffix'))}".strip rescue nil %>
 
 mysql: &MYSQL
-  adapter: mysql
+  adapter: jdbcmysql
   username: root
   password:
   host: localhost
@@ -22,19 +22,19 @@ development:
     database: warehouse_development<%= suffix %>
 
 development_local:
-  adapter: sqlite3
+  adapter: jdbcsqlite3
   database: db/development.sqlite3
   pool: 5
   timeout: 5000
 
 development_local_snp:
-  adapter: sqlite3
+  adapter: jdbcsqlite3
   database: db/snp_development.sqlite3
   pool: 5
   timeout: 5000
 
 development_local_cas:
-  adapter: sqlite3
+  adapter: jdbcsqlite3
   database: db/cas_development.sqlite3
   pool: 5
   timeout: 5000
