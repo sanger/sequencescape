@@ -64,7 +64,7 @@ class Transfer::FromPlateToTubeBySubmission < Transfer
 
   def locate_mx_library_tube_for(stock_well)
     return nil if stock_well.nil?
-    stock_well.requests_as_source.detect { |request| request.target_asset.is_a?(MultiplexedLibraryTube) }.try(:target_asset)
+    stock_well.requests_as_source.detect { |request| request.target_asset.is_a?(Tube) }.try(:target_asset)
   end
   private :locate_mx_library_tube_for
 

@@ -77,7 +77,6 @@ class PlatePurpose < Purpose
   include Api::PlatePurposeIO::Extensions
   cattr_reader :per_page
   @@per_page = 500
-  include Uuid::Uuidable
 
   # TODO: change to purpose_id
   has_many :plates, :foreign_key => :plate_purpose_id

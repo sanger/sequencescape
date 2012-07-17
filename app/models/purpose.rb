@@ -30,6 +30,7 @@ class Purpose < ActiveRecord::Base
   end
 
   include Relationship::Associations
+  include Uuid::Uuidable
 
   # There's a barcode printer type that has to be used to print the labels for this type of plate.
   belongs_to :barcode_printer_type

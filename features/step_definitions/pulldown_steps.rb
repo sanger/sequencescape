@@ -200,3 +200,15 @@ Given /^all requests are in the last submission$/ do
 	submission = Submission.last or raise StandardError, "There are no submissions!"
 	Request.update_all("submission_id=#{submission.id}")
 end
+
+Given /^(the plate .+) will pool into 1 tube$/ do |plate|
+  stock_plate = PlatePurpose.find(2).create!(:do_not_create_wells) { |p| p.wells = [Factory(:empty_well)] }
+  stock_well  = stock_plate.wells.first
+  submission  = Submission.create!(:user => Factory(:user))
+
+  AssetLink.create!(:ancestor => stock_plate, :descendant => plate)
+
+  plate.wells.in_column_major_order.each do |well|
+    RequestType.transfer.create!(:asset => stock_well, :target_asset => well, :submission => submission)
+  end
+end

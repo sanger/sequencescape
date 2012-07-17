@@ -6,7 +6,7 @@ class ::Io::PlateCreation < ::Core::Io::Base
   define_attribute_and_json_mapping(%Q{
                    user <=> user
                  parent <=> parent
-    child_plate_purpose <=> child_plate_purpose
+          child_purpose <=> child_purpose
                   child  => child
   })
 end

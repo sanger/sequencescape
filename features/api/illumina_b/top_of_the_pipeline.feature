@@ -62,7 +62,7 @@ Feature: The top of the Illumina-B pipeline
         "plate_creation": {
           "user": "99999999-8888-7777-6666-555555555555",
           "parent": "00000000-1111-2222-3333-000000000001",
-          "child_plate_purpose": "11111111-2222-3333-4444-000000000002"
+          "child_purpose": "11111111-2222-3333-4444-000000000002"
         }
       }
       """
@@ -84,7 +84,7 @@ Feature: The top of the Illumina-B pipeline
               "read": "http://www.example.com/api/1/00000000-1111-2222-3333-000000000002"
             }
           },
-          "child_plate_purpose": {
+          "child_purpose": {
             "actions": {
               "read": "http://www.example.com/api/1/11111111-2222-3333-4444-000000000002"
             }

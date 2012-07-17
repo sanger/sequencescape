@@ -29,6 +29,7 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME = [
   'pico assay plate',
   'pico dilution plate',
   'plate purpose',
+  'tube purpose',
   'plate',
   'sequenom qc plate',
   'working dilution plate',
@@ -87,6 +88,7 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
   'asset audit',
 
   'plate purpose',
+  'tube purpose',
   'dilution plate purpose',
 
   'sample',
@@ -99,11 +101,10 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
 
   'tag layout',
   'plate creation',
+  'tube creation',
   'state change',
 
   'aliquot'
-
-
 ]
 
 SINGULAR_MODELS_BASED_ON_ID_REGEXP = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID.join('|')
