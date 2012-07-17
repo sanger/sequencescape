@@ -13,6 +13,7 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME = [
   'library tube',
   'pulldown multiplexed library tube',
   'multiplexed library tube',
+  'stock multiplexed library tube',
   'PacBio library tube',
   'well',
   'plate',
@@ -29,7 +30,7 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME = [
   'pico assay plate',
   'pico dilution plate',
   'plate purpose',
-  'tube purpose',
+  'purpose',
   'plate',
   'sequenom qc plate',
   'working dilution plate',
@@ -84,11 +85,12 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
   'well',
   'pulldown multiplexed library tube',
   'multiplexed library tube',
+  'stock multiplexed library tube',
 
   'asset audit',
 
   'plate purpose',
-  'tube purpose',
+  'purpose',
   'dilution plate purpose',
 
   'sample',
