@@ -592,22 +592,6 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))
 end
 
-RequestType.create!(
-  :workflow => next_gen_sequencing,
-  :key => 'illumina_b_std',
-  :name => 'Illumina-B STD',
-  :billable => 1, :for_multiplexing => 1, :morphology => 0) do |request_type|
-  request_type.billable          = true
-  request_type.initial_state     = 'pending'
-  request_type.asset_type        = 'Well'
-  request_type.target_purpose    = Tube::Purpose.standard_mx_tube
-  request_type.order             = 1
-  request_type.multiples_allowed = false
-  request_type.request_class =  IlluminaB::Requests::StdLibraryRequest
-  request_type.product_line = ProductLine.find_by_name('Illumina-B')
-end
-
-
 ##################################################################################################################
 # Microarray genotyping
 ##################################################################################################################

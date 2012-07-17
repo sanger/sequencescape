@@ -19,6 +19,7 @@ Feature: The bottom of the illumina_b pipeline
     Given the UUID for the plate purpose "ILB_STD_INPUT" is "11111111-2222-3333-4444-000000000001"
       And the UUID for the purpose "ILB_STD_STOCK" is "88888888-1111-2222-3333-000000000001"
       And the UUID for the transfer template "Transfer wells to specific tubes by submission" is "22222222-3333-4444-5555-000000000001"
+      And the UUID for the transfer template "Transfer from tube to tube by submission" is "22222222-3333-4444-5555-000000000002"
       And the UUID for the search "Find assets by barcode" is "33333333-4444-5555-6666-000000000001"
       And the UUID of the next plate creation created will be "55555556-6666-7777-8888-000000000001"
       And the UUID of the next state change created will be "44444444-5555-6666-7777-000000000001"
@@ -82,7 +83,7 @@ Feature: The bottom of the illumina_b pipeline
       """
      And all stock multiplexed library tubes have sequential UUIDs based on "98989898-1111-2222-3333"
 
-    # Make the transfers from the plate to the appropriate MX library tubes
+    # Make the transfers from the plate to the appropriate stock MX library tubes
     Then log "Make the transfers from the plate to the appropriate stock MX library tubes" for debugging
     When I make an authorised POST with the following JSON to the API path "/22222222-3333-4444-5555-000000000001":
       """
@@ -111,14 +112,64 @@ Feature: The bottom of the illumina_b pipeline
       """
 
     Then the aliquots of the stock multiplexed library tube with UUID "98989898-1111-2222-3333-000000000001" should be the same as the wells "A7-H12" of the plate "Testing the API"
+     And the name of the stock multiplexed library tube with UUID "98989898-1111-2222-3333-000000000001" should be "DN1000001M A7:H12"
      And the aliquots of the stock multiplexed library tube with UUID "98989898-1111-2222-3333-000000000002" should be the same as the wells "A1-H6" of the plate "Testing the API"
+     And the name of the stock multiplexed library tube with UUID "98989898-1111-2222-3333-000000000002" should be "DN1000001M A1:H6"
 
     # Transfer from the stock MX tubes to the MX tubes
+    Then log "Make the transfers from first stock tube to one MX tube" for debugging
+    When I make an authorised POST with the following JSON to the API path "/22222222-3333-4444-5555-000000000002":
+      """
+      {
+        "transfer": {
+          "user": "99999999-8888-7777-6666-555555555555",
+          "source": "98989898-1111-2222-3333-000000000001"
+        }
+      }
+      """
+    Then the HTTP response should be "201 Created"
+     And the JSON should match the following for the specified fields:
+      """
+      {
+        "transfer": {
+          "source": {
+            "uuid": "98989898-1111-2222-3333-000000000001"
+          },
+          "destination": {
+            "uuid": "00000000-1111-2222-3333-999900000002"
+          }
+        }
+      }
+      """
+    Then the aliquots of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000002" should be the same as the wells "A7-H12" of the plate "Testing the API"
+     And the name of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000002" should be "DN1000001M A7:H12"
 
+    Then log "Make the transfers from second stock tube to one MX tube" for debugging
+    When I make an authorised POST with the following JSON to the API path "/22222222-3333-4444-5555-000000000002":
+      """
+      {
+        "transfer": {
+          "user": "99999999-8888-7777-6666-555555555555",
+          "source": "98989898-1111-2222-3333-000000000002"
+        }
+      }
+      """
+    Then the HTTP response should be "201 Created"
+     And the JSON should match the following for the specified fields:
+      """
+      {
+        "transfer": {
+          "source": {
+            "uuid": "98989898-1111-2222-3333-000000000002"
+          },
+          "destination": {
+            "uuid": "00000000-1111-2222-3333-999900000001"
+          }
+        }
+      }
+      """
     Then the aliquots of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be the same as the wells "A1-H6" of the plate "Testing the API"
      And the name of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "DN1000001M A1:H6"
-     And the aliquots of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000002" should be the same as the wells "A7-H12" of the plate "Testing the API"
-     And the name of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000002" should be "DN1000001M A7:H12"
 
     # Change the state of one tube to ensure it doesn't affect the other
     Then log "Change the state of one tube to ensure it doesn't affect the other" for debugging

@@ -60,7 +60,7 @@ class Tube < Aliquot::Receptacle
 
   # TODO: change column name to account for purpose, not plate_purpose!
   belongs_to :purpose, :class_name => 'Tube::Purpose', :foreign_key => :plate_purpose_id
-  delegate_to_purpose(:transition_to, :created_with_request_options)
+  delegate_to_purpose(:transition_to, :created_with_request_options, :pool_id, :name_for_child_tube)
   delegate :barcode_type, :to => :purpose
 
   def name_for_label
