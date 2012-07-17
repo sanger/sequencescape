@@ -54,6 +54,16 @@ ActiveRecord::Schema.define(:version => 20121011104935) do
   create_table "asset_barcodes", :force => true do |t|
   end
 
+  create_table "asset_creations", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "parent_id"
+    t.integer  "child_purpose_id"
+    t.integer  "child_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "type",             :null => false
+  end
+
   create_table "asset_group_assets", :force => true do |t|
     t.integer  "asset_id"
     t.integer  "asset_group_id"
@@ -618,15 +628,6 @@ ActiveRecord::Schema.define(:version => 20121011104935) do
 
   add_index "pipelines_request_types", ["pipeline_id"], :name => "fk_pipelines_request_types_to_pipelines"
   add_index "pipelines_request_types", ["request_type_id"], :name => "fk_pipelines_request_types_to_request_types"
-
-  create_table "plate_creations", :force => true do |t|
-    t.integer  "user_id"
-    t.integer  "parent_id"
-    t.integer  "child_plate_purpose_id"
-    t.integer  "child_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "plate_creator_purposes", :force => true do |t|
     t.integer  "plate_creator_id", :null => false
@@ -1332,6 +1333,13 @@ ActiveRecord::Schema.define(:version => 20121011104935) do
   end
 
   add_index "transfers", ["source_id"], :name => "source_id_idx"
+
+  create_table "tube_creation_children", :force => true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "tube_creation_id", :null => false
+    t.integer  "tube_id",          :null => false
+  end
 
   create_table "users", :force => true do |t|
     t.string   "login"

@@ -353,6 +353,11 @@ Factory.define :plate_purpose do |plate_purpose|
   plate_purpose.name    "Frag"
 end
 
+Factory.define(:tube_purpose, :class => Tube::Purpose) do |purpose|
+  purpose.name        'Tube purpose'
+  purpose.target_type 'MultiplexedLibraryTube'
+end
+
 Factory.define :dilution_plate_purpose do |plate_purpose|
   plate_purpose.name    'Dilution'
 end
