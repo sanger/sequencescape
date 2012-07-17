@@ -38,4 +38,10 @@ ActiveRecord::Base.transaction do
     :name                => "Transfer wells to specific tubes by submission",
     :transfer_class_name => Transfer::FromPlateToSpecificTubes.name
   )
+
+  # Tube-to-tube transfers
+  TransferTemplate.create!(
+    :name                => "Transfer from tube to tube by submission",
+    :transfer_class_name => Transfer::BetweenTubesBySubmission.name
+  )
 end

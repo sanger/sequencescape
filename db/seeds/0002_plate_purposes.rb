@@ -31,7 +31,4 @@ ActiveRecord::Base.transaction do
     plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
     plate_purpose.child_relationships.create!(:child => qc_plate_purpose, :transfer_request_type => RequestType.transfer)
   end
-
-  # We only have one flow at the moment
-  IlluminaB::PlatePurposes.create_plate_purposes
 end

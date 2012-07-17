@@ -52,6 +52,13 @@ module IlluminaB::PlatePurposes
 
   # We only have one flow at the moment
   class << self
+    def create_tube_purposes
+      IlluminaB::PlatePurposes::TUBE_PURPOSE_FLOWS.each do |flow|
+        stock_tube = create_tube_purpose(flow.shift, :target_type => 'StockMultiplexedLibraryTube')
+        flow.each(&method(:create_tube_purpose))
+      end
+    end
+
     def create_plate_purposes
       IlluminaB::PlatePurposes::PLATE_PURPOSE_FLOWS.each do |flow|
         stock_plate = create_plate_purpose(flow.shift, :can_be_considered_a_stock_plate => true, :default_state => 'passed', :cherrypickable_target => true)
@@ -59,11 +66,9 @@ module IlluminaB::PlatePurposes
 
         flow.each(&method(:create_plate_purpose))
       end
-      IlluminaB::PlatePurposes::TUBE_PURPOSE_FLOWS.each do |flow|
-        stock_tube = create_tube_purpose(flow.shift, :target_type => 'StockMultiplexedLibraryTube')
-        flow.each(&method(:create_tube_purpose))
-      end
+    end
 
+    def create_branches
       IlluminaB::PlatePurposes::BRANCHES.each do |branch|
         branch.inject(Purpose.find_by_name(branch.shift)) do |parent, child|
           Purpose.find_by_name(child).tap do |child_purpose|
