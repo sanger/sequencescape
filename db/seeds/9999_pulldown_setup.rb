@@ -122,7 +122,7 @@ options_hash = {
     submission = LinearSubmission.last.create_submission
 
     (1..7).each do |i|
-      tube    = MultiplexedLibraryTube.create!(:location => Location.find(2)).tap { |t| t.aliquots.create!(:sample => Sample.create!(:name => "fudge_#{i}")) }
+      tube    = Tube::Purpose.standard_mx_tube.create!(:location => Location.find(2)).tap { |t| t.aliquots.create!(:sample => Sample.create!(:name => "fudge_#{i}")) }
       request = RequestType.find(8).create!(:asset => tube, :study => Study.first, :submission => submission, :request_metadata_attributes => { :fragment_size_required_from => 100, :fragment_size_required_to => 200, :read_length => 100 })
     end
 

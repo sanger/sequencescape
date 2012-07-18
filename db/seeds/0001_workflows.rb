@@ -88,11 +88,11 @@ LibraryCreationPipeline.create!(:name => 'Illumina-C Library preparation') do |p
   pipeline.location = Location.first(:conditions => { :name => 'Library creation freezer' }) or raise StandardError, "Cannot find 'Library creation freezer' location"
 
   pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'library_creation', :name => 'Library creation') do |request_type|
-    request_type.billable          = true
-    request_type.initial_state     = 'pending'
-    request_type.asset_type        = 'SampleTube'
-    request_type.order             = 1
-    request_type.multiples_allowed = false
+    request_type.billable           = true
+    request_type.initial_state      = 'pending'
+    request_type.asset_type         = 'SampleTube'
+    request_type.order              = 1
+    request_type.multiples_allowed  = false
     request_type.request_class_name = LibraryCreationRequest.name
   end
 
@@ -592,22 +592,6 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))
 end
 
-RequestType.create!(
-  :workflow => next_gen_sequencing,
-  :key => 'illumina_b_std',
-  :name => 'Illumina-B STD',
-  :billable => 1, :for_multiplexing => 1, :morphology => 0) do |request_type|
-  request_type.billable          = true
-  request_type.initial_state     = 'pending'
-  request_type.asset_type        = 'Well'
-  request_type.target_asset_type = 'MultiplexedLibraryTube'
-  request_type.order             = 1
-  request_type.multiples_allowed = false
-  request_type.request_class =  IlluminaB::Requests::StdLibraryRequest
-  request_type.product_line = ProductLine.find_by_name('Illumina-B')
-end
-
-
 ##################################################################################################################
 # Microarray genotyping
 ##################################################################################################################
@@ -847,7 +831,7 @@ set_pipeline_flow_to('PacBio Sample Prep' => 'PacBio Sequencing')
       request_type.key               = pipeline_name.downcase.gsub(/\s+/, '_')
       request_type.initial_state     = 'pending'
       request_type.asset_type        = 'Well'
-      request_type.target_asset_type = 'MultiplexedLibraryTube'
+      request_type.target_purpose    = Tube::Purpose.standard_mx_tube
       request_type.order             = 1
       request_type.multiples_allowed = false
       request_type.request_class     = "Pulldown::Requests::#{pipeline_type.humanize}LibraryRequest".constantize

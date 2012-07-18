@@ -37,7 +37,7 @@ Feature: Access plate creations through the API
         "plate_creation": {
           "user": "99999999-8888-7777-6666-555555555555",
           "parent": "00000000-1111-2222-3333-000000000001",
-          "child_plate_purpose": "11111111-2222-3333-4444-000000000002"
+          "child_purpose": "11111111-2222-3333-4444-000000000002"
         }
       }
       """
@@ -59,7 +59,7 @@ Feature: Access plate creations through the API
               "read": "http://www.example.com/api/1/00000000-1111-2222-3333-000000000002"
             }
           },
-          "child_plate_purpose": {
+          "child_purpose": {
             "actions": {
               "read": "http://www.example.com/api/1/11111111-2222-3333-4444-000000000002"
             }
@@ -93,11 +93,11 @@ Feature: Access plate creations through the API
       """
 
     Scenarios:
-      | json                                                                                                                                                            | error                                                        |
-      | "parent": "00000000-1111-2222-3333-000000000001", "child_plate_purpose": "11111111-2222-3333-4444-000000000002"                                                 | "user": [ "can't be blank" ]                                 |
-      | "user": "99999999-8888-7777-6666-555555555555", "parent": "00000000-1111-2222-3333-000000000001"                                                                | "child_plate_purpose": [ "can't be blank" ]                  |
-      | "user": "99999999-8888-7777-6666-555555555555", "child_plate_purpose": "11111111-2222-3333-4444-000000000002"                                                   | "parent": [ "can't be blank" ]                               |
-      | "user": "99999999-8888-7777-6666-555555555555", "parent": "00000000-1111-2222-3333-000000000001", "child_plate_purpose": "11111111-2222-3333-4444-000000000001" | "child_plate_purpose": [ "is not a valid child plate type" ] |
+      | json                                                                                                                                                      | error                                            |
+      | "parent": "00000000-1111-2222-3333-000000000001", "child_purpose": "11111111-2222-3333-4444-000000000002"                                                 | "user": [ "can't be blank" ]                     |
+      | "user": "99999999-8888-7777-6666-555555555555", "parent": "00000000-1111-2222-3333-000000000001"                                                          | "child_purpose": [ "can't be blank" ]            |
+      | "user": "99999999-8888-7777-6666-555555555555", "child_purpose": "11111111-2222-3333-4444-000000000002"                                                   | "parent": [ "can't be blank" ]                   |
+      | "user": "99999999-8888-7777-6666-555555555555", "parent": "00000000-1111-2222-3333-000000000001", "child_purpose": "11111111-2222-3333-4444-000000000001" | "child_purpose": [ "is not a valid child type" ] |
 
   @read
   Scenario: Reading the JSON for a UUID
@@ -126,7 +126,7 @@ Feature: Access plate creations through the API
               "read": "http://www.example.com/api/1/00000000-1111-2222-3333-000000000002"
             }
           },
-          "child_plate_purpose": {
+          "child_purpose": {
             "actions": {
               "read": "http://www.example.com/api/1/11111111-2222-3333-4444-000000000002"
             }

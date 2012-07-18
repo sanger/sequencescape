@@ -4,7 +4,7 @@ class ::Endpoints::PlatePurposes < ::Core::Endpoint::Base
   end
 
   instance do
-    has_many(:child_plate_purposes, :json => 'children', :to => 'children')
+    has_many(:child_purposes, :json => 'children', :to => 'children')
 
     has_many(:plates, :json => 'plates', :to => 'plates') do
       action(:create) do |request, _|

@@ -219,9 +219,9 @@ class Asset < ActiveRecord::Base
   def child
     self.children.last
   end
-
+  
   def library_prep?
-    self.sti_type == "LibraryTube" || self.sti_type == "MultiplexedLibraryTube"
+    false
   end
 
   def display_name

@@ -24,7 +24,7 @@ class Cherrypick::Task::PickHelpersTest < ActiveSupport::TestCase
 
       context 'when the plate is to be picked in columns' do
         setup do
-          plate_purpose = PlatePurpose.find(2)
+          plate_purpose = PlatePurpose.stock_plate_purpose
           plate_purpose.update_attributes!(:cherrypick_direction => 'column')
           @plate = plate_purpose.create!(:do_not_create_wells, :barcode => (@barcode += 1))
 
@@ -48,7 +48,7 @@ class Cherrypick::Task::PickHelpersTest < ActiveSupport::TestCase
 
       context 'when the plate is to be picked in rows' do
         setup do
-          plate_purpose = PlatePurpose.find(2)
+          plate_purpose = PlatePurpose.stock_plate_purpose
           plate_purpose.update_attributes!(:cherrypick_direction => 'row')
           @plate = plate_purpose.create!(:do_not_create_wells, :barcode => (@barcode += 1))
 

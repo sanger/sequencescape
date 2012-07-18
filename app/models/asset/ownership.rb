@@ -13,7 +13,7 @@ module Asset::Ownership
     end
 
     def assign_owner
-      target_for_ownership.change_owner_to(user,self)
+      Array(target_for_ownership).map { |target| target.change_owner_to(user,self) }
     end
     private :assign_owner
 
@@ -22,15 +22,12 @@ module Asset::Ownership
         alias_method(:target_for_ownership, target)
       end
     end
-
   end
 
   module Unowned
-
     def change_owner_to(owner,source_event)
       # Do nothing
     end
-
   end
 
   module Owned
@@ -66,7 +63,5 @@ module Asset::Ownership
         plate_owner.update_attributes!(:user => owner, :eventable => source_event)
       end
     end
-
   end
-
 end
