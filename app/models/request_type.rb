@@ -94,26 +94,6 @@ class RequestType < ActiveRecord::Base
     self.request_class_name = request_class.name
   end
 
-  def quarantine_create_asset_at_submission_time?
-    # temporary
-    # we should had an attribute for that
-    [6,7, 8].include? id
-  end
-
-  def order_with_default(default=2^31)
-    order || default
-  end
-
-  def quarantine_is_for_library_creation?
-    # TODO: this should either be an attribute in the request_types table or a specific class hierarchy is required
-    [ :library_creation, :multiplexed_library_creation ].include?(self.key.to_sym)
-  end
-
-  def quaratine_is_for_sequencing?
-    # TODO: this should either be an attribute in the request_types table or a specific class hierarchy is required
-    [ :single_ended_sequencing, :paired_end_sequencing ].include?(self.key.to_sym)
-  end
-
   def self.dna_qc
     @dna_qc ||= find_by_key("dna_qc")
   end
@@ -135,7 +115,22 @@ class RequestType < ActiveRecord::Base
     attributes.delete_if { |k,_| not common_attributes.include?(k) }
   end
 
-  def asset_type_class
-    asset_type ? asset_type.constantize : Asset
+  def targets_lanes?
+    (target_asset_type == 'Lane') or (name =~ /\ssequencing$/)
+  end
+
+  # The target asset can either be described by a purpose, or by the target asset type.
+  belongs_to :target_purpose, :class_name => 'Purpose'
+
+  def needs_target_asset?
+    target_purpose.nil? and target_asset_type.blank?
+  end
+
+  def create_target_asset!(&block)
+    case
+    when target_purpose.present?  then target_purpose.create!(&block)
+    when target_asset_type.blank? then nil
+    else                               target_asset_type.constantize.create!(&block)
+    end
   end
 end

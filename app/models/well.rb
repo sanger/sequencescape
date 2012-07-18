@@ -144,7 +144,7 @@ class Well < Aliquot::Receptacle
   end
 
   def create_child_sample_tube
-    SampleTube.create!(:map => self.map, :aliquots => aliquots.map(&:clone)).tap do |sample_tube|
+    Tube::Purpose.standard_sample_tube.create!(:map => self.map, :aliquots => aliquots.map(&:clone)).tap do |sample_tube|
       AssetLink.connect(self, sample_tube)
     end
   end

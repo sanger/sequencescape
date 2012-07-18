@@ -11,8 +11,15 @@ module IlluminaB::PlatePurposes
     ]
   ]
 
+  TUBE_PURPOSE_FLOWS = [
+    [
+      'ILB_STD_STOCK',
+      'ILB_STD_MX'
+    ]
+  ]
+
   BRANCHES = [
-    [ 'ILB_STD_INPUT', 'ILB_STD_COVARIS', 'ILB_STD_SH', 'ILB_STD_PREPCR', 'ILB_STD_PCR', 'ILB_STD_PCRXP' ],
+    [ 'ILB_STD_INPUT', 'ILB_STD_COVARIS', 'ILB_STD_SH', 'ILB_STD_PREPCR', 'ILB_STD_PCR', 'ILB_STD_PCRXP', 'ILB_STD_STOCK', 'ILB_STD_MX' ],
     [ 'ILB_STD_PREPCR', 'ILB_STD_PCRR', 'ILB_STD_PCRXP' ]
   ]
 
@@ -27,7 +34,8 @@ module IlluminaB::PlatePurposes
     [ 'ILB_STD_PREPCR',  'ILB_STD_PCR',   'IlluminaB::Requests::PrePcrToPcr'      ],
     [ 'ILB_STD_PREPCR',  'ILB_STD_PCRR',  'IlluminaB::Requests::PrePcrToPcr'      ],
     [ 'ILB_STD_PCR',     'ILB_STD_PCRXP', 'IlluminaB::Requests::PcrToPcrXp'       ],
-    [ 'ILB_STD_PCRR',    'ILB_STD_PCRXP', 'IlluminaB::Requests::PcrToPcrXp'       ]
+    [ 'ILB_STD_PCRR',    'ILB_STD_PCRXP', 'IlluminaB::Requests::PcrToPcrXp'       ],
+    [ 'ILB_STD_PCRXP',   'ILB_STD_STOCK', 'IlluminaB::Requests::PcrXpToStock'     ]
   ]
 
   PLATE_PURPOSE_TYPE = {
@@ -37,22 +45,33 @@ module IlluminaB::PlatePurposes
     'ILB_STD_PREPCR'  => PlatePurpose,
     'ILB_STD_PCR'     => IlluminaB::PcrPlatePurpose,
     'ILB_STD_PCRXP'   => IlluminaB::FinalPlatePurpose,
-    'ILB_STD_PCRR'    => PlatePurpose
+    'ILB_STD_PCRR'    => PlatePurpose,
+    'ILB_STD_STOCK'   => IlluminaB::StockTubePurpose,
+    'ILB_STD_MX'      => IlluminaB::MxTubePurpose
   }
 
   # We only have one flow at the moment
   class << self
+    def create_tube_purposes
+      IlluminaB::PlatePurposes::TUBE_PURPOSE_FLOWS.each do |flow|
+        stock_tube = create_tube_purpose(flow.shift, :target_type => 'StockMultiplexedLibraryTube')
+        flow.each(&method(:create_tube_purpose))
+      end
+    end
+
     def create_plate_purposes
       IlluminaB::PlatePurposes::PLATE_PURPOSE_FLOWS.each do |flow|
-        stock_plate = create_purpose(flow.shift, :can_be_considered_a_stock_plate => true, :default_state => 'passed', :cherrypickable_target => true)
+        stock_plate = create_plate_purpose(flow.shift, :can_be_considered_a_stock_plate => true, :default_state => 'passed', :cherrypickable_target => true)
         request_type_for(stock_plate).acceptable_plate_purposes << stock_plate
 
-        flow.each(&method(:create_purpose))
+        flow.each(&method(:create_plate_purpose))
       end
+    end
 
+    def create_branches
       IlluminaB::PlatePurposes::BRANCHES.each do |branch|
-        branch.inject(PlatePurpose.find_by_name(branch.shift)) do |parent, child|
-          PlatePurpose.find_by_name(child).tap do |child_purpose|
+        branch.inject(Purpose.find_by_name(branch.shift)) do |parent, child|
+          Purpose.find_by_name(child).tap do |child_purpose|
             parent.child_relationships.create!(:child => child_purpose, :transfer_request_type => request_type_between(parent, child_purpose))
           end
         end
@@ -65,6 +84,11 @@ module IlluminaB::PlatePurposes
     end
     private :request_type_for
 
+    def purpose_for(name)
+      IlluminaB::PlatePurposes::PLATE_PURPOSE_TYPE[name]
+    end
+    private :purpose_for
+
     def request_type_between(parent, child)
       _, _, request_class = IlluminaB::PlatePurposes::PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES.detect { |a,b,_| (parent.name == a) && (child.name == b) }
       return RequestType.transfer if request_class.nil?
@@ -73,8 +97,8 @@ module IlluminaB::PlatePurposes
     end
     private :request_type_between
 
-    def create_purpose(plate_purpose_name, options = {})
-      IlluminaB::PlatePurposes::PLATE_PURPOSE_TYPE[plate_purpose_name].create!(options.reverse_merge(
+    def create_plate_purpose(plate_purpose_name, options = {})
+      purpose_for(plate_purpose_name).create!(options.reverse_merge(
         :name                  => plate_purpose_name,
         :cherrypickable_target => false,
         :cherrypick_direction  => 'row'
@@ -82,6 +106,15 @@ module IlluminaB::PlatePurposes
         plate_purpose.barcode_printer_type = BarcodePrinterType.find_by_type('BarcodePrinterType96Plate')||plate_purpose.barcode_printer_type
       end
     end
-    private :create_purpose
+    private :create_plate_purpose
+
+    def create_tube_purpose(tube_purpose_name, options = {})
+      purpose_for(tube_purpose_name).create!(options.reverse_merge(
+        :name                 => tube_purpose_name,
+        :target_type          => 'MultiplexedLibraryTube',
+        :barcode_printer_type => BarcodePrinterType.find_by_type('BarcodePrinterType1DTube')
+      ))
+    end
+    private :create_tube_purpose
   end
 end
