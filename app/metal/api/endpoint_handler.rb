@@ -38,9 +38,11 @@ class ::Api::EndpointHandler < ::Core::Service
         # Nope, try again
       end
     end
+    raise StandardError, "Cannot route #{parts.join('/').inspect}"
   end
+  private :determine_model_from_parts
 
-  def handle_request(handler, http_request, action, parts)
+  def handle_request(handler, action, parts)
     endpoint_lookup, io_lookup =
       case handler
       when :instance then [ :endpoint_for_object, :lookup_for_object ]

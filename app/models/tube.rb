@@ -16,7 +16,7 @@ class Tube < Aliquot::Receptacle
     end
 
     def created_with_request_options(tube)
-      tube.parents.first
+      tube.creation_request.try(:request_options_for_creation) || {}
     end
 
     def create!(*args, &block)
@@ -49,6 +49,10 @@ class Tube < Aliquot::Receptacle
   end
 
   class StandardMx < Tube::Purpose
+    def created_with_request_options(tube)
+      tube.parent.created_with_request_options
+    end
+
     # Transitioning an MX library tube to a state involves updating the state of the transfer requests.  If the
     # state is anything but "started" or "pending" then the pulldown library creation request should also be
     # set to the same state
