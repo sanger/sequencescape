@@ -14,16 +14,29 @@ class ::Api::EndpointHandler < ::Core::Service
 
     def model_action(action, http_method)
       send(http_method, %r{^/#{self.api_version_path}/([^\d/][^/]+(?:/[^/]+){0,2})$}) do
-        parts = params[:captures].to_s.split('/')
-        model = parts.shift.classify.constantize
-
-        handle_request(:model, action, parts) do |request|
-          request.io     = ::Core::Io::Registry.instance.lookup_for_class(model) rescue nil
-          request.target = model
+        determine_model_from_parts(params[:captures].to_s.split('/')) do |model, parts|
+          handle_request(:model, action, parts) do |request|
+            request.io     = ::Core::Io::Registry.instance.lookup_for_class(model) rescue nil
+            request.target = model
+          end
         end
       end
     end
   end
+
+  # Not ideal but at least this allows us to pick up the appropriate model from the URL.
+  def determine_model_from_parts(*parts)
+    (parts.length..1).each do |n|
+      begin
+        model_name, remainder = parts.slice(0, n), parts.slice(n, parts.length)
+        return yield(model_name.join('/').classify.constantize, remainder)
+      rescue NameError => exception
+        # Nope, try again
+      end
+    end
+    raise StandardError, "Cannot route #{parts.join('/').inspect}"
+  end
+  private :determine_model_from_parts
 
   def handle_request(handler, action, parts)
     endpoint_lookup, io_lookup =
