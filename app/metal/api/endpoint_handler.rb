@@ -14,7 +14,7 @@ class ::Api::EndpointHandler < ::Core::Service
 
     def model_action(action, http_method)
       send(http_method, %r{^/#{self.api_version_path}/([^\d/][^/]+(?:/[^/]+){0,2})$}) do
-        determine_model_from_parts(params[:captures].to_s.split('/')) do |model, parts|
+        determine_model_from_parts(*params[:captures].to_s.split('/')) do |model, parts|
           handle_request(:model, action, parts) do |request|
             request.io     = ::Core::Io::Registry.instance.lookup_for_class(model) rescue nil
             request.target = model
@@ -26,7 +26,7 @@ class ::Api::EndpointHandler < ::Core::Service
 
   # Not ideal but at least this allows us to pick up the appropriate model from the URL.
   def determine_model_from_parts(*parts)
-    (parts.length..1).each do |n|
+    (1..parts.length).to_a.reverse.each do |n|
       begin
         model_name, remainder = parts.slice(0, n), parts.slice(n, parts.length)
         return yield(model_name.join('/').classify.constantize, remainder)
