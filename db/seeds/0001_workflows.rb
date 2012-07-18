@@ -88,11 +88,11 @@ LibraryCreationPipeline.create!(:name => 'Illumina-C Library preparation') do |p
   pipeline.location = Location.first(:conditions => { :name => 'Library creation freezer' }) or raise StandardError, "Cannot find 'Library creation freezer' location"
 
   pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'library_creation', :name => 'Library creation') do |request_type|
-    request_type.billable          = true
-    request_type.initial_state     = 'pending'
-    request_type.asset_type        = 'SampleTube'
-    request_type.order             = 1
-    request_type.multiples_allowed = false
+    request_type.billable           = true
+    request_type.initial_state      = 'pending'
+    request_type.asset_type         = 'SampleTube'
+    request_type.order              = 1
+    request_type.multiples_allowed  = false
     request_type.request_class_name = LibraryCreationRequest.name
   end
 

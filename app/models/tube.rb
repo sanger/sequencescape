@@ -23,12 +23,20 @@ class Tube < Aliquot::Receptacle
       target_class.create!(*args, &block).tap { |t| tubes << t }
     end
 
-    def self.standard_sample_tube
-      @standard_sample_tube ||= find_by_name('Standard sample') or raise "Cannot find standard sample tube purpose"
-    end
+    # Define some simple helper methods
+    class << self
+      [ 'stock', 'standard' ].each do |purpose_type|
+        [ 'sample', 'library', 'MX' ].each do |tube_type|
+          name = "#{purpose_type} #{tube_type}"
 
-    def self.standard_mx_tube
-      @standard_mx_tube ||= find_by_name('Standard MX') or raise "Cannot find standard MX tube purpose"
+          line = __LINE__ + 1
+          class_eval(%Q{
+            def #{name.downcase.gsub(/\W+/, '_')}_tube
+              @#{name.downcase.gsub(/\W+/, '_')}_tube ||= find_by_name('#{name.humanize}') or raise "Cannot find #{name} tube"
+            end
+          }, __FILE__, line)
+        end
+      end
     end
   end
 

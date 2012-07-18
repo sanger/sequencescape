@@ -54,6 +54,10 @@ Factory.define(:transfer_from_plate_to_tube, :class => Transfer::FromPlateToTube
   transfer.source      { |target| target.association(:source_transfer_plate) }
   transfer.destination { |target| target.association(:library_tube)   }
   transfer.transfers([ 'A1', 'B1' ])
+
+  transfer.after_build do |transfer|
+    transfer.source.plate_purpose.child_relationships.create!(:child => transfer.destination.purpose, :transfer_request_type => RequestType.transfer)
+  end
 end
 
 Factory.define(:transfer_template) do |transfer_template|

@@ -328,6 +328,7 @@ Factory.define :empty_sample_tube, :class => SampleTube do |sample_tube|
   sample_tube.qc_state            ""
   sample_tube.resource            nil
   sample_tube.barcode             {|a| Factory.next :barcode_number }
+  sample_tube.purpose             Tube::Purpose.standard_sample_tube
 end
 Factory.define :sample_tube, :parent => :empty_sample_tube do |sample_tube|
   sample_tube.after_create do |sample_tube|
