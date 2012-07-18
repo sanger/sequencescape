@@ -50,6 +50,11 @@ Feature: The entry point for the API gives directions to the other actions
             "read": "http://www.example.com/api/1/plate_purposes"
           }
         },
+        "tube_purposes": {
+          "actions": {
+            "read": "http://www.example.com/api/1/tube/purposes"
+          }
+        },
         "dilution_plate_purposes": {
           "actions": {
             "read": "http://www.example.com/api/1/dilution_plate_purposes"
@@ -266,6 +271,11 @@ Feature: The entry point for the API gives directions to the other actions
         "plate_purposes": {
           "actions": {
             "read": "http://www.example.com/api/1/plate_purposes"
+          }
+        },
+        "tube_purposes": {
+          "actions": {
+            "read": "http://www.example.com/api/1/tube/purposes"
           }
         },
         "dilution_plate_purposes": {

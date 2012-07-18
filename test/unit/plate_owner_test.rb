@@ -12,9 +12,7 @@ class PlateOwnerTest < ActionController::TestCase
       @barcode_printer.stubs(:map).returns(["abc",1])
       @barcode_printer.stubs(:first).returns(@barcode_printer)
       BarcodePrinter.stubs(:find).returns(@barcode_printer)
-      @plate_barcode = mock("plate barcode")
-      @plate_barcode.stubs(:barcode).returns("1234567")
-      PlateBarcode.stubs(:create).returns(@plate_barcode)
+      PlateBarcode.stubs(:create).returns(OpenStruct.new(:barcode => '1234567'))
       @barcode_printer.stubs(:each).returns(@barcode_printer )
       @barcode_printer.stubs(:blank?).returns(true)
 
@@ -22,9 +20,9 @@ class PlateOwnerTest < ActionController::TestCase
       @parent_plate = PlatePurpose.find_by_name('WGS stock DNA').create!(:barcode=>'12345')
 
       @pc_event = PlateCreation.create(
-        :user                 => @user,
-        :parent               => @parent_plate,
-        :child_plate_purpose  => PlatePurpose.find_by_name('WGS Covaris')
+        :user          => @user,
+        :parent        => @parent_plate,
+        :child_purpose => PlatePurpose.find_by_name('WGS Covaris')
       )
       @child_plate = @pc_event.child
     end

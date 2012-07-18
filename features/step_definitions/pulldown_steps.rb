@@ -25,20 +25,20 @@ class WellRange
 	end
 	private :include_well_location?
 
-	def to_a(&block)
-		[].tap do |wells|
-			(1..12).each do |column|
-				('A'..'H').each do |row|
-					well = "#{row}#{column}"
-					wells << well if include_well_location?(well)
-				end
-			end
-		end
-	end
+  def to_a(&block)
+    [].tap do |wells|
+      (1..12).each do |column|
+        ('A'..'H').each do |row|
+          well = "#{row}#{column}"
+          wells << well if include_well_location?(well)
+        end
+      end
+    end
+  end
 
-	def size
-		to_a.size
-	end
+  def size
+    to_a.size
+  end
 end
 
 Transform /^([A-H]\d+)-([A-H]\d+)$/ do |start, finish|
@@ -46,13 +46,13 @@ Transform /^([A-H]\d+)-([A-H]\d+)$/ do |start, finish|
 end
 
 def create_submission_of_assets(template, assets, request_options = {})
-      template.create_and_build_submission!(
-        :user            => Factory(:user),
-        :study           => Factory(:study),
-        :project         => Factory(:project),
-        :assets          => assets,
-        :request_options => request_options
-      )
+  template.create_and_build_submission!(
+    :user            => Factory(:user),
+    :study           => Factory(:study),
+    :project         => Factory(:project),
+    :assets          => assets,
+    :request_options => request_options
+  )
 
   Given 'all pending delayed jobs are processed'
 end
