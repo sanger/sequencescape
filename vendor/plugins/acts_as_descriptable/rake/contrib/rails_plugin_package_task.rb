@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env jruby
 
 # Copyright (c) 2006 by Zak Mandhro
 # 

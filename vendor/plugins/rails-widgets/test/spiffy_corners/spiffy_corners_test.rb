@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env jruby
 require File.dirname(__FILE__) + '/../test_helper'
 
 class SpiffyCornersHelperTest < ActionView::TestCase

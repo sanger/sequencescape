@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env jruby
 gem 'test-unit', '1.2.3' if RUBY_VERSION.to_f >= 1.9
 ENV['RSPEC'] = 'true'     # allows autotest to discover rspec
 ENV['AUTOTEST'] = 'true'  # allows autotest to run w/ color on linux
