@@ -235,25 +235,28 @@ private
     raise StandardError, "Cannot connect to EBI to get accession number. Please configure accession_url in config.yml" if configatron.accession_url.blank?
 
     begin
-      curl = Curl::Easy.new(URI.parse(configatron.accession_url+accession_login).to_s)
+      rc = RestClient::Resource.new(URI.parse(configatron.accession_url+accession_login).to_s)
       if configatron.disable_web_proxy == true
-        curl.proxy_url = ''
+        RestClient.proxy = ''
       elsif not configatron.proxy.blank?
-
-        curl.proxy_url= configatron.proxy
+        RestClient.proxy = configatron.proxy
         # UA required to get through Sanger proxy
-        curl.headers["User-Agent"] = "Sequencescape Accession Client (#{RAILS_ENV})"
-        curl.proxy_tunnel = true
-        curl.verbose = true
+        rc.options.headers[:user_agent] = "Sequencescape Accession Client (#{RAILS_ENV})"
+        #rc.proxy_tunnel = true
+        #rc.verbose = true
       end
 
-      curl.multipart_form_post = true
-      curl.http_post(
-        *file_params.map { |p| Curl::PostField.file(p[:name], p[:local_name], p[:remote_name]) }
-      )
-      case curl.response_code
+      payload = {}
+      file_params.map { |p|
+        # XYZZY: Caution remote file name may be incorrect
+        payload[p[:name]] = File.open(p[:local_name])
+        #Curl::PostField.file(p[:name], p[:local_name], p[:remote_name])
+        }
+      #rc.multipart_form_post = true # RC handles automatically
+      response = rc.post(payload)
+      case response.code
       when (200...300) #success
-        return curl.body_str
+        return response.body.to_s
       when (400...600)
         Rails.logger.warn($!)
         $! = nil
