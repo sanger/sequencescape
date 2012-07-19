@@ -18,7 +18,7 @@ module Core::Service::ContentFiltering
     def process_json_request_body
       content = request.body.read
       raise Core::Service::ContentFiltering::InvalidBodyContentType if not content.blank? and request.content_type != 'application/json'
-      @json   = content.blank? ? {} : Yajl::Parser.parse(StringIO.new(content))
+      @json   = content.blank? ? {} : JSON.parse(content)
     ensure
       # It's important to ensure that the body IO object has been rewound to the start for other requests.
       request.body.seek(0)
