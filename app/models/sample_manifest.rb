@@ -142,4 +142,12 @@ class SampleManifest < ActiveRecord::Base
     (1..count).map { |_| SangerSampleId::Factory.instance.next! }
   end
   private :generate_sanger_ids
+
+  def generate_study_samples(study_samples_data)
+    study_sample_fields = [:study_id, :sample_id]
+    study_samples_data.each do |study_sample|
+      StudySample.create!(:study_id => study_sample.first, :sample_id=> study_sample.last)
+    end
+    #StudySample.import study_sample_fields, study_samples_data
+  end
 end

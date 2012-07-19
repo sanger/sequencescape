@@ -46,7 +46,10 @@ locations_data = [
   'PacBio sample prep freezer',
   'PacBio sequencing freezer'
 ]
-Location.import [ :name ], locations_data, :validate => false
+locations_data.each do |location|
+  Location.create!(:name=>location)
+end
+#import [ :name ], locations_data, :validate => false
 
 
 #### RequestInformationTypes
