@@ -6,17 +6,14 @@ gem "rails", "2.3.11"
 # Warehouse builder
 gem "log4r"
 gem "db-charmer"
-# 1.1 activated by rails
-#gem "rack", "~>1.2"
 
 gem "aasm", "~>2.4.0"
 gem "ar-extensions"
 gem "configatron"
-#gem "rurl" # curb substitute. 1.9+ only (Might just be a case of converting hashes)
+gem "rest-client" # curb substitute.
 gem "fastercsv", "~>1.4.0"
 gem "formtastic", "~>1.2.0"
-gem "activerecord-jdbc-adapter" # Not sure I need all three here. Worked a bit without jdbc prefix in database config
-gem "activerecord-jdbcmysql-adapter"
+gem "activerecord-jdbc-adapter"
 gem "jdbc-mysql"
 gem "spreadsheet"
 gem "will_paginate", "~>2.3.15"
@@ -53,13 +50,14 @@ gem "bunny"
 group :warehouse do
   #the most recent one that actually compiles
   #gem "ruby-oci8"
+  # No ruby-oci8, (Need to use Oracle JDBC drivers Instead)
   #any newer version requires ruby-oci8 => 2.0.1
   gem "activerecord-oracle_enhanced-adapter"
 end
 
 group :development do
   # The fake services run better with Mongrel
-  # gem "mongrel"
+  gem "mongrel"
 
   gem "flay"
   gem "flog"
