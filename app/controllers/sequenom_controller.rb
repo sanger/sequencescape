@@ -39,11 +39,13 @@ class SequenomController < ApplicationController
   end
 
   def update
-    STEPS.for(params[:sequenom_step]).update_plate(@plate, @user) do |step|
-      flash[:notice] = I18n.t(
-        'sequenom.notices.step_completed', 
-        :step => step.name, :barcode => @plate.ean13_barcode, :human_barcode => @plate.sanger_human_barcode
-      )
+    ActiveRecord::Base.transaction do
+      STEPS.for(params[:sequenom_step]).update_plate(@plate, @user) do |step|
+        flash[:notice] = I18n.t(
+          'sequenom.notices.step_completed', 
+          :step => step.name, :barcode => @plate.ean13_barcode, :human_barcode => @plate.sanger_human_barcode
+        )
+      end
     end
     redirect_to sequenom_plate_path(@plate)
   end
