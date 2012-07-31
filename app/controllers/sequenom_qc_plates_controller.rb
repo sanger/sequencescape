@@ -21,28 +21,29 @@ class SequenomQcPlatesController < ApplicationController
     # This will hold the first bad plate with errors preventing it's creation
     bad_plate  = nil
     
-    
-    (1..number_of_barcodes).each do
-      sequenom_qc_plate = SequenomQcPlate.new(
-        :plate_prefix        => params[:plate_prefix],
-        :gender_check_bypass => gender_check_bypass,
-        :user_barcode        => user_barcode
-      )
-      #TODO: create a factory object
-    
-      # Need to be done before saving the plate
-      valid = input_plate_names && sequenom_qc_plate.compute_and_set_name(input_plate_names)
-      errors = sequenom_qc_plate.errors.inject({}) { |h, (k, v)| h.update(k=>v) }
-      if sequenom_qc_plate.save and valid and sequenom_qc_plate.add_event_to_stock_plates(user_barcode)
-        new_plates << sequenom_qc_plate
-      else
-        # If saving any of our new plates fails then catch that plate, for errors
-        # and move straight on to sending a response
-        bad_plate = sequenom_qc_plate
-        errors.each do |att, value|
-          bad_plate.errors.add(att, value)
+    ActiveRecord::Base.transaction do
+      (1..number_of_barcodes).each do
+        sequenom_qc_plate = SequenomQcPlate.new(
+          :plate_prefix        => params[:plate_prefix],
+          :gender_check_bypass => gender_check_bypass,
+          :user_barcode        => user_barcode
+        )
+        #TODO: create a factory object
+      
+        # Need to be done before saving the plate
+        valid = input_plate_names && sequenom_qc_plate.compute_and_set_name(input_plate_names)
+        errors = sequenom_qc_plate.errors.inject({}) { |h, (k, v)| h.update(k=>v) }
+        if sequenom_qc_plate.save and valid and sequenom_qc_plate.add_event_to_stock_plates(user_barcode)
+          new_plates << sequenom_qc_plate
+        else
+          # If saving any of our new plates fails then catch that plate, for errors
+          # and move straight on to sending a response
+          bad_plate = sequenom_qc_plate
+          errors.each do |att, value|
+            bad_plate.errors.add(att, value)
+          end
+          break
         end
-        break
       end
     end
 
