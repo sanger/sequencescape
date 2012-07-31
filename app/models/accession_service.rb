@@ -8,64 +8,66 @@ class AccessionService
   Hold = "hold".freeze
   
   def submit(user, *accessionables)
-    submission = Accessionable::Submission.new(self, user, *accessionables)
+    ActiveRecord::Base.transaction do
+      submission = Accessionable::Submission.new(self, user, *accessionables)
 
-    errors = submission.all_accessionables.map(&:errors).flatten
+      errors = submission.all_accessionables.map(&:errors).flatten
 
-    raise AccessionServiceError, errors.join("\n") unless errors.empty?
+      raise AccessionServiceError, errors.join("\n") unless errors.empty?
 
-    files = [] # maybe not necessary, but just to be sure that the tempfile still exists when they are sent
-    begin
-      xml_result = post_files(submission.all_accessionables.map do |acc|
-          file = Tempfile.open("#{acc.schema_type}_file")
-          files << file
-          file.puts(acc.xml)
-          file.open # reopen for read
+      files = [] # maybe not necessary, but just to be sure that the tempfile still exists when they are sent
+      begin
+        xml_result = post_files(submission.all_accessionables.map do |acc|
+            file = Tempfile.open("#{acc.schema_type}_file")
+            files << file
+            file.puts(acc.xml)
+            file.open # reopen for read
 
-          Rails::logger.debug { file.lines.to_a.join("\n") }
+            Rails::logger.debug { file.lines.to_a.join("\n") }
 
-          {:name => acc.schema_type.upcase, :local_name => file.path, :remote_name => acc.file_name }
-        end
-       )
-
-      Rails::logger.debug { xml_result }
-      raise AccessionServiceError, "EBI Server Error. Couldnt get accession number: #{xml_result}" if xml_result =~ /(Server error|Auth required|Login failed)/
-
-      xmldoc  = Document.new(xml_result)
-      success = xmldoc.root.attributes['success']
-      accession_numbers = []
-      # for some reasons, ebi doesn't give us back a accession number for the submission if it's a MODIFY action
-      # therefore, we should be ready to get one or not
-      number_generated = true
-      if success == 'true'
-        #extract and update accession numbers
-        accession_number = submission.all_accessionables.each do |acc|
-          accession_number       = acc.extract_accession_number(xmldoc)
-          if accession_number
-            acc.update_accession_number!(user, accession_number)
-            accession_numbers << accession_number
-          else
-            # error only, if one of the expected accessionable didn't get a AN
-            # We don't care about the submission
-            number_generated = false if accessionables.include?(acc)
+            {:name => acc.schema_type.upcase, :local_name => file.path, :remote_name => acc.file_name }
           end
-          ae_an = acc.extract_array_express_accession_number(xmldoc)
-          acc.update_array_express_accession_number!(ae_an) if ae_an
+         )
+
+        Rails::logger.debug { xml_result }
+        raise AccessionServiceError, "EBI Server Error. Couldnt get accession number: #{xml_result}" if xml_result =~ /(Server error|Auth required|Login failed)/
+
+        xmldoc  = Document.new(xml_result)
+        success = xmldoc.root.attributes['success']
+        accession_numbers = []
+        # for some reasons, ebi doesn't give us back a accession number for the submission if it's a MODIFY action
+        # therefore, we should be ready to get one or not
+        number_generated = true
+        if success == 'true'
+          #extract and update accession numbers
+          accession_number = submission.all_accessionables.each do |acc|
+            accession_number       = acc.extract_accession_number(xmldoc)
+            if accession_number
+              acc.update_accession_number!(user, accession_number)
+              accession_numbers << accession_number
+            else
+              # error only, if one of the expected accessionable didn't get a AN
+              # We don't care about the submission
+              number_generated = false if accessionables.include?(acc)
+            end
+            ae_an = acc.extract_array_express_accession_number(xmldoc)
+            acc.update_array_express_accession_number!(ae_an) if ae_an
+          end
+
+          raise NumberNotGenerated, 'Service gave no numbers back' unless number_generated
+
+        elsif success == 'false'
+          errors = xmldoc.root.elements.to_a("//ERROR").map(&:text)
+          raise AccessionServiceError, "Could not get accession number. Error in submitted data: #{$!} #{ errors.map { |e| "\n  - #{e}"} }"
+        else
+          raise AccessionServiceError,  "Could not get accession number. Error in submitted data: #{$!}"
         end
-
-        raise NumberNotGenerated, 'Service gave no numbers back' unless number_generated
-
-      elsif success == 'false'
-        errors = xmldoc.root.elements.to_a("//ERROR").map(&:text)
-        raise AccessionServiceError, "Could not get accession number. Error in submitted data: #{$!} #{ errors.map { |e| "\n  - #{e}"} }"
-      else
-        raise AccessionServiceError,  "Could not get accession number. Error in submitted data: #{$!}"
+      ensure
+        files.each { |f| f.close } # not really necessary but recommended
       end
-    ensure
-      files.each { |f| f.close } # not really necessary but recommended
-    end
 
-    return accessionables.map(&:accession_number)
+      return accessionables.map(&:accession_number)
+    end
   end
 
   def submit_sample_for_user(sample, user)
