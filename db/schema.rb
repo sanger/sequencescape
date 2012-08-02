@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120629131720) do
+ActiveRecord::Schema.define(:version => 20120802101538) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -505,11 +505,11 @@ ActiveRecord::Schema.define(:version => 20120629131720) do
   end
 
   create_table "location_associations", :force => true do |t|
-    t.integer "locatable_id"
-    t.integer "location_id"
+    t.integer "locatable_id", :null => false
+    t.integer "location_id",  :null => false
   end
 
-  add_index "location_associations", ["locatable_id"], :name => "index_location_associations_on_locatable_id"
+  add_index "location_associations", ["locatable_id"], :name => "single_location_per_locatable_idx", :unique => true
   add_index "location_associations", ["location_id"], :name => "index_location_associations_on_location_id"
 
   create_table "locations", :force => true do |t|
