@@ -4,6 +4,7 @@ class Io::Tube < Io::Asset
   set_eager_loading { |model| model.include_aliquots.include_scanned_into_lab_event }
 
   define_attribute_and_json_mapping(%Q{
+              state  => state
              closed  => closed
       concentration  => concentration
              volume  => volume
