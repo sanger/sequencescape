@@ -5,7 +5,7 @@ class Transfer < ActiveRecord::Base
         include Transfer::State
 
         has_many :transfers_as_source,     :class_name => 'Transfer', :foreign_key => :source_id,      :order => 'created_at ASC'
-        has_many :transfers_to_tubes,      :class_name => 'Transfer::FromPlateToTubeBySubmission', :foreign_key => :source_id, :order => 'created_at ASC'
+        has_many :transfers_to_tubes,      :class_name => 'Transfer::BetweenPlateAndTubes', :foreign_key => :source_id, :order => 'created_at ASC'
         has_one  :transfer_as_destination, :class_name => 'Transfer', :foreign_key => :destination_id
 
         # This looks odd but it's a LEFT OUTER JOIN, meaning that the rows we would be interested in have no source_id.

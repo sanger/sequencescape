@@ -3,6 +3,12 @@ class Tube < Aliquot::Receptacle
   include Barcode::Barcodeable
   include Tag::Associations
   include Asset::Ownership::Unowned
+  include Transfer::Associations
+
+  # Transfer requests into a tube are direct requests where the tube is the target.
+  def transfer_requests
+    requests_as_target.where_is_a?(TransferRequest).all
+  end
 
   named_scope :include_scanned_into_lab_event, :include => :scanned_into_lab_event
 
@@ -20,7 +26,7 @@ class Tube < Aliquot::Receptacle
     end
 
     def create!(*args, &block)
-      target_class.create!(*args, &block).tap { |t| tubes << t }
+      target_class.create_with_barcode!(*args, &block).tap { |t| tubes << t }
     end
 
     # Define some simple helper methods
@@ -81,5 +87,13 @@ class Tube < Aliquot::Receptacle
 
   def transfer_request_type_from(source)
     purpose.transfer_request_type_from(source.purpose)
+  end
+
+  def self.create_with_barcode!(*args, &block)
+    attributes = args.extract_options!
+    barcode    = args.first || attributes[:barcode]
+    raise "Barcode: #{barcode} already used!" if barcode.present? and find_by_barcode(barcode).present?
+    barcode  ||= AssetBarcode.new_barcode
+    create!(attributes.merge(:barcode => barcode), &block)
   end
 end
