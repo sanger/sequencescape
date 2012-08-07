@@ -6,7 +6,5 @@ class ::Io::Transfer::BetweenTubesBySubmission < ::Core::Io::Base
   define_attribute_and_json_mapping(%Q{
            user <=> user
          source <=> source
-    destination <=> destination
-      transfers  => transfers
   })
 end
