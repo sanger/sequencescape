@@ -1,9 +1,11 @@
 class Tube < Aliquot::Receptacle
   include LocationAssociation::Locatable
   include Barcode::Barcodeable
+  include ModelExtensions::Tube
   include Tag::Associations
   include Asset::Ownership::Unowned
   include Transfer::Associations
+  include Transfer::State::TubeState
 
   # Transfer requests into a tube are direct requests where the tube is the target.
   def transfer_requests
@@ -11,6 +13,10 @@ class Tube < Aliquot::Receptacle
   end
 
   named_scope :include_scanned_into_lab_event, :include => :scanned_into_lab_event
+
+  named_scope :with_purpose, lambda { |*purposes|
+    { :conditions => { :plate_purpose_id => purposes.flatten.map(&:id) } }
+  }
 
   # Base class for the all tube purposes
   class Purpose < ::Purpose
