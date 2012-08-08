@@ -3,6 +3,7 @@ class Plate < Asset
   include ModelExtensions::Plate
   include LocationAssociation::Locatable
   include Transfer::Associations
+  include Transfer::State::PlateState
   include PlatePurpose::Associations
   include Barcode::Barcodeable
   include Asset::Ownership::Owned

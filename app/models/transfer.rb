@@ -24,40 +24,6 @@ class Transfer < ActiveRecord::Base
     # are failed).
     ALL_STATES = [ 'started', 'qc_complete', 'pending', 'passed', 'failed', 'cancelled' ]
 
-    def self.included(base)
-      base.class_eval do
-        named_scope :in_state, lambda { |states|
-          states = Array(states).map(&:to_s)
-
-          # If all of the states are present there is no point in actually adding this set of conditions because we're
-          # basically looking for all of the plates.
-          if states.sort != ALL_STATES.sort
-            # NOTE: The use of STRAIGHT_JOIN here forces the most optimum query on MySQL, where it is better to reduce
-            # assets to the plates, then look for the wells, rather than vice-versa.  The former query takes fractions
-            # of a second, the latter over 60.
-            query_conditions, joins = 'transfer_requests_as_target.state IN (?)', [
-              "STRAIGHT_JOIN `container_associations` ON (`assets`.`id` = `container_associations`.`container_id`)",
-              "INNER JOIN `assets` wells_assets ON (`wells_assets`.`id` = `container_associations`.`content_id`) AND (`wells_assets`.`sti_type` = 'Well')",
-              "LEFT OUTER JOIN `requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = wells_assets.id AND (transfer_requests_as_target.`sti_type` IN (#{[TransferRequest, *Class.subclasses_of(TransferRequest)].map(&:name).map(&:inspect).join(',')}))"
-            ]
-
-            # Note that 'state IS NULL' is included here for plates that are stock plates, because they will not have any
-            # transfer requests coming into their wells and so we can assume they are pending (from the perspective of
-            # pulldown at least).
-            query_conditions = 'transfer_requests_as_target.state IN (?)'
-            if states.include?('pending')
-              joins << "INNER JOIN `plate_purposes` ON (`plate_purposes`.`id` = `assets`.`plate_purpose_id`)"
-              query_conditions << ' OR (transfer_requests_as_target.state IS NULL AND plate_purposes.can_be_considered_a_stock_plate=TRUE)'
-            end
-
-            { :joins => joins, :conditions => [ query_conditions, states ] }
-          else
-            { }
-          end
-        }
-      end
-    end
-
     def self.state_helper(names)
       Array(names).each do |name|
         module_eval(%Q{def #{name}? ; state == #{name.to_s.inspect} ; end})
@@ -78,6 +44,70 @@ class Transfer < ActiveRecord::Base
       ALL_STATES.detect { |s| unique_states.include?(s) } || self.default_state || 'unknown'
     end
     private :state_from
+
+    module PlateState
+      def self.included(base)
+        base.class_eval do
+          named_scope :in_state, lambda { |states|
+            states = Array(states).map(&:to_s)
+
+            # If all of the states are present there is no point in actually adding this set of conditions because we're
+            # basically looking for all of the plates.
+            if states.sort != ALL_STATES.sort
+              # NOTE: The use of STRAIGHT_JOIN here forces the most optimum query on MySQL, where it is better to reduce
+              # assets to the plates, then look for the wells, rather than vice-versa.  The former query takes fractions
+              # of a second, the latter over 60.
+              query_conditions, joins = 'transfer_requests_as_target.state IN (?)', [
+                "STRAIGHT_JOIN `container_associations` ON (`assets`.`id` = `container_associations`.`container_id`)",
+                "INNER JOIN `assets` wells_assets ON (`wells_assets`.`id` = `container_associations`.`content_id`) AND (`wells_assets`.`sti_type` = 'Well')",
+                "LEFT OUTER JOIN `requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = wells_assets.id AND (transfer_requests_as_target.`sti_type` IN (#{[TransferRequest, *Class.subclasses_of(TransferRequest)].map(&:name).map(&:inspect).join(',')}))"
+              ]
+
+              # Note that 'state IS NULL' is included here for plates that are stock plates, because they will not have any
+              # transfer requests coming into their wells and so we can assume they are pending (from the perspective of
+              # pulldown at least).
+              query_conditions = 'transfer_requests_as_target.state IN (?)'
+              if states.include?('pending')
+                joins << "INNER JOIN `plate_purposes` ON (`plate_purposes`.`id` = `assets`.`plate_purpose_id`)"
+                query_conditions << ' OR (transfer_requests_as_target.state IS NULL AND plate_purposes.can_be_considered_a_stock_plate=TRUE)'
+              end
+
+              { :joins => joins, :conditions => [ query_conditions, states ] }
+            else
+              { }
+            end
+          }
+        end
+      end
+    end
+
+    module TubeState
+      def self.included(base)
+        base.class_eval do
+          named_scope :in_state, lambda { |states|
+            states = Array(states).map(&:to_s)
+
+            # If all of the states are present there is no point in actually adding this set of conditions because we're
+            # basically looking for all of the plates.
+            if states.sort != ALL_STATES.sort
+
+              query_conditions, joins = 'transfer_requests_as_target.state IN (?)', [
+                "LEFT OUTER JOIN `requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = `assets`.id AND (transfer_requests_as_target.`sti_type` IN (#{[TransferRequest, *Class.subclasses_of(TransferRequest)].map(&:name).map(&:inspect).join(',')}))"
+              ]
+
+              query_conditions = 'transfer_requests_as_target.state IN (?)'
+
+              { :joins => joins, :conditions => [ query_conditions, states ] }
+            else
+              { }
+            end
+          }
+          named_scope :without_finished_tubes, lambda { |purpose|
+            {:conditions => ["NOT (plate_purpose_id IN (?) AND state = 'passed')", purpose.map(&:id) ]}
+          }
+        end
+      end
+    end
   end
 
   # The transfers are described in some manner, like direct transfers of one well to the same well on
