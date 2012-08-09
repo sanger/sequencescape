@@ -7,6 +7,7 @@ class Io::Tube < Io::Asset
               state  => state
         purpose.name => purpose.name
         purpose.uuid => purpose.uuid
+
              closed  => closed
       concentration  => concentration
              volume  => volume
