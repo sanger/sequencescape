@@ -14,6 +14,7 @@ Feature: The XML for the sequencescape API
     
     And the study "Study for XML" has samples contaminated with human DNA
     And the study "Study for XML" does not contain samples commercially available
+    And the study "Study for XML" has samples which need x and autosome data removed
     And the study "Study for XML" has the following contacts
       | login   | role    |
       | owner   | owner   |
@@ -60,6 +61,10 @@ Feature: The XML for the sequencescape API
           </descriptor>
           <descriptor>
             <name>Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?</name>
+            <value>Yes</value>
+          </descriptor>
+          <descriptor>
+            <name>Does this study require the removal of X chromosome and autosome sequence?</name>
             <value>Yes</value>
           </descriptor>
           <descriptor>

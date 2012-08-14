@@ -261,6 +261,10 @@ en:
         contaminated_human_dna:
           label: Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?
           help: Usually only applicable to pathogen research when human DNA will not be sequenced and therefore does not require ethical approval.
+        
+        remove_x_and_autosomes:
+          label: Does this study require the removal of X chromosome and autosome sequence?
+          help: Applicable for studies where only mtDNA and Y-chromosomal data will be submitted to EGA.
 
         study_project_id:
           label: ENA Project ID

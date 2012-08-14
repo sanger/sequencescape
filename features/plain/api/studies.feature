@@ -36,6 +36,7 @@ Feature: Interacting with studies through the API
             "state": "active",
             "contaminated_human_dna": "No",
             "contains_human_dna": "No",
+            "remove_x_and_autosomes": "No",
             "commercially_available": "No",
             "data_release_sort_of_study": "genomic sequencing",
             "data_release_strategy": "open",
@@ -60,9 +61,9 @@ Feature: Interacting with studies through the API
 
   Scenario: Retrieving the JSON for a particular study
     Given I have an active study called "Testing the JSON API"
+    And the study "Testing the JSON API" has samples which need x and autosome data removed
     And the UUID for the study "Testing the JSON API" is "00000000-1111-2222-3333-444444444444"
     And the faculty sponsor for study "Testing the JSON API" is "John Smith"
-
     When I GET the API path "/studies/00000000-1111-2222-3333-444444444444"
     Then ignoring "updated_at|id" the JSON should be:
       """
@@ -81,6 +82,7 @@ Feature: Interacting with studies through the API
           "state": "active",
           "contaminated_human_dna": "No",
           "contains_human_dna": "No",
+          "remove_x_and_autosomes": "Yes",
           "commercially_available": "No",
           "study_visibility": "Hold",
           "data_release_sort_of_study": "genomic sequencing",

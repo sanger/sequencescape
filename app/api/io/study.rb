@@ -2,7 +2,7 @@ class Io::Study < Core::Io::Base
   set_model_for_input(::Study)
   set_json_root(:study)
   set_eager_loading { |model| model.include_study_metadata.include_projects }
-  
+
   define_attribute_and_json_mapping(%Q{
                                          name     => name
                            ethically_approved     => ethically_approved
@@ -17,9 +17,11 @@ class Io::Study < Core::Io::Base
                 study_metadata.study_abstract     => abstract
 
         study_metadata.contaminated_human_dna     => contaminated_human_dna
+        study_metadata.remove_x_and_autosomes     => remove_x_and_autosomes
             study_metadata.contains_human_dna     => contains_human_dna
         study_metadata.commercially_available     => commercially_available
   study_metadata.data_release_study_type.name     => data_release_sort_of_study
          study_metadata.data_release_strategy     => data_release_strategy
+
   })
 end
