@@ -179,6 +179,21 @@ class StudyTest < ActiveSupport::TestCase
 
     end
 
+    context "which needs x and autosomal DNA removed" do
+      setup do
+        @study_remove = Factory :study
+        @study_remove.study_metadata.remove_x_and_autosomes = Study::YES
+        @study_remove.save!
+        @study_keep = Factory :study
+        @study_keep.study_metadata.remove_x_and_autosomes = Study::NO
+        @study_keep.save!
+      end
+
+      should "show in the filters" do
+        assert Study.all_with_remove_x_and_autosomes.include?(@study_remove)
+        assert !Study.all_with_remove_x_and_autosomes.include?(@study_keep)
+      end
+    end
 
     context "#unprocessed_submissions?" do
       setup do
