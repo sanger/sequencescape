@@ -5,7 +5,8 @@ class AmqpObserver < ActiveRecord::Observer
     :study, :study_sample, :sample, :aliquot, :tag,
     :project,
     :asset, :asset_link, :well_attribute,
-    Metadata::Base
+    Metadata::Base,
+    :billing_event
   )
 
   # Ensure we capture records being saved as well as deleted.
@@ -36,11 +37,13 @@ class AmqpObserver < ActiveRecord::Observer
 
   # Converts metadata entries to their owner records, if necessary
   def determine_record_to_broadcast(record)
-    case
-    when record.is_a?(WellAttribute)  then record.well
-    when record.is_a?(Metadata::Base) then record.owner
-    else record
+    record_to_broadcast, record_for_deletion = case
+    when record.is_a?(WellAttribute)  then [ record.well,  nil ]
+    when record.is_a?(Metadata::Base) then [ record.owner, nil ]
+    else [ record, record ]
     end
+
+    yield(record_to_broadcast, record_for_deletion)
   end
   private :determine_record_to_broadcast
 
@@ -57,20 +60,21 @@ class AmqpObserver < ActiveRecord::Observer
     def map(&block)
       @updated.group_by(&:first).each do |model, pairs|
         model = model.including_associations_for_json if model.respond_to?(:including_associations_for_json)
-        pairs.map(&:last).in_groups_of(configatron.amqp.burst_size).each { |group| model.find(group).map(&block) }
+        pairs.map(&:last).in_groups_of(configatron.amqp.burst_size).each { |group| model.find(group.compact).map(&block) }
       end
       @deleted.map(&block)
     end
 
     def <<(record)
       self.tap do
-        record_to_broadcast = determine_record_to_broadcast(record)
-        pair                = [ record_to_broadcast.class, record_to_broadcast.id ]
-        if record.destroyed?
-          @updated.delete(pair)
-          @deleted << record
-        else
-          @updated << pair
+        determine_record_to_broadcast(record) do |record_to_broadcast, record_for_deletion|
+          pair = [ record_to_broadcast.class, record_to_broadcast.id ]
+          if record.destroyed?
+            @updated.delete(pair)
+            @deleted << record_for_deletion if record_for_deletion.present?
+          else
+            @updated << pair
+          end
         end
       end
     end
@@ -92,7 +96,15 @@ class AmqpObserver < ActiveRecord::Observer
     private :activate_exchange, :publish
 
     def <<(record)
-      activate_exchange { publish(determine_record_to_broadcast(record)) }
+      activate_exchange do
+        determine_record_to_broadcast(record) do |record_to_broadcast, record_for_deletion|
+          if record.destroyed?
+            publish(record_for_deletion) if record_for_deletion.present?
+          else
+            publish(record_to_broadcast)
+          end
+        end
+      end
     end
   end
 
