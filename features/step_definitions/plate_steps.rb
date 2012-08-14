@@ -204,6 +204,7 @@ Given /^(passed|started|pending|failed) transfer requests exist between (\d+) we
   (0...count.to_i).each do |i|
     RequestType.transfer.create!(:asset => source.wells.in_row_major_order[i], :target_asset => destination.wells.in_row_major_order[i], :state=>state)
   end
+  AssetLink.create(:ancestor=>source,:descendant=>destination)
 end
 
 
