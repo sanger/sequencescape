@@ -18,6 +18,7 @@ Feature: Listing studies by the various possible types
       | Pending |
       | Pending ethical approval |
       | Contaminated with human dna |
+      | Remove x and autosomes |
       | Active |
       | Inactive |
       | Collaborations |
