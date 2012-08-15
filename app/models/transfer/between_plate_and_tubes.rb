@@ -39,8 +39,25 @@ class Transfer::BetweenPlateAndTubes < Transfer
   named_scope :include_transfers, :include => { :well_to_tubes => DESTINATION_INCLUDES }
 
   def transfers
-    Hash[well_to_tubes.include_destination.map { |t| [t.source, t.destination] }]
+    Hash[well_to_tubes.include_destination.map { |t| [t.source, tube_to_hash(t.destination)] }]
   end
+
+  # NOTE: Performance enhancement to convert a tube to it's minimal representation for presentation.
+  def tube_to_hash(tube)
+    {
+      :uuid    => tube.uuid,
+      :name    => tube.name,
+      :state   => tube.state,
+      :barcode => {
+        :number          => tube.barcode,
+        :prefix          => tube.barcode_prefix.prefix,
+        :two_dimensional => tube.two_dimensional_barcode,
+        :ean13           => tube.ean13_barcode,
+        :type            => tube.barcode_type
+      }
+    }
+  end
+  private :tube_to_hash
 
   #--
   # The source plate wells need to be translated back to the stock plate wells, which simply
