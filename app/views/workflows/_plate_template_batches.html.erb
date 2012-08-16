@@ -41,18 +41,22 @@
   </fieldset>
 
   <h2>Step 2</h2>
-  <fieldset>
-    <legend>Cherrypicking robot</legend>
-    <table cellspacing='0' cellpadding='0'>
-      <tr>
-        <td>Source Plates Type:</td>
-        <td><%= select_tag "plate_type", options_for_select(Plate::SOURCE_PLATE_TYPES) %></td>
-      </tr>
-      <tr>
-        <td>Picking Robot:</td>
-        <td><%= select("robot", "0", @robots.collect {|p| [ p.name, p.id ] })  %></td>
-      </tr>
-    </table>
+	<fieldset>
+		<legend>Cherrypicking robot</legend>
+		<table cellspacing='0' cellpadding='0'>
+			<tr>
+				<td>Source Plates Type:</td>
+				<td><%= select_tag "plate_type", options_for_select(PlatePurpose.cherrypickable_as_source.map(&:name)) %></td>
+			</tr>
+			<tr>
+				<td>Picking Robot:</td>
+				<td>
+				<% unless @robots.nil? -%>
+					<%= select("robot", "0", @robots.collect {|p| [ p.name, p.id ] })  %>
+				<% end -%>
+				</td>
+			</tr>
+		</table>
   </fieldset>
 
   <h2>Step 3</h2>

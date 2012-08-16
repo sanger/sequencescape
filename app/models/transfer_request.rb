@@ -29,6 +29,10 @@ class TransferRequest < Request
       transitions :to => :cancelled, :from => [:started]
     end
 
+    aasm_event :cancel_before_started do
+      transitions :to => :cancelled, :from => [:pending]
+    end
+
     aasm_event :detach do
       transitions :to => :pending, :from => [:pending]
     end

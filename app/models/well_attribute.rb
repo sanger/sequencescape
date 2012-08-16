@@ -1,8 +1,12 @@
 class WellAttribute < ActiveRecord::Base
   include AASM
-  belongs_to :assets
+
+	belongs_to :well, :inverse_of => :well_attribute
 
   serialize :gender_markers
+  def gender_markers_string
+    gender_markers.try(:to_s)
+  end
 
   aasm_column :pico_pass
   

@@ -16,7 +16,7 @@ class Well < Aliquot::Receptacle
   contained_by :plate
   delegate :location, :to => :container , :allow_nil => true
   @@per_page = 500
-  has_one :well_attribute
+  has_one :well_attribute, :inverse_of => :well
 
   named_scope :pooled_as_target_by, lambda { |type|
     {

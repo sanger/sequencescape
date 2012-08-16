@@ -61,6 +61,10 @@ development:
       authorisation_code: development
 
 test: &TEST
+    amqp:
+      url: amqp://localhost:5672/
+      persistent: false
+      burst_size: 1000
     accession_login: "accession_login"
     accession_url: http://localhost:9999/accession_service/
     accession_view_url: http://localhost:9999/view_accession/

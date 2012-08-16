@@ -502,7 +502,7 @@ end
 
 SequencingPipeline.create!(:name => 'HiSeq Cluster formation PE (spiked in controls)', :request_types => [ cluster_formation_pe_request_type ]) do |pipeline|
   pipeline.asset_type      = 'Lane'
-  pipeline.sorter          = 8
+  pipeline.sorter          = 9
   pipeline.automated       = false
   pipeline.active          = true
   pipeline.group_by_parent = false

@@ -14,7 +14,7 @@ private
     association_name = "#{ as_name }_metadata".underscore.to_sym 
     class_name = "#{ self.name}::Metadata"
 
-    has_one(association_name, { :class_name => class_name, :dependent => :destroy, :validate => true, :autosave => true }.merge(options).merge(:foreign_key => "#{as_name}_id"))
+    has_one(association_name, { :class_name => class_name, :dependent => :destroy, :validate => true, :autosave => true }.merge(options).merge(:foreign_key => "#{as_name}_id", :inverse_of => :owner))
     accepts_nested_attributes_for(association_name, :update_only => true)
     named_scope :"include_#{ association_name }", { :include => association_name }
 
@@ -48,11 +48,14 @@ private
     metadata = Class.new( self == as_class ? Base : as_class::Metadata)
     metadata.instance_eval(&block) if block_given?
 
+    as_name = as_class.name.demodulize.underscore
+
     # Ensure that it is correctly associated back to the owner model and that the table name
     # is correctly set.
     metadata.instance_eval %Q{
       set_table_name('#{table_name}')
-      belongs_to :#{ as_class.name.demodulize.underscore }, :class_name => #{ self.name.inspect }, :validate => false, :autosave => false
+      belongs_to :#{as_name}, :class_name => #{ self.name.inspect }, :validate => false, :autosave => false
+      belongs_to :owner, :foreign_key => :#{as_name}_id, :class_name => #{self.name.inspect}, :validate => false, :autosave => false, :inverse_of => :#{as_name}_metadata
     }
 
     # Finally give it a name!

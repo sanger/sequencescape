@@ -29,20 +29,19 @@ class Api::WellIO < Api::Base
       json_attributes["genotyping_status"]       = object.genotyping_status
       json_attributes["genotyping_snp_plate_id"] = sample.genotyping_snp_plate_id
     end
+  end
 
-    if object.respond_to?(:well_attribute)
-      well_attributes = object.well_attribute
-      json_attributes["gel_pass"]         = well_attributes.gel_pass
-      json_attributes["concentration"]    = well_attributes.concentration
-      json_attributes["current_volume"]   = well_attributes.current_volume
-      json_attributes["buffer_volume"]    = well_attributes.buffer_volume
-      json_attributes["requested_volume"] = well_attributes.requested_volume
-      json_attributes["picked_volume"]    = well_attributes.picked_volume
-      json_attributes["pico_pass"]        = well_attributes.pico_pass
-      json_attributes["measured_volume"]  = well_attributes.measured_volume
-      json_attributes["sequenom_count"]   = well_attributes.sequenom_count
-      json_attributes["gender_markers"]   = well_attributes.gender_markers.try(:to_s)
-    end
+  with_association(:well_attribute) do
+    map_attribute_to_json_attribute(:gel_pass, 'gel_pass')
+    map_attribute_to_json_attribute(:concentration, 'concentration')
+    map_attribute_to_json_attribute(:current_volume, 'current_volume')
+    map_attribute_to_json_attribute(:buffer_volume, 'buffer_volume')
+    map_attribute_to_json_attribute(:requested_volume, 'requested_volume')
+    map_attribute_to_json_attribute(:picked_volume, 'picked_volume')
+    map_attribute_to_json_attribute(:pico_pass, 'pico_pass')
+    map_attribute_to_json_attribute(:measured_volume, 'measured_volume')
+    map_attribute_to_json_attribute(:sequenom_count, 'sequenom_count')
+    map_attribute_to_json_attribute(:gender_markers_string, 'gender_markers')
   end
 
   with_association(:map) do
