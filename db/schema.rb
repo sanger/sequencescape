@@ -1,4 +1,4 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file,
+# This file is auto-generated from the current state of the database. Instead of editing this file, 
 # please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120801142402) do
+ActiveRecord::Schema.define(:version => 20120802140342) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -486,7 +486,7 @@ ActiveRecord::Schema.define(:version => 20120801142402) do
 
   add_index "lab_events", ["batch_id"], :name => "index_lab_events_on_batch_id"
   add_index "lab_events", ["created_at"], :name => "index_lab_events_on_created_at"
-  add_index "lab_events", ["description", "eventful_type"], :name => "index_lab_events_find_flowcell", :length => {"description"=>"20", "eventful_type"=>nil}
+  add_index "lab_events", ["description", "eventful_type"], :name => "index_lab_events_find_flowcell", :length => {"eventful_type"=>nil, "description"=>"20"}
   add_index "lab_events", ["eventful_id"], :name => "index_lab_events_on_eventful_id"
   add_index "lab_events", ["eventful_type"], :name => "index_lab_events_on_eventful_type"
 
@@ -1049,44 +1049,44 @@ ActiveRecord::Schema.define(:version => 20120801142402) do
   add_index "studies", ["user_id"], :name => "index_projects_on_user_id"
 
   create_table "study_metadata", :force => true do |t|
-    t.integer "study_id"
-    t.string  "old_sac_sponsor"
-    t.text    "study_description"
-    t.string  "contaminated_human_dna"
-    t.string  "study_project_id"
-    t.text    "study_abstract"
-    t.string  "study_study_title"
-    t.string  "study_ebi_accession_number"
-    t.string  "study_sra_hold"
-    t.string  "contains_human_dna"
-    t.string  "study_name_abbreviation"
-    t.string  "reference_genome_old"
-    t.string  "data_release_strategy"
-    t.string  "data_release_standard_agreement"
-    t.string  "data_release_timing"
-    t.string  "data_release_delay_reason"
-    t.string  "data_release_delay_other_comment"
-    t.string  "data_release_delay_period"
-    t.string  "data_release_delay_approval"
-    t.string  "data_release_delay_reason_comment"
-    t.string  "data_release_prevention_reason"
-    t.string  "data_release_prevention_approval"
-    t.string  "data_release_prevention_reason_comment"
-    t.integer "snp_study_id"
-    t.integer "snp_parent_study_id"
-    t.boolean "bam",                                    :default => true
-    t.integer "study_type_id"
-    t.integer "data_release_study_type_id"
-    t.integer "reference_genome_id",                    :default => 1
-    t.string  "array_express_accession_number"
-    t.text    "dac_policy"
-    t.string  "ega_policy_accession_number"
-    t.string  "ega_dac_accession_number"
-    t.string  "commercially_available",                 :default => "No"
-    t.integer "faculty_sponsor_id"
-    t.float   "number_of_gigabases_per_sample"
-    t.string  "hmdmc_approval_number"
-    t.string  "remove_x_and_autosomes",                 :default => "No", :null => false
+    t.integer  "study_id"
+    t.string   "old_sac_sponsor"
+    t.text     "study_description"
+    t.string   "contaminated_human_dna"
+    t.string   "study_project_id"
+    t.text     "study_abstract"
+    t.string   "study_study_title"
+    t.string   "study_ebi_accession_number"
+    t.string   "study_sra_hold"
+    t.string   "contains_human_dna"
+    t.string   "study_name_abbreviation"
+    t.string   "reference_genome_old"
+    t.string   "data_release_strategy"
+    t.string   "data_release_standard_agreement"
+    t.string   "data_release_timing"
+    t.string   "data_release_delay_reason"
+    t.string   "data_release_delay_other_comment"
+    t.string   "data_release_delay_period"
+    t.string   "data_release_delay_approval"
+    t.string   "data_release_delay_reason_comment"
+    t.string   "data_release_prevention_reason"
+    t.string   "data_release_prevention_approval"
+    t.string   "data_release_prevention_reason_comment"
+    t.integer  "snp_study_id"
+    t.integer  "snp_parent_study_id"
+    t.boolean  "bam",                                    :default => true
+    t.integer  "study_type_id"
+    t.integer  "data_release_study_type_id"
+    t.integer  "reference_genome_id",                    :default => 1
+    t.string   "array_express_accession_number"
+    t.text     "dac_policy"
+    t.string   "ega_policy_accession_number"
+    t.string   "ega_dac_accession_number"
+    t.string   "commercially_available",                 :default => "No"
+    t.integer  "faculty_sponsor_id"
+    t.float    "number_of_gigabases_per_sample"
+    t.string   "hmdmc_approval_number"
+    t.string   "remove_x_and_autosomes",                 :default => "No", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
