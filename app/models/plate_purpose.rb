@@ -91,7 +91,7 @@ class PlatePurpose < Purpose
 
   def self.stock_plate_purpose
     # IDs copied from SNP
-    @stock_plate_purpose ||= PlatePurpose.find(2)
+    PlatePurpose.find(2)
   end
 
   def create!(*args, &block)

@@ -49,7 +49,7 @@ class RequestType < ActiveRecord::Base
 
   delegate :delegate_validator, :to => :request_class
 
-  named_scope :applicable_for_asset, lambda { |asset| 
+  named_scope :applicable_for_asset, lambda { |asset|
     {
       :conditions => [
         'asset_type = ?
@@ -95,15 +95,15 @@ class RequestType < ActiveRecord::Base
   end
 
   def self.dna_qc
-    @dna_qc ||= find_by_key("dna_qc")
+    find_by_key("dna_qc")
   end
 
   def self.genotyping
-    @genotyping ||= find_by_key("genotyping")
+    find_by_key("genotyping")
   end
 
   def self.transfer
-    @transfer ||= find_by_key("transfer")
+    find_by_key("transfer")
   end
 
   def extract_metadata_from_hash(request_options)
