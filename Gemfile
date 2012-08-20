@@ -19,6 +19,7 @@ gem "spreadsheet"
 gem "will_paginate", "~>2.3.15"
 gem 'net-ldap'
 gem 'carrierwave', "~>0.4.0"
+gem 'jruby-openssl'
 
 # This was once a plugin, now it's a gem:
 gem 'catch_cookie_exception', :git => 'git+ssh://git@github.com/mhartl/catch_cookie_exception.git'
