@@ -21,4 +21,17 @@ class IlluminaB::StockTubePurpose < Tube::Purpose
   def name_for_child_tube(tube)
     tube.name
   end
+
+  def stock_plate(tube)
+    return nil if tube.requests_as_target.empty?
+
+    assets = [ tube.requests_as_target.first.asset ]
+    until assets.empty?
+      asset = assets.shift
+      return asset.plate if asset.is_a?(Well) and asset.plate.stock_plate?
+      assets.push(asset.requests_as_target.first.asset).compact
+    end
+
+    raise "Cannot locate stock plate for #{tube.display_name.inspect}"
+  end
 end
