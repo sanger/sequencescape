@@ -47,17 +47,24 @@ class Transfer::BetweenPlateAndTubes < Transfer
     {
       :uuid    => tube.uuid,
       :name    => tube.name,
-      :state   => tube.state,
-      :barcode => {
-        :number          => tube.barcode,
-        :prefix          => tube.barcode_prefix.prefix,
-        :two_dimensional => tube.two_dimensional_barcode,
-        :ean13           => tube.ean13_barcode,
-        :type            => tube.barcode_type
-      }
-    }
+      :state   => tube.state
+    }.tap do |details|
+      barcode_to_hash(tube) { |s| details[:barcode] = s }
+      barcode_to_hash(tube.stock_plate) { |s| details[:stock_plate] = { :barcode => s } }
+    end
   end
   private :tube_to_hash
+
+  def barcode_to_hash(barcoded)
+    yield({
+      :number          => barcoded.barcode,
+      :prefix          => barcoded.barcode_prefix.prefix,
+      :two_dimensional => barcoded.two_dimensional_barcode,
+      :ean13           => barcoded.ean13_barcode,
+      :type            => barcoded.barcode_type
+    }) if barcoded.present?
+  end
+  private :barcode_to_hash
 
   #--
   # The source plate wells need to be translated back to the stock plate wells, which simply
