@@ -54,4 +54,6 @@ module Pulldown::PlatePurposes
     'ISC lib PCR-XP',
     'ISC cap lib PCR-XP'
   ]
+
+  STOCK_PLATE_PURPOSES = ['WGS stock DNA','SC stock DNA','ISC stock DNA']
 end
