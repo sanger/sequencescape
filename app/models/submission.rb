@@ -98,9 +98,10 @@ class Submission < ActiveRecord::Base
       orders.each do |order|
         order.build_request_graph!(multiplexing_assets) { |a| multiplexing_assets ||= a }
       end
-    end
 
-    errors.add("No requests  have been created for this submission") if !self.requests.present? 
+      errors.add(:requests, "No requests have been created for this submission") if requests.empty?
+      raise ActiveRecord::RecordInvalid, self if errors.present?
+    end
 
   end
   alias_method(:create_requests, :process_submission!)
