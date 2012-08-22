@@ -77,7 +77,7 @@ WHERE c.container_id=?
       links_data.each do |c|
         AssetLink.create!(
           :direct => true,
-          :count => 1,
+          #:count => 1, Huh?
           :ancestor_id => c.first,
           :descendant_id => c.last
           )

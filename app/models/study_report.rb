@@ -8,7 +8,7 @@ class StudyReport < ActiveRecord::Base
 
   named_scope :for_study, lambda { |study| { :conditions => { :study_id => study.id } } }
   named_scope :for_user, lambda { |user| { :conditions => { :user_id => user.id } } }
-  named_scope :without_files, lambda { select_without_file_columns_for(:report) }
+  #named_scope :without_files, lambda { select_without_file_columns_for(:report) }
 
   has_uploaded :report, {:serialization_column => "report_filename"}
 
