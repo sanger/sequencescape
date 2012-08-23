@@ -3,9 +3,13 @@ require 'test_helper'
 class AmqpObserverTest < ActiveSupport::TestCase
   OWNED_CLASSES = { WellAttribute => :well, Metadata::Base => :owner }
 
+  class AmqpObserver
+    include ::AmqpObserver::Implementation
+  end
+
   context AmqpObserver do
     setup do
-      @target = AmqpObserver.instance.tap do |target|
+      @target = AmqpObserver.new.tap do |target|
         def target.activate_exchange(&block)
           yield
         end
