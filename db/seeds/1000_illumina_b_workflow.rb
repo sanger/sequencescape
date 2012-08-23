@@ -55,7 +55,7 @@ ActiveRecord::Base.transaction do
       SubmissionTemplate.new_from_submission(
         "Cherrypick for pulldown - #{request_type_name} - #{sequencing_request_type.name}",
         submission
-      ).tap { |template| template.visible = false }.save!
+      ).tap { |template| template.superceded_by_unknown! }.save!
 
       SubmissionTemplate.new_from_submission("Illumina-B - Cherrypick for pulldown - #{request_type_name} - #{sequencing_request_type.name}", submission).save!
     end

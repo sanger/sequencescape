@@ -1182,10 +1182,11 @@ ActiveRecord::Schema.define(:version => 20121011104935) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "product_line_id"
-    t.boolean  "visible",               :default => true, :null => false
+    t.integer  "superceded_by_id",      :default => -1, :null => false
+    t.datetime "superceded_at"
   end
 
-  add_index "submission_templates", ["name"], :name => "index_submission_templates_on_name"
+  add_index "submission_templates", ["name", "superceded_by_id"], :name => "name_and_superceded_by_unique_idx", :unique => true
 
   create_table "submission_workflows", :force => true do |t|
     t.string   "key",        :limit => 50
