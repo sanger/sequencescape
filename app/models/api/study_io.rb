@@ -71,7 +71,7 @@ class Api::StudyIO < Api::Base
     with_association(:data_release_study_type, :lookup_by => :name ) do
       map_attribute_to_json_attribute(:name                    , 'data_release_sort_of_study')
     end
-    map_attribute_to_json_attribute(:remove_x_and_autosomes)
+    map_attribute_to_json_attribute(:remove_x_and_autosomes?, 'remove_x_and_autosomes')
 
     map_attribute_to_json_attribute(:data_release_strategy)
     map_attribute_to_json_attribute(:ega_dac_accession_number)

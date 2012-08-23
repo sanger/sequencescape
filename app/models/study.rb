@@ -266,6 +266,10 @@ class Study < ActiveRecord::Base
 
   end
   class Metadata
+    def remove_x_and_autosomes?
+      remove_x_and_autosomes == YES
+    end
+
     def managed?
       self.data_release_strategy == DATA_RELEASE_STRATEGY_MANAGED
     end
