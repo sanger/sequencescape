@@ -1,49 +1,49 @@
-#!/usr/bin/env jruby
+#!/usr/bin/env ruby
 
 # Copyright (c) 2006 by Zak Mandhro
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy of this software
 # and associated documentation files (the "Software"), to deal in the Software without restriction,
 # including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
 # and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
 # subject to the following conditions:
-# 
-# The above copyright notice and this permission notice shall be included in all copies or substantial 
+#
+# The above copyright notice and this permission notice shall be included in all copies or substantial
 # portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
-# LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO 
+# LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
 # EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 # USE OR OTHER DEALINGS IN THE SOFTWARE.
-# 
+#
 # = Rails Plug-in Package Task
-# 
+#
 # RailsPluginPackageTask is a rake task designed to automate the publishing of
 # Ruby on Rails plug-ins. The Rails plug-in installer _RecursiveHTTPFetcher_ makes
 # certain assumptions about the web servers that does not hold through from
 # server to server, for example:
-# 
+#
 # * Server generates an index page with links
 # * All links to plug-in files are relative links
 # * Folder links end with a forward slash (used to recurse)
-#  
+#
 # RubyForge web server is an example of where these assupmtions don't hold
 # true. As a result, you can not simply copy your files to a web server
 # and expect Rails HTTP plugin installer to just work.
-# 
+#
 # This Rake task helps fill the gap by complying to the plug-in scripts assumptions.
 # Following the Rake package task conventions, it defines the "rails_plugin" task
 # that recurses through your _package_files_, generates compliant index.html for
 # each folder (that contains a file), and creates a directory structure that you
 # can publish as a set for your plugin.
-# 
+#
 # = Example
-# 
+#
 # The following example uses the Rake::RailsPluginPackageTask to create
 # the package. It then uses the Rake::SshDirPublisher to publish the plugin
 # directory to RubyForge.
-# # 
+# #
 #    Rake::RailsPluginPackageTask.new(ProjectInfo[:name], ProjectInfo[:version]) do |p|
 #      p.package_files = PluginPackageFiles
 #      p.plugin_files = FileList["rails_plugin/**/*"]
