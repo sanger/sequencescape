@@ -21,7 +21,7 @@ module Core::Service::ContentFiltering
       @json   = content.blank? ? {} : JSON.parse(content)
     ensure
       # It's important to ensure that the body IO object has been rewound to the start for other requests.
-      request.body.seek(0)
+      request.body.rewind
     end
 
     def process_json_response_body
