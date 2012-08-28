@@ -1,12 +1,11 @@
 require 'control_request_type_creation'
 
-Pipeline.send(:include, ControlRequestTypeCreation)
-
 class CreateIlluminaBMxLibPrepRequestTypes < ActiveRecord::Migration
-
   REQUEST_INFORMATION_TYPES = Hash[RequestInformationType.all.map { |t| [ t.key, t ] }].freeze
 
   def self.create_request_information_types(pipeline, *keys)
+    Pipeline.send(:include, ControlRequestTypeCreation)
+
     PipelineRequestInformationType.create!(
       keys.map do |k|
       {
