@@ -14,7 +14,7 @@ Feature: Bulk Submission
     And I have an "active" study called "abc123_study"
     And I have a project called "Test project"
     # And the study "abc123_study" has an asset group called "assetgroup123"
-    And the study "abc123_study" has an asset group of 10 samples called "assetgroup123"
+    And the study "abc123_study" has an asset group of 10 samples in "wells" called "assetgroup123"
     # And I have a sample tube called "testing123" registered under study
     And study "abc123_study" has assets registered
    # And the sample tube "testing123" is in the asset group "assetgroup123"
