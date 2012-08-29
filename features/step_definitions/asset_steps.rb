@@ -12,7 +12,8 @@ Given /^(?:I have )?a (sample|library) tube called "([^\"]+)"$/ do |tube_type, n
 end
 
 Given /^(?:I have )?a well called "([^\"]+)"$/ do |name|
-  Factory(:well, :name => name)
+  sample = Factory(:sample)
+  Factory(:well, :name => name, :sample => sample)
 end
 
 Then /^the name of (the .+) should be "([^\"]+)"$/ do |asset, name|

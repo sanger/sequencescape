@@ -14,7 +14,7 @@ Feature: Bulk Submission
     And I have an "active" study called "abc123_study"
     And I have a project called "Test project"
     # And the study "abc123_study" has an asset group called "assetgroup123"
-    And the study "abc123_study" has an asset group of 10 samples in "wells" called "assetgroup123"
+    And the study "abc123_study" has an asset group of 10 samples in "well" called "assetgroup123"
     # And I have a sample tube called "testing123" registered under study
     And study "abc123_study" has assets registered
    # And the sample tube "testing123" is in the asset group "assetgroup123"
@@ -44,8 +44,8 @@ Feature: Bulk Submission
     Then I should see "There was a quota problem"
 
   Scenario: Uploading a valid file with bait library specified should set the bait library name
-    Given I have a sample tube called "testing123"
-      And the sample in sample tube "testing123" is registered under the study "abc123_study"
+    Given I have a well called "testing123"
+      And the sample in well "testing123" is registered under the study "abc123_study"
     When I upload a file with 2 valid SC submissions
     Then I should see "Your submissions:"
      And there should be an order with the bait library name set to "Bait library 1"
