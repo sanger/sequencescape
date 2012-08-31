@@ -1,4 +1,4 @@
 compat.version=1.8
 cext.enabled=false
-objectspace.enabled=false
+objectspace.enabled=true
 thread.pooling=true
