@@ -1,6 +1,0 @@
-A <%= @exception.class %> occurred in <%= @failing_controller.controller_name %>#<%= @failing_controller.action_name %>:
-
-  <%= @exception.message %>
-  <%= @backtrace.first %>
-
-<%= @sections.map { |section| render_section(section) }.join %>
