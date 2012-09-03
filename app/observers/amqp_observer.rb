@@ -6,7 +6,8 @@ class AmqpObserver < ActiveRecord::Observer
     :project,
     :asset, :asset_link, :well_attribute,
     Metadata::Base,
-    :billing_event
+    :billing_event,
+    :batch, :batch_request
   )
 
   # Ensure we capture records being saved as well as deleted.
