@@ -16,7 +16,7 @@ class RequestTest < ActiveSupport::TestCase
         #@submission  = Factory(:order_with_submission, :request_types => [@cherrypick_request_type, @genotyping_request_type].map(&:id)).submission
         @submission  = Factory::submission(:request_types => [@cherrypick_request_type, @genotyping_request_type].map(&:id), :asset_group_name => 'to avoid asset errors')
         @item = Factory :item, :submission => @submission
-        
+
         @genotype_pipeline = Factory :pipeline, :name =>"genotyping pipeline", :request_types => [ @genotyping_request_type ]
         @cherrypick_pipeline = Factory :pipeline, :name => "cherrypick pipeline", :request_types => [ @cherrypick_request_type ], :next_pipeline_id => @genotype_pipeline.id, :asset_type => 'LibraryTube'
 
@@ -76,6 +76,8 @@ class RequestTest < ActiveSupport::TestCase
        end
 
        should "return same properties" do
+         @request.reload
+         @new_request.reload
          original_attributes = @request.request_metadata.attributes.merge('id' => nil, 'request_id' => nil)
          copied_attributes   = @new_request.request_metadata.attributes.merge('id' => nil, 'request_id' => nil)
          assert_equal original_attributes, copied_attributes
