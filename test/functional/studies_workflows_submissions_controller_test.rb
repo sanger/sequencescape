@@ -81,8 +81,8 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
             @study.study_metadata.study_ebi_accession_number = 'Test'
             @study.study_metadata.data_release_strategy = 'managed'
             @study.study_metadata.study_type = StudyType.find_by_name("Not specified")
-            @study.study_metadata.data_release_study_type = DataReleaseStudyType.find_by_name('genomic sequencing') 
-            
+            @study.study_metadata.data_release_study_type = DataReleaseStudyType.find_by_name('genomic sequencing')
+
 
             @workflow = Factory :submission_workflow
             @submission_template = Factory :submission_template
@@ -95,14 +95,14 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
             assert_template :new
           end
         end
-      
+
         context "when study is inactive" do
           setup do
             @study = Factory(:study, :state => "inactive")
             @workflow = Factory :submission_workflow
             get :new, :study_id => @study.id, :workflow_id => @workflow.id
           end
-    
+
           should_redirect_to("studies") {studies_url}
         end
       end
@@ -148,15 +148,15 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
           end
 
           # NOTE: 'data release is required on a study, so it can't not be filled in'
-          
+
           context "where data release is set to open" do
             setup do
               @study.study_metadata.data_release_study_type.name = 'genomic sequencing'
               @study.study_metadata.data_release_strategy        = 'open'
               @study.study_metadata.data_release_timing          = 'standard'
               @study.study_metadata.study_type = StudyType.find_by_name("Not specified")
-              @study.study_metadata.data_release_study_type = DataReleaseStudyType.find_by_name('genomic sequencing') 
-              
+              @study.study_metadata.data_release_study_type = DataReleaseStudyType.find_by_name('genomic sequencing')
+
             end
             context "study has accession number" do
               setup do
@@ -167,7 +167,7 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
                 setup do
                   create_and_submit  :order => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name, :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
                 end
-                
+
                 should "not have a successful submission" do
                   assert_contains(@controller.action_flash[:error], 'Study and all samples must have accession numbers')
                   assert_equal @submission_count, Submission.count
@@ -214,8 +214,8 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
               @study.study_metadata.data_release_prevention_approval = 'Yes'
               @study.study_metadata.data_release_prevention_reason_comment = 'It just is ok?'
               @study.study_metadata.study_type = StudyType.find_by_name("Not specified")
- 
-              
+
+
               @study.save!
             end
             context "and study has accession number" do
@@ -286,7 +286,7 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
           create_and_submit  :order => {}, :asset_group => @asset_group.id.to_s, :project_name => @project.name, :study_id => @study.id, :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
         end
         should "not have a successful submission" do
-          assert_contains(@controller.action_flash.values, 'Insufficient quota for test type')
+          assert_contains(@controller.action_flash.values, 'Insufficient quota for test type (require 3 but only 0 remaining)')
           assert_equal @submission_count, Submission.count
         end
       end
