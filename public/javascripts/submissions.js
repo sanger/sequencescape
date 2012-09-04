@@ -12,7 +12,7 @@
       // This is not very pretty but it is IE safe...
       var validationResult = true;
 
-      this.find('input').each(function(element){ 
+      this.find('input').each(function(element){
 
         if (!$(this).val().match(/^\d+$/)){
           validationResult = false;
@@ -366,8 +366,9 @@
   var assetSelectorToggle = function(event) {
     var currentAssetsPanel      = $(event.target).closest('.assets');
 
-    var nextAssetPanel =
-      currentAssetsPanel.siblings(':hidden').first();
+    var href = $(event.target)[0].href;
+    var hash = href.substr(href.indexOf('#'));
+    var nextAssetPanel = $(hash);
 
     currentAssetsPanel.fadeOut(function(){
       nextAssetPanel.find('input, textarea, select').val('');
