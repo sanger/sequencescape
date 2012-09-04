@@ -40,14 +40,21 @@ class Map < ActiveRecord::Base
     map = Map.find(current_map_id)
     Map.next_vertical_map_position_from_description(map.description,map.asset_size)
   end
-  
+
   def self.next_vertical_map_position_from_description(description,asset_size)
     map_position = Map.description_to_vertical_plate_position(description,asset_size)
     return nil if map_position +1 >  asset_size
     horiz_description = Map.vertical_plate_position_to_description(map_position +1,asset_size)
     Map.find_by_description_and_asset_size(horiz_description,asset_size)
   end
-  
+
+  def self.descriptions_for_row(row)
+    wells = (1..Map.plate_width(384)).map {|column| "#{row}#{column}"}
+  end
+
+  def self.descriptions_for_column(column)
+    (0...Map.plate_length(384)).map {|row| location_from_row_and_column(row,column)}
+  end
 
   def self.map_96wells
     Map.all(:conditions => {:asset_size => 96})

@@ -81,6 +81,11 @@ class Barcode
     human_prefix = ((prefix.to_i/27)+64).chr + ((prefix.to_i%27)+64).chr
   end
 
+  def self.human_to_machine_barcode(human_barcode)
+    human_prefix, bcode, human_suffix = split_human_barcode(human_barcode)
+    calculate_barcode(human_prefix,bcode.to_i)
+  end
+
   def self.barcode_to_human(code)
     bcode = nil
     prefix, number, check = self.split_barcode(code)

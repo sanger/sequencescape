@@ -21,6 +21,7 @@ class Aliquot < ActiveRecord::Base
     # Named scopes for the future
     named_scope :include_aliquots, :include => { :aliquots => [ :sample, :tag, :bait_library ] }
     named_scope :with_aliquots, :joins => :aliquots
+    named_scope :filled, :joins => :aliquots, :conditions => ['aliquots.id IS NOT NULL']
 
     # Provide some named scopes that will fit with what we've used in the past
     named_scope :with_sample_id, lambda { |id|     { :conditions => { :aliquots => { :sample_id => Array(id)               } }, :joins => :aliquots } }
@@ -139,7 +140,7 @@ class Aliquot < ActiveRecord::Base
   # It may have a bait library but not necessarily.
   belongs_to :bait_library
 
-  # An aliquot can represent a library, which is a processed sample that has been fragmented.  In which case it 
+  # An aliquot can represent a library, which is a processed sample that has been fragmented.  In which case it
   # has a receptacle that held the library aliquot and has an insert size describing the fragment positions.
   class InsertSize < Range
     alias_method :from, :first

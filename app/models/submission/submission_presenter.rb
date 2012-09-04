@@ -70,6 +70,7 @@ class SubmissionCreater < PresenterSkeleton
     :id,
     :template_id,
     :sample_names_text,
+    :barcodes_wells_text,
     :study_id,
     :submission_id,
     :project_name,
@@ -194,7 +195,7 @@ class SubmissionCreater < PresenterSkeleton
   end
 
   def order_assets
-    input_methods = [ :asset_group_id, :sample_names_text ].select { |input_method| send(input_method).present? }
+    input_methods = [ :asset_group_id, :sample_names_text, :barcodes_wells_text ].select { |input_method| send(input_method).present? }
 
     raise InvalidInputException, "No Samples found" if input_methods.empty?
     raise InvalidInputException, "Samples cannot be added from multiple sources at the same time." unless input_methods.size == 1
@@ -209,8 +210,12 @@ class SubmissionCreater < PresenterSkeleton
             find_samples_from_text(sample_names_text)
           )
         }
+      when :barcodes_wells_text then
+        {
+          :assets => find_assets_from_text(barcodes_wells_text)
+        }
 
-      else raise StandardError, "No way to determine assets for input choice #{input_choice.first}"
+      else raise StandardError, "No way to determine assets for input choice #{input_methods.first}"
     end
   end
 
@@ -243,6 +248,37 @@ class SubmissionCreater < PresenterSkeleton
     return samples
   end
   private :find_samples_from_text
+
+  def find_assets_from_text(assets_text)
+    plates_wells = assets_text.lines.map(&:chomp).reject(&:blank?).map(&:strip)
+
+    assets = plates_wells.map do |plate_wells|
+      plate_barcode, well_locations = plate_wells.split(':')
+
+      plate = Plate.find_from_machine_barcode(Barcode.human_to_machine_barcode(plate_barcode))
+      well_array = (well_locations||[]).split(',').reject(&:blank?).map(&:strip)
+
+      find_wells_in_array(plate,well_array)
+    end.flatten
+  end
+  private :find_assets_from_text
+
+  def find_wells_in_array(plate,well_array)
+    return plate.wells.filled if well_array.empty?
+    well_array.map do |map_description|
+      case map_description
+      when /^[a-z,A-Z]+[0-9]+$/ # A well
+        plate.find_well_by_name(map_description)
+      when /^[a-z,A-Z]$/ # A row
+        plate.wells.filled.in_row(map_description)
+      when /^[0-9]+$/ # A column
+        plate.wells.filled.in_column(map_description)
+      else
+        raise StandardError "#{map_description} is no a valid well location"
+      end
+    end
+  end
+  private :find_wells_in_array
 
   def study
     @study ||= (Study.find(@study_id) if @study_id.present?)

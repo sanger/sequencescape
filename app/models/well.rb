@@ -37,6 +37,9 @@ class Well < Aliquot::Receptacle
   named_scope :in_inverse_column_major_order, { :joins => :map, :order => 'column_order DESC' }
   named_scope :in_inverse_row_major_order, { :joins => :map, :order => 'row_order DESC' }
 
+  named_scope :in_column, lambda {|col| {:joins => :map, :conditions => {:maps => {:description => Map.descriptions_for_column(col) }}}}
+  named_scope :in_row,    lambda {|row| {:joins => :map, :conditions => {:maps => {:description => Map.descriptions_for_row(row) }}}}
+
   after_create :create_well_attribute_if_not_exists
 
   named_scope :with_blank_samples, { :conditions => { :aliquots => { :samples => { :empty_supplier_sample_name => true } } }, :joins => { :aliquots => :sample } }
