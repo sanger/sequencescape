@@ -260,7 +260,7 @@ Factory.define :request, :parent => :request_without_assets do |request|
   request.target_asset { |asset| asset.association(:library_tube) }
 end
 
-Factory.define :sequencing_request, :parent => :request_without_assets do |request|
+Factory.define :request_with_sequencing_request_type, :parent => :request_without_assets do |request|
   # the sample should be setup correctly and the assets should be valid
   request.asset            { |asset|    asset.association(:library_tube)  }
   request.request_metadata { |metadata| metadata.association(:request_metadata_for_standard_sequencing)}
