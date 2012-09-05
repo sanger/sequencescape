@@ -48,13 +48,13 @@ Feature: Upload Pico Green concentration results from the Pico Green application
     Given I have an active study called "Test study"
     Given plate "1221234567841" is part of study "Test study"
     Given I am on the Qc reports homepage
-		Then I should see "New report for"
-		When I select "Test study" from "Study"
+    Then I should see "New report for"
+    When I select "Test study" from "Study"
     And I press "Submit"
-		Given 1 pending delayed jobs are processed
-		And I am on the Qc reports homepage
-		Then I follow "Download report for Test study"
-	  Then I should see the report for "Test study":
+    Given 1 pending delayed jobs are processed
+    And I am on the Qc reports homepage
+    Then I follow "Download report for Test study"
+    Then I should see the report for "Test study":
     | Pico     | Well | Pico date  |
     | Pass     | A1   | 2011-02-14 |
     | ungraded | A2   |            |

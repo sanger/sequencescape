@@ -22,20 +22,20 @@ Feature: The Tecan file has the wrong buffer volumes, defaulting to 13 total vol
     Given plate "1220000010734" has concentration and volume results
     Given plate "1220000001831" has concentration and volume results
     Given plate "1220000005877" has concentration and volume results
-  	When I follow "Start batch"
-  	When I select "testtemplate" from "Plate Template"
+    When I follow "Start batch"
+    When I select "testtemplate" from "Plate Template"
 
 
   Scenario: volume of 65 is required
     When I fill in "Volume Required" with "65"
     When I press "Next step"
-  	When I press "Next step"
-  	When I select "Infinium 670k" from "Plate Purpose"
-  	And I press "Next step"
-  	When I select "Genotyping freezer" from "Location"
-  	And I press "Next step"
-  	When I press "Release this batch"
-  	Given the last batch has a barcode of "550000555760"
+    When I press "Next step"
+    When I select "Infinium 670k" from "Plate Purpose"
+    And I press "Next step"
+    When I select "Genotyping freezer" from "Location"
+    And I press "Next step"
+    When I press "Release this batch"
+    Given the last batch has a barcode of "550000555760"
     And user "user" has a user barcode of "ID41440E"
 
     Given I am on the robot verification page

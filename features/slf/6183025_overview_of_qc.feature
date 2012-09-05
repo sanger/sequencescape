@@ -29,12 +29,12 @@ Feature: display an overview of all plates going through QC in SLF
        | Study      | Stock   | QC started        | Pico Analysed | Gel Analysed | Sequenom Stamp |
        | Test Study | 1234567 | 2011-02-14        |               |              |                |
      Given I am on the Qc reports homepage
- 		 When I select "Test Study" from "Study"
+      When I select "Test Study" from "Study"
      And I press "Submit"
- 		 Given 1 pending delayed jobs are processed
- 		 And I am on the Qc reports homepage
- 		 When I follow "Download report for Test Study"
-  	 Then I should see the report for "Test Study":
+      Given 1 pending delayed jobs are processed
+      And I am on the Qc reports homepage
+      When I follow "Download report for Test Study"
+     Then I should see the report for "Test Study":
        | Well | QC started date |
        | A1   | 2011-02-14      |
 
@@ -120,12 +120,12 @@ Feature: display an overview of all plates going through QC in SLF
      | Test Study | 1234567 | 2011-02-14        | 2011-02-14    | 2011-02-14   | 2011-02-14     |
 
      Given I am on the Qc reports homepage
- 		 When I select "Test Study" from "Study"
+      When I select "Test Study" from "Study"
      And I press "Submit"
- 		 Given 2 pending delayed jobs are processed
- 		 And I am on the Qc reports homepage
- 		 When I follow "Download report for Test Study"
-  	 Then I should see the report for "Test Study":
+      Given 2 pending delayed jobs are processed
+      And I am on the Qc reports homepage
+      When I follow "Download report for Test Study"
+     Then I should see the report for "Test Study":
        | Well | QC started date | Seq stamp date |
        | A1   | 2011-02-14      | 2011-02-14     |
 

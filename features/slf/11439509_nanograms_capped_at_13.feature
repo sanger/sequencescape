@@ -45,9 +45,9 @@ Feature: Picking more than 13 minimum volume should render in tecan file
       | Maximum Volume    | 150   |
       | Quantity to pick  | 10000 |
     And I press "Next step"
-		When I press "Next step"
-		And I press "Next step"
-		And I press "Next step"
+    When I press "Next step"
+    And I press "Next step"
+    And I press "Next step"
 
     When I press "Release this batch"
     Given the last batch has a barcode of "550000555760"

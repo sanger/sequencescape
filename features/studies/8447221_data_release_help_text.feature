@@ -56,11 +56,11 @@ Feature: Update the data release fields for creating a study
     And I should exactly see "Comment regarding data release timing and approval"
 
     When I fill in the following:
-  	    | Study name                                                                                  | new study       |
-  	    | Study description                                                                           | writing cukes   |
-  	    | Please explain the reason for delaying release (e.g., pre-existing collaborative agreement) | some comment    |
-  	    | Comment regarding data release timing and approval                                          | another comment |
-  	And I select "Jack Sponsor" from "Faculty Sponsor"
+        | Study name                                                                                  | new study       |
+        | Study description                                                                           | writing cukes   |
+        | Please explain the reason for delaying release (e.g., pre-existing collaborative agreement) | some comment    |
+        | Comment regarding data release timing and approval                                          | another comment |
+    And I select "Jack Sponsor" from "Faculty Sponsor"
     And I select "Yes" from "Do any of the samples in this study contain human DNA?"
     And I select "No" from "Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?"
     And I select "open" from "What is the data release strategy for this study?"

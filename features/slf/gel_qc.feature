@@ -75,7 +75,7 @@ Feature: Gel QC
     When I follow "Score"
     And I press "Update gel values"
 
-	  Given a study report is generated for study "Test study"
+    Given a study report is generated for study "Test study"
     Then the last report for "Test study" should be:
     | Gel | Well | Gel QC date |
     | OK  | A1   | 2011-02-14  |

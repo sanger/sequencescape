@@ -24,7 +24,7 @@ Feature: Cherrypicking a plate twice should display latest plate in report
       | A1   | ImmunoChip      | A1              | 22222              |
 
 
- 	Scenario: A plate genotyped in SNP and recherrypicked in sequencescape
+   Scenario: A plate genotyped in SNP and recherrypicked in sequencescape
     Given I have a cherrypicked plate with barcode "11111" and plate purpose "Infinium 670k"
     And well "A1" on plate "11111" has a genotyping_done status of "DNAlab completed: 13"
     Given a study report is generated for study "Test study"
