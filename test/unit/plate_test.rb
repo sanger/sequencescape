@@ -133,7 +133,7 @@ class PlateTest < ActiveSupport::TestCase
     end
 
   end
-  
+
   context "Plate submission" do
     setup do
       @plate1 = Factory :plate

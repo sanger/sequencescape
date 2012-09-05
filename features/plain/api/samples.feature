@@ -1,5 +1,5 @@
 # rake features FEATURE=features/plain/api/samples.feature
-@api @json @sample @allow-rescue @sample_api 
+@api @json @sample @allow-rescue @sample_api
 Feature: Interacting with samples through the API
   # NOTE: 'id' is displayed in the JSON but the JSON comparison step removes this
   Background:
@@ -232,7 +232,7 @@ Feature: Interacting with samples through the API
       }
       """
 
-  Scenario: Retrieving the JSON for a particular sample 
+  Scenario: Retrieving the JSON for a particular sample
     Given I have an active study called "Study for testing the JSON API"
     Given a reference genome table
     And the reference genome for study "Study for testing the JSON API" is "Homo_sapiens (GRCh37_53)"
@@ -285,8 +285,8 @@ Feature: Interacting with samples through the API
         }
       }
       """
-      
-      
+
+
   Scenario: Given a sample has a supplier name set
     Given I have an active study called "Study for testing the JSON API"
     Given a reference genome table
@@ -341,7 +341,7 @@ Feature: Interacting with samples through the API
         }
       }
       """
-      
+
 
   Scenario: Updating an existing sample without required fields
     Given the sample named "sample_testing_the_json_api" exists

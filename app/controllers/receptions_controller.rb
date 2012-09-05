@@ -45,7 +45,7 @@ class ReceptionsController < ApplicationController
       else
         @asset = Asset.find_from_machine_barcode(barcode)
       end
-      
+
 
       if @asset.nil?
         @generic_asset = Asset.find_by_barcode(id)
@@ -127,7 +127,7 @@ class ReceptionsController < ApplicationController
         @snp_plates << plate
       end
     end
-    
+
     if @errors.size > 0
       respond_to do |format|
         format.html { render :action => "snp_import" }

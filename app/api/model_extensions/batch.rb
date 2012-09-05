@@ -24,7 +24,7 @@ module ModelExtensions::Batch
           { :target_asset => [ :uuid_object, :barcode_prefix, { :aliquots => [ :sample, :tag ] } ] }
         ]
       }
-      
+
       after_create :generate_target_assets_for_requests, :if => :need_target_assets_on_requests?
       before_save :manage_downstream_requests
     end
@@ -44,7 +44,7 @@ module ModelExtensions::Batch
       amount_to_keep     = yield(request)
       requests_to_cancel = request.next_requests(pipeline)
 
-      requests_to_cancel = 
+      requests_to_cancel =
         case amount_to_keep
         when nil   then []
         when :none then requests_to_cancel

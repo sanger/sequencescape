@@ -24,13 +24,13 @@ Feature: Interacting with library_tubes through the API
             "created_at": "2010-09-16T13:45:00+01:00",
             "updated_at": "2010-09-16T13:45:00+01:00",
             "uuid": "00000000-1111-2222-3333-444444444444",
-            "barcode_prefix": "NT", 
+            "barcode_prefix": "NT",
             "scanned_in_date": "",
             "public_name": "ABC",
             "lanes": "http://localhost:3000/0_5/library_tubes/00000000-1111-2222-3333-444444444444/lanes",
             "requests": "http://localhost:3000/0_5/library_tubes/00000000-1111-2222-3333-444444444444/requests",
             "qc_state": "",
-            
+
             "id": 1
           }
         }
@@ -53,7 +53,7 @@ Feature: Interacting with library_tubes through the API
           "created_at": "2010-09-16T13:45:00+01:00",
           "updated_at": "2010-09-16T13:45:00+01:00",
           "uuid": "00000000-1111-2222-3333-444444444444",
-          "barcode_prefix": "NT", 
+          "barcode_prefix": "NT",
           "scanned_in_date": "",
           "lanes": "http://localhost:3000/0_5/library_tubes/00000000-1111-2222-3333-444444444444/lanes",
           "requests": "http://localhost:3000/0_5/library_tubes/00000000-1111-2222-3333-444444444444/requests",
@@ -79,7 +79,7 @@ Feature: Interacting with library_tubes through the API
           "created_at": "2010-09-16T13:45:00+01:00",
           "updated_at": "2012-05-01T14:10:00+01:00",
           "uuid": "00000000-1111-2222-3333-444444444444",
-          "barcode_prefix": "NT", 
+          "barcode_prefix": "NT",
           "scanned_in_date": "",
           "lanes": "http://localhost:3000/0_5/library_tubes/00000000-1111-2222-3333-444444444444/lanes",
           "requests": "http://localhost:3000/0_5/library_tubes/00000000-1111-2222-3333-444444444444/requests",

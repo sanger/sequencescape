@@ -36,7 +36,7 @@ class TagGroupsControllerTest < ActionController::TestCase
         should_respond_with :redirect
         should_set_the_flash_to /created/
       end
-      
+
       context "with 4 tags where 2 have empty oligos" do
         setup do
           post :create, :tag_group => {:name=>"new tag group"}, :tags =>  {  "7"=>{"map_id"=>"8", "oligo"=>"AAA"}, "1"=>{"map_id"=>"1", "oligo"=>""} ,  "5"=>{"map_id"=>"6", "oligo"=>"CCC"},"9"=>{"map_id"=>"9"}}

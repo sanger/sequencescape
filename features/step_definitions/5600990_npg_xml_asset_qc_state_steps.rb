@@ -27,15 +27,15 @@ Given /^an event to the request$/ do
  lane = Lane.find_by_name("NPG_Action_Lane_Test")
  request = lane.source_request
  Factory :event, :eventful => request, :created_by =>'npg'
-end 
-   
+end
+
 When /^I (POST|PUT) following XML to change the QC state on the last asset:$/ do |action, xml|
- lane = Lane.last 
+ lane = Lane.last
  When %Q{I #{action} the following XML to "/npg_actions/assets/#{lane.id}/fail_qc_state":}, xml
 end
 
 When /^I (POST|PUT) following XML to change in passed the QC state on the last asset:$/ do |action, xml|
- lane = Lane.last 
+ lane = Lane.last
  When %Q{I #{action} the following XML to "/npg_actions/assets/#{lane.id}/pass_qc_state":}, xml
 end
 

@@ -7,8 +7,8 @@
 </div>
 
 <% form_for @study, :url => {:action => "new", :study_id => @study.id}  do |form| %>
-	<h2>Create an individual submission:</h2> 
-	<p class="info">Please select a submission template:</p>
+  <h2>Create an individual submission:</h2>
+  <p class="info">Please select a submission template:</p>
   <p>
     <%= label_tag(:submission_template_id, 'Template') %>:
     <%= select_tag(:submission_template_id, options_from_collection_for_select(@template_list, :id, :name)) %>

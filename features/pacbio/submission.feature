@@ -35,7 +35,7 @@ Feature: Create a submission for the pacbio pipeline
     And I press "Next step"
     When I press "Release this batch"
     When I follow "Print worksheet"
-    Then the PacBio sample prep worksheet should look like:  
+    Then the PacBio sample prep worksheet should look like:
        | Barcode | Name       | Required size | Complete? | Repaired? | Adapter ligated? | Clean up complete? | Exonnuclease cleanup | ng/ul | Fragment size | Volume |
        | 111     | Sample_111 | <insert_size> |           |           |                  |                    |                      |       |               |        |
     Given I am on the homepage
@@ -43,7 +43,7 @@ Feature: Create a submission for the pacbio pipeline
     Given I am on the show page for pipeline "PacBio Sequencing"
     Then I should see "<sequencing_type>"
     And I should see "<insert_size>"
-    
+
     Examples:
       | sequencing_type | insert_size | number_of_smart_cells |
       | Strobe          | 250         | 1                     |
@@ -55,25 +55,25 @@ Feature: Create a submission for the pacbio pipeline
       | Strobe          | 6000        | 1                     |
       | Standard        | 8000        | 2                     |
       | Circular        | 10000       | 3                     |
-     
-     
+
+
   Scenario: No kit number entered
     Given I have a PacBio Sample Prep batch
     When I follow "Start batch"
     When I fill in "DNA Template Prep Kit Box Barcode" with ""
     And I press "Next step"
     Then I should see "Please enter a Kit Barcode"
-    
-    
+
+
   @worksheet
   Scenario: Sample Sheet
     Given I have a PacBio Sample Prep batch
     When I follow "Print worksheet"
-    Then the PacBio sample prep worksheet should look like:  
+    Then the PacBio sample prep worksheet should look like:
        | Barcode | Name       | Required size | Complete? | Repaired? | Adapter ligated? | Clean up complete? | Exonnuclease cleanup | ng/ul | Fragment size | Volume |
        | 111     | Sample_111 | 250           |           |           |                  |                    |                      |       |               |        |
        | 222     | Sample_222 | 250           |           |           |                  |                    |                      |       |               |        |
-       
+
 
   Scenario: When a sample fails dont enter number of SMRTcells and cancel sequencing request
     Given I have a PacBio Sample Prep batch

@@ -2,7 +2,7 @@
 <%= render :partial => 'shared/metadata/edit/project', :locals => { :project => project, :form => form } %>
 
 <% if logged_in? && current_user.privileged? %>
-   <%= render :partial => "shared/financial_approval", 			:locals => { :project => project, :form => form } -%>
+   <%= render :partial => "shared/financial_approval",       :locals => { :project => project, :form => form } -%>
 <% end %>
 
 <table width="100%" cellspacing="0" cellpadding="0">

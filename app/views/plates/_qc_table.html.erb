@@ -1,40 +1,40 @@
 <table class="plate" id="<%= qc_type %>">
-	<thead>
-	  <tr>
-		<% num_rows = Map.plate_length(plate.size) -%>
-		<% num_columns = Map.plate_width(plate.size) -%>
-		<th></th>
-		<% num_columns.times do |column| -%>
-			<th><%= column+1 %></th>
-		<% end -%>
-		<th class='border' width='2%'class='border' width='2%'></th>
-		</tr>
-	</thead>
-	<tbody>
-	<% num_rows.times do |row| -%>
-		<tr>
-			<% rowchar = (65+row).chr %>
-			<td class='border' width='2%'><strong><%= rowchar %></strong></td>
-			<% (num_columns).times do |column| -%>
-			  <% well_name = "#{rowchar}#{column+1}" %>
-			  <% well = plate.find_well_by_name(well_name) %>
-				 <% if well %>
-				    <%= render :partial => qc_type, :locals => { :value => well.well_attribute.send(:"#{ qc_type }") } %>
-				 <% else %>
-				   <td></td>
-				<% end %>
-			<% end -%>
-			<td class='border' width='2%'><strong><%= rowchar %></strong></td>
-		</tr>
-	<% end -%>
-	<tr>
-		<td class='border'></td>
-		<% num_columns.times do |column| -%>
-			<td class='border'><strong><%= column+1 %></strong></td>
-		<% end -%>
-		<td class='border' width='2%'class='border' width='2%'></td>
-	</tr>
-	</tbody>
+  <thead>
+    <tr>
+    <% num_rows = Map.plate_length(plate.size) -%>
+    <% num_columns = Map.plate_width(plate.size) -%>
+    <th></th>
+    <% num_columns.times do |column| -%>
+      <th><%= column+1 %></th>
+    <% end -%>
+    <th class='border' width='2%'class='border' width='2%'></th>
+    </tr>
+  </thead>
+  <tbody>
+  <% num_rows.times do |row| -%>
+    <tr>
+      <% rowchar = (65+row).chr %>
+      <td class='border' width='2%'><strong><%= rowchar %></strong></td>
+      <% (num_columns).times do |column| -%>
+        <% well_name = "#{rowchar}#{column+1}" %>
+        <% well = plate.find_well_by_name(well_name) %>
+         <% if well %>
+            <%= render :partial => qc_type, :locals => { :value => well.well_attribute.send(:"#{ qc_type }") } %>
+         <% else %>
+           <td></td>
+        <% end %>
+      <% end -%>
+      <td class='border' width='2%'><strong><%= rowchar %></strong></td>
+    </tr>
+  <% end -%>
+  <tr>
+    <td class='border'></td>
+    <% num_columns.times do |column| -%>
+      <td class='border'><strong><%= column+1 %></strong></td>
+    <% end -%>
+    <td class='border' width='2%'class='border' width='2%'></td>
+  </tr>
+  </tbody>
 </table>
 
 <% plate.wells.each do |well| %>

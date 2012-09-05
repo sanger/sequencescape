@@ -14,15 +14,15 @@ class PlateTemplate < Plate
       end
     end
   end
-  
+
   def set_control_well(result)
     self.add_descriptor(Descriptor.new({:name => "control_well", :value => result}))
     self.save
   end
-  
+
   def control_well?
     return false if descriptors.nil?
     return 1 == descriptor_value('control_well').to_i
   end
-  
+
 end

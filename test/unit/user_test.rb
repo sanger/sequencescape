@@ -232,7 +232,7 @@ end
         User.authenticate_by_sanger_cookie('123456789')
         assert(validated_at < user.cookie_validated_at, 'User appears to have not been revalidated')
       end
-      
+
       should 'request the user information from the service based on the cookie' do
         user = User.new(:login => 'john')
         User.expects(:user_from_single_sign_on_service).returns(user)

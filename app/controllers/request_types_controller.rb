@@ -1,7 +1,7 @@
 class RequestTypesController < ApplicationController
-  
+
   before_filter :admin_login_required
-  
+
   # GET /request_types
   # GET /request_types.xml
   def index

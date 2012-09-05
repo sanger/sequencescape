@@ -9,7 +9,7 @@ module Cherrypick::VolumeByMicroLitre
       well_attribute.picked_volume    = volume_to_pick
     end
   end
-  
+
   def check_inputs_to_volume_to_cherrypick_by_micro_litre!(volume_required)
     raise Cherrypick::VolumeError, "Volume required (#{volume_required.inspect}) is invalid for cherrypicking by micro litre" if volume_required.blank? || volume_required.to_f <= 0.0
   end

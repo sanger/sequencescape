@@ -18,12 +18,12 @@
         <td width="25%" class="account_item account_label">Username: </td>
         <td width="75%" class="account_item"><%= text_field_tag "login", "", { :size => 35 } %></td>
       </tr>
-      
+
       <tr>
         <td class="account_label">Password: </td>
         <td><%= password_field_tag "password", "", { :size => 35 } %></td>
       </tr>
-      
+
       <tr>
         <td>&nbsp;</td>
         <td><br /><%= submit_tag I18n.t('global_links.login') %></td>

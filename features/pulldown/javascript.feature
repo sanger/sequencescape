@@ -4,8 +4,8 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
   Background:
     Given I am a "administrator" user logged in as "user"
     And the "96 Well Plate" barcode printer "xyz" exists
-    
-    
+
+
   Scenario: Create a Tecan file with correct volumes to pick via the original Cherrypick interface
     Given a plate template exists
     Given a robot exists
@@ -43,7 +43,7 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
       | Maximum Volume    | 50   |
       | Quantity to pick  | 1000 |
     And I press "Next step"
-		When I press "Next step"
+    When I press "Next step"
     Given the last batch has a barcode of "550000555760"
     Then the downloaded tecan file for batch "550000555760" and plate "1220099999705" is
     """
@@ -140,7 +140,7 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     Given I have an active study called "Test study"
     And I have an active study called "Study B"
     And I have an active study called "Study C"
-  
+
     Given plate "1234567" with 2 samples in study "Test study" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission
     Given plate "222" with 1 samples in study "Study B" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission
     Given plate "333" with 3 samples in study "Study C" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission
@@ -163,7 +163,7 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     And project "Test project" has enough quotas
     Given I have an active study called "Test study"
     And I have an active study called "Study A"
-  
+
     Given I have a tag group called "UK10K tag group" with 8 tags
     Given I have a pulldown batch
     When I follow "Start batch"
@@ -181,7 +181,7 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     Given I have a project called "Test project"
     And project "Test project" has enough quotas
     Given I have an active study called "Test study"
-  
+
     Given a plate barcode webservice is available and returns "99999"
     Given plate "1234567" with 1 samples in study "Test study" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission
     Given plate "1234567" has nonzero concentration results

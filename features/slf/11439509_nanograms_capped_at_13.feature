@@ -1,7 +1,7 @@
 @nano_grams @cherrypicking @barcode-service  @javascript @tecan
 Feature: Picking more than 13 minimum volume should render in tecan file
 
-  Background: 
+  Background:
     Given I am an "manager" user logged in as "john"
     Given a plate template exists
     Given a robot exists
@@ -45,10 +45,10 @@ Feature: Picking more than 13 minimum volume should render in tecan file
       | Maximum Volume    | 150   |
       | Quantity to pick  | 10000 |
     And I press "Next step"
-		When I press "Next step"
-		And I press "Next step"
-		And I press "Next step"
-    
+    When I press "Next step"
+    And I press "Next step"
+    And I press "Next step"
+
     When I press "Release this batch"
     Given the last batch has a barcode of "550000555760"
     Then the downloaded tecan file for batch "550000555760" and plate "1220099999705" is
@@ -135,7 +135,7 @@ Feature: Picking more than 13 minimum volume should render in tecan file
     """
     When I follow "Print worksheet for Plate 99999"
     Then I should see the cherrypick worksheet table:
-     | 1                            | 2                            | 
+     | 1                            | 2                            |
      | B1        222        v150 b0 | C3        333        v30 b0  |
      | B2        222        v150 b0 | D3        333        v15 b5  |
      | B3        222        v150 b0 | C4        333        v10 b10 |

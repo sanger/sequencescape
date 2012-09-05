@@ -59,7 +59,7 @@ Feature: The API provides a lookup feature for legacy ID values to UUIDs
       | lookup  | { "model": "sample", "id": 1 }     |
       | bulk    | [ { "model": "sample", "id": 1 } ] |
 
-  @error @individual 
+  @error @individual
   Scenario: Looking up a single record that does not exist
     When I POST the following JSON to the API path "/uuids/lookup":
       """
@@ -163,8 +163,8 @@ Feature: The API provides a lookup feature for legacy ID values to UUIDs
       | lookup  | {"lookup":{"model":"", "id":1}}      | "model":["can't be blank"]                                                         |
       | lookup  | {}                                   | "lookup":["should be a tuple"],"model":["can't be blank"],"id":["is not a number"] |
       | lookup  |                                      | "lookup":["should be a tuple"],"model":["can't be blank"],"id":["is not a number"] |
-    
-    @bulk 
+
+    @bulk
     Scenarios: Bulk lookup
       | service | posted_json        | errors                                    |
       | bulk    | {"lookup":["foo"]} | "lookup":["should be a tuple"]            |
@@ -191,7 +191,7 @@ Feature: The API provides a lookup feature for legacy ID values to UUIDs
       }
       """
 
-    @individual 
+    @individual
     Scenarios: Individual lookup
       | service | method |
       | lookup  | GET    |

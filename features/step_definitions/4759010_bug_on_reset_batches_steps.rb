@@ -4,7 +4,7 @@ Given /^sequencescape is setup for 4759010$/ do
   (1..10).each { |i| group.tags.create!(:map_id => i, :oligo => 'Tag for 4759010') }
 end
 
-Given /^a batch in "Cluster formation PE" has been setup for feature 4759010$/ do         
+Given /^a batch in "Cluster formation PE" has been setup for feature 4759010$/ do
   pending
 end
 
@@ -36,20 +36,20 @@ Given /^a batch in "Illumina-B MX Library Preparation" has been setup for featur
 
     request  = Factory :request, :request_type => pipeline.request_types.last, :submission_id => submission.id, :asset => source, :target_asset => destination
 
-    batch.requests << request 
+    batch.requests << request
     asset_group.assets << source
   end
 
-                                                     
+
   pipeline = Pipeline.find_by_name("Cluster formation PE") or raise StandardError, "Cannot find pipeline '#{ name }'"
-  
+
   request  = Factory :request, :request_type => pipeline.request_types.last, :submission_id => submission.id, :asset => Factory(asset_type)
   request.asset.location    = pipeline.location
   request.asset.save!
   batch.requests << request
   asset_group.assets << request.asset
-end    
- 
-When /^I select all requests$/ do 
+end
+
+When /^I select all requests$/ do
  page.all('.request_checkbox').each { |checkbox| checkbox.set(true) }
 end

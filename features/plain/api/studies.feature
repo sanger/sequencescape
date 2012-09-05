@@ -1,4 +1,4 @@
-@api @json @study @allow-rescue @study_api 
+@api @json @study @allow-rescue @study_api
 Feature: Interacting with studies through the API
   Background:
     Given all of this is happening at exactly "16-September-2010 13:45:00+01:00"

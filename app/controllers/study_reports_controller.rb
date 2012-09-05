@@ -5,7 +5,7 @@ class StudyReportsController < ApplicationController
     @study_reports = StudyReport.without_files.paginate(:page => params[:page], :order => "id desc")
     @studies = Study.all(:order => "name ASC")
   end
-  
+
   def new
     params[:study_report] = {:study => params[:study]}
     create
@@ -16,7 +16,7 @@ class StudyReportsController < ApplicationController
     study_report = StudyReport.create!(:study => study, :user => @current_user)
 
     study_report.perform
-    
+
     respond_to do |format|
       if study_report
         flash[:notice] = "Report being generated"
@@ -31,7 +31,7 @@ class StudyReportsController < ApplicationController
       end
     end
   end
-  
+
   def show
     study_report = StudyReport.find(params[:id])
     send_data( study_report.report.data, :type => "text/plain",

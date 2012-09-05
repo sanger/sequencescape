@@ -44,7 +44,7 @@ class ApplicationController < ActionController::Base
     new_hash
 
   end
-  
+
   private
   def sso_not_available
     flash[:warning] = I18n.t("errors.single_sign_on_unavailable")
@@ -64,7 +64,7 @@ class ApplicationController < ActionController::Base
   end
 
   def extract_header_info
-    exclude_nested_resource = request.headers["HTTP_EXCLUDE_NESTED_RESOURCE"] || params[:exclude_nested_resource] 
+    exclude_nested_resource = request.headers["HTTP_EXCLUDE_NESTED_RESOURCE"] || params[:exclude_nested_resource]
     @exclude_nested_resource = exclude_nested_resource && exclude_nested_resource.to_s.downcase == "true"
   end
 

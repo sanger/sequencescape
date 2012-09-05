@@ -22,13 +22,13 @@ Feature: Submission creation
     Then I should see "Please select a submission template"
     When I select "Pulldown library creation - Single ended sequencing" from "Template"
     When I press "Next"
-  
+
   Scenario: No project provided
     Then I should see "Select a group to submit"
     When I select "new_asset_group" from "asset_group"
     And I press "Create Order"
     Then I should see "Project can't be blank"
-  
+
   Scenario: No asset group provided
     When I press "Create Order"
     Then I should see "No assets found"

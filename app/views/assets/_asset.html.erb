@@ -37,10 +37,10 @@
     </tr>
     <tr>
       <td class="item"><%= h(@asset.lane_metadata.attribute_details_for(:release_reason).to_field_info.display_name) %>:</td>
-      <td><strong><%= h(@asset.lane_metadata.release_reason) %></strong></td>    
+      <td><strong><%= h(@asset.lane_metadata.release_reason) %></strong></td>
     </tr>
   <% elsif @asset.is_a?(SpikedBuffer) %>
-  <!-- 
+  <!--
     The percentage needs to be calculated differently.
     BJ to fix - PT 9221511
    -->

@@ -28,7 +28,7 @@
       <tr><td>&nbsp;</td></tr>
       <tr><td></td><td><%= submit_tag 'Update' %></td></tr>
     </table>
-    
+
     <% unless @asset.parents.empty? %>
       <div class="info">
         <%= pluralize @asset.parents.size, "Source" %>
@@ -58,7 +58,7 @@
               <th>Asset</th>
             </tr>
           </thead>
-          <tbody>        
+          <tbody>
             <% @asset.children.each do |child| %>
               <tr>
                 <td><%= link_to "#{(child.label or "").humanize} #{child.id}", :action => :lab_view, :barcode => child.barcode %></td>

@@ -1,7 +1,7 @@
 class PulldownPlate < Plate
   def self.initialize_child_plates
     #FIXME: refactor to make PulldownPlate.count work
-    PulldownAliquotPlate             
+    PulldownAliquotPlate
     PulldownSonicationPlate
     PulldownRunOfRobotPlate
     PulldownEnrichmentOnePlate
@@ -10,7 +10,7 @@ class PulldownPlate < Plate
     PulldownEnrichmentFourPlate
     PulldownSequenceCapturePlate
     PulldownPcrPlate
-    PulldownQpcrPlate                          
+    PulldownQpcrPlate
   end
-  
+
 end

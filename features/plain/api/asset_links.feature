@@ -26,10 +26,10 @@ Feature: Interacting with asset_links through the API
             "ancestor_type": "plates",
             "descendant_type": "wells",
             "descendant_uuid": "UUID-well456",
-            
+
             "ancestor_internal_id": 20,
             "descendant_internal_id": 19,
-            
+
             "created_at": "2010-09-16T13:45:00+01:00",
             "updated_at": "2010-09-16T13:45:00+01:00"
           }
@@ -56,10 +56,10 @@ Feature: Interacting with asset_links through the API
             "ancestor_type": "plates",
             "descendant_type": "wells",
             "descendant_uuid": "UUID-well456",
-            
+
             "ancestor_internal_id": 20,
             "descendant_internal_id": 19,
-            
+
             "created_at": "2010-09-16T13:45:00+01:00",
             "updated_at": "2010-09-16T13:45:00+01:00"
           }

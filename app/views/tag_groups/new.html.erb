@@ -7,20 +7,20 @@
     <%= f.text_field :name %>
   </p>
 
-	<table>
-		<thead>
-			<th>Index</th>
-		  <th>Expected Sequence</th>
-		</thead>
-		<% @number_of_tags ||= "12" %>
+  <table>
+    <thead>
+      <th>Index</th>
+      <th>Expected Sequence</th>
+    </thead>
+    <% @number_of_tags ||= "12" %>
   <% @number_of_tags.to_i.times do |i| -%>
     <tr>
-    	<%= hidden_field_tag "tags[#{i}][map_id]", "#{i+1}" %>
-    	<td><%= label_tag "tags_#{i}_oligo", "Index #{i+1}" %></td>
-    	<td><%= text_field_tag "tags[#{i}][oligo]" %></td>
+      <%= hidden_field_tag "tags[#{i}][map_id]", "#{i+1}" %>
+      <td><%= label_tag "tags_#{i}_oligo", "Index #{i+1}" %></td>
+      <td><%= text_field_tag "tags[#{i}][oligo]" %></td>
     </tr>
-	<% end -%>
-	</table>
+  <% end -%>
+  </table>
 
   <p>
     <%= f.submit "Create" %>

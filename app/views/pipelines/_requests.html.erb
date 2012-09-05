@@ -20,7 +20,7 @@
         <th><%= link_to "Asset ID", "javascript:void(0);" %></th>
         <th><%= link_to "Asset comments", "javascript:void(0);" %></th>
         <th><%= link_to "Conc", "javascript:void(0);" %></th>
-        <th><%= link_to "Scanned in (Y-M-D)", "javascript:void(0);" %></th>        
+        <th><%= link_to "Scanned in (Y-M-D)", "javascript:void(0);" %></th>
         <% @information_types.each do |information_type| %>
           <% next if information_type.hide_in_inbox %>
           <th><%= link_to "#{information_type.label}", "javascript:void(0);" %></th>
@@ -57,7 +57,7 @@
             <%= link_to request.id, request_path(request) %>
           </td>
           <td><%= link_to request.asset.try(:name), asset_path(request.asset) %></td>
-          
+
           <% unless request_comments.empty? -%>
             <%= render :partial => "request_comments", :locals => { :request => request, :comments => request_comments } %>
           <% else -%>
@@ -116,7 +116,7 @@
   });
 
   $(document).ready(function() {
-    $("#pipeline_inbox").tablesorter({ 
+    $("#pipeline_inbox").tablesorter({
       sortList: [[1,1], [2,0]],
       widgets: ['zebra', 'jFilter'],
 

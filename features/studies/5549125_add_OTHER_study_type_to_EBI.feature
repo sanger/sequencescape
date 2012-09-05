@@ -5,7 +5,7 @@ Feature: Check Study accession xml is valid
     Given the study "My study" is a "<study_type>" study
     When I request XML for the show accession page for study named "My study"
     Then the value of the "existing_study_type" attribute of the XML element "//STUDY_TYPE" should be "<study_type>"
-    
+
     Examples:
       | study_type|
       | Synthetic Genomics|

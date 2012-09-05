@@ -14,5 +14,5 @@ module ExternalProperties
   def self.included(base)
     base.send(:has_many, :external_properties, :as => :propertied, :dependent => :destroy)
   end
-  
+
 end

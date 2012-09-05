@@ -5,7 +5,7 @@ module Tasks::CherrypickGroupBySubmissionHandler
       redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (0).to_s
       return false
     end
-    
+
     volume_required= params[:volume_required]
     concentration_required = params[:concentration_required]
     plate_purpose = PlatePurpose.find(params[:plate_purpose_id])
@@ -13,7 +13,7 @@ module Tasks::CherrypickGroupBySubmissionHandler
     begin
       batch = Batch.find(params[:batch_id], :include => [:requests, :pipeline, :lab_events])
       requests = batch.ordered_requests
-      
+
       ActiveRecord::Base.transaction do
         plate = plate_purpose.create!(:do_not_create_wells) do |plate|
           plate.name = "Cherrypicked #{plate.barcode}"

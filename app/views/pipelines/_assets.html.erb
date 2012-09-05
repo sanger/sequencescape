@@ -3,11 +3,11 @@
     <tr>
       <th class='label'>&nbsp;</th>
       <th class='label'><%= link_to "Internal ID", "javascript:void(0);" %></th>
-			<th class='label'><%= link_to "Barcode", "javascript:void(0);" %></th>
+      <th class='label'><%= link_to "Barcode", "javascript:void(0);" %></th>
       <th class='label'><%= link_to "Wells", "javascript:void(0);" %></th>
       <% if @pipeline.display_next_pipeline? %><th class="label"><%= link_to "Next Pipeline", "javascript:void(0);" %></th><% end %>
-			<th class='label'><%= link_to "Submission", "javascript:void(0);" %></th>
-			<th class='label'><%= link_to "Study", "javascript:void(0);" %></th>
+      <th class='label'><%= link_to "Submission", "javascript:void(0);" %></th>
+      <th class='label'><%= link_to "Study", "javascript:void(0);" %></th>
       <th class='label'></th>
     </tr>
   </thead>
@@ -34,16 +34,16 @@
           <td><%= parent.sanger_human_barcode %></td>
           <td><%= requests.size %></td>
           <% if @pipeline.display_next_pipeline? %><td><%= next_pipeline_name_for(requests.first) %></td><% end %>
-					<td>
-          	<% if @pipeline.group_by_submission? %>
-          		<%= submission_id %>
-        		<% end -%>
-					</td>
-					<td>
-          	<% if submission -%>
-            	<%= submission.name %>
-        		<% end -%>
-					</td>
+          <td>
+            <% if @pipeline.group_by_submission? %>
+              <%= submission_id %>
+            <% end -%>
+          </td>
+          <td>
+            <% if submission -%>
+              <%= submission.name %>
+            <% end -%>
+          </td>
           <td><%= link_to 'Show plate', show_plate_asset_url(parent) %></td>
         </tr>
       <% else %>

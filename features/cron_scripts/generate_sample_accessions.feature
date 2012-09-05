@@ -7,7 +7,7 @@ Feature: Generate Sample Accessions
 
   Scenario Outline: When we have a Study with a Managed Data Strategy
       Given a user with an api key of "abc" exists
-      
+
       Given a study named "Study 4491710" exists
       And the study "Study 4491710" is a "Whole Genome Sequencing" study
       And the title of study "Study 4491710" is "My title"
@@ -32,11 +32,11 @@ Feature: Generate Sample Accessions
 
     When I run the "generate_sample_accessions.rb" cron script
     Then sample "Sample4491710" should have an accession number of "<accession_number>"
-  
+
 
     Examples:
       | data_release_strategy | accession_number |
       | open                  | EGAN00001000234  |
-      | managed               | EGAN00001000234  |  
+      | managed               | EGAN00001000234  |
 
 

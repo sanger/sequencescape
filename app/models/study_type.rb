@@ -1,4 +1,4 @@
-class StudyType < ActiveRecord::Base 
+class StudyType < ActiveRecord::Base
   extend Attributable::Association::Target
 
   has_many :study

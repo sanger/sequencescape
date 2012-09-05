@@ -1,40 +1,40 @@
 <% form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form", :multipart => true} do |form| %>
   <table class="plate">
-  	<thead>
-  	  <tr>
-  		<% num_rows = Map.plate_length(96) -%>
-  		<% num_columns = Map.plate_width(96) -%>
-  		<th class='border' width='2%'></th>
-  		<% num_columns.times do |column| -%>
-  			<th class='plate_column'><%= column+1 %></th>
-  		<% end -%>
-  		<th class='border' width='2%'></th>
-  		</tr>
-  	</thead>
-  	<tbody>
-  	<% num_rows.times do |row| -%>
-  		<tr>
-  			<% rowchar = (65+row).chr %>
-  			<td class='border' width='2%'><strong><%= rowchar %></strong></td>
-  			<% (num_columns).times do |column| -%>
-  			  <% well_name = "#{rowchar}#{column+1}" %>
-  				<td >
-  				  <% current_tube = @tubes.shift %>
-  				  <% default_tube = [current_tube.name, current_tube.id] if current_tube %>
+    <thead>
+      <tr>
+      <% num_rows = Map.plate_length(96) -%>
+      <% num_columns = Map.plate_width(96) -%>
+      <th class='border' width='2%'></th>
+      <% num_columns.times do |column| -%>
+        <th class='plate_column'><%= column+1 %></th>
+      <% end -%>
+      <th class='border' width='2%'></th>
+      </tr>
+    </thead>
+    <tbody>
+    <% num_rows.times do |row| -%>
+      <tr>
+        <% rowchar = (65+row).chr %>
+        <td class='border' width='2%'><strong><%= rowchar %></strong></td>
+        <% (num_columns).times do |column| -%>
+          <% well_name = "#{rowchar}#{column+1}" %>
+          <td >
+            <% current_tube = @tubes.shift %>
+            <% default_tube = [current_tube.name, current_tube.id] if current_tube %>
             <%= select_tag("well[#{well_name}]", options_for_select(@available_tubes_options, default_tube )) %>
-  				</td>
-  			<% end -%>
-  			<td class='border' width='2%'><strong><%= rowchar %></strong></td>
-  		</tr>
-  	<% end -%>
-  	<tr>
-  		<td></td>
-  		<% num_columns.times do |column| -%>
-  			<td><strong><%= column+1 %></strong></td>
-  		<% end -%>
-  		<td class='border' width='2%'class='border' width='2%'></td>
-  	</tr>
-  	</tbody>
+          </td>
+        <% end -%>
+        <td class='border' width='2%'><strong><%= rowchar %></strong></td>
+      </tr>
+    <% end -%>
+    <tr>
+      <td></td>
+      <% num_columns.times do |column| -%>
+        <td><strong><%= column+1 %></strong></td>
+      <% end -%>
+      <td class='border' width='2%'class='border' width='2%'></td>
+    </tr>
+    </tbody>
   </table>
 
   <% num_rows.times do |row| -%>

@@ -20,7 +20,7 @@ end
 
 Given /^the field labeled "([^\"]+)" should not exist$/ do |field_name|
   # begin
-    
+
     assert_nil field_labeled(field_name), "Field labeled '#{ field_name }' found!"
   # rescue Webrat::NotFoundError => exception
     # Cool, let this pass

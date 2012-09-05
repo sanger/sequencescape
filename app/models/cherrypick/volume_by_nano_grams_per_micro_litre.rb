@@ -1,7 +1,7 @@
 module Cherrypick::VolumeByNanoGramsPerMicroLitre
   def volume_to_cherrypick_by_nano_grams_per_micro_litre(volume_required,concentration_required,source_concentration)
     check_inputs_to_volume_to_cherrypick_by_nano_grams_per_micro_litre!(volume_required,concentration_required,source_concentration)
-    
+
     well_attribute.concentration    = concentration_required
     well_attribute.requested_volume = volume_required
     well_attribute.current_volume   = volume_required
@@ -19,7 +19,7 @@ module Cherrypick::VolumeByNanoGramsPerMicroLitre
 
     volume_to_pick
   end
-  
+
   def check_inputs_to_volume_to_cherrypick_by_nano_grams_per_micro_litre!(volume_required,concentration_required,source_concentration)
     raise Cherrypick::VolumeError, "Volume required (#{volume_required.inspect}) is invalid for cherrypick by nano grams per micro litre"                      if volume_required.blank? || volume_required.to_f <= 0.0
     raise Cherrypick::ConcentrationError, "Concentration required (#{concentration_required.inspect}) is invalid for cherrypick by nano grams per micro litre" if concentration_required.blank? || concentration_required.to_f <= 0.0

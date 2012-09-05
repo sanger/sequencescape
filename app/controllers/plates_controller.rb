@@ -1,6 +1,6 @@
 class PlatesController < ApplicationController
   before_filter :login_required, :except => [:upload_pico_results]
-  
+
   def new
     @plate_creators   = Plate::Creator.all(:order => 'name ASC')
     @barcode_printers = BarcodePrinterType.find_by_name("96 Well Plate").barcode_printers
@@ -12,11 +12,11 @@ class PlatesController < ApplicationController
       format.json { render :json => @plate }
     end
   end
-  
+
   def show
     @plate = Plate.find(params[:id])
   end
-  
+
   def create
     ActiveRecord::Base.transaction do
       plate_creator         = Plate::Creator.find(params[:plates][:creator_id])

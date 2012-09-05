@@ -1,5 +1,5 @@
 <% add :menu, "Sample Logistics homepage" => lab_sample_logistics_path %>
-<% form_for :robot_verifications, :url => {:action => "download"} do |f| %> 
+<% form_for :robot_verifications, :url => {:action => "download"} do |f| %>
 <h2>Step 2 of 3: Scan robot beds and plates</h2>
 
 <table class="bed_verification" id="source_beds">
@@ -9,12 +9,12 @@
     <th>Scanned robot beds</th>
     <th>Plate ID</th>
     <th>Scanned plates</th>
-		<th>Plate type</th>
-		</tr>
+    <th>Plate type</th>
+    </tr>
   </thead>
   <tbody>
   <% if @all_labels.last.nil? -%>
-	<tr><td>No source plates found for this batch</td></tr>
+  <tr><td>No source plates found for this batch</td></tr>
   <% else -%>
     <% count = 0%>
     <% @all_labels.last.sort{ |a,b| a[1].to_i <=> b[1].to_i }.each do |plate_label, bed_label| %>
@@ -34,7 +34,7 @@
     <% end %>
   <% end %>
   <% if @all_labels.first.nil? -%>
-	<tr><td>No destination plates found for this batch</tr></td>
+  <tr><td>No destination plates found for this batch</tr></td>
   <% else -%>
     <% @all_labels.first.sort.each do |destination_label, bed_label| %>
     <tr class="destination">
@@ -56,7 +56,7 @@
 </table>
 
 <div align="center">
-  <br>Buffer added 
+  <br>Buffer added
   <%= check_box_tag "buffer_added" %>
   <br>
   <br>

@@ -12,7 +12,7 @@ Feature: Samples submission
     And user "abc123" is a "manager" of study "study B"
     And I have an "approved" project called "project B"
     And the project "project B" has quotas and quotas are enforced
-    
+
     Given I am visiting study "study B" homepage
     Then I should see "study B"
     When I follow "Register samples"
@@ -23,7 +23,7 @@ Feature: Samples submission
     When I press "Upload spreadsheet"
     When I press "Register samples"
     Then I should see "Your samples have been registered"
-    
+
     Given I am visiting study "study B" homepage
 
   Scenario: Missed an accession number EBI. Gave us an error.

@@ -6,9 +6,9 @@
   <%= f.error_messages %>
 
 
-	<% @assets.each do |asset| %>
+  <% @assets.each do |asset| %>
     <%= check_box :asset, asset.id, :value => asset.id %> <%= label(:asset, asset.id, "#{asset.display_name} #{asset.label}") %><br/>
-	<% end %>
+  <% end %>
 
   <p>
     <%= f.submit "Create" %>

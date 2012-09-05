@@ -27,10 +27,10 @@ module Identifiable
     ident = identifier(resource_name)
     ident ? ident.external_id : nil
   end
-  
+
   def external_object(resource_name)
     ident = identifier(resource_name)
     ident ? ident.external : nil
   end
-  
+
 end

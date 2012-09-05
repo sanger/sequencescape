@@ -3,7 +3,7 @@ def create_request(request_type, study, project, asset, target_asset, additional
   request = Factory(:request,
     additional_options.merge(
       :study => study, :project => project,
-      :asset => asset, 
+      :asset => asset,
       :target_asset => target_asset,
       :request_type => request_type,
       :request_metadata_attributes => {

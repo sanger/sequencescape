@@ -5,7 +5,7 @@ module Tasks::SamplePrepQcHandler
 
   def do_sample_prep_qc_task(task, params)
     requests = task.find_batch_requests(params[:batch_id])
-    
+
     params[:request].each do |request_id, qc_status|
       requests_found = requests.select{ |request| request.id == request_id.to_i }
       request = requests_found.first
@@ -25,5 +25,5 @@ module Tasks::SamplePrepQcHandler
 
     true
   end
-  
+
 end

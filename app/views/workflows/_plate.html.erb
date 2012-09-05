@@ -17,7 +17,7 @@
           <td class='border' width='2%'><%= (65+row).chr %></td>
         <% else %>
           <% current_well = plate[(col-1)*plate_rows + row]  %>
-          
+
           <% if current_well[0] == 0 -%>
             <td class="empty"><%= current_well[1] %></td>
           <% else -%>

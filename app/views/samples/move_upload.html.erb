@@ -4,21 +4,21 @@
 <h1>Pre-Check Move sample </h1>
 <div id="study">
   <table class="sortable">
-	  <thead>
-	    <tr>
-	      <th class='label' width="5%"><%= link_to 'Row', "javascript:void(0);" %></th>
-	      <th class='label' width="10%">Asset Group ID</th>
-	      <th class='label' width="30%">Asset Group Name</th>
-	      <th class='label' width="10%">Sample ID</th>
-	      <th class='label' width="10%">Project From</th>
-	      <th class='label' width="10%">Project To</th>
+    <thead>
+      <tr>
+        <th class='label' width="5%"><%= link_to 'Row', "javascript:void(0);" %></th>
+        <th class='label' width="10%">Asset Group ID</th>
+        <th class='label' width="30%">Asset Group Name</th>
+        <th class='label' width="10%">Sample ID</th>
+        <th class='label' width="10%">Project From</th>
+        <th class='label' width="10%">Project To</th>
           <th class='label' width="25%"><%= link_to 'Error msg', "javascript:void(0);" %></th>
-	    </tr>
+      </tr>
     </thead>
   <tbody>
   <% @samples_to_move.sort.each do |s, v| %>
     <tr class="<%= cycle("rowodd", "roweven") %>" >
-	  <td> <%= s %></td>
+    <td> <%= s %></td>
       <% v.sort.each do |key, value|%>
           <td> <%= value %> </td>
       <% end %>

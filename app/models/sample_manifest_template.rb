@@ -3,7 +3,7 @@ class SampleManifestTemplate < ActiveRecord::Base
   serialize :cell_map, Hash
 
   def self.populate()
-    transaction do 
+    transaction do
       base_template = SampleManifestTemplate.create!(
         :name => "default layout",
         :path => "/data/base_manifest.xls",
@@ -78,7 +78,7 @@ class SampleManifestTemplate < ActiveRecord::Base
       current_row = current_row + 1
     end
 
-    # Truncate the number of rows in the spreadsheet.  This improves performance dramatically because the 
+    # Truncate the number of rows in the spreadsheet.  This improves performance dramatically because the
     # number of rows in the original sheet is 9999, which means 20s of unnecessary data processing.  This
     # change causes times to drop to < 1s. An extra offset is required because Excel does things in blocks
     # of 32 rows

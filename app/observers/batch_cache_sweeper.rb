@@ -52,7 +52,7 @@ class BatchCacheSweeper < ActiveRecord::Observer
     query = "SELECT batches.id AS id FROM batches #{joins.join(' ')} WHERE #{record.class.table_name}.id=#{record.id}"
     ActiveRecord::Base.connection.select_all(query).map { |result| result['id'] }
   end
-  private :batch_ids_for 
+  private :batch_ids_for
 
   # This is an ordered hash, mapping from a model name to the SQL JOIN that needs to be added.
   # It's used to automatically generate the correct query to find the associated batch for a record.
@@ -64,7 +64,7 @@ class BatchCacheSweeper < ActiveRecord::Observer
     joins['tags']           = "INNER JOIN tags ON tags.id=aliquots.tag_id"
   end
 
-  # Returns an array of SQL JOINs that need to be made for the given record.  We know that the 
+  # Returns an array of SQL JOINs that need to be made for the given record.  We know that the
   # entries in JOINS above are in order, so if we can find the index of the model in the keys
   # then the SQL JOINs are all the values to this point.  That is, if you have a Request you
   # need to JOIN the batches table, to the batch_requests, to the requests.

@@ -39,11 +39,11 @@
       <% add :menu, "Verify tube layout" => url_for(:controller => :batches, :action => :verify, :id => @batch.id) -%>
     <% end %>
   <% end %>
-  
+
   <% if @pipeline.is_a?(PulldownMultiplexLibraryPreparationPipeline) %>
     <% add :menu, "Batch Report"  => url_for(:controller => :batches, :action => :pulldown_batch_report, :id => @batch.id) -%>
   <% end %>
-  
+
 <% end %>
 <% add :menu, "NPG run data" => "#{configatron.run_data_by_batch_id_url}#{@batch.id}" -%>
 <% add :menu, "SybrGreen images" => "#{configatron.sybr_green_images_url}#{@batch.id}" -%>
@@ -82,7 +82,7 @@
 <% if @batch.show_actions?  %>
   <%= render :partial => "shared/actions" %>
 <% elsif @batch.show_fail_link? %>
-  <ul>  
+  <ul>
     <li><%= link_to "Fail batch or items", :action => "fail", :id => @batch.id %></li>
   </ul>
 <% end %>

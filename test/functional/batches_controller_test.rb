@@ -62,7 +62,7 @@ class BatchesControllerTest < ActionController::TestCase
           assert_tag :tag => 'sample', :attributes => { :library_id => @library.id, :library_name => @library.name, :library_type => 'Standard' }
         end
       end
-      
+
       context "actions" do
         setup do
           @pipeline_next = Factory :pipeline, :name => 'Next pipeline'
@@ -140,14 +140,14 @@ class BatchesControllerTest < ActionController::TestCase
           end
 
         end
-        
+
         context "#reset a batch" do
           setup do
             @old_count = Batch.count
             @requests = @batch_one.requests
             delete :destroy, :id => @batch_one.id
           end
-          
+
           should "destroy_batch and reset state on requests" do
             assert_equal @old_count-1, Batch.count
             assert_redirected_to batches_path
@@ -208,14 +208,14 @@ class BatchesControllerTest < ActionController::TestCase
           context "non-multiplexed batches" do
             should "have items created that have different internal tracking ids"
           end
-          
+
           context "create and assign requests" do
             setup do
               @old_count = Batch.count
               post :create, :id => @pipeline.id, :request => {@request_three.id => "1", @request_four.id => "1"}
               @batch = Batch.last
             end
-      
+
             should "create assets and change batch requests" do
               assert_equal @old_count+1, Batch.count
               assert_equal 2, @batch.request_count
@@ -293,7 +293,7 @@ class BatchesControllerTest < ActionController::TestCase
               should "create a failure on each item in this batch and have two items related" do
                 assert_equal 0, @batch_one.failures.size
                 assert_equal 2, @batch_one.size
-                
+
                 # First item
                 assert_equal 1, @batch_one.requests.first.failures.size
                 assert_equal "PCR not completed", @batch_one.requests.first.failures.first.reason
@@ -305,9 +305,9 @@ class BatchesControllerTest < ActionController::TestCase
         end
       end
     end
-    
+
     context "Find by barcode (found)" do
-      setup do 
+      setup do
         @controller.stubs(:current_user).returns(@admin)
         @batch = Factory :batch
         request = Factory :request
@@ -317,11 +317,11 @@ class BatchesControllerTest < ActionController::TestCase
         @e.add_descriptor Descriptor.new({:name => "Chip Barcode", :value => "Chip Barcode: 62c7gaaxx"})
         @e.batch_id = @batch.id
         @e.save
-        get :find_batch_by_barcode, :id => "62c7gaaxx", :format => "xml"        
+        get :find_batch_by_barcode, :id => "62c7gaaxx", :format => "xml"
       end
       # should "lab event" do
       #   assert_equal "Cluster generation", @e.description
-      #   assert_equal "Request", @e.eventful_type 
+      #   assert_equal "Request", @e.eventful_type
       #   assert_true @e.descriptors.to_yaml.include? "Chip Barcode: 62c7gaaxx"
       # end
       # should "get batch" do
@@ -334,15 +334,15 @@ class BatchesControllerTest < ActionController::TestCase
     end
 
     context "Find by barcode (not found)" do
-      setup do 
+      setup do
         @controller.stubs(:current_user).returns(@admin)
-        get :find_batch_by_barcode, :id => "62c7axx", :format => "xml"        
+        get :find_batch_by_barcode, :id => "62c7axx", :format => "xml"
       end
       should "show error" do
         # this is the wrong response!
         assert_response :success
         assert_template "batches/batch_error.xml.builder"
       end
-    end    
+    end
   end
 end

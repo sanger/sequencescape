@@ -8,7 +8,7 @@ module Tasks::GenerateManifestHandler
       :filename=>"#{study.name}_#{batch.id}_manifest.csv",
       :disposition => 'attachment'
   end
-  
+
   def render_generate_manifest_task(task, params)
     @studies = @batch.studies
   end
