@@ -10,7 +10,7 @@ class Map < ActiveRecord::Base
 
   named_scope :where_description, lambda { |*descriptions| { :conditions => { :description => descriptions.flatten } } }
   named_scope :where_plate_size,  lambda { |size| { :conditions => { :asset_size => size } } }
-	named_scope :where_vertical_plate_position, lambda { |*positions| { :conditions => { :column_order => positions.map {|v| v-1} } } }
+  named_scope :where_vertical_plate_position, lambda { |*positions| { :conditions => { :column_order => positions.map {|v| v-1} } } }
 
   def vertical_plate_position
     self.column_order + 1

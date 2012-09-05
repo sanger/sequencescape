@@ -37,7 +37,7 @@ class AssetsController < ApplicationController
 
   def new
     @asset = Asset.new
-		@asset_types = { "Sample Tube" =>'SampleTube', "Library Tube" => 'LibraryTube', "Hybridization Buffer Spiked" => "SpikedBuffer" }
+    @asset_types = { "Sample Tube" =>'SampleTube', "Library Tube" => 'LibraryTube', "Hybridization Buffer Spiked" => "SpikedBuffer" }
 
     respond_to do |format|
       format.html

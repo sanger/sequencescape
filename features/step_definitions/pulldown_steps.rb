@@ -16,29 +16,29 @@ class WellRange
   end
 
   def include?(well)
-		include_well_location?(well.map.description)
+    include_well_location?(well.map.description)
   end
 
-	def include_well_location?(location)
+  def include_well_location?(location)
     well_match = WELL_REGEXP.match(location)
     @rows.include?(well_match[1]) and @columns.include?(well_match[2].to_i)
-	end
-	private :include_well_location?
+  end
+  private :include_well_location?
 
-	def to_a(&block)
-		[].tap do |wells|
-			(1..12).each do |column|
-				('A'..'H').each do |row|
-					well = "#{row}#{column}"
-					wells << well if include_well_location?(well)
-				end
-			end
-		end
-	end
+  def to_a(&block)
+    [].tap do |wells|
+      (1..12).each do |column|
+        ('A'..'H').each do |row|
+          well = "#{row}#{column}"
+          wells << well if include_well_location?(well)
+        end
+      end
+    end
+  end
 
-	def size
-		to_a.size
-	end
+  def size
+    to_a.size
+  end
 end
 
 Transform /^([A-H]\d+)-([A-H]\d+)$/ do |start, finish|
@@ -176,6 +176,6 @@ Then /^all of the pulldown library creation requests to (the multiplexed library
 end
 
 Given /^all requests are in the last submission$/ do
-	submission = Submission.last or raise StandardError, "There are no submissions!"
-	Request.update_all("submission_id=#{submission.id}")
+  submission = Submission.last or raise StandardError, "There are no submissions!"
+  Request.update_all("submission_id=#{submission.id}")
 end

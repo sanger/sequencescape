@@ -16,16 +16,16 @@ class Api::SubmissionIO < Api::Base
 
   # Quick fix for the warehouse
   with_association(:order) do
-	  with_association(:project) do
-		  map_attribute_to_json_attribute(:uuid  , 'project_uuid')
-		  map_attribute_to_json_attribute(:id  , 'project_internal_id')
-		  map_attribute_to_json_attribute(:name  , 'project_name')
-	  end
+    with_association(:project) do
+      map_attribute_to_json_attribute(:uuid  , 'project_uuid')
+      map_attribute_to_json_attribute(:id  , 'project_internal_id')
+      map_attribute_to_json_attribute(:name  , 'project_name')
+    end
 
-	  with_association(:study) do
-		  map_attribute_to_json_attribute(:uuid  , 'study_uuid')
-		  map_attribute_to_json_attribute(:id  , 'study_internal_id')
-		  map_attribute_to_json_attribute(:name  , 'study_name')
-	  end
+    with_association(:study) do
+      map_attribute_to_json_attribute(:uuid  , 'study_uuid')
+      map_attribute_to_json_attribute(:id  , 'study_internal_id')
+      map_attribute_to_json_attribute(:name  , 'study_name')
+    end
   end
 end
