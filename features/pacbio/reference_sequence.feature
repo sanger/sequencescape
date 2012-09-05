@@ -26,7 +26,7 @@ Feature: Handle reference sequences and protocols
       |               |
     When I press "Next step"
     Then I should see "All samples must have a protocol selected"
-      
+
   Scenario: Both Study and Sample have different reference genomes
     Given the study "Test study" has a reference genome of "Mouse"
     Given the sample in tube "111" has a reference genome of "Human"
@@ -42,7 +42,7 @@ Feature: Handle reference sequences and protocols
     When I press "Next step"
     Then Library tube "333" should have protocol "Human"
       And Library tube "444" should have protocol "Mouse"
-    
+
   Scenario: No reference genome set for either sample
     Given I have progressed to the Reference Sequence task
     Then the sample reference sequence table should look like:

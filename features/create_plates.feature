@@ -25,10 +25,10 @@ Feature: Printing new plate barcodes
     And I fill in "User barcode" with "2470000100730"
     And I select "xyz" from "Barcode printer"
     Then I expect an exception to be raised when I press "Submit"
-    
+
   Scenario: Creating plates where the scanner appends a carriage return
     Given I am on the new plate page
-    When I fill in "User barcode" with multiline text 
+    When I fill in "User barcode" with multiline text
     """
     2470000100730
 
@@ -42,7 +42,7 @@ Feature: Printing new plate barcodes
       | Field | Value |
       | name  | Stock Plate       |
       | desc  | jack\s+ |
-    
+
   Scenario Outline: Creating plates
     Given I am on the new plate page
     When I select "<plate_purpose>" from "Plate purpose"
@@ -106,7 +106,7 @@ Feature: Printing new plate barcodes
     And plate with barcode "4341234567737" should exist
     And plate with barcode "1931234567771" should exist
     And plate with barcode "1220077777868" should exist
-    
+
     Given I am on the events page for asset with barcode "1221234567841"
     Then the events table should be:
       | Message                              | Content    | Created by | Created at           |
@@ -143,7 +143,7 @@ Feature: Printing new plate barcodes
     Then the events table should be:
       | Message                   | Content    | Created by | Created at           |
       | Created Stock Plate plate | 2010-07-12 | jack       | Monday 12 July, 2010 |
-    
+
     Given I am on the pico dilution index page
     Then the XML response should be:
       """

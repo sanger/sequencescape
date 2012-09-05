@@ -20,7 +20,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
     order = @submission.orders.try(:first)
     if order
       @study ||= order.study unless @study
-      @workflow ||= order.workflow 
+      @workflow ||= order.workflow
     end
 
     @submission_template_id = params[:submission_template_id] || if order
@@ -55,7 +55,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
         redirect_to template_chooser_study_workflow_submissions_path(@study, @workflow)
         throw :end
       end
-      @order = @submission_template.new_order 
+      @order = @submission_template.new_order
 
 
       options = {}
@@ -84,7 +84,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
       raise InvalidInputException, "#{klass.table_name} #{not_found.to_a.join(", ")} not founds" unless not_found.empty?
       return objects
   end
-  
+
   def find_sample_by_name_or_sanger_sample_id( text)
     names = text.lines.map(&:chomp).reject(&:blank?).map(&:strip)
 
@@ -110,7 +110,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
     when :asset_group then { :asset_group => AssetGroup.find(params[:asset_group]) }
     when :asset_ids   then { :assets => Asset.find_all_by_id(params[:asset_ids].split).uniq }
     when :asset_names then { :assets => find_by_name(Asset, params[:asset_names]) }
-    when :sample_names 
+    when :sample_names
       asset_lookup_method = params[:plate_purpose_id].blank? ? :assets_of_request_type_for : :wells_on_specified_plate_purpose_for
       { :assets => send(asset_lookup_method, find_sample_by_name_or_sanger_sample_id(params[:sample_names])) }
 
@@ -148,7 +148,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
 
     params[:request_type] = params[:request_type].inject([]) do |array,(key, value)|
       array.tap { array[key.to_i] = value }
-    end 
+    end
   end
   private :request_type_from_hash_to_array
 
@@ -227,10 +227,10 @@ class Studies::Workflows::SubmissionsController < ApplicationController
 
           if params.fetch(:build_submission, "no") == "yes"
             flash[:notice] = "Submission successfully created"
-            format.html { redirect_to edit_submission_path(@submission, :submission_template_id => @submission_template_id) 
+            format.html { redirect_to edit_submission_path(@submission, :submission_template_id => @submission_template_id)
             }
           else
-            flash[:notice] = "Order successfully created." 
+            flash[:notice] = "Order successfully created."
             format.html { redirect_to new_study_workflow_submissions_path(@study, @workflow, :submission_template_id => @submission_template.id, :id => @submission.id) }
           end
         rescue Quota::Error => quota_exception

@@ -26,7 +26,7 @@ Feature: A request with no study should not raise an exception when viewing the 
       <user>abc123</user>
     </request>
     """
-  
+
   Scenario: A request without a request type
     Given I have a request 123 without a request type
       And I am on the XML show page for request 123

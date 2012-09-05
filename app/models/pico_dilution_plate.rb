@@ -3,7 +3,7 @@ class PicoDilutionPlate < DilutionPlate
   # sent to PicoGreen is likely to hold all the rececent PicoDilutionPlates
   @@per_page = 5000
   self.prefix = "PD"
-  
+
   def self.index_to_hash(pico_dilutions)
     pico_dilutions.map{ |pico_dilution| pico_dilution.to_hash }
   end
@@ -11,7 +11,7 @@ class PicoDilutionPlate < DilutionPlate
   def study_name
     study.try(:name) || ""
   end
-  
+
   def to_hash
     {:pico_dilution => {
         :child_barcodes => children.map{ |plate| plate.barcode_and_created_at_hash }

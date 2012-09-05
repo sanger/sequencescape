@@ -6,7 +6,7 @@ class  EgaAccessionService < AccessionService
   def accession_login
     configatron.ega_accession_login or raise RuntimeError,  "Can't find EGA accession login in configuration file"
   end
-  
+
   def sample_visibility(sample)
     Protect
   end
@@ -14,7 +14,7 @@ class  EgaAccessionService < AccessionService
   def study_visibility(study)
     Protect
   end
-  
+
   def broker
     "EGA"
   end

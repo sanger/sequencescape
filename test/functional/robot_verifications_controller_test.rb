@@ -60,7 +60,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
                             :destination_bed_barcodes => {"1" => "580000005842"},
                             :destination_plate_barcodes => {"142334" => "1220142334774"}
         end
-        
+
         should "be successful" do
           assert_response :success
           assert_equal @before_event_count+ 1, Event.count
@@ -79,7 +79,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
                               :destination_bed_barcodes => {"1" => ""},
                               :destination_plate_barcodes => {"142334" => ""}
           end
-          
+
           should "redirect and set the flash to error" do
             assert_response :redirect
             assert_not_nil @controller.session[:flash][:error].grep /Error/

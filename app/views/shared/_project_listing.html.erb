@@ -5,20 +5,20 @@
   <tr>
     <th class="label">Name</th>
     <th class="label">State</th>
-		<th class="label">Quota</th>
+    <th class="label">Quota</th>
   </tr>
 
 <% for project in @projects %>
   <tr>
     <td><%= link_to  "#{project.name}", project%></td>
     <td><%=h project.state %></td>
-		<% if current_user.privileged?(project) -%>
-		  <td>
-		    <%= link_to "Request quota increase", update_request_project_workflow_quotas_path(project, current_user.workflow) %>
-		  </td>
-		<% else -%>
-		<td></td>
-		<% end -%>
+    <% if current_user.privileged?(project) -%>
+      <td>
+        <%= link_to "Request quota increase", update_request_project_workflow_quotas_path(project, current_user.workflow) %>
+      </td>
+    <% else -%>
+    <td></td>
+    <% end -%>
   </tr>
 <% end %>
 

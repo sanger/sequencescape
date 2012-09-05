@@ -5,17 +5,17 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <%= stylesheet_link_tag "print" %>
   <%= stylesheet_link_tag "print",:media => "print" %>
-	<%= javascript_include_tag "prototype" %>
+  <%= javascript_include_tag "prototype" %>
   <%= javascript_include_tag "barcode" %>
   <title>Batch <%= @batch.id %></title>
 </head>
 <body>
-	
-	<% @plates.each do |plate| %>
-		<% robot_plate_layout = @batch.tecan_layout_plate_barcodes(plate.barcode) %> 
-		<%= render :partial => 'cherrypick_single_worksheet' , :locals => {:batch => @batch, :robot_plate_layout => robot_plate_layout, :plate_barcode => plate.barcode} %>
-	<hr>
-	<% end %>
+
+  <% @plates.each do |plate| %>
+    <% robot_plate_layout = @batch.tecan_layout_plate_barcodes(plate.barcode) %>
+    <%= render :partial => 'cherrypick_single_worksheet' , :locals => {:batch => @batch, :robot_plate_layout => robot_plate_layout, :plate_barcode => plate.barcode} %>
+  <hr>
+  <% end %>
   <% unless ["cucumber", "test"].include?(RAILS_ENV) %>
     <!-- window.print open a popup window that we can't control with capybara -->
   <script language="javascript">

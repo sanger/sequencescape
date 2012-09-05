@@ -12,7 +12,7 @@ Feature: Beginning with the API progress through pulldown to sequencing
 
     Given plate "1234567" with 3 samples in study "Study A" exists
     Given plate "1234567" has nonzero concentration results
-    
+
     Given I have a project called "Testing submission creation"
     And the UUID for the project "Testing submission creation" is "22222222-3333-4444-5555-000000000001"
     And project "Testing submission creation" has enough quotas
@@ -24,7 +24,7 @@ Feature: Beginning with the API progress through pulldown to sequencing
     Given the UUID for the well "Well_1234567_1" is "44444444-2222-3333-4444-000000000001"
     And the UUID for the well "Well_1234567_2" is "44444444-2222-3333-4444-000000000002"
     And the UUID for the well "Well_1234567_3" is "44444444-2222-3333-4444-000000000003"
-    
+
   Scenario: Create a submission where there are different number of lanes requested for 3 submissions
     Given I have an "active" study called "Study B"
     And the UUID for the study "Study B" is "22222222-3333-4444-6666-000000000000"
@@ -112,7 +112,7 @@ Feature: Beginning with the API progress through pulldown to sequencing
     When I press "Next step"
     When I press "Release this batch"
     Then I should see "Batch released!"
-    
+
     Given all library tube barcodes are set to know values
     Then library "3980000001795" should have 7 sequencing requests
     And library "3980000002808" should have 5 sequencing requests

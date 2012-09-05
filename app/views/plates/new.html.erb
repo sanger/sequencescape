@@ -1,12 +1,12 @@
 <% add :menu, "Sample Logistics homepage" => lab_sample_logistics_path %>
 <% semantic_form_for(:plates, :url => create_plates_path) do |form| %>
-	<% form.inputs :name => "Create Plates" do %>
-	  <%= form.input :user_barcode,    :input_html => {:onkeypress => "return disable_cr_and_change_focus(event,'user_barcode','plates_source_plates')" } %>
-  	<%= form.input :source_plates,   :as => :text,   :required => false %>
+  <% form.inputs :name => "Create Plates" do %>
+    <%= form.input :user_barcode,    :input_html => {:onkeypress => "return disable_cr_and_change_focus(event,'user_barcode','plates_source_plates')" } %>
+    <%= form.input :source_plates,   :as => :text,   :required => false %>
     <%= form.input :creator_id,      :as => :select, :collection => @plate_creators, :label => 'Plate purpose' %>
-  	<%= form.input :barcode_printer, :as => :select, :collection => @barcode_printers %>
-  	<%= form.commit_button %>
-	<% end %>
+    <%= form.input :barcode_printer, :as => :select, :collection => @barcode_printers %>
+    <%= form.commit_button %>
+  <% end %>
 <% end %>
 
 

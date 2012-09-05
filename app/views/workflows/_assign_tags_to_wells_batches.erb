@@ -1,44 +1,44 @@
 <% form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form", :multipart => true} do |form| %>
 <p>Assign tags to libraries on a plate</p>
   <table class="plate">
-  	<thead>
-  	  <tr>
-  		<% num_rows = Map.plate_length(@plate.size) -%>
-  		<% num_columns = Map.plate_width(@plate.size) -%>
-  		<th></th>
-  		<% num_columns.times do |column| -%>
-  			<th><%= column+1 %></th>
-  		<% end -%>
-  		<th class='border' width='2%'class='border' width='2%'></th>
-  		</tr>
-  	</thead>
-  	<tbody>
-  	<% num_rows.times do |row| -%>
-  		<tr>
-  			<% rowchar = (65+row).chr %>
-  			<td class='border' width='2%'><strong><%= rowchar %></strong></td>
-  			<% (num_columns).times do |column| -%>
-  			  <% well_name = "#{rowchar}#{column+1}" %>
-				  <% well = @plate.find_well_by_name(well_name) %>
+    <thead>
+      <tr>
+      <% num_rows = Map.plate_length(@plate.size) -%>
+      <% num_columns = Map.plate_width(@plate.size) -%>
+      <th></th>
+      <% num_columns.times do |column| -%>
+        <th><%= column+1 %></th>
+      <% end -%>
+      <th class='border' width='2%'class='border' width='2%'></th>
+      </tr>
+    </thead>
+    <tbody>
+    <% num_rows.times do |row| -%>
+      <tr>
+        <% rowchar = (65+row).chr %>
+        <td class='border' width='2%'><strong><%= rowchar %></strong></td>
+        <% (num_columns).times do |column| -%>
+          <% well_name = "#{rowchar}#{column+1}" %>
+          <% well = @plate.find_well_by_name(well_name) %>
 
-				  <% colour = well ? "colour#{@asset_ids_to_colour_index[well.id]%12}" : '' %>
-  				<td class="<%= colour %>" >
-  	  				<%= render :partial => "select_tag_for_well", :locals => { :well => well, :well_description => well_name, :tag => @tags_to_wells[well_name] } %>
-  					</td>
-  			<% end -%>
-  			<td class='border' width='2%'><strong><%= rowchar %></strong></td>
-  		</tr>
-  	<% end -%>
-  	<tr>
-  		<td></td>
-  		<% num_columns.times do |column| -%>
-  			<td><strong><%= column+1 %></strong></td>
-  		<% end -%>
-  		<td class='border' width='2%'class='border' width='2%'></td>
-  	</tr>
-  	</tbody>
+          <% colour = well ? "colour#{@asset_ids_to_colour_index[well.id]%12}" : '' %>
+          <td class="<%= colour %>" >
+              <%= render :partial => "select_tag_for_well", :locals => { :well => well, :well_description => well_name, :tag => @tags_to_wells[well_name] } %>
+            </td>
+        <% end -%>
+        <td class='border' width='2%'><strong><%= rowchar %></strong></td>
+      </tr>
+    <% end -%>
+    <tr>
+      <td></td>
+      <% num_columns.times do |column| -%>
+        <td><strong><%= column+1 %></strong></td>
+      <% end -%>
+      <td class='border' width='2%'class='border' width='2%'></td>
+    </tr>
+    </tbody>
   </table>
-  
+
   <% @plate.wells.each do |well| %>
     <label for="tag_<%= "#{well.id.to_s}" %>" style="display:none">Well <%= well.map.description %></label>
   <% end %>

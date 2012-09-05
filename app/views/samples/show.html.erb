@@ -70,13 +70,13 @@
   </div>
   <br />
 </div>
-  
+
 <div class='info'>
   <h3>STUDIES</h3>
   <div class='help'>
     This sample is associated with <%= pluralize @sample.studies.size, "study" %>.
   </div>
-  
+
   <% form_for :sample, :url => url_for({:controller => "samples", :id => @sample.id, :action => :add_to_study}), :html => {:method => :put} do |form| -%>
   <table width='100%'>
     <thead>
@@ -97,7 +97,7 @@
       <% if current_user.is_administrator? || current_user.is_manager?(@study) %>
       <tr>
         <td>
-          <%= label("study", "id", 'Add to study', :style => 'display:none') %> 
+          <%= label("study", "id", 'Add to study', :style => 'display:none') %>
           <%= collection_select("study", :id, @studies, :id, :name, :prompt => "Add to study") %>
         </td>
         <td><%= form.submit "Add" %></td>
@@ -111,9 +111,9 @@
 <div class='info'>
   <h3>ASSETS</h3>
   <div class='help'>
-    This sample is associated with <%= pluralize @sample.assets.size, "asset" %>. 
+    This sample is associated with <%= pluralize @sample.assets.size, "asset" %>.
   </div>
-  
+
   <table width='100%'>
     <thead>
       <tr>

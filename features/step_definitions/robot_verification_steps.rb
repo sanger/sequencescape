@@ -8,18 +8,18 @@ Given /^I have a released cherrypicking batch with (\d+) samples$/ do |number_of
   Given %Q{a plate template exists}
   Given %Q{a robot exists with barcode "444"}
   Given %Q{plate "1221234567841" has concentration and volume results}
-	When %Q{I follow "Start batch"}
-	When %Q{I select "testtemplate" from "Plate Template"}
-	And %Q{I fill in "Volume Required" with "13"}
-	And %Q{I fill in "Concentration Required" with "50"}
-	When %Q{I press "Next step"}
-	When %Q{I press "Next step"}
-	When %Q{I select "Infinium 670k" from "Plate Purpose"}
-	And %Q{I press "Next step"}
-	When %Q{I select "Genotyping freezer" from "Location"}
-	And %Q{I press "Next step"}
-	When %Q{I press "Release this batch"}
-	Given %Q{the last batch has a barcode of "550000555760"}
+  When %Q{I follow "Start batch"}
+  When %Q{I select "testtemplate" from "Plate Template"}
+  And %Q{I fill in "Volume Required" with "13"}
+  And %Q{I fill in "Concentration Required" with "50"}
+  When %Q{I press "Next step"}
+  When %Q{I press "Next step"}
+  When %Q{I select "Infinium 670k" from "Plate Purpose"}
+  And %Q{I press "Next step"}
+  When %Q{I select "Genotyping freezer" from "Location"}
+  And %Q{I press "Next step"}
+  When %Q{I press "Release this batch"}
+  Given %Q{the last batch has a barcode of "550000555760"}
 end
 
 
@@ -34,13 +34,13 @@ Given /^I have a released cherrypicking batch with 3 plates$/ do
 
   Given %Q{I have a Cherrypicking submission for asset group "Plate asset group"}
   Given %Q{I am on the show page for pipeline "Cherrypick"}
-  
+
   When %Q{I check "Select DN1S for batch"}
   When %Q{I check "Select DN10I for batch"}
   When %Q{I check "Select DN5W for batch"}
   And %Q{I select "Create Batch" from "action_on_requests"}
   And %Q{I press "Submit"}
-  
+
   # must use @javascript
   Given %Q{a plate barcode webservice is available and returns "99999"}
   Given %Q{a plate template exists}
@@ -48,19 +48,19 @@ Given /^I have a released cherrypicking batch with 3 plates$/ do
   Given %Q{plate "1220000010734" has concentration and volume results}
   Given %Q{plate "1220000001831" has concentration and volume results}
   Given %Q{plate "1220000005877" has concentration and volume results}
-  
-	When %Q{I follow "Start batch"}
-	When %Q{I select "testtemplate" from "Plate Template"}
-	And %Q{I fill in "Volume Required" with "13"}
-	And %Q{I fill in "Concentration Required" with "50"}
-	When %Q{I press "Next step"}
-	When %Q{I press "Next step"}
-	When %Q{I select "Infinium 670k" from "Plate Purpose"}
-	And %Q{I press "Next step"}
-	When %Q{I select "Genotyping freezer" from "Location"}
-	And %Q{I press "Next step"}
-	When %Q{I press "Release this batch"}
-	Given %Q{the last batch has a barcode of "550000555760"}
+
+  When %Q{I follow "Start batch"}
+  When %Q{I select "testtemplate" from "Plate Template"}
+  And %Q{I fill in "Volume Required" with "13"}
+  And %Q{I fill in "Concentration Required" with "50"}
+  When %Q{I press "Next step"}
+  When %Q{I press "Next step"}
+  When %Q{I select "Infinium 670k" from "Plate Purpose"}
+  And %Q{I press "Next step"}
+  When %Q{I select "Genotyping freezer" from "Location"}
+  And %Q{I press "Next step"}
+  When %Q{I press "Release this batch"}
+  Given %Q{the last batch has a barcode of "550000555760"}
 end
 
 Given /^I have a released cherrypicking batch with 1 plate which doesnt need buffer$/ do

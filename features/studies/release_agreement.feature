@@ -16,7 +16,7 @@ Feature: Studies have a release agreement
     When I press "Create"
     Then I should be on the study workflow page for "Testing release agreements"
     And I should see "Your study has been created"
-    
+
   Scenario: Using a non-standard agreement but no file uploaded
     Given I select "No" from "Will you be using WTSI's standard access agreement?"
     When I press "Create"

@@ -18,7 +18,7 @@
 <% end %>
 <% add :menu, "Fail batch" => url_for(:controller => :batches, :action => :fail, :id => @batch.id) %>
 
-<% if @batch.workflow.locale == "Internal" && ! @batch.pipeline.sequencing? %> 
+<% if @batch.workflow.locale == "Internal" && ! @batch.pipeline.sequencing? %>
   <% add :menu, "Release" => release_batch_url(@batch) %>
 <% end %>
 <% if @batch.has_limit? %>

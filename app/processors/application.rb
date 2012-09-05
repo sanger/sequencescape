@@ -1,5 +1,5 @@
 class ApplicationProcessor < ActiveMessaging::Processor
-  
+
   # Default on_error implementation - logs standard errors but keeps processing. Other exceptions are raised.
   # Have on_error throw ActiveMessaging::AbortMessageException when you want a message to be aborted/rolled back,
   # meaning that it can and should be retried (idempotency matters here).

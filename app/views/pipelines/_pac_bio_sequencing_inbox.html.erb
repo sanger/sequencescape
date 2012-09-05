@@ -5,13 +5,13 @@
 <% if @grouped_requests.empty? -%>
   There are no outstanding requests for this pipeline.
 <% else -%>
-	<%= render :partial => 'pipeline_paginate' %>
+  <%= render :partial => 'pipeline_paginate' %>
   <% form_tag({:controller => :batches, :action => :create, :id => @pipeline.id}, :id => "requests_to_batch_form") do -%>
     <% if @pipeline.item_limit -%>
       <input type="hidden" id="batch_item_limit" value="<%= @pipeline.item_limit %>" />
     <% end -%>
-    
-    
+
+
     <table width="100%" bgcolor="#edf5ff" cellpadding="2" cellspacing="0" class="sortable" id='request_inbox'>
       <thead>
         <tr>
@@ -24,7 +24,7 @@
           <% @information_types.each do |information_type| %>
             <% next if information_type.hide_in_inbox %>
             <th class='label' style='text-align: left' width='5%'><%= link_to "#{information_type.label}", "javascript:void(0);" %></th>
-          <% end %>    
+          <% end %>
           <th class='label' width='5%'><%= link_to "Study", "javascript:void(0);" %></th>
         </tr>
       </thead>
@@ -36,9 +36,9 @@
               <% request_item = request %>
               <td class="request" width='2%'>
               <%= hidden_label_tag_for_testing("select_all_group_#{index}", "Select Request Group #{index}") %>
-    		    <input type="checkbox" name="selectAll" onclick="select_requests_by_group(<%=  request_item.item_id %>,<%= requests.size %>, this.checked);" id="select_all_group_<%= index %>"></a>
-    		    <% index += 1 %>
-    		  </td>
+            <input type="checkbox" name="selectAll" onclick="select_requests_by_group(<%=  request_item.item_id %>,<%= requests.size %>, this.checked);" id="select_all_group_<%= index %>"></a>
+            <% index += 1 %>
+          </td>
               <td class="request" width='2%'><a href="javascript:void(0)" onclick="showElement(<%=  request_item.item_id %>,<%= requests.size %>); return false;"><%= image_tag "information.png", :size =>"13x13" %></a></td>
               <td class="request" width='5%'>&nbsp;</td>
               <td class='request' width='10%'><%= h(request.asset.display_name) %></td>
@@ -49,7 +49,7 @@
                 <td class='request' width='5%'><%= h(request.request_metadata[information_type.key]) %></td>
               <% end %>
               <td class='request' width='5%'><%= request.submission.name %></td>
-            </tr>        
+            </tr>
 
           <tr class="nested" id="<%= request_item.item_id %>_0" style="display:none">
              <td>&nbsp;</td>
@@ -61,15 +61,15 @@
           </tr>
             <%- requests.each_with_index do |request, indice| -%>
               <% request_comments = request.comments -%>
-    					<% request_asset = request.asset -%>
+              <% request_asset = request.asset -%>
               <% request_asset_comments = request_asset.comments -%>
               <% progr = indice + 1 %>
             <tr class="nested" id="<%= request_item.item_id %>_<%= progr.to_s %>" style="display:none">
               <td class="request" width='2%'>&nbsp;</td>
-              <td>                  
-    	        <%= label(:request, request.id, "Select Request #{indice}", :style => 'display:none') %>                                     
-    		    <%= check_box :request, request.id, :value => request.id %>
-    		  </td>
+              <td>
+              <%= label(:request, request.id, "Select Request #{indice}", :style => 'display:none') %>
+            <%= check_box :request, request.id, :value => request.id %>
+          </td>
               <td class='request' width='5%'><%= link_to request.id, "#{configatron.studies_url}/requests/#{request.id}" %></td>
               <td class='request' width='10%'><%= link_to request_asset.name, "#{configatron.studies_url}/assets/#{request.asset_id}" %></td>
              <td class='request' width='10%'><%=  link_to "#{request_asset.sti_type} #{request_asset.barcode}", "#{configatron.studies_url}/assets/#{request.asset_id}" %></td>
@@ -85,9 +85,9 @@
       </tbody>
     </table>
 
-    
-    
-	  <%= render :partial => 'inbox_submission_button' %>
+
+
+    <%= render :partial => 'inbox_submission_button' %>
   <% end -%>
 
  <%= render :partial => 'pipeline_paginate' %>

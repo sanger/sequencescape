@@ -15,7 +15,7 @@
       <td class="strong faint"><%= study_report.created_at.to_formatted_s(:sortable) %></td>
       <td>
         <% if study_report.user %>
-          
+
           <%= link_to study_report.user.login, study_reports_profile_path(study_report.user) %>
         <% end %>
       </td>

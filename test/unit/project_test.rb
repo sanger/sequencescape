@@ -194,7 +194,7 @@ class ProjectTest < ActiveSupport::TestCase
         end
 
         should 'not be actionable' do
-          assert !@project.actionable?   
+          assert !@project.actionable?
         end
 
         should 'not have quota for request type' do

@@ -1,27 +1,27 @@
 <table width="100%" cellspacing="0" cellpadding="0">
-	<tr>
-		<%= tabulated_error_messages_for "custom_text" %>
-	</tr>
-	<tr>
-		<td width="35%" class="item"><label for="custom_text_identifier">Custom text identifier:</label> </td>
-		<td width="65%"><%= form.text_field :identifier %></td>
-	</tr>
-	<tr>
-		<td width="35%" class="item"><label for="custom_text_differential">Custom text differential:</label> </td>
-		<td width="65%"><%= form.text_field :differential %></td>
-	</tr>
-	<tr>
-		<td width="35%" class="item"><label for="custom_text_content_type">Custom text content type:</label> </td>
-		<td width="65%"><%= form.text_field :content_type %></td>
-	</tr>
-	<tr>
-		<td width="35%" class="item"><label for="custom_text_content">Custom text content:</label> </td>
-		<td width="65%"><%= text_area :custom_text, :content, :cols => 40, :rows => 10 %></td>
-	</tr>
-	<tr>
-		<td width="35%" class="item">&nbsp;</td>
-		<td width="65%">
-			<%= form.submit %>
-		</td>
-	</tr>
+  <tr>
+    <%= tabulated_error_messages_for "custom_text" %>
+  </tr>
+  <tr>
+    <td width="35%" class="item"><label for="custom_text_identifier">Custom text identifier:</label> </td>
+    <td width="65%"><%= form.text_field :identifier %></td>
+  </tr>
+  <tr>
+    <td width="35%" class="item"><label for="custom_text_differential">Custom text differential:</label> </td>
+    <td width="65%"><%= form.text_field :differential %></td>
+  </tr>
+  <tr>
+    <td width="35%" class="item"><label for="custom_text_content_type">Custom text content type:</label> </td>
+    <td width="65%"><%= form.text_field :content_type %></td>
+  </tr>
+  <tr>
+    <td width="35%" class="item"><label for="custom_text_content">Custom text content:</label> </td>
+    <td width="65%"><%= text_area :custom_text, :content, :cols => 40, :rows => 10 %></td>
+  </tr>
+  <tr>
+    <td width="35%" class="item">&nbsp;</td>
+    <td width="65%">
+      <%= form.submit %>
+    </td>
+  </tr>
 </table>

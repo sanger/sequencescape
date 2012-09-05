@@ -4,7 +4,7 @@ Feature: Upload volume results from the volume checker robot
   Background:
     Given I am a "manager" user logged in as "user"
     And a study named "Study B" exists
-    
+
   Scenario: Update measured volume results on one plate
     Given I have a project called "Test project"
      And project "Test project" has enough quotas
@@ -155,7 +155,7 @@ Feature: Upload volume results from the volume checker robot
       | 222     | B10  | 0.0             |
       | 222     | B11  | 0.0             |
       | 222     | B12  | 0.0133          |
- 
+
 
   Scenario: Update plate where there is no barcode in first column
     Given study "Study B" has a plate "111" to be volume checked

@@ -102,7 +102,7 @@ class Well < Aliquot::Receptacle
   writer_for_well_attribute_as_float(:picked_volume)
 
   delegate_to_well_attribute(:gender_markers)
-  
+
   def update_gender_markers!(gender_markers, resource)
     if self.well_attribute.gender_markers == gender_markers
       gender_marker_event = self.events.find_by_family('update_gender_markers', :order => 'id desc')
@@ -114,16 +114,16 @@ class Well < Aliquot::Receptacle
     else
       self.events.update_gender_markers!(resource)
     end
-    
+
     self.well_attribute.update_attributes!(:gender_markers => gender_markers)
   end
-  
+
   def update_sequenom_count!(sequenom_count, resource)
     unless self.well_attribute.sequenom_count == sequenom_count
       self.events.update_sequenom_count!(resource)
     end
     self.well_attribute.update_attributes!(:sequenom_count => sequenom_count)
-    
+
   end
 
   # The sequenom pass value is either the string 'Unknown' or it is the combination of gender marker values.

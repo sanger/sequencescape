@@ -1,34 +1,34 @@
 <h2>Plate <%= plate.barcode %></h2>
 
 <table class="plate">
-	<thead>
-		<% num_rows = Map.plate_length(plate.size) -%>
-		<% num_columns = Map.plate_width(plate.size) -%>
-		<th></th>
-		<% num_columns.times do |column| -%>
-			<th><%= column+1 %></th>
-		<% end -%>
-		<th class='border' width='2%'></th>
-	</thead>
-	<tbody>
-	<% num_rows.times do |row| -%>
-		<tr>
-			<% rowchar = (65+row).chr %>
-			<th class='border' width='2%'><%= rowchar %></th>
-			<% (num_columns).times do |column| -%>
-				<td>
-					<%= render :partial => well_partial, :locals => {:well_request => @request_wells[plate.id]["#{rowchar}#{column+1}"], :plate => plate, :well_description => "#{rowchar}#{column+1}" } %>
-					</td>
-			<% end -%>
-			<th class='border' width='2%'><%= rowchar %></th>
-		</tr>
-	<% end -%>
-	<tr>
-		<th></th>
-		<% num_columns.times do |column| -%>
-			<th><%= column+1 %></th>
-		<% end -%>
-		<th class='border' width='2%'class='border' width='2%'></th>
-	</tr>
-	</tbody>
+  <thead>
+    <% num_rows = Map.plate_length(plate.size) -%>
+    <% num_columns = Map.plate_width(plate.size) -%>
+    <th></th>
+    <% num_columns.times do |column| -%>
+      <th><%= column+1 %></th>
+    <% end -%>
+    <th class='border' width='2%'></th>
+  </thead>
+  <tbody>
+  <% num_rows.times do |row| -%>
+    <tr>
+      <% rowchar = (65+row).chr %>
+      <th class='border' width='2%'><%= rowchar %></th>
+      <% (num_columns).times do |column| -%>
+        <td>
+          <%= render :partial => well_partial, :locals => {:well_request => @request_wells[plate.id]["#{rowchar}#{column+1}"], :plate => plate, :well_description => "#{rowchar}#{column+1}" } %>
+          </td>
+      <% end -%>
+      <th class='border' width='2%'><%= rowchar %></th>
+    </tr>
+  <% end -%>
+  <tr>
+    <th></th>
+    <% num_columns.times do |column| -%>
+      <th><%= column+1 %></th>
+    <% end -%>
+    <th class='border' width='2%'class='border' width='2%'></th>
+  </tr>
+  </tbody>
 </table>

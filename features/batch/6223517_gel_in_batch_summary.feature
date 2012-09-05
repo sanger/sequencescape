@@ -1,7 +1,7 @@
 @fragment @library_preparation @batch @javascript
 Feature: Fragment archive in library preparation batch
   Background:
-    Given I am logged in as "user" 
+    Given I am logged in as "user"
 
   Scenario: Add a fragment to batch
     Given I have a batch with 1 request for the "Illumina-C Library preparation" pipeline

@@ -14,7 +14,7 @@ end
 Given /^I have a PacBio submission$/ do
   project = Project.find_by_name("Test project")
   study = Study.find_by_name("Test study")
-  
+
   submission_template = SubmissionTemplate.find_by_name('PacBio')
   submission = submission_template.create_and_build_submission!(
     :study => study,
@@ -157,7 +157,7 @@ Then /^the PacBio sample prep worksheet should look like:$/ do |expected_results
   expected_results_table.diff!(actual_table)
 end
 
-Given /^I have progressed to the Reference Sequence task$/ do 
+Given /^I have progressed to the Reference Sequence task$/ do
   Given %Q{I have a PacBio sequencing batch}
   When %Q{I follow "Start batch"}
   When %Q{I fill in "Binding Kit Box Barcode" with "777"}

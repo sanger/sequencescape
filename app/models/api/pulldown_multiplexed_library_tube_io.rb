@@ -33,7 +33,7 @@ class Api::PulldownMultiplexedLibraryTubeIO < Api::Base
   with_association(:barcode_prefix) do
     map_attribute_to_json_attribute(:prefix, 'barcode_prefix')
   end
-  
+
   extra_json_attributes do |object, json_attributes|
     json_attributes["scanned_in_date"] = object.scanned_in_date if object.respond_to?(:scanned_in_date)
   end

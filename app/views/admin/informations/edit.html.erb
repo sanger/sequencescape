@@ -2,57 +2,57 @@
 <%- add :menu, "Back to search" => informations_url %>
 <% form_for :object, :url => update_information_url(@object), :html => {:method => :post} do |f| %>
 
-	<h1><%= link_to "#{@type} #{@id}", @object %></h1>
+  <h1><%= link_to "#{@type} #{@id}", @object %></h1>
 
-	<table width="100%" cellspacing="0" cellpadding="0">
-		<tr>
-			<%= tabulated_error_messages_for "object" %>
-		</tr>
-		<% if @object.respond_to?(:name) %>
-			<tr>
-				<td width="40%" class="item"><label for="name">Name:</label> <%= required_marker -%></td>
-				<td width="65%"><%= text_field_tag :name, @object.name %></td>
-			</tr>
-		<% end %>
+  <table width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+      <%= tabulated_error_messages_for "object" %>
+    </tr>
+    <% if @object.respond_to?(:name) %>
+      <tr>
+        <td width="40%" class="item"><label for="name">Name:</label> <%= required_marker -%></td>
+        <td width="65%"><%= text_field_tag :name, @object.name %></td>
+      </tr>
+    <% end %>
 
-		<tr>
-		<td width="100%" colspan=2>
-			<%= render :partial => "shared/edit_properties", :locals => { :item => @object } %>
-		</td>
-	  </tr>
+    <tr>
+    <td width="100%" colspan=2>
+      <%= render :partial => "shared/edit_properties", :locals => { :item => @object } %>
+    </td>
+    </tr>
 
-		<% unless  @missing_definitions.empty? %>
-			<tr>
-			<td width="100%" colspan=2>
-				<b>Missing definition</b>
-			</td>
-			</tr>
-			<% @missing_definitions.each do |property| %>
-				<tr>
-					<td width="40%" class="item"><%= property.name %></td>
-					<td width="60%"> <%= text_field_tag "missing_definition[#{property.key}]", property.value %></td>
-				</td>
-				</tr>
-		<% end %>
-		<% end %>
+    <% unless  @missing_definitions.empty? %>
+      <tr>
+      <td width="100%" colspan=2>
+        <b>Missing definition</b>
+      </td>
+      </tr>
+      <% @missing_definitions.each do |property| %>
+        <tr>
+          <td width="40%" class="item"><%= property.name %></td>
+          <td width="60%"> <%= text_field_tag "missing_definition[#{property.key}]", property.value %></td>
+        </td>
+        </tr>
+    <% end %>
+    <% end %>
 
-		<tr>
-		<td width="100%" colspan=2>
-			&nbsp;
-		</td>
-	  </tr>
+    <tr>
+    <td width="100%" colspan=2>
+      &nbsp;
+    </td>
+    </tr>
 
-		<tr>
-			<td>&nbsp;</td>
-			<td>
-				<%= submit_tag %> or
+    <tr>
+      <td>&nbsp;</td>
+      <td>
+        <%= submit_tag %> or
         <%= link_to "cancel", informations_url %>
-			</td>
-		</tr>
-	</table>
+      </td>
+    </tr>
+  </table>
 
-	<%= hidden_field_tag 'object[id]', @object.id %>
-	<%= hidden_field_tag 'object[type]', @object.class.to_s %>
+  <%= hidden_field_tag 'object[id]', @object.id %>
+  <%= hidden_field_tag 'object[type]', @object.class.to_s %>
 
 
 <% end %>

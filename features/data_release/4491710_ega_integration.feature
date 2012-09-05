@@ -2,14 +2,14 @@
 Feature: Generate accession nubmers for a sample
   Background:
     Given I am logged in as "user123"
-     
+
   Scenario: I am not the owner of a sample
     Given a study named "Study 4491710" exists
     Given study "Study 4491710" has a registered sample "Sample4491710"
     And an accession number is required for study "Study 4491710"
     Given I am on the show page for sample "Sample4491710"
     Then I should not see "Generate Accession Number"
-    
+
   Scenario: The sample has no study
     Given a sample named "Sample4491710" exists
     Given I am the owner of sample "Sample4491710"
@@ -38,8 +38,8 @@ Feature: Generate accession nubmers for a sample
     Given an accessioning webservice exists which returns a sample accession number "EGAN00001000234"
     When I follow "Generate Accession Number"
     Then I should not see "Accession number generated: EGAN00001000234"
-    
-  Scenario: Study doesn't have any of the required properties filled in 
+
+  Scenario: Study doesn't have any of the required properties filled in
     Given a study named "Study 4491710" exists
 
     Given study "Study 4491710" has a registered sample "Sample4491710"
@@ -53,9 +53,9 @@ Feature: Generate accession nubmers for a sample
     Given an accessioning webservice exists which returns a sample accession number "EGAN00001000234"
     When I follow "Generate Accession Number"
     Then I should not see "Accession number generated: EGAN00001000234"
-   
-    
-  Scenario Outline: Study doesn't have some of the required data release properties filled in 
+
+
+  Scenario Outline: Study doesn't have some of the required data release properties filled in
     Given a study named "Study 4491710" exists
     And the study "Study 4491710" is a "<type>" study
     And the title of study "Study 4491710" is "<title>"
@@ -78,7 +78,7 @@ Feature: Generate accession nubmers for a sample
     When I follow "Generate Accession Number"
     Then I should not see "Accession number generated: EGAN00001000234"
     # NOTE: strategy, timing and description cannot be empty by definition
-    Examples:                                 
+    Examples:
       | Strategy | title    | type                    | study_abstract |
       | open     | My title | Not specified           | abstract       |
       | managed  | My title | Not specified           | abstract       |
@@ -109,8 +109,8 @@ Feature: Generate accession nubmers for a sample
     Given an accessioning webservice exists which returns a sample accession number "<accession_number>"
     When I follow "Generate Accession Number"
     Then I should see "Accession number generated: <accession_number>"
-    
+
     Examples:
       | data_release_strategy | accession_number |
       | open                  | EGAN00001000234  |
-      | managed               | EGAN00001000234  |  
+      | managed               | EGAN00001000234  |

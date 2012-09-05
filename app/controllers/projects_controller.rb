@@ -53,7 +53,7 @@ class ProjectsController < ApplicationController
     @project.save!
 
     current_user.has_role('manager', @project)
-    
+
     # Creates an event when a new Project is created
     EventFactory.new_project(@project, current_user)
 
@@ -110,7 +110,7 @@ class ProjectsController < ApplicationController
   def related_studies
     @project = Project.find(params[:id])
     @studies = @project.studies
-    
+
     respond_to do |format|
       format.html
       format.xml

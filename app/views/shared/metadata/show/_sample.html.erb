@@ -42,8 +42,8 @@
     <% metadata_fields.with_options(:grouping => 'SRA Sample AN') do |group| %>
       <%= group.plain_value(:sample_ebi_accession_number) %>
     <% end %>
-    
-    <%= metadata_fields.association_attribute(:reference_genome, :name) %> 
+
+    <%= metadata_fields.association_attribute(:reference_genome, :name) %>
     <!-- array express field -->
     <%= metadata_fields.plain_value(:genotype) %>
     <%= metadata_fields.plain_value(:phenotype) %>

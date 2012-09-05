@@ -18,9 +18,9 @@ class DnaQcTask < Task
       @gel_value             = well.get_gel_pass
       @sequenom_count        = well.get_sequenom_count
       @initial_concentration = well.get_concentration
-      @gender_value          = primary_sample.try(:sample_metadata).try(:gender) 
+      @gender_value          = primary_sample.try(:sample_metadata).try(:gender)
       @gender_markers_value  = well.get_gender_markers
-      @sequenom_value        = "#{@sequenom_count}/30 #{@gender_markers_value}" 
+      @sequenom_value        = "#{@sequenom_count}/30 #{@gender_markers_value}"
       @volume                = well.well_attribute.measured_volume
     end
 
@@ -35,7 +35,7 @@ class DnaQcTask < Task
       else ""
       end
     end
-    
+
     def sample_name_empty
       case
       when sample_empty then "fail"
@@ -48,7 +48,7 @@ class DnaQcTask < Task
       when pico_value ==  "Pass" || pico_value ==  "passed" then "pass"
       when pico_value == "ungraded" || pico_value == "repeat" then "*"
       when pico_value == "failed" then "fail"
-      when ["Too Low To Normalise"].include?(pico_value) then "fail"        
+      when ["Too Low To Normalise"].include?(pico_value) then "fail"
       else ""
       end
     end

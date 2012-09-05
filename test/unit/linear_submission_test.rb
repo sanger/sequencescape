@@ -320,10 +320,10 @@ class LinearSubmissionTest < ActiveSupport::TestCase
         @pe_request_type = Factory :request_type, :asset_type => "LibraryTube", :initial_state => "pending", :name => "PE sequencing", :order => 2, :key => "pe_sequencing"
         @se_request_type = Factory :request_type, :asset_type => "LibraryTube", :initial_state => "pending", :name => "SE sequencing", :order => 2, :key => "se_sequencing"
 
-        Factory :project_quota, :project => @project, :limit => 20, :request_type => @mx_request_type 
+        Factory :project_quota, :project => @project, :limit => 20, :request_type => @mx_request_type
         Factory :project_quota, :project => @project, :limit => 60, :request_type => @lib_request_type
-        Factory :project_quota, :project => @project, :limit => 60, :request_type => @pe_request_type 
-        Factory :project_quota, :project => @project, :limit => 0, :request_type => @se_request_type 
+        Factory :project_quota, :project => @project, :limit => 60, :request_type => @pe_request_type
+        Factory :project_quota, :project => @project, :limit => 0, :request_type => @se_request_type
 
         @submission_with_multiplication_factor = LinearSubmission.build!(
           :study            => @study,

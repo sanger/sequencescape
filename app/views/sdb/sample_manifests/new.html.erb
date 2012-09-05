@@ -15,7 +15,7 @@
       <%= form.input :count, :input_html => { :size => 3, :value => "1" } %>
       <%= form.input :barcode_printer,  :as => :select, :collection => @barcode_printers %>
   <% elsif params[:type] == '2dtube' %>
-    <% 1.upto(params[:count].to_i) do |i| %> 
+    <% 1.upto(params[:count].to_i) do |i| %>
       Rack <%= i %> <%= file_field_tag "2d_file_#{i}" %><br />
     <% end %>
   <% else %>
@@ -27,6 +27,6 @@
     <%= form.input :asset_type, :value => params[:type], :as => :hidden %>
     <%= form.commit_button 'Create manifest and print labels' %>
   <% end %>
-  
+
 
 <% end %>

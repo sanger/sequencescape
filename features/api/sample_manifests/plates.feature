@@ -22,7 +22,7 @@ Feature: Access sample manifests through the API
     Given the "96 Well Plate" barcode printer "d999bc" exists
     And the plate barcode webservice returns "1234567"
 
-  @read 
+  @read
   Scenario: Reading the JSON for a UUID
     Given the sample manifest exists with ID 1
     And the UUID for the sample manifest with ID 1 is "00000000-1111-2222-3333-444444444444"

@@ -23,13 +23,13 @@ Feature: Pipeline shows status of requests in pipeline
     And sample "SampleToFail" is in a sample tube named "TubeToFail"
     And study "Priority Study" has made the following "Library creation" requests:
     | state   | count| asset      | sample      |
-    | started | 1    | TubeToPass | SampletoPass| 
+    | started | 1    | TubeToPass | SampletoPass|
     | failed  | 1    | TubeToFail | SampleToFail|
 
  # to be implemented!
  # And study "Priority Study" has made the following "Cluster formation SE" requests:
  #   | state   | count| asset      | sample      |
- #   | pending | 1    | TubeToPass | SampletoPass| 
+ #   | pending | 1    | TubeToPass | SampletoPass|
  #   | pending | 1    | TubeToFail | SampleToFail|
 
   Scenario: I can see the sample in the asset

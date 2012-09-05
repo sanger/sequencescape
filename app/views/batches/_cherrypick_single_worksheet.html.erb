@@ -1,45 +1,45 @@
   <div id="header">
       <h1>Batch <%= batch.id %> - <%= batch.study.name %></h1>
-			<div id="batchbarcode_<%= plate_barcode %>">
-			  <img src='<%= "#{configatron.barcode_images_url}/barcode_images/ean13/0#{Barcode.calculate_barcode('BA',batch.id)}" %>' alt="batchbarcode_<%= plate_barcode %>"/>
-			</div>
-	</div>
+      <div id="batchbarcode_<%= plate_barcode %>">
+        <img src='<%= "#{configatron.barcode_images_url}/barcode_images/ean13/0#{Barcode.calculate_barcode('BA',batch.id)}" %>' alt="batchbarcode_<%= plate_barcode %>"/>
+      </div>
+  </div>
 
-	<div id="plate_details">
-	<div id="sourceplates">
-	<h2>Source plates</h2>
+  <div id="plate_details">
+  <div id="sourceplates">
+  <h2>Source plates</h2>
   <table>
      <thead>
        <tr>
          <th>Bed</th>
          <th>Plate name</th>
          <th>Barcode</th>
-				 <th>Storage Area</th>
-				 <th>Freezer</th>
-				 <th>Building Area</th>
+         <th>Storage Area</th>
+         <th>Freezer</th>
+         <th>Building Area</th>
        </tr>
      </thead>
      <tbody>
-			 <% source_plate_colour = {} %>
+       <% source_plate_colour = {} %>
        <% robot_plate_layout[1].sort{|a,b| a[1]<=>b[1]}.each do |barcode,index| -%>
          <% plate = Plate.with_machine_barcode(barcode).first %>
          <% location_data = plate.get_storage_location %>
-				 <% source_plate_colour["#{barcode}"] = "colour#{index%12}" %>
+         <% source_plate_colour["#{barcode}"] = "colour#{index%12}" %>
        <tr>
          <td>SCRC<%= index %></td>
          <td><%= plate.barcode %></td>
          <td><strong><%= barcode %></strong></td>
-				 <td><%= location_data["storage_area"] %></td>
-				 <td><%= location_data["storage_device"] %></td>
-			   <td><%= location_data["building_area"] %> - <%= location_data["building"] %></td>
+         <td><%= location_data["storage_area"] %></td>
+         <td><%= location_data["storage_device"] %></td>
+         <td><%= location_data["building_area"] %> - <%= location_data["building"] %></td>
        </tr>
        <% end -%>
      </tbody>
    </table>
-	</div>
+  </div>
 
-	<div id="destinationplates">
-	<h2>Destination plate</h2>
+  <div id="destinationplates">
+  <h2>Destination plate</h2>
   <table>
      <thead>
        <tr>
@@ -59,70 +59,70 @@
        <% end -%>
      </tbody>
    </table>
-	</div>
-	</div>
+  </div>
+  </div>
 
 
-	<div id="plate_layouts">
+  <div id="plate_layouts">
 <% robot_plate_layout[0].sort{|a,b| a[1]<=>b[1]}.each do |barcode,index| -%>
-		<% plate = Plate.find_by_barcode(Barcode.split_barcode(barcode)[1]) %>
+    <% plate = Plate.find_by_barcode(Barcode.split_barcode(barcode)[1]) %>
     <% if plate.buffer_required? %>
       <h3> Buffer Required </h3>
     <% end %>
 <table class="plate_layout">
-	<thead>
-	  <tr>
-		<% plate = Plate.find_by_barcode(Barcode.split_barcode(barcode)[1]) %>
-		<% num_rows = Map.plate_length(plate.size) -%>
-		<% num_columns = Map.plate_width(plate.size) -%>
-		<th></th>
-		<% num_columns.times do |column| -%>
-			<th><%= column+1 %></th>
-		<% end -%>
-		<th></th>
-		</tr>
-	</thead>
-	<tbody>
-	<% num_rows.times do |row| -%>
-		<tr>
-			<% rowchar = (65+row).chr %>
-			<td><strong><%= rowchar %></strong></td>
-			<% (num_columns).times do |column| -%>
-					<% well = plate.find_well_by_name("#{rowchar}#{column+1}") -%>
+  <thead>
+    <tr>
+    <% plate = Plate.find_by_barcode(Barcode.split_barcode(barcode)[1]) %>
+    <% num_rows = Map.plate_length(plate.size) -%>
+    <% num_columns = Map.plate_width(plate.size) -%>
+    <th></th>
+    <% num_columns.times do |column| -%>
+      <th><%= column+1 %></th>
+    <% end -%>
+    <th></th>
+    </tr>
+  </thead>
+  <tbody>
+  <% num_rows.times do |row| -%>
+    <tr>
+      <% rowchar = (65+row).chr %>
+      <td><strong><%= rowchar %></strong></td>
+      <% (num_columns).times do |column| -%>
+          <% well = plate.find_well_by_name("#{rowchar}#{column+1}") -%>
 
-					<% if  well.present? -%>
-					<% request = batch.requests.find_by_target_asset_id(well.id)  %>
-					  <% if well.parent.present?  &&  request.present?-%>
-					    <% source_well = request.asset %>
-							<% if source_well.plate.is_a?(ControlPlate) %>
-							  <td class="control">
-							<% elsif source_well.is_a?(Well) %>
-								<td class="<%= source_plate_colour[source_well.plate.ean13_barcode.to_s]%> ">
-							<% else %>
-								<td>
-							<% end -%>
-							<%= source_well.map.description %>
-							<%= source_well.plate.barcode %>
-							v<%= well.get_picked_volume.to_i %> b<%= well.get_buffer_volume.to_i %>
-						<% else %>
-						<td>
-						<% end -%>
-					<% else %>
-					<td>
-					<% end -%>
-					</td>
-			<% end -%>
-			<td><strong><%= rowchar %></strong></td>
-		</tr>
-	<% end -%>
-	<tr>
-		<th></th>
-		<% num_columns.times do |column| -%>
-			<th><%= column+1 %></th>
-		<% end -%>
-		<th></th>
-	</tr>
-	</tbody>
+          <% if  well.present? -%>
+          <% request = batch.requests.find_by_target_asset_id(well.id)  %>
+            <% if well.parent.present?  &&  request.present?-%>
+              <% source_well = request.asset %>
+              <% if source_well.plate.is_a?(ControlPlate) %>
+                <td class="control">
+              <% elsif source_well.is_a?(Well) %>
+                <td class="<%= source_plate_colour[source_well.plate.ean13_barcode.to_s]%> ">
+              <% else %>
+                <td>
+              <% end -%>
+              <%= source_well.map.description %>
+              <%= source_well.plate.barcode %>
+              v<%= well.get_picked_volume.to_i %> b<%= well.get_buffer_volume.to_i %>
+            <% else %>
+            <td>
+            <% end -%>
+          <% else %>
+          <td>
+          <% end -%>
+          </td>
+      <% end -%>
+      <td><strong><%= rowchar %></strong></td>
+    </tr>
+  <% end -%>
+  <tr>
+    <th></th>
+    <% num_columns.times do |column| -%>
+      <th><%= column+1 %></th>
+    <% end -%>
+    <th></th>
+  </tr>
+  </tbody>
 </table>
 
 <% end -%>
@@ -132,4 +132,4 @@
 
 
   <div id="footer">Created: <%= batch.updated_at.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= batch.user.login %> -
-	Printed: <%= Time.now.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= current_user.login %></div>
+  Printed: <%= Time.now.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= current_user.login %></div>

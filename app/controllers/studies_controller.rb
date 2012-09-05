@@ -179,7 +179,7 @@ class StudiesController < ApplicationController
 
     #TODO create a proper ReversedStudyRelation
     @relations = @study.study_relations.map { |r| [r.related_study, r.name ] } +
-      @study.reversed_study_relations.map { |r| [r.study, r.reversed_name ] } 
+      @study.reversed_study_relations.map { |r| [r.study, r.reversed_name ] }
 
   end
 
@@ -437,22 +437,22 @@ class StudiesController < ApplicationController
      @study = Study.find(params[:id])
      @projects = @study.projects.paginate :page => params[:page]
    end
-   
+
    def sample_manifests
      @study = Study.find(params[:id])
      @sample_manifests = @study.sample_manifests.paginate(:page => params[:page])
    end
-   
+
    def suppliers
      @study = Study.find(params[:id])
      @suppliers = @study.suppliers.paginate(:page => params[:page])
    end
-     
+
    def study_reports
      @study = Study.find(params[:id])
      @study_reports = StudyReport.without_files.for_study(@study).paginate(:page => params[:page], :order => 'id DESC')
    end
-   
+
 
   private
 

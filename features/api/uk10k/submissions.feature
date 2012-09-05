@@ -126,7 +126,7 @@ Feature: Creating submissions
       }
       """
 
-  @submit @error 
+  @submit @error
   Scenario Outline: Attempting to submit a submission that has been readied
     Given 3 sample tubes exist with names based on "sampletube" and IDs starting at 1
     And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"

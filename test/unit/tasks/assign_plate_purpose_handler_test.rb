@@ -4,7 +4,7 @@ class DummyWorkflowController < WorkflowsController
   attr_accessor :potential_plate_purposes
   attr_accessor :batch
   attr_accessor :flash
-  
+
   def initialize
     @flash = {}
   end
@@ -33,7 +33,7 @@ class AssignPlatePurposeHandlerTest < ActiveSupport::TestCase
         should "not try to save the batch but instead return false" do
           assert_equal false, @return_value
         end
-        
+
         should "set a flash[:error] message" do
           assert_not_nil @workflows_controller.flash[:error]
         end
@@ -47,11 +47,11 @@ class AssignPlatePurposeHandlerTest < ActiveSupport::TestCase
           @workflows_controller.batch.expects(:save!).returns(true)
           @return_value = @workflows_controller.do_assign_plate_purpose_task(@task,@params)
         end
-      
+
         should "return true." do
           assert_equal true, @return_value
         end
-        
+
         should "set a flash[:notice] for success" do
           assert_not_nil @workflows_controller.flash[:notice]
         end

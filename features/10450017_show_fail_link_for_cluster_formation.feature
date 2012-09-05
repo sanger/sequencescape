@@ -1,7 +1,7 @@
 @batch
 Feature: Show link "Fail" only for cluster formation pipeline
 
-Background: 
+Background:
   Given I am logged in as "user"
   And I am on the homepage
 
@@ -12,8 +12,8 @@ Background:
     And I am on the last batch show page
     Then I should see "This batch belongs to pipeline: <pipeline_type>"
     And I should see "Fail batch or items"
-  
-  Examples: 
+
+  Examples:
     | pipeline_type                                   |
     | Cluster formation SE                            |
     | Cluster formation PE                            |

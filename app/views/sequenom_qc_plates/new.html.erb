@@ -3,14 +3,14 @@
 <%# This form uses tag helpers rather than form helpers because %>
 <%# we're using some non-database backed attributes in our model %>
 <% form_tag(sequenom_qc_plates_path) do %>
-  
+
   <fieldset>
     <legend>User</legend>
     <%= label_tag :user_barcode, "User barcode" %>
     <%= text_field_tag "user_barcode", '', :onkeypress => "return disable_cr_and_change_focus(event,'user_barcode','input_plate_names_1')" %>
     <br />
   </fieldset>
-  
+
   <fieldset>
     <legend>Input Plate Barcodes</legend>
 
@@ -33,7 +33,7 @@
     <%= check_box_tag :gender_check_bypass %>
     <%- end -%>
   </fieldset>
-  
+
   <fieldset id="barcode_printing">
     <legend>Labels</legend>
     <%= label_tag :barcode_printer_id, "Barcode Printer"%>
@@ -41,6 +41,6 @@
     <%= label_tag :number_of_barcodes, "Number of Plates"%>
     <%= text_field_tag "number_of_barcodes", "2" %>
   </fieldset>
-  
+
   <%= submit_tag "Create new Plate" %>
 <% end -%>

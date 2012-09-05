@@ -19,7 +19,7 @@ class BatchTest < ActiveSupport::TestCase
       assert_equal @batch.aasm_current_state, :started
       assert_equal @batch.started?, true
     end
-    
+
     context "with a pipeline" do
       setup do
         @batch = @pipeline.batches.create!
@@ -28,19 +28,19 @@ class BatchTest < ActiveSupport::TestCase
         setup do
           @pipeline.workflow.update_attributes!(:locale => 'Internal')
         end
-    
+
         should "initially not be #externally_released? then be #externally_released?" do
           assert_equal @batch.externally_released?, false
           @batch.release!(Factory(:user))
           assert_equal @batch.externally_released?, true
         end
       end
-    
+
       context "workflow is external and released?" do
         setup do
           @pipeline.workflow.update_attributes!(:locale => 'External')
         end
-    
+
         should "initially not be #internally_released? then be #internally_released? and return the pipelines first workflow" do
           assert_equal @batch.internally_released?, false
           @batch.release!(Factory(:user))
@@ -49,14 +49,14 @@ class BatchTest < ActiveSupport::TestCase
       end
     end
   end
-  
+
   context "Batch#add_control" do
     setup do
       @control = Factory :control
       @batch = @pipeline.batches.create!
       @batch.add_control(@control.name, 2)
     end
-  
+
     should_change("BatchRequest.count", :by => 2) { BatchRequest.count }
   end
 
@@ -100,7 +100,7 @@ class BatchTest < ActiveSupport::TestCase
     end
 
   end
-  
+
   context "when batch is created" do
     setup do
       @request1 = @pipeline.request_types.last.create!(:asset => Factory(:sample_tube), :target_asset => Factory(:empty_library_tube))
@@ -120,7 +120,7 @@ class BatchTest < ActiveSupport::TestCase
       assert_equal :started, @batch.aasm_current_state
       assert_equal :started, @batch.requests(true).first.aasm_current_state
     end
-    
+
     context "#remove_request_ids" do
       context "with 2 requests" do
         context "where 1 needs to be removed" do
@@ -152,7 +152,7 @@ class BatchTest < ActiveSupport::TestCase
     end
 
   end
-  
+
   context "batch #has_event(event_name)" do
     setup do
       @batch = @pipeline.batches.create!
@@ -179,8 +179,8 @@ class BatchTest < ActiveSupport::TestCase
       end
     end
   end
-  
-  
+
+
   context "#requests_by_study" do
     setup do
       @pipeline.workflow.update_attributes!(:locale => 'Internal')
@@ -227,8 +227,8 @@ class BatchTest < ActiveSupport::TestCase
       end
     end
   end
-  
-  
+
+
   context "#plate_ids_in_study" do
     setup do
       @batch = @pipeline.batches.create!
@@ -255,7 +255,7 @@ class BatchTest < ActiveSupport::TestCase
 
         @plate2 = Factory :plate
         @well2 = Factory :well, :plate => @plate2
-      
+
         @batch.requests = [
           @pipeline.request_types.last.create!(:study => @study1, :asset => @well1),
           @pipeline.request_types.last.create!(:study => @study1, :asset => @well2)
@@ -831,7 +831,7 @@ class BatchTest < ActiveSupport::TestCase
         assert_equal @task2, @batch.last_completed_task
       end
     end
-    
+
     context "#output_plate_purpose" do
       setup do
         @batch = @pipeline.batches.create!
@@ -889,7 +889,7 @@ class BatchTest < ActiveSupport::TestCase
         end
 
         should "should do no assignments but raise a RuntimeError" do
-          assert_raise(RuntimeError) { 
+          assert_raise(RuntimeError) {
             @batch.set_output_plate_purpose(@plate_purpose)
           }
         end

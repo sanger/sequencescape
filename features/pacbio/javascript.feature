@@ -7,7 +7,7 @@ Feature: Push samples through the PacBio pipeline with javascript
     And project "Test project" has enough quotas
     Given I have an active study called "Test study"
     Given I am on the show page for study "Test study"
-    
+
     Given I have a sample tube "111" in study "Test study" in asset group "Test study group"
     Given the "1D Tube" barcode printer "xyz" exists
     Given the "96 Well Plate" barcode printer "xyz" exists
@@ -15,16 +15,16 @@ Feature: Push samples through the PacBio pipeline with javascript
     Given the sample validation webservice returns "true"
       And the reference genome "Mouse" exists
     Given the study "Test study" has a reference genome of "Mouse"
-    
+
   Scenario: Enough SMRTcells requested to cover multiple wells
     Given sample tube "111" is part of study "Test study"
     Given I have a "PacBio" submission with the following setup:
-       | Project         | Test project     | 
-       | Study           | Test study       | 
-       | Asset Group     | Test study group | 
-       | Insert size     | 2000             | 
-       | Sequencing type | Standard         | 
-       | multiplier#2    | 22               | 
+       | Project         | Test project     |
+       | Study           | Test study       |
+       | Asset Group     | Test study group |
+       | Insert size     | 2000             |
+       | Sequencing type | Standard         |
+       | multiplier#2    | 22               |
     #When I follow "Create Submission"
     #When I select "PacBio" from "Template"
     #And I press "Next"
@@ -82,9 +82,9 @@ Feature: Push samples through the PacBio pipeline with javascript
     When I press "Release this batch"
     Then I should see "Batch released!"
     When I follow "Print plate labels"
-  	Then I should see "99999"
-  	When I press "Print labels"
-  	Then I should see "Your labels have been printed"
+    Then I should see "99999"
+    When I press "Print labels"
+    Then I should see "Your labels have been printed"
 
   Scenario: Print out the library tube barcodes
     Given I have a PacBio Sample Prep batch

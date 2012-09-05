@@ -10,9 +10,9 @@ Feature: Recycling requests in the Cherrypicking pipeline
     # All of this to create a batch in the cherrypicking pipeline ...
     Given study "Testing batch request recycling" has an asset group called "My asset group" with 5 wells
     And I have a "Cherrypick" submission with the following setup:
-	    | Asset Group | My asset group |
-	    | Project | Testing batch request recycling |
-	    | Study |     Testing batch request recycling |
+      | Asset Group | My asset group |
+      | Project | Testing batch request recycling |
+      | Study |     Testing batch request recycling |
     Given 1 pending delayed jobs are processed
 
 

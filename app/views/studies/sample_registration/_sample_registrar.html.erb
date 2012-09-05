@@ -81,7 +81,7 @@
             <% metadata_fields.with_options(:grouping => 'SRA Sample AN') do |group| %>
               <%= group.header(:sample_ebi_accession_number) %>
             <% end %>
-            
+
             <%= metadata_fields.header(:reference_genome) %>
 
             <!-- array express field -->
@@ -185,7 +185,7 @@
               <% metadata_fields.with_options(:grouping => 'SRA Sample AN') do |group| %>
                 <%= group.text_field(:sample_ebi_accession_number) %>
               <% end %>
-              
+
               <%= metadata_fields.select_by_association(:reference_genome)%>
               <!-- array express field -->
               <%metadata_fields.with_options(:grouping => 'Array Express') do |group| %>

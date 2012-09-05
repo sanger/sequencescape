@@ -1,6 +1,6 @@
 @study @asset @sample @javascript @wip @to_fix @or_delete
 Feature: Rename Asset and Sample
-  Background: 
+  Background:
     Given I am a "administrator" user logged in as "user"
     And I am on the homepage
 
@@ -28,7 +28,7 @@ Feature: Rename Asset and Sample
     Then I should see "Sample_10021931_Salmonella_4"
     And I should see "Asset_10021931_Salmonella_2"
     When I check "Select ALL Samples"
-    When I check "Select ALL Assets"  
+    When I check "Select ALL Assets"
     And I fill in "Replace:" with "Salmonella"
     And I fill in "With:" with "Tuberculosis"
     When I press "Save changes"
@@ -51,7 +51,7 @@ Feature: Rename Asset and Sample
     Then I should see "Sample_10021931_Salmonella_1"
     And I should see "Asset_10021931_Salmonella_1"
     When I check "Select ALL Samples"
-    When I check "Select ALL Assets"  
+    When I check "Select ALL Assets"
     And I fill in "Replace:" with "Salmonella"
     When I press "Save changes"
     Then I should see "Failed! Please, read the list of problem below."

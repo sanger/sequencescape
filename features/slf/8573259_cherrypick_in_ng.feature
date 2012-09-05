@@ -1,7 +1,7 @@
 @nano_grams @cherrypicking_for_pulldown @cherrypicking @barcode-service @pulldown @tecan
 Feature: Pick a ng quantity using the Tecan robot
 
-  Background: 
+  Background:
     Given I am an "manager" user logged in as "john"
 
   @gwl
@@ -135,17 +135,17 @@ Feature: Pick a ng quantity using the Tecan robot
     """
     When I follow "Print worksheet for Plate 99999"
     Then I should see the cherrypick worksheet table:
-     | 1                           | 2                           | 
-     | B1        222        v10 b0 | C5        333        v2 b8  | 
-     | B2        222        v9 b1  | C6        333        v2 b8  | 
-     | B3        222        v8 b2  | C7        333        v2 b8  | 
-     | B4        222        v7 b3  | C8        333        v2 b8  | 
-     | B5        222        v6 b4  | D1        333        v10 b0 | 
-     | B6        222        v5 b5  | D2        333        v10 b0 | 
-     | C3        333        v30 b0 | D3        333        v15 b0 | 
-     | C4        333        v1 b9  | D4        333        v20 b0 | 
-     | 1                           | 2                           | 
-     
+     | 1                           | 2                           |
+     | B1        222        v10 b0 | C5        333        v2 b8  |
+     | B2        222        v9 b1  | C6        333        v2 b8  |
+     | B3        222        v8 b2  | C7        333        v2 b8  |
+     | B4        222        v7 b3  | C8        333        v2 b8  |
+     | B5        222        v6 b4  | D1        333        v10 b0 |
+     | B6        222        v5 b5  | D2        333        v10 b0 |
+     | C3        333        v30 b0 | D3        333        v15 b0 |
+     | C4        333        v1 b9  | D4        333        v20 b0 |
+     | 1                           | 2                           |
+
   Scenario: Try to cherrypick where 1 well has no concentration
     Given a plate barcode webservice is available and returns "99999"
     Given I have a plate "222" with the following wells:
@@ -164,7 +164,7 @@ Feature: Pick a ng quantity using the Tecan robot
       | Quantity to pick  | 1000 |
     And I press "Next step"
     Then I should see "Missing measured concentration for well DN222J:B2"
-  
+
    Scenario: Try to cherrypick where 1 well has no volume
      Given a plate barcode webservice is available and returns "99999"
      Given I have a plate "222" with the following wells:
@@ -183,7 +183,7 @@ Feature: Pick a ng quantity using the Tecan robot
        | Quantity to pick  | 1000 |
      And I press "Next step"
     Then I should see "Missing measured volume for well DN222J:B2"
-     
+
    Scenario Outline: Invalid picking options
      Given I have a plate "222" with the following wells:
        | well_location | measured_concentration | measured_volume |
@@ -210,4 +210,4 @@ Feature: Pick a ng quantity using the Tecan robot
        | 10             | 0.0            | 1.0       |
        | 10             | 5              | 1000      |
 
-    
+

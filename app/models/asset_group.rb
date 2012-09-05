@@ -12,8 +12,8 @@ class AssetGroup < ActiveRecord::Base
 
   validates_presence_of :name, :study
   validates_uniqueness_of :name
-  
-  
+
+
 
   named_scope :for_search_query, lambda { |query| { :conditions => [ 'name LIKE ?', "%#{query}%" ] } }
 

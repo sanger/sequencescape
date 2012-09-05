@@ -76,7 +76,7 @@ class SampleManifestTest < ActiveSupport::TestCase
         assert_not_nil @well_with_sample_and_plate.plate.events.last
       end
     end
-    
+
   end
 
   # This is testing a specific case pulled from production where the size of the delayed job 'handler' column was

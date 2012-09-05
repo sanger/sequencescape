@@ -7,7 +7,7 @@ Feature: Added a new js version. Check that submission continues to work and Pro
     And user "abc123" is a "manager" of study "Study B"
     And I have an "approved" project called "Project B"
     And the project "Project B" has quotas and quotas are enforced
-    
+
     Given I am visiting study "Study B" homepage
     Then I should see "Study B"
     And the study "Study B" has an asset group of 10 samples called "asset_group_1"
@@ -18,7 +18,7 @@ Feature: Added a new js version. Check that submission continues to work and Pro
     Given I have a project called "Test 1"
     Given I have a project called "Test 2"
     Given I have a project called "Surf_1"
-    Given I have a project called "Woolfinite"    
+    Given I have a project called "Woolfinite"
     Given I am visiting study "Study B" homepage
 
 

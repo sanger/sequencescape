@@ -15,8 +15,8 @@ end
 
 Given /^I am an? "([^\"]*)" user logged in as "([^\"]*)"$/ do |type_of_user, login|
   wk = Submission::Workflow.first(:conditions => { :key => 'short_read_sequencing' }) or
-    raise 'Cannot find Next-gen sequencing workflow'  
-  
+    raise 'Cannot find Next-gen sequencing workflow'
+
   @current_user = User.create!(
     :login => login,
     :first_name => "John",
@@ -52,7 +52,7 @@ Given /^I have a single sign\-on token for "(.*)"$/ do |login|
     :login => login,
     :password => 'generic',
     :password_confirmation => 'generic',
-    :email => "#{login}@example.com" 
+    :email => "#{login}@example.com"
   )
   cookies[:WTSISignOn] = "fnord"
   User.stubs(:authenticate_by_sanger_cookie).returns(user)

@@ -27,7 +27,7 @@ class Api::RequestIO < Api::Base
                 { :primary_aliquot => { :sample => :uuid_object } }
               ],
               :initial_study =>:uuid_object,
-              :initial_project => :uuid_object 
+              :initial_project => :uuid_object
             }
           ]
         }
@@ -49,7 +49,7 @@ class Api::RequestIO < Api::Base
   map_attribute_to_json_attribute(:updated_at)
   map_attribute_to_json_attribute(:state)
   map_attribute_to_json_attribute(:priority)
-  
+
 
   extra_json_attributes do |object, json_attributes|
     json_attributes["read_length"]                 = object.request_metadata.read_length  if object.is_a?(SequencingRequest)

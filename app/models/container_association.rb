@@ -5,7 +5,7 @@ class ContainerAssociation < ActiveRecord::Base
   belongs_to :content , :class_name => "Asset"
 
   # NOTE: This was originally on the content asset but this causes massive performance issues.
-  # It causes the plate and it's metadata to be loaded for each well, which would be cached if 
+  # It causes the plate and it's metadata to be loaded for each well, which would be cached if
   # it were not for inserts/updates being performed.  I'm disabling this as it should be caught
   # in tests and we've not seen it in production.
   #

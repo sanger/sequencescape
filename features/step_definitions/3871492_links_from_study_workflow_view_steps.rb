@@ -30,9 +30,9 @@ Given /^study "([^"]+)" has made the following "([^"]+)" requests:$/ do |study_n
       requests = study.requests.for_asset_id(asset.id).for_state(state)
       requests.select { |r| r.samples.include?(sample)}.map(&:destroy) if requests.present?
     else
-      count.to_i.times do |index| 
+      count.to_i.times do |index|
         Factory(
-          :request, 
+          :request,
           :request_type => request_type,
           :user => @current_user, :workflow => @current_user.workflow,
           :study => study, :asset => asset, :state => state

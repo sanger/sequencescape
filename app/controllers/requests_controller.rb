@@ -1,5 +1,5 @@
 class RequestsController < ApplicationController
-  
+
   before_filter :admin_login_required, :only => [ :describe, :undescribe, :destroy ]
  # before_filter :find_request_from_id, :only => [ :filter_change_decision, :change_decision ]
 
@@ -40,13 +40,13 @@ class RequestsController < ApplicationController
     end
 
     # Now, here we go: find all of the requests!
-    @requests = 
+    @requests =
       if @no_filter_params
         Request.paginate(:page => params[:page], :order => 'created_at DESC')
       else
         request_source.all(query_options)
       end
-    
+
     respond_to do |format|
       format.html
       format.xml { render :xml => Request.all.to_xml }
@@ -71,7 +71,7 @@ class RequestsController < ApplicationController
     if redirect_if_not_owner_or_admin
       return
     end
-    
+
     if params[:request][:state] == "cancelled" && !@request.cancelable?
       flash[:notice] = "You can not cancel a request that is in progress."
       redirect_to request_path(@request)
@@ -94,7 +94,7 @@ class RequestsController < ApplicationController
         if params[:request][:state] == "failed"
           flash[:notice] = "Request #{params[:id]} has been failed"
           EventFactory.request_update_note_to_manager(@request, current_user, flash[:notice])
-        end 
+        end
         redirect_to request_path(@request)
       else
         flash[:error] = "Request was not updated. No change specified ?"
@@ -237,28 +237,28 @@ class RequestsController < ApplicationController
       format.json { render :json => @requests.to_json }
     end
   end
-  
+
   before_filter :find_request, :only => [ :filter_change_decision, :change_decision ]
-  
+
   def find_request
     @request  = Request.find(params[:id])
   end
 
   def filter_change_decision
-    reference = BillingEvent.build_reference(@request) 
+    reference = BillingEvent.build_reference(@request)
     #@billing  = BillingEvent.related_to_reference(reference).only_these_kinds('charge', 'refund').all
     @billing  = BillingEvent.related_to_reference(reference).all
-    @change_decision = Request::ChangeDecision.new(:request => @request, :billing => @billing, :user => @current_user)  
+    @change_decision = Request::ChangeDecision.new(:request => @request, :billing => @billing, :user => @current_user)
     respond_to do |format|
       format.html
     end
   end
 
   def change_decision
-    reference = BillingEvent.build_reference(@request) 
+    reference = BillingEvent.build_reference(@request)
     #@billing  = BillingEvent.related_to_reference(reference).only_these_kinds('charge', 'refund').all
-    @billing  = BillingEvent.related_to_reference(reference).all   
-        
+    @billing  = BillingEvent.related_to_reference(reference).all
+
     @change_decision = Request::ChangeDecision.new({:request => @request,:billing => @billing, :user => @current_user}.merge(params[:change_decision] || {})).execute!
     flash[:notice] = "Update. Below you find the new situation."
     redirect_to filter_change_decision_request_path(params[:id])

@@ -20,7 +20,7 @@ class BarcodePrinter < ActiveRecord::Base
   def print_labels(labels, barcode_prefix=nil, barcode_type= "short",study_name=nil, user_login=nil)
     service.print_labels(labels, name, printer_type_id,
                          :prefix => barcode_prefix,
-                         :type => barcode_type, 
+                         :type => barcode_type,
                          :study_name => study_name,
                          :user_login => user_login)
   end

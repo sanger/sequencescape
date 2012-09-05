@@ -1,5 +1,5 @@
 class ::Sample
-  # This returns all samples that require an accession number to be generated based on the conditions of their 
+  # This returns all samples that require an accession number to be generated based on the conditions of their
   # studies and themselves.  It comes from a long (and highly frustrating) experience of decoding the
   # app/models/data_release.rb logic.
   named_scope :requiring_accession_number, {

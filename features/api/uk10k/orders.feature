@@ -98,7 +98,7 @@ Feature: Creating orders for UK10K
       | "asset_group_name": "",          | 11111111-2222-3333-4444-555555555555 |
       | "asset_group_name": "new group", | new group                            |
 
-  @create @asset_group 
+  @create @asset_group
   Scenario Outline: Creating a new order with an existing asset group
     Given the study "Testing submission creation" has an asset group called "Existing asset group"
     And the UUID for the asset group "Existing asset group" is "88888888-1111-2222-3333-000000000000"
@@ -551,7 +551,7 @@ Feature: Creating orders for UK10K
       }
       """
 
-  @update @error 
+  @update @error
   Scenario Outline: Attempting to change initial information after creating an order
     Given I have an "active" study called "Altering the order"
     And the UUID for the study "Altering the order" is "22222222-3333-4444-5555-111111111111"

@@ -146,12 +146,12 @@ module User::Authentication
       rescue Curl::Err::RecvError
         logger.info "Authentication service down #{configatron.sanger_auth_service} cookie: #{value}"
       end
-      
+
       u = nil
       begin
         result = ActiveSupport::JSON.decode(res)
         logger.debug "Authentication by cookie: " + res
-      
+
         if result && result["valid"] == 1 && result["username"]
           u = find_or_create_by_login(result["username"])
         end

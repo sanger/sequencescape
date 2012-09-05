@@ -13,7 +13,7 @@ class BillingEvent < ActiveRecord::Base
 
   belongs_to :project
   belongs_to :request
-  
+
   validates_presence_of :kind, :entry_date, :reference
   validates_presence_of :created_by
   validates_presence_of :project
@@ -22,7 +22,7 @@ class BillingEvent < ActiveRecord::Base
   validates_numericality_of :quantity
 
 #  validates_uniqueness_of :reference, :if => :charge?
-#  validates_uniqueness_of :reference, :if => :charge_internally? 
+#  validates_uniqueness_of :reference, :if => :charge_internally?
 
   named_scope :charged_to_project, { :conditions => { :kind => 'charge' } }
   named_scope :charged_internally, { :conditions => { :kind => 'charge_internally' } }

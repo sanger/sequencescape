@@ -13,14 +13,14 @@ Feature: Interacting with billing_events that include bait_libraries through the
       {
         "billing_event": {
           "uuid": "00000000-1111-2222-3333-444444444444",
-					"quantity": 1,
-					"kind": "charge",
-					"description": "Unspecified",
-					"project_name": "Test Project",
-					"created_by": "abc123@example.com",
-					"project_division": "Human variation",
-					"project_cost_code": "Some Cost Code",
-					"entry_date": "2010-09-16T13:45:00+01:00",
+          "quantity": 1,
+          "kind": "charge",
+          "description": "Unspecified",
+          "project_name": "Test Project",
+          "created_by": "abc123@example.com",
+          "project_division": "Human variation",
+          "project_cost_code": "Some Cost Code",
+          "entry_date": "2010-09-16T13:45:00+01:00",
           "created_at": "2010-09-16T13:45:00+01:00",
           "updated_at": "2010-09-16T13:45:00+01:00",
           "price": 100,
@@ -88,10 +88,10 @@ Feature: Interacting with billing_events that include bait_libraries through the
             "target_asset_name": "Study testing the JSON API - Target asset",
             "source_asset_state": "",
             "source_asset_name": "Tube",
-						"source_asset_barcode_prefix": "NT",
-						"target_asset_barcode_prefix": "DN",
-						"fragment_size_required_to": "20",
-						"fragment_size_required_from": "1",
+            "source_asset_barcode_prefix": "NT",
+            "target_asset_barcode_prefix": "DN",
+            "fragment_size_required_to": "20",
+            "fragment_size_required_from": "1",
             "library_type": "Standard",
 
             "priority": 0,
@@ -109,4 +109,3 @@ Feature: Interacting with billing_events that include bait_libraries through the
         }
       ]
       """
-      

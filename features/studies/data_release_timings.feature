@@ -17,14 +17,14 @@ Feature: Studies have timings for release of their data
     When I press "Create"
     Then I should be on the study workflow page for "Testing data release strategies"
     And I should see "Your study has been created"
-  
+
 
   Scenario: When the data release is immediate
     Given I select "immediate" from "How is the data release to be timed?"
     When I press "Create"
     Then I should be on the study workflow page for "Testing data release strategies"
     And I should see "Your study has been created"
-  
+
 
   Scenario: When the data release is delayed for PhD study
     Given I select "delayed" from "How is the data release to be timed?"

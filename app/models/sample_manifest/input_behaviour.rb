@@ -122,7 +122,7 @@ module SampleManifest::InputBehaviour
       alias_method_chain(:update_attributes!, :sample_manifest)
     end
   end
-  
+
   def convert_yes_no_to_boolean(value)
     !!(value && value.match(/Y/i))
   end
@@ -247,7 +247,7 @@ module SampleManifest::InputBehaviour
 
     raise InvalidManifest, sample_errors unless sample_errors.empty?
 
-    ActiveRecord::Base.transaction do 
+    ActiveRecord::Base.transaction do
       update_attributes!({
         :override_previous_manifest => override_sample_information,
         :samples_attributes         => samples_to_updated_attributes.map(&:last)

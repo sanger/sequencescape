@@ -16,7 +16,7 @@ class Factory
     state = options.delete(:state)
     message = options.delete(:message)
     submission = Factory(:order_with_submission, options).submission
-    #trying to skip StateMachine 
+    #trying to skip StateMachine
     if submission_options.present?
       submission.update_attributes!(submission_options)
     end
