@@ -15,32 +15,32 @@
 <div id="template_form_body">
   <%= render :partial => "shared/metadata/show/project", :locals => { :project => @project } %>
 
-	<table width="100%" cellspacing="0" cellpadding="0">
+  <table width="100%" cellspacing="0" cellpadding="0">
     <tr>
       <td width="40%" class="item">
         Approved:
       </td>
       <td width="40%">
-				<%=h @project.approved %>
-			</td>
-		  <td width="20%">
-			</td>
-		</tr>
-		<tr>
+        <%=h @project.approved %>
+      </td>
+      <td width="20%">
+      </td>
+    </tr>
+    <tr>
       <td width="40%" class="item">
         State:
       </td>
       <td width="40%">
-				<%=h @project.state %>
-			</td>
-		  <td width="20%">
-			</td>
-		</tr>
-	</table>
+        <%=h @project.state %>
+      </td>
+      <td width="20%">
+      </td>
+    </tr>
+  </table>
 
-	<% if current_user.privileged?(@project) %>
-	  <h3>Quotas</h3>
+  <% if current_user.privileged?(@project) %>
+    <h3>Quotas</h3>
     <%= render :partial => "projects/workflows/quotas/all", :locals => {:project => @project, :workflow => @workflow} %>
-	<% end %>
+  <% end %>
 
 </div>

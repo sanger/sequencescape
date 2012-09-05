@@ -1,8 +1,8 @@
 
 <% form_for :object, :url => lookup_informations_url, :html => {:method => :get} do |f| %>
-	<%= text_field :object, :id %>
-	<%= select :object, :type, ['Sample','Study','Project','Asset','Request','Property'] %> <!-- Pulldown -->
+  <%= text_field :object, :id %>
+  <%= select :object, :type, ['Sample','Study','Project','Asset','Request','Property'] %> <!-- Pulldown -->
 
-	<%= submit_tag 'Lookup' %>
+  <%= submit_tag 'Lookup' %>
 
 <% end %>

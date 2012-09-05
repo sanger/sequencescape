@@ -13,11 +13,11 @@
   <h1>Batch <%= @batch.id %></h1>
   <table width="100%" cellpadding="4" cellspacing="0" border="1">
     <thead>
-	  <% if @batch.workflow.name.include? "HiSeq" -%>
+    <% if @batch.workflow.name.include? "HiSeq" -%>
       <tr class="tr_hiseq">
-	  <% else %>
-  	  <tr>
-	  <% end %>
+    <% else %>
+      <tr>
+    <% end %>
         <th>Lane</th>
         <th>Library ID</th>
         <th>Sample</th>
