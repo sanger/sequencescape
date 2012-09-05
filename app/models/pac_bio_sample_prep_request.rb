@@ -10,5 +10,5 @@ class PacBioSamplePrepRequest < Request
   def self.delegate_validator
     PacBioSamplePrepRequest::RequestOptionsValidator
   end
-  
+
 end

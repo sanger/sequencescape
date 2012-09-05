@@ -5,7 +5,7 @@ class Document < ActiveRecord::Base
   extend Technoweenie::AttachmentFu::ActMethods
 
   belongs_to :documentable, :polymorphic => true
-  
+
   has_attachment :storage => :multi_db_file,
                  :max_part_size => 200.kilobytes
 

@@ -1,6 +1,6 @@
 class ControlPlate < Plate
   self.prefix = "DN"
-  
+
   def illumina_wells
     self.wells.all(:conditions => [ 'maps.description IN (?) AND maps.asset_size=?', [ 'A1', 'C1', 'E1' ], 96 ], :include => :map)
   end

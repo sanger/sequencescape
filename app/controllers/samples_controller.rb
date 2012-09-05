@@ -131,7 +131,7 @@ class SamplesController < ApplicationController
     end
     # TODO[5003153]: ... to here, with appropriate exception raising and redirects here.
   end
-  
+
   def history
     @sample = Sample.find(params[:id])
     respond_to do |format|
@@ -279,11 +279,11 @@ class SamplesController < ApplicationController
 
     error = false
     @samples.each do |progr, sample |
-      params_for_move = {}.with_indifferent_access 
+      params_for_move = {}.with_indifferent_access
       sample.sort.each do | key, value|
         params_for_move[key.to_sym] = value
       end
-    
+
       params_for_move[:asset_group_id] = verify_asset_group(params_for_move[:asset_name])
       sample["asset_group_id"] = params_for_move[:asset_group_id]
       if params_for_move[:asset_group_id] == "0"
@@ -306,7 +306,7 @@ class SamplesController < ApplicationController
         sample["xmsg"] = flash[:error]
         error = true
       end
-    end  
+    end
 
     if error
       flash[:error] = "Caution, errors were found. Lines with errors are not processed."
@@ -315,7 +315,7 @@ class SamplesController < ApplicationController
 
   def verify_asset_group(asset_group_name)
     asset = AssetGroup.find_by_name(asset_group_name)
-    if asset.nil? 
+    if asset.nil?
       asset_group_id = "0"
     else
       asset_group_id = asset.id
@@ -336,7 +336,7 @@ class SamplesController < ApplicationController
   end
 
   def move_single_sample(params)
-    @sample         = Sample.find(params[:id]) 
+    @sample         = Sample.find(params[:id])
     @study_from     = Study.find(params[:study_id_from])
     @study_to       = Study.find(params[:study_id_to])
     @asset_group    = AssetGroup.find_by_id(params[:asset_group_id])
@@ -430,7 +430,7 @@ private
       valid = false
     else
       @sample = Sample.find_by_id(params_for_move[:id]);
-      if @sample.nil? 
+      if @sample.nil?
         flash[:error] = "The sample don't exist."
         valid = false
       else
@@ -438,9 +438,9 @@ private
         if study.nil?
           flash[:error] = "The sample is not belonging to study_from"
           valid = false
-        else 
+        else
           assetgroup = AssetGroup.find_by_name(params_for_move[:asset_name])
-          if !assetgroup.nil? 
+          if !assetgroup.nil?
             if assetgroup.study_id != params_for_move[:study_id_to].to_i
               flash[:error] = "The Asset Group is not belong to study_to"
               valid = false

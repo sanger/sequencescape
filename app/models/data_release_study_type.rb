@@ -1,8 +1,8 @@
-class DataReleaseStudyType < ActiveRecord::Base 
+class DataReleaseStudyType < ActiveRecord::Base
   extend Attributable::Association::Target
 
   has_many :study
-  
+
   validates_presence_of  :name
   validates_uniqueness_of :name, :message => "of data release study type already present in database"
 
@@ -10,7 +10,7 @@ class DataReleaseStudyType < ActiveRecord::Base
   named_scope :non_assay_types, { :conditions => { :is_assay_type => false } }
 
   TYPES = ['genotyping or cytogenetics' ]
- 
+
   def is_not_specified?
     false
   end

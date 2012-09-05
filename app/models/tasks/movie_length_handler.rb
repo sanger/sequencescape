@@ -4,15 +4,15 @@ module Tasks::MovieLengthHandler
   end
 
   def do_movie_length_task(task, params)
-    ActiveRecord::Base.transaction do 
+    ActiveRecord::Base.transaction do
       params[:asset].each do |asset_id, movie_length|
         asset = Asset.find(asset_id)
 
         unless task.valid_movie_length?(movie_length)
           flash[:error] = "Invalid movie length"
-          return false 
+          return false
         end
-      
+
         asset.pac_bio_library_tube_metadata.update_attributes!(:movie_length => movie_length)
       end
     end

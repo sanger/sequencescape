@@ -27,7 +27,7 @@ class Transfer::FromPlateToTubeBySubmission < Transfer
   # The source plate wells need to be translated back to the stock plate wells, which simply
   # involves following the transfer requests back up until we hit the stock plate.  We only need
   # to follow one transfer request for each well as the submission related stock wells will be in
-  # the same final well.  Once we get to the stock well we then find the request that has the 
+  # the same final well.  Once we get to the stock well we then find the request that has the
   # well as a source and the target is an MX library tube.
   #++
   def well_to_destination

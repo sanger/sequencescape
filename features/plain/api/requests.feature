@@ -64,7 +64,7 @@ Feature: Interacting with requests through the API
 						"fragment_size_required_to": "20",
 						"fragment_size_required_from": "1",
             "library_type": "Standard",
-            
+
             "priority": 0,
 
             "source_asset_barcode": "ignored in test because it varies uncontrollably",
@@ -128,7 +128,7 @@ Feature: Interacting with requests through the API
 						"fragment_size_required_from": "1",
 
             "read_length": 76,
-            
+
             "priority": 0,
 
             "source_asset_barcode": "ignored in test because it varies uncontrollably",
@@ -192,7 +192,7 @@ Feature: Interacting with requests through the API
 					"fragment_size_required_from": "1",
 
           "library_type": "Standard",
-          
+
           "priority": 0,
 
           "source_asset_barcode": "ignored in test because it varies uncontrollably",
@@ -259,7 +259,7 @@ Feature: Interacting with requests through the API
 					"fragment_size_required_from": "1",
 
           "read_length": 76,
-          
+
           "priority": 0,
 
           "source_asset_barcode": "ignored in test because it varies uncontrollably",
@@ -278,7 +278,7 @@ Feature: Interacting with requests through the API
       |request type|
       |Single ended sequencing|
       |Paired end sequencing|
-      
+
   @priority
   Scenario: Retrieving the JSON for a request which is owned by a user and has the priority flag set
     Given the project "Project testing the JSON API" has a "Single ended sequencing" quota of 10
@@ -328,7 +328,7 @@ Feature: Interacting with requests through the API
 					"fragment_size_required_from": "1",
 
           "read_length": 76,
-          
+
           "priority": 1,
           "user": "abc",
 
@@ -390,7 +390,7 @@ Feature: Interacting with requests through the API
 						"fragment_size_required_from": "1",
 
             "library_type": "Standard",
-            
+
             "priority": 0,
 
             "source_asset_barcode": "ignored in test because it varies uncontrollably",

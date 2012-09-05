@@ -27,7 +27,7 @@ Feature: display an overview of all plates going through QC in SLF
      When I follow "QC overview"
      Then the overview of the plates should look like:
        | Study      | Stock   | QC started        | Pico Analysed | Gel Analysed | Sequenom Stamp |
-       | Test Study | 1234567 | 2011-02-14        |               |              |                |       
+       | Test Study | 1234567 | 2011-02-14        |               |              |                |
      Given I am on the Qc reports homepage
  		 When I select "Test Study" from "Study"
      And I press "Submit"
@@ -37,7 +37,7 @@ Feature: display an overview of all plates going through QC in SLF
   	 Then I should see the report for "Test Study":
        | Well | QC started date |
        | A1   | 2011-02-14      |
-  
+
 
    @barcode-service
    Scenario: A plate has had pico assays created but not analysed
@@ -118,7 +118,7 @@ Feature: display an overview of all plates going through QC in SLF
      Then the overview of the plates should look like:
      | Study      | Stock   | QC started        | Pico Analysed | Gel Analysed | Sequenom Stamp |
      | Test Study | 1234567 | 2011-02-14        | 2011-02-14    | 2011-02-14   | 2011-02-14     |
-     
+
      Given I am on the Qc reports homepage
  		 When I select "Test Study" from "Study"
      And I press "Submit"
@@ -126,9 +126,9 @@ Feature: display an overview of all plates going through QC in SLF
  		 And I am on the Qc reports homepage
  		 When I follow "Download report for Test Study"
   	 Then I should see the report for "Test Study":
-       | Well | QC started date | Seq stamp date | 
-       | A1   | 2011-02-14      | 2011-02-14     | 
-  
+       | Well | QC started date | Seq stamp date |
+       | A1   | 2011-02-14      | 2011-02-14     |
+
 
   @new-api @asset_audit @single-sign-on
   Scenario: A plate has been scanned as received in the audit application

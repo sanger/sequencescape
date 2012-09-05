@@ -33,7 +33,7 @@ class Plate < Asset
     # tables to find all of the child plates of our parent that have the same plate purpose, numbering
     # those rows to give the iteration number for each plate.
     iteration_of_plate = connection.select_one(%Q{
-      SELECT iteration 
+      SELECT iteration
       FROM (
         SELECT iteration_plates.id, @rownum:=@rownum+1 AS iteration
         FROM (
@@ -117,7 +117,7 @@ WHERE c.container_id=?
 
   before_create :set_plate_name_and_size
 
-  named_scope :qc_started_plates, lambda { 
+  named_scope :qc_started_plates, lambda {
     {
       :select => "distinct assets.*",
       :order => 'assets.id DESC',
@@ -191,7 +191,7 @@ WHERE c.container_id=?
   def find_well_by_name(well_name)
     self.wells.position_name(well_name, self.size).first
   end
-  alias :find_well_by_map_description :find_well_by_name 
+  alias :find_well_by_map_description :find_well_by_name
 
   def plate_header
     rows = [""]
@@ -379,7 +379,7 @@ WHERE c.container_id=?
 
     true
   end
-  
+
   # Should return true if any samples on the plate contains gender information
   def contains_gendered_samples?
     wells.any? do |well|
@@ -510,7 +510,7 @@ WHERE c.container_id=?
   def default_plate_size
     DEFAULT_SIZE
   end
-  
+
   def move_study_sample(study_from, study_to, current_user)
     study_from.events.create(
       :message => "Plate #{self.id} was moved to Study #{study_to.id}",

@@ -6,7 +6,7 @@
   <title>Batch <%= @batch.id %></title>
 </head>
 <link rel="stylesheet" href="/stylesheets/print.css" type="text/css">
-<body>  
+<body>
   <% if workflow_name(@batch).present? -%>
     <div style="font-size:40px;text-align:right;padding-right:20px"><%=workflow_name(@batch)%></div>
   <% end -%>

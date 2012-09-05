@@ -16,8 +16,8 @@ class Metadata::ViewBuilder < Metadata::BuilderBase
   def file(field, options = {})
     render_view(:file, field, options) { |locals| locals.merge(:document => @object.send(field)) }
   end
-  
-  def association_attribute(association_name, attribute, options = {}) 
+
+  def association_attribute(association_name, attribute, options = {})
     render_view(:plain_value, :"#{association_name}_id", options) { |locals| locals.merge(:value => @object.try(association_name).try(attribute)) }
   end
 end

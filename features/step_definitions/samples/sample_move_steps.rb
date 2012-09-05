@@ -26,6 +26,6 @@ When /^I move sample "([^\"]*)" from study "([^\"]*)" to "([^\"]*)", to asset gr
   And %Q{I fill in "file" with "data/#{file_name}"}
   Then %Q{I press "Upload spreadsheet"}
 %
-   
+
 
  end

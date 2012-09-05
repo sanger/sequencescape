@@ -10,7 +10,7 @@ Feature: Show/update samples
     Then I should see "Manifest_1"
     When I follow "Manifest_1"
     Then I should see "Download Blank Manifest"
-    
+
   Scenario: A sample doesnt have a sample manifest
     Given I have a sample called "sample_test" with metadata
      And I am on the show page for sample "sample_test"

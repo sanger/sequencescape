@@ -37,7 +37,7 @@ class FakeSinatraService
       # Ensure that, if we're running in a javascript environment, that the browser has been launched
       # before we start our service.  This ensures that the listening port is not inherited by the fork
       # within the Selenium driver.
-      Before(tags) do |scenario| 
+      Before(tags) do |scenario|
         Capybara.current_session.driver.browser if Capybara.current_driver == Capybara.javascript_driver
         service.instance.start!
       end

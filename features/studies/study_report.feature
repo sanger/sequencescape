@@ -30,8 +30,8 @@ Feature: create a report on the current state of a study going through QC
       | Study   | Created on | Created by | Download   | Rerun |
       | Study B | 2010-07-12 | user       | Download   | Rerun |
       | Study A | 2010-07-12 | user       | Processing |       |
-      
-      
+
+
   Scenario: Filter reports by a given study
     Given there is 1 pending report for study "Study A"
 	  And there is 1 completed report for study "Study B"
@@ -91,7 +91,7 @@ Feature: create a report on the current state of a study going through QC
     Given all pending delayed jobs are processed
     When I am on the delayed jobs admin page # refreshing
     Then I should not see "generate study report"
-  
+
   Scenario: The wells have child sample tubes and wells on child plates
     Given study "Study B" has a plate "1234567"
     Given each well in "Study B" has a DNA QC request
@@ -99,12 +99,12 @@ Feature: create a report on the current state of a study going through QC
     Given each well in "Study B" has a child well on a plate
     Given a study report is generated for study "Study B"
     Then the last report for "Study B" should be:
-    | Plate   | Genotyping Chip | Genotyping Barcode | Well | Genotyping Well | Qc Status | 
-    | 1234567 | Pulldown        | 44444              | A1   | A1              | passed    | 
-    | 1234567 | Pulldown        | 44444              | A2   | A2              | passed    | 
-    | 1234567 | Pulldown        | 44444              | A3   | A3              | passed    | 
+    | Plate   | Genotyping Chip | Genotyping Barcode | Well | Genotyping Well | Qc Status |
+    | 1234567 | Pulldown        | 44444              | A1   | A1              | passed    |
+    | 1234567 | Pulldown        | 44444              | A2   | A2              | passed    |
+    | 1234567 | Pulldown        | 44444              | A3   | A3              | passed    |
 
-   
+
   Scenario: The wells have child wells and sample tubes (reversed)
     Given study "Study B" has a plate "1234567"
     Given each well in "Study B" has a DNA QC request
@@ -112,50 +112,50 @@ Feature: create a report on the current state of a study going through QC
     Given each well in "Study B" has a child sample tube
     Given a study report is generated for study "Study B"
     Then the last report for "Study B" should be:
-     | Plate   | Genotyping Chip | Genotyping Barcode | Well | Genotyping Well | Qc Status | 
-     | 1234567 | Pulldown        | 44444              | A1   | A1              | passed    | 
-     | 1234567 | Pulldown        | 44444              | A2   | A2              | passed    | 
-     | 1234567 | Pulldown        | 44444              | A3   | A3              | passed    | 
- 
-   
+     | Plate   | Genotyping Chip | Genotyping Barcode | Well | Genotyping Well | Qc Status |
+     | 1234567 | Pulldown        | 44444              | A1   | A1              | passed    |
+     | 1234567 | Pulldown        | 44444              | A2   | A2              | passed    |
+     | 1234567 | Pulldown        | 44444              | A3   | A3              | passed    |
+
+
   Scenario: The wells have child sample tubes
     Given study "Study B" has a plate "1234567"
     Given each well in "Study B" has a child sample tube
     Given a study report is generated for study "Study B"
     Then the last report for "Study B" should be:
-      | Study   | Plate   | Well | 
-      | Study B | 1234567 | A1   | 
-      | Study B | 1234567 | A2   | 
-      | Study B | 1234567 | A3   | 
-  
+      | Study   | Plate   | Well |
+      | Study B | 1234567 | A1   |
+      | Study B | 1234567 | A2   |
+      | Study B | 1234567 | A3   |
+
   Scenario: The wells have qc status but havent been cherrypicked
     Given study "Study B" has a plate "1234567"
     Given each well in "Study B" has a DNA QC request
     Given a study report is generated for study "Study B"
     Then the last report for "Study B" should be:
-      | Study   | Plate   | Well |  Qc Status | 
-      | Study B | 1234567 | A1   |  passed    | 
-      | Study B | 1234567 | A2   |  passed    | 
-      | Study B | 1234567 | A3   |  passed    | 
-      
+      | Study   | Plate   | Well |  Qc Status |
+      | Study B | 1234567 | A1   |  passed    |
+      | Study B | 1234567 | A2   |  passed    |
+      | Study B | 1234567 | A3   |  passed    |
+
   @manifest
   Scenario: Samples have been created by have no manifest uploaded
     Given study "Study B" has a plate "1234567"
     Given a study report is generated for study "Study B"
     Then the last report for "Study B" should be:
-      | Study   | Plate   | Well | Status            | 
-      | Study B | 1234567 | A1   | Awaiting manifest | 
-      | Study B | 1234567 | A2   | Awaiting manifest | 
+      | Study   | Plate   | Well | Status            |
+      | Study B | 1234567 | A1   | Awaiting manifest |
+      | Study B | 1234567 | A2   | Awaiting manifest |
       | Study B | 1234567 | A3   | Awaiting manifest |
-      
+
   @manifest
   Scenario: Samples have been created by have no manifest uploaded
     Given study "Study B" has a plate "1234567"
     Given each sample was updated by a sample manifest
     Given a study report is generated for study "Study B"
     Then the last report for "Study B" should be:
-      | Study   | Plate   | Well | Status              | 
-      | Study B | 1234567 | A1   | Updated by manifest | 
-      | Study B | 1234567 | A2   | Updated by manifest | 
+      | Study   | Plate   | Well | Status              |
+      | Study B | 1234567 | A1   | Updated by manifest |
+      | Study B | 1234567 | A2   | Updated by manifest |
       | Study B | 1234567 | A3   | Updated by manifest |
- 
+

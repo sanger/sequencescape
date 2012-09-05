@@ -16,7 +16,7 @@ Feature: Manage users
 		And I should see "john"
 		When I follow "Edit user john"
 		Then I should see "Edit profile: John Smith"
-			
+
 	Scenario Outline: Edit a user and give them universal roles
     Given the role "<role_name>" exists
 		When I fill in the following:

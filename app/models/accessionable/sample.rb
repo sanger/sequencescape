@@ -1,4 +1,4 @@
-module Accessionable 
+module Accessionable
   class Sample < Base
     attr_reader :common_name, :taxon_id, :links, :tags
     def initialize(sample)
@@ -39,7 +39,7 @@ module Accessionable
     def object_id
      @sample.id
     end
-    
+
     def xml
     xml = Builder::XmlMarkup.new
     xml.instruct!

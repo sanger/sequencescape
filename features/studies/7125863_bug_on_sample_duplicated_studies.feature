@@ -1,10 +1,10 @@
 @sample @allow-rescue
 Feature: Samples should have only one link to study.
-  Background: 
+  Background:
     Given I am an "administrator" user logged in as "John Doe"
     Given the sample named "Sample_PT_7125863" exists
     Given I have a study called "Study_PT_7125863"
-    Given the sample named "Sample_PT_7125863" belongs to the study named "Study_PT_7125863" 
+    Given the sample named "Sample_PT_7125863" belongs to the study named "Study_PT_7125863"
 
   Scenario: Insert a second same study from interface
     Given I am on the show page for sample "Sample_PT_7125863"

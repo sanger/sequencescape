@@ -109,4 +109,3 @@ Feature: Interacting with billing_events that include bait_libraries through the
         }
       ]
       """
-      

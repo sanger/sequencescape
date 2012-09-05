@@ -110,11 +110,11 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
             post :create, :study_id => @study,
               :sample_registrars => {
                 '1' => {
-                  :asset_group_name  => 'asset_group_0', 
+                  :asset_group_name  => 'asset_group_0',
                   :sample_attributes => { :name => 'Sam1' }
                 },
                 '2' => {
-                  :asset_group_name  => 'asset_group_0', 
+                  :asset_group_name  => 'asset_group_0',
                   :sample_attributes => { :name => 'Sam2' }
                 }
               }
@@ -168,7 +168,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
                   }
                 }
           end
-          
+
           should_respond_with :redirect
           should_change('@study.samples.count', :by => 2) { @study.samples.count }
           should_change('Asset.count', :by => 2) { Asset.count }

@@ -42,7 +42,7 @@ class ColumnMap
     def self.fields
       @@fields
     end
-    
+
     def self.required_columns
       ["VOLUME (ul)",
       "CONC. (ng/ul)"]
@@ -75,7 +75,7 @@ class SampleManifest < ActiveRecord::Base
   class_inheritable_accessor :spreadsheet_header_row
   self.spreadsheet_offset = 9
   self.spreadsheet_header_row = 8
-  
+
   acts_as_audited :on => [:destroy, :update]
 
   # Problem with paperclip
@@ -88,7 +88,7 @@ class SampleManifest < ActiveRecord::Base
   attr_accessor :generated_content_type
   attr_accessor :generated_file_size
   attr_accessor :generated_updated_at
-  
+
   attr_accessor :override
   attr_reader :manifest_errors
 
@@ -106,9 +106,9 @@ class SampleManifest < ActiveRecord::Base
   validates_presence_of :supplier
   validates_presence_of :study
   validates_numericality_of :count, :only_integer => true, :greater_than => 0, :allow_blank => false
-  
+
   before_save :default_asset_type
-  
+
   def default_asset_type
     self.asset_type = "plate" if self.asset_type.blank?
   end
@@ -119,7 +119,7 @@ class SampleManifest < ActiveRecord::Base
 
   named_scope :pending_manifests,   { :order => 'id DESC',         :conditions => 'uploaded_file IS NULL'     }
   named_scope :completed_manifests, { :order => 'updated_at DESC', :conditions => 'uploaded_file IS NOT NULL' }
-  
+
   def generate
     @manifest_errors = []
 

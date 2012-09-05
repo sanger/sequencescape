@@ -41,7 +41,7 @@ Feature: I wish to create samples and push them all the way through QC in SLF
     # numbers and so it's trying to turn that check off.
     And I select "genotyping or cytogenetics" from "What sort of study is this?"
     When I press "Create"
-    
+
     Given I am on the sample db homepage
     When I follow "Create manifest for plates"
     When I select "Test study" from "Study"
@@ -83,7 +83,7 @@ Feature: I wish to create samples and push them all the way through QC in SLF
     And I press "Confirm"
 
     Given I am on the show page for pipeline "DNA QC"
-    
+
     When I check "Select DN1234567T for batch"
     And I select "Create Batch" from "action_on_requests"
     And I press "Submit"
@@ -217,7 +217,7 @@ Feature: I wish to create samples and push them all the way through QC in SLF
 		Then I should see "Your labels have been printed"
 
 		Given I am on the show page for pipeline "Genotyping"
-		
+
 		When I check "Select DN99999F for batch"
 		And I select "Create Batch" from "action_on_requests"
 	  And I press "Submit"

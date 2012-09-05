@@ -161,7 +161,7 @@ Feature: move samples and assets between studies
     Then I should not see "Caution, errors were found"
     Then the sample "sample_to_move" should belong to the study named "study_to"
     And the aliquot 165441 should belong to the study named "study_to"
-       
+
     # The MultiplexedLibraryTube
     Then all aliquots in asset 2317176 should belong to the study named "study_to"
     # The Lane

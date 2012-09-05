@@ -1,4 +1,4 @@
-# Classes including this module are capable of grouping the requests for a pipeline in a 
+# Classes including this module are capable of grouping the requests for a pipeline in a
 # specific manner.
 module Pipeline::Grouper
   def self.included(base)

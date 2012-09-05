@@ -62,7 +62,7 @@ class ProjectsControllerTest < ActionController::TestCase
       context "with invalid data" do
         setup do
           post :create, "project" => {
-            "name" => "hello 2", 
+            "name" => "hello 2",
             :project_metadata_attributes => {
               :project_cost_code => ''
             },

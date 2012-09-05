@@ -1,6 +1,6 @@
 @javascript @barcode-service @cherrypicking @gwl
 Feature: The Tecan file has the wrong buffer volumes, defaulting to 13 total volume
-  
+
   Background:
     Given I am a "administrator" user logged in as "user"
     Given I have a project called "Test project"

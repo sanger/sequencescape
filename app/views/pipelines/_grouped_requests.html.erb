@@ -14,13 +14,13 @@
       <th class='label' width='10%'><%= link_to "Asset", "javascript:void(0);" %></th>
       <th class='label' width='15%'><%= link_to "Asset comments", "javascript:void(0);" %></th>
       <% if @pipeline.multiplexed? %>
-        <th class='label'><%= link_to "Scanned in (Y-M-D)", "javascript:void(0);" %></th> 
+        <th class='label'><%= link_to "Scanned in (Y-M-D)", "javascript:void(0);" %></th>
       <% end %>
       <% @information_types.each do |information_type| %>
         <% next if information_type.hide_in_inbox %>
         <th class='label' style='text-align: left' width='5%'><%= link_to "#{information_type.label}", "javascript:void(0);" %></th>
       <% end %>
-      <th class='label' width='5%'><%= link_to "Concentration", "javascript:void(0);" %></th>      
+      <th class='label' width='5%'><%= link_to "Concentration", "javascript:void(0);" %></th>
       <th class='label' width='5%'><%= link_to "Study", "javascript:void(0);" %></th>
     </tr>
   </thead>
@@ -55,9 +55,9 @@
             <% next if information_type.hide_in_inbox %>
             <td class='request' width='5%'><%= h(request.request_metadata[information_type.key]) %></td>
           <% end %>
-          <td class='request' width='5%'><%= request.asset.concentration || "&nbsp;" -%></td> 
+          <td class='request' width='5%'><%= request.asset.concentration || "&nbsp;" -%></td>
           <td class='request' width='5%'><%= request.submission.name %></td>
-        </tr>        
+        </tr>
 
       <tr class="nested" id="<%= request.submission_id %>_0" style="display:none">
          <td>&nbsp;</td>
@@ -74,8 +74,8 @@
           <% progr = indice + 1 %>
         <tr class="nested" id="<%= request.submission_id %>_<%= progr.to_s %>" style="display:none">
           <td class="request" width='2%'>&nbsp;</td>
-          <td>                  
-	        <%= label(:request, request.id, 'Select Request', :style => 'display:none') %>                                     
+          <td>
+	        <%= label(:request, request.id, 'Select Request', :style => 'display:none') %>
 		    <%= check_box :request, request.id, :value => request.id %>
 		  </td>
           <td style="display:none" class="request" width='5%'><%= link_to request.submission_id,study_workflow_submission_path(request.study, current_user.workflow, request.submission) %></td>
@@ -103,7 +103,7 @@
             <% next if information_type.hide_in_inbox %>
             <td class='request' width='5%'><%= h(request.request_metadata[information_type.key]) %></td>
           <% end %>
-          <td class='request' width='5%'><%= request.asset.concentration || "&nbsp;" -%></td> 
+          <td class='request' width='5%'><%= request.asset.concentration || "&nbsp;" -%></td>
           <td class='request' width='5%'><%= request.submission.name %></td>
         </tr>
         <% end -%>

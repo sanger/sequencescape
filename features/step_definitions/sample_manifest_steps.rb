@@ -23,7 +23,7 @@ Given /^sample information is updated from the manifest for study "([^"]*)"$/ do
   end
 end
 
-Given /^the last sample has been updated by a manifest$/ do 
+Given /^the last sample has been updated by a manifest$/ do
   sample = Sample.last or raise StandardError, "There appear to be no samples"
   sample.update_attributes!(:updated_by_manifest => true)
 end
@@ -144,7 +144,7 @@ Then /^the last created sample manifest should be:$/ do |table|
     spreadsheet = Spreadsheet.open(tempfile.path)
     @worksheet   =spreadsheet.worksheets.first
   end
-  
+
   table.rows.each_with_index do |row,index|
     assert_equal Barcode.barcode_to_human(Barcode.calculate_barcode(Plate.prefix, row[0].to_i)), @worksheet[offset+index,0]
     assert_equal row[1], @worksheet[offset+index,1]

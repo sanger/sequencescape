@@ -56,7 +56,7 @@ def wait_for_child(pid=nil)
     pid, child_result = (pid.nil? ? Process.wait2 : Process.waitpid2(pid))
     unless child_result.exitstatus.zero?
       $child_pids.each {|child_pid| Process.kill('TERM', child_pid) rescue true}
-      raise "Child PID:#{pid} exited with status #{child_result.exitstatus} - aborting" 
+      raise "Child PID:#{pid} exited with status #{child_result.exitstatus} - aborting"
     end
   rescue Errno::ECHILD
     true
@@ -92,7 +92,7 @@ end
 
 def final_wait
   i = 0
-  $child_pids.each do |pid| 
+  $child_pids.each do |pid|
     wait_for_child(pid)
     puts "PID #{pid} collected (#{i += 1} of #{$child_pids.length})" if ENV['TEST_RUN']
   end
@@ -148,11 +148,11 @@ class Script < ActiveRecord::Migration
       end
       group.each do |asset|
         stuffing << {
-          :asset_id => asset.id, 
+          :asset_id => asset.id,
           :name => asset.name,
           :external_release => asset.external_release,
           :public_name => asset.public_name,
-          :asset_type => asset.sti_type, 
+          :asset_type => asset.sti_type,
           :qc_state => asset.qc_state,
           :volume => asset.volume,
           :concentration => asset.concentration,
@@ -226,7 +226,7 @@ class Script < ActiveRecord::Migration
             # Ununsed guard that fails with current data.
 #            raise "Expected (indexed) library of a Sample, but got one with a tag on #{idxlib.inspect}" unless idxlib.sample_id.present?
             next unless idxlib.is_a?(LibraryTube)
-            tag = idxlib.get_tag 
+            tag = idxlib.get_tag
             mlt = mlreq.asset
             mlreq.batch_requests.each do |batchreq| # mostly one Batch per Request, since Attempts have been disabled
               stuffing << {
@@ -250,7 +250,7 @@ class Script < ActiveRecord::Migration
       end
     end
   end
-  
+
   def self.put_property_and_requests
     Request.find_in_batches(:include => [:request_type, :request_metadata, :project, :study, :sample, :asset]) do |group|
       stuffing = {:pi => [], :mbr => [], :mbr_new => []}
@@ -311,7 +311,7 @@ class Script < ActiveRecord::Migration
           :sample_name => sample_name,
           :type => request_type_name,
           :state => request.state,
-          :created_at => request.created_at.nil? ? nil : request.created_at.to_formatted_s(:db), 
+          :created_at => request.created_at.nil? ? nil : request.created_at.to_formatted_s(:db),
           :read_length => (request.request_metadata.read_length ? request.request_metadata.read_length : nil)
         }
 
@@ -342,7 +342,7 @@ class Script < ActiveRecord::Migration
       break if ENV['TEST_RUN']
     end
   end
-  
+
   def self.run_all_steps
     run_in_parallel("put_property_and_requests") do
       put_property_and_requests()
@@ -352,7 +352,7 @@ class Script < ActiveRecord::Migration
         stuffing = {:mbs => [], :pi => []}
         group.each do |sample|
           stuffing[:mbs] << {
-            :sample_id => sample.id, 
+            :sample_id => sample.id,
             :name => sample.name
           }
 
@@ -437,7 +437,7 @@ class Script < ActiveRecord::Migration
                 :value      => study.study_metadata.faculty_sponsor.try(:name)
               )
             end
-            
+
           Study::Metadata.attribute_details.each do |attribute|
             StudyInformation.create(
               :study_id   => study.id,
@@ -472,7 +472,7 @@ class Script < ActiveRecord::Migration
         group.each do |library_tube|
           if library_tube.source_request
             stuffing << {
-              :item_id => library_tube.source_request.item_id, 
+              :item_id => library_tube.source_request.item_id,
               :asset_id => library_tube.id
             }
           end
@@ -482,7 +482,7 @@ class Script < ActiveRecord::Migration
       end
     end
     run_in_parallel("sample_tube") do
-      SampleTube.find_in_batches(:include => :sample) do |group| 
+      SampleTube.find_in_batches(:include => :sample) do |group|
         stuffing = []
         group.each do |sample_tube|
           if sample_tube.sample
@@ -501,7 +501,7 @@ class Script < ActiveRecord::Migration
         stuffing = []
         group.each do |asset_link|
           stuffing << {
-            :parent_id => asset_link.ancestor_id, 
+            :parent_id => asset_link.ancestor_id,
             :child_id => asset_link.descendant_id
           }
         end
@@ -532,10 +532,10 @@ class Script < ActiveRecord::Migration
       end
     end
     run_in_parallel("asset_information") do
-      Request.find_in_batches(:include => [:request_metadata, :asset]) do |group| 
+      Request.find_in_batches(:include => [:request_metadata, :asset]) do |group|
         stuffing = []
         group.each do |r|
-          if r.asset 
+          if r.asset
             r.request_metadata.class.attribute_details.each do |attribute|
               stuffing << {
                 :item_id    => r.asset_id,
@@ -618,7 +618,7 @@ class Script < ActiveRecord::Migration
       add_index(:"requests_new#{LOADING_SUFFIX}", :study_id)
       add_index(:"requests_new#{LOADING_SUFFIX}", :item_id)
       add_index(:"requests_new#{LOADING_SUFFIX}", :sample_id)
- 
+
       add_index(:"study_sample_reports#{LOADING_SUFFIX}", :study_id)
       add_index(:"study_sample_reports#{LOADING_SUFFIX}", :sample_id)
       add_index(:"project_information#{LOADING_SUFFIX}", :project_id)
@@ -740,7 +740,7 @@ class Script < ActiveRecord::Migration
         t.string :user_login, :asset_type
         t.datetime :created_at,:state_date, :batch_created_at
       end
-      
+
       create_table MbAsset.table_name, opts.clone do |t|
         t.integer :asset_id, :external_release
         t.text :name
@@ -803,7 +803,7 @@ Script.say_with_time "Starting..." do
   Script.run_all_steps
 
   final_wait
-  
+
   Script.create_table_indexes
 
   Script.switch_loading_to_live

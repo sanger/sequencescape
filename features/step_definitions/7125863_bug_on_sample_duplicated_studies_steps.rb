@@ -4,19 +4,19 @@ def bind_sample_to_study(name_sample, name_study)
   sample.studies << study
 end
 
-Given /^the sample named "([^"]*)" belongs to the study named "([^"]*)"$/ do |name_sample, name_study|  
+Given /^the sample named "([^"]*)" belongs to the study named "([^"]*)"$/ do |name_sample, name_study|
   bind_sample_to_study(name_sample, name_study)
 end
 
 Given /^an import SNP with study "([^"]*)" bounded to sample "([^"]*)"$/ do |study_name, name_sample|
-  Given %Q{a study named "#{study_name}" to the sample named "#{name_sample}"}  
+  Given %Q{a study named "#{study_name}" to the sample named "#{name_sample}"}
 end
 
 When /^I try to set the sample named "([^"]*)" as belonging to the study named "([^"]*)"$/ do |sample_name, study_name|
   assert_raises(ActiveRecord::RecordInvalid) do
     bind_sample_to_study(sample_name, study_name)
   end
-end 
+end
 
 Then /^the sample "([^"]*)" should belong to the study named "([^"]*)" only once$/ do |sample_name, study_name|
   sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample #{sample_name.inspect}"

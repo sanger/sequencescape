@@ -139,11 +139,11 @@ class User < ActiveRecord::Base
   def lab_manager?
     self.has_role? 'lab_manager'
   end
-  
+
   def slf_manager?
     self.has_role? 'slf_manager'
   end
-  
+
   def slf_gel?
     self.has_role? 'slf_gel'
   end
@@ -222,7 +222,7 @@ class User < ActiveRecord::Base
   def interesting_studies
     Study.of_interest_to(self)
   end
-  
+
   def self.valid_barcode?(code)
     begin
       human_code = Barcode.barcode_to_human!(code, self.prefix)
@@ -233,16 +233,16 @@ class User < ActiveRecord::Base
 
     true
   end
-  
+
   def self.lookup_by_barcode(user_barcode)
     barcode = Barcode.barcode_to_human(user_barcode)
     if barcode
-      return User.find_by_barcode(barcode) 
+      return User.find_by_barcode(barcode)
     end
-    
+
     nil
   end
-  
+
   def self.owners
     all.select{ |user| user.is_owner? && ! user.last_name.blank? }.sort{ |user1, user2| user1.last_name <=> user2.last_name }
   end

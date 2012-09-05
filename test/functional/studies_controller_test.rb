@@ -15,7 +15,7 @@ class StudiesControllerTest < ActionController::TestCase
     should_require_login
 
     resource_test(
-      'study', { 
+      'study', {
         :defaults => {:name => "study name"},
         :user => :admin,
         :other_actions => ['properties', 'study_status'],
@@ -65,8 +65,8 @@ class StudiesControllerTest < ActionController::TestCase
 
       context "successfully create a new study" do
         setup do
-          post :create, "study" => { 
-            "name" => "hello", 
+          post :create, "study" => {
+            "name" => "hello",
             "reference_genome_id" => ReferenceGenome.find_by_name("").id,
             'study_metadata_attributes' => {
               'faculty_sponsor' => FacultySponsor.create!(:name => 'Me'),
@@ -101,18 +101,18 @@ class StudiesControllerTest < ActionController::TestCase
 
       context "create a new study using permission allowed (not required)" do
         setup do
-          post :create, "study" => { 
+          post :create, "study" => {
             "name" => "hello 3",
-            "reference_genome_id" => ReferenceGenome.find_by_name("").id, 
+            "reference_genome_id" => ReferenceGenome.find_by_name("").id,
             'study_metadata_attributes' => {
               'faculty_sponsor' => FacultySponsor.create!(:name => 'Me'),
               'study_description' => 'some new study',
               'contains_human_dna' => 'No',
               'contaminated_human_dna' => 'No',
               'commercially_available' => 'No',
-              'data_release_study_type' => DataReleaseStudyType.find_by_name('genomic sequencing'), 
+              'data_release_study_type' => DataReleaseStudyType.find_by_name('genomic sequencing'),
               'data_release_strategy' => 'open',
-              'study_type' => StudyType.find_by_name("Not specified") 
+              'study_type' => StudyType.find_by_name("Not specified")
             }
           }
         end

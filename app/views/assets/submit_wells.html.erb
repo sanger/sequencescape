@@ -6,12 +6,12 @@
 
 
 <h1>Asset Specification</h1>
-<%= render :partial => "asset", :locals => { :asset => @asset } %> 
+<%= render :partial => "asset", :locals => { :asset => @asset } %>
 
 <br />
 
 
-<h3> Create an new asset group </h3> 
+<h3> Create an new asset group </h3>
 <% @study_list = @current_user.interesting_studies  %>
 <% form_for :asset_group, :url => create_wells_group_asset_path(@asset)  do |f| %>
   <p> Enter a asset group name : <%= f.text_field :name, :value => "#{@asset.display_name} Wells" %> </p>

@@ -6,15 +6,15 @@ module Rails
   module Upgrading
     class NewConfigurationGenerator
       attr_writer :environment_code
-      
+
       def has_environment?
         true
       end
-      
+
       def environment_code
         @environment_code
       end
-      
+
       def app_name
         "my_application"
       end
@@ -50,14 +50,14 @@ this_is_after_the_code
   def test_raises_error_with_no_code
     generator = Rails::Upgrading::NewConfigurationGenerator.new
     generator.environment_code = ""
-    
+
     assert_raises(RuntimeError) { generator.generate_new_application_rb }
   end
-  
+
   def test_generates_with_code
     generator = Rails::Upgrading::NewConfigurationGenerator.new
     generator.environment_code = CODE % [CONFIG]
-    
+
     assert_equal FRAME % [generator.indent(CONFIG)], generator.generate_new_application_rb
   end
 end

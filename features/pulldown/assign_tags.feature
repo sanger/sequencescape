@@ -9,14 +9,14 @@ Feature: Cherrypicking for Pulldown pipeline
     And I have an active study called "Study A"
     And the "96 Well Plate" barcode printer "xyz" exists
 
-  Scenario: I select 2 pulldown plates for a batch, but the max is 1  
+  Scenario: I select 2 pulldown plates for a batch, but the max is 1
     Given I have 2 pulldown plates
     Given I am on the show page for pipeline "Pulldown Multiplex Library Preparation"
     When I check "Select DN99999F for batch"
     And I check "Select DN88888N for batch"
     And I press "Submit"
     Then I should see "Too many request groups selected, maximum is 1"
-    
+
   Scenario: View pulldown report for batch without assigning tags in batch
     Given I have a tag group called "UK10K tag group" with 8 tags
     Given I have a pulldown batch
@@ -40,7 +40,7 @@ Feature: Cherrypicking for Pulldown pipeline
      | DN99999F | F2   | Study A    | 2              |           |     |                   | Sample_222_6     | 55.0            | 200.0                  |
      | DN99999F | G2   | Study A    | 2              |           |     |                   | Sample_222_7     | 66.0            | 240.0                  |
      | DN99999F | H2   | Study A    | 2              |           |     |                   | Sample_222_8     | 77.0            | 280.0                  |
-     
+
   Scenario: Cherrypick and multiplex library prep for pulldown with 16 tags
     Given I have a tag group called "UK10K tag group" with 16 tags
     Given I have a pulldown batch
@@ -49,16 +49,16 @@ Feature: Cherrypicking for Pulldown pipeline
     And I press "Next step"
     Then I should see "Assign Tags to Wells"
     And the default plates to wells table should look like:
-    | 1     | 2      | 
-    | Tag 1 | Tag 9  | 
-    | Tag 2 | Tag 10 | 
-    | Tag 3 | Tag 11 | 
-    | Tag 4 | Tag 12 | 
-    | Tag 5 | Tag 13 | 
-    | Tag 6 | Tag 14 | 
-    | Tag 7 | Tag 15 | 
-    | Tag 8 | Tag 16 | 
-    | 1     | 2      | 
+    | 1     | 2      |
+    | Tag 1 | Tag 9  |
+    | Tag 2 | Tag 10 |
+    | Tag 3 | Tag 11 |
+    | Tag 4 | Tag 12 |
+    | Tag 5 | Tag 13 |
+    | Tag 6 | Tag 14 |
+    | Tag 7 | Tag 15 |
+    | Tag 8 | Tag 16 |
+    | 1     | 2      |
     And I press "Next step"
     When I press "Release this batch"
     Then I should see "Batch released!"
@@ -71,21 +71,21 @@ Feature: Cherrypicking for Pulldown pipeline
     And I press "Next step"
     Then I should see "Assign Tags to Wells"
     And the default plates to wells table should look like:
-    | 1     | 2     | 
-    | Tag 1 | Tag 1 | 
-    | Tag 2 | Tag 2 | 
-    | Tag 3 | Tag 3 | 
-    | Tag 4 | Tag 4 | 
-    | Tag 5 | Tag 5 | 
-    | Tag 6 | Tag 6 | 
-    | Tag 7 | Tag 7 | 
-    | Tag 8 | Tag 8 | 
-    | 1     | 2     | 
+    | 1     | 2     |
+    | Tag 1 | Tag 1 |
+    | Tag 2 | Tag 2 |
+    | Tag 3 | Tag 3 |
+    | Tag 4 | Tag 4 |
+    | Tag 5 | Tag 5 |
+    | Tag 6 | Tag 6 |
+    | Tag 7 | Tag 7 |
+    | Tag 8 | Tag 8 |
+    | 1     | 2     |
     When I select "Tag 4" from "Well A1"
     And I select "Tag 3" from "Well B1"
     And I select "Tag 2" from "Well C1"
     And I select "Tag 1" from "Well D1"
-  
+
     And I press "Next step"
     When I press "Release this batch"
     Given all library tube barcodes are set to know values
@@ -109,29 +109,29 @@ Feature: Cherrypicking for Pulldown pipeline
     | DN99999F | F2   | Study A    | 2                | UK10K tag group | Tag 6    | CGATGT            | Sample_222_6     | 55.0            | 200.0                  |
     | DN99999F | G2   | Study A    | 2                | UK10K tag group | Tag 7    | TTAGGC            | Sample_222_7     | 66.0            | 240.0                  |
     | DN99999F | H2   | Study A    | 2                | UK10K tag group | Tag 8    | TGACCA            | Sample_222_8     | 77.0            | 280.0                  |
-     
+
   Scenario: Use 8 tags and rearrange manually in an invalid order
     Given I have a tag group called "UK10K tag group" with 8 tags
     Given I have a pulldown batch
-  
+
     When I follow "Start batch"
     When I select "UK10K tag group" from "Tag Group"
     And I press "Next step"
     Then I should see "Assign Tags to Wells"
     And the default plates to wells table should look like:
-    | 1     | 2     | 
-    | Tag 1 | Tag 1 | 
-    | Tag 2 | Tag 2 | 
-    | Tag 3 | Tag 3 | 
-    | Tag 4 | Tag 4 | 
-    | Tag 5 | Tag 5 | 
-    | Tag 6 | Tag 6 | 
-    | Tag 7 | Tag 7 | 
-    | Tag 8 | Tag 8 | 
-    | 1     | 2     | 
+    | 1     | 2     |
+    | Tag 1 | Tag 1 |
+    | Tag 2 | Tag 2 |
+    | Tag 3 | Tag 3 |
+    | Tag 4 | Tag 4 |
+    | Tag 5 | Tag 5 |
+    | Tag 6 | Tag 6 |
+    | Tag 7 | Tag 7 |
+    | Tag 8 | Tag 8 |
+    | 1     | 2     |
     When I select "Tag 1" from "Well B1"
     And I select "Tag 1" from "Well C1"
-  
+
     And I press "Next step"
     Then I should see "Duplicate tags in a single pooled tube"
     Given I am on the last batch show page
@@ -180,7 +180,7 @@ Feature: Cherrypicking for Pulldown pipeline
     And I press "Next step"
     When I press "Release this batch"
     Then I should see "Batch released!"
-    
+
   Scenario: Change your mind about tag assignment before releasing the batch
     Given I have a tag group called "UK10K tag group" with 8 tags
     Given I have a pulldown batch
@@ -241,7 +241,7 @@ Feature: Cherrypicking for Pulldown pipeline
       | DN99999F | F2   | Study A    | 2                | UK10K tag group | Tag 6    | CGATGT            | Sample_222_6     | 55.0            | 200.0                  |
       | DN99999F | G2   | Study A    | 2                | UK10K tag group | Tag 7    | TTAGGC            | Sample_222_7     | 66.0            | 240.0                  |
       | DN99999F | H2   | Study A    | 2                | UK10K tag group | Tag 8    | TGACCA            | Sample_222_8     | 77.0            | 280.0                  |
-      
+
   Scenario: Release batch then change your mind about tag assignment
     Given I have a tag group called "UK10K tag group" with 8 tags
     Given I have a pulldown batch
@@ -302,7 +302,7 @@ Feature: Cherrypicking for Pulldown pipeline
       | DN99999F | F2   | Study A    | 2                | UK10K tag group | Tag 6    | CGATGT            | Sample_222_6     | 55.0            | 200.0                  |
       | DN99999F | G2   | Study A    | 2                | UK10K tag group | Tag 7    | TTAGGC            | Sample_222_7     | 66.0            | 240.0                  |
       | DN99999F | H2   | Study A    | 2                | UK10K tag group | Tag 8    | TGACCA            | Sample_222_8     | 77.0            | 280.0                  |
-          
+
   Scenario: Different sized submissions
     Given I have a tag group called "UK10K tag group" with 4 tags
     And I have an active study called "Study B"
@@ -352,7 +352,7 @@ Feature: Cherrypicking for Pulldown pipeline
       | DN99999F | H1   | Study B    | 3           | UK10K tag group | Tag 4 | TGACCA            | Sample_333_2     | 11.0            | 40.0                   |
       | DN99999F | A2   | Study B    | 3           | UK10K tag group | Tag 1 | ATCACG            | Sample_333_3     | 22.0            | 80.0                   |
       | DN99999F | B2   | Study A    | 2           | UK10K tag group | Tag 2 | CGATGT            | Sample_222_1     | 0.0             | 1.0                    |
-  
+
   Scenario: Different sized submissions and the tag group is too small
     Given I have a tag group called "UK10K tag group" with 2 tags
     Given plate "1234567" with 3 samples in study "Test study" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission
@@ -378,7 +378,7 @@ Feature: Cherrypicking for Pulldown pipeline
     When I select "UK10K tag group" from "Tag Group"
     And I press "Next step"
     Then I should see "Duplicate tags will be assigned to a pooled tube, select a different tag group"
-   
+
   Scenario: Paired ended sequencing after pulldown multiplexing
     Given I have a tag group called "UK10K tag group" with 4 tags
     Given I have a plate "1234567" in study "Test study" with 3 samples in asset group "Plate asset group 1234567"
@@ -439,8 +439,8 @@ Feature: Cherrypicking for Pulldown pipeline
     And I press "Next step"
     When I press "Release this batch"
     Then I should see "Batch released!"
- 
-  
+
+
   Scenario: Worksheet with 8 tags
     Given I have a tag group called "UK10K tag group" with 8 tags
     Given I have a pulldown batch
@@ -449,16 +449,16 @@ Feature: Cherrypicking for Pulldown pipeline
     And I press "Next step"
     Then I should see "Assign Tags to Wells"
     And the default plates to wells table should look like:
-    | 1     | 2     | 
-    | Tag 1 | Tag 1 | 
-    | Tag 2 | Tag 2 | 
-    | Tag 3 | Tag 3 | 
-    | Tag 4 | Tag 4 | 
-    | Tag 5 | Tag 5 | 
-    | Tag 6 | Tag 6 | 
-    | Tag 7 | Tag 7 | 
-    | Tag 8 | Tag 8 | 
-    | 1     | 2     | 
+    | 1     | 2     |
+    | Tag 1 | Tag 1 |
+    | Tag 2 | Tag 2 |
+    | Tag 3 | Tag 3 |
+    | Tag 4 | Tag 4 |
+    | Tag 5 | Tag 5 |
+    | Tag 6 | Tag 6 |
+    | Tag 7 | Tag 7 |
+    | Tag 8 | Tag 8 |
+    | 1     | 2     |
 
     And I press "Next step"
     When I press "Release this batch"
@@ -466,22 +466,22 @@ Feature: Cherrypicking for Pulldown pipeline
     Then I should see "Batch released!"
     When I follow "Print worksheet"
     Then the worksheet for the last batch should be:
-     |  Pooled Tube | Plate    | Well | Tag      |  Sample           | 
-     |  1           | DN99999F | A1   | Tag 1    |  Sample_1234567_1 | 
-     |  1           | DN99999F | B1   | Tag 2    |  Sample_1234567_2 | 
-     |  1           | DN99999F | C1   | Tag 3    |  Sample_1234567_3 | 
-     |  1           | DN99999F | D1   | Tag 4    |  Sample_1234567_4 | 
-     |  1           | DN99999F | E1   | Tag 5    |  Sample_1234567_5 | 
-     |  1           | DN99999F | F1   | Tag 6    |  Sample_1234567_6 | 
-     |  1           | DN99999F | G1   | Tag 7    |  Sample_1234567_7 | 
-     |  1           | DN99999F | H1   | Tag 8    |  Sample_1234567_8 | 
-     |  2           | DN99999F | A2   | Tag 1    |  Sample_222_1     | 
-     |  2           | DN99999F | B2   | Tag 2    |  Sample_222_2     | 
-     |  2           | DN99999F | C2   | Tag 3    |  Sample_222_3     | 
-     |  2           | DN99999F | D2   | Tag 4    |  Sample_222_4     | 
-     |  2           | DN99999F | E2   | Tag 5    |  Sample_222_5     | 
-     |  2           | DN99999F | F2   | Tag 6    |  Sample_222_6     | 
-     |  2           | DN99999F | G2   | Tag 7    |  Sample_222_7     | 
-     |  2           | DN99999F | H2   | Tag 8    |  Sample_222_8     | 
-    
+     |  Pooled Tube | Plate    | Well | Tag      |  Sample           |
+     |  1           | DN99999F | A1   | Tag 1    |  Sample_1234567_1 |
+     |  1           | DN99999F | B1   | Tag 2    |  Sample_1234567_2 |
+     |  1           | DN99999F | C1   | Tag 3    |  Sample_1234567_3 |
+     |  1           | DN99999F | D1   | Tag 4    |  Sample_1234567_4 |
+     |  1           | DN99999F | E1   | Tag 5    |  Sample_1234567_5 |
+     |  1           | DN99999F | F1   | Tag 6    |  Sample_1234567_6 |
+     |  1           | DN99999F | G1   | Tag 7    |  Sample_1234567_7 |
+     |  1           | DN99999F | H1   | Tag 8    |  Sample_1234567_8 |
+     |  2           | DN99999F | A2   | Tag 1    |  Sample_222_1     |
+     |  2           | DN99999F | B2   | Tag 2    |  Sample_222_2     |
+     |  2           | DN99999F | C2   | Tag 3    |  Sample_222_3     |
+     |  2           | DN99999F | D2   | Tag 4    |  Sample_222_4     |
+     |  2           | DN99999F | E2   | Tag 5    |  Sample_222_5     |
+     |  2           | DN99999F | F2   | Tag 6    |  Sample_222_6     |
+     |  2           | DN99999F | G2   | Tag 7    |  Sample_222_7     |
+     |  2           | DN99999F | H2   | Tag 8    |  Sample_222_8     |
+
 

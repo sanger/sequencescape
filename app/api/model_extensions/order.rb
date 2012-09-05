@@ -28,7 +28,7 @@ module ModelExtensions::Order
     def request_options_for_validation
       OpenStruct.new({ :owner => self }.reverse_merge(self.request_options || {})).tap do |v|
         v.class.delegate(:errors, :include_unset_values?, :to => :owner)
-      end 
+      end
     end
   end
 
@@ -67,7 +67,7 @@ module ModelExtensions::Order
     end
   end
 
-  class NonNilHash 
+  class NonNilHash
     def initialize(key_style_operation = :symbolize_keys)
       @key_style_operation = key_style_operation
       @store = {}
@@ -83,7 +83,7 @@ module ModelExtensions::Order
     end
 
     def []=(*keys_and_values)
-      value = keys_and_values.pop 
+      value = keys_and_values.pop
       return if value.nil?
       node_and_leaf(*keys_and_values) { |node, leaf| node[leaf] = value }
     end

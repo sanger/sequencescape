@@ -4,12 +4,12 @@ module Submission::QuotaBehaviour
       validates_each(:project, :if => :checking_quotas?) do |record, attr, project|
         record.errors.add_to_base('Quotas are being enforced but have not been setup')       if     project.quotas.all.empty? || project.quotas.map(&:limit).all?(&:zero?)
         record.errors.add_to_base("Project #{project.name} is not approved")                 unless project.approved?
-        record.errors.add_to_base("Project #{project.name} is not active")                   unless project.active? 
+        record.errors.add_to_base("Project #{project.name} is not active")                   unless project.active?
         record.errors.add_to_base("Project #{project.name} does not have a budget division") unless project.actionable?
       end
 
       delegate :book_quota, :unbook_quota, :quota_for!, :to => :project
-      after_create :book_quota_available_for_request_types! 
+      after_create :book_quota_available_for_request_types!
     end
   end
 
@@ -79,7 +79,7 @@ module Submission::QuotaBehaviour
   def before_destroy
     # We need to unbook preordered quota
     # but not if it's already been done'
-    
+
     unbook_quota_available_for_request_types! unless submission && submission.state == "failed"
   end
 end

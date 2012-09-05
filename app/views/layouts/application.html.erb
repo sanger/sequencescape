@@ -74,14 +74,14 @@
         <div id="header">
           <div id='header_container'>
             <div id="app_name"><%= link_to I18n.t('application.name').upcase, root_path %></div>
-          
+
           <%# Only show the info-box if there's something to talk about... %>
           <%- unless custom_text("app_info_box", 1).blank? -%>
             <div id="app-info-box">
               <span><%= custom_text("app_info_box", 1) %></span>
             </div>
           <%- end -%>
-            
+
             <div id="search">
             <% form_tag searches_path, :method => :get do %>Search <%= text_field_tag :q, "", :size => 20, :type => "search", :placeholder => "samples, studies", :id => 'layout_search' %> <% end %>
             </div>

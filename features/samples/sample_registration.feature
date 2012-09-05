@@ -1,7 +1,7 @@
 @sample @registration
 Feature: Registering samples
   # TODO: All of these scenarios, except for the spreadsheet ones, only register 1 sample because the page requires Javascript.
-  
+
   Background:
     Given I am an "external" user logged in as "John Smith"
     And I have an active study called "Testing registering samples"
@@ -52,7 +52,7 @@ Feature: Registering samples
     Then I should see "sample_for_asset_group"
 
   # NOTE: The behaviour here is slightly different to what the browser will do if you ignore a sample.
-  # The browser has it's fields disabled and should be prevented from sending those fields in the 
+  # The browser has it's fields disabled and should be prevented from sending those fields in the
   # request.  However, webrat doesn't execute the Javascript so it does send the fields but includes
   # the ignore value so the controller has to handle this.
   Scenario: Attempting to register an ignored sample
@@ -155,9 +155,9 @@ Feature: Registering samples
     And I should see "Name can't be blank"
     And the "2D barcode for sample 0" field should contain "12345"
     And the "Organism for sample 0" field should contain "Weird green jelly like thing"
-      
+
   @sample_registration
-   Scenario: Uploading a spreadsheet of data for sequencing    
+   Scenario: Uploading a spreadsheet of data for sequencing
     Given user "John Smith" has a workflow "Next-gen sequencing"
 
     Given I am on the page for choosing how to register samples for study "Testing registering samples"

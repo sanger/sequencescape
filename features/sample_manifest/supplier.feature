@@ -31,4 +31,4 @@ Feature: Manage sample suppliers
 	   And I press "Update Supplier"
 	  Then I should see "Supplier was successfully updated"
 	   And I should see "New supplier name"
-	  
+

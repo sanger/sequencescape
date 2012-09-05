@@ -2,11 +2,11 @@
 Feature: The XML for the sequencescape API. If all lanes are passed batch state is released
   Background:
     Given sequencescape is setup for 11803383
-    And I am a "administrator" user logged in as "user"   
+    And I am a "administrator" user logged in as "user"
 
   Scenario: POST XML to change qc_state on a asset
-    Given I am on the last batch show page    
-    Then batch state should be "started"  
+    Given I am on the last batch show page
+    Then batch state should be "started"
     When I POST following XML to change in passed the QC state on the last asset:
        """
       <?xml version="1.0" encoding="UTF-8"?><qc_information><message>NPG change status in failed</message></qc_information>
@@ -32,5 +32,5 @@ Feature: The XML for the sequencescape API. If all lanes are passed batch state 
         </asset>
         """
     Given I am on the last batch show page
-    Then I should see "This batch belongs to pipeline: Cluster formation PE" 
+    Then I should see "This batch belongs to pipeline: Cluster formation PE"
     And batch state should be "released"

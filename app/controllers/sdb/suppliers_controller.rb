@@ -1,5 +1,5 @@
 class Sdb::SuppliersController < Sdb::BaseController
-  
+
   # Show all suppliers
   def index
     @suppliers = Supplier.all
@@ -23,11 +23,11 @@ class Sdb::SuppliersController < Sdb::BaseController
       end
     end
   end
-  
+
   def edit
     @supplier = Supplier.find(params[:id])
   end
-  
+
   # Update a supplier
   def update
     @supplier = Supplier.find(params[:id])
@@ -41,20 +41,20 @@ class Sdb::SuppliersController < Sdb::BaseController
       end
     end
   end
-  
+
   # Show a supplier
   def show
     @supplier = Supplier.find(params[:id])
   end
-  
+
   def sample_manifests
     @supplier = Supplier.find(params[:id])
     @sample_manifests = @supplier.sample_manifests.paginate(:page => params[:page])
   end
-  
+
   def studies
     @supplier = Supplier.find(params[:id])
     @studies = @supplier.studies.paginate(:page => params[:page])
   end
-  
+
 end

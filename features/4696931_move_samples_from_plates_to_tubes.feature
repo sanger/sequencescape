@@ -24,7 +24,7 @@ Feature: Creating sample tubes from a plate, add to asset group, and print barco
     When I press "Next"
     Then I should see "Study 4696931 : REQUEST Next-gen sequencing"
     And I should see "128459"
-    
+
   Scenario: plate ID typed in
     Given a plate of type "Plate" with barcode "1220128459804" exists
     And plate with barcode "128459" has a well
@@ -57,7 +57,7 @@ Feature: Creating sample tubes from a plate, add to asset group, and print barco
     When I press "Submit"
     Then I should see "Failed to create sample tubes"
     And I should see "Convert plates to tubes"
-    
+
   Scenario: no plates scanned
     When I select "Another lab freezer" from "Destination freezer"
     And I select "Study 4696931" from "Study"

@@ -5,7 +5,7 @@ Given /^I have a "([^"]*)" submission with (\d+) sample tubes as part of "([^"]*
   1.upto(number_of_tubes.to_i) do |i|
     sample_tubes << Factory(:sample_tube, :name => "Sample Tube #{i}", :location => Location.find_by_name('Library creation freezer'), :barcode => "#{i}")
   end
-  
+
   submission_template = SubmissionTemplate.find_by_name(submission_template_name)
   submission = submission_template.create_and_build_submission!(
     :study => study,

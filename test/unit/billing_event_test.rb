@@ -239,7 +239,7 @@ context "A request with no billing events " do
     setup do
       BillingEvent.generate_pass_event @request
     end
-    
+
     should 'not generate any refunds or internal charges' do
       assert_equal [], BillingEvent.refunds_for_reference(@reference)
       assert_nil BillingEvent.charge_internally_for_reference(@reference)
@@ -261,7 +261,7 @@ context "A request with no billing events " do
       assert_equal [], BillingEvent.refunds_for_reference(@reference)
       assert BillingEvent.charge_internally_for_reference(@reference)
     end
-  end 
+  end
   context "without an initial project" do
     setup do
       @request.initial_project = nil
@@ -273,7 +273,7 @@ context "A request with no billing events " do
       setup do
         BillingEvent.generate_pass_event @request
       end
-      
+
       should 'not generate any refunds or internal charges' do
         assert_equal [], BillingEvent.refunds_for_reference(@reference)
         assert_nil BillingEvent.charge_internally_for_reference(@reference)
@@ -285,7 +285,7 @@ context "A request with no billing events " do
         assert_equal @request.asset.aliquots.first.project_id, charge.project_id
       end
     end
-  end 
+  end
 end
 context "A request with no billing events and 2 aliquots " do
   setup do
@@ -327,7 +327,7 @@ context "A request with no billing events and 2 aliquots " do
       end
     end
     should_change("BillingEvent.count", :by => 2) { BillingEvent.count }
-  end 
+  end
 end
 context "A request" do
   setup do

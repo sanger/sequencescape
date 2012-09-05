@@ -61,10 +61,10 @@ Feature: Creating submissions through the submission templates
     And I press "Create Order"
 
     Then I should see "Insufficient quota for Single ended sequencing"
-  
+
   Scenario Outline: The project does not have sufficient quotas for library creation
     Given the project "Project testing submission templates" has a "Single ended sequencing" quota of 999
-    And the project "Project testing submission templates" has no "<library_type>" quota 
+    And the project "Project testing submission templates" has no "<library_type>" quota
 
     Given I am on the "Next-gen sequencing" submission template selection page for study "Study testing submission templates"
     When I select "<library_type> - Single ended sequencing" from "Template"
@@ -87,10 +87,10 @@ Feature: Creating submissions through the submission templates
       |Library creation            |
       |Multiplexed library creation|
       |Pulldown library creation   |
-  
+
   Scenario Outline: The project does not have sufficient quotas for sequencing type
     Given the project "Project testing submission templates" has a "Library creation" quota of 999
-    And the project "Project testing submission templates" has no "<sequencing_type>" quota 
+    And the project "Project testing submission templates" has no "<sequencing_type>" quota
 
     Given I am on the "Next-gen sequencing" submission template selection page for study "Study testing submission templates"
     When I select "Library creation - <sequencing_type>" from "Template"

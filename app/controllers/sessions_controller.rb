@@ -1,6 +1,6 @@
 class SessionsController < ApplicationController
   include Informatics::Globals
-  
+
   skip_before_filter :login_required
 
   filter_parameter_logging :password

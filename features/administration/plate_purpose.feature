@@ -30,7 +30,7 @@ Feature: Manage Plate Purposes
     And I fill in the field labeled "Name" with "ABC   "
     And I press "Create"
     Then I should see "Name is invalid"
-    
+
   Scenario: Adding an invalid plate purpose name with a space at the beginning
     Then I should see "Listing All Plate Purposes"
     And I should see "Stock Plate"

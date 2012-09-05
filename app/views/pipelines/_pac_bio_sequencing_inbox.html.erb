@@ -10,8 +10,8 @@
     <% if @pipeline.item_limit -%>
       <input type="hidden" id="batch_item_limit" value="<%= @pipeline.item_limit %>" />
     <% end -%>
-    
-    
+
+
     <table width="100%" bgcolor="#edf5ff" cellpadding="2" cellspacing="0" class="sortable" id='request_inbox'>
       <thead>
         <tr>
@@ -24,7 +24,7 @@
           <% @information_types.each do |information_type| %>
             <% next if information_type.hide_in_inbox %>
             <th class='label' style='text-align: left' width='5%'><%= link_to "#{information_type.label}", "javascript:void(0);" %></th>
-          <% end %>    
+          <% end %>
           <th class='label' width='5%'><%= link_to "Study", "javascript:void(0);" %></th>
         </tr>
       </thead>
@@ -49,7 +49,7 @@
                 <td class='request' width='5%'><%= h(request.request_metadata[information_type.key]) %></td>
               <% end %>
               <td class='request' width='5%'><%= request.submission.name %></td>
-            </tr>        
+            </tr>
 
           <tr class="nested" id="<%= request_item.item_id %>_0" style="display:none">
              <td>&nbsp;</td>
@@ -66,8 +66,8 @@
               <% progr = indice + 1 %>
             <tr class="nested" id="<%= request_item.item_id %>_<%= progr.to_s %>" style="display:none">
               <td class="request" width='2%'>&nbsp;</td>
-              <td>                  
-    	        <%= label(:request, request.id, "Select Request #{indice}", :style => 'display:none') %>                                     
+              <td>
+    	        <%= label(:request, request.id, "Select Request #{indice}", :style => 'display:none') %>
     		    <%= check_box :request, request.id, :value => request.id %>
     		  </td>
               <td class='request' width='5%'><%= link_to request.id, "#{configatron.studies_url}/requests/#{request.id}" %></td>
@@ -85,8 +85,8 @@
       </tbody>
     </table>
 
-    
-    
+
+
 	  <%= render :partial => 'inbox_submission_button' %>
   <% end -%>
 

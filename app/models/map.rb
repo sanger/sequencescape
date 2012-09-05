@@ -1,11 +1,11 @@
 class Map < ActiveRecord::Base
-  named_scope :for_position_on_plate, lambda { |position,plate_size| 
+  named_scope :for_position_on_plate, lambda { |position,plate_size|
     {
       :conditions => {
         :description => horizontal_plate_position_to_description(position, plate_size),
         :asset_size  => plate_size
       }
-    } 
+    }
   }
 
   named_scope :where_description, lambda { |*descriptions| { :conditions => { :description => descriptions.flatten } } }
@@ -40,14 +40,14 @@ class Map < ActiveRecord::Base
     map = Map.find(current_map_id)
     Map.next_vertical_map_position_from_description(map.description,map.asset_size)
   end
-  
+
   def self.next_vertical_map_position_from_description(description,asset_size)
     map_position = Map.description_to_vertical_plate_position(description,asset_size)
     return nil if map_position +1 >  asset_size
     horiz_description = Map.vertical_plate_position_to_description(map_position +1,asset_size)
     Map.find_by_description_and_asset_size(horiz_description,asset_size)
   end
-  
+
 
   def self.map_96wells
     Map.all(:conditions => {:asset_size => 96})
@@ -171,11 +171,11 @@ class Map < ActiveRecord::Base
   def self.find_for_cell_location(cell_location, asset_size)
     self.find_by_description_and_asset_size(cell_location.sub(/0(\d)$/, '\1'), asset_size)
   end
-  
+
   def self.pad_description(map)
     split_description = split_well_description(map.description)
     return "#{map.description[0].chr}0#{split_description[:col]}" if split_description[:col] < 10
-      
+
     map.description
   end
 

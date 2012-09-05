@@ -85,15 +85,15 @@ ActionController::Routing::Routes.draw do |map|
 
     study.resources :workflows, :controller => "studies/workflows", :member => { :summary => :get, :show_summary => :get} do |workflow|
       workflow.resources :submissions, :controller => "studies/workflows/submissions",
-        :collection => { :info => [:get, :put], 
-          :template_chooser => :get, :new => [:get, :put] , :asset_inputs => :get } 
+        :collection => { :info => [:get, :put],
+          :template_chooser => :get, :new => [:get, :put] , :asset_inputs => :get }
       workflow.resources :assets, :collection => { :print => :post }
     end
 
     study.resources :documents, :controller => "studies/documents", :only => [:index, :new, :create, :show, :destroy]
 
   end
-  
+
   # TODO (jr16) move to a more appropriate location
   map.connect "bulk_submissions", :controller => "bulk_submissions", :action => "new"
 
@@ -106,7 +106,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :documents, :controller => 'properties/documents', :only => [ :show ]
 
-  
+
   #Same path but two different actions. GET for put parameter in the form and show the error. PUT for the action.
   map.filter_change_decision_request 'requests/:id/change_decision', :controller => 'requests', :action => 'filter_change_decision', :conditions => { :method => :get }
   map.change_decision_request        'requests/:id/change_decision', :controller => 'requests', :action => 'change_decision',        :conditions => { :method => :put }
@@ -115,7 +115,7 @@ ActionController::Routing::Routes.draw do |map|
   map.filter_change_name_rename      'renames/:id/change_name', :controller => 'renames', :action => 'filter_change_name', :conditions => { :method => :get }
   map.change_name_rename             'renames/:id/change_name', :controller => 'renames', :action => 'change_name',        :conditions => { :method => :put }
 
-  
+
   map.resources :requests,
                 :has_many => :batches,
                 :member => { :copy => :get, :cancel => :get, :print => :get, :history => :get },
@@ -208,20 +208,20 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'assets/make_plate_from_rack', :controller => 'assets', :action => 'make_plate_from_rack'
 
   map.controller 'assets/find_by_barcode', :controller => 'assets', :action => 'find_by_barcode'
-  
-  map.lab_view "lab_view", :controller => 'assets', :action => 'lab_view'  
+
+  map.lab_view "lab_view", :controller => 'assets', :action => 'lab_view'
 
   map.resources :families
   map.resources :tag_groups, :except => [:destroy] do |tag|
     tag.resources :tags, :except => [:destroy, :index, :create, :new]
   end
-  
-  
+
+
 
   map.resources :assets, :has_many => :assets, :collection => { :snp_register => :get, :reception => :get, :print_labels => :post}, :member => { :parent_assets => :get, :child_assets => :get, :show_plate => :get, :new_request => :get, :create_request => :post, :summary => :get, :close => :get, :print => :get, :print_items => :post, :submit_wells => :get, :create_wells_group => :post, :history => :get, :filtered_move => :get, :move => :post, :move_to_2D => :get,  :complete_move_to_2D => :post} do |asset|
     asset.resources :comments, :controller => "assets/comments"
   end
-  
+
   map.resources :plates, :collection => { :upload_pico_results => :post, :create => :post, :to_sample_tubes => :get, :create_sample_tubes => :post }
 
 
@@ -236,9 +236,9 @@ ActionController::Routing::Routes.draw do |map|
     sequenom.sequenom_update 'sequenom/:id', :action => 'update', :conditions => { :method => :put }, :requirements => { :id => /\d+/ }
     sequenom.sequenom_quick_update 'sequenom/quick', :action => 'quick_update', :conditions => { :method => :post }
   end
-  
+
   map.resources :sequenom_qc_plates, :only => [ :new, :create, :index]
-  
+
   map.resources :pico_dilutions
 
   map.resources :study_reports
@@ -250,8 +250,8 @@ ActionController::Routing::Routes.draw do |map|
     pulldown.resources :validates, :collection => { :source_plate_type => :get, :target_plate_type => :get, :validate_plates => :post }
   end
 
-  
-  
+
+
 
   ### Standard routes
   # You can have the root of your site routed with map.root -- just remember to delete public/index.html.
@@ -295,7 +295,7 @@ ActionController::Routing::Routes.draw do |map|
     api.with_options(:read_only => false) do |crud|
       crud.model :projects, :controller => "api/projects" do |project|
         project.model :studies, :controller => "api/studies"
-      end  
+      end
       crud.model :requests, :controller => "api/requests"
       crud.model :samples, :controller => "api/samples" do |smp|
         smp.asset :sample_tubes, :controller => "api/sample_tubes", :read_only => true
@@ -303,14 +303,14 @@ ActionController::Routing::Routes.draw do |map|
       crud.model :studies, :controller => "api/studies" do |study|
         study.model :samples, :controller => "api/samples"
         study.model :projects, :controller => "api/projects"
-      end  
+      end
     end
 
     # ... and some are specialised (but should not be!)
-    
+
   end
   #### API end ####
-  
+
   ### SDB ###
   map.with_options(:namespace => "sdb/", :path_prefix => "/sdb") do |sdb|
     sdb.resources :sample_manifests, :collection => {:upload => :post} ,:member => {:export => :get, :uploaded_spreadsheet => :get}
@@ -318,8 +318,8 @@ ActionController::Routing::Routes.draw do |map|
     sdb.resources :suppliers, :member => {:sample_manifests => :get, :studies => :get}
     sdb.connect "/", :controller => "home"
   end
-  
-  
+
+
   # Install the default routes as the lowest priority.
   map.connect ":controller/:action/:id"
   map.connect ":controller/:action/:id.:format"

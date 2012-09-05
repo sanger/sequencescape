@@ -1,4 +1,4 @@
-class ::Core::Registry 
+class ::Core::Registry
   include ::Singleton
   include ::Core::Logging
 
@@ -14,7 +14,7 @@ class ::Core::Registry
 #    raise AlreadyRegisteredError, "Already registered for #{model_class.name.inspect}" if is_already_registered?(model_class)
 #    register(model_class, io_class)
 #  end
-#  
+#
 #  def deregister!(model_class)
 #    raise UnregisteredError, "There is no #{model_clas.name.inspect} registered" unless is_already_registered?(model_class)
 #    deregister(model_class)

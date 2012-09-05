@@ -9,7 +9,7 @@ sample_name_filename="../samplenames"
 
 sample_names = []
 myfile = File.open(sample_name_filename)
-myfile.each do |line| 
+myfile.each do |line|
 	line = line.chomp
 	next if line.blank?
 	sample_names << line

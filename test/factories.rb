@@ -111,18 +111,18 @@ Factory.define :study do |p|
   p.state                "pending"
   p.enforce_data_release false
   p.enforce_accessioning false
-  p.reference_genome     ReferenceGenome.find_by_name("") 
+  p.reference_genome     ReferenceGenome.find_by_name("")
 
   p.after_build { |study| study.study_metadata = Factory(:study_metadata, :study => study) }
 end
 
 Factory.define :budget_division do |bd|
- bd.name { |a| Factory.next :budget_division_name }   
+ bd.name { |a| Factory.next :budget_division_name }
 end
 
 Factory.define :project_metadata, :class => Project::Metadata do |m|
   m.project_cost_code 'Some Cost Code'
-  m.budget_division {|budget| budget.association(:budget_division)} 
+  m.budget_division {|budget| budget.association(:budget_division)}
 end
 
 Factory.define :project do |p|
@@ -248,7 +248,7 @@ Factory.define :request_without_assets, :parent => :request_with_submission do |
   request.item              {|item|       item.association(:item)}
   request.project           {|pr|         pr.association(:project)}
   request.request_type      {|rt|         rt.association(:request_type)}
-  request.state             'pending'     
+  request.state             'pending'
   request.study             {|study|      study.association(:study)}
   request.user              {|user|       user.association(:user)}
   request.workflow          {|workflow|   workflow.association(:submission_workflow)}
@@ -363,7 +363,7 @@ Factory.define :user do |u|
   u.last_name         "ln"
   u.login             "abc123"
   u.email             {|a| "#{a.login}@example.com".downcase }
-  u.roles             []   
+  u.roles             []
   u.workflow          {|workflow| workflow.association(:submission_workflow)}
   u.api_key           "123456789"
 end
@@ -477,7 +477,7 @@ Factory.define :library_creation_request, :parent => :request do |request|
   end
 end
 
-# A Multiplexed library tube comes from several library tubes, which are themselves created through a 
+# A Multiplexed library tube comes from several library tubes, which are themselves created through a
 # number of multiplexed library creation requests.  But the binding to these tubes comes from the parent-child
 # relationships.
 Factory.define :full_multiplexed_library_tube, :parent => :multiplexed_library_tube do |multiplexed_library_tube|
@@ -520,7 +520,7 @@ end
 
 Factory.define :spiked_buffer do |a|
   a.name { |a| Factory.next :asset_name }
-  a.volume 50 
+  a.volume 50
 end
 
 Factory.define :reference_genome do |r|
@@ -567,5 +567,5 @@ Factory.define(:asset_audit) do |audit|
 end
 
 Factory.define(:faculty_sponsor) do |sponsor|
-  sponsor.name     { |a| Factory.next :faculty_sponsor_name } 
+  sponsor.name     { |a| Factory.next :faculty_sponsor_name }
 end

@@ -33,7 +33,7 @@ class ::Api::EndpointHandler < ::Core::Service
       else raise StandardError, "Unexpected handler #{handler.inspect}"
       end
 
-    request = 
+    request =
       ::Core::Service::Request.new do |request|
         request.service = self
         request.path    = parts

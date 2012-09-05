@@ -5,7 +5,7 @@ module LabInterface::WorkflowsHelper
   # blank string...
   def descriptor_value(descriptor)
     # Refactored to remove reliance on @values
-    params[:values].try(:[], descriptor.name) or 
+    params[:values].try(:[], descriptor.name) or
       @study.try(:descriptor_value,descriptor.name) or ""
   end
 

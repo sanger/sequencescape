@@ -13,16 +13,16 @@ class SamplesControllerTest < ActionController::TestCase
 
       Sample.stubs(:assets).returns([])
     end
-    
+
     should_require_login
-    
-    # NOTE: You can update a sample through this controller, you just can't change the name, which is 
+
+    # NOTE: You can update a sample through this controller, you just can't change the name, which is
     # why, if you remove 'update' from the 'ignore_actions' you'll find the test fails!
     resource_test(
       'sample', {
-        :defaults => {:name => "Sample22"}, 
-        :formats => ['html'], 
-        :ignore_actions =>['show','create','update'], 
+        :defaults => {:name => "Sample22"},
+        :formats => ['html'],
+        :ignore_actions =>['show','create','update'],
         :user => lambda { user = Factory(:user) ; user.is_administrator ; user }
       }
     )
@@ -34,7 +34,7 @@ class SamplesControllerTest < ActionController::TestCase
         @controller.stubs(:logged_in?).returns(@user)
         @controller.stubs(:current_user).returns(@user)
       end
-      
+
       context "#add_to_study" do
         setup do
           @sample = Factory :sample
@@ -47,10 +47,10 @@ class SamplesControllerTest < ActionController::TestCase
 
       context "#automatic move sample" do
         setup do
-          @study_from = Factory :study, :id => "69" 
+          @study_from = Factory :study, :id => "69"
           @study_to = Factory :study, :id => "96"
         end
-        
+
         should "without correct data give Error." do
           post :move_upload, :file => File.open(RAILS_ROOT + '/test/data/upload_sample_move.xls')
           assert_equal "Caution, errors were found. Lines with errors are not processed.", flash[:error]
@@ -61,7 +61,7 @@ class SamplesControllerTest < ActionController::TestCase
           @workflow = Factory :submission_workflow
           @study_sample = Factory :study_sample, :study => @study_from, :sample => @sample
           post :move_upload, :file => File.open(RAILS_ROOT + '/test/data/upload_sample_move.xls')
-          
+
           assert_equal nil, flash[:error]
         end
 
@@ -70,5 +70,5 @@ class SamplesControllerTest < ActionController::TestCase
       context "#move" do
       end
     end
-  end 
+  end
 end

@@ -11,13 +11,13 @@
   <% if @asset.location %>
       <tr><td>Location: <%= f.select :location_id, Location.all.map { |location| [location.name, location.id]} %></td></tr>
   <% end %>
-    
+
   <tr><td>Public name (for ENA release): <%= f.text_field :public_name %></td><tr>
 
 
   <% if @asset.is_a?(Lane) %>
     <tr><td>Should the data be released?: <%= f.check_box :external_release, { 'data-field' => 'lane_lane_metadata_attributes_release_reason'} %>
-    <%= hidden_field_tag :qc_state_value, @asset.qc_state %> 
+    <%= hidden_field_tag :qc_state_value, @asset.qc_state %>
     <%= hidden_field_tag :external_release_value, @asset.external_release %>
     <%= hidden_field_tag 'lane[lane_metadata_attributes][release_reason]', '', :id => 'hidden_lane' %>
     </td></tr>
@@ -27,7 +27,7 @@
 <% end %>
 
  <tr><td><%= link_to 'Show', :action => :show, :id => @asset.id %></td></tr>
-</table> 
+</table>
 
 <script type="text/javascript">
 (function(undefined) {
@@ -35,15 +35,15 @@
 
    $$('input[type=checkbox]').each(function(checkbox) {
      var field = $(checkbox.readAttribute('data-field'));
-     field.disabled = true;    
+     field.disabled = true;
 
      checkbox.observe('click', function() {
       asset_qc_state = $('qc_state_value').value
       external_release = eval($('external_release_value').value)
-      checkbox_status = this.checked 
+      checkbox_status = this.checked
 
       if (((asset_qc_state =="passed") && (!checkbox_status) && (external_release)) || ((asset_qc_state =="failed") && (checkbox_status) && (!external_release)))
-      {  
+      {
         field.disabled = false;
       }
       else

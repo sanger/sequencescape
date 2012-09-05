@@ -274,14 +274,14 @@ Feature: Full run through of the UK10K submissions
           "last": "http://www.example.com/api/1/11111111-2222-3333-4444-555555555555/requests/1",
           "read": "http://www.example.com/api/1/11111111-2222-3333-4444-555555555555/requests/1",
           "first": "http://www.example.com/api/1/11111111-2222-3333-4444-555555555555/requests/1"
-        }, 
+        },
         "requests": [
           {
             "source_asset": {
               "uuid": "33333333-4444-5555-6666-000000000001",
               "type": "sample_tubes"
             },
-            "target_asset": null, 
+            "target_asset": null,
 
             "fragment_size": {
               "from": "100",
@@ -347,5 +347,5 @@ Feature: Full run through of the UK10K submissions
             "type": "Paired end sequencing"
           }
         ]
-      } 
+      }
       """

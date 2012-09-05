@@ -6,7 +6,7 @@ Feature: Manage robots for SLF
 		When I follow "Admin"
 		Then I should see "Administration"
 		When I follow "Robot management"
-		
+
 	Scenario: Add new robot
 	  When I follow "New robot"
 	  Then I should see "New robot"
@@ -27,4 +27,4 @@ Feature: Manage robots for SLF
 		And I should see "A robot"
 		When I follow "All robots"
 		Then I should see "A robot"
-		
+

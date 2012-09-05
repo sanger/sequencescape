@@ -6,7 +6,7 @@ class AccessionService
   CenterName = 'SC'.freeze # TODO [xxx] use confing file
   Protect = "protect".freeze
   Hold = "hold".freeze
-  
+
   def submit(user, *accessionables)
     ActiveRecord::Base.transaction do
       submission = Accessionable::Submission.new(self, user, *accessionables)
@@ -84,7 +84,7 @@ class AccessionService
 
     #TODO check error
     #raise AccessionServiceError, "Cannot generate accession number: #{ sampledata[:error] }" if sampledata[:error]
-    
+
 
     ebi_accession_number = study.study_metadata.study_ebi_accession_number
     #raise NumberNotGenerated, 'No need to' if not ebi_accession_number.blank? and not /ER/.match(ebi_accession_number)
@@ -116,7 +116,7 @@ class AccessionService
   def sample_visibility(sample)
     Protect
   end
-  
+
   def study_visibility(study)
     Protect
   end
@@ -191,14 +191,14 @@ private
     xml.instruct!
     xml.SUBMISSION(
       'xmlns:xsi'      => 'http://www.w3.org/2001/XMLSchema-instance',
-      :center_name     => submission[:center_name], 
-      :broker_name     => submission[:broker], 
-      :alias           => submission[:submission_id], 
-      :submission_date => submission[:submission_date] 
+      :center_name     => submission[:center_name],
+      :broker_name     => submission[:broker],
+      :alias           => submission[:submission_id],
+      :submission_date => submission[:submission_date]
     ) {
       xml.CONTACTS {
         xml.CONTACT(
-          :inform_on_error  => submission[:contact_inform_on_error], 
+          :inform_on_error  => submission[:contact_inform_on_error],
           :inform_on_status => submission[:contact_inform_on_status],
           :name             => submission[:name]
         )

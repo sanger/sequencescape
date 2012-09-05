@@ -3,7 +3,7 @@ class SequencingPipeline < Pipeline
     true
   end
 
-  # The guys in sequencing want to be able to re-run a request in another batch.  What we've agreed is that 
+  # The guys in sequencing want to be able to re-run a request in another batch.  What we've agreed is that
   # the request will be failed and then an identical request will be resubmitted to their inbox.  The
   # "failed" request should not be charged for.
   def detach_request_from_batch(batch, request)

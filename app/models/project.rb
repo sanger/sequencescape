@@ -11,9 +11,9 @@ class Project < ActiveRecord::Base
   extend EventfulRecord
   has_many_events
   has_many_lab_events
-  
+
   acts_as_audited :on => [:destroy, :update]
-  
+
 
   aasm_column :state
   aasm_initial_state :pending
@@ -33,7 +33,7 @@ class Project < ActiveRecord::Base
     transitions :to => :inactive, :from => [:pending, :active]
   end
 
-  has_many :quotas 
+  has_many :quotas
   has_many :billing_events
   has_many :roles, :as => :authorizable
   has_many :orders
@@ -83,7 +83,7 @@ class Project < ActiveRecord::Base
   end
 
   def book_quota(request_type,number=1)
-    quota_for!(request_type).book_request!(number, enforce_quotas?) 
+    quota_for!(request_type).book_request!(number, enforce_quotas?)
   end
 
   def unbook_quota(request_type, number=1)
@@ -196,7 +196,7 @@ class Project < ActiveRecord::Base
     quota.limit += number+quota.used
     quota.save!
   end
-  
+
   def owners
     role = self.roles.detect{|r| r.name == "owner" }
     unless role.nil?
@@ -210,7 +210,7 @@ class Project < ActiveRecord::Base
     owners_ = owners
     owners_ and owners_.first
   end
-  
+
   def manager
     role = self.roles.detect{|r| r.name == "manager"}
     unless role.nil?
@@ -219,11 +219,11 @@ class Project < ActiveRecord::Base
       nil
     end
   end
-  
+
   def actionable?
     self.project_metadata.budget_division.name != 'Unallocated'
   end
-  
+
   def sequencing_budget_division
     self.project_metadata.budget_division.name
   end
@@ -243,7 +243,7 @@ class Project < ActiveRecord::Base
     # that doesn't.
     include ProjectManager::Associations
     include BudgetDivision::Associations
-    
+
     attribute(:project_cost_code, :required => true)
     attribute(:funding_comments)
     attribute(:collaborators)

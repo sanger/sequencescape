@@ -15,11 +15,11 @@
 					<td><%= plate_barcode %></td>
 					<td></td>
 					<% end %>
-				</tr>				
+				</tr>
 				<% end %>
 				</table>
       </div>
-      <br />  
+      <br />
       <strong>I have placed the above barcoded DNA plates in the reception fridge in the following lab:</strong>
       <br /><br />
       <% form_for :asset,  :url => { :action => "import_from_snp" } do |f| %>

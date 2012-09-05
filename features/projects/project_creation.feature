@@ -87,4 +87,3 @@ Feature: Creating projects
       | Pulldown library creation              | 0           | 0          | 0               | Request more |
       | Single ended hi seq sequencing         | 0           | 0          | 0               | Request more |
       | Single ended sequencing                | 0           | 0          | 0               | Request more |
-      

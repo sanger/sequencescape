@@ -8,7 +8,7 @@ Feature: Listing studies by the various possible types
     Given a study will appear in the study list "<study type>"
     When I follow "<study type>"
     Then I should see the study for study list "<study type>"
-  
+
     Examples:
       | study type |
       | Interesting |
@@ -22,7 +22,7 @@ Feature: Listing studies by the various possible types
       | Active |
       | Inactive |
       | Collaborations |
-  # 
+  #
   # Scenario: Listing all studies
   #   Given studies will appear in the following study lists:
   #     | Interesting |
@@ -35,10 +35,10 @@ Feature: Listing studies by the various possible types
   #     | Active |
   #     | Inactive |
   #     | Collaborations |
-  #   
+  #
   #   When I follow "All"
   #   And the Ajax updates the view
-  #   
+  #
   #   Then I should see the studies for the following study lists:
   #     | Interesting |
   #     | Followed |

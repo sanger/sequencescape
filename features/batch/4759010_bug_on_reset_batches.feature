@@ -26,7 +26,7 @@ Feature: Resetting a batch and creating an "identical" batch
     And I fill in "Multiplexed Library name" with "New Name"
     And I press "Next step"
 
-    # "Initial QC" page 
+    # "Initial QC" page
     Then I should see "TASK DETAILS"
     And I press "Next step"
     And I should not see "Unable to find sequencing request"

@@ -4,7 +4,7 @@ module SubmissionTemplateMaker
       submission_parameters = old_template.submission_parameters.dup
 
       submission_parameters[:request_type_ids_list] = new_request_types(
-        product_line, 
+        product_line,
         submission_parameters[:request_type_ids_list]
       )
 

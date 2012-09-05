@@ -42,7 +42,7 @@ Then /^I should see the following (required )?fields:$/ do |required,table|
   table.hashes.each do |field|
     if field['type'].include?('/')
       Then %Q{I should see the #{ required }select field "#{ field['field'] }" with options "#{ field['type'] }"}
-    else 
+    else
       Then %Q{I should see the #{ required }#{ field['type'] } field "#{ field['field'] }"}
     end
   end

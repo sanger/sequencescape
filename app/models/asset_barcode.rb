@@ -4,10 +4,10 @@ class AssetBarcode < ActiveRecord::Base
     offset = 200000
     barcode = (AssetBarcode.create!).id + offset
 
-    while Asset.find_by_barcode(barcode.to_s) 
+    while Asset.find_by_barcode(barcode.to_s)
       barcode = (AssetBarcode.create!).id + offset
     end
-    
+
     (barcode).to_s
   end
 end

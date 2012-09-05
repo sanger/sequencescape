@@ -100,7 +100,7 @@ Then /^I should see the cherrypick worksheet table:$/ do |expected_results_table
   1.upto(12).each do |column_name|
     actual_table.map_column!("#{column_name}") { |text| text.tr("\n\t",' ') }
   end
-  
+
   expected_results_table.diff!(actual_table)
 end
 
@@ -115,17 +115,17 @@ Given /^I have a tag group called "([^"]*)" with (\d+) tags$/ do |tag_group_name
   1.upto(number_of_tags.to_i) do |i|
     tags << Tag.new(:oligo => oligos[(i-1)%oligos.size], :map_id => i, :tag_group_id => tag_group.id)
   end
-  
+
   Tag.import tags
 end
 
 Then /^the default plates to wells table should look like:$/ do |expected_results_table|
   actual_table = table(tableish('table.plate tr', 'td,th').collect{ |row| row.collect{|cell| cell[/^(Tag [\d]+)|(\w+)/] }})
-  
+
   expected_results_table.diff!(actual_table)
 end
 
-When /^I set (PacBioLibraryTube|Plate|Sample|Multiplexed Library|Library|Pulldown Multiplexed Library) "([^"]*)" to be in freezer "([^"]*)"$/ do |asset_type, plate_barcode,freezer_name|  
+When /^I set (PacBioLibraryTube|Plate|Sample|Multiplexed Library|Library|Pulldown Multiplexed Library) "([^"]*)" to be in freezer "([^"]*)"$/ do |asset_type, plate_barcode,freezer_name|
   asset = Asset.find_from_machine_barcode(plate_barcode)
   location = Location.find_by_name(freezer_name)
   asset.update_attributes!(:location => location)
@@ -170,7 +170,7 @@ Given /^I have 2 pulldown plates$/ do
   And %Q{I press "Next step"}
   When %Q{I press "Release this batch"}
   When %Q{I set Plate "1220099999705" to be in freezer "Pulldown freezer"}
-  
+
   Given %Q{plate "222" with 1 samples in study "Study A" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission}
   Given %Q{plate "222" has nonzero concentration results}
   Given %Q{plate "222" has measured volume results}
@@ -183,7 +183,7 @@ Given /^I have 2 pulldown plates$/ do
   And %Q{I press "Next step"}
   When %Q{I press "Release this batch"}
   When %Q{I set Plate "1220088888782" to be in freezer "Pulldown freezer"}
-  
+
 end
 
 
@@ -224,7 +224,7 @@ Given /^I have a "([^"]*)" submission with 2 plates$/ do |submission_template_na
     [plate_1, plate_2].each do |plate|
       Well.create!(:map_id => 1, :plate => plate)
     end
-    
+
     submission_template = SubmissionTemplate.find_by_name(submission_template_name)
     submission = submission_template.create_and_build_submission!(
       :study => study,

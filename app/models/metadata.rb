@@ -7,11 +7,11 @@ module Metadata
   end
 
 private
-  
+
   def build_association(as_class, options)
     # First we build the association into the current ActiveRecord::Base class
     as_name = as_class.name.demodulize.underscore
-    association_name = "#{ as_name }_metadata".underscore.to_sym 
+    association_name = "#{ as_name }_metadata".underscore.to_sym
     class_name = "#{ self.name}::Metadata"
 
     has_one(association_name, { :class_name => class_name, :dependent => :destroy, :validate => true, :autosave => true }.merge(options).merge(:foreign_key => "#{as_name}_id", :inverse_of => :owner))

@@ -38,7 +38,7 @@ Feature: Interacting with projects through the API
 				            "name": "John Doe"
 				        }],
 				        "state": "active",
-				
+
 								"id": 644
 				    }
 				}
@@ -76,7 +76,7 @@ Feature: Interacting with projects through the API
 			            "name": "John Doe"
 			        }],
 			        "state": "active",
-			
+
 							"id": 644
 			    }
 			}

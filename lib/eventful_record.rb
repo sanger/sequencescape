@@ -13,7 +13,7 @@ module EventfulRecord
       class_eval(&block) if block.present?
     end
   end
-  
+
   def has_many_lab_events(&block)
     has_many(:lab_events, :as => :eventful, :dependent => :destroy, :order => 'created_at', &block)
   end

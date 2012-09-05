@@ -70,7 +70,7 @@ class Barcode
     prefix, number, check = split_human_barcode(barcode)
     return number
   end
-  
+
   def self.prefix_from_barcode(code)
     barcode = barcode_to_human(code)
     prefix, number, check = split_human_barcode(barcode)
@@ -91,13 +91,13 @@ class Barcode
     bcode
   end
 
-  # Returns the Human barcode or raises an InvalidBarcode exception if there is a problem.  The barcode is 
+  # Returns the Human barcode or raises an InvalidBarcode exception if there is a problem.  The barcode is
   # considered invalid if it does not translate to a Human barcode or, when the optional +prefix+ is specified,
   # its human equivalent does not match.
   def self.barcode_to_human!(code, prefix = nil)
     human_barcode = barcode_to_human(code) or raise InvalidBarcode, "Barcode #{ code } appears to be invalid"
     unless prefix.nil? or split_human_barcode(human_barcode).first == prefix
-      raise InvalidBarcode, "Barcode #{ code } (#{ human_barcode }) does not match prefix #{ prefix }" 
+      raise InvalidBarcode, "Barcode #{ code } (#{ human_barcode }) does not match prefix #{ prefix }"
     end
     human_barcode
   end

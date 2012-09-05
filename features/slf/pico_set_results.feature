@@ -7,8 +7,8 @@ Feature: Upload Pico Green concentration results from the Pico Green application
     And the plate barcode webservice returns "1234567"
     Given all of this is happening at exactly "14-Feb-2011 23:00:00+01:00"
     Given a plate with purpose "Pico Standard" and barcode "1234567" exists
-  
-  @qc_event @study_report @qc_study_report 
+
+  @qc_event @study_report @qc_study_report
   Scenario: upload concentration results from the pico application
     Given a stock plate with barcode "1221234567841" exists
     And plate "1234567" has "96" wells with aliquots
@@ -17,7 +17,7 @@ Feature: Upload Pico Green concentration results from the Pico Green application
     # up and running, which appears not to be the case for backgrounds (oddly).
     And the "Dilution Plates" plate is created from the plate with barcode "1221234567841"
     And the "Pico Assay Plates" plate is created from the plate with barcode "4361234567667"
-  
+
     When I post the JSON below to update the plate:
       """
       {
@@ -152,8 +152,8 @@ Feature: Upload Pico Green concentration results from the Pico Green application
     | ungraded | H10  |            |
     | ungraded | H11  |            |
     | Pass     | H12  | 2011-02-14 |
-    
-    
+
+
 
   Scenario Outline: Changing the Pico Pass state of the wells on a Pico Plate
     Given a stock plate with barcode "1221234567841" exists
@@ -180,7 +180,7 @@ Feature: Upload Pico Green concentration results from the Pico Green application
       }
       """
     Then the Stock Plate's Pico pass state is "<FINISH_STATE>"
-    
+
     Examples:
       | INITIAL_STOCK_STATE | JSON_STATE_MESSAGE | FINISH_STATE |
       |                     | passed             | Pass         |
@@ -191,4 +191,4 @@ Feature: Upload Pico Green concentration results from the Pico Green application
       | Fail                | failed             | Fail         |
       | Fail                | passed             | Pass         |
       | Pass                | passed             | Pass         |
-    
+

@@ -15,7 +15,7 @@
     </div>
     <div class='section'>2. Provide a name.</div>
     <div class='section'><%= label_tag "asset_name", "Name", {:style => 'display:none;'} %><%= f.text_field:name%></div>
-      
+
     <div class='section'>3. If applicable, scan in the 'parent' asset's barcode,</div>
     <div class='section'>
       <%= label_tag "parent_asset_", "Parent Asset", {:style => 'display:none;'} %><%= text_field :parent_asset, nil %>
@@ -28,7 +28,7 @@
     <div class='section'>4. If the new asset is indexed, enter the tag's number, (e.g 168)</div>
     <div class='section'>
       <%= label_tag "tag_", "Tag", {:style => 'display:none;'} %><%= text_field :tag, nil %>
-    </div>  
+    </div>
      <div class='section'>
      and optionally its sequence (e.g. ACAACGCA)
      </div>
@@ -42,7 +42,7 @@
     <div class='section'>6. Provide the volume (in &#181;L). </div>
     <div class='section'><%= label_tag "asset_volume", "Volume", {:style => 'display:none;'} %><%= f.text_field :volume%> &#181;L</div>
     <div class='section'><p>(NB, this should include any amount taken from the 'parent'.</p><p>This does not need to be entered if it is only an aliquot of the parent.)</p></div>
-    
+
     <div class='section'>7. If you want to create multiple identical assets, provide the number you would like.</div>
     <div class='section'><%= label_tag "count_", "Count", {:style => 'display:none;'} %><%= text_field :count, nil%></div>
   </div>

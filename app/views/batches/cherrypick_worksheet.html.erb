@@ -10,9 +10,9 @@
   <title>Batch <%= @batch.id %></title>
 </head>
 <body>
-	
+
 	<% @plates.each do |plate| %>
-		<% robot_plate_layout = @batch.tecan_layout_plate_barcodes(plate.barcode) %> 
+		<% robot_plate_layout = @batch.tecan_layout_plate_barcodes(plate.barcode) %>
 		<%= render :partial => 'cherrypick_single_worksheet' , :locals => {:batch => @batch, :robot_plate_layout => robot_plate_layout, :plate_barcode => plate.barcode} %>
 	<hr>
 	<% end %>
