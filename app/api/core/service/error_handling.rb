@@ -7,14 +7,14 @@ module Core::Service::ErrorHandling
       @errors = HierarchicalExceptionMap.new(@errors)
 
       error([ ::IllegalOperation, ::Core::Service::Error, ActiveRecord::ActiveRecordError ]) do
-        Rails.logger.error(exception_thrown.message)
-        exception_thrown.backtrace.map(&Rails.logger.method(:error))
+        buffer = [ exception_thrown.message, exception_thrown.backtrace ].join("\n")
+        Rails.logger.error("API[error]: #{buffer}")
 
         exception_thrown.api_error(self)
       end
       error([ ::Exception ]) do
-        Rails.logger.error(exception_thrown.message)
-        exception_thrown.backtrace.map(&Rails.logger.method(:error))
+        buffer = [ exception_thrown.message, exception_thrown.backtrace ].join("\n")
+        Rails.logger.error("API[error]: #{buffer}")
 
         self.general_error(501)
       end
