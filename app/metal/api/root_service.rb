@@ -25,7 +25,7 @@ class Api::RootService < ::Core::Service
   # slash gets stripped off any requests, so we have to account for that with the root actions.
   get(%r{^/#{self.api_version_path}/?$}) do
     body(
-      ::Core::Service::Request.new do |request|
+      ::Core::Service::Request.new(request.fullpath) do |request|
         request.service = self
         request.path    = '/'
       end.response do |response|
