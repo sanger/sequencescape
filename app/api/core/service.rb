@@ -42,6 +42,15 @@ class Core::Service < Sinatra::Base
     end
   end
 
+  # Report the performance and status of any request
+  def report(handler, &block)
+    Rails.logger.info("API[start]: #{handler}: #{request.fullpath}")
+    yield
+  ensure
+    Rails.logger.info("API[handled]: #{handler}: #{request.fullpath}")
+  end
+  private :report
+
   # Disable the Sinatra rubbish that happens in the development environment because we want
   # Rails to do all of the handling if we don't
   set(:environment, Rails.env)
