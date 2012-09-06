@@ -24,7 +24,7 @@ class Api::RootService < ::Core::Service
   # It appears that if you go through a service like nginx or mongrel cluster(?) that the trailing
   # slash gets stripped off any requests, so we have to account for that with the root actions.
   get(%r{^/#{self.api_version_path}/?$}) do
-    body(
+    result = report("root") do
       ::Core::Service::Request.new(request.fullpath) do |request|
         request.service = self
         request.path    = '/'
@@ -32,7 +32,9 @@ class Api::RootService < ::Core::Service
         class << response ; include RootResponse ; end
         response.services(ALL_SERVICES_AVAILABLE)
       end
-    )
+    end
+
+    body(result)
   end
 
   [ :post, :put, :delete ].each do |action|
