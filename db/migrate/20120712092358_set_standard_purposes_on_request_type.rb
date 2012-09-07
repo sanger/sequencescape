@@ -4,6 +4,18 @@ class SetStandardPurposesOnRequestType < ActiveRecord::Migration
     'LibraryTube'            => 'Standard library'
   }
 
+  class Tube
+    class Purpose < ActiveRecord::Base
+      set_table_name('plate_purposes')
+      set_inheritance_column(nil)
+    end
+  end
+
+  class RequestType < ActiveRecord::Base
+    set_table_name('request_types')
+    belongs_to :target_purpose, :class_name => 'SetStandardPurposesOnRequestType::Tube::Purpose'
+  end
+
   def self.up
     ActiveRecord::Base.transaction do
       TARGET_ASSET_TYPES_TO_PURPOSES.each do |target_type, purpose_name|

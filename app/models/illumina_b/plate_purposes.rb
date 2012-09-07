@@ -59,12 +59,24 @@ module IlluminaB::PlatePurposes
       end
     end
 
+    def destroy_tube_purposes
+      IlluminaB::PlatePurposes::TUBE_PURPOSE_FLOWS.each do |flow|
+        Tube::Purpose.find_all_by_name(flow.flatten).map(&:destroy)
+      end
+    end
+
     def create_plate_purposes
       IlluminaB::PlatePurposes::PLATE_PURPOSE_FLOWS.each do |flow|
         stock_plate = create_plate_purpose(flow.shift, :can_be_considered_a_stock_plate => true, :default_state => 'passed', :cherrypickable_target => true)
         request_type_for(stock_plate).acceptable_plate_purposes << stock_plate
 
         flow.each(&method(:create_plate_purpose))
+      end
+    end
+
+    def destroy_plate_purposes
+      IlluminaB::PlatePurposes::PLATE_PURPOSE_FLOWS.each do |flow|
+        PlatePurpose.find_all_by_name(flow.flatten).map(&:destroy)
       end
     end
 
@@ -78,9 +90,13 @@ module IlluminaB::PlatePurposes
       end
     end
 
+    def destroy_branches
+
+    end
+
     def request_type_for(stock_plate)
       # Only have one at the moment
-      RequestType.find_by_key('illumina_b_std')
+      RequestType.find_by_key('illumina_b_std') or raise "Cannot find Illumina B STD request type"
     end
     private :request_type_for
 
