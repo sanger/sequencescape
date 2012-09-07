@@ -1,5 +1,7 @@
-
 class AddNewRequestTypesForPlateBasedIlluminaBMxLibraryCreation < ActiveRecord::Migration
+  class RequestType < ActiveRecord::Base
+    set_table_name('request_types')
+  end
 
   def self.up
     ActiveRecord::Base.transaction do
@@ -23,7 +25,7 @@ class AddNewRequestTypesForPlateBasedIlluminaBMxLibraryCreation < ActiveRecord::
 
   def self.down
     ActiveRecord::Base.transaction do
-      RequestType.find_by_key('Illumina-B STD').destroy
+      RequestType.find_by_key('illumina_b_std').destroy
     end
   end
 
