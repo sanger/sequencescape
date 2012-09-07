@@ -1,4 +1,16 @@
 class SetIlbStdMxTubePurposeOnRequestType < ActiveRecord::Migration
+  class RequestType < ActiveRecord::Base
+    set_table_name('request_types')
+    belongs_to :target_purpose, :class_name => 'SetIlbStdMxTubePurposeOnRequestType::IlluminaB::MxTubePurpose'
+  end
+
+  module IlluminaB
+    class MxTubePurpose < ActiveRecord::Base
+      set_table_name('plate_purposes')
+      set_inheritance_column(nil)
+    end
+  end
+
   def self.up
     change do |request_type, tube_purpose|
       request_type.update_attributes!(:target_asset_type => nil, :target_purpose => tube_purpose)
