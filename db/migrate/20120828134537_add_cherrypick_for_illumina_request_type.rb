@@ -37,7 +37,9 @@ class AddCherrypickForIlluminaRequestType < ActiveRecord::Migration
     end
 
     def old_request_type
-      @old_request_type ||= RequestType.find_by_key('illumina_a_cherrypick_for_pulldown')
+      @old_request_type ||=
+        RequestType.find_by_key('illumina_a_cherrypick_for_pulldown') or
+          raise "Cannot find illumina_a_cherrypick_for_pulldown request type"
     end
 
     # Find submission_templates using the old request_type_id
@@ -53,7 +55,9 @@ class AddCherrypickForIlluminaRequestType < ActiveRecord::Migration
         # and UnDeprecate the old request_type
         old_request_type.update_attributes(:deprecated => false)
 
-        new_request_type = RequestType.find_by_key('cherrypick_for_illumina')
+        new_request_type =
+          RequestType.find_by_key('cherrypick_for_illumina') or
+            raise "Cannot find cherrypick_for_illumina request type"
 
         templates_using_request_type(new_request_type).each do |template|
           template.submission_parameters[:request_type_ids_list].shift
@@ -65,7 +69,7 @@ class AddCherrypickForIlluminaRequestType < ActiveRecord::Migration
 
         cherrypick_pipeline.request_types.delete(new_request_type)
 
-        new_request_type.destroy!
+        new_request_type.destroy
 
       end
     end
