@@ -252,10 +252,11 @@ class SubmissionCreater < PresenterSkeleton
   def find_assets_from_text(assets_text)
     plates_wells = assets_text.lines.map(&:chomp).reject(&:blank?).map(&:strip)
 
-    assets = plates_wells.map do |plate_wells|
+    plates_wells.map do |plate_wells|
       plate_barcode, well_locations = plate_wells.split(':')
 
       plate = Plate.find_from_machine_barcode(Barcode.human_to_machine_barcode(plate_barcode))
+      raise InvalidInputException, "No plate found for barcode #{plate_barcode}." if plate.nil?
       well_array = (well_locations||[]).split(',').reject(&:blank?).map(&:strip)
 
       find_wells_in_array(plate,well_array)
@@ -274,7 +275,7 @@ class SubmissionCreater < PresenterSkeleton
       when /^[0-9]+$/ # A column
         plate.wells.filled.in_column(map_description)
       else
-        raise StandardError "#{map_description} is no a valid well location"
+        raise InvalidInputException "#{map_description} is not a valid well location"
       end
     end
   end
