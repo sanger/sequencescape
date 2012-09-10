@@ -366,9 +366,9 @@
   // TODO: replace this with a jQuery UI tabview.  Needs the order IDs
   // sorting out for that though....
   var assetSelectorToggle = function(event) {
-    var currentAssetsPanel      = $(event.target).closest('.assets');
+    var currentAssetsPanel      = $(event.currentTarget).closest('.assets');
 
-    var nextAssetPanel = $(event.target.hash);
+    var nextAssetPanel = $($(event.currentTarget).data('selector'));
 
     currentAssetsPanel.fadeOut(function(){
       nextAssetPanel.find('input, textarea, select').val('');
