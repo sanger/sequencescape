@@ -257,7 +257,7 @@ class SubmissionCreater < PresenterSkeleton
 
       plate = Plate.find_from_machine_barcode(Barcode.human_to_machine_barcode(plate_barcode))
       raise InvalidInputException, "No plate found for barcode #{plate_barcode}." if plate.nil?
-      well_array = (well_locations||[]).split(',').reject(&:blank?).map(&:strip)
+      well_array = (well_locations||'').split(',').reject(&:blank?).map(&:strip)
 
       find_wells_in_array(plate,well_array)
     end.flatten
@@ -268,14 +268,19 @@ class SubmissionCreater < PresenterSkeleton
     return plate.wells.filled if well_array.empty?
     well_array.map do |map_description|
       case map_description
-      when /^[a-z,A-Z]+[0-9]+$/ # A well
-        plate.find_well_by_name(map_description)
+      when /^[a-z,A-Z][0-9]+$/ # A well
+        well = plate.find_well_by_name(map_description)
+        if well.nil? or well.aliquots.empty?
+          raise InvalidInputException, "Well #{map_description} on #{plate.sanger_human_barcode} does not exist or is empty."
+        else
+          well
+        end
       when /^[a-z,A-Z]$/ # A row
         plate.wells.filled.in_row(map_description)
       when /^[0-9]+$/ # A column
         plate.wells.filled.in_column(map_description)
       else
-        raise InvalidInputException "#{map_description} is not a valid well location"
+        raise InvalidInputException, "#{map_description} is not a valid well location"
       end
     end
   end
