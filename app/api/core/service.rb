@@ -42,6 +42,15 @@ class Core::Service < Sinatra::Base
     end
   end
 
+  # Report the performance and status of any request
+  def report(handler, &block)
+    Rails.logger.info("API[start]: #{handler}: #{request.fullpath}")
+    yield
+  ensure
+    Rails.logger.info("API[handled]: #{handler}: #{request.fullpath}")
+  end
+  private :report
+
   # Disable the Sinatra rubbish that happens in the development environment because we want
   # Rails to do all of the handling if we don't
   set(:environment, Rails.env)
@@ -114,9 +123,11 @@ class Core::Service < Sinatra::Base
     attr_reader :ability
 
     delegate :user, :to => :service
+    attr_reader :identifier
 
-    def initialize(*args, &block)
-      super
+    def initialize(identifier, *args, &block)
+      @identifier = identifier
+      super(*args, &block)
       @ability = Core::Abilities.create(self)
     end
 
@@ -190,7 +201,7 @@ class Core::Service < Sinatra::Base
     attr_reader             :request
     initialized_attr_reader :handled_by, :object
 
-    delegate :io, :to => :request
+    delegate :io, :identifier, :to => :request
 
     delegate :status, :to => 'request.service'
     initialized_delegate :status
@@ -223,8 +234,11 @@ class Core::Service < Sinatra::Base
     end
 
     def close
+      identifier = self.identifier  # Save for later as next line discards our request!
       discard_all_references
       super
+    ensure
+      Rails.logger.info("API[finished]: #{identifier}")
     end
 
     def discard_all_references
