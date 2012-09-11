@@ -99,5 +99,6 @@ end
 group :deployment do
   gem "mongrel_cluster"
   gem "psd_logger", :git => "git@github.com:sanger/psd_logger.git"
+  gem "gmetric", "~>0.1.3"
 end
 
