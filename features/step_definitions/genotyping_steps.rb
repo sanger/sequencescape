@@ -63,7 +63,7 @@ Given /^I have a cherrypicking batch with (\d+) samples$/ do |number_of_samples|
 
   Given %Q{I have a Cherrypicking submission for asset group "Plate asset group"}
   Given %Q{I am on the show page for pipeline "Cherrypick"}
-  
+
   When %Q{I check "Select DN1234567T for batch"}
   And %Q{I select "Create Batch" from "action_on_requests"}
   And %Q{I press "Submit"}
@@ -96,7 +96,7 @@ When /^I complete the cherrypicking batch with "([^"]*)" plate purpose$/ do |pla
   Then %Q{I should see "Batch released"}
 end
 
-Given /^I have a cherrypicked plate with barcode "([^"]*)" and plate purpose "([^"]*)"$/ do |plate_barcode, plate_purpose_name|  
+Given /^I have a cherrypicked plate with barcode "([^"]*)" and plate purpose "([^"]*)"$/ do |plate_barcode, plate_purpose_name|
   Given %Q{I have a Cherrypicking submission for asset group "Plate asset group"}
   Given %Q{I am on the show page for pipeline "Cherrypick"}
   When %Q{I check "Select DN1234567T for batch"}
@@ -142,12 +142,12 @@ Given /^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)"
   wells.compact!
 
   submission_template = SubmissionTemplate.find_by_name(submission_template_name)
-  submission = submission_template.create_and_build_submission!(
+  submission = submission_template.create_and_build_submission!({
     :study    => study,
     :project  => project,
     :workflow => Submission::Workflow.find_by_key('microarray_genotyping'),
     :user     => User.last,
-    :assets   => wells
+    :assets   => wells}
     )
   And %Q{1 pending delayed jobs are processed}
 end
@@ -178,7 +178,12 @@ Given /^the internal QC plates are created$/ do
   And %Q{I press "Submit"}
   When %Q{I fill in "Source plates" with "1221234567841"}
   And %Q{I fill in "User barcode" with "2470000100730"}
-  When %Q{I select "Dilution Plates" from "Plate purpose"}
+  When %Q{I select "Pico dilution" from "Plate purpose"}
+  And %Q{I select "xyz" from "Barcode printer"}
+  And %Q{I press "Submit"}
+  When %Q{I fill in "Source plates" with "1221234567841"}
+  And %Q{I fill in "User barcode" with "2470000100730"}
+  When %Q{I select "Working dilution" from "Plate purpose"}
   And %Q{I select "xyz" from "Barcode printer"}
   And %Q{I press "Submit"}
   When %Q{I fill in "Source plates" with "4361234567667"}
