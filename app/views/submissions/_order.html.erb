@@ -12,14 +12,14 @@
     <%= studies_select(form, @presenter.studies) %>
   </li>
 
-  <li class="assets" id="asset_group_selector">
+  <li class="assets asset_group_selector">
     <h3>Add Samples from Study asset group</h3>
     <div class="study-assets">First select a study for this order...</div>
-    <p><a class="asset-input-toggle" href="#" data-selector="#sample_name_selector">Switch to Sample selector...</a></p>
-    <p><a class="asset-input-toggle" href="#" data-selector="#plate_wells_selector">Switch to plate wells selector...</a></p>
+    <p><a class="asset-input-toggle" href="#" data-selector=".sample_name_selector">Switch to Sample selector...</a></p>
+    <p><a class="asset-input-toggle" href="#" data-selector=".plate_wells_selector">Switch to plate wells selector...</a></p>
   </li>
 
-  <li class="assets" style="display:none;" id="sample_name_selector">
+  <li class="assets sample_name_selector" style="display:none;">
     <h3>Add Samples from Plate</h3>
     <table>
       <th>
@@ -43,11 +43,11 @@
         %>
       </td>
   </table>
-    <a class="asset-input-toggle" href="#" data-selector="#asset_group_selector">Switch to Study asset selector...</a><br/>
-    <a class="asset-input-toggle" href="#" data-selector="#plate_wells_selector">Switch to plate wells selector...</a>
+    <a class="asset-input-toggle" href="#" data-selector=".asset_group_selector">Switch to Study asset selector...</a><br/>
+    <a class="asset-input-toggle" href="#" data-selector=".plate_wells_selector">Switch to plate wells selector...</a>
   </li>
   
-  <li class="assets" style="display:none;" id="plate_wells_selector">
+  <li class="assets plate_wells_selector" style="display:none;">
     <h3>Add Samples from Plate and Wells</h3>
     <table>
       <th></th>
@@ -65,8 +65,8 @@
         %>
       </td>
   </table>
-    <a class="asset-input-toggle" href="#" data-selector="#asset_group_selector">Switch to Study asset selector...</a><br/>
-    <a class="asset-input-toggle" href="#" data-selector="#sample_name_selector">Switch to Sample selector...</a>
+    <a class="asset-input-toggle" href="#" data-selector=".asset_group_selector">Switch to Study asset selector...</a><br/>
+    <a class="asset-input-toggle" href="#" data-selector=".sample_name_selector">Switch to Sample selector...</a>
   </li>
 
   <li class="project">

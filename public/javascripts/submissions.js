@@ -368,7 +368,8 @@
   var assetSelectorToggle = function(event) {
     var currentAssetsPanel      = $(event.currentTarget).closest('.assets');
 
-    var nextAssetPanel = $($(event.currentTarget).data('selector'));
+    var nextAssetPanelClass = $(event.currentTarget).data('selector')
+    var nextAssetPanel = currentAssetsPanel.siblings(nextAssetPanelClass).first();
 
     currentAssetsPanel.fadeOut(function(){
       nextAssetPanel.find('input, textarea, select').val('');
