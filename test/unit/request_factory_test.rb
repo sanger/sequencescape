@@ -7,7 +7,7 @@ class RequestFactoryTest < ActiveSupport::TestCase
         @project = Factory(:project)
         @project.project_metadata.update_attributes!(:budget_division => BudgetDivision.create!(:name => 'Test'))
         @order = Factory(:order, :project => @project)
-        @request = Factory(:request, :request_type => Factory(:request_type), :project => @project, :asset => Factory(:well), :target_asset => Factory(:well))
+        @request = Factory(:request, :request_type => Factory(:request_type), :project => @project, :asset => Factory(:sample_tube), :target_asset => Factory(:well))
       end
 
       context 'without quotas' do

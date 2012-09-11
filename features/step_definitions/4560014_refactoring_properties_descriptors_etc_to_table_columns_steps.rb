@@ -3,7 +3,7 @@ def create_request(request_type, study, project, asset, target_asset, additional
   request = Factory(:request,
     additional_options.merge(
       :study => study, :project => project,
-      :asset => asset, 
+      :asset => asset,
       :target_asset => target_asset,
       :request_type => request_type,
       :request_metadata_attributes => {
@@ -75,10 +75,10 @@ Given /^the project "([^\"]+)" has no "([^\"]+)" quota$/ do |name, type|
   project.quotas.delete(*project.quotas.all(:conditions => { :request_type_id => request_type.id }))
 end
 
-Given /^the sample in sample tube "([^\"]+)" is registered under the study "([^\"]+)"$/ do |tube_name, study_name|
-  tube = SampleTube.find_by_name(tube_name) or raise StandardError, "Cannot find sample tube #{tube_name.inspect}"
+Given /^the sample in (well|sample tube) "([^\"]+)" is registered under the study "([^\"]+)"$/ do |_,asset_name, study_name|
+  asset = Asset.find_by_name(asset_name) or raise StandardError, "Cannot find asset #{tube_name.inspect}"
   study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
-  study.samples << tube.aliquots.map(&:sample)
+  study.samples << asset.aliquots.map(&:sample)
 end
 
 Given /^the study "([^\"]+)" has an asset group of (\d+) samples called "([^\"]+)"$/ do |study_name, count, group_name|

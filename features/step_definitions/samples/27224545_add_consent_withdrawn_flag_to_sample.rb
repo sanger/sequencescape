@@ -11,6 +11,15 @@ Given /^the study "([^"]*)" has the sample "([^"]*)" in a sample tube and asset 
   And %Q{the sample tube "#{sample}_tube" is in the asset group "#{sample}_group"}
 end
 
+Given /^the study "([^"]*)" has the sample "([^"]*)" in a well and asset group$/ do |study, sample|
+  And %Q{the study "#{study}" has an asset group called "#{sample}_group"}
+  And %Q{I have a sample called "#{sample}" with metadata}
+  And %Q{the sample "#{sample}" belongs to the study "#{study}"}
+  And %Q{a well called "#{sample}_well" with ID #{Asset.count+1}}
+  And %Q{the sample "#{sample}" is in the well "#{sample}_well"}
+  And %Q{the well "#{sample}_well" is in the asset group "#{sample}_group"}
+end
+
 Given /^I try to create a "([^\"]*)" order with the following setup:$/ do |template_name, table|
   submission_template = SubmissionTemplate.find_by_name(template_name)
   params = table.rows_hash
