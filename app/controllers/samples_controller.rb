@@ -1,4 +1,6 @@
 class SamplesController < ApplicationController
+  include XmlCacheHelper::ControllerHelper
+
   require 'curb'
 
   before_filter :admin_login_required, :only => [ :administer, :destroy ]
@@ -49,7 +51,7 @@ class SamplesController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml
+      format.xml { cache_xml_response(@sample) }
       format.json { render :json => @sample.to_json }
     end
   end
