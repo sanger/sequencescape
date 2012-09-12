@@ -1,4 +1,6 @@
 class BatchesController < ApplicationController
+  include XmlCacheHelper::ControllerHelper
+
   before_filter :login_required, :except => [:released, :evaluations_counter, :qc_criteria]
   before_filter :find_batch_by_id, :only => [:show,:edit, :update, :destroy, :qc_information, :qc_batch, :save, :fail, :fail_items, :assign_batch, :control, :add_control, :remove_request, :print_labels, :print_plate_labels, :print_multiplex_labels, :print, :verify, :verify_tube_layout, :reset_batch, :previous_qc_state, :filtered, :swap, :download_spreadsheet, :gwl_file, :pulldown_batch_report, :pacbio_sample_sheet, :sample_prep_worksheet]
   before_filter :find_batch_by_batch_id, :only => [:sort, :print_multiplex_barcodes, :print_pulldown_multiplex_tube_labels, :print_plate_barcodes, :print_barcodes]
@@ -37,7 +39,7 @@ class BatchesController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml  { render :layout => false ; cache_page(response.body, url_for(:controller => 'batches', :action => 'show', :id => @batch.id, :format => :xml, :only_path => true)) }
+      format.xml { cache_xml_response(@batch) }
     end
   end
 
