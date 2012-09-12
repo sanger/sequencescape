@@ -49,12 +49,5 @@ class Projects::Workflows::QuotasControllerTest < ActionController::TestCase
       should_redirect_to("project_path(@quota.project)"){ project_path(@quota.project) }
     end
 
-    context "#all" do
-      setup do
-        get :all, :project_id => @quota.project.id, :workflow_id => @workflow.id
-      end
-      should_respond_with :success
-      should_render_template :all
-    end
   end
 end

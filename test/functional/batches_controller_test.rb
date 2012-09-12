@@ -83,10 +83,16 @@ class BatchesControllerTest < ActionController::TestCase
           @library2 = Factory :empty_library_tube
           @library2.parents << @sample
 
+          @library1.update_attributes(:location=>@pipeline.location)
+          @library2.update_attributes(:location=>@pipeline.location)
+
+          @target_one = Factory(:sample_tube)
+          @target_two = Factory(:sample_tube)
+
           # todo add a control_request_type to pipeline...
-          @request_one = @pipeline.request_types.first.create!(:asset => @library1, :project => Factory(:project))
+          @request_one = @pipeline.request_types.first.create!(:asset => @library1, :target_asset => @target_one, :project => Factory(:project))
           @batch_one.batch_requests.create!(:request => @request_one, :position => 1)
-          @request_two = @pipeline.request_types.first.create!(:asset => @library2, :project => Factory(:project))
+          @request_two = @pipeline.request_types.first.create!(:asset => @library2, :target_asset => @target_two, :project => Factory(:project))
           @batch_one.batch_requests.create!(:request => @request_two, :position => 2)
           @batch_one.reload
         end
@@ -169,7 +175,7 @@ class BatchesControllerTest < ActionController::TestCase
         context "#create" do
           setup do
             @old_count = Batch.count
-            @user.expects(:batches).returns(Batch.all)
+            #@user.expects(:batches).returns(Batch.all)
 
             @request_three = @pipeline.request_types.first.create!(:asset => @library1, :project => Factory(:project))
             @request_four  = @pipeline.request_types.first.create!(:asset => @library2, :project => Factory(:project))
@@ -254,6 +260,12 @@ class BatchesControllerTest < ActionController::TestCase
         end
 
         context "#fail_items" do
+
+          setup do
+            # We need to ensure the batch is started before we fail it.
+            @batch_one.start!(Factory(:user))
+          end
+
           context "posting without a failure reason" do
             setup do
               post :fail_items, :id => @batch_one.id, :failure => { :entire_batch => "0", :reason => "", :comment => "" }

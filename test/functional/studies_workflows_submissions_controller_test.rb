@@ -286,7 +286,7 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
           create_and_submit  :order => {}, :asset_group => @asset_group.id.to_s, :project_name => @project.name, :study_id => @study.id, :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
         end
         should "not have a successful submission" do
-          assert_contains(@controller.action_flash.values, 'Insufficient quota for test type')
+          assert_contains(@controller.action_flash.values, 'Insufficient quota for test type (require 3 but only 0 remaining)')
           assert_equal @submission_count, Submission.count
         end
       end

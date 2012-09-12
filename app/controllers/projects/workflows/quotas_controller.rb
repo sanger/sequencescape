@@ -11,11 +11,6 @@ class Projects::Workflows::QuotasController < ApplicationController
     @request_types = @workflow.request_types
   end
 
-  def all
-    @request_types = @workflow.request_types
-    render :partial => "all", :locals =>{:workflow => @workflow}
-  end
-
   private
   def discover_project
     @project = Project.find(params[:project_id])
