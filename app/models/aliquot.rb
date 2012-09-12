@@ -133,6 +133,10 @@ class Aliquot < ActiveRecord::Base
     self.tag_id.nil? or self.tag_id == UNASSIGNED_TAG
   end
 
+  def tagged?
+    !self.untagged?
+  end
+
   def tag_with_unassigned_behaviour
     untagged? ? nil : tag_without_unassigned_behaviour
   end
@@ -186,17 +190,16 @@ class Aliquot < ActiveRecord::Base
     a.zip(b).all?  { |x, y|  (x || y) == (y || x)  }
   end
 
-  def tagged?
-    @tag_id != -1
-  end
-
   def matches?(object)
-    # Note: This funtion is direction, and assumes that the downstream aliquot
+    # Note: This funtion is directional, and assumes that the downstream aliquot
     # is checking the upstream aliquot (or the AliquotRecord)
     case
     when self.sample_id != object.sample_id then return false # The samples don't match
-    when !self.tagged? && object.tagged? then raise "Tag missing from downstream aliquot" # The downstream aliquot is untagged, but is tagged upstream. Something is wrong!
-    when !object.tagged? then return true # Thhe upstream aliquot was untagged, we don't need to check tags
+    when self.library_id != object.library_id then return false # Our librarys don't match.
+    #when self.bait_library_id.nil? && object.bait_library_id.present? then raise StandardError, "Bait library missing from downstream aliquot" # Something is wrong!
+    when object.bait_library_id.present? && (self.bait_library_id != object.bait_library_id) then return false # We have different bait libraries
+    when self.untagged? && object.tagged? then raise StandardError, "Tag missing from downstream aliquot" # The downstream aliquot is untagged, but is tagged upstream. Something is wrong!
+    when object.untagged? then return true # The upstream aliquot was untagged, we don't need to check tags
     else self.tag_id == object.tag_id # Both aliquots are tagged, we need to check if they match
     end
   end

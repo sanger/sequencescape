@@ -4,15 +4,21 @@ module Aliquot::Remover
     # the time we want to look at it. The aliquot record mimics
     # an aliquot in the comparison functions
 
-    attr_reader :tag_id, :sample_id
+    attr_reader :tag_id, :sample_id, :library_id, :bait_library_id
 
     def initialize(aliquot)
       @tag_id = aliquot.tag_id
       @sample_id = aliquot.sample_id
+      @library_id = aliquot.library_id
+      @bait_library_id = aliquot.bait_library_id
     end
 
     def tagged?
-      @tag_id != -1
+      self.tag_id.nil? or (self.tag_id != Aliquot::UNASSIGNED_TAG)
+    end
+
+    def untagged?
+      !self.tagged?
     end
 
   end
@@ -44,12 +50,17 @@ module Aliquot::Remover
         aliquot.matches?(aliquot_to_remove)
       end
 
-      raise "Duplicate aliquots detected in asset #{display_name}." if to_remove.count > 1
-      removed_aliquot = AliquotRecord.new(to_remove.first)
-      to_remove.first.destroy
-      removed_aliquot
+      case
+      when to_remove.count > 1 then raise "Duplicate aliquots detected in asset #{display_name}."
+      when to_remove.count == 1
+        removed_aliquot = AliquotRecord.new(to_remove.first)
+        to_remove.first.destroy
+        removed_aliquot
+      else # We have noting to remove
+        nil
+      end
 
-    end
+    end.reject{|aliquot| aliquot.nil?}
   end
 
 end
