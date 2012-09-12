@@ -60,7 +60,7 @@ module Aliquot::Remover
         nil
       end
 
-    end.reject{|aliquot| aliquot.nil?}
+    end.compact
   end
 
 end
