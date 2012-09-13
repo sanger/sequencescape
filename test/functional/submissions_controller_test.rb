@@ -32,7 +32,7 @@ class SubmissionsControllerTest < ActionController::TestCase
       #Mainly to verify that it isn't the new test that is broken
 
       setup do
-        samples = Well.filled.each.map {|w| w.aliquots.first.sample.name}
+        samples = Well.with_aliquots.each.map {|w| w.aliquots.first.sample.name}
 
         post(:create, :submission => {:is_a_sequencing_order=>"false", :comments=>"", :template_id=>@submission_template.id.to_s, :order_params=>{"read_length"=>"37", "fragment_size_required_to"=>"400", "bait_library_name"=>"Human all exon 50MB", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"}, :asset_group_id=>"", :study_id=>@study.id.to_s, :sample_names_text=>samples[1..4].join("\n"), :plate_purpose_id=>@plate.plate_purpose.id.to_s, :project_name=>"A project"})
 

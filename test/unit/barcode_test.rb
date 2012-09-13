@@ -40,7 +40,7 @@ class BarcodeTest < ActiveSupport::TestCase
     should_eventually "be splittable" do
       prefix, number, check =  Barcode.split_barcode(@barcode)
       assert_equal "247", prefix
-      assert_equal 2, number 
+      assert_equal 2, number
       assert_equal "799", check
     end
 
@@ -60,7 +60,7 @@ class BarcodeTest < ActiveSupport::TestCase
   end
 
   context "A Generic Barcode" do
-    setup do 
+    setup do
       @barcode = 5018206206022.to_s
     end
 
@@ -70,7 +70,7 @@ class BarcodeTest < ActiveSupport::TestCase
   end
 
   context "A Generic Barcode" do
-    setup do 
+    setup do
       @barcode = 5018206206023.to_s
     end
 
@@ -89,4 +89,25 @@ class BarcodeTest < ActiveSupport::TestCase
       end
     end
   end
+
+  context "A human readable barcode" do
+
+    setup do
+      @human_readable_barcode = "PR1234K"
+      @invalid_human_barcode = "QQ12345A"
+      @expected_machine_barcode = 4500001234757
+    end
+
+    should "convert to the correct machine barcode" do
+      assert_equal(@expected_machine_barcode,Barcode.human_to_machine_barcode(@human_readable_barcode))
+    end
+
+    should "raise an exception with an invalid barcode" do
+      assert_raise(Barcode::InvalidBarcode) do
+        Barcode.human_to_machine_barcode(@invalid_human_barcode)
+      end
+    end
+
+  end
+
 end

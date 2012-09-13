@@ -21,7 +21,6 @@ class Aliquot < ActiveRecord::Base
     # Named scopes for the future
     named_scope :include_aliquots, :include => { :aliquots => [ :sample, :tag, :bait_library ] }
     named_scope :with_aliquots, :joins => :aliquots
-    named_scope :filled, :joins => :aliquots, :conditions => ['aliquots.id IS NOT NULL']
 
     # Provide some named scopes that will fit with what we've used in the past
     named_scope :with_sample_id, lambda { |id|     { :conditions => { :aliquots => { :sample_id => Array(id)               } }, :joins => :aliquots } }

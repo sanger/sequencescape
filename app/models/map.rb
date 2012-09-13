@@ -1,11 +1,11 @@
 class Map < ActiveRecord::Base
-  named_scope :for_position_on_plate, lambda { |position,plate_size| 
+  named_scope :for_position_on_plate, lambda { |position,plate_size|
     {
       :conditions => {
         :description => horizontal_plate_position_to_description(position, plate_size),
         :asset_size  => plate_size
       }
-    } 
+    }
   }
 
   named_scope :where_description, lambda { |*descriptions| { :conditions => { :description => descriptions.flatten } } }
@@ -48,12 +48,12 @@ class Map < ActiveRecord::Base
     Map.find_by_description_and_asset_size(horiz_description,asset_size)
   end
 
-  def self.descriptions_for_row(row)
-    wells = (1..Map.plate_width(384)).map {|column| "#{row}#{column}"}
+  def self.descriptions_for_row(row,size)
+    wells = (1..Map.plate_width(size)).map {|column| "#{row}#{column}"}
   end
 
-  def self.descriptions_for_column(column)
-    (0...Map.plate_length(384)).map {|row| location_from_row_and_column(row,column)}
+  def self.descriptions_for_column(column,size)
+    (0...Map.plate_length(size)).map {|row| location_from_row_and_column(row,column)}
   end
 
   def self.map_96wells
@@ -178,11 +178,11 @@ class Map < ActiveRecord::Base
   def self.find_for_cell_location(cell_location, asset_size)
     self.find_by_description_and_asset_size(cell_location.sub(/0(\d)$/, '\1'), asset_size)
   end
-  
+
   def self.pad_description(map)
     split_description = split_well_description(map.description)
     return "#{map.description[0].chr}0#{split_description[:col]}" if split_description[:col] < 10
-      
+
     map.description
   end
 

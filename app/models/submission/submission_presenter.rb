@@ -254,8 +254,11 @@ class SubmissionCreater < PresenterSkeleton
 
     plates_wells.map do |plate_wells|
       plate_barcode, well_locations = plate_wells.split(':')
-
-      plate = Plate.find_from_machine_barcode(Barcode.human_to_machine_barcode(plate_barcode))
+      begin
+        plate = Plate.find_from_machine_barcode(Barcode.human_to_machine_barcode(plate_barcode))
+      rescue Barcode::InvalidBarcode => exception
+        raise InvalidInputException, "Invalid Barcode #{plate_barcode}: #{exception}"
+      end
       raise InvalidInputException, "No plate found for barcode #{plate_barcode}." if plate.nil?
       well_array = (well_locations||'').split(',').reject(&:blank?).map(&:strip)
 
@@ -265,7 +268,7 @@ class SubmissionCreater < PresenterSkeleton
   private :find_assets_from_text
 
   def find_wells_in_array(plate,well_array)
-    return plate.wells.filled if well_array.empty?
+    return plate.wells.with_aliquots if well_array.empty?
     well_array.map do |map_description|
       case map_description
       when /^[a-z,A-Z][0-9]+$/ # A well
@@ -276,9 +279,9 @@ class SubmissionCreater < PresenterSkeleton
           well
         end
       when /^[a-z,A-Z]$/ # A row
-        plate.wells.filled.in_row(map_description)
+        plate.wells.with_aliquots.in_plate_row(map_description,plate.size)
       when /^[0-9]+$/ # A column
-        plate.wells.filled.in_column(map_description)
+        plate.wells.with_aliquots.in_plate_column(map_description,plate.size)
       else
         raise InvalidInputException, "#{map_description} is not a valid well location"
       end
