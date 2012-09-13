@@ -68,7 +68,7 @@ module XmlCacheHelper
 
   # Finds all of the batches that the specified record relates to
   def ids_for(record)
-    joins = joins_for(record).uniq
+    joins = Array(joins_for(record)).uniq
     query = "SELECT DISTINCT #{caching_for_model}.id AS id FROM #{caching_for_model} #{joins.join(' ')} WHERE #{record.class.table_name}.id=#{record.id}"
     ActiveRecord::Base.connection.select_all(query).map { |result| result['id'] }
   end
