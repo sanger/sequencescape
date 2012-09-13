@@ -37,6 +37,9 @@ class Well < Aliquot::Receptacle
   named_scope :in_inverse_column_major_order, { :joins => :map, :order => 'column_order DESC' }
   named_scope :in_inverse_row_major_order, { :joins => :map, :order => 'row_order DESC' }
 
+  named_scope :in_plate_column, lambda {|col,size| {:joins => :map, :conditions => {:maps => {:description => Map.descriptions_for_column(col,size), :asset_size => size }}}}
+  named_scope :in_plate_row,    lambda {|row,size| {:joins => :map, :conditions => {:maps => {:description => Map.descriptions_for_row(row,size), :asset_size =>size }}}}
+
   after_create :create_well_attribute_if_not_exists
 
   named_scope :with_blank_samples, { :conditions => { :aliquots => { :samples => { :empty_supplier_sample_name => true } } }, :joins => { :aliquots => :sample } }
@@ -102,7 +105,7 @@ class Well < Aliquot::Receptacle
   writer_for_well_attribute_as_float(:picked_volume)
 
   delegate_to_well_attribute(:gender_markers)
-  
+
   def update_gender_markers!(gender_markers, resource)
     if self.well_attribute.gender_markers == gender_markers
       gender_marker_event = self.events.find_by_family('update_gender_markers', :order => 'id desc')
@@ -114,16 +117,16 @@ class Well < Aliquot::Receptacle
     else
       self.events.update_gender_markers!(resource)
     end
-    
+
     self.well_attribute.update_attributes!(:gender_markers => gender_markers)
   end
-  
+
   def update_sequenom_count!(sequenom_count, resource)
     unless self.well_attribute.sequenom_count == sequenom_count
       self.events.update_sequenom_count!(resource)
     end
     self.well_attribute.update_attributes!(:sequenom_count => sequenom_count)
-    
+
   end
 
   # The sequenom pass value is either the string 'Unknown' or it is the combination of gender marker values.

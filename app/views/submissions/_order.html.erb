@@ -12,13 +12,14 @@
     <%= studies_select(form, @presenter.studies) %>
   </li>
 
-  <li class="assets">
+  <li class="assets asset_group_selector">
     <h3>Add Samples from Study asset group</h3>
     <div class="study-assets">First select a study for this order...</div>
-    <p><a class="asset-input-toggle" href="#">Switch to Sample selector...</a></p>
+    <p><a class="asset-input-toggle" href="#" data-selector=".sample_name_selector">Switch to Sample selector...</a></p>
+    <p><a class="asset-input-toggle" href="#" data-selector=".plate_wells_selector">Switch to plate wells selector...</a></p>
   </li>
 
-  <li class="assets" style="display:none;">
+  <li class="assets sample_name_selector" style="display:none;">
     <h3>Add Samples from Plate</h3>
     <table>
       <th>
@@ -42,7 +43,30 @@
         %>
       </td>
   </table>
-    <a class="asset-input-toggle" href="#">Switch to Study asset selector...</a>
+    <a class="asset-input-toggle" href="#" data-selector=".asset_group_selector">Switch to Study asset selector...</a><br/>
+    <a class="asset-input-toggle" href="#" data-selector=".plate_wells_selector">Switch to plate wells selector...</a>
+  </li>
+  
+  <li class="assets plate_wells_selector" style="display:none;">
+    <h3>Add Samples from Plate and Wells</h3>
+    <table>
+      <th></th>
+      <td>
+        <p><em>Examples:</em>DN123456P:A1,A2,A3 (Wells A1,A2,A3)<br/>DN123456P:1,2,3 (Columns 1,2,3)<br/>DN123456P:A,B (Rows A,B)<br/>DN123456P (Entire Plate)<br/></p>
+      </td>
+      <th>
+        <%= form.label :barcodes_wells_text, 'Plates and wells:' %>
+      </th>
+      <td>
+        <%= form.text_area :barcodes_wells_text,
+          :cols  => 40,
+          :rows  => 4,
+          :class => "submission_barcodes_wells_text"
+        %>
+      </td>
+  </table>
+    <a class="asset-input-toggle" href="#" data-selector=".asset_group_selector">Switch to Study asset selector...</a><br/>
+    <a class="asset-input-toggle" href="#" data-selector=".sample_name_selector">Switch to Sample selector...</a>
   </li>
 
   <li class="project">
