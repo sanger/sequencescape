@@ -12,7 +12,7 @@
       // This is not very pretty but it is IE safe...
       var validationResult = true;
 
-      this.find('input').each(function(element){ 
+      this.find('input').each(function(element){
 
         if (!$(this).val().match(/^\d+$/)){
           validationResult = false;
@@ -24,7 +24,8 @@
 
     hasAssets : function() {
       if (this.find('.submission_asset_group_id').val() ||
-          this.find('.submission_sample_names_text').val() ) {
+          this.find('.submission_sample_names_text').val() ||
+          this.find('.submission_barcodes_wells_text').val() ) {
         return true;
       } else {
         return false;
@@ -166,6 +167,7 @@
     SCAPE.submission.project_name                 = currentPane.find('.submission_project_name').val();
     SCAPE.submission.asset_group_id               = currentPane.find('.submission_asset_group_id').val();
     SCAPE.submission.sample_names_text            = currentPane.find('.submission_sample_names_text').val();
+    SCAPE.submission.barcodes_wells_text          = currentPane.find('.submission_barcodes_wells_text').val();
     SCAPE.submission.plate_purpose_id             = currentPane.find('.submission_plate_purpose_id').val();
     SCAPE.submission.comments                     = currentPane.find('.submission_comments').val();
     SCAPE.submission.lanes_of_sequencing_required = currentPane.find('.lanes_of_sequencing').val();
@@ -364,10 +366,10 @@
   // TODO: replace this with a jQuery UI tabview.  Needs the order IDs
   // sorting out for that though....
   var assetSelectorToggle = function(event) {
-    var currentAssetsPanel      = $(event.target).closest('.assets');
+    var currentAssetsPanel      = $(event.currentTarget).closest('.assets');
 
-    var nextAssetPanel =
-      currentAssetsPanel.siblings(':hidden').first();
+    var nextAssetPanelClass = $(event.currentTarget).data('selector')
+    var nextAssetPanel = currentAssetsPanel.siblings(nextAssetPanelClass).first();
 
     currentAssetsPanel.fadeOut(function(){
       nextAssetPanel.find('input, textarea, select').val('');

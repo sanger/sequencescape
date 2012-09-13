@@ -70,6 +70,7 @@ class SubmissionCreater < PresenterSkeleton
     :id,
     :template_id,
     :sample_names_text,
+    :barcodes_wells_text,
     :study_id,
     :submission_id,
     :project_name,
@@ -194,7 +195,7 @@ class SubmissionCreater < PresenterSkeleton
   end
 
   def order_assets
-    input_methods = [ :asset_group_id, :sample_names_text ].select { |input_method| send(input_method).present? }
+    input_methods = [ :asset_group_id, :sample_names_text, :barcodes_wells_text ].select { |input_method| send(input_method).present? }
 
     raise InvalidInputException, "No Samples found" if input_methods.empty?
     raise InvalidInputException, "Samples cannot be added from multiple sources at the same time." unless input_methods.size == 1
@@ -209,8 +210,12 @@ class SubmissionCreater < PresenterSkeleton
             find_samples_from_text(sample_names_text)
           )
         }
+      when :barcodes_wells_text then
+        {
+          :assets => find_assets_from_text(barcodes_wells_text)
+        }
 
-      else raise StandardError, "No way to determine assets for input choice #{input_choice.first}"
+      else raise StandardError, "No way to determine assets for input choice #{input_methods.first}"
     end
   end
 
@@ -243,6 +248,46 @@ class SubmissionCreater < PresenterSkeleton
     return samples
   end
   private :find_samples_from_text
+
+  def find_assets_from_text(assets_text)
+    plates_wells = assets_text.lines.map(&:chomp).reject(&:blank?).map(&:strip)
+
+    plates_wells.map do |plate_wells|
+      plate_barcode, well_locations = plate_wells.split(':')
+      begin
+        plate = Plate.find_from_machine_barcode(Barcode.human_to_machine_barcode(plate_barcode))
+      rescue Barcode::InvalidBarcode => exception
+        raise InvalidInputException, "Invalid Barcode #{plate_barcode}: #{exception}"
+      end
+      raise InvalidInputException, "No plate found for barcode #{plate_barcode}." if plate.nil?
+      well_array = (well_locations||'').split(',').reject(&:blank?).map(&:strip)
+
+      find_wells_in_array(plate,well_array)
+    end.flatten
+  end
+  private :find_assets_from_text
+
+  def find_wells_in_array(plate,well_array)
+    return plate.wells.with_aliquots if well_array.empty?
+    well_array.map do |map_description|
+      case map_description
+      when /^[a-z,A-Z][0-9]+$/ # A well
+        well = plate.find_well_by_name(map_description)
+        if well.nil? or well.aliquots.empty?
+          raise InvalidInputException, "Well #{map_description} on #{plate.sanger_human_barcode} does not exist or is empty."
+        else
+          well
+        end
+      when /^[a-z,A-Z]$/ # A row
+        plate.wells.with_aliquots.in_plate_row(map_description,plate.size)
+      when /^[0-9]+$/ # A column
+        plate.wells.with_aliquots.in_plate_column(map_description,plate.size)
+      else
+        raise InvalidInputException, "#{map_description} is not a valid well location"
+      end
+    end
+  end
+  private :find_wells_in_array
 
   def study
     @study ||= (Study.find(@study_id) if @study_id.present?)
