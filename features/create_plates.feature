@@ -83,7 +83,14 @@ Feature: Printing new plate barcodes
     Then I should see "Created plates and printed barcodes"
 
     When I fill in the field labeled "Source plates" with "1221234567841"
-    When I select "Dilution Plates" from "Plate purpose"
+    When I select "Working dilution" from "Plate purpose"
+    And I fill in "User barcode" with "2470000100730"
+    And I select "xyz" from "Barcode printer"
+    And I press "Submit"
+    Then I should see "Created plates and printed barcodes"
+    
+    When I fill in the field labeled "Source plates" with "6251234567836"
+    When I select "Pico dilution" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
     And I select "xyz" from "Barcode printer"
     And I press "Submit"
@@ -111,7 +118,7 @@ Feature: Printing new plate barcodes
     Then the events table should be:
       | Message                              | Content    | Created by | Created at           |
       | Created child Working Dilution plate | 2010-07-12 | jack       | Monday 12 July, 2010 |
-      | Created child Pico Dilution plate    | 2010-07-12 | jack       | Monday 12 July, 2010 |
+
     Given I am on the events page for asset with barcode "1220001454858"
     Then the events table should be:
       | Message                         | Content    | Created by | Created at           |
@@ -124,9 +131,10 @@ Feature: Printing new plate barcodes
       | Created child Pico Assay B plate | 2010-07-12 | jack       | Monday 12 July, 2010 |
     Given I am on the events page for asset with barcode "6251234567836"
     Then the events table should be:
-      | Message                          | Content    | Created by | Created at           |
-      | Created Working Dilution plate   | 2010-07-12 | jack       | Monday 12 July, 2010 |
-      | Created child Gel Dilution plate | 2010-07-12 | jack       | Monday 12 July, 2010 |
+      | Message                           | Content    | Created by | Created at           |
+      | Created Working Dilution plate    | 2010-07-12 | jack       | Monday 12 July, 2010 |
+      | Created child Pico Dilution plate | 2010-07-12 | jack       | Monday 12 July, 2010 |
+      | Created child Gel Dilution plate  | 2010-07-12 | jack       | Monday 12 July, 2010 |
     Given I am on the events page for asset with barcode "4331234567653"
     Then the events table should be:
       | Message                    | Content    | Created by | Created at           |

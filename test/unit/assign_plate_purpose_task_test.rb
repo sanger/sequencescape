@@ -14,7 +14,7 @@ class AssignPlatePurposeTaskTest < ActiveSupport::TestCase
 
     context "#plate_purpose_options" do
       should 'return only the cherrypickable plate purposes' do
-        assert_equal(PlatePurpose.cherrypickable.all.map { |p| [p.name, p.id] }.sort, @assign_plate_purpose_task.plate_purpose_options(@batch))
+        assert_equal(PlatePurpose.cherrypickable_as_target.all.map { |p| [p.name, p.id] }.sort, @assign_plate_purpose_task.plate_purpose_options(@batch))
       end
     end
 
@@ -23,20 +23,20 @@ class AssignPlatePurposeTaskTest < ActiveSupport::TestCase
         assert_equal 'assign_plate_purpose', @assign_plate_purpose_task.partial
       end
     end
-    
+
     context "#render_task" do
       should "call WorkflowsController#render_assign_plate_purpose_task and return nil." do
         @workflows_controller.expects(:render_assign_plate_purpose_task).once
         assert_nil @assign_plate_purpose_task.render_task(@workflows_controller,@params)
       end
     end
-    
+
     context "#do_task" do
       should "call WorkflowsController#do_assign_plate_purpose_task and return nil." do
         @workflows_controller.expects(:do_assign_plate_purpose_task).once
         assert_nil @assign_plate_purpose_task.do_task(@workflows_controller,@params)
       end
     end
-    
+
   end
 end
