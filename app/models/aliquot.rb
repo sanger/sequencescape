@@ -2,8 +2,10 @@
 # of a sample, or it might be a library (a combination of the DNA sample and a tag).
 class Aliquot < ActiveRecord::Base
   include Uuid::Uuidable
+
   class Receptacle < Asset
     include Transfer::State
+    include Aliquot::Remover
 
     has_many :transfer_requests, :class_name => 'TransferRequest', :foreign_key => :target_asset_id
     has_many :transfer_requests_as_source, :class_name => 'TransferRequest', :foreign_key => :asset_id
@@ -182,6 +184,21 @@ class Aliquot < ActiveRecord::Base
   def =~(object)
     a, b = [self, object].map { |o| [o.tag_id, o.sample_id] }
     a.zip(b).all?  { |x, y|  (x || y) == (y || x)  }
+  end
+
+  def tagged?
+    @tag_id != -1
+  end
+
+  def matches?(object)
+    # Note: This funtion is direction, and assumes that the downstream aliquot
+    # is checking the upstream aliquot (or the AliquotRecord)
+    case
+    when self.sample_id != object.sample_id then return false # The samples don't match
+    when !self.tagged? && object.tagged? then raise "Tag missing from downstream aliquot" # The downstream aliquot is untagged, but is tagged upstream. Something is wrong!
+    when !object.tagged? then return true # Thhe upstream aliquot was untagged, we don't need to check tags
+    else self.tag_id == object.tag_id # Both aliquots are tagged, we need to check if they match
+    end
   end
 
 end
