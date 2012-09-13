@@ -68,7 +68,7 @@ module XmlCacheHelper
 
   # Finds all of the batches that the specified record relates to
   def ids_for(record)
-    joins = joins_for(record).uniq
+    joins = Array(joins_for(record)).uniq
     query = "SELECT DISTINCT #{caching_for_model}.id AS id FROM #{caching_for_model} #{joins.join(' ')} WHERE #{record.class.table_name}.id=#{record.id}"
     ActiveRecord::Base.connection.select_all(query).map { |result| result['id'] }
   end
@@ -76,14 +76,14 @@ module XmlCacheHelper
 
   def metadata
     metadata = "#{caching_for_model.to_s.singularize}_metadata"
-    "INNER JOIN #{metadata} ON #{metadata}.#{caching_for_model.to_s.singularize}_id=#{caching_for_model.to_s.pluralize}"
+    "INNER JOIN #{metadata} ON #{metadata}.#{caching_for_model.to_s.singularize}_id=#{caching_for_model.to_s.pluralize}.id"
   end
   private :metadata
 
   def metadata_association(type)
     metadata = "#{caching_for_model.to_s.singularize}_metadata"
     [
-      "INNER JOIN #{metadata} ON #{metadata}.#{caching_for_model.to_s.singularize}_id=#{caching_for_model.to_s.pluralize}",
+      "INNER JOIN #{metadata} ON #{metadata}.#{caching_for_model.to_s.singularize}_id=#{caching_for_model.to_s.pluralize}.id",
       "INNER JOIN #{type.to_s.pluralize} ON #{metadata}.#{type.to_s.singularlize}_id=#{type.to_s.pluralize}.id"
     ]
   end
