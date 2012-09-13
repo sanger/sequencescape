@@ -76,14 +76,14 @@ module XmlCacheHelper
 
   def metadata
     metadata = "#{caching_for_model.to_s.singularize}_metadata"
-    "INNER JOIN #{metadata} ON #{metadata}.#{caching_for_model.to_s.singularize}_id=#{caching_for_model.to_s.pluralize}"
+    "INNER JOIN #{metadata} ON #{metadata}.#{caching_for_model.to_s.singularize}_id=#{caching_for_model.to_s.pluralize}.id"
   end
   private :metadata
 
   def metadata_association(type)
     metadata = "#{caching_for_model.to_s.singularize}_metadata"
     [
-      "INNER JOIN #{metadata} ON #{metadata}.#{caching_for_model.to_s.singularize}_id=#{caching_for_model.to_s.pluralize}",
+      "INNER JOIN #{metadata} ON #{metadata}.#{caching_for_model.to_s.singularize}_id=#{caching_for_model.to_s.pluralize}.id",
       "INNER JOIN #{type.to_s.pluralize} ON #{metadata}.#{type.to_s.singularlize}_id=#{type.to_s.pluralize}.id"
     ]
   end
