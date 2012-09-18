@@ -136,7 +136,7 @@ MultiplexedLibraryCreationPipeline.create!(:name => 'Illumina-B MX Library Prepa
     request_type.request_class     = MultiplexedLibraryCreationRequest
     request_type.for_multiplexing  = true
   end
-  
+
   pipeline.request_types << RequestType.create!(
     :workflow => Submission::Workflow.find_by_key('short_read_sequencing'),
     :key      => 'illumina_b_multiplexed_library_creation',
@@ -289,9 +289,9 @@ SequencingPipeline.create!(:name => 'Cluster formation SE (spiked in controls)',
     end
   end
 end.tap do |pipeline|
-  PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_key("read_length")) 
-  PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_key("library_type")) 
-  PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))   
+  PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_key("read_length"))
+  PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_key("library_type"))
+  PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))
 end
 
 SequencingPipeline.create!(:name => 'Cluster formation SE', :request_types => [ cluster_formation_se_request_type ]) do |pipeline|
@@ -318,7 +318,7 @@ SequencingPipeline.create!(:name => 'Cluster formation SE', :request_types => [ 
   end
 end.tap do |pipeline|
   create_request_information_types(pipeline, "read_length", "library_type")
-  PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))   
+  PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))
 end
 
 SequencingPipeline.create!(:name => 'Cluster formation SE (no controls)', :request_types => [ cluster_formation_se_request_type ]) do |pipeline|
@@ -345,7 +345,7 @@ SequencingPipeline.create!(:name => 'Cluster formation SE (no controls)', :reque
   end
 end.tap do |pipeline|
   create_request_information_types(pipeline, "read_length", "library_type")
-  PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))   
+  PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))
 end
 
 single_ended_hi_seq_sequencing = RequestType.create!(:workflow => next_gen_sequencing, :key => 'single_ended_hi_seq_sequencing', :name => 'Single ended hi seq sequencing') do |request_type|
@@ -381,7 +381,7 @@ SequencingPipeline.create!(:name => 'Cluster formation SE HiSeq', :request_types
   end
 end.tap do |pipeline|
   create_request_information_types(pipeline, "read_length", "library_type")
-  PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))   
+  PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))
 end
 
 SequencingPipeline.create!(:name => 'Cluster formation SE HiSeq (no controls)', :request_types => [ single_ended_hi_seq_sequencing ]) do |pipeline|
@@ -408,7 +408,7 @@ SequencingPipeline.create!(:name => 'Cluster formation SE HiSeq (no controls)', 
   end
 end.tap do |pipeline|
   create_request_information_types(pipeline, "read_length", "library_type")
-  PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))   
+  PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))
 end
 
 cluster_formation_pe_request_type = RequestType.create!(:workflow => next_gen_sequencing, :key => 'paired_end_sequencing', :name => 'Paired end sequencing') do |request_type|
@@ -670,7 +670,7 @@ DnaQcPipeline.create!(:name => 'DNA QC') do |pipeline|
 
   pipeline.location = Location.first(:conditions => { :name => 'Sample logistics freezer' }) or raise StandardError, "Cannot find 'Sample logistics freezer' location"
 
-  pipeline.request_types << RequestType.create!(:workflow => microarray_genotyping, :key => 'dna_qc', :name => 'DNA QC') do |request_type|
+  pipeline.request_types << RequestType.create!(:workflow => microarray_genotyping, :key => 'dna_qc', :name => 'DNA QC', :no_target_asset => true) do |request_type|
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'Well'
     request_type.order             = 1

@@ -111,18 +111,18 @@ Factory.define :study do |p|
   p.state                "pending"
   p.enforce_data_release false
   p.enforce_accessioning false
-  p.reference_genome     ReferenceGenome.find_by_name("") 
+  p.reference_genome     ReferenceGenome.find_by_name("")
 
   p.after_build { |study| study.study_metadata = Factory(:study_metadata, :study => study) }
 end
 
 Factory.define :budget_division do |bd|
- bd.name { |a| Factory.next :budget_division_name }   
+ bd.name { |a| Factory.next :budget_division_name }
 end
 
 Factory.define :project_metadata, :class => Project::Metadata do |m|
   m.project_cost_code 'Some Cost Code'
-  m.budget_division {|budget| budget.association(:budget_division)} 
+  m.budget_division {|budget| budget.association(:budget_division)}
 end
 
 Factory.define :project do |p|
@@ -248,7 +248,7 @@ Factory.define :request_without_assets, :parent => :request_with_submission do |
   request.item              {|item|       item.association(:item)}
   request.project           {|pr|         pr.association(:project)}
   request.request_type      {|rt|         rt.association(:request_type)}
-  request.state             'pending'     
+  request.state             'pending'
   request.study             {|study|      study.association(:study)}
   request.user              {|user|       user.association(:user)}
   request.workflow          {|workflow|   workflow.association(:submission_workflow)}
@@ -258,6 +258,20 @@ Factory.define :request, :parent => :request_without_assets do |request|
   # the sample should be setup correctly and the assets should be valid
   request.asset        { |asset| asset.association(:sample_tube)  }
   request.target_asset { |asset| asset.association(:library_tube) }
+end
+
+Factory.define :request_with_sequencing_request_type, :parent => :request_without_assets do |request|
+  # the sample should be setup correctly and the assets should be valid
+  request.asset            { |asset|    asset.association(:library_tube)  }
+  request.request_metadata { |metadata| metadata.association(:request_metadata_for_standard_sequencing)}
+  request.request_type     { |rt|       rt.association(:sequencing_request_type)}
+end
+
+Factory.define :well_request, :parent => :request_without_assets do |request|
+  # the sample should be setup correctly and the assets should be valid
+  request.request_type {|rt|         rt.association(:well_request_type)}
+  request.asset        { |asset| asset.association(:well)  }
+  request.target_asset { |asset| asset.association(:well) }
 end
 
 Factory.define :request_suitable_for_starting, :parent => :request_without_assets do |request|
@@ -303,16 +317,23 @@ Factory.define :request_type do |rt|
   rt.name           "Request type #{rt_value}"
   rt.key            "request_type_#{rt_value}"
   rt.deprecated     false
+  rt.asset_type     'SampleTube'
   rt.request_class  Request
   rt.order          1
   rt.workflow    {|workflow| workflow.association(:submission_workflow)}
   rt.initial_state   "pending"
 end
 
+Factory.define :well_request_type, :parent => :request_type do |rt|
+  rt.asset_type     'Well'
+end
+
 Factory.define :library_creation_request_type, :class => RequestType do |rt|
   rt_value = Factory.next :request_type_id
   rt.name           "Request type #{rt_value}"
   rt.key            "request_type_#{rt_value}"
+  rt.asset_type     "SampleTube"
+  rt.target_asset_type "LibraryTube"
   rt.request_class  LibraryCreationRequest
   rt.order          1
   rt.workflow    {|workflow| workflow.association(:submission_workflow)}
@@ -321,6 +342,7 @@ Factory.define :sequencing_request_type, :class => RequestType do |rt|
   rt_value = Factory.next :request_type_id
   rt.name           "Request type #{rt_value}"
   rt.key            "request_type_#{rt_value}"
+  rt.asset_type     "LibraryTube"
   rt.request_class  SequencingRequest
   rt.order          1
   rt.workflow    {|workflow| workflow.association(:submission_workflow)}
@@ -331,6 +353,7 @@ Factory.define :multiplexed_library_creation_request_type, :class => RequestType
   rt.name               "Request type #{rt_value}"
   rt.key                "request_type_#{rt_value}"
   rt.request_class      MultiplexedLibraryCreationRequest
+  rt.asset_type         "SampleTube"
   rt.order              1
   rt.for_multiplexing   true
   rt.workflow           { |workflow| workflow.association(:submission_workflow)}
@@ -363,7 +386,7 @@ Factory.define :user do |u|
   u.last_name         "ln"
   u.login             "abc123"
   u.email             {|a| "#{a.login}@example.com".downcase }
-  u.roles             []   
+  u.roles             []
   u.workflow          {|workflow| workflow.association(:submission_workflow)}
   u.api_key           "123456789"
 end
@@ -477,7 +500,7 @@ Factory.define :library_creation_request, :parent => :request do |request|
   end
 end
 
-# A Multiplexed library tube comes from several library tubes, which are themselves created through a 
+# A Multiplexed library tube comes from several library tubes, which are themselves created through a
 # number of multiplexed library creation requests.  But the binding to these tubes comes from the parent-child
 # relationships.
 Factory.define :full_multiplexed_library_tube, :parent => :multiplexed_library_tube do |multiplexed_library_tube|
@@ -520,7 +543,7 @@ end
 
 Factory.define :spiked_buffer do |a|
   a.name { |a| Factory.next :asset_name }
-  a.volume 50 
+  a.volume 50
 end
 
 Factory.define :reference_genome do |r|
@@ -567,5 +590,5 @@ Factory.define(:asset_audit) do |audit|
 end
 
 Factory.define(:faculty_sponsor) do |sponsor|
-  sponsor.name     { |a| Factory.next :faculty_sponsor_name } 
+  sponsor.name     { |a| Factory.next :faculty_sponsor_name }
 end

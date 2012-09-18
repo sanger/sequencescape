@@ -12,21 +12,20 @@ Feature: Non-standard Bulk Submission files
     And I have administrative role
     And I have an "active" study called "abc123_study"
     And I have a project called "Test project"
-    And the study "abc123_study" has an asset group of 10 samples called "assetgroup123"
+    And the study "abc123_study" has an asset group of 10 samples in "well" called "assetgroup123"
     And study "abc123_study" has assets registered
     When I go to the create bulk submissions page
     Then I should see "Create a bulk submission"
-   
 
   Scenario: Uploading a file with an empty column
     When I upload a file with an empty column
     Then I should see "Bulk submission successfully made"
     And I should see "Your submissions:"
     And the preordered quota for project "Test project" should be:
-         | RequestType                 | preordered | 
-         | Cherrypicking for Pulldown  | 10         | 
-         | Pulldown WGS                | 10         | 
-         | HiSeq Paired end sequencing | 1          | 
+         | RequestType                 | preordered |
+         | Cherrypicking for Pulldown  | 10         |
+         | Pulldown WGS                | 10         |
+         | HiSeq Paired end sequencing | 1          |
 
   Scenario: Uploading a file with a header not at row 0 or 1
     When I upload a file with a header at an unexpected location

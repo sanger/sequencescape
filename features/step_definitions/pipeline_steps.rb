@@ -18,11 +18,7 @@ Given /^I have a control called "([^\"]*)" for "([^\"]*)"$/ do |name, pipeline_n
 end
 
 def pipeline_name_to_asset_type(pipeline_name)
-  asset_types = {
-    "Library preparation" => :sample_tube
-  }
-
-  asset_types.fetch(pipeline_name, :library_tube)
+  pipeline_name.include?('Library Preparation') || pipeline_name.include?('Library preparation') ? :sample_tube : :library_tube
 end
 
 def create_request_for_pipeline(pipeline_name, options = {})
@@ -54,17 +50,17 @@ Given /^all requests for the submission with UUID "([^\"]+)" are in the "([^\"]+
   Request.update_all("state=#{state.inspect}", [ 'submission_id=?', submission.id ])
 end
 
-Given /^I on batch page$/ do 
-  visit "/batches/#{Batch.last.id}" 
+Given /^I on batch page$/ do
+  visit "/batches/#{Batch.last.id}"
 end
 
-Given /^I am viewing the pipeline page$/ do 
-  visit "/pipelines/#{Pipeline.last.id}" 
+Given /^I am viewing the pipeline page$/ do
+  visit "/pipelines/#{Pipeline.last.id}"
 end
 
 Given /^I have data loaded from SNP$/ do
-  
-  
+
+
 end
 When /^I check request "(\d+)" for pipeline "([^"]+)"/ do |request_number, pipeline_name|
   #TODO find the request checkboxes in the current page (by name "request_... ") so we don't need
@@ -131,15 +127,15 @@ Given /^Microarray genotyping is set up$/ do
   dna_qc = Factory :request_type, :key => "dna_qc", :name => "DNA QC", :workflow => submission_workflow, :order => 1, :asset_type => "Well", :initial_state => "pending"
   cherrypick = Factory :request_type, :key => "cherrypick", :name => "Cherrypick", :workflow => submission_workflow, :order => 2, :initial_state => "blocked", :asset_type => "Well"
   genotyping = Factory :request_type, :key => "genotyping", :name => "Genotyping", :workflow => submission_workflow, :order => 3, :asset_type => "Well"
-  
+
   # Workflows and tasks
   cherrypick_pipeline = Factory :pipeline, :name => "Cherrypick", :request_type_id => cherrypick.id, :group_by_parent => true, :location_id => Location.find_by_name("Sample logistics freezer").id
   dna_qc_pipeline = Factory :pipeline, :name => "DNA QC", :request_type_id => dna_qc.id, :group_by_parent => true, :location_id => Location.find_by_name("Sample logistics freezer").id, :next_pipeline_id => cherrypick_pipeline.id
-  
+
   dna_qc_workflow = Factory :lab_workflow, :name => "DNA QC", :pipeline => dna_qc_pipeline
   Factory :task, :name => "Duplicate Samples Check", :sti_type => "DuplicateSamplesCheckTask", :sorted => 0, :workflow => dna_qc_workflow, :batched => 0
   Factory :task, :name => "QC result", :sti_type => "DnaQcTask", :sorted => 1, :workflow => dna_qc_workflow, :batched => 1
-  
+
   cherrypick_workflow = Factory :lab_workflow, :name => "Cherrypick", :pipeline => cherrypick_pipeline
   Factory :task, :name => "Filter Samples", :sti_type => "FilterSamplesTask", :sorted => 0, :workflow => cherrypick_workflow
   Factory :task, :name => "Select Plate Template", :sti_type => "PlateTemplateTask", :sorted => 1, :workflow => cherrypick_workflow
@@ -160,11 +156,11 @@ end
 
 Then /^the pipeline inbox should be:$/ do |expected_results_table|
    expected_results_table.diff!(table(tableish('table#pipeline_inbox tr', 'td,th')))
-end 
+end
 
 When /^I click on the last "([^\"]*)" batch$/ do |status|
   batch = Batch.last(:conditions => { :state => status })
-  When %Q{I follow "#{status} batch #{batch.id}"} 
+  When %Q{I follow "#{status} batch #{batch.id}"}
 end
 
 Given /^the maximum batch size for the pipeline "([^\"]+)" is (\d+)$/ do |name, max_size|
