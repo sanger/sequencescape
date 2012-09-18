@@ -151,7 +151,7 @@ end
 Given /^a sample named "([^\"]+)" exists for accession/ do |sample_name|
   study_name = "study for sample #{sample_name}"
   Given %Q{a study named "#{study_name}" exists for accession}
-  Given %Q{a sample named "#{sample_name}" exists}
+  Given %Q{the sample named "#{sample_name}" exists with ID 200}
   And %Q{I am the owner of sample "sample"}
   And %Q{the sample "#{sample_name}" belongs to the study "#{study_name}"}
   And %Q{the sample "#{sample_name}" has the Taxon ID "99999"}
