@@ -7,6 +7,13 @@ class AmqpObserverTest < ActiveSupport::TestCase
     include ::AmqpObserver::Implementation
   end
 
+  def return_from_inside_transaction(target, object)
+    target.transaction do
+      target << object
+      return
+    end
+  end
+
   context AmqpObserver do
     setup do
       @target = AmqpObserver.new.tap do |target|
@@ -63,6 +70,16 @@ class AmqpObserverTest < ActiveSupport::TestCase
       end
 
       context 'inside transaction' do
+        should 'broadcast even in the presence of return' do
+          object, object_class = mock('Object to broadcast'), mock('Class of object to broadcast')
+          object.stubs(:id).returns(123456789)
+          object.stubs(:class).returns(object_class)
+          object.stubs(:destroyed?).returns(false)
+          object_class.expects(:find).with([object.id]).returns([object])
+          @target.expects(:publish).with(object).once
+          return_from_inside_transaction(@target, object)
+        end
+
         should 'only send one copy of the object' do
           object, object_class = mock('Object to broadcast'), mock('Class of object to broadcast')
           object.stubs(:id).returns(123456789)

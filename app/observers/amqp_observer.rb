@@ -30,14 +30,27 @@ class AmqpObserver < ActiveRecord::Observer
     # A transaction is (potentially) a bulk send of messages and hence we can create a buffer that
     # will be written to during changes.  But transactions can be nested, which means that only the
     # very outter one should do any publishing.
+    #
+    #--
+    # What follows looks complicated but is specialised to deal with a 'return' being called from
+    # within the block.  In that case the 'return' causes the method to return and *not* to execute
+    # any code after 'yield' in the code below.  Therefore you have the situation where the database
+    # transaction has been committed but the AMQP broadcast has not happened.  But the 'ensure' block
+    # is always called, so we assume the transaction to be good (i.e. commit) unless an exception is
+    # raised (when it is marked as bad), and broadcast our buffer iff the transaction is good and
+    # there's stuff to broadcast.
+    #++
     def transaction(&block)
       Thread.current[:buffer] ||= (current_buffer = MostRecentBuffer.new(self))
-      yield.tap do
-        activate_exchange do
-          current_buffer.map(&method(:publish))
-        end unless current_buffer.blank?
-      end
+      transaction_good = true
+      yield
+    rescue => exception
+      transaction_good = false
+      raise
     ensure
+      activate_exchange do
+        current_buffer.map(&method(:publish))
+      end if transaction_good and not current_buffer.blank?
       Thread.current[:buffer] = nil unless current_buffer.nil?
     end
 
