@@ -15,18 +15,24 @@ class BatchCacheSweeper < ActiveRecord::Observer
   JOINS = ActiveSupport::OrderedHash.new.tap do |joins|
     joins['batch_requests'] = "INNER JOIN batch_requests ON batch_requests.batch_id=batches.id"
     joins['requests']       = "INNER JOIN requests ON requests.id=batch_requests.request_id"
-    joins['assets']         = "INNER JOIN assets ON (assets.id=requests.asset_id OR assets.id=requests.target_asset_id)"
-    joins['aliquots']       = "INNER JOIN aliquots ON aliquots.receptacle_id=assets.id"
-    joins['tags']           = "INNER JOIN tags ON tags.id=aliquots.tag_id"
+    joins['aliquots']       = "INNER JOIN aliquots ON (aliquots.receptacle_id=requests.asset_id OR aliquots.receptacle_id=requests.target_asset_id)"
   end
 
-  # Returns an array of SQL JOINs that need to be made for the given record.  We know that the 
-  # entries in JOINS above are in order, so if we can find the index of the model in the keys
-  # then the SQL JOINs are all the values to this point.  That is, if you have a Request you
-  # need to JOIN the batches table, to the batch_requests, to the requests.
-  def joins_for(record)
-    index = JOINS.keys.index(record.class.table_name) or return []
-    JOINS.values.slice(0, index+1)
+  def through(record, &block)
+    model, conditions = case
+      when record.is_a?(BatchRequest) then [ 'batch_requests', query_conditions_for(record)                                                ]
+      when record.is_a?(Request)      then [ 'batch_requests', "batch_requests.request_id=#{record.id}"                                    ]
+      when record.is_a?(Asset)        then [ 'requests',       "(requests.asset_id=#{record.id} OR requests.target_asset_id=#{record.id})" ]
+      when record.is_a?(Aliquot)      then [ 'aliquots',       query_conditions_for(record)                                                ]
+      when record.is_a?(Tag)          then [ 'aliquots',       "aliquots.tag_id=#{record.id}"                                              ]
+    end
+    yield(JOINS.values.slice(0, JOINS.keys.index(model)+1), conditions)
   end
-  private :joins_for
+  private :through
+
+  def query_details_for(record, &block)
+    return yield([], query_conditions_for(record)) if record.is_a?(Batch)
+    through(record, &block)
+  end
+  private :query_details_for
 end
