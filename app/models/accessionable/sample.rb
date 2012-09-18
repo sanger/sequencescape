@@ -75,6 +75,11 @@ module Accessionable
     def protect?(service)
       service.sample_visibility(@sample) == AccessionService::Protect
     end
+
+    def released?
+      @sample.released?
+    end
+
   end
   private
 
