@@ -5,32 +5,30 @@ class SampleCacheSweeper < ActiveRecord::Observer
   set_caching_for_model 'samples'
 
   THROUGH_JOINS = {
-    'study' => [
-      "INNER JOIN study_samples ON study_samples.sample_id=samples.id",
-      "INNER JOIN studies ON study_samples.study_id=studies.id"
-    ],
-    'receptacle' => [
-      "INNER JOIN aliquots ON aliquots.sample_id=samples.id",
-      "INNER JOIN assets ON aliquots.receptacle_id=assets.id"
-    ]
+    'study'      => "INNER JOIN study_samples ON study_samples.sample_id=samples.id",
+    'receptacle' => "INNER JOIN aliquots ON aliquots.sample_id=samples.id"
   }
 
-  def through(model, distance = nil)
-    joins = THROUGH_JOINS[model]
-    joins.slice(0, distance || joins.size)
+  # We shorten the query conditions for studies and receptacles because we do not need to perform
+  # a JOIN against their table, considering we go through a JOIN table anyway.
+  def through(record, &block)
+    model, conditions = case
+      when record.is_a?(StudySample)         then [ 'study',      query_conditions_for(record)          ]
+      when record.is_a?(Study)               then [ 'study',      "study_samples.study_id=#{record.id}" ]
+      when record.is_a?(Aliquot)             then [ 'receptacle', query_conditions_for(record)          ]
+      when record.is_a?(Aliquot::Receptacle) then [ 'receptacle', "aliquots.receptacle_id=#{record.id}" ]
+    end
+    yield(Array(THROUGH_JOINS[model]), conditions)
   end
   private :through
 
-  def joins_for(record)
-    return [] if record.is_a?(Sample)
+  def query_details_for(record, &block)
     case
-    when record.is_a?(Sample::Metadata)    then metadata
-    when record.is_a?(StudySample)         then through('study', 1)
-    when record.is_a?(Study)               then through('study')
-    when record.is_a?(Aliquot)             then through('receptacle', 1)
-    when record.is_a?(Aliquot::Receptacle) then through('receptacle')
-    when record.is_a?(ReferenceGenome)     then metadata_association(:reference_genome)
+    when record.is_a?(Sample)           then yield([], query_conditions_for(record))
+    when record.is_a?(Sample::Metadata) then metadata(record, &block)
+    when record.is_a?(ReferenceGenome)  then metadata_association(:reference_genome, record, &block)
+    else through(record, &block)
     end
   end
-  private :joins_for
+  private :query_details_for
 end
