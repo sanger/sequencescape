@@ -139,7 +139,7 @@ class Submission < ActiveRecord::Base
 
  #Required at initial construction time ...
  validate :validate_orders_are_compatible
- 
+
  #Order needs to have the 'structure'
  def validate_orders_are_compatible()
     return true if orders.size < 2
@@ -187,24 +187,31 @@ class Submission < ActiveRecord::Base
     raise RuntimeError, "Request #{request.id} is not part of submission #{id}" unless request.submission_id == self.id
     return request.target_asset.requests if request.target_asset.present?
 
-    next_request_type_id = self.next_request_type_id(request.request_type_id)
-    sibling_requests = requests.select { |r| r.request_type_id == request.request_type_id}
-    next_possible_requests = requests.select { |r| r.request_type_id == next_request_type_id}
+      # Pick out the siblings of the request, so we can work out where it is in the list, and all of
+      # the requests in the subsequent request type, so that we can tie them up.  We order by ID
+      # here so that the earliest requests, those created by the submission build, are always first;
+      # any additional requests will have come from a sequencing batch being reset.
+      next_request_type_id = self.next_request_type_id(request.request_type_id) or return []
+      all_requests = requests.with_request_type_id([ request.request_type_id, next_request_type_id ]).all(:order => 'id ASC')
+      sibling_requests, next_possible_requests = all_requests.partition { |r| r.request_type_id == request.request_type_id }
 
-    #we need to find the position of the request within its sibling and use the same index
-    #in the next_possible ones.
-
-    [sibling_requests, next_possible_requests].map do |request_list|
-      request_list.sort! { |a, b| a.id <=> b.id }
+    if request.request_type.for_multiplexing?
+      # Multiplexed requests should not get batched seperately, and furthermore, will all use the same sequencing request for
+      # each lane. The divergence ratio plays no part in identifying the start index
+      next_possible_requests
+    else
+      # If requests aren't multiplexed, then they may be batched seperately, and we'll have issues
+      # if downstream changes affect the ratio. We can use the multiplier on order however, as we
+      # don't need to worry about divergence ratios f < 1
+      # Determine the number of requests that should come next from the multipliers in the orders.
+      # NOTE: This will only work whilst you order the same number of requests.
+      multipliers = orders.map { |o| (o.request_options[:multiplier].try(:[], next_request_type_id.to_s) || 1).to_i }.compact.uniq
+      raise RuntimeError, "Mismatched multiplier information for submission #{id}" if multipliers.size != 1
+      # Now we can take the group of requests from next_possible_requests that tie up.
+      divergence_ratio = multipliers.first
+      index = sibling_requests.index(request)
+      next_possible_requests[index*divergence_ratio,[ 1, divergence_ratio ].max]
     end
-
-    # The divergence_ratio should be equal to the multiplier if there is one and so the same for every requests
-    # should work also for convergent a request (ration < 1.0))
-
-    divergence_ratio = 1.0* next_possible_requests.size / sibling_requests.size
-    index = sibling_requests.index(request)
-
-    next_possible_requests[index*divergence_ratio,[ 1, divergence_ratio ].max]
   end
 
   def name
