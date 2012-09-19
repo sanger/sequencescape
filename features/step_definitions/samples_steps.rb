@@ -82,11 +82,11 @@ Given /^the sample "([^"]*)" has a supplier name of "([^"]*)"$/ do |sample_name,
   sample.sample_metadata.update_attributes!(:supplier_name => supplier_name)
 end
 
-Given /^the sample "([^\"]+)" is in the sample tube "([^\"]+)"$/ do |sample_name, tube_name|
+Given /^the sample "([^\"]+)" is in the (sample tube|well) "([^\"]+)"$/ do |sample_name, asset_type, asset_name|
   sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample #{sample_name.inspect}"
-  tube   = SampleTube.find_by_name(tube_name) or raise StandardError, "Cannot find sample tube #{tube_name.inspect}"
-  tube.aliquots.clear
-  tube.aliquots.create!(:sample => sample)
+  asset   = Asset.find_by_name(asset_name) or raise StandardError, "Cannot find sample tube #{asset_name.inspect}"
+  asset.aliquots.clear
+  asset.aliquots.create!(:sample => sample)
 end
 
 Then /^sample "([^"]*)" should have an accession number of "([^"]*)"$/ do |sample_name, accession_number|

@@ -62,7 +62,7 @@ class PlateTest < ActiveSupport::TestCase
           @plate_cw = Plate.create!
           @plate_cw.add_and_save_well Well.new
           @plate_cw.reload
-          Factory :request, :asset => @control_well_asset, :target_asset => @plate_cw.child
+          Factory :well_request, :asset => @control_well_asset, :target_asset => @plate_cw.child
         end
         should "return true" do
           assert @plate_cw.control_well_exists?
@@ -87,7 +87,7 @@ class PlateTest < ActiveSupport::TestCase
       @well1 = Well.new
       @plate1 = Factory :plate
       @plate1.add_and_save_well(@well1)
-      @request1 = Factory :request, :asset => @well1
+      @request1 = Factory :well_request, :asset => @well1
     end
 
     context "with 1 request" do
@@ -102,7 +102,7 @@ class PlateTest < ActiveSupport::TestCase
       setup do
         @well2 = Well.new
         @plate1.add_and_save_well(@well2)
-        @request2 = Factory :request, :asset => @well2
+        @request2 = Factory :well_request, :asset => @well2
       end
       context "with a valid well assets" do
         should "return a single plate ID" do
@@ -117,10 +117,10 @@ class PlateTest < ActiveSupport::TestCase
         @well2 = Well.new
         @plate2 = Factory :plate
         @plate2.add_and_save_well(@well2)
-        @request2 = Factory :request, :asset => @well2
+        @request2 = Factory :well_request, :asset => @well2
         @well3 = Well.new
         @plate1.add_and_save_well(@well3)
-        @request3 = Factory :request, :asset => @well3
+        @request3 = Factory :well_request, :asset => @well3
       end
       context "with a valid well assets" do
         should "return 2 plate IDs" do
@@ -133,15 +133,15 @@ class PlateTest < ActiveSupport::TestCase
     end
 
   end
-  
+
   context "Plate submission" do
     setup do
       @plate1 = Factory :plate
       @plate2 = Factory :plate
       @plate3 = Factory :plate
       @workflow = Factory :submission_workflow,:key => 'microarray_genotyping'
-      @request_type_1 = Factory :request_type, :workflow => @workflow
-      @request_type_2 = Factory :request_type, :workflow => @workflow
+      @request_type_1 = Factory :well_request_type, :workflow => @workflow
+      @request_type_2 = Factory :well_request_type, :workflow => @workflow
       @workflow.request_types << @request_type_1
       @workflow.request_types << @request_type_2
       @study = Factory :study

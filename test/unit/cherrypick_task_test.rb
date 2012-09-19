@@ -9,7 +9,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
     setup do
       pipeline = Pipeline.find_by_name('Cherrypick') or raise StandardError, "Cannot find cherrypick pipeline"
       @task = CherrypickTask.new(:workflow => pipeline.workflow)
-    end 
+    end
 
     context "#map_empty_wells with 1 empty_well" do
       setup do
@@ -78,9 +78,9 @@ class CherrypickTaskTest < ActiveSupport::TestCase
         @parentasset  = Factory :well
         @parentasset2 = Factory :well
         @parentasset3 = Factory :well
-        @request  =  Factory :request, :asset => @parentasset
-        @request2 =  Factory :request, :asset => @parentasset2
-        @request3 =  Factory :request, :asset => @parentasset3
+        @request  =  Factory :well_request, :asset => @parentasset
+        @request2 =  Factory :well_request, :asset => @parentasset2
+        @request3 =  Factory :well_request, :asset => @parentasset3
         @plate = Factory :plate
         @plate.add_and_save_well @parentasset
         @plate.add_and_save_well @parentasset2

@@ -38,7 +38,11 @@ class Order < ActiveRecord::Base
 
   serialize :item_options
 
+  validate :assets_are_appropriate
   validate :no_consent_withdrawl
+
+  class AssetTypeError < StandardError
+  end
 
   def no_consent_withdrawl
     return true unless all_samples.detect(&:consent_withdrawn?)
@@ -46,6 +50,15 @@ class Order < ActiveRecord::Base
     false
   end
   private :no_consent_withdrawl
+
+  def assets_are_appropriate
+    all_assets.each do |asset|
+      errors.add(:asset, "#{asset.name} is not an appropriate type for the request") unless is_asset_applicable_to_type?(first_request_type, asset)
+    end
+    return true if errors.empty?
+    false
+  end
+  private :assets_are_appropriate
 
   def samples
     #naive way
@@ -132,8 +145,7 @@ class Order < ActiveRecord::Base
       use_quota!(request, true)
 
       if request.asset.present?
-        # TODO: This should really be an exception but not sure of the side-effects at the moment
-        request.asset  = nil unless is_asset_applicable_to_type?(request_type, request.asset)
+        raise AssetTypeError, "Asset type does not match that expected by request type." unless is_asset_applicable_to_type?(request_type, request.asset)
       end
     end
   end
@@ -180,6 +192,10 @@ class Order < ActiveRecord::Base
 
   def request_types_list
     request_type_ids_list.map { |ids| RequestType.find(ids) }
+  end
+
+  def first_request_type
+    RequestType.find(request_types.first)
   end
 
   def filter_asset_groups(asset_groups)
