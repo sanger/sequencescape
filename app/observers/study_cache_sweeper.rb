@@ -9,7 +9,7 @@ class StudyCacheSweeper < ActiveRecord::Observer
   # not go through each other (like the BatchCacheSweeper does).
   def query_details_for(record, &block)
     case
-    when record.is_a?(Study)                then yield([], conditions_for(record))
+    when record.is_a?(Study)                then yield([], query_conditions_for(record))
     when record.is_a?(Study::Metadata)      then metadata(record, &block)
     when record.is_a?(StudyType)            then metadata_reference(:study_type, record, &block)
     when record.is_a?(DataReleaseStudyType) then metadata_reference(:data_release_study_type, record, &block)
