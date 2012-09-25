@@ -18,12 +18,19 @@ options_hash = {
       'Pulldown WGS',
       'Pulldown SC',
       'Pulldown ISC'
-    ]
+    ],
+
+    :submission_template_name => lambda {|pipeline| "Cherrypick for pulldown - #{pipeline} - HiSeq Paired end sequencing"}
+
+
   },
   'Illumina b' => {
     :pipelines_array => [
       'Illumina-B STD'
-    ]
+    ],
+
+    :submission_template_name => lambda {|_| 'Illumina-B - Cherrypicked - Multiplexed WGS - HiSeq Paired end sequencing' }
+
   }
 }
   ActiveRecord::Base.transaction do
@@ -62,10 +69,13 @@ options_hash = {
     end
 
     options_hash[chosen_pipeline][:pipelines_array].each do |pipeline|
+      template_name = options_hash[chosen_pipeline][:submission_template_name].call(pipeline)
+
       $stderr.puts "\t#{pipeline}"
 
       $stderr.puts "\t\tFull plate"
-      SubmissionTemplate.find_by_name("Cherrypick for pulldown - #{pipeline} - HiSeq Paired end sequencing").create_with_submission!(
+
+      SubmissionTemplate.find_by_name(template_name).create_with_submission!(
         :user => user, :study => study, :project => project,
         :assets => stock_plate.wells,
         :request_options => {
@@ -76,7 +86,7 @@ options_hash = {
 
       # Submit the plate in two halves
       $stderr.puts "\t\tTwo halves"
-      SubmissionTemplate.find_by_name("Cherrypick for pulldown - #{pipeline} - HiSeq Paired end sequencing").create_with_submission!(
+      SubmissionTemplate.find_by_name(template_name).create_with_submission!(
         :user => user, :study => study, :project => project,
         :assets => stock_plate.wells.slice(0, 48),
         :request_options => {
@@ -85,7 +95,7 @@ options_hash = {
         }
       )
 
-      SubmissionTemplate.find_by_name("Cherrypick for pulldown - #{pipeline} - HiSeq Paired end sequencing").create_with_submission!(
+      SubmissionTemplate.find_by_name(template_name).create_with_submission!(
         :user => user, :study => study, :project => project,
         :assets => stock_plate.wells.slice(48, 96),
         :request_options => {
@@ -102,7 +112,7 @@ options_hash = {
           wells_to_submit << well if well.map.description =~ /^[A-H]#{column}$/
         end
 
-        SubmissionTemplate.find_by_name("Cherrypick for pulldown - #{pipeline} - HiSeq Paired end sequencing").create_with_submission!(
+      SubmissionTemplate.find_by_name(template_name).create_with_submission!(
           :user => user, :study => study, :project => project,
           :assets => wells_to_submit,
           :request_options => {

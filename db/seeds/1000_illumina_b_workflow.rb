@@ -57,17 +57,8 @@ ActiveRecord::Base.transaction do
         submission
       ).tap { |template| template.superceded_by_unknown! }.save!
 
-      SubmissionTemplate.new_from_submission("Illumina-B - Cherrypick for pulldown - #{request_type_name} - #{sequencing_request_type.name}", submission).save!
+      SubmissionTemplate.new_from_submission("Illumina-B - Cherrypicked - Multiplexed WGS - #{sequencing_request_type.name}", submission).save!
     end
 
-    RequestType.find_each(:conditions => { :name => sequencing_request_type_names }) do |sequencing_request_type|
-      submission                   = LinearSubmission.new
-      submission.request_type_ids  = [ pulldown_request_type.id, sequencing_request_type.id ]
-      submission.info_differential = workflow.id
-      submission.workflow          = workflow
-      submission.request_options   = defaults
-
-      SubmissionTemplate.new_from_submission("#{request_type_name} - #{sequencing_request_type.name}", submission).save!
-    end
   end
 end
