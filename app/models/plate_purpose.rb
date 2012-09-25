@@ -37,10 +37,18 @@ class PlatePurpose < Purpose
   def transition_to(plate, state, contents = nil)
     wells = plate.wells
     wells = wells.located_at(contents) unless contents.blank?
+
+    transition_input_requests(wells, state)
+    fail_stock_well_requests(wells) if state == 'failed'
+  end
+
+  def transition_input_requests(wells, state)
     wells = wells.all(:include => { :requests_as_target => { :asset => :aliquots, :target_asset => :aliquots } })
     wells.each { |w| w.requests_as_target.map { |r| r.transition_to(state) } }
-    return unless state == 'failed'
+  end
+  private :transition_input_requests
 
+  def fail_stock_well_requests(wells)
     # Load all of the requests that come from the stock wells that should be failed.  Note that we can't simply change
     # their state, we have to actually use the statemachine method to do this to get the correct behaviour.
     conditions, parameters = [], []
@@ -60,6 +68,7 @@ class PlatePurpose < Purpose
     end
     Request.where_is_not_a?(TransferRequest).all(:conditions => [ "(#{conditions.join(' OR ')})", *parameters ]).map(&:fail!)
   end
+  private :fail_stock_well_requests
 
   def pool_wells(wells)
     _pool_wells(wells).all(
