@@ -83,8 +83,12 @@ class AmqpObserver < ActiveRecord::Observer
 
       def map(&block)
         @updated.group_by(&:first).each do |model, pairs|
-          model = model.including_associations_for_json if model.respond_to?(:including_associations_for_json)
-          pairs.map(&:last).in_groups_of(configatron.amqp.burst_size).each { |group| model.find(group.compact).map(&block) }
+          # Regardless of what the scoping says, we're going by ID so we always want to do what
+          # the standard model does.  If we need eager loading we'll add it.
+          model.send(:with_exclusive_scope) do
+            model = model.including_associations_for_json if model.respond_to?(:including_associations_for_json)
+            pairs.map(&:last).in_groups_of(configatron.amqp.burst_size).each { |group| model.find(group.compact).map(&block) }
+          end
         end
         @deleted.map(&block)
       end
@@ -164,7 +168,7 @@ class AmqpObserver < ActiveRecord::Observer
         client.stop
       end
     rescue Qrack::ConnectionTimeout, StandardError => exception
-      Rails.logger.debug { "Unable to broadcast: #{exception.message}\n#{exception.backtrace.join("\n")}" }
+      Rails.logger.error { "Unable to broadcast: #{exception.message}\n#{exception.backtrace.join("\n")}" }
     end
     private :activate_exchange
   end
