@@ -91,41 +91,6 @@ class PlatesControllerTest < ActionController::TestCase
           end
         end
 
-        context "Create Dilution Plates" do
-          context "with one source plate" do
-            setup do
-              @parent_raw_barcode = Barcode.calculate_barcode(Plate.prefix, @parent_plate.barcode.to_i)
-              post :create, :plates => {:creator_id => @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id, :source_plates =>"#{@parent_raw_barcode}", :user_barcode => '2470000100730'}
-            end
-            should_change("WorkingDilutionPlate.count", :by => 1) { WorkingDilutionPlate.count }
-            should_change("PicoDilutionPlate.count", :by => 1) { PicoDilutionPlate.count }
-
-            should "add a child to the parent plate" do
-              assert_equal Plate.find(@parent_plate.id), WorkingDilutionPlate.last.parent
-              assert_equal Plate.find(@parent_plate.id), PicoDilutionPlate.last.parent
-            end
-            should_respond_with :redirect
-            should_set_the_flash_to /Created/
-          end
-
-          context "with 3 source plates" do
-            setup do
-              @parent_raw_barcode  = Barcode.calculate_barcode(Plate.prefix, @parent_plate.barcode.to_i)
-              @parent_raw_barcode2 = Barcode.calculate_barcode(Plate.prefix, @parent_plate2.barcode.to_i)
-              @parent_raw_barcode3 = Barcode.calculate_barcode(Plate.prefix, @parent_plate3.barcode.to_i)
-              post :create, :plates => {:creator_id => @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id, :source_plates =>"#{@parent_raw_barcode}\n#{@parent_raw_barcode2}\t#{@parent_raw_barcode3}", :user_barcode => '2470000100730'}
-            end
-            should_change("WorkingDilutionPlate.count", :by => 3) { WorkingDilutionPlate.count }
-            should_change("PicoDilutionPlate.count", :by => 3) { PicoDilutionPlate.count }
-            should "have child plates" do
-              [@parent_plate, @parent_plate2, @parent_plate3].each do  |plate|
-                assert Plate.find(plate.id).children.first.is_a?(Plate)
-              end
-            end
-            should_respond_with :redirect
-            should_set_the_flash_to /Created/
-          end
-        end
       end
     end
   end

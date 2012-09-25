@@ -161,7 +161,7 @@ Given /^I have a "([^\"]*)" submission with the following setup:$/ do |template_
       multiplier_hash = request_options[:multiplier]
       multiplier_hash = request_options[:multiplier]={} unless multiplier_hash
       index = $1.to_i-1
-      multiplier_hash[request_type_ids[index]]=v.to_i
+      multiplier_hash[request_type_ids[index].to_s]=v.to_i
     else
       key = k.underscore.gsub(/\W+/,"_")
       request_options[key]=v

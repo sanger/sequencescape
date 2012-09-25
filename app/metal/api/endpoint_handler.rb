@@ -2,30 +2,45 @@ class ::Api::EndpointHandler < ::Core::Service
   class << self
     def instance_action(action, http_method)
       send(http_method, %r{^/#{self.api_version_path}/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?$}) do
-        uuid_in_url, parts = params[:captures][0], params[:captures][1].try(:split, '/') || []
-        uuid = Uuid.with_external_id(uuid_in_url).first or raise ActiveRecord::RecordNotFound, "UUID does not exist"
+        report("instance") do
+          uuid_in_url, parts = params[:captures][0], params[:captures][1].try(:split, '/') || []
+          uuid = Uuid.with_external_id(uuid_in_url).first or raise ActiveRecord::RecordNotFound, "UUID does not exist"
 
-        handle_request(:instance, action, parts) do |request|
-          request.io     = ::Core::Io::Registry.instance.lookup_for_class(uuid.resource.class)
-          request.target = request.io.eager_loading_for(uuid.resource.class).include_uuid.find(uuid.resource_id)
+          handle_request(:instance, request, action, parts) do |request|
+            request.io     = ::Core::Io::Registry.instance.lookup_for_class(uuid.resource.class)
+            request.target = request.io.eager_loading_for(uuid.resource.class).include_uuid.find(uuid.resource_id)
+          end
         end
       end
     end
 
     def model_action(action, http_method)
       send(http_method, %r{^/#{self.api_version_path}/([^\d/][^/]+(?:/[^/]+){0,2})$}) do
-        parts = params[:captures].to_s.split('/')
-        model = parts.shift.classify.constantize
-
-        handle_request(:model, action, parts) do |request|
-          request.io     = ::Core::Io::Registry.instance.lookup_for_class(model) rescue nil
-          request.target = model
+        report("model") do
+          determine_model_from_parts(*params[:captures].to_s.split('/')) do |model, parts|
+            handle_request(:model, request, action, parts) do |request|
+              request.io     = ::Core::Io::Registry.instance.lookup_for_class(model) rescue nil
+              request.target = model
+            end
+          end
         end
       end
     end
   end
 
-  def handle_request(handler, action, parts)
+  # Not ideal but at least this allows us to pick up the appropriate model from the URL.
+  def determine_model_from_parts(*parts)
+    (1..parts.length).to_a.reverse.each do |n|
+      begin
+        model_name, remainder = parts.slice(0, n), parts.slice(n, parts.length)
+        return yield(model_name.join('/').classify.constantize, remainder)
+      rescue NameError => exception
+        # Nope, try again
+      end
+    end
+  end
+
+  def handle_request(handler, http_request, action, parts)
     endpoint_lookup, io_lookup =
       case handler
       when :instance then [ :endpoint_for_object, :lookup_for_object ]
@@ -33,8 +48,8 @@ class ::Api::EndpointHandler < ::Core::Service
       else raise StandardError, "Unexpected handler #{handler.inspect}"
       end
 
-    request =
-      ::Core::Service::Request.new do |request|
+    request = 
+      ::Core::Service::Request.new(http_request.fullpath) do |request|
         request.service = self
         request.path    = parts
         request.json    = @json

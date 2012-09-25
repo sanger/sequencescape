@@ -5,43 +5,18 @@ xml.study(api_data) do |study|
   study.active @study.active?
   study.user_id @study.user_id
 
-  unless @study.followers.empty?
-    study.followers do |followers|
-      @study.followers.each do |f|
-        followers.follower do |follower|
-          follower.login f.login
-          follower.email f.email
-          follower.name f.name
-          follower.id f.id
+  [ 'followers', 'managers', 'owners' ].each do |type_of_user|
+    users, singular_user = @study.send(type_of_user), type_of_user.singularize
+    study.tag!(type_of_user) do |users_tag|
+      users.each do |user|
+        users_tag.tag!(singular_user) do |user_tag|
+          user_tag.login(user.login)
+          user_tag.email(user.email)
+          user_tag.name(user.name)
+          user_tag.id(user.id)
         end
       end
-    end
-  end
-
-  unless @study.managers.empty?
-    study.managers do |managers|
-      @study.managers.each do |m|
-        managers.manager do |manager|
-          manager.login m.login
-          manager.email m.email
-          manager.name m.name
-          manager.id m.id
-        end
-      end
-    end
-  end
-
-  unless @study.owners.empty?
-    study.owners do |owners|
-      @study.owners.each do |o|
-        owners.owner do |owner|
-          owner.login o.login
-          owner.email o.email
-          owner.name o.name
-          owner.id o.id
-        end
-      end
-    end
+    end unless users.empty?
   end
 
   xml.comment!("Family has been deprecated")

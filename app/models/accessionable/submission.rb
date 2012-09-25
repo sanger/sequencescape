@@ -54,13 +54,24 @@ class Accessionable::Submission < Accessionable::Base
             )
           }
 
-          xml.ACTION {
-            xml.tag!(accessionable.protect?(@service) ? 'PROTECT' : 'HOLD')
-          }
+          state_action(accessionable) do |action|
+            xml.ACTION {
+              xml.tag!(action)
+            }
+          end
         end
       }
     }
     return xml.target!
+  end
+
+
+  def state_action(accessionable)
+    if accessionable.protect?(@service)
+      yield 'PROTECT'
+    elsif !accessionable.released?
+      yield 'HOLD'
+    end
   end
 
   def name

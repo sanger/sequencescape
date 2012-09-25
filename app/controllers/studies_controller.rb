@@ -3,6 +3,7 @@ require "rexml/document"
 class StudiesController < ApplicationController
   include REXML
   include Informatics::Globals
+  include XmlCacheHelper::ControllerHelper
 
   before_filter :login_required
   before_filter :admin_login_required, :only => [:new_plate_submission, :create_plate_submission, :settings, :administer, :manage, :managed_update, :grant_role, :remove_role]
@@ -85,7 +86,7 @@ class StudiesController < ApplicationController
           redirect_to study_workflow_path(@study, current_user.workflow)
         end
       end
-      format.xml
+      format.xml { cache_xml_response(@study) }
       format.json { render :json => @study.to_json }
     end
   end

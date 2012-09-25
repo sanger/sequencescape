@@ -48,6 +48,13 @@ class Map < ActiveRecord::Base
     Map.find_by_description_and_asset_size(horiz_description,asset_size)
   end
 
+  def self.descriptions_for_row(row,size)
+    wells = (1..Map.plate_width(size)).map {|column| "#{row}#{column}"}
+  end
+
+  def self.descriptions_for_column(column,size)
+    (0...Map.plate_length(size)).map {|row| location_from_row_and_column(row,column)}
+  end
 
   def self.map_96wells
     Map.all(:conditions => {:asset_size => 96})

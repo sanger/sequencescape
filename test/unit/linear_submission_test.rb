@@ -315,8 +315,8 @@ class LinearSubmissionTest < ActiveSupport::TestCase
         @asset_1 = Factory(:sample_tube)
         @asset_2 = Factory(:sample_tube)
 
-        @mx_request_type = Factory :request_type, :asset_type => "SampleTube", :initial_state => "pending", :name => "Multiplexed Library Creation", :order => 1, :key => "multiplexed_library_creation"
-        @lib_request_type = Factory :request_type, :asset_type => "SampleTube", :initial_state => "pending", :name => "Library Creation", :order => 1, :key => "library_creation"
+        @mx_request_type = Factory :request_type, :asset_type => "SampleTube", :target_asset_type=>"LibraryTube", :initial_state => "pending", :name => "Multiplexed Library Creation", :order => 1, :key => "multiplexed_library_creation"
+        @lib_request_type = Factory :request_type, :asset_type => "SampleTube", :target_asset_type=>"LibraryTube", :initial_state => "pending", :name => "Library Creation", :order => 1, :key => "library_creation"
         @pe_request_type = Factory :request_type, :asset_type => "LibraryTube", :initial_state => "pending", :name => "PE sequencing", :order => 2, :key => "pe_sequencing"
         @se_request_type = Factory :request_type, :asset_type => "LibraryTube", :initial_state => "pending", :name => "SE sequencing", :order => 2, :key => "se_sequencing"
 

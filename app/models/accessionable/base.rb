@@ -57,6 +57,11 @@ class Accessionable::Base
     raise NotImplementError, "abstract method"
   end
 
+  def released?
+    # Return false by default. Overidden by sample.
+    false
+  end
+
   def add_updated_event(user, classname,  eventable)
         eventable.events.create(
           :created_by => user.login,

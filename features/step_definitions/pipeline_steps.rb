@@ -18,11 +18,7 @@ Given /^I have a control called "([^\"]*)" for "([^\"]*)"$/ do |name, pipeline_n
 end
 
 def pipeline_name_to_asset_type(pipeline_name)
-  asset_types = {
-    "Library preparation" => :sample_tube
-  }
-
-  asset_types.fetch(pipeline_name, :library_tube)
+  pipeline_name.include?('Library Preparation') || pipeline_name.include?('Library preparation') ? :sample_tube : :library_tube
 end
 
 def create_request_for_pipeline(pipeline_name, options = {})

@@ -3,7 +3,7 @@ Given /^that there is a "([^"]*)" pipeline$/ do |pipeline_name|
 end
 
 Given /^that there are (\d+) requests in that pipeline$/ do |number_requests|
-  asset_type = pipeline_name_to_asset_type(name)
+  asset_type = pipeline_name_to_asset_type(@pipeline.name)
 
   number_requests.to_i.times do
     request  = Factory(

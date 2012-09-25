@@ -7,7 +7,7 @@ Feature: Links from the study workflow page
       And a study named "Study 3871492" exists
       And the reference genome for study "Study 3871492" is "Schistosoma_mansoni (20100601)"
       And study "Study 3871492" has a registered sample "sample_1-3871492"
-      And a sample tube named "Asset 1 - 3871492" exists
+      And a library tube named "Asset 1 - 3871492" exists
 
       And study "Study 3871492" has made the following "Paired end sequencing" requests:
         |  state  | count |       asset       |     sample       |

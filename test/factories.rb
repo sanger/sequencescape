@@ -260,6 +260,20 @@ Factory.define :request, :parent => :request_without_assets do |request|
   request.target_asset { |asset| asset.association(:library_tube) }
 end
 
+Factory.define :request_with_sequencing_request_type, :parent => :request_without_assets do |request|
+  # the sample should be setup correctly and the assets should be valid
+  request.asset            { |asset|    asset.association(:library_tube)  }
+  request.request_metadata { |metadata| metadata.association(:request_metadata_for_standard_sequencing)}
+  request.request_type     { |rt|       rt.association(:sequencing_request_type)}
+end
+
+Factory.define :well_request, :parent => :request_without_assets do |request|
+  # the sample should be setup correctly and the assets should be valid
+  request.request_type {|rt|         rt.association(:well_request_type)}
+  request.asset        { |asset| asset.association(:well)  }
+  request.target_asset { |asset| asset.association(:well) }
+end
+
 Factory.define :request_suitable_for_starting, :parent => :request_without_assets do |request|
   request.asset        { |asset| asset.association(:sample_tube)        }
   request.target_asset { |asset| asset.association(:empty_library_tube) }
@@ -303,16 +317,23 @@ Factory.define :request_type do |rt|
   rt.name           "Request type #{rt_value}"
   rt.key            "request_type_#{rt_value}"
   rt.deprecated     false
+  rt.asset_type     'SampleTube'
   rt.request_class  Request
   rt.order          1
   rt.workflow    {|workflow| workflow.association(:submission_workflow)}
   rt.initial_state   "pending"
 end
 
+Factory.define :well_request_type, :parent => :request_type do |rt|
+  rt.asset_type     'Well'
+end
+
 Factory.define :library_creation_request_type, :class => RequestType do |rt|
   rt_value = Factory.next :request_type_id
   rt.name           "Request type #{rt_value}"
   rt.key            "request_type_#{rt_value}"
+  rt.asset_type     "SampleTube"
+  rt.target_asset_type "LibraryTube"
   rt.request_class  LibraryCreationRequest
   rt.order          1
   rt.workflow    {|workflow| workflow.association(:submission_workflow)}
@@ -321,6 +342,7 @@ Factory.define :sequencing_request_type, :class => RequestType do |rt|
   rt_value = Factory.next :request_type_id
   rt.name           "Request type #{rt_value}"
   rt.key            "request_type_#{rt_value}"
+  rt.asset_type     "LibraryTube"
   rt.request_class  SequencingRequest
   rt.order          1
   rt.workflow    {|workflow| workflow.association(:submission_workflow)}
@@ -331,6 +353,7 @@ Factory.define :multiplexed_library_creation_request_type, :class => RequestType
   rt.name               "Request type #{rt_value}"
   rt.key                "request_type_#{rt_value}"
   rt.request_class      MultiplexedLibraryCreationRequest
+  rt.asset_type         "SampleTube"
   rt.order              1
   rt.for_multiplexing   true
   rt.workflow           { |workflow| workflow.association(:submission_workflow)}

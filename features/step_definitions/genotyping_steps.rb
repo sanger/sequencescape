@@ -178,7 +178,12 @@ Given /^the internal QC plates are created$/ do
   And %Q{I press "Submit"}
   When %Q{I fill in "Source plates" with "1221234567841"}
   And %Q{I fill in "User barcode" with "2470000100730"}
-  When %Q{I select "Dilution Plates" from "Plate purpose"}
+  When %Q{I select "Working dilution" from "Plate purpose"}
+  And %Q{I select "xyz" from "Barcode printer"}
+  And %Q{I press "Submit"}
+  When %Q{I fill in "Source plates" with "6251234567836"}
+  And %Q{I fill in "User barcode" with "2470000100730"}
+  When %Q{I select "Pico dilution" from "Plate purpose"}
   And %Q{I select "xyz" from "Barcode printer"}
   And %Q{I press "Submit"}
   When %Q{I fill in "Source plates" with "4361234567667"}

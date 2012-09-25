@@ -50,6 +50,8 @@ class Request < ActiveRecord::Base
 
   belongs_to :submission
 
+  named_scope :with_request_type_id, lambda { |id| { :conditions => { :request_type_id => id } } }
+
   # project is read only so we can set it everywhere
   # but it will be only used in specific and controlled place
   belongs_to :initial_project, :class_name => "Project"
