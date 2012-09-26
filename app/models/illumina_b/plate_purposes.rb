@@ -7,7 +7,8 @@ module IlluminaB::PlatePurposes
       'ILB_STD_PREPCR',
       'ILB_STD_PCR',
       'ILB_STD_PCRR',
-      'ILB_STD_PCRXP'
+      'ILB_STD_PCRXP',
+      'ILB_STD_PCRRXP'
     ]
   ]
 
@@ -20,7 +21,7 @@ module IlluminaB::PlatePurposes
 
   BRANCHES = [
     [ 'ILB_STD_INPUT', 'ILB_STD_COVARIS', 'ILB_STD_SH', 'ILB_STD_PREPCR', 'ILB_STD_PCR', 'ILB_STD_PCRXP', 'ILB_STD_STOCK', 'ILB_STD_MX' ],
-    [ 'ILB_STD_PREPCR', 'ILB_STD_PCRR', 'ILB_STD_PCRXP' ]
+    [ 'ILB_STD_PREPCR', 'ILB_STD_PCRR', 'ILB_STD_PCRRXP' ]
   ]
 
   STOCK_PLATE_PURPOSE = 'ILB_STD_INPUT'
@@ -30,12 +31,13 @@ module IlluminaB::PlatePurposes
   ]
 
   PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
-    [ 'ILB_STD_COVARIS', 'ILB_STD_SH',    'IlluminaB::Requests::CovarisToSheared' ],
-    [ 'ILB_STD_PREPCR',  'ILB_STD_PCR',   'IlluminaB::Requests::PrePcrToPcr'      ],
-    [ 'ILB_STD_PREPCR',  'ILB_STD_PCRR',  'IlluminaB::Requests::PrePcrToPcr'      ],
-    [ 'ILB_STD_PCR',     'ILB_STD_PCRXP', 'IlluminaB::Requests::PcrToPcrXp'       ],
-    [ 'ILB_STD_PCRR',    'ILB_STD_PCRXP', 'IlluminaB::Requests::PcrToPcrXp'       ],
-    [ 'ILB_STD_PCRXP',   'ILB_STD_STOCK', 'IlluminaB::Requests::PcrXpToStock'     ]
+    [ 'ILB_STD_COVARIS', 'ILB_STD_SH',     'IlluminaB::Requests::CovarisToSheared' ],
+    [ 'ILB_STD_PREPCR',  'ILB_STD_PCR',    'IlluminaB::Requests::PrePcrToPcr'      ],
+    [ 'ILB_STD_PREPCR',  'ILB_STD_PCRR',   'IlluminaB::Requests::PrePcrToPcr'      ],
+    [ 'ILB_STD_PCR',     'ILB_STD_PCRXP',  'IlluminaB::Requests::PcrToPcrXp'       ],
+    [ 'ILB_STD_PCRR',    'ILB_STD_PCRRXP', 'IlluminaB::Requests::PcrToPcrXp'       ],
+    [ 'ILB_STD_PCRXP',   'ILB_STD_STOCK',  'IlluminaB::Requests::PcrXpToStock'     ],
+    [ 'ILB_STD_PCRRXP',  'ILB_STD_STOCK',  'IlluminaB::Requests::PcrXpToStock'     ]
   ]
 
   PLATE_PURPOSE_TYPE = {
@@ -46,6 +48,7 @@ module IlluminaB::PlatePurposes
     'ILB_STD_PCR'     => IlluminaB::PcrPlatePurpose,
     'ILB_STD_PCRXP'   => IlluminaB::FinalPlatePurpose,
     'ILB_STD_PCRR'    => PlatePurpose,
+    'ILB_STD_PCRRXP'  => IlluminaB::FinalPlatePurpose,
     'ILB_STD_STOCK'   => IlluminaB::StockTubePurpose,
     'ILB_STD_MX'      => IlluminaB::MxTubePurpose
   }
