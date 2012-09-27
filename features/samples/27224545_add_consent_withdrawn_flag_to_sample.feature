@@ -12,8 +12,8 @@ Feature: Patients should be able to withdraw consent
     And I have an "approved" project called "Project A"
     And the project "Project A" has quotas and quotas are enforced
     Given there are no samples
-    And the study "Study A" has the sample "sample_withdrawn" in a well and asset group
-    And the study "Study A" has the sample "sample_okay" in a well and asset group
+    And the study "Study A" has the sample "sample_withdrawn" in a sample tube and asset group
+    And the study "Study A" has the sample "sample_okay" in a sample tube and asset group
     And the patient has withdrawn consent for "sample_withdrawn"
 
   Scenario: Withdrawn consent is presented downstream
@@ -142,7 +142,7 @@ Feature: Patients should be able to withdraw consent
 
   @submission
   Scenario: Submissions can not be created containing withdrawn samples
-  Given I try to create a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - Paired end sequencing" order with the following setup:
+  Given I try to create a "Illumina-C Multiplexed Library Creation - Single ended sequencing" order with the following setup:
     | Project                     | Project A              |
     | Study                       | Study A                |
     | Asset Group                 | sample_withdrawn_group |
@@ -154,7 +154,7 @@ Feature: Patients should be able to withdraw consent
   And the last error should contain "Samples in this submission have had patient consent withdrawn."
   When I try to save the order
   Then the order should not be built
-  Given I try to create a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - Paired end sequencing" order with the following setup:
+  Given I try to create a "Illumina-C Multiplexed Library Creation - Single ended sequencing" order with the following setup:
     | Project                     | Project A              |
     | Study                       | Study A                |
     | Asset                       | sample_withdrawn_tube  |
@@ -166,7 +166,7 @@ Feature: Patients should be able to withdraw consent
   And the last error should contain "Samples in this submission have had patient consent withdrawn."
   When I try to save the order
   Then the order should not be built
-  Given I try to create a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - Paired end sequencing" order with the following setup:
+  Given I try to create a "Illumina-C Multiplexed Library Creation - Single ended sequencing" order with the following setup:
     | Project                     | Project A              |
     | Study                       | Study A                |
     | Asset Group                 | sample_okay_group |
@@ -177,7 +177,7 @@ Feature: Patients should be able to withdraw consent
   And the order should not have errors
   When I try to save the order
   Then the order should be built
-  Given I try to create a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - Paired end sequencing" order with the following setup:
+  Given I try to create a "Illumina-C Multiplexed Library Creation - Single ended sequencing" order with the following setup:
     | Project                     | Project A              |
     | Study                       | Study A                |
     | Asset                       | sample_okay_tube       |
