@@ -137,7 +137,8 @@ class Api::Base
   def self.newer_than(object, timestamp, &block)
     return if object.nil? or timestamp.nil?
     modified = false
-    timestamp, modified = object.updated_at, true if object.respond_to?(:updated_at) and object.updated_at > timestamp
+    object_timestamp = object.updated_at || timestamp if object.respond_to?(:updated_at)
+    timestamp, modified = object_timestamp, true if object_timestamp > timestamp
     self.associations.each do |association, helper|
       helper.newer_than(object.send(association), timestamp) { |t| timestamp, modified = t, true }
     end
