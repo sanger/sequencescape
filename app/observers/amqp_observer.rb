@@ -126,6 +126,8 @@ class AmqpObserver < ActiveRecord::Observer
       def <<(record)
         activate_exchange do
           determine_record_to_broadcast(record) do |record_to_broadcast, record_for_deletion|
+            Rails.logger.warn { "AmqpObserver called outside transaction: #{caller.join("\n")}" }
+
             if record.destroyed?
               publish(record_for_deletion) if record_for_deletion.present?
             else
