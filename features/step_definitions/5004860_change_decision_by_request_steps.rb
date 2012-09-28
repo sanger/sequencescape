@@ -6,6 +6,6 @@ Given /^sequencescape is setup for 5004860$/ do
   request_one = Factory :request_with_sequencing_request_type, :asset => library1, :target_asset => lane, :state => 'passed'
 
   reference = BillingEvent.build_reference(request_one)
-  Factory :billing_event, :reference => reference,  :quantity => 7, :kind => "charge"
+  Factory :billing_event, :reference => reference, :request=> request_one,  :quantity => 7, :kind => "charge"
 
 end
