@@ -4,10 +4,10 @@ class RepairBillingEventsWithoutRequestId < ActiveRecord::Migration
   class BillingEvent < ActiveRecord::Base
 
     def self.do_not_record_timestamps(&block)
-      @record_timestamps = false
+      BillingEvent.record_timestamps = false
       yield
     ensure
-      @record_timestamps = true
+      BillingEvent.record_timestamps = true
     end
 
   end
