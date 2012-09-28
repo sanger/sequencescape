@@ -1,4 +1,7 @@
 <%- add :title, "Viewing Submission" -%>
+<% @presenter.submission.orders.uniq(&:asset_group).each do |order|
+  add :menu, "Print labels for #{order.asset_group.name}" => print_study_asset_group_path(order.study,order.asset_group) unless order.asset_group.nil?
+end %>
 <%- add :manager_option, "<strong>Submissions Inbox</strong>" => submissions_path -%>
 
 
