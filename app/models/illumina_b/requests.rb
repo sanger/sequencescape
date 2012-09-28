@@ -42,7 +42,7 @@ module IlluminaB::Requests
       aasm_event :pass   do transitions :to => :passed,      :from => [:pending, :started, :failed] end
       aasm_event :qc     do transitions :to => :qc_complete, :from => [:passed]                     end
       aasm_event :fail   do transitions :to => :failed,      :from => [:pending, :started, :passed] end
-      aasm_event :cancel do transitions :to => :cancelled,   :from => [:started]                    end
+      aasm_event :cancel do transitions :to => :cancelled,   :from => [:started, :passed]           end
     end
   end
 
@@ -62,7 +62,7 @@ module IlluminaB::Requests
       aasm_event :start_mj do transitions :to => :started_mj,  :from => [:started_fx]                                 end
       aasm_event :pass     do transitions :to => :passed,      :from => [:pending, :started_mj, :failed]              end
       aasm_event :fail     do transitions :to => :failed,      :from => [:pending, :started_fx, :started_mj, :passed] end
-      aasm_event :cancel   do transitions :to => :cancelled,   :from => [:started_fx, :started_mj]                    end
+      aasm_event :cancel   do transitions :to => :cancelled,   :from => [:started_fx, :started_mj, :passed]           end
     end
   end
 
@@ -82,7 +82,7 @@ module IlluminaB::Requests
       aasm_event :pass   do transitions :to => :passed,      :from => [:pending, :started, :failed] end
       aasm_event :qc     do transitions :to => :qc_complete, :from => [:passed]                     end
       aasm_event :fail   do transitions :to => :failed,      :from => [:pending, :started, :passed] end
-      aasm_event :cancel do transitions :to => :cancelled,   :from => [:started]                    end
+      aasm_event :cancel do transitions :to => :cancelled,   :from => [:started, :passed, :qc]      end
     end
   end
 
@@ -102,7 +102,7 @@ module IlluminaB::Requests
       aasm_event :pass   do transitions :to => :passed,      :from => [:pending, :started, :failed] end
       aasm_event :qc     do transitions :to => :qc_complete, :from => [:passed]                     end
       aasm_event :fail   do transitions :to => :failed,      :from => [:pending, :started, :passed] end
-      aasm_event :cancel do transitions :to => :cancelled,   :from => [:started]                    end
+      aasm_event :cancel do transitions :to => :cancelled,   :from => [:started, :passed, :qc]      end
     end
   end
 end
