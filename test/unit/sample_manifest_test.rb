@@ -23,6 +23,8 @@ class SampleManifestTest < ActiveSupport::TestCase
           should_change('Sample.count', :by => (count * 96)) { Sample.count }
           should_change('Plate.count',  :by => (count * 1))  { Plate.count  }
           should_change('Well.count',   :by => (count * 96)) { Well.count   }
+
+          should_change("Study.samples.count", :by => (count * 96)) { @study.samples.count }
         end
       end
     end
