@@ -170,7 +170,7 @@ module SampleManifest::PlateBehaviour
   end
 
   def generate_wells(wells_for_plate, plate)
-    study_samples_data = wells_for_plate.map do |map,sanger_sample_id|
+    study.samples << wells_for_plate.map do |map,sanger_sample_id|
       create_sample(sanger_sample_id).tap do |sample|
         plate.wells.create!(:map => map, :well_attribute => WellAttribute.new).tap do |well|
           well.aliquots.create!(:sample => sample)
@@ -178,7 +178,6 @@ module SampleManifest::PlateBehaviour
       end
     end
 
-    generate_study_samples(study_samples_data.map { |sample| [ study.id, sample.id ] })
     plate.events.created_using_sample_manifest!(self.user)
 
     RequestFactory.create_assets_requests(plate.wells.map(&:id), study.id)
