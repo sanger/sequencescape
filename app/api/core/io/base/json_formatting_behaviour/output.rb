@@ -42,7 +42,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Output
   end
 
   RETURNED_OBJECTS = [
-    Symbol, String, Fixnum, BigDecimal,
+    Symbol, String, Fixnum, BigDecimal, Float,
     Date, Time, ActiveSupport::TimeWithZone,
     FalseClass, TrueClass
   ]
