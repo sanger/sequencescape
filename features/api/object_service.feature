@@ -51,8 +51,7 @@ Feature: Access objects through the API
           "last": "http://www.example.com/api/1/samples/1"
         },
         "size": 0,
-        "samples": [ ],
-        "uuids_to_ids": { }
+        "samples": [ ]
       }
       """
 
@@ -108,10 +107,7 @@ Feature: Access objects through the API
               "name": "testing_the_object_service"
             }
           }
-        ],
-        "uuids_to_ids": {
-          "00000000-1111-2222-3333-444444444444": 1
-        }
+        ]
       }
       """
 
@@ -146,10 +142,7 @@ Feature: Access objects through the API
               "name": "testing_the_object_service-<index>"
             }
           }
-        ],
-        "uuids_to_ids": {
-          "11111111-2222-3333-4444-<uuid>": <id>
-        }
+        ]
       }
       """
 
@@ -216,9 +209,6 @@ Feature: Access objects through the API
           "taxonomy": {
             "organism": "weird green jelly like thing"
           }
-        },
-        "uuids_to_ids": {
-          "00000000-1111-2222-3333-444444444444": 1
         }
       }
       """
@@ -278,9 +268,6 @@ Feature: Access objects through the API
             },
             "size": <number of sample tubes>
           }
-        },
-        "uuids_to_ids": {
-          "00000000-1111-2222-3333-444444444444": 1
         }
       }
       """
@@ -364,11 +351,7 @@ Feature: Access objects through the API
               "size": 0
             }
           }
-        ],
-        "uuids_to_ids": {
-          "00000000-1111-2222-3333-444444444444": 1,
-          "11111111-2222-3333-4444-000000000001": 1
-        }
+        ]
       }
       """
 
@@ -392,8 +375,7 @@ Feature: Access objects through the API
           "last": "http://www.example.com/api/1/samples/1"
         },
         "size": 0,
-        "samples": [ ],
-        "uuids_to_ids": { }
+        "samples": [ ]
       }
       """
 
@@ -413,8 +395,7 @@ Feature: Access objects through the API
           "create": "http://www.example.com/api/1/samples"
         },
         "size": 0,
-        "samples": [ ],
-        "uuids_to_ids": { }
+        "samples": [ ]
       }
       """
 
@@ -452,9 +433,6 @@ Feature: Access objects through the API
           "taxonomy": {
             "organism": "weird green jelly like thing"
           }
-        },
-        "uuids_to_ids": {
-          "00000000-1111-2222-3333-444444444444": 1
         }
       }
       """

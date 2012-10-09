@@ -9,7 +9,6 @@ module Core::Endpoint::BasicHandler::Associations::BelongsTo
 
     def as_json(options = {})
       endpoint_details(options) do |endpoint, object|
-        options[:uuids_to_ids][object.uuid] = object.id
         action_json = endpoint.instance_handler.as_json(options.merge(:embedded => true, :target => object))
         action_json[:uuid] = object.uuid
 

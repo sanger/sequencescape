@@ -43,9 +43,6 @@ Feature: Access plate purposes through the API
               "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/children"
             }
           }
-        },
-        "uuids_to_ids": {
-          "00000000-1111-2222-3333-444444444444": 1
         }
       }
       """

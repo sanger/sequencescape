@@ -221,7 +221,7 @@ class Core::Service < Sinatra::Base
     #++
     def each(&block)
       benchmark('Streaming JSON') do
-        options = { :response => self, :uuids_to_ids => {}, :target => object }
+        options = { :response => self, :target => object }
 
         io_handler         = ::Core::Io::Registry.instance.lookup_for_object(object)
         object_as_json     = io_handler.as_json(options.merge(:object => object))
@@ -251,7 +251,7 @@ class Core::Service < Sinatra::Base
     private :discard_all_references
 
     def merge_actions_into_object_json(object_as_json, actions_for_object)
-      key         = object_as_json.keys.detect { |k| not [ 'uuids_to_ids', 'size' ].include?(k.to_s) }
+      key         = object_as_json.keys.detect { |k| 'size' != k.to_s }
       target_json = object_as_json[key]
       return target_json.deep_merge!(actions_for_object) unless target_json.is_a?(Array)
 

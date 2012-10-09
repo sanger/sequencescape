@@ -50,10 +50,7 @@ Feature: Searching for assets by barcode
               "ean13": "1220000333802"
             }
           }
-        ],
-        "uuids_to_ids": {
-
-        }
+        ]
       }
       """
 
@@ -72,7 +69,6 @@ Feature: Searching for assets by barcode
       """
       {
         "size": 0,
-        "searches": [],
-        "uuids_to_ids": {}
+        "searches": []
       }
       """
