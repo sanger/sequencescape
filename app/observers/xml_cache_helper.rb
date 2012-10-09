@@ -63,6 +63,8 @@ module XmlCacheHelper
       :controller => caching_for_controller, :action => 'show', :id => id, :format => :xml,
       :only_path => true, :skip_relative_url_root => true
     ))
+  rescue Errno::ENOENT => exception
+    Rails.logger.warn { "Cannot clear cached XML file as it does not exist (#{exception.message})" }
   end
   private :clear_cache
 
