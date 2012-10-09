@@ -45,9 +45,6 @@ Feature: Access multiplexed library creation requests through the API
             "to": "20"
           },
           "state": "pending"
-        },
-        "uuids_to_ids": {
-          "00000000-1111-2222-3333-444444444444": 1
         }
       }
       """

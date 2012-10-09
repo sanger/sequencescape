@@ -43,9 +43,6 @@ Feature: Access users through the API
           "has_a_swipecard_code": false,
 
           "uuid": "00000000-1111-2222-3333-444444444444"
-        },
-        "uuids_to_ids": {
-          "00000000-1111-2222-3333-444444444444": 1
         }
       }
       """

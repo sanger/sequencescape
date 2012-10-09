@@ -40,9 +40,6 @@ Feature: Access sequencing requests through the API
 
           "type": "Paired end sequencing",
           "read_length": 76
-        },
-        "uuids_to_ids": {
-          "00000000-1111-2222-3333-444444444444": 1
         }
       }
       """

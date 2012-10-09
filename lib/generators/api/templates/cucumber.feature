@@ -14,7 +14,6 @@ Feature: Access <%= plural_human_name %> through the API
     Given I am using the latest version of the API
 <% if can_create? -%>
 
-  # NOTE: we cannot predefine the ID here so we ignore it in the uuids_to_ids map
   @create
   Scenario: Creating a <%= singular_human_name %>
     Given the UUID of the next <%= singular_human_name %> created will be "00000000-1111-2222-3333-444444444444"
