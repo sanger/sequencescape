@@ -64,8 +64,7 @@ Feature: Access pipelines through the API
           "last": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/requests/1"
         },
         "size": 0,
-        "requests": [ ],
-        "uuids_to_ids": { }
+        "requests": [ ]
       }
       """
 

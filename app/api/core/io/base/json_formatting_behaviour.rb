@@ -21,16 +21,15 @@ module Core::Io::Base::JsonFormattingBehaviour
   def as_json(options = nil, &block)
     options        ||= {}
     object           = options.delete(:object)
-    uuids_to_ids     = options[:uuids_to_ids] || { }
-    object_content   = object_json(object, uuids_to_ids, options)
+    object_content   = object_json(object, options)
 
-    options[:nested] ? object_content : { self.json_root => object_content, :uuids_to_ids => uuids_to_ids }
+    options[:nested] ? object_content : { self.json_root => object_content }
   end
 
   #--
   # Very root level does absolutely nothing useful!
   #++
-  def object_json(object, uuids_to_ids, options)
+  def object_json(object, options)
     {}
   end
   private :object_json

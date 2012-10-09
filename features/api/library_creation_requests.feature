@@ -40,9 +40,6 @@ Feature: Access library creation requests through the API
 
           "type": "Library creation",
           "library_type": "Standard"
-        },
-        "uuids_to_ids": {
-          "00000000-1111-2222-3333-444444444444": 1
         }
       }
       """

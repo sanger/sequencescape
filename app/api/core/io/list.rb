@@ -7,31 +7,26 @@ class Core::Io::List
     @current_page, @last_page = [ 1, objects.current_page ].max, [ 1, objects.total_pages ].max
   end
 
+  delegate :action_for_page, :to => :@command
+
   def as_json(options = nil)
     benchmark("I/O #{self.class.name}") do
-      uuids_to_ids = {}
-      object_contents = @objects.map { |o| o.object_json(uuids_to_ids, options) }
-
-      json = @command.as_json(options)
-      json[:actions].merge!(pagination_actions)
-      json.merge!(
-        :uuids_to_ids             => uuids_to_ids,
-        @command.class.json_root  => object_contents
-      )
-      json
+      @command.as_json(options).tap do |json|
+        json[:actions].merge!(pagination_actions)
+        json[@command.class.json_root] = @objects.map { |o| o.object_json(options) }
+      end
     end
   end
 
-private
-
   def pagination_actions
-    actions_to_page = {
-      :first => 1,
-      :last  => @last_page,
-      :read  => @current_page
-    }
-    actions_to_page[:previous] = @current_page-1 unless @current_page == 1
-    actions_to_page[:next]     = @current_page+1 unless @current_page == @last_page
-    Hash[actions_to_page.map { |k,v| [ k, @command.action_for_page(v) ] }]
+    {
+      :first => action_for_page(1),
+      :last  => action_for_page(@last_page),
+      :read  => action_for_page(@current_page)
+    }.tap do |actions_to_page|
+      actions_to_page[:previous] = action_for_page(@current_page-1) unless @current_page == 1
+      actions_to_page[:next]     = action_for_page(@current_page+1) unless @current_page == @last_page
+    end
   end
+  private :pagination_actions
 end

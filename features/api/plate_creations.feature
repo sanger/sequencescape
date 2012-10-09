@@ -25,7 +25,6 @@ Feature: Access plate creations through the API
     Given a "Parent plate purpose" plate called "Testing the API" exists
       And the UUID for the plate "Testing the API" is "00000000-1111-2222-3333-000000000001"
 
-  # NOTE: we cannot predefine the ID here so we ignore it in the uuids_to_ids map
   @create
   Scenario: Creating a plate creation
     Given the UUID of the next plate creation created will be "55555555-6666-7777-8888-000000000001"
