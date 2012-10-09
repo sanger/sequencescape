@@ -7,7 +7,8 @@ class AmqpObserver < ActiveRecord::Observer
     :asset, :asset_link, :well_attribute,
     Metadata::Base,
     :billing_event,
-    :batch, :batch_request
+    :batch, :batch_request,
+    :role
   )
 
   # Ensure we capture records being saved as well as deleted.
@@ -60,14 +61,13 @@ class AmqpObserver < ActiveRecord::Observer
     end
 
     # Converts metadata entries to their owner records, if necessary
-    def determine_record_to_broadcast(record)
-      record_to_broadcast, record_for_deletion = case
-      when record.is_a?(WellAttribute)  then [ record.well,  nil ]
-      when record.is_a?(Metadata::Base) then [ record.owner, nil ]
-      else [ record, record ]
+    def determine_record_to_broadcast(record, &block)
+      case
+      when record.is_a?(WellAttribute)  then yield(record.well,  nil)
+      when record.is_a?(Metadata::Base) then yield(record.owner, nil)
+      when record.is_a?(Role)           then determine_record_to_broadcast(record.authorizable, &block)
+      else                                   yield(record,       record)
       end
-
-      yield(record_to_broadcast, record_for_deletion)
     end
     private :determine_record_to_broadcast
 
