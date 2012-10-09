@@ -63,9 +63,25 @@ class AmqpObserverTest < ActiveSupport::TestCase
             metadata.stubs(:destroyed?).returns(true)
             metadata.stubs(owner).returns(object)
             OWNED_CLASSES.each { |c,_| metadata.stubs(:is_a?).with(c).returns(base_class == c) }
+            metadata.stubs(:is_a?).with(Role).returns(false)
 
             @target << metadata
           end
+        end
+
+        should 'send the authorized record for roles' do
+          object, role = mock('Object to broadcast'), mock('Role being updated')
+
+          role.stubs(:destroyed?).returns(false)
+          OWNED_CLASSES.each { |c,_| role.stubs(:is_a?).with(c).returns(false) }
+          role.stubs(:is_a?).with(Role).returns(true)
+          role.stubs(:authorizable).returns(object)
+
+          OWNED_CLASSES.each { |c,_| object.stubs(:is_a?).with(c).returns(false) }
+          object.stubs(:is_a?).with(Role).returns(false)
+          @target.expects(:publish).with(object).once
+
+          @target << role
         end
       end
 
