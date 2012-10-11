@@ -40,8 +40,11 @@ class Api::StudyIO < Api::Base
     json_attributes["abbreviation"] = object.abbreviation
 
     object.roles.each do |role|
-      json_attributes[role.name.downcase.gsub(/\s+/, '_')] = role.users.map do |user|
-        { :login => user.login, :email => user.email, :name  => user.name }
+      json_attributes[role.name.downcase.gsub(/\s+/, '_')] = role.user_roles.map do |user_role|
+        { :login => user_role.user.login, :email => user_role.user.email, :name  => user_role.user.name }.tap do
+          json_attributes['updated_at'] ||= user_role.updated_at
+          json_attributes['updated_at']   = user_role.updated_at if json_attributes['updated_at'] < user_role.updated_at
+        end
       end
     end if object.respond_to?(:roles)
   end

@@ -69,19 +69,37 @@ class AmqpObserverTest < ActiveSupport::TestCase
           end
         end
 
-        should 'send the authorized record for roles' do
-          object, role = mock('Object to broadcast'), mock('Role being updated')
+        context 'role related' do
+          setup do
+            @object, @role = mock('Object to broadcast'), mock('Role being updated')
 
-          role.stubs(:destroyed?).returns(false)
-          OWNED_CLASSES.each { |c,_| role.stubs(:is_a?).with(c).returns(false) }
-          role.stubs(:is_a?).with(Role).returns(true)
-          role.stubs(:authorizable).returns(object)
+            @role.stubs(:destroyed?).returns(false)
+            OWNED_CLASSES.each { |c,_| @role.stubs(:is_a?).with(c).returns(false) }
+            @role.stubs(:is_a?).with(Role).returns(true)
+            @role.stubs(:authorizable).returns(@object)
 
-          OWNED_CLASSES.each { |c,_| object.stubs(:is_a?).with(c).returns(false) }
-          object.stubs(:is_a?).with(Role).returns(false)
-          @target.expects(:publish).with(object).once
+            OWNED_CLASSES.each { |c,_| @object.stubs(:is_a?).with(c).returns(false) }
+            @object.stubs(:is_a?).with(Role).returns(false)
+            @object.stubs(:is_a?).with(Role::UserRole).returns(false)
 
-          @target << role
+            @target.expects(:publish).with(@object).once
+          end
+
+          should 'send the authorized record for roles' do
+            @target << @role
+          end
+
+          should 'send the authorized record for a user role addition' do
+            user_role = mock('User role being added')
+
+            user_role.stubs(:destroyed?).returns(false)
+            OWNED_CLASSES.each { |c,_| user_role.stubs(:is_a?).with(c).returns(false) }
+            user_role.stubs(:is_a?).with(Role).returns(false)
+            user_role.stubs(:is_a?).with(Role::UserRole).returns(true)
+            user_role.stubs(:role).returns(@role)
+
+            @target << user_role
+          end
         end
       end
 
