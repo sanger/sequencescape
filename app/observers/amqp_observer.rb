@@ -8,7 +8,7 @@ class AmqpObserver < ActiveRecord::Observer
     Metadata::Base,
     :billing_event,
     :batch, :batch_request,
-    :role
+    :role, 'Role::UserRole'
   )
 
   # Ensure we capture records being saved as well as deleted.
@@ -66,6 +66,7 @@ class AmqpObserver < ActiveRecord::Observer
       when record.is_a?(WellAttribute)  then yield(record.well,  nil)
       when record.is_a?(Metadata::Base) then yield(record.owner, nil)
       when record.is_a?(Role)           then determine_record_to_broadcast(record.authorizable, &block)
+      when record.is_a?(Role::UserRole) then determine_record_to_broadcast(record.role, &block)
       else                                   yield(record,       record)
       end
     end
