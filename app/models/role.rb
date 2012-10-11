@@ -3,7 +3,15 @@
 # "moderator" for an instance of a model (i.e., an object), a model class,
 # or without any specification at all.
 class Role < ActiveRecord::Base
-  has_and_belongs_to_many :users
+  class UserRole < ActiveRecord::Base
+    set_table_name('roles_users')
+    belongs_to :role
+    belongs_to :user
+  end
+
+  has_many :user_role_bindings, :class_name => 'Role::UserRole'
+  has_many :users, :through => :user_role_bindings, :source => :user
+
   belongs_to :authorizable, :polymorphic => true
 
   validates_presence_of :name
