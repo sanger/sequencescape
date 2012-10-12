@@ -120,7 +120,7 @@ class PlatePurpose < ActiveRecord::Base
 
     attributes[:size] ||= 96
     plates.create_with_barcode!(attributes, &block).tap do |plate|
-      plate.wells.import(Map.where_plate_size(plate.size).in_reverse_row_major_order.all.map { |map| Well.new(:map => map) }) unless do_not_create_wells
+      plate.wells.construct! unless do_not_create_wells
     end
   end
 end
