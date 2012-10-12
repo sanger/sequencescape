@@ -73,7 +73,9 @@ module IlluminaB::PlatePurposes
         stock_plate = create_plate_purpose(flow.shift, :can_be_considered_a_stock_plate => true, :default_state => 'passed', :cherrypickable_target => true)
         request_type_for(stock_plate).acceptable_plate_purposes << stock_plate
 
-        flow.each(&method(:create_plate_purpose))
+        flow.each do |name|
+          create_plate_purpose(name, :default_location => library_creation_freezer)
+        end
       end
     end
 
@@ -115,6 +117,11 @@ module IlluminaB::PlatePurposes
       RequestType.create!(:name => request_type_name, :key => request_type_name.gsub(/\W+/, '_'), :request_class_name => request_class, :asset_type => 'Well', :order => 1)
     end
     private :request_type_between
+
+    def library_creation_freezer
+      Location.find_by_name('Library creation freezer') or raise "Cannot find library creation freezer"
+    end
+    private :library_creation_freezer
 
     def create_plate_purpose(plate_purpose_name, options = {})
       purpose_for(plate_purpose_name).create!(options.reverse_merge(

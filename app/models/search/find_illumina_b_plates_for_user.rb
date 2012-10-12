@@ -4,5 +4,4 @@ class Search::FindIlluminaBPlatesForUser < Search::FindIlluminaBPlates
     # for transfer) the destination plate becomes the end of the chain.
     super.for_user(Uuid.lookup_single_uuid(criteria['user_uuid']).resource)
   end
-
 end
