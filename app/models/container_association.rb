@@ -40,20 +40,26 @@ class ContainerAssociation < ActiveRecord::Base
               post_import(records.map { |r| [proxy_owner.id, r['id']] })
             end
           end
-
-          def attach(records)
-            ActiveRecord::Base.transaction do
-              links_data = records.map { |r| [proxy_owner.id, r['id']] }
-              ContainerAssociation.import([:container_id, :content_id], links_data, :validate => false)
-            end
-          end
         }, __FILE__, line)
+
+        def attach(records)
+          ActiveRecord::Base.transaction do
+            links_data = records.map { |r| [proxy_owner.id, r['id']] }
+            ContainerAssociation.import([:container_id, :content_id], links_data, :validate => false)
+          end
+        end
 
         # Sometimes we need to do things after importing the contained records.  This is the callback that should be
         # overridden by the block passed.
         def post_import(_)
           # Does nothing by default
         end
+
+        def connect(content)
+          ContainerAssociation.create!(:container => proxy_owner, :content => content)
+          post_connect(content)
+        end
+        private :connect
 
         class_eval(&block) if block_given?
       end

@@ -76,6 +76,18 @@ WHERE c.container_id=?
       AssetLink.import([:direct, :count, :ancestor_id, :descendant_id], links_data.map { |c| [true,1,*c] }, :validate => false)
       WellAttribute.import([:well_id, :created_at, :updated_at], links_data.map { |c| [c.last, time_now, time_now] }, :validate => false, :timestamps => false)
     end
+    private :post_import
+
+    def post_connect(well)
+      AssetLink.create!(:ancestor => proxy_owner, :descendant => well)
+    end
+    private :post_connect
+
+    def construct!
+      Map.where_plate_size(proxy_owner.size).in_row_major_order.map do |location|
+        connect(Well.create!(:map => location))
+      end
+    end
 
     def map_from_locations
       {}.tap do |location_to_well|
