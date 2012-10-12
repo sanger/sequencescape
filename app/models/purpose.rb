@@ -39,6 +39,9 @@ class Purpose < ActiveRecord::Base
     barcode_printer_type.printer_type_id
   end
 
+  # Things that are created are often in a default location!
+  belongs_to :default_location, :class_name => 'Location'
+
   validates_format_of :name, :with => /^\w[\s\w._-]+\w$/i
   validates_presence_of :name
   validates_uniqueness_of :name, :message => "already in use"
