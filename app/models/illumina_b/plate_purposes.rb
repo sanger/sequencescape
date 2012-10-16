@@ -70,7 +70,13 @@ module IlluminaB::PlatePurposes
 
     def create_plate_purposes
       IlluminaB::PlatePurposes::PLATE_PURPOSE_FLOWS.each do |flow|
-        stock_plate = create_plate_purpose(flow.shift, :can_be_considered_a_stock_plate => true, :default_state => 'passed', :cherrypickable_target => true)
+        stock_plate = create_plate_purpose(
+          flow.shift,
+          :can_be_considered_a_stock_plate => true,
+          :default_state                   => 'passed',
+          :cherrypickable_target           => true,
+          :cherrypick_strategy             => 'Cherrypick::Strategy::Optimum'
+        )
         request_type_for(stock_plate).acceptable_plate_purposes << stock_plate
 
         flow.each do |name|

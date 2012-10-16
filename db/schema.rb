@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121012130916) do
+ActiveRecord::Schema.define(:version => 20121016104928) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -684,6 +684,7 @@ ActiveRecord::Schema.define(:version => 20121012130916) do
     t.boolean  "cherrypickable_source",                         :default => false,     :null => false
     t.string   "cherrypick_direction",                          :default => "column",  :null => false
     t.integer  "default_location_id"
+    t.string   "cherrypick_strategy"
   end
 
   add_index "plate_purposes", ["qc_display"], :name => "index_plate_purposes_on_qc_display"

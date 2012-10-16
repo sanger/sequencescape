@@ -270,15 +270,14 @@ plate_purposes = <<-EOS
   id: 83
   type: PulldownQpcrPlatePurpose
   target_type: PulldownQpcrPlate
-  EOS
+EOS
 
-plate_purposes_data = []
 YAML::load(plate_purposes).each do |plate_purpose|
   attributes = plate_purpose.reverse_merge('type' => 'PlatePurpose', 'cherrypickable_target' => false)
-  plate_purposes_data << attributes.delete('type').constantize.new(attributes)
+  attributes.delete('type').constantize.new(attributes) do |purpose|
+    purpose.id = attributes['id']
+  end.save!
 end
-
-PlatePurpose.import plate_purposes_data
 
 # Some plate purposes that appear to be used by SLF but are not in the seeds from SNP.
 (1..5).each do |index|
