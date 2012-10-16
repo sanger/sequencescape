@@ -19,5 +19,16 @@
     </fieldset>
   </div>
 
+  <h2>Step 3</h2>
+  <fieldset>
+    <legend>Cherrypicking robot</legend>
+    <table cellspacing='0' cellpadding='0'>
+      <tr>
+        <td><label for="robot">Picking Robot</label>:</td>
+        <td><%= select_tag("robot", options_for_select(Robot.all.collect {|p| [ p.name, p.id ] }))  %></td>
+      </tr>
+    </table>
+  </fieldset>
+
   <%= render :partial => "next_stage_submit" %>
 <% end %>

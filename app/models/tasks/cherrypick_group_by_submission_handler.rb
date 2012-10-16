@@ -18,12 +18,13 @@ module Tasks::CherrypickGroupBySubmissionHandler
       end
     end
 
+    robot = Robot.find(params[:robot])
     batch = Batch.find(params[:batch_id], :include => [:requests, :pipeline, :lab_events])
 
     ActiveRecord::Base.transaction do
       task.send(
         :"pick_by_#{params[:cherrypick][:action]}",
-        batch, batch.ordered_requests, partial_plate || plate_purpose, params
+        batch.ordered_requests, robot, partial_plate || plate_purpose, params
       )
     end
 

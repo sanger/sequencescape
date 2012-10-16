@@ -1,6 +1,7 @@
 module Cherrypick::Task::PickByMicroLitre
-  def pick_by_micro_litre(batch, requests, plate_purpose, options = {})
-    cherrypick_wells_grouped_by_submission(requests, plate_purpose, &create_micro_litre_picker(options))
+  def pick_by_micro_litre(*args)
+    options = args.extract_options!
+    cherrypick_wells_grouped_by_submission(*args, &create_micro_litre_picker(options))
   end
 
   def valid_params_for_micro_litre_pick?(options)
