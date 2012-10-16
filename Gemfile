@@ -10,7 +10,6 @@ gem "db-charmer"
 #gem "rack", "~>1.2"
 
 gem "aasm", "~>2.4.0"
-gem "acts_as_audited"
 gem "ar-extensions"
 gem "configatron"
 gem "curb"

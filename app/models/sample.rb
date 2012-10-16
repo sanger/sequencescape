@@ -24,7 +24,7 @@ class Sample < ActiveRecord::Base
   EgaFields = %w(subject disease treatment)
 
   acts_as_authorizable
-  acts_as_audited :on => [:destroy, :update]
+
 
 
   has_many :study_samples
