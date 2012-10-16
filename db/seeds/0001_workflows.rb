@@ -637,7 +637,6 @@ CherrypickForPulldownPipeline.create!(:name => 'Cherrypicking for Pulldown') do 
   pipeline.automated           = false
   pipeline.active              = true
   pipeline.group_by_parent     = true
-  pipeline.max_size            = 96
 
   pipeline.location = Location.first(:conditions => { :name => 'Sample logistics freezer' }) or raise StandardError, "Cannot find 'Sample logistics freezer' location"
 
