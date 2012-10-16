@@ -7,24 +7,28 @@ module Cherrypick::Task::PickHelpers
     end
   end
 
-  def cherrypick_wells_grouped_by_submission(requests, plate, &picker)
-    # NOTE: This sorts the wells within a submission by row, which just seems nuts but it's the behaviour
-    # that was there previously!
-    sorted_requests = group_requests_by_submission_id(requests).map do |requests_in_a_submission|
-      requests_in_a_submission.sort { |a,b| a.asset.map.row_order <=> b.asset.map.row_order }
-    end.flatten
+  def cherrypick_wells_grouped_by_submission(requests, purpose, &picker)
+    purpose.cherrypick_strategy.pick(requests, OpenStruct.new(:max_beds => 1000)).map do |wells|
+      wells_and_requests = wells.zip(
+        Map.where_plate_size(purpose.size).send("in_#{purpose.cherrypick_direction}_major_order").slice(0, wells.size)
+      ).map do |request, position|
+        if request.present?
+          well     = request.target_asset
+          well.map = position
+          picker.call(well, request)
+          [ well, request ]
+        else
+          nil
+        end
+      end.compact
 
-    positions = Map.where_plate_size(plate.size).send("in_#{plate.plate_purpose.cherrypick_direction}_major_order").slice(0, sorted_requests.size)
-
-    wells_and_requests = sorted_requests.zip(positions).map do |request, position|
-      well     = request.target_asset
-      well.map = position
-      picker.call(well, request)
-      [ well, request ]
+      wells_and_requests.each { |well, request| well.well_attribute.save! ; well.save! ; request.pass! }
+      purpose.create!(:do_not_create_wells) do |plate|
+        plate.name = "Cherrypicked #{plate.barcode}"
+      end.tap do |plate|
+        plate.wells.attach(wells_and_requests.map(&:first))
+      end
     end
-
-    wells_and_requests.each { |well, request| well.well_attribute.save! ; well.save! ; request.pass! }
-    plate.wells.attach(wells_and_requests.map(&:first))
   end
   private :cherrypick_wells_grouped_by_submission
 

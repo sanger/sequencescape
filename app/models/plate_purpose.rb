@@ -28,6 +28,10 @@ class PlatePurpose < Purpose
   named_scope :cherrypickable_as_source, :conditions => { :cherrypickable_source => true }
   named_scope :cherrypickable_default_type, :conditions => { :cherrypickable_target => true, :cherrypickable_source => true }
 
+  def cherrypick_strategy
+    self[:cherrypick_strategy].constantize.new(self)
+  end
+
   # The state of a plate is based on the transfer requests.
   def state_of(plate)
     plate.send(:state_from, plate.transfer_requests)
@@ -105,11 +109,15 @@ class PlatePurpose < Purpose
     PlatePurpose.find(2)
   end
 
+  def size
+    96
+  end
+
   def create!(*args, &block)
     attributes          = args.extract_options!
     do_not_create_wells = !!args.first
 
-    attributes[:size]     ||= 96
+    attributes[:size]     ||= size
     attributes[:location] ||= default_location
     plates.create_with_barcode!(attributes, &block).tap do |plate|
       plate.wells.construct! unless do_not_create_wells
