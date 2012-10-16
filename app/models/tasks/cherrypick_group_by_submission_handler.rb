@@ -6,25 +6,28 @@ module Tasks::CherrypickGroupBySubmissionHandler
       return false
     end
 
-    volume_required= params[:volume_required]
-    concentration_required = params[:concentration_required]
-    plate_purpose = PlatePurpose.find(params[:plate_purpose_id])
+    # If there was a plate scanned then we take its purpose, otherwise we use the purpose specified
+    # in the dropdown.
+    partial_plate, plate_purpose = nil, PlatePurpose.find(params[:plate_purpose_id])
+    if params[:existing_plate]
+      partial_plate, plate_purpose = Plate.with_machine_barcode(params[:existing_plate]).first, nil
+      if partial_plate.nil?
+        flash[:error] = "Cannot find the partial plate #{params[:existing_plate].inspect}"
+        redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (0).to_s
+        return false
+      end
+    end
 
     batch = Batch.find(params[:batch_id], :include => [:requests, :pipeline, :lab_events])
-    requests = batch.ordered_requests
 
     ActiveRecord::Base.transaction do
       task.send(
         :"pick_by_#{params[:cherrypick][:action]}",
-        batch, requests, plate_purpose, params
+        batch, batch.ordered_requests, partial_plate || plate_purpose, params
       )
     end
 
     true
-#  rescue => exception
-#    debugger
-#    flash[:error] = exception.message
-#    return false
   end
 
   def render_cherrypick_group_by_submission_task(task,params)

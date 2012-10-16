@@ -8,7 +8,10 @@ module Cherrypick::Task::PickHelpers
   end
 
   def cherrypick_wells_grouped_by_submission(requests, purpose, &picker)
-    purpose.cherrypick_strategy.pick(requests, OpenStruct.new(:max_beds => 1000)).map do |wells|
+    plate, purpose = nil, purpose
+    plate, purpose = purpose, purpose.plate_purpose if purpose.is_a?(Plate)
+
+    purpose.cherrypick_strategy.pick(requests, OpenStruct.new(:max_beds => 1000), plate).map do |wells|
       wells_and_requests = wells.zip(purpose.well_locations.slice(0, wells.size)).map do |request, position|
         if request.present?
           well     = request.target_asset
@@ -21,10 +24,15 @@ module Cherrypick::Task::PickHelpers
       end.compact
 
       wells_and_requests.each { |well, request| well.well_attribute.save! ; well.save! ; request.pass! }
-      purpose.create!(:do_not_create_wells) do |plate|
+
+      # Attach the wells to the existing partial plate, or to a new plate if we need to create
+      # one.  After the partial plate has been attached to we automatically need a new plate.
+      plate ||= purpose.create!(:do_not_create_wells) do |plate|
         plate.name = "Cherrypicked #{plate.barcode}"
-      end.tap do |plate|
-        plate.wells.attach(wells_and_requests.map(&:first))
+      end
+      plate.tap do |working_on|
+        working_on.wells.attach(wells_and_requests.map(&:first))
+        plate = nil
       end
     end
   end
