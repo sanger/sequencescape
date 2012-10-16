@@ -4,13 +4,14 @@ class SetIlluminaPipelinesToOptimumPackingStrategy < ActiveRecord::Migration
     set_inheritance_column(nil)
 
     named_scope :illumina_plate_purposes, { :conditions => {
-      :name => (IlluminaB::PlatePurposes::PLATE_PURPOSE_FLOWS + Pulldown::PlatePurposes::PLATE_PURPOSE_FLOWS).flatten
+      :name => (IlluminaB::PlatePurposes::PLATE_PURPOSE_FLOWS + Pulldown::PlatePurposes::PLATE_PURPOSE_FLOWS).flatten,
     } }
+    named_scope :cherrypickable_as_target, { :conditions => { :cherrypickable_target => true } }
   end
 
   def self.up
     ActiveRecord::Base.transaction do
-      PlatePurpose.illumina_plate_purposes.find_each do |purpose|
+      PlatePurpose.cherrypickable_as_target.illumina_plate_purposes.find_each do |purpose|
         purpose.update_attributes!(:cherrypick_strategy => 'Cherrypick::Strategy::Optimum')
       end
     end

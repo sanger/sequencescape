@@ -28,6 +28,10 @@ class PlatePurpose < Purpose
   named_scope :cherrypickable_as_source, :conditions => { :cherrypickable_source => true }
   named_scope :cherrypickable_default_type, :conditions => { :cherrypickable_target => true, :cherrypickable_source => true }
 
+  # Ensure we always have a cherrypicking strategy if we can be picked to
+  before_validation(:if => :cherrypickable_target?) { |record| record[:cherrypick_strategy] ||= 'Cherrypick::Strategy::Default' }
+  validates_presence_of(:cherrypick_strategy, :if => :cherrypickable_target?)
+
   def cherrypick_strategy
     self[:cherrypick_strategy].constantize.new(self)
   end
