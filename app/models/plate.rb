@@ -119,6 +119,10 @@ WHERE c.container_id=?
     def walk_in_row_major_order(&block)
       self.in_row_major_order.each { |well| yield(well, well.map.row_order) }
     end
+
+    def in_preferred_order
+      proxy_owner.plate_purpose.in_preferred_order(self)
+    end
   end
 
   named_scope :include_wells_and_attributes, { :include => { :wells => [ :map, :well_attribute ] } }

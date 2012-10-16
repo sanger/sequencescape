@@ -53,8 +53,8 @@ class Cherrypick::Strategy
   end
 
   class PickPlate
-    def initialize(purpose)
-      @purpose, @wells = purpose, []
+    def initialize(purpose, filled = 0)
+      @purpose, @wells = purpose, [Cherrypick::Strategy::Empty] * filled
     end
 
     delegate :size, :cherrypick_direction, :to => :@purpose
@@ -134,21 +134,33 @@ class Cherrypick::Strategy
     end
   end
 
-  def create_empty_plate
-    PickPlate.new(@purpose)
-  end
-
   def initialize(purpose)
     @purpose = purpose
   end
 
-  def pick(requests, robot)
-    _pick(requests.map(&Full.method(:new)), robot)
+  def pick(requests, robot, plate = nil)
+    _pick(requests.map(&Full.method(:new)), robot, wrap_plate(plate))
   end
 
-  def _pick(requests, robot)
+  def create_empty_plate
+    PickPlate.new(@purpose)
+  end
+  private :create_empty_plate
+
+  # Given a, possibly nil, plate, create something that knows how to the pick of a plex will affect
+  # that plate.  We assume that the space used on the specified plate is contiguous.
+  def wrap_plate(plate)
+    return create_empty_plate if plate.nil?
+
+    boundary_location = plate.wells.in_preferred_order.map { |w| w.map }.last
+    boundary_index    = plate.plate_purpose.well_locations.index(boundary_location)
+    PickPlate.new(@purpose, boundary_index+1)
+  end
+  private :wrap_plate
+
+  def _pick(requests, robot, current_plate = create_empty_plate)
     [].tap do |plate_picks|
-      current_plate, previous_picked_plates = create_empty_plate, []
+      previous_picked_plates = []
       until requests.empty?
         # Here we keep selecting plexes according to our core strategy.  Should the selected plex violate
         # the number of beds on the robot, then we simply discard it and try again.  If there are no plexes

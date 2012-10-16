@@ -117,6 +117,14 @@ class PlatePurpose < Purpose
     96
   end
 
+  def well_locations
+    in_preferred_order(Map.where_plate_size(size))
+  end
+
+  def in_preferred_order(relationship)
+    relationship.send("in_#{cherrypick_direction}_major_order")
+  end
+
   def create!(*args, &block)
     attributes          = args.extract_options!
     do_not_create_wells = !!args.first

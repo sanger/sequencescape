@@ -9,9 +9,7 @@ module Cherrypick::Task::PickHelpers
 
   def cherrypick_wells_grouped_by_submission(requests, purpose, &picker)
     purpose.cherrypick_strategy.pick(requests, OpenStruct.new(:max_beds => 1000)).map do |wells|
-      wells_and_requests = wells.zip(
-        Map.where_plate_size(purpose.size).send("in_#{purpose.cherrypick_direction}_major_order").slice(0, wells.size)
-      ).map do |request, position|
+      wells_and_requests = wells.zip(purpose.well_locations.slice(0, wells.size)).map do |request, position|
         if request.present?
           well     = request.target_asset
           well.map = position
