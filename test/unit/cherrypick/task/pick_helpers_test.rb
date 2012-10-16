@@ -15,7 +15,13 @@ class Cherrypick::Task::PickHelpersTest < ActiveSupport::TestCase
     context '#cherrypick_wells_grouped_by_submission' do
       setup do
         @requests = Map.where_plate_size(96).in_column_major_order.slice(0, 3).map do |position|
-          Factory(:request, :asset => Factory(:empty_well, :map => position), :target_asset => Factory(:empty_well), :state => 'started', :submission_id => 1)
+          Factory(
+            :well_request,
+            :asset         => Factory(:empty_well, :map => position),
+            :target_asset  => Factory(:empty_well),
+            :state         => 'started',
+            :submission_id => 1
+          )
         end
 
         @callback = mock('Callback')

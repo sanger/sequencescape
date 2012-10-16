@@ -7,24 +7,34 @@ module Cherrypick::Task::PickHelpers
     end
   end
 
-  def cherrypick_wells_grouped_by_submission(requests, plate, &picker)
-    # NOTE: This sorts the wells within a submission by row, which just seems nuts but it's the behaviour
-    # that was there previously!
-    sorted_requests = group_requests_by_submission_id(requests).map do |requests_in_a_submission|
-      requests_in_a_submission.sort { |a,b| a.asset.map.row_order <=> b.asset.map.row_order }
-    end.flatten
+  def cherrypick_wells_grouped_by_submission(requests, robot, purpose, &picker)
+    plate, purpose = nil, purpose
+    plate, purpose = purpose, purpose.plate_purpose if purpose.is_a?(Plate)
 
-    positions = Map.where_plate_size(plate.size).send("in_#{plate.plate_purpose.cherrypick_direction}_major_order").slice(0, sorted_requests.size)
+    purpose.cherrypick_strategy.pick(requests, robot, plate).map do |wells|
+      wells_and_requests = wells.zip(purpose.well_locations.slice(0, wells.size)).map do |request, position|
+        if request.present?
+          well     = request.target_asset
+          well.map = position
+          picker.call(well, request)
+          [ well, request ]
+        else
+          nil
+        end
+      end.compact
 
-    wells_and_requests = sorted_requests.zip(positions).map do |request, position|
-      well     = request.target_asset
-      well.map = position
-      picker.call(well, request)
-      [ well, request ]
+      wells_and_requests.each { |well, request| well.well_attribute.save! ; well.save! ; request.pass! }
+
+      # Attach the wells to the existing partial plate, or to a new plate if we need to create
+      # one.  After the partial plate has been attached to we automatically need a new plate.
+      plate ||= purpose.create!(:do_not_create_wells) do |plate|
+        plate.name = "Cherrypicked #{plate.barcode}"
+      end
+      plate.tap do |working_on|
+        working_on.wells.attach(wells_and_requests.map(&:first))
+        plate = nil
+      end
     end
-
-    wells_and_requests.each { |well, request| well.well_attribute.save! ; well.save! ; request.pass! }
-    plate.wells.attach(wells_and_requests.map(&:first))
   end
   private :cherrypick_wells_grouped_by_submission
 

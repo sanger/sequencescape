@@ -63,6 +63,10 @@ options_hash = {
       u.roles.create!(:name => 'administrator')
     end
 
+    Robot.create!(:name => 'Picking robot', :location => 'In a lab').tap do |robot|
+      robot.create_max_plates_property(:value => 10)
+    end
+
     # Plate that can be submitted for each pipeline
     stock_plate = PlatePurpose.find(2).create!.tap do |plate|
       plate.wells.each { |w| w.aliquots.create!(:sample => Sample.create!(:name => "sample_in_stock_well_#{w.map.description}")) }
@@ -73,53 +77,18 @@ options_hash = {
 
       $stderr.puts "\t#{pipeline}"
 
-      $stderr.puts "\t\tFull plate"
-
-      SubmissionTemplate.find_by_name(template_name).create_with_submission!(
-        :user => user, :study => study, :project => project,
-        :assets => stock_plate.wells,
-        :request_options => {
-          :read_length => 100,
-          :bait_library_name => BaitLibrary.first.name
-        }
-      )
-
-      # Submit the plate in two halves
-      $stderr.puts "\t\tTwo halves"
-      SubmissionTemplate.find_by_name(template_name).create_with_submission!(
-        :user => user, :study => study, :project => project,
-        :assets => stock_plate.wells.slice(0, 48),
-        :request_options => {
-          :read_length => 100,
-          :bait_library_name => BaitLibrary.first.name
-        }
-      )
-
-      SubmissionTemplate.find_by_name(template_name).create_with_submission!(
-        :user => user, :study => study, :project => project,
-        :assets => stock_plate.wells.slice(48, 96),
-        :request_options => {
-          :read_length => 100,
-          :bait_library_name => BaitLibrary.first.name
-        }
-      )
-
-      # Submit the plate in columns
-      (1..12).each do |column|
-        $stderr.puts "\t\tColumn #{column}"
-        wells_to_submit = []
-        stock_plate.wells.walk_in_column_major_order do |well, _|
-          wells_to_submit << well if well.map.description =~ /^[A-H]#{column}$/
+      [ 1, 2, 4, 8, 12, 48, 96 ].each do |group_size|
+        $stderr.puts "\t\t#{group_size}-plex"
+        stock_plate.wells.in_column_major_order.in_groups_of(group_size).each do |wells_to_submit|
+          SubmissionTemplate.find_by_name(template_name).create_with_submission!(
+            :user => user, :study => study, :project => project,
+            :assets => wells_to_submit.compact,
+            :request_options => {
+              :read_length => 100,
+              :bait_library_name => BaitLibrary.first.name
+            }
+          )
         end
-
-      SubmissionTemplate.find_by_name(template_name).create_with_submission!(
-          :user => user, :study => study, :project => project,
-          :assets => wells_to_submit,
-          :request_options => {
-            :read_length => 100,
-            :bait_library_name => BaitLibrary.first.name
-          }
-        )
       end
     end
 

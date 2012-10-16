@@ -1,6 +1,7 @@
 module Cherrypick::Task::PickByNanoGramsPerMicroLitre
-  def pick_by_nano_grams_per_micro_litre(batch, requests, plate, plate_purpose, options = {})
-    cherrypick_wells_grouped_by_submission(requests, plate, &create_nano_grams_per_micro_litre_picker(options))
+  def pick_by_nano_grams_per_micro_litre(*args)
+    options = args.extract_options!
+    cherrypick_wells_grouped_by_submission(*args, &create_nano_grams_per_micro_litre_picker(options))
   end
 
   def valid_params_for_nano_grams_per_micro_litre_pick?(options)
