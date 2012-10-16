@@ -3,7 +3,7 @@ class Robot < ActiveRecord::Base
   has_many :robot_properties
   has_one :max_plates_property, :class_name => 'RobotProperty', :conditions => { :key => 'max_plates' }
 
-  acts_as_audited :on => [:destroy, :update]
+
 
   def max_beds
     max_plates_property.try(:value).to_i

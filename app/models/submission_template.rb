@@ -9,7 +9,7 @@ class SubmissionTemplate < ActiveRecord::Base
   validates_presence_of :submission_class_name
 
   serialize :submission_parameters
-  acts_as_audited :on => [:destroy, :update]
+
 
   has_many :orders
   belongs_to :product_line

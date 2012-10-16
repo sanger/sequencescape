@@ -14,7 +14,7 @@ class Quota < ActiveRecord::Base
   validates_presence_of :request_type
   validates_uniqueness_of :request_type_id, :scope => :project_id
 
-  acts_as_audited :on => [:destroy, :update]
+
 
   named_scope :request_type, lambda {|*args| {:conditions => { :request_type_id => args[0]} } }
   named_scope :counted_, lambda {|*args| {:conditions => { :request_type_id => args[0]} } }
