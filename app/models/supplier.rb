@@ -5,7 +5,7 @@ class Supplier < ActiveRecord::Base
 
   has_many :studies, :through => :sample_manifests, :uniq => true
   validates_presence_of :name
-  acts_as_audited :on => [:destroy, :update]
+
 
   # Named scope for search by query string behaviour
   named_scope :for_search_query, lambda { |query|

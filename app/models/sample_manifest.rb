@@ -76,7 +76,7 @@ class SampleManifest < ActiveRecord::Base
   self.spreadsheet_offset = 9
   self.spreadsheet_header_row = 8
   
-  acts_as_audited :on => [:destroy, :update]
+
 
   # Problem with paperclip
   attr_accessor :uploaded_file_name
