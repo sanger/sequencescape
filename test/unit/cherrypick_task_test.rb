@@ -24,7 +24,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
     context '#pick_onto_partial_plate' do
       setup do
         plate     = PlatePurpose.stock_plate_purpose.create!(:barcode => (@barcode += 1))
-        @requests = plate.wells.map { |w| Factory(:request, :asset => w) }
+        @requests = plate.wells.map { |w| Factory(:well_request, :asset => w) }
       end
 
       should 'error when the robot has no beds' do
@@ -128,7 +128,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
         should 'not pick on top of any wells that are already present' do
           plate    = PlatePurpose.stock_plate_purpose.create!(:barcode => (@barcode += 1))
-          requests = plate.wells.in_column_major_order.map { |w| Factory(:request, :asset => w) }
+          requests = plate.wells.in_column_major_order.map { |w| Factory(:well_request, :asset => w) }
 
           expected_partial = []
           expected_partial.concat([CherrypickTask::TEMPLATE_EMPTY_WELL] * 8) # Column 1
@@ -177,7 +177,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
         end
 
         should 'not add a control well to the plate if it already has one' do
-          Factory(:request, :asset => @control_plate.wells.first, :target_asset => @partial.wells.first)
+          Factory(:well_request, :asset => @control_plate.wells.first, :target_asset => @partial.wells.first)
 
           plates, source_plates = @task.pick_onto_partial_plate([], @template, @robot, @batch, @partial)
           assert_equal([@expected_partial], plates, "Incorrect plate pick without control well")
@@ -199,7 +199,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
       context 'with a plate purpose' do
         setup do
           plate     = PlatePurpose.stock_plate_purpose.create!(:barcode => (@barcode += 1))
-          @requests = plate.wells.in_column_major_order.map { |w| Factory(:request, :asset => w) }
+          @requests = plate.wells.in_column_major_order.map { |w| Factory(:well_request, :asset => w) }
 
           @target_purpose = PlatePurpose.stock_plate_purpose
         end
@@ -235,7 +235,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
       context 'with limited number of source beds' do
         setup do
           plates = (1..3).map { |_| PlatePurpose.stock_plate_purpose.create!(:barcode => (@barcode += 1)) }
-          @requests = plates.map { |p| Factory(:request, :asset => p.wells.first) }
+          @requests = plates.map { |p| Factory(:well_request, :asset => p.wells.first) }
           @expected = @requests.map do |request|
             [request.id, request.asset.plate.barcode, request.asset.map.description]
           end.in_groups_of(2).map do |group|

@@ -24,7 +24,7 @@ class Cherrypick::StrategyTest < ActiveSupport::TestCase
 
   context Cherrypick::Strategy do
     setup do
-      @purpose  = PlatePurpose.find_by_name('WGS stock DNA') or raise "Cannot find plate purpose"
+      @purpose  = PlatePurpose.stock_plate_purpose
       @strategy = Cherrypick::Strategy.new(@purpose)
     end
 
@@ -45,7 +45,7 @@ class Cherrypick::StrategyTest < ActiveSupport::TestCase
         end
 
         should 'contiguous wells' do
-          @plate = @purpose.create!(:do_not_create_wells).tap do |plate|
+          @plate = @purpose.create!(:do_not_create_wells, :barcode => 1).tap do |plate|
             @purpose.well_locations.slice(0, 12).each do |location|
               plate.wells.create!(:map => location)
             end
@@ -53,7 +53,7 @@ class Cherrypick::StrategyTest < ActiveSupport::TestCase
         end
 
         should 'non-contiguous wells' do
-          @plate = @purpose.create!(:do_not_create_wells).tap do |plate|
+          @plate = @purpose.create!(:do_not_create_wells, :barcode => 1).tap do |plate|
             plate.wells.create!(:map => @purpose.well_locations[11])
           end
         end
