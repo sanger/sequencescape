@@ -2,7 +2,7 @@ class IlluminaBSubmissionTemplatesWithoutCherryPicking < ActiveRecord::Migration
   extend SubmissionTemplateMaker
   def self.up
     ActiveRecord::Base.transaction do
-      illumina_b_templates = SubmissionTemplate.visible.all(:conditions => ['name like ?', 'Illumina-B%'])
+      illumina_b_templates = SubmissionTemplate.visible.all(:conditions => ['name like ?', 'Illumina-B - Cherrypicked %'])
 
       illumina_b_templates.map(&:clone).map do |template|
         raise "Submission Template should consist of 3 requests types" if
