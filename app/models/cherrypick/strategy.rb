@@ -8,7 +8,7 @@ class Cherrypick::Strategy
     def choose_next_plex_from(requests, current_plate)
       first_request = requests.first
       requests_for_first_plex = requests.select do |r|
-        r.submission_id = first_request.submission_id
+        r.submission_id == first_request.submission_id
       end.slice(0, current_plate.available)
       [ requests_for_first_plex, requests - requests_for_first_plex ]
     end
@@ -148,12 +148,15 @@ class Cherrypick::Strategy
   private :create_empty_plate
 
   # Given a, possibly nil, plate, create something that knows how to the pick of a plex will affect
-  # that plate.  We assume that the space used on the specified plate is contiguous.
+  # that plate.  We assume that the space used on the specified plate is contiguous.  Sometimes
+  # plates can be completely devoid of wells, in which case they can be treated as an empty plate
+  # too.
   def wrap_plate(plate)
     return create_empty_plate if plate.nil?
 
-    boundary_location = plate.wells.in_preferred_order.map { |w| w.map }.last
-    boundary_index    = plate.plate_purpose.well_locations.index(boundary_location)
+    boundary_location = plate.wells.in_preferred_order.map { |w| w.map }.last or return create_empty_plate
+    boundary_index    = plate.plate_purpose.well_locations.index(boundary_location) or
+      raise "Cannot find #{boundary_location.inspect} on #{plate.id}"
     PickPlate.new(@purpose, boundary_index+1)
   end
   private :wrap_plate

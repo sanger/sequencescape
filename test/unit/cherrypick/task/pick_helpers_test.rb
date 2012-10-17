@@ -21,8 +21,12 @@ class Cherrypick::Task::PickHelpersTest < ActiveSupport::TestCase
             :target_asset  => Factory(:empty_well),
             :state         => 'started',
             :submission_id => 1
-          )
+          ).tap do |request|
+            request.asset.stubs(:plate).returns(OpenStruct.new(:sanger_human_barcode => 1))
+          end
         end
+
+        @robot = OpenStruct.new(:max_beds => 10)
 
         @callback = mock('Callback')
         @requests.each { |r| @callback.expects(:call).with(r.target_asset, r) }
@@ -34,7 +38,7 @@ class Cherrypick::Task::PickHelpersTest < ActiveSupport::TestCase
           plate_purpose.update_attributes!(:cherrypick_direction => 'column')
           @plate = plate_purpose.create!(:do_not_create_wells, :barcode => (@barcode += 1))
 
-          @helper.cherrypick_wells_grouped_by_submission(@requests, @plate) { |*args| @callback.call(*args) }
+          @helper.cherrypick_wells_grouped_by_submission(@requests, @robot, @plate) { |*args| @callback.call(*args) }
           @requests.map(&:reload)
         end
 
@@ -58,7 +62,7 @@ class Cherrypick::Task::PickHelpersTest < ActiveSupport::TestCase
           plate_purpose.update_attributes!(:cherrypick_direction => 'row')
           @plate = plate_purpose.create!(:do_not_create_wells, :barcode => (@barcode += 1))
 
-          @helper.cherrypick_wells_grouped_by_submission(@requests, @plate) { |*args| @callback.call(*args) }
+          @helper.cherrypick_wells_grouped_by_submission(@requests, @robot, @plate) { |*args| @callback.call(*args) }
           @requests.map(&:reload)
         end
 
