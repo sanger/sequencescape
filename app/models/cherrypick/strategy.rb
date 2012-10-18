@@ -47,22 +47,24 @@ class Cherrypick::Strategy
 
     # Orders the plexes such that plexes with the same species as the plate come first, ensuring that
     # the plate has species closely packed.  We're going to assume that if the well has multiple samples
-    # in it, then any of those species is a good choice.
+    # in it, then any of those species is a good choice.  Ordering is maintained within plexes, that is,
+    # appropriate plexes bubble to the top but maintain their relative ordering; this means filters that
+    # apply an ordering can be used before this.
     class BySpecies
       def call(plexes, current_plate)
         species = current_plate.species
         return plexes if species.empty?
 
-        plexes.sort do |left, right|
+        plexes.each_with_index.sort do |(left,left_index), (right,right_index)|
           left_species, right_species = species_for_plex(left), species_for_plex(right)
           left_in, right_in = species & left_species, species & right_species
           case
-          when  left_in.empty? &&  right_in.empty? then left_species <=> right_species  # No match
-          when !left_in.empty? && !right_in.empty? then left_species <=> right_species  # Both match
-          when !left_in.empty?                     then -1                              # Left better
-          else                                           1                              # Right better
+          when  left_in.empty? &&  right_in.empty? then left_index <=> right_index # No match (maintain order)
+          when !left_in.empty? && !right_in.empty? then left_index <=> right_index # Both match (maintain order)
+          when !left_in.empty?                     then -1                         # Left better
+          else                                           1                         # Right better
           end
-        end
+        end.map(&:first)
       end
 
       def species_for_well(well)

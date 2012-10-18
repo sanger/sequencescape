@@ -116,15 +116,15 @@ class Cherrypick::Strategy::FilterTest < ActiveSupport::TestCase
     end
 
     should 'order the plexes so that the same species plexes are first' do
-      @plate, @expected = plate('snail'), [ @plexes[2], @plexes[1], @plexes[0] ]
+      @plate, @expected = plate('snail'), [ @plexes[2], @plexes[0], @plexes[1] ]
     end
 
     should 'order the plexes so that any of the same species plexes are first' do
       @plate, @expected = plate('snail','human'), [ @plexes[0], @plexes[2], @plexes[1] ]
     end
 
-    should 'give back the plexes alphabetically ordered if there are no same species plexes' do
-      @plate, @expected = plate('unknown'), [ @plexes[1], @plexes[0], @plexes[2] ]
+    should 'give back the plexes unchanged if there are no matching species plexes' do
+      @plate, @expected = plate('unknown'), @plexes
     end
 
     should 'give back the plexes unchanged when the plate is empty' do

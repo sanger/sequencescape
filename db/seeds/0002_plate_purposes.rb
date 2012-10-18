@@ -7,7 +7,12 @@ ActiveRecord::Base.transaction do
       :name                            => flow.shift,
       :default_state                   => 'passed',
       :can_be_considered_a_stock_plate => true,
-      :cherrypick_filters              => ['Cherrypick::Strategy::Filter::ByOverflow', 'Cherrypick::Strategy::Filter::ByEmptySpaceUsage', 'Cherrypick::Strategy::Filter::BestFit']
+      :cherrypick_filters              => [
+        'Cherrypick::Strategy::Filter::ByOverflow',
+        'Cherrypick::Strategy::Filter::ByEmptySpaceUsage',
+        'Cherrypick::Strategy::Filter::BestFit',
+        'Cherrypick::Strategy::Filter::BySpecies'
+      ]
     )
     pipeline_name       = /^([^\s]+)/.match(stock_plate_purpose.name)[1]  # Hack but works!
     request_type        = RequestType.find_by_name("Pulldown #{pipeline_name}") or raise StandardError, "Cannot find pulldown pipeline for #{pipeline_name}"
