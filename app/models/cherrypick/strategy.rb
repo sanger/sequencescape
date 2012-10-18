@@ -79,25 +79,6 @@ class Cherrypick::Strategy
     end
   end
 
-  # This is the default cherrypicking strategy, that blindly picks the wells in the order that the requests
-  # are given.  It will break a pool apart so that it can cross plates, hence this should not be used for
-  # plate types that do not permit cross plate pools.
-  class Default < Cherrypick::Strategy
-    def self.filters
-      [ Filter::ShortenPlexesToFit ]
-    end
-    delegate :filters, :to => 'self.class'
-  end
-
-  # This cherrypicking strategy attempts to order the wells in such a fashion as to optimally pack the wells
-  # on a plate.  It does not break pools apart, so pools will never be picked that overflow a given plate.
-  class Optimum < Cherrypick::Strategy
-    def self.filters
-      [ Filter::ByOverflow, Filter::ByEmptySpaceUsage, Filter::BestFit ]
-    end
-    delegate :filters, :to => 'self.class'
-  end
-
   class PickPlate
     def initialize(purpose, filled = 0)
       @purpose, @wells = purpose, [Cherrypick::Strategy::Empty] * filled
