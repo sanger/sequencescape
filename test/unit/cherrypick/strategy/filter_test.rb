@@ -1,10 +1,27 @@
 require 'test_helper'
 
 class Cherrypick::Strategy::FilterTest < ActiveSupport::TestCase
-  def plex(size)
-    OpenStruct.new(:size => size)
+  def plex(size, species = 'unknown')
+    request = OpenStruct.new(:asset => well(species)).tap do |r|
+      class << r
+        def inspect
+          "[asset=#{asset.to_s}]"
+        end
+      end
+    end
+    [ request ] * size
   end
   private :plex
+
+  def well(species)
+    OpenStruct.new(:aliquots => Array(species).map { |s| OpenStruct.new(:sample => OpenStruct.new(:sample_metadata => OpenStruct.new(:sample_common_name => s))) })
+  end
+  private :well
+
+  def plate(*wells)
+    OpenStruct.new(:empty? => wells.empty?, :wells => OpenStruct.new(:in_preferred_order => wells.map { |w| well(w) }))
+  end
+  private :plate
 
   context Cherrypick::Strategy::Filter::ShortenPlexesToFit do
     setup { @target = Cherrypick::Strategy::Filter::ShortenPlexesToFit.new }
@@ -85,6 +102,41 @@ class Cherrypick::Strategy::FilterTest < ActiveSupport::TestCase
         [plexes[4], plexes[2], plexes[3], plexes[1], plexes[0]],
         @target.call(plexes, plate)
       )
+    end
+  end
+
+  context Cherrypick::Strategy::Filter::BySpecies do
+    setup do
+      @target = Cherrypick::Strategy::Filter::BySpecies.new
+      @plexes = [ plex(1, 'human'), plex(1, 'fish'), plex(1, 'snail') ]
+    end
+
+    teardown do
+      assert_equal(@expected, @target.call(@plexes, @plate))
+    end
+
+    should 'order the plexes so that the same species plexes are first' do
+      @plate, @expected = plate('snail'), [ @plexes[2], @plexes[1], @plexes[0] ]
+    end
+
+    should 'order the plexes so that the same species plexes are first if you ignore empty wells' do
+      @plate, @expected = plate('snail', []), [ @plexes[2], @plexes[1], @plexes[0] ]
+    end
+
+    should 'order the plexes so that any of the same species plexes are first' do
+      @plate, @expected = plate(['snail','human']), [ @plexes[0], @plexes[2], @plexes[1] ]
+    end
+
+    should 'give back the plexes alphabetically ordered if there are no same species plexes' do
+      @plate, @expected = plate('unknown'), [ @plexes[1], @plexes[0], @plexes[2] ]
+    end
+
+    should 'give back the plexes unchanged when the plate is empty' do
+      @plate, @expected = plate(), @plexes
+    end
+
+    should 'give back the plexes unchanged when the wells of the plate are empty' do
+      @plate, @expected = plate([]), @plexes
     end
   end
 end

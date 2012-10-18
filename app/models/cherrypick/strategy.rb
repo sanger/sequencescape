@@ -44,6 +44,39 @@ class Cherrypick::Strategy
         plexes.sort(&comparator)
       end
     end
+
+    # Orders the plexes such that plexes with the same species as the plate come first, ensuring that
+    # the plate has species closely packed.  We're going to assume that if the well has multiple samples
+    # in it, then any of those species is a good choice.
+    class BySpecies
+      def call(plexes, current_plate)
+        return plexes if current_plate.empty?
+        last_well = current_plate.wells.in_preferred_order.reject { |w| w.aliquots.empty? }.last or return plexes
+        species   = species_for_well(last_well)
+        return plexes if species.empty?
+
+        plexes.sort do |left, right|
+          left_species, right_species = species_for_plex(left), species_for_plex(right)
+          left_in, right_in = species & left_species, species & right_species
+          case
+          when  left_in.empty? &&  right_in.empty? then left_species <=> right_species  # No match
+          when !left_in.empty? && !right_in.empty? then left_species <=> right_species  # Both match
+          when !left_in.empty?                     then -1                              # Left better
+          else                                           1                              # Right better
+          end
+        end
+      end
+
+      def species_for_well(well)
+        well.aliquots.map { |a| a.sample.sample_metadata.sample_common_name }.uniq.sort
+      end
+      private :species_for_well
+
+      def species_for_plex(plex)
+        plex.map { |r| species_for_well(r.asset) }.flatten.uniq.sort
+      end
+      private :species_for_plex
+    end
   end
 
   # This is the default cherrypicking strategy, that blindly picks the wells in the order that the requests
