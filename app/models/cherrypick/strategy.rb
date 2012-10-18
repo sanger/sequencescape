@@ -67,13 +67,8 @@ class Cherrypick::Strategy
         end.map(&:first)
       end
 
-      def species_for_well(well)
-        well.aliquots.map { |a| a.sample.sample_metadata.sample_common_name }.uniq.sort
-      end
-      private :species_for_well
-
       def species_for_plex(plex)
-        plex.map { |r| species_for_well(r.asset) }.flatten.uniq.sort
+        plex.map(&:species).flatten.uniq.sort
       end
       private :species_for_plex
     end

@@ -2,21 +2,9 @@ require 'test_helper'
 
 class Cherrypick::Strategy::FilterTest < ActiveSupport::TestCase
   def plex(size, species = 'unknown')
-    request = OpenStruct.new(:asset => well(species)).tap do |r|
-      class << r
-        def inspect
-          "[asset=#{asset.to_s}]"
-        end
-      end
-    end
-    [ request ] * size
+    [ OpenStruct.new(:species => Array(species)) ] * size
   end
   private :plex
-
-  def well(species)
-    OpenStruct.new(:aliquots => Array(species).map { |s| OpenStruct.new(:sample => OpenStruct.new(:sample_metadata => OpenStruct.new(:sample_common_name => s))) })
-  end
-  private :well
 
   def plate(*species)
     OpenStruct.new(:species => species)
