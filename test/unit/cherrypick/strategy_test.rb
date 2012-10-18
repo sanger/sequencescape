@@ -63,7 +63,7 @@ class Cherrypick::StrategyTest < ActiveSupport::TestCase
     context '#pick' do
       setup do
         @filter = mock('filter')
-        @purpose.stubs(:filters).returns([ OpenStruct.new(:new => @filter) ])
+        @purpose.stubs(:cherrypick_filters).returns([ OpenStruct.new(:new => @filter) ])
       end
 
       should 'return empty plates for no requests' do

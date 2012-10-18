@@ -18,8 +18,8 @@ class Cherrypick::Strategy::FilterTest < ActiveSupport::TestCase
   end
   private :well
 
-  def plate(*wells)
-    OpenStruct.new(:empty? => wells.empty?, :wells => OpenStruct.new(:in_preferred_order => wells.map { |w| well(w) }))
+  def plate(*species)
+    OpenStruct.new(:species => species)
   end
   private :plate
 
@@ -119,12 +119,8 @@ class Cherrypick::Strategy::FilterTest < ActiveSupport::TestCase
       @plate, @expected = plate('snail'), [ @plexes[2], @plexes[1], @plexes[0] ]
     end
 
-    should 'order the plexes so that the same species plexes are first if you ignore empty wells' do
-      @plate, @expected = plate('snail', []), [ @plexes[2], @plexes[1], @plexes[0] ]
-    end
-
     should 'order the plexes so that any of the same species plexes are first' do
-      @plate, @expected = plate(['snail','human']), [ @plexes[0], @plexes[2], @plexes[1] ]
+      @plate, @expected = plate('snail','human'), [ @plexes[0], @plexes[2], @plexes[1] ]
     end
 
     should 'give back the plexes alphabetically ordered if there are no same species plexes' do
@@ -133,10 +129,6 @@ class Cherrypick::Strategy::FilterTest < ActiveSupport::TestCase
 
     should 'give back the plexes unchanged when the plate is empty' do
       @plate, @expected = plate(), @plexes
-    end
-
-    should 'give back the plexes unchanged when the wells of the plate are empty' do
-      @plate, @expected = plate([]), @plexes
     end
   end
 end

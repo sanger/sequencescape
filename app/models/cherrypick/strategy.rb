@@ -50,9 +50,7 @@ class Cherrypick::Strategy
     # in it, then any of those species is a good choice.
     class BySpecies
       def call(plexes, current_plate)
-        return plexes if current_plate.empty?
-        last_well = current_plate.wells.in_preferred_order.reject { |w| w.aliquots.empty? }.last or return plexes
-        species   = species_for_well(last_well)
+        species = current_plate.species
         return plexes if species.empty?
 
         plexes.sort do |left, right|
@@ -80,8 +78,8 @@ class Cherrypick::Strategy
   end
 
   class PickPlate
-    def initialize(purpose, filled = 0)
-      @purpose, @wells = purpose, [Cherrypick::Strategy::Empty] * filled
+    def initialize(purpose, filled = 0, species = [])
+      @purpose, @wells, @species = purpose, [Cherrypick::Strategy::Empty] * filled, species
     end
 
     delegate :size, :cherrypick_direction, :to => :@purpose
@@ -113,6 +111,10 @@ class Cherrypick::Strategy
       (dimension - overlap) % dimension
     end
 
+    def species
+      @wells.map(&:species).reject(&:empty?).last || @species
+    end
+
     def to_a
       @wells.map(&:representation)
     end
@@ -137,6 +139,10 @@ class Cherrypick::Strategy
         self
       end
 
+      def species
+        []
+      end
+
       def inspect
         'Empty'
       end
@@ -159,14 +165,18 @@ class Cherrypick::Strategy
     def representation
       @request
     end
+
+    def species
+      @request.asset.aliquots.map { |a| a.sample.sample_metadata.sample_common_name }
+    end
   end
 
   def initialize(purpose)
     @purpose = purpose
   end
 
-  delegate :filters, :to => :@purpose
-  private :filters
+  delegate :cherrypick_filters, :to => :@purpose
+  private :cherrypick_filters
 
   def pick(requests, robot, plate = nil)
     _pick(requests.map(&Full.method(:new)), robot, wrap_plate(plate))
@@ -184,10 +194,16 @@ class Cherrypick::Strategy
   def wrap_plate(plate)
     return create_empty_plate if plate.nil?
 
+    # Identify the last well (empty or not) on the plate as the point at which we start the pick
     boundary_location = plate.wells.in_preferred_order.map { |w| w.map }.last or return create_empty_plate
     boundary_index    = plate.plate_purpose.well_locations.index(boundary_location) or
       raise "Cannot find #{boundary_location.inspect} on #{plate.id}"
-    PickPlate.new(@purpose, boundary_index+1)
+
+    # Pick out the last full well of the plate as the species we're supposed to use
+    last_well, species = plate.wells.in_preferred_order.reject { |w| w.aliquots.empty? }.last, []
+    species = last_well.aliquots.map { |a| a.sample.sample_metadata.sample_common_name }.uniq.sort if last_well.present?
+
+    PickPlate.new(@purpose, boundary_index+1, species)
   end
   private :wrap_plate
 
@@ -232,7 +248,7 @@ class Cherrypick::Strategy
   # taking the first.  The filters therefore reduce the set of requests, ordering them if desired,
   # before we decide if there is a plex that's appropriate.
   def choose_next_plex_from(requests, current_plate)
-    candidate_plexes = filters.map(&:new).inject(requests.group_by(&:submission_id).map(&:last)) do |plexes, filter|
+    candidate_plexes = cherrypick_filters.map(&:new).inject(requests.group_by(&:submission_id).map(&:last)) do |plexes, filter|
       filter.call(plexes, current_plate)
     end
 
