@@ -653,7 +653,8 @@ CherrypickForPulldownPipeline.create!(:name => 'Cherrypicking for Pulldown') do 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'Cherrypicking for Pulldown').tap do |workflow|
     # NOTE[xxx]: Note that the order here, and 'Set Location' being interactive, do not mimic the behaviour of production
     [
-      { :class => CherrypickGroupBySubmissionTask, :name => 'Cherrypick Group By Submission', :sorted => 0, :batched => true }
+      { :class => CherrypickGroupBySubmissionTask, :name => 'Cherrypick Group By Submission', :sorted => 0, :batched => true },
+      { :class => SetLocationTask,                 :name => 'Set location', :sorted => 1 }
     ].each do |details|
       details.delete(:class).create!(details.merge(:workflow => workflow))
     end
