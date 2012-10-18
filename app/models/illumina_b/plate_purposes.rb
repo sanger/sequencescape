@@ -79,7 +79,8 @@ module IlluminaB::PlatePurposes
             'Cherrypick::Strategy::Filter::ByOverflow',
             'Cherrypick::Strategy::Filter::ByEmptySpaceUsage',
             'Cherrypick::Strategy::Filter::BestFit',
-            'Cherrypick::Strategy::Filter::BySpecies'
+            'Cherrypick::Strategy::Filter::BySpecies',
+            'Cherrypick::Strategy::Filter::InternallyOrderPlexBySubmission'
           ]
         )
         request_type_for(stock_plate).acceptable_plate_purposes << stock_plate
