@@ -9,7 +9,7 @@ module Tasks::CherrypickGroupBySubmissionHandler
     # If there was a plate scanned then we take its purpose, otherwise we use the purpose specified
     # in the dropdown.
     partial_plate, plate_purpose = nil, PlatePurpose.find(params[:plate_purpose_id])
-    if params[:existing_plate]
+    if not params[:existing_plate].blank?
       partial_plate, plate_purpose = Plate.with_machine_barcode(params[:existing_plate]).first, nil
       if partial_plate.nil?
         flash[:error] = "Cannot find the partial plate #{params[:existing_plate].inspect}"
