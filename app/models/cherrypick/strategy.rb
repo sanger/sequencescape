@@ -1,55 +1,68 @@
 class Cherrypick::Strategy
   PickFailureError = Class.new(StandardError)
 
+  # Classes inside this module represent filters that can be combined to reduce the set of plexes
+  # for a cherrypick to the optimum selection.
+  module Filter
+    # Shortens any plexes over the available space of the plate to fit.
+    class ShortenPlexesToFit
+      def call(plexes, current_plate)
+        plexes.map { |p| p.slice(0, current_plate.available) }
+      end
+    end
+
+    # Ensures that the plate is not overflowed by any of the plexes.
+    class ByOverflow
+      def call(plexes, current_plate)
+        plexes.select { |plex| (plex.size + current_plate.used) <= current_plate.size }
+      end
+    end
+
+    # Ensures that the plexes do not overflow the dimension of the plate when added.
+    class ByEmptySpaceUsage
+      def call(plexes, current_plate)
+        return plexes if current_plate.overlap.zero?
+
+        plexes.select do |plex|
+          empty_space_after_addition = (plex.size + current_plate.overlap) % current_plate.dimension
+          empty_space_after_addition <= ((plex.size >= current_plate.dimension) ? 0 : current_plate.dimension)
+        end
+      end
+    end
+
+    # Orders the plexes by the optimum fitting
+    class BestFit
+      def call(plexes, current_plate)
+        comparator = lambda { |l,r| r.size <=> l.size }
+        comparator = lambda do |left, right|
+          left_fill, right_fill = current_plate.space_after_adding(left), current_plate.space_after_adding(right)
+          sorted_fill =  left_fill <=> right_fill
+          sorted_fill = right.size <=> left.size if sorted_fill.zero?
+          sorted_fill
+        end unless current_plate.overlap.zero?
+
+        plexes.sort(&comparator)
+      end
+    end
+  end
+
   # This is the default cherrypicking strategy, that blindly picks the wells in the order that the requests
   # are given.  It will break a pool apart so that it can cross plates, hence this should not be used for
   # plate types that do not permit cross plate pools.
   class Default < Cherrypick::Strategy
-    def choose_next_plex_from(requests, current_plate)
-      first_request = requests.first
-      requests_for_first_plex = requests.select do |r|
-        r.submission_id == first_request.submission_id
-      end.slice(0, current_plate.available)
-      [ requests_for_first_plex, requests - requests_for_first_plex ]
+    def self.filters
+      [ Filter::ShortenPlexesToFit ]
     end
+    delegate :filters, :to => 'self.class'
   end
 
   # This cherrypicking strategy attempts to order the wells in such a fashion as to optimally pack the wells
   # on a plate.  It does not break pools apart, so pools will never be picked that overflow a given plate.
   class Optimum < Cherrypick::Strategy
-    def choose_next_plex_from(requests, current_plate)
-      # Determine the candidate plexes from the current requests.  These plexes should not overflow the size
-      # of the plate with are building, and they should optimally fill the dimension of the plate, leaving
-      # no need for empty space if they are larger than the dimension
-      candidate_plexes = requests.group_by(&:submission_id).select do |_, plex|
-        (plex.size + current_plate.used) <= current_plate.size
-      end.select do |_, plex|
-        if current_plate.overlap.zero?
-          true
-        else
-          empty_space_after_addition = ((plex.size % current_plate.dimension) + current_plate.overlap)
-          empty_space_after_addition <= ((plex.size >= current_plate.dimension) ? 0 : current_plate.dimension)
-        end
-      end.map(&:last)
-
-      # Nothing fits optimally, apparently.  We suggest filling this with empty space!l
-      return [ [Cherrypick::Strategy::Empty] * current_plate.remainder, requests ] if candidate_plexes.empty?
-
-      # Now order those plexes such that the first in the list is the optimal packing for the plate.  This
-      # means that, if the plate is empty, we can use the biggest; otherwise we're looking for the largest
-      # plex that reduces empty space to a minimum.
-      selected_plex, *remaining_plexes = candidate_plexes.sort do |left, right|
-        if current_plate.overlap.zero?
-          right.size <=> left.size
-        else
-          left_fill, right_fill = current_plate.space_after_adding(left), current_plate.space_after_adding(right)
-          sorted_fill =  left_fill <=> right_fill
-          sorted_fill = right.size <=> left.size if sorted_fill.zero?
-          sorted_fill
-        end
-      end
-      [ selected_plex, requests - selected_plex ]
+    def self.filters
+      [ Filter::ByOverflow, Filter::ByEmptySpaceUsage, Filter::BestFit ]
     end
+    delegate :filters, :to => 'self.class'
   end
 
   class PickPlate
@@ -138,6 +151,9 @@ class Cherrypick::Strategy
     @purpose = purpose
   end
 
+  delegate :filters, :to => :@purpose
+  private :filters
+
   def pick(requests, robot, plate = nil)
     _pick(requests.map(&Full.method(:new)), robot, wrap_plate(plate))
   end
@@ -197,4 +213,17 @@ class Cherrypick::Strategy
     end.map(&:to_a)
   end
   private :_pick
+
+  # Picking the next plex involves applying each of the filters we have to the requests and then
+  # taking the first.  The filters therefore reduce the set of requests, ordering them if desired,
+  # before we decide if there is a plex that's appropriate.
+  def choose_next_plex_from(requests, current_plate)
+    candidate_plexes = filters.map(&:new).inject(requests.group_by(&:submission_id).map(&:last)) do |plexes, filter|
+      filter.call(plexes, current_plate)
+    end
+
+    return [ [Cherrypick::Strategy::Empty] * current_plate.remainder, requests ] if candidate_plexes.empty?
+    [ candidate_plexes.first, requests - candidate_plexes.first ]
+  end
+  private :choose_next_plex_from
 end

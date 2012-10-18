@@ -75,7 +75,7 @@ module IlluminaB::PlatePurposes
           :can_be_considered_a_stock_plate => true,
           :default_state                   => 'passed',
           :cherrypickable_target           => true,
-          :cherrypick_strategy             => 'Cherrypick::Strategy::Optimum'
+          :cherrypick_filters              => ['Cherrypick::Strategy::Filter::ByOverflow', 'Cherrypick::Strategy::Filter::ByEmptySpaceUsage', 'Cherrypick::Strategy::Filter::BestFit']
         )
         request_type_for(stock_plate).acceptable_plate_purposes << stock_plate
 

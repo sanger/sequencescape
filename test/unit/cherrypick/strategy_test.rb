@@ -61,6 +61,11 @@ class Cherrypick::StrategyTest < ActiveSupport::TestCase
     end
 
     context '#pick' do
+      setup do
+        @filter = mock('filter')
+        @purpose.stubs(:filters).returns([ OpenStruct.new(:new => @filter) ])
+      end
+
       should 'return empty plates for no requests' do
         pick_list = @strategy.send(:_pick, [], OpenStruct.new)
         assert([], pick_list)
@@ -68,14 +73,15 @@ class Cherrypick::StrategyTest < ActiveSupport::TestCase
 
       should 'raise an error if there is no pick for an empty plate' do
         assert_raises(Cherrypick::Strategy::PickFailureError) do
-          @strategy.stubs(:choose_next_plex_from).returns([ [], [] ]) # Pretend no pick fits
-          @strategy.send(:_pick, [request(1)], OpenStruct.new(:max_beds => 1))
+          request = request(1)
+          @filter.expects(:call).with([ [request] ], anything).returns([]).once
+          @strategy.send(:_pick, [request], OpenStruct.new(:max_beds => 1))
         end
       end
 
       should 'return a single plate with one request' do
         request = request(1)
-        @strategy.stubs(:choose_next_plex_from).returns([ [request], [] ])
+        @filter.expects(:call).with([ [request] ], anything).returns([ [request] ]).once
 
         pick_list = @strategy.send(:_pick, [request], OpenStruct.new(:max_beds => 1))
         assert([[request]], pick_list)
@@ -87,8 +93,8 @@ class Cherrypick::StrategyTest < ActiveSupport::TestCase
         # 2. From remaining request pick the request, can't put it on plate as robot too large, try again
         # 4. From remaining request pick the request, put it on plate
         requests = [request(1, 1), request(2, 2)]
-        @strategy.stubs(:choose_next_plex_from).with(requests,        anything).returns([ [requests.first], [requests.last] ]).once
-        @strategy.stubs(:choose_next_plex_from).with([requests.last], anything).returns([ [requests.last],  [] ]).twice
+        @filter.expects(:call).with([ [requests.first], [requests.last] ], anything).returns([ [requests.first], [requests.last] ]).once
+        @filter.expects(:call).with([ [requests.last] ], anything).returns([ [requests.last] ]).twice
 
         pick_list = @strategy.send(:_pick, requests, OpenStruct.new(:max_beds => 1))
         assert([[requests.first],[requests.last]], pick_list)

@@ -684,7 +684,7 @@ ActiveRecord::Schema.define(:version => 20121018112029) do
     t.boolean  "cherrypickable_source",                         :default => false,     :null => false
     t.string   "cherrypick_direction",                          :default => "column",  :null => false
     t.integer  "default_location_id"
-    t.string   "cherrypick_strategy"
+    t.string   "cherrypick_filters"
   end
 
   add_index "plate_purposes", ["qc_display"], :name => "index_plate_purposes_on_qc_display"
