@@ -72,6 +72,15 @@ class Cherrypick::Strategy
       end
       private :species_for_plex
     end
+
+    # Ensures that all of the plexes are internally ordered based on their position in the submission
+    class InternallyOrderPlexBySubmission
+      def call(plexes, current_plate)
+        plexes.map do |plex|
+          plex.sort_by(&:index_in_submission)
+        end
+      end
+    end
   end
 
   class PickPlate
@@ -153,6 +162,10 @@ class Cherrypick::Strategy
 
     def submission_id
       @submission_id ||= @request.submission_id
+    end
+
+    def index_in_submission
+      @index_in_submission ||= @request.submission.requests.index(@request)
     end
 
     def barcode
