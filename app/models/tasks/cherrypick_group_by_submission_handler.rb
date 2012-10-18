@@ -29,6 +29,9 @@ module Tasks::CherrypickGroupBySubmissionHandler
     end
 
     true
+  rescue => exception
+    flash[:error] = exception.message
+    false
   end
 
   def render_cherrypick_group_by_submission_task(task,params)
