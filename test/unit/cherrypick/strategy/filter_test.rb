@@ -119,4 +119,17 @@ class Cherrypick::Strategy::FilterTest < ActiveSupport::TestCase
       @plate, @expected = plate(), @plexes
     end
   end
+
+  context Cherrypick::Strategy::Filter::InternallyOrderPlexBySubmission do
+    setup { @target = Cherrypick::Strategy::Filter::InternallyOrderPlexBySubmission.new }
+
+    should 'order each plex internally by the positions in the submission' do
+      requests = (1..5).map { |i| OpenStruct.new(:index_in_submission => i) }
+
+      assert_equal(
+        [ requests ],
+        @target.call([ requests.reverse ], nil)
+      )
+    end
+  end
 end
