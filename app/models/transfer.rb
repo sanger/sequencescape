@@ -156,42 +156,6 @@ class Transfer < ActiveRecord::Base
   end
 
   module WellHelpers
-    # Given a plate this method returns a map from the wells on the plate to their stock well.  It assumes
-    # that all of the wells on the specified plate came from stock wells at the same depth, i.e. the number
-    # of requests that it needs to hop back is the same.  It does not matter what plate the stock wells are
-    # on, just that they are all of equal depth.
-    def locate_stock_wells_for(plate)
-      # Optimisation: if the plate is a stock plate then it's wells are it's stock wells!
-      return Hash[plate.wells.with_pool_id.map { |w| [w,[w]] }] if plate.stock_plate?
-      raise "No stock plate associated with #{plate.id}" if plate.stock_plate.nil?
-
-      # Find the first well on the plate that has something in it.  Then find the distance from that well
-      # to it's stock well.  We'll use that as the stock well depth to find.
-      stock_well_depth = plate.ancestors.all(:order => 'created_at DESC').index(plate.stock_plate) or raise StandardError, "Cannot find a well with contents on #{plate.id}"
-
-      # Now build a query that will find all of the stock wells for the wells on the plate.  This is done
-      # by joining the requests table over-and-over again.
-      joins   = (1..stock_well_depth).map { |index| "LEFT JOIN requests r#{index} ON r#{index-1}.asset_id=r#{index}.target_asset_id AND r#{index}.sti_type IN (#{[TransferRequest, *Class.subclasses_of(TransferRequest)].map(&:name).map(&:inspect).join(',')})" }
-      results = Request.connection.select_all(%Q{
-        SELECT r0.target_asset_id AS plate_well_id,r#{stock_well_depth}.asset_id AS stock_well_id
-        FROM requests r0
-        #{joins.join("\n")}
-        WHERE r0.target_asset_id IN (#{plate.wells.map(&:id).join(',')}) AND r0.sti_type IN (#{[TransferRequest, *Class.subclasses_of(TransferRequest)].map(&:name).map(&:inspect).join(',')})
-      }, "Query for stock wells of #{plate.id}")
-
-      # One plate well can come from many stock wells, which means that we build a list.  But first,
-      # let's load the wells themselves with some efficiency!
-      (Hash.new { |h,k| h[k] = [] }).tap do |plate_wells_to_stock_wells|
-        plate_well_ids, stock_well_ids = results.map { |r| r['plate_well_id'].to_i }, results.map { |r| r['stock_well_id'].to_i }
-        eager_loaded_plate_wells       = Hash[plate.wells.with_pool_id.select { |w| plate_well_ids.include?(w.id.to_i) }.map { |w| [w.id.to_i,w] }]
-        eager_loaded_stock_wells       = Hash[Well.find(stock_well_ids, :include => [:plate, :map, { :requests_as_source => :target_asset }]).map { |w| [w.id.to_i,w] }]
-        results.each do |r|
-          plate_wells_to_stock_wells[eager_loaded_plate_wells[r['plate_well_id'].to_i]] << eager_loaded_stock_wells[r['stock_well_id'].to_i]
-        end
-      end
-    end
-    private :locate_stock_wells_for
-
     # To calculate the depth we keep walking the requests_as_target until we reach a plate that can be
     # considered a stock plate.
     def calculate_stock_well_depth_for(well)

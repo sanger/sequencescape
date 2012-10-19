@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121018134105) do
+ActiveRecord::Schema.define(:version => 20121019094424) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -1394,6 +1394,12 @@ ActiveRecord::Schema.define(:version => 20121018134105) do
   end
 
   add_index "well_attributes", ["well_id"], :name => "index_well_attributes_on_well_id"
+
+  create_table "well_links", :force => true do |t|
+    t.integer "target_well_id", :null => false
+    t.integer "source_well_id", :null => false
+    t.string  "type",           :null => false
+  end
 
   create_table "well_to_tube_transfers", :force => true do |t|
     t.integer "transfer_id",    :null => false
