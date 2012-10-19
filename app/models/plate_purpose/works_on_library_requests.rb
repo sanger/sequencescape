@@ -6,7 +6,7 @@ module PlatePurpose::WorksOnLibraryRequests
   end
 
   def each_well_and_its_library_request(plate, &block)
-    well_to_stock_id = Hash[locate_stock_wells_for(plate).map { |well,stock_wells| [well.id, stock_wells.first.id] }]
+    well_to_stock_id = Hash[plate.stock_wells.map { |well,stock_wells| [well.id, stock_wells.first.id] }]
     requests         = Request::LibraryCreation.for_asset_id(well_to_stock_id.values).include_request_metadata.group_by(&:asset_id)
     plate.wells.all(:include => { :aliquots => :library }).each do |well|
       next if well.aliquots.empty?

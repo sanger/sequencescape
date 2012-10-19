@@ -7,6 +7,19 @@ class Well < Aliquot::Receptacle
   include StudyReport::WellDetails
   include Tag::Associations
 
+  class Link < ActiveRecord::Base
+    set_table_name('well_links')
+    set_inheritance_column(nil)
+    belongs_to :target_well, :class_name => 'Well'
+    belongs_to :source_well, :class_name => 'Well'
+  end
+  has_many :stock_well_links, :class_name => 'Well::Link', :foreign_key => :target_well_id, :conditions => { :type => 'stock' }
+  has_many :stock_wells, :through => :stock_well_links, :source => :source_well do
+    def attach!(wells)
+      proxy_owner.stock_well_links.build(wells.map { |well| { :type => 'stock', :source_well => well } }).map(&:save!)
+    end
+  end
+
   named_scope :located_at, lambda { |plate, location|
     { :joins => :map, :conditions => { :maps => { :description => location, :asset_size => plate.size } } }
   }
@@ -45,10 +58,6 @@ class Well < Aliquot::Receptacle
   named_scope :with_blank_samples, { :conditions => { :aliquots => { :samples => { :empty_supplier_sample_name => true } } }, :joins => { :aliquots => :sample } }
 
   include Transfer::WellHelpers
-
-  def stock_wells
-    locate_stock_wells_for(plate)[self]
-  end
 
   class << self
     def delegate_to_well_attribute(attribute, options = {})
