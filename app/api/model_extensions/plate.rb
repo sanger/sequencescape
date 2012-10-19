@@ -41,7 +41,7 @@ module ModelExtensions::Plate
         pool_information = { :wells => Map.find(wells.map(&:map_id)).map(&:description) }
         stock_wells = wells.first.stock_wells
         stock_wells = wells if plate_purpose_or_stock_plate.can_be_considered_a_stock_plate?
-        stock_wells.first.requests_as_source.each { |request| request.update_pool_information(pool_information) }
+        stock_wells.first.requests_as_source.each { |request| request.update_pool_information(pool_information) } unless stock_wells.empty?
         pools[pool_id] = pool_information
       end
     end
