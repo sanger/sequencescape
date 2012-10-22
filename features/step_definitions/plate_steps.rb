@@ -143,7 +143,7 @@ Given /^well "([^"]*)" is holded by plate "([^"]*)"$/ do |well_uuid, plate_uuid|
 end
 
 Then /^plate "([^"]*)" should have a purpose of "([^"]*)"$/ do |plate_barcode, plate_purpose_name|
-  assert_equal plate_purpose_name, Plate.find_by_barcode("1234567").plate_purpose.name 
+  assert_equal plate_purpose_name, Plate.find_by_barcode("1234567").plate_purpose.name
 end
 
 Given /^the well with ID (\d+) contains the sample "([^\"]+)"$/ do |well_id, name|
@@ -168,6 +168,12 @@ Given /^a "([^\"]+)" plate called "([^\"]+)" exists$/ do |name, plate_name|
   plate_purpose.create!(:name => plate_name)
 end
 
+Given /^a "([^\"]+)" plate called "([^\"]+)" exists as a child of "([^\"]+)"$/ do |name, plate_name, parent_name|
+  plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
+  parent        = Plate.find_by_name(parent_name) or raise StandardError, "Cannot find parent plate #{parent_name.inspect}"
+  AssetLink.create!(:ancestor => parent, :descendant => plate_purpose.create!(:name => plate_name))
+end
+
 Given /^a "([^\"]+)" plate called "([^\"]+)" with ID (\d+)$/ do |name, plate_name, id|
   plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
   plate_purpose.create!(:name => plate_name, :id => id)
@@ -184,3 +190,24 @@ Given /^plate "([^"]*)" has "([^"]*)" wells with aliquots$/ do |plate_barcode, n
     Well.create!(:plate => plate, :map_id => i).aliquots.create!(:sample => Factory(:sample))
   end
 end
+
+Given /^the plate "([^"]*)" is (passed|started|pending|failed) by "([^"]*)"$/ do |plate_name, state, user_name|
+  plate = Plate.find_by_name(plate_name)
+  user = User.find_by_login(user_name)
+  StateChange.create!(:user => user, :target => plate, :target_state => state)
+end
+
+
+Given /^(passed|started|pending|failed) transfer requests exist between (\d+) wells on "([^"]*)" and "([^"]*)"$/ do |state, count, source_name, dest_name|
+  source = Plate.find_by_name(source_name)
+  destination = Plate.find_by_name(dest_name)
+  (0...count.to_i).each do |i|
+    RequestType.transfer.create!(:asset => source.wells.in_row_major_order[i], :target_asset => destination.wells.in_row_major_order[i], :state=>state)
+  end
+  AssetLink.create(:ancestor=>source,:descendant=>destination)
+end
+
+
+
+
+

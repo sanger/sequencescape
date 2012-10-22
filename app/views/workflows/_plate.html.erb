@@ -12,18 +12,15 @@
   </thead>
   <% plate_rows.times do |row| %>
     <tr id="plate[<%= index %>][<%= row %>]">
-      <% (plate_cols+1).times do |col| %>
-        <% if col==0 %>
-          <td class='border' width='2%'><%= (65+row).chr %></td>
-        <% else %>
-          <% current_well = plate[(col-1)*plate_rows + row]  %>
-          
-          <% if current_well[0] == 0 -%>
-            <td class="empty"><%= current_well[1] %></td>
-          <% else -%>
-            <td id="<%= current_well[0] %>" class="<%= plate_class[current_well[1]] %>" ><%= current_well[1] %><br /><%= current_well[2] %></td>
-          <% end -%>
-        <% end %>
+      <td class='border' width='2%'><%= (65+row).chr %></td>
+      <% plate_cols.times do |col| %>
+        <% current_well = plate[col*plate_rows + row]  %>
+        
+        <% if current_well[0] == 0 -%>
+          <td class="empty"><%= current_well[1] %></td>
+        <% else -%>
+          <td id="<%= current_well[0] %>" class="<%= plate_class[current_well[1]] %>" ><%= current_well[1] %><br /><%= current_well[2] %></td>
+        <% end -%>
       <% end %>
     </tr>
   <% end %>

@@ -8,13 +8,17 @@ class Transfer::BetweenPlates < Transfer
 
   include TransfersBySchema
   include TransfersToKnownDestination
+  include BuildsStockWellLinks
+
+  include Asset::Ownership::ChangesOwner
+  set_target_for_owner(:destination)
 
   # The values in the transfers must be a hash and must be valid well positions on both the
   # source and destination plates.
   validates_each(:transfers) do |record, attribute, value|
     if not value.is_a?(Hash)
       record.errors.add(:transfers, 'must be a map from source to destination location')
-    elsif record.source.present? and not record.source.valid_positions?(value.keys) 
+    elsif record.source.present? and not record.source.valid_positions?(value.keys)
       record.errors.add(:transfers, 'are not valid positions for the source plate')
     elsif record.destination.present? and not record.destination.valid_positions?(value.values)
       record.errors.add(:transfers, 'are not valid positions for the destination plate')
@@ -44,5 +48,11 @@ class Transfer::BetweenPlates < Transfer
     transfers.delete_if { |k,_| transfers_we_did_not_make.include?(k) }
   end
   private :each_transfer
+
+  # Request type for transfers is based on the plates, not the wells we're transferring
+  def request_type_between(ignored_a, ignored_b)
+    destination.transfer_request_type_from(source)
+  end
+  private :request_type_between
 end
 

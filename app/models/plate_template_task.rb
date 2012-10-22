@@ -1,4 +1,5 @@
 class PlateTemplateTask < Task
+  include Tasks::PlatePurposeBehavior
 
   class PlateTemplateData < Task::RenderElement
     attr_reader :testing

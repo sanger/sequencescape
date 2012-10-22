@@ -89,7 +89,7 @@ class Asset < ActiveRecord::Base
 
   named_scope :with_name, lambda { |*names| { :conditions => { :name => names.flatten } } }
 
-  acts_as_audited :on => [:destroy]
+
   
 
   extend EventfulRecord
@@ -219,9 +219,9 @@ class Asset < ActiveRecord::Base
   def child
     self.children.last
   end
-
+  
   def library_prep?
-    self.sti_type == "LibraryTube" || self.sti_type == "MultiplexedLibraryTube"
+    false
   end
 
   def display_name

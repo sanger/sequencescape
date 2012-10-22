@@ -1,4 +1,6 @@
 ActiveRecord::Base.transaction do
+
+  # Pulldown
   TagGroup.find_each do |tag_group|
     TagLayoutTemplate.create!(
       :name                => "#{tag_group.name} in column major order",
@@ -25,4 +27,15 @@ ActiveRecord::Base.transaction do
       :walking_algorithm   => 'TagLayout::WalkWellsByPools'
     )
   end
+
+  # Illumina B
+  tag_group = TagGroup.find_by_name('Sanger_168tags - 10 mer tags')
+
+  TagLayoutTemplate.create!(
+    :name => 'Illumina B tagging',
+    :direction_algorithm => 'TagLayout::InRows',
+    :walking_algorithm => 'TagLayout::WalkWellsOfPlate',
+    :tag_group => tag_group
+  )
+
 end

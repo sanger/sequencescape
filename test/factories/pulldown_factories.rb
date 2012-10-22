@@ -2,10 +2,6 @@
 Factory.define(:transfer_plate, :class => Plate) do |plate|
   plate.size 96
 
-  plate.after_build do |plate|
-    plate.plate_purpose = PlatePurpose.find_by_name('Parent plate purpose') || Factory(:parent_plate_purpose)
-  end
-
   plate.after_create do |plate|
     plate.wells.import(
       [ 'A1', 'B1' ].map do |location|
@@ -13,6 +9,17 @@ Factory.define(:transfer_plate, :class => Plate) do |plate|
         Factory(:tagged_well, :map => map)
       end
     )
+  end
+end
+
+Factory.define(:source_transfer_plate, :parent => :transfer_plate) do |plate|
+  plate.after_build do |plate|
+    plate.plate_purpose = PlatePurpose.find_by_name('Parent plate purpose') || Factory(:parent_plate_purpose)
+  end
+end
+Factory.define(:destination_transfer_plate, :parent => :transfer_plate) do |plate|
+  plate.after_build do |plate|
+    plate.plate_purpose = PlatePurpose.find_by_name('Child plate purpose') || Factory(:child_plate_purpose)
   end
 end
 
@@ -37,16 +44,20 @@ end
 # Transfers and their templates
 Factory.define(:transfer_between_plates, :class => Transfer::BetweenPlates) do |transfer|
   transfer.user        { |target| target.association(:user) }
-  transfer.source      { |target| target.association(:transfer_plate) }
-  transfer.destination { |target| target.association(:transfer_plate) }
+  transfer.source      { |target| target.association(:source_transfer_plate) }
+  transfer.destination { |target| target.association(:destination_transfer_plate) }
   transfer.transfers('A1' => 'A1', 'B1' => 'B1')
 end
 
 Factory.define(:transfer_from_plate_to_tube, :class => Transfer::FromPlateToTube) do |transfer|
   transfer.user        { |target| target.association(:user) }
-  transfer.source      { |target| target.association(:transfer_plate) }
+  transfer.source      { |target| target.association(:source_transfer_plate) }
   transfer.destination { |target| target.association(:library_tube)   }
   transfer.transfers([ 'A1', 'B1' ])
+
+  transfer.after_build do |transfer|
+    transfer.source.plate_purpose.child_relationships.create!(:child => transfer.destination.purpose, :transfer_request_type => RequestType.transfer)
+  end
 end
 
 Factory.define(:transfer_template) do |transfer_template|
@@ -105,7 +116,7 @@ Factory.define(:parent_plate_purpose, :class => PlatePurpose) do |plate_purpose|
   plate_purpose.name 'Parent plate purpose'
 
   plate_purpose.after_create do |plate_purpose|
-    plate_purpose.child_plate_purposes << Factory(:child_plate_purpose)
+    plate_purpose.child_relationships.create!(:child => Factory(:child_plate_purpose), :transfer_request_type => RequestType.transfer)
   end
 end
 Factory.define(:child_plate_purpose, :class => PlatePurpose) do |plate_purpose|
@@ -117,7 +128,32 @@ Factory.define(:plate_creation) do |plate_creation|
 
   plate_creation.after_build do |plate_creation|
     plate_creation.parent.plate_purpose = PlatePurpose.find_by_name('Parent plate purpose') || Factory(:parent_plate_purpose)
-    plate_creation.child_plate_purpose  = PlatePurpose.find_by_name('Child plate purpose')  || Factory(:child_plate_purpose)
+    plate_creation.child_purpose        = PlatePurpose.find_by_name('Child plate purpose')  || Factory(:child_plate_purpose)
+  end
+end
+
+# Tube creations
+Factory.define(:child_tube_purpose, :class => Tube::Purpose) do |plate_purpose|
+  plate_purpose.name 'Child tube purpose'
+end
+Factory.define(:tube_creation) do |tube_creation|
+  tube_creation.user   { |target| target.association(:user) }
+  tube_creation.parent { |target| target.association(:full_plate) }
+
+  tube_creation.after_build do |tube_creation|
+    tube_creation.parent.plate_purpose = PlatePurpose.find_by_name('Parent plate purpose') || Factory(:parent_plate_purpose)
+    tube_creation.child_purpose        = Tube::Purpose.find_by_name('Child tube purpose')  || Factory(:child_tube_purpose)
+
+    # Ensure that the parent plate will pool into two children by setting up a dummy stock plate
+    stock_plate = PlatePurpose.find(2).create!(:do_not_create_wells, :barcode => '999999') { |p| p.wells = [Factory(:empty_well)] }
+    stock_well  = stock_plate.wells.first
+
+    AssetLink.create!(:ancestor => stock_plate, :descendant => tube_creation.parent)
+
+    tube_creation.parent.wells.in_column_major_order.in_groups_of(tube_creation.parent.wells.size/2).each do |pool|
+      submission  = Submission.create!(:user => Factory(:user))
+      pool.each { |well| RequestType.transfer.create!(:asset => stock_well, :target_asset => well, :submission => submission) }
+    end
   end
 end
 

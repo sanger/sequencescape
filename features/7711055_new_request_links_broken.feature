@@ -24,13 +24,6 @@ Feature: Creating new requests from an asset
       | Next-gen sequencing   |
       | Microarray genotyping |
 
-  @wip
-  Scenario: New request link from complete move to 2D page
-    # app/views/assets/complete_move_to_2D.html.erb
-
-  @wip
-  Scenario: New request link from an individual asset page, via a sample, as an administrator
-
   @study @administrator
   Scenario Outline: New request link from an individual asset page, via a study, as an administrator
     Given user "John Smith" is an administrator

@@ -22,7 +22,7 @@ class MapTest < ActiveSupport::TestCase
 
     context "Invalid well position" do
       {0=>nil, -1=>nil, 97=>nil, 384 => nil, "1"=>nil}.each do |position, result|
-        should "return nil for #{position}" do
+        should "return nil for #{position.inspect}" do
           assert_equal result, Map.horizontal_to_vertical(position,96)
         end
       end

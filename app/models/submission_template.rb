@@ -6,16 +6,42 @@ class SubmissionTemplate < ActiveRecord::Base
   include Uuid::Uuidable
 
   validates_presence_of :name
-  validates_uniqueness_of :name
   validates_presence_of :submission_class_name
 
   serialize :submission_parameters
-  acts_as_audited :on => [:destroy, :update]
+
 
   has_many :orders
   belongs_to :product_line
 
-  named_scope :visible, :order => 'product_line_id ASC', :conditions => { :visible => true }
+  has_many   :supercedes,    :class_name => 'SubmissionTemplate', :foreign_key => :superceded_by_id
+  belongs_to :superceded_by, :class_name => 'SubmissionTemplate', :foreign_key => :superceded_by_id
+
+  LATEST_VERSION = -1
+  SUPERCEDED_BY_UNKNOWN_TEMPLATE = -2
+
+  named_scope :hidden, :order => 'product_line_id ASC', :conditions => [ 'superceded_by_id != ?', LATEST_VERSION ]
+  named_scope :visible, :order => 'product_line_id ASC', :conditions => { :superceded_by_id => LATEST_VERSION }
+
+  def visible
+    self.superceded_by_id == LATEST_VERSION
+  end
+
+  def superceded_by_unknown!
+    self.superceded_by_id = SUPERCEDED_BY_UNKNOWN_TEMPLATE
+  end
+
+  def supercede(&block)
+    ActiveRecord::Base.transaction do
+      self.clone.tap do |cloned|
+        yield(cloned) if block_given?
+        name, cloned.name = cloned.name, "Superceding #{cloned.name}"
+        cloned.save!
+        self.update_attributes!(:superceded_by_id => cloned.id, :superceded_at => Time.now)
+        cloned.update_attributes!(:name => name)
+      end
+    end
+  end
 
   def create_and_build_submission!(attributes)
     Submission.build!(attributes.merge(:template => self))

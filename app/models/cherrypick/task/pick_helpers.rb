@@ -7,40 +7,39 @@ module Cherrypick::Task::PickHelpers
     end
   end
 
-  def cherrypick_wells_grouped_by_submission(requests, plate, &picker)
-    wells_and_requests = sort_grouped_requests_by_submission_id(requests).each_with_index.map do |request, index|
-      well     = request.target_asset
-      well.map = Map.where_plate_size(plate.size).where_vertical_plate_position(index+1).first
-      picker.call(well, request)
-      [ well, request ]
-    end
+  def cherrypick_wells_grouped_by_submission(requests, robot, purpose, &picker)
+    plate, purpose = nil, purpose
+    plate, purpose = purpose, purpose.plate_purpose if purpose.is_a?(Plate)
 
-    wells_and_requests.each { |well, request| well.well_attribute.save! ; well.save! ; request.pass! }
-    plate.wells.attach(wells_and_requests.map(&:first))
+    purpose.cherrypick_strategy.pick(requests, robot, plate).map do |wells|
+      wells_and_requests = wells.zip(purpose.well_locations.slice(0, wells.size)).map do |request, position|
+        if request.present?
+          well     = request.target_asset
+          well.map = position
+          picker.call(well, request)
+          [ well, request ]
+        else
+          nil
+        end
+      end.compact
+
+      wells_and_requests.each { |well, request| well.well_attribute.save! ; well.save! ; request.pass! }
+
+      # Attach the wells to the existing partial plate, or to a new plate if we need to create
+      # one.  After the partial plate has been attached to we automatically need a new plate.
+      plate ||= purpose.create!(:do_not_create_wells) do |plate|
+        plate.name = "Cherrypicked #{plate.barcode}"
+      end
+      plate.tap do |working_on|
+        working_on.wells.attach(wells_and_requests.map(&:first))
+        plate = nil
+      end
+    end
   end
   private :cherrypick_wells_grouped_by_submission
 
-  def create_nano_grams_per_micro_litre_picker(params)
-    volume, concentration = params[:volume_required].to_f, params[:concentration_required].to_f
-    lambda do |well, request|
-      well.volume_to_cherrypick_by_nano_grams_per_micro_litre(volume, concentration, request.asset.get_concentration)
-    end
-  end
-  private :create_nano_grams_per_micro_litre_picker
-
-  def create_nano_grams_picker(params)
-    min_vol, max_vol, nano_grams = params[:minimum_volume].to_f, params[:maximum_volume].to_f, params[:total_nano_grams].to_f
-    lambda do |well, request|
-      well.volume_to_cherrypick_by_nano_grams(min_vol, max_vol, nano_grams, request.asset)
-    end
-  end
-  private :create_nano_grams_picker
-
-  def create_micro_litre_picker(params)
-    volume = params[:micro_litre_volume_required].to_f
-    lambda do |well, _|
-      well.volume_to_cherrypick_by_micro_litre(volume)
-    end
-  end
-  private :create_micro_litre_picker
+  def valid_float_param?(input_value)  
+    !input_value.blank? && (input_value.to_f > 0.0)
+  end 
+  private :valid_float_param?
 end

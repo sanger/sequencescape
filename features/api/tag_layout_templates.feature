@@ -120,104 +120,15 @@ Feature: Access tag layout templates through the API
       }
       """
 
-    Then the tags assigned to the plate "Testing the tagging" should be:
-      | well | tag  |
-      | A1   | AAAA |
-      | B1   | CCCC |
-      | C1   | TTTT |
-      | D1   | GGGG |
-      | E1   | AACC |
-      | F1   | TTGG |
-      | G1   | AATT |
-      | H1   | CCGG |
-      | A2   | AAAA |
-      | B2   | CCCC |
-      | C2   | TTTT |
-      | D2   | GGGG |
-      | E2   | AACC |
-      | F2   | TTGG |
-      | G2   | AATT |
-      | H2   | CCGG |
-      | A3   | AAAA |
-      | B3   | CCCC |
-      | C3   | TTTT |
-      | D3   | GGGG |
-      | E3   | AACC |
-      | F3   | TTGG |
-      | G3   | AATT |
-      | H3   | CCGG |
-      | A4   | AAAA |
-      | B4   | CCCC |
-      | C4   | TTTT |
-      | D4   | GGGG |
-      | E4   | AACC |
-      | F4   | TTGG |
-      | G4   | AATT |
-      | H4   | CCGG |
-      | A5   | AAAA |
-      | B5   | CCCC |
-      | C5   | TTTT |
-      | D5   | GGGG |
-      | E5   | AACC |
-      | F5   | TTGG |
-      | G5   | AATT |
-      | H5   | CCGG |
-      | A6   | AAAA |
-      | B6   | CCCC |
-      | C6   | TTTT |
-      | D6   | GGGG |
-      | E6   | AACC |
-      | F6   | TTGG |
-      | G6   | AATT |
-      | H6   | CCGG |
-      | A7   | AAAA |
-      | B7   | CCCC |
-      | C7   | TTTT |
-      | D7   | GGGG |
-      | E7   | AACC |
-      | F7   | TTGG |
-      | G7   | AATT |
-      | H7   | CCGG |
-      | A8   | AAAA |
-      | B8   | CCCC |
-      | C8   | TTTT |
-      | D8   | GGGG |
-      | E8   | AACC |
-      | F8   | TTGG |
-      | G8   | AATT |
-      | H8   | CCGG |
-      | A9   | AAAA |
-      | B9   | CCCC |
-      | C9   | TTTT |
-      | D9   | GGGG |
-      | E9   | AACC |
-      | F9   | TTGG |
-      | G9   | AATT |
-      | H9   | CCGG |
-      | A10  | AAAA |
-      | B10  | CCCC |
-      | C10  | TTTT |
-      | D10  | GGGG |
-      | E10  | AACC |
-      | F10  | TTGG |
-      | G10  | AATT |
-      | H10  | CCGG |
-      | A11  | AAAA |
-      | B11  | CCCC |
-      | C11  | TTTT |
-      | D11  | GGGG |
-      | E11  | AACC |
-      | F11  | TTGG |
-      | G11  | AATT |
-      | H11  | CCGG |
-      | A12  | AAAA |
-      | B12  | CCCC |
-      | C12  | TTTT |
-      | D12  | GGGG |
-      | E12  | AACC |
-      | F12  | TTGG |
-      | G12  | AATT |
-      | H12  | CCGG |
+    Then the tag layout on the plate "Testing the tagging" should be:
+      | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA |
+      | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC |
+      | TTTT | TTTT | TTTT | TTTT | TTTT | TTTT | TTTT | TTTT | TTTT | TTTT | TTTT | TTTT |
+      | GGGG | GGGG | GGGG | GGGG | GGGG | GGGG | GGGG | GGGG | GGGG | GGGG | GGGG | GGGG |
+      | AACC | AACC | AACC | AACC | AACC | AACC | AACC | AACC | AACC | AACC | AACC | AACC |
+      | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG |
+      | AATT | AATT | AATT | AATT | AATT | AATT | AATT | AATT | AATT | AATT | AATT | AATT |
+      | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG |
 
   @tag_layout @create @barcode-service
   Scenario: Creating a tag layout from an inverted tag layout template
@@ -288,104 +199,15 @@ Feature: Access tag layout templates through the API
       }
       """
 
-    Then the tags assigned to the plate "Testing the tagging" should be:
-      | well | tag  |
-      | A1   | CCGG |
-      | B1   | AATT |
-      | C1   | TTGG |
-      | D1   | AACC |
-      | E1   | GGGG |
-      | F1   | TTTT |
-      | G1   | CCCC |
-      | H1   | AAAA |
-      | A2   | CCGG |
-      | B2   | AATT |
-      | C2   | TTGG |
-      | D2   | AACC |
-      | E2   | GGGG |
-      | F2   | TTTT |
-      | G2   | CCCC |
-      | H2   | AAAA |
-      | A3   | CCGG |
-      | B3   | AATT |
-      | C3   | TTGG |
-      | D3   | AACC |
-      | E3   | GGGG |
-      | F3   | TTTT |
-      | G3   | CCCC |
-      | H3   | AAAA |
-      | A4   | CCGG |
-      | B4   | AATT |
-      | C4   | TTGG |
-      | D4   | AACC |
-      | E4   | GGGG |
-      | F4   | TTTT |
-      | G4   | CCCC |
-      | H4   | AAAA |
-      | A5   | CCGG |
-      | B5   | AATT |
-      | C5   | TTGG |
-      | D5   | AACC |
-      | E5   | GGGG |
-      | F5   | TTTT |
-      | G5   | CCCC |
-      | H5   | AAAA |
-      | A6   | CCGG |
-      | B6   | AATT |
-      | C6   | TTGG |
-      | D6   | AACC |
-      | E6   | GGGG |
-      | F6   | TTTT |
-      | G6   | CCCC |
-      | H6   | AAAA |
-      | A7   | CCGG |
-      | B7   | AATT |
-      | C7   | TTGG |
-      | D7   | AACC |
-      | E7   | GGGG |
-      | F7   | TTTT |
-      | G7   | CCCC |
-      | H7   | AAAA |
-      | A8   | CCGG |
-      | B8   | AATT |
-      | C8   | TTGG |
-      | D8   | AACC |
-      | E8   | GGGG |
-      | F8   | TTTT |
-      | G8   | CCCC |
-      | H8   | AAAA |
-      | A9   | CCGG |
-      | B9   | AATT |
-      | C9   | TTGG |
-      | D9   | AACC |
-      | E9   | GGGG |
-      | F9   | TTTT |
-      | G9   | CCCC |
-      | H9   | AAAA |
-      | A10  | CCGG |
-      | B10  | AATT |
-      | C10  | TTGG |
-      | D10  | AACC |
-      | E10  | GGGG |
-      | F10  | TTTT |
-      | G10  | CCCC |
-      | H10  | AAAA |
-      | A11  | CCGG |
-      | B11  | AATT |
-      | C11  | TTGG |
-      | D11  | AACC |
-      | E11  | GGGG |
-      | F11  | TTTT |
-      | G11  | CCCC |
-      | H11  | AAAA |
-      | A12  | CCGG |
-      | B12  | AATT |
-      | C12  | TTGG |
-      | D12  | AACC |
-      | E12  | GGGG |
-      | F12  | TTTT |
-      | G12  | CCCC |
-      | H12  | AAAA |
+    Then the tag layout on the plate "Testing the tagging" should be:
+      | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG |
+      | AATT | AATT | AATT | AATT | AATT | AATT | AATT | AATT | AATT | AATT | AATT | AATT |
+      | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG |
+      | AACC | AACC | AACC | AACC | AACC | AACC | AACC | AACC | AACC | AACC | AACC | AACC |
+      | GGGG | GGGG | GGGG | GGGG | GGGG | GGGG | GGGG | GGGG | GGGG | GGGG | GGGG | GGGG |
+      | TTTT | TTTT | TTTT | TTTT | TTTT | TTTT | TTTT | TTTT | TTTT | TTTT | TTTT | TTTT |
+      | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC |
+      | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA |
 
   @tag_layout @create @barcode-service
   Scenario: Creating a tag layout from a tag layout template which ignores pools
@@ -688,104 +510,15 @@ Feature: Access tag layout templates through the API
       }
       """
 
-    Then the tags assigned to the plate "Testing the tagging" should be:
-      | well | tag      |
-      | A1   | TAGCTTGT |
-      | B1   | CGATGTTT |
-      | C1   | GCCAATGT |
-      | D1   | ACAGTGGT |
-      | E1   | ATCACGTT |
-      | F1   | GATCAGCG |
-      | G1   | CAGATCTG |
-      | H1   | TTAGGCAT |
-      | A2   | GGCTACAG |
-      | B2   | CTTGTACT |
-      | C2   | ACTTGATG |
-      | D2   | TGACCACT |
-      | E2   | TGGTTGTT |
-      | F2   | TCTCGGTT |
-      | G2   | TAAGCGTT |
-      | H2   | TCCGTCTT |
-      | A3   | TGTACCTT |
-      | B3   | TTCTGTGT |
-      | C3   | TCTGCTGT |
-      | D3   | TTGGAGGT |
-      | E3   | TCGAGCGT |
-      | F3   | TGATACGT |
-      | G3   | TGCATAGT |
-      | H3   | TTGACTCT |
-      | A4   | TGCGATCT |
-      | B4   | TTCCTGCT |
-      | C4   | TAGTGACT |
-      | D4   | TACAGGAT |
-      | E4   | TCCTCAAT |
-      | F4   | TGTGGTTG |
-      | G4   | TAGTCTTG |
-      | H4   | TTCCATTG |
-      | A5   | TCGAAGTG |
-      | B5   | TAACGCTG |
-      | C5   | TTGGTATG |
-      | D5   | TGAACTGG |
-      | E5   | TACTTCGG |
-      | F5   | TCTCACGG |
-      | G5   | TCAGGAGG |
-      | H5   | TAAGTTCG |
-      | A6   | TCCAGTCG |
-      | B6   | TGTATGCG |
-      | C6   | TCATTGAG |
-      | D6   | TGGCTCAG |
-      | E6   | TATGCCAG |
-      | F6   | TCAGATTC |
-      | G6   | TACTAGTC |
-      | H6   | TTCAGCTC |
-      | A7   | TGTCTATC |
-      | B7   | TATGTGGC |
-      | C7   | TTACTCGC |
-      | D7   | TCGTTAGC |
-      | E7   | TACCGAGC |
-      | F7   | TGTTCTCC |
-      | G7   | TTCGCACC |
-      | H7   | TTGCGTAC |
-      | A8   | TCTACGAC |
-      | B8   | TGACAGAC |
-      | C8   | TAGAACAC |
-      | D8   | TCATCCTA |
-      | E8   | TGCTGATA |
-      | F8   | TAGACGGA |
-      | G8   | TGTGAAGA |
-      | H8   | TCTCTTCA |
-      | A9   | TTGTTCCA |
-      | B9   | TGAAGCCA |
-      | C9   | TACCACCA |
-      | D9   | TGCGTGAA |
-      | E9   | GGTGAGTT |
-      | F9   | GATCTCTT |
-      | G9   | GTGTCCTT |
-      | H9   | GACGGATT |
-      | A10  | GCAACATT |
-      | B10  | GGTCGTGT |
-      | C10  | GAATCTGT |
-      | D10  | GTACATCT |
-      | E10  | GAGGTGCT |
-      | F10  | GCATGGCT |
-      | G10  | GTTAGCCT |
-      | H10  | GTCGCTAT |
-      | A11  | GGAATGAT |
-      | B11  | GAGCCAAT |
-      | C11  | GCTCCTTG |
-      | D11  | GTAAGGTG |
-      | E11  | GAGGATGG |
-      | F11  |          |
-      | G11  | GGATTAGG |
-      | H11  | GATAGAGG |
-      | A12  | GTGTGTCG |
-      | B12  | GCAATCCG |
-      | C12  | GACCTTAG |
-      | D12  | GCCTGTTC |
-      | E12  | GCACTGTC |
-      | F12  |          |
-      | G12  |          |
-      | H12  | GTCTTGGC |
+    Then the tag layout on the plate "Testing the tagging" should be:
+      | TAGCTTGT | GGCTACAG | TGTACCTT | TGCGATCT | TCGAAGTG | TCCAGTCG | TGTCTATC | TCTACGAC | TTGTTCCA | GCAACATT | GGAATGAT | GTGTGTCG |
+      | CGATGTTT | CTTGTACT | TTCTGTGT | TTCCTGCT | TAACGCTG | TGTATGCG | TATGTGGC | TGACAGAC | TGAAGCCA | GGTCGTGT | GAGCCAAT | GCAATCCG |
+      | GCCAATGT | ACTTGATG | TCTGCTGT | TAGTGACT | TTGGTATG | TCATTGAG | TTACTCGC | TAGAACAC | TACCACCA | GAATCTGT | GCTCCTTG | GACCTTAG |
+      | ACAGTGGT | TGACCACT | TTGGAGGT | TACAGGAT | TGAACTGG | TGGCTCAG | TCGTTAGC | TCATCCTA | TGCGTGAA | GTACATCT | GTAAGGTG | GCCTGTTC |
+      | ATCACGTT | TGGTTGTT | TCGAGCGT | TCCTCAAT | TACTTCGG | TATGCCAG | TACCGAGC | TGCTGATA | GGTGAGTT | GAGGTGCT | GAGGATGG | GCACTGTC |
+      | GATCAGCG | TCTCGGTT | TGATACGT | TGTGGTTG | TCTCACGG | TCAGATTC | TGTTCTCC | TAGACGGA | GATCTCTT | GCATGGCT |          |          |
+      | CAGATCTG | TAAGCGTT | TGCATAGT | TAGTCTTG | TCAGGAGG | TACTAGTC | TTCGCACC | TGTGAAGA | GTGTCCTT | GTTAGCCT | GGATTAGG |          |
+      | TTAGGCAT | TCCGTCTT | TTGACTCT | TTCCATTG | TAAGTTCG | TTCAGCTC | TTGCGTAC | TCTCTTCA | GACGGATT | GTCGCTAT | GATAGAGG | GTCTTGGC |
 
   @tag_layout @create @barcode-service
   Scenario: Creating a tag layout with substitutions from a tag layout template
@@ -864,104 +597,15 @@ Feature: Access tag layout templates through the API
       }
       """
 
-    Then the tags assigned to the plate "Testing the tagging" should be:
-      | well | tag  |
-      | A1   | AAAA |
-      | B1   | CCCC |
-      | C1   | TTTT |
-      | D1   | GGGG |
-      | E1   | AACC |
-      | F1   | TTGG |
-      | G1   | CCGG |
-      | H1   | AATT |
-      | A2   | AAAA |
-      | B2   | CCCC |
-      | C2   | TTTT |
-      | D2   | GGGG |
-      | E2   | AACC |
-      | F2   | TTGG |
-      | G2   | CCGG |
-      | H2   | AATT |
-      | A3   | AAAA |
-      | B3   | CCCC |
-      | C3   | TTTT |
-      | D3   | GGGG |
-      | E3   | AACC |
-      | F3   | TTGG |
-      | G3   | CCGG |
-      | H3   | AATT |
-      | A4   | AAAA |
-      | B4   | CCCC |
-      | C4   | TTTT |
-      | D4   | GGGG |
-      | E4   | AACC |
-      | F4   | TTGG |
-      | G4   | CCGG |
-      | H4   | AATT |
-      | A5   | AAAA |
-      | B5   | CCCC |
-      | C5   | TTTT |
-      | D5   | GGGG |
-      | E5   | AACC |
-      | F5   | TTGG |
-      | G5   | CCGG |
-      | H5   | AATT |
-      | A6   | AAAA |
-      | B6   | CCCC |
-      | C6   | TTTT |
-      | D6   | GGGG |
-      | E6   | AACC |
-      | F6   | TTGG |
-      | G6   | CCGG |
-      | H6   | AATT |
-      | A7   | AAAA |
-      | B7   | CCCC |
-      | C7   | TTTT |
-      | D7   | GGGG |
-      | E7   | AACC |
-      | F7   | TTGG |
-      | G7   | CCGG |
-      | H7   | AATT |
-      | A8   | AAAA |
-      | B8   | CCCC |
-      | C8   | TTTT |
-      | D8   | GGGG |
-      | E8   | AACC |
-      | F8   | TTGG |
-      | G8   | CCGG |
-      | H8   | AATT |
-      | A9   | AAAA |
-      | B9   | CCCC |
-      | C9   | TTTT |
-      | D9   | GGGG |
-      | E9   | AACC |
-      | F9   | TTGG |
-      | G9   | CCGG |
-      | H9   | AATT |
-      | A10  | AAAA |
-      | B10  | CCCC |
-      | C10  | TTTT |
-      | D10  | GGGG |
-      | E10  | AACC |
-      | F10  | TTGG |
-      | G10  | CCGG |
-      | H10  | AATT |
-      | A11  | AAAA |
-      | B11  | CCCC |
-      | C11  | TTTT |
-      | D11  | GGGG |
-      | E11  | AACC |
-      | F11  | TTGG |
-      | G11  | CCGG |
-      | H11  | AATT |
-      | A12  | AAAA |
-      | B12  | CCCC |
-      | C12  | TTTT |
-      | D12  | GGGG |
-      | E12  | AACC |
-      | F12  | TTGG |
-      | G12  | CCGG |
-      | H12  | AATT |
+    Then the tag layout on the plate "Testing the tagging" should be:
+      | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA |
+      | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC |
+      | TTTT | TTTT | TTTT | TTTT | TTTT | TTTT | TTTT | TTTT | TTTT | TTTT | TTTT | TTTT |
+      | GGGG | GGGG | GGGG | GGGG | GGGG | GGGG | GGGG | GGGG | GGGG | GGGG | GGGG | GGGG |
+      | AACC | AACC | AACC | AACC | AACC | AACC | AACC | AACC | AACC | AACC | AACC | AACC |
+      | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG |
+      | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG |
+      | AATT | AATT | AATT | AATT | AATT | AATT | AATT | AATT | AATT | AATT | AATT | AATT |
 
   @tag_layout @create @barcode-service
   Scenario: Creating a tag layout where the pools are factors of the number of rows on the plate
@@ -1035,104 +679,15 @@ Feature: Access tag layout templates through the API
       }
       """
 
-    Then the tags assigned to the plate "Testing the tagging" should be:
-      | well | tag  |
-      | A1   | AAAA |
-      | B1   | CCCC |
-      | C1   | TTTT |
-      | D1   | GGGG |
-      | E1   | AACC |
-      | F1   | TTGG |
-      | G1   | AATT |
-      | H1   | CCGG |
-      | A2   | AAAA |
-      | B2   | CCCC |
-      | C2   | TTTT |
-      | D2   | GGGG |
-      | E2   | AACC |
-      | F2   | TTGG |
-      | G2   | AATT |
-      | H2   | CCGG |
-      | A3   | AAAA |
-      | B3   | CCCC |
-      | C3   | TTTT |
-      | D3   | GGGG |
-      | E3   | AACC |
-      | F3   | TTGG |
-      | G3   | AATT |
-      | H3   | CCGG |
-      | A4   | AAAA |
-      | B4   | CCCC |
-      | C4   | TTTT |
-      | D4   | GGGG |
-      | E4   | AACC |
-      | F4   | TTGG |
-      | G4   | AATT |
-      | H4   | CCGG |
-      | A5   | AAAA |
-      | B5   | CCCC |
-      | C5   | TTTT |
-      | D5   | GGGG |
-      | E5   | AACC |
-      | F5   | TTGG |
-      | G5   | AATT |
-      | H5   | CCGG |
-      | A6   | AAAA |
-      | B6   | CCCC |
-      | C6   | TTTT |
-      | D6   | GGGG |
-      | E6   | AACC |
-      | F6   | TTGG |
-      | G6   | AATT |
-      | H6   | CCGG |
-      | A7   | AAAA |
-      | B7   | CCCC |
-      | C7   | TTTT |
-      | D7   | GGGG |
-      | E7   | AACC |
-      | F7   | TTGG |
-      | G7   | AATT |
-      | H7   | CCGG |
-      | A8   | AAAA |
-      | B8   | CCCC |
-      | C8   | TTTT |
-      | D8   | GGGG |
-      | E8   | AACC |
-      | F8   | TTGG |
-      | G8   | AATT |
-      | H8   | CCGG |
-      | A9   | AAAA |
-      | B9   | CCCC |
-      | C9   | TTTT |
-      | D9   | GGGG |
-      | E9   | AACC |
-      | F9   | TTGG |
-      | G9   | AATT |
-      | H9   | CCGG |
-      | A10  | AAAA |
-      | B10  | CCCC |
-      | C10  | TTTT |
-      | D10  | GGGG |
-      | E10  | AACC |
-      | F10  | TTGG |
-      | G10  | AATT |
-      | H10  | CCGG |
-      | A11  | AAAA |
-      | B11  | CCCC |
-      | C11  | TTTT |
-      | D11  | GGGG |
-      | E11  | AACC |
-      | F11  | TTGG |
-      | G11  | AATT |
-      | H11  | CCGG |
-      | A12  | AAAA |
-      | B12  | CCCC |
-      | C12  | TTTT |
-      | D12  | GGGG |
-      | E12  | AACC |
-      | F12  | TTGG |
-      | G12  | AATT |
-      | H12  | CCGG |
+    Then the tag layout on the plate "Testing the tagging" should be:
+      | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA |
+      | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC |
+      | TTTT | TTTT | TTTT | TTTT | TTTT | TTTT | TTTT | TTTT | TTTT | TTTT | TTTT | TTTT |
+      | GGGG | GGGG | GGGG | GGGG | GGGG | GGGG | GGGG | GGGG | GGGG | GGGG | GGGG | GGGG |
+      | AACC | AACC | AACC | AACC | AACC | AACC | AACC | AACC | AACC | AACC | AACC | AACC |
+      | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG |
+      | AATT | AATT | AATT | AATT | AATT | AATT | AATT | AATT | AATT | AATT | AATT | AATT |
+      | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG |
 
   @tag_layout @create @barcode-service
   Scenario: Creating a tag layout where the pools are awkwardly sized and cause overlaps
@@ -1206,104 +761,15 @@ Feature: Access tag layout templates through the API
       }
       """
 
-    Then the tags assigned to the plate "Testing the tagging" should be:
-      | well | tag  |
-      | A1   | AAAA |
-      | B1   | CCCC |
-      | C1   | TTTT |
-      | D1   | GGGG |
-      | E1   | AACC |
-      | F1   | TTGG |
-      | G1   | AATT |
-      | H1   | CCGG |
-      | A2   | AAAA |
-      | B2   | CCCC |
-      | C2   | TTTT |
-      | D2   | GGGG |
-      | E2   | AACC |
-      | F2   | TTGG |
-      | G2   | AATT |
-      | H2   | CCGG |
-      | A3   | AAAA |
-      | B3   | CCCC |
-      | C3   | GAGA |
-      | D3   | CACA |
-      | E3   | AACC |
-      | F3   | TTGG |
-      | G3   | AATT |
-      | H3   | CCGG |
-      | A4   | AAAA |
-      | B4   | CCCC |
-      | C4   | TTTT |
-      | D4   | GGGG |
-      | E4   | AACC |
-      | F4   | TTGG |
-      | G4   | AATT |
-      | H4   | CCGG |
-      | A5   | AAAA |
-      | B5   | CCCC |
-      | C5   | TTTT |
-      | D5   | GGGG |
-      | E5   | AACC |
-      | F5   | TTGG |
-      | G5   | AATT |
-      | H5   | CCGG |
-      | A6   | AAAA |
-      | B6   | CCCC |
-      | C6   | GAGA |
-      | D6   | CACA |
-      | E6   | AACC |
-      | F6   | TTGG |
-      | G6   | AATT |
-      | H6   | CCGG |
-      | A7   | AAAA |
-      | B7   | CCCC |
-      | C7   | TTTT |
-      | D7   | GGGG |
-      | E7   | AACC |
-      | F7   | TTGG |
-      | G7   | AATT |
-      | H7   | CCGG |
-      | A8   | AAAA |
-      | B8   | CCCC |
-      | C8   | TTTT |
-      | D8   | GGGG |
-      | E8   | AACC |
-      | F8   | TTGG |
-      | G8   | AATT |
-      | H8   | CCGG |
-      | A9   | AAAA |
-      | B9   | CCCC |
-      | C9   | GAGA |
-      | D9   | CACA |
-      | E9   | AACC |
-      | F9   | TTGG |
-      | G9   | AATT |
-      | H9   | CCGG |
-      | A10  | AAAA |
-      | B10  | CCCC |
-      | C10  | TTTT |
-      | D10  | GGGG |
-      | E10  | AACC |
-      | F10  | TTGG |
-      | G10  | AATT |
-      | H10  | CCGG |
-      | A11  | AAAA |
-      | B11  | CCCC |
-      | C11  | TTTT |
-      | D11  | GGGG |
-      | E11  | AACC |
-      | F11  | TTGG |
-      | G11  | AATT |
-      | H11  | CCGG |
-      | A12  | AAAA |
-      | B12  | CCCC |
-      | C12  | TTTT |
-      | D12  | GGGG |
-      | E12  | AACC |
-      | F12  | TTGG |
-      | G12  | AATT |
-      | H12  | CCGG |
+    Then the tag layout on the plate "Testing the tagging" should be:
+      | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA |
+      | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC |
+      | TTTT | TTTT | GAGA | TTTT | TTTT | GAGA | TTTT | TTTT | GAGA | TTTT | TTTT | TTTT |
+      | GGGG | GGGG | CACA | GGGG | GGGG | CACA | GGGG | GGGG | CACA | GGGG | GGGG | GGGG |
+      | AACC | AACC | AACC | AACC | AACC | AACC | AACC | AACC | AACC | AACC | AACC | AACC |
+      | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG | TTGG |
+      | AATT | AATT | AATT | AATT | AATT | AATT | AATT | AATT | AATT | AATT | AATT | AATT |
+      | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG | CCGG |
 
   @tag_layout @create @barcode-service
   Scenario: Creating a tag layout of an entire plate using 96 tags
@@ -1333,104 +799,15 @@ Feature: Access tag layout templates through the API
       """
     Then the HTTP response should be "201 Created"
 
-    Then the tags assigned to the plate "Testing the tagging" should be:
-      | well | tag   |
-      | A1   | TAG1  |
-      | B1   | TAG2  |
-      | C1   | TAG3  |
-      | D1   | TAG4  |
-      | E1   | TAG5  |
-      | F1   | TAG6  |
-      | G1   | TAG7  |
-      | H1   | TAG8  |
-      | A2   | TAG9  |
-      | B2   | TAG10 |
-      | C2   | TAG11 |
-      | D2   | TAG12 |
-      | E2   | TAG13 |
-      | F2   | TAG14 |
-      | G2   | TAG15 |
-      | H2   | TAG16 |
-      | A3   | TAG17 |
-      | B3   | TAG18 |
-      | C3   | TAG19 |
-      | D3   | TAG20 |
-      | E3   | TAG21 |
-      | F3   | TAG22 |
-      | G3   | TAG23 |
-      | H3   | TAG24 |
-      | A4   | TAG25 |
-      | B4   | TAG26 |
-      | C4   | TAG27 |
-      | D4   | TAG28 |
-      | E4   | TAG29 |
-      | F4   | TAG30 |
-      | G4   | TAG31 |
-      | H4   | TAG32 |
-      | A5   | TAG33 |
-      | B5   | TAG34 |
-      | C5   | TAG35 |
-      | D5   | TAG36 |
-      | E5   | TAG37 |
-      | F5   | TAG38 |
-      | G5   | TAG39 |
-      | H5   | TAG40 |
-      | A6   | TAG41 |
-      | B6   | TAG42 |
-      | C6   | TAG43 |
-      | D6   | TAG44 |
-      | E6   | TAG45 |
-      | F6   | TAG46 |
-      | G6   | TAG47 |
-      | H6   | TAG48 |
-      | A7   | TAG49 |
-      | B7   | TAG50 |
-      | C7   | TAG51 |
-      | D7   | TAG52 |
-      | E7   | TAG53 |
-      | F7   | TAG54 |
-      | G7   | TAG55 |
-      | H7   | TAG56 |
-      | A8   | TAG57 |
-      | B8   | TAG58 |
-      | C8   | TAG59 |
-      | D8   | TAG60 |
-      | E8   | TAG61 |
-      | F8   | TAG62 |
-      | G8   | TAG63 |
-      | H8   | TAG64 |
-      | A9   | TAG65 |
-      | B9   | TAG66 |
-      | C9   | TAG67 |
-      | D9   | TAG68 |
-      | E9   | TAG69 |
-      | F9   | TAG70 |
-      | G9   | TAG71 |
-      | H9   | TAG72 |
-      | A10  | TAG73 |
-      | B10  | TAG74 |
-      | C10  | TAG75 |
-      | D10  | TAG76 |
-      | E10  | TAG77 |
-      | F10  | TAG78 |
-      | G10  | TAG79 |
-      | H10  | TAG80 |
-      | A11  | TAG81 |
-      | B11  | TAG82 |
-      | C11  | TAG83 |
-      | D11  | TAG84 |
-      | E11  | TAG85 |
-      | F11  | TAG86 |
-      | G11  | TAG87 |
-      | H11  | TAG88 |
-      | A12  | TAG89 |
-      | B12  | TAG90 |
-      | C12  | TAG91 |
-      | D12  | TAG92 |
-      | E12  | TAG93 |
-      | F12  | TAG94 |
-      | G12  | TAG95 |
-      | H12  | TAG96 |
+    Then the tag layout on the plate "Testing the tagging" should be:
+      | TAG1 | TAG9  | TAG17 | TAG25 | TAG33 | TAG41 | TAG49 | TAG57 | TAG65 | TAG73 | TAG81 | TAG89 |
+      | TAG2 | TAG10 | TAG18 | TAG26 | TAG34 | TAG42 | TAG50 | TAG58 | TAG66 | TAG74 | TAG82 | TAG90 |
+      | TAG3 | TAG11 | TAG19 | TAG27 | TAG35 | TAG43 | TAG51 | TAG59 | TAG67 | TAG75 | TAG83 | TAG91 |
+      | TAG4 | TAG12 | TAG20 | TAG28 | TAG36 | TAG44 | TAG52 | TAG60 | TAG68 | TAG76 | TAG84 | TAG92 |
+      | TAG5 | TAG13 | TAG21 | TAG29 | TAG37 | TAG45 | TAG53 | TAG61 | TAG69 | TAG77 | TAG85 | TAG93 |
+      | TAG6 | TAG14 | TAG22 | TAG30 | TAG38 | TAG46 | TAG54 | TAG62 | TAG70 | TAG78 | TAG86 | TAG94 |
+      | TAG7 | TAG15 | TAG23 | TAG31 | TAG39 | TAG47 | TAG55 | TAG63 | TAG71 | TAG79 | TAG87 | TAG95 |
+      | TAG8 | TAG16 | TAG24 | TAG32 | TAG40 | TAG48 | TAG56 | TAG64 | TAG72 | TAG80 | TAG88 | TAG96 |
 
   @tag_layout @create @barcode-service
   Scenario: Creating a tag layout where one of the wells is empty
@@ -1461,101 +838,12 @@ Feature: Access tag layout templates through the API
       """
     Then the HTTP response should be "201 Created"
 
-    Then the tags assigned to the plate "Testing the tagging" should be:
-      | well | tag   |
-      | A1   | TAG1  |
-      | B1   | TAG2  |
-      | C1   | TAG3  |
-      | D1   | TAG4  |
-      | E1   | TAG5  |
-      | F1   | TAG6  |
-      | G1   | TAG7  |
-      | H1   | TAG8  |
-      | A2   | TAG9  |
-      | B2   | TAG10 |
-      | C2   | TAG11 |
-      | D2   | TAG12 |
-      | E2   | TAG13 |
-      | F2   | TAG14 |
-      | G2   | TAG15 |
-      | H2   | TAG16 |
-      | A3   | TAG17 |
-      | B3   | TAG18 |
-      | C3   | TAG19 |
-      | D3   | TAG20 |
-      | E3   | TAG21 |
-      | F3   | TAG22 |
-      | G3   | TAG23 |
-      | H3   | TAG24 |
-      | A4   | TAG25 |
-      | B4   | TAG26 |
-      | C4   | TAG27 |
-      | D4   | TAG28 |
-      | E4   | TAG29 |
-      | F4   | TAG30 |
-      | G4   | TAG31 |
-      | H4   | TAG32 |
-      | A5   | TAG33 |
-      | B5   | TAG34 |
-      | C5   | TAG35 |
-      | D5   | TAG36 |
-      | E5   | TAG37 |
-      | F5   | TAG38 |
-      | G5   | TAG39 |
-      | H5   | TAG40 |
-      | A6   | TAG41 |
-      | B6   | TAG42 |
-      | C6   | TAG43 |
-      | D6   | TAG44 |
-      | E6   | TAG45 |
-      | F6   | TAG46 |
-      | G6   | TAG47 |
-      | H6   | TAG48 |
-      | A7   | TAG49 |
-      | B7   | TAG50 |
-      | C7   | TAG51 |
-      | D7   | TAG52 |
-      | E7   | TAG53 |
-      | F7   | TAG54 |
-      | G7   | TAG55 |
-      | H7   | TAG56 |
-      | A8   | TAG57 |
-      | B8   | TAG58 |
-      | C8   | TAG59 |
-      | D8   | TAG60 |
-      | E8   | TAG61 |
-      | F8   | TAG62 |
-      | G8   | TAG63 |
-      | H8   | TAG64 |
-      | A9   | TAG65 |
-      | B9   | TAG66 |
-      | C9   | TAG67 |
-      | D9   | TAG68 |
-      | E9   | TAG69 |
-      | F9   | TAG70 |
-      | G9   | TAG71 |
-      | H9   | TAG72 |
-      | A10  | TAG73 |
-      | B10  | TAG74 |
-      | C10  | TAG75 |
-      | D10  | TAG76 |
-      | E10  | TAG77 |
-      | F10  | TAG78 |
-      | G10  | TAG79 |
-      | H10  | TAG80 |
-      | A11  | TAG81 |
-      | B11  | TAG82 |
-      | C11  | TAG83 |
-      | D11  | TAG84 |
-      | E11  | TAG85 |
-      | F11  | TAG86 |
-      | G11  | TAG87 |
-      | H11  | TAG88 |
-      | A12  | TAG89 |
-      | B12  | TAG90 |
-      | C12  | TAG91 |
-      | D12  | TAG92 |
-      | E12  | TAG93 |
-      | F12  | TAG94 |
-      | G12  | TAG95 |
-      | H12  |       |
+    Then the tag layout on the plate "Testing the tagging" should be:
+      | TAG1 | TAG9  | TAG17 | TAG25 | TAG33 | TAG41 | TAG49 | TAG57 | TAG65 | TAG73 | TAG81 | TAG89 |
+      | TAG2 | TAG10 | TAG18 | TAG26 | TAG34 | TAG42 | TAG50 | TAG58 | TAG66 | TAG74 | TAG82 | TAG90 |
+      | TAG3 | TAG11 | TAG19 | TAG27 | TAG35 | TAG43 | TAG51 | TAG59 | TAG67 | TAG75 | TAG83 | TAG91 |
+      | TAG4 | TAG12 | TAG20 | TAG28 | TAG36 | TAG44 | TAG52 | TAG60 | TAG68 | TAG76 | TAG84 | TAG92 |
+      | TAG5 | TAG13 | TAG21 | TAG29 | TAG37 | TAG45 | TAG53 | TAG61 | TAG69 | TAG77 | TAG85 | TAG93 |
+      | TAG6 | TAG14 | TAG22 | TAG30 | TAG38 | TAG46 | TAG54 | TAG62 | TAG70 | TAG78 | TAG86 | TAG94 |
+      | TAG7 | TAG15 | TAG23 | TAG31 | TAG39 | TAG47 | TAG55 | TAG63 | TAG71 | TAG79 | TAG87 | TAG95 |
+      | TAG8 | TAG16 | TAG24 | TAG32 | TAG40 | TAG48 | TAG56 | TAG64 | TAG72 | TAG80 | TAG88 |       |

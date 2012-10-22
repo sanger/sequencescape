@@ -88,11 +88,11 @@ LibraryCreationPipeline.create!(:name => 'Illumina-C Library preparation') do |p
   pipeline.location = Location.first(:conditions => { :name => 'Library creation freezer' }) or raise StandardError, "Cannot find 'Library creation freezer' location"
 
   pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'library_creation', :name => 'Library creation') do |request_type|
-    request_type.billable          = true
-    request_type.initial_state     = 'pending'
-    request_type.asset_type        = 'SampleTube'
-    request_type.order             = 1
-    request_type.multiples_allowed = false
+    request_type.billable           = true
+    request_type.initial_state      = 'pending'
+    request_type.asset_type         = 'SampleTube'
+    request_type.order              = 1
+    request_type.multiples_allowed  = false
     request_type.request_class_name = LibraryCreationRequest.name
   end
 
@@ -624,7 +624,6 @@ CherrypickPipeline.create!(:name => 'Cherrypick') do |pipeline|
     [
       { :class => PlateTemplateTask,      :name => "Select Plate Template",              :sorted => 1, :batched => true },
       { :class => CherrypickTask,         :name => "Approve Plate Layout",               :sorted => 2, :batched => true },
-      { :class => AssignPlatePurposeTask, :name => "Assign a Purpose for Output Plates", :sorted => 3 },
       { :class => SetLocationTask,        :name => "Set Location",                       :sorted => 4 }
     ].each do |details|
       details.delete(:class).create!(details.merge(:workflow => workflow))
@@ -638,11 +637,10 @@ CherrypickForPulldownPipeline.create!(:name => 'Cherrypicking for Pulldown') do 
   pipeline.automated           = false
   pipeline.active              = true
   pipeline.group_by_parent     = true
-  pipeline.max_size            = 96
 
   pipeline.location = Location.first(:conditions => { :name => 'Sample logistics freezer' }) or raise StandardError, "Cannot find 'Sample logistics freezer' location"
 
-  pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'cherrypick_for_pulldown', :name => 'Cherrypicking for Pulldown') do |request_type|
+  cherrypicking_attributes = lambda do |request_type|
     request_type.initial_state     = 'pending'
     request_type.target_asset_type = 'Well'
     request_type.asset_type        = 'Well'
@@ -652,10 +650,17 @@ CherrypickForPulldownPipeline.create!(:name => 'Cherrypicking for Pulldown') do 
     request_type.for_multiplexing  = false
   end
 
+  pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'cherrypick_for_pulldown', :name => 'Cherrypicking for Pulldown',  &cherrypicking_attributes)
+
+  pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'cherrypick_for_illumina',   :name => 'Cherrypick for Illumina',   &cherrypicking_attributes)
+  pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'cherrypick_for_illumina_b', :name => 'Cherrypick for Illumina-B', &cherrypicking_attributes)
+
+
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'Cherrypicking for Pulldown').tap do |workflow|
     # NOTE[xxx]: Note that the order here, and 'Set Location' being interactive, do not mimic the behaviour of production
     [
-      { :class => CherrypickGroupBySubmissionTask, :name => 'Cherrypick Group By Submission', :sorted => 0, :batched => true }
+      { :class => CherrypickGroupBySubmissionTask, :name => 'Cherrypick Group By Submission', :sorted => 0, :batched => true },
+      { :class => SetLocationTask,                 :name => 'Set location', :sorted => 1 }
     ].each do |details|
       details.delete(:class).create!(details.merge(:workflow => workflow))
     end
@@ -832,7 +837,7 @@ set_pipeline_flow_to('PacBio Sample Prep' => 'PacBio Sequencing')
       request_type.key               = pipeline_name.downcase.gsub(/\s+/, '_')
       request_type.initial_state     = 'pending'
       request_type.asset_type        = 'Well'
-      request_type.target_asset_type = 'MultiplexedLibraryTube'
+      request_type.target_purpose    = Tube::Purpose.standard_mx_tube
       request_type.order             = 1
       request_type.multiples_allowed = false
       request_type.request_class     = "Pulldown::Requests::#{pipeline_type.humanize}LibraryRequest".constantize

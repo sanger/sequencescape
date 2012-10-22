@@ -46,6 +46,8 @@ class Request < ActiveRecord::Base
   delegate :billable?, :to => :request_type, :allow_nil => true
   belongs_to :workflow, :class_name => "Submission::Workflow"
 
+  named_scope :for_billing, :include => [ :initial_project, :request_type, { :target_asset => :aliquots } ]
+
   belongs_to :user
 
   belongs_to :submission
@@ -103,6 +105,7 @@ class Request < ActiveRecord::Base
   #  validates_presence_of :study, :request_type#TODO, :submission
 
   named_scope :between, lambda { |source,target| { :conditions => { :asset_id => source.id, :target_asset_id => target.id } } }
+  named_scope :into_by_id, lambda { |target_ids| { :conditions => { :target_asset_id => target_ids } } }
 
   # TODO: Really need to be consistent in who our named scopes behave
   named_scope :request_type, lambda { |request_type|
@@ -161,7 +164,7 @@ class Request < ActiveRecord::Base
     target = options[:by_target] ? 'target_asset_id' : 'asset_id'
 
     send(finder_method, options.slice(:group).merge(
-      :select  => "requests.*, tca.container_id AS container_id, tca.content_id AS content_id",
+      :select  => "DISTINCT requests.*, tca.container_id AS container_id, tca.content_id AS content_id",
       :joins   => "INNER JOIN container_associations tca ON tca.content_id=#{target}",
       :readonly => false,
       :include => :request_metadata
@@ -394,5 +397,10 @@ class Request < ActiveRecord::Base
   def has_quota?(number)
     #no if one project doesn't have the quota
     not quotas.map(&:project).any? {|p| p.has_quota?(request_type_id, number) == false}
+  end
+
+  # Adds any pool information to the structure so that it can be reported to client applications
+  def update_pool_information(pool_information)
+    # Does not need anything here
   end
 end

@@ -7,6 +7,10 @@ class Transfer::BetweenPlatesBySubmission < Transfer
 
   include TransfersToKnownDestination
   include ControlledDestinations
+  include BuildsStockWellLinks
+
+  include Asset::Ownership::ChangesOwner
+  set_target_for_owner(:destination)
 
   #--
   # Track back from the specified well to the stock plate well that has been transfered here.  Then
@@ -17,7 +21,7 @@ class Transfer::BetweenPlatesBySubmission < Transfer
   def well_to_destination
     {}.tap do |sources_to_target|
       # Group the wells based on the submission their non-transfer request belongs to
-      wells_to_stocks = locate_stock_wells_for(source)
+      wells_to_stocks = source.stock_wells
       groups = source.wells.in_column_major_order.with_pool_id.group_by do |well|
         stock_well = wells_to_stocks[well].first
         stock_well and stock_well.requests_as_source.where_has_a_submission.first.try(:submission_id)
@@ -41,4 +45,10 @@ class Transfer::BetweenPlatesBySubmission < Transfer
     self.transfers[source.map.description] = destination.map.description
   end
   private :record_transfer
+
+  # Request type for transfers is based on the plates, not the wells we're transferring
+  def request_type_between(ignored_a, ignored_b)
+    destination.transfer_request_type_from(source)
+  end
+  private :request_type_between
 end

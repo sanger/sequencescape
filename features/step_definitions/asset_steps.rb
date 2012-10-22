@@ -19,3 +19,8 @@ end
 Then /^the name of (the .+) should be "([^\"]+)"$/ do |asset, name|
   assert_equal(name, asset.name)
 end
+
+Given /^there is an asset link between "([^"]*)" and "([^"]*)"$/ do |source, target|
+  AssetLink.create_edge(Plate.find_by_name(source),Plate.find_by_name(target))
+end
+

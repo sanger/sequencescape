@@ -10,10 +10,6 @@ require File.expand_path(File.join(Rails.root, %w{test factories.rb}))
 
 require "#{Rails.root}/test/unit/task_test_base"
 
-# Turn auditing off by default.  If you need it call Audit.enable_auditing
-# in your test setup and Audit.disable_auditing in the teardown
-require File.expand_path(File.dirname(__FILE__) + "/../features/support/auditing_control")
-
 # add the ci_reporter to create reports for test-runs, since parallel_tests is not invoked through rake
 if ENV.has_key?("CI")
   require 'ci/reporter/test_unit' # needed, despite "bundle exec"!

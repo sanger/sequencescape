@@ -1,15 +1,34 @@
 <% form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form", :multipart => true} do |form| %>
+  <h2>Step 1</h2>
+  <%= render :partial => 'cherrypicking_volume_parameters' %>
 
-<h2>Step 1</h2>
-<%= render :partial => 'cherrypicking_volume_parameters' %>
+  <div id='plate_purpose_box'>
+    <h2>Step 2</h2>
+    <fieldset>
+      <legend>Either choose a purpose for the output plates, or scan a partial plate:</legend>
+      <table cellspacing="0" cellpadding="0">
+        <tr>
+          <td><label for="plate_purpose_id">Plate Purpose</label>:</td>
+          <td><%= select_tag("plate_purpose_id", options_for_select(@plate_purpose_options)) %></td>
+        </tr>
+        <tr>
+          <td><label for="existing_plate">Scan partial plate</label>:</td>
+          <td><%= text_field_tag 'existing_plate' %></td>
+        </tr>
+      </table>
+    </fieldset>
+  </div>
 
-<div id='plate_purpose_box'>
-<h2>Step 2</h2>
-<fieldset>
-    <legend>Please Choose a Purpose for Your Output Plates:</legend>
-    <label for="plate_purpose_id">Plate Purpose</label>:
-    <%= select_tag("plate_purpose_id", options_for_select(@plate_purpose_options)) %>
-</fieldset>
-</div>
+  <h2>Step 3</h2>
+  <fieldset>
+    <legend>Cherrypicking robot</legend>
+    <table cellspacing='0' cellpadding='0'>
+      <tr>
+        <td><label for="robot">Picking Robot</label>:</td>
+        <td><%= select_tag("robot", options_for_select(Robot.all.collect {|p| [ p.name, p.id ] }))  %></td>
+      </tr>
+    </table>
+  </fieldset>
+
   <%= render :partial => "next_stage_submit" %>
 <% end %>

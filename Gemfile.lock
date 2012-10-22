@@ -63,8 +63,6 @@ GEM
     activeresource (2.3.11)
       activesupport (= 2.3.11)
     activesupport (2.3.11)
-    acts_as_audited (1.1.1)
-      activerecord (>= 2.1)
     ar-extensions (0.9.5)
       activerecord (~> 2.1)
     aws-s3 (0.6.2)
@@ -217,7 +215,6 @@ DEPENDENCIES
   aasm (~> 2.4.0)
   activerecord-oracle_enhanced-adapter (= 1.2.3)
   acts-as-dag!
-  acts_as_audited
   alter_table!
   ar-extensions
   bunny
