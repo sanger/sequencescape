@@ -13,6 +13,7 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME = [
   'library tube',
   'pulldown multiplexed library tube',
   'multiplexed library tube',
+  'stock multiplexed library tube',
   'PacBio library tube',
   'well',
   'plate',
@@ -29,6 +30,7 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME = [
   'pico assay plate',
   'pico dilution plate',
   'plate purpose',
+  'purpose',
   'plate',
   'sequenom qc plate',
   'working dilution plate',
@@ -36,7 +38,8 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME = [
   'supplier',
   'transfer template',
   'tag layout template',
-  'barcode printer'
+  'barcode printer',
+  'tube'
 ]
 
 SINGULAR_MODELS_BASED_ON_NAME_REGEXP = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME.join('|')
@@ -83,10 +86,12 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
   'well',
   'pulldown multiplexed library tube',
   'multiplexed library tube',
+  'stock multiplexed library tube',
 
   'asset audit',
 
   'plate purpose',
+  'purpose',
   'dilution plate purpose',
 
   'sample',
@@ -99,11 +104,10 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
 
   'tag layout',
   'plate creation',
+  'tube creation',
   'state change',
 
   'aliquot'
-
-
 ]
 
 SINGULAR_MODELS_BASED_ON_ID_REGEXP = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID.join('|')
@@ -122,6 +126,7 @@ Given /^the UUID for the (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) with ID (\d+) i
 end
 
 Given /^all (#{PLURAL_MODELS_BASED_ON_NAME_REGEXP}|#{PLURAL_MODELS_BASED_ON_ID_REGEXP}) have sequential UUIDs based on "([^\"]+)"$/ do |model,core_uuid|
+  core_uuid = core_uuid.dup  # Oh the irony of modifying a string that then alters Cucumber output!
   core_uuid << '-' if core_uuid.length == 23
   core_uuid << "%0#{36-core_uuid.length}d"
 

@@ -21,7 +21,11 @@ require 'capybara/session'
 require 'cucumber/rails/capybara_javascript_emulation' # Lets you click links with onclick javascript handlers without using @culerity or @javascript
 require 'timecop'
 
-
+# If the environment establishes which firefox to run, use that.
+unless ENV['CAPYBARA_FIREFOX'].blank?
+  Capybara::Driver::Selenium # Appears to be required to initialize Selenium
+  Selenium::WebDriver::Firefox::Binary.path = File.join(File.expand_path(ENV['CAPYBARA_FIREFOX']), %w{Contents MacOS firefox-bin})
+end
 
 Capybara.save_and_open_page_path = "tmp/capybara"
 

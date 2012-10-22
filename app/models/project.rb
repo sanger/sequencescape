@@ -12,7 +12,7 @@ class Project < ActiveRecord::Base
   has_many_events
   has_many_lab_events
   
-  acts_as_audited :on => [:destroy, :update]
+
   
 
   aasm_column :state

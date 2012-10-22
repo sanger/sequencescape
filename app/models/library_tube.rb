@@ -6,6 +6,10 @@ class LibraryTube < Tube
     true
   end
 
+  def library_prep?
+    true
+  end
+
   named_scope :include_tag, :include => { :aliquots => { :tag => [ :uuid_object, { :tag_group => :uuid_object } ] } }
 
   def sorted_tags_for_select

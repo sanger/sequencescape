@@ -31,9 +31,7 @@ module Submission::LinearRequestGraph
   private :build_request_type_multiplier_pairs
 
   def create_target_asset_for!(request_type, source_asset = nil)
-    # TODO: What to do when the request type doesn't have an asset?  Returning nil might work!
-    return nil if request_type.target_asset_type.blank?
-    request_type.target_asset_type.constantize.create! do |asset|
+    request_type.create_target_asset! do |asset|
       asset.generate_barcode
       asset.generate_name(source_asset.try(:name) || asset.barcode.to_s)
     end

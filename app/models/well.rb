@@ -7,6 +7,20 @@ class Well < Aliquot::Receptacle
   include StudyReport::WellDetails
   include Tag::Associations
 
+  class Link < ActiveRecord::Base
+    set_table_name('well_links')
+    set_inheritance_column(nil)
+    belongs_to :target_well, :class_name => 'Well'
+    belongs_to :source_well, :class_name => 'Well'
+  end
+  has_many :stock_well_links, :class_name => 'Well::Link', :foreign_key => :target_well_id, :conditions => { :type => 'stock' }
+  has_many :stock_wells, :through => :stock_well_links, :source => :source_well do
+    def attach!(wells)
+      proxy_owner.stock_well_links.build(wells.map { |well| { :type => 'stock', :source_well => well } }).map(&:save!)
+    end
+  end
+  named_scope :include_stock_wells, { :include => { :stock_wells => :requests_as_source } }
+
   named_scope :located_at, lambda { |plate, location|
     { :joins => :map, :conditions => { :maps => { :description => location, :asset_size => plate.size } } }
   }
@@ -20,16 +34,16 @@ class Well < Aliquot::Receptacle
 
   named_scope :pooled_as_target_by, lambda { |type|
     {
-      :joins      => 'LEFT JOIN requests ON assets.id=target_asset_id',
-      :conditions => [ '(requests.sti_type IS NULL OR requests.sti_type IN (?))', [ type, *Class.subclasses_of(type) ].map(&:name) ],
-      :select     => 'assets.*, submission_id AS pool_id'
+      :joins      => 'LEFT JOIN requests patb ON assets.id=patb.target_asset_id',
+      :conditions => [ '(patb.sti_type IS NULL OR patb.sti_type IN (?))', [ type, *Class.subclasses_of(type) ].map(&:name) ],
+      :select     => 'assets.*, patb.submission_id AS pool_id'
     }
   }
   named_scope :pooled_as_source_by, lambda { |type|
     {
-      :joins      => 'LEFT JOIN requests ON assets.id=asset_id',
-      :conditions => [ '(requests.sti_type IS NULL OR requests.sti_type IN (?))', [ type, *Class.subclasses_of(type) ].map(&:name) ],
-      :select     => 'assets.*, submission_id AS pool_id'
+      :joins      => 'LEFT JOIN requests pasb ON assets.id=pasb.asset_id',
+      :conditions => [ '(pasb.sti_type IS NULL OR pasb.sti_type IN (?))', [ type, *Class.subclasses_of(type) ].map(&:name) ],
+      :select     => 'assets.*, pasb.submission_id AS pool_id'
     }
   }
   named_scope :in_column_major_order, { :joins => :map, :order => 'column_order ASC' }
@@ -44,18 +58,7 @@ class Well < Aliquot::Receptacle
 
   named_scope :with_blank_samples, { :conditions => { :aliquots => { :samples => { :empty_supplier_sample_name => true } } }, :joins => { :aliquots => :sample } }
 
-  def stock_wells
-    wells_to_walk, stock_wells = [ self ], []
-    until wells_to_walk.empty?
-      current_well = wells_to_walk.shift or next
-      if current_well.plate.stock_plate?
-        stock_wells << current_well
-      else
-        wells_to_walk.concat(current_well.requests_as_target.where_is_a?(TransferRequest).map(&:asset))
-      end
-    end
-    stock_wells
-  end
+  include Transfer::WellHelpers
 
   class << self
     def delegate_to_well_attribute(attribute, options = {})
@@ -154,7 +157,7 @@ class Well < Aliquot::Receptacle
   end
 
   def create_child_sample_tube
-    SampleTube.create!(:map => self.map, :aliquots => aliquots.map(&:clone)).tap do |sample_tube|
+    Tube::Purpose.standard_sample_tube.create!(:map => self.map, :aliquots => aliquots.map(&:clone)).tap do |sample_tube|
       AssetLink.connect(self, sample_tube)
     end
   end

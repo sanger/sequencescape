@@ -113,7 +113,7 @@ class Pipeline < ActiveRecord::Base
     }
   }
 
-  acts_as_audited :on => [:destroy, :update]
+
 
   self.inheritance_column = "sti_type"
 

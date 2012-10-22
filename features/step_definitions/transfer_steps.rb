@@ -39,8 +39,13 @@ Given /^a transfer plate exists with ID (\d+)$/ do |id|
   Factory(:transfer_plate, :id => id)
 end
 
-Given /^a transfer plate called "([^\"]+)" exists$/ do |name|
-  Factory(:transfer_plate, :name => name)
+Given /^a (source|destination) transfer plate called "([^\"]+)" exists$/ do |type, name|
+  Factory("#{type}_transfer_plate", :name => name)
+end
+
+Given /^a destination transfer plate called "([^\"]+)" exists as a child of "([^\"]+)"$/ do |name, parent|
+  parent_plate = Plate.find_by_name(parent) or raise "Cannot find parent plate #{parent.inspect}"
+  AssetLink.create!(:ancestor => parent_plate, :descendant => Factory(:destination_transfer_plate, :name => name))
 end
 
 Given /^the "([^\"]+)" transfer template has been used between "([^\"]+)" and "([^\"]+)"$/ do |template_name, source_name, destination_name|
@@ -82,6 +87,14 @@ end
     Given /^the state of all the pulldown library creation requests (to|from) (the #{target} .+) is "([^"]+)"$/ do |direction, target, state|
       change_request_state(state, #{request_holder}, direction, Pulldown::Requests::LibraryCreation)
     end
+
+    Then /^the state of all the illumina-b library creation requests (to|from) (the #{target} .+) should be "([^"]+)"$/ do |direction, target, state|
+      assert_request_state(state, #{request_holder}, direction, IlluminaB::Requests::StdLibraryRequest)
+    end
+
+    Given /^the state of all the illumina-b library creation requests (to|from) (the #{target} .+) is "([^"]+)"$/ do |direction, target, state|
+      change_request_state(state, #{request_holder}, direction, IlluminaB::Requests::StdLibraryRequest)
+    end
   }, __FILE__, line)
 end
 
@@ -104,4 +117,11 @@ end
 Given /^(the plate .+) is a "([^\"]+)"$/ do |plate, name|
   plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find the plate purpose #{name.inspect}"
   plate.update_attributes!(:plate_purpose => plate_purpose)
+end
+
+Given /^transfers between "([^\"]+)" and "([^\"]+)" plates are done by "([^\"]+)" requests$/ do |source, destination, typename|
+  source_plate_purpose      = PlatePurpose.find_by_name(source)      or raise StandardError, "Cannot find the plate purpose #{source.inspect}"
+  destination_plate_purpose = PlatePurpose.find_by_name(destination) or raise StandardError, "Cannot find the plate purpose #{destination.inspect}"
+  request_type              = RequestType.find_by_name(typename)     or raise StandardError, "Cannot find request type #{typename.inspect}"
+  source_plate_purpose.child_relationships.create!(:child => destination_plate_purpose, :transfer_request_type => request_type)
 end

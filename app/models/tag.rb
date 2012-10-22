@@ -10,7 +10,7 @@ class Tag < ActiveRecord::Base
   @@per_page = 500
   include Uuid::Uuidable
 
-  acts_as_audited :on => [:destroy, :update]
+
 
   belongs_to :tag_group
   has_many :assets, :as => :material

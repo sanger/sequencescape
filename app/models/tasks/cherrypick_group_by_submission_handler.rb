@@ -5,35 +5,33 @@ module Tasks::CherrypickGroupBySubmissionHandler
       redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (0).to_s
       return false
     end
-    
-    volume_required= params[:volume_required]
-    concentration_required = params[:concentration_required]
-    plate_purpose = PlatePurpose.find(params[:plate_purpose_id])
 
-    begin
-      batch = Batch.find(params[:batch_id], :include => [:requests, :pipeline, :lab_events])
-      requests = batch.ordered_requests
-      
-      ActiveRecord::Base.transaction do
-        plate = plate_purpose.create!(:do_not_create_wells) do |plate|
-          plate.name = "Cherrypicked #{plate.barcode}"
-        end
-        if params[:cherrypick][:action] == 'nano_grams_per_micro_litre'
-          task.pick_by_nano_grams_per_micro_litre(batch, requests, plate, plate_purpose, params)
-        elsif params[:cherrypick][:action] == "nano_grams"
-          task.pick_by_nano_grams(batch, requests, plate, plate_purpose, params)
-        elsif params[:cherrypick][:action] == "micro_litre"
-          task.pick_by_micro_litre(batch, requests, plate, plate_purpose, params)
-        else
-          raise 'Invalid cherrypicking type'
-        end
+    # If there was a plate scanned then we take its purpose, otherwise we use the purpose specified
+    # in the dropdown.
+    partial_plate, plate_purpose = nil, PlatePurpose.find(params[:plate_purpose_id])
+    if not params[:existing_plate].blank?
+      partial_plate, plate_purpose = Plate.with_machine_barcode(params[:existing_plate]).first, nil
+      if partial_plate.nil?
+        flash[:error] = "Cannot find the partial plate #{params[:existing_plate].inspect}"
+        redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (0).to_s
+        return false
       end
-    rescue => exception
-      flash[:error] = exception.message
-      return false
+    end
+
+    robot = Robot.find(params[:robot])
+    batch = Batch.find(params[:batch_id], :include => [:requests, :pipeline, :lab_events])
+
+    ActiveRecord::Base.transaction do
+      task.send(
+        :"pick_by_#{params[:cherrypick][:action]}",
+        batch.ordered_requests, robot, partial_plate || plate_purpose, params
+      )
     end
 
     true
+  rescue => exception
+    flash[:error] = exception.message
+    false
   end
 
   def render_cherrypick_group_by_submission_task(task,params)

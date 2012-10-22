@@ -5,7 +5,7 @@ class StudyType < ActiveRecord::Base
 
   validates_presence_of  :name
   validates_uniqueness_of :name, :message => "of study type already present in database"
-  acts_as_audited :on => [:destroy, :update]
+
 
   def for_select_dropdown
     valid_for_creation? ? [self.name, self.id] : nil

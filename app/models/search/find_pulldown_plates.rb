@@ -5,10 +5,8 @@ class Search::FindPulldownPlates < Search
     Plate.include_plate_metadata.include_plate_purpose.with_plate_purpose(pulldown_plate_purposes).with_no_outgoing_transfers.in_state(criteria['state'])
   end
 
-  def self.pulldown_plate_purposes
-    @plate_purposes ||= PlatePurpose.find_all_by_name(
-      Pulldown::PlatePurposes::PULLDOWN_PLATE_PURPOSE_FLOWS.flatten
-    )
+  def pulldown_plate_purposes
+    PlatePurpose.find_all_by_name(Pulldown::PlatePurposes::PLATE_PURPOSE_FLOWS.flatten)
   end
-  delegate :pulldown_plate_purposes, :to => 'self.class'
+  private :pulldown_plate_purposes
 end

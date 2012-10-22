@@ -18,9 +18,11 @@ Feature: Access state changes through the API
     Given the plate barcode webservice returns "1000001"
       And the plate barcode webservice returns "1000002"
 
+    Given transfers between "Stock plate" and "Pulldown QC plate" plates are done by "Transfer" requests
+
     Given a "Stock plate" plate called "Source plate" exists
       And all wells on the plate "Source plate" have unique samples
-      And a "Pulldown QC plate" plate called "Destination plate" exists
+      And a "Pulldown QC plate" plate called "Destination plate" exists as a child of "Source plate"
       And the UUID for the plate "Source plate" is "00000000-1111-2222-3333-000000000001"
       And the UUID for the plate "Destination plate" is "00000000-1111-2222-3333-000000000002"
       And the "Transfer columns 1-12" transfer template has been used between "Source plate" and "Destination plate"
@@ -35,7 +37,8 @@ Feature: Access state changes through the API
         "state_change": {
           "user": "99999999-8888-7777-6666-555555555555",
           "target": "00000000-1111-2222-3333-000000000002",
-          "target_state": "<state>"
+          "target_state": "<state>",
+          "reason": "testing this works"
         }
       }
       """
@@ -53,7 +56,8 @@ Feature: Access state changes through the API
             }
           },
           "target_state": "<state>",
-          "previous_state": "pending"
+          "previous_state": "pending",
+          "reason": "testing this works"
         }
       }
       """
@@ -64,11 +68,40 @@ Feature: Access state changes through the API
      #And the state of all the pulldown library creation requests from the plate "Source plate" should be "<library state>"
 
     Scenarios:
-      | state   |
-      | pending |
-      | started |
-      | passed  |
-      | failed  |
+      | state     | 
+      | pending   | 
+      | started   | 
+      | passed    | 
+      | failed    | 
+
+  @create
+  Scenario Outline: Creating a state change on a plate where the state requires a reason
+    Given the UUID of the next state change created will be "11111111-2222-3333-4444-000000000001"
+
+    When I make an authorised POST with the following JSON to the API path "/state_changes":
+      """
+      {
+        "state_change": {
+          "user": "99999999-8888-7777-6666-555555555555",
+          "target": "00000000-1111-2222-3333-000000000002",
+          "target_state": "<state>"
+        }
+      }
+      """
+    Then the HTTP response should be "422 Unprocessable Entity"
+     And the JSON should match the following for the specified fields:
+      """
+      {
+        "content": {
+          "reason": [ "can't be blank" ]
+        }
+      }
+      """
+
+    Scenarios:
+      | state     | 
+      | failed    | 
+      | cancelled | 
 
   @create
   Scenario: Changing the state of only one well on the plate
@@ -81,7 +114,8 @@ Feature: Access state changes through the API
           "user": "99999999-8888-7777-6666-555555555555",
           "target": "00000000-1111-2222-3333-000000000002",
           "contents": [ "A1" ],
-          "target_state": "failed"
+          "target_state": "failed",
+          "reason": "testing this"
         }
       }
       """
@@ -100,7 +134,8 @@ Feature: Access state changes through the API
           },
           "target_state": "failed",
           "contents": [ "A1" ],
-          "previous_state": "pending"
+          "previous_state": "pending",
+          "reason": "testing this"
         }
       }
       """
@@ -142,7 +177,8 @@ Feature: Access state changes through the API
           "user": "99999999-8888-7777-6666-555555555555",
           "target": "00000000-1111-2222-3333-000000000002",
           "contents": [ "A1" ],
-          "target_state": "failed"
+          "target_state": "failed",
+          "reason": "testing this"
         }
       }
       """
@@ -161,7 +197,8 @@ Feature: Access state changes through the API
           },
           "target_state": "failed",
           "contents": [ "A1" ],
-          "previous_state": "pending"
+          "previous_state": "pending",
+          "reason": "testing this"
         }
       }
       """
@@ -184,7 +221,8 @@ Feature: Access state changes through the API
         "state_change": {
           "user": "99999999-8888-7777-6666-555555555555",
           "target": "00000000-1111-2222-3333-000000000002",
-          "target_state": "<state>"
+          "target_state": "<state>",
+          "reason": "testing this"
         }
       }
       """
@@ -202,7 +240,8 @@ Feature: Access state changes through the API
             }
           },
           "target_state": "<state>",
-          "previous_state": "pending"
+          "previous_state": "pending",
+          "reason": "testing this"
         }
       }
       """
@@ -212,10 +251,10 @@ Feature: Access state changes through the API
      And the state of all the pulldown library creation requests from the plate "Source plate" should be "<library state>"
 
     Scenarios:
-      | state   | library state |
-      | pending | pending       |
-      | started | pending       |
-      | passed  | pending       |
+      | state     | library state | 
+      | pending   | pending       | 
+      | started   | pending       | 
+      | passed    | pending       | 
 
     Scenarios:
       | state   | library state |

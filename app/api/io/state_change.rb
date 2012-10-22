@@ -7,6 +7,7 @@ class ::Io::StateChange < ::Core::Io::Base
               user <=> user
             target <=> target
           contents <=> contents
+            reason <=> reason
       target_state <=> target_state
     previous_state  => previous_state
   })

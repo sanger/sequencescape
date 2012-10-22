@@ -6,7 +6,7 @@ class ReferenceGenome < ActiveRecord::Base
   validates_uniqueness_of :name, :message => "of reference genome already present in database", :allow_blank => true
   named_scope :sorted_by_name , :order => "name ASC"  
   
-  acts_as_audited :on => [:destroy, :update]
+
 
   module Associations
     def self.included(base)
