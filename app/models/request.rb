@@ -164,7 +164,7 @@ class Request < ActiveRecord::Base
     target = options[:by_target] ? 'target_asset_id' : 'asset_id'
 
     send(finder_method, options.slice(:group).merge(
-      :select  => "requests.*, tca.container_id AS container_id, tca.content_id AS content_id",
+      :select  => "DISTINCT requests.*, tca.container_id AS container_id, tca.content_id AS content_id",
       :joins   => "INNER JOIN container_associations tca ON tca.content_id=#{target}",
       :readonly => false,
       :include => :request_metadata
