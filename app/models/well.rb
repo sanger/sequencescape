@@ -189,8 +189,11 @@ class Well < Aliquot::Receptacle
     nil
   end
 
+  validate(:on => :save) do |record|
+    record.errors.add(:name, "cannot be specified for a well") unless record.name.blank?
+  end
+
   def display_name
-    return self.name unless self.name.blank?
     plate_name = self.plate.present? ? self.plate.sanger_human_barcode : '(not on a plate)'
     "#{plate_name}:#{map ? map.description : ''}"
   end
