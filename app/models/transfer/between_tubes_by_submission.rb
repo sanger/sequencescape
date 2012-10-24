@@ -5,7 +5,11 @@ class Transfer::BetweenTubesBySubmission < Transfer
 
   before_validation :ensure_destination_setup
   def ensure_destination_setup
-    self.destination = source.requests_as_target.first.asset.stock_wells.first.requests_as_source.detect { |request| request.target_asset.is_a?(Tube) }.try(:target_asset)
+    self.destination = source.requests_as_target.map do |request|
+      request.asset.stock_wells
+    end.flatten.first.requests_as_source.detect do |request|
+      request.target_asset.is_a?(Tube)
+    end.try(:target_asset)
   end
   private :ensure_destination_setup
 

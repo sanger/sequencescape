@@ -23,7 +23,9 @@ class Transfer::BetweenPlatesBySubmission < Transfer
       # Group the wells based on the submission their non-transfer request belongs to
       wells_to_stocks = source.stock_wells
       groups = source.wells.in_column_major_order.with_pool_id.group_by do |well|
-        stock_well = wells_to_stocks[well].first
+        stock_wells = wells_to_stocks[well]
+        next if stock_wells.blank?
+        stock_well  = stock_wells.first
         stock_well and stock_well.requests_as_source.where_has_a_submission.first.try(:submission_id)
       end.delete_if { |k,_| k.nil? }.values
 
