@@ -1,7 +1,6 @@
 @javascript @barcode-service @cherrypicking @gwl
 Feature: The Tecan file has the wrong buffer volumes, defaulting to 13 total volume
-
-  Background:
+  Scenario: volume of 65 is required
     Given I am a "administrator" user logged in as "user"
     Given I have a project called "Test project"
     And project "Test project" has enough quotas
@@ -25,8 +24,6 @@ Feature: The Tecan file has the wrong buffer volumes, defaulting to 13 total vol
     When I follow "Start batch"
     When I select "testtemplate" from "Plate Template"
 
-
-  Scenario: volume of 65 is required
     When I fill in "Volume Required" with "65"
     When I press "Next step"
     When I press "Next step"

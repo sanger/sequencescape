@@ -69,6 +69,7 @@ Factory.define :billing_event do |be|
   be.reference {|reference| Factory.next :billing_reference }
   be.created_by "abc123@example.com"
   be.project {|project| project.association(:project)}
+  be.request {|request| request.association(:request)}
 end
 
 Factory.define :comment do |c|
@@ -458,7 +459,8 @@ Factory.define :fragment do |fragment|
 end
 
 Factory.define :multiplexed_library_tube do |a|
-  a.name                {|a| Factory.next :asset_name }
+  a.name    {|a| Factory.next :asset_name }
+  a.purpose Tube::Purpose.standard_mx_tube
 end
 
 Factory.define :pulldown_multiplexed_library_tube do |a|
@@ -467,12 +469,14 @@ Factory.define :pulldown_multiplexed_library_tube do |a|
 end
 
 Factory.define :stock_multiplexed_library_tube do |a|
-  a.name                {|a| Factory.next :asset_name }
+  a.name    {|a| Factory.next :asset_name }
+  a.purpose Tube::Purpose.stock_mx_tube
 end
 
 Factory.define(:empty_library_tube, :class => LibraryTube) do |library_tube|
   library_tube.qc_state ''
   library_tube.name     {|_| Factory.next :asset_name }
+  library_tube.purpose  Tube::Purpose.standard_library_tube
 end
 Factory.define :library_tube, :parent => :empty_library_tube do |library_tube|
   library_tube.after_create do |library_tube|
@@ -526,11 +530,13 @@ Factory.define :multiplexed_library_creation_request, :parent => :request do |re
 end
 
 Factory.define :stock_library_tube do |a|
-  a.name                {|a| Factory.next :asset_name }
+  a.name     {|a| Factory.next :asset_name }
+  a.purpose  Tube::Purpose.stock_library_tube
 end
 
 Factory.define :stock_sample_tube do |a|
-  a.name                {|a| Factory.next :asset_name }
+  a.name     {|a| Factory.next :asset_name }
+  a.purpose  Tube::Purpose.stock_sample_tube
 end
 
 Factory.define(:empty_lane, :class => Lane) do |lane|

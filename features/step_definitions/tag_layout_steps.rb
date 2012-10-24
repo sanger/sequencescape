@@ -70,6 +70,15 @@ def check_tag_layout(name, well_range, expected_wells_to_oligos)
   end
 end
 
+Then /^the tag layout on the plate "([^"]+)" should be:$/ do |name, table|
+  check_tag_layout(
+    name, WellRange.new('A1', 'H12'),
+    ('A'..'H').to_a.zip(table.raw).inject({}) do |h,(row_a, row)|
+      h.tap { row.each_with_index { |cell, i| h["#{row_a}#{i+1}"] = cell } }
+    end
+  )
+end
+
 Then /^the tags assigned to the plate "([^"]+)" should be:$/ do |name, table|
   check_tag_layout(
     name, WellRange.new('A1', 'H12'),

@@ -28,6 +28,15 @@ class ::Api::EndpointHandler < ::Core::Service
     end
   end
 
+  # Report the performance and status of any request
+  def report(handler, &block)
+    Rails.logger.info("API[start]: #{handler}: #{request.fullpath}")
+    yield
+  ensure
+    Rails.logger.info("API[handled]: #{handler}: #{request.fullpath}")
+  end
+  private :report
+
   # Not ideal but at least this allows us to pick up the appropriate model from the URL.
   def determine_model_from_parts(*parts)
     (1..parts.length).to_a.reverse.each do |n|
@@ -38,7 +47,9 @@ class ::Api::EndpointHandler < ::Core::Service
         # Nope, try again
       end
     end
+    raise StandardError, "Cannot route #{parts.join('/').inspect}"
   end
+  private :determine_model_from_parts
 
   def handle_request(handler, http_request, action, parts)
     endpoint_lookup, io_lookup =

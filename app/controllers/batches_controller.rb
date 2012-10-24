@@ -669,7 +669,7 @@ class BatchesController < ApplicationController
   end
 
   def download_spreadsheet
-    csv_string = CherrypickTask.generate_spreadsheet(@batch)
+    csv_string = Tasks::PlateTemplateHandler.generate_spreadsheet(@batch)
     send_data csv_string, :type => "text/plain",
      :filename=>"#{@batch.id}_cherrypick_layout.csv",
      :disposition => 'attachment'

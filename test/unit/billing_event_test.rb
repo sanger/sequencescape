@@ -19,6 +19,7 @@ class BillingEventTest < ActiveSupport::TestCase
     should_validate_presence_of :created_by
     should_validate_presence_of :project
     should_validate_presence_of :quantity
+    should_validate_presence_of :request
 
     should_validate_numericality_of :quantity
 
@@ -73,6 +74,7 @@ class BillingEventTest < ActiveSupport::TestCase
   context "refunds" do
     context "when no entry exists" do
       setup do
+        @request = Factory :request
         assert_raises BillingException::UnchargedRefund do
           @refund_event = BillingEvent.create!(:project => @project,
                                                :reference => "Refund me!",
@@ -86,15 +88,18 @@ class BillingEventTest < ActiveSupport::TestCase
 
     context "when an entry exists" do
       setup do
+        @request = Factory :request
         assert_nothing_raised do
           assert_equal 1, BillingEvent.count
           @charge = BillingEvent.create(:project => @project,
                                         :reference => "Refund me!",
+                                        :request => @request,
                                         :created_by => "abc123@example.com")
           assert_equal 2, BillingEvent.count
           @refund_event = BillingEvent.create(:project => @project,
                                               :reference => "Refund me!",
                                               :kind => "refund",
+                                              :request => @request,
                                               :created_by => "abc123@example.com")
         end
       end
@@ -104,14 +109,17 @@ class BillingEventTest < ActiveSupport::TestCase
 
     context "when an entry has been refunded" do
       setup do
+        @request = Factory :request
         @charge = BillingEvent.create(:project => @project,
                                       :reference => "Refund me!",
+                                      :request => @request,
                                       :created_by => "abc123@example.com")
 
         assert_nothing_raised do
           @refund_event = BillingEvent.create(:project => @project,
                                               :reference => "Refund me!",
                                               :kind => "refund",
+                                              :request => @request,
                                               :created_by => "abc123@example.com")
         end
 
@@ -119,6 +127,7 @@ class BillingEventTest < ActiveSupport::TestCase
           @duplicate_refund_event = BillingEvent.create(:project => @project,
                                                         :reference => "Refund me!",
                                                         :kind => "refund",
+                                                        :request => @request,
                                                         :created_by => "abc123@example.com")
         end
       end
@@ -133,9 +142,11 @@ class BillingEventTest < ActiveSupport::TestCase
     context "when a charge has a multiple quantity" do
       setup do
         assert_nothing_raised do
+          @request = Factory :request
           @charge = BillingEvent.create(:project => @project,
                                         :reference => "Refund me!",
                                         :kind => "charge",
+                                        :request => @request,
                                         :quantity => 5,
                                         :created_by => "abc123@example.com")
         end
@@ -146,6 +157,7 @@ class BillingEventTest < ActiveSupport::TestCase
             @refund_event = BillingEvent.create(:project => @project,
                                                 :reference => "Refund me!",
                                                 :kind => "refund",
+                                                :request => @request,
                                                 :quantity => 5,
                                                 :created_by => "abc123@example.com")
           end
@@ -160,16 +172,19 @@ class BillingEventTest < ActiveSupport::TestCase
             @refund_event_1 = BillingEvent.create(:project => @project,
                                                   :reference => "Refund me!",
                                                   :kind => "refund",
+                                                  :request => @request,
                                                   :quantity => 2,
                                                   :created_by => "abc123@example.com")
             @refund_event_2 = BillingEvent.create(:project => @project,
                                                   :reference => "Refund me!",
                                                   :kind => "refund",
+                                                  :request => @request,
                                                   :quantity => 2,
                                                   :created_by => "abc123@example.com")
             @refund_event_3 = BillingEvent.create(:project => @project,
                                                   :reference => "Refund me!",
                                                   :kind => "refund",
+                                                  :request => @request,
                                                   :quantity => 1,
                                                   :created_by => "abc123@example.com")
           end
@@ -187,16 +202,19 @@ class BillingEventTest < ActiveSupport::TestCase
             @refund_event_1 = BillingEvent.create(:project => @project,
                                                   :reference => "Refund me!",
                                                   :kind => "refund",
+                                                  :request => @request,
                                                   :quantity => 2,
                                                   :created_by => "abc123@example.com")
             @refund_event_2 = BillingEvent.create(:project => @project,
                                                   :reference => "Refund me!",
                                                   :kind => "refund",
+                                                  :request => @request,
                                                   :quantity => 1,
                                                   :created_by => "abc123@example.com")
             @refund_event_3 = BillingEvent.create(:project => @project,
                                                   :reference => "Refund me!",
                                                   :kind => "refund",
+                                                  :request => @request,
                                                   :quantity => 1,
                                                   :created_by => "abc123@example.com")
           end
@@ -204,6 +222,7 @@ class BillingEventTest < ActiveSupport::TestCase
             @refund_event_3 = BillingEvent.create(:project => @project,
                                                   :reference => "Refund me!",
                                                   :kind => "refund",
+                                                  :request => @request,
                                                   :quantity => 2,
                                                   :created_by => "abc123@example.com")
           end

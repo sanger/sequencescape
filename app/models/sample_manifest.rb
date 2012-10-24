@@ -76,8 +76,6 @@ class SampleManifest < ActiveRecord::Base
   self.spreadsheet_offset = 9
   self.spreadsheet_header_row = 8
 
-  acts_as_audited :on => [:destroy, :update]
-
   # Problem with paperclip
   attr_accessor :uploaded_file_name
   attr_accessor :uploaded_content_type
@@ -152,9 +150,4 @@ class SampleManifest < ActiveRecord::Base
     (1..count).map { |_| SangerSampleId::Factory.instance.next! }
   end
   private :generate_sanger_ids
-
-  def generate_study_samples(study_samples_data)
-    study_sample_fields = [:study_id, :sample_id]
-    StudySample.import study_sample_fields, study_samples_data
-  end
 end

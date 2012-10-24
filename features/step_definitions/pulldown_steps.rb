@@ -46,13 +46,13 @@ Transform /^([A-H]\d+)-([A-H]\d+)$/ do |start, finish|
 end
 
 def create_submission_of_assets(template, assets, request_options = {})
-      template.create_and_build_submission!(
-        :user            => Factory(:user),
-        :study           => Factory(:study),
-        :project         => Factory(:project),
-        :assets          => assets,
-        :request_options => request_options
-      )
+  template.create_and_build_submission!(
+    :user            => Factory(:user),
+    :study           => Factory(:study),
+    :project         => Factory(:project),
+    :assets          => assets,
+    :request_options => request_options
+  )
 
   Given 'all pending delayed jobs are processed'
 end
@@ -103,7 +103,13 @@ def work_pipeline_for(submissions, name)
     Factory(:tag).tag!(w) unless w.primary_aliquot.tag.present? # Ensure wells are tagged
     w.requests_as_source.first.start!                           # Ensure request is considered started
   end
-  template.create!(:source => source_plate, :destination => final_plate_type.create!, :user => Factory(:user))
+
+  source_plate.plate_purpose.child_relationships.create!(:child => final_plate_type, :transfer_request_type => RequestType.transfer)
+
+  final_plate_type.create!.tap do |final_plate|
+    AssetLink.create!(:ancestor => source_plate, :descendant => final_plate)
+    template.create!(:source => source_plate, :destination => final_plate, :user => Factory(:user))
+  end
 end
 
 # A bit of a fudge but it'll work for the moment.  We essentially link the last plate of the different
@@ -117,6 +123,9 @@ Given /^(all submissions) have been worked until the last plate of the "Pulldown
 end
 Given /^(all submissions) have been worked until the last plate of the "Pulldown ISC" pipeline$/ do |submissions|
   work_pipeline_for(submissions, 'ISC cap lib pool')
+end
+Given /^(all submissions) have been worked until the last plate of the "Illumina-B STD" pipeline$/ do |submissions|
+  work_pipeline_for(submissions, 'ILB_STD_PCRXP')
 end
 
 Transform /^the (sample|library) tube "([^\"]+)"$/ do |type, name|
@@ -175,7 +184,31 @@ Then /^all of the pulldown library creation requests to (the multiplexed library
   assert(requests.all? { |r| r.billing_events.empty? }, "There are requests that have billing events")
 end
 
+Then /^all of the illumina-b library creation requests to (the multiplexed library tube .+) should be billed to their project$/ do |tube|
+  requests = tube.requests_as_target.where_is_a?(IlluminaB::Requests::StdLibraryRequest).all
+  assert(!requests.empty?, "There are expected to be a number of pulldown requests")
+  assert(requests.all? { |r| not r.billing_events.charged_to_project.empty? }, "There are requests that have not billed the project")
+end
+
+Then /^all of the illumina-b library creation requests to (the multiplexed library tube .+) should not have billing$/ do |tube|
+  requests = tube.requests_as_target.where_is_a?(IlluminaB::Requests::StdLibraryRequest).all
+  assert(!requests.empty?, "There are expected to be a number of pulldown requests")
+  assert(requests.all? { |r| r.billing_events.empty? }, "There are requests that have billing events")
+end
+
 Given /^all requests are in the last submission$/ do
   submission = Submission.last or raise StandardError, "There are no submissions!"
   Request.update_all("submission_id=#{submission.id}")
+end
+
+Given /^(the plate .+) will pool into 1 tube$/ do |plate|
+  stock_plate = PlatePurpose.find(2).create!(:do_not_create_wells) { |p| p.wells = [Factory(:empty_well)] }
+  stock_well  = stock_plate.wells.first
+  submission  = Submission.create!(:user => Factory(:user))
+
+  AssetLink.create!(:ancestor => stock_plate, :descendant => plate)
+
+  plate.wells.in_column_major_order.each do |well|
+    RequestType.transfer.create!(:asset => stock_well, :target_asset => well, :submission => submission)
+  end
 end

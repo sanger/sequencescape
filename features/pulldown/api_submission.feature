@@ -1,4 +1,4 @@
-@api @json @pulldown @submission @single-sign-on @new-api @barcode-service @pulldown_api
+@api @json @pulldown @submission @single-sign-on @new-api @barcode-service @pulldown_api @wip
 Feature: Beginning with the API progress through pulldown to sequencing
 
   Background:

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120919082820) do
+ActiveRecord::Schema.define(:version => 20121024075904) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -52,6 +52,16 @@ ActiveRecord::Schema.define(:version => 20120919082820) do
   add_index "asset_audits", ["asset_id"], :name => "index_asset_audits_on_asset_id"
 
   create_table "asset_barcodes", :force => true do |t|
+  end
+
+  create_table "asset_creations", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "parent_id"
+    t.integer  "child_purpose_id"
+    t.integer  "child_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "type",             :null => false
   end
 
   create_table "asset_group_assets", :force => true do |t|
@@ -250,7 +260,7 @@ ActiveRecord::Schema.define(:version => 20120919082820) do
     t.float    "quantity",    :default => 1.0
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "request_id"
+    t.integer  "request_id",                             :null => false
   end
 
   add_index "billing_events", ["kind"], :name => "index_billing_events_on_kind"
@@ -619,15 +629,6 @@ ActiveRecord::Schema.define(:version => 20120919082820) do
   add_index "pipelines_request_types", ["pipeline_id"], :name => "fk_pipelines_request_types_to_pipelines"
   add_index "pipelines_request_types", ["request_type_id"], :name => "fk_pipelines_request_types_to_request_types"
 
-  create_table "plate_creations", :force => true do |t|
-    t.integer  "user_id"
-    t.integer  "parent_id"
-    t.integer  "child_plate_purpose_id"
-    t.integer  "child_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "plate_creator_purposes", :force => true do |t|
     t.integer  "plate_creator_id", :null => false
     t.integer  "plate_purpose_id", :null => false
@@ -653,9 +654,19 @@ ActiveRecord::Schema.define(:version => 20120919082820) do
 
   add_index "plate_metadata", ["plate_id"], :name => "index_plate_metadata_on_plate_id"
 
+  create_table "plate_owners", :force => true do |t|
+    t.integer  "user_id",        :null => false
+    t.integer  "plate_id",       :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "eventable_id",   :null => false
+    t.string   "eventable_type", :null => false
+  end
+
   create_table "plate_purpose_relationships", :force => true do |t|
     t.integer "parent_id"
     t.integer "child_id"
+    t.integer "transfer_request_type_id", :null => false
   end
 
   create_table "plate_purposes", :force => true do |t|
@@ -671,6 +682,9 @@ ActiveRecord::Schema.define(:version => 20120919082820) do
     t.integer  "barcode_printer_type_id",                       :default => 2
     t.boolean  "cherrypickable_target",                         :default => true,      :null => false
     t.boolean  "cherrypickable_source",                         :default => false,     :null => false
+    t.string   "cherrypick_direction",                          :default => "column",  :null => false
+    t.integer  "default_location_id"
+    t.string   "cherrypick_filters"
   end
 
   add_index "plate_purposes", ["qc_display"], :name => "index_plate_purposes_on_qc_display"
@@ -825,6 +839,7 @@ ActiveRecord::Schema.define(:version => 20120919082820) do
     t.integer  "product_line_id"
     t.boolean  "deprecated",                       :default => false, :null => false
     t.boolean  "no_target_asset",                  :default => false, :null => false
+    t.integer  "target_purpose_id"
   end
 
   create_table "requests", :force => true do |t|
@@ -886,9 +901,11 @@ ActiveRecord::Schema.define(:version => 20120919082820) do
   add_index "roles", ["authorizable_id"], :name => "index_roles_on_authorizable_id"
   add_index "roles", ["name"], :name => "index_roles_on_name"
 
-  create_table "roles_users", :id => false, :force => true do |t|
-    t.integer "role_id"
-    t.integer "user_id"
+  create_table "roles_users", :force => true do |t|
+    t.integer  "role_id"
+    t.integer  "user_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   add_index "roles_users", ["role_id"], :name => "index_roles_users_on_role_id"
@@ -1030,6 +1047,7 @@ ActiveRecord::Schema.define(:version => 20120919082820) do
     t.string   "target_state"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "reason"
   end
 
   create_table "studies", :force => true do |t|
@@ -1166,10 +1184,11 @@ ActiveRecord::Schema.define(:version => 20120919082820) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "product_line_id"
-    t.boolean  "visible",               :default => true, :null => false
+    t.integer  "superceded_by_id",      :default => -1, :null => false
+    t.datetime "superceded_at"
   end
 
-  add_index "submission_templates", ["name"], :name => "index_submission_templates_on_name"
+  add_index "submission_templates", ["name", "superceded_by_id"], :name => "name_and_superceded_by_unique_idx", :unique => true
 
   create_table "submission_workflows", :force => true do |t|
     t.string   "key",        :limit => 50
@@ -1315,6 +1334,13 @@ ActiveRecord::Schema.define(:version => 20120919082820) do
 
   add_index "transfers", ["source_id"], :name => "source_id_idx"
 
+  create_table "tube_creation_children", :force => true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "tube_creation_id", :null => false
+    t.integer  "tube_id",          :null => false
+  end
+
   create_table "users", :force => true do |t|
     t.string   "login"
     t.string   "email"
@@ -1368,6 +1394,12 @@ ActiveRecord::Schema.define(:version => 20120919082820) do
   end
 
   add_index "well_attributes", ["well_id"], :name => "index_well_attributes_on_well_id"
+
+  create_table "well_links", :force => true do |t|
+    t.integer "target_well_id", :null => false
+    t.integer "source_well_id", :null => false
+    t.string  "type",           :null => false
+  end
 
   create_table "well_to_tube_transfers", :force => true do |t|
     t.integer "transfer_id",    :null => false

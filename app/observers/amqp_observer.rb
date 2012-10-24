@@ -7,7 +7,8 @@ class AmqpObserver < ActiveRecord::Observer
     :asset, :asset_link, :well_attribute,
     Metadata::Base,
     :billing_event,
-    :batch, :batch_request
+    :batch, :batch_request,
+    :role, Role::UserRole
   )
 
   # Ensure we capture records being saved as well as deleted.
@@ -60,14 +61,14 @@ class AmqpObserver < ActiveRecord::Observer
     end
 
     # Converts metadata entries to their owner records, if necessary
-    def determine_record_to_broadcast(record)
-      record_to_broadcast, record_for_deletion = case
-      when record.is_a?(WellAttribute)  then [ record.well,  nil ]
-      when record.is_a?(Metadata::Base) then [ record.owner, nil ]
-      else [ record, record ]
+    def determine_record_to_broadcast(record, &block)
+      case
+      when record.is_a?(WellAttribute)  then yield(record.well,  nil)
+      when record.is_a?(Metadata::Base) then yield(record.owner, nil)
+      when record.is_a?(Role)           then determine_record_to_broadcast(record.authorizable, &block)
+      when record.is_a?(Role::UserRole) then determine_record_to_broadcast(record.role, &block)
+      else                                   yield(record,       record)
       end
-
-      yield(record_to_broadcast, record_for_deletion)
     end
     private :determine_record_to_broadcast
 
@@ -83,8 +84,12 @@ class AmqpObserver < ActiveRecord::Observer
 
       def map(&block)
         @updated.group_by(&:first).each do |model, pairs|
-          model = model.including_associations_for_json if model.respond_to?(:including_associations_for_json)
-          pairs.map(&:last).in_groups_of(configatron.amqp.burst_size).each { |group| model.find(group.compact).map(&block) }
+          # Regardless of what the scoping says, we're going by ID so we always want to do what
+          # the standard model does.  If we need eager loading we'll add it.
+          model.send(:with_exclusive_scope) do
+            model = model.including_associations_for_json if model.respond_to?(:including_associations_for_json)
+            pairs.map(&:last).in_groups_of(configatron.amqp.burst_size).each { |group| model.find(group.compact).map(&block) }
+          end
         end
         @deleted.map(&block)
       end
@@ -122,6 +127,8 @@ class AmqpObserver < ActiveRecord::Observer
       def <<(record)
         activate_exchange do
           determine_record_to_broadcast(record) do |record_to_broadcast, record_for_deletion|
+            Rails.logger.warn { "AmqpObserver called outside transaction: #{caller.join("\n")}" }
+
             if record.destroyed?
               publish(record_for_deletion) if record_for_deletion.present?
             else
@@ -164,7 +171,7 @@ class AmqpObserver < ActiveRecord::Observer
         client.stop
       end
     rescue Qrack::ConnectionTimeout, StandardError => exception
-      Rails.logger.debug { "Unable to broadcast: #{exception.message}\n#{exception.backtrace.join("\n")}" }
+      Rails.logger.error { "Unable to broadcast: #{exception.message}\n#{exception.backtrace.join("\n")}" }
     end
     private :activate_exchange
   end

@@ -32,9 +32,6 @@ Feature: Access request types through the API
 
           "uuid": "00000000-1111-2222-3333-444444444444",
           "name": "Sequencing by colour"
-        },
-        "uuids_to_ids": {
-
         }
       }
       """

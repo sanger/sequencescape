@@ -22,6 +22,7 @@
 
 <% @sample.studies.each do |study| %>
   <% add :menu, "Back to study #{study.name}" => study_path(study) -%>
+  <% add :menu, "Back to samples for #{study.name}" => study_samples_path(study) -%>
 <% end %>
 
 <h1>Sample Specification</h1>

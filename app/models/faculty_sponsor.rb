@@ -6,8 +6,6 @@ class FacultySponsor < ActiveRecord::Base
   validates_presence_of  :name
   validates_uniqueness_of :name, :message => "of faculty sponsor already present in database"
 
-  acts_as_audited :on => [:destroy, :update]
-
   def count_studies
     Study.count(:joins => { :study_metadata => :faculty_sponsor }, :conditions => { :study_metadata => { :faculty_sponsor_id => self.id } })
   end

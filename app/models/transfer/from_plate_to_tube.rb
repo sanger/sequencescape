@@ -26,5 +26,11 @@ class Transfer::FromPlateToTube < Transfer
     self.transfers = self.transfers - bad_wells.map { |well| well.map.description }
   end
   private :each_transfer
+
+  # Request type is based on the destination tube from the source plate
+  def request_type_between(_, destination)
+    destination.transfer_request_type_from(source)
+  end
+  private :request_type_between
 end
 

@@ -27,9 +27,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Output
 
     line = __LINE__ + 1
     class_eval(%Q{
-      def self.object_json(object, uuids_to_ids, options)
-        uuids_to_ids[object.uuid] = object.id if object.respond_to?(:uuid)
-
+      def self.object_json(object, options)
         super.tap do |result|
           result["uuid"]       = object.uuid if object.respond_to?(:uuid)
           result["created_at"] = object.created_at
@@ -42,7 +40,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Output
   end
 
   RETURNED_OBJECTS = [
-    Symbol, String, Fixnum, BigDecimal,
+    Symbol, String, Fixnum, BigDecimal, Float,
     Date, Time, ActiveSupport::TimeWithZone,
     FalseClass, TrueClass
   ]

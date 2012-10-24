@@ -3,8 +3,10 @@ class Plate < Asset
   include ModelExtensions::Plate
   include LocationAssociation::Locatable
   include Transfer::Associations
+  include Transfer::State::PlateState
   include PlatePurpose::Associations
   include Barcode::Barcodeable
+  include Asset::Ownership::Owned
 
   # The default state for a plate comes from the plate purpose
   delegate :default_state, :to => :plate_purpose, :allow_nil => true
@@ -17,7 +19,7 @@ class Plate < Asset
 
   # Transfer requests into a plate are the requests leading into the wells of said plate.
   def transfer_requests
-    wells.map(&:transfer_requests_as_target).flatten
+    wells.all(:include => :transfer_requests_as_target).map(&:transfer_requests_as_target).flatten
   end
 
   def self.derived_classes
@@ -76,6 +78,18 @@ WHERE c.container_id=?
       AssetLink.import([:direct, :count, :ancestor_id, :descendant_id], links_data.map { |c| [true,1,*c] }, :validate => false)
       WellAttribute.import([:well_id, :created_at, :updated_at], links_data.map { |c| [c.last, time_now, time_now] }, :validate => false, :timestamps => false)
     end
+    private :post_import
+
+    def post_connect(well)
+      AssetLink.create!(:ancestor => proxy_owner, :descendant => well)
+    end
+    private :post_connect
+
+    def construct!
+      Map.where_plate_size(proxy_owner.size).in_row_major_order.map do |location|
+        connect(Well.create!(:map => location))
+      end
+    end
 
     def map_from_locations
       {}.tap do |location_to_well|
@@ -104,6 +118,10 @@ WHERE c.container_id=?
     # Walks the wells A1, A2, ... B1, B2, ... H12
     def walk_in_row_major_order(&block)
       self.in_row_major_order.each { |well| yield(well, well.map.row_order) }
+    end
+
+    def in_preferred_order
+      proxy_owner.plate_purpose.in_preferred_order(self)
     end
   end
 
@@ -237,16 +255,9 @@ WHERE c.container_id=?
   end
 
   def control_well_exists?
-    wells.each do |well|
-      request = Request.find_by_target_asset_id(well.id)
-      unless request.nil?
-        source_well = request.asset
-        if source_well.parent.is_a?(ControlPlate)
-          return true
-        end
-      end
-    end
-    false
+		Request.into_by_id(well_ids).any? do |request|
+			request.asset.plate.is_a?(ControlPlate)
+		end
   end
 
   # A plate has a sample with the specified name if any of its wells have that sample.
@@ -436,13 +447,7 @@ WHERE c.container_id=?
   end
 
   def lookup_stock_plate
-    self.parents.each do |parent_plate|
-      next unless parent_plate.is_a?(Plate)     # TODO: Do we need this?
-      return parent_plate if parent_plate.stock_plate?
-      parent_stock = parent_plate.send(:lookup_stock_plate)
-      return parent_stock if parent_stock.present?
-    end
-    nil
+    self.ancestors.all(:order => 'created_at DESC', :include => :plate_purpose).detect(&:stock_plate?)
   end
   private :lookup_stock_plate
 
@@ -563,5 +568,14 @@ WHERE c.container_id=?
       :suffix => self.parent.try(:barcode),
       :prefix => self.barcode_prefix.prefix
     )
+  end
+
+  # This method returns a map from the wells on the plate to their stock well.
+  def stock_wells
+    # Optimisation: if the plate is a stock plate then it's wells are it's stock wells!
+    return Hash[wells.with_pool_id.map { |w| [w,[w]] }] if stock_plate?
+    Hash[wells.with_pool_id.map { |w| [w, w.stock_wells] }].tap do |stock_wells_hash|
+      raise "No stock plate associated with #{id}" if stock_wells_hash.empty?
+    end
   end
 end

@@ -5,7 +5,7 @@ class ::Endpoints::PlateCreations < ::Core::Endpoint::Base
 
   instance do
     belongs_to(:child, :json => "child")
-    belongs_to(:child_plate_purpose, :json => "child_plate_purpose")
+    belongs_to(:child_purpose, :json => "child_purpose")
     belongs_to(:parent, :json => "parent")
     belongs_to(:user, :json => "user")
   end

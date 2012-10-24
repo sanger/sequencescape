@@ -18,6 +18,7 @@ class BillingEvent < ActiveRecord::Base
   validates_presence_of :created_by
   validates_presence_of :project
   validates_presence_of :quantity
+  validates_presence_of :request
 
   validates_numericality_of :quantity
 

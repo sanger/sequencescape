@@ -1,5 +1,5 @@
 class Study < ActiveRecord::Base
-  acts_as_audited :on => [:destroy, :update]
+
 
   include StudyReport::StudyDetails
   include ModelExtensions::Study

@@ -1,4 +1,4 @@
-@pulldown @barcode-service @assign_tags
+@pulldown @barcode-service @assign_tags @wip
 Feature: Cherrypicking for Pulldown pipeline
 
   Background:

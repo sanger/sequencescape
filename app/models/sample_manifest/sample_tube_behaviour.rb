@@ -76,7 +76,7 @@ module SampleManifest::SampleTubeBehaviour
 
     tubes, samples_data = [], []
     (0...self.count).each do |_|
-      sample_tube = SampleTube.create!
+      sample_tube = Tube::Purpose.standard_sample_tube.create!
       sanger_sample_id = SangerSampleId.generate_sanger_sample_id!(study_abbreviation, sanger_ids.shift)
 
       tubes << sample_tube
@@ -96,15 +96,12 @@ module SampleManifest::SampleTubeBehaviour
   handle_asynchronously :delayed_generate_asset_requests
 
   def sample_tube_sample_creation(samples_data,study_id)
-    study_samples_data = []
-    samples_data.each do |barcode,sanger_sample_id,prefix|
-      sample      = create_sample(sanger_sample_id)
-      sample_tube = SampleTube.find_by_barcode(barcode) or raise ActiveRecord::RecordNotFound, "Cannot find sample tube with barcode #{barcode.inspect}"
-      sample_tube.aliquots.create!(:sample => sample)
-
-      study_samples_data << [study_id, sample.id]
+    study.samples << samples_data.map do |barcode, sanger_sample_id, prefix|
+      create_sample(sanger_sample_id).tap do |sample|
+        sample_tube = SampleTube.find_by_barcode(barcode) or raise ActiveRecord::RecordNotFound, "Cannot find sample tube with barcode #{barcode.inspect}"
+        sample_tube.aliquots.create!(:sample => sample)
+      end
     end
-    generate_study_samples(study_samples_data)
   end
   private :sample_tube_sample_creation
 end

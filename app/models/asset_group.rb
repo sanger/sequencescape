@@ -1,5 +1,5 @@
 class AssetGroup < ActiveRecord::Base
-  acts_as_audited :on => [:destroy, :update]
+
   include Uuid::Uuidable
   include ModelExtensions::AssetGroup
 

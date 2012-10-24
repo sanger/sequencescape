@@ -30,7 +30,7 @@
   </thead>
   <tbody>
     <% well_submission_colours = AssignTagsToWellsTask.new.map_asset_ids_to_normalised_index_by_submission(@batch.requests) %>
-    <% CherrypickGroupBySubmissionTask.new.sort_grouped_requests_by_submission_id(@batch.requests).each do |request| %>
+    <% Request::GroupingHelpers.sort_grouped_requests_by_submission_id(@batch.requests).each do |request| %>
       <% well, source_well = request.asset, request.asset
       # follow transfer request until the multiplexed one
       while transfer_requests=well.requests.select { |r| r.is_a?(TransferRequest) }  and transfer_requests.size == 1

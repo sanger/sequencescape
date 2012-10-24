@@ -98,10 +98,7 @@ Feature: Searching for assets by barcode
             "name": "Testing the API 2",
             "uuid": "11111111-2222-3333-4444-000000000002"
           }
-        ],
-        "uuids_to_ids": {
-
-        }
+        ]
       }
       """
 
@@ -122,7 +119,6 @@ Feature: Searching for assets by barcode
       """
       {
         "searches": [],
-        "size": 0,
-        "uuids_to_ids": {}
+        "size": 0
       }
       """

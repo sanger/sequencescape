@@ -178,3 +178,6 @@ en:
     
   submissions:
     no_submissions: "There are no submissions yet. Please create one."
+
+  cherrypick:
+    picking_by_row: "This cherrypick may take longer as it is picking by rows, rather than columns."

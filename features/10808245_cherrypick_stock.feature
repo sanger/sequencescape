@@ -38,7 +38,7 @@ Feature: Pick by micro litre (stock transfer) using the Tecan robot
      And I choose "Pick by µl"
      And I fill in the following:
         | Volume  | <volume>   |
-     And I select "Pulldown Aliquot" from "Plate Purpose"
+     And I select "Pulldown" from "Plate Purpose"
      And I press "Next step"
      And I press "Release this batch"
     Given the last batch has a barcode of "550000555760"

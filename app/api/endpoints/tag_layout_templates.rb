@@ -9,5 +9,6 @@ class ::Endpoints::TagLayoutTemplates < ::Core::Endpoint::Base
         request.create!(::Io::TagLayout.map_parameters_to_attributes(request.json).reverse_merge(:user => request.user))
       end
     end
+
   end
 end

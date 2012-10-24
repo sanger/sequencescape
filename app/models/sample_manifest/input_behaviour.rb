@@ -217,7 +217,10 @@ module SampleManifest::InputBehaviour
       #
       # NOTE: Do not include the primary_receptacle here as it will cause the wrong one to be loaded!
       sample = samples.find_by_sanger_sample_id(sanger_sample_id)
-      if sample.primary_receptacle.nil?
+      if sample.nil?
+        sample_errors.push("Sample #{sanger_sample_id} does not appear to be part of this manifest")
+        next
+      elsif sample.primary_receptacle.nil?
         sample_errors.push("Sample #{sanger_sample_id} appears to not have a receptacle defined! Contact PSD")
         next
       else

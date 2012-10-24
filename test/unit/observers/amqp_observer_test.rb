@@ -63,8 +63,42 @@ class AmqpObserverTest < ActiveSupport::TestCase
             metadata.stubs(:destroyed?).returns(true)
             metadata.stubs(owner).returns(object)
             OWNED_CLASSES.each { |c,_| metadata.stubs(:is_a?).with(c).returns(base_class == c) }
+            metadata.stubs(:is_a?).with(Role).returns(false)
 
             @target << metadata
+          end
+        end
+
+        context 'role related' do
+          setup do
+            @object, @role = mock('Object to broadcast'), mock('Role being updated')
+
+            @role.stubs(:destroyed?).returns(false)
+            OWNED_CLASSES.each { |c,_| @role.stubs(:is_a?).with(c).returns(false) }
+            @role.stubs(:is_a?).with(Role).returns(true)
+            @role.stubs(:authorizable).returns(@object)
+
+            OWNED_CLASSES.each { |c,_| @object.stubs(:is_a?).with(c).returns(false) }
+            @object.stubs(:is_a?).with(Role).returns(false)
+            @object.stubs(:is_a?).with(Role::UserRole).returns(false)
+
+            @target.expects(:publish).with(@object).once
+          end
+
+          should 'send the authorized record for roles' do
+            @target << @role
+          end
+
+          should 'send the authorized record for a user role addition' do
+            user_role = mock('User role being added')
+
+            user_role.stubs(:destroyed?).returns(false)
+            OWNED_CLASSES.each { |c,_| user_role.stubs(:is_a?).with(c).returns(false) }
+            user_role.stubs(:is_a?).with(Role).returns(false)
+            user_role.stubs(:is_a?).with(Role::UserRole).returns(true)
+            user_role.stubs(:role).returns(@role)
+
+            @target << user_role
           end
         end
       end
@@ -75,9 +109,26 @@ class AmqpObserverTest < ActiveSupport::TestCase
           object.stubs(:id).returns(123456789)
           object.stubs(:class).returns(object_class)
           object.stubs(:destroyed?).returns(false)
+          object_class.expects(:with_exclusive_scope).yields
           object_class.expects(:find).with([object.id]).returns([object])
           @target.expects(:publish).with(object).once
           return_from_inside_transaction(@target, object)
+        end
+
+        should 'no message on exceptions' do
+          object, object_class = mock('Object to broadcast'), mock('Class of object to broadcast')
+          object.stubs(:id).returns(123456789)
+          object.stubs(:class).returns(object_class)
+          object.stubs(:destroyed?).returns(false)
+
+          begin
+            @target.transaction do
+              @target << object
+              raise 'Do not send thanks!'
+            end
+          rescue => exception
+            # Good!
+          end
         end
 
         should 'only send one copy of the object' do
@@ -85,6 +136,7 @@ class AmqpObserverTest < ActiveSupport::TestCase
           object.stubs(:id).returns(123456789)
           object.stubs(:class).returns(object_class)
           object.stubs(:destroyed?).returns(false)
+          object_class.expects(:with_exclusive_scope).yields
           object_class.expects(:find).with([object.id]).returns([object])
           @target.expects(:publish).with(object).once
 
@@ -110,6 +162,7 @@ class AmqpObserverTest < ActiveSupport::TestCase
           object.stubs(:id).returns(123456789)
           object.stubs(:class).returns(object_class)
           object.stubs(:destroyed?).returns(false)
+          object_class.expects(:with_exclusive_scope).yields
           object_class.expects(:find).with([object.id]).returns([object])
 
           # NOTE: Expectation set after the inner transaction so that it will error if the method
