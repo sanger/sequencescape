@@ -148,6 +148,6 @@ class SampleManifest < ActiveRecord::Base
     study_samples_data.each do |study_sample|
       StudySample.create!(:study_id => study_sample.first, :sample_id=> study_sample.last)
     end
-    #StudySample.import study_sample_fields, study_samples_data
+
   end
 end

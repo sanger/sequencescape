@@ -63,9 +63,14 @@ request_information_types_data = [
   ["Sequencing Type", 'sequencing_type', 'Sequencing Type', 0 ],
   ['Insert Size', 'insert_size', 'Insert Size', 0 ]
 ]
-RequestInformationType.import [:name, :key, :label, :hide_in_inbox], request_information_types_data, :validate => false
-
-
+request_information_types_data.each do |data|
+  RequestInformationType.create!(
+    :name          => data[0],
+    :key           => data[1],
+    :label         => data[2],
+    :hide_in_inbox => data[3]
+  )
+end
 
 REQUEST_INFORMATION_TYPES = Hash[RequestInformationType.all.map { |t| [ t.key, t ] }].freeze
 def create_request_information_types(pipeline, *keys)

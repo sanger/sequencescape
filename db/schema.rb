@@ -321,7 +321,7 @@ ActiveRecord::Schema.define(:version => 20121120100335) do
   create_table "db_files", :force => true do |t|
     t.binary  "data",                :limit => 2147483647
     t.integer "owner_id"
-    t.string  "owner_type",          :limit => 50,         :default => "Document", :null => false
+    t.string  "owner_type",          :limit => 25,         :default => "Document", :null => false
     t.string  "owner_type_extended"
   end
 
@@ -503,7 +503,7 @@ ActiveRecord::Schema.define(:version => 20121120100335) do
 
   add_index "lab_events", ["batch_id"], :name => "index_lab_events_on_batch_id"
   add_index "lab_events", ["created_at"], :name => "index_lab_events_on_created_at"
-  add_index "lab_events", ["description", "eventful_type"], :name => "index_lab_events_find_flowcell", :length => {"eventful_type"=>nil, "description"=>"20"}
+  add_index "lab_events", ["description", "eventful_type"], :name => "index_lab_events_find_flowcell", :length => {"description"=>"20", "eventful_type"=>nil}
   add_index "lab_events", ["eventful_id"], :name => "index_lab_events_on_eventful_id"
   add_index "lab_events", ["eventful_type"], :name => "index_lab_events_on_eventful_type"
 
@@ -1109,9 +1109,9 @@ ActiveRecord::Schema.define(:version => 20121120100335) do
     t.integer  "faculty_sponsor_id"
     t.float    "number_of_gigabases_per_sample"
     t.string   "hmdmc_approval_number"
-    t.string   "remove_x_and_autosomes",                 :default => "No", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "remove_x_and_autosomes",                 :default => "No", :null => false
   end
 
   add_index "study_metadata", ["faculty_sponsor_id"], :name => "index_study_metadata_on_faculty_sponsor_id"

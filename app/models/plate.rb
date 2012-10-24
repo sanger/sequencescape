@@ -84,7 +84,7 @@ WHERE c.container_id=?
         WellAttribute.create!(
           :well_id => c.last,
           :created_at => time_now,
-          :updated_at => time.now
+          :updated_at => time_now
         )
       end
     end

@@ -1,7 +1,7 @@
 # Creates all of the Map instances in the DB for all know plate sizes.  This assumes a horizontal orientation
 # of the plate, i.e.:
 #
-#   1 2 3 4 5 6 7 8 9 
+#   1 2 3 4 5 6 7 8 9
 # A . . . . . . . . .
 # B . . . . . . . . .
 # C . . . . . . . . .
@@ -28,9 +28,7 @@ map_data = []
 end
 
 COLUMNS = [:location_id, :description, :asset_size, :column_order, :row_order]
-Map.import(
-  COLUMNS,
-  map_data.map { |details| COLUMNS.map { |k| details[k] } },
-  :validate => false
-)
 
+map_data.each do |details|
+  Map.create(details)
+end

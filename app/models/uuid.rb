@@ -65,8 +65,6 @@ class Uuid < ActiveRecord::Base
 
       def generate_missing_uuids
         records_for_missing_uuids { |id| Uuid.create!(:resouce_type=>self.name, :resource_id=>id, :external_id=>Uuid.generate_uuid ) }
-        #return if records.blank?
-        #Uuid.import([ 'resource_type', 'resource_id', 'external_id' ], records, :validate => false)
       end
       private :generate_missing_uuids
 

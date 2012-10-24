@@ -8,7 +8,7 @@ gem "log4r"
 gem "db-charmer"
 
 gem "aasm", "~>2.4.0"
-gem "ar-extensions"
+gem "acts_as_audited"
 gem "configatron"
 gem "rest-client" # curb substitute.
 gem "fastercsv", "~>1.4.0"
