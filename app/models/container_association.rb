@@ -43,10 +43,9 @@ class ContainerAssociation < ActiveRecord::Base
           end
         }, __FILE__, line)
 
-          def attach(records)
-            ActiveRecord::Base.transaction do
-              records.each { |r| ContainerAssociation.create!(:container_id => proxy_owner.id, :content_id => r['id']) }
-            end
+        def attach(records)
+          ActiveRecord::Base.transaction do
+            records.each { |r| ContainerAssociation.create!(:container_id => proxy_owner.id, :content_id => r['id']) }
           end
         end
 
