@@ -39,7 +39,7 @@ class CarrierwaveData < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
       # Create files from existing study reports
-      StudyReport.find_each do |r|
+      StudyReport.find_each(:batch_size => 200) do |r|
 
         unless r.report_file.nil?
           say "Migrating study report: #{r.id}"
@@ -50,8 +50,9 @@ class CarrierwaveData < ActiveRecord::Migration
         end
 
       end
-
-      SampleManifest.find_each do |s|
+    end
+    ActiveRecord::Base.transaction do
+      SampleManifest.find_each(:batch_size => 200) do |s|
 
         # Temp files are created so that Document.create has a file object to save
         unless s.uploaded_file.nil?
