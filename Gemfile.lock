@@ -151,6 +151,8 @@ GEM
       daemons (>= 1.0.3)
       fastthread (>= 1.0.1)
       gem_plugin (>= 0.2.3)
+    mongrel (1.1.5-java)
+      gem_plugin (>= 0.2.3)
     mongrel_cluster (1.0.5)
       gem_plugin (>= 0.2.3)
       mongrel (>= 1.0.2)
@@ -236,7 +238,7 @@ PLATFORMS
 DEPENDENCIES
   aasm (~> 2.4.0)
   activerecord-jdbc-adapter
-  activerecord-oracle_enhanced-adapter (= 1.2.3)
+  activerecord-oracle_enhanced-adapter
   acts-as-dag!
   acts_as_audited
   alter_table!
@@ -264,7 +266,7 @@ DEPENDENCIES
   launchy
   log4r
   mocha
-  mongrel (~> 1.1.5)
+  mongrel
   mongrel_cluster
   mysql
   net-ldap
