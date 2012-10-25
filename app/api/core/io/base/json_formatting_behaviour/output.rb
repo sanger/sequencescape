@@ -19,12 +19,6 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Output
       }
     end
 
-    # NOTE: Handy to have when debugging!
-    low_level("#{'=' * 20} #{self.name} #{'=' * 20}")
-    low_level("OUTPUT JSON CODE:")
-    code.each(&method(:low_level))
-    low_level('-' * 60)
-
     line = __LINE__ + 1
     class_eval(%Q{
       def self.object_json(object, options)
