@@ -82,7 +82,10 @@ class PlatePurpose < Purpose
       conditions << "(#{condition[0]} AND #{condition[1]})"
       parameters.concat(args)
     end
-    Request.where_is_not_a?(TransferRequest).all(:conditions => [ "(#{conditions.join(' OR ')})", *parameters ]).map(&:fail!)
+    Request.where_is_not_a?(TransferRequest).all(:conditions => [ "(#{conditions.join(' OR ')})", *parameters ]).map do |request|
+      # This can probably be switched for an each, as I don't think the array is actually used for anything.
+      request.passed? ? request.change_decision! : request.fail!
+    end
   end
   private :fail_stock_well_requests
 
