@@ -1,21 +1,22 @@
-# Local class definitions
-class StudyReport < ActiveRecord::Base
-  extend DbFile::Uploader
-  has_uploaded :report, {:serialization_column => "report_filename"}
-end
-
-class PlateVolume < ActiveRecord::Base
-  extend DbFile::Uploader
-  has_uploaded :uploaded, { :serialization_column => "uploaded_file_name" }
-end
-
-class SampleManifest < ActiveRecord::Base
-  extend Document::Associations
-  has_uploaded_document :uploaded, {:differentiator => "uploaded"}
-  has_uploaded_document :generated, {:differentiator => "generated"}
-end
-
 class CarrierwaveData < ActiveRecord::Migration
+
+  # Local class definitions
+  class StudyReport < ActiveRecord::Base
+    extend DbFile::Uploader
+    has_uploaded :report, {:serialization_column => "report_filename"}
+  end
+
+  class PlateVolume < ActiveRecord::Base
+    extend DbFile::Uploader
+    has_uploaded :uploaded, { :serialization_column => "uploaded_file_name" }
+  end
+
+  class SampleManifest < ActiveRecord::Base
+    extend Document::Associations
+    has_uploaded_document :uploaded, {:differentiator => "uploaded"}
+    has_uploaded_document :generated, {:differentiator => "generated"}
+  end
+
   # This module is a copy of code in the Polymorphic uploader.
    module DbFileStorage
      def self.store(file, o_id, o_type)
@@ -36,10 +37,10 @@ class CarrierwaveData < ActiveRecord::Migration
      end
    end
   def self.up
-    ActiveRecord::Base.transaction do 
+    ActiveRecord::Base.transaction do
       # Create files from existing study reports
       StudyReport.find_each do |r|
-        
+
         unless r.report_file.nil?
           say "Migrating study report: #{r.id}"
           DbFileStorage.store(r.report_file, r.id, "StudyReport")
@@ -47,11 +48,11 @@ class CarrierwaveData < ActiveRecord::Migration
           r.content_type="text/csv"
           r.save
         end
-        
+
       end
 
-      SampleManifest.find_each do |s| 
-        
+      SampleManifest.find_each do |s|
+
         # Temp files are created so that Document.create has a file object to save
         unless s.uploaded_file.nil?
           say "Migrating sample manifest: #{s.id}"
@@ -83,7 +84,7 @@ class CarrierwaveData < ActiveRecord::Migration
         end
         s.save
       end
-      
+
       # Create files from existing plate volume data
       PlateVolume.find_each do |p|
         say "Migrating plate volume: #{p.id}"
@@ -108,7 +109,7 @@ class CarrierwaveData < ActiveRecord::Migration
         end
         sm.save
       end
-   
+
       #  Create files from existing plate volume data
       PlateVolume.find_each do |p|
         say "Migrating plate volume: #{p.id}"
@@ -116,7 +117,7 @@ class CarrierwaveData < ActiveRecord::Migration
         p.db_files.each { |f| f.destroy }
         p.save
       end
-    
+
       # Create files from existing reports
       StudyReport.find_each do |r|
         say "Reverting study report: #{r.id}"
