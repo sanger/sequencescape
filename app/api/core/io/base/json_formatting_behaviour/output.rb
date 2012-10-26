@@ -116,8 +116,8 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Output
 
   module Tree
     module Intermediate
-      def initialize
-        @children = []
+      def initialize(children)
+        @children = children || []
       end
 
       def leaf(name, attribute)
@@ -142,14 +142,23 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Output
       def inspect
         @children.inspect
       end
+
+      def duplicate(&block)
+        yield(@children.map(&:dup))
+      end
+      private :duplicate
     end
 
     class Root
       include Intermediate
 
-      def initialize(owner)
-        super()
+      def initialize(owner, children = nil)
+        super(children)
         @owner = owner
+      end
+
+      def for(owner)
+        duplicate { |children| self.class.new(owner, children) }
       end
 
       delegate :json_root, :to => :@owner
@@ -195,8 +204,8 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Output
       include Intermediate
       attr_reader :name
 
-      def initialize(name)
-        super()
+      def initialize(name, children = nil)
+        super(children)
         @name = name
       end
 
@@ -204,6 +213,10 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Output
         stream.block(@name) do |stream|
           super(object, options, stream)
         end
+      end
+
+      def dup
+        duplicate { |children| self.class.new(@name, children) }
       end
 
       def inspect
@@ -225,10 +238,19 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Output
         stream.attribute(@name, value.send(@attribute), options)
       end
 
+      def dup
+        attribute = @attribute_path.dup.tap { |p| p << @attribute }
+        self.class.new(name, attribute)
+      end
+
       def inspect
         "Leaf<#{@name},#{@attribute},#{@attribute_path.inspect}>"
       end
     end
+  end
+
+  def json_code_tree
+    Tree::Root.new(self)
   end
 
   def generate_object_to_json_mapping(attribute_to_json)
@@ -237,7 +259,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Output
     # an object to generate the JSON appropriately.
     tree = attribute_to_json.sort_by(&:last).map do |attribute, json|
       [ json.split('.'), attribute.split('.').map(&:to_sym) ]
-    end.inject(Tree::Root.new(self)) do |tree, (json_path, attribute_path)|
+    end.inject(json_code_tree.for(self)) do |tree, (json_path, attribute_path)|
       tree.tap do
         json_leaf = json_path.pop
         json_path.inject(tree) { |node,step| node[step] }.leaf(json_leaf, attribute_path)
@@ -245,6 +267,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Output
     end
 
     # Now we can generate a method that will use that tree to encode an object to JSON.
+    self.singleton_class.send(:define_method, :json_code_tree) { tree }
     self.singleton_class.send(:define_method, :object_json, &tree.method(:encode))
   end
 end
