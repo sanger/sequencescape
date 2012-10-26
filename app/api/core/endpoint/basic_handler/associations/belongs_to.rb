@@ -9,8 +9,8 @@ module Core::Endpoint::BasicHandler::Associations::BelongsTo
 
     def generate_action_json(object, options)
       endpoint_details(options) do |endpoint, object|
-        options[:stream].send(:[], @options[:json].to_s, true) do |result|
-          result['uuid'] = object.uuid
+        options[:stream].block(@options[:json].to_s) do |result|
+          result.attribute('uuid', object.uuid)
           endpoint.instance_handler.generate_action_json(
             object,
             options.merge(:stream => result, :embedded => true, :target => object)

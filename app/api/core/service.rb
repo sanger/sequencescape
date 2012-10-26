@@ -221,17 +221,17 @@ class Core::Service < Sinatra::Base
     #++
     def each(&block)
       benchmark('Streaming JSON') do
-        object_as_json = {}
-        options = {
-          :response   => self,
-          :target     => object,
-          :stream     => ::Core::Io::Base::JsonFormattingBehaviour::Output::Stream.new(object_as_json),
-          :object     => object,
-          :handled_by => handled_by
-        }
-
-        ::Core::Io::Registry.instance.lookup_for_object(object).as_json(options)
-        Yajl::Encoder.encode(object_as_json, &block)
+        ::Core::Io::Buffer.new(block) do |buffer|
+          ::Core::Io::Base::JsonFormattingBehaviour::Output::Stream.new(buffer).open do |stream|
+            ::Core::Io::Registry.instance.lookup_for_object(object).as_json(
+              :response   => self,
+              :target     => object,
+              :stream     => stream,
+              :object     => object,
+              :handled_by => handled_by
+            )
+          end
+        end
       end
     end
 

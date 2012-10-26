@@ -10,9 +10,9 @@ class Core::Endpoint::BasicHandler
     private :actions
 
     def generate_action_json(object, options)
-      options[:stream].send(:[], 'actions', true) do |result|
+      options[:stream].block('actions') do |result|
         actions(object, options).each do |name, behaviour|
-          result[name] = behaviour
+          result.attribute(name, behaviour)
         end
       end
     end

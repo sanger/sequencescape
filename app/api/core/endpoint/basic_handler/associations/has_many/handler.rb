@@ -61,9 +61,9 @@ class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpo
 
   def generate_action_json(object, options)
     if options[:embedded]
-      options[:stream].send(:[], @options[:json].to_s, true) do |result|
+      options[:stream].block(@options[:json].to_s) do |result|
         association    = object.send(@association)
-        result['size'] = association.count
+        result.attribute('size', association.count)
         super(association, options.merge(:stream => result))
       end
     else

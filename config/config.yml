@@ -59,6 +59,7 @@ development:
     sequencing_admin_email: admin@example.com
     api:
       authorisation_code: development
+      flush_response_at: 32768
 
 test: &TEST
     amqp:
@@ -114,6 +115,7 @@ test: &TEST
     sequencing_admin_email: admin@example.com
     api:
       authorisation_code: cucumber
+      flush_response_at: 32768
 
 cucumber:
     <<: *TEST
