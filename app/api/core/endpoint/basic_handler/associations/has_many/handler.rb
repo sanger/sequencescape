@@ -64,7 +64,7 @@ class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpo
       options[:stream].block(@options[:json].to_s) do |result|
         association    = object.send(@association)
         result.attribute('size', association.count)
-        super(association, options.merge(:stream => result))
+        super(options[:response].object, options.merge(:stream => result))
       end
     else
       raise 'foo'
