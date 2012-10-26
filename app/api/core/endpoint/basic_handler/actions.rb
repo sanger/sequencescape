@@ -93,4 +93,12 @@ module Core::Endpoint::BasicHandler::Actions
     }, __FILE__, line)
   end
   private :declare_action
+
+  def generate_json_actions(object, options)
+    options[:stream].send(:[], 'actions', true) do |result|
+      actions(object, options).each do |name, url|
+        result[name] = url
+      end
+    end
+  end
 end

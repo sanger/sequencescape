@@ -6,6 +6,13 @@ module Core::Endpoint::BasicHandler::Paged
     :read     => :current_page
   }
 
+  def actions(object, options)
+    super.tap do |actions|
+      actions.merge!(pages_to_actions(object, options)) if options[:handled_by] == self
+    end
+  end
+  private :actions
+
   def action_updates_for(options)
     response = options[:response]
     return unless response.handled_by == self

@@ -221,14 +221,16 @@ class Core::Service < Sinatra::Base
     #++
     def each(&block)
       benchmark('Streaming JSON') do
-        options = { :response => self, :target => object }
+        object_as_json = {}
+        options = {
+          :response   => self,
+          :target     => object,
+          :stream     => ::Core::Io::Base::JsonFormattingBehaviour::Output::Stream.new(object_as_json),
+          :object     => object,
+          :handled_by => handled_by
+        }
 
-        io_handler         = ::Core::Io::Registry.instance.lookup_for_object(object)
-        object_as_json     = io_handler.as_json(options.merge(:object => object))
-        actions_for_object = handled_by.as_json(options)
-        merge_actions_into_object_json(object_as_json, actions_for_object)
-        io_handler.post_process(object_as_json)
-
+        ::Core::Io::Registry.instance.lookup_for_object(object).as_json(options)
         Yajl::Encoder.encode(object_as_json, &block)
       end
     end
@@ -249,29 +251,5 @@ class Core::Service < Sinatra::Base
       ActiveRecord::Base.connection_pool.release_connection
     end
     private :discard_all_references
-
-    def merge_actions_into_object_json(object_as_json, actions_for_object)
-      key         = object_as_json.keys.detect { |k| 'size' != k.to_s }
-      target_json = object_as_json[key]
-      return target_json.deep_merge!(actions_for_object) unless target_json.is_a?(Array)
-
-      # Merging the actions into a paged list of results is a little more complicated.
-      # We have to remove the results from the JSON (otherwise deep_merge will overwrite
-      # them) and then we have to individual merge the objects back in again.
-      #
-      # An added complication is that the actions for the object define the real name of
-      # the results.  So we have to find the key that is not 'actions' and use that for
-      # the remerge.
-      result_list_key = actions_for_object.keys.detect { |k| k != 'actions' } || key
-
-      object_as_json.delete(key)
-      object_as_json.deep_merge!(actions_for_object)
-      if actions_for_object.key?(result_list_key)
-        object_as_json[result_list_key] = actions_for_object[result_list_key].each_with_index.map { |oaj,i| target_json[i].deep_merge!(oaj) }
-      else
-        object_as_json[result_list_key] = target_json
-      end
-    end
-    private :merge_actions_into_object_json
   end
 end

@@ -7,10 +7,6 @@ class ::Io::Endpoints::Uuids::Search
     @search = search
   end
 
-  def as_json(options = {})
-    {}
-  end
-
   def self.json_field_for(attribute)
     attribute
   end

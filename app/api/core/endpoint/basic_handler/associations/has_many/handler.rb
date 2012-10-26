@@ -59,18 +59,27 @@ class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpo
   private :_read
   standard_action(:read)
 
-  def as_json(options = {})
-    json = super.tap { |json| action_updates_for(options) { |updates| json['actions'].merge!(updates) } }
-    options[:embedded] ?  generate_embedded_as_json(options, json) : generate_list_as_json(options, json)
+  def generate_action_json(object, options)
+    if options[:embedded]
+      options[:stream].send(:[], @options[:json].to_s, true) do |result|
+        association    = object.send(@association)
+        result['size'] = association.count
+        super(association, options.merge(:stream => result))
+      end
+    else
+      raise 'foo'
+    end
   end
 
   def generate_embedded_as_json(options, json)
+    raise 'foo'
     json['size'] = options[:target].send(@association).count
     { @options[:json].to_s => json }
   end
   private :generate_embedded_as_json
 
   def generate_list_as_json(options, json)
+    raise 'foo'
     json.tap do |json|
       dupped = options.merge(:target => nil, :only => @options[:include])
       json[@options[:json].to_s] = options[:response].object.map do |object|

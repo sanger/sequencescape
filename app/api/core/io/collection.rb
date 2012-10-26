@@ -1,21 +1,15 @@
 module ::Core::Io::Collection
   def as_json(options = {})
-    results      = options.delete(:object)
-    object_json  = results.map do |o|
-      ::Core::Io::Registry.instance.lookup_for_object(o).object_json(o, options)
+    results, stream = options.delete(:object), options[:stream]
+    options[:handled_by].generate_json_actions(results, options)
+    stream[:size] = size_for(results)
+    stream.array(options[:response].io.json_root.to_s.pluralize, results) do |stream, o|
+      ::Core::Io::Registry.instance.lookup_for_object(o).object_json(o, options.merge(:stream => stream, :target => o, :nested => true))
     end
-
-    {
-      options[:response].io.json_root.to_s.pluralize => object_json,
-      :size => size_for(results)
-    }
   end
 
   def size_for(results)
     results.size
   end
-
-  def post_process(json)
-    # Nothing is done here!
-  end
+  private :size_for
 end

@@ -33,18 +33,6 @@ class Core::Endpoint::Base
       end
       private :_read
       standard_action(:read)
-
-      def as_json(options = {})
-        response = options[:response]
-        super.tap do |json|
-          action_updates_for(options) { |updates| json['actions'].merge!(updates) }
-          unless response.request.target.nil?
-            model_io = ::Core::Io::Registry.instance.lookup(response.request.target)
-            handler  = endpoint_for_class(response.request.target).instance_handler
-            json[model_io.json_root.to_s.pluralize] = response.object.map { |o| handler.as_json(options.merge(:target => o)) }
-          end
-        end
-      end
     end
 
     def self.extended(base)

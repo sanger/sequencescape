@@ -7,9 +7,16 @@ module Core::Endpoint::BasicHandler::Actions::InnerAction
     action(name, options)
   end
 
-  def as_json(options = {})
-    json = super
-    @options.key?(:json) ? { @options[:json].to_s => json } : json
+  def rooted_json(options, &block)
+    return yield(options[:stream]) if @options.key?(:json)
+    options[:stream].send(:[], @options[:json].to_s, true, &block)
+  end
+  private :rooted_json
+
+  def generate_json_actions(object, options)
+    rooted_json(options) do |stream|
+      super(object, options.merge(:stream => stream))
+    end
   end
 
   def declare_action(name, options)

@@ -7,18 +7,20 @@ module Core::Endpoint::BasicHandler::Associations::BelongsTo
       @throughs = Array(options[:through])
     end
 
-    def as_json(options = {})
+    def generate_action_json(object, options)
       endpoint_details(options) do |endpoint, object|
-        action_json = endpoint.instance_handler.as_json(options.merge(:embedded => true, :target => object))
-        action_json[:uuid] = object.uuid
-
-        { @options[:json].to_s => action_json }
+        options[:stream].send(:[], @options[:json].to_s, true) do |result|
+          result['uuid'] = object.uuid
+          endpoint.instance_handler.generate_action_json(
+            object,
+            options.merge(:stream => result, :embedded => true, :target => object)
+          )
+        end
       end
     end
 
     def endpoint_details(options)
-      object = @throughs.inject(options[:target]) { |t,s| t.send(s) }.send(@name)
-      return { @options[:json].to_s => nil } if object.nil?
+      object = @throughs.inject(options[:target]) { |t,s| t.send(s) }.send(@name) || return
       yield(endpoint_for_object(object), object)
     end
     private :endpoint_details
@@ -34,11 +36,10 @@ module Core::Endpoint::BasicHandler::Associations::BelongsTo
     @endpoints.push(class_handler.new(name, options, &block))
   end
 
-  def as_json(options = {})
-    super.tap do |json|
-      @endpoints.each do |endpoint|
-        json.deep_merge!(endpoint.as_json(options))
-      end unless options[:embedded]
-    end
+  def generate_action_json(object, options)
+    super
+    @endpoints.each do |endpoint|
+      endpoint.generate_action_json(object, options)
+    end unless options[:embedded]
   end
 end

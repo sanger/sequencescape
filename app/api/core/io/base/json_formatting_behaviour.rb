@@ -12,31 +12,29 @@ module Core::Io::Base::JsonFormattingBehaviour
   end
 
   module Debug
-    def as_json(options = nil, &block)
-      return super if options[:nested]
+    def object_json(object, options)
       benchmark("I/O #{self.name}") { super }
+    end
+
+    def generate_action_json(object, options)
+      benchmark("I/O #{self.name}(actions)") { super }
     end
   end
 
+  # NOTE: This one is OK!
   def as_json(options = nil, &block)
-    options        ||= {}
-    object           = options.delete(:object)
-    object_content   = object_json(object, options)
-
-    options[:nested] ? object_content : { self.json_root => object_content }
+    options ||= {}
+    object    = options.delete(:object)
+    object_json(object, options)
   end
 
   #--
   # Very root level does absolutely nothing useful!
   #++
-  def object_json(object, options)
-    {}
+  def object_json(*args)
+
   end
   private :object_json
-
-  def post_process(json)
-    # Does nothing, intentionally
-  end
 
   def json_field_for(attribute)
     return attribute_to_json_field[attribute.to_s] if attribute_to_json_field.key?(attribute.to_s)
