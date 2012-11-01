@@ -46,6 +46,7 @@ gem "uuidtools"
 gem "sinatra", "~>1.1.0"
 gem "rack-acceptable", :require => 'rack/acceptable'
 gem "json_pure" #gem "yajl-ruby", :require => 'yajl'
+gem "json"
 gem "cancan"
 
 gem "bunny"
