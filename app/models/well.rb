@@ -78,6 +78,10 @@ class Well < Aliquot::Receptacle
     end
   end
 
+  def generate_name(_)
+    # Do nothing
+  end
+
   #hotfix
   def well_attribute_with_creation
     self.well_attribute_without_creation || self.build_well_attribute
