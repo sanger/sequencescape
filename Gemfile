@@ -27,7 +27,7 @@ gem 'sanger_barcode', :git => 'git+ssh://git@github.com/sanger/sanger_barcode.gi
 # The graph library (1.x only because 2.x uses Rails 3).  This specific respository fixes an issue
 # seen in creating asset links during the assign_tags_handler (which blew up in rewire_crossing in the
 # gem code).
-gem "acts-as-dag", :git => "git+ssh://git@github.com/sanger/acts-as-dag.git", :branch => 'fix_rewire_crossing'
+gem "acts-as-dag", :git => "git+ssh://git@github.com/sanger/acts-as-dag.git", :branch => '38792421_add_dependent_destroy_to_links'
 
 # Better table alterations
 gem "alter_table", :git => "git+ssh://git@github.com/sanger/alter_table.git"
