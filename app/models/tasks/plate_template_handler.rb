@@ -49,7 +49,7 @@ module Tasks::PlateTemplateHandler
   def map_parsed_spreadsheet_to_plate(mapped_plate_wells,batch,plate_size)
     plates = mapped_plate_wells.map do |plate_key, mapped_wells|
       (1..plate_size).map do |i|
-        request_id, well = mapped_wells[i], EMPTY_WELL
+        request_id, well = mapped_wells[i], CherrypickTask::EMPTY_WELL
         if request_id.present?
           begin
             source_plate_barcode = batch.requests.find(request_id).asset.plate.barcode
@@ -59,7 +59,7 @@ module Tasks::PlateTemplateHandler
           end
         end
 
-        current_plate << well
+        well
       end
     end
 
