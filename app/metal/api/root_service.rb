@@ -11,12 +11,15 @@ class Api::RootService < ::Core::Service
 
       def @owner.each(&block)
         ::Core::Io::Buffer.new(block) do |buffer|
-          ::Core::Io::Base::JsonFormattingBehaviour::Output::Stream.new(buffer).open do |stream|
+          ::Core::Io::Json::Stream.new(buffer).open do |stream|
             stream.attribute('revision', 2)
             object.each do |model_in_json, endpoint|
               stream.named(model_in_json) do
                 stream.open do
-                  endpoint.model_handler.generate_action_json(endpoint.model_handler, :stream => stream, :response => self, :endpoint => endpoint)
+                  endpoint.model_handler.generate_action_json(
+                    endpoint.model_handler,
+                    :stream => stream, :response => self, :endpoint => endpoint
+                  )
                 end
               end
             end

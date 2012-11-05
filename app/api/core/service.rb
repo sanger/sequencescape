@@ -220,19 +220,22 @@ class Core::Service < Sinatra::Base
     # out the JSON to the client.  The garbage collection is then re-enabled in close.
     #++
     def each(&block)
-      benchmark('Streaming JSON') do
-        ::Core::Io::Buffer.new(block) do |buffer|
-          ::Core::Io::Base::JsonFormattingBehaviour::Output::Stream.new(buffer).open do |stream|
-            ::Core::Io::Registry.instance.lookup_for_object(object).as_json(
-              :response   => self,
-              :target     => object,
-              :stream     => stream,
-              :object     => object,
-              :handled_by => handled_by
-            )
-          end
+      Rails.logger.info('API[streaming]: starting JSON streaming')
+      start = Time.now
+
+      ::Core::Io::Buffer.new(block) do |buffer|
+        ::Core::Io::Json::Stream.new(buffer).open do |stream|
+          ::Core::Io::Registry.instance.lookup_for_object(object).as_json(
+            :response   => self,
+            :target     => object,
+            :stream     => stream,
+            :object     => object,
+            :handled_by => handled_by
+          )
         end
       end
+
+      Rails.logger.info("API[streaming]: finished JSON streaming in #{Time.now-start}s")
     end
 
     def close

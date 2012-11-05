@@ -1,10 +1,10 @@
 require 'test_helper'
 
-class Core::Io::Base::JsonFormattingBehaviour::Output::StreamTest < ActiveSupport::TestCase
-  context Core::Io::Base::JsonFormattingBehaviour::Output::Stream do
+class Core::Io::Json::StreamTest < ActiveSupport::TestCase
+  context Core::Io::Json::Stream do
     setup do
       @buffer = StringIO.new
-      @stream = Core::Io::Base::JsonFormattingBehaviour::Output::Stream.new(@buffer)
+      @stream = Core::Io::Json::Stream.new(@buffer)
     end
 
     should 'generate empty object on open empty' do
@@ -23,8 +23,8 @@ class Core::Io::Base::JsonFormattingBehaviour::Output::StreamTest < ActiveSuppor
 
     should 'generate a block for access' do
       @stream.open do |stream|
-        stream.send(:[], 'block') do |stream|
-          stream['key'] = 'value'
+        stream.block('block') do |stream|
+          stream.attribute('key', 'value')
         end
       end
       assert_equal('{"block":{"key":"value"}}', @buffer.string)
@@ -33,16 +33,16 @@ class Core::Io::Base::JsonFormattingBehaviour::Output::StreamTest < ActiveSuppor
     context 'separate multiple attributes' do
       should 'simple' do
         @stream.open do |stream|
-          stream['key1'] = 'value1'
-          stream['key2'] = 'value2'
+          stream.attribute('key1', 'value1')
+          stream.attribute('key2', 'value2')
         end
         assert_equal('{"key1":"value1","key2":"value2"}', @buffer.string)
       end
 
       should 'structured' do
         @stream.open do |stream|
-          stream.send(:[], 'block1') { |stream| stream['key'] = 'value' }
-          stream.send(:[], 'block2') { |stream| stream['key'] = 'value' }
+          stream.block('block1') { |stream| stream.attribute('key', 'value') }
+          stream.block('block2') { |stream| stream.attribute('key', 'value') }
         end
         assert_equal(
           '{"block1":{"key":"value"},"block2":{"key":"value"}}',
@@ -52,12 +52,12 @@ class Core::Io::Base::JsonFormattingBehaviour::Output::StreamTest < ActiveSuppor
 
       should 'structured with multiple' do
         @stream.open do |stream|
-          stream.send(:[], 'block1') do |stream|
-            stream['key1'] = 'value1'
-            stream['key2'] = 'value2'
+          stream.block('block1') do |stream|
+            stream.attribute('key1', 'value1')
+            stream.attribute('key2', 'value2')
           end
-          stream.send(:[], 'block2') do |stream|
-            stream['key'] = 'value'
+          stream.block('block2') do |stream|
+            stream.attribute('key', 'value')
           end
         end
         assert_equal(
@@ -69,7 +69,7 @@ class Core::Io::Base::JsonFormattingBehaviour::Output::StreamTest < ActiveSuppor
 
     context 'basic types' do
       teardown do
-        @stream.open { |stream| stream['key'] = @value }
+        @stream.open { |stream| stream.attribute('key', @value) }
         assert_equal(%Q{{"key":#{@expected}}}, @buffer.string)
       end
 

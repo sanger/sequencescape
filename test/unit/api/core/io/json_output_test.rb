@@ -42,15 +42,14 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
   private :json_results
 
   def decode(json)
-    json.to_hash
-#    ActiveSupport::JSON.decode(json)
+    ActiveSupport::JSON.decode("{#{json.string}}")
   end
   private :decode
 
   context Core::Io::Base::JsonFormattingBehaviour do
     setup do
-      @stream = Core::Io::Base::JsonFormattingBehaviour::Output::Stream.new
-      @options = { :stream => @stream }
+      @stream = StringIO.new
+      @options = { :stream => Core::Io::Json::Stream.new(@stream) }
     end
 
     context 'resource' do
@@ -64,12 +63,12 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
             encoder_for(
               'attribute' => 'json'
             ).object_json(
-              object_to_encode(:attribute => @value), 
+              object_to_encode(:attribute => @value),
               @options
             )
 
             assert_equal(
-              json_results('json' => @value),
+              json_results('json' => @expected || @value),
               decode(@stream)
             )
           end
@@ -95,7 +94,7 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
           end
 
           should 'handle times' do
-            @value = Time.parse('2012-10-25 12:39')
+            @value, @expected = Time.parse('2012-10-25 12:39'), 'Thu Oct 25 12:39:00 +0100 2012'
           end
         end
 
@@ -182,7 +181,7 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
           )
 
           assert_equal(
-            json_results('json' => nil),
+            json_results({}),
             decode(@stream)
           )
         end
@@ -196,7 +195,7 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
           )
 
           assert_equal(
-            json_results({}),
+            json_results({'nested'=>{}}),
             decode(@stream)
           )
         end
