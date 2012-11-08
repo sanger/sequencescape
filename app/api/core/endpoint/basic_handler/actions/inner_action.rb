@@ -7,9 +7,19 @@ module Core::Endpoint::BasicHandler::Actions::InnerAction
     action(name, options)
   end
 
+  def separate(_, actions)
+    actions[@options[:to].to_s] = lambda do |object, options, stream|
+      actions(object, options.merge(:target => object)).map(&stream.method(:attribute))
+    end
+  end
+
+  def for_json
+    nil
+  end
+
   def rooted_json(options, &block)
     return yield(options[:stream]) if @options.key?(:json)
-    options[:stream].send(:[], @options[:json].to_s, true, &block)
+    options[:stream].block(@options[:json].to_s, &block)
   end
   private :rooted_json
 
@@ -23,7 +33,7 @@ module Core::Endpoint::BasicHandler::Actions::InnerAction
     line = __LINE__ + 1
     singleton_class.class_eval(%Q{
       def _#{name}(request, response)
-        object = @handler.call(request, response)
+        object = @handler.call(self, request, response)
         yield(owner_for(request, object), object)
       end
     }, __FILE__, line)

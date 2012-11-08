@@ -7,7 +7,7 @@ class ::Api::EndpointHandler < ::Core::Service
           uuid = Uuid.with_external_id(uuid_in_url).first or raise ActiveRecord::RecordNotFound, "UUID does not exist"
 
           handle_request(:instance, request, action, parts) do |request|
-            request.io     = ::Core::Io::Registry.instance.lookup_for_class(uuid.resource.class)
+            request.io     = lookup_for_class(uuid.resource.class) { |e| raise e }
             request.target = request.io.eager_loading_for(uuid.resource.class).include_uuid.find(uuid.resource_id)
           end
         end
@@ -19,7 +19,7 @@ class ::Api::EndpointHandler < ::Core::Service
         report("model") do
           determine_model_from_parts(*params[:captures].to_s.split('/')) do |model, parts|
             handle_request(:model, request, action, parts) do |request|
-              request.io     = ::Core::Io::Registry.instance.lookup_for_class(model) rescue nil
+              request.io     = lookup_for_class(model) { |_| nil }
               request.target = model
             end
           end
@@ -27,6 +27,13 @@ class ::Api::EndpointHandler < ::Core::Service
       end
     end
   end
+
+  def lookup_for_class(model, &block)
+    ::Core::Io::Registry.instance.lookup_for_class(model)
+  rescue ::Core::Registry::UnregisteredError => exception
+    block.call(exception)
+  end
+  private :lookup_for_class
 
   # Report the performance and status of any request
   def report(handler, &block)

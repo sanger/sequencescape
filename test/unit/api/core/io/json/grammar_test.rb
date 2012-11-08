@@ -39,9 +39,10 @@ class Core::Io::Json::GrammarTest < ActiveSupport::TestCase
       stream, nested_stream = mock('Stream'), mock('Nested Stream')
       stream.expects(:block).with(:attribute_name).yields(nested_stream)
 
-      children = [ mock('Child 1'), mock('Child 2') ].tap do |children|
-        children.each { |child| child.expects(:call).with(:object, :options, nested_stream) }
-      end
+      children = Hash[[ 'Child 1', 'Child 2' ].map do |name|
+        child = mock(name).tap { |child| child.expects(:call).with(:object, :options, nested_stream) }
+        [name, child]
+      end]
 
       target = Core::Io::Json::Grammar::Node.new(:attribute_name, children)
       target.call(:object, :options, stream)
@@ -67,9 +68,10 @@ class Core::Io::Json::GrammarTest < ActiveSupport::TestCase
 
         options  = { :handled_by => @handler }
 
-        children = [ mock('Child 1'), mock('Child 2') ].tap do |children|
-          children.each { |child| child.expects(:call).with(@object, options, nested_stream) }
-        end
+        children = Hash[[ 'Child 1', 'Child 2' ].map do |name|
+          child = mock(name).tap { |child| child.expects(:call).with(@object, options, nested_stream) }
+          [name, child]
+        end]
         target = Core::Io::Json::Grammar::Root.new(OpenStruct.new(:json_root => :root_json), children)
         target.call(@object, options, stream)
       end

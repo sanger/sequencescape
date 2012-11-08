@@ -35,7 +35,7 @@ Feature: Searching for assets by barcode
       Given a "ILB_STD_MX" tube called "mx tube current" exists
       And the UUID for the tube "mx tube current" is "00000000-1111-2222-3333-000000000004"
       And the tube "mx tube current" is the target of a started "Illumina-B STD" from "source plate 2"
-      And a started transfer from "stock tube passed" to "mx tube current"
+      And a started transfer from the stock tube "stock tube passed" to the MX tube
       
       # Flow C [MX]
       Given I am setup to test tubes with plate set 3
@@ -48,7 +48,7 @@ Feature: Searching for assets by barcode
       And the UUID for the tube "mx tube passed" is "00000000-1111-2222-3333-000000000005"
       And the tube "mx tube passed" is the target of a passed "Illumina-B STD" from "source plate 3"
       #And the tube "mx tube passed" is the target of a passed "Transfer" from "further stock tube passed"
-      And a passed transfer from "stock tube passed 3" to "mx tube passed"
+      And a passed transfer from the stock tube "stock tube passed 3" to the MX tube
       #And the transfer requests on "stock tube passed 3" are passed
       
     Scenario: I should be able to find Illumina-B Tubes

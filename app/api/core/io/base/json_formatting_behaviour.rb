@@ -3,21 +3,10 @@ module Core::Io::Base::JsonFormattingBehaviour
     base.class_eval do
       extend ::Core::Io::Base::JsonFormattingBehaviour::Input
       extend ::Core::Io::Base::JsonFormattingBehaviour::Output
-      extend ::Core::Io::Base::JsonFormattingBehaviour::Debug unless Rails.env == 'production'
 
       class_inheritable_reader :attribute_to_json_field
       write_inheritable_attribute(:attribute_to_json_field, {})
       delegate :json_field_for, :to => 'self.class'
-    end
-  end
-
-  module Debug
-    def object_json(object, options)
-      benchmark("I/O #{self.name}") { super }
-    end
-
-    def generate_action_json(object, options)
-      benchmark("I/O #{self.name}(actions)") { super }
     end
   end
 
@@ -34,7 +23,6 @@ module Core::Io::Base::JsonFormattingBehaviour
   def object_json(*args)
 
   end
-  private :object_json
 
   def json_field_for(attribute)
     return attribute_to_json_field[attribute.to_s] if attribute_to_json_field.key?(attribute.to_s)

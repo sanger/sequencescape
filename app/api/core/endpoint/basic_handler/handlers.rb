@@ -15,14 +15,18 @@ module Core::Endpoint::BasicHandler::Handlers
     @handlers = {}
   end
 
-  def generate_action_json(object, options)
-    super
+  def related
+    @handlers.map(&:last)
+  end
 
-    includes = options.fetch(:include, @handlers.keys).map(&:to_sym)
-    @handlers.select do |key, _|
-      includes.include?(key)
-    end.each do |_, handler|
-      handler.generate_action_json(object, options.merge(:embedded => true))
+  def actions(object, options)
+    @handlers.select do |name, handler|
+      handler.is_a?(Core::Endpoint::BasicHandler::Actions::InnerAction)
+#      accessible_action?(self, handler, options[:response].request, object)
+    end.map do |name, handler|
+      handler.send(:actions, object, options)
+    end.inject(super) do |actions, subactions|
+      actions.merge(subactions)
     end
   end
 

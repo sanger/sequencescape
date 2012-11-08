@@ -1,34 +1,55 @@
 module ::Core::Io::Json::Grammar
   module Intermediate
+    attr_reader :children
+
     def initialize(children)
-      @children = children || []
+      @children = children || {}
     end
 
     def leaf(name, attribute)
-      attach(Leaf.new(name, attribute))
+      @children[name] ||= Leaf.new(name, attribute)
     end
 
     def [](name)
-      @children.detect { |n| n.name == name } || attach(Node.new(name))
+      @children[name] ||= Node.new(name)
     end
-
-    def attach(node)
-      node.tap { |n| @children.push(n) }
-    end
-    private :attach
 
     def call(object, options, stream)
-      @children.each do |child|
+      process_children(object, options, stream)
+    end
+
+    def process_children(object, options, stream)
+      @children.each do |_, child|
         child.call(object, options, stream)
       end
     end
+    private :process_children
+
+    def merge(node)
+      yield(node.merge_children_with(self))
+    end
+
+    def merge_children_with(node)
+      Hash[
+        (node.children.keys + @children.keys).uniq.map do |k|
+          cloned = case
+          when @children.key?(k) && node.children.key?(k) then node.children[k].merge(@children[k])
+          when @children.key?(k)                          then @children[k]
+          when node.children.key?(k)                      then node.children[k]
+          else raise "Odd, how did that happen?"
+          end
+
+          [k,cloned]
+        end
+      ]
+    end
 
     def inspect
-      @children.inspect
+      @children.values.inspect
     end
 
     def duplicate(&block)
-      yield(@children.map(&:dup))
+      yield(Hash[@children.map { |k,v| [k,v.dup] }])
     end
     private :duplicate
   end
@@ -48,12 +69,28 @@ module ::Core::Io::Json::Grammar
     delegate :json_root, :to => :@owner
 
     def encode(object, options)
-      call(object, options, options[:stream])
+      object_encoder(object, options).call(object, options, options[:stream])
     end
+
+    # To encode an individual object we use our JSON serialization tree, merged with the actions
+    # tree from the endpoint would handle this object.
+    def object_encoder(object, options)
+      return self unless object.respond_to?(:uuid)
+
+      instance_handler = options[:handled_by].send(:endpoint_for_object, object).instance_handler
+      instance_handler.tree_for(object, options).merge(self) do |children|
+        self.class.new(@owner, children)
+      end
+    rescue Core::Endpoint::BasicHandler::EndpointLookup::MissingEndpoint => exception
+      # There is no endpoint for this, even though it has a UUID!
+      self
+    end
+    private :object_encoder
 
     def call(object, options, stream)
       rooted_json(stream, options[:nested]) do |stream|
-        default_json(stream, object, options)
+        stream.attribute('created_at', object.created_at)
+        stream.attribute('updated_at', object.updated_at)
         super(object, options, stream)
       end
     end
@@ -63,22 +100,6 @@ module ::Core::Io::Json::Grammar
       stream.block(json_root, &block)
     end
     private :rooted_json
-
-    def resource_json(result, object, options)
-      instance_handler = options[:handled_by].send(:endpoint_for_object, object).instance_handler
-      instance_handler.generate_action_json(object, options.merge(:stream => result, :target => object))
-      result.attribute('uuid', object.uuid)
-    rescue Core::Endpoint::BasicHandler::EndpointLookup::MissingEndpoint => exception
-      # There is no endpoint for this, even though it has a UUID!
-    end
-    private :resource_json
-
-    def default_json(result, object, options)
-      resource_json(result, object, options) if object.respond_to?(:uuid)
-      result.attribute('created_at', object.created_at)
-      result.attribute('updated_at', object.updated_at)
-    end
-    private :default_json
 
     def inspect
       "Root<#{super}>"
@@ -102,6 +123,10 @@ module ::Core::Io::Json::Grammar
 
     def dup
       duplicate { |children| self.class.new(@name, children) }
+    end
+
+    def merge(node)
+      super(node) { |children| self.class.new(@name, children) }
     end
 
     def inspect
@@ -128,8 +153,58 @@ module ::Core::Io::Json::Grammar
       self.class.new(name, attribute)
     end
 
+    def merge(node)
+      raise "Cannot merge into a leaf as it is attribute only!"
+    end
+
+    def merge_children_with(node)
+      key = "_#{name}"
+      raise "Cannot merge as existing leaf node '#{key}'" if node.children.key?(key)
+      node.children.merge(key => self)
+    end
+
     def inspect
       "Leaf<#{@name},#{@attribute},#{@attribute_path.inspect}>"
+    end
+  end
+
+  module Resource
+    def resource_details(endpoint, object, options, stream)
+      stream.block('actions') do |nested_stream|
+        endpoint.send(:actions, object, options.merge(:target => object)).map(&nested_stream.method(:attribute))
+        actions(object, options, nested_stream)
+      end
+      stream.attribute('uuid', object.uuid)
+    end
+  end
+
+  class Actions
+    include Intermediate
+    include Resource
+
+    def initialize(endpoint, children = nil)
+      super(children)
+      @endpoint = endpoint
+    end
+
+    def call(object, options, stream)
+      resource_details(@endpoint, object, options, stream)
+    end
+
+    def actions(object, options, stream)
+      process_children(object, options, stream)
+    end
+
+    def merge(_)
+      raise "Cannot merge into an actions leaf as it is actions only!"
+    end
+
+    def dup
+      self.class.new(@endpoint)
+    end
+
+    def inspect
+      "Actions<#{super}>"
     end
   end
 end

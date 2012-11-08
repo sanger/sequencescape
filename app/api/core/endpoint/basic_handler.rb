@@ -9,12 +9,21 @@ class Core::Endpoint::BasicHandler
     end
     private :actions
 
-    def generate_action_json(object, options)
-      options[:stream].block('actions') do |result|
-        actions(object, options).each do |name, behaviour|
-          result.attribute(name, behaviour)
-        end
-      end
+    def root_json
+      'unknown'
+    end
+
+    def related
+      []
+    end
+
+    def tree_for(object, options)
+      associations, actions = {}, {}
+      related.each { |r| r.separate(associations, actions) }
+      Core::Io::Json::Grammar::Root.new(
+        root_json,
+        associations.merge('actions' => Core::Io::Json::Grammar::Actions.new(self, actions))
+      )
     end
 
     def core_path(*args)

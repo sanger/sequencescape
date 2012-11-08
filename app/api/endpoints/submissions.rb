@@ -14,7 +14,7 @@ class Endpoints::Submissions < Core::Endpoint::Base
 
     action(:update, :to => :standard_update!, :if => :building?)
 
-    bind_action(:create, :as => :submit, :to => 'submit', :if => :building?) do |request, response|
+    bind_action(:create, :as => :submit, :to => 'submit', :if => :building?) do |_, request, response|
       ActiveRecord::Base.transaction do
         request.target.tap do |submission|
           submission.built!

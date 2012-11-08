@@ -35,7 +35,7 @@ module Core::Endpoint::BasicHandler::Actions
         request.response do |response|
           response.status(#{status_code})
           _#{action}(request, response) do |handler, object|
-            response.handled_by = handler
+            response.handled_by ||= handler
             response.object     = object
           end
         end

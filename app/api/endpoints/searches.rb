@@ -1,15 +1,16 @@
 class ::Endpoints::Searches < ::Core::Endpoint::Base
   module SearchActions
     def search_action(name, &block)
-      bind_action(:create, :to => name.to_s, :as => name.to_sym) do |request, response|
-        request.target.scope(request.json['search']).send(name.to_sym).tap do |result|
-          block.call(response, result)
+      bind_action(:create, :to => name.to_s, :as => name.to_sym) do |action, request, response|
+        request.target.scope(request.json['search']).send(name).tap do |results|
+          response.handled_by = action
+          block.call(response, results)
         end
       end
     end
 
     def singular_search_action(name)
-      bind_action(:create, :to => name.to_s, :as => name.to_sym) do |request, response|
+      bind_action(:create, :to => name.to_s, :as => name.to_sym) do |action, request, response|
         record = request.target.scope(request.json['search']).send(name.to_sym)
         raise ActiveRecord::RecordNotFound, 'no resources found with that search criteria' if record.nil?
 

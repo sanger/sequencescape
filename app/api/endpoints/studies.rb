@@ -12,7 +12,7 @@ class Endpoints::Studies < Core::Endpoint::Base
       def self.constructor(name, method)
         line = __LINE__ + 1
         instance_eval(%Q{
-          bind_action(:create, :as => #{name.to_sym.inspect}, :to => #{name.to_s.inspect}) do |request, response|
+          bind_action(:create, :as => #{name.to_sym.inspect}, :to => #{name.to_s.inspect}) do |_, request, response|
             ActiveRecord::Base.transaction do
               manifest = request.target.#{method}(request.attributes)
               request.io.eager_loading_for(manifest.class).include_uuid.find(manifest.id)

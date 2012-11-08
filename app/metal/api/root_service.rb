@@ -14,12 +14,13 @@ class Api::RootService < ::Core::Service
           ::Core::Io::Json::Stream.new(buffer).open do |stream|
             stream.attribute('revision', 2)
             object.each do |model_in_json, endpoint|
-              stream.named(model_in_json) do
-                stream.open do
-                  endpoint.model_handler.generate_action_json(
+              stream.block(model_in_json) do |nested_stream|
+                nested_stream.block('actions') do |actions_stream|
+                  endpoint.model_handler.send(
+                    :actions,
                     endpoint.model_handler,
-                    :stream => stream, :response => self, :endpoint => endpoint
-                  )
+                    :response => self, :endpoint => endpoint
+                  ).map(&actions_stream.method(:attribute))
                 end
               end
             end
