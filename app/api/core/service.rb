@@ -122,10 +122,10 @@ class Core::Service < Sinatra::Base
     attr_reader :ability
 
     delegate :user, :to => :service
-    attr_reader :identifier
+    attr_reader :identifier, :started_at
 
     def initialize(identifier, *args, &block)
-      @identifier = identifier
+      @identifier, @started_at = identifier, Time.now
       super(*args, &block)
       @ability = Core::Abilities.create(self)
     end
@@ -199,7 +199,7 @@ class Core::Service < Sinatra::Base
     attr_reader             :request
     initialized_attr_reader :handled_by, :object
 
-    delegate :io, :identifier, :to => :request
+    delegate :io, :identifier, :started_at, :to => :request
 
     delegate :status, :to => 'request.service'
     initialized_delegate :status
@@ -237,10 +237,10 @@ class Core::Service < Sinatra::Base
     end
 
     def close
-      identifier = self.identifier  # Save for later as next line discards our request!
+      identifier, started_at = self.identifier, self.started_at  # Save for later as next line discards our request!
       discard_all_references
     ensure
-      Rails.logger.info("API[finished]: #{identifier}")
+      Rails.logger.info("API[finished]: #{identifier} in #{Time.now-started_at}s")
     end
 
     def discard_all_references

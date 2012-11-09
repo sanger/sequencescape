@@ -37,10 +37,11 @@ class ::Api::EndpointHandler < ::Core::Service
 
   # Report the performance and status of any request
   def report(handler, &block)
+    start = Time.now
     Rails.logger.info("API[start]: #{handler}: #{request.fullpath}")
     yield
   ensure
-    Rails.logger.info("API[handled]: #{handler}: #{request.fullpath}")
+    Rails.logger.info("API[handled]: #{handler}: #{request.fullpath} in #{Time.now-start}s")
   end
   private :report
 

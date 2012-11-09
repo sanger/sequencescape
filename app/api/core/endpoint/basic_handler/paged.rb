@@ -50,6 +50,40 @@ module Core::Endpoint::BasicHandler::Paged
   end
   private :page_of_results
 
+  class PagedTarget
+    def initialize(model)
+      @model = model
+    end
+
+    delegate :count, :to => :@model
+
+    class PageOfResults
+      def initialize(page, total, per_page)
+        @page, @total_pages = page, page / per_page
+      end
+
+      attr_reader :page, :total_pages
+      alias_method(:current_page, :page)
+
+      def next_page
+        page + 1
+      end
+
+      def previous_page
+        page - 1
+      end
+    end
+
+    def paginate(options)
+      PageOfResults.new(options[:page], options[:total_entries], options[:per_page])
+    end
+  end
+
+  def count_of_pages(target, page = 1)
+    page_of_results(PagedTarget.new(target), page)
+  end
+  private :count_of_pages
+
   # For a convenience allow people to override the number of results that are returned per page.  This is
   # really only used in the Cucumber features where we want to see more or less than the defaults.
   mattr_accessor :results_per_page
