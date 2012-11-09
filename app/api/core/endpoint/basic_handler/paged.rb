@@ -1,10 +1,17 @@
 module Core::Endpoint::BasicHandler::Paged
-  ACTION_NAME_TO_PAGE_METHOD = {
-    :last     => :total_pages,
-    :previous => :previous_page,
-    :next     => :next_page,
-    :read     => :current_page
-  }
+  def self.page_accessor(action, will_paginate_method, default_value = nil)
+    lambda do |object|
+      page = object.send(will_paginate_method) || default_value
+      page.nil? ? nil : [action, [1,page].max]
+    end
+  end
+
+  ACTION_NAME_TO_PAGE_METHOD = [
+    page_accessor(:last, :total_pages, 1),
+    page_accessor(:previous, :previous_page),
+    page_accessor(:next, :next_page),
+    page_accessor(:read, :current_page, 1)
+  ]
 
   def actions(object, options)
     super.tap do |actions|
@@ -21,11 +28,8 @@ module Core::Endpoint::BasicHandler::Paged
   private :action_updates_for
 
   def pages_to_actions(object, options)
-    action_to_page = ACTION_NAME_TO_PAGE_METHOD.map do |action,will_paginate_method|
-      page = object.send(will_paginate_method)
-      page.nil? ? nil : [ action, core_path([ 1, page ].max, options) ]
-    end
-    Hash[action_to_page.compact + [ [:first, core_path(1, options)] ]]
+    actions_to_details = [[:first,1]] +  ACTION_NAME_TO_PAGE_METHOD.map { |c| c.call(object) }.compact
+    Hash[actions_to_details.map { |action,page| [action,core_path(page, options)] }]
   end
   private :pages_to_actions
 

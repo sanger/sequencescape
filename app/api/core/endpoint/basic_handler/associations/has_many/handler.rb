@@ -66,7 +66,10 @@ class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpo
         nested_stream.attribute('size', association.count)
 
         nested_stream.block('actions') do |action_stream|
-          actions(association, options.merge(:target => object)).map(&action_stream.method(:attribute))
+          actions(
+            page_of_results(association),
+            options.merge(:target => object)
+          ).map(&action_stream.method(:attribute))
         end
       end
     end
