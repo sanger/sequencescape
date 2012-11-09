@@ -116,7 +116,6 @@ class Core::Service < Sinatra::Base
     include Core::References
     include Core::Benchmarking
     include Core::Service::EndpointHandling
-    include Core::Service::GarbageCollection::Request
 
     initialized_attr_reader :service, :target, :path, :io, :json
     attr_writer :io
@@ -180,7 +179,6 @@ class Core::Service < Sinatra::Base
     extend Core::Initializable
     include Core::References
     include Core::Benchmarking
-    include Core::Service::GarbageCollection::Response
 
     class Initializer
       delegate :status, :headers, :api_path, :to => '@owner.request.service'
@@ -241,7 +239,6 @@ class Core::Service < Sinatra::Base
     def close
       identifier = self.identifier  # Save for later as next line discards our request!
       discard_all_references
-      super
     ensure
       Rails.logger.info("API[finished]: #{identifier}")
     end
