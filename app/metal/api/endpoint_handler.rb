@@ -68,14 +68,16 @@ class ::Api::EndpointHandler < ::Core::Service
       end
 
     request = 
-      ::Core::Service::Request.new(http_request.fullpath) do |request|
+      ::Core::Service::Request.new(requested_url = http_request.fullpath) do |request|
         request.service = self
         request.path    = parts
         request.json    = @json
         yield(request)
       end
 
-    body(request.send(handler, action, send(endpoint_lookup, request.target)))
+    endpoint = send(endpoint_lookup, request.target)
+    Rails.logger.info("API[endpoint]: #{handler}: #{requested_url} handled by #{endpoint.inspect}")
+    body(request.send(handler, action, endpoint))
   end
 
   ACTIONS_TO_HTTP_VERBS = {
