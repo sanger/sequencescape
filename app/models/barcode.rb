@@ -1,9 +1,22 @@
 class Barcode
   # Anything that has a barcode is considered barcodeable.
   module Barcodeable
+    def self.included(base)
+      base.class_eval do
+        before_create :set_default_prefix
+        class_inheritable_accessor :prefix
+        self.prefix = "NT"
+      end
+    end
+
     def generate_barcode
       self.barcode = AssetBarcode.new_barcode
     end
+
+    def set_default_prefix
+      self.barcode_prefix ||= BarcodePrefix.find_by_prefix(self.prefix)
+    end
+    private :set_default_prefix
   end
 
   InvalidBarcode = Class.new(StandardError)

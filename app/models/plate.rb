@@ -81,13 +81,15 @@ WHERE c.container_id=?
     private :post_import
 
     def post_connect(well)
-      AssetLink.create!(:ancestor => proxy_owner, :descendant => well)
+#      AssetLink.create!(:ancestor => proxy_owner, :descendant => well)
     end
     private :post_connect
 
     def construct!
       Map.where_plate_size(proxy_owner.size).in_row_major_order.map do |location|
-        connect(Well.create!(:map => location))
+        create!(:map => location)
+      end.tap do |wells|
+        AssetLink::Job.create(proxy_owner, wells)
       end
     end
 

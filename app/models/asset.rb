@@ -18,11 +18,6 @@ class Asset < ActiveRecord::Base
 
   class VolumeError< StandardError
   end
-
-  before_create :set_default_prefix
-  
-  class_inheritable_accessor :prefix
-  self.prefix = "NT"
   
   cattr_reader :per_page
   @@per_page = 500
@@ -530,11 +525,4 @@ class Asset < ActiveRecord::Base
    self.resource == true
   end
 
-  private
-  def set_default_prefix
-    if barcode_prefix.nil?
-      self.barcode_prefix = BarcodePrefix.find_by_prefix(self.prefix)
-    end
-  end
-  
 end
