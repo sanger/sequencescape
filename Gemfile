@@ -45,8 +45,8 @@ gem "ruby_walk",  ">= 0.0.3",:git => "git+ssh://git@github.com/sanger/ruby_walk"
 gem "uuidtools"
 gem "sinatra", "~>1.1.0"
 gem "rack-acceptable", :require => 'rack/acceptable'
-gem "json_pure" #gem "yajl-ruby", :require => 'yajl'
-gem "json"
+# gem "json_pure" #gem "yajl-ruby", :require => 'yajl'
+# gem "json"
 gem "cancan"
 
 gem "bunny"
