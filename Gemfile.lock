@@ -262,6 +262,8 @@ DEPENDENCIES
   gmetric (~> 0.1.3)
   jdbc-mysql
   jruby-openssl
+  json
+  json_pure
   launchy
   log4r
   mocha
