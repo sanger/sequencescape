@@ -13,6 +13,7 @@ Feature: The entry point for the API gives directions to the other actions
   Scenario: Retrieving the root entry point when unauthorised
     When I GET the API path "/"
     Then the HTTP response should be "200 OK"
+    Then show me the HTTP response body
     And the JSON should be:
       """
       {

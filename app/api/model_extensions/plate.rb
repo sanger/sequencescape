@@ -34,14 +34,10 @@ module ModelExtensions::Plate
   # ignored within the returned result.
   def pools
     ActiveSupport::OrderedHash.new.tap do |pools|
-      wells.include_stock_wells.walk_in_pools do |_, wells|
-        pool_id = wells.first.pool_uuid
-        next if pool_id.blank?
-
-        pool_information = { :wells => Map.find(wells.map(&:map_id)).map(&:description) }
-        stock_wells = plate_purpose_or_stock_plate.can_be_considered_a_stock_plate? ? wells : wells.first.stock_wells
-        stock_wells.first.requests_as_source.each { |request| request.update_pool_information(pool_information) } unless stock_wells.empty?
-        pools[pool_id] = pool_information
+      Request.include_request_metadata.for_pooling_of(self).each do |request|
+        pools[request.pool_id] = { :wells => request.pool_into.split(',') }.tap do |pool_information|
+          request.update_pool_information(pool_information)
+        end unless request.pool_id.nil?
       end
     end
   end

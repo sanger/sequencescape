@@ -88,7 +88,7 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
     disable(:read)
 
     # Does an individual resource lookup
-    bind_action(:create, :to => 'lookup', :as => :lookup) do |request, response|
+    bind_action(:create, :to => 'lookup', :as => :lookup) do |_,request, response|
       uuid = Search.create!(request.json['lookup']).find
 
       # Hack time ...
@@ -105,7 +105,7 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
     bound_action_does_not_require_an_io_class(:lookup)
 
     # Handles trying to find multiple resources
-    bind_action(:create, :to => 'bulk', :as => :bulk) do |request, response|
+    bind_action(:create, :to => 'bulk', :as => :bulk) do |_,request, response|
       uuids = Search.create_bulk!(request.json['lookup']).map(&:find)
 
       # Hack time ...

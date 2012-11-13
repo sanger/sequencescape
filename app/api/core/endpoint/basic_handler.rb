@@ -1,13 +1,29 @@
 class Core::Endpoint::BasicHandler
   module Json
-    def as_json(options = {})
-      request = options[:response].request
+    def actions(object, options)
+      Hash[@actions.select do |name, behaviour|
+        accessible_action?(self, behaviour, options[:response].request, object)
+      end.map do |name, behaviour|
+        [name, core_path(options)]
+      end]
+    end
+    private :actions
 
-      { 'actions' => { } }.tap do |json|
-        json['actions'] = Hash[@actions.map do |name, behaviour|
-          [ name, core_path(options) ] if accessible_action?(self, behaviour, request, options[:target])
-        end.compact]
-      end
+    def root_json
+      'unknown'
+    end
+
+    def related
+      []
+    end
+
+    def tree_for(object, options)
+      associations, actions = {}, {}
+      related.each { |r| r.separate(associations, actions) }
+      Core::Io::Json::Grammar::Root.new(
+        root_json,
+        associations.merge('actions' => Core::Io::Json::Grammar::Actions.new(self, actions))
+      )
     end
 
     def core_path(*args)

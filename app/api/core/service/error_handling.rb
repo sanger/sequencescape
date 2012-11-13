@@ -23,8 +23,6 @@ module Core::Service::ErrorHandling
 
   module Helpers
     class JsonError
-      include Core::Service::GarbageCollection::Response
-
       def initialize(error)
         @error = error
       end
@@ -32,11 +30,6 @@ module Core::Service::ErrorHandling
       def each(&block)
         Yajl::Encoder.new.encode(@error, &block)
       end
-      def close
-        GC.enable
-        GC.start
-      end
-
     end
 
     def exception_thrown

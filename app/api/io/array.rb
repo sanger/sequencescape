@@ -1,7 +1,7 @@
 class ::Io::Array
-  extend ::Core::Io::Collection
+  extend Core::Io::Collection
 
-  def self.post_process(json)
-    json.delete('actions')
+  def self.size_for(collection)
+    collection.size
   end
 end

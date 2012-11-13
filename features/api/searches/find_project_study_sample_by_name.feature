@@ -43,7 +43,7 @@ Feature: Searching for studies, projects and samples by name
       | sample  | "sanger": { "name": "Testing_the_API_2" } |
 
   @single
-  Scenario Outline: Looking for a non-existant entry
+  Scenario: Looking for a non-existant entry
     Given the UUID for the search "Find assets by barcode" is "00000000-1111-2222-3333-444444444444"
 
     When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/first":

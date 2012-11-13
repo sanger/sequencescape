@@ -116,17 +116,16 @@ class Core::Service < Sinatra::Base
     include Core::References
     include Core::Benchmarking
     include Core::Service::EndpointHandling
-    include Core::Service::GarbageCollection::Request
 
     initialized_attr_reader :service, :target, :path, :io, :json
     attr_writer :io
     attr_reader :ability
 
     delegate :user, :to => :service
-    attr_reader :identifier
+    attr_reader :identifier, :started_at
 
     def initialize(identifier, *args, &block)
-      @identifier = identifier
+      @identifier, @started_at = identifier, Time.now
       super(*args, &block)
       @ability = Core::Abilities.create(self)
     end
@@ -180,7 +179,6 @@ class Core::Service < Sinatra::Base
     extend Core::Initializable
     include Core::References
     include Core::Benchmarking
-    include Core::Service::GarbageCollection::Response
 
     class Initializer
       delegate :status, :headers, :api_path, :to => '@owner.request.service'
@@ -201,7 +199,7 @@ class Core::Service < Sinatra::Base
     attr_reader             :request
     initialized_attr_reader :handled_by, :object
 
-    delegate :io, :identifier, :to => :request
+    delegate :io, :identifier, :started_at, :to => :request
 
     delegate :status, :to => 'request.service'
     initialized_delegate :status
@@ -220,25 +218,29 @@ class Core::Service < Sinatra::Base
     # out the JSON to the client.  The garbage collection is then re-enabled in close.
     #++
     def each(&block)
-      benchmark('Streaming JSON') do
-        options = { :response => self, :target => object }
+      Rails.logger.info('API[streaming]: starting JSON streaming')
+      start = Time.now
 
-        io_handler         = ::Core::Io::Registry.instance.lookup_for_object(object)
-        object_as_json     = io_handler.as_json(options.merge(:object => object))
-        actions_for_object = handled_by.as_json(options)
-        merge_actions_into_object_json(object_as_json, actions_for_object)
-        io_handler.post_process(object_as_json)
-
-        Yajl::Encoder.encode(object_as_json, &block)
+      ::Core::Io::Buffer.new(block) do |buffer|
+        ::Core::Io::Json::Stream.new(buffer).open do |stream|
+          ::Core::Io::Registry.instance.lookup_for_object(object).as_json(
+            :response   => self,
+            :target     => object,
+            :stream     => stream,
+            :object     => object,
+            :handled_by => handled_by
+          )
+        end
       end
+
+      Rails.logger.info("API[streaming]: finished JSON streaming in #{Time.now-start}s")
     end
 
     def close
-      identifier = self.identifier  # Save for later as next line discards our request!
+      identifier, started_at = self.identifier, self.started_at  # Save for later as next line discards our request!
       discard_all_references
-      super
     ensure
-      Rails.logger.info("API[finished]: #{identifier}")
+      Rails.logger.info("API[finished]: #{identifier} in #{Time.now-started_at}s")
     end
 
     def discard_all_references
@@ -249,29 +251,5 @@ class Core::Service < Sinatra::Base
       ActiveRecord::Base.connection_pool.release_connection
     end
     private :discard_all_references
-
-    def merge_actions_into_object_json(object_as_json, actions_for_object)
-      key         = object_as_json.keys.detect { |k| 'size' != k.to_s }
-      target_json = object_as_json[key]
-      return target_json.deep_merge!(actions_for_object) unless target_json.is_a?(Array)
-
-      # Merging the actions into a paged list of results is a little more complicated.
-      # We have to remove the results from the JSON (otherwise deep_merge will overwrite
-      # them) and then we have to individual merge the objects back in again.
-      #
-      # An added complication is that the actions for the object define the real name of
-      # the results.  So we have to find the key that is not 'actions' and use that for
-      # the remerge.
-      result_list_key = actions_for_object.keys.detect { |k| k != 'actions' } || key
-
-      object_as_json.delete(key)
-      object_as_json.deep_merge!(actions_for_object)
-      if actions_for_object.key?(result_list_key)
-        object_as_json[result_list_key] = actions_for_object[result_list_key].each_with_index.map { |oaj,i| target_json[i].deep_merge!(oaj) }
-      else
-        object_as_json[result_list_key] = target_json
-      end
-    end
-    private :merge_actions_into_object_json
   end
 end

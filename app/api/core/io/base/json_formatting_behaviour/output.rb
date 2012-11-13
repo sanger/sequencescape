@@ -1,65 +1,24 @@
 module ::Core::Io::Base::JsonFormattingBehaviour::Output
+  def json_code_tree
+    ::Core::Io::Json::Grammar::Root.new(self)
+  end
+  private :json_code_tree
+
   def generate_object_to_json_mapping(attribute_to_json)
-    code = attribute_to_json.sort_by(&:first).map do |attribute, json|
-      json_path = json.split('.')
-      json_leaf = json_path.pop
-
-      attribute_path = attribute.split('.').map(&:to_sym)
-      attribute_leaf = attribute_path.pop
-      %Q{
-        handle_attribute(object, #{attribute_leaf.inspect}, #{attribute_path.inspect}, options) do |value, force|
-          container = result
-          #{json_path.inspect}.each do |k|
-            break if container.nil?
-            container = force ? (container[k] ||= {}) : container[k]
-          end
-
-          container[#{json_leaf.inspect}] = value unless container.nil?
-        end
-      }
-    end
-
-    # NOTE: Handy to have when debugging!
-    low_level("#{'=' * 20} #{self.name} #{'=' * 20}")
-    low_level("OUTPUT JSON CODE:")
-    code.each(&method(:low_level))
-    low_level('-' * 60)
-
-    line = __LINE__ + 1
-    class_eval(%Q{
-      def self.object_json(object, options)
-        super.tap do |result|
-          result["uuid"]       = object.uuid if object.respond_to?(:uuid)
-          result["created_at"] = object.created_at
-          result["updated_at"] = object.updated_at
-
-          #{code.join("\n")}
-        end
+    # Sort the attribute_to_json map such that the JSON elements are in order, thus ensuring that
+    # we will only open and close blocks as we go.  Then build a tree that can be executed against
+    # an object to generate the JSON appropriately.
+    tree = attribute_to_json.sort_by(&:last).map do |attribute, json|
+      [ json.split('.'), attribute.split('.').map(&:to_sym) ]
+    end.inject(json_code_tree.for(self)) do |tree, (json_path, attribute_path)|
+      tree.tap do
+        json_leaf = json_path.pop
+        json_path.inject(tree) { |node,step| node[step] }.leaf(json_leaf, attribute_path)
       end
-    }, "#{__FILE__}(#{self.name})", line)
-  end
-
-  RETURNED_OBJECTS = [
-    Symbol, String, Fixnum, BigDecimal, Float,
-    Date, Time, ActiveSupport::TimeWithZone,
-    FalseClass, TrueClass
-  ]
-
-  def jsonify(object, options)
-    case
-    when object.nil?         then nil
-    when object.is_a?(Array) then object.map { |o| jsonify(o, options) }
-    when object.is_a?(Hash)  then Hash[object.map { |k,v| [ jsonify(k, options), jsonify(v, options) ] }]
-    when RETURNED_OBJECTS.include?(object.class) then object
-    else ::Core::Io::Registry.instance.lookup_for_object(object).as_json(options.merge(:object => object, :nested => true))
     end
-  end
-  private :jsonify
 
-  def handle_attribute(object, attribute_name, attribute_path, options)
-    target = attribute_path.inject(object) { |o,k| break if o.nil? ; o.send(k) }
-    return yield(nil, false) if target.nil?
-    yield(jsonify(target.send(attribute_name), options), true)
+    # Now we can generate a method that will use that tree to encode an object to JSON.
+    self.singleton_class.send(:define_method, :json_code_tree) { tree }
+    self.singleton_class.send(:define_method, :object_json, &tree.method(:encode))
   end
-  private :handle_attribute
 end

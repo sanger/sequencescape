@@ -39,7 +39,7 @@ Feature: Illumina-b stock DNA plate state varies based on the presence of submis
       """
 
   Scenario: An empty stock plate with submissions is in the pending state
-    Given the plate with UUID "00000000-1111-2222-3333-000000000001" has been submitted to "Illumina-B STD - HiSeq Paired end sequencing"
+    Given the plate with UUID "00000000-1111-2222-3333-000000000001" has been submitted to "Illumina-B - Multiplexed WGS - HiSeq Paired end sequencing"
 
     When I GET the API path "/00000000-1111-2222-3333-000000000001"
     Then the HTTP response should be "200 OK"
@@ -55,7 +55,7 @@ Feature: Illumina-b stock DNA plate state varies based on the presence of submis
 
   Scenario: When the stock plate has full wells that do not have submissions it should be pending
     Given all wells on the plate "Testing the API" have unique samples
-      And "A1-H6" of the plate with UUID "00000000-1111-2222-3333-000000000001" have been submitted to "Illumina-B STD - HiSeq Paired end sequencing"
+      And "A1-H6" of the plate with UUID "00000000-1111-2222-3333-000000000001" have been submitted to "Illumina-B - Multiplexed WGS - HiSeq Paired end sequencing"
 
     When I GET the API path "/00000000-1111-2222-3333-000000000001"
     Then the HTTP response should be "200 OK"
@@ -71,7 +71,7 @@ Feature: Illumina-b stock DNA plate state varies based on the presence of submis
 
   Scenario: When the stock plate has submissions on all of its full wells then its state is 'passed'
     Given all wells on the plate "Testing the API" have unique samples
-      And the plate with UUID "00000000-1111-2222-3333-000000000001" has been submitted to "Illumina-B STD - HiSeq Paired end sequencing"
+      And the plate with UUID "00000000-1111-2222-3333-000000000001" has been submitted to "Illumina-B - Multiplexed WGS - HiSeq Paired end sequencing"
 
     When I GET the API path "/00000000-1111-2222-3333-000000000001"
     Then the HTTP response should be "200 OK"

@@ -29,7 +29,7 @@ Feature: The top of the Illumina-B pipeline
       And the UUID for the plate "Testing the API" is "00000000-1111-2222-3333-000000000001"
       And all wells on the plate "Testing the API" have unique samples
 
-    Given the plate with UUID "00000000-1111-2222-3333-000000000001" has been submitted to "Illumina-B STD - HiSeq Paired end sequencing"
+    Given the plate with UUID "00000000-1111-2222-3333-000000000001" has been submitted to "Illumina-B - Multiplexed WGS - HiSeq Paired end sequencing"
 
     Given the UUID for the plate purpose "ILB_STD_COVARIS" is "11111111-2222-3333-4444-000000000002"
       And the UUID of the next plate created will be "00000000-1111-2222-3333-000000000002"

@@ -1,6 +1,18 @@
 class AssetLink < ActiveRecord::Base
   include Api::AssetLinkIO::Extensions
 
+  # Convenient mechanism for queueing the creation of AssetLink instances for asynchronous processing.
+  # Basically we should be moving away from these and this enables us to ignore them.
+  class Job < Struct.new(:parent, :children)
+    def self.create(parent, children)
+      Delayed::Job.enqueue(new(parent.id, children.map(&:id)))
+    end
+
+    def perform
+      children.map { |child| AssetLink.create!(:ancestor_id => parent, :descendant_id => child) }
+    end
+  end
+
   cattr_reader :per_page
   @@per_page = 500
   acts_as_dag_links :node_class_name => 'Asset'

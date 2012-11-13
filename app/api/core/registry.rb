@@ -10,16 +10,6 @@ class ::Core::Registry
     @model_class_to_target = {}
   end
 
-#  def register!(model_class, io_class)
-#    raise AlreadyRegisteredError, "Already registered for #{model_class.name.inspect}" if is_already_registered?(model_class)
-#    register(model_class, io_class)
-#  end
-#  
-#  def deregister!(model_class)
-#    raise UnregisteredError, "There is no #{model_clas.name.inspect} registered" unless is_already_registered?(model_class)
-#    deregister(model_class)
-#  end
-
   def lookup_target_class_in_registry!(model_class)
     lookup_target_class_in_registry(model_class) or raise UnregisteredError, "Unable to locate for #{model_class.name.inspect}"
   end

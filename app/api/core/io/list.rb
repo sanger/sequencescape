@@ -9,15 +9,6 @@ class Core::Io::List
 
   delegate :action_for_page, :to => :@command
 
-  def as_json(options = nil)
-    benchmark("I/O #{self.class.name}") do
-      @command.as_json(options).tap do |json|
-        json[:actions].merge!(pagination_actions)
-        json[@command.class.json_root] = @objects.map { |o| o.object_json(options) }
-      end
-    end
-  end
-
   def pagination_actions
     {
       :first => action_for_page(1),

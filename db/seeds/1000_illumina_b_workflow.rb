@@ -57,8 +57,17 @@ ActiveRecord::Base.transaction do
         submission
       ).tap { |template| template.superceded_by_unknown! }.save!
 
-      SubmissionTemplate.new_from_submission("Illumina-B - Cherrypicked - Multiplexed WGS - #{sequencing_request_type.name}", submission).save!
-    end
+      SubmissionTemplate.new_from_submission(
+        "Illumina-B - Cherrypicked - Multiplexed WGS - #{sequencing_request_type.name}",
+        submission
+      ).save!
 
+      submission.request_type_ids  = [ pulldown_request_type.id, sequencing_request_type.id ]
+
+      SubmissionTemplate.new_from_submission(
+        "Illumina-B - Multiplexed WGS - #{sequencing_request_type.name}",
+        submission
+      ).save!
+    end
   end
 end
