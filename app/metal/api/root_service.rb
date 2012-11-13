@@ -10,13 +10,22 @@ class Api::RootService < ::Core::Service
       self.object = services
 
       def @owner.each(&block)
-        json = Hash[
-          object.map do |model_in_json,endpoint|
-            [model_in_json, endpoint.model_handler.as_json(:response => self, :endpoint => endpoint, :target => endpoint.model_handler)] 
-          end +
-          [ [ 'revision', 2 ] ]
-        ]
-        Yajl::Encoder.new.encode(json, &block)
+        ::Core::Io::Buffer.new(block) do |buffer|
+          ::Core::Io::Json::Stream.new(buffer).open do |stream|
+            stream.attribute('revision', 2)
+            object.each do |model_in_json, endpoint|
+              stream.block(model_in_json) do |nested_stream|
+                nested_stream.block('actions') do |actions_stream|
+                  endpoint.model_handler.send(
+                    :actions,
+                    endpoint.model_handler,
+                    :response => self, :endpoint => endpoint
+                  ).map(&actions_stream.method(:attribute))
+                end
+              end
+            end
+          end
+        end
       end
     end
   end

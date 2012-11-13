@@ -5,6 +5,5 @@ class ::Endpoints::Wells < ::Core::Endpoint::Base
 
   instance do
     belongs_to :plate, :json => 'plate'
-
   end
 end

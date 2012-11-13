@@ -1,5 +1,4 @@
 Factory.define :empty_well, :class => Well do |well|
-  well.name                {|a| Factory.next :asset_name }
   well.value               ""
   well.qc_state            ""
   well.resource            nil

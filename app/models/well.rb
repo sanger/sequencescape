@@ -30,7 +30,9 @@ class Well < Aliquot::Receptacle
   contained_by :plate
   delegate :location, :to => :container , :allow_nil => true
   @@per_page = 500
+
   has_one :well_attribute, :inverse_of => :well
+  after_create { |w| w.create_well_attribute unless w.well_attribute.present? }
 
   named_scope :pooled_as_target_by, lambda { |type|
     {
@@ -53,8 +55,6 @@ class Well < Aliquot::Receptacle
 
   named_scope :in_plate_column, lambda {|col,size| {:joins => :map, :conditions => {:maps => {:description => Map.descriptions_for_column(col,size), :asset_size => size }}}}
   named_scope :in_plate_row,    lambda {|row,size| {:joins => :map, :conditions => {:maps => {:description => Map.descriptions_for_row(row,size), :asset_size =>size }}}}
-
-  after_create :create_well_attribute_if_not_exists
 
   named_scope :with_blank_samples, { :conditions => { :aliquots => { :samples => { :empty_supplier_sample_name => true } } }, :joins => { :aliquots => :sample } }
 
@@ -172,14 +172,6 @@ class Well < Aliquot::Receptacle
      :sequenom      => self.get_sequenom_pass,
      :concentration => self.get_concentration }
   end
-
-  def create_well_attribute_if_not_exists
-    unless self.well_attribute
-      self.well_attribute = WellAttribute.create
-      self.save!
-    end
-  end
-  private :create_well_attribute_if_not_exists
 
   def buffer_required?
     get_buffer_volume > 0.0

@@ -15,16 +15,18 @@ module Core::Endpoint::BasicHandler::Handlers
     @handlers = {}
   end
 
-  def as_json(options = {})
-    super.tap do |json|
-      segments = @handlers.keys
-      segments = segments && options[:include].map(&:to_sym) if options.key?(:include)
+  def related
+    @handlers.map(&:last)
+  end
 
-      # I have no idea why I put 'unless options[:embedded]' on this as it doesn't seem to
-      # do anything other than stop stuff working!
-      segments.each do |segment|
-        json.deep_merge!(@handlers[segment].as_json(options.merge(:embedded => true)))
-      end
+  def actions(object, options)
+    @handlers.select do |name, handler|
+      handler.is_a?(Core::Endpoint::BasicHandler::Actions::InnerAction)
+#      accessible_action?(self, handler, options[:response].request, object)
+    end.map do |name, handler|
+      handler.send(:actions, object, options)
+    end.inject(super) do |actions, subactions|
+      actions.merge(subactions)
     end
   end
 

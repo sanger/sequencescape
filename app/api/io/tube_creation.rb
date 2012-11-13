@@ -7,6 +7,5 @@ class ::Io::TubeCreation < ::Core::Io::Base
                    user <=> user
                  parent <=> parent
           child_purpose <=> child_purpose
-               children  => children
   })
 end

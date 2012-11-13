@@ -30,8 +30,8 @@ Feature: The bottom of the illumina_b pipeline
 
   @authorised
   Scenario: Dealing with the MX library tube at the end of the pipeline
-    Given "A1-H6" of the plate with UUID "00000000-1111-2222-3333-000000000001" have been submitted to "Illumina-B STD - HiSeq Paired end sequencing"
-      And "A7-H12" of the plate with UUID "00000000-1111-2222-3333-000000000001" have been submitted to "Illumina-B STD - HiSeq Paired end sequencing"
+    Given "A1-H6" of the plate with UUID "00000000-1111-2222-3333-000000000001" have been submitted to "Illumina-B - Multiplexed WGS - HiSeq Paired end sequencing"
+      And "A7-H12" of the plate with UUID "00000000-1111-2222-3333-000000000001" have been submitted to "Illumina-B - Multiplexed WGS - HiSeq Paired end sequencing"
 
     Given all submissions have been worked until the last plate of the "Illumina-B STD" pipeline
       And all plates have sequential UUIDs based on "00000000-1111-2222-3333"
@@ -105,13 +105,13 @@ Feature: The bottom of the illumina_b pipeline
           },
           "transfers": {
             "A1": {
-              "uuid": "98989898-1111-2222-3333-000000000002",
+              "uuid": "98989898-1111-2222-3333-000000000001",
               "stock_plate": {
                 "barcode": { "ean13": "1221000001777" }
               }
             },
             "B1": {
-              "uuid": "98989898-1111-2222-3333-000000000001",
+              "uuid": "98989898-1111-2222-3333-000000000002",
               "stock_plate": {
                 "barcode": { "ean13": "1221000001777" }
               }
@@ -121,10 +121,10 @@ Feature: The bottom of the illumina_b pipeline
       }
       """
 
-    Then the aliquots of the stock multiplexed library tube with UUID "98989898-1111-2222-3333-000000000001" should be the same as the wells "A7-H12" of the plate "Testing the API"
-     And the name of the stock multiplexed library tube with UUID "98989898-1111-2222-3333-000000000001" should be "DN1000001M A7:H12"
-     And the aliquots of the stock multiplexed library tube with UUID "98989898-1111-2222-3333-000000000002" should be the same as the wells "A1-H6" of the plate "Testing the API"
-     And the name of the stock multiplexed library tube with UUID "98989898-1111-2222-3333-000000000002" should be "DN1000001M A1:H6"
+    Then the aliquots of the stock multiplexed library tube with UUID "98989898-1111-2222-3333-000000000002" should be the same as the wells "A7-H12" of the plate "Testing the API"
+     And the name of the stock multiplexed library tube with UUID "98989898-1111-2222-3333-000000000002" should be "DN1000001M A7:H12"
+     And the aliquots of the stock multiplexed library tube with UUID "98989898-1111-2222-3333-000000000001" should be the same as the wells "A1-H6" of the plate "Testing the API"
+     And the name of the stock multiplexed library tube with UUID "98989898-1111-2222-3333-000000000001" should be "DN1000001M A1:H6"
 
     # Transfer from the stock MX tubes to the MX tubes
     Then log "Make the transfers from first stock tube to one MX tube" for debugging
@@ -146,13 +146,13 @@ Feature: The bottom of the illumina_b pipeline
             "uuid": "98989898-1111-2222-3333-000000000001"
           },
           "destination": {
-            "uuid": "00000000-1111-2222-3333-999900000002"
+            "uuid": "00000000-1111-2222-3333-999900000001"
           }
         }
       }
       """
-    Then the aliquots of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000002" should be the same as the wells "A7-H12" of the plate "Testing the API"
-     And the name of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000002" should be "DN1000001M A7:H12"
+    Then the aliquots of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be the same as the wells "A1-H6" of the plate "Testing the API"
+     And the name of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "DN1000001M A1:H6"
 
     Then log "Make the transfers from second stock tube to one MX tube" for debugging
     When I make an authorised POST with the following JSON to the API path "/22222222-3333-4444-5555-000000000002":
@@ -173,13 +173,13 @@ Feature: The bottom of the illumina_b pipeline
             "uuid": "98989898-1111-2222-3333-000000000002"
           },
           "destination": {
-            "uuid": "00000000-1111-2222-3333-999900000001"
+            "uuid": "00000000-1111-2222-3333-999900000002"
           }
         }
       }
       """
-    Then the aliquots of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be the same as the wells "A1-H6" of the plate "Testing the API"
-     And the name of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "DN1000001M A1:H6"
+    Then the aliquots of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000002" should be the same as the wells "A7-H12" of the plate "Testing the API"
+     And the name of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000002" should be "DN1000001M A7:H12"
 
     # Change the state of one tube to ensure it doesn't affect the other
     Then log "Change the state of one tube to ensure it doesn't affect the other" for debugging
@@ -250,8 +250,8 @@ Feature: The bottom of the illumina_b pipeline
 
   #  @authorised
   #  Scenario Outline: Changing the tube state when requests are not "open"
-  #    Given "A1-H6" of the plate with UUID "00000000-1111-2222-3333-000000000001" have been submitted to "Illumina-B STD - HiSeq Paired end sequencing"
-  #      And "A7-H12" of the plate with UUID "00000000-1111-2222-3333-000000000001" have been submitted to "Illumina-B STD - HiSeq Paired end sequencing"
+  #    Given "A1-H6" of the plate with UUID "00000000-1111-2222-3333-000000000001" have been submitted to "Illumina-B - Multiplexed WGS - HiSeq Paired end sequencing"
+  #      And "A7-H12" of the plate with UUID "00000000-1111-2222-3333-000000000001" have been submitted to "Illumina-B - Multiplexed WGS - HiSeq Paired end sequencing"
   #
   #    Given all submissions have been worked until the last plate of the "Illumina-B STD" pipeline
   #      And all plates have sequential UUIDs based on "00000000-1111-2222-3333"

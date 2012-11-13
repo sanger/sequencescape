@@ -3,7 +3,6 @@ module Core::Io::Base::JsonFormattingBehaviour
     base.class_eval do
       extend ::Core::Io::Base::JsonFormattingBehaviour::Input
       extend ::Core::Io::Base::JsonFormattingBehaviour::Output
-      extend ::Core::Io::Base::JsonFormattingBehaviour::Debug unless Rails.env == 'production'
 
       class_inheritable_reader :attribute_to_json_field
       write_inheritable_attribute(:attribute_to_json_field, {})
@@ -11,31 +10,18 @@ module Core::Io::Base::JsonFormattingBehaviour
     end
   end
 
-  module Debug
-    def as_json(options = nil, &block)
-      return super if options[:nested]
-      benchmark("I/O #{self.name}") { super }
-    end
-  end
-
+  # NOTE: This one is OK!
   def as_json(options = nil, &block)
-    options        ||= {}
-    object           = options.delete(:object)
-    object_content   = object_json(object, options)
-
-    options[:nested] ? object_content : { self.json_root => object_content }
+    options ||= {}
+    object    = options.delete(:object)
+    object_json(object, options)
   end
 
   #--
   # Very root level does absolutely nothing useful!
   #++
-  def object_json(object, options)
-    {}
-  end
-  private :object_json
+  def object_json(*args)
 
-  def post_process(json)
-    # Does nothing, intentionally
   end
 
   def json_field_for(attribute)
