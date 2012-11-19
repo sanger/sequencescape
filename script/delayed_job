@@ -1,11 +1,12 @@
 #!/bin/bash -l
 function delayed_job_start() {
+  cd `pwd`
   ./script/runner 'Delayed::Worker.new.start' &
-  echo $! > ../shared/delayed_job.pid
+  echo $! > ../../shared/delayed_job.pid
 }
 
 function delayed_job_stop() {
-  kill -9 `cat ../shared/delayed_job.pid`
+  kill -9 `cat ../../shared/delayed_job.pid`
 }
 
 function delayed_job_restart() {
