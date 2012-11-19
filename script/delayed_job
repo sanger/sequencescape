@@ -13,4 +13,4 @@ function delayed_job_restart() {
   delayed_job_start
 }
 
-delayed_job_${1}
+delayed_job_${3}
