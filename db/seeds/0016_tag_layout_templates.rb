@@ -37,5 +37,11 @@ ActiveRecord::Base.transaction do
     :walking_algorithm => 'TagLayout::WalkWellsOfPlate',
     :tag_group => tag_group
   )
+  TagLayoutTemplate.create!(
+    :name => 'Illumina B vertical tagging',
+    :direction_algorithm => 'TagLayout::InColumns',
+    :walking_algorithm => 'TagLayout::WalkWellsOfPlate',
+    :tag_group => tag_group
+  )
 
 end
