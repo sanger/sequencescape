@@ -34,11 +34,18 @@ class Request < ActiveRecord::Base
     }
 
   named_scope :for_pooling_of, lambda { |plate|
+    joins =
+      if plate.stock_plate?
+        [ 'INNER JOIN assets AS pw ON requests.asset_id=pw.id' ]
+      else
+        [
+          'INNER JOIN well_links ON well_links.source_well_id=requests.asset_id',
+          'INNER JOIN assets AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"',
+        ]
+      end
     {
       :select => 'uuids.external_id AS pool_id, GROUP_CONCAT(DISTINCT pw_location.description SEPARATOR ",") AS pool_into, requests.*',
-      :joins => [
-        'INNER JOIN well_links ON well_links.source_well_id=requests.asset_id',
-        'INNER JOIN assets AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"',
+      :joins => joins + [
         'INNER JOIN maps AS pw_location ON pw.map_id=pw_location.id',
         'INNER JOIN container_associations ON container_associations.content_id=pw.id',
         'INNER JOIN submissions ON requests.submission_id=submissions.id',
