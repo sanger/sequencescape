@@ -54,27 +54,39 @@ class PlatePurpose < Purpose
     wells = plate.wells
     wells = wells.located_at(contents) unless contents.blank?
 
-    transition_input_requests(wells, state)
+    transition_state_requests(wells, state)
     fail_stock_well_requests(wells) if state == 'failed'
   end
 
-  def transition_input_requests(wells, state)
-    wells = wells.all(:include => { :requests_as_target => { :asset => :aliquots, :target_asset => :aliquots } })
-    wells.each { |w| w.requests_as_target.map { |r| r.transition_to(state) } }
+  module Overrideable
+    def transition_state_requests(wells, state)
+      wells = wells.all(:include => { :requests_as_target => { :asset => :aliquots, :target_asset => :aliquots } })
+      wells.each { |w| w.requests_as_target.map { |r| r.transition_to(state) } }
+    end
+    private :transition_state_requests
+
+    # Override this method to control the requests that should be failed for the given wells.
+    def fail_request_details_for(wells)
+      wells.each do |well|
+        submission_ids = well.requests_as_target.map(&:submission_id)
+        next if submission_ids.empty?
+
+        stock_wells = well.stock_wells.map(&:id)
+        next if stock_wells.empty?
+
+        yield(submission_ids, stock_wells)
+      end
+    end
+    private :fail_request_details_for
   end
-  private :transition_input_requests
+
+  include Overrideable
 
   def fail_stock_well_requests(wells)
     # Load all of the requests that come from the stock wells that should be failed.  Note that we can't simply change
     # their state, we have to actually use the statemachine method to do this to get the correct behaviour.
     conditions, parameters = [], []
-    wells.each do |well|
-      submission_ids = well.requests_as_target.map(&:submission_id)
-      next if submission_ids.empty?
-
-      stock_wells = well.stock_wells.map(&:id)
-      next if stock_wells.empty?
-
+    fail_request_details_for(wells) do |submission_ids, stock_wells|
       # Efficiency gain to be had using '=' over 'IN' when there is only one value to consider.
       condition, args = [], []
       condition[0], args[0] = (submission_ids.size == 1) ? ['submission_id=?',submission_ids.first] : ['submission_id IN (?)',submission_ids]
@@ -82,6 +94,7 @@ class PlatePurpose < Purpose
       conditions << "(#{condition[0]} AND #{condition[1]})"
       parameters.concat(args)
     end
+    raise "Apparently there are not requests on these wells?" if conditions.empty?
     Request.where_is_not_a?(TransferRequest).all(:conditions => [ "(#{conditions.join(' OR ')})", *parameters ]).map(&:fail!)
   end
   private :fail_stock_well_requests

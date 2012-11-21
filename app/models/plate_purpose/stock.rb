@@ -17,4 +17,19 @@ module PlatePurpose::Stock
     full_wells_with_requests = plate.wells.requests_as_source_is_a?(Request::LibraryCreation).count(:conditions => { :id => wells_with_aliquots.map(&:id) })
     full_wells_with_requests == wells_with_aliquots.size ? 'passed' : 'pending'
   end
+
+  def transition_state_requests(*args)
+    # Does nothing, we'll do it in a moment!
+  end
+  private :transition_state_requests
+
+  # The requests that we're going to be failing are based on the requests coming out of the
+  # wells, and the wells themselves, for stock plates.
+  def fail_request_details_for(wells)
+    wells.each do |well|
+      submission_ids = well.requests_as_source.map(&:submission_id)
+      yield(submission_ids, [well.id]) unless submission_ids.empty?
+    end
+  end
+  private :fail_request_details_for
 end
