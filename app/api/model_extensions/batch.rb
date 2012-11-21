@@ -61,7 +61,7 @@ module ModelExtensions::Batch
       asset_links << [request.asset.id, request.target_asset.id]
     end
 
-    AssetLink::Bulk.create(asset_links)
+    AssetLink::BuilderJob.create(asset_links)
 
     Request.import(
       [ :id, :asset_id ],
