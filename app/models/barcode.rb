@@ -17,6 +17,16 @@ class Barcode
       self.barcode_prefix ||= BarcodePrefix.find_by_prefix(self.prefix)
     end
     private :set_default_prefix
+
+    def sanger_human_barcode
+      return nil if self.barcode.nil?
+      self.prefix + self.barcode.to_s + Barcode.calculate_checksum(self.prefix, self.barcode)
+    end
+
+    def ean13_barcode
+      return nil unless barcode.present? and prefix.present?
+      Barcode.calculate_barcode(self.prefix, self.barcode.to_i).to_s
+    end
   end
 
   InvalidBarcode = Class.new(StandardError)
