@@ -1,25 +1,21 @@
 <tr class="<%= cycle("rowodd", "roweven") %>">
   <td><%= link_to(h(asset.display_name), asset_url(asset), :target => "_blank") %></td>
-  <td><%= asset.sanger_human_barcode %></td>
-  <% unless asset.requests.empty? %>
-    <td colspan="3">
+  <td><%= asset.respond_to?(:sanger_human_barcode) ? asset.sanger_human_barcode : '' %></td>
+  <td colspan="3">
+    <% unless asset.requests.empty? %>
       <table border="0" cellpadding="3" cellspacing="0" width="100%">
         <% asset.requests.each do |request| %>
           <tr>
             <td width="42%"><%= request.pipeline.name unless request.pipeline_id.nil? %></td>
-            <td width="29%"><%= link_to request.id, "#{configatron.studies_url}/requests/#{request.id}" %></td>
+            <td width="29%"><%= link_to request.id, request_path(:id => request.id) %></td>
             <td width="29%"><%= request.batch_ids %></td>
           </tr>
         <% end %>
       </table>
-    </td>
-  <% else %>
-    <td colspan="3">No request</td>
-  <% end %>
+    <% else %>
+      No request
+    <% end %>
+  </td>
   <td><%= asset.sti_type %></td>
-  <% if asset.location %>
-    <td><%= asset.location.name %></td>
-  <% else %>
-    <td>Unknown location</td>
-  <% end %>
+  <td><%= asset.location ? asset.location.name : 'Unknown location' %></td>
 </tr>
