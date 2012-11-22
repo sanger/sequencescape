@@ -81,13 +81,15 @@ WHERE c.container_id=?
     private :post_import
 
     def post_connect(well)
-      AssetLink.create!(:ancestor => proxy_owner, :descendant => well)
+#      AssetLink.create!(:ancestor => proxy_owner, :descendant => well)
     end
     private :post_connect
 
     def construct!
       Map.where_plate_size(proxy_owner.size).in_row_major_order.map do |location|
-        connect(Well.create!(:map => location))
+        create!(:map => location)
+      end.tap do |wells|
+        AssetLink::Job.create(proxy_owner, wells)
       end
     end
 
@@ -574,7 +576,7 @@ WHERE c.container_id=?
   def stock_wells
     # Optimisation: if the plate is a stock plate then it's wells are it's stock wells!
     return Hash[wells.with_pool_id.map { |w| [w,[w]] }] if stock_plate?
-    Hash[wells.with_pool_id.map { |w| [w, w.stock_wells] }].tap do |stock_wells_hash|
+    Hash[wells.with_pool_id.map { |w| [w, w.stock_wells] }.reject { |_,v| v.empty? }].tap do |stock_wells_hash|
       raise "No stock plate associated with #{id}" if stock_wells_hash.empty?
     end
   end

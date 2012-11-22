@@ -1,6 +1,28 @@
 class AssetLink < ActiveRecord::Base
   include Api::AssetLinkIO::Extensions
 
+  # Enables the bulk creation of the asset links defined by the pairs passed as edges.
+  # Basically we should be moving away from these and this enables us to ignore them.
+  class BuilderJob < Struct.new(:links)
+    def perform
+      ActiveRecord::Base.transaction do
+        links.map { |parent,child| AssetLink.create!(:ancestor_id => parent, :descendant_id => child) }
+      end
+    end
+
+    def self.create(*args)
+      Delayed::Job.enqueue(new(*args))
+    end
+  end
+
+  # Convenient mechanism for queueing the creation of AssetLink instances where there is
+  # singular parent with lots of children.
+  class Job < BuilderJob
+    def initialize(parent, children)
+      super(children.map { |child| [parent.id,child.id] })
+    end
+  end
+
   cattr_reader :per_page
   @@per_page = 500
   acts_as_dag_links :node_class_name => 'Asset'

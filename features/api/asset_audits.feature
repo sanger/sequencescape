@@ -124,8 +124,6 @@ Feature: Access asset audits through the API
           "actions": {
             "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
           },
-          "created_at": "2010-10-23T23:00:00+01:00",
-          "updated_at": "2010-10-23T23:00:00+01:00",
           "uuid": "00000000-1111-2222-3333-444444444444",
           "created_by": "john",
           "key": "some_key",

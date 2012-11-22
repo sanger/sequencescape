@@ -1,10 +1,24 @@
 module Core::Endpoint::BasicHandler::Paged
-  ACTION_NAME_TO_PAGE_METHOD = {
-    :last     => :total_pages,
-    :previous => :previous_page,
-    :next     => :next_page,
-    :read     => :current_page
-  }
+  def self.page_accessor(action, will_paginate_method, default_value = nil)
+    lambda do |object|
+      page = object.send(will_paginate_method) || default_value
+      page.nil? ? nil : [action, [1,page].max]
+    end
+  end
+
+  ACTION_NAME_TO_PAGE_METHOD = [
+    page_accessor(:last, :total_pages, 1),
+    page_accessor(:previous, :previous_page),
+    page_accessor(:next, :next_page),
+    page_accessor(:read, :current_page, 1)
+  ]
+
+  def actions(object, options)
+    super.tap do |actions|
+      actions.merge!(pages_to_actions(object, options)) if options[:handled_by] == self
+    end
+  end
+  private :actions
 
   def action_updates_for(options)
     response = options[:response]
@@ -14,11 +28,8 @@ module Core::Endpoint::BasicHandler::Paged
   private :action_updates_for
 
   def pages_to_actions(object, options)
-    action_to_page = ACTION_NAME_TO_PAGE_METHOD.map do |action,will_paginate_method|
-      page = object.send(will_paginate_method)
-      page.nil? ? nil : [ action, core_path([ 1, page ].max, options) ]
-    end
-    Hash[action_to_page.compact + [ [:first, core_path(1, options)] ]]
+    actions_to_details = [[:first,1]] +  ACTION_NAME_TO_PAGE_METHOD.map { |c| c.call(object) }.compact
+    Hash[actions_to_details.map { |action,page| [action,core_path(page, options)] }]
   end
   private :pages_to_actions
 
@@ -38,6 +49,40 @@ module Core::Endpoint::BasicHandler::Paged
     end
   end
   private :page_of_results
+
+  class PagedTarget
+    def initialize(model)
+      @model = model
+    end
+
+    delegate :count, :to => :@model
+
+    class PageOfResults
+      def initialize(page, total, per_page)
+        @page, @total_pages = page, page / per_page
+      end
+
+      attr_reader :page, :total_pages
+      alias_method(:current_page, :page)
+
+      def next_page
+        page + 1
+      end
+
+      def previous_page
+        page - 1
+      end
+    end
+
+    def paginate(options)
+      PageOfResults.new(options[:page], options[:total_entries], options[:per_page])
+    end
+  end
+
+  def count_of_pages(target, page = 1)
+    page_of_results(PagedTarget.new(target), page)
+  end
+  private :count_of_pages
 
   # For a convenience allow people to override the number of results that are returned per page.  This is
   # really only used in the Cucumber features where we want to see more or less than the defaults.

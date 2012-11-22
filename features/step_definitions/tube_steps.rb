@@ -19,12 +19,10 @@ Given /^the tube "([^"]*)" is the target of a (started|passed|pending) "([^"]*)"
 end
 
 
-Given /^a (started|passed|pending) transfer from "([^"]*)" to "([^"]*)"$/ do |state, source_name, destination_name|
-  source = Tube.find_by_name(source_name)
-  destination = Tube.find_by_name(destination_name)
+Given /^a (started|passed|pending) transfer from the stock tube "([^"]*)" to the MX tube$/ do |state, source_name|
+  source = Tube.find_by_name(source_name) or raise "Cannot find source tube #{source_name.inspect}"
   Transfer::BetweenTubesBySubmission.create!(
     :source => source,
-    :destination => destination,
     :user => User.last||User.create(:login=>'no_one')
   )
   Then %Q{the transfer requests on "#{source.id}" are #{state}}

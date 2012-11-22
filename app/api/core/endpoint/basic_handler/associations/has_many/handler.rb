@@ -59,28 +59,21 @@ class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpo
   private :_read
   standard_action(:read)
 
-  def as_json(options = {})
-    json = super.tap { |json| action_updates_for(options) { |updates| json['actions'].merge!(updates) } }
-    options[:embedded] ?  generate_embedded_as_json(options, json) : generate_list_as_json(options, json)
-  end
+  def separate(associations, _)
+    associations[@options[:json].to_s] = lambda do |object, options, stream|
+      stream.block(@options[:json].to_s) do |nested_stream|
+        association = object.send(@association)
+        nested_stream.attribute('size', association.count)
 
-  def generate_embedded_as_json(options, json)
-    json['size'] = options[:target].send(@association).count
-    { @options[:json].to_s => json }
-  end
-  private :generate_embedded_as_json
-
-  def generate_list_as_json(options, json)
-    json.tap do |json|
-      dupped = options.merge(:target => nil, :only => @options[:include])
-      json[@options[:json].to_s] = options[:response].object.map do |object|
-        handler_for_object = endpoint_for_object(object).instance_handler
-        dupped[:target] = object
-        handler_for_object.as_json(dupped)
+        nested_stream.block('actions') do |action_stream|
+          actions(
+            count_of_pages(association),
+            options.merge(:target => object)
+          ).map(&action_stream.method(:attribute))
+        end
       end
     end
   end
-  private :generate_list_as_json
 
   def core_path(*args)
     options = args.extract_options!

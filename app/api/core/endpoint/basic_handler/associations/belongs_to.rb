@@ -7,21 +7,44 @@ module Core::Endpoint::BasicHandler::Associations::BelongsTo
       @throughs = Array(options[:through])
     end
 
-    def as_json(options = {})
-      endpoint_details(options) do |endpoint, object|
-        action_json = endpoint.instance_handler.as_json(options.merge(:embedded => true, :target => object))
-        action_json[:uuid] = object.uuid
+    def endpoint_details(object, &block)
+      object = @throughs.inject(object) { |t,s| t.send(s) }.send(@name) || return
+      block.call(@options[:json].to_s, endpoint_for_object(object), object)
+    end
+    private :endpoint_details
 
-        { @options[:json].to_s => action_json }
+    class Association
+      include Core::Io::Json::Grammar::Intermediate
+      include Core::Io::Json::Grammar::Resource
+
+      def initialize(endpoint_helper, children = nil)
+        super(children)
+        @endpoint_helper = endpoint_helper
+      end
+
+      delegate :endpoint_details, :to => :@endpoint
+
+      def merge(node)
+        super(node) { |children| self.class.new(@endpoint_helper, children) }
+      end
+
+      def call(object, options, stream)
+        @endpoint_helper.call(object) do |json_root, endpoint, associated_object|
+          stream.block(json_root) do |nested_stream|
+            resource_details(endpoint.instance_handler, associated_object, options, stream)
+            super(object, options, nested_stream)
+          end
+        end
+      end
+
+      def actions(*args)
+        # Nothing needed here!
       end
     end
 
-    def endpoint_details(options)
-      object = @throughs.inject(options[:target]) { |t,s| t.send(s) }.send(@name)
-      return { @options[:json].to_s => nil } if object.nil?
-      yield(endpoint_for_object(object), object)
+    def separate(associations, _)
+      associations[@options[:json].to_s] = Association.new(method(:endpoint_details))
     end
-    private :endpoint_details
   end
 
   def initialize
@@ -34,11 +57,7 @@ module Core::Endpoint::BasicHandler::Associations::BelongsTo
     @endpoints.push(class_handler.new(name, options, &block))
   end
 
-  def as_json(options = {})
-    super.tap do |json|
-      @endpoints.each do |endpoint|
-        json.deep_merge!(endpoint.as_json(options))
-      end unless options[:embedded]
-    end
+  def related
+    super.concat(@endpoints)
   end
 end

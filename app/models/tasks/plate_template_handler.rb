@@ -23,8 +23,8 @@ module Tasks::PlateTemplateHandler
   def parse_uploaded_spreadsheet_layout(layout_data,plate_size)
     (Hash.new { |h,k| h[k] = {} }).tap do |parsed_plates|
       FasterCSV.parse(layout_data) do |row|
-        parse_spreadsheet_row(plate_size, *row) do |plate_key, request_id, index_of_well_on_plate|
-          parsed_plates[plate_key][index_of_well_on_plate] = request_id
+        parse_spreadsheet_row(plate_size, *row) do |plate_key, request_id, location|
+          parsed_plates[plate_key][location.column_order] = [location,request_id]
         end
       end
     end
@@ -36,30 +36,20 @@ module Tasks::PlateTemplateHandler
     return if destination_well.blank? or destination_well.to_i > 0
 
     location = Map.find_by_description_and_asset_size(destination_well, plate_size) or return
-
-    return nil if Map.find_by_description_and_asset_size(destination_well,plate_size).nil?
-    index_of_well_on_plate = Map.description_to_vertical_plate_position(destination_well,plate_size)
-    return nil if index_of_well_on_plate.nil?
-
     plate_key = "default plate 1" if plate_key.blank?
-    yield(plate_key, request_id.to_i, index_of_well_on_plate)
+    yield(plate_key, request_id.to_i, location)
   end
   private :parse_spreadsheet_row
 
   def map_parsed_spreadsheet_to_plate(mapped_plate_wells,batch,plate_size)
     plates = mapped_plate_wells.map do |plate_key, mapped_wells|
-      (1..plate_size).map do |i|
-        request_id, well = mapped_wells[i], EMPTY_WELL
+      (0...plate_size).map do |i|
+        well, location, request_id = CherrypickTask::EMPTY_WELL, *mapped_wells[i]
         if request_id.present?
-          begin
-            source_plate_barcode = batch.requests.find(request_id).asset.plate.barcode
-            well = [request_id, source_plate_barcode, Map.vertical_plate_position_to_description(i,plate_size)]
-          rescue
-            # Nothing to do here
-          end
+          asset = batch.requests.find(request_id).asset
+          well  = [request_id, asset.plate.barcode, asset.display_name]
         end
-
-        current_plate << well
+        well
       end
     end
 

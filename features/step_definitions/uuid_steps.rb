@@ -205,7 +205,7 @@ end
 
 Given /^a "([^\"]+)" request with ID (\d+)$/ do |type, id|
   request_type = RequestType.find_by_name(type) or raise StandardError, "Cannot find request type #{type.inspect}"
-  Request.create!(:request_type => request_type) { |r| r.id = id.to_i }
+  request_type.requests.create! { |r| r.id = id.to_i }
 end
 
 Given /^all of the requests have appropriate assets with samples$/ do

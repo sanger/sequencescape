@@ -4,7 +4,7 @@ class ::Endpoints::BaitLibraryLayouts < ::Core::Endpoint::Base
 
     # You can preview a bait library layout, which is effectively an unsaved version of the one
     # that will be created.
-    bind_action(:create, :as => 'preview', :to => 'preview') do |request, response|
+    bind_action(:create, :as => 'preview', :to => 'preview') do |_, request, response|
       request.target.preview!(request.attributes).tap do |_|
         response.status(200)
       end
