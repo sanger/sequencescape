@@ -57,10 +57,12 @@
     <td class="item">Concentration:</td>
     <td><strong><%=h @asset.concentration %></strong> nM</td>
   </tr>
+<% if @asset.respond_to?(:sanger_human_barcode) %>
   <tr>
     <td class="item">Human barcode:</td>
     <td><strong><%=h @asset.sanger_human_barcode %></strong></td>
   </tr>
+<% end %>
   <tr>
     <td class="item">Scanned into lab?:</td>
     <td><strong><%= @asset.location.nil? ? 'No' : @asset.location.name %></strong></td>
