@@ -238,7 +238,7 @@ PLATFORMS
 DEPENDENCIES
   aasm (~> 2.4.0)
   activerecord-jdbc-adapter
-  activerecord-oracle_enhanced-adapter
+  activerecord-oracle_enhanced-adapter (= 1.2.3)
   acts-as-dag!
   acts_as_audited
   alter_table!

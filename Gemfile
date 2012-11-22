@@ -57,11 +57,7 @@ group :warehouse do
   gem "ruby-oci8", "1.0.7", :platforms => :mri
   # No ruby-oci8, (Need to use Oracle JDBC drivers Instead)
   #any newer version requires ruby-oci8 => 2.0.1
-  if(defined?(JRUBY_VERSION))
-    gem "activerecord-oracle_enhanced-adapter", :platforms => :jruby
-  else
-    gem "activerecord-oracle_enhanced-adapter" , "1.2.3", :platforms => :mri
-  end
+  gem "activerecord-oracle_enhanced-adapter" , "1.2.3", :platforms => :mri
 
 end
 

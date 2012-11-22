@@ -63,7 +63,7 @@ class CarrierwaveData < ActiveRecord::Migration
             File.open(uploaded.path, 'wb') do |f|
               f.write s.uploaded_file
             end
-            Document.create!(:uploaded_data => uploaded,  :documentable => s, :documentable_extended => "uploaded" )
+            Document.create!(:uploaded_data => uploaded,  :documentable_type => 'SampleManifest', :documentable_id=> s.id, :documentable_extended => "uploaded" )
           ensure
             uploaded.close
             uploaded.unlink # delete tempfile
