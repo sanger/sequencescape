@@ -1,23 +1,23 @@
 #!/bin/bash -l
 function delayed_job_start() {
   cd `pwd`
-  if [ ! -f "./tmp/worker" ]
+  if [ ! -f ../../shared/delayed_job.${1}.stop ]
   then
-    touch ./tmp/worker
+    touch ../../shared/delayed_job.${1}.stop
     ./script/runner 'Delayed::Worker.new.start' &
-    echo $! > ../../shared/delayed_job.pid
+    echo $! > ../../shared/delayed_job.${1}.pid
     wait $!
     echo "Delayed::Worker died"
-    if [ -f "./tmp/worker" ]; then rm ./tmp/worker; fi
+    if [ -f ../../shared/delayed_job.${1}.stop ]; then rm ../../shared/delayed_job.${1}.stop; fi
   else
     echo "Worker already running with pid:"
-    echo `cat ../../shared/delayed_job.pid`
+    echo `cat ../../shared/delayed_job.${1}.pid`
   fi
 }
 
 function delayed_job_stop() {
-  kill -9 `cat ../../shared/delayed_job.pid`
-  if [ -f "./tmp/worker" ]; then rm ./tmp/worker; fi
+  kill -9 `cat ../../shared/delayed_job.${1}.pid`
+  if [ -f ../../shared/delayed_job.${1}.stop ]; then rm ../../shared/delayed_job.${1}.stop; fi
 }
 
 function delayed_job_restart() {
@@ -25,4 +25,4 @@ function delayed_job_restart() {
   delayed_job_start
 }
 
-delayed_job_${3}
+delayed_job_${3} $2
