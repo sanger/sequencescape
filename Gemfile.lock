@@ -73,7 +73,7 @@ GEM
       xml-simple
     bouncy-castle-java (1.5.0146.1)
     builder (3.0.0)
-    bunny (0.8.0)
+    bunny (0.7.9)
     cancan (1.6.8)
     capybara (0.3.9)
       culerity (>= 0.2.4)
