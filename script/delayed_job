@@ -16,6 +16,7 @@ function delayed_job_start() {
 }
 
 function delayed_job_stop() {
+  cd `pwd`
   kill -9 `cat ../../shared/delayed_job.${1}.pid`
   if [ -f ../../shared/delayed_job.${1}.stop ]; then rm ../../shared/delayed_job.${1}.stop; fi
 }
