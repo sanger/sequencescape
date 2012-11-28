@@ -139,7 +139,7 @@ module IlluminaB::PlatePurposes
       purpose_for(plate_purpose_name).create!(options.reverse_merge(
         :name                  => plate_purpose_name,
         :cherrypickable_target => false,
-        :cherrypick_direction  => 'row'
+        :cherrypick_direction  => 'column'
       )).tap do |plate_purpose|
         plate_purpose.barcode_printer_type = BarcodePrinterType.find_by_type('BarcodePrinterType96Plate')||plate_purpose.barcode_printer_type
       end
