@@ -6,7 +6,7 @@ class AccessionService
   CenterName = 'SC'.freeze # TODO [xxx] use confing file
   Protect = "protect".freeze
   Hold = "hold".freeze
-  
+
   def submit(user, *accessionables)
     ActiveRecord::Base.transaction do
       submission = Accessionable::Submission.new(self, user, *accessionables)
@@ -84,7 +84,7 @@ class AccessionService
 
     #TODO check error
     #raise AccessionServiceError, "Cannot generate accession number: #{ sampledata[:error] }" if sampledata[:error]
-    
+
 
     ebi_accession_number = study.study_metadata.study_ebi_accession_number
     #raise NumberNotGenerated, 'No need to' if not ebi_accession_number.blank? and not /ER/.match(ebi_accession_number)
@@ -116,7 +116,7 @@ class AccessionService
   def sample_visibility(sample)
     Protect
   end
-  
+
   def study_visibility(study)
     Protect
   end
@@ -191,14 +191,14 @@ private
     xml.instruct!
     xml.SUBMISSION(
       'xmlns:xsi'      => 'http://www.w3.org/2001/XMLSchema-instance',
-      :center_name     => submission[:center_name], 
-      :broker_name     => submission[:broker], 
-      :alias           => submission[:submission_id], 
-      :submission_date => submission[:submission_date] 
+      :center_name     => submission[:center_name],
+      :broker_name     => submission[:broker],
+      :alias           => submission[:submission_id],
+      :submission_date => submission[:submission_date]
     ) {
       xml.CONTACTS {
         xml.CONTACT(
-          :inform_on_error  => submission[:contact_inform_on_error], 
+          :inform_on_error  => submission[:contact_inform_on_error],
           :inform_on_status => submission[:contact_inform_on_status],
           :name             => submission[:name]
         )
@@ -224,7 +224,7 @@ private
   end
 
   require 'rexml/document'
-  require 'curb'
+  #require 'curb'
   include REXML
 
   def accession_login
@@ -235,25 +235,28 @@ private
     raise StandardError, "Cannot connect to EBI to get accession number. Please configure accession_url in config.yml" if configatron.accession_url.blank?
 
     begin
-      curl = Curl::Easy.new(URI.parse(configatron.accession_url+accession_login).to_s)
+      rc = RestClient::Resource.new(URI.parse(configatron.accession_url+accession_login).to_s)
       if configatron.disable_web_proxy == true
-        curl.proxy_url = ''
+        RestClient.proxy = ''
       elsif not configatron.proxy.blank?
-
-        curl.proxy_url= configatron.proxy
+        RestClient.proxy = configatron.proxy
         # UA required to get through Sanger proxy
-        curl.headers["User-Agent"] = "Sequencescape Accession Client (#{RAILS_ENV})"
-        curl.proxy_tunnel = true
-        curl.verbose = true
+        rc.options.headers[:user_agent] = "Sequencescape Accession Client (#{RAILS_ENV})"
+        #rc.proxy_tunnel = true
+        #rc.verbose = true
       end
 
-      curl.multipart_form_post = true
-      curl.http_post(
-        *file_params.map { |p| Curl::PostField.file(p[:name], p[:local_name], p[:remote_name]) }
-      )
-      case curl.response_code
+      payload = {}
+      file_params.map { |p|
+        # XYZZY: Caution remote file name may be incorrect
+        payload[p[:name]] = File.open(p[:local_name])
+        #Curl::PostField.file(p[:name], p[:local_name], p[:remote_name])
+        }
+      #rc.multipart_form_post = true # RC handles automatically
+      response = rc.post(payload)
+      case response.code
       when (200...300) #success
-        return curl.body_str
+        return response.body.to_s
       when (400...600)
         Rails.logger.warn($!)
         $! = nil

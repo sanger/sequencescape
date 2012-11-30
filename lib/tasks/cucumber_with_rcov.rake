@@ -12,9 +12,9 @@ begin
       t.fork = true # You may get faster startup if you set this to false
       t.profile = 'default'
 
-      t.rcov = true
-      t.rcov_opts = %w{--rails --exclude osx\/objc,gems\/,spec\/,features\/}
-      t.rcov_opts << %W{-o "#{ File.join('rcov', 'features') }"}
+      #t.rcov = true
+      #t.rcov_opts = %w{--rails --exclude osx\/objc,gems\/,spec\/,features\/}
+      #t.rcov_opts << %W{-o "#{ File.join('rcov', 'features') }"}
     end
   end
 rescue LoadError

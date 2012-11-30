@@ -118,15 +118,29 @@ module User::Authentication
     end
     private :init_curl
 
+    def init_rc(uri)
+      rc = RestClient::Resource.new(URI.parse(uri).to_s)
+      if configatron.disable_web_proxy == true
+        RestClient.proxy = ''
+      elsif not configatron.proxy.blank?
+        rc.headers[:user_agent] = "Sequencescape"
+        RestClient.proxy = configatron.proxy
+        #curl.proxy_tunnel = true
+      end
+      rc
+    end
+    private :init_rc
+
     def get_sanger_token(username,password)
       begin
-        curl = self.init_curl(configatron.sanger_login_service)
+        rc = self.init_rc(configatron.sanger_login_service)
         wtsi_token =""
-        curl.on_header do |header|
-          wtsi_token = "#{$1}" if header =~ /^Set-Cookie: WTSISignOn=([^; ]+);/
-          header.length
-        end
-        curl.http_post(configatron.sanger_login_service,Curl::PostField.content('credential_0', username), Curl::PostField.content('credential_1', password),Curl::PostField.content('destination', '/'))
+        response = rc.post(:credential_0=> username, :credential_1 => password, :destination=> '/')
+        #curl.http_post(configatron.sanger_login_service,Curl::PostField.content('credential_0', username), Curl::PostField.content('credential_1', password),Curl::PostField.content('destination', '/'))
+
+        # Can probably tidy this up a lot
+        wtsi_token = "#{$1}" if response.raw_headers =~ /^Set-Cookie: WTSISignOn=([^; ]+);/
+
         wtsi_token
       rescue
         logger.info "Authentication service down #{configatron.sanger_login_service} user: #{username}: #{$!}"
@@ -138,20 +152,20 @@ module User::Authentication
       logger.debug "Authentication by cookie: " + value
       res = ""
       begin
-        curl = init_curl(configatron.sanger_auth_service)
-        curl.http_post(Curl::PostField.content('cookie',value))
-        res = curl.body_str
+        rc = init_rc(configatron.sanger_auth_service)
+        res = rc.post(:cookie=>value)
+        res.body.to_s #XYZZY: Look at optimizing
       rescue SocketError
         logger.info "Authentication service down #{configatron.sanger_auth_service} cookie: #{value}"
-      rescue Curl::Err::RecvError
+      rescue RestClient::Exception
         logger.info "Authentication service down #{configatron.sanger_auth_service} cookie: #{value}"
       end
-      
+
       u = nil
       begin
         result = ActiveSupport::JSON.decode(res)
         logger.debug "Authentication by cookie: " + res
-      
+
         if result && result["valid"] == 1 && result["username"]
           u = find_or_create_by_login(result["username"])
         end

@@ -74,9 +74,19 @@ WHERE c.container_id=?
     # After importing wells we need to also create the AssetLink and WellAttribute information for them.
     def post_import(links_data)
       time_now = Time.now
-
-      AssetLink.import([:direct, :count, :ancestor_id, :descendant_id], links_data.map { |c| [true,1,*c] }, :validate => false)
-      WellAttribute.import([:well_id, :created_at, :updated_at], links_data.map { |c| [c.last, time_now, time_now] }, :validate => false, :timestamps => false)
+      links_data.each do |c|
+        AssetLink.create!(
+          :direct => true,
+          #:count => 1, Huh?
+          :ancestor_id => c.first,
+          :descendant_id => c.last
+          )
+        WellAttribute.create!(
+          :well_id => c.last,
+          :created_at => time_now,
+          :updated_at => time_now
+        )
+      end
     end
     private :post_import
 

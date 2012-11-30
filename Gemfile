@@ -6,19 +6,23 @@ gem "rails", "2.3.11"
 # Warehouse builder
 gem "log4r"
 gem "db-charmer"
-# 1.1 activated by rails
-#gem "rack", "~>1.2"
 
 gem "aasm", "~>2.4.0"
-gem "ar-extensions"
+gem "acts_as_audited"
 gem "configatron"
-gem "curb"
+gem "rest-client" # curb substitute.
 gem "fastercsv", "~>1.4.0"
 gem "formtastic", "~>1.2.0"
-gem "mysql"
+gem "activerecord-jdbc-adapter", :platforms => :jruby
+gem "jdbc-mysql", :platforms => :jruby
+gem "mysql", :platforms => :mri
 gem "spreadsheet"
-gem "will_paginate"
+gem "will_paginate", "~>2.3.15"
 gem 'net-ldap'
+gem 'carrierwave', "~>0.4.0"
+gem 'jruby-openssl', :platforms => :jruby
+
+gem 'trinidad', :platforms => :jruby
 
 # This was once a plugin, now it's a gem:
 gem 'catch_cookie_exception', :git => 'git+ssh://git@github.com/mhartl/catch_cookie_exception.git'
@@ -41,7 +45,8 @@ gem "ruby_walk",  ">= 0.0.3",:git => "git+ssh://git@github.com/sanger/ruby_walk"
 gem "uuidtools"
 gem "sinatra", "~>1.1.0"
 gem "rack-acceptable", :require => 'rack/acceptable'
-gem "yajl-ruby", :require => 'yajl'
+gem "json_pure" #gem "yajl-ruby", :require => 'yajl'
+gem "json"
 gem "cancan"
 
 gem "bunny"
@@ -49,19 +54,25 @@ gem "bunny"
 
 group :warehouse do
   #the most recent one that actually compiles
-  gem "ruby-oci8", "1.0.7" 
+  gem "ruby-oci8", "1.0.7", :platforms => :mri
+  # No ruby-oci8, (Need to use Oracle JDBC drivers Instead)
   #any newer version requires ruby-oci8 => 2.0.1
-  gem "activerecord-oracle_enhanced-adapter" , "1.2.3" 
+  gem "activerecord-oracle_enhanced-adapter" , "1.2.3", :platforms => :mri
+
 end
 
 group :development do
   # The fake services run better with Mongrel
-  gem "mongrel", "~>1.1.5"
+  if(defined?(JRUBY_VERSION))
+    gem "mongrel", :platforms => :jruby
+  else
+    gem "mongrel", "~>1.1.5", :platforms => :mri
+  end
 
   gem "flay"
   gem "flog"
   gem "roodi"
-  gem "rcov", :require => false
+  gem "rcov", :require => false, :platforms => :mri
   #gem "rcov_rails" # gem only for Rails 3, plugin for Rails 2.3 :-/
   # ./script/plugin install http://svn.codahale.com/rails_rcov
 
@@ -96,8 +107,9 @@ group :cucumber do
 end
 
 group :deployment do
-  gem "mongrel_cluster"
+  gem "mongrel_cluster", :platforms => :mri
   gem "psd_logger", :git => "git@github.com:sanger/psd_logger.git"
   gem "gmetric", "~>0.1.3"
+  gem "trinidad_daemon_extension", :platforms => :jruby
 end
 

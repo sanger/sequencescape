@@ -8,7 +8,6 @@ class Api::RootService < ::Core::Service
   module RootResponse
     def services(services)
       self.object = services
-
       def @owner.each(&block)
         ::Core::Io::Buffer.new(block) do |buffer|
           ::Core::Io::Json::Stream.new(buffer).open do |stream|
@@ -26,6 +25,14 @@ class Api::RootService < ::Core::Service
             end
           end
         end
+        # json = Hash[
+        #   object.map do |model_in_json,endpoint|
+        #     [model_in_json, endpoint.model_handler.as_json(:response => self, :endpoint => endpoint, :target => endpoint.model_handler)]
+        #   end +
+        #   [ [ 'revision', 2 ] ]
+        # ]
+        # #Yajl::Encoder.new.encode(json, &block)
+        # yield JSON.generate(json)
       end
     end
   end
