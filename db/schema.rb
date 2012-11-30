@@ -317,9 +317,13 @@ ActiveRecord::Schema.define(:version => 20121128084845) do
   end
 
   create_table "db_files", :force => true do |t|
-    t.binary  "data",        :limit => 2147483647
-    t.integer "document_id"
+    t.binary  "data",                :limit => 2147483647
+    t.integer "owner_id"
+    t.string  "owner_type",          :limit => 25,         :default => "Document", :null => false
+    t.string  "owner_type_extended"
   end
+
+  add_index "db_files", ["owner_type", "owner_id"], :name => "index_db_files_on_owner_type_and_owner_id"
 
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0
@@ -368,10 +372,12 @@ ActiveRecord::Schema.define(:version => 20121128084845) do
     t.integer "parent_id"
     t.string  "thumbnail"
     t.integer "db_file_id"
-    t.string  "documentable_type", :limit => 50
+    t.string  "documentable_type",     :limit => 50, :null => false
+    t.string  "documentable_extended", :limit => 50
   end
 
   add_index "documents", ["documentable_id", "documentable_type"], :name => "index_documents_on_documentable_id_and_documentable_type"
+  add_index "documents", ["documentable_type", "documentable_id"], :name => "index_documents_on_documentable_type_and_documentable_id"
 
   create_table "events", :force => true do |t|
     t.integer  "eventful_id"
@@ -495,7 +501,7 @@ ActiveRecord::Schema.define(:version => 20121128084845) do
 
   add_index "lab_events", ["batch_id"], :name => "index_lab_events_on_batch_id"
   add_index "lab_events", ["created_at"], :name => "index_lab_events_on_created_at"
-  add_index "lab_events", ["description", "eventful_type"], :name => "index_lab_events_find_flowcell", :length => {"eventful_type"=>nil, "description"=>"20"}
+  add_index "lab_events", ["description", "eventful_type"], :name => "index_lab_events_find_flowcell", :length => {"description"=>"20", "eventful_type"=>nil}
   add_index "lab_events", ["eventful_id"], :name => "index_lab_events_on_eventful_id"
   add_index "lab_events", ["eventful_type"], :name => "index_lab_events_on_eventful_type"
 
@@ -691,7 +697,6 @@ ActiveRecord::Schema.define(:version => 20121128084845) do
   add_index "plate_purposes", ["updated_at"], :name => "index_plate_purposes_on_updated_at"
 
   create_table "plate_volumes", :force => true do |t|
-    t.text     "uploaded_file"
     t.string   "barcode"
     t.string   "uploaded_file_name"
     t.string   "state"
@@ -924,8 +929,6 @@ ActiveRecord::Schema.define(:version => 20121128084845) do
     t.integer  "project_id"
     t.integer  "supplier_id"
     t.integer  "count"
-    t.binary   "uploaded_file",  :limit => 2147483647
-    t.binary   "generated_file", :limit => 2147483647
     t.string   "asset_type"
     t.text     "last_errors"
     t.string   "state"
@@ -1104,9 +1107,9 @@ ActiveRecord::Schema.define(:version => 20121128084845) do
     t.integer  "faculty_sponsor_id"
     t.float    "number_of_gigabases_per_sample"
     t.string   "hmdmc_approval_number"
-    t.string   "remove_x_and_autosomes",                 :default => "No", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "remove_x_and_autosomes",                 :default => "No", :null => false
   end
 
   add_index "study_metadata", ["faculty_sponsor_id"], :name => "index_study_metadata_on_faculty_sponsor_id"
@@ -1128,10 +1131,11 @@ ActiveRecord::Schema.define(:version => 20121128084845) do
 
   create_table "study_reports", :force => true do |t|
     t.integer  "study_id"
-    t.binary   "report_file", :limit => 2147483647
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
+    t.string   "report_filename"
+    t.string   "content_type",    :default => "text/csv"
   end
 
   add_index "study_reports", ["created_at"], :name => "index_study_reports_on_created_at"

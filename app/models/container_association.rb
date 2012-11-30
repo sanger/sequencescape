@@ -5,7 +5,7 @@ class ContainerAssociation < ActiveRecord::Base
   belongs_to :content , :class_name => "Asset"
 
   # NOTE: This was originally on the content asset but this causes massive performance issues.
-  # It causes the plate and it's metadata to be loaded for each well, which would be cached if 
+  # It causes the plate and it's metadata to be loaded for each well, which would be cached if
   # it were not for inserts/updates being performed.  I'm disabling this as it should be caught
   # in tests and we've not seen it in production.
   #
@@ -32,7 +32,8 @@ class ContainerAssociation < ActiveRecord::Base
         class_eval(%Q{
           def import(records)
             ActiveRecord::Base.transaction do
-              #{class_name}.import(records)
+
+              records.map(&:save!)
 
               sub_query = #{class_name}.send(:construct_finder_sql, :select => 'id', :order => 'id DESC')
               records   = #{class_name}.connection.select_all(%Q{SELECT id FROM (\#{sub_query}) AS a LIMIT \#{records.size}})
@@ -44,8 +45,7 @@ class ContainerAssociation < ActiveRecord::Base
 
         def attach(records)
           ActiveRecord::Base.transaction do
-            links_data = records.map { |r| [proxy_owner.id, r['id']] }
-            ContainerAssociation.import([:container_id, :content_id], links_data, :validate => false)
+            records.each { |r| ContainerAssociation.create!(:container_id => proxy_owner.id, :content_id => r['id']) }
           end
         end
 

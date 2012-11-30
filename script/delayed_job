@@ -1,5 +1,29 @@
-#!/usr/bin/env ruby
+#!/bin/bash -l
+function delayed_job_start() {
+  cd `pwd`
+  if [ ! -f ../../shared/delayed_job.${1}.stop ]
+  then
+    touch ../../shared/delayed_job.${1}.stop
+    ./script/runner 'Delayed::Worker.new.start' &
+    echo $! > ../../shared/delayed_job.${1}.pid
+    wait $!
+    echo "Delayed::Worker died"
+    if [ -f ../../shared/delayed_job.${1}.stop ]; then rm ../../shared/delayed_job.${1}.stop; fi
+  else
+    echo "Worker already running with pid:"
+    echo `cat ../../shared/delayed_job.${1}.pid`
+  fi
+}
 
-require File.expand_path(File.join(File.dirname(__FILE__), '..', 'config', 'environment'))
-require 'delayed/command'
-Delayed::Command.new(ARGV).daemonize
+function delayed_job_stop() {
+  cd `pwd`
+  kill -9 `cat ../../shared/delayed_job.${1}.pid`
+  if [ -f ../../shared/delayed_job.${1}.stop ]; then rm ../../shared/delayed_job.${1}.stop; fi
+}
+
+function delayed_job_restart() {
+  delayed_job_stop
+  delayed_job_start
+}
+
+delayed_job_${3} $2

@@ -1,1 +1,3 @@
-ReferenceGenome.import [:name], [[""], ["Not suitable for alignment"]], :validate => false
+["","Not suitable for alignment"].each do |name|
+  ReferenceGenome.create!(:name=>name)
+end

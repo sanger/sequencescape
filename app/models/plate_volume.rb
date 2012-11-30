@@ -1,10 +1,7 @@
 class PlateVolume < ActiveRecord::Base
-  has_attached_file :uploaded, :storage => :database
-  default_scope select_without_file_columns_for(:uploaded)
-
-  attr_accessor :uploaded_content_type
-  attr_accessor :uploaded_file_size
-  attr_accessor :uploaded_updated_at
+  extend DbFile::Uploader
+  
+  has_uploaded :uploaded, { :serialization_column => "uploaded_file_name" }
 
   OFFSET = 1
 
@@ -33,7 +30,7 @@ class PlateVolume < ActiveRecord::Base
 
   def extract_well_volumes
     return if self.uploaded.blank?
-    csv = FasterCSV.parse(self.uploaded_file)
+    csv = FasterCSV.parse(self.uploaded.file.read)
     (OFFSET...csv.size).map { |row| [ csv[row][1], csv[row][2] ] }
   end
   private :extract_well_volumes
