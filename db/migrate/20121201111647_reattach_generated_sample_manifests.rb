@@ -5,6 +5,7 @@ class ReattachGeneratedSampleManifests < ActiveRecord::Migration
 
     named_scope :unattached, :conditions => { :documentable_id => nil }
     named_scope :for, lambda { |m| { :conditions => { :documentable_type => m } } }
+    named_scope :extended_type, lambda { |m| { :conditions => { :documentable_extended => m } } } 
 
     validates_presence_of :documentable_type
     validates_presence_of :documentable_id
@@ -12,9 +13,9 @@ class ReattachGeneratedSampleManifests < ActiveRecord::Migration
 
   def self.up
     ActiveRecord::Base.transaction do
-      Document.unattached.for('SampleManifest').find_each do |document|
+      Document.unattached.extended_type('generated').for('SampleManifest').find_each do |document|
         match = /^sm-generated-(\d+)\.xls.+$/.match(document.filename)
-        document.update_attributes!(:document_id => match[1].to_i) if match.present?
+        document.update_attributes!(:documentable_id => match[1].to_i) if match.present?
       end
     end
   end
