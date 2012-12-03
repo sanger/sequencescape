@@ -241,7 +241,7 @@ private
       elsif not configatron.proxy.blank?
         RestClient.proxy = configatron.proxy
         # UA required to get through Sanger proxy
-        rc.options.headers[:user_agent] = "Sequencescape Accession Client (#{RAILS_ENV})"
+        rc.headers[:user_agent] = "Sequencescape Accession Client (#{RAILS_ENV})"
         #rc.proxy_tunnel = true
         #rc.verbose = true
       end
