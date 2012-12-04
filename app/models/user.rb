@@ -1,7 +1,7 @@
 require "net/ldap"
 require "openssl"
 require "digest/sha1"
-require 'curb'
+#require 'curb'
 
 class User < ActiveRecord::Base
   include Authentication

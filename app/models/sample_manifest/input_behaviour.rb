@@ -185,7 +185,7 @@ module SampleManifest::InputBehaviour
   InvalidManifest = Class.new(StandardError)
 
   def each_csv_row(&block)
-    csv = FasterCSV.parse(uploaded.data)
+    csv = FasterCSV.parse(uploaded.current_data)
     clean_up_sheet(csv)
 
     headers = csv[spreadsheet_header_row].map { |header| header.gsub(/\s+/, ' ') }

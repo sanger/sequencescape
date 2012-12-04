@@ -214,8 +214,10 @@ class CherrypickTask < Task
   def generate_control_request(well)
     # TODO: create a genotyping request for the control request
     #Request.create(:state => "pending", :sample => well.sample, :asset => well, :target_asset => Well.create(:sample => well.sample, :name => well.sample.name))
-    target_well = Well.create!(:name => well.primary_aliquot.sample.name, :aliquots => well.aliquots.map(&:clone))
-    workflow.pipeline.control_request_type.create_control!(:asset => well, :target_asset => target_well)
+    workflow.pipeline.control_request_type.create_control!(
+      :asset => well,
+      :target_well => Well.create!(:aliquots => well.aliquots.map(&:clone))
+    )
   end
   private :generate_control_request
 

@@ -25,14 +25,14 @@ class Sdb::SampleManifestsController < Sdb::BaseController
 
   def export
     @manifest = SampleManifest.find(params[:id])
-    send_data(@manifest.generated.data,
+    send_data(@manifest.generated_document.current_data, 
               :filename => "manifest_#{@manifest.id}.xls",
               :type => 'application/excel')
   end
 
   def uploaded_spreadsheet
     @manifest = SampleManifest.find(params[:id])
-    send_data(@manifest.uploaded.data,
+    send_data(@manifest.uploaded_document.current_data, 
               :filename => "manifest_#{@manifest.id}.csv",
               :type => 'application/excel')
   end

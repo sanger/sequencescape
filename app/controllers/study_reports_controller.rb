@@ -2,7 +2,7 @@ class StudyReportsController < ApplicationController
   before_filter :login_required
 
   def index
-    @study_reports = StudyReport.without_files.paginate(:page => params[:page], :order => "id desc")
+    @study_reports = StudyReport.paginate(:page => params[:page], :order => "id desc")
     @studies = Study.all(:order => "name ASC")
   end
 
@@ -34,7 +34,7 @@ class StudyReportsController < ApplicationController
 
   def show
     study_report = StudyReport.find(params[:id])
-    send_data( study_report.report.data, :type => "text/plain",
+    send_data( study_report.report.read, :type => "text/plain",
     :filename=>"#{study_report.study.dehumanise_abbreviated_name}_progress_report.csv",
     :disposition => 'attachment')
   end

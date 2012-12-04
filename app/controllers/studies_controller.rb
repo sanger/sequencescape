@@ -388,51 +388,30 @@ class StudiesController < ApplicationController
      end
    end
 
-   def grant_role
-     @user    = User.find(params[:role][:user])
-     @study = Study.find(params[:id])
-     @role    = Role.find_by_name(params[:role][:authorizable_type])
+   def self.role_helper(name, success_action, error_action, &block)
+     define_method("#{name}_role") do
+       ActiveRecord::Base.transaction do
+         @user, @study = User.find(params[:role][:user]), Study.find(params[:id])
 
-     if request.xhr?
-       if params[:role]
-         @user.has_role(params[:role][:authorizable_type].to_s, @study)
-         @roles   = Role.find(:all, :conditions => {:authorizable_id => @study.id, :authorizable_type => "Study"})
-         flash[:notice] = "Role added"
-         render :partial => "roles", :status => 200
-       else
-         @roles   = Role.find(:all, :conditions => {:authorizable_id => @study.id, :authorizable_type => "Study"})
-         flash[:error] = "A problem occurred while adding the role"
-         render :partial => "roles", :status => 500
+         if request.xhr?
+           if params[:role]
+             block.call(@user, @study, params[:role][:authorizable_type].to_s)
+             status, flash[:notice] = 200, "Role #{success_action}"
+           else
+             status, flash[:error] = 500, "A problem occurred while #{error_action} the role"
+           end
+         else
+           status, flash[:error] = 401, "A problem occurred while #{error_action} the role"
+         end
+
+         @roles = @study.roles(true).all
+         render :partial => "roles", :status => status
        end
-     else
-       @roles   = Role.find(:all, :conditions => {:authorizable_id => @study.id, :authorizable_type => "Study"})
-       flash[:error] = "A problem occurred while adding the role"
-       render :partial => "roles", :status => 401
      end
    end
 
-   def remove_role
-     @user    = User.find(params[:role][:user])
-     @study = Study.find(params[:id])
-     @role    = Role.find_by_name(params[:role][:authorizable_type])
-
-     if request.xhr?
-       if params[:role]
-         @user.has_no_role(params[:role][:authorizable_type].to_s, @study)
-         @roles   = Role.find(:all, :conditions => {:authorizable_id => @study.id, :authorizable_type => "Study"})
-         flash[:error] = "Role was removed"
-         render :partial => "roles", :status => 200
-       else
-         @roles   = Role.find(:all, :conditions => {:authorizable_id => @study.id, :authorizable_type => "Study"})
-         flash[:error] = "A problem occurred while removing the role"
-         render :partial => "roles", :status => 500
-       end
-     else
-       @roles   = Role.find(:all, :conditions => {:authorizable_id => @study.id, :authorizable_type => "Study"})
-       flash[:error] = "A problem occurred while removing the role"
-       render :partial => "roles", :status => 401
-     end
-   end
+   role_helper(:grant, "added", "adding")     { |user,study,name| user.has_role(name, study) }
+   role_helper(:remove, "remove", "removing") { |user,study,name| user.has_no_role(name, study) }
 
    def projects
      @study = Study.find(params[:id])
@@ -451,7 +430,7 @@ class StudiesController < ApplicationController
 
    def study_reports
      @study = Study.find(params[:id])
-     @study_reports = StudyReport.without_files.for_study(@study).paginate(:page => params[:page], :order => 'id DESC')
+     @study_reports = StudyReport.for_study(@study).paginate(:page => params[:page], :order => 'id DESC')
    end
 
 

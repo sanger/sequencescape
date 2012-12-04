@@ -108,29 +108,29 @@ class GeneratorTest < ActiveSupport::TestCase
 
         context "when mapping wells from 1 96 well source plate to 1 96 well destination plate" do
           should "return a String object" do
-            assert_kind_of String, Generator.mapping(@data_object,  13)
+            assert_kind_of String, Sanger::Robots::Tecan::Generator.mapping(@data_object,  13)
           end
 
           should "generate the expected output" do
-            assert_equal @expected_output, Generator.mapping(@data_object,  13)
+            assert_equal @expected_output, Sanger::Robots::Tecan::Generator.mapping(@data_object,  13)
           end
 
           should "have a header section" do
-            assert_match /^C;\nC; This file created by (.+?) on (.+?)\nC;\n/, Generator.mapping(@data_object,  13)
+            assert_match /^C;\nC; This file created by (.+?) on (.+?)\nC;\n/, Sanger::Robots::Tecan::Generator.mapping(@data_object,  13)
           end
 
           should "contain buffers" do
-            assert_match /(?:A;BUFF;;.*?\nD;DEST[0-9].*?\nW;\n)?/, Generator.mapping(@data_object,  13)
+            assert_match /(?:A;BUFF;;.*?\nD;DEST[0-9].*?\nW;\n)?/, Sanger::Robots::Tecan::Generator.mapping(@data_object,  13)
           end
 
           should "contain a footer" do
-            assert_match /C;\n(C; SCRC[0-9] = [0-9]+\n)+C;\nC; DEST[0-9] = [0-9]+\n$/, Generator.mapping(@data_object,  13)
+            assert_match /C;\n(C; SCRC[0-9] = [0-9]+\n)+C;\nC; DEST[0-9] = [0-9]+\n$/, Sanger::Robots::Tecan::Generator.mapping(@data_object,  13)
           end
         end
         context "when passed invalid object" do
           should "throw an ArgumentError" do
             assert_raises ArgumentError do
-              Generator.mapping nil, nil
+              Sanger::Robots::Tecan::Generator.mapping nil, nil
             end
           end
         end
@@ -142,7 +142,7 @@ class GeneratorTest < ActiveSupport::TestCase
         @barcodes = {"1111" => "aaa", "5555" => "tttt", "4444" => "bbbb", "7777"=> "zzzz"}
       end
       should "remap barcode ids to start at 1" do
-        @plate_index_lookup = Generator.barcode_to_plate_index(@barcodes)
+        @plate_index_lookup = Sanger::Robots::Tecan::Generator.barcode_to_plate_index(@barcodes)
         @barcodes.each do |key,value|
           assert @plate_index_lookup[key].is_a?(Integer)
           assert @plate_index_lookup[key] > 0
@@ -166,7 +166,7 @@ class GeneratorTest < ActiveSupport::TestCase
           }
         }
         @expected_order = {"88888" => 1, "66666" => 2, "99999" => 3}
-        @source_index = Generator.source_barcode_to_plate_index(@barcodes)
+        @source_index = Sanger::Robots::Tecan::Generator.source_barcode_to_plate_index(@barcodes)
     end
 
     should "remap barcodes to start at 1" do

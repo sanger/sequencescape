@@ -137,7 +137,7 @@ end
 Then /^the last created sample manifest should be:$/ do |table|
   offset = 9
   Tempfile.open('testfile.xls') do |tempfile|
-    tempfile.write(SampleManifest.last.generated.data)
+    tempfile.write(SampleManifest.last.generated_document.current_data)
     tempfile.flush
     tempfile.open
 
@@ -146,8 +146,9 @@ Then /^the last created sample manifest should be:$/ do |table|
   end
 
   table.rows.each_with_index do |row,index|
-    assert_equal Barcode.barcode_to_human(Barcode.calculate_barcode(Plate.prefix, row[0].to_i)), @worksheet[offset+index,0]
-    assert_equal row[1], @worksheet[offset+index,1]
+    expected = [ Barcode.barcode_to_human(Barcode.calculate_barcode(Plate.prefix, row[0].to_i)), row[1] ]
+    got      = [ @worksheet[offset+index,0], @worksheet[offset+index,1] ]
+    assert_equal(expected, got, "Unexpected manifest row #{index}")
   end
 end
 

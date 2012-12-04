@@ -1,7 +1,7 @@
 class SamplesController < ApplicationController
   include XmlCacheHelper::ControllerHelper
 
-  require 'curb'
+  #require 'curb'
 
   before_filter :admin_login_required, :only => [ :administer, :destroy ]
 
@@ -197,16 +197,16 @@ class SamplesController < ApplicationController
      else return
      end
 
-     c = Curl::Easy.new(URI.parse(url).to_s)
+     rc = RestClient::Resource.new(URI.parse(url).to_s)
      if configatron.disable_web_proxy == true
-       curl.proxy_url = ''
+       RestClient.proxy = ''
      elsif not configatron.proxy.blank?
-       c.proxy_url= configatron.proxy
-       c.headers["User-Agent"] = "Internet Explorer 5.0"
+       RestClient.proxy= configatron.proxy
+       rc.headers["User-Agent"] = "Internet Explorer 5.0"
      end
-     c.verbose = true
-     c.perform
-     body = c.body_str
+     #rc.verbose = true
+     rc.get
+     body = rc.body.to_s
 
      respond_to do |format|
        format.js {render :text =>body}

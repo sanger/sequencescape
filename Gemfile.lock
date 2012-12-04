@@ -13,7 +13,7 @@ GIT
 
 GIT
   remote: git+ssh://git@github.com/sanger/alter_table.git
-  revision: 5799d3c8ba38009f269f44c0d6b3a0730b752ecc
+  revision: f9df7521d958926be1945822d20ce941992e3383
   specs:
     alter_table (0.0.1)
       rails (~> 2.3.11)
@@ -58,21 +58,23 @@ GEM
       rack (~> 1.1.0)
     activerecord (2.3.11)
       activesupport (= 2.3.11)
+    activerecord-jdbc-adapter (1.2.2)
     activerecord-oracle_enhanced-adapter (1.2.3)
       activerecord (>= 2.0.0)
     activeresource (2.3.11)
       activesupport (= 2.3.11)
     activesupport (2.3.11)
-    ar-extensions (0.9.5)
-      activerecord (~> 2.1)
-    aws-s3 (0.6.2)
+    acts_as_audited (1.1.1)
+      activerecord (>= 2.1)
+    addressable (2.2.8)
+    aws-s3 (0.6.3)
       builder
       mime-types
       xml-simple
-    blankslate (2.1.2.4)
+    bouncy-castle-java (1.5.0146.1)
     builder (3.0.0)
     bunny (0.7.9)
-    cancan (1.6.5)
+    cancan (1.6.8)
     capybara (0.3.9)
       culerity (>= 0.2.4)
       mime-types (>= 1.16)
@@ -80,74 +82,86 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       selenium-webdriver (>= 0.0.3)
+    carrierwave (0.4.10)
     cgi_multipart_eof_fix (2.5.0)
-    childprocess (0.1.8)
-      ffi (~> 1.0.6)
-    columnize (0.3.2)
-    configatron (2.7.2)
+    childprocess (0.3.6)
+      ffi (~> 1.0, >= 1.0.6)
+    columnize (0.3.6)
+    configatron (2.9.1)
       yamler (>= 0.1.0)
-    configuration (1.2.0)
-    cucumber (0.10.2)
+    cucumber (1.2.1)
       builder (>= 2.1.2)
-      diff-lcs (>= 1.1.2)
-      gherkin (>= 2.3.5)
+      diff-lcs (>= 1.1.3)
+      gherkin (~> 2.11.0)
       json (>= 1.4.6)
-      term-ansicolor (>= 1.0.5)
     cucumber-rails (0.3.2)
       cucumber (>= 0.8.0)
     culerity (0.2.15)
-    curb (0.7.15)
     daemons (1.0.10)
-    database_cleaner (0.6.7)
-    db-charmer (1.6.19)
-      blankslate
-      rails (~> 2.2)
+    database_cleaner (0.8.0)
+    db-charmer (1.7.1)
+      activerecord (<= 3.2.3)
+      activesupport (<= 3.2.3)
     delayed_job (2.0.7)
       activesupport (~> 2.0)
       daemons (= 1.0.10)
-    diff-lcs (1.1.2)
+    diff-lcs (1.1.3)
     factory_girl (1.3.3)
     fastercsv (1.4.0)
     fastthread (1.0.7)
-    ffi (1.0.7)
-      rake (>= 0.8.7)
-    flay (1.4.2)
+    ffi (1.0.11)
+    ffi (1.0.11-java)
+    flay (1.4.3)
       ruby_parser (~> 2.0)
       sexp_processor (~> 3.0)
-    flog (2.5.1)
+    flog (2.5.3)
       ruby_parser (~> 2.0)
       sexp_processor (~> 3.0)
-    formtastic (1.2.4)
-      actionpack (>= 2.3.7)
-      activesupport (>= 2.3.7)
-      i18n (~> 0.4)
+    formtastic (1.2.5)
+      i18n (~> 0.4.0)
     gem_plugin (0.2.3)
-    gherkin (2.3.6)
+    gherkin (2.11.5)
+      json (>= 1.4.6)
+    gherkin (2.11.5-java)
       json (>= 1.4.6)
     gmetric (0.1.3)
-    i18n (0.6.0)
-    json (1.5.1)
-    json_pure (1.5.1)
-    launchy (0.4.0)
-      configuration (>= 0.0.5)
-      rake (>= 0.8.1)
-    linecache (0.43)
-    log4r (1.1.9)
-    mime-types (1.16)
-    mocha (0.9.12)
+    i18n (0.4.2)
+    jdbc-mysql (5.1.13)
+    jruby-openssl (0.7.7)
+      bouncy-castle-java (>= 1.5.0146.1)
+    jruby-rack (1.1.10)
+    json (1.7.5)
+    json (1.7.5-java)
+    json_pure (1.7.3)
+    launchy (2.1.0)
+      addressable (~> 2.2.6)
+    launchy (2.1.0-java)
+      addressable (~> 2.2.6)
+      ffi (~> 1.0.9)
+      spoon (~> 0.0.1)
+    linecache (0.46)
+      rbx-require-relative (> 0.0.4)
+    log4r (1.1.10)
+    metaclass (0.0.1)
+    mime-types (1.19)
+    mocha (0.12.0)
+      metaclass (~> 0.0.1)
     mongrel (1.1.5)
       cgi_multipart_eof_fix (>= 2.4)
       daemons (>= 1.0.3)
       fastthread (>= 1.0.1)
       gem_plugin (>= 0.2.3)
+    mongrel (1.1.5-java)
+      gem_plugin (>= 0.2.3)
     mongrel_cluster (1.0.5)
       gem_plugin (>= 0.2.3)
       mongrel (>= 1.0.2)
     mysql (2.8.1)
-    net-ldap (0.2.2)
-    nokogiri (1.4.4)
-    parallel (0.5.3)
-    parallel_tests (0.4.16)
+    net-ldap (0.3.1)
+    nokogiri (1.5.5)
+    nokogiri (1.5.5-java)
+    parallel (0.5.17)
+    parallel_tests (0.8.4)
       parallel
     polyglot (0.3.1)
     rack (1.1.3)
@@ -163,7 +177,10 @@ GEM
       activesupport (= 2.3.11)
       rake (>= 0.8.3)
     rake (0.9.2.2)
+    rbx-require-relative (0.0.9)
     rcov (0.9.9)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
     rgl (0.4.0)
       rake
       stream (>= 0.5)
@@ -174,6 +191,7 @@ GEM
       ruby-debug-base (~> 0.10.4.0)
     ruby-debug-base (0.10.4)
       linecache (>= 0.3)
+    ruby-debug-base (0.10.4-java)
     ruby-oci8 (1.0.7)
     ruby-ole (1.2.11.1)
     ruby_parser (2.0.6)
@@ -189,14 +207,20 @@ GEM
     sinatra (1.1.4)
       rack (~> 1.1)
       tilt (>= 1.2.2, < 2.0)
+    spoon (0.0.1)
     spreadsheet (0.6.5.4)
       ruby-ole (>= 1.0)
     stream (0.5)
-    term-ansicolor (1.0.5)
     tilt (1.3)
     timecop (0.3.5)
     treetop (1.2.6)
       polyglot (>= 0.2.5)
+    trinidad (1.4.1)
+      jruby-rack (>= 1.1.7)
+      trinidad_jars (>= 1.0.5)
+    trinidad_daemon_extension (0.3.1)
+      trinidad_jars (>= 1.0.0)
+    trinidad_jars (1.0.6)
     utility_belt (1.1.0)
       Platform (>= 0.4.0)
       aws-s3 (>= 0.4.0)
@@ -205,27 +229,28 @@ GEM
     will_paginate (2.3.15)
     wirble (0.1.3)
     xml-simple (1.0.15)
-    yajl-ruby (0.8.2)
     yamler (0.1.0)
 
 PLATFORMS
+  java
   ruby
 
 DEPENDENCIES
   aasm (~> 2.4.0)
+  activerecord-jdbc-adapter
   activerecord-oracle_enhanced-adapter (= 1.2.3)
   acts-as-dag!
+  acts_as_audited
   alter_table!
-  ar-extensions
   bunny
   cancan
   capybara (~> 0.3.9)
+  carrierwave (~> 0.4.0)
   catch_cookie_exception!
   ci_reporter!
   configatron
   cucumber
   cucumber-rails (~> 0.3.2)
-  curb
   database_cleaner
   db-charmer
   delayed_job (~> 2.0.4)
@@ -235,10 +260,14 @@ DEPENDENCIES
   flog
   formtastic (~> 1.2.0)
   gmetric (~> 0.1.3)
+  jdbc-mysql
+  jruby-openssl
+  json
+  json_pure
   launchy
   log4r
   mocha
-  mongrel (~> 1.1.5)
+  mongrel
   mongrel_cluster
   mysql
   net-ldap
@@ -248,6 +277,7 @@ DEPENDENCIES
   rack-acceptable
   rails (= 2.3.11)
   rcov
+  rest-client
   rgl
   roodi
   ruby-debug
@@ -259,7 +289,8 @@ DEPENDENCIES
   spreadsheet
   timecop
   treetop (~> 1.2.5)
+  trinidad
+  trinidad_daemon_extension
   utility_belt
   uuidtools
-  will_paginate
-  yajl-ruby
+  will_paginate (~> 2.3.15)

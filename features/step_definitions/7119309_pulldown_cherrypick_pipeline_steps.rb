@@ -113,10 +113,8 @@ Given /^I have a tag group called "([^"]*)" with (\d+) tags$/ do |tag_group_name
   tag_group = TagGroup.create!(:name => tag_group_name)
   tags = []
   1.upto(number_of_tags.to_i) do |i|
-    tags << Tag.new(:oligo => oligos[(i-1)%oligos.size], :map_id => i, :tag_group_id => tag_group.id)
+    Tag.create!(:oligo => oligos[(i-1)%oligos.size], :map_id => i, :tag_group_id => tag_group.id)
   end
-
-  Tag.import tags
 end
 
 Then /^the default plates to wells table should look like:$/ do |expected_results_table|

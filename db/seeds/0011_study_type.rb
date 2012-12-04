@@ -16,4 +16,6 @@ study_types = [
   ["Clone Sequencing"           , 0, 1]
 ]
 
-StudyType.import [ :name, :valid_type, :valid_for_creation ], study_types, :validate => false
+study_types.each do |type|
+  StudyType.create(:name=>type[0], :valid_type=>type[1], :valid_for_creation=>type[2])
+end

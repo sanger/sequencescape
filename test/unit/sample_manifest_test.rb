@@ -35,7 +35,7 @@ class SampleManifestTest < ActiveSupport::TestCase
         @manifest.generate
         SampleManifestTemplate.first.generate(@manifest)
 
-        @spreadsheet = Spreadsheet.open(StringIO.new(@manifest.generated.data))
+        @spreadsheet = Spreadsheet.open(StringIO.new(@manifest.generated_document.current_data))
         @worksheet   = @spreadsheet.worksheets.first
       end
 

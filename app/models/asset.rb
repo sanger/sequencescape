@@ -314,22 +314,6 @@ class Asset < ActiveRecord::Base
     not self.qc_state.blank?
   end
 
-  def sanger_human_barcode
-    if self.barcode
-      return self.prefix + self.barcode.to_s + Barcode.calculate_checksum(self.prefix, self.barcode)
-    else
-      return nil
-    end
-  end
-
-  def ean13_barcode
-    if barcode && self.prefix
-      return Barcode.calculate_barcode(self.prefix, self.barcode.to_i).to_s
-    else
-      return nil
-    end
-  end
-
   def set_external_release(state)
     update_external_release do
       case
@@ -359,27 +343,6 @@ class Asset < ActiveRecord::Base
       return well if well
     end
     raise ActiveRecord::RecordNotFound, "Couldn't find well with for #{barcode} #{location}"
-  end
-
-  def self.get_barcode_from_params(params)
-    prefix = 'NT'
-    asset = nil
-    if _pre=params[:prefix]
-      prefix = _pre
-    else
-      begin
-        asset = Asset.find(params[:id])
-        prefix = asset.prefix
-      rescue
-      end
-    end
-    if asset and asset.barcode
-      barcode = Barcode.calculate_barcode(prefix, asset.barcode.to_i)
-    else
-      barcode = Barcode.calculate_barcode(prefix, params[:id].to_i)
-    end
-
-    barcode
   end
 
   def assign_relationships(parents, child)
