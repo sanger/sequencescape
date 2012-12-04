@@ -105,10 +105,8 @@ class SampleManifest < ActiveRecord::Base
     "Manifest_#{self.id}"
   end
 
-  #TODO[xxx] Optimise the SQL or add an index to make it faster
-  # named_scope :pending_manifests,   { :order => 'id DESC',         :conditions => "sample_manifests.id NOT IN (SELECT documentable_id FROM documents WHERE documents.documentable_type = 'SampleManifest' AND documents.documentable_extended = 'uploaded')"     }
-  # named_scope :completed_manifests, { :order => 'updated_at DESC', :conditions => "sample_manifests.id IN (SELECT documentable_id FROM documents WHERE documents.documentable_type = 'SampleManifest' AND documents.documentable_extended = 'uploaded')" }
-   named_scope :pending_manifests, {
+  #TODO[xxx] Consider index to make it faster
+  named_scope :pending_manifests, {
    :order      => 'sample_manifests.id DESC',
    :joins      => 'LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"',
    :conditions => 'documents.id IS NULL'
