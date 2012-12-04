@@ -42,7 +42,7 @@ class ColumnMap
     def self.fields
       @@fields
     end
-    
+
     def self.required_columns
       ["VOLUME (ul)",
       "CONC. (ng/ul)"]
@@ -60,7 +60,7 @@ class SampleManifest < ActiveRecord::Base
   include SampleManifest::InputBehaviour
   extend SampleManifest::StateMachine
   extend Document::Associations
-  
+
   module Associations
     def self.included(base)
       base.has_many(:sample_manifests)
@@ -74,9 +74,9 @@ class SampleManifest < ActiveRecord::Base
   class_inheritable_accessor :spreadsheet_header_row
   self.spreadsheet_offset = 9
   self.spreadsheet_header_row = 8
-  
+
   acts_as_audited :on => [:destroy, :update]
-  
+
   attr_accessor :override
   attr_reader :manifest_errors
 
@@ -94,9 +94,9 @@ class SampleManifest < ActiveRecord::Base
   validates_presence_of :supplier
   validates_presence_of :study
   validates_numericality_of :count, :only_integer => true, :greater_than => 0, :allow_blank => false
-  
+
   before_save :default_asset_type
-  
+
   def default_asset_type
     self.asset_type = "plate" if self.asset_type.blank?
   end
@@ -106,10 +106,19 @@ class SampleManifest < ActiveRecord::Base
   end
 
   #TODO[xxx] Optimise the SQL or add an index to make it faster
-  named_scope :pending_manifests,   { :order => 'id DESC',         :conditions => "sample_manifests.id NOT IN (SELECT documentable_id FROM documents WHERE documents.documentable_type = 'SampleManifest' AND documents.documentable_extended = 'uploaded')"     }
-  named_scope :completed_manifests, { :order => 'updated_at DESC', :conditions => "sample_manifests.id IN (SELECT documentable_id FROM documents WHERE documents.documentable_type = 'SampleManifest' AND documents.documentable_extended = 'uploaded')" }
-  
-  
+  # named_scope :pending_manifests,   { :order => 'id DESC',         :conditions => "sample_manifests.id NOT IN (SELECT documentable_id FROM documents WHERE documents.documentable_type = 'SampleManifest' AND documents.documentable_extended = 'uploaded')"     }
+  # named_scope :completed_manifests, { :order => 'updated_at DESC', :conditions => "sample_manifests.id IN (SELECT documentable_id FROM documents WHERE documents.documentable_type = 'SampleManifest' AND documents.documentable_extended = 'uploaded')" }
+   named_scope :pending_manifests, {
+   :order      => 'sample_manifests.id DESC',
+   :joins      => 'LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"',
+   :conditions => 'documents.id IS NULL'
+ }
+  named_scope :completed_manifests, {
+   :order      => 'sample_manifests.updated_at DESC',
+   :joins      => 'LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"',
+   :conditions => 'documents.id IS NOT NULL'
+ }
+
   def generate
     @manifest_errors = []
 
