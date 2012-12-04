@@ -205,8 +205,7 @@ class SamplesController < ApplicationController
        rc.headers["User-Agent"] = "Internet Explorer 5.0"
      end
      #rc.verbose = true
-     rc.get
-     body = rc.body.to_s
+     body = rc.get.body
 
      respond_to do |format|
        format.js {render :text =>body}
