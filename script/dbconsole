@@ -2,9 +2,11 @@
 require File.dirname(__FILE__) + '/../config/boot'
 
 if RUBY_PLATFORM == "java"
+  require 'spoon'
   # If we are using jruby, ensure output is sent to the console
   def exec(*args)
-    Kernel::exec("#{args.join(' ')} < /dev/tty > /dev/tty 2>&1")
+    pid = Spoon.spawnp *args
+    Process.waitpid(pid)
   end
 end
 
