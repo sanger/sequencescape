@@ -286,6 +286,7 @@ DEPENDENCIES
   sanger_barcode!
   shoulda (~> 2.10.0)
   sinatra (~> 1.1.0)
+  spoon
   spreadsheet
   timecop
   treetop (~> 1.2.5)
