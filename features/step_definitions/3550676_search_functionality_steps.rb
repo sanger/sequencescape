@@ -5,7 +5,7 @@ end
 
 Then /^the search results I should see are:$/ do |table|
   table.hashes.each do |row|
-    Then %Q{I should see "1 #{ row['section'] }"}
-    Then %Q{I should see "#{ row['result'] }"}
+    step %Q{I should see "1 #{ row['section'] }"}
+    step %Q{I should see "#{ row['result'] }"}
   end
 end

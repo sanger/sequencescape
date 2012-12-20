@@ -54,7 +54,7 @@ end
 
 
 Given /^study "([^"]*)" has a plate "([^"]*)" to be volume checked$/ do |study_name, plate_barcode|
-  
+
   plate = Plate.create!(:barcode => plate_barcode, :plate_purpose => PlatePurpose.find_by_name("Stock Plate"))
   1.upto(24) do |i|
     well = Well.create!(:plate => plate, :map_id => i)
@@ -68,7 +68,7 @@ end
 Given /^a study report is generated for study "([^"]*)"$/ do |study_name|
   study_report = StudyReport.create!(:study => Study.find_by_name(study_name))
   study_report.perform
-  Given %Q{1 pending delayed jobs are processed}
+  step(%Q{1 pending delayed jobs are processed})
 end
 
 

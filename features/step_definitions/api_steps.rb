@@ -88,7 +88,7 @@ Given /^I am using version "(\d+)" of the API$/ do |version|
 end
 
 Given /^I am using the latest version of the API$/ do
-  Given %Q{I am using version "#{::Core::Service::API_VERSION}" of the API}
+  step(%Q{I am using version "#{::Core::Service::API_VERSION}" of the API})
 end
 
 Given /^I am using version "([^\"]+)" of a legacy API$/ do |version|
@@ -134,7 +134,7 @@ When /^I make an authorised (POST|PUT) with the following JSON to the API path "
 end
 
 When /^I retrieve the JSON for all (studies|samples|requests)$/ do |model|
-  When %Q{I GET the API path "/#{model}"}
+  step(%Q{I GET the API path "/#{model}"})
 end
 
 When /^I retrieve the JSON for all requests related to the (sample|library) tube "([^\"]+)"$/ do |tube_type, name|
@@ -238,7 +238,7 @@ Then /^the HTTP response should be "([^\"]+)"$/ do |status|
   begin
   assert_equal(match[1].to_i, page.driver.status_code)
   rescue Test::Unit::AssertionFailedError => e
-    Then %Q{show me the HTTP response body}
+    step %Q{show me the HTTP response body}
     raise e
   end
 
@@ -274,12 +274,12 @@ end
 ##############################################################################
 # deprecated
 Given /^the sample named "([^\"]+)" exists with ID (\d+)$/ do |name, id|
-  Given %Q{a sample called "#{name}" with ID #{id}}
+  step(%Q{a sample called "#{name}" with ID #{id}})
 end
 
 # deprecated
 Given /^(\d+) samples exist with the core name "([^\"]+)" and IDs starting at (\d+)$/ do |count,name,id|
-  Given %Q{#{count} samples exist with names based on "#{name}" and IDs starting at #{id}}
+  step(%Q{#{count} samples exist with names based on "#{name}" and IDs starting at #{id}})
 end
 
 Given /^the (well|library tube|plate) "([^\"]+)" is a child of the (well|sample tube|plate) "([^\"]+)"$/ do |child_model, child_name, parent_model, parent_name|

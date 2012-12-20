@@ -18,15 +18,15 @@ Given /^there is a CustomText with identifier: "([^"]*)", differential: "([^"]*)
 end
 
 When /^I edit the custom text with identifier "([^"]*)" and differential "([^"]*)"$/ do |identifier, differential|
-  When %Q{I follow "Edit" within "##{identifier}-#{differential}-details"}
+  step(%Q{I follow "Edit" within "##{identifier}-#{differential}-details"})
 end
 
 When /^I delete the custom text with identifier "([^"]*)" and differential "([^"]*)"$/ do |identifier, differential|
-  When %Q{I follow "Delete" within "##{identifier}-#{differential}-details"}
+  step(%Q{I follow "Delete" within "##{identifier}-#{differential}-details"})
 end
 
 When /^I edit the CustomText$/ do
-  When %Q{I follow "Edit" within "##{@current_custom_text.name}-details"}
+  step(%Q{I follow "Edit" within "##{@current_custom_text.name}-details"})
 end
 
 Given /^the application information box should contain "([^\"]*)"$/ do |info_text|
@@ -56,32 +56,32 @@ end
 Then /^the page should contain the following$/ do |table|
   # table is a Cucumber::Ast::Table
   table.hashes.each do |hash|
-    Then "I should see \"#{hash[:text]}\""
+    step "I should see \"#{hash[:text]}\""
   end
 end
 
 When /^I fill in the following fields$/ do |table|
   # table is a Cucumber::Ast::Table
   table.hashes.each do |hash|
-    When %Q{I fill in the field labeled "Custom text #{ hash[:label] }" with "#{ hash[:value] }"}
+    step(%Q{I fill in the field labeled "Custom text #{ hash[:label] }" with "#{ hash[:value] }"})
   end
 end
 
 Then /^I should be able to (enter|edit) the following fields$/ do |action, table|
    # table is a Cucumber::Ast::Table
   table.hashes.each do |hash|
-    When %Q{I fill in the field labeled "Custom text #{ hash[:label] }" with "#{ hash[:value] }"}
+    step(%Q{I fill in the field labeled "Custom text #{ hash[:label] }" with "#{ hash[:value] }"})
   end
 
-  And "I press \"Save changes\""
+  step "I press \"Save changes\""
   case action
   when "enter"
-    Then "I should see \"Custom text successfully created\""
+    step "I should see \"Custom text successfully created\""
   when "edit"
-    Then "I should see \"Details have been updated\""
+    step "I should see \"Details have been updated\""
   end
   table.hashes.each do |hash|
-    Then "I should see \"#{ hash[:value] }\""
+    step "I should see \"#{ hash[:value] }\""
   end
 end
 

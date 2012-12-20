@@ -35,7 +35,7 @@ When /^I delete the attached file "([^"]+)"$/ do |filename|
 end
 
 When /^I delete the attached Listing Document for "([^"]*)"$/ do |file_name|
-  When %Q{I delete the attached file "#{ file_name }"}
+  step(%Q{I delete the attached file "#{ file_name }"})
 # TODO[xxx]: Think this is not needed really
 # within(:css, "div##{file_name.methodize}_listing") do
 #   click_link('Delete')
