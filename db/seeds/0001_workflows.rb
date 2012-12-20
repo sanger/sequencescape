@@ -563,7 +563,10 @@ SequencingPipeline.create!(:name => 'HiSeq 2500 PE (spiked in controls)', :reque
   end.tap do |workflow|
     [
       { :class => SetDescriptorsTask,     :name => 'Specify Dilution Volume', :sorted => 1, :batched => true },
-      { :class => AddSpikedInControlTask, :name => 'Add Spiked in Control',   :sorted => 3, :batched => true }
+      { :class => AddSpikedInControlTask, :name => 'Add Spiked in Control',   :sorted => 3, :batched => true },
+      { :class => SetDescriptorsTask,     :name => 'Quality control',                   :sorted => 4, :batched => true },
+      { :class => SetDescriptorsTask,     :name => 'Read 1 Lin/block/hyb/load',         :sorted => 5, :batched => true, :interactive => true, :per_item => true },
+      { :class => SetDescriptorsTask,     :name => 'Read 2 Cluster/Lin/block/hyb/load', :sorted => 6, :batched => true, :interactive => true, :per_item => true }
     ].each do |details|
       details.delete(:class).create!(details.merge(:workflow => workflow))
     end
