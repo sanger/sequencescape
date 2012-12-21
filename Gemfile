@@ -63,13 +63,6 @@ group :warehouse do
 end
 
 group :development do
-  # The fake services run better with Mongrel
-  if(defined?(JRUBY_VERSION))
-    gem "mongrel", :platforms => :jruby
-  else
-    gem "mongrel", "~>1.1.5", :platforms => :mri
-  end
-
   gem "flay"
   gem "flog"
   gem "roodi"

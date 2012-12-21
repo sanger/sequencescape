@@ -154,8 +154,6 @@ GEM
       daemons (>= 1.0.3)
       fastthread (>= 1.0.1)
       gem_plugin (>= 0.2.3)
-    mongrel (1.1.5-java)
-      gem_plugin (>= 0.2.3)
     mongrel_cluster (1.0.5)
       gem_plugin (>= 0.2.3)
       mongrel (>= 1.0.2)
@@ -273,7 +271,6 @@ DEPENDENCIES
   launchy
   log4r
   mocha
-  mongrel
   mongrel_cluster
   mysql
   net-ldap

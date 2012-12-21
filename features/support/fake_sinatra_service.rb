@@ -1,14 +1,3 @@
-# We're going to be using mongrel but it outputs stuff to STDERR.  Luckily it doesn't reference the
-# top-level constant, so we can override it here!
-require 'mongrel'
-class Mongrel::HttpServer
-  const_set(:STDERR, Object.new.tap do |null_outputter|
-    def null_outputter.puts(*args, &block)
-      # Do nothing, we don't care
-    end
-  end) unless const_defined?(:STDERR)
-end
-
 class FakeSinatraService
   include Singleton
 
