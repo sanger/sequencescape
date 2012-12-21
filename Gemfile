@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 source 'http://gems.github.com'
 
-gem "rails", "2.3.11"
+gem "rails", "2.3.14"
 
 # Warehouse builder
 gem "log4r"
@@ -21,6 +21,7 @@ gem "will_paginate", "~>2.3.15"
 gem 'net-ldap'
 gem 'carrierwave', "~>0.4.0"
 gem 'jruby-openssl', :platforms => :jruby
+gem 'rdoc', '~>2.4.2'
 
 gem 'trinidad', :platforms => :jruby
 
