@@ -31,6 +31,7 @@
         <% metadata_fields.related_fields(:to => :data_release_standard_agreement, :when => Study::NO) do %>
           <%= group.document_field(:data_release_non_standard_agreement) %>
         <% end %>
+      <%= metadata_fields.text_field(:dac_policy_title) %>
       <%= metadata_fields.text_area(:dac_policy) %>
       <%= metadata_fields.text_field(:ega_dac_accession_number) %>
       <%= metadata_fields.text_field(:ega_policy_accession_number) %>

@@ -364,6 +364,9 @@ en:
         ArrayExpress:
           label: ArrayExpress
 
+        dac_policy_title:
+          label: Policy title
+          help: The title for the policy. The standard Sanger policy title is 'Wellcome Trust Sanger Institute Data Sharing Policy'
         dac_policy:
           label: Policy
         ega_dac_accession_number:
