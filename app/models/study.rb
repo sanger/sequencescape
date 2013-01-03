@@ -182,8 +182,6 @@ class Study < ActiveRecord::Base
   DATA_RELEASE_DELAY_SHORT = [ '3 months' ]
   DATA_RELEASE_DELAY_PERIODS = DATA_RELEASE_DELAY_SHORT + DATA_RELEASE_DELAY_LONG
 
-  DEFAULT_SANGER_POLICY_TITLE = 'Wellcome Trust Sanger Institute Data Sharing Policy'
-
   extend Metadata
   has_metadata do
     include StudyType::Associations
@@ -221,8 +219,8 @@ class Study < ActiveRecord::Base
       required.attribute(:data_release_delay_reason_comment)
     end
 
-    attribute(:dac_policy)
-    attribute(:dac_policy_title, :default => DEFAULT_SANGER_POLICY_TITLE, :if => :managed?)
+    attribute(:dac_policy, :default => configatron.default_policy_text, :if => :managed?)
+    attribute(:dac_policy_title, :default => configatron.default_policy_title, :if => :managed?)
     attribute(:ega_dac_accession_number)
     attribute(:ega_policy_accession_number)
     attribute(:array_express_accession_number)

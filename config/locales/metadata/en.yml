@@ -369,6 +369,7 @@ en:
           help: The title for the policy. The standard Sanger policy title is 'Wellcome Trust Sanger Institute Data Sharing Policy'
         dac_policy:
           label: Policy
+          help: For all studies following the standard Sanger data policy, the link to the data sharing policy is all you need.
         ega_dac_accession_number:
           label: EGA DAC Accession Number
           help: Data Release accession Number. Will be filled automatically during submission process.
