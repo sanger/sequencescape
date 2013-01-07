@@ -23,7 +23,7 @@ Given /^sample information is updated from the manifest for study "([^"]*)"$/ do
   end
 end
 
-Given /^the last sample has been updated by a manifest$/ do 
+Given /^the last sample has been updated by a manifest$/ do
   sample = Sample.last or raise StandardError, "There appear to be no samples"
   sample.update_attributes!(:updated_by_manifest => true)
 end
@@ -96,19 +96,19 @@ Then /^the samples table should look like:$/ do |table|
 end
 
 Given /^a manifest has been created for "([^"]*)"$/ do |study_name|
-  When %Q{I follow "Create manifest for plates"}
-	When %Q{I select "#{study_name}" from "Study"}
-  When %Q{I select "default layout" from "Template"}
-	And %Q{I select "Test supplier name" from "Supplier"}
-	And %Q{I select "xyz" from "Barcode printer"}
-	And %Q{I fill in the field labeled "Count" with "1"}
-  And %Q{I select "default layout" from "Template"}
-	When %Q{I press "Create manifest and print labels"}
-	Then %Q{I should see "Manifest_"}
-	Then %Q{I should see "Download Blank Manifest"}
-	Given %Q{3 pending delayed jobs are processed}
-	Then %Q{study "#{study_name}" should have 96 samples}
-	Given %Q{I reset all of the sanger sample ids to a known number sequence}
+  step(%Q{I follow "Create manifest for plates"})
+	step(%Q{I select "#{study_name}" from "Study"})
+  step(%Q{I select "default layout" from "Template"})
+	step(%Q{I select "Test supplier name" from "Supplier"})
+	step(%Q{I select "xyz" from "Barcode printer"})
+	step(%Q{I fill in the field labeled "Count" with "1"})
+  step(%Q{I select "default layout" from "Template"})
+	step(%Q{I press "Create manifest and print labels"})
+	step %Q{I should see "Manifest_"}
+	step %Q{I should see "Download Blank Manifest"}
+	step(%Q{3 pending delayed jobs are processed})
+	step %Q{study "#{study_name}" should have 96 samples}
+	step(%Q{I reset all of the sanger sample ids to a known number sequence})
 end
 
 Then /^the sample controls and resubmits should look like:$/ do |table|
@@ -144,7 +144,7 @@ Then /^the last created sample manifest should be:$/ do |table|
     spreadsheet = Spreadsheet.open(tempfile.path)
     @worksheet   =spreadsheet.worksheets.first
   end
-  
+
   table.rows.each_with_index do |row,index|
     expected = [ Barcode.barcode_to_human(Barcode.calculate_barcode(Plate.prefix, row[0].to_i)), row[1] ]
     got      = [ @worksheet[offset+index,0], @worksheet[offset+index,1] ]
@@ -177,5 +177,5 @@ end
 Given /^the sample manifest with ID (\d+) has been processed$/ do |id|
   manifest = SampleManifest.find(id)
   manifest.generate
-  Given %Q{3 pending delayed jobs are processed}
+  step(%Q{3 pending delayed jobs are processed})
 end

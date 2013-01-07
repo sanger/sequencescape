@@ -66,7 +66,7 @@ Given /^I have already made (\d+) "([^\"]+)" requests? with IDs starting at (\d+
 end
 
 Given /^I have already made a "([^\"]+)" request with ID (\d+) within the study "([^\"]+)" for the project "([^\"]+)"$/ do |type, id, study_name, project_name|
-  Given %Q{I have already made 1 "#{type}" request with IDs starting at #{id} within the study "#{study_name}" for the project "#{project_name}"}
+  step(%Q{I have already made 1 "#{type}" request with IDs starting at #{id} within the study "#{study_name}" for the project "#{project_name}"})
 end
 
 Given /^the project "([^\"]+)" has no "([^\"]+)" quota$/ do |name, type|
@@ -82,7 +82,7 @@ Given /^the sample in (well|sample tube) "([^\"]+)" is registered under the stud
 end
 
 Given /^the study "([^\"]+)" has an asset group of (\d+) samples called "([^\"]+)"$/ do |study_name, count, group_name|
-  When %Q{the study "#{study_name}" has an asset group of #{count} samples in "sample tube" called "#{group_name}"}
+  step(%Q{the study "#{study_name}" has an asset group of #{count} samples in "sample tube" called "#{group_name}"})
 end
 
 Given /^the study "([^\"]+)" has an asset group of (\d+) samples in "([^\"]+)" called "([^\"]+)"$/ do |study_name, count, asset_type, group_name|

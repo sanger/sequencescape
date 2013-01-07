@@ -1,7 +1,7 @@
 
 Given /^I have a billing event with UUID "([^"]*)" and a bait library$/ do |uuid_value|
   project = Factory :project, :name => "Test Project"
-  Given %Q{the project "Test Project" a budget division "Human variation"}
+  step(%Q{the project "Test Project" a budget division "Human variation"})
   request = Request.create!(:request_type => RequestType.find_by_key('paired_end_sequencing'))
   request.request_metadata.update_attributes!(:read_length => 100, :library_type => "Standard", :bait_library_id => 1 )
   billing_event = Factory :billing_event, :project => project, :request => request
