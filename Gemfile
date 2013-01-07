@@ -52,6 +52,10 @@ gem "cancan"
 gem "bunny"
 #gem "amqp", "~> 0.9.2"
 
+gem "spoon"
+# Spoon lets jruby spawn processes, such as the dbconsole. Part of launchy,
+# but we'll need it in production if dbconsole is to work
+
 group :warehouse do
   #the most recent one that actually compiles
   gem "ruby-oci8", "1.0.7", :platforms => :mri
