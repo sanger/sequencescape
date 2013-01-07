@@ -6,7 +6,7 @@ Given /^I have a pipeline called "([^\"]*)"$/ do |name|
 end
 
 Given /^I have a batch in "([^\"]*)"$/ do |pipeline|
-  When  %Q{I have a "pending" batch in "#{pipeline}"}
+  step  %Q{I have a "pending" batch in "#{pipeline}"}
 end
 
 Given /^I have a "([^\"]*)" batch in "([^\"]*)"$/ do |state, pipeline|
@@ -97,7 +97,7 @@ Given /^I have a freezer called "([^\"]*)"$/ do |location_name|
 end
 
 When /^I fill in the plate barcode$/ do
-  When %Q{I fill in "barcode_0" with "#{Plate.last.ean13_barcode}"}
+  step(%Q{I fill in "barcode_0" with "#{Plate.last.ean13_barcode}"})
 #  puts "Plate #{Plate.last.id} -- #{Plate.last.location_id}"
 end
 
@@ -160,7 +160,7 @@ end
 
 When /^I click on the last "([^\"]*)" batch$/ do |status|
   batch = Batch.last(:conditions => { :state => status })
-  When %Q{I follow "#{status} batch #{batch.id}"}
+  step(%Q{I follow "#{status} batch #{batch.id}"})
 end
 
 Given /^the maximum batch size for the pipeline "([^\"]+)" is (\d+)$/ do |name, max_size|

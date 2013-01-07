@@ -8,6 +8,6 @@ Then /^launch the debugger$/ do
 end
 
 Then /^stop$/ do
-  Then %q{show me the page}
-  And %q{launch the debugger}
+  step %q{show me the page}
+  step %q{launch the debugger}
 end

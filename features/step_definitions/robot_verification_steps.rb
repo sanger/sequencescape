@@ -1,68 +1,68 @@
 Given /^I have a released cherrypicking batch$/ do
-  Given %Q{I have a released cherrypicking batch with 96 samples}
+  step(%Q{I have a released cherrypicking batch with 96 samples})
 end
 
 Given /^I have a released cherrypicking batch with (\d+) samples$/ do |number_of_samples|
-  Given %Q{I have a cherrypicking batch with #{number_of_samples} samples}
-  Given %Q{a plate barcode webservice is available and returns "99999"}
-  Given %Q{a plate template exists}
-  Given %Q{a robot exists with barcode "444"}
-  Given %Q{plate "1221234567841" has concentration and volume results}
-	When %Q{I follow "Start batch"}
-	When %Q{I select "testtemplate" from "Plate Template"}
-	When %Q{I select "Infinium 670k" from "Output plate purpose"}
-	And %Q{I fill in "Volume Required" with "13"}
-	And %Q{I fill in "Concentration Required" with "50"}
-	When %Q{I press "Next step"}
-	And %Q{I press "Next step"}
-	When %Q{I select "Genotyping freezer" from "Location"}
-	And %Q{I press "Next step"}
-	When %Q{I press "Release this batch"}
-	Given %Q{the last batch has a barcode of "550000555760"}
+  step(%Q{I have a cherrypicking batch with #{number_of_samples} samples})
+  step(%Q{a plate barcode webservice is available and returns "99999"})
+  step(%Q{a plate template exists})
+  step(%Q{a robot exists with barcode "444"})
+  step(%Q{plate "1221234567841" has concentration and volume results})
+	step(%Q{I follow "Start batch"})
+	step(%Q{I select "testtemplate" from "Plate Template"})
+	step(%Q{I select "Infinium 670k" from "Output plate purpose"})
+	step(%Q{I fill in "Volume Required" with "13"})
+	step(%Q{I fill in "Concentration Required" with "50"})
+	step(%Q{I press "Next step"})
+	step(%Q{I press "Next step"})
+	step(%Q{I select "Genotyping freezer" from "Location"})
+	step(%Q{I press "Next step"})
+	step(%Q{I press "Release this batch"})
+	step(%Q{the last batch has a barcode of "550000555760"})
 end
 
 
 Given /^I have a released cherrypicking batch with 3 plates$/ do
-  Given %Q{I am a "administrator" user logged in as "user"}
-  Given %Q{I have a project called "Test project"}
-  And %Q{project "Test project" has enough quotas}
-  Given %Q{I have an active study called "Test study"}
-  Given %Q{I have a plate "1" in study "Test study" with 2 samples in asset group "Plate asset group"}
-  Given %Q{I have a plate "10" in study "Test study" with 2 samples in asset group "Plate asset group"}
-  Given %Q{I have a plate "5" in study "Test study" with 2 samples in asset group "Plate asset group"}
+  step(%Q{I am a "administrator" user logged in as "user"})
+  step(%Q{I have a project called "Test project"})
+  step(%Q{project "Test project" has enough quotas})
+  step(%Q{I have an active study called "Test study"})
+  step(%Q{I have a plate "1" in study "Test study" with 2 samples in asset group "Plate asset group"})
+  step(%Q{I have a plate "10" in study "Test study" with 2 samples in asset group "Plate asset group"})
+  step(%Q{I have a plate "5" in study "Test study" with 2 samples in asset group "Plate asset group"})
 
-  Given %Q{I have a Cherrypicking submission for asset group "Plate asset group"}
-  Given %Q{I am on the show page for pipeline "Cherrypick"}
-  
-  When %Q{I check "Select DN1S for batch"}
-  When %Q{I check "Select DN10I for batch"}
-  When %Q{I check "Select DN5W for batch"}
-  And %Q{I select "Create Batch" from "action_on_requests"}
-  And %Q{I press "Submit"}
-  
+  step(%Q{I have a Cherrypicking submission for asset group "Plate asset group"})
+  step(%Q{I am on the show page for pipeline "Cherrypick"})
+
+  step(%Q{I check "Select DN1S for batch"})
+  step(%Q{I check "Select DN10I for batch"})
+  step(%Q{I check "Select DN5W for batch"})
+  step(%Q{I select "Create Batch" from "action_on_requests"})
+  step(%Q{I press "Submit"})
+
   # must use @javascript
-  Given %Q{a plate barcode webservice is available and returns "99999"}
-  Given %Q{a plate template exists}
-  Given %Q{a robot exists with barcode "444"}
-  Given %Q{plate "1220000010734" has concentration and volume results}
-  Given %Q{plate "1220000001831" has concentration and volume results}
-  Given %Q{plate "1220000005877" has concentration and volume results}
-  
-	When %Q{I follow "Start batch"}
-	When %Q{I select "testtemplate" from "Plate Template"}
-	When %Q{I select "Infinium 670k" from "Output plate purpose"}
-	And %Q{I fill in "Volume Required" with "13"}
-	And %Q{I fill in "Concentration Required" with "50"}
-	When %Q{I press "Next step"}
-	And %Q{I press "Next step"}
-	When %Q{I select "Genotyping freezer" from "Location"}
-	And %Q{I press "Next step"}
-	When %Q{I press "Release this batch"}
-	Given %Q{the last batch has a barcode of "550000555760"}
+  step(%Q{a plate barcode webservice is available and returns "99999"})
+  step(%Q{a plate template exists})
+  step(%Q{a robot exists with barcode "444"})
+  step(%Q{plate "1220000010734" has concentration and volume results})
+  step(%Q{plate "1220000001831" has concentration and volume results})
+  step(%Q{plate "1220000005877" has concentration and volume results})
+
+	step(%Q{I follow "Start batch"})
+	step(%Q{I select "testtemplate" from "Plate Template"})
+	step(%Q{I select "Infinium 670k" from "Output plate purpose"})
+	step(%Q{I fill in "Volume Required" with "13"})
+	step(%Q{I fill in "Concentration Required" with "50"})
+	step(%Q{I press "Next step"})
+	step(%Q{I press "Next step"})
+	step(%Q{I select "Genotyping freezer" from "Location"})
+	step(%Q{I press "Next step"})
+	step(%Q{I press "Release this batch"})
+	step(%Q{the last batch has a barcode of "550000555760"})
 end
 
 Given /^I have a released cherrypicking batch with 1 plate which doesnt need buffer$/ do
-  Given %Q{I have a released cherrypicking batch with 1 samples}
+  step(%Q{I have a released cherrypicking batch with 1 samples})
   plate = Plate.last
   plate.wells.each { |well| well.well_attribute.update_attributes!(:buffer_volume => nil) }
 end

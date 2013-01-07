@@ -9,5 +9,5 @@ Given /^data are preloaded from "([^\"]+)" renaming:$/ do |file_name, table|
   ImportPulledData::import_from_yaml("data/setup/#{file_name}.yml", names_map)
 end
 Given /^data are preloaded from "([^\"]+)"$/ do |file_name|
-  Given %Q{data are preloaded from "#{file_name}" renaming:}
+  step(%Q{data are preloaded from "#{file_name}" renaming:})
 end

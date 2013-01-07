@@ -14,7 +14,7 @@ end
 Given /^I have a PacBio submission$/ do
   project = Project.find_by_name("Test project")
   study = Study.find_by_name("Test study")
-  
+
   submission_template = SubmissionTemplate.find_by_name('PacBio')
   submission = submission_template.create_and_build_submission!(
     :study => study,
@@ -24,7 +24,7 @@ Given /^I have a PacBio submission$/ do
     :assets => SampleTube.all,
     :request_options => {"multiplier"=>{"1"=>"1", "3"=>"1"}, "insert_size"=>"250", "sequencing_type"=>"Standard"}
     )
-  And %Q{1 pending delayed jobs are processed}
+  step(%Q{1 pending delayed jobs are processed})
 end
 
 
@@ -33,14 +33,14 @@ Then /^I should have (\d+) PacBioSequencingRequests$/ do |number_of_requests|
 end
 
 Given /^I have a PacBio Sample Prep batch$/ do
-  Given %Q{I have a sample tube "222" in study "Test study" in asset group "Test study group"}
-  Given %Q{I have a PacBio submission}
-  Given %Q{I am on the show page for pipeline "PacBio Sample Prep"}
-  When %Q{I check "Select SampleTube 111 for batch"}
-  When %Q{I check "Select SampleTube 222 for batch"}
-  When %Q{I press "Submit"}
-  Given %Q{SampleTube "111" has a PacBioLibraryTube "333"}
-  Given %Q{SampleTube "222" has a PacBioLibraryTube "444"}
+  step(%Q{I have a sample tube "222" in study "Test study" in asset group "Test study group"})
+  step(%Q{I have a PacBio submission})
+  step(%Q{I am on the show page for pipeline "PacBio Sample Prep"})
+  step(%Q{I check "Select SampleTube 111 for batch"})
+  step(%Q{I check "Select SampleTube 222 for batch"})
+  step(%Q{I press "Submit"})
+  step(%Q{SampleTube "111" has a PacBioLibraryTube "333"})
+  step(%Q{SampleTube "222" has a PacBioLibraryTube "444"})
 end
 
 Given /^SampleTube "([^"]*)" has a PacBioLibraryTube "([^"]*)"$/ do |sample_tube_barcode, library_tube_barcode|
@@ -50,9 +50,9 @@ Given /^SampleTube "([^"]*)" has a PacBioLibraryTube "([^"]*)"$/ do |sample_tube
 end
 
 Given /^I have a fast PacBio sequencing batch$/ do
-  Given %Q{I have a sample tube "222" in study "Test study" in asset group "Test study group"}
-  Given %Q{the sample tubes are part of the study}
-  Given %Q{I have a PacBio submission}
+  step(%Q{I have a sample tube "222" in study "Test study" in asset group "Test study group"})
+  step(%Q{the sample tubes are part of the study})
+  step(%Q{I have a PacBio submission})
   location = Location.find_by_name("PacBio sequencing freezer")
   library_1 = PacBioLibraryTube.create!(:location => location, :barcode => "333", :aliquots => SampleTube.find_by_barcode(111).aliquots.map(&:clone))
   library_1.pac_bio_library_tube_metadata.update_attributes!(:prep_kit_barcode => "999", :smrt_cells_available => 3)
@@ -60,33 +60,33 @@ Given /^I have a fast PacBio sequencing batch$/ do
   library_2.pac_bio_library_tube_metadata.update_attributes!(:prep_kit_barcode => "999", :smrt_cells_available => 1)
   PacBioSequencingRequest.first.update_attributes!(:asset => library_1)
   PacBioSequencingRequest.last.update_attributes!(:asset => library_2)
-  Given %Q{I am on the show page for pipeline "PacBio Sequencing"}
-  When %Q{I check "Select Request Group 0"}
-  And %Q{I check "Select Request 0"}
-  And %Q{I check "Select Request 1"}
-  And %Q{I press "Submit"}
+  step(%Q{I am on the show page for pipeline "PacBio Sequencing"})
+  step(%Q{I check "Select Request Group 0"})
+  step(%Q{I check "Select Request 0"})
+  step(%Q{I check "Select Request 1"})
+  step(%Q{I press "Submit"})
 end
 
 Given /^I have a PacBio sequencing batch$/ do
-  Given %Q{I have a PacBio Sample Prep batch}
-  When %Q{I follow "Start batch"}
-  When %Q{I fill in "DNA Template Prep Kit Box Barcode" with "999"}
-  And %Q{I press "Next step"}
-  When %Q{I select "Pass" from "QC PacBioLibraryTube 333"}
-  And %Q{I select "Pass" from "QC PacBioLibraryTube 444"}
-  And %Q{I press "Next step"}
-  When %Q{I fill in "Number of SMRTcells for PacBioLibraryTube 333" with "3"}
-  And %Q{I fill in "Number of SMRTcells for PacBioLibraryTube 444" with "1"}
-  And %Q{I press "Next step"}
-  When %Q{I press "Release this batch"}
-  When %Q{set the location of PacBioLibraryTube "3980000333858" to be in "PacBio sequencing freezer"}
-  When %Q{set the location of PacBioLibraryTube "3980000444684" to be in "PacBio sequencing freezer"}
-  Given %Q{I am on the show page for pipeline "PacBio Sequencing"}
-  When %Q{I check "Select Request Group 0"}
-  And %Q{I check "Select Request 0"}
-  And %Q{I check "Select Request 1"}
-  And %Q{I press "Submit"}
-  Given %Q{the sample tubes are part of the study}
+  step(%Q{I have a PacBio Sample Prep batch})
+  step(%Q{I follow "Start batch"})
+  step(%Q{I fill in "DNA Template Prep Kit Box Barcode" with "999"})
+  step(%Q{I press "Next step"})
+  step(%Q{I select "Pass" from "QC PacBioLibraryTube 333"})
+  step(%Q{I select "Pass" from "QC PacBioLibraryTube 444"})
+  step(%Q{I press "Next step"})
+  step(%Q{I fill in "Number of SMRTcells for PacBioLibraryTube 333" with "3"})
+  step(%Q{I fill in "Number of SMRTcells for PacBioLibraryTube 444" with "1"})
+  step(%Q{I press "Next step"})
+  step(%Q{I press "Release this batch"})
+  step(%Q{set the location of PacBioLibraryTube "3980000333858" to be in "PacBio sequencing freezer"})
+  step(%Q{set the location of PacBioLibraryTube "3980000444684" to be in "PacBio sequencing freezer"})
+  step(%Q{I am on the show page for pipeline "PacBio Sequencing"})
+  step(%Q{I check "Select Request Group 0"})
+  step(%Q{I check "Select Request 0"})
+  step(%Q{I check "Select Request 1"})
+  step(%Q{I press "Submit"})
+  step(%Q{the sample tubes are part of the study})
 end
 
 Given /^the sample tubes are part of the study$/ do
@@ -134,11 +134,11 @@ end
 Given /^the UUID for well "([^"]*)" on plate "([^"]*)" is "([^"]*)"$/ do |well_position, plate_barcode, uuid|
   plate = Plate.find_by_barcode(plate_barcode)
   well = plate.find_well_by_name(well_position)
-  Given %Q{the UUID for the well with ID #{well.id} is "#{uuid}"}
+  step(%Q{the UUID for the well with ID #{well.id} is "#{uuid}"})
 end
 
 Given /^the UUID for Library "([^"]*)" is "([^"]*)"$/ do |barcode,uuid|
-  Given %Q{the UUID for the asset with ID #{Asset.find_by_barcode(barcode).id} is "#{uuid}"}
+  step(%Q{the UUID for the asset with ID #{Asset.find_by_barcode(barcode).id} is "#{uuid}"})
 end
 
 Given /^the sample validation webservice returns "(true|false)"$/ do |success_boolean|
@@ -157,14 +157,14 @@ Then /^the PacBio sample prep worksheet should look like:$/ do |expected_results
   expected_results_table.diff!(actual_table)
 end
 
-Given /^I have progressed to the Reference Sequence task$/ do 
-  Given %Q{I have a PacBio sequencing batch}
-  When %Q{I follow "Start batch"}
-  When %Q{I fill in "Binding Kit Box Barcode" with "777"}
-  And %Q{I press "Next step"}
-  When %Q{I fill in "Movie length for 333" with "12"}
-  And %Q{I fill in "Movie length for 444" with "23"}
-  And %Q{I press "Next step"}
+Given /^I have progressed to the Reference Sequence task$/ do
+  step(%Q{I have a PacBio sequencing batch})
+  step(%Q{I follow "Start batch"})
+  step(%Q{I fill in "Binding Kit Box Barcode" with "777"})
+  step(%Q{I press "Next step"})
+  step(%Q{I fill in "Movie length for 333" with "12"})
+  step(%Q{I fill in "Movie length for 444" with "23"})
+  step(%Q{I press "Next step"})
 end
 
 Given /^the reference genome "([^"]*)" exists$/ do |name|

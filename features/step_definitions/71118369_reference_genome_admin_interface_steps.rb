@@ -4,12 +4,12 @@ end
 
 When /^I (POST|PUT) following XML to see the reference genome on the study called "([^"]*)"$/ do |action, xml, name_study|
  study = Study.find_by_name(name_study)
- When %Q{I #{action} the following XML to "/studies/#{study.id}":}, xml
+ step %Q{I #{action} the following XML to "/studies/#{study.id}":}, xml
 end
 
 When /^I (POST|PUT) following XML to see the empty reference genome on the study called "([^"]*)"$/ do |action, xml, name_study|
  study = Study.find_by_name(name_study)
- When %Q{I #{action} the following XML to "/studies/#{study.id}":}, xml
+ step %Q{I #{action} the following XML to "/studies/#{study.id}":}, xml
 end
 
 #When /^I request XML for the study named (.+)$/ do |page_name|

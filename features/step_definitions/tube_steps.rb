@@ -25,17 +25,17 @@ Given /^a (started|passed|pending) transfer from the stock tube "([^"]*)" to the
     :source => source,
     :user => User.last||User.create(:login=>'no_one')
   )
-  Then %Q{the transfer requests on "#{source.id}" are #{state}}
+  step %Q{the transfer requests on "#{source.id}" are #{state}}
 end
 
 Given /^I am setup to test tubes with plate set (\d+)$/ do |num|
-  Then %Q{the plate barcode webservice returns "#{num}000001"}
-  Then %Q{a "ILB_STD_INPUT" plate called "source plate #{num}" exists}
-  Then %Q{plate "source plate #{num}" has "1" wells with aliquots}
-  Then %Q{the plate barcode webservice returns "#{num}000002"}
-  Then %Q{a "ILB_STD_PCRXP" plate called "middle plate #{num}" exists}
-  Then %Q{plate "middle plate #{num}" has "1" wells with aliquots}
-  Then %Q{passed transfer requests exist between 1 wells on "source plate #{num}" and "middle plate #{num}"}
+  step %Q{the plate barcode webservice returns "#{num}000001"}
+  step %Q{a "ILB_STD_INPUT" plate called "source plate #{num}" exists}
+  step %Q{plate "source plate #{num}" has "1" wells with aliquots}
+  step %Q{the plate barcode webservice returns "#{num}000002"}
+  step %Q{a "ILB_STD_PCRXP" plate called "middle plate #{num}" exists}
+  step %Q{plate "middle plate #{num}" has "1" wells with aliquots}
+  step %Q{passed transfer requests exist between 1 wells on "source plate #{num}" and "middle plate #{num}"}
 end
 
 def request_defaults(type)

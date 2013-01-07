@@ -22,5 +22,5 @@ Given /^the project "([^\"]+)" has a "([^\"]+)" quota of (\d+)$/ do |name, type,
 end
 
 When /^I follow the "([^\"]+)" request$/ do |request_type|
-  When %Q{I follow "#{ request_type } request"}
+  step(%Q{I follow "#{ request_type } request"})
 end

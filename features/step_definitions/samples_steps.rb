@@ -106,13 +106,13 @@ end
 GivenSampleMetadata(:sample_ebi_accession_number, /^the sample "([^\"]+)" has the accession number "([^\"]+)"$/)
 
 When /^I generate an? accession number for sample "([^\"]+)"$/ do |sample_name|
- Then %Q{I am on the show page for sample "#{sample_name}"}
- When %Q{I follow "Generate Accession Number"}
+ step %Q{I am on the show page for sample "#{sample_name}"}
+ step(%Q{I follow "Generate Accession Number"})
 end
 
 When /^I update an? accession number for sample "([^\"]+)"$/ do |sample_name|
- Then %Q{I am on the show page for sample "#{sample_name}"}
- When %Q{I follow "Update EBI Sample data"}
+ step %Q{I am on the show page for sample "#{sample_name}"}
+ step(%Q{I follow "Update EBI Sample data"})
 end
 
 
@@ -129,10 +129,10 @@ Given /^study "([^\"]+)" has the following samples in sample tubes:$/ do |study_
     sample_name = details['sample']
 
     sample = Sample.find_by_name(sample_name)
-    Given %Q{I have a sample called "#{sample_name}"} unless sample
-    Given %Q{sample "#{sample_name}" is in a sample tube named "#{sample_tube_name}"}
-    And %Q{the sample "#{sample_name}" belongs to the study "#{study_name}"}
-    And %Q{the asset "#{sample_tube_name}" belongs to study "#{study_name}"}
+    step %Q{I have a sample called "#{sample_name}"} unless sample
+    step(%Q{sample "#{sample_name}" is in a sample tube named "#{sample_tube_name}"})
+    step(%Q{the sample "#{sample_name}" belongs to the study "#{study_name}"})
+    step(%Q{the asset "#{sample_tube_name}" belongs to study "#{study_name}"})
 
   end
 end
@@ -150,12 +150,12 @@ end
 
 Given /^a sample named "([^\"]+)" exists for accession/ do |sample_name|
   study_name = "study for sample #{sample_name}"
-  Given %Q{a study named "#{study_name}" exists for accession}
-  Given %Q{the sample named "#{sample_name}" exists with ID 200}
-  And %Q{I am the owner of sample "sample"}
-  And %Q{the sample "#{sample_name}" belongs to the study "#{study_name}"}
-  And %Q{the sample "#{sample_name}" has the Taxon ID "99999"}
-  And %Q{the sample "#{sample_name}" has the common name "Human"}
+  step(%Q{a study named "#{study_name}" exists for accession})
+  step(%Q{the sample named "#{sample_name}" exists with ID 200})
+  step(%Q{I am the owner of sample "sample"})
+  step(%Q{the sample "#{sample_name}" belongs to the study "#{study_name}"})
+  step(%Q{the sample "#{sample_name}" has the Taxon ID "99999"})
+  step(%Q{the sample "#{sample_name}" has the common name "Human"})
 end
 
 Given /^the Sanger sample ID of the last sample is "([^\"]+)"$/ do |id|

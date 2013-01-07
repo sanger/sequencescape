@@ -6,7 +6,7 @@ end
 
 When /^I select "([^"]*)" for the first row of the plate$/ do |qc_result|
   1.upto(12) do |i|
-    When %Q{I select "pass" from "Plate 1234567 QC status A#{i}"}
+    step(%Q{I select "pass" from "Plate 1234567 QC status A#{i}"})
   end
 end
 
@@ -33,7 +33,7 @@ Given /^I have a plate "([^"]*)" in study "([^"]*)" with (\d+) samples in asset 
 
   asset_group = study.asset_groups.find_by_name(asset_group_name) || study.asset_groups.create!(:name => asset_group_name)
   asset_group.assets << (1..number_of_samples.to_i).map do |index|
-    Factory(:well, :name => "Well_#{plate_barcode}_#{index}", :plate => plate, :map_id => index).tap do |well|
+    Factory(:well, :plate => plate, :map_id => index).tap do |well|
       well.aliquots.create!(:sample => Factory(:sample, :name => "Sample_#{plate_barcode}_#{index}"),
                                               :study => study)
     end
@@ -51,22 +51,22 @@ Given /^plate "([^"]*)" in study "([^"]*)" is in asset group "([^"]*)"$/ do |pla
 end
 
 Given /^I have a cherrypicking batch$/ do
-  Given %Q{I have a cherrypicking batch with 96 samples}
+  step(%Q{I have a cherrypicking batch with 96 samples})
 end
 
 Given /^I have a cherrypicking batch with (\d+) samples$/ do |number_of_samples|
-  Given %Q{I am a "administrator" user logged in as "user"}
-  Given %Q{I have a project called "Test project"}
-  And %Q{project "Test project" has enough quotas}
-  Given %Q{I have an active study called "Test study"}
-  Given %Q{I have a plate "1234567" in study "Test study" with #{number_of_samples} samples in asset group "Plate asset group"}
+  step(%Q{I am a "administrator" user logged in as "user"})
+  step(%Q{I have a project called "Test project"})
+  step(%Q{project "Test project" has enough quotas})
+  step(%Q{I have an active study called "Test study"})
+  step(%Q{I have a plate "1234567" in study "Test study" with #{number_of_samples} samples in asset group "Plate asset group"})
 
-  Given %Q{I have a Cherrypicking submission for asset group "Plate asset group"}
-  Given %Q{I am on the show page for pipeline "Cherrypick"}
+  step(%Q{I have a Cherrypicking submission for asset group "Plate asset group"})
+  step(%Q{I am on the show page for pipeline "Cherrypick"})
 
-  When %Q{I check "Select DN1234567T for batch"}
-  And %Q{I select "Create Batch" from "action_on_requests"}
-  And %Q{I press "Submit"}
+  step(%Q{I check "Select DN1234567T for batch"})
+  step(%Q{I select "Create Batch" from "action_on_requests"})
+  step(%Q{I press "Submit"})
 end
 
 Given /^a robot exists with barcode "([^"]*)"$/ do |robot_barcode|
@@ -79,30 +79,30 @@ Given /^a robot exists with barcode "([^"]*)"$/ do |robot_barcode|
 end
 
 When /^I complete the cherrypicking batch with "([^"]*)" plate purpose but dont release it$/ do |plate_purpose_name|
-  When %Q{I follow "Start batch"}
-  When %Q{I select "testtemplate" from "Plate Template"}
-  When %Q{I select "#{plate_purpose_name}" from "Output plate purpose"}
-  When %Q{I press "Next step"}
-  And %Q{I press "Next step"}
-  When %Q{I select "Genotyping freezer" from "Location"}
-  And %Q{I press "Next step"}
+  step(%Q{I follow "Start batch"})
+  step(%Q{I select "testtemplate" from "Plate Template"})
+  step(%Q{I select "#{plate_purpose_name}" from "Output plate purpose"})
+  step(%Q{I press "Next step"})
+  step(%Q{I press "Next step"})
+  step(%Q{I select "Genotyping freezer" from "Location"})
+  step(%Q{I press "Next step"})
 end
 
 
 When /^I complete the cherrypicking batch with "([^"]*)" plate purpose$/ do |plate_purpose_name|
-  When %Q{I complete the cherrypicking batch with "#{plate_purpose_name}" plate purpose but dont release it}
-  When %Q{I press "Release this batch"}
-  Then %Q{I should see "Batch released"}
+  step(%Q{I complete the cherrypicking batch with "#{plate_purpose_name}" plate purpose but dont release it})
+  step(%Q{I press "Release this batch"})
+  step %Q{I should see "Batch released"}
 end
 
 Given /^I have a cherrypicked plate with barcode "([^"]*)" and plate purpose "([^"]*)"$/ do |plate_barcode, plate_purpose_name|
-  Given %Q{I have a Cherrypicking submission for asset group "Plate asset group"}
-  Given %Q{I am on the show page for pipeline "Cherrypick"}
-  When %Q{I check "Select DN1234567T for batch"}
-  And %Q{I select "Create Batch" from "action_on_requests"}
-  And %Q{I press "Submit"}
-  Given %Q{a plate barcode webservice is available and returns "#{plate_barcode}"}
-  When %Q{I complete the cherrypicking batch with "#{plate_purpose_name}" plate purpose but dont release it}
+  step(%Q{I have a Cherrypicking submission for asset group "Plate asset group"})
+  step(%Q{I am on the show page for pipeline "Cherrypick"})
+  step(%Q{I check "Select DN1234567T for batch"})
+  step(%Q{I select "Create Batch" from "action_on_requests"})
+  step(%Q{I press "Submit"})
+  step(%Q{a plate barcode webservice is available and returns "#{plate_barcode}"})
+  step(%Q{I complete the cherrypicking batch with "#{plate_purpose_name}" plate purpose but dont release it})
 end
 
 Given /^well "([^"]*)" on plate "([^"]*)" has a genotyping_done status of "([^"]*)"$/ do |well_description, plate_barcode, genotyping_status|
@@ -125,7 +125,7 @@ end
 
 
 Given /^I have a DNA QC submission for plate "([^"]*)"$/ do |plate_barcode|
-  Given %{I have a "DNA QC" submission for plate "#{plate_barcode}" with project "Test project" and study "Study B"}
+  step %Q{I have a "DNA QC" submission for plate "#{plate_barcode}" with project "Test project" and study "Study B"}
 end
 
 Given /^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)" and study "([^"]*)"$/ do |submission_template_name,plate_barcode, project_name, study_name|
@@ -148,7 +148,7 @@ Given /^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)"
     :user     => User.last,
     :assets   => wells
     )
-  And %Q{1 pending delayed jobs are processed}
+  step(%Q{1 pending delayed jobs are processed})
 end
 
 
@@ -165,48 +165,48 @@ Given /^I have a Cherrypicking submission for asset group "([^"]*)"$/ do |asset_
     :user => User.last,
     :assets => asset_group.assets
     )
-  And %Q{1 pending delayed jobs are processed}
+  step(%Q{1 pending delayed jobs are processed})
 end
 
 Given /^the internal QC plates are created$/ do
-  When %Q{I follow "Pipelines"}
-  When %Q{I follow "Create Plate Barcodes"}
-  When %Q{I select "Pico Standard" from "Plate purpose"}
-  And %Q{I select "xyz" from "Barcode printer"}
-  And %Q{I fill in "User barcode" with "2470000100730"}
-  And %Q{I press "Submit"}
-  When %Q{I fill in "Source plates" with "1221234567841"}
-  And %Q{I fill in "User barcode" with "2470000100730"}
-  When %Q{I select "Working dilution" from "Plate purpose"}
-  And %Q{I select "xyz" from "Barcode printer"}
-  And %Q{I press "Submit"}
-  When %Q{I fill in "Source plates" with "6251234567836"}
-  And %Q{I fill in "User barcode" with "2470000100730"}
-  When %Q{I select "Pico dilution" from "Plate purpose"}
-  And %Q{I select "xyz" from "Barcode printer"}
-  And %Q{I press "Submit"}
-  When %Q{I fill in "Source plates" with "4361234567667"}
-  And %Q{I fill in "User barcode" with "2470000100730"}
-  When %Q{I select "Pico Assay Plates" from "Plate purpose"}
-  And %Q{I select "xyz" from "Barcode printer"}
-  And %Q{I press "Submit"}
-  When %Q{I fill in "Source plates" with "6251234567836"}
-  And %Q{I fill in "User barcode" with "2470000100730"}
-  When %Q{I select "Gel Dilution Plates" from "Plate purpose"}
-  And %Q{I select "xyz" from "Barcode printer"}
-  And %Q{I press "Submit"}
-  Then %Q{plate with barcode "4331234567653" is part of study "Test study"}
-  And %Q{plate with barcode "4341234567737" is part of study "Test study"}
-  And %Q{plate with barcode "1931234567771" is part of study "Test study"}
-  Given %Q{5 pending delayed jobs are processed}
+  step(%Q{I follow "Pipelines"})
+  step(%Q{I follow "Create Plate Barcodes"})
+  step(%Q{I select "Pico Standard" from "Plate purpose"})
+  step(%Q{I select "xyz" from "Barcode printer"})
+  step(%Q{I fill in "User barcode" with "2470000100730"})
+  step(%Q{I press "Submit"})
+  step(%Q{I fill in "Source plates" with "1221234567841"})
+  step(%Q{I fill in "User barcode" with "2470000100730"})
+  step(%Q{I select "Working dilution" from "Plate purpose"})
+  step(%Q{I select "xyz" from "Barcode printer"})
+  step(%Q{I press "Submit"})
+  step(%Q{I fill in "Source plates" with "6251234567836"})
+  step(%Q{I fill in "User barcode" with "2470000100730"})
+  step(%Q{I select "Pico dilution" from "Plate purpose"})
+  step(%Q{I select "xyz" from "Barcode printer"})
+  step(%Q{I press "Submit"})
+  step(%Q{I fill in "Source plates" with "4361234567667"})
+  step(%Q{I fill in "User barcode" with "2470000100730"})
+  step(%Q{I select "Pico Assay Plates" from "Plate purpose"})
+  step(%Q{I select "xyz" from "Barcode printer"})
+  step(%Q{I press "Submit"})
+  step(%Q{I fill in "Source plates" with "6251234567836"})
+  step(%Q{I fill in "User barcode" with "2470000100730"})
+  step(%Q{I select "Gel Dilution Plates" from "Plate purpose"})
+  step(%Q{I select "xyz" from "Barcode printer"})
+  step(%Q{I press "Submit"})
+  step %Q{plate with barcode "4331234567653" is part of study "Test study"}
+  step(%Q{plate with barcode "4341234567737" is part of study "Test study"})
+  step(%Q{plate with barcode "1931234567771" is part of study "Test study"})
+  step(%Q{5 pending delayed jobs are processed})
 
   # print sequenome barcode
-  Given %Q{I am on the new Sequenom QC Plate page}
-  When %Q{I fill in "User barcode" with "2470000100730"}
-  And %Q{I fill in "Plate 1" with "6251234567836"}
-  And %Q{I fill in "Number of Plates" with "1"}
-  And %Q{I select "xyz" from "Barcode Printer"}
-  And %Q{I press "Create new Plate"}
-  And %Q{all pending delayed jobs are processed}
+  step(%Q{I am on the new Sequenom QC Plate page})
+  step(%Q{I fill in "User barcode" with "2470000100730"})
+  step(%Q{I fill in "Plate 1" with "6251234567836"})
+  step(%Q{I fill in "Number of Plates" with "1"})
+  step(%Q{I select "xyz" from "Barcode Printer"})
+  step(%Q{I press "Create new Plate"})
+  step(%Q{all pending delayed jobs are processed})
 end
 
