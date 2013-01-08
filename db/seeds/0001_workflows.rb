@@ -428,17 +428,19 @@ cluster_formation_pe_request_type = RequestType.create!(:workflow => next_gen_se
   request_type.request_class =  SequencingRequest
 end
 
-highseq_2500_request_type = RequestType.create!(
-  :key                => 'illumina_c_hiseq_2500_paired_end_sequencing',
-  :name               => 'Illumina-C HiSeq 2500 Paired end sequencing',
-  :workflow           => Submission::Workflow.find_by_key('short_read_sequencing'),
-  :asset_type         => 'LibraryTube',
-  :order              => 2,
-  :initial_state      => 'pending',
-  :multiples_allowed  => true,
-  :request_class_name => 'HiSeqSequencingRequest',
-  :product_line       => ProductLine.find_by_name('Illumina-C')
-)
+hiseq_2500_request_types = ['a','b','c'].map do |pl|
+  RequestType.create!(
+    :key                => "illumina_#{pl}_hiseq_2500_paired_end_sequencing",
+    :name               => "Illumina-#{pl.upcase} HiSeq 2500 Paired end sequencing",
+    :workflow           => Submission::Workflow.find_by_key('short_read_sequencing'),
+    :asset_type         => 'LibraryTube',
+    :order              => 2,
+    :initial_state      => 'pending',
+    :multiples_allowed  => true,
+    :request_class_name => 'HiSeqSequencingRequest',
+    :product_line       => ProductLine.find_by_name("Illumina-#{pl.upcase}")
+  )
+end
 
 SequencingPipeline.create!(:name => 'Cluster formation PE', :request_types => [ cluster_formation_pe_request_type ]) do |pipeline|
   pipeline.asset_type = 'Lane'
@@ -548,7 +550,7 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))
 end
 
-SequencingPipeline.create!(:name => 'HiSeq 2500 PE (spiked in controls)', :request_types => [ highseq_2500_request_type ]) do |pipeline|
+SequencingPipeline.create!(:name => 'HiSeq 2500 PE (spiked in controls)', :request_types => hiseq_2500_request_types ) do |pipeline|
   pipeline.asset_type      = 'Lane'
   pipeline.sorter          = 9
   pipeline.max_size        = 2
