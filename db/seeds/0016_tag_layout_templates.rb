@@ -28,20 +28,39 @@ ActiveRecord::Base.transaction do
     )
   end
 
-  # Illumina B
-  tag_group = TagGroup.find_by_name('Sanger_168tags - 10 mer tags')
+
+
+  # Pulldown (Illumina A)
+  TagLayoutTemplate.create!(
+    :name                => "Illumina set - 6 mer tags in column major order (first oligo: ATCACG)",
+    :direction_algorithm => 'TagLayout::InColumns',
+    :walking_algorithm   => 'TagLayout::WalkWellsByPools',
+    :tag_group           => TagGroup.find_by_name('Illumina set - 6 mer tags')
+  )
+
+
+  sanger_168_tag_group = TagGroup.find_by_name('Sanger_168tags - 10 mer tags')
 
   TagLayoutTemplate.create!(
-    :name => 'Illumina B tagging',
+    :name                => "Sanger_168tags - 10 mer tags in columns ignoring pools (first oligo: ATCACGTT)",
+    :direction_algorithm => 'TagLayout::InColumns',
+    :walking_algorithm   => 'TagLayout::WalkWellsOfPlate',
+    :tag_group           => sanger_168_tag_group
+  )
+
+
+  # Illumina B
+  TagLayoutTemplate.create!(
+    :name                => 'Illumina B tagging',
     :direction_algorithm => 'TagLayout::InRows',
-    :walking_algorithm => 'TagLayout::WalkWellsOfPlate',
-    :tag_group => tag_group
+    :walking_algorithm   => 'TagLayout::WalkWellsOfPlate',
+    :tag_group           => sanger_168_tag_group
   )
   TagLayoutTemplate.create!(
-    :name => 'Illumina B vertical tagging',
+    :name                => 'Illumina B vertical tagging',
     :direction_algorithm => 'TagLayout::InColumns',
-    :walking_algorithm => 'TagLayout::WalkWellsOfPlate',
-    :tag_group => tag_group
+    :walking_algorithm   => 'TagLayout::WalkWellsOfPlate',
+    :tag_group           => sanger_168_tag_group
   )
 
 end
