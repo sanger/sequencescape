@@ -1,17 +1,10 @@
 class AddIulluminaCHiseq2500RequestTypes < ActiveRecord::Migration
+
+  require 'hiseq_2500_helper'
+
   def self.up
     ActiveRecord::Base.transaction do
-      RequestType.create!(
-          :key                => 'illumina_c_hiseq_2500_paired_end_sequencing',
-          :name               => 'Illumina-C HiSeq 2500 Paired end sequencing',
-          :workflow           => Submission::Workflow.find_by_key('short_read_sequencing'),
-          :asset_type         => 'LibraryTube',
-          :order              => 2,
-          :initial_state      => 'pending',
-          :multiples_allowed  => true,
-          :request_class_name => 'HiSeqSequencingRequest',
-          :product_line       => ProductLine.find_by_name('Illumina-C')
-        )
+      Hiseq2500Helper.create_request_type('c')
     end
   end
 
