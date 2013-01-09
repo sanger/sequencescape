@@ -18,7 +18,7 @@ class Asset < ActiveRecord::Base
 
   class VolumeError< StandardError
   end
-  
+
   cattr_reader :per_page
   @@per_page = 500
   self.inheritance_column = "sti_type"
@@ -85,10 +85,10 @@ class Asset < ActiveRecord::Base
   named_scope :with_name, lambda { |*names| { :conditions => { :name => names.flatten } } }
 
 
-  
+
 
   extend EventfulRecord
-  has_many_events do 
+  has_many_events do
     event_constructor(:create_external_release!,       ExternalReleaseEvent,          :create_for_asset!)
     event_constructor(:create_pass!,                   Event::AssetSetQcStateEvent,   :create_passed!)
     event_constructor(:create_fail!,                   Event::AssetSetQcStateEvent,   :create_failed!)
@@ -214,7 +214,7 @@ class Asset < ActiveRecord::Base
   def child
     self.children.last
   end
-  
+
   def library_prep?
     false
   end
@@ -247,7 +247,7 @@ class Asset < ActiveRecord::Base
   def set_qc_state(state)
     self.qc_state = QC_STATES.rassoc(state).try(:first) || state
     self.save
-    self.set_external_release(self.qc_state) 
+    self.set_external_release(self.qc_state)
   end
 
   def move_asset_group(study_from, asset_group)
@@ -312,24 +312,24 @@ class Asset < ActiveRecord::Base
 
     return move_result
   end
-  
+
   def has_been_through_qc?
     not self.qc_state.blank?
   end
-  
+
   def set_external_release(state)
-    update_external_release do 
-      case 
+    update_external_release do
+      case
       when state == 'failed'  then self.external_release = false
       when state == 'passed'  then self.external_release = true
       when state == 'pending' then self # Do nothing
-      when state.nil?         then self # TODO: Ignore for the moment, correct later     
+      when state.nil?         then self # TODO: Ignore for the moment, correct later
       when [ 'scanned_into_lab' ].include?(state.to_s) then self # TODO: Ignore for the moment, correct later
       else raise StandardError, "Invalid external release state #{state.inspect}"
       end
     end
   end
-  
+
   def update_external_release(&block)
     external_release_nil_before = external_release.nil?
     yield
@@ -343,7 +343,7 @@ class Asset < ActiveRecord::Base
     if data[0] == 'DN'
       plate = Plate.find_by_barcode(data[1])
       well = plate.find_well_by_name(location)
-      return well if well 
+      return well if well
     end
     raise ActiveRecord::RecordNotFound, "Couldn't find well with for #{barcode} #{location}"
   end
@@ -402,8 +402,8 @@ class Asset < ActiveRecord::Base
 
     { :conditions => [ query_details[:query].join(' OR '), *query_details[:conditions].flatten.compact ] }
   }
-  
-  
+
+
   named_scope :source_assets_from_machine_barcode, lambda { |destination_barcode|
     destination_asset = find_from_machine_barcode(destination_barcode)
     if destination_asset
@@ -415,26 +415,26 @@ class Asset < ActiveRecord::Base
       end
     else
       { :conditions => 'FALSE' }
-    end 
+    end
   }
-  
-  
+
+
   def self.find_from_machine_barcode(source_barcode)
     with_machine_barcode(source_barcode).first
   end
-  
-  def barcode_and_created_at_hash 
+
+  def barcode_and_created_at_hash
     return {} if barcode.blank?
     {
       :barcode    => generate_machine_barcode,
       :created_at => created_at
     }
   end
-  
+
   def generate_machine_barcode
     "#{Barcode.calculate_barcode( barcode_prefix.prefix,barcode.to_i)}"
   end
-  
+
   def external_release_text
     return "Unknown" if self.external_release.nil?
     return self.external_release? ? "Yes" : "No"
@@ -443,7 +443,7 @@ class Asset < ActiveRecord::Base
   def add_parent(parent)
     return unless parent
     #should be self.parents << parent but that doesn't work
-    
+
     self.save!
     parent.save!
     AssetLink.create_edge!(parent, self)
@@ -452,7 +452,7 @@ class Asset < ActiveRecord::Base
   def attach_tag(tag)
     tag.tag!(self) if tag.present?
   end
-  
+
   def requests_status(request_type)
    # get the most recent request (ignore previous runs)
     self.requests.sort_by{ |r| r.id }.select{ |request| request.request_type == request_type }.map{ |filtered_request| filtered_request.state }
@@ -474,18 +474,22 @@ class Asset < ActiveRecord::Base
   def spiked_in_buffer
     return nil
   end
-  
+
   def has_stock_asset?
     return false
   end
-  
-    
+
+
   def has_many_requests?
     Request.find_all_target_asset(self.id).size > 1
   end
-  
+
   def is_a_resource
    self.resource == true
+  end
+
+  def can_be_created?
+    false
   end
 
 end
