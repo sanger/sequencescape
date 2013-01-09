@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 source 'http://gems.github.com'
 
-gem "rails", "2.3.14"
+gem "rails", "2.3.15"
 
 # Warehouse builder
 gem "log4r"
