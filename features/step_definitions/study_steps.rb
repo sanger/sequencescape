@@ -316,19 +316,28 @@ Then /^I should see the study for study list "([^\"]+)"$/ do |study_list|
 end
 
 Given /^asset with barcode "([^"]*)" belongs to study "([^"]*)"$/ do |raw_barcode, study_name|
-  study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   asset = Asset.find_from_machine_barcode(raw_barcode) or raise StandardError, "Cannot find asset with machine barcode #{raw_barcode.inspect}"
-  asset_ids = [asset.id]
-  asset_ids += asset.well_ids if asset.respond_to?(:wells)
-  RequestFactory.create_assets_requests(asset_ids, study.id)
+  assign_asset_to_study(asset,study_name)
 end
 
 Given /^the asset "([^\"]+)" belongs to study "([^\"]+)"$/ do |asset_name, study_name|
-  study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   asset = Asset.find_by_name(asset_name) or raise StandardError, "Cannot find asset #{asset_name.inspect}"
+  assign_asset_to_study(asset,study_name)
+end
+
+def assign_asset_to_study(asset,study_name)
+  study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   asset_ids = [asset.id]
-  asset_ids += asset.well_ids if asset.respond_to?(:wells)
-  RequestFactory.create_assets_requests(asset_ids, study.id)
+  asset_ids = asset.well_ids if asset.respond_to?(:wells)
+  if asset.can_be_created? || (asset.respond_to?(:wells) && (asset.stock_plate?))
+    RequestFactory.create_assets_requests(asset_ids, study.id)
+  else
+    Asset.find(asset_ids).each do |asset|
+      asset.try(:aliquots).try(:each) do |aliquot|
+        aliquot.update_attributes!(:study_id => study.id)
+      end
+    end
+  end
 end
 
 Then /^abbreviation for Study "([^"]*)" should be "([^"]*)"$/ do |study_name, abbreviation_regex|

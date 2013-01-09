@@ -199,4 +199,8 @@ class Well < Aliquot::Receptacle
     plate_name = self.plate.present? ? self.plate.sanger_human_barcode : '(not on a plate)'
     "#{plate_name}:#{map ? map.description : ''}"
   end
+
+  def can_be_created?
+    plate.stock_plate?
+  end
 end
