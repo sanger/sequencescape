@@ -7,6 +7,12 @@ class AccessionService
   Protect = "protect".freeze
   Hold = "hold".freeze
 
+  class AccessionedFile < File
+    # This class provides an original_filename method
+    # which RestClient can use to define the remote filename
+    attr_accessor :original_filename
+  end
+
   def submit(user, *accessionables)
     ActiveRecord::Base.transaction do
       submission = Accessionable::Submission.new(self, user, *accessionables)
@@ -241,16 +247,14 @@ private
       elsif not configatron.proxy.blank?
         RestClient.proxy = configatron.proxy
         # UA required to get through Sanger proxy
-        rc.options.headers[:user_agent] = "Sequencescape Accession Client (#{RAILS_ENV})"
-        #rc.proxy_tunnel = true
-        #rc.verbose = true
+        # Although currently this UA is actually being set elsewhere in the
+        # code as RestClient doesn't pass this header to the proxy.
+        rc.options[:headers]={:user_agent=>"Sequencescape Accession Client (#{RAILS_ENV})"}
       end
 
       payload = {}
       file_params.map { |p|
-        # XYZZY: Caution remote file name may be incorrect
-        payload[p[:name]] = File.open(p[:local_name])
-        #Curl::PostField.file(p[:name], p[:local_name], p[:remote_name])
+        payload[p[:name]] = AccessionedFile.open(p[:local_name]).tap{|f| f.original_filename = p[:remote_name] }
         }
       #rc.multipart_form_post = true # RC handles automatically
       response = rc.post(payload)

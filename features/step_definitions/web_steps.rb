@@ -50,7 +50,7 @@ end
 
 # Use this to fill in an entire form with data from a table. Example:
 #
-#   When I fill in the following:
+#   step fill in the following:
 #     | Account Number | 5002       |
 #     | Expiry date    | 2009-11-01 |
 #     | Note           | Nice guy   |
@@ -62,7 +62,7 @@ end
 When /^(?:|I )fill in the following(?: within "([^"]*)")?:$/ do |selector, fields|
   with_scope(selector) do
     fields.rows_hash.each do |name, value|
-      When %{I fill in "#{name}" with "#{value}"}
+      step %Q{I fill in "#{name}" with "#{value}"}
     end
   end
 end

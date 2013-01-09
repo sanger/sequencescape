@@ -3,7 +3,7 @@ Given /^I am using "(.*)" to authenticate$/ do |auth_method|
 end
 
 Given /^I am logged in as "(.*)"$/ do |login|
-  Given %Q{I am an "internal" user logged in as "#{ login }"}
+  step(%Q{I am an "internal" user logged in as "#{ login }"})
 end
 
 Given /^user "(.*)" has a workflow "(.*)"$/ do |login, workflow_name|

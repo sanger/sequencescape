@@ -6,15 +6,15 @@ Given /^I have created a sequenom plate$/ do
     4 => "1220125048766"
   }
 
-  Given %Q{there is a 1 well "Working Dilution" plate with a barcode of "1220125054743"}
-  And %Q{there is a 1 well "Working Dilution" plate with a barcode of "1220125056761"}
-  And %Q{there is a 1 well "Stock Plate" plate with a barcode of "1220125069815"}
-  And %Q{there is a 3 well "Stock Plate" plate with a barcode of "1220125048766"}
+  step(%Q{there is a 1 well "Working Dilution" plate with a barcode of "1220125054743"})
+  step(%Q{there is a 1 well "Working Dilution" plate with a barcode of "1220125056761"})
+  step(%Q{there is a 1 well "Stock Plate" plate with a barcode of "1220125069815"})
+  step(%Q{there is a 3 well "Stock Plate" plate with a barcode of "1220125048766"})
 
-  Given %Q{asset with barcode "1220125054743" belongs to study "Study A"}
-  And %Q{asset with barcode "1220125056761" belongs to study "Study A"}
-  And %Q{asset with barcode "1220125069815" belongs to study "Study B"}
-  And %Q{asset with barcode "1220125048766" belongs to study "Study B"}
+  step(%Q{asset with barcode "1220125054743" belongs to study "Study A"})
+  step(%Q{asset with barcode "1220125056761" belongs to study "Study A"})
+  step(%Q{asset with barcode "1220125069815" belongs to study "Study B"})
+  step(%Q{asset with barcode "1220125048766" belongs to study "Study B"})
 
   seq_plate = SequenomQcPlate.new(
     :plate_prefix      => "QC",
@@ -24,7 +24,7 @@ Given /^I have created a sequenom plate$/ do
   seq_plate.save!
 
 
-  And %Q{1 pending delayed jobs are processed}
+  step(%Q{1 pending delayed jobs are processed})
 
 end
 

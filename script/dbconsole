@@ -1,3 +1,13 @@
 #!/usr/bin/env ruby
 require File.dirname(__FILE__) + '/../config/boot'
+
+if RUBY_PLATFORM == "java"
+  require 'spoon'
+  # If we are using jruby, ensure output is sent to the console
+  def exec(*args)
+    pid = Spoon.spawnp *args
+    Process.waitpid(pid)
+  end
+end
+
 require 'commands/dbconsole'
