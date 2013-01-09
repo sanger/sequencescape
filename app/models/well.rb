@@ -56,7 +56,13 @@ class Well < Aliquot::Receptacle
   named_scope :in_plate_column, lambda {|col,size| {:joins => :map, :conditions => {:maps => {:description => Map.descriptions_for_column(col,size), :asset_size => size }}}}
   named_scope :in_plate_row,    lambda {|row,size| {:joins => :map, :conditions => {:maps => {:description => Map.descriptions_for_row(row,size), :asset_size =>size }}}}
 
-  named_scope :with_blank_samples, { :conditions => { :aliquots => { :samples => { :empty_supplier_sample_name => true } } }, :joins => { :aliquots => :sample } }
+  named_scope :with_blank_samples, {
+    :joins => [
+      "INNER JOIN aliquots ON aliquots.receptacle_id=assets.id",
+      "INNER JOIN samples ON aliquots.sample_id=samples.id"
+    ],
+    :conditions => ['samples.empty_supplier_sample_name=?',true]
+  }
 
   include Transfer::WellHelpers
 

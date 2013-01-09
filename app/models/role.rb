@@ -33,25 +33,29 @@ class Role < ActiveRecord::Base
         named_scope :with_related_users_included, { :include => { :roles => :users } }
         named_scope :of_interest_to, lambda { |user|
           {
-            :joins      => { :roles => :users },
-            :conditions => { :roles => { :users => { :id => user.id } } },
-            :group => "roles.authorizable_id"
+            :joins => joins_through_to_users,
+            :conditions => ['rj_u.id=?', user.id],
+            :group => "rj_r.authorizable_id"
           }
         }
       end
     end
 
     module ClassMethods
+      def joins_through_to_users
+        [
+          "INNER JOIN roles rj_r ON rj_r.authorizable_type IN (#{[self,*Class.subclasses_of(self)].map{|c|"'#{c.name}'"}.join(',')}) AND rj_r.authorizable_id=#{table_name}.id",
+          "INNER JOIN roles_users rj_ru ON rj_r.id=rj_ru.role_id",
+          "INNER JOIN users rj_u ON rj_u.id=rj_ru.user_id"
+        ]
+      end
+      private :joins_through_to_users
+
       def role_relation(name, role_name)
         named_scope name.to_sym, lambda { |user|
           {
-            :joins      => { :roles => :users },
-            :conditions => {
-              :roles => {
-                :name  => role_name.to_s,
-                :users => { :id => user.id }
-              }
-            }
+            :joins      => joins_through_to_users,
+            :conditions => ['rj_r.name=? AND rj_u.id=?', role_name.to_s, user.id ]
           }
         }
       end
