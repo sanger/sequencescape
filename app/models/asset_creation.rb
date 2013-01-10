@@ -26,7 +26,6 @@ class AssetCreation < ActiveRecord::Base
   def process_children
     create_children!
     connect_parent_and_children
-    connect_children_to_parent_study
     record_creation_of_children
   end
   private :process_children
@@ -35,9 +34,4 @@ class AssetCreation < ActiveRecord::Base
     children.each { |child| AssetLink.create_edge!(parent, child) }
   end
   private :connect_parent_and_children
-
-  def connect_children_to_parent_study
-    RequestFactory.create_assets_requests(children.map(&:id), parent.study.id) if parent.study.present?
-  end
-  private :connect_children_to_parent_study
 end
