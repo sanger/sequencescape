@@ -40,9 +40,9 @@ GIT
 
 GIT
   remote: git@github.com:sanger/psd_logger.git
-  revision: e16d106be39ea096f95787a927b8ce24ec522bde
+  revision: dd2d634114df75b1d8535715c169a7fc99521389
   specs:
-    psd_logger (0.1.5)
+    psd_logger (0.1.6)
 
 GEM
   remote: http://rubygems.org/
