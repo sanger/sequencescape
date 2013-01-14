@@ -40,7 +40,7 @@ class PlateVolume < ActiveRecord::Base
 
   def call(filename, file)
     return unless update_required?(file.stat.mtime)
-    db_files.map(&:destroy!)
+    db_files.map(&:destroy)
     update_attributes!(:uploaded_file_name => filename, :updated_at => file.stat.mtime, :uploaded => file)
   end
 
