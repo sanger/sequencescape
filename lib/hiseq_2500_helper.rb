@@ -1,9 +1,9 @@
 module Hiseq2500Helper
 
-  def self.create_request_type(pl)
+  def self.create_request_type(pl, ended='paired')
     RequestType.create!(
-        :key                => "illumina_#{pl}_hiseq_2500_paired_end_sequencing",
-        :name               => "Illumina-#{pl.upcase} HiSeq 2500 Paired end sequencing",
+        :key                => "illumina_#{pl}_hiseq_2500_#{ended}_end_sequencing",
+        :name               => "Illumina-#{pl.upcase} HiSeq 2500 #{ended.upcase} end sequencing",
         :workflow           => Submission::Workflow.find_by_key('short_read_sequencing'),
         :asset_type         => 'LibraryTube',
         :order              => 2,
@@ -28,7 +28,7 @@ module Hiseq2500Helper
   end
 
   def self.sequencing_request_type(settings)
-    RequestType.find_by_key("illumina_#{settings[:pipeline]}_hiseq_2500_paired_end_sequencing")
+    RequestType.find_by_key("illumina_#{settings[:pipeline]}_hiseq_2500_#{settings[:ended]||'paired'}_end_sequencing")
   end
 
   def self.library_request_type(settings)
@@ -41,50 +41,49 @@ module Hiseq2500Helper
     rts << [library_request_type(settings).id] << [sequencing_request_type(settings).id]
   end
 
-  def self.other(settings)
-    case settings[:sub_params]
-    when :ill_c
-      {
-        :input_field_infos => [
+  def self.input_fields(sizes,libraries)
+    [
           FieldInfo.new(:kind => "Text",:default_value => "",:parameters => {},:display_name => "Fragment size required (from)",:key => "fragment_size_required_from"),
           FieldInfo.new(:kind => "Text",:default_value => "",:parameters => {},:display_name => "Fragment size required (to)",:key => "fragment_size_required_to"),
           FieldInfo.new(
-            :kind => "Selection",:default_value => "Standard",:parameters => {
-              :selection => [
-                "NlaIII gene expression","Standard","Long range","Small RNA","DpnII gene expression","qPCR only",
-                "High complexity and double size selected","Illumina cDNA protocol","Custom","High complexity",
-                "Double size selected","No PCR","Agilent Pulldown","ChiP-seq","Pre-quality controlled","TraDIS"
-              ]
-            },
+            :kind => "Selection",:default_value => "Standard",:parameters => { :selection => libraries },
             :display_name => "Library type",
             :key => "library_type"
           ),
-          FieldInfo.new(:kind => "Selection",:default_value => "100",:parameters => {:selection => ["50","75","100"]},:display_name => "Read length",:key => "read_length")
+          FieldInfo.new(:kind => "Selection",:default_value => sizes.last,:parameters => {:selection => sizes},:display_name => "Read length",:key => "read_length")
         ]
-      }
+  end
+
+  def self.other(settings)
+    case settings[:sub_params]
+    when :ill_c
+      { :input_field_infos => input_fields(["75","100"],[
+                "NlaIII gene expression","Standard","Long range","Small RNA","DpnII gene expression","qPCR only",
+                "High complexity and double size selected","Illumina cDNA protocol","Custom","High complexity",
+                "Double size selected","No PCR","Agilent Pulldown","ChiP-seq","Pre-quality controlled","TraDIS"
+              ]) }
+    when :ill_c_single
+      { :input_field_infos => input_fields(["50"],[
+                "NlaIII gene expression","Standard","Long range","Small RNA","DpnII gene expression","qPCR only",
+                "High complexity and double size selected","Illumina cDNA protocol","Custom","High complexity",
+                "Double size selected","No PCR","Agilent Pulldown","ChiP-seq","Pre-quality controlled","TraDIS"
+              ]) }
     when :sc
       {:request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"}}
     when :wgs
       {:request_options=>{"fragment_size_required_to"=>"500", "fragment_size_required_from"=>"300", "library_type"=>"Standard"}}
     when :ill_b
-      {
-        :input_field_infos=>[
-          FieldInfo.new(:kind => "Text",:default_value => "",:parameters => {},:display_name => "Fragment size required (from)",:key => "fragment_size_required_from"),
-          FieldInfo.new(:kind => "Text",:default_value => "",:parameters => {},:display_name => "Fragment size required (to)",:key => "fragment_size_required_to"),
-          FieldInfo.new(
-            :kind=>"Selection", :default_value=>"Standard", :parameters=>{
-              :selection=>[
+      { :input_field_infos => input_fields(["75","100"],[
                 "NlaIII gene expression","Standard","Long range","Small RNA","DpnII gene expression","qPCR only",
                 "High complexity and double size selected","Illumina cDNA protocol","Custom","High complexity",
                 "Double size selected","No PCR","Agilent Pulldown","ChiP-seq","Pre-quality controlled"
-              ]
-            },
-            :display_name=>"Library type",
-            :key=>"library_type"
-          ),
-          FieldInfo.new(:kind => "Selection",:default_value => "100",:parameters => {:selection => ["50","75","100"]},:display_name => "Read length",:key => "read_length")
-        ]
-      }
+              ]) }
+    when :ill_b_single
+      { :input_field_infos => input_fields(["50"],[
+                "NlaIII gene expression","Standard","Long range","Small RNA","DpnII gene expression","qPCR only",
+                "High complexity and double size selected","Illumina cDNA protocol","Custom","High complexity",
+                "Double size selected","No PCR","Agilent Pulldown","ChiP-seq","Pre-quality controlled"
+              ]) }
     else
       raise "Invalid submission parameters"
     end

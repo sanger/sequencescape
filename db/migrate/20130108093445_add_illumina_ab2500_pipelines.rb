@@ -5,7 +5,7 @@ class AddIlluminaAb2500Pipelines < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
       ['a','b'].each do |pl|
-        Hiseq2500Helper.create_request_type(pl)
+        Pipeline.find_by_name('HiSeq 2500 SE (spiked in controls)').request_types << Hiseq2500Helper.create_request_type(pl)
       end
     end
   end
