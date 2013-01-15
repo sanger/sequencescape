@@ -10,7 +10,7 @@ class AddMissingStepsTo2500 < ActiveRecord::Migration
   def self.down
     ActiveRecord::Base.transaction do
       tasks.each do |task|
-        task[:class].find(:last, :conditions => {:name => task[:name], :workflow => workflow }).destroy
+        task[:class].find(:last, :conditions => {:name => task[:name], :pipeline_workflow_id => workflow.id }).destroy
       end
     end
   end
