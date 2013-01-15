@@ -3,7 +3,7 @@ module Hiseq2500Helper
   def self.create_request_type(pl, ended='paired')
     RequestType.create!(
         :key                => "illumina_#{pl}_hiseq_2500_#{ended}_end_sequencing",
-        :name               => "Illumina-#{pl.upcase} HiSeq 2500 #{ended.upcase} end sequencing",
+        :name               => "Illumina-#{pl.upcase} HiSeq 2500 #{ended.titleize} end sequencing",
         :workflow           => Submission::Workflow.find_by_key('short_read_sequencing'),
         :asset_type         => 'LibraryTube',
         :order              => 2,

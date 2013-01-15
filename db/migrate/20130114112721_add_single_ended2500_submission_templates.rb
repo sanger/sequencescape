@@ -70,13 +70,13 @@ class AddSingleEnded2500SubmissionTemplates < ActiveRecord::Migration
         :name => "Illumina-C - Library creation - HiSeq 2500 Single end sequencing",
         :library_creation => ['illumina_c_library_creation','library_creation'],
         :cherrypick=> false,
-        :pipeline=>'c', :sub_params=>:ill_c_single
+        :pipeline=>'c', :ended => 'single', :sub_params=>:ill_c_single
       },
       {
         :name => "Illumina-C - Multiplexed library creation - HiSeq 2500 Single end sequencing",
         :library_creation => ['illumina_c_multiplexed_library_creation'],
         :cherrypick=> false,
-        :pipeline=>'c', :sub_params=>:ill_c_single
+        :pipeline=>'c', :ended => 'single', :sub_params=>:ill_c_single
       }
     ].each do |settings|
       yield settings
