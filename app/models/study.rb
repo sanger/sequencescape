@@ -219,7 +219,8 @@ class Study < ActiveRecord::Base
       required.attribute(:data_release_delay_reason_comment)
     end
 
-    attribute(:dac_policy)
+    attribute(:dac_policy, :default => configatron.default_policy_text, :if => :managed?)
+    attribute(:dac_policy_title, :default => configatron.default_policy_title, :if => :managed?)
     attribute(:ega_dac_accession_number)
     attribute(:ega_policy_accession_number)
     attribute(:array_express_accession_number)

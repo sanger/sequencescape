@@ -7,6 +7,7 @@ class Accessionable::Policy < Accessionable::Base
 
     @name = "Policy for study - #{study.name} - ##{study.id}"
     @policy_text = study.study_metadata.dac_policy
+    @title = study.study_metadata.dac_policy_title
     #@dac_refname = study.dac_refname
     @dac_accession_number = study.dac_accession_number
     super(study.policy_accession_number)
