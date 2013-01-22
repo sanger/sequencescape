@@ -16,9 +16,13 @@ class Role < ActiveRecord::Base
 
   validates_presence_of :name
   named_scope :general_roles, :conditions => "authorizable_type IS NULL"
-  
+
   def self.keys
     Role.all.map { |r| r.name }.uniq
+  end
+
+  def before_destroy
+    authorizable.touch
   end
 
   # Include this module into your ActiveRecord model and get has_many roles and some
@@ -61,7 +65,7 @@ class Role < ActiveRecord::Base
       end
 
       def has_many_users_through_roles(name)
-        define_method(name.to_s.pluralize.to_sym) do 
+        define_method(name.to_s.pluralize.to_sym) do
           role = self.roles.find_by_name(name.to_s.singularize)
           role.nil? ? [] : role.users
         end
