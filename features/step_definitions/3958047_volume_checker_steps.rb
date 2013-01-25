@@ -10,5 +10,5 @@ Given /^study "([^"]*)" has a plate "([^"]*)" setup for volume checking$/ do |st
     plate.wells.create!(:map => Map.find_by_description_and_asset_size(Map.vertical_position_to_description(i, 8), plate.size))
   end
 
-  RequestFactory.create_assets_requests(plate.wells.map(&:id), study.id)
+  RequestFactory.create_assets_requests(plate.wells, study)
 end

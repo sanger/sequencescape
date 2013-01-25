@@ -68,7 +68,7 @@ class RequestFactoryTest < ActiveSupport::TestCase
       @study  = Factory(:study)
       @assets = [ Factory(:sample_tube), Factory(:sample_tube) ]
 
-      RequestFactory.create_assets_requests(@assets.map(&:id), @study.id)
+      RequestFactory.create_assets_requests(@assets, @study)
     end
 
     should 'have all create asset requests as passed' do

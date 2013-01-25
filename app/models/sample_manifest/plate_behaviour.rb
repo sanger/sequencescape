@@ -178,7 +178,7 @@ module SampleManifest::PlateBehaviour
 
     plate.events.created_using_sample_manifest!(self.user)
 
-    RequestFactory.create_assets_requests(plate.wells.map(&:id), study.id)
+    RequestFactory.create_assets_requests(plate.wells, study)
   end
   private :generate_wells
 end

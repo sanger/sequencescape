@@ -80,7 +80,7 @@ class SampleRegistrar < ActiveRecord::Base
     # and send the request for the method!
     record.user.send(:is_owner_of, record.sample)
     record.study.samples.concat(record.sample)
-    RequestFactory.create_assets_requests([record.sample_tube.id], record.study.id)
+    RequestFactory.create_assets_requests([record.sample_tube], record.study)
   end
 
   # Samples always come in a SampleTube when coming through us

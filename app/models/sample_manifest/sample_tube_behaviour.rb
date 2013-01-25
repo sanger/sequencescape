@@ -91,7 +91,8 @@ module SampleManifest::SampleTubeBehaviour
   end
 
   def delayed_generate_asset_requests(asset_ids,study_id)
-    RequestFactory.create_assets_requests(asset_ids, study_id)
+    # TODO: Refactor?
+    RequestFactory.create_assets_requests(Asset.find(asset_ids), Study.find(study_id))
   end
   handle_asynchronously :delayed_generate_asset_requests
 
