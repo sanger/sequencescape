@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121218134529) do
+ActiveRecord::Schema.define(:version => 20130102120845) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -1164,6 +1164,7 @@ ActiveRecord::Schema.define(:version => 20121218134529) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "remove_x_and_autosomes",                 :default => "No", :null => false
+    t.string   "dac_policy_title"
   end
 
   add_index "study_metadata", ["faculty_sponsor_id"], :name => "index_study_metadata_on_faculty_sponsor_id"
