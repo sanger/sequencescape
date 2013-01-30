@@ -30,7 +30,8 @@ class PresenterSkeleton
   def lanes_from_request_options
     library_request       = RequestType.find(order.request_types.first)
     sequencing_request    = RequestType.find(order.request_types.last)
-    sequencing_multiplier = order.request_options.fetch('multiplier', {}).fetch(sequencing_request.id.to_s, 1).to_i
+    multiplier_hash = order.request_options.fetch(:multiplier, {})
+    sequencing_multiplier = (multiplier_hash[sequencing_request.id.to_s]||multiplier_hash.fetch(sequencing_request.id, 1)).to_i
 
     if library_request.for_multiplexing?
       sequencing_multiplier
@@ -117,7 +118,7 @@ class SubmissionCreater < PresenterSkeleton
     )
 
     new_order.request_type_multiplier do |sequencing_request_type_id|
-      new_order.request_options['multiplier'][sequencing_request_type_id] = (lanes_of_sequencing_required || 1)
+      new_order.request_options[:multiplier][sequencing_request_type_id] = (lanes_of_sequencing_required || 1)
     end if order_params
 
     new_order
@@ -125,7 +126,8 @@ class SubmissionCreater < PresenterSkeleton
   private :create_order
 
   def order_params
-    @order_params[:multiplier] = {} if @order_params && @order_params[:multiplier].nil?
+    @order_params = @order_params.to_hash if @order_params.class == HashWithIndifferentAccess
+    @order_params[:multiplier] = HashWithIndifferentAccess.new if @order_params && @order_params[:multiplier].nil?
     @order_params
   end
 
