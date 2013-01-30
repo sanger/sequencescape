@@ -154,8 +154,7 @@ class SamplesController < ApplicationController
   def remove_from_study
     study = Study.find(params[:study_id])
     sample = Sample.find(params[:id])
-    study.samples.delete(sample)
-    study.save
+    StudySample.find(:first, :conditions=>{:study_id=>params[:study_id],:sample_id=>params[:id]}).destroy
     flash[:notice] = "Sample was removed from study #{study.name.humanize}"
     redirect_to sample_path(sample)
   end
