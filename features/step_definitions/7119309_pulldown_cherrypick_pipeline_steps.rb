@@ -26,7 +26,7 @@ Given /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" su
     :workflow => Submission::Workflow.find_by_key('short_read_sequencing'),
     :user     => User.last,
     :assets   => wells,
-    :request_options => {"multiplier"=>{"1"=>"1", "3"=>"1"}, "read_length"=>"100", "fragment_size_required_to"=>"400", "fragment_size_required_from"=>"300", "library_type"=>"Standard"}
+    :request_options => {:multiplier=>{"1"=>"1", "3"=>"1"}, "read_length"=>"100", "fragment_size_required_to"=>"400", "fragment_size_required_from"=>"300", "library_type"=>"Standard"}
     )
   step(%Q{1 pending delayed jobs are processed})
 end
@@ -232,7 +232,7 @@ Given /^I have a "([^"]*)" submission with 2 plates$/ do |submission_template_na
       :workflow => Submission::Workflow.find_by_key('short_read_sequencing'),
       :user => User.last,
       :assets => Well.all,
-      :request_options => {"multiplier"=>{"1"=>"1", "3"=>"1"}, "read_length"=>"100", "fragment_size_required_to"=>"300", "fragment_size_required_from"=>"250", "library_type"=>"Illumina cDNA protocol"}
+      :request_options => {:multiplier=>{"1"=>"1", "3"=>"1"}, "read_length"=>"100", "fragment_size_required_to"=>"300", "fragment_size_required_from"=>"250", "library_type"=>"Illumina cDNA protocol"}
       )
     step(%Q{1 pending delayed jobs are processed})
 end

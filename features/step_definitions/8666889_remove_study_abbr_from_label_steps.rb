@@ -13,7 +13,7 @@ Given /^I have a "([^"]*)" submission with (\d+) sample tubes as part of "([^"]*
     :workflow => Submission::Workflow.find_by_key('short_read_sequencing'),
     :user => User.last,
     :assets => sample_tubes,
-    :request_options => {"multiplier"=>{"1"=>"1", "3"=>"1"}, "read_length"=>"76", "fragment_size_required_to"=>"300", "fragment_size_required_from"=>"250", "library_type"=>"Illumina cDNA protocol"}
+    :request_options => {:multiplier=>{"1"=>"1", "3"=>"1"}, "read_length"=>"76", "fragment_size_required_to"=>"300", "fragment_size_required_from"=>"250", "library_type"=>"Illumina cDNA protocol"}
     )
   step(%Q{1 pending delayed jobs are processed})
 
