@@ -23,7 +23,7 @@ class CreateRequestsForStudySamples < ActiveRecord::Migration
 
       puts("Linking Sample #{sample.id} to Studies [#{sample_studies.map(&:id).join(',')}]")
 
-      sample_studies.each{ |study| RequestFactory.create_assets_requests([asset.id], study.id) }
+      sample_studies.each{ |study| RequestFactory.create_assets_requests([asset], study) }
     end
   end
 
