@@ -109,7 +109,7 @@ module SampleManifest::PlateBehaviour
     def updated_by!(user, samples)
       # It's more efficient to look for the wells with the samples than to look for the assets from the samples
       # themselves as the former can use named_scopes where as the latter is an array that needs iterating over.
-      Well.with_sample(samples).map(&:plate).uniq.compact.each do |plate|
+      Plate.with_sample(samples).each do |plate|
         plate.events.updated_using_sample_manifest!(user)
       end
     end
@@ -178,7 +178,7 @@ module SampleManifest::PlateBehaviour
 
     plate.events.created_using_sample_manifest!(self.user)
 
-    RequestFactory.create_assets_requests(plate.wells.map(&:id), study.id)
+    RequestFactory.create_assets_requests(plate.wells, study)
   end
   private :generate_wells
 end

@@ -157,6 +157,16 @@ WHERE c.container_id=?
     }
   }
 
+  named_scope :with_sample,    lambda { |sample|
+    {
+      :select => "distinct assets.*",
+      :joins => "LEFT OUTER JOIN container_associations AS wscas ON wscas.container_id = assets.id
+  LEFT JOIN assets AS wswells ON wswells.id = content_id
+  LEFT JOIN aliquots AS wsaliquots ON wsaliquots.receptacle_id = wswells.id",
+      :conditions => ["wsaliquots.sample_id IN(?)", Array(sample).map(&:id)]
+    }
+  }
+
   def wells_sorted_by_map_id
     wells.sorted
   end
