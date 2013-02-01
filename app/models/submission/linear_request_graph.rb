@@ -82,7 +82,7 @@ module Submission::LinearRequestGraph
       next if request_type_and_multiplier_pairs.empty?
       target_assets =
         if request_type.for_multiplexing?   # May have many nil assets for non-multiplexing
-          target_assets.uniq.map { |asset| [ asset, nil ] }  # 'nil' is Item here and should go
+          target_assets.uniq.reject {|a| a.requests(true).present? }.map { |asset| [ asset, nil ] } # 'nil' is Item here and should go
         else
           target_assets.each_with_index.map do |asset,index|
             source_asset = request_type.no_target_asset? ? source_asset_item_pairs[index].first : asset
