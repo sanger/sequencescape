@@ -164,11 +164,12 @@ class SubmissionCreater < PresenterSkeleton
           # we shouldn't see any empty submissions.
           # Remove the raise and recue block to enable multiple submissions.
           # You'll also need to renable them in the submission.js file.
-          raise MultipleOrdersException
+          # raise MultipleOrdersException
 
+          # Right! Simple first change!
 
           # uncomment this line to enable multiple orders
-          # submission.orders << new_order
+          submission.orders << new_order
         else
           @submission = new_order.create_submission(:user => order.user)
         end
@@ -177,9 +178,6 @@ class SubmissionCreater < PresenterSkeleton
         @order = new_order
       end
 
-
-    rescue MultipleOrdersException => exception
-      order.errors.add_to_base('Sorry, multiple orders per submission are not supported at the current time.')
     rescue Quota::Error => quota_exception
       order.errors.add_to_base(quota_exception.message)
     rescue InvalidInputException => input_exception
