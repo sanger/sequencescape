@@ -97,6 +97,11 @@
   <%= form.text_field :lanes_of_sequencing, :class => 'lanes_of_sequencing', :value => 1 %>
 </div>
 
+<div class="pre-capture-plex-level">
+  <%= form.label :pre_capture_plex_level, 'Pre-capture plex level' %>
+  <%= form.text_field :pre_capture_plex_level, :class => 'pre_capture_plex_level', :value => 8 %>
+</div>
+
 <div class="save-buttons">
   <% if order.present? -%>
     <%= hidden_field_tag :order_id,

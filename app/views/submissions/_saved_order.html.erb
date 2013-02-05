@@ -38,6 +38,13 @@
     </ul>
   <% end %>
 
+  <% unless order.request_options['pre_capture_plex_level'].nil? %>
+    <h4>
+      Pre-capture plexing level:
+      <%= order.request_options['pre_capture_plex_level'] %>
+    </h4>
+  <% end %>
+
   <h4>Comments:</h4>
   <div class="sub-panel">
     <%= "<p><i>#{order.comments}</i></p>" unless order.comments.nil? %>

@@ -171,6 +171,7 @@
     SCAPE.submission.plate_purpose_id             = currentPane.find('.submission_plate_purpose_id').val();
     SCAPE.submission.comments                     = currentPane.find('.submission_comments').val();
     SCAPE.submission.lanes_of_sequencing_required = currentPane.find('.lanes_of_sequencing').val();
+    SCAPE.submission.order_params.pre_capture_plex_level       = currentPane.find('.pre_capture_plex_level').val();
 
 
     currentPane.ajaxError(function(event, jqXHR, ajaxSettings, thrownError) {
@@ -278,6 +279,13 @@
     // if this is not a sequencing order remove the lanes_of_sequencing_required stuff
     if (SCAPE.submission.is_a_sequencing_order === false) {
       newOrder.find('.lanes-of-sequencing').remove();
+    }
+
+    // we only need this box if we're pre-cap pooling
+    if (SCAPE.submission.pre_capture_plex_level === null) {
+      newOrder.find('.pre-capture-plex-level').remove();
+    } else {
+      newOrder.find('.pre_capture_plex_level').value = SCAPE.submission.pre_capture_plex_level;
     }
 
     newOrder.find('.submission_project_name').autocomplete({

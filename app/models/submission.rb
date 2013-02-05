@@ -45,6 +45,8 @@ class Submission < ActiveRecord::Base
   # Before destroying this instance we should cancel all of the requests it has made
   before_destroy :cancel_all_requests_on_destruction
 
+  PER_ORDER_REQUEST_OPTIONS = ['pre_capture_plex_level']
+
   def cancel_all_requests_on_destruction
     ActiveRecord::Base.transaction do
       requests.all.each do |request|
@@ -155,10 +157,14 @@ class Submission < ActiveRecord::Base
  # which decide if orders are compatible or not
  def check_orders_compatible?(a,b)
     errors.add(:request_types, "are incompatible") if a.request_types != b.request_types
-    errors.add(:request_options, "are incompatible") if a.request_options != b.request_options
+    errors.add(:request_options, "are incompatible") if !request_options_compatible?(a,b)
     errors.add(:item_options, "are incompatible") if a.item_options != b.item_options
     errors.add(:project, "should be identical") if a.project_id != b.project_id
     check_studies_compatible?(a.study, b.study)
+ end
+
+ def request_options_compatible?(a,b)
+   a.request_options.reject {|k,_| PER_ORDER_REQUEST_OPTIONS.include?(k) } == b.request_options.reject {|k,_| PER_ORDER_REQUEST_OPTIONS.include?(k) }
  end
 
  def check_studies_compatible?(a,b)
