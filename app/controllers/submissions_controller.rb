@@ -31,7 +31,9 @@ class SubmissionsController < ApplicationController
 
     @presenter.build_submission!
 
-    redirect_to @presenter.submission
+    flash[:error] = "The submission could not be built: #{@presenter.submission.errors.full_messages}" if @presenter.submission.errors.present?
+
+    render :show
   end
 
   def index

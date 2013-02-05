@@ -327,6 +327,11 @@ class SubmissionCreater < PresenterSkeleton
   def url(view)
     view.send(:submission_path, submission.present? ? submission : { :id => 'DUMMY_ID' })
   end
+
+  def template_name
+    submission.orders.first.template_name
+  end
+
 end
 
 class SubmissionPresenter < PresenterSkeleton

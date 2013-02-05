@@ -146,6 +146,7 @@ class Submission < ActiveRecord::Base
     # check every order agains the first one
     first_order = orders.first
     orders[1..-1].each { |o| check_orders_compatible?(o,first_order) }
+    return false if errors.count > 0
  end
  private :validate_orders_are_compatible
 
