@@ -64,9 +64,6 @@ class SubmissionCreater < PresenterSkeleton
   IncorrectParamsException = Class.new(SubmissionsCreaterError)
   InvalidInputException    = Class.new(SubmissionsCreaterError)
 
-  # Remove this Exception if you enable multiple orders per submission
-  MultipleOrdersException = Class.new(Exception)
-
   write_inheritable_attribute :attributes,  [
     :id,
     :template_id,

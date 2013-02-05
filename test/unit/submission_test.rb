@@ -22,6 +22,7 @@ class SubmissionTest < ActiveSupport::TestCase
       @study2 = Factory :study
 
       @project =  Factory :project
+      @project2 = Factory :project
 
       @asset1 = Factory :empty_sample_tube
       @asset1.aliquots.create!(:sample => Factory(:sample, :studies => [@study1]))
@@ -81,6 +82,17 @@ class SubmissionTest < ActiveSupport::TestCase
           assert_equal false, orders_compatible?(@order1, @order2, :request_options)
         end
       end
+
+      context "and different projects" do
+        setup do
+          @order2.project = @project2
+        end
+
+        should "be incompatible" do
+          assert_equal false, orders_compatible?(@order1, @order2)
+        end
+      end
+
     end
   end
 end
