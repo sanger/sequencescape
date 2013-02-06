@@ -8,7 +8,7 @@ class AddFlowcellBarcodeCapture < ActiveRecord::Migration
           :sorted => 4,
           :batched => 1
           ).tap do |task|
-            Descriptor.create!(:name=>'Chip barcode', :sorter=>1, :task=>task, :kind=>'Text')
+            Descriptor.create!(:name=>'Chip Barcode', :sorter=>1, :task=>task, :kind=>'Text')
         end
       end
     end
