@@ -59,6 +59,32 @@ class Request < ActiveRecord::Base
     }
   }
 
+    named_scope :for_pre_cap_grouping_of, lambda { |plate|
+    joins =
+      if plate.stock_plate? # Sould never be once we've optimized
+        [ 'INNER JOIN assets AS pw ON requests.asset_id=pw.id' ]
+      else
+        [
+          'INNER JOIN well_links ON well_links.source_well_id=requests.asset_id',
+          'INNER JOIN assets AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"',
+        ]
+      end
+    {
+      :select => 'uuids.external_id AS group_id, GROUP_CONCAT(DISTINCT pw_location.description SEPARATOR ",") AS group_into, requests.*',
+      :joins => joins + [
+        'INNER JOIN maps AS pw_location ON pw.map_id=pw_location.id',
+        'INNER JOIN container_associations ON container_associations.content_id=pw.id',
+        'INNER JOIN orders ON requests.order_id=orders.id',
+        'INNER JOIN uuids ON uuids.resource_id=orders.id AND uuids.resource_type="Order"'
+      ],
+      :group => 'orders.id',
+      :conditions => [
+        'requests.sti_type NOT IN (?) AND container_associations.container_id=?',
+        [TransferRequest,*Class.subclasses_of(TransferRequest)].map(&:name), plate.id
+      ]
+    }
+  }
+
   belongs_to :pipeline
   belongs_to :item
 
@@ -77,6 +103,7 @@ class Request < ActiveRecord::Base
   belongs_to :user
 
   belongs_to :submission
+  belongs_to :order
 
   named_scope :with_request_type_id, lambda { |id| { :conditions => { :request_type_id => id } } }
 

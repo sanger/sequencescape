@@ -141,7 +141,7 @@ class Order < ActiveRecord::Base
       request.submission_id               = submission_id
       request.request_metadata_attributes = request_type.extract_metadata_from_hash(request_options)
       request.state                       = initial_request_state(request_type)
-
+      request.order                       = self
       use_quota!(request, true)
 
       if request.asset.present?
