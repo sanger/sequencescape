@@ -92,6 +92,10 @@ class SubmissionCreater < PresenterSkeleton
     end
   end
 
+  def per_order_settings
+    [:pre_capture_plex_level]
+  end
+
   def find_asset_group
     AssetGroup.find(asset_group_id) if asset_group_id.present?
   end
@@ -132,8 +136,7 @@ class SubmissionCreater < PresenterSkeleton
     if order.input_field_infos.flatten.empty?
       order.request_type_ids_list = order.request_types.map { |rt| [rt] }
     end
-
-    order.input_field_infos
+    order.input_field_infos.reject {|info| per_order_settings.include?(info.key)}
   end
 
   # Return the submission's orders or a blank array
