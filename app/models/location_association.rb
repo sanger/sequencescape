@@ -5,6 +5,12 @@ class LocationAssociation < ActiveRecord::Base
   validates_uniqueness_of :locatable_id
   validates_presence_of :location_id, :locatable_id
 
+  after_save :update_locatable
+
+  def update_locatable
+    locatable.touch
+  end
+
   module Locatable
     def self.included(base)
       base.class_eval do
