@@ -14,7 +14,7 @@ class LocationAssociation < ActiveRecord::Base
   module Locatable
     def self.included(base)
       base.class_eval do
-        has_one :location_association, :foreign_key => :locatable_id
+        has_one :location_association, :foreign_key => :locatable_id, :inverse_of => :locatable
 
         has_one :location, :through => :location_association
         delegate :location_id, :to => :location_association, :allow_nil => true
