@@ -201,8 +201,8 @@
           $('.pane').not('#blank-order').addClass('active');
 
           // Hack to stop multiple orders per submission.
-          // Remove to enable again... Removed
-          // $('#add-order').attr('disabled', true);
+          // Remove to enable again... #XSP
+          $('#add-order').attr('disabled', true);
         });
 
       }
