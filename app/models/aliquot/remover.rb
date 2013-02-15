@@ -14,11 +14,11 @@ module Aliquot::Remover
     end
 
     def tagged?
-      self.tag_id.nil? or (self.tag_id != Aliquot::UNASSIGNED_TAG)
+      !self.untagged?
     end
 
     def untagged?
-      !self.tagged?
+      self.tag_id.nil? or (self.tag_id == Aliquot::UNASSIGNED_TAG)
     end
 
   end
