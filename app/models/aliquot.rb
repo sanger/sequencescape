@@ -195,7 +195,7 @@ class Aliquot < ActiveRecord::Base
     # is checking the upstream aliquot (or the AliquotRecord)
     case
     when self.sample_id != object.sample_id                                                   then return false # The samples don't match
-    when self.library_id != object.library_id                                                 then return false # Our librarys don't match.
+    when object.library_id.present?      && (self.library_id      != object.library_id)       then return false # Our librarys don't match.
     when object.bait_library_id.present? && (self.bait_library_id != object.bait_library_id)  then return false # We have different bait libraries
     when self.untagged? && object.tagged?                                                     then raise StandardError, "Tag missing from downstream aliquot" # The downstream aliquot is untagged, but is tagged upstream. Something is wrong!
     when object.untagged?                                                                     then return true # The upstream aliquot was untagged, we don't need to check tags
