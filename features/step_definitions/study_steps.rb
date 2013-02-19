@@ -330,7 +330,7 @@ def assign_asset_to_study(asset,study_name)
   asset_ids = [asset.id]
   asset_ids = asset.well_ids if asset.respond_to?(:wells)
   if asset.can_be_created? || (asset.respond_to?(:wells) && (asset.stock_plate?))
-    RequestFactory.create_assets_requests(asset_ids, study.id)
+    RequestFactory.create_assets_requests(Asset.find(asset_ids), study)
   else
     Asset.find(asset_ids).each do |asset|
       asset.try(:aliquots).try(:each) do |aliquot|
