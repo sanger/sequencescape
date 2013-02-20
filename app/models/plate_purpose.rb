@@ -95,7 +95,10 @@ class PlatePurpose < Purpose
       parameters.concat(args)
     end
     raise "Apparently there are not requests on these wells?" if conditions.empty?
-    Request.where_is_not_a?(TransferRequest).all(:conditions => [ "(#{conditions.join(' OR ')})", *parameters ]).map(&:fail!)
+    Request.where_is_not_a?(TransferRequest).all(:conditions => [ "(#{conditions.join(' OR ')})", *parameters ]).map do |request|
+      # This can probably be switched for an each, as I don't think the array is actually used for anything.
+      request.passed? ? request.change_decision! : request.fail!
+    end
   end
   private :fail_stock_well_requests
 
