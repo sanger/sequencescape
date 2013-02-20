@@ -22,7 +22,7 @@ class Role < ActiveRecord::Base
   end
 
   def before_destroy
-    authorizable.touch
+    authorizable.touch unless authorizable.nil?
   end
 
   # Include this module into your ActiveRecord model and get has_many roles and some
