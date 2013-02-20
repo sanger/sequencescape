@@ -10,7 +10,7 @@ class Api::SampleTubeIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        named_scope :including_associations_for_json, { :include => [ :uuid_object, :barcode_prefix, { :primary_aliquot => { :sample => :uuid_object } } ] }
+        named_scope :including_associations_for_json, { :include => [ :uuid_object, :barcode_prefix, { :primary_aliquot => { :sample => :uuid_object } }, :scanned_into_lab_event ] }
       end
     end
   end
@@ -28,8 +28,8 @@ class Api::SampleTubeIO < Api::Base
   map_attribute_to_json_attribute(:created_at)
   map_attribute_to_json_attribute(:updated_at)
 
-  extra_json_attributes do |object, json_attributes|
-    json_attributes["scanned_in_date"] = object.scanned_in_date if object.respond_to?(:scanned_in_date)
+  with_association(:scanned_into_lab_event) do
+    map_attribute_to_json_attribute(:content, 'scanned_in_date')
   end
 
   with_association(:barcode_prefix) do
