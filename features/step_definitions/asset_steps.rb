@@ -13,7 +13,7 @@ end
 
 Given /^(?:I have )?a well called "([^\"]+)"$/ do |name|
   sample = Factory(:sample)
-  Factory(:well, :name => name, :sample => sample)
+  Factory(:well, :sample => sample)
 end
 
 Then /^the name of (the .+) should be "([^\"]+)"$/ do |asset, name|
