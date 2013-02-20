@@ -14,9 +14,8 @@ class AmqpObserver < ActiveRecord::Observer
   # Ensure we capture records being saved as well as deleted.
   #
   # NOTE: Oddly you can't alias_method the after_destroy, it has to be physically defined!
-  [ :after_save, :after_destroy ].each do |name|
-    class_eval(%Q{def #{name}(record) ; self << record ; true ; end})
-  end
+    class_eval(%Q{def after_save(record) ; self << record ; true ; end})
+    class_eval(%Q{def after_destroy(record) ; record.class.render_class.associations.each {|a,_| record.send(a) } ; self << record ; true ; end})
 
   # To prevent ActiveRecord::Observer doing something insane when we test this, we pull
   # out the implementation in a module (which can be tested) and leave the rest behind.
