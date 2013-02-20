@@ -10,7 +10,7 @@ class Api::PacBioLibraryTubeIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        named_scope :including_associations_for_json, { :include => [:uuid_object, :barcode_prefix ] }
+        named_scope :including_associations_for_json, { :include => [:uuid_object, :barcode_prefix, :scanned_into_lab_event ] }
       end
     end
   end
@@ -41,8 +41,8 @@ class Api::PacBioLibraryTubeIO < Api::Base
   with_association(:barcode_prefix) do
     map_attribute_to_json_attribute(:prefix, 'barcode_prefix')
   end
-  
-  extra_json_attributes do |object, json_attributes|
-    json_attributes["scanned_in_date"] = object.scanned_in_date if object.respond_to?(:scanned_in_date)
+
+  with_association(:scanned_into_lab_event) do
+    map_attribute_to_json_attribute(:content, 'scanned_in_date')
   end
 end
