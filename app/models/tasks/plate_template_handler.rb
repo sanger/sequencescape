@@ -22,8 +22,8 @@ module Tasks::PlateTemplateHandler
 
   def parse_uploaded_spreadsheet_layout(layout_data,plate_size)
     (Hash.new { |h,k| h[k] = {} }).tap do |parsed_plates|
-      FasterCSV.parse(layout_data) do |row|
-        parse_spreadsheet_row(plate_size, *row) do |plate_key, request_id, location|
+      FasterCSV.parse(layout_data, :headers=>:first_row) do |row|
+        parse_spreadsheet_row(plate_size, row["Request ID"],row["Sample Name"],row["Plate"],row["Destination Well"]) do |plate_key, request_id, location|
           parsed_plates[plate_key][location.column_order] = [location,request_id]
         end
       end
