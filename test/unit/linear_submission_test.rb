@@ -24,6 +24,8 @@ class LinearSubmissionTest < ActiveSupport::TestCase
         @library_creation_request_type = Factory :library_creation_request_type
         @sequencing_request_type = Factory :sequencing_request_type
 
+        @purpose = Factory :plate_purpose, :name => "mock purpose", :type=>'Tube::StandardMx', :target_type => 'MultiplexedLibraryTube'
+
         @request_type_ids = [@request_type_1.id, @library_creation_request_type.id, @sequencing_request_type.id]
 
         @request_options = {"read_length"=>"108", "fragment_size_required_from"=>"150", "fragment_size_required_to"=>"200"}
@@ -31,7 +33,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
 
       context 'multiplexed submission' do
         setup do
-          @mpx_request_type = Factory :multiplexed_library_creation_request_type
+          @mpx_request_type = Factory :multiplexed_library_creation_request_type, {:target_purpose => @purpose}
           @mpx_request_type_ids = [@mpx_request_type.id, @sequencing_request_type.id]
 
           @mpx_submission = LinearSubmission.build!(

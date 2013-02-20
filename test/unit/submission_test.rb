@@ -7,7 +7,7 @@ class SubmissionTest < ActiveSupport::TestCase
       submission = Submission.new(:user => Factory(:user),:orders => [a,b])
       submission.save!
       true
-    rescue ActiveRecord::RecordInvalid
+    rescue ActiveRecord::RecordInvalid => exception
       if key
         !submission.errors[key]
       else
@@ -22,6 +22,7 @@ class SubmissionTest < ActiveSupport::TestCase
       @study2 = Factory :study
 
       @project =  Factory :project
+      @project2 = Factory :project
 
       @asset1 = Factory :empty_sample_tube
       @asset1.aliquots.create!(:sample => Factory(:sample, :studies => [@study1]))
@@ -31,11 +32,11 @@ class SubmissionTest < ActiveSupport::TestCase
       @reference_genome1 = Factory :reference_genome, :name => "genome 1"
       @reference_genome2 = Factory :reference_genome, :name => "genome 2"
 
-      @order1 = Factory :order, :study => @study1, :assets => [@asset1]
-      @order2 = Factory :order,:study => @study2, :assets => [@asset2]
+      @order1 = Factory :order, :study => @study1, :assets => [@asset1], :project => @project
+      @order2 = Factory :order,:study => @study2, :assets => [@asset2], :project => @project
     end
 
-    context "compatible requests" do
+    context "with compatible requests" do
       setup do
         @order2.request_types = @order1.request_types
       end
@@ -43,7 +44,7 @@ class SubmissionTest < ActiveSupport::TestCase
       context "and study with same reference genome" do
         setup do
           @study1.reference_genome = @reference_genome1
-          @study2.reference_genome = @reference_genome2
+          @study2.reference_genome = @reference_genome1
         end
 
         should "be compatible" do
@@ -81,6 +82,17 @@ class SubmissionTest < ActiveSupport::TestCase
           assert_equal false, orders_compatible?(@order1, @order2, :request_options)
         end
       end
+
+      context "and different projects" do
+        setup do
+          @order2.project = @project2
+        end
+
+        should "be incompatible" do
+          assert_equal false, orders_compatible?(@order1, @order2)
+        end
+      end
+
     end
   end
 end
