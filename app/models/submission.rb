@@ -146,6 +146,7 @@ class Submission < ActiveRecord::Base
     # check every order agains the first one
     first_order = orders.first
     orders[1..-1].each { |o| check_orders_compatible?(o,first_order) }
+    return false if errors.count > 0
  end
  private :validate_orders_are_compatible
 
@@ -156,6 +157,7 @@ class Submission < ActiveRecord::Base
     errors.add(:request_types, "are incompatible") if a.request_types != b.request_types
     errors.add(:request_options, "are incompatible") if a.request_options != b.request_options
     errors.add(:item_options, "are incompatible") if a.item_options != b.item_options
+    errors.add(:project, "should be identical") if a.project_id != b.project_id
     check_studies_compatible?(a.study, b.study)
     check_samples_compatible?(a,b)
  end

@@ -80,19 +80,30 @@ module Submission::LinearRequestGraph
       # We need to de-duplicate the multiplexed assets.  Note that we duplicate the pairs here so that
       # they don't get disrupted by the shift operation at the start of this method.
       next if request_type_and_multiplier_pairs.empty?
-      target_assets =
         if request_type.for_multiplexing?   # May have many nil assets for non-multiplexing
-          target_assets.uniq.map { |asset| [ asset, nil ] }  # 'nil' is Item here and should go
+          target_assets_items, built_assets = target_assets.uniq.partition {|a| a.requests(true).empty? }
+          target_assets_items = target_assets_items.map { |asset| [ asset, nil ] } # 'nil' is Item here and should go
         else
-          target_assets.each_with_index.map do |asset,index|
+          target_assets_items = target_assets.each_with_index.map do |asset,index|
             source_asset = request_type.no_target_asset? ? source_asset_item_pairs[index].first : asset
             [ source_asset, source_asset_item_pairs[index].last ]
           end
         end
-      create_request_chain!(request_type_and_multiplier_pairs.dup, target_assets, multiplexing_assets, &block)
+      associate_built_requests(built_assets||[])
+      create_request_chain!(request_type_and_multiplier_pairs.dup, target_assets_items, multiplexing_assets, &block)
     end
   end
   private :create_request_chain!
+
+  def associate_built_requests(assets)
+    assets.map(&:requests).flatten.each do |request|
+      request.update_attributes!(:initial_study => nil) if request.initial_study != study
+      comments.each do |comment|
+        request.comments.create!(:user => user, :description => comment)
+      end if comments.present?
+    end
+  end
+  private :associate_built_requests
 
   # TODO: Remove this it's not supposed to be being used!
   def create_item_for!(asset)
