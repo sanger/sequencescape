@@ -6,7 +6,7 @@ class Transfer < ActiveRecord::Base
 
         has_many :transfers_as_source,     :class_name => 'Transfer', :foreign_key => :source_id,      :order => 'created_at ASC'
         has_many :transfers_to_tubes,      :class_name => 'Transfer::BetweenPlateAndTubes', :foreign_key => :source_id, :order => 'created_at ASC'
-        has_one  :transfer_as_destination, :class_name => 'Transfer', :foreign_key => :destination_id
+        has_many :transfers_as_destination, :class_name => 'Transfer', :foreign_key => :destination_id
 
         # This looks odd but it's a LEFT OUTER JOIN, meaning that the rows we would be interested in have no source_id.
         named_scope :with_no_outgoing_transfers, {
