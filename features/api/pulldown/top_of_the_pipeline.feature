@@ -302,6 +302,7 @@ Feature: The top of the pulldown pipeline
     Then the state of the plate with UUID "00000000-1111-2222-3333-000000000002" should be "started"
      And the state of all the transfer requests to the plate with UUID "00000000-1111-2222-3333-000000000002" should be "started"
      And the state of all the pulldown library creation requests from the plate with UUID "00000000-1111-2222-3333-000000000001" should be "started"
+     And the study for the aliquots in the wells of the plate with UUID "00000000-1111-2222-3333-000000000002" should match the last submission
 
     # Now change the state of the plate to passed
     When I make an authorised POST with the following JSON to the API path "/state_changes":
