@@ -114,6 +114,10 @@ Given /the wells "([^\"]+)" on (the plate .+) are empty$/ do |range, plate|
   plate.wells.select(&range.method(:include?)).each { |well| well.aliquots.clear }
 end
 
+Then /^the study for the aliquots in the wells of (the plate .+) should match the last submission$/ do |plate|
+  study = Submission.last.orders.first.study
+  plate.wells.each {|w| w.aliquots.each {|a| assert_equal a.study, study}}
+end
 Given /^(the plate .+) is a "([^\"]+)"$/ do |plate, name|
   plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find the plate purpose #{name.inspect}"
   plate.update_attributes!(:plate_purpose => plate_purpose)
