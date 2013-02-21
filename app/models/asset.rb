@@ -393,7 +393,7 @@ class Asset < ActiveRecord::Base
       else
         { :query => '(barcode=? AND barcode_prefix_id=?)', :conditions => [ barcode_number, barcode_prefix.id ] }
       end
-    end.inject({ :query => [], :conditions => [] }) do |building, current|
+    end.inject({ :query => ['FALSE'], :conditions => [nil] }) do |building, current|
       building.tap do
         building[:query]      << current[:query]
         building[:conditions] << current[:conditions]
