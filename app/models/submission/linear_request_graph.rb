@@ -81,7 +81,7 @@ module Submission::LinearRequestGraph
       # they don't get disrupted by the shift operation at the start of this method.
       next if request_type_and_multiplier_pairs.empty?
         if request_type.for_multiplexing?   # May have many nil assets for non-multiplexing
-          target_assets_items, built_assets = target_assets.uniq.partition {|a| a.requests(true).empty? }
+          target_assets_items, built_assets = target_assets.uniq.partition {|a| a.nil? || a.requests(true).empty? }
           target_assets_items = target_assets_items.map { |asset| [ asset, nil ] } # 'nil' is Item here and should go
         else
           target_assets_items = target_assets.each_with_index.map do |asset,index|
