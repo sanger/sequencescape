@@ -277,6 +277,12 @@ ActiveRecord::Schema.define(:version => 20130424133956) do
     t.datetime "updated_at"
   end
 
+  create_table "bulk_transfers", :force => true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "user_id"
+  end
+
   create_table "comments", :force => true do |t|
     t.string   "title"
     t.string   "commentable_type", :limit => 50
@@ -786,19 +792,7 @@ ActiveRecord::Schema.define(:version => 20130424133956) do
   add_index "projects", ["state"], :name => "index_projects_on_state"
   add_index "projects", ["updated_at"], :name => "index_projects_on_updated_at"
 
-  create_table "quotas_bkp", :force => true do |t|
-    t.integer  "limit",            :default => 0
-    t.integer  "project_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "request_type_id"
-    t.integer  "preordered_count", :default => 0
-  end
-
-  add_index "quotas_bkp", ["request_type_id", "project_id"], :name => "index_quotas_on_request_type_id_and_project_id"
-  add_index "quotas_bkp", ["updated_at"], :name => "index_quotas_on_updated_at"
-
-  create_table "reference_genomes", :force => true do |t|
+  create_table "reference_genomes", :force => true do |tracking|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -1417,6 +1411,7 @@ ActiveRecord::Schema.define(:version => 20130424133956) do
     t.integer  "destination_id"
     t.string   "destination_type"
     t.string   "transfers",        :limit => 1024
+    t.integer  "bulk_transfer_id"
   end
 
   add_index "transfers", ["source_id"], :name => "source_id_idx"
