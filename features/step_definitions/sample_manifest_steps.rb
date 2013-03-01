@@ -92,6 +92,15 @@ Then /^the samples table should look like:$/ do |table|
     unless expected_data[:common_name].blank?
       assert_equal(expected_data[:common_name], sample.sample_metadata.sample_common_name, "Sample common name invalid for #{sanger_sample_id}")
     end
+
+  end
+end
+
+Then /^the sample accession numbers should be:$/ do |table|
+  table.hashes.each do |expected_data|
+    sanger_sample_id = expected_data[:sanger_sample_id]
+    sample = Sample.find_by_sanger_sample_id(sanger_sample_id) or raise StandardError, "Could not find sample #{sanger_sample_id}"
+    assert_equal(expected_data[:accession_number],sample.sample_metadata.sample_ebi_accession_number)
   end
 end
 
