@@ -228,8 +228,8 @@ class BatchesController < ApplicationController
   def released
     if params[:id]
       @pipeline = Pipeline.find(params[:id])
-      @batches = @pipeline.batches.released.all(:order => "id DESC", :include => [:requests, :user, :pipeline])
 
+      @batches = @pipeline.batches.released.all(:order => "id DESC", :include => [:user ])
       respond_to do |format|
         format.html
         format.xml { render :layout => false }
