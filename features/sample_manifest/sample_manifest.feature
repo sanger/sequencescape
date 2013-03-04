@@ -401,5 +401,46 @@ Feature: Sample manifest
      | sample_11        | uuuuu          | false                      | 10016           |
      | sample_12        | gggg_updated   | false                      | 10017           |
 
+ @override
+  Scenario Outline: Updating of sample accession numbers
+    Given a manifest has been created for "Test study"
+    When I fill in "File to upload" with "test/data/<initial>"
+    And I press "Upload manifest"
+    Given 1 pending delayed jobs are processed
+    When I follow "View all manifests"
+    Then I should see the manifest table:
+      | Contains | Study      | Supplier           | Manifest       | Upload             | Errors | State     |
+      | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest |        | Completed |
+    When I fill in "File to upload" with "test/data/<update>"
+    And I check "Override previously uploaded samples"
+    And I press "Upload manifest"
+    Given 1 pending delayed jobs are processed
+    When I follow "View all manifests"
+    Then I should see the manifest table:
+      | Contains | Study      | Supplier           | Manifest       | Errors   | State   |
+      | 1 plate  | Test study | Test supplier name | Blank manifest | <errors> | <state> |
+    Then the sample accession numbers should be:
+     | sanger_sample_id | accession_number |
+     | sample_1         | 12345            |
+     | sample_2         | 12346            |
+     | sample_3         | 12347            |
+     | sample_4         | 12348            |
+     | sample_5         | 12349            |
+     | sample_6         | 12350            |
+     | sample_7         | 12351            |
+     | sample_8         | 12352            |
+     | sample_9         | 12353            |
+     | sample_10        | 12354            |
+     | sample_11        | 12355            |
+     | sample_12        | 12356            |
+
+    Examples:
+      | initial                           | update                            | state     | errors |
+      | sample_manifest_a_accessions.csv  | sample_manifest_no_accessions.csv | Completed |        |
+      | sample_manifest_a_accessions.csv  | sample_manifest_b_accessions.csv  | Failed    | Errors |
+      | sample_manifest_no_accessions.csv | sample_manifest_a_accessions.csv  | Completed |        |
+
+
+
 
 
