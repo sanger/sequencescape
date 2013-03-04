@@ -230,8 +230,8 @@ class SamplesController < ApplicationController
         num_rows = num_rows + 1
       end
       num_samples = num_rows - 1
-      if num_samples > UPLOADED_SPREADSHEET_MAX_NUMBER_OF_MOVE_SAMPLES
-        flash[:error] = "You can only load #{UPLOADED_SPREADSHEET_MAX_NUMBER_OF_MOVE_SAMPLES} samples at a time. Please split the file into smaller groups of samples."
+      if num_samples > configatron.uploaded_spreadsheet.max_number_of_move_samples
+        flash[:error] = "You can only load #{configatron.uploaded_spreadsheet.max_number_of_move_samples} samples at a time. Please split the file into smaller groups of samples."
         redirect_to move_spreadsheet_sample_path and return
       end
 
