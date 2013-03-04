@@ -11,14 +11,16 @@ class BulkTransfer < ActiveRecord::Base
   attr_accessor :well_transfers
 
   def build_transfers!
-    each_transfer do |source_uuid,destination_uuid,transfers|
-      Transfer::BetweenPlates.create!(
-        :source=>Uuid.find_by_external_id(source_uuid).resource,
-        :destination=>Uuid.find_by_external_id(destination_uuid).resource,
-        :user => user,
-        :transfers => transfers,
-        :bulk_transfer_id => self.id
-      )
+    ActiveRecord::Base.transaction do
+      each_transfer do |source,destination,transfers|
+        Transfer::BetweenPlates.create!(
+          :source=>source,
+          :destination=>destination,
+          :user => user,
+          :transfers => transfers,
+          :bulk_transfer_id => self.id
+        )
+      end
     end
   end
   private :build_transfers!
@@ -27,7 +29,14 @@ class BulkTransfer < ActiveRecord::Base
     well_transfers.group_by { |tf| [tf["source_uuid"],tf["destination_uuid"]] }.each do |source_dest, all_transfers|
       transfers = {}
       all_transfers.each {|t| transfers[t["source_location"]] = t["destination_location"] }
-      yield (source_dest.first,source_dest.last,transfers)
+
+      source = Uuid.find_by_external_id(source_dest.first).resource
+      destination = Uuid.find_by_external_id(source_dest.last).resource
+      errors.add(:source, 'is not a plate') unless source.is_a?(Plate)
+      errors.add(:destination, 'is not a plate') unless destination.is_a?(Plate)
+      raise ActiveRecord::RecordInvalid, self if errors.count > 0
+
+      yield (source,destination,transfers)
     end
   end
   private :each_transfer
