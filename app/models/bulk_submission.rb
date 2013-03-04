@@ -21,6 +21,10 @@ class Array
   def comma_separate_field_list(*fields)
     map { |row| fields.map { |field| row[field] } }.flatten.delete_if(&:blank?).join(',')
   end
+
+  def comma_separate_field_list_for_display(*fields)
+    map { |row| fields.map { |field| row[field] } }.flatten.delete_if(&:blank?).join(', ')
+  end
 end
 
 class BulkSubmission < ActiveRecord::Base
@@ -178,7 +182,7 @@ class BulkSubmission < ActiveRecord::Base
         details["asset group name"]
       end.map do |group_name, rows|
         Hash[COMMON_FIELDS.map { |f| [ f, rows.first[f] ] }].tap do |details|
-          details['rows']          = rows.comma_separate_field_list('row')
+          details['rows']          = rows.comma_separate_field_list_for_display('row')
           details['asset ids']     = rows.comma_separate_field_list('asset id', 'asset ids')
           details['asset names']   = rows.comma_separate_field_list('asset name', 'asset names')
           details['plate well']    = rows.comma_separate_field_list('plate well')
