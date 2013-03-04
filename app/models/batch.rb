@@ -466,7 +466,7 @@ class Batch < ActiveRecord::Base
   end
 
   def request_count
-    BatchRequest.count(:conditions => "batch_id = #{self.id}")
+    BatchRequest.count(:conditions => ["batch_id = ?", self.id ])
   end
 
   def pulldown_batch_report
