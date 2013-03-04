@@ -159,17 +159,11 @@ class Submission < ActiveRecord::Base
     errors.add(:item_options, "are incompatible") if a.item_options != b.item_options
     errors.add(:project, "should be identical") if a.project_id != b.project_id
     check_studies_compatible?(a.study, b.study)
-    check_samples_compatible?(a,b)
  end
 
  def check_studies_compatible?(a,b)
     errors.add(:study, "Can't mix contaminated and non contaminated human DNA") unless a.study_metadata.contaminated_human_dna == b.study_metadata.contaminated_human_dna
     errors.add(:study, "Can't mix X and autosome removal with non-removal") unless a.study_metadata.remove_x_and_autosomes == b.study_metadata.remove_x_and_autosomes
- end
-
- def check_samples_compatible?(a,b)
-    reference_genomes = [a, b].map(&:samples).flatten.uniq.group_by(&:sample_reference_genome).keys
-    errors.add(:samples, "Can't mix reference genenome") if  reference_genomes.size > 1
  end
 
   #for the moment we consider that request types should be the same for all order
