@@ -80,16 +80,20 @@ module Submission::LinearRequestGraph
       # We need to de-duplicate the multiplexed assets.  Note that we duplicate the pairs here so that
       # they don't get disrupted by the shift operation at the start of this method.
       next if request_type_and_multiplier_pairs.empty?
-        if request_type.for_multiplexing?   # May have many nil assets for non-multiplexing
-          target_assets_items, built_assets = target_assets.uniq.partition {|a| a.nil? || a.requests(true).empty? }
-          target_assets_items = target_assets_items.map { |asset| [ asset, nil ] } # 'nil' is Item here and should go
+
+      target_assets_items =  if request_type.for_multiplexing?   # May have many nil assets for non-multiplexing
+        if multiplexing_assets.nil?
+          target_assets.uniq.map { |asset| [ asset, nil ] }
         else
-          target_assets_items = target_assets.each_with_index.map do |asset,index|
-            source_asset = request_type.no_target_asset? ? source_asset_item_pairs[index].first : asset
-            [ source_asset, source_asset_item_pairs[index].last ]
-          end
+          associate_built_requests(target_assets.uniq.compact); []
         end
-      associate_built_requests(built_assets||[])
+      else
+        target_assets.each_with_index.map do |asset,index|
+          source_asset = request_type.no_target_asset? ? source_asset_item_pairs[index].first : asset
+          [ source_asset, source_asset_item_pairs[index].last ]
+        end
+      end
+
       create_request_chain!(request_type_and_multiplier_pairs.dup, target_assets_items, multiplexing_assets, &block)
     end
   end
