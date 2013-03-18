@@ -34,4 +34,11 @@ class IlluminaB::StockTubePurpose < Tube::Purpose
 
     raise "Cannot locate stock plate for #{tube.display_name.inspect}"
   end
+
+  def stock_wells(tube)
+    tube.requests_as_target.map do |request|
+      request.asset.stock_wells
+    end
+  end
+
 end
