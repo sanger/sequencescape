@@ -38,7 +38,7 @@ class IlluminaB::StockTubePurpose < Tube::Purpose
   def stock_wells(tube)
     tube.requests_as_target.map do |request|
       request.asset.stock_wells
-    end
+    end.flatten
   end
 
 end

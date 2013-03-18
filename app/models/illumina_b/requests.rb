@@ -32,7 +32,7 @@ module IlluminaB::Requests
 
   class SharedLibraryPrep < StdLibraryRequest
     def target_tube
-      submission.next_requests(self).detect {|r| r.target_tube }.try(:target_tube)
+      @target_tube ||= submission.next_requests(self).detect {|r| r.target_tube }.try(:target_tube)
     end
   end
 
