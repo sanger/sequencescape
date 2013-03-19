@@ -102,6 +102,11 @@
   <%= form.text_field :pre_capture_plex_level, :class => 'pre_capture_plex_level', :value => 8 %>
 </div>
 
+<div class="pre-capture-plex-group">
+  <%= form.label :pre_capture_plex_group, 'Pre-capture plex group' %>
+  <%= form.text_field :pre_capture_plex_group, :class => 'pre_capture_plex_group', :value => nil %>
+</div>
+
 <div class="save-buttons">
   <% if order.present? -%>
     <%= hidden_field_tag :order_id,

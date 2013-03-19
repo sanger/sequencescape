@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130211120359) do
+ActiveRecord::Schema.define(:version => 20130318152648) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -582,6 +582,7 @@ ActiveRecord::Schema.define(:version => 20130211120359) do
     t.integer  "asset_group_id"
     t.string   "asset_group_name"
     t.integer  "submission_id"
+    t.integer  "pre_cap_group"
   end
 
   add_index "orders", ["state_to_delete"], :name => "index_submissions_on_state"
@@ -835,6 +836,7 @@ ActiveRecord::Schema.define(:version => 20130211120359) do
     t.integer  "bait_library_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "pre_capture_plex_level"
   end
 
   add_index "request_metadata", ["request_id"], :name => "index_request_metadata_on_request_id"
@@ -894,6 +896,7 @@ ActiveRecord::Schema.define(:version => 20130211120359) do
     t.integer  "initial_project_id"
     t.integer  "priority",                         :default => 0
     t.string   "sti_type"
+    t.integer  "order_id"
   end
 
   add_index "requests", ["asset_id"], :name => "index_requests_on_asset_id"
