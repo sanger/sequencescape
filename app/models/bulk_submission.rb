@@ -160,7 +160,8 @@ class BulkSubmission < ActiveRecord::Base
     'bait library', 'bait library name',
     'comments',
     'number of lanes',
-    'pre-capture plex level'
+    'pre-capture plex level',
+    'pre-capture group'
   ]
 
   def validate_entry(header,pos,row,index)
@@ -210,7 +211,8 @@ class BulkSubmission < ActiveRecord::Base
         :comments => details['comments'],
         :request_options => {
           :read_length  => details['read length']
-        }
+        },
+        :pre_cap_group => details['pre-capture group']
       }
 
       attributes[:request_options]['library_type']                  = details['library type']           unless details['library type'].blank?

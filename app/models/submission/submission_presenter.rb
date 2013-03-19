@@ -77,7 +77,8 @@ class SubmissionCreater < PresenterSkeleton
     :comments,
     :orders,
     :order_params,
-    :asset_group_id
+    :asset_group_id,
+    :pre_capture_plex_group
   ]
 
 
@@ -115,9 +116,9 @@ class SubmissionCreater < PresenterSkeleton
       :project         => project,
       :user            => @user,
       :request_options => order_params,
-      :comments        => comments
+      :comments        => comments,
+      :pre_cap_group   => pre_capture_plex_group
     )
-
     new_order.request_type_multiplier do |sequencing_request_type_id|
       new_order.request_options[:multiplier][sequencing_request_type_id] = (lanes_of_sequencing_required || 1)
     end if order_params
@@ -158,12 +159,8 @@ class SubmissionCreater < PresenterSkeleton
         new_order = create_order.tap { |o| o.update_attributes!(order_assets) }
 
         if submission.present?
-          # This code shouldn't get run, as the client should stop this but...
-          # This exception is thrown if we try to add multiple orders to a submission.
           # The submission should be destroyed if we delete the last order on it so
           # we shouldn't see any empty submissions.
-          # Remove the raise and recue block to enable multiple submissions.
-          # You'll also need to renable them in the submission.js file.
 
           submission.orders << new_order
         else
