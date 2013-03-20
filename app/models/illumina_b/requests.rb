@@ -30,6 +30,12 @@ module IlluminaB::Requests
     include TransferRequest::InitialTransfer
   end
 
+  class SharedLibraryPrep < StdLibraryRequest
+  end
+
+  class LibraryCompletion < StdLibraryRequest
+  end
+
   class CovarisToSheared < TransferRequest
     redefine_state_machine do
       aasm_column :state
