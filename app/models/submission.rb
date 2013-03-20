@@ -159,7 +159,6 @@ class Submission < ActiveRecord::Base
     errors.add(:request_types, "are incompatible") if a.request_types != b.request_types
     errors.add(:request_options, "are incompatible") if !request_options_compatible?(a,b)
     errors.add(:item_options, "are incompatible") if a.item_options != b.item_options
-    errors.add(:project, "should be identical") if a.project_id != b.project_id
     check_studies_compatible?(a.study, b.study)
  end
 
