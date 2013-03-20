@@ -57,7 +57,6 @@ end
 Given /^I have a cherrypicking batch with (\d+) samples$/ do |number_of_samples|
   step(%Q{I am a "administrator" user logged in as "user"})
   step(%Q{I have a project called "Test project"})
-  step(%Q{project "Test project" has enough quotas})
   step(%Q{I have an active study called "Test study"})
   step(%Q{I have a plate "1234567" in study "Test study" with #{number_of_samples} samples in asset group "Plate asset group"})
 

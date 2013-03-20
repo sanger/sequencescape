@@ -401,14 +401,10 @@ WHERE c.container_id=?
     return false if user.nil? || project.nil? || study.nil?
     current_time = Time.now
 
-    project.enforce_quotas = false
     project.save
     plates.each do |plate|
       plate.generate_plate_submission(project, study, user,current_time)
     end
-    # TODO: return an error if insufficient quota
-    #project.enforce_quotas = true
-    #project.save
 
     true
   end

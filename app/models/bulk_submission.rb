@@ -131,8 +131,8 @@ class BulkSubmission < ActiveRecord::Base
               # Collect successful submissions
               @submission_ids << submission.id
               @completed_submissions[submission.id] = "Submission #{submission.id} built (#{submission.orders.count} orders)"
-            rescue Quota::Error => exception
-              errors.add :spreadsheet, "There was a quota problem: #{exception.message}"
+            rescue Submission::ProjectValidation::Error => exception
+              errors.add :spreadsheet, "There was an issue with a project: #{exception.message}"
             end
           end
         end

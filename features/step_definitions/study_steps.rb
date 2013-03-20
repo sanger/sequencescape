@@ -7,12 +7,6 @@ Given /^I have a study called "([^\"]*)"$/ do |study|
   proj = Factory :study, :name => study
 end
 
-#Given /^study "([^\"]*)" approval is "([^\"]*)"$/ do |study, approval|
-#  proj = Study.find_by_name(study)
-#  approval == "approved" ? proj.approved = true : proj.approved = false
-#  proj.save
-#end
-
 Given /^study "([^\"]*)" status is "([^\"]*)"$/ do |study, status|
   proj = Study.find_by_name(study)
   status == "active" ? proj.activate! : proj.deactivate!
@@ -23,14 +17,6 @@ Given /^I have an "([^\"]*)" study called "([^\"]*)"$/ do |status, study|
   step %Q{I have a study called "#{study}"}
   step %Q{study "#{study}" status is "#{status}"}
 end
-
-#Given /^study "([^\"]*)" has enough quotas$/ do |study|
-#  proj = Study.find_by_name(study)
-#  req_types = {}
-#  RequestType.all.each {|rt| req_types["#{rt.id}"] = 500}
-#  proj.add_quotas(req_types)
-#  proj.save
-#end
 
 Given /^study "([^\"]*)" has samples registered$/ do |study|
   proj = Study.find_by_name(study)
@@ -108,29 +94,6 @@ end
 And /^the study have a workflow$/ do
   Factory :submission_workflow
 end
-
-#And /^the study "([^\"]*)" has quotas and quotas are enforced$/ do |study_id|
-#  proj = Study.find_by_name study_id.to_s
-#  @request= RequestType.find(:all)
-#  @request.each do |rt|
-#      Factory :study_quota, :study_id => proj.id, :request_type_id => rt.id, :limit => 500
-#  end
-#
-#  proj.save
-#end
-
-#Given /^the study "([^\"]*)" has quotas filled$/ do |study_id|
-#  proj = Study.find_by_name study_id.to_s
-#  request_types = []
-#  request_types << RequestType.find_by_name("Receive sample")
-#  request_types << RequestType.find_by_name("Library creation")
-#  request_types << RequestType.find_by_name("Single ended sequencing")
-#  request_types << RequestType.find_by_name("Paired end sequencing")
-#  request_types.each do |rt|
-#    Factory :study_quota, :study => proj, :request_type => rt, :limit => 500
-#  end
-#  proj.save
-#end
 
 def GivenFixedStudyMetadata(attribute, value, regexp)
   Given(regexp) do |name|

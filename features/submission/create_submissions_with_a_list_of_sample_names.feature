@@ -14,10 +14,6 @@ Feature: Creating submissions through the submission templates
     Given the study "Study testing submission templates" has an asset group of 10 samples in "well" called "Asset group for submission templates"
     And all of the wells are on a "Stock plate" plate
 
-    Given the project "Project testing submission templates" has a "Cherrypick" quota of 999
-    And the project "Project testing submission templates" has a "DNA QC" quota of 999
-    And the project "Project testing submission templates" has a "Genotyping" quota of 999
-
     Given I am on the "Microarray genotyping" submission template selection page for study "Study testing submission templates"
     When I select "Microarray genotyping" from "Template"
     And I press "Next"
@@ -42,10 +38,6 @@ Feature: Creating submissions through the submission templates
   Scenario: Creating a submission with wrong sample names should fail
     Given the study "Study testing submission templates" has an asset group of 10 samples in "well" called "Asset group for submission templates"
     And all of the wells are on a "Stock plate" plate
-
-    Given the project "Project testing submission templates" has a "Cherrypick" quota of 999
-    And the project "Project testing submission templates" has a "DNA QC" quota of 999
-    And the project "Project testing submission templates" has a "Genotyping" quota of 999
 
     Given I am on the "Microarray genotyping" submission template selection page for study "Study testing submission templates"
     When I select "Microarray genotyping" from "Template"

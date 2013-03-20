@@ -200,7 +200,6 @@ Feature: Manage a list of bait libraries
 
     Given I have a project called "Testing submission creation"
     And the UUID for the project "Testing submission creation" is "22222222-3333-4444-5555-000000000001"
-    And project "Testing submission creation" has enough quotas
 
     Given the UUID for the request type "Cherrypicking for Pulldown" is "99999999-1111-2222-3333-000000000000"
     And the UUID for the request type "Pulldown Multiplex Library Preparation" is "99999999-1111-2222-3333-000000000001"

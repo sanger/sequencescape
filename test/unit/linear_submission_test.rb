@@ -182,7 +182,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
     end
 
 
-    context "#quota_check" do
+    context "#no quota_check" do
       setup do
         @study = Factory :study
         @project = Factory :project
@@ -227,80 +227,25 @@ class LinearSubmissionTest < ActiveSupport::TestCase
           @project.update_attributes(:enforce_quotas => true)
         end
 
-        context "when quotas have been set up" do
-          setup do
-            @request_types.each do |request_type|
-              @project.set_available_quotas!(request_type, @assets.length)
-            end
-            @project.set_available_quotas!(@mpx_request_type, @mpx_assets.length)
-            @project.set_available_quotas!(@request_type_3, 1)
-          end
-
-          should 'allow the normal submission to build' do
-            LinearSubmission.build!(@submission_params)
-          end
-
-          should 'allow the multiplexed submission to build' do
-            LinearSubmission.build!(@mpx_submission_params)
-          end
+        should 'allow the normal submission to build' do
+          LinearSubmission.build!(@submission_params)
         end
 
-        context "when quotas have been set to 0" do
-          setup do
-            @request_types.each do |request_type|
-              @project.quota_for!(request_type).update_attributes!(:limit =>0, :preordered_count => 0)
-            end
-          end
-
-          should 'not allow the normal submission to build' do
-            assert_raises(Quota::Error) { LinearSubmission.build!(@submission_params) }
-          end
-
-          context 'when quotas are not being enforced' do
-            setup do
-              @project.update_attributes!(:enforce_quotas => false)
-            end
-
-            should 'allow the normal submission to build' do
-              LinearSubmission.build!(@submission_params)
-            end
-          end
-        end
-
-        context "when quotas have not been set up" do
-          should 'not allow the normal submission to build' do
-            assert_raises(Quota::Error) { LinearSubmission.build!(@submission_params) }
-          end
-
-          context 'when quotas are not being enforced' do
-            setup do
-              @project.update_attributes!(:enforce_quotas => false)
-            end
-
-            should 'allow the normal submission to build' do
-              LinearSubmission.build!(@submission_params)
-            end
-
-            context 'then' do
-              setup do
-                @submission = LinearSubmission.build!(@submission_params)
-
-              end
-              should 'allow the submission to be processed' do
-                @submission.process!
-              end
-              context 'when the quota have been enforced' do
-                setup do
-                @project.update_attributes!(:enforce_quotas => true)
-                end
-                should 'not allow the submission to be processed' do
-                  assert_raises(Quota::Error) { @submission.process!}
-                end
-              end
-            end
-          end
+        should 'allow the multiplexed submission to build' do
+          LinearSubmission.build!(@mpx_submission_params)
         end
       end
+
+      context 'when quotas are not being enforced' do
+        setup do
+          @project.update_attributes!(:enforce_quotas => false)
+        end
+
+        should 'allow the normal submission to build' do
+          LinearSubmission.build!(@submission_params)
+        end
+      end
+
     end
 
     context "process with a multiplier for request type" do
@@ -321,11 +266,6 @@ class LinearSubmissionTest < ActiveSupport::TestCase
         @lib_request_type = Factory :request_type, :asset_type => "SampleTube", :target_asset_type=>"LibraryTube", :initial_state => "pending", :name => "Library Creation", :order => 1, :key => "library_creation"
         @pe_request_type = Factory :request_type, :asset_type => "LibraryTube", :initial_state => "pending", :name => "PE sequencing", :order => 2, :key => "pe_sequencing"
         @se_request_type = Factory :request_type, :asset_type => "LibraryTube", :initial_state => "pending", :name => "SE sequencing", :order => 2, :key => "se_sequencing"
-
-        Factory :project_quota, :project => @project, :limit => 20, :request_type => @mx_request_type
-        Factory :project_quota, :project => @project, :limit => 60, :request_type => @lib_request_type
-        Factory :project_quota, :project => @project, :limit => 60, :request_type => @pe_request_type
-        Factory :project_quota, :project => @project, :limit => 0, :request_type => @se_request_type
 
         @submission_with_multiplication_factor = LinearSubmission.build!(
           :study            => @study,
@@ -350,48 +290,30 @@ class LinearSubmissionTest < ActiveSupport::TestCase
       end
 
       context "when a multiplication factor of 5 is provided" do
-        context "when there's sufficient quota" do
-          context "for non multiplexed libraries and sequencing" do
-            setup do
-              @submission_with_multiplication_factor.process!
-            end
-            should_change("Request.count", :by => 12) { Request.count }
 
-            should "create 2 library requests" do
-              lib_requests = Request.find_all_by_submission_id_and_request_type_id(@submission_with_multiplication_factor, @lib_request_type.id)
-              assert_equal 2, lib_requests.size
-            end
+        context "for non multiplexed libraries and sequencing" do
+          setup do
+            @submission_with_multiplication_factor.process!
+          end
+          should_change("Request.count", :by => 12) { Request.count }
 
-            should "create 10 sequencing requests" do
-              seq_requests = Request.find_all_by_submission_id_and_request_type_id(@submission_with_multiplication_factor, @pe_request_type.id)
-              assert_equal 10, seq_requests.size
-            end
+          should "create 2 library requests" do
+            lib_requests = Request.find_all_by_submission_id_and_request_type_id(@submission_with_multiplication_factor, @lib_request_type.id)
+            assert_equal 2, lib_requests.size
           end
 
-          context "for non multiplexed libraries and sequencing" do
-            setup do
-              @mx_submission_with_multiplication_factor.process!
-            end
-          end
-
-          context "insufficient quota" do
-            should "build will raise an exception" do
-              $stop = true
-              assert_raise Quota::Error do
-                LinearSubmission.build!(
-                  :study            => @study,
-                  :project          => @project,
-                  :workflow         => @workflow,
-                  :user             => @user,
-                  :assets           => [ @asset_1, @asset_2 ],
-                  :request_types    => [ @lib_request_type.id, @se_request_type.id ],
-                  :request_options  => { :multiplier => { @se_request_type.id.to_s.to_sym => '5', @lib_request_type.id.to_s.to_sym => '1' } },
-                  :comments         => ''
-                )
-              end
-            end
+          should "create 10 sequencing requests" do
+            seq_requests = Request.find_all_by_submission_id_and_request_type_id(@submission_with_multiplication_factor, @pe_request_type.id)
+            assert_equal 10, seq_requests.size
           end
         end
+
+        context "for non multiplexed libraries and sequencing" do
+          setup do
+            @mx_submission_with_multiplication_factor.process!
+          end
+        end
+
       end
     end
   end

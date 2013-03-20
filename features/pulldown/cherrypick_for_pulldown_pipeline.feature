@@ -17,10 +17,10 @@ Feature: Cherrypicking for Pulldown pipeline
 
   Scenario: Dont allow more than 96 wells in a batch
     Given I have a project called "Test project"
-    And project "Test project" has enough quotas
+
     Given I have an active study called "Test study"
     And I have an active study called "Study A"
-  
+
     Given the CherrypickForPulldownPipeline pipeline has a max batch size of 2
     Given plate "1234567" with 2 samples in study "Test study" has a "Cherrypicking for Pulldown" submission for cherrypicking
     Given plate "222" with 1 samples in study "Study A" has a "Cherrypicking for Pulldown" submission for cherrypicking
@@ -36,16 +36,16 @@ Feature: Cherrypicking for Pulldown pipeline
 
  Scenario: Cherrypick for pulldown from 2 submissions from different studies and view worksheet
    Given I have a project called "Test project"
-   And project "Test project" has enough quotas
+
    Given I have an active study called "Test study"
    And I have an active study called "Study A"
    And the "96 Well Plate" barcode printer "xyz" exists
- 
+
    Given plate "1234567" with 8 samples in study "Test study" has a "Cherrypicking for Pulldown" submission for cherrypicking
    Given plate "222" with 8 samples in study "Study A" has a "Cherrypicking for Pulldown" submission for cherrypicking
    Given plate "1234567" has nonzero concentration results
    Given plate "222" has nonzero concentration results
-   
+
    Given I am on the show page for pipeline "Cherrypicking for Pulldown"
    When I check "Select DN1234567T for batch"
    And I check "Select DN222J for batch"
@@ -167,5 +167,5 @@ Feature: Cherrypicking for Pulldown pipeline
     | A7        1234567        v3 b10  | A7        222        v3 b10 |
     | A8        1234567        v3 b10  | A8        222        v3 b10 |
     | 1                                | 2                           |
-                                                                      
+
 

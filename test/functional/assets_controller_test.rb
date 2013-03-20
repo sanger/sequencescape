@@ -39,7 +39,6 @@ class AssetsControllerTest < ActionController::TestCase
       @project = Factory :project, :enforce_quotas => true
       @request_type = Factory :request_type
       @workflow = Factory :submission_workflow
-      @quota = Factory :project_quota, :project_id => @project.id, :request_type_id => @request_type.id, :limit => 10
       @json_data = valid_json_create_request(@asset,@request_type,@study, @project)
 
       @request.accept = @request.env['CONTENT_TYPE'] = 'application/json'

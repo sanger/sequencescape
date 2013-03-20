@@ -50,13 +50,6 @@ Feature: Creating projects
     Then I should be on the show page for project "Testing project creation"
     And I should see "Your project has been created"
 
-    # NOTE: What follows may not be how it looks on the screen because the table is orderable with Javascript!
-    And the project quotas table should be:
-      | Request type                           | Total quota | Used quota | Remaining quota | Change quota |
-      | Cherrypick                             | 0           | 0          | 0               | Request more |
-      | DNA QC                                 | 0           | 0          | 0               | Request more |
-      | Genotyping                             | 0           | 0          | 0               | Request more |
-
   Scenario: Creating a next-gen sequencing project
     Given user "John Smith" has a workflow "Next-gen sequencing"
 
@@ -68,24 +61,3 @@ Feature: Creating projects
     Then I should be on the show page for project "Testing project creation"
     And I should see "Your project has been created"
 
-    # NOTE: What follows may not be how it looks on the screen because the table is orderable with Javascript!
-    And the project quotas table should be:
-      | Request type                           | Total quota | Used quota | Remaining quota | Change quota |
-      | Cherrypicking for Pulldown             | 0           | 0          | 0               | Request more |
-      | HiSeq Paired end sequencing            | 0           | 0          | 0               | Request more |
-      | Illumina-B Multiplexed Library Creation| 0           | 0          | 0               | Request more |
-      | Illumina-B STD                         | 0           | 0          | 0               | Request more |
-      | Illumina-C Multiplexed Library Creation| 0           | 0          | 0               | Request more |
-      | Library creation                       | 0           | 0          | 0               | Request more |
-      | Multiplexed library creation           | 0           | 0          | 0               | Request more |
-      | PacBio Sample Prep                     | 0           | 0          | 0               | Request more |
-      | PacBio Sequencing                      | 0           | 0          | 0               | Request more |
-      | Paired end sequencing                  | 0           | 0          | 0               | Request more |
-      | Pulldown ISC                           | 0           | 0          | 0               | Request more |
-      | Pulldown Multiplex Library Preparation | 0           | 0          | 0               | Request more |
-      | Pulldown SC                            | 0           | 0          | 0               | Request more |
-      | Pulldown WGS                           | 0           | 0          | 0               | Request more |
-      | Pulldown library creation              | 0           | 0          | 0               | Request more |
-      | Single ended hi seq sequencing         | 0           | 0          | 0               | Request more |
-      | Single ended sequencing                | 0           | 0          | 0               | Request more |
-      

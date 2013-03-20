@@ -1,6 +1,0 @@
-<% @request_types.each do |request| %>
-  <li>
-    <div id="left"><label for="quota_<%= request.id %>"><%= request.name -%></label></div>
-    <div id="right"><%= text_field_tag "quota[#{request.id}]", 0 %></div>
-  </li>
-<% end %>

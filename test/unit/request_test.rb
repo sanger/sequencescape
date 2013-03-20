@@ -319,32 +319,5 @@ class RequestTest < ActiveSupport::TestCase
       end
     end
 
-    context "#quota_counted and #quota_exempted" do
-      setup do
-
-        @quota_counted_states = ["passed", "pending", "started"]
-        @cquota_exempted_states = ["failed", "cancelled", "aborted"]
-
-        @all_states = @quota_counted_states + @cquota_exempted_states
-
-        assert_equal 6, @all_states.size
-
-        @all_states.each do |state|
-          Factory :request, :state => state
-        end
-
-        assert_equal 6, Request.count
-      end
-      context "quota_counted requests" do
-        should "total right number" do
-          assert_equal @quota_counted_states.size, Request.quota_counted.count
-        end
-      end
-      context "quota_exempted requests" do
-        should "total right number" do
-          assert_equal @cquota_exempted_states.size, Request.quota_exempted.count
-        end
-      end
-    end
   end
 end

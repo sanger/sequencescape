@@ -1,10 +1,10 @@
 @javascript @barcode-service @cherrypicking @gwl
 Feature: The Tecan file has the wrong buffer volumes, defaulting to 13 total volume
-  
+
   Scenario: volume of 65 is required
     Given I am a "administrator" user logged in as "user"
     Given I have a project called "Test project"
-    And project "Test project" has enough quotas
+
     Given I have an active study called "Test study"
     Given I have a plate "1" in study "Test study" with 2 samples in asset group "Plate asset group"
     Given I have a plate "10" in study "Test study" with 2 samples in asset group "Plate asset group"

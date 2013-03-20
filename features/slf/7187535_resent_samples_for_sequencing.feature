@@ -4,7 +4,7 @@ Feature: Cherrypicking a plate twice should display latest plate in report
   Background:
     Given I am a "administrator" user logged in as "user"
     Given I have a project called "Test project"
-    And project "Test project" has enough quotas
+
     Given I have an active study called "Test study"
     Given I have a plate "1234567" in study "Test study" with 1 samples in asset group "Plate asset group"
     Given a plate template exists
