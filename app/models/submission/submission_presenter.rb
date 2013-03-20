@@ -171,8 +171,8 @@ class SubmissionCreater < PresenterSkeleton
         @order = new_order
       end
 
-    rescue Quota::Error => quota_exception
-      order.errors.add_to_base(quota_exception.message)
+    rescue Submission::ProjectValidation::Error => project_exception
+      order.errors.add_to_base(project_exception.message)
     rescue InvalidInputException => input_exception
       order.errors.add_to_base(input_exception.message)
     rescue IncorrectParamsException => exception

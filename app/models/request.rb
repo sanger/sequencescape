@@ -91,9 +91,6 @@ class Request < ActiveRecord::Base
   has_many :failures, :as => :failable
   has_many :billing_events
 
-  has_many :request_quotas
-  has_many :quotas, :through => :request_quotas
-
   belongs_to :request_type
   delegate :billable?, :to => :request_type, :allow_nil => true
   belongs_to :workflow, :class_name => "Submission::Workflow"
@@ -114,28 +111,9 @@ class Request < ActiveRecord::Base
   def project_id=(project_id)
     raise RuntimeError, "Initial project already set" if initial_project_id
     self.initial_project_id = project_id
-
-
-    #use quota if neeed
-    #we can't use quota now, because if we are building the request, the request type might
-    # haven't been assigned yet.
-    # We use in instance variable instead and book the request in a before_save callback
-    #
-    @orders_to_book = self.initial_project.orders
-    book_quotas unless new_record?
-    #self.initial_project.orders.each { |o| o.use_quota!(self, o.assets.present?) }
   end
 
 
-  def book_quotas
-    return unless @orders_to_book
-    # if assets are empty the order hasn't booked anything, so there is no need to unbook quota
-    # Should happen in real life but might in test
-    @orders_to_book.each { |o| o.use_quota!(self, o.assets.present?) }
-    @orders_to_book = nil
-  end
-  private :book_quotas
-  after_create :book_quotas
 
   def project=(project)
     return unless project
@@ -424,10 +402,7 @@ class Request < ActiveRecord::Base
   end
 
   def request_type_updatable?(new_request_type)
-    return false unless self.pending?
-    request_type = RequestType.find(new_request_type)
-    return true if self.request_type_id == request_type.id
-    self.has_quota?(1)
+    self.pending?
   end
 
   extend Metadata
@@ -447,10 +422,6 @@ class Request < ActiveRecord::Base
   # NOTE: With properties Request#name would have been silently sent through to the property.  With metadata
   # we now need to be explicit in how we want it delegated.
   delegate :name, :to => :request_metadata
-  def has_quota?(number)
-    #no if one project doesn't have the quota
-    not quotas.map(&:project).any? {|p| p.has_quota?(request_type_id, number) == false}
-  end
 
   # Adds any pool information to the structure so that it can be reported to client applications
   def update_pool_information(pool_information)

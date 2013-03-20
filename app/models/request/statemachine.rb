@@ -137,8 +137,6 @@ module Request::Statemachine
         transitions :to => :cancelled, :from => [:pending]
       end
 
-      after_save :release_unneeded_quotas!
-
       # new version of combinable named_scope
       named_scope :for_state, lambda { |state| { :conditions => { :state => state } } }
 
@@ -154,8 +152,6 @@ module Request::Statemachine
 
       named_scope :open, :conditions => {:state => OPENED_STATE}
       named_scope :closed, :conditions => {:state => ["passed", "failed", "cancelled", "aborted"]}
-      named_scope :quota_counted, :conditions => {:state => QUOTA_COUNTED}
-      named_scope :quota_exempted, :conditions => {:state => QUOTA_EXEMPTED}
       named_scope :hold, :conditions => {:state => "hold"}
     end
   end
@@ -191,10 +187,6 @@ module Request::Statemachine
 
   end
 
-  def release_unneeded_quotas!
-    self.request_quotas(true).destroy_all unless quota_counted?
-  end
-
   def on_passed
 
   end
@@ -209,10 +201,6 @@ module Request::Statemachine
 
   def on_hold
 
-  end
-
-  def quota_counted?
-    return QUOTA_COUNTED.include?(state)
   end
 
   def finished?

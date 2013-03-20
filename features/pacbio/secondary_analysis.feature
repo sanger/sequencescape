@@ -4,7 +4,7 @@ Feature: Display secondary analysis details in the sample sheet
   Background:
     Given I am a "manager" user logged in as "user"
       And I have a project called "Test project"
-      And project "Test project" has enough quotas
+
       And I have an active study called "Test study"
       And I have a sample tube "111" in study "Test study" in asset group "Test study group"
       And the reference genome "Mouse" exists

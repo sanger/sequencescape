@@ -98,7 +98,7 @@ Feature: Creating orders for UK10K
       | "asset_group_name": "",          | 11111111-2222-3333-4444-555555555555 |
       | "asset_group_name": "new group", | new group                            |
 
-  @create @asset_group 
+  @create @asset_group
   Scenario Outline: Creating a new order with an existing asset group
     Given the study "Testing submission creation" has an asset group called "Existing asset group"
     And the UUID for the asset group "Existing asset group" is "88888888-1111-2222-3333-000000000000"
@@ -372,7 +372,7 @@ Feature: Creating orders for UK10K
     And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"
 
     Given project "Testing submission creation" approval is "inactive"
-    And the project "Testing submission creation" has quotas and quotas are enforced
+    And project "Testing submission creation" has enforced quotas
 
     When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/orders":
       """
@@ -551,7 +551,7 @@ Feature: Creating orders for UK10K
       }
       """
 
-  @update @error 
+  @update @error
   Scenario Outline: Attempting to change initial information after creating an order
     Given I have an "active" study called "Altering the order"
     And the UUID for the study "Altering the order" is "22222222-3333-4444-5555-111111111111"
@@ -585,34 +585,6 @@ Feature: Creating orders for UK10K
       | field   | uuid                                 |
       | study   | 22222222-3333-4444-5555-111111111111 |
       | project | 22222222-3333-4444-5555-111111111112 |
-
-  @submit @error @project
-  Scenario: Building an order that results in an error because of quota
-    Given 3 sample tubes exist with names based on "sampletube" and IDs starting at 1
-    And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"
-
-    Given project "Testing submission creation" approval is "inactive"
-    And the project "Testing submission creation" has quotas and quotas are enforced
-
-    When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/orders":
-      """
-      {
-        "order": {
-          "project": "22222222-3333-4444-5555-000000000001",
-          "study": "22222222-3333-4444-5555-000000000000",
-          "assets": [
-            "33333333-4444-5555-6666-000000000001"
-          ]
-        }
-      }
-      """
-    Then the HTTP response should be "501 Not Implemented"
-    And the JSON should match the following for the specified fields:
-      """
-      {
-        "general": [ "Project Testing submission creation is not approved" ]
-      }
-      """
 
   @submit @asset_group
   Scenario Outline: Submitting a submission where the order was created with an asset group

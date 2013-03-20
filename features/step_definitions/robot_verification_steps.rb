@@ -25,7 +25,6 @@ end
 Given /^I have a released cherrypicking batch with 3 plates$/ do
   step(%Q{I am a "administrator" user logged in as "user"})
   step(%Q{I have a project called "Test project"})
-  step(%Q{project "Test project" has enough quotas})
   step(%Q{I have an active study called "Test study"})
   step(%Q{I have a plate "1" in study "Test study" with 2 samples in asset group "Plate asset group"})
   step(%Q{I have a plate "10" in study "Test study" with 2 samples in asset group "Plate asset group"})

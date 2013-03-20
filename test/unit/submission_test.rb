@@ -50,17 +50,6 @@ class SubmissionTest < ActiveSupport::TestCase
         should "be compatible" do
           assert orders_compatible?(@order1, @order2)
         end
-
-        context "and sample with a different reference genome" do
-          setup do
-            @asset2.aliquots.first.sample.sample_metadata.update_attributes!(:reference_genome=>@reference_genome2)
-          end
-        should "be incompatible" do
-          $stop = true
-          assert_equal false, orders_compatible?(@order1, @order2)
-          $stop = false
-        end
-        end
       end
       context "and study with different contaminated human DNA policy" do
         setup do

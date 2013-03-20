@@ -167,21 +167,6 @@ class PlateTest < ActiveSupport::TestCase
           assert_equal 0, @study.errors.count
         end
       end
-      context "where project quotas are enforced" do
-        context "and there is no quota available" do
-          setup do
-            @project.enforce_quotas = true
-            @project.quotas.create(:request_type => @request_type_1, :limit => 0)
-            @project.quotas.create(:request_type => @request_type_2, :limit => 0)
-            @project.save
-          end
-          should "raise quota exception" do
-            assert_raise Quota::Error do
-              @plate1.generate_plate_submission(@project, @study, @user, @current_time)
-            end
-          end
-        end
-      end
     end
 
     context "#create_plates_submission(project, study, plates, user)" do

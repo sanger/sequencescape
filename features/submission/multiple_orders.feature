@@ -21,11 +21,11 @@ Feature: Creating a submissin with many orders
 
     Given I have a project called "Project A"
     And the UUID for the project "Project A" is "22222222-3333-4444-5555-000000000001"
-    And project "Project A" has enough quotas
+
 
     Given I have a project called "Project B"
     And the UUID for the project "Project B" is "22222222-3333-4444-5555-000000000002"
-    And project "Project B" has enough quotas
+
 
     And the UUID of the next submission created will be "11111111-2222-3333-4444-555555555555"
     And the UUID of the next order created will be "11111111-2222-3333-4444-666666666666"

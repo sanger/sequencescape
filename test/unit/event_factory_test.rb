@@ -13,55 +13,6 @@ class EventFactoryTest < ActiveSupport::TestCase
       @request = Factory :request, :request_type => @request_type, :user => @user, :project => @project
     end
 
-    context "#request increase in quota" do
-      setup do
-        admin = Factory :role, :name => "administrator"
-        user1 = Factory :user, :login => "bla"
-        user2 = Factory :user, :login => "wow"
-        user2.roles << admin
-        user1.roles << admin
-        comment = "New comment"
-        @incoming = {:library_creation => 20}
-        EventFactory.quota_update(@project, @user, @incoming, comment)
-      end
-
-      should_change("Event.count", :by => 1) { Event.count }
-
-      should "include proper message and content" do
-        assert_equal "Quota update request", Event.last.message
-        assert Event.last.content =~ /An increase in #{@request_type.name.downcase} quota: from 0 to #{@incoming[:library_creation]}/
-      end
-
-      should "send an email" do
-        assert_sent_email do |email|
-          email.subject =~ /Project/ &&  email.subject =~ /[TEST]/ && email.bcc.include?("bla@example.com")
-          email.bcc.size == 2
-          email.body    =~ /An increase in #{@request_type.name.downcase} quota: from 0 to #{@incoming[:library_creation]}/
-        end
-      end
-    end
-
-    context "#quota updated" do
-      setup do
-        admin = Factory :role, :name => "administrator"
-        user1 = Factory :user, :login => "abc123"
-        user1.roles << admin
-        EventFactory.quota_updated(@project, @user)
-      end
-
-      should_change("Event.count", :by => 1) { Event.count }
-
-      should "sends 2 emails to 2 recipient" do
-        assert_sent_email do |email|
-          email.subject =~ /Project quota approved/ \
-            && email.bcc.include?("abc123@example.com") \
-            && email.bcc.include?("south@example.com") \
-            && email.bcc.size == 2 \
-            && email.body =~ /Project quota approved by #{@user.login}/
-        end
-      end
-    end
-
     context "#new_project" do
       setup do
         admin = Factory :role, :name => "administrator"
