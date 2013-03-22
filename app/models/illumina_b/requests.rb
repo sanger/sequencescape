@@ -34,9 +34,16 @@ module IlluminaB::Requests
     def target_tube
       @target_tube ||= submission.next_requests(self).detect {|r| r.target_tube }.try(:target_tube)
     end
+
+        # Ensure that the bait library information is also included in the pool information.
+    def update_pool_information(pool_information)
+      super
+      pool_information[:target_tube_purpose] = target_tube.purpose.uuid if target_tube
+    end
   end
 
   class LibraryCompletion < StdLibraryRequest
+
   end
 
   class CovarisToSheared < TransferRequest
