@@ -17,7 +17,7 @@ class AssetCreation < ActiveRecord::Base
   private :parent_nil?
 
   belongs_to :child_purpose, :class_name => 'Purpose'
-  validates_presence_of :child_purpose
+  validates_presence_of :child_purpose, :unless => :multiple_purposes
   validates_each(:child_purpose, :unless => :parent_nil?, :allow_blank => true) do |record, attr, child_purpose|
     record.errors.add(:child_purpose, 'is not a valid child type') unless record.parent.purpose.child_purposes.include?(child_purpose)
   end
@@ -34,4 +34,9 @@ class AssetCreation < ActiveRecord::Base
     children.each { |child| AssetLink.create_edge!(parent, child) }
   end
   private :connect_parent_and_children
+
+  def multiple_purposes
+    false
+  end
+
 end
