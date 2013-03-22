@@ -1,11 +1,12 @@
 ActiveRecord::Base.transaction do
 
-  IlluminaB::PlatePurposes.create_tube_purposes
 
   workflow   = Submission::Workflow.find_by_key('short_read_sequencing') or raise StandardError, 'Cannot find Next-gen sequencing workflow'
   cherrypick = RequestType.find_by_name('Cherrypicking for Pulldown')    or raise StandardError, 'Cannot find Cherrypicking for Pulldown request type'
 
   pipeline_name = "Illumina-B STD"
+
+  IlluminaB::PlatePurposes.create_tube_purposes
 
   shared_options = {
         :workflow => workflow,
@@ -37,7 +38,7 @@ ActiveRecord::Base.transaction do
       :request_class_name => "IlluminaB::Requests::LibraryCompletion",
       :for_multiplexing => true,
       :no_target_asset => false,
-      :target_purpose => Purpose.find_by_name('Lib Pool Norm')
+      :target_purpose => Purpose.find_by_name!('Lib Pool Norm')
     },
     {
       :key => "illumina_b_pippin",
@@ -45,7 +46,7 @@ ActiveRecord::Base.transaction do
       :request_class_name => "IlluminaB::Requests::LibraryCompletion",
       :for_multiplexing => true,
       :no_target_asset => false,
-      :target_purpose => Purpose.find_by_name('Lib Pool SS-XP-Norm')
+      :target_purpose => Purpose.find_by_name!('Lib Pool SS-XP-Norm')
     },
   ].each do |request_type_options|
     RequestType.create!(shared_options.merge(request_type_options))
@@ -81,14 +82,14 @@ ActiveRecord::Base.transaction do
       submission.request_options   = defaults
 
       SubmissionTemplate.new_from_submission(
-        "Illumina-B - Cherrypicked - #{request_type_options[:name]} - #{sequencing_request_type}",
+        "Illumina-B - Cherrypicked - #{request_type_options[:name]} - #{sequencing_request_type.name}",
         submission
       ).save!
 
       submission.request_type_ids  = [ pulldown_request_types.map(&:id), sequencing_request_type.id ].flatten
 
       SubmissionTemplate.new_from_submission(
-        "Illumina-B - #{request_type_options[:name]} - #{sequencing_request_type}",
+        "Illumina-B - #{request_type_options[:name]} - #{sequencing_request_type.name}",
         submission
       ).save!
     end

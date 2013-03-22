@@ -12,7 +12,7 @@ module IlluminaB::PlatePurposes
     ],
     [
       'Cherrypicked',
-      'Covaris',
+      'Shear',
       'Post Shear',
       'AL Libs',
       'Lib PCR',
@@ -29,6 +29,7 @@ module IlluminaB::PlatePurposes
     ],
     [
       'Lib Pool',
+      'Lib Pool Pippin',
       'Lib Pool Norm',
       'Lib Pool Conc',
       'Lib Pool SS',
@@ -40,8 +41,8 @@ module IlluminaB::PlatePurposes
   BRANCHES = [
     [ 'ILB_STD_INPUT', 'ILB_STD_COVARIS', 'ILB_STD_SH', 'ILB_STD_PREPCR', 'ILB_STD_PCR', 'ILB_STD_PCRXP', 'ILB_STD_STOCK', 'ILB_STD_MX' ],
     [ 'ILB_STD_PREPCR', 'ILB_STD_PCRR', 'ILB_STD_PCRRXP' ],
-    [ 'Cherrypicked', 'Covaris', 'Post Shear', 'AL Libs', 'Lib PCR', 'Lib PCR-XP','Lib Pool','Lib Pool Norm'],
-    [ 'Lib Pool', 'Lib Pool Conc', 'Lib Pool SS', 'Lib Pool SS-XP', 'Lib Pool SS-XP-Norm' ],
+    [ 'Cherrypicked', 'Shear', 'Post Shear', 'AL Libs', 'Lib PCR', 'Lib PCR-XP','Lib Pool','Lib Pool Norm'],
+    [ 'Lib PCR-XP','Lib Pool Pippin', 'Lib Pool Conc', 'Lib Pool SS', 'Lib Pool SS-XP', 'Lib Pool SS-XP-Norm' ],
     [ 'AL Libs', 'Lib PCRR', 'Lib PCRR-XP' ]
   ]
 
@@ -52,6 +53,7 @@ module IlluminaB::PlatePurposes
   ]
 
   PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
+<<<<<<< HEAD
     [ 'ILB_STD_INPUT',   'ILB_STD_COVARIS','IlluminaB::Requests::InputToCovaris'   ],
     [ 'ILB_STD_COVARIS', 'ILB_STD_SH',     'IlluminaB::Requests::CovarisToSheared' ],
     [ 'ILB_STD_PREPCR',  'ILB_STD_PCR',    'IlluminaB::Requests::PrePcrToPcr'      ],
@@ -61,37 +63,40 @@ module IlluminaB::PlatePurposes
     [ 'ILB_STD_PCRXP',   'ILB_STD_STOCK',  'IlluminaB::Requests::PcrXpToStock'     ],
     [ 'ILB_STD_PCRRXP',  'ILB_STD_STOCK',  'IlluminaB::Requests::PcrXpToStock'     ],
 
-    [ 'Covaris',         'Post Shear',     'IlluminaB::Requests::CovarisToSheared' ],
+    [ 'Shear',           'Post Shear',      'IlluminaB::Requests::CovarisToSheared' ],
     [ 'AL Libs',         'Lib PCR',        'IlluminaB::Requests::PrePcrToPcr'      ],
     [ 'AL Libs',         'Lib PCRR',       'IlluminaB::Requests::PrePcrToPcr'      ],
     [ 'Lib PCR',         'Lib PCR-XP',     'IlluminaB::Requests::PcrToPcrXp'       ],
     [ 'Lib PCRR',        'Lib PCRR-XP',    'IlluminaB::Requests::PcrToPcrXp'       ],
     [ 'Lib PCR-XP',      'Lib Pool',       'IlluminaB::Requests::PcrXpToStock'     ],
     [ 'Lib PCRR-XP',     'Lib Pool',       'IlluminaB::Requests::PcrXpToStock'     ]
+    [ 'Lib PCR-XP',      'Lib Pool Pippin', 'IlluminaB::Requests::PcrXpToStock'     ],
+    [ 'Lib PCRR-XP',     'Lib Pool Pippin', 'IlluminaB::Requests::PcrXpToStock'     ]
   ]
 
   PLATE_PURPOSE_TYPE = {
-    'ILB_STD_INPUT'   => IlluminaB::StockPlatePurpose,
-    'ILB_STD_COVARIS' => IlluminaB::CovarisPlatePurpose,
-    'ILB_STD_SH'      => PlatePurpose,
-    'ILB_STD_PREPCR'  => PlatePurpose,
-    'ILB_STD_PCR'     => IlluminaB::PcrPlatePurpose,
-    'ILB_STD_PCRXP'   => IlluminaB::FinalPlatePurpose,
-    'ILB_STD_PCRR'    => PlatePurpose,
-    'ILB_STD_PCRRXP'  => IlluminaB::FinalPlatePurpose,
-    'ILB_STD_STOCK'   => IlluminaB::StockTubePurpose,
-    'ILB_STD_MX'      => IlluminaB::MxTubePurpose,
+    'ILB_STD_INPUT'       => IlluminaB::StockPlatePurpose,
+    'ILB_STD_COVARIS'     => IlluminaB::CovarisPlatePurpose,
+    'ILB_STD_SH'          => PlatePurpose,
+    'ILB_STD_PREPCR'      => PlatePurpose,
+    'ILB_STD_PCR'         => IlluminaB::PcrPlatePurpose,
+    'ILB_STD_PCRXP'       => IlluminaB::FinalPlatePurpose,
+    'ILB_STD_PCRR'        => PlatePurpose,
+    'ILB_STD_PCRRXP'      => IlluminaB::FinalPlatePurpose,
+    'ILB_STD_STOCK'       => IlluminaB::StockTubePurpose,
+    'ILB_STD_MX'          => IlluminaB::MxTubePurpose,
 
-    'Cherrypicked'     => IlluminaB::StockPlatePurpose,
-    'Covaris'          => IlluminaB::CovarisPlatePurpose,
-    'Post Shear'       => PlatePurpose,
-    'AL Libs'          => PlatePurpose,
-    'Lib PCR'          => IlluminaB::PcrPlatePurpose,
-    'Lib PCRR'         => PlatePurpose,
-    'Lib PCR-XP'       => IlluminaB::TransferablePlatePurpose,
-    'Lib PCRR-XP'      => IlluminaB::TransferablePlatePurpose,
-    'Lib Pool'         => IlluminaB::StockTubePurpose,
-    'Lib Pool Norm'    => IlluminaB::MxTubePurpose,
+    'Cherrypicked'        => IlluminaB::StockPlatePurpose,
+    'Shear'               => IlluminaB::CovarisPlatePurpose,
+    'Post Shear'          => PlatePurpose,
+    'AL Libs'             => PlatePurpose,
+    'Lib PCR'             => IlluminaB::PcrPlatePurpose,
+    'Lib PCRR'            => PlatePurpose,
+    'Lib PCR-XP'          => IlluminaB::TransferablePlatePurpose,
+    'Lib PCRR-XP'         => IlluminaB::TransferablePlatePurpose,
+    'Lib Pool'            => IlluminaB::StockTubePurpose,
+    'Lib Pool Pippin'     => IlluminaB::StockTubePurpose,
+    'Lib Pool Norm'       => IlluminaB::MxTubePurpose,
     'Lib Pool Conc'       => IlluminaB::StockTubePurpose,
     'Lib Pool SS'         => IlluminaB::StockTubePurpose,
     'Lib Pool SS-XP'      => IlluminaB::StockTubePurpose,
