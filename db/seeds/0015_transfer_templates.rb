@@ -49,4 +49,9 @@ ActiveRecord::Base.transaction do
     :name                => 'Transfer wells to specific tubes defined by submission',
     :transfer_class_name => 'Transfer::FromPlateToSpecificTubesByPool'
   )
+
+  TransferTemplate.create!(
+    :name => 'Transfer between specific tubes',
+    :transfer_class_name => 'Transfer::BetweenSpecificTubes'
+  )
 end
