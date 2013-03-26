@@ -3,12 +3,9 @@ class AssetCreation < ActiveRecord::Base
   include Asset::Ownership::ChangesOwner
   extend ModelExtensions::Plate::NamedScopeHelpers
 
-  include_plate_named_scope :parent
-
   belongs_to :user
   validates_presence_of :user
 
-  belongs_to :parent, :class_name => 'Plate'
   validates_presence_of :parent
 
   def parent_nil?

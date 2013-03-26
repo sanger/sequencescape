@@ -46,6 +46,12 @@ module IlluminaB::Requests
 
   end
 
+  module InitialDownstream
+    def outer_request
+      asset.requests.detect {|request| request.is_a?(LibraryCompletion)}
+    end
+  end
+
   class CovarisToSheared < TransferRequest
     redefine_state_machine do
       aasm_column :state
@@ -125,4 +131,46 @@ module IlluminaB::Requests
       aasm_event :cancel do transitions :to => :cancelled,   :from => [:started, :passed, :qc]      end
     end
   end
+
+  class PcrXpToPoolPippin < TransferRequest
+    include InitialDownstream
+    redefine_state_machine do
+      aasm_column :state
+      aasm_initial_state :pending
+
+      aasm_state :pending
+      aasm_state :started
+      aasm_state :passed
+      aasm_state :cancelled
+
+      aasm_event :start  do transitions :to => :started,     :from => [:pending]                    end
+      aasm_event :pass   do transitions :to => :passed,      :from => [:pending, :started, :failed] end
+      aasm_event :cancel do transitions :to => :cancelled,   :from => [:started, :passed, :qc]      end
+    end
+  end
+
+  class PcrXpToPool < PcrXpToStock
+    include InitialDownstream
+  end
+
+  class LibPoolSsToLibPoolSsXp < TransferRequest
+    redefine_state_machine do
+      aasm_column :state
+      aasm_initial_state :pending
+
+      aasm_state :pending
+      aasm_state :started
+      aasm_state :passed
+      aasm_state :qc_complete
+      aasm_state :failed
+      aasm_state :cancelled
+
+      aasm_event :start  do transitions :to => :started,     :from => [:pending]                    end
+      aasm_event :pass   do transitions :to => :passed,      :from => [:pending, :started, :failed] end
+      aasm_event :qc     do transitions :to => :qc_complete, :from => [:passed]                     end
+      aasm_event :fail   do transitions :to => :failed,      :from => [:pending, :started, :passed] end
+      aasm_event :cancel do transitions :to => :cancelled,   :from => [:started, :passed, :qc]      end
+    end
+  end
+
 end

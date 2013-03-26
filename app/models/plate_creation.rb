@@ -2,8 +2,10 @@
 # the parent.
 class PlateCreation < AssetCreation
   include_plate_named_scope :child
+  include_plate_named_scope :parent
 
   # This is the child that is created from the parent.  It cannot be assigned before validation.
+  belongs_to :parent, :class_name => 'Plate'
   belongs_to :child, :class_name => 'Plate'
   validates_unassigned(:child)
 
