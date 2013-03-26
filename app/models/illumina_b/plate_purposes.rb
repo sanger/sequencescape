@@ -29,8 +29,10 @@ module IlluminaB::PlatePurposes
     ],
     [
       'Lib Pool',
-      'Lib Pool Pippin',
       'Lib Pool Norm',
+    ],
+    [
+      'Lib Pool Pippin',
       'Lib Pool Conc',
       'Lib Pool SS',
       'Lib Pool SS-XP',
@@ -53,7 +55,6 @@ module IlluminaB::PlatePurposes
   ]
 
   PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
-<<<<<<< HEAD
     [ 'ILB_STD_INPUT',   'ILB_STD_COVARIS','IlluminaB::Requests::InputToCovaris'   ],
     [ 'ILB_STD_COVARIS', 'ILB_STD_SH',     'IlluminaB::Requests::CovarisToSheared' ],
     [ 'ILB_STD_PREPCR',  'ILB_STD_PCR',    'IlluminaB::Requests::PrePcrToPcr'      ],
@@ -94,8 +95,8 @@ module IlluminaB::PlatePurposes
     'Lib PCRR'            => PlatePurpose,
     'Lib PCR-XP'          => IlluminaB::TransferablePlatePurpose,
     'Lib PCRR-XP'         => IlluminaB::TransferablePlatePurpose,
-    'Lib Pool'            => IlluminaB::StockTubePurpose,
-    'Lib Pool Pippin'     => IlluminaB::StockTubePurpose,
+    'Lib Pool'            => IlluminaB::InitialStockTubePurpose,
+    'Lib Pool Pippin'     => IlluminaB::InitialStockTubePurpose,
     'Lib Pool Norm'       => IlluminaB::MxTubePurpose,
     'Lib Pool Conc'       => IlluminaB::StockTubePurpose,
     'Lib Pool SS'         => IlluminaB::StockTubePurpose,
