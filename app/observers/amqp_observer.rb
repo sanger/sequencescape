@@ -8,7 +8,8 @@ class AmqpObserver < ActiveRecord::Observer
     Metadata::Base,
     :billing_event,
     :batch, :batch_request,
-    :role, Role::UserRole
+    :role, Role::UserRole,
+    :reference_genome
   )
 
   # Ensure we capture records being saved as well as deleted.
