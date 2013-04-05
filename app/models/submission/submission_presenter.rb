@@ -63,8 +63,6 @@ class SubmissionCreater < PresenterSkeleton
   SubmissionsCreaterError  = Class.new(StandardError)
   IncorrectParamsException = Class.new(SubmissionsCreaterError)
   InvalidInputException    = Class.new(SubmissionsCreaterError)
-  # XSP Remove exception class
-  MultipleOrdersException = Class.new(Exception)
 
   write_inheritable_attribute :attributes,  [
     :id,
@@ -164,11 +162,7 @@ class SubmissionCreater < PresenterSkeleton
           # Remove the raise and recue block to enable multiple submissions.
           # You'll also need to renable them in the submission.js file.
 
-          # XSP: Comment out below
-          raise MultipleOrdersException
-
-          # XSP uncomment this line to enable multiple orders
-          # submission.orders << new_order
+          submission.orders << new_order
         else
           @submission = new_order.create_submission(:user => order.user)
         end
@@ -177,9 +171,6 @@ class SubmissionCreater < PresenterSkeleton
         @order = new_order
       end
 
-    # XSP Rmove first rescue
-    rescue MultipleOrdersException => exception
-      order.errors.add_to_base('Sorry, multiple orders per submission are not supported at the current time.')
     rescue Quota::Error => quota_exception
       order.errors.add_to_base(quota_exception.message)
     rescue InvalidInputException => input_exception

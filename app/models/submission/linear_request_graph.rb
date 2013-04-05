@@ -132,7 +132,9 @@ module Submission::LinearRequestGraph
         quota_required  *= multiplier_for(request_type)
         yield(request_type, quota_required)
         # should have the same behavior as the chain_request call
-        quota_required = 1 if request_type.for_multiplexing?
+        if request_type.for_multiplexing?
+          quota_required = (submission.try(:orders)||[self]).index(self)==0 ? 1 : 0
+        end
       end
     end
   end
