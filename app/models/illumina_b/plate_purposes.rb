@@ -52,6 +52,7 @@ module IlluminaB::PlatePurposes
 
   # Don't have ILllumina B QC plates at the momnet...
   PLATE_PURPOSE_LEADING_TO_QC_PLATES = [
+    'Post Shear', 'Lib PCR-XP', 'Lib PCRR-XP'
   ]
 
   PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
@@ -101,7 +102,11 @@ module IlluminaB::PlatePurposes
     'Lib Pool Conc'       => IlluminaB::StockTubePurpose,
     'Lib Pool SS'         => IlluminaB::StockTubePurpose,
     'Lib Pool SS-XP'      => IlluminaB::StockTubePurpose,
-    'Lib Pool SS-XP-Norm' => IlluminaB::MxTubePurpose
+    'Lib Pool SS-XP-Norm' => IlluminaB::MxTubePurpose,
+
+    'Post Shear QC'    => IlluminaB::PostShearQcPlatePurpose,
+    'Lib PCR-XP QC'    => PlatePurpose,
+    'Lib PCRR-XP QC'   => PlatePurpose
 
   }
 
@@ -151,6 +156,7 @@ module IlluminaB::PlatePurposes
       IlluminaB::PlatePurposes::PLATE_PURPOSE_FLOWS.each do |flow|
         create_plate_flow(flow)
       end
+      create_qc_plates
     end
 
     def destroy_plate_purposes
@@ -222,5 +228,15 @@ module IlluminaB::PlatePurposes
       ))
     end
     private :create_tube_purpose
+
+    def create_qc_plates
+      ActiveRecord::Base.transaction do
+        IlluminaB::PlatePurposes::PLATE_PURPOSE_LEADING_TO_QC_PLATES.each do |name|
+          qc_plate_purpose = purpose_for("#{name} QC").create!(:name => "#{name} QC")
+          plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
+          plate_purpose.child_relationships.create!(:child => qc_plate_purpose, :transfer_request_type => RequestType.find_by_name('Transfer'))
+        end
+      end
+    end
   end
 end
