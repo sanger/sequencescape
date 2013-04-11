@@ -11,6 +11,7 @@ class Io::Plate < Io::Asset
                                       iteration  => iteration
                                           pools  => pools
                                   pre_cap_groups => pre_cap_groups
+                                      label_text => label_text
 
                                stock_plate.uuid  => stock_plate.uuid
                             stock_plate.barcode  => stock_plate.barcode.number

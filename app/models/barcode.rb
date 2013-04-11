@@ -27,6 +27,16 @@ class Barcode
       return nil unless barcode.present? and prefix.present?
       Barcode.calculate_barcode(self.prefix, self.barcode.to_i).to_s
     end
+
+    def label_text
+      "#{role} #{purpose.name}"
+    end
+
+    def role
+      return nil if stock_plate.nil?
+      stock_plate.wells.first.requests.first.role
+    end
+
   end
 
   InvalidBarcode = Class.new(StandardError)

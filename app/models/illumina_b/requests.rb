@@ -40,6 +40,10 @@ module IlluminaB::Requests
       super
       pool_information[:target_tube_purpose] = target_tube.purpose.uuid if target_tube
     end
+
+    def role
+      "ILB"
+    end
   end
 
   class LibraryCompletion < StdLibraryRequest

@@ -47,10 +47,11 @@ class Transfer::BetweenPlateAndTubes < Transfer
     {
       :uuid    => tube.uuid,
       :name    => tube.name,
-      :state   => tube.state
+      :state   => tube.state,
     }.tap do |details|
       barcode_to_hash(tube) { |s| details[:barcode] = s }
       barcode_to_hash(tube.stock_plate) { |s| details[:stock_plate] = { :barcode => s } }
+      details[:label_text] = tube.label_text unless tube.label_text.nil?
     end
   end
   private :tube_to_hash
