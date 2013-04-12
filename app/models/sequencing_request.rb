@@ -8,6 +8,13 @@ class SequencingRequest < Request
     attribute(:read_length, :integer => true, :required => true, :in => READ_LENGTHS)
   end
 
+  before_validation :clear_cross_projects
+  def clear_cross_projects
+    self.initial_project = nil if submission.try(:cross_project?)
+    self.initial_study   = nil if submission.try(:cross_study?)
+  end
+  private :clear_cross_projects
+
   def create_assets_for_multiplexing
     barcode = AssetBarcode.new_barcode
     # Needs a sample?
