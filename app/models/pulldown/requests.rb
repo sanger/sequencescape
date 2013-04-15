@@ -59,6 +59,9 @@ module Pulldown::Requests
 
   end
 
+  class IscLibraryRequestPart < LibraryCreation
+  end
+
   class StockToCovaris < TransferRequest
     include TransferRequest::InitialTransfer
   end

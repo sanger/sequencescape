@@ -79,6 +79,10 @@ module IlluminaHtp::PlatePurposes
 
   }
 
+  def self.request_type_prefix
+    "Illumina"
+  end
+
   module PurposeHelpers
 
 
@@ -167,7 +171,7 @@ module IlluminaHtp::PlatePurposes
     def request_type_between(parent, child)
       _, _, request_class = self::PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES.detect { |a,b,_| (parent.name == a) && (child.name == b) }
       return RequestType.transfer if request_class.nil?
-      request_type_name = "Illumina-B #{parent.name}-#{child.name}"
+      request_type_name = "#{request_type_prefix} #{parent.name}-#{child.name}"
       RequestType.create!(:name => request_type_name, :key => request_type_name.gsub(/\W+/, '_'), :request_class_name => request_class, :asset_type => 'Well', :order => 1)
     end
     private :request_type_between

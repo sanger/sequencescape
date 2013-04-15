@@ -9,7 +9,8 @@ ActiveRecord::Base.transaction do
   IlluminaB::PlatePurposes.create_tube_purposes
   IlluminaHtp::PlatePurposes.create_tube_purposes
 
-  shared_options = {
+  # For B
+  shared_options_b = {
         :workflow => workflow,
         :asset_type => "Well",
         :order => 1,
@@ -18,6 +19,8 @@ ActiveRecord::Base.transaction do
         :product_line_id => ProductLine.find_by_name('Illumina-B'),
         :no_target_asset => false
   }
+
+  shared_options_a = shared_options_b.clone.merge({:product_line_id => ProductLine.find_by_name('Illumina-A')})
 
   [
     {
@@ -29,7 +32,7 @@ ActiveRecord::Base.transaction do
     {
       :key => "illumina_b_shared",
       :name => "Shared Library Creation",
-      :request_class_name => "IlluminaB::Requests::SharedLibraryPrep",
+      :request_class_name => "IlluminaHtp::Requests::SharedLibraryPrep",
       :for_multiplexing => false,
       :no_target_asset => false
     },
@@ -50,13 +53,51 @@ ActiveRecord::Base.transaction do
       :target_purpose => Purpose.find_by_name!('Lib Pool SS-XP-Norm')
     },
   ].each do |request_type_options|
-    RequestType.create!(shared_options.merge(request_type_options))
+    RequestType.create!(shared_options_b.merge(request_type_options))
   end
 
   IlluminaB::PlatePurposes.create_plate_purposes
   IlluminaB::PlatePurposes.create_branches
   IlluminaHtp::PlatePurposes.create_plate_purposes
   IlluminaHtp::PlatePurposes.create_branches
+
+
+  [
+    {
+      :key => "illumina_a_shared",
+      :name => "Illumina A Shared Library Creation",
+      :request_class_name => "IlluminaHtp::Requests::SharedLibraryPrep",
+      :for_multiplexing => false,
+      :no_target_asset => false
+    },
+    {
+      :key => "illumina_a_pool",
+      :name => "Illumina-A Pooled",
+      :request_class_name => "IlluminaHtp::Requests::LibraryCompletion",
+      :for_multiplexing => true,
+      :no_target_asset => false,
+      :target_purpose => Purpose.find_by_name!('Lib Pool Norm')
+    },
+    {
+      :key => "illumina_a_pippin",
+      :name => "Illumina-A Pippin",
+      :request_class_name => "IlluminaHtp::Requests::LibraryCompletion",
+      :for_multiplexing => true,
+      :no_target_asset => false,
+      :target_purpose => Purpose.find_by_name!('Lib Pool SS-XP-Norm')
+    },
+    {
+      :key => "illumina_a_isc",
+      :name => "Illumina-A ISC",
+      :request_class_name => "Pulldown::Requests::IscLibraryRequestPart",
+      :acceptable_plate_purposes => [Purpose.find_by_name('Lib PCR-XP')],
+      :for_multiplexing => true,
+      :no_target_asset => false,
+      :target_purpose => Purpose.find_by_name('Standard MX')
+    }
+  ].each do |request_type_options|
+    RequestType.create!(shared_options_a.merge(request_type_options))
+  end
 
 
   sequencing_request_type_names = [

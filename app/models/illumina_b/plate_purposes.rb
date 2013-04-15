@@ -59,6 +59,10 @@ module IlluminaB::PlatePurposes
 
   }
 
+  def self.request_type_prefix
+    "Illumina-B"
+  end
+
   extend IlluminaHtp::PlatePurposes::PurposeHelpers
 
 end
