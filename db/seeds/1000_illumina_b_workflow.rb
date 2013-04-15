@@ -7,6 +7,7 @@ ActiveRecord::Base.transaction do
   pipeline_name = "Illumina-B STD"
 
   IlluminaB::PlatePurposes.create_tube_purposes
+  IlluminaHtp::PlatePurposes.create_tube_purposes
 
   shared_options = {
         :workflow => workflow,
@@ -35,7 +36,7 @@ ActiveRecord::Base.transaction do
     {
       :key => "illumina_b_pool",
       :name => "Illumina-B Pooled",
-      :request_class_name => "IlluminaB::Requests::LibraryCompletion",
+      :request_class_name => "IlluminaHtp::Requests::LibraryCompletion",
       :for_multiplexing => true,
       :no_target_asset => false,
       :target_purpose => Purpose.find_by_name!('Lib Pool Norm')
@@ -43,7 +44,7 @@ ActiveRecord::Base.transaction do
     {
       :key => "illumina_b_pippin",
       :name => "Illumina-B Pippin",
-      :request_class_name => "IlluminaB::Requests::LibraryCompletion",
+      :request_class_name => "IlluminaHtp::Requests::LibraryCompletion",
       :for_multiplexing => true,
       :no_target_asset => false,
       :target_purpose => Purpose.find_by_name!('Lib Pool SS-XP-Norm')
@@ -54,6 +55,9 @@ ActiveRecord::Base.transaction do
 
   IlluminaB::PlatePurposes.create_plate_purposes
   IlluminaB::PlatePurposes.create_branches
+  IlluminaHtp::PlatePurposes.create_plate_purposes
+  IlluminaHtp::PlatePurposes.create_branches
+
 
   sequencing_request_type_names = [
     "Single ended sequencing",

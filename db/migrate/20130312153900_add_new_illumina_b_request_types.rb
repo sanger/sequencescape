@@ -20,7 +20,7 @@ class AddNewIlluminaBRequestTypes < ActiveRecord::Migration
       {
         :key => "illumina_b_shared",
         :name => "Shared Library Creation",
-        :request_class_name => "IlluminaB::Requests::SharedLibraryPrep",
+        :request_class_name => "IlluminaHtp::Requests::SharedLibraryPrep",
         :acceptable_plate_purposes => [PlatePurpose.find_by_name('Cherrypicked')],
         :for_multiplexing => false,
         :no_target_asset => false
@@ -28,7 +28,7 @@ class AddNewIlluminaBRequestTypes < ActiveRecord::Migration
       {
         :key => "illumina_b_pool",
         :name => "Illumina-B Pooled",
-        :request_class_name => "IlluminaB::Requests::LibraryCompletion",
+        :request_class_name => "IlluminaHtp::Requests::LibraryCompletion",
         :acceptable_plate_purposes => [PlatePurpose.find_by_name('Lib PCR-XP')],
         :for_multiplexing => true,
         :no_target_asset => false,
@@ -37,7 +37,7 @@ class AddNewIlluminaBRequestTypes < ActiveRecord::Migration
       {
         :key => "illumina_b_pippin",
         :name => "Illumina-B Pippin",
-        :request_class_name => "IlluminaB::Requests::LibraryCompletion",
+        :request_class_name => "IlluminaHtp::Requests::LibraryCompletion",
         :acceptable_plate_purposes => [PlatePurpose.find_by_name('Lib PCR-XP')],
         :for_multiplexing => true,
         :no_target_asset => false,

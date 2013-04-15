@@ -1,4 +1,4 @@
-class IlluminaB::TransferablePlatePurpose < IlluminaB::FinalPlatePurpose
+class IlluminaHtp::TransferablePlatePurpose < IlluminaHtp::FinalPlatePurpose
   include PlatePurpose::Library
 
   def transition_to(plate, state, contents = nil)
