@@ -36,6 +36,14 @@ module Pulldown::PlatePurposes
       'ISC cap lib PCR',
       'ISC cap lib PCR-XP',
       'ISC cap lib pool'
+    ], [
+      'Lib PCR-XP',
+      'ISC lib pool',
+      'ISC hyb',
+      'ISC cap lib',
+      'ISC cap lib PCR',
+      'ISC cap lib PCR-XP',
+      'ISC cap lib pool'
     ]
   ]
 

@@ -69,7 +69,7 @@ class AddNewSubmissionTemplates < ActiveRecord::Migration
           "Double size selected","No PCR","Agilent Pulldown","ChiP-seq","Pre-quality controlled"
         ]) }
       },
-      {:name=>'HiSeq Single ended sequencing', :key=>"illumina_a_single_ended_hi_seq_sequencing", :submission_parameters => {:workflow_id=>1, :input_field_infos=>Hiseq2500Helper.other({:sub_params=>:ill_b_single})}},
+      {:name=>'HiSeq Single ended sequencing', :key=>"illumina_b_single_ended_hi_seq_sequencing", :submission_parameters => {:workflow_id=>1, :input_field_infos=>Hiseq2500Helper.other({:sub_params=>:ill_b_single})}},
       {:name=>'Paired end sequencing', :key=>"illumina_b_paired_end_sequencing", :submission_parameters => {:workflow_id=>1, :info_differential=>1} },
       {:name=>'Single ended sequencing', :key=>"illumina_b_single_ended_sequencing", :submission_parameters => {:workflow_id=>1, :info_differential=>1} }
    ]

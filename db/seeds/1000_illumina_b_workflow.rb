@@ -65,26 +65,10 @@ ActiveRecord::Base.transaction do
   [
     {
       :key => "illumina_a_shared",
-      :name => "Illumina A Shared Library Creation",
+      :name => "Illumina-A Shared Library Creation",
       :request_class_name => "IlluminaHtp::Requests::SharedLibraryPrep",
       :for_multiplexing => false,
       :no_target_asset => false
-    },
-    {
-      :key => "illumina_a_pool",
-      :name => "Illumina-A Pooled",
-      :request_class_name => "IlluminaHtp::Requests::LibraryCompletion",
-      :for_multiplexing => true,
-      :no_target_asset => false,
-      :target_purpose => Purpose.find_by_name!('Lib Pool Norm')
-    },
-    {
-      :key => "illumina_a_pippin",
-      :name => "Illumina-A Pippin",
-      :request_class_name => "IlluminaHtp::Requests::LibraryCompletion",
-      :for_multiplexing => true,
-      :no_target_asset => false,
-      :target_purpose => Purpose.find_by_name!('Lib Pool SS-XP-Norm')
     },
     {
       :key => "illumina_a_isc",
@@ -113,6 +97,35 @@ ActiveRecord::Base.transaction do
     {:pulldown_requests=>["Illumina-B STD"], :defaults=>{ 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, :name=>'Multiplexed WGS'},
     {:pulldown_requests=>["Shared Library Creation","Illumina-B Pooled"], :defaults=>{ 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, :name=>'Pooled'},
     {:pulldown_requests=>["Shared Library Creation","Illumina-B Pippin"], :defaults=>{ 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, :name=>'Pippin'}
+  ].each do |request_type_options|
+    defaults = request_type_options[:defaults]
+    pulldown_request_types = request_type_options[:pulldown_requests].map do |request_type_name|
+      RequestType.find_by_name!(request_type_name)
+    end
+
+    RequestType.find_each(:conditions => { :name => sequencing_request_type_names }) do |sequencing_request_type|
+      submission                   = LinearSubmission.new
+      submission.request_type_ids  = [ cherrypick.id, pulldown_request_types.map(&:id), sequencing_request_type.id ].flatten
+      submission.info_differential = workflow.id
+      submission.workflow          = workflow
+      submission.request_options   = defaults
+
+      SubmissionTemplate.new_from_submission(
+        "Illumina-B - Cherrypicked - #{request_type_options[:name]} - #{sequencing_request_type.name}",
+        submission
+      ).save!
+
+      submission.request_type_ids  = [ pulldown_request_types.map(&:id), sequencing_request_type.id ].flatten
+
+      SubmissionTemplate.new_from_submission(
+        "Illumina-B - #{request_type_options[:name]} - #{sequencing_request_type.name}",
+        submission
+      ).save!
+    end
+  end
+
+  [
+    {:pulldown_requests=>["Illumina-A Shared Library Creation","Illumina-A ISC"], :defaults=>{ 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, :name=>'HTP ISC'}
   ].each do |request_type_options|
     defaults = request_type_options[:defaults]
     pulldown_request_types = request_type_options[:pulldown_requests].map do |request_type_name|
