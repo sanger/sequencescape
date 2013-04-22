@@ -61,6 +61,8 @@ ActiveRecord::Base.transaction do
   IlluminaHtp::PlatePurposes.create_plate_purposes
   IlluminaHtp::PlatePurposes.create_branches
 
+  Pulldown::PlatePurposes.create_purposes(Pulldown::PlatePurposes::PLATE_PURPOSE_FLOWS.last)
+
 
   [
     {
@@ -125,7 +127,7 @@ ActiveRecord::Base.transaction do
   end
 
   [
-    {:pulldown_requests=>["Illumina-A Shared Library Creation","Illumina-A ISC"], :defaults=>{ 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, :name=>'HTP ISC'}
+    {:pulldown_requests=>["Illumina-A Shared Library Creation","Illumina-A ISC"], :defaults=>{ 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500, 'pre_capture_plex_level' => "8" }, :name=>'HTP ISC'}
   ].each do |request_type_options|
     defaults = request_type_options[:defaults]
     pulldown_request_types = request_type_options[:pulldown_requests].map do |request_type_name|
@@ -140,14 +142,14 @@ ActiveRecord::Base.transaction do
       submission.request_options   = defaults
 
       SubmissionTemplate.new_from_submission(
-        "Illumina-B - Cherrypicked - #{request_type_options[:name]} - #{sequencing_request_type.name}",
+        "Illumina-A - Cherrypicked - #{request_type_options[:name]} - #{sequencing_request_type.name}",
         submission
       ).save!
 
       submission.request_type_ids  = [ pulldown_request_types.map(&:id), sequencing_request_type.id ].flatten
 
       SubmissionTemplate.new_from_submission(
-        "Illumina-B - #{request_type_options[:name]} - #{sequencing_request_type.name}",
+        "Illumina-A - #{request_type_options[:name]} - #{sequencing_request_type.name}",
         submission
       ).save!
     end

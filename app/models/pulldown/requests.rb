@@ -59,7 +59,7 @@ module Pulldown::Requests
 
   end
 
-  class IscLibraryRequestPart < LibraryCreation
+  class IscLibraryRequestPart < IscLibraryRequest
   end
 
   class StockToCovaris < TransferRequest
