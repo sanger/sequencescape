@@ -54,6 +54,13 @@ ActiveRecord::Schema.define(:version => 20130424133956) do
   create_table "asset_barcodes", :force => true do |t|
   end
 
+  create_table "asset_creation_parents", :force => true do |t|
+    t.integer  "asset_creation_id"
+    t.integer  "asset_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "asset_creations", :force => true do |t|
     t.integer  "user_id"
     t.integer  "parent_id"

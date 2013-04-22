@@ -47,7 +47,7 @@ module ModelExtensions::Plate
     ActiveSupport::OrderedHash.new.tap do |groups|
       Request.include_request_metadata.for_pre_cap_grouping_of(self.stock_plate||self).each do |request|
         groups[request.group_id] = { :wells => request.group_into.split(',') }.tap do |pool_information|
-          pool_information[:pre_capture_plex_level] ||= request.request_metadata.pre_capture_plex_level
+          pool_information[:pre_capture_plex_level] ||= request.order.request_options['pre_capture_plex_level'].to_i
         end unless request.group_id.nil?
       end
     end
