@@ -3,7 +3,7 @@ class AddMultipleParents < ActiveRecord::Migration
     ActiveRecord::Base.transaction do
       create_table :asset_creation_parents do |t|
         t.references :asset_creation
-        t.references :asset
+        t.references :parent
         t.timestamps
       end
     end

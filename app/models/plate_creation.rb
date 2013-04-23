@@ -13,10 +13,11 @@ class PlateCreation < AssetCreation
 
   module Children
 
-    def self.includes(base)
+    def self.included(base)
       base.class_eval %Q{
         include_plate_named_scope :child
         belongs_to :child, :class_name => 'Plate'
+
         validates_unassigned(:child)
       }
     end

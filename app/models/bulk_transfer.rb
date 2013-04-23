@@ -36,7 +36,7 @@ class BulkTransfer < ActiveRecord::Base
       errors.add(:destination, 'is not a plate') unless destination.is_a?(Plate)
       raise ActiveRecord::RecordInvalid, self if errors.count > 0
 
-      yield (source,destination,transfers)
+      yield(source,destination,transfers)
     end
   end
   private :each_transfer
