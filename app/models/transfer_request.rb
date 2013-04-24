@@ -1,6 +1,22 @@
 # Every request "moving" an asset from somewhere to somewhere else without really transforming it
 # (chemically) as, cherrypicking, pooling, spreading on the floor etc
 class TransferRequest < Request
+
+  module InitialTransfer
+    def perform_transfer_of_contents
+      target_asset.aliquots << asset.aliquots.map do |a|
+        aliquot = a.clone
+        aliquot.study = outer_request.initial_study
+        aliquot
+      end unless asset.failed? or asset.cancelled?
+    end
+    private :perform_transfer_of_contents
+
+    def outer_request
+      asset.requests.detect{|r| r.is_a?(Request::LibraryCreation)}
+    end
+  end
+
   TRANSITIONS = {
     'started' => {
       'passed' => :pass!,

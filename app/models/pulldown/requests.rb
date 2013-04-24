@@ -58,4 +58,8 @@ module Pulldown::Requests
     end
 
   end
+
+  class StockToCovaris < TransferRequest
+    include TransferRequest::InitialTransfer
+  end
 end
