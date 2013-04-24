@@ -13,10 +13,11 @@ class LibraryCreationRequest < Request
     "Small RNA",
     "Double size selected",
     "DpnII gene expression",
-    "TraDIS", 
+    "TraDIS",
     "qPCR only",
     "Pre-quality controlled",
-    "DSN_RNAseq"
+    "DSN_RNAseq",
+    "RNA-seq dUTP"
   ]
 
   DEFAULT_LIBRARY_TYPE = 'Standard'
