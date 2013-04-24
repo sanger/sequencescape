@@ -44,7 +44,7 @@ class Request < ActiveRecord::Base
         ]
       end
     {
-      :select => 'uuids.external_id AS pool_id, GROUP_CONCAT(DISTINCT pw_location.description SEPARATOR ",") AS pool_into, requests.*',
+      :select => 'uuids.external_id AS pool_id, GROUP_CONCAT(DISTINCT pw_location.description ORDER BY pw.map_id ASC SEPARATOR ",") AS pool_into, requests.*',
       :joins => joins + [
         'INNER JOIN maps AS pw_location ON pw.map_id=pw_location.id',
         'INNER JOIN container_associations ON container_associations.content_id=pw.id',
