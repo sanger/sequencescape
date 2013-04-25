@@ -220,6 +220,14 @@ class Submission < ActiveRecord::Base
     name.present? ? name : "##{id}"
   end
 
+ def cross_project?
+  multiplexed? && orders.map(&:project_id).uniq.size > 1
+ end
+
+ def cross_study?
+  multiplexed? && orders.map(&:study_id).uniq.size > 1
+ end
+
 end
 
 class Array
