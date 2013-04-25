@@ -1,8 +1,10 @@
 class RepairStudyProjectOnAliquots < ActiveRecord::Migration
+
   def self.up
     ActiveRecord::Base.transaction do
+      Well.last # Silly class loading work arround
       Request.find_each(
-        :joins =>  "LEFT OUTER JOIN assets AS sa ON requests.asset_id = sa.id
+        :joins => "LEFT OUTER JOIN assets AS sa ON requests.asset_id = sa.id
       LEFT OUTER JOIN aliquots AS al ON al.receptacle_id = sa.id
       LEFT OUTER JOIN request_types ON request_types.id = requests.request_type_id",
         :conditions => "(al.study_id != requests.initial_study_id OR al.project_id != requests.initial_project_id) AND request_types.name IN('Illumina-A Pulldown WGS','Illumina-A Pulldown SC','Illumina-A Pulldown ISC','Illumina-B STD')"
@@ -21,6 +23,7 @@ class RepairStudyProjectOnAliquots < ActiveRecord::Migration
   def self.repair(request)
     ActiveRecord::Base.transaction do
       raise "Multiple Aliquots Discovered" if request.asset.aliquots.count > 1
+      raise "No Aliquots Discovered" if request.asset.aliquots.count == 0
       parent_aliquot = request.asset.aliquots.first
       study_id = request.study_id
       project_id = request.initial_project_id
@@ -34,14 +37,15 @@ class RepairStudyProjectOnAliquots < ActiveRecord::Migration
     return if request.target_asset.nil?
     return if request.target_asset.aliquots.empty?
     if ((request.initial_study_id||study_id)!=study_id )||((request.initial_project_id||project_id)!=project_id )
-      raise "Downstream request mismatch"
+      say "Downstream request mismatch: #{request.id}, skipping this branch"
+      return
     end
     aliquot = find_aliquot(request.target_asset,parent_aliquot)
     aliquot.study_id = study_id
     aliquot.project_id = project_id
     aliquot.save!
     request.target_asset.requests.each do |new_request|
-      step_repair(new_request,aliquot,study_id)
+      step_repair(new_request,aliquot,study_id,project_id)
     end
     request.clear_association_cache
   end
