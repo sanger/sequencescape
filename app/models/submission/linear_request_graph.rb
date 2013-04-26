@@ -38,6 +38,18 @@ module Submission::LinearRequestGraph
   end
   private :create_target_asset_for!
 
+  class MockedArray
+    def initialize(contents)
+      @contents = contents
+    end
+    def [](_)
+      @contents
+    end
+    def uniq
+      [@contents]
+    end
+  end
+
   # Creates the next step in the request graph, taking the first request type specified and building
   # enough requests for the source requests.  It will recursively call itself if there are more requests
   # that need creating.
@@ -50,7 +62,7 @@ module Submission::LinearRequestGraph
       # Otherwise there are the same number of target assets as source.
       target_assets =
         if request_type.for_multiplexing?
-          multiplexing_assets || ([ create_target_asset_for!(request_type) ] * assets.size)
+          multiplexing_assets || MockedArray.new(create_target_asset_for!(request_type))
         else
           source_asset_item_pairs.map { |source_asset, _| create_target_asset_for!(request_type, source_asset) }
         end

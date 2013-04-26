@@ -48,6 +48,7 @@ module Submission::StateMachine
     aasm_state :pending, :enter => :complete_building
     aasm_state :processing, :enter => :process_submission!
     aasm_state :ready
+    aasm_state :failed
 
     aasm_event :built do
       transitions :to => :pending, :from => [ :building ]
