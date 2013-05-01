@@ -14,3 +14,5 @@ Search::FindOutstandingIlluminaBPrePcrPlates.create!(:name=>'Find outstanding Il
 Search::FindIlluminaBTubes.create!(:name=>'Find Illumina-B tubes')
 Search::FindPulldownPlatesForUser.create!(:name=>'Find pulldown plates for user')
 Search::FindPulldownStockPlates.create!(:name=>'Find pulldown stock plates')
+Search::FindIlluminaAPlates.create!(:name=>'Find Illumina-A plates')
+Search::FindIlluminaAStockPlates.create!(:name=>'Find Illumina-A stock plates')
