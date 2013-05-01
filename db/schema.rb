@@ -577,6 +577,12 @@ ActiveRecord::Schema.define(:version => 20130424133956) do
   add_index "maps", ["description", "asset_size"], :name => "index_maps_on_description_and_asset_size"
   add_index "maps", ["description"], :name => "index_maps_on_description"
 
+  create_table "order_roles", :force => true do |t|
+    t.string   "role"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "orders", :force => true do |t|
     t.integer  "study_id"
     t.integer  "workflow_id"
@@ -596,6 +602,7 @@ ActiveRecord::Schema.define(:version => 20130424133956) do
     t.string   "asset_group_name"
     t.integer  "submission_id"
     t.integer  "pre_cap_group"
+    t.integer  "order_role_id"
   end
 
   add_index "orders", ["state_to_delete"], :name => "index_submissions_on_state"
@@ -792,7 +799,19 @@ ActiveRecord::Schema.define(:version => 20130424133956) do
   add_index "projects", ["state"], :name => "index_projects_on_state"
   add_index "projects", ["updated_at"], :name => "index_projects_on_updated_at"
 
-  create_table "reference_genomes", :force => true do |tracking|
+  create_table "quotas_bkp", :force => true do |t|
+    t.integer  "limit",            :default => 0
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "request_type_id"
+    t.integer  "preordered_count", :default => 0
+  end
+
+  add_index "quotas_bkp", ["request_type_id", "project_id"], :name => "index_quotas_on_request_type_id_and_project_id"
+  add_index "quotas_bkp", ["updated_at"], :name => "index_quotas_on_updated_at"
+
+  create_table "reference_genomes", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"

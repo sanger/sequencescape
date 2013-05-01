@@ -38,7 +38,7 @@ module IlluminaHtp::Requests
     end
 
     def role
-      "ILB"
+      order.role
     end
   end
 

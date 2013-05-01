@@ -97,8 +97,10 @@ ActiveRecord::Base.transaction do
 
   [
     {:pulldown_requests=>["Illumina-B STD"], :defaults=>{ 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, :name=>'Multiplexed WGS'},
-    {:pulldown_requests=>["Shared Library Creation","Illumina-B Pooled"], :defaults=>{ 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, :name=>'Pooled'},
-    {:pulldown_requests=>["Shared Library Creation","Illumina-B Pippin"], :defaults=>{ 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, :name=>'Pippin'}
+    {:pulldown_requests=>["Shared Library Creation","Illumina-B Pooled"], :defaults=>{ 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, :name=>'Pooled PATH', :label=>'ILB PATH'},
+    {:pulldown_requests=>["Shared Library Creation","Illumina-B Pippin"], :defaults=>{ 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, :name=>'Pippin PATH', :label=>'ILB PATH'},
+    {:pulldown_requests=>["Shared Library Creation","Illumina-B Pooled"], :defaults=>{ 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, :name=>'Pooled HWGS', :label=>'ILB HWGS'},
+    {:pulldown_requests=>["Shared Library Creation","Illumina-B Pippin"], :defaults=>{ 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, :name=>'Pippin HWGS', :label=>'ILB HWGS'}
   ].each do |request_type_options|
     defaults = request_type_options[:defaults]
     pulldown_request_types = request_type_options[:pulldown_requests].map do |request_type_name|
@@ -112,22 +114,26 @@ ActiveRecord::Base.transaction do
       submission.workflow          = workflow
       submission.request_options   = defaults
 
-      SubmissionTemplate.new_from_submission(
+      st = SubmissionTemplate.new_from_submission(
         "Illumina-B - Cherrypicked - #{request_type_options[:name]} - #{sequencing_request_type.name}",
         submission
-      ).save!
+      )
+      st.submission_parameters.merge!({:order_role_id=>Order::OrderRole.find_or_create_by_role(request_type_options[:label]).id}) unless request_type_options[:label].nil?
+      st.save!
 
       submission.request_type_ids  = [ pulldown_request_types.map(&:id), sequencing_request_type.id ].flatten
 
-      SubmissionTemplate.new_from_submission(
+      st = SubmissionTemplate.new_from_submission(
         "Illumina-B - #{request_type_options[:name]} - #{sequencing_request_type.name}",
         submission
-      ).save!
+      )
+      st.submission_parameters.merge!({:order_role_id=>Order::OrderRole.find_or_create_by_role(request_type_options[:label]).id}) unless request_type_options[:label].nil?
+      st.save!
     end
   end
 
   [
-    {:pulldown_requests=>["Illumina-A Shared Library Creation","Illumina-A ISC"], :defaults=>{ 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500, 'pre_capture_plex_level' => "8" }, :name=>'HTP ISC'}
+    {:pulldown_requests=>["Illumina-A Shared Library Creation","Illumina-A ISC"], :defaults=>{ 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500, 'pre_capture_plex_level' => "8" }, :name=>'HTP ISC', :label=>'ILA ISC'}
   ].each do |request_type_options|
     defaults = request_type_options[:defaults]
     pulldown_request_types = request_type_options[:pulldown_requests].map do |request_type_name|
@@ -141,17 +147,21 @@ ActiveRecord::Base.transaction do
       submission.workflow          = workflow
       submission.request_options   = defaults
 
-      SubmissionTemplate.new_from_submission(
+      st = SubmissionTemplate.new_from_submission(
         "Illumina-A - Cherrypicked - #{request_type_options[:name]} - #{sequencing_request_type.name}",
         submission
-      ).save!
+      )
+      st.submission_parameters.merge!({:order_role_id=>Order::OrderRole.find_or_create_by_role(request_type_options[:label]).id})
+      st.save!
 
       submission.request_type_ids  = [ pulldown_request_types.map(&:id), sequencing_request_type.id ].flatten
 
-      SubmissionTemplate.new_from_submission(
+      st = SubmissionTemplate.new_from_submission(
         "Illumina-A - #{request_type_options[:name]} - #{sequencing_request_type.name}",
         submission
-      ).save!
+      )
+       st.submission_parameters.merge!({:order_role_id=>Order::OrderRole.find_or_create_by_role(request_type_options[:label]).id})
+      st.save!
     end
   end
 end

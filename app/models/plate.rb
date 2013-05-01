@@ -461,7 +461,7 @@ WHERE c.container_id=?
   end
 
   def stock_plate
-    @stock_plate ||= lookup_stock_plate
+    @stock_plate ||= stock_plate? ? self : lookup_stock_plate
   end
 
   def lookup_stock_plate

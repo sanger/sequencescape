@@ -206,6 +206,10 @@ Given /^(passed|started|pending|failed) transfer requests exist between (\d+) we
   AssetLink.create(:ancestor=>source,:descendant=>destination)
 end
 
+Then /^the plate with the barcode "(.*?)" should have a label of "(.*?)"$/ do |barcode, label|
+  plate = Plate.find_by_barcode!(barcode)
+  assert_equal label, plate.label_text
+end
 
 
 

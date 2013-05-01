@@ -24,8 +24,10 @@ class AddNewSubmissionTemplates < ActiveRecord::Migration
 
   def self.new_templates
     [
-      {:middle_name => 'Pippin', :middle_request_types => [ [shared], [pippin] ] },
-      {:middle_name => 'Pooled', :middle_request_types => [ [shared], [pooled] ] }
+      {:middle_name => 'Pippin PATH', :middle_request_types => [ [shared], [pippin] ], :order_role=>'ILB PATH'},
+      {:middle_name => 'Pooled PATH', :middle_request_types => [ [shared], [pooled] ], :order_role=>'ILB PATH'}
+      {:middle_name => 'Pippin HWGS', :middle_request_types => [ [shared], [pippin] ], :order_role=>'ILB HWGS'},
+      {:middle_name => 'Pooled HWGS', :middle_request_types => [ [shared], [pooled] ], :order_role=>'ILB HWGS'}
     ]
   end
 
@@ -34,10 +36,11 @@ class AddNewSubmissionTemplates < ActiveRecord::Migration
       sequencing_requests.each do |sequencing_request|
         request_type_ids = cherrypick ? [[RequestType.find_by_key('cherrypick_for_illumina_b').id]] : []
         request_type_ids.concat(new_st[:middle_request_types]) << [RequestType.find_by_key(sequencing_request[:key]).id]
+        order_role_id = Order::OrderRole.find_or_create_by_role(new_st[:order_role]).id
         yield({
           :name => "Illumina-B -#{cherrypick ? 'Cherrypicked -':''} #{new_st[:middle_name]} - #{sequencing_request[:name]}",
           :submission_class_name => 'LinearSubmission',
-          :submission_parameters => {:request_type_ids_list => request_type_ids}.merge(sequencing_request[:submission_parameters]),
+          :submission_parameters => {:request_type_ids_list => request_type_ids, :order_role_id => order_role_id }.merge(sequencing_request[:submission_parameters]),
           :product_line => ProductLine.find_by_name('Illumina-B')
         })
       end
