@@ -46,6 +46,7 @@ module IlluminaHtp::PlatePurposes
 
   PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
     [ 'Shear',           'Post Shear',      'IlluminaHtp::Requests::CovarisToSheared'      ],
+    [ 'Post Shear',       'AL Libs',        'IlluminaHtp::Requests::PostShearToAlLibs'     ],
     [ 'AL Libs',         'Lib PCR',         'IlluminaHtp::Requests::PrePcrToPcr'           ],
     [ 'AL Libs',         'Lib PCRR',        'IlluminaHtp::Requests::PrePcrToPcr'           ],
     [ 'Lib PCR',         'Lib PCR-XP',      'IlluminaHtp::Requests::PcrToPcrXp'            ],
@@ -62,7 +63,7 @@ module IlluminaHtp::PlatePurposes
     'Shear'               => IlluminaHtp::CovarisPlatePurpose,
     'Post Shear'          => PlatePurpose,
     'AL Libs'             => PlatePurpose,
-    'Lib PCR'             => IlluminaHtp::PcrPlatePurpose,
+    'Lib PCR'             => IlluminaHtp::LibPcrPlatePurpose,
     'Lib PCRR'            => PlatePurpose,
     'Lib PCR-XP'          => IlluminaHtp::TransferablePlatePurpose,
     'Lib PCRR-XP'         => IlluminaHtp::TransferablePlatePurpose,
@@ -95,7 +96,7 @@ module IlluminaHtp::PlatePurposes
 
     def create_tube_flow(flow)
       raise "Flow already exists" if Purpose.find_by_name(flow.first).present?
-      stock_tube = create_tube_purpose(flow.shift, :target_type => 'StockMultiplexedLibraryTube')
+      create_tube_purpose(flow.pop, :target_type => 'MultiplexedLibraryTube')
       flow.each(&method(:create_tube_purpose))
     end
 
@@ -195,7 +196,7 @@ module IlluminaHtp::PlatePurposes
 
     def create_tube_purpose(tube_purpose_name, options = {})
       purpose = purpose_for(tube_purpose_name)
-      target_type = purpose == IlluminaB::MxTubePurpose ? 'MultiplexedLibraryTube' : 'StockMultiplexedLibraryTube'
+      target_type = 'StockMultiplexedLibraryTube'
       purpose.create!(options.reverse_merge(
         :name                 => tube_purpose_name,
         :target_type          => target_type,
