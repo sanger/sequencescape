@@ -6,7 +6,6 @@
 <% add :menu, "Contacts" => collaborators_project_path(@project) %>
 <% add :menu, "&nbsp;" => '' -%>
 <% add :menu, display_follow(@project, current_user, "Project") => follow_project_path(@project) -%>
-<% add :manager_option, "Request quota increase" => update_request_project_workflow_quotas_path(@project, current_user.workflow) -%>
 <% add :menu, "&nbsp;" => '' -%>
 <% add :menu, "Back to projects" => projects_path -%>
 
@@ -37,10 +36,5 @@
 			</td>
 		</tr>
 	</table>
-
-	<% if current_user.privileged?(@project) %>
-	  <h3>Quotas</h3>
-    <%= render :partial => "projects/workflows/quotas/all", :locals => {:project => @project, :workflow => @workflow} %>
-	<% end %>
 
 </div>

@@ -77,7 +77,8 @@ class SubmissionCreater < PresenterSkeleton
     :comments,
     :orders,
     :order_params,
-    :asset_group_id
+    :asset_group_id,
+    :pre_capture_plex_group
   ]
 
 
@@ -90,6 +91,10 @@ class SubmissionCreater < PresenterSkeleton
         submission.errors.add_to_base(message)
       end
     end
+  end
+
+  def per_order_settings
+    [:pre_capture_plex_level]
   end
 
   def find_asset_group
@@ -111,9 +116,9 @@ class SubmissionCreater < PresenterSkeleton
       :project         => project,
       :user            => @user,
       :request_options => order_params,
-      :comments        => comments
+      :comments        => comments,
+      :pre_cap_group   => pre_capture_plex_group
     )
-
     new_order.request_type_multiplier do |sequencing_request_type_id|
       new_order.request_options[:multiplier][sequencing_request_type_id] = (lanes_of_sequencing_required || 1)
     end if order_params
@@ -132,8 +137,7 @@ class SubmissionCreater < PresenterSkeleton
     if order.input_field_infos.flatten.empty?
       order.request_type_ids_list = order.request_types.map { |rt| [rt] }
     end
-
-    order.input_field_infos
+    order.input_field_infos.reject {|info| per_order_settings.include?(info.key)}
   end
 
   # Return the submission's orders or a blank array
@@ -155,12 +159,8 @@ class SubmissionCreater < PresenterSkeleton
         new_order = create_order.tap { |o| o.update_attributes!(order_assets) }
 
         if submission.present?
-          # This code shouldn't get run, as the client should stop this but...
-          # This exception is thrown if we try to add multiple orders to a submission.
           # The submission should be destroyed if we delete the last order on it so
           # we shouldn't see any empty submissions.
-          # Remove the raise and recue block to enable multiple submissions.
-          # You'll also need to renable them in the submission.js file.
 
           submission.orders << new_order
         else
@@ -171,8 +171,8 @@ class SubmissionCreater < PresenterSkeleton
         @order = new_order
       end
 
-    rescue Quota::Error => quota_exception
-      order.errors.add_to_base(quota_exception.message)
+    rescue Submission::ProjectValidation::Error => project_exception
+      order.errors.add_to_base(project_exception.message)
     rescue InvalidInputException => input_exception
       order.errors.add_to_base(input_exception.message)
     rescue IncorrectParamsException => exception

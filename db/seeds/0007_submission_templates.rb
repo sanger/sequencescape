@@ -61,6 +61,10 @@ def create_pulldown_submission_templates
       end
     end
   end
+  SubmissionTemplate.find(:all, :conditions => "name LIKE('% ISC %')").each do |submission_template|
+    submission_template.submission_parameters[:request_options]['pre_capture_plex_level']='8'
+    submission_template.save
+  end
 end
 
 # The pulldown submissions

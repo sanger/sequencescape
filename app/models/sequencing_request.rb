@@ -7,13 +7,20 @@ class SequencingRequest < Request
 
     attribute(:read_length, :integer => true, :required => true, :in => READ_LENGTHS)
   end
-  
+
+  before_validation :clear_cross_projects
+  def clear_cross_projects
+    self.initial_project = nil if submission.try(:cross_project?)
+    self.initial_study   = nil if submission.try(:cross_study?)
+  end
+  private :clear_cross_projects
+
   def create_assets_for_multiplexing
     barcode = AssetBarcode.new_barcode
     # Needs a sample?
     puldown_mx_library = PulldownMultiplexedLibraryTube.create!(:name => "#{barcode}", :barcode => barcode)
     lane = Lane.create!(:name => puldown_mx_library.name)
-    
+
     self.update_attributes!(:asset => puldown_mx_library, :target_asset =>lane)
   end
 
@@ -24,6 +31,10 @@ class SequencingRequest < Request
     delegate :fragment_size_required_from, :fragment_size_required_to, :to => :target
     validates_numericality_of :fragment_size_required_from, :integer_only => true, :greater_than => 0
     validates_numericality_of :fragment_size_required_to, :integer_only => true, :greater_than => 0
+  end
+
+  def order=(_)
+    # Do nothing
   end
 
   def self.delegate_validator

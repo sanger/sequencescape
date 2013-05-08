@@ -52,5 +52,14 @@ module Pulldown::Requests
 
   class IscLibraryRequest < LibraryCreation
     include BaitLibraryRequest
+
+    Metadata.class_eval do
+      attribute(:pre_capture_plex_level, :default => 8, :integer => true, :required =>true)
+    end
+
+  end
+
+  class StockToCovaris < TransferRequest
+    include TransferRequest::InitialTransfer
   end
 end

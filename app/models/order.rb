@@ -7,7 +7,7 @@ class Order < ActiveRecord::Base
   include InstanceMethods
   include Uuid::Uuidable
   include Submission::AssetGroupBehaviour
-  include Submission::QuotaBehaviour
+  include Submission::ProjectValidation
   include Submission::RequestOptionsBehaviour
   include Submission::AccessionBehaviour
   include ModelExtensions::Order
@@ -22,7 +22,6 @@ class Order < ActiveRecord::Base
 
   belongs_to :project
   validates_presence_of :project
-  has_many :quotas, :through => :project
 
   belongs_to :user
   validates_presence_of :user
@@ -134,15 +133,14 @@ class Order < ActiveRecord::Base
 
   def create_request_of_type!(request_type, attributes = {}, &block)
     request_type.create!(attributes) do |request|
+      request.submission_id               = submission_id
       request.workflow                    = workflow
       request.study                       = study
-      request.initial_project             = project # don't trigger the use_quota which is called below
+      request.initial_project             = project
       request.user                        = user
-      request.submission_id               = submission_id
       request.request_metadata_attributes = request_type.extract_metadata_from_hash(request_options)
       request.state                       = initial_request_state(request_type)
-
-      use_quota!(request, true)
+      request.order                       = self
 
       if request.asset.present?
         raise AssetTypeError, "Asset type does not match that expected by request type." unless is_asset_applicable_to_type?(request_type, request.asset)
