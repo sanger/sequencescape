@@ -46,7 +46,7 @@ Feature: Interacting with billing_events that include bait_libraries through the
     And the UUID for the study "Study testing the JSON API" is "22222222-2222-3333-4444-ffffffffffff"
 
     And the UUID of the next submission created will be "11111111-2222-3333-4444-111111111111"
-    Given the project "Project testing the JSON API" has a "Pulldown library creation" quota of 10
+
     And I have a sample tube called "Tube"
     And the sample tube "Tube" has been involved in a "Pulldown library creation" request with the bait library "Mouse all exon" within the study "Study testing the JSON API" for the project "Project testing the JSON API"
     And all assets have sequential UUIDs based on "aaaaaaaa-1111-2222-3333"
@@ -109,4 +109,4 @@ Feature: Interacting with billing_events that include bait_libraries through the
         }
       ]
       """
-      
+

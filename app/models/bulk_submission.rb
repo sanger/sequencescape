@@ -131,8 +131,8 @@ class BulkSubmission < ActiveRecord::Base
               # Collect successful submissions
               @submission_ids << submission.id
               @completed_submissions[submission.id] = "Submission #{submission.id} built (#{submission.orders.count} orders)"
-            rescue Quota::Error => exception
-              errors.add :spreadsheet, "There was a quota problem: #{exception.message}"
+            rescue Submission::ProjectValidation::Error => exception
+              errors.add :spreadsheet, "There was an issue with a project: #{exception.message}"
             end
           end
         end
@@ -159,7 +159,9 @@ class BulkSubmission < ActiveRecord::Base
     'library type',
     'bait library', 'bait library name',
     'comments',
-    'number of lanes'
+    'number of lanes',
+    'pre-capture plex level',
+    'pre-capture group'
   ]
 
   def validate_entry(header,pos,row,index)
@@ -209,14 +211,16 @@ class BulkSubmission < ActiveRecord::Base
         :comments => details['comments'],
         :request_options => {
           :read_length  => details['read length']
-        }
+        },
+        :pre_cap_group => details['pre-capture group']
       }
 
-      attributes[:request_options]['library_type']                  = details['library type']       unless details['library type'].blank?
-      attributes[:request_options]['fragment_size_required_from']   = details['fragment size from'] unless details['fragment size from'].blank?
-      attributes[:request_options]['fragment_size_required_to']     = details['fragment size to']   unless details['fragment size to'].blank?
-      attributes[:request_options][:bait_library_name]              = details['bait library name']  unless details['bait library name'].blank?
-      attributes[:request_options][:bait_library_name]            ||= details['bait library']       unless details['bait library'].blank?
+      attributes[:request_options]['library_type']                  = details['library type']           unless details['library type'].blank?
+      attributes[:request_options]['fragment_size_required_from']   = details['fragment size from']     unless details['fragment size from'].blank?
+      attributes[:request_options]['fragment_size_required_to']     = details['fragment size to']       unless details['fragment size to'].blank?
+      attributes[:request_options][:bait_library_name]              = details['bait library name']      unless details['bait library name'].blank?
+      attributes[:request_options][:bait_library_name]            ||= details['bait library']           unless details['bait library'].blank?
+      attributes[:request_options]['pre_capture_plex_level']        = details['pre-capture plex level'] unless details['pre-capture plex level'].blank?
 
       # Deal with the asset group: either it's one we should be loading, or one we should be creating.
       begin

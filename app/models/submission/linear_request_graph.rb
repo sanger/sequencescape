@@ -38,6 +38,18 @@ module Submission::LinearRequestGraph
   end
   private :create_target_asset_for!
 
+  class MockedArray
+    def initialize(contents)
+      @contents = contents
+    end
+    def [](_)
+      @contents
+    end
+    def uniq
+      [@contents]
+    end
+  end
+
   # Creates the next step in the request graph, taking the first request type specified and building
   # enough requests for the source requests.  It will recursively call itself if there are more requests
   # that need creating.
@@ -50,7 +62,7 @@ module Submission::LinearRequestGraph
       # Otherwise there are the same number of target assets as source.
       target_assets =
         if request_type.for_multiplexing?
-          multiplexing_assets || ([ create_target_asset_for!(request_type) ] * assets.size)
+          multiplexing_assets || MockedArray.new(create_target_asset_for!(request_type))
         else
           source_asset_item_pairs.map { |source_asset, _| create_target_asset_for!(request_type, source_asset) }
         end
@@ -102,6 +114,7 @@ module Submission::LinearRequestGraph
   def associate_built_requests(assets)
     assets.map(&:requests).flatten.each do |request|
       request.update_attributes!(:initial_study => nil) if request.initial_study != study
+      request.update_attributes!(:initial_project => nil) if request.initial_project != project
       comments.each do |comment|
         request.comments.create!(:user => user, :description => comment)
       end if comments.present?
@@ -119,24 +132,4 @@ module Submission::LinearRequestGraph
   end
   private :create_item_for!
 
-  def quota_calculator(&block)
-    Order.transaction do
-      # If there are no assets then we do not need to check the quota as none will be used, regardless.
-      return if assets.empty?
-
-      # Not optimal but preserve the order of the request_types
-      request_type_records = self.request_types.map { |rt_id|  RequestType.find(rt_id) }
-      quota_required = assets.size
-
-      request_type_records.each do |request_type|
-        quota_required  *= multiplier_for(request_type)
-        yield(request_type, quota_required)
-        # should have the same behavior as the chain_request call
-        if request_type.for_multiplexing?
-          quota_required = (submission.try(:orders)||[self]).index(self)==0 ? 1 : 0
-        end
-      end
-    end
-  end
-  private :quota_calculator
 end

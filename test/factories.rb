@@ -160,12 +160,6 @@ Factory.define :order_template, :class => SubmissionTemplate do |submission_temp
   submission_template.submission_parameters({ :workflow_id => 1, :request_type_ids_list => [] })
 end
 
-Factory.define :project_quota, :class => Quota do |quota|
-  quota.project         {|project| project.association(:project)}
-  quota.request_type    {|request_type| request_type.association(:request_type)}
-  quota.limit           0
-end
-
 Factory.define :report do |r|
 end
 

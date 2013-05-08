@@ -27,7 +27,7 @@ Feature: Pick by micro litre (stock transfer) using the Tecan robot
        | D2            | 50                     | 10              |
        | D3            | 40                     | 15              |
        | D4            | 50                     | 20              |
-    
+
     Given I have a "Cherrypicking for Pulldown" submission with plate "222"
      And I have a "Cherrypicking for Pulldown" submission with plate "333"
      And I am on the show page for pipeline "Cherrypicking for Pulldown"
@@ -151,11 +151,10 @@ Feature: Pick by micro litre (stock transfer) using the Tecan robot
         | Volume  |  -1  |
      And I press "Next step"
     Then I should see "Invalid values typed in"
-    
+
   @cherrypicking @javascript @gwl
   Scenario Outline: Stock transfer by micro litres in Cherrypicking pipeline
     Given I have a project called "Test project"
-     And project "Test project" has enough quotas
      And I have an active study called "Test study"
      And I have a plate "1" in study "Test study" with 2 samples in asset group "Plate asset group"
      And I have a plate "10" in study "Test study" with 2 samples in asset group "Plate asset group"
@@ -172,11 +171,11 @@ Feature: Pick by micro litre (stock transfer) using the Tecan robot
     	And I follow "Start batch"
     	And I select "testtemplate" from "Plate Template"
    	 And I select "Infinium 670k" from "Output plate purpose"
-    	
+
     When I choose "Pick by µl"
      And I fill in the following:
         | Volume  |  <volume>  |
-      
+
    	 And I press "Next step"
    	 And I press "Next step"
    	 And I select "Genotyping freezer" from "Location"

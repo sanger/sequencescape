@@ -47,7 +47,7 @@
     <%= submit_tag "&#10010; Add Order",
       :id       => "add-order",
       :class    => "button",
-      :disabled => true
+      :disabled => @presenter.orders.empty?
     %>
   </li>
 

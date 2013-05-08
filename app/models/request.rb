@@ -44,7 +44,7 @@ class Request < ActiveRecord::Base
         ]
       end
     {
-      :select => 'uuids.external_id AS pool_id, GROUP_CONCAT(DISTINCT pw_location.description SEPARATOR ",") AS pool_into, requests.*',
+      :select => 'uuids.external_id AS pool_id, GROUP_CONCAT(DISTINCT pw_location.description ORDER BY pw.map_id ASC SEPARATOR ",") AS pool_into, requests.*',
       :joins => joins + [
         'INNER JOIN maps AS pw_location ON pw.map_id=pw_location.id',
         'INNER JOIN container_associations ON container_associations.content_id=pw.id',
@@ -59,14 +59,37 @@ class Request < ActiveRecord::Base
     }
   }
 
+    named_scope :for_pre_cap_grouping_of, lambda { |plate|
+    joins =
+      if plate.stock_plate? # Should never be once we've optimized
+        [ 'INNER JOIN assets AS pw ON requests.asset_id=pw.id' ]
+      else
+        [
+          'INNER JOIN well_links ON well_links.source_well_id=requests.asset_id',
+          'INNER JOIN assets AS pw ON well_links.target_well_id=pw.id AND well_links.type="stock"',
+        ]
+      end
+    {
+      :select => 'min(uuids.external_id) AS group_id, GROUP_CONCAT(DISTINCT pw_location.description SEPARATOR ",") AS group_into, requests.*',
+      :joins => joins + [
+        'INNER JOIN maps AS pw_location ON pw.map_id=pw_location.id',
+        'INNER JOIN container_associations ON container_associations.content_id=pw.id',
+        'INNER JOIN orders ON requests.order_id=orders.id',
+        'INNER JOIN uuids ON uuids.resource_id=orders.id AND uuids.resource_type="Order"'
+      ],
+      :group => 'orders.pre_cap_group, ifnull(orders.pre_cap_group, orders.id)',
+      :conditions => [
+        'requests.sti_type NOT IN (?) AND container_associations.container_id=?',
+        [TransferRequest,*Class.subclasses_of(TransferRequest)].map(&:name), plate.id
+      ]
+    }
+  }
+
   belongs_to :pipeline
   belongs_to :item
 
   has_many :failures, :as => :failable
   has_many :billing_events
-
-  has_many :request_quotas
-  has_many :quotas, :through => :request_quotas
 
   belongs_to :request_type
   delegate :billable?, :to => :request_type, :allow_nil => true
@@ -77,6 +100,7 @@ class Request < ActiveRecord::Base
   belongs_to :user
 
   belongs_to :submission
+  belongs_to :order
 
   named_scope :with_request_type_id, lambda { |id| { :conditions => { :request_type_id => id } } }
 
@@ -87,28 +111,9 @@ class Request < ActiveRecord::Base
   def project_id=(project_id)
     raise RuntimeError, "Initial project already set" if initial_project_id
     self.initial_project_id = project_id
-
-
-    #use quota if neeed
-    #we can't use quota now, because if we are building the request, the request type might
-    # haven't been assigned yet.
-    # We use in instance variable instead and book the request in a before_save callback
-    #
-    @orders_to_book = self.initial_project.orders
-    book_quotas unless new_record?
-    #self.initial_project.orders.each { |o| o.use_quota!(self, o.assets.present?) }
   end
 
 
-  def book_quotas
-    return unless @orders_to_book
-    # if assets are empty the order hasn't booked anything, so there is no need to unbook quota
-    # Should happen in real life but might in test
-    @orders_to_book.each { |o| o.use_quota!(self, o.assets.present?) }
-    @orders_to_book = nil
-  end
-  private :book_quotas
-  after_create :book_quotas
 
   def project=(project)
     return unless project
@@ -397,10 +402,7 @@ class Request < ActiveRecord::Base
   end
 
   def request_type_updatable?(new_request_type)
-    return false unless self.pending?
-    request_type = RequestType.find(new_request_type)
-    return true if self.request_type_id == request_type.id
-    self.has_quota?(1)
+    self.pending?
   end
 
   extend Metadata
@@ -420,10 +422,6 @@ class Request < ActiveRecord::Base
   # NOTE: With properties Request#name would have been silently sent through to the property.  With metadata
   # we now need to be explicit in how we want it delegated.
   delegate :name, :to => :request_metadata
-  def has_quota?(number)
-    #no if one project doesn't have the quota
-    not quotas.map(&:project).any? {|p| p.has_quota?(request_type_id, number) == false}
-  end
 
   # Adds any pool information to the structure so that it can be reported to client applications
   def update_pool_information(pool_information)

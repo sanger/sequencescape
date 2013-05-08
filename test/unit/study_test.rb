@@ -233,7 +233,6 @@ class StudyTest < ActiveSupport::TestCase
         (1..2).each { |_| Factory(:order, :study => @study ) }
         @study.projects.each do |project|
           project.enforce_quotas=true
-          Factory(:project_quota, :project => project, :request_type => @request_type, :limit => 10)
         end
         @study.save!
 
@@ -249,11 +248,6 @@ class StudyTest < ActiveSupport::TestCase
         assert @study.requests.all? { |request| not request.cancelled? }
       end
 
-      should 'not alter the project quotas' do
-        @study.projects.each do |project|
-          assert_equal 10, project.total_quota(@request_type)
-        end
-      end
     end
   end
 end

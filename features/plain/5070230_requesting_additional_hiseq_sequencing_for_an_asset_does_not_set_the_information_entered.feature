@@ -4,7 +4,6 @@ Feature: Requesting additional HiSeq sequencing for a library tube
     Given I am an "administrator" user logged in as "John Smith"
 
     Given I have a project called "Testing HiSeq Project"
-    And the project "Testing HiSeq Project" has a "HiSeq Paired end sequencing" quota of 100
 
     Given I have an active study called "Testing HiSeq Study"
     And I have a library tube of stuff called "tube_1"

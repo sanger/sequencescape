@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130424110718) do
+ActiveRecord::Schema.define(:version => 20130424133956) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -582,6 +582,7 @@ ActiveRecord::Schema.define(:version => 20130424110718) do
     t.integer  "asset_group_id"
     t.string   "asset_group_name"
     t.integer  "submission_id"
+    t.integer  "pre_cap_group"
   end
 
   add_index "orders", ["state_to_delete"], :name => "index_submissions_on_state"
@@ -778,7 +779,7 @@ ActiveRecord::Schema.define(:version => 20130424110718) do
   add_index "projects", ["state"], :name => "index_projects_on_state"
   add_index "projects", ["updated_at"], :name => "index_projects_on_updated_at"
 
-  create_table "quotas", :force => true do |t|
+  create_table "quotas_bkp", :force => true do |t|
     t.integer  "limit",            :default => 0
     t.integer  "project_id"
     t.datetime "created_at"
@@ -787,8 +788,8 @@ ActiveRecord::Schema.define(:version => 20130424110718) do
     t.integer  "preordered_count", :default => 0
   end
 
-  add_index "quotas", ["request_type_id", "project_id"], :name => "index_quotas_on_request_type_id_and_project_id"
-  add_index "quotas", ["updated_at"], :name => "index_quotas_on_updated_at"
+  add_index "quotas_bkp", ["request_type_id", "project_id"], :name => "index_quotas_on_request_type_id_and_project_id"
+  add_index "quotas_bkp", ["updated_at"], :name => "index_quotas_on_updated_at"
 
   create_table "reference_genomes", :force => true do |t|
     t.string   "name"
@@ -835,17 +836,18 @@ ActiveRecord::Schema.define(:version => 20130424110718) do
     t.integer  "bait_library_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "pre_capture_plex_level"
   end
 
   add_index "request_metadata", ["request_id"], :name => "index_request_metadata_on_request_id"
 
-  create_table "request_quotas", :force => true do |t|
+  create_table "request_quotas_bkp", :force => true do |t|
     t.integer "request_id", :null => false
     t.integer "quota_id",   :null => false
   end
 
-  add_index "request_quotas", ["quota_id", "request_id"], :name => "index_request_quotas_on_quota_id_and_request_id"
-  add_index "request_quotas", ["request_id"], :name => "fk_request_quotas_to_requests"
+  add_index "request_quotas_bkp", ["quota_id", "request_id"], :name => "index_request_quotas_on_quota_id_and_request_id"
+  add_index "request_quotas_bkp", ["request_id"], :name => "fk_request_quotas_to_requests"
 
   create_table "request_type_plate_purposes", :force => true do |t|
     t.integer "request_type_id",  :null => false
@@ -894,6 +896,7 @@ ActiveRecord::Schema.define(:version => 20130424110718) do
     t.integer  "initial_project_id"
     t.integer  "priority",                         :default => 0
     t.string   "sti_type"
+    t.integer  "order_id"
   end
 
   add_index "requests", ["asset_id"], :name => "index_requests_on_asset_id"

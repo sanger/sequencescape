@@ -26,7 +26,7 @@ class AssetsController < ApplicationController
       end
     end
   end
-  
+
   def show
     respond_to do |format|
       format.html
@@ -253,13 +253,13 @@ class AssetsController < ApplicationController
       :comments        => params[:comments]
     )
 
-    respond_to do |format| 
+    respond_to do |format|
       flash[:notice] = 'Created request'
 
       format.html { redirect_to new_request_for_current_asset }
       format.json { render :json => submission.requests, :status => :created }
     end
-  rescue Quota::Error => exception
+  rescue Submission::ProjectValidation::Error => exception
     respond_to do |format|
       flash[:error] = exception.message
       format.html { redirect_to new_request_for_current_asset }
@@ -271,7 +271,7 @@ class AssetsController < ApplicationController
       format.html { redirect_to new_request_for_current_asset }
       format.json { render :json => exception.message, :status => :precondition_failed }
     end
-  rescue ActiveRecord::RecordInvalid => exception 
+  rescue ActiveRecord::RecordInvalid => exception
     respond_to do |format|
       flash[:error] = exception.message
       format.html { redirect_to new_request_for_current_asset }
@@ -395,7 +395,7 @@ class AssetsController < ApplicationController
       redirect_to :action => :filtered_move, :id => params[:id]
       return
     end
-    
+
     result = move_single(params)
     if result
       flash[:notice] = "Assets has been moved"
@@ -405,10 +405,10 @@ class AssetsController < ApplicationController
       redirect_to :action => "filtered_move", :id => @asset.id
     end
   end
-  
+
   def find_by_barcode
   end
-  
+
   def lab_view
     barcode = params[:barcode]
     if barcode.blank?
@@ -419,14 +419,14 @@ class AssetsController < ApplicationController
       else
         @asset = Asset.find_by_barcode(barcode)
       end
-      
+
       if @asset.nil?
         flash[:error] = "Unable to find anything with this barcode"
         redirect_to :action => "find_by_barcode"
       end
     end
   end
-  
+
   def create_stocks
     params[:assets].each do |id, params|
       asset = Asset.find(id)
@@ -437,7 +437,7 @@ class AssetsController < ApplicationController
       )
       stock_asset.assign_relationships(asset.parents, asset)
     end
-    
+
     batch = Batch.find(params[:batch_id])
     redirect_to batch_path(batch)
   end
