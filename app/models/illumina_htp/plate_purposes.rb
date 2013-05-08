@@ -35,6 +35,8 @@ module IlluminaHtp::PlatePurposes
 
   STOCK_PLATE_PURPOSE = 'Cherrypicked'
 
+  OUTPUT_PLATE_PURPOSES = ['Lib PCR-XP','Lib PCRR-XP']
+
   # Don't have ILllumina B QC plates at the momnet...
   PLATE_PURPOSE_LEADING_TO_QC_PLATES = [
     'Post Shear', 'Lib PCR-XP', 'Lib PCRR-XP'
@@ -187,7 +189,8 @@ module IlluminaHtp::PlatePurposes
       purpose_for(plate_purpose_name).create!(options.reverse_merge(
         :name                  => plate_purpose_name,
         :cherrypickable_target => false,
-        :cherrypick_direction  => 'column'
+        :cherrypick_direction  => 'column',
+        :can_be_considered_a_stock_plate => self::OUTPUT_PLATE_PURPOSES.include?(plate_purpose_name)
       )).tap do |plate_purpose|
         plate_purpose.barcode_printer_type = BarcodePrinterType.find_by_type('BarcodePrinterType96Plate')||plate_purpose.barcode_printer_type
       end

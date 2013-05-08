@@ -33,8 +33,21 @@ class Barcode
     end
 
     def role
-      return nil if stock_plate.nil?
+      return nil if no_role?
       stock_plate.wells.first.requests.first.role
+    end
+
+    def no_role?
+      case
+      when stock_plate.nil?
+        return true
+      when stock_plate.wells.first.nil?
+        return true
+      when stock_plate.wells.first.requests.first.nil?
+        return true
+      else
+        false
+      end
     end
 
   end

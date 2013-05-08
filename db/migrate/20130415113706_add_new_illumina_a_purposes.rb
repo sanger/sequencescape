@@ -3,6 +3,9 @@ class AddNewIlluminaAPurposes < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
       Pulldown::PlatePurposes.create_purposes(branch)
+
+      tube_purpose = Tube::Purpose.find_by_name('Standard MX') or raise "Cannot find standard MX tube purpose"
+      Purpose.find_by_name(branch.last).child_relationships.create!(:child => tube_purpose, :transfer_request_type => RequestType.transfer)
     end
   end
 

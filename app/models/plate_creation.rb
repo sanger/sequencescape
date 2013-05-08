@@ -33,7 +33,7 @@ class PlateCreation < AssetCreation
     private :children
 
     def create_children!
-      self.child = child_purpose.create!
+      self.child = child_purpose.create!(:location=>parent.location)
     end
     private :create_children!
 

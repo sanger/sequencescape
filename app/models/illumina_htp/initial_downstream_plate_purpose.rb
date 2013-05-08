@@ -4,7 +4,7 @@ class IlluminaHtp::InitialDownstreamPlatePurpose < IlluminaHtp::DownstreamPlateP
   def transition_to(plate, state, contents = nil)
     ActiveRecord::Base.transaction do
       super
-      new_outer_state = ['started','passed','qc_complete'].include?(state) ? 'started' : state
+      new_outer_state = ['started','passed','qc_complete','nx_in_progress'].include?(state) ? 'started' : state
       stock_wells(plate,contents).each do |source_well|
         source_well.requests.reject {|r| r.is_a?(TransferRequest)}.each do |request|
           request.transition_to(new_outer_state) if request.pending?

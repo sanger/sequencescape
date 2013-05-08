@@ -17,6 +17,10 @@ class UpdateTransferRequestClasses < ActiveRecord::Migration
         {
         :parent=>'ISC stock DNA', :child=>'ISC Covaris',
         :request_class_name=>'Pulldown::Requests::StockToCovaris', :prefix=>'Pulldown'
+        },
+        {
+        :parent=>'Lib PCR-XP', :child=>'ISC-HTP lib pool',
+        :request_class_name=>'Pulldown::Requests::PcrXpToIscLibPool', :prefix=>'Pulldown'
         }
     ].each do |settings|
       yield(
