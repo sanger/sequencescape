@@ -34,6 +34,8 @@ module IlluminaB::PlatePurposes
     'ILB_STD_INPUT' => 'illumina_b_std'
   }
 
+  OUTPUT_PLATE_PURPOSES = []
+
   PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
     [ 'ILB_STD_INPUT',   'ILB_STD_COVARIS','IlluminaB::Requests::InputToCovaris'     ],
 	[ 'ILB_STD_COVARIS', 'ILB_STD_SH',      'IlluminaB::Requests::CovarisToSheared'  ],
