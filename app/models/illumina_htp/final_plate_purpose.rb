@@ -8,6 +8,10 @@ class IlluminaHtp::FinalPlatePurpose < PlatePurpose
     default_transition_to(plate, state, contents)
   end
 
+  def attatched?(plate)
+    plate.state == ('qc_completed')
+  end
+
   def fail_stock_well_requests(wells)
     # Handled by the nudge of the pre PCR wells!
   end
