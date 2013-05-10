@@ -60,6 +60,7 @@ module Pulldown::Requests
   end
 
   class IscLibraryRequestPart < IscLibraryRequest
+    include IlluminaHtp::Requests::LibraryCompletion::FailUpstream
   end
 
   class StockToCovaris < TransferRequest

@@ -24,14 +24,8 @@ module IlluminaHtp::Requests
     DEFAULT_LIBRARY_TYPE = 'Standard'
 
     fragment_size_details(:no_default, :no_default)
-  end
 
-  class SharedLibraryPrep < StdLibraryRequest
-    def target_tube
-      @target_tube ||= submission.next_requests(self).detect {|r| r.target_tube }.try(:target_tube)
-    end
-
-        # Ensure that the bait library information is also included in the pool information.
+    # Ensure that the bait library information is also included in the pool information.
     def update_pool_information(pool_information)
       super
       pool_information[:target_tube_purpose] = target_tube.purpose.uuid if target_tube
@@ -40,10 +34,26 @@ module IlluminaHtp::Requests
     def role
       order.role
     end
+
+  end
+
+  class SharedLibraryPrep < StdLibraryRequest
+    def target_tube
+      @target_tube ||= submission.next_requests(self).detect {|r| r.target_tube }.try(:target_tube)
+    end
+
+    def on_failed
+      submission.next_requests(self).each {|r| r.pending? ? r.cancel_before_started : r.cancel }
+    end
   end
 
   class LibraryCompletion < StdLibraryRequest
-
+    module FailUpstream
+      def on_failed
+        asset.requests_as_target.select {|r| r.passed? && r.is_a?(SharedLibraryPrep) }.change_decision!
+      end
+    end
+    include FailUpstream
   end
 
   module InitialDownstream
