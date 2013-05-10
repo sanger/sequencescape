@@ -208,7 +208,7 @@ end
 
 Then /^the plate with the barcode "(.*?)" should have a label of "(.*?)"$/ do |barcode, label|
   plate = Plate.find_by_barcode!(barcode)
-  assert_equal label, plate.label_text
+  assert_equal label, plate.label_prefix
 end
 
 
