@@ -123,7 +123,6 @@ module IlluminaHtp::PlatePurposes
           'Cherrypick::Strategy::Filter::InternallyOrderPlexBySubmission'
         ]
       )
-      request_type_for(stock_plate).acceptable_plate_purposes << stock_plate
 
       flow.each do |name|
         create_plate_purpose(name, :default_location => library_creation_freezer)

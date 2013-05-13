@@ -4,6 +4,9 @@ class AddNewIlluminaBRequestTypes < ActiveRecord::Migration
       each_request_type do |request_type_options|
         RequestType.create!(shared_options.merge(request_type_options))
       end
+      IlluminaHtp::PlatePurposes::STOCK_PLATE_PURPOSE_TO_OUTER_REQUEST.each do |purpose,request|
+        RequestType.find_by_key(request).acceptable_plate_purposes << Purpose.find_by_name(stock_plate)
+      end
     end
   end
 
