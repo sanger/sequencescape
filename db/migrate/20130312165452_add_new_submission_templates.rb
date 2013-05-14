@@ -25,7 +25,7 @@ class AddNewSubmissionTemplates < ActiveRecord::Migration
   def self.new_templates
     [
       {:middle_name => 'Pippin PATH', :middle_request_types => [ [shared], [pippin] ], :order_role=>'ILB PATH'},
-      {:middle_name => 'Pooled PATH', :middle_request_types => [ [shared], [pooled] ], :order_role=>'ILB PATH'}
+      {:middle_name => 'Pooled PATH', :middle_request_types => [ [shared], [pooled] ], :order_role=>'ILB PATH'},
       {:middle_name => 'Pippin HWGS', :middle_request_types => [ [shared], [pippin] ], :order_role=>'ILB HWGS'},
       {:middle_name => 'Pooled HWGS', :middle_request_types => [ [shared], [pooled] ], :order_role=>'ILB HWGS'}
     ]

@@ -4,9 +4,6 @@ class AddNewIlluminaBRequestTypes < ActiveRecord::Migration
       each_request_type do |request_type_options|
         RequestType.create!(shared_options.merge(request_type_options))
       end
-      IlluminaHtp::PlatePurposes::STOCK_PLATE_PURPOSE_TO_OUTER_REQUEST.each do |purpose,request|
-        RequestType.find_by_key(request).acceptable_plate_purposes << Purpose.find_by_name(purpose)
-      end
     end
   end
 
@@ -24,7 +21,7 @@ class AddNewIlluminaBRequestTypes < ActiveRecord::Migration
         :key => "illumina_b_shared",
         :name => "Shared Library Creation",
         :request_class_name => "IlluminaHtp::Requests::SharedLibraryPrep",
-        :acceptable_plate_purposes => [PlatePurpose.find_by_name('Cherrypicked')],
+        :acceptable_plate_purposes => [Purpose.find_by_name!('Cherrypicked')],
         :for_multiplexing => false,
         :no_target_asset => false
       },
@@ -32,19 +29,19 @@ class AddNewIlluminaBRequestTypes < ActiveRecord::Migration
         :key => "illumina_b_pool",
         :name => "Illumina-B Pooled",
         :request_class_name => "IlluminaHtp::Requests::LibraryCompletion",
-        :acceptable_plate_purposes => [PlatePurpose.find_by_name('Lib PCR-XP')],
+        :acceptable_plate_purposes => [Purpose.find_by_name!('Lib PCR-XP')],
         :for_multiplexing => true,
         :no_target_asset => false,
-        :target_purpose => Purpose.find_by_name('Lib Pool Norm')
+        :target_purpose => Purpose.find_by_name!('Lib Pool Norm')
       },
       {
         :key => "illumina_b_pippin",
         :name => "Illumina-B Pippin",
         :request_class_name => "IlluminaHtp::Requests::LibraryCompletion",
-        :acceptable_plate_purposes => [PlatePurpose.find_by_name('Lib PCR-XP')],
+        :acceptable_plate_purposes => [Purpose.find_by_name('Lib PCR-XP')],
         :for_multiplexing => true,
         :no_target_asset => false,
-        :target_purpose => Purpose.find_by_name('Lib Pool SS-XP-Norm')
+        :target_purpose => Purpose.find_by_name!('Lib Pool SS-XP-Norm')
       },
     ].each do |request_type|
       yield request_type
