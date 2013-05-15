@@ -63,4 +63,5 @@ class Core::Endpoint::BasicHandler
   include Core::Endpoint::BasicHandler::Handlers
   include Core::Endpoint::BasicHandler::Associations::HasMany
   include Core::Endpoint::BasicHandler::Associations::BelongsTo
+  include Core::Endpoint::BasicHandler::Associations::HasFile
 end

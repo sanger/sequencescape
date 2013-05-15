@@ -1,11 +1,22 @@
 class ::Api::EndpointHandler < ::Core::Service
   class << self
+
+    def registered_mimetypes
+      @registered_mimetypes
+    end
+
+    # We can't use the built in provides, as the accepted mimetimes are fixed when the route is set up.
+    def valid_mimetype(_)
+      condition do
+        request.acceptable_media_types.prioritize(registered_mimetypes).present?
+      end
+    end
+
     def instance_action(action, http_method)
-      send(http_method, %r{^/#{self.api_version_path}/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?$}) do
+      send(http_method, %r{^/#{self.api_version_path}/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?$}, :provides=>'application/json') do
         report("instance") do
           uuid_in_url, parts = params[:captures][0], params[:captures][1].try(:split, '/') || []
           uuid = Uuid.with_external_id(uuid_in_url).first or raise ActiveRecord::RecordNotFound, "UUID does not exist"
-
           handle_request(:instance, request, action, parts) do |request|
             request.io     = lookup_for_class(uuid.resource.class) { |e| raise e }
             request.target = request.io.eager_loading_for(uuid.resource.class).include_uuid.find(uuid.resource_id)
@@ -15,7 +26,7 @@ class ::Api::EndpointHandler < ::Core::Service
     end
 
     def model_action(action, http_method)
-      send(http_method, %r{^/#{self.api_version_path}/([^\d/][^/]+(?:/[^/]+){0,2})$}) do
+      send(http_method, %r{^/#{self.api_version_path}/([^\d/][^/]+(?:/[^/]+){0,2})$}, :provides=>'application/json') do
         report("model") do
           determine_model_from_parts(*params[:captures].to_s.split('/')) do |model, parts|
             handle_request(:model, request, action, parts) do |request|
@@ -26,7 +37,42 @@ class ::Api::EndpointHandler < ::Core::Service
         end
       end
     end
+
+    def file_model_action(action, http_method)
+      send(http_method, %r{^/#{self.api_version_path}/([^\d/][^/]+(?:/[^/]+){0,2})$}, :valid_mimetype=>true) do
+        report("model") do
+          raise Core::Service::ContentFiltering::InvalidRequestedContentType
+        end
+      end
+    end
+
+    def file_action(action, http_method)
+      send(http_method, %r{^/#{self.api_version_path}/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?$}, :valid_mimetype=>true) do
+        report("file") do
+          uuid_in_url, parts = params[:captures][0], params[:captures][1].try(:split, '/') || []
+          uuid = Uuid.with_external_id(uuid_in_url).first or raise ActiveRecord::RecordNotFound, "UUID does not exist"
+
+          file_through = return_file(request, action, parts) do |request|
+            request.io     = lookup_for_class(uuid.resource.class) { |e| raise e }
+            request.target = request.io.eager_loading_for(uuid.resource.class).include_uuid.find(uuid.resource_id)
+          end
+          uuid.resource.__send__(file_through) {|file| send_file file.path, :filename=> file.filename }
+
+        end
+      end
+    end
+
+    def register_mimetype(mimetype)
+      @registered_mimetypes ||= []
+      @registered_mimetypes.push(mimetype).uniq!
+    end
+
   end
+
+  def registered_mimetypes
+    self.class.registered_mimetypes
+  end
+
 
   def lookup_for_class(model, &block)
     ::Core::Io::Registry.instance.lookup_for_class(model)
@@ -67,7 +113,7 @@ class ::Api::EndpointHandler < ::Core::Service
       else raise StandardError, "Unexpected handler #{handler.inspect}"
       end
 
-    request = 
+    request =
       ::Core::Service::Request.new(requested_url = http_request.fullpath) do |request|
         request.service = self
         request.path    = parts
@@ -80,6 +126,23 @@ class ::Api::EndpointHandler < ::Core::Service
     body(request.send(handler, action, endpoint))
   end
 
+  def return_file(http_request, action, parts)
+
+    request =
+      ::Core::Service::Request.new(requested_url = http_request.fullpath) do |request|
+        request.service = self
+        request.path    = parts
+        request.json    = @json
+        yield(request)
+      end
+
+    endpoint = endpoint_for_object(request.target)
+    handled_by = request.instance(action, endpoint).handled_by
+    file_through = handled_by.file_through(request_accepted)
+    Rails.logger.info("API[endpoint]: File: #{requested_url} handled by #{endpoint.inspect}")
+    file_through
+  end
+
   ACTIONS_TO_HTTP_VERBS = {
     :create => :post,
     :read   => :get,
@@ -90,5 +153,7 @@ class ::Api::EndpointHandler < ::Core::Service
   ACTIONS_TO_HTTP_VERBS.each do |action, verb|
     instance_action(action, verb)
     model_action(action, verb)
+    file_action(action,verb)
+    file_model_action(action,verb)
   end
 end

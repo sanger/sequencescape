@@ -1,24 +1,18 @@
-class QcInformation < ActiveRecord::Base
+class QcFile < ActiveRecord::Base
   extend DbFile::Uploader
   include Uuid::Uuidable
-
-  set_table_name('qc_information')
 
   module Associations
     # Adds accessors for named fields and attaches documents to them
 
-    def has_qc_information
+    def has_qc_files
       line = __LINE__ + 1
       class_eval(%Q{
-        has_many(:qc_information_documents, :class_name => "QcInformation", :as => :asset, :dependent => :destroy
+        has_many(:qc_files, :as => :asset, :dependent => :destroy
           )
 
-        def qc_information
-          self.qc_information_documents
-        end
-
-        def add_qc_information(file)
-          qc_information_documents.create!(:uploaded_data => file) unless file.blank?
+        def add_qc_file(file)
+          qc_files.create!(:uploaded_data => file) unless file.blank?
         end
 
       }, __FILE__, line)
@@ -34,6 +28,16 @@ class QcInformation < ActiveRecord::Base
   # Method provided for backwards compatibility
   def current_data
     uploaded_data.read
+  end
+
+  def retrieve_file
+    begin
+      uploaded_data.cache!(uploaded_data.file)
+      yield(uploaded_data)
+    ensure
+      # Clear the cached file once done
+      uploaded_data.file.delete
+    end
   end
 
   # Handle some of the metadata with this callback

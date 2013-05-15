@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130501131941) do
+ActiveRecord::Schema.define(:version => 20130502095908) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -798,6 +798,16 @@ ActiveRecord::Schema.define(:version => 20130501131941) do
   add_index "projects", ["enforce_quotas"], :name => "index_projects_on_enforce_quotas"
   add_index "projects", ["state"], :name => "index_projects_on_state"
   add_index "projects", ["updated_at"], :name => "index_projects_on_updated_at"
+
+  create_table "qc_files", :force => true do |t|
+    t.integer  "asset_id"
+    t.string   "asset_type"
+    t.integer  "size"
+    t.string   "content_type"
+    t.string   "filename"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "quotas_bkp", :force => true do |t|
     t.integer  "limit",            :default => 0

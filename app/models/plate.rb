@@ -8,9 +8,8 @@ class Plate < Asset
   include Barcode::Barcodeable
   include Asset::Ownership::Owned
 
-  extend QcInformation::Associations
-  has_qc_information
-
+  extend QcFile::Associations
+  has_qc_files
   # The default state for a plate comes from the plate purpose
   delegate :default_state, :to => :plate_purpose, :allow_nil => true
   def state
