@@ -5,9 +5,14 @@ module Core::Service::ContentFiltering
     self.api_error_message = "the 'Accept' header can only be 'application/json' or a supported filetype eg.'sequencescape/qc_file'"
   end
 
+  class InvalidRequestedContentTypeOnFile < ::Core::Service::Error
+    self.api_error_code    = 406
+    self.api_error_message = "the 'Accept' header can only be 'application/json' when submitting a file"
+  end
+
   class InvalidBodyContentType < ::Core::Service::Error
     self.api_error_code    = 415
-    self.api_error_message = "the 'Content-Type' can only be 'application/json'"
+    self.api_error_message = "the 'Content-Type' can only be 'application/json' or a supported filetype eg.'sequencescape/qc_file'"
   end
 
   module Helpers
@@ -15,10 +20,10 @@ module Core::Service::ContentFiltering
       @json
     end
 
-    def process_json_request_body
+    def process_request_body
       content = request.body.read
-      raise Core::Service::ContentFiltering::InvalidBodyContentType if not content.blank? and request.content_type != 'application/json'
-      @json   = content.blank? ? {} : JSON.parse(content)
+      raise Core::Service::ContentFiltering::InvalidBodyContentType if not content.blank? and !acceptable_types.include?(request.content_type)
+      @json   = content.blank? ? {} : JSON.parse(content) if request.content_type == 'application/json' || content.blank?
     ensure
       # It's important to ensure that the body IO object has been rewound to the start for other requests.
       request.body.rewind
@@ -36,7 +41,7 @@ module Core::Service::ContentFiltering
     ACCEPTABLE_TYPES << '*/*' if Rails.env == 'development'
 
     def acceptable_types
-      ACCEPTABLE_TYPES.concat(::Api::EndpointHandler.registered_mimetypes)
+      ACCEPTABLE_TYPES + ::Api::EndpointHandler.registered_mimetypes
     end
 
     def check_acceptable_content_type_requested!
@@ -55,7 +60,7 @@ module Core::Service::ContentFiltering
 
     app.before_all_actions do
       check_acceptable_content_type_requested!
-      process_json_request_body
+      process_request_body
     end
 
     app.after_all_actions do

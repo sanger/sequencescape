@@ -9,9 +9,14 @@ class ::Endpoints::Plates < ::Core::Endpoint::Base
     belongs_to(:plate_purpose,           :json => 'plate_purpose')
 
     has_many(:qc_files,  :json => 'qc_files', :to => 'qc_files', :include=>[]) do
-      action(:create) do |qc_file, _|
+      action(:create, :as=>'create') do |request, _|
         ActiveRecord::Base.transaction do
-          # request.create!(::Io::Batch.map_parameters_to_attributes(request.json).merge(:user => request.user))
+          QcFile.create!(request.attributes.merge({:asset=>request.target}))
+        end
+      end
+      action(:create_from_file, :as => 'create') do |request,_|
+        ActiveRecord::Base.transaction do
+          request.target.add_qc_file(request.file,request.filename)
         end
       end
     end

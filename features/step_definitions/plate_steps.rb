@@ -173,6 +173,12 @@ Given /^a "([^\"]+)" plate called "([^\"]+)" exists as a child of "([^\"]+)"$/ d
   AssetLink.create!(:ancestor => parent, :descendant => plate_purpose.create!(:name => plate_name))
 end
 
+Given /^a "(.*?)" plate called "(.*?)" exists as a child of plate (\d+)$/ do |name, plate_name, parent_id|
+  plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
+  parent        = Plate.find(parent_id) or raise StandardError, "Cannot find parent plate #{parent_id.inspect}"
+  AssetLink.create!(:ancestor => parent, :descendant => plate_purpose.create!(:name => plate_name))
+end
+
 Given /^a "([^\"]+)" plate called "([^\"]+)" with ID (\d+)$/ do |name, plate_name, id|
   plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
   plate_purpose.create!(:name => plate_name, :id => id)

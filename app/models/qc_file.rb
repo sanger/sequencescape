@@ -8,11 +8,12 @@ class QcFile < ActiveRecord::Base
     def has_qc_files
       line = __LINE__ + 1
       class_eval(%Q{
-        has_many(:qc_files, :as => :asset, :dependent => :destroy
-          )
+        has_many(:qc_files, {:as => :asset, :dependent => :destroy })
 
-        def add_qc_file(file)
-          qc_files.create!(:uploaded_data => file) unless file.blank?
+        def add_qc_file(file, filename=nil)
+          opts = {:uploaded_data => {:tempfile=>file, :filename=>filename}}
+          opts.merge!(:filename=>filename) unless filename.nil?
+          qc_files.create!(opts) unless file.blank?
         end
 
       }, __FILE__, line)

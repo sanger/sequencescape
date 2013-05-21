@@ -6,40 +6,72 @@ class ::Api::EndpointHandler < ::Core::Service
     end
 
     # We can't use the built in provides, as the accepted mimetimes are fixed when the route is set up.
-    def valid_mimetype(_)
+    def file_requested(bool)
       condition do
-        request.acceptable_media_types.prioritize(registered_mimetypes).present?
+        request.acceptable_media_types.prioritize(registered_mimetypes).present? == bool
       end
     end
 
-    def instance_action(action, http_method)
-      send(http_method, %r{^/#{self.api_version_path}/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?$}, :provides=>'application/json') do
-        report("instance") do
-          uuid_in_url, parts = params[:captures][0], params[:captures][1].try(:split, '/') || []
-          uuid = Uuid.with_external_id(uuid_in_url).first or raise ActiveRecord::RecordNotFound, "UUID does not exist"
-          handle_request(:instance, request, action, parts) do |request|
-            request.io     = lookup_for_class(uuid.resource.class) { |e| raise e }
-            request.target = request.io.eager_loading_for(uuid.resource.class).include_uuid.find(uuid.resource_id)
+    def file_attatched(bool)
+      condition do
+        registered_mimetypes.include?(request.content_type) == bool
+      end
+    end
+
+    def file_addition(action, http_method)
+      send(http_method, %r{^/#{self.api_version_path}/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?$}, :file_attatched=> true) do
+        raise Core::Service::ContentFiltering::InvalidRequestedContentTypeOnFile if request.acceptable_media_types.prioritize(registered_mimetypes).present?
+        report("file") do
+          filename = /filename="([^"]*)"/.match(request.env["HTTP_CONTENT_DISPOSITION"]).try(:[],1)||"unnamed_file"
+          begin
+            file = Tempfile.new(filename)
+            file.write(request.body.read)
+            # Be kind...
+            file.rewind
+            request.body.rewind
+            uuid_in_url, parts = params[:captures][0], params[:captures][1].try(:split, '/') || []
+            uuid = Uuid.with_external_id(uuid_in_url).first or raise ActiveRecord::RecordNotFound, "UUID does not exist"
+            handle_request(:instance, request, action, parts) do |request|
+              request.io     = lookup_for_class(uuid.resource.class) { |e| raise e }
+              request.target = request.io.eager_loading_for(uuid.resource.class).include_uuid.find(uuid.resource_id)
+              request.file    = file
+              request.filename = filename
+            end
+          ensure
+            file.close!
           end
         end
       end
     end
 
-    def model_action(action, http_method)
-      send(http_method, %r{^/#{self.api_version_path}/([^\d/][^/]+(?:/[^/]+){0,2})$}, :provides=>'application/json') do
+    def file_model_addition(action, http_method)
+      send(http_method, %r{^/#{self.api_version_path}/([^\d/][^/]+(?:/[^/]+){0,2})$}, :file_attatched=> true) do
+        raise Core::Service::ContentFiltering::InvalidRequestedContentType if request.acceptable_media_types.prioritize(registered_mimetypes).present?
         report("model") do
-          determine_model_from_parts(*params[:captures].to_s.split('/')) do |model, parts|
-            handle_request(:model, request, action, parts) do |request|
-              request.io     = lookup_for_class(model) { |_| nil }
-              request.target = model
+          filename = /filename="([^"]*)"/.match(request.env["HTTP_CONTENT_DISPOSITION"]).try(:[],1)||"unnamed_file"
+          begin
+            file = Tempfile.new(filename)
+            file.write(request.body.read)
+            # Be kind...
+            file.rewind
+            request.body.rewind
+            determine_model_from_parts(*params[:captures].to_s.split('/')) do |model, parts|
+              handle_request(:model, request, action, parts) do |request|
+                request.io     = lookup_for_class(model) { |_| nil }
+                request.target = model
+                request.file    = file
+                request.filename = filename
+              end
             end
+          ensure
+            file.close!
           end
         end
       end
     end
 
     def file_model_action(action, http_method)
-      send(http_method, %r{^/#{self.api_version_path}/([^\d/][^/]+(?:/[^/]+){0,2})$}, :valid_mimetype=>true) do
+      send(http_method, %r{^/#{self.api_version_path}/([^\d/][^/]+(?:/[^/]+){0,2})$}, :file_requested=>true) do
         report("model") do
           raise Core::Service::ContentFiltering::InvalidRequestedContentType
         end
@@ -47,7 +79,7 @@ class ::Api::EndpointHandler < ::Core::Service
     end
 
     def file_action(action, http_method)
-      send(http_method, %r{^/#{self.api_version_path}/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?$}, :valid_mimetype=>true) do
+      send(http_method, %r{^/#{self.api_version_path}/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?$}, :file_requested=>true) do
         report("file") do
           uuid_in_url, parts = params[:captures][0], params[:captures][1].try(:split, '/') || []
           uuid = Uuid.with_external_id(uuid_in_url).first or raise ActiveRecord::RecordNotFound, "UUID does not exist"
@@ -61,6 +93,33 @@ class ::Api::EndpointHandler < ::Core::Service
         end
       end
     end
+
+    def instance_action(action, http_method)
+      send(http_method, %r{^/#{self.api_version_path}/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?$}, :file_attatched=> false, :file_requested=>false) do
+        report("instance") do
+          uuid_in_url, parts = params[:captures][0], params[:captures][1].try(:split, '/') || []
+          uuid = Uuid.with_external_id(uuid_in_url).first or raise ActiveRecord::RecordNotFound, "UUID does not exist"
+          handle_request(:instance, request, action, parts) do |request|
+            request.io     = lookup_for_class(uuid.resource.class) { |e| raise e }
+            request.target = request.io.eager_loading_for(uuid.resource.class).include_uuid.find(uuid.resource_id)
+          end
+        end
+      end
+    end
+
+    def model_action(action, http_method)
+      send(http_method, %r{^/#{self.api_version_path}/([^\d/][^/]+(?:/[^/]+){0,2})$}, :file_attatched=> false, :file_requested=>false) do
+        report("model") do
+          determine_model_from_parts(*params[:captures].to_s.split('/')) do |model, parts|
+            handle_request(:model, request, action, parts) do |request|
+              request.io     = lookup_for_class(model) { |_| nil }
+              request.target = model
+            end
+          end
+        end
+      end
+    end
+
 
     def register_mimetype(mimetype)
       @registered_mimetypes ||= []
@@ -137,8 +196,8 @@ class ::Api::EndpointHandler < ::Core::Service
       end
 
     endpoint = endpoint_for_object(request.target)
-    handled_by = request.instance(action, endpoint).handled_by
-    file_through = handled_by.file_through(request_accepted)
+    file_through = request.instance(action, endpoint).handled_by.file_through(request_accepted)
+    raise Core::Service::ContentFiltering::InvalidRequestedContentType if file_through.nil?
     Rails.logger.info("API[endpoint]: File: #{requested_url} handled by #{endpoint.inspect}")
     file_through
   end
@@ -156,4 +215,13 @@ class ::Api::EndpointHandler < ::Core::Service
     file_action(action,verb)
     file_model_action(action,verb)
   end
+
+  {
+    :create_from_file => :post,
+    :update_from_file => :put
+  }.each do |action, verb|
+    file_addition(action,verb)
+    file_model_addition(action,verb)
+  end
+
 end

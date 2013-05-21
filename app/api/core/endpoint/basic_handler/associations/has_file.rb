@@ -11,7 +11,6 @@ module Core::Endpoint::BasicHandler::Associations::HasFile
   end
 
   def file_through(content_type)
-    raise Core::Service::ContentFiltering::InvalidRequestedContentType if content_type(content_type).nil?
     content_type(content_type)
   end
 
