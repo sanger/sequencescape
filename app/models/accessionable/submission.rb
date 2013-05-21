@@ -23,8 +23,8 @@ class Accessionable::Submission < Accessionable::Base
     xml.instruct!
     xml.SUBMISSION(
       'xmlns:xsi'      => 'http://www.w3.org/2001/XMLSchema-instance',
-      :center_name     => self.center_name, 
-      :broker_name     => self.broker, 
+      :center_name     => self.center_name,
+      :broker_name     => self.broker,
       :alias           => self.alias,
       :submission_date => self.date
     ) {
@@ -49,8 +49,7 @@ class Accessionable::Submission < Accessionable::Base
           xml.ACTION {
             xml.MODIFY(
               :source => accessionable.file_name,
-              :schema => accessionable.schema_type,
-              :target => accessionable.accession_number
+              :schema => accessionable.schema_type
             )
           }
 
@@ -102,7 +101,7 @@ private
 
     def build(markup)
       markup.CONTACT(
-        :inform_on_error  => inform_on_error, 
+        :inform_on_error  => inform_on_error,
         :inform_on_status => inform_on_status,
         :name             => name
       )
