@@ -83,7 +83,7 @@ class CherrypickTask < Task
 
     # Completes the given well array such that it looks like the plate has been completely picked.
     def complete(wells)
-      until wells.size == @size
+      until wells.size >= @size
         add_empty_well(wells)
         add_any_wells_from_template_or_partial(wells)
       end
