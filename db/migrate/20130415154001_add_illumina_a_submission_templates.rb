@@ -35,7 +35,7 @@ class AddIlluminaASubmissionTemplates < ActiveRecord::Migration
         yield({
           :name => "Illumina-A -#{cherrypick ? 'Cherrypicked -':''} #{new_st[:middle_name]} - #{sequencing_request[:name]}",
           :submission_class_name => 'LinearSubmission',
-          :submission_parameters => {:request_type_ids_list => request_type_ids, :order_role_id => OrderRole.find_or_create_by_role('ILA ISC').id}.merge(sequencing_request[:submission_parameters]),
+          :submission_parameters => {:request_type_ids_list => request_type_ids, :order_role_id => Order::OrderRole.find_or_create_by_role('ILA ISC').id}.merge(sequencing_request[:submission_parameters]),
           :product_line => ProductLine.find_by_name('Illumina-A')
         })
       end
