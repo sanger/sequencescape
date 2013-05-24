@@ -160,12 +160,6 @@ module IlluminaHtp::PlatePurposes
 
     end
 
-    def request_type_for(stock_plate)
-      key = self::STOCK_PLATE_PURPOSE_TO_OUTER_REQUEST[stock_plate.name]
-      RequestType.find_by_key(key) or raise "Cannot find #{key} request type"
-    end
-    private :request_type_for
-
     def purpose_for(name)
       self::PLATE_PURPOSE_TYPE[name]
     end
