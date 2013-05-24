@@ -47,6 +47,7 @@ module IlluminaHtp::PlatePurposes
   }
 
   PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
+    [ 'Cherrypicked',    'Shear',           'IlluminaHtp::Requests::CherrypickedToShear'   ],
     [ 'Shear',           'Post Shear',      'IlluminaHtp::Requests::CovarisToSheared'      ],
     [ 'Post Shear',       'AL Libs',        'IlluminaHtp::Requests::PostShearToAlLibs'     ],
     [ 'AL Libs',         'Lib PCR',         'IlluminaHtp::Requests::PrePcrToPcr'           ],

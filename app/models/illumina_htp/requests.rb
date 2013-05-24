@@ -62,6 +62,10 @@ module IlluminaHtp::Requests
     end
   end
 
+  class CherrypickedToShear < TransferRequest
+    include TransferRequest::InitialTransfer
+  end
+
   class CovarisToSheared < TransferRequest
     redefine_state_machine do
       aasm_column :state
