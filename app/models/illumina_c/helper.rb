@@ -63,7 +63,7 @@ module IlluminaC::Helper
     end
 
     def request_type_ids(cherrypick,sequencing)
-      ids = cherrypick ? [[RequestType.find_by_key('cherrypick_for_illumina_c').id]] : [[]]
+      ids = cherrypick ? [[RequestType.find_by_key('cherrypick_for_illumina_c').id]] : []
       ids << [RequestType.find_by_key(type).id] << [sequencing.id]
     end
 
@@ -83,8 +83,9 @@ module IlluminaC::Helper
     def submission_parameters(cherrypick,sequencing)
       sp = {
         :request_type_ids_list => request_type_ids(cherrypick,sequencing),
-        :workflow_id => Submission::Workflow.find_by_key('short_read_sequencing'),
-        :order_role_id => Order::OrderRole.find_or_create_by_role("ILC #{role}")
+        :workflow_id => Submission::Workflow.find_by_key('short_read_sequencing').id,
+        :order_role_id => Order::OrderRole.find_or_create_by_role("ILC #{role}").id,
+        :info_differential => Submission::Workflow.find_by_key('short_read_sequencing').id
       }
       return sp if ['illumina_c_single_ended_sequencing','illumina_c_paired_end_sequencing'].include?(sequencing.key)
       sp.merge({
@@ -111,10 +112,9 @@ module IlluminaC::Helper
     end
 
     def self.find_for(name,sequencing=nil)
-      tc = TemplateConstructor.new(:name=>name)
-      sequencing ||= ACCEPTABLE_SEQUENCING_REQUESTS
+      tc = TemplateConstructor.new(:name=>name, :sequencing=>sequencing)
       [true,false].map do |cherrypick|
-        sequencing.map do |sequencing_request_type|
+        tc.sequencing.map do |sequencing_request_type|
           SubmissionTemplate.find_by_name!(tc.name_for(cherrypick,sequencing_request_type))
         end
       end.flatten
