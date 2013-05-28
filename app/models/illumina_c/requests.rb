@@ -65,7 +65,8 @@ module IlluminaC::Requests
           :initial_state =>'pending',
           :for_multiplexing =>true,
           :billable =>true,
-          :target_purpose =>Purpose.find_by_name('ILC Lib Pool Norm')
+          :target_purpose =>Purpose.find_by_name('ILC Lib Pool Norm'),
+          :product_line => ProductLine.find_by_name('Illumina-C')
         })
         yield(params)
       end
