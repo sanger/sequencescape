@@ -15,10 +15,10 @@ end
 
 def create_pulldown_submission_templates
   sequencing_request_type_names = [
-    "Single ended sequencing",
-    "Single ended hi seq sequencing",
-    "Paired end sequencing",
-    "HiSeq Paired end sequencing"
+    "Illumina-A Single ended sequencing",
+    "Illumina-A Single ended hi seq sequencing",
+    "Illumina-A Paired end sequencing",
+    "Illumina-A HiSeq Paired end sequencing"
   ]
 
   pipelines_to_request_types = {
@@ -133,8 +133,8 @@ end
 seq_submission_workflow = Submission::Workflow.find_by_name('Next-gen sequencing') or raise StandardError, "Cannot find seq_submission_workflow"
 [
   { :name => "Cherrypicking for Pulldown", :request_types => [ 'Cherrypicking for Pulldown']},
-  { :name => 'Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing', :request_types => [ 'Cherrypicking for Pulldown', 'Pulldown Multiplex Library Preparation', 'HiSeq Paired end sequencing' ] },
-  { :name => 'Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - Paired end sequencing', :request_types => [ 'Cherrypicking for Pulldown', 'Pulldown Multiplex Library Preparation', 'Paired end sequencing' ] }
+  { :name => 'Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing', :request_types => [ 'Cherrypicking for Pulldown', 'Pulldown Multiplex Library Preparation', 'Illumina-A HiSeq Paired end sequencing' ] },
+  { :name => 'Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - Paired end sequencing', :request_types => [ 'Cherrypicking for Pulldown', 'Pulldown Multiplex Library Preparation', 'Illumina-A Paired end sequencing' ] }
 
 ].each do |attributes|
   request_types = attributes[:request_types].map { |n| RequestType.find_by_name(n) or raise StandardError, "Request type #{n.inspect} not found" }

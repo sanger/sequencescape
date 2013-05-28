@@ -265,16 +265,22 @@ PulldownLibraryCreationPipeline.create!(:name => 'Pulldown library preparation')
   end
 end
 
-cluster_formation_se_request_type = RequestType.create!(:workflow => next_gen_sequencing, :key => 'single_ended_sequencing', :name => 'Single ended sequencing') do |request_type|
-  request_type.billable          = true
-  request_type.initial_state     = 'pending'
-  request_type.asset_type        = 'LibraryTube'
-  request_type.order             = 2
-  request_type.multiples_allowed = true
-  request_type.request_class =  SequencingRequest
+cluster_formation_se_request_type = ['a','b','c'].map do |pl|
+  RequestType.create!(
+    :workflow => next_gen_sequencing,
+    :key => "illumina_#{pl}_single_ended_sequencing",
+    :name => "Illumina-#{pl.upcase} Single ended sequencing",
+    :product_line => ProductLine.find_by_name("Illumina-#{pl.upcase}")) do |request_type|
+    request_type.billable          = true
+    request_type.initial_state     = 'pending'
+    request_type.asset_type        = 'LibraryTube'
+    request_type.order             = 2
+    request_type.multiples_allowed = true
+    request_type.request_class =  SequencingRequest
+  end
 end
 
-SequencingPipeline.create!(:name => 'Cluster formation SE (spiked in controls)', :request_types => [ cluster_formation_se_request_type ]) do |pipeline|
+SequencingPipeline.create!(:name => 'Cluster formation SE (spiked in controls)', :request_types => cluster_formation_se_request_type ) do |pipeline|
   pipeline.asset_type = 'Lane'
   pipeline.sorter     = 2
   pipeline.automated  = false
@@ -302,7 +308,7 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))
 end
 
-SequencingPipeline.create!(:name => 'Cluster formation SE', :request_types => [ cluster_formation_se_request_type ]) do |pipeline|
+SequencingPipeline.create!(:name => 'Cluster formation SE', :request_types => cluster_formation_se_request_type ) do |pipeline|
   pipeline.asset_type = 'Lane'
   pipeline.sorter     = 2
   pipeline.automated  = false
@@ -329,7 +335,7 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))
 end
 
-SequencingPipeline.create!(:name => 'Cluster formation SE (no controls)', :request_types => [ cluster_formation_se_request_type ]) do |pipeline|
+SequencingPipeline.create!(:name => 'Cluster formation SE (no controls)', :request_types => cluster_formation_se_request_type ) do |pipeline|
   pipeline.asset_type = 'Lane'
   pipeline.sorter     = 2
   pipeline.automated  = false
@@ -356,16 +362,18 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))
 end
 
-single_ended_hi_seq_sequencing = RequestType.create!(:workflow => next_gen_sequencing, :key => 'single_ended_hi_seq_sequencing', :name => 'Single ended hi seq sequencing') do |request_type|
-  request_type.billable          = true
-  request_type.initial_state     = 'pending'
-  request_type.asset_type        = 'LibraryTube'
-  request_type.order             = 2
-  request_type.multiples_allowed = true
-  request_type.request_class =  HiSeqSequencingRequest
+single_ended_hi_seq_sequencing = ['a','b','c'].map do |pl|
+  RequestType.create!(:workflow => next_gen_sequencing, :key => "illumina_#{pl}_single_ended_hi_seq_sequencing", :name => "Illumina-#{pl.upcase} Single ended hi seq sequencing",:product_line => ProductLine.find_by_name("Illumina-#{pl.upcase}")) do |request_type|
+    request_type.billable          = true
+    request_type.initial_state     = 'pending'
+    request_type.asset_type        = 'LibraryTube'
+    request_type.order             = 2
+    request_type.multiples_allowed = true
+    request_type.request_class =  HiSeqSequencingRequest
+  end
 end
 
-SequencingPipeline.create!(:name => 'Cluster formation SE HiSeq', :request_types => [ single_ended_hi_seq_sequencing ]) do |pipeline|
+SequencingPipeline.create!(:name => 'Cluster formation SE HiSeq', :request_types => single_ended_hi_seq_sequencing) do |pipeline|
   pipeline.asset_type = 'Lane'
   pipeline.sorter     = 2
   pipeline.automated  = false
@@ -392,7 +400,7 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))
 end
 
-SequencingPipeline.create!(:name => 'Cluster formation SE HiSeq (no controls)', :request_types => [ single_ended_hi_seq_sequencing ]) do |pipeline|
+SequencingPipeline.create!(:name => 'Cluster formation SE HiSeq (no controls)', :request_types => single_ended_hi_seq_sequencing ) do |pipeline|
   pipeline.asset_type = 'Lane'
   pipeline.sorter     = 2
   pipeline.automated  = false
@@ -419,13 +427,15 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))
 end
 
-cluster_formation_pe_request_type = RequestType.create!(:workflow => next_gen_sequencing, :key => 'paired_end_sequencing', :name => 'Paired end sequencing') do |request_type|
-  request_type.billable          = true
-  request_type.initial_state     = 'pending'
-  request_type.asset_type        = 'LibraryTube'
-  request_type.order             = 2
-  request_type.multiples_allowed = true
-  request_type.request_class =  SequencingRequest
+cluster_formation_pe_request_types =  ['a','b','c'].map do |pl|
+  RequestType.create!(:workflow => next_gen_sequencing, :key => "illumina_#{pl}_paired_end_sequencing", :name => "Illumina-#{pl.upcase} Paired end sequencing", :product_line => ProductLine.find_by_name("Illumina-#{pl.upcase}")) do |request_type|
+    request_type.billable          = true
+    request_type.initial_state     = 'pending'
+    request_type.asset_type        = 'LibraryTube'
+    request_type.order             = 2
+    request_type.multiples_allowed = true
+    request_type.request_class =  SequencingRequest
+  end
 end
 
 hiseq_2500_request_types = ['a','b','c'].map do |pl|
@@ -456,7 +466,7 @@ hiseq_2500_se_request_types = ['a','b','c'].map do |pl|
   )
 end
 
-SequencingPipeline.create!(:name => 'Cluster formation PE', :request_types => [ cluster_formation_pe_request_type ]) do |pipeline|
+SequencingPipeline.create!(:name => 'Cluster formation PE', :request_types => cluster_formation_pe_request_types ) do |pipeline|
   pipeline.asset_type = 'Lane'
   pipeline.sorter     = 3
   pipeline.automated  = false
@@ -482,7 +492,7 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))
 end
 
-SequencingPipeline.create!(:name => 'Cluster formation PE (no controls)', :request_types => [ cluster_formation_pe_request_type ]) do |pipeline|
+SequencingPipeline.create!(:name => 'Cluster formation PE (no controls)', :request_types => cluster_formation_pe_request_types ) do |pipeline|
   pipeline.asset_type      = 'Lane'
   pipeline.sorter          = 8
   pipeline.automated       = false
@@ -508,7 +518,7 @@ end.tap do |pipeline|
   create_request_information_types(pipeline, "read_length", "library_type")
 end
 
-SequencingPipeline.create!(:name => 'Cluster formation PE (spiked in controls)', :request_types => [ cluster_formation_pe_request_type ]) do |pipeline|
+SequencingPipeline.create!(:name => 'Cluster formation PE (spiked in controls)', :request_types => cluster_formation_pe_request_types ) do |pipeline|
   pipeline.asset_type      = 'Lane'
   pipeline.sorter          = 8
   pipeline.automated       = false
@@ -536,7 +546,7 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))
 end
 
-SequencingPipeline.create!(:name => 'HiSeq Cluster formation PE (spiked in controls)', :request_types => [ cluster_formation_pe_request_type ]) do |pipeline|
+SequencingPipeline.create!(:name => 'HiSeq Cluster formation PE (spiked in controls)', :request_types => cluster_formation_pe_request_types ) do |pipeline|
   pipeline.asset_type      = 'Lane'
   pipeline.sorter          = 9
   pipeline.automated       = false
@@ -619,7 +629,7 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))
 end
 
-SequencingPipeline.create!(:name => 'Cluster formation SE HiSeq (spiked in controls)', :request_types => [ cluster_formation_pe_request_type ]) do |pipeline|
+SequencingPipeline.create!(:name => 'Cluster formation SE HiSeq (spiked in controls)', :request_types => cluster_formation_pe_request_types ) do |pipeline|
   pipeline.asset_type      = 'Lane'
   pipeline.sorter          = 8
   pipeline.automated       = false
@@ -655,13 +665,15 @@ SequencingPipeline.create!(:name => 'HiSeq Cluster formation PE (no controls)') 
   pipeline.group_by_parent = false
   pipeline.location        = Location.first(:conditions => { :name => 'Cluster formation freezer' }) or raise StandardError, "Cannot find 'Cluster formation freezer' location"
 
-  pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'hiseq_paired_end_sequencing', :name => 'HiSeq Paired end sequencing') do |request_type|
-    request_type.billable          = true
-    request_type.initial_state     = 'pending'
-    request_type.asset_type        = 'LibraryTube'
-    request_type.order             = 2
-    request_type.multiples_allowed = true
-    request_type.request_class =  HiSeqSequencingRequest
+  ['a','b','c'].each do |pl|
+    pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => "illumina_#{pl}_hiseq_paired_end_sequencing", :name => "Illumina-#{pl.upcase} HiSeq Paired end sequencing",  :product_line => ProductLine.find_by_name("Illumina-#{pl.upcase}")) do |request_type|
+      request_type.billable          = true
+      request_type.initial_state     = 'pending'
+      request_type.asset_type        = 'LibraryTube'
+      request_type.order             = 2
+      request_type.multiples_allowed = true
+      request_type.request_class =  HiSeqSequencingRequest
+    end
   end
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'HiSeq Cluster formation PE (no controls)') do |workflow|
@@ -745,6 +757,7 @@ CherrypickForPulldownPipeline.create!(:name => 'Cherrypicking for Pulldown') do 
 
   pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'cherrypick_for_illumina',   :name => 'Cherrypick for Illumina',   &cherrypicking_attributes)
   pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'cherrypick_for_illumina_b', :name => 'Cherrypick for Illumina-B', &cherrypicking_attributes)
+  pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'cherrypick_for_illumina_c', :name => 'Cherrypick for Illumina-C', &cherrypicking_attributes)
 
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'Cherrypicking for Pulldown').tap do |workflow|
@@ -938,3 +951,48 @@ set_pipeline_flow_to('PacBio Sample Prep' => 'PacBio Sequencing')
     pipeline.workflow = LabInterface::Workflow.create!(:name => pipeline_name)
   end
 end
+
+mi_seq_freezer = Location.create!({:name => "MiSeq freezer"})
+SequencingPipeline.create!(:name => "MiSeq sequencing") do |pipeline|
+    pipeline.asset_type = 'Lane'
+    pipeline.sorter     = 2
+    pipeline.automated  = false
+    pipeline.active     = true
+
+    pipeline.location = mi_seq_freezer
+
+    pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'miseq_sequencing', :name => "MiSeq sequencing") do |request_type|
+      request_type.initial_state     = 'pending'
+      request_type.asset_type        = 'LibraryTube'
+      request_type.order             = 1
+      request_type.multiples_allowed = false
+      request_type.request_class_name = SequencingRequest.name
+    end
+
+    ['a','b','c'].each do |pl|
+      pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => "illumina_#{pl}_miseq_sequencing", :name => "Illumina-#{pl.upcase} MiSeq sequencing") do |request_type|
+        request_type.initial_state     = 'pending'
+        request_type.asset_type        = 'LibraryTube'
+        request_type.order             = 1
+        request_type.multiples_allowed = false
+        request_type.request_class_name = SequencingRequest.name
+      end
+    end
+
+    pipeline.workflow = LabInterface::Workflow.create!(:name => "MiSeq sequencing") do |workflow|
+      workflow.locale     = 'External'
+      workflow.item_limit = 1
+    end.tap do |workflow|
+        t1 = SetDescriptorsTask.create!({:name => 'Specify Dilution Volume', :sorted => 0, :workflow => workflow})
+        Descriptor.create!({:kind => "Text", :sorter => 1, :name => "Concentration", :task => t1})
+        t2 = SetDescriptorsTask.create!({:name => 'Cluster Generation', :sorted => 0, :workflow => workflow})
+        Descriptor.create!({:kind => "Text", :sorter => 1, :name => "Chip barcode", :task => t2})
+        Descriptor.create!({:kind => "Text", :sorter => 2, :name => "Cartridge barcode", :task => t2})
+        Descriptor.create!({:kind => "Text", :sorter => 3, :name => "Operator", :task => t2})
+        Descriptor.create!({:kind => "Text", :sorter => 4, :name => "Machine name", :task => t2})
+
+
+    end
+  end.tap do |pipeline|
+    create_request_information_types(pipeline, 'fragment_size_required_from', 'fragment_size_required_to', 'library_type')
+  end
