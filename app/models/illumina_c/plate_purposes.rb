@@ -18,8 +18,8 @@ module IlluminaC::PlatePurposes
   QC_TUBE = 'ILC QC Pool'
 
   BRANCHES = [
-    ['ILC Stock','ILC AL Libs','ILC Lib PCR','ILC Lib PCR-XP','Lib Pool Norm'],
-    ['ILC STOCK','ILC AL Libs Tagged','Lib Pool Norm']
+    ['ILC Stock','ILC AL Libs','ILC Lib PCR','ILC Lib PCR-XP','ILC Lib Pool Norm'],
+    ['ILC STOCK','ILC AL Libs Tagged','ILC Lib Pool Norm']
   ]
 
   STOCK_PLATE_PURPOSE = 'ILC Stock'
@@ -46,8 +46,8 @@ module IlluminaC::PlatePurposes
   PLATE_PURPOSE_TYPE = {
     'ILC QC Pool'        => IlluminaC::QcPoolPurpose,
     'ILC Stock'          => IlluminaC::StockPurpose,
-    'ILC AL Libs'        => PlatePurpose,
-    'ILC Lib PCR'        => PlatePurpose,
+    'ILC AL Libs'        => IlluminaC::AlLibsPurpose,
+    'ILC Lib PCR'        => IlluminaC::LibPcrPurpose,
     'ILC Lib PCR-XP'     => IlluminaC::LibPcrXpPurpose,
     'ILC AL Libs Tagged' => IlluminaC::AlLibsTaggedPurpose,
     'ILC Lib Pool Norm'  => IlluminaC::MxTubePurpose
