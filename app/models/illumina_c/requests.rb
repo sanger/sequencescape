@@ -3,6 +3,12 @@ module IlluminaC::Requests
   class LibraryRequest < Request::LibraryCreation
     def role; "#{request_metadata.library_type} #{order.role}"; end
 
+    # Pop the request type in the pool information
+    def update_pool_information(pool_information)
+      super
+      pool_information[:request_type] = request_type.name
+    end
+
   end
 
   class PcrLibraryRequest < LibraryRequest
@@ -24,6 +30,7 @@ module IlluminaC::Requests
   class InitialTransfer < TransferRequest
     include TransferRequest::InitialTransfer
   end
+
 
   module Helpers
 
