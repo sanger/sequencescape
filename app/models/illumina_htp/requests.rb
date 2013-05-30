@@ -35,6 +35,13 @@ module IlluminaHtp::Requests
       order.role
     end
 
+    validate :valid_purpose?
+    def valid_purpose?
+      return true if request_type.acceptable_plate_purposes.include?(asset.plate.purpose)
+      errors.add(:asset,'is not a suitable plate purpose')
+      false
+    end
+
   end
 
   class SharedLibraryPrep < StdLibraryRequest

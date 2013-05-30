@@ -72,6 +72,7 @@ ActiveRecord::Base.transaction do
       :key => "illumina_a_shared",
       :name => "Illumina-A Shared Library Creation",
       :request_class_name => "IlluminaHtp::Requests::SharedLibraryPrep",
+      :acceptable_plate_purposes => [Purpose.find_by_name('Cherrypicked')],
       :for_multiplexing => false,
       :no_target_asset => false
     },
@@ -167,7 +168,7 @@ ActiveRecord::Base.transaction do
       st.save!
     end
   end
-    IlluminaHtp::PlatePurposes::STOCK_PLATE_PURPOSE_TO_OUTER_REQUEST.each do |purpose,request|
-      RequestType.find_by_key(request).acceptable_plate_purposes << Purpose.find_by_name(stock_plate)
-    end
+  IlluminaHtp::PlatePurposes::STOCK_PLATE_PURPOSE_TO_OUTER_REQUEST.each do |purpose,request|
+    RequestType.find_by_key(request).acceptable_plate_purposes << Purpose.find_by_name(purpose)
+  end
 end
