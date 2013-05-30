@@ -84,7 +84,7 @@ module IlluminaC::Helper
       sp = {
         :request_type_ids_list => request_type_ids(cherrypick,sequencing),
         :workflow_id => Submission::Workflow.find_by_key('short_read_sequencing').id,
-        :order_role_id => Order::OrderRole.find_or_create_by_role("ILC #{role}").id,
+        :order_role_id => Order::OrderRole.find_or_create_by_role(role).id,
         :info_differential => Submission::Workflow.find_by_key('short_read_sequencing').id
       }
       return sp if ['illumina_c_single_ended_sequencing','illumina_c_paired_end_sequencing'].include?(sequencing.key)
@@ -104,11 +104,7 @@ module IlluminaC::Helper
     end
 
     def library_types
-      ["NlaIII gene expression", "Standard", "Long range", "Small RNA",
-        "DpnII gene expression", "qPCR only", "High complexity and double size selected",
-        "Illumina cDNA protocol", "Custom", "High complexity", "Double size selected",
-        "No PCR", "Agilent Pulldown", "ChiP-seq", "Pre-quality controlled", "TraDIS",
-        "RNA-seq dUTP"]
+      ['ChIP Auto','RNAseq Manual','RNAseq Auto','FAIRE']
     end
 
     def self.find_for(name,sequencing=nil)

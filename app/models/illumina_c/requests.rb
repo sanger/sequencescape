@@ -1,25 +1,22 @@
 module IlluminaC::Requests
 
   class LibraryRequest < Request::LibraryCreation
+    def role; "#{request_metadata.library_type} #{order.role}"; end
 
   end
 
   class PcrLibraryRequest < LibraryRequest
-    LIBRARY_TYPES = [
-      'Standard'
-    ]
+    LIBRARY_TYPES = ['ChIP Auto','RNAseq Manual','RNAseq Auto','FAIRE']
 
-    DEFAULT_LIBRARY_TYPE = 'Standard'
+    DEFAULT_LIBRARY_TYPE = 'RNAseq Auto'
 
     fragment_size_details(:no_default, :no_default)
   end
 
   class NoPcrLibraryRequest < LibraryRequest
-    LIBRARY_TYPES = [
-      'Standard'
-    ]
+    LIBRARY_TYPES = ['ChIP Auto','RNAseq Manual','RNAseq Auto','FAIRE']
 
-    DEFAULT_LIBRARY_TYPE = 'Standard'
+    DEFAULT_LIBRARY_TYPE = 'RNAseq Auto'
 
     fragment_size_details(:no_default, :no_default)
   end
