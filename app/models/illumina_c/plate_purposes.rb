@@ -19,7 +19,7 @@ module IlluminaC::PlatePurposes
 
   BRANCHES = [
     ['ILC Stock','ILC AL Libs','ILC Lib PCR','ILC Lib PCR-XP','ILC Lib Pool Norm'],
-    ['ILC STOCK','ILC AL Libs Tagged','ILC Lib Pool Norm']
+    ['ILC Stock','ILC AL Libs Tagged','ILC Lib Pool Norm']
   ]
 
   STOCK_PLATE_PURPOSE = 'ILC Stock'
@@ -40,7 +40,8 @@ module IlluminaC::PlatePurposes
 
   PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
     [ 'ILC Stock',   'ILC AL Libs',        'IlluminaC::Requests::InitialTransfer' ],
-    [ 'ILC Stock',   'ILC AL Libs Tagged', 'IlluminaC::Requests::InitialTransfer' ]
+    [ 'ILC Stock',   'ILC AL Libs Tagged', 'IlluminaC::Requests::StockToAlLibsTagged' ],
+    [ 'ILC Lib PCR', 'ILC Lib PCR-XP',     'IlluminaC::Requests::QcCompleteable'  ]
   ]
 
   PLATE_PURPOSE_TYPE = {
@@ -70,7 +71,7 @@ module IlluminaC::PlatePurposes
 
   def self.create_qc_tubes
     ActiveRecord::Base.transaction do
-      qc_tube_purpose = purpose_for(self::QC_TUBE).create!(:name=>self::QC_TUBE)
+      qc_tube_purpose = purpose_for(self::QC_TUBE).create!(:name=>self::QC_TUBE, :target_type=>'QcTube',:barcode_printer_type => BarcodePrinterType.find_by_type('BarcodePrinterType1DTube'))
       self::PLATE_PURPOSE_LEADING_TO_QC_TUBES.each do |name|
         plate_purpose = Purpose.find_by_name(name) or raise StandardError, "Cannot find purpose #{name.inspect}"
         plate_purpose.child_relationships.create!(:child => qc_tube_purpose, :transfer_request_type => RequestType.find_by_name('Transfer'))
