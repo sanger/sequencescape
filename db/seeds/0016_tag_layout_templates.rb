@@ -62,5 +62,11 @@ ActiveRecord::Base.transaction do
     :walking_algorithm   => 'TagLayout::WalkWellsOfPlate',
     :tag_group           => sanger_168_tag_group
   )
+  TagLayoutTemplate.create!(
+    :name => 'Illumina pipeline tagging',
+    :walking_algorithm => 'TagLayout::WalkWellsOfPlate',
+    :tag_group => sanger_168_tag_group,
+    :direction_algorithm => 'TagLayout::InColumns'
+  )
 
 end
