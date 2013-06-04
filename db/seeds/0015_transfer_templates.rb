@@ -56,9 +56,8 @@ ActiveRecord::Base.transaction do
   )
 
   TransferTemplate.create!(
-      :name => 'Whole plate to tube',
-      :transfer_class_name => 'Transfer::FromPlateToTube',
-      :transfers => Hash[locations_for(('A'..'H'), (1..12)).map { |location| [location, location] }]
-      )
-  end
+    :name => 'Whole plate to tube',
+    :transfer_class_name => 'Transfer::FromPlateToTube',
+    :transfers => locations_for(('A'..'H'), (1..12))
+  )
 end

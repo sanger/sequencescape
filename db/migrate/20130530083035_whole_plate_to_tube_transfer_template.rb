@@ -4,7 +4,7 @@ class WholePlateToTubeTransferTemplate < ActiveRecord::Migration
       TransferTemplate.create!(
         :name => 'Whole plate to tube',
         :transfer_class_name => 'Transfer::FromPlateToTube',
-        :transfers => plate_map
+        :transfers => all_wells
         )
     end
   end
@@ -15,7 +15,7 @@ class WholePlateToTubeTransferTemplate < ActiveRecord::Migration
     end
   end
 
-  def self.plate_map
-    {}.tap {|a| ('A'..'H').each {|l| (1..12).each {|n| a["#{l}#{n}"]="#{l}#{n}" }}}
+  def self.all_wells
+    ('A'..'H').map {|l| (1..12).map {|n| "#{l}#{n}" }}.flatten
   end
 end
