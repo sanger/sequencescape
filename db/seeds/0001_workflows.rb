@@ -714,11 +714,11 @@ CherrypickPipeline.create!(:name => 'Cherrypick') do |pipeline|
   pipeline.location = Location.first(:conditions => { :name => 'Sample logistics freezer' }) or raise StandardError, "Cannot find 'Sample logistics freezer' location"
 
   pipeline.request_types << RequestType.create!(:workflow => microarray_genotyping, :key => 'cherrypick', :name => 'Cherrypick') do |request_type|
-    request_type.initial_state     = 'blocked'
+    request_type.initial_state     = 'pending'
     request_type.target_asset_type = 'Well'
     request_type.asset_type        = 'Well'
     request_type.order             = 2
-    request_type.request_class     = Request
+    request_type.request_class     = CherrypickForPulldownRequest
     request_type.multiples_allowed = false
   end
 

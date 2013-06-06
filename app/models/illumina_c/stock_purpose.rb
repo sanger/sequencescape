@@ -4,7 +4,13 @@ class IlluminaC::StockPurpose < PlatePurpose
   def transition_to(plate, state, contents = nil)
     return unless ['failed','cancelled'].include?(state)
     plate.wells.located_at(contents).each do |well|
-      well.requests.each {|r| r.cancel_before_started! if r.is_a?(IlluminaC::Requests::LibraryRequest) }
+      well.requests.each {|r| r.send(transition_from(r.state)) if r.is_a?(IlluminaC::Requests::LibraryRequest) }
+      well.requests_as_target.each {|r| r.transition_to('failed') if r.is_a?(TransferRequest)}
     end
   end
+
+  def transition_from(state)
+    {'pending' => :cancel_before_started!, 'started'=>:cancel!}[state]
+  end
+  private :transition_from
 end
