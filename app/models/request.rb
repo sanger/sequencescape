@@ -29,7 +29,8 @@ class Request < ActiveRecord::Base
       {
         :joins => [ 'LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id' ],
         :conditions => [ 'prt.pipeline_id=?', pipeline.id],
-        :readonly => false
+        :readonly => false,
+        :include => [:asset,:submission,:request_type]
       }
     }
 
