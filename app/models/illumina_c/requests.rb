@@ -12,17 +12,24 @@ module IlluminaC::Requests
   end
 
   class PcrLibraryRequest < LibraryRequest
-    LIBRARY_TYPES = ['ChIP Auto','RNAseq Manual','RNAseq Auto','FAIRE']
+    LIBRARY_TYPES = [
+      'Manual Standard WGS (Plate)',
+      'ChIP-Seq Auto',
+      'TruSeq mRNA (RNA Seq)',
+      'Small RNA (miRNA)',
+      'RNA-seq dUTP eukaryotic',
+      'RNA-seq dUTP prokaryotic'
+    ]
 
-    DEFAULT_LIBRARY_TYPE = 'RNAseq Auto'
+    DEFAULT_LIBRARY_TYPE = 'Manual Standard WGS (Plate)'
 
     fragment_size_details(:no_default, :no_default)
   end
 
   class NoPcrLibraryRequest < LibraryRequest
-    LIBRARY_TYPES = ['ChIP Auto','RNAseq Manual','RNAseq Auto','FAIRE']
+    LIBRARY_TYPES = ['No PCR (Plate)']
 
-    DEFAULT_LIBRARY_TYPE = 'RNAseq Auto'
+    DEFAULT_LIBRARY_TYPE = 'No PCR (Plate)'
 
     fragment_size_details(:no_default, :no_default)
   end

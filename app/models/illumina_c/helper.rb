@@ -104,7 +104,14 @@ module IlluminaC::Helper
     end
 
     def library_types
-      ['ChIP Auto','RNAseq Manual','RNAseq Auto','FAIRE']
+      RequestType.find_by_key(self.type).request_class_name.constantize::LIBRARY_TYPES
+    end
+
+    def update!
+      each_submission_template do |options|
+        next if options[:submission_parameters][:input_field_infos].nil?
+        SubmissionTemplate.find_by_name!(options[:name]).update_attributes!(:submission_parameters=>options[:submission_parameters])
+      end
     end
 
     def self.find_for(name,sequencing=nil)
