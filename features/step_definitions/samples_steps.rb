@@ -42,9 +42,27 @@ Given /^the sample "([^\"]+)" has the Taxon ID "([^\"]+)"$/ do |name,id|
   sample.save!
 end
 
-Given /^the sample "([^\"]+)" has the common name "([^\"]+)"$/ do |name,common_name|
+Given /^the sample "([^\"]+)" has the common name "([^\"]*)"$/ do |name,common_name|
   sample = Sample.find_by_name(name) or raise StandardError, "Cannot find sample with name #{ name.inspect }"
   sample.sample_metadata.sample_common_name = common_name
+  sample.save!
+end
+
+Given /^the sample "([^\"]+)" has the gender "([^\"]*)"$/ do |name,gender|
+  sample = Sample.find_by_name(name) or raise StandardError, "Cannot find sample with name #{ name.inspect }"
+  sample.sample_metadata.gender = gender
+  sample.save!
+end
+
+Given /^the sample "([^\"]+)" has the donor id "([^\"]*)"$/ do |name,donor_id|
+  sample = Sample.find_by_name(name) or raise StandardError, "Cannot find sample with name #{ name.inspect }"
+  sample.sample_metadata.donor_id = donor_id
+  sample.save!
+end
+
+Given /^the sample "([^\"]+)" has the phenotype "([^\"]*)"$/ do |name,phenotype|
+  sample = Sample.find_by_name(name) or raise StandardError, "Cannot find sample with name #{ name.inspect }"
+  sample.sample_metadata.phenotype = phenotype
   sample.save!
 end
 
@@ -92,6 +110,11 @@ end
 Then /^sample "([^"]*)" should have an accession number of "([^"]*)"$/ do |sample_name, accession_number|
   sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample #{sample_name.inspect}"
   assert_equal accession_number, sample.sample_metadata.sample_ebi_accession_number
+end
+
+Then /^sample "([^"]*)" should not have an accession number of "([^"]*)"$/ do |sample_name, accession_number|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample #{sample_name.inspect}"
+  assert accession_number != sample.sample_metadata.sample_ebi_accession_number
 end
 
 Given /^the sample "([^"]*)" should not have an accession number$/ do |sample_name|
