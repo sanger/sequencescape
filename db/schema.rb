@@ -1054,6 +1054,7 @@ ActiveRecord::Schema.define(:version => 20130626082027) do
     t.string   "treatment"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "donor_id"
   end
 
   add_index "sample_metadata", ["sample_id"], :name => "index_sample_metadata_on_sample_id"

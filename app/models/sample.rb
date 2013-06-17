@@ -21,7 +21,7 @@ class Sample < ActiveRecord::Base
   has_many_lab_events
 
   ArrayExpressFields = %w(genotype phenotype strain_or_line developmental_stage sex cell_type disease_state compound dose immunoprecipitate growth_condition rnai organism_part species time_point)
-  EgaFields = %w(subject disease treatment)
+  EgaFields = %w(subject disease treatment gender phenotype)
 
   acts_as_authorizable
 
@@ -233,6 +233,7 @@ class Sample < ActiveRecord::Base
     attribute(:replicate)
     attribute(:gc_content, :in => Sample::GC_CONTENTS)
     attribute(:gender, :in => Sample::GENDERS)
+    attribute(:donor_id)
     attribute(:dna_source, :in => Sample::DNA_SOURCES)
     attribute(:sample_public_name)
     attribute(:sample_common_name)

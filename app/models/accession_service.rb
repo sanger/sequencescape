@@ -7,6 +7,10 @@ class AccessionService
   Protect = "protect".freeze
   Hold = "hold".freeze
 
+  def sample_tags
+    [ :sample_strain_att, :sample_description ]
+  end
+
   class AccessionedFile < File
     # This class provides an original_filename method
     # which RestClient can use to define the remote filename
