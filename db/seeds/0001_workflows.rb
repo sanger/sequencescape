@@ -996,3 +996,55 @@ SequencingPipeline.create!(:name => "MiSeq sequencing") do |pipeline|
   end.tap do |pipeline|
     create_request_information_types(pipeline, 'fragment_size_required_from', 'fragment_size_required_to', 'library_type')
   end
+
+# ADD ILC Cherrypick
+    cprt =  RequestType.create!(
+        :key => 'illumina_c_cherrypick',
+        :name => 'Illumina-C Cherrypick',
+        :workflow_id => Submission::Workflow.find_by_key("short_read_sequencing").id,
+        :asset_type => 'Well',
+        :order => 2,
+        :initial_state => 'pending',
+        :target_asset_type => 'Well',
+        :request_class_name => 'Request'
+        )
+
+      liw = LabInterface::Workflow.create!(:name=>'Illumina-C Cherrypick')
+
+      LabInterface::Workflow.find_by_name('Cherrypick').tasks.each do |task|
+        # next if task.name == 'Set Location'
+        new_task = task.clone
+        new_task.workflow = liw
+        new_task.save!
+      end
+
+      CherrypickPipeline.create!(
+        :name => 'Illumina-C Cherrypick',
+        :active => true,
+        :automated=>false,
+        :location_id => Location.find_by_name('Library creation freezer'),
+        :group_by_parent => true,
+        :asset_type => 'Well',
+        :group_name => 'Illumina-C Library creation',
+        :max_size => 3000,
+        :sorter=>10,
+        :request_types => [cprt],
+        :workflow => liw
+      ) do |pipeline|
+        pipeline.add_control_request_type
+      end
+
+      SubmissionTemplate.create!(
+        :name => 'Illumina-C - Cherrypick Internally',
+        :submission_class_name => 'LinearSubmission',
+        :submission_parameters => {
+          :info_differential=>Submission::Workflow.find_by_key("short_read_sequencing").id,
+          :request_options=>{
+            :initial_state=>{
+              cprt.id=>:pending
+              }
+            },
+            :asset_input_methods=>["select an asset group", "enter a list of sample names found on plates"],
+            :workflow_id=>Submission::Workflow.find_by_key("short_read_sequencing").id,
+            :request_type_ids_list=>[[cprt.id]]}
+        )
