@@ -13,7 +13,7 @@ gem "configatron"
 gem "rest-client" # curb substitute.
 gem "fastercsv", "~>1.4.0"
 gem "formtastic", "~>1.2.0"
-gem "activerecord-jdbc-adapter", :platforms => :jruby
+gem "activerecord-jdbc-adapter", ">= 1.2.6", :platforms => :jruby
 gem "jdbc-mysql", :platforms => :jruby
 gem "mysql", :platforms => :mri
 gem "spreadsheet"
