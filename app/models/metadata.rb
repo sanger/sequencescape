@@ -7,11 +7,11 @@ module Metadata
   end
 
 private
-  
+
   def build_association(as_class, options)
     # First we build the association into the current ActiveRecord::Base class
     as_name = as_class.name.demodulize.underscore
-    association_name = "#{ as_name }_metadata".underscore.to_sym 
+    association_name = "#{ as_name }_metadata".underscore.to_sym
     class_name = "#{ self.name}::Metadata"
 
     has_one(association_name, { :class_name => class_name, :dependent => :destroy, :validate => true, :autosave => true }.merge(options).merge(:foreign_key => "#{as_name}_id", :inverse_of => :owner))
@@ -40,7 +40,47 @@ private
         @validating_ena_required_fields = !!state
         self.#{ association_name }.validating_ena_required_fields = state
       end
+
+      def tags
+        self.class.tags.select{|tag| tag.for?(accession_service.provider)}
+      end
+
+      def required_tags
+        self.class.required_tags[accession_service.provider]+self.class.required_tags[:all]
+      end
+
+      def self.tags
+        @tags ||= []
+      end
+
+      def self.required_tags
+        @required_tags ||= Hash.new {|h,k| h[k] = Array.new }
+      end
     VALIDATING_METADATA_ATTRIBUTE_GROUPS
+  end
+
+  def include_tag(tag,options=Hash.new)
+    tags << AccessionedTag.new(tag,options[:as],options[:services])
+  end
+
+  def require_tag(tag,services=:all)
+    [services].flatten.each do |service|
+      required_tags[service] << tag
+    end
+  end
+
+
+  class AccessionedTag
+    attr_reader :tag, :name
+    def initialize(tag, as=nil, services=[])
+      @tag = tag
+      @name = as||tag
+      @services = [services].flatten.compact
+    end
+
+    def for?(service)
+      @services.empty? || @services.include?(service)
+    end
   end
 
   def construct_metadata_class(table_name, as_class, &block)
@@ -81,6 +121,16 @@ private
 
     def validating_ena_required_fields=(state)
       @validating_ena_required_fields = !!state
+    end
+
+    def service_specific_fields
+      owner.required_tags.each do |tag|
+        if send(tag).blank?
+          owner.errors.add_to_base("#{tag} is required")
+          return nil if send(tag).blank?
+        end
+      end
+      true
     end
 
     class << self

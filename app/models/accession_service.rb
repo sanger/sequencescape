@@ -7,9 +7,7 @@ class AccessionService
   Protect = "protect".freeze
   Hold = "hold".freeze
 
-  def sample_tags
-    [ :sample_strain_att, :sample_description ]
-  end
+  def provider; end
 
   class AccessionedFile < File
     # This class provides an original_filename method

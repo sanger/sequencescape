@@ -31,6 +31,7 @@ Feature: Generate Sample Accessions
       And the sample "Sample4491710" has the gender "<gender>"
       And the sample "Sample4491710" has the phenotype "<phenotype>"
       And the sample "Sample4491710" should not have an accession number
+      And the sample "Sample4491710" should <accession> an accesionable flag
       And an accessioning webservice exists which returns a sample accession number "<accession_number>"
 
     When I run the "generate_sample_accessions.rb" cron script
@@ -41,6 +42,8 @@ Feature: Generate Sample Accessions
       | data_release_strategy | accession_number | gender | donor_id | phenotype | accession |
       | open                  | EGAN00001000234  |        |          |           | have      |
       | managed               | EGAN00001000234  | male   | D0N0R    | cancer    | have      |
+      | managed               | EGAN00001000234  | male   |          | cancer    | not have  |
       | managed               | EGAN00001000234  | male   |          | healthy   | have      |
+      | managed               | EGAN00001000234  | male   |          |           | not have  |
 
 

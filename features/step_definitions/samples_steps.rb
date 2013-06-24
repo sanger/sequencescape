@@ -56,7 +56,7 @@ end
 
 Given /^the sample "([^\"]+)" has the donor id "([^\"]*)"$/ do |name,donor_id|
   sample = Sample.find_by_name(name) or raise StandardError, "Cannot find sample with name #{ name.inspect }"
-  sample.sample_metadata.donor_id = donor_id
+  sample.sample_metadata.cancer_donor_id = donor_id
   sample.save!
 end
 
@@ -229,4 +229,14 @@ end
 
 Given /^there are no samples$/ do
   Sample.destroy_all
+end
+
+Given /^the sample "(.*?)" should have an accesionable flag$/ do |name|
+  sample = Sample.find_by_name(name) or raise StandardError, "Cannot find the sample #{name.inspect}"
+  assert sample.accession_could_be_generated?
+end
+
+Given /^the sample "(.*?)" should not have an accesionable flag$/ do |name|
+  sample = Sample.find_by_name(name) or raise StandardError, "Cannot find the sample #{name.inspect}"
+  assert !sample.accession_could_be_generated?
 end
