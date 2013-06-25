@@ -48,7 +48,7 @@ module Pulldown::PlatePurposes
   ]
 
   PLATE_PURPOSE_TYPE = {
-    'ISC-HTP lib pool'       => IlluminaHtp::InitialDownstreamPlatePurpose,
+    'ISC-HTP lib pool'       => Pulldown::InitialDownstreamPlatePurpose,
     'ISC-HTP hyb'            => IlluminaHtp::DownstreamPlatePurpose,
     'ISC-HTP cap lib'        => IlluminaHtp::DownstreamPlatePurpose,
     'ISC-HTP cap lib PCR'    => IlluminaHtp::DownstreamPlatePurpose,

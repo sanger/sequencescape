@@ -24,6 +24,11 @@ class PooledPlateCreation < AssetCreation
   end
   private :record_creation_of_children
 
+  def connect_parent_and_children
+    parents.each { |parent| AssetLink.create_edge!(parent, child) }
+  end
+  private :connect_parent_and_children
+
   include PlateCreation::Children
 
 end
