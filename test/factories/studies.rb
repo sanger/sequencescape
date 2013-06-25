@@ -21,6 +21,13 @@ Factory.define(:study_for_study_list_inactive, :parent => :study) do |study|
   study.state 'inactive'
 end
 
+Factory.define(:managed_study, :parent => :study) do |study|
+  study.name 'Study: Manages'
+  study.state 'active'
+  study.after_create do |study|
+    study.study_metadata.update_attributes!(:data_release_strategy=> 'managed')
+  end
+end
 # These require property definitions to be properly setup
 Factory.define(:study_metadata_for_study_list_pending_ethical_approval, :parent => :study_metadata) do |metadata|
   metadata.contains_human_dna     'Yes'

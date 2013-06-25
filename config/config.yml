@@ -19,6 +19,7 @@ development:
     barcode_service_url: http://localhost:9998/barcode_service.wsdl
     default_policy_text: https://www.example.com/
     default_policy_title: Default Policy Title
+    invalid_policy_url_domains: []
     delayed_job:
       study_report_priority: 100
       submission_process_priority: 0
@@ -84,6 +85,11 @@ test: &TEST
     barcode_images_url: http://example.com/deliberately_broken_url
     barcode_prefix: NT
     barcode_service_url: http://localhost:9998/barcode_service.wsdl
+    default_policy_text: https://www.example.com/
+    default_policy_title: Default Policy Title
+    invalid_policy_url_domains:
+        - internal.example.com
+        - invalid.example.com
     disable_accession_check: false
     disable_api_authentication: true
     disable_web_proxy: true
