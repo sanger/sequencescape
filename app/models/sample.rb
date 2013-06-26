@@ -111,8 +111,8 @@ class Sample < ActiveRecord::Base
       else
         has_submission = true
       end
-    elsif self.has_submission_record?
-      #if has submission record means that exists a row in table submission but no request is created.
+    else # We have no requests, we're probably S2 (Or very old Sequencescape)
+         # This is a hack, but I'll get this tdied up.
       has_submission = true
     end
     return has_submission
@@ -128,17 +128,6 @@ class Sample < ActiveRecord::Base
     end
 
     return has_ebi_accession_number
-  end
-
-  def has_submission_record?
-    # Old code:
-    # assets_common_to_submissions = self.assets - self.studies.map(&:submissions).flatten.map(&:assets).uniq
-    # not assets_common_to_submissions.empty?
-    # We'll only ever hit this for S2 injected samples, which we don't really want to be deleted from
-    # within sequencescape, which is all this horridly named method is used for. (Basically stopping
-    # people from deleting samples with submissions being built)
-    # true is technically a lie.
-    true
   end
 
   # TODO: remove as this is no longer needed (validation of name change will fail)
