@@ -46,7 +46,7 @@ private
       end
 
       def required_tags
-        self.class.required_tags[accession_service.provider]+self.class.required_tags[:all]
+        self.class.required_tags[accession_service.try(:provider)]+self.class.required_tags[:all]
       end
 
       def self.tags
@@ -127,7 +127,7 @@ private
       owner.required_tags.each do |tag|
         if send(tag).blank?
           owner.errors.add_to_base("#{tag} is required")
-          return nil if send(tag).blank?
+          return nil
         end
       end
       true
