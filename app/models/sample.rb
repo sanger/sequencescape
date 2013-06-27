@@ -13,11 +13,11 @@ class Sample < ActiveRecord::Base
   include Aliquot::Aliquotable
 
   extend EventfulRecord
-  has_many_events do 
+  has_many_events do
     event_constructor(:created_using_sample_manifest!, Event::SampleManifestEvent, :created_sample!)
     event_constructor(:updated_using_sample_manifest!, Event::SampleManifestEvent, :updated_sample!)
   end
-  
+
   has_many_lab_events
 
   ArrayExpressFields = %w(genotype phenotype strain_or_line developmental_stage sex cell_type disease_state compound dose immunoprecipitate growth_condition rnai organism_part species time_point)
@@ -58,7 +58,7 @@ class Sample < ActiveRecord::Base
     update_attributes!(:name => new_name)
   end
   validation_guarded_by(:rename_to!, :can_rename_sample)
-  
+
   named_scope :with_name, lambda { |*names| { :conditions => { :name => names.flatten } } }
 
   named_scope :for_search_query, lambda { |query|
@@ -111,8 +111,8 @@ class Sample < ActiveRecord::Base
       else
         has_submission = true
       end
-    elsif self.has_submission_record?
-      #if has submission record means that exists a row in table submission but no request is created.
+    else # We have no requests, we're probably S2 (Or very old Sequencescape)
+         # This is a hack, but I'll get this tdied up.
       has_submission = true
     end
     return has_submission
@@ -128,11 +128,6 @@ class Sample < ActiveRecord::Base
     end
 
     return has_ebi_accession_number
-  end
-
-  def has_submission_record?
-    assets_common_to_submissions = self.assets - self.studies.map(&:submissions).flatten.map(&:assets).uniq
-    not assets_common_to_submissions.empty?
   end
 
   # TODO: remove as this is no longer needed (validation of name change will fail)
@@ -165,7 +160,7 @@ class Sample < ActiveRecord::Base
     return false unless self.sample_metadata.sample_ebi_accession_number.blank?
     return false if self.sample_metadata.sample_taxon_id.blank?
     return false if self.sample_metadata.sample_common_name.blank?
-    
+
     # We have everything needed to generate an accession so...
     true
   end
@@ -225,7 +220,7 @@ class Sample < ActiveRecord::Base
   has_metadata do
     include ReferenceGenome::Associations
     association(:reference_genome, :name, :required => true)
-    
+
     attribute(:organism)
     attribute(:cohort)
     attribute(:country_of_origin)
@@ -246,7 +241,7 @@ class Sample < ActiveRecord::Base
     attribute(:sample_ebi_accession_number)
     attribute(:sample_description)
     attribute(:sample_sra_hold, :in => Sample::SRA_HOLD_VALUES)
-    
+
     attribute(:sibling)
     attribute(:is_resubmitted)              # TODO[xxx]: selection of yes/no?
     attribute(:date_of_sample_collection)   # TODO[xxx]: Date field?
@@ -282,7 +277,7 @@ class Sample < ActiveRecord::Base
     attribute(:treatment)
     attribute(:subject)
     attribute(:disease)
-    
+
 
     with_options(:if => :validating_ena_required_fields?) do |ena_required_fields|
       ena_required_fields.validates_presence_of :sample_common_name
@@ -296,14 +291,14 @@ class Sample < ActiveRecord::Base
       :gender                  => GENDERS,
       :dna_source              => DNA_SOURCES,
       :sample_sra_hold         => SRA_HOLD_VALUES
-#      :reference_genome        => ??      
+#      :reference_genome        => ??
     }.inject({}) do |h,(k,v)|
       h[k] = v.inject({}) { |a,b| a[b.downcase] = b ; a }
       h
     end
 
     before_validation do |record|
-      record.reference_genome_id = 1 if record.reference_genome_id.blank? 
+      record.reference_genome_id = 1 if record.reference_genome_id.blank?
 
       # Unfortunately it appears that some of the functionality of this implementation relies on non-capitalisation!
       # So we remap the lowercased versions to their proper values here
@@ -364,13 +359,13 @@ class Sample < ActiveRecord::Base
     # Do not alter the order of this line, otherwise the @ena_study won't be reset!
     self.validating_ena_required_fields, @ena_study = false, nil
   end
-  
+
   def sample_reference_genome
     reference_genome = self.sample_metadata.reference_genome
     reference_genome = self.primary_study.try(:study_metadata).try(:reference_genome) if ( reference_genome.nil? ) || reference_genome.name.blank?
     reference_genome
   end
-  
+
   def affiliated_with?(object)
     case
     when object.respond_to?(:sample_id)
