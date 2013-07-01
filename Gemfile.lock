@@ -131,7 +131,6 @@ GEM
     jdbc-mysql (5.1.25)
     jruby-openssl (0.7.7)
       bouncy-castle-java (>= 1.5.0146.1)
-    jruby-rack (1.1.10)
     json (1.7.5)
     json (1.7.5-java)
     json_pure (1.7.3)
@@ -165,6 +164,10 @@ GEM
     parallel_tests (0.8.4)
       parallel
     polyglot (0.3.1)
+    puma (2.1.1)
+      rack (>= 1.1, < 2.0)
+    puma (2.1.1-java)
+      rack (>= 1.1, < 2.0)
     rack (1.1.4)
     rack-acceptable (0.1.0)
       rack (>= 1.1.0)
@@ -219,9 +222,6 @@ GEM
     timecop (0.3.5)
     treetop (1.2.6)
       polyglot (>= 0.2.5)
-    trinidad (1.4.1)
-      jruby-rack (>= 1.1.7)
-      trinidad_jars (>= 1.0.5)
     trinidad_daemon_extension (0.3.1)
       trinidad_jars (>= 1.0.0)
     trinidad_jars (1.0.6)
@@ -277,6 +277,7 @@ DEPENDENCIES
   nokogiri
   parallel_tests
   psd_logger!
+  puma
   rack-acceptable
   rails (= 2.3.15)
   rcov
@@ -294,7 +295,6 @@ DEPENDENCIES
   spreadsheet
   timecop
   treetop (~> 1.2.5)
-  trinidad
   trinidad_daemon_extension
   utility_belt
   uuidtools

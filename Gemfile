@@ -23,7 +23,7 @@ gem 'carrierwave', "~>0.4.0"
 gem 'jruby-openssl', :platforms => :jruby
 gem 'rdoc', '~>2.4.2'
 
-gem 'trinidad', :platforms => :jruby
+gem 'puma'
 
 # This was once a plugin, now it's a gem:
 gem 'catch_cookie_exception', :git => 'git+ssh://git@github.com/mhartl/catch_cookie_exception.git'
