@@ -113,19 +113,19 @@ Feature: Sample manifest
       | Contains | Study      | Supplier           | Manifest       | Upload             | Errors | State     | Created by |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest |        | Completed | john       |
     Then the samples table should look like:
-      | sanger_sample_id | supplier_name | empty_supplier_sample_name | sample_taxon_id |
-      | sample_1         | aaaa          | false                      | 9606            |
-      | sample_2         | bbbb          | false                      | 9607            |
-      | sample_3         | Water         | true                       |                 |
-      | sample_4         | cccc          | false                      | 9609            |
-      | sample_5         | Blank         | true                       |                 |
-      | sample_6         | dddd          | false                      | 9611            |
-      | sample_7         |               | true                       |                 |
-      | sample_8         | eeee          | false                      | 9613            |
-      | sample_9         | EMPTY         | true                       |                 |
-      | sample_10        | ffffff        | false                      | 9615            |
-      | sample_11        | None          | true                       |                 |
-      | sample_12        | gggg          | false                      | 9617            |
+      | sanger_sample_id | supplier_name | empty_supplier_sample_name | sample_taxon_id | donor_id |
+      | sample_1         | aaaa          | false                      | 9606            | 12345    |
+      | sample_2         | bbbb          | false                      | 9607            | 12345    |
+      | sample_3         | Water         | true                       |                 |          |
+      | sample_4         | cccc          | false                      | 9609            | 12345    |
+      | sample_5         | Blank         | true                       |                 |          |
+      | sample_6         | dddd          | false                      | 9611            | 12345    |
+      | sample_7         |               | true                       |                 |          |
+      | sample_8         | eeee          | false                      | 9613            | 12345    |
+      | sample_9         | EMPTY         | true                       |                 |          |
+      | sample_10        | ffffff        | false                      | 9615            | 12345    |
+      | sample_11        | None          | true                       |                 |          |
+      | sample_12        | gggg          | false                      | 9617            | 12345    |
     Given plate "1234567" has samples with known sanger_sample_ids
     Given I am on the Qc reports homepage
     Then I should see "New report for"

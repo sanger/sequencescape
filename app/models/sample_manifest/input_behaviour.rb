@@ -188,7 +188,8 @@ module SampleManifest::InputBehaviour
     :gc_content                     => 'GC CONTENT',
     :sample_public_name             => 'PUBLIC NAME',
     :sample_common_name             => 'COMMON NAME',
-    :sample_strain_att              => 'STRAIN'
+    :sample_strain_att              => 'STRAIN',
+    :cancer_donor_id                => 'DONOR ID (required for cancer samples)'
   }
 
   InvalidManifest = Class.new(StandardError)

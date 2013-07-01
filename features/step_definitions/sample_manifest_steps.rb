@@ -93,6 +93,10 @@ Then /^the samples table should look like:$/ do |table|
       assert_equal(expected_data[:common_name], sample.sample_metadata.sample_common_name, "Sample common name invalid for #{sanger_sample_id}")
     end
 
+    unless expected_data[:donor_id].blank?
+      assert_equal(expected_data[:donor_id], sample.sample_metadata.cancer_donor_id, "Sample donor_id invalid for #{sanger_sample_id}")
+    end
+
   end
 end
 
