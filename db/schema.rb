@@ -1,4 +1,4 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file, 
+# This file is auto-generated from the current state of the database. Instead of editing this file,
 # please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
@@ -1054,6 +1054,7 @@ ActiveRecord::Schema.define(:version => 20130626082027) do
     t.string   "treatment"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "cancer_donor_id"
   end
 
   add_index "sample_metadata", ["sample_id"], :name => "index_sample_metadata_on_sample_id"

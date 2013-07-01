@@ -21,7 +21,7 @@ class Sample < ActiveRecord::Base
   has_many_lab_events
 
   ArrayExpressFields = %w(genotype phenotype strain_or_line developmental_stage sex cell_type disease_state compound dose immunoprecipitate growth_condition rnai organism_part species time_point)
-  EgaFields = %w(subject disease treatment)
+  EgaFields = %w(subject disease treatment gender phenotype)
 
   acts_as_authorizable
 
@@ -158,9 +158,9 @@ class Sample < ActiveRecord::Base
   # and we have a common name for the sample return true else false
   def accession_could_be_generated?
     return false unless self.sample_metadata.sample_ebi_accession_number.blank?
-    return false if self.sample_metadata.sample_taxon_id.blank?
-    return false if self.sample_metadata.sample_common_name.blank?
-
+    required_tags.each do |tag|
+      return false if self.sample_metadata.send(tag).blank?
+    end
     # We have everything needed to generate an accession so...
     true
   end
@@ -233,6 +233,7 @@ class Sample < ActiveRecord::Base
     attribute(:replicate)
     attribute(:gc_content, :in => Sample::GC_CONTENTS)
     attribute(:gender, :in => Sample::GENDERS)
+    attribute(:cancer_donor_id)
     attribute(:dna_source, :in => Sample::DNA_SOURCES)
     attribute(:sample_public_name)
     attribute(:sample_common_name)
@@ -280,8 +281,9 @@ class Sample < ActiveRecord::Base
 
 
     with_options(:if => :validating_ena_required_fields?) do |ena_required_fields|
-      ena_required_fields.validates_presence_of :sample_common_name
-      ena_required_fields.validates_presence_of :sample_taxon_id
+      # ena_required_fields.validates_presence_of :sample_common_name
+      # ena_required_fields.validates_presence_of :sample_taxon_id
+      ena_required_fields.validates_presence_of :service_specific_fields
     end
 
     # The spreadsheets that people upload contain various fields that could be mistyped.  Here we ensure that the
@@ -309,6 +311,19 @@ class Sample < ActiveRecord::Base
     end
   end
 
+    include_tag(:sample_strain_att)
+    include_tag(:sample_description)
+
+    include_tag(:gender, :services=>:EGA)
+    include_tag(:phenotype, :services=>:EGA)
+    include_tag(:cancer_donor_id, :as=>:donor_id, :services=>:EGA)
+
+    require_tag(:sample_taxon_id)
+    require_tag(:sample_common_name)
+    require_tag(:gender, :EGA)
+    require_tag(:phenotype, :EGA)
+    require_tag(:donor_id_provided_if_needed, :EGA)
+
   # This needs to appear after the metadata has been defined to ensure that the Metadata class
   # is present.
   include SampleManifest::InputBehaviour::SampleUpdating
@@ -326,6 +341,10 @@ class Sample < ActiveRecord::Base
     end
     def species
       sample_common_name
+    end
+
+    def donor_id_provided_if_needed
+      phenotype.downcase == 'cancer' ? cancer_donor_id : true
     end
   end
 
