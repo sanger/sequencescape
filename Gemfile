@@ -108,6 +108,5 @@ group :deployment do
   gem "mongrel_cluster", :platforms => :mri
   gem "psd_logger", :git => "git@github.com:sanger/psd_logger.git"
   gem "gmetric", "~>0.1.3"
-  gem "trinidad_daemon_extension", :platforms => :jruby
 end
 
