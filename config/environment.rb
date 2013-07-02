@@ -37,7 +37,7 @@ Rails::Initializer.run do |config|
   #config.gem "factory_girl", :lib => "factory_girl", :source => "http://gems.github.com"
   #config.gem 'db-charmer', :lib => 'db_charmer', :source => 'http://gemcutter.org'
   #config.gem 'mexpolk-flow_pagination', :lib => 'flow_pagination'
-  
+
   # Only load the plugins named here, in the order given. By default, all plugins
   # in vendor/plugins are loaded in alphabetical order.
   # :all can be used as a placeholder for all plugins not explicitly named
@@ -68,12 +68,12 @@ Rails::Initializer.run do |config|
      :key => '_sequencescape_projects_session',
      :secret      => '331126909929cd365e60e61c66e88d260ef609cb813566e03618f6a455dbfc7f50486aa6dc721bcc5fce54455282e3e17bb500f11d8b72bbac369f194c9dae73'
    }
-   
+
   config.reload_plugins = true
 
   # Enable localisations to be split over multiple paths.
   config.i18n.load_path << Dir[File.join(Rails.root, %w{config locales metadata *.{rb,yml}})]
-    
+
   # Use the database for sessions instead of the cookie-based default,
   # which shouldn't be used to store highly confidential information
   # (create the session table with "rake db:sessions:create")
@@ -83,4 +83,12 @@ Rails::Initializer.run do |config|
   # This is necessary if your schema can't be completely dumped by the schema dumper,
   # like if you have constraints or database-specific column types
   # config.active_record.schema_format = :sql
+
+  # Jruby 1.7 seems to try and use the http.proxyX settings, but ignores the noProxyHost ENV.
+  if defined?(ENV_JAVA)
+    ENV_JAVA['http.proxyHost'] = nil
+    ENV_JAVA['http.proxyPort'] = nil
+    ENV_JAVA['https.proxyHost'] = nil
+    ENV_JAVA['https.proxyPort'] = nil
+  end
 end
