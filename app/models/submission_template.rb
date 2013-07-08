@@ -13,6 +13,7 @@ class SubmissionTemplate < ActiveRecord::Base
 
   has_many :orders
   belongs_to :product_line
+  belongs_to :order_role, :class_name => 'Order::OrderRole'
 
   has_many   :supercedes,    :class_name => 'SubmissionTemplate', :foreign_key => :superceded_by_id
   belongs_to :superceded_by, :class_name => 'SubmissionTemplate', :foreign_key => :superceded_by_id

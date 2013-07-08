@@ -12,6 +12,8 @@ class Io::Tube < Io::Asset
                           concentration  => concentration
                                  volume  => volume
                         scanned_in_date  => scanned_in_date
+                                    role => label.prefix
+                            purpose.name => label.text
 
                        stock_plate.uuid  => stock_plate.uuid
                     stock_plate.barcode  => stock_plate.barcode.number

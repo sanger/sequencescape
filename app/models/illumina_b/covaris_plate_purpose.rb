@@ -1,3 +1,2 @@
-class IlluminaB::CovarisPlatePurpose < PlatePurpose
-  include PlatePurpose::Initial
+class IlluminaB::CovarisPlatePurpose < IlluminaHtp::CovarisPlatePurpose
 end

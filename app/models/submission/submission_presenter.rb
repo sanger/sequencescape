@@ -28,7 +28,7 @@ class PresenterSkeleton
   end
 
   def lanes_from_request_options
-    library_request       = RequestType.find(order.request_types.first)
+    library_request       = RequestType.find(order.request_types[-2])
     sequencing_request    = RequestType.find(order.request_types.last)
     multiplier_hash = order.request_options.fetch(:multiplier, {})
     sequencing_multiplier = (multiplier_hash[sequencing_request.id.to_s]||multiplier_hash.fetch(sequencing_request.id, 1)).to_i

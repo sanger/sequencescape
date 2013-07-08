@@ -1,4 +1,4 @@
 
-class IlluminaB::StockPlatePurpose < PlatePurpose
-  include PlatePurpose::Stock
+class IlluminaB::StockPlatePurpose < IlluminaHtp::StockPlatePurpose
+
 end
