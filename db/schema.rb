@@ -1,4 +1,4 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file, 
+# This file is auto-generated from the current state of the database. Instead of editing this file,
 # please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130607150607) do
+ActiveRecord::Schema.define(:version => 20130626082027) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -52,6 +52,13 @@ ActiveRecord::Schema.define(:version => 20130607150607) do
   add_index "asset_audits", ["asset_id"], :name => "index_asset_audits_on_asset_id"
 
   create_table "asset_barcodes", :force => true do |t|
+  end
+
+  create_table "asset_creation_parents", :force => true do |t|
+    t.integer  "asset_creation_id"
+    t.integer  "parent_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "asset_creations", :force => true do |t|
@@ -268,6 +275,12 @@ ActiveRecord::Schema.define(:version => 20130607150607) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "bulk_transfers", :force => true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "user_id"
   end
 
   create_table "comments", :force => true do |t|
@@ -564,6 +577,12 @@ ActiveRecord::Schema.define(:version => 20130607150607) do
   add_index "maps", ["description", "asset_size"], :name => "index_maps_on_description_and_asset_size"
   add_index "maps", ["description"], :name => "index_maps_on_description"
 
+  create_table "order_roles", :force => true do |t|
+    t.string   "role"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "orders", :force => true do |t|
     t.integer  "study_id"
     t.integer  "workflow_id"
@@ -583,6 +602,7 @@ ActiveRecord::Schema.define(:version => 20130607150607) do
     t.string   "asset_group_name"
     t.integer  "submission_id"
     t.integer  "pre_cap_group"
+    t.integer  "order_role_id"
   end
 
   add_index "orders", ["state_to_delete"], :name => "index_submissions_on_state"
@@ -778,6 +798,16 @@ ActiveRecord::Schema.define(:version => 20130607150607) do
   add_index "projects", ["enforce_quotas"], :name => "index_projects_on_enforce_quotas"
   add_index "projects", ["state"], :name => "index_projects_on_state"
   add_index "projects", ["updated_at"], :name => "index_projects_on_updated_at"
+
+  create_table "qc_files", :force => true do |t|
+    t.integer  "asset_id"
+    t.string   "asset_type"
+    t.integer  "size"
+    t.string   "content_type"
+    t.string   "filename"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "quotas_bkp", :force => true do |t|
     t.integer  "limit",            :default => 0
@@ -1054,6 +1084,7 @@ ActiveRecord::Schema.define(:version => 20130607150607) do
     t.string   "treatment"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "cancer_donor_id"
   end
 
   add_index "sample_metadata", ["sample_id"], :name => "index_sample_metadata_on_sample_id"
@@ -1095,6 +1126,13 @@ ActiveRecord::Schema.define(:version => 20130607150607) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "model_name"
+  end
+
+  create_table "specific_tube_creation_purposes", :force => true do |t|
+    t.integer  "specific_tube_creation_id"
+    t.integer  "tube_purpose_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "state_changes", :force => true do |t|
@@ -1403,6 +1441,7 @@ ActiveRecord::Schema.define(:version => 20130607150607) do
     t.integer  "destination_id"
     t.string   "destination_type"
     t.string   "transfers",        :limit => 1024
+    t.integer  "bulk_transfer_id"
   end
 
   add_index "transfers", ["source_id"], :name => "source_id_idx"

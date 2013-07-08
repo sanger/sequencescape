@@ -8,6 +8,8 @@ class Plate < Asset
   include Barcode::Barcodeable
   include Asset::Ownership::Owned
 
+  extend QcFile::Associations
+  has_qc_files
   # The default state for a plate comes from the plate purpose
   delegate :default_state, :to => :plate_purpose, :allow_nil => true
   def state
@@ -24,6 +26,10 @@ class Plate < Asset
 
   def self.derived_classes
     @derived_classes ||= [ self, *Class.subclasses_of(self) ].map(&:name)
+  end
+
+  def prefix
+    self.barcode_prefix.try(:prefix) || self.class.prefix
   end
 
   # The iteration of a plate is defined as the number of times a plate of this type has been created
@@ -457,11 +463,11 @@ WHERE c.container_id=?
 
   def stock_plate?
     return true if self.plate_purpose.nil?
-    self.plate_purpose.can_be_considered_a_stock_plate?
+    self.plate_purpose.can_be_considered_a_stock_plate? && self.plate_purpose.attatched?(self)
   end
 
   def stock_plate
-    @stock_plate ||= lookup_stock_plate
+    @stock_plate ||= stock_plate? ? self : lookup_stock_plate
   end
 
   def lookup_stock_plate

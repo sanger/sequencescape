@@ -117,8 +117,8 @@ class Core::Service < Sinatra::Base
     include Core::Benchmarking
     include Core::Service::EndpointHandling
 
-    initialized_attr_reader :service, :target, :path, :io, :json
-    attr_writer :io
+    initialized_attr_reader :service, :target, :path, :io, :json, :file, :filename
+    attr_writer :io, :file, :filename
     attr_reader :ability
 
     delegate :user, :to => :service
@@ -231,18 +231,6 @@ class Core::Service < Sinatra::Base
             :handled_by => handled_by
           )
         end
-      # Old Jruby changes
-      # benchmark('Streaming JSON') do
-      #   options = { :response => self, :target => object }
-      #
-      #   io_handler         = ::Core::Io::Registry.instance.lookup_for_object(object)
-      #   object_as_json     = io_handler.as_json(options.merge(:object => object))
-      #   actions_for_object = handled_by.as_json(options)
-      #   merge_actions_into_object_json(object_as_json, actions_for_object)
-      #   io_handler.post_process(object_as_json)
-      #
-      #   #Yajl::Encoder.encode(object_as_json, &block)
-      #   yield JSON.generate(object_as_json)
       end
 
       Rails.logger.info("API[streaming]: finished JSON streaming in #{Time.now-start}s")

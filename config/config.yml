@@ -111,6 +111,9 @@ test: &TEST
     studies_url: http://localhost:3000
     taxon_lookup_url: http://eutils.ncbi.nlm.nih.gov/entrez/eutils/
     tecan_files_location:  <%= Rails.root %>/data
+    uploaded_spreadsheet:
+      max_number_of_samples: 384
+      max_number_of_move_samples: 0
     verify_login_url: http://localhost:9999/cgi-bin/prodsoft/SSO/isAuth.pl
     xml_files_location: <%= Rails.root %>/data/
     data_sharing_contact:

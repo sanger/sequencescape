@@ -93,6 +93,7 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
   'plate purpose',
   'purpose',
   'dilution plate purpose',
+  'bulk transfer',
 
   'sample',
   'sample manifest',
