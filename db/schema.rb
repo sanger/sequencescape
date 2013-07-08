@@ -1,4 +1,4 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file,
+# This file is auto-generated from the current state of the database. Instead of editing this file, 
 # please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130626082027) do
+ActiveRecord::Schema.define(:version => 20130704144832) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -827,6 +827,17 @@ ActiveRecord::Schema.define(:version => 20130626082027) do
     t.datetime "updated_at"
   end
 
+  create_table "request_events", :force => true do |t|
+    t.integer  "request_id",   :null => false
+    t.string   "event_name",   :null => false
+    t.string   "from_state"
+    t.string   "to_state"
+    t.datetime "current_from", :null => false
+    t.datetime "current_to"
+  end
+
+  add_index "request_events", ["request_id", "current_to"], :name => "index_request_events_on_request_id_and_current_to"
+
   create_table "request_information_types", :force => true do |t|
     t.string   "name"
     t.string   "key",           :limit => 50
@@ -896,15 +907,15 @@ ActiveRecord::Schema.define(:version => 20130626082027) do
     t.integer  "order"
     t.string   "initial_state",      :limit => 20
     t.string   "target_asset_type"
-    t.boolean  "multiples_allowed",                :default => false
+    t.boolean  "multiples_allowed",                 :default => false
     t.string   "request_class_name"
     t.text     "request_parameters"
-    t.integer  "morphology",                       :default => 0
-    t.boolean  "for_multiplexing",                 :default => false
-    t.boolean  "billable",                         :default => false
+    t.integer  "morphology",                        :default => 0
+    t.boolean  "for_multiplexing",                  :default => false
+    t.boolean  "billable",                          :default => false
     t.integer  "product_line_id"
-    t.boolean  "deprecated",                       :default => false, :null => false
-    t.boolean  "no_target_asset",                  :default => false, :null => false
+    t.boolean  "deprecated",                        :default => false, :null => false
+    t.boolean  "no_target_asset",                   :default => false, :null => false
     t.integer  "target_purpose_id"
   end
 
