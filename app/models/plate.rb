@@ -28,6 +28,10 @@ class Plate < Asset
     @derived_classes ||= [ self, *Class.subclasses_of(self) ].map(&:name)
   end
 
+  def prefix
+    self.barcode_prefix.try(:prefix) || self.class.prefix
+  end
+
   # The iteration of a plate is defined as the number of times a plate of this type has been created
   # from it's parent.
   def iteration

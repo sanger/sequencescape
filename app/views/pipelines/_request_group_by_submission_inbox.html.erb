@@ -2,7 +2,7 @@
 <%= render :partial => "batch_statuses" %>
 <%= render :partial => 'pipeline_limit' %>
 
-<% if @grouped_requests.empty? -%>
+<% if @requests_waiting == 0 -%>
   There are no outstanding requests for this pipeline.
 <% else -%>
 	<%= render :partial => 'pipeline_paginate' %>

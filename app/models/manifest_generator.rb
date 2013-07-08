@@ -86,6 +86,7 @@ class ManifestGenerator
     when 'not applicable' then 'U'
     when 'mixed'          then 'U'
     when 'hermaphrodite'  then 'U'
+    when 'unknown'        then 'U'
     when nil              then 'U'
     else raise StandardError, "Unknown gender type #{gender.inspect}"
     end

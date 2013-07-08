@@ -12,6 +12,7 @@ Feature: Registering samples
 
   Scenario: The required fields are required
     Then I should see the text field "Sample name for sample 0"
+    And I should see "Donor Id"
 
     When I press "Register samples"
     Then I should be on the sample error page for study "Testing registering samples"
@@ -168,11 +169,11 @@ Feature: Registering samples
     And I press "Upload spreadsheet"
     Then I should be on the sample registration page for study "Testing registering samples"
     And the following samples should be in the sample registration fields:
-      |Sample name           |Cohort|Country of origin|Geographical region|Gender|Volume (µl)| Ethnicity | DNA source |
-      |cn_dev_96_inc_blank_01|ro    |uk               |europe             |Male  |100        | Caucasian | Blood      |
-      |cn_dev_96_inc_blank_02|ro    |uk               |europe             |Female|100        | Caucasian | Blood      |
-      |cn_dev_96_inc_blank_03|ro    |uk               |europe             |Male  |100        | Caucasian | Blood      |
-      |cn_dev_96_inc_blank_04|ro    |uk               |europe             |Female|100        | Caucasian | Blood      |
+      |Sample name           |Cohort|Country of origin|Geographical region|Gender|Volume (µl)| Ethnicity | DNA source | Donor Id |
+      |cn_dev_96_inc_blank_01|ro    |uk               |europe             |Male  |100        | Caucasian | Blood      | 12345    |
+      |cn_dev_96_inc_blank_02|ro    |uk               |europe             |Female|100        | Caucasian | Blood      | 12345    |
+      |cn_dev_96_inc_blank_03|ro    |uk               |europe             |Male  |100        | Caucasian | Blood      | 12345    |
+      |cn_dev_96_inc_blank_04|ro    |uk               |europe             |Female|100        | Caucasian | Blood      | 12345    |
     And every sample in study "Testing registering samples" should be accessible via a request
 
   Scenario: Uploading a non-spreadsheet file

@@ -26,7 +26,7 @@ en:
 
         name:
           label: Name
-        
+
         insert_size:
           label: Insert size
 
@@ -142,7 +142,7 @@ en:
 
         reference_genome:
           label: Reference Genome
-        
+
         sibling:
           label: Sibling
 
@@ -172,12 +172,16 @@ en:
 
         concentration_determined_by:
           label: Concentration determind by
-          
+
         sample_type:
           label: Sample type
 
         sample_storage_conditions:
           label: Sample storage conditions
+
+        cancer_donor_id:
+          label:  Donor Id
+          edit_info: "[ EGA (Cancer samples) ]"
 
         genotype:
           label: Genotype
@@ -189,14 +193,14 @@ en:
           label: Strain or Line
           edit_info: "[ Array Express ]"
         age:
-          label: Age 
+          label: Age
           edit_info: "[ Array Express ]"
           help: valid units are  second, minute, hour, day, month year.
         developmental_stage:
           label: Developmental Stage
           edit_info: "[ Array Express ]"
         sex:
-          label: Sex 
+          label: Sex
           edit_info: "[ Array Express ]"
         cell_type:
           label: Cell Type
@@ -205,25 +209,25 @@ en:
           label: Disease State
           edit_info: "[ Array Express, EGA ]"
         compound:
-          label: Compound 
+          label: Compound
           edit_info: "[ Array Express ]"
         dose:
-          label: Dose 
+          label: Dose
           edit_info: "[ Array Express ]"
         immunoprecipitate:
-          label: Immunoprecipitate 
+          label: Immunoprecipitate
           edit_info: "[ Array Express ]"
         growth_condition:
           label: Growth Condition
           edit_info: "[ Array Express ]"
         rnai:
-          label: RNAi 
+          label: RNAi
           edit_info: "[ Array Express ]"
         organism_part:
           label: Organism Part
           edit_info: "[ Array Express ]"
         species:
-          label: Species 
+          label: Species
           edit_info: "[ Array Express ]"
         time_point:
           label: Time Point
@@ -249,7 +253,7 @@ en:
 
         faculty_sponsor_id:
           label: Faculty Sponsor
-          
+
         faculty_sponsor:
           label: Faculty Sponsor
 
@@ -261,7 +265,7 @@ en:
         contaminated_human_dna:
           label: Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?
           help: Usually only applicable to pathogen research when human DNA will not be sequenced and therefore does not require ethical approval.
-        
+
         remove_x_and_autosomes:
           label: Does this study require the removal of X chromosome and autosome sequence?
           help: Applicable for studies where only mtDNA and Y-chromosomal data will be submitted to EGA.
@@ -354,10 +358,10 @@ en:
 
         data_release_delay_reason_comment:
           label: Comment regarding data release timing and approval
-        
+
         bam:
           label: Alignments in BAM
-          help: If you uncheck this, then you will not have alignments added to your BAM files for any runs created in this study.  Also, please be aware, that unless you choose a reference genome, the reference that the alignments will be made against is guessed based on the taxon identifier.  If there is no suitable reference genome, please leave it blank and contact NPG to get it added. 
+          help: If you uncheck this, then you will not have alignments added to your BAM files for any runs created in this study.  Also, please be aware, that unless you choose a reference genome, the reference that the alignments will be made against is guessed based on the taxon identifier.  If there is no suitable reference genome, please leave it blank and contact NPG to get it added.
 
         for_array_express:
           label: Send to ArrayExpress ?
@@ -373,7 +377,7 @@ en:
         ega_dac_accession_number:
           label: EGA DAC Accession Number
           help: Data Release accession Number. Will be filled automatically during submission process.
-#TODO help doesn't work, maybe because we are in a "related_field" subsection 
+#TODO help doesn't work, maybe because we are in a "related_field" subsection
 
         ega_policy_accession_number:
           label: EGA Policy Accession Number
@@ -388,7 +392,7 @@ en:
 
         snp_study_id:
           label: SNP study ID
-        
+
         commercially_available:
           label: Are all the samples to be used in this study commercially available, unlinked anonymised cell-lines?
           help: Are all the samples to be used in this study commercially available, anonymised cell-lines or DNA/RNA from commercially available, anonymised cell-lines?
@@ -403,7 +407,7 @@ en:
       metadata:
         project_manager_id:
           label: Sequencing Project Manager
-        
+
         project_cost_code:
           label: Project cost code
 
@@ -434,10 +438,10 @@ en:
         infinium_barcode:
           label: Infinium LIMS barcode
           help: Optional barcode which links a plate to the proprietary Illumina Infinium LIMS
-    
+
     lane:
       metadata:
         release_reason:
-          label: Reason for releasing data 
+          label: Reason for releasing data
 
 
