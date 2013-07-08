@@ -162,6 +162,10 @@ class PlatePurpose < Purpose
     cherrypick_direction == 'row'
   end
 
+  def attatched?(plate)
+    true
+  end
+
   def child_plate_purposes
     child_purposes.where_is_a?(PlatePurpose)
   end

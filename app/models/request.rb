@@ -350,6 +350,10 @@ class Request < ActiveRecord::Base
     end
   end
 
+  def target_tube
+    target_asset if target_asset.is_a?(Tube)
+  end
+
   def previous_failed_requests
     self.asset.requests.select { |previous_failed_request| (previous_failed_request.failed? or previous_failed_request.blocked?)}
   end
@@ -426,5 +430,9 @@ class Request < ActiveRecord::Base
   # Adds any pool information to the structure so that it can be reported to client applications
   def update_pool_information(pool_information)
     # Does not need anything here
+  end
+
+  def role
+    nil
   end
 end

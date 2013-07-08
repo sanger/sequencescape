@@ -5,6 +5,9 @@ class TubeCreation < AssetCreation
     belongs_to :tube
   end
 
+  belongs_to :parent, :class_name => 'Plate'
+  include_plate_named_scope :parent
+
   has_many :child_tubes, :class_name => 'TubeCreation::ChildTube'
   has_many :children, :through => :child_tubes, :source => :tube
 

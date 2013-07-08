@@ -59,7 +59,30 @@ module Pulldown::Requests
 
   end
 
+  class IscLibraryRequestPart < IscLibraryRequest
+    include IlluminaHtp::Requests::LibraryCompletion::FailUpstream
+  end
+
   class StockToCovaris < TransferRequest
     include TransferRequest::InitialTransfer
+  end
+
+  class PcrXpToIscLibPool < TransferRequest
+    include IlluminaHtp::Requests::InitialDownstream
+    redefine_state_machine do
+      aasm_column :state
+      aasm_initial_state :pending
+
+      aasm_state :pending
+      aasm_state :started
+      aasm_state :nx_in_progress
+      aasm_state :passed
+      aasm_state :cancelled
+
+      aasm_event :start       do transitions :to => :started,        :from => [:pending]                    end
+      aasm_event :nx_progress do transitions :to => :nx_in_progress, :from => [:pending, :started]          end
+      aasm_event :pass        do transitions :to => :passed,         :from => [:nx_in_progress, :failed]    end
+      aasm_event :cancel      do transitions :to => :cancelled,      :from => [:started, :passed]           end
+    end
   end
 end
