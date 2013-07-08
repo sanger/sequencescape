@@ -249,6 +249,41 @@ class StudyTest < ActiveSupport::TestCase
       end
 
     end
+
+    context 'policy text' do
+
+      setup do
+        @study = Factory :managed_study
+      end
+
+      should 'accept valid urls' do
+        assert @study.study_metadata.update_attributes!(:dac_policy=>'http://www.example.com')
+        assert_equal 'http://www.example.com', @study.study_metadata.dac_policy
+      end
+
+      should 'reject free text' do
+        assert_raise ActiveRecord::RecordInvalid do
+         @study.study_metadata.update_attributes!(:dac_policy=>'Not a URL')
+        end
+      end
+
+      should 'reject invalid domains' do
+        # In this context invalid domains refers to those on internal domains inaccessible outside the unit
+        assert_raise ActiveRecord::RecordInvalid do
+          @study.study_metadata.update_attributes!(:dac_policy=>'http://internal.example.com')
+        end
+      end
+
+      should 'add http:// before testing a url' do
+        assert @study.study_metadata.update_attributes!(:dac_policy=>'www.example.com')
+        assert_equal 'http://www.example.com', @study.study_metadata.dac_policy
+      end
+
+      should 'not add http for eg. https' do
+        assert @study.study_metadata.update_attributes!(:dac_policy=>'https://www.example.com')
+        assert_equal 'https://www.example.com', @study.study_metadata.dac_policy
+      end
+    end
   end
 end
 

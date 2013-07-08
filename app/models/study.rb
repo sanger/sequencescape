@@ -298,6 +298,8 @@ class Study < ActiveRecord::Base
     validates_presence_of :data_release_non_standard_agreement, :if => :non_standard_agreement?
     validates_associated  :data_release_non_standard_agreement, :if => :non_standard_agreement?
 
+    validate :valid_policy_url?
+
     before_validation do |record|
       if not record.non_standard_agreement? and not record.data_release_non_standard_agreement.nil?
         record.data_release_non_standard_agreement.delete
@@ -311,6 +313,22 @@ class Study < ActiveRecord::Base
 
     def study_type_valid?
       self.errors.add(:study_type, "is not specified")  if study_type.name == "Not specified"
+    end
+
+    def valid_policy_url?
+      # Rails 2.3 has no inbuilt URL validation, but rather than rolling our own, we'll
+      # use the inbuilt ruby URI parser, a bit like here:
+      # http://www.simonecarletti.com/blog/2009/04/validating-the-format-of-an-url-with-rails/
+      return true if dac_policy.blank?
+      dac_policy.insert(0,"http://") if /:\/\//.match(dac_policy).nil? # Add an http protocol if no protocol is defined
+      begin
+        uri = URI.parse(dac_policy)
+        raise URI::InvalidURIError if configatron.invalid_policy_url_domains.include?(uri.host)
+      rescue URI::InvalidURIError
+        self.errors.add(:dac_policy, ": #{dac_policy} is not a valid URL")
+        return false
+      end
+      return true
     end
 
     with_options(:if => :validating_ena_required_fields?) do |ena_required_fields|
