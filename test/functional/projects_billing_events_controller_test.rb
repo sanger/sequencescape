@@ -90,7 +90,8 @@ class Projects::BillingEventsControllerTest < ActionController::TestCase
     context "#create" do
       context "with valid parameters" do
         setup do
-          @billing_attributes = Factory.attributes_for(:billing_event, :project_id => @project.id)
+          @s_request  = Factory :request
+          @billing_attributes = Factory.attributes_for(:billing_event, :project_id => @project.id, :request_id => @s_request.id)
         end
         context "POSTed as form" do
           context "with supplied email" do
@@ -124,7 +125,7 @@ class Projects::BillingEventsControllerTest < ActionController::TestCase
 
           should_respond_with :created
           should "return location header to new resource" do
-            assert_equal project_billing_event_url(@project, @billing_event), @response.location
+            assert_equal project_billing_event_url(@project.id, @billing_event.id), @response.location
           end
           should "set the created_at as supplied" do
             assert_equal @billing_attributes[:created_by], assigns(:billing_event).created_by
@@ -138,7 +139,7 @@ class Projects::BillingEventsControllerTest < ActionController::TestCase
 
           should_respond_with :created
           should "return location header to new resource" do
-            assert_equal project_billing_event_url(@project, @billing_event), @response.location
+            assert_equal project_billing_event_url(@project.id, @billing_event.id), @response.location
           end
         end
 

@@ -238,21 +238,21 @@ class PlateTest < ActiveSupport::TestCase
 
       context "without attachments" do
         should "not report any qc_data" do
-          assert @plate.qc_information.empty?
+          assert @plate.qc_files.empty?
         end
       end
 
       context "with attached qc data" do
         setup do
           File.open("test/data/manifests/mismatched_plate.csv") do |file|
-            @plate.add_qc_information file
+            @plate.add_qc_file file
           end
         end
 
         should "return any qc data" do
-          assert @plate.qc_information.count ==1
+          assert @plate.qc_files.count ==1
           File.open("test/data/manifests/mismatched_plate.csv") do |file|
-            assert_equal file.read, @plate.qc_information.first.uploaded_data.file.read
+            assert_equal file.read, @plate.qc_files.first.uploaded_data.file.read
           end
         end
       end
@@ -260,13 +260,13 @@ class PlateTest < ActiveSupport::TestCase
      context "with multiple attached qc data" do
         setup do
           File.open("test/data/manifests/mismatched_plate.csv") do |file|
-            @plate.add_qc_information file
-            @plate.add_qc_information file
+            @plate.add_qc_file file
+            @plate.add_qc_file file
           end
         end
 
         should "return multiple qc data" do
-          assert @plate.qc_information.count ==2
+          assert @plate.qc_files.count ==2
         end
       end
 
