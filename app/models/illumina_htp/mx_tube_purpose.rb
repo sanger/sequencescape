@@ -1,6 +1,6 @@
 class IlluminaHtp::MxTubePurpose < Tube::Purpose
   def created_with_request_options(tube)
-    tube.requests_as_target.where_is_a?(IlluminaHtp::Requests::StdLibraryRequest).first.request_options_for_creation || {}
+    tube.requests_as_target.where_is_a?(Request::LibraryCreation).first.request_options_for_creation || {}
   end
 
   def transition_to(tube, state, _ = nil)
