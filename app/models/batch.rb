@@ -330,6 +330,7 @@ class Batch < ActiveRecord::Base
 
   def reset!(current_user)
     ActiveRecord::Base.transaction do
+      raise StandardError, 'Can only reset pending batches' unless pending?
       self.requests.each do |request|
         self.remove_link(request) # Remove link in all types of pipelines
         self.detach_request(request, current_user)

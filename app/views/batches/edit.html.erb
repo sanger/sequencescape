@@ -37,11 +37,11 @@
     <% end -%>
   </div>
 </div>
-<% if current_user.is_administrator? -%>
+  <% if @batch.pending? %>
   <h1>RESET BATCH</h1>
   <div class="content">
     <div class="info">
-      This will destroy the batch, all of the target assets that are related the requests that were in are batch
+      This will release all requests in the batch back into the inbox. The batch itself will be destroyed, target assets, such as lanes, will be removed.
     </div>
     <div id="sample">
       <% form_tag(:controller => :batches, :action => :reset_batch, :id => @batch.id) do -%>
@@ -53,6 +53,8 @@
       <% end %>
     </div>
   </div>
+  <% end %>
+  <% if current_user.is_administrator? -%>
   <h1>ROLLBACK QC</h1>
   <div class="content">
     <div class="info">
@@ -68,5 +70,5 @@
       <% end %>
     </div>
   </div>
-  
+
 <% end %>
