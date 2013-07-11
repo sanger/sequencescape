@@ -21,12 +21,12 @@
 <%= render :partial => "controls" %>
 <% end -%>
 
-<h1>ASSIGN BATCH TO USER</h1>
+<h2>ASSIGN BATCH TO USER</h2>
 <div class="content">
   <div class="info">
   Assign this batch to another user
   </div>
-  <div id="sample">
+  <div>
     <% form_for :assignee, :url => {:action => "assign_batch", :id => @batch} do |form| -%>
       <table width="100%" cellspacing="0" cellpadding="0">
         <tr>
@@ -38,16 +38,16 @@
   </div>
 </div>
   <% if @batch.pending? %>
-  <h1>RESET BATCH</h1>
+  <h2>RESET BATCH</h2>
   <div class="content">
     <div class="info">
       This will release all requests in the batch back into the inbox. The batch itself will be destroyed, target assets, such as lanes, will be removed.
     </div>
-    <div id="sample">
+    <div>
       <% form_tag(:controller => :batches, :action => :reset_batch, :id => @batch.id) do -%>
         <table width="100%" cellspacing="0" cellpadding="0">
           <tr>
-            <td width="45%" class="item"><%= submit_tag "Reset", :confirm => 'Do you really want to do this?' %></td><td widht="55%"></td>
+            <td width="45%" class="item"><%= submit_tag "Reset", :confirm => 'Do you really want to do this?' %></td><td width="55%"></td>
           </tr>
         </table>
       <% end %>
@@ -55,16 +55,16 @@
   </div>
   <% end %>
   <% if current_user.is_administrator? -%>
-  <h1>ROLLBACK QC</h1>
+  <h2>ROLLBACK QC</h2>
   <div class="content">
     <div class="info">
       This will move the batch to it's previous QC state.
     </div>
-    <div id="sample">
+    <div>
       <% form_tag(:controller => :batches, :action => :previous_qc_state, :id => @batch.id) do -%>
         <table width="100%" cellspacing="0" cellpadding="0">
           <tr>
-            <td width="45%" class="item"><%= submit_tag "Move to previous state", :confirm => 'Do you really want to do this?' %></td><td widht="55%"></td>
+            <td width="45%" class="item"><%= submit_tag "Move to previous state", :confirm => 'Do you really want to do this?' %></td><td width="55%"></td>
           </tr>
         </table>
       <% end %>
