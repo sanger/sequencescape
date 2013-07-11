@@ -129,24 +129,6 @@ class BatchesControllerTest < ActionController::TestCase
           end
         end
 
-        context "#remove_request" do
-          setup do
-            @current_user = Factory :user
-            assert_equal 2, @batch_one.requests.size
-            @request_1 = @batch_one.requests.first
-            @comment_count = @request_1.comments.size
-            assert_equal "pending", @request_1.state
-            post :remove_request, :id => @batch_one.id, :request_id => @request_1.id
-          end
-
-          should "#remove_request and not change the request status" do
-            # Keep batch intact
-            assert_equal 2, @batch_one.requests.size
-            assert_equal "pending", Request.find(@request_1).state
-          end
-
-        end
-
         context "#reset a batch" do
           setup do
             @old_count = Batch.count

@@ -2,7 +2,7 @@ class BatchesController < ApplicationController
   include XmlCacheHelper::ControllerHelper
 
   before_filter :login_required, :except => [:released, :evaluations_counter, :qc_criteria]
-  before_filter :find_batch_by_id, :only => [:show,:edit, :update, :destroy, :qc_information, :qc_batch, :save, :fail, :fail_items, :assign_batch, :control, :add_control, :remove_request, :print_labels, :print_plate_labels, :print_multiplex_labels, :print, :verify, :verify_tube_layout, :reset_batch, :previous_qc_state, :filtered, :swap, :download_spreadsheet, :gwl_file, :pulldown_batch_report, :pacbio_sample_sheet, :sample_prep_worksheet]
+  before_filter :find_batch_by_id, :only => [:show,:edit, :update, :destroy, :qc_information, :qc_batch, :save, :fail, :fail_items, :assign_batch, :control, :add_control, :print_labels, :print_plate_labels, :print_multiplex_labels, :print, :verify, :verify_tube_layout, :reset_batch, :previous_qc_state, :filtered, :swap, :download_spreadsheet, :gwl_file, :pulldown_batch_report, :pacbio_sample_sheet, :sample_prep_worksheet]
   before_filter :find_batch_by_batch_id, :only => [:sort, :print_multiplex_barcodes, :print_pulldown_multiplex_tube_labels, :print_plate_barcodes, :print_barcodes]
 
   def index
@@ -369,13 +369,6 @@ class BatchesController < ApplicationController
 
     flash[:notice] = 'Training batch created'
     redirect_to :action => "show", :id => batch.id
-  end
-
-  def remove_request
-    @request = Request.find(params[:request_id])
-    @batch.detach_request(@request, @current_user)
-    flash[:notice] = "Request deleted"
-    redirect_to :action => "edit", :id => @batch.id
   end
 
   def evaluations_counter
