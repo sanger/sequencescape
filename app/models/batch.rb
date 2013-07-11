@@ -324,6 +324,13 @@ class Batch < ActiveRecord::Base
     end
   end
 
+  def return_request_to_inbox(request, current_user=nil)
+    ActiveRecord::Base.transaction do
+      request.add_comment("Used to belong to Batch #{self.id} returned to inbox unstarted at #{Time.now()}", current_user) unless current_user.nil?
+      request.return_pending_to_inbox!
+    end
+  end
+
   def remove_link(request)
     request.batches-=[self]
   end
@@ -333,7 +340,7 @@ class Batch < ActiveRecord::Base
       raise StandardError, 'Can only reset pending batches' unless pending?
       self.requests.each do |request|
         self.remove_link(request) # Remove link in all types of pipelines
-        self.detach_request(request, current_user)
+        self.return_request_to_inbox(request, current_user)
       end
 
       if self.requests.last.submission_id.present?

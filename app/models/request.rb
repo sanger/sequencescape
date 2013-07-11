@@ -366,6 +366,11 @@ class Request < ActiveRecord::Base
     Request.count(:conditions => "submission_id = #{submission_id} and request_type_id = #{request_type_id}")
   end
 
+  def return_pending_to_inbox!
+    raise StandardError, "Can only return pending requests, request is #{state}" unless pending?
+    remove_unused_assets
+  end
+
   def remove_unused_assets
     return if target_asset.nil?
     target_asset.requests do |related_request|
