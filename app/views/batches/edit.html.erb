@@ -1,7 +1,6 @@
 <% add :title, "Batch" -%>
 <% add :menu, "Finish editing" => batch_path(@batch) -%>
 <% add :menu, "Swap lanes editing" => filtered_batch_path(@batch) -%>
-<% add :admin_option, {"Delete batch" => batch_path(@batch) }, {:confirm => "Are you sure you want to delete this batch? There is no undo.", :method => :delete} -%>
 <% add :back_menu, "View all batches" => batch_path(@batch) -%>
 
 <h1>BATCH <%= @batch.id %></h1>
