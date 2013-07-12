@@ -23,6 +23,7 @@ class WorkflowsController < ApplicationController
   include Tasks::SmrtCellsHandler
   include Tasks::TagGroupHandler
   include Tasks::ValidateSampleSheetHandler
+  include Tasks::StartBatchHandler
 
   def index
     @workflows = LabInterface::Workflow.all
