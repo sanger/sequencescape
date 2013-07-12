@@ -129,19 +129,6 @@ class BatchesControllerTest < ActionController::TestCase
           end
         end
 
-        context "#reset a batch" do
-          setup do
-            @old_count = Batch.count
-            @requests = @batch_one.requests
-            delete :destroy, :id => @batch_one.id
-          end
-
-          should "destroy_batch and reset state on requests" do
-            assert_equal @old_count-1, Batch.count
-            assert_redirected_to batches_path
-            assert_equal "pending", Request.find(@batch_one.requests.first).state
-          end
-        end
 
         should "#update" do
           #try to reach the else on edit method.
