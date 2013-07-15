@@ -153,7 +153,6 @@ class WorkflowsController < ApplicationController
     @rits = @batch.pipeline.request_information_types
     @requests = @batch.ordered_requests
     @requests_by_submission = @requests.group_by(&:submission)
-    ActiveRecord::Base.transaction { @batch.start!(current_user) } unless @batch.started? or @batch.failed?
 
     @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
     @task = task
