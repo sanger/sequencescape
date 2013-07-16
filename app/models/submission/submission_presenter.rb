@@ -90,6 +90,8 @@ class SubmissionCreater < PresenterSkeleton
       exception.record.errors.full_messages.each do |message|
         submission.errors.add_to_base(message)
       end
+    rescue Submission::ProjectValidation::Error => exception
+      submission.errors.add_to_base(exception.message)
     end
   end
 
