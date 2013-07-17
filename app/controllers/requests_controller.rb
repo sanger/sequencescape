@@ -1,6 +1,12 @@
 class RequestsController < ApplicationController
 
   before_filter :admin_login_required, :only => [ :describe, :undescribe, :destroy ]
+  before_filter :set_permitted_params, :only => [ :update ]
+
+  def set_permitted_params
+    @parameters = params[:request].reject{|k,v| !['request_metadata_attributes'].include?(k.to_s)}
+  end
+  attr_reader :parameters
  # before_filter :find_request_from_id, :only => [ :filter_change_decision, :change_decision ]
 
   def index
@@ -80,8 +86,6 @@ class RequestsController < ApplicationController
       end
     end
 
-    parameters = params[:request]
-#    parameters[:properties] = params[:request][:properties] if params[:request][:properties]
     begin
       if @request.update_attributes(parameters)
         flash[:notice] = "Request details have been updated"
