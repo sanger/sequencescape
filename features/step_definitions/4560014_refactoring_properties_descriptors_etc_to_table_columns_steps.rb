@@ -75,6 +75,12 @@ Given /^the sample in (well|sample tube) "([^\"]+)" is registered under the stud
   study.samples << asset.aliquots.map(&:sample)
 end
 
+Given /^the sample in the last (well|sample tube) is registered under the study "([^\"]+)"$/ do |_, study_name|
+  asset = Asset.last or raise StandardError, "Cannot find asset #{tube_name.inspect}"
+  study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
+  study.samples << asset.aliquots.map(&:sample)
+end
+
 Given /^the study "([^\"]+)" has an asset group of (\d+) samples called "([^\"]+)"$/ do |study_name, count, group_name|
   step(%Q{the study "#{study_name}" has an asset group of #{count} samples in "sample tube" called "#{group_name}"})
 end
