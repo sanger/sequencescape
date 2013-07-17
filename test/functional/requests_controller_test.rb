@@ -115,8 +115,10 @@ class RequestsControllerTest < ActionController::TestCase
           @params = { :request_metadata_attributes => { :read_length => "37" }, :state => 'failed' }
           put :update, :id => @reqwest.id, :request => @params
         end
-        should_set_the_flash_to Regexp.new("has been failed")
-        should_redirect_to("request path") { request_path(@reqwest) }
+        should "not update the state" do
+          # We really don't want arbitrary changing of state
+          assert @reqwest.state != 'failed'
+        end
       end
     end
   end

@@ -237,7 +237,7 @@ class BatchesControllerTest < ActionController::TestCase
 
           context "posting without a failure reason" do
             setup do
-              post :fail_items, :id => @batch_one.id, :failure => { :entire_batch => "0", :reason => "", :comment => "" }
+              post :fail_items, :id => @batch_one.id, :failure => { :reason => "", :comment => "" }
             end
             should "not allow failing a batch/items without specifying a reason and set the flash" do
               @controller.session[:flash][:error].grep /Please specify a failure reason for this batch/
@@ -246,30 +246,13 @@ class BatchesControllerTest < ActionController::TestCase
           end
 
           context "posting with a failure reason" do
-            context "entire batch" do
-              setup do
-                post :fail_items, :id => @batch_one.id, :failure => { :entire_batch => "1", :reason => "PCR not completed", :comment => "" }
-              end
-
-              should "create a failure on each request in this batch and have two related items" do
-                assert_equal 2, @batch_one.size
-                assert_equal 1, @batch_one.failures.size
-                assert_equal "PCR not completed", @batch_one.failures.first.reason
-                # First item
-                assert_equal 1, @batch_one.requests.first.failures.size
-                assert_equal "PCR not completed", @batch_one.requests.first.failures.first.reason
-                # Second item
-                assert_equal 1, @batch_one.requests.last.failures.size
-                assert_equal "PCR not completed", @batch_one.requests.last.failures.first.reason
-              end
-            end
 
             context "individual items" do
               setup do
                 EventSender.expects(:send_fail_event).returns(true).times(1)
                 post :fail_items, :id => @batch_one.id,
-                                  :failure => { :entire_batch => "0", :reason => "PCR not completed", :comment => "" },
-                                  :requested => {"#{@request_one.id}"=>"on"}
+                                  :failure => { :reason => "PCR not completed", :comment => "" },
+                                  :requested_fail => {"#{@request_one.id}"=>"on"}
               end
               should "create a failure on each item in this batch and have two items related" do
                 assert_equal 0, @batch_one.failures.size

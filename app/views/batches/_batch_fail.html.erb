@@ -16,8 +16,12 @@
           <th class='label' width="7%"><%= link_to 'From', "javascript:void(0);" %></th>
           <th class='label' width="7%"><%= link_to 'To', "javascript:void(0);" %></th>
           <th class='label' width="7%"><%= link_to 'Conc.', "javascript:void(0);" %></th>
-          <th class="label" width="7%">Fail</th>
-          <th class="label" width="7%">Remove</th>
+          <% @batch.pipeline.request_actions.each do |action| -%>
+            <th class="label nosort" width="7%">
+              <%= action.to_s.capitalize %>
+              <input type='checkbox' id='select_all_<%= action.to_s %>' class='select_all' data-action='<%= action.to_s %>'>
+            </th>
+          <% end %>
           <th class='label' width="7%">&nbsp;</th>
         </tr>
       </thead>
@@ -47,21 +51,28 @@
 
             <% if request.failures.empty? -%>
               <% if request.asset && request.asset.resource? -%>
+                <% @batch.pipeline.request_actions.each do |action| -%>
+                  <% if action == :fail -%>
+                    <td class="7%"><input name='requested_<%= action.to_s %>[control]' type='checkbox'></td>
+                  <% else -%>
+                    <td></td>
+                  <% end %>
+                <% end %>
+
                 <td class="7%"><input name='requested[control]' type='checkbox'></td>
                 <td></td>
               <% else -%>
-                <td class="7%">
-                  <label for="requested_<%= request.id %>" style="display:none;">Fail request <%= index+1 %></label>
-                  <input name='requested[<%= request.id %>]' id="requested_<%= request.id %>" type='checkbox'>
-                </td>
-                <td class="7%">
-                  <label for="requested_remove_<%= request.id %>" style="display:none;">Remove request <%= index+1 %></label>
-                  <input name='requested_remove[<%= request.id %>]' id="requested_remove_<%= request.id %>" type='checkbox'>
-                </td>
+                <% @batch.pipeline.request_actions.each do |action| -%>
+                  <td class="7%">
+                    <label for="requested_<%= action.to_s %>_<%= request.id %>" style="display:none;"><%= action.to_s.capitalize %> request <%= index+1 %></label>
+                    <input name='requested_<%= action.to_s %>[<%= request.id %>]' id="requested_<%= action.to_s %>_<%= request.id %>" type='checkbox' class='select_<%= action.to_s %> select_all_target' data-action='<%= action.to_s %>'>
+                  </td>
+                <% end %>
               <% end -%>
             <% else -%>
-              <td class="7%">&nbsp;</td>
-              <td class="7%">&nbsp;</td>
+              <% @batch.pipeline.request_actions.each do |action| -%>
+                <td class="7%">&nbsp;</td>
+              <% end %>
             <% end -%>
             <td class="7%"><%= item_status(request) %></td>
           </tr>

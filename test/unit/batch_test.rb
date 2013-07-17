@@ -126,7 +126,7 @@ class BatchTest < ActiveSupport::TestCase
         context "where 1 needs to be removed" do
           setup do
             @batch_requests_count = @batch.requests.count
-            @batch.remove_request_ids([ @request2.id])
+            @batch.remove_request_ids([ @request2.id],'Reason','Comment')
           end
           should "leave 2 requests behind" do
             assert_not_nil @batch.requests.find(@request2)
@@ -334,6 +334,12 @@ class BatchTest < ActiveSupport::TestCase
         assert_equal @batch.request_count, 2
       end
 
+      should "raise an exception if you try and ignore requests" do
+        assert_raise StandardError do
+          @batch.fail(@reason, @comment, :ignore_requests)
+        end
+      end
+
       context "create failures" do
         setup do
           @batch.fail(@reason, @comment)
@@ -363,7 +369,7 @@ class BatchTest < ActiveSupport::TestCase
 
       context "fail requests" do
         setup do
-          EventSender.expects(:send_fail_event).returns(true).times(1)
+          EventSender.expects(:send_fail_event)
           @requests = { "#{@request1.id}"=>"on" }
           @batch.fail_batch_items(@requests, @reason, @comment)
         end
@@ -372,9 +378,13 @@ class BatchTest < ActiveSupport::TestCase
 
         should "not fail not requested requests"
 
-        should "not fail the batch"
+        should "not fail the batch" do
+          assert !@batch.failed?
+        end
 
-        should "create failures on failed requests"
+        should "create failures on failed requests" do
+          assert_equal 1, @request1.failures.count
+        end
       end
 
       context "control request" do
@@ -388,6 +398,7 @@ class BatchTest < ActiveSupport::TestCase
         end
 
         should "fail control request"
+
       end
 
       should "not fail requests if value passed is not set to ON" do
@@ -398,13 +409,19 @@ class BatchTest < ActiveSupport::TestCase
 
       context "fail the batch" do
         setup do
-          EventSender.expects(:send_fail_event).returns(true)
+          EventSender.expects(:send_fail_event).returns(true).times(2)
           @requests = { "#{@request1.id}"=>"on", "#{@request2.id}"=>"on" }
+          @request1.expects(:terminated?).returns(true).times(1)
+          @request2.expects(:terminated?).returns(true).times(1)
           @batch.fail_batch_items(@requests, @reason, @comment)
         end
 
-        should "if all the requests within the batch are failing, fail the batch too"
+        should "if all the requests within the batch are failing, fail the batch too" do
+          assert @batch.failed?
+        end
+
         should "change @batch.failures.count, :from => 0, :to => 1"
+
       end
     end
 
