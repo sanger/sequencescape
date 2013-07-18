@@ -237,4 +237,7 @@ Given /^I have a "([^"]*)" submission with 2 plates$/ do |submission_template_na
     step(%Q{1 pending delayed jobs are processed})
 end
 
-
+When /^the last batch is sorted in row order$/ do
+  order = Batch.last.batch_requests.map {|br| br.request.asset.map.row_order }
+  Batch.last.batch_requests.map {|br| br.update_attributes!(:position => order.sort.index(br.request.asset.map.row_order))}
+end

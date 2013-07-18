@@ -90,12 +90,13 @@ Given /^the study "([^\"]+)" has an asset group of (\d+) samples in "([^\"]+)" c
 
   assets = (1..count.to_i).map do |i|
     sample_name = "#{group_name} sample #{i}".gsub(/\s+/, '_').downcase
-    param = asset_type == 'well' ? {} : {:name => "#{ group_name }, #{ asset_type } #{ i }"}
+    param = asset_type == 'well' ? {:id=>90+i} : {:name => "#{ group_name }, #{ asset_type } #{ i }"}
     Factory(asset_type.gsub(/[^a-z0-9_-]+/, '_'), param ).tap do |asset|
       if asset.primary_aliquot.present?
         asset.primary_aliquot.sample.tap { |s| s.name = sample_name ; s.save(false) }
       else
-        asset.aliquots.create!(:sample => Factory(:sample, :name => sample_name))
+        asset.aliquots.create!(:sample => Factory(:sample, :name => sample_name), :study=>study)
+        asset.aliquots.each {|a| study.samples << a.sample}
       end
     end
   end

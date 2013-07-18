@@ -33,8 +33,8 @@ Feature: Bulk Submission
     And I should see "Your submissions:"
 
   Scenario: Uploading a valid file with bait library specified should set the bait library name
-    Given I have a well called "testing123"
-      And the sample in the last well is registered under the study "abc123_study"
+    # Given I have a well called "testing123"
+    #   And the sample in the last well is registered under the study "abc123_study"
     When I upload a file with 2 valid SC submissions
     Then I should see "Your submissions:"
      And there should be an order with the bait library name set to "Bait library 1"
