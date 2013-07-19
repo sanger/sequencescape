@@ -41,5 +41,4 @@ module IlluminaB::Requests
 
   class PcrXpToStock < IlluminaHtp::Requests::PcrXpToStock
   end
-
 end

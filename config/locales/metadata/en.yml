@@ -26,7 +26,7 @@ en:
 
         name:
           label: Name
-        
+
         insert_size:
           label: Insert size
 
@@ -142,7 +142,7 @@ en:
 
         reference_genome:
           label: Reference Genome
-        
+
         sibling:
           label: Sibling
 
@@ -172,12 +172,16 @@ en:
 
         concentration_determined_by:
           label: Concentration determind by
-          
+
         sample_type:
           label: Sample type
 
         sample_storage_conditions:
           label: Sample storage conditions
+
+        cancer_donor_id:
+          label:  Donor Id
+          edit_info: "[ EGA (Cancer samples) ]"
 
         genotype:
           label: Genotype
@@ -189,14 +193,14 @@ en:
           label: Strain or Line
           edit_info: "[ Array Express ]"
         age:
-          label: Age 
+          label: Age
           edit_info: "[ Array Express ]"
           help: valid units are  second, minute, hour, day, month year.
         developmental_stage:
           label: Developmental Stage
           edit_info: "[ Array Express ]"
         sex:
-          label: Sex 
+          label: Sex
           edit_info: "[ Array Express ]"
         cell_type:
           label: Cell Type
@@ -205,25 +209,25 @@ en:
           label: Disease State
           edit_info: "[ Array Express, EGA ]"
         compound:
-          label: Compound 
+          label: Compound
           edit_info: "[ Array Express ]"
         dose:
-          label: Dose 
+          label: Dose
           edit_info: "[ Array Express ]"
         immunoprecipitate:
-          label: Immunoprecipitate 
+          label: Immunoprecipitate
           edit_info: "[ Array Express ]"
         growth_condition:
           label: Growth Condition
           edit_info: "[ Array Express ]"
         rnai:
-          label: RNAi 
+          label: RNAi
           edit_info: "[ Array Express ]"
         organism_part:
           label: Organism Part
           edit_info: "[ Array Express ]"
         species:
-          label: Species 
+          label: Species
           edit_info: "[ Array Express ]"
         time_point:
           label: Time Point
@@ -249,19 +253,19 @@ en:
 
         faculty_sponsor_id:
           label: Faculty Sponsor
-          
+
         faculty_sponsor:
           label: Faculty Sponsor
 
         study_description:
           label: Study description
           edit_info: '[ ENA requirement ]'
-          help: Please choose one of the following 2 standard statements to be included with your data submissions (one or the other, depending on the study). <b>If you use the second statement, replace [doi or ref] by a reference or doi for your publication:</b><br /><br />This data is part of a pre-publication release. For information on the proper use of pre-publication data shared by the Wellcome Trust Sanger Institute (including details of any publication moratoria), please see http://www.sanger.ac.uk/datasharing/<br /><br />OR<br /><br />This data has been described in the following article [doi or ref] and its further analysis can be freely submitted for publication. For information on the proper use of data shared by the Wellcome Trust Sanger Institute (including information on acknowledgement), please see http://www.sanger.ac.uk/datasharing/<br/>
+          help: Please choose one of the following 2 standard statements to be included with your data submissions (one or the other, depending on the study). <b>If you use the second statement, replace [doi or ref] by a reference or doi for your publication:</b><br /><br />This data is part of a pre-publication release. For information on the proper use of pre-publication data shared by the Wellcome Trust Sanger Institute (including details of any publication moratoria), please see http://www.sanger.ac.uk/datasharing/<br /><br />OR<br /><br />This data has been described in the following article [doi or ref] and its further analysis can be freely submitted for publication. For information on the proper use of data shared by the Wellcome Trust Sanger Institute (including information on acknowledgement), please see http://www.sanger.ac.uk/datasharing/<br/><p>If applicable, include a brief description of any restrictions on data usage, e.g. 'For AIDS-releated research only'</p>
 
         contaminated_human_dna:
           label: Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?
           help: Usually only applicable to pathogen research when human DNA will not be sequenced and therefore does not require ethical approval.
-        
+
         remove_x_and_autosomes:
           label: Does this study require the removal of X chromosome and autosome sequence?
           help: Applicable for studies where only mtDNA and Y-chromosomal data will be submitted to EGA.
@@ -274,7 +278,7 @@ en:
         study_abstract:
           label: Abstract
           edit_info: '[ ENA requirement ]'
-          help: Briefly describes the goals, purpose, and scope of the Study. This need not be listed if it can be inherited from a referenced publication
+          help: Briefly describes the goals, purpose, and scope of the Study. This need not be listed if it can be inherited from a referenced publication. For managed access studies, please bear in mind it’s this text in the Abstract section that will be publicly visible on the EGA website.
 
         study_study_title:
           label: Title
@@ -327,7 +331,7 @@ en:
 
         data_release_timing:
           label: How is the data release to be timed?
-          help: "Immediate: To be released as soon as possible.<br />Standard: To be released:<ul><li>within 2 months of generation for genomic sequencing project</li><li>within 3 months of generation for transcriptomics, genotyping and cytogenetics projects</li><li>after quality control for other sequencing-based assays (e.g., ChIP-seq)</li></ul>"
+          help: "Choose from:<p><strong>Immediate:</strong> To be released as soon as possible.</p><p><strong>Standard:</strong> To be released:<ul><li>within 2 months of generation for genomic sequencing project</li><li>within 3 months of generation for transcriptomics, genotyping and cytogenetics projects</li><li>after quality control for other sequencing-based assays (e.g., ChIP-seq)</li></ul></p><p><strong>Never:</strong> This option is only availiable if the data release strategy is set to 'Not applicable.'"
 
         data_release_prevention_reason:
           label: What is the reason for preventing data release?
@@ -344,7 +348,7 @@ en:
           help: "To apply for a delay, please send the following information to <%= configatron.data_sharing_contact.name %> (<%= configatron.data_sharing_contact.email %>):<ul><li>SAC sponsor</li><li>Study title and, where available, data set(s) ID</li><li>Study description (should describe the data types that will be produced)</li><li>Data sharing plan (to include the following):<ul><li>- Which repository/repositories will be used</li><li>- If data will be made available under a managed access mechanism</li><li>- When data will be shared</li></ul></li><li>Reason(s) for delaying data release</li></ul>"
 
         data_release_delay_other_comment:
-          label: Please explain the reason for delaying release (e.g., pre-existing collaborative agreement)
+          label: Please explain the reason for delaying release
 
         data_release_delay_period:
           label: Delay for
@@ -354,10 +358,10 @@ en:
 
         data_release_delay_reason_comment:
           label: Comment regarding data release timing and approval
-        
+
         bam:
           label: Alignments in BAM
-          help: If you uncheck this, then you will not have alignments added to your BAM files for any runs created in this study.  Also, please be aware, that unless you choose a reference genome, the reference that the alignments will be made against is guessed based on the taxon identifier.  If there is no suitable reference genome, please leave it blank and contact NPG to get it added. 
+          help: If you uncheck this, then you will not have alignments added to your BAM files for any runs created in this study.  Also, please be aware, that unless you choose a reference genome, the reference that the alignments will be made against is guessed based on the taxon identifier.  If there is no suitable reference genome, please leave it blank and contact NPG to get it added.
 
         for_array_express:
           label: Send to ArrayExpress ?
@@ -368,12 +372,12 @@ en:
           label: Policy title
           help: The title for the policy. The standard Sanger policy title is 'Wellcome Trust Sanger Institute Data Sharing Policy'
         dac_policy:
-          label: Policy
-          help: For all studies following the standard Sanger data policy, the link to the data sharing policy and a brief description of any limitations on data use (e.g., 'for AIDS-related research only' ) is all you need.
+          label: Policy Url
+          help: The URL of the policy. For all studies following the standard Sanger data policy, the link to the data sharing policy is all you need. A brief description of any limitations on data use (e.g., 'for AIDS-related research only' ) can be added to the study description.
         ega_dac_accession_number:
           label: EGA DAC Accession Number
           help: Data Release accession Number. Will be filled automatically during submission process.
-#TODO help doesn't work, maybe because we are in a "related_field" subsection 
+#TODO help doesn't work, maybe because we are in a "related_field" subsection
 
         ega_policy_accession_number:
           label: EGA Policy Accession Number
@@ -388,7 +392,7 @@ en:
 
         snp_study_id:
           label: SNP study ID
-        
+
         commercially_available:
           label: Are all the samples to be used in this study commercially available, unlinked anonymised cell-lines?
           help: Are all the samples to be used in this study commercially available, anonymised cell-lines or DNA/RNA from commercially available, anonymised cell-lines?
@@ -403,7 +407,7 @@ en:
       metadata:
         project_manager_id:
           label: Sequencing Project Manager
-        
+
         project_cost_code:
           label: Project cost code
 
@@ -434,10 +438,10 @@ en:
         infinium_barcode:
           label: Infinium LIMS barcode
           help: Optional barcode which links a plate to the proprietary Illumina Infinium LIMS
-    
+
     lane:
       metadata:
         release_reason:
-          label: Reason for releasing data 
+          label: Reason for releasing data
 
 

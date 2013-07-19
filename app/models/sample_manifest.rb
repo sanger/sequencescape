@@ -33,7 +33,9 @@ class ColumnMap
        'STRAIN',
        'SAMPLE VISIBILITY',
        'SAMPLE TYPE',
-       'SAMPLE ACCESSION NUMBER (optional)']
+       'SAMPLE ACCESSION NUMBER (optional)',
+       'DONOR ID (required for cancer samples)'
+     ]
 
     def self.[](x)
       @@fields.index(x)

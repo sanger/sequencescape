@@ -1,8 +1,13 @@
 class EraAccessionService < AccessionService
+
+  def provider
+    :ERA
+  end
+
   def accession_from_ebi(submission_filename, submission_file_handle, type_filename, type_file_handle, type)
     generate_accession_from_ebi(submission_filename, submission_file_handle, type_filename, type_file_handle, type, configatron.era_accession_login)
   end
-  
+
   def accession_login
     configatron.era_accession_login or raise RuntimeError,  "Can't find ERA  accession login in configuration file"
   end
@@ -12,7 +17,7 @@ class EraAccessionService < AccessionService
     #sample_hold.blank? ? 'hold' : sample_hold
     Hold
   end
-  
+
   def study_visibility(study)
     #study_hold = study.study_sra_hold
     #study_hold.blank? ? 'hold' : study_hold
@@ -26,7 +31,7 @@ class EraAccessionService < AccessionService
   def dac_visibility(study)
     Hold
   end
-  
+
   def broker
     nil
   end

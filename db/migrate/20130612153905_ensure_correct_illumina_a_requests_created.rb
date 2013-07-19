@@ -1,22 +1,9 @@
-class UpdateTransferRequestClasses < ActiveRecord::Migration
-
+class EnsureCorrectIlluminaARequestsCreated < ActiveRecord::Migration
   def self.each_parent_and_child
     [
-      {
-        :parent=>'ILB_STD_INPUT', :child=>'ILB_STD_COVARIS',
-        :request_class_name=>'IlluminaB::Requests::InputToCovaris', :prefix=>'Illumina-B'
-        },
         {
-        :parent=>'WGS stock DNA', :child=>'WGS Covaris',
-        :request_class_name=>'Pulldown::Requests::StockToCovaris', :prefix=>'Pulldown'
-        },
-        {
-        :parent=>'SC stock DNA', :child=>'SC Covaris',
-        :request_class_name=>'Pulldown::Requests::StockToCovaris', :prefix=>'Pulldown'
-        },
-        {
-        :parent=>'ISC stock DNA', :child=>'ISC Covaris',
-        :request_class_name=>'Pulldown::Requests::StockToCovaris', :prefix=>'Pulldown'
+        :parent=>'Lib PCR-XP', :child=>'ISC-HTP lib pool',
+        :request_class_name=>'Pulldown::Requests::PcrXpToIscLibPool', :prefix=>'Pulldown'
         }
     ].each do |settings|
       yield(

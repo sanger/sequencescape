@@ -1,4 +1,4 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file, 
+# This file is auto-generated from the current state of the database. Instead of editing this file,
 # please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130701130533) do
+ActiveRecord::Schema.define(:version => 20130626082027) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -887,7 +887,7 @@ ActiveRecord::Schema.define(:version => 20130701130533) do
   add_index "request_type_plate_purposes", ["request_type_id", "plate_purpose_id"], :name => "plate_purposes_are_unique_within_request_type", :unique => true
 
   create_table "request_types", :force => true do |t|
-    t.string   "key",                :limit => 50
+    t.string   "key",                :limit => 100
     t.string   "name"
     t.integer  "workflow_id"
     t.datetime "created_at"
@@ -1084,6 +1084,7 @@ ActiveRecord::Schema.define(:version => 20130701130533) do
     t.string   "treatment"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "cancer_donor_id"
   end
 
   add_index "sample_metadata", ["sample_id"], :name => "index_sample_metadata_on_sample_id"

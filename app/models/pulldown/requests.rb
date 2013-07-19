@@ -54,7 +54,7 @@ module Pulldown::Requests
     include BaitLibraryRequest
 
     Metadata.class_eval do
-      attribute(:pre_capture_plex_level, :default => 8, :integer => true, :required =>true)
+      attribute(:pre_capture_plex_level, :default => 8, :integer => true)
     end
 
   end
