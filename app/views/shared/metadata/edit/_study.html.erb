@@ -16,6 +16,7 @@
     <%= metadata_fields.select(:contaminated_human_dna, Study::YES_OR_NO) %>
     <%= metadata_fields.select(:commercially_available, Study::YES_OR_NO) %>
     <%= metadata_fields.select(:remove_x_and_autosomes, Study::YES_OR_NO) %>
+    <%= metadata_fields.check_box(:seperate_y_chromosome_data) %>
 
     <%= metadata_fields.text_field(:study_project_id, :grouping => 'SRA') %>
     <%= metadata_fields.text_field(:study_ebi_accession_number, :grouping => 'SRA AN') %>
