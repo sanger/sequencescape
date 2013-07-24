@@ -8,7 +8,9 @@ module IlluminaHtp::PlatePurposes
       'Lib PCR',
       'Lib PCRR',
       'Lib PCR-XP',
-      'Lib PCRR-XP'
+      'Lib PCRR-XP',
+      # Alternative branch for ILA
+      'Post Shear XP',
     ]
   ]
 
@@ -30,7 +32,8 @@ module IlluminaHtp::PlatePurposes
     [ 'Cherrypicked', 'Shear', 'Post Shear', 'AL Libs', 'Lib PCR', 'Lib PCR-XP','Lib Pool','Lib Pool Norm'],
     [ 'Lib PCR-XP','Lib Pool Pippin', 'Lib Pool Conc', 'Lib Pool SS', 'Lib Pool SS-XP', 'Lib Pool SS-XP-Norm' ],
     [ 'AL Libs', 'Lib PCRR', 'Lib PCRR-XP' ],
-    ['Lib PCR-XP','ISC lib pool']
+    [ 'Lib PCR-XP','ISC lib pool'],
+    [ 'Post Shear', 'Post Shear XP', 'AL Libs']
   ]
 
   STOCK_PLATE_PURPOSE = 'Cherrypicked'
@@ -79,6 +82,7 @@ module IlluminaHtp::PlatePurposes
     'Lib Pool SS'         => IlluminaHtp::StockTubePurpose,
     'Lib Pool SS-XP'      => IlluminaHtp::StockTubePurpose,
     'Lib Pool SS-XP-Norm' => IlluminaHtp::MxTubePurpose,
+    'Post Shear XP'       => PlatePurpose,
 
     'Post Shear QC'    => IlluminaHtp::PostShearQcPlatePurpose,
     'Lib PCR-XP QC'    => PlatePurpose,
