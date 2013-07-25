@@ -33,7 +33,7 @@ Feature: Access objects through the API
     And the JSON should be:
       """
       {
-        "general": [ "the 'Content-Type' can only be 'application/json'" ]
+        "general": [ "the 'Content-Type' can only be 'application/json' or a supported filetype eg.'sequencescape/qc_file'" ]
       }
       """
 
@@ -234,7 +234,7 @@ Feature: Access objects through the API
     And the JSON should be:
       """
       {
-        "general": [ "the 'Accept' header can only be 'application/json'" ]
+        "general": [ "the 'Accept' header can only be 'application/json' or a supported filetype eg.'sequencescape/qc_file'" ]
       }
       """
 
@@ -277,7 +277,7 @@ Feature: Access objects through the API
       | 1                      |
       | 3                      |
 
-  @action @error 
+  @action @error
   Scenario: Performing an unknown action upon an object
     Given the sample named "testing_the_object_service" exists with ID 1
     And the UUID for the sample "testing_the_object_service" is "00000000-1111-2222-3333-444444444444"
@@ -449,7 +449,7 @@ Feature: Access objects through the API
       {
         "sample": {
           "taxonomy": {
-            "organism": "weird green jelly like thing" 
+            "organism": "weird green jelly like thing"
           }
         }
       }

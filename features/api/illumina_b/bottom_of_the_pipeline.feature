@@ -244,6 +244,19 @@ Feature: The bottom of the illumina_b pipeline
 
     Then the state of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "passed"
      And the state of all the transfer requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "passed"
+
+    When I make an authorised POST with the following JSON to the API path "/state_changes":
+      """
+      {
+        "state_change": {
+          "user": "99999999-8888-7777-6666-555555555555",
+          "target": "00000000-1111-2222-3333-999900000001",
+          "target_state": "qc_complete"
+        }
+      }
+      """
+    Then the HTTP response should be "201 Created"
+
      And the state of all the illumina-b library creation requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "passed"
      And all of the illumina-b library creation requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be billed to their project
 
@@ -343,7 +356,7 @@ Feature: The bottom of the illumina_b pipeline
   #     And all of the illumina-b library creation requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should not have billing
   #
   #    Scenarios:
-  #      | state     | 
-  #      | cancelled | 
-  #      | passed    | 
-  #      | failed    | 
+  #      | state     |
+  #      | cancelled |
+  #      | passed    |
+  #      | failed    |

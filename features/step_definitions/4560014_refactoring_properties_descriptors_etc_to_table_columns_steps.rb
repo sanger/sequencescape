@@ -75,6 +75,12 @@ Given /^the sample in (well|sample tube) "([^\"]+)" is registered under the stud
   study.samples << asset.aliquots.map(&:sample)
 end
 
+Given /^the sample in the last (well|sample tube) is registered under the study "([^\"]+)"$/ do |_, study_name|
+  asset = Asset.last or raise StandardError, "Cannot find asset #{tube_name.inspect}"
+  study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
+  study.samples << asset.aliquots.map(&:sample)
+end
+
 Given /^the study "([^\"]+)" has an asset group of (\d+) samples called "([^\"]+)"$/ do |study_name, count, group_name|
   step(%Q{the study "#{study_name}" has an asset group of #{count} samples in "sample tube" called "#{group_name}"})
 end
@@ -84,12 +90,13 @@ Given /^the study "([^\"]+)" has an asset group of (\d+) samples in "([^\"]+)" c
 
   assets = (1..count.to_i).map do |i|
     sample_name = "#{group_name} sample #{i}".gsub(/\s+/, '_').downcase
-    param = asset_type == 'well' ? {} : {:name => "#{ group_name }, #{ asset_type } #{ i }"}
+    param = asset_type == 'well' ? {:id=>90+i} : {:name => "#{ group_name }, #{ asset_type } #{ i }"}
     Factory(asset_type.gsub(/[^a-z0-9_-]+/, '_'), param ).tap do |asset|
       if asset.primary_aliquot.present?
         asset.primary_aliquot.sample.tap { |s| s.name = sample_name ; s.save(false) }
       else
-        asset.aliquots.create!(:sample => Factory(:sample, :name => sample_name))
+        asset.aliquots.create!(:sample => Factory(:sample, :name => sample_name), :study=>study)
+        asset.aliquots.each {|a| study.samples << a.sample}
       end
     end
   end

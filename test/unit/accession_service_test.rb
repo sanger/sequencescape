@@ -25,7 +25,7 @@ class AccessionServiceTest < ActiveSupport::TestCase
 
   context "A sample with a gender" do
     setup do
-      @study = Factory :manged_study
+      @study = Factory :managed_study
       @sample = Factory :sample, :studies => [@study]
       @sample.sample_metadata.gender  = "male"
     end
