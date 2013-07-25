@@ -205,9 +205,9 @@ Feature: Manage a list of bait libraries
     And the UUID for the request type "Pulldown Multiplex Library Preparation" is "99999999-1111-2222-3333-000000000001"
     And the UUID for the request type "HiSeq Paired end sequencing" is "99999999-1111-2222-3333-000000000002"
 
-    Given the UUID for the well "Well_1234567_1" is "44444444-2222-3333-4444-000000000001"
-    And the UUID for the well "Well_1234567_2" is "44444444-2222-3333-4444-000000000002"
-    And the UUID for the well "Well_1234567_3" is "44444444-2222-3333-4444-000000000003"
+    Given the UUID for well 1 on plate "1234567" is "44444444-2222-3333-4444-000000000001"
+    And the UUID for well 2 on plate "1234567" is "44444444-2222-3333-4444-000000000002"
+    And the UUID for well 3 on plate "1234567" is "44444444-2222-3333-4444-000000000003"
 
     Given I have a bait library called "Delete This"
     And the last bait library is hidden

@@ -3,6 +3,7 @@ Feature: Print truncated sanger sample id on sample tube barcode
 
   Background:
     Given I am a "manager" user logged in as "john"
+    And a robot exists
     And I have a "Library creation - Paired end sequencing" submission with 1 sample tubes as part of "Test study" and "Test project"
     And the "1D Tube" barcode printer "xyz" exists
     Given I am on the show page for pipeline "Illumina-C Library preparation"

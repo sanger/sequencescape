@@ -68,11 +68,11 @@ Feature: Access state changes through the API
      #And the state of all the pulldown library creation requests from the plate "Source plate" should be "<library state>"
 
     Scenarios:
-      | state     | 
-      | pending   | 
-      | started   | 
-      | passed    | 
-      | failed    | 
+      | state     |
+      | pending   |
+      | started   |
+      | passed    |
+      | failed    |
 
   @create
   Scenario Outline: Creating a state change on a plate where the state requires a reason
@@ -99,9 +99,9 @@ Feature: Access state changes through the API
       """
 
     Scenarios:
-      | state     | 
-      | failed    | 
-      | cancelled | 
+      | state     |
+      | failed    |
+      | cancelled |
 
   @create
   Scenario: Changing the state of only one well on the plate
@@ -251,11 +251,11 @@ Feature: Access state changes through the API
      And the state of all the pulldown library creation requests from the plate "Source plate" should be "<library state>"
 
     Scenarios:
-      | state     | library state | 
-      | pending   | pending       | 
-      | started   | pending       | 
-      | passed    | pending       | 
+      | state     | library state |
+      | pending   | pending       |
+      | started   | pending       |
+      | passed    | pending       |
 
     Scenarios:
       | state   | library state |
-      | failed  | failed        |
+      # | failed  | failed        |
