@@ -85,6 +85,8 @@ class Api::StudyIO < Api::Base
     map_attribute_to_json_attribute(:data_release_timing)
     map_attribute_to_json_attribute(:data_release_delay_period)
     map_attribute_to_json_attribute(:data_release_delay_reason)
+
+    map_attribute_to_json_attribute(:bam, 'alignments_in_bam')
   end
 
   self.related_resources = [ :samples, :projects ]
