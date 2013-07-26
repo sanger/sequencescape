@@ -37,11 +37,11 @@ module Tasks::CherrypickHandler
         redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage -1).to_s
         return
       end
-      unless task.plate_purpose_options(@batch).include?(@plate.purpose)
-        flash[:error] = "Invalid target plate, wrong plate purpose"
-        redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage -1).to_s
-        return
-      end
+      # unless task.plate_purpose_options(@batch).include?(@plate.purpose)
+        # flash[:error] = "Invalid target plate, wrong plate purpose"
+        # redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage -1).to_s
+        # return
+      # end
 
       action_flash[:warning] = I18n.t("cherrypick.picking_by_row") if @plate.plate_purpose.cherrypick_in_rows?
     end
