@@ -12,8 +12,8 @@ xml.batch {
           next
         end
 
-        # Requests that have a source control asset do not have target assets, so we output them 
-        # seperately and loop around.
+        # Requests that have a source control asset do not have target assets, so we output them
+        # separately and loop around.
         if request.asset.resource?
           xml.control(
             "id"         => request.asset.id,

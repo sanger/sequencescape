@@ -198,7 +198,7 @@ class StudyTest < ActiveSupport::TestCase
     context "with check y separation" do
       setup do
         @study = Factory :study
-        @study.study_metadata.seperate_y_chromosome_data = true
+        @study.study_metadata.separate_y_chromosome_data = true
       end
 
       should "be valid when we are sane" do
