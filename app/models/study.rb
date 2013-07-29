@@ -197,7 +197,7 @@ class Study < ActiveRecord::Base
     attribute(:study_description, :required => true)
     attribute(:contaminated_human_dna, :required => true, :in => YES_OR_NO)
     attribute(:remove_x_and_autosomes, :required => true, :default => 'No', :in => YES_OR_NO)
-    attribute(:seperate_y_chromosome_data, :required => true, :default=> false, :boolean => true)
+    attribute(:separate_y_chromosome_data, :required => true, :default=> false, :boolean => true)
     attribute(:study_project_id)
     attribute(:study_abstract)
     attribute(:study_study_title)
@@ -301,10 +301,10 @@ class Study < ActiveRecord::Base
 
     validate :valid_policy_url?
 
-    validate :sanity_check_y_separation, :if => :seperate_y_chromosome_data?
+    validate :sanity_check_y_separation, :if => :separate_y_chromosome_data?
 
     def sanity_check_y_separation
-      self.errors.add(:seperate_y_chromosome_data,'cannot be selected with remove x and autosomes.') if remove_x_and_autosomes?
+      self.errors.add(:separate_y_chromosome_data,'cannot be selected with remove x and autosomes.') if remove_x_and_autosomes?
       !remove_x_and_autosomes?
     end
 
