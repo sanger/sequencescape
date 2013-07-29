@@ -52,15 +52,8 @@
             <% if request.failures.empty? -%>
               <% if request.asset && request.asset.resource? -%>
                 <% @batch.pipeline.request_actions.each do |action| -%>
-                  <% if action == :fail -%>
-                    <td class="7%"><input name='requested_<%= action.to_s %>[control]' type='checkbox'></td>
-                  <% else -%>
-                    <td></td>
-                  <% end %>
+                  <td class="7%"><input name='requested_fail[control]' type='checkbox'></td>
                 <% end %>
-
-                <td class="7%"><input name='requested[control]' type='checkbox'></td>
-                <td></td>
               <% else -%>
                 <% @batch.pipeline.request_actions.each do |action| -%>
                   <td class="7%">
