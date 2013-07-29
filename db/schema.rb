@@ -131,6 +131,7 @@ ActiveRecord::Schema.define(:version => 20130726150840) do
   add_index "assets", ["barcode_prefix_id"], :name => "index_assets_on_barcode_prefix_id"
   add_index "assets", ["legacy_sample_id"], :name => "index_assets_on_sample_id"
   add_index "assets", ["map_id"], :name => "index_assets_on_map_id"
+  add_index "assets", ["sti_type", "plate_purpose_id"], :name => "index_assets_on_plate_purpose_id_sti_type"
   add_index "assets", ["sti_type", "updated_at"], :name => "index_assets_on_sti_type_and_updated_at"
   add_index "assets", ["sti_type"], :name => "index_assets_on_sti_type"
   add_index "assets", ["updated_at"], :name => "index_assets_on_updated_at"
