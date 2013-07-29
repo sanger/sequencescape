@@ -671,13 +671,17 @@ class BatchTest < ActiveSupport::TestCase
       # Separate context because we need to setup the DB first and we cannot check the changes made.
       context 'checking DB changes' do
         setup do
-          @batch.expects(:destroy)    # Always gets destroyed
           @batch.reset!(@user)
         end
 
         should_change('BatchRequest.count', :by => -2) { BatchRequest.count }
         should_change('Asset.count', :by => -2) { Asset.count }
         should_change('Request.count', :by => 0) { Request.count }
+        should_change('Batch.count', :by =>0) { Batch.count }
+
+        should 'transition to discarded' do
+          assert_equal('discarded',@batch.state)
+        end
       end
 
       context 'once started' do
@@ -686,7 +690,7 @@ class BatchTest < ActiveSupport::TestCase
        end
 
        should 'raise an exception' do
-          assert_raise StandardError do
+          assert_raise AASM::InvalidTransition do
             @batch.reset!(@user)
           end
         end
@@ -696,11 +700,9 @@ class BatchTest < ActiveSupport::TestCase
     context "#reset! of sequencing_pipeline" do
       setup do
         @batch = @sequencing_pipeline.batches.create!
-        @pending_request   = @pipeline.request_types.last.create!(:state => 'pending', :target_asset => Factory(:lane))
-        @pending_request_2 = @pipeline.request_types.last.create!(:state => 'pending', :target_asset => Factory(:lane))
+        @pending_request   = @sequencing_pipeline.request_types.last.create!(:state => 'pending', :target_asset => Factory(:lane))
+        @pending_request_2 = @sequencing_pipeline.request_types.last.create!(:state => 'pending', :target_asset => Factory(:lane))
         @batch.requests << @pending_request << @pending_request_2
-
-        @batch.expects(:destroy)    # Always gets destroyed
       end
 
       # Separate context because we need to setup the DB first and we cannot check the changes made.
@@ -712,6 +714,12 @@ class BatchTest < ActiveSupport::TestCase
         should_change('BatchRequest.count', :by => -2) { BatchRequest.count }
         should_change('Asset.count', :by => -2) { Asset.count }
         should_change('Request.count', :by => 0) { Request.count }
+
+        should_change('Batch.count', :by =>0) { Batch.count }
+
+        should 'transition to discarded' do
+          assert_equal('discarded',@batch.state)
+        end
       end
     end
 
