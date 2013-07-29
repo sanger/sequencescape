@@ -1,4 +1,4 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file,
+# This file is auto-generated from the current state of the database. Instead of editing this file, 
 # please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130626082027) do
+ActiveRecord::Schema.define(:version => 20130726150840) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -896,15 +896,15 @@ ActiveRecord::Schema.define(:version => 20130626082027) do
     t.integer  "order"
     t.string   "initial_state",      :limit => 20
     t.string   "target_asset_type"
-    t.boolean  "multiples_allowed",                :default => false
+    t.boolean  "multiples_allowed",                 :default => false
     t.string   "request_class_name"
     t.text     "request_parameters"
-    t.integer  "morphology",                       :default => 0
-    t.boolean  "for_multiplexing",                 :default => false
-    t.boolean  "billable",                         :default => false
+    t.integer  "morphology",                        :default => 0
+    t.boolean  "for_multiplexing",                  :default => false
+    t.boolean  "billable",                          :default => false
     t.integer  "product_line_id"
-    t.boolean  "deprecated",                       :default => false, :null => false
-    t.boolean  "no_target_asset",                  :default => false, :null => false
+    t.boolean  "deprecated",                        :default => false, :null => false
+    t.boolean  "no_target_asset",                   :default => false, :null => false
     t.integer  "target_purpose_id"
   end
 
@@ -1204,8 +1204,9 @@ ActiveRecord::Schema.define(:version => 20130626082027) do
     t.string   "hmdmc_approval_number"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "remove_x_and_autosomes",                 :default => "No", :null => false
+    t.string   "remove_x_and_autosomes",                 :default => "No",  :null => false
     t.string   "dac_policy_title"
+    t.boolean  "separate_y_chromosome_data",             :default => false, :null => false
   end
 
   add_index "study_metadata", ["faculty_sponsor_id"], :name => "index_study_metadata_on_faculty_sponsor_id"

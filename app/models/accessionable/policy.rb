@@ -29,7 +29,7 @@ class Accessionable::Policy < Accessionable::Base
                  :center_name => self.center_name) {
       xml.TITLE self.title
       xml.DAC_REF(:accession => self.dac_accession_number)
-      xml.POLICY_URL self.policy_url
+      xml.POLICY_FILE self.policy_url
     }
     }
     return xml.target!

@@ -270,6 +270,10 @@ en:
           label: Does this study require the removal of X chromosome and autosome sequence?
           help: Applicable for studies where only mtDNA and Y-chromosomal data will be submitted to EGA.
 
+        separate_y_chromosome_data:
+          label: Does this study require y chromosome data to be separated from x and autosomal data before archival?
+          help: Applicable for studies where Y-chromosome data will not be submitted to the EGA, or will be submitted separately from autosomal sequence.
+
         study_project_id:
           label: ENA Project ID
           edit_info: '[ ENA (see help) ]'

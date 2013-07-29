@@ -197,11 +197,11 @@ class Submission < ActiveRecord::Base
       sibling_requests, next_possible_requests = all_requests.partition { |r| r.request_type_id == request.request_type_id }
 
     if request.request_type.for_multiplexing?
-      # Multiplexed requests should not get batched seperately, and furthermore, will all use the same sequencing request for
+      # Multiplexed requests should not get batched separately, and furthermore, will all use the same sequencing request for
       # each lane. The divergence ratio plays no part in identifying the start index
       next_possible_requests
     else
-      # If requests aren't multiplexed, then they may be batched seperately, and we'll have issues
+      # If requests aren't multiplexed, then they may be batched separately, and we'll have issues
       # if downstream changes affect the ratio. We can use the multiplier on order however, as we
       # don't need to worry about divergence ratios f < 1
       # Determine the number of requests that should come next from the multipliers in the orders.

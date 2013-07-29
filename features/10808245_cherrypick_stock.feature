@@ -3,6 +3,7 @@ Feature: Pick by micro litre (stock transfer) using the Tecan robot
 
   Background:
     Given I am an "manager" user logged in as "john"
+    And a robot exists
 
   @gwl @cherrypicking_for_pulldown @pulldown
   Scenario Outline: Create a Tecan file with the correct volumes to pick
@@ -34,11 +35,13 @@ Feature: Pick by micro litre (stock transfer) using the Tecan robot
     When I check "Select DN222J for batch"
      And I check "Select DN333P for batch"
      And I press "Submit"
+     And the last batch is sorted in row order
      And I follow "Start batch"
      And I choose "Pick by µl"
      And I fill in the following:
         | Volume  | <volume>   |
      And I select "Pulldown" from "Plate Purpose"
+     And I press "Next step"
      And I press "Next step"
      And I press "Release this batch"
     Given the last batch has a barcode of "550000555760"

@@ -53,7 +53,6 @@ def create_submission_of_assets(template, assets, request_options = {})
     :assets          => assets,
     :request_options => request_options
   )
-
   step 'all pending delayed jobs are processed'
 end
 

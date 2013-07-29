@@ -34,7 +34,8 @@ class ColumnMap
        'SAMPLE VISIBILITY',
        'SAMPLE TYPE',
        'SAMPLE ACCESSION NUMBER (optional)',
-       'DONOR ID (required for cancer samples)'
+       'DONOR ID (required for cancer samples)',
+       'PHENOTYPE (required for EGA)'
      ]
 
     def self.[](x)
