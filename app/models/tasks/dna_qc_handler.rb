@@ -15,10 +15,6 @@ module Tasks::DnaQcHandler
       :order => 'maps.column_order ASC'
     )
 
-    unless @batch.started? || @batch.failed?
-      @batch.start!(current_user)
-    end
-
     @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
     @task = task # @workflow.tasks[params[:id].to_i]
     @stage = params[:id].to_i

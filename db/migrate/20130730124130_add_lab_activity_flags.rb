@@ -1,24 +1,19 @@
-class MoveStartBatchEventLater < ActiveRecord::Migration
+class AddLabActivityFlags < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
       each_workflow do |name,before|
-        say "Prcessing #{name}"
+        say "Processing #{name}"
         workflow = LabInterface::Workflow.find_by_name!(name)
         re_sort = workflow.tasks.detect{|task| task.name==before}.sorted
         workflow.tasks.each do |task|
-          orig_sort = task.sorted
-          task.update_attributes!(:sorted=>orig_sort+1) if orig_sort >= re_sort
+          task.update_attributes!(:lab_activity=>true) if task.sorted >= re_sort
         end
-        task = StartBatchTask.create!(:name=>'Start batch', :sorted=>re_sort,:batched=>true,:interactive=>false)
-        workflow.tasks << task
       end
     end
   end
 
   def self.down
-    ActiveRecord::Base.transaction do
-      StartBatchTask.find_all_by_name('Start batch').each(&:destroy)
-    end
+    Task.update_all('lab_activity = NULL')
   end
 
   def self.each_workflow

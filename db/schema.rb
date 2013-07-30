@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130712112842) do
+ActiveRecord::Schema.define(:version => 20130730124130) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -1418,6 +1418,7 @@ ActiveRecord::Schema.define(:version => 20130712112842) do
     t.boolean "interactive"
     t.boolean "per_item"
     t.string  "sti_type",             :limit => 50
+    t.boolean "lab_activity"
   end
 
   add_index "tasks", ["name"], :name => "index_tasks_on_name"

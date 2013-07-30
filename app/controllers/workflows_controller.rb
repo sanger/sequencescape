@@ -132,7 +132,8 @@ class WorkflowsController < ApplicationController
     # else actually execute the task.
     unless params[:next_stage].nil?
       if @task.do_task(self, params)
-        # Task completed, display the next one
+        # Task completed, start the batch is necessary and display the next one
+        do_start_batch_task(@task,params)
         @stage +=  1
         params[:id] = @stage
         @task = @workflow.tasks[@stage]
