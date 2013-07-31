@@ -12,7 +12,7 @@
       return if request.new_record? || !request.changed.include?('state')
       from_state = request.changes['state'].first
       time = DateTime.now
-      request.current_request_event.expire!(time)
+      request.current_request_event.expire!(time) unless request.current_request_event.nil?
       request.request_events.create!(
         :event_name   => 'state_changed',
         :from_state   => from_state,
@@ -23,7 +23,7 @@
 
     def before_destroy(request)
       time = DateTime.now
-      request.current_request_event.expire!(time)
+      request.current_request_event.expire!(time)  unless request.current_request_event.nil?
       request.request_events.create!(
         :event_name   => 'destroyed',
         :from_state   => request.state,
