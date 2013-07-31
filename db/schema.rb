@@ -828,6 +828,17 @@ ActiveRecord::Schema.define(:version => 20130729153709) do
     t.datetime "updated_at"
   end
 
+  create_table "request_events", :force => true do |t|
+    t.integer  "request_id",   :null => false
+    t.string   "event_name",   :null => false
+    t.string   "from_state"
+    t.string   "to_state"
+    t.datetime "current_from", :null => false
+    t.datetime "current_to"
+  end
+
+  add_index "request_events", ["request_id", "current_to"], :name => "index_request_events_on_request_id_and_current_to"
+
   create_table "request_information_types", :force => true do |t|
     t.string   "name"
     t.string   "key",           :limit => 50
