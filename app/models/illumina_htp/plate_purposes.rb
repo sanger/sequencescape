@@ -29,8 +29,9 @@ module IlluminaHtp::PlatePurposes
   BRANCHES = [
     [ 'Cherrypicked', 'Shear', 'Post Shear', 'AL Libs', 'Lib PCR', 'Lib PCR-XP','Lib Pool','Lib Pool Norm'],
     [ 'Lib PCR-XP','Lib Pool Pippin', 'Lib Pool Conc', 'Lib Pool SS', 'Lib Pool SS-XP', 'Lib Pool SS-XP-Norm' ],
-    [ 'AL Libs', 'Lib PCRR', 'Lib PCRR-XP' ],
-    ['Lib PCR-XP','ISC lib pool']
+    [ 'AL Libs', 'Lib PCRR', 'Lib PCRR-XP','Lib Pool Pippin' ],
+    [ 'Lib PCR-XP','ISC lib pool' ],
+    [ 'Lib PCRR-XP','ISC lib pool' ],
   ]
 
   STOCK_PLATE_PURPOSE = 'Cherrypicked'

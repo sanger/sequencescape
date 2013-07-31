@@ -220,3 +220,7 @@ Given /^plate "([^"]*)" is a source plate of "([^"]*)"$/ do |source_plate_uuid, 
   destination_plate = Plate.find(Uuid.find_id(destination_plate_uuid))
   source_plate.children << destination_plate
 end
+
+Given /^the UUID for well (\d+) on plate "(.*?)" is "(.*?)"$/ do |well_id, plate_name, uuid|
+  set_uuid_for(Plate.find_by_name(plate_name).wells[well_id],uuid)
+end

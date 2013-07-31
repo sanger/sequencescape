@@ -131,6 +131,7 @@ ActiveRecord::Schema.define(:version => 20130730124130) do
   add_index "assets", ["barcode_prefix_id"], :name => "index_assets_on_barcode_prefix_id"
   add_index "assets", ["legacy_sample_id"], :name => "index_assets_on_sample_id"
   add_index "assets", ["map_id"], :name => "index_assets_on_map_id"
+  add_index "assets", ["sti_type", "plate_purpose_id"], :name => "index_assets_on_plate_purpose_id_sti_type"
   add_index "assets", ["sti_type", "updated_at"], :name => "index_assets_on_sti_type_and_updated_at"
   add_index "assets", ["sti_type"], :name => "index_assets_on_sti_type"
   add_index "assets", ["updated_at"], :name => "index_assets_on_updated_at"
@@ -827,6 +828,17 @@ ActiveRecord::Schema.define(:version => 20130730124130) do
     t.datetime "updated_at"
   end
 
+  create_table "request_events", :force => true do |t|
+    t.integer  "request_id",   :null => false
+    t.string   "event_name",   :null => false
+    t.string   "from_state"
+    t.string   "to_state"
+    t.datetime "current_from", :null => false
+    t.datetime "current_to"
+  end
+
+  add_index "request_events", ["request_id", "current_to"], :name => "index_request_events_on_request_id_and_current_to"
+
   create_table "request_information_types", :force => true do |t|
     t.string   "name"
     t.string   "key",           :limit => 50
@@ -896,15 +908,15 @@ ActiveRecord::Schema.define(:version => 20130730124130) do
     t.integer  "order"
     t.string   "initial_state",      :limit => 20
     t.string   "target_asset_type"
-    t.boolean  "multiples_allowed",                :default => false
+    t.boolean  "multiples_allowed",                 :default => false
     t.string   "request_class_name"
     t.text     "request_parameters"
-    t.integer  "morphology",                       :default => 0
-    t.boolean  "for_multiplexing",                 :default => false
-    t.boolean  "billable",                         :default => false
+    t.integer  "morphology",                        :default => 0
+    t.boolean  "for_multiplexing",                  :default => false
+    t.boolean  "billable",                          :default => false
     t.integer  "product_line_id"
-    t.boolean  "deprecated",                       :default => false, :null => false
-    t.boolean  "no_target_asset",                  :default => false, :null => false
+    t.boolean  "deprecated",                        :default => false, :null => false
+    t.boolean  "no_target_asset",                   :default => false, :null => false
     t.integer  "target_purpose_id"
   end
 
@@ -1204,8 +1216,9 @@ ActiveRecord::Schema.define(:version => 20130730124130) do
     t.string   "hmdmc_approval_number"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "remove_x_and_autosomes",                 :default => "No", :null => false
+    t.string   "remove_x_and_autosomes",                 :default => "No",  :null => false
     t.string   "dac_policy_title"
+    t.boolean  "separate_y_chromosome_data",             :default => false, :null => false
   end
 
   add_index "study_metadata", ["faculty_sponsor_id"], :name => "index_study_metadata_on_faculty_sponsor_id"

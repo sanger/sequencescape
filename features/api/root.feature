@@ -229,6 +229,31 @@ Feature: The entry point for the API gives directions to the other actions
           "actions": {
             "read": "http://www.example.com/api/1/users"
           }
+        },
+        "bulk_transfers": {
+          "actions": {
+            "read": "http://www.example.com/api/1/bulk_transfers"
+          }
+        },
+        "pooled_plate_creations": {
+          "actions": {
+            "read": "http://www.example.com/api/1/pooled_plate_creations"
+          }
+        },
+        "qc_files": {
+          "actions": {
+            "read": "http://www.example.com/api/1/qc_files"
+          }
+        },
+        "specific_tube_creations": {
+          "actions": {
+            "read": "http://www.example.com/api/1/specific_tube_creations"
+          }
+        },
+        "tube_from_tube_creations": {
+          "actions": {
+            "read": "http://www.example.com/api/1/tube_from_tube_creations"
+          }
         }
       }
       """
@@ -458,6 +483,31 @@ Feature: The entry point for the API gives directions to the other actions
         "users": {
           "actions": {
             "read": "http://www.example.com/api/1/users"
+          }
+        },
+        "bulk_transfers": {
+          "actions": {
+            "read": "http://www.example.com/api/1/bulk_transfers"
+          }
+        },
+        "pooled_plate_creations": {
+          "actions": {
+            "read": "http://www.example.com/api/1/pooled_plate_creations"
+          }
+        },
+        "qc_files": {
+          "actions": {
+            "read": "http://www.example.com/api/1/qc_files"
+          }
+        },
+        "specific_tube_creations": {
+          "actions": {
+            "read": "http://www.example.com/api/1/specific_tube_creations"
+          }
+        },
+        "tube_from_tube_creations": {
+          "actions": {
+            "read": "http://www.example.com/api/1/tube_from_tube_creations"
           }
         }
       }

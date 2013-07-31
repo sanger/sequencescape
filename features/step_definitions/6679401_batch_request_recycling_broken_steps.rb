@@ -86,6 +86,7 @@ def build_batch_for(name, count, &block)
     asset_attributes = { }
     if submission_details.key?(:holder_type)
       asset_attributes[:container] = Factory(submission_details[:holder_type], :location_id => pipeline.location_id)
+      asset_attributes[:map_id] = Map.find(1)
     else
       asset_attributes[:location_id] = pipeline.location_id
     end

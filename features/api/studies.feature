@@ -46,6 +46,7 @@ Feature: Access studies through the API
           "contaminated_human_dna": "No",
           "contains_human_dna": "No",
           "remove_x_and_autosomes": false,
+          "separate_y_chromosome_data": false,
           "commercially_available": "No",
           "data_release_sort_of_study": "genomic sequencing",
           "data_release_strategy": "open",

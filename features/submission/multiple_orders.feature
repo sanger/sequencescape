@@ -89,6 +89,6 @@ Feature: Creating a submissin with many orders
     Examples:
        | template_name                                                  | number  | type                  | asset_type   |
        | Library creation - Paired end sequencing                       | 4       | Paired end sequencing | sample tubes |
-       | Multiplexed Library creation - Paired end sequencing           | 2       | Paired end sequencing | sample tubes |
-       | Pulldown Multiplex Library Preparation - Paired end sequencing | 2       | Paired end sequencing | wells        |
+       | Multiplexed Library creation - Paired end sequencing           | 1       | Paired end sequencing | sample tubes |
+       | Pulldown Multiplex Library Preparation - Paired end sequencing | 1       | Paired end sequencing | wells        |
 

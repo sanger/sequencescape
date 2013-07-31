@@ -349,7 +349,7 @@ When /^I update an? accession number for study "([^\"]+)"$/ do |study_name|
 end
 
 Given /^the study "([^\"]+)" has a valid policy$/ do |study_name|
-    step(%Q{the policy for study "#{study_name}" is "I am the 'managed study'  policy"})
+    step(%Q{the policy for study "#{study_name}" is "http://www.example.com"})
     step(%Q{the dac accession number for study "#{study_name}" is "EGAC00000001"})
 end
 
