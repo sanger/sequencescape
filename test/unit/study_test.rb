@@ -195,6 +195,25 @@ class StudyTest < ActiveSupport::TestCase
       end
     end
 
+    context "with check y separation" do
+      setup do
+        @study = Factory :study
+        @study.study_metadata.separate_y_chromosome_data = true
+      end
+
+      should "be valid when we are sane" do
+        @study.study_metadata.remove_x_and_autosomes = Study::NO
+        assert @study.save!
+      end
+
+      should "be invalid when we do something silly" do
+        @study.study_metadata.remove_x_and_autosomes = Study::YES
+        assert_raise ActiveRecord::RecordInvalid do
+          @study.save!
+        end
+      end
+    end
+
     context "#unprocessed_submissions?" do
       setup do
         @study = Factory :study

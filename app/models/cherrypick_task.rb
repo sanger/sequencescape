@@ -83,7 +83,7 @@ class CherrypickTask < Task
 
     # Completes the given well array such that it looks like the plate has been completely picked.
     def complete(wells)
-      until wells.size == @size
+      until wells.size >= @size
         add_empty_well(wells)
         add_any_wells_from_template_or_partial(wells)
       end
@@ -108,7 +108,7 @@ class CherrypickTask < Task
     # checked to see if subsequent wells are already taken.  In other words, after calling this method
     # the next position on the pick plate is known to be empty.
     def add_any_wells_from_template_or_partial(wells)
-      wells << CherrypickTask::TEMPLATE_EMPTY_WELL until wells.size == @size or @used_wells[well_position(wells)].nil?
+      wells << CherrypickTask::TEMPLATE_EMPTY_WELL until wells.size >= @size or @used_wells[well_position(wells)].nil?
       return unless @control_well_required and wells.size == (@size-1)
 
       # Control well is always in the bottom right corner of the plate

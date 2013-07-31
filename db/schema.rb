@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130704144832) do
+ActiveRecord::Schema.define(:version => 20130729153709) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -131,6 +131,7 @@ ActiveRecord::Schema.define(:version => 20130704144832) do
   add_index "assets", ["barcode_prefix_id"], :name => "index_assets_on_barcode_prefix_id"
   add_index "assets", ["legacy_sample_id"], :name => "index_assets_on_sample_id"
   add_index "assets", ["map_id"], :name => "index_assets_on_map_id"
+  add_index "assets", ["sti_type", "plate_purpose_id"], :name => "index_assets_on_plate_purpose_id_sti_type"
   add_index "assets", ["sti_type", "updated_at"], :name => "index_assets_on_sti_type_and_updated_at"
   add_index "assets", ["sti_type"], :name => "index_assets_on_sti_type"
   add_index "assets", ["updated_at"], :name => "index_assets_on_updated_at"
@@ -1215,8 +1216,9 @@ ActiveRecord::Schema.define(:version => 20130704144832) do
     t.string   "hmdmc_approval_number"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "remove_x_and_autosomes",                 :default => "No", :null => false
+    t.string   "remove_x_and_autosomes",                 :default => "No",  :null => false
     t.string   "dac_policy_title"
+    t.boolean  "separate_y_chromosome_data",             :default => false, :null => false
   end
 
   add_index "study_metadata", ["faculty_sponsor_id"], :name => "index_study_metadata_on_faculty_sponsor_id"

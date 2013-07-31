@@ -208,13 +208,14 @@ Given /^(passed|started|pending|failed) transfer requests exist between (\d+) we
   destination = Plate.find_by_name(dest_name)
   (0...count.to_i).each do |i|
     RequestType.transfer.create!(:asset => source.wells.in_row_major_order[i], :target_asset => destination.wells.in_row_major_order[i], :state=>state)
+    Well::Link.create!(:source_well=>source.wells.in_row_major_order[i],:target_well=>destination.wells.in_row_major_order[i], :type=>'stock')
   end
   AssetLink.create(:ancestor=>source,:descendant=>destination)
 end
 
 Then /^the plate with the barcode "(.*?)" should have a label of "(.*?)"$/ do |barcode, label|
   plate = Plate.find_by_barcode!(barcode)
-  assert_equal label, plate.label_prefix
+  assert_equal label, plate.role
 end
 
 

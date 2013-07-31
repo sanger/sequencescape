@@ -1,11 +1,13 @@
 class ReferenceGenome < ActiveRecord::Base
   extend Attributable::Association::Target
+  include Api::ReferenceGenomeIO::Extensions
+  include Uuid::Uuidable
 
   has_many :studies
   has_many :samples
   validates_uniqueness_of :name, :message => "of reference genome already present in database", :allow_blank => true
-  named_scope :sorted_by_name , :order => "name ASC"  
-  
+  named_scope :sorted_by_name , :order => "name ASC"
+
 
 
   module Associations

@@ -12,7 +12,7 @@ Feature: Interacting with wells through the API
 
   Scenario: Listing all of the wells that exist
     Given a well called "Testing the JSON API" exists
-    And the UUID for the well "Testing the JSON API" is "00000000-1111-2222-3333-444444444444"
+    And the UUID for the last well is "00000000-1111-2222-3333-444444444444"
     And well "Testing the JSON API" has a genotyping status of "Imported to Illumina: 123456 | Imported to Illumina: 987654"
 
     When I GET the API path "/wells"
@@ -28,8 +28,8 @@ Feature: Interacting with wells through the API
             "uuid": "00000000-1111-2222-3333-444444444444",
             "lanes": "http://localhost:3000/0_5/wells/00000000-1111-2222-3333-444444444444/lanes",
             "requests": "http://localhost:3000/0_5/wells/00000000-1111-2222-3333-444444444444/requests",
-            "pico_pass": "ungraded", 
-            "concentration": 23.2, 
+            "pico_pass": "ungraded",
+            "concentration": 23.2,
             "current_volume": 15.0,
             "measured_volume": null,
             "sequenom_count": null,
@@ -37,7 +37,7 @@ Feature: Interacting with wells through the API
             "genotyping_status": "Imported to Illumina: 123456 | Imported to Illumina: 987654",
             "genotyping_snp_plate_id": 123456,
             "sample_name": "Testing_the_JSON_API",
-            
+
             "internal_id": 1
           }
         }
@@ -50,7 +50,7 @@ Feature: Interacting with wells through the API
 
   Scenario: Retrieving the JSON for a particular well
     Given a well called "Testing the JSON API" exists
-    And the UUID for the well "Testing the JSON API" is "00000000-1111-2222-3333-444444444444"
+    And the UUID for the last well is "00000000-1111-2222-3333-444444444444"
     Given a plate called "Testing the JSON API" exists
     And the UUID for the plate "Testing the JSON API" is "UUID-1234567890"
     And well "00000000-1111-2222-3333-444444444444" is holded by plate "UUID-1234567890"
@@ -67,13 +67,13 @@ Feature: Interacting with wells through the API
           "uuid": "00000000-1111-2222-3333-444444444444",
           "lanes": "http://localhost:3000/0_5/wells/00000000-1111-2222-3333-444444444444/lanes",
           "requests": "http://localhost:3000/0_5/wells/00000000-1111-2222-3333-444444444444/requests",
-          "pico_pass": "ungraded", 
-          "concentration": 23.2, 
+          "pico_pass": "ungraded",
+          "concentration": 23.2,
           "current_volume": 15.0,
           "measured_volume": null,
           "sequenom_count": null,
           "gender_markers": null,
-          
+
           "plate_uuid": "UUID-1234567890",
           "plate_barcode_prefix": "DN",
 
@@ -85,11 +85,11 @@ Feature: Interacting with wells through the API
 
   Scenario: Retrieving the children of a well
     Given a well called "Testing the JSON API" exists
-    And the UUID for the well "Testing the JSON API" is "00000000-1111-2222-3333-444444444444"
+    And the UUID for the last well is "00000000-1111-2222-3333-444444444444"
 
     Given a well called "Child well for the JSON API" exists
     And the well "Child well for the JSON API" is a child of the well "Testing the JSON API"
-    And the UUID for the well "Child well for the JSON API" is "ffffffff-1111-2222-3333-444444444444"
+    And the UUID for the last well is "ffffffff-1111-2222-3333-444444444444"
 
     When I GET the API path "/wells/00000000-1111-2222-3333-444444444444/children"
     Then ignoring "id" the JSON should be:
@@ -106,11 +106,11 @@ Feature: Interacting with wells through the API
 
   Scenario: Retrieving the parents of a well
     Given a well called "Testing the JSON API" exists
-    And the UUID for the well "Testing the JSON API" is "00000000-1111-2222-3333-444444444444"
+    And the UUID for the last well is "00000000-1111-2222-3333-444444444444"
 
     Given a well called "Parent well for the JSON API" exists
     And the well "Testing the JSON API" is a child of the well "Parent well for the JSON API"
-    And the UUID for the well "Parent well for the JSON API" is "ffffffff-1111-2222-3333-444444444444"
+    And the UUID for the last well is "ffffffff-1111-2222-3333-444444444444"
 
     When I GET the API path "/wells/00000000-1111-2222-3333-444444444444/parents"
     Then ignoring "id" the JSON should be:
@@ -124,7 +124,7 @@ Feature: Interacting with wells through the API
         }
       ]
       """
-      
+
   Scenario: Convenient well naming format is exposed in the warehouse
      Given the nameless well exists with ID 1
       And the UUID for the well with ID 1 is "00000000-1111-2222-3333-444444444444"
@@ -144,7 +144,7 @@ Feature: Interacting with wells through the API
             "lanes": "http://localhost:3000/0_5/wells/00000000-1111-2222-3333-444444444444/lanes",
             "requests": "http://localhost:3000/0_5/wells/00000000-1111-2222-3333-444444444444/requests",
             "pico_pass": "ungraded",
-            "concentration": 23.2, 
+            "concentration": 23.2,
             "current_volume": 15.0,
             "measured_volume": null,
             "sequenom_count": null,
@@ -159,5 +159,5 @@ Feature: Interacting with wells through the API
           }
         }
         """
-    
-    
+
+

@@ -54,7 +54,7 @@
     <% metadata_fields.with_options(:grouping => 'SRA Sample AN') do |group| %>
       <%= group.text_field(:sample_ebi_accession_number) %>
     <% end %>
-    
+
     <%= metadata_fields.select_by_association(:reference_genome)%>
 
     <!-- array express field -->
@@ -74,6 +74,7 @@
 
     <!-- EGA field -->
     <%= metadata_fields.checktext_field(:subject) %>
+    <%= metadata_fields.checktext_field(:cancer_donor_id) %>
     <%= metadata_fields.checktext_field(:disease) %>
     <%= metadata_fields.checktext_field(:treatment)%>
 
