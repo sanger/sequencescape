@@ -1,4 +1,4 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file, 
+# This file is auto-generated from the current state of the database. Instead of editing this file,
 # please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130726150840) do
+ActiveRecord::Schema.define(:version => 20130730124130) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -131,6 +131,7 @@ ActiveRecord::Schema.define(:version => 20130726150840) do
   add_index "assets", ["barcode_prefix_id"], :name => "index_assets_on_barcode_prefix_id"
   add_index "assets", ["legacy_sample_id"], :name => "index_assets_on_sample_id"
   add_index "assets", ["map_id"], :name => "index_assets_on_map_id"
+  add_index "assets", ["sti_type", "plate_purpose_id"], :name => "index_assets_on_plate_purpose_id_sti_type"
   add_index "assets", ["sti_type", "updated_at"], :name => "index_assets_on_sti_type_and_updated_at"
   add_index "assets", ["sti_type"], :name => "index_assets_on_sti_type"
   add_index "assets", ["updated_at"], :name => "index_assets_on_updated_at"
@@ -827,6 +828,17 @@ ActiveRecord::Schema.define(:version => 20130726150840) do
     t.datetime "updated_at"
   end
 
+  create_table "request_events", :force => true do |t|
+    t.integer  "request_id",   :null => false
+    t.string   "event_name",   :null => false
+    t.string   "from_state"
+    t.string   "to_state"
+    t.datetime "current_from", :null => false
+    t.datetime "current_to"
+  end
+
+  add_index "request_events", ["request_id", "current_to"], :name => "index_request_events_on_request_id_and_current_to"
+
   create_table "request_information_types", :force => true do |t|
     t.string   "name"
     t.string   "key",           :limit => 50
@@ -1419,6 +1431,7 @@ ActiveRecord::Schema.define(:version => 20130726150840) do
     t.boolean "interactive"
     t.boolean "per_item"
     t.string  "sti_type",             :limit => 50
+    t.boolean "lab_activity"
   end
 
   add_index "tasks", ["name"], :name => "index_tasks_on_name"

@@ -175,7 +175,7 @@ class SamplesController < ApplicationController
     flash[:notice] = "Accession number generated: #{ @sample.sample_metadata.sample_ebi_accession_number }"
     redirect_to(sample_path(@sample))
   rescue ActiveRecord::RecordInvalid => exception
-    flash[:error] = 'Please fill in the required fields'
+    flash[:error] = "Please fill in the required fields: #{@sample.errors.full_messages.join(', ')}"
     redirect_to(edit_sample_path(@sample))
   rescue AccessionService::NumberNotRequired => exception
     flash[:warning] = 'An accession number is not required for this study'

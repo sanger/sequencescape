@@ -344,7 +344,7 @@ class Sample < ActiveRecord::Base
     end
 
     def donor_id_provided_if_needed
-      phenotype.downcase == 'cancer' ? cancer_donor_id : true
+      phenotype.try(:downcase) == 'cancer' ? cancer_donor_id : true
     end
   end
 
