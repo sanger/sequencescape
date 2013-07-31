@@ -1,4 +1,4 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file, 
+# This file is auto-generated from the current state of the database. Instead of editing this file,
 # please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130729153709) do
+ActiveRecord::Schema.define(:version => 20130730124130) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -1431,6 +1431,7 @@ ActiveRecord::Schema.define(:version => 20130729153709) do
     t.boolean "interactive"
     t.boolean "per_item"
     t.string  "sti_type",             :limit => 50
+    t.boolean "lab_activity"
   end
 
   add_index "tasks", ["name"], :name => "index_tasks_on_name"

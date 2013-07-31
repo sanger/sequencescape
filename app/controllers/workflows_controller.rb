@@ -23,6 +23,7 @@ class WorkflowsController < ApplicationController
   include Tasks::SmrtCellsHandler
   include Tasks::TagGroupHandler
   include Tasks::ValidateSampleSheetHandler
+  include Tasks::StartBatchHandler
 
   def index
     @workflows = LabInterface::Workflow.all
@@ -131,7 +132,8 @@ class WorkflowsController < ApplicationController
     # else actually execute the task.
     unless params[:next_stage].nil?
       if @task.do_task(self, params)
-        # Task completed, display the next one
+        # Task completed, start the batch is necessary and display the next one
+        do_start_batch_task(@task,params)
         @stage +=  1
         params[:id] = @stage
         @task = @workflow.tasks[@stage]
@@ -152,7 +154,6 @@ class WorkflowsController < ApplicationController
     @rits = @batch.pipeline.request_information_types
     @requests = @batch.ordered_requests
     @requests_by_submission = @requests.group_by(&:submission)
-    ActiveRecord::Base.transaction { @batch.start!(current_user) } unless @batch.started? or @batch.failed?
 
     @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
     @task = task
