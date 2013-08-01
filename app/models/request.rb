@@ -440,4 +440,8 @@ class Request < ActiveRecord::Base
   def role
     nil
   end
+
+  def self.accessioning_required?
+    false
+  end
 end

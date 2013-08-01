@@ -116,21 +116,22 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
         @study = Factory :study
         @project = Factory :project
 
-        @asset1 = Factory(:sample_tube)
-        @asset2 = Factory(:sample_tube)
-        @asset3 = Factory(:sample_tube)
+        @asset1 = Factory(:library_tube)
+        @asset2 = Factory(:library_tube)
+        @asset3 = Factory(:library_tube)
         @asset_group = Factory :asset_group
         @asset_group.assets << [@asset1,@asset2,@asset3]
+        @sequencing_request_type = Factory :sequencing_request_type, :name => "sequencing test type"
         @request_type = Factory :request_type, :name => "test type"
         @workflow = Factory :submission_workflow
         @submission_template = Factory :submission_template
 
         @request_params = {
-          "request_metadata_attributes" => {
+          "properties" => {
             "library_type"=>"Standard",
-            "fragment_size_required_from"=>"5",
-            "fragment_size_required_to"=>"6",
-            "read_length"=>"37"
+            'fragment_size_required_from' => 5,
+            'fragment_size_required_to' => 6,
+            'read_length' => 37
           }
         }
         @submission_count = Submission.count
@@ -148,7 +149,7 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
 
           # NOTE: 'data release is required on a study, so it can't not be filled in'
 
-          context "where data release is set to open" do
+          context "sequencing requests where data release is set to open" do
             setup do
               @study.study_metadata.data_release_study_type.name = 'genomic sequencing'
               @study.study_metadata.data_release_strategy        = 'open'
@@ -164,7 +165,7 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
               end
               context "and no samples in asset group have accessions" do
                 setup do
-                  create_and_submit  :order => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name, :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
+                  create_and_submit  :order => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name, :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@sequencing_request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
                 end
 
                 should "not have a successful submission" do
@@ -176,10 +177,10 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
               context "and 1 sample in asset group has an accession and the rest dont" do
                 setup do
                   @asset2.primary_aliquot.sample.sample_metadata.update_attributes!(:sample_ebi_accession_number => 'ERS000001')
-                  create_and_submit  :order => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
+                  create_and_submit  :order => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@sequencing_request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
                 end
                 should "not have a successful submission" do
-                  assert_contains(@controller.action_flash[:error], 'Study and all samples must have accession numbers')
+                  assert_contains(@controller.action_flash[:error].split(', '), 'Study and all samples must have accession numbers')
                   assert_equal @submission_count, Submission.count
                 end
               end
@@ -194,16 +195,64 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
             end
             context "study doesnt have accession number" do
               setup do
-                create_and_submit :order => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
+                create_and_submit :order => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@sequencing_request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
               end
               should "not have a successful submission" do
-                assert_contains(@controller.action_flash[:error], 'Study and all samples must have accession numbers')
+                assert_contains(@controller.action_flash[:error].split(', '), 'Study and all samples must have accession numbers')
                 assert_equal @submission_count, Submission.count
               end
             end
           end
 
+          context "where there is no sequencing" do
+            setup do
+              @study.study_metadata.data_release_study_type.name = 'genomic sequencing'
+              @study.study_metadata.data_release_strategy        = 'open'
+              @study.study_metadata.data_release_timing          = 'standard'
+              @study.study_metadata.study_type = StudyType.find_by_name("Not specified")
+              @study.study_metadata.data_release_study_type = DataReleaseStudyType.find_by_name('genomic sequencing')
+
+              @asset4 = Factory(:sample_tube)
+              @asset5 = Factory(:sample_tube)
+              @asset6 = Factory(:sample_tube)
+              @asset_group_b = Factory :asset_group
+              @asset_group_b.assets << [@asset4,@asset5,@asset6]
+
+            end
+            context "study has accession number" do
+              setup do
+                @study.study_metadata.study_ebi_accession_number = "ERP0000001"
+                @study.save!
+              end
+              context "and no samples in asset group have accessions" do
+                setup do
+                  create_and_submit  :order => {}, :asset_group => @asset_group_b.id.to_s, :study_id => @study.id, :project_name => @project.name, :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
+                end
+
+                should "have a successful submission" do
+                  assert_equal(@controller.action_flash[:notice], nil)
+                  assert_equal @submission_count+1, Submission.count
+                end
+
+              end
+              context "and 1 sample in asset group has an accession and the rest dont" do
+                setup do
+                  @asset2.primary_aliquot.sample.sample_metadata.update_attributes!(:sample_ebi_accession_number => 'ERS000001')
+                  create_and_submit  :order => {}, :asset_group => @asset_group_b.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
+                end
+                should "have a successful submission" do
+                  assert_equal(@controller.action_flash[:notice], nil)
+                  assert_equal @submission_count+1, Submission.count
+                end
+              end
+            end
+          end
+
           context "where data release is set to managed" do
+            # Note: The bulk of these tests don't actually do what they claim, as there are no assertions.
+            # Not only do the setup phases not run, but the validation errors are passed to the flash, so
+            # wouldn't actually raise an exception.
+            # These tests would actually fail if written correctly.
             setup do
               @study.study_metadata.data_release_study_type = DataReleaseStudyType.find_by_name('transcriptomics')
               @study.study_metadata.data_release_strategy      = 'managed'
@@ -224,14 +273,14 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
               end
               context "and no samples in asset group have accessions" do
                 setup do
-                  create_and_submit  :order => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
+                  create_and_submit  :order => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@sequencing_request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
                 end
                 #should_have_successful_submission
               end
               context "and 1 sample in asset group has an accession and the rest dont" do
                 setup do
                   @asset2.primary_aliquot.sample.sample_metadata.sample_ebi_accession_number = "ERS0000001"
-                  create_and_submit  :order => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
+                  create_and_submit  :order => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@sequencing_request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
                 end
                 #should_have_successful_submission
               end
@@ -240,7 +289,7 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
                   @asset_group.assets.each do |asset|
                     asset.primary_aliquot.sample.sample_metadata.sample_ebi_accession_number = "ERS0000001"
                   end
-                  create_and_submit  :order => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
+                  create_and_submit  :order => {}, :asset_group => @asset_group.id.to_s, :study_id => @study.id, :project_name => @project.name,  :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@sequencing_request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
                 end
                 #should_have_successful_submission
               end
@@ -248,7 +297,7 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
 
             context "study doesnt have accession number" do
               setup do
-                create_and_submit  :order => {}, :asset_group => @asset_group.id.to_s, :project_name => @project.name,  :study_id => @study.id, :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
+                create_and_submit  :order => {}, :asset_group => @asset_group.id.to_s, :project_name => @project.name,  :study_id => @study.id, :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@sequencing_request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
               end
               #should_have_successful_submission
             end
@@ -263,7 +312,7 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
             setup do
               @study.enforce_data_release = false
               @study.save!
-              create_and_submit  :order => {}, :asset_group => @asset_group.id.to_s,:project_name => @project.name, :study_id => @study.id, :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
+              create_and_submit  :order => {}, :asset_group => @asset_group.id.to_s,:project_name => @project.name, :study_id => @study.id, :workflow_id => @workflow.id, "request_type" => {"0"=>{"request_type_id"=>"#{@sequencing_request_type.id}"}}, :request => @request_params, :submission_template_id => @submission_template.id
             end
             #should_have_successful_submission
           end
@@ -280,7 +329,7 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
             :study_id => @study.id,
             :project_name => @project.name,
             :workflow_id => @workflow.id,
-            "request_type" => {"0"=>{"request_type_id"=>"#{@request_type.id}"}},
+            "request_type" => {"0"=>{"request_type_id"=>"#{@sequencing_request_type.id}"}},
             :request => @request_params,
             :submission_template_id => @submission_template.id
           }
@@ -308,7 +357,7 @@ class Studies::Workflows::SubmissionsControllerTest < ActionController::TestCase
               :project_name => @project.name,
               :study_id => @study.id,
               :workflow_id => @workflow.id,
-              :request_type => {"0"=>{"request_type_id"=>"#{@request_type.id}"}},
+              :request_type => {"0"=>{"request_type_id"=>"#{@sequencing_request_type.id}"}},
               :request => @item_params,
               :submission_template_id => @submission_template.id
             )
