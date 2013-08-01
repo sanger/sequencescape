@@ -48,6 +48,7 @@ class RequestType < ActiveRecord::Base
   serialize :request_parameters
 
   delegate :delegate_validator, :to => :request_class
+  delegate :accessioning_required?, :to => :request_class
 
   named_scope :applicable_for_asset, lambda { |asset|
     {

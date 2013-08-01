@@ -6,7 +6,11 @@ module Submission::AccessionBehaviour
   end
 
   def can_check_data_release_and_accession?
-    self.study.present?
+    self.study.present? && self.request_types_require_accessioning?
+  end
+
+  def request_types_require_accessioning?
+    RequestType.find(self.request_types).detect(&:accessioning_required?)
   end
 
   def check_data_release_and_accession_for_submission
