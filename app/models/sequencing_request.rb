@@ -1,4 +1,8 @@
 class SequencingRequest < Request
+
+  extend Request::AccessioningRequired
+
+
   READ_LENGTHS = [37, 54, 76, 108]
   has_metadata :as => Request  do
     #redundant with library creation , but THEY are using it .
