@@ -663,8 +663,10 @@ class BatchTest < ActiveSupport::TestCase
     context "#reset!" do
       setup do
         @batch = @pipeline.batches.create!
-        @pending_request   = @pipeline.request_types.last.create!(:state => 'pending',   :target_asset => Factory(:sample_tube))
-        @pending_request_2 = @pipeline.request_types.last.create!(:state => 'pending', :target_asset => Factory(:sample_tube))
+        @pending_request   = @pipeline.request_types.last.create!(:state => 'pending', :asset=> Factory(:sample_tube), :target_asset => Factory(:sample_tube))
+        @pending_request_2 = @pipeline.request_types.last.create!(:state => 'pending', :asset=> Factory(:sample_tube), :target_asset => Factory(:sample_tube))
+        @pending_request.asset.children << @pending_request.target_asset
+        @pending_request_2.asset.children << @pending_request_2.target_asset
         @batch.requests << @pending_request << @pending_request_2
       end
 
@@ -700,8 +702,12 @@ class BatchTest < ActiveSupport::TestCase
     context "#reset! of sequencing_pipeline" do
       setup do
         @batch = @sequencing_pipeline.batches.create!
-        @pending_request   = @sequencing_pipeline.request_types.last.create!(:state => 'pending', :target_asset => Factory(:lane))
-        @pending_request_2 = @sequencing_pipeline.request_types.last.create!(:state => 'pending', :target_asset => Factory(:lane))
+        @ancestor = Factory :sample_tube
+        @pending_request   = @sequencing_pipeline.request_types.last.create!(:state => 'pending', :asset=> Factory(:library_tube), :target_asset => Factory(:lane))
+        @pending_request_2 = @sequencing_pipeline.request_types.last.create!(:state => 'pending', :asset=> Factory(:library_tube), :target_asset => Factory(:lane))
+        @ancestor.children = [@pending_request.asset, @pending_request_2.asset]
+        @pending_request.asset.children << @pending_request.target_asset
+        @pending_request_2.asset.children << @pending_request_2.target_asset
         @batch.requests << @pending_request << @pending_request_2
       end
 
