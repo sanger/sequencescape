@@ -108,6 +108,11 @@ class Request < ActiveRecord::Base
   # but it will be only used in specific and controlled place
   belongs_to :initial_project, :class_name => "Project"
 
+  has_many :request_events, :order => 'current_from ASC'
+  def current_request_event
+    request_events.current.last
+  end
+
   def project_id=(project_id)
     raise RuntimeError, "Initial project already set" if initial_project_id
     self.initial_project_id = project_id
@@ -434,5 +439,9 @@ class Request < ActiveRecord::Base
 
   def role
     nil
+  end
+
+  def self.accessioning_required?
+    false
   end
 end

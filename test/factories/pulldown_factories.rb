@@ -143,6 +143,7 @@ Factory.define(:tube_creation) do |tube_creation|
   tube_creation.after_build do |tube_creation|
     tube_creation.parent.plate_purpose = PlatePurpose.find_by_name('Parent plate purpose') || Factory(:parent_plate_purpose)
     tube_creation.child_purpose        = Tube::Purpose.find_by_name('Child tube purpose')  || Factory(:child_tube_purpose)
+    mock_request_type                  = Factory(:request_type)
 
     # Ensure that the parent plate will pool into two children by setting up a dummy stock plate
     stock_plate = PlatePurpose.find(2).create!(:do_not_create_wells, :barcode => '999999') { |p| p.wells = [Factory(:empty_well)] }
@@ -152,7 +153,11 @@ Factory.define(:tube_creation) do |tube_creation|
 
     tube_creation.parent.wells.in_column_major_order.in_groups_of(tube_creation.parent.wells.size/2).each do |pool|
       submission  = Submission.create!(:user => Factory(:user))
-      pool.each { |well| RequestType.transfer.create!(:asset => stock_well, :target_asset => well, :submission => submission) }
+      pool.each do |well|
+        RequestType.transfer.create!(:asset => stock_well, :target_asset => well, :submission => submission);
+        mock_request_type.create!(:asset => stock_well, :target_asset => well, :submission => submission);
+        Well::Link.create!(:type=>'stock', :target_well=>well, :source_well=>stock_well)
+      end
     end
   end
 end

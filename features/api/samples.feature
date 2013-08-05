@@ -33,11 +33,6 @@ Feature: Access samples through the API
           "actions": {
             "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
           },
-          "sample_tubes": {
-            "actions": {
-              "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/sample_tubes"
-            }
-          },
 
           "uuid": "00000000-1111-2222-3333-444444444444",
 

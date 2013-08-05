@@ -24,10 +24,11 @@ ActiveRecord::Base.transaction do
 
   [
     {
-      :name              => "Illumina-B STD",
-      :key               => pipeline_name.downcase.gsub(/\W+/, '_'),
-      :target_purpose    => Tube::Purpose.find_by_name!('ILB_STD_MX'),
-      :request_class_name     => "IlluminaB::Requests::StdLibraryRequest"
+      :name               => "Illumina-B STD",
+      :key                => pipeline_name.downcase.gsub(/\W+/, '_'),
+      :target_purpose     => Tube::Purpose.find_by_name!('ILB_STD_MX'),
+      :for_multiplexing   => true,
+      :request_class_name => "IlluminaB::Requests::StdLibraryRequest"
     },
     {
       :key => "illumina_b_shared",

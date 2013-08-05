@@ -124,13 +124,9 @@ private
     end
 
     def service_specific_fields
-      owner.required_tags.each do |tag|
-        if send(tag).blank?
-          owner.errors.add_to_base("#{tag} is required")
-          return nil
-        end
-      end
-      true
+      owner.required_tags.uniq.select do |tag|
+        owner.errors.add_to_base("#{tag} is required") if send(tag).blank?
+      end.empty?
     end
 
     class << self

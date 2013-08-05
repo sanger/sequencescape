@@ -18,6 +18,7 @@ class Io::Study < Core::Io::Base
 
           study_metadata.contaminated_human_dna     => contaminated_human_dna
          study_metadata.remove_x_and_autosomes?     => remove_x_and_autosomes
+      study_metadata.separate_y_chromosome_data     => separate_y_chromosome_data
               study_metadata.contains_human_dna     => contains_human_dna
           study_metadata.commercially_available     => commercially_available
     study_metadata.data_release_study_type.name     => data_release_sort_of_study

@@ -21,7 +21,7 @@ config.action_mailer.raise_delivery_errors = false
 
 config.log_level = :debug
 
-#config.active_record.observers = [ :batch_cache_sweeper, :study_cache_sweeper, :sample_cache_sweeper ]
+config.active_record.observers = [ :request_observer ]
 
 # Use the response timer middleware
 config.middleware.insert_after(ActionController::Failsafe, "ResponseTimer", File.new(ENV['LOG_TO'], 'w+')) unless ENV['LOG_TO'].nil?
