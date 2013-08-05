@@ -6,7 +6,7 @@ plate_purposes = <<-EOS
   type: DilutionPlatePurpose
   target_type: WorkingDilutionPlate
   cherrypickable_target: true
-  cherrypickable_source: true
+  can_be_considered_a_stock_plate: true
 - name: Stock Plate
   qc_display: true
   id: 2
