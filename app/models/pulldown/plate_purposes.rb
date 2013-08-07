@@ -86,7 +86,7 @@ module Pulldown::PlatePurposes
       initial = Purpose.find_by_name!(branch.shift)
       branch.inject(initial) do |parent,new_purpose_name|
         Pulldown::PlatePurposes::PLATE_PURPOSE_TYPE[new_purpose_name].create!(:name => new_purpose_name).tap do |child_purpose|
-          parent.child_relationships.create!(:child => child_purpose, :transfer_request_type => RequestType.find_by_name('Transfer'))
+          parent.child_relationships.create!(:child => child_purpose, :transfer_request_type => request_type_between(parent,child_purpose))
         end
       end
     end
