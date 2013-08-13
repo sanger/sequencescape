@@ -9,7 +9,7 @@ class IlluminaHtp::FinalPlatePurpose < PlatePurpose
   end
 
   def attatched?(plate)
-    plate.state == ('qc_completed')
+    plate.state == ('qc_complete')
   end
 
   def fail_stock_well_requests(wells)

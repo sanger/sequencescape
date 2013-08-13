@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130805091001) do
+ActiveRecord::Schema.define(:version => 20130809101359) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -758,6 +758,18 @@ ActiveRecord::Schema.define(:version => 20130805091001) do
   end
 
   add_index "plate_volumes_shadow", ["uploaded_file_name"], :name => "index_plate_volumes_on_uploaded_file_name"
+
+  create_table "pre_capture_pool_pooled_requests", :force => true do |t|
+    t.integer "pre_capture_pool_id", :null => false
+    t.integer "request_id",          :null => false
+  end
+
+  add_index "pre_capture_pool_pooled_requests", ["request_id"], :name => "request_id_should_be_unique", :unique => true
+
+  create_table "pre_capture_pools", :force => true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "product_lines", :force => true do |t|
     t.string "name", :null => false
