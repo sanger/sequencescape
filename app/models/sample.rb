@@ -233,7 +233,7 @@ class Sample < ActiveRecord::Base
     attribute(:replicate)
     attribute(:gc_content, :in => Sample::GC_CONTENTS)
     attribute(:gender, :in => Sample::GENDERS)
-    attribute(:cancer_donor_id)
+    attribute(:donor_id)
     attribute(:dna_source, :in => Sample::DNA_SOURCES)
     attribute(:sample_public_name)
     attribute(:sample_common_name)
@@ -316,7 +316,7 @@ class Sample < ActiveRecord::Base
 
     include_tag(:gender, :services=>:EGA)
     include_tag(:phenotype, :services=>:EGA)
-    include_tag(:cancer_donor_id, :as=>:donor_id, :services=>:EGA)
+    include_tag(:donor_id, :services=>:EGA)
 
     require_tag(:sample_taxon_id)
     require_tag(:sample_common_name)
@@ -344,7 +344,7 @@ class Sample < ActiveRecord::Base
     end
 
     def donor_id_provided_if_needed
-      phenotype.try(:downcase) == 'cancer' ? cancer_donor_id : true
+      phenotype.try(:downcase) == 'cancer' ? donor_id : true
     end
   end
 
