@@ -34,12 +34,20 @@ class ColumnMap
        'SAMPLE VISIBILITY',
        'SAMPLE TYPE',
        'SAMPLE ACCESSION NUMBER (optional)',
-       'DONOR ID (required for cancer samples)',
+       'DONOR ID (required for EGA)',
        'PHENOTYPE (required for EGA)'
      ]
 
+  @@renamed = {
+    'DONOR ID (required for cancer samples)'=>'DONOR ID (required for EGA)'
+  }
+
     def self.[](x)
-      @@fields.index(x)
+      @@fields.index(x)||@@fields.index(@@renamed[x])
+    end
+
+    def self.renamed(h)
+      @@renamed[h]||h
     end
 
     def self.fields
