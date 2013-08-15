@@ -3,11 +3,6 @@
     <%= tabulated_error_messages_for "request" %>
   </tr>
   <tr>
-    <tr>
-      <td width="40%" class="item"><label for='request_state'>State: </label></td>
-      <td width="60%"><%= form.select :state, Request.aasm_states_for_select %></td>
-      <td></td>
-    </tr>
     <% if @request.pending? %>
       <tr>
         <td width="40%" class="item"><%= label_tag(:request_request_type_id, 'Request Type: ') %>: </td>

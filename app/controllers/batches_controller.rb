@@ -2,7 +2,7 @@ class BatchesController < ApplicationController
   include XmlCacheHelper::ControllerHelper
 
   before_filter :login_required, :except => [:released, :evaluations_counter, :qc_criteria]
-  before_filter :find_batch_by_id, :only => [:show,:edit, :update, :destroy, :qc_information, :qc_batch, :save, :fail, :fail_items, :assign_batch, :control, :add_control, :remove_request, :print_labels, :print_plate_labels, :print_multiplex_labels, :print, :verify, :verify_tube_layout, :reset_batch, :previous_qc_state, :filtered, :swap, :download_spreadsheet, :gwl_file, :pulldown_batch_report, :pacbio_sample_sheet, :sample_prep_worksheet]
+  before_filter :find_batch_by_id, :only => [:show,:edit, :update, :destroy, :qc_information, :qc_batch, :save, :fail, :fail_items, :fail_batch, :assign_batch, :control, :add_control, :print_labels, :print_plate_labels, :print_multiplex_labels, :print, :verify, :verify_tube_layout, :reset_batch, :previous_qc_state, :filtered, :swap, :download_spreadsheet, :gwl_file, :pulldown_batch_report, :pacbio_sample_sheet, :sample_prep_worksheet]
   before_filter :find_batch_by_batch_id, :only => [:sort, :print_multiplex_barcodes, :print_pulldown_multiplex_tube_labels, :print_plate_barcodes, :print_barcodes]
 
   def index
@@ -117,15 +117,6 @@ class BatchesController < ApplicationController
         redirect_to(pipeline_path(@pipeline))
       }
       format.xml  { render :xml => @batch.errors.to_xml }
-    end
-  end
-
-  def destroy
-    @batch.destroy
-    flash[:notice] = "Batch deleted"
-    respond_to do |format|
-      format.html { redirect_to batches_url }
-      format.xml  { head :ok }
     end
   end
 
@@ -274,33 +265,17 @@ class BatchesController < ApplicationController
   end
 
   def fail_items
-    unless params[:failure][:reason].empty?
-      reason = params[:failure][:reason]
-      comment = params[:failure][:comment]
-      requests = params[:requested] || {}
-      requests_for_removal = params[:requested_remove] || {}
-      # Check to see if the user is trying to remove AND fail the same request.
-      diff = requests_for_removal.keys & requests.keys
+    ActiveRecord::Base.transaction do
+      unless params[:failure][:reason].empty?
+        reason = params[:failure][:reason]
+        comment = params[:failure][:comment]
+        requests = params[:requested_fail] || {}
+        requests_for_removal = params[:requested_remove] || {}
+        # Check to see if the user is trying to remove AND fail the same request.
+        diff = requests_for_removal.keys & requests.keys
 
-      unless diff.empty?
-        flash[:error] = "Fail and remove was selected for the following - #{diff.to_sentence} this is not supported."
-      else
-        if params[:failure][:entire_batch] == "1"
-          if params[:failure][:only_batch] == "1"
-            flash[:error] = "Please fail EITHER only the batch OR the batch and all its contents."
-          else
-            if requests_for_removal.empty?
-              @batch.fail(reason, comment)
-              flash[:notice] = "Failed batch #{@batch.id} and all of its contents."
-            else
-              flash[:error] = "You cannot fail the batch, everything in it and remove requests from the batch at the same time."
-            end
-          end
-        elsif params[:failure][:only_batch] == "1"
-          @batch.fail(reason, comment, ignore_requests = true)
-          @batch.fail_batch_items(requests, reason, comment) unless requests.empty?
-          @batch.remove_request_ids(requests_for_removal.keys) unless requests_for_removal.empty?
-          flash[:notice] = "Failed #{@batch.id} and removed and/or failed any requests you selected"
+        unless diff.empty?
+          flash[:error] = "Fail and remove were both selected for the following - #{diff.to_sentence} this is not supported."
         else
           if requests.empty? && requests_for_removal.empty?
             flash[:error] = "Please select an item to fail or remove"
@@ -311,16 +286,16 @@ class BatchesController < ApplicationController
             end
 
             unless requests_for_removal.empty?
-              @batch.remove_request_ids(requests_for_removal.keys)
+              @batch.remove_request_ids(requests_for_removal.keys, reason, comment)
               flash[:notice] = "#{requests_for_removal.keys.to_sentence} removed."
             end
           end
         end
+        redirect_to :action => "fail", :id => @batch.id
+      else
+        flash[:error] = "Please specify a failure reason for this batch"
+        redirect_to :action => :fail, :id => @batch.id
       end
-      redirect_to :action => "fail", :id => @batch.id
-    else
-      flash[:error] = "Please specify a failure reason for this batch"
-      redirect_to :action => :fail, :id => @batch.id
     end
   end
 
@@ -380,13 +355,6 @@ class BatchesController < ApplicationController
     redirect_to :action => "show", :id => batch.id
   end
 
-  def remove_request
-    @request = Request.find(params[:request_id])
-    @batch.detach_request(@request, @current_user)
-    flash[:notice] = "Request deleted"
-    redirect_to :action => "edit", :id => @batch.id
-  end
-
   def evaluations_counter
     @ev = BatchStatus.find(params[:id])
     render :partial => 'evaluations_counter'
@@ -398,7 +366,7 @@ class BatchesController < ApplicationController
   def print_stock_labels
     @batch = Batch.find(params[:id])
   end
-  
+
   def print_plate_labels
     @pipeline = @batch.pipeline
     @output_barcodes = []
@@ -427,7 +395,7 @@ class BatchesController < ApplicationController
       if ! request.target_asset.nil? && ! request.target_asset.children.empty?
         # We are trying to find the MX library tube or the stock MX library
         # tube. I've added a filter so it doesn't pick up Lanes.
-        children = request.target_asset.children.last.children.select { |a| a.is_a?(Tube) } 
+        children = request.target_asset.children.last.children.select { |a| a.is_a?(Tube) }
         if children.empty?
           @asset = request.target_asset.children.last
         else
@@ -441,23 +409,23 @@ class BatchesController < ApplicationController
     end
     # @assets = @batch.multiplexed_items_with_unique_library_ids
   end
-  
+
   def print_stock_multiplex_labels
     @batch = Batch.find(params[:id])
     request = @batch.requests.first
     pooled_library = request.target_asset.children.first
     stock_multiplexed_tube = nil
-    
+
     if pooled_library.is_a_stock_asset?
       stock_multiplexed_tube = pooled_library
     elsif pooled_library.has_stock_asset?
       stock_multiplexed_tube = pooled_library.stock_asset
     end
-    
+
     if stock_multiplexed_tube.nil?
       flash[:notice] = "There is no stock multiplexed library available."
       redirect_to :controller => 'batches', :action => 'show', :id => @batch.id
-    else  
+    else
       @asset = stock_multiplexed_tube
     end
   end
@@ -539,7 +507,7 @@ class BatchesController < ApplicationController
               identifier = stock.barcode
               label = stock.name
             end
-          else  
+          else
             if @batch.multiplexed?
               unless request.tag_number.nil?
                 label = "(#{request.tag_number}) #{request.target_asset.id}"
@@ -676,8 +644,8 @@ class BatchesController < ApplicationController
   end
 
   def gwl_file
-    @plate_barcode = @batch.plate_barcode(params[:barcode])  
-    tecan_gwl_file_as_string = @batch.tecan_gwl_file_as_text(@plate_barcode, 
+    @plate_barcode = @batch.plate_barcode(params[:barcode])
+    tecan_gwl_file_as_string = @batch.tecan_gwl_file_as_text(@plate_barcode,
                                                              @batch.total_volume_to_cherrypick,
                                                              params[:plate_type])
     send_data tecan_gwl_file_as_string, :type => "text/plain",
@@ -707,7 +675,7 @@ class BatchesController < ApplicationController
       else
         unless @batch.requests.first.target_asset.children.empty?
           multiplexed_library = @batch.requests.first.target_asset.children.first
-  
+
           if  ! multiplexed_library.has_stock_asset? && ! multiplexed_library.is_a_stock_asset?
             @batch_assets = [multiplexed_library]
           else
@@ -725,47 +693,47 @@ class BatchesController < ApplicationController
       end
     end
   end
-  
+
   def edit_volume_and_concentration
     @batch = Batch.find(params[:id])
   end
-  
+
   def update_volume_and_concentration
     @batch = Batch.find(params[:batch_id])
-    
+
     params[:assets].each do |id, values|
       asset = Asset.find(id)
       asset.volume = values[:volume]
       asset.concentration = values[:concentration]
       asset.save
     end
-    
+
     redirect_to batch_path(@batch)
   end
-  
+
   def pulldown_batch_report
     csv_string = @batch.pulldown_batch_report
     send_data csv_string, :type => "text/plain",
      :filename=>"batch_#{@batch.id}_report.csv",
      :disposition => 'attachment'
-    
+
   end
-  
+
   def pacbio_sample_sheet
     csv_string = PacBio::SampleSheet.new.create_csv_from_batch(@batch)
     send_data csv_string, :type => "text/plain",
      :filename=>"batch_#{@batch.id}_sample_sheet.csv",
      :disposition => 'attachment'
   end
-  
+
   def sample_prep_worksheet
     csv_string = PacBio::Worksheet.new.create_csv_from_batch(@batch)
     send_data csv_string, :type => "text/plain",
      :filename=>"batch_#{@batch.id}_worksheet.csv",
      :disposition => 'attachment'
   end
-  
-  
+
+
   def find_batch_by_barcode
     batch_id = LabEvent.find_by_barcode(params[:id])
     if batch_id == 0
@@ -777,7 +745,7 @@ class BatchesController < ApplicationController
       render :action => "show"
     end
   end
-  
+
   private
   def pipeline_error_on_batch_creation(message)
     respond_to do |format|

@@ -49,18 +49,19 @@ class Batch < ActiveRecord::Base
 
   # Fail was removed from State Machine (as a state) to allow the addition of qc_state column and features
   def fail(reason, comment, ignore_requests=false)
+    # We've deprecated the ability to fail a batch but not its requests.
+    # Keep this check here until we're sure we haven't missed anything.
+    raise StandardError, "Can not fail batch without failing requests" if ignore_requests
     # create failures
     self.failures.create(:reason => reason, :comment => comment, :notify_remote => false)
-    unless ignore_requests
 
-      self.requests.each do |request|
-        request.failures.create(:reason => reason, :comment => comment, :notify_remote => true)
-        unless request.asset && request.asset.resource?
-          EventSender.send_fail_event(request.id, reason, comment, self.id)
-        end
+    self.requests.each do |request|
+      request.failures.create(:reason => reason, :comment => comment, :notify_remote => true)
+      unless request.asset && request.asset.resource?
+        EventSender.send_fail_event(request.id, reason, comment, self.id)
       end
-
     end
+
     self.production_state = "fail"
     self.save!
   end
@@ -84,10 +85,11 @@ class Batch < ActiveRecord::Base
       end
     end
 
-    # There is a slight difference between fail and fail_batch_items.
-    # fail_batch_items checks if all the values on request_ids are "on", which is safe.
-    # While fail method fails the batch and the items without checking
-    if checkpoint == true && requests.size == self.requests.size
+    update_batch_state(reason, comment) if checkpoint
+  end
+
+  def update_batch_state(reason, comment)
+    if self.requests.all?(&:terminated?)
       self.failures.create(:reason => reason, :comment => comment, :notify_remote => false)
       self.production_state = "fail"
       self.save!
@@ -306,11 +308,15 @@ class Batch < ActiveRecord::Base
   end
 
   # Remove the request from the batch and remove asset information
-  def remove_request_ids(request_ids)
-    request_ids.each do |request_id|
-      request = Request.find(request_id)
-      next if request.nil?
-      self.detach_request(request)
+  def remove_request_ids(request_ids, reason=nil, comment=nil)
+    ActiveRecord::Base.transaction do
+      request_ids.each do |request_id|
+        request = Request.find(request_id)
+        next if request.nil?
+        request.failures.create(:reason => reason, :comment => comment, :notify_remote => true)
+        self.detach_request(request)
+      end
+      update_batch_state(reason, comment)
     end
   end
   alias_method(:recycle_request_ids, :remove_request_ids)
@@ -324,15 +330,24 @@ class Batch < ActiveRecord::Base
     end
   end
 
+  def return_request_to_inbox(request, current_user=nil)
+    ActiveRecord::Base.transaction do
+      request.add_comment("Used to belong to Batch #{self.id} returned to inbox unstarted at #{Time.now()}", current_user) unless current_user.nil?
+      request.return_pending_to_inbox!
+    end
+  end
+
   def remove_link(request)
     request.batches-=[self]
   end
 
   def reset!(current_user)
     ActiveRecord::Base.transaction do
+      self.discard!
+
       self.requests.each do |request|
         self.remove_link(request) # Remove link in all types of pipelines
-        self.detach_request(request, current_user)
+        self.return_request_to_inbox(request, current_user)
       end
 
       if self.requests.last.submission_id.present?
@@ -343,8 +358,6 @@ class Batch < ActiveRecord::Base
           request.save!
         end
       end
-
-      self.destroy
     end
   end
 

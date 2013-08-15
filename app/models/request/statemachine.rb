@@ -207,6 +207,10 @@ module Request::Statemachine
     self.passed? || self.failed?
   end
 
+  def terminated?
+    self.failed? || self.cancelled?
+  end
+
   def closed?
     ["passed", "failed", "cancelled", "aborted"].include?(self.state)
   end

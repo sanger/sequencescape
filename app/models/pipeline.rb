@@ -91,7 +91,7 @@ class Pipeline < ActiveRecord::Base
   end
 
   def request_types_including_controls
-    Array(control_request_type) + request_types
+    [control_request_type].compact + request_types
   end
 
   def custom_inbox_actions
@@ -308,5 +308,9 @@ class Pipeline < ActiveRecord::Base
 
   def can_create_stock_assets?
     false
+  end
+
+  def request_actions
+    [:fail]
   end
 end
