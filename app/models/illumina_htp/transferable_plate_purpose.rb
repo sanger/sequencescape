@@ -8,7 +8,10 @@ class IlluminaHtp::TransferablePlatePurpose < IlluminaHtp::FinalPlatePurpose
 
   def connect_requests(plate, state, contents = nil)
     return unless state == 'qc_complete'
-    plate.wells.located_at(contents).each do |target_well|
+    wells = plate.wells
+    wells = wells.located_at(contents) unless contents.blank?
+
+    wells.each do |target_well|
       source_wells = target_well.stock_wells
       source_wells.each do |source_well|
         upstream = source_well.requests.detect {|r| r.is_a?(IlluminaHtp::Requests::SharedLibraryPrep) }

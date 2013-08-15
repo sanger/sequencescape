@@ -18,6 +18,7 @@ Given /^I have an order created with the following details based on the template
       when 'asset_group_name' then v
       when 'request_options' then Hash[v.split(',').map { |p| p.split(':').map(&:strip) }]
       when 'assets' then Uuid.lookup_many_uuids(v.split(',').map(&:strip)).map(&:resource)
+      when 'pre_cap_group' then v
       else Uuid.include_resource.lookup_single_uuid(v).resource
       end
     [ k.to_sym, v ]
