@@ -267,7 +267,7 @@ class Order < ActiveRecord::Base
      PacBioSequencingRequest,
      SequencingRequest,
      *Class.subclasses_of(SequencingRequest)
-    ].include?(RequestType.find(request_types).last.request_class)
+    ].include?(RequestType.find(request_types.last).request_class)
   end
 end
 

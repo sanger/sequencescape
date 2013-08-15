@@ -1407,8 +1407,8 @@ ActiveRecord::Schema.define(:version => 20130814092800) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "substitutions"
-    t.string   "walking_algorithm",   :default => "TagLayout::WalkWellsByPools"
+    t.string   "substitutions",       :limit => 1525
+    t.string   "walking_algorithm",                   :default => "TagLayout::WalkWellsByPools"
   end
 
   create_table "tags", :force => true do |t|

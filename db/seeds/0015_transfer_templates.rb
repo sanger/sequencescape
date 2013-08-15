@@ -54,4 +54,10 @@ ActiveRecord::Base.transaction do
     :name => 'Transfer between specific tubes',
     :transfer_class_name => 'Transfer::BetweenSpecificTubes'
   )
+
+  TransferTemplate.create!(
+    :name => 'Whole plate to tube',
+    :transfer_class_name => 'Transfer::FromPlateToTube',
+    :transfers => locations_for(('A'..'H'), (1..12))
+  )
 end
