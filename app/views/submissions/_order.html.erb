@@ -27,7 +27,7 @@
       </th>
       <td>
         <%= form.collection_select :plate_purpose_id,
-          PlatePurpose.considered_stock_plate.all, :id, :name,
+          PlatePurpose.for_submissions.all, :id, :name,
           { :selected => PlatePurpose.stock_plate_purpose.id },
           :class => 'submission_plate_purpose_id'
         %>
@@ -46,7 +46,7 @@
     <a class="asset-input-toggle" href="#" data-selector=".asset_group_selector">Switch to Study asset selector...</a><br/>
     <a class="asset-input-toggle" href="#" data-selector=".plate_wells_selector">Switch to plate wells selector...</a>
   </li>
-  
+
   <li class="assets plate_wells_selector" style="display:none;">
     <h3>Add Samples from Plate and Wells</h3>
     <table>
