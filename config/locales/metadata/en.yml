@@ -179,7 +179,7 @@ en:
         sample_storage_conditions:
           label: Sample storage conditions
 
-        cancer_donor_id:
+        donor_id:
           label:  Donor Id
           edit_info: "[ EGA (Cancer samples) ]"
 
