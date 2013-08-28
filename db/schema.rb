@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130814092800) do
+ActiveRecord::Schema.define(:version => 20130828082344) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -1108,7 +1108,7 @@ ActiveRecord::Schema.define(:version => 20130814092800) do
     t.string   "treatment"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "cancer_donor_id"
+    t.string   "donor_id"
   end
 
   add_index "sample_metadata", ["sample_id"], :name => "index_sample_metadata_on_sample_id"
