@@ -89,12 +89,10 @@ Then /^the samples table should look like:$/ do |table|
       assert_equal(expected_data[:sample_taxon_id].to_i, sample.sample_metadata.sample_taxon_id, "Sample taxon ID invalid for #{sanger_sample_id}")
     end
 
-    unless expected_data[:common_name].blank?
-      assert_equal(expected_data[:common_name], sample.sample_metadata.sample_common_name, "Sample common name invalid for #{sanger_sample_id}")
-    end
-
-    unless expected_data[:donor_id].blank?
-      assert_equal(expected_data[:donor_id], sample.sample_metadata.donor_id, "Sample donor_id invalid for #{sanger_sample_id}")
+    expected_data.each do |k,v|
+      next if v.blank?
+      next if [:sanger_sample_id,:empty_supplier_sample_name,:supplier_name,:sample_taxon_id].include?(:"#{k}")
+      assert_equal(v,sample.sample_metadata.send(k), "Sample #{k} invalid for #{sanger_sample_id}")
     end
 
   end

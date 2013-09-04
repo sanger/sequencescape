@@ -160,6 +160,14 @@ module SampleManifest::InputBehaviour
   end
   private :strip_non_word_characters
 
+  CORE_FIELDS = [
+    'SANGER PLATE ID',
+    'WELL',
+    'SANGER SAMPLE ID',
+    'IS SAMPLE A CONTROL?',
+    'IS RE-SUBMITTED SAMPLE?'
+  ]
+
   METADATA_ATTRIBUTES_TO_CSV_COLUMNS = {
     :cohort                         => 'COHORT',
     :gender                         => 'GENDER',
@@ -190,7 +198,23 @@ module SampleManifest::InputBehaviour
     :sample_common_name             => 'COMMON NAME',
     :sample_strain_att              => 'STRAIN',
     :donor_id                       => 'DONOR ID (required for EGA)',
-    :phenotype                      => 'PHENOTYPE (required for EGA)'
+    :phenotype                      => 'PHENOTYPE (required for EGA)',
+    :genotype                       => 'GENOTYPE',
+    :phenotype                      => 'PHENOTYPE',
+    :age                            => 'AGE (with units)',
+    :developmental_stage            => 'Developmental stage',
+    :cell_type                      => 'Cell Type',
+    :disease_state                  => 'Disease State',
+    :compound                       => 'Compound',
+    :dose                           => 'Dose',
+    :immunoprecipitate              => 'Immunoprecipitate',
+    :growth_condition               => 'Growth condition',
+    :rnai                           => 'RNAi',
+    :organism_part                  => 'Organism part',
+    :time_point                     => 'Time Point',
+    :treatment                      => 'Treatment',
+    :subject                        => 'Subject',
+    :disease                        => 'Disease'
   }
 
   InvalidManifest = Class.new(StandardError)
@@ -201,7 +225,7 @@ module SampleManifest::InputBehaviour
 
     headers = csv[spreadsheet_header_row].map { |header| h = header.gsub(/\s+/, ' '); ColumnMap.renamed(h) }
     headers.each_with_index.map do |name, index|
-      "Header '#{name}' should be '#{ColumnMap.fields[index]}'" if not name.blank? and strip_non_word_characters(name) != strip_non_word_characters(ColumnMap.fields[index])
+      "Header '#{name}' not recognised!" unless name.blank? || valid_header?(name)
     end.compact.tap do |headers_with_errors|
       raise InvalidManifest, headers_with_errors unless headers_with_errors.empty?
     end
@@ -214,6 +238,11 @@ module SampleManifest::InputBehaviour
     raise InvalidManifest, "Invalid CSV file, did you upload an EXCEL file by accident? - #{exception.message}"
   end
   private :each_csv_row
+
+  def valid_header?(name)
+    METADATA_ATTRIBUTES_TO_CSV_COLUMNS.has_value?(name) || CORE_FIELDS.include?(name)
+  end
+  private :valid_header?
 
   # Always allow 'empty' samples to be updated, but non-empty samples need to have the override checkbox set for an update to occur
   def process(user_updating_manifest, override_sample_information = false)
