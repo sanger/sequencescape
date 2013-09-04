@@ -1,6 +1,10 @@
 class IlluminaHtp::TransferablePlatePurpose < IlluminaHtp::FinalPlatePurpose
   include PlatePurpose::Library
 
+  def source_plate(plate)
+    plate.parent.stock_plate
+  end
+
   def transition_to(plate, state, contents = nil)
     super
     connect_requests(plate, state, contents)
