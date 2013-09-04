@@ -1,12 +1,3 @@
-class ColumnMap
-  @@renamed = {
-    'DONOR ID (required for cancer samples)'=>'DONOR ID (required for EGA)'
-  }
-    def self.renamed(h)
-      @@renamed[h]||h
-    end
-end
-
 class SampleManifest < ActiveRecord::Base
   include Uuid::Uuidable
   include ModelExtensions::SampleManifest
