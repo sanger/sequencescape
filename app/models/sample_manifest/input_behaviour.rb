@@ -189,7 +189,7 @@ module SampleManifest::InputBehaviour
     :sample_public_name             => 'PUBLIC NAME',
     :sample_common_name             => 'COMMON NAME',
     :sample_strain_att              => 'STRAIN',
-    :cancer_donor_id                => 'DONOR ID (required for cancer samples)',
+    :donor_id                       => 'DONOR ID (required for EGA)',
     :phenotype                      => 'PHENOTYPE (required for EGA)'
   }
 
@@ -199,7 +199,7 @@ module SampleManifest::InputBehaviour
     csv = FasterCSV.parse(uploaded.current_data)
     clean_up_sheet(csv)
 
-    headers = csv[spreadsheet_header_row].map { |header| header.gsub(/\s+/, ' ') }
+    headers = csv[spreadsheet_header_row].map { |header| h = header.gsub(/\s+/, ' '); ColumnMap.renamed(h) }
     headers.each_with_index.map do |name, index|
       "Header '#{name}' should be '#{ColumnMap.fields[index]}'" if not name.blank? and strip_non_word_characters(name) != strip_non_word_characters(ColumnMap.fields[index])
     end.compact.tap do |headers_with_errors|

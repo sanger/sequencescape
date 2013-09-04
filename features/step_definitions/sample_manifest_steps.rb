@@ -94,7 +94,7 @@ Then /^the samples table should look like:$/ do |table|
     end
 
     unless expected_data[:donor_id].blank?
-      assert_equal(expected_data[:donor_id], sample.sample_metadata.cancer_donor_id, "Sample donor_id invalid for #{sanger_sample_id}")
+      assert_equal(expected_data[:donor_id], sample.sample_metadata.donor_id, "Sample donor_id invalid for #{sanger_sample_id}")
     end
 
   end
