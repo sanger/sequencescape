@@ -12,10 +12,24 @@
           <td class="help_field"></td>
         </tr>
       <% end %>
+      <% if @asset.studies.uniq.count > 1 -%>
+        <tr>
+          <td class="item" width="40%"><%= label_tag('cross_study_request', 'Cross Study Request') %>:</td>
+          <td><%= check_box_tag('cross_study_request', 'cross_study_request', true) %></td>
+          <td class="help_field"></td>
+        </tr>
+      <% end %>
       <% instance_variable_or_id_param(:study) do |field_name, value| %>
         <tr>
           <td class="item" width="40%"><%= label_tag(field_name, 'Study') %>:</td>
           <td><%= select_field_sorted_by_name(field_name, current_user_studies_from(@asset), value) %></td>
+          <td class="help_field"></td>
+        </tr>
+      <% end %>
+      <% if @asset.projects.uniq.count > 1 -%>
+        <tr>
+          <td class="item" width="40%"><%= label_tag('cross_project_request', 'Cross Project Request') %>:</td>
+          <td><%= check_box_tag('cross_project_request', 'cross_project_request', true) %></td>
           <td class="help_field"></td>
         </tr>
       <% end %>
@@ -28,9 +42,9 @@
       <% end %>
     </table>
   </div>
-  
+
   <h3>Number of copies</h3>
-  
+
   <div id="property_group_ENAAN">
     <table width="100%" cellspacing="0" cellpadding="0">
       <tr>
@@ -40,9 +54,9 @@
       </tr>
     </table>
   </div>
-  
+
   <div id="study">
-    
+
     <h3>Properties</h3>
     <table width="100%" cellspacing="0" cellpadding="0">
       <% if @request.present? %>
@@ -64,7 +78,7 @@
         <% end %>
       <% end %>
     </table>
-    
+
     <table width="100%" cellspacing="0" cellpadding="0">
       <tr>
         <td class="item" width="40%"><%= label_tag(:comments, 'Comments') %>:</td>
@@ -72,7 +86,7 @@
         <td class="help_field"></td>
       </tr>
     </table>
-    
+
     <table width="100%" cellspacing="0" cellpadding="0">
       <tr>
         <td class="item" width="40%"><%= f.submit "Create" %></td>
@@ -108,6 +122,20 @@
 
       request_type_element.change(handler);
       handler();
+
+      checkStudyHandler = function() {
+        var cross_study = $('#cross_study_request').attr('checked')=='checked';
+        $('#study_id').attr('disabled',cross_study);
+      }
+      checkProjectHandler = function() {
+        var cross_project = $('#cross_project_request').attr('checked')=='checked';
+        $('#project_id').attr('disabled',cross_project);
+      }
+      $('#study_id').change(checkStudyHandler);
+      $('#project_id').change(checkProjectHandler);
+      checkStudyHandler();
+      checkProjectHandler();
     });
+
   })(jQuery);
 </script>

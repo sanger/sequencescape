@@ -71,6 +71,7 @@ class Aliquot < ActiveRecord::Base
     end
 
     has_many :studies, :through => :aliquots
+    has_many :projects, :through => :aliquots
   end
 
   # Something that is aliquotable can be part of an aliquot.  So sample and tag are both examples.
