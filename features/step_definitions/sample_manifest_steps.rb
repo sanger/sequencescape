@@ -44,7 +44,7 @@ def sequence_sanger_sample_ids_for(plate)
 end
 
 Given /^I reset all of the sanger sample ids to a known number sequence$/ do
-  raise StandardError, "Only works for plate manifests!" if Plate.count == 0
+  # raise StandardError, "Only works for plate manifests!" if Plate.count == 0
 
   index = 0
   Plate.all(:order => 'id ASC').each do |plate|
@@ -52,6 +52,9 @@ Given /^I reset all of the sanger sample ids to a known number sequence$/ do
       "sample_#{index+well_index}"
     end
     index += plate.size
+  end
+  SampleTube.all(:order => 'id ASC').each_with_index do |tube, idx|
+    tube.aliquots.first.sample.update_attributes!(:sanger_sample_id=>"tube_sample_#{idx+1}")
   end
 end
 
@@ -189,4 +192,8 @@ Given /^the sample manifest with ID (\d+) has been processed$/ do |id|
   manifest = SampleManifest.find(id)
   manifest.generate
   step(%Q{3 pending delayed jobs are processed})
+end
+
+Given /^sample tubes are expected by the last manifest$/ do
+  SampleManifest.last.update_attributes(:barcodes=>SampleTube.all.map(&:sanger_human_barcode))
 end
