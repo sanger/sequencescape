@@ -8,13 +8,17 @@ module SampleManifest::Headers
     RENAMED[h]||h
   end
 
+  # If a field name changes (Such as when it changes from optional to required)
+  # remap it here to preserve compatibility with older manifests
   RENAMED = {
-    'DONOR ID (required for cancer samples)'=>'DONOR ID (required for EGA)'
+    'DONOR ID (required for cancer samples)'=>'DONOR ID (required for EGA)',
+    'PHENOTYPE' => 'PHENOTYPE (required for EGA)'
   }
 
 
   CORE_FIELDS = [
     'SANGER PLATE ID',
+    'SANGER TUBE ID',
     'WELL',
     'SANGER SAMPLE ID',
     'IS SAMPLE A CONTROL?',
@@ -53,7 +57,6 @@ module SampleManifest::Headers
     :donor_id                       => 'DONOR ID (required for EGA)',
     :phenotype                      => 'PHENOTYPE (required for EGA)',
     :genotype                       => 'GENOTYPE',
-    :phenotype                      => 'PHENOTYPE',
     :age                            => 'AGE (with units)',
     :developmental_stage            => 'Developmental stage',
     :cell_type                      => 'Cell Type',
