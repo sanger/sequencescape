@@ -49,3 +49,11 @@ Given /^the barcode of the last sample tube is "([^\"]+)"$/ do |barcode|
   tube = SampleTube.last or raise StandardError, "There appear to be no sample tubes"
   tube.update_attributes!(:barcode => barcode)
 end
+
+Given /^sample tubes are barcoded sequentially from (\d+)$/ do |initial|
+  counter = initial.to_i
+  SampleTube.find(:all,:order=>'id ASC').each do |asset|
+    asset.update_attributes!(:barcode=>counter)
+    counter += 1
+  end
+end

@@ -64,10 +64,9 @@ Feature: Sample manifest
     When I follow "Create manifest for 1D tubes"
     Then I should see "Barcode printer"
     When I select "Test study" from "Study"
-    And I select "default layout" from "Template"
+    And I select "default tube layout" from "Template"
     And I select "Test supplier name" from "Supplier"
     And I select "xyz" from "Barcode printer"
-    And I select "default layout" from "Template"
     And I fill in the field labeled "Count" with "10"
     When I press "Create manifest and print labels"
     Then I should see "Manifest_"
@@ -337,7 +336,7 @@ Feature: Sample manifest
       | Contains | Study      | Supplier           | Manifest       | Upload             | Errors | State     |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest |        | Completed |
     Then the samples table should look like:
-      | sanger_sample_id | supplier_name | empty_supplier_sample_name | sample_taxon_id | common_name  |
+      | sanger_sample_id | supplier_name | empty_supplier_sample_name | sample_taxon_id | sample_common_name  |
       | sample_1         | aaaa          | false                      | 9606            | Human  |
       | sample_2         | bbbb          | false                      | 9607            | Human  |
       | sample_3         | zzzzz         | false                      | 9608            | Human  |
