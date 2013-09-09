@@ -4,8 +4,9 @@
     <tr>
       <td width='35%' class='item'>Name: </td>
       <td width='65%'>
-        Asset:   <%= request.asset.name -%>
-        Samples: <%= request.sample_name -%>
+        <strong>Asset:</strong>   <%= request.asset.name -%></br>
+        <strong>Asset:</strong>   <%= request.asset.name -%></br>
+        <strong>Samples:</strong> <%= request.sample_name -%>
       </td>
     </tr>
       <%= render :partial => 'descriptor', :collection => @task.descriptors, :locals => {:request => request } %>

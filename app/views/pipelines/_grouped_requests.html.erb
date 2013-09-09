@@ -104,7 +104,7 @@
             <td class='request' width='5%'><%= h(request.request_metadata[information_type.key]) %></td>
           <% end %>
           <td class='request' width='5%'><%= request.asset.concentration || "&nbsp;" -%></td>
-          <td class='request' width='5%'><%= request.submission.name %></td>
+          <td class='request' width='5%'><%= request.submission.study_names %></td>
         </tr>
         <% end -%>
     <% end %>
