@@ -216,9 +216,13 @@ class Submission < ActiveRecord::Base
   end
 
   def name
-    name = attributes['name'] ||
-           orders.map {|o| o.study.try(:name)||o.assets.map{|a| a.aliquots.map {|al| al.study.try(:name) }} }.flatten.compact.sort.uniq.join("|")
+    name = attributes['name'] || study_names
     name.present? ? name : "##{id}"
+  end
+
+  def study_names
+    # TODO: Should probably be re-factored, although we'll only fall back to the intensive code in the case of cross study re-requests
+    orders.map {|o| o.study.try(:name)||o.assets.map{|a| a.aliquots.map {|al| al.study.try(:name) }} }.flatten.compact.sort.uniq.join("|")
   end
 
  def cross_project?

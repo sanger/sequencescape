@@ -1,10 +1,12 @@
 <table width="100%" cellspacing="0" cellpadding="0">
   <% if @task.per_item %>
-    <% @batch.requests.each do |request| %>
+    <% @batch.requests.sort_by{|r| r.batch_request.position}.each do |request| %>
     <tr>
       <td width='35%' class='item'>Name: </td>
       <td width='65%'>
-        <%= request.sample_name -%>
+        <strong>Asset:</strong>   <%= request.asset.name -%></br>
+        <strong>Asset:</strong>   <%= request.asset.name -%></br>
+        <strong>Samples:</strong> <%= request.sample_name -%>
       </td>
     </tr>
       <%= render :partial => 'descriptor', :collection => @task.descriptors, :locals => {:request => request } %>
