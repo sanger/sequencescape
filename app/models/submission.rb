@@ -76,7 +76,7 @@ class Submission < ActiveRecord::Base
       order = Order.prepare!(options)
       order.create_submission({:user_id => order.user_id}.merge(submission_options)).built!
       order.save! #doesn't save submission id otherwise
-      study_name = order.try(:study).name
+      study_name = order.study.try(:name)
       order.submission.update_attributes!(:name=>study_name) if study_name
       order.submission.reload
     end
@@ -218,8 +218,13 @@ class Submission < ActiveRecord::Base
   end
 
   def name
-    name = attributes[:name] || orders.map {|o| o.try(:study).try(:name) }.compact.sort.uniq.join("|")
+    name = attributes['name'] || study_names
     name.present? ? name : "##{id}"
+  end
+
+  def study_names
+    # TODO: Should probably be re-factored, although we'll only fall back to the intensive code in the case of cross study re-requests
+    orders.map {|o| o.study.try(:name)||o.assets.map{|a| a.aliquots.map {|al| al.study.try(:name) }} }.flatten.compact.sort.uniq.join("|")
   end
 
  def cross_project?

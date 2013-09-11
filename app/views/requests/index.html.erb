@@ -64,7 +64,7 @@
         <td><%= link_to request.id, request_path(request) %></td>
         <td><%= request.request_type.name unless request.request_type.nil? %></td>
         <td><%= request.user.login unless request.user.blank? %></td>
-        <td><%= link_to(request.submission.name, submission_path(request.submission)) if request.submission %></td>
+        <td><%= link_to(request.submission.study_names, submission_path(request.submission)) if request.submission %></td>
         <td><%= request.created_at.to_formatted_s(:sortable) %></td>
         <td><%= display_status(request.state) %></td>
       </tr>

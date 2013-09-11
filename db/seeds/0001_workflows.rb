@@ -112,9 +112,9 @@ LibraryCreationPipeline.create!(:name => 'Illumina-C Library preparation') do |p
 
     [
 
-      { :class => SetDescriptorsTask, :name => 'Initial QC',       :sorted => 1 },
-      { :class => SetDescriptorsTask, :name => 'Gel',              :sorted => 2, :interactive => false, :per_item => false, :families => [fragment_family] },
-      { :class => SetDescriptorsTask, :name => 'Characterisation', :sorted => 3, :batched => true, :interactive => false, :per_item => false }
+      { :class => SetDescriptorsTask, :name => 'Initial QC',       :sorted => 1, :lab_activity => true },
+      { :class => SetDescriptorsTask, :name => 'Gel',              :sorted => 2, :interactive => false, :per_item => false, :families => [fragment_family], :lab_activity => true },
+      { :class => SetDescriptorsTask, :name => 'Characterisation', :sorted => 3, :batched => true, :interactive => false, :per_item => false, :lab_activity => true }
     ].each do |details|
       details.delete(:class).create!(details.merge(:workflow => workflow))
     end
@@ -165,11 +165,11 @@ MultiplexedLibraryCreationPipeline.create!(:name => 'Illumina-B MX Library Prepa
   end.tap do |workflow|
     [
 
-      { :class => TagGroupsTask,      :name => 'Tag Groups',       :sorted => 1 },
-      { :class => AssignTagsTask,     :name => 'Assign Tags',      :sorted => 2 },
-      { :class => SetDescriptorsTask, :name => 'Initial QC',       :sorted => 3, :batched => false },
-      { :class => SetDescriptorsTask, :name => 'Gel',              :sorted => 4, :batched => false },
-      { :class => SetDescriptorsTask, :name => 'Characterisation', :sorted => 5, :batched => true }
+      { :class => TagGroupsTask,      :name => 'Tag Groups',       :sorted => 1, :lab_activity => true },
+      { :class => AssignTagsTask,     :name => 'Assign Tags',      :sorted => 2, :lab_activity => true },
+      { :class => SetDescriptorsTask, :name => 'Initial QC',       :sorted => 3, :batched => false, :lab_activity => true },
+      { :class => SetDescriptorsTask, :name => 'Gel',              :sorted => 4, :batched => false, :lab_activity => true },
+      { :class => SetDescriptorsTask, :name => 'Characterisation', :sorted => 5, :batched => true, :lab_activity => true }
     ].each do |details|
       details.delete(:class).create!(details.merge(:workflow => workflow))
     end
@@ -210,11 +210,11 @@ MultiplexedLibraryCreationPipeline.create!(:name => 'Illumina-C MX Library Prepa
     workflow.locale   = 'External'
   end.tap do |workflow|
     {
-      TagGroupsTask      => { :name => 'Tag Groups',       :sorted => 1 },
-      AssignTagsTask     => { :name => 'Assign Tags',      :sorted => 2 },
-      SetDescriptorsTask => { :name => 'Initial QC',       :sorted => 3, :batched => false },
-      SetDescriptorsTask => { :name => 'Gel',              :sorted => 4, :batched => false },
-      SetDescriptorsTask => { :name => 'Characterisation', :sorted => 5, :batched => true }
+      TagGroupsTask      => { :name => 'Tag Groups',       :sorted => 1, :lab_activity => true },
+      AssignTagsTask     => { :name => 'Assign Tags',      :sorted => 2, :lab_activity => true },
+      SetDescriptorsTask => { :name => 'Initial QC',       :sorted => 3, :batched => false, :lab_activity => true },
+      SetDescriptorsTask => { :name => 'Gel',              :sorted => 4, :batched => false, :lab_activity => true },
+      SetDescriptorsTask => { :name => 'Characterisation', :sorted => 5, :batched => true, :lab_activity => true }
     }.each do |klass, details|
       klass.create!(details.merge(:workflow => workflow))
     end
@@ -256,28 +256,34 @@ PulldownLibraryCreationPipeline.create!(:name => 'Pulldown library preparation')
   end.tap do |workflow|
     [
 
-      { :class => SetDescriptorsTask, :name => 'Shearing',               :sorted => 1, :batched => false, :interactive => true },
-      { :class => SetDescriptorsTask, :name => 'Library preparation',    :sorted => 2, :batched => false, :interactive => true },
-      { :class => SetDescriptorsTask, :name => 'Pre-hybridisation PCR',  :sorted => 3, :batched => false, :interactive => true },
-      { :class => SetDescriptorsTask, :name => 'Hybridisation',          :sorted => 4, :batched => false, :interactive => true },
-      { :class => SetDescriptorsTask, :name => 'Post-hybridisation PCR', :sorted => 5, :batched => false, :interactive => true },
-      { :class => SetDescriptorsTask, :name => 'qPCR',                   :sorted => 6, :batched => false, :interactive => true }
+      { :class => SetDescriptorsTask, :name => 'Shearing',               :sorted => 1, :batched => false, :interactive => true, :lab_activity => true },
+      { :class => SetDescriptorsTask, :name => 'Library preparation',    :sorted => 2, :batched => false, :interactive => true, :lab_activity => true },
+      { :class => SetDescriptorsTask, :name => 'Pre-hybridisation PCR',  :sorted => 3, :batched => false, :interactive => true, :lab_activity => true },
+      { :class => SetDescriptorsTask, :name => 'Hybridisation',          :sorted => 4, :batched => false, :interactive => true, :lab_activity => true },
+      { :class => SetDescriptorsTask, :name => 'Post-hybridisation PCR', :sorted => 5, :batched => false, :interactive => true, :lab_activity => true },
+      { :class => SetDescriptorsTask, :name => 'qPCR',                   :sorted => 6, :batched => false, :interactive => true, :lab_activity => true }
     ].each do |details|
       details.delete(:class).create!(details.merge(:workflow => workflow))
     end
   end
 end
 
-cluster_formation_se_request_type = RequestType.create!(:workflow => next_gen_sequencing, :key => 'single_ended_sequencing', :name => 'Single ended sequencing') do |request_type|
-  request_type.billable          = true
-  request_type.initial_state     = 'pending'
-  request_type.asset_type        = 'LibraryTube'
-  request_type.order             = 2
-  request_type.multiples_allowed = true
-  request_type.request_class =  SequencingRequest
+cluster_formation_se_request_type = ['a','b','c'].map do |pl|
+  RequestType.create!(
+    :workflow => next_gen_sequencing,
+    :key => "illumina_#{pl}_single_ended_sequencing",
+    :name => "Illumina-#{pl.upcase} Single ended sequencing",
+    :product_line => ProductLine.find_by_name("Illumina-#{pl.upcase}")) do |request_type|
+    request_type.billable          = true
+    request_type.initial_state     = 'pending'
+    request_type.asset_type        = 'LibraryTube'
+    request_type.order             = 2
+    request_type.multiples_allowed = true
+    request_type.request_class =  SequencingRequest
+  end
 end
 
-SequencingPipeline.create!(:name => 'Cluster formation SE (spiked in controls)', :request_types => [ cluster_formation_se_request_type ]) do |pipeline|
+SequencingPipeline.create!(:name => 'Cluster formation SE (spiked in controls)', :request_types => cluster_formation_se_request_type ) do |pipeline|
   pipeline.asset_type = 'Lane'
   pipeline.sorter     = 2
   pipeline.automated  = false
@@ -293,9 +299,9 @@ SequencingPipeline.create!(:name => 'Cluster formation SE (spiked in controls)',
       { :class => SetDescriptorsTask,     :name => 'Specify Dilution Volume ',  :sorted => 1, :batched => true },
       { :class => AddSpikedInControlTask, :name => 'Add Spiked in Control',     :sorted => 2, :batched => true },
 
-      { :class => SetDescriptorsTask,     :name => 'Cluster generation',        :sorted => 4, :batched => true, :interactive => false, :per_item => false },
-      { :class => SetDescriptorsTask,     :name => 'Quality control',           :sorted => 5, :batched => true, :interactive => false, :per_item => false },
-      { :class => SetDescriptorsTask,     :name => 'Lin/block/hyb/load',        :sorted => 6, :batched => true, :interactive => false, :per_item => false }
+      { :class => SetDescriptorsTask,     :name => 'Cluster generation',        :sorted => 4, :batched => true, :interactive => false, :per_item => false, :lab_activity => true },
+      { :class => SetDescriptorsTask,     :name => 'Quality control',           :sorted => 5, :batched => true, :interactive => false, :per_item => false, :lab_activity => true },
+      { :class => SetDescriptorsTask,     :name => 'Lin/block/hyb/load',        :sorted => 6, :batched => true, :interactive => false, :per_item => false, :lab_activity => true }
     ].each do |details|
       details.delete(:class).create!(details.merge(:workflow => workflow))
     end
@@ -306,7 +312,7 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))
 end
 
-SequencingPipeline.create!(:name => 'Cluster formation SE', :request_types => [ cluster_formation_se_request_type ]) do |pipeline|
+SequencingPipeline.create!(:name => 'Cluster formation SE', :request_types => cluster_formation_se_request_type ) do |pipeline|
   pipeline.asset_type = 'Lane'
   pipeline.sorter     = 2
   pipeline.automated  = false
@@ -322,9 +328,9 @@ SequencingPipeline.create!(:name => 'Cluster formation SE', :request_types => [ 
       # NOTE: Yes, there's a typo in the name here:
       { :class => SetDescriptorsTask, :name => 'Specify Dilution Volume ', :sorted => 1, :batched => true },
 
-      { :class => SetDescriptorsTask, :name => 'Cluster generation',       :sorted => 3, :batched => true, :interactive => false, :per_item => false },
-      { :class => SetDescriptorsTask, :name => 'Quality control',          :sorted => 4, :batched => true, :interactive => false, :per_item => false },
-      { :class => SetDescriptorsTask, :name => 'Lin/block/hyb/load',       :sorted => 5, :batched => true, :interactive => false, :per_item => false }
+      { :class => SetDescriptorsTask, :name => 'Cluster generation',       :sorted => 3, :batched => true, :interactive => false, :per_item => false, :lab_activity => true },
+      { :class => SetDescriptorsTask, :name => 'Quality control',          :sorted => 4, :batched => true, :interactive => false, :per_item => false, :lab_activity => true },
+      { :class => SetDescriptorsTask, :name => 'Lin/block/hyb/load',       :sorted => 5, :batched => true, :interactive => false, :per_item => false, :lab_activity => true }
     ].each do |details|
       details.delete(:class).create!(details.merge(:workflow => workflow))
     end
@@ -334,7 +340,7 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))
 end
 
-SequencingPipeline.create!(:name => 'Cluster formation SE (no controls)', :request_types => [ cluster_formation_se_request_type ]) do |pipeline|
+SequencingPipeline.create!(:name => 'Cluster formation SE (no controls)', :request_types => cluster_formation_se_request_type ) do |pipeline|
   pipeline.asset_type = 'Lane'
   pipeline.sorter     = 2
   pipeline.automated  = false
@@ -350,9 +356,9 @@ SequencingPipeline.create!(:name => 'Cluster formation SE (no controls)', :reque
       # NOTE: Yes, there's a typo in the name here:
       { :class => SetDescriptorsTask, :name => 'Specify Dilution Volume ', :sorted => 1, :batched => true },
 
-      { :class => SetDescriptorsTask, :name => 'Cluster generation',       :sorted => 3, :batched => true, :interactive => false, :per_item => false },
-      { :class => SetDescriptorsTask, :name => 'Quality control',          :sorted => 4, :batched => true, :interactive => false, :per_item => false },
-      { :class => SetDescriptorsTask, :name => 'Lin/block/hyb/load',       :sorted => 5, :batched => true, :interactive => false, :per_item => false }
+      { :class => SetDescriptorsTask, :name => 'Cluster generation',       :sorted => 3, :batched => true, :interactive => false, :per_item => false, :lab_activity => true },
+      { :class => SetDescriptorsTask, :name => 'Quality control',          :sorted => 4, :batched => true, :interactive => false, :per_item => false, :lab_activity => true },
+      { :class => SetDescriptorsTask, :name => 'Lin/block/hyb/load',       :sorted => 5, :batched => true, :interactive => false, :per_item => false, :lab_activity => true }
     ].each do |details|
       details.delete(:class).create!(details.merge(:workflow => workflow))
     end
@@ -362,16 +368,18 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))
 end
 
-single_ended_hi_seq_sequencing = RequestType.create!(:workflow => next_gen_sequencing, :key => 'single_ended_hi_seq_sequencing', :name => 'Single ended hi seq sequencing') do |request_type|
-  request_type.billable          = true
-  request_type.initial_state     = 'pending'
-  request_type.asset_type        = 'LibraryTube'
-  request_type.order             = 2
-  request_type.multiples_allowed = true
-  request_type.request_class =  HiSeqSequencingRequest
+single_ended_hi_seq_sequencing = ['a','b','c'].map do |pl|
+  RequestType.create!(:workflow => next_gen_sequencing, :key => "illumina_#{pl}_single_ended_hi_seq_sequencing", :name => "Illumina-#{pl.upcase} Single ended hi seq sequencing",:product_line => ProductLine.find_by_name("Illumina-#{pl.upcase}")) do |request_type|
+    request_type.billable          = true
+    request_type.initial_state     = 'pending'
+    request_type.asset_type        = 'LibraryTube'
+    request_type.order             = 2
+    request_type.multiples_allowed = true
+    request_type.request_class =  HiSeqSequencingRequest
+  end
 end
 
-SequencingPipeline.create!(:name => 'Cluster formation SE HiSeq', :request_types => [ single_ended_hi_seq_sequencing ]) do |pipeline|
+SequencingPipeline.create!(:name => 'Cluster formation SE HiSeq', :request_types => single_ended_hi_seq_sequencing) do |pipeline|
   pipeline.asset_type = 'Lane'
   pipeline.sorter     = 2
   pipeline.automated  = false
@@ -387,9 +395,9 @@ SequencingPipeline.create!(:name => 'Cluster formation SE HiSeq', :request_types
       # NOTE: Yes, there's a typo in the name here:
       { :class => SetDescriptorsTask, :name => 'Specify Dilution Volume ', :sorted => 1, :batched => true },
 
-      { :class => SetDescriptorsTask, :name => 'Cluster generation',       :sorted => 3, :batched => true, :interactive => false, :per_item => false },
-      { :class => SetDescriptorsTask, :name => 'Quality control',          :sorted => 4, :batched => true, :interactive => false, :per_item => false },
-      { :class => SetDescriptorsTask, :name => 'Lin/block/hyb/load',       :sorted => 5, :batched => true, :interactive => false, :per_item => false }
+      { :class => SetDescriptorsTask, :name => 'Cluster generation',       :sorted => 3, :batched => true, :interactive => false, :per_item => false, :lab_activity => true },
+      { :class => SetDescriptorsTask, :name => 'Quality control',          :sorted => 4, :batched => true, :interactive => false, :per_item => false, :lab_activity => true },
+      { :class => SetDescriptorsTask, :name => 'Lin/block/hyb/load',       :sorted => 5, :batched => true, :interactive => false, :per_item => false, :lab_activity => true }
     ].each do |details|
       details.delete(:class).create!(details.merge(:workflow => workflow))
     end
@@ -399,7 +407,7 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))
 end
 
-SequencingPipeline.create!(:name => 'Cluster formation SE HiSeq (no controls)', :request_types => [ single_ended_hi_seq_sequencing ]) do |pipeline|
+SequencingPipeline.create!(:name => 'Cluster formation SE HiSeq (no controls)', :request_types => single_ended_hi_seq_sequencing ) do |pipeline|
   pipeline.asset_type = 'Lane'
   pipeline.sorter     = 2
   pipeline.automated  = false
@@ -415,9 +423,9 @@ SequencingPipeline.create!(:name => 'Cluster formation SE HiSeq (no controls)', 
       # NOTE: Yes, there's a typo in the name here:
       { :class => SetDescriptorsTask, :name => 'Specify Dilution Volume ', :sorted => 1, :batched => true },
 
-      { :class => SetDescriptorsTask, :name => 'Cluster generation',       :sorted => 3, :batched => true, :interactive => false, :per_item => false },
-      { :class => SetDescriptorsTask, :name => 'Quality control',          :sorted => 4, :batched => true, :interactive => false, :per_item => false },
-      { :class => SetDescriptorsTask, :name => 'Lin/block/hyb/load',       :sorted => 5, :batched => true, :interactive => false, :per_item => false }
+      { :class => SetDescriptorsTask, :name => 'Cluster generation',       :sorted => 3, :batched => true, :interactive => false, :per_item => false, :lab_activity => true },
+      { :class => SetDescriptorsTask, :name => 'Quality control',          :sorted => 4, :batched => true, :interactive => false, :per_item => false, :lab_activity => true },
+      { :class => SetDescriptorsTask, :name => 'Lin/block/hyb/load',       :sorted => 5, :batched => true, :interactive => false, :per_item => false, :lab_activity => true }
     ].each do |details|
       details.delete(:class).create!(details.merge(:workflow => workflow))
     end
@@ -427,13 +435,15 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))
 end
 
-cluster_formation_pe_request_type = RequestType.create!(:workflow => next_gen_sequencing, :key => 'paired_end_sequencing', :name => 'Paired end sequencing') do |request_type|
-  request_type.billable          = true
-  request_type.initial_state     = 'pending'
-  request_type.asset_type        = 'LibraryTube'
-  request_type.order             = 2
-  request_type.multiples_allowed = true
-  request_type.request_class =  SequencingRequest
+cluster_formation_pe_request_types =  ['a','b','c'].map do |pl|
+  RequestType.create!(:workflow => next_gen_sequencing, :key => "illumina_#{pl}_paired_end_sequencing", :name => "Illumina-#{pl.upcase} Paired end sequencing", :product_line => ProductLine.find_by_name("Illumina-#{pl.upcase}")) do |request_type|
+    request_type.billable          = true
+    request_type.initial_state     = 'pending'
+    request_type.asset_type        = 'LibraryTube'
+    request_type.order             = 2
+    request_type.multiples_allowed = true
+    request_type.request_class =  SequencingRequest
+  end
 end
 
 hiseq_2500_request_types = ['a','b','c'].map do |pl|
@@ -464,7 +474,7 @@ hiseq_2500_se_request_types = ['a','b','c'].map do |pl|
   )
 end
 
-SequencingPipeline.create!(:name => 'Cluster formation PE', :request_types => [ cluster_formation_pe_request_type ]) do |pipeline|
+SequencingPipeline.create!(:name => 'Cluster formation PE', :request_types => cluster_formation_pe_request_types ) do |pipeline|
   pipeline.asset_type = 'Lane'
   pipeline.sorter     = 3
   pipeline.automated  = false
@@ -478,10 +488,10 @@ SequencingPipeline.create!(:name => 'Cluster formation PE', :request_types => [ 
     [
       { :class => SetDescriptorsTask, :name => 'Specify Dilution Volume',           :sorted => 1, :batched => true },
 
-      { :class => SetDescriptorsTask, :name => 'Cluster generation',                :sorted => 3, :batched => true, :interactive => false, :per_item => false },
-      { :class => SetDescriptorsTask, :name => 'Quality control',                   :sorted => 4, :batched => true, :interactive => false, :per_item => false },
-      { :class => SetDescriptorsTask, :name => 'Read 1 Lin/block/hyb/load',         :sorted => 5, :batched => true, :interactive => true, :per_item => true },
-      { :class => SetDescriptorsTask, :name => 'Read 2 Cluster/Lin/block/hyb/load', :sorted => 6, :batched => true, :interactive => true, :per_item => true }
+      { :class => SetDescriptorsTask, :name => 'Cluster generation',                :sorted => 3, :batched => true, :interactive => false, :per_item => false, :lab_activity => true },
+      { :class => SetDescriptorsTask, :name => 'Quality control',                   :sorted => 4, :batched => true, :interactive => false, :per_item => false, :lab_activity => true },
+      { :class => SetDescriptorsTask, :name => 'Read 1 Lin/block/hyb/load',         :sorted => 5, :batched => true, :interactive => true, :per_item => true, :lab_activity => true },
+      { :class => SetDescriptorsTask, :name => 'Read 2 Cluster/Lin/block/hyb/load', :sorted => 6, :batched => true, :interactive => true, :per_item => true, :lab_activity => true }
     ].each do |details|
       details.delete(:class).create!(details.merge(:workflow => workflow))
     end
@@ -491,7 +501,7 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))
 end
 
-SequencingPipeline.create!(:name => 'Cluster formation PE (no controls)', :request_types => [ cluster_formation_pe_request_type ]) do |pipeline|
+SequencingPipeline.create!(:name => 'Cluster formation PE (no controls)', :request_types => cluster_formation_pe_request_types ) do |pipeline|
   pipeline.asset_type      = 'Lane'
   pipeline.sorter          = 8
   pipeline.automated       = false
@@ -506,10 +516,10 @@ SequencingPipeline.create!(:name => 'Cluster formation PE (no controls)', :reque
     [
       { :class => SetDescriptorsTask, :name => 'Specify Dilution Volume',           :sorted => 1, :batched => true },
 
-      { :class => SetDescriptorsTask, :name => 'Cluster generation',                :sorted => 3, :batched => true },
-      { :class => SetDescriptorsTask, :name => 'Quality control',                   :sorted => 4, :batched => true },
-      { :class => SetDescriptorsTask, :name => 'Read 1 Lin/block/hyb/load',         :sorted => 5, :batched => true, :interactive => true, :per_item => true },
-      { :class => SetDescriptorsTask, :name => 'Read 2 Cluster/Lin/block/hyb/load', :sorted => 6, :batched => true, :interactive => true, :per_item => true }
+      { :class => SetDescriptorsTask, :name => 'Cluster generation',                :sorted => 3, :batched => true, :lab_activity => true },
+      { :class => SetDescriptorsTask, :name => 'Quality control',                   :sorted => 4, :batched => true, :lab_activity => true },
+      { :class => SetDescriptorsTask, :name => 'Read 1 Lin/block/hyb/load',         :sorted => 5, :batched => true, :interactive => true, :per_item => true, :lab_activity => true },
+      { :class => SetDescriptorsTask, :name => 'Read 2 Cluster/Lin/block/hyb/load', :sorted => 6, :batched => true, :interactive => true, :per_item => true, :lab_activity => true }
     ].each do |details|
       details.delete(:class).create!(details.merge(:workflow => workflow))
     end
@@ -518,7 +528,7 @@ end.tap do |pipeline|
   create_request_information_types(pipeline, "read_length", "library_type")
 end
 
-SequencingPipeline.create!(:name => 'Cluster formation PE (spiked in controls)', :request_types => [ cluster_formation_pe_request_type ]) do |pipeline|
+SequencingPipeline.create!(:name => 'Cluster formation PE (spiked in controls)', :request_types => cluster_formation_pe_request_types ) do |pipeline|
   pipeline.asset_type      = 'Lane'
   pipeline.sorter          = 8
   pipeline.automated       = false
@@ -533,11 +543,11 @@ SequencingPipeline.create!(:name => 'Cluster formation PE (spiked in controls)',
     [
       { :class => SetDescriptorsTask,     :name => 'Specify Dilution Volume',           :sorted => 1, :batched => true },
 
-      { :class => SetDescriptorsTask,     :name => 'Cluster generation',                :sorted => 3, :batched => true },
-      { :class => AddSpikedInControlTask, :name => 'Add Spiked in Control',             :sorted => 4, :batched => true },
-      { :class => SetDescriptorsTask,     :name => 'Quality control',                   :sorted => 5, :batched => true },
-      { :class => SetDescriptorsTask,     :name => 'Read 1 Lin/block/hyb/load',         :sorted => 6, :batched => true, :interactive => true, :per_item => true },
-      { :class => SetDescriptorsTask,     :name => 'Read 2 Cluster/Lin/block/hyb/load', :sorted => 7, :batched => true, :interactive => true, :per_item => true }
+      { :class => SetDescriptorsTask,     :name => 'Cluster generation',                :sorted => 3, :batched => true, :lab_activity => true },
+      { :class => AddSpikedInControlTask, :name => 'Add Spiked in Control',             :sorted => 4, :batched => true, :lab_activity => true },
+      { :class => SetDescriptorsTask,     :name => 'Quality control',                   :sorted => 5, :batched => true, :lab_activity => true},
+      { :class => SetDescriptorsTask,     :name => 'Read 1 Lin/block/hyb/load',         :sorted => 6, :batched => true, :interactive => true, :per_item => true, :lab_activity => true },
+      { :class => SetDescriptorsTask,     :name => 'Read 2 Cluster/Lin/block/hyb/load', :sorted => 7, :batched => true, :interactive => true, :per_item => true, :lab_activity => true }
     ].each do |details|
       details.delete(:class).create!(details.merge(:workflow => workflow))
     end
@@ -547,7 +557,7 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))
 end
 
-SequencingPipeline.create!(:name => 'HiSeq Cluster formation PE (spiked in controls)', :request_types => [ cluster_formation_pe_request_type ]) do |pipeline|
+SequencingPipeline.create!(:name => 'HiSeq Cluster formation PE (spiked in controls)', :request_types => cluster_formation_pe_request_types ) do |pipeline|
   pipeline.asset_type      = 'Lane'
   pipeline.sorter          = 9
   pipeline.automated       = false
@@ -562,11 +572,11 @@ SequencingPipeline.create!(:name => 'HiSeq Cluster formation PE (spiked in contr
     [
       { :class => SetDescriptorsTask,     :name => 'Specify Dilution Volume',           :sorted => 1, :batched => true },
 
-      { :class => SetDescriptorsTask,     :name => 'Cluster generation',                :sorted => 3, :batched => true },
-      { :class => AddSpikedInControlTask, :name => 'Add Spiked in Control',             :sorted => 4, :batched => true },
-      { :class => SetDescriptorsTask,     :name => 'Quality control',                   :sorted => 5, :batched => true },
-      { :class => SetDescriptorsTask,     :name => 'Read 1 Lin/block/hyb/load',         :sorted => 6, :batched => true, :interactive => true, :per_item => true },
-      { :class => SetDescriptorsTask,     :name => 'Read 2 Cluster/Lin/block/hyb/load', :sorted => 7, :batched => true, :interactive => true, :per_item => true }
+      { :class => SetDescriptorsTask,     :name => 'Cluster generation',                :sorted => 3, :batched => true, :lab_activity => true },
+      { :class => AddSpikedInControlTask, :name => 'Add Spiked in Control',             :sorted => 4, :batched => true, :lab_activity => true },
+      { :class => SetDescriptorsTask,     :name => 'Quality control',                   :sorted => 5, :batched => true, :lab_activity => true },
+      { :class => SetDescriptorsTask,     :name => 'Read 1 Lin/block/hyb/load',         :sorted => 6, :batched => true, :interactive => true, :per_item => true, :lab_activity => true },
+      { :class => SetDescriptorsTask,     :name => 'Read 2 Cluster/Lin/block/hyb/load', :sorted => 7, :batched => true, :interactive => true, :per_item => true, :lab_activity => true }
     ].each do |details|
       details.delete(:class).create!(details.merge(:workflow => workflow))
     end
@@ -592,10 +602,10 @@ SequencingPipeline.create!(:name => 'HiSeq 2500 PE (spiked in controls)', :reque
     [
       { :class => SetDescriptorsTask,     :name => 'Specify Dilution Volume', :sorted => 1, :batched => true },
 
-      { :class => AddSpikedInControlTask, :name => 'Add Spiked in Control',   :sorted => 3, :batched => true },
-      { :class => SetDescriptorsTask,     :name => 'Quality control',                   :sorted => 4, :batched => true },
-      { :class => SetDescriptorsTask,     :name => 'Read 1 Lin/block/hyb/load',         :sorted => 5, :batched => true, :interactive => true, :per_item => true },
-      { :class => SetDescriptorsTask,     :name => 'Read 2 Cluster/Lin/block/hyb/load', :sorted => 6, :batched => true, :interactive => true, :per_item => true }
+      { :class => AddSpikedInControlTask, :name => 'Add Spiked in Control',   :sorted => 3, :batched => true, :lab_activity => true },
+      { :class => SetDescriptorsTask,     :name => 'Quality control',                   :sorted => 4, :batched => true, :lab_activity => true },
+      { :class => SetDescriptorsTask,     :name => 'Read 1 Lin/block/hyb/load',         :sorted => 5, :batched => true, :interactive => true, :per_item => true, :lab_activity => true },
+      { :class => SetDescriptorsTask,     :name => 'Read 2 Cluster/Lin/block/hyb/load', :sorted => 6, :batched => true, :interactive => true, :per_item => true, :lab_activity => true }
     ].each do |details|
       details.delete(:class).create!(details.merge(:workflow => workflow))
     end
@@ -621,9 +631,9 @@ SequencingPipeline.create!(:name => 'HiSeq 2500 SE (spiked in controls)', :reque
     [
       { :class => SetDescriptorsTask,     :name => 'Specify Dilution Volume', :sorted => 1, :batched => true },
 
-      { :class => AddSpikedInControlTask, :name => 'Add Spiked in Control',   :sorted => 3, :batched => true },
-      { :class => SetDescriptorsTask,     :name => "Quality control",         :sorted => 4, :batched => true, :interactive => false, :per_item => false },
-      { :class => SetDescriptorsTask,     :name => "Lin/block/hyb/load",      :sorted => 5, :batched => true, :interactive => false, :per_item => false }
+      { :class => AddSpikedInControlTask, :name => 'Add Spiked in Control',   :sorted => 3, :batched => true, :lab_activity => true },
+      { :class => SetDescriptorsTask,     :name => "Quality control",         :sorted => 4, :batched => true, :interactive => false, :per_item => false, :lab_activity => true },
+      { :class => SetDescriptorsTask,     :name => "Lin/block/hyb/load",      :sorted => 5, :batched => true, :interactive => false, :per_item => false, :lab_activity => true }
     ].each do |details|
       details.delete(:class).create!(details.merge(:workflow => workflow))
     end
@@ -633,7 +643,7 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))
 end
 
-SequencingPipeline.create!(:name => 'Cluster formation SE HiSeq (spiked in controls)', :request_types => [ cluster_formation_pe_request_type ]) do |pipeline|
+SequencingPipeline.create!(:name => 'Cluster formation SE HiSeq (spiked in controls)', :request_types => cluster_formation_pe_request_types ) do |pipeline|
   pipeline.asset_type      = 'Lane'
   pipeline.sorter          = 8
   pipeline.automated       = false
@@ -648,10 +658,10 @@ SequencingPipeline.create!(:name => 'Cluster formation SE HiSeq (spiked in contr
     [
       { :class => SetDescriptorsTask,     :name => 'Specify Dilution Volume',           :sorted => 1, :batched => true },
 
-      { :class => SetDescriptorsTask,     :name => 'Cluster generation',                :sorted => 3, :batched => true },
-      { :class => AddSpikedInControlTask, :name => 'Add Spiked in Control',             :sorted => 4, :batched => true },
-      { :class => SetDescriptorsTask,     :name => 'Quality control',                   :sorted => 5, :batched => true },
-      { :class => SetDescriptorsTask,     :name => 'Read 1 Lin/block/hyb/load',         :sorted => 6, :batched => true, :interactive => true, :per_item => true },
+      { :class => SetDescriptorsTask,     :name => 'Cluster generation',                :sorted => 3, :batched => true, :lab_activity => true },
+      { :class => AddSpikedInControlTask, :name => 'Add Spiked in Control',             :sorted => 4, :batched => true, :lab_activity => true },
+      { :class => SetDescriptorsTask,     :name => 'Quality control',                   :sorted => 5, :batched => true, :lab_activity => true },
+      { :class => SetDescriptorsTask,     :name => 'Read 1 Lin/block/hyb/load',         :sorted => 6, :batched => true, :interactive => true, :per_item => true, :lab_activity => true },
     ].each do |details|
       details.delete(:class).create!(details.merge(:workflow => workflow))
     end
@@ -670,13 +680,15 @@ SequencingPipeline.create!(:name => 'HiSeq Cluster formation PE (no controls)') 
   pipeline.group_by_parent = false
   pipeline.location        = Location.first(:conditions => { :name => 'Cluster formation freezer' }) or raise StandardError, "Cannot find 'Cluster formation freezer' location"
 
-  pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'hiseq_paired_end_sequencing', :name => 'HiSeq Paired end sequencing') do |request_type|
-    request_type.billable          = true
-    request_type.initial_state     = 'pending'
-    request_type.asset_type        = 'LibraryTube'
-    request_type.order             = 2
-    request_type.multiples_allowed = true
-    request_type.request_class =  HiSeqSequencingRequest
+  ['a','b','c'].each do |pl|
+    pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => "illumina_#{pl}_hiseq_paired_end_sequencing", :name => "Illumina-#{pl.upcase} HiSeq Paired end sequencing",  :product_line => ProductLine.find_by_name("Illumina-#{pl.upcase}")) do |request_type|
+      request_type.billable          = true
+      request_type.initial_state     = 'pending'
+      request_type.asset_type        = 'LibraryTube'
+      request_type.order             = 2
+      request_type.multiples_allowed = true
+      request_type.request_class =  HiSeqSequencingRequest
+    end
   end
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'HiSeq Cluster formation PE (no controls)') do |workflow|
@@ -686,10 +698,10 @@ SequencingPipeline.create!(:name => 'HiSeq Cluster formation PE (no controls)') 
     [
       { :class => SetDescriptorsTask, :name => 'Specify Dilution Volume',           :sorted => 1, :batched => true },
 
-      { :class => SetDescriptorsTask, :name => 'Cluster generation',                :sorted => 3, :batched => true },
-      { :class => SetDescriptorsTask, :name => 'Quality control',                   :sorted => 4, :batched => true },
-      { :class => SetDescriptorsTask, :name => 'Read 1 Lin/block/hyb/load',         :sorted => 5, :batched => true, :interactive => true, :per_item => true },
-      { :class => SetDescriptorsTask, :name => 'Read 2 Cluster/Lin/block/hyb/load', :sorted => 6, :batched => true, :interactive => true, :per_item => true }
+      { :class => SetDescriptorsTask, :name => 'Cluster generation',                :sorted => 3, :batched => true, :lab_activity => true },
+      { :class => SetDescriptorsTask, :name => 'Quality control',                   :sorted => 4, :batched => true, :lab_activity => true },
+      { :class => SetDescriptorsTask, :name => 'Read 1 Lin/block/hyb/load',         :sorted => 5, :batched => true, :interactive => true, :per_item => true, :lab_activity => true },
+      { :class => SetDescriptorsTask, :name => 'Read 2 Cluster/Lin/block/hyb/load', :sorted => 6, :batched => true, :interactive => true, :per_item => true, :lab_activity => true }
     ].each do |details|
       details.delete(:class).create!(details.merge(:workflow => workflow))
     end
@@ -718,11 +730,11 @@ CherrypickPipeline.create!(:name => 'Cherrypick') do |pipeline|
   pipeline.location = Location.first(:conditions => { :name => 'Sample logistics freezer' }) or raise StandardError, "Cannot find 'Sample logistics freezer' location"
 
   pipeline.request_types << RequestType.create!(:workflow => microarray_genotyping, :key => 'cherrypick', :name => 'Cherrypick') do |request_type|
-    request_type.initial_state     = 'blocked'
+    request_type.initial_state     = 'pending'
     request_type.target_asset_type = 'Well'
     request_type.asset_type        = 'Well'
     request_type.order             = 2
-    request_type.request_class     = Request
+    request_type.request_class     = CherrypickForPulldownRequest
     request_type.multiples_allowed = false
   end
 
@@ -730,9 +742,9 @@ CherrypickPipeline.create!(:name => 'Cherrypick') do |pipeline|
     # NOTE[xxx]: Note that the order here, and 'Set Location' being interactive, do not mimic the behaviour of production
     [
 
-      { :class => PlateTemplateTask,      :name => "Select Plate Template",              :sorted => 1, :batched => true },
-      { :class => CherrypickTask,         :name => "Approve Plate Layout",               :sorted => 2, :batched => true },
-      { :class => SetLocationTask,        :name => "Set Location",                       :sorted => 4 }
+      { :class => PlateTemplateTask,      :name => "Select Plate Template",              :sorted => 1, :batched => true, :lab_activity => true },
+      { :class => CherrypickTask,         :name => "Approve Plate Layout",               :sorted => 2, :batched => true, :lab_activity => true },
+      { :class => SetLocationTask,        :name => "Set Location",                       :sorted => 4, :lab_activity => true }
     ].each do |details|
       details.delete(:class).create!(details.merge(:workflow => workflow))
     end
@@ -762,6 +774,7 @@ CherrypickForPulldownPipeline.create!(:name => 'Cherrypicking for Pulldown') do 
 
   pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'cherrypick_for_illumina',   :name => 'Cherrypick for Illumina',   &cherrypicking_attributes)
   pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'cherrypick_for_illumina_b', :name => 'Cherrypick for Illumina-B', &cherrypicking_attributes)
+  pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'cherrypick_for_illumina_c', :name => 'Cherrypick for Illumina-C', &cherrypicking_attributes)
 
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'Cherrypicking for Pulldown').tap do |workflow|
@@ -882,9 +895,9 @@ PacBioSamplePrepPipeline.create!(:name => 'PacBio Sample Prep') do |pipeline|
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'PacBio Sample Prep').tap do |workflow|
     [
 
-      { :class => PrepKitBarcodeTask, :name => 'DNA Template Prep Kit Box Barcode',    :sorted => 1, :batched => true },
-      { :class => SamplePrepQcTask,   :name => 'Sample Prep QC',                       :sorted => 2, :batched => true },
-      { :class => SmrtCellsTask,      :name => 'Number of SMRTcells that can be made', :sorted => 3, :batched => true }
+      { :class => PrepKitBarcodeTask, :name => 'DNA Template Prep Kit Box Barcode',    :sorted => 1, :batched => true, :lab_activity => true },
+      { :class => SamplePrepQcTask,   :name => 'Sample Prep QC',                       :sorted => 2, :batched => true, :lab_activity => true },
+      { :class => SmrtCellsTask,      :name => 'Number of SMRTcells that can be made', :sorted => 3, :batched => true, :lab_activity => true }
     ].each do |details|
       details.delete(:class).create!(details.merge(:workflow => workflow))
     end
@@ -914,11 +927,11 @@ PacBioSequencingPipeline.create!(:name => 'PacBio Sequencing') do |pipeline|
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'PacBio Sequencing').tap do |workflow|
     [
 
-      { :class => BindingKitBarcodeTask,      :name => 'Binding Kit Box Barcode', :sorted => 1, :batched => true },
-      { :class => MovieLengthTask,            :name => 'Movie Lengths',           :sorted => 2, :batched => true },
-      { :class => ReferenceSequenceTask,      :name => 'Reference Sequence',      :sorted => 3, :batched => true },
-      { :class => AssignTubesToWellsTask,     :name => 'Layout tubes on a plate', :sorted => 4, :batched => true },
-      { :class => ValidateSampleSheetTask,    :name => 'Validate Sample Sheet',   :sorted => 5, :batched => true }
+      { :class => BindingKitBarcodeTask,      :name => 'Binding Kit Box Barcode', :sorted => 1, :batched => true, :lab_activity => true },
+      { :class => MovieLengthTask,            :name => 'Movie Lengths',           :sorted => 2, :batched => true, :lab_activity => true },
+      { :class => ReferenceSequenceTask,      :name => 'Reference Sequence',      :sorted => 3, :batched => true, :lab_activity => true },
+      { :class => AssignTubesToWellsTask,     :name => 'Layout tubes on a plate', :sorted => 4, :batched => true, :lab_activity => true },
+      { :class => ValidateSampleSheetTask,    :name => 'Validate Sample Sheet',   :sorted => 5, :batched => true, :lab_activity => true }
     ].each do |details|
       details.delete(:class).create!(details.merge(:workflow => workflow))
     end
@@ -960,3 +973,100 @@ set_pipeline_flow_to('PacBio Sample Prep' => 'PacBio Sequencing')
     pipeline.workflow = LabInterface::Workflow.create!(:name => pipeline_name)
   end
 end
+
+mi_seq_freezer = Location.create!({:name => "MiSeq freezer"})
+SequencingPipeline.create!(:name => "MiSeq sequencing") do |pipeline|
+    pipeline.asset_type = 'Lane'
+    pipeline.sorter     = 2
+    pipeline.automated  = false
+    pipeline.active     = true
+
+    pipeline.location = mi_seq_freezer
+
+    pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'miseq_sequencing', :name => "MiSeq sequencing") do |request_type|
+      request_type.initial_state     = 'pending'
+      request_type.asset_type        = 'LibraryTube'
+      request_type.order             = 1
+      request_type.multiples_allowed = false
+      request_type.request_class_name = SequencingRequest.name
+    end
+
+    ['a','b','c'].each do |pl|
+      pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => "illumina_#{pl}_miseq_sequencing", :name => "Illumina-#{pl.upcase} MiSeq sequencing") do |request_type|
+        request_type.initial_state     = 'pending'
+        request_type.asset_type        = 'LibraryTube'
+        request_type.order             = 1
+        request_type.multiples_allowed = false
+        request_type.request_class_name = SequencingRequest.name
+      end
+    end
+
+    pipeline.workflow = LabInterface::Workflow.create!(:name => "MiSeq sequencing") do |workflow|
+      workflow.locale     = 'External'
+      workflow.item_limit = 1
+    end.tap do |workflow|
+        t1 = SetDescriptorsTask.create!({:name => 'Specify Dilution Volume', :sorted => 0, :workflow => workflow})
+        Descriptor.create!({:kind => "Text", :sorter => 1, :name => "Concentration", :task => t1})
+        t2 = SetDescriptorsTask.create!({:name => 'Cluster Generation', :sorted => 0, :workflow => workflow})
+        Descriptor.create!({:kind => "Text", :sorter => 1, :name => "Chip barcode", :task => t2})
+        Descriptor.create!({:kind => "Text", :sorter => 2, :name => "Cartridge barcode", :task => t2})
+        Descriptor.create!({:kind => "Text", :sorter => 3, :name => "Operator", :task => t2})
+        Descriptor.create!({:kind => "Text", :sorter => 4, :name => "Machine name", :task => t2})
+
+
+    end
+  end.tap do |pipeline|
+    create_request_information_types(pipeline, 'fragment_size_required_from', 'fragment_size_required_to', 'library_type')
+  end
+
+# ADD ILC Cherrypick
+    cprt =  RequestType.create!(
+        :key => 'illumina_c_cherrypick',
+        :name => 'Illumina-C Cherrypick',
+        :workflow_id => Submission::Workflow.find_by_key("short_read_sequencing").id,
+        :asset_type => 'Well',
+        :order => 2,
+        :initial_state => 'pending',
+        :target_asset_type => 'Well',
+        :request_class_name => 'Request'
+        )
+
+      liw = LabInterface::Workflow.create!(:name=>'Illumina-C Cherrypick')
+
+      LabInterface::Workflow.find_by_name('Cherrypick').tasks.each do |task|
+        # next if task.name == 'Set Location'
+        new_task = task.clone
+        new_task.workflow = liw
+        new_task.save!
+      end
+
+      CherrypickPipeline.create!(
+        :name => 'Illumina-C Cherrypick',
+        :active => true,
+        :automated=>false,
+        :location_id => Location.find_by_name('Library creation freezer'),
+        :group_by_parent => true,
+        :asset_type => 'Well',
+        :group_name => 'Illumina-C Library creation',
+        :max_size => 3000,
+        :sorter=>10,
+        :request_types => [cprt],
+        :workflow => liw
+      ) do |pipeline|
+        pipeline.add_control_request_type
+      end
+
+      SubmissionTemplate.create!(
+        :name => 'Illumina-C - Cherrypick Internally',
+        :submission_class_name => 'LinearSubmission',
+        :submission_parameters => {
+          :info_differential=>Submission::Workflow.find_by_key("short_read_sequencing").id,
+          :request_options=>{
+            :initial_state=>{
+              cprt.id=>:pending
+              }
+            },
+            :asset_input_methods=>["select an asset group", "enter a list of sample names found on plates"],
+            :workflow_id=>Submission::Workflow.find_by_key("short_read_sequencing").id,
+            :request_type_ids_list=>[[cprt.id]]}
+        )

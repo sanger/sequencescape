@@ -54,7 +54,7 @@ module SampleManifest::SampleTubeBehaviour
     end
 
     def validate_sample_container(sample, row, &block)
-      manifest_barcode, primary_barcode = row['SOMETHING'], sample.primary_receptacle.sanger_human_barcode
+      manifest_barcode, primary_barcode = row['SANGER TUBE ID'], sample.primary_receptacle.sanger_human_barcode
       return if primary_barcode == manifest_barcode
       yield("Tube info for #{sample.sanger_sample_id} mismatch: expected #{primary_barcode} but reported as #{manifest_barcode}")
     end

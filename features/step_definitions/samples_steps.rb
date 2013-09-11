@@ -56,7 +56,7 @@ end
 
 Given /^the sample "([^\"]+)" has the donor id "([^\"]*)"$/ do |name,donor_id|
   sample = Sample.find_by_name(name) or raise StandardError, "Cannot find sample with name #{ name.inspect }"
-  sample.sample_metadata.cancer_donor_id = donor_id
+  sample.sample_metadata.donor_id = donor_id
   sample.save!
 end
 

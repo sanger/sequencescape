@@ -228,7 +228,7 @@ class AssetsController < ApplicationController
   private :prepare_asset
 
   def new_request_for_current_asset
-    new_request_asset_path(@asset, {:study_id => @study.id, :project_id => params[:project_id], :request_type_id => @request_type.id})
+    new_request_asset_path(@asset, {:study_id => @study.try(:id), :project_id => @project.try(:id), :request_type_id => @request_type.id})
   end
   private :new_request_for_current_asset
 
@@ -238,13 +238,14 @@ class AssetsController < ApplicationController
 
   def create_request
     @request_type = RequestType.find(params[:request_type_id])
-    @study        = Study.find(params[:study_id])
+    @study        = Study.find(params[:study_id]) unless params[:cross_study_request].present?
+    @project      = Project.find(params[:project_id]) unless params[:cross_project_request].present?
 
     request_options = params.fetch(:request, {}).fetch(:request_metadata_attributes, {})
     request_options[:multiplier] = { @request_type.id => params[:count].to_i } unless params[:count].blank?
     submission = ReRequestSubmission.build!(
       :study           => @study,
-      :project         => Project.find(params[:project_id]),
+      :project         => @project,
       :workflow        => @request_type.workflow,
       :user            => current_user,
       :assets          => [ @asset ],

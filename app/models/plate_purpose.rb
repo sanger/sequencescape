@@ -27,6 +27,8 @@ class PlatePurpose < Purpose
   named_scope :cherrypickable_as_target, :conditions => { :cherrypickable_target => true }
   named_scope :cherrypickable_as_source, :conditions => { :cherrypickable_source => true }
   named_scope :cherrypickable_default_type, :conditions => { :cherrypickable_target => true, :cherrypickable_source => true }
+  named_scope :for_submissions, { :conditions => 'can_be_considered_a_stock_plate = true OR name = "Working Dilution"', :order=>'can_be_considered_a_stock_plate DESC'}
+  named_scope :considered_stock_plate, { :conditions => { :can_be_considered_a_stock_plate => true } }
 
   serialize :cherrypick_filters
   validates_presence_of(:cherrypick_filters, :if => :cherrypickable_target?)
@@ -127,8 +129,6 @@ class PlatePurpose < Purpose
 
   # TODO: change to purpose_id
   has_many :plates, :foreign_key => :plate_purpose_id
-
-  named_scope :considered_stock_plate, { :conditions => { :can_be_considered_a_stock_plate => true } }
 
   def target_plate_type
     self.target_type || 'Plate'

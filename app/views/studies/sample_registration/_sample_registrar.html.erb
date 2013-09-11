@@ -81,7 +81,7 @@
             <% metadata_fields.with_options(:grouping => 'SRA Sample AN') do |group| %>
               <%= group.header(:sample_ebi_accession_number) %>
             <% end %>
-            
+
             <%= metadata_fields.header(:reference_genome) %>
 
             <!-- array express field -->
@@ -106,7 +106,7 @@
               <%= group.header(:subject) %>
               <%= group.header(:disease) %>
               <%= group.header(:treatment)%>
-              <%= group.header(:cancer_donor_id)%>
+              <%= group.header(:donor_id)%>
             <% end %>
           <% end %>
         <% end %>
@@ -186,7 +186,7 @@
               <% metadata_fields.with_options(:grouping => 'SRA Sample AN') do |group| %>
                 <%= group.text_field(:sample_ebi_accession_number) %>
               <% end %>
-              
+
               <%= metadata_fields.select_by_association(:reference_genome)%>
               <!-- array express field -->
               <%metadata_fields.with_options(:grouping => 'Array Express') do |group| %>
@@ -210,7 +210,7 @@
                 <%= group.text_field(:subject) %>
                 <%= group.text_field(:disease) %>
                 <%= group.text_field(:treatment)%>
-                <%= group.text_field(:cancer_donor_id)%>
+                <%= group.text_field(:donor_id)%>
               <% end %>
 
     <%  metadata_fields.finalize_related_fields %>

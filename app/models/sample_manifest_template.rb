@@ -3,19 +3,39 @@ class SampleManifestTemplate < ActiveRecord::Base
   serialize :cell_map, Hash
 
   def self.populate()
-    transaction do 
-      base_template = SampleManifestTemplate.create!(
-        :name => "default layout",
-        :path => "/data/base_manifest.xls",
-        :cell_map => {
+    transaction do
+      map = {
           :study => [4,1],
           :supplier => [5,1],
           :number_of_plates => [6,1]
         }
+      SampleManifestTemplate.create!(
+        :name => "default layout",
+        :path => "/data/base_manifest.xls",
+        :cell_map => map,
+        :asset_type => 'plate'
+      )
+      SampleManifestTemplate.create!(
+        :name => "full layout",
+        :path => "/data/full_manifest.xls",
+        :cell_map => map,
+        :asset_type => 'plate'
+      )
+      SampleManifestTemplate.create!(
+        :name => "default tube layout",
+        :path => "/data/base_tube_manifest.xls",
+        :cell_map => map,
+        :asset_type => '1dtube'
+      )
+      SampleManifestTemplate.create!(
+        :name => "full tube layout",
+        :path => "/data/full_tube_manifest.xls",
+        :cell_map => map,
+        :asset_type => '1dtube'
       )
 
       unless RAILS_ENV == "production"
-        base2_template = SampleManifestTemplate.create!(
+        SampleManifestTemplate.create!(
           :name => "test layout",
           :path => "/data/base2_manifest.xls",
           :cell_map => {
@@ -60,9 +80,10 @@ class SampleManifestTemplate < ActiveRecord::Base
     worksheet   = spreadsheet.worksheets.first
 
     @column_position_map = read_column_position(manifest, worksheet)
-    barcode_position     = @column_position_map['SANGER PLATE ID']
+    barcode_position     = @column_position_map['SANGER PLATE ID']||@column_position_map['SANGER TUBE ID']
     position_position    = @column_position_map['WELL']
     sample_id_position   = @column_position_map['SANGER SAMPLE ID']
+    donor_id_position    = @column_position_map['DONOR ID (required for EGA)']||@column_position_map['DONOR ID (required for cancer samples)']
 
     set_value(worksheet, :study,            manifest.study.abbreviation)
     set_value(worksheet, :supplier,         Supplier.find(manifest.supplier_id).name)
@@ -73,12 +94,13 @@ class SampleManifestTemplate < ActiveRecord::Base
       worksheet[current_row, barcode_position]   = details[:barcode]
       worksheet[current_row, sample_id_position] = details[:sample_id]
       worksheet[current_row, position_position]  = details[:position] if details.key?(:position)
+      worksheet[current_row, donor_id_position]  = details[:sample_id]
       fill_row_with_default_values(worksheet, current_row, default_values)
 
       current_row = current_row + 1
     end
 
-    # Truncate the number of rows in the spreadsheet.  This improves performance dramatically because the 
+    # Truncate the number of rows in the spreadsheet.  This improves performance dramatically because the
     # number of rows in the original sheet is 9999, which means 20s of unnecessary data processing.  This
     # change causes times to drop to < 1s. An extra offset is required because Excel does things in blocks
     # of 32 rows
