@@ -101,6 +101,8 @@ class Submission < ActiveRecord::Base
         order.build_request_graph!(multiplexing_assets) { |a| multiplexing_assets ||= a }
       end
 
+      PreCapturePool::Builder.new(self).build!
+
       errors.add(:requests, "No requests have been created for this submission") if requests.empty?
       raise ActiveRecord::RecordInvalid, self if errors.present?
     end
