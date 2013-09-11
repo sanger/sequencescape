@@ -84,7 +84,7 @@
               <%= h(request.request_metadata[information_type.key]) %>
             </td>
           <% end %>
-          <td width=100px><%= truncate(request.try(:submission).try(:name), :separator => ' ') %></td>
+          <td width=100px><%= truncate(request.try(:submission).try(:study_names), :separator => ' ') %></td>
         </tr>
       <%- end -%>
       </div>
