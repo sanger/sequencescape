@@ -8,7 +8,9 @@ module IlluminaHtp::PlatePurposes
       'Lib PCR',
       'Lib PCRR',
       'Lib PCR-XP',
-      'Lib PCRR-XP'
+      'Lib PCRR-XP',
+      # Alternative branch for ILA
+      'Post Shear XP',
     ]
   ]
 
@@ -32,6 +34,7 @@ module IlluminaHtp::PlatePurposes
     [ 'AL Libs', 'Lib PCRR', 'Lib PCRR-XP','Lib Pool Pippin' ],
     [ 'Lib PCR-XP','ISC lib pool' ],
     [ 'Lib PCRR-XP','ISC lib pool' ],
+    [ 'Post Shear', 'Post Shear XP', 'AL Libs']
   ]
 
   STOCK_PLATE_PURPOSE = 'Cherrypicked'
@@ -51,6 +54,7 @@ module IlluminaHtp::PlatePurposes
     [ 'Cherrypicked',    'Shear',               'IlluminaHtp::Requests::CherrypickedToShear'   ],
     [ 'Shear',           'Post Shear',          'IlluminaHtp::Requests::CovarisToSheared'      ],
     [ 'Post Shear',      'AL Libs',             'IlluminaHtp::Requests::PostShearToAlLibs'     ],
+    [ 'Post Shear XP',   'AL Libs',             'IlluminaHtp::Requests::PostShearToAlLibs'     ],
     [ 'AL Libs',         'Lib PCR',             'IlluminaHtp::Requests::PrePcrToPcr'           ],
     [ 'AL Libs',         'Lib PCRR',            'IlluminaHtp::Requests::PrePcrToPcr'           ],
     [ 'Lib PCR',         'Lib PCR-XP',          'IlluminaHtp::Requests::PcrToPcrXp'            ],
@@ -80,6 +84,7 @@ module IlluminaHtp::PlatePurposes
     'Lib Pool SS'         => IlluminaHtp::StockTubePurpose,
     'Lib Pool SS-XP'      => IlluminaHtp::StockTubePurpose,
     'Lib Pool SS-XP-Norm' => IlluminaHtp::MxTubePurpose,
+    'Post Shear XP'       => PlatePurpose,
 
     'Post Shear QC'    => IlluminaHtp::PostShearQcPlatePurpose,
     'Lib PCR-XP QC'    => PlatePurpose,
