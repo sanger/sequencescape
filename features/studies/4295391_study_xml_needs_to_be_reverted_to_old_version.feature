@@ -15,6 +15,7 @@ Feature: The XML for the sequencescape API
     And the study "Study for XML" has samples contaminated with human DNA
     And the study "Study for XML" does not contain samples commercially available
     And the study "Study for XML" has samples which need x and autosome data removed
+    And the study "Study for XML" has a data access group of "group1"
     And the study "Study for XML" has the following contacts
       | login   | role    |
       | owner   | owner   |
@@ -175,6 +176,7 @@ Feature: The XML for the sequencescape API
             <name>HMDMC approval number</name>
             <value></value>
           </descriptor>
+          <descriptor><name>Data access group</name><value>group1</value></descriptor>
           <descriptor><name>EGA DAC Accession Number</name></descriptor>
           <descriptor><name>EGA Policy Accession Number</name></descriptor>
           <descriptor><name>Policy Url</name></descriptor>
