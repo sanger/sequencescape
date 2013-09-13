@@ -116,7 +116,7 @@ class Studies::WorkflowsController < ApplicationController
   private
   def discover_study
     @study  = Study.find(params[:study_id])
-    flash[:errors] = @study.warnings
+    flash[:warning] = "#{flash[:warning]} #{@study.warnings}"
   end
 
   def discover_workflow

@@ -423,11 +423,7 @@ When /^I have an? (managed|open) study without a data release group called "(.*?
     )
 end
 
-When /^I follow manage$/ do
-  pending # express the regexp above with the code you wish you had
-end
-
-When /^I click submit$/ do
-  pending # express the regexp above with the code you wish you had
+Given /^the study "(.*?)" has a data access group of "(.*?)"$/ do |study_name, dag|
+  Study.find_by_name(study_name).study_metadata.update_attributes!(:data_access_group=>dag)
 end
 

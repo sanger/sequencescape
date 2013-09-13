@@ -65,6 +65,10 @@ Feature: The XML for the sequencescape API
             <value>Yes</value>
           </descriptor>
           <descriptor>
+            <name>Does this study require y chromosome data to be separated from x and autosomal data before archival?</name>
+            <value>false</value>
+          </descriptor>
+          <descriptor>
             <name>Does this study require the removal of X chromosome and autosome sequence?</name>
             <value>Yes</value>
           </descriptor>
@@ -180,7 +184,7 @@ Feature: The XML for the sequencescape API
           <descriptor><name>EGA DAC Accession Number</name></descriptor>
           <descriptor><name>EGA Policy Accession Number</name></descriptor>
           <descriptor><name>Policy Url</name></descriptor>
-          <descriptor><name>Policy Title</name></descriptor>
+          <descriptor><name>Policy title</name></descriptor>
           <descriptor><name>ArrayExpress Accession Number</name></descriptor>
         </descriptors>
       </study>
