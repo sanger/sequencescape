@@ -406,3 +406,24 @@ end
 Then /^the faculty sponsor index page should look like:$/ do |expected_results_table|
   expected_results_table.diff!(table(tableish('table#faculty_sponsor_list tr', 'td,th')))
 end
+
+When /^I have an? (managed|open) study without a data release group called "(.*?)"$/ do |managed,study_name|
+  Study.create!(
+      :name => study_name,
+      :study_metadata_attributes => {
+        :faculty_sponsor => Factory(:faculty_sponsor),
+        :study_type => StudyType.last,
+        :data_release_strategy => managed,
+        :study_description => 'blah',
+        :data_release_study_type => DataReleaseStudyType.first,
+        :contaminated_human_dna => 'No',
+        :contains_human_dna => 'Yes',
+        :commercially_available => 'No'
+      }
+    )
+end
+
+Given /^the study "(.*?)" has a data access group of "(.*?)"$/ do |study_name, dag|
+  Study.find_by_name(study_name).study_metadata.update_attributes!(:data_access_group=>dag)
+end
+
