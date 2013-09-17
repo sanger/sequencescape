@@ -8,7 +8,7 @@ namespace :benchmark do
     user = User.find_or_create_by_login('test_user')
     targets = []
 
-    45.times do
+    30.times do
       $stdout.print '.'
       targets << Purpose.find_by_name('Post Shear').create!
     end
@@ -25,7 +25,7 @@ namespace :benchmark do
 
     start = Time.now
     $stdout.puts "Starting #{start}"
-    30.times do
+    15.times do
       Transfer::BetweenPlates.create!(:source=>stock,:destination=>targets.pop,:transfers=>all_wells.clone, :user=>user)
       $stdout.print '.'
     end
