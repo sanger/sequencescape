@@ -363,6 +363,10 @@ en:
         data_release_delay_reason_comment:
           label: Comment regarding data release timing and approval
 
+        data_access_group:
+          label: Data access group
+          help: Access to product data in the iRODs seq zone will be limited to the members of the Sanger UNIX group set here. Leaving the field empty allow public access within the Sanger. Entering an invalid group will stop all access.
+
         bam:
           label: Alignments in BAM
           help: If you uncheck this, then you will not have alignments added to your BAM files for any runs created in this study.  Also, please be aware, that unless you choose a reference genome, the reference that the alignments will be made against is guessed based on the taxon identifier.  If there is no suitable reference genome, please leave it blank and contact NPG to get it added.

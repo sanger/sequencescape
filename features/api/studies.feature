@@ -50,6 +50,7 @@ Feature: Access studies through the API
           "commercially_available": "No",
           "data_release_sort_of_study": "genomic sequencing",
           "data_release_strategy": "open",
+          "data access group": "",
           "reference_genome": "",
 
           "samples": {
