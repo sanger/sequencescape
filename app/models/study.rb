@@ -236,6 +236,8 @@ class Study < ActiveRecord::Base
       required.attribute(:data_release_prevention_reason_comment)
     end
 
+    attribute(:data_access_group, :with=> /\A[A-z0-9]+\Z/)
+
     # SNP information
     attribute(:snp_study_id, :integer => true)
     attribute(:snp_parent_study_id, :integer => true)
@@ -365,6 +367,12 @@ class Study < ActiveRecord::Base
     self.validating_ena_required_fields_without_enforce_data_release = state if self.enforce_data_release
   end
   alias_method_chain(:validating_ena_required_fields=, :enforce_data_release)
+
+  def warnings
+    if study_metadata.managed? && study_metadata.data_access_group.blank?
+      "No user group specified for a managed study. Please specify a valid Unix user group to ensure study data is visible to the correct people."
+    end
+  end
 
   def mark_deactive
     unless self.inactive?
@@ -674,7 +682,6 @@ class Study < ActiveRecord::Base
       true
     end
   end
-
 
   private
   # beware , this method change the study of an object but doesn't look at some
