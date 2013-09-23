@@ -51,7 +51,7 @@ class Cherrypick::Task::PickHelpersTest < ActiveSupport::TestCase
         end
 
         should 'lays out the wells in column order' do
-          expected = Map.where_plate_size(@plate.size).in_column_major_order.slice(0, @requests.size)
+          expected = Map.where_plate_size(@plate.size).where_plate_shape(@plate.asset_shape).in_column_major_order.slice(0, @requests.size)
           assert_equal(expected, @requests.map(&:target_asset).map(&:map), "Wells in incorrect positions")
         end
       end
@@ -67,7 +67,7 @@ class Cherrypick::Task::PickHelpersTest < ActiveSupport::TestCase
         end
 
         should 'lays out the wells in row order' do
-          expected = Map.where_plate_size(@plate.size).in_row_major_order.slice(0, @requests.size)
+          expected = Map.where_plate_size(@plate.size).where_plate_shape(@plate.asset_shape).in_row_major_order.slice(0, @requests.size)
           assert_equal(expected, @requests.map(&:target_asset).map(&:map), "Wells in incorrect positions")
         end
       end

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130916095432) do
+ActiveRecord::Schema.define(:version => 20130919131612) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -100,6 +100,15 @@ ActiveRecord::Schema.define(:version => 20130916095432) do
 
   add_index "asset_links", ["ancestor_id", "direct"], :name => "index_asset_links_on_ancestor_id_and_direct"
   add_index "asset_links", ["descendant_id", "direct"], :name => "index_asset_links_on_descendant_id_and_direct"
+
+  create_table "asset_shapes", :force => true do |t|
+    t.string   "name",                 :null => false
+    t.integer  "horizontal_ratio",     :null => false
+    t.integer  "vertical_ratio",       :null => false
+    t.string   "description_strategy", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "assets", :force => true do |t|
     t.string   "name"
@@ -568,11 +577,12 @@ ActiveRecord::Schema.define(:version => 20130916095432) do
   end
 
   create_table "maps", :force => true do |t|
-    t.string  "description",  :limit => 4
+    t.string  "description",    :limit => 4
     t.integer "asset_size"
     t.integer "location_id"
     t.integer "row_order"
     t.integer "column_order"
+    t.integer "asset_shape_id",              :default => 1, :null => false
   end
 
   add_index "maps", ["description", "asset_size"], :name => "index_maps_on_description_and_asset_size"
@@ -731,6 +741,8 @@ ActiveRecord::Schema.define(:version => 20130916095432) do
     t.string   "cherrypick_direction",                          :default => "column",  :null => false
     t.integer  "default_location_id"
     t.string   "cherrypick_filters"
+    t.integer  "size",                                          :default => 96
+    t.integer  "asset_shape_id",                                :default => 1,         :null => false
   end
 
   add_index "plate_purposes", ["qc_display"], :name => "index_plate_purposes_on_qc_display"

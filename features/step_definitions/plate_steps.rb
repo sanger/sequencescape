@@ -131,7 +131,7 @@ end
 
 Given /^the well with ID (\d+) is at position "([^\"]+)" on the plate with ID (\d+)$/ do |well_id, position, plate_id|
   plate = Plate.find(plate_id)
-  map   = Map.where_description(position).where_plate_size(plate.size).first or raise StandardError, "Could not find position #{position}"
+  map   = Map.where_description(position).where_plate_size(plate.size).where_plate_shape(plate.asset_shape).first or raise StandardError, "Could not find position #{position}"
   Well.find(well_id).update_attributes!(:plate => plate, :map => map)
 end
 

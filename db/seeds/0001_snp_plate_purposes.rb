@@ -47,6 +47,7 @@ plate_purposes = <<-EOS
   qc_display: false
   id: 13
   type: QcPlatePurpose
+  size: 384
 - name: Gel Dilution
   qc_display: false
   id: 14
@@ -273,8 +274,27 @@ plate_purposes = <<-EOS
   target_type: PulldownQpcrPlate
 EOS
 
+Map::AssetShape.create!(
+  :name => 'Standard',
+  :horizontal_ratio => 3,
+  :vertical_ratio   => 2,
+  :description_strategy => Map::Coordinate
+)
+Map::AssetShape.create!(
+  :name => 'Fluidgm96',
+  :horizontal_ratio => 3,
+  :vertical_ratio   => 8,
+  :description_strategy => Map::Sequential
+)
+Map::AssetShape.create!(
+  :name => 'Fluidgm192',
+  :horizontal_ratio => 3,
+  :vertical_ratio   => 4,
+  :description_strategy => Map::Sequential
+)
+
 YAML::load(plate_purposes).each do |plate_purpose|
-  attributes = plate_purpose.reverse_merge('type' => 'PlatePurpose', 'cherrypickable_target' => false)
+  attributes = plate_purpose.reverse_merge('type' => 'PlatePurpose', 'cherrypickable_target' => false, 'asset_shape_id'=>Map::AssetShape.find_by_name('Standard').id)
   attributes.delete('type').constantize.new(attributes) do |purpose|
     purpose.id = attributes['id']
   end.save!
@@ -326,4 +346,37 @@ ActiveRecord::Base.transaction do
   # A couple of legacy pulldown types
   PlatePurpose.create!(:name => 'SEQCAP WG', :cherrypickable_target => false)  # Superceded by Pulldown WGS below (here for transition period)
   PlatePurpose.create!(:name => 'SEQCAP SC', :cherrypickable_target => false)  # Superceded by Pulldown SC/ISC below (here for transition period)
+
+  PlatePurpose.create!(
+  :name=>'STA',
+  :default_state=>'pending',
+  :barcode_printer_type=>BarcodePrinterType.find_by_name('96 Well Plate'),
+  :cherrypickable_target => true,
+  :cherrypick_direction => 'column',
+  :asset_shape => Map::AssetShape.find_by_name('Standard')
+)
+PlatePurpose.create!(
+  :name=>'STA2',
+  :default_state=>'pending',
+  :barcode_printer_type=>BarcodePrinterType.find_by_name('96 Well Plate'),
+  :cherrypickable_target => true,
+  :cherrypick_direction => 'column',
+  :asset_shape => Map::AssetShape.find_by_name('Standard')
+)
+PlatePurpose.create!(
+  :name=>'Fluidgm 96-96',
+  :default_state=>'pending',
+  :cherrypickable_target => true,
+  :cherrypick_direction => 'row',
+  :size => 96,
+  :asset_shape => Map::AssetShape.find_by_name('Fluidgm96')
+)
+PlatePurpose.create!(
+  :name=>'Fluidgm 192-24',
+  :default_state=>'pending',
+  :cherrypickable_target => true,
+  :cherrypick_direction => 'row',
+  :size => 192,
+  :asset_shape => Map::AssetShape.find_by_name('Fluidgm192')
+)
 end

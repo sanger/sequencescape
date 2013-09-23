@@ -1,4 +1,15 @@
 class Map < ActiveRecord::Base
+
+  class AssetShape < ActiveRecord::Base
+    set_table_name('asset_shapes')
+  end
+
+  module Coordinate
+  end
+
+  module Sequential
+  end
+
   named_scope :for_position_on_plate, lambda { |position,plate_size|
     {
       :conditions => {
@@ -10,8 +21,10 @@ class Map < ActiveRecord::Base
 
   named_scope :where_description, lambda { |*descriptions| { :conditions => { :description => descriptions.flatten } } }
   named_scope :where_plate_size,  lambda { |size| { :conditions => { :asset_size => size } } }
+  named_scope :where_plate_shape,  lambda { |asset_shape| { :conditions => { :asset_shape_id => asset_shape.id } } }
 	named_scope :where_vertical_plate_position, lambda { |*positions| { :conditions => { :column_order => positions.map {|v| v-1} } } }
 
+  belongs_to :asset_shape, :class_name => 'Map::AssetShape'
   def vertical_plate_position
     self.column_order + 1
   end
@@ -208,16 +221,18 @@ class Map < ActiveRecord::Base
     end
 
     # Walking in column major order goes by the columns: A1, B1, C1, ... A2, B2, ...
-    def walk_plate_in_column_major_order(size, &block)
-      self.all(:conditions => { :asset_size => size }, :order => 'column_order ASC').each do |position|
+    def walk_plate_in_column_major_order(size, asset_shape=nil, &block)
+      asset_shape ||= AssetShape.find_by_name('Standard')
+      self.all(:conditions => { :asset_size => size, :asset_shape_id => asset_shape.id }, :order => 'column_order ASC').each do |position|
         yield(position, position.column_order)
       end
     end
     alias_method(:walk_plate_vertically, :walk_plate_in_column_major_order)
 
     # Walking in row major order goes by the rows: A1, A2, A3, ... B1, B2, B3 ....
-    def walk_plate_in_row_major_order(size, &block)
-      self.all(:conditions => { :asset_size => size }, :order => 'row_order ASC').each do |position|
+    def walk_plate_in_row_major_order(size, shape=0, &block)
+      asset_shape ||= AssetShape.find_by_name('Standard')
+      self.all(:conditions => { :asset_size => size, :asset_shape_id => asset_shape.id }, :order => 'row_order ASC').each do |position|
         yield(position, position.row_order)
       end
     end

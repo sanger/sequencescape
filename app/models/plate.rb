@@ -18,6 +18,7 @@ class Plate < Asset
 
   # The type of the barcode is delegated to the plate purpose because that governs the number of wells
   delegate :barcode_type, :to => :plate_purpose, :allow_nil => true
+  delegate :asset_shape, :to => :plate_purpose, :allow_nil => true
 
   # Transfer requests into a plate are the requests leading into the wells of said plate.
   def transfer_requests
@@ -102,7 +103,7 @@ WHERE c.container_id=?
     private :post_connect
 
     def construct!
-      Map.where_plate_size(proxy_owner.size).in_row_major_order.map do |location|
+      Map.where_plate_size(proxy_owner.size).where_plate_shape(proxy_owner.asset_shape).in_row_major_order.map do |location|
         build(:map => location)
       end.tap do |wells|
         proxy_owner.save!
@@ -566,7 +567,7 @@ WHERE c.container_id=?
   end
 
   def valid_positions?(positions)
-    unique_positions_on_plate, unique_positions_from_caller = Map.where_description(positions).where_plate_size(self.size).all.map(&:description).sort.uniq, positions.sort.uniq
+    unique_positions_on_plate, unique_positions_from_caller = Map.where_description(positions).where_plate_size(self.size).where_plate_shape(self.asset_shape).all.map(&:description).sort.uniq, positions.sort.uniq
     unique_positions_on_plate == unique_positions_from_caller
   end
 

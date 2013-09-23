@@ -91,6 +91,7 @@ module Tasks::CherrypickHandler
 
       # Ensure that we have a plate purpose for any plates we are creating
       plate_purpose = PlatePurpose.find(params[:plate_purpose_id])
+      asset_shape_id = plate_purpose.asset_shape_is
 
       # Configure the cherrypicking action based on the parameters
       cherrypicker = case params[:cherrypick_action]
@@ -101,7 +102,7 @@ module Tasks::CherrypickHandler
       end
 
       # We can preload the well locations so that we can do efficient lookup later.
-      well_locations = Hash[Map.where_plate_size(partial_plate.try(:size) || size).in_row_major_order.map do |location|
+      well_locations = Hash[Map.where_plate_size(partial_plate.try(:size) || size).where_plate_shape(partial_plate.try(:asset_shape) || asset_shape_id).in_row_major_order.map do |location|
         [location.description, location]
       end]
 
