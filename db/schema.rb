@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130919131612) do
+ActiveRecord::Schema.define(:version => 20130924090300) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -706,6 +706,7 @@ ActiveRecord::Schema.define(:version => 20130919131612) do
     t.string   "infinium_barcode"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "fluidgm_barcode",  :limit => 10
   end
 
   add_index "plate_metadata", ["plate_id"], :name => "index_plate_metadata_on_plate_id"
