@@ -596,6 +596,14 @@ WHERE c.container_id=?
     )
   end
 
+  def height
+    (size/(asset_shape.ratio_sum))*asset_shape.vertical_ratio
+  end
+
+  def width
+    (size/(asset_shape.ratio_sum))*asset_shape.horizontal_ratio
+  end
+
   # This method returns a map from the wells on the plate to their stock well.
   def stock_wells
     # Optimisation: if the plate is a stock plate then it's wells are it's stock wells!

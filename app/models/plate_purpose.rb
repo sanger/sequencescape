@@ -46,6 +46,18 @@ class PlatePurpose < Purpose
     Cherrypick::Strategy.new(self)
   end
 
+  def cherrypick_dimension
+    cherrypick_direction == 'column' ? plate_height : plate_width
+  end
+
+  def plate_height
+    (size/(asset_shape.ratio_sum))*asset_shape.vertical_ratio
+  end
+
+  def plate_width
+    (size/(asset_shape.ratio_sum))*asset_shape.horizontal_ratio
+  end
+
   def cherrypick_filters
     self[:cherrypick_filters].map(&:constantize)
   end

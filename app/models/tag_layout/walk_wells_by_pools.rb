@@ -11,7 +11,7 @@ module TagLayout::WalkWellsByPools
     # Adjust each of the groups so that any wells that are in the same pool as those at the same position
     # in the group to the left are moved to a non-clashing position.  Effectively this makes the view of the
     # plate slightly jagged.
-    group_size      = direction.to_sym == :column ? Map.plate_length(plate.size) : Map.plate_width(plate.size)
+    group_size      = direction.to_sym == :column ? Map::Coordinate.plate_length(plate.size) : Map::Coordinate.plate_width(plate.size)
     wells_in_groups = wells_in_walking_order.with_pool_id.in_groups_of(group_size).map do |wells|
       wells.map { |well| [ well, well.pool_id ] }
     end

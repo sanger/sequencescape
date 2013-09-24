@@ -2,8 +2,8 @@
 
 <table class="plate">
 	<thead>
-		<% num_rows = Map.plate_length(plate.size) -%>
-		<% num_columns = Map.plate_width(plate.size) -%>
+		<% num_rows = plate.width -%>
+		<% num_columns = plate.height -%>
 		<th></th>
 		<% num_columns.times do |column| -%>
 			<th><%= column+1 %></th>

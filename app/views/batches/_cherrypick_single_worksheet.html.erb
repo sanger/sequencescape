@@ -73,8 +73,8 @@
 	<thead>
 	  <tr>
 		<% plate = Plate.find_by_barcode(Barcode.split_barcode(barcode)[1]) %>
-		<% num_rows = Map.plate_length(plate.size) -%>
-		<% num_columns = Map.plate_width(plate.size) -%>
+		<% num_rows = plate.height -%>
+		<% num_columns = plate.width -%>
 		<th></th>
 		<% num_columns.times do |column| -%>
 			<th><%= column+1 %></th>

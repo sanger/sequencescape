@@ -13,7 +13,7 @@ map_data = []
     details = (0...plate_size).map do |index|
       {
         :location_id => index + 1,
-        :description => Map.horizontal_plate_position_to_description(index+1, plate_size),
+        :description => Map::Coordinate.horizontal_plate_position_to_description(index+1, plate_size),
         :asset_size  => plate_size,
         :asset_shape => Map::AssetShape.find_by_name('Standard')
       }

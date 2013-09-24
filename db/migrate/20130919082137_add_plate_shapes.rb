@@ -5,19 +5,19 @@ class AddPlateShapes < ActiveRecord::Migration
         :name => 'Standard',
         :horizontal_ratio => 3,
         :vertical_ratio   => 2,
-        :description_strategy => Map::Coordinate
+        :description_strategy => 'Map::Coordinate'
       )
       Map::AssetShape.create!(
         :name => 'Fluidgm96',
         :horizontal_ratio => 3,
         :vertical_ratio   => 8,
-        :description_strategy => Map::Sequential
+        :description_strategy => 'Map::Sequential'
       )
       Map::AssetShape.create!(
         :name => 'Fluidgm192',
         :horizontal_ratio => 3,
         :vertical_ratio   => 4,
-        :description_strategy => Map::Sequential
+        :description_strategy => 'Map::Sequential'
       )
     end
   end

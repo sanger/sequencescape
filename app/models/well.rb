@@ -53,8 +53,8 @@ class Well < Aliquot::Receptacle
   named_scope :in_inverse_column_major_order, { :joins => :map, :order => 'column_order DESC' }
   named_scope :in_inverse_row_major_order, { :joins => :map, :order => 'row_order DESC' }
 
-  named_scope :in_plate_column, lambda {|col,size| {:joins => :map, :conditions => {:maps => {:description => Map.descriptions_for_column(col,size), :asset_size => size }}}}
-  named_scope :in_plate_row,    lambda {|row,size| {:joins => :map, :conditions => {:maps => {:description => Map.descriptions_for_row(row,size), :asset_size =>size }}}}
+  named_scope :in_plate_column, lambda {|col,size| {:joins => :map, :conditions => {:maps => {:description => Map::Coordinate.descriptions_for_column(col,size), :asset_size => size }}}}
+  named_scope :in_plate_row,    lambda {|row,size| {:joins => :map, :conditions => {:maps => {:description => Map::Coordinate.descriptions_for_row(row,size), :asset_size =>size }}}}
 
   named_scope :with_blank_samples, {
     :joins => [

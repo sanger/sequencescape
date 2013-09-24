@@ -60,8 +60,8 @@ module Tasks::CherrypickHandler
     @plates = @map_info[0]
     @source_plate_ids = @map_info[1]
 
-    @plate_cols = Map.plate_width(plate_template.size)
-    @plate_rows = Map.plate_length(plate_template.size)
+    @plate_cols = plate.width
+    @plate_rows = plate.height
   end
 
   def setup_input_params_for_pass_through
