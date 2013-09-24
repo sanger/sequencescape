@@ -11,8 +11,17 @@ class Map < ActiveRecord::Base
       horizontal_ratio == 3 && vertical_ratio == 2
     end
 
-    def ratio_sum
-      horizontal_ratio + vertical_ratio
+    def multiplier(size)
+      ((size/(vertical_ratio*horizontal_ratio))**0.5).to_i
+    end
+    private :multiplier
+
+    def plate_height(size)
+      multiplier(size)*vertical_ratio
+    end
+
+    def plate_width(size)
+      multiplier(size)*horizontal_ratio
     end
   end
 

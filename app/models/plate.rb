@@ -598,11 +598,11 @@ WHERE c.container_id=?
   end
 
   def height
-    (size/(asset_shape.ratio_sum))*asset_shape.vertical_ratio
+    asset_shape.plate_height(size)
   end
 
   def width
-    (size/(asset_shape.ratio_sum))*asset_shape.horizontal_ratio
+    asset_shape.plate_width(size)
   end
 
   # This method returns a map from the wells on the plate to their stock well.

@@ -51,11 +51,11 @@ class PlatePurpose < Purpose
   end
 
   def plate_height
-    (size/(asset_shape.ratio_sum))*asset_shape.vertical_ratio
+    asset_shape.plate_height(size)
   end
 
   def plate_width
-    (size/(asset_shape.ratio_sum))*asset_shape.horizontal_ratio
+    asset_shape.plate_width(size)
   end
 
   def cherrypick_filters
