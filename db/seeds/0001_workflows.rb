@@ -1070,3 +1070,33 @@ SequencingPipeline.create!(:name => "MiSeq sequencing") do |pipeline|
             :workflow_id=>Submission::Workflow.find_by_key("short_read_sequencing").id,
             :request_type_ids_list=>[[cprt.id]]}
         )
+
+
+## Fluidgm Stuff
+RequestType.create!(shared_options.merge({
+  :key => 'pick_to_sta',
+  :name => 'Pick to STA',
+  :order => 1,
+  :request_class_name => 'CherrypickForPulldownRequest'
+  })
+).tap do |rt|
+  rt.acceptable_plate_purposes << Purpose.find_by_name!('Working Dilution')
+end
+RequestType.create!(shared_options.merge({
+  :key => 'pick_to_sta2',
+  :name => 'Pick to STA2',
+  :order => 2,
+  :request_class_name => 'CherrypickForPulldownRequest'
+  })
+).tap do |rt|
+  rt.acceptable_plate_purposes << Purpose.find_by_name!('STA')
+end
+RequestType.create!(shared_options.merge({
+  :key => 'pick_to_fluidgm',
+  :name => 'Pick to Fluidgm',
+  :order => 3,
+  :request_class_name => 'CherrypickForFluidgmRequest'
+  })
+).tap do |rt|
+  rt.acceptable_plate_purposes << Purpose.find_by_name!('STA2')
+end
