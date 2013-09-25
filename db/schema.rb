@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130924090300) do
+ActiveRecord::Schema.define(:version => 20130925105148) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -904,6 +904,7 @@ ActiveRecord::Schema.define(:version => 20130924090300) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "pre_capture_plex_level"
+    t.integer  "target_purpose_id"
   end
 
   add_index "request_metadata", ["request_id"], :name => "index_request_metadata_on_request_id"
