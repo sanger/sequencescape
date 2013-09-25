@@ -160,7 +160,7 @@ class Map < ActiveRecord::Base
 
   named_scope :where_description, lambda { |*descriptions| { :conditions => { :description => descriptions.flatten } } }
   named_scope :where_plate_size,  lambda { |size| { :conditions => { :asset_size => size } } }
-  named_scope :where_plate_shape,  lambda { |asset_shape| { :conditions => { :asset_shape_id => asset_shape.id } } }
+  named_scope :where_plate_shape,  lambda { |asset_shape| { :conditions => { :asset_shape_id => asset_shape } } }
   named_scope :where_vertical_plate_position, lambda { |*positions| { :conditions => { :column_order => positions.map {|v| v-1} } } }
 
   belongs_to :asset_shape, :class_name => 'Map::AssetShape'

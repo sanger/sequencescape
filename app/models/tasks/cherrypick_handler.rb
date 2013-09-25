@@ -60,8 +60,8 @@ module Tasks::CherrypickHandler
     @plates = @map_info[0]
     @source_plate_ids = @map_info[1]
 
-    @plate_cols = plate.width
-    @plate_rows = plate.height
+    @plate_cols = @plate.try(:width)||@plate_purpose.plate_width
+    @plate_rows = @plate.try(:height)||@plate_purpose.plate_height
   end
 
   def setup_input_params_for_pass_through
@@ -91,7 +91,7 @@ module Tasks::CherrypickHandler
 
       # Ensure that we have a plate purpose for any plates we are creating
       plate_purpose = PlatePurpose.find(params[:plate_purpose_id])
-      asset_shape_id = plate_purpose.asset_shape_is
+      asset_shape_id = plate_purpose.asset_shape_id
 
       # Configure the cherrypicking action based on the parameters
       cherrypicker = case params[:cherrypick_action]
