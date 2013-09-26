@@ -1,12 +1,12 @@
 <% add :title, "Batch" -%>
 <% add :menu, "Edit batch" => edit_batch_path(@batch) -%>
-<% add :admin_option, {"Delete batch" => batch_path(@batch) }, {:confirm => "Are you sure you want to delete this batch? There is no undo.", :method => :delete} -%>
 <% add :back_menu, "Back to batch" => batch_path(@batch) -%>
 
 <h1>FAIL ITEMS IN BATCH <%= @batch.id %></h1>
 <div class="info">
   Removing a request from a batch will result in it being returned to the inbox to be reprocessed. <br/ >
-  Failing a request will result in an email being generated and sent to the project's PM.  This request will not be returned to the inbox.
+  Failing a request will result in an email being generated and sent to the project's PM.  This request will not be returned to the inbox. <br/>
+  Batches will automatically be failed when all requests in them have been failed, cancelled or removed.
 </div>
 <% form_tag(:controller => :batches, :action => :fail_items, :id => @batch.id ) do -%>
 
@@ -24,16 +24,9 @@
       <td width="65%"><%= text_area :failure, :comment, :size => "40x6" %></td>
     </tr>
     <tr>
-      <td width="35%" class="item">Fail entire batch?</td>
-      <td width="65%"><%= check_box :failure, :entire_batch %></td>
-    </tr>
-    <tr>
-      <td width="35%" class="item">Fail only batch?</td>
-      <td width="65%"><%= check_box :failure, :only_batch %></td>
-    </tr>
-    <tr>
-      <td width="35%" class="item">&nbsp;</td><td width="65%"><%= submit_tag "Fail items/batch" %></td>
+      <td width="35%" class="item">&nbsp;</td><td width="65%"><%= submit_tag 'Fail selected requests', :value=>'Fail selected requests' %></td>
     </tr>
   </table>
 </div>
 <% end -%>
+<%= javascript_include_tag 'fail_batch.js' %>
