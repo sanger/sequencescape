@@ -16,7 +16,7 @@
 
 <% if @asset.respond_to?(:sample) && @asset.sample %>
   <% add :menu, "Back to sample" => sample_path(@asset.sample) -%>
-  <% @asset.studies.each do |study| %>
+  <% @asset.studies.uniq.each do |study| %>
     <% add :menu, "Back to study #{study.name}" => study_path(study) -%>
   <% end %>
 <% end %>
