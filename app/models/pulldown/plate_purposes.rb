@@ -38,22 +38,22 @@ module Pulldown::PlatePurposes
       'ISC cap lib pool'
     ], [
       'Lib PCR-XP',
-      'ISC-HTP lib pool',
-      'ISC-HTP hyb',
-      'ISC-HTP cap lib',
-      'ISC-HTP cap lib PCR',
-      'ISC-HTP cap lib PCR-XP',
-      'ISC-HTP cap lib pool'
+      'ISCH lib pool',
+      'ISCH hyb',
+      'ISCH cap lib',
+      'ISCH cap lib PCR',
+      'ISCH cap lib PCR-XP',
+      'ISCH cap lib pool'
     ]
   ]
 
   PLATE_PURPOSE_TYPE = {
-    'ISC-HTP lib pool'       => Pulldown::InitialDownstreamPlatePurpose,
-    'ISC-HTP hyb'            => IlluminaHtp::DownstreamPlatePurpose,
-    'ISC-HTP cap lib'        => IlluminaHtp::DownstreamPlatePurpose,
-    'ISC-HTP cap lib PCR'    => IlluminaHtp::DownstreamPlatePurpose,
-    'ISC-HTP cap lib PCR-XP' => IlluminaHtp::DownstreamPlatePurpose,
-    'ISC-HTP cap lib pool'   => IlluminaHtp::DownstreamPlatePurpose
+    'ISCH lib pool'       => Pulldown::InitialDownstreamPlatePurpose,
+    'ISCH hyb'            => IlluminaHtp::DownstreamPlatePurpose,
+    'ISCH cap lib'        => IlluminaHtp::DownstreamPlatePurpose,
+    'ISCH cap lib PCR'    => IlluminaHtp::DownstreamPlatePurpose,
+    'ISCH cap lib PCR-XP' => IlluminaHtp::DownstreamPlatePurpose,
+    'ISCH cap lib pool'   => IlluminaHtp::DownstreamPlatePurpose
   }
 
   PLATE_PURPOSE_LEADING_TO_QC_PLATES = [
@@ -74,8 +74,8 @@ module Pulldown::PlatePurposes
 
 
   PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
-    [ 'Lib PCR-XP',      'ISC-HTP lib pool', 'Pulldown::Requests::PcrXpToIscLibPool'     ],
-    [ 'Lib PCRR-XP',     'ISC-HTP lib pool', 'Pulldown::Requests::PcrXpToIscLibPool'     ]
+    [ 'Lib PCR-XP',      'ISCH lib pool', 'Pulldown::Requests::PcrXpToIscLibPool'     ],
+    [ 'Lib PCRR-XP',     'ISCH lib pool', 'Pulldown::Requests::PcrXpToIscLibPool'     ]
   ]
 
   STOCK_PLATE_PURPOSES = ['WGS stock DNA','SC stock DNA','ISC stock DNA']

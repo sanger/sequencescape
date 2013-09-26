@@ -9,8 +9,8 @@ class Io::Tube < Io::Asset
                             purpose.uuid => purpose.uuid
 
                                  closed  => closed
-                          concentration  => concentration
-                                 volume  => volume
+                     concentration.to_f  => concentration
+                            volume.to_f  => volume
                         scanned_in_date  => scanned_in_date
                                     role => label.prefix
                             purpose.name => label.text

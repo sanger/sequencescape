@@ -1,6 +1,6 @@
 <% add :title, "Print barcode for this asset." -%>
 <% add :menu, "View studies" => studies_path -%>
-<% @asset.studies.each do |study| %>
+<% @asset.studies.uniq.each do |study| %>
 	<% add :menu, "Back to #{study.name}" => study_url(study) %>
 <% end %>
 

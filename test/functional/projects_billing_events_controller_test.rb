@@ -14,6 +14,7 @@ class Projects::BillingEventsControllerTest < ActionController::TestCase
       @user     = Factory :user, :email => @logged_in_users_email
       @controller.stubs(:current_user).returns(@user)
       @project  = Factory :project
+      @seq_request = Factory :request
     end
     should_require_login
 
@@ -90,8 +91,7 @@ class Projects::BillingEventsControllerTest < ActionController::TestCase
     context "#create" do
       context "with valid parameters" do
         setup do
-          @s_request  = Factory :request
-          @billing_attributes = Factory.attributes_for(:billing_event, :project_id => @project.id, :request_id => @s_request.id)
+          @billing_attributes = Factory.attributes_for(:billing_event, :project_id=> @project.id, :request_id => @seq_request.id)
         end
         context "POSTed as form" do
           context "with supplied email" do

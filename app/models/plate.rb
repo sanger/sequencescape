@@ -103,8 +103,9 @@ WHERE c.container_id=?
 
     def construct!
       Map.where_plate_size(proxy_owner.size).in_row_major_order.map do |location|
-        create!(:map => location)
+        build(:map => location)
       end.tap do |wells|
+        proxy_owner.save!
         AssetLink::Job.create(proxy_owner, wells)
       end
     end

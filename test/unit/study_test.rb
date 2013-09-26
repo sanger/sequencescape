@@ -303,6 +303,25 @@ class StudyTest < ActiveSupport::TestCase
         assert_equal 'https://www.example.com', @study.study_metadata.dac_policy
       end
     end
+
+    context 'policy text' do
+
+      setup do
+        @study = Factory :managed_study
+      end
+
+      should 'accept alphanumeric data access groups' do
+        assert @study.study_metadata.update_attributes!(:data_access_group=>'goodname')
+        assert_equal 'goodname', @study.study_metadata.data_access_group
+      end
+
+      should 'reject non-alphanumeric data access groups' do
+        assert_raise ActiveRecord::RecordInvalid do
+          @study.study_metadata.update_attributes!(:data_access_group=>'b@dname')
+        end
+      end
+
+    end
   end
 end
 

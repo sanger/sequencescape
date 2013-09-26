@@ -322,7 +322,7 @@ class Sample < ActiveRecord::Base
     require_tag(:sample_common_name)
     require_tag(:gender, :EGA)
     require_tag(:phenotype, :EGA)
-    require_tag(:donor_id_provided_if_needed, :EGA)
+    require_tag(:donor_id, :EGA)
 
   # This needs to appear after the metadata has been defined to ensure that the Metadata class
   # is present.
@@ -343,9 +343,6 @@ class Sample < ActiveRecord::Base
       sample_common_name
     end
 
-    def donor_id_provided_if_needed
-      phenotype.try(:downcase) == 'cancer' ? donor_id : true
-    end
   end
 
 
