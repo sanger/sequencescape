@@ -18,75 +18,75 @@ class Projects::BillingEventsControllerTest < ActionController::TestCase
     end
     should_require_login
 
-    # context "#index" do
-    #   context "requesting html" do
-    #     setup do
-    #       get :index, :project_id => @project.id
-    #     end
+    context "#index" do
+      context "requesting html" do
+        setup do
+          get :index, :project_id => @project.id
+        end
 
-    #     should_respond_with :success
-    #     should_render_template "index"
-    #   end
+        should_respond_with :success
+        should_render_template "index"
+      end
 
-    #   context "requesting xml" do
-    #     setup do
-    #       get :index, :project_id => @project.id, :format => "xml"
-    #     end
+      context "requesting xml" do
+        setup do
+          get :index, :project_id => @project.id, :format => "xml"
+        end
 
-    #     should_respond_with :success
-    #     should_respond_with_content_type :xml
-    #   end
+        should_respond_with :success
+        should_respond_with_content_type :xml
+      end
 
-    #   context "requesting json" do
-    #     setup do
-    #       get :index, :project_id => @project.id, :format => "json"
-    #     end
+      context "requesting json" do
+        setup do
+          get :index, :project_id => @project.id, :format => "json"
+        end
 
-    #     should_respond_with :success
-    #     should_respond_with_content_type :json
-    #   end
-    # end
+        should_respond_with :success
+        should_respond_with_content_type :json
+      end
+    end
 
-    # context "#new" do
-    #   setup do
-    #     get :new, :project_id => @project.id
-    #   end
+    context "#new" do
+      setup do
+        get :new, :project_id => @project.id
+      end
 
-    #   should_respond_with :success
-    #   should_render_template "new"
-    # end
+      should_respond_with :success
+      should_render_template "new"
+    end
 
-    # context "#show" do
-    #   setup do
-    #     @billing_event = Factory :billing_event
-    #   end
-    #   context "requesting html" do
-    #     setup do
-    #       get :show, :project_id => @project, :id => @billing_event
-    #     end
+    context "#show" do
+      setup do
+        @billing_event = Factory :billing_event
+      end
+      context "requesting html" do
+        setup do
+          get :show, :project_id => @project, :id => @billing_event
+        end
 
-    #     should_respond_with :success
-    #     should_render_template "show"
-    #   end
+        should_respond_with :success
+        should_render_template "show"
+      end
 
-    #   context "requesting xml" do
-    #     setup do
-    #       get :show, :project_id => @project, :id => @billing_event, :format => "xml"
-    #     end
+      context "requesting xml" do
+        setup do
+          get :show, :project_id => @project, :id => @billing_event, :format => "xml"
+        end
 
-    #     should_respond_with :success
-    #     should_respond_with_content_type :xml
-    #   end
+        should_respond_with :success
+        should_respond_with_content_type :xml
+      end
 
-    #   context "requesting json" do
-    #     setup do
-    #       get :show, :project_id => @project, :id => @billing_event, :format => "json"
-    #     end
+      context "requesting json" do
+        setup do
+          get :show, :project_id => @project, :id => @billing_event, :format => "json"
+        end
 
-    #     should_respond_with :success
-    #     should_respond_with_content_type :json
-    #   end
-    # end
+        should_respond_with :success
+        should_respond_with_content_type :json
+      end
+    end
 
     context "#create" do
       context "with valid parameters" do
@@ -125,7 +125,7 @@ class Projects::BillingEventsControllerTest < ActionController::TestCase
 
           should_respond_with :created
           should "return location header to new resource" do
-            assert_equal project_billing_event_url(@project, @billing_event), @response.location
+            assert_equal project_billing_event_url(@project.id, @billing_event.id), @response.location
           end
           should "set the created_at as supplied" do
             assert_equal @billing_attributes[:created_by], assigns(:billing_event).created_by
@@ -139,7 +139,7 @@ class Projects::BillingEventsControllerTest < ActionController::TestCase
 
           should_respond_with :created
           should "return location header to new resource" do
-            assert_equal project_billing_event_url(@project, @billing_event), @response.location
+            assert_equal project_billing_event_url(@project.id, @billing_event.id), @response.location
           end
         end
 

@@ -7,6 +7,7 @@ module Batch::StateMachineBehaviour
       aasm_state :started, :enter => :start_requests
       aasm_state :completed
       aasm_state :released
+      aasm_state :discarded
 
       # State Machine events
       aasm_event :start do
@@ -19,6 +20,10 @@ module Batch::StateMachineBehaviour
 
       aasm_event :release do
         transitions :to => :released, :from => [:completed, :started, :pending, :released]
+      end
+
+      aasm_event :discard do
+        transitions :to => :discarded, :from => [:pending]
       end
 
       # Some named scopes needed for finding the batches in a particular state
@@ -75,4 +80,5 @@ module Batch::StateMachineBehaviour
     end
   end
   private :create_release_batch_event_for
+
 end

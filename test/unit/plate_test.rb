@@ -238,7 +238,7 @@ class PlateTest < ActiveSupport::TestCase
 
       context "without attachments" do
         should "not report any qc_data" do
-          assert @plate.qc_information.empty?
+          assert @plate.qc_files.empty?
         end
       end
 

@@ -378,17 +378,24 @@ class Request < ActiveRecord::Base
     Request.count(:conditions => "submission_id = #{submission_id} and request_type_id = #{request_type_id}")
   end
 
+  def return_pending_to_inbox!
+    raise StandardError, "Can only return pending requests, request is #{state}" unless pending?
+    remove_unused_assets
+  end
+
   def remove_unused_assets
-    return if target_asset.nil?
-    target_asset.requests do |related_request|
-      target_asset.remove_unused_assets
-      releated_request.asset.destroy
-      releated_request.asset_id = nil
-      releated_request.save!
+    ActiveRecord::Base.transaction do
+      return if target_asset.nil?
+      target_asset.requests do |related_request|
+        target_asset.remove_unused_assets
+        releated_request.asset.ancestors.clear
+        releated_request.asset.destroy
+        releated_request.save!
+      end
+      self.target_asset.ancestors.clear
+      self.target_asset.destroy
+      self.save!
     end
-    self.target_asset.destroy
-    self.target_asset_id = nil
-    self.save!
   end
 
   def format_qc_information

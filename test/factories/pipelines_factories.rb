@@ -145,7 +145,21 @@ Factory.define :pipeline, :class => Pipeline do |p|
   p.next_pipeline_id      nil
   p.previous_pipeline_id  nil
   p.location              {|location| location.association(:location)}
-  p.after_build          do |pipeline| 
+  p.after_build          do |pipeline|
+    pipeline.request_types << Factory(:request_type )
+    pipeline.add_control_request_type
+    pipeline.build_workflow(:name => pipeline.name, :item_limit => 2, :locale => 'Internal') if pipeline.workflow.nil?
+  end
+end
+
+Factory.define :sequencing_pipeline, :class => SequencingPipeline do |p|
+  p.name                  {|a| Factory.next :pipeline_name }
+  p.automated             false
+  p.active                true
+  p.next_pipeline_id      nil
+  p.previous_pipeline_id  nil
+  p.location              {|location| location.association(:location)}
+  p.after_build          do |pipeline|
     pipeline.request_types << Factory(:request_type )
     pipeline.add_control_request_type
     pipeline.build_workflow(:name => pipeline.name, :item_limit => 2, :locale => 'Internal') if pipeline.workflow.nil?
@@ -177,7 +191,7 @@ Factory.define :library_creation_pipeline do |p|
 
   p.after_build do |pipeline|
     pipeline.request_types << Factory(:request_type )
-    pipeline.add_control_request_type    
+    pipeline.add_control_request_type
     pipeline.build_workflow(:name => pipeline.name, :locale => 'Internal')
   end
 end
@@ -192,7 +206,7 @@ Factory.define :pulldown_library_creation_pipeline do |p|
 
   p.after_build do |pipeline|
     pipeline.request_types << Factory(:request_type )
-    pipeline.add_control_request_type    
+    pipeline.add_control_request_type
     pipeline.build_workflow(:name => pipeline.name, :locale => 'Internal')
   end
 end
@@ -238,11 +252,11 @@ Factory.define :request_information_type do |w|
   w.name                   ""
   w.key                    ""
   w.label                  ""
-  w.hide_in_inbox          ""    
+  w.hide_in_inbox          ""
 end
 
 Factory.define :pipeline_request_information_type do |prit|
-  prit.pipeline                  {|pipeline| pipeline.association(:pipeline)}   
+  prit.pipeline                  {|pipeline| pipeline.association(:pipeline)}
   prit.request_information_type  {|request_information_type| request_information_type.association(:request_information_type)}
 end
 
