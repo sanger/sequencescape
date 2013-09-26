@@ -138,6 +138,13 @@ class Request < ActiveRecord::Base
     self.study_id=study.id
   end
 
+  def associated_studies
+    return [initial_study] if initial_study.present?
+    return asset.studies.uniq if asset.present?
+    return submission.studies if submission.present?
+    []
+  end
+
   #  validates_presence_of :study, :request_type#TODO, :submission
 
   named_scope :between, lambda { |source,target| { :conditions => { :asset_id => source.id, :target_asset_id => target.id } } }
