@@ -200,11 +200,13 @@ WHERE c.container_id=?
   deprecate :create_child
 
   def find_map_by_rowcol(row, col)
-    description  = (?A+row).chr+"#{col+1}"
-    Map.find_by_description_and_asset_size(description, size)
-  end
-
-  def find_well_by_map_description(description)
+    description  = asset_shape.location_from_row_and_column(row,col,size)
+    Map.find(:first,
+             :conditions =>{
+              :description    => description,
+              :asset_size     => size,
+              :asset_shape_id => asset_shape
+             })
   end
 
   def find_well_by_rowcol(row, col)
@@ -242,29 +244,15 @@ WHERE c.container_id=?
   alias :find_well_by_map_description :find_well_by_name
 
   def plate_header
-    rows = [""]
-    if self.size == 384
-      rows += (1..24).to_a
-    else
-      rows += (1..12).to_a
-    end
-    rows
+    [""] + plate_columns
   end
 
   def plate_rows
-    if self.size == 384
-      return ("A".."P").to_a
-    else
-      return ("A".."H").to_a
-    end
+    ("A".."#{(?A+height-1).chr}").to_a
   end
 
   def plate_columns
-    if self.size == 384
-      return (1..24).to_a
-    else
-      return (1..12).to_a
-    end
+    (1..width).to_a
   end
 
   def get_plate_type

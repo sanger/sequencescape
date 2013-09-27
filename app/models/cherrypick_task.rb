@@ -33,8 +33,8 @@ class CherrypickTask < Task
       const_get("by_#{cherrypick_direction}".classify)
     end
 
-    def initialize(batch, template, partial = nil)
-      @wells, @size, @batch = [], template.size, batch
+    def initialize(batch, template, plate_purpose, partial = nil)
+      @wells, @size, @batch, @plate_purpose = [], template.size, batch, plate_purpose
       initialize_already_occupied_wells_from(template, partial)
       add_any_wells_from_template_or_partial(@wells)
     end
@@ -50,7 +50,7 @@ class CherrypickTask < Task
         @wells.dup.tap do |wells|
           complete(wells)
         end.each_with_index.inject([]) do |wells, (well, index)|
-          wells.tap { wells[Map.horizontal_to_vertical(index+1, @size)] = well }
+          wells.tap { wells[@plate_purpose.asset_shape.horizontal_to_vertical(index+1, @size)] = well }
         end.compact
       end
     end
@@ -58,12 +58,28 @@ class CherrypickTask < Task
     # Deals with generating the pick plate by travelling in a column direction, so A1, B1, C1 ...
     class ByColumn < PickTarget
       def well_position(wells)
-        Map.vertical_to_horizontal(wells.size+1, @size)
+         @plate_purpose.asset_shape.vertical_to_horizontal(wells.size+1, @size)
       end
       private :well_position
 
       def completed_view
         @wells.dup.tap { |wells| complete(wells) }
+      end
+    end
+
+    # Deals with generating the pick plate by travelling in an interlaced column direction, so A1, C1, E1 ...
+    class ByInterlacedColumn < PickTarget
+      def well_position(wells)
+         @plate_purpose.asset_shape.interlaced_vertical_to_horizontal(wells.size+1, @size)
+      end
+      private :well_position
+
+      def completed_view
+        @wells.dup.tap do |wells|
+          complete(wells)
+        end.each_with_index.inject([]) do |wells, (well, index)|
+          wells.tap { wells[@plate_purpose.asset_shape.vertical_to_interlaced_vertical(index+1, @size)] = well }
+        end.compact
       end
     end
 
@@ -128,14 +144,14 @@ class CherrypickTask < Task
   def pick_new_plate(requests, template, robot, batch, plate_purpose)
     target_type = PickTarget.for(plate_purpose)
     perform_pick(requests, robot, batch) do |batch|
-      target_type.new(batch, template)
+      target_type.new(batch, template, plate_purpose)
     end
   end
 
   def pick_onto_partial_plate(requests, template, robot, batch, partial_plate)
     target_type = PickTarget.for(partial_plate.plate_purpose)
     perform_pick(requests, robot, batch) do |batch|
-      target_type.new(batch, template, partial_plate).tap do
+      target_type.new(batch, template, plate_purpose, partial_plate).tap do
         partial_plate = nil  # Ensure that subsequent calls have no partial plate
       end
     end

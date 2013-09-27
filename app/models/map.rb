@@ -7,6 +7,10 @@ class Map < ActiveRecord::Base
       @default ||= Map::AssetShape.find_by_name('Standard').id
     end
 
+    def self.default
+      Map::AssetShape.find_by_name('Standard')
+    end
+
     def standard?
       horizontal_ratio == 3 && vertical_ratio == 2
     end
@@ -23,6 +27,43 @@ class Map < ActiveRecord::Base
     def plate_width(size)
       multiplier(size)*horizontal_ratio
     end
+
+    def horizontal_to_vertical(well_position,plate_size)
+      alternate_position(well_position, plate_size, :width, :height)
+    end
+
+    def vertical_to_horizontal(well_position,plate_size)
+      alternate_position(well_position, plate_size, :height, :width)
+    end
+
+    def interlaced_vertical_to_horizontal(well_position,plate_size)
+      alternate_position(interlace(well_position,plate_size), plate_size, :height, :width)
+    end
+
+    def vertical_to_interlaced_vertical(well_position,plate_size)
+      interlace(well_position,plate_size)
+    end
+
+    def interlace(i,size)
+      m,d = (i-1).divmod(size/2)
+      2*d+1+m
+    end
+    private :interlace
+
+    def alternate_position(well_position, size, *dimensions)
+      return nil unless Map.valid_well_position?(well_position)
+      divisor, multiplier = dimensions.map { |n| send("plate_#{n}", size) }
+      column, row = (well_position-1).divmod(divisor)
+      return nil unless (0...multiplier).include?(column)
+      return nil unless (0...divisor).include?(row)
+      alternate = (row * multiplier) + column + 1
+    end
+    private :alternate_position
+
+    def location_from_row_and_column(row, column, size=96)
+      description_strategy.constantize.location_from_row_and_column(row, column,plate_width(size))
+    end
+
   end
 
   module Coordinate
@@ -35,8 +76,12 @@ class Map < ActiveRecord::Base
       384 => [ 24, 16 ]
     )
 
+    def self.location_from_row_and_column(row, column,_)
+      "#{(?A+row).chr}#{column}"
+    end
+
     def self.description_to_horizontal_plate_position(well_description,plate_size)
-      return nil unless valid_well_description_and_plate_size?(well_description,plate_size)
+      return nil unless Map.valid_well_description_and_plate_size?(well_description,plate_size)
       split_well = Map.split_well_description(well_description)
       width = self.plate_width(plate_size)
       return nil if width.nil?
@@ -44,7 +89,7 @@ class Map < ActiveRecord::Base
     end
 
     def self.description_to_vertical_plate_position(well_description,plate_size)
-      return nil unless valid_well_description_and_plate_size?(well_description,plate_size)
+      return nil unless Map.valid_well_description_and_plate_size?(well_description,plate_size)
       split_well = Map.split_well_description(well_description)
       length = self.plate_length(plate_size)
       return nil if length.nil?
@@ -52,14 +97,14 @@ class Map < ActiveRecord::Base
     end
 
     def self.horizontal_plate_position_to_description(well_position,plate_size)
-      return nil unless valid_plate_position_and_plate_size?(well_position,plate_size)
+      return nil unless Map.valid_plate_position_and_plate_size?(well_position,plate_size)
       width = plate_width(plate_size)
       return nil if width.nil?
       horizontal_position_to_description(well_position, width)
     end
 
     def self.vertical_plate_position_to_description(well_position,plate_size)
-      return nil unless valid_plate_position_and_plate_size?(well_position,plate_size)
+      return nil unless Map.valid_plate_position_and_plate_size?(well_position,plate_size)
       length = plate_length(plate_size)
       return nil if length.nil?
       vertical_position_to_description(well_position, length)
@@ -79,27 +124,6 @@ class Map < ActiveRecord::Base
 
     def self.plate_length(plate_size)
       PLATE_DIMENSIONS[plate_size].last
-    end
-
-    def self.valid_plate_size?(plate_size)
-      plate_size.is_a?(Integer) && plate_size >0
-    end
-
-    def self.valid_well_position?(well_position)
-      well_position.is_a?(Integer) && well_position >0
-    end
-
-    def self.valid_plate_position_and_plate_size?(well_position,plate_size)
-      return false unless valid_well_position?(well_position)
-      return false unless valid_plate_size?(plate_size)
-      return false if well_position > plate_size
-      true
-    end
-
-    def self.valid_well_description_and_plate_size?(well_description,plate_size)
-      return false if well_description.blank?
-      return false unless valid_plate_size?(plate_size)
-      true
     end
 
     def self.vertical_position_to_description(well_position, length)
@@ -131,7 +155,7 @@ class Map < ActiveRecord::Base
     # NOTE: I don't like this, it just makes things clearer than it was!
     # NOTE: I hate the nil returns but external code would take too long to change this time round
     def alternate_position(well_position, size, *dimensions)
-      return nil unless valid_well_position?(well_position)
+      return nil unless Map.valid_well_position?(well_position)
       divisor, multiplier = dimensions.map { |n| send("plate_#{n}", size) }
       return nil if divisor.nil? or multiplier.nil?
       column, row = (well_position-1).divmod(divisor)
@@ -145,6 +169,10 @@ class Map < ActiveRecord::Base
   end
 
   module Sequential
+
+    def self.location_from_row_and_column(row, column, width)
+      "S#{(row)*width + column}"
+    end
 
   end
 
@@ -165,6 +193,27 @@ class Map < ActiveRecord::Base
 
   belongs_to :asset_shape, :class_name => 'Map::AssetShape'
   delegate :standard?, :to => :asset_shape
+
+  def self.valid_plate_size?(plate_size)
+    plate_size.is_a?(Integer) && plate_size >0
+  end
+
+  def self.valid_plate_position_and_plate_size?(well_position,plate_size)
+    return false unless valid_well_position?(well_position)
+    return false unless valid_plate_size?(plate_size)
+    return false if well_position > plate_size
+    true
+  end
+
+  def self.valid_well_description_and_plate_size?(well_description,plate_size)
+    return false if well_description.blank?
+    return false unless valid_plate_size?(plate_size)
+    true
+  end
+
+  def self.valid_well_position?(well_position)
+    well_position.is_a?(Integer) && well_position >0
+  end
 
   def vertical_plate_position
     self.column_order + 1
@@ -195,11 +244,11 @@ class Map < ActiveRecord::Base
       })
   end
 
-  def self.horizontal_to_vertical(well_position,plate_size)
+  def self.horizontal_to_vertical(well_position,plate_size,plate_shape=nil)
     Map::Coordinate.horizontal_to_vertical(well_position,plate_size)
   end
 
-  def self.vertical_to_horizontal(well_position,plate_size)
+  def self.vertical_to_horizontal(well_position,plate_size,plate_shape=nil)
     Map::Coordinate.vertical_to_horizontal(well_position,plate_size)
   end
 
@@ -258,6 +307,7 @@ class Map < ActiveRecord::Base
   named_scope :in_reverse_column_major_order, { :order => 'column_order DESC' }
 
   class << self
+    # Caution! Only use for seeds. Not valid elsewhere
     def plate_dimensions(plate_size)
       case plate_size
       when 96  then yield(12, 8)

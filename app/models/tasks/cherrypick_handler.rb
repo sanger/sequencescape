@@ -37,12 +37,6 @@ module Tasks::CherrypickHandler
         redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage -1).to_s
         return
       end
-      # unless task.plate_purpose_options(@batch).include?(@plate.purpose)
-        # flash[:error] = "Invalid target plate, wrong plate purpose"
-        # redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage -1).to_s
-        # return
-      # end
-
       action_flash[:warning] = I18n.t("cherrypick.picking_by_row") if @plate.plate_purpose.cherrypick_in_rows?
     end
 
@@ -137,7 +131,7 @@ module Tasks::CherrypickHandler
             # This collects the wells together for the plate they should be on, and modifies
             # the values in the well data.  It *does not* save either of these, which means that
             # SELECT & INSERT/UPDATE are not interleaved, which affects the cache
-            well.map = well_locations[Map.location_from_row_and_column(row, col.to_i+1)]
+            well.map = well_locations[plate.asset_shape.location_from_row_and_column(row, col.to_i+1, plate.size)]
             cherrypicker.call(well, request)
             plates_and_wells[plate] << well
             used_requests << request

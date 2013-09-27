@@ -1073,6 +1073,14 @@ SequencingPipeline.create!(:name => "MiSeq sequencing") do |pipeline|
 
 
 ## Fluidgm Stuff
+
+shared_options = {
+    :workflow => Submission::Workflow.find_by_name('Microarray genotyping'),
+    :asset_type => 'Well',
+    :target_asset_type => 'Well',
+    :initial_state => 'pending'
+}
+
 RequestType.create!(shared_options.merge({
   :key => 'pick_to_sta',
   :name => 'Pick to STA',

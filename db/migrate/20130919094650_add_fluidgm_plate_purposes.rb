@@ -22,7 +22,7 @@ class AddFluidgmPlatePurposes < ActiveRecord::Migration
         :name=>'Fluidgm 96-96',
         :default_state=>'pending',
         :cherrypickable_target => true,
-        :cherrypick_direction => 'row',
+        :cherrypick_direction => 'interlaced_column',
         :size => 96,
         :asset_shape => Map::AssetShape.find_by_name('Fluidgm96')
       )
@@ -30,7 +30,7 @@ class AddFluidgmPlatePurposes < ActiveRecord::Migration
         :name=>'Fluidgm 192-24',
         :default_state=>'pending',
         :cherrypickable_target => true,
-        :cherrypick_direction => 'row',
+        :cherrypick_direction => 'interlaced_column',
         :size => 192,
         :asset_shape => Map::AssetShape.find_by_name('Fluidgm192')
       )
