@@ -200,7 +200,8 @@ WHERE c.container_id=?
   deprecate :create_child
 
   def find_map_by_rowcol(row, col)
-    description  = asset_shape.location_from_row_and_column(row,col,size)
+    # Count from 0
+    description  = asset_shape.location_from_row_and_column(row,col+1,size)
     Map.find(:first,
              :conditions =>{
               :description    => description,

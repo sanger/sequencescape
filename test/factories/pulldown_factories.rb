@@ -35,6 +35,30 @@ Factory.define(:full_plate, :class => Plate) do |plate|
   end
 end
 
+Factory.define(:full_stock_plate, :class => Plate) do |plate|
+  plate.size 96
+
+  plate.after_build do |plate|
+    plate.plate_purpose = PlatePurpose.stock_plate_purpose
+  end
+
+  plate.after_create do |plate|
+    plate.wells.import(Map.where_plate_size(plate.size).where_plate_shape(plate.asset_shape).all.map { |map| Factory(:well, :map => map) })
+  end
+end
+
+Factory.define(:partial_plate, :class => Plate) do |plate|
+  plate.size 96
+
+  plate.after_build do |plate|
+    plate.plate_purpose = PlatePurpose.stock_plate_purpose
+  end
+
+  plate.after_create do |plate|
+    plate.wells.import(Map.where_plate_size(plate.size).where_plate_shape(plate.asset_shape).in_column_major_order.slice(0,48).map { |map| Factory(:well, :map => map) })
+  end
+end
+
 Factory.define(:full_plate_with_samples, :parent => :full_plate) do |plate|
   plate.after_create do |plate|
     plate.wells.each { |well| well.aliquots.create!(:sample => Factory(:sample)) }
