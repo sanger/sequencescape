@@ -6,5 +6,8 @@ class CherrypickForFluidgmRequest < CherrypickForPulldownRequest
     validates_presence_of :target_purpose
   end
 
+  def target_purpose
+    request_metadata.target_purpose
+  end
 
 end

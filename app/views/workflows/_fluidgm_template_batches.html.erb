@@ -9,10 +9,12 @@
         <td><label for="plate_purpose_id">Output plate purpose</label>:</td>
         <td><%= select_tag("plate_purpose_id", options_for_select(@plate_purpose_options, PlatePurpose.stock_plate_purpose.id)) %></td>
       </tr>
-      <tr>
-        <td><strong>Optional: </strong>Scan partial plate:</td>
-        <td><%= text_field_tag 'existing_plate' %></td>
-      </tr>
+      <%- if final_transfer? %>
+        <tr>
+          <td>Scan fluidgm plate:</td>
+          <td><%= text_field_tag 'fluidgm_plate' %></td>
+        </tr>
+      <%- end %>
       <tr>
         <td><label for="plate_template_0">Plate Template</label>:</td>
         <td><%= select("plate_template", "0", @plate_templates.collect {|p| [ (p.control_well? ? p.name+" - control well" : p.name), p.id ] })  %></td>

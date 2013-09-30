@@ -26,18 +26,26 @@ module Tasks::CherrypickHandler
     @batch = Batch.find(params[:batch_id], :include => [:requests, :pipeline, :lab_events])
     @requests = @batch.ordered_requests
 
-    @plate_barcode = params[:existing_plate]
     @plate = nil
-    unless @plate_barcode.blank?
-      plate_barcode_id = @plate_barcode.to_i
-      plate_barcode_id = Barcode.number_to_human(@plate_barcode.to_i) if plate_barcode_id > 11
-      @plate = Plate.find_by_barcode(plate_barcode_id.to_s)
+    @plate_barcode = params[:existing_plate]
+    @fluidgm_plate = params[:fluidgm_plate]
+
+    if @plate_barcode.present?
+      plate_barcode_id = @plate_barcode.to_i > 11 ? Barcode.number_to_human(@plate_barcode) : @plate_barcode
+      @plate = Plate.find_by_barcode(plate_barcode_id)
       if @plate.nil?
         flash[:error] = "Invalid plate barcode"
         redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage -1).to_s
         return
       end
-      action_flash[:warning] = I18n.t("cherrypick.picking_by_row") if @plate.plate_purpose.cherrypick_in_rows?
+      action_flash[:warning] = I18n.t("cherrypick.picking_by_row") if plate.plate_purpose.cherrypick_in_rows?
+    elsif @fluidgm_plate.present?
+      if @fluidgm_plate.size > 10
+        flash[:error] = "Invalid fluidgm barcode"
+        redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage -1).to_s
+        return
+      end
+      @plate = Plate::Metadata.find(:first, :include=>:plate, :conditions=>{:fluidgm_barcode=> @fluidgm_barcode }).try(:plate)
     end
 
     @plate_purpose = PlatePurpose.find(params[:plate_purpose_id])
@@ -69,6 +77,7 @@ module Tasks::CherrypickHandler
     @total_nano_grams = params[:total_nano_grams]
     @cherrypick_action = params[:cherrypick][:action]
     @plate_purpose_id = params[:plate_purpose_id]
+    @fluidgm_barcode = params[:fluidgm_plate]
   end
 
   def do_cherrypick_task(task, params)
@@ -78,9 +87,12 @@ module Tasks::CherrypickHandler
 
     ActiveRecord::Base.transaction do
       # Determine if there is a standard plate to use.
-      partial_plate, plate_barcode = nil, params[:plate_barcode]
+      partial_plate, plate_barcode, fluidgm_plate = nil, params[:plate_barcode], params[:fluidgm_plate]
       unless plate_barcode.nil?
         partial_plate = Plate.find_by_barcode(plate_barcode) or raise ActiveRecord::RecordNotFound, "No plate with barcode #{plate_barcode.inspect}"
+      end
+      if fluidgm_plate.present?
+        partial_plate = Plate::Metadata.find_by_fluidgm_barcode(fluidgm_plate).try(:plate)
       end
 
       # Ensure that we have a plate purpose for any plates we are creating
@@ -112,7 +124,7 @@ module Tasks::CherrypickHandler
         plate = partial_plate
         if plate.nil?
           barcode = PlateBarcode.create.barcode
-          plate   = plate_purpose.create!(:do_not_create_wells, :name => "Cherrypicked #{barcode}", :size => size, :barcode => barcode)
+          plate   = plate_purpose.create!(:do_not_create_wells, :name => "Cherrypicked #{barcode}", :size => size, :barcode => barcode, :plate_metadata_attributes=>{:fluidgm_barcode=>fluidgm_plate})
         end
 
         # Set the plate type, regardless of what it was.  This may change the standard plate.

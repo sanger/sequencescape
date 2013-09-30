@@ -9,7 +9,7 @@ module Tasks::PlateTemplateHandler
     return true if params[:file].blank?
 
     if params[:plate_template].blank?
-      plate_size = 96
+      plate_size = PlatePurpose.find(params[:plate_purpose_id]).size
     else
       plate_size = PlateTemplate.find(params[:plate_template]["0"].to_i).size
     end

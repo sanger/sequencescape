@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130925105148) do
+ActiveRecord::Schema.define(:version => 20130930142116) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -709,6 +709,7 @@ ActiveRecord::Schema.define(:version => 20130925105148) do
     t.string   "fluidgm_barcode",  :limit => 10
   end
 
+  add_index "plate_metadata", ["fluidgm_barcode"], :name => "index_on_fluidgm_barcode", :unique => true
   add_index "plate_metadata", ["plate_id"], :name => "index_plate_metadata_on_plate_id"
 
   create_table "plate_owners", :force => true do |t|

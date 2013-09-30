@@ -7,8 +7,14 @@ module PipelinesHelper
 
   def target_purpose_for(request)
     nrs = request.submission.present? ? request.submission.next_requests(request) : []
-    return nrs.first.request_type.acceptable_plate_purposes.map(:name).join('|') unless nrs.empty?
-    return request.request_metadata.target_purpose.name if request.request_metadata.target_purpose.present?
-    return 'Not specified'
+    return nrs.first.request_type.acceptable_plate_purposes.map(&:name).join('|') unless nrs.empty?
+    return request.target_purpose.try(:name) || 'Not specified'
   end
+
+  def final_transfer?
+    request = @requests.first
+    return false if request.submission.nil?
+    request.submission.next_requests(request).empty?
+  end
+
 end
