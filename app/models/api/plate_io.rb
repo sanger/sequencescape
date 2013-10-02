@@ -31,7 +31,7 @@ class Api::PlateIO < Api::Base
 
   with_association(:plate_metadata) do
     map_attribute_to_json_attribute(:infinium_barcode)
-    map_attribute_to_json_attribute(:fluidgm_barcode)
+    map_attribute_to_json_attribute(:fluidigm_barcode)
   end
 
   with_association(:location) do

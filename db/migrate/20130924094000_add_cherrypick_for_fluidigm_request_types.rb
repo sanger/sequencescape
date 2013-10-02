@@ -1,4 +1,4 @@
-class AddCherrypickForFluidgmRequestTypes < ActiveRecord::Migration
+class AddCherrypickForFluidigmRequestTypes < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
       RequestType.create!(shared_options.merge({
@@ -20,10 +20,10 @@ class AddCherrypickForFluidgmRequestTypes < ActiveRecord::Migration
         rt.acceptable_plate_purposes << Purpose.find_by_name!('STA')
       end
       RequestType.create!(shared_options.merge({
-        :key => 'pick_to_fluidgm',
-        :name => 'Pick to Fluidgm',
+        :key => 'pick_to_fluidigm',
+        :name => 'Pick to Fluidigm',
         :order => 3,
-        :request_class_name => 'CherrypickForFluidgmRequest'
+        :request_class_name => 'CherrypickForFluidigmRequest'
         })
       ).tap do |rt|
         rt.acceptable_plate_purposes << Purpose.find_by_name!('STA2')
@@ -42,7 +42,7 @@ class AddCherrypickForFluidgmRequestTypes < ActiveRecord::Migration
 
   def self.down
     ActiveRecord::Base.transaction do
-      RequestType.find_all_by_key(['pick_to_sta','pick_to_sta2','pick_to_fluidgm']).each(&:destroy)
+      RequestType.find_all_by_key(['pick_to_sta','pick_to_sta2','pick_to_fluidigm']).each(&:destroy)
     end
   end
 end

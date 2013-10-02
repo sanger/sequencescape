@@ -34,4 +34,4 @@ map_data.each do |details|
   Map.create(details)
 end
 
-Map.create!(FluidgmHelper.map_configuration_for(6,16,Map::AssetShape.find_by_name('Fluidgm96').id) + FluidgmHelper.map_configuration_for(12,16,Map::AssetShape.find_by_name('Fluidgm192').id))
+Map.create!(FluidigmHelper.map_configuration_for(6,16,Map::AssetShape.find_by_name('Fluidigm96').id) + FluidigmHelper.map_configuration_for(12,16,Map::AssetShape.find_by_name('Fluidigm192').id))

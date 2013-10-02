@@ -100,7 +100,7 @@ class AssetShapeTest < ActiveSupport::TestCase
 
   end
 
-  context "Fluidgm plates of 96 wells" do
+  context "Fluidigm plates of 96 wells" do
 
     setup do
       @shape = Map::AssetShape.new(:name=>'Test',:horizontal_ratio=>3,:vertical_ratio=>8,:description_strategy=>'Map::Sequential')
@@ -133,7 +133,7 @@ class AssetShapeTest < ActiveSupport::TestCase
   end
 
 
-  context "Fluidgm plates of 192 wells" do
+  context "Fluidigm plates of 192 wells" do
 
     setup do
       @shape = Map::AssetShape.new(:name=>'Test',:horizontal_ratio=>3,:vertical_ratio=>4,:description_strategy=>'Map::Sequential')

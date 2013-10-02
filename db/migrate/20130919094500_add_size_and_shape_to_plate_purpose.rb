@@ -4,6 +4,7 @@ class AddSizeAndShapeToPlatePurpose < ActiveRecord::Migration
     ActiveRecord::Base.transaction do
       add_column :plate_purposes, :size, :integer, :default=>96, :null=>true
       add_column :plate_purposes, :asset_shape_id, :integer, :default=>default, :null=>false
+      Purpose.reset_column_information
       Purpose.find_by_name('Sequenom').update_attributes!(:size=>384)
     end
   end

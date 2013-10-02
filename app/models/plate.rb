@@ -574,7 +574,7 @@ WHERE c.container_id=?
   extend Metadata
   has_metadata do
     attribute(:infinium_barcode)
-    attribute(:fluidgm_barcode)
+    attribute(:fluidigm_barcode)
   end
 
   def barcode_label_for_printing

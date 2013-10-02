@@ -1072,7 +1072,7 @@ SequencingPipeline.create!(:name => "MiSeq sequencing") do |pipeline|
         )
 
 
-## Fluidgm Stuff
+## Fluidigm Stuff
 
 shared_options = {
     :workflow => Submission::Workflow.find_by_name('Microarray genotyping'),
@@ -1100,18 +1100,18 @@ RequestType.create!(shared_options.merge({
   rt.acceptable_plate_purposes << Purpose.find_by_name!('STA')
 end
 RequestType.create!(shared_options.merge({
-  :key => 'pick_to_fluidgm',
-  :name => 'Pick to Fluidgm',
+  :key => 'pick_to_fluidigm',
+  :name => 'Pick to Fluidigm',
   :order => 3,
-  :request_class_name => 'CherrypickForFluidgmRequest'
+  :request_class_name => 'CherrypickForFluidigmRequest'
   })
 ).tap do |rt|
   rt.acceptable_plate_purposes << Purpose.find_by_name!('STA2')
 end
 
-liw = LabInterface::Workflow.create!(:name=>'Cherrypick for Fluidgm')
+liw = LabInterface::Workflow.create!(:name=>'Cherrypick for Fluidigm')
 
-FluidgmTemplateTask.create!(
+FluidigmTemplateTask.create!(
   :name => 'Select Plate Template',
   :pipeline_workflow_id => liw.id,
   :sorted => 1,
@@ -1137,7 +1137,7 @@ end
 
 
 CherrypickPipeline.create!(
-  :name=>'Cherrypick for Fluidgm',
+  :name=>'Cherrypick for Fluidigm',
   :active => true,
   :location => Location.find_by_name('Sample logistics freezer'),
   :group_by_parent => true,
@@ -1147,7 +1147,7 @@ CherrypickPipeline.create!(
   :summary => true,
   :group_name => 'Sample Logistics',
   :workflow => liw,
-  :request_types => RequestType.find_all_by_key(['pick_to_sta','pick_to_sta2','pick_to_fluidgm']),
+  :request_types => RequestType.find_all_by_key(['pick_to_sta','pick_to_sta2','pick_to_fluidigm']),
   :control_request_type_id => 0,
   :max_size => 192
 ) do |pipeline|
@@ -1155,27 +1155,27 @@ end
 
 tosta = RequestType.find_by_key('pick_to_sta').id
 tosta2 = RequestType.find_by_key('pick_to_sta2').id
-tofluidgm = RequestType.find_by_key('pick_to_fluidgm').id
+tofluidigm = RequestType.find_by_key('pick_to_fluidigm').id
 
 SubmissionTemplate.create!(
-  :name => 'Cherrypick for Fluidgm',
+  :name => 'Cherrypick for Fluidigm',
   :submission_class_name => 'LinearSubmission',
   :submission_parameters => {
     :request_options=>{
       :initial_state=>{
         tosta =>:pending,
         tosta2 =>:pending,
-        tofluidgm =>:pending
+        tofluidigm =>:pending
         }
       },
-    :request_type_ids_list=>[[tosta],[tosta2],[tofluidgm]],
+    :request_type_ids_list=>[[tosta],[tosta2],[tofluidigm]],
     :workflow_id => Submission::Workflow.find_by_name('Microarray genotyping').id,
     :info_differential => Submission::Workflow.find_by_name('Microarray genotyping').id,
     :input_field_infos => [
       FieldInfo.new(
-        :kind => "Selection",:default_value => "Fluidgm 96-96",:parameters => { :selection => ['Fluidgm 96-96','Fluidgm 192-24'] },
-        :display_name => "Fluidgm Chip",
-        :key => "target_purpose"
+        :kind => "Selection",:default_value => "Fluidigm 96-96",:parameters => { :selection => ['Fluidigm 96-96','Fluidigm 192-24'] },
+        :display_name => "Fluidigm Chip",
+        :key => "target_purpose_name"
     )]
   }
 )

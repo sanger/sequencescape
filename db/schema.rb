@@ -1,4 +1,4 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file, 
+# This file is auto-generated from the current state of the database. Instead of editing this file,
 # please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
@@ -706,10 +706,10 @@ ActiveRecord::Schema.define(:version => 20130930142116) do
     t.string   "infinium_barcode"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "fluidgm_barcode",  :limit => 10
+    t.string   "fluidigm_barcode",  :limit => 10
   end
 
-  add_index "plate_metadata", ["fluidgm_barcode"], :name => "index_on_fluidgm_barcode", :unique => true
+  add_index "plate_metadata", ["fluidigm_barcode"], :name => "index_on_fluidigm_barcode", :unique => true
   add_index "plate_metadata", ["plate_id"], :name => "index_plate_metadata_on_plate_id"
 
   create_table "plate_owners", :force => true do |t|

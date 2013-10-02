@@ -8,13 +8,13 @@ class AddPlateShapes < ActiveRecord::Migration
         :description_strategy => 'Map::Coordinate'
       )
       Map::AssetShape.create!(
-        :name => 'Fluidgm96',
+        :name => 'Fluidigm96',
         :horizontal_ratio => 3,
         :vertical_ratio   => 8,
         :description_strategy => 'Map::Sequential'
       )
       Map::AssetShape.create!(
-        :name => 'Fluidgm192',
+        :name => 'Fluidigm192',
         :horizontal_ratio => 3,
         :vertical_ratio   => 4,
         :description_strategy => 'Map::Sequential'
@@ -24,7 +24,7 @@ class AddPlateShapes < ActiveRecord::Migration
 
   def self.down
     ActiveRecord::Base.transaction do
-      Map::AssetShape.find_all_by_name(['Standard','Fluidgm96','Fluidgm192'])
+      Map::AssetShape.find_all_by_name(['Standard','Fluidigm96','Fluidigm192'])
     end
   end
 end

@@ -1,4 +1,4 @@
-class CherrypickForFluidgmRequest < CherrypickForPulldownRequest
+class CherrypickForFluidigmRequest < CherrypickForPulldownRequest
 
   has_metadata :as => Request do
     belongs_to :target_purpose, :class_name => 'Purpose'

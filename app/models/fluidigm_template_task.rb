@@ -1,7 +1,7 @@
-class FluidgmTemplateTask < PlateTemplateTask
+class FluidigmTemplateTask < PlateTemplateTask
 
   def partial
-    "fluidgm_template_batches"
+    "fluidigm_template_batches"
   end
 
   def plate_purpose_options(batch)

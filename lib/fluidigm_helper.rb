@@ -1,4 +1,4 @@
-module FluidgmHelper
+module FluidigmHelper
 
   def self.map_configuration_for(width,height,plate_layout)
     wells = []

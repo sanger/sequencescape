@@ -281,13 +281,13 @@ Map::AssetShape.create!(
   :description_strategy => 'Map::Coordinate'
 )
 Map::AssetShape.create!(
-  :name => 'Fluidgm96',
+  :name => 'Fluidigm96',
   :horizontal_ratio => 3,
   :vertical_ratio   => 8,
   :description_strategy => 'Map::Sequential'
 )
 Map::AssetShape.create!(
-  :name => 'Fluidgm192',
+  :name => 'Fluidigm192',
   :horizontal_ratio => 3,
   :vertical_ratio   => 4,
   :description_strategy => 'Map::Sequential'
@@ -364,19 +364,19 @@ PlatePurpose.create!(
   :asset_shape => Map::AssetShape.find_by_name('Standard')
 )
 PlatePurpose.create!(
-  :name=>'Fluidgm 96-96',
+  :name=>'Fluidigm 96-96',
   :default_state=>'pending',
   :cherrypickable_target => true,
   :cherrypick_direction => 'interlaced_column',
   :size => 96,
-  :asset_shape => Map::AssetShape.find_by_name('Fluidgm96')
+  :asset_shape => Map::AssetShape.find_by_name('Fluidigm96')
 )
 PlatePurpose.create!(
-  :name=>'Fluidgm 192-24',
+  :name=>'Fluidigm 192-24',
   :default_state=>'pending',
   :cherrypickable_target => true,
   :cherrypick_direction => 'interlaced_column',
   :size => 192,
-  :asset_shape => Map::AssetShape.find_by_name('Fluidgm192')
+  :asset_shape => Map::AssetShape.find_by_name('Fluidigm192')
 )
 end
