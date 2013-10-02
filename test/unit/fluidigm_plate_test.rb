@@ -13,12 +13,12 @@ class FluidigmPlateTest < ActiveSupport::TestCase
 
     should "have wells named sequentially in rows with prefix S" do
       @plate.wells.in_row_major_order.each_with_index do |w,i|
-        assert "S#{i}", w.map_description
+        assert "S%02d" % i, w.map_description
       end
     end
 
     should 'be 6*16' do
-      assert_equal 'S7', @plate.wells.in_column_major_order[1].map_description
+      assert_equal 'S07', @plate.wells.in_column_major_order[1].map_description
     end
   end
 
@@ -34,12 +34,12 @@ class FluidigmPlateTest < ActiveSupport::TestCase
 
     should "have wells named sequentially in rows with prefix S" do
       @plate.wells.in_row_major_order.each_with_index do |w,i|
-        assert "S#{i}", w.map_description
+        assert "S%03d" % i, w.map_description
       end
     end
 
     should 'be 12*16' do
-      assert_equal 'S13', @plate.wells.in_column_major_order[1].map_description
+      assert_equal 'S013', @plate.wells.in_column_major_order[1].map_description
     end
 
   end

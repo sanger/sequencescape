@@ -61,7 +61,7 @@ class Map < ActiveRecord::Base
     private :alternate_position
 
     def location_from_row_and_column(row, column, size=96)
-      description_strategy.constantize.location_from_row_and_column(row, column,plate_width(size))
+      description_strategy.constantize.location_from_row_and_column(row, column,plate_width(size),size)
     end
 
   end
@@ -76,7 +76,7 @@ class Map < ActiveRecord::Base
       384 => [ 24, 16 ]
     )
 
-    def self.location_from_row_and_column(row, column,_)
+    def self.location_from_row_and_column(row, column,_=nil,__=nil)
       "#{(?A+row).chr}#{column}"
     end
 
@@ -170,8 +170,9 @@ class Map < ActiveRecord::Base
 
   module Sequential
 
-    def self.location_from_row_and_column(row, column, width)
-      "S#{(row)*width + column}"
+    def self.location_from_row_and_column(row, column, width, size)
+      digit_count = Math.log10(size+1).ceil
+      "S%0#{digit_count}d" % [(row)*width + column]
     end
 
   end
