@@ -53,6 +53,21 @@ class FluidigmFileTest < ActiveSupport::TestCase
       assert_equal @well_maps.size, checked
     end
 
+    should "let us grab all well locations" do
+      assert_equal 95, @fluidigm.well_locations.count
+      @fluidigm.well_locations.each {|l| assert l.is_a?(String)}
+    end
+
+    should "let us fetch individual wells" do
+      @well_maps.each do |loc,properties|
+        well = @fluidigm.well_at(loc)
+        assert well.is_a?(FluidigmFile::FluidigmWell)
+        assert_equal loc, well.description
+        assert_equal @well_maps[loc][:markers].sort, well.gender_markers.sort
+        assert_equal @well_maps[loc][:count], well.count
+      end
+    end
+
   end
 
 end

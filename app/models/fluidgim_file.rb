@@ -78,6 +78,10 @@ class FluidigmFile
     @wells[description]
   end
 
+  def well_locations
+    @wells.keys
+  end
+
   private
   def header_start_index
     @header_start_index ||= (0..@csv.size).detect {|i| @csv[i][0]=='Experiment Information'} || raise(InvalidFile,'Could not find header')
