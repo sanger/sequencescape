@@ -42,6 +42,8 @@ gem "delayed_job", '~>2.0.4'
 
 gem "ruby_walk",  ">= 0.0.3",:git => "git+ssh://git@github.com/sanger/ruby_walk"
 
+gem "irods_reader", '>=0.0.1', :git => 'git+ssh://git@github.com/sanger/irods_reader'
+
 # For the API level
 gem "uuidtools"
 gem "sinatra", "~>1.1.0"
