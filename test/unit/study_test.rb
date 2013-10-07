@@ -322,6 +322,24 @@ class StudyTest < ActiveSupport::TestCase
       end
 
     end
+
+    context 'study name' do
+
+      setup do
+        @study = Factory :study
+      end
+
+      should 'accept names shorter than 200 characters' do
+        assert @study.update_attributes!(:name=>'Short name')
+      end
+
+      should 'reject names longer than 200 characters' do
+        assert_raise(ActiveRecord::RecordInvalid) do
+          @study.update_attributes!(:name=>'a'*201)
+        end
+      end
+    end
+
   end
 end
 

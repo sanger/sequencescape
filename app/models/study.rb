@@ -106,6 +106,7 @@ class Study < ActiveRecord::Base
 
   validates_presence_of :name
   validates_uniqueness_of :name, :on => :create, :message => "already in use (#{self.name})"
+  validates_length_of :name, :maximum => 200
   validates_format_of :abbreviation, :with => /^[\w_-]+$/i, :allow_blank => false, :message => 'cannot contain spaces or be blank'
 
   validate :validate_ethically_approved
