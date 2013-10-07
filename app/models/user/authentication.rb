@@ -169,7 +169,7 @@ module User::Authentication
         if result && result["valid"] == 1 && result["username"]
           u = find_or_create_by_login(result["username"])
         end
-      rescue ParseError
+      rescue ActiveSupport::JSON.parse_error
         logger.info "Authentication service parse error #{configatron.sanger_auth_service} cookie: #{value}"
         return nil
       end
