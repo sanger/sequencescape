@@ -36,6 +36,9 @@ en:
         bait_library:
           label: Bait library
 
+        gigabases_expected:
+          label: Gigabases expected
+
     library_creation_request:
       <<: *REQUEST
     sequencing_request:
