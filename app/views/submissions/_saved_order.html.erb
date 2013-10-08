@@ -49,6 +49,13 @@
     </h4>
   <% end %>
 
+  <% unless order.request_options['gigabases_expected'].nil? %>
+    <h4>
+      Gigabases expected:
+      <%= order.request_options['gigabases_expected'] %>
+    </h4>
+  <% end %>
+
   <h4>Comments:</h4>
   <div class="sub-panel">
     <%= "<p><i>#{order.comments}</i></p>" unless order.comments.nil? %>
