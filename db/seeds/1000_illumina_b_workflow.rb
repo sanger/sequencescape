@@ -100,6 +100,17 @@ ActiveRecord::Base.transaction do
     "HiSeq 2500 Paired end sequencing"
   ]
 
+  def sequencing_request_type_names_for(pipeline)
+    [
+    "Single ended sequencing",
+    "Single ended hi seq sequencing",
+    "Paired end sequencing",
+    "HiSeq Paired end sequencing",
+    "HiSeq 2500 Single end sequencing",
+    "HiSeq 2500 Paired end sequencing"
+  ].map {|s| "#{pipeline} #{s}"}
+  end
+
   [
     {:pulldown_requests=>["Illumina-B STD"], :defaults=>{ 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, :name=>'Multiplexed WGS'},
     {:pulldown_requests=>["Shared Library Creation","Illumina-B Pooled"], :defaults=>{ 'library_type' => 'Standard', 'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 }, :name=>'Pooled PATH', :label=>'ILB PATH'},
@@ -112,7 +123,7 @@ ActiveRecord::Base.transaction do
       RequestType.find_by_name!(request_type_name)
     end
 
-    RequestType.find_each(:conditions => { :name => sequencing_request_type_names }) do |sequencing_request_type|
+    RequestType.find_each(:conditions => { :name => sequencing_request_type_names_for('Illumina-B') }) do |sequencing_request_type|
       submission                   = LinearSubmission.new
       submission.request_type_ids  = [ cherrypick.id, pulldown_request_types.map(&:id), sequencing_request_type.id ].flatten
       submission.info_differential = workflow.id
@@ -145,7 +156,7 @@ ActiveRecord::Base.transaction do
       RequestType.find_by_name!(request_type_name)
     end
 
-    RequestType.find_each(:conditions => { :name => sequencing_request_type_names }) do |sequencing_request_type|
+    RequestType.find_each(:conditions => { :name => sequencing_request_type_names_for('Illumina-A') }) do |sequencing_request_type|
       submission                   = LinearSubmission.new
       submission.request_type_ids  = [ cherrypick.id, pulldown_request_types.map(&:id), sequencing_request_type.id ].flatten
       submission.info_differential = workflow.id
