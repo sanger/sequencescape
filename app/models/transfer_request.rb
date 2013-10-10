@@ -18,32 +18,6 @@ class TransferRequest < Request
     end
   end
 
-  TRANSITIONS = {
-    'started' => {
-      'passed' => :pass!,
-      'cancelled' => :cancel!,
-      'failed' => :fail!
-    },
-    'pending' =>{
-      'started' => :start!,
-      'passed' => :pass!,
-      'failed' => :fail!,
-      'pending' => :detach!,
-      'cancelled' => :cancel_before_started!
-    },
-    'passed' => {
-      'failed' => :fail!
-    },
-    'cancelled' => {
-    },
-    'failed' => {
-      'passed' => :pass!
-    },
-    'hold' => {
-    },
-    'blocked' => {
-    }
-  }
 
   redefine_state_machine do
     # The statemachine for transfer requests is more promiscuous than normal requests, as well
@@ -81,11 +55,6 @@ class TransferRequest < Request
       transitions :to => :pending, :from => [:pending]
     end
   end
-
-  def transition_method_to(target_state)
-    TransferRequest::TRANSITIONS[state][target_state]
-  end
-  private :transition_method_to
 
   # Ensure that the source and the target assets are not the same, otherwise bad things will happen!
   validate do |record|

@@ -16,6 +16,7 @@ class PacBioSequencingRequest < Request
     attribute(:insert_size, :default => 250, :in => INSERT_SIZE, :integer => true, :required =>true)
     attribute(:sequencing_type, :required => true, :in => SEQUENCING_TYPE)
   end
+  include Request::CustomerResponsibility
 
   class RequestOptionsValidator < DelegateValidation::Validator
     delegate_attribute :insert_size, :to => :target, :type_cast => :to_i

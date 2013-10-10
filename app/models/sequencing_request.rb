@@ -11,6 +11,7 @@ class SequencingRequest < Request
 
     attribute(:read_length, :integer => true, :required => true, :in => READ_LENGTHS)
   end
+  include Request::CustomerResponsibility
 
   before_validation :clear_cross_projects
   def clear_cross_projects

@@ -908,6 +908,7 @@ ActiveRecord::Schema.define(:version => 20131101124516) do
     t.integer  "pre_capture_plex_level"
     t.float    "gigabases_expected"
     t.integer  "target_purpose_id"
+    t.boolean  "customer_accepts_responsibility"
   end
 
   add_index "request_metadata", ["request_id"], :name => "index_request_metadata_on_request_id"

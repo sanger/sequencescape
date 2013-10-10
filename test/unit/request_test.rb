@@ -319,5 +319,26 @@ class RequestTest < ActiveSupport::TestCase
       end
     end
 
+    context "#customer_responsible" do
+
+      setup do
+        @request = Factory :library_creation_request
+        @request.state = 'started'
+      end
+
+      should "update when request is started" do
+        @request.request_metadata.update_attributes!(:customer_accepts_responsibility=>true)
+        assert @request.request_metadata.customer_accepts_responsibility?
+      end
+
+      should "not update once a request is failed" do
+        @request.fail!
+        assert_raise ActiveRecord::RecordInvalid do
+          @request.request_metadata.update_attributes!(:customer_accepts_responsibility=>true)
+        end
+      end
+
+    end
+
   end
 end
