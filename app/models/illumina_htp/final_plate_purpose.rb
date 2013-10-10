@@ -3,16 +3,16 @@ class IlluminaHtp::FinalPlatePurpose < PlatePurpose
 
   alias_method(:default_transition_to, :transition_to)
 
-  def transition_to(plate, state, contents = nil)
+  def transition_to(plate, state, contents = nil,customer_accepts_responsibility=false)
     nudge_pre_pcr_wells(plate, state, contents)
-    default_transition_to(plate, state, contents)
+    default_transition_to(plate, state, contents,customer_accepts_responsibility)
   end
 
   def attatched?(plate)
     plate.state == ('qc_complete')
   end
 
-  def fail_stock_well_requests(wells)
+  def fail_stock_well_requests(wells,_)
     # Handled by the nudge of the pre PCR wells!
   end
   private :fail_stock_well_requests

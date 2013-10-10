@@ -211,3 +211,9 @@ Given /^(the plate .+) will pool into 1 tube$/ do |plate|
     RequestType.transfer.create!(:asset => stock_well, :target_asset => well, :submission => submission)
   end
 end
+
+Then /^the user (should|should not) accept responsibility for pulldown library creation requests from the plate "(.*?)"$/ do |accept,plate_name|
+  Plate.find_by_name(plate_name).wells.each do |well|
+    well.requests.where_is_a?(Pulldown::Requests::LibraryCreation).each {|r| assert_equal accept=='should', r.request_metadata.customer_accepts_responsibility }
+  end
+end

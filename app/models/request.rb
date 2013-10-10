@@ -428,6 +428,10 @@ class Request < ActiveRecord::Base
     self.pending?
   end
 
+  def customer_accepts_responsibility!
+    self.request_metadata.update_attributes!(:customer_accepts_responsibility=>true)
+  end
+
   extend Metadata
   has_metadata do
     # TODO[xxx]: Until we know exactly what to do with these they live here.

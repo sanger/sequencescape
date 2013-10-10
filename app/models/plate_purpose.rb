@@ -12,8 +12,8 @@ class PlatePurpose < Purpose
     end
 
     # Delegate the change of state to our plate purpose.
-    def transition_to(state, contents = nil)
-      purpose.transition_to(self, state, contents)
+    def transition_to(state, contents = nil, customer_accepts_responsibility=false)
+      purpose.transition_to(self, state, contents,customer_accepts_responsibility)
     end
 
     # Delegate the transfer request type determination to our plate purpose
@@ -70,12 +70,12 @@ class PlatePurpose < Purpose
   # Updates the state of the specified plate to the specified state.  The basic implementation does this by updating
   # all of the TransferRequest instances to the state specified.  If contents is blank then the change is assumed to
   # relate to all wells of the plate, otherwise only the selected ones are updated.
-  def transition_to(plate, state, contents = nil)
+  def transition_to(plate, state, contents = nil, customer_accepts_responsibility=false)
     wells = plate.wells
     wells = wells.located_at(contents) unless contents.blank?
 
     transition_state_requests(wells, state)
-    fail_stock_well_requests(wells) if state == 'failed'
+    fail_stock_well_requests(wells,customer_accepts_responsibility) if state == 'failed'
   end
 
   module Overrideable
@@ -102,7 +102,7 @@ class PlatePurpose < Purpose
 
   include Overrideable
 
-  def fail_stock_well_requests(wells)
+  def fail_stock_well_requests(wells,customer_accepts_responsibility)
     # Load all of the requests that come from the stock wells that should be failed.  Note that we can't simply change
     # their state, we have to actually use the statemachine method to do this to get the correct behaviour.
     conditions, parameters = [], []
@@ -117,6 +117,7 @@ class PlatePurpose < Purpose
     raise "Apparently there are not requests on these wells?" if conditions.empty?
     Request.where_is_not_a?(TransferRequest).all(:conditions => [ "(#{conditions.join(' OR ')})", *parameters ]).map do |request|
       # This can probably be switched for an each, as I don't think the array is actually used for anything.
+      request.request_metadata.update_attributes!(:customer_accepts_responsibility=>true) if customer_accepts_responsibility
       request.passed? ? request.change_decision! : request.fail!
     end
   end

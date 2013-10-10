@@ -1,6 +1,6 @@
 class IlluminaC::QcPoolPurpose < Tube::Purpose
 
-  def transition_to(tube, state, _ = nil)
+  def transition_to(tube, state, _ = nil, customer_accepts_responsibility=false)
     ActiveRecord::Base.transaction do
       tube.requests_as_target.all(not_terminated).each do |request|
         request.transition_to(state)

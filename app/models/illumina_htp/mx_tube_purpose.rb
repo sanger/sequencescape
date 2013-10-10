@@ -3,8 +3,9 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
     tube.requests_as_target.where_is_a?(Request::LibraryCreation).first.request_options_for_creation || {}
   end
 
-  def transition_to(tube, state, _ = nil)
+  def transition_to(tube, state, _ = nil, customer_accepts_responsibility = false)
     target_requests(tube).each do |request|
+      request.customer_accepts_responsibility! if customer_accepts_responsibility
       to_state = request_state(request,state)
       request.transition_to(to_state) unless to_state.nil?
     end

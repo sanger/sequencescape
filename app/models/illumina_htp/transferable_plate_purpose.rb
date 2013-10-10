@@ -5,7 +5,7 @@ class IlluminaHtp::TransferablePlatePurpose < IlluminaHtp::FinalPlatePurpose
     plate.parent.stock_plate
   end
 
-  def transition_to(plate, state, contents = nil)
+  def transition_to(plate, state, contents = nil, customer_accepts_responsibility = false)
     super
     connect_requests(plate, state, contents)
   end
@@ -13,7 +13,7 @@ class IlluminaHtp::TransferablePlatePurpose < IlluminaHtp::FinalPlatePurpose
   def connect_requests(plate, state, contents = nil)
     return unless state == 'qc_complete'
     wells = plate.wells
-    wells = wells.located_at(contents) unless contents.blank?
+    wells = wells.include_stock_wells.located_at(contents) unless contents.blank?
 
     wells.each do |target_well|
       source_wells = target_well.stock_wells
