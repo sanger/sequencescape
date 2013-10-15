@@ -19,6 +19,7 @@ class Plate < Asset
   # The type of the barcode is delegated to the plate purpose because that governs the number of wells
   delegate :barcode_type, :to => :plate_purpose, :allow_nil => true
   delegate :asset_shape, :to => :plate_purpose, :allow_nil => true
+  delegate :fluidigm_barcode, :to => :plate_metadata
 
   # Transfer requests into a plate are the requests leading into the wells of said plate.
   def transfer_requests
@@ -294,6 +295,10 @@ WHERE c.container_id=?
       plate_location[key] = self.get_external_value(key)
     end
     plate_location
+  end
+
+  def barcode_for_tecan
+    plate_purpose.present? ? send(:"#{plate_purpose.barcode_for_tecan}") : ean13_barcode
   end
 
   def infinium_barcode
