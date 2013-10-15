@@ -45,6 +45,7 @@ class Purpose < ActiveRecord::Base
   validates_format_of :name, :with => /^\w[\s\w._-]+\w$/i
   validates_presence_of :name
   validates_uniqueness_of :name, :message => "already in use"
+  validates_inclusion_of :barcode_for_tecan, :in => ['ean13_barcode','fluidigm_barcode']
 
   named_scope :where_is_a?, lambda { |clazz| { :conditions => { :type => [clazz,*Class.subclasses_of(clazz)].map(&:name) } } }
 

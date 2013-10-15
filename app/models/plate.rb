@@ -298,6 +298,7 @@ WHERE c.container_id=?
   end
 
   def barcode_for_tecan
+    raise StandardError, 'Purpose is not valid' if plate_purpose.present? and not plate_purpose.valid?
     plate_purpose.present? ? send(:"#{plate_purpose.barcode_for_tecan}") : ean13_barcode
   end
 
