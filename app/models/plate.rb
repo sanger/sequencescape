@@ -287,17 +287,13 @@ WHERE c.container_id=?
   end
 
   def get_storage_location
-    plate_location= HashWithIndifferentAccess.new
+    plate_location = HashWithIndifferentAccess.new
     return {"storage_area" => "Control"} if self.is_a?(ControlPlate)
     return {} if self.barcode.blank?
     ['storage_area', 'storage_device', 'building_area', 'building'].each do |key|
       plate_location[key] = self.get_external_value(key)
     end
-    if plate_location.nil?
-      return {}
-    else
-      plate_location
-    end
+    plate_location
   end
 
   def infinium_barcode
