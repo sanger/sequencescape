@@ -13,17 +13,32 @@ class Well < Aliquot::Receptacle
     belongs_to :target_well, :class_name => 'Well'
     belongs_to :source_well, :class_name => 'Well'
   end
-  has_many :stock_well_links, :class_name => 'Well::Link', :foreign_key => :target_well_id, :conditions => { :type => 'stock' }
+  has_many :stock_well_links,  :class_name => 'Well::Link', :foreign_key => :target_well_id, :conditions => { :type => 'stock' }
+
   has_many :stock_wells, :through => :stock_well_links, :source => :source_well do
     def attach!(wells)
-      proxy_owner.stock_well_links.build(wells.map { |well| { :type => 'stock', :source_well => well } }).map(&:save!)
+      proxy_owner.stock_well_links.build(wells.map { |well| { :type => 'stock', :source_well => well } }).tap do |_|
+        proxy_owner.save!
+      end
     end
   end
+
   named_scope :include_stock_wells, { :include => { :stock_wells => :requests_as_source } }
 
   named_scope :located_at, lambda { |plate, location|
     { :joins => :map, :conditions => { :maps => { :description => location, :asset_size => plate.size } } }
   }
+
+  has_many :target_well_links, :class_name => 'Well::Link', :foreign_key => :source_well_id, :conditions => { :type => 'stock' }
+  has_many :target_wells, :through => :target_well_links, :source => :target_well
+  named_scope :stock_wells_for, lambda { |wells| {
+    :joins      => :target_well_links,
+    :conditions => {
+      :well_links =>{
+        :target_well_id => [wells].flatten.map(&:id)
+        }
+      }
+    }}
 
   named_scope :located_at_position, lambda { |position| { :joins => :map, :readonly => false, :conditions => { :maps => { :description => position } } } }
 
