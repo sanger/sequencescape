@@ -78,7 +78,7 @@ class TransferRequest < Request
     end
 
     aasm_event :detach do
-      transitions :to => :pending, :from => [:pending]
+      transitions :to => :pending, :from => [:pending, :cancelled]
     end
   end
 
