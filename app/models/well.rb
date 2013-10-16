@@ -16,7 +16,12 @@ class Well < Aliquot::Receptacle
   has_many :stock_well_links, :class_name => 'Well::Link', :foreign_key => :target_well_id, :conditions => { :type => 'stock' }
   has_many :stock_wells, :through => :stock_well_links, :source => :source_well do
     def attach!(wells)
-      proxy_owner.stock_well_links.build(wells.map { |well| { :type => 'stock', :source_well => well } }).map(&:save!)
+      attach(wells).tap do |_|
+        proxy_owner.save!
+      end
+    end
+    def attach(wells)
+      proxy_owner.stock_well_links.build(wells.map { |well| { :type => 'stock', :source_well => well } })
     end
   end
   named_scope :include_stock_wells, { :include => { :stock_wells => :requests_as_source } }
