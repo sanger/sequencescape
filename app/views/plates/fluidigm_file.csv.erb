@@ -1,0 +1,10 @@
+File Format,BioMark Sample Format V1.0,,,,,,,<% debugger %>
+Sample Plate Name,<%= @parents.first.sanger_human_barcode %>,,,,,,,
+Barcode ID,<%= @parents.first.ean13_barcode %>,,,,,,,
+Description,<%= @parents.first.sanger_human_barcode %>,,,,,,,
+Plate Type,SBS96,,,,,,,
+,,,,,,,,
+Well Location,Sample Name,Sample Concentration,Sample Type,,,,,
+<% padded_wells_by_row(@parents.first,'H12') do |well,sample,conc,type| -%>
+<%= well %>,<%= sample %>,<%= conc %>,<%= type %>,,,,,
+<% end %>

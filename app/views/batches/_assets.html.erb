@@ -28,7 +28,9 @@
 						<% end -%>
           </td>
           <td>
-          	<% if output_plate -%>
+            <% if fluidigm_plate(parent) %>
+              <%= link_to 'Fluidigm file', url_for(:controller => :plates, :action => :fluidigm_file, :id => parent.id), :title => "Fluidigm file for Plate #{parent.fluidigm_barcode}" %>
+          	<% elsif output_plate -%>
               <%= link_to 'Tecan file', url_for(:controller => :batches, :action => :gwl_file, :id => @batch.id, :barcode => parent.barcode), :title => "Tecan file for Plate #{parent.barcode}" %>
 						<% end -%>
           </td>

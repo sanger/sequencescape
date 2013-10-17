@@ -11,10 +11,8 @@ module PipelinesHelper
     return request.target_purpose.try(:name) || 'Not specified'
   end
 
-  def final_transfer?
-    request = @requests.first
-    return false if request.submission.nil?
-    request.submission.next_requests(request).empty?
+  def fluidigm_target?(batch)
+    batch.requests.where_is_a?(CherrypickForFluidigmRequest).present?
   end
 
 end
