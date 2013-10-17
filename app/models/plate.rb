@@ -176,6 +176,20 @@ WHERE c.container_id=?
     }
   }
 
+  named_scope :with_requests, lambda { |requests|
+    {
+      :select     => "DISTINCT assets.*",
+      :joins      => [
+        "INNER JOIN container_associations AS wrca ON wrca.container_id = assets.id",
+        "INNER JOIN requests AS wrr ON wrr.asset_id = wrca.content_id"
+      ],
+      :conditions => [
+        'wrr.id IN (?)',
+        requests.map(&:id)
+      ]
+    }
+  }
+
   def wells_sorted_by_map_id
     wells.sorted
   end

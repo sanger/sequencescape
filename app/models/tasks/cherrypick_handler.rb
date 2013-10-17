@@ -117,7 +117,7 @@ module Tasks::CherrypickHandler
       # whole load of wells so that they can be retrieved quickly and easily.
       wells = Hash[Well.find(@batch.requests.map(&:target_asset_id), :include => :well_attribute).map { |w| [w.id,w] }]
       request_and_well = Hash[@batch.requests.all(:include => :request_metadata).map { |r| [r.id.to_i, [r, wells[r.target_asset_id]]] }]
-      used_requests, plates_and_wells = [], Hash.new { |h,k| h[k] = [] }
+      used_requests, plates_and_wells, plate_and_requests = [], Hash.new { |h,k| h[k] = [] }, Hash.new { |h,k| h[k] = [] }
       plates.each do |id, plate_params|
         # The first time round this loop we'll either have a plate, from the partial_plate, or we'll
         # be needing to create a new one.
@@ -146,8 +146,10 @@ module Tasks::CherrypickHandler
             well.map = well_locations[plate.asset_shape.location_from_row_and_column(row, col.to_i+1, plate.size)]
             cherrypicker.call(well, request)
             plates_and_wells[plate] << well
+            plate_and_requests[plate] << request
             used_requests << request
           end
+
         end
 
         # At this point we can consider ourselves finished with the partial plate
@@ -158,6 +160,12 @@ module Tasks::CherrypickHandler
       plates_and_wells.each do |plate, wells|
         wells.map { |w| w.well_attribute.save! ; w.save! }
         plate.wells.attach(wells)
+      end
+
+      plate_and_requests.each do |target_plate,requests|
+        Plate.with_requests(requests).each do |source_plate|
+          AssetLink::Job.create(source_plate,[target_plate])
+        end
       end
 
       # Now pass each of the requests we used and ditch any there weren't back into the inbox.
