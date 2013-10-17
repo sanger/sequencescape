@@ -9,7 +9,7 @@
         <td><label for="plate_purpose_id">Output plate purpose</label>:</td>
         <td><%= select_tag("plate_purpose_id", options_for_select(@plate_purpose_options, PlatePurpose.stock_plate_purpose.id)) %></td>
       </tr>
-      <%- if final_transfer? %>
+      <%- if fluidigm_target?(@batch) %>
         <tr>
           <td>Scan fluidigm plate:</td>
           <td><%= text_field_tag 'fluidigm_plate' %></td>
@@ -59,7 +59,7 @@
 
   <h2>Step 3</h2>
 
-  <%= render :partial => 'cherrypicking_volume_parameters' %>
+  <%= render :partial => 'cherrypicking_volume_by_micro_litre' %>
   <br />
 
   <%= render :partial => "next_stage_submit" %>
