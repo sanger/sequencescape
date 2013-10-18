@@ -2,6 +2,7 @@ class AddStockWellsToExistingWdPlates < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
       AssetLink.find_each(
+        :batch_size => 100,
         :include => {
           :ancestor=>:wells,
           :descendant=>:wells
