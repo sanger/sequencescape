@@ -1,4 +1,4 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file,
+# This file is auto-generated from the current state of the database. Instead of editing this file, 
 # please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131015105245) do
+ActiveRecord::Schema.define(:version => 20131018083912) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -706,7 +706,7 @@ ActiveRecord::Schema.define(:version => 20131015105245) do
     t.string   "infinium_barcode"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "fluidigm_barcode",  :limit => 10
+    t.string   "fluidigm_barcode", :limit => 10
   end
 
   add_index "plate_metadata", ["fluidigm_barcode"], :name => "index_on_fluidigm_barcode", :unique => true
@@ -728,23 +728,23 @@ ActiveRecord::Schema.define(:version => 20131015105245) do
   end
 
   create_table "plate_purposes", :force => true do |t|
-    t.string   "name",                                                                 :null => false
+    t.string   "name",                                                                       :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "type"
     t.string   "target_type",                     :limit => 30
     t.boolean  "qc_display",                                    :default => false
     t.boolean  "pulldown_display"
-    t.boolean  "can_be_considered_a_stock_plate",               :default => false,     :null => false
+    t.boolean  "can_be_considered_a_stock_plate",               :default => false,           :null => false
     t.string   "default_state",                                 :default => "pending"
     t.integer  "barcode_printer_type_id",                       :default => 2
-    t.boolean  "cherrypickable_target",                         :default => true,      :null => false
-    t.boolean  "cherrypickable_source",                         :default => false,     :null => false
-    t.string   "cherrypick_direction",                          :default => "column",  :null => false
+    t.boolean  "cherrypickable_target",                         :default => true,            :null => false
+    t.boolean  "cherrypickable_source",                         :default => false,           :null => false
+    t.string   "cherrypick_direction",                          :default => "column",        :null => false
     t.integer  "default_location_id"
     t.string   "cherrypick_filters"
     t.integer  "size",                                          :default => 96
-    t.integer  "asset_shape_id",                                :default => 1,         :null => false
+    t.integer  "asset_shape_id",                                :default => 1,               :null => false
     t.string   "barcode_for_tecan",                             :default => "ean13_barcode", :null => false
   end
 
