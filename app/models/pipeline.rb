@@ -309,4 +309,8 @@ class Pipeline < ActiveRecord::Base
   def can_create_stock_assets?
     false
   end
+
+  def request_actions
+    [:fail]
+  end
 end
