@@ -157,7 +157,6 @@ module Tasks::CherrypickHandler
       used_requests.map(&:pass!)
       (@batch.requests-used_requests).each do |unused_request|
         unused_request.recycle_from_batch!(@batch)
-        unused_request.target_asset.aliquots.clear
       end
     end
   end
