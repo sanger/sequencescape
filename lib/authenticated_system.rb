@@ -64,13 +64,8 @@ module AuthenticatedSystem
         else
           self.current_user = user
         end
-      elsif cookies[:WTSISignOn]
-        user = User.authenticate_by_sanger_cookie(cookies[:WTSISignOn])
-        if user.nil?
-          self.current_user = :false
-        else
-          self.current_user = user
-        end
+      else
+        self.current_user = :false
       end
 
       respond_to do |accepts|
@@ -112,21 +107,21 @@ module AuthenticatedSystem
         end
       end
     end
-    
+
     def slf_manager_login_required
       setup_current_user
       respond_to do |accepts|
         accepts.html   { logged_in? && authorized? && (current_user.slf_manager? || current_user.administrator? ) ? true : access_denied }
       end
     end
-    
+
     def slf_gel_login_required
       setup_current_user
       respond_to do |accepts|
         accepts.html   { logged_in? && authorized? && (current_user.slf_manager? || current_user.slf_gel? || current_user.administrator? ) ? true : access_denied }
       end
     end
-    
+
     def setup_current_user
       username, passwd = get_auth_data
       self.current_user ||= User.authenticate(username, passwd) || :false if username && passwd
