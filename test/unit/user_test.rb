@@ -24,14 +24,6 @@ if false
         assert_equal true, User.authenticate_with_ldap("someone","password")
       end
 
-      should_eventually "work_with_sanger_sso" do
-        http = mock("http")
-        http.stubs(:read).returns("xyz987")
-        OpenURI.stubs(:open_uri).returns(http)
-        user =  User.authenticate_by_sanger_cookie("cookie_string")
-        assert_instance_of String, user
-        assert_equal "xyz987", user
-      end
     end
 
     context "is an administrator" do
@@ -189,20 +181,18 @@ if false
         assert @profile_complete
       end
     end
-
-
-end
-
-  context 'workflow' do
-    should 'have "Next-gen sequencing" workflow set' do
-      assert_not_nil(User.create!(:login => 'foo').workflow, 'workflow has not been defaulted')
-    end
-
-    should 'not override the user choice' do
-      workflow = Factory(:submission_workflow)
-      assert_equal(workflow, User.create!(:login => 'foo', :workflow => workflow).workflow, 'workflow differs from what was requested')
-    end
   end
+
+    context 'workflow' do
+      should 'have "Next-gen sequencing" workflow set' do
+        assert_not_nil(User.create!(:login => 'foo').workflow, 'workflow has not been defaulted')
+      end
+
+      should 'not override the user choice' do
+        workflow = Factory(:submission_workflow)
+        assert_equal(workflow, User.create!(:login => 'foo', :workflow => workflow).workflow, 'workflow differs from what was requested')
+      end
+    end
 
     context "without a swipecard_code" do
       setup do
@@ -212,39 +202,12 @@ end
       should "not have a swipecard code" do
         assert_equal false, @user.swipecard_code?
       end
+
       should "be able to have one assigned" do
         code = "code"
         @user.swipecard_code=code
       end
     end
 
-    context '#authenticate_by_sanger_cookie' do
-      should 'use the user from the database if they have logged in recently' do
-        user = User.create!(:login => 'john', :cookie => '123456789', :cookie_validated_at => 5.minutes.ago)
-        assert_equal(user.id, User.authenticate_by_sanger_cookie('123456789').id)
-      end
-
-      should 'request the user information from the service if they have not logged in recently' do
-        validated_at = (configatron.sanger_auth_freshness + 5).minutes.ago
-        user = User.create!(:login => 'john', :cookie => '123456789', :cookie_validated_at => validated_at)
-        User.expects(:user_from_single_sign_on_service).returns(user)
-
-        User.authenticate_by_sanger_cookie('123456789')
-        assert(validated_at < user.cookie_validated_at, 'User appears to have not been revalidated')
-      end
-      
-      should 'request the user information from the service based on the cookie' do
-        user = User.new(:login => 'john')
-        User.expects(:user_from_single_sign_on_service).returns(user)
-
-        User.authenticate_by_sanger_cookie('123456789')
-        assert_not_nil(user.cookie_validated_at, 'User appears to have not been validated')
-      end
-
-      should 'not blow up if the user cannot be identified by the service' do
-        User.expects(:user_from_single_sign_on_service).returns(nil)
-        User.authenticate_by_sanger_cookie('123456789')
-      end
-    end
   end
 end

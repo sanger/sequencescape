@@ -155,15 +155,7 @@ module Core::Abilities
     # by the application.  If it does, however, then the user abilities may need to be changed
     # so we need to modify that too.
     def authenticate!(user_ability)
-      single_sign_on_cookie = @request.authentication_code
-      if single_sign_on_cookie.blank? and cannot?(:authenticate, :nil)
-        Core::Service::Authentication::UnauthenticatedError.no_cookie!
-      elsif not single_sign_on_cookie.blank?
-        user = ::User.authenticate_by_sanger_cookie(single_sign_on_cookie) or ::User.find_by_api_key(single_sign_on_cookie) or Core::Service::Authentication::UnauthenticatedError.unauthenticated!
-        @request.service.instance_variable_set(:@user, user)
-      end
-
-      user_ability.authenticated!
+      Core::Service::Authentication::UnauthenticatedError.retired!
     end
   end
 end
