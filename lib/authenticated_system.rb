@@ -64,8 +64,6 @@ module AuthenticatedSystem
         else
           self.current_user = user
         end
-      else
-        self.current_user = :false
       end
 
       respond_to do |accepts|
