@@ -9,6 +9,7 @@ class CherrypickForPulldownRequest < TransferRequest
     aasm_state :failed,     :enter => :on_failed
     aasm_state :passed
     aasm_state :cancelled,  :enter => :on_cancelled
+    aasm_state :hold
     aasm_initial_state :pending
 
     aasm_event :hold do
