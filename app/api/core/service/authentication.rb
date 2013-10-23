@@ -8,9 +8,6 @@ module Core::Service::Authentication
       raise self, 'could not be authenticated'
     end
 
-    def self.retired!
-      raise self, 'the WTSISignOn serive is retired'
-    end
 
     def api_error(response)
       response.general_error(401)
