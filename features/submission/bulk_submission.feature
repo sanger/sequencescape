@@ -34,11 +34,18 @@ Feature: Bulk Submission
 
   Scenario: Uploading a valid file with bait library specified should set the bait library name
     # Given I have a well called "testing123"
-    #   And the sample in the last well is registered under the study "abc123_study"
+    # And the sample in the last well is registered under the study "abc123_study"
     When I upload a file with 2 valid SC submissions
     Then I should see "Your submissions:"
      And there should be an order with the bait library name set to "Bait library 1"
      And there should be an order with the bait library name set to "Bait library 2"
+
+  Scenario: Uploading a valid file with gb expected specified should set the gb expected
+    # Given I have a well called "testing123"
+    # And the sample in the last well is registered under the study "abc123_study"
+    When I upload a file with valid data for 2 submissions
+    Then I should see "Your submissions:"
+     And there should be an order with the gigabases expected set to "1.35"
 
   @this
   Scenario: Uploading a valid file with 2 submissions

@@ -32,6 +32,7 @@ class LibraryCreationRequest < Request
   has_metadata :as => Request do
     # /!\ We don't check the read_length, because we don't know the restriction, that depends on the SequencingRequest
     attribute(:read_length, :integer => true) # meaning , so not required but some people want to set it
+    attribute(:gigabases_expected, :positive_float => true)
   end
 
   include Request::LibraryManufacture

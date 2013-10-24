@@ -891,6 +891,7 @@ ActiveRecord::Schema.define(:version => 20131008135410) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "pre_capture_plex_level"
+    t.float    "gigabases_expected"
   end
 
   add_index "request_metadata", ["request_id"], :name => "index_request_metadata_on_request_id"

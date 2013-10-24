@@ -107,6 +107,11 @@
   <%= form.text_field :pre_capture_plex_group, :class => 'pre_capture_plex_group', :value => nil %>
 </div>
 
+<div class="gigabases-expected">
+  <%= form.label :gigabases_expected, 'Gigabases expected' %>
+  <%= form.text_field :gigabases_expected, :class => 'gigabases_expected', :value => nil %>
+</div>
+
 <div class="save-buttons">
   <% if order.present? -%>
     <%= hidden_field_tag :order_id,
