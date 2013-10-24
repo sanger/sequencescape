@@ -1,5 +1,5 @@
 class ::Sample
-  # This returns all samples that require an accession number to be generated based on the conditions of their 
+  # This returns all samples that require an accession number to be generated based on the conditions of their
   # studies and themselves.  It comes from a long (and highly frustrating) experience of decoding the
   # app/models/data_release.rb logic.
   named_scope :requiring_accession_number, {
@@ -40,7 +40,7 @@ current_user = User.find_by_api_key(configatron.accession_local_key) or raise St
 Sample.requiring_accession_number.find_each(:include => [ :sample_metadata, { :studies => :study_metadata } ]) do |sample|
   begin
     sample.validate_ena_required_fields!
-    sample.accession_service.submit_sample_for_user(sample, current_user)
+    sample.accession_service.submit_sample_for_user(sample, current_user) unless sample.accession_service.nil?
   rescue ActiveRecord::RecordInvalid => exception
     #warn "Please fill in the required fields for sample: #{sample.name}"
   rescue AccessionService::NumberNotRequired => exception

@@ -173,4 +173,8 @@ class PlatePurpose < Purpose
   def child_plate_purposes
     child_purposes.where_is_a?(PlatePurpose)
   end
+
+  def source_wells_for(stock_wells)
+    stock_wells
+  end
 end
