@@ -1,11 +1,11 @@
 module Core::Service::Authentication
   class UnauthenticatedError < Core::Service::Error
     def self.no_cookie!
-      raise self, 'no WTSISignOn cookie provided'
+      raise self, 'no authentication provided'
     end
 
     def self.unauthenticated!
-      raise self, 'the WTSISignOn cookie is invalid'
+      raise self, 'could not be authenticated'
     end
 
     def api_error(response)
