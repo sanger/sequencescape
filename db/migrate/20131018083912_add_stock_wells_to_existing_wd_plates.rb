@@ -15,13 +15,15 @@ class AddStockWellsToExistingWdPlates < ActiveRecord::Migration
       ActiveRecord::Base.transaction do
         batch.each do |asset_link|
           next unless asset_link.ancestor.stock_plate?
-          next if asset_link.descendant.wells.first.try(:stock_wells).present?
+          next if asset_link.descendant.wells.detect {|w| w.try(:stock_wells).present? }
           say "Updating #{asset_link.descendant.id}"
-          stock_wells = Hash[asset_link.ancestor.wells.map {|w| [w.map_description,w]}]
-          asset_link.descendant.wells.each do |well|
-            well.stock_wells.attach!([stock_wells[well.map_description]])
+          stock_wells = Hash[asset_link.ancestor.wells.compact.map {|w| [w.map_description,w]}]
+          asset_link.descendant.wells.compact.each do |well|
+            well.stock_wells.attach!([stock_wells[well.map_description]]) unless stock_wells[well.map_description].nil?
           end
+          asset_link.clear_association_cache
         end
+
       end
     end
   end
