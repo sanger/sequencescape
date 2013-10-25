@@ -22,14 +22,14 @@ end
 
 Plate.requiring_fluidigm_data.find_each do |plate|
 
-  data = IrodsReader::DataObj.find('seq',:fluidigm_barcode=>plate.fluidigm_barcode, :target=>1, :type=>'csv')
+  data = IrodsReader::DataObj.find('seq',:target=>1, :fluidigm_plate=>plate.fluidigm_barcode)
 
   next if data.empty?
   raise StandardError, "Multiple files found" if data.size > 1
 
   file = FluidigmFile.new(data.first.retrieve)
 
-  raise StandardError, "File does not match plate" unless file.for_plate?(plate.fluidgm_barcode)
+  raise StandardError, "File does not match plate" unless file.for_plate?(plate.fluidigm_barcode)
 
   plate.wells.located_at(file.well_locations).include_stock_wells.each do |well|
     well.stock_wells.each do |sw|
