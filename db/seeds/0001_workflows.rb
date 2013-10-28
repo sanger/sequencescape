@@ -1108,6 +1108,18 @@ RequestType.create!(shared_options.merge({
 ).tap do |rt|
   rt.acceptable_plate_purposes << Purpose.find_by_name!('STA2')
 end
+RequestType.create!({
+  :workflow => Submission::Workflow.find_by_name('Microarray genotyping'),
+  :asset_type => 'Well',
+  :target_asset_type => 'Well',
+  :initial_state => 'pending',
+  :key => 'pick_to_snp_type',
+  :name => 'Pick to SNP Type',
+  :order => 3,
+  :request_class_name => 'CherrypickForPulldownRequest'
+}).tap do |rt|
+  rt.acceptable_plate_purposes << Purpose.find_by_name!('SNP Type')
+end
 
 liw = LabInterface::Workflow.create!(:name=>'Cherrypick for Fluidigm')
 
@@ -1147,7 +1159,7 @@ CherrypickPipeline.create!(
   :summary => true,
   :group_name => 'Sample Logistics',
   :workflow => liw,
-  :request_types => RequestType.find_all_by_key(['pick_to_sta','pick_to_sta2','pick_to_fluidigm']),
+  :request_types => RequestType.find_all_by_key(['pick_to_sta','pick_to_sta2','pick_to_snp_type','pick_to_fluidigm']),
   :control_request_type_id => 0,
   :max_size => 192
 ) do |pipeline|
@@ -1155,6 +1167,7 @@ end
 
 tosta = RequestType.find_by_key('pick_to_sta').id
 tosta2 = RequestType.find_by_key('pick_to_sta2').id
+ptst = RequestType.find_by_key('pick_to_snp_type').id
 tofluidigm = RequestType.find_by_key('pick_to_fluidigm').id
 
 SubmissionTemplate.create!(
@@ -1165,10 +1178,11 @@ SubmissionTemplate.create!(
       :initial_state=>{
         tosta =>:pending,
         tosta2 =>:pending,
+        ptst => :pending,
         tofluidigm =>:pending
         }
       },
-    :request_type_ids_list=>[[tosta],[tosta2],[tofluidigm]],
+    :request_type_ids_list=>[[tosta],[tosta2],[ptst],[tofluidigm]],
     :workflow_id => Submission::Workflow.find_by_name('Microarray genotyping').id,
     :info_differential => Submission::Workflow.find_by_name('Microarray genotyping').id,
     :input_field_infos => [

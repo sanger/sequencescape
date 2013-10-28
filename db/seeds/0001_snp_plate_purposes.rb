@@ -364,6 +364,14 @@ PlatePurpose.create!(
   :asset_shape => Map::AssetShape.find_by_name('Standard')
 )
 PlatePurpose.create!(
+  :name=>'SNP Type',
+  :default_state=>'pending',
+  :barcode_printer_type=>BarcodePrinterType.find_by_name('96 Well Plate'),
+  :cherrypickable_target => true,
+  :cherrypick_direction => 'column',
+  :asset_shape => Map::AssetShape.find_by_name('Standard')
+)
+PlatePurpose.create!(
   :name=>'Fluidigm 96-96',
   :default_state=>'pending',
   :cherrypickable_target => true,

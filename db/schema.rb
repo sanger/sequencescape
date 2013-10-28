@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131018083912) do
+ActiveRecord::Schema.define(:version => 20131028124928) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
