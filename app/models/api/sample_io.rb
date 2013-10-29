@@ -60,6 +60,7 @@ class Api::SampleIO < Api::Base
       map_attribute_to_json_attribute(:name, 'reference_genome')
     end
     map_attribute_to_json_attribute(:supplier_name)
+    map_attribute_to_json_attribute(:donor_id)
   end
 
   self.related_resources = [ :sample_tubes ]
