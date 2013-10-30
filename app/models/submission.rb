@@ -42,6 +42,9 @@ class Submission < ActiveRecord::Base
   named_scope :pending, :conditions => { :state => "pending" }
   named_scope :ready, :conditions => { :state => "ready" }
 
+  validates_presence_of :priority
+  validates_numericality_of :priority, :only_integer => true, :greater_than_or_equal_to => 0, :less_than_or_equal_to => 3
+
   # Before destroying this instance we should cancel all of the requests it has made
   before_destroy :cancel_all_requests_on_destruction
 

@@ -6,17 +6,17 @@ Feature: Searching for assets by barcode
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
-    
+
     Given the UUID for the search "Find pulldown plates" is "00000000-1111-2222-3333-444444444444"
     Given the UUID for the search "Find pulldown stock plates" is "00000000-1111-2222-3333-444444444445"
     Given the UUID for the search "Find pulldown plates for user" is "00000000-1111-2222-3333-444444444446"
-    
+
     Given the plate barcode webservice returns "1000001"
       And the plate barcode webservice returns "1000002"
       And the plate barcode webservice returns "1000003"
       And the plate barcode webservice returns "1000004"
       And the plate barcode webservice returns "1000005"
-      
+
       Given a "Stock Plate" plate called "stock plate" exists
       And a "ISC stock DNA" plate called "Testing the API A" exists
       And the UUID for the plate "Testing the API A" is "00000000-1111-2222-3333-000000000001"
@@ -32,7 +32,7 @@ Feature: Searching for assets by barcode
       And pending transfer requests exist between 1 wells on "stock plate" and "Testing the API B"
       And pending transfer requests exist between 1 wells on "stock plate" and "Testing the API C"
       And pending transfer requests exist between 1 wells on "stock plate" and "Testing the API D"
-      
+
     Scenario: I should be able to find Pulldown Plates
       When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/all":
         """
@@ -52,22 +52,26 @@ Feature: Searching for assets by barcode
               "name":"Testing the API A",
               "plate_purpose":{"name":"ISC stock DNA"},
               "uuid":"00000000-1111-2222-3333-000000000001",
-              "state":"passed"
+              "state":"passed",
+              "priority":0
             }, {
               "name":"Testing the API B",
               "plate_purpose":{"name":"ISC Covaris"},
               "uuid":"00000000-1111-2222-3333-000000000002",
-              "state":"pending"
+              "state":"pending",
+              "priority":0
             }, {
               "name":"Testing the API C",
               "plate_purpose":{"name":"ISC lib PCR"},
               "uuid":"00000000-1111-2222-3333-000000000003",
-              "state":"pending"
+              "state":"pending",
+              "priority":0
             }, {
               "name":"Testing the API D",
               "plate_purpose":{"name":"ISC lib PCR-XP"},
               "uuid":"00000000-1111-2222-3333-000000000004",
-              "state":"pending"
+              "state":"pending",
+              "priority":0
             } ]
           }
           """
@@ -95,7 +99,7 @@ Feature: Searching for assets by barcode
                }
               """
       Scenario: I should be able to find Pulldown Stock Plates
-      
+
         When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444445/all":
          """
          {
