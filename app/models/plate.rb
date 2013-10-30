@@ -32,6 +32,18 @@ class Plate < Asset
     self.barcode_prefix.try(:prefix) || self.class.prefix
   end
 
+  def priority
+    Submission.find(:first,
+      :select => 'submissions.priority',
+      :joins => [
+        'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
+        'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.asset_id'
+      ],
+      :conditions => ['caplp.container_id = ?',self.id],
+      :order => ['submissions.priority DESC']
+    ).try(:priority)||0
+  end
+
   # The iteration of a plate is defined as the number of times a plate of this type has been created
   # from it's parent.
   def iteration

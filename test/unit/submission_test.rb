@@ -33,7 +33,7 @@ class SubmissionTest < ActiveSupport::TestCase
     end
 
     should "have a maximum of 3" do
-      @submission.priority = 3
+      @submission.priority = 4
       assert_equal false, @submission.valid?
     end
 
