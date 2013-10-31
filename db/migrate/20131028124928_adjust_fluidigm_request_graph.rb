@@ -11,7 +11,7 @@ class AdjustFluidigmRequestGraph < ActiveRecord::Migration
         :order => 3,
         :request_class_name => 'CherrypickForPulldownRequest'
       }).tap do |rt|
-        rt.acceptable_plate_purposes << Purpose.find_by_name!('SNP Type')
+        rt.acceptable_plate_purposes << Purpose.find_by_name!('STA2')
       end
 
       RequestType.find_by_key('pick_to_fluidigm').update_attributes!(:order=>4)
@@ -32,7 +32,7 @@ class AdjustFluidigmRequestGraph < ActiveRecord::Migration
               tofluidigm =>:pending
               }
             },
-          :request_type_ids_list=>[[tosta],[tosta2],[ptst],[tofluidigm]],
+          :request_type_ids_list=>[[tosta],[tosta2],[ptst.id],[tofluidigm]],
           :workflow_id => Submission::Workflow.find_by_name('Microarray genotyping').id,
           :info_differential => Submission::Workflow.find_by_name('Microarray genotyping').id,
           :input_field_infos => [

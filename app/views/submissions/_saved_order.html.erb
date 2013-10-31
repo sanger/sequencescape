@@ -32,7 +32,7 @@
   <% unless order.request_types.blank? %>
     <h4>Request types:</h4>
     <ul id="request_types_for_submission">
-      <% RequestType.find(order.request_types).each do |request_type| %>
+      <% RequestType.find(order.request_types,:order=>'request_types.order ASC').each do |request_type| %>
         <li><%= request_description(presenter, request_type) %></li>
       <% end %>
     </ul>
