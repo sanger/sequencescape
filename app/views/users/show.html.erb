@@ -36,3 +36,10 @@
     </tr>
   </table>
 </div>
+
+<% logged_in_user? do -%>
+<div class='callout'>
+  <h2>Your API key is:</h2>
+  <code><%= @user.api_key %></code>
+  <p>You can use your API key to access your studies, samples and requests programmatically.</p>
+<% end %>

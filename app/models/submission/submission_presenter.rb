@@ -79,7 +79,8 @@ class SubmissionCreater < PresenterSkeleton
     :order_params,
     :asset_group_id,
     :pre_capture_plex_group,
-    :priority
+    :gigabases_expected,
+	:priority
   ]
 
 
@@ -98,7 +99,7 @@ class SubmissionCreater < PresenterSkeleton
   end
 
   def per_order_settings
-    [:pre_capture_plex_level]
+    [:pre_capture_plex_level, :gigabases_expected]
   end
 
   def find_asset_group

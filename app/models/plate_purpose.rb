@@ -36,12 +36,26 @@ class PlatePurpose < Purpose
     r[:cherrypick_filters] ||= [ 'Cherrypick::Strategy::Filter::ShortenPlexesToFit' ]
   end
 
+  belongs_to :asset_shape, :class_name => 'Map::AssetShape'
+
   def source_plate(plate)
     plate.stock_plate
   end
 
   def cherrypick_strategy
     Cherrypick::Strategy.new(self)
+  end
+
+  def cherrypick_dimension
+    cherrypick_direction == 'column' ? plate_height : plate_width
+  end
+
+  def plate_height
+    asset_shape.plate_height(size)
+  end
+
+  def plate_width
+    asset_shape.plate_width(size)
   end
 
   def cherrypick_filters
@@ -140,11 +154,11 @@ class PlatePurpose < Purpose
   end
 
   def size
-    96
+    attributes['size']||96
   end
 
   def well_locations
-    in_preferred_order(Map.where_plate_size(size))
+    in_preferred_order(Map.where_plate_size(size).where_plate_shape(asset_shape))
   end
 
   def in_preferred_order(relationship)

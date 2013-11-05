@@ -13,8 +13,9 @@ map_data = []
     details = (0...plate_size).map do |index|
       {
         :location_id => index + 1,
-        :description => Map.horizontal_plate_position_to_description(index+1, plate_size),
-        :asset_size  => plate_size
+        :description => Map::Coordinate.horizontal_plate_position_to_description(index+1, plate_size),
+        :asset_size  => plate_size,
+        :asset_shape => Map::AssetShape.find_by_name('Standard')
       }
     end
 
@@ -32,3 +33,5 @@ COLUMNS = [:location_id, :description, :asset_size, :column_order, :row_order]
 map_data.each do |details|
   Map.create(details)
 end
+
+Map.create!(FluidigmHelper.map_configuration_for(6,16,Map::AssetShape.find_by_name('Fluidigm96').id) + FluidigmHelper.map_configuration_for(12,16,Map::AssetShape.find_by_name('Fluidigm192').id))

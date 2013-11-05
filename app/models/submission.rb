@@ -46,7 +46,7 @@ class Submission < ActiveRecord::Base
   # Before destroying this instance we should cancel all of the requests it has made
   before_destroy :cancel_all_requests_on_destruction
 
-  PER_ORDER_REQUEST_OPTIONS = ['pre_capture_plex_level']
+  PER_ORDER_REQUEST_OPTIONS = ['pre_capture_plex_level','gigabases_expected']
 
   def cancel_all_requests_on_destruction
     ActiveRecord::Base.transaction do

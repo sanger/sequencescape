@@ -93,16 +93,16 @@ class MapTest < ActiveSupport::TestCase
   context "The despcription for rows/colums" do
 
     should 'return the expected wells for 96 well plates' do
-      assert_equal(['G1','G2','G3','G4','G5','G6','G7','G8','G9','G10','G11','G12'],Map.descriptions_for_row('G',96))
-      assert_equal(['A5','B5','C5','D5','E5','F5','G5','H5'],Map.descriptions_for_column(5,96))
+      assert_equal(['G1','G2','G3','G4','G5','G6','G7','G8','G9','G10','G11','G12'],Map::Coordinate.descriptions_for_row('G',96))
+      assert_equal(['A5','B5','C5','D5','E5','F5','G5','H5'],Map::Coordinate.descriptions_for_column(5,96))
     end
 
     should 'return the expected wells for 384 well plates' do
 
       assert_equal(['G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G7', 'G8', 'G9', 'G10','G11','G12',
-                    'G13','G14','G15','G16','G17','G18','G19','G20','G21','G22','G23','G24'], Map.descriptions_for_row('G',384))
+                    'G13','G14','G15','G16','G17','G18','G19','G20','G21','G22','G23','G24'], Map::Coordinate.descriptions_for_row('G',384))
       assert_equal(['A5','B5','C5','D5','E5','F5','G5','H5',
-                    'I5','J5','K5','L5','M5','N5','O5','P5'], Map.descriptions_for_column(5,384))
+                    'I5','J5','K5','L5','M5','N5','O5','P5'], Map::Coordinate.descriptions_for_column(5,384))
     end
 
   end

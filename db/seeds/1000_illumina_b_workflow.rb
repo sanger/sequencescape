@@ -91,15 +91,24 @@ ActiveRecord::Base.transaction do
   end
 
 
-  def sequencing_request_type_names(extra)
+  sequencing_request_type_names = [
+    "Single ended sequencing",
+    "Single ended hi seq sequencing",
+    "Paired end sequencing",
+    "HiSeq Paired end sequencing",
+    "HiSeq 2500 Single end sequencing",
+    "HiSeq 2500 Paired end sequencing"
+  ]
+
+  def sequencing_request_type_names_for(pipeline)
     [
-      "Single ended sequencing",
-      "Single ended hi seq sequencing",
-      "Paired end sequencing",
-      "HiSeq Paired end sequencing",
-      "HiSeq 2500 Single end sequencing",
-      "HiSeq 2500 Paired end sequencing"
-   ].map {|n| "#{extra} #{n}"}
+    "Single ended sequencing",
+    "Single ended hi seq sequencing",
+    "Paired end sequencing",
+    "HiSeq Paired end sequencing",
+    "HiSeq 2500 Single end sequencing",
+    "HiSeq 2500 Paired end sequencing"
+  ].map {|s| "#{pipeline} #{s}"}
   end
 
   [
@@ -114,7 +123,7 @@ ActiveRecord::Base.transaction do
       RequestType.find_by_name!(request_type_name)
     end
 
-    RequestType.find_each(:conditions => { :name => sequencing_request_type_names('Illumina-B') }) do |sequencing_request_type|
+    RequestType.find_each(:conditions => { :name => sequencing_request_type_names_for('Illumina-B') }) do |sequencing_request_type|
       submission                   = LinearSubmission.new
       submission.request_type_ids  = [ cherrypick.id, pulldown_request_types.map(&:id), sequencing_request_type.id ].flatten
       submission.info_differential = workflow.id
@@ -122,7 +131,7 @@ ActiveRecord::Base.transaction do
       submission.request_options   = defaults
 
       st = SubmissionTemplate.new_from_submission(
-        "Illumina-B - Cherrypicked - #{request_type_options[:name]} - #{sequencing_request_type.name[11..-1]}",
+        "Illumina-B - Cherrypicked - #{request_type_options[:name]} - #{sequencing_request_type.name}",
         submission
       )
       st.submission_parameters.merge!({:order_role_id=>Order::OrderRole.find_or_create_by_role(request_type_options[:label]).id}) unless request_type_options[:label].nil?
@@ -131,7 +140,7 @@ ActiveRecord::Base.transaction do
       submission.request_type_ids  = [ pulldown_request_types.map(&:id), sequencing_request_type.id ].flatten
 
       st = SubmissionTemplate.new_from_submission(
-        "Illumina-B - #{request_type_options[:name]} - #{sequencing_request_type.name[11..-1]}",
+        "Illumina-B - #{request_type_options[:name]} - #{sequencing_request_type.name}",
         submission
       )
       st.submission_parameters.merge!({:order_role_id=>Order::OrderRole.find_or_create_by_role(request_type_options[:label]).id}) unless request_type_options[:label].nil?
@@ -147,7 +156,7 @@ ActiveRecord::Base.transaction do
       RequestType.find_by_name!(request_type_name)
     end
 
-    RequestType.find_each(:conditions => { :name => sequencing_request_type_names('Illumina-A') }) do |sequencing_request_type|
+    RequestType.find_each(:conditions => { :name => sequencing_request_type_names_for('Illumina-A') }) do |sequencing_request_type|
       submission                   = LinearSubmission.new
       submission.request_type_ids  = [ cherrypick.id, pulldown_request_types.map(&:id), sequencing_request_type.id ].flatten
       submission.info_differential = workflow.id
@@ -155,7 +164,7 @@ ActiveRecord::Base.transaction do
       submission.request_options   = defaults
 
       st = SubmissionTemplate.new_from_submission(
-        "Illumina-A - Cherrypicked - #{request_type_options[:name]} - #{sequencing_request_type.name[11..-1]}",
+        "Illumina-A - Cherrypicked - #{request_type_options[:name]} - #{sequencing_request_type.name}",
         submission
       )
       st.submission_parameters.merge!({:order_role_id=>Order::OrderRole.find_or_create_by_role(request_type_options[:label]).id})
@@ -164,7 +173,7 @@ ActiveRecord::Base.transaction do
       submission.request_type_ids  = [ pulldown_request_types.map(&:id), sequencing_request_type.id ].flatten
 
       st = SubmissionTemplate.new_from_submission(
-        "Illumina-A - #{request_type_options[:name]} - #{sequencing_request_type.name[11..-1]}",
+        "Illumina-A - #{request_type_options[:name]} - #{sequencing_request_type.name}",
         submission
       )
        st.submission_parameters.merge!({:order_role_id=>Order::OrderRole.find_or_create_by_role(request_type_options[:label]).id})

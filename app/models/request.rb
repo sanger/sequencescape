@@ -460,4 +460,8 @@ class Request < ActiveRecord::Base
   def self.accessioning_required?
     false
   end
+
+  def target_purpose
+    nil
+  end
 end

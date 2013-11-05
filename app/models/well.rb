@@ -17,9 +17,12 @@ class Well < Aliquot::Receptacle
 
   has_many :stock_wells, :through => :stock_well_links, :source => :source_well do
     def attach!(wells)
-      proxy_owner.stock_well_links.build(wells.map { |well| { :type => 'stock', :source_well => well } }).tap do |_|
+      attach(wells).tap do |_|
         proxy_owner.save!
       end
+    end
+    def attach(wells)
+      proxy_owner.stock_well_links.build(wells.map { |well| { :type => 'stock', :source_well => well } })
     end
   end
 
@@ -68,8 +71,8 @@ class Well < Aliquot::Receptacle
   named_scope :in_inverse_column_major_order, { :joins => :map, :order => 'column_order DESC' }
   named_scope :in_inverse_row_major_order, { :joins => :map, :order => 'row_order DESC' }
 
-  named_scope :in_plate_column, lambda {|col,size| {:joins => :map, :conditions => {:maps => {:description => Map.descriptions_for_column(col,size), :asset_size => size }}}}
-  named_scope :in_plate_row,    lambda {|row,size| {:joins => :map, :conditions => {:maps => {:description => Map.descriptions_for_row(row,size), :asset_size =>size }}}}
+  named_scope :in_plate_column, lambda {|col,size| {:joins => :map, :conditions => {:maps => {:description => Map::Coordinate.descriptions_for_column(col,size), :asset_size => size }}}}
+  named_scope :in_plate_row,    lambda {|row,size| {:joins => :map, :conditions => {:maps => {:description => Map::Coordinate.descriptions_for_row(row,size), :asset_size =>size }}}}
 
   named_scope :with_blank_samples, {
     :joins => [

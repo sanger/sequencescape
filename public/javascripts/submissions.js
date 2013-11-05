@@ -171,6 +171,7 @@
     SCAPE.submission.plate_purpose_id                     = currentPane.find('.submission_plate_purpose_id').val();
     SCAPE.submission.comments                             = currentPane.find('.submission_comments').val();
     SCAPE.submission.lanes_of_sequencing_required         = currentPane.find('.lanes_of_sequencing').val();
+    SCAPE.submission.order_params.gigabases_expected      = currentPane.find('.gigabases_expected').val();
     SCAPE.submission.order_params.pre_capture_plex_level  = currentPane.find('.pre_capture_plex_level').val();
     SCAPE.submission.pre_capture_plex_group               = currentPane.find('.pre_capture_plex_group').val();
 
@@ -296,6 +297,11 @@
       source    : SCAPE.user_project_names,
       minLength : 3
     });
+
+    // iAnd gigabase stuff is only for library creation
+    if (SCAPE.submission.show_gigabses_expected === false) {
+      newOrder.find('.gigabases-expected').remove();
+    }
 
     // If we already have a study id set then load the asset_group for it.
     // e.g. someone coming to the page directly from a study page rather than

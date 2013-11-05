@@ -36,7 +36,7 @@ Given /^an order template called "([^\"]+)" with UUID "([^"]+)"$/ do |name, uuid
 end
 
 Given /^the UUID for the order template "([^\"]+)" is "([^\"]+)"$/ do |name,uuid_value|
-  object = SubmissionTemplate.find_by_name(name) or raise "Cannot find order template #{ name.inspect }"
+  object = SubmissionTemplate.find_by_name!(name)
   set_uuid_for(object, uuid_value)
 end
 

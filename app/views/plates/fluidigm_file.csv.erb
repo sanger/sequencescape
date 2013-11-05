@@ -1,0 +1,10 @@
+File Format,BioMark Sample Format V1.0,,,,,,,
+Sample Plate Name,<%= @parents.map(&:sanger_human_barcode).join('/')%>,,,,,,,
+Barcode ID,<%= @plate.fluidigm_barcode %>,,,,,,,
+Description,<%= @parents.map(&:sanger_human_barcode) %>,,,,,,,
+Plate Type,<%= @parents.count > 1 ? 'SBS384' : 'SBS96' %>,,,,,,,
+,,,,,,,,
+Well Location,Sample Name,Sample Concentration,Sample Type,,,,,
+<% padded_wells_by_row(@plate) do |well,sample,conc,type| -%>
+<%= well %>,<%= sample %>,<%= conc %>,<%= type %>,,,,,
+<% end %>

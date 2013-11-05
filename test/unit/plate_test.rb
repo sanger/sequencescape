@@ -19,7 +19,7 @@ class PlateTest < ActiveSupport::TestCase
         context "for #{plate_size} plate" do
           setup do
             @well = Well.new
-            @plate =Plate.new(:name => "Test Plate", :size => plate_size)
+            @plate =Plate.new(:name => "Test Plate", :size => plate_size, :purpose=>Purpose.find_by_name('Stock Plate'))
           end
           context "with valid row and col combinations" do
             (0..row_size).step(1) do |row|

@@ -18,7 +18,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
       @batch    = mock('batch')
 
-      @template = PlateTemplate.create!(:size => 96)
+      @template = PlateTemplate.new(:size => 96)
     end
 
     context '#pick_onto_partial_plate' do
@@ -84,7 +84,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
         should 'represent partial plate correctly when there are no picks made' do
           expected = (1..12).inject([]) do |plate, _|
-            plate.tap do 
+            plate.tap do
               plate.concat([CherrypickTask::TEMPLATE_EMPTY_WELL] * 4)
               plate.concat([CherrypickTask::EMPTY_WELL] * 4)
             end
@@ -228,7 +228,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
         robot.stubs(:max_beds).returns(0)
 
         assert_raises(StandardError) do
-          @task.pick_new_plate(nil, nil, robot, nil, nil)
+          @task.pick_new_plate(nil, nil, robot, nil, PlatePurpose.new(:asset_shape=>Map::AssetShape.first))
         end
       end
 
@@ -245,13 +245,13 @@ class CherrypickTaskTest < ActiveSupport::TestCase
         end
 
         should 'not generate a second plate if beds are not full' do
-          plates, source_plates = @task.pick_new_plate(@requests.slice(0, 2), @template, @robot, @batch, nil)
+          plates, source_plates = @task.pick_new_plate(@requests.slice(0, 2), @template, @robot, @batch, @target_purpose)
           assert_equal(@expected.slice(0, 1), plates, "Incorrect plate pick")
           assert_equal(Set.new(@requests.slice(0, 2).map(&:asset).map(&:plate).map(&:barcode)), source_plates, "Incorrect source plates used")
         end
 
         should 'generate new plate when all source beds are full' do
-          plates, source_plates = @task.pick_new_plate(@requests, @template, @robot, @batch, nil)
+          plates, source_plates = @task.pick_new_plate(@requests, @template, @robot, @batch, @target_purpose)
           assert_equal(@expected, plates, "Incorrect plate pick")
           assert_equal(Set.new(@requests.map(&:asset).map(&:plate).map(&:barcode)), source_plates, "Incorrect source plates used")
         end

@@ -92,7 +92,7 @@ class Cherrypick::Strategy
 
     # This is the size of the plate in the dimension in which we cherrypick.
     def dimension
-      @dimension ||= Map.send(:"plate_#{cherrypick_direction == 'row' ? 'width' : 'length'}", size)
+      @dimension ||= Map::Coordinate.send(:"plate_#{cherrypick_direction == 'row' ? 'width' : 'length'}", size)
     end
 
     def available

@@ -27,6 +27,7 @@ development:
     disable_api_authentication: true
     ega_accession_login: "ega_accession_login"
     era_accession_login: "era_accession_login"
+    irods_audience: http://localhost:3000
     ldap_port: 13890
     ldap_secure_port: 6360
     ldap_server: localhost

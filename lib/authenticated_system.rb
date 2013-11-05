@@ -64,13 +64,6 @@ module AuthenticatedSystem
         else
           self.current_user = user
         end
-      elsif cookies[:WTSISignOn]
-        user = User.authenticate_by_sanger_cookie(cookies[:WTSISignOn])
-        if user.nil?
-          self.current_user = :false
-        else
-          self.current_user = user
-        end
       end
 
       respond_to do |accepts|

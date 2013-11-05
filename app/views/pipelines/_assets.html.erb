@@ -9,6 +9,8 @@
       <th class='label'><%= link_to "Internal ID", "javascript:void(0);" %></th>
 			<th class='label'><%= link_to "Barcode", "javascript:void(0);" %></th>
       <th class='label'><%= link_to "Wells", "javascript:void(0);" %></th>
+      <th class='label'><%= link_to "Plate Purpose", "javascript:void(0);" %></th>
+      <th class='label'><%= link_to "Pick To", "javascript:void(0);" %></th>
       <% if @pipeline.display_next_pipeline? %><th class="label"><%= link_to "Next Pipeline", "javascript:void(0);" %></th><% end %>
 			<th class='label'><%= link_to "Submission", "javascript:void(0);" %></th>
 			<th class='label'><%= link_to "Study", "javascript:void(0);" %></th>
@@ -43,6 +45,8 @@
           <td><%= parent.id %></td>
           <td><%= parent.sanger_human_barcode %></td>
           <td><%= requests.size %></td>
+          <td><%= parent.purpose.name %></td>
+          <td><%= target_purpose_for(requests.first) %></td>
           <% if @pipeline.display_next_pipeline? %><td><%= next_pipeline_name_for(requests.first) %></td><% end %>
 					<td>
           	<% if @pipeline.group_by_submission? %>

@@ -1,15 +1,16 @@
 module Tasks::PlateTemplateHandler
   def render_plate_template_task(task, params)
-    @plate_templates = PlateTemplate.all
     @robots = Robot.all
     @plate_purpose_options = task.plate_purpose_options(@batch)
+    suitable_sizes = @plate_purpose_options.map {|o| o[1] }
+    @plate_templates = PlateTemplate.find(:all, :conditions=>{:size=>suitable_sizes})
   end
 
   def do_plate_template_task(task, params)
     return true if params[:file].blank?
 
     if params[:plate_template].blank?
-      plate_size = 96
+      plate_size = PlatePurpose.find(params[:plate_purpose_id]).size
     else
       plate_size = PlateTemplate.find(params[:plate_template]["0"].to_i).size
     end

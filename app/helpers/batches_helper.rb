@@ -7,6 +7,10 @@ module BatchesHelper
     end
   end
 
+  def fluidigm_plate(plate)
+    plate.purpose.barcode_for_tecan == 'fluidigm_barcode'
+  end
+
   # Used by both assets/show.xml.builder and batches/show.xml.builder
   def output_aliquot(xml, aliquot)
     xml.sample(

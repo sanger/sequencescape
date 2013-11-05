@@ -58,7 +58,7 @@ class BulkSubmission < ActiveRecord::Base
       end
     end
   rescue FasterCSV::MalformedCSVError
-      errors.add(:spreadsheet, "The supplied file was not a valid CSV file (try opening it with MS Excel)")
+    errors.add(:spreadsheet, "The supplied file was not a valid CSV file (try opening it with MS Excel)")
   end
 
   def headers
@@ -170,7 +170,8 @@ class BulkSubmission < ActiveRecord::Base
     'number of lanes',
     'pre-capture plex level',
     'pre-capture group',
-    'priority'
+    'gigabases expected',
+	'priority'
   ]
 
   def validate_entry(header,pos,row,index)
@@ -230,6 +231,7 @@ class BulkSubmission < ActiveRecord::Base
       attributes[:request_options][:bait_library_name]              = details['bait library name']      unless details['bait library name'].blank?
       attributes[:request_options][:bait_library_name]            ||= details['bait library']           unless details['bait library'].blank?
       attributes[:request_options]['pre_capture_plex_level']        = details['pre-capture plex level'] unless details['pre-capture plex level'].blank?
+      attributes[:request_options]['gigabases_expected']            = details['gigabases expected']     unless details['gigabases expected'].blank?
 
       # Deal with the asset group: either it's one we should be loading, or one we should be creating.
       begin

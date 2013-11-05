@@ -553,6 +553,8 @@ class BatchesController < ApplicationController
     @pipeline = @batch.pipeline
     @comments = @batch.comments
 
+    # TODO: Re-factor this.
+
     if @pipeline.is_a?(PulldownMultiplexLibraryPreparationPipeline)
       @plate = @batch.requests.first.asset.plate
       render :action => "pulldown_worksheet", :layout => false

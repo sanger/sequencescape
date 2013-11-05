@@ -272,6 +272,11 @@ class Order < ActiveRecord::Base
      *Class.subclasses_of(SequencingRequest)
     ].include?(RequestType.find(request_types.last).request_class)
   end
+
+  def collect_gigabases_expected?
+    input_field_infos.any? {|k| k.key==:gigabases_expected}
+  end
+
 end
 
 

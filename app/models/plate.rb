@@ -19,6 +19,8 @@ class Plate < Asset
 
   # The type of the barcode is delegated to the plate purpose because that governs the number of wells
   delegate :barcode_type, :to => :plate_purpose, :allow_nil => true
+  delegate :asset_shape, :to => :plate_purpose, :allow_nil => true
+  delegate :fluidigm_barcode, :to => :plate_metadata
 
   # Transfer requests into a plate are the requests leading into the wells of said plate.
   def transfer_requests
@@ -115,7 +117,7 @@ WHERE c.container_id=?
     private :post_connect
 
     def construct!
-      Map.where_plate_size(proxy_owner.size).in_row_major_order.map do |location|
+      Map.where_plate_size(proxy_owner.size).where_plate_shape(proxy_owner.asset_shape).in_row_major_order.map do |location|
         build(:map => location)
       end.tap do |wells|
         proxy_owner.save!
@@ -187,6 +189,20 @@ WHERE c.container_id=?
     }
   }
 
+  named_scope :with_requests, lambda { |requests|
+    {
+      :select     => "DISTINCT assets.*",
+      :joins      => [
+        "INNER JOIN container_associations AS wrca ON wrca.container_id = assets.id",
+        "INNER JOIN requests AS wrr ON wrr.asset_id = wrca.content_id"
+      ],
+      :conditions => [
+        'wrr.id IN (?)',
+        requests.map(&:id)
+      ]
+    }
+  }
+
   def wells_sorted_by_map_id
     wells.sorted
   end
@@ -212,11 +228,14 @@ WHERE c.container_id=?
   deprecate :create_child
 
   def find_map_by_rowcol(row, col)
-    description  = (?A+row).chr+"#{col+1}"
-    Map.find_by_description_and_asset_size(description, size)
-  end
-
-  def find_well_by_map_description(description)
+    # Count from 0
+    description  = asset_shape.location_from_row_and_column(row,col+1,size)
+    Map.find(:first,
+             :conditions =>{
+              :description    => description,
+              :asset_size     => size,
+              :asset_shape_id => asset_shape
+             })
   end
 
   def find_well_by_rowcol(row, col)
@@ -254,29 +273,15 @@ WHERE c.container_id=?
   alias :find_well_by_map_description :find_well_by_name
 
   def plate_header
-    rows = [""]
-    if self.size == 384
-      rows += (1..24).to_a
-    else
-      rows += (1..12).to_a
-    end
-    rows
+    [""] + plate_columns
   end
 
   def plate_rows
-    if self.size == 384
-      return ("A".."P").to_a
-    else
-      return ("A".."H").to_a
-    end
+    ("A".."#{(?A+height-1).chr}").to_a
   end
 
   def plate_columns
-    if self.size == 384
-      return (1..24).to_a
-    else
-      return (1..12).to_a
-    end
+    (1..width).to_a
   end
 
   def get_plate_type
@@ -310,17 +315,18 @@ WHERE c.container_id=?
   end
 
   def get_storage_location
-    plate_location= HashWithIndifferentAccess.new
+    plate_location = HashWithIndifferentAccess.new
     return {"storage_area" => "Control"} if self.is_a?(ControlPlate)
     return {} if self.barcode.blank?
     ['storage_area', 'storage_device', 'building_area', 'building'].each do |key|
       plate_location[key] = self.get_external_value(key)
     end
-    if plate_location.nil?
-      return {}
-    else
-      plate_location
-    end
+    plate_location
+  end
+
+  def barcode_for_tecan
+    raise StandardError, 'Purpose is not valid' if plate_purpose.present? and not plate_purpose.valid?
+    plate_purpose.present? ? send(:"#{plate_purpose.barcode_for_tecan}") : ean13_barcode
   end
 
   def infinium_barcode
@@ -579,7 +585,7 @@ WHERE c.container_id=?
   end
 
   def valid_positions?(positions)
-    unique_positions_on_plate, unique_positions_from_caller = Map.where_description(positions).where_plate_size(self.size).all.map(&:description).sort.uniq, positions.sort.uniq
+    unique_positions_on_plate, unique_positions_from_caller = Map.where_description(positions).where_plate_size(self.size).where_plate_shape(self.asset_shape).all.map(&:description).sort.uniq, positions.sort.uniq
     unique_positions_on_plate == unique_positions_from_caller
   end
 
@@ -597,6 +603,7 @@ WHERE c.container_id=?
   extend Metadata
   has_metadata do
     attribute(:infinium_barcode)
+    attribute(:fluidigm_barcode)
   end
 
   def barcode_label_for_printing
@@ -606,6 +613,14 @@ WHERE c.container_id=?
       :suffix => self.parent.try(:barcode),
       :prefix => self.barcode_prefix.prefix
     )
+  end
+
+  def height
+    asset_shape.plate_height(size)
+  end
+
+  def width
+    asset_shape.plate_width(size)
   end
 
   # This method returns a map from the wells on the plate to their stock well.
