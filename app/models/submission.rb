@@ -5,6 +5,7 @@ class Submission < ActiveRecord::Base
   include ModelExtensions::Submission
   #TODO[mb14] check if really needed. We use them in project_test
   include Request::Statistics::DeprecatedMethods
+  include Submission::Priorities
 
 
   include DelayedJobEx
@@ -42,9 +43,6 @@ class Submission < ActiveRecord::Base
   named_scope :pending, :conditions => { :state => "pending" }
   named_scope :ready, :conditions => { :state => "ready" }
 
-  validates_presence_of :priority
-  validates_numericality_of :priority, :only_integer => true, :greater_than_or_equal_to => 0, :less_than_or_equal_to => 3
-
   # Before destroying this instance we should cancel all of the requests it has made
   before_destroy :cancel_all_requests_on_destruction
 
@@ -71,7 +69,7 @@ class Submission < ActiveRecord::Base
 
   def self.build!(options)
     submission_options = {}
-    [:message].each do |option|
+    [:message, :priority].each do |option|
       value = options.delete(option)
       submission_options[option] = value if value
     end

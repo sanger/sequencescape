@@ -2,6 +2,8 @@ class PipelinesController < ApplicationController
   before_filter :find_pipeline_by_id, :only => [ :show, :setup_inbox,
                                    :set_inbox, :training_batch, :show_comments, :activate, :deactivate, :destroy, :batches]
 
+  before_filter :lab_manager_login_required, :only => [:update_priority]
+
   def index
     @pipelines = Pipeline.active.internally_managed.all(:order => "sorter ASC")
     @grouping  = @pipelines.inject(Hash.new { |h,k| h[k] = [] }) { |h,p| h[p.group_name] << p ; h }

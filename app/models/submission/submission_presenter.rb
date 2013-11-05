@@ -78,14 +78,16 @@ class SubmissionCreater < PresenterSkeleton
     :orders,
     :order_params,
     :asset_group_id,
-    :pre_capture_plex_group
+    :pre_capture_plex_group,
+    :priority
   ]
 
 
   def build_submission!
     begin
       submission.built!
-
+    rescue AASM::InvalidTransition
+      submission.errors.add_to_base("Submissions can not be edited once they are submitted for building.")
     rescue ActiveRecord::RecordInvalid => exception
       exception.record.errors.full_messages.each do |message|
         submission.errors.add_to_base(message)
@@ -166,7 +168,7 @@ class SubmissionCreater < PresenterSkeleton
 
           submission.orders << new_order
         else
-          @submission = new_order.create_submission(:user => order.user)
+          @submission = new_order.create_submission(:user => order.user, :priority=>priority)
         end
 
         new_order.save!
@@ -334,6 +336,10 @@ class SubmissionPresenter < PresenterSkeleton
 
   def submission
     @submission ||= Submission.find(id)
+  end
+
+  def priority
+    submission.priority
   end
 
   def template_name
