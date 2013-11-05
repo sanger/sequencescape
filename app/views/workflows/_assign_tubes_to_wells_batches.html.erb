@@ -2,8 +2,8 @@
   <table class="plate">
   	<thead>
   	  <tr>
-  		<% num_rows = Map.plate_length(96) -%>
-  		<% num_columns = Map.plate_width(96) -%>
+  		<% num_rows = Map::Coordinate.plate_length(96) -%>
+  		<% num_columns = Map::Coordinate.plate_width(96) -%>
   		<th class='border' width='2%'></th>
   		<% num_columns.times do |column| -%>
   			<th class='plate_column'><%= column+1 %></th>

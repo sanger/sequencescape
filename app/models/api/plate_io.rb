@@ -29,11 +29,12 @@ class Api::PlateIO < Api::Base
   map_attribute_to_json_attribute(:created_at)
   map_attribute_to_json_attribute(:updated_at)
 
-  with_association(:plate_metadata) do 
+  with_association(:plate_metadata) do
     map_attribute_to_json_attribute(:infinium_barcode)
+    map_attribute_to_json_attribute(:fluidigm_barcode)
   end
-  
-  with_association(:location) do 
+
+  with_association(:location) do
     map_attribute_to_json_attribute(:name, 'location')
   end
 

@@ -14,7 +14,7 @@ class AssignPlatePurposeTaskTest < ActiveSupport::TestCase
 
     context "#plate_purpose_options" do
       should 'return only the cherrypickable plate purposes' do
-        assert_equal(PlatePurpose.cherrypickable_as_target.all.map { |p| [p.name, p.id] }.sort, @assign_plate_purpose_task.plate_purpose_options(@batch))
+        assert_equal(PlatePurpose.cherrypickable_as_target.all.map { |p| [p.name, p.size, p.id] }.sort, @assign_plate_purpose_task.plate_purpose_options(@batch))
       end
     end
 

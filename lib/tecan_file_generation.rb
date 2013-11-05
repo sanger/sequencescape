@@ -52,15 +52,15 @@ module Sanger
           data_object["destination"].each do |dest_plate_barcode,plate_details|
             mapping_by_well = {}
             plate_details["mapping"].each do |mapping|
-              destination_position = Map.description_to_vertical_plate_position(mapping["dst_well"],plate_details["plate_size"])
+              destination_position = Map::Coordinate.description_to_vertical_plate_position(mapping["dst_well"],plate_details["plate_size"])
               mapping_by_well[destination_position] = mapping
             end
 
             mapping_by_well.sort{|a,b| a[0]<=>b[0]}.each do |dest_position, mapping|
               source_barcode = "#{mapping["src_well"][0]}"
               source_name = data_object["source"]["#{mapping["src_well"][0]}"]["name"]
-              source_position  = Map.description_to_vertical_plate_position(mapping["src_well"][1],data_object["source"]["#{mapping["src_well"][0]}"]["plate_size"])
-              destination_position = Map.description_to_vertical_plate_position(mapping["dst_well"],plate_details["plate_size"])
+              source_position  = Map::Coordinate.description_to_vertical_plate_position(mapping["src_well"][1],data_object["source"]["#{mapping["src_well"][0]}"]["plate_size"])
+              destination_position = Map::Coordinate.description_to_vertical_plate_position(mapping["dst_well"],plate_details["plate_size"])
               temp = [
                 "A;#{source_barcode};;#{source_name};#{source_position};;#{mapping["volume"]}",
                 "D;#{dest_plate_barcode};;#{plate_details["name"]};#{destination_position};;#{mapping["volume"]}",
@@ -80,14 +80,14 @@ module Sanger
           data_object["destination"].each do |destination_barcode,destination_details|
             mapping_by_well = {}
             destination_details["mapping"].each do |mapping|
-              destination_position = Map.description_to_vertical_plate_position(mapping["dst_well"],destination_details["plate_size"])
+              destination_position = Map::Coordinate.description_to_vertical_plate_position(mapping["dst_well"],destination_details["plate_size"])
               mapping_by_well[destination_position] = mapping
             end
             mapping_by_well.sort{|a,b| a[0]<=>b[0]}.each do |dest_position,mapping|
               if total_volume  > mapping["volume"]
                 dest_name = data_object["destination"][destination_barcode]["name"]
                 volume = ((total_volume*100) - (mapping["volume"]*100)).to_i.to_f/100
-                vert_map_id = Map.description_to_vertical_plate_position(mapping["dst_well"],destination_details["plate_size"])
+                vert_map_id = Map::Coordinate.description_to_vertical_plate_position(mapping["dst_well"],destination_details["plate_size"])
                 buffer << "A;BUFF;;96-TROUGH;#{vert_map_id};;#{volume}\nD;#{destination_barcode};;#{dest_name};#{vert_map_id};;#{volume}\nW;"
               end
             end

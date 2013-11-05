@@ -71,6 +71,14 @@ class PlatesController < ApplicationController
     end
   end
 
+  def fluidigm_file
+    @plate = Plate.find(params[:id])
+    @parents = @plate.parents
+    respond_to do |format|
+      format.csv { render :csv => @plate }
+    end
+  end
+
 end
 
 

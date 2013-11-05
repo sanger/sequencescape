@@ -26,8 +26,8 @@ module Batch::TecanBehaviour
       destination_barcode = request.target_asset.plate.barcode
       next unless destination_barcode == target_barcode
 
-      full_source_barcode = request.asset.plate.ean13_barcode
-      full_destination_barcode = request.target_asset.plate.ean13_barcode
+      full_source_barcode = request.asset.plate.barcode_for_tecan
+      full_destination_barcode = request.target_asset.plate.barcode_for_tecan
 
       source_plate_name = request.asset.plate.stock_plate_name.gsub(/_/, "\s")
       if override_plate_type

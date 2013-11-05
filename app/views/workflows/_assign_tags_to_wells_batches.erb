@@ -3,8 +3,8 @@
   <table class="plate">
   	<thead>
   	  <tr>
-  		<% num_rows = Map.plate_length(@plate.size) -%>
-  		<% num_columns = Map.plate_width(@plate.size) -%>
+  		<% num_rows = @plate.height -%>
+  		<% num_columns = @plate.width -%>
   		<th></th>
   		<% num_columns.times do |column| -%>
   			<th><%= column+1 %></th>
@@ -38,7 +38,7 @@
   	</tr>
   	</tbody>
   </table>
-  
+
   <% @plate.wells.each do |well| %>
     <label for="tag_<%= "#{well.id.to_s}" %>" style="display:none">Well <%= well.map.description %></label>
   <% end %>

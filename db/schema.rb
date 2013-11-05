@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131008135410) do
+ActiveRecord::Schema.define(:version => 20131101124516) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -100,6 +100,15 @@ ActiveRecord::Schema.define(:version => 20131008135410) do
 
   add_index "asset_links", ["ancestor_id", "direct"], :name => "index_asset_links_on_ancestor_id_and_direct"
   add_index "asset_links", ["descendant_id", "direct"], :name => "index_asset_links_on_descendant_id_and_direct"
+
+  create_table "asset_shapes", :force => true do |t|
+    t.string   "name",                 :null => false
+    t.integer  "horizontal_ratio",     :null => false
+    t.integer  "vertical_ratio",       :null => false
+    t.string   "description_strategy", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "assets", :force => true do |t|
     t.string   "name"
@@ -568,11 +577,12 @@ ActiveRecord::Schema.define(:version => 20131008135410) do
   end
 
   create_table "maps", :force => true do |t|
-    t.string  "description",  :limit => 4
+    t.string  "description",    :limit => 4
     t.integer "asset_size"
     t.integer "location_id"
     t.integer "row_order"
     t.integer "column_order"
+    t.integer "asset_shape_id",              :default => 1, :null => false
   end
 
   add_index "maps", ["description", "asset_size"], :name => "index_maps_on_description_and_asset_size"
@@ -696,8 +706,10 @@ ActiveRecord::Schema.define(:version => 20131008135410) do
     t.string   "infinium_barcode"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "fluidigm_barcode", :limit => 10
   end
 
+  add_index "plate_metadata", ["fluidigm_barcode"], :name => "index_on_fluidigm_barcode", :unique => true
   add_index "plate_metadata", ["plate_id"], :name => "index_plate_metadata_on_plate_id"
 
   create_table "plate_owners", :force => true do |t|
@@ -716,21 +728,24 @@ ActiveRecord::Schema.define(:version => 20131008135410) do
   end
 
   create_table "plate_purposes", :force => true do |t|
-    t.string   "name",                                                                 :null => false
+    t.string   "name",                                                                       :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "type"
     t.string   "target_type",                     :limit => 30
     t.boolean  "qc_display",                                    :default => false
     t.boolean  "pulldown_display"
-    t.boolean  "can_be_considered_a_stock_plate",               :default => false,     :null => false
+    t.boolean  "can_be_considered_a_stock_plate",               :default => false,           :null => false
     t.string   "default_state",                                 :default => "pending"
     t.integer  "barcode_printer_type_id",                       :default => 2
-    t.boolean  "cherrypickable_target",                         :default => true,      :null => false
-    t.boolean  "cherrypickable_source",                         :default => false,     :null => false
-    t.string   "cherrypick_direction",                          :default => "column",  :null => false
+    t.boolean  "cherrypickable_target",                         :default => true,            :null => false
+    t.boolean  "cherrypickable_source",                         :default => false,           :null => false
+    t.string   "cherrypick_direction",                          :default => "column",        :null => false
     t.integer  "default_location_id"
     t.string   "cherrypick_filters"
+    t.integer  "size",                                          :default => 96
+    t.integer  "asset_shape_id",                                :default => 1,               :null => false
+    t.string   "barcode_for_tecan",                             :default => "ean13_barcode", :null => false
   end
 
   add_index "plate_purposes", ["qc_display"], :name => "index_plate_purposes_on_qc_display"
@@ -892,6 +907,7 @@ ActiveRecord::Schema.define(:version => 20131008135410) do
     t.datetime "updated_at"
     t.integer  "pre_capture_plex_level"
     t.float    "gigabases_expected"
+    t.integer  "target_purpose_id"
   end
 
   add_index "request_metadata", ["request_id"], :name => "index_request_metadata_on_request_id"
