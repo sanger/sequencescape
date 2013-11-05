@@ -1,7 +1,9 @@
-require 'app/models/illumina_b/requests'
-require 'app/models/illumina_c/requests'
-require 'app/models/illumina_htp/requests'
-require 'app/models/pulldown/requests'
+
+require "#{Rails.root}/app/models/illumina_b/requests"
+require "#{Rails.root}/app/models/illumina_c/requests"
+require "#{Rails.root}/app/models/illumina_htp/requests"
+require "#{Rails.root}/app/models/pulldown/requests"
+
 
 class PlateForInbox < ActiveRecord::Base
 
@@ -15,6 +17,8 @@ class PlateForInbox < ActiveRecord::Base
   include Barcode::Barcodeable
   include Asset::Ownership::Owned
   include AssetLink::Associations
+  include LocationAssociation::Locatable
+  include Plate::Iterations
 
   def readonly?; true; end
   def before_destroy; raise ActiveRecord::ReadOnlyRecord; end
@@ -51,9 +55,9 @@ class PlateForInbox < ActiveRecord::Base
       'INNER JOIN uuids AS pfiuu ON pfiuu.resource_id = assets.id AND pfiuu.resource_type = "Asset"',
       'STRAIGHT_JOIN container_associations AS pfica ON pfica.container_id = assets.id',
       "LEFT OUTER JOIN requests AS pfir ON pfir.target_asset_id = pfica.content_id AND (pfir.`sti_type` IN (#{[TransferRequest, *Class.subclasses_of(TransferRequest)].map(&:name).map(&:inspect).join(',')}))",
-      'LEFT OUTER JOIN submissions AS pfis ON pfis.id = pfir.submission_id',
       'INNER JOIN plate_purposes AS pfip ON assets.plate_purpose_id = pfip.id',
-      "LEFT OUTER JOIN requests AS pfilcr ON pfip.can_be_considered_a_stock_plate = TRUE AND pfilcr.asset_id = pfica.content_id AND (pfilcr.`sti_type` IN (#{[Request::LibraryCreation, *Class.subclasses_of(Request::LibraryCreation)].map(&:name).map(&:inspect).join(',')}))"
+      "LEFT OUTER JOIN requests AS pfilcr ON pfip.can_be_considered_a_stock_plate = TRUE AND pfilcr.asset_id = pfica.content_id AND (pfilcr.`sti_type` IN (#{[Request::LibraryCreation, *Class.subclasses_of(Request::LibraryCreation)].map(&:name).map(&:inspect).join(',')}))",
+      'LEFT OUTER JOIN submissions AS pfis ON pfis.id = pfir.submission_id OR pfis.id = pfilcr.submission_id'
     ],
     :conditions => [
       'assets.sti_type IN (?)',
@@ -65,6 +69,10 @@ class PlateForInbox < ActiveRecord::Base
 
   belongs_to :plate_purpose
   belongs_to :barcode_prefix
+
+  def prefix
+    barcode_prefix.prefix
+  end
 
   def source_plate
     plate_purpose.source_plate(self)
@@ -91,7 +99,7 @@ class PlateForInbox < ActiveRecord::Base
   named_scope :with_plate_purpose, lambda {|purposes| { :conditions => {:plate_purpose_id=>purposes.map(&:id)}} }
   named_scope :in_state, lambda {|states|
     if states.sort != PlateForInbox.state_order.sort
-      { :having => ['state_index IN (?) OR (a_stock_plate=TRUE AND cancelled_requests=FALSE)', states.map {|s| PlateForInbox.state_order.index(s)} ] }
+      { :having => ['state_index IN (?) OR (a_stock_plate=TRUE AND cancelled_requests=FALSE)', states.map {|s| PlateForInbox.state_order.index(s)+1} ] }
     else
       {}
     end
@@ -114,30 +122,5 @@ class PlateForInbox < ActiveRecord::Base
   end
 
   def transfer_requests; end
-
-  def iteration
-    return nil if parent.nil?  # No parent means no iteration, not a 0 iteration.
-
-    # NOTE: This is how to do row numbering with MySQL!  It essentially joins the assets and asset_links
-    # tables to find all of the child plates of our parent that have the same plate purpose, numbering
-    # those rows to give the iteration number for each plate.
-    iteration_of_plate = connection.select_one(%Q{
-      SELECT iteration
-      FROM (
-        SELECT iteration_plates.id, @rownum:=@rownum+1 AS iteration
-        FROM (
-          SELECT assets.id
-          FROM asset_links
-          JOIN assets ON asset_links.descendant_id=assets.id
-          WHERE asset_links.direct=TRUE AND ancestor_id=#{parent.id} AND assets.sti_type in (#{Plate.derived_classes.map(&:inspect).join(',')}) AND assets.plate_purpose_id=#{plate_purpose.id}
-          ORDER by assets.created_at ASC
-        ) AS iteration_plates,
-        (SELECT @rownum:=0) AS r
-      ) AS a
-      WHERE a.id=#{self.id}
-    }, "Plate #{self.id} iteration query")
-
-    iteration_of_plate['iteration'].to_i
-  end
 
 end

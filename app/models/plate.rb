@@ -7,6 +7,7 @@ class Plate < Asset
   include PlatePurpose::Associations
   include Barcode::Barcodeable
   include Asset::Ownership::Owned
+  include Plate::Iterations
 
   extend QcFile::Associations
   has_qc_files
@@ -36,8 +37,8 @@ class Plate < Asset
     Submission.find(:first,
       :select => 'submissions.priority',
       :joins => [
-        'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
-        'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.asset_id'
+        'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id OR caplp.content_id = reqp.asset_id',
+        'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id'
       ],
       :conditions => ['caplp.container_id = ?',self.id],
       :order => ['submissions.priority DESC']
