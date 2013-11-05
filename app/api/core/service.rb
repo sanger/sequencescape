@@ -135,7 +135,10 @@ class Core::Service < Sinatra::Base
     end
 
     def authentication_code
-      @service.request.cookies['WTSISignOn']
+      # The WTSISignOn service has been retired. However previously the code
+      # supported supplying the API key in this cookie, so this has been left
+      # for compatibility purposes
+      @service.request.cookies['api_key']||@service.request.cookies['WTSISignOn']
     end
 
     def response(&block)

@@ -47,17 +47,6 @@ Given /^I am not logged in$/ do
   @current_user = nil
 end
 
-Given /^I have a single sign\-on token for "(.*)"$/ do |login|
-  user = User.create!(
-    :login => login,
-    :password => 'generic',
-    :password_confirmation => 'generic',
-    :email => "#{login}@example.com"
-  )
-  cookies[:WTSISignOn] = "fnord"
-  User.stubs(:authenticate_by_sanger_cookie).returns(user)
-  @current_user = user
-end
 
 Then /^I should not be on the login page$/ do
   # assert_no_tag :tag => :title, :child => "Sequencescape : Login"

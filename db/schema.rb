@@ -906,6 +906,7 @@ ActiveRecord::Schema.define(:version => 20131101124516) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "pre_capture_plex_level"
+    t.float    "gigabases_expected"
     t.integer  "target_purpose_id"
   end
 
