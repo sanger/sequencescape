@@ -418,10 +418,12 @@ class Request < ActiveRecord::Base
   end
 
   def update_priority
-    priority = (self.priority + 1) % 2
-    submission.requests.each do |request|
-      request.update_attributes!(:priority => priority)
-    end
+    priority = (self.priority + 1) % 4
+    submission.update_attributes!(:priority => priority)
+  end
+
+  def priority
+    submission.try(:priority)||0
   end
 
   def request_type_updatable?(new_request_type)
