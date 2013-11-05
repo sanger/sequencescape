@@ -100,6 +100,14 @@ class BulkSubmission < ActiveRecord::Base
     false
   end
 
+  def max_priority(orders)
+    orders.inject(0) do |max,order|
+      priority = Submission::Priorities.priorities.index(order['priority'])||order['priority'].to_i
+      priority > max ? priority.to_i : max
+    end
+  end
+  private :max_priority
+
   def spreadsheet_valid?
     valid_header?
     errors.count == 0
@@ -126,7 +134,7 @@ class BulkSubmission < ActiveRecord::Base
             end
 
             begin
-              submission = Submission.create!(:name=>submission_name, :user => user, :orders => orders.map(&method(:prepare_order)).compact)
+              submission = Submission.create!(:name=>submission_name, :user => user, :orders => orders.map(&method(:prepare_order)).compact, :priority=>max_priority(orders))
               submission.built!
               # Collect successful submissions
               @submission_ids << submission.id
@@ -161,7 +169,8 @@ class BulkSubmission < ActiveRecord::Base
     'comments',
     'number of lanes',
     'pre-capture plex level',
-    'pre-capture group'
+    'pre-capture group',
+    'priority'
   ]
 
   def validate_entry(header,pos,row,index)
