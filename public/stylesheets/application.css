@@ -410,7 +410,7 @@ color: #666;
 padding-left: 12px;
 }
 
-.help {
+.help, .priority_changer {
   background: #FBFFC7;
   padding: 5px;
   -moz-border-radius: 3px;
@@ -1268,19 +1268,19 @@ label.required:after {
 }
 
 
-div.auto_complete { 
-  width:100%; 
+div.auto_complete {
+  width:100%;
   background: #fff;
   z-index: 250;
   border: 1px solid gray;
 }
 
-div.auto_complete ul { 
+div.auto_complete ul {
   border:1px solid 888;
   margin:0;
   padding:0;
   width:100%;
-  list-style-type:none; 
+  list-style-type:none;
 }
 
 div.auto_complete ul li {
@@ -1292,7 +1292,7 @@ div.auto_complete ul.li.selected {
   background-color: #ffb;
 }
 
-div.auto_complete ul strong.highlight { 
+div.auto_complete ul strong.highlight {
   color: #800;
   margin:0;
   padding:0;
