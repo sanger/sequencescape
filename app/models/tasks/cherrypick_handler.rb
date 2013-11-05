@@ -38,7 +38,6 @@ module Tasks::CherrypickHandler
         redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (@stage -1).to_s
         return
       end
-      action_flash[:warning] = I18n.t("cherrypick.picking_by_row") if plate.plate_purpose.cherrypick_in_rows?
     elsif @fluidigm_plate.present?
       if @fluidigm_plate.size > 10
         flash[:error] = "Invalid fluidigm barcode"
