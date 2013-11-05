@@ -23,14 +23,14 @@
           <% if output_plate %><td><%= purpose_for_plate(parent) %></td><% end %>
           <td><%= link_to 'Show plate', show_plate_asset_url(parent)%></td>
           <td>
-          	<% if output_plate -%>
+            <% if output_plate -%>
               <%= link_to 'Print worksheet', url_for(:controller => :batches, :action => :print, :id => @batch.id, :barcode => parent.barcode), :title => "Print worksheet for Plate #{parent.barcode}" %>
-						<% end -%>
+              <% end -%>
           </td>
           <td>
-          	<% if output_plate -%>
+            <% if output_plate -%>
               <%= link_to 'Tecan file', url_for(:controller => :batches, :action => :gwl_file, :id => @batch.id, :barcode => parent.barcode), :title => "Tecan file for Plate #{parent.barcode}" %>
-						<% end -%>
+              <% end -%>
           </td>
         </tr>
       <% else %>
