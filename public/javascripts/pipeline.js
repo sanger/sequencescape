@@ -2,16 +2,16 @@ function select_requests_by_group(elementId,size,value) {
   for (var i = 1; i < size+1; i++) {
 	$$('#' + elementId + '_' + i + ' input[type=checkbox]')[0].checked = value;
 
-	element = $(elementId + '_' + i);   
+	element = $(elementId + '_' + i);
 	if (value) {
 	  element.show();
 	} else {
 	  element.hide();
-	}                   
-  }                                            
+	}
+  }
 }
 
-function showElement(elementId, size) {     
+function showElement(elementId, size) {
   for (var i = 0; i < size+1; i++) {
 	element = $(elementId + '_' + i);
       //console.debug(element);
@@ -35,9 +35,6 @@ function showElement(elementId, size) {
 
     var priority = !!parseInt(element.attr('data-priority'));
     var answer = true;
-    if (priority) {
-      answer = confirm('Are you sure you want to set this to normal priority?');
-    }
 
     if (answer) {
       $.ajax({
@@ -47,7 +44,7 @@ function showElement(elementId, size) {
           request_id:  element.attr('data-request-id')
         },
         success: function() {
-          new_priority = priority ? '0' : '1';  // NOTE: Inverted at this point!
+          new_priority = (priority+1)%4;  // NOTE: Inverted at this point!
           element.attr('data-priority', new_priority).attr('alt', new_priority).attr('src', '/images/icon_' + new_priority + '_flag.png');
           inbox.trigger('priorityChange', element);
         },
