@@ -33,26 +33,23 @@ function showElement(elementId, size) {
   inbox.delegate('.flag_image', 'click', function() {
     var element = $(this);
 
-    var priority = !!parseInt(element.attr('data-priority'));
-    var answer = true;
+    var priority = parseInt(element.attr('data-priority'));
 
-    if (answer) {
-      $.ajax({
-        url: '/pipelines/update_priority',
-        type: 'POST',
-        data: {
-          request_id:  element.attr('data-request-id')
-        },
-        success: function() {
-          new_priority = (priority+1)%4;  // NOTE: Inverted at this point!
-          element.attr('data-priority', new_priority).attr('alt', new_priority).attr('src', '/images/icon_' + new_priority + '_flag.png');
-          inbox.trigger('priorityChange', element);
-        },
-        error: function() {
-          alert('The request cannot be saved properly. Flag not updated.');
-        }
-      });
-    }
+    $.ajax({
+      url: '/pipelines/update_priority',
+      type: 'POST',
+      data: {
+        request_id:  element.attr('data-request-id')
+      },
+      success: function() {
+        new_priority = (priority+1)%4;  // NOTE: Inverted at this point!
+        element.attr('data-priority', new_priority).attr('alt', new_priority).attr('src', '/images/icon_' + new_priority + '_flag.png');
+        inbox.trigger('priorityChange', element);
+      },
+      error: function() {
+        alert('The request cannot be saved properly. Flag not updated.');
+      }
+    });
   });
 
   // This handles the priority changing event by signalling table resorting and updating any related flags.
