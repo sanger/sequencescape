@@ -23,9 +23,9 @@ def create_pulldown_submission_templates
 
   pipelines_to_request_types = {
     'Illumina-A' => {
-      'Pulldown WGS' => { 'library_type' => 'Standard',         'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 },
-      'Pulldown SC'  => { 'library_type' => 'Agilent Pulldown', 'fragment_size_required_from' => 100, 'fragment_size_required_to' => 400 },
-      'Pulldown ISC' => { 'library_type' => 'Agilent Pulldown', 'fragment_size_required_from' => 100, 'fragment_size_required_to' => 400 }
+      'Illumina-A Pulldown WGS' => { 'library_type' => 'Standard',         'fragment_size_required_from' => 300, 'fragment_size_required_to' => 500 },
+      'Illumina-A Pulldown SC'  => { 'library_type' => 'Agilent Pulldown', 'fragment_size_required_from' => 100, 'fragment_size_required_to' => 400 },
+      'Illumina-A Pulldown ISC' => { 'library_type' => 'Agilent Pulldown', 'fragment_size_required_from' => 100, 'fragment_size_required_to' => 400 }
     },
   }
 
