@@ -10,10 +10,10 @@ end %>
  Submission created at: <strong><%=h @presenter.submission.created_at.to_formatted_s(:day_full_with_time) %></strong>
 </div>
 <%= submission_status_message(@presenter.submission) %>
-<% if current_user.is_lab_manager? %>
 <div class='priority_changer'>
   <h2>Priority:</h2>
   <%= image_tag("icon_#{@presenter.submission.priority}_flag.png", :size=>"64x64", :class=>'sub_flag') if @presenter.submission.priority > 0 %>
+  <% if current_user.is_lab_manager? %>
   <% form_for(:submission, @presenter, :url => {:id=> @presenter.submission.id, :action => :change_priority }) do |f| %>
 
       <p>The priority of a submission applies to all requests in the submission. If it is changed, request priority will be updated automatically.</p>
@@ -28,8 +28,8 @@ end %>
       <%= f.submit 'Change priority' %>
 
   <% end %>
+  <% end %>
 </div>
-<% end %>
 
 
 <% if @presenter.submission.pending? -%>

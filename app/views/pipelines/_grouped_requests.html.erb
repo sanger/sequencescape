@@ -3,9 +3,7 @@
     <tr>
       <th class='label' style='text-align: left' width='2%'>&nbsp;</th>
       <th class='label' style='text-align: left' width='2%'>&nbsp;</th>
-      <% if current_user.is_lab_manager? %>
-        <th id="priority_flag" class='label' style='text-align: center' width='5%'><%= link_to image_tag("icon_0_flag.png", :size=>"16x16"), "javascript:void(0);" %></th>
-      <% end %>
+      <th id="priority_flag" class='label' style='text-align: center' width='5%'><%= link_to image_tag("icon_0_flag.png", :size=>"16x16"), "javascript:void(0);" %></th>
       <th class='label' width='5%'><%= link_to "Item ID", "javascript:void(0);" %></th>
       <th style="display:none" class='label' width='5%'><%= link_to "", "javascript:void(0);" %></th>
       <th class='label' width='5%'>Request ID</th>
@@ -36,11 +34,9 @@
 		        <% index += 1 %>
 		      </td>
           <td class="request" width='2%'><a href="javascript:void(0)" onclick="showElement(<%=  request.submission_id %>,<%= requests.size %>); return false;"><%= image_tag "information.png", :size =>"13x13" %></a></td>
-          <% if current_user.is_lab_manager? %>
-            <td class='request' style='text-align: center' width='5%'>
-              <%= image_tag "icon_#{request.priority}_flag.png", 'alt' => request.priority, :size => '16x16', :class => 'flag_image', "data-priority" => request.priority, 'data-request-id' => request.id, 'data-submission-id' => request.submission_id %>
-            </td>
-          <% end %>
+          <td class='request' style='text-align: center' width='5%'>
+            <%= image_tag "icon_#{request.priority}_flag.png", 'alt' => request.priority, :size => '16x16', :class => "flag_image #{current_user.is_lab_manager? ? 'as_manager' : ''}", "data-priority" => request.priority, 'data-request-id' => request.id, 'data-submission-id' => request.submission_id %>
+          </td>
           <td class="request" width='5%'><%= link_to request.submission_id,study_workflow_submission_path(request.study, current_user.workflow, request.submission) %></td>
           <td class="request" width='5%'>&nbsp;</td>
           <td style="display:none" class='request' width='5%'><%= link_to request.submission_id,study_workflow_submission_path(request.study, current_user.workflow, request.submission) %></td>
@@ -79,11 +75,9 @@
 		    <%= check_box :request, request.id, :value => request.id %>
 		  </td>
           <td style="display:none" class="request" width='5%'><%= link_to request.submission_id,study_workflow_submission_path(request.study, current_user.workflow, request.submission) %></td>
-          <% if current_user.is_lab_manager? %>
-            <td class='request' style='text-align: center' width='5%'>
-              <%= image_tag "icon_#{request.priority}_flag.png", 'alt' => request.priority, :size => '16x16', :class => 'related_flag_image', 'data-submission-id' => request.submission_id %>
-            </td>
-          <% end %>
+          <td class='request' style='text-align: center' width='5%'>
+            <%= image_tag "icon_#{request.priority}_flag.png", 'alt' => request.priority, :size => '16x16', :class => 'related_flag_image', 'data-submission-id' => request.submission_id %>
+          </td>
           <td class="request" width='5%'><%= link_to request.submission_id,study_workflow_submission_path(request.study, current_user.workflow, request.submission) %></td>
           <td class='request' width='5%'><%= link_to request.id, request_path(request) %></td>
           <td class='request' width='10%'><%= link_to(h(request_asset.display_name), asset_path(request.asset)) %></td>

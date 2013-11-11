@@ -30,7 +30,7 @@ function showElement(elementId, size) {
   // Whenever someone clicks on a priority flag we need to change the request priority.  For the multiplexed requests
   // this will trigger all of them to be updated.
   var inbox = $('#pipeline_inbox');
-  inbox.delegate('.flag_image', 'click', function() {
+  inbox.delegate('.flag_image.as_manager', 'click', function() {
     var element = $(this);
 
     var priority = parseInt(element.attr('data-priority'));
