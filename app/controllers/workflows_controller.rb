@@ -14,6 +14,7 @@ class WorkflowsController < ApplicationController
   include Tasks::GenerateManifestHandler
   include Tasks::MovieLengthHandler
   include Tasks::PlateTemplateHandler
+  include Tasks::PlateTransferHandler
   include Tasks::PrepKitBarcodeHandler
   include Tasks::ReferenceSequenceHandler
   include Tasks::SamplePrepQcHandler
