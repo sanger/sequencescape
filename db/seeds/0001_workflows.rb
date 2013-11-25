@@ -948,7 +948,7 @@ set_pipeline_flow_to('PacBio Sample Prep' => 'PacBio Sequencing')
   'SC',
   'ISC'
 ].each do |pipeline_type|
-  pipeline_name = "Pulldown #{pipeline_type}"
+  pipeline_name = "Illumina-A Pulldown #{pipeline_type}"
   Pipeline.create!(:name => pipeline_name) do |pipeline|
     pipeline.sorter             = Pipeline.maximum(:sorter) + 1
     pipeline.automated          = false
@@ -960,7 +960,7 @@ set_pipeline_flow_to('PacBio Sample Prep' => 'PacBio Sequencing')
 
     pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :name => pipeline_name) do |request_type|
       request_type.billable          = true
-      request_type.key               = pipeline_name.downcase.gsub(/\s+/, '_')
+      request_type.key               = pipeline_name.downcase.underscore.gsub(/\s+/, '_')
       request_type.initial_state     = 'pending'
       request_type.asset_type        = 'Well'
       request_type.target_purpose    = Tube::Purpose.standard_mx_tube
@@ -988,7 +988,7 @@ SequencingPipeline.create!(:name => "MiSeq sequencing") do |pipeline|
       request_type.asset_type        = 'LibraryTube'
       request_type.order             = 1
       request_type.multiples_allowed = false
-      request_type.request_class_name = SequencingRequest.name
+      request_type.request_class_name = MiSeqSequencingRequest.name
     end
 
     ['a','b','c'].each do |pl|
@@ -997,7 +997,7 @@ SequencingPipeline.create!(:name => "MiSeq sequencing") do |pipeline|
         request_type.asset_type        = 'LibraryTube'
         request_type.order             = 1
         request_type.multiples_allowed = false
-        request_type.request_class_name = SequencingRequest.name
+        request_type.request_class_name = MiSeqSequencingRequest.name
       end
     end
 
