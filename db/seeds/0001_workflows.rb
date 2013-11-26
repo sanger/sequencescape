@@ -938,7 +938,7 @@ end
 set_pipeline_flow_to('Cherrypicking for Pulldown' => 'Pulldown Multiplex Library Preparation')
 set_pipeline_flow_to('DNA QC' => 'Cherrypick')
 
-PacBioSamplePrepPipeline.create!(:name => 'PacBio Sample Prep') do |pipeline|
+PacBioSamplePrepPipeline.create!(:name => 'PacBio Library Prep') do |pipeline|
   pipeline.sorter               = 14
   pipeline.automated            = false
   pipeline.active               = true
@@ -946,15 +946,15 @@ PacBioSamplePrepPipeline.create!(:name => 'PacBio Sample Prep') do |pipeline|
 
   pipeline.location = Location.first(:conditions => { :name => 'PacBio sample prep freezer' }) or raise StandardError, "Cannot find 'PacBio sample prep freezer' location"
 
-  pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'pacbio_sample_prep', :name => 'PacBio Sample Prep') do |request_type|
+  pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'pacbio_sample_prep', :name => 'PacBio Library Prep') do |request_type|
     request_type.initial_state     = 'pending'
-    request_type.asset_type        = 'SampleTube'
+    request_type.asset_type        = 'Well'
     request_type.order             = 1
     request_type.multiples_allowed = false
     request_type.request_class = PacBioSamplePrepRequest
   end
 
-  pipeline.workflow = LabInterface::Workflow.create!(:name => 'PacBio Sample Prep').tap do |workflow|
+  pipeline.workflow = LabInterface::Workflow.create!(:name => 'PacBio Library Prep').tap do |workflow|
     [
 
       { :class => PrepKitBarcodeTask, :name => 'DNA Template Prep Kit Box Barcode',    :sorted => 1, :batched => true, :lab_activity => true },
