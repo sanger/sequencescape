@@ -26,7 +26,11 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
       @source_plate.wells   = ['A1','B1','C1'].map do |loc|
         Factory(:well_with_sample_and_without_plate).tap do |w|
           w.map = Map.find_by_description_and_asset_size(loc,96)
-          request = Request.create!(:asset=>w, :submission=>Submission.create!(:user=>Factory(:user)))
+          request = Request.create!(
+            :asset=>w,
+            :submission=>Submission.create!(:user=>Factory(:user)),
+            :target_asset=> Factory(:pac_bio_library_tube)
+          )
           @batch.requests << request
         end
       end
@@ -48,7 +52,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
 
         should_change("Plate.count", :by => 1) { Plate.count }
 
-        should_change("TransferRequest.count", :by => 3) { TransferRequest.count }
+        should_change("TransferRequest.count", :by => 6) { TransferRequest.count }
 
         should 'mimic the original layout' do
           @source_plate.wells.each do |w|
@@ -59,6 +63,13 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
         should 'create transfer requests between wells' do
           @source_plate.wells.each do |w|
             assert_equal w.requests_as_source.where_is_a?(TransferRequest).last.target_asset, Plate.last.wells.located_at(w.map_description).first
+          end
+        end
+
+        should 'create transfer to the Library tubes' do
+          @batch.requests.each do |r|
+            w = r.asset
+            assert_equal r.target_asset, Plate.last.wells.located_at(w.map_description).first.requests.first.target_asset
           end
         end
 
@@ -117,7 +128,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
       end
 
       should 'pass the transfer requests' do
-        assert_equal 'passed', TransferRequest.last.state
+        assert_equal 'passed', @batch.requests.first.asset.requests.where_is_a?(TransferRequest).first.state
       end
     end
 

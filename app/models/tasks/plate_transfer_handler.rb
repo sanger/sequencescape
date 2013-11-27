@@ -4,7 +4,7 @@ module Tasks::PlateTransferHandler
 
   def render_plate_transfer_task(task,params)
     ActiveRecord::Base.transaction do
-      find_or_create_target(task)
+      @target = find_or_create_target(task)
     end
   end
 
@@ -15,9 +15,14 @@ module Tasks::PlateTransferHandler
     task.purpose.create!.tap do |target|
       @batch.requests.each do |outer_request|
         source = outer_request.asset
-        RequestType.transfer.create!(
+        RequestType.find_by_target_purpose_id(task.purpose_id).create!(
           :asset => source,
           :target_asset => target.wells.located_at(source.map_description).first,
+          :submission_id => outer_request.submission_id
+        )
+        RequestType.transfer.create!(
+          :asset => target.wells.located_at(source.map_description).first,
+          :target_asset => outer_request.target_asset,
           :submission_id => outer_request.submission_id
         )
       end
@@ -37,6 +42,7 @@ module Tasks::PlateTransferHandler
 
   def do_plate_transfer_task(task,params)
     target_plate.transition_to('passed')
+    true
   end
 
 end

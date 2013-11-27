@@ -896,8 +896,9 @@ PacBioSamplePrepPipeline.create!(:name => 'PacBio Library Prep') do |pipeline|
     [
 
       { :class => PrepKitBarcodeTask, :name => 'DNA Template Prep Kit Box Barcode',    :sorted => 1, :batched => true, :lab_activity => true },
-      { :class => SamplePrepQcTask,   :name => 'Sample Prep QC',                       :sorted => 2, :batched => true, :lab_activity => true },
-      { :class => SmrtCellsTask,      :name => 'Number of SMRTcells that can be made', :sorted => 3, :batched => true, :lab_activity => true }
+      { :class => PlateTransferTask,  :name => 'Transfer to plate',                    :sorted => 2, :batched => nil,  :lab_activity => true, :purpose => Purpose.find_by_name('PacBio Sheared') },
+      { :class => SamplePrepQcTask,   :name => 'Sample Prep QC',                       :sorted => 3, :batched => true, :lab_activity => true },
+      { :class => SmrtCellsTask,      :name => 'Number of SMRTcells that can be made', :sorted => 4, :batched => true, :lab_activity => true }
     ].each do |details|
       details.delete(:class).create!(details.merge(:workflow => workflow))
     end
