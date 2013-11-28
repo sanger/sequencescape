@@ -15,7 +15,7 @@ class PacBioSamplePrepRequest < Request
   private
 
   def on_started
-    # Do nothing, our transfer request will handle that
+    target_asset.generate_name(asset.display_name.gsub(':','-'))
   end
 
   def on_passed
