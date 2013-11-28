@@ -12,6 +12,7 @@ Given /^I have a sample tube "([^"]*)" in study "([^"]*)" in asset group "([^"]*
 end
 
 Given /^I have a PacBio submission$/ do
+  step(%Q{I have a plate for PacBio})
   project = Project.find_by_name("Test project")
   study = Study.find_by_name("Test study")
 
@@ -21,7 +22,7 @@ Given /^I have a PacBio submission$/ do
     :project => project,
     :workflow => Submission::Workflow.find_by_key('short_read_sequencing'),
     :user => User.last,
-    :assets => SampleTube.all,
+    :assets => Plate.find_by_barcode(1234567).wells.all,
     :request_options => {:multiplier=>{"1"=>"1", "3"=>"1"}, "insert_size"=>"250", "sequencing_type"=>"Standard"}
     )
   step(%Q{1 pending delayed jobs are processed})
@@ -32,15 +33,22 @@ Then /^I should have (\d+) PacBioSequencingRequests$/ do |number_of_requests|
   assert_equal number_of_requests.to_i, PacBioSequencingRequest.count
 end
 
+Given /^I have a plate for PacBio$/ do
+  PlatePurpose.stock_plate_purpose.create!(:without_wells, :barcode=>1234567) do |plate|
+    plate.wells.create!(:map=>Map.find_by_asset_size_and_description(96,'A1'),:aliquots => SampleTube.find_by_barcode(111).aliquots.map(&:clone))
+    plate.wells.create!(:map=>Map.find_by_asset_size_and_description(96,'B1'),:aliquots => SampleTube.find_by_barcode(222).aliquots.map(&:clone)) if  SampleTube.find_by_barcode(222).present?
+    plate.location = Location.find_by_name('PacBio sample prep freezer')
+  end
+end
+
 Given /^I have a PacBio Sample Prep batch$/ do
   step(%Q{I have a sample tube "222" in study "Test study" in asset group "Test study group"})
   step(%Q{I have a PacBio submission})
-  step(%Q{I am on the show page for pipeline "PacBio Sample Prep"})
-  step(%Q{I check "Select SampleTube 111 for batch"})
-  step(%Q{I check "Select SampleTube 222 for batch"})
+  step(%Q{I am on the show page for pipeline "PacBio Library Prep"})
+  step(%Q{I check "Select DN1234567T for batch"})
   step(%Q{I press "Submit"})
-  step(%Q{SampleTube "111" has a PacBioLibraryTube "333"})
-  step(%Q{SampleTube "222" has a PacBioLibraryTube "444"})
+  step(%Q{Well "1234567":"A1" has a PacBioLibraryTube "333"})
+  step(%Q{Well "1234567":"B1" has a PacBioLibraryTube "444"})
 end
 
 Given /^SampleTube "([^"]*)" has a PacBioLibraryTube "([^"]*)"$/ do |sample_tube_barcode, library_tube_barcode|
@@ -49,7 +57,14 @@ Given /^SampleTube "([^"]*)" has a PacBioLibraryTube "([^"]*)"$/ do |sample_tube
   request.target_asset.update_attributes!(:barcode => library_tube_barcode)
 end
 
+Given /^Well "([^"]*)":"([^"]*)" has a PacBioLibraryTube "([^"]*)"$/ do |plate_barcode, well, library_tube_barcode|
+  well = Plate.find_by_barcode(plate_barcode).wells.located_at(well).first
+  request = Request.find_by_asset_id(well.id)
+  request.target_asset.update_attributes!(:barcode => library_tube_barcode)
+end
+
 Given /^I have a fast PacBio sequencing batch$/ do
+  step(%Q{I have a sample tube "111" in study "Test study" in asset group "Test study group"})
   step(%Q{I have a sample tube "222" in study "Test study" in asset group "Test study group"})
   step(%Q{the sample tubes are part of the study})
   step(%Q{I have a PacBio submission})
@@ -69,8 +84,9 @@ end
 
 Given /^I have a PacBio sequencing batch$/ do
   step(%Q{I have a PacBio Sample Prep batch})
-  step(%Q{I follow "Start batch"})
+  step(%Q{I follow "DNA Template Prep Kit Box Barcode"})
   step(%Q{I fill in "DNA Template Prep Kit Box Barcode" with "999"})
+  step(%Q{I press "Next step"})
   step(%Q{I press "Next step"})
   step(%Q{I select "Pass" from "QC PacBioLibraryTube 333"})
   step(%Q{I select "Pass" from "QC PacBioLibraryTube 444"})
@@ -127,6 +143,7 @@ Then /^the PacBio manifest for the last batch should look like:$/ do |expected_r
   pac_bio_run_file = PacBio::SampleSheet.new.create_csv_from_batch(Batch.last)
   csv_rows = pac_bio_run_file.split(/\r\n/)
   csv_rows.shift(8)
+  expected_results_table.column_names.each {|c| expected_results_table.map_column!(c) {|d| d.blank? ? nil : d }}
   actual_table = FasterCSV.parse( csv_rows.map{|c| "#{c}\r\n"}.join(''))
   expected_results_table.diff!(actual_table)
 end
@@ -197,5 +214,6 @@ Then /^the PacBio manifest should be:$/ do |expected_results_table|
   csv_rows = pac_bio_run_file.split(/\r\n/)
   csv_rows.shift(8)
   actual_table = FasterCSV.parse( csv_rows.map{|c| "#{c}\r\n"}.join(''))
+  expected_results_table.column_names.each {|c| expected_results_table.map_column!(c) {|d| d.blank? ? nil : d }}
   expected_results_table.diff!(actual_table)
 end
