@@ -881,6 +881,7 @@ PacBioSamplePrepPipeline.create!(:name => 'PacBio Library Prep') do |pipeline|
   pipeline.automated            = false
   pipeline.active               = true
   pipeline.asset_type           = 'PacBioLibraryTube'
+  pipeline.group_by_parent      = true
 
   pipeline.location = Location.first(:conditions => { :name => 'PacBio sample prep freezer' }) or raise StandardError, "Cannot find 'PacBio sample prep freezer' location"
 
@@ -941,7 +942,16 @@ end.tap do |pipeline|
   create_request_information_types(pipeline, "sequencing_type", "insert_size")
 end
 
-set_pipeline_flow_to('PacBio Sample Prep' => 'PacBio Sequencing')
+      RequestType.create!(
+        :key                => 'initial_pacbio_transfer',
+        :name               => 'Initial Pacbio Transfer',
+        :asset_type         => 'Well',
+        :request_class_name => 'PacBioSamplePrepRequest::Initial',
+        :order              => 1,
+        :target_purpose     => Purpose.find_by_name('PacBio Sheared')
+      )
+
+set_pipeline_flow_to('PacBio Library Prep' => 'PacBio Sequencing')
 
 # Pulldown pipelines
 [

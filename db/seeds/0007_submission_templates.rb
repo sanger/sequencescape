@@ -153,7 +153,7 @@ end
 
 seq_submission_workflow = Submission::Workflow.find_by_name('Next-gen sequencing') or raise StandardError, "Cannot find seq_submission_workflow"
 [
-  { :name => 'PacBio', :request_types => ['PacBio Sample Prep','PacBio Sequencing']}
+  { :name => 'PacBio', :request_types => ['PacBio Library Prep','PacBio Sequencing']}
 
 ].each do |attributes|
   request_types = attributes[:request_types].map { |n| RequestType.find_by_name(n) or raise StandardError, "Request type #{n.inspect} not found" }
