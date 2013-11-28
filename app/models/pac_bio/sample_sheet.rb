@@ -53,7 +53,7 @@ class PacBio::SampleSheet
     well = request.target_asset
     [
       Map.pad_description(well.map),
-      well.primary_aliquot.sample.name,
+      "PB_#{library_tube.name}",
       library_tube.pac_bio_library_tube_metadata.prep_kit_barcode,
       nil,
       library_tube.pac_bio_library_tube_metadata.binding_kit_barcode,
