@@ -86,7 +86,7 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
            # We're using the submissions controller as things are a bit screwy if we go to the plate creator (PlateCreater) directly
            # However, as this seems to relate to the multiplier, it may be related to out problem.
            #@asset_group.assets.each_with_index {|a,i| tag= Factory :tag; a.aliquots.first.update_attributes!(:tag=>tag)}
-           @submission_template = SubmissionTemplate.find_by_name('Illumina-B Multiplexed Library Creation - Single ended sequencing')
+           @submission_template = SubmissionTemplate.find_by_name('Illumina-B Multiplexed Library Creation - Illumina-B Single ended sequencing')
            @library_pipeline = Pipeline.find_by_name('Illumina-B MX Library Preparation')
 
            post(:create, :submission => {
