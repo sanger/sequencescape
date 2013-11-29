@@ -114,6 +114,8 @@ class BulkSubmission < ActiveRecord::Base
 
     if spreadsheet_valid?
       submission_details = submission_structure
+
+      raise ActiveRecord::RecordInvalid, self if self.errors.count > 0
       # Within a single transaction process each of the rows of the CSV file as a separate submission.  Any name
       # fields need to be mapped to IDs, and the 'assets' field needs to be split up and processed if present.
       ActiveRecord::Base.transaction do
@@ -152,7 +154,7 @@ class BulkSubmission < ActiveRecord::Base
     'user login',
 
     # Needed to identify the assets and what happens to them ...
-    'plate barcode', 'plate well',
+    'plate barcode',
     'asset group id', 'asset group name',
     'fragment size from', 'fragment size to',
     'read length',
@@ -184,7 +186,10 @@ class BulkSubmission < ActiveRecord::Base
       order = rows.group_by do |details|
         details["asset group name"]
       end.map do |group_name, rows|
-        Hash[COMMON_FIELDS.map { |f| [ f, rows.first[f] ] }].tap do |details|
+
+        # puts shared_options!(rows).inspect
+
+        Hash[shared_options!(rows)].tap do |details|
           details['rows']          = rows.comma_separate_field_list_for_display('row')
           details['asset ids']     = rows.comma_separate_field_list('asset id', 'asset ids')
           details['asset names']   = rows.comma_separate_field_list('asset name', 'asset names')
@@ -192,6 +197,15 @@ class BulkSubmission < ActiveRecord::Base
         end.delete_if { |_,v| v.blank? }
       end
       Hash[submission_name, order]
+    end
+  end
+
+  def shared_options!(rows)
+    # Builds an array of the common fields. Raises and exception if the fields are inconsistent
+    COMMON_FIELDS.map do |field|
+      option = rows.map {|r| r[field] }.uniq
+      self.errors.add(:spreadsheet, "Field #{field} is inconsistent for asset group #{rows.first['asset group name']}") if option.count > 1
+      [field, option.first]
     end
   end
 
