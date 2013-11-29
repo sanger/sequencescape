@@ -189,6 +189,13 @@ Given /^all wells on (the plate "[^\"]+") have unique samples$/ do |plate|
     well.aliquots.create!(:sample => Factory(:sample))
   end
 end
+
+Given /^([0-9]+) wells on (the plate "[^\"]+") have unique samples$/ do |number,plate|
+  plate.wells.in_column_major_order[0,number.to_i].each do |well|
+    well.aliquots.create!(:sample => Factory(:sample))
+  end
+end
+
 Given /^plate "([^"]*)" has "([^"]*)" wells with aliquots$/ do |plate_barcode, number_of_wells|
   plate = Plate.find_by_barcode(plate_barcode)
   1.upto(number_of_wells.to_i) do |i|

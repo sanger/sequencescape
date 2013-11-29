@@ -97,7 +97,7 @@ class SubmissionCreater < PresenterSkeleton
   end
 
   def per_order_settings
-    [:pre_capture_plex_level, :gigabases_expected]
+    [:pre_capture_plex_level, :gigabases_expected, :customer_accepts_responsibility]
   end
 
   def find_asset_group

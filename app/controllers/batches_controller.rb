@@ -270,6 +270,7 @@ class BatchesController < ApplicationController
         reason = params[:failure][:reason]
         comment = params[:failure][:comment]
         requests = params[:requested_fail] || {}
+        fail_but_charge = params[:failure][:fail_but_charge]=='1'
         requests_for_removal = params[:requested_remove] || {}
         # Check to see if the user is trying to remove AND fail the same request.
         diff = requests_for_removal.keys & requests.keys
@@ -281,8 +282,8 @@ class BatchesController < ApplicationController
             flash[:error] = "Please select an item to fail or remove"
           else
             unless requests.empty?
-              @batch.fail_batch_items(requests, reason, comment)
-              flash[:notice] = "#{requests.keys.to_sentence} set to failed."
+              @batch.fail_batch_items(requests, reason, comment, fail_but_charge)
+              flash[:notice] = "#{requests.keys.to_sentence} set to failed.#{fail_but_charge ? ' The customer will still be charged.':''}"
             end
 
             unless requests_for_removal.empty?

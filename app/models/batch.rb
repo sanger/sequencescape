@@ -67,7 +67,7 @@ class Batch < ActiveRecord::Base
   end
 
   # Fail specific items on this batch
-  def fail_batch_items(requests, reason, comment)
+  def fail_batch_items(requests, reason, comment, fail_but_charge=false)
     checkpoint = true
 
     requests.each do |key, value|
@@ -76,6 +76,7 @@ class Batch < ActiveRecord::Base
         unless key == "control"
           ActiveRecord::Base.transaction do
             request = self.requests.find(key)
+            request.update_attributes!(:customer_accepts_responisbility=>fail_but_charge) if fail_but_charge
             request.failures.create(:reason => reason, :comment => comment, :notify_remote => true)
             EventSender.send_fail_event(request.id, reason, comment, self.id)
           end

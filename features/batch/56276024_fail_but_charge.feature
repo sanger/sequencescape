@@ -11,16 +11,16 @@ Feature: Option to fail but charge requests in a batch
     When I follow "View pending batch 1"
     Then I should not see "Fail batch or items"
     When the batch is started
-    And I follow "<start batch>"
+    And I follow "<first step>"
     And I follow "Fail batch"
-    And I check "Fail but charge request" for 1 to 5
+    And I check "Fail request" for 1 to 5
+    And I check "Fail but charge"
     And I select "Other" from "Select failure reason"
     And I press "Fail selected requests"
     Then I should see "charged."
-
-    Then the 0 requests should be in the "<pipeline>" pipeline inbox
+    And the customer should accept responsibility for all requests in the last batch
 
   Scenarios: Library creation pipelines
-    | pipeline                          | workflow            | start batch |
+    | pipeline                          | workflow            | first step  |
     | Illumina-C Library preparation    | Next-gen sequencing | Initial QC  |
     | Illumina-B MX Library Preparation | Next-gen sequencing | Initial QC  |
