@@ -18,9 +18,17 @@ class AssetGroup < ActiveRecord::Base
   named_scope :for_search_query, lambda { |query| { :conditions => [ 'name LIKE ?', "%#{query}%" ] } }
 
   def all_samples_have_accession_numbers?
-    assets.all? do |asset|
-      asset.aliquots.all? { |aliquot| aliquot.sample.accession_number? }
-    end
+    unaccessioned_samples.count == 0
+  end
+
+  def unaccessioned_samples
+    Sample.find(:all,
+      :joins => [
+        'INNER JOIN aliquots ON aliquots.sample_id = samples.id',
+        'INNER JOIN sample_metadata ON sample_metadata.sample_id = samples.id'
+        ],
+        :conditions => ['aliquots.receptacle_id IN (?) AND sample_ebi_accession_number IS NULL',assets.map(&:id)]
+    )
   end
 
   def self.find_or_create_asset_group(new_assets_name, study)
