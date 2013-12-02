@@ -1,4 +1,4 @@
-@javascript @submission @bulk_submissions
+@submission @bulk_submissions
 Feature: Bulk Submission
   So that biological work can be requested
   in a large batch rather than separate
@@ -24,7 +24,7 @@ Feature: Bulk Submission
   Scenario: Uploading a valid file with 1 submission but a deprecated template
     # When I upload a file with valid data for 1 submissions but deprecated template
     When I upload a file with deprecated data for 1 submissions
-    Then I should see "Template: 'Cherrypick for pulldown - Pulldown WGS - HiSeq Paired end sequencing' is deprecated and no longer in use."
+    Then I should see "Template: 'Cherrypick for pulldown - Pulldown WGS - Illumina-A HiSeq Paired end sequencing' is deprecated and no longer in use."
 
 
   Scenario: Uploading a valid file with 1 submission
@@ -62,6 +62,12 @@ Feature: Bulk Submission
     When I upload a file with invalid data for 2 submissions
     Then I should see "There was a problem on row(s)"
     Then there should be no submissions
+
+  Scenario: Uploading a file with conflicting orders
+    When I upload a file with conflicting submissions
+    Then I should see "Field read length is inconsistent for asset group assetgroup123"
+    Then there should be no submissions
+
 
   Scenario: Uploading an invalid file with 2 submissions
     When I upload a file with 1 invalid submission and 1 valid submission

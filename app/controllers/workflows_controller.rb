@@ -123,29 +123,31 @@ class WorkflowsController < ApplicationController
   end
 
   def stage
-    @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
-    @stage = params[:id].to_i
-    @task = @workflow.tasks[@stage]
-    @batch = Batch.find(params[:batch_id], :include => [:requests, :pipeline, :lab_events])
+    ActiveRecord::Base.transaction do
+      @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
+      @stage = params[:id].to_i
+      @task = @workflow.tasks[@stage]
+      @batch = Batch.find(params[:batch_id], :include => [:requests, :pipeline, :lab_events])
 
-    # If params[:next_stage] is nil then just render the current task
-    # else actually execute the task.
-    unless params[:next_stage].nil?
-      if @task.do_task(self, params)
-        # Task completed, start the batch is necessary and display the next one
-        do_start_batch_task(@task,params)
-        @stage +=  1
-        params[:id] = @stage
-        @task = @workflow.tasks[@stage]
+      # If params[:next_stage] is nil then just render the current task
+      # else actually execute the task.
+      unless params[:next_stage].nil?
+        if @task.do_task(self, params)
+          # Task completed, start the batch is necessary and display the next one
+          do_start_batch_task(@task,params)
+          @stage +=  1
+          params[:id] = @stage
+          @task = @workflow.tasks[@stage]
+        end
       end
-    end
 
-    # Is this the last task in the workflow?
-    if @stage >= @workflow.tasks.size
-      # All requests have finished all tasks: finish workflow
-      redirect_to finish_batch_url(@batch)
-    else
-      @task.render_task(self, params)
+      # Is this the last task in the workflow?
+      if @stage >= @workflow.tasks.size
+        # All requests have finished all tasks: finish workflow
+        redirect_to finish_batch_url(@batch)
+      else
+        @task.render_task(self, params)
+      end
     end
   end
 
