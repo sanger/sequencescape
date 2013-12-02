@@ -60,11 +60,11 @@ Given /^no cookies are set for HTTP requests to the API$/ do
 end
 
 Given /^the WTSI single sign-on service recognises "([^\"]+)" as "([^\"]+)"$/ do |cookie, login|
-  FakeSingleSignOnService.instance.map_cookie_to_login(cookie, login)
+  User.find_by_login(login).update_attributes!(:api_key=>cookie)
 end
 
 Given /^the WTSI single sign-on service does not recognise "([^\"]+)"$/ do |cookie|
-  FakeSingleSignOnService.instance.unmap_cookie(cookie)
+  User.find_by_api_key(cookie).update_attributes!(:api_key=>nil)
 end
 
 def api_request(action, path, body)
