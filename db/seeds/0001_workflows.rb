@@ -190,6 +190,49 @@ end.tap do |pipeline|
   PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Concentration"))
 end
 
+  RequestType.create!(:workflow => next_gen_sequencing, :key => "paired_end_sequencing", :name => "Paired end sequencing", :deprecated=>true) do |request_type|
+    request_type.billable          = true
+    request_type.initial_state     = 'pending'
+    request_type.asset_type        = 'LibraryTube'
+    request_type.order             = 2
+    request_type.multiples_allowed = true
+    request_type.request_class =  SequencingRequest
+  end
+
+  RequestType.create!(
+    :key                => "hiseq_2500_paired_end_sequencing",
+    :name               => "HiSeq 2500 Paired end sequencing",
+    :workflow           => Submission::Workflow.find_by_key('short_read_sequencing'),
+    :asset_type         => 'LibraryTube',
+    :order              => 2,
+    :initial_state      => 'pending',
+    :multiples_allowed  => true,
+    :request_class_name => 'HiSeqSequencingRequest',
+    :deprecated=>true
+  )
+
+  RequestType.create!(
+    :workflow => next_gen_sequencing,
+    :key => "single_ended_sequencing",
+    :name => "Single ended sequencing",
+    :deprecated=>true) do |request_type|
+    request_type.billable          = true
+    request_type.initial_state     = 'pending'
+    request_type.asset_type        = 'LibraryTube'
+    request_type.order             = 2
+    request_type.multiples_allowed = true
+    request_type.request_class =  SequencingRequest
+  end
+
+  RequestType.create!(:workflow => next_gen_sequencing, :key => "single_ended_hi_seq_sequencing", :name => "Single ended hi seq sequencing") do |request_type|
+    request_type.billable          = true
+    request_type.initial_state     = 'pending'
+    request_type.asset_type        = 'LibraryTube'
+    request_type.order             = 2
+    request_type.multiples_allowed = true
+    request_type.request_class =  HiSeqSequencingRequest
+  end
+
 MultiplexedLibraryCreationPipeline.create!(:name => 'Illumina-C MX Library Preparation') do |pipeline|
   pipeline.asset_type  = 'LibraryTube'
   pipeline.sorter      = 0
@@ -718,6 +761,15 @@ SequencingPipeline.create!(:name => 'Cluster formation SE HiSeq (spiked in contr
 end.tap do |pipeline|
   create_request_information_types(pipeline, "read_length", "library_type")
   PipelineRequestInformationType.create!(:pipeline => pipeline, :request_information_type => RequestInformationType.find_by_label("Vol."))
+end
+
+RequestType.create!(:workflow => next_gen_sequencing, :key => "hiseq_paired_end_sequencing", :name => "HiSeq Paired end sequencing") do |request_type|
+  request_type.billable          = true
+  request_type.initial_state     = 'pending'
+  request_type.asset_type        = 'LibraryTube'
+  request_type.order             = 2
+  request_type.multiples_allowed = true
+  request_type.request_class =  HiSeqSequencingRequest
 end
 
 # TODO: This pipeline has been cloned from the 'Cluster formation PE (no controls)'.  Needs checking
