@@ -73,17 +73,4 @@ class SubmissionWorkflowsController < ApplicationController
     end
   end
 
-  # DELETE /submission_workflows/1
-  # DELETE /submission_workflows/1.xml
-  def destroy
-    @submission_workflow = Submission::Workflow.find(params[:id])
-    ActiveRecord::Base.transaction do
-      @submission_workflow.destroy
-    end
-
-    respond_to do |format|
-      format.html { redirect_to(submission_workflows_url) }
-      format.xml  { head :ok }
-    end
-  end
 end

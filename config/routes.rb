@@ -80,9 +80,6 @@ ActionController::Routing::Routes.draw do |map|
     end
 
     study.resources :workflows, :controller => "studies/workflows", :member => { :summary => :get, :show_summary => :get} do |workflow|
-      workflow.resources :submissions, :controller => "studies/workflows/submissions",
-        :collection => { :info => [:get, :put],
-          :template_chooser => :get, :new => [:get, :put] , :asset_inputs => :get }
       workflow.resources :assets, :collection => { :print => :post }
     end
 
@@ -214,7 +211,7 @@ ActionController::Routing::Routes.draw do |map|
 
 
 
-  map.resources :assets, :has_many => :assets, :collection => { :snp_register => :get, :reception => :get, :print_labels => :post}, :member => { :parent_assets => :get, :child_assets => :get, :show_plate => :get, :new_request => :get, :create_request => :post, :summary => :get, :close => :get, :print => :get, :print_items => :post, :submit_wells => :get, :create_wells_group => :post, :history => :get, :filtered_move => :get, :move => :post, :move_to_2D => :get,  :complete_move_to_2D => :post} do |asset|
+  map.resources :assets, :has_many => :assets, :collection => { :snp_register => :get, :reception => :get, :print_labels => :post}, :member => { :parent_assets => :get, :child_assets => :get, :show_plate => :get, :new_request => :get, :create_request => :post, :summary => :get, :close => :get, :print => :get, :print_items => :post, :history => :get, :filtered_move => :get, :move => :post, :move_to_2D => :get,  :complete_move_to_2D => :post} do |asset|
     asset.resources :comments, :controller => "assets/comments"
   end
 

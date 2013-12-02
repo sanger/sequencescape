@@ -8,7 +8,6 @@
 <% end %>
 <% if @asset.is_a?(Plate) %>
   <% add :menu, "QC results" => plate_path(@asset) %>
-  <% add :menu, "Create wells Submission" => submit_wells_asset_path(@asset) %>
 <% end %>
 
 <% add :menu, "Event history" => history_asset_path(@asset) -%>
@@ -35,7 +34,7 @@
 
 <h1>Asset Specification</h1>
 
-<%= render :partial => "asset", :locals => { :asset => @asset } %> 
+<%= render :partial => "asset", :locals => { :asset => @asset } %>
 <br />
 
 <h3>RELATIONS</h3>
@@ -59,7 +58,7 @@
       <td></td>
     </tr>
     <% end %>
-    
+
     <% child_assets = @asset.is_a?(Plate) ? @asset.children_and_holded : @asset.children %>
     <% child_assets.each do |child| %>
     <tr>
