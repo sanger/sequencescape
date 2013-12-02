@@ -16,6 +16,29 @@ class SubmissionTest < ActiveSupport::TestCase
     end
   end
 
+  context "#priority" do
+
+    setup do
+      @submission = Submission.new(:user => Factory(:user))
+    end
+
+    should "be 0 by default" do
+      assert_equal 0, @submission.priority
+    end
+
+    should "be changable" do
+      @submission.priority = 3
+      assert @submission.valid?
+      assert_equal 3, @submission.priority
+    end
+
+    should "have a maximum of 3" do
+      @submission.priority = 4
+      assert_equal false, @submission.valid?
+    end
+
+  end
+
   context "#orders compatible" do
     setup do
       @study1 =  Factory :study

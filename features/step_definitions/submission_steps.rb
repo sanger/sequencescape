@@ -93,6 +93,14 @@ SENSIBLE_DEFAULTS_FOR_REQUEST_TYPE = {
   "Single ended hi seq sequencing" => SENSIBLE_DEFAULTS_HISEQ,
   "HiSeq Paired end sequencing"    => SENSIBLE_DEFAULTS_HISEQ,
 
+  "Illumina-B Single ended sequencing"      => SENSIBLE_DEFAULTS_FOR_SEQUENCING,
+  "Illumina-B Paired end sequencing"        => SENSIBLE_DEFAULTS_FOR_SEQUENCING,
+
+  # HiSeq defaults
+  "Illumina-B Single ended hi seq sequencing" => SENSIBLE_DEFAULTS_HISEQ,
+  "Illumina-B HiSeq Paired end sequencing"    => SENSIBLE_DEFAULTS_HISEQ,
+
+
   # PacBio defaults
   "PacBio Sample Prep" => {}
 }

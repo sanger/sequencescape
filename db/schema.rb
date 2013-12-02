@@ -1371,6 +1371,7 @@ ActiveRecord::Schema.define(:version => 20131107133158) do
     t.integer  "asset_group_id_to_delete"
     t.string   "asset_group_name_to_delete"
     t.string   "name"
+    t.integer  "priority",                   :limit => 1,  :default => 0, :null => false
   end
 
   add_index "submissions", ["state"], :name => "index_submissions_on_state"

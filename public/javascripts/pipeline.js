@@ -2,16 +2,16 @@ function select_requests_by_group(elementId,size,value) {
   for (var i = 1; i < size+1; i++) {
 	$$('#' + elementId + '_' + i + ' input[type=checkbox]')[0].checked = value;
 
-	element = $(elementId + '_' + i);   
+	element = $(elementId + '_' + i);
 	if (value) {
 	  element.show();
 	} else {
 	  element.hide();
-	}                   
-  }                                            
+	}
+  }
 }
 
-function showElement(elementId, size) {     
+function showElement(elementId, size) {
   for (var i = 0; i < size+1; i++) {
 	element = $(elementId + '_' + i);
       //console.debug(element);
@@ -30,32 +30,26 @@ function showElement(elementId, size) {
   // Whenever someone clicks on a priority flag we need to change the request priority.  For the multiplexed requests
   // this will trigger all of them to be updated.
   var inbox = $('#pipeline_inbox');
-  inbox.delegate('.flag_image', 'click', function() {
+  inbox.delegate('.flag_image.as_manager', 'click', function() {
     var element = $(this);
 
-    var priority = !!parseInt(element.attr('data-priority'));
-    var answer = true;
-    if (priority) {
-      answer = confirm('Are you sure you want to set this to normal priority?');
-    }
+    var priority = parseInt(element.attr('data-priority'));
 
-    if (answer) {
-      $.ajax({
-        url: '/pipelines/update_priority',
-        type: 'POST',
-        data: {
-          request_id:  element.attr('data-request-id')
-        },
-        success: function() {
-          new_priority = priority ? '0' : '1';  // NOTE: Inverted at this point!
-          element.attr('data-priority', new_priority).attr('alt', new_priority).attr('src', '/images/icon_' + new_priority + '_flag.png');
-          inbox.trigger('priorityChange', element);
-        },
-        error: function() {
-          alert('The request cannot be saved properly. Flag not updated.');
-        }
-      });
-    }
+    $.ajax({
+      url: '/pipelines/update_priority',
+      type: 'POST',
+      data: {
+        request_id:  element.attr('data-request-id')
+      },
+      success: function() {
+        new_priority = (priority+1)%4;  // NOTE: Inverted at this point!
+        element.attr('data-priority', new_priority).attr('alt', new_priority).attr('src', '/images/icon_' + new_priority + '_flag.png');
+        inbox.trigger('priorityChange', element);
+      },
+      error: function() {
+        alert('The request cannot be saved properly. Flag not updated.');
+      }
+    });
   });
 
   // This handles the priority changing event by signalling table resorting and updating any related flags.

@@ -1,5 +1,7 @@
 class SubmissionsController < ApplicationController
 
+  before_filter :lab_manager_login_required, :only => [:change_priority]
+
   def new
     @presenter = SubmissionCreater.new(current_user, :study_id => params[:study_id])
   end
@@ -34,6 +36,11 @@ class SubmissionsController < ApplicationController
     flash[:error] = "The submission could not be built: #{@presenter.submission.errors.full_messages}" if @presenter.submission.errors.present?
 
     render :show
+  end
+
+  def change_priority
+    Submission.find(params[:id]).update_attributes!(:priority=>params[:submission][:priority])
+    redirect_to :action=>:show, :id=>params[:id]
   end
 
   def index

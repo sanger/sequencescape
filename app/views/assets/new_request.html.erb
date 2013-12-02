@@ -40,6 +40,14 @@
           <td class="help_field"></td>
         </tr>
       <% end %>
+      <tr>
+        <td class="item" width="40%"><%= label_tag(:priority, 'Priority') %>:</td>
+        <td><%= select_tag(:priority, options_for_select(
+          Submission::Priorities.options,
+          @asset.requests.last.try(:priority)
+        )) %></td>
+        <td class="help_field"></td>
+      </tr>
     </table>
   </div>
 
