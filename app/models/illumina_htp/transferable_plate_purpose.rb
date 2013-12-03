@@ -13,7 +13,7 @@ class IlluminaHtp::TransferablePlatePurpose < IlluminaHtp::FinalPlatePurpose
   def connect_requests(plate, state, contents = nil)
     return unless state == 'qc_complete'
     wells = plate.wells
-    wells = wells.include_stock_wells.located_at(contents) unless contents.blank?
+    wells = wells.located_at(contents).include_stock_wells unless contents.blank?
 
     wells.each do |target_well|
       source_wells = target_well.stock_wells
