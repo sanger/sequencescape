@@ -3,14 +3,14 @@ class AddNewStepToPacbioWorkflow < ActiveRecord::Migration
     ActiveRecord::Base.transaction do
       wf = LabInterface::Workflow.find_by_name('PacBio Sample Prep')
       wf.tasks.each do |task|
-        task.update_attributes!(:sorted=>task.sorted+1) if task.sorted >= 2
+        task.update_attributes!(:sorted=>task.sorted+1) if task.sorted >= 1
       end
       new_task = PlateTransferTask.create!(
         :name=> 'Transfer to plate',
         :workflow => wf,
         :lab_activity => true,
         :purpose => PlatePurpose.find_by_name('PacBio Sheared'),
-        :sorted => 2
+        :sorted => 1
       )
 
     end
