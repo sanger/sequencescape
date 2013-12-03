@@ -53,7 +53,7 @@ class PacBio::SampleSheet
     well = request.target_asset
     [
       Map.pad_description(well.map),
-      "PB_#{library_tube.name}",
+      library_tube.name,
       library_tube.pac_bio_library_tube_metadata.prep_kit_barcode,
       nil,
       library_tube.pac_bio_library_tube_metadata.binding_kit_barcode,
@@ -76,8 +76,8 @@ class PacBio::SampleSheet
   end
 
   def lookup_collection_protocol(request)
-    return 'Standard Seq 2-Set v1' if request.request_metadata.sequencing_type == 'Standard'
-    return 'Default Strobe Sequencing' if request.request_metadata.sequencing_type == 'Strobe'
+    return 'Standard Seq v3' if request.request_metadata.sequencing_type == 'Standard'
+    return 'MagBead Standard Seq v2' if request.request_metadata.sequencing_type == 'MagBead'
     request.request_metadata.sequencing_type
   end
 
