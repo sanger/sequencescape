@@ -157,11 +157,7 @@ class User < ActiveRecord::Base
   end
 
   def manager_or_administrator?
-    access = false
-    if self.is_administrator? || self.is_manager?
-      access = true
-    end
-    access
+    self.is_administrator? || self.is_manager?
   end
 
   # Checks if the current user is a manager

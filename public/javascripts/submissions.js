@@ -175,6 +175,8 @@
     SCAPE.submission.order_params.pre_capture_plex_level  = currentPane.find('.pre_capture_plex_level').val();
     SCAPE.submission.pre_capture_plex_group               = currentPane.find('.pre_capture_plex_group').val();
 
+    SCAPE.submission.priority                             = $('#submission_priority').val();
+
     currentPane.ajaxError(function(event, jqXHR, ajaxSettings, thrownError) {
       currentPane.find('.project-details').html(jqXHR.responseText);
       currentPane.submission('markPaneInvalid');

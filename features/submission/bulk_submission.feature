@@ -39,6 +39,7 @@ Feature: Bulk Submission
     Then I should see "Your submissions:"
      And there should be an order with the bait library name set to "Bait library 1"
      And there should be an order with the bait library name set to "Bait library 2"
+     And the last submission should have a priority of 1
 
   Scenario: Uploading a valid file with gb expected specified should set the gb expected
     # Given I have a well called "testing123"

@@ -7,6 +7,7 @@ class Plate < Asset
   include PlatePurpose::Associations
   include Barcode::Barcodeable
   include Asset::Ownership::Owned
+  include Plate::Iterations
 
   extend QcFile::Associations
   has_qc_files
@@ -32,6 +33,17 @@ class Plate < Asset
 
   def prefix
     self.barcode_prefix.try(:prefix) || self.class.prefix
+  end
+
+  def priority
+    Submission.find(:first,
+      :select => 'MAX(submissions.priority) AS priority',
+      :joins => [
+        'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
+        'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id  OR caplp.content_id = reqp.asset_id'
+      ],
+      :conditions => ['caplp.container_id = ?',self.id]
+    ).try(:priority)||0
   end
 
   # The iteration of a plate is defined as the number of times a plate of this type has been created

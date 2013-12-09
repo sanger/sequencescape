@@ -134,6 +134,20 @@ class PlateTest < ActiveSupport::TestCase
 
   end
 
+  context "Plate priority" do
+    setup do
+      @plate = Factory :transfer_plate
+      user = Factory(:user)
+      @plate.wells.each_with_index do |well,index|
+        Factory :request, :asset=>well, :submission=>Submission.create!(:priority => index+1, :user => user)
+      end
+    end
+
+    should "inherit the highest submission priority" do
+      assert_equal 2, @plate.priority
+    end
+  end
+
   context "Plate submission" do
     setup do
       @plate1 = Factory :plate

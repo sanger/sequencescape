@@ -26,6 +26,18 @@ class SubmissionsControllerTest < ActionController::TestCase
       @submission_template = SubmissionTemplate.find_by_name('Cherrypicking for pulldown')
     end
 
+    context "when a submission exists" do
+
+      setup do
+        @submission = Submission.create!(:priority=>1, :user=>@user)
+        post :change_priority, {:id=> @submission.id, :submission=>{:priority=>3}}
+      end
+
+      should 'allow update of priorities' do
+        assert 3, @submission.reload.priority
+      end
+    end
+
     should_require_login
 
     context "by sample name" do
@@ -119,6 +131,8 @@ class SubmissionsControllerTest < ActionController::TestCase
     end
 
   end
+
+
 
   def plate_submission(text)
     {:submission => {:is_a_sequencing_order=>"false", :comments=>"", :template_id=>@submission_template.id.to_s, :order_params=>{"read_length"=>"37", "fragment_size_required_to"=>"400", "bait_library_name"=>"Human all exon 50MB", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"}, :asset_group_id=>"", :study_id=>@study.id.to_s, :sample_names_text=>'', :barcodes_wells_text => text, :plate_purpose_id=>@plate.plate_purpose.id.to_s, :project_name=>"A project"}}

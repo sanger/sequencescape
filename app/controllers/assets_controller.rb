@@ -251,7 +251,8 @@ class AssetsController < ApplicationController
       :assets          => [ @asset ],
       :request_types   => [ @request_type.id ],
       :request_options => request_options,
-      :comments        => params[:comments]
+      :comments        => params[:comments],
+      :priority        => params[:priority]
     )
 
     respond_to do |format|
@@ -443,22 +444,6 @@ class AssetsController < ApplicationController
 
     batch = Batch.find(params[:batch_id])
     redirect_to batch_path(batch)
-  end
-
-  def move_requests(source_asset, destination_asset)
-    raise 'Is this method still in use?'
-    # @pipeline = Pipeline.find(1)
-    # request_type = @pipeline.request_type
-    # request = Request.find_by_asset_id_and_request_type_id_and_state(source_asset.id, request_type.id, "pending")
-    # unless request.nil?
-    #   # make the event
-    #   self.events << Event.new({:message => "Moved from 1D tube #{source_asset.id} to 2D tube #{destination_asset.id}", :created_by => user.login, :family => "Update"})
-    #   # Move all requests
-    #   self.requests.each do |request|
-    #     request.events << Event.new({:message => "Moved from 1D tube #{source_asset.id} to 2D tube #{destination_asset.id}", :created_by => user.login, :family => "Update"})
-    #     request.initial_study_id = study.id
-    #   end
-    # end
   end
 
   private

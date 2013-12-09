@@ -5,6 +5,7 @@ class Submission < ActiveRecord::Base
   include ModelExtensions::Submission
   #TODO[mb14] check if really needed. We use them in project_test
   include Request::Statistics::DeprecatedMethods
+  include Submission::Priorities
 
 
   include DelayedJobEx
@@ -68,7 +69,7 @@ class Submission < ActiveRecord::Base
 
   def self.build!(options)
     submission_options = {}
-    [:message].each do |option|
+    [:message, :priority].each do |option|
       value = options.delete(option)
       submission_options[option] = value if value
     end

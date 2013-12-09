@@ -46,6 +46,9 @@ class AssetsControllerTest < ActionController::TestCase
     end
 
     should_change("Submission.count", :by => 1) { Submission.count }
+    should "set a priority" do
+      assert_equal(3,Submission.last.priority)
+    end
   end
 
   def valid_json_create_request(asset,request_type,study, project)
@@ -57,6 +60,7 @@ class AssetsControllerTest < ActionController::TestCase
         "project_id": "#{project.id}",
         "request_type_id": "#{request_type.id}",
         "count": 3,
+        "priority": 3,
         "comments": "This is a request",
         "id": "#{asset.id}",
         "request": {
