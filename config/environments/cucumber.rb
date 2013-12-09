@@ -25,3 +25,10 @@ config.action_controller.allow_forgery_protection    = false
 config.action_mailer.delivery_method = :test
 
 config.active_record.observers = [ :batch_cache_sweeper, :request_observer ]
+
+if defined?(ENV_JAVA)
+  ENV_JAVA['http.proxyHost'] = nil
+  ENV_JAVA['http.proxyPort'] = nil
+  ENV_JAVA['https.proxyHost'] = nil
+  ENV_JAVA['https.proxyPort'] = nil
+end
