@@ -19,7 +19,7 @@
   			<% (num_columns).times do |column| -%>
   			  <% well_name = "#{rowchar}#{column+1}" %>
   				<td >
-  				  <% current_tube = @tubes.shift %>
+  				  <% current_tube = @tubes[row+(column*num_rows)] %>
   				  <% default_tube = [current_tube.name, current_tube.id] if current_tube %>
             <%= select_tag("well[#{well_name}]", options_for_select(@available_tubes_options, default_tube )) %>
   				</td>
