@@ -7,8 +7,8 @@
 <tbody>
 <% @assets.each do |asset| %>
   <tr>
-    <td><%= label_tag( "asset[#{asset.id}]", "Movie length for #{asset.barcode}", :style => 'display:none;') %><%= asset.barcode %></td>
-    <td><%= text_field_tag "asset[#{asset.id}]" %></td>
+    <td><%= label_tag( "asset[#{asset.id}]", "Movie length for #{asset.barcode}", :style => 'display:none;') %><%= asset.name %>: <%= asset.barcode %></td>
+    <td><%= select_tag "asset[#{asset.id}]", options_for_select(@valid_movie_lengths) %></td>
   </tr>
 <% end%>
 </tbody>
