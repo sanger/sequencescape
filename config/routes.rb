@@ -114,8 +114,6 @@ ActionController::Routing::Routes.draw do |map|
     item.resource :request, :only => [:new, :create]
   end
 
-  map.resources :annotations
-
   map.study_workflow_status "studies/:study_id/workflows/:id", :controller => "study_workflows", :action => "show"
 
   map.resources :searches, :only => [:index]
@@ -127,6 +125,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :studies, :controller => "admin/studies", :path_prefix => "/admin", :member => { :managed_update => :put }, :collection => {:index => :get}
   map.resources :projects, :controller => "admin/projects", :path_prefix => "/admin", :member => { :managed_update => :put }, :collection => {:index => :get}
   map.resources :plate_purposes, :controller => "admin/plate_purposes", :path_prefix => "/admin", :only => [:index,:edit,:new,:create]
+  map.resources :delayed_jobs, :controller => "admin/delayed_jobs", :path_prefix => "/admin", :only => [:index]
   map.resources :faculty_sponsors, :controller => "admin/faculty_sponsors", :path_prefix => "/admin"
   map.resources :change_tags, :controller => "admin/change_tags", :path_prefix => "/admin", :collection => { :lookup => :get, :bulk_update => :put}
   map.resources :delayed_jobs, :controller => "admin/delayed_jobs", :path_prefix => "/admin", :only => [:index]
