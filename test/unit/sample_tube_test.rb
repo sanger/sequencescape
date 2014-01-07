@@ -1,3 +1,6 @@
+
+require "test_helper"
+
 class SampleTubeTest < ActiveSupport::TestCase
 
   context 'A Sample tube' do
