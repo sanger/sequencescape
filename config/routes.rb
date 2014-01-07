@@ -91,11 +91,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :submissions, :collection => { :study_assets => :get, :order_fields => :get, :project_details => :get }
   map.resources :orders, :only => [:destroy]
 
-  map.resources :properties  do |property|
-    property.resources :documents, :controller => "properties/documents", :only => [:show]
-  end
-
-  map.resources :documents, :controller => 'properties/documents', :only => [ :show ]
+  map.resources :documents, :only => [ :show ]
 
 
   #Same path but two different actions. GET for put parameter in the form and show the error. PUT for the action.
