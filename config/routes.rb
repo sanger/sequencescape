@@ -83,7 +83,7 @@ ActionController::Routing::Routes.draw do |map|
       workflow.resources :assets, :collection => { :print => :post }
     end
 
-    study.resources :documents, :controller => "studies/documents", :only => [:index, :new, :create, :show, :destroy]
+    study.resources :documents, :controller => "studies/documents", :only => [:show, :destroy]
 
   end
 
