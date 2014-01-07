@@ -1,7 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
   map.resources :reference_genomes
   map.resources :barcode_printers
-  map.resources :submission_workflows
 
   map.resources :robot_verifications, :collection => {:submission => [:post, :get], :download => [:post]}
   map.resources :projects, :has_many => :studies, :member => { :related_studies => :get, :collaborators => :get, :follow => :get, :grant_role => :post, :remove_role => :post  } do |project|
