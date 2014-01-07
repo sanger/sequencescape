@@ -77,6 +77,14 @@ ActiveRecord::Base.transaction do
       :for_multiplexing => false,
       :no_target_asset => false
     },
+        {
+      :key => "illumina_a_pool",
+      :name => "Illumina-A Pooled",
+      :request_class_name => "IlluminaHtp::Requests::LibraryCompletion",
+      :for_multiplexing => true,
+      :no_target_asset => false,
+      :target_purpose => Purpose.find_by_name!('Lib Pool Norm')
+    },
     {
       :key => "illumina_a_isc",
       :name => "Illumina-A ISC",

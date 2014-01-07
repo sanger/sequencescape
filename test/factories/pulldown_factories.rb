@@ -5,7 +5,7 @@ Factory.define(:transfer_plate, :class => Plate) do |plate|
   plate.after_create do |plate|
     plate.wells.import(
       [ 'A1', 'B1' ].map do |location|
-        map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(plate.asset_shape).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
+        map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(Map::AssetShape.find_by_name('Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
         Factory(:tagged_well, :map => map)
       end
     )

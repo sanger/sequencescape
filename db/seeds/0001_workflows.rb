@@ -943,34 +943,36 @@ end
 set_pipeline_flow_to('PacBio Sample Prep' => 'PacBio Sequencing')
 
 # Pulldown pipelines
-[
-  'WGS',
-  'SC',
-  'ISC'
-].each do |pipeline_type|
-  pipeline_name = "Illumina-A Pulldown #{pipeline_type}"
-  Pipeline.create!(:name => pipeline_name) do |pipeline|
-    pipeline.sorter             = Pipeline.maximum(:sorter) + 1
-    pipeline.automated          = false
-    pipeline.active             = true
-    pipeline.asset_type         = 'LibraryTube'
-    pipeline.externally_managed = true
+['Pulldown','Illumina-A Pulldown'].each do |lab|
+  [
+    'WGS',
+    'SC',
+    'ISC'
+  ].each do |pipeline_type|
+    pipeline_name = "#{lab} #{pipeline_type}"
+    Pipeline.create!(:name => pipeline_name) do |pipeline|
+      pipeline.sorter             = Pipeline.maximum(:sorter) + 1
+      pipeline.automated          = false
+      pipeline.active             = true
+      pipeline.asset_type         = 'LibraryTube'
+      pipeline.externally_managed = true
 
-    pipeline.location   = Location.find_by_name('Pulldown freezer') or raise StandardError, "Pulldown freezer does not appear to exist!"
+      pipeline.location   = Location.find_by_name('Pulldown freezer') or raise StandardError, "Pulldown freezer does not appear to exist!"
 
-    pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :name => pipeline_name) do |request_type|
-      request_type.billable          = true
-      request_type.key               = pipeline_name.downcase.underscore.gsub(/\s+/, '_')
-      request_type.initial_state     = 'pending'
-      request_type.asset_type        = 'Well'
-      request_type.target_purpose    = Tube::Purpose.standard_mx_tube
-      request_type.order             = 1
-      request_type.multiples_allowed = false
-      request_type.request_class     = "Pulldown::Requests::#{pipeline_type.humanize}LibraryRequest".constantize
-      request_type.for_multiplexing  = true
+      pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :name => pipeline_name) do |request_type|
+        request_type.billable          = true
+        request_type.key               = pipeline_name.downcase.underscore.gsub(/\s+/, '_')
+        request_type.initial_state     = 'pending'
+        request_type.asset_type        = 'Well'
+        request_type.target_purpose    = Tube::Purpose.standard_mx_tube
+        request_type.order             = 1
+        request_type.multiples_allowed = false
+        request_type.request_class     = "Pulldown::Requests::#{pipeline_type.humanize}LibraryRequest".constantize
+        request_type.for_multiplexing  = true
+      end
+
+      pipeline.workflow = LabInterface::Workflow.create!(:name => pipeline_name)
     end
-
-    pipeline.workflow = LabInterface::Workflow.create!(:name => pipeline_name)
   end
 end
 
