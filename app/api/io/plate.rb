@@ -22,5 +22,11 @@ class Io::Plate < Io::Asset
             source_plate.two_dimensional_barcode  => stock_plate.barcode.two_dimensional
                       source_plate.ean13_barcode  => stock_plate.barcode.ean13
                        source_plate.barcode_type  => stock_plate.barcode.type
+
+                                         barcode  => barcode.number
+                           barcode_prefix.prefix  => barcode.prefix
+                         two_dimensional_barcode  => barcode.two_dimensional
+                                   ean13_barcode  => barcode.ean13
+                                    barcode_type  => barcode.type
   })
 end
