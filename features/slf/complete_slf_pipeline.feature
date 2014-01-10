@@ -87,7 +87,7 @@ Feature: I wish to create samples and push them all the way through QC in SLF
     When I check "Select DN1234567T for batch"
     And I select "Create Batch" from "action_on_requests"
     And I press "Submit"
-    When I follow "Start batch"
+    When I follow "QC result"
     Then I should see dna qc table:
      | Well | Gel              | Pico | Sequenom   | Gender | Concentration | Plate         |
      | A1   | Band Not Visible | Pass | 0/30 FFFF  | F      | 5.0           | Plate 1234567 |

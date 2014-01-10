@@ -53,7 +53,7 @@ Feature: Cherrypicking for Pulldown pipeline
    Then I should see "This batch belongs to pipeline: Cherrypicking for Pulldown"
    And I should see "Cherrypick Group By Submission"
    Given a plate barcode webservice is available and returns "99999"
-   When I follow "Start batch"
+   When I follow "Cherrypick Group By Submission"
    When I fill in "Volume Required" with "13"
    And I fill in "Concentration Required" with "50"
    And I select "Pulldown" from "Plate Purpose"

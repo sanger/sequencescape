@@ -1,7 +1,7 @@
 @barcode-service @pipeline @inbox
-Feature: Requests should disappear from the inbox when a batch is started 
+Feature: Requests should disappear from the inbox when a batch is started
 
-  Background: 
+  Background:
     Given I am an "manager" user logged in as "john"
 
   Scenario: Requests should disappear from inbox after batch started
@@ -14,7 +14,7 @@ Feature: Requests should disappear from the inbox when a batch is started
     And I check "Select DN222J for batch"
     And I select "Create Batch" from "Action to perform"
     And I press "Submit"
-    When I follow "Start batch"
+    When I follow "Cherrypick Group By Submission"
     Given I am on the show page for pipeline "Cherrypicking for Pulldown"
     Then I should not see "222"
-    
+

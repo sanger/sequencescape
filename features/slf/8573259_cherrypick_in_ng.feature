@@ -36,7 +36,7 @@ Feature: Pick a ng quantity using the Tecan robot
     And I check "Select DN333P for batch"
     And I select "Create Batch" from "Action to perform"
     And I press "Submit"
-    When I follow "Start batch"
+    When I follow "Cherrypick Group By Submission"
     When I choose "Pick by ng"
     And I fill in the following:
       | Minimum Volume    | 10   |
@@ -158,7 +158,7 @@ Feature: Pick a ng quantity using the Tecan robot
     And I check "Select DN222J for batch"
     And I select "Create Batch" from "Action to perform"
     And I press "Submit"
-    When I follow "Start batch"
+    When I follow "Cherrypick Group By Submission"
     When I choose "Pick by ng"
     And I fill in the following:
       | Minimum Volume    | 10   |
@@ -177,7 +177,7 @@ Feature: Pick a ng quantity using the Tecan robot
      And I check "Select DN222J for batch"
      And I select "Create Batch" from "Action to perform"
      And I press "Submit"
-     When I follow "Start batch"
+     When I follow "Cherrypick Group By Submission"
      When I choose "Pick by ng"
      And I fill in the following:
        | Minimum Volume    | 10   |
@@ -195,7 +195,7 @@ Feature: Pick a ng quantity using the Tecan robot
      And I check "Select DN222J for batch"
      And I select "Create Batch" from "Action to perform"
      And I press "Submit"
-     When I follow "Start batch"
+     When I follow "Cherrypick Group By Submission"
      When I choose "Pick by ng"
      And I fill in the following:
        | Minimum Volume    | <minimum_volume>   |

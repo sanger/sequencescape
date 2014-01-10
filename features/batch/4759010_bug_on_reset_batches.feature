@@ -17,7 +17,7 @@ Feature: Resetting a batch and creating an "identical" batch
     And I press "Submit"
 
     # "Start batch" page
-    When I follow "Start batch"
+    When I follow "Initial QC"
 
     # "Tag groups" page
     When I press "Next step"

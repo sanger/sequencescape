@@ -78,7 +78,7 @@ Given /^a robot exists with barcode "([^"]*)"$/ do |robot_barcode|
 end
 
 When /^I complete the cherrypicking batch with "([^"]*)" plate purpose but dont release it$/ do |plate_purpose_name|
-  step(%Q{I follow "Start batch"})
+  step(%Q{I follow "Select Plate Template"})
   step(%Q{I select "testtemplate" from "Plate Template"})
   step(%Q{I select "#{plate_purpose_name}" from "Output plate purpose"})
   step(%Q{I press "Next step"})

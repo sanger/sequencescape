@@ -22,7 +22,7 @@ Feature: Recycling requests in the Cherrypicking pipeline
     When I check "Include request 1"
     And I select "Create Batch" from "Action to perform"
     And I press "Submit"
-    And I follow "Start batch"
+    And I follow "Select Plate Template"
     And I press "Next"
 
   # Just to note: the pass/fail/remove requests from batch page that is available for all pipelines is

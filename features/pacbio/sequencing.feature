@@ -16,14 +16,14 @@ Feature: Push samples through the PacBio pipeline for sequencing
 
   Scenario: No kit number entered for sequencing step
     Given I have a PacBio sequencing batch
-    When I follow "Start batch"
+    When I follow "Binding Kit Box Barcode"
     When I fill in "Binding Kit Box Barcode" with ""
     And I press "Next step"
     Then I should see "Please enter a Kit Barcode"
 
   Scenario: Add invalid movie lengths
     Given I have a fast PacBio sequencing batch
-    When I follow "Start batch"
+    When I follow "Binding Kit Box Barcode"
     When I fill in "Binding Kit Box Barcode" with "777"
     And I press "Next step"
     When I fill in "Movie length for 333" with ""
@@ -57,7 +57,7 @@ Feature: Push samples through the PacBio pipeline for sequencing
 
   Scenario Outline: Add Valid movie lengths
     Given I have a fast PacBio sequencing batch
-    When I follow "Start batch"
+    When I follow "Binding Kit Box Barcode"
     When I fill in "Binding Kit Box Barcode" with "777"
     And I press "Next step"
     When I fill in "Movie length for 333" with "<movie_length_1>"
@@ -71,7 +71,7 @@ Feature: Push samples through the PacBio pipeline for sequencing
 
   Scenario: Default layout of tubes on a plate
     Given I have a PacBio sequencing batch
-    When I follow "Start batch"
+    When I follow "Binding Kit Box Barcode"
     When I fill in "Binding Kit Box Barcode" with "777"
     And I press "Next step"
     When I fill in "Movie length for 333" with "12"
@@ -109,7 +109,7 @@ Feature: Push samples through the PacBio pipeline for sequencing
 
    Scenario: Display samplesheet
      Given I have a PacBio sequencing batch
-     When I follow "Start batch"
+     When I follow "Binding Kit Box Barcode"
      When I fill in "Binding Kit Box Barcode" with "777"
      And I press "Next step"
      When I fill in "Movie length for 333" with "12"
@@ -147,7 +147,7 @@ Feature: Push samples through the PacBio pipeline for sequencing
 
   Scenario: Alter tube layout on the plate
     Given I have a PacBio sequencing batch
-    When I follow "Start batch"
+    When I follow "Binding Kit Box Barcode"
     When I fill in "Binding Kit Box Barcode" with "777"
     And I press "Next step"
     When I fill in "Movie length for 333" with "12"

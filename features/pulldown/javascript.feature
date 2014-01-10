@@ -36,7 +36,7 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     When I check "Select DN222J for batch"
     And I check "Select DN333P for batch"
     And I press "Submit"
-    When I follow "Start batch"
+    When I follow "Select Plate Template"
     When I choose "Pick by ng"
     And I fill in the following:
       | Minimum Volume    | 10   |
@@ -167,7 +167,7 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
 
     Given I have a tag group called "UK10K tag group" with 8 tags
     Given I have a pulldown batch
-    When I follow "Start batch"
+    When I follow "Assign Tags"
     When I select "UK10K tag group" from "Tag Group"
     And I press "Next step"
     And I press "Next step"
@@ -190,7 +190,7 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     Given I am on the show page for pipeline "Cherrypicking for Pulldown"
     When I check "Select DN1234567T for batch"
     And I press "Submit"
-    When I follow "Start batch"
+    When I follow "Cherrypick Group By Submission"
     And I choose "Pick by ng/µl"
     And I select "Pulldown Aliquot" from "Plate Purpose"
     And I press "Next step"
