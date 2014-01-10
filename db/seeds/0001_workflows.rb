@@ -95,7 +95,16 @@ LibraryCreationPipeline.create!(:name => 'Illumina-C Library preparation') do |p
 
   pipeline.location = Location.first(:conditions => { :name => 'Library creation freezer' }) or raise StandardError, "Cannot find 'Library creation freezer' location"
 
-  pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'library_creation', :name => 'Library creation') do |request_type|
+  pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'library_creation', :name => 'Library creation',
+    :deprecated => true) do |request_type|
+    request_type.billable           = true
+    request_type.initial_state      = 'pending'
+    request_type.asset_type         = 'SampleTube'
+    request_type.order              = 1
+    request_type.multiples_allowed  = false
+    request_type.request_class_name = LibraryCreationRequest.name
+  end << RequestType.create!(:workflow => next_gen_sequencing, :key => 'illumina_c_library_creation', :name => 'Illumina-C Library creation',
+    :product_line => ProductLine.find_or_create_by_name("Illumina-C")) do |request_type|
     request_type.billable           = true
     request_type.initial_state      = 'pending'
     request_type.asset_type         = 'SampleTube'
@@ -149,7 +158,9 @@ MultiplexedLibraryCreationPipeline.create!(:name => 'Illumina-B MX Library Prepa
   pipeline.request_types << RequestType.create!(
     :workflow => Submission::Workflow.find_by_key('short_read_sequencing'),
     :key      => 'illumina_b_multiplexed_library_creation',
-    :name     => 'Illumina-B Multiplexed Library Creation'
+    :name     => 'Illumina-B Multiplexed Library Creation',
+    :product_line => ProductLine.find_or_create_by_name("Illumina-B"),
+    :deprecated => true
   ) do |request_type|
     request_type.billable          = true
     request_type.initial_state     = 'pending'
@@ -194,7 +205,8 @@ MultiplexedLibraryCreationPipeline.create!(:name => 'Illumina-C MX Library Prepa
   pipeline.request_types << RequestType.create!(
     :workflow => Submission::Workflow.find_by_key('short_read_sequencing'),
     :key      => 'illumina_c_multiplexed_library_creation',
-    :name     => 'Illumina-C Multiplexed Library Creation'
+    :name     => 'Illumina-C Multiplexed Library Creation',
+    :product_line => ProductLine.find_or_create_by_name("Illumina-C")
   ) do |request_type|
     request_type.billable          = true
     request_type.initial_state     = 'pending'
@@ -268,12 +280,68 @@ PulldownLibraryCreationPipeline.create!(:name => 'Pulldown library preparation')
   end
 end
 
+# Deprecated request types
+  RequestType.create!(
+    :workflow => next_gen_sequencing,
+    :key => "single_ended_sequencing",
+    :name => "Single ended sequencing",
+    :deprecated => true
+  ) do |request_type|
+    request_type.billable          = true
+    request_type.initial_state     = 'pending'
+    request_type.asset_type        = 'LibraryTube'
+    request_type.order             = 2
+    request_type.multiples_allowed = true
+    request_type.request_class =  SequencingRequest
+  end
+  RequestType.create!(
+    :workflow => next_gen_sequencing,
+    :key => "paired_end_sequencing",
+    :name => "Paired end sequencing",
+    :deprecated => true
+  ) do |request_type|
+    request_type.billable          = true
+    request_type.initial_state     = 'pending'
+    request_type.asset_type        = 'LibraryTube'
+    request_type.order             = 2
+    request_type.multiples_allowed = true
+    request_type.request_class =  SequencingRequest
+  end
+  RequestType.create!(
+    :workflow => next_gen_sequencing,
+    :key => "single_ended_hi_seq_sequencing",
+    :name => "Single ended hi seq sequencing",
+    :deprecated => true
+  ) do |request_type|
+    request_type.billable          = true
+    request_type.initial_state     = 'pending'
+    request_type.asset_type        = 'LibraryTube'
+    request_type.order             = 2
+    request_type.multiples_allowed = true
+    request_type.request_class =  HiSeqSequencingRequest
+  end
+  RequestType.create!(
+    :workflow => next_gen_sequencing,
+    :key => "hiseq_paired_end_sequencing",
+    :name => "HiSeq Paired end sequencing",
+    :deprecated => true
+  ) do |request_type|
+    request_type.billable          = true
+    request_type.initial_state     = 'pending'
+    request_type.asset_type        = 'LibraryTube'
+    request_type.order             = 2
+    request_type.multiples_allowed = true
+    request_type.request_class =  HiSeqSequencingRequest
+  end
+
+#######################
+
 cluster_formation_se_request_type = ['a','b','c'].map do |pl|
   RequestType.create!(
     :workflow => next_gen_sequencing,
     :key => "illumina_#{pl}_single_ended_sequencing",
     :name => "Illumina-#{pl.upcase} Single ended sequencing",
-    :product_line => ProductLine.find_by_name("Illumina-#{pl.upcase}")) do |request_type|
+    :product_line => ProductLine.find_or_create_by_name("Illumina-#{pl.upcase}")) do |request_type|
     request_type.billable          = true
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'LibraryTube'
@@ -369,7 +437,7 @@ end.tap do |pipeline|
 end
 
 single_ended_hi_seq_sequencing = ['a','b','c'].map do |pl|
-  RequestType.create!(:workflow => next_gen_sequencing, :key => "illumina_#{pl}_single_ended_hi_seq_sequencing", :name => "Illumina-#{pl.upcase} Single ended hi seq sequencing",:product_line => ProductLine.find_by_name("Illumina-#{pl.upcase}")) do |request_type|
+  RequestType.create!(:workflow => next_gen_sequencing, :key => "illumina_#{pl}_single_ended_hi_seq_sequencing", :name => "Illumina-#{pl.upcase} Single ended hi seq sequencing",:product_line => ProductLine.find_or_create_by_name("Illumina-#{pl.upcase}")) do |request_type|
     request_type.billable          = true
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'LibraryTube'
@@ -436,7 +504,7 @@ end.tap do |pipeline|
 end
 
 cluster_formation_pe_request_types =  ['a','b','c'].map do |pl|
-  RequestType.create!(:workflow => next_gen_sequencing, :key => "illumina_#{pl}_paired_end_sequencing", :name => "Illumina-#{pl.upcase} Paired end sequencing", :product_line => ProductLine.find_by_name("Illumina-#{pl.upcase}")) do |request_type|
+  RequestType.create!(:workflow => next_gen_sequencing, :key => "illumina_#{pl}_paired_end_sequencing", :name => "Illumina-#{pl.upcase} Paired end sequencing", :product_line => ProductLine.find_or_create_by_name("Illumina-#{pl.upcase}")) do |request_type|
     request_type.billable          = true
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'LibraryTube'
@@ -456,7 +524,7 @@ hiseq_2500_request_types = ['a','b','c'].map do |pl|
     :initial_state      => 'pending',
     :multiples_allowed  => true,
     :request_class_name => 'HiSeqSequencingRequest',
-    :product_line       => ProductLine.find_by_name("Illumina-#{pl.upcase}")
+    :product_line       => ProductLine.find_or_create_by_name("Illumina-#{pl.upcase}")
   )
 end
 
@@ -470,7 +538,7 @@ hiseq_2500_se_request_types = ['a','b','c'].map do |pl|
     :initial_state      => 'pending',
     :multiples_allowed  => true,
     :request_class_name => 'HiSeqSequencingRequest',
-    :product_line       => ProductLine.find_by_name("Illumina-#{pl.upcase}")
+    :product_line       => ProductLine.find_or_create_by_name("Illumina-#{pl.upcase}")
   )
 end
 
@@ -681,7 +749,7 @@ SequencingPipeline.create!(:name => 'HiSeq Cluster formation PE (no controls)') 
   pipeline.location        = Location.first(:conditions => { :name => 'Cluster formation freezer' }) or raise StandardError, "Cannot find 'Cluster formation freezer' location"
 
   ['a','b','c'].each do |pl|
-    pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => "illumina_#{pl}_hiseq_paired_end_sequencing", :name => "Illumina-#{pl.upcase} HiSeq Paired end sequencing",  :product_line => ProductLine.find_by_name("Illumina-#{pl.upcase}")) do |request_type|
+    pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => "illumina_#{pl}_hiseq_paired_end_sequencing", :name => "Illumina-#{pl.upcase} HiSeq Paired end sequencing",  :product_line => ProductLine.find_or_create_by_name("Illumina-#{pl.upcase}")) do |request_type|
       request_type.billable          = true
       request_type.initial_state     = 'pending'
       request_type.asset_type        = 'LibraryTube'

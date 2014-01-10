@@ -139,7 +139,7 @@ ActiveRecord::Base.transaction do
       submission.request_options   = defaults
 
       st = SubmissionTemplate.new_from_submission(
-        "Illumina-B - Cherrypicked - #{request_type_options[:name]} - #{sequencing_request_type.name}",
+        "Illumina-B - Cherrypicked - #{request_type_options[:name]} - #{sequencing_request_type.name.gsub(/Illumina-[ABC] /,'')}",
         submission
       )
       st.submission_parameters.merge!({:order_role_id=>Order::OrderRole.find_or_create_by_role(request_type_options[:label]).id}) unless request_type_options[:label].nil?
@@ -148,7 +148,7 @@ ActiveRecord::Base.transaction do
       submission.request_type_ids  = [ pulldown_request_types.map(&:id), sequencing_request_type.id ].flatten
 
       st = SubmissionTemplate.new_from_submission(
-        "Illumina-B - #{request_type_options[:name]} - #{sequencing_request_type.name}",
+        "Illumina-B - #{request_type_options[:name]} - #{sequencing_request_type.name.gsub(/Illumina-[ABC] /,'')}",
         submission
       )
       st.submission_parameters.merge!({:order_role_id=>Order::OrderRole.find_or_create_by_role(request_type_options[:label]).id}) unless request_type_options[:label].nil?
@@ -172,7 +172,7 @@ ActiveRecord::Base.transaction do
       submission.request_options   = defaults
 
       st = SubmissionTemplate.new_from_submission(
-        "Illumina-A - Cherrypicked - #{request_type_options[:name]} - #{sequencing_request_type.name}",
+        "Illumina-A - Cherrypicked - #{request_type_options[:name]} - #{sequencing_request_type.name.gsub(/Illumina-[ABC] /,'')}",
         submission
       )
       st.submission_parameters.merge!({:order_role_id=>Order::OrderRole.find_or_create_by_role(request_type_options[:label]).id})
@@ -181,7 +181,7 @@ ActiveRecord::Base.transaction do
       submission.request_type_ids  = [ pulldown_request_types.map(&:id), sequencing_request_type.id ].flatten
 
       st = SubmissionTemplate.new_from_submission(
-        "Illumina-A - #{request_type_options[:name]} - #{sequencing_request_type.name}",
+        "Illumina-A - #{request_type_options[:name]} - #{sequencing_request_type.name.gsub(/Illumina-[ABC] /,'')}",
         submission
       )
        st.submission_parameters.merge!({:order_role_id=>Order::OrderRole.find_or_create_by_role(request_type_options[:label]).id})
