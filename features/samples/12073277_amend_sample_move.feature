@@ -1,4 +1,4 @@
-@study @sample @sample_move @asset
+@study @sample @sample_move @asset @deprecated
 Feature: move samples and assets between studies
   Background:
     Given I am an "Administrator" user logged in as "me"
@@ -143,9 +143,9 @@ Feature: move samples and assets between studies
   @wip
   Scenario: Niel bug
     Given data are preloaded from "RT211312" renaming:
-      | old name | new name |
-      | Study_1700_name | study from |
-      | Study_1787_name | study 17878 to |
+      | old name            | new name       |
+      | Study_1700_name     | study from     |
+      | Study_1787_name     | study 17878 to |
       | Sample_1115606_name | sample_to_move |
     When I move samples between studies using the spreadsheet "RT211312_samples_to_move.xls"
     Then the sample "sample_to_move" should belong to the study named "study 17878 to"
@@ -155,13 +155,13 @@ Feature: move samples and assets between studies
     Given data are preloaded from "17802275_move_aliquots" renaming:
       | old_name | new_name |
       | Study_700_name | study_from |
-      | Study_605_name | study_to |
+      | Study_605_name      | study_to |
       | Sample_1103232_name | sample_to_move |
     When I move samples between studies using the spreadsheet "17802275_samples_to_move.xls"
     Then I should not see "Caution, errors were found"
     Then the sample "sample_to_move" should belong to the study named "study_to"
     And the aliquot 165441 should belong to the study named "study_to"
-       
+
     # The MultiplexedLibraryTube
     Then all aliquots in asset 2317176 should belong to the study named "study_to"
     # The Lane
