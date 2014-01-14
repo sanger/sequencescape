@@ -4,11 +4,11 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
   Background:
     Given I am a "administrator" user logged in as "user"
     And the "96 Well Plate" barcode printer "xyz" exists
+    Given a robot exists
 
 
   Scenario: Create a Tecan file with correct volumes to pick via the original Cherrypick interface
     Given a plate template exists
-    Given a robot exists
     Given a plate barcode webservice is available and returns "99999"
     Given I have a plate "222" with the following wells:
       | well_location | measured_concentration | measured_volume |

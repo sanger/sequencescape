@@ -3,6 +3,7 @@ Feature: Display the errors that occur during cherrypicking for pulldown
   Background:
     Given I am a "administrator" user logged in as "user"
     Given I have a project called "Test project"
+    And a robot exists
 
     Given I have an active study called "Test study"
     And the "96 Well Plate" barcode printer "xyz" exists
