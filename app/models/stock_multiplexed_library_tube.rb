@@ -5,4 +5,8 @@ class StockMultiplexedLibraryTube < Tube
     purpose.stock_wells(self)
   end
 
+  def created_with_request_options
+    parent.created_with_request_options
+  end
+
 end
