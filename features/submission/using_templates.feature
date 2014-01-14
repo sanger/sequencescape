@@ -188,7 +188,7 @@ Feature: Creating submissions through the submission templates
   Scenario Outline: Selecting the appropriate sequencing read lengths
 
     Given I am on the "Next-gen sequencing" submission template selection page for study "Study testing submission templates"
-    When I select "Library creation - <sequencing type>" from "Template"
+    When I select "Illumina-C - Library creation - <sequencing type>" from "Template"
     And I press "Next"
 
     When I select "Study testing submission templates" from "Select a study"
@@ -219,14 +219,14 @@ Feature: Creating submissions through the submission templates
       | Library type:                  | Custom        |
 
     Examples:
-      | sequencing type             | read length |
-      | HiSeq Paired end sequencing | 50          |
-      | HiSeq Paired end sequencing | 100         |
-      | Single ended sequencing     | 37          |
-      | Single ended sequencing     | 54          |
-      | Single ended sequencing     | 76          |
-      | Single ended sequencing     | 108         |
-      | Paired end sequencing       | 37          |
-      | Paired end sequencing       | 54          |
-      | Paired end sequencing       | 76          |
-      | Paired end sequencing       | 108         |
+      | sequencing type                        | read length |
+      | Illumina-C HiSeq Paired end sequencing | 50          |
+      | Illumina-C HiSeq Paired end sequencing | 100         |
+      | Illumina-C Single ended sequencing     | 37          |
+      | Illumina-C Single ended sequencing     | 54          |
+      | Illumina-C Single ended sequencing     | 76          |
+      | Illumina-C Single ended sequencing     | 108         |
+      | Illumina-C Paired end sequencing       | 37          |
+      | Illumina-C Paired end sequencing       | 54          |
+      | Illumina-C Paired end sequencing       | 76          |
+      | Illumina-C Paired end sequencing       | 108         |

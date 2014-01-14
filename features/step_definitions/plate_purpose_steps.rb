@@ -17,3 +17,9 @@ end
 Given /^(the purpose "[^"]+") is a parent of (the purpose "[^"]+")$/ do |parent, child|
   parent.child_relationships.create!(:child => child, :transfer_request_type => RequestType.transfer)
 end
+
+When /^"(.*?)" plate purpose picks with "(.*?)"$/ do |name, filter|
+  purpose = PlatePurpose.find_by_name(name)
+  purpose.cherrypick_filters << filter unless purpose.cherrypick_filters.include?(filter)
+  purpose.save!
+end

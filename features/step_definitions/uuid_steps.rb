@@ -222,5 +222,6 @@ Given /^plate "([^"]*)" is a source plate of "([^"]*)"$/ do |source_plate_uuid, 
 end
 
 Given /^the UUID for well (\d+) on plate "(.*?)" is "(.*?)"$/ do |well_id, plate_name, uuid|
-  set_uuid_for(Plate.find_by_name(plate_name).wells[well_id],uuid)
+  plate = Plate.find_by_name(plate_name) || Plate.find_by_barcode(plate_name)
+  set_uuid_for(plate.wells[well_id.to_i-1],uuid)
 end

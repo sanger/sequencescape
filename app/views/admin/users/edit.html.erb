@@ -41,7 +41,7 @@
       <tr>
         <td class="item" width="20%"><label for="role_lab_manager">Lab manager</label>?</td>
         <td><%= check_box_tag "role[lab_manager]", "checked", @user.has_role?("lab_manager") %></td>
-      </tr
+      </tr>
       <tr>
         <td class="item" width="20%"><label for="role_owner">Owner</label>?</td>
         <td><%= check_box_tag "role[owner]", "checked", @user.has_role?("owner") %></td>

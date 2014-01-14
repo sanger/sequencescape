@@ -11,7 +11,7 @@ module Batch::StateMachineBehaviour
 
       # State Machine events
       aasm_event :start do
-        transitions :to => :started, :from => [:pending, :started, :completed, :released]
+        transitions :to => :started, :from => [:pending, :started]
       end
 
       aasm_event :complete do

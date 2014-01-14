@@ -4,11 +4,11 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
   Background:
     Given I am a "administrator" user logged in as "user"
     And the "96 Well Plate" barcode printer "xyz" exists
+    Given a robot exists
 
 
   Scenario: Create a Tecan file with correct volumes to pick via the original Cherrypick interface
     Given a plate template exists
-    Given a robot exists
     Given a plate barcode webservice is available and returns "99999"
     Given I have a plate "222" with the following wells:
       | well_location | measured_concentration | measured_volume |
@@ -36,14 +36,14 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     When I check "Select DN222J for batch"
     And I check "Select DN333P for batch"
     And I press "Submit"
-    When I follow "Start batch"
-    When I choose "Pick by ng"
+    When I follow "Select Plate Template"
     And I fill in the following:
       | Minimum Volume    | 10   |
       | Maximum Volume    | 50   |
       | Quantity to pick  | 1000 |
+    And I choose "Pick by ng"
     And I press "Next step"
-		When I press "Next step"
+    When I press "Next step"
     Given the last batch has a barcode of "550000555760"
     Then the downloaded tecan file for batch "550000555760" and plate "1220099999705" is
     """
@@ -141,9 +141,9 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     And I have an active study called "Study B"
     And I have an active study called "Study C"
 
-    Given plate "1234567" with 2 samples in study "Test study" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission
-    Given plate "222" with 1 samples in study "Study B" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission
-    Given plate "333" with 3 samples in study "Study C" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission
+    Given plate "1234567" with 2 samples in study "Test study" has a "Illumina-A - Cherrypick for pulldown - Pulldown WGS - HiSeq Paired end sequencing" submission
+    Given plate "222" with 1 samples in study "Study B" has a "Illumina-A - Cherrypick for pulldown - Pulldown WGS - HiSeq Paired end sequencing" submission
+    Given plate "333" with 3 samples in study "Study C" has a "Illumina-A - Cherrypick for pulldown - Pulldown WGS - HiSeq Paired end sequencing" submission
     Given I am on the show page for pipeline "Cherrypicking for Pulldown"
     When I check "Select DN1234567T for batch"
     Then I should see "You have 2 requests selected"
@@ -167,7 +167,7 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
 
     Given I have a tag group called "UK10K tag group" with 8 tags
     Given I have a pulldown batch
-    When I follow "Start batch"
+    When I follow "Assign Tags"
     When I select "UK10K tag group" from "Tag Group"
     And I press "Next step"
     And I press "Next step"
@@ -184,15 +184,16 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     Given I have an active study called "Test study"
 
     Given a plate barcode webservice is available and returns "99999"
-    Given plate "1234567" with 1 samples in study "Test study" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission
+    Given plate "1234567" with 1 samples in study "Test study" has a "Illumina-A - Cherrypick for pulldown - Pulldown WGS - HiSeq Paired end sequencing" submission
     Given plate "1234567" has nonzero concentration results
     Given plate "1234567" has measured volume results
     Given I am on the show page for pipeline "Cherrypicking for Pulldown"
     When I check "Select DN1234567T for batch"
     And I press "Submit"
-    When I follow "Start batch"
+    When I follow "Cherrypick Group By Submission"
     And I choose "Pick by ng/µl"
-    And I select "Pulldown Aliquot" from "Plate Purpose"
+    And I select "WGS stock DNA" from "Plate Purpose"
+    And I press "Next step"
     And I press "Next step"
     When I press "Release this batch"
     When I follow "Print plate labels"

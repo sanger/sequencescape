@@ -187,3 +187,7 @@ Given /^I have a "([^\"]*)" submission with the following setup:$/ do |template_
 
   #step(%Q{1 pending delayed jobs are processed})
 end
+
+Then /^the last submission should have a priority of (\d+)$/ do |priority|
+  Submission.last.update_attributes!(:priority=>priority)
+end

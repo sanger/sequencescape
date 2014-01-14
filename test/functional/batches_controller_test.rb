@@ -31,6 +31,7 @@ class BatchesControllerTest < ActionController::TestCase
 
           @study, @project = Factory(:study), Factory(:project)
           @sample = Factory :sample
+          @submission = Factory :submission_without_order, {:priority => 3}
 
           @library = Factory(:empty_library_tube).tap do |library_tube|
             library_tube.aliquots.create!(:sample => @sample, :project => @project, :study => @study, :library => library_tube, :library_type => 'Standard')
@@ -38,7 +39,8 @@ class BatchesControllerTest < ActionController::TestCase
           @lane        = Factory(:empty_lane, :qc_state => 'failed')
           @request_one = pipeline.request_types.first.create!(
             :asset => @library, :target_asset => @lane,
-            :project => @project, :study => @study, :priority => 99,
+            :project => @project, :study => @study,
+            :submission => @submission,
             :request_metadata_attributes => { :fragment_size_required_from => 100, :fragment_size_required_to => 200, :read_length => 76 }
           )
 
@@ -54,7 +56,7 @@ class BatchesControllerTest < ActionController::TestCase
 
         should "have api version attribute on root object" do
           assert_response :success
-          assert_tag :tag => 'lane', :attributes => { :position => 1, :id => @lane.id, :priority => 99 }
+          assert_tag :tag => 'lane', :attributes => { :position => 1, :id => @lane.id, :priority => 3 }
           assert_tag :tag => "library", :attributes => {:request_id => @request_one.id, :qc_state => 'fail'}
         end
 

@@ -27,7 +27,7 @@ Feature: Submitting an asset directly for a request
     Then the library tube "library tube 1" should have 2 "<sequencing type>" requests
 
     Examples:
-      | sequencing type             | read length |
-      | Single ended sequencing     | 76          |
-      | Paired end sequencing       | 76          |
-      | HiSeq Paired end sequencing | 100         |
+      | sequencing type                        | read length |
+      | Illumina-C Single ended sequencing     | 76          |
+      | Illumina-C Paired end sequencing       | 76          |
+      | Illumina-C HiSeq Paired end sequencing | 100         |

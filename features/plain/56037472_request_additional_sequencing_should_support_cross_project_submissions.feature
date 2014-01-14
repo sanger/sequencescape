@@ -23,19 +23,19 @@ Feature: Requesting additional sequencing for cross study requests
 
     Given I am on the show page for asset "multiplex 1"
     When I follow "Request additional sequencing"
-    And I select "HiSeq Paired end sequencing" from "Request type"
+    And I select "Illumina-C HiSeq Paired end sequencing" from "Request type"
     And the checkbox labeled "Cross Study Request" should be checked
     And the checkbox labeled "Cross Project Request" should be checked
-    And I fill in "Fragment size required (from)" with "100" for the "HiSeq Paired end sequencing" request type
-    And I fill in "Fragment size required (to)" with "200" for the "HiSeq Paired end sequencing" request type
-    And I select "100" from "Read length" for the "HiSeq Paired end sequencing" request type
+    And I fill in "Fragment size required (from)" with "100" for the "Illumina-C HiSeq Paired end sequencing" request type
+    And I fill in "Fragment size required (to)" with "200" for the "Illumina-C HiSeq Paired end sequencing" request type
+    And I select "100" from "Read length" for the "Illumina-C HiSeq Paired end sequencing" request type
     And I press "Create"
     Then I should see "Created request"
 
     # Ensure that the submission can be processed validly
     Given all pending delayed jobs are processed
-    Then the multiplexed library tube "multiplex 1" should have 1 "HiSeq Paired end sequencing" requests
-    And the "HiSeq Paired end sequencing" requests on "multiplex 1" should have no study or project
+    Then the multiplexed library tube "multiplex 1" should have 1 "Illumina-C HiSeq Paired end sequencing" requests
+    And the "Illumina-C HiSeq Paired end sequencing" requests on "multiplex 1" should have no study or project
     And the last submission should be called "Study A|Study B"
 
   Scenario: Submission succeeds

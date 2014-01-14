@@ -102,6 +102,11 @@ Feature: The entry point for the API gives directions to the other actions
             "read": "http://www.example.com/api/1/plates"
           }
         },
+        "plates_for_inboxes": {
+          "actions": {
+            "read": "http://www.example.com/api/1/plates_for_inboxes"
+          }
+        },
         "wells": {
           "actions": {
             "read": "http://www.example.com/api/1/wells"
@@ -349,6 +354,11 @@ Feature: The entry point for the API gives directions to the other actions
         "plates": {
           "actions": {
             "read": "http://www.example.com/api/1/plates"
+          }
+        },
+        "plates_for_inbox": {
+          "actions": {
+            "read": "http://www.example.com/api/1/plates_for_inbox"
           }
         },
         "wells": {

@@ -37,7 +37,7 @@ class CreateMiseqSubmissionTemplates < ActiveRecord::Migration
           :request_type_ids_list => outline[:request_types].map {|rt| [RequestType.find_by_key!(rt).id] } << miseq_for(outline[:pipeline]),
           :workflow_id => 1
         }
-      paras.merge({:order_role_id => Order::OrderRole.find_by_role!(outline[:role]).id}) if outline[:role].present?
+      paras.merge({:order_role_id => Order::OrderRole.find_or_create_by_role(outline[:role]).id}) if outline[:role].present?
       template = {
         :name => "#{outline[:pipeline]} - #{outline[:name]} - MiSeq sequencing",
         :submission_class_name => 'LinearSubmission',

@@ -11,6 +11,7 @@ Given /^I have an active project called "([^"]*)"$/ do |project_name|
 end
 
 Then /^the role list table should look like:$/ do |expected_results_table|
+  sleep 0.1
   expected_results_table.diff!(table(tableish('table#roles_table tr', 'td,th')))
 end
 

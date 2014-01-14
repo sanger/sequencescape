@@ -11,9 +11,9 @@ Feature: Interacting with wells through the API
     Then the JSON should be an empty array
 
   Scenario: Listing all of the wells that exist
-    Given a well called "Testing the JSON API" exists
+    Given the well exists with ID 1
     And the UUID for the last well is "00000000-1111-2222-3333-444444444444"
-    And well "Testing the JSON API" has a genotyping status of "Imported to Illumina: 123456 | Imported to Illumina: 987654"
+    And well "00000000-1111-2222-3333-444444444444" has a genotyping status of "Imported to Illumina: 123456 | Imported to Illumina: 987654"
 
     When I GET the API path "/wells"
     Then ignoring "internal_id|sample_uuid" the JSON should be:
@@ -21,8 +21,7 @@ Feature: Interacting with wells through the API
       [
         {
           "well": {
-            "name": "Testing the JSON API",
-            "display_name": "Testing the JSON API",
+            "display_name": "(not on a plate):",
             "created_at": "2010-09-16T13:45:00+01:00",
             "updated_at": "2010-09-16T13:45:00+01:00",
             "uuid": "00000000-1111-2222-3333-444444444444",
@@ -60,8 +59,8 @@ Feature: Interacting with wells through the API
       """
       {
         "well": {
-          "name": "Testing the JSON API",
-          "display_name": "Testing the JSON API",
+          "display_name": "DN1S:A1",
+          "map":"A1",
           "created_at": "2010-09-16T13:45:00+01:00",
           "updated_at": "2010-09-16T13:45:00+01:00",
           "uuid": "00000000-1111-2222-3333-444444444444",
@@ -88,8 +87,8 @@ Feature: Interacting with wells through the API
     And the UUID for the last well is "00000000-1111-2222-3333-444444444444"
 
     Given a well called "Child well for the JSON API" exists
-    And the well "Child well for the JSON API" is a child of the well "Testing the JSON API"
     And the UUID for the last well is "ffffffff-1111-2222-3333-444444444444"
+    And the well "ffffffff-1111-2222-3333-444444444444" is a child of the well "00000000-1111-2222-3333-444444444444"
 
     When I GET the API path "/wells/00000000-1111-2222-3333-444444444444/children"
     Then ignoring "id" the JSON should be:
@@ -97,7 +96,6 @@ Feature: Interacting with wells through the API
       [
         {
           "id": 1,
-          "name": "Child well for the JSON API",
           "uuid": "ffffffff-1111-2222-3333-444444444444",
           "url": "http://localhost:3000/0_5/wells/ffffffff-1111-2222-3333-444444444444"
         }
@@ -109,8 +107,8 @@ Feature: Interacting with wells through the API
     And the UUID for the last well is "00000000-1111-2222-3333-444444444444"
 
     Given a well called "Parent well for the JSON API" exists
-    And the well "Testing the JSON API" is a child of the well "Parent well for the JSON API"
     And the UUID for the last well is "ffffffff-1111-2222-3333-444444444444"
+    And the well "00000000-1111-2222-3333-444444444444" is a child of the well "ffffffff-1111-2222-3333-444444444444"
 
     When I GET the API path "/wells/00000000-1111-2222-3333-444444444444/parents"
     Then ignoring "id" the JSON should be:
@@ -118,7 +116,6 @@ Feature: Interacting with wells through the API
       [
         {
           "id": 1,
-          "name": "Parent well for the JSON API",
           "uuid": "ffffffff-1111-2222-3333-444444444444",
           "url": "http://localhost:3000/0_5/wells/ffffffff-1111-2222-3333-444444444444"
         }

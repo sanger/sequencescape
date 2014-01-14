@@ -69,7 +69,7 @@ end
 
 Given /^I have a PacBio sequencing batch$/ do
   step(%Q{I have a PacBio Sample Prep batch})
-  step(%Q{I follow "Start batch"})
+  step(%Q{I follow "DNA Template Prep Kit Box Barcode"})
   step(%Q{I fill in "DNA Template Prep Kit Box Barcode" with "999"})
   step(%Q{I press "Next step"})
   step(%Q{I select "Pass" from "QC PacBioLibraryTube 333"})
@@ -159,7 +159,7 @@ end
 
 Given /^I have progressed to the Reference Sequence task$/ do
   step(%Q{I have a PacBio sequencing batch})
-  step(%Q{I follow "Start batch"})
+  step(%Q{I follow "Binding Kit Box Barcode"})
   step(%Q{I fill in "Binding Kit Box Barcode" with "777"})
   step(%Q{I press "Next step"})
   step(%Q{I fill in "Movie length for 333" with "12"})

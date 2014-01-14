@@ -12,12 +12,12 @@ Feature: Full run through of the UK10K submissions
     Given I have a project called "Testing submission creation"
     And the UUID for the project "Testing submission creation" is "22222222-3333-4444-5555-000000000001"
 
-    Given the UUID for the order template "Library creation - Paired end sequencing" is "00000000-1111-2222-3333-444444444444"
+    Given the UUID for the order template "Illumina-C - Library creation - Paired end sequencing" is "00000000-1111-2222-3333-444444444444"
     And the UUID of the next submission created will be "11111111-2222-3333-4444-555555555555"
     And the UUID of the next order created will be "11111111-2222-3333-4444-666666666666"
 
-    Given the UUID for the request type "Library creation" is "99999999-1111-2222-3333-000000000000"
-    And the UUID for the request type "Paired end sequencing" is "99999999-1111-2222-3333-000000000001"
+    Given the UUID for the request type "Illumina-C Library creation" is "99999999-1111-2222-3333-000000000000"
+    And the UUID for the request type "Illumina-C Paired end sequencing" is "99999999-1111-2222-3333-000000000001"
 
   @full-workflow @create @update @submit @read
   Scenario: Create submission, attach assets, and then submit it
@@ -41,7 +41,7 @@ Feature: Full run through of the UK10K submissions
           },
 
           "uuid": "00000000-1111-2222-3333-444444444444",
-          "name": "Library creation - Paired end sequencing"
+          "name": "Illumina-C - Library creation - Paired end sequencing"
         }
       }
       """
@@ -84,11 +84,11 @@ Feature: Full run through of the UK10K submissions
           "request_types": [
             {
               "uuid": "99999999-1111-2222-3333-000000000000",
-              "name": "Library creation"
+              "name": "Illumina-C Library creation"
             },
             {
               "uuid": "99999999-1111-2222-3333-000000000001",
-              "name": "Paired end sequencing"
+              "name": "Illumina-C Paired end sequencing"
             }
           ],
           "request_options": {}
@@ -150,11 +150,11 @@ Feature: Full run through of the UK10K submissions
           "request_types": [
             {
               "uuid": "99999999-1111-2222-3333-000000000000",
-              "name": "Library creation"
+              "name": "Illumina-C Library creation"
             },
             {
               "uuid": "99999999-1111-2222-3333-000000000001",
-              "name": "Paired end sequencing"
+              "name": "Illumina-C Paired end sequencing"
             }
           ],
           "request_options": {
@@ -274,20 +274,20 @@ Feature: Full run through of the UK10K submissions
           "last": "http://www.example.com/api/1/11111111-2222-3333-4444-555555555555/requests/1",
           "read": "http://www.example.com/api/1/11111111-2222-3333-4444-555555555555/requests/1",
           "first": "http://www.example.com/api/1/11111111-2222-3333-4444-555555555555/requests/1"
-        }, 
+        },
         "requests": [
           {
             "source_asset": {
               "uuid": "33333333-4444-5555-6666-000000000001",
               "type": "sample_tubes"
             },
-            "target_asset": null, 
+            "target_asset": null,
 
             "fragment_size": {
               "from": "100",
               "to": "200"
             },
-            "type": "Library creation",
+            "type": "Illumina-C Library creation",
             "library_type": "qPCR only"
           }, {
             "source_asset": {
@@ -300,7 +300,7 @@ Feature: Full run through of the UK10K submissions
               "from": "100",
               "to": "200"
             },
-            "type": "Library creation",
+            "type": "Illumina-C Library creation",
             "library_type": "qPCR only"
           }, {
             "source_asset": {
@@ -313,7 +313,7 @@ Feature: Full run through of the UK10K submissions
               "from": "100",
               "to": "200"
             },
-            "type": "Library creation",
+            "type": "Illumina-C Library creation",
             "library_type": "qPCR only"
           }, {
             "source_asset": null,
@@ -324,7 +324,7 @@ Feature: Full run through of the UK10K submissions
               "from": "100",
               "to": "200"
             },
-            "type": "Paired end sequencing"
+            "type": "Illumina-C Paired end sequencing"
           }, {
             "source_asset": null,
             "target_asset": null,
@@ -334,7 +334,7 @@ Feature: Full run through of the UK10K submissions
               "from": "100",
               "to": "200"
             },
-            "type": "Paired end sequencing"
+            "type": "Illumina-C Paired end sequencing"
           }, {
             "source_asset": null,
             "target_asset": null,
@@ -344,8 +344,8 @@ Feature: Full run through of the UK10K submissions
               "from": "100",
               "to": "200"
             },
-            "type": "Paired end sequencing"
+            "type": "Illumina-C Paired end sequencing"
           }
         ]
-      } 
+      }
       """
