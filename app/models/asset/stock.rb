@@ -26,7 +26,8 @@ module Asset::Stock
           self.class.stock_asset_type.#{ctor}(attributes.reverse_merge(
             :name     => "(s) \#{self.name}",
             :barcode  => AssetBarcode.new_barcode,
-            :aliquots => self.aliquots.map(&:clone)
+            :aliquots => self.aliquots.map(&:clone),
+            :purpose  => self.class.stock_asset_purpose
           ), &block)
         end
       }, __FILE__, line)
