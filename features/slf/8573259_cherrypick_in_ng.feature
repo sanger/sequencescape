@@ -43,6 +43,7 @@ Feature: Pick a ng quantity using the Tecan robot
       | Quantity to pick  | 1000 |
     When I choose "Pick by ng"
     And I select "Pulldown" from "Plate Purpose"
+    And "Pulldown" plate purpose picks with "Cherrypick::Strategy::Filter::InRowOrder"
     And I press "Next step"
     And I press "Next step"
     When I press "Release this batch"
