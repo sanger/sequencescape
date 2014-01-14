@@ -42,8 +42,7 @@ Feature: Generate Sample Accessions
       | data_release_strategy | accession_number | gender | donor_id | phenotype | accession |
       | open                  | EGAN00001000234  |        |          |           | have      |
       | managed               | EGAN00001000234  | male   | D0N0R    | cancer    | have      |
-      | managed               | EGAN00001000234  | male   |          | cancer    | not have  |
-      | managed               | EGAN00001000234  | male   |          | healthy   | have      |
+      | managed               | EGAN00001000234  | male   |          | healthy   | not have  |
       | managed               | EGAN00001000234  | male   |          |           | not have  |
 
 
