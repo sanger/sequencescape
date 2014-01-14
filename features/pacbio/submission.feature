@@ -26,7 +26,7 @@ Feature: Create a submission for the pacbio pipeline
     And I should see "<insert_size>"
     When I check "Select SampleTube 111 for batch"
     When I press "Submit"
-    When I follow "Start batch"
+    When I follow "DNA Template Prep Kit Box Barcode"
     Given SampleTube "111" has a PacBioLibraryTube "333"
     When I fill in "DNA Template Prep Kit Box Barcode" with "999"
     And I press "Next step"
@@ -59,7 +59,7 @@ Feature: Create a submission for the pacbio pipeline
 
   Scenario: No kit number entered
     Given I have a PacBio Sample Prep batch
-    When I follow "Start batch"
+    When I follow "DNA Template Prep Kit Box Barcode"
     When I fill in "DNA Template Prep Kit Box Barcode" with ""
     And I press "Next step"
     Then I should see "Please enter a Kit Barcode"
@@ -77,7 +77,7 @@ Feature: Create a submission for the pacbio pipeline
 
   Scenario: When a sample fails dont enter number of SMRTcells and cancel sequencing request
     Given I have a PacBio Sample Prep batch
-    When I follow "Start batch"
+    When I follow "DNA Template Prep Kit Box Barcode"
     When I fill in "DNA Template Prep Kit Box Barcode" with "999"
     And I press "Next step"
     Then I should see "Sample Prep QC"
@@ -107,7 +107,7 @@ Feature: Create a submission for the pacbio pipeline
     When I check "Select SampleTube 111 for batch"
     When I press "Submit"
     Given SampleTube "111" has a PacBioLibraryTube "333"
-    When I follow "Start batch"
+    When I follow "DNA Template Prep Kit Box Barcode"
     When I fill in "DNA Template Prep Kit Box Barcode" with "999"
     And I press "Next step"
     And I press "Next step"
@@ -126,7 +126,7 @@ Feature: Create a submission for the pacbio pipeline
 
   Scenario Outline: Invalid input into the SMRTcells field
     Given I have a PacBio Sample Prep batch
-    When I follow "Start batch"
+    When I follow "DNA Template Prep Kit Box Barcode"
     When I fill in "DNA Template Prep Kit Box Barcode" with "999"
     And I press "Next step"
     Then I should see "Sample Prep QC"
