@@ -37,13 +37,13 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     And I check "Select DN333P for batch"
     And I press "Submit"
     When I follow "Select Plate Template"
-    When I choose "Pick by ng"
     And I fill in the following:
       | Minimum Volume    | 10   |
       | Maximum Volume    | 50   |
       | Quantity to pick  | 1000 |
+    And I choose "Pick by ng"
     And I press "Next step"
-		When I press "Next step"
+    When I press "Next step"
     Given the last batch has a barcode of "550000555760"
     Then the downloaded tecan file for batch "550000555760" and plate "1220099999705" is
     """

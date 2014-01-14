@@ -1,4 +1,4 @@
-@nano_grams @cherrypicking_for_pulldown @cherrypicking @barcode-service @pulldown @tecan
+@nano_grams @cherrypicking_for_pulldown @cherrypicking @barcode-service @pulldown @tecan @javascript
 Feature: Pick a ng quantity using the Tecan robot
 
   Background:
@@ -37,11 +37,11 @@ Feature: Pick a ng quantity using the Tecan robot
     And I select "Create Batch" from "Action to perform"
     And I press "Submit"
     When I follow "Cherrypick Group By Submission"
-    When I choose "Pick by ng"
     And I fill in the following:
       | Minimum Volume    | 10   |
       | Maximum Volume    | 50   |
       | Quantity to pick  | 1000 |
+    When I choose "Pick by ng"
     And I select "Pulldown" from "Plate Purpose"
     And I press "Next step"
     And I press "Next step"
@@ -196,11 +196,11 @@ Feature: Pick a ng quantity using the Tecan robot
      And I select "Create Batch" from "Action to perform"
      And I press "Submit"
      When I follow "Cherrypick Group By Submission"
-     When I choose "Pick by ng"
      And I fill in the following:
        | Minimum Volume    | <minimum_volume>   |
        | Maximum Volume    | <maximum_volume>   |
-       | Quantity to pick  | <target_ng> |
+       | Quantity to pick  | <target_ng>        |
+     When I choose "Pick by ng"
      And I press "Next step"
      Then I should see "Invalid values typed in"
      Examples:
