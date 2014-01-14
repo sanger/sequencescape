@@ -280,61 +280,6 @@ PulldownLibraryCreationPipeline.create!(:name => 'Pulldown library preparation')
   end
 end
 
-# Deprecated request types
-  RequestType.create!(
-    :workflow => next_gen_sequencing,
-    :key => "single_ended_sequencing",
-    :name => "Single ended sequencing",
-    :deprecated => true
-  ) do |request_type|
-    request_type.billable          = true
-    request_type.initial_state     = 'pending'
-    request_type.asset_type        = 'LibraryTube'
-    request_type.order             = 2
-    request_type.multiples_allowed = true
-    request_type.request_class =  SequencingRequest
-  end
-  RequestType.create!(
-    :workflow => next_gen_sequencing,
-    :key => "paired_end_sequencing",
-    :name => "Paired end sequencing",
-    :deprecated => true
-  ) do |request_type|
-    request_type.billable          = true
-    request_type.initial_state     = 'pending'
-    request_type.asset_type        = 'LibraryTube'
-    request_type.order             = 2
-    request_type.multiples_allowed = true
-    request_type.request_class =  SequencingRequest
-  end
-  RequestType.create!(
-    :workflow => next_gen_sequencing,
-    :key => "single_ended_hi_seq_sequencing",
-    :name => "Single ended hi seq sequencing",
-    :deprecated => true
-  ) do |request_type|
-    request_type.billable          = true
-    request_type.initial_state     = 'pending'
-    request_type.asset_type        = 'LibraryTube'
-    request_type.order             = 2
-    request_type.multiples_allowed = true
-    request_type.request_class =  HiSeqSequencingRequest
-  end
-  RequestType.create!(
-    :workflow => next_gen_sequencing,
-    :key => "hiseq_paired_end_sequencing",
-    :name => "HiSeq Paired end sequencing",
-    :deprecated => true
-  ) do |request_type|
-    request_type.billable          = true
-    request_type.initial_state     = 'pending'
-    request_type.asset_type        = 'LibraryTube'
-    request_type.order             = 2
-    request_type.multiples_allowed = true
-    request_type.request_class =  HiSeqSequencingRequest
-  end
-
-#######################
 
 cluster_formation_se_request_type = ['a','b','c'].map do |pl|
   RequestType.create!(
@@ -349,7 +294,19 @@ cluster_formation_se_request_type = ['a','b','c'].map do |pl|
     request_type.multiples_allowed = true
     request_type.request_class =  SequencingRequest
   end
-end
+end << RequestType.create!(
+    :workflow => next_gen_sequencing,
+    :key => "single_ended_sequencing",
+    :name => "Single ended sequencing",
+    :deprecated => true
+  ) do |request_type|
+    request_type.billable          = true
+    request_type.initial_state     = 'pending'
+    request_type.asset_type        = 'LibraryTube'
+    request_type.order             = 2
+    request_type.multiples_allowed = true
+    request_type.request_class =  SequencingRequest
+  end
 
 SequencingPipeline.create!(:name => 'Cluster formation SE (spiked in controls)', :request_types => cluster_formation_se_request_type ) do |pipeline|
   pipeline.asset_type = 'Lane'
@@ -445,7 +402,19 @@ single_ended_hi_seq_sequencing = ['a','b','c'].map do |pl|
     request_type.multiples_allowed = true
     request_type.request_class =  HiSeqSequencingRequest
   end
-end
+end <<   RequestType.create!(
+    :workflow => next_gen_sequencing,
+    :key => "single_ended_hi_seq_sequencing",
+    :name => "Single ended hi seq sequencing",
+    :deprecated => true
+  ) do |request_type|
+    request_type.billable          = true
+    request_type.initial_state     = 'pending'
+    request_type.asset_type        = 'LibraryTube'
+    request_type.order             = 2
+    request_type.multiples_allowed = true
+    request_type.request_class =  HiSeqSequencingRequest
+  end
 
 SequencingPipeline.create!(:name => 'Cluster formation SE HiSeq', :request_types => single_ended_hi_seq_sequencing) do |pipeline|
   pipeline.asset_type = 'Lane'
@@ -512,7 +481,19 @@ cluster_formation_pe_request_types =  ['a','b','c'].map do |pl|
     request_type.multiples_allowed = true
     request_type.request_class =  SequencingRequest
   end
-end
+end << RequestType.create!(
+    :workflow => next_gen_sequencing,
+    :key => "paired_end_sequencing",
+    :name => "Paired end sequencing",
+    :deprecated => true
+  ) do |request_type|
+    request_type.billable          = true
+    request_type.initial_state     = 'pending'
+    request_type.asset_type        = 'LibraryTube'
+    request_type.order             = 2
+    request_type.multiples_allowed = true
+    request_type.request_class =  SequencingRequest
+  end
 
 hiseq_2500_request_types = ['a','b','c'].map do |pl|
   RequestType.create!(
@@ -756,7 +737,20 @@ SequencingPipeline.create!(:name => 'HiSeq Cluster formation PE (no controls)') 
       request_type.order             = 2
       request_type.multiples_allowed = true
       request_type.request_class =  HiSeqSequencingRequest
-    end
+    end <<
+  RequestType.create!(
+    :workflow => next_gen_sequencing,
+    :key => "hiseq_paired_end_sequencing",
+    :name => "HiSeq Paired end sequencing",
+    :deprecated => true
+  ) do |request_type|
+    request_type.billable          = true
+    request_type.initial_state     = 'pending'
+    request_type.asset_type        = 'LibraryTube'
+    request_type.order             = 2
+    request_type.multiples_allowed = true
+    request_type.request_class =  HiSeqSequencingRequest
+  end
   end
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'HiSeq Cluster formation PE (no controls)') do |workflow|

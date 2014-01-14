@@ -32,7 +32,7 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
       setup do
         # We're using the submissions controller as things are a bit screwy if we go to the plate creator (PlateCreater) directly
         # However, as this seems to relate to the multiplier, it may be related to out problem.
-        @submission_template = SubmissionTemplate.find_by_name!('Library creation - Illumina-B Single ended sequencing')
+        @submission_template = SubmissionTemplate.find_by_name!('Library creation - Single ended sequencing')
 
         post(:create, :submission => {:is_a_sequencing_order=>"true", :comments=>"", :template_id=>@submission_template.id, :order_params=>{"read_length"=>"37", "fragment_size_required_to"=>"400", "bait_library_name"=>"Human all exon 50MB", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"}, :asset_group_id=>@asset_group.id, :study_id=>@study.id, :sample_names_text=>"", :plate_purpose_id=>@plate_purpose.id, :project_name=>@project.name, :lanes_of_sequencing_required=>"5"})
 
@@ -86,7 +86,7 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
            # We're using the submissions controller as things are a bit screwy if we go to the plate creator (PlateCreater) directly
            # However, as this seems to relate to the multiplier, it may be related to out problem.
            #@asset_group.assets.each_with_index {|a,i| tag= Factory :tag; a.aliquots.first.update_attributes!(:tag=>tag)}
-           @submission_template = SubmissionTemplate.find_by_name!('Illumina-B Multiplexed Library Creation - Illumina-B Single ended sequencing')
+           @submission_template = SubmissionTemplate.find_by_name!('Illumina-B Multiplexed Library Creation - Single ended sequencing')
            @library_pipeline = Pipeline.find_by_name!('Illumina-B MX Library Preparation')
 
            post(:create, :submission => {

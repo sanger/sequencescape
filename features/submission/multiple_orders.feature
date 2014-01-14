@@ -88,7 +88,8 @@ Feature: Creating a submissin with many orders
     Then the submission with UUID "11111111-2222-3333-4444-555555555555" should have <number> "<type>" requests
     Examples:
        | template_name                                                  | number  | type                  | asset_type   |
-       | Library creation - Paired end sequencing                       | 4       | Paired end sequencing | sample tubes |
-       | Multiplexed Library creation - Paired end sequencing           | 1       | Paired end sequencing | sample tubes |
-       | Pulldown Multiplex Library Preparation - Paired end sequencing | 1       | Paired end sequencing | wells        |
+       | Illumina-C - Library creation - Paired end sequencing                       | 4       | Illumina-C Paired end sequencing | sample tubes |
+       | Illumina-C - Multiplexed Library creation - Paired end sequencing           | 1       | Illumina-C Paired end sequencing | sample tubes |
+       # Disabled as template is now deprecated
+       # | Pulldown Multiplex Library Preparation - Paired end sequencing | 1       | Paired end sequencing | wells        |
 

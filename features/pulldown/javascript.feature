@@ -141,9 +141,9 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     And I have an active study called "Study B"
     And I have an active study called "Study C"
 
-    Given plate "1234567" with 2 samples in study "Test study" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission
-    Given plate "222" with 1 samples in study "Study B" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission
-    Given plate "333" with 3 samples in study "Study C" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission
+    Given plate "1234567" with 2 samples in study "Test study" has a "Illumina-A - Cherrypick for pulldown - Pulldown WGS - HiSeq Paired end sequencing" submission
+    Given plate "222" with 1 samples in study "Study B" has a "Illumina-A - Cherrypick for pulldown - Pulldown WGS - HiSeq Paired end sequencing" submission
+    Given plate "333" with 3 samples in study "Study C" has a "Illumina-A - Cherrypick for pulldown - Pulldown WGS - HiSeq Paired end sequencing" submission
     Given I am on the show page for pipeline "Cherrypicking for Pulldown"
     When I check "Select DN1234567T for batch"
     Then I should see "You have 2 requests selected"
@@ -184,7 +184,7 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     Given I have an active study called "Test study"
 
     Given a plate barcode webservice is available and returns "99999"
-    Given plate "1234567" with 1 samples in study "Test study" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission
+    Given plate "1234567" with 1 samples in study "Test study" has a "Illumina-A - Cherrypick for pulldown - Pulldown WGS - HiSeq Paired end sequencing" submission
     Given plate "1234567" has nonzero concentration results
     Given plate "1234567" has measured volume results
     Given I am on the show page for pipeline "Cherrypicking for Pulldown"
@@ -192,7 +192,8 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     And I press "Submit"
     When I follow "Cherrypick Group By Submission"
     And I choose "Pick by ng/µl"
-    And I select "Pulldown Aliquot" from "Plate Purpose"
+    And I select "WGS stock DNA" from "Plate Purpose"
+    And I press "Next step"
     And I press "Next step"
     When I press "Release this batch"
     When I follow "Print plate labels"

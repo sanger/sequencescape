@@ -19,7 +19,7 @@ Feature: Creating submissions
     Given I have a project called "Testing submission creation"
     And the UUID for the project "Testing submission creation" is "22222222-3333-4444-5555-000000000001"
 
-    Given the UUID for the order template "Library creation - Paired end sequencing" is "00000000-1111-2222-3333-444444444444"
+    Given the UUID for the order template "Illumina-C - Library creation - Paired end sequencing" is "00000000-1111-2222-3333-444444444444"
     And the UUID of the next submission created will be "11111111-2222-3333-4444-555555555555"
     And the UUID of the next order created will be "11111111-2222-3333-4444-666666666666"
 
@@ -31,14 +31,14 @@ Feature: Creating submissions
     Given 4 sample tubes exist with names based on "sampletube" and IDs starting at 1
     And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"
 
-    Given I have an order created with the following details based on the template "Library creation - Paired end sequencing":
+    Given I have an order created with the following details based on the template "Illumina-C - Library creation - Paired end sequencing":
       | study           | 22222222-3333-4444-5555-000000000000                                                                       |
       | project         | 22222222-3333-4444-5555-000000000001                                                                       |
       | assets          | 33333333-4444-5555-6666-000000000001, 33333333-4444-5555-6666-000000000002                                 |
       | request_options | read_length: 76, fragment_size_required_from: 100, fragment_size_required_to: 200, library_type: qPCR only |
 
     Given the UUID of the next order created will be "11111111-2222-3333-4444-666666666667"
-    Given I have an order created with the following details based on the template "Library creation - Paired end sequencing":
+    Given I have an order created with the following details based on the template "Illumina-C - Library creation - Paired end sequencing":
       | study           | 22222222-3333-4444-5555-000000000000                                                                       |
       | project         | 22222222-3333-4444-5555-000000000001                                                                       |
       | assets          | 33333333-4444-5555-6666-000000000003, 33333333-4444-5555-6666-000000000004                                 |
@@ -73,7 +73,7 @@ Feature: Creating submissions
 
   @create @error @asset
   Scenario: Attempting to create a submission with an order that has no assets
-    Given I have an order created with the following details based on the template "Library creation - Paired end sequencing":
+    Given I have an order created with the following details based on the template "Illumina-C - Library creation - Paired end sequencing":
       | study            | 22222222-3333-4444-5555-000000000000                                                                       |
       | project          | 22222222-3333-4444-5555-000000000001                                                                       |
       | request_options  | read_length: 76, fragment_size_required_from: 100, fragment_size_required_to: 200, library_type: qPCR only |
@@ -100,7 +100,7 @@ Feature: Creating submissions
 
   @update @error @asset
   Scenario: Attempting to add an order that has no assets to an existing submission
-    Given I have an order created with the following details based on the template "Library creation - Paired end sequencing":
+    Given I have an order created with the following details based on the template "Illumina-C - Library creation - Paired end sequencing":
       | study            | 22222222-3333-4444-5555-000000000000                                                                       |
       | project          | 22222222-3333-4444-5555-000000000001                                                                       |
       | request_options  | read_length: 76, fragment_size_required_from: 100, fragment_size_required_to: 200, library_type: qPCR only |
@@ -126,12 +126,12 @@ Feature: Creating submissions
       }
       """
 
-  @submit @error 
+  @submit @error
   Scenario Outline: Attempting to submit a submission that has been readied
     Given 3 sample tubes exist with names based on "sampletube" and IDs starting at 1
     And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"
 
-    Given I have an order created with the following details based on the template "Library creation - Paired end sequencing":
+    Given I have an order created with the following details based on the template "Illumina-C - Library creation - Paired end sequencing":
       | study            | 22222222-3333-4444-5555-000000000000                                                                       |
       | project          | 22222222-3333-4444-5555-000000000001                                                                       |
       | request_options  | read_length: 76, fragment_size_required_from: 100, fragment_size_required_to: 200, library_type: qPCR only |

@@ -5,7 +5,7 @@ class NilClass
   end
 end
 Given /^data are preloaded from "([^\"]+)" renaming:$/ do |file_name, table|
-  names_map = Hash[table.rows.map { |n,o| [o,n] }]
+  names_map = Hash[table.rows.map { |o,n| [o,n] }]
   ImportPulledData::import_from_yaml("data/setup/#{file_name}.yml", names_map)
 end
 Given /^data are preloaded from "([^\"]+)"$/ do |file_name|

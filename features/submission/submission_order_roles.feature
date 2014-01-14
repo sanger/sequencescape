@@ -51,6 +51,6 @@ Feature: Submission templates should set order roles
     Then the plate with the barcode "12345" should have a label of "<label>"
     Examples:
        | template_name                                               | asset_type   | label    |
-       | Illumina-B - Pooled PATH - Illumina-B Paired end sequencing | wells        | ILB PATH |
-       | Illumina-B - Pooled HWGS - Illumina-B Paired end sequencing | wells        | ILB HWGS |
+       | Illumina-B - Pooled PATH - Paired end sequencing | wells        | ILB PATH |
+       | Illumina-B - Pooled HWGS - Paired end sequencing | wells        | ILB HWGS |
 
