@@ -1,6 +1,6 @@
 Given /^I have a sample tube "([^"]*)" in study "([^"]*)" in asset group "([^"]*)"$/ do |sample_tube_barcode, study_name, asset_group_name|
   study = Study.find_by_name(study_name)
-  sample_tube = Factory(:sample_tube, :barcode => sample_tube_barcode, :location =>  Location.find_by_name('PacBio sample prep freezer'))
+  sample_tube = Factory(:sample_tube, :barcode => sample_tube_barcode, :location =>  Location.find_by_name('PacBio library prep freezer'))
   sample_tube.primary_aliquot.sample.rename_to!("Sample_#{sample_tube_barcode}")
   asset_group = AssetGroup.find_by_name(asset_group_name)
   if asset_group.nil?
@@ -37,7 +37,7 @@ Given /^I have a plate for PacBio$/ do
   PlatePurpose.stock_plate_purpose.create!(:without_wells, :barcode=>1234567) do |plate|
     plate.wells.create!(:map=>Map.find_by_asset_size_and_description(96,'A1'),:aliquots => SampleTube.find_by_barcode(111).aliquots.map(&:clone))
     plate.wells.create!(:map=>Map.find_by_asset_size_and_description(96,'B1'),:aliquots => SampleTube.find_by_barcode(222).aliquots.map(&:clone)) if  SampleTube.find_by_barcode(222).present?
-    plate.location = Location.find_by_name('PacBio sample prep freezer')
+    plate.location = Location.find_by_name('PacBio library prep freezer')
   end
 end
 

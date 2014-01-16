@@ -43,7 +43,7 @@ locations_data = [
   'Sample logistics freezer',
   'Genotyping freezer',
   'Pulldown freezer',
-  'PacBio sample prep freezer',
+  'PacBio library prep freezer',
   'PacBio sequencing freezer'
 ]
 locations_data.each do |location|
@@ -945,7 +945,7 @@ PacBioSamplePrepPipeline.create!(:name => 'PacBio Library Prep') do |pipeline|
   pipeline.asset_type           = 'PacBioLibraryTube'
   pipeline.group_by_parent      = true
 
-  pipeline.location = Location.first(:conditions => { :name => 'PacBio sample prep freezer' }) or raise StandardError, "Cannot find 'PacBio sample prep freezer' location"
+  pipeline.location = Location.first(:conditions => { :name => 'PacBio library prep freezer' }) or raise StandardError, "Cannot find 'PacBio library prep freezer' location"
 
   pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'pacbio_sample_prep', :name => 'PacBio Library Prep') do |request_type|
     request_type.initial_state     = 'pending'
