@@ -4,7 +4,7 @@ class RemoveSmrtCellsTasks < ActiveRecord::Migration
 
   def self.up
     ActiveRecord::Base.transaction do
-      # Pipeline.find_by_name!('PacBio Library Prep').workflow.tasks.find_by_name('Number of SMRTcells that can be made').destroy
+      Pipeline.find_by_name!('PacBio Library Prep').workflow.tasks.find_by_name('Number of SMRTcells that can be made').destroy
     end
   end
 
