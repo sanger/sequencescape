@@ -6,9 +6,11 @@ class PacBioSequencingRequest < Request
     1000,
     2000,
     4000,
+    5000,
     6000,
     8000,
-    10000
+    10000,
+    20000
   ]
 
   SEQUENCING_TYPE = ["Standard","MagBead","Strobe","Circular"]
