@@ -33,7 +33,7 @@ ActionController::Routing::Routes.draw do |map|
   # Main objects
   map.resources :events
   map.resources :sources
-  map.resources :samples, :has_many => :assets, :member => {:filtered_move => :get, :move => :post, :history => :get }, :collection =>{ :move_spreadsheet => :get, :move_upload => :post, :move_upload_do => :post}
+  map.resources :samples, :has_many => :assets, :member => {:history => :get }
   map.resources :samples, :collection => { :upload => :get, :review => :post } do |sample|
     sample.resources :comments, :controller => "samples/comments"
     sample.resources :studies, :controller => "samples/studies"

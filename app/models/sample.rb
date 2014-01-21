@@ -27,7 +27,7 @@ class Sample < ActiveRecord::Base
 
 
 
-  has_many :study_samples
+  has_many :study_samples, :dependent => :destroy
   has_many :studies, :through => :study_samples
 
   has_many :roles, :as => :authorizable
@@ -59,6 +59,16 @@ class Sample < ActiveRecord::Base
   end
   validation_guarded_by(:rename_to!, :can_rename_sample)
 
+  before_destroy :safe_to_destroy
+
+  def safe_to_destroy
+    return true unless receptacles.present? || has_submission?
+    errors.add_to_base("Remove '#{@sample.name}' from assets before destroying") if receptacles.present?
+    errors.add_to_base("You can't delete '#{@sample.name}' because is linked to a submission.") if has_submission?
+    return false
+  end
+  private :safe_to_destroy
+
   named_scope :with_name, lambda { |*names| { :conditions => { :name => names.flatten } } }
 
   named_scope :for_search_query, lambda { |query|
@@ -89,7 +99,7 @@ class Sample < ActiveRecord::Base
   end
 
   def has_request
-    not requests.empty?
+    requests.present?
   end
 
   def has_request_all_cancelled?
@@ -112,7 +122,7 @@ class Sample < ActiveRecord::Base
         has_submission = true
       end
     else # We have no requests, we're probably S2 (Or very old Sequencescape)
-         # This is a hack, but I'll get this tdied up.
+         # This is a hack, but I'll get this tidied up.
       has_submission = true
     end
     return has_submission
