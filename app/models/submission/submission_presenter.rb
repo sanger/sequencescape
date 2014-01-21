@@ -116,13 +116,15 @@ class SubmissionCreater < PresenterSkeleton
   end
 
   def create_order
+    order_role = Order::OrderRole.find_by_role(order_params.delete('order_role')) if order_params.present?
     new_order = template.new_order(
       :study           => study,
       :project         => project,
       :user            => @user,
       :request_options => order_params,
       :comments        => comments,
-      :pre_cap_group   => pre_capture_plex_group
+      :pre_cap_group   => pre_capture_plex_group,
+      :order_role      => order_role
     )
     new_order.request_type_multiplier do |sequencing_request_type_id|
       new_order.request_options[:multiplier][sequencing_request_type_id] = (lanes_of_sequencing_required || 1)
