@@ -454,7 +454,7 @@ class Request < ActiveRecord::Base
   end
 
   def role
-    nil
+    order.try(:role)
   end
 
   def self.accessioning_required?

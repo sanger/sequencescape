@@ -201,6 +201,10 @@ class Batch < ActiveRecord::Base
     output_plates[0].plate_purpose unless output_plates[0].nil?
   end
 
+  def output_plate_role
+    requests.first.try(:role)
+  end
+
   # Set the plate_purpose of all output plates associated with this batch
   def set_output_plate_purpose(plate_purpose)
     raise "This batch has no output plates to assign a purpose to!" if output_plates.blank?
