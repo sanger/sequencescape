@@ -43,7 +43,7 @@ class Batch < ActiveRecord::Base
   named_scope :released_for_ui,    { :conditions => { :state => 'released',  :production_state => nil    }, :order => 'created_at DESC' }
   named_scope :completed_for_ui,   { :conditions => { :state => 'completed', :production_state => nil    }, :order => 'created_at DESC' }
   named_scope :failed_for_ui,      { :conditions => {                        :production_state => 'fail' }, :order => 'created_at DESC' }
-  named_scope :in_progress_for_ui, { :conditions => [ 'state NOT IN (?) AND production_state IS NULL', [ 'pending', 'released', 'completed' ] ], :order => 'created_at DESC' }
+  named_scope :in_progress_for_ui, { :conditions => { :state => 'started',   :production_state => nil    }, :order => 'created_at DESC' }
 
   delegate :size, :to => :requests
 
