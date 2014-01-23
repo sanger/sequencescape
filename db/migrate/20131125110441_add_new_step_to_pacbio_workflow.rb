@@ -1,4 +1,7 @@
 class AddNewStepToPacbioWorkflow < ActiveRecord::Migration
+
+  class SmrtCellsTask < Task; end
+
   def self.up
     ActiveRecord::Base.transaction do
       wf = LabInterface::Workflow.find_by_name('PacBio Sample Prep')
