@@ -41,7 +41,7 @@ Given /^I have a plate for PacBio$/ do
   end
 end
 
-Given /^I have a PacBio Sample Prep batch$/ do
+Given /^I have a PacBio Library Prep batch$/ do
   step(%Q{I have a sample tube "222" in study "Test study" in asset group "Test study group"})
   step(%Q{I have a PacBio submission})
   step(%Q{I am on the show page for pipeline "PacBio Library Prep"})
@@ -83,7 +83,7 @@ Given /^I have a fast PacBio sequencing batch$/ do
 end
 
 Given /^I have a PacBio sequencing batch$/ do
-  step(%Q{I have a PacBio Sample Prep batch})
+  step(%Q{I have a PacBio Library Prep batch})
   step(%Q{I follow "DNA Template Prep Kit Box Barcode"})
   step(%Q{I fill in "DNA Template Prep Kit Box Barcode" with "999"})
   step(%Q{I press "Next step"})
@@ -130,8 +130,9 @@ Then /^(\d+) PacBioSequencingRequests for "([^"]*)" should be "([^"]*)"$/ do |nu
 end
 
 Then /^the PacBioSamplePrepRequests for "([^"]*)" should be "([^"]*)"$/ do |asset_barcode, state|
-  sample_tube = SampleTube.find_by_barcode(asset_barcode)
-  assert_equal 1, PacBioSamplePrepRequest.find_all_by_asset_id_and_state(sample_tube.id,state).count
+  plate_barcode, location = asset_barcode.split(':')
+  well = Plate.find_by_barcode(plate_barcode.gsub(/[A-Z]/,'')).wells.located_at(location).first
+  assert_equal 1, PacBioSamplePrepRequest.find_all_by_asset_id_and_state(well.id,state).count
 end
 
 Then /^the plate layout should look like:$/ do |expected_results_table|
@@ -182,6 +183,10 @@ Given /^I have progressed to the Reference Sequence task$/ do
   step(%Q{I fill in "Movie length for 333" with "12"})
   step(%Q{I fill in "Movie length for 444" with "23"})
   step(%Q{I press "Next step"})
+end
+
+Then /^the PacBioLibraryTube "(.*?)" should have (\d+) SMRTcells$/ do |barcode, cells|
+  assert_equal PacBioLibraryTube.find_by_barcode(barcode).pac_bio_library_tube_metadata.smrt_cells_available||0, cells.to_i
 end
 
 Given /^the reference genome "([^"]*)" exists$/ do |name|

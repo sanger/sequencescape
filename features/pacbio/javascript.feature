@@ -86,7 +86,7 @@ Feature: Push samples through the PacBio pipeline with javascript
   	Then I should see "Your labels have been printed"
 
   Scenario: Print out the library tube barcodes
-    Given I have a PacBio Sample Prep batch
+    Given I have a PacBio Library Prep batch
     When I follow "Print labels"
     When I select "xyz" from "Print to"
     When I press "Print labels"

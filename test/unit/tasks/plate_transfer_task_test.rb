@@ -26,7 +26,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
       @source_plate.wells   = ['A1','B1','C1'].map do |loc|
         Factory(:well_with_sample_and_without_plate).tap do |w|
           w.map = Map.find_by_description_and_asset_size(loc,96)
-          request = Request.create!(
+          request = PacBioSamplePrepRequest.create!(
             :asset=>w,
             :submission=>Submission.create!(:user=>Factory(:user)),
             :target_asset=> Factory(:pac_bio_library_tube)

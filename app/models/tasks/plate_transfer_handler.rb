@@ -15,7 +15,7 @@ module Tasks::PlateTransferHandler
     task.purpose.create!.tap do |target|
       @batch.requests.each do |outer_request|
         source = outer_request.asset
-        RequestType.find_by_target_purpose_id(task.purpose_id).create!(
+        (RequestType.find_by_target_purpose_id(task.purpose_id)||RequestType.transfer).create!(
           :asset => source,
           :target_asset => target.wells.located_at(source.map_description).first,
           :submission_id => outer_request.submission_id
