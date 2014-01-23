@@ -21,61 +21,28 @@ Feature: Push samples through the PacBio pipeline for sequencing
     And I press "Next step"
     Then I should see "Please enter a Kit Barcode"
 
-  Scenario: Add invalid movie lengths
-    Given I have a fast PacBio sequencing batch
-    When I follow "Binding Kit Box Barcode"
-    When I fill in "Binding Kit Box Barcode" with "777"
-    And I press "Next step"
-    When I fill in "Movie length for 333" with ""
-    And I press "Next step"
-    Then I should see "Invalid movie length"
-    When I fill in "Movie length for 333" with "abc"
-    And I press "Next step"
-    Then I should see "Invalid movie length"
-    When I fill in "Movie length for 333" with "0"
-    And I press "Next step"
-    Then I should see "Invalid movie length"
-    When I fill in "Movie length for 333" with "-1"
-    And I press "Next step"
-    Then I should see "Invalid movie length"
-    When I fill in "Movie length for 333" with "1,,2"
-    And I press "Next step"
-    Then I should see "Invalid movie length"
-    When I fill in "Movie length for 333" with ",2,"
-    And I press "Next step"
-    Then I should see "Invalid movie length"
-    When I fill in "Movie length for 333" with "1,20m,5"
-    And I press "Next step"
-    Then I should see "Invalid movie length"
-    When I fill in "Movie length for 333" with "1,0,1"
-    And I press "Next step"
-    Then I should see "Invalid movie length"
-    When I fill in "Movie length for 333" with "1,-1"
-    And I press "Next step"
-    Then I should see "Invalid movie length"
-
 
   Scenario Outline: Add Valid movie lengths
     Given I have a fast PacBio sequencing batch
     When I follow "Binding Kit Box Barcode"
     When I fill in "Binding Kit Box Barcode" with "777"
     And I press "Next step"
-    When I fill in "Movie length for 333" with "<movie_length_1>"
-    When I fill in "Movie length for 444" with "<movie_length_2>"
+    When I select "<movie_length_1>" from "Movie length for 333"
+    When I select "<movie_length_2>" from "Movie length for 444"
     And I press "Next step"
     Then I should not see "Invalid movie length"
     Examples:
-      | movie_length_1 | movie_length_2    |
-      | 1              | 1,2,3,4,5,6,7,8,9 |
-      | 5,1,7          | 5,    1 , 7       |
+      | movie_length_1  | movie_length_2    |
+      | 30              | 30                |
+      | 60              | 30                |
 
   Scenario: Default layout of tubes on a plate
     Given I have a PacBio sequencing batch
     When I follow "Binding Kit Box Barcode"
     When I fill in "Binding Kit Box Barcode" with "777"
     And I press "Next step"
-    When I fill in "Movie length for 333" with "12"
-    And I fill in "Movie length for 444" with "23"
+    When I select "30" from "Movie length for 333"
+    And I select "60" from "Movie length for 444"
     And I press "Next step"
     And I press "Next step"
     Then I should see "Layout tubes on a plate"
@@ -112,8 +79,8 @@ Feature: Push samples through the PacBio pipeline for sequencing
      When I follow "Binding Kit Box Barcode"
      When I fill in "Binding Kit Box Barcode" with "777"
      And I press "Next step"
-     When I fill in "Movie length for 333" with "12"
-     And I fill in "Movie length for 444" with "23"
+     When I select "30" from "Movie length for 333"
+     And I select "60" from "Movie length for 444"
      And I press "Next step"
      And I press "Next step"
      Then I should see "Layout tubes on a plate"
@@ -151,8 +118,8 @@ Feature: Push samples through the PacBio pipeline for sequencing
     When I follow "Binding Kit Box Barcode"
     When I fill in "Binding Kit Box Barcode" with "777"
     And I press "Next step"
-    When I fill in "Movie length for 333" with "12"
-    And I fill in "Movie length for 444" with "23"
+    When I select "30" from "Movie length for 333"
+    And I select "60" from "Movie length for 444"
     And I press "Next step"
     And I press "Next step"
     Then I should see "Layout tubes on a plate"

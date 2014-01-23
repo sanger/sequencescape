@@ -999,6 +999,13 @@ PacBioSequencingPipeline.create!(:name => 'PacBio Sequencing') do |pipeline|
       details.delete(:class).create!(details.merge(:workflow => workflow))
     end
   end
+
+  Task.find_by_name('Movie Lengths').descriptors.create!(
+      :name => 'Movie length',
+      :kind => 'Selection',
+      :selection => [30, 60, 90, 120, 180]
+    )
+
 end.tap do |pipeline|
   create_request_information_types(pipeline, "sequencing_type", "insert_size")
 end

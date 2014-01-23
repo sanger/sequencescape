@@ -91,9 +91,6 @@ Given /^I have a PacBio sequencing batch$/ do
   step(%Q{I select "Pass" from "QC PacBioLibraryTube 333"})
   step(%Q{I select "Pass" from "QC PacBioLibraryTube 444"})
   step(%Q{I press "Next step"})
-  step(%Q{I fill in "Number of SMRTcells for PacBioLibraryTube 333" with "3"})
-  step(%Q{I fill in "Number of SMRTcells for PacBioLibraryTube 444" with "1"})
-  step(%Q{I press "Next step"})
   step(%Q{I press "Release this batch"})
   step(%Q{set the location of PacBioLibraryTube "3980000333858" to be in "PacBio sequencing freezer"})
   step(%Q{set the location of PacBioLibraryTube "3980000444684" to be in "PacBio sequencing freezer"})
@@ -180,8 +177,8 @@ Given /^I have progressed to the Reference Sequence task$/ do
   step(%Q{I follow "Binding Kit Box Barcode"})
   step(%Q{I fill in "Binding Kit Box Barcode" with "777"})
   step(%Q{I press "Next step"})
-  step(%Q{I fill in "Movie length for 333" with "12"})
-  step(%Q{I fill in "Movie length for 444" with "23"})
+  step(%Q{I select "30" from "Movie length for 333"})
+  step(%Q{I select "60" from "Movie length for 444"})
   step(%Q{I press "Next step"})
 end
 
