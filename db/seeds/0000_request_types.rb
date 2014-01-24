@@ -9,3 +9,10 @@ RequestType.create!(
   :request_class_name => 'TransferRequest',  :morphology => RequestType::CONVERGENT,
   :for_multiplexing => 0, :billable => 0
 )
+RequestType.create!(
+  :key                => 'initial_pacbio_transfer',
+  :name               => 'Initial Pacbio Transfer',
+  :asset_type         => 'Well',
+  :request_class_name => 'PacBioSamplePrepRequest::Initial',
+  :order              => 1
+)

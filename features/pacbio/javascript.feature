@@ -54,7 +54,7 @@ Feature: Push samples through the PacBio pipeline with javascript
     When I follow "Binding Kit Box Barcode"
     When I fill in "Binding Kit Box Barcode" with "777"
     And I press "Next step"
-    When I fill in "Movie length for 333" with "12"
+    When I select "12" from "Movie length for 333"
     And I press "Next step"
     And I press "Next step"
     Then I should see "Layout tubes on a plate"
@@ -86,7 +86,7 @@ Feature: Push samples through the PacBio pipeline with javascript
   	Then I should see "Your labels have been printed"
 
   Scenario: Print out the library tube barcodes
-    Given I have a PacBio Sample Prep batch
+    Given I have a PacBio Library Prep batch
     When I follow "Print labels"
     When I select "xyz" from "Print to"
     When I press "Print labels"
