@@ -10,6 +10,7 @@ Feature: Handle reference sequences and protocols
       And the reference genome "Human" exists
       And the reference genome "Homo Sapien" exists
       And I am on the show page for study "Test study"
+      And the plate barcode webservice returns "99998"
       And the plate barcode webservice returns "99999"
 
   Scenario: 1 Sample has a reference genome, the other has none set
