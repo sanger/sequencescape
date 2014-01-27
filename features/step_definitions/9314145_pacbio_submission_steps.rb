@@ -38,6 +38,7 @@ Given /^I have a plate for PacBio$/ do
     plate.wells.create!(:map=>Map.find_by_asset_size_and_description(96,'A1'),:aliquots => SampleTube.find_by_barcode(111).aliquots.map(&:clone))
     plate.wells.create!(:map=>Map.find_by_asset_size_and_description(96,'B1'),:aliquots => SampleTube.find_by_barcode(222).aliquots.map(&:clone)) if  SampleTube.find_by_barcode(222).present?
     plate.location = Location.find_by_name('PacBio library prep freezer')
+    AssetGroup.create!(:name=>"PacBio group", :study=>Study.find_by_name('Test study')).assets << plate.wells
   end
 end
 
@@ -60,7 +61,7 @@ end
 Given /^Well "([^"]*)":"([^"]*)" has a PacBioLibraryTube "([^"]*)"$/ do |plate_barcode, well, library_tube_barcode|
   well = Plate.find_by_barcode(plate_barcode).wells.located_at(well).first
   request = Request.find_by_asset_id(well.id)
-  request.target_asset.update_attributes!(:barcode => library_tube_barcode)
+  request.target_asset.update_attributes!(:barcode => library_tube_barcode, :name=>well.display_name)
 end
 
 Given /^I have a fast PacBio sequencing batch$/ do

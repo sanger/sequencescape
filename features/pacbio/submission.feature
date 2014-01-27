@@ -12,10 +12,11 @@ Feature: Create a submission for the pacbio pipeline
 
   @worksheet @old_submission @wip
   Scenario Outline: Valid submission with different options
+  Given study "Test study" has an asset group called "Test group b" with 1 wells
    When I have a "PacBio" submission with the following setup:
         |Study | Test study |
         | Project | Test project |
-        | Asset Group | Test study group |
+        | Asset Group | Test group b |
         | Insert size | <insert_size> |
         | Sequencing type | <sequencing_type> |
         | multiplier#2 |  <smart_cells_requested> |
@@ -27,7 +28,7 @@ Feature: Create a submission for the pacbio pipeline
     When I check "Select SampleTube 111 for batch"
     When I press "Submit"
     When I follow "DNA Template Prep Kit Box Barcode"
-    Given SampleTube "111" has a PacBioLibraryTube "333"
+    Given Well "1234567":"A1" has a PacBioLibraryTube "333"
     When I fill in "DNA Template Prep Kit Box Barcode" with "999"
     And I press "Next step"
     And I press "Next step"
@@ -44,15 +45,12 @@ Feature: Create a submission for the pacbio pipeline
 
     Examples:
       | sequencing_type | insert_size | number_of_smart_cells |
-      | Strobe          | 250         | 1                     |
+      | MagBead         | 250         | 1                     |
       | Standard        | 2000        | 2                     |
-      | Circular        | 200         | 3                     |
-      | Strobe          | 500         | 1                     |
+      | MagBead         | 500         | 1                     |
       | Standard        | 1000        | 2                     |
-      | Circular        | 4000        | 3                     |
-      | Strobe          | 6000        | 1                     |
+      | MagBead         | 6000        | 1                     |
       | Standard        | 8000        | 2                     |
-      | Circular        | 10000       | 3                     |
 
 
   Scenario: No kit number entered
