@@ -47,30 +47,30 @@ Feature: Push samples through the PacBio pipeline for sequencing
     And I press "Next step"
     Then I should see "Layout tubes on a plate"
     And the plate layout should look like:
-      | 1             | 2             | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
-      | Tube 333      | Tube 444      |   |   |   |   |   |   |   |    |    |    |
-      |               |               |   |   |   |   |   |   |   |    |    |    |
-      |               |               |   |   |   |   |   |   |   |    |    |    |
-      |               |               |   |   |   |   |   |   |   |    |    |    |
-      |               |               |   |   |   |   |   |   |   |    |    |    |
-      |               |               |   |   |   |   |   |   |   |    |    |    |
-      |               |               |   |   |   |   |   |   |   |    |    |    |
-      |               |               |   |   |   |   |   |   |   |    |    |    |
-      |               |               |   |   |   |   |   |   |   |    |    |    |
+      | 1             | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
+      | DN1234567T-A1 |   |   |   |   |   |   |   |   |    |    |    |
+      | DN1234567T-B1 |   |   |   |   |   |   |   |   |    |    |    |
+      |               |   |   |   |   |   |   |   |   |    |    |    |
+      |               |   |   |   |   |   |   |   |   |    |    |    |
+      |               |   |   |   |   |   |   |   |   |    |    |    |
+      |               |   |   |   |   |   |   |   |   |    |    |    |
+      |               |   |   |   |   |   |   |   |   |    |    |    |
+      |               |   |   |   |   |   |   |   |   |    |    |    |
+      |               |   |   |   |   |   |   |   |   |    |    |    |
    And I press "Next step"
    And I press "Next step"
 
    Given the UUID for the last batch is "00000000-1111-2222-3333-444444444445"
    And the UUID for well "A1" on plate "99999" is "00000000-1111-2222-3333-444444444441"
-   And the UUID for well "A2" on plate "99999" is "00000000-1111-2222-3333-444444444442"
+   And the UUID for well "B1" on plate "99999" is "00000000-1111-2222-3333-444444444442"
    And the UUID for Library "333" is "00000000-1111-2222-3333-444444444443"
    And the UUID for Library "444" is "00000000-1111-2222-3333-444444444444"
    And all requests have sequential UUIDs based on "00000000-1111-2222-3333"
 
    Then the PacBio manifest for the last batch should look like:
      | Well No. | Sample Name | DNA Template Prep Kit Box Barcode | Binding Kit Box Barcode | Binding Kit Parameters | Collection Protocol   | CP Parameters                                             | Basecaller | User Field 1                         | User Field 2                         | User Field 3                         | User Field 4 | User Field 5                         |
-     | A01      | DN1234567T-A1  | 999                               | 777                     |                        | Standard Seq 2-Set v1 | AcquisitionTime=12\|InsertSize=250\|StageHS=True\|SizeSelectionEnabled=False\|Use2ndLook=False\|NumberOfCollections=1 | Default    | 00000000-1111-2222-3333-444444444441 | 00000000-1111-2222-3333-444444444443 | 00000000-1111-2222-3333-444444444445 | 99999        | 00000000-1111-2222-3333-000000000003 |
-     | A02      | DN1234567T-B1  | 999                               | 777                     |                        | Standard Seq 2-Set v1 | AcquisitionTime=23\|InsertSize=250\|StageHS=True\|SizeSelectionEnabled=False\|Use2ndLook=False\|NumberOfCollections=1 | Default    | 00000000-1111-2222-3333-444444444442 | 00000000-1111-2222-3333-444444444444 | 00000000-1111-2222-3333-444444444445 | 99999        | 00000000-1111-2222-3333-000000000004 |
+     | A01      | DN1234567T-A1  | 999                               | 777                     |                        | Standard Seq v3 | AcquisitionTime=30\|InsertSize=250\|StageHS=True\|SizeSelectionEnabled=False\|Use2ndLook=False\|NumberOfCollections=1 | Default    | 00000000-1111-2222-3333-444444444441 | 00000000-1111-2222-3333-444444444443 | 00000000-1111-2222-3333-444444444445 | 99999        | 00000000-1111-2222-3333-000000000003 |
+     | B01      | DN1234567T-B1  | 999                               | 777                     |                        | Standard Seq v3 | AcquisitionTime=60\|InsertSize=250\|StageHS=True\|SizeSelectionEnabled=False\|Use2ndLook=False\|NumberOfCollections=1 | Default    | 00000000-1111-2222-3333-444444444442 | 00000000-1111-2222-3333-444444444444 | 00000000-1111-2222-3333-444444444445 | 99999        | 00000000-1111-2222-3333-000000000004 |
    When I press "Release this batch"
    Then I should see "Batch released!"
 
@@ -85,21 +85,21 @@ Feature: Push samples through the PacBio pipeline for sequencing
      And I press "Next step"
      Then I should see "Layout tubes on a plate"
      And the plate layout should look like:
-      | 1             | 2             | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
-      | Tube 333      | Tube 444      |   |   |   |   |   |   |   |    |    |    |
-      |               |               |   |   |   |   |   |   |   |    |    |    |
-      |               |               |   |   |   |   |   |   |   |    |    |    |
-      |               |               |   |   |   |   |   |   |   |    |    |    |
-      |               |               |   |   |   |   |   |   |   |    |    |    |
-      |               |               |   |   |   |   |   |   |   |    |    |    |
-      |               |               |   |   |   |   |   |   |   |    |    |    |
-      |               |               |   |   |   |   |   |   |   |    |    |    |
-      |               |               |   |   |   |   |   |   |   |    |    |    |
+      | 1             | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
+      | DN1234567T-A1 |   |   |   |   |   |   |   |   |    |    |    |
+      | DN1234567T-B1 |   |   |   |   |   |   |   |   |    |    |    |
+      |               |   |   |   |   |   |   |   |   |    |    |    |
+      |               |   |   |   |   |   |   |   |   |    |    |    |
+      |               |   |   |   |   |   |   |   |   |    |    |    |
+      |               |   |   |   |   |   |   |   |   |    |    |    |
+      |               |   |   |   |   |   |   |   |   |    |    |    |
+      |               |   |   |   |   |   |   |   |   |    |    |    |
+      |               |   |   |   |   |   |   |   |   |    |    |    |
      When I press "Next step"
 
      Given the UUID for the last batch is "00000000-1111-2222-3333-444444444445"
      And the UUID for well "A1" on plate "99999" is "00000000-1111-2222-3333-444444444441"
-     And the UUID for well "A2" on plate "99999" is "00000000-1111-2222-3333-444444444442"
+     And the UUID for well "B1" on plate "99999" is "00000000-1111-2222-3333-444444444442"
      And the UUID for Library "333" is "00000000-1111-2222-3333-444444444443"
      And the UUID for Library "444" is "00000000-1111-2222-3333-444444444444"
      And all requests have sequential UUIDs based on "00000000-1111-2222-3333"
@@ -109,8 +109,8 @@ Feature: Push samples through the PacBio pipeline for sequencing
      When I follow "Download Sample Sheet"
      Then the PacBio manifest should be:
        | Well No. | Sample Name | DNA Template Prep Kit Box Barcode | Prep Kit Parameters | Binding Kit Box Barcode | Binding Kit Parameters | Collection Protocol   | CP Parameters                                                                                                         | Basecaller | Basecaller Parameters | Secondary Analysis Protocol | Secondary Analysis Parameters | Sample Comments | User Field 1                         | User Field 2                         | User Field 3                         | User Field 4 | User Field 5                         | User Field 6 | Results Data Output Path |
-       | A01      | DN1234567T-A1  | 999                               |                     | 777                     |                        | Standard Seq 2-Set v1 | AcquisitionTime=12\|InsertSize=250\|StageHS=True\|SizeSelectionEnabled=False\|Use2ndLook=False\|NumberOfCollections=1 | Default    |                       |                             |                               |                 | 00000000-1111-2222-3333-444444444441 | 00000000-1111-2222-3333-444444444443 | 00000000-1111-2222-3333-444444444445 | 99999        | 00000000-1111-2222-3333-000000000003 |              |                          |
-       | A02      | DN1234567T-B1  | 999                               |                     | 777                     |                        | Standard Seq 2-Set v1 | AcquisitionTime=23\|InsertSize=250\|StageHS=True\|SizeSelectionEnabled=False\|Use2ndLook=False\|NumberOfCollections=1 | Default    |                       |                             |                               |                 | 00000000-1111-2222-3333-444444444442 | 00000000-1111-2222-3333-444444444444 | 00000000-1111-2222-3333-444444444445 | 99999        | 00000000-1111-2222-3333-000000000004 |              |                          |
+       | A01      | DN1234567T-A1  | 999                               |                     | 777                     |                        | Standard Seq v3 | AcquisitionTime=30\|InsertSize=250\|StageHS=True\|SizeSelectionEnabled=False\|Use2ndLook=False\|NumberOfCollections=1 | Default    |                       |                             |                               |                 | 00000000-1111-2222-3333-444444444441 | 00000000-1111-2222-3333-444444444443 | 00000000-1111-2222-3333-444444444445 | 99999        | 00000000-1111-2222-3333-000000000003 |              |                          |
+       | B01      | DN1234567T-B1  | 999                               |                     | 777                     |                        | Standard Seq v3 | AcquisitionTime=60\|InsertSize=250\|StageHS=True\|SizeSelectionEnabled=False\|Use2ndLook=False\|NumberOfCollections=1 | Default    |                       |                             |                               |                 | 00000000-1111-2222-3333-444444444442 | 00000000-1111-2222-3333-444444444444 | 00000000-1111-2222-3333-444444444445 | 99999        | 00000000-1111-2222-3333-000000000004 |              |                          |
 
 
   Scenario: Alter tube layout on the plate
@@ -124,26 +124,26 @@ Feature: Push samples through the PacBio pipeline for sequencing
     And I press "Next step"
     Then I should see "Layout tubes on a plate"
     And the plate layout should look like:
-      | 1        | 2        | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
-      | Tube 333 | Tube 444 |   |   |   |   |   |   |   |    |    |    |
-      |          |          |   |   |   |   |   |   |   |    |    |    |
-      |          |          |   |   |   |   |   |   |   |    |    |    |
-      |          |          |   |   |   |   |   |   |   |    |    |    |
-      |          |          |   |   |   |   |   |   |   |    |    |    |
-      |          |          |   |   |   |   |   |   |   |    |    |    |
-      |          |          |   |   |   |   |   |   |   |    |    |    |
-      |          |          |   |   |   |   |   |   |   |    |    |    |
-      |          |          |   |   |   |   |   |   |   |    |    |    |
+      | 1             | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
+      | DN1234567T-A1 |   |   |   |   |   |   |   |   |    |    |    |
+      | DN1234567T-B1 |   |   |   |   |   |   |   |   |    |    |    |
+      |               |   |   |   |   |   |   |   |   |    |    |    |
+      |               |   |   |   |   |   |   |   |   |    |    |    |
+      |               |   |   |   |   |   |   |   |   |    |    |    |
+      |               |   |   |   |   |   |   |   |   |    |    |    |
+      |               |   |   |   |   |   |   |   |   |    |    |    |
+      |               |   |   |   |   |   |   |   |   |    |    |    |
+      |               |   |   |   |   |   |   |   |   |    |    |    |
     When I select "" from "Well A1"
-    And I select "" from "Well A2"
-    And I select "Tube 333" from "Well C2"
-    And I select "Tube 444" from "Well A12"
+    And I select "" from "Well B1"
+    And I select "DN1234567T-A1" from "Well C2"
+    And I select "DN1234567T-B1" from "Well A12"
     And I press "Next step"
     And I press "Next step"
     Then the PacBio manifest for the last batch should look like:
        | Well No. | Sample Name | DNA Template Prep Kit Box Barcode | Prep Kit Parameters | Binding Kit Box Barcode | Binding Kit Parameters | Collection Protocol   | CP Parameters                                                                                                         | Basecaller | Basecaller Parameters | Secondary Analysis Protocol | Secondary Analysis Parameters | Sample Comments |
-       | C02      | DN1234567T-A1  | 999                               |                     | 777                     |                        | Standard Seq 2-Set v1 | AcquisitionTime=12\|InsertSize=250\|StageHS=True\|SizeSelectionEnabled=False\|Use2ndLook=False\|NumberOfCollections=1 | Default    |                       |                             |                               |                 |
-       | A12      | DN1234567T-B1  | 999                               |                     | 777                     |                        | Standard Seq 2-Set v1 | AcquisitionTime=23\|InsertSize=250\|StageHS=True\|SizeSelectionEnabled=False\|Use2ndLook=False\|NumberOfCollections=1 | Default    |                       |                             |                               |                 |
+       | C02      | DN1234567T-A1  | 999                               |                     | 777                     |                        | Standard Seq v3 | AcquisitionTime=30\|InsertSize=250\|StageHS=True\|SizeSelectionEnabled=False\|Use2ndLook=False\|NumberOfCollections=1 | Default    |                       |                             |                               |                 |
+       | A12      | DN1234567T-B1  | 999                               |                     | 777                     |                        | Standard Seq v3 | AcquisitionTime=60\|InsertSize=250\|StageHS=True\|SizeSelectionEnabled=False\|Use2ndLook=False\|NumberOfCollections=1 | Default    |                       |                             |                               |                 |
 
     When I press "Release this batch"
     Then I should see "Batch released!"
