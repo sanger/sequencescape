@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140120143546) do
+ActiveRecord::Schema.define(:version => 20140127091947) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -347,11 +347,6 @@ ActiveRecord::Schema.define(:version => 20140120143546) do
   end
 
   add_index "db_files", ["owner_type", "owner_id"], :name => "index_db_files_on_owner_type_and_owner_id"
-
-  create_table "db_files_shadow", :force => true do |t|
-    t.binary  "data",        :limit => 2147483647
-    t.integer "document_id"
-  end
 
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0
@@ -763,17 +758,6 @@ ActiveRecord::Schema.define(:version => 20140120143546) do
 
   add_index "plate_volumes", ["uploaded_file_name"], :name => "index_plate_volumes_on_uploaded_file_name"
 
-  create_table "plate_volumes_shadow", :force => true do |t|
-    t.text     "uploaded_file"
-    t.string   "barcode"
-    t.string   "uploaded_file_name"
-    t.string   "state"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "plate_volumes_shadow", ["uploaded_file_name"], :name => "index_plate_volumes_on_uploaded_file_name"
-
   create_table "pre_capture_pool_pooled_requests", :force => true do |t|
     t.integer "pre_capture_pool_id", :null => false
     t.integer "request_id",          :null => false
@@ -1048,29 +1032,6 @@ ActiveRecord::Schema.define(:version => 20140120143546) do
   add_index "sample_manifests", ["updated_at"], :name => "index_sample_manifests_on_updated_at"
   add_index "sample_manifests", ["user_id"], :name => "index_sample_manifests_on_user_id"
 
-  create_table "sample_manifests_shadow", :force => true do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "study_id"
-    t.integer  "project_id"
-    t.integer  "supplier_id"
-    t.integer  "count"
-    t.binary   "uploaded_file",  :limit => 2147483647
-    t.binary   "generated_file", :limit => 2147483647
-    t.string   "asset_type"
-    t.text     "last_errors"
-    t.string   "state"
-    t.text     "barcodes"
-    t.integer  "user_id"
-  end
-
-  add_index "sample_manifests_shadow", ["asset_type"], :name => "index_sample_manifests_on_asset_type"
-  add_index "sample_manifests_shadow", ["created_at"], :name => "index_sample_manifests_on_created_at"
-  add_index "sample_manifests_shadow", ["study_id"], :name => "index_sample_manifests_on_study_id"
-  add_index "sample_manifests_shadow", ["supplier_id"], :name => "index_sample_manifests_on_supplier_id"
-  add_index "sample_manifests_shadow", ["updated_at"], :name => "index_sample_manifests_on_updated_at"
-  add_index "sample_manifests_shadow", ["user_id"], :name => "index_sample_manifests_on_user_id"
-
   create_table "sample_metadata", :force => true do |t|
     t.integer  "sample_id"
     t.string   "organism"
@@ -1281,19 +1242,6 @@ ActiveRecord::Schema.define(:version => 20140120143546) do
   add_index "study_reports", ["study_id"], :name => "index_study_reports_on_study_id"
   add_index "study_reports", ["updated_at"], :name => "index_study_reports_on_updated_at"
   add_index "study_reports", ["user_id"], :name => "index_study_reports_on_user_id"
-
-  create_table "study_reports_shadow", :force => true do |t|
-    t.integer  "study_id"
-    t.binary   "report_file", :limit => 2147483647
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "user_id"
-  end
-
-  add_index "study_reports_shadow", ["created_at"], :name => "index_study_reports_on_created_at"
-  add_index "study_reports_shadow", ["study_id"], :name => "index_study_reports_on_study_id"
-  add_index "study_reports_shadow", ["updated_at"], :name => "index_study_reports_on_updated_at"
-  add_index "study_reports_shadow", ["user_id"], :name => "index_study_reports_on_user_id"
 
   create_table "study_samples", :force => true do |t|
     t.integer  "study_id",   :null => false
