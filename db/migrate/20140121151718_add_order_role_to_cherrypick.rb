@@ -11,8 +11,7 @@ class AddOrderRoleToCherrypick < ActiveRecord::Migration
           fi.set_selection([
             '',
             'ILA WGS',
-            'ILA ISC Li',
-            'ILA ISC Si',
+            'ILA ISC',
             'ILB HWGS',
             'ILB PATH'
         ])
