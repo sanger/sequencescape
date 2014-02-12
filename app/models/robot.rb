@@ -1,4 +1,5 @@
 class Robot < ActiveRecord::Base
+  include Uuid::Uuidable
   validates_presence_of :name,:location
   has_many :robot_properties
   has_one :max_plates_property, :class_name => 'RobotProperty', :conditions => { :key => 'max_plates' }

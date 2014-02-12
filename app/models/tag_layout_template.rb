@@ -2,6 +2,7 @@
 # group that will be used and the actual TagLayout implementation that will do the work.
 class TagLayoutTemplate < ActiveRecord::Base
   include Uuid::Uuidable
+  include Lot::Template
 
   belongs_to :tag_group
   validates_presence_of :tag_group

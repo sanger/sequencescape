@@ -4,6 +4,9 @@
 
 class Stamp < ActiveRecord::Base
 
+  include Uuid::Uuidable
+  include ModelExtensions::Stamp
+
   class StampQcable < ActiveRecord::Base
 
     set_table_name('stamp_qcables')
