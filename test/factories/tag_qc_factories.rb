@@ -11,6 +11,12 @@ Factory.define :lot_type do |lot_type|
   lot_type.target_purpose { Tube::Purpose.stock_library_tube }
 end
 
+Factory.define :qcable_creator do |qcable_creator|
+  qcable_creator.count    0
+  qcable_creator.user    { Factory :user }
+  qcable_creator.lot     { Factory :lot }
+end
+
 Factory.define :lot do |lot|
   lot.lot_number  { Factory.next :lot_number }
   lot.lot_type    { Factory :lot_type }
@@ -29,5 +35,5 @@ end
 Factory.define :qcable do |qcable|
   qcable.state  'created'
   qcable.lot    { Factory :lot }
-  qcable.user   { Factory :user }
+  qcable.qcable_creator { Factory :qcable_creator }
 end

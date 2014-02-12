@@ -11,13 +11,13 @@ class Qcable < ActiveRecord::Base
   include Qcable::Statemachine
 
   belongs_to :lot, :inverse_of => :qcables
-  belongs_to :user
   belongs_to :asset
+  belongs_to :qcable_creator, :inverse_of => :qcables
 
   has_one :stamp_qcable, :inverse_of => :qcable, :class_name => 'Stamp::StampQcable'
   has_one :stamp, :through => :stamp_qcable
 
-  validates_presence_of :lot, :user, :asset, :state
+  validates_presence_of :lot, :asset, :state, :qcable_creator
 
   before_validation :create_asset!
 

@@ -35,28 +35,6 @@ class LotTest < ActiveSupport::TestCase
         @user = Factory :user
       end
 
-      context "qcables.create" do
-
-        setup do
-          @qcable = @lot.qcables.create!(:user=>@user)
-        end
-        should_change("Qcable.count", :by => 1) { Qcable.count }
-      end
-
-      context "qcables.create with count 2" do
-
-        setup do
-          @qcable = @lot.qcables.create!(:user=>@user, :count=>2)
-        end
-        should_change("Qcable.count", :by => 2) { Qcable.count }
-      end
-
-      should "require a user to create qcables" do
-        assert_raise ActiveRecord::RecordInvalid do
-          @lot.qcables.create!({})
-        end
-      end
-
       should "validate the template type" do
         @lot.template = Factory :tag_layout_template, :name => 'lot_test'
         assert !@lot.valid?, 'Lot should be invalid'

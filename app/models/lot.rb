@@ -4,26 +4,22 @@
 
 class Lot < ActiveRecord::Base
 
+  module Template
+    def self.included(base)
+      base.class_eval do
+        belongs_to :lot
+      end
+    end
+  end
+
+  # include Api::LotIO::Extensions
   include Uuid::Uuidable
 
   belongs_to :lot_type
   belongs_to :user
   belongs_to :template, :polymorphic => true
 
-  has_many :qcables, :inverse_of => :lot do
-
-    def create!(opts)
-      construct(opts)
-      proxy_owner.save!
-    end
-
-    private
-    def construct(opts)
-      count = opts.delete(:count)||1
-      proxy_owner.qcables.build([opts]*count)
-    end
-
-  end
+  has_many :qcables, :inverse_of => :lot
 
   validates_presence_of :lot_number, :lot_type, :user, :template, :recieved_at
   validates_uniqueness_of :lot_number, :scope => :lot_type_id

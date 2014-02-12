@@ -9,13 +9,13 @@ class QcableTest < ActiveSupport::TestCase
     end
 
     should_belong_to :lot
-    should_belong_to :user
     should_belong_to :asset
+    should_belong_to :qcable_creator
 
     should_have_one :stamp_qcable
     should_have_one :stamp
 
-    should_validate_presence_of :lot, :user, :asset
+    should_validate_presence_of :lot, :asset, :qcable_creator
 
     should 'not let state be nil' do
       @qcable = Factory :qcable
