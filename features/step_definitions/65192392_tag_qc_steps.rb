@@ -35,3 +35,9 @@ Then /^the qcables in lot "(.*?)" should be "(.*?)"$/ do |lot_number, target_sta
     assert_equal target_state, qcable.state
   end
 end
+
+Given /^all qcables in lot "(.*?)" are "(.*?)"$/ do |lot_number, state|
+  Lot.find_by_lot_number(lot_number).qcables.each do |qcable|
+    qcable.update_attributes!(:state=>state)
+  end
+end

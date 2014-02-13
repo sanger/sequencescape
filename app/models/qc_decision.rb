@@ -1,5 +1,7 @@
 class QcDecision < ActiveRecord::Base
 
+  include Uuid::Uuidable
+
   class QcDecisionQcable < ActiveRecord::Base
 
     set_table_name('qc_decision_qcables')
@@ -16,7 +18,7 @@ class QcDecision < ActiveRecord::Base
     private
 
     def make_decision
-      qcable.send(:"#{decision}")
+      qcable.send(:"#{decision}!")
     end
   end
 
