@@ -91,7 +91,7 @@ class Request < ActiveRecord::Base
   has_many :failures, :as => :failable
   has_many :billing_events
 
-  belongs_to :request_type
+  belongs_to :request_type, :inverse_of => :requests
   delegate :billable?, :to => :request_type, :allow_nil => true
   belongs_to :workflow, :class_name => "Submission::Workflow"
 
