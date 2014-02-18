@@ -592,7 +592,7 @@ ActiveRecord::Schema.define(:version => 20140212165754) do
     t.integer  "template_id",   :null => false
     t.string   "template_type", :null => false
     t.integer  "user_id",       :null => false
-    t.date     "recieved_at",   :null => false
+    t.date     "received_at",   :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

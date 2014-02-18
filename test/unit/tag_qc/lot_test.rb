@@ -10,7 +10,7 @@ class LotTest < ActiveSupport::TestCase
     should_belong_to :user
     should_belong_to :lot_type
     should_validate_presence_of :user
-    should_validate_presence_of :recieved_at
+    should_validate_presence_of :received_at
     should_belong_to :template
 
     context "when validating" do

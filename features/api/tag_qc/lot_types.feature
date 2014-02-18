@@ -53,7 +53,7 @@ Feature: Access lots through the API
         "lot": {
           "lot_number": "1234567890",
           "user": "99999999-8888-7777-6666-555555555555",
-          "recieved_at": "2014-02-01",
+          "received_at": "2014-02-01",
           "template": "00000000-1111-2222-3333-666666666666"
         }
       }
@@ -87,7 +87,7 @@ Feature: Access lots through the API
           "template_name": "Test tag layout",
           "lot_type_name": "Test Lot Type",
           "lot_number": "1234567890",
-          "recieved_at": "2014-02-01",
+          "received_at": "2014-02-01",
 
           "uuid": "00000000-1111-2222-3333-444444444444"
         }

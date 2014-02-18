@@ -15,7 +15,7 @@ Given /^the lot exists with the attributes:$/ do |table|
   Lot.create!(
     :lot_number  => settings['lot_number'],
     :lot_type    => LotType.find_by_name(settings['lot_type']),
-    :recieved_at => settings['recieved_at'],
+    :received_at => settings['received_at'],
     :template    => TagLayoutTemplate.find_by_name(settings['template']),
     :user        => User.last
     )

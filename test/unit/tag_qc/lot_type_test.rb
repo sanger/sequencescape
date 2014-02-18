@@ -26,7 +26,7 @@ class LotTypeTest < ActiveSupport::TestCase
       context "create" do
 
         setup do
-          @lot = @lot_type.create!(:template=>@template,:user=>@user,:lot_number=>'123456789',:recieved_at=>'2014-02-01')
+          @lot = @lot_type.create!(:template=>@template,:user=>@user,:lot_number=>'123456789',:received_at=>'2014-02-01')
         end
 
         should_change('Lot.count', :by=>1) { Lot.count }

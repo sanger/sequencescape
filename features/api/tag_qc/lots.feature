@@ -20,7 +20,7 @@ Feature: Access lots through the API
         | 1     | ACTG  |
         | 2     | GTCA  |
     Given the lot exists with the attributes:
-    | lot_number | lot_type      | recieved_at | template        |
+    | lot_number | lot_type      | received_at | template        |
     | 1234567890 | Test Lot Type | 2014-02-01  | Test tag layout |
     And the UUID for the lot with lot number "1234567890" is "00000000-1111-2222-3333-444444444444"
 
@@ -56,7 +56,7 @@ Feature: Access lots through the API
           "template_name": "Test tag layout",
           "lot_type_name": "Test Lot Type",
           "lot_number": "1234567890",
-          "recieved_at": "2014-02-01",
+          "received_at": "2014-02-01",
 
           "uuid": "00000000-1111-2222-3333-444444444444"
         }
@@ -134,7 +134,7 @@ Feature: Access lots through the API
           "template_name": "Test tag layout",
           "lot_type_name": "Test Lot Type",
           "lot_number": "1234567890",
-          "recieved_at": "2014-02-01",
+          "received_at": "2014-02-01",
 
           "uuid": "00000000-1111-2222-3333-444444444444"
         }

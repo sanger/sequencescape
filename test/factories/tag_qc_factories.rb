@@ -22,7 +22,7 @@ Factory.define :lot do |lot|
   lot.lot_type    { Factory :lot_type }
   lot.template    { Factory :plate_template }
   lot.user        { Factory :user }
-  lot.recieved_at '2014-02-01'
+  lot.received_at '2014-02-01'
 end
 
 Factory.define :stamp do |stamp|

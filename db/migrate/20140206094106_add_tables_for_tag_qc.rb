@@ -12,7 +12,7 @@ class AddTablesForTagQc < ActiveRecord::Migration
       t.references :lot_type,    :null => false
       t.references :template ,   :null => false, :polymorphic => true
       t.references :user,        :null => false
-      t.date       :recieved_at, :null => false
+      t.date       :received_at, :null => false
       t.timestamps
     end
     add_index 'lots', [:lot_number,:lot_type_id], :name => 'index_lot_number_lot_type_id', :unique=>true
