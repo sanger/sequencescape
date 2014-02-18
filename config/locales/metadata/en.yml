@@ -39,6 +39,9 @@ en:
         gigabases_expected:
           label: Gigabases expected
 
+        customer_accepts_responsibility:
+          label: Still charge on fail
+
     library_creation_request:
       <<: *REQUEST
     sequencing_request:

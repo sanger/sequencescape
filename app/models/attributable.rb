@@ -262,7 +262,9 @@ module Attributable
         :kind          => FieldInfo::TEXT
       }
       options.update(:kind => FieldInfo::SELECTION, :selection => self.selection_values) if self.selection?
+      options.update(:kind => FieldInfo::BOOLEAN ) if self.boolean?
       FieldInfo.new(options)
     end
+
   end
 end
