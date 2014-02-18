@@ -28,6 +28,9 @@ class Lot < ActiveRecord::Base
 
   delegate :valid_template_class, :target_purpose, :to => :lot_type
 
+  named_scope :include_lot_type, { :include => :lot_type }
+  named_scope :include_template, { :include => :template }
+
   private
 
   def valid_template?
