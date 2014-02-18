@@ -3,6 +3,7 @@ Feature: Display the errors that occur during cherrypicking for pulldown
   Background:
     Given I am a "administrator" user logged in as "user"
     Given I have a project called "Test project"
+    And a robot exists
 
     Given I have an active study called "Test study"
     And the "96 Well Plate" barcode printer "xyz" exists
@@ -19,7 +20,7 @@ Feature: Display the errors that occur during cherrypicking for pulldown
 
     Given a plate barcode webservice is available and returns "99999"
 
-    When I follow "Start batch"
+    When I follow "Cherrypick Group By Submission"
     When I fill in "Volume Required" with "13"
     And I fill in "Concentration Required" with "50"
     And I select "Pulldown" from "Plate Purpose"

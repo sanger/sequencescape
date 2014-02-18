@@ -7,6 +7,8 @@ module Submission::ProjectValidation
         record.errors.add_to_base("Project #{project.name} is not active")                   unless project.active?
         record.errors.add_to_base("Project #{project.name} does not have a budget division") unless project.actionable?
       end
+
+      after_create :confirm_validity!
     end
   end
 
@@ -48,5 +50,12 @@ module Submission::ProjectValidation
     save_without_validation
     @saving_without_validation=false
   end
+
+
+  def confirm_validity!
+    return if @saving_without_validation
+    check_project_details!
+  end
+  private :confirm_validity!
 
 end

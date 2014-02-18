@@ -8,7 +8,7 @@ Given /^I have a released cherrypicking batch with (\d+) samples$/ do |number_of
   step(%Q{a plate template exists})
   step(%Q{a robot exists with barcode "444"})
   step(%Q{plate "1221234567841" has concentration and volume results})
-	step(%Q{I follow "Start batch"})
+	step(%Q{I follow "Select Plate Template"})
 	step(%Q{I select "testtemplate" from "Plate Template"})
 	step(%Q{I select "Infinium 670k" from "Output plate purpose"})
 	step(%Q{I fill in "Volume Required" with "13"})
@@ -47,7 +47,7 @@ Given /^I have a released cherrypicking batch with 3 plates$/ do
   step(%Q{plate "1220000001831" has concentration and volume results})
   step(%Q{plate "1220000005877" has concentration and volume results})
 
-	step(%Q{I follow "Start batch"})
+	step(%Q{I follow "Select Plate Template"})
 	step(%Q{I select "testtemplate" from "Plate Template"})
 	step(%Q{I select "Infinium 670k" from "Output plate purpose"})
 	step(%Q{I fill in "Volume Required" with "13"})

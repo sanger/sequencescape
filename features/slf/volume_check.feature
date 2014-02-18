@@ -44,7 +44,7 @@ Feature: Upload volume results from the volume checker robot
     When I check "Select DN1234567T for batch"
     And I select "Create Batch" from "action_on_requests"
     And I press "Submit"
-    When I follow "Start batch"
+    When I follow "QC result"
     Then I should see dna qc table:
       | Well | Volume  |
       | A1   | 55.3281 |

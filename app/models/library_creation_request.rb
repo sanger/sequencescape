@@ -43,12 +43,14 @@ class LibraryCreationRequest < Request
   # an MX library is also a type of library that might have libraries coming into it, therefore we only update the
   # information that is missing.
   def on_started
-    super
-    target_asset.aliquots.each do |aliquot|
-      aliquot.library      ||= target_asset
-      aliquot.library_type ||= library_type
-      aliquot.insert_size  ||= insert_size
-      aliquot.save!
+    ActiveRecord::Base.transaction do
+      super
+      target_asset.aliquots.each do |aliquot|
+        aliquot.library      ||= target_asset
+        aliquot.library_type ||= library_type
+        aliquot.insert_size  ||= insert_size
+        aliquot.save!
+      end
     end
   end
 

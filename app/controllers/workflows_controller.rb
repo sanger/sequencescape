@@ -14,13 +14,13 @@ class WorkflowsController < ApplicationController
   include Tasks::GenerateManifestHandler
   include Tasks::MovieLengthHandler
   include Tasks::PlateTemplateHandler
+  include Tasks::PlateTransferHandler
   include Tasks::PrepKitBarcodeHandler
   include Tasks::ReferenceSequenceHandler
   include Tasks::SamplePrepQcHandler
   include Tasks::SetDescriptorsHandler
   include Tasks::SetCharacterisationDescriptorsHandler
   include Tasks::SetLocationHandler
-  include Tasks::SmrtCellsHandler
   include Tasks::TagGroupHandler
   include Tasks::ValidateSampleSheetHandler
   include Tasks::StartBatchHandler
@@ -123,12 +123,11 @@ class WorkflowsController < ApplicationController
   end
 
   def stage
+    @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
+    @stage = params[:id].to_i
+    @task = @workflow.tasks[@stage]
+    @batch = Batch.find(params[:batch_id], :include => [:requests, :pipeline, :lab_events])
     ActiveRecord::Base.transaction do
-      @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
-      @stage = params[:id].to_i
-      @task = @workflow.tasks[@stage]
-      @batch = Batch.find(params[:batch_id], :include => [:requests, :pipeline, :lab_events])
-
       # If params[:next_stage] is nil then just render the current task
       # else actually execute the task.
       unless params[:next_stage].nil?

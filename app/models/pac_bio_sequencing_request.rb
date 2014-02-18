@@ -6,12 +6,14 @@ class PacBioSequencingRequest < Request
     1000,
     2000,
     4000,
+    5000,
     6000,
     8000,
-    10000
+    10000,
+    20000
   ]
 
-  SEQUENCING_TYPE = ["Standard","Strobe","Circular"]
+  SEQUENCING_TYPE = ["Standard","MagBead","Strobe","Circular"]
   has_metadata :as => Request  do
     attribute(:insert_size, :default => 250, :in => INSERT_SIZE, :integer => true, :required =>true)
     attribute(:sequencing_type, :required => true, :in => SEQUENCING_TYPE)

@@ -19,5 +19,11 @@ class Io::PlateForInbox < Core::Io::Base
                             source_plate.barcode  => stock_plate.barcode.number
               source_plate.barcode_prefix.prefix  => stock_plate.barcode.prefix
                       source_plate.ean13_barcode  => stock_plate.barcode.ean13
+
+                                         barcode  => barcode.number
+                           barcode_prefix.prefix  => barcode.prefix
+                         two_dimensional_barcode  => barcode.two_dimensional
+                                   ean13_barcode  => barcode.ean13
+                                    barcode_type  => barcode.type
   })
 end

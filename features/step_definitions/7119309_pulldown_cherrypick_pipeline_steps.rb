@@ -98,9 +98,11 @@ end
 Then /^I should see the cherrypick worksheet table:$/ do |expected_results_table|
   actual_table = table(tableish('table.plate_layout tr', 'td,th'))
   1.upto(12).each do |column_name|
-    actual_table.map_column!("#{column_name}") { |text| text.tr("\n\t",' ') }
+    actual_table.map_column!("#{column_name}") { |text| text.gsub(/\W+/,' ') }
   end
-
+  expected_results_table.column_names.each do |column_name|
+    expected_results_table.map_column!("#{column_name}") { |text| text.gsub(/\W+/,' ') }
+  end
   expected_results_table.diff!(actual_table)
 end
 
@@ -145,7 +147,7 @@ Given /^I have a pulldown batch$/ do
   step(%Q{I check "Select DN222J for batch"})
   step(%Q{I select "Create Batch" from "action_on_requests"})
   step(%Q{I press "Submit"})
-  step(%Q{I follow "Start batch"})
+  step(%Q{I follow "Cherrypick Group By Submission"})
   step(%Q{I select "Pulldown Aliquot" from "Plate Purpose"})
   step(%Q{I press "Next step"})
   step(%Q{I press "Release this batch"})
@@ -165,7 +167,7 @@ Given /^I have 2 pulldown plates$/ do
   step(%Q{I check "Select DN1234567T for batch"})
   step(%Q{I select "Create Batch" from "action_on_requests"})
   step(%Q{I press "Submit"})
-  step(%Q{I follow "Start batch"})
+  step(%Q{I follow "Cherrypick Group By Submission"})
   step(%Q{I select "Pulldown Aliquot" from "Plate Purpose"})
   step(%Q{I press "Next step"})
   step(%Q{I press "Release this batch"})
@@ -178,7 +180,7 @@ Given /^I have 2 pulldown plates$/ do
   step(%Q{I am on the show page for pipeline "Cherrypicking for Pulldown"})
   step(%Q{I check "Select DN222J for batch"})
   step(%Q{I press "Submit"})
-  step(%Q{I follow "Start batch"})
+  step(%Q{I follow "Cherrypick Group By Submission"})
   step(%Q{I select "Pulldown Aliquot" from "Plate Purpose"})
   step(%Q{I press "Next step"})
   step(%Q{I press "Release this batch"})
@@ -232,7 +234,7 @@ Given /^I have a "([^"]*)" submission with 2 plates$/ do |submission_template_na
       :workflow => Submission::Workflow.find_by_key('short_read_sequencing'),
       :user => User.last,
       :assets => Well.all,
-      :request_options => {:multiplier=>{"1"=>"1", "3"=>"1"}, "read_length"=>"100", "fragment_size_required_to"=>"300", "fragment_size_required_from"=>"250", "library_type"=>"Illumina cDNA protocol"}
+      :request_options => {:multiplier=>{"1"=>"1", "3"=>"1"}, "read_length"=>"100", "fragment_size_required_to"=>"300", "fragment_size_required_from"=>"250", "library_type"=>"Agilent Pulldown"}
       )
     step(%Q{1 pending delayed jobs are processed})
 end

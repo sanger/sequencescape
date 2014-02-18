@@ -23,5 +23,11 @@ class Io::Tube < Io::Asset
                stock_plate.barcode_type  => stock_plate.barcode.type
 
                                aliquots  => aliquots
+
+                                barcode  => barcode.number
+                  barcode_prefix.prefix  => barcode.prefix
+                two_dimensional_barcode  => barcode.two_dimensional
+                          ean13_barcode  => barcode.ean13
+                           barcode_type  => barcode.type
   })
 end

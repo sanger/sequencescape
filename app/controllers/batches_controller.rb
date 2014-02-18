@@ -492,7 +492,7 @@ class BatchesController < ApplicationController
 
   def print_barcodes
     unless @batch.requests.empty?
-      asset = @batch.requests.first.asset
+      asset = @batch.requests.first.target_asset
       printables = []
       count = params[:count].to_i
       params[:printable].each do |key, value|

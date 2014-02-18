@@ -310,14 +310,19 @@ class StudyTest < ActiveSupport::TestCase
         @study = Factory :managed_study
       end
 
-      should 'accept alphanumeric data access groups' do
-        assert @study.study_metadata.update_attributes!(:data_access_group=>'goodname')
-        assert_equal 'goodname', @study.study_metadata.data_access_group
+      should 'accept valid data access group names' do
+        # Valid names contain alphanumerics and underscores. They are limited to 32 characters, and cannot begin with a number
+        ['goodname','g00dname','good_name','_goodname','good-name'].each do |name|
+          assert @study.study_metadata.update_attributes!(:data_access_group=>name)
+          assert_equal name, @study.study_metadata.data_access_group
+        end
       end
 
       should 'reject non-alphanumeric data access groups' do
-        assert_raise ActiveRecord::RecordInvalid do
-          @study.study_metadata.update_attributes!(:data_access_group=>'b@dname')
+        ['b@dname','bad name','1badname','averylongbadnamewouldbebadsowesouldblockit','baDname'].each do |name|
+          assert_raise ActiveRecord::RecordInvalid do
+            @study.study_metadata.update_attributes!(:data_access_group=>name)
+          end
         end
       end
 

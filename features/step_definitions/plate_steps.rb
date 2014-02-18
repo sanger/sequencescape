@@ -138,7 +138,8 @@ end
 Given /^well "([^"]*)" is holded by plate "([^"]*)"$/ do |well_uuid, plate_uuid|
   well = Uuid.find_by_external_id(well_uuid).resource
   plate = Uuid.find_by_external_id(plate_uuid).resource
-  well.update_attributes!(:plate => plate)
+  well.update_attributes!(:plate => plate, :map=>Map.find_by_description('A1'))
+  plate.update_attributes!(:barcode=>1)
 end
 
 Then /^plate "([^"]*)" should have a purpose of "([^"]*)"$/ do |plate_barcode, plate_purpose_name|

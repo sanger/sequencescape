@@ -22,7 +22,7 @@ Feature: The Tecan file has the wrong buffer volumes, defaulting to 13 total vol
     Given plate "1220000010734" has concentration and volume results
     Given plate "1220000001831" has concentration and volume results
     Given plate "1220000005877" has concentration and volume results
-  	When I follow "Start batch"
+  	When I follow "Select Plate Template"
   	When I select "testtemplate" from "Plate Template"
   	When I select "Infinium 670k" from "Output plate purpose"
 

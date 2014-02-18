@@ -1,6 +1,7 @@
 module Tasks::DnaQcHandler
   def render_dna_qc_task(task, params)
     @batch = Batch.find(params[:batch_id], :include => [{ :requests => :request_metadata }, :pipeline, :lab_events])
+    @batch.start!(current_user) if @batch.pending?
     @rits = @batch.pipeline.request_information_types
     @requests = @batch.requests.all(
       :include => {

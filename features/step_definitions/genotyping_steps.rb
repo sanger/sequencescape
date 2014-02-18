@@ -6,7 +6,15 @@ end
 
 When /^I select "([^"]*)" for the first row of the plate$/ do |qc_result|
   1.upto(12) do |i|
-    step(%Q{I select "pass" from "Plate 1234567 QC status A#{i}"})
+    step(%Q{I select "#{qc_result}" from "Plate 1234567 QC status A#{i}"})
+  end
+end
+
+When /^I select "([^"]*)" for the remaining rows of the plate$/ do |qc_result|
+  1.upto(12) do |i|
+    ('B'..'H').each do |r|
+      step(%Q{I select "#{qc_result}" from "Plate 1234567 QC status #{r}#{i}"})
+    end
   end
 end
 
@@ -78,7 +86,7 @@ Given /^a robot exists with barcode "([^"]*)"$/ do |robot_barcode|
 end
 
 When /^I complete the cherrypicking batch with "([^"]*)" plate purpose but dont release it$/ do |plate_purpose_name|
-  step(%Q{I follow "Start batch"})
+  step(%Q{I follow "Select Plate Template"})
   step(%Q{I select "testtemplate" from "Plate Template"})
   step(%Q{I select "#{plate_purpose_name}" from "Output plate purpose"})
   step(%Q{I press "Next step"})
@@ -111,10 +119,10 @@ Given /^well "([^"]*)" on plate "([^"]*)" has a genotyping_done status of "([^"]
 end
 
 
-Given /^well "([^"]*)" has a genotyping status of "([^"]*)"$/ do |well_name, genotyping_status|
-  well =Well.find_by_name(well_name)
+Given /^well "([^"]*)" has a genotyping status of "([^"]*)"$/ do |uuid, genotyping_status|
+  well =Uuid.find_by_external_id(uuid).resource
 
-  sample = Factory(:sample, :name => well_name.gsub(/ /,'_'))
+  sample = Factory(:sample, :name => "Testing_the_JSON_API")
   sample.external_properties.create!(:key => 'genotyping_done', :value => genotyping_status)
   sample.external_properties.create!(:key => 'genotyping_snp_plate_id')
 

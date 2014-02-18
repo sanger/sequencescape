@@ -334,6 +334,10 @@ end
 Factory.define :gel_qc_task do |t|
 end
 
+Factory.define :plate_transfer_task do |t|
+  t.purpose_id Purpose.find_by_name('PacBio Sheared').id
+end
+
 Factory.define :empty_sample_tube, :class => SampleTube do |sample_tube|
   sample_tube.name                {|a| Factory.next :asset_name }
   sample_tube.value               ""

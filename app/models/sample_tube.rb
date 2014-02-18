@@ -16,7 +16,7 @@ class SampleTube < Tube
     end
   end
   after_create do |record|
-    record.barcode = record.id.to_s                     if record.two_dimensional_barcode.blank? and record.barcode.blank?
+    record.barcode = AssetBarcode.new_barcode           if record.two_dimensional_barcode.blank? and record.barcode.blank?
     record.name    = record.primary_aliquot.sample.name if record.name.blank? and not record.primary_aliquot.try(:sample).nil?
 
     record.save! if record.barcode_changed? or record.name_changed?

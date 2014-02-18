@@ -81,6 +81,23 @@ class Cherrypick::Strategy
         end
       end
     end
+
+    class InRowOrder
+      def call(plexes, current_plate)
+        plexes.map do |plex|
+          plex.sort_by(&:row_index)
+        end
+      end
+    end
+
+
+    class InColumnOrder
+      def call(plexes, current_plate)
+        plexes.map do |plex|
+          plex.sort_by(&:column_index)
+        end
+      end
+    end
   end
 
   class PickPlate
@@ -152,6 +169,14 @@ class Cherrypick::Strategy
       def inspect
         'Empty'
       end
+
+      def row_index
+        nil
+      end
+
+      def column_index
+        nil
+      end
     end
   end
 
@@ -178,6 +203,14 @@ class Cherrypick::Strategy
 
     def species
       @request.asset.aliquots.map { |a| a.sample.sample_metadata.sample_common_name }
+    end
+
+    def row_index
+      @request.asset.map.row_order
+    end
+
+    def column_index
+      @request.asset.map.column_order
     end
   end
 

@@ -12,10 +12,11 @@ Feature: Create a submission for the pacbio pipeline
 
   @worksheet @old_submission @wip
   Scenario Outline: Valid submission with different options
+  Given study "Test study" has an asset group called "Test group b" with 1 wells
    When I have a "PacBio" submission with the following setup:
         |Study | Test study |
         | Project | Test project |
-        | Asset Group | Test study group |
+        | Asset Group | Test group b |
         | Insert size | <insert_size> |
         | Sequencing type | <sequencing_type> |
         | multiplier#2 |  <smart_cells_requested> |
@@ -26,18 +27,16 @@ Feature: Create a submission for the pacbio pipeline
     And I should see "<insert_size>"
     When I check "Select SampleTube 111 for batch"
     When I press "Submit"
-    When I follow "Start batch"
-    Given SampleTube "111" has a PacBioLibraryTube "333"
+    When I follow "DNA Template Prep Kit Box Barcode"
+    Given Well "1234567":"A1" has a PacBioLibraryTube "333"
     When I fill in "DNA Template Prep Kit Box Barcode" with "999"
     And I press "Next step"
-    And I press "Next step"
-    When I fill in "Number of SMRTcells for PacBioLibraryTube 333" with "15"
     And I press "Next step"
     When I press "Release this batch"
     When I follow "Print worksheet"
     Then the PacBio sample prep worksheet should look like:
-       | Barcode | Name       | Required size | Complete? | Repaired? | Adapter ligated? | Clean up complete? | Exonnuclease cleanup | ng/ul | Fragment size | Volume |
-       | 111     | Sample_111 | <insert_size> |           |           |                  |                    |                      |       |               |        |
+       | Well         | Name       | Required size | Complete? | Repaired? | Adapter ligated? | Clean up complete? | Exonnuclease cleanup | ng/ul | Fragment size | Volume |
+       | DN1234567T:A1 | Sample_111 | <insert_size> |           |           |                  |                    |                      |       |               |        |
     Given I am on the homepage
     When I set PacBioLibraryTube "3980000333858" to be in freezer "PacBio sequencing freezer"
     Given I am on the show page for pipeline "PacBio Sequencing"
@@ -46,20 +45,17 @@ Feature: Create a submission for the pacbio pipeline
 
     Examples:
       | sequencing_type | insert_size | number_of_smart_cells |
-      | Strobe          | 250         | 1                     |
+      | MagBead         | 250         | 1                     |
       | Standard        | 2000        | 2                     |
-      | Circular        | 200         | 3                     |
-      | Strobe          | 500         | 1                     |
+      | MagBead         | 500         | 1                     |
       | Standard        | 1000        | 2                     |
-      | Circular        | 4000        | 3                     |
-      | Strobe          | 6000        | 1                     |
+      | MagBead         | 6000        | 1                     |
       | Standard        | 8000        | 2                     |
-      | Circular        | 10000       | 3                     |
 
 
   Scenario: No kit number entered
-    Given I have a PacBio Sample Prep batch
-    When I follow "Start batch"
+    Given I have a PacBio Library Prep batch
+    When I follow "DNA Template Prep Kit Box Barcode"
     When I fill in "DNA Template Prep Kit Box Barcode" with ""
     And I press "Next step"
     Then I should see "Please enter a Kit Barcode"
@@ -67,82 +63,30 @@ Feature: Create a submission for the pacbio pipeline
 
   @worksheet
   Scenario: Sample Sheet
-    Given I have a PacBio Sample Prep batch
+    Given I have a PacBio Library Prep batch
     When I follow "Print worksheet"
     Then the PacBio sample prep worksheet should look like:
-       | Barcode | Name       | Required size | Complete? | Repaired? | Adapter ligated? | Clean up complete? | Exonnuclease cleanup | ng/ul | Fragment size | Volume |
-       | 111     | Sample_111 | 250           |           |           |                  |                    |                      |       |               |        |
-       | 222     | Sample_222 | 250           |           |           |                  |                    |                      |       |               |        |
+       | Well          | Name       | Required size | Complete? | Repaired? | Adapter ligated? | Clean up complete? | Exonnuclease cleanup | ng/ul | Fragment size | Volume |
+       | DN1234567T:A1 | Sample_111 | 250           |           |           |                  |                    |                      |       |               |        |
+       | DN1234567T:B1 | Sample_222 | 250           |           |           |                  |                    |                      |       |               |        |
 
 
   Scenario: When a sample fails dont enter number of SMRTcells and cancel sequencing request
-    Given I have a PacBio Sample Prep batch
-    When I follow "Start batch"
+    Given I have a PacBio Library Prep batch
+    When I follow "DNA Template Prep Kit Box Barcode"
     When I fill in "DNA Template Prep Kit Box Barcode" with "999"
+    And I press "Next step"
     And I press "Next step"
     Then I should see "Sample Prep QC"
     When I select "Fail" from "QC PacBioLibraryTube 333"
     And I select "Pass" from "QC PacBioLibraryTube 444"
     And I press "Next step"
-    Then I should see "Number of SMRTcells that can be made"
-    Then I should not see "Number of SMRTcells for PacBioLibraryTube 333"
-    And I should see "Number of SMRTcells for PacBioLibraryTube 444"
-    When I fill in "Number of SMRTcells for PacBioLibraryTube 444" with "1"
-    And I press "Next step"
+    Then the PacBioLibraryTube "333" should have 0 SMRTcells
+    And the PacBioLibraryTube "444" should have 1 SMRTcells
     When I press "Release this batch"
     Then I should see "Batch released!"
     Then 1 PacBioSequencingRequests for "333" should be "cancelled"
-    And the PacBioSamplePrepRequests for "111" should be "failed"
-
-  Scenario Outline: The number of SMRTcells that can be made is less than the number requested
-   When I have a "PacBio" submission with the following setup:
-        |Study | Test study |
-        | Project | Test project |
-        | Asset Group | Test study group |
-        | Insert size | 250 |
-        | Sequencing type | Standard |
-        | multiplier#2 |  <smart_cells_requested> |
-    Given 1 pending delayed jobs are processed
-    Given I am on the show page for pipeline "PacBio Sample Prep"
-    When I check "Select SampleTube 111 for batch"
-    When I press "Submit"
-    Given SampleTube "111" has a PacBioLibraryTube "333"
-    When I follow "Start batch"
-    When I fill in "DNA Template Prep Kit Box Barcode" with "999"
-    And I press "Next step"
-    And I press "Next step"
-    When I fill in "Number of SMRTcells for PacBioLibraryTube 333" with "<actual_smart_cells_available>"
-    And I press "Next step"
-    When I press "Release this batch"
-    Then I should see "Batch released!"
-    Then <num_cancelled_requests> PacBioSequencingRequests for "333" should be "cancelled"
-    Examples:
-      | smart_cells_requested | actual_smart_cells_available | num_cancelled_requests |
-      | 1                     | 1                            | 0                      |
-      | 1                     | 0                            | 1                      |
-      | 1                     | 2                            | 0                      |
-      | 2                     | 1                            | 1                      |
-      | 10                    | 3                            | 7                      |
-
-  Scenario Outline: Invalid input into the SMRTcells field
-    Given I have a PacBio Sample Prep batch
-    When I follow "Start batch"
-    When I fill in "DNA Template Prep Kit Box Barcode" with "999"
-    And I press "Next step"
-    Then I should see "Sample Prep QC"
-    When I select "Pass" from "QC PacBioLibraryTube 333"
-    And I press "Next step"
-    When I fill in "Number of SMRTcells for PacBioLibraryTube 333" with "<actual_smart_cells_available>"
-    And I press "Next step"
-    Then I should see "Invalid SMRTcell value"
-    Then I should see "Number of SMRTcells that can be made"
-    Examples:
-      | actual_smart_cells_available |
-      | -1                           |
-      | 1.5                          |
-      | 1k                           |
-      | one                          |
-      |                              |
+    And the PacBioSamplePrepRequests for "DN1234567T:A1" should be "failed"
 
 
 

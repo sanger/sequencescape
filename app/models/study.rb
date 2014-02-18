@@ -237,7 +237,7 @@ class Study < ActiveRecord::Base
       required.attribute(:data_release_prevention_reason_comment)
     end
 
-    attribute(:data_access_group, :with=> /\A[A-z0-9]+\Z/)
+    attribute(:data_access_group, :with=> /\A[a-z_][a-z0-9_-]{0,31}\Z/)
 
     # SNP information
     attribute(:snp_study_id, :integer => true)
