@@ -120,18 +120,17 @@ ActionController::Routing::Routes.draw do |map|
 
   # Administrative things
   map.admin "admin", :controller => "admin", :action => "index"
-  map.resources :custom_texts, :controller => "admin/custom_texts", :path_prefix => "/admin"
-  map.resources :settings, :controller => "admin/settings", :path_prefix => "/admin", :collection => { :reset => :get, :apply => :get }
-  map.resources :studies, :controller => "admin/studies", :path_prefix => "/admin", :member => { :managed_update => :put }, :collection => {:index => :get}
-  map.resources :projects, :controller => "admin/projects", :path_prefix => "/admin", :member => { :managed_update => :put }, :collection => {:index => :get}
-  map.resources :plate_purposes, :controller => "admin/plate_purposes", :path_prefix => "/admin", :only => [:index,:edit,:new,:create]
-  map.resources :delayed_jobs, :controller => "admin/delayed_jobs", :path_prefix => "/admin", :only => [:index]
+  map.resources :custom_texts,     :controller => "admin/custom_texts",     :path_prefix => "/admin"
+  map.resources :settings,         :controller => "admin/settings",         :path_prefix => "/admin", :collection => { :reset => :get, :apply => :get }
+  map.resources :studies,          :controller => "admin/studies",          :path_prefix => "/admin", :member => { :managed_update => :put }, :collection => {:index => :get, :filer => :post}
+  map.resources :projects,         :controller => "admin/projects",         :path_prefix => "/admin", :member => { :managed_update => :put }, :collection => {:index => :get, :filer => :post}
+  map.resources :plate_purposes,   :controller => "admin/plate_purposes",   :path_prefix => "/admin", :only => [:index,:edit,:new,:create]
+  map.resources :delayed_jobs,     :controller => "admin/delayed_jobs",     :path_prefix => "/admin", :only => [:index]
   map.resources :faculty_sponsors, :controller => "admin/faculty_sponsors", :path_prefix => "/admin"
-  map.resources :change_tags, :controller => "admin/change_tags", :path_prefix => "/admin", :collection => { :lookup => :get, :bulk_update => :put}
-  map.resources :delayed_jobs, :controller => "admin/delayed_jobs", :path_prefix => "/admin", :only => [:index]
-  map.resources :users, :controller => "admin/users", :path_prefix => "/admin",
+  map.resources :delayed_jobs,     :controller => "admin/delayed_jobs",     :path_prefix => "/admin", :only => [:index]
+  map.resources :users,            :controller => "admin/users",            :path_prefix => "/admin",
     :collection => { :filter => :post }, :member => { :switch => :get, :grant_user_role => :post, :remove_user_role => :post }
-  map.resources :profile, :controller => "users",:member => {:study_reports => :get, :projects => :get }, :only => [:show, :edit, :update, :projects]
+  map.resources :profile,          :controller => "users",:member => {:study_reports => :get, :projects => :get }, :only => [:show, :edit, :update, :projects]
   map.resources :roles, :path_prefix => "/admin", :shallow => true do |role|
     role.resources :users, :controller => "roles/users"
   end
