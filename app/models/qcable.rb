@@ -23,6 +23,19 @@ class Qcable < ActiveRecord::Base
 
   delegate :bed, :order, :to => :stamp_qcable, :nil => true
 
+  named_scope :include_for_json, { :include => [:asset,:lot,:stamp,:stamp_qcable] }
+
+  named_scope :stamped, {
+    :include => [:stamp_qcable, :stamp],
+    :conditions => 'stamp_qcables.id IS NOT NULL',
+      :order => 'stamps.created_at ASC, stamp_qcables.order ASC'
+  }
+
+  def stamp_index
+    return nil if stamp_qcable.nil?
+    lot.qcables.stamped.index(self)
+  end
+
   private
 
   def asset_purpose

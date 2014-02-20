@@ -4,7 +4,6 @@ class ::Endpoints::Qcables < ::Core::Endpoint::Base
   end
 
   instance do
-    belongs_to(:user,   :json => 'user')
     belongs_to(:asset,  :json => 'asset')
   end
 

@@ -21,6 +21,8 @@ class Lot < ActiveRecord::Base
 
   has_many :qcables, :inverse_of => :lot
 
+  has_many :stamps, :inverse_of => :lot
+
   validates_presence_of :lot_number, :lot_type, :user, :template, :received_at
   validates_uniqueness_of :lot_number, :scope => :lot_type_id
 
