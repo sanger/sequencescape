@@ -1,7 +1,7 @@
 Given /^I have a lot type for testing called "(.*?)"$/ do |name|
   LotType.create!(
     :name           => name,
-    :target_purpose => PlatePurpose.stock_plate_purpose,
+    :target_purpose => QcablePlatePurpose.find_by_name('Tag Plate'),
     :template_class => 'TagLayoutTemplate'
   )
 end
@@ -62,4 +62,12 @@ Given /^I am set up for testing qcable ordering$/ do
   sqc_d = Stamp::StampQcable.new(:bed=>'3',:order=>2,:qcable=>qccreate.qcables[2])
   stamp_b = Stamp.create!(:user=>user,:tip_lot=>'1234556',:stamp_qcables => [sqc_c,sqc_d],:lot=>lot, :robot=>Robot.last)
 
+end
+
+Given /^I have a qcable$/ do
+  lot = Lot.find_by_lot_number('1234567890')
+  user = User.last
+  step %{the UUID of the next plate created will be "55555555-6666-7777-8888-000000000004"}
+  step %Q{the plate barcode webservice returns "1000001"}
+  QcableCreator.create!(:lot=>lot,:user=>user,:count=>1)
 end

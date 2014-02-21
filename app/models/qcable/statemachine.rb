@@ -1,7 +1,22 @@
 module Qcable::Statemachine
 
+  module ClassMethods
+    # A little more sensitive than the request state machine
+    def suggested_transition_between(current, target)
+      aasm_events.select do |name, event|
+
+        event.transitions_from_state(current.to_sym).any? do |transition|
+          transition.options[:allow_automated?] && transition.to == target.to_sym
+        end
+      end.tap do |events|
+        raise StandardError, "No automated transition from #{current.inspect} to #{target.inspect}" unless events.size == 1
+      end.first.first
+    end
+  end
+
   def self.included(base)
     base.class_eval do
+      extend ClassMethods
 
       ## State machine
       aasm_column :state
@@ -26,7 +41,7 @@ module Qcable::Statemachine
       end
 
       aasm_event :destroy do
-        transitions :to => :destroyed, :from => [:pending,:available]
+        transitions :to => :destroyed, :from => [:pending,:available], :allow_automated? => true
       end
 
       aasm_event :qc do
@@ -70,5 +85,9 @@ module Qcable::Statemachine
   def on_destroyed; end
   def on_qc; end
   def on_used; end
+
+  def transition_to(target_state)
+    send("#{self.class.suggested_transition_between(self.state, target_state)}!")
+  end
 
 end
