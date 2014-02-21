@@ -44,40 +44,40 @@ Feature: Access lots through the API
         "qcables": [
           {
             "updated_at": "2010-10-23 23:00:00 +0100",
-            "asset_barcode": "1000001",
+            "barcode": {"number": "1000001", "prefix": "DN"},
             "state": "pending",
             "stamp_index": 0,
             "stamp_bed": "1"
           },
           {
-            "asset_barcode": "1000002",
+            "barcode": {"number": "1000002", "prefix": "DN"},
             "state": "created",
             "stamp_index": null,
             "stamp_bed": null
           },
           {
             "updated_at": "2010-10-23 23:20:00 +0100",
-            "asset_barcode": "1000003",
+            "barcode": {"number": "1000003", "prefix": "DN"},
             "state": "pending",
             "stamp_index": 3,
             "stamp_bed": "3"
           },
           {
             "updated_at": "2010-10-23 23:20:00 +0100",
-            "asset_barcode": "1000004",
+            "barcode": {"number": "1000004", "prefix": "DN"},
             "state": "pending",
             "stamp_index": 2,
             "stamp_bed": "5"
           },
           {
             "updated_at": "2010-10-23 23:00:00 +0100",
-            "asset_barcode": "1000005",
+            "barcode": {"number": "1000005", "prefix": "DN"},
             "state": "pending",
             "stamp_index": 1,
             "stamp_bed": "2"
           },
           {
-            "asset_barcode": "1000006",
+            "barcode": {"number": "1000006", "prefix": "DN"},
             "state": "created",
             "stamp_index": null,
             "stamp_bed": null
