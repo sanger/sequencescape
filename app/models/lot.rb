@@ -32,6 +32,7 @@ class Lot < ActiveRecord::Base
 
   named_scope :include_lot_type, { :include => :lot_type }
   named_scope :include_template, { :include => :template }
+  named_scope :with_lot_number, lambda { |lot_number| {:conditions=>{:lot_number=>lot_number} } }
 
   private
 
