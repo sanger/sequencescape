@@ -1,10 +1,16 @@
 class Robot < ActiveRecord::Base
   include Uuid::Uuidable
+  include ModelExtensions::Robot
   validates_presence_of :name,:location
   has_many :robot_properties
   has_one :max_plates_property, :class_name => 'RobotProperty', :conditions => { :key => 'max_plates' }
 
+  named_scope :with_machine_barcode, lambda { |barcode|
+    barcode_number = Barcode.number_to_human(source_barcode)
+    { :conditions => [ 'barcode=?', barcode_number ] }
+  }
 
+  named_scope :include_properties, { :include => :robot_properties }
 
   def max_beds
     max_plates_property.try(:value).to_i

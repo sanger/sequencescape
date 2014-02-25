@@ -71,3 +71,14 @@ Given /^I have a qcable$/ do
   step %Q{the plate barcode webservice returns "1000001"}
   QcableCreator.create!(:lot=>lot,:user=>user,:count=>1)
 end
+
+Given /^I have a robot for testing called "(.*?)"$/ do |name|
+  Robot.create!(:name=>name,:location=>'Somewhere',:barcode=>123) do |robot|
+    robot.robot_properties.build([
+      {:name=>'Max Number of plates',:key=>'max_plates',:value=>'3'},
+      {:key=>'SCRC1',:value=>'20001'},
+      {:key=>'DEST1',:value=>'20002'},
+      {:key=>'DEST2',:value=>'20003'}
+    ])
+  end
+end
