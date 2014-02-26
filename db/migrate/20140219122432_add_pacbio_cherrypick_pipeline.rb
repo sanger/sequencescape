@@ -22,7 +22,7 @@ class AddPacbioCherrypickPipeline < ActiveRecord::Migration
         :location_id => Location.find_by_name('PacBio library prep freezer'),
         :group_by_parent => true,
         :asset_type => 'Well',
-        :group_name => 'R&D PIPELINES',
+        :group_name => 'R&D',
         :max_size => 3000,
         :sorter=>10,
         :request_types => [RequestType.find_by_key!('pacbio_cherrypick')],
