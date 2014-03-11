@@ -39,10 +39,10 @@ GIT
 
 GIT
   remote: git+ssh://git@github.com/sanger/sanger_barcode.git
-  revision: f3175bbb2df4782fe8b5ff2433a25f6fbbebb495
+  revision: 2d354c48dd325551662309be247c87a5bfea3b57
   branch: ruby-1.8
   specs:
-    sanger_barcode (0.0.1)
+    sanger_barcode (0.1.0)
 
 GIT
   remote: git@github.com:sanger/psd_logger.git
@@ -294,7 +294,7 @@ DEPENDENCIES
   ruby-debug
   ruby-oci8 (= 1.0.7)
   ruby_walk (>= 0.0.3)!
-  sanger_barcode!
+  sanger_barcode (~> 0.1.0)!
   shoulda (~> 2.10.0)
   sinatra (~> 1.1.0)
   spoon
