@@ -14,13 +14,13 @@ class WorkflowsController < ApplicationController
   include Tasks::GenerateManifestHandler
   include Tasks::MovieLengthHandler
   include Tasks::PlateTemplateHandler
+  include Tasks::PlateTransferHandler
   include Tasks::PrepKitBarcodeHandler
   include Tasks::ReferenceSequenceHandler
   include Tasks::SamplePrepQcHandler
   include Tasks::SetDescriptorsHandler
   include Tasks::SetCharacterisationDescriptorsHandler
   include Tasks::SetLocationHandler
-  include Tasks::SmrtCellsHandler
   include Tasks::TagGroupHandler
   include Tasks::ValidateSampleSheetHandler
   include Tasks::StartBatchHandler

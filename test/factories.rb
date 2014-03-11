@@ -492,6 +492,8 @@ Factory.define :library_tube, :parent => :empty_library_tube do |library_tube|
     library_tube.aliquots.create!(:sample => Factory(:sample))
   end
 end
+Factory.define :pac_bio_library_tube do
+end
 
 # A library tube is created from a sample tube through a library creation request!
 Factory.define :full_library_tube, :parent => :library_tube do |library_tube|

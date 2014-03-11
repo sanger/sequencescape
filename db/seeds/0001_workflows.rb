@@ -43,7 +43,7 @@ locations_data = [
   'Sample logistics freezer',
   'Genotyping freezer',
   'Pulldown freezer',
-  'PacBio sample prep freezer',
+  'PacBio library prep freezer',
   'PacBio sequencing freezer'
 ]
 locations_data.each do |location|
@@ -938,29 +938,30 @@ end
 set_pipeline_flow_to('Cherrypicking for Pulldown' => 'Pulldown Multiplex Library Preparation')
 set_pipeline_flow_to('DNA QC' => 'Cherrypick')
 
-PacBioSamplePrepPipeline.create!(:name => 'PacBio Sample Prep') do |pipeline|
+PacBioSamplePrepPipeline.create!(:name => 'PacBio Library Prep') do |pipeline|
   pipeline.sorter               = 14
   pipeline.automated            = false
   pipeline.active               = true
   pipeline.asset_type           = 'PacBioLibraryTube'
+  pipeline.group_by_parent      = true
 
-  pipeline.location = Location.first(:conditions => { :name => 'PacBio sample prep freezer' }) or raise StandardError, "Cannot find 'PacBio sample prep freezer' location"
+  pipeline.location = Location.first(:conditions => { :name => 'PacBio library prep freezer' }) or raise StandardError, "Cannot find 'PacBio library prep freezer' location"
 
-  pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'pacbio_sample_prep', :name => 'PacBio Sample Prep') do |request_type|
+  pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'pacbio_sample_prep', :name => 'PacBio Library Prep') do |request_type|
     request_type.initial_state     = 'pending'
-    request_type.asset_type        = 'SampleTube'
+    request_type.asset_type        = 'Well'
     request_type.order             = 1
     request_type.multiples_allowed = false
     request_type.request_class = PacBioSamplePrepRequest
   end
 
-  pipeline.workflow = LabInterface::Workflow.create!(:name => 'PacBio Sample Prep').tap do |workflow|
+  pipeline.workflow = LabInterface::Workflow.create!(:name => 'PacBio Library Prep').tap do |workflow|
     [
 
       { :class => PrepKitBarcodeTask, :name => 'DNA Template Prep Kit Box Barcode',    :sorted => 1, :batched => true, :lab_activity => true },
-      { :class => SamplePrepQcTask,   :name => 'Sample Prep QC',                       :sorted => 2, :batched => true, :lab_activity => true },
-      { :class => SmrtCellsTask,      :name => 'Number of SMRTcells that can be made', :sorted => 3, :batched => true, :lab_activity => true }
-    ].each do |details|
+      { :class => PlateTransferTask,  :name => 'Transfer to plate',                    :sorted => 2, :batched => nil,  :lab_activity => true, :purpose => Purpose.find_by_name('PacBio Sheared') },
+      { :class => SamplePrepQcTask,   :name => 'Sample Prep QC',                       :sorted => 3, :batched => true, :lab_activity => true }
+     ].each do |details|
       details.delete(:class).create!(details.merge(:workflow => workflow))
     end
   end
@@ -998,11 +999,27 @@ PacBioSequencingPipeline.create!(:name => 'PacBio Sequencing') do |pipeline|
       details.delete(:class).create!(details.merge(:workflow => workflow))
     end
   end
+
+  Task.find_by_name('Movie Lengths').descriptors.create!(
+      :name => 'Movie length',
+      :kind => 'Selection',
+      :selection => [30, 60, 90, 120, 180]
+    )
+
 end.tap do |pipeline|
   create_request_information_types(pipeline, "sequencing_type", "insert_size")
 end
 
-set_pipeline_flow_to('PacBio Sample Prep' => 'PacBio Sequencing')
+      RequestType.create!(
+        :key                => 'initial_pacbio_transfer',
+        :name               => 'Initial Pacbio Transfer',
+        :asset_type         => 'Well',
+        :request_class_name => 'PacBioSamplePrepRequest::Initial',
+        :order              => 1,
+        :target_purpose     => Purpose.find_by_name('PacBio Sheared')
+      )
+
+set_pipeline_flow_to('PacBio Library Prep' => 'PacBio Sequencing')
 
 # Pulldown pipelines
 ['Pulldown','Illumina-A Pulldown'].each do |lab|

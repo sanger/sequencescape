@@ -1,0 +1,26 @@
+<div>
+  <h1>Print labels for <%= asset.label %> "<%= asset.name %>"</h1>
+</div>
+<br />
+
+<p>Choose your Eppendorf tube label printer</p>
+
+<table width="100%" cellspacing="0" cellpadding="0">
+  <form action="/assets/print_assets" method="POST">
+    <tr>
+      <td width="35%" class="item"><%= asset.label %>: <input type="hidden" name="printable[<%= asset.id %>]" /></td>
+      <td width="65%"><strong><%= h(asset.display_name) %></strong></td>
+    </tr>
+  <tr>
+    <td width="35%" class="item">Print to: </td>
+    <td width="65%">
+      <%= render :partial => "shared/printer_list" %>
+    </td>
+  </tr>
+  <input type="hidden" name="id" value="<%= asset.id %>" />
+  <tr>
+    <td width="35%" class="item">&nbsp;</td>
+    <td width="65%"><input type="submit" value="Print labels" /> or <%= link_to "cancel", asset_path(asset) %></td>
+  </tr>
+  </form>
+</table>

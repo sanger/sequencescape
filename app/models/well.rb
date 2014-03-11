@@ -82,6 +82,10 @@ class Well < Aliquot::Receptacle
     :conditions => ['samples.empty_supplier_sample_name=?',true]
   }
 
+  named_scope :with_contents, {
+    :joins => 'INNER JOIN aliquots ON aliquots.receptacle_id=assets.id'
+  }
+
   include Transfer::WellHelpers
 
   class << self

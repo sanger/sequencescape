@@ -1463,6 +1463,7 @@ ActiveRecord::Schema.define(:version => 20140311110026) do
     t.boolean "per_item"
     t.string  "sti_type",             :limit => 50
     t.boolean "lab_activity"
+    t.integer "purpose_id"
   end
 
   add_index "tasks", ["name"], :name => "index_tasks_on_name"
