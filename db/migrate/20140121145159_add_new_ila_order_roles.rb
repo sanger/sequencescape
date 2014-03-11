@@ -16,7 +16,7 @@ class AddNewIlaOrderRoles < ActiveRecord::Migration
   end
 
   def self.each_role
-    ['ILA ISC',].each do |role|
+    ['ILA ISC','ILA WGS'].each do |role|
       yield role
     end
   end
