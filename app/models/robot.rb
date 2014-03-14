@@ -6,7 +6,7 @@ class Robot < ActiveRecord::Base
   has_one :max_plates_property, :class_name => 'RobotProperty', :conditions => { :key => 'max_plates' }
 
   named_scope :with_machine_barcode, lambda { |barcode|
-    barcode_number = Barcode.number_to_human(source_barcode)
+    barcode_number = Barcode.number_to_human(barcode)
     { :conditions => [ 'barcode=?', barcode_number ] }
   }
 
