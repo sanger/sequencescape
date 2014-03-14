@@ -72,6 +72,14 @@ Given /^I have a qcable$/ do
   QcableCreator.create!(:lot=>lot,:user=>user,:count=>1)
 end
 
+Given /^I have two qcables$/ do
+  lot = Lot.find_by_lot_number('1234567890')
+  user = User.last
+  step %Q{the plate barcode webservice returns "1000001"}
+  step %Q{the plate barcode webservice returns "1000002"}
+  QcableCreator.create!(:lot=>lot,:user=>user,:count=>2)
+end
+
 Given /^I have a robot for testing called "(.*?)"$/ do |name|
   Robot.create!(:name=>name,:location=>'Somewhere',:barcode=>123) do |robot|
     robot.robot_properties.build([
