@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140314110110) do
+ActiveRecord::Schema.define(:version => 20140314165716) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -708,6 +708,14 @@ ActiveRecord::Schema.define(:version => 20140314110110) do
 
   add_index "pipelines_request_types", ["pipeline_id"], :name => "fk_pipelines_request_types_to_pipelines"
   add_index "pipelines_request_types", ["request_type_id"], :name => "fk_pipelines_request_types_to_request_types"
+
+  create_table "plate_conversions", :force => true do |t|
+    t.integer  "target_id",  :null => false
+    t.integer  "purpose_id", :null => false
+    t.integer  "user_id",    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "plate_creator_purposes", :force => true do |t|
     t.integer  "plate_creator_id", :null => false
