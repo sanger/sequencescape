@@ -41,11 +41,11 @@ just set any or all of the following values:
 
 Even if you have mixed into ApplicationController you can skip notification in
 some controllers by
-  
+
   class MyController  < ApplicationController
     skip_exception_notifications
   end
-  
+
 == Deprecated local_request? overriding
 
 Email notifications will only occur when the IP address is determined not to
@@ -67,10 +67,10 @@ NOT be considered local), you can simply do, somewhere in your controller:
   local_addresses.clear
 
 NOTE: The above functionality has has been pulled out to consider_local.rb,
-as interfering with rails local determination is orthogonal to notification, 
-unnecessarily clutters backtraces, and even occasionally errs on odd ip or 
+as interfering with rails local determination is orthogonal to notification,
+unnecessarily clutters backtraces, and even occasionally errs on odd ip or
 requests bugs. To return original functionality add an initializer with:
- 
+
   ActionController::Base.send :include, ConsiderLocal
 
 or just include it per controller that wants it
@@ -87,7 +87,7 @@ sections are rendered by placing a partial named for that part in your
 app/views/exception_notifier directory (e.g., _session.rhtml). Each partial has
 access to the following variables:
 
-* @controller: the controller that caused the error
+* @failing_controller: the controller that caused the error
 * @request: the current request object
 * @exception: the exception that was raised
 * @host: the name of the host that made the request
@@ -121,7 +121,7 @@ existing sections defined by the plugin for examples of how to write your own.
 
 == 404s errors
 
-Notification is skipped if you return a 404 status, which happens by default 
+Notification is skipped if you return a 404 status, which happens by default
 for an ActiveRecord::RecordNotFound or ActionController::UnknownAction error.
 
 == Manually notifying of error in a rescue block
