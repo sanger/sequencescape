@@ -1,25 +1,16 @@
 class UsersController < ApplicationController
 
+  before_filter :validate_user, :except => [:index, :projects, :study_reports]
+  before_filter :find_user, :except => [:index]
+
   def index
     @users = User.all
   end
 
   def show
-    if current_user.administrator? || current_user.id == params[:id].to_i
-      @user = User.find(params[:id])
-    else
-      flash[:error] = "You don't have permission to view that profile: here is yours instead."
-      redirect_to :action => :show, :id => current_user.id
-    end
   end
 
   def edit
-    if current_user.administrator? || current_user.id == params[:id].to_i
-      @user = User.find(params[:id])
-    else
-      flash[:error] = "You don't have permission to edit that profile: here is yours instead."
-      redirect_to :action => :show, :id => current_user.id
-    end
   end
 
   def update
@@ -36,13 +27,26 @@ class UsersController < ApplicationController
   end
 
   def projects
-    @user = User.find(params[:id])
     @projects = @user.projects.paginate :page => params[:page]
   end
 
   def study_reports
-    @user = User.find(params[:id])
     @study_reports = StudyReport.for_user(@user).paginate(:page => params[:page], :order => "id desc")
+  end
+
+  private
+
+  def validate_user
+    if current_user.administrator? || current_user.id == params[:id].to_i
+      return true
+    else
+      flash[:error] = "You don't have permission to view or edit that profile: here is yours instead."
+      redirect_to :action => :show, :id => current_user.id
+    end
+  end
+
+  def find_user
+    @user = User.find(params[:id])
   end
 
 end
