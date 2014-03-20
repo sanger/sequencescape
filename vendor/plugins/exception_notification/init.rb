@@ -1,1 +1,1 @@
-require "action_mailer"
+require "exception_notification"
