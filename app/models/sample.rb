@@ -20,7 +20,7 @@ class Sample < ActiveRecord::Base
 
   has_many_lab_events
 
-  ArrayExpressFields = %w(genotype phenotype strain_or_line developmental_stage sex cell_type disease_state compound dose immunoprecipitate growth_condition rnai organism_part species time_point)
+  ArrayExpressFields = %w(genotype phenotype strain_or_line developmental_stage sex cell_type disease_state compound dose immunoprecipitate growth_condition rnai organism_part species time_point age treatment)
   EgaFields = %w(subject disease treatment gender phenotype)
 
   acts_as_authorizable
