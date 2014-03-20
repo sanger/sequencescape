@@ -1,7 +1,7 @@
 require "test_helper"
 
 class MyBrokenController < ActionController::Base
-  include ExceptionNotifiable
+  include ExceptionNotification::Notifiable
   alias_method(:rescue_action, :rescue_action_in_public)
 
   # This method is purposely set up to fail and by having the @request member variable
@@ -14,7 +14,7 @@ end
 
 # This is an extremely simple test in that it just makes sure that the exception notification
 # code doesn't blow up in my face.  With the default implementation of the exception notification
-# plugin the @request in the controller above would be used, which would cause all kinds of 
+# plugin the @request in the controller above would be used, which would cause all kinds of
 # problems when rendering the email.  With the fixes in place it shouldn't error at all.
 #
 # If the exception notification stuff is broken you'll see this error:

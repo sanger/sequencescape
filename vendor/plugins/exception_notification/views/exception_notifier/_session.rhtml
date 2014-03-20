@@ -1,2 +1,2 @@
-* session id: <%= @failing_request.session.instance_variable_get(:@session_id).inspect %>
-* data: <%= PP.pp(@failing_request.session.instance_variable_get(:@data),"").gsub(/\n/, "\n  ").strip %>
+* session id: <%= @failing_request.session_options[:id] %>
+* data: <%= @failing_request.session.inspect %>
