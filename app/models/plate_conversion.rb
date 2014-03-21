@@ -2,6 +2,8 @@
 # plate purpose
 class PlateConversion < ActiveRecord::Base
 
+  include Uuid::Uuidable
+
   belongs_to :target, :class_name => 'Plate'
   belongs_to :user
   belongs_to :purpose, :class_name => 'PlatePurpose'
