@@ -34,12 +34,18 @@ class Lot < ActiveRecord::Base
   named_scope :include_template, { :include => :template }
   named_scope :with_lot_number, lambda { |lot_number| {:conditions=>{:lot_number=>lot_number} } }
 
+  named_scope :with_qc_asset, lambda {|qc_asset|
+    sibling = qc_asset.transfers_as_destination.first.source
+
+    {:include=>:qcables,:conditions=>['qcables.asset_id IN(?) AND qcables.state != ?',[qc_asset.id,sibling.id],'exhausted' ]}
+  }
+
   private
 
   def valid_template?
     return false unless lot_type.present?
     return true if template.is_a?(valid_template_class)
-    errors.add(:template,'is not an appropriate type for this lot')
+    errors.add(:template,"is not an appropriate type for this lot. Received #{template.class} expected #{valid_template_class}.")
     false
   end
 

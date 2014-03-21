@@ -6,6 +6,14 @@ Given /^I have a lot type for testing called "(.*?)"$/ do |name|
   )
 end
 
+Given /^I have a reporter lot type for testing called "(.*?)"$/ do |name|
+  LotType.create!(
+    :name           => name,
+    :target_purpose => QcablePlatePurpose.find_by_name('Reporter Plate'),
+    :template_class => 'PlateTemplate'
+  )
+end
+
 Given /^the UUID for the lot type "(.*?)" is "(.*?)"$/ do |name, uuid|
   set_uuid_for(LotType.find_by_name(name),uuid)
 end
@@ -16,7 +24,7 @@ Given /^the lot exists with the attributes:$/ do |table|
     :lot_number  => settings['lot_number'],
     :lot_type    => LotType.find_by_name(settings['lot_type']),
     :received_at => settings['received_at'],
-    :template    => TagLayoutTemplate.find_by_name(settings['template']),
+    :template    => TagLayoutTemplate.find_by_name(settings['template'])||PlateTemplate.find_by_name(settings['template']),
     :user        => User.last
     )
 end
@@ -89,4 +97,34 @@ Given /^I have a robot for testing called "(.*?)"$/ do |name|
       {:key=>'DEST2',:value=>'20003'}
     ])
   end
+end
+
+Given /^I have a qc library created$/ do
+  lot = Lot.find_by_lot_number('1234567890')
+  lot_b = Lot.find_by_lot_number('1234567891')
+  user = User.last
+  step %Q{the plate barcode webservice returns "1000001"}
+  step %Q{the plate barcode webservice returns "1000002"}
+  qca = QcableCreator.create!(:lot=>lot,:user=>user,:count=>1)
+  qcb = QcableCreator.create!(:lot=>lot_b,:user=>user,:count=>1)
+
+  tag_plate = qca.qcables.first.asset
+  reporter_plate = qcb.qcables.first.asset
+
+  tag_plate.update_attributes!(:plate_purpose=>PlatePurpose.find_by_name('Tag PCR'))
+  Transfer::BetweenPlates.create!(:user=>user,:source=>reporter_plate,:destination=>tag_plate,:transfers=>{'A1'=>'A1'})
+  stc = SpecificTubeCreation.create!(:parent=>tag_plate,:child_purposes=>[Tube::Purpose.find_by_name('Tag MX')],:user=>user)
+  Batch.new(:pipeline=>Pipeline.last).tap do |batch|
+    batch.id= 12345
+    batch.save!
+  end
+  Batch.find(12345).batch_requests.create!(:request=>Request.create!(:asset=>stc.children.first),:position=>1)
+
+end
+
+Given /^the library is testing a reporter$/ do
+  lot = Lot.find_by_lot_number('1234567890')
+  lot_b = Lot.find_by_lot_number('1234567891')
+  lot.qcables.first.update_attributes!(:state=>'exhausted')
+  lot_b.qcables.first.update_attributes!(:state=>'pending')
 end
