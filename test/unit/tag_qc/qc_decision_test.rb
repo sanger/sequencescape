@@ -15,6 +15,8 @@ class QcDecisionTest < ActiveSupport::TestCase
       setup do
         @lot = Factory :lot
         @user = Factory :user
+        @user.roles.create!(:name=>'qa_manager')
+        @user_b = Factory :user
         @qcable_a = Factory :qcable, :lot => @lot, :state => 'pending'
         @qcable_b = Factory :qcable, :lot => @lot, :state => 'pending'
       end
@@ -50,6 +52,19 @@ class QcDecisionTest < ActiveSupport::TestCase
             :lot  => @lot,
             :decisions=> [
               {:qcable=> @qcable_a, :decision=>'delete'},
+              {:qcable=> @qcable_b, :decision=>'fail'}
+            ]
+          )
+        end
+      end
+
+      should "reject invalid users" do
+        assert_raise ActiveRecord::RecordInvalid do
+          QcDecision.create!(
+            :user => @user_b,
+            :lot  => @lot,
+            :decisions=> [
+              {:qcable=> @qcable_a, :decision=>'release'},
               {:qcable=> @qcable_b, :decision=>'fail'}
             ]
           )

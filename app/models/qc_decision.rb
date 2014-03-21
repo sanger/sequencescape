@@ -29,8 +29,17 @@ class QcDecision < ActiveRecord::Base
   has_many :qcables, :through => :qc_decision_qcables
 
   validates_presence_of :user
+  validate :user_has_permission, :if => :user
 
   def decisions=(decisions)
     self.qc_decision_qcables.build(decisions)
+  end
+
+  private
+
+  def user_has_permission
+    return true if user.qa_manager?
+    errors.add(:user,'does not have permission to make qc decisions.')
+    false
   end
 end

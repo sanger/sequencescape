@@ -136,6 +136,10 @@ class User < ActiveRecord::Base
     self.has_role? 'internal'
   end
 
+  def qa_manager?
+    self.has_role? 'qa_manager'
+  end
+
   def lab_manager?
     self.has_role? 'lab_manager'
   end
