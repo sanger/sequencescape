@@ -2,11 +2,13 @@ class Endpoints::Submissions < Core::Endpoint::Base
   model do
     action(:create) do |request, _|
       attributes = ::Io::Submission.map_parameters_to_attributes(request.json)
-      request.target.create!(attributes.merge(:user => request.user))
+      attributes.merge!(:user => request.user) if request.user.present?
+      request.target.create!(attributes)
     end
   end
 
   instance do
+    belongs_to(:user,    :json => 'user')
     has_many(
       :requests, :json => 'requests', :to => 'requests',
       :include => [ :source_asset, :target_asset ]
