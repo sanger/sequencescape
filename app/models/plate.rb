@@ -40,7 +40,14 @@ class Plate < Asset
       :select => 'MAX(submissions.priority) AS priority',
       :joins => [
         'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
-        'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id  OR caplp.content_id = reqp.asset_id'
+        'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.asset_id'
+      ],
+      :conditions => ['caplp.container_id = ?',self.id]
+    ).try(:priority)||Submission.find(:first,
+      :select => 'MAX(submissions.priority) AS priority',
+      :joins => [
+        'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
+        'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id'
       ],
       :conditions => ['caplp.container_id = ?',self.id]
     ).try(:priority)||0

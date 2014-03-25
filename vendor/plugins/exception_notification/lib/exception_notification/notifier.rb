@@ -20,7 +20,15 @@ require 'pathname'
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-class ExceptionNotifier < ActionMailer::Base
+class ExceptionNotification::Notifier < ActionMailer::Base
+  self.mailer_name = 'exception_notifier'
+  self.view_paths << "#{File.dirname(__FILE__)}/../../views"
+
+  # next line is a hack to fix
+  # undefined method `find_template' for #<Array:0x000001009cd230>
+  # after Rails 2.3.8 -> 2.3.11 upgrade
+  self.view_paths = ActionView::PathSet.new(self.view_paths) unless self.view_paths.respond_to?(:find_template)
+
   @@sender_address = %("Exception Notifier" <exception.notifier@default.com>)
   cattr_accessor :sender_address
 
@@ -33,34 +41,40 @@ class ExceptionNotifier < ActionMailer::Base
   @@sections = %w(request session environment backtrace)
   cattr_accessor :sections
 
-  self.template_root = "#{File.dirname(__FILE__)}/../views"
-
   def self.reloadable?() false end
 
   def exception_notification(exception, controller, request, data={})
+    source = self.class.exception_source(controller)
     content_type "text/plain"
 
-    subject    "#{email_prefix}#{controller.controller_name}##{controller.action_name} (#{exception.class}) #{exception.message.inspect}"
+    subject    "#{email_prefix}#{source} (#{exception.class}) #{exception.message.inspect}"
 
     recipients exception_recipients
     from       sender_address
 
     body       data.merge({ :failing_controller => controller, :failing_request => request,
-                  :exception => exception, :host => (request.env["HTTP_X_FORWARDED_HOST"] || request.env["HTTP_HOST"]),
+                  :exception => exception, :exception_source => source, :host => (request.env["HTTP_X_FORWARDED_HOST"] || request.env["HTTP_HOST"]),
                   :backtrace => sanitize_backtrace(exception.backtrace),
                   :rails_root => rails_root, :data => data,
                   :sections => sections })
   end
 
-  private
-
-    def sanitize_backtrace(trace)
-      re = Regexp.new(/^#{Regexp.escape(rails_root)}/)
-      trace.map { |line| Pathname.new(line.gsub(re, "[RAILS_ROOT]")).cleanpath.to_s }
+  def self.exception_source(controller)
+    if controller.respond_to?(:controller_name)
+      "in #{controller.controller_name}##{controller.action_name}"
+    else
+      "outside of a controller"
     end
+  end
 
-    def rails_root
-      @rails_root ||= Pathname.new(RAILS_ROOT).cleanpath.to_s
-    end
+private
 
+  def sanitize_backtrace(trace)
+    re = Regexp.new(/^#{Regexp.escape(rails_root)}/)
+    trace.map { |line| Pathname.new(line.gsub(re, "[RAILS_ROOT]")).cleanpath.to_s }
+  end
+
+  def rails_root
+    @rails_root ||= Pathname.new(RAILS_ROOT).cleanpath.to_s
+  end
 end

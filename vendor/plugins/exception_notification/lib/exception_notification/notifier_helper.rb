@@ -20,32 +20,20 @@ require 'pp'
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-module ExceptionNotifierHelper
-  VIEW_PATH = "views/exception_notifier"
-  APP_PATH = "#{RAILS_ROOT}/app/#{VIEW_PATH}"
+module ExceptionNotification::NotifierHelper
   PARAM_FILTER_REPLACEMENT = "[FILTERED]"
 
   def render_section(section)
     RAILS_DEFAULT_LOGGER.info("rendering section #{section.inspect}")
-    summary = render_overridable(section).strip
+    summary = render("exception_notifier/#{section}").strip
     unless summary.blank?
-      title = render_overridable(:title, :locals => { :title => section }).strip
+      title = render("exception_notifier/title", :locals => { :title => section }).strip
       "#{title}\n\n#{summary.gsub(/^/, "  ")}\n\n"
     end
   end
 
-  def render_overridable(partial, options={})
-    if File.exist?(path = "#{APP_PATH}/_#{partial}.rhtml")
-      render(options.merge(:file => path, :use_full_path => false))
-    elsif File.exist?(path = "#{File.dirname(__FILE__)}/../#{VIEW_PATH}/_#{partial}.rhtml")
-      render(options.merge(:file => path, :use_full_path => false))
-    else
-      ""
-    end
-  end
-
   def inspect_model_object(model, locals={})
-    render_overridable(:inspect_model,
+    render('exception_notifier/inspect_model',
       :locals => { :inspect_model => model,
                    :show_instance_variables => true,
                    :show_attributes => true }.merge(locals))
@@ -63,16 +51,17 @@ module ExceptionNotifierHelper
   end
 
   def exclude_raw_post_parameters?
-    @controller && @controller.respond_to?(:filter_parameters)
+    @failing_controller && @failing_controller.respond_to?(:filter_parameters)
   end
-  
+
   def filter_sensitive_post_data_parameters(parameters)
-    exclude_raw_post_parameters? ? @controller.__send__(:filter_parameters, parameters) : parameters
+    exclude_raw_post_parameters? ? @failing_controller.__send__(:filter_parameters, parameters) : parameters
   end
-  
+
   def filter_sensitive_post_data_from_env(env_key, env_value)
     return env_value unless exclude_raw_post_parameters?
     return PARAM_FILTER_REPLACEMENT if (env_key =~ /RAW_POST_DATA/i)
-    return @controller.__send__(:filter_parameters, {env_key => env_value}).values[0]
+    return @failing_controller.__send__(:filter_parameters, {env_key => env_value}).values[0]
   end
+
 end

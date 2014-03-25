@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
   # from your application log (in this case, all fields with names like "password").
   # filter_parameter_logging :password
 
-  include ExceptionNotifiable
+  include ExceptionNotification::Notifiable
 
   # Provide authentication, and "remember me"
   include AuthenticatedSystem
