@@ -78,7 +78,10 @@ module Qcable::Statemachine
   # derived classes to override these and add custom behaviour.  You are advised to call
   # super in any method that you override so that they can be stacked.
   #++
-  def on_stamp; end
+  def on_stamp
+    lot.template.stamp_to(asset)
+  end
+
   def on_failed; end
   def on_passed; end
   def on_released; end

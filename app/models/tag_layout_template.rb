@@ -16,6 +16,10 @@ class TagLayoutTemplate < ActiveRecord::Base
   delegate :direction, :to => :direction_algorithm_class
   delegate :walking_by, :to => :walking_algorithm_class
 
+  def stamp_to(_)
+    # Do Nothing
+  end
+
   def direction_algorithm_class
     direction_algorithm.constantize
   end

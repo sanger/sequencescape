@@ -18,12 +18,23 @@ class StampTest < ActiveSupport::TestCase
 
     context "#stamp" do
       should 'transition qcables to pending' do
-        @qcable = Factory :qcable
+        @qcable = Factory :qcable_with_asset
         # Unfortunately we can't do this, as stamp looks for qcables directly.
         # @qcable.expects(:do_stamp!).returns(true)
         sqc = Stamp::StampQcable.new(:bed=>'1',:order=>1,:qcable=>@qcable)
         @stamp = Factory :stamp, :stamp_qcables => [sqc]
         assert_equal 'pending', @qcable.reload.state
+      end
+
+      should 'transfer samples' do
+        @qcable = Factory :qcable_with_asset
+        # Unfortunately we can't do this, as stamp looks for qcables directly.
+        # @qcable.expects(:do_stamp!).returns(true)
+
+        sqc = Stamp::StampQcable.new(:bed=>'1',:order=>1,:qcable=>@qcable)
+        @stamp = Factory :stamp, :stamp_qcables => [sqc]
+        assert_equal 'pending', @qcable.reload.state
+        assert_equal 1, @qcable.asset.wells.located_at('A2').first.aliquots.count
       end
     end
   end
