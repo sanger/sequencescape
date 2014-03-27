@@ -35,6 +35,7 @@ class Lot < ActiveRecord::Base
   named_scope :with_lot_number, lambda { |lot_number| {:conditions=>{:lot_number=>lot_number} } }
 
   named_scope :with_qc_asset, lambda {|qc_asset|
+    return { :conditions => 'FALSE' } if root_asset.nil?
     sibling = qc_asset.transfers_as_destination.first.source
 
     {:include=>:qcables,:conditions=>['qcables.asset_id IN(?) AND qcables.state != ?',[qc_asset.id,sibling.id],'exhausted' ]}
