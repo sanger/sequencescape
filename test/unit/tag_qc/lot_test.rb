@@ -18,7 +18,7 @@ class LotTest < ActiveSupport::TestCase
         Factory :lot
       end
 
-      should_validate_uniqueness_of(:lot_number, :scoped_to=>:lot_type_id)
+      should_validate_uniqueness_of :lot_number
     end
 
 
