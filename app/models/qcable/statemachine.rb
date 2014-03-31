@@ -45,7 +45,7 @@ module Qcable::Statemachine
       end
 
       aasm_event :qc do
-        transitions :to => :qc_in_progress, :from => [:pending]
+        transitions :to => :qc_in_progress, :from => [:pending], :allow_automated? => true
       end
 
       aasm_event :release do
@@ -61,7 +61,7 @@ module Qcable::Statemachine
       end
 
       aasm_event :use do
-        transitions :to => :exhausted, :from => [:available]
+        transitions :to => :exhausted, :from => [:available], :allow_automated? => true
       end
 
       # new version of combinable named_scope

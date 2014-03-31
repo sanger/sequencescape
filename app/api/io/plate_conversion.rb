@@ -7,5 +7,6 @@ class ::Io::PlateConversion < ::Core::Io::Base
                    user <=> user
                  target <=> target
                 purpose <=> purpose
+                 parent <=  parent
   })
 end

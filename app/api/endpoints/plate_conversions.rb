@@ -4,8 +4,9 @@ class ::Endpoints::PlateConversions < ::Core::Endpoint::Base
   end
 
   instance do
-    belongs_to(:target, :json => "target")
+    belongs_to(:target,  :json => "target")
     belongs_to(:purpose, :json => "purpose")
-    belongs_to(:user, :json => "user")
+    belongs_to(:user,    :json => "user")
+    belongs_to(:parent,  :json => "user")
   end
 end
