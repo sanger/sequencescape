@@ -1,3 +1,20 @@
+rt = RequestType.create!(
+  :key                =>"qc_miseq_sequencing",
+  :name               =>"MiSeq sequencing QC",
+  :workflow           => Submission::Workflow.find_by_key('short_read_sequencing'),
+  :asset_type         => 'LibraryTube',
+  :order              => 1,
+  :initial_state      => 'pending',
+  :multiples_allowed  => false,
+  :request_class_name => "MiSeqSequencingRequest",
+  :morphology         => 0,
+  :for_multiplexing   => false,
+  :billable           => true,
+  :deprecated         => false,
+  :no_target_asset    => false
+  ) do |rt|
+  Pipeline.find_by_name('MiSeq sequencing').request_types << rt
+end
 
 tube = BarcodePrinterType.find_by_name('1D Tube')
 plate = BarcodePrinterType.find_by_name('96 Well PLate')
@@ -25,3 +42,16 @@ ActiveRecord::Base.transaction do
     end
   end
 end
+
+SubmissionTemplate.create!(
+  :name => 'MiSeq for TagQC',
+  :submission_class_name => 'LinearSubmission',
+  :submission_parameters => {
+    :request_options=>{
+    },
+    :request_type_ids_list=>[[rt.id]],
+    :workflow_id=>Submission::Workflow.find_by_key('short_read_sequencing').id,
+    :info_differential=>Submission::Workflow.find_by_key('short_read_sequencing').id
+  },
+  :superceded_by_id => -2
+)
