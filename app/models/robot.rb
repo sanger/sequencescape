@@ -7,7 +7,7 @@ class Robot < ActiveRecord::Base
 
   named_scope :with_machine_barcode, lambda { |barcode|
     barcode_number = Barcode.number_to_human(barcode)
-    { :conditions => [ 'barcode=?', barcode_number ] }
+    { :conditions => [ 'barcode=? AND ?', barcode_number, Barcode.prefix_from_barcode(barcode)==prefix ] }
   }
 
   named_scope :include_properties, { :include => :robot_properties }
