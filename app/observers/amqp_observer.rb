@@ -1,7 +1,7 @@
 class AmqpObserver < ActiveRecord::Observer
   # Observe not only the records but their metadata too, otherwise we may miss changes.
   observe(
-    :order, :submission, :request,
+    :order, :submission, :request, :plate_purpose,
     :study, :study_sample, :sample, :aliquot, :tag,
     :project,
     :asset, :asset_link, :well_attribute,
