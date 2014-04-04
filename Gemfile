@@ -94,6 +94,8 @@ group :test do
   gem "treetop", "~>1.2.5"
   gem 'parallel_tests'
 
+  gem "timocratic-test_benchmark"
+
   gem 'rgl'
 end
 
