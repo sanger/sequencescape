@@ -22,7 +22,7 @@ end
 
 Plate.requiring_fluidigm_data.find_each do |plate|
 
-  data = IrodsReader::DataObj.find('seq',:audience=>configatron.irods_audience, :fluidigm_plate=>plate.fluidigm_barcode)
+  data = IrodsReader::DataObj.find('seq','dcterms:audience'=>configatron.irods_audience, :fluidigm_plate=>plate.fluidigm_barcode)
 
   next if data.empty?
   raise StandardError, "Multiple files found" if data.size > 1
