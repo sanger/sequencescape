@@ -1,52 +1,7 @@
 <% add :title, "Batch" -%>
-<% add :menu, "View summary" => url_for(:controller => :pipelines, :action => :summary, :id => @batch.id) -%>
-<% add :menu, (pluralize @batch.comments.size, "comment") => batch_comments_path(@batch) -%>
-<% unless current_user.is_owner? && ! current_user.is_manager? %>
-  <% add :menu, "Edit batch" => edit_batch_path(@batch) -%>
-  <% if  @pipeline.is_a?(PulldownMultiplexLibraryPreparationPipeline)%>
-    <% add :menu, "Print labels" => url_for(:controller => :batches, :action => :print_labels, :id => @batch.id) -%>
-  <% elsif @batch.multiplexed? -%>
-    <% add :menu, "Print pool label" => url_for(:controller => :batches, :action => :print_multiplex_labels, :id => @batch.id) -%>
-    <% add :menu, "Print labels" => url_for(:controller => :batches, :action => :print_labels, :id => @batch.id) -%>
-    <% add :menu, "Print stock pool label" => url_for(:controller => :batches, :action => :print_stock_multiplex_labels, :id => @batch.id) -%>
-  <% elsif @pipeline.is_a?(CherrypickingPipeline) || @pipeline.is_a?(GenotypingPipeline) || @pipeline.is_a?(PacBioSequencingPipeline) -%>
-    <% add :menu, "Print plate labels" => url_for(:controller => :batches, :action => :print_plate_labels, :id => @batch.id) -%>
-  <% elsif (!@pipeline.is_a?(SequencingPipeline)) -%>
-    <% if @batch.pipeline.can_create_stock_assets? %>
-      <% add :menu, "Print stock labels" => url_for(:controller => :batches, :action => :print_stock_labels, :id => @batch.id) -%>
-    <% end %>
-    <% add :menu, "Print labels" => url_for(:controller => :batches, :action => :print_labels, :id => @batch.id) -%>
-  <% end -%>
-  <% unless @pipeline.is_a?(SequencingPipeline) -%>
-    <% add :menu, "Vol' & Conc'"  => url_for(:controller => :batches, :action => :edit_volume_and_concentration, :id => @batch.id) -%>
-  <% end %>
-  <% if @batch.pipeline.can_create_stock_assets? %>
-    <% add :menu, "Create stock tubes"  => url_for(:controller => :batches, :action => :new_stock_assets, :id => @batch.id) -%>
-  <% end %>
-
-  <% if @pipeline.is_a?(PacBioSamplePrepPipeline) %>
-      <% add :menu, "Print worksheet" => url_for(:controller => :batches, :action => :sample_prep_worksheet, :id => @batch.id) -%>
-  <% elsif @pipeline.prints_a_worksheet_per_task? %>
-    <% @tasks.each do |task| %>
-      <% add :menu, "Print worksheet for #{task.name}" => url_for(:controller => :batches, :action => :print, :id => @batch.id, :task_id => task.id) -%>
-    <% end %>
-  <% else %>
-    <% add :menu, "Print worksheet" => url_for(:controller => :batches, :action => :print, :id => @batch.id) -%>
-  <% end %>
-
-  <% if @batch.has_limit? %>
-    <% unless @batch.has_event("Tube layout verified") %>
-      <% add :menu, "Verify tube layout" => url_for(:controller => :batches, :action => :verify, :id => @batch.id) -%>
-    <% end %>
-  <% end %>
-  
-  <% if @pipeline.is_a?(PulldownMultiplexLibraryPreparationPipeline) %>
-    <% add :menu, "Batch Report"  => url_for(:controller => :batches, :action => :pulldown_batch_report, :id => @batch.id) -%>
-  <% end %>
-  
-<% end %>
-<% add :menu, "NPG run data" => "#{configatron.run_data_by_batch_id_url}#{@batch.id}" -%>
-<% add :menu, "SybrGreen images" => "#{configatron.sybr_green_images_url}#{@batch.id}" -%>
+<% @submenu_presenter.options.each do |option| -%>
+  <% add :menu, option[:label] => option[:url] -%>
+<% end -%>
 <% add :back_menu, "Back to pipeline" => pipeline_path(@pipeline) -%>
 
 <h1>BATCH <%= @batch.id %> <% if @batch.failed? -%> (FAILED)<% end -%> <% if @batch.multiplexed? -%> (MULTIPLEXED)<% end -%></h1>
@@ -82,7 +37,7 @@
 <% if @batch.show_actions?  %>
   <%= render :partial => "shared/actions" %>
 <% elsif @batch.show_fail_link? %>
-  <ul>  
+  <ul>
     <li><%= link_to "Fail batch or items", :action => "fail", :id => @batch.id %></li>
   </ul>
 <% end %>
