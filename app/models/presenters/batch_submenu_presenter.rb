@@ -95,9 +95,5 @@ module Presenters
       @options += [{:label => text, :url =>  actionParams}]
     end
 
-    def to_s
-      @options.each {|option| "#{option},"}
-    end
-
   end
 end
