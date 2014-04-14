@@ -27,64 +27,54 @@ module Presenters
     end
 
     def load_pipeline_options
-      def all(list_conds)
-        Proc.new { (list_conds.map do |cond| cond.call end).all? }
-      end
-      
-      def any(list_conds)
-        Proc.new { (list_conds.map do |cond| cond.call end).any? }
-      end
-      
       # Conditions to check in order to display the pipeline options
-      cond_is_manager = Proc.new { !@current_user.is_owner? || @current_user.is_manager?}
-      cond_is_pulldown_pipeline= Proc.new {@pipeline.is_a?(PulldownMultiplexLibraryPreparationPipeline)}
-      cond_is_batch_multiplexed = Proc.new{@batch.multiplexed?}
-      cond_is_cherrypicking_pipeline= Proc.new {@pipeline.is_a?(CherrypickingPipeline)}
-      cond_is_genotyping_pipeline= Proc.new {@pipeline.is_a?(GenotypingPipeline)}
-      cond_is_pacbio_pipeline= Proc.new {@pipeline.is_a?(PacBioSequencingPipeline)}
-      cond_not_seq_pipeline = Proc.new {@pipeline.is_a?(SequencingPipeline)}
-      cond_pipeline_can_create_stock_assets =  Proc.new { @batch.pipeline.can_create_stock_assets? }
-      cond_is_pacbio_sample_pipeline =  Proc.new { @pipeline.is_a?(PacBioSamplePrepPipeline)}
-      cond_tube_layout_not_verified = Proc.new { @batch.has_limit? and !@batch.has_event("Tube layout verified") }
+      cond_is_manager = !@current_user.is_owner? || @current_user.is_manager?
+      cond_is_pulldown_pipeline= @pipeline.is_a?(PulldownMultiplexLibraryPreparationPipeline)
+      cond_is_batch_multiplexed = @batch.multiplexed?
+      cond_is_cherrypicking_pipeline= @pipeline.is_a?(CherrypickingPipeline)
+      cond_is_genotyping_pipeline= @pipeline.is_a?(GenotypingPipeline)
+      cond_is_pacbio_pipeline= @pipeline.is_a?(PacBioSequencingPipeline)
+      cond_not_seq_pipeline = @pipeline.is_a?(SequencingPipeline)
+      cond_pipeline_can_create_stock_assets =  @batch.pipeline.can_create_stock_assets?
+      cond_is_pacbio_sample_pipeline =  @pipeline.is_a?(PacBioSamplePrepPipeline)
+      cond_tube_layout_not_verified = @batch.has_limit? and !@batch.has_event("Tube layout verified")
 
-      add_submenu_option "Edit batch", edit_batch_path(@batch), cond_is_manager
+      add_submenu_option "Edit batch", edit_batch_path(@batch) if cond_is_manager
               
       # Printing of labels is enabled for anybody
-      add_submenu_option "Print labels", :print_labels, cond_is_pulldown_pipeline
-      add_submenu_option "Print pool label", :print_multiplex_labels, cond_is_batch_multiplexed
-      add_submenu_option "Print labels" ,  :print_labels , cond_is_batch_multiplexed
-      add_submenu_option "Print stock pool label" , :print_stock_multiplex_labels, cond_is_batch_multiplexed 
-      add_submenu_option "Print plate labels" , :print_plate_labels, any([
+      add_submenu_option "Print labels", :print_labels if cond_is_pulldown_pipeline
+      add_submenu_option "Print pool label", :print_multiplex_labels if cond_is_batch_multiplexed
+      add_submenu_option "Print labels" ,  :print_labels if cond_is_batch_multiplexed
+      add_submenu_option "Print stock pool label" , :print_stock_multiplex_labels if cond_is_batch_multiplexed 
+      add_submenu_option "Print plate labels" , :print_plate_labels if [
           cond_is_cherrypicking_pipeline, 
           cond_is_genotyping_pipeline, 
-          cond_is_pacbio_pipeline ])
-      add_submenu_option "Print stock labels" , :print_stock_labels, all([
+          cond_is_pacbio_pipeline ].any?
+      add_submenu_option "Print stock labels" , :print_stock_labels if [
         cond_not_seq_pipeline, 
-        cond_pipeline_can_create_stock_assets])
-      add_submenu_option "Print labels" , :print_labels, cond_not_seq_pipeline
+        cond_pipeline_can_create_stock_assets].all?
+      add_submenu_option "Print labels" , :print_labels if cond_not_seq_pipeline
       
       # Other options are enabled only for managers
-      add_submenu_option "Vol' & Conc'", :edit_volume_and_concentration, all([cond_not_seq_pipeline, cond_is_manager])
-      add_submenu_option "Create stock tubes"  , :new_stock_assets, all([cond_pipeline_can_create_stock_assets, cond_is_manager])
-      add_submenu_option "Print worksheet" , :sample_prep_worksheet, all([cond_is_pacbio_sample_pipeline, cond_is_manager])
+      add_submenu_option "Vol' & Conc'", :edit_volume_and_concentration if [cond_not_seq_pipeline, cond_is_manager].all?
+      add_submenu_option "Create stock tubes"  , :new_stock_assets if [cond_pipeline_can_create_stock_assets, cond_is_manager].all?
+      add_submenu_option "Print worksheet" , :sample_prep_worksheet if [cond_is_pacbio_sample_pipeline, cond_is_manager].all?
 
-      if @pipeline.prints_a_worksheet_per_task? and !cond_is_pacbio_sample_pipeline.call()
+      if @pipeline.prints_a_worksheet_per_task? and !cond_is_pacbio_sample_pipeline
         @tasks.each do |task|
-          add_submenu_option "Print worksheet for #{task.name}" , {:action => :print, :task_id => task.id}, cond_is_manager
+          add_submenu_option "Print worksheet for #{task.name}" , {:action => :print, :task_id => task.id} if cond_is_manager
         end
       else
-        add_submenu_option "Print worksheet" , :print, cond_is_manager
+        add_submenu_option "Print worksheet" , :print if cond_is_manager
       end
       
-      add_submenu_option "Verify tube layout" , :verify, all([cond_tube_layout_not_verified, cond_is_manager])
-      add_submenu_option "Batch Report", :pulldown_batch_report, all([cond_is_pulldown_pipeline, cond_is_manager])
+      add_submenu_option "Verify tube layout" , :verify if [cond_tube_layout_not_verified, cond_is_manager].all?
+      add_submenu_option "Batch Report", :pulldown_batch_report if [cond_is_pulldown_pipeline, cond_is_manager].all?
     end
 
     public
 
-    def add_submenu_option(text, actionParams, code=nil)
-      return if code!=nil and !code.call
-         
+    def add_submenu_option(text, actionParams)         
       if @options == nil
         @options = Array.new
       end
