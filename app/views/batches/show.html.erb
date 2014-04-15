@@ -1,5 +1,5 @@
 <% add :title, "Batch" -%>
-<% @submenu_presenter.options.each do |option| -%>
+<% @submenu_presenter.each_option do |option| -%>
   <% add :menu, option[:label] => option[:url] -%>
 <% end -%>
 <% add :back_menu, "Back to pipeline" => pipeline_path(@pipeline) -%>

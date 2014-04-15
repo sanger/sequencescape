@@ -13,17 +13,12 @@ class BatchesControllerTest < ActionController::TestCase
     end
     should_require_login
 
-    context "with a user logged in" do
+    context "with a false user for npg" do
+
       setup do
-        @controller.stubs(:current_user).returns(@user)
+        @controller.stubs(:current_user).returns(:false)
       end
 
-      context "routing" do
-        should "map '/batches/auto_qc" do
-          assert_routing({ :method => 'post', :path => '/batches/auto_qc'}, { :controller => 'batches', :action => 'auto_qc'})
-        end
-        # Add more tests here
-      end
 
       context "NPG xml view" do
         setup do
@@ -63,6 +58,19 @@ class BatchesControllerTest < ActionController::TestCase
         should 'expose the library information correctly' do
           assert_tag :tag => 'sample', :attributes => { :library_id => @library.id, :library_name => @library.name, :library_type => 'Standard' }
         end
+      end
+    end
+
+    context "with a user logged in" do
+      setup do
+        @controller.stubs(:current_user).returns(@user)
+      end
+
+      context "routing" do
+        should "map '/batches/auto_qc" do
+          assert_routing({ :method => 'post', :path => '/batches/auto_qc'}, { :controller => 'batches', :action => 'auto_qc'})
+        end
+        # Add more tests here
       end
 
       context "actions" do
