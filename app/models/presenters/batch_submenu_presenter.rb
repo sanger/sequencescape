@@ -15,7 +15,6 @@ module Presenters
       @pipeline = @batch.pipeline
 
       set_defaults({:controller => :batches, :id => @batch.id, :only_path => true})
-      build_submenu
     end
 
     def build_submenu
@@ -40,21 +39,21 @@ module Presenters
       cond_tube_layout_not_verified = @batch.has_limit? and !@batch.has_event("Tube layout verified")
 
       add_submenu_option "Edit batch", edit_batch_path(@batch) if cond_is_manager
-              
+
       # Printing of labels is enabled for anybody
       add_submenu_option "Print labels", :print_labels if cond_is_pulldown_pipeline
       add_submenu_option "Print pool label", :print_multiplex_labels if cond_is_batch_multiplexed
       add_submenu_option "Print labels" ,  :print_labels if cond_is_batch_multiplexed
-      add_submenu_option "Print stock pool label" , :print_stock_multiplex_labels if cond_is_batch_multiplexed 
+      add_submenu_option "Print stock pool label" , :print_stock_multiplex_labels if cond_is_batch_multiplexed
       add_submenu_option "Print plate labels" , :print_plate_labels if [
-          cond_is_cherrypicking_pipeline, 
-          cond_is_genotyping_pipeline, 
+          cond_is_cherrypicking_pipeline,
+          cond_is_genotyping_pipeline,
           cond_is_pacbio_pipeline ].any?
       add_submenu_option "Print stock labels" , :print_stock_labels if [
-        cond_not_seq_pipeline, 
+        cond_not_seq_pipeline,
         cond_pipeline_can_create_stock_assets].all?
       add_submenu_option "Print labels" , :print_labels if cond_not_seq_pipeline
-      
+
       # Other options are enabled only for managers
       add_submenu_option "Vol' & Conc'", :edit_volume_and_concentration if [cond_not_seq_pipeline, cond_is_manager].all?
       add_submenu_option "Create stock tubes"  , :new_stock_assets if [cond_pipeline_can_create_stock_assets, cond_is_manager].all?
@@ -67,17 +66,15 @@ module Presenters
       else
         add_submenu_option "Print worksheet" , :print if cond_is_manager
       end
-      
+
       add_submenu_option "Verify tube layout" , :verify if [cond_tube_layout_not_verified, cond_is_manager].all?
       add_submenu_option "Batch Report", :pulldown_batch_report if [cond_is_pulldown_pipeline, cond_is_manager].all?
     end
 
     public
 
-    def add_submenu_option(text, actionParams)         
-      if @options == nil
-        @options = Array.new
-      end
+    def add_submenu_option(text, actionParams)
+      @options ||= Array.new
 
       # If it is a string, it will be an url
       unless actionParams.is_a?(String)
@@ -93,6 +90,13 @@ module Presenters
         actionParams = url_for(actionConfig)
       end
       @options += [{:label => text, :url =>  actionParams}]
+    end
+
+    def each_option
+      build_submenu if @options.nil?
+      @options.each do |option|
+        yield option
+      end
     end
 
   end
