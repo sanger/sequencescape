@@ -34,7 +34,7 @@ Plate.requiring_fluidigm_data.find_each do |plate|
   plate.wells.located_at(file.well_locations).include_stock_wells.each do |well|
     well.stock_wells.each do |sw|
       sw.update_gender_markers!( file.well_at(well.map_description).gender_markers,'FLUIDIGM' )
-      sw.update_sequenom_count!( file.well_at(well.map_description).gender_markers,'FLUIDIGM' )
+      sw.update_sequenom_count!( file.well_at(well.map_description).count,'FLUIDIGM' )
     end
   end
 end
