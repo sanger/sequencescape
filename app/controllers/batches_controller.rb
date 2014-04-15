@@ -25,6 +25,8 @@ class BatchesController < ApplicationController
   end
 
   def show
+    @submenu_presenter = Presenters::BatchSubmenuPresenter.new(current_user, @batch)
+    
     @pipeline = @batch.pipeline
     @tasks    = @batch.tasks.sort_by(&:sorted)
     @rits = @pipeline.request_information_types
