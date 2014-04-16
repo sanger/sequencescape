@@ -637,4 +637,8 @@ WHERE c.container_id=?
       raise "No stock plate associated with #{id}" if stock_wells_hash.empty?
     end
   end
+
+  def convert_to(new_purpose)
+    self.update_attributes!(:plate_purpose=>new_purpose)
+  end
 end

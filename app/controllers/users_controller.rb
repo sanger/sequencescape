@@ -14,6 +14,7 @@ class UsersController < ApplicationController
   end
 
   def update
+    params[:user].delete(:swipecard_code) if params[:user][:swipecard_code].blank?
     @user = User.find(params[:id])
     if @user.id == params[:id].to_i
       @user.update_attributes(params[:user])

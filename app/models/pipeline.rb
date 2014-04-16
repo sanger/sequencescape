@@ -1,6 +1,6 @@
 class PipelinesRequestType < ActiveRecord::Base
-  belongs_to :pipeline
-  belongs_to :request_type
+  belongs_to :pipeline, :inverse_of => :pipelines_request_types
+  belongs_to :request_type, :inverse_of => :pipelines_request_types
 end
 
 class Pipeline < ActiveRecord::Base
@@ -25,14 +25,16 @@ class Pipeline < ActiveRecord::Base
   has_many :tasks, :through => :workflows
   belongs_to :location
 
-  has_many :pipelines_request_types
+  has_many :pipelines_request_types, :inverse_of => :pipeline
   has_many :request_types, :through => :pipelines_request_types
-  validate :has_request_types
 
-  def has_request_types
-    errors.add_to_base('A Pipeline must have at least one associcated RequestType') if self.request_types.blank?
-  end
-  private :has_request_types
+  validates_presence_of :request_types
+  # validate :has_request_types
+
+  # def has_request_types
+  #   errors.add_to_base('A Pipeline must have at least one associcated RequestType') if self.request_types.blank?
+  # end
+  # private :has_request_types
 
   belongs_to :control_request_type, :class_name => 'RequestType'
 

@@ -365,6 +365,11 @@ class Batch < ActiveRecord::Base
     end
   end
 
+  def parent_of_purpose(name)
+    return nil if requests.empty?
+    requests.first.asset.ancestors.find(:first,:joins=>'INNER JOIN plate_purposes ON assets.plate_purpose_id = plate_purposes.id',:conditions=>{:plate_purposes=>{:name=>name}})
+  end
+
   def swap(current_user, batch_info = {})
     return false if batch_info.empty?
 

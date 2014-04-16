@@ -2,6 +2,7 @@
 # group that will be used and the actual TagLayout implementation that will do the work.
 class TagLayoutTemplate < ActiveRecord::Base
   include Uuid::Uuidable
+  include Lot::Template
 
   belongs_to :tag_group
   validates_presence_of :tag_group
@@ -14,6 +15,10 @@ class TagLayoutTemplate < ActiveRecord::Base
 
   delegate :direction, :to => :direction_algorithm_class
   delegate :walking_by, :to => :walking_algorithm_class
+
+  def stamp_to(_)
+    # Do Nothing
+  end
 
   def direction_algorithm_class
     direction_algorithm.constantize
