@@ -14,14 +14,23 @@ class Batch < ActiveRecord::Base
   include ModelExtensions::Batch
   include StandardNamedScopes
 
-  validate_on_create :requests_have_same_read_length 
+  validate_on_create :requests_have_same_read_length, :cluster_formation_requests_must_be_eight
   
-  
+  def cluster_formation_requests_must_be_eight
+    cluster_formation_names = ["Cluster formation (old)", "Cluster formation SE", "Cluster formation PE", 
+      "Cluster formation PE (no controls)", "Cluster formation SE HiSeq", "Cluster formation SE HiSeq (no controls)",
+      "Cluster formation SE (no controls)", "Cluster formation SE (spiked in controls)", 
+      "Cluster formation PE (spiked in controls)", "HiSeq Cluster formation PE (spiked in controls)", 
+      "Cluster formation SE HiSeq (spiked in controls)"]
+    if (cluster_formation_names.find_index(@pipeline.name) != nil) and (@requests.size != 8)
+      errors.add_to_base "You must create batches of 8 requests in the pipeline " + @pipeline.name
+    end
+  end
   
   def requests_have_same_read_length
     information_types = @pipeline.request_information_types
     read_length_information_type_record = information_types.find_by_key("read_length")
-    return if read_length_information_type_record == nil
+    return if (read_length_information_type_record == nil) or (requests.size == 0)
     read_length_list = requests.map { |request| 
       request.get_value(read_length_information_type_record) 
     }.compact
