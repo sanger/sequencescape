@@ -14,6 +14,23 @@ class Batch < ActiveRecord::Base
   include ModelExtensions::Batch
   include StandardNamedScopes
 
+  validate_on_create :requests_have_same_read_length 
+  
+  
+  
+  def requests_have_same_read_length
+    information_types = @pipeline.request_information_types
+    read_length_information_type_record = information_types.find_by_key("read_length")
+    return if read_length_information_type_record == nil
+    read_length_list = requests.map { |request| 
+      request.get_value(read_length_information_type_record) 
+    }.compact
+      
+    unless (read_length_list != nil and read_length_list.uniq.size == 1)
+      errors.add_to_base "This batch cannot be created because the selected requests must have the same values in their 'Read length' field."
+    end
+  end    
+      
   extend EventfulRecord
   has_many_events
   has_many_lab_events
