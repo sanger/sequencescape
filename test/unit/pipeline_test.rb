@@ -16,7 +16,7 @@ class PipelineTest < ActiveSupport::TestCase
         @submission  = Factory::submission(:request_types => [@request_type].map(&:id), :asset_group_name => 'to avoid asset errors')
         @item = Factory :item, :submission => @submission
 
-        @pipeline = Factory :pipeline, :name => "cherrypick pipeline", :request_types => [ @request_type ]
+        @pipeline = Factory :sequencing_pipeline, :name => "sequencing pipeline", :request_types => [ @request_type ]
         @metadata1 = Factory :request_metadata
         @metadata2 = Factory :request_metadata
         @request1 = Factory(
