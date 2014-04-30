@@ -162,6 +162,22 @@ class Pipeline < ActiveRecord::Base
     false
   end
 
+  def is_read_length_consistent_for_batch?(batch)
+    # No requests selected
+    return true if (batch.requests.size == 0)
+    # The pipeline doesn't contain metadata to check
+    return true if batch.requests.first.request_metadata.nil?
+    read_length_list = batch.requests.map { |request|
+      request.request_metadata.read_length
+    }.compact
+    
+    # The pipeline doen't contain the read_length attribute
+    return true if read_length_list.size == 0
+    # There are some requests that don't have the read_length_attribute
+    return false if read_length_list.size != batch.requests.size
+    (read_length_list.uniq.size == 1)
+  end
+  
   def need_picoset?
     false
   end
