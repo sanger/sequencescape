@@ -6,10 +6,6 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :robot_verifications, :collection => {:submission => [:post, :get], :download => [:post]}
   map.resources :projects, :has_many => :studies, :member => { :related_studies => :get, :collaborators => :get, :follow => :get, :grant_role => :post, :remove_role => :post  } do |project|
-    project.resources :workflows, :only => :none  do |workflow|
-      workflow.resources :quotas, :controller => "projects/workflows/quotas", :only => [],
-                         :collection => { :all => :get, :send_request => :post, :update_request => :get }
-    end
     project.resources :billing_events, :controller => "projects/billing_events", :only => [:index, :show, :new, :create]
   end
 
@@ -137,12 +133,12 @@ ActionController::Routing::Routes.draw do |map|
   map.admin "admin", :controller => "admin", :action => "index"
   map.resources :custom_texts, :controller => "admin/custom_texts", :path_prefix => "/admin"
   map.resources :settings, :controller => "admin/settings", :path_prefix => "/admin", :collection => { :reset => :get, :apply => :get }
-  map.resources :studies, :controller => "admin/studies", :path_prefix => "/admin", :member => { :managed_update => :put }, :collection => {:index => :get, :reset_quota => :post}
-  map.resources :projects, :controller => "admin/projects", :path_prefix => "/admin", :member => { :managed_update => :put }, :collection => {:index => :get, :reset_quota => :post}
+  map.resources :studies, :controller => "admin/studies", :path_prefix => "/admin", :member => { :managed_update => :put }, :collection => {:index => :get}
+  map.resources :projects, :controller => "admin/projects", :path_prefix => "/admin", :member => { :managed_update => :put }, :collection => {:index => :get}
   map.resources :plate_purposes, :controller => "admin/plate_purposes", :path_prefix => "/admin"
   map.resources :faculty_sponsors, :controller => "admin/faculty_sponsors", :path_prefix => "/admin"
   map.resources :change_tags, :controller => "admin/change_tags", :path_prefix => "/admin", :collection => { :lookup => :get, :bulk_update => :put}
-
+  map.resources :delayed_jobs, :controller => "admin/delayed_jobs", :path_prefix => "/admin", :only => [:index]
   map.resources :users, :controller => "admin/users", :path_prefix => "/admin",
     :collection => { :filter => :get }, :member => { :switch => :get, :grant_user_role => :post, :remove_user_role => :post }
   map.resources :profile, :controller => "users",:member => {:study_reports => :get, :projects => :get }, :only => [:show, :edit, :update, :projects]
@@ -276,7 +272,6 @@ ActionController::Routing::Routes.draw do |map|
       read_only.asset :pulldown_multiplexed_library_tubes, :controller => "api/pulldown_multiplexed_library_tubes"
       read_only.model :plate_purposes, :controller => "api/plate_purposes"
       read_only.asset :plates, :controller => "api/plates"
-      read_only.model :quotas, :controller => "api/quotas"
       read_only.asset :sample_tubes, :controller => "api/sample_tubes" do |sample_tube|
         sample_tube.asset :library_tubes, :controller => "api/library_tubes"
         sample_tube.model :requests, :controller => "api/requests"

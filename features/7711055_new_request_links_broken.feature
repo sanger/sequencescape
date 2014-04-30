@@ -138,19 +138,19 @@ Feature: Creating new requests from an asset
 
     @library_tube
     Scenarios:
-      | asset type   | request type                   | fragment size required from | fragment size required to |
-      | Library tube | Single ended sequencing        | 100                         | 200                       |
-      | Library tube | Single ended hi seq sequencing | 100                         | 200                       |
-      | Library tube | Paired end sequencing          | 100                         | 200                       |
-      | Library tube | HiSeq Paired end sequencing    | 100                         | 200                       |
+      | asset type   | request type                              | fragment size required from | fragment size required to |
+      | Library tube | Illumina-B Single ended sequencing        | 100                         | 200                       |
+      | Library tube | Illumina-B Single ended hi seq sequencing | 100                         | 200                       |
+      | Library tube | Illumina-B Paired end sequencing          | 100                         | 200                       |
+      | Library tube | Illumina-B HiSeq Paired end sequencing    | 100                         | 200                       |
 
     @multiplexed_library_tube
     Scenarios:
-      | asset type               | request type                   | fragment size required from | fragment size required to |
-      | Multiplexed library tube | Single ended sequencing        | 150                         | 400                       |
-      | Multiplexed library tube | Single ended hi seq sequencing | 150                         | 400                       |
-      | Multiplexed library tube | Paired end sequencing          | 150                         | 400                       |
-      | Multiplexed library tube | HiSeq Paired end sequencing    | 150                         | 400                       |
+      | asset type               | request type                              | fragment size required from | fragment size required to |
+      | Multiplexed library tube | Illumina-B Single ended sequencing        | 150                         | 400                       |
+      | Multiplexed library tube | Illumina-B Single ended hi seq sequencing | 150                         | 400                       |
+      | Multiplexed library tube | Illumina-B Paired end sequencing          | 150                         | 400                       |
+      | Multiplexed library tube | Illumina-B HiSeq Paired end sequencing    | 150                         | 400                       |
 
   @library_tube @multiplexed_library_tube @accession @foo
   Scenario Outline: Requesting more sequencing of a library where the study needs accession numbers
@@ -161,8 +161,8 @@ Feature: Creating new requests from an asset
 
     Given I am on the new request page for "<asset type> for testing new request"
 
-    When I select "HiSeq Paired end sequencing" from "Request type"
-     And I fill in the request fields with sensible values for "HiSeq Paired end sequencing"
+    When I select "Illumina-B HiSeq Paired end sequencing" from "Request type"
+     And I fill in the request fields with sensible values for "Illumina-B HiSeq Paired end sequencing"
      And I select "Study testing new request" from "Study"
      And I select "Project testing new request" from "Project"
      And I press "Create"

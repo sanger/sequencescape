@@ -7,12 +7,12 @@ class Cherrypick::Strategy::PickPlateTest < ActiveSupport::TestCase
         context "when the plate size is #{size}" do
           should 'return plate width if purpose picked in rows' do
             plate = Cherrypick::Strategy::PickPlate.new(OpenStruct.new(:size => size, :cherrypick_direction => 'row'))
-            assert_equal(Map.plate_width(size), plate.dimension)
+            assert_equal(Map::Coordinate.plate_width(size), plate.dimension)
           end
 
           should 'return plate length if purpose picked in column' do
             plate = Cherrypick::Strategy::PickPlate.new(OpenStruct.new(:size => size, :cherrypick_direction => 'column'))
-            assert_equal(Map.plate_length(size), plate.dimension)
+            assert_equal(Map::Coordinate.plate_length(size), plate.dimension)
           end
         end
       end

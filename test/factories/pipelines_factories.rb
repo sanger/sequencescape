@@ -152,6 +152,20 @@ Factory.define :pipeline, :class => Pipeline do |p|
   end
 end
 
+Factory.define :sequencing_pipeline, :class => SequencingPipeline do |p|
+  p.name                  {|a| Factory.next :pipeline_name }
+  p.automated             false
+  p.active                true
+  p.next_pipeline_id      nil
+  p.previous_pipeline_id  nil
+  p.location              {|location| location.association(:location)}
+  p.after_build          do |pipeline|
+    pipeline.request_types << Factory(:request_type )
+    pipeline.add_control_request_type
+    pipeline.build_workflow(:name => pipeline.name, :item_limit => 2, :locale => 'Internal') if pipeline.workflow.nil?
+  end
+end
+
 Factory.define :qc_pipeline do |p|
   p.name                  {|a| Factory.next :pipeline_name }
   p.automated             false
@@ -318,6 +332,10 @@ Factory.define :tag_groups_task do |t|
 end
 
 Factory.define :gel_qc_task do |t|
+end
+
+Factory.define :plate_transfer_task do |t|
+  t.purpose_id Purpose.find_by_name('PacBio Sheared').id
 end
 
 Factory.define :empty_sample_tube, :class => SampleTube do |sample_tube|

@@ -49,8 +49,7 @@ class ProjectsControllerTest < ActionController::TestCase
             "name" => "hello",
             :project_metadata_attributes => {
               :project_cost_code => 'Some cost code'
-            },
-            :quotas => {"#{@request_type_1.id}"=>"0"}
+            }
           }
         end
 
@@ -65,8 +64,7 @@ class ProjectsControllerTest < ActionController::TestCase
             "name" => "hello 2",
             :project_metadata_attributes => {
               :project_cost_code => ''
-            },
-            "quotas" => {"#{@request_type_1.id}"=>"0"}
+            }
           }
         end
 
@@ -84,8 +82,7 @@ class ProjectsControllerTest < ActionController::TestCase
             "name" => "hello 3",
             :project_metadata_attributes => {
               :project_cost_code => 'Some cost code'
-            },
-            :quotas => {"#{@request_type_1.id}"=>"0"}
+            }
           }
         end
 

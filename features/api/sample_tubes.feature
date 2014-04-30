@@ -40,7 +40,6 @@ Feature: Access sample tubes through the API
           "closed": false,
           "concentration": null,
           "volume": null,
-          "scanned_in_date": "",
 
           "barcode": {
             "prefix": "NT",

@@ -10,7 +10,7 @@ Feature: Patients should be able to withdraw consent
     And I have an active study called "Study A"
     And user "user" is a "manager" of study "Study A"
     And I have an "approved" project called "Project A"
-    And the project "Project A" has quotas and quotas are enforced
+    And project "Project A" has enforced quotas
     Given there are no samples
     And the study "Study A" has the sample "sample_withdrawn" in a sample tube and asset group
     And the study "Study A" has the sample "sample_okay" in a sample tube and asset group

@@ -5,13 +5,12 @@
 <% end -%>
 <div class="info">
   <ul>
-    <% unless @batch.released? || @batch.failed? -%>
-      <li><%= link_to "Start batch", {:controller => "workflows", :action => "stage", :id => 0, :batch_id => @batch.id, :workflow_id => @batch.workflow.id}, :onclick => "if (!check_count_before_start()) {return false;} " %></li>
-    <% end -%>
     <% @batch.workflow.tasks.each_with_index do |task, index| -%>
     <li><%= link_to task.name, :controller => :workflows, :action => :stage, :id => index, :batch_id => @batch.id, :workflow_id => @batch.workflow.id %></li>
     <% end -%>
-    <li><%= link_to "Fail batch or items", :action => "fail", :id => @batch.id %></li>
+    <% unless @batch.pending? -%>
+      <li><%= link_to "Fail batch or items", :action => "fail", :id => @batch.id %></li>
+    <% end %>
   </ul>
   <p>
     <% if @pipeline.next_pipeline and not @pipeline.genotyping?-%>

@@ -1,15 +1,16 @@
 module Tasks::PlateTemplateHandler
   def render_plate_template_task(task, params)
-    @plate_templates = PlateTemplate.all
     @robots = Robot.all
     @plate_purpose_options = task.plate_purpose_options(@batch)
+    suitable_sizes = @plate_purpose_options.map {|o| o[1] }
+    @plate_templates = PlateTemplate.find(:all, :conditions=>{:size=>suitable_sizes})
   end
 
   def do_plate_template_task(task, params)
     return true if params[:file].blank?
 
     if params[:plate_template].blank?
-      plate_size = 96
+      plate_size = PlatePurpose.find(params[:plate_purpose_id]).size
     else
       plate_size = PlateTemplate.find(params[:plate_template]["0"].to_i).size
     end
@@ -22,8 +23,8 @@ module Tasks::PlateTemplateHandler
 
   def parse_uploaded_spreadsheet_layout(layout_data,plate_size)
     (Hash.new { |h,k| h[k] = {} }).tap do |parsed_plates|
-      FasterCSV.parse(layout_data) do |row|
-        parse_spreadsheet_row(plate_size, *row) do |plate_key, request_id, location|
+      FasterCSV.parse(layout_data, :headers=>:first_row) do |row|
+        parse_spreadsheet_row(plate_size, row["Request ID"],row["Sample Name"],row["Plate"],row["Destination Well"]) do |plate_key, request_id, location|
           parsed_plates[plate_key][location.column_order] = [location,request_id]
         end
       end

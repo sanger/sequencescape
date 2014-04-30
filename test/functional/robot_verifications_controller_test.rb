@@ -33,8 +33,8 @@ class RobotVerificationsControllerTest < ActionController::TestCase
         @expected_layout[1].each do |barcode,bed_number|
           @robot.robot_properties.create(:key => "SCRC#{bed_number}", :value => bed_number)
           @source_plate = Factory :plate, :barcode => barcode
-          well        = Factory :well, :map_id => Map.for_position_on_plate(count, 96).first.id
-          target_well = Factory :well, :map_id => Map.for_position_on_plate(count, 96).first.id
+          well        = Factory :well, :map_id => Map.for_position_on_plate(count, 96, @source_plate.asset_shape).first.id
+          target_well = Factory :well, :map_id => Map.for_position_on_plate(count, 96, @source_plate.asset_shape).first.id
           target_well.well_attribute = Factory :well_attribute
           @source_plate.add_and_save_well(well)
           @plate.add_and_save_well(target_well)

@@ -16,6 +16,7 @@ Feature: Update the data release fields for creating a study
       OR
 
       This data has been described in the following article [doi or ref] and its further analysis can be freely submitted for publication. For information on the proper use of data shared by the Wellcome Trust Sanger Institute (including information on acknowledgement), please see http://www.sanger.ac.uk/datasharing/
+      If applicable, include a brief description of any restrictions on data usage, e.g. 'For AIDS-releated research only'
       """
 
   Scenario Outline: Add help text opposite delay drop down (4044305)
@@ -56,11 +57,11 @@ Feature: Update the data release fields for creating a study
     And I should exactly see "Comment regarding data release timing and approval"
 
     When I fill in the following:
-        | Study name                                                                                  | new study       |
-        | Study description                                                                           | writing cukes   |
-        | Please explain the reason for delaying release (e.g., pre-existing collaborative agreement) | some comment    |
-        | Comment regarding data release timing and approval                                          | another comment |
-    And I select "Jack Sponsor" from "Faculty Sponsor"
+  	    | Study name                                         | new study       |
+  	    | Study description                                  | writing cukes   |
+  	    | Please explain the reason for delaying release     | some comment    |
+  	    | Comment regarding data release timing and approval | another comment |
+  	And I select "Jack Sponsor" from "Faculty Sponsor"
     And I select "Yes" from "Do any of the samples in this study contain human DNA?"
     And I select "No" from "Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?"
     And I select "open" from "What is the data release strategy for this study?"

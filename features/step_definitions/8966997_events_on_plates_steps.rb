@@ -9,7 +9,7 @@ end
 Given /^plate "([^"]*)" is part of study "([^"]*)"$/ do |plate_barcode, study_name|
   plate = Plate.find_from_machine_barcode(plate_barcode)
   study = Study.find_by_name(study_name)
-  RequestFactory.create_assets_requests(plate.wells.map(&:id), study.id)
+  RequestFactory.create_assets_requests(plate.wells, study)
 end
 
 Then /^the plate "([^"]*)" should have a 'pico_analysed' event$/ do |plate_barcode|

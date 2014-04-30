@@ -4,7 +4,7 @@ Feature: Create a submission based on the sanger_sample_id
   Background:
     Given I am a "administrator" user logged in as "user"
     Given I have a project called "Test project"
-    And project "Test project" has enough quotas
+    
     Given I have an active study called "Test study"
     Given I have a plate in study "Test study" with samples with known sanger_sample_ids
     Given I am on the show page for study "Test study"

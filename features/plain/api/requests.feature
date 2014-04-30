@@ -18,7 +18,7 @@ Feature: Interacting with requests through the API
     Then the JSON should be an empty array
 
   Scenario: Listing all of the requests related to sample tubes
-    Given the project "Project testing the JSON API" has a "Pulldown library creation" quota of 10
+
     And I have a sample tube called "Tube"
     And the sample tube "Tube" has been involved in a "Pulldown library creation" request within the study "Study testing the JSON API" for the project "Project testing the JSON API"
     And all assets have sequential UUIDs based on "aaaaaaaa-1111-2222-3333"
@@ -82,7 +82,7 @@ Feature: Interacting with requests through the API
       """
 
   Scenario: Listing all of the requests related to library tubes
-    Given the project "Project testing the JSON API" has a "Paired end sequencing" quota of 10
+
     And I have a library tube called "Tube"
     And the library tube "Tube" has been involved in a "Paired end sequencing" request within the study "Study testing the JSON API" for the project "Project testing the JSON API"
     And all assets have sequential UUIDs based on "aaaaaaaa-1111-2222-3333"
@@ -145,7 +145,7 @@ Feature: Interacting with requests through the API
       """
 
   Scenario Outline: Retrieving the JSON for a request that is for library preparation
-    Given the project "Project testing the JSON API" has a "<request type>" quota of 10
+
     And I have already made a "<request type>" request within the study "Study testing the JSON API" for the project "Project testing the JSON API"
     And all assets have sequential UUIDs based on "aaaaaaaa-1111-2222-3333"
 
@@ -213,7 +213,7 @@ Feature: Interacting with requests through the API
       |Multiplexed library creation|
 
   Scenario Outline: Retrieving the JSON for a request that is for sequencing
-    Given the project "Project testing the JSON API" has a "<request type>" quota of 10
+
     And I have already made a "<request type>" request within the study "Study testing the JSON API" for the project "Project testing the JSON API"
     And all assets have sequential UUIDs based on "aaaaaaaa-1111-2222-3333"
 
@@ -281,7 +281,7 @@ Feature: Interacting with requests through the API
 
   @priority
   Scenario: Retrieving the JSON for a request which is owned by a user and has the priority flag set
-    Given the project "Project testing the JSON API" has a "Single ended sequencing" quota of 10
+
     And I have already made a "Single ended sequencing" request within the study "Study testing the JSON API" for the project "Project testing the JSON API"
     And all assets have sequential UUIDs based on "aaaaaaaa-1111-2222-3333"
     Given user "abc" owns all requests

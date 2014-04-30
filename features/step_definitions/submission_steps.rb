@@ -93,6 +93,14 @@ SENSIBLE_DEFAULTS_FOR_REQUEST_TYPE = {
   "Single ended hi seq sequencing" => SENSIBLE_DEFAULTS_HISEQ,
   "HiSeq Paired end sequencing"    => SENSIBLE_DEFAULTS_HISEQ,
 
+  "Illumina-B Single ended sequencing"      => SENSIBLE_DEFAULTS_FOR_SEQUENCING,
+  "Illumina-B Paired end sequencing"        => SENSIBLE_DEFAULTS_FOR_SEQUENCING,
+
+  # HiSeq defaults
+  "Illumina-B Single ended hi seq sequencing" => SENSIBLE_DEFAULTS_HISEQ,
+  "Illumina-B HiSeq Paired end sequencing"    => SENSIBLE_DEFAULTS_HISEQ,
+
+
   # PacBio defaults
   "PacBio Sample Prep" => {}
 }
@@ -178,4 +186,8 @@ Given /^I have a "([^\"]*)" submission with the following setup:$/ do |template_
   )
 
   #step(%Q{1 pending delayed jobs are processed})
+end
+
+Then /^the last submission should have a priority of (\d+)$/ do |priority|
+  Submission.last.update_attributes!(:priority=>priority)
 end

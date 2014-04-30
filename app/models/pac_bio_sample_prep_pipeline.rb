@@ -1,5 +1,11 @@
 class PacBioSamplePrepPipeline < Pipeline
+  INBOX_PARTIAL               = 'group_by_parent'
   ALWAYS_SHOW_RELEASE_ACTIONS = true
+
+  def inbox_partial
+    INBOX_PARTIAL
+  end
+
 
   def post_release_batch(batch, user)
     cancel_sequencing_requests_on_library_failure(batch)
@@ -44,4 +50,5 @@ class PacBioSamplePrepPipeline < Pipeline
   def requires_position?
     false
   end
+
 end

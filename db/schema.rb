@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121218134529) do
+ActiveRecord::Schema.define(:version => 20140402114508) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -54,6 +54,13 @@ ActiveRecord::Schema.define(:version => 20121218134529) do
   create_table "asset_barcodes", :force => true do |t|
   end
 
+  create_table "asset_creation_parents", :force => true do |t|
+    t.integer  "asset_creation_id"
+    t.integer  "parent_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "asset_creations", :force => true do |t|
     t.integer  "user_id"
     t.integer  "parent_id"
@@ -94,6 +101,15 @@ ActiveRecord::Schema.define(:version => 20121218134529) do
   add_index "asset_links", ["ancestor_id", "direct"], :name => "index_asset_links_on_ancestor_id_and_direct"
   add_index "asset_links", ["descendant_id", "direct"], :name => "index_asset_links_on_descendant_id_and_direct"
 
+  create_table "asset_shapes", :force => true do |t|
+    t.string   "name",                 :null => false
+    t.integer  "horizontal_ratio",     :null => false
+    t.integer  "vertical_ratio",       :null => false
+    t.string   "description_strategy", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "assets", :force => true do |t|
     t.string   "name"
     t.string   "value"
@@ -124,6 +140,7 @@ ActiveRecord::Schema.define(:version => 20121218134529) do
   add_index "assets", ["barcode_prefix_id"], :name => "index_assets_on_barcode_prefix_id"
   add_index "assets", ["legacy_sample_id"], :name => "index_assets_on_sample_id"
   add_index "assets", ["map_id"], :name => "index_assets_on_map_id"
+  add_index "assets", ["sti_type", "plate_purpose_id"], :name => "index_assets_on_plate_purpose_id_sti_type"
   add_index "assets", ["sti_type", "updated_at"], :name => "index_assets_on_sti_type_and_updated_at"
   add_index "assets", ["sti_type"], :name => "index_assets_on_sti_type"
   add_index "assets", ["updated_at"], :name => "index_assets_on_updated_at"
@@ -268,6 +285,12 @@ ActiveRecord::Schema.define(:version => 20121218134529) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "bulk_transfers", :force => true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "user_id"
   end
 
   create_table "comments", :force => true do |t|
@@ -553,16 +576,47 @@ ActiveRecord::Schema.define(:version => 20121218134529) do
     t.string "name"
   end
 
+  create_table "lot_types", :force => true do |t|
+    t.string   "name",              :null => false
+    t.string   "template_class",    :null => false
+    t.integer  "target_purpose_id", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "lot_types", ["target_purpose_id"], :name => "fk_lot_types_to_plate_purposes"
+
+  create_table "lots", :force => true do |t|
+    t.string   "lot_number",    :null => false
+    t.integer  "lot_type_id",   :null => false
+    t.integer  "template_id",   :null => false
+    t.string   "template_type", :null => false
+    t.integer  "user_id",       :null => false
+    t.date     "received_at",   :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "lots", ["lot_number", "lot_type_id"], :name => "index_lot_number_lot_type_id", :unique => true
+  add_index "lots", ["lot_type_id"], :name => "fk_lots_to_lot_types"
+
   create_table "maps", :force => true do |t|
-    t.string  "description",  :limit => 4
+    t.string  "description",    :limit => 4
     t.integer "asset_size"
     t.integer "location_id"
     t.integer "row_order"
     t.integer "column_order"
+    t.integer "asset_shape_id",              :default => 1, :null => false
   end
 
   add_index "maps", ["description", "asset_size"], :name => "index_maps_on_description_and_asset_size"
   add_index "maps", ["description"], :name => "index_maps_on_description"
+
+  create_table "order_roles", :force => true do |t|
+    t.string   "role"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "orders", :force => true do |t|
     t.integer  "study_id"
@@ -582,6 +636,8 @@ ActiveRecord::Schema.define(:version => 20121218134529) do
     t.integer  "asset_group_id"
     t.string   "asset_group_name"
     t.integer  "submission_id"
+    t.integer  "pre_cap_group"
+    t.integer  "order_role_id"
   end
 
   add_index "orders", ["state_to_delete"], :name => "index_submissions_on_state"
@@ -653,6 +709,14 @@ ActiveRecord::Schema.define(:version => 20121218134529) do
   add_index "pipelines_request_types", ["pipeline_id"], :name => "fk_pipelines_request_types_to_pipelines"
   add_index "pipelines_request_types", ["request_type_id"], :name => "fk_pipelines_request_types_to_request_types"
 
+  create_table "plate_conversions", :force => true do |t|
+    t.integer  "target_id",  :null => false
+    t.integer  "purpose_id", :null => false
+    t.integer  "user_id",    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "plate_creator_purposes", :force => true do |t|
     t.integer  "plate_creator_id", :null => false
     t.integer  "plate_purpose_id", :null => false
@@ -674,8 +738,10 @@ ActiveRecord::Schema.define(:version => 20121218134529) do
     t.string   "infinium_barcode"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "fluidigm_barcode", :limit => 10
   end
 
+  add_index "plate_metadata", ["fluidigm_barcode"], :name => "index_on_fluidigm_barcode", :unique => true
   add_index "plate_metadata", ["plate_id"], :name => "index_plate_metadata_on_plate_id"
 
   create_table "plate_owners", :force => true do |t|
@@ -694,21 +760,24 @@ ActiveRecord::Schema.define(:version => 20121218134529) do
   end
 
   create_table "plate_purposes", :force => true do |t|
-    t.string   "name",                                                                 :null => false
+    t.string   "name",                                                                       :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "type"
     t.string   "target_type",                     :limit => 30
     t.boolean  "qc_display",                                    :default => false
     t.boolean  "pulldown_display"
-    t.boolean  "can_be_considered_a_stock_plate",               :default => false,     :null => false
+    t.boolean  "can_be_considered_a_stock_plate",               :default => false,           :null => false
     t.string   "default_state",                                 :default => "pending"
     t.integer  "barcode_printer_type_id",                       :default => 2
-    t.boolean  "cherrypickable_target",                         :default => true,      :null => false
-    t.boolean  "cherrypickable_source",                         :default => false,     :null => false
-    t.string   "cherrypick_direction",                          :default => "column",  :null => false
+    t.boolean  "cherrypickable_target",                         :default => true,            :null => false
+    t.boolean  "cherrypickable_source",                         :default => false,           :null => false
+    t.string   "cherrypick_direction",                          :default => "column",        :null => false
     t.integer  "default_location_id"
     t.string   "cherrypick_filters"
+    t.integer  "size",                                          :default => 96
+    t.integer  "asset_shape_id",                                :default => 1,               :null => false
+    t.string   "barcode_for_tecan",                             :default => "ean13_barcode", :null => false
   end
 
   add_index "plate_purposes", ["qc_display"], :name => "index_plate_purposes_on_qc_display"
@@ -736,6 +805,18 @@ ActiveRecord::Schema.define(:version => 20121218134529) do
   end
 
   add_index "plate_volumes_shadow", ["uploaded_file_name"], :name => "index_plate_volumes_on_uploaded_file_name"
+
+  create_table "pre_capture_pool_pooled_requests", :force => true do |t|
+    t.integer "pre_capture_pool_id", :null => false
+    t.integer "request_id",          :null => false
+  end
+
+  add_index "pre_capture_pool_pooled_requests", ["request_id"], :name => "request_id_should_be_unique", :unique => true
+
+  create_table "pre_capture_pools", :force => true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "product_lines", :force => true do |t|
     t.string "name", :null => false
@@ -778,7 +859,51 @@ ActiveRecord::Schema.define(:version => 20121218134529) do
   add_index "projects", ["state"], :name => "index_projects_on_state"
   add_index "projects", ["updated_at"], :name => "index_projects_on_updated_at"
 
-  create_table "quotas", :force => true do |t|
+  create_table "qc_decision_qcables", :force => true do |t|
+    t.integer  "qc_decision_id", :null => false
+    t.integer  "qcable_id",      :null => false
+    t.string   "decision",       :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "qc_decisions", :force => true do |t|
+    t.integer  "lot_id",     :null => false
+    t.integer  "user_id",    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "qc_files", :force => true do |t|
+    t.integer  "asset_id"
+    t.string   "asset_type"
+    t.integer  "size"
+    t.string   "content_type"
+    t.string   "filename"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "qcable_creators", :force => true do |t|
+    t.integer  "lot_id",     :null => false
+    t.integer  "user_id",    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "qcables", :force => true do |t|
+    t.integer  "lot_id",            :null => false
+    t.integer  "asset_id",          :null => false
+    t.string   "state",             :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "qcable_creator_id", :null => false
+  end
+
+  add_index "qcables", ["asset_id"], :name => "index_asset_id"
+  add_index "qcables", ["lot_id"], :name => "index_lot_id"
+
+  create_table "quotas_bkp", :force => true do |t|
     t.integer  "limit",            :default => 0
     t.integer  "project_id"
     t.datetime "created_at"
@@ -787,14 +912,25 @@ ActiveRecord::Schema.define(:version => 20121218134529) do
     t.integer  "preordered_count", :default => 0
   end
 
-  add_index "quotas", ["request_type_id", "project_id"], :name => "index_quotas_on_request_type_id_and_project_id"
-  add_index "quotas", ["updated_at"], :name => "index_quotas_on_updated_at"
+  add_index "quotas_bkp", ["request_type_id", "project_id"], :name => "index_quotas_on_request_type_id_and_project_id"
+  add_index "quotas_bkp", ["updated_at"], :name => "index_quotas_on_updated_at"
 
   create_table "reference_genomes", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "request_events", :force => true do |t|
+    t.integer  "request_id",   :null => false
+    t.string   "event_name",   :null => false
+    t.string   "from_state"
+    t.string   "to_state"
+    t.datetime "current_from", :null => false
+    t.datetime "current_to"
+  end
+
+  add_index "request_events", ["request_id", "current_to"], :name => "index_request_events_on_request_id_and_current_to"
 
   create_table "request_information_types", :force => true do |t|
     t.string   "name"
@@ -835,17 +971,20 @@ ActiveRecord::Schema.define(:version => 20121218134529) do
     t.integer  "bait_library_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "pre_capture_plex_level"
+    t.float    "gigabases_expected"
+    t.integer  "target_purpose_id"
   end
 
   add_index "request_metadata", ["request_id"], :name => "index_request_metadata_on_request_id"
 
-  create_table "request_quotas", :force => true do |t|
+  create_table "request_quotas_bkp", :force => true do |t|
     t.integer "request_id", :null => false
     t.integer "quota_id",   :null => false
   end
 
-  add_index "request_quotas", ["quota_id", "request_id"], :name => "index_request_quotas_on_quota_id_and_request_id"
-  add_index "request_quotas", ["request_id"], :name => "fk_request_quotas_to_requests"
+  add_index "request_quotas_bkp", ["quota_id", "request_id"], :name => "index_request_quotas_on_quota_id_and_request_id"
+  add_index "request_quotas_bkp", ["request_id"], :name => "fk_request_quotas_to_requests"
 
   create_table "request_type_plate_purposes", :force => true do |t|
     t.integer "request_type_id",  :null => false
@@ -855,7 +994,7 @@ ActiveRecord::Schema.define(:version => 20121218134529) do
   add_index "request_type_plate_purposes", ["request_type_id", "plate_purpose_id"], :name => "plate_purposes_are_unique_within_request_type", :unique => true
 
   create_table "request_types", :force => true do |t|
-    t.string   "key",                :limit => 50
+    t.string   "key",                :limit => 100
     t.string   "name"
     t.integer  "workflow_id"
     t.datetime "created_at"
@@ -864,15 +1003,15 @@ ActiveRecord::Schema.define(:version => 20121218134529) do
     t.integer  "order"
     t.string   "initial_state",      :limit => 20
     t.string   "target_asset_type"
-    t.boolean  "multiples_allowed",                :default => false
+    t.boolean  "multiples_allowed",                 :default => false
     t.string   "request_class_name"
     t.text     "request_parameters"
-    t.integer  "morphology",                       :default => 0
-    t.boolean  "for_multiplexing",                 :default => false
-    t.boolean  "billable",                         :default => false
+    t.integer  "morphology",                        :default => 0
+    t.boolean  "for_multiplexing",                  :default => false
+    t.boolean  "billable",                          :default => false
     t.integer  "product_line_id"
-    t.boolean  "deprecated",                       :default => false, :null => false
-    t.boolean  "no_target_asset",                  :default => false, :null => false
+    t.boolean  "deprecated",                        :default => false, :null => false
+    t.boolean  "no_target_asset",                   :default => false, :null => false
     t.integer  "target_purpose_id"
   end
 
@@ -894,6 +1033,7 @@ ActiveRecord::Schema.define(:version => 20121218134529) do
     t.integer  "initial_project_id"
     t.integer  "priority",                         :default => 0
     t.string   "sti_type"
+    t.integer  "order_id"
   end
 
   add_index "requests", ["asset_id"], :name => "index_requests_on_asset_id"
@@ -1051,6 +1191,7 @@ ActiveRecord::Schema.define(:version => 20121218134529) do
     t.string   "treatment"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "donor_id"
   end
 
   add_index "sample_metadata", ["sample_id"], :name => "index_sample_metadata_on_sample_id"
@@ -1093,6 +1234,38 @@ ActiveRecord::Schema.define(:version => 20121218134529) do
     t.datetime "updated_at"
     t.string   "model_name"
   end
+
+  create_table "specific_tube_creation_purposes", :force => true do |t|
+    t.integer  "specific_tube_creation_id"
+    t.integer  "tube_purpose_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "stamp_qcables", :force => true do |t|
+    t.integer  "stamp_id",   :null => false
+    t.integer  "qcable_id",  :null => false
+    t.string   "bed",        :null => false
+    t.integer  "order",      :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "stamp_qcables", ["qcable_id"], :name => "fk_stamp_qcables_to_qcables"
+  add_index "stamp_qcables", ["stamp_id"], :name => "fk_stamp_qcables_to_stamps"
+
+  create_table "stamps", :force => true do |t|
+    t.integer  "lot_id",     :null => false
+    t.integer  "user_id",    :null => false
+    t.integer  "robot_id",   :null => false
+    t.string   "tip_lot",    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "stamps", ["lot_id"], :name => "fk_stamps_to_lots"
+  add_index "stamps", ["robot_id"], :name => "fk_stamps_to_robots"
+  add_index "stamps", ["user_id"], :name => "fk_stamps_to_users"
 
   create_table "state_changes", :force => true do |t|
     t.integer  "user_id"
@@ -1163,7 +1336,10 @@ ActiveRecord::Schema.define(:version => 20121218134529) do
     t.string   "hmdmc_approval_number"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "remove_x_and_autosomes",                 :default => "No", :null => false
+    t.string   "remove_x_and_autosomes",                 :default => "No",  :null => false
+    t.string   "dac_policy_title"
+    t.boolean  "separate_y_chromosome_data",             :default => false, :null => false
+    t.string   "data_access_group"
   end
 
   add_index "study_metadata", ["faculty_sponsor_id"], :name => "index_study_metadata_on_faculty_sponsor_id"
@@ -1285,6 +1461,7 @@ ActiveRecord::Schema.define(:version => 20121218134529) do
     t.integer  "asset_group_id_to_delete"
     t.string   "asset_group_name_to_delete"
     t.string   "name"
+    t.integer  "priority",                   :limit => 1,  :default => 0, :null => false
   end
 
   add_index "submissions", ["state"], :name => "index_submissions_on_state"
@@ -1340,8 +1517,8 @@ ActiveRecord::Schema.define(:version => 20121218134529) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "substitutions"
-    t.string   "walking_algorithm",   :default => "TagLayout::WalkWellsByPools"
+    t.string   "substitutions",       :limit => 1525
+    t.string   "walking_algorithm",                   :default => "TagLayout::WalkWellsByPools"
   end
 
   create_table "tags", :force => true do |t|
@@ -1376,6 +1553,8 @@ ActiveRecord::Schema.define(:version => 20121218134529) do
     t.boolean "interactive"
     t.boolean "per_item"
     t.string  "sti_type",             :limit => 50
+    t.boolean "lab_activity"
+    t.integer "purpose_id"
   end
 
   add_index "tasks", ["name"], :name => "index_tasks_on_name"
@@ -1399,6 +1578,7 @@ ActiveRecord::Schema.define(:version => 20121218134529) do
     t.integer  "destination_id"
     t.string   "destination_type"
     t.string   "transfers",        :limit => 1024
+    t.integer  "bulk_transfer_id"
   end
 
   add_index "transfers", ["source_id"], :name => "source_id_idx"

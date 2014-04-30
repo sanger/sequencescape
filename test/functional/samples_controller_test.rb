@@ -45,28 +45,6 @@ class SamplesControllerTest < ActionController::TestCase
         should_redirect_to("sample path") { sample_path(@sample) }
       end
 
-      context "#automatic move sample" do
-        setup do
-          @study_from = Factory :study, :id => "69"
-          @study_to = Factory :study, :id => "96"
-        end
-
-        should "without correct data give Error." do
-          post :move_upload, :file => File.open(RAILS_ROOT + '/test/data/upload_sample_move.xls')
-          assert_equal "Caution, errors were found. Lines with errors are not processed.", flash[:error]
-        end
-
-        should "with correct data all sample in XLS are moved." do
-          @sample = Factory :sample, :id => 696969
-          @workflow = Factory :submission_workflow
-          @study_sample = Factory :study_sample, :study => @study_from, :sample => @sample
-          post :move_upload, :file => File.open(RAILS_ROOT + '/test/data/upload_sample_move.xls')
-
-          assert_equal nil, flash[:error]
-        end
-
-      end
-
       context "#move" do
       end
     end

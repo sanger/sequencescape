@@ -233,8 +233,8 @@ class Studies::Workflows::SubmissionsController < ApplicationController
             flash[:notice] = "Order successfully created."
             format.html { redirect_to new_study_workflow_submissions_path(@study, @workflow, :submission_template_id => @submission_template.id, :id => @submission.id) }
           end
-        rescue Quota::Error => quota_exception
-          action_flash[:error] = quota_exception.message
+        rescue Submission::ProjectValidation::Error => project_exception
+          action_flash[:error] = project_exception.message
           raise
         rescue InvalidInputException => input_exception
           action_flash[:error] = input_exception.message
@@ -247,7 +247,7 @@ class Studies::Workflows::SubmissionsController < ApplicationController
           raise
         end
       end
-    rescue StandardError, Quota::Error => exception
+    rescue StandardError, Submission::ProjectValidation::Error => exception
       if @submission_is_new
         # the submission hasn't been saved, therefore if it's a new one
         # it doesn't exist in the database and it's ID is invalid

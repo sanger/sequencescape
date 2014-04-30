@@ -5,6 +5,7 @@ class Submission < ActiveRecord::Base
   include ModelExtensions::Submission
   #TODO[mb14] check if really needed. We use them in project_test
   include Request::Statistics::DeprecatedMethods
+  include Submission::Priorities
 
 
   include DelayedJobEx
@@ -45,6 +46,8 @@ class Submission < ActiveRecord::Base
   # Before destroying this instance we should cancel all of the requests it has made
   before_destroy :cancel_all_requests_on_destruction
 
+  PER_ORDER_REQUEST_OPTIONS = ['pre_capture_plex_level','gigabases_expected']
+
   def cancel_all_requests_on_destruction
     ActiveRecord::Base.transaction do
       requests.all.each do |request|
@@ -66,7 +69,7 @@ class Submission < ActiveRecord::Base
 
   def self.build!(options)
     submission_options = {}
-    [:message].each do |option|
+    [:message, :priority].each do |option|
       value = options.delete(option)
       submission_options[option] = value if value
     end
@@ -74,7 +77,7 @@ class Submission < ActiveRecord::Base
       order = Order.prepare!(options)
       order.create_submission({:user_id => order.user_id}.merge(submission_options)).built!
       order.save! #doesn't save submission id otherwise
-      study_name = order.try(:study).name
+      study_name = order.study.try(:name)
       order.submission.update_attributes!(:name=>study_name) if study_name
       order.submission.reload
     end
@@ -98,6 +101,8 @@ class Submission < ActiveRecord::Base
       orders.each do |order|
         order.build_request_graph!(multiplexing_assets) { |a| multiplexing_assets ||= a }
       end
+
+      PreCapturePool::Builder.new(self).build!
 
       errors.add(:requests, "No requests have been created for this submission") if requests.empty?
       raise ActiveRecord::RecordInvalid, self if errors.present?
@@ -146,6 +151,7 @@ class Submission < ActiveRecord::Base
     # check every order agains the first one
     first_order = orders.first
     orders[1..-1].each { |o| check_orders_compatible?(o,first_order) }
+    return false if errors.count > 0
  end
  private :validate_orders_are_compatible
 
@@ -154,20 +160,18 @@ class Submission < ActiveRecord::Base
  # which decide if orders are compatible or not
  def check_orders_compatible?(a,b)
     errors.add(:request_types, "are incompatible") if a.request_types != b.request_types
-    errors.add(:request_options, "are incompatible") if a.request_options != b.request_options
+    errors.add(:request_options, "are incompatible") if !request_options_compatible?(a,b)
     errors.add(:item_options, "are incompatible") if a.item_options != b.item_options
     check_studies_compatible?(a.study, b.study)
-    check_samples_compatible?(a,b)
+ end
+
+ def request_options_compatible?(a,b)
+   a.request_options.reject {|k,_| PER_ORDER_REQUEST_OPTIONS.include?(k) } == b.request_options.reject {|k,_| PER_ORDER_REQUEST_OPTIONS.include?(k) }
  end
 
  def check_studies_compatible?(a,b)
     errors.add(:study, "Can't mix contaminated and non contaminated human DNA") unless a.study_metadata.contaminated_human_dna == b.study_metadata.contaminated_human_dna
     errors.add(:study, "Can't mix X and autosome removal with non-removal") unless a.study_metadata.remove_x_and_autosomes == b.study_metadata.remove_x_and_autosomes
- end
-
- def check_samples_compatible?(a,b)
-    reference_genomes = [a, b].map(&:samples).flatten.uniq.group_by(&:sample_reference_genome).keys
-    errors.add(:samples, "Can't mix reference genenome") if  reference_genomes.size > 1
  end
 
   #for the moment we consider that request types should be the same for all order
@@ -196,11 +200,11 @@ class Submission < ActiveRecord::Base
       sibling_requests, next_possible_requests = all_requests.partition { |r| r.request_type_id == request.request_type_id }
 
     if request.request_type.for_multiplexing?
-      # Multiplexed requests should not get batched seperately, and furthermore, will all use the same sequencing request for
+      # Multiplexed requests should not get batched separately, and furthermore, will all use the same sequencing request for
       # each lane. The divergence ratio plays no part in identifying the start index
       next_possible_requests
     else
-      # If requests aren't multiplexed, then they may be batched seperately, and we'll have issues
+      # If requests aren't multiplexed, then they may be batched separately, and we'll have issues
       # if downstream changes affect the ratio. We can use the multiplier on order however, as we
       # don't need to worry about divergence ratios f < 1
       # Determine the number of requests that should come next from the multipliers in the orders.
@@ -215,9 +219,22 @@ class Submission < ActiveRecord::Base
   end
 
   def name
-    name = attributes[:name] || orders.map {|o| o.try(:study).try(:name) }.compact.sort.uniq.join("|")
+    name = attributes['name'] || study_names
     name.present? ? name : "##{id}"
   end
+
+  def study_names
+    # TODO: Should probably be re-factored, although we'll only fall back to the intensive code in the case of cross study re-requests
+    orders.map {|o| o.study.try(:name)||o.assets.map{|a| a.aliquots.map {|al| al.study.try(:name) }} }.flatten.compact.sort.uniq.join("|")
+  end
+
+ def cross_project?
+  multiplexed? && orders.map(&:project_id).uniq.size > 1
+ end
+
+ def cross_study?
+  multiplexed? && orders.map(&:study_id).uniq.size > 1
+ end
 
 end
 

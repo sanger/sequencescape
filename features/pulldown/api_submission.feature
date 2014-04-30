@@ -15,15 +15,15 @@ Feature: Beginning with the API progress through pulldown to sequencing
 
     Given I have a project called "Testing submission creation"
     And the UUID for the project "Testing submission creation" is "22222222-3333-4444-5555-000000000001"
-    And project "Testing submission creation" has enough quotas
+
 
     Given the UUID for the request type "Cherrypicking for Pulldown" is "99999999-1111-2222-3333-000000000000"
     And the UUID for the request type "Pulldown Multiplex Library Preparation" is "99999999-1111-2222-3333-000000000001"
     And the UUID for the request type "HiSeq Paired end sequencing" is "99999999-1111-2222-3333-000000000002"
 
-    Given the UUID for the well "Well_1234567_1" is "44444444-2222-3333-4444-000000000001"
-    And the UUID for the well "Well_1234567_2" is "44444444-2222-3333-4444-000000000002"
-    And the UUID for the well "Well_1234567_3" is "44444444-2222-3333-4444-000000000003"
+    Given the UUID for well 1 on plate "1234567" is "44444444-2222-3333-4444-000000000001"
+    And the UUID for well 2 on plate "1234567" is "44444444-2222-3333-4444-000000000002"
+    And the UUID for well 3 on plate "1234567" is "44444444-2222-3333-4444-000000000003"
 
   Scenario: Create a submission where there are different number of lanes requested for 3 submissions
     Given I have an "active" study called "Study B"
@@ -35,12 +35,12 @@ Feature: Beginning with the API progress through pulldown to sequencing
     Given plate "333" with 3 samples in study "Study C" exists
     Given plate "333" has nonzero concentration results
 
-    Given the UUID for the well "Well_222_1" is "44444444-2222-3333-4444-000000000004"
-    And the UUID for the well "Well_222_2" is "44444444-2222-3333-4444-000000000005"
-    And the UUID for the well "Well_222_3" is "44444444-2222-3333-4444-000000000006"
-    And the UUID for the well "Well_333_1" is "44444444-2222-3333-4444-000000000007"
-    And the UUID for the well "Well_333_2" is "44444444-2222-3333-4444-000000000008"
-    And the UUID for the well "Well_333_3" is "44444444-2222-3333-4444-000000000009"
+    Given the UUID for well 1 on plate "222" is "44444444-2222-3333-4444-000000000004"
+    And the UUID for well 2 on plate "222" is "44444444-2222-3333-4444-000000000005"
+    And the UUID for well 3 on plate "222" is "44444444-2222-3333-4444-000000000006"
+    And the UUID for well 1 on plate "333" is "44444444-2222-3333-4444-000000000007"
+    And the UUID for well 2 on plate "333" is "44444444-2222-3333-4444-000000000008"
+    And the UUID for well 3 on plate "333" is "44444444-2222-3333-4444-000000000009"
 
     Given the UUID for the submission template "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" is "00000000-1111-2222-3333-444444444444"
 
@@ -92,7 +92,7 @@ Feature: Beginning with the API progress through pulldown to sequencing
 
     And I select "Create Batch" from "Action to perform"
     And I press "Submit"
-    When I follow "Start batch"
+    When I follow "Cherrypick Group By Submission"
     When I fill in "Volume Required" with "13"
     And I fill in "Concentration Required" with "50"
     And I select "Pulldown Aliquot" from "Plate Purpose"
@@ -104,7 +104,7 @@ Feature: Beginning with the API progress through pulldown to sequencing
     When I check "Select DN99999F for batch"
     And I select "Create Batch" from "Action to perform"
     And I press "Submit"
-    When I follow "Start batch"
+    When I follow "Tag Groups"
 
     When I select "UK10K tag group" from "Tag Group"
     And I press "Next step"
@@ -148,12 +148,12 @@ Feature: Beginning with the API progress through pulldown to sequencing
     And the UUID for the study "Study C" is "22222222-3333-4444-7777-000000000000"
     Given plate "333" with 3 samples in study "Study C" exists
     Given plate "333" has nonzero concentration results
-    Given the UUID for the well "Well_222_1" is "44444444-2222-3333-4444-000000000004"
-    And the UUID for the well "Well_222_2" is "44444444-2222-3333-4444-000000000005"
-    And the UUID for the well "Well_222_3" is "44444444-2222-3333-4444-000000000006"
-    And the UUID for the well "Well_333_1" is "44444444-2222-3333-4444-000000000007"
-    And the UUID for the well "Well_333_2" is "44444444-2222-3333-4444-000000000008"
-    And the UUID for the well "Well_333_3" is "44444444-2222-3333-4444-000000000009"
+    Given the UUID for well 1 on plate "222" is "44444444-2222-3333-4444-000000000004"
+    And the UUID for well 2 on plate "222" is "44444444-2222-3333-4444-000000000005"
+    And the UUID for well 3 on plate "222" is "44444444-2222-3333-4444-000000000006"
+    And the UUID for well 1 on plate "333" is "44444444-2222-3333-4444-000000000007"
+    And the UUID for well 2 on plate "333" is "44444444-2222-3333-4444-000000000008"
+    And the UUID for well 3 on plate "333" is "44444444-2222-3333-4444-000000000009"
 
     Given the UUID of the next submission created will be "11111111-2222-3333-4444-555555555555"
       And the UUID of the next order created will be "11111111-2222-3333-4444-666666666665"
@@ -201,7 +201,7 @@ Feature: Beginning with the API progress through pulldown to sequencing
 
     And I select "Create Batch" from "Action to perform"
     And I press "Submit"
-    When I follow "Start batch"
+    When I follow "Cherrypick Group By Submission"
     When I fill in "Volume Required" with "13"
     And I fill in "Concentration Required" with "50"
     And I select "Pulldown Aliquot" from "Plate Purpose"
@@ -213,7 +213,7 @@ Feature: Beginning with the API progress through pulldown to sequencing
     When I check "Select DN99999F for batch"
     And I select "Create Batch" from "Action to perform"
     And I press "Submit"
-    When I follow "Start batch"
+    When I follow "Tag Groups"
 
     When I select "UK10K tag group" from "Tag Group"
     And I press "Next step"
@@ -322,7 +322,7 @@ Feature: Beginning with the API progress through pulldown to sequencing
      When I check "Select DN1234567T for batch"
      And I select "Create Batch" from "Action to perform"
      And I press "Submit"
-     When I follow "Start batch"
+     When I follow "Cherrypick Group By Submission"
      When I fill in "Volume Required" with "13"
      And I fill in "Concentration Required" with "50"
      And I select "Pulldown Aliquot" from "Plate Purpose"
@@ -333,7 +333,7 @@ Feature: Beginning with the API progress through pulldown to sequencing
      When I check "Select DN99999F for batch"
      And I select "Create Batch" from "Action to perform"
      And I press "Submit"
-     When I follow "Start batch"
+     When I follow "Tag Groups"
      When I select "UK10K tag group" from "Tag Group"
      And I press "Next step"
      And I press "Next step"
@@ -344,7 +344,7 @@ Feature: Beginning with the API progress through pulldown to sequencing
      When I check "Select PulldownMultiplexedLibraryTube 1 for batch"
      And I select "Create Batch" from "Action to perform"
      And I press "Submit"
-     And I follow "Start batch"
+     And I follow "Specify Dilution Volume"
      And I press "Next step"
      And I press "Next step"
      And I press "Next step"

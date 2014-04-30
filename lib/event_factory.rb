@@ -1,69 +1,5 @@
 class EventFactory
 
-  ###############################
-  # Quota related notifications #
-  ###############################
-  # Creates an event and sends an email when a request for quota update is made
-  def self.quota_update(project, user, incoming = {}, comment = "")
-    content = "A change has been requested for this project's request quota:\n\n"
-
-    incoming.each do |request_type_key, quota|
-      request_type = RequestType.find_by_key(request_type_key.to_s)
-      original_limit = project.quota_limit_for(request_type)
-
-      if original_limit < quota.to_i
-        content = content + "An increase in #{request_type.name.downcase} quota: from #{original_limit} to #{quota}.\n"
-      elsif original_limit > quota.to_i
-        content = content + "An decrease in #{request_type.name.downcase} quota: from #{original_limit} to #{quota}.\n"
-      end
-    end
-
-    content = content + "\n"
-    content = content + "Request received from: #{user.login}\n\n"
-    content = content + "#{comment}\n\n"
-
-    event = Event.new(
-      :eventful_id   => project.id,
-      :eventful_type => "Project",
-      :message       => "Quota update request",
-      :content       => content,
-      :created_by    => user.login
-    )
-    event.save
-
-    EventfulMailer.deliver_confirm_event(User.all_administrators_emails, event.eventful, event.message, event.content, "No Milestone")
-    event
-  end
-
-  # Creates an event and sends an email when quota is updated
-  def self.quota_updated(project, user)
-    content = "Project quota approved by #{user.login}"
-
-    event = Event.new(
-      :eventful_id => project.id,
-      :eventful_type => "Project",
-      :message => "Project quota approved",
-      :created_by => user.login,
-      :content => content,
-      :of_interest_to => "administrators"
-    )
-    event.save
-
-    recipients = User.all_administrators_emails
-
-    # Get the project owner's email
-    unless project.owner.nil? || recipients.include?(project.owner.email)
-      recipients << project.owner.email
-    end
-
-    # Delete empty strings
-    recipients.delete_if {|x| x == ""}
-    # Get rid of all duplicate email addresses
-    recipients.uniq!
-
-    EventfulMailer.deliver_confirm_event(recipients, event.eventful, event.message, event.content, "No Milestone")
-  end
-
   #################################
   # project related notifications #
   #################################
@@ -217,7 +153,7 @@ class EventFactory
     )
 
     recipients = []
-    request.quotas.map(&:project).each do |project|
+    request.initial_project.tap do |project|
       recipients << project.manager.email if project && project.manager
     end
 

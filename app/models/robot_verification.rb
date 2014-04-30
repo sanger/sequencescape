@@ -8,7 +8,8 @@ class RobotVerification
   end
 
   def expected_layout(batch, destination_plate_barcode)
-    batch.tecan_layout_plate_barcodes(Barcode.number_to_human(destination_plate_barcode))
+    plate_barcode = Barcode.number_to_human(destination_plate_barcode) || Plate.find_from_machine_barcode(destination_plate_barcode).barcode
+    batch.tecan_layout_plate_barcodes(plate_barcode)
   end
 
   def valid_source_plates_on_robot?(beds, plates, robot, batch,all_expected_plate_layout)

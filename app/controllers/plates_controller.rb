@@ -1,5 +1,5 @@
 class PlatesController < ApplicationController
-  before_filter :login_required, :except => [:upload_pico_results]
+  before_filter :login_required, :except => [:upload_pico_results, :fluidigm_file]
 
   def new
     @plate_creators   = Plate::Creator.all(:order => 'name ASC')
@@ -67,6 +67,16 @@ class PlatesController < ApplicationController
         format.html { redirect_to(to_sample_tubes_plates_path) }
         format.xml  { render :xml  => flash.to_xml,  :status => :unprocessable_entity }
         format.json { render :json => flash.to_json, :status => :unprocessable_entity }
+      end
+    end
+  end
+
+  def fluidigm_file
+    if logged_in?
+      @plate = Plate.find(params[:id])
+      @parents = @plate.parents
+      respond_to do |format|
+        format.csv { render :csv => @plate, :content_type => "text/csv" }
       end
     end
   end

@@ -6,42 +6,14 @@
         project <%= @project.id %> &middot; Created on <%= @project.created_at.to_formatted_s(:long) %> &middot; <%= @project.state.capitalize %>
       </div>
 
-      <h3>Quotas</h3>
+      <h3>Project validation</h3>
       <table width='100%' cellspacing='0' cellpadding='0'>
         <tr>
-         <td width='40%' class='item'><label for='project_enforce_quotas'>Enforce quotas:</label></td>
+         <td width='40%' class='item'><label for='project_enforce_quotas'>Enforce validation:</label></td>
          <td width='60%'>
            <%= form.check_box :enforce_quotas %>
          </td>
         </tr>
-
-        <% if @project %>
-          <% @project.quotas.each do |quota| %>
-            <tr>
-              <td class='item'>
-                <label for='project_quotas_<%= quota.request_type.id %>'><%= quota.request_type.name %></label>
-              </td>
-              <td>
-                <%= text_field_tag "project[quotas][#{quota.request_type.id}]", quota.limit -%>
-                <%= link_to("<span style='color: red;'><strong>[reset]</strong></span>", {:action => "reset_quota", :id => @project.id, :request_type => quota.request_type.id}, :confirm => "Are you sure?") -%>
-              </td>
-            </tr>
-          <% end %>
-          <tr>
-            <td colspan='2' align='center'>
-            <%= link_to_function("Add more Quotas &darr;", nil, :id => "more_link") do |page|
-              page.visual_effect :toggle_blind, 'quotas'
-            end -%>
-              <div id='quotaListContainer'>
-                <div id='quotas' style='display:none;'>
-                  <ul id='quotaList'>
-                    <%= render :partial => "edit_quotas", :locals => {:request_types => @request_types } %>
-                  </ul>
-                </div>
-              </div>
-            </td>
-          </tr>
-        <% end %>
       </table>
 
       <h3>Project information</h3>

@@ -4,7 +4,7 @@ Feature: Cherrypicking for Pulldown pipeline
   Background:
     Given I am a "administrator" user logged in as "user"
     Given I have a project called "Test project"
-    And project "Test project" has enough quotas
+
     Given I have an active study called "Test study"
     And I have an active study called "Study A"
     And the "96 Well Plate" barcode printer "xyz" exists
@@ -44,7 +44,7 @@ Feature: Cherrypicking for Pulldown pipeline
   Scenario: Cherrypick and multiplex library prep for pulldown with 16 tags
     Given I have a tag group called "UK10K tag group" with 16 tags
     Given I have a pulldown batch
-    When I follow "Start batch"
+    When I follow "Tag Groups"
     When I select "UK10K tag group" from "Tag Group"
     And I press "Next step"
     Then I should see "Assign Tags to Wells"
@@ -66,7 +66,7 @@ Feature: Cherrypicking for Pulldown pipeline
   Scenario: Use 8 tags and rearrange manually in a valid order
     Given I have a tag group called "UK10K tag group" with 8 tags
     Given I have a pulldown batch
-    When I follow "Start batch"
+    When I follow "Tag Groups"
     When I select "UK10K tag group" from "Tag Group"
     And I press "Next step"
     Then I should see "Assign Tags to Wells"
@@ -114,7 +114,7 @@ Feature: Cherrypicking for Pulldown pipeline
     Given I have a tag group called "UK10K tag group" with 8 tags
     Given I have a pulldown batch
 
-    When I follow "Start batch"
+    When I follow "Tag Groups"
     When I select "UK10K tag group" from "Tag Group"
     And I press "Next step"
     Then I should see "Assign Tags to Wells"
@@ -160,7 +160,7 @@ Feature: Cherrypicking for Pulldown pipeline
   Scenario: Apply 8 tags and progress to hiseq sequencing
     Given I have a tag group called "UK10K tag group" with 8 tags
     Given I have a pulldown batch
-    When I follow "Start batch"
+    When I follow "Tag Groups"
     When I select "UK10K tag group" from "Tag Group"
     And I press "Next step"
     And I press "Next step"
@@ -172,7 +172,7 @@ Feature: Cherrypicking for Pulldown pipeline
     When I check "Select PulldownMultiplexedLibraryTube 1 for batch"
     And I check "Select PulldownMultiplexedLibraryTube 2 for batch"
     And I press "Submit"
-    And I follow "Start batch"
+    And I follow "Specify Dilution Volume"
     And I press "Next step"
     And I press "Next step"
     And I press "Next step"
@@ -184,7 +184,7 @@ Feature: Cherrypicking for Pulldown pipeline
   Scenario: Change your mind about tag assignment before releasing the batch
     Given I have a tag group called "UK10K tag group" with 8 tags
     Given I have a pulldown batch
-    When I follow "Start batch"
+    When I follow "Tag Groups"
     When I select "UK10K tag group" from "Tag Group"
     And I press "Next step"
     And I press "Next step"
@@ -245,7 +245,7 @@ Feature: Cherrypicking for Pulldown pipeline
   Scenario: Release batch then change your mind about tag assignment
     Given I have a tag group called "UK10K tag group" with 8 tags
     Given I have a pulldown batch
-    When I follow "Start batch"
+    When I follow "Tag Groups"
     When I select "UK10K tag group" from "Tag Group"
     And I press "Next step"
     And I press "Next step"
@@ -322,7 +322,7 @@ Feature: Cherrypicking for Pulldown pipeline
     And I check "Select DN444V for batch"
     And I press "Submit"
     Given a plate barcode webservice is available and returns "99999"
-    When I follow "Start batch"
+    When I follow "Select Plate Template"
     When I fill in "Volume Required" with "13"
     And I fill in "Concentration Required" with "50"
     And I select "Pulldown Aliquot" from "Plate Purpose"
@@ -332,7 +332,7 @@ Feature: Cherrypicking for Pulldown pipeline
     Given I am on the show page for pipeline "Pulldown Multiplex Library Preparation"
     When I check "Select DN99999F for batch"
     And I press "Submit"
-    When I follow "Start batch"
+    When I follow "Tag Groups"
     When I select "UK10K tag group" from "Tag Group"
     And I press "Next step"
     And I press "Next step"
@@ -364,7 +364,7 @@ Feature: Cherrypicking for Pulldown pipeline
     And I check "Select DN222J for batch"
     And I press "Submit"
     Given a plate barcode webservice is available and returns "99999"
-    When I follow "Start batch"
+    When I follow "Select Plate Template"
     When I fill in "Volume Required" with "13"
     And I fill in "Concentration Required" with "50"
     And I select "Pulldown Aliquot" from "Plate Purpose"
@@ -374,7 +374,7 @@ Feature: Cherrypicking for Pulldown pipeline
     Given I am on the show page for pipeline "Pulldown Multiplex Library Preparation"
     When I check "Select DN99999F for batch"
     And I press "Submit"
-    When I follow "Start batch"
+    When I follow "Tag Groups"
     When I select "UK10K tag group" from "Tag Group"
     And I press "Next step"
     Then I should see "Duplicate tags will be assigned to a pooled tube, select a different tag group"
@@ -410,7 +410,7 @@ Feature: Cherrypicking for Pulldown pipeline
     When I check "Select DN1234567T for batch"
     And I press "Submit"
     Given a plate barcode webservice is available and returns "99999"
-    When I follow "Start batch"
+    When I follow "Select Plate Template"
     When I fill in "Volume Required" with "13"
     And I fill in "Concentration Required" with "50"
     And I select "Pulldown Aliquot" from "Plate Purpose"
@@ -420,7 +420,7 @@ Feature: Cherrypicking for Pulldown pipeline
     Given I am on the show page for pipeline "Pulldown Multiplex Library Preparation"
     When I check "Select DN99999F for batch"
     And I press "Submit"
-    When I follow "Start batch"
+    When I follow "Tag Groups"
     When I select "UK10K tag group" from "Tag Group"
     And I press "Next step"
     And I press "Next step"
@@ -431,7 +431,7 @@ Feature: Cherrypicking for Pulldown pipeline
     When I check "Select PulldownMultiplexedLibraryTube 1 for batch"
     And I select "Create Batch" from "action_on_requests"
     And I press "Submit"
-    And I follow "Start batch"
+    And I follow "Specify Dilution Volume"
     And I press "Next step"
     And I press "Next step"
     And I press "Next step"
@@ -444,7 +444,7 @@ Feature: Cherrypicking for Pulldown pipeline
   Scenario: Worksheet with 8 tags
     Given I have a tag group called "UK10K tag group" with 8 tags
     Given I have a pulldown batch
-    When I follow "Start batch"
+    When I follow "Tag Groups"
     When I select "UK10K tag group" from "Tag Group"
     And I press "Next step"
     Then I should see "Assign Tags to Wells"

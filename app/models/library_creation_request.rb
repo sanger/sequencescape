@@ -16,7 +16,8 @@ class LibraryCreationRequest < Request
     "TraDIS",
     "qPCR only",
     "Pre-quality controlled",
-    "DSN_RNAseq"
+    "DSN_RNAseq",
+    "RNA-seq dUTP"
   ]
 
   DEFAULT_LIBRARY_TYPE = 'Standard'
@@ -31,6 +32,7 @@ class LibraryCreationRequest < Request
   has_metadata :as => Request do
     # /!\ We don't check the read_length, because we don't know the restriction, that depends on the SequencingRequest
     attribute(:read_length, :integer => true) # meaning , so not required but some people want to set it
+    attribute(:gigabases_expected, :positive_float => true)
   end
 
   include Request::LibraryManufacture
@@ -40,12 +42,14 @@ class LibraryCreationRequest < Request
   # an MX library is also a type of library that might have libraries coming into it, therefore we only update the
   # information that is missing.
   def on_started
-    super
-    target_asset.aliquots.each do |aliquot|
-      aliquot.library      ||= target_asset
-      aliquot.library_type ||= library_type
-      aliquot.insert_size  ||= insert_size
-      aliquot.save!
+    ActiveRecord::Base.transaction do
+      super
+      target_asset.aliquots.each do |aliquot|
+        aliquot.library      ||= target_asset
+        aliquot.library_type ||= library_type
+        aliquot.insert_size  ||= insert_size
+        aliquot.save!
+      end
     end
   end
 

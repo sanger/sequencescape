@@ -126,7 +126,7 @@ class BatchTest < ActiveSupport::TestCase
         context "where 1 needs to be removed" do
           setup do
             @batch_requests_count = @batch.requests.count
-            @batch.remove_request_ids([ @request2.id])
+            @batch.remove_request_ids([ @request2.id],'Reason','Comment')
           end
           should "leave 2 requests behind" do
             assert_not_nil @batch.requests.find(@request2)
@@ -282,6 +282,7 @@ class BatchTest < ActiveSupport::TestCase
     setup do
       @pipeline_next = Factory :pipeline, :name => 'Next pipeline'
       @pipeline      = Factory :pipeline, :name => 'Pipeline for BatchTest', :automated => false, :next_pipeline_id => @pipeline_next.id, :asset_type => "LibraryTube"
+      @sequencing_pipeline = Factory :sequencing_pipeline, :name => 'SequencingPipeline for BatchTest', :automated => false, :asset_type => "Lane"
       @pipeline_qc   = Factory :pipeline, :name => 'quality control', :automated => true, :next_pipeline_id => @pipeline_next.id
     end
 
@@ -333,6 +334,12 @@ class BatchTest < ActiveSupport::TestCase
         assert_equal @batch.request_count, 2
       end
 
+      should "raise an exception if you try and ignore requests" do
+        assert_raise StandardError do
+          @batch.fail(@reason, @comment, :ignore_requests)
+        end
+      end
+
       context "create failures" do
         setup do
           @batch.fail(@reason, @comment)
@@ -362,7 +369,7 @@ class BatchTest < ActiveSupport::TestCase
 
       context "fail requests" do
         setup do
-          EventSender.expects(:send_fail_event).returns(true).times(1)
+          EventSender.expects(:send_fail_event)
           @requests = { "#{@request1.id}"=>"on" }
           @batch.fail_batch_items(@requests, @reason, @comment)
         end
@@ -371,9 +378,13 @@ class BatchTest < ActiveSupport::TestCase
 
         should "not fail not requested requests"
 
-        should "not fail the batch"
+        should "not fail the batch" do
+          assert !@batch.failed?
+        end
 
-        should "create failures on failed requests"
+        should "create failures on failed requests" do
+          assert_equal 1, @request1.failures.count
+        end
       end
 
       context "control request" do
@@ -387,6 +398,7 @@ class BatchTest < ActiveSupport::TestCase
         end
 
         should "fail control request"
+
       end
 
       should "not fail requests if value passed is not set to ON" do
@@ -397,13 +409,19 @@ class BatchTest < ActiveSupport::TestCase
 
       context "fail the batch" do
         setup do
-          EventSender.expects(:send_fail_event).returns(true)
+          EventSender.expects(:send_fail_event).returns(true).times(2)
           @requests = { "#{@request1.id}"=>"on", "#{@request2.id}"=>"on" }
+          @request1.expects(:terminated?).returns(true).times(1)
+          @request2.expects(:terminated?).returns(true).times(1)
           @batch.fail_batch_items(@requests, @reason, @comment)
         end
 
-        should "if all the requests within the batch are failing, fail the batch too"
+        should "if all the requests within the batch are failing, fail the batch too" do
+          assert @batch.failed?
+        end
+
         should "change @batch.failures.count, :from => 0, :to => 1"
+
       end
     end
 
@@ -645,11 +663,11 @@ class BatchTest < ActiveSupport::TestCase
     context "#reset!" do
       setup do
         @batch = @pipeline.batches.create!
-        @started_request   = @pipeline.request_types.last.create!(:state => 'pending',   :target_asset => Factory(:sample_tube))
-        @cancelled_request = @pipeline.request_types.last.create!(:state => 'cancelled', :target_asset => Factory(:sample_tube))
-        @batch.requests << @started_request << @cancelled_request
-
-        @batch.expects(:destroy)    # Always gets destroyed
+        @pending_request   = @pipeline.request_types.last.create!(:state => 'pending', :asset=> Factory(:sample_tube), :target_asset => Factory(:sample_tube))
+        @pending_request_2 = @pipeline.request_types.last.create!(:state => 'pending', :asset=> Factory(:sample_tube), :target_asset => Factory(:sample_tube))
+        @pending_request.asset.children << @pending_request.target_asset
+        @pending_request_2.asset.children << @pending_request_2.target_asset
+        @batch.requests << @pending_request << @pending_request_2
       end
 
       # Separate context because we need to setup the DB first and we cannot check the changes made.
@@ -660,6 +678,54 @@ class BatchTest < ActiveSupport::TestCase
 
         should_change('BatchRequest.count', :by => -2) { BatchRequest.count }
         should_change('Asset.count', :by => -2) { Asset.count }
+        should_change('Request.count', :by => 0) { Request.count }
+        should_change('Batch.count', :by =>0) { Batch.count }
+
+        should 'transition to discarded' do
+          assert_equal('discarded',@batch.state)
+        end
+      end
+
+      context 'once started' do
+        setup do
+         @batch.update_attributes!(:state=>'started')
+       end
+
+       should 'raise an exception' do
+          assert_raise AASM::InvalidTransition do
+            @batch.reset!(@user)
+          end
+        end
+      end
+    end
+
+    context "#reset! of sequencing_pipeline" do
+      setup do
+        @batch = @sequencing_pipeline.batches.create!
+        @ancestor = Factory :sample_tube
+        @pending_request   = @sequencing_pipeline.request_types.last.create!(:state => 'pending', :asset=> Factory(:library_tube), :target_asset => Factory(:lane))
+        @pending_request_2 = @sequencing_pipeline.request_types.last.create!(:state => 'pending', :asset=> Factory(:library_tube), :target_asset => Factory(:lane))
+        @ancestor.children = [@pending_request.asset, @pending_request_2.asset]
+        @pending_request.asset.children << @pending_request.target_asset
+        @pending_request_2.asset.children << @pending_request_2.target_asset
+        @batch.requests << @pending_request << @pending_request_2
+      end
+
+      # Separate context because we need to setup the DB first and we cannot check the changes made.
+      context 'checking DB changes' do
+        setup do
+          @batch.reset!(@user)
+        end
+
+        should_change('BatchRequest.count', :by => -2) { BatchRequest.count }
+        should_change('Asset.count', :by => -2) { Asset.count }
+        should_change('Request.count', :by => 0) { Request.count }
+
+        should_change('Batch.count', :by =>0) { Batch.count }
+
+        should 'transition to discarded' do
+          assert_equal('discarded',@batch.state)
+        end
       end
     end
 
@@ -908,4 +974,5 @@ class BatchTest < ActiveSupport::TestCase
       @batch.complete!(@user)
     end
   end
+
 end

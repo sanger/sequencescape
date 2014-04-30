@@ -15,12 +15,6 @@ Given /^I have already made a request for library tube "([^\"]+)" within the stu
   ).save!
 end
 
-Given /^the project "([^\"]+)" has a "([^\"]+)" quota of (\d+)$/ do |name, type, quota|
-  project      = Project.find_by_name(name) or raise StandardError, "Cannot find project with name #{ name.inspect }"
-  request_type = RequestType.find_by_name(type) or raise StandardError, "Cannot find request type #{ type.inspect }"
-  project.quota_for!(request_type).update_attributes!(:limit => quota)
-end
-
 When /^I follow the "([^\"]+)" request$/ do |request_type|
   step(%Q{I follow "#{ request_type } request"})
 end

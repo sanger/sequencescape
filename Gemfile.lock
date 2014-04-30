@@ -26,6 +26,12 @@ GIT
       builder (>= 2.1.2)
 
 GIT
+  remote: git+ssh://git@github.com/sanger/irods_reader
+  revision: 14db88aa7783118d2d4a8351c5028d07e6ee5644
+  specs:
+    irods_reader (0.0.2)
+
+GIT
   remote: git+ssh://git@github.com/sanger/ruby_walk
   revision: 6e86c0413ab508933de899d7a3c6bc3b415e2acb
   specs:
@@ -33,16 +39,16 @@ GIT
 
 GIT
   remote: git+ssh://git@github.com/sanger/sanger_barcode.git
-  revision: f3175bbb2df4782fe8b5ff2433a25f6fbbebb495
+  revision: 2d354c48dd325551662309be247c87a5bfea3b57
   branch: ruby-1.8
   specs:
-    sanger_barcode (0.0.1)
+    sanger_barcode (0.1.0)
 
 GIT
   remote: git@github.com:sanger/psd_logger.git
-  revision: e16d106be39ea096f95787a927b8ce24ec522bde
+  revision: dd2d634114df75b1d8535715c169a7fc99521389
   specs:
-    psd_logger (0.1.5)
+    psd_logger (0.1.6)
 
 GEM
   remote: http://rubygems.org/
@@ -58,7 +64,7 @@ GEM
       rack (~> 1.1.3)
     activerecord (2.3.15)
       activesupport (= 2.3.15)
-    activerecord-jdbc-adapter (1.2.2)
+    activerecord-jdbc-adapter (1.2.9)
     activerecord-oracle_enhanced-adapter (1.2.3)
       activerecord (>= 2.0.0)
     activeresource (2.3.15)
@@ -128,7 +134,7 @@ GEM
     hoe (3.4.0)
       rake (>= 0.8, < 11.0)
     i18n (0.4.2)
-    jdbc-mysql (5.1.13)
+    jdbc-mysql (5.1.25)
     jruby-openssl (0.7.7)
       bouncy-castle-java (>= 1.5.0146.1)
     jruby-rack (1.1.10)
@@ -241,7 +247,7 @@ PLATFORMS
 
 DEPENDENCIES
   aasm (~> 2.4.0)
-  activerecord-jdbc-adapter
+  activerecord-jdbc-adapter (>= 1.2.6)
   activerecord-oracle_enhanced-adapter (= 1.2.3)
   acts-as-dag!
   acts_as_audited
@@ -264,6 +270,7 @@ DEPENDENCIES
   flog
   formtastic (~> 1.2.0)
   gmetric (~> 0.1.3)
+  irods_reader (>= 0.0.2)!
   jdbc-mysql
   jruby-openssl
   json
@@ -287,7 +294,7 @@ DEPENDENCIES
   ruby-debug
   ruby-oci8 (= 1.0.7)
   ruby_walk (>= 0.0.3)!
-  sanger_barcode!
+  sanger_barcode (~> 0.1.0)!
   shoulda (~> 2.10.0)
   sinatra (~> 1.1.0)
   spoon

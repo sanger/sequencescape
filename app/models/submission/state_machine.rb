@@ -29,19 +29,11 @@ module Submission::StateMachine
     # TODO[xxx]: ... to here
 
     def complete_building
-      orders(true).all?(&:complete_building)
-
+      orders(true).each(&:complete_building)
     end
 
     def process_submission!
       # Does nothing by default!
-    end
-
-    def fail_orders!
-      # TODO we need to find a cleaner way release
-      # book quota and especially not release them twice
-      return if state == "failed"  # don't do it twice
-      orders.each(&:unbook_quota_available_for_request_types!)
     end
 
     def unprocessed?
@@ -56,7 +48,7 @@ module Submission::StateMachine
     aasm_state :pending, :enter => :complete_building
     aasm_state :processing, :enter => :process_submission!
     aasm_state :ready
-    aasm_state :failed, :enter => :fail_orders!
+    aasm_state :failed
 
     aasm_event :built do
       transitions :to => :pending, :from => [ :building ]

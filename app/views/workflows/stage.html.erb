@@ -1,5 +1,6 @@
 <% add :title, "Processing batch" %>
 <% add :menu, "View all batches" => batches_path %>
+<% add :menu, "Edit batch" => edit_batch_path(@batch) %>
 <% add :menu, "Print worksheet" => url_for(:controller => :batches, :action => :print, :id => @batch.id) %>
 <% if @batch.multiplexed? -%>
   <% add :menu, "Print pool label" => url_for(:controller => :batches, :action => :print_multiplex_labels, :id => @batch.id) -%>

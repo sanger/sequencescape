@@ -27,6 +27,8 @@ class PlatePurpose < Purpose
   named_scope :cherrypickable_as_target, :conditions => { :cherrypickable_target => true }
   named_scope :cherrypickable_as_source, :conditions => { :cherrypickable_source => true }
   named_scope :cherrypickable_default_type, :conditions => { :cherrypickable_target => true, :cherrypickable_source => true }
+  named_scope :for_submissions, { :conditions => 'can_be_considered_a_stock_plate = true OR name = "Working Dilution"', :order=>'can_be_considered_a_stock_plate DESC'}
+  named_scope :considered_stock_plate, { :conditions => { :can_be_considered_a_stock_plate => true } }
 
   serialize :cherrypick_filters
   validates_presence_of(:cherrypick_filters, :if => :cherrypickable_target?)
@@ -34,8 +36,26 @@ class PlatePurpose < Purpose
     r[:cherrypick_filters] ||= [ 'Cherrypick::Strategy::Filter::ShortenPlexesToFit' ]
   end
 
+  belongs_to :asset_shape, :class_name => 'Map::AssetShape'
+
+  def source_plate(plate)
+    plate.stock_plate
+  end
+
   def cherrypick_strategy
     Cherrypick::Strategy.new(self)
+  end
+
+  def cherrypick_dimension
+    cherrypick_direction == 'column' ? plate_height : plate_width
+  end
+
+  def plate_height
+    asset_shape.plate_height(size)
+  end
+
+  def plate_width
+    asset_shape.plate_width(size)
   end
 
   def cherrypick_filters
@@ -95,7 +115,10 @@ class PlatePurpose < Purpose
       parameters.concat(args)
     end
     raise "Apparently there are not requests on these wells?" if conditions.empty?
-    Request.where_is_not_a?(TransferRequest).all(:conditions => [ "(#{conditions.join(' OR ')})", *parameters ]).map(&:fail!)
+    Request.where_is_not_a?(TransferRequest).all(:conditions => [ "(#{conditions.join(' OR ')})", *parameters ]).map do |request|
+      # This can probably be switched for an each, as I don't think the array is actually used for anything.
+      request.passed? ? request.change_decision! : request.fail!
+    end
   end
   private :fail_stock_well_requests
 
@@ -121,8 +144,6 @@ class PlatePurpose < Purpose
   # TODO: change to purpose_id
   has_many :plates, :foreign_key => :plate_purpose_id
 
-  named_scope :considered_stock_plate, { :conditions => { :can_be_considered_a_stock_plate => true } }
-
   def target_plate_type
     self.target_type || 'Plate'
   end
@@ -133,11 +154,11 @@ class PlatePurpose < Purpose
   end
 
   def size
-    96
+    attributes['size']||96
   end
 
   def well_locations
-    in_preferred_order(Map.where_plate_size(size))
+    in_preferred_order(Map.where_plate_size(size).where_plate_shape(asset_shape))
   end
 
   def in_preferred_order(relationship)
@@ -159,7 +180,15 @@ class PlatePurpose < Purpose
     cherrypick_direction == 'row'
   end
 
+  def attatched?(plate)
+    true
+  end
+
   def child_plate_purposes
     child_purposes.where_is_a?(PlatePurpose)
+  end
+
+  def source_wells_for(stock_wells)
+    stock_wells
   end
 end

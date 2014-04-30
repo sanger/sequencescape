@@ -30,9 +30,9 @@ class SampleRegistrarTest < ActiveSupport::TestCase
         assert_equal(Sample.last.name, SampleTube.last.name)
       end
 
-      should 'set the barcode on the sample tube based on the ID' do
+      should 'set the barcode on the sample tube based on the AssetBarcode service' do
         sample_tube = SampleTube.last
-        assert_equal(sample_tube.id.to_s, sample_tube.barcode)
+        assert_equal(AssetBarcode.last.id.to_s, sample_tube.barcode)
       end
 
       should 'put the sample into the study' do

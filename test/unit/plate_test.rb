@@ -19,7 +19,7 @@ class PlateTest < ActiveSupport::TestCase
         context "for #{plate_size} plate" do
           setup do
             @well = Well.new
-            @plate =Plate.new(:name => "Test Plate", :size => plate_size)
+            @plate =Plate.new(:name => "Test Plate", :size => plate_size, :purpose=>Purpose.find_by_name('Stock Plate'))
           end
           context "with valid row and col combinations" do
             (0..row_size).step(1) do |row|
@@ -134,6 +134,20 @@ class PlateTest < ActiveSupport::TestCase
 
   end
 
+  context "Plate priority" do
+    setup do
+      @plate = Factory :transfer_plate
+      user = Factory(:user)
+      @plate.wells.each_with_index do |well,index|
+        Factory :request, :asset=>well, :submission=>Submission.create!(:priority => index+1, :user => user)
+      end
+    end
+
+    should "inherit the highest submission priority" do
+      assert_equal 2, @plate.priority
+    end
+  end
+
   context "Plate submission" do
     setup do
       @plate1 = Factory :plate
@@ -165,21 +179,6 @@ class PlateTest < ActiveSupport::TestCase
         should_change("Request.count", :by => 0) { Request.count }
         should "not set study.errors" do
           assert_equal 0, @study.errors.count
-        end
-      end
-      context "where project quotas are enforced" do
-        context "and there is no quota available" do
-          setup do
-            @project.enforce_quotas = true
-            @project.quotas.create(:request_type => @request_type_1, :limit => 0)
-            @project.quotas.create(:request_type => @request_type_2, :limit => 0)
-            @project.save
-          end
-          should "raise quota exception" do
-            assert_raise Quota::Error do
-              @plate1.generate_plate_submission(@project, @study, @user, @current_time)
-            end
-          end
         end
       end
     end
@@ -241,6 +240,47 @@ class PlateTest < ActiveSupport::TestCase
           end
           should_change("Event.count", :by => 0) { Event.count }
           should_change("Submission.count", :by => 0) { Submission.count }
+        end
+      end
+
+    end
+
+    context "A Plate" do
+      setup do
+        @plate = Plate.create!
+      end
+
+      context "without attachments" do
+        should "not report any qc_data" do
+          assert @plate.qc_files.empty?
+        end
+      end
+
+      context "with attached qc data" do
+        setup do
+          File.open("test/data/manifests/mismatched_plate.csv") do |file|
+            @plate.add_qc_file file
+          end
+        end
+
+        should "return any qc data" do
+          assert @plate.qc_files.count ==1
+          File.open("test/data/manifests/mismatched_plate.csv") do |file|
+            assert_equal file.read, @plate.qc_files.first.uploaded_data.file.read
+          end
+        end
+      end
+
+     context "with multiple attached qc data" do
+        setup do
+          File.open("test/data/manifests/mismatched_plate.csv") do |file|
+            @plate.add_qc_file file
+            @plate.add_qc_file file
+          end
+        end
+
+        should "return multiple qc data" do
+          assert @plate.qc_files.count ==2
         end
       end
 

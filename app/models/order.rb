@@ -1,4 +1,9 @@
 class Order < ActiveRecord::Base
+
+  class OrderRole < ActiveRecord::Base
+    set_table_name('order_roles')
+  end
+
   module InstanceMethods
     def complete_building
       #nothing just so mixin can use super
@@ -7,7 +12,7 @@ class Order < ActiveRecord::Base
   include InstanceMethods
   include Uuid::Uuidable
   include Submission::AssetGroupBehaviour
-  include Submission::QuotaBehaviour
+  include Submission::ProjectValidation
   include Submission::RequestOptionsBehaviour
   include Submission::AccessionBehaviour
   include ModelExtensions::Order
@@ -18,11 +23,13 @@ class Order < ActiveRecord::Base
 
   # Required at initial construction time ...
   belongs_to :study
-  validates_presence_of :study
+  validates_presence_of :study, :unless => :cross_study_allowed
 
   belongs_to :project
-  validates_presence_of :project
-  has_many :quotas, :through => :project
+  validates_presence_of :project, :unless => :cross_project_allowed
+
+  belongs_to :order_role, :class_name => 'Order::OrderRole'
+  delegate :role, :to => :order_role, :allow_nil => true
 
   belongs_to :user
   validates_presence_of :user
@@ -43,6 +50,9 @@ class Order < ActiveRecord::Base
 
   class AssetTypeError < StandardError
   end
+
+  def cross_study_allowed; false; end
+  def cross_project_allowed; false; end
 
   def no_consent_withdrawl
     return true unless all_samples.detect(&:consent_withdrawn?)
@@ -134,15 +144,14 @@ class Order < ActiveRecord::Base
 
   def create_request_of_type!(request_type, attributes = {}, &block)
     request_type.create!(attributes) do |request|
+      request.submission_id               = submission_id
       request.workflow                    = workflow
       request.study                       = study
-      request.initial_project             = project # don't trigger the use_quota which is called below
+      request.initial_project             = project
       request.user                        = user
-      request.submission_id               = submission_id
       request.request_metadata_attributes = request_type.extract_metadata_from_hash(request_options)
       request.state                       = initial_request_state(request_type)
-
-      use_quota!(request, true)
+      request.order                       = self
 
       if request.asset.present?
         raise AssetTypeError, "Asset type does not match that expected by request type." unless is_asset_applicable_to_type?(request_type, request.asset)
@@ -261,8 +270,13 @@ class Order < ActiveRecord::Base
      PacBioSequencingRequest,
      SequencingRequest,
      *Class.subclasses_of(SequencingRequest)
-    ].include?(RequestType.find(request_types).last.request_class)
+    ].include?(RequestType.find(request_types.last).request_class)
   end
+
+  def collect_gigabases_expected?
+    input_field_infos.any? {|k| k.key==:gigabases_expected}
+  end
+
 end
 
 

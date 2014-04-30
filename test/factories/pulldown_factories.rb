@@ -5,7 +5,7 @@ Factory.define(:transfer_plate, :class => Plate) do |plate|
   plate.after_create do |plate|
     plate.wells.import(
       [ 'A1', 'B1' ].map do |location|
-        map = Map.where_description(location).where_plate_size(plate.size).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
+        map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(Map::AssetShape.find_by_name('Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
         Factory(:tagged_well, :map => map)
       end
     )
@@ -31,7 +31,31 @@ Factory.define(:full_plate, :class => Plate) do |plate|
   end
 
   plate.after_create do |plate|
-    plate.wells.import(Map.where_plate_size(plate.size).all.map { |map| Factory(:well, :map => map) })
+    plate.wells.import(Map.where_plate_size(plate.size).where_plate_shape(plate.asset_shape).all.map { |map| Factory(:well, :map => map) })
+  end
+end
+
+Factory.define(:full_stock_plate, :class => Plate) do |plate|
+  plate.size 96
+
+  plate.after_build do |plate|
+    plate.plate_purpose = PlatePurpose.stock_plate_purpose
+  end
+
+  plate.after_create do |plate|
+    plate.wells.import(Map.where_plate_size(plate.size).where_plate_shape(plate.asset_shape).all.map { |map| Factory(:well, :map => map) })
+  end
+end
+
+Factory.define(:partial_plate, :class => Plate) do |plate|
+  plate.size 96
+
+  plate.after_build do |plate|
+    plate.plate_purpose = PlatePurpose.stock_plate_purpose
+  end
+
+  plate.after_create do |plate|
+    plate.wells.import(Map.where_plate_size(plate.size).where_plate_shape(plate.asset_shape).in_column_major_order.slice(0,48).map { |map| Factory(:well, :map => map) })
   end
 end
 
@@ -143,16 +167,21 @@ Factory.define(:tube_creation) do |tube_creation|
   tube_creation.after_build do |tube_creation|
     tube_creation.parent.plate_purpose = PlatePurpose.find_by_name('Parent plate purpose') || Factory(:parent_plate_purpose)
     tube_creation.child_purpose        = Tube::Purpose.find_by_name('Child tube purpose')  || Factory(:child_tube_purpose)
+    mock_request_type                  = Factory(:library_creation_request_type)
 
     # Ensure that the parent plate will pool into two children by setting up a dummy stock plate
-    stock_plate = PlatePurpose.find(2).create!(:do_not_create_wells, :barcode => '999999') { |p| p.wells = [Factory(:empty_well)] }
-    stock_well  = stock_plate.wells.first
+    stock_plate = PlatePurpose.find(2).create!(:do_not_create_wells, :barcode => '999999') { |p| p.wells = [Factory(:empty_well),Factory(:empty_well)] }
+    stock_wells  = stock_plate.wells
 
     AssetLink.create!(:ancestor => stock_plate, :descendant => tube_creation.parent)
 
-    tube_creation.parent.wells.in_column_major_order.in_groups_of(tube_creation.parent.wells.size/2).each do |pool|
+    tube_creation.parent.wells.in_column_major_order.in_groups_of(tube_creation.parent.wells.size/2).each_with_index do |pool,i|
       submission  = Submission.create!(:user => Factory(:user))
-      pool.each { |well| RequestType.transfer.create!(:asset => stock_well, :target_asset => well, :submission => submission) }
+      pool.each do |well|
+        RequestType.transfer.create!(:asset => stock_wells[i], :target_asset => well, :submission => submission);
+        mock_request_type.create!(:asset => stock_wells[i], :target_asset => well, :submission => submission, :request_metadata_attributes=>Factory(:request_metadata_for_library_creation).attributes);
+        Well::Link.create!(:type=>'stock', :target_well=>well, :source_well=>stock_wells[i])
+      end
     end
   end
 end

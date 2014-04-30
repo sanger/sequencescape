@@ -10,12 +10,23 @@ class Io::Plate < Io::Asset
                                           state  => state
                                       iteration  => iteration
                                           pools  => pools
+                                  pre_cap_groups => pre_cap_groups
+                                            role => label.prefix
+                                    purpose.name => label.text
+                                   location.name => location
+                                        priority => priority
 
-                               stock_plate.uuid  => stock_plate.uuid
-                            stock_plate.barcode  => stock_plate.barcode.number
-              stock_plate.barcode_prefix.prefix  => stock_plate.barcode.prefix
-            stock_plate.two_dimensional_barcode  => stock_plate.barcode.two_dimensional
-                      stock_plate.ean13_barcode  => stock_plate.barcode.ean13
-                       stock_plate.barcode_type  => stock_plate.barcode.type
+                               source_plate.uuid  => stock_plate.uuid
+                            source_plate.barcode  => stock_plate.barcode.number
+              source_plate.barcode_prefix.prefix  => stock_plate.barcode.prefix
+            source_plate.two_dimensional_barcode  => stock_plate.barcode.two_dimensional
+                      source_plate.ean13_barcode  => stock_plate.barcode.ean13
+                       source_plate.barcode_type  => stock_plate.barcode.type
+
+                                         barcode  => barcode.number
+                           barcode_prefix.prefix  => barcode.prefix
+                         two_dimensional_barcode  => barcode.two_dimensional
+                                   ean13_barcode  => barcode.ean13
+                                    barcode_type  => barcode.type
   })
 end

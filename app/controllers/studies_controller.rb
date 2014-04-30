@@ -77,12 +77,15 @@ class StudiesController < ApplicationController
   def show
     @study = Study.find(params[:id])
 
+
     respond_to do |format|
       format.html do
         if current_user.workflow.nil?
           flash[:notice] = "Your profile is incomplete. Please select a workflow."
           redirect_to edit_profile_path(current_user)
         else
+          flash.keep
+          flash.merge!({:warning=>@study.warnings}) if @study.warnings.present?
           redirect_to study_workflow_path(@study, current_user.workflow)
         end
       end
@@ -93,6 +96,8 @@ class StudiesController < ApplicationController
 
   def edit
     @study = Study.find(params[:id])
+    flash.keep
+    flash.merge!({:warning=>@study.warnings}) if @study.warnings.present?
     @users   = User.all
     redirect_if_not_owner_or_admin
   end
@@ -112,6 +117,8 @@ class StudiesController < ApplicationController
       end
 
       flash[:notice] = "Your study has been updated"
+      flash.keep
+      flash.merge!({:warning=>@study.warnings}) if @study.warnings.present?
 
       redirect_to study_path(@study)
     end

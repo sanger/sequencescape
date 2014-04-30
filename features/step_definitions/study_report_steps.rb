@@ -44,7 +44,7 @@ Given /^study "([^"]*)" has a plate "([^"]*)"$/ do |study_name, plate_barcode|
     samples << well.primary_aliquot.sample
   end
   study = Study.find_by_name(study_name)
-  RequestFactory.create_assets_requests(plate.wells.map(&:id), study.id)
+  RequestFactory.create_assets_requests(plate.wells, study)
 
   samples[0].external_properties.create!(:key => 'genotyping_done', :value => "DNAlab completed: 13")
   samples[1].external_properties.create!(:key => 'genotyping_done', :value => "Imported to Illumina: 123")
@@ -62,13 +62,13 @@ Given /^study "([^"]*)" has a plate "([^"]*)" to be volume checked$/ do |study_n
   end
 
   study = Study.find_by_name(study_name)
-  RequestFactory.create_assets_requests(plate.wells.map(&:id), study.id)
+  RequestFactory.create_assets_requests(plate.wells, study)
 end
 
 Given /^a study report is generated for study "([^"]*)"$/ do |study_name|
   study_report = StudyReport.create!(:study => Study.find_by_name(study_name))
   study_report.perform
-  step(%Q{1 pending delayed jobs are processed})
+  step(%Q{2 pending delayed jobs are processed})
 end
 
 

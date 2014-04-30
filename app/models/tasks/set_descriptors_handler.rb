@@ -5,10 +5,6 @@ module Tasks::SetDescriptorsHandler
     @rits = @batch.pipeline.request_information_types
     @requests = @batch.ordered_requests
 
-    unless @batch.started? || @batch.failed?
-      @batch.start!(current_user)
-    end
-
     # if qc_state is qc_manual then update it
     if @batch.qc_state == "qc_manual"
       @batch.lab_events.create(:description => "Manual QC", :message => "Manual QC started for batch #{@batch.id}", :user_id => current_user.id)
@@ -115,11 +111,6 @@ module Tasks::SetDescriptorsHandler
     @batch = Batch.find(params[:batch_id], :include => [:requests, :pipeline, :lab_events])
     @rits = @batch.pipeline.request_information_types
     @requests = @batch.ordered_requests
-
-    unless @batch.started? || @batch.failed?
-      @batch.start!(current_user)
-    end
-
     @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
     @task = @workflow.tasks[params[:id].to_i]
     @stage = params[:id].to_i

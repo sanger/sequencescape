@@ -7,8 +7,8 @@
     <div class='label'>
       <tr>
         <th class='{sorter: false}'>&nbsp;</th>
+        <th id="priority_flag"  style='text-align: center'><%= link_to image_tag("icon_0_flag.png", :size=>"16x16"), "javascript:void(0);" %></th>
         <% if current_user.is_lab_manager? %>
-          <th id="priority_flag"  style='text-align: center'><%= link_to image_tag("icon_0_flag.png", :size=>"16x16"), "javascript:void(0);" %></th>
           <th><%= link_to "Previous requests", "javascript:void(0);" %></th>
         <% end %>
         <th><%= link_to 'Product Line', 'javascript:void(0);' %></th>
@@ -39,10 +39,10 @@
             <%= hidden_label_tag_for_testing("request_#{request.id}", "Select #{request.asset.sti_type} #{request.asset.barcode} for batch") %>
             <%= check_box :request, request.id, :value => request.id, :class => 'grouped_checkbox request_checkbox', :'data-count' => 1 %>
           </td>
+          <td  style='text-align: center'>
+            <%= image_tag "icon_#{request.priority}_flag.png", 'alt' => request.priority, :size => '16x16', :class =>  "flag_image #{current_user.is_lab_manager? ? 'as_manager' : ''}", "data-priority" => request.priority, 'data-request-id' => request.id %>
+          </td>
           <% if current_user.is_lab_manager? %>
-            <td  style='text-align: center'>
-              <%= image_tag "icon_#{request.priority}_flag.png", 'alt' => request.priority, :size => '16x16', :class => 'flag_image', "data-priority" => request.priority, 'data-request-id' => request.id %>
-            </td>
             <td>
               <%= render :partial => "previous_failed_requests", :locals => { :request => request } %>
             </td>
@@ -84,7 +84,7 @@
               <%= h(request.request_metadata[information_type.key]) %>
             </td>
           <% end %>
-          <td width=100px><%= truncate(request.try(:submission).try(:name), :separator => ' ') %></td>
+          <td width=100px><%= truncate(request.try(:submission).try(:study_names), :separator => ' ') %></td>
         </tr>
       <%- end -%>
       </div>

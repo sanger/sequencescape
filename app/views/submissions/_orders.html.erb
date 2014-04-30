@@ -24,6 +24,14 @@
       :prompt => "Please select a template..."
     %>
 
+  <%= label("submission[priority]", 'Priority') %>
+  <%= select_tag(
+      "submission[priority]",
+      options_for_select(
+        Submission::Priorities.options
+      )
+    )%>
+
 
     <div id="order-parameters" >
       <%= render :partial => 'order_fields' if @presenter.submission.present? %>
@@ -47,7 +55,7 @@
     <%= submit_tag "&#10010; Add Order",
       :id       => "add-order",
       :class    => "button",
-      :disabled => true
+      :disabled => @presenter.orders.empty?
     %>
   </li>
 

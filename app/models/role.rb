@@ -21,6 +21,10 @@ class Role < ActiveRecord::Base
     Role.all.map { |r| r.name }.uniq
   end
 
+  def before_destroy
+    authorizable.touch unless authorizable.nil?
+  end
+
   # Include this module into your ActiveRecord model and get has_many roles and some
   # utility named_scopes.  You also get the ability to define role relations by name
   # through the role_relation class method.

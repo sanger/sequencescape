@@ -42,11 +42,6 @@ module LabInterface::WorkflowsHelper
   end
 
   def request_types_sorted_by_total(workflow, project)
-    request_types          = workflow.request_types.to_a.sort {|a,b| a.name <=> b.name}
-
-    active_request_types   = request_types.reject {|rt| project.total_quota(rt).zero? }
-    inactive_request_types = request_types.select {|rt| project.total_quota(rt).zero? }
-
-    (active_request_types + inactive_request_types)
+    workflow.request_types.to_a.sort {|a,b| a.name <=> b.name}
   end
 end

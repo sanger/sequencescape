@@ -2,14 +2,21 @@ module Identifiable
   def self.included(base)
     base.send(:has_many, :identifiers, :as => :identifiable)
     base.instance_eval do
-      named_scope :with_identifier , lambda { |resource_name| { :conditions => {"identifiers.identifiable_type" => self.name, "identifiers.resource_name" => resource_name } , :joins => :identifiers} }
+      named_scope :with_identifier, lambda { |t| {
+        :include => :identifiers,
+        :conditions => { :identifiers => { :resource_name => t } }
+      } }
+
+      named_scope :sync_identifier, lambda { |t| {
+        :joins => "INNER JOIN identifiers sid ON sid.identifiable_id=samples.id AND sid.identifiable_type IN (#{[self,*Class.subclasses_of(self)].map(&:name).map(&:inspect).join(',')})",
+        :conditions => ['sid.resource_name=? AND NOT sid.do_not_sync AND sid.external_id IS NOT NULL', t]
+      } }
     end
   end
 
   def identifier(resource_name)
-    identifiers.select { |i| i.resource_name == resource_name }.first
+    identifiers.detect { |i| i.resource_name == resource_name }
   end
-
 
   def set_external(resource_name, object_or_id)
     raise Exception.new, "Resource name can't be blank" if resource_name.blank?

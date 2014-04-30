@@ -49,8 +49,7 @@ class Accessionable::Submission < Accessionable::Base
           xml.ACTION {
             xml.MODIFY(
               :source => accessionable.file_name,
-              :schema => accessionable.schema_type,
-              :target => accessionable.accession_number
+              :schema => accessionable.schema_type
             )
           }
 

@@ -21,11 +21,11 @@ Feature: Creating a submissin with many orders
 
     Given I have a project called "Project A"
     And the UUID for the project "Project A" is "22222222-3333-4444-5555-000000000001"
-    And project "Project A" has enough quotas
+
 
     Given I have a project called "Project B"
     And the UUID for the project "Project B" is "22222222-3333-4444-5555-000000000002"
-    And project "Project B" has enough quotas
+
 
     And the UUID of the next submission created will be "11111111-2222-3333-4444-555555555555"
     And the UUID of the next order created will be "11111111-2222-3333-4444-666666666666"
@@ -88,7 +88,8 @@ Feature: Creating a submissin with many orders
     Then the submission with UUID "11111111-2222-3333-4444-555555555555" should have <number> "<type>" requests
     Examples:
        | template_name                                                  | number  | type                  | asset_type   |
-       | Library creation - Paired end sequencing                       | 4       | Paired end sequencing | sample tubes |
-       | Multiplexed Library creation - Paired end sequencing           | 2       | Paired end sequencing | sample tubes |
-       | Pulldown Multiplex Library Preparation - Paired end sequencing | 2       | Paired end sequencing | wells        |
+       | Illumina-C - Library creation - Paired end sequencing                       | 4       | Illumina-C Paired end sequencing | sample tubes |
+       | Illumina-C - Multiplexed Library creation - Paired end sequencing           | 1       | Illumina-C Paired end sequencing | sample tubes |
+       # Disabled as template is now deprecated
+       # | Pulldown Multiplex Library Preparation - Paired end sequencing | 1       | Paired end sequencing | wells        |
 

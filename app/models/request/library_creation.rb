@@ -29,6 +29,7 @@ class Request::LibraryCreation < Request
         # Redefine the fragment size attributes as they are fixed
         attribute(:fragment_size_required_from, minimum_details)
         attribute(:fragment_size_required_to, maximum_details)
+        attribute(:gigabases_expected, :positive_float => true)
       end
 
       include Request::LibraryManufacture
@@ -42,5 +43,9 @@ class Request::LibraryCreation < Request
         self[:fragment_size_required_to].try(:to_i)
       end
     end
+  end
+
+  def request_options_for_creation
+    Hash[[:fragment_size_required_from, :fragment_size_required_to, :library_type].map { |f| [ f, request_metadata[f] ] }]
   end
 end

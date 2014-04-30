@@ -13,17 +13,35 @@ class Well < Aliquot::Receptacle
     belongs_to :target_well, :class_name => 'Well'
     belongs_to :source_well, :class_name => 'Well'
   end
-  has_many :stock_well_links, :class_name => 'Well::Link', :foreign_key => :target_well_id, :conditions => { :type => 'stock' }
+  has_many :stock_well_links,  :class_name => 'Well::Link', :foreign_key => :target_well_id, :conditions => { :type => 'stock' }
+
   has_many :stock_wells, :through => :stock_well_links, :source => :source_well do
     def attach!(wells)
-      proxy_owner.stock_well_links.build(wells.map { |well| { :type => 'stock', :source_well => well } }).map(&:save!)
+      attach(wells).tap do |_|
+        proxy_owner.save!
+      end
+    end
+    def attach(wells)
+      proxy_owner.stock_well_links.build(wells.map { |well| { :type => 'stock', :source_well => well } })
     end
   end
+
   named_scope :include_stock_wells, { :include => { :stock_wells => :requests_as_source } }
 
   named_scope :located_at, lambda { |plate, location|
     { :joins => :map, :conditions => { :maps => { :description => location, :asset_size => plate.size } } }
   }
+
+  has_many :target_well_links, :class_name => 'Well::Link', :foreign_key => :source_well_id, :conditions => { :type => 'stock' }
+  has_many :target_wells, :through => :target_well_links, :source => :target_well
+  named_scope :stock_wells_for, lambda { |wells| {
+    :joins      => :target_well_links,
+    :conditions => {
+      :well_links =>{
+        :target_well_id => [wells].flatten.map(&:id)
+        }
+      }
+    }}
 
   named_scope :located_at_position, lambda { |position| { :joins => :map, :readonly => false, :conditions => { :maps => { :description => position } } } }
 
@@ -53,8 +71,8 @@ class Well < Aliquot::Receptacle
   named_scope :in_inverse_column_major_order, { :joins => :map, :order => 'column_order DESC' }
   named_scope :in_inverse_row_major_order, { :joins => :map, :order => 'row_order DESC' }
 
-  named_scope :in_plate_column, lambda {|col,size| {:joins => :map, :conditions => {:maps => {:description => Map.descriptions_for_column(col,size), :asset_size => size }}}}
-  named_scope :in_plate_row,    lambda {|row,size| {:joins => :map, :conditions => {:maps => {:description => Map.descriptions_for_row(row,size), :asset_size =>size }}}}
+  named_scope :in_plate_column, lambda {|col,size| {:joins => :map, :conditions => {:maps => {:description => Map::Coordinate.descriptions_for_column(col,size), :asset_size => size }}}}
+  named_scope :in_plate_row,    lambda {|row,size| {:joins => :map, :conditions => {:maps => {:description => Map::Coordinate.descriptions_for_row(row,size), :asset_size =>size }}}}
 
   named_scope :with_blank_samples, {
     :joins => [
@@ -62,6 +80,10 @@ class Well < Aliquot::Receptacle
       "INNER JOIN samples ON aliquots.sample_id=samples.id"
     ],
     :conditions => ['samples.empty_supplier_sample_name=?',true]
+  }
+
+  named_scope :with_contents, {
+    :joins => 'INNER JOIN aliquots ON aliquots.receptacle_id=assets.id'
   }
 
   include Transfer::WellHelpers
@@ -198,5 +220,9 @@ class Well < Aliquot::Receptacle
   def display_name
     plate_name = self.plate.present? ? self.plate.sanger_human_barcode : '(not on a plate)'
     "#{plate_name}:#{map ? map.description : ''}"
+  end
+
+  def can_be_created?
+    plate.stock_plate?
   end
 end

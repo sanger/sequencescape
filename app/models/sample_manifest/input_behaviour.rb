@@ -38,6 +38,15 @@ module SampleManifest::InputBehaviour
           validates_each(:volume, :concentration, :if => :updating_from_manifest?) do |record, attr, value|
             record.errors.add_on_blank(attr, "can't be blank for #{record.sample.sanger_sample_id}")
           end
+
+        end
+
+        def accession_number_from_manifest=(new_value)
+          self.sample_ebi_accession_number ||= new_value
+          if new_value.present? && new_value != sample_ebi_accession_number
+            self.errors.add(:sample_ebi_accession_number, "can not be changed")
+            raise ActiveRecord::RecordInvalid, self
+          end
         end
       end
     end
@@ -151,46 +160,15 @@ module SampleManifest::InputBehaviour
   end
   private :strip_non_word_characters
 
-  METADATA_ATTRIBUTES_TO_CSV_COLUMNS = {
-    :cohort                      => 'COHORT',
-    :gender                      => 'GENDER',
-    :father                      => 'FATHER (optional)',
-    :mother                      => 'MOTHER (optional)',
-    :sibling                     => 'SIBLING (optional)',
-    :country_of_origin           => 'COUNTRY OF ORIGIN',
-    :geographical_region         => 'GEOGRAPHICAL REGION',
-    :ethnicity                   => 'ETHNICITY',
-    :dna_source                  => 'DNA SOURCE',
-    :date_of_sample_collection   => 'DATE OF SAMPLE COLLECTION (MM/YY or YYYY only)',
-    :date_of_sample_extraction   => 'DATE OF DNA EXTRACTION (MM/YY or YYYY only)',
-    :sample_extraction_method    => 'DNA EXTRACTION METHOD',
-    :sample_purified             => 'SAMPLE PURIFIED?',
-    :purification_method         => 'PURIFICATION METHOD',
-    :concentration               => "CONC. (ng/ul)",
-    :concentration_determined_by => 'CONCENTRATION DETERMINED BY',
-    :sample_taxon_id             => 'TAXON ID',
-    :sample_description          => 'SAMPLE DESCRIPTION',
-    :sample_ebi_accession_number => 'SAMPLE ACCESSION NUMBER (optional)',
-    :sample_sra_hold             => 'SAMPLE VISIBILITY',
-    :sample_type                 => 'SAMPLE TYPE',
-    :volume                      => "VOLUME (ul)",
-    :sample_storage_conditions   => 'DNA STORAGE CONDITIONS',
-    :supplier_name               => 'SUPPLIER SAMPLE NAME',
-    :gc_content                  => 'GC CONTENT',
-    :sample_public_name          => 'PUBLIC NAME',
-    :sample_common_name          => 'COMMON NAME',
-    :sample_strain_att           => 'STRAIN'
-  }
-
   InvalidManifest = Class.new(StandardError)
 
   def each_csv_row(&block)
     csv = FasterCSV.parse(uploaded.current_data)
     clean_up_sheet(csv)
 
-    headers = csv[spreadsheet_header_row].map { |header| header.gsub(/\s+/, ' ') }
+    headers = csv[spreadsheet_header_row].map { |header| h = header.gsub(/\s+/, ' '); SampleManifest::Headers.renamed(h) }
     headers.each_with_index.map do |name, index|
-      "Header '#{name}' should be '#{ColumnMap.fields[index]}'" if not name.blank? and strip_non_word_characters(name) != strip_non_word_characters(ColumnMap.fields[index])
+      "Header '#{name}' not recognised!" unless name.blank? || SampleManifest::Headers.valid?(name)
     end.compact.tap do |headers_with_errors|
       raise InvalidManifest, headers_with_errors unless headers_with_errors.empty?
     end
@@ -231,7 +209,7 @@ module SampleManifest::InputBehaviour
       end
 
       metadata = Hash[
-        METADATA_ATTRIBUTES_TO_CSV_COLUMNS.map do |attribute, csv_column|
+        SampleManifest::Headers::METADATA_ATTRIBUTES_TO_CSV_COLUMNS.map do |attribute, csv_column|
           [ attribute, row[csv_column] ]
         end
       ].merge(

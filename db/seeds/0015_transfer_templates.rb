@@ -44,4 +44,28 @@ ActiveRecord::Base.transaction do
     :name                => "Transfer from tube to tube by submission",
     :transfer_class_name => Transfer::BetweenTubesBySubmission.name
   )
+
+  TransferTemplate.create!(
+    :name                => 'Transfer wells to specific tubes defined by submission',
+    :transfer_class_name => 'Transfer::FromPlateToSpecificTubesByPool'
+  )
+
+  TransferTemplate.create!(
+    :name => 'Transfer between specific tubes',
+    :transfer_class_name => 'Transfer::BetweenSpecificTubes'
+  )
+
+  TransferTemplate.create!(
+    :name => 'Whole plate to tube',
+    :transfer_class_name => 'Transfer::FromPlateToTube',
+    :transfers => locations_for(('A'..'H'), (1..12))
+  )
+
+  wells = locations_for(('A'..'H'), (1..12))
+
+  TransferTemplate.create!(
+    :name => 'Flip Plate',
+    :transfer_class_name => 'Transfer::BetweenPlates',
+    :transfers => Hash[wells.zip(wells.reverse)]
+  )
 end

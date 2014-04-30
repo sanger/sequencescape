@@ -18,6 +18,7 @@ Given /^I have an order created with the following details based on the template
       when 'asset_group_name' then v
       when 'request_options' then Hash[v.split(',').map { |p| p.split(':').map(&:strip) }]
       when 'assets' then Uuid.lookup_many_uuids(v.split(',').map(&:strip)).map(&:resource)
+      when 'pre_cap_group' then v
       else Uuid.include_resource.lookup_single_uuid(v).resource
       end
     [ k.to_sym, v ]
@@ -35,7 +36,7 @@ Given /^an order template called "([^\"]+)" with UUID "([^"]+)"$/ do |name, uuid
 end
 
 Given /^the UUID for the order template "([^\"]+)" is "([^\"]+)"$/ do |name,uuid_value|
-  object = SubmissionTemplate.find_by_name(name) or raise "Cannot find order template #{ name.inspect }"
+  object = SubmissionTemplate.find_by_name!(name)
   set_uuid_for(object, uuid_value)
 end
 

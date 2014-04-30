@@ -28,9 +28,11 @@ class PresenterSkeleton
   end
 
   def lanes_from_request_options
-    library_request       = RequestType.find(order.request_types.first)
+    return order.request_options.fetch(:multiplier, {}) if order.request_types[-2].nil?
+    library_request       = RequestType.find(order.request_types[-2])
     sequencing_request    = RequestType.find(order.request_types.last)
-    sequencing_multiplier = order.request_options.fetch('multiplier', {}).fetch(sequencing_request.id.to_s, 1).to_i
+    multiplier_hash = order.request_options.fetch(:multiplier, {})
+    sequencing_multiplier = (multiplier_hash[sequencing_request.id.to_s]||multiplier_hash.fetch(sequencing_request.id, 1)).to_i
 
     if library_request.for_multiplexing?
       sequencing_multiplier
@@ -63,9 +65,6 @@ class SubmissionCreater < PresenterSkeleton
   IncorrectParamsException = Class.new(SubmissionsCreaterError)
   InvalidInputException    = Class.new(SubmissionsCreaterError)
 
-  # Remove this Exception if you enable multiple orders per submission
-  MultipleOrdersException = Class.new(Exception)
-
   write_inheritable_attribute :attributes,  [
     :id,
     :template_id,
@@ -79,19 +78,29 @@ class SubmissionCreater < PresenterSkeleton
     :comments,
     :orders,
     :order_params,
-    :asset_group_id
+    :asset_group_id,
+    :pre_capture_plex_group,
+    :gigabases_expected,
+	:priority
   ]
 
 
   def build_submission!
     begin
       submission.built!
-
+    rescue AASM::InvalidTransition
+      submission.errors.add_to_base("Submissions can not be edited once they are submitted for building.")
     rescue ActiveRecord::RecordInvalid => exception
       exception.record.errors.full_messages.each do |message|
         submission.errors.add_to_base(message)
       end
+    rescue Submission::ProjectValidation::Error => exception
+      submission.errors.add_to_base(exception.message)
     end
+  end
+
+  def per_order_settings
+    [:pre_capture_plex_level, :gigabases_expected]
   end
 
   def find_asset_group
@@ -108,16 +117,18 @@ class SubmissionCreater < PresenterSkeleton
   end
 
   def create_order
+    order_role = Order::OrderRole.find_by_role(order_params.delete('order_role')) if order_params.present?
     new_order = template.new_order(
       :study           => study,
       :project         => project,
       :user            => @user,
       :request_options => order_params,
-      :comments        => comments
+      :comments        => comments,
+      :pre_cap_group   => pre_capture_plex_group,
+      :order_role      => order_role
     )
-
     new_order.request_type_multiplier do |sequencing_request_type_id|
-      new_order.request_options['multiplier'][sequencing_request_type_id] = (lanes_of_sequencing_required || 1)
+      new_order.request_options[:multiplier][sequencing_request_type_id] = (lanes_of_sequencing_required || 1)
     end if order_params
 
     new_order
@@ -125,7 +136,8 @@ class SubmissionCreater < PresenterSkeleton
   private :create_order
 
   def order_params
-    @order_params[:multiplier] = {} if @order_params && @order_params[:multiplier].nil?
+    @order_params = @order_params.to_hash if @order_params.class == HashWithIndifferentAccess
+    @order_params[:multiplier] = HashWithIndifferentAccess.new if @order_params && @order_params[:multiplier].nil?
     @order_params
   end
 
@@ -133,8 +145,7 @@ class SubmissionCreater < PresenterSkeleton
     if order.input_field_infos.flatten.empty?
       order.request_type_ids_list = order.request_types.map { |rt| [rt] }
     end
-
-    order.input_field_infos
+    order.input_field_infos.reject {|info| per_order_settings.include?(info.key)}
   end
 
   # Return the submission's orders or a blank array
@@ -156,30 +167,20 @@ class SubmissionCreater < PresenterSkeleton
         new_order = create_order.tap { |o| o.update_attributes!(order_assets) }
 
         if submission.present?
-          # This code shouldn't get run, as the client should stop this but...
-          # This exception is thrown if we try to add multiple orders to a submission.
           # The submission should be destroyed if we delete the last order on it so
           # we shouldn't see any empty submissions.
-          # Remove the raise and recue block to enable multiple submissions.
-          # You'll also need to renable them in the submission.js file.
-          raise MultipleOrdersException
 
-
-          # uncomment this line to enable multiple orders
-          # submission.orders << new_order
+          submission.orders << new_order
         else
-          @submission = new_order.create_submission(:user => order.user)
+          @submission = new_order.create_submission(:user => order.user, :priority=>priority)
         end
 
         new_order.save!
         @order = new_order
       end
 
-
-    rescue MultipleOrdersException => exception
-      order.errors.add_to_base('Sorry, multiple orders per submission are not supported at the current time.')
-    rescue Quota::Error => quota_exception
-      order.errors.add_to_base(quota_exception.message)
+    rescue Submission::ProjectValidation::Error => project_exception
+      order.errors.add_to_base(project_exception.message)
     rescue InvalidInputException => input_exception
       order.errors.add_to_base(input_exception.message)
     rescue IncorrectParamsException => exception
@@ -327,6 +328,11 @@ class SubmissionCreater < PresenterSkeleton
   def url(view)
     view.send(:submission_path, submission.present? ? submission : { :id => 'DUMMY_ID' })
   end
+
+  def template_name
+    submission.orders.first.template_name
+  end
+
 end
 
 class SubmissionPresenter < PresenterSkeleton
@@ -334,6 +340,10 @@ class SubmissionPresenter < PresenterSkeleton
 
   def submission
     @submission ||= Submission.find(id)
+  end
+
+  def priority
+    submission.priority
   end
 
   def template_name

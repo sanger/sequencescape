@@ -28,12 +28,11 @@ class Accessionable::Base
   end
 
   def alias
-    #TODO move date from alias to filename
-    "#{name.gsub(/[^a-z\d]/i, '_')}-sc-#{date}-#{object_id}"
+    "#{name.gsub(/[^a-z\d]/i, '_')}-sc-#{object_id}"
   end
 
   def file_name
-    "#{self.alias}.#{schema_type}.xml"
+    "#{self.alias}-#{date}.#{schema_type}.xml"
   end
 
   def extract_accession_number(xmldoc)

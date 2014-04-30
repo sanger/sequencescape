@@ -12,10 +12,24 @@
           <td class="help_field"></td>
         </tr>
       <% end %>
+      <% if @asset.studies.uniq.count > 1 -%>
+        <tr>
+          <td class="item" width="40%"><%= label_tag('cross_study_request', 'Cross Study Request') %>:</td>
+          <td><%= check_box_tag('cross_study_request', 'cross_study_request', true) %></td>
+          <td class="help_field"></td>
+        </tr>
+      <% end %>
       <% instance_variable_or_id_param(:study) do |field_name, value| %>
         <tr>
           <td class="item" width="40%"><%= label_tag(field_name, 'Study') %>:</td>
           <td><%= select_field_sorted_by_name(field_name, current_user_studies_from(@asset), value) %></td>
+          <td class="help_field"></td>
+        </tr>
+      <% end %>
+      <% if @asset.projects.uniq.count > 1 -%>
+        <tr>
+          <td class="item" width="40%"><%= label_tag('cross_project_request', 'Cross Project Request') %>:</td>
+          <td><%= check_box_tag('cross_project_request', 'cross_project_request', true) %></td>
           <td class="help_field"></td>
         </tr>
       <% end %>
@@ -26,6 +40,14 @@
           <td class="help_field"></td>
         </tr>
       <% end %>
+      <tr>
+        <td class="item" width="40%"><%= label_tag(:priority, 'Priority') %>:</td>
+        <td><%= select_tag(:priority, options_for_select(
+          Submission::Priorities.options,
+          @asset.requests.last.try(:priority)
+        )) %></td>
+        <td class="help_field"></td>
+      </tr>
     </table>
   </div>
 
@@ -108,6 +130,20 @@
 
       request_type_element.change(handler);
       handler();
+
+      checkStudyHandler = function() {
+        var cross_study = $('#cross_study_request').attr('checked')=='checked';
+        $('#study_id').attr('disabled',cross_study);
+      }
+      checkProjectHandler = function() {
+        var cross_project = $('#cross_project_request').attr('checked')=='checked';
+        $('#project_id').attr('disabled',cross_project);
+      }
+      $('#study_id').change(checkStudyHandler);
+      $('#project_id').change(checkProjectHandler);
+      checkStudyHandler();
+      checkProjectHandler();
     });
+
   })(jQuery);
 </script>

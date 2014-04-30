@@ -106,6 +106,7 @@ class Study < ActiveRecord::Base
 
   validates_presence_of :name
   validates_uniqueness_of :name, :on => :create, :message => "already in use (#{self.name})"
+  validates_length_of :name, :maximum => 200
   validates_format_of :abbreviation, :with => /^[\w_-]+$/i, :allow_blank => false, :message => 'cannot contain spaces or be blank'
 
   validate :validate_ethically_approved
@@ -197,6 +198,7 @@ class Study < ActiveRecord::Base
     attribute(:study_description, :required => true)
     attribute(:contaminated_human_dna, :required => true, :in => YES_OR_NO)
     attribute(:remove_x_and_autosomes, :required => true, :default => 'No', :in => YES_OR_NO)
+    attribute(:separate_y_chromosome_data, :required => true, :default=> false, :boolean => true)
     attribute(:study_project_id)
     attribute(:study_abstract)
     attribute(:study_study_title)
@@ -219,7 +221,8 @@ class Study < ActiveRecord::Base
       required.attribute(:data_release_delay_reason_comment)
     end
 
-    attribute(:dac_policy)
+    attribute(:dac_policy, :default => configatron.default_policy_text, :if => :managed?)
+    attribute(:dac_policy_title, :default => configatron.default_policy_title, :if => :managed?)
     attribute(:ega_dac_accession_number)
     attribute(:ega_policy_accession_number)
     attribute(:array_express_accession_number)
@@ -233,6 +236,8 @@ class Study < ActiveRecord::Base
       required.attribute(:data_release_prevention_approval, :in => YES_OR_NO)
       required.attribute(:data_release_prevention_reason_comment)
     end
+
+    attribute(:data_access_group, :with=> /\A[a-z_][a-z0-9_-]{0,31}\Z/)
 
     # SNP information
     attribute(:snp_study_id, :integer => true)
@@ -297,6 +302,16 @@ class Study < ActiveRecord::Base
     validates_presence_of :data_release_non_standard_agreement, :if => :non_standard_agreement?
     validates_associated  :data_release_non_standard_agreement, :if => :non_standard_agreement?
 
+    validate :valid_policy_url?
+
+    validate :sanity_check_y_separation, :if => :separate_y_chromosome_data?
+
+    def sanity_check_y_separation
+      self.errors.add(:separate_y_chromosome_data,'cannot be selected with remove x and autosomes.') if remove_x_and_autosomes?
+      !remove_x_and_autosomes?
+    end
+
+
     before_validation do |record|
       if not record.non_standard_agreement? and not record.data_release_non_standard_agreement.nil?
         record.data_release_non_standard_agreement.delete
@@ -310,6 +325,22 @@ class Study < ActiveRecord::Base
 
     def study_type_valid?
       self.errors.add(:study_type, "is not specified")  if study_type.name == "Not specified"
+    end
+
+    def valid_policy_url?
+      # Rails 2.3 has no inbuilt URL validation, but rather than rolling our own, we'll
+      # use the inbuilt ruby URI parser, a bit like here:
+      # http://www.simonecarletti.com/blog/2009/04/validating-the-format-of-an-url-with-rails/
+      return true if dac_policy.blank?
+      dac_policy.insert(0,"http://") if /:\/\//.match(dac_policy).nil? # Add an http protocol if no protocol is defined
+      begin
+        uri = URI.parse(dac_policy)
+        raise URI::InvalidURIError if configatron.invalid_policy_url_domains.include?(uri.host)
+      rescue URI::InvalidURIError
+        self.errors.add(:dac_policy, ": #{dac_policy} is not a valid URL")
+        return false
+      end
+      return true
     end
 
     with_options(:if => :validating_ena_required_fields?) do |ena_required_fields|
@@ -337,6 +368,12 @@ class Study < ActiveRecord::Base
     self.validating_ena_required_fields_without_enforce_data_release = state if self.enforce_data_release
   end
   alias_method_chain(:validating_ena_required_fields=, :enforce_data_release)
+
+  def warnings
+    if study_metadata.managed? && study_metadata.data_access_group.blank?
+      "No user group specified for a managed study. Please specify a valid Unix user group to ensure study data is visible to the correct people."
+    end
+  end
 
   def mark_deactive
     unless self.inactive?
@@ -646,7 +683,6 @@ class Study < ActiveRecord::Base
       true
     end
   end
-
 
   private
   # beware , this method change the study of an object but doesn't look at some

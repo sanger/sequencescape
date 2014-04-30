@@ -25,5 +25,9 @@ class LibraryTube < Tube
     StockLibraryTube
   end
 
+  def self.stock_asset_purpose
+    Tube::Purpose.stock_library_tube
+  end
+
   extend Asset::Stock::CanCreateStockAsset
 end

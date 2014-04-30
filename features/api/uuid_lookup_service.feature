@@ -27,7 +27,7 @@ Feature: The API provides a lookup feature for legacy ID values to UUIDs
     And the JSON should be:
       """
       {
-        "general": [ "no WTSISignOn cookie provided" ]
+        "general": [ "no authentication provided" ]
       }
       """
 
@@ -50,7 +50,7 @@ Feature: The API provides a lookup feature for legacy ID values to UUIDs
     And the JSON should be:
       """
       {
-        "general": [ "the WTSISignOn cookie is invalid" ]
+        "general": [ "could not be authenticated" ]
       }
       """
 

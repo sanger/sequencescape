@@ -64,10 +64,9 @@ Feature: Sample manifest
     When I follow "Create manifest for 1D tubes"
     Then I should see "Barcode printer"
     When I select "Test study" from "Study"
-    And I select "default layout" from "Template"
+    And I select "default tube layout" from "Template"
     And I select "Test supplier name" from "Supplier"
     And I select "xyz" from "Barcode printer"
-    And I select "default layout" from "Template"
     And I fill in the field labeled "Count" with "10"
     When I press "Create manifest and print labels"
     Then I should see "Manifest_"
@@ -113,19 +112,19 @@ Feature: Sample manifest
       | Contains | Study      | Supplier           | Manifest       | Upload             | Errors | State     | Created by |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest |        | Completed | john       |
     Then the samples table should look like:
-      | sanger_sample_id | supplier_name | empty_supplier_sample_name | sample_taxon_id |
-      | sample_1         | aaaa          | false                      | 9606            |
-      | sample_2         | bbbb          | false                      | 9607            |
-      | sample_3         | Water         | true                       |                 |
-      | sample_4         | cccc          | false                      | 9609            |
-      | sample_5         | Blank         | true                       |                 |
-      | sample_6         | dddd          | false                      | 9611            |
-      | sample_7         |               | true                       |                 |
-      | sample_8         | eeee          | false                      | 9613            |
-      | sample_9         | EMPTY         | true                       |                 |
-      | sample_10        | ffffff        | false                      | 9615            |
-      | sample_11        | None          | true                       |                 |
-      | sample_12        | gggg          | false                      | 9617            |
+      | sanger_sample_id | supplier_name | empty_supplier_sample_name | sample_taxon_id | donor_id |
+      | sample_1         | aaaa          | false                      | 9606            | 12345    |
+      | sample_2         | bbbb          | false                      | 9607            | 12345    |
+      | sample_3         | Water         | true                       |                 |          |
+      | sample_4         | cccc          | false                      | 9609            | 12345    |
+      | sample_5         | Blank         | true                       |                 |          |
+      | sample_6         | dddd          | false                      | 9611            | 12345    |
+      | sample_7         |               | true                       |                 |          |
+      | sample_8         | eeee          | false                      | 9613            | 12345    |
+      | sample_9         | EMPTY         | true                       |                 |          |
+      | sample_10        | ffffff        | false                      | 9615            | 12345    |
+      | sample_11        | None          | true                       |                 |          |
+      | sample_12        | gggg          | false                      | 9617            | 12345    |
     Given plate "1234567" has samples with known sanger_sample_ids
     Given I am on the Qc reports homepage
     Then I should see "New report for"
@@ -337,7 +336,7 @@ Feature: Sample manifest
       | Contains | Study      | Supplier           | Manifest       | Upload             | Errors | State     |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest |        | Completed |
     Then the samples table should look like:
-      | sanger_sample_id | supplier_name | empty_supplier_sample_name | sample_taxon_id | common_name  |
+      | sanger_sample_id | supplier_name | empty_supplier_sample_name | sample_taxon_id | sample_common_name  |
       | sample_1         | aaaa          | false                      | 9606            | Human  |
       | sample_2         | bbbb          | false                      | 9607            | Human  |
       | sample_3         | zzzzz         | false                      | 9608            | Human  |
@@ -400,6 +399,47 @@ Feature: Sample manifest
      | sample_10        | ffffff_updated | false                      | 10015           |
      | sample_11        | uuuuu          | false                      | 10016           |
      | sample_12        | gggg_updated   | false                      | 10017           |
+
+ @override
+  Scenario Outline: Updating of sample accession numbers
+    Given a manifest has been created for "Test study"
+    When I fill in "File to upload" with "test/data/<initial>"
+    And I press "Upload manifest"
+    Given 1 pending delayed jobs are processed
+    When I follow "View all manifests"
+    Then I should see the manifest table:
+      | Contains | Study      | Supplier           | Manifest       | Upload             | Errors | State     |
+      | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest |        | Completed |
+    When I fill in "File to upload" with "test/data/<update>"
+    And I check "Override previously uploaded samples"
+    And I press "Upload manifest"
+    Given 1 pending delayed jobs are processed
+    When I follow "View all manifests"
+    Then I should see the manifest table:
+      | Contains | Study      | Supplier           | Manifest       | Errors   | State   |
+      | 1 plate  | Test study | Test supplier name | Blank manifest | <errors> | <state> |
+    Then the sample accession numbers should be:
+     | sanger_sample_id | accession_number |
+     | sample_1         | 12345            |
+     | sample_2         | 12346            |
+     | sample_3         | 12347            |
+     | sample_4         | 12348            |
+     | sample_5         | 12349            |
+     | sample_6         | 12350            |
+     | sample_7         | 12351            |
+     | sample_8         | 12352            |
+     | sample_9         | 12353            |
+     | sample_10        | 12354            |
+     | sample_11        | 12355            |
+     | sample_12        | 12356            |
+
+    Examples:
+      | initial                           | update                            | state     | errors |
+      | sample_manifest_a_accessions.csv  | sample_manifest_no_accessions.csv | Completed |        |
+      | sample_manifest_a_accessions.csv  | sample_manifest_b_accessions.csv  | Failed    | Errors |
+      | sample_manifest_no_accessions.csv | sample_manifest_a_accessions.csv  | Completed |        |
+
+
 
 
 

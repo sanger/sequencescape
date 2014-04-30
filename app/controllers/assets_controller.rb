@@ -228,7 +228,7 @@ class AssetsController < ApplicationController
   private :prepare_asset
 
   def new_request_for_current_asset
-    new_request_asset_path(@asset, {:study_id => @study.id, :project_id => params[:project_id], :request_type_id => @request_type.id})
+    new_request_asset_path(@asset, {:study_id => @study.try(:id), :project_id => @project.try(:id), :request_type_id => @request_type.id})
   end
   private :new_request_for_current_asset
 
@@ -238,19 +238,21 @@ class AssetsController < ApplicationController
 
   def create_request
     @request_type = RequestType.find(params[:request_type_id])
-    @study        = Study.find(params[:study_id])
+    @study        = Study.find(params[:study_id]) unless params[:cross_study_request].present?
+    @project      = Project.find(params[:project_id]) unless params[:cross_project_request].present?
 
     request_options = params.fetch(:request, {}).fetch(:request_metadata_attributes, {})
     request_options[:multiplier] = { @request_type.id => params[:count].to_i } unless params[:count].blank?
     submission = ReRequestSubmission.build!(
       :study           => @study,
-      :project         => Project.find(params[:project_id]),
+      :project         => @project,
       :workflow        => @request_type.workflow,
       :user            => current_user,
       :assets          => [ @asset ],
       :request_types   => [ @request_type.id ],
       :request_options => request_options,
-      :comments        => params[:comments]
+      :comments        => params[:comments],
+      :priority        => params[:priority]
     )
 
     respond_to do |format|
@@ -259,7 +261,7 @@ class AssetsController < ApplicationController
       format.html { redirect_to new_request_for_current_asset }
       format.json { render :json => submission.requests, :status => :created }
     end
-  rescue Quota::Error => exception
+  rescue Submission::ProjectValidation::Error => exception
     respond_to do |format|
       flash[:error] = exception.message
       format.html { redirect_to new_request_for_current_asset }
@@ -415,7 +417,9 @@ class AssetsController < ApplicationController
       redirect_to :action => "find_by_barcode"
     else
       if barcode.size == 13 && Barcode.check_EAN(barcode)
-        @asset = Asset.find_by_barcode(Barcode.split_barcode(barcode)[1])
+        num_prefix, number, _ = Barcode.split_barcode(barcode)
+        prefix = BarcodePrefix.find_by_prefix(Barcode.prefix_to_human(num_prefix))
+        @asset = Asset.find_by_barcode_and_barcode_prefix_id(number,prefix.id)
       else
         @asset = Asset.find_by_barcode(barcode)
       end
@@ -440,22 +444,6 @@ class AssetsController < ApplicationController
 
     batch = Batch.find(params[:batch_id])
     redirect_to batch_path(batch)
-  end
-
-  def move_requests(source_asset, destination_asset)
-    raise 'Is this method still in use?'
-    # @pipeline = Pipeline.find(1)
-    # request_type = @pipeline.request_type
-    # request = Request.find_by_asset_id_and_request_type_id_and_state(source_asset.id, request_type.id, "pending")
-    # unless request.nil?
-    #   # make the event
-    #   self.events << Event.new({:message => "Moved from 1D tube #{source_asset.id} to 2D tube #{destination_asset.id}", :created_by => user.login, :family => "Update"})
-    #   # Move all requests
-    #   self.requests.each do |request|
-    #     request.events << Event.new({:message => "Moved from 1D tube #{source_asset.id} to 2D tube #{destination_asset.id}", :created_by => user.login, :family => "Update"})
-    #     request.initial_study_id = study.id
-    #   end
-    # end
   end
 
   private

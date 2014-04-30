@@ -3,6 +3,10 @@ class SequencingPipeline < Pipeline
     true
   end
 
+  def request_actions
+    [:remove]
+  end
+
   # The guys in sequencing want to be able to re-run a request in another batch.  What we've agreed is that
   # the request will be failed and then an identical request will be resubmitted to their inbox.  The
   # "failed" request should not be charged for.

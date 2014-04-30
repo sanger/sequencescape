@@ -2,7 +2,7 @@
 <%= render :partial => "batch_statuses" %>
 <%= render :partial => 'pipeline_limit' %>
 
-<% if @grouped_requests.empty? -%>
+<% if @requests_waiting == 0 -%>
   There are no outstanding requests for this pipeline.
 <% else -%>
   <%= render :partial => 'pipeline_paginate' %>
@@ -36,9 +36,9 @@
               <% request_item = request %>
               <td class="request" width='2%'>
               <%= hidden_label_tag_for_testing("select_all_group_#{index}", "Select Request Group #{index}") %>
-            <input type="checkbox" name="selectAll" onclick="select_requests_by_group(<%=  request_item.item_id %>,<%= requests.size %>, this.checked);" id="select_all_group_<%= index %>"></a>
-            <% index += 1 %>
-          </td>
+    		    <input type="checkbox" name="selectAll" onclick="select_requests_by_group(<%=  request_item.item_id %>,<%= requests.size %>, this.checked);" id="select_all_group_<%= index %>"></a>
+    		    <% index += 1 %>
+    		  </td>
               <td class="request" width='2%'><a href="javascript:void(0)" onclick="showElement(<%=  request_item.item_id %>,<%= requests.size %>); return false;"><%= image_tag "information.png", :size =>"13x13" %></a></td>
               <td class="request" width='5%'>&nbsp;</td>
               <td class='request' width='10%'><%= h(request.asset.display_name) %></td>
@@ -48,7 +48,7 @@
                 <% next if information_type.hide_in_inbox %>
                 <td class='request' width='5%'><%= h(request.request_metadata[information_type.key]) %></td>
               <% end %>
-              <td class='request' width='5%'><%= request.submission.name %></td>
+              <td class='request' width='5%'><%= request.submission.study_names %></td>
             </tr>
 
           <tr class="nested" id="<%= request_item.item_id %>_0" style="display:none">
@@ -67,9 +67,9 @@
             <tr class="nested" id="<%= request_item.item_id %>_<%= progr.to_s %>" style="display:none">
               <td class="request" width='2%'>&nbsp;</td>
               <td>
-              <%= label(:request, request.id, "Select Request #{indice}", :style => 'display:none') %>
-            <%= check_box :request, request.id, :value => request.id %>
-          </td>
+    	        <%= label(:request, request.id, "Select Request #{indice}", :style => 'display:none') %>
+    		    <%= check_box :request, request.id, :value => request.id %>
+    		  </td>
               <td class='request' width='5%'><%= link_to request.id, "#{configatron.studies_url}/requests/#{request.id}" %></td>
               <td class='request' width='10%'><%= link_to request_asset.name, "#{configatron.studies_url}/assets/#{request.asset_id}" %></td>
              <td class='request' width='10%'><%=  link_to "#{request_asset.sti_type} #{request_asset.barcode}", "#{configatron.studies_url}/assets/#{request.asset_id}" %></td>
@@ -78,7 +78,7 @@
                 <% next if information_type.hide_in_inbox %>
                 <td class='request' width='5%'><%= h(request.request_metadata[information_type.key]) %></td>
               <% end %>
-              <td class='request' width='5%'><%= request.submission.name %></td>
+              <td class='request' width='5%'><%= request.submission.study_names %></td>
             </tr>
             <% end -%>
         <% end %>

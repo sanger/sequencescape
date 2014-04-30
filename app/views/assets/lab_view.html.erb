@@ -18,7 +18,7 @@
         <% end %>
       <% end %>
       <tr><td>Studies: </td></tr>
-      <% @asset.studies.each do |study| %>
+      <% @asset.studies.uniq.each do |study| %>
         <tr><td></td><td><%= link_to "#{study.id} - #{study.name}", :controller => :studies, :action => :show, :id => study.id %></td></tr>
       <% end %>
       <tr><td>&nbsp;</td></tr>

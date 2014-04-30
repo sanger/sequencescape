@@ -37,7 +37,7 @@ Feature: Picking more than 13 minimum volume should render in tecan file
     And I check "Select DN333P for batch"
     And I select "Create Batch" from "Action to perform"
     And I press "Submit"
-    When I follow "Start batch"
+    When I follow "Select Plate Template"
     When I select "testtemplate" from "Plate Template"
     And I choose "Pick by ng"
     And I fill in the following:
@@ -45,9 +45,8 @@ Feature: Picking more than 13 minimum volume should render in tecan file
       | Maximum Volume    | 150   |
       | Quantity to pick  | 10000 |
     And I press "Next step"
-    When I press "Next step"
-    And I press "Next step"
-    And I press "Next step"
+		When I press "Next step"
+		And I press "Next step"
 
     When I press "Release this batch"
     Given the last batch has a barcode of "550000555760"

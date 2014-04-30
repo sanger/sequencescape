@@ -56,19 +56,6 @@ class RequestsControllerTest < ActionController::TestCase
          assert_equal flash[:notice], "Created request #{@new_request.id}"
          assert_response :redirect
       end
-
-      should "when no quotas - copy failed" do
-        @project =  Factory(:project_with_order, :name => 'Prj1')
-        @request_initial_2= Factory :request, :user => @user, :request_type => Factory(:request_type), :study => Factory(:study, :name => "ReqCon XXX"),
-          :workflow => Factory(:submission_workflow), :project => @project
-        @project.update_attributes!(:enforce_quotas=>true)
-
-         get :copy, :id => @request_initial_2.id
-
-         @new_request = Request.last
-         assert_equal flash[:error], "Insufficient quota."
-         assert_response :redirect
-      end
     end
 
     context "#update" do
@@ -128,8 +115,10 @@ class RequestsControllerTest < ActionController::TestCase
           @params = { :request_metadata_attributes => { :read_length => "37" }, :state => 'failed' }
           put :update, :id => @reqwest.id, :request => @params
         end
-        should_set_the_flash_to Regexp.new("has been failed")
-        should_redirect_to("request path") { request_path(@reqwest) }
+        should "not update the state" do
+          # We really don't want arbitrary changing of state
+          assert @reqwest.state != 'failed'
+        end
       end
     end
   end

@@ -3,6 +3,7 @@ Feature: Pick by micro litre (stock transfer) using the Tecan robot
 
   Background:
     Given I am an "manager" user logged in as "john"
+    And a robot exists
 
   @gwl @cherrypicking_for_pulldown @pulldown
   Scenario Outline: Create a Tecan file with the correct volumes to pick
@@ -34,11 +35,13 @@ Feature: Pick by micro litre (stock transfer) using the Tecan robot
     When I check "Select DN222J for batch"
      And I check "Select DN333P for batch"
      And I press "Submit"
-     And I follow "Start batch"
+     And the last batch is sorted in row order
+     And I follow "Cherrypick Group By Submission"
      And I choose "Pick by µl"
      And I fill in the following:
         | Volume  | <volume>   |
      And I select "Pulldown" from "Plate Purpose"
+     And I press "Next step"
      And I press "Next step"
      And I press "Release this batch"
     Given the last batch has a barcode of "550000555760"
@@ -101,16 +104,16 @@ Feature: Pick by micro litre (stock transfer) using the Tecan robot
     """
     When I follow "Print worksheet for Plate 99999"
     Then I should see the cherrypick worksheet table:
-      | 1                                 | 2                                 |
-      | B1        222        v<volume> b0 | C5        333        v<volume> b0 |
-      | B2        222        v<volume> b0 | C6        333        v<volume> b0 |
-      | B3        222        v<volume> b0 | C7        333        v<volume> b0 |
-      | B4        222        v<volume> b0 | C8        333        v<volume> b0 |
-      | B5        222        v<volume> b0 | D1        333        v<volume> b0 |
-      | B6        222        v<volume> b0 | D2        333        v<volume> b0 |
-      | C3        333        v<volume> b0 | D3        333        v<volume> b0 |
-      | C4        333        v<volume> b0 | D4        333        v<volume> b0 |
-      | 1                                 | 2                                 |
+     | 1                                 | 2                                 |
+     | B1        222        v<volume> b0 | C5        333        v<volume> b0 |
+     | B2        222        v<volume> b0 | C6        333        v<volume> b0 |
+     | B3        222        v<volume> b0 | C7        333        v<volume> b0 |
+     | B4        222        v<volume> b0 | C8        333        v<volume> b0 |
+     | B5        222        v<volume> b0 | D1        333        v<volume> b0 |
+     | B6        222        v<volume> b0 | D2        333        v<volume> b0 |
+     | C3        333        v<volume> b0 | D3        333        v<volume> b0 |
+     | C4        333        v<volume> b0 | D4        333        v<volume> b0 |
+     | 1                                 | 2                                 |
     Examples:
       | volume |
       | 13     |
@@ -126,7 +129,7 @@ Feature: Pick by micro litre (stock transfer) using the Tecan robot
      And I am on the show page for pipeline "Cherrypicking for Pulldown"
     When I check "Select DN222J for batch"
      And I press "Submit"
-     And I follow "Start batch"
+     And I follow "Cherrypick Group By Submission"
 
     When I choose "Pick by µl"
      And I fill in the following:
@@ -155,7 +158,6 @@ Feature: Pick by micro litre (stock transfer) using the Tecan robot
   @cherrypicking @javascript @gwl
   Scenario Outline: Stock transfer by micro litres in Cherrypicking pipeline
     Given I have a project called "Test project"
-     And project "Test project" has enough quotas
      And I have an active study called "Test study"
      And I have a plate "1" in study "Test study" with 2 samples in asset group "Plate asset group"
      And I have a plate "10" in study "Test study" with 2 samples in asset group "Plate asset group"
@@ -169,21 +171,20 @@ Feature: Pick by micro litre (stock transfer) using the Tecan robot
      And I check "Select DN10I for batch"
      And I check "Select DN5W for batch"
      And I press "Submit"
-      And I follow "Start batch"
-      And I select "testtemplate" from "Plate Template"
+     And I follow "Select Plate Template"
+     And I select "testtemplate" from "Plate Template"
+   	 And I select "Infinium 670k" from "Output plate purpose"
 
     When I choose "Pick by µl"
      And I fill in the following:
         | Volume  |  <volume>  |
 
-     And I press "Next step"
-      And I press "Next step"
-      And I select "Infinium 670k" from "Plate Purpose"
-      And I press "Next step"
-      And I select "Genotyping freezer" from "Location"
-      And I press "Next step"
-      And I press "Release this batch"
-     Given the last batch has a barcode of "550000555760"
+   	 And I press "Next step"
+   	 And I press "Next step"
+   	 And I select "Genotyping freezer" from "Location"
+   	 And I press "Next step"
+   	 And I press "Release this batch"
+   	Given the last batch has a barcode of "550000555760"
     Then the downloaded tecan file for batch "550000555760" and plate "1220099999705" is
     """
     C;

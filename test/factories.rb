@@ -160,12 +160,6 @@ Factory.define :order_template, :class => SubmissionTemplate do |submission_temp
   submission_template.submission_parameters({ :workflow_id => 1, :request_type_ids_list => [] })
 end
 
-Factory.define :project_quota, :class => Quota do |quota|
-  quota.project         {|project| project.association(:project)}
-  quota.request_type    {|request_type| request_type.association(:request_type)}
-  quota.limit           0
-end
-
 Factory.define :report do |r|
 end
 
@@ -182,6 +176,7 @@ Factory.define :request_metadata_for_standard_sequencing, :parent => :request_me
   m.fragment_size_required_to     21
   m.read_length                   76
 end
+
 Factory.define(:request_metadata_for_single_ended_sequencing, :parent => :request_metadata_for_standard_sequencing) {}
 Factory.define(:request_metadata_for_paired_end_sequencing, :parent => :request_metadata_for_standard_sequencing) {}
 
@@ -193,6 +188,20 @@ Factory.define :request_metadata_for_hiseq_sequencing, :parent => :request_metad
 end
 Factory.define(:request_metadata_for_hiseq_paired_end_sequencing, :parent => :request_metadata_for_hiseq_sequencing) {}
 Factory.define(:request_metadata_for_single_ended_hi_seq_sequencing, :parent => :request_metadata_for_hiseq_sequencing) {}
+
+
+('a'..'c').each do |p|
+  Factory.define(:"request_metadata_for_illumina_#{p}_single_ended_sequencing", :parent => :request_metadata_for_standard_sequencing) {}
+  Factory.define(:"request_metadata_for_illumina_#{p}_paired_end_sequencing", :parent => :request_metadata_for_standard_sequencing) {}
+  # HiSeq sequencing
+  Factory.define :"request_metadata_for_illumina_#{p}_hiseq_sequencing", :parent => :request_metadata do |m|
+    m.fragment_size_required_from   1
+    m.fragment_size_required_to     21
+    m.read_length                   100
+  end
+  Factory.define(:"request_metadata_for_illumina_#{p}_hiseq_paired_end_sequencing", :parent => :request_metadata_for_hiseq_sequencing) {}
+  Factory.define(:"request_metadata_for_illumina_#{p}_single_ended_hi_seq_sequencing", :parent => :request_metadata_for_hiseq_sequencing) {}
+end
 
 # Library manufacture
 Factory.define :request_metadata_for_library_manufacture, :parent => :request_metadata do |m|
@@ -482,6 +491,8 @@ Factory.define :library_tube, :parent => :empty_library_tube do |library_tube|
   library_tube.after_create do |library_tube|
     library_tube.aliquots.create!(:sample => Factory(:sample))
   end
+end
+Factory.define :pac_bio_library_tube do
 end
 
 # A library tube is created from a sample tube through a library creation request!

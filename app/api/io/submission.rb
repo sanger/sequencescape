@@ -6,5 +6,7 @@ class ::Io::Submission < ::Core::Io::Base
   define_attribute_and_json_mapping(%Q{
      state  => state
     orders <=> orders
+
+      user <=  user
   })
 end

@@ -23,12 +23,12 @@ class PacBio::Worksheet
   end
 
   def column_headers
-    ["Barcode", "Name", "Required size", "Complete?", "Repaired?", "Adapter ligated?", "Clean up complete?", "Exonnuclease cleanup", "ng/ul", "Fragment size", "Volume"]
+    ["Well", "Name", "Required size", "Complete?", "Repaired?", "Adapter ligated?", "Clean up complete?", "Exonnuclease cleanup", "ng/ul", "Fragment size", "Volume"]
   end
 
   def row(request)
     [
-      request.asset.barcode,
+      request.asset.display_name,
       request.asset.primary_aliquot.sample.name,
       request.request_metadata.insert_size,
       '',

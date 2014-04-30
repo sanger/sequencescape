@@ -1,5 +1,7 @@
 class PlateTemplate < Plate
 
+  include Lot::Template
+
   def update_params!(details = {})
     self.name = details[:name]
     self.wells.delete_all
@@ -14,6 +16,15 @@ class PlateTemplate < Plate
       end
     end
   end
+
+  def stamp_to(plate)
+    ActiveRecord::Base.transaction do
+      self.wells.each do |well|
+        plate.wells.located_at(well.map_description).first.aliquots << well.aliquots.clone
+      end
+    end
+  end
+
 
   def set_control_well(result)
     self.add_descriptor(Descriptor.new({:name => "control_well", :value => result}))

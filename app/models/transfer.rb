@@ -6,7 +6,7 @@ class Transfer < ActiveRecord::Base
 
         has_many :transfers_as_source,     :class_name => 'Transfer', :foreign_key => :source_id,      :order => 'created_at ASC'
         has_many :transfers_to_tubes,      :class_name => 'Transfer::BetweenPlateAndTubes', :foreign_key => :source_id, :order => 'created_at ASC'
-        has_one  :transfer_as_destination, :class_name => 'Transfer', :foreign_key => :destination_id
+        has_many :transfers_as_destination, :class_name => 'Transfer', :foreign_key => :destination_id, :order => 'id ASC'
 
         # This looks odd but it's a LEFT OUTER JOIN, meaning that the rows we would be interested in have no source_id.
         named_scope :with_no_outgoing_transfers, {
@@ -22,7 +22,7 @@ class Transfer < ActiveRecord::Base
     # These are all of the valid states but keep them in a priority order: in other words, 'started' is more important
     # than 'pending' when there are multiple requests (like a plate where half the wells have been started, the others
     # are failed).
-    ALL_STATES = [ 'started', 'qc_complete', 'pending', 'passed', 'failed', 'cancelled' ]
+    ALL_STATES = [ 'started', 'qc_complete', 'pending', 'nx_in_progress', 'started_fx', 'started_mj', 'passed', 'failed', 'cancelled' ]
 
     def self.state_helper(names)
       Array(names).each do |name|

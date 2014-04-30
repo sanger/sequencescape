@@ -2,7 +2,7 @@ class BatchesController < ApplicationController
   include XmlCacheHelper::ControllerHelper
 
   before_filter :login_required, :except => [:released, :evaluations_counter, :qc_criteria]
-  before_filter :find_batch_by_id, :only => [:show,:edit, :update, :destroy, :qc_information, :qc_batch, :save, :fail, :fail_items, :assign_batch, :control, :add_control, :remove_request, :print_labels, :print_plate_labels, :print_multiplex_labels, :print, :verify, :verify_tube_layout, :reset_batch, :previous_qc_state, :filtered, :swap, :download_spreadsheet, :gwl_file, :pulldown_batch_report, :pacbio_sample_sheet, :sample_prep_worksheet]
+  before_filter :find_batch_by_id, :only => [:show,:edit, :update, :destroy, :qc_information, :qc_batch, :save, :fail, :fail_items, :fail_batch, :assign_batch, :control, :add_control, :print_labels, :print_plate_labels, :print_multiplex_labels, :print, :verify, :verify_tube_layout, :reset_batch, :previous_qc_state, :filtered, :swap, :download_spreadsheet, :gwl_file, :pulldown_batch_report, :pacbio_sample_sheet, :sample_prep_worksheet]
   before_filter :find_batch_by_batch_id, :only => [:sort, :print_multiplex_barcodes, :print_pulldown_multiplex_tube_labels, :print_plate_barcodes, :print_barcodes]
 
   def index
@@ -25,6 +25,8 @@ class BatchesController < ApplicationController
   end
 
   def show
+    @submenu_presenter = Presenters::BatchSubmenuPresenter.new(current_user, @batch)
+    
     @pipeline = @batch.pipeline
     @tasks    = @batch.tasks.sort_by(&:sorted)
     @rits = @pipeline.request_information_types
@@ -117,15 +119,6 @@ class BatchesController < ApplicationController
         redirect_to(pipeline_path(@pipeline))
       }
       format.xml  { render :xml => @batch.errors.to_xml }
-    end
-  end
-
-  def destroy
-    @batch.destroy
-    flash[:notice] = "Batch deleted"
-    respond_to do |format|
-      format.html { redirect_to batches_url }
-      format.xml  { head :ok }
     end
   end
 
@@ -228,8 +221,8 @@ class BatchesController < ApplicationController
   def released
     if params[:id]
       @pipeline = Pipeline.find(params[:id])
-      @batches = @pipeline.batches.released.all(:order => "id DESC", :include => [:requests, :user, :pipeline])
 
+      @batches = @pipeline.batches.released.all(:order => "id DESC", :include => [:user ])
       respond_to do |format|
         format.html
         format.xml { render :layout => false }
@@ -274,33 +267,17 @@ class BatchesController < ApplicationController
   end
 
   def fail_items
-    unless params[:failure][:reason].empty?
-      reason = params[:failure][:reason]
-      comment = params[:failure][:comment]
-      requests = params[:requested] || {}
-      requests_for_removal = params[:requested_remove] || {}
-      # Check to see if the user is trying to remove AND fail the same request.
-      diff = requests_for_removal.keys & requests.keys
+    ActiveRecord::Base.transaction do
+      unless params[:failure][:reason].empty?
+        reason = params[:failure][:reason]
+        comment = params[:failure][:comment]
+        requests = params[:requested_fail] || {}
+        requests_for_removal = params[:requested_remove] || {}
+        # Check to see if the user is trying to remove AND fail the same request.
+        diff = requests_for_removal.keys & requests.keys
 
-      unless diff.empty?
-        flash[:error] = "Fail and remove was selected for the following - #{diff.to_sentence} this is not supported."
-      else
-        if params[:failure][:entire_batch] == "1"
-          if params[:failure][:only_batch] == "1"
-            flash[:error] = "Please fail EITHER only the batch OR the batch and all its contents."
-          else
-            if requests_for_removal.empty?
-              @batch.fail(reason, comment)
-              flash[:notice] = "Failed batch #{@batch.id} and all of its contents."
-            else
-              flash[:error] = "You cannot fail the batch, everything in it and remove requests from the batch at the same time."
-            end
-          end
-        elsif params[:failure][:only_batch] == "1"
-          @batch.fail(reason, comment, ignore_requests = true)
-          @batch.fail_batch_items(requests, reason, comment) unless requests.empty?
-          @batch.remove_request_ids(requests_for_removal.keys) unless requests_for_removal.empty?
-          flash[:notice] = "Failed #{@batch.id} and removed and/or failed any requests you selected"
+        unless diff.empty?
+          flash[:error] = "Fail and remove were both selected for the following - #{diff.to_sentence} this is not supported."
         else
           if requests.empty? && requests_for_removal.empty?
             flash[:error] = "Please select an item to fail or remove"
@@ -311,16 +288,16 @@ class BatchesController < ApplicationController
             end
 
             unless requests_for_removal.empty?
-              @batch.remove_request_ids(requests_for_removal.keys)
+              @batch.remove_request_ids(requests_for_removal.keys, reason, comment)
               flash[:notice] = "#{requests_for_removal.keys.to_sentence} removed."
             end
           end
         end
+        redirect_to :action => "fail", :id => @batch.id
+      else
+        flash[:error] = "Please specify a failure reason for this batch"
+        redirect_to :action => :fail, :id => @batch.id
       end
-      redirect_to :action => "fail", :id => @batch.id
-    else
-      flash[:error] = "Please specify a failure reason for this batch"
-      redirect_to :action => :fail, :id => @batch.id
     end
   end
 
@@ -378,13 +355,6 @@ class BatchesController < ApplicationController
 
     flash[:notice] = 'Training batch created'
     redirect_to :action => "show", :id => batch.id
-  end
-
-  def remove_request
-    @request = Request.find(params[:request_id])
-    @batch.detach_request(@request, @current_user)
-    flash[:notice] = "Request deleted"
-    redirect_to :action => "edit", :id => @batch.id
   end
 
   def evaluations_counter
@@ -508,7 +478,7 @@ class BatchesController < ApplicationController
     unless printables.empty?
       begin
         printables.sort! {|a,b| a.number <=> b.number }
-        BarcodePrinter.print(printables, params[:printer], "DN", "long",@batch.study.abbreviation, current_user.login)
+        BarcodePrinter.print(printables, params[:printer], "DN", "cherrypick",@batch.study.abbreviation, current_user.login)
       rescue PrintBarcode::BarcodeException
         flash[:error] = "Label printing to #{params[:printer]} failed: #{$!}."
       rescue SOAP::FaultError
@@ -523,7 +493,7 @@ class BatchesController < ApplicationController
 
   def print_barcodes
     unless @batch.requests.empty?
-      asset = @batch.requests.first.asset
+      asset = @batch.requests.first.target_asset
       printables = []
       count = params[:count].to_i
       params[:printable].each do |key, value|
@@ -584,6 +554,8 @@ class BatchesController < ApplicationController
     @workflow = @batch.workflow
     @pipeline = @batch.pipeline
     @comments = @batch.comments
+
+    # TODO: Re-factor this.
 
     if @pipeline.is_a?(PulldownMultiplexLibraryPreparationPipeline)
       @plate = @batch.requests.first.asset.plate

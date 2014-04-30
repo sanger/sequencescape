@@ -3,7 +3,7 @@ module Tasks::AssignTubesToWellsHandler
 
   def render_assign_tubes_to_wells_task(task, params)
     available_tubes = uniq_assets_from_requests(task, params)
-    @available_tubes_options = [['',nil]] | available_tubes.map{ |t| ["Tube #{t.barcode}", t.id] }
+    @available_tubes_options = [['',nil]] | available_tubes.map{ |t| [t.name, t.id] }
 
     @tubes = calculate_number_of_wells_library_needs_to_use(task, params)
   end

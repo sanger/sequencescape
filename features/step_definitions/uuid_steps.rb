@@ -39,7 +39,8 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME = [
   'transfer template',
   'tag layout template',
   'barcode printer',
-  'tube'
+  'tube',
+  'robot'
 ]
 
 SINGULAR_MODELS_BASED_ON_NAME_REGEXP = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME.join('|')
@@ -93,6 +94,7 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
   'plate purpose',
   'purpose',
   'dilution plate purpose',
+  'bulk transfer',
 
   'sample',
   'sample manifest',
@@ -107,7 +109,16 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
   'tube creation',
   'state change',
 
-  'aliquot'
+  'aliquot',
+  'qcable',
+  'stock',
+  'stamp',
+  'qcable creator',
+  'lot',
+  'lot type',
+  'robot',
+  'qc decision',
+  'robot'
 ]
 
 SINGULAR_MODELS_BASED_ON_ID_REGEXP = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID.join('|')
@@ -218,4 +229,9 @@ Given /^plate "([^"]*)" is a source plate of "([^"]*)"$/ do |source_plate_uuid, 
   source_plate = Plate.find(Uuid.find_id(source_plate_uuid))
   destination_plate = Plate.find(Uuid.find_id(destination_plate_uuid))
   source_plate.children << destination_plate
+end
+
+Given /^the UUID for well (\d+) on plate "(.*?)" is "(.*?)"$/ do |well_id, plate_name, uuid|
+  plate = Plate.find_by_name(plate_name) || Plate.find_by_barcode(plate_name)
+  set_uuid_for(plate.wells[well_id.to_i-1],uuid)
 end

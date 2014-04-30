@@ -195,6 +195,25 @@ class StudyTest < ActiveSupport::TestCase
       end
     end
 
+    context "with check y separation" do
+      setup do
+        @study = Factory :study
+        @study.study_metadata.separate_y_chromosome_data = true
+      end
+
+      should "be valid when we are sane" do
+        @study.study_metadata.remove_x_and_autosomes = Study::NO
+        assert @study.save!
+      end
+
+      should "be invalid when we do something silly" do
+        @study.study_metadata.remove_x_and_autosomes = Study::YES
+        assert_raise ActiveRecord::RecordInvalid do
+          @study.save!
+        end
+      end
+    end
+
     context "#unprocessed_submissions?" do
       setup do
         @study = Factory :study
@@ -233,7 +252,6 @@ class StudyTest < ActiveSupport::TestCase
         (1..2).each { |_| Factory(:order, :study => @study ) }
         @study.projects.each do |project|
           project.enforce_quotas=true
-          Factory(:project_quota, :project => project, :request_type => @request_type, :limit => 10)
         end
         @study.save!
 
@@ -249,12 +267,84 @@ class StudyTest < ActiveSupport::TestCase
         assert @study.requests.all? { |request| not request.cancelled? }
       end
 
-      should 'not alter the project quotas' do
-        @study.projects.each do |project|
-          assert_equal 10, project.total_quota(@request_type)
+    end
+
+    context 'policy text' do
+
+      setup do
+        @study = Factory :managed_study
+      end
+
+      should 'accept valid urls' do
+        assert @study.study_metadata.update_attributes!(:dac_policy=>'http://www.example.com')
+        assert_equal 'http://www.example.com', @study.study_metadata.dac_policy
+      end
+
+      should 'reject free text' do
+        assert_raise ActiveRecord::RecordInvalid do
+         @study.study_metadata.update_attributes!(:dac_policy=>'Not a URL')
+        end
+      end
+
+      should 'reject invalid domains' do
+        # In this context invalid domains refers to those on internal domains inaccessible outside the unit
+        assert_raise ActiveRecord::RecordInvalid do
+          @study.study_metadata.update_attributes!(:dac_policy=>'http://internal.example.com')
+        end
+      end
+
+      should 'add http:// before testing a url' do
+        assert @study.study_metadata.update_attributes!(:dac_policy=>'www.example.com')
+        assert_equal 'http://www.example.com', @study.study_metadata.dac_policy
+      end
+
+      should 'not add http for eg. https' do
+        assert @study.study_metadata.update_attributes!(:dac_policy=>'https://www.example.com')
+        assert_equal 'https://www.example.com', @study.study_metadata.dac_policy
+      end
+    end
+
+    context 'policy text' do
+
+      setup do
+        @study = Factory :managed_study
+      end
+
+      should 'accept valid data access group names' do
+        # Valid names contain alphanumerics and underscores. They are limited to 32 characters, and cannot begin with a number
+        ['goodname','g00dname','good_name','_goodname','good-name'].each do |name|
+          assert @study.study_metadata.update_attributes!(:data_access_group=>name)
+          assert_equal name, @study.study_metadata.data_access_group
+        end
+      end
+
+      should 'reject non-alphanumeric data access groups' do
+        ['b@dname','bad name','1badname','averylongbadnamewouldbebadsowesouldblockit','baDname'].each do |name|
+          assert_raise ActiveRecord::RecordInvalid do
+            @study.study_metadata.update_attributes!(:data_access_group=>name)
+          end
+        end
+      end
+
+    end
+
+    context 'study name' do
+
+      setup do
+        @study = Factory :study
+      end
+
+      should 'accept names shorter than 200 characters' do
+        assert @study.update_attributes!(:name=>'Short name')
+      end
+
+      should 'reject names longer than 200 characters' do
+        assert_raise(ActiveRecord::RecordInvalid) do
+          @study.update_attributes!(:name=>'a'*201)
         end
       end
     end
+
   end
 end
 

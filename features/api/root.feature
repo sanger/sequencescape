@@ -102,6 +102,11 @@ Feature: The entry point for the API gives directions to the other actions
             "read": "http://www.example.com/api/1/plates"
           }
         },
+        "plates_for_inboxes": {
+          "actions": {
+            "read": "http://www.example.com/api/1/plates_for_inboxes"
+          }
+        },
         "wells": {
           "actions": {
             "read": "http://www.example.com/api/1/wells"
@@ -229,6 +234,31 @@ Feature: The entry point for the API gives directions to the other actions
           "actions": {
             "read": "http://www.example.com/api/1/users"
           }
+        },
+        "bulk_transfers": {
+          "actions": {
+            "read": "http://www.example.com/api/1/bulk_transfers"
+          }
+        },
+        "pooled_plate_creations": {
+          "actions": {
+            "read": "http://www.example.com/api/1/pooled_plate_creations"
+          }
+        },
+        "qc_files": {
+          "actions": {
+            "read": "http://www.example.com/api/1/qc_files"
+          }
+        },
+        "specific_tube_creations": {
+          "actions": {
+            "read": "http://www.example.com/api/1/specific_tube_creations"
+          }
+        },
+        "tube_from_tube_creations": {
+          "actions": {
+            "read": "http://www.example.com/api/1/tube_from_tube_creations"
+          }
         }
       }
       """
@@ -324,6 +354,11 @@ Feature: The entry point for the API gives directions to the other actions
         "plates": {
           "actions": {
             "read": "http://www.example.com/api/1/plates"
+          }
+        },
+        "plates_for_inbox": {
+          "actions": {
+            "read": "http://www.example.com/api/1/plates_for_inbox"
           }
         },
         "wells": {
@@ -458,6 +493,31 @@ Feature: The entry point for the API gives directions to the other actions
         "users": {
           "actions": {
             "read": "http://www.example.com/api/1/users"
+          }
+        },
+        "bulk_transfers": {
+          "actions": {
+            "read": "http://www.example.com/api/1/bulk_transfers"
+          }
+        },
+        "pooled_plate_creations": {
+          "actions": {
+            "read": "http://www.example.com/api/1/pooled_plate_creations"
+          }
+        },
+        "qc_files": {
+          "actions": {
+            "read": "http://www.example.com/api/1/qc_files"
+          }
+        },
+        "specific_tube_creations": {
+          "actions": {
+            "read": "http://www.example.com/api/1/specific_tube_creations"
+          }
+        },
+        "tube_from_tube_creations": {
+          "actions": {
+            "read": "http://www.example.com/api/1/tube_from_tube_creations"
           }
         }
       }

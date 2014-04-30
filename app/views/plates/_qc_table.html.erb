@@ -1,8 +1,8 @@
 <table class="plate" id="<%= qc_type %>">
   <thead>
     <tr>
-    <% num_rows = Map.plate_length(plate.size) -%>
-    <% num_columns = Map.plate_width(plate.size) -%>
+    <% num_rows = plate.height -%>
+    <% num_columns = plate.width -%>
     <th></th>
     <% num_columns.times do |column| -%>
       <th><%= column+1 %></th>

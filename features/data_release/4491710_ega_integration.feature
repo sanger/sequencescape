@@ -104,6 +104,9 @@ Feature: Generate accession nubmers for a sample
     Given I am the owner of sample "Sample4491710"
     And the sample "Sample4491710" has the Taxon ID "99999"
     And the sample "Sample4491710" has the common name "Human"
+    And the sample "Sample4491710" has the phenotype "Healthy"
+    And the sample "Sample4491710" has the gender "Female"
+    And the sample "Sample4491710" has the donor id "D0N0R"
 
     Given I am on the show page for sample "Sample4491710"
     Given an accessioning webservice exists which returns a sample accession number "<accession_number>"

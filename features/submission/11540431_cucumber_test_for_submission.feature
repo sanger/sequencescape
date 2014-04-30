@@ -6,7 +6,7 @@ Feature: Added a new js version. Check that submission continues to work and Pro
     And I have an active study called "Study B"
     And user "abc123" is a "manager" of study "Study B"
     And I have an "approved" project called "Project B"
-    And the project "Project B" has quotas and quotas are enforced
+    And project "Project B" has enforced quotas
 
     Given I am visiting study "Study B" homepage
     Then I should see "Study B"
@@ -26,7 +26,7 @@ Feature: Added a new js version. Check that submission continues to work and Pro
     Given study "Study B" has an accession number
     When I follow "Create Submission"
     Then I should see "Please select a submission template"
-    When I select "Library creation - Single ended sequencing" from "Template"
+    When I select "Illumina-C - Library creation - Single ended sequencing" from "Template"
     When I press "Next"
     Then I should see "Select a group to submit"
     When I fill in "Project Name" with "Pr"

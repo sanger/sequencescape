@@ -14,15 +14,15 @@ Feature: object with an accession should be modifiable
     When ignoring "CONTACTS" the XML submission for the sample "sample" should be:
         """
   <?xml version="1.0" encoding="UTF-8"?>
-  <SUBMISSION center_name="SC" broker_name="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" alias="sample-sc-2010-10-23T23:00:00Z-200" submission_date="2010-10-23T23:00:00Z">
+  <SUBMISSION center_name="SC" broker_name="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" alias="sample-sc-200" submission_date="2010-10-23T23:00:00Z">
     <ACTIONS>
       <ACTION>
-        <MODIFY source="sample-sc-2010-10-23T23:00:00Z-200.sample.xml" target="E-ERA-16" schema="sample"/>
+        <MODIFY source="sample-sc-200-2010-10-23T23:00:00Z.sample.xml" schema="sample"/>
       </ACTION>
     </ACTIONS>
   </SUBMISSION>
         """
-       
+
   Scenario: A unreleased sample with already an accession number should behave as normal
     Given a sample named "sample" exists for accession
     And the sample "sample" has the accession number "E-ERA-16"
@@ -32,10 +32,10 @@ Feature: object with an accession should be modifiable
     When ignoring "CONTACTS" the XML submission for the sample "sample" should be:
         """
   <?xml version="1.0" encoding="UTF-8"?>
-  <SUBMISSION center_name="SC" broker_name="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" alias="sample-sc-2010-10-23T23:00:00Z-200" submission_date="2010-10-23T23:00:00Z">
+  <SUBMISSION center_name="SC" broker_name="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" alias="sample-sc-200" submission_date="2010-10-23T23:00:00Z">
     <ACTIONS>
       <ACTION>
-        <MODIFY source="sample-sc-2010-10-23T23:00:00Z-200.sample.xml" target="E-ERA-16" schema="sample"/>
+        <MODIFY source="sample-sc-200-2010-10-23T23:00:00Z.sample.xml" schema="sample"/>
       </ACTION>
       <ACTION><HOLD/></ACTION>
     </ACTIONS>

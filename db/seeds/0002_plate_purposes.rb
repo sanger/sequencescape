@@ -1,6 +1,8 @@
 ActiveRecord::Base.transaction do
   # And here is pulldown
-  Pulldown::PlatePurposes::PLATE_PURPOSE_FLOWS.each do |flow|
+  purpose_flows = Pulldown::PlatePurposes::PLATE_PURPOSE_FLOWS.clone
+  purpose_flows.pop
+  purpose_flows.each do |flow|
     # We're using a different plate purpose for each pipeline, which means we need to attach that plate purpose to the request
     # type for it.  Then in the cherrypicking they'll only be able to pick the correct type from the list.
     stock_plate_purpose = Pulldown::StockPlatePurpose.create!(
@@ -15,7 +17,7 @@ ActiveRecord::Base.transaction do
       ]
     )
     pipeline_name       = /^([^\s]+)/.match(stock_plate_purpose.name)[1]  # Hack but works!
-    request_type        = RequestType.find_by_name("Pulldown #{pipeline_name}") or raise StandardError, "Cannot find pulldown pipeline for #{pipeline_name}"
+    request_type        = RequestType.find_by_name("Illumina-A Pulldown #{pipeline_name}") or raise StandardError, "Cannot find pulldown pipeline for #{pipeline_name}"
     request_type.acceptable_plate_purposes << stock_plate_purpose
 
     # Now we can build from the stock plate through to the end
@@ -23,7 +25,9 @@ ActiveRecord::Base.transaction do
       :name                  => flow.shift,
       :cherrypickable_target => false
     ).tap do |plate_purpose|
-      stock_plate_purpose.child_relationships.create!(:child => plate_purpose, :transfer_request_type => RequestType.transfer)
+      request_type_name = "Pulldown #{stock_plate_purpose.name}-#{plate_purpose.name}"
+      transfer = RequestType.create!(:name => request_type_name, :key => request_type_name.gsub(/\W+/, '_'), :request_class_name => 'Pulldown::Requests::StockToCovaris', :asset_type => 'Well', :order => 1)
+      stock_plate_purpose.child_relationships.create!(:child => plate_purpose, :transfer_request_type => transfer)
     end
     final_purpose = flow.inject(initial_purpose) do |parent, child_plate_name|
       options = { :name => child_plate_name, :cherrypickable_target => false }

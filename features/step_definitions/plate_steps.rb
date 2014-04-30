@@ -131,14 +131,15 @@ end
 
 Given /^the well with ID (\d+) is at position "([^\"]+)" on the plate with ID (\d+)$/ do |well_id, position, plate_id|
   plate = Plate.find(plate_id)
-  map   = Map.where_description(position).where_plate_size(plate.size).first or raise StandardError, "Could not find position #{position}"
+  map   = Map.where_description(position).where_plate_size(plate.size).where_plate_shape(plate.asset_shape).first or raise StandardError, "Could not find position #{position}"
   Well.find(well_id).update_attributes!(:plate => plate, :map => map)
 end
 
 Given /^well "([^"]*)" is holded by plate "([^"]*)"$/ do |well_uuid, plate_uuid|
   well = Uuid.find_by_external_id(well_uuid).resource
   plate = Uuid.find_by_external_id(plate_uuid).resource
-  well.update_attributes!(:plate => plate)
+  well.update_attributes!(:plate => plate, :map=>Map.find_by_description('A1'))
+  plate.update_attributes!(:barcode=>1)
 end
 
 Then /^plate "([^"]*)" should have a purpose of "([^"]*)"$/ do |plate_barcode, plate_purpose_name|
@@ -173,6 +174,12 @@ Given /^a "([^\"]+)" plate called "([^\"]+)" exists as a child of "([^\"]+)"$/ d
   AssetLink.create!(:ancestor => parent, :descendant => plate_purpose.create!(:name => plate_name))
 end
 
+Given /^a "(.*?)" plate called "(.*?)" exists as a child of plate (\d+)$/ do |name, plate_name, parent_id|
+  plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
+  parent        = Plate.find(parent_id) or raise StandardError, "Cannot find parent plate #{parent_id.inspect}"
+  AssetLink.create!(:ancestor => parent, :descendant => plate_purpose.create!(:name => plate_name))
+end
+
 Given /^a "([^\"]+)" plate called "([^\"]+)" with ID (\d+)$/ do |name, plate_name, id|
   plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
   plate_purpose.create!(:name => plate_name, :id => id)
@@ -202,10 +209,15 @@ Given /^(passed|started|pending|failed) transfer requests exist between (\d+) we
   destination = Plate.find_by_name(dest_name)
   (0...count.to_i).each do |i|
     RequestType.transfer.create!(:asset => source.wells.in_row_major_order[i], :target_asset => destination.wells.in_row_major_order[i], :state=>state)
+    Well::Link.create!(:source_well=>source.wells.in_row_major_order[i],:target_well=>destination.wells.in_row_major_order[i], :type=>'stock')
   end
   AssetLink.create(:ancestor=>source,:descendant=>destination)
 end
 
+Then /^the plate with the barcode "(.*?)" should have a label of "(.*?)"$/ do |barcode, label|
+  plate = Plate.find_by_barcode!(barcode)
+  assert_equal label, plate.role
+end
 
 
 

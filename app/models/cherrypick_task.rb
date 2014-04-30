@@ -33,8 +33,8 @@ class CherrypickTask < Task
       const_get("by_#{cherrypick_direction}".classify)
     end
 
-    def initialize(batch, template, partial = nil)
-      @wells, @size, @batch = [], template.size, batch
+    def initialize(batch, template, asset_shape=nil, partial = nil)
+      @wells, @size, @batch, @shape = [], template.size, batch, asset_shape||Map::AssetShape.default
       initialize_already_occupied_wells_from(template, partial)
       add_any_wells_from_template_or_partial(@wells)
     end
@@ -50,7 +50,7 @@ class CherrypickTask < Task
         @wells.dup.tap do |wells|
           complete(wells)
         end.each_with_index.inject([]) do |wells, (well, index)|
-          wells.tap { wells[Map.horizontal_to_vertical(index+1, @size)] = well }
+          wells.tap { wells[@shape.horizontal_to_vertical(index+1, @size)] = well }
         end.compact
       end
     end
@@ -58,12 +58,28 @@ class CherrypickTask < Task
     # Deals with generating the pick plate by travelling in a column direction, so A1, B1, C1 ...
     class ByColumn < PickTarget
       def well_position(wells)
-        Map.vertical_to_horizontal(wells.size+1, @size)
+         @shape.vertical_to_horizontal(wells.size+1, @size)
       end
       private :well_position
 
       def completed_view
         @wells.dup.tap { |wells| complete(wells) }
+      end
+    end
+
+    # Deals with generating the pick plate by travelling in an interlaced column direction, so A1, C1, E1 ...
+    class ByInterlacedColumn < PickTarget
+      def well_position(wells)
+         @shape.interlaced_vertical_to_horizontal(wells.size+1, @size)
+      end
+      private :well_position
+
+      def completed_view
+        @wells.dup.tap do |wells|
+          complete(wells)
+        end.each_with_index.inject([]) do |wells, (well, index)|
+          wells.tap { wells[@shape.vertical_to_interlaced_vertical(index+1, @size)] = well }
+        end.compact
       end
     end
 
@@ -83,7 +99,7 @@ class CherrypickTask < Task
 
     # Completes the given well array such that it looks like the plate has been completely picked.
     def complete(wells)
-      until wells.size == @size
+      until wells.size >= @size
         add_empty_well(wells)
         add_any_wells_from_template_or_partial(wells)
       end
@@ -108,7 +124,7 @@ class CherrypickTask < Task
     # checked to see if subsequent wells are already taken.  In other words, after calling this method
     # the next position on the pick plate is known to be empty.
     def add_any_wells_from_template_or_partial(wells)
-      wells << CherrypickTask::TEMPLATE_EMPTY_WELL until wells.size == @size or @used_wells[well_position(wells)].nil?
+      wells << CherrypickTask::TEMPLATE_EMPTY_WELL until wells.size >= @size or @used_wells[well_position(wells)].nil?
       return unless @control_well_required and wells.size == (@size-1)
 
       # Control well is always in the bottom right corner of the plate
@@ -128,14 +144,16 @@ class CherrypickTask < Task
   def pick_new_plate(requests, template, robot, batch, plate_purpose)
     target_type = PickTarget.for(plate_purpose)
     perform_pick(requests, robot, batch) do |batch|
-      target_type.new(batch, template)
+      target_type.new(batch, template, plate_purpose.try(:asset_shape))
     end
   end
 
   def pick_onto_partial_plate(requests, template, robot, batch, partial_plate)
-    target_type = PickTarget.for(partial_plate.plate_purpose)
+    purpose = partial_plate.plate_purpose
+    target_type = PickTarget.for(purpose)
+
     perform_pick(requests, robot, batch) do |batch|
-      target_type.new(batch, template, partial_plate).tap do
+      target_type.new(batch, template, purpose.try(:asset_shape), partial_plate).tap do
         partial_plate = nil  # Ensure that subsequent calls have no partial plate
       end
     end
@@ -216,7 +234,7 @@ class CherrypickTask < Task
     #Request.create(:state => "pending", :sample => well.sample, :asset => well, :target_asset => Well.create(:sample => well.sample, :name => well.sample.name))
     workflow.pipeline.control_request_type.create_control!(
       :asset => well,
-      :target_well => Well.create!(:aliquots => well.aliquots.map(&:clone))
+      :target_asset => Well.create!(:aliquots => well.aliquots.map(&:clone))
     )
   end
   private :generate_control_request

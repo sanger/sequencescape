@@ -16,6 +16,7 @@
     <%= metadata_fields.select(:contaminated_human_dna, Study::YES_OR_NO) %>
     <%= metadata_fields.select(:commercially_available, Study::YES_OR_NO) %>
     <%= metadata_fields.select(:remove_x_and_autosomes, Study::YES_OR_NO) %>
+    <%= metadata_fields.check_box(:separate_y_chromosome_data) %>
 
     <%= metadata_fields.text_field(:study_project_id, :grouping => 'SRA') %>
     <%= metadata_fields.text_field(:study_ebi_accession_number, :grouping => 'SRA AN') %>
@@ -24,6 +25,7 @@
     <%= metadata_fields.check_box(:bam) %>
 
     <% metadata_fields.with_options(:grouping => 'Data Release') do |group| %>
+      <%= metadata_fields.text_field(:data_access_group) %>
       <%= group.select_by_association(:data_release_study_type)%>
       <%= group.select(:data_release_strategy, Study::DATA_RELEASE_STRATEGIES) %>
       <% metadata_fields.related_fields(:to => :data_release_strategy, :when => Study::DATA_RELEASE_STRATEGY_MANAGED) do %>
@@ -31,7 +33,8 @@
         <% metadata_fields.related_fields(:to => :data_release_standard_agreement, :when => Study::NO) do %>
           <%= group.document_field(:data_release_non_standard_agreement) %>
         <% end %>
-      <%= metadata_fields.text_area(:dac_policy) %>
+      <%= metadata_fields.text_field(:dac_policy_title) %>
+      <%= metadata_fields.text_field(:dac_policy) %>
       <%= metadata_fields.text_field(:ega_dac_accession_number) %>
       <%= metadata_fields.text_field(:ega_policy_accession_number) %>
       <%= metadata_fields.text_field(:array_express_accession_number) if study.for_array_express? %>

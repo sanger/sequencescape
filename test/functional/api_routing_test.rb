@@ -72,7 +72,6 @@ class ApiRoutingTest < ActionController::TestCase
       :multiplexed_library_tubes,
       :plate_purposes,
       :plates,
-      :quotas,
       :sample_tubes,
       :study_samples,
       :tags,

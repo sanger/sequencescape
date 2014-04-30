@@ -38,7 +38,7 @@ Feature: Studies have timings for release of their data
   Scenario Outline: When the data release is delayed but no reasons are provided
     Given I select "delayed" from "How is the data release to be timed?"
     And I select "other" from "Reason for delaying release"
-    And I fill in "Please explain the reason for delaying release (e.g., pre-existing collaborative agreement)" with "Some reason"
+    And I fill in "Please explain the reason for delaying release" with "Some reason"
     And I select "<period>" from "Delay for"
     When I press "Create"
     Then I should be on the studies page
@@ -54,7 +54,7 @@ Feature: Studies have timings for release of their data
   Scenario Outline: When the data release is delayed and the reasons are provided
     Given I select "delayed" from "How is the data release to be timed?"
     And I select "other" from "Reason for delaying release"
-    And I fill in "Please explain the reason for delaying release (e.g., pre-existing collaborative agreement)" with "Some reason"
+    And I fill in "Please explain the reason for delaying release" with "Some reason"
     And I select "<period>" from "Delay for"
     And I fill in "Comment regarding data release timing and approval" with "Because it is ok?"
     When I press "Create"

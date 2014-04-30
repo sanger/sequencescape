@@ -33,7 +33,7 @@ Feature: Access objects through the API
     And the JSON should be:
       """
       {
-        "general": [ "the 'Content-Type' can only be 'application/json'" ]
+        "general": [ "the 'Content-Type' can only be 'application/json' or a supported filetype eg.'sequencescape/qc_file'" ]
       }
       """
 
@@ -234,7 +234,7 @@ Feature: Access objects through the API
     And the JSON should be:
       """
       {
-        "general": [ "the 'Accept' header can only be 'application/json'" ]
+        "general": [ "the 'Accept' header can only be 'application/json' or a supported filetype eg.'sequencescape/qc_file'" ]
       }
       """
 
@@ -459,30 +459,5 @@ Feature: Access objects through the API
       """
       {
         "general": [ "requested action is not supported on this resource" ]
-      }
-      """
-
-  @authentication
-  Scenario: Authentication checks are only made when they are unknown or not fresh.
-    Given the sample named "testing_the_object_service" exists with ID 1
-    And the UUID for the sample "testing_the_object_service" is "00000000-1111-2222-3333-444444444444"
-
-    # First we are authenticating, everything should go well ...
-    When I GET the API path "/00000000-1111-2222-3333-444444444444"
-    Then the HTTP response should be "200 OK"
-
-    # Now we are no longer recognised but the check should be fresh, so it should still work ...
-    Given the WTSI single sign-on service does not recognise "I-am-authenticated"
-    When I GET the API path "/00000000-1111-2222-3333-444444444444"
-    Then the HTTP response should be "200 OK"
-
-    # Finally we travel a bit in time, making our check stale, and then we should find an authentication error ...
-    Given all of this is happening 2 hours from now
-    When I GET the API path "/00000000-1111-2222-3333-444444444444"
-    Then the HTTP response should be "401 Unauthorised"
-    And the JSON should be:
-      """
-      {
-        "general": [ "the WTSISignOn cookie is invalid" ]
       }
       """

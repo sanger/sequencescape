@@ -1,7 +1,7 @@
 require "test_helper"
 
 class MyBrokenController < ActionController::Base
-  include ExceptionNotifiable
+  include ExceptionNotification::Notifiable
   alias_method(:rescue_action, :rescue_action_in_public)
 
   # This method is purposely set up to fail and by having the @request member variable

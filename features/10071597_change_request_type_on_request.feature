@@ -1,5 +1,5 @@
 @request
-Feature: if request is pending and there is enough quota the admin could change of request type.
+Feature: if request is pending then the admin could change of request type.
   Background:
      Given I am logged in as "John Smith"
      And I am an administrator
@@ -16,16 +16,7 @@ Feature: if request is pending and there is enough quota the admin could change 
      And I press "Save changes"
      Then I should see "Request details have been updated"
 
-
-   Scenario: The user asks to change with Request Type that hasnt enough quota
-     Given I am on the page for editing the last request
-     Then I should see "Request Type:"
-     When I select "Single ended sequencing" from "Request Type:"
-     And I press "Save changes"
-     Then I should see "You can not change the request type. Insufficient quota for single ended sequencing."
-
-   Scenario: The user asks to change with Request Type that has enough quotas.
-     Given last request enough quota
+   Scenario: The user asks to change with Request Type
      Given I am on the page for editing the last request
      Then I should see "Request Type:"
      When I select "Single ended sequencing" from "Request Type:"

@@ -140,10 +140,7 @@ class DnaQcTask < Task
 
         #cancel next request
         request.next_requests(batch.pipeline).each do |next_request|
-          #TODO cancel request or fail it
-#          if next_request.request_cancel
-#            next_request.save
-#          end
+          next_request.cancel_before_started!
         end
       end
     end

@@ -15,8 +15,8 @@ class RequestType < ActiveRecord::Base
   include Uuid::Uuidable
   include Named
 
-  has_many :requests
-  has_many :pipelines_request_types
+  has_many :requests, :inverse_of => :request_type
+  has_many :pipelines_request_types, :inverse_of => :request_type
   has_many :pipelines, :through => :pipelines_request_types
 
   # Returns a collect of pipelines for which this RequestType is valid control.
@@ -48,6 +48,7 @@ class RequestType < ActiveRecord::Base
   serialize :request_parameters
 
   delegate :delegate_validator, :to => :request_class
+  delegate :accessioning_required?, :to => :request_class
 
   named_scope :applicable_for_asset, lambda { |asset|
     {

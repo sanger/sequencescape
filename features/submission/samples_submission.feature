@@ -11,7 +11,7 @@ Feature: Samples submission
     And I have an active study called "study B"
     And user "abc123" is a "manager" of study "study B"
     And I have an "approved" project called "project B"
-    And the project "project B" has quotas and quotas are enforced
+    And project "project B" has enforced quotas
 
     Given I am visiting study "study B" homepage
     Then I should see "study B"

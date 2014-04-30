@@ -1,0 +1,11 @@
+<div id='pick_by_micro_litre'>
+<fieldset>
+  <%= hidden_field("cherrypick", "action", :value=>"micro_litre") %>
+    <table cellspacing='0' cellpadding='0'>
+    <tr>
+      <td><label for="micro_litre_volume_required">Volume</label> (&micro;l):</td>
+      <td><%= text_field_tag 'micro_litre_volume_required', '13', :size => 5 %></td>
+    </tr>
+    </table>
+</fieldset>
+</div>

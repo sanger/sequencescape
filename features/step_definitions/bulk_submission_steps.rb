@@ -37,3 +37,10 @@ Then /^there should be an order with the bait library name set to "([^\"]+)"$/ d
     "There is no order with the bait library name set to #{name.inspect}"
   )
 end
+
+Then /^there should be an order with the gigabases expected set to "(.*?)"$/ do |gigabase|
+    assert_not_nil(
+    Order.all.detect { |o| o.request_options['gigabases_expected'] == gigabase },
+    "There is no order with the gigabases expected set to #{gigabase}"
+  )
+end

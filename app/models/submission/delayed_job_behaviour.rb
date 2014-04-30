@@ -14,8 +14,8 @@ module Submission::DelayedJobBehaviour
 
   def build_batch
     finalize_build!
-  rescue Quota::Error => quota_exception
-    fail_set_message_and_save(quota_exception.message)
+  rescue Submission::ProjectValidation::Error => project_exception
+    fail_set_message_and_save(project_exception.message)
   rescue ActiveRecord::StatementInvalid => sql_exception
     # If an SQL problems occurs, it's more likely that's it's
     # a one shot one, e.g. timeout , deadlock etc ...

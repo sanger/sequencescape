@@ -64,13 +64,6 @@ module AuthenticatedSystem
         else
           self.current_user = user
         end
-      elsif cookies[:WTSISignOn]
-        user = User.authenticate_by_sanger_cookie(cookies[:WTSISignOn])
-        if user.nil?
-          self.current_user = :false
-        else
-          self.current_user = user
-        end
       end
 
       respond_to do |accepts|
@@ -109,6 +102,20 @@ module AuthenticatedSystem
         else
           accepts.xml  { logged_in? && authorized? && current_user.manager_or_administrator? ? true : access_denied }
           accepts.json { logged_in? && authorized? && current_user.manager_or_administrator? ? true : access_denied }
+        end
+      end
+    end
+
+    def lab_manager_login_required
+      setup_current_user
+      respond_to do |accepts|
+        accepts.html   { logged_in? && authorized? && current_user.lab_manager? ? true : access_denied }
+        if configatron.disable_api_authentication == true
+          accepts.xml  { true }
+          accepts.json { true }
+        else
+          accepts.xml  { logged_in? && authorized? && current_user.lab_manager? ? true : access_denied }
+          accepts.json { logged_in? && authorized? && current_user.lab_manager? ? true : access_denied }
         end
       end
     end

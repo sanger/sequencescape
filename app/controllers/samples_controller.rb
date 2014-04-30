@@ -154,8 +154,7 @@ class SamplesController < ApplicationController
   def remove_from_study
     study = Study.find(params[:study_id])
     sample = Sample.find(params[:id])
-    study.samples.delete(sample)
-    study.save
+    StudySample.find(:first, :conditions=>{:study_id=>params[:study_id],:sample_id=>params[:id]}).destroy
     flash[:notice] = "Sample was removed from study #{study.name.humanize}"
     redirect_to sample_path(sample)
   end
@@ -176,7 +175,7 @@ class SamplesController < ApplicationController
     flash[:notice] = "Accession number generated: #{ @sample.sample_metadata.sample_ebi_accession_number }"
     redirect_to(sample_path(@sample))
   rescue ActiveRecord::RecordInvalid => exception
-    flash[:error] = 'Please fill in the required fields'
+    flash[:error] = "Please fill in the required fields: #{@sample.errors.full_messages.join(', ')}"
     redirect_to(edit_sample_path(@sample))
   rescue AccessionService::NumberNotRequired => exception
     flash[:warning] = 'An accession number is not required for this study'
@@ -231,8 +230,8 @@ class SamplesController < ApplicationController
         num_rows = num_rows + 1
       end
       num_samples = num_rows - 1
-      if num_samples > UPLOADED_SPREADSHEET_MAX_NUMBER_OF_MOVE_SAMPLES
-        flash[:error] = "You can only load #{UPLOADED_SPREADSHEET_MAX_NUMBER_OF_MOVE_SAMPLES} samples at a time. Please split the file into smaller groups of samples."
+      if num_samples > configatron.uploaded_spreadsheet.max_number_of_move_samples
+        flash[:error] = "You can only load #{configatron.uploaded_spreadsheet.max_number_of_move_samples} samples at a time. Please split the file into smaller groups of samples."
         redirect_to move_spreadsheet_sample_path and return
       end
 

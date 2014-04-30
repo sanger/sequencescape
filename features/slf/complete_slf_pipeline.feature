@@ -1,4 +1,4 @@
-@slf @javascript @sequenom @barcode-service
+@slf @javascript @sequenom @barcode-service @wip
 Feature: I wish to create samples and push them all the way through QC in SLF
   Background:
     Given the Sanger sample IDs will be sequentially generated
@@ -22,7 +22,7 @@ Feature: I wish to create samples and push them all the way through QC in SLF
   @manifest
   Scenario: Push a plate all the way through SLF to genotyping
     Given I have a project called "Test project"
-    And project "Test project" has enough quotas
+
 
     When I go to the homepage
     And I follow "Create study"
@@ -87,7 +87,7 @@ Feature: I wish to create samples and push them all the way through QC in SLF
     When I check "Select DN1234567T for batch"
     And I select "Create Batch" from "action_on_requests"
     And I press "Submit"
-    When I follow "Start batch"
+    When I follow "QC result"
     Then I should see dna qc table:
      | Well | Gel              | Pico | Sequenom   | Gender | Concentration | Plate         |
      | A1   | Band Not Visible | Pass | 0/30 FFFF  | F      | 5.0           | Plate 1234567 |
@@ -200,14 +200,13 @@ Feature: I wish to create samples and push them all the way through QC in SLF
     When I check "Select DN1234567T for batch"
     And I select "Create Batch" from "action_on_requests"
     And I press "Submit"
-    When I follow "Start batch"
+    When I follow "Select Plate Template"
     When I select "testtemplate" from "Plate Template"
+    When I select "Infinium 670k" from "Output plate purpose"
     And I fill in "Volume Required" with "13"
     And I fill in "Concentration Required" with "50"
     When I press "Next step"
-    When I press "Next step"
 
-    When I select "Infinium 670k" from "Plate Purpose"
     And I press "Next step"
     When I select "Genotyping freezer" from "Location"
     And I press "Next step"
@@ -221,25 +220,25 @@ Feature: I wish to create samples and push them all the way through QC in SLF
     When I check "Select DN99999F for batch"
     And I select "Create Batch" from "action_on_requests"
     And I press "Submit"
-    When I follow "Start batch"
+    When I follow "Attach Infinium Barcode"
 
     When I fill in "Infinium barcode for plate 99999" with "WG1234567"
     And I press "Next step"
     When I press "Next step"
     Then the manifest for study "Test study" with plate "99999" should be:
-    | Row | Institute Plate Label | Well | Is Control | Institute Sample Label | Species      | Sex    | Volume (ul) | Conc (ng/ul) | Extraction Method | Mass of DNA used in WGA | Tissue Source |
-    | 1   | WG1234567         | A01  | 0          | 99999_A01_CCC31        | Homo sapiens | F | 13          | 50           | -                 | 0                       | -             |
-    | 2   | WG1234567         | B01  | 0          | 99999_B01_CCC39        | Homo sapiens | F | 13          | 50           | -                 | 0                       | -             |
-    | 3   | WG1234567         | C01  | 0          | 99999_C01_CCC317       | Homo sapiens | F | 13          | 50           | -                 | 0                       | -             |
-    | 4   | WG1234567         | D01  | 0          | 99999_D01_CCC325       | Homo sapiens | F | 13          | 50           | -                 | 0                       | -             |
-    | 5   | WG1234567         | E01  | 0          | 99999_E01_CCC333       | Homo sapiens | F | 13          | 50           | -                 | 0                       | -             |
-    | 6   | WG1234567         | F01  | 0          | 99999_F01_CCC341       | Homo sapiens | F | 13          | 50           | -                 | 0                       | -             |
-    | 7   | WG1234567         | G01  | 0          | 99999_G01_CCC349       | Homo sapiens | F | 13          | 50           | -                 | 0                       | -             |
-    | 8   | WG1234567         | H01  | 0          | 99999_H01_CCC357       | Homo sapiens | F | 13          | 50           | -                 | 0                       | -             |
-    | 9   | WG1234567         | A02  | 0          | 99999_A02_CCC365       | Homo sapiens | F | 13          | 50           | -                 | 0                       | -             |
-    | 10  | WG1234567         | B02  | 0          | 99999_B02_CCC373       | Homo sapiens | F | 13          | 50           | -                 | 0                       | -             |
-    | 11  | WG1234567         | C02  | 0          | 99999_C02_CCC381       | Homo sapiens | F | 13          | 50           | -                 | 0                       | -             |
-    | 12  | WG1234567         | D02  | 0          | 99999_D02_CCC389       | Homo sapiens | F | 13          | 50           | -                 | 0                       | -             |
+    | Row | Institute Plate Label | Well | Is Control | Institute Sample Label | Species      | Sex | Volume (ul) | Conc (ng/ul) | Extraction Method | Mass of DNA used in WGA | Tissue Source |
+    | 1   | WG1234567             | A01  | 0          | 99999_A01_CCC31        | Homo sapiens | F   | 13          | 50           | -                 | 0                       | -             |
+    | 2   | WG1234567             | B01  | 0          | 99999_B01_CCC39        | Homo sapiens | F   | 13          | 50           | -                 | 0                       | -             |
+    | 3   | WG1234567             | C01  | 0          | 99999_C01_CCC317       | Homo sapiens | F   | 13          | 50           | -                 | 0                       | -             |
+    | 4   | WG1234567             | D01  | 0          | 99999_D01_CCC325       | Homo sapiens | F   | 13          | 50           | -                 | 0                       | -             |
+    | 5   | WG1234567             | E01  | 0          | 99999_E01_CCC333       | Homo sapiens | F   | 13          | 50           | -                 | 0                       | -             |
+    | 6   | WG1234567             | F01  | 0          | 99999_F01_CCC341       | Homo sapiens | F   | 13          | 50           | -                 | 0                       | -             |
+    | 7   | WG1234567             | G01  | 0          | 99999_G01_CCC349       | Homo sapiens | F   | 13          | 50           | -                 | 0                       | -             |
+    | 8   | WG1234567             | H01  | 0          | 99999_H01_CCC357       | Homo sapiens | F   | 13          | 50           | -                 | 0                       | -             |
+    | 9   | WG1234567             | A02  | 0          | 99999_A02_CCC365       | Homo sapiens | F   | 13          | 50           | -                 | 0                       | -             |
+    | 10  | WG1234567             | B02  | 0          | 99999_B02_CCC373       | Homo sapiens | F   | 13          | 50           | -                 | 0                       | -             |
+    | 11  | WG1234567             | C02  | 0          | 99999_C02_CCC381       | Homo sapiens | F   | 13          | 50           | -                 | 0                       | -             |
+    | 12  | WG1234567             | D02  | 0          | 99999_D02_CCC389       | Homo sapiens | F   | 13          | 50           | -                 | 0                       | -             |
     When I press "Release this batch"
 
     Given a study report is generated for study "Test study"

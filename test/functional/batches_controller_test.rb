@@ -13,17 +13,12 @@ class BatchesControllerTest < ActionController::TestCase
     end
     should_require_login
 
-    context "with a user logged in" do
+    context "with a false user for npg" do
+
       setup do
-        @controller.stubs(:current_user).returns(@user)
+        @controller.stubs(:current_user).returns(:false)
       end
 
-      context "routing" do
-        should "map '/batches/auto_qc" do
-          assert_routing({ :method => 'post', :path => '/batches/auto_qc'}, { :controller => 'batches', :action => 'auto_qc'})
-        end
-        # Add more tests here
-      end
 
       context "NPG xml view" do
         setup do
@@ -31,6 +26,7 @@ class BatchesControllerTest < ActionController::TestCase
 
           @study, @project = Factory(:study), Factory(:project)
           @sample = Factory :sample
+          @submission = Factory :submission_without_order, {:priority => 3}
 
           @library = Factory(:empty_library_tube).tap do |library_tube|
             library_tube.aliquots.create!(:sample => @sample, :project => @project, :study => @study, :library => library_tube, :library_type => 'Standard')
@@ -38,7 +34,8 @@ class BatchesControllerTest < ActionController::TestCase
           @lane        = Factory(:empty_lane, :qc_state => 'failed')
           @request_one = pipeline.request_types.first.create!(
             :asset => @library, :target_asset => @lane,
-            :project => @project, :study => @study, :priority => 99,
+            :project => @project, :study => @study,
+            :submission => @submission,
             :request_metadata_attributes => { :fragment_size_required_from => 100, :fragment_size_required_to => 200, :read_length => 76 }
           )
 
@@ -54,13 +51,26 @@ class BatchesControllerTest < ActionController::TestCase
 
         should "have api version attribute on root object" do
           assert_response :success
-          assert_tag :tag => 'lane', :attributes => { :position => 1, :id => @lane.id, :priority => 99 }
+          assert_tag :tag => 'lane', :attributes => { :position => 1, :id => @lane.id, :priority => 3 }
           assert_tag :tag => "library", :attributes => {:request_id => @request_one.id, :qc_state => 'fail'}
         end
 
         should 'expose the library information correctly' do
           assert_tag :tag => 'sample', :attributes => { :library_id => @library.id, :library_name => @library.name, :library_type => 'Standard' }
         end
+      end
+    end
+
+    context "with a user logged in" do
+      setup do
+        @controller.stubs(:current_user).returns(@user)
+      end
+
+      context "routing" do
+        should "map '/batches/auto_qc" do
+          assert_routing({ :method => 'post', :path => '/batches/auto_qc'}, { :controller => 'batches', :action => 'auto_qc'})
+        end
+        # Add more tests here
       end
 
       context "actions" do
@@ -129,37 +139,6 @@ class BatchesControllerTest < ActionController::TestCase
           end
         end
 
-        context "#remove_request" do
-          setup do
-            @current_user = Factory :user
-            assert_equal 2, @batch_one.requests.size
-            @request_1 = @batch_one.requests.first
-            @comment_count = @request_1.comments.size
-            assert_equal "pending", @request_1.state
-            post :remove_request, :id => @batch_one.id, :request_id => @request_1.id
-          end
-
-          should "#remove_request and not change the request status" do
-            # Keep batch intact
-            assert_equal 2, @batch_one.requests.size
-            assert_equal "pending", Request.find(@request_1).state
-          end
-
-        end
-
-        context "#reset a batch" do
-          setup do
-            @old_count = Batch.count
-            @requests = @batch_one.requests
-            delete :destroy, :id => @batch_one.id
-          end
-
-          should "destroy_batch and reset state on requests" do
-            assert_equal @old_count-1, Batch.count
-            assert_redirected_to batches_path
-            assert_equal "pending", Request.find(@batch_one.requests.first).state
-          end
-        end
 
         should "#update" do
           #try to reach the else on edit method.
@@ -268,7 +247,7 @@ class BatchesControllerTest < ActionController::TestCase
 
           context "posting without a failure reason" do
             setup do
-              post :fail_items, :id => @batch_one.id, :failure => { :entire_batch => "0", :reason => "", :comment => "" }
+              post :fail_items, :id => @batch_one.id, :failure => { :reason => "", :comment => "" }
             end
             should "not allow failing a batch/items without specifying a reason and set the flash" do
               @controller.session[:flash][:error].grep /Please specify a failure reason for this batch/
@@ -277,30 +256,13 @@ class BatchesControllerTest < ActionController::TestCase
           end
 
           context "posting with a failure reason" do
-            context "entire batch" do
-              setup do
-                post :fail_items, :id => @batch_one.id, :failure => { :entire_batch => "1", :reason => "PCR not completed", :comment => "" }
-              end
-
-              should "create a failure on each request in this batch and have two related items" do
-                assert_equal 2, @batch_one.size
-                assert_equal 1, @batch_one.failures.size
-                assert_equal "PCR not completed", @batch_one.failures.first.reason
-                # First item
-                assert_equal 1, @batch_one.requests.first.failures.size
-                assert_equal "PCR not completed", @batch_one.requests.first.failures.first.reason
-                # Second item
-                assert_equal 1, @batch_one.requests.last.failures.size
-                assert_equal "PCR not completed", @batch_one.requests.last.failures.first.reason
-              end
-            end
 
             context "individual items" do
               setup do
                 EventSender.expects(:send_fail_event).returns(true).times(1)
                 post :fail_items, :id => @batch_one.id,
-                                  :failure => { :entire_batch => "0", :reason => "PCR not completed", :comment => "" },
-                                  :requested => {"#{@request_one.id}"=>"on"}
+                                  :failure => { :reason => "PCR not completed", :comment => "" },
+                                  :requested_fail => {"#{@request_one.id}"=>"on"}
               end
               should "create a failure on each item in this batch and have two items related" do
                 assert_equal 0, @batch_one.failures.size

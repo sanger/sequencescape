@@ -13,7 +13,7 @@ gem "configatron"
 gem "rest-client" # curb substitute.
 gem "fastercsv", "~>1.4.0"
 gem "formtastic", "~>1.2.0"
-gem "activerecord-jdbc-adapter", :platforms => :jruby
+gem "activerecord-jdbc-adapter", ">= 1.2.6", :platforms => :jruby
 gem "jdbc-mysql", :platforms => :jruby
 gem "mysql", :platforms => :mri
 gem "spreadsheet"
@@ -28,7 +28,7 @@ gem 'trinidad', :platforms => :jruby
 # This was once a plugin, now it's a gem:
 gem 'catch_cookie_exception', :git => 'git+ssh://git@github.com/mhartl/catch_cookie_exception.git'
 
-gem 'sanger_barcode', :git => 'git+ssh://git@github.com/sanger/sanger_barcode.git', :branch => 'ruby-1.8'
+gem 'sanger_barcode', '~>0.1.0', :git => 'git+ssh://git@github.com/sanger/sanger_barcode.git', :branch => 'ruby-1.8'
 # The graph library (1.x only because 2.x uses Rails 3).  This specific respository fixes an issue
 # seen in creating asset links during the assign_tags_handler (which blew up in rewire_crossing in the
 # gem code).
@@ -41,6 +41,8 @@ gem "alter_table", :git => "git+ssh://git@github.com/sanger/alter_table.git"
 gem "delayed_job", '~>2.0.4'
 
 gem "ruby_walk",  ">= 0.0.3",:git => "git+ssh://git@github.com/sanger/ruby_walk"
+
+gem "irods_reader", '>=0.0.2', :git => 'git+ssh://git@github.com/sanger/irods_reader'
 
 # For the API level
 gem "uuidtools"

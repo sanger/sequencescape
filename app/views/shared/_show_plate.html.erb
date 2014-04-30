@@ -6,13 +6,13 @@
   </tr>
   <% plate.plate_rows.each do |row| %>
     <tr>
-  <td id='border' width='2%'><%= row %></td>
+	  <td id='border' width='2%'><%= row %></td>
       <% plate.plate_columns.each do |column| -%>
-         <td>
-           <div id="boxNormal">
-            <% well = plate.find_well_by_name("#{row}#{column}") %>
-            <% if well %>
-              <% if well.sample%>
+        <td>
+          <div id="boxNormal">
+            <% well = plate.find_well_by_rowcol(row[0]-?A,column-1) %>
+			<% if well %>
+			  <% if well.sample%>
                 <%= link_to well.sample.name, sample_path(well.sample) %><br/>
               <% end %>
               <%= link_to "#{row}#{column}", asset_path(well) %><br/>

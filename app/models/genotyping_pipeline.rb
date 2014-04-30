@@ -16,4 +16,8 @@ class GenotypingPipeline < Pipeline
   def requires_position?
     false
   end
+
+  def request_actions
+    [:fail,:remove]
+  end
 end

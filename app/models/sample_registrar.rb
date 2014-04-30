@@ -80,7 +80,7 @@ class SampleRegistrar < ActiveRecord::Base
     # and send the request for the method!
     record.user.send(:is_owner_of, record.sample)
     record.study.samples.concat(record.sample)
-    RequestFactory.create_assets_requests([record.sample_tube.id], record.study.id)
+    RequestFactory.create_assets_requests([record.sample_tube], record.study)
   end
 
   # Samples always come in a SampleTube when coming through us
@@ -146,8 +146,8 @@ class SampleRegistrar < ActiveRecord::Base
     # Assume there is always 1 header row
     num_samples = worksheet.count - 1
 
-    if num_samples > UPLOADED_SPREADSHEET_MAX_NUMBER_OF_SAMPLES
-      raise TooManySamplesError, "You can only load #{UPLOADED_SPREADSHEET_MAX_NUMBER_OF_SAMPLES} samples at a time. Please split the file into smaller groups of samples."
+    if num_samples > configatron.uploaded_spreadsheet.max_number_of_samples
+      raise TooManySamplesError, "You can only load #{configatron.uploaded_spreadsheet.max_number_of_samples} samples at a time. Please split the file into smaller groups of samples."
     end
 
     # Map the header from the spreadsheet (the first row) to the attributes of the sample registrar.  Each column

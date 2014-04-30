@@ -27,7 +27,7 @@
       </th>
       <td>
         <%= form.collection_select :plate_purpose_id,
-          PlatePurpose.considered_stock_plate.all, :id, :name,
+          PlatePurpose.for_submissions.all, :id, :name,
           { :selected => PlatePurpose.stock_plate_purpose.id },
           :class => 'submission_plate_purpose_id'
         %>
@@ -46,7 +46,7 @@
     <a class="asset-input-toggle" href="#" data-selector=".asset_group_selector">Switch to Study asset selector...</a><br/>
     <a class="asset-input-toggle" href="#" data-selector=".plate_wells_selector">Switch to plate wells selector...</a>
   </li>
-  
+
   <li class="assets plate_wells_selector" style="display:none;">
     <h3>Add Samples from Plate and Wells</h3>
     <table>
@@ -95,6 +95,21 @@
 <div class="lanes-of-sequencing">
   <%= form.label :lanes_of_sequencing, 'Lanes of sequencing required' %>
   <%= form.text_field :lanes_of_sequencing, :class => 'lanes_of_sequencing', :value => 1 %>
+</div>
+
+<div class="pre-capture-plex-level">
+  <%= form.label :pre_capture_plex_level, 'Pre-capture plex level' %>
+  <%= form.text_field :pre_capture_plex_level, :class => 'pre_capture_plex_level', :value => 8 %>
+</div>
+
+<div class="pre-capture-plex-group">
+  <%= form.label :pre_capture_plex_group, 'Pre-capture plex group' %>
+  <%= form.text_field :pre_capture_plex_group, :class => 'pre_capture_plex_group', :value => nil %>
+</div>
+
+<div class="gigabases-expected">
+  <%= form.label :gigabases_expected, 'Gigabases expected' %>
+  <%= form.text_field :gigabases_expected, :class => 'gigabases_expected', :value => nil %>
 </div>
 
 <div class="save-buttons">

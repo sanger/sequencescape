@@ -36,8 +36,9 @@ class Event < ActiveRecord::Base
       unless request.nil? or request.failed? or request.cancelled?
         if self.family == "fail"
           if self.descriptor_key == "library_creation_complete" or self.descriptor_key == "multiplexed_library_creation"
-            request.state = "failed"
-            request.save
+            # We were previously bypassing the state machine, and were trying to change the state
+            # directly. We really don't want to do this any more.
+            request.fail!
             BillingEvent.generate_fail_event(request)
           else
             request.fail!

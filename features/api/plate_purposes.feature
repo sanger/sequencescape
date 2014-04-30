@@ -21,7 +21,7 @@ Feature: Access plate purposes through the API
     And the UUID for the plate purpose with ID 1 is "00000000-1111-2222-3333-444444444444"
 
     When I GET the API path "/00000000-1111-2222-3333-444444444444"
-    Then the HTTP response should be "200 OK"
+    Then the HTTP response should be "203 OK"
     And the JSON should match the following for the specified fields:
       """
       {

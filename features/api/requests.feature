@@ -65,9 +65,9 @@ Feature: Access requests through the API
       """
 
     Examples:
-      | request type                 | request type name            | asset type    | fragment size from | fragment size to |
-      | library creation             | Library creation             | sample_tubes  | 1                  | 20               |
-      | multiplexed library creation | Multiplexed library creation | sample_tubes  | 1                  | 20               |
-      | sequencing                   | Paired end sequencing        | library_tubes | 1                  | 21               |
-      | sequencing                   | Single ended sequencing      | library_tubes | 1                  | 21               |
+      | request type                 | request type name                  | asset type    | fragment size from | fragment size to |
+      | library creation             | Library creation                   | sample_tubes  | 1                  | 20               |
+      | multiplexed library creation | Multiplexed library creation       | sample_tubes  | 1                  | 20               |
+      | sequencing                   | Illumina-C Paired end sequencing   | library_tubes | 1                  | 21               |
+      | sequencing                   | Illumina-C Single ended sequencing | library_tubes | 1                  | 21               |
 

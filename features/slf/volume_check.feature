@@ -7,7 +7,7 @@ Feature: Upload volume results from the volume checker robot
 
   Scenario: Update measured volume results on one plate
     Given I have a project called "Test project"
-     And project "Test project" has enough quotas
+
     Given study "Study B" has a plate "1234567" to be volume checked
     Given all plate volume check files are processed
     Given a study report is generated for study "Study B"
@@ -44,7 +44,7 @@ Feature: Upload volume results from the volume checker robot
     When I check "Select DN1234567T for batch"
     And I select "Create Batch" from "action_on_requests"
     And I press "Submit"
-    When I follow "Start batch"
+    When I follow "QC result"
     Then I should see dna qc table:
       | Well | Volume  |
       | A1   | 55.3281 |

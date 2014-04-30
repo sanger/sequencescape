@@ -17,6 +17,7 @@ module Tasks::SamplePrepQcHandler
         request.fail!
       elsif qc_status == "passed"
         request.pass!
+        request.target_asset.pac_bio_library_tube_metadata.update_attributes!(:smrt_cells_available => 1)
       else
         flash[:error] = "Invalid QC state for #{request_id}"
         return false

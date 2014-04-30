@@ -34,30 +34,8 @@ class RequestFactoryTest < ActiveSupport::TestCase
           @project.update_attributes!(:enforce_quotas => true)
         end
 
-        context 'when has enough quota' do
-          setup do
-            @project.quota_for!(@request.request_type).update_attributes!(:limit => 2, :preordered_count =>0)
-            @request.reload
-          end
-
-          should 'not fail' do
-            RequestFactory.copy_request(@request)
-          end
-
-          should 'fail if we request more than available' do
-            RequestFactory.copy_request(@request)
-            assert_raises(Quota::Error) { RequestFactory.copy_request(@request) }
-          end
-        end
-
-        context 'when insufficient quota' do
-          setup do
-            @project.quota_for!(@request.request_type).update_attributes!(:limit => 1, :preordered_count =>0)
-          end
-
-          should 'raise an exception' do
-            assert_raises(Quota::Error) { RequestFactory.copy_request(@request) }
-          end
+        should 'not fail' do
+          RequestFactory.copy_request(@request)
         end
       end
     end
@@ -68,7 +46,7 @@ class RequestFactoryTest < ActiveSupport::TestCase
       @study  = Factory(:study)
       @assets = [ Factory(:sample_tube), Factory(:sample_tube) ]
 
-      RequestFactory.create_assets_requests(@assets.map(&:id), @study.id)
+      RequestFactory.create_assets_requests(@assets, @study)
     end
 
     should 'have all create asset requests as passed' do

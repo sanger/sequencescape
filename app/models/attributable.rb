@@ -184,6 +184,14 @@ module Attributable
       @options.key?(:integer)
     end
 
+    def float?
+      @options.key?(:positive_float)
+    end
+
+    def boolean?
+      @options.key?(:boolean)
+    end
+
     def selection?
       @options.key?(:in)
     end
@@ -206,9 +214,12 @@ module Attributable
       allow_blank = save_blank_value
 
       model.with_options(conditions) do |object|
-        object.validates_presence_of(name) if self.required?
+        # false.blank? == true, so we exclude booleans here, they handle themselves further down.
+        object.validates_presence_of(name) if self.required? && ! self.boolean?
         object.with_options(:allow_nil => self.optional?, :allow_blank => allow_blank) do |required|
+          required.validates_inclusion_of(name, :in => [true, false]) if self.boolean?
           required.validates_numericality_of(name, :only_integer => true) if self.numeric?
+          required.validates_numericality_of(name, :greater_than => 0) if self.float?
           required.validates_inclusion_of(name, :in => self.selection_values, :allow_false => true) if self.selection?
           required.validates_format_of(name, :with => self.valid_format) if self.valid_format?
         end

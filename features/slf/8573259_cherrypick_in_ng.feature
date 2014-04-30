@@ -1,8 +1,9 @@
-@nano_grams @cherrypicking_for_pulldown @cherrypicking @barcode-service @pulldown @tecan
+@nano_grams @cherrypicking_for_pulldown @cherrypicking @barcode-service @pulldown @tecan @javascript
 Feature: Pick a ng quantity using the Tecan robot
 
   Background:
     Given I am an "manager" user logged in as "john"
+    And a robot exists
 
   @gwl
   Scenario: Create a Tecan file with the correct volumes to pick
@@ -35,13 +36,15 @@ Feature: Pick a ng quantity using the Tecan robot
     And I check "Select DN333P for batch"
     And I select "Create Batch" from "Action to perform"
     And I press "Submit"
-    When I follow "Start batch"
-    When I choose "Pick by ng"
+    When I follow "Cherrypick Group By Submission"
     And I fill in the following:
       | Minimum Volume    | 10   |
       | Maximum Volume    | 50   |
       | Quantity to pick  | 1000 |
+    When I choose "Pick by ng"
     And I select "Pulldown" from "Plate Purpose"
+    And "Pulldown" plate purpose picks with "Cherrypick::Strategy::Filter::InRowOrder"
+    And I press "Next step"
     And I press "Next step"
     When I press "Release this batch"
     Given the last batch has a barcode of "550000555760"
@@ -156,7 +159,7 @@ Feature: Pick a ng quantity using the Tecan robot
     And I check "Select DN222J for batch"
     And I select "Create Batch" from "Action to perform"
     And I press "Submit"
-    When I follow "Start batch"
+    When I follow "Cherrypick Group By Submission"
     When I choose "Pick by ng"
     And I fill in the following:
       | Minimum Volume    | 10   |
@@ -175,7 +178,7 @@ Feature: Pick a ng quantity using the Tecan robot
      And I check "Select DN222J for batch"
      And I select "Create Batch" from "Action to perform"
      And I press "Submit"
-     When I follow "Start batch"
+     When I follow "Cherrypick Group By Submission"
      When I choose "Pick by ng"
      And I fill in the following:
        | Minimum Volume    | 10   |
@@ -193,12 +196,12 @@ Feature: Pick a ng quantity using the Tecan robot
      And I check "Select DN222J for batch"
      And I select "Create Batch" from "Action to perform"
      And I press "Submit"
-     When I follow "Start batch"
-     When I choose "Pick by ng"
+     When I follow "Cherrypick Group By Submission"
      And I fill in the following:
        | Minimum Volume    | <minimum_volume>   |
        | Maximum Volume    | <maximum_volume>   |
-       | Quantity to pick  | <target_ng> |
+       | Quantity to pick  | <target_ng>        |
+     When I choose "Pick by ng"
      And I press "Next step"
      Then I should see "Invalid values typed in"
      Examples:

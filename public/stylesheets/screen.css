@@ -221,15 +221,15 @@ td.total {
   margin: 3px 0 0 10px;
   padding: 2px 20px;
   width: 700px;
-  
+
   -moz-border-radius:    10px;
   -webkit-border-radius: 10px;
   border-radius:         10px;
-  
+
   -moz-box-shadow:     1px 1px 4px #1D445A;
   -webkit-box-shadow:  1px 1px 4px #1D445A;
   box-shadow:          1px 1px 4px #1D445A;
-  
+
   color: #000;
   background: #FFE138 ;
   font-family:'Century Gothic','Lucida Grande',helvetica,arial,sans-serif;
@@ -474,7 +474,7 @@ div.detail {
   background: #31353d;
   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(0%, #29384D), color-stop(100%, #272C32));
   background-image: -moz-linear-gradient(top, #29384D 0%, #272C32 100%);
-  
+
   color: #fff;
   font-size: 12px;
   border-top: 3px solid #055694;
@@ -813,7 +813,7 @@ div.critical {
 div.critical a, div.critical a:link, div.critical a:visited {   color: #fff !important;
   font-weight: bold;
   text-decoration: underline !important;
-} 
+}
 
 div.critical a:hover {
   font-color: #f00;
@@ -859,15 +859,15 @@ div.title_name {
 }
 
 div.title_link {
-  text-align: right; 
+  text-align: right;
   width: 100%;
   text-align: right;
-  padding-right: 5px; 
+  padding-right: 5px;
 }
 
 div.title_link.small {
   font-size: 10px;
-  padding-top: 1px; 
+  padding-top: 1px;
 }
 
 div.bright a, div.bright a:link, div.bright a:visited {
@@ -1036,7 +1036,7 @@ div.error {
 }
 
 div.jumper {
-  margin: 5px 0px 5px 0px;  
+  margin: 5px 0px 5px 0px;
   border: 1px solid #C5DCFF;
   background: #D2EDFF;
   padding: 5px;
@@ -1127,7 +1127,7 @@ table.sortable thead tr th {
   background:#fff;
 }
 
-.nested { 
+.nested {
 	background:#ffffff;
 }
 
@@ -1228,7 +1228,7 @@ div.order_in_submission {
   font-size: 12px;
   min-height: 600px;
   line-height: 17px;
-  
+
   -moz-border-radius:    5px;
   -webkit-border-radius: 5px;
   border-radius:         5px;
@@ -1240,4 +1240,17 @@ div.order_in_submission h2 {
   margin-top : 0px;
   border-bottom: 1px solid #ccc;
 
+}
+
+.sub_flag {
+  float : right;
+  position: absolute;
+  right : 10px;
+  top : 10px;
+}
+.priority_changer {
+  position : relative;
+}
+.priority_changer input {
+  clear : left;
 }

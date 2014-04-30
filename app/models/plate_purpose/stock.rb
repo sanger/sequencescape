@@ -15,7 +15,7 @@ module PlatePurpose::Stock
 
     # All of the wells with aliquots must have requests for us to be considered passed
     requests = Request::LibraryCreation.all(:conditions => { :asset_id => wells_with_aliquots.map(&:id) })
-    return 'pending' unless requests.size == wells_with_aliquots.size
+    return 'pending' unless requests.count == wells_with_aliquots.count
 
     case requests.map(&:state).uniq.sort
     when ['failed']             then 'failed'

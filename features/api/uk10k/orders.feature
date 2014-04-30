@@ -12,12 +12,12 @@ Feature: Creating orders for UK10K
     Given I have a project called "Testing submission creation"
     And the UUID for the project "Testing submission creation" is "22222222-3333-4444-5555-000000000001"
 
-    Given the UUID for the order template "Library creation - Paired end sequencing" is "00000000-1111-2222-3333-444444444444"
+    Given the UUID for the order template "Illumina-C - Library creation - Paired end sequencing" is "00000000-1111-2222-3333-444444444444"
     And the UUID of the next submission created will be "11111111-2222-3333-4444-555555555555"
     And the UUID of the next order created will be "11111111-2222-3333-4444-666666666666"
 
-    Given the UUID for the request type "Library creation" is "99999999-1111-2222-3333-000000000000"
-    And the UUID for the request type "Paired end sequencing" is "99999999-1111-2222-3333-000000000001"
+    Given the UUID for the request type "Illumina-C Library creation" is "99999999-1111-2222-3333-000000000000"
+    And the UUID for the request type "Illumina-C Paired end sequencing" is "99999999-1111-2222-3333-000000000001"
 
   @create @error
   Scenario Outline: Creating a new order with missing initial information
@@ -81,11 +81,11 @@ Feature: Creating orders for UK10K
           "request_types": [
             {
               "uuid": "99999999-1111-2222-3333-000000000000",
-              "name": "Library creation"
+              "name": "Illumina-C Library creation"
             },
             {
               "uuid": "99999999-1111-2222-3333-000000000001",
-              "name": "Paired end sequencing"
+              "name": "Illumina-C Paired end sequencing"
             }
           ]
         }
@@ -157,7 +157,7 @@ Feature: Creating orders for UK10K
     Given 3 sample tubes exist with names based on "sampletube" and IDs starting at 1
     And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"
 
-    Given I have an order created with the following details based on the template "Library creation - Paired end sequencing":
+    Given I have an order created with the following details based on the template "Illumina-C - Library creation - Paired end sequencing":
       | study            | 22222222-3333-4444-5555-000000000000 |
       | project          | 22222222-3333-4444-5555-000000000001 |
       | assets           | 33333333-4444-5555-6666-000000000001 |
@@ -192,7 +192,7 @@ Feature: Creating orders for UK10K
     Given 3 sample tubes exist with names based on "sampletube" and IDs starting at 1
     And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"
 
-    Given I have an order created with the following details based on the template "Library creation - Paired end sequencing":
+    Given I have an order created with the following details based on the template "Illumina-C - Library creation - Paired end sequencing":
       | study            | 22222222-3333-4444-5555-000000000000                                                                       |
       | project          | 22222222-3333-4444-5555-000000000001                                                                       |
       | assets           | 33333333-4444-5555-6666-000000000001                                                                       |
@@ -239,8 +239,8 @@ Feature: Creating orders for UK10K
     When the last submission has been submitted
     Given all pending delayed jobs are processed
     Then the submission with UUID "11111111-2222-3333-4444-555555555555" is ready
-    Then the submission with UUID "11111111-2222-3333-4444-555555555555" should have 1 "Library creation" request
-    And the submission with UUID "11111111-2222-3333-4444-555555555555" should have <sequencing requests> "Paired end sequencing" requests
+    Then the submission with UUID "11111111-2222-3333-4444-555555555555" should have 1 "Illumina-C Library creation" request
+    And the submission with UUID "11111111-2222-3333-4444-555555555555" should have <sequencing requests> "Illumina-C Paired end sequencing" requests
 
     Examples:
       | json                  | sequencing requests |
@@ -253,7 +253,7 @@ Feature: Creating orders for UK10K
     Given 3 sample tubes exist with names based on "sampletube" and IDs starting at 1
     And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"
 
-    Given I have an order created with the following details based on the template "Library creation - Paired end sequencing":
+    Given I have an order created with the following details based on the template "Illumina-C - Library creation - Paired end sequencing":
       | study   | 22222222-3333-4444-5555-000000000000 |
       | project | 22222222-3333-4444-5555-000000000001 |
 
@@ -294,7 +294,7 @@ Feature: Creating orders for UK10K
     Given 3 sample tubes exist with names based on "sampletube" and IDs starting at 1
     And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"
 
-    Given I have an order created with the following details based on the template "Library creation - Paired end sequencing":
+    Given I have an order created with the following details based on the template "Illumina-C - Library creation - Paired end sequencing":
       | study   | 22222222-3333-4444-5555-000000000000 |
       | project | 22222222-3333-4444-5555-000000000001 |
       | assets  | 33333333-4444-5555-6666-000000000001 |
@@ -372,7 +372,7 @@ Feature: Creating orders for UK10K
     And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"
 
     Given project "Testing submission creation" approval is "inactive"
-    And the project "Testing submission creation" has quotas and quotas are enforced
+    And project "Testing submission creation" has enforced quotas
 
     When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/orders":
       """
@@ -400,7 +400,7 @@ Feature: Creating orders for UK10K
     Given the study "Testing submission creation" has an asset group called "Existing asset group"
     And the UUID for the asset group "Existing asset group" is "88888888-1111-2222-3333-000000000000"
 
-    Given I have an order created with the following details based on the template "Library creation - Paired end sequencing":
+    Given I have an order created with the following details based on the template "Illumina-C - Library creation - Paired end sequencing":
       | study       | 22222222-3333-4444-5555-000000000000 |
       | project     | 22222222-3333-4444-5555-000000000001 |
       | assets      | 33333333-4444-5555-6666-000000000001 |
@@ -462,7 +462,7 @@ Feature: Creating orders for UK10K
     And the UUID for the asset group "Existing asset group" is "88888888-1111-2222-3333-000000000000"
     And the sample tube "sampletube-1" is in the asset group "Existing asset group"
 
-    Given I have an order created with the following details based on the template "Library creation - Paired end sequencing":
+    Given I have an order created with the following details based on the template "Illumina-C - Library creation - Paired end sequencing":
       | study       | 22222222-3333-4444-5555-000000000000 |
       | project     | 22222222-3333-4444-5555-000000000001 |
       | asset_group | 88888888-1111-2222-3333-000000000000 |
@@ -491,7 +491,7 @@ Feature: Creating orders for UK10K
     Given 3 sample tubes exist with names based on "sampletube" and IDs starting at 1
     And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"
 
-    Given I have an order created with the following details based on the template "Library creation - Paired end sequencing":
+    Given I have an order created with the following details based on the template "Illumina-C - Library creation - Paired end sequencing":
       | study            | 22222222-3333-4444-5555-000000000000                                                                       |
       | project          | 22222222-3333-4444-5555-000000000001                                                                       |
       | request_options  | read_length: 76, fragment_size_required_from: 100, fragment_size_required_to: 200, library_type: qPCR only |
@@ -522,7 +522,7 @@ Feature: Creating orders for UK10K
     Given 3 sample tubes exist with names based on "sampletube" and IDs starting at 1
     And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"
 
-    Given I have an order created with the following details based on the template "Library creation - Paired end sequencing":
+    Given I have an order created with the following details based on the template "Illumina-C - Library creation - Paired end sequencing":
       | study           | 22222222-3333-4444-5555-000000000000                                                                       |
       | project         | 22222222-3333-4444-5555-000000000001                                                                       |
       | request_options | read_length: 76, fragment_size_required_from: 100, fragment_size_required_to: 200, library_type: qPCR only |
@@ -559,7 +559,7 @@ Feature: Creating orders for UK10K
     Given I have a project called "Altering the order"
     And the UUID for the project "Altering the order" is "22222222-3333-4444-5555-111111111112"
 
-    Given I have an order created with the following details based on the template "Library creation - Paired end sequencing":
+    Given I have an order created with the following details based on the template "Illumina-C - Library creation - Paired end sequencing":
       | study   | 22222222-3333-4444-5555-000000000000 |
       | project | 22222222-3333-4444-5555-000000000001 |
 
@@ -586,34 +586,6 @@ Feature: Creating orders for UK10K
       | study   | 22222222-3333-4444-5555-111111111111 |
       | project | 22222222-3333-4444-5555-111111111112 |
 
-  @submit @error @project
-  Scenario: Building an order that results in an error because of quota
-    Given 3 sample tubes exist with names based on "sampletube" and IDs starting at 1
-    And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"
-
-    Given project "Testing submission creation" approval is "inactive"
-    And the project "Testing submission creation" has quotas and quotas are enforced
-
-    When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/orders":
-      """
-      {
-        "order": {
-          "project": "22222222-3333-4444-5555-000000000001",
-          "study": "22222222-3333-4444-5555-000000000000",
-          "assets": [
-            "33333333-4444-5555-6666-000000000001"
-          ]
-        }
-      }
-      """
-    Then the HTTP response should be "501 Not Implemented"
-    And the JSON should match the following for the specified fields:
-      """
-      {
-        "general": [ "Project Testing submission creation is not approved" ]
-      }
-      """
-
   @submit @asset_group
   Scenario Outline: Submitting a submission where the order was created with an asset group
     Given 3 sample tubes exist with names based on "sampletube" and IDs starting at 1
@@ -623,7 +595,7 @@ Feature: Creating orders for UK10K
     And the UUID for the asset group "Existing asset group" is "88888888-1111-2222-3333-000000000000"
     And the sample tube "sampletube-1" is in the asset group "Existing asset group"
 
-    Given I have an order created with the following details based on the template "Library creation - Paired end sequencing":
+    Given I have an order created with the following details based on the template "Illumina-C - Library creation - Paired end sequencing":
       | study           | 22222222-3333-4444-5555-000000000000                                                                       |
       | project         | 22222222-3333-4444-5555-000000000001                                                                       |
       | request_options | read_length: 76, fragment_size_required_from: 100, fragment_size_required_to: 200, library_type: qPCR only |
@@ -660,7 +632,7 @@ Feature: Creating orders for UK10K
     Given 3 sample tubes exist with names based on "sampletube" and IDs starting at 1
     And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"
 
-    Given I have an order created with the following details based on the template "Library creation - Paired end sequencing":
+    Given I have an order created with the following details based on the template "Illumina-C - Library creation - Paired end sequencing":
       | study            | 22222222-3333-4444-5555-000000000000                                                                       |
       | project          | 22222222-3333-4444-5555-000000000001                                                                       |
       | request_options  | read_length: 76, fragment_size_required_from: 100, fragment_size_required_to: 200, library_type: qPCR only |

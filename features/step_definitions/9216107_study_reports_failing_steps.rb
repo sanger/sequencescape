@@ -11,7 +11,7 @@ Given /^each well in "([^"]*)" has a child sample tube$/ do |study_name|
   Well.find_each do |well|
     well.children << Factory(:sample_tube)
   end
-  RequestFactory.create_assets_requests(SampleTube.all.map(&:id), study.id)
+  RequestFactory.create_assets_requests(SampleTube.all, study.id)
 end
 
 

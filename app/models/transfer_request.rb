@@ -1,6 +1,23 @@
 # Every request "moving" an asset from somewhere to somewhere else without really transforming it
 # (chemically) as, cherrypicking, pooling, spreading on the floor etc
 class TransferRequest < Request
+
+  module InitialTransfer
+    def perform_transfer_of_contents
+      target_asset.aliquots << asset.aliquots.map do |a|
+        aliquot = a.clone
+        aliquot.study = outer_request.initial_study
+        aliquot.project = outer_request.initial_project
+        aliquot
+      end unless asset.failed? or asset.cancelled?
+    end
+    private :perform_transfer_of_contents
+
+    def outer_request
+      asset.requests.detect{|r| r.is_a?(Request::LibraryCreation)}
+    end
+  end
+
   TRANSITIONS = {
     'started' => {
       'passed' => :pass!,
@@ -34,9 +51,9 @@ class TransferRequest < Request
     aasm_column :state
     aasm_state :pending
     aasm_state :started
-    aasm_state :failed
+    aasm_state :failed,	    :enter => :on_failed
     aasm_state :passed
-    aasm_state :cancelled
+    aasm_state :cancelled,  :enter => :on_cancelled
     aasm_initial_state :pending
 
     # State Machine events
@@ -90,4 +107,11 @@ class TransferRequest < Request
     target_asset.aliquots << asset.aliquots.map(&:clone) unless asset.failed? or asset.cancelled?
   end
   private :perform_transfer_of_contents
+
+  def on_failed
+    self.target_asset.remove_downstream_aliquots
+  end
+  private :on_failed
+
+  alias_method :on_cancelled, :on_failed
 end

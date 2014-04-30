@@ -1,4 +1,9 @@
 class EraAccessionService < AccessionService
+
+  def provider
+    :ERA
+  end
+
   def accession_from_ebi(submission_filename, submission_file_handle, type_filename, type_file_handle, type)
     generate_accession_from_ebi(submission_filename, submission_file_handle, type_filename, type_file_handle, type, configatron.era_accession_login)
   end

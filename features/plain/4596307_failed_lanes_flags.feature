@@ -58,7 +58,7 @@ Feature: Pipeline shows status of requests in pipeline
     When I press "Create batch"
     Then I should see "Edit batch"
 
-    When I follow "Start batch"
+    When I follow "Specify Dilution Volume"
     Then I should see "View all batches"
 
     When I press "Next step"

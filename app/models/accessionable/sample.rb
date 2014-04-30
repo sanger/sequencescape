@@ -13,13 +13,13 @@ module Accessionable
       #@__alias    = "#{ submission_id }-#{ sample.id }"
 
       @common_name = sample.sample_metadata.sample_common_name
-      @taxon_id           = sample.sample_metadata.sample_taxon_id
+      @taxon_id    = sample.sample_metadata.sample_taxon_id
 
       # Tags from the 'ENA attributes' property group
       # NOTE[xxx]: This used to also look for 'ENA links' and push them to the 'data[:links]' value, but group was empty
       @links = []
-      @tags  = [ :sample_strain_att, :sample_description ].map do |datum|
-        Tag.new(label_scope, datum, sample.sample_metadata[datum])
+      @tags  = sample.tags.map do |datum|
+        Tag.new(label_scope, datum.name, sample.sample_metadata[datum.tag])
       end
 
       #TODO maybe unify this with the previous loop

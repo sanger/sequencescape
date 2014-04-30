@@ -7,12 +7,6 @@ Given /^I have a study called "([^\"]*)"$/ do |study|
   proj = Factory :study, :name => study
 end
 
-#Given /^study "([^\"]*)" approval is "([^\"]*)"$/ do |study, approval|
-#  proj = Study.find_by_name(study)
-#  approval == "approved" ? proj.approved = true : proj.approved = false
-#  proj.save
-#end
-
 Given /^study "([^\"]*)" status is "([^\"]*)"$/ do |study, status|
   proj = Study.find_by_name(study)
   status == "active" ? proj.activate! : proj.deactivate!
@@ -23,14 +17,6 @@ Given /^I have an "([^\"]*)" study called "([^\"]*)"$/ do |status, study|
   step %Q{I have a study called "#{study}"}
   step %Q{study "#{study}" status is "#{status}"}
 end
-
-#Given /^study "([^\"]*)" has enough quotas$/ do |study|
-#  proj = Study.find_by_name(study)
-#  req_types = {}
-#  RequestType.all.each {|rt| req_types["#{rt.id}"] = 500}
-#  proj.add_quotas(req_types)
-#  proj.save
-#end
 
 Given /^study "([^\"]*)" has samples registered$/ do |study|
   proj = Study.find_by_name(study)
@@ -108,29 +94,6 @@ end
 And /^the study have a workflow$/ do
   Factory :submission_workflow
 end
-
-#And /^the study "([^\"]*)" has quotas and quotas are enforced$/ do |study_id|
-#  proj = Study.find_by_name study_id.to_s
-#  @request= RequestType.find(:all)
-#  @request.each do |rt|
-#      Factory :study_quota, :study_id => proj.id, :request_type_id => rt.id, :limit => 500
-#  end
-#
-#  proj.save
-#end
-
-#Given /^the study "([^\"]*)" has quotas filled$/ do |study_id|
-#  proj = Study.find_by_name study_id.to_s
-#  request_types = []
-#  request_types << RequestType.find_by_name("Receive sample")
-#  request_types << RequestType.find_by_name("Library creation")
-#  request_types << RequestType.find_by_name("Single ended sequencing")
-#  request_types << RequestType.find_by_name("Paired end sequencing")
-#  request_types.each do |rt|
-#    Factory :study_quota, :study => proj, :request_type => rt, :limit => 500
-#  end
-#  proj.save
-#end
 
 def GivenFixedStudyMetadata(attribute, value, regexp)
   Given(regexp) do |name|
@@ -316,19 +279,28 @@ Then /^I should see the study for study list "([^\"]+)"$/ do |study_list|
 end
 
 Given /^asset with barcode "([^"]*)" belongs to study "([^"]*)"$/ do |raw_barcode, study_name|
-  study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   asset = Asset.find_from_machine_barcode(raw_barcode) or raise StandardError, "Cannot find asset with machine barcode #{raw_barcode.inspect}"
-  asset_ids = [asset.id]
-  asset_ids += asset.well_ids if asset.respond_to?(:wells)
-  RequestFactory.create_assets_requests(asset_ids, study.id)
+  assign_asset_to_study(asset,study_name)
 end
 
 Given /^the asset "([^\"]+)" belongs to study "([^\"]+)"$/ do |asset_name, study_name|
-  study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   asset = Asset.find_by_name(asset_name) or raise StandardError, "Cannot find asset #{asset_name.inspect}"
+  assign_asset_to_study(asset,study_name)
+end
+
+def assign_asset_to_study(asset,study_name)
+  study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   asset_ids = [asset.id]
-  asset_ids += asset.well_ids if asset.respond_to?(:wells)
-  RequestFactory.create_assets_requests(asset_ids, study.id)
+  asset_ids = asset.well_ids if asset.respond_to?(:wells)
+  if asset.can_be_created? || (asset.respond_to?(:wells) && (asset.stock_plate?))
+    RequestFactory.create_assets_requests(Asset.find(asset_ids), study)
+  else
+    Asset.find(asset_ids).each do |asset|
+      asset.try(:aliquots).try(:each) do |aliquot|
+        aliquot.update_attributes!(:study_id => study.id)
+      end
+    end
+  end
 end
 
 Then /^abbreviation for Study "([^"]*)" should be "([^"]*)"$/ do |study_name, abbreviation_regex|
@@ -377,7 +349,7 @@ When /^I update an? accession number for study "([^\"]+)"$/ do |study_name|
 end
 
 Given /^the study "([^\"]+)" has a valid policy$/ do |study_name|
-    step(%Q{the policy for study "#{study_name}" is "I am the 'managed study'  policy"})
+    step(%Q{the policy for study "#{study_name}" is "http://www.example.com"})
     step(%Q{the dac accession number for study "#{study_name}" is "EGAC00000001"})
 end
 
@@ -434,3 +406,24 @@ end
 Then /^the faculty sponsor index page should look like:$/ do |expected_results_table|
   expected_results_table.diff!(table(tableish('table#faculty_sponsor_list tr', 'td,th')))
 end
+
+When /^I have an? (managed|open) study without a data release group called "(.*?)"$/ do |managed,study_name|
+  Study.create!(
+      :name => study_name,
+      :study_metadata_attributes => {
+        :faculty_sponsor => Factory(:faculty_sponsor),
+        :study_type => StudyType.last,
+        :data_release_strategy => managed,
+        :study_description => 'blah',
+        :data_release_study_type => DataReleaseStudyType.first,
+        :contaminated_human_dna => 'No',
+        :contains_human_dna => 'Yes',
+        :commercially_available => 'No'
+      }
+    )
+end
+
+Given /^the study "(.*?)" has a data access group of "(.*?)"$/ do |study_name, dag|
+  Study.find_by_name(study_name).study_metadata.update_attributes!(:data_access_group=>dag)
+end
+

@@ -75,6 +75,7 @@ class Api::StudyIO < Api::Base
       map_attribute_to_json_attribute(:name                    , 'data_release_sort_of_study')
     end
     map_attribute_to_json_attribute(:remove_x_and_autosomes?, 'remove_x_and_autosomes')
+    map_attribute_to_json_attribute(:separate_y_chromosome_data)
 
     map_attribute_to_json_attribute(:data_release_strategy)
     map_attribute_to_json_attribute(:ega_dac_accession_number)
@@ -84,6 +85,10 @@ class Api::StudyIO < Api::Base
     map_attribute_to_json_attribute(:data_release_timing)
     map_attribute_to_json_attribute(:data_release_delay_period)
     map_attribute_to_json_attribute(:data_release_delay_reason)
+
+    map_attribute_to_json_attribute(:data_access_group)
+
+    map_attribute_to_json_attribute(:bam, 'alignments_in_bam')
   end
 
   self.related_resources = [ :samples, :projects ]

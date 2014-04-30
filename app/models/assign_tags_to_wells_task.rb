@@ -204,7 +204,7 @@ class AssignTagsToWellsTask < Task
     current_well = wells.first
 
     1.upto(plate.size) do |index|
-      tags_to_wells[Map.vertical_plate_position_to_description(index, plate.size)] = sorted_tags[(index-1) % sorted_tags.size]
+      tags_to_wells[Map::Coordinate.vertical_plate_position_to_description(index, plate.size)] = sorted_tags[(index-1) % sorted_tags.size]
     end
 
     tags_to_wells

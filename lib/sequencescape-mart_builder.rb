@@ -551,18 +551,18 @@ class Script < ActiveRecord::Migration
         batch_load(AssetInformation, stuffing)
         break if ENV['TEST_RUN']
       end
-    end
-    run_in_parallel("quota") do
-      Quota.find_each(:include => :request_type) do |quota|
-        if quota.request_type
-          MbQuota.create(
-          :project_id => quota.project_id,
-          :request_type => quota.request_type.name,
-          :quota_limit => quota.limit)
-          break if ENV['TEST_RUN']
-        end
-      end
-    end
+    # end
+    # run_in_parallel("quota") do
+    #   Quota.find_each(:include => :request_type) do |quota|
+    #     if quota.request_type
+    #       MbQuota.create(
+    #       :project_id => quota.project_id,
+    #       :request_type => quota.request_type.name,
+    #       :quota_limit => quota.limit)
+    #       break if ENV['TEST_RUN']
+    #     end
+    #   end
+    # end
   end
 
   def self.switch_loading_to_live

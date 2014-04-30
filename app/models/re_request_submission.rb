@@ -1,6 +1,9 @@
 class ReRequestSubmission < Order
   include Submission::LinearRequestGraph
 
+  def cross_study_allowed;   assets.any? {|a| a.studies.uniq.count  > 1 }; end
+  def cross_project_allowed; assets.any? {|a| a.projects.uniq.count > 1 }; end
+
   def is_asset_applicable_to_type?(request_type, asset)
     true
   end

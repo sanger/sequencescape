@@ -9,9 +9,11 @@ class Io::Tube < Io::Asset
                             purpose.uuid => purpose.uuid
 
                                  closed  => closed
-                          concentration  => concentration
-                                 volume  => volume
+                     concentration.to_f  => concentration
+                            volume.to_f  => volume
                         scanned_in_date  => scanned_in_date
+                                    role => label.prefix
+                            purpose.name => label.text
 
                        stock_plate.uuid  => stock_plate.uuid
                     stock_plate.barcode  => stock_plate.barcode.number
@@ -21,5 +23,11 @@ class Io::Tube < Io::Asset
                stock_plate.barcode_type  => stock_plate.barcode.type
 
                                aliquots  => aliquots
+
+                                barcode  => barcode.number
+                  barcode_prefix.prefix  => barcode.prefix
+                two_dimensional_barcode  => barcode.two_dimensional
+                          ean13_barcode  => barcode.ean13
+                           barcode_type  => barcode.type
   })
 end

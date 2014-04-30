@@ -7,6 +7,9 @@ class Tube < Aliquot::Receptacle
   include Transfer::Associations
   include Transfer::State::TubeState
 
+  extend QcFile::Associations
+  has_qc_files
+
   # Transfer requests into a tube are direct requests where the tube is the target.
   def transfer_requests
     requests_as_target.where_is_a?(TransferRequest).all
@@ -62,6 +65,14 @@ class Tube < Aliquot::Receptacle
       tube.requests_as_target.open.each do |request|
         request.transition_to(state)
       end
+    end
+
+    def pool_id(tube)
+      tube.requests_as_target.first.try(:submission_id)
+    end
+
+    def name_for_child_tube(tube)
+      tube.name
     end
   end
 

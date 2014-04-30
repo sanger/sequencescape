@@ -40,7 +40,47 @@ private
         @validating_ena_required_fields = !!state
         self.#{ association_name }.validating_ena_required_fields = state
       end
+
+      def tags
+        self.class.tags.select{|tag| tag.for?(accession_service.provider)}
+      end
+
+      def required_tags
+        self.class.required_tags[accession_service.try(:provider)]+self.class.required_tags[:all]
+      end
+
+      def self.tags
+        @tags ||= []
+      end
+
+      def self.required_tags
+        @required_tags ||= Hash.new {|h,k| h[k] = Array.new }
+      end
     VALIDATING_METADATA_ATTRIBUTE_GROUPS
+  end
+
+  def include_tag(tag,options=Hash.new)
+    tags << AccessionedTag.new(tag,options[:as],options[:services])
+  end
+
+  def require_tag(tag,services=:all)
+    [services].flatten.each do |service|
+      required_tags[service] << tag
+    end
+  end
+
+
+  class AccessionedTag
+    attr_reader :tag, :name
+    def initialize(tag, as=nil, services=[])
+      @tag = tag
+      @name = as||tag
+      @services = [services].flatten.compact
+    end
+
+    def for?(service)
+      @services.empty? || @services.include?(service)
+    end
   end
 
   def construct_metadata_class(table_name, as_class, &block)
@@ -81,6 +121,12 @@ private
 
     def validating_ena_required_fields=(state)
       @validating_ena_required_fields = !!state
+    end
+
+    def service_specific_fields
+      owner.required_tags.uniq.select do |tag|
+        owner.errors.add_to_base("#{tag} is required") if send(tag).blank?
+      end.empty?
     end
 
     class << self

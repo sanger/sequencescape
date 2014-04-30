@@ -22,9 +22,6 @@
         <% end %>
         <th class='label' width="4%"><%= link_to 'State', "javascript:void(0);" %></th>
         <th class='label' width="3%"><%= link_to 'Comments', "javascript:void(0);" %></th>
-        <% if edit -%>
-          <th class='label' width="5%"><%= link_to 'Remove', "javascript:void(0);" %></th>
-        <% end -%>
       </tr>
     </thead>
     <tbody id="requests_list">
@@ -77,9 +74,6 @@
           <td width='4%'><%= link_to (pluralize request.comments.size, 'comment'),  request_comments_url(request) %></td>
           <% else -%>
           <td>None</td>
-          <% end -%>
-          <% if edit -%>
-            <td width="5%" class="center"><%= link_to image_tag("delete.png", :size => "13x13"), :action => "remove_request", :id => @batch.id, :request_id => request.id %></td>
           <% end -%>
         </tr>
       <% end -%>

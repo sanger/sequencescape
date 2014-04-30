@@ -26,5 +26,9 @@ class MultiplexedLibraryTube < Tube
     StockMultiplexedLibraryTube
   end
 
+  def self.stock_asset_purpose
+    Tube::Purpose.stock_mx_tube
+  end
+
   extend Asset::Stock::CanCreateStockAsset
 end

@@ -20,8 +20,8 @@ class Sample < ActiveRecord::Base
 
   has_many_lab_events
 
-  ArrayExpressFields = %w(genotype phenotype strain_or_line developmental_stage sex cell_type disease_state compound dose immunoprecipitate growth_condition rnai organism_part species time_point)
-  EgaFields = %w(subject disease treatment)
+  ArrayExpressFields = %w(genotype phenotype strain_or_line developmental_stage sex cell_type disease_state compound dose immunoprecipitate growth_condition rnai organism_part species time_point age treatment)
+  EgaFields = %w(subject disease treatment gender phenotype)
 
   acts_as_authorizable
 
@@ -111,8 +111,8 @@ class Sample < ActiveRecord::Base
       else
         has_submission = true
       end
-    elsif self.has_submission_record?
-      #if has submission record means that exists a row in table submission but no request is created.
+    else # We have no requests, we're probably S2 (Or very old Sequencescape)
+         # This is a hack, but I'll get this tdied up.
       has_submission = true
     end
     return has_submission
@@ -128,11 +128,6 @@ class Sample < ActiveRecord::Base
     end
 
     return has_ebi_accession_number
-  end
-
-  def has_submission_record?
-    assets_common_to_submissions = self.assets - self.studies.map(&:submissions).flatten.map(&:assets).uniq
-    not assets_common_to_submissions.empty?
   end
 
   # TODO: remove as this is no longer needed (validation of name change will fail)
@@ -163,9 +158,9 @@ class Sample < ActiveRecord::Base
   # and we have a common name for the sample return true else false
   def accession_could_be_generated?
     return false unless self.sample_metadata.sample_ebi_accession_number.blank?
-    return false if self.sample_metadata.sample_taxon_id.blank?
-    return false if self.sample_metadata.sample_common_name.blank?
-
+    required_tags.each do |tag|
+      return false if self.sample_metadata.send(tag).blank?
+    end
     # We have everything needed to generate an accession so...
     true
   end
@@ -216,9 +211,9 @@ class Sample < ActiveRecord::Base
 
   GC_CONTENTS     = [ 'Neutral', 'High AT', 'High GC' ]
   GENDERS         = [ 'Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable' ]
-  DNA_SOURCES     = [ 'Genomic', 'Whole Genome Amplified', 'Blood', 'Cell Line','Saliva','Brain' ]
+  DNA_SOURCES     = [ 'Genomic', 'Whole Genome Amplified', 'Blood', 'Cell Line','Saliva','Brain','FFPE' ]
   SRA_HOLD_VALUES = [ 'Hold', 'Public', 'Protect' ]
-  AGE_REGEXP      = '\d+(?:\.\d+)?\s+(?:second|minute|day|week|month|year)s?|Not Applicable|N/A|To be provided'
+  AGE_REGEXP      = '\d+(?:\.\d+|\-\d+|\.\d+\-\d+\.\d+|\.\d+\-\d+\.\d+)?\s+(?:second|minute|day|week|month|year)s?|Not Applicable|N/A|To be provided'
   DOSE_REGEXP     = '\d+(?:\.\d+)?\s+\w+(?:\/\w+)?|Not Applicable|N/A|To be provided'
 
   extend Metadata
@@ -238,6 +233,7 @@ class Sample < ActiveRecord::Base
     attribute(:replicate)
     attribute(:gc_content, :in => Sample::GC_CONTENTS)
     attribute(:gender, :in => Sample::GENDERS)
+    attribute(:donor_id)
     attribute(:dna_source, :in => Sample::DNA_SOURCES)
     attribute(:sample_public_name)
     attribute(:sample_common_name)
@@ -285,8 +281,9 @@ class Sample < ActiveRecord::Base
 
 
     with_options(:if => :validating_ena_required_fields?) do |ena_required_fields|
-      ena_required_fields.validates_presence_of :sample_common_name
-      ena_required_fields.validates_presence_of :sample_taxon_id
+      # ena_required_fields.validates_presence_of :sample_common_name
+      # ena_required_fields.validates_presence_of :sample_taxon_id
+      ena_required_fields.validates_presence_of :service_specific_fields
     end
 
     # The spreadsheets that people upload contain various fields that could be mistyped.  Here we ensure that the
@@ -314,6 +311,19 @@ class Sample < ActiveRecord::Base
     end
   end
 
+    include_tag(:sample_strain_att)
+    include_tag(:sample_description)
+
+    include_tag(:gender, :services=>:EGA)
+    include_tag(:phenotype, :services=>:EGA)
+    include_tag(:donor_id, :services=>:EGA)
+
+    require_tag(:sample_taxon_id)
+    require_tag(:sample_common_name)
+    require_tag(:gender, :EGA)
+    require_tag(:phenotype, :EGA)
+    require_tag(:donor_id, :EGA)
+
   # This needs to appear after the metadata has been defined to ensure that the Metadata class
   # is present.
   include SampleManifest::InputBehaviour::SampleUpdating
@@ -332,6 +342,7 @@ class Sample < ActiveRecord::Base
     def species
       sample_common_name
     end
+
   end
 
 

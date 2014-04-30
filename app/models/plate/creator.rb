@@ -47,6 +47,7 @@ class Plate::Creator < ActiveRecord::Base
   private :create_plates
 
   def create_child_plates_from(plate, current_user)
+    stock_well_picker = plate.plate_purpose.can_be_considered_a_stock_plate? ? lambda { |w| [w] } : lambda { |w| w.stock_wells }
     plate_purposes.map do |target_plate_purpose|
       target_plate_purpose.target_plate_type.constantize.create_with_barcode!(plate.barcode) do |child_plate|
         child_plate.plate_purpose = target_plate_purpose
@@ -54,15 +55,13 @@ class Plate::Creator < ActiveRecord::Base
         child_plate.location      = plate.location
         child_plate.name          = "#{target_plate_purpose.name} #{child_plate.barcode}"
       end.tap do |child_plate|
-        plate.wells.each do |well|
-          child_plate.wells << well.clone.tap do |child_well|
-            child_well.aliquots = well.aliquots.map(&:clone)
+          child_plate.wells << plate.wells.map do |well|
+            well.clone.tap do |child_well|
+              child_well.aliquots = well.aliquots.map(&:clone)
+              child_well.stock_wells.attach(stock_well_picker.call(well))
+            end
           end
-        end
-
-        RequestFactory.create_assets_requests([child_plate.id], plate.study.id) if plate.study.present?
         AssetLink.create_edge!(plate, child_plate)
-
         plate.events.create_plate!(target_plate_purpose, child_plate, current_user)
       end
     end

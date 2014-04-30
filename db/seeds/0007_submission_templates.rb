@@ -15,10 +15,10 @@ end
 
 def create_pulldown_submission_templates
   sequencing_request_type_names = [
-    "Single ended sequencing",
-    "Single ended hi seq sequencing",
-    "Paired end sequencing",
-    "HiSeq Paired end sequencing"
+    "Illumina-A Single ended sequencing",
+    "Illumina-A Single ended hi seq sequencing",
+    "Illumina-A Paired end sequencing",
+    "Illumina-A HiSeq Paired end sequencing"
   ]
 
   pipelines_to_request_types = {
@@ -44,11 +44,11 @@ def create_pulldown_submission_templates
         submission.request_options   = defaults
 
         SubmissionTemplate.new_from_submission(
-          "Cherrypick for pulldown - #{request_type_name} - #{sequencing_request_type.name}",
+          "Cherrypick for pulldown - #{request_type_name} - #{sequencing_request_type.name.gsub(/Illumina-[ABC] /,'')}",
           submission
         ).tap { |template| template.superceded_by_unknown! }.save!
 
-        SubmissionTemplate.new_from_submission("#{pipeline} - Cherrypick for pulldown - #{request_type_name} - #{sequencing_request_type.name}", submission).save!
+        SubmissionTemplate.new_from_submission("#{pipeline} - Cherrypick for pulldown - #{request_type_name} - #{sequencing_request_type.name.gsub(/Illumina-[ABC] /,'')}", submission).save!
       end
       RequestType.find_each(:conditions => { :name => sequencing_request_type_names }) do |sequencing_request_type|
         submission                   = LinearSubmission.new
@@ -57,9 +57,13 @@ def create_pulldown_submission_templates
         submission.workflow          = workflow
         submission.request_options   = defaults
 
-        SubmissionTemplate.new_from_submission("#{request_type_name} - #{sequencing_request_type.name}", submission).save!
+        SubmissionTemplate.new_from_submission("#{request_type_name} - #{sequencing_request_type.name.gsub(/Illumina-[ABC] /,'')}", submission).save!
       end
     end
+  end
+  SubmissionTemplate.find(:all, :conditions => "name LIKE('% ISC %')").each do |submission_template|
+    submission_template.submission_parameters[:request_options]['pre_capture_plex_level']='8'
+    submission_template.save
   end
 end
 
@@ -68,41 +72,51 @@ create_pulldown_submission_templates
 
 # Now generate the rest of the submission templates
 Submission::Workflow.all.each do |workflow|
-  request_types_group = workflow.request_types.group_by {|rt| rt.order }.sort {|a, b| a[0] <=> b[0]  }
-  request_type_ids_list = request_types_group.map { |o, rts| rts.map { |rt| rt.id } }
+  pipeline_group = workflow.request_types.group_by {|rt| rt.product_line_id }
+  pipeline_group.each do |product_line, pipeline_requests|
+    request_types_group = pipeline_requests.group_by {|rt| rt.order }.sort {|a, b| a[0] <=> b[0]  }
+    request_type_ids_list = request_types_group.map { |o, rts| rts.map { |rt| rt.id } }
 
-  if workflow.name =~ /[sS]equencing/
-    combinations = list_combinations(request_type_ids_list)
-    combinations.each do |request_type_ids|
-      name = request_type_ids.map {|id| RequestType.find(id).name}.join(" - ")
-      next if SubmissionTemplate.find_by_name(name)
-
-      submission = LinearSubmission.new
-      submission.request_type_ids = request_type_ids
-      submission.info_differential = workflow.id
-      submission.workflow = workflow
-
-      SubmissionTemplate.new_from_submission(name, submission).save!
-    end
-
-  elsif workflow.name =~ /Microarray genotyping/
-      [["DNA QC", "Cherrypick", "Genotyping"],
-      ["DNA QC", "Cherrypick"],
-      ["Cherrypick", "Genotyping"],
-      ["DNA QC"],
-      ["Cherrypick"]].each do |request_type_names|
-        request_type_ids = request_type_names.map {|request_type_name| RequestType.find_by_name(request_type_name).id}
-        name = request_type_names.join(" - ")
+    if workflow.name =~ /[sS]equencing/
+      combinations = list_combinations(request_type_ids_list)
+      combinations.each do |request_type_ids|
+        name = request_type_ids.map {|id| RequestType.find(id).name.gsub(/Illumina-[ABC] /,'')}.join(" - ")
+        name = "#{ProductLine.find(product_line).name} - #{name}" if product_line.present?
+        deprecated = request_type_ids.any? {|id| RequestType.find(id).deprecated?}
+        next if SubmissionTemplate.find_by_name(name)
 
         submission = LinearSubmission.new
         submission.request_type_ids = request_type_ids
         submission.info_differential = workflow.id
-        submission.request_options = { :initial_state => { request_type_ids.first => :pending }}
-        submission.asset_input_methods   = [ 'select an asset group', 'enter a list of sample names found on plates' ]
         submission.workflow = workflow
 
-        SubmissionTemplate.new_from_submission(name, submission).save!
+        SubmissionTemplate.new_from_submission(name, submission).tap do |template|
+          if deprecated
+            template.superceded_by_id = -2
+            template.superceded_at = DateTime.now
+          end
+        end.save!
       end
+
+    elsif workflow.name =~ /Microarray genotyping/
+        [["DNA QC", "Cherrypick", "Genotyping"],
+        ["DNA QC", "Cherrypick"],
+        ["Cherrypick", "Genotyping"],
+        ["DNA QC"],
+        ["Cherrypick"]].each do |request_type_names|
+          request_type_ids = request_type_names.map {|request_type_name| RequestType.find_by_name(request_type_name).id}
+          name = request_type_names.join(" - ")
+
+          submission = LinearSubmission.new
+          submission.request_type_ids = request_type_ids
+          submission.info_differential = workflow.id
+          submission.request_options = { :initial_state => { request_type_ids.first => :pending }}
+          submission.asset_input_methods   = [ 'select an asset group', 'enter a list of sample names found on plates' ]
+          submission.workflow = workflow
+
+          SubmissionTemplate.new_from_submission(name, submission).save!
+        end
+    end
   end
 end
 
@@ -129,8 +143,8 @@ end
 seq_submission_workflow = Submission::Workflow.find_by_name('Next-gen sequencing') or raise StandardError, "Cannot find seq_submission_workflow"
 [
   { :name => "Cherrypicking for Pulldown", :request_types => [ 'Cherrypicking for Pulldown']},
-  { :name => 'Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing', :request_types => [ 'Cherrypicking for Pulldown', 'Pulldown Multiplex Library Preparation', 'HiSeq Paired end sequencing' ] },
-  { :name => 'Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - Paired end sequencing', :request_types => [ 'Cherrypicking for Pulldown', 'Pulldown Multiplex Library Preparation', 'Paired end sequencing' ] }
+  { :name => 'Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing', :request_types => [ 'Cherrypicking for Pulldown', 'Pulldown Multiplex Library Preparation', 'Illumina-A HiSeq Paired end sequencing' ] },
+  { :name => 'Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - Paired end sequencing', :request_types => [ 'Cherrypicking for Pulldown', 'Pulldown Multiplex Library Preparation', 'Illumina-A Paired end sequencing' ] }
 
 ].each do |attributes|
   request_types = attributes[:request_types].map { |n| RequestType.find_by_name(n) or raise StandardError, "Request type #{n.inspect} not found" }
@@ -149,7 +163,7 @@ end
 
 seq_submission_workflow = Submission::Workflow.find_by_name('Next-gen sequencing') or raise StandardError, "Cannot find seq_submission_workflow"
 [
-  { :name => 'PacBio', :request_types => ['PacBio Sample Prep','PacBio Sequencing']}
+  { :name => 'PacBio', :request_types => ['PacBio Library Prep','PacBio Sequencing']}
 
 ].each do |attributes|
   request_types = attributes[:request_types].map { |n| RequestType.find_by_name(n) or raise StandardError, "Request type #{n.inspect} not found" }

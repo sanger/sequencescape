@@ -21,6 +21,10 @@ class Array
   def comma_separate_field_list(*fields)
     map { |row| fields.map { |field| row[field] } }.flatten.delete_if(&:blank?).join(',')
   end
+
+  def comma_separate_field_list_for_display(*fields)
+    map { |row| fields.map { |field| row[field] } }.flatten.delete_if(&:blank?).join(', ')
+  end
 end
 
 class BulkSubmission < ActiveRecord::Base
@@ -54,7 +58,7 @@ class BulkSubmission < ActiveRecord::Base
       end
     end
   rescue FasterCSV::MalformedCSVError
-      errors.add(:spreadsheet, "The supplied file was not a valid CSV file (try opening it with MS Excel)")
+    errors.add(:spreadsheet, "The supplied file was not a valid CSV file (try opening it with MS Excel)")
   end
 
   def headers
@@ -96,6 +100,14 @@ class BulkSubmission < ActiveRecord::Base
     false
   end
 
+  def max_priority(orders)
+    orders.inject(0) do |max,order|
+      priority = Submission::Priorities.priorities.index(order['priority'])||order['priority'].to_i
+      priority > max ? priority.to_i : max
+    end
+  end
+  private :max_priority
+
   def spreadsheet_valid?
     valid_header?
     errors.count == 0
@@ -122,13 +134,13 @@ class BulkSubmission < ActiveRecord::Base
             end
 
             begin
-              submission = Submission.create!(:name=>submission_name, :user => user, :orders => orders.map(&method(:prepare_order)).compact)
+              submission = Submission.create!(:name=>submission_name, :user => user, :orders => orders.map(&method(:prepare_order)).compact, :priority=>max_priority(orders))
               submission.built!
               # Collect successful submissions
               @submission_ids << submission.id
               @completed_submissions[submission.id] = "Submission #{submission.id} built (#{submission.orders.count} orders)"
-            rescue Quota::Error => exception
-              errors.add :spreadsheet, "There was a quota problem: #{exception.message}"
+            rescue Submission::ProjectValidation::Error => exception
+              errors.add :spreadsheet, "There was an issue with a project: #{exception.message}"
             end
           end
         end
@@ -155,7 +167,11 @@ class BulkSubmission < ActiveRecord::Base
     'library type',
     'bait library', 'bait library name',
     'comments',
-    'number of lanes'
+    'number of lanes',
+    'pre-capture plex level',
+    'pre-capture group',
+    'gigabases expected',
+	'priority'
   ]
 
   def validate_entry(header,pos,row,index)
@@ -178,7 +194,7 @@ class BulkSubmission < ActiveRecord::Base
         details["asset group name"]
       end.map do |group_name, rows|
         Hash[COMMON_FIELDS.map { |f| [ f, rows.first[f] ] }].tap do |details|
-          details['rows']          = rows.comma_separate_field_list('row')
+          details['rows']          = rows.comma_separate_field_list_for_display('row')
           details['asset ids']     = rows.comma_separate_field_list('asset id', 'asset ids')
           details['asset names']   = rows.comma_separate_field_list('asset name', 'asset names')
           details['plate well']    = rows.comma_separate_field_list('plate well')
@@ -205,14 +221,17 @@ class BulkSubmission < ActiveRecord::Base
         :comments => details['comments'],
         :request_options => {
           :read_length  => details['read length']
-        }
+        },
+        :pre_cap_group => details['pre-capture group']
       }
 
-      attributes[:request_options]['library_type']                  = details['library type']       unless details['library type'].blank?
-      attributes[:request_options]['fragment_size_required_from']   = details['fragment size from'] unless details['fragment size from'].blank?
-      attributes[:request_options]['fragment_size_required_to']     = details['fragment size to']   unless details['fragment size to'].blank?
-      attributes[:request_options][:bait_library_name]              = details['bait library name']  unless details['bait library name'].blank?
-      attributes[:request_options][:bait_library_name]            ||= details['bait library']       unless details['bait library'].blank?
+      attributes[:request_options]['library_type']                  = details['library type']           unless details['library type'].blank?
+      attributes[:request_options]['fragment_size_required_from']   = details['fragment size from']     unless details['fragment size from'].blank?
+      attributes[:request_options]['fragment_size_required_to']     = details['fragment size to']       unless details['fragment size to'].blank?
+      attributes[:request_options][:bait_library_name]              = details['bait library name']      unless details['bait library name'].blank?
+      attributes[:request_options][:bait_library_name]            ||= details['bait library']           unless details['bait library'].blank?
+      attributes[:request_options]['pre_capture_plex_level']        = details['pre-capture plex level'] unless details['pre-capture plex level'].blank?
+      attributes[:request_options]['gigabases_expected']            = details['gigabases expected']     unless details['gigabases expected'].blank?
 
       # Deal with the asset group: either it's one we should be loading, or one we should be creating.
       begin

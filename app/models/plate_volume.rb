@@ -40,7 +40,8 @@ class PlateVolume < ActiveRecord::Base
 
   def call(filename, file)
     return unless update_required?(file.stat.mtime)
-    db_files.map(&:destroy!)
+    db_files.map(&:destroy)
+    self.reload
     update_attributes!(:uploaded_file_name => filename, :updated_at => file.stat.mtime, :uploaded => file)
   end
 
@@ -60,16 +61,23 @@ class PlateVolume < ActiveRecord::Base
 
     def handle_volume(filename, file)
       ActiveRecord::Base.transaction do
-        find_for_filename(filename).call(filename, file)
+        find_for_filename(sanitized_filename(file)).call(filename, file)
       end
     rescue => exception
       Rails.logger.warn("Error processing volume file #{filename}: #{exception.message}")
     end
     private :handle_volume
 
+    def sanitized_filename(file)
+      # We need to use the Carrierwave sanitized filename for lookup, else files with spaces are repetedly processed
+      # Later versions of carrierwave expose this sanitization better, but for now we are forced to create an object
+      CarrierWave::SanitizedFile.new(file).filename
+    end
+
     def find_for_filename(filename)
       self.find_by_uploaded_file_name(filename) or
       lambda { |filename, file| PlateVolume.create!(:uploaded_file_name => filename, :updated_at => file.stat.mtime, :uploaded => file) }
     end
+
   end
 end

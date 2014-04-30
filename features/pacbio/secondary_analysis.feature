@@ -4,7 +4,7 @@ Feature: Display secondary analysis details in the sample sheet
   Background:
     Given I am a "manager" user logged in as "user"
       And I have a project called "Test project"
-      And project "Test project" has enough quotas
+
       And I have an active study called "Test study"
       And I have a sample tube "111" in study "Test study" in asset group "Test study group"
       And the reference genome "Mouse" exists
@@ -16,6 +16,7 @@ Feature: Display secondary analysis details in the sample sheet
 
   # remove this test when the secondary analysis is reenabled on the instrument
   Scenario: 1 Sample has a reference genome, the other has none set, but we set it then
+    And the plate barcode webservice returns "99998"
     Given the sample in tube "111" has a reference genome of "Human"
     Given I have progressed to the Reference Sequence task
     Then the sample reference sequence table should look like:
@@ -33,9 +34,9 @@ Feature: Display secondary analysis details in the sample sheet
     When I press "Next step"
       And I press "Next step"
     Then the PacBio manifest for the last batch should look like:
-      | Well No. | Sample Name | Secondary Analysis Protocol | Secondary Analysis Parameters |
-      | A01      | Sample_111  |                             |                               |
-      | A02      | Sample_222  |                             |                               |
+      | Well No. | Sample Name   | Secondary Analysis Protocol | Secondary Analysis Parameters |
+      | A01      | DN1234567T-A1 |                             |                               |
+      | B01      | DN1234567T-B1 |                             |                               |
 
 
   # Secondary analysis has been disabled. Reenable these tests when its turned back on

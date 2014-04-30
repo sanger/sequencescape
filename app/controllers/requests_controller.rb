@@ -1,6 +1,12 @@
 class RequestsController < ApplicationController
 
   before_filter :admin_login_required, :only => [ :describe, :undescribe, :destroy ]
+  before_filter :set_permitted_params, :only => [ :update ]
+
+  def set_permitted_params
+    @parameters = params[:request].reject{|k,v| !['request_metadata_attributes'].include?(k.to_s)}
+  end
+  attr_reader :parameters
  # before_filter :find_request_from_id, :only => [ :filter_change_decision, :change_decision ]
 
   def index
@@ -72,29 +78,17 @@ class RequestsController < ApplicationController
       return
     end
 
-    if params[:request][:state] == "cancelled" && !@request.cancelable?
-      flash[:notice] = "You can not cancel a request that is in progress."
-      redirect_to request_path(@request)
-      return
-    end
-
     unless params[:request][:request_type_id].nil?
       unless @request.request_type_updatable?(params[:request][:request_type_id])
-        flash[:error] = "You can not change the request type. Insufficient quota for #{RequestType.find(params[:request][:request_type_id]).name.downcase}."
+        flash[:error] = "You can not change the request type."
         redirect_to request_path(@request)
         return
       end
-   end
+    end
 
-    parameters = params[:request]
-#    parameters[:properties] = params[:request][:properties] if params[:request][:properties]
     begin
       if @request.update_attributes(parameters)
         flash[:notice] = "Request details have been updated"
-        if params[:request][:state] == "failed"
-          flash[:notice] = "Request #{params[:id]} has been failed"
-          EventFactory.request_update_note_to_manager(@request, current_user, flash[:notice])
-        end
         redirect_to request_path(@request)
       else
         flash[:error] = "Request was not updated. No change specified ?"
@@ -211,14 +205,9 @@ class RequestsController < ApplicationController
 
   def copy
     old_request = Request.find(params[:id])
-    if old_request.has_quota?(1)
-      new_request = old_request.copy
-      flash[:notice] = "Created request #{new_request.id}"
-      redirect_to asset_url(new_request.asset)
-    else
-      flash[:error] = "Insufficient quota."
-      redirect_to asset_url( old_request.asset)
-    end
+    new_request = old_request.copy
+    flash[:notice] = "Created request #{new_request.id}"
+    redirect_to asset_url(new_request.asset)
   end
 
   def reset_qc_information

@@ -28,7 +28,6 @@ class ProjectsController < ApplicationController
 
   def new
     @project = Project.new
-    @project.new_quotas
 
     respond_to do |format|
       format.html
@@ -40,15 +39,10 @@ class ProjectsController < ApplicationController
   def edit
     @project = Project.find(params[:id])
     @users   = User.all
-    @project.new_quotas
   end
 
   def create
     # TODO[5002667]: All of this code should be in a before_create/after_create callback in the Project model ...
-    quota_params = []
-    if params["project"]["quotas"]
-      quota_params = params["project"].delete("quotas")
-    end
     @project = Project.new(params[:project])
     @project.save!
 
@@ -57,9 +51,6 @@ class ProjectsController < ApplicationController
     # Creates an event when a new Project is created
     EventFactory.new_project(@project, current_user)
 
-    unless quota_params.empty?
-      @project.add_quotas(quota_params)
-    end
     # TODO[5002667]: ... to here.
 
     flash[:notice] = "Your project has been created"
@@ -72,7 +63,6 @@ class ProjectsController < ApplicationController
     action_flash[:error] = "Problems creating your new project"
     respond_to do |format|
       format.html {
-        @project.new_quotas=(quota_params)
         render :action => "new"
       }
       format.xml  { render :xml  => @project.errors, :status => :unprocessable_entity }
@@ -81,11 +71,6 @@ class ProjectsController < ApplicationController
   end
 
   def update
-
-    quota_params = []
-    if params["project"]["quotas"]
-      quota_params = params["project"].delete("quotas")
-    end
     respond_to do |format|
       if @project.update_attributes(params[:project])
         flash[:notice] = 'Project was successfully updated.'

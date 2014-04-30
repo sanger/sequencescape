@@ -29,6 +29,10 @@ module ModelExtensions::Plate
     self.plate_purpose || PlatePurpose.find_by_name('Stock Plate')
   end
 
+  def source_plate
+    self.plate_purpose.source_plate(self)
+  end
+
   # Returns a hash from the submission for the pools to the wells that form that pool on this plate.  This is
   # not necessarily efficient but it is correct.  Unpooled wells, those without submissions, are completely
   # ignored within the returned result.
@@ -41,4 +45,16 @@ module ModelExtensions::Plate
       end
     end
   end
+
+  # Adds pre-capture pooling information, we need to delegate this to the stock plate, as we need all the wells
+  def pre_cap_groups
+    ActiveSupport::OrderedHash.new.tap do |groups|
+      Request.include_request_metadata.for_pre_cap_grouping_of(self).each do |request|
+        groups[request.group_id] = { :wells => request.group_into.split(',') }.tap do |pool_information|
+          pool_information[:pre_capture_plex_level] ||= request.request_metadata.pre_capture_plex_level
+        end unless request.group_id.nil?
+      end
+    end
+  end
+
 end

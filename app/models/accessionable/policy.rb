@@ -1,12 +1,13 @@
 class Accessionable::Policy < Accessionable::Base
 
-  attr_reader :policy_text, :dac_accession_number, :title
+  attr_reader :policy_url, :dac_accession_number, :title
 
   def initialize(study)
     @study = study
 
     @name = "Policy for study - #{study.name} - ##{study.id}"
-    @policy_text = study.study_metadata.dac_policy
+    @policy_url = study.study_metadata.dac_policy
+    @title = study.study_metadata.dac_policy_title
     #@dac_refname = study.dac_refname
     @dac_accession_number = study.dac_accession_number
     super(study.policy_accession_number)
@@ -28,7 +29,7 @@ class Accessionable::Policy < Accessionable::Base
                  :center_name => self.center_name) {
       xml.TITLE self.title
       xml.DAC_REF(:accession => self.dac_accession_number)
-      xml.POLICY_TEXT self.policy_text
+      xml.POLICY_FILE self.policy_url
     }
     }
     return xml.target!

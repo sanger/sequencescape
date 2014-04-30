@@ -7,7 +7,7 @@ Feature: Pipeline navigation
     Given I have a batch in "Illumina-C Library preparation"
     Given I on batch page
     Then I should see "Edit batch"
-    Then I should see "Start batch"
+    Then I should see "Initial QC"
     Then I should see "Print worksheet"
 
   Scenario: Make training batch
@@ -37,10 +37,10 @@ Feature: Pipeline navigation
     When I check request "1" for pipeline "Illumina-C Library preparation"
     When I press "Submit"
     Then I should see "Edit batch"
-    Then I should see "Start batch"
+    Then I should see "Initial QC"
     Then I should see "Print worksheet"
 
     #completing the batch
-    When I follow "Start batch"
+    When I follow "Initial QC"
     And I press "Next step"
     # This is only here to check that this is working and there is nothing after here.
