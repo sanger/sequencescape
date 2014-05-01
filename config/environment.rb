@@ -5,7 +5,28 @@
 # ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '2.3.15' unless defined? RAILS_GEM_VERSION
+RAILS_GEM_VERSION = '2.3.18' unless defined? RAILS_GEM_VERSION
+
+# Monkey patch for rubygems 2.0 compatibility
+# John Anderson - http://djellemah.com/blog/2013/02/27/rails-23-with-ruby-20/
+  module Gem
+    def self.source_index
+      sources
+    end
+
+    def self.cache
+      sources
+    end
+
+    SourceIndex = Specification
+
+    class SourceList
+      # If you want vendor gems, this is where to start writing code.
+      def search( *args ); []; end
+      def each( &block ); end
+      include Enumerable
+    end
+  end
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
@@ -37,7 +58,7 @@ Rails::Initializer.run do |config|
   #config.gem "factory_girl", :lib => "factory_girl", :source => "http://gems.github.com"
   #config.gem 'db-charmer', :lib => 'db_charmer', :source => 'http://gemcutter.org'
   #config.gem 'mexpolk-flow_pagination', :lib => 'flow_pagination'
-  
+
   # Only load the plugins named here, in the order given. By default, all plugins
   # in vendor/plugins are loaded in alphabetical order.
   # :all can be used as a placeholder for all plugins not explicitly named
@@ -68,12 +89,12 @@ Rails::Initializer.run do |config|
      :key => '_sequencescape_projects_session',
      :secret      => '331126909929cd365e60e61c66e88d260ef609cb813566e03618f6a455dbfc7f50486aa6dc721bcc5fce54455282e3e17bb500f11d8b72bbac369f194c9dae73'
    }
-   
+
   config.reload_plugins = true
 
   # Enable localisations to be split over multiple paths.
   config.i18n.load_path << Dir[File.join(Rails.root, %w{config locales metadata *.{rb,yml}})]
-    
+
   # Use the database for sessions instead of the cookie-based default,
   # which shouldn't be used to store highly confidential information
   # (create the session table with "rake db:sessions:create")
