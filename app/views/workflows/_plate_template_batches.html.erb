@@ -6,6 +6,10 @@
     <legend>Automatic</legend>
     <table cellspacing='0' cellpadding='0'>
       <tr>
+         <td><label for="plate_purpose_id">Output plate purpose</label>:</td>
+         <td><%= select_tag("plate_purpose_id", options_for_select(@plate_purpose_options, PlatePurpose.stock_plate_purpose.id)) %></td>
+       </tr>
+       <tr>
         <td><strong>Optional: </strong>Scan partial plate:</td>
         <td><%= text_field_tag 'existing_plate' %></td>
       </tr>

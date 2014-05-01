@@ -24,6 +24,8 @@ class SampleManifest < ActiveRecord::Base
   self.spreadsheet_offset = 9
   self.spreadsheet_header_row = 8
 
+  acts_as_audited :on => [:destroy, :update]
+
   attr_accessor :override
   attr_reader :manifest_errors
 
