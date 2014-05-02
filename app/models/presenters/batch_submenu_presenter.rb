@@ -33,7 +33,7 @@ module Presenters
       cond_is_cherrypicking_pipeline= @pipeline.is_a?(CherrypickingPipeline)
       cond_is_genotyping_pipeline= @pipeline.is_a?(GenotypingPipeline)
       cond_is_pacbio_pipeline= @pipeline.is_a?(PacBioSequencingPipeline)
-      cond_not_seq_pipeline = @pipeline.is_a?(SequencingPipeline)
+      cond_not_seq_pipeline = !@pipeline.is_a?(SequencingPipeline)
       cond_pipeline_can_create_stock_assets =  @batch.pipeline.can_create_stock_assets?
       cond_is_pacbio_sample_pipeline =  @pipeline.is_a?(PacBioSamplePrepPipeline)
       cond_tube_layout_not_verified = @batch.has_limit? and !@batch.has_event("Tube layout verified")
