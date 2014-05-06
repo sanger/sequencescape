@@ -36,6 +36,19 @@ class StampTest < ActiveSupport::TestCase
         assert_equal 'pending', @qcable.reload.state
         assert_equal 1, @qcable.asset.wells.located_at('A2').first.aliquots.count
       end
+
+      should 'clone the aliquots' do
+        @qcable = Factory :qcable_with_asset
+        @qcable_2 = @qcable.lot.qcables.create!(:qcable_creator=>@qcable.qcable_creator,:asset=>Factory(:full_plate))
+
+        sqc = Stamp::StampQcable.new(:bed=>'1',:order=>1,:qcable=>@qcable)
+        sqc_2 = Stamp::StampQcable.new(:bed=>'2',:order=>2,:qcable=>@qcable_2)
+        @stamp = Factory :stamp, :stamp_qcables => [sqc,sqc_2]
+        assert_equal 'pending', @qcable.reload.state
+        assert_equal 1, @qcable.asset.wells.located_at('A2').first.aliquots.count
+        assert_equal 'pending', @qcable_2.reload.state
+        assert_equal 1, @qcable_2.asset.wells.located_at('A2').first.aliquots.count
+      end
     end
   end
 
