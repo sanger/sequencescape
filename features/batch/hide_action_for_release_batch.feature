@@ -23,5 +23,5 @@ Feature: If a batch is released, the section Action/Task shouldn't be shown unle
     | Genotyping                             | released    | should               |
     | DNA QC                                 | released    | should               |
     | Cherrypick                             | released    | should               |
-    | PacBio Sample Prep                     | released    | should               |
+    | PacBio Library Prep                    | released    | should               |
     | PacBio Sequencing                      | released    | should               |

@@ -92,6 +92,16 @@ Feature: The entry point for the API gives directions to the other actions
             "read": "http://www.example.com/api/1/library_tubes"
           }
         },
+        "lot_types": {
+          "actions": {
+            "read": "http://www.example.com/api/1/lot_types"
+          }
+        },
+        "lots": {
+          "actions": {
+            "read": "http://www.example.com/api/1/lots"
+          }
+        },
         "multiplexed_library_tubes": {
           "actions": {
             "read": "http://www.example.com/api/1/multiplexed_library_tubes"
@@ -100,11 +110,6 @@ Feature: The entry point for the API gives directions to the other actions
         "plates": {
           "actions": {
             "read": "http://www.example.com/api/1/plates"
-          }
-        },
-        "plates_for_inboxes": {
-          "actions": {
-            "read": "http://www.example.com/api/1/plates_for_inboxes"
           }
         },
         "wells": {
@@ -177,12 +182,24 @@ Feature: The entry point for the API gives directions to the other actions
             "read": "http://www.example.com/api/1/pipelines"
           }
         },
+        "plate_conversions": {
+          "actions": {
+            "read": "http://www.example.com/api/1/plate_conversions"
+          }
+        },
+        "plate_templates":
+           {"actions": {"read": "http://www.example.com/api/1/plate_templates"}},
         "batches": {
           "actions": {
             "read": "http://www.example.com/api/1/batches"
           }
         },
-
+        "robots": {"actions": {"read": "http://www.example.com/api/1/robots"}},
+        "stamps":{
+          "actions":{
+            "read":"http://www.example.com/api/1/stamps"
+          }
+        },
         "transfers": {
           "actions": {
             "read": "http://www.example.com/api/1/transfers"
@@ -245,9 +262,24 @@ Feature: The entry point for the API gives directions to the other actions
             "read": "http://www.example.com/api/1/pooled_plate_creations"
           }
         },
+        "qc_decisions": {
+          "actions": {
+            "read": "http://www.example.com/api/1/qc_decisions"
+          }
+        },
         "qc_files": {
           "actions": {
             "read": "http://www.example.com/api/1/qc_files"
+          }
+        },
+        "qcable_creators": {
+          "actions": {
+            "read": "http://www.example.com/api/1/qcable_creators"
+          }
+        },
+        "qcables": {
+          "actions": {
+            "read": "http://www.example.com/api/1/qcables"
           }
         },
         "specific_tube_creations": {
@@ -346,6 +378,16 @@ Feature: The entry point for the API gives directions to the other actions
             "read": "http://www.example.com/api/1/library_tubes"
           }
         },
+        "lot_types": {
+          "actions": {
+            "read": "http://www.example.com/api/1/lot_types"
+          }
+        },
+        "lots": {
+          "actions": {
+            "read": "http://www.example.com/api/1/lots"
+          }
+        },
         "multiplexed_library_tubes": {
           "actions": {
             "read": "http://www.example.com/api/1/multiplexed_library_tubes"
@@ -356,9 +398,29 @@ Feature: The entry point for the API gives directions to the other actions
             "read": "http://www.example.com/api/1/plates"
           }
         },
-        "plates_for_inbox": {
+        "plate_conversions":
+          {"actions": {
+            "read": "http://www.example.com/api/1/plate_conversions",
+            "create": "http://www.example.com/api/1/plate_conversions"
+          }},
+        "plate_templates":
+          {"actions": {"read": "http://www.example.com/api/1/plate_templates"}},
+        "batches": {
           "actions": {
-            "read": "http://www.example.com/api/1/plates_for_inbox"
+            "read": "http://www.example.com/api/1/batches"
+          }
+        },
+        "robots": {"actions": {"read": "http://www.example.com/api/1/robots"}},
+        "stamps":{
+          "actions":{
+            "read":"http://www.example.com/api/1/stamps",
+            "create":"http://www.example.com/api/1/stamps"
+          }
+        },
+        "transfers": {
+          "actions": {
+            "read": "http://www.example.com/api/1/transfers",
+            "create": "http://www.example.com/api/1/stamps"
           }
         },
         "wells": {
@@ -497,12 +559,20 @@ Feature: The entry point for the API gives directions to the other actions
         },
         "bulk_transfers": {
           "actions": {
-            "read": "http://www.example.com/api/1/bulk_transfers"
+            "read": "http://www.example.com/api/1/bulk_transfers",
+            "create": "http://www.example.com/api/1/bulk_transfers"
           }
         },
         "pooled_plate_creations": {
           "actions": {
-            "read": "http://www.example.com/api/1/pooled_plate_creations"
+            "read": "http://www.example.com/api/1/pooled_plate_creations",
+            "create": "http://www.example.com/api/1/pooled_plate_creations"
+          }
+        },
+        "qc_decisions": {
+          "actions": {
+            "read": "http://www.example.com/api/1/qc_decisions",
+            "create": "http://www.example.com/api/1/qc_decisions"
           }
         },
         "qc_files": {
@@ -510,14 +580,27 @@ Feature: The entry point for the API gives directions to the other actions
             "read": "http://www.example.com/api/1/qc_files"
           }
         },
+        "qcable_creators": {
+          "actions": {
+            "read": "http://www.example.com/api/1/qcable_creators",
+            "create": "http://www.example.com/api/1/qcable_creators"
+          }
+        },
+        "qcables": {
+          "actions": {
+            "read": "http://www.example.com/api/1/qcables"
+          }
+        },
         "specific_tube_creations": {
           "actions": {
-            "read": "http://www.example.com/api/1/specific_tube_creations"
+            "read": "http://www.example.com/api/1/specific_tube_creations",
+            "create": "http://www.example.com/api/1/specific_tube_creations"
           }
         },
         "tube_from_tube_creations": {
           "actions": {
-            "read": "http://www.example.com/api/1/tube_from_tube_creations"
+            "read": "http://www.example.com/api/1/tube_from_tube_creations",
+            "create": "http://www.example.com/api/1/tube_from_tube_creations"
           }
         }
       }

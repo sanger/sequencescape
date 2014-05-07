@@ -128,3 +128,7 @@ Given /^the library is testing a reporter$/ do
   lot.qcables.first.update_attributes!(:state=>'exhausted')
   lot_b.qcables.first.update_attributes!(:state=>'pending')
 end
+
+Given /^the user with UUID "(.*?)" is a 'qa_manager'$/ do |uuid|
+  Uuid.find_by_external_id(uuid).resource.roles.create(:name=>'qa_manager')
+end
