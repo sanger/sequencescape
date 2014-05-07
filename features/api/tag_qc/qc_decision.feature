@@ -31,6 +31,7 @@ Feature: Access stamps through the API
   @create @authorised @barcode-service
   Scenario: Creating a Qc Decisions
     Given a user with UUID "99999999-8888-7777-6666-555555555555" exists
+    And the user with UUID "99999999-8888-7777-6666-555555555555" is a 'qa_manager'
 
     Given the UUID of the next qc decision created will be "55555555-6666-7777-8888-000000000003"
 

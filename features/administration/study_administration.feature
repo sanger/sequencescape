@@ -12,7 +12,6 @@ Feature: Study administration
     Given I am visiting study "Study B" homepage
     When I follow "Contacts"
     Then I should see "Study B : Contacts"
-    Then show me the page
     # And I should see the following contacts
     #   | role     | name       |
     #   | Owner    | John Smith |

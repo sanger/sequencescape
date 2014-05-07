@@ -51,7 +51,8 @@ module Presenters
           cond_is_pacbio_pipeline ].any?
       add_submenu_option "Print stock labels" , :print_stock_labels if [
         cond_not_seq_pipeline,
-        cond_pipeline_can_create_stock_assets].all?
+        cond_pipeline_can_create_stock_assets,
+        !cond_is_batch_multiplexed].all?
       add_submenu_option "Print labels" , :print_labels if cond_not_seq_pipeline
 
       # Other options are enabled only for managers

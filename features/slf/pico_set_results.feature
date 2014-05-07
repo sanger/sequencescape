@@ -184,7 +184,6 @@ Feature: Upload Pico Green concentration results from the Pico Green application
 
     Examples:
       | INITIAL_STOCK_STATE | JSON_STATE_MESSAGE | FINISH_STATE |
-      |                     | passed             | Pass         |
       | ungraded            | passed             | Pass         |
       | ungraded            | failed             | Repeat       |
       | Repeat              | failed             | Fail         |
