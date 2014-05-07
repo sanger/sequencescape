@@ -20,7 +20,7 @@ class PlateTemplate < Plate
   def stamp_to(plate)
     ActiveRecord::Base.transaction do
       self.wells.each do |well|
-        plate.wells.located_at(well.map_description).first.aliquots << well.aliquots.clone
+        plate.wells.located_at(well.map_description).first.aliquots = well.aliquots.map {|a| a.clone }
       end
     end
   end
