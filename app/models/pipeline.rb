@@ -162,6 +162,10 @@ class Pipeline < ActiveRecord::Base
     false
   end
 
+  def is_read_length_consistent_for_batch?(batch)
+    true
+  end
+  
   def need_picoset?
     false
   end
