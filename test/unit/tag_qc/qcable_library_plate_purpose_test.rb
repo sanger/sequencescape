@@ -24,7 +24,7 @@ class QcableLibraryPlatePurposeTest < ActiveSupport::TestCase
 
         assert_equal aliquot.library, well
         assert_equal aliquot.library_type, 'QA1'
-        assert_equal aliquot.insert_size, 100
+        assert_equal aliquot.insert_size.from, 100
 
       end
     end

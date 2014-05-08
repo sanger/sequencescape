@@ -19,7 +19,7 @@ class QcableLibraryPlatePurpose < PlatePurpose
     # Ensure that the library information within the aliquots of the well is correct.
     def assign_library_information_to_wells(plate)
       plate.wells.each do |well|
-        library_type, insert_size = 'QA1', 100
+        library_type, insert_size = 'QA1', Aliquot::InsertSize.new(100,100)
 
         well.aliquots.each do |aliquot|
           aliquot.library      ||= well

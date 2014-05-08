@@ -41,6 +41,7 @@ ActiveRecord::Base.transaction do
       parent.child_relationships.create!(:child => child, :transfer_request_type => RequestType.find_by_name('Transfer'))
     end
   end
+  Purpose::Relationship.create!(:parent=>Purpose.find_by_name('Reporter Plate'),:child=>Purpose.find_by_name('Tag PCR'),:transfer_request_type=>RequestType.transfer)
 end
 
 SubmissionTemplate.create!(
