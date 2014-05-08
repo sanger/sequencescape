@@ -114,7 +114,7 @@ class GraphRenderer < Renderer
         subgraph = DOT::Subgraph.new("name" => "cluster_#{klass.name}", "style"=>"filled", "fillcolor"=>"gold", "color" => "goldenrod4")
         requests.each do |r|
           subsubgraph = DOT::Subgraph.new("name" => "cluster_#{r.node_name}", "color"=>"none")
-          [r.asset.requests.size <=1 ? r.asset : nil, r, r.target_asset].compact.each do |o| 
+          [r.asset.requests.size <=1 ? r.asset : nil, r, r.target_asset].compact.each do |o|
             subsubgraph << DOT::Node.new("name" => o.node_name)
             graph << subsubgraph
           end
@@ -131,7 +131,7 @@ class GraphRenderer < Renderer
     cut = Set.new()
     ellipsis = Set.new()
     label_map = {}
-    
+
     edges.each do |edge|
 
       set = case edge
@@ -160,7 +160,7 @@ class GraphRenderer < Renderer
         if label=label_map[node]
           node_options["label"] = label
         end
-        dot_node = case 
+        dot_node = case
         when normal.include?(node)
          DOT::Node.new(node_options.merge("style" => "filled"))
         when ellipsis.include?(node)
@@ -388,7 +388,7 @@ Models = {
   Request => [:asset, :target_asset],
   Asset => [lambda { |s|  s.requests.group_by(&:request_type_id).values }, :requests_as_target, :children, :parent],
   AssetGroup => [:assets]
-}, 
+},
   {
   Request => [:submission]
 }
@@ -396,14 +396,14 @@ Models = {
 
   :simple_submission =>  { Submission => lambda { |s|  s.requests.group_by(&:request_type_id).values }} ,
 
-  :asset_down => AssetDown={ Asset => [:children, RequestByType, :sample, :tags], 
+  :asset_down => AssetDown={ Asset => [:children, RequestByType, :sample, :tags],
     Request => [:target_asset],
     Submission => [RequestByType],
     Aliquot::Receptacle => [:aliquots],
     Aliquot => [:sample, :tag],
     Plate => [:wells]
 },
-  :asset_up => AssetUp={ Asset => [:parents, :requests_as_target], 
+  :asset_up => AssetUp={ Asset => [:parents, :requests_as_target],
     TagInstance => [:tag],
     Request => [:asset],
     Aliquot => [:sample, :tag],
@@ -422,7 +422,7 @@ Models = {
   :asset_down_and_up => [AssetDown, AssetUp],
   :full_asset => AssetUp.merge(AssetDown),
   :asset => [{Asset => [ lambda { |s|  s.requests.group_by(&:request_type_id).values },
-        :requests_as_target, :children, :parents]}, 
+        :requests_as_target, :children, :parents]},
         { Request => [:asset, :target_asset]}],
   :submission_down => [{ Submission => RequestByType}.merge(AssetDown)] ,
     :bare => {}
@@ -462,7 +462,7 @@ optparse = OptionParser.new do |opts|
   opts.on '-m' '--model', 'model of what needs to be pull' do |model_name|
     $options[:model]=model_name
   end
-  opts.on('-rs', '--ruby', 'Generate a ruby script') do 
+  opts.on('-rs', '--ruby', 'Generate a ruby script') do
     $options[:output_method] = ScriptRenderer.new
   end
 
@@ -510,7 +510,7 @@ def set_graph_filter_option(type)
                            when 2
                                #RubyWalk::Cut.new({ parent => [object, "..."]})
                                RubyWalk::Cut.new(Ellipsis.new(parent,object, index, max_index))
-                           else 
+                           else
                                RubyWalk::Cut.new(HiddenEdge.new(parent, object, index, max_index))
                            end
                          end
@@ -578,7 +578,7 @@ class ActiveRecord::Base
   end
 end
 
-[Submission, Project,Study, Tag].each do |klass| 
+[Submission, Project,Study, Tag].each do |klass|
   klass.class_eval do
     #include ProjectLike
   def node_options_with_lyellow()
@@ -666,7 +666,7 @@ end
 [Well, MultiplexedLibraryTube].each do |klass|
   klass.class_eval do
     def node_options_with_multi
-      node_options_without_multi.merge("fillcolor" => aliquots.size > 1 ? "red": "lightcyan") 
+      node_options_without_multi.merge("fillcolor" => aliquots.size > 1 ? "red": "lightcyan")
     end
     alias_method_chain :node_options, :multi
   end

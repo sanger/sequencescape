@@ -1,6 +1,6 @@
 class ReferenceGenomesController < ApplicationController
-  before_filter :admin_login_required, :only => [:new, :create, :edit, :update, :destroy]    
-  
+  before_filter :admin_login_required, :only => [:new, :create, :edit, :update, :destroy]
+
   def index
     @reference_genomes = ReferenceGenome.all(:order => "name ASC")
     respond_to do |format|

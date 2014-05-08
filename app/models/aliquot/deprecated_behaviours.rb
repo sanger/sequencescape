@@ -22,7 +22,7 @@ module Aliquot::DeprecatedBehaviours
     deprecate :tag_number
 
     # tags and tag have been moved to the appropriate assets.
-    # I don't think that they are used anywhere else apart 
+    # I don't think that they are used anywhere else apart
     # from the batch xml and can therefore probably be removed.
     # ---
     def tag
@@ -35,7 +35,7 @@ module Aliquot::DeprecatedBehaviours
     end
     deprecate :tags
     # ---
-    
+
     def sample_name?
       samples.present?
     end

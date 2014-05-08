@@ -142,7 +142,7 @@ Feature: Patients should be able to withdraw consent
 
   @submission
   Scenario: Submissions can not be created containing withdrawn samples
-  Given I try to create a "Illumina-C Multiplexed Library Creation - Single ended sequencing" order with the following setup:
+  Given I try to create a "Illumina-C - Multiplexed Library Creation - Single ended sequencing" order with the following setup:
     | Project                     | Project A              |
     | Study                       | Study A                |
     | Asset Group                 | sample_withdrawn_group |
@@ -154,7 +154,7 @@ Feature: Patients should be able to withdraw consent
   And the last error should contain "Samples in this submission have had patient consent withdrawn."
   When I try to save the order
   Then the order should not be built
-  Given I try to create a "Illumina-C Multiplexed Library Creation - Single ended sequencing" order with the following setup:
+  Given I try to create a "Illumina-C - Multiplexed Library Creation - Single ended sequencing" order with the following setup:
     | Project                     | Project A              |
     | Study                       | Study A                |
     | Asset                       | sample_withdrawn_tube  |
@@ -166,7 +166,7 @@ Feature: Patients should be able to withdraw consent
   And the last error should contain "Samples in this submission have had patient consent withdrawn."
   When I try to save the order
   Then the order should not be built
-  Given I try to create a "Illumina-C Multiplexed Library Creation - Single ended sequencing" order with the following setup:
+  Given I try to create a "Illumina-C - Multiplexed Library Creation - Single ended sequencing" order with the following setup:
     | Project                     | Project A              |
     | Study                       | Study A                |
     | Asset Group                 | sample_okay_group |
@@ -177,7 +177,7 @@ Feature: Patients should be able to withdraw consent
   And the order should not have errors
   When I try to save the order
   Then the order should be built
-  Given I try to create a "Illumina-C Multiplexed Library Creation - Single ended sequencing" order with the following setup:
+  Given I try to create a "Illumina-C - Multiplexed Library Creation - Single ended sequencing" order with the following setup:
     | Project                     | Project A              |
     | Study                       | Study A                |
     | Asset                       | sample_okay_tube       |

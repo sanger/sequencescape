@@ -14,6 +14,11 @@ class SpecificTubeCreation < TubeCreation
     self.child_purposes = uuids.map {|uuid| Uuid.find_by_external_id(uuid).resource }
   end
 
+  def no_pooling_expected?
+    true
+  end
+  private :no_pooling_expected?
+
   def create_children!
     self.children = (child_purposes).map { |child_purpose| child_purpose.create! }
   end

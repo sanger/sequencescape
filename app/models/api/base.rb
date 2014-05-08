@@ -2,7 +2,7 @@ class Api::Base
   # TODO[xxx]: This class is in a state of flux at the moment, please don't hack at this too much!
   #
   # Basically this is in a transition as I move more of the behaviour of the API into these model classes,
-  # and out of the controllers, and will eventually be much clearer.  And, although this class looks 
+  # and out of the controllers, and will eventually be much clearer.  And, although this class looks
   # extremely complex, it's purpose is to make subclasses much, much easier to write and maintain.
 
   #--
@@ -17,7 +17,7 @@ class Api::Base
       object.update_attributes!(attributes_from_json(params))
     end
 
-    # Maps the attribute names in the errors to their JSON counterparts, so that the end user gets 
+    # Maps the attribute names in the errors to their JSON counterparts, so that the end user gets
     # the correct information.
     def map_attribute_to_json_attribute_in_errors(attribute_errors)
       Hash[attribute_errors.map { |a,v| [ json_attribute_for_attribute(*a.to_s.split('.')), v ] }]
@@ -76,7 +76,7 @@ class Api::Base
     def render_class_for_model(model)
       render_class = Class.new(self)
 
-      # NOTE: It's quite annoying that you don't have any access to the inheritable class attributes from 
+      # NOTE: It's quite annoying that you don't have any access to the inheritable class attributes from
       # within the Class.new block above, so we have to do a separate instance_eval to get it to work.
       render_class.instance_eval do
         self.model_class = model
@@ -160,11 +160,11 @@ class Api::Base
     end
     self.associations[ association.to_sym ] = association_helper
   end
-  
+
   def self.performs_lookup?
     !!self.lookup_by
   end
-  
+
   def self.lookup_associated_record_from(json_attributes, &block)
     attributes = convert_json_attributes_to_attributes(json_attributes)
     return unless attributes.key?(self.lookup_by)

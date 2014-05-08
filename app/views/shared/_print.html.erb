@@ -2,7 +2,7 @@
   <tr>
     <td width="35%" class="item"><label for="printer">Print to</label>:</td>
     <td width="65%">
-			<%= select_tag("printer", options_for_select(BarcodePrinter.all.map { |p| p.name})) %>
+      <%= select_tag("printer", options_for_select(BarcodePrinter.all.map { |p| p.name})) %>
     </td>
   </tr>
 </table>

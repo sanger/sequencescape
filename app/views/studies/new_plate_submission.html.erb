@@ -2,17 +2,17 @@
 <p>Create requests on plates so that they turn up in the genotyping pipeline inbox. It will take up to 5 minutes for them to appear in the inbox.</p>
 
 <table width="100%" cellspacing="0" cellpadding="0">
-	<% @study.errors.each do |object, message| %>
+  <% @study.errors.each do |object, message| %>
   <tr>
-  	<td class="error"><%= message %></td>
+    <td class="error"><%= message %></td>
   </tr>
-	<% end %>
+  <% end %>
 </table>
 
 <% semantic_form_for(:studies, :url => create_plate_submission_study_path(@study)) do |form| %>
-	<% form.inputs :name => "" do %>
-  	<%= form.input :project,   :as => :select, :collection => current_user.sorted_project_names_and_ids  %>
-  	<%= form.input :barcodes,   :as => :text %>
-  	<%= form.commit_button %>
-	<% end %>
+  <% form.inputs :name => "" do %>
+    <%= form.input :project,   :as => :select, :collection => current_user.sorted_project_names_and_ids  %>
+    <%= form.input :barcodes,   :as => :text %>
+    <%= form.commit_button %>
+  <% end %>
 <% end %>

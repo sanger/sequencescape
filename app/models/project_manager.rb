@@ -1,8 +1,8 @@
-class ProjectManager < ActiveRecord::Base 
+class ProjectManager < ActiveRecord::Base
   extend Attributable::Association::Target
 
   has_many :project
-  
+
   validates_presence_of  :name
   validates_uniqueness_of :name, :message => "of project manager already present in database"
 

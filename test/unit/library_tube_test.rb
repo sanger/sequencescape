@@ -12,11 +12,11 @@ class LibraryTubeTest < ActiveSupport::TestCase
         @stock_library_tube = Factory :stock_library_tube
         @stock_library_tube.children << @library_tube_with_stock_tube
       end
-      
+
       should "return false if it doesn't have a stock asset" do
         assert ! @library_tube.has_stock_asset?
       end
-      
+
       should "return true if it does have a stock asset" do
         assert @library_tube_with_stock_tube.has_stock_asset?
       end

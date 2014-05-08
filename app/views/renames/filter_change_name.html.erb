@@ -1,21 +1,21 @@
 <% add :title, "Change Decision Samples/Assets" -%>
-<% add :menu, (pluralize @study.comments.size, "comment") => study_comments_path(@study) -%>  
+<% add :menu, (pluralize @study.comments.size, "comment") => study_comments_path(@study) -%>
 <% add :menu, "Back to study" => study_path(@study) -%>
 
 <h1>Study <%= @study.id %></h1>
 <div class="info">
-Rename Asset and Sample 
+Rename Asset and Sample
 </div>
 <div id="study">
-  <% form_for(:change_name, :url => change_name_rename_path(@change_name.study), :html => {:method => :put}) do |form| -%> 
-  <%= error_messages_for :change_name %> 
+  <% form_for(:change_name, :url => change_name_rename_path(@change_name.study), :html => {:method => :put}) do |form| -%>
+  <%= error_messages_for :change_name %>
     <table width="100%" cellspacing="20" cellpadding="0">
         <tr>
         <td width="25%" >
-           <%= label('change_name_sample','check_box', 'Sample Rename') %>  
-        </td>             
+           <%= label('change_name_sample','check_box', 'Sample Rename') %>
+        </td>
         <td><%= form.select('list_samples_to_rename', options_for_select(@study.samples.map(&:name)), {}, {:size => 5, :multiple =>true}) %><br>
-         <%= label('sample_select','all', 'Select ALL Samples', :style => 'display:none;') %>   
+         <%= label('sample_select','all', 'Select ALL Samples', :style => 'display:none;') %>
          <%= check_box_tag('sample_select_all') %><i>Select ALL Samples</i>
          </td>
           <td class="help_field">
@@ -24,15 +24,15 @@ Rename Asset and Sample
         </tr>
         <tr>
         <td width="25%" >
-           <%= label('change_name_asset','check_box', 'Asset Rename') %>  
-        </td>             
+           <%= label('change_name_asset','check_box', 'Asset Rename') %>
+        </td>
         <td><%= form.select('list_assets_to_rename', options_for_select(@study.assets.map(&:name)), {}, {:size => 5, :multiple =>true}) %><br>
         <%= label('asset_select','all', 'Select ALL Assets', :style => 'display:none;') %>
         <%= check_box_tag('asset_select_all') %><i>Select ALL Assets</i>
-        </td> 
+        </td>
         <td class="help_field">
                 <% help_text do %>Please, select the list of Assets involved in this action.<br>CRTL/CMD + item to select a list of items.<% end %>
-        </td>         
+        </td>
         </tr>
         <tr><td colspan=3><%= label_tag("change_name_replace", 'Replace: ') %><%= form.text_field :replace %> <%= label_tag("change_name_with", 'With: ') %> <%= form.text_field :with %><td></tr>
         <tr><td><br><td></tr>
@@ -41,7 +41,7 @@ Rename Asset and Sample
                 <%= submit_tag %> or <%= link_to "cancel", study_path(@study) %>
             </td>
         </tr>
-    </table>   
+    </table>
   <% end %>
 </div>
 
@@ -50,17 +50,17 @@ Rename Asset and Sample
     choose_valid_options = function(combo_boxes, select_value) {
         combo_boxes.each(function(index, list_items) {
           for (i=0; i < list_items.options.length;   i++ ){
-           list_items.options[i].selected = select_value; 
+           list_items.options[i].selected = select_value;
           }
-        });  
+        });
       };
-    
+
     $("#sample_select_all").click(function() {
         choose_valid_options($('#change_name_list_samples_to_rename'), this.checked);
     });
-    
-    $("#asset_select_all").click(function() { 
-        choose_valid_options($('#change_name_list_assets_to_rename'), this.checked);  
+
+    $("#asset_select_all").click(function() {
+        choose_valid_options($('#change_name_list_assets_to_rename'), this.checked);
     });
 
 })(jQuery);

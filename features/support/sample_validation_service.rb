@@ -5,7 +5,7 @@ class FakeSampleValidationService < FakeSinatraService
     super
     configatron.pac_bio_instrument_api = "http://#{host}:#{port}/SampleSheet/Validate"
   end
-  
+
   def return_values
     @return_values ||= []
   end
@@ -17,11 +17,11 @@ class FakeSampleValidationService < FakeSinatraService
   def next!
     self.return_values.pop
   end
-  
+
   def return_value(return_value)
     self.return_values.push(return_value)
   end
-  
+
   def service
     Service
   end

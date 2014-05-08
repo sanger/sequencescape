@@ -16,14 +16,14 @@ class WellRange
   end
 
   def include?(well)
-		include_well_location?(well.map.description)
+    include_well_location?(well.map.description)
   end
 
-	def include_well_location?(location)
+  def include_well_location?(location)
     well_match = WELL_REGEXP.match(location)
     @rows.include?(well_match[1]) and @columns.include?(well_match[2].to_i)
-	end
-	private :include_well_location?
+  end
+  private :include_well_location?
 
   def to_a(&block)
     [].tap do |wells|
@@ -196,8 +196,8 @@ Then /^all of the illumina-b library creation requests to (the multiplexed libra
 end
 
 Given /^all requests are in the last submission$/ do
-	submission = Submission.last or raise StandardError, "There are no submissions!"
-	Request.update_all("submission_id=#{submission.id}")
+  submission = Submission.last or raise StandardError, "There are no submissions!"
+  Request.update_all("submission_id=#{submission.id}")
 end
 
 Given /^(the plate .+) will pool into 1 tube$/ do |plate|

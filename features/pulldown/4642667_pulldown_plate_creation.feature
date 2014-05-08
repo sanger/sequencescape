@@ -37,7 +37,7 @@ Feature: Printing new plate barcodes in pulldown
     | 1750133339674  | 1770133339818  | PulldownEnrichmentFourPlate  | PulldownSequenceCapturePlate |
     | 1770133339818  | 1790133339724  | PulldownSequenceCapturePlate | PulldownPcrPlate             |
     | 1790133339724  | 1810133339866  | PulldownPcrPlate             | PulldownQpcrPlate            |
- 
+
   Scenario: Creating a child plate where the input is empty
     Given I am on the pulldown homepage
     Then I should see "Create Plates"

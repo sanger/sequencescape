@@ -171,8 +171,8 @@ Feature: Pick by micro litre (stock transfer) using the Tecan robot
      And I check "Select DN10I for batch"
      And I check "Select DN5W for batch"
      And I press "Submit"
-    	And I follow "Select Plate Template"
-    	And I select "testtemplate" from "Plate Template"
+     And I follow "Select Plate Template"
+     And I select "testtemplate" from "Plate Template"
    	 And I select "Infinium 670k" from "Output plate purpose"
 
     When I choose "Pick by µl"

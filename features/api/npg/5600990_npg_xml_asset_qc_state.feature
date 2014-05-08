@@ -1,8 +1,8 @@
 @xml @api @allow-rescue
 Feature: The XML for the sequencescape API
   Background:
-    Given sequencescape is setup for 5600990 
-   
+    Given sequencescape is setup for 5600990
+
   Scenario: POST XML to change qc_state on a asset
     When I POST following XML to change the QC state on the last asset:
        """
@@ -28,7 +28,7 @@ Feature: The XML for the sequencescape API
           </requests>
         </asset>
         """
-      
+
   Scenario: POST XML to change qc_state on a asset
     When I POST following XML to change the QC state on the asset that does not exist:
        """
@@ -43,7 +43,7 @@ Feature: The XML for the sequencescape API
 
   Scenario: POST XML to change qc_state on a asset. This asset has 2 requests. Should give you error.
     Given a second request
-    When I POST following XML to change the QC state on the last asset: 
+    When I POST following XML to change the QC state on the last asset:
        """
       <?xml version="1.0" encoding="UTF-8"?><qc_information><message>NPG change status in failed</message></qc_information>
        """
@@ -56,7 +56,7 @@ Feature: The XML for the sequencescape API
 
   Scenario: POST XML to change qc_state on a asset. The relative request has a double refund
     Given a billing event to the request
-    When I POST following XML to change the QC state on the last asset: 
+    When I POST following XML to change the QC state on the last asset:
        """
       <?xml version="1.0" encoding="UTF-8"?><qc_information><message>NPG change status in failed</message></qc_information>
        """
@@ -69,7 +69,7 @@ Feature: The XML for the sequencescape API
 
   Scenario: POST XML to change qc_state on a asset. NPG did this action before
     Given an event to the request
-    When I POST following XML to change the QC state on the last asset: 
+    When I POST following XML to change the QC state on the last asset:
        """
       <?xml version="1.0" encoding="UTF-8"?><qc_information><message>NPG change status in failed</message></qc_information>
        """

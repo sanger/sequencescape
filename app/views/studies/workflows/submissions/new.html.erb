@@ -7,11 +7,11 @@
 
 <h1>
   <%
-    # we can't use @submission.new_record as it will return true even though the 
+    # we can't use @submission.new_record as it will return true even though the
     # creation of the object failed
   if  @submission && @submission.id%>
   Add a new order to the submission
-  <%= link_to @submission.name, submission_path(@submission) %> 
+  <%= link_to @submission.name, submission_path(@submission) %>
   <% if @submission.editable? %>
     or <%= link_to 'submit', edit_submission_path(@submission) %> it
   <%end%>
@@ -127,7 +127,7 @@ Please remember once you have created an order, any changes to the assets group 
         <% unless request_types.detect{ |rt| rt.multiples_allowed? }.nil? %>
           <tr>
             <td class='center'>
-              &times; 
+              &times;
               <%= hidden_label_tag_for_testing(:"request_type_#{ order }_number", "Multiplier for step #{ order+1 }") %>
               <%= text_field_tag "request_type[#{order}][number]", :number, :value => params[:request_type].try(:[], order).try(:[], :number) || 1, :size => 1 %>
             </td>

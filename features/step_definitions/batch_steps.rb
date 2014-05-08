@@ -34,7 +34,7 @@ Then /^all of the downstream requests from the "([^\"]+)" pipeline of the reques
   uuid     = Uuid.with_external_id(uuid).first or raise StandardError, "Cannot find UUID #{uuid.inspect}"
   requests = uuid.resource.next_requests(pipeline) { |request| true }
   raise StandardError, "There are no downstream requests of #{uuid.inspect} (#{uuid.resource.inspect})" if requests.empty?
-  assert(requests.all?(&:"#{state}?"), "Some of the requests are not #{state}") 
+  assert(requests.all?(&:"#{state}?"), "Some of the requests are not #{state}")
 end
 
 Then /^(\d+) of the downstream requests from the "([^\"]+)" pipeline of the request with UUID "([^\"]+)" should be "([^\"]+)"$/ do |count, name, uuid, state|
@@ -43,7 +43,7 @@ Then /^(\d+) of the downstream requests from the "([^\"]+)" pipeline of the requ
   requests = uuid.resource.next_requests(pipeline) { |request| true }
   raise StandardError, "There are no downstream requests of #{uuid.inspect} (#{uuid.resource.inspect})" if requests.empty?
 
-  assert_equal(count.to_i, requests.select(&:"#{state}?").length, "Some of the requests are not #{state}") 
+  assert_equal(count.to_i, requests.select(&:"#{state}?").length, "Some of the requests are not #{state}")
 end
 
 Given /^all requests for the "([^\"]+)" pipeline are in a batch$/ do |name|

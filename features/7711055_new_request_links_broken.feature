@@ -111,11 +111,10 @@ Feature: Creating new requests from an asset
      Then the source asset of the last "<request type>" request should be a "Sample tube"
 
     Scenarios:
-      | request type                   |
-      | Library creation               |
-      | Multiplexed library creation   |
-      | Pulldown library creation      |
-      | PacBio Sample Prep             |
+      | request type                               |
+      | Illumina-C Library creation                |
+      | Multiplexed library creation               |
+      | Pulldown library creation                  |
 
   @foo
   Scenario Outline: Requesting more sequencing of an library
@@ -179,13 +178,13 @@ Feature: Creating new requests from an asset
       And the asset "Sample tube for testing new request" belongs to study "Study testing new request"
 
     Given I am on the new request page for "Sample tube for testing new request"
-    When I select "Library creation" from "Request type"
+    When I select "Illumina-C Library creation" from "Request type"
      And I fill in "Fragment size required (from)" with "Small"
      And I fill in "Fragment size required (to)" with "Large"
      And I select "Study testing new request" from "Study"
      And I select "Project testing new request" from "Project"
      And I press "Create"
     Then I should see "Validation failed"
-     And "Library creation" should be selected from "Request type"
+     And "Illumina-C Library creation" should be selected from "Request type"
      And "Study testing new request" should be selected from "Study"
      And "Project testing new request" should be selected from "Project"

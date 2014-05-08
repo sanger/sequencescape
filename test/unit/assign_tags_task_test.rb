@@ -22,7 +22,7 @@ class AssignTagsTaskTest < TaskTestBase
       @task      = Factory :assign_tags_task
       @tag_group = Factory :tag_group
       @tag       = Factory :tag, :tag_group => @tag_group
-      
+
     end
 
     expected_partial('assign_tags_batches')
@@ -53,14 +53,14 @@ class AssignTagsTaskTest < TaskTestBase
         @sample_tube    = Factory(:sample_tube)
         @library        = Factory(:library_tube).tap { |tube| tube.aliquots = @sample_tube.aliquots.map(&:clone) }
         @sample_tube.children << @library
-          
+
         submission = Submission.last # probably built in batch ...?
         @mx_request     = Factory :request, :request_type_id => 1, :submission => submission, :asset => @sample_tube, :target_asset => @library
         $stop = true
         @cf_request     = Factory :request_without_assets, :request_type_id => 2, :submission => submission, :asset => nil
         @batch.requests << [@mx_request, @cf_request]
         @controller.batch = @batch
-          
+
         params = { :workflow_id => @workflow, :batch_id => @batch.id,
                    :tag_group => @tag_group.id.to_s,
                    :mx_library_name => "MX library",
@@ -68,28 +68,28 @@ class AssignTagsTaskTest < TaskTestBase
                     }
         @task.do_task(@controller, params)
       end
-    
+
       should "have requests in batch" do
         assert_equal 2, @controller.batch.request_count
       end
-    
+
       should_change("MultiplexedLibraryTube.count", :by => 1) { MultiplexedLibraryTube.count }
-    
+
       should "should update library" do
         assert_equal 1, @sample_tube.children.size
-    
+
         # Related to sample tube and tag instance
         assert_equal 1, @library.parents.size
         assert_equal @sample_tube, @library.parent
 
         # Should have tagged the library tube
         assert_equal @tag_group.tags.first, @library.aliquots.first.tag
-    
+
         assert_equal 1, MultiplexedLibraryTube.last.parents.size
         assert_equal LibraryTube.find(@library.id),  MultiplexedLibraryTube.last.parent
-    
+
       end
-    
+
     end
   end
 end

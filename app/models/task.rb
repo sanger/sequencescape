@@ -26,7 +26,7 @@ class Task < ActiveRecord::Base
     self.descriptors.each do |desc|
       if desc.name.eql?(name_s)
         desc.value = value
-        return 
+        return
       end
     end
     self.descriptors <<  Descriptor.new(:name => name_s, :value => value)
@@ -51,7 +51,7 @@ class Task < ActiveRecord::Base
     self.subclass_attributes.each do |desc|
       if desc.name.eql?(name_s)
         desc.value = value
-        return 
+        return
       end
     end
     self.subclass_attributes <<  SubclassAttribute.new(:name => name_s, :value => value)
@@ -87,7 +87,7 @@ class Task < ActiveRecord::Base
   def self.set_subclass_attribute(name, options = {})
     init_class
     raise ArgumentError, "subclass attribute #{name} already in use" if @subclass_attributes.include? name
-  
+
     @subclass_attributes[name] =  options
     @subclass_attributes_ordered_names << name
 
@@ -95,7 +95,7 @@ class Task < ActiveRecord::Base
     cast = options[:cast]
     default_value = options[:default]
 
-    define_method(name) do 
+    define_method(name) do
       value = get_subclass_attribute_value name, default_value # we love closure :)
       value and case cast
       when :int
@@ -127,9 +127,9 @@ class Task < ActiveRecord::Base
 
   def partial
   end
-  
 
-  def render_task(controller, params) 
+
+  def render_task(controller, params)
     controller.render_task(self, params)
   end
 
@@ -141,7 +141,7 @@ class Task < ActiveRecord::Base
     raise NotImplementedError, "Please Implement a do_task for #{self.class.name}"
   end
 
-  def subassets_for_asset(asset) 
+  def subassets_for_asset(asset)
     return [] unless asset
     sub_assets = []
     family_map  = families.index_by(&:name)
@@ -159,7 +159,7 @@ class Task < ActiveRecord::Base
     end
     return event
   end
-  
+
   def find_batch(batch_id)
     Batch.find(batch_id, :include => [:requests, :pipeline, :lab_events])
   end

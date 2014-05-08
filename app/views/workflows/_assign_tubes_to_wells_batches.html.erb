@@ -6,35 +6,35 @@
   		<% num_columns = Map::Coordinate.plate_width(96) -%>
   		<th class='border' width='2%'></th>
   		<% num_columns.times do |column| -%>
-  			<th class='plate_column'><%= column+1 %></th>
+  		  <th class='plate_column'><%= column+1 %></th>
   		<% end -%>
   		<th class='border' width='2%'></th>
   		</tr>
   	</thead>
   	<tbody>
   	<% num_rows.times do |row| -%>
-  		<tr>
-  			<% rowchar = (65+row).chr %>
-  			<td class='border' width='2%'><strong><%= rowchar %></strong></td>
-  			<% (num_columns).times do |column| -%>
-  			  <% well_name = "#{rowchar}#{column+1}" %>
-  				<td >
-  				  <% current_tube = @tubes[row+(column*num_rows)] %>
-  				  <% default_tube = [current_tube.name, current_tube.id] if current_tube %>
+  	  <tr>
+  	    <% rowchar = (65+row).chr %>
+  	    <td class='border' width='2%'><strong><%= rowchar %></strong></td>
+  		<% (num_columns).times do |column| -%>
+  		  <% well_name = "#{rowchar}#{column+1}" %>
+  		  <td >
+  		    <% current_tube = @tubes[row+(column*num_rows)] %>
+  		    <% default_tube = [current_tube.name, current_tube.id] if current_tube %>
             <%= select_tag("well[#{well_name}]", options_for_select(@available_tubes_options, default_tube )) %>
-  				</td>
-  			<% end -%>
-  			<td class='border' width='2%'><strong><%= rowchar %></strong></td>
-  		</tr>
-  	<% end -%>
-  	<tr>
-  		<td></td>
-  		<% num_columns.times do |column| -%>
-  			<td><strong><%= column+1 %></strong></td>
-  		<% end -%>
-  		<td class='border' width='2%'class='border' width='2%'></td>
-  	</tr>
-  	</tbody>
+          </td>
+        <% end -%>
+        <td class='border' width='2%'><strong><%= rowchar %></strong></td>
+      </tr>
+    <% end -%>
+    <tr>
+      <td></td>
+      <% num_columns.times do |column| -%>
+        <td><strong><%= column+1 %></strong></td>
+      <% end -%>
+      <td class='border' width='2%'class='border' width='2%'></td>
+    </tr>
+    </tbody>
   </table>
 
   <% num_rows.times do |row| -%>

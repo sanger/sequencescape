@@ -2,7 +2,7 @@ module SearchBehaviour
   def self.included(base)
     base.helper_method :each_non_empty_search_result
   end
-  
+
   def search
     perform_search(params[:q]) unless params[:q].blank?
     respond_to do |format|

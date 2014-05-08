@@ -5,8 +5,8 @@
       <th width="10%" class='label'><%= link_to "Barcode", "javascript:void(0);" %></th>
       <th width="10%" class='label'><%= link_to "Wells", "javascript:void(0);" %></th>
       <% if output_plate %><th width="10%" class='label'>Plate's Purpose</th><% end %>
-			<th width="10%" class='label'></th>
-			<th class='label'></th>
+      <th width="10%" class='label'></th>
+      <th class='label'></th>
       <th class='label'></th>
     </tr>
   </thead>
@@ -25,14 +25,14 @@
           <td>
             <% if output_plate -%>
               <%= link_to 'Print worksheet', url_for(:controller => :batches, :action => :print, :id => @batch.id, :barcode => parent.barcode), :title => "Print worksheet for Plate #{parent.barcode}" %>
-              <% end -%>
+            <% end -%>
           </td>
           <td>
             <% if fluidigm_plate(parent) %>
               <%= link_to 'Fluidigm file', url_for(:controller => :plates, :action => :fluidigm_file, :id => parent.id,  :format => :csv), :type => 'text/csv', :title => "Fluidigm file for Plate #{parent.fluidigm_barcode}" %>
           	<% elsif output_plate -%>
               <%= link_to 'Tecan file', url_for(:controller => :batches, :action => :gwl_file, :id => @batch.id, :barcode => parent.barcode), :title => "Tecan file for Plate #{parent.barcode}" %>
-              <% end -%>
+            <% end -%>
           </td>
         </tr>
       <% else %>

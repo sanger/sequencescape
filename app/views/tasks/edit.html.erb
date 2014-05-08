@@ -43,7 +43,7 @@
             choices = choices.call if choices.is_a? Proc
             select_options = ( options[:options] || {})
        %>
-       <strong><%= pretty_name %></strong> <%= f.select att_name, choices, select_options %> 
+       <strong><%= pretty_name %></strong> <%= f.select att_name, choices, select_options %>
         <% else %>
 <strong><%=pretty_name %></strong> <%= f.text_field pretty_name %>
         <%end%>

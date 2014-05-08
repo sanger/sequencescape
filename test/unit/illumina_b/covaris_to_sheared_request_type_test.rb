@@ -9,6 +9,6 @@ class IlluminaB::CovarisToShearedRequestTypeTest < ActiveSupport::TestCase
     check_event(:pass!, :pending, :started, :failed)
     check_event(:qc!, :passed)
     check_event(:fail, :pending, :started, :passed)
-    check_event(:cancel, :started)
+    check_event(:cancel, :started, :passed)
   end
 end

@@ -18,6 +18,7 @@ class PacBio::SampleSheet
       'Sample Comments', 'User Field 1', 'User Field 2', 'User Field 3', 'User Field 4', 'User Field 5', 'User Field 6', 'Results Data Output Path']
   end
 
+
   def create_csv_from_batch(batch)
       csv_string = FasterCSV.generate( :row_sep => "\r\n") do |csv|
         header_metadata(batch).each{ |header_row| csv << header_row }

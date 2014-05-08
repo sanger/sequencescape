@@ -69,9 +69,9 @@ Feature: Push samples through the PacBio pipeline with javascript
     When I press "Release this batch"
     Then I should see "Batch released!"
     When I follow "Print plate labels"
-  	Then I should see "99999"
-  	When I press "Print labels"
-  	Then I should see "Your labels have been printed"
+    Then I should see "99999"
+    When I press "Print labels"
+    Then I should see "Your labels have been printed"
 
   Scenario: Print out the library tube barcodes
     Given I have a PacBio Library Prep batch

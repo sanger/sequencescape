@@ -1,4 +1,4 @@
-begin 
+begin
   require 'deployed_version'
 rescue LoadError
   module Deployed

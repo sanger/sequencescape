@@ -28,5 +28,7 @@ class ::Io::Order < ::Core::Io::Base
 
                            request_type_objects  => request_types
                      request_options_structured <=> request_options
+
+                                           user <=  user
   })
 end

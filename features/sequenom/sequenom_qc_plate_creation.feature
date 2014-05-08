@@ -1,7 +1,7 @@
 @sequenom @sequenom_creation @barcode-service
 Feature: Sequenom QC Plate Creation
 
-  I want to create a 384 Well Plate from 4 stock dilution Plates.  
+  I want to create a 384 Well Plate from 4 stock dilution Plates.
   The barcode of the new QC plate will be based on the barcode labels from up to 4 working dilution plates.
   NB. printing barcode labels is currently very slow as new dummy plates are create for each label.
   So if you're not specifically testing the number of labels printed limit it to 1 for speed reasons.
@@ -20,7 +20,7 @@ Feature: Sequenom QC Plate Creation
       And I am on the new Sequenom QC Plate page
       And I should see "Create Sequenom Plate"
       And I should see "Input Plate Barcodes"
-    
+
     When I fill in "User barcode" with "2470000100730"
       And I fill in "Plate 1" with "<plate_1>"
       And I fill in "Plate 2" with "<plate_2>"
@@ -29,7 +29,7 @@ Feature: Sequenom QC Plate Creation
       And I fill in "Number of Plates" with "<number_of_plates>"
       And select "<plate_type>" from "Plate Type"
       And select "xyz" from "Barcode Printer"
-      
+
 
 
     When I press "Create new Plate"
@@ -99,7 +99,7 @@ Feature: Sequenom QC Plate Creation
       And I check "Bypass Source Plate Gender Checks?"
       And I press "Create new Plate"
     Then I should see "Source Plate: SOMETHING_NOT_A_BAR_CODE cannot be found"
-   
+
 
   Scenario Outline: Source Plate Gender checking
     Given the plate barcode webservice returns "<barcodes>"
@@ -111,7 +111,7 @@ Feature: Sequenom QC Plate Creation
     When I try to create a Sequenom QC plate from the input plate
     Then I <positive_result> see "Sequenom QC Plate QC125054____20100804 successfully created"
       And I <negative_result> see "Failed to create Sequenom QC Plate - Source Plate: 1220125054743 lacks gender information"
-    
+
     Examples:
        | user_role     | user_name | see_or_check_bypass | positive_result | negative_result | barcodes         |
        | internal      | bloggs    | should not see      | should not      | should          | 1234567          |

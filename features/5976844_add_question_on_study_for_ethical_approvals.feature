@@ -42,4 +42,4 @@ Feature: Added property "commercially_available". Add and edit this value. Pendi
       | No           | Yes              | Yes        |            |
 
 
-      
+

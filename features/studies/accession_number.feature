@@ -56,7 +56,7 @@ Feature: Studies should be able to generate accession numbers
 
     When I follow "Generate Accession Number"
     Then I should see "We are experiencing problems, sorry"
-  
+
   Scenario: There are problems contacting the accession number service
     Given an accessioning webservice is unavailable
 

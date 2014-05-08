@@ -33,7 +33,7 @@ module Presenters
       cond_is_cherrypicking_pipeline= @pipeline.is_a?(CherrypickingPipeline)
       cond_is_genotyping_pipeline= @pipeline.is_a?(GenotypingPipeline)
       cond_is_pacbio_pipeline= @pipeline.is_a?(PacBioSequencingPipeline)
-      cond_not_seq_pipeline = @pipeline.is_a?(SequencingPipeline)
+      cond_not_seq_pipeline = !@pipeline.is_a?(SequencingPipeline)
       cond_pipeline_can_create_stock_assets =  @batch.pipeline.can_create_stock_assets?
       cond_is_pacbio_sample_pipeline =  @pipeline.is_a?(PacBioSamplePrepPipeline)
       cond_tube_layout_not_verified = @batch.has_limit? and !@batch.has_event("Tube layout verified")
@@ -51,7 +51,8 @@ module Presenters
           cond_is_pacbio_pipeline ].any?
       add_submenu_option "Print stock labels" , :print_stock_labels if [
         cond_not_seq_pipeline,
-        cond_pipeline_can_create_stock_assets].all?
+        cond_pipeline_can_create_stock_assets,
+        !cond_is_batch_multiplexed].all?
       add_submenu_option "Print labels" , :print_labels if cond_not_seq_pipeline
 
       # Other options are enabled only for managers

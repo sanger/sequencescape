@@ -39,7 +39,8 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME = [
   'transfer template',
   'tag layout template',
   'barcode printer',
-  'tube'
+  'tube',
+  'robot'
 ]
 
 SINGULAR_MODELS_BASED_ON_NAME_REGEXP = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME.join('|')
@@ -108,7 +109,16 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
   'tube creation',
   'state change',
 
-  'aliquot'
+  'aliquot',
+  'qcable',
+  'stock',
+  'stamp',
+  'qcable creator',
+  'lot',
+  'lot type',
+  'robot',
+  'qc decision',
+  'robot'
 ]
 
 SINGULAR_MODELS_BASED_ON_ID_REGEXP = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID.join('|')
@@ -136,19 +146,15 @@ Given /^all (#{PLURAL_MODELS_BASED_ON_NAME_REGEXP}|#{PLURAL_MODELS_BASED_ON_ID_R
   end
 end
 
-# Superb hack that adds one to the previous primary key value for the model.  Basically MySQL allows you to retrieve
-# the last ID incremented, but that's from the last table updated.  So here we create an instance of the model we
-# want to retrieve the ID for and then destroy it.
 Given /^the UUID of the next (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) created will be "([^\"]+)"$/ do |model,uuid_value|
   model_class = model.gsub(/\s+/, '_').classify.constantize
-  model_class.connection.update("INSERT INTO #{model_class.quoted_table_name} VALUES()")
-  last_id = ActiveRecord::Base.connection.select_all('SELECT LAST_INSERT_ID() AS last_id').first['last_id'].to_i
-  model_class.connection.update("DELETE FROM #{model_class.quoted_table_name} WHERE `id`=#{last_id}")
+
+  next_id = ActiveRecord::Base.connection.execute("SHOW TABLE STATUS WHERE `name` = '#{model_class.table_name}'").first['Auto_increment']
 
   # Unforunately we need to find the root of the tree
   root_class = model_class
   root_class = root_class.superclass until root_class.superclass == ActiveRecord::Base
-  Uuid.new(:resource_type => root_class.sti_name, :resource_id => last_id+1, :external_id => uuid_value).save(false)
+  Uuid.new(:resource_type => root_class.sti_name, :resource_id => next_id, :external_id => uuid_value).save(false)
 end
 
 Given /^the UUID of the last (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) created is "([^\"]+)"$/ do |model,uuid_value|

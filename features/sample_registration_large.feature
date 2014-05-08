@@ -15,12 +15,12 @@ Feature: Sample registration from a spreadsheet containing many samples
     And I have an active study called "study A"
     And user "abc123" is a "manager" of study "study A"
     And the study have a workflow
-    
+
     Given I am visiting study "study A" homepage
     Then I should see "study A"
     When I follow "Register samples"
     Then I should see "Sample registration"
-    
+
   Scenario: Insert samples over the upload limit with new AssetGroupName
     When I follow "2. Spreadsheet load"
     And I attach the relative file "test/data/just_too_big_sample_info.xls" to "file"

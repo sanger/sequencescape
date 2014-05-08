@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140311110026) do
+ActiveRecord::Schema.define(:version => 20140506135748) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -576,6 +576,30 @@ ActiveRecord::Schema.define(:version => 20140311110026) do
     t.string "name"
   end
 
+  create_table "lot_types", :force => true do |t|
+    t.string   "name",              :null => false
+    t.string   "template_class",    :null => false
+    t.integer  "target_purpose_id", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "lot_types", ["target_purpose_id"], :name => "fk_lot_types_to_plate_purposes"
+
+  create_table "lots", :force => true do |t|
+    t.string   "lot_number",    :null => false
+    t.integer  "lot_type_id",   :null => false
+    t.integer  "template_id",   :null => false
+    t.string   "template_type", :null => false
+    t.integer  "user_id",       :null => false
+    t.date     "received_at",   :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "lots", ["lot_number", "lot_type_id"], :name => "index_lot_number_lot_type_id", :unique => true
+  add_index "lots", ["lot_type_id"], :name => "fk_lots_to_lot_types"
+
   create_table "maps", :force => true do |t|
     t.string  "description",    :limit => 4
     t.integer "asset_size"
@@ -684,6 +708,14 @@ ActiveRecord::Schema.define(:version => 20140311110026) do
 
   add_index "pipelines_request_types", ["pipeline_id"], :name => "fk_pipelines_request_types_to_pipelines"
   add_index "pipelines_request_types", ["request_type_id"], :name => "fk_pipelines_request_types_to_request_types"
+
+  create_table "plate_conversions", :force => true do |t|
+    t.integer  "target_id",  :null => false
+    t.integer  "purpose_id", :null => false
+    t.integer  "user_id",    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "plate_creator_purposes", :force => true do |t|
     t.integer  "plate_creator_id", :null => false
@@ -827,6 +859,21 @@ ActiveRecord::Schema.define(:version => 20140311110026) do
   add_index "projects", ["state"], :name => "index_projects_on_state"
   add_index "projects", ["updated_at"], :name => "index_projects_on_updated_at"
 
+  create_table "qc_decision_qcables", :force => true do |t|
+    t.integer  "qc_decision_id", :null => false
+    t.integer  "qcable_id",      :null => false
+    t.string   "decision",       :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "qc_decisions", :force => true do |t|
+    t.integer  "lot_id",     :null => false
+    t.integer  "user_id",    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "qc_files", :force => true do |t|
     t.integer  "asset_id"
     t.string   "asset_type"
@@ -836,6 +883,25 @@ ActiveRecord::Schema.define(:version => 20140311110026) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "qcable_creators", :force => true do |t|
+    t.integer  "lot_id",     :null => false
+    t.integer  "user_id",    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "qcables", :force => true do |t|
+    t.integer  "lot_id",            :null => false
+    t.integer  "asset_id",          :null => false
+    t.string   "state",             :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "qcable_creator_id", :null => false
+  end
+
+  add_index "qcables", ["asset_id"], :name => "index_asset_id"
+  add_index "qcables", ["lot_id"], :name => "index_lot_id"
 
   create_table "quotas_bkp", :force => true do |t|
     t.integer  "limit",            :default => 0
@@ -1175,6 +1241,31 @@ ActiveRecord::Schema.define(:version => 20140311110026) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "stamp_qcables", :force => true do |t|
+    t.integer  "stamp_id",   :null => false
+    t.integer  "qcable_id",  :null => false
+    t.string   "bed",        :null => false
+    t.integer  "order",      :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "stamp_qcables", ["qcable_id"], :name => "fk_stamp_qcables_to_qcables"
+  add_index "stamp_qcables", ["stamp_id"], :name => "fk_stamp_qcables_to_stamps"
+
+  create_table "stamps", :force => true do |t|
+    t.integer  "lot_id",     :null => false
+    t.integer  "user_id",    :null => false
+    t.integer  "robot_id",   :null => false
+    t.string   "tip_lot",    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "stamps", ["lot_id"], :name => "fk_stamps_to_lots"
+  add_index "stamps", ["robot_id"], :name => "fk_stamps_to_robots"
+  add_index "stamps", ["user_id"], :name => "fk_stamps_to_users"
 
   create_table "state_changes", :force => true do |t|
     t.integer  "user_id"

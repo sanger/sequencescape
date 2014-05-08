@@ -84,9 +84,6 @@ class Asset < ActiveRecord::Base
 
   named_scope :with_name, lambda { |*names| { :conditions => { :name => names.flatten } } }
 
-
-
-
   extend EventfulRecord
   has_many_events do
     event_constructor(:create_external_release!,       ExternalReleaseEvent,          :create_for_asset!)

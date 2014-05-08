@@ -6,26 +6,26 @@ class Event::SampleLogisticsQcEvent < Event
       gel_qc_message(asset, "Gel Analysed", "gel_analysed", user)
     end
   end
-  
+
   def self.gel_qc_message(asset, message, family, user)
     self.create!(
       :eventful => asset,
-      :message => message, 
+      :message => message,
       :content => Date.today.to_s,
       :family => family,
       :created_by => user ? user.login : nil
     )
   end
-  
+
   def self.pico_qc_message(asset, message, family)
     self.create!(
       :eventful => asset,
-      :message => message, 
+      :message => message,
       :content => Date.today.to_s,
       :family => family
     )
   end
-  
+
   def self.create_pico_result_for_asset!(asset, result)
     if asset.is_a?(Well)
       pico_qc_message(asset, "Pico result for well #{asset.id} with #{result}", "pico_analysed")
