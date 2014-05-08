@@ -697,6 +697,7 @@ ActiveRecord::Schema.define(:version => 20140507153740) do
     t.boolean  "externally_managed",                          :default => false
     t.string   "group_name"
     t.integer  "control_request_type_id",                                        :null => false
+    t.integer  "min_size"
   end
 
   add_index "pipelines", ["sorter"], :name => "index_pipelines_on_sorter"
