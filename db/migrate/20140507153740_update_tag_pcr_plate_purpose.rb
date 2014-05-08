@@ -7,7 +7,7 @@ class UpdateTagPcrPlatePurpose < ActiveRecord::Migration
       execute("UPDATE plate_purposes
         SET type = 'QcableLibraryPlatePurpose'
         WHERE name = 'Tag PCR';")
-      PlatePurpose.find_by_name('Tag PCR').touch
+      Purpose.find_by_name('Tag PCR').touch
     end
   end
 
@@ -16,7 +16,7 @@ class UpdateTagPcrPlatePurpose < ActiveRecord::Migration
       execute("UPDATE plate_purposes
         SET type = 'PlatePurpose'
         WHERE name = 'Tag PCR';")
-      PlatePurpose.find_by_name('Tag PCR').touch
+      Purpose.find_by_name('Tag PCR').touch
     end
   end
 end
