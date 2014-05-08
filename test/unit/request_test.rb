@@ -78,8 +78,8 @@ class RequestTest < ActiveSupport::TestCase
        should "return same properties" do
          @request.reload
          @new_request.reload
-         original_attributes = @request.request_metadata.attributes.merge('id' => nil, 'request_id' => nil)
-         copied_attributes   = @new_request.request_metadata.attributes.merge('id' => nil, 'request_id' => nil)
+         original_attributes = @request.request_metadata.attributes.merge('id' => nil, 'request_id' => nil, 'updated_at'=>nil)
+         copied_attributes   = @new_request.request_metadata.attributes.merge('id' => nil, 'request_id' => nil, 'updated_at'=>nil)
          assert_equal original_attributes, copied_attributes
        end
 
