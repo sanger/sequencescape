@@ -13,7 +13,12 @@ module QcableStatemachineChecks
       @owner.instance_eval do
         context "##{name}" do
           setup do
+            lot = mock('lot')
+            template = mock('template')
+            template.stubs(:stamp_to)
+            lot.stubs(:template).returns(template)
             @qcable = target.new
+            @qcable.stubs(:lot).returns(lot)
           end
 
           acceptable_states.map(&:to_s).each do |state|

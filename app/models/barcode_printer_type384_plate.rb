@@ -1,2 +1,2 @@
-class BarcodePrinterType384Plate < BarcodePrinterType 
+class BarcodePrinterType384Plate < BarcodePrinterType
 end

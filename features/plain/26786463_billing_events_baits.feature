@@ -13,14 +13,14 @@ Feature: Interacting with billing_events that include bait_libraries through the
       {
         "billing_event": {
           "uuid": "00000000-1111-2222-3333-444444444444",
-					"quantity": 1,
-					"kind": "charge",
-					"description": "Unspecified",
-					"project_name": "Test Project",
-					"created_by": "abc123@example.com",
-					"project_division": "Human variation",
-					"project_cost_code": "Some Cost Code",
-					"entry_date": "2010-09-16T13:45:00+01:00",
+          "quantity": 1,
+          "kind": "charge",
+          "description": "Unspecified",
+          "project_name": "Test Project",
+          "created_by": "abc123@example.com",
+          "project_division": "Human variation",
+          "project_cost_code": "Some Cost Code",
+          "entry_date": "2010-09-16T13:45:00+01:00",
           "created_at": "2010-09-16T13:45:00+01:00",
           "updated_at": "2010-09-16T13:45:00+01:00",
           "price": 100,
@@ -43,7 +43,7 @@ Feature: Interacting with billing_events that include bait_libraries through the
     And the UUID for the project "Project testing the JSON API" is "11111111-2222-3333-4444-ffffffffffff"
 
     Given I have an active study called "Study testing the JSON API"
-    And the UUID for the study "Study testing the JSON API" is "22222222-2222-3333-4444-ffffffffffff"
+    And the UUID for the study "Study testing the JSON API" is "22222222-2222-3333-4444-0fffffffffff"
 
     And the UUID of the next submission created will be "11111111-2222-3333-4444-111111111111"
 
@@ -76,9 +76,9 @@ Feature: Interacting with billing_events that include bait_libraries through the
             "source_asset_closed": false,
             "target_asset_uuid": "aaaaaaaa-1111-2222-3333-000000000002",
             "source_asset_uuid": "aaaaaaaa-1111-2222-3333-000000000001",
-            "study_url": "http://localhost:3000/0_5/studies/22222222-2222-3333-4444-ffffffffffff",
+            "study_url": "http://localhost:3000/0_5/studies/22222222-2222-3333-4444-0fffffffffff",
             "project_name": "Project testing the JSON API",
-            "study_uuid": "22222222-2222-3333-4444-ffffffffffff",
+            "study_uuid": "22222222-2222-3333-4444-0fffffffffff",
 
             "submission_uuid": "11111111-2222-3333-4444-111111111111",
             "submission_url": "http://localhost:3000/0_5/submissions/11111111-2222-3333-4444-111111111111",
@@ -88,10 +88,10 @@ Feature: Interacting with billing_events that include bait_libraries through the
             "target_asset_name": "Study testing the JSON API - Target asset",
             "source_asset_state": "",
             "source_asset_name": "Tube",
-						"source_asset_barcode_prefix": "NT",
-						"target_asset_barcode_prefix": "DN",
-						"fragment_size_required_to": "20",
-						"fragment_size_required_from": "1",
+            "source_asset_barcode_prefix": "NT",
+            "target_asset_barcode_prefix": "DN",
+            "fragment_size_required_to": "20",
+            "fragment_size_required_from": "1",
             "library_type": "Standard",
 
             "priority": 0,

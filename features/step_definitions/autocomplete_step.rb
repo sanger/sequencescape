@@ -10,4 +10,4 @@ When /^I click on the "([^"]*)" autocomplete option$/ do |link_text|
   page.driver.browser.execute_script %Q{ $('.ui-menu-item a:contains("#{link_text}")').trigger("mouseenter").click(); }
 end
 
-           
+

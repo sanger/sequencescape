@@ -1,5 +1,5 @@
 class AssetsController < ApplicationController
-  
+
   class PlateLayout
     DEFAULT_WELL = { :request => nil, :asset => nil, :error => nil }
 

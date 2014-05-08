@@ -11,7 +11,7 @@ Feature: Gel QC
     And I am on the gel QC page
     Then I should see "Find gel plate"
     Given all of this is happening at exactly "14-Feb-2011 23:00:00+01:00"
-    
+
   @gel_index
   Scenario: Gel dilution with working dilution and stock plate should display on index
     And a "Working Dilution" plate purpose and of type "WorkingDilutionPlate" with barcode "6250000123818" exists
@@ -20,7 +20,7 @@ Feature: Gel QC
     And plate "6250000123818" is the parent of plate "1930000123708"
     Given I am on the gel QC page
     Then I should see "Find gel plate"
-  
+
   @gel_index @qc_event
   Scenario: Gel dilution linked directly to stock plate should display on index
     And a "Working Dilution" plate purpose and of type "WorkingDilutionPlate" with barcode "6250000123818" exists
@@ -31,12 +31,12 @@ Feature: Gel QC
     Then I should see "Find gel plate"
     Then I should see "123"
     And I should not see "Rescore"
-    
+
   @gel_index
   Scenario: Gel dilution with no parents should not display
     And a "Gel Dilution" plate purpose and of type "GelDilutionPlate" with barcode "1930000123708" exists
     Given I am on the gel QC page
-    Then I should see "Find gel plate"  
+    Then I should see "Find gel plate"
     Then I should not see "123"
 
   @qc_event
@@ -61,7 +61,7 @@ Feature: Gel QC
       | Message      | Content    | Created by |
       | Gel Analysed | 2011-02-14 | john       |
 
-    
+
   @study_report @qc_study_report @qc_event
   Scenario: Display gel analysed date in the study report
     And a "Working Dilution" plate purpose and of type "WorkingDilutionPlate" with barcode "6250000123818" exists
@@ -74,14 +74,14 @@ Feature: Gel QC
     Given I am on the gel QC page
     When I follow "Score"
     And I press "Update gel values"
-    
-	  Given a study report is generated for study "Test study"
+
+    Given a study report is generated for study "Test study"
     Then the last report for "Test study" should be:
     | Gel | Well | Gel QC date |
     | OK  | A1   | 2011-02-14  |
     | OK  | A2   | 2011-02-14  |
     | OK  | A3   | 2011-02-14  |
-  
+
 
   Scenario: Lookup plate where all wells have completed sample names
     Given all wells on plate "1220000123724" have non-empty sample names
@@ -92,7 +92,7 @@ Feature: Gel QC
     When I press "Update gel values"
     Then I should see "Gel results for plate updated"
     And I should be on the gel QC page
-    
+
   Scenario: Set degraded on well
     Given all wells on plate "1220000123724" have non-empty sample names
     When I fill in "barcode" with "123"
@@ -102,7 +102,7 @@ Feature: Gel QC
     When I press "Update gel values"
     Then I should see "Gel results for plate updated"
     And I should be on the gel QC page
-    
+
 
   Scenario: Lookup plate where all wells have no samples
     When I fill in "barcode" with "123"

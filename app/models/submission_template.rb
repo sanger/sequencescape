@@ -1,4 +1,4 @@
-# It associates a name to a pre-filled submission (subclass) and a serialized set of attributes 
+# It associates a name to a pre-filled submission (subclass) and a serialized set of attributes
 # We could have use a Prototype Factory , and so just associate a name to existing submission
 # but that doesn't work because the submission prototype doesn't pass the validation stage.
 # Anyway that's basically a prototype factory
@@ -50,7 +50,7 @@ class SubmissionTemplate < ActiveRecord::Base
   def create_order!(attributes)
     self.new_order(attributes).tap do |order|
       yield(order) if block_given?
-      order.save! 
+      order.save!
     end
   end
 
@@ -117,19 +117,19 @@ class SubmissionTemplate < ActiveRecord::Base
 
   def submission_class
     klass = submission_class_name.constantize
-    #TODO[mb14] Hack. This is to avoid to have to rename it in database or seen 
+    #TODO[mb14] Hack. This is to avoid to have to rename it in database or seen
     #The hack is not needed for subclasses as they inherits from Order
     klass == Submission ? Order  : klass
   end
 
-  private 
+  private
 
   def self.unserialize(object)
     if object.respond_to? :map
       return object.map { |o| unserialize(o) }
     elsif object.is_a?(YAML::Object)
       return object.class.constantize.new(object.ivars)
-    else 
+    else
       return object
     end
   end

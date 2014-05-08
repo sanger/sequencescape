@@ -4,7 +4,7 @@ Feature: Disable form submission on carriage return on Sequenom plate creation p
   out barcodes when scanned into a text area. To make it work with text input fields, the carriage return
   needs to be trapped or the form will submit. So make the carriage return change the focus to the next
   input box to make it work in a high throughput manner
-	
+
   Background:
     Given I am logged in as "user"
     And today's date is "4 Aug 2010"
@@ -15,27 +15,27 @@ Feature: Disable form submission on carriage return on Sequenom plate creation p
   Scenario Outline: Creating a Sequenome plate from Stock Dilution Plates.
     Given I am setup for sequenome QC
       And I am on the new Sequenom QC Plate page
-    When I fill in "User barcode" with multiline text 
+    When I fill in "User barcode" with multiline text
 """
 2470000100730
 
 """
-    When I fill in "Plate 1" with multiline text 
+    When I fill in "Plate 1" with multiline text
 """
 <plate_1>
 
 """
-    When I fill in "Plate 2" with multiline text 
+    When I fill in "Plate 2" with multiline text
 """
 <plate_2>
 
 """
-    When I fill in "Plate 3" with multiline text 
+    When I fill in "Plate 3" with multiline text
 """
 <plate_3>
 
 """
-    When I fill in "Plate 4" with multiline text 
+    When I fill in "Plate 4" with multiline text
 """
 <plate_4>
 

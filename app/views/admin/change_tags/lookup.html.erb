@@ -2,7 +2,7 @@
   <% form.inputs :name => "Change Tags" do %>
 <table width="100%" class="sortable library_tube_list" cellpadding="4" cellspacing="0"  >
   <thead>
-    <tr> 
+    <tr>
       <th><%= link_to "Library ID", "javascript:void(0);" %></th>
       <th><%= link_to "Library Tube", "javascript:void(0);" %></th>
       <th><%= link_to "Tag Group", "javascript:void(0);" %></th>
@@ -29,8 +29,8 @@
   <%= form.label "library_tubes[#{library_tube.id}]", "Library Tube Tag #{index}", :style => "display: none;" %>
 <% end %>
 
-  	<%= form.commit_button %>
-	<% end %>
+    <%= form.commit_button %>
+  <% end %>
 <% end %>
 
 

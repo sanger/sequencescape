@@ -48,10 +48,10 @@ class MetadataMigration < ActiveRecord::Migration
         objects = records.map do |record|
           metadata_class.new(
             properties.inject({ self.reference_id.to_s => record.id }) do |attributes,(property,definition)|
-              returning(attributes) do 
-                attributes[ property.to_s ] = record.properties.detect { |p| 
-                  p.property_definition_id == definition.id 
-                }.try(:value) 
+              returning(attributes) do
+                attributes[ property.to_s ] = record.properties.detect { |p|
+                  p.property_definition_id == definition.id
+                }.try(:value)
               end
             end
           )

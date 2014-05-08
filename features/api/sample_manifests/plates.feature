@@ -17,12 +17,12 @@ Feature: Access sample manifests through the API
     And the UUID for the study "Testing sample manifests" is "22222222-3333-4444-5555-000000000000"
 
     Given a supplier called "John's Genes" with ID 2
-    And the UUID for the supplier "John's Genes" is "33333333-1111-2222-3333-4444444444444"
+    And the UUID for the supplier "John's Genes" is "33333333-1111-2222-3333-444444444444"
 
     Given the "96 Well Plate" barcode printer "d999bc" exists
     And the plate barcode webservice returns "1234567"
 
-  @read 
+  @read
   Scenario: Reading the JSON for a UUID
     Given the sample manifest exists with ID 1
     And the UUID for the sample manifest with ID 1 is "00000000-1111-2222-3333-444444444444"
@@ -339,7 +339,7 @@ Feature: Access sample manifests through the API
 
   @create
   Scenario: Creating a plate sample manifest through a study
-    Given the UUID of the next sample manifest created will be "00000000-1111-2222-3333-4444444444444"
+    Given the UUID of the next sample manifest created will be "00000000-1111-2222-3333-444444444444"
     And the Sanger sample IDs will be sequentially generated
 
     When I POST the following JSON to the API path "/22222222-3333-4444-5555-000000000000/sample_manifests/create_for_plates":

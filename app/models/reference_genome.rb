@@ -8,8 +8,6 @@ class ReferenceGenome < ActiveRecord::Base
   validates_uniqueness_of :name, :message => "of reference genome already present in database", :allow_blank => true
   named_scope :sorted_by_name , :order => "name ASC"
 
-
-
   module Associations
     def self.included(base)
       base.validates_presence_of :reference_genome_id

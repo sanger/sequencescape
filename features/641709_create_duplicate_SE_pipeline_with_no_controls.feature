@@ -1,6 +1,6 @@
 @pipeline
 Feature: Create a new pipeline called Cluster Formation SE (no controls)
-		 Create a batch for this pipeline
+     Create a batch for this pipeline
 
   Background:
     Given I am a "administrator" user logged in as "John Smith"

@@ -11,8 +11,8 @@
       <th class='label' width="7%"><%= link_to 'Sample', "javascript:void(0);" %></th>
       <th class='label' width="7%"><%= link_to 'Request', "javascript:void(0);" %></th>
       <th class='label' width="15%"><%= link_to 'Source', "javascript:void(0);" %></th>
-    	<th class='label' width="15%"><%= link_to 'Source barcode', "javascript:void(0);" %></th>  
-    	<th class='label' width="15%"><%= link_to 'Target', "javascript:void(0);" %></th>  
+      <th class='label' width="15%"><%= link_to 'Source barcode', "javascript:void(0);" %></th>
+      <th class='label' width="15%"><%= link_to 'Target', "javascript:void(0);" %></th>
       <% if @batch.multiplexed? %>
         <th class='label' width="7%"><%= link_to 'Sample name', "javascript:void(0);" %></th>
         <th class='label' width="15%"><%= link_to 'Tag #', "javascript:void(0);" %></th>
@@ -29,21 +29,21 @@
     <% requests.each do |request| -%>
       <tr id="request_<%= request.id %>" class="<%= cycle("rowodd", "roweven") %>">
           <td width="5%"><%= request.position(@batch) %></td>
-						<td width="7%"><%= request.sample_name %></td>
+            <td width="7%"><%= request.sample_name %></td>
             <td><%= link_to request.id, "#{configatron.studies_url}/requests/#{request.id}" %></td>
-					<% if request.asset  %>
-	          <td width="15%"><%= link_to request.asset.display_name, asset_url(request.asset), :target => "_blank" %></td>
-	          <td width="7%"><%= request.asset.barcode %></td>
-						<% if request.target_asset %>
-	          <td width="15%"><%= link_to request.target_asset.display_name, asset_url(request.target_asset), :target => "_blank" %></td>
-						<% else %>
-	          <td width="15%"></td>
-						<% end %>
-					<% else %>
-	          <td width="15%"></td>
-	          <td width="7%"></td>
-	          <td width="7%"></td>
-					<% end %>
+          <% if request.asset  %>
+            <td width="15%"><%= link_to request.asset.display_name, asset_url(request.asset), :target => "_blank" %></td>
+            <td width="7%"><%= request.asset.barcode %></td>
+            <% if request.target_asset %>
+            <td width="15%"><%= link_to request.target_asset.display_name, asset_url(request.target_asset), :target => "_blank" %></td>
+            <% else %>
+            <td width="15%"></td>
+            <% end %>
+          <% else %>
+            <td width="15%"></td>
+            <td width="7%"></td>
+            <td width="7%"></td>
+          <% end %>
         <% if @batch.multiplexed? -%>
             <td><%= request.sample_name('-') -%></td>
           <% unless request.tag_number.empty? %>
@@ -55,12 +55,12 @@
         <% @rits.each do |rit| %>
           <td width="10%"><%= display_request_information(request, rit) %></td>
         <% end %>
-					<td width='5%'><%= request.state.humanize %></td>
-				<% if request.asset %>
-	        <td width="5%"><%= display_boolean_results(request.asset.qc_state) %></td>
+          <td width='5%'><%= request.state.humanize %></td>
+        <% if request.asset %>
+          <td width="5%"><%= display_boolean_results(request.asset.qc_state) %></td>
         <% else %>
-					<td width="5%"></td>
-				<% end %>
+          <td width="5%"></td>
+        <% end %>
         <td>
           <% if request.tag_number.empty? %>
             <%= select "tag", request.id.to_s, @tags.collect { |t| [t.name, t.id] } %>

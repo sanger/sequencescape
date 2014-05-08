@@ -14,7 +14,7 @@ Feature: Access asset audits through the API
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
-      
+
   @create @error
   Scenario: Creating a asset audit without passing in an asset
     Given the UUID of the next asset audit created will be "00000000-1111-2222-3333-444444444444"
@@ -64,7 +64,7 @@ Feature: Access asset audits through the API
         }
       }
       """
-      
+
   @create @error
   Scenario Outline: Creating a asset audit with an invalid key
     Given the plate exists with ID 1
@@ -96,7 +96,7 @@ Feature: Access asset audits through the API
     | abc abc |
     | a-b     |
     | *       |
-  
+
 
   @create
   Scenario: Creating a asset audit
@@ -129,7 +129,7 @@ Feature: Access asset audits through the API
           "key": "some_key",
           "message": "My message",
           "witnessed_by": "jane",
-          
+
           "asset": {
             "actions": {
               "read": "http://www.example.com/api/1/00000000-1111-2222-3333-555555555555"

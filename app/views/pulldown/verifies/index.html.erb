@@ -5,23 +5,23 @@
 <p>Verify that the source and target plates are correct.</p>
 
 <% semantic_form_for(:plates, :url => '/pulldown/verifies/validate_plates') do |form| %>
-	<% form.inputs :name => "" do %>
-  	<%= form.input :source_plate, :required => false %>
-  	<%= observe_field("plates_source_plate",
+  <% form.inputs :name => "" do %>
+    <%= form.input :source_plate, :required => false %>
+    <%= observe_field("plates_source_plate",
           :url => { :action => :source_plate_type },
           :frequency => 0.5,
           :update => :source_plate,
           :with => "'plates[source_plate]='+ escape($('plates_source_plate').value)") %>
     <li><label></label><div id="source_plate" class="selected"></div></li>
-  	<%= form.input :target_plate, :required => false %>
-  	<%= observe_field("plates_target_plate",
+    <%= form.input :target_plate, :required => false %>
+    <%= observe_field("plates_target_plate",
           :url => { :action => :target_plate_type },
           :frequency => 0.5,
           :update => :target_plate,
           :with => "'plates[target_plate]='+ escape($('plates_target_plate').value)") %>
-  	
-  	<li><label></label><div id="target_plate" class="selected"></div></li>
-  	<%= form.commit_button %>
-	<% end %>
+
+    <li><label></label><div id="target_plate" class="selected"></div></li>
+    <%= form.commit_button %>
+  <% end %>
 <% end %>
 

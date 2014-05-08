@@ -19,7 +19,7 @@ class Assets::CommentsController < ApplicationController
     @comments = @asset.comments
     render :partial => "list", :locals => { :commentable => @asset, :visible => true }
   end
-  
+
   private
   def discover_asset
     @asset = Asset.find(params[:asset_id])

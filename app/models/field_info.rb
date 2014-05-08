@@ -13,7 +13,7 @@ class FieldInfo
     self.default_value = args.delete(:default_value) || args.delete("default_value")
     params = args.delete(:parameters)  || args.delete("parameters")
     args.merge!(params) if params
-    self.parameters= args 
+    self.parameters= args
   end
 
   def old_initialize(display_name, key, kind, args = {})

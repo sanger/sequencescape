@@ -37,13 +37,14 @@ Feature: Pick a ng quantity using the Tecan robot
     And I select "Create Batch" from "Action to perform"
     And I press "Submit"
     When I follow "Cherrypick Group By Submission"
+    And the last batch is sorted in row order
     And I fill in the following:
       | Minimum Volume    | 10   |
       | Maximum Volume    | 50   |
       | Quantity to pick  | 1000 |
-    When I choose "Pick by ng"
     And I select "Pulldown" from "Plate Purpose"
     And "Pulldown" plate purpose picks with "Cherrypick::Strategy::Filter::InRowOrder"
+    When I choose "Pick by ng"
     And I press "Next step"
     And I press "Next step"
     When I press "Release this batch"

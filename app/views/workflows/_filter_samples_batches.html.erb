@@ -1,11 +1,11 @@
 <% form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
 
-	<table cellspacing='0' cellpadding='0'>
-		<tr>
-			<td>External Sample Names:</td>
-			<td><%= select_tag("external_sample_name", options_for_select([["No duplicates","unique"], ["All","all"], ["Only duplicates","duplicates"]])) %></td>
-		</tr>
-	</table>
+  <table cellspacing='0' cellpadding='0'>
+    <tr>
+      <td>External Sample Names:</td>
+      <td><%= select_tag("external_sample_name", options_for_select([["No duplicates","unique"], ["All","all"], ["Only duplicates","duplicates"]])) %></td>
+    </tr>
+  </table>
 
   <%= render :partial => "next_stage_submit" %>
 <% end %>

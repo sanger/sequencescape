@@ -103,7 +103,7 @@ def build_batch_for(name, count, &block)
 
     # Setup the assets so that they have samples and they are scanned into the correct lab.
     :assets        => assets,
-    :request_types => pipeline.request_type_ids,
+    :request_types => [pipeline.request_type_ids.detect {|id| !RequestType.find(id).deprecated }],
 
     # Request parameter options
     :request_options => submission_details[:request_options]

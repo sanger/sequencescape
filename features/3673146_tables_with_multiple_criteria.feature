@@ -22,4 +22,4 @@ Feature: Order a table with tablesorter plugin.
         | Test Asset 3 |
         | Test Asset 2 |
         | Test Asset 1 |
-        | Test Asset 0 |                
+        | Test Asset 0 |

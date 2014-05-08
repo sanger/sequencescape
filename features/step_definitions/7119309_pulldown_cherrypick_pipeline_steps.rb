@@ -117,8 +117,6 @@ Given /^I have a tag group called "([^"]*)" with (\d+) tags$/ do |tag_group_name
   1.upto(number_of_tags.to_i) do |i|
     Tag.create!(:oligo => oligos[(i-1)%oligos.size], :map_id => i, :tag_group_id => tag_group.id)
   end
-
-  #Tag.import tags
 end
 
 Then /^the default plates to wells table should look like:$/ do |expected_results_table|
@@ -228,13 +226,14 @@ Given /^I have a "([^"]*)" submission with 2 plates$/ do |submission_template_na
     end
 
     submission_template = SubmissionTemplate.find_by_name(submission_template_name)
+
     submission = submission_template.create_and_build_submission!(
       :study => study,
       :project => project,
       :workflow => Submission::Workflow.find_by_key('short_read_sequencing'),
       :user => User.last,
       :assets => Well.all,
-      :request_options => {:multiplier=>{"1"=>"1", "3"=>"1"}, "read_length"=>"100", "fragment_size_required_to"=>"300", "fragment_size_required_from"=>"250", "library_type"=>"Agilent Pulldown"}
+      :request_options => {:multiplier=>{"1"=>"1", "3"=>"1"}, "read_length"=>"100", "fragment_size_required_to"=>"300", "fragment_size_required_from"=>"250", "library_type"=>'Standard'}
       )
     step(%Q{1 pending delayed jobs are processed})
 end
