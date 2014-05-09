@@ -134,7 +134,7 @@ GEM
     hoe (3.4.0)
       rake (>= 0.8, < 11.0)
     i18n (0.4.2)
-    jdbc-mysql (5.1.25)
+    jdbc-mysql (5.1.30)
     jruby-openssl (0.7.7)
       bouncy-castle-java (>= 1.5.0146.1)
     jruby-rack (1.1.10)
