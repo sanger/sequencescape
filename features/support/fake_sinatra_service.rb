@@ -63,7 +63,7 @@ private
       logger       = Logger.new(STDERR)
       logger.level = Logger::FATAL
 
-      service.run!(:host => @host, :port => @port, :webrick => { :Logger => logger, :AccessLog => [] })
+      service.run!(:host => @host, :port => @port, :puma => { :Logger => logger, :AccessLog => [] })
     end
     yield(thread)
   end
@@ -97,11 +97,11 @@ private
   class Base < Sinatra::Base
     # Use Mongrel as the handler as it's quicker to start than Webrick.  It might take a few seconds to
     # shutdown but Webrick takes ~30 to start so Mongrel wins out.
-    HANDLER, QUIT_HANDLER = Rack::Handler.get('webrick'), :shutdown
+    HANDLER, QUIT_HANDLER = Rack::Handler.get('Puma'), :close
 
     def self.run!(options={})
       set options
-      HANDLER.run(self, { :Host => bind, :Port => port, :timeout => 1 }.merge(options.fetch(:webrick, {}))) do |server|
+      HANDLER.run(self, { :Host => bind, :Port => port, :timeout => 1 }.merge(options.fetch(:puma, {}))) do |server|
         set :running, true
         set :quit_handler, Proc.new { server.send(QUIT_HANDLER) }
       end

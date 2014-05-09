@@ -104,4 +104,12 @@ Rails::Initializer.run do |config|
   # This is necessary if your schema can't be completely dumped by the schema dumper,
   # like if you have constraints or database-specific column types
   # config.active_record.schema_format = :sql
+
+  # Jruby 1.7 seems to try and use the http.proxyX settings, but ignores the noProxyHost ENV.
+  if defined?(ENV_JAVA)
+    ENV_JAVA['http.proxyHost'] = nil
+    ENV_JAVA['http.proxyPort'] = nil
+    ENV_JAVA['https.proxyHost'] = nil
+    ENV_JAVA['https.proxyPort'] = nil
+  end
 end
