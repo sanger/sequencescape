@@ -1,4 +1,4 @@
-@javascript @submission @bulk_submissions
+@submission @bulk_submissions
 Feature: Bulk Submission
   So that biological work can be requested
   in a large batch rather than separate
