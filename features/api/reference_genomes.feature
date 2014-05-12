@@ -29,7 +29,7 @@ Feature: Access reference genomes through the API
           "actions": {
             "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
           },
-
+          "name": "testing-of-creation",
           "uuid": "00000000-1111-2222-3333-444444444444"
         }
       }
@@ -54,7 +54,7 @@ Feature: Access reference genomes through the API
 
   @read
   Scenario: Reading the JSON for a reference genome UUID
-    Given a reference genome with UUID "00000000-1111-2222-3333-444444444444" exists
+   Given a reference genome called "testing-of-reading" with UUID "00000000-1111-2222-3333-444444444444"
 
     When I GET the API path "/00000000-1111-2222-3333-444444444444"
     Then the HTTP response should be "200 OK"
@@ -65,7 +65,7 @@ Feature: Access reference genomes through the API
           "actions": {
             "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
           },
-
+          "name": "testing-of-reading",
           "uuid": "00000000-1111-2222-3333-444444444444"
         }
       }
@@ -87,7 +87,7 @@ Feature: Access reference genomes through the API
           "actions": {
             "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
           },
-
+          "name": "testing-of-update",
           "uuid": "00000000-1111-2222-3333-444444444444"
         }
       }
