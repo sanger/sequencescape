@@ -3,12 +3,6 @@
 <% add :menu, 'Event history' => history_sample_path(@sample) -%>
 
 <% add :back_menu, "Back to STUDIES" => studies_path -%>
-<% if current_user.administrator? -%>
-  <% if (! @sample.has_submission? ) -%>
-    <% add :menu, { "Delete" => destroy_sample_path(@sample.id) }, { :confirm => "Are you sure to delete this sample?" } -%>
-  <% end %>
-  <% add :menu, { "Move sample to different study" => filtered_move_sample_path(@sample.id) } -%>
-<% end %>
 
 <% if current_user.manager_or_administrator? || current_user.owner?(@sample) -%>
   <% add :menu, "Edit" => edit_sample_path(@sample) -%>

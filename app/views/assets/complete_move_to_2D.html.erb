@@ -6,9 +6,6 @@
 <% else %>
   <% add :manager_option, {  "Close" => close_asset_path(@asset) }, { :confirm => "Do you really want to close this #{@asset.label}?" } -%>
 <% end %>
-<% if @asset.sti_type == 'Plate' %>
-  <% add :menu, "Create wells Submission" => submit_wells_asset_path(@asset) %>
-<% end %>
 
 <% add :menu, "Event history" => history_asset_path(@asset) -%>
 
