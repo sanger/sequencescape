@@ -196,7 +196,7 @@ class Request < ActiveRecord::Base
   named_scope :full_inbox, :conditions => {:state => ["pending","hold"]}
   named_scope :hold, :conditions => {:state => "hold"}
 
-  named_scope :loaded_for_inbox_display, :include => [:comments, {:submission => {:orders =>:study}, :asset => [:scanned_into_lab_event,:comments,:studies]}]
+  named_scope :loaded_for_inbox_display, :include => [{:submission => {:orders =>:study}, :asset => [:scanned_into_lab_event,:studies]}]
   named_scope :ordered_for_ungrouped_inbox, :order => 'id DESC'
   named_scope :ordered_for_submission_grouped_inbox, :order => 'submission_id DESC, id ASC'
 
