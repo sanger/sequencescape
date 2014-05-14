@@ -124,7 +124,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :settings,         :controller => "admin/settings",         :path_prefix => "/admin", :collection => { :reset => :get, :apply => :get }
   map.resources :studies,          :controller => "admin/studies",          :path_prefix => "/admin", :member => { :managed_update => :put }, :collection => {:index => :get, :filer => :post}
   map.resources :projects,         :controller => "admin/projects",         :path_prefix => "/admin", :member => { :managed_update => :put }, :collection => {:index => :get, :filer => :post}
-  map.resources :plate_purposes,   :controller => "admin/plate_purposes",   :path_prefix => "/admin", :only => [:index,:edit,:new,:create]
+  map.resources :plate_purposes,   :controller => "admin/plate_purposes",   :path_prefix => "/admin", :only => [:index,:edit,:new,:create,:update]
   map.resources :delayed_jobs,     :controller => "admin/delayed_jobs",     :path_prefix => "/admin", :only => [:index]
   map.resources :faculty_sponsors, :controller => "admin/faculty_sponsors", :path_prefix => "/admin"
   map.resources :delayed_jobs,     :controller => "admin/delayed_jobs",     :path_prefix => "/admin", :only => [:index]

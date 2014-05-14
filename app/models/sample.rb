@@ -63,8 +63,8 @@ class Sample < ActiveRecord::Base
 
   def safe_to_destroy
     return true unless receptacles.present? || has_submission?
-    errors.add_to_base("Remove '#{@sample.name}' from assets before destroying") if receptacles.present?
-    errors.add_to_base("You can't delete '#{@sample.name}' because is linked to a submission.") if has_submission?
+    errors.add_to_base("Remove '#{name}' from assets before destroying") if receptacles.present?
+    errors.add_to_base("You can't delete '#{name}' because is linked to a submission.") if has_submission?
     return false
   end
   private :safe_to_destroy

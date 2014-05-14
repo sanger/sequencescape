@@ -59,7 +59,7 @@ class PlatesController < ApplicationController
         # makes request properties partial show
         @current_user.workflow = Submission::Workflow.find_by_key("short_read_sequencing")
         @current_user.save!
-        format.html { redirect_to(template_chooser_study_workflow_submissions_path(asset_group.study, @current_user.workflow )) }
+        format.html { redirect_to(new_submission_path(:study_id=>asset_group.study.id)) }
         format.xml  { render :xml  => asset_group, :status => :created}
         format.json { render :json => asset_group, :status => :created}
       else
