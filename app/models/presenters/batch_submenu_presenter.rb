@@ -48,7 +48,8 @@ module Presenters
       add_submenu_option "Print plate labels" , :print_plate_labels if [
           cond_is_cherrypicking_pipeline,
           cond_is_genotyping_pipeline,
-          cond_is_pacbio_pipeline ].any?
+          cond_is_pacbio_pipeline,
+          cond_is_pacbio_sample_pipeline ].any?
       add_submenu_option "Print stock labels" , :print_stock_labels if [
         cond_not_seq_pipeline,
         cond_pipeline_can_create_stock_assets,
