@@ -2,6 +2,7 @@
 # of a sample, or it might be a library (a combination of the DNA sample and a tag).
 class Aliquot < ActiveRecord::Base
   include Uuid::Uuidable
+  include Api::Messages::FlowcellIO::AliquotExtensions
 
   class Receptacle < Asset
     include Transfer::State

@@ -3,6 +3,7 @@ development:
       url: amqp://localhost:5672/
       persistent: false
       burst_size: 1000
+      lims_id: SQSCP
     accession_login: "accession_login"
     accession_url: http://localhost:9999/accession_service/
     accession_view_url: http://localhost:9999/view_accession/
@@ -42,6 +43,7 @@ development:
     pipelines_url: http://localhost:3000
     plate_barcode_service: http://localhost:3011
     plate_volume_files: <%= Rails.root %>/data/plate_volume/
+    r_and_d_division: RandD
     proxy: http://example.com
     sanger_auth_service: http://localhost:9999/cgi-bin/prodsoft/SSO/isAuth.pl
     sanger_login_service: http://localhost:9999/LOGIN
@@ -110,6 +112,7 @@ test: &TEST
     pico_green_url: http://localhost:3003
     plate_barcode_service: http://localhost:9998/plate_barcode_service/
     plate_volume_files: <%= Rails.root %>/test/data/plate_volume/
+    r_and_d_division: RandD
     sanger_auth_service: http://localhost:9999/cgi-bin/prodsoft/SSO/isAuth.pl
     site_name: Projects (TEST)
     site_url: localhost:3000
