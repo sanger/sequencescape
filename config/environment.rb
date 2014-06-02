@@ -18,7 +18,7 @@ RAILS_GEM_VERSION = '2.3.18' unless defined? RAILS_GEM_VERSION
       sources
     end
 
-    SourceIndex = Specification
+    SourceIndex ||= Specification
 
     class SourceList
       # If you want vendor gems, this is where to start writing code.
