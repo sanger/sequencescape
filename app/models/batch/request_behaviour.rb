@@ -15,7 +15,7 @@ module Batch::RequestBehaviour
         :readonly   => false,
         :conditions => '`ubr`.`request_id` IS NULL'
       }
-      delegate :position, :to=>:batch_request. :allow_nil=>true
+      delegate :position, :to=>:batch_request, :allow_nil=>true
     end
   end
 
