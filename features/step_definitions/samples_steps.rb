@@ -228,7 +228,7 @@ Given /^the dosage of the sample called "([^\"]+)" is (#{Sample::DOSE_REGEXP})/ 
 end
 
 Given /^there are no samples$/ do
-  Sample.destroy_all
+  Sample.delete_all
 end
 
 Given /^the sample "(.*?)" should have an accesionable flag$/ do |name|

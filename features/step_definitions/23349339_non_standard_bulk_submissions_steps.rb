@@ -9,3 +9,7 @@ end
 When /^I upload a file with a header at an unexpected location$/ do
   upload_submission_spreadsheet("with_moved_header")
 end
+
+When /^I upload a file with conflicting submissions$/ do
+  upload_submission_spreadsheet("with_conflicting_submissions")
+end

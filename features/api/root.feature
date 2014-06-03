@@ -291,6 +291,11 @@ Feature: The entry point for the API gives directions to the other actions
           "actions": {
             "read": "http://www.example.com/api/1/tube_from_tube_creations"
           }
+        },
+        "reference_genomes": {
+          "actions": {
+            "read": "http://www.example.com/api/1/reference_genomes"
+          }
         }
       }
       """
@@ -601,6 +606,12 @@ Feature: The entry point for the API gives directions to the other actions
           "actions": {
             "read": "http://www.example.com/api/1/tube_from_tube_creations",
             "create": "http://www.example.com/api/1/tube_from_tube_creations"
+          }
+        },
+        "reference_genomes": {
+          "actions": {
+            "read": "http://www.example.com/api/1/reference_genomes",
+            "create": "http://www.example.com/api/1/reference_genomes"
           }
         }
       }

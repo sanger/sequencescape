@@ -44,6 +44,10 @@ module Batch::StateMachineBehaviour
     completed? or released?
   end
 
+  def editable?
+    pending? or started?
+  end
+
   def start_with_user!(user)
     start_without_user!
   end

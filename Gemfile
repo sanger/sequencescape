@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 source 'http://gems.github.com'
 
-gem "rails", "2.3.15"
+gem "rails", "~>2.3"
 
 # Warehouse builder
 gem "log4r"
@@ -23,7 +23,7 @@ gem 'carrierwave', "~>0.4.0"
 gem 'jruby-openssl', :platforms => :jruby
 gem 'rdoc', '~>2.4.2'
 
-gem 'trinidad', :platforms => :jruby
+gem 'puma'
 
 # This was once a plugin, now it's a gem:
 gem 'catch_cookie_exception', :git => 'git+ssh://git@github.com/mhartl/catch_cookie_exception.git'
@@ -94,6 +94,8 @@ group :test do
   gem "treetop", "~>1.2.5"
   gem 'parallel_tests'
 
+  gem "timocratic-test_benchmark"
+
   gem 'rgl'
 end
 
@@ -110,6 +112,5 @@ group :deployment do
   gem "mongrel_cluster", :platforms => :mri
   gem "psd_logger", :git => "git@github.com:sanger/psd_logger.git"
   gem "gmetric", "~>0.1.3"
-  gem "trinidad_daemon_extension", :platforms => :jruby
 end
 

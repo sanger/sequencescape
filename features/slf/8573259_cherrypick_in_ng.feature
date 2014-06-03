@@ -1,4 +1,4 @@
-@nano_grams @cherrypicking_for_pulldown @cherrypicking @barcode-service @pulldown @tecan @javascript
+@nano_grams @cherrypicking_for_pulldown @cherrypicking @barcode-service @pulldown @tecan
 Feature: Pick a ng quantity using the Tecan robot
 
   Background:

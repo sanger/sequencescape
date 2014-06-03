@@ -1,6 +1,3 @@
-<% if current_user.administrator? -%>
-  <% add :menu, "Spreadsheet Move Sample" =>  move_spreadsheet_samples_path -%>
-<% end %>
 <% add :title, "Samples are registered here for sequencing or other laboratory pipelines." -%>
 
 <h1>All Samples</h1>
@@ -33,7 +30,6 @@
            <% else %>
             <td>&nbsp;</td>
           <% end %>
-          <td><%= link_to "Move", filtered_move_sample_path(sample) -%></td>
         <% end -%>
       </tr>
     <% end -%>

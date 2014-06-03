@@ -5,7 +5,28 @@
 # ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '2.3.15' unless defined? RAILS_GEM_VERSION
+RAILS_GEM_VERSION = '2.3.18' unless defined? RAILS_GEM_VERSION
+
+# Monkey patch for rubygems 2.0 compatibility
+# John Anderson - http://djellemah.com/blog/2013/02/27/rails-23-with-ruby-20/
+  module Gem
+    def self.source_index
+      sources
+    end
+
+    def self.cache
+      sources
+    end
+
+    SourceIndex ||= Specification
+
+    class SourceList
+      # If you want vendor gems, this is where to start writing code.
+      def search( *args ); []; end
+      def each( &block ); end
+      include Enumerable
+    end
+  end
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
@@ -83,4 +104,12 @@ Rails::Initializer.run do |config|
   # This is necessary if your schema can't be completely dumped by the schema dumper,
   # like if you have constraints or database-specific column types
   # config.active_record.schema_format = :sql
+
+  # Jruby 1.7 seems to try and use the http.proxyX settings, but ignores the noProxyHost ENV.
+  if defined?(ENV_JAVA)
+    ENV_JAVA['http.proxyHost'] = nil
+    ENV_JAVA['http.proxyPort'] = nil
+    ENV_JAVA['https.proxyHost'] = nil
+    ENV_JAVA['https.proxyPort'] = nil
+  end
 end

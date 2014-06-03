@@ -8,7 +8,6 @@
 <% end %>
 <% if @asset.is_a?(Plate) %>
   <% add :menu, "QC results" => plate_path(@asset) %>
-  <% add :menu, "Create wells Submission" => submit_wells_asset_path(@asset) %>
 <% end %>
 
 <% add :menu, "Event history" => history_asset_path(@asset) -%>

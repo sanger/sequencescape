@@ -37,9 +37,9 @@
           <td class='request' style='text-align: center' width='5%'>
             <%= image_tag "icon_#{request.priority}_flag.png", 'alt' => request.priority, :size => '16x16', :class => "flag_image #{current_user.is_lab_manager? ? 'as_manager' : ''}", "data-priority" => request.priority, 'data-request-id' => request.id, 'data-submission-id' => request.submission_id %>
           </td>
-          <td class="request" width='5%'><%= link_to request.submission_id,study_workflow_submission_path(request.study, current_user.workflow, request.submission) %></td>
+          <td class="request" width='5%'><%= link_to request.submission_id,submission_path(request.submission) %></td>
           <td class="request" width='5%'>&nbsp;</td>
-          <td style="display:none" class='request' width='5%'><%= link_to request.submission_id,study_workflow_submission_path(request.study, current_user.workflow, request.submission) %></td>
+          <td style="display:none" class='request' width='5%'><%= link_to request.submission_id,submission_path(request.submission) %></td>
           <td class='request' width='10%'><%= h(request.asset.display_name) %></td>
           <td class='request' width='15%'>&nbsp;</td>
           <td class='request' width='10%'>&nbsp;</td>
@@ -58,9 +58,9 @@
       <tr class="nested" id="<%= request.submission_id %>_0" style="display:none">
          <td>&nbsp;</td>
          <td>&nbsp;</td>
-         <td style="display:none" class="request" width='5%'><%= link_to request.submission_id,study_workflow_submission_path(request.study, current_user.workflow, request.submission) %></td>
+         <td style="display:none" class="request" width='5%'><%= link_to request.submission_id,submission_path(request.submission) %></td>
         <td>&nbsp;</td>
-        <td style="display:none" class='request' width='5%'><%= link_to request.submission_id,study_workflow_submission_path(request.study, current_user.workflow, request.submission) %></td>
+        <td style="display:none" class='request' width='5%'><%= link_to request.submission_id,submission_path(request.submission) %></td>
         <td class="request" colspan=12><%= requests.size %> out of <%= Request.number_expected_for_submission_id_and_request_type_id(request.submission_id, request.request_type_id) %> scanned in.</td>
       </tr>
         <%- requests.each_with_index do |request, indice| -%>
@@ -74,11 +74,11 @@
 	        <%= label(:request, request.id, 'Select Request', :style => 'display:none') %>
 		    <%= check_box :request, request.id, :value => request.id %>
 		  </td>
-          <td style="display:none" class="request" width='5%'><%= link_to request.submission_id,study_workflow_submission_path(request.study, current_user.workflow, request.submission) %></td>
+          <td style="display:none" class="request" width='5%'><%= link_to request.submission_id,submission_path(request.submission) %></td>
           <td class='request' style='text-align: center' width='5%'>
             <%= image_tag "icon_#{request.priority}_flag.png", 'alt' => request.priority, :size => '16x16', :class => 'related_flag_image', 'data-submission-id' => request.submission_id %>
           </td>
-          <td class="request" width='5%'><%= link_to request.submission_id,study_workflow_submission_path(request.study, current_user.workflow, request.submission) %></td>
+          <td class="request" width='5%'><%= link_to request.submission_id,submission_path(request.submission) %></td>
           <td class='request' width='5%'><%= link_to request.id, request_path(request) %></td>
           <td class='request' width='10%'><%= link_to(h(request_asset.display_name), asset_path(request.asset)) %></td>
           <% unless request_comments.empty? -%>
