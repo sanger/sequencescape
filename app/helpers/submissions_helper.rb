@@ -88,7 +88,7 @@ module SubmissionsHelper
     when 'processing' then
       display_user_guide("Your submission is currently being processed.  This should take no longer than five minutes.")
     when 'failed' then
-      display_user_error("<h2>Your submission has failed:</h2><p> #{h(submission.message)} </p>")
+      display_user_error("<h2>Your submission has failed:</h2><p> #{h(submission.message.lines.first)} </p>")
     when 'ready'
       content_tag(:p, 'Your submission has been <strong>processed</strong>.')
     else

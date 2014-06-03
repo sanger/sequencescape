@@ -70,6 +70,7 @@ class Pipeline < ActiveRecord::Base
       actions << ((proxy_owner.group_by_parent? or show_held_requests) ? :full_inbox : :pipeline_pending)
       actions << [ (proxy_owner.group_by_parent? ? :holder_located : :located), proxy_owner.location_id ]
       if action != :count
+        actions << :include_request_metadata
         actions << (proxy_owner.group_by_submission? ? :ordered_for_submission_grouped_inbox : :ordered_for_ungrouped_inbox)
         actions << :loaded_for_inbox_display
       end
@@ -79,7 +80,7 @@ class Pipeline < ActiveRecord::Base
         actions << [ :paginate, { :per_page => 50, :page => current_page } ]
       end
 
-      actions.inject(requests.include_request_metadata) { |context, action| context.send(*Array(action)) }
+      actions.inject(requests) { |context, action| context.send(*Array(action)) }
     end
 
     # Used by the Pipeline class to retrieve the list of requests that are coming into the pipeline.
@@ -165,7 +166,7 @@ class Pipeline < ActiveRecord::Base
   def is_read_length_consistent_for_batch?(batch)
     true
   end
-  
+
   def need_picoset?
     false
   end

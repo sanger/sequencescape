@@ -1,6 +1,6 @@
 class AssetsController < ApplicationController
   include BarcodePrintersController::Print
-   before_filter :discover_asset, :only => [:show, :edit, :update, :destory, :summary, :close, :print_assets, :print, :show_plate, :create_wells_group, :history, :holded_assets, :complete_move_to_2D]
+   before_filter :discover_asset, :only => [:show, :edit, :update, :destory, :summary, :close, :print_assets, :print, :show_plate, :history, :holded_assets, :complete_move_to_2D]
 
   def index
     @assets_without_requests = []
@@ -213,9 +213,6 @@ class AssetsController < ApplicationController
     params[:printables]={@asset =>1}
     return print_asset_labels(asset_url(@asset), asset_url(@asset))
   end
-  def submit_wells
-    @asset = Asset.find params[:id]
-  end
 
   def show_plate
   end
@@ -279,19 +276,6 @@ class AssetsController < ApplicationController
       format.html { redirect_to new_request_for_current_asset }
       format.json { render :json => exception.message, :status => :precondition_failed }
     end
-  end
-
-  def create_wells_group
-    study_id = params[:asset_group][:study_id]
-
-    if study_id.blank?
-      flash[:error] = "Please select a study"
-      redirect_to submit_wells_asset_path(@asset)
-      return
-    end
-
-    asset_group = @asset.create_asset_group_wells(@current_user, params[:asset_group])
-    redirect_to template_chooser_study_workflow_submissions_path(nil, asset_group.study, @current_user.workflow)
   end
 
   def get_barcode

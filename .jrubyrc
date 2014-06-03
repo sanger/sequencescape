@@ -1,5 +1,5 @@
 compat.version=1.8
 cext.enabled=false
 objectspace.enabled=false
-compile.invokedynamic=false
+compile.invokedynamic=true
 thread.pooling=true
