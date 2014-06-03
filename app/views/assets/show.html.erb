@@ -113,9 +113,7 @@
       </td>
       <td><%= request_status(request) %></td>
       <td>
-      <% request.batch_ids.each do |batch_id| %>
-        <%= link_to batch_id, batch_url(batch_id) %>
-      <% end %>
+      <%= link_to request.batch.id, batch_url(request.batch.id) %>
       </td>
       <% if request.target_asset %>
         <td><%= link_to(h(request.target_asset.display_name), asset_url(request.target_asset)) %></td>

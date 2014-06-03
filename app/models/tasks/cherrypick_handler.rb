@@ -170,7 +170,7 @@ module Tasks::CherrypickHandler
       # Now pass each of the requests we used and ditch any there weren't back into the inbox.
       used_requests.map(&:pass!)
       (@batch.requests-used_requests).each do |unused_request|
-        unused_request.recycle_from_batch!(@batch)
+        unused_request.recycle_from_batch!
       end
     end
   end

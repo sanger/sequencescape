@@ -464,8 +464,8 @@ class BatchTest < ActiveSupport::TestCase
         v = @batch.shift_item_positions(4,1)
         # assert_equal 3, v[2].id # make sure that requests are the same
         # assert_equal 4, v[3].id # make sure that requests are the same
-        assert_equal 9, v[3].position(@batch) # make sure that requests.position was increased properly
-        assert_equal 7, v[2].position(@batch) # make sure that requests.position was increased properly
+        assert_equal 9, v[3].position # make sure that requests.position was increased properly
+        assert_equal 7, v[2].position # make sure that requests.position was increased properly
       end
 
       should "return empty assigned user" do
