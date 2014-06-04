@@ -80,7 +80,7 @@
       <td><%= request.submission ? request.submission.study_names : "NA" %></td>
       <td><%= request_status(request) %></td>
       <td>
-      <% request.batch_ids.each do |batch_id| %>
+      <% request.with_batch_id do |batch_id| %>
         <%= link_to batch_id, URI.join(configatron.pipelines_url, "batches/#{batch_id}").to_s %>
       <% end %>
       </td>

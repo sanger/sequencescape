@@ -15,7 +15,7 @@ class BatchesController < ApplicationController
       @batches = Batch.find(:all)
     end
     if params[:request_id]
-      @batches = Request.find(params[:request_id]).batches
+      @batches = [Request.find(params[:request_id]).batch].compact
     end
     respond_to do |format|
       format.html
@@ -26,7 +26,7 @@ class BatchesController < ApplicationController
 
   def show
     @submenu_presenter = Presenters::BatchSubmenuPresenter.new(current_user, @batch)
-    
+
     @pipeline = @batch.pipeline
     @tasks    = @batch.tasks.sort_by(&:sorted)
     @rits = @pipeline.request_information_types

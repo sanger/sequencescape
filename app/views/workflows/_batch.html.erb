@@ -29,7 +29,7 @@
         <% if passed && !@task.per_item -%>
         <tr class="<%= cycle("rowodd", "roweven") %>">
           <td class="7%">&nbsp;</td>
-          <td width="5%"><%= request.position(@batch) %></td>
+          <td width="5%"><%= request.position %></td>
           <td width="7%"><%= request.sample_name %></td>
           <td width="7%"><%= request.asset.barcode %></td>
           <td width="15%"><%= link_to(h(request.asset.display_name), asset_url(request.asset), :target => "_blank") %></td>
@@ -44,7 +44,7 @@
         <% else -%>
         <tr class="<%= cycle("rowodd", "roweven") %>">
           <td class="7%"><input name='request[<%= request.id %>]' class='sample_check' type='checkbox' checked></td>
-          <td width="5%"><%= request.position(@batch) %></td>
+          <td width="5%"><%= request.position %></td>
           <% if request.asset && request.asset.parent %>
             <td width="7%"><%= link_to request.asset.parent.name, asset_url(request.asset.parent), :target => "_blank" %></td>
           <% else %>

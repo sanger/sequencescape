@@ -15,19 +15,19 @@ class Batch < ActiveRecord::Base
   include StandardNamedScopes
 
   validate_on_create :requests_have_same_read_length, :cluster_formation_requests_must_be_over_minimum
-  
+
   def cluster_formation_requests_must_be_over_minimum
     if (!@pipeline.min_size.nil?) && (@requests.size < @pipeline.min_size)
       errors.add_to_base "You must create batches of at least " + @pipeline.min_size.to_s+" requests in the pipeline " + @pipeline.name
     end
   end
-  
+
   def requests_have_same_read_length
     unless @pipeline.is_read_length_consistent_for_batch?(self)
       errors.add_to_base "The selected requests must have the same values in their 'Read length' field."
     end
-  end    
-      
+  end
+
   extend EventfulRecord
   has_many_events
   has_many_lab_events
@@ -302,10 +302,10 @@ class Batch < ActiveRecord::Base
 
   def verify_tube_layout(barcodes, user = nil)
     self.requests.each do |request|
-      barcode = barcodes["#{request.position(self)}"]
+      barcode = barcodes["#{request.position}"]
       unless barcode.blank? || barcode == "0"
         unless barcode.to_i == request.asset.barcode.to_i
-          self.errors.add_to_base("The tube at position #{request.position(self)} is incorrect.")
+          self.errors.add_to_base("The tube at position #{request.position} is incorrect.")
         end
       end
     end
@@ -356,7 +356,7 @@ class Batch < ActiveRecord::Base
   end
 
   def remove_link(request)
-    request.batches-=[self]
+    request.batch = nil
   end
 
   def reset!(current_user)
