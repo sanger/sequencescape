@@ -1,4 +1,4 @@
-@javascript @submission @bulk_submissions
+@submission @bulk_submissions
 Feature: Bulk Submission
   So that biological work can be requested
   in a large batch rather than separate
@@ -56,7 +56,7 @@ Feature: Bulk Submission
 
   Scenario: Uploading an invalid file with 1 submissions
     When I upload a file with invalid data for 1 submissions
-    Then I should see "Cannot find user"
+    Then I should see "No user specified for testing124"
     Then there should be no submissions
 
   Scenario: Uploading an invalid file with 2 submissions

@@ -6,8 +6,30 @@ class CherrypickTaskTest < ActiveSupport::TestCase
     plate.concat([CherrypickTask::EMPTY_WELL] * (template.size - plate.size))
   end
 
+  def maps_for(num,from=0,order='column')
+    Map.find(:all,
+      :conditions=>{
+        :asset_shape_id=>@asset_shape.id,
+        :asset_size=> 12
+      },
+      :order=>"#{order}_order ASC")[from...num]
+  end
+
   context CherrypickTask do
     setup do
+      @asset_shape = Map::AssetShape.create!(:name=>'mini',:horizontal_ratio=>4,:vertical_ratio=>3,:description_strategy=>'Map::Coordinate')
+
+      ('A'..'C').map {|r| (1..4).map {|c| "#{r}#{c}"}}.flatten.each_with_index do |m,i|
+        Map.create!(:description=>m,:asset_size=>12,:asset_shape_id=>@asset_shape.id,:location_id =>i+1,:row_order=>i,:column_order=>((i/4)+3*(i%4)) )
+      end
+
+      @mini_plate_purpose = PlatePurpose.stock_plate_purpose.clone.tap do |pp|
+        pp.size = 12
+        pp.name = "Clonepp"
+        pp.asset_shape = @asset_shape
+        pp.save!
+      end
+
       @pipeline = Pipeline.find_by_name('Cherrypick') or raise StandardError, "Cannot find cherrypick pipeline"
       @task = CherrypickTask.new(:workflow => @pipeline.workflow)
 
@@ -18,21 +40,24 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
       @batch    = mock('batch')
 
-      @template = PlateTemplate.new(:size => 96)
+      @template = PlateTemplate.new(:size => 12)
     end
 
     context '#pick_onto_partial_plate' do
       setup do
-        plate     = PlatePurpose.stock_plate_purpose.create!(:barcode => (@barcode += 1))
-        @requests = plate.wells.map { |w| Factory(:well_request, :asset => w) }
+        plate     = @mini_plate_purpose.create!(:without_wells, :barcode => (@barcode += 1)) do |plate|
+          plate.wells.build(maps_for(12).map {|m| {:map=>m} })
+        end
+        # TODO: This is very slow, and could do with improvements
+        @requests = plate.wells.in_column_major_order.map { |w| Factory(:well_request, :asset => w) }
       end
 
       should 'error when the robot has no beds' do
         robot = mock('robot')
         robot.stubs(:max_beds).returns(0)
 
-        partial = PlatePurpose.stock_plate_purpose.create!(:barcode => (@barcode += 1)).tap do |partial|
-          partial.wells -= partial.wells.in_column_major_order.slice(48, 48)
+        partial = @mini_plate_purpose.create!(:without_wells, :barcode => (@barcode += 1)) do |partial|
+          partial.wells.build(maps_for(6).map {|m| {:map=>m} })
         end
 
         assert_raises(StandardError) do
@@ -40,12 +65,12 @@ class CherrypickTaskTest < ActiveSupport::TestCase
         end
       end
 
-      context 'that is column picked and has left 6 columns filled' do
+      context 'that is column picked and has left 2 columns filled' do
         setup do
-          plate_purpose = PlatePurpose.stock_plate_purpose
+          plate_purpose = @mini_plate_purpose
           plate_purpose.update_attributes!(:cherrypick_direction => 'column')
-          @partial = plate_purpose.create!(:barcode => (@barcode += 1)).tap do |partial|
-            partial.wells -= partial.wells.in_column_major_order.slice(48, 48)
+          @partial = plate_purpose.create!(:without_wells, :barcode => (@barcode += 1)) do |partial|
+            partial.wells.build(maps_for(6).map {|m| {:map=>m} })
           end
           @expected_partial = [CherrypickTask::TEMPLATE_EMPTY_WELL] * @partial.wells.size
         end
@@ -73,20 +98,20 @@ class CherrypickTaskTest < ActiveSupport::TestCase
         end
       end
 
-      context 'that is row picked and has top 4 rows filled' do
+      context 'that is row picked and has top row filled' do
         setup do
-          plate_purpose = PlatePurpose.stock_plate_purpose
+          plate_purpose = @mini_plate_purpose
           plate_purpose.update_attributes!(:cherrypick_direction => 'row')
-          @partial = plate_purpose.create!(:barcode => (@barcode += 1)).tap do |partial|
-            partial.wells -= partial.wells.in_row_major_order.slice(48, 48)
+          @partial = plate_purpose.create!(:without_wells, :barcode => (@barcode += 1)) do |partial|
+            partial.wells.build(maps_for(4,0,'row').map {|m| {:map=>m} })
           end
         end
 
         should 'represent partial plate correctly when there are no picks made' do
-          expected = (1..12).inject([]) do |plate, _|
+          expected = (1..4).inject([]) do |plate, _|
             plate.tap do
-              plate.concat([CherrypickTask::TEMPLATE_EMPTY_WELL] * 4)
-              plate.concat([CherrypickTask::EMPTY_WELL] * 4)
+              plate.concat([CherrypickTask::TEMPLATE_EMPTY_WELL] * 1)
+              plate.concat([CherrypickTask::EMPTY_WELL] * 2)
             end
           end
 
@@ -95,47 +120,49 @@ class CherrypickTaskTest < ActiveSupport::TestCase
         end
 
         should 'pick wells in rows' do
-          expected = (1..12).inject([]) do |plate,row|
+          expected = (1..4).inject([]) do |plate,row|
             plate.tap do
               request = @requests[row-1]
-              plate.concat([CherrypickTask::TEMPLATE_EMPTY_WELL] * 4)
+              plate.concat([CherrypickTask::TEMPLATE_EMPTY_WELL])
               plate.push([request.id, request.asset.plate.barcode, request.asset.map.description])
-              plate.concat([CherrypickTask::EMPTY_WELL] * 3)
+              plate.concat([CherrypickTask::EMPTY_WELL])
             end
           end
 
-          plates, source_plates = @task.pick_onto_partial_plate(@requests.slice(0, 12), @template, @robot, @batch, @partial)
+          plates, source_plates = @task.pick_onto_partial_plate(@requests.slice(0, 4), @template, @robot, @batch, @partial)
           assert_equal([expected], plates, "Incorrect partial plate representation")
         end
       end
 
       context 'with left & right columns filled' do
         setup do
-          @partial = PlatePurpose.stock_plate_purpose.create!(:barcode => (@barcode += 1)).tap do |partial|
-            partial.wells -= partial.wells.in_column_major_order.slice(8, 80)
+          @partial = @mini_plate_purpose.create!(:without_wells,:barcode => (@barcode += 1)) do |partial|
+            ms =  maps_for(3,0,'column').map {|m| {:map=>m} }
+            ms.concat(maps_for(12,9,'column').map {|m| {:map=>m} })
+            partial.wells.build(ms)
           end
         end
 
         should 'represent partial plate correctly when there are no picks made' do
           expected = []
-          expected.concat([CherrypickTask::TEMPLATE_EMPTY_WELL] * 8) # Column 1
-          expected.concat([CherrypickTask::EMPTY_WELL] * 80)         # Columns 2-11
-          expected.concat([CherrypickTask::TEMPLATE_EMPTY_WELL] * 8) # Column 12
+          expected.concat([CherrypickTask::TEMPLATE_EMPTY_WELL] * 3) # Column 1
+          expected.concat([CherrypickTask::EMPTY_WELL] * 6)         # Columns 2-11
+          expected.concat([CherrypickTask::TEMPLATE_EMPTY_WELL] * 3) # Column 12
 
           plates, source_plates = @task.pick_onto_partial_plate([], @template, @robot, @batch, @partial)
           assert_equal([expected], plates, "Incorrect partial plate representation")
         end
 
         should 'not pick on top of any wells that are already present' do
-          plate    = PlatePurpose.stock_plate_purpose.create!(:barcode => (@barcode += 1))
+          plate    = @mini_plate_purpose.create!(:barcode => (@barcode += 1))
           requests = plate.wells.in_column_major_order.map { |w| Factory(:well_request, :asset => w) }
 
           expected_partial = []
-          expected_partial.concat([CherrypickTask::TEMPLATE_EMPTY_WELL] * 8) # Column 1
-          expected_partial.concat(requests.slice(0, 80).map { |request| [request.id, request.asset.plate.barcode, request.asset.map.description] })
-          expected_partial.concat([CherrypickTask::TEMPLATE_EMPTY_WELL] * 8) # Column 12
+          expected_partial.concat([CherrypickTask::TEMPLATE_EMPTY_WELL] * 3) # Column 1
+          expected_partial.concat(requests.slice(0, 6).map { |request| [request.id, request.asset.plate.barcode, request.asset.map.description] })
+          expected_partial.concat([CherrypickTask::TEMPLATE_EMPTY_WELL] * 3) # Column 12
 
-          expected_second = requests.slice(80, 16).map { |request| [request.id, request.asset.plate.barcode, request.asset.map.description] }
+          expected_second = requests.slice(6, 6).map { |request| [request.id, request.asset.plate.barcode, request.asset.map.description] }
           pad_expected_plate_with_empty_wells(@template, expected_second)
 
           plates, source_plates = @task.pick_onto_partial_plate(requests, @template, @robot, @batch, @partial)
@@ -145,20 +172,23 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
       context 'where the template defines a control well' do
         setup do
-          @partial = PlatePurpose.stock_plate_purpose.create!(:barcode => (@barcode += 1)).tap do |partial|
-            partial.wells -= partial.wells.in_column_major_order.slice(24, 72)
+          @partial = @mini_plate_purpose.create!(:without_wells, :barcode => (@barcode += 1)) do |partial|
+            partial.wells.build(maps_for(3).map {|m| {:map=>m} })
           end
           @expected_partial = [CherrypickTask::TEMPLATE_EMPTY_WELL] * @partial.wells.size
           pad_expected_plate_with_empty_wells(@template, @expected_partial)
 
           @template.set_control_well(1)
 
-          @control_plate = ControlPlate.create!(:barcode => (@barcode += 1)).tap do |plate|
-            Map.where_plate_size(96).where_description(ControlPlate::ILLUMINA_CONTROL_WELL_LOCATIONS).all.each do |location|
+          @control_plate = ControlPlate.create!(:barcode => (@barcode += 1),:size=>12, :plate_purpose=>@mini_plate_purpose ).tap do |plate|
+            Map.where_plate_size(12).where_description(['A1','C1','A2']).all.each do |location|
               well = plate.wells.create!(:map => location)
               well.aliquots.create!(:sample => Factory(:sample))
             end
           end
+
+          ControlPlate.any_instance.stubs(:illumina_wells).returns(@control_plate.wells.located_at(['A1','C1','A2']))
+          @control_plate.stubs(:illumina_wells).returns(@control_plate.wells.located_at(['A1','C1','A2']))
 
           @batch = @pipeline.batches.create!
         end
@@ -173,7 +203,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
           # To check the control well we have to account for the well being picked being random
           assert_equal(@batch.requests.first.id, control_well_details[0], "Incorrect control request ID")
           assert_equal(@control_plate.barcode.to_s, control_well_details[1], "Incorrect control plate barcode")
-          assert(ControlPlate::ILLUMINA_CONTROL_WELL_LOCATIONS.include?(control_well_details[2]), "Incorrect control well location")
+          assert(['A1','C1','A2'].include?(control_well_details[2]), "Incorrect control well location")
         end
 
         should 'not add a control well to the plate if it already has one' do
@@ -190,7 +220,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
         should 'add the control plate to the source list' do
           plates, source_plates = @task.pick_onto_partial_plate([], @template, @robot, @batch, @partial)
-          assert(source_plates.include?(ControlPlate.first.barcode), "control plate not part of sources")
+          assert(source_plates.include?(@control_plate.barcode.to_s), "control plate not part of sources")
         end
       end
     end
@@ -198,10 +228,10 @@ class CherrypickTaskTest < ActiveSupport::TestCase
     context '#pick_new_plate' do
       context 'with a plate purpose' do
         setup do
-          plate     = PlatePurpose.stock_plate_purpose.create!(:barcode => (@barcode += 1))
+          plate     = @mini_plate_purpose.create!(:barcode => (@barcode += 1))
           @requests = plate.wells.in_column_major_order.map { |w| Factory(:well_request, :asset => w) }
 
-          @target_purpose = PlatePurpose.stock_plate_purpose
+          @target_purpose = @mini_plate_purpose
         end
 
         teardown do
@@ -216,8 +246,8 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
         should 'pick horizontally when the plate purpose says so' do
           @target_purpose.update_attributes!(:cherrypick_direction => 'row')
-          @expected = (1..@requests.size).map do |index|
-            request = @requests[Map.vertical_to_horizontal(index, @requests.size)-1]
+          @expected = (1..12).map do |index|
+            request = @requests[@asset_shape.vertical_to_horizontal(index, @requests.size)-1]
             [request.id, request.asset.plate.barcode, request.asset.map.description]
           end
         end
@@ -228,13 +258,13 @@ class CherrypickTaskTest < ActiveSupport::TestCase
         robot.stubs(:max_beds).returns(0)
 
         assert_raises(StandardError) do
-          @task.pick_new_plate(nil, nil, robot, nil, PlatePurpose.new(:asset_shape=>Map::AssetShape.first))
+          @task.pick_new_plate(nil, nil, robot, nil, PlatePurpose.new(:asset_shape=>@asset_shape,:size=>12))
         end
       end
 
       context 'with limited number of source beds' do
         setup do
-          plates = (1..3).map { |_| PlatePurpose.stock_plate_purpose.create!(:barcode => (@barcode += 1)) }
+          plates = (1..3).map { |_| @mini_plate_purpose.create!(:barcode => (@barcode += 1)) }
           @requests = plates.map { |p| Factory(:well_request, :asset => p.wells.first) }
           @expected = @requests.map do |request|
             [request.id, request.asset.plate.barcode, request.asset.map.description]

@@ -1,8 +1,13 @@
 module Batch::RequestBehaviour
   def self.included(base)
     base.class_eval do
-      has_many :batch_requests
-      has_many :batches, :through => :batch_requests
+      has_one :batch_request
+      has_one :batch, :through => :batch_request
+
+      # For backwards compatibility
+      def batch_requests; [batch_request].compact ; end
+      def batches; [batch_request].compact ; end
+
 
       # Identifies all requests that are not part of a batch.
       named_scope :unbatched, {
@@ -10,24 +15,27 @@ module Batch::RequestBehaviour
         :readonly   => false,
         :conditions => '`ubr`.`request_id` IS NULL'
       }
+      delegate :position, :to=>:batch_request, :allow_nil=>true
     end
   end
 
-  def batch_ids
-    batch_requests.map(&:batch_id)
+  def with_batch_id
+    yield batch.id if batch.present?
   end
 
-  def position(batch)
-    batch.batch_requests.detect { |br| br.request_id == self.id }.try(:position) || 0
-  end
-
-  def recycle_from_batch!(batch)
+  def recycle_from_batch!
     ActiveRecord::Base.transaction do
       self.return_for_inbox!
-      self.batches.delete(batch)
+      self.batch_request.destroy if self.batch_request.present?
+      self.save!
     end
     #self.detach
     #self.batches -= [ batch ]
+  end
+
+  def create_batch_request!(*args)
+    # I think this is actually deprecated
+    create_batch_request(args)
   end
 
   def return_for_inbox!
@@ -37,11 +45,4 @@ module Batch::RequestBehaviour
     self.detach! unless self.pending?
   end
 
-  def create_batch_request!(attributes)
-    batch_requests.create!(attributes)
-  end
-
-  def batch_request
-    batch_requests.first
-  end
 end

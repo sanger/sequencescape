@@ -67,10 +67,10 @@
 </div>
 
 <div class="info">
-<h3>Batches</h3>
-<% @request.batch_ids.each do |batch_id| %>
-  <%= link_to batch_id, URI.join(configatron.pipelines_url, "batches/#{batch_id}").to_s %>
-<% end %>
+<h3>Batch</h3>
+  <% @request.with_batch_id do |batch_id| %>
+    <%= link_to batch_id, URI.join(configatron.pipelines_url, "batches/#{batch_id}").to_s %>
+  <% end %>
 </div>
 
 

@@ -13,6 +13,7 @@ class LibraryCreationPipeline < Pipeline
   end
 
   # This is specific for multiplexing batches for plates
+  # Is this still used?
   def create_batch_from_assets(assets)
     batch = create_batch
     ActiveRecord::Base.transaction do

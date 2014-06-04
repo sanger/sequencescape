@@ -25,7 +25,7 @@ class Asset < ActiveRecord::Base
   #acts_as_paranoid
 #  validates_uniqueness_of :name
 
-  has_many :asset_group_assets
+  has_many :asset_group_assets, :dependent => :destroy
   has_many :asset_groups, :through => :asset_group_assets
   has_many :asset_audits
 

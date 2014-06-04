@@ -20,10 +20,7 @@ Feature: Creating sample tubes from a plate, add to asset group, and print barco
     And I select "xyz" from "Barcode printer"
     When I press "Submit"
     Then I should see "Created tubes and printed barcodes"
-    Then I should see "Please select a submission template"
-    When I press "Next"
-    Then I should see "Study 4696931 : REQUEST Next-gen sequencing"
-    And I should see "128459"
+    Then I should see "Order Template"
 
   Scenario: plate ID typed in
     Given a plate of type "Plate" with barcode "1220128459804" exists
@@ -34,10 +31,7 @@ Feature: Creating sample tubes from a plate, add to asset group, and print barco
     And I select "xyz" from "Barcode printer"
     When I press "Submit"
     Then I should see "Created tubes and printed barcodes"
-    Then I should see "Please select a submission template"
-    When I press "Next"
-    Then I should see "Study 4696931 : REQUEST Next-gen sequencing"
-    And I should see "128459"
+    Then I should see "Order Template"
 
   Scenario: plate barcode scanned and plate exists but has no wells
     Given a plate of type "Plate" with barcode "1220128459804" exists

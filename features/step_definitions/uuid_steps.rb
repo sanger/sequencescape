@@ -40,7 +40,8 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME = [
   'tag layout template',
   'barcode printer',
   'tube',
-  'robot'
+  'robot',
+  'reference genome'
 ]
 
 SINGULAR_MODELS_BASED_ON_NAME_REGEXP = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME.join('|')
@@ -106,6 +107,7 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
 
   'tag layout',
   'plate creation',
+  'plate conversion',
   'tube creation',
   'state change',
 
@@ -118,7 +120,8 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
   'lot type',
   'robot',
   'qc decision',
-  'robot'
+  'robot',
+  'reference genome'
 ]
 
 SINGULAR_MODELS_BASED_ON_ID_REGEXP = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID.join('|')

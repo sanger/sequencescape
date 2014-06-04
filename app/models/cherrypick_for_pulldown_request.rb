@@ -42,6 +42,10 @@ class CherrypickForPulldownRequest < TransferRequest
     end
   end
 
+  def on_failed
+    # Do nothing
+  end
+
   def perform_transfer_of_contents
     on_started # Ensures we set the study/project
   end
