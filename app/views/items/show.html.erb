@@ -61,7 +61,9 @@
       <% end %>
       <td><%= request.state %></td>
       <td>
-      <%= link_to request.batch.id, URI.join(configatron.pipelines_url, "batches/#{request.batch.id}").to_s %>
+      <% request.with_batch_id do |batch_id| %>
+        <%= link_to batch_id, URI.join(configatron.pipelines_url, "batches/#{batch_id}").to_s %>
+      <% end %>
       </td>
       <% if request.asset %>
       <td><%= link_to "#{request.asset.label} #{request.asset.id}", asset_url(request.asset) %></td>

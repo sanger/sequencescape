@@ -15,7 +15,7 @@ class BatchesController < ApplicationController
       @batches = Batch.find(:all)
     end
     if params[:request_id]
-      @batches = [Request.find(params[:request_id]).batch]
+      @batches = [Request.find(params[:request_id]).batch].compact
     end
     respond_to do |format|
       format.html

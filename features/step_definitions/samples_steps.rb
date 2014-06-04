@@ -228,7 +228,12 @@ Given /^the dosage of the sample called "([^\"]+)" is (#{Sample::DOSE_REGEXP})/ 
 end
 
 Given /^there are no samples$/ do
+  # Imagine there's no samples,
+  # it's easy if you try
+  # To bypass all the callbacks
+  # That trigger when they die
   Sample.delete_all
+  Uuid.find(:all,:conditions=>{:resource_type=>'Sample'}).each(&:destroy)
 end
 
 Given /^the sample "(.*?)" should have an accesionable flag$/ do |name|

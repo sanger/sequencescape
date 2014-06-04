@@ -8,7 +8,7 @@
           <tr>
             <td width="42%"><%= request.pipeline.name unless request.pipeline_id.nil? %></td>
             <td width="29%"><%= link_to request.id, request_path(:id => request.id) %></td>
-            <td width="29%"><%= request.batch.id %></td>
+            <td width="29%"><%= request.batch.try(:id) %></td>
           </tr>
         <% end %>
       </table>

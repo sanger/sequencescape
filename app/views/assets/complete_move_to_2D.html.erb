@@ -80,7 +80,9 @@
       <td><%= request.submission ? request.submission.study_names : "NA" %></td>
       <td><%= request_status(request) %></td>
       <td>
-      <%= link_to request.batch.id, URI.join(configatron.pipelines_url, "batches/#{request.batch.id}").to_s %>
+      <% request.with_batch_id do |batch_id| %>
+        <%= link_to batch_id, URI.join(configatron.pipelines_url, "batches/#{batch_id}").to_s %>
+      <% end %>
       </td>
       <% if request.target_asset %>
         <td><%= link_to(h(request.target_asset.display_name), asset_url(request.target_asset)) %></td>
