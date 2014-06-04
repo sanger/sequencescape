@@ -33,6 +33,11 @@ module Batch::RequestBehaviour
     #self.batches -= [ batch ]
   end
 
+  def create_batch_request!(*args)
+    # I think this is actually deprecated
+    create_batch_request(args)
+  end
+
   def return_for_inbox!
     # Valid for started, cancelled and pending batches
     # Will raise an exception outside of this
