@@ -23,7 +23,7 @@ gem 'carrierwave', "~>0.4.0"
 gem 'jruby-openssl', :platforms => :jruby
 gem 'rdoc', '~>2.4.2'
 
-gem 'puma'
+gem 'trinidad', :platforms => :jruby
 
 # This was once a plugin, now it's a gem:
 gem 'catch_cookie_exception', :git => 'git+ssh://git@github.com/mhartl/catch_cookie_exception.git'
@@ -112,5 +112,6 @@ group :deployment do
   gem "mongrel_cluster", :platforms => :mri
   gem "psd_logger", :git => "git@github.com:sanger/psd_logger.git"
   gem "gmetric", "~>0.1.3"
+  gem "trinidad_daemon_extension", :platforms => :jruby
 end
 
