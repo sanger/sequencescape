@@ -559,6 +559,23 @@ ActiveRecord::Schema.define(:version => 20140724111927) do
     t.datetime "updated_at"
   end
 
+  create_table "library_types", :force => true do |t|
+    t.string   "name",       :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "library_types_request_types", :id => false, :force => true do |t|
+    t.integer  "request_type_id",                    :null => false
+    t.integer  "library_type_id",                    :null => false
+    t.boolean  "is_default",      :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "library_types_request_types", ["library_type_id"], :name => "fk_library_types_request_types_to_library_types"
+  add_index "library_types_request_types", ["request_type_id"], :name => "fk_library_types_request_types_to_request_types"
+
   create_table "location_associations", :force => true do |t|
     t.integer "locatable_id", :null => false
     t.integer "location_id",  :null => false
