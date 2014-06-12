@@ -565,7 +565,7 @@ ActiveRecord::Schema.define(:version => 20140606141347) do
     t.datetime "updated_at"
   end
 
-  create_table "library_types_request_types", :id => false, :force => true do |t|
+  create_table "library_types_request_types", :force => true do |t|
     t.integer  "request_type_id",                    :null => false
     t.integer  "library_type_id",                    :null => false
     t.boolean  "is_default",      :default => false
