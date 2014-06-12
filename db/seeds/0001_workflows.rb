@@ -1276,7 +1276,7 @@ SubmissionTemplate.create!(
 )
 
 
-['a', 'b', 'c'].each do |pipeline|
+v4_requests_types = ['a', 'b', 'c'].map do |pipeline| 
   RequestType.create!({
     :key => "illumina_#{pipeline}_hiseq_2500_v4_paired_end_sequencing",
     :name => "Illumina-#{pipeline.upcase} HiSeq 2500 V4 Paired end sequencing",
@@ -1289,4 +1289,43 @@ SubmissionTemplate.create!(
     :product_line => ProductLine.find_by_name("Illumina-#{pipeline.upcase}")
   })
 end
+
+['(spiked in controls)','(no controls)'].each do |type|
+  SequencingPipeline.create!(
+    :name => "HiSeq 2500 v4 PE #{type}",
+      :automated => false,
+      :active => true,
+      :location => Location.find_by_name("Cluster formation freezer"),
+      :group_by_parent => false,
+      :asset_type => "Lane",
+      :sorter => 9,
+      :paginate => false,
+      :max_size => 8,
+      :min_size => 8,
+      :summary => true,
+      :group_name => "Sequencing",
+      :control_request_type_id => 0
+    ) do |pipeline|
+      pipeline.workflow = LabInterface::Workflow.create!(:name => pipeline.name) do |workflow|
+        workflow.locale     = 'Internal'
+        workflow.item_limit = 8
+      end.tap do |workflow|
+        [
+          { :class => SetDescriptorsTask,     :name => 'Specify Dilution Volume',           :sorted => 1, :batched => true },
+    
+          { :class => SetDescriptorsTask,     :name => 'Cluster generation',                :sorted => 3, :batched => true, :lab_activity => true },
+          { :class => AddSpikedInControlTask, :name => 'Add Spiked in Control',             :sorted => 4, :batched => true, :lab_activity => true },
+          { :class => SetDescriptorsTask,     :name => 'Quality control',                   :sorted => 5, :batched => true, :lab_activity => true },
+          { :class => SetDescriptorsTask,     :name => 'Read 1 Lin/block/hyb/load',         :sorted => 6, :batched => true, :interactive => true, :per_item => true, :lab_activity => true },
+          { :class => SetDescriptorsTask,     :name => 'Read 2 Cluster/Lin/block/hyb/load', :sorted => 7, :batched => true, :interactive => true, :per_item => true, :lab_activity => true }
+        ].select do |task|
+          type ==  '(spiked in controls)' || task[:name] !=  'Add Spiked in Control'
+        end.each do |details|
+          details.delete(:class).create!(details.merge(:workflow => workflow))
+        end
+      end
+      pipeline.request_types = v4_requests_types
+    end
+end
+
 
