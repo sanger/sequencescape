@@ -27,13 +27,13 @@ class SetUpAssociations < ActiveRecord::Migration
   end
 
   def self.down
-    # ActiveRecord::Base.transaction do
-    #   RequestType.all.each do |request_type|
-    #     library_types = LibraryType.find_all_by_name(existing_associations_for(request_type))
-    #     next if library_types.empty?
-    #     request_type.library_types.delete(library_types)
-    #   end
-    # end
+    ActiveRecord::Base.transaction do
+      RequestType.all.each do |request_type|
+        library_types = LibraryType.find_all_by_name(existing_associations_for(request_type))
+        next if library_types.empty?
+        request_type.library_types.delete(library_types)
+      end
+    end
   end
 
   def self.existing_associations_for(request_type)
