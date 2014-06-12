@@ -1,5 +1,5 @@
 class HiSeqSequencingRequest < SequencingRequest
-  READ_LENGTHS = [50, 75, 100]
+  READ_LENGTHS = [50, 75, 100, 125]
   has_metadata :as => Request  do
     #redundant with library creation , but THEY are using it .
     attribute(:fragment_size_required_from, :required =>true, :integer => true)
