@@ -7,6 +7,9 @@
 # Specifies gem version of Rails to use when vendor/rails is not present
 RAILS_GEM_VERSION = '2.3.18' unless defined? RAILS_GEM_VERSION
 
+# Bootstrap the Rails environment, frameworks, and default configuration
+require File.join(File.dirname(__FILE__), 'boot')
+
 # Monkey patch for rubygems 2.0 compatibility
 # John Anderson - http://djellemah.com/blog/2013/02/27/rails-23-with-ruby-20/
   module Gem
@@ -27,9 +30,6 @@ RAILS_GEM_VERSION = '2.3.18' unless defined? RAILS_GEM_VERSION
       include Enumerable
     end
   end
-
-# Bootstrap the Rails environment, frameworks, and default configuration
-require File.join(File.dirname(__FILE__), 'boot')
 
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence over those specified here.
