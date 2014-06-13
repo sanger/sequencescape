@@ -104,7 +104,7 @@ module IlluminaC::Helper
     end
 
     def library_types
-      RequestType.find_by_key(self.type).request_class_name.constantize::LIBRARY_TYPES
+      RequestType.find_by_key(self.type).library_types.map(&:name)
     end
 
     def update!

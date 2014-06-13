@@ -1,4 +1,7 @@
 class RequestType < ActiveRecord::Base
+
+  include RequestType::Validation
+
   class DeprecatedError < RuntimeError; end
 
   class RequestTypePlatePurpose < ActiveRecord::Base
@@ -20,6 +23,10 @@ class RequestType < ActiveRecord::Base
   has_many :pipelines, :through => :pipelines_request_types
   has_many :library_types_request_types, :inverse_of=> :request_type
   has_many :library_types, :through => :library_types_request_types
+
+  def default_library_type
+    library_types_request_types.find(:first,:conditions=>{:is_default=>true}).library_type
+  end
 
   # Returns a collect of pipelines for which this RequestType is valid control.
   # ...so only valid for ControlRequest producing RequestTypes...
@@ -49,7 +56,6 @@ class RequestType < ActiveRecord::Base
 
   serialize :request_parameters
 
-  delegate :delegate_validator, :to => :request_class
   delegate :accessioning_required?, :to => :request_class
 
   named_scope :applicable_for_asset, lambda { |asset|
