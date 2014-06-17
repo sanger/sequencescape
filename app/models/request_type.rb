@@ -25,7 +25,7 @@ class RequestType < ActiveRecord::Base
   has_many :library_types, :through => :library_types_request_types
 
   def default_library_type
-    library_types_request_types.find(:first,:conditions=>{:is_default=>true}).library_type
+    library_types.find(:first,:conditions=>{:library_types_request_types=>{:is_default=>true}})
   end
 
   # Returns a collect of pipelines for which this RequestType is valid control.

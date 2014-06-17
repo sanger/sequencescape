@@ -262,8 +262,8 @@ class LinearSubmissionTest < ActiveSupport::TestCase
         @asset_1 = Factory(:sample_tube)
         @asset_2 = Factory(:sample_tube)
 
-        @mx_request_type = Factory :request_type, :asset_type => "SampleTube", :target_asset_type=>"LibraryTube", :initial_state => "pending", :name => "Multiplexed Library Creation", :order => 1, :key => "multiplexed_library_creation"
-        @lib_request_type = Factory :request_type, :asset_type => "SampleTube", :target_asset_type=>"LibraryTube", :initial_state => "pending", :name => "Library Creation", :order => 1, :key => "library_creation"
+        @mx_request_type = Factory :multiplexed_library_creation_request_type, :asset_type => "SampleTube", :target_asset_type=>"LibraryTube", :initial_state => "pending", :name => "Multiplexed Library Creation", :order => 1, :key => "multiplexed_library_creation"
+        @lib_request_type = Factory :library_creation_request_type, :asset_type => "SampleTube", :target_asset_type=>"LibraryTube", :initial_state => "pending", :name => "Library Creation", :order => 1, :key => "library_creation"
         @pe_request_type = Factory :request_type, :asset_type => "LibraryTube", :initial_state => "pending", :name => "PE sequencing", :order => 2, :key => "pe_sequencing"
         @se_request_type = Factory :request_type, :asset_type => "LibraryTube", :initial_state => "pending", :name => "SE sequencing", :order => 2, :key => "se_sequencing"
 
@@ -274,7 +274,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
           :user             => @user,
           :assets           => [ @asset_1, @asset_2 ],
           :request_types    => [ @lib_request_type.id, @pe_request_type.id ],
-          :request_options  => { :multiplier => { @pe_request_type.id.to_s.to_sym => '5', @lib_request_type.id.to_s.to_sym => '1' } },
+          :request_options  => { :multiplier => { @pe_request_type.id.to_s.to_sym => '5', @lib_request_type.id.to_s.to_sym => '1' }, "read_length"=>"108", "fragment_size_required_from"=>"150", "fragment_size_required_to"=>"200" },
           :comments         => ''
         )
         @mx_submission_with_multiplication_factor = LinearSubmission.build!(
@@ -284,7 +284,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
           :user             => @user,
           :assets           => [ @asset_1, @asset_2 ],
           :request_types    => [ @mx_request_type.id, @pe_request_type.id ],
-          :request_options  => { :multiplier => { @pe_request_type.id.to_s.to_sym => '5', @mx_request_type.id.to_s.to_sym => '1' } },
+          :request_options  => { :multiplier => { @pe_request_type.id.to_s.to_sym => '5', @mx_request_type.id.to_s.to_sym => '1' }, "read_length"=>"108", "fragment_size_required_from"=>"150", "fragment_size_required_to"=>"200" },
           :comments         => ''
         )
       end
