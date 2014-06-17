@@ -109,8 +109,14 @@ private
     # This ensures that the default values are stored within the DB, meaning that this information will be
     # preserved for the future, unlike the original properties information which didn't store values when
     # nil which lead to us having to guess.
-    def initialize(attributes = nil, &block)
+    def initialize(attributes = {}, &block)
       super(self.class.defaults.merge(attributes.try(:symbolize_keys) || {}), &block)
+    end
+
+    before_validation_on_create :merge_instance_defaults
+
+    def merge_instance_defaults
+      self.attributes = self.attributes.reverse_merge(instance_defaults)
     end
 
     include Attributable

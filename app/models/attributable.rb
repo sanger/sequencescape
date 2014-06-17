@@ -26,6 +26,12 @@ module Attributable
     self.class.attribute_details_for(*args)
   end
 
+  def instance_defaults
+    self.class.attribute_details.inject({}) do |hash, attribute|
+      hash.tap { hash[ attribute.name ] = attribute.default_from(self) if attribute.method? }
+    end
+  end
+
   def attribute_value_pairs
     self.class.attribute_details.inject({}) do |hash, attribute|
       hash.tap { hash[attribute] = attribute.from(self) }
@@ -172,6 +178,11 @@ module Attributable
       record[self.name]
     end
 
+    def default_from(origin=nil)
+      return nil if origin.nil? || self.no_lookup?
+      origin.send(default_method)
+    end
+
     def required?
       @required
     end
@@ -184,6 +195,10 @@ module Attributable
       @options.key?(:integer)
     end
 
+    def no_lookup?
+      !@options.key?(:default_lookup)
+    end
+
     def float?
       @options.key?(:positive_float)
     end
@@ -194,6 +209,18 @@ module Attributable
 
     def selection?
       @options.key?(:in)
+    end
+
+    def method?
+      @options.key?(:with_method)
+    end
+
+    def validate_method
+      @options[:with_method]
+    end
+
+    def default_method
+      @options[:default_lookup]
     end
 
     def selection_values
@@ -222,6 +249,7 @@ module Attributable
           required.validates_numericality_of(name, :greater_than => 0) if self.float?
           required.validates_inclusion_of(name, :in => self.selection_values, :allow_false => true) if self.selection?
           required.validates_format_of(name, :with => self.valid_format) if self.valid_format?
+          required.validate(self.validate_method) if self.method?
         end
       end
 
