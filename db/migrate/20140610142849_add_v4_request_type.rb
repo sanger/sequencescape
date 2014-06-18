@@ -3,8 +3,8 @@ class AddV4RequestType < ActiveRecord::Migration
     ActiveRecord::Base.transaction do
       ['a', 'b', 'c'].each do |pipeline|
         RequestType.create!({
-          :key => "illumina_#{pipeline}_hiseq_2500_v4_paired_end_sequencing",
-          :name => "Illumina-#{pipeline.upcase} HiSeq 2500 V4 Paired end sequencing",
+          :key => "illumina_#{pipeline}_hiseq_v4_paired_end_sequencing",
+          :name => "Illumina-#{pipeline.upcase} HiSeq V4 Paired end sequencing",
           :workflow =>  Submission::Workflow.find_by_key("short_read_sequencing"),
           :asset_type => "LibraryTube",
           :order => 2,
@@ -20,7 +20,7 @@ class AddV4RequestType < ActiveRecord::Migration
   def self.down
     ActiveRecord::Base.transaction do
       ['a', 'b', 'c'].each do |pipeline|
-        RequestType.find_by_key("illumina_#{pipeline}_hiseq_2500_v4_paired_end_sequencing").destroy
+        RequestType.find_by_key("illumina_#{pipeline}_hiseq_v4_paired_end_sequencing").destroy
       end
     end
   end

@@ -1,4 +1,4 @@
-class V4SubmissionTemplates < ActiveRecord::Migration
+class AddV4SubmissionTemplates < ActiveRecord::Migration
   require 'lib/hiseq_2500_helper'
 
   def self.up
@@ -65,7 +65,7 @@ class V4SubmissionTemplates < ActiveRecord::Migration
   end
 
   def self.seq_v4_for(pipeline)
-    @hash ||= Hash.new {|h,i| h[i]= [RequestType.find_by_key("#{i.underscore}_hiseq_2500_v4_paired_end_sequencing").id]}
+    @hash ||= Hash.new {|h,i| h[i]= [RequestType.find_by_key("#{i.underscore}_hiseq_v4_paired_end_sequencing").id]}
     @hash[pipeline]
   end
 end
