@@ -1,11 +1,5 @@
 module RequestType::Validation
 
-  # def self.included(base)
-  #   base.class_eval do
-  #     delegate :delegate_validator, :to => :request_class
-  #   end
-  # end
-
   def delegate_validator
     DelegateValidation::CompositeValidator::CompositeValidator(request_class.delegate_validator,request_type_validator)
   end

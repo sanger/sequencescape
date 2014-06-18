@@ -210,6 +210,6 @@ Given /^(the plate .+) will pool into 1 tube$/ do |plate|
   plate.wells.in_column_major_order.each do |well|
     RequestType.transfer.create!(:asset => stock_well, :target_asset => well, :submission => submission)
     well.stock_wells.attach!([stock_well])
-    LibraryCreationRequest.create!(:asset => stock_well, :target_asset => well, :submission => submission, :sti_type=>'Request', :request_metadata_attributes=>{:fragment_size_required_from=>20,:fragment_size_required_to=>30})
+    LibraryCreationRequest.create!(:request_type=>RequestType.find_by_request_class_name_and_deprecated('LibraryCreationRequest',false),:asset => stock_well, :target_asset => well, :submission => submission, :sti_type=>'Request', :request_metadata_attributes=>{:fragment_size_required_from=>20,:fragment_size_required_to=>30})
   end
 end

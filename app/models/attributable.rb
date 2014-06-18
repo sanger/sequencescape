@@ -28,7 +28,7 @@ module Attributable
 
   def instance_defaults
     self.class.attribute_details.inject({}) do |hash, attribute|
-      hash.tap { hash[ attribute.name ] = attribute.default_from(self) if attribute.method? }
+      hash.tap { hash[ attribute.name ] = attribute.default_from(self) if attribute.runtime_default? }
     end
   end
 
@@ -45,7 +45,9 @@ module Attributable
    end
 
   def field_infos
-    self.class.attribute_details.map(&:to_field_info)
+    self.class.attribute_details.map do |detail|
+      detail.to_field_info(nil,self)
+    end
   end
 
   def required?(field)
@@ -207,12 +209,24 @@ module Attributable
       @options.key?(:boolean)
     end
 
-    def selection?
+    def fixed_selection?
       @options.key?(:in)
+    end
+
+    def runtime_selection?
+      @options.key?(:from)
+    end
+
+    def selection?
+      fixed_selection?||runtime_selection?
     end
 
     def method?
       @options.key?(:with_method)
+    end
+
+    def runtime_default?
+      @options.key?(:default_lookup)
     end
 
     def validate_method
@@ -235,6 +249,10 @@ module Attributable
       valid_format
     end
 
+    def selection_includes
+      @options[:from]
+    end
+
     def configure(model)
       conditions = @options.slice(:if)
       save_blank_value = @options.delete(:save_blank)
@@ -247,8 +265,13 @@ module Attributable
           required.validates_inclusion_of(name, :in => [true, false]) if self.boolean?
           required.validates_numericality_of(name, :only_integer => true) if self.numeric?
           required.validates_numericality_of(name, :greater_than => 0) if self.float?
-          required.validates_inclusion_of(name, :in => self.selection_values, :allow_false => true) if self.selection?
+          required.validates_inclusion_of(name, :in => self.selection_values, :allow_false => true) if self.fixed_selection?
           required.validates_format_of(name, :with => self.valid_format) if self.valid_format?
+          required.validate do |record|
+            valid = record.send(selection_includes).include?(record.send(name))
+            record.errors.add(name,"is not in the list") unless valid
+            valid
+          end if self.runtime_selection?
           required.validate(self.validate_method) if self.method?
         end
       end
@@ -281,15 +304,15 @@ module Attributable
       end
     end
 
-    def to_field_info(object = nil)
+    def to_field_info(object = nil, metadata = nil)
       options = {
         # TODO[xxx]: currently only working for metadata, the only place attributes are used
         :display_name  => Attribute::find_display_name(@owner,  name),
         :key           => self.name,
-        :default_value => object.try(self.name) || self.default,
+        :default_value => default_from(metadata) || object.try(self.name) || self.default,
         :kind          => FieldInfo::TEXT
       }
-      options.update(:kind => FieldInfo::SELECTION, :selection => self.selection_values) if self.selection?
+      options.update(:kind => FieldInfo::SELECTION, :selection => self.selection_values||metadata.try(selection_includes)||[]) if self.selection?
       FieldInfo.new(options)
     end
   end
