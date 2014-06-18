@@ -3,7 +3,7 @@ class AddX10Pipelines < ActiveRecord::Migration
     ActiveRecord::Base.transaction do
       ['(spiked in controls)','(no controls)'].each do |type|
         SequencingPipeline.create!(
-          :name => "HiSeq 2500 X Ten PE #{type}",
+          :name => "HiSeq X Ten PE #{type}",
             :automated => false,
             :active => true,
             :location => Location.find_by_name("Cluster formation freezer"),
@@ -18,7 +18,7 @@ class AddX10Pipelines < ActiveRecord::Migration
             :control_request_type_id => 0
           ) do |pipeline|
             pipeline.workflow = clone_workflow(type)
-            pipeline.request_types = ["a", "b"].map {|pipelinetype| RequestType.find_by_key("illumina_#{pipelinetype}_hiseq_x_ten_paired_end_sequencing")}
+            pipeline.request_types = ["a", "b"].map {|pipelinetype| RequestType.find_by_key("illumina_#{pipelinetype}_hiseq_xten_paired_end_sequencing")}
           end
       end
     end
@@ -26,11 +26,15 @@ class AddX10Pipelines < ActiveRecord::Migration
 
   def self.down
     ActiveRecord::Base.transaction do
-      ['(spiked in controls)','(no controls)'].each do |type|      
-        SequencingPipeline.find_by_name("HiSeq X Ten PE #{type}").tap do |pipeline|
+      ['(spiked in controls)','(no controls)'].each do |type|
+        pipeline = SequencingPipeline.find_by_name("HiSeq X Ten PE #{type}")
+        unless pipeline.nil?
           pipeline.workflow.tasks.each {|t| t.descriptors.each(&:destroy); t.destroy }
-          pipeline.workflow.destroy
-        end.destroy
+          unless pipeline.workflow.nil?
+            pipeline.workflow.destroy
+          end
+          pipeline.destroy
+        end
       end
     end
   end
@@ -39,6 +43,10 @@ class AddX10Pipelines < ActiveRecord::Migration
     wf = LabInterface::Workflow.find_by_name("Cluster formation PE HiSeq (no control)#{type=='(spiked in controls)'? ' '+type : '' }") ||
         LabInterface::Workflow.find_by_name("HiSeq Cluster formation PE #{type}")
         
-    wf.deep_copy("_suf", true).tap {|val| val.name="HiSeq X Ten PE #{type}" ; val.save! }
+    wf.deep_copy("_suf", true).tap do |val| 
+      val.tasks = val.tasks.select {|task| task.name.match(/Quality control/).nil? } 
+      val.name="HiSeq X Ten PE #{type}" 
+      val.save!
+    end
   end
 end

@@ -20,7 +20,10 @@ class AddX10RequestType < ActiveRecord::Migration
   def self.down
     ActiveRecord::Base.transaction do
       ['a', 'b'].each do |pipeline|
-        RequestType.find_by_key("illumina_#{pipeline}_hiseq_x_ten_paired_end_sequencing").destroy
+        request_type = RequestType.find_by_key("illumina_#{pipeline}_hiseq_xten_paired_end_sequencing")
+        if !request_type.nil?
+          request_type.destroy
+        end
       end
     end
   end
