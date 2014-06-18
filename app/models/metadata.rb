@@ -116,7 +116,8 @@ private
     before_validation_on_create :merge_instance_defaults
 
     def merge_instance_defaults
-      self.attributes = self.attributes.reverse_merge(instance_defaults)
+      # Replace attributes with the default if the value is nil
+      self.attributes = instance_defaults.merge(self.attributes.symbolize_keys) {|key, default, attribute| attribute||default}
     end
 
     include Attributable
