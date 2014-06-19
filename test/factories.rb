@@ -374,6 +374,14 @@ Factory.define :sequencing_request_type, :class => RequestType do |rt|
   rt.request_class  SequencingRequest
   rt.order          1
   rt.workflow    {|workflow| workflow.association(:submission_workflow)}
+  rt.after_build {|request_type|
+    request_type.request_type_validators << Factory(:sequencing_request_type_validator, :request_type=>request_type)
+  }
+end
+
+Factory.define :sequencing_request_type_validator, :class => RequestType::Validator do |rtv|
+  rtv.request_option 'read_length'
+  rtv.valid_options [37, 54, 76, 108]
 end
 
 Factory.define :multiplexed_library_creation_request_type, :class => RequestType do |rt|

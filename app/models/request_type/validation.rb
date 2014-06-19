@@ -6,15 +6,19 @@ module RequestType::Validation
 
   def request_type_validator
     request_type = self
-    Class.new(LibraryTypeValidator) do
-      validates_inclusion_of :library_type, :in => request_type.library_types.map(&:name), :if => :library_types_present?
-      delegate_attribute :library_type, :to => :target, :default => request_type.default_library_type.try(:name)
+
+    Class.new(RequestTypeValidator) do
+      request_type.request_type_validators.each do |validator|
+        validates_inclusion_of :"#{validator.request_option}", :in => validator.valid_options, :if => :"#{validator.request_option}_needs_checking?"
+        delegate_attribute(:"#{validator.request_option}", :to => :target, :default => validator.default, :type_cast => validator.type_cast)
+      end
     end.tap do |sub_class|
       sub_class.write_inheritable_attribute(:request_type, request_type)
     end
+
   end
 
-  class LibraryTypeValidator < DelegateValidation::Validator
+  class RequestTypeValidator < DelegateValidation::Validator
     class_inheritable_reader :request_type
     write_inheritable_attribute :request_type, nil
 

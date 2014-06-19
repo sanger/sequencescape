@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140606141347) do
+ActiveRecord::Schema.define(:version => 20140617110119) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -994,6 +994,14 @@ ActiveRecord::Schema.define(:version => 20140606141347) do
   end
 
   add_index "request_type_plate_purposes", ["request_type_id", "plate_purpose_id"], :name => "plate_purposes_are_unique_within_request_type", :unique => true
+
+  create_table "request_type_validators", :force => true do |t|
+    t.integer  "request_type_id", :null => false
+    t.string   "request_option",  :null => false
+    t.text     "valid_options",   :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "request_types", :force => true do |t|
     t.string   "key",                :limit => 100
