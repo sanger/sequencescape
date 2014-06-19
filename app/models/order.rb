@@ -143,13 +143,14 @@ class Order < ActiveRecord::Base
   delegate :left_building_state?, :to => :submission, :allow_nil => true
 
   def create_request_of_type!(request_type, attributes = {}, &block)
+    em = request_type.extract_metadata_from_hash(request_options)
     request_type.create!(attributes) do |request|
       request.submission_id               = submission_id
       request.workflow                    = workflow
       request.study                       = study
       request.initial_project             = project
       request.user                        = user
-      request.request_metadata_attributes = request_type.extract_metadata_from_hash(request_options)
+      request.request_metadata_attributes = em
       request.state                       = initial_request_state(request_type)
       request.order                       = self
 
@@ -216,14 +217,23 @@ class Order < ActiveRecord::Base
     request_types_list.flatten.each do |request_type|
       request_type.request_class::Metadata.attribute_details.each do |att|
         old_attribute = attributes[att.name]
-        attributes[att.name] = att unless old_attribute and old_attribute.required? # required attributes have a priority
+        attributes[att.name] = [att,mock_metadata_for(request_type)] unless old_attribute and old_attribute.first.required? # required attributes have a priority
       end
       request_type.request_class::Metadata.association_details.each do |att|
-        attributes[att.name] = att
+        attributes[att.name] = [att,mock_metadata_for(request_type)]
       end
     end
 
     attributes.values
+  end
+
+  def mock_metadata_for(request_type)
+    # We have to create a mocked Metadata to point back at the appropriate request class, as request options
+    # are no longer hardcoded in RequestClasses. This is a bit messy, but the tendrils of the old system went
+    # deep. In hindsight it would probably have been easier to either:
+    # a) Start from scratch
+    # b) Not bother
+    request_type.request_class::Metadata.new(:request=>request_type.request_class.new(:request_type=>request_type))
   end
 
   # Return the list of input fields to edit when creating a new submission
@@ -254,7 +264,9 @@ class Order < ActiveRecord::Base
 
 
   def compute_input_field_infos()
-    request_attributes.uniq.map(&:to_field_info)
+    request_attributes.uniq.map do |att,meta|
+      att.to_field_info(meta)
+    end
   end
   protected :compute_input_field_infos
 
