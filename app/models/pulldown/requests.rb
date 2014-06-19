@@ -2,9 +2,6 @@ module Pulldown::Requests
   module BaitLibraryRequest
     def self.included(base)
       base.class_eval do
-        const_set(:DEFAULT_LIBRARY_TYPE, 'Agilent Pulldown')
-        const_set(:LIBRARY_TYPES, [ 'Agilent Pulldown' ])
-
         fragment_size_details(100, 400)
       end
       base::Metadata.class_eval do
@@ -40,9 +37,6 @@ module Pulldown::Requests
   end
 
   class WgsLibraryRequest < LibraryCreation
-    DEFAULT_LIBRARY_TYPE = 'Standard'
-    LIBRARY_TYPES        = [ DEFAULT_LIBRARY_TYPE ]
-
     fragment_size_details(300, 500)
   end
 
