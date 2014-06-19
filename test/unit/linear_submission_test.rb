@@ -81,6 +81,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
                 :request_types    => @mpx_request_type_ids,
                 :request_options  => @request_options
               )
+
               @multiple_mpx_submission.process!
             end
 

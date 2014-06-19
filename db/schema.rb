@@ -996,6 +996,14 @@ ActiveRecord::Schema.define(:version => 20140724111927) do
 
   add_index "request_type_plate_purposes", ["request_type_id", "plate_purpose_id"], :name => "plate_purposes_are_unique_within_request_type", :unique => true
 
+  create_table "request_type_validators", :force => true do |t|
+    t.integer  "request_type_id", :null => false
+    t.string   "request_option",  :null => false
+    t.text     "valid_options",   :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "request_types", :force => true do |t|
     t.string   "key",                :limit => 100
     t.string   "name"
