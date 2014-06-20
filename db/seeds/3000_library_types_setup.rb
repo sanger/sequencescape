@@ -58,7 +58,8 @@ RequestType.find_each do |request_type|
       'illumina_c_hiseq_2500_paired_end_sequencing' => [75,100],
       'illumina_a_hiseq_2500_single_end_sequencing' => [50],
       'illumina_b_hiseq_2500_single_end_sequencing' => [50],
-      'illumina_c_hiseq_2500_single_end_sequencing' => [50]
+      'illumina_c_hiseq_2500_single_end_sequencing' => [50],
+      'illumina_b_hiseq_xten_paired_end_sequencing' => [150]
       }[request_type.key]||{
     # By request class
       'HiSeqSequencingRequest' => [50, 75, 100],

@@ -4,7 +4,9 @@ class AddV4SubmissionTemplates < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
       outlines do |template|
-        SubmissionTemplate.create!(template)
+        puts "begin template creation"
+        val = SubmissionTemplate.create!(template)
+        puts "template created", val
       end
     end
   end
