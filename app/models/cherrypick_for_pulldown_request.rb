@@ -46,6 +46,8 @@ class CherrypickForPulldownRequest < TransferRequest
     # Do nothing
   end
 
+  alias_method :on_cancelled, :on_failed
+
   def perform_transfer_of_contents
     on_started # Ensures we set the study/project
   end
