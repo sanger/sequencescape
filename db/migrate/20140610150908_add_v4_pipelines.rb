@@ -36,7 +36,7 @@ class AddV4Pipelines < ActiveRecord::Migration
   end
   
   def self.clone_workflow(type)
-    wf = LabInterface::Workflow.find_by_name("Cluster formation PE HiSeq (no control)#{type=='(spiked in controls)'? ' '+type : '' }") ||
+    wf = LabInterface::Workflow.find_by_name("Cluster formation PE HiSeq (no control)#{type=='(spiked in controls)'? ' (spiked in control)' : '' }") ||
         LabInterface::Workflow.find_by_name("HiSeq Cluster formation PE #{type}")
         
     wf.deep_copy("_suf", true).tap do |val|
