@@ -1,10 +1,25 @@
-ActiveRecord::Base.transaction do
-  def outlines
+  outlines=
     [
       {:pipeline=>'Illumina-A', :name => 'Pulldown WGS',    :infos=>'wgs',  :request_types=>['illumina_a_pulldown_wgs']},
-      {:pipeline=>'Illumina-B', :name => 'Pooled HWGS',     :infos=>'was', :request_types=>['illumina_b_shared', 'illumina_b_pool'],   :role=>'ILB HWGS' },
-      {:pipeline=>'Illumina-B', :name => 'Pippin HWGS',     :infos=>'was', :request_types=>['illumina_b_shared', 'illumina_b_pippin'], :role=>'ILB HWGS' }
-    ].each do |outline|
+      {:pipeline=>'Illumina-B', :name => 'Pooled HWGS',     :infos=>'full', :request_types=>['illumina_b_shared', 'illumina_b_pool'],   :role=>'ILB HWGS' },
+      {:pipeline=>'Illumina-B', :name => 'Pippin HWGS',     :infos=>'full', :request_types=>['illumina_b_shared', 'illumina_b_pippin'], :role=>'ILB HWGS' }
+    ].map do |outline|
+      
+      def infos(type)
+        Hiseq2500Helper.input_fields(['150'],{
+          'wgs'  => ["Standard"],
+          'isc'  => ["Agilent Pulldown"],
+          'full' => ["NlaIII gene expression","Standard","Long range","Small RNA","DpnII gene expression","qPCR only",
+                    "High complexity and double size selected","Illumina cDNA protocol","Custom","High complexity",
+                    "Double size selected","No PCR","Agilent Pulldown","ChiP-seq","Pre-quality controlled"]
+          }[type])
+      end
+    
+      def seq_x10_for(pipeline)
+        hash ||= Hash.new {|h,i| h[i]= [RequestType.find_by_key("#{i.underscore}_hiseq_xten_paired_end_sequencing").id]}
+        hash[pipeline]
+      end
+      
       paras = {
           :input_field_infos => infos(outline[:infos]),
           :request_type_ids_list => outline[:request_types].map {|rt| [RequestType.find_by_key!(rt).id] } << seq_x10_for(outline[:pipeline]),
@@ -17,26 +32,10 @@ ActiveRecord::Base.transaction do
         :submission_parameters => paras,
         :product_line_id => ProductLine.find_by_name!(outline[:pipeline]).id
       }
-      yield(template)
+      template
     end
-  end
       
-  def infos(type)
-    Hiseq2500Helper.input_fields(['150'],{
-      'wgs'  => ["Standard"],
-      'isc'  => ["Agilent Pulldown"],
-      'full' => ["NlaIII gene expression","Standard","Long range","Small RNA","DpnII gene expression","qPCR only",
-                "High complexity and double size selected","Illumina cDNA protocol","Custom","High complexity",
-                "Double size selected","No PCR","Agilent Pulldown","ChiP-seq","Pre-quality controlled"]
-      }[type])
-  end
-
-  def seq_x10_for(pipeline)
-    @hash ||= Hash.new {|h,i| h[i]= [RequestType.find_by_key("#{i.underscore}_hiseq_xten_paired_end_sequencing").id]}
-    @hash[pipeline]
-  end
   
-  outlines do |template|
+  outlines.each do |template|
     SubmissionTemplate.create!(template)
   end
-end
