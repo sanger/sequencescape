@@ -59,6 +59,10 @@ RequestType.find_each do |request_type|
       'illumina_a_hiseq_2500_single_end_sequencing' => [50],
       'illumina_b_hiseq_2500_single_end_sequencing' => [50],
       'illumina_c_hiseq_2500_single_end_sequencing' => [50],
+      'illumina_a_hiseq_v4_paired_end_sequencing' => [75,125],
+      'illumina_b_hiseq_v4_paired_end_sequencing' => [75,125],
+      'illumina_c_hiseq_v4_paired_end_sequencing' => [75,125],      
+      'illumina_a_hiseq_xten_paired_end_sequencing' => [150],
       'illumina_b_hiseq_xten_paired_end_sequencing' => [150]
       }[request_type.key]||{
     # By request class
@@ -71,3 +75,17 @@ RequestType.find_each do |request_type|
     RequestType::Validator.create!(:request_type=>request_type,:request_option=>'read_length',:valid_options=>read_lengths)
   end
 end
+
+['a', 'b', 'c'].each do |pipeline|
+  rt = RequestType.find_by_key("illumina_#{pipeline}_hiseq_v4_paired_end_sequencing")
+  RequestType::Validator.create!(:request_type => rt, :request_option=> "read_length", :valid_options=>[125,75])
+end
+
+
+['a', 'b'].each do |pipeline|
+  rt = RequestType.find_by_key!("illumina_#{pipeline}_hiseq_xten_paired_end_sequencing")
+  RequestType::Validator.create!(:request_type => rt, :request_option=> "read_length", :valid_options=>[150])
+  rt.library_types << LibraryType.find_by_name('Standard')
+  RequestType::Validator.create!(:request_type=>rt, :request_option=> "library_type", :valid_options=>RequestType::Validator::LibraryTypeValidator.new(rt.id))
+end
+
