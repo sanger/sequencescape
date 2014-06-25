@@ -17,6 +17,13 @@ namespace :db do
     task :schema_load => :environment  do
       require './db/views_schema'
     end
-
   end
+end
+
+Rake::Task['db:schema:dump'].enhance do
+  Rake::Task['db:views:dump_schema'].invoke
+end
+
+Rake::Task['db:schema:load'].enhance do
+  Rake::Task['db:views:schema_load'].invoke
 end
