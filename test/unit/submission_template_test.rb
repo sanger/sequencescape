@@ -69,6 +69,18 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
         end
       end
     end
+    context "without input_field_infos" do
+      setup do
+        @test_request_type = Factory :sequencing_request_type
+        @order.request_types = [@test_request_type]
+        @order.request_type_ids_list = [[@test_request_type.id]]
+      end
+
+      should "load the parameters properly" do
+        assert_equal 3, @order.input_field_infos.size
+        assert_equal [37, 54, 76, 108], @order.input_field_infos.last.selection
+      end
+    end
   end
 end
 
