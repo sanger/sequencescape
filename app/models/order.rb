@@ -252,7 +252,8 @@ class Order < ActiveRecord::Base
     # deep. In hindsight it would probably have been easier to either:
     # a) Start from scratch
     # b) Not bother
-    request_type.request_class::Metadata.new(:request=>request_type.request_class.new(:request_type=>request_type))
+    mock_request = request_type.request_class.new(:request_type=>request_type)
+    request_type.request_class::Metadata.new(:request=>mock_request,:owner=>mock_request)
   end
 
   # Return the list of input fields to edit when creating a new submission
@@ -284,7 +285,7 @@ class Order < ActiveRecord::Base
 
   def compute_input_field_infos()
     request_attributes.uniq.map do |att,meta|
-      att.to_field_info(meta)
+      att.to_field_info(nil,meta)
     end
   end
   protected :compute_input_field_infos
