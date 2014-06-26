@@ -2,7 +2,7 @@ namespace :db do
   namespace :views do
     desc 'Export the views to a schema file'
     task :dump_schema => :environment do
-      File.open('./db/views_schema.rb','w') do |schema|
+      File.open('./db/views_schema.tmp','w') do |schema|
         schema.puts "# This is an automatically generated file by rake:db:views:dump_schema"
         ViewsSchema.each_view do |name,definition|
           schema.puts "ViewsSchema.create_view("
@@ -11,6 +11,9 @@ namespace :db do
           schema.puts ')'
         end
       end
+      File.delete('./db/views_schema.old')
+      File.rename('./db/views_schema.rb','./db/views_schema.old')
+      File.rename('./db/views_schema.tmp','./db/views_schema.rb')
     end
 
     desc 'Reload the dumped schema'
