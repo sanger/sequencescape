@@ -6,7 +6,7 @@ module Batch::RequestBehaviour
 
       # For backwards compatibility
       def batch_requests; [batch_request].compact ; end
-      def batches; [batch_request].compact ; end
+      def batches; [batch].compact ; end
 
 
       # Identifies all requests that are not part of a batch.
