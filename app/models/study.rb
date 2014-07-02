@@ -415,14 +415,14 @@ class Study < ActiveRecord::Base
   # Yields information on the state of all assets in a convenient fashion for displaying in a table.
   def asset_progress(assets = nil, &block)
     conditions = { }
-    conditions[:having] = "asset_id IN (#{assets.map(&:id).join(',')})" unless assets.blank?
+    conditions[:conditions] = "asset_id IN (#{assets.map(&:id).join(',')})" unless assets.blank?
     yield(self.initial_requests.asset_statistics(conditions))
   end
 
   # Yields information on the state of all samples in a convenient fashion for displaying in a table.
   def sample_progress(samples = nil, &block)
     conditions = { }
-    conditions[:having] = "sample_id IN (#{samples.map(&:id).join(',')})" unless samples.blank?
+    conditions[:conditions] = ["sample_id IN (#{samples.map(&:id).join(',')})"] unless samples.blank?
     yield(self.requests.sample_statistics(conditions))
   end
 
