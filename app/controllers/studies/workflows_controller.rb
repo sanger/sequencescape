@@ -98,8 +98,9 @@ class Studies::WorkflowsController < ApplicationController
 
   def compute_total_request(study)
     total_requests = { }
+    report =  @study.total_requests_report
     @workflow.request_types.each do |rt|
-      total_requests[rt] = @study.total_requests(rt)
+      total_requests[rt] = report[rt.id]||0
     end
     total_requests
   end
