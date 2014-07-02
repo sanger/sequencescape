@@ -387,9 +387,13 @@ class Study < ActiveRecord::Base
     end
   end
 
-  def completed
-    if (self.requests.size - self.requests.failed.size - self.requests.cancelled.size) > 0
-      completed_percent = ((self.requests.passed.size.to_f / (self.requests.size - self.requests.failed.size - self.requests.cancelled.size).to_f)*100)
+  def completed(workflow=nil)
+    rts = workflow.present? ? workflow.request_types.map(&:id) : RequestType.all.map(&:id)
+    total = self.requests.request_type(rts).count
+    failed = self.requests.failed.request_type(rts).count
+    cancelled = self.requests.cancelled.request_type(rts).count
+    if (total - failed - cancelled) > 0
+      completed_percent = ((self.requests.passed.request_type(rts).count.to_f / (total - failed - cancelled).to_f)*100)
       completed_percent.to_i
     else
       return 0
