@@ -68,6 +68,8 @@ class Studies::WorkflowsController < ApplicationController
         @cache.merge!(:passed => @passed_asset_request, :failed => @failed_asset_request)
         render :partial => "asset_progress"
       when "Summary"
+        @page_elements= @study.assets_through_requests.for_summary.paginate(page_params)
+        asset_ids = @page_elements.map { |e| e.id }
         render :partial => "summary"
       else
         @request_type = @request_types[@summary - @basic_tabs.size]
