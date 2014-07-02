@@ -156,6 +156,7 @@ class Request < ActiveRecord::Base
       case
       when request_type.nil? then nil   # TODO: Are the pipelines with nil request_type_id really nil?
       when request_type.is_a?(Fixnum), request_type.is_a?(String) then request_type
+      when request_type.is_a?(Array) then request_type
       else request_type.id
       end
     {:conditions => { :request_type_id => id} }
@@ -218,13 +219,22 @@ class Request < ActiveRecord::Base
   named_scope :for_asset_id, lambda { |id| { :conditions => { :asset_id => id } } }
   named_scope :for_study_ids, lambda { |ids|
     {
-      :joins =>  %Q(
-      INNER JOIN (assets AS a, aliquots AS al)
-       ON (requests.asset_id = a.id
-           AND  al.receptacle_id = a.id
-           AND al.study_id IN (#{ids.join(", ")}))
-             ),
-       :group => "requests.id"
+      :joins =>  'INNER JOIN aliquots AS al ON requests.asset_id = al.receptacle_id',
+      :group => "requests.id",
+      :conditions =>['al.study_id IN (?)',ids]
+    }
+  } do
+    #fix a bug in rail, the group clause if removed
+    #therefor we need to the DISTINCT parameter
+    def count
+      super('requests.id',:distinct =>true)
+    end
+  end
+  named_scope :for_study_id, lambda { |id|
+    {
+      :joins =>  'INNER JOIN aliquots AS al ON requests.asset_id = al.receptacle_id',
+      :group => "requests.id",
+      :conditions =>['al.study_id = ?',id]
     }
   } do
     #fix a bug in rail, the group clause if removed
@@ -234,9 +244,6 @@ class Request < ActiveRecord::Base
     end
   end
 
-  def self.for_study_id (study_id)
-    for_study_ids([study_id])
-  end
   def self.for_study(study)
     Request.for_study_id(study.id)
   end
