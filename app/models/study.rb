@@ -405,7 +405,7 @@ class Study < ActiveRecord::Base
   end
 
   def orders_for_workflow(workflow)
-    self.orders.select {|s| s.workflow.id == workflow.id}
+    self.orders.find(:all,:conditions=>{:workflow_id=>workflow})
   end
   # Yields information on the state of all request types in a convenient fashion for displaying in a table.
   def request_progress(&block)
