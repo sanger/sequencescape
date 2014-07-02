@@ -78,7 +78,7 @@ class Study < ActiveRecord::Base
 
   has_many :aliquots
   has_many :assets_through_aliquots, :class_name => "Asset", :through => :aliquots, :source => :receptacle, :uniq => :true
-  has_many :assets_through_requests, :class_name => "Asset", :through => :requests, :source => :asset, :uniq => :true
+  has_many :assets_through_requests, :class_name => "Asset", :through => :initial_requests, :source => :asset, :uniq => :true
 
   has_many :items , :through => :requests, :uniq => true
 
