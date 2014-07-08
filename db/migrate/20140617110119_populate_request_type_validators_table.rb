@@ -37,6 +37,13 @@ class PopulateRequestTypeValidatorsTable < ActiveRecord::Migration
   end
 
   def self.read_lengths_for(request_type)
+    return false if [
+      'illumina_a_hiseq_v4_paired_end_sequencing',
+      'illumina_b_hiseq_v4_paired_end_sequencing',
+      'illumina_c_hiseq_v4_paired_end_sequencing',
+      'illumina_a_hiseq_xten_paired_end_sequencing',
+      'illumina_b_hiseq_xten_paired_end_sequencing'
+    ].include?(request_type.key)
     # By Key
     {
       'illumina_a_hiseq_2500_paired_end_sequencing' => [75,100],
