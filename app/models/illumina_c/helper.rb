@@ -2,7 +2,7 @@ module IlluminaC::Helper
 
   require 'hiseq_2500_helper'
 
-  ACCEPTABLE_REQUEST_TYPES = ['illumina_c_pcr','illumina_c_nopcr']
+  ACCEPTABLE_REQUEST_TYPES = ['illumina_c_pcr','illumina_c_nopcr', 'illumina_c_multiplexing']
   ACCEPTABLE_SEQUENCING_REQUESTS = [
     'illumina_c_single_ended_sequencing',
     'illumina_c_paired_end_sequencing',
@@ -23,13 +23,14 @@ module IlluminaC::Helper
     #   :role => The role that will be printed on barcodes
     #   :type => 'illumina_c_pcr'||'illumina_c_nopcr'
     # }
-    attr_accessor :name, :type, :role
+    attr_accessor :name, :type, :role, :skip_cherrypick
     attr_reader :sequencing
 
     def initialize(params)
       self.name = params[:name]
       self.type = params[:type]
       self.role = params[:role]
+      self.skip_cherrypick = params[:skip_cherrypick]
       self.sequencing = params[:sequencing]||ACCEPTABLE_SEQUENCING_REQUESTS
     end
 
@@ -67,8 +68,12 @@ module IlluminaC::Helper
       ids << [RequestType.find_by_key(type).id] << [sequencing.id]
     end
 
+    def cherrypick_options
+      [!skip_cherrypick,false].uniq
+    end
+
     def each_submission_template
-      [true,false].each do |cherrypick|
+      cherrypick_options.each do |cherrypick|
         sequencing.each do |sequencing_request_type|
           yield({
             :name => name_for(cherrypick,sequencing_request_type),
@@ -87,7 +92,7 @@ module IlluminaC::Helper
         :order_role_id => Order::OrderRole.find_or_create_by_role(role).id,
         :info_differential => Submission::Workflow.find_by_key('short_read_sequencing').id
       }
-      return sp if ['illumina_c_single_ended_sequencing','illumina_c_paired_end_sequencing'].include?(sequencing.key)
+      return sp if ['illumina_c_single_ended_sequencing','illumina_c_paired_end_sequencing'].include?(sequencing.key) || type == 'illumina_c_multiplexing'
       sp.merge({
         :input_field_infos => Hiseq2500Helper.input_fields(sizes_for(sequencing),library_types)
       })

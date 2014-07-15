@@ -283,3 +283,44 @@ Feature: Access transfer templates through the API
       }
       """
 
+  @transfer @create @authenticated
+  Scenario: Creating a transfer from a transfer template by multiplex request
+    Given the multiplex transfer template called "Test transfers" exists
+      And the UUID for the transfer template "Test transfers" is "00000000-1111-2222-3333-444444444444"
+
+    Given a source transfer plate called "Source plate" exists
+      And the plate "Source plate" is a "ILC Lib PCR-XP"
+      And the plate "Source plate" has additional wells
+      And the UUID for the plate "Source plate" is "11111111-2222-3333-4444-000000000001"
+
+    Given "A1-B1" of the plate "Source plate" have been submitted to "Illumina-C Multiplex - HiSeq Paired end sequencing"
+    And   "C1-D1" of the plate "Source plate" have been submitted to "Illumina-C Multiplex - HiSeq Paired end sequencing"
+
+    And all multiplexed library tubes have sequential UUIDs based on "00000000-1111-2222-3333-9999"
+
+    When I make an authorised POST with the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
+      """
+      {
+        "transfer": {
+          "source": "11111111-2222-3333-4444-000000000001"
+        }
+      }
+      """
+    Then the HTTP response should be "201 Created"
+     And the JSON should match the following for the specified fields:
+      """
+      {
+        "transfer": {
+          "source": {
+            "uuid": "11111111-2222-3333-4444-000000000001"
+          },
+          "transfers": {
+            "A1": { "uuid": "00000000-1111-2222-3333-999900000001" },
+            "B1": { "uuid": "00000000-1111-2222-3333-999900000001" },
+            "C1": { "uuid": "00000000-1111-2222-3333-999900000002" },
+            "D1": { "uuid": "00000000-1111-2222-3333-999900000002" }
+          }
+        }
+      }
+      """
+
