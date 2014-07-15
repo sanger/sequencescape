@@ -13,7 +13,9 @@ module Submission::DelayedJobBehaviour
   end
 
   def build_batch
+  ActiveRecord::Base.transaction do
     finalize_build!
+  end
   rescue Submission::ProjectValidation::Error => project_exception
     fail_set_message_and_save(project_exception.message)
   rescue ActiveRecord::StatementInvalid => sql_exception
