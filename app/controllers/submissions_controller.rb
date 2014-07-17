@@ -44,6 +44,8 @@ class SubmissionsController < ApplicationController
   end
 
   def index
+    # Disable cache of this page
+    
     @building = Submission.building.find(:all, :order => "created_at DESC", :conditions => { :user_id => current_user.id })
     @pending = Submission.pending.find(:all, :order => "created_at DESC", :conditions => { :user_id => current_user.id })
     @ready = Submission.ready.find(:all, :limit => 10, :order => "created_at DESC", :conditions => { :user_id => current_user.id })
