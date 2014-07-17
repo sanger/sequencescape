@@ -22,10 +22,10 @@ class AddX10SubmissionTemplates < ActiveRecord::Migration
 
   def self.outlines
     [
-    {:pipeline=>'Illumina-A', :name => 'Pulldown WGS',    :infos=>'wgs',  :request_types=>['illumina_a_pulldown_wgs']},
-      
-    {:pipeline=>'Illumina-B', :name => 'Pooled HWGS',     :infos=>'full', :request_types=>['illumina_b_shared', 'illumina_b_pool'],   :role=>'ILB HWGS' },
-    {:pipeline=>'Illumina-B', :name => 'Pippin HWGS',     :infos=>'full', :request_types=>['illumina_b_shared', 'illumina_b_pippin'], :role=>'ILB HWGS' }
+    {:pipeline=>'Illumina-A', :name => 'Pippin WGS',      :infos=>'full',  :request_types=>['illumina_a_shared', 'illumina_a_pippin'],   :role=>'ILA WGS'},
+
+    {:pipeline=>'Illumina-B', :name => 'Pooled HWGS',     :infos=>'full', :request_types=>['illumina_b_shared', 'illumina_b_pool'],   :role=>'HWGS' },
+    {:pipeline=>'Illumina-B', :name => 'Pippin HWGS',     :infos=>'full', :request_types=>['illumina_b_shared', 'illumina_b_pippin'], :role=>'HWGS' }
 
     ].each do |outline|
       paras = {
