@@ -136,7 +136,7 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
       raise StandardError, "Could not find #{db_file}" unless File.exists?(db_file)
 
       puts "Importing production information..."
-      `pv -per #{db_file} | gunzip -c | ruby ~/projects/james/sequencescape_2/lib/tasks/sql_filter.rb | ./script/dbconsole`
+      `pv -per #{db_file} | gunzip -c | ruby ./lib/tasks/sql_filter.rb | ./script/dbconsole -p`
       puts "Production imported."
 
       puts "Resetting primary key counters"
