@@ -9,15 +9,20 @@ class DataReleaseStudyType < ActiveRecord::Base
   named_scope :assay_types, { :conditions => { :is_assay_type => true } }
   named_scope :non_assay_types, { :conditions => { :is_assay_type => false } }
 
-  TYPES = ['genotyping or cytogenetics' ]
+  DATA_RELEASE_TYPES_SAMPLES = ['genotyping or cytogenetics' ]
+  DATA_RELEASE_TYPES_STUDIES = []
 
   def is_not_specified?
     false
   end
-
-  def include_type?
-    TYPES.include?(self.name)
+  
+  def studies_excluded_for_release?
+    DATA_RELEASE_TYPES_STUDIES.include?(self.name)
   end
+  
+  def samples_excluded_for_release?
+    DATA_RELEASE_TYPES_SAMPLES.include?(self.name)
+  end  
 
   def self.default
     first(:conditions => { :is_default => true })
