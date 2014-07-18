@@ -2,14 +2,19 @@ class SequencingRequest < Request
 
   extend Request::AccessioningRequired
 
-
-  READ_LENGTHS = [37, 54, 76, 108]
   has_metadata :as => Request  do
     #redundant with library creation , but THEY are using it .
     attribute(:fragment_size_required_from, :required =>true, :integer => true)
     attribute(:fragment_size_required_to, :required =>true, :integer =>true)
 
-    attribute(:read_length, :integer => true, :required => true, :in => READ_LENGTHS)
+    attribute(:read_length, { :integer => true, :from => :valid_read_lengths, :required => true })
+  end
+
+  SequencingRequest::Metadata.class_eval do
+    def valid_read_lengths
+      owner.request_type.request_type_validators.find(:first,:conditions=>{:request_option=>'read_length'}).try(:valid_options)||
+      raise(StandardError, "No read lengths specified for #{owner.request_type.name}")
+    end
   end
 
   before_validation :clear_cross_projects
@@ -29,9 +34,6 @@ class SequencingRequest < Request
   end
 
   class RequestOptionsValidator < DelegateValidation::Validator
-    delegate_attribute :read_length, :to => :target, :type_cast => :to_i
-    validates_inclusion_of :read_length, :in => SequencingRequest::READ_LENGTHS, :if => :read_length_needs_checking?
-
     delegate :fragment_size_required_from, :fragment_size_required_to, :to => :target
     validates_numericality_of :fragment_size_required_from, :integer_only => true, :greater_than => 0
     validates_numericality_of :fragment_size_required_to, :integer_only => true, :greater_than => 0

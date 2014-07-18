@@ -32,6 +32,10 @@ Factory.sequence :request_type_id do |n|
   n
 end
 
+Factory.sequence :library_type_id do |n|
+  n
+end
+
 Factory.sequence :billing_reference do |ref|
   ref.to_s
 end
@@ -335,19 +339,32 @@ Factory.define :request_type do |rt|
   rt.initial_state   "pending"
 end
 
+Factory.define :library_type do |lt|
+  lt_value = Factory.next :library_type_id
+  lt.name    "Standard"
+end
+
+Factory.define :library_types_request_type do |ltrt|
+  ltrt.library_type  {|library_type| library_type.association(:library_type)}
+  ltrt.is_default true
+end
+
 Factory.define :well_request_type, :parent => :request_type do |rt|
   rt.asset_type     'Well'
 end
 
 Factory.define :library_creation_request_type, :class => RequestType do |rt|
   rt_value = Factory.next :request_type_id
-  rt.name           "Request type #{rt_value}"
+  rt.name           "LC Request type #{rt_value}"
   rt.key            "request_type_#{rt_value}"
   rt.asset_type     "SampleTube"
   rt.target_asset_type "LibraryTube"
   rt.request_class  LibraryCreationRequest
   rt.order          1
   rt.workflow    {|workflow| workflow.association(:submission_workflow)}
+  rt.after_build {|request_type|
+    request_type.library_types_request_types << Factory(:library_types_request_type,:request_type=>request_type)
+  }
 end
 Factory.define :sequencing_request_type, :class => RequestType do |rt|
   rt_value = Factory.next :request_type_id
@@ -357,17 +374,28 @@ Factory.define :sequencing_request_type, :class => RequestType do |rt|
   rt.request_class  SequencingRequest
   rt.order          1
   rt.workflow    {|workflow| workflow.association(:submission_workflow)}
+  rt.after_build {|request_type|
+    request_type.request_type_validators << Factory(:sequencing_request_type_validator, :request_type=>request_type)
+  }
+end
+
+Factory.define :sequencing_request_type_validator, :class => RequestType::Validator do |rtv|
+  rtv.request_option 'read_length'
+  rtv.valid_options [37, 54, 76, 108]
 end
 
 Factory.define :multiplexed_library_creation_request_type, :class => RequestType do |rt|
   rt_value = Factory.next :request_type_id
-  rt.name               "Request type #{rt_value}"
+  rt.name               "MX Request type #{rt_value}"
   rt.key                "request_type_#{rt_value}"
   rt.request_class      MultiplexedLibraryCreationRequest
   rt.asset_type         "SampleTube"
   rt.order              1
   rt.for_multiplexing   true
   rt.workflow           { |workflow| workflow.association(:submission_workflow)}
+    rt.after_build {|request_type|
+    request_type.library_types_request_types << Factory(:library_types_request_type,:request_type=>request_type)
+  }
 end
 
 Factory.define :sample do |s|
