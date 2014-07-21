@@ -43,10 +43,10 @@ class Submission < ActiveRecord::Base
   named_scope :pending, :conditions => { :state => "pending" }
   named_scope :ready, :conditions => { :state => "ready" }
 
-  before_destroy :building?, :destroy_all_orders
+  before_destroy :building?, :empty_of_orders?
   
-  def destroy_all_orders
-    self.orders.map(&:delete).all?
+  def empty_of_orders?
+    self.orders.empty?
   end
       
   # Before destroying this instance we should cancel all of the requests it has made

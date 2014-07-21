@@ -41,14 +41,18 @@ class Order < ActiveRecord::Base
   belongs_to :submission, :inverse_of => :orders
   #validates_presence_of :submission
   
-  before_destroy :on_delete_handle_submission_dependency
+  before_destroy :is_building_submission?
+  after_destroy :on_delete_destroy_submission
   
-  def on_delete_handle_submission_dependency
-    submission = self.submission
-    if submission.building?
-      # Destroys the order and if it is the last order on it's submission
-      # destroy the submission too.      
-      orders = submission.orders
+  def is_building_submission?
+    self.submission.building?
+  end
+  
+  def on_delete_destroy_submission
+    if is_building_submission?
+      # After destroying an order, if it is the last order on it's submission
+      # destroy the submission too.
+      orders = self.submission.orders
       submission.destroy unless orders.size > 1
       return true
     end
