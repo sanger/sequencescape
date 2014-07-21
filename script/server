@@ -1,6 +1,3 @@
-#!/bin/bash -l
-puma --config ./config/puma.rb
-
-# #!/usr/bin/env ruby
-# require File.dirname(__FILE__) + '/../config/boot'
-# require 'commands/server'
+#!/usr/bin/env ruby
+require File.dirname(__FILE__) + '/../config/boot'
+require 'commands/server'
