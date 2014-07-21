@@ -126,7 +126,7 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
             'plate_creators','plate_purpose_relationships','plate_purposes','product_lines','project_managers',
             'reference_genomes','request_information_types','request_type_plate_purposes','request_type_validators',
             'request_types','robot_properties','robots','roles','roles_users','sample_manifest_templates','schema_migrations',
-            'study_relation_types','study_relations','study_types','subclass_attributes','submission_templates',
+            'searches','study_relation_types','study_relations','study_types','subclass_attributes','submission_templates',
             'submission_workflows','suppliers','tag_groups','tag_layout_templates','tags','task_request_types',
             'tasks','transfer_templates','users'
       ]
