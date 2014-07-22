@@ -44,6 +44,9 @@ class SubmissionsController < ApplicationController
   end
 
   def index
+    # Disable cache of this page
+    self.expires_now
+    
     @building = Submission.building.find(:all, :order => "created_at DESC", :conditions => { :user_id => current_user.id })
     @pending = Submission.pending.find(:all, :order => "created_at DESC", :conditions => { :user_id => current_user.id })
     @ready = Submission.ready.find(:all, :limit => 10, :order => "created_at DESC", :conditions => { :user_id => current_user.id })
@@ -52,9 +55,11 @@ class SubmissionsController < ApplicationController
   def destroy
     ActiveRecord::Base.transaction do
       submission = SubmissionPresenter.new(current_user, :id => params[:id])
-      submission.destroy
-
-      flash[:notice] = "Submission successfully deleted!"
+      if submission.destroy
+        flash[:notice] = "Submission successfully deleted!"
+      else
+        flash[:error] = "This submission can't be deleted"
+      end
       redirect_to :action => :index
     end
   end
