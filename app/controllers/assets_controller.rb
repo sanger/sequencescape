@@ -46,7 +46,7 @@ class AssetsController < ApplicationController
   end
 
   def edit
-    @valid_purposes_options = PlatePurpose.find(:all, :conditions => ["target_type IS NULL or id = ? or target_type = ?", @asset.purpose.id, @asset.sti_type], :order=>"name ASC").map do |purpose|
+    @valid_purposes_options = PlatePurpose.compatible_with_purpose(@asset.purpose).map do |purpose|
       [purpose.name, purpose.id]
     end
   end
