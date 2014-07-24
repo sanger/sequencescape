@@ -46,6 +46,9 @@ class AssetsController < ApplicationController
   end
 
   def edit
+    @valid_purposes_options = PlatePurpose.compatible_with_purpose(@asset.purpose).map do |purpose|
+      [purpose.name, purpose.id]
+    end
   end
 
   def find_parents(text)
