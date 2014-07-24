@@ -129,7 +129,7 @@ class Study < ActiveRecord::Base
   end
   private :set_default_ethical_approval
 
-  named_scope :for_search_query, lambda { |query|
+  named_scope :for_search_query, lambda { |query,with_includes|
     { :conditions => [ 'name LIKE ? OR id=?', "%#{query}%", query ] }
   }
 

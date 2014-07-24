@@ -75,12 +75,11 @@ class Asset < ActiveRecord::Base
     (orders.map(&:study)+studies).compact.uniq
   end
   # Named scope for search by query string behaviour
-  named_scope :for_search_query, lambda { |query|
+  named_scope :for_search_query, lambda { |query,with_includes|
     {
       :conditions => [
-        'assets.name IS NOT NULL AND (assets.name LIKE :like OR assets.id=:query OR assets.barcode LIKE :query)', { :like => "%#{query}%", :query => query } ],
-      :include => :requests, :order => 'requests.pipeline_id ASC'
-    }
+        'assets.name IS NOT NULL AND (assets.name LIKE :like OR assets.id=:query OR assets.barcode = :query)', { :like => "%#{query}%", :query => query } ]
+    }.tap {|cond| cond.merge!(:include => :requests, :order => 'requests.pipeline_id ASC') if with_includes }
   }
 
   named_scope :with_name, lambda { |*names| { :conditions => { :name => names.flatten } } }

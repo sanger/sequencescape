@@ -44,7 +44,7 @@ class Batch < ActiveRecord::Base
   has_many :failures, :as => :failable
 
   # Named scope for search by query string behavior
-  named_scope :for_search_query, lambda { |query|
+  named_scope :for_search_query, lambda { |query,with_includes|
     conditions = [ 'id=?', query ]
     if user = User.find_by_login(query)
       conditions = [ 'user_id=?', user.id ]
