@@ -12,7 +12,6 @@ Feature: Study administration
     Given I am visiting study "Study B" homepage
     When I follow "Contacts"
     Then I should see "Study B : Contacts"
-    Then show me the page
     # And I should see the following contacts
     #   | role     | name       |
     #   | Owner    | John Smith |
@@ -38,7 +37,7 @@ Feature: Study administration
     And I press "Update"
     Then I should see "Your study has been updated"
     And the checkbox labeled "HMDMC approved" should be checked
-    And the field labeled "HMDMC approval number" should contain "XX/XXX" 
+    And the field labeled "HMDMC approval number" should contain "XX/XXX"
     When I press "Update"
     Then I should see "Your study has been updated"
 

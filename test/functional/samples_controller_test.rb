@@ -22,7 +22,7 @@ class SamplesControllerTest < ActionController::TestCase
       'sample', {
         :defaults => {:name => "Sample22"},
         :formats => ['html'],
-        :ignore_actions =>['show','create','update'],
+        :ignore_actions =>['show','create','update','destroy'],
         :user => lambda { user = Factory(:user) ; user.is_administrator ; user }
       }
     )

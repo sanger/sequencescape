@@ -1,6 +1,6 @@
 <% form_for @task, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
 
-	<p class="info">Please select a location.</p>
+  <p class="info">Please select a location.</p>
 <p>
 <label for="location_id_">Location</label>: <%= select :location_id , nil , Location.all.map { |l| [l.name, l.id] } , :selected => @task.location_id %>
 </p>

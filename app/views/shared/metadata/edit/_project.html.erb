@@ -12,7 +12,7 @@
       <% metadata_fields.with_options(:grouping => 'Billing') do |group| %>
         <%= group.select_by_association(:project_manager)%>
         <%= group.text_field(:external_funding_source) %>
-        <%= group.select_by_association(:budget_division)%> 
+        <%= group.select_by_association(:budget_division)%>
         <%= group.text_field(:sequencing_budget_cost_centre) %>
       <% end %>
       <%= metadata_fields.select(:project_funding_model, Project::PROJECT_FUNDING_MODELS) %>

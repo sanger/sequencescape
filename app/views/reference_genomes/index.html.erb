@@ -1,12 +1,12 @@
 <h1>Listing reference genomes</h1>
 <br />
-<% if current_user.is_administrator? %>        
+<% if current_user.is_administrator? %>
   <%= link_to 'New reference genome', new_reference_genome_path %>
 <% end %>
 
 <table>
   <tr>
-	<th>Name</th>
+  <th>Name</th>
   </tr>
 
 <% @reference_genomes.each do |reference_genome| %>
@@ -14,7 +14,7 @@
     <td><%=h reference_genome.name %></td>
     <% if current_user.is_administrator? %>
       <td><%= link_to 'Show', reference_genome %></td>
-      <td><%= link_to 'Edit', edit_reference_genome_path(reference_genome) %></td>  
+      <td><%= link_to 'Edit', edit_reference_genome_path(reference_genome) %></td>
     <% end %>
   </tr>
 <% end %>

@@ -1,10 +1,10 @@
 @lane @data_release @external_release @11233725
 Feature: Externally releasing a passed or failed lane should display the correct options in the dropdown
 
-  Background: 
+  Background:
     Given I am an "administrator" user logged in as "John Doe"
 
-    Scenario Outline: 
+    Scenario Outline:
       Given a lane named "<name_lane>" exists
       Given an <external_release> lane named "<name_lane>"
       Given a state "<status>" to lane named "<name_lane>"
@@ -22,4 +22,4 @@ Feature: Externally releasing a passed or failed lane should display the correct
         | second_asset | failed | unreleasable     | Failed on quality but sufficient data for experiment               |
         | second_asset | failed | unreleasable     | Failed on adapter contamination but data sufficient for experiment |
 
-     
+

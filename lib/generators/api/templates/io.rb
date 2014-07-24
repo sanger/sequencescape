@@ -2,7 +2,7 @@ class ::Io::<%= class_name %> < ::Core::Io::Base
   set_model_for_input(::<%= class_name %>)
   set_json_root(:<%= singular_name %>)
   # set_eager_loading { |model| model }   # TODO: uncomment and add any named_scopes that do includes you need
-  
+
   # TODO: define the mapping from the model attributes to the JSON attributes
   #
   # The rules are relatively straight forward with each line looking like '<attibute> <access> <json>', and blank lines or

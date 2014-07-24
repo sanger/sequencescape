@@ -15,7 +15,7 @@
       <td class='border' width='2%'><%= (65+row).chr %></td>
       <% plate_cols.times do |col| %>
         <% current_well = plate[col*plate_rows + row]  %>
-        
+
         <% if current_well[0] == 0 -%>
           <td class="empty"><%= current_well[1] %></td>
         <% else -%>

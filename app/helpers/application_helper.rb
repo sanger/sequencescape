@@ -10,14 +10,14 @@ module ApplicationHelper
         }
       )
 
-      RAILS_DEFAULT_LOGGER.debug 
-        "No custom text found for #{identifier} #{differential}." if custom_text.nil?    
-    
+      RAILS_DEFAULT_LOGGER.debug
+        "No custom text found for #{identifier} #{differential}." if custom_text.nil?
+
       custom_text.try(:content) || ""
     end
-    
+
   end
-  
+
   def loading_bar(identifier = "loading")
     content_tag("div", :id => identifier, :class => "loading_bar", :style => "display:none") do
       image_tag "loader-bar.gif", :size => "200x19"
@@ -45,7 +45,7 @@ module ApplicationHelper
   def required_marker
     output = %Q{<span class="required">&raquo;</span>}
   end
-  
+
   def required_marker_bold
     %Q{<span style="font-size : medium;"class="required">&raquo;</span>}
   end
@@ -63,7 +63,7 @@ module ApplicationHelper
   def api_data
     {:api_version => RELEASE.api_version}
   end
-  
+
   def display_user_guide(display_text, link=nil)
     if link.nil?
       content_tag(:div, display_text, :class => "user_guide")
@@ -71,7 +71,7 @@ module ApplicationHelper
       content_tag(:div, link_to(display_text, link), :class => "user_guide")
    end
   end
-  
+
   def display_user_error(display_text, link=nil)
     unless link.nil?
       content_tag(:div, link_to(display_text, link), :class => "user_error")
@@ -97,7 +97,7 @@ module ApplicationHelper
     end
     return formatted_status
   end
-  
+
   def dynamic_link_to(summary_item)
     object = summary_item.object
     if object.instance_of?(Asset)
@@ -120,7 +120,7 @@ module ApplicationHelper
        url_path = request_path(matching_requests.first)
        link_to count, url_path, html_options
     elsif count > 1
-       url_path = study_requests_path(study, :state => state, :request_type_id => request_type.id, :asset_id => asset.id) 
+       url_path = study_requests_path(study, :state => state, :request_type_id => request_type.id, :asset_id => asset.id)
        link_to count, url_path, html_options
     end
 
@@ -129,18 +129,18 @@ module ApplicationHelper
   def request_link(object, count, request_type, status = nil, options = {}, link_options = {})
     link_to_if((count != 0), count, request_list_path(object, request_type, status, options), link_options)
   end
-  
+
   def request_list_path(object, request_type = nil, status = nil, options = {})
     options[:state] = status unless status.nil?
     options[:request_type_id] = request_type.id unless request_type.nil?
 
-    if object.instance_of?(Asset) 
+    if object.instance_of?(Asset)
       asset_path(object, options)
     elsif object.instance_of?(Study)
       study_requests_path(object, options)
     end
   end
-  
+
   def display_follow(item, user, msg)
     if user.following?(item)
       "Unfollow " + msg
@@ -148,7 +148,7 @@ module ApplicationHelper
       "Follow " + msg
     end
   end
-  
+
   def progress_bar(count)
     color = ""
     if count < 25
@@ -158,7 +158,7 @@ module ApplicationHelper
     else
       color = "DAEE34"
     end
-    
+
     html = %Q{<span style="display:none">#{count}</span>}
     html = html + %Q{<div style="width: 100px; background-color: #CCCCCC; color: inherit;">}
     html = html + %Q{<div style="width: #{count}px; background-color: ##{color}; color: inherit;">}
@@ -166,7 +166,7 @@ module ApplicationHelper
     html = html + %Q{  </div>}
     html = html + %Q{</div>}
   end
-  
+
   def completed(object, request_type = nil, cache = {})
 
     total  = 0
@@ -201,7 +201,7 @@ module ApplicationHelper
       return 0
     end
   end
-  
+
   def study_state(state)
     if state == "active"
       return "<span style='color:green;'>#{state}</span>"
@@ -209,7 +209,7 @@ module ApplicationHelper
       return "<span style='color:red;'>#{state}</span>"
     end
   end
-  
+
   def display_empty_table(display_text, link=nil)
     unless link.nil?
       content_tag(:div, link_to(display_text, link), :class => "empty_table", :id => "empty_table")
@@ -217,8 +217,8 @@ module ApplicationHelper
       content_tag(:div, display_text, :class => "empty_table", :id => "empty_table")
    end
   end
-  
-  
+
+
   ## From Pipelines
 
   def render_title(title = "")
@@ -228,11 +228,11 @@ module ApplicationHelper
   def render_help(help = "")
     add :help, help
   end
-  
+
   def required_marker
     output = %Q{<span class="required">&raquo;</span>}
   end
-  
+
   def tabulated_error_messages_for(*params)
     options = params.last.is_a?(Hash) ? params.pop.symbolize_keys : {}
     objects = params.collect {|object_name| instance_variable_get("@#{object_name}") }.compact
@@ -282,12 +282,12 @@ module ApplicationHelper
       image_tag("error.png")
     end
   end
-  
+
   def display_request_information(request, rit, batch = nil)
     r = request.value_for(rit.name, batch)
     (!r || r.empty?) ? "NA" : r
   end
-  
+
   def display_boolean_results(result)
     return "NA" if (!result || result.empty?)
     if result == "pass" || result == "1" || result == "true"
@@ -296,14 +296,14 @@ module ApplicationHelper
       return image_tag("error.png", :title => result)
     end
   end
-  
+
   def sorted_requests_for_search(requests)
     sorted_requests = requests.select{|r| r.pipeline_id.nil?}
     new_requests = requests - sorted_requests
     new_requests.sort_by(&:pipeline_id)
     requests = requests + sorted_requests
   end
-  
+
   def display_hash_value(hash, key, sub_key)
     hash.fetch(key, {}).fetch(sub_key, '')
   end

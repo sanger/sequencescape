@@ -4,7 +4,7 @@ class AdminController < ApplicationController
 
   def index
   end
-  
+
   def filter
     if params[:q].blank?
       @users = User.all

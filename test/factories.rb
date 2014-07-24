@@ -210,6 +210,7 @@ Factory.define :request_metadata_for_library_manufacture, :parent => :request_me
   m.library_type                  "Standard"
 end
 Factory.define(:request_metadata_for_library_creation, :parent => :request_metadata_for_library_manufacture) {}
+Factory.define(:request_metadata_for_illumina_c_library_creation, :parent => :request_metadata_for_library_manufacture) {}
 Factory.define(:request_metadata_for_multiplexed_library_creation, :parent => :request_metadata_for_library_manufacture) {}
 Factory.define(:request_metadata_for_mx_library_preparation_new, :parent => :request_metadata_for_library_manufacture) {}
 Factory.define(:request_metadata_for_illumina_b_multiplexed_library_creation, :parent => :request_metadata_for_library_manufacture) {}

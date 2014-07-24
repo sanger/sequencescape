@@ -20,12 +20,12 @@ Feature: Track when a sample and its plate has been updated by a manifest
   @sample_manifest_events
   Scenario: Some samples get updated by a manifest and events get created
     Given a manifest has been created for "Test study"
-    
+
     Given I am on the event history page for sample with sanger_sample_id "sample_1"
     Then the events table should be:
       | Message                    | Content    | Created by | Created at           |
       | Created by Sample Manifest | 2010-07-12 | john       | Monday 12 July, 2010 |
-       
+
     Given I am on the event history page for sample with sanger_sample_id "sample_7"
     Then the events table should be:
       | Message                    | Content    | Created by | Created at           |
@@ -36,7 +36,7 @@ Feature: Track when a sample and its plate has been updated by a manifest
       And I fill in "File to upload" with "test/data/test_blank_wells.csv"
       And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
-     
+
     Given I am on the event history page for sample with sanger_sample_id "sample_1"
     Then the events table should be:
       | Message                    | Content    | Created by | Created at           |
@@ -56,24 +56,24 @@ Feature: Track when a sample and its plate has been updated by a manifest
       And I check "Override previously uploaded samples"
       And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
-      
+
    Given I am on the event history page for sample with sanger_sample_id "sample_1"
    Then the events table should be:
      | Message                    | Content    | Created by | Created at           |
      | Created by Sample Manifest | 2010-07-12 | john       | Monday 12 July, 2010 |
      | Updated by Sample Manifest | 2010-07-12 | john       | Monday 12 July, 2010 |
      | Updated by Sample Manifest | 2010-07-12 | jane       | Monday 12 July, 2010 |
-  
+
    Given I am on the event history page for sample with sanger_sample_id "sample_7"
    Then the events table should be:
      | Message                    | Content    | Created by | Created at           |
      | Created by Sample Manifest | 2010-07-12 | john       | Monday 12 July, 2010 |
      | Updated by Sample Manifest | 2010-07-12 | jane       | Monday 12 July, 2010 |
-     
+
    Given I am on the events page for asset with barcode "1221234567841"
    Then the events table should be:
      | Message                    | Content    | Created by | Created at           |
      | Created by Sample Manifest | 2010-07-12 | john       | Monday 12 July, 2010 |
      | Updated by Sample Manifest | 2010-07-12 | john       | Monday 12 July, 2010 |
      | Updated by Sample Manifest | 2010-07-12 | jane       | Monday 12 July, 2010 |
- 
+

@@ -33,7 +33,7 @@ class AdminControllerTest < ActionController::TestCase
         should_respond_with :success
         should_render_template "admin/users/_users"
       end
-      
+
       context "#filter with query" do
         setup do
           get :filter, :q => "abc123"
@@ -41,7 +41,7 @@ class AdminControllerTest < ActionController::TestCase
         should_respond_with :success
         should_render_template "admin/users/_users"
       end
-      
+
     end
   end
 end

@@ -39,7 +39,7 @@ class Api::ProjectIO < Api::Base
   with_association(:project_metadata) do
     with_association(:project_manager, :lookup_by => :name) do
       map_attribute_to_json_attribute(:name , 'project_manager')
-    end 
+    end
     map_attribute_to_json_attribute(:project_cost_code , 'cost_code')
     map_attribute_to_json_attribute(:funding_comments , 'funding_comments')
     map_attribute_to_json_attribute(:collaborators , 'collaborators')
@@ -50,7 +50,7 @@ class Api::ProjectIO < Api::Base
     map_attribute_to_json_attribute(:sequencing_budget_cost_centre , 'budget_cost_centre')
     map_attribute_to_json_attribute(:project_funding_model , 'funding_model')
   end
-  
+
   extra_json_attributes do |object, json_attributes|
     json_attributes["uuid"] = object.uuid if object.respond_to?(:uuid)
 

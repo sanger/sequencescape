@@ -11,11 +11,11 @@ class MultiplexedLibraryTubeTest < ActiveSupport::TestCase
         @stock_multiplexed_library_tube = Factory :stock_multiplexed_library_tube
         @stock_multiplexed_library_tube.children << @multiplexed_library_tube_with_stock_tube
       end
-      
+
       should "return false if it doesn't have a stock asset" do
         assert ! @multiplexed_library_tube.has_stock_asset?
       end
-      
+
       should "return true if it does have a stock asset" do
         assert @multiplexed_library_tube_with_stock_tube.has_stock_asset?
       end

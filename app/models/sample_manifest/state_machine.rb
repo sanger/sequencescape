@@ -6,7 +6,7 @@ module SampleManifest::StateMachine
       configure_state_machine
     end
   end
-  
+
   def configure_state_machine
     aasm_column :state
     aasm_state :pending
@@ -27,7 +27,7 @@ module SampleManifest::StateMachine
     aasm_event :fail do
       transitions :to => :failed, :from => [:processing]
     end
-  end 
+  end
   private :configure_state_machine
-  
+
 end

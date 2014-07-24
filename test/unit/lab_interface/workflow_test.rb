@@ -4,7 +4,7 @@ class LabInterface::WorkflowTest < ActiveSupport::TestCase
   context "A Workflow" do
     should_have_many :tasks
     should_belong_to :pipeline
-    
+
     setup do
       pipeline  = Factory :pipeline, :name => "Pipeline for LabInterface::WorkflowTest"
       @workflow = pipeline.workflow
@@ -16,7 +16,7 @@ class LabInterface::WorkflowTest < ActiveSupport::TestCase
     end
 
     subject { @workflow }
-    
+
     context "#deep_copy" do
       setup do
         @workflow.deep_copy

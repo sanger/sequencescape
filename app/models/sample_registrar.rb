@@ -5,7 +5,7 @@ require 'rexml/text'
 #
 #--
 # NOTE: This is very much a temporary object: after creation the instance will instantly destroy
-# itself.  This is primarily done because Rails 2.3 doesn't have the ActiveModel features of 
+# itself.  This is primarily done because Rails 2.3 doesn't have the ActiveModel features of
 # Rails 3, and we need some of those above-and-beyond just validation.  If required, the after_create
 # callback could be removed to keep track of sample registrations.
 #++
@@ -24,12 +24,12 @@ class SampleRegistrar < ActiveRecord::Base
       @sample_registrars = sample_registrars
     end
   end
-  
+
   class AssetGroupHelper
     def initialize
       @asset_groups = {}
     end
-    
+
     def existing_asset_group?(name)
       return @asset_groups[name] if @asset_groups.key?(name)
       @asset_groups[name] = !AssetGroup.find_by_name(name).nil?
@@ -174,8 +174,8 @@ class SampleRegistrar < ActiveRecord::Base
     # Map the headers to their attribute handlers.  Ensure that the required headers are present.
     used_definitions, headers = [], []
     column_index, column_name = 0, worksheet.cell(0, 0).to_s.gsub(/\000/,'').gsub(/\.0/,'').strip
-    until column_name.empty? 
-      column_name = REMAPPED_COLUMN_NAMES.fetch(column_name, column_name) 
+    until column_name.empty?
+      column_name = REMAPPED_COLUMN_NAMES.fetch(column_name, column_name)
       handler     = definitions[column_name]
       unless handler.nil?
         used_definitions[column_index] = handler

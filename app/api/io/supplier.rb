@@ -13,7 +13,7 @@ class ::Io::Supplier < ::Core::Io::Base
 
   set_json_root(:supplier)
   # set_eager_loading { |model| model }   # TODO: uncomment and add any named_scopes that do includes you need
-  
+
   define_attribute_and_json_mapping(%Q{
             name  => name
            email  => email

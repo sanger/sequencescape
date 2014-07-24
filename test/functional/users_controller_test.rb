@@ -13,8 +13,8 @@ class UsersControllerTest < ActionController::TestCase
     end
 
     should_require_login :edit, :show, :update
-    
+
     # should only be able to see your own page
   end
-  
+
 end

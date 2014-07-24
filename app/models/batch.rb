@@ -14,6 +14,20 @@ class Batch < ActiveRecord::Base
   include ModelExtensions::Batch
   include StandardNamedScopes
 
+  validate_on_create :requests_have_same_read_length, :cluster_formation_requests_must_be_over_minimum
+
+  def cluster_formation_requests_must_be_over_minimum
+    if (!@pipeline.min_size.nil?) && (@requests.size < @pipeline.min_size)
+      errors.add_to_base "You must create batches of at least " + @pipeline.min_size.to_s+" requests in the pipeline " + @pipeline.name
+    end
+  end
+
+  def requests_have_same_read_length
+    unless @pipeline.is_read_length_consistent_for_batch?(self)
+      errors.add_to_base "The selected requests must have the same values in their 'Read length' field."
+    end
+  end
+
   extend EventfulRecord
   has_many_events
   has_many_lab_events
@@ -30,7 +44,7 @@ class Batch < ActiveRecord::Base
   has_many :failures, :as => :failable
 
   # Named scope for search by query string behavior
-  named_scope :for_search_query, lambda { |query|
+  named_scope :for_search_query, lambda { |query,with_includes|
     conditions = [ 'id=?', query ]
     if user = User.find_by_login(query)
       conditions = [ 'user_id=?', user.id ]
@@ -202,6 +216,10 @@ class Batch < ActiveRecord::Base
     output_plates[0].plate_purpose unless output_plates[0].nil?
   end
 
+  def output_plate_role
+    requests.first.try(:role)
+  end
+
   # Set the plate_purpose of all output plates associated with this batch
   def set_output_plate_purpose(plate_purpose)
     raise "This batch has no output plates to assign a purpose to!" if output_plates.blank?
@@ -285,10 +303,10 @@ class Batch < ActiveRecord::Base
 
   def verify_tube_layout(barcodes, user = nil)
     self.requests.each do |request|
-      barcode = barcodes["#{request.position(self)}"]
+      barcode = barcodes["#{request.position}"]
       unless barcode.blank? || barcode == "0"
         unless barcode.to_i == request.asset.barcode.to_i
-          self.errors.add_to_base("The tube at position #{request.position(self)} is incorrect.")
+          self.errors.add_to_base("The tube at position #{request.position} is incorrect.")
         end
       end
     end
@@ -339,7 +357,7 @@ class Batch < ActiveRecord::Base
   end
 
   def remove_link(request)
-    request.batches-=[self]
+    request.batch = nil
   end
 
   def reset!(current_user)
@@ -360,6 +378,11 @@ class Batch < ActiveRecord::Base
         end
       end
     end
+  end
+
+  def parent_of_purpose(name)
+    return nil if requests.empty?
+    requests.first.asset.ancestors.find(:first,:joins=>'INNER JOIN plate_purposes ON assets.plate_purpose_id = plate_purposes.id',:conditions=>{:plate_purposes=>{:name=>name}})
   end
 
   def swap(current_user, batch_info = {})

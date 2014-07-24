@@ -1,4 +1,0 @@
-* URL       : <%= @failing_request.protocol %><%= @host %><%= @failing_request.request_uri %>
-* IP address: <%= @failing_request.env["HTTP_X_FORWARDED_FOR"] || @failing_request.env["REMOTE_ADDR"] %>
-* Parameters: <%= filter_sensitive_post_data_parameters(@failing_request.parameters).inspect %>
-* Rails root: <%= @rails_root %>

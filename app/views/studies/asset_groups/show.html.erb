@@ -16,7 +16,7 @@
         <td>
           <% if asset.is_a?(Aliquot::Receptacle) and not asset.aliquots.empty? %>
               <% asset.aliquots.each do |aliquot| %>
-                <%= link_to aliquot.sample.name, sample_path(aliquot.sample) %> 
+                <%= link_to aliquot.sample.name, sample_path(aliquot.sample) %>
               <% end %>
           <% end %>
         </td>

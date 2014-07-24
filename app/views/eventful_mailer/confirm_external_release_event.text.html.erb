@@ -9,8 +9,8 @@ You can manage this asset here:<br />
 
 <% link = url_for(:host => configatron.site_url, :controller => 'assets', :action => 'edit', :id => @eventful) %>
 </p>
-<a href="<%= link %>"><%= link %></a></p> 
-<% source_request = Asset.find(@eventful.id).source_request 
+<a href="<%= link %>"><%= link %></a></p>
+<% source_request = Asset.find(@eventful.id).source_request
    @study_id = source_request.study_id unless source_request.nil?
 %>
 <p>The study is: <%= @study_id %>

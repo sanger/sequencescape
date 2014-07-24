@@ -40,7 +40,14 @@ class Plate < Asset
       :select => 'MAX(submissions.priority) AS priority',
       :joins => [
         'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
-        'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id  OR caplp.content_id = reqp.asset_id'
+        'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.asset_id'
+      ],
+      :conditions => ['caplp.container_id = ?',self.id]
+    ).try(:priority)||Submission.find(:first,
+      :select => 'MAX(submissions.priority) AS priority',
+      :joins => [
+        'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
+        'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id'
       ],
       :conditions => ['caplp.container_id = ?',self.id]
     ).try(:priority)||0
@@ -629,5 +636,9 @@ WHERE c.container_id=?
     Hash[wells.with_pool_id.map { |w| [w, w.stock_wells.in_column_major_order] }.reject { |_,v| v.empty? }].tap do |stock_wells_hash|
       raise "No stock plate associated with #{id}" if stock_wells_hash.empty?
     end
+  end
+
+  def convert_to(new_purpose)
+    self.update_attributes!(:plate_purpose=>new_purpose)
   end
 end

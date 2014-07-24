@@ -2,34 +2,34 @@
 <div class="content">
 <div id='accept'>
       <div id='asset_title'>
-				<table>
-					<thead><th>Plate ID</th><th>Warnings</th></thead>
-			  <% @snp_plates.each do |plate_barcode| %>
-				<tr>
-					<% if plate_barcode.is_a?(Plate)%>
-					<td><%= plate_barcode.barcode %></td>
-					<td>
-					  	<%= link_to "Already exists in Sequencescape. Will be ignored.", asset_path(plate_barcode.id)%>
-					</td>
-					<% else %>
-					<td><%= plate_barcode %></td>
-					<td></td>
-					<% end %>
-				</tr>				
-				<% end %>
-				</table>
+        <table>
+          <thead><th>Plate ID</th><th>Warnings</th></thead>
+        <% @snp_plates.each do |plate_barcode| %>
+        <tr>
+          <% if plate_barcode.is_a?(Plate)%>
+          <td><%= plate_barcode.barcode %></td>
+          <td>
+              <%= link_to "Already exists in Sequencescape. Will be ignored.", asset_path(plate_barcode.id)%>
+          </td>
+          <% else %>
+          <td><%= plate_barcode %></td>
+          <td></td>
+          <% end %>
+        </tr>
+        <% end %>
+        </table>
       </div>
-      <br />  
+      <br />
       <strong>I have placed the above barcoded DNA plates in the reception fridge in the following lab:</strong>
       <br /><br />
       <% form_for :asset,  :url => { :action => "import_from_snp" } do |f| %>
               <%= f.collection_select :location_id, Location.all, :id, :name %>
-							<% @snp_plates.each_with_index do |plate_barcode,index| %>
-							  <% next if plate_barcode.is_a?(Plate) %>
-              	<%= hidden_field_tag "snp_plates[#{index}]", plate_barcode %>
-							<% end %>
+              <% @snp_plates.each_with_index do |plate_barcode,index| %>
+                <% next if plate_barcode.is_a?(Plate) %>
+                <%= hidden_field_tag "snp_plates[#{index}]", plate_barcode %>
+              <% end %>
               <%= f.submit 'Confirm', :disable_with => "Please wait..."
-							%> or  <%= link_to 'cancel', :action => 'import_from_snp' %>
+              %> or  <%= link_to 'cancel', :action => 'import_from_snp' %>
       <% end %>
 </div>
 </div>

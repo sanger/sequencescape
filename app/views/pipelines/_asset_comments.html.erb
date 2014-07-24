@@ -1,11 +1,15 @@
-<td class='request' style='text-align: left' width='15%'><%= link_to (pluralize comments.size, 'comment'),  "#{configatron.studies_url}/assets/#{request.asset_id}/comments" %>
+<td class='request' style='text-align: left' width='15%'><%= link_to (pluralize comments.count, 'comment'),  "#{configatron.studies_url}/assets/#{request.asset_id}/comments" %>
   <a href="#" onclick="Effect.SlideDown('comment_for_asset_<%= "#{request.asset_id}"%>'); return false;">+</a>
   <a href="#" onclick="Effect.SlideUp('comment_for_asset_<%= "#{request.asset_id}"%>'); return false;">-</a>
   <div id="<%= "comment_for_asset_#{request.asset_id}" %>" style="display:none; text-align:center;">
     <div style='text-align: left'>
       <ul>
-        <% comments.each do |comment| %>
-          <li><%= comment.description %></li>
+        <% if comments.count <= 10 -%>
+          <% comments.each do |comment| %>
+            <li><%= comment.description %></li>
+          <% end %>
+        <% else %>
+            <li>Too many comments to show inline. Please use link above.</li>
         <% end %>
       </ul>
     </div>

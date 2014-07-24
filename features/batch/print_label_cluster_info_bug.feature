@@ -1,11 +1,11 @@
 @batch
 Feature: Change the side links in a batch depending on the pipeline
 
-  Background: 
+  Background:
     Given I am logged in as "user"
-    And I have lab manager role 
+    And I have lab manager role
 
-  Scenario Outline: Menu displayed 
+  Scenario Outline: Menu displayed
     Given I have a batch in "<pipeline>"
       And I am on the last batch show page
     Then I should see "Edit"

@@ -13,8 +13,8 @@ Feature: Study creation with a checkbox for BAM file.
     Then I should see "CREATE STUDY"
     Then I should see "Alignments in BAM"
     And the checkbox labeled "Alignments in BAM" should be checked
-    When I uncheck "Alignments in BAM"       
-    Then the checkbox labeled "Alignments in BAM" should not be checked 
+    When I uncheck "Alignments in BAM"
+    Then the checkbox labeled "Alignments in BAM" should not be checked
     When I fill in the following:
       | Study name                 | new study     |
       | Study description          | writing cukes |
@@ -27,9 +27,9 @@ Feature: Study creation with a checkbox for BAM file.
     And I select "open" from "What is the data release strategy for this study?"
     When I press "Create"
     Then I should be on the study workflow page for "new study"
-    Then abbreviation for Study "new study" should be "CCC3"  
+    Then abbreviation for Study "new study" should be "CCC3"
     Then I should see "Edit"
     When I follow "Edit"
     Then I should see "Alignments in BAM"
     And the checkbox labeled "Alignments in BAM" should not be checked
-    
+

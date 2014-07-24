@@ -1,12 +1,12 @@
 <h2>Scratch Pad</h2>
 <p>Anything in this table will not be cherrypicked.</p>
 <table id="scratch_pad" class="plate" width="100%">
-	<% (plate_rows/2).times do |row| %>
-		<tr id="<%= "scratch_[#{row}" %>]">
-			<% (plate_cols+1).times do |col| %><td id="" class="empty">Empty</td><% end %>
-		</tr>
+  <% (plate_rows/2).times do |row| %>
+    <tr id="<%= "scratch_[#{row}" %>]">
+      <% (plate_cols+1).times do |col| %><td id="" class="empty">Empty</td><% end %>
+    </tr>
     <% plate_ids << "scratch_[#{row}]" %>
-	<% end %>
+  <% end %>
 </table>
 
 <% if (control_plate = ControlPlate.first).present? %>

@@ -11,16 +11,16 @@
 
 <h2>Properties</h2>
 <table>
-	<thead>
-		<th>Name</th>
-		<th>Key</th>
-		<th>Value</th>
+  <thead>
+    <th>Name</th>
+    <th>Key</th>
+    <th>Value</th>
 </thead>
 <% @robot.robot_properties.each do |property| %>
 <tr>
-	<td><%= property.name %></td>
-	<td><%= property.key %></td>
-	<td><%= property.value %></td>
+  <td><%= property.name %></td>
+  <td><%= property.key %></td>
+  <td><%= property.value %></td>
 </tr>
 <% end %>
 </table>

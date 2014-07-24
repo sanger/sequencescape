@@ -24,7 +24,7 @@ module Tasks::AssignTagsToWellsHandler
       redirect_to :action => 'stage', :batch_id => @batch.id, :workflow_id => @workflow.id, :id => (0).to_s, :tag_group => params[:tag_group]
       return false
     end
-    
+
     ActiveRecord::Base.transaction do
       well_id_tag_id_map = {}
       params[:tag].each do |k,v|

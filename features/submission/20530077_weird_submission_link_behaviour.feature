@@ -7,7 +7,7 @@ Feature: Weird submission link behaviour
     # NOTE: This feature will need to be revisited, due to
     # inconsistencies in the sidebar link code. Ideally the
     # two should behave the same.
-    
+
   Background:
     Given I am an "administrator" user logged in as "admin"
     And I have an active study called "Study A"

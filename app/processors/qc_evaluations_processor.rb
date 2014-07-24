@@ -1,4 +1,4 @@
-#perl -I/software/solexa/lib/perl5 ./report_qc_to_sequencescape_mq --usedb --id_run 3999 -l 1 -l 2 
+#perl -I/software/solexa/lib/perl5 ./report_qc_to_sequencescape_mq --usedb --id_run 3999 -l 1 -l 2
 #  -mqserver mq-dev -mqqueue /queue/staging.qc_evaluations
 # NOTE: Rails.logger.level may be overridden (Logger::DEBUG ?) in poller launch script
 class QcEvaluationsProcessor < ApplicationProcessor
@@ -67,8 +67,8 @@ class QcEvaluationsProcessor < ApplicationProcessor
   #     </optional>
   #   </evaluation>
   # </evaluations>
-  
-  
+
+
   # Expected xml from Queue ### NEW STATUS
   # <?xml version="1.0" encoding="UTF-8"?>
   # <evaluations>

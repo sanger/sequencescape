@@ -20,14 +20,14 @@ class Sample < ActiveRecord::Base
 
   has_many_lab_events
 
-  ArrayExpressFields = %w(genotype phenotype strain_or_line developmental_stage sex cell_type disease_state compound dose immunoprecipitate growth_condition rnai organism_part species time_point)
+  ArrayExpressFields = %w(genotype phenotype strain_or_line developmental_stage sex cell_type disease_state compound dose immunoprecipitate growth_condition rnai organism_part species time_point age treatment)
   EgaFields = %w(subject disease treatment gender phenotype)
 
   acts_as_authorizable
 
 
 
-  has_many :study_samples
+  has_many :study_samples, :dependent => :destroy
   has_many :studies, :through => :study_samples
 
   has_many :roles, :as => :authorizable
@@ -59,9 +59,19 @@ class Sample < ActiveRecord::Base
   end
   validation_guarded_by(:rename_to!, :can_rename_sample)
 
+  before_destroy :safe_to_destroy
+
+  def safe_to_destroy
+    return true unless receptacles.present? || has_submission?
+    errors.add_to_base("Remove '#{name}' from assets before destroying") if receptacles.present?
+    errors.add_to_base("You can't delete '#{name}' because is linked to a submission.") if has_submission?
+    return false
+  end
+  private :safe_to_destroy
+
   named_scope :with_name, lambda { |*names| { :conditions => { :name => names.flatten } } }
 
-  named_scope :for_search_query, lambda { |query|
+  named_scope :for_search_query, lambda { |query,with_includes|
     { :conditions => [ 'name LIKE ? OR id=?', "%#{query}%", query ] }
   }
 
@@ -89,7 +99,7 @@ class Sample < ActiveRecord::Base
   end
 
   def has_request
-    not requests.empty?
+    requests.present?
   end
 
   def has_request_all_cancelled?
@@ -112,7 +122,7 @@ class Sample < ActiveRecord::Base
         has_submission = true
       end
     else # We have no requests, we're probably S2 (Or very old Sequencescape)
-         # This is a hack, but I'll get this tdied up.
+         # This is a hack, but I'll get this tidied up.
       has_submission = true
     end
     return has_submission
@@ -213,7 +223,7 @@ class Sample < ActiveRecord::Base
   GENDERS         = [ 'Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable' ]
   DNA_SOURCES     = [ 'Genomic', 'Whole Genome Amplified', 'Blood', 'Cell Line','Saliva','Brain','FFPE' ]
   SRA_HOLD_VALUES = [ 'Hold', 'Public', 'Protect' ]
-  AGE_REGEXP      = '\d+(?:\.\d+)?\s+(?:second|minute|day|week|month|year)s?|Not Applicable|N/A|To be provided'
+  AGE_REGEXP      = '\d+(?:\.\d+|\-\d+|\.\d+\-\d+\.\d+|\.\d+\-\d+\.\d+)?\s+(?:second|minute|day|week|month|year)s?|Not Applicable|N/A|To be provided'
   DOSE_REGEXP     = '\d+(?:\.\d+)?\s+\w+(?:\/\w+)?|Not Applicable|N/A|To be provided'
 
   extend Metadata

@@ -5,7 +5,7 @@
 <% if @requests_waiting == 0 -%>
   There are no outstanding requests for this pipeline.
 <% else -%>
-	<%= render :partial => 'pipeline_paginate' %>
+  <%= render :partial => 'pipeline_paginate' %>
   <% form_tag({:controller => :batches, :action => :create, :id => @pipeline.id}, :id => "requests_to_batch_form") do -%>
     <% if @pipeline.item_limit -%>
       <input type="hidden" id="batch_item_limit" value="<%= @pipeline.item_limit %>" />
@@ -61,7 +61,7 @@
           </tr>
             <%- requests.each_with_index do |request, indice| -%>
               <% request_comments = request.comments -%>
-    					<% request_asset = request.asset -%>
+              <% request_asset = request.asset -%>
               <% request_asset_comments = request_asset.comments -%>
               <% progr = indice + 1 %>
             <tr class="nested" id="<%= request_item.item_id %>_<%= progr.to_s %>" style="display:none">
@@ -87,7 +87,7 @@
 
 
 
-	  <%= render :partial => 'inbox_submission_button' %>
+    <%= render :partial => 'inbox_submission_button' %>
   <% end -%>
 
  <%= render :partial => 'pipeline_paginate' %>

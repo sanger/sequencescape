@@ -1,10 +1,10 @@
-@reference_genome @admin 
+@reference_genome @admin
 Feature: Add interface to update reference genomes
 
   Background:
     Given I am a "administrator" user logged in as "user"
     And I am on the homepage
-	
+
   Scenario: Can I create a reference genome
     Then I should see "Admin"
     When I follow "Admin"
@@ -44,9 +44,9 @@ Feature: Add interface to update reference genomes
     When I follow "Create study"
     And I fill in "study_name" with "Cucumber1"
     Then I should see "Mus_musculus (NCBIm37)"
-    
+
     And I select "Jack Sponsor" from "Faculty Sponsor"
     And I fill in "Study description" with "parp parp"
     And I press "Create"
     Then I should see "Your study has been created"
- 
+

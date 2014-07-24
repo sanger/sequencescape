@@ -1,4 +1,4 @@
-module BillingException  
+module BillingException
   class Base < StandardError
   end
   # Raised when a refund is being created but there is no charge event with the same reference
@@ -14,9 +14,9 @@ module BillingException
   class DuplicateCharge < Base
   end
   class DuplicateChargeInternally < Base
-  end                                     
-#rescue BillingException::DuplicateCharge => exception  
-#rescue BillingException::Base => exception 
+  end
+#rescue BillingException::DuplicateCharge => exception
+#rescue BillingException::Base => exception
 
   IllegalRefund = Class.new(Base)
 end

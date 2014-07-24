@@ -15,11 +15,11 @@ Feature: Searching for assets by barcode
     Given a plate called "Testing the API 2" with ID 2
       And the plate "Testing the API 2" has a barcode of "1220000222748"
       And the UUID for the plate "Testing the API 2" is "11111111-2222-3333-4444-000000000002"
-      
+
     Given a plate called "Testing the API 3" with ID 3
       And the plate "Testing the API 3" has a barcode of "1220000333802"
       And the UUID for the plate "Testing the API 3" is "11111111-2222-3333-4444-000000000003"
-      
+
     Given plate "11111111-2222-3333-4444-000000000002" is a source plate of "11111111-2222-3333-4444-000000000001"
       And plate "11111111-2222-3333-4444-000000000003" is a source plate of "11111111-2222-3333-4444-000000000001"
 

@@ -84,6 +84,7 @@ SENSIBLE_DEFAULTS_HISEQ = SENSIBLE_DEFAULTS_FOR_SEQUENCING.merge(
 SENSIBLE_DEFAULTS_FOR_REQUEST_TYPE = {
   # Non-HiSeq defaults
   "Library creation"             => SENSIBLE_DEFAULTS_STANDARD,
+  "Illumina-C Library creation"             => SENSIBLE_DEFAULTS_STANDARD,
   "Multiplexed library creation" => SENSIBLE_DEFAULTS_STANDARD,
   "Pulldown library creation"    => SENSIBLE_DEFAULTS_STANDARD,
   "Single ended sequencing"      => SENSIBLE_DEFAULTS_FOR_SEQUENCING,
@@ -102,7 +103,7 @@ SENSIBLE_DEFAULTS_FOR_REQUEST_TYPE = {
 
 
   # PacBio defaults
-  "PacBio Sample Prep" => {}
+  "PacBio Library Prep" => {}
 }
 
 def with_request_type_scope(name, &block)

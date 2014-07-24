@@ -5,16 +5,16 @@
 <p>Scan some plates to create the next plates in the pipeline.
 </p>
 <% semantic_form_for(:plates, :url => '/pulldown/plates/create') do |form| %>
-	<% form.inputs :name => "" do %>
-  	<%= form.input :source_plates,   :as => :text,   :required => false %>
+  <% form.inputs :name => "" do %>
+    <%= form.input :source_plates,   :as => :text,   :required => false %>
     <%= observe_field("plates_source_plates",
           :url => { :action => :lookup_plate_purposes },
           :frequency => 0.5,
           :update => :plate_purposes,
           :with => "'plates[source_plates]='+ escape($('plates_source_plates').value)") %>
-  	<%= form.input :barcode_printer, :as => :select, :collection => @barcode_printers %>
-  	<div id="plate_purposes"></div>
-  	<%= form.commit_button %>
-	<% end %>
+    <%= form.input :barcode_printer, :as => :select, :collection => @barcode_printers %>
+    <div id="plate_purposes"></div>
+    <%= form.commit_button %>
+  <% end %>
 <% end %>
 

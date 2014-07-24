@@ -5,7 +5,7 @@ Feature: Searching for assets by barcode
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
-    
+
   @search_assets @single
   Scenario Outline: Looking up a single asset by barcode
     Given the UUID for the search "Find assets by barcode" is "00000000-1111-2222-3333-444444444444"

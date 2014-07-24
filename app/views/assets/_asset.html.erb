@@ -30,6 +30,12 @@
     <td class="item">Type:</td>
     <td><strong><%=h @asset.label %></strong></td>
   </tr>
+  <% if @asset.respond_to? :plate_purpose %>
+  <tr>
+    <td class="item">Purpose:</td>
+    <td><strong><%=h @asset.plate_purpose.name %></strong></td>
+  </tr>
+  <% end %>
   <% if @asset.is_a?(Lane) %>
     <tr>
     <td class="item">Data to be released externally?:</td>
@@ -37,10 +43,10 @@
     </tr>
     <tr>
       <td class="item"><%= h(@asset.lane_metadata.attribute_details_for(:release_reason).to_field_info.display_name) %>:</td>
-      <td><strong><%= h(@asset.lane_metadata.release_reason) %></strong></td>    
+      <td><strong><%= h(@asset.lane_metadata.release_reason) %></strong></td>
     </tr>
   <% elsif @asset.is_a?(SpikedBuffer) %>
-  <!-- 
+  <!--
     The percentage needs to be calculated differently.
     BJ to fix - PT 9221511
    -->

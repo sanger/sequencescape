@@ -1,15 +1,15 @@
 <table>
   <tr>
-		<th>Index</th>
-		<th>Expected Sequence</th>
+    <th>Index</th>
+    <th>Expected Sequence</th>
 
-		<th></th>
+    <th></th>
   </tr>
 
 <% for tag in tags %>
   <tr>
-		<td><%=h tag.map_id %></td>
-		<td><%=h tag.oligo %></td>
+    <td><%=h tag.map_id %></td>
+    <td><%=h tag.oligo %></td>
     <td><% if current_user.administrator? %><%= link_to 'Edit', edit_tag_group_tag_path(tag_group,tag) %><% end %></td>
   </tr>
 <% end %>

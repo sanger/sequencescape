@@ -32,7 +32,7 @@ class SequencingQcBatchTest < ActiveSupport::TestCase
       should 'moves to the next state when it is not nil' do
         @batch.expects(:qc_next_state).twice.returns('qc_fooing')
         @batch.expects(:update_attribute).with(:qc_state, 'qc_fooing')
-        @batch.qc_submitted 
+        @batch.qc_submitted
       end
 
       should 'do nothing if the next state is nil' do

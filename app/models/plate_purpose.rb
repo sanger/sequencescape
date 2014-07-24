@@ -23,6 +23,8 @@ class PlatePurpose < Purpose
   end
 
   include Relationship::Associations
+  
+  named_scope :compatible_with_purpose, lambda {|purpose| { :conditions => ["(target_type is null and 'Plate'=?)  or target_type=?",purpose.target_plate_type, purpose.target_plate_type], :order=>"name ASC" } }  
 
   named_scope :cherrypickable_as_target, :conditions => { :cherrypickable_target => true }
   named_scope :cherrypickable_as_source, :conditions => { :cherrypickable_source => true }

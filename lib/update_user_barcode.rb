@@ -28,7 +28,7 @@ def read_user_id
 
       user_barcode[user]=id
       puts "#{user} => #{id}"
-      
+
       f.gets #read a blamk lien as record separator
     end
 

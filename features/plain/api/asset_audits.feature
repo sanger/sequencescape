@@ -30,7 +30,7 @@ Feature: Interacting with asset_audits through the API
           "key": "some_key",
           "created_at": "2010-09-16T13:45:00+01:00",
           "updated_at": "2010-09-16T13:45:00+01:00",
-          
+
           "plate_barcode": "123",
           "plate_barcode_prefix": "DN",
           "plate_uuid": "00000000-1111-2222-3333-444444444999",
@@ -63,7 +63,7 @@ Feature: Interacting with asset_audits through the API
           "created_by": "abc123",
           "key": "some_key",
           "witnessed_by": "jane",
-          
+
           "plate_barcode": "123",
           "plate_barcode_prefix": "DN",
           "plate_uuid": "00000000-1111-2222-3333-444444444999",

@@ -6,10 +6,10 @@
     <legend>Automatic</legend>
     <table cellspacing='0' cellpadding='0'>
       <tr>
-        <td><label for="plate_purpose_id">Output plate purpose</label>:</td>
-        <td><%= select_tag("plate_purpose_id", options_for_select(@plate_purpose_options, PlatePurpose.stock_plate_purpose.id)) %></td>
-      </tr>
-      <tr>
+         <td><label for="plate_purpose_id">Output plate purpose</label>:</td>
+         <td><%= select_tag("plate_purpose_id", options_for_select(@plate_purpose_options, PlatePurpose.stock_plate_purpose.id)) %></td>
+       </tr>
+       <tr>
         <td><strong>Optional: </strong>Scan partial plate:</td>
         <td><%= text_field_tag 'existing_plate' %></td>
       </tr>
@@ -32,9 +32,7 @@
       </tr>
       <tr>
         <td></td>
-        <td>
-          <%= file_field_tag "file", :size => 50 %>
-        </td>
+        <td><%= file_field_tag "file", :size => 50 %></td>
       </tr>
     </table>
     <p><%= link_to "Download the file", url_for(:controller => :batches, :action => :download_spreadsheet, :id => @batch.id) %>, enter the destination wells (A1,B2...), save as CSV, then upload.  If there are any errors with the uploaded wells, the wells wont be cherrypicked and will be put back in the inbox.  Wells can be rearranged in the next step.</p>

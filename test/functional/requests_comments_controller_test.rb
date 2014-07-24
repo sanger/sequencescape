@@ -12,8 +12,8 @@ class Requests::CommentsControllerTest < ActionController::TestCase
     end
 
     should_require_login
-    
+
     resource_test('comment', {:actions => ['index'], :ignore_actions => ["new", "edit", "update", "show", 'destroy', 'create'], :formats => ['html'], :parent => "request"})
-    
+
   end
 end

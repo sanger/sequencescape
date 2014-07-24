@@ -9,9 +9,9 @@ module NavigationHelpers
 
   # Maps a static name to a static route.
   #
-  # This method is *not* designed to map from a dynamic name to a 
-  # dynamic route like <tt>post_comments_path(post)</tt>. For dynamic 
-  # routes like this you should *not* rely on #path_to, but write 
+  # This method is *not* designed to map from a dynamic name to a
+  # dynamic route like <tt>post_comments_path(post)</tt>. For dynamic
+  # routes like this you should *not* rely on #path_to, but write
   # your own step definitions instead. Example:
   #
   #   Given /I am on the comments page for the "(.+)" post/ |name|
@@ -21,7 +21,7 @@ module NavigationHelpers
   #
   def path_to(page_name)
     case page_name
-    
+
     when /the homepage/
       root_path
     when /login/
@@ -92,7 +92,7 @@ module NavigationHelpers
       study      = Study.first(:conditions => { :name => study_name }) or
                     raise StandardError, "No study defined with name '#{ study_name }'"
       study_path(study)
-      
+
     when /the edit page for the last batch/
       batch = Batch.last or raise StandardError, "Cannot find the last batch"
       edit_batch_path(batch)
@@ -167,14 +167,6 @@ module NavigationHelpers
       study    = Study.find_by_name($1) or raise StandardError, "No study defined with name #{ $1.inspect }"
       study_workflow_submissions_path(study, @current_user.workflow)
 
-
-    # Submission related
-    when /the "([^\"]+)" submission template selection page for study "([^\"]+)"/
-      workflow_name, study_name = $1, $2
-      study    = Study.find_by_name(study_name) or raise StandardError, "No study defined with name #{ study_name.inspect }"
-      workflow = Submission::Workflow.find_by_name(workflow_name) or raise StandardError, "No submission workflow defined with name #{ workflow_name.inspect }"
-      template_chooser_study_workflow_submissions_path(study, workflow)
-
     when /the Qc reports homepage/
       study_reports_path
 
@@ -232,17 +224,17 @@ module NavigationHelpers
     when /the request page for the last request/
       request = Request.last or raise StandardError, "Cannot find the last request"
       request_path(request)
-    
+
     when /the Tag Group index page/
       tag_groups_path
-      
+
     when /the edit page for the first tag in "([^"]+)"/
       tag_group = TagGroup.find_by_name($1)
       edit_tag_group_tag_path(tag_group,tag_group.tags.first)
-    
+
     when /the Tag Group new page/
       new_tag_group_path
-    
+
     when /the show page for tag group "([^"]+)"/
       tag_group = TagGroup.find_by_name($1)
       tag_group_path(tag_group)
@@ -270,8 +262,8 @@ module NavigationHelpers
       history_sample_path(sample)
 
     when /the events page for the last sequenom plate/
-      history_asset_path(SequenomQcPlate.last)  
-      
+      history_asset_path(SequenomQcPlate.last)
+
     when /the tag changing page/
       change_tags_path
 

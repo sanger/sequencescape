@@ -2,24 +2,24 @@
 <div class="content">
 <div id='accept'>
       <table>
-				<thead><th>Name</th><th>Barcode</th><th>Type</th></thead>
-		  <% @assets.each do |asset| %>
-			<tr>
-			  <td><%= link_to asset.name, asset_path(asset)   %></td>
+        <thead><th>Name</th><th>Barcode</th><th>Type</th></thead>
+      <% @assets.each do |asset| %>
+      <tr>
+        <td><%= link_to asset.name, asset_path(asset)   %></td>
         <td><%= asset.sanger_human_barcode %></td>
-				<td><%= asset.sti_type %></td>
-			</tr>
-			<% end %>
-			</table>
-      <br />  
+        <td><%= asset.sti_type %></td>
+      </tr>
+      <% end %>
+      </table>
+      <br />
       <strong>I have placed the above barcoded Samples in the reception fridge in the following lab:</strong>
       <br /><br />
       <% form_for :asset, @asset, :url => { :action => "confirm_reception" } do |f| %>
               <%= f.label :location_id, 'Freezers', :style => "display:none" %>
               <%= f.collection_select :location_id, Location.all, :id, :name %>
-							<% @assets.each_with_index do |asset,index| %>
-              	<%= hidden_field_tag "asset_id[#{index}]", asset.id %>
-							<% end %>
+              <% @assets.each_with_index do |asset,index| %>
+                <%= hidden_field_tag "asset_id[#{index}]", asset.id %>
+              <% end %>
               <%= f.submit 'Confirm' %> or  <%= link_to 'cancel', :action => 'reception' %>
       <% end %>
 </div>

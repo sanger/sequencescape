@@ -19,29 +19,29 @@ Feature: Interacting with projects through the API
       """
       [
         {
-				    "project": {
-				        "name": "Testing the JSON API",
-				        "created_at": "2010-09-16T13:45:00+01:00",
-				        "collaborators": "No collaborators",
-				        "funding_comments": "External funding",
-				        "uuid": "00000000-1111-2222-3333-444444444444",
+            "project": {
+                "name": "Testing the JSON API",
+                "created_at": "2010-09-16T13:45:00+01:00",
+                "collaborators": "No collaborators",
+                "funding_comments": "External funding",
+                "uuid": "00000000-1111-2222-3333-444444444444",
 
-				        "approved": true,
-				        "funding_model": "Internal",
-				        "budget_cost_centre": "Sanger",
-				        "external_funding_source": "EU",
-				        "budget_division": "Pathogen (including malaria)",
-				        "project_manager": "Unallocated",
-				        "cost_code": "ABC",
-				        "owner": [{"email": "abc123@example.com",
-				            "login": "abc123",
-				            "name": "John Doe"
-				        }],
-				        "state": "active",
-				
-								"id": 644
-				    }
-				}
+                "approved": true,
+                "funding_model": "Internal",
+                "budget_cost_centre": "Sanger",
+                "external_funding_source": "EU",
+                "budget_division": "Pathogen (including malaria)",
+                "project_manager": "Unallocated",
+                "cost_code": "ABC",
+                "owner": [{"email": "abc123@example.com",
+                    "login": "abc123",
+                    "name": "John Doe"
+                }],
+                "state": "active",
+
+                "id": 644
+            }
+        }
       ]
       """
 
@@ -57,27 +57,27 @@ Feature: Interacting with projects through the API
     Then ignoring "updated_at|id" the JSON should be:
       """
       {
-			    "project": {
-			        "name": "Testing the JSON API",
-			        "created_at": "2010-09-16T13:45:00+01:00",
-			        "collaborators": "No collaborators",
-			        "funding_comments": "External funding",
-			        "uuid": "00000000-1111-2222-3333-444444444444",
+          "project": {
+              "name": "Testing the JSON API",
+              "created_at": "2010-09-16T13:45:00+01:00",
+              "collaborators": "No collaborators",
+              "funding_comments": "External funding",
+              "uuid": "00000000-1111-2222-3333-444444444444",
 
-			        "approved": true,
-			        "funding_model": "Internal",
-			        "budget_cost_centre": "Sanger",
-			        "external_funding_source": "EU",
-			        "budget_division": "Pathogen (including malaria)",
-			        "project_manager": "Unallocated",
-			        "cost_code": "ABC",
-			        "owner": [{"email": "abc123@example.com",
-			            "login": "abc123",
-			            "name": "John Doe"
-			        }],
-			        "state": "active",
-			
-							"id": 644
-			    }
-			}
+              "approved": true,
+              "funding_model": "Internal",
+              "budget_cost_centre": "Sanger",
+              "external_funding_source": "EU",
+              "budget_division": "Pathogen (including malaria)",
+              "project_manager": "Unallocated",
+              "cost_code": "ABC",
+              "owner": [{"email": "abc123@example.com",
+                  "login": "abc123",
+                  "name": "John Doe"
+              }],
+              "state": "active",
+
+              "id": 644
+          }
+      }
       """

@@ -1,8 +1,8 @@
 @external_release
 Feature: Display the external release flag for a lane.
-  Background: 
+  Background:
     Given I am an "administrator" user logged in as "John Smith"
-    
+
     Scenario: An unknown lane
       Given a lane named "an_unknown_lane" exists
       And I am on the show page for asset "an_unknown_lane"
@@ -18,4 +18,4 @@ Feature: Display the external release flag for a lane.
       And I am on the show page for asset "a_no_lane"
       Then I should see "No"
 
-      
+

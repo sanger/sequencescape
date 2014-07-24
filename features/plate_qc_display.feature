@@ -51,7 +51,7 @@ Feature: Display QC data for a plate in a grid
       |   |   |   |   |   |   |   |   |   |    |    |    |
       |   |   |   |   |   |   |   |   |   |    |    |    |
       | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
-	  Then the QC table for "sequenom_count" should be:
+    Then the QC table for "sequenom_count" should be:
       | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
       |   |   |   |   |   |   |   |   |   |    |    |    |
       |   |   |   |   |   |   |   |   |   |    |    |    |
@@ -63,22 +63,22 @@ Feature: Display QC data for a plate in a grid
       |   |   |   |   |   |   |   |   |   |    |    |    |
       | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
 
-	  Then the QC table for "quantity_in_nano_grams" should be:
-	    | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
-	    |   |   |   |   |   |   |   |   |   |    |    |    |
-	    |   |   |   |   |   |   |   |   |   |    |    |    |
-	    |   |   |   |   |   |   |   |   |   |    |    |    |
-	    |   |   |   |   |   |   |   |   |   |    |    |    |
-	    |   |   |   |   |   |   |   |   |   |    |    |    |
-	    |   |   |   |   |   |   |   |   |   |    |    |    |
-	    |   |   |   |   |   |   |   |   |   |    |    |    |
-	    |   |   |   |   |   |   |   |   |   |    |    |    |
-	    | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
-	
+    Then the QC table for "quantity_in_nano_grams" should be:
+      | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
+      |   |   |   |   |   |   |   |   |   |    |    |    |
+      |   |   |   |   |   |   |   |   |   |    |    |    |
+      |   |   |   |   |   |   |   |   |   |    |    |    |
+      |   |   |   |   |   |   |   |   |   |    |    |    |
+      |   |   |   |   |   |   |   |   |   |    |    |    |
+      |   |   |   |   |   |   |   |   |   |    |    |    |
+      |   |   |   |   |   |   |   |   |   |    |    |    |
+      |   |   |   |   |   |   |   |   |   |    |    |    |
+      | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
+
 
 
   Scenario: A plate has all QC results
-	Given a "Stock Plate" plate purpose and of type "Plate" with barcode "1220000123724" exists
+  Given a "Stock Plate" plate purpose and of type "Plate" with barcode "1220000123724" exists
     And plate "123" has "3" wells
     And plate "123" has QC results
     And I am on the show page for asset "1220000123724"

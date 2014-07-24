@@ -153,7 +153,7 @@ Feature: Creating submissions for pulldown
             "submit": "http://www.example.com/api/1/11111111-2222-3333-4444-555555555555/submit"
           },
           "state": "building",
-          "orders": [ 
+          "orders": [
             {
               "uuid": "11111111-2222-3333-4444-666666666666"
             }
@@ -258,7 +258,7 @@ Feature: Creating submissions for pulldown
             "submit": "http://www.example.com/api/1/11111111-2222-3333-4444-555555555555/submit"
           },
           "state": "building",
-          "orders": [ 
+          "orders": [
             {
               "uuid": "11111111-2222-3333-4444-666666666666"
             }
@@ -339,7 +339,7 @@ Feature: Creating submissions for pulldown
             "submit": "http://www.example.com/api/1/11111111-2222-3333-4444-555555555555/submit"
           },
           "state": "building",
-          "orders": [ 
+          "orders": [
             {
               "uuid": "11111111-2222-3333-4444-666666666666"
             }
@@ -372,8 +372,8 @@ Feature: Creating submissions for pulldown
     # Check that all of the library creation requests have the correct information on them
     Given all pending delayed jobs have been processed
     Then all "Pulldown <pipeline>" requests should have the following details:
-      | fragment_size_required_from | 99  | 
-      | fragment_size_required_to   | 999 | 
+      | fragment_size_required_from | 99  |
+      | fragment_size_required_to   | 999 |
 
     Examples:
       | pipeline |

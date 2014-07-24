@@ -1,6 +1,6 @@
 class PipelinesRequestType < ActiveRecord::Base
-  belongs_to :pipeline
-  belongs_to :request_type
+  belongs_to :pipeline, :inverse_of => :pipelines_request_types
+  belongs_to :request_type, :inverse_of => :pipelines_request_types
 end
 
 class Pipeline < ActiveRecord::Base
@@ -25,14 +25,16 @@ class Pipeline < ActiveRecord::Base
   has_many :tasks, :through => :workflows
   belongs_to :location
 
-  has_many :pipelines_request_types
+  has_many :pipelines_request_types, :inverse_of => :pipeline
   has_many :request_types, :through => :pipelines_request_types
-  validate :has_request_types
 
-  def has_request_types
-    errors.add_to_base('A Pipeline must have at least one associcated RequestType') if self.request_types.blank?
-  end
-  private :has_request_types
+  validates_presence_of :request_types
+  # validate :has_request_types
+
+  # def has_request_types
+  #   errors.add_to_base('A Pipeline must have at least one associcated RequestType') if self.request_types.blank?
+  # end
+  # private :has_request_types
 
   belongs_to :control_request_type, :class_name => 'RequestType'
 
@@ -68,6 +70,7 @@ class Pipeline < ActiveRecord::Base
       actions << ((proxy_owner.group_by_parent? or show_held_requests) ? :full_inbox : :pipeline_pending)
       actions << [ (proxy_owner.group_by_parent? ? :holder_located : :located), proxy_owner.location_id ]
       if action != :count
+        actions << :include_request_metadata
         actions << (proxy_owner.group_by_submission? ? :ordered_for_submission_grouped_inbox : :ordered_for_ungrouped_inbox)
         actions << :loaded_for_inbox_display
       end
@@ -77,7 +80,7 @@ class Pipeline < ActiveRecord::Base
         actions << [ :paginate, { :per_page => 50, :page => current_page } ]
       end
 
-      actions.inject(requests.include_request_metadata) { |context, action| context.send(*Array(action)) }
+      actions.inject(requests) { |context, action| context.send(*Array(action)) }
     end
 
     # Used by the Pipeline class to retrieve the list of requests that are coming into the pipeline.
@@ -158,6 +161,10 @@ class Pipeline < ActiveRecord::Base
 
   def sequencing?
     false
+  end
+
+  def is_read_length_consistent_for_batch?(batch)
+    true
   end
 
   def need_picoset?

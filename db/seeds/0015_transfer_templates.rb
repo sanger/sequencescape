@@ -60,4 +60,12 @@ ActiveRecord::Base.transaction do
     :transfer_class_name => 'Transfer::FromPlateToTube',
     :transfers => locations_for(('A'..'H'), (1..12))
   )
+
+  wells = locations_for(('A'..'H'), (1..12))
+
+  TransferTemplate.create!(
+    :name => 'Flip Plate',
+    :transfer_class_name => 'Transfer::BetweenPlates',
+    :transfers => Hash[wells.zip(wells.reverse)]
+  )
 end

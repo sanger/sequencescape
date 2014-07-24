@@ -19,7 +19,7 @@ class Batches::CommentsController < ApplicationController
     @comments = @batch.comments
     render :partial => "list", :locals => { :commentable => @batch, :visible => true }
   end
-  
+
   private
   def discover_batch
     @batch = Batch.find(params[:batch_id])

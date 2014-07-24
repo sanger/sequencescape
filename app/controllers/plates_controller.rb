@@ -1,6 +1,6 @@
 class PlatesController < ApplicationController
-  before_filter :login_required, :except => [:upload_pico_results]
-  
+  before_filter :login_required, :except => [:upload_pico_results, :fluidigm_file]
+
   def new
     @plate_creators   = Plate::Creator.all(:order => 'name ASC')
     @barcode_printers = BarcodePrinterType.find_by_name("96 Well Plate").barcode_printers
@@ -12,11 +12,11 @@ class PlatesController < ApplicationController
       format.json { render :json => @plate }
     end
   end
-  
+
   def show
     @plate = Plate.find(params[:id])
   end
-  
+
   def create
     ActiveRecord::Base.transaction do
       plate_creator         = Plate::Creator.find(params[:plates][:creator_id])
@@ -59,7 +59,7 @@ class PlatesController < ApplicationController
         # makes request properties partial show
         @current_user.workflow = Submission::Workflow.find_by_key("short_read_sequencing")
         @current_user.save!
-        format.html { redirect_to(template_chooser_study_workflow_submissions_path(asset_group.study, @current_user.workflow )) }
+        format.html { redirect_to(new_submission_path(:study_id=>asset_group.study.id)) }
         format.xml  { render :xml  => asset_group, :status => :created}
         format.json { render :json => asset_group, :status => :created}
       else
@@ -72,10 +72,12 @@ class PlatesController < ApplicationController
   end
 
   def fluidigm_file
-    @plate = Plate.find(params[:id])
-    @parents = @plate.parents
-    respond_to do |format|
-      format.csv { render :csv => @plate }
+    if logged_in?
+      @plate = Plate.find(params[:id])
+      @parents = @plate.parents
+      respond_to do |format|
+        format.csv { render :csv => @plate, :content_type => "text/csv" }
+      end
     end
   end
 

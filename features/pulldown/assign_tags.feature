@@ -387,12 +387,12 @@ Feature: Cherrypicking for Pulldown pipeline
     Given I am on the show page for study "Test study"
 
     Given I have a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - Paired end sequencing" submission with the following setup:
-	    | Project | Test project |
-	    | Study | Test study |
-	    | Asset Group | Plate asset group 1234567 |
-	    | Fragment size required from | 300|
-	    | Fragment size required to | 400|
-	    | Read length  | 108 |
+      | Project | Test project |
+      | Study | Test study |
+      | Asset Group | Plate asset group 1234567 |
+      | Fragment size required from | 300|
+      | Fragment size required to | 400|
+      | Read length  | 108 |
 
     #And I select "108" from "Read length"
     #When I follow "Create Submission"

@@ -1,5 +1,5 @@
-		<% if @show_held_requests %>
-		  <%= link_to( "Hide hidden requests", { :controller => "pipelines", :action => "show", :id => @pipeline.id, :page => @current_page }) %>
-		<% else %>
-		  <%= link_to( "Show hidden requests", { :controller => "pipelines", :action => "show", :id => @pipeline.id, :view => "all", :page => @current_page }) %>
-		<% end %>
+    <% if @show_held_requests %>
+      <%= link_to( "Hide hidden requests", { :controller => "pipelines", :action => "show", :id => @pipeline.id, :page => @current_page }) %>
+    <% else %>
+      <%= link_to( "Show hidden requests", { :controller => "pipelines", :action => "show", :id => @pipeline.id, :view => "all", :page => @current_page }) %>
+    <% end %>

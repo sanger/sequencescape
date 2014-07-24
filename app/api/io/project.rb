@@ -2,7 +2,7 @@ class Io::Project < Core::Io::Base
   set_model_for_input(::Project)
   set_json_root(:project)
   set_eager_loading { |model| model.include_project_metadata.include_roles }
-  
+
   define_attribute_and_json_mapping(%Q{
                                               name  => name
                                           approved  => approved

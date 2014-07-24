@@ -1,2 +1,2 @@
-class BarcodePrinterType1DTube < BarcodePrinterType 
+class BarcodePrinterType1DTube < BarcodePrinterType
 end

@@ -1,15 +1,15 @@
 <h1>Robot Property for <%= @robot.name %></h1>
 
 <p>
-	<strong>Name:</strong><%= @robot_property.name %>
+  <strong>Name:</strong><%= @robot_property.name %>
 </p>
 <p>
-	<strong>Key:</strong><%= @robot_property.key %>
+  <strong>Key:</strong><%= @robot_property.key %>
 </p>
 
 <p>
-	<strong>Value:</strong><%= @robot_property.value %>
+  <strong>Value:</strong><%= @robot_property.value %>
 </p>
 
 <%= link_to 'Edit', edit_robot_robot_property_path(@robot, @robot_property) %> | <%= link_to 'Back', robot_robot_properties_path(@robot) %>
-| <%= link_to 'Back to Robot', @robot %> 
+| <%= link_to 'Back to Robot', @robot %>

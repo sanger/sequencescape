@@ -12,9 +12,6 @@ class Project < ActiveRecord::Base
   has_many_events
   has_many_lab_events
 
-
-
-
   aasm_column :state
   aasm_initial_state :pending
   aasm_state :pending
@@ -43,7 +40,7 @@ class Project < ActiveRecord::Base
   validates_presence_of :name
   validates_uniqueness_of :name, :on => :create, :message => "already in use (#{self.name})"
 
-  named_scope :for_search_query, lambda { |query|
+  named_scope :for_search_query, lambda { |query,with_includes|
     { :conditions => [ 'name LIKE ? OR id=?', "%#{query}%", query ] }
   }
 

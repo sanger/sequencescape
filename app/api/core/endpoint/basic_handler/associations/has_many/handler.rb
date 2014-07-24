@@ -35,7 +35,7 @@ class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpo
     uuid = request.target.uuid
     association_details_for(request) do |association_io|
       request.io = association_io
-      request.push(association) do 
+      request.push(association) do
         association.singleton_class.send(:define_method, :uuid) { uuid } unless association.respond_to?(:uuid)
         yield
       end

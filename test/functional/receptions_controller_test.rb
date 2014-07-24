@@ -63,7 +63,7 @@ class ReceptionsControllerTest < ActionController::TestCase
         should_change("Asset.count", :by => 0) { Asset.count }
         should_set_the_flash_to /not found/
       end
-      
+
       context "create an event" do
         setup do
           post :confirm_reception, :asset_id => @sample_tube.id, :asset => { :location_id => @location.id }

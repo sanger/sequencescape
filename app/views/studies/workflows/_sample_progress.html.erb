@@ -14,7 +14,7 @@
       <% @page_elements.each do |sample| %>
         <% sample_statistics = statistics[sample.id] %>
         <tr>
-          <td> <%= link_to sample.name, sample_path(sample)	  %></td>
+          <td> <%= link_to sample.name, sample_path(sample)    %></td>
           <td><%= sample.updated_at.to_formatted_s(:sortable) %></td>
           <% @request_types.each do |request_type| %>
             <% request_type_statistics = sample_statistics[request_type.id] %>

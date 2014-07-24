@@ -1,10 +1,10 @@
 <h1>Study Reports</h1>
 
 <% semantic_form_for(:study_report, :url => study_reports_path ) do |form| %>
-	<% form.inputs :name => "New report for" do %>
-  	<%= form.input :study, :as => :select, :collection => @studies %>
-  	<%= form.commit_button %>
-	<% end %>
+  <% form.inputs :name => "New report for" do %>
+    <%= form.input :study, :as => :select, :collection => @studies %>
+    <%= form.commit_button %>
+  <% end %>
 <% end %>
 
 <%= will_paginate @study_reports %>

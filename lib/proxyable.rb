@@ -27,7 +27,7 @@ module Proxyable
 
     # Create a new proxy for an object from partial description of it.
     # @param [String, Integer, Object] object
-    # @return ResourceProxy 
+    # @return ResourceProxy
     def new_proxy(object)
       proxy_class.new(object, self)
     end

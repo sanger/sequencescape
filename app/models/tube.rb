@@ -66,6 +66,14 @@ class Tube < Aliquot::Receptacle
         request.transition_to(state)
       end
     end
+
+    def pool_id(tube)
+      tube.requests_as_target.first.try(:submission_id)
+    end
+
+    def name_for_child_tube(tube)
+      tube.name
+    end
   end
 
   class StandardMx < Tube::Purpose

@@ -11,7 +11,7 @@
     <% metadata_fields.with_options(:grouping => 'Billing') do |group| %>
       <%= group.association_attribute(:project_manager, :name) %>
       <%= group.plain_value(:external_funding_source) %>
-      <%= group.association_attribute(:budget_division, :name) %> 
+      <%= group.association_attribute(:budget_division, :name) %>
       <%= group.plain_value(:sequencing_budget_cost_centre) %>
     <% end %>
     <%= metadata_fields.plain_value(:project_funding_model) %>

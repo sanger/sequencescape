@@ -9,7 +9,7 @@ Feature: Print buffer is required (or not)
     When I follow "Print worksheet"
     Then I should see "Destination plate"
       And I should not see "Buffer Required"
-    
+
   @javascript
   Scenario: One plate needs a buffer. buffer required should be printed
     Given I have a released cherrypicking batch with 1 samples

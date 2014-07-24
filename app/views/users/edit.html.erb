@@ -21,6 +21,10 @@
         <td><strong><%= f.collection_select :workflow_id, Submission::Workflow.all, :id, :name %></strong></td>
       </tr>
       <tr>
+        <td class="item" width="40%">Swipecard (leave blank to keep existing code):</td>
+        <td><strong><%= f.password_field :swipecard_code %></strong></td>
+      </tr>
+      <tr>
         <td>&nbsp;</td>
         <td><br /><%= submit_tag "Update" %> or <%= link_to 'cancel', "javascript:history.back();" %></td>
       </tr>

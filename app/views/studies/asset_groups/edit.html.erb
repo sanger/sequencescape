@@ -3,13 +3,13 @@
 <% form_for @asset_group, :url => study_asset_group_path(@study), :html => {:method => :put} do |f| %>
   <%= f.error_messages %>
 
-	<p>
-		Name: <%= f.text_field :name %>
-	</p>
+  <p>
+    Name: <%= f.text_field :name %>
+  </p>
 
-	<p>
-		Study: <%= f.collection_select :study_id, Study.all, :id, :name %>
-	</p>
+  <p>
+    Study: <%= f.collection_select :study_id, Study.all, :id, :name %>
+  </p>
 
 
   <p>

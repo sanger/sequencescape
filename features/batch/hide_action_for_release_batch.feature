@@ -1,7 +1,7 @@
 @batch
-Feature: If a batch is released, the section Action/Task shouldn't be shown unless it is on a white list 
+Feature: If a batch is released, the section Action/Task shouldn't be shown unless it is on a white list
 
-  Background: 
+  Background:
     Given I am logged in as "user"
 
   Scenario Outline: The show or hide the released Actions section for pipelines
@@ -23,5 +23,5 @@ Feature: If a batch is released, the section Action/Task shouldn't be shown unle
     | Genotyping                             | released    | should               |
     | DNA QC                                 | released    | should               |
     | Cherrypick                             | released    | should               |
-    | PacBio Sample Prep                     | released    | should               |
+    | PacBio Library Prep                    | released    | should               |
     | PacBio Sequencing                      | released    | should               |

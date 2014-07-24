@@ -1,11 +1,11 @@
-<% add :title, "You can search for studies, samples and items here." -%>
+<% add :title, "You can search for studies, samples and assets here." -%>
 
 <h1>Search for <%= @query %></h1>
 
 <%- form_tag searches_path(:q => params["q"]), :method => :get do -%>
   <div>
     <span class="item">
-      <label for="q">Search for:</label> <%= text_field_tag "q" %> 
+      <label for="q">Search for:</label> <%= select_tag :type, options_for_select(search_options), :id => 'layout_search_options' %> <%= text_field_tag "q" %>
       <%= submit_tag "Go" %>
     </span>
   </div>
@@ -16,3 +16,6 @@
     <%= render :partial => "search" %>
   </div>
 <% end -%>
+
+<p><strong>Search Took</strong> <%= @search_took %> s</p>
+<p><strong>Render Took</strong> <%= Time.now - @render_start %> s</p>

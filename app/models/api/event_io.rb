@@ -45,7 +45,7 @@ class Api::EventIO < Api::Base
     map_attribute_to_json_attribute(:id,   'eventful_internal_id')
 
     extra_json_attributes do |object, json_attributes|
-      json_attributes['eventful_type'] = object.class.name.tableize 
+      json_attributes['eventful_type'] = object.class.name.tableize
     end
   end
 end

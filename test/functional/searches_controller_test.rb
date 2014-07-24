@@ -12,13 +12,13 @@ class SearchesControllerTest < ActionController::TestCase
     end
 
     should_require_login
-    
+
     context "searching (when logged in)" do
       setup do
         @user = Factory :user
         @controller.stubs(:logged_in?).returns(@user)
         @controller.stubs(:current_user).returns(@user)
-        
+
         @study                    = Factory :study, :name => "FindMeStudy"
         @study2                   = Factory :study, :name => "Another study"
         @sample                   = Factory :sample, :name => "FindMeSample"

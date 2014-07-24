@@ -15,7 +15,7 @@
   <% if current_user.privileged? @request %>
     <div>
       <p>Type your comment:</p>
-			<%= form_remote_tag(:url => request_comments_path(@request), :update => "request_annotations_#{@request.id}") %>
+      <%= form_remote_tag(:url => request_comments_path(@request), :update => "request_annotations_#{@request.id}") %>
       <%= text_field_tag "comment", '', :size  => 65 %><%= submit_tag 'Add comment' %>
     </div>
   <% end %>

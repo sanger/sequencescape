@@ -32,7 +32,7 @@ module Batch::PipelineBehaviour
   def internally_released?
     workflow.source_is_external? && self.released?
   end
-  
+
   def show_actions?
     return true if pipeline.is_a?(PulldownMultiplexLibraryPreparationPipeline) || pipeline.is_a?(CherrypickForPulldownPipeline)
     !released?

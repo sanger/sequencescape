@@ -11,15 +11,15 @@ class Roles::UsersControllerTest < ActionController::TestCase
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
     end
-    
+
     should_require_login
-    
+
     resource_test(
       'user', {
-        :parent => 'role', 
-        :actions => ['index'], 
+        :parent => 'role',
+        :actions => ['index'],
         :ignore_actions =>['show','create'],
-        :user => lambda { user = Factory(:user) ; user.is_administrator ; user }, 
+        :user => lambda { user = Factory(:user) ; user.is_administrator ; user },
         :formats => ['html']
       }
     )

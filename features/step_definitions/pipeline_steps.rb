@@ -23,8 +23,9 @@ end
 
 def create_request_for_pipeline(pipeline_name, options = {})
   pipeline = Pipeline.find_by_name(pipeline_name) or raise StandardError, "Cannot find pipeline #{pipeline_name.inspect}"
-  request_metadata_attributes = { :read_length => 76, :fragment_size_required_from => 100, :fragment_size_required_to => 200, :library_type => 'Standard' }
-  Factory(:request, options.merge(:request_type => pipeline.request_types.last, :asset => Factory(pipeline_name_to_asset_type(pipeline_name)), :request_metadata_attributes => request_metadata_attributes)).tap do |request|
+  request_metadata = Factory :"request_metadata_for_#{pipeline.request_types.first.key}"
+  request_parameters = options.merge(:request_type => pipeline.request_types.last, :asset => Factory(pipeline_name_to_asset_type(pipeline_name)), :request_metadata => request_metadata)
+  Factory(:request, request_parameters).tap do |request|
     request.asset.update_attributes!(:location => pipeline.location)
   end
 end

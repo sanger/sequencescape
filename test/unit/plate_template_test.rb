@@ -7,7 +7,7 @@ class PlateTemplateTest < ActiveSupport::TestCase
       context "with a control well set to #{i} - #{index}" do
         setup do
           @template = Factory :plate_template
-          @template.set_control_well(i)        
+          @template.set_control_well(i)
         end
 
         should "be saved" do
@@ -20,18 +20,18 @@ class PlateTemplateTest < ActiveSupport::TestCase
         @template = Factory :plate_template
         @template.set_control_well(0)
       end
-    
+
       should "return boolean" do
         assert_equal false, @template.control_well?
       end
     end
-    
+
     context "with a control well set to 1" do
       setup do
         @template = Factory :plate_template
         @template.set_control_well(1)
       end
-    
+
       should "return boolean" do
         assert @template.control_well?
       end
@@ -60,7 +60,7 @@ class PlateTemplateTest < ActiveSupport::TestCase
         assert_equal @old_wells+1, Well.count
       end
     end
-    
+
     context "with 2 empty wells" do
       setup do
         @template = Factory :plate_template

@@ -80,6 +80,10 @@ Feature: NPG XML interface
                 <value>76</value>
               </property>
               <property>
+                <key>gigabases_expected</key>
+                <name>Gigabases expected</name>
+              </property>
+              <property>
                 <key>library_type</key>
                 <name>Library type</name>
                 <value>Standard</value>

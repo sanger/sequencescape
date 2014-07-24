@@ -14,4 +14,3 @@ Feature: Change pipeline inbox view about attribute "Concentration". Added reque
     Given I am on the show page for pipeline "Illumina-B MX Library Preparation"
     Then I should see "Library type"
     And I should see "Concentration"
-                                

@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 source 'http://gems.github.com'
 
-gem "rails", "2.3.15"
+gem "rails", "~>2.3"
 
 # Warehouse builder
 gem "log4r"
@@ -28,7 +28,7 @@ gem 'trinidad', :platforms => :jruby
 # This was once a plugin, now it's a gem:
 gem 'catch_cookie_exception', :git => 'git+ssh://git@github.com/mhartl/catch_cookie_exception.git'
 
-gem 'sanger_barcode', :git => 'git+ssh://git@github.com/sanger/sanger_barcode.git', :branch => 'ruby-1.8'
+gem 'sanger_barcode', '~>0.1.0', :git => 'git+ssh://git@github.com/sanger/sanger_barcode.git', :branch => 'ruby-1.8'
 # The graph library (1.x only because 2.x uses Rails 3).  This specific respository fixes an issue
 # seen in creating asset links during the assign_tags_handler (which blew up in rewire_crossing in the
 # gem code).
@@ -42,7 +42,7 @@ gem "delayed_job", '~>2.0.4'
 
 gem "ruby_walk",  ">= 0.0.3",:git => "git+ssh://git@github.com/sanger/ruby_walk"
 
-gem "irods_reader", '>=0.0.1', :git => 'git+ssh://git@github.com/sanger/irods_reader'
+gem "irods_reader", '>=0.0.2', :git => 'git+ssh://git@github.com/sanger/irods_reader'
 
 # For the API level
 gem "uuidtools"
@@ -93,6 +93,8 @@ group :test do
   gem "timecop"
   gem "treetop", "~>1.2.5"
   gem 'parallel_tests'
+
+  gem "timocratic-test_benchmark"
 
   gem 'rgl'
 end

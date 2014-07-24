@@ -19,7 +19,7 @@ class Requests::CommentsController < ApplicationController
     @comments = @request.comments
     render :partial => "list", :locals => { :commentable => @request, :visible => true }
   end
-  
+
   private
   def discover_request
     @request = Request.find(params[:request_id])

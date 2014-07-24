@@ -1,6 +1,6 @@
 class GelsController < ApplicationController
   before_filter :slf_gel_login_required
-  
+
   def index
     # TODO: if a plate has a working dilution plate and it has a gel dilution plate, display:
     @gel_plates = GelDilutionPlate.paginate(:page => params[:page], :order => 'id DESC')
@@ -17,14 +17,14 @@ class GelsController < ApplicationController
       render :action => :find
       return
     end
-      
+
     render :action => :show
   end
 
   def show
     @plate = Plate.find(params[:id])
   end
-  
+
   def update
     ActiveRecord::Base.transaction do
       params[:wells].keys.each do |well_id|

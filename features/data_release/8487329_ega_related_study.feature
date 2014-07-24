@@ -1,5 +1,5 @@
 @study @ega @related_studies
-Feature: A user should be able to relate studies 
+Feature: A user should be able to relate studies
   Background:
     Given I am logged in as "me"
     Given I have a study called "master"

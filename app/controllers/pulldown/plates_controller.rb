@@ -1,12 +1,12 @@
 class Pulldown::PlatesController < Pulldown::BaseController
   before_filter :login_required
-  
+
   def index
     PulldownPlate.initialize_child_plates # force sub plate types to be initialised
     @pulldown_plates = PulldownPlate.find(:all, :limit => 20, :order => 'id DESC')
     @pulldown_aliquot_plates = PulldownAliquotPlate.paginate(:page => params[:page], :order => 'id DESC')
   end
-  
+
   def new
     @plate = Plate.new
     @plate_purposes = PlatePurpose.find_all_by_pulldown_display(true)
@@ -18,7 +18,7 @@ class Pulldown::PlatesController < Pulldown::BaseController
       format.json { render :json => @plate }
     end
   end
-  
+
   def create
     ActiveRecord::Base.transaction do
       barcode_printer = BarcodePrinter.find(params[:plates][:barcode_printer])
@@ -42,7 +42,7 @@ class Pulldown::PlatesController < Pulldown::BaseController
 
   def lookup_plate_purposes
     plate = Plate.plates_from_scanned_plate_barcodes(params[:plates][:source_plates]).first
-    
+
     if plate && plate.plate_purpose && plate.plate_purpose.child_plate_purposes && plate.plate_purpose.child_plate_purposes.first
       render :text => "Creating '#{plate.plate_purpose.child_plate_purposes.first.name}' plates from '#{plate.plate_purpose.name}' plates", :layout => false
     else

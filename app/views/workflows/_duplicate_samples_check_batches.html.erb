@@ -1,59 +1,59 @@
 <p>This checks to see if any External Sample names are duplicated within a study.</p>
 <% form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
 
-	<% if @duplicate_samples.blank? -%>
-		<h2>Requests do not contain duplicate external sample names.</h2>
-	<% else -%>
-		<table class="plate">
-			<thead>
-				<th>Remove from Batch</th>
-				<th>External Name</th>
-				<th>Internal Name</th>
-				<th>Plate</th>
-				<th>Well</th>
-				<th>Pico</th>
-				<th>Gel</th>
-				<th>Sequenom</th>
-				<th>Concentration</th>
-			</thead>
+  <% if @duplicate_samples.blank? -%>
+    <h2>Requests do not contain duplicate external sample names.</h2>
+  <% else -%>
+    <table class="plate">
+      <thead>
+        <th>Remove from Batch</th>
+        <th>External Name</th>
+        <th>Internal Name</th>
+        <th>Plate</th>
+        <th>Well</th>
+        <th>Pico</th>
+        <th>Gel</th>
+        <th>Sequenom</th>
+        <th>Concentration</th>
+      </thead>
 
-	  <% @duplicate_samples.each do |batch_well_info| -%>
-		  <% next if batch_well_info.blank? -%>
-			<% next if batch_well_info.duplicate_external_name_data.blank?  %>
-			<% well_qc_results = batch_well_info.asset.qc_data  %>
-			<tr>
-				<td><%= check_box_tag  "request[#{batch_well_info.request.id}]", "1", true %></td>
-				<% batch_well_asset = batch_well_info.asset %>
-				<% batch_well_sample = batch_well_asset.sample %>
-			  <td><% if batch_well_sample %><%= batch_well_sample.sample_external_name %><% end %></td>
-			  <td><% if batch_well_sample %> <%= batch_well_sample.name %><% end %></td>
-	  		<td><%= batch_well_asset.plate.barcode %></td>
-	      <td><%= batch_well_asset.map.description %></td>
-				<td><%= well_qc_results[:pico]  %></td>
-				<td><%= well_qc_results[:gel]  %></td>
-				<td><%= well_qc_results[:sequenom]  %></td>
-				<td><%= well_qc_results[:concentration]  %></td>
-			</tr>
-			<% batch_well_info.duplicate_external_name_data.each do |duplicate_data| -%>
+    <% @duplicate_samples.each do |batch_well_info| -%>
+      <% next if batch_well_info.blank? -%>
+      <% next if batch_well_info.duplicate_external_name_data.blank?  %>
+      <% well_qc_results = batch_well_info.asset.qc_data  %>
+      <tr>
+        <td><%= check_box_tag  "request[#{batch_well_info.request.id}]", "1", true %></td>
+        <% batch_well_asset = batch_well_info.asset %>
+        <% batch_well_sample = batch_well_asset.sample %>
+        <td><% if batch_well_sample %><%= batch_well_sample.sample_external_name %><% end %></td>
+        <td><% if batch_well_sample %> <%= batch_well_sample.name %><% end %></td>
+        <td><%= batch_well_asset.plate.barcode %></td>
+        <td><%= batch_well_asset.map.description %></td>
+        <td><%= well_qc_results[:pico]  %></td>
+        <td><%= well_qc_results[:gel]  %></td>
+        <td><%= well_qc_results[:sequenom]  %></td>
+        <td><%= well_qc_results[:concentration]  %></td>
+      </tr>
+      <% batch_well_info.duplicate_external_name_data.each do |duplicate_data| -%>
 
-			<tr>
-				<td></td>
-				<% duplicate_sample = duplicate_data.sample %>
-		    <td><%= duplicate_sample.sample_external_name %></td>
-		    <td><%= duplicate_sample.name %></td>
-	  	  <td><%= duplicate_data.plate.barcode %></td>
-	  	  <td><%= duplicate_data.map.description %></td>
-				<% duplicate_well_qc_results = duplicate_data.qc_data %>
-				<td><%= duplicate_well_qc_results[:pico]  %></td>
-				<td><%= duplicate_well_qc_results[:gel]  %></td>
-				<td><%= duplicate_well_qc_results[:sequenom]  %></td>
-				<td><%= duplicate_well_qc_results[:concentration]  %></td>
-			</tr>
-			<% end -%>
+      <tr>
+        <td></td>
+        <% duplicate_sample = duplicate_data.sample %>
+        <td><%= duplicate_sample.sample_external_name %></td>
+        <td><%= duplicate_sample.name %></td>
+        <td><%= duplicate_data.plate.barcode %></td>
+        <td><%= duplicate_data.map.description %></td>
+        <% duplicate_well_qc_results = duplicate_data.qc_data %>
+        <td><%= duplicate_well_qc_results[:pico]  %></td>
+        <td><%= duplicate_well_qc_results[:gel]  %></td>
+        <td><%= duplicate_well_qc_results[:sequenom]  %></td>
+        <td><%= duplicate_well_qc_results[:concentration]  %></td>
+      </tr>
+      <% end -%>
 
-		<% end -%>
-		</table>
-	<% end -%>
+    <% end -%>
+    </table>
+  <% end -%>
 
   <%= render(:partial => 'next_stage_submit') %>
 <% end %>

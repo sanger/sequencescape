@@ -18,7 +18,7 @@ class FakeSingleSignOnService < FakeSinatraService
   def map_cookie_to_login(cookie, login)
     self.cookie_to_login_map[cookie] = login
   end
-  
+
   def unmap_cookie(cookie)
     self.cookie_to_login_map.delete(cookie)
   end
@@ -26,7 +26,7 @@ class FakeSingleSignOnService < FakeSinatraService
   def login_for_cookie(cookie)
     self.cookie_to_login_map[cookie]
   end
-  
+
   def service
     Service
   end

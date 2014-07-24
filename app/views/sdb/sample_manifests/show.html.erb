@@ -16,7 +16,7 @@
   Since there are errors no samples have been updated. Please fix them and upload again.
   </div>
   <ul>
-    
+
     <% @sample_manifest.last_errors.each do |error| %>
       <li><%= error %></li>
     <% end %>
@@ -40,7 +40,7 @@
 <% else %>
   <h3>Contains</h3>
   <p>
-  <%= pluralize(@sample_manifest.count, @sample_manifest.asset_type) %>  
+  <%= pluralize(@sample_manifest.count, @sample_manifest.asset_type) %>
   </p>
 <% end %>
 

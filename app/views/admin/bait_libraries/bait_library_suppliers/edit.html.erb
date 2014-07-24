@@ -2,7 +2,7 @@
 
 <% form_for(@bait_library_supplier) do |f| %>
   <%= f.error_messages %>
-  
+
   <%= render :partial => "edit_form", :locals => {:f => f } %>
   <p>
     <%= f.submit "Update" %>

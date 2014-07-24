@@ -127,6 +127,13 @@ class WorkflowsController < ApplicationController
     @stage = params[:id].to_i
     @task = @workflow.tasks[@stage]
     @batch = Batch.find(params[:batch_id], :include => [:requests, :pipeline, :lab_events])
+
+    if params[:next_stage].present? && !@batch.editable?
+      flash[:error] = "You cannot execute more tasks in a completed batch."
+      redirect_to :back
+      return
+    end
+
     ActiveRecord::Base.transaction do
       # If params[:next_stage] is nil then just render the current task
       # else actually execute the task.

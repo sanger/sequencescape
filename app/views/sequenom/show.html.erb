@@ -7,16 +7,16 @@
 <h2>Plate history</h2>
 <div id="events">
 <table width="100%" class="sortable" id="summary">
-	<tr>
-		<th class="label">Date</th>
-		<th class="label">Process</th>
-		<th class="label">User</th>
-	</tr>
+  <tr>
+    <th class="label">Date</th>
+    <th class="label">Process</th>
+    <th class="label">User</th>
+  </tr>
 <% @plate.events.each do |event| -%>
-	<tr>
-		<td><%= h(event.created_at.strftime('%d-%b-%Y %H:%M')) -%></td>
-		<td><%= h(event.message) -%></td>
-		<td><%= h(event.created_by) -%></td>
+  <tr>
+    <td><%= h(event.created_at.strftime('%d-%b-%Y %H:%M')) -%></td>
+    <td><%= h(event.message) -%></td>
+    <td><%= h(event.created_by) -%></td>
   </tr>
 <% end -%>
 </table>

@@ -1,6 +1,6 @@
 class Pulldown::VerifiesController < Pulldown::BaseController
   before_filter :login_required
-  
+
   def index
   end
 
@@ -25,22 +25,22 @@ class Pulldown::VerifiesController < Pulldown::BaseController
 
   def source_plate_type
     plate = Plate.plates_from_scanned_plate_barcodes(params[:plates][:source_plate]).first
-    
+
     if plate && plate.plate_purpose
       render :text => "#{plate.plate_purpose.name}", :layout => false
     else
       render :text => "", :layout => false
     end
   end
-  
+
   def target_plate_type
     plate = Plate.plates_from_scanned_plate_barcodes(params[:plates][:target_plate]).first
-    
+
     if plate && plate.plate_purpose
       render :text => "#{plate.plate_purpose.name}", :layout => false
     else
       render :text => "", :layout => false
     end
   end
-  
+
 end

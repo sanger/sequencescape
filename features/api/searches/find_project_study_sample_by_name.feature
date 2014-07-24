@@ -11,10 +11,10 @@ Feature: Searching for studies, projects and samples by name
   Scenario Outline: Looking for a single entry
     Given the UUID for the search "Find <model> by name" is "00000000-1111-2222-3333-444444444444"
 
-    Given a <model> called "Testing_the_API_1" with ID 1
+    Given a <model> called "Testing_the_API_1" with ID 2
       And the UUID for the <model> "Testing_the_API_1" is "11111111-2222-3333-4444-000000000001"
 
-    Given a <model> called "Testing_the_API_2" with ID 2
+    Given a <model> called "Testing_the_API_2" with ID 3
       And the UUID for the <model> "Testing_the_API_2" is "11111111-2222-3333-4444-000000000002"
 
     When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/first":

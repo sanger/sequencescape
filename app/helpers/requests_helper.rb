@@ -13,7 +13,7 @@ module RequestsHelper #:nodoc: all
       %Q{<strong style="color:#3c3c3c;">#{request.state.upcase}</strong>}
     end
   end
-  
+
   def read_length(request)
     if request.descriptor_value_for_key("read_length")
       "(#{request.descriptor_value_for_key("read_length").value} cycles)"

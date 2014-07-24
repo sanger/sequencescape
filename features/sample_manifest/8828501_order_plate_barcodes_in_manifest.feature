@@ -8,7 +8,7 @@ Also print out the barcodes in the same order as they appear in the manifest
       And the plate barcode webservice returns "666"
       And the plate barcode webservice returns "222"
       And the plate barcode webservice returns "555"
-    
+
     Given a supplier called "Test supplier name" exists
     And I have an active study called "Test study"
     Given the study "Test study" has a abbreviation
@@ -18,7 +18,7 @@ Also print out the barcodes in the same order as they appear in the manifest
     Then I should see "Test study"
     When I follow "Sample Manifests"
     Then I should see "Create manifest for plates"
-    
+
     Scenario: Out of order barcodes should be sorted in the manifest
       When I follow "Create manifest for plates"
        And I select "default layout" from "Template"

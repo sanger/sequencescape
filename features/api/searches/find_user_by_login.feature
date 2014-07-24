@@ -67,5 +67,5 @@ Feature: Searching for users by login
       }
       """
     Then the HTTP response should be "404 Not Found"
- 
+
 

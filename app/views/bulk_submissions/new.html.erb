@@ -1,15 +1,15 @@
-<h2>Create a bulk submission:</h2> 
+<h2>Create a bulk submission:</h2>
 
 <p class="info">Please note that <strong>all</strong> submissions in your file will be processed, or if there are any errors, <strong>none</strong> of them will be processed. You will get feedback about any problems.</p>
 
 <% semantic_form_for @bulk_submission, :url => {:action => "create"}, :html => {:multipart => true } do |form|  %>
     <% form.inputs do %>
       <%= form.input :spreadsheet, :as => :file, :label => 'Spreadsheet' %>
-      
+
     <% end %>
     <% form.buttons do %>
       <%= form.commit_button %>
-      
+
     <% end %>
     <div id="being_created" style="display: none;">
       <p>Your spreadsheet is being processed...</p>

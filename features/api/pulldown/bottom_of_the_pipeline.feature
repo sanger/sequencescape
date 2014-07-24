@@ -255,7 +255,7 @@ Feature: The bottom of the pulldown pipeline
      And all of the pulldown library creation requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should not have billing
 
     Scenarios:
-      | state     | 
-      | cancelled | 
-      | passed    | 
-      | failed    | 
+      | state     |
+      | cancelled |
+      | passed    |
+      | failed    |

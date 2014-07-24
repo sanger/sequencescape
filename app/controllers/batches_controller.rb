@@ -15,7 +15,7 @@ class BatchesController < ApplicationController
       @batches = Batch.find(:all)
     end
     if params[:request_id]
-      @batches = Request.find(params[:request_id]).batches
+      @batches = [Request.find(params[:request_id]).batch].compact
     end
     respond_to do |format|
       format.html
@@ -25,6 +25,8 @@ class BatchesController < ApplicationController
   end
 
   def show
+    @submenu_presenter = Presenters::BatchSubmenuPresenter.new(current_user, @batch)
+
     @pipeline = @batch.pipeline
     @tasks    = @batch.tasks.sort_by(&:sorted)
     @rits = @pipeline.request_information_types
@@ -477,7 +479,7 @@ class BatchesController < ApplicationController
     unless printables.empty?
       begin
         printables.sort! {|a,b| a.number <=> b.number }
-        BarcodePrinter.print(printables, params[:printer], "DN", "long",@batch.study.abbreviation, current_user.login)
+        BarcodePrinter.print(printables, params[:printer], "DN", "cherrypick",@batch.study.abbreviation, current_user.login)
       rescue PrintBarcode::BarcodeException
         flash[:error] = "Label printing to #{params[:printer]} failed: #{$!}."
       rescue SOAP::FaultError

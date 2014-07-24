@@ -1,5 +1,5 @@
 Given /^I have administrative role$/ do
-  @current_user.is_administrator 
+  @current_user.is_administrator
 end
 
 Given /^I have lab role$/ do

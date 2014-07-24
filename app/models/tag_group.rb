@@ -5,9 +5,9 @@ class TagGroup < ActiveRecord::Base
 
 
   named_scope :visible, :conditions => {:visible => true}
-  
+
   validates_presence_of :name
-  validates_uniqueness_of :name 
+  validates_uniqueness_of :name
 
   def create_tags(tags_properties)
     return if tags_properties.blank?

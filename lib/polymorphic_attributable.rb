@@ -12,7 +12,7 @@ module PolymorphicAttributable
             nil
           when self.material.is_a?(#{camel_name})
             self.material
-        else 
+        else
             nil
           end
         end

@@ -4,7 +4,6 @@
 <h1>Sequencescape <%= Deployed::VERSION_ID %></h1>
 
 <h2>Administration</h2>
-
 <h3><%= link_to "Study management", url_for(:controller => "admin/studies", :action => "index") %></h3>
 <p>Make changes to studies.</p>
 <h3><%= link_to "Project management", url_for(:controller => "admin/projects", :action => "index") %></h3>
@@ -13,12 +12,6 @@
 <p>View current users in the system.</p>
 <h3><%= link_to "Role management", roles_path %></h3>
 <p>Add new roles to users.</p>
-<h3><%= link_to "Lab Workflow management", workflows_path %></h3>
-<p>Update lab workflows.</p>
-<h3><%= link_to "Submission Workflow management", submission_workflows_path %></h3>
-<p>Update submission workflows.</p>
-<h3><%= link_to "Request type management", request_types_path %></h3>
-<p>Update request types.</p>
 
 <h3><%= link_to "Help text management", custom_texts_url %></h3>
 <p>Update help texts used in the application.</p>
@@ -33,8 +26,6 @@
 <p>See the delayed jobs queue</p>
 <h3><%= link_to "Reference genome management", reference_genomes_path %></h3>
 <p>Add and remove reference genomes.</p>
-<h3><%= link_to "Change Tags", change_tags_path %></h3>
-<p>Change a tag assigned to a multiplexed library tube.</p>
 <h3><%= link_to "Faculty Sponsors", faculty_sponsors_path %></h3>
 <p>Manage the faculty sponsors for studies.</p>
 <h3><%= link_to "Bait library management", bait_libraries_path %></h3>

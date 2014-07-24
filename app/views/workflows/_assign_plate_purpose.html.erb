@@ -1,10 +1,10 @@
-<% form_for @task, 
-  :url => { 
-    :action => "stage", 
-    :id => @stage, 
-    :workflow_id => @workflow.id, 
-    :batch_id => @batch.id, 
-    :next_stage => true }, 
+<% form_for @task,
+  :url => {
+    :action => "stage",
+    :id => @stage,
+    :workflow_id => @workflow.id,
+    :batch_id => @batch.id,
+    :next_stage => true },
   :html => { :id => "stage_form"} do |form| %>
   <fieldset>
     <legend>Please Choose a Purpose for Your Output Plates:</legend>

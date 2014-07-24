@@ -2,6 +2,7 @@ ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 #TODO: for rails 3 replace with rails/test_help
 require "test_help"
+require 'test_benchmark'
 
 require File.expand_path(File.join(Rails.root, %w{test factories.rb}))
  Dir.glob(File.expand_path(File.join(Rails.root, %w{test factories ** *.rb}))) do |factory_filename|

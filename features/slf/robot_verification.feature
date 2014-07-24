@@ -33,47 +33,47 @@ Feature: RobotVerification
     | SCRC 2 | 1220000010734 |
     | SCRC 3 | 1220000005877 |
     | DEST 1 | 1220099999705 |
-    
-    
+
+
     When I fill in "SCRC 1" with multiline text
     """
     4880000001780
-    
+
     """
     When I fill in "1220000001831" with multiline text
     """
     1220000001831
-    
+
     """
     When I fill in "SCRC 2" with multiline text
     """
     4880000002794
-    
+
     """
     When I fill in "1220000005877" with multiline text
     """
     1220000005877
-    
+
     """
     When I fill in "SCRC 3" with multiline text
     """
     4880000003807
-    
+
     """
     When I fill in "1220000010734" with multiline text
     """
     1220000010734
-    
+
     """
     When I fill in "DEST 1" with multiline text
     """
     4880000020729
-    
+
     """
     When I fill in "1220099999705" with multiline text
     """
     1220099999705
-    
+
     """
     And I press "Verify"
     Then I should see "Download TECAN file"
@@ -152,11 +152,11 @@ C; DEST1 = 1220099999705
     1220099999705
 
     """
-      
+
     # the last step (with a carriage reture) trigger the check
-    # and launch a new page. We want capyra to wait the check is finished 
+    # and launch a new page. We want capyra to wait the check is finished
     # before checking the page. Filling something does it.
-    
+
     When I fill in the following:
     | SCRC 1        | 4880000001780 |
     | 1221234567841 | 1221234567841 |

@@ -2,7 +2,7 @@ class CherrypickPipeline < CherrypickingPipeline
   include Pipeline::InboxGroupedBySubmission
 
   ALWAYS_SHOW_RELEASE_ACTIONS = true
-  
+
   def post_finish_batch(batch, user)
     # Nothing, we don't want all the requests to be completed
   end

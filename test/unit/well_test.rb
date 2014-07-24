@@ -5,16 +5,16 @@ class WellTest < ActiveSupport::TestCase
     setup do
       @well = Factory :well
     end
-    
+
     context "with gender_markers results" do
-      setup do 
+      setup do
         @well.well_attribute.update_attributes!(:gender_markers => ['M','F','F'])
       end
       should "create an event if nothings changed and there are no previous events" do
         @well.update_gender_markers!(['M','F','F'], 'SNP')
         assert_equal 1, @well.events.count
       end
-      
+
       should "an event for each resource if nothings changed" do
         @well.update_gender_markers!(['M','F','F'], 'MSPEC')
         assert_equal 1, @well.events.count
@@ -23,7 +23,7 @@ class WellTest < ActiveSupport::TestCase
         assert_equal 2, @well.events.count
         assert 'SNP', @well.events.last.content
       end
-      
+
       should "only 1 event if nothings changed for the same resource" do
         @well.update_gender_markers!(['M','F','F'], 'SNP')
         assert_equal 1, @well.events.count
@@ -33,7 +33,7 @@ class WellTest < ActiveSupport::TestCase
         assert 'SNP', @well.events.last.content
       end
     end
-    
+
     context "without gender_markers results" do
       should "an event for each resource if its changed" do
         @well.update_gender_markers!(['M','F','F'], 'MSPEC')
@@ -44,12 +44,12 @@ class WellTest < ActiveSupport::TestCase
         assert 'SNP', @well.events.last.content
       end
     end
-    
+
     context "with sequenom_count results" do
-      setup do 
+      setup do
          @well.well_attribute.update_attributes!(:sequenom_count => 5)
       end
-      
+
       should "add an event if its changed" do
         @well.update_sequenom_count!(10, 'MSPEC')
         assert_equal 1, @well.events.count
@@ -59,7 +59,7 @@ class WellTest < ActiveSupport::TestCase
         assert 'MSPEC', @well.events.last.content
       end
     end
-    
+
     context "without sequenom_count results" do
       should "add an event if its changed" do
         @well.update_sequenom_count!(10, 'MSPEC')
@@ -70,37 +70,37 @@ class WellTest < ActiveSupport::TestCase
         assert 'SNP', @well.events.last.content
       end
     end
-    
+
     should "have pico pass" do
       @well.well_attribute.pico_pass = "Yes"
       assert_equal "Yes", @well.get_pico_pass
     end
-    
+
     should "have gel pass" do
       @well.well_attribute.gel_pass = "Pass"
       assert_equal "Pass", @well.get_gel_pass
       assert @well.get_gel_pass.is_a?(String)
     end
-    
+
     should "have picked volume" do
       @well.set_picked_volume(3.6)
       assert_equal 3.6, @well.get_picked_volume
     end
-    
+
     should "allow concentration to be set" do
       @well.set_concentration(1.0)
       concentration = @well.get_concentration
       assert_equal 1.0, concentration
       assert concentration.is_a?(Float)
     end
-    
+
     should "allow volume to be set" do
       @well.set_current_volume(2.5)
       vol = @well.get_volume
       assert_equal 2.5, vol
       assert vol.is_a?(Float)
     end
-    
+
     should "allow current volume to be set" do
       @well.set_current_volume(3.5)
       vol = @well.get_current_volume
@@ -127,7 +127,7 @@ class WellTest < ActiveSupport::TestCase
       end
 
       context "for a tecan" do
-        context "with valid inputs" do 
+        context "with valid inputs" do
           setup do
             @well.map = Map.first
           end
@@ -147,7 +147,7 @@ class WellTest < ActiveSupport::TestCase
         end
       end
     end
-    
+
     [
      [1000 , 10  , 50, 50, 0],
      [1000 , 10  , 10, 10, 0],
@@ -177,10 +177,10 @@ class WellTest < ActiveSupport::TestCase
       end
     end
   end
-    
-  
+
+
     context "to be cherrypicked" do
-      
+
       context "with no source concentration" do
         should "raise an error" do
           assert_raises Cherrypick::ConcentrationError do

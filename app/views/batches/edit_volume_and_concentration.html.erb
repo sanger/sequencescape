@@ -19,8 +19,8 @@
                 <td><%= request.target_asset.stock_asset.sti_type %></td>
                 <td><%= text_field_tag "assets[#{request.target_asset.stock_asset.id}][volume]", "#{request.target_asset.stock_asset.volume}" %></td>
                 <td><%= text_field_tag "assets[#{request.target_asset.stock_asset.id}][concentration]", "#{request.target_asset.stock_asset.concentration}" %></td>
-              </tr>     
-            <% end %>     
+              </tr>
+            <% end %>
             <tr>
               <td><%= link_to(h(request.target_asset.display_name), asset_path(request.target_asset)) %>
               <td><%= request.target_asset.sti_type %></td>

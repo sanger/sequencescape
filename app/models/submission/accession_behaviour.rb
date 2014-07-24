@@ -29,15 +29,15 @@ module Submission::AccessionBehaviour
 
   private
 
-  def asset_group
+  def test_asset_group
     AssetGroup.new(:assets => self.assets)
   end
 
   def unaccessioned_samples
-    asset_group.unaccessioned_samples.map(&:name).to_sentence
+    test_asset_group.unaccessioned_samples.map(&:name).to_sentence
   end
 
   def all_samples_have_accession_numbers?
-    asset_group.all_samples_have_accession_numbers?
+    test_asset_group.all_samples_have_accession_numbers?
   end
 end

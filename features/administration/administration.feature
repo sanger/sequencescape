@@ -3,7 +3,7 @@ Feature: Administration
   In order to allow certain users to administer the system
   admin users
   wants an administrative area with access controls
-  
+
   @wip
   Scenario: Admin user logs into the system
     Given I am using "local" to authenticate

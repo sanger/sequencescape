@@ -1,4 +1,4 @@
-class ::Core::Registry 
+class ::Core::Registry
   include ::Singleton
   include ::Core::Logging
 

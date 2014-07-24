@@ -36,7 +36,7 @@ Feature: The "Sequenom" project need to interact with plates for their 4-step wo
       | And finally this one occurred |
     When I am on the Sequenom plate page for "DN99999F"
     Then I should see "Something happened first"
-		And I should see "Then this happened"
+    And I should see "Then this happened"
     And I should see "And finally this one occurred"
     And I should see a dropdown labeled "Process:" with:
       | PCR Mix    |

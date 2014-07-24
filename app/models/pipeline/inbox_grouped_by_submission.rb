@@ -28,7 +28,7 @@ module Pipeline::InboxGroupedBySubmission
 
     #--
     # Slight hack here in that we are assuming that only the submissions that have requests
-    # waiting in the correct location and in the right state are what we want to display 
+    # waiting in the correct location and in the right state are what we want to display
     # for the inbox.
     #++
     def submissions(finder_method, options = {})

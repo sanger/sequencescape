@@ -46,7 +46,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
       # 'model' is nil if there is no association and we're assuming that we need a Hash of
       # some form.
       model, path = trunk.inject([ model_for_input, [] ]) do |(model, parts), step|
-        next_model, next_step = 
+        next_model, next_step =
           if model.nil?
             [ nil, step ]
           elsif association = model.reflections[step]
@@ -59,7 +59,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
         [ next_model, parts << next_step ]
       end
 
-      # Build the necessary structure for the attributes.  The code can also be generated 
+      # Build the necessary structure for the attributes.  The code can also be generated
       # based on the information we have generated.  If we ended at an association and the
       # leaf is also an association then we have to change the behaviour based on the incoming
       # JSON.

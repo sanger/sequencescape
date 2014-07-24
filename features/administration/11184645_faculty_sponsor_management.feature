@@ -1,6 +1,6 @@
 @study @faculty_sponsor
 Feature: Manage a list of faculty sponsors
-    
+
   @admin
   Scenario: Add and update a faculty sponsor
     Given I am a "administrator" user logged in as "user"
@@ -23,7 +23,7 @@ Feature: Manage a list of faculty sponsors
     When I follow "Delete Jane Doe"
     Then I should see "Faculty Sponsor was successfully deleted"
       And I should not see "Jane Doe"
-      
+
   @admin @javascript
   Scenario: List the studies associated with a Faculty Sponsor
     Given a faculty sponsor called "Adam Apple" exists
@@ -36,7 +36,7 @@ Feature: Manage a list of faculty sponsors
       | Adam Apple | 0                 |
       | Barry Ball | 0                 |
       | Conor Cone | 0                 |
-      
+
     Given I create study "Big study" with faculty sponsor "Barry Ball"
       And I create study "Another Big study" with faculty sponsor "Barry Ball"
       And I create study "Small study" with faculty sponsor "Conor Cone"
@@ -52,7 +52,7 @@ Feature: Manage a list of faculty sponsors
       | Study name        |
       | Big study         |
       | Another Big study |
-  
+
   @admin @javascript
   Scenario: Create a sponsor and use it to create a study
     Given I am a "administrator" user logged in as "user"
@@ -70,7 +70,7 @@ Feature: Manage a list of faculty sponsors
     Then I should see "Your study has been created"
     When I follow "Study details"
     Then I should see "John Doe"
-    
+
   @javascript
   Scenario: Update the faculty sponsor on an existing study
     Given a faculty sponsor called "Jack Sponsor" exists
@@ -79,13 +79,13 @@ Feature: Manage a list of faculty sponsors
       And I am on the show page for study "Test study"
     When I follow "Study details"
     Then I should see "John Doe"
-    When I follow "Edit"  
+    When I follow "Edit"
       And I select "Jack Sponsor" from "Faculty Sponsor"
       And I press "Update"
     Then I should see "Your study has been updated"
     When I follow "Study details"
     Then I should see "Jack Sponsor"
-    
+
   Scenario Outline: Only admins can manage faculty sponsors
     Given I am a "<role>" user logged in as "user"
       And I am on the faculty sponsor homepage

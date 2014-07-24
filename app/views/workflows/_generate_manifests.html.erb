@@ -1,14 +1,14 @@
 <% form_for :task, :url => {:action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
 
 <table width="100%">
-	<% @studies.each do |study|	%>
+  <% @studies.each do |study|  %>
   <tr>
     <td>
       <%= link_to "Manifest for #{study.name}", url_for(:controller => :workflows, :action => :generate_manifest, :id => @batch.id, :study_id => study.id) %>
     </td>
   </tr>
   <% end %>
-	</table>
+  </table>
 <br />
 
 <table id="summary" width="100%" class="sortable">
@@ -16,21 +16,21 @@
     <tr>
       <th>Study</th>
       <th>Plate</th>
-			<th>Infinium Barcode</th>
+      <th>Infinium Barcode</th>
       <th>No. Wells</th>
     </tr>
   </thead>
   <tbody>
-	<% @studies.each do |study|	%>
-	  <% @batch.plate_ids_in_study(study).each do |plate_id| %>
-	    <% plate = Plate.find_by_id(plate_id) %>
-	    <% next if plate.nil? %>
+  <% @studies.each do |study|  %>
+    <% @batch.plate_ids_in_study(study).each do |plate_id| %>
+      <% plate = Plate.find_by_id(plate_id) %>
+      <% next if plate.nil? %>
       <tr>
-      	<td><%= link_to study.name, study_path(study) %></td>
+        <td><%= link_to study.name, study_path(study) %></td>
         <td><%= link_to plate.name, show_plate_asset_path(plate) %></td>
-				<td>
-					<%= plate.infinium_barcode %>
-				</td>
+        <td>
+          <%= plate.infinium_barcode %>
+        </td>
         <td><%= plate.wells.size %></td>
       </tr>
     <% end %>

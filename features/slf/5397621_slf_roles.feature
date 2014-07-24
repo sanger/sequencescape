@@ -80,7 +80,7 @@ Feature: Set roles for SLF functionality
     | administrator |
     | slf_gel       |
 
-	@slf @gel
+  @slf @gel
   Scenario: View SLF homepage as slf gel user
     Given I am an "slf_gel" user logged in as "john"
     And I am on the sample logistics homepage

@@ -1,0 +1,2 @@
+module ModelExtensions::Lot
+end

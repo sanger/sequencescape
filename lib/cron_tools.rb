@@ -26,11 +26,11 @@ module TimeKeeping
   def self.start!
     @start = Time.now
   end
-  
+
   def self.finish!
     @finish = Time.now
   end
-  
+
   def self.running_time
     "#{(((@finish - @start).abs)/60)} minutes"
   end
@@ -43,7 +43,7 @@ def custom_log(script_name)
   @log = Log4r::Logger.new 'log'
 #  @log.outputters = Log4r::StdoutOutputter.new 'console', :formatter => console_formatter
   @log.level = Log4r::INFO
-  
+
   file_format = PatternFormatter.new(:pattern => "[ %d ] %l\t %m")
   @log.add FileOutputter.new('fileOutputter', :filename => log_file, :trunc => false, :formatter=>file_format)
 end

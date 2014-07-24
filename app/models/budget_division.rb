@@ -1,4 +1,4 @@
-class BudgetDivision < ActiveRecord::Base 
+class BudgetDivision < ActiveRecord::Base
   extend Attributable::Association::Target
 
   validates_presence_of  :name

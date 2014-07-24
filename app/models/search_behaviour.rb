@@ -2,9 +2,12 @@ module SearchBehaviour
   def self.included(base)
     base.helper_method :each_non_empty_search_result
   end
-  
+
   def search
-    perform_search(params[:q]) unless params[:q].blank?
+    t = Time.now
+    perform_search(params[:q].strip) unless params[:q].blank?
+    @search_took = Time.now - t
+    @render_start = Time.now
     respond_to do |format|
       format.html
       format.js { render :partial => 'search', :layout => false }
@@ -15,7 +18,7 @@ private
 
   def perform_search(query)
     searchable_classes.each do |clazz|
-      instance_variable_set("@#{ clazz.name.underscore.pluralize }", clazz.for_search_query(query).all)
+      instance_variable_set("@#{ clazz.name.underscore.pluralize }", clazz.for_search_query(query,extended).all)
     end
   end
 

@@ -6,5 +6,5 @@ class Batches::RequestsController < ApplicationController
       format.xml { render :xml => requests.to_xml }
     end
   end
-  
+
 end
