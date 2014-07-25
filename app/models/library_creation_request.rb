@@ -35,6 +35,7 @@ class LibraryCreationRequest < Request
     attribute(:gigabases_expected, :positive_float => true)
   end
 
+  include Request::CustomerResponsibility
   include Request::LibraryManufacture
 
   # When a library creation request passes it does the default behaviour of a request but also adds the

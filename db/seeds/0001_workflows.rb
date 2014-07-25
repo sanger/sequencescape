@@ -280,7 +280,6 @@ PulldownLibraryCreationPipeline.create!(:name => 'Pulldown library preparation')
   end
 end
 
-
 cluster_formation_se_request_type = ['a','b','c'].map do |pl|
   RequestType.create!(
     :workflow => next_gen_sequencing,
@@ -737,8 +736,9 @@ SequencingPipeline.create!(:name => 'HiSeq Cluster formation PE (no controls)') 
       request_type.order             = 2
       request_type.multiples_allowed = true
       request_type.request_class =  HiSeqSequencingRequest
-    end <<
-  RequestType.create!(
+    end
+  end
+  pipeline.request_types << RequestType.create!(
     :workflow => next_gen_sequencing,
     :key => "hiseq_paired_end_sequencing",
     :name => "HiSeq Paired end sequencing",
@@ -750,7 +750,6 @@ SequencingPipeline.create!(:name => 'HiSeq Cluster formation PE (no controls)') 
     request_type.order             = 2
     request_type.multiples_allowed = true
     request_type.request_class =  HiSeqSequencingRequest
-  end
   end
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'HiSeq Cluster formation PE (no controls)') do |workflow|

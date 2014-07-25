@@ -7,6 +7,7 @@ class MiSeqSequencingRequest < SequencingRequest
 
     attribute(:read_length, :integer => true, :required => true, :in => READ_LENGTHS)
   end
+  include Request::CustomerResponsibility
 
   class RequestOptionsValidator < DelegateValidation::Validator
     delegate_attribute :read_length, :to => :target, :type_cast => :to_i

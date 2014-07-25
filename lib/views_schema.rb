@@ -6,7 +6,7 @@ module ViewsSchema
       yield(name,definition)
     end
   rescue ActiveRecord::StatementInvalid => exception
-      puts %Q{
+      puts %Q{\e[1;31m
 ==============================================================
 *                          WARNING!                          *
 *        The attempt to dump the view schema failed.         *
@@ -22,7 +22,7 @@ module ViewsSchema
 *      Downstream users should be notified of potential      *
 *                        disruption.                         *
 ==============================================================
-      }
+\e[0m}
       raise exception
   end
 
@@ -36,5 +36,11 @@ module ViewsSchema
 
   def self.create_view(name,definition)
     ActiveRecord::Base.connection.execute(definition)
+  end
+
+  def self.update_view(name,definition)
+    raise "Invalid name" unless /^[a-z0-9_]*$/===name
+    ActiveRecord::Base.connection.execute("DROP VIEW IF EXISTS `#{name}`;")
+    create_view(name,definition)
   end
 end

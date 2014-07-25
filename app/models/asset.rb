@@ -500,4 +500,8 @@ class Asset < ActiveRecord::Base
     false
   end
 
+  def compatible_purposes
+    []
+  end
+
 end

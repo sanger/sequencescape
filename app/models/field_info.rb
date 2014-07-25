@@ -3,7 +3,8 @@
 class FieldInfo
   SELECTION = 'Selection'
   TEXT      = 'Text'
-  Kind      = [ SELECTION, TEXT ]
+  BOOLEAN   = 'Boolean'
+  Kind      = [ SELECTION, TEXT, BOOLEAN ]
   attr_accessor :display_name, :key, :kind, :default_value, :parameters
 
   def initialize(args)

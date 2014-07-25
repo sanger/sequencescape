@@ -46,7 +46,7 @@ class AssetsController < ApplicationController
   end
 
   def edit
-    @valid_purposes_options = PlatePurpose.compatible_with_purpose(@asset.purpose).map do |purpose|
+    @valid_purposes_options = @asset.compatible_purposes.map do |purpose|
       [purpose.name, purpose.id]
     end
   end

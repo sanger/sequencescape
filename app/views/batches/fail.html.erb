@@ -24,6 +24,10 @@
       <td width="65%"><%= text_area :failure, :comment, :size => "40x6" %></td>
     </tr>
     <tr>
+      <td width="35%" class="item"><%= label_tag('failure_fail_but_charge', 'Fail but charge')%></td>
+      <td width="65%"><%= check_box :failure, :fail_but_charge %></td>
+    </tr>
+    <tr>
       <td width="35%" class="item">&nbsp;</td><td width="65%"><%= submit_tag 'Fail selected requests', :value=>'Fail selected requests' %></td>
     </tr>
   </table>
