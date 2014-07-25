@@ -167,7 +167,7 @@ Feature: Access state changes through the API
   @create
   Scenario: Changing the state of only one well on the plate with pulldown requests
     Given the UUID of the next state change created will be "11111111-2222-3333-4444-000000000001"
-      And "A1-H12" of the plate "Source plate" have been submitted to "Pulldown WGS - Illumina-A HiSeq Paired end sequencing"
+      And "A1-H12" of the plate "Source plate" have been submitted to "Pulldown WGS - HiSeq Paired end sequencing"
       And all requests are in the last submission
       And all the "Pulldown::Requests::WgsLibraryRequest" requests in the last submission have been started
     When I make an authorised POST with the following JSON to the API path "/state_changes":
@@ -212,7 +212,7 @@ Feature: Access state changes through the API
   @create
   Scenario Outline: Creating a state change on a plate with pulldown requests
     Given the UUID of the next state change created will be "11111111-2222-3333-4444-000000000001"
-      And "A1-B1" of the plate "Source plate" have been submitted to "Pulldown WGS - Illumina-A HiSeq Paired end sequencing"
+      And "A1-B1" of the plate "Source plate" have been submitted to "Pulldown WGS - HiSeq Paired end sequencing"
       And all requests are in the last submission
 
     When I make an authorised POST with the following JSON to the API path "/state_changes":
@@ -263,7 +263,7 @@ Feature: Access state changes through the API
   @create
   Scenario: Assigning customer responsibility
     Given the UUID of the next state change created will be "11111111-2222-3333-4444-000000000001"
-    And "A1-B1" of the plate "Source plate" have been submitted to "Pulldown WGS - Illumina-A HiSeq Paired end sequencing"
+    And "A1-B1" of the plate "Source plate" have been submitted to "Pulldown WGS - HiSeq Paired end sequencing"
       And all requests are in the last submission
       And all the "Pulldown::Requests::WgsLibraryRequest" requests in the last submission have been started
 
