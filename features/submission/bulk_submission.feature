@@ -66,7 +66,7 @@ Feature: Bulk Submission
 
   Scenario: Uploading a file with conflicting orders
     When I upload a file with conflicting submissions
-    Then I should see "Field read length is inconsistent for asset group assetgroup123"
+    Then I should see "Column, read length, should be identical for all requests in asset group assetgroup123"
     Then there should be no submissions
 
   Scenario: Uploading an invalid file with 2 submissions
