@@ -30,6 +30,10 @@ Feature: NPG XML interface
             <id>1</id>
             <properties>
               <property>
+                <key>customer_accepts_responsibility</key>
+                <name>Still charge on fail</name>
+              </property>
+              <property>
                 <key>read_length</key>
                 <name>Read length</name>
                 <value>76</value>
@@ -74,6 +78,10 @@ Feature: NPG XML interface
           <request>
             <id>1</id>
             <properties>
+              <property>
+                <key>customer_accepts_responsibility</key>
+                <name>Still charge on fail</name>
+              </property>
               <property>
                 <key>read_length</key>
                 <name>Read length</name>
