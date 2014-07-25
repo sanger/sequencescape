@@ -46,4 +46,13 @@ class SequencingRequest < Request
   def self.delegate_validator
     SequencingRequest::RequestOptionsValidator
   end
+
+  def concentration
+    return "&nbsp" if request.lab_events_for_batch(batch).empty?
+    conc = request.lab_events_for_batch(batch).first.descriptor_value("Concentration")
+    return "#{conc}&#x3BC;l" if conc.present?
+    dna = request.lab_events_for_batch(batch).first.descriptor_value("DNA Volume")
+    rsb = request.lab_events_for_batch(batch).first.descriptor_value("RSB Volume")
+    "#{dna}&#x3BC;l DNA in #{rsb}}&#x3BC;l RSB"
+  end
 end
