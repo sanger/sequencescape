@@ -7,7 +7,7 @@
     </ul>
   <% end %>
 </div>
-<% if @studies.empty? && @samples.empty? && @assets.empty? && @requests.empty? -%>
+<% unless @studies.present? || @samples.present? || @assets.present? || @requests.present? -%>
   <div class="info">
     <h3>No results</h3>
   </div>
