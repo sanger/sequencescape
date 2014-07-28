@@ -7,7 +7,7 @@ module PlatePurpose::Library
 
   STATES_TO_ASSIGN_LIBRARY_INFORMATION = [ 'started', 'passed' ]
 
-  def transition_to(plate, state, contents = nil)
+  def transition_to(plate, state, contents = nil, customer_accepts_responsibility = false)
     super
     assign_library_information_to_wells(plate) if STATES_TO_ASSIGN_LIBRARY_INFORMATION.include?(state)
   end

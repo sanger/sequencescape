@@ -5,6 +5,8 @@
       <!-- todo unify with how submission use fiel info-->
       <%- if field_info.selection %>
         <%= metadata_fields.select(field_info.key, field_info.selection) %>
+      <%- elsif field_info.kind == 'Boolean' %>
+        <%= metadata_fields.check_box(field_info.key) %>
       <%- else %>
         <%= metadata_fields.text_field(field_info.key) %>
       <%- end %>

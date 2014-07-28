@@ -30,6 +30,12 @@
     <td class="item">Type:</td>
     <td><strong><%=h @asset.label %></strong></td>
   </tr>
+  <% if @asset.respond_to? :plate_purpose %>
+  <tr>
+    <td class="item">Purpose:</td>
+    <td><strong><%=h @asset.plate_purpose.name %></strong></td>
+  </tr>
+  <% end %>
   <% if @asset.is_a?(Lane) %>
     <tr>
     <td class="item">Data to be released externally?:</td>

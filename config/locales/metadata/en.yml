@@ -39,6 +39,9 @@ en:
         gigabases_expected:
           label: Gigabases expected
 
+        customer_accepts_responsibility:
+          label: Still charge on fail
+
     library_creation_request:
       <<: *REQUEST
     sequencing_request:
@@ -61,6 +64,27 @@ en:
         sc_library_request:
           <<: *REQUEST
         isc_library_request:
+          <<: *REQUEST
+        isc_library_request_part:
+          <<: *REQUEST
+
+    illumina_b:
+      requests:
+        std_library_request:
+          <<: *REQUEST
+
+    illumina_htp:
+      requests:
+        shared_library_prep:
+          <<: *REQUEST
+        library_completion:
+          <<: *REQUEST
+
+    illuminaC:
+      requests:
+        pcr_library_request:
+          <<: *REQUEST
+        no_pcr_library_request:
           <<: *REQUEST
 
     sample:

@@ -64,6 +64,11 @@ Feature: Bulk Submission
     Then I should see "There was a problem on row(s)"
     Then there should be no submissions
 
+  Scenario: Uploading a file with conflicting orders
+    When I upload a file with conflicting submissions
+    Then I should see "Column, read length, should be identical for all requests in asset group assetgroup123"
+    Then there should be no submissions
+
   Scenario: Uploading an invalid file with 2 submissions
     When I upload a file with 1 invalid submission and 1 valid submission
     Then I should see "There was a problem on row(s)"

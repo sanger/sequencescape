@@ -3,10 +3,20 @@ class IlluminaHtp::StockTubePurpose < Tube::Purpose
     raise 'Unimplemented behaviour'
   end
 
-  def transition_to(tube, state, _ = nil)
+  def transition_to(tube, state, _ = nil, customer_accepts_responsibility = false)
     tube.requests_as_target.all(not_terminated).each do |request|
       request.transition_to(state)
     end
+    outer_requests_for(tube).each do |request|
+      request.customer_accepts_responsibility! if customer_accepts_responsibility
+      request.transition_to(state)
+    end if ['cancelled','failed','aborted'].include?(state)
+  end
+
+  def outer_requests_for(tube)
+    tube.requests_as_target.map do |r|
+      r.submission.requests.where_is_a(LibraryCompletion)
+    end.uniq
   end
 
   def not_terminated

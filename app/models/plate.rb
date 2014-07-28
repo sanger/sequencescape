@@ -641,4 +641,8 @@ WHERE c.container_id=?
   def convert_to(new_purpose)
     self.update_attributes!(:plate_purpose=>new_purpose)
   end
+
+  def compatible_purposes
+    PlatePurpose.compatible_with_purpose(self.purpose)
+  end
 end
