@@ -48,7 +48,8 @@ class ProjectsControllerTest < ActionController::TestCase
           post :create, "project" => {
             "name" => "hello",
             :project_metadata_attributes => {
-              :project_cost_code => 'Some cost code'
+              :project_cost_code => 'Some cost code',
+              :project_funding_model => 'Internal'
             }
           }
         end
@@ -63,7 +64,8 @@ class ProjectsControllerTest < ActionController::TestCase
           post :create, "project" => {
             "name" => "hello 2",
             :project_metadata_attributes => {
-              :project_cost_code => ''
+              :project_cost_code => '',
+              :project_funding_model => ''
             }
           }
         end
@@ -81,7 +83,8 @@ class ProjectsControllerTest < ActionController::TestCase
           post :create, "project" => {
             "name" => "hello 3",
             :project_metadata_attributes => {
-              :project_cost_code => 'Some cost code'
+              :project_cost_code => 'Some cost code',
+              :project_funding_model => 'Internal'
             }
           }
         end
@@ -109,7 +112,8 @@ class ProjectsControllerTest < ActionController::TestCase
             "project": {
               "name": "Some Project",
               "project_metadata_attributes": {
-                "project_cost_code": "Some cost code"
+                "project_cost_code": "Some cost code",
+                "project_funding_model": "Internal"
               }
             }
           }

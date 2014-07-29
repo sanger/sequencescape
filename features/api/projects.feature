@@ -39,7 +39,7 @@ Feature: Access projects through the API
           "external_funding_source": null,
           "budget_division": "Human variation",
           "budget_cost_centre": null,
-          "funding_model": null,
+          "funding_model": "Internal",
 
           "roles": {
           }

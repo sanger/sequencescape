@@ -123,6 +123,7 @@ end
 
 Factory.define :project_metadata, :class => Project::Metadata do |m|
   m.project_cost_code 'Some Cost Code'
+  m.project_funding_model 'Internal'
   m.budget_division {|budget| budget.association(:budget_division)}
 end
 

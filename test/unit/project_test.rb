@@ -3,6 +3,20 @@ require "test_helper"
 class ProjectTest < ActiveSupport::TestCase
   context "Project" do
 
+    should_validate_presence_of :name
+
+    context "#metadata" do
+      setup do
+        @project = Project.new :name => "Project : #{Time.now}"
+      end
+
+      should "require cost-code and project funding model" do
+        assert_equal false, @project.save
+        assert  @project.errors.full_messages.include?("Project cost code can't be blank")
+      end
+
+    end
+
     context "#billable_events" do
       setup do
         @sample1 = mock("Sample 1", :billable_events => [1, 2, 3])
