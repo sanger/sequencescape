@@ -25,14 +25,14 @@ class IlluminaB::FinalPlatePurposeTest < ActiveSupport::TestCase
       end
 
       should "fail the pre-pcr plate when failing the entire plate" do
-        @grandparent.expects(:transition_to).with('failed', nil)
+        @grandparent.expects(:transition_to).with('failed', nil,false)
         @purpose.expects(:transition_state_requests).with(@child_wells, 'failed')
         @purpose.transition_to(@child, 'failed', nil)
       end
 
       should "fail the pre-pcr well when failing a well" do
         @child_wells.expects(:located_at).with(['A1']).returns(@child_wells)
-        @grandparent.expects(:transition_to).with('failed', ['A1'])
+        @grandparent.expects(:transition_to).with('failed', ['A1'],false)
         @purpose.expects(:transition_state_requests).with(@child_wells, 'failed')
         @purpose.transition_to(@child, 'failed', ['A1'])
       end

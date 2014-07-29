@@ -2,7 +2,10 @@ class SubmissionsController < ApplicationController
 
   before_filter :lab_manager_login_required, :only => [:change_priority]
 
+  after_filter :set_cache_disabled!, :only => [:new, :index]
+    
   def new
+    self.expires_now
     @presenter = SubmissionCreater.new(current_user, :study_id => params[:study_id])
   end
 
@@ -44,6 +47,9 @@ class SubmissionsController < ApplicationController
   end
 
   def index
+    # Disable cache of this page
+    self.expires_now
+    
     @building = Submission.building.find(:all, :order => "created_at DESC", :conditions => { :user_id => current_user.id })
     @pending = Submission.pending.find(:all, :order => "created_at DESC", :conditions => { :user_id => current_user.id })
     @ready = Submission.ready.find(:all, :limit => 10, :order => "created_at DESC", :conditions => { :user_id => current_user.id })
@@ -52,9 +58,11 @@ class SubmissionsController < ApplicationController
   def destroy
     ActiveRecord::Base.transaction do
       submission = SubmissionPresenter.new(current_user, :id => params[:id])
-      submission.destroy
-
-      flash[:notice] = "Submission successfully deleted!"
+      if submission.destroy
+        flash[:notice] = "Submission successfully deleted!"
+      else
+        flash[:error] = "This submission can't be deleted"
+      end
       redirect_to :action => :index
     end
   end

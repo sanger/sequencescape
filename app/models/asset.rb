@@ -58,6 +58,7 @@ class Asset < ActiveRecord::Base
   named_scope :sorted , :order => "map_id ASC"
   named_scope :position_name, lambda { |*args| { :joins => :map, :conditions => ["description = ? AND asset_size = ?", args[0], args[1]] }}
   named_scope :get_by_type, lambda {|*args| {:conditions => { :sti_type => args[0]} } }
+  named_scope :for_summary, {:include=>[:map,:barcode_prefix]}
 
   named_scope :of_type, lambda { |*args| { :conditions => { :sti_type => args.map { |t| [t, Class.subclasses_of(t)] }.flatten.map(&:name) } } }
 
@@ -74,12 +75,11 @@ class Asset < ActiveRecord::Base
     (orders.map(&:study)+studies).compact.uniq
   end
   # Named scope for search by query string behaviour
-  named_scope :for_search_query, lambda { |query|
+  named_scope :for_search_query, lambda { |query,with_includes|
     {
       :conditions => [
-        'assets.name IS NOT NULL AND (assets.name LIKE :like OR assets.id=:query OR assets.barcode LIKE :query)', { :like => "%#{query}%", :query => query } ],
-      :include => :requests, :order => 'requests.pipeline_id ASC'
-    }
+        'assets.name IS NOT NULL AND (assets.name LIKE :like OR assets.id=:query OR assets.barcode = :query)', { :like => "%#{query}%", :query => query } ]
+    }.tap {|cond| cond.merge!(:include => :requests, :order => 'requests.pipeline_id ASC') if with_includes }
   }
 
   named_scope :with_name, lambda { |*names| { :conditions => { :name => names.flatten } } }
@@ -498,6 +498,10 @@ class Asset < ActiveRecord::Base
 
   def can_be_created?
     false
+  end
+
+  def compatible_purposes
+    []
   end
 
 end

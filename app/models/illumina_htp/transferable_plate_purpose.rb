@@ -5,7 +5,7 @@ class IlluminaHtp::TransferablePlatePurpose < IlluminaHtp::FinalPlatePurpose
     plate.parent.stock_plate
   end
 
-  def transition_to(plate, state, contents = nil)
+  def transition_to(plate, state, contents = nil, customer_accepts_responsibility = false)
     super
     connect_requests(plate, state, contents)
   end

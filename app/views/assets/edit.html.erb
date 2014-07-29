@@ -7,6 +7,10 @@
   <% else %>
       <tr><td>Name: <%= h(@asset.display_name) %></td></tr>
   <% end %>
+  
+  <% if (@current_user.is_lab_manager?) && (@asset.respond_to? :plate_purpose) %>
+    <tr><td>Purpose: <%= select_tag ("asset[plate_purpose_id]", options_for_select(@valid_purposes_options, @asset.purpose.id)) %></td></tr>
+  <% end %>
 
   <% if @asset.location %>
       <tr><td>Location: <%= f.select :location_id, Location.all.map { |location| [location.name, location.id]} %></td></tr>

@@ -83,7 +83,10 @@
           <%- end -%>
 
             <div id="search">
-            <% form_tag searches_path, :method => :get do %>Search <%= text_field_tag :q, "", :size => 20, :type => "search", :placeholder => "samples, studies", :id => 'layout_search' %> <% end %>
+            <% form_tag searches_path, :method => :get do %>Search
+              <%= select_tag :type, options_for_select(search_options), :id => 'layout_search_options' %>
+              <%= text_field_tag :q, "", :size => 20, :type => "search", :placeholder => "name, id, barcode", :id => 'layout_search' %>
+            <% end %>
             </div>
           </div>
           <div id="tab_bar">

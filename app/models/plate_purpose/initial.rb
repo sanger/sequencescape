@@ -7,7 +7,7 @@ module PlatePurpose::Initial
 
   # Initial plates in the pulldown pipelines change the state of the pulldown requests they are being
   # created for to exactly the same state.
-  def transition_to(plate, state, contents = nil)
+  def transition_to(plate, state, contents = nil, customer_accepts_responsibility = false)
     super
     start_pulldown_library_requests(plate)
   end

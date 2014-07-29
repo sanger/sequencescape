@@ -29,7 +29,7 @@ class ::Sample
       )
     }, {
       :data_release_timing          => [ 'never', 'delayed' ],
-      :data_release_study_type      => DataReleaseStudyType::TYPES,
+      :data_release_study_type      => DataReleaseStudyType::DATA_RELEASE_TYPES_SAMPLES,
       :data_release_managed_or_open => [ Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED ]
     } ]
   }

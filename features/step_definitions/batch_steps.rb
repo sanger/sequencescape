@@ -52,3 +52,11 @@ Given /^all requests for the "([^\"]+)" pipeline are in a batch$/ do |name|
   raise StandardError, "There appear to be no #{pipeline.request_type.name.inspect} requests" if requests.empty?
   pipeline.batches.create!(:requests => requests)
 end
+
+When /^the batch is started$/ do
+  Batch.last.start!(User.last)
+end
+
+Then /^the customer should accept responsibility for all requests in the last batch$/ do
+  Batch.last.requests.all? {|r| r.request_metadata.customer_accepts_responsibility? }
+end

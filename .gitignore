@@ -4,6 +4,7 @@ tmp/*
 .DS_Store
 public/doc/*
 db/*.sql
+db/views_schema.old
 repository
 lib/tasks/*.local.rake
 public/documents

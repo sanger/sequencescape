@@ -55,6 +55,12 @@ class ApplicationController < ActionController::Base
     exclude_nested_resource = request.headers["HTTP_EXCLUDE_NESTED_RESOURCE"] || params[:exclude_nested_resource]
     @exclude_nested_resource = exclude_nested_resource && exclude_nested_resource.to_s.downcase == "true"
   end
+  
+  def set_cache_disabled!
+    response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
+  end  
 
   def first_param(key)
     value  = params[key]
