@@ -1,6 +1,6 @@
-class UpdateX10Fields < ActiveRecord::Migration
+class UpdateV4Fields < ActiveRecord::Migration
   def self.up
-    switch_to(:new)
+    switch_to(:new,false)
   end
 
   def self.down
@@ -43,19 +43,14 @@ class UpdateX10Fields < ActiveRecord::Migration
           ["Concentration", "Text", 1]
         ]
       },
-      # "Add Spiked in control"=>{
-      #   :new=>[],
-      #   :old=>[]
-      # },
       "Cluster generation"=>{
         :new=>[
           ["Chip Barcode", "Text", 1],
           ["Operator", "Text", 2],
-          ["CBOT", "Text", 3],
-          ["-20 Temp. Read 1 Cluster Kit Lot #", "Text", 4],
-          ["-20 Temp. Cluster Kit RGT #", "Text", 5],
-          ["Pipette Carousel", "Text", 6],
-          ["Comment", "Text", 7]
+          ["Cluster Station", "Text", 3],
+          ["HiSeq PE Cluster Kit V4 – cBot Box 1 of 2", "Text", 4],
+          ["Pipette Carousel", "Text", 5],
+          ["Comment", "Text", 6],
         ],
         :old=>[
           ["Chip Barcode", "Text", 1],
@@ -72,18 +67,13 @@ class UpdateX10Fields < ActiveRecord::Migration
         :new=>[
           ["Chip Barcode", "Text", 1],
           ["Operator", "Text", 2],
-          ["Pipette Carousel", "Text", 3],
-          ["-20 Seq kit lot #", "Text", 4],
-          ["-20 Seq kit RGT #", "Text", 5],
-          ["+4 Seq kit lot #", "Text", 6],
-          ["+4 Seq kit RGT #", "Text", 7],
-          ['Patterned incorporation mix (PIM)', 'Text',8],
-          ['Patterned SBS buffer 1 (PB1)','Text',9],
-          ['Patterned scan mix (PSM)','Text',10],
-          ['Patterned SBS buffer 2 (PB2)','Text',11],
-          ['Patterned cleavage mix (PCM)','Text',12],
-          ['iPCR batch #','Text',13],
-          ["Comments", "Text", 14]
+          ["Universal Scan Mix", "Text", 3],
+          ["Incorporation Reagent Master Mix", "Text", 4],
+          ["Cleavage Reagent Mix", "Text", 5],
+          ["High Salt Buffer", "Text", 6],
+          ["Incorporation Wash Buffer", "Text", 7],
+          ["Cleavage Buffer", "Text", 8],
+          ["Comments", "Text", 9]
         ],
         :old=>[
           ["Chip Barcode", "Text", 1],
@@ -105,16 +95,9 @@ class UpdateX10Fields < ActiveRecord::Migration
         :new=>[
           ["Operator", "Text", 1],
           ["Sequencing Machine", "Text", 2],
-          ["-20 Temp. Read 2 Cluster Kit Lot  #", "Text", 3],
-          ["-20 Temp. Read 2 kit RGT #", "Text", 4],
-          ['Patterned resynthesis mix (PRM)','Text',5],
-          ['Patterned linearization mix (PLM2)','Text',6],
-          ['Patterned amplification mix (PAM)','Text',7],
-          ['Patterned amp premix (PPM)','Text',8],
-          ['Patterned denaturation mix (PDR)','Text',9],
-          ['Primer mix (HP11)','Text',10],
-          ['Primer mix (HP12)','Text',11],
-          ["Comments", "Text", 12]
+          ["Pipette Carousel", "Text", 3],
+          ["HiSeq PE Cluster Kit V4 – cBot Box 2 of 2", "Text", 4],
+          ["Comments", "Text", 5]
         ],
         :old=>[
           ["Operator", "Text", 1],
@@ -136,7 +119,7 @@ class UpdateX10Fields < ActiveRecord::Migration
   end
 
   def self.each_workflow
-    ["HiSeq X Ten PE (spiked in controls)","HiSeq X Ten PE (no controls)"].each do |name|
+    ["HiSeq v4 PE (spiked in controls)","HiSeq v4 PE (no controls)"].each do |name|
       yield LabInterface::Workflow.find_by_name!(name)
     end
   end
