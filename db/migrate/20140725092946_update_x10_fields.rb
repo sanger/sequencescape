@@ -14,7 +14,8 @@ class UpdateX10Fields < ActiveRecord::Migration
         workflow.tasks.each do |task|
           next unless changes(task.name).present?
           task.descriptors.clear
-          new_descriptors = changes(task.name)[option].map do |name,kind,sort|
+          new_descriptors = changes(task.name)[option].map do |name,kind,sort,spiked_only|
+            next if spiked_only && workflow.name != "HiSeq X Ten PE (spiked in controls)"
             {
               :name => name,
               :selection => {"1"=>""},
@@ -23,7 +24,7 @@ class UpdateX10Fields < ActiveRecord::Migration
               :required => required,
               :sorter => sort
             }
-          end
+          end.compact
 
           Descriptor.create!(new_descriptors)
         end
@@ -55,7 +56,8 @@ class UpdateX10Fields < ActiveRecord::Migration
           ["-20 Temp. Read 1 Cluster Kit Lot #", "Text", 4],
           ["-20 Temp. Cluster Kit RGT #", "Text", 5],
           ["Pipette Carousel", "Text", 6],
-          ["Comment", "Text", 7]
+          ["PhiX lot #","Text", 7, true],
+          ["Comment", "Text", 8]
         ],
         :old=>[
           ["Chip Barcode", "Text", 1],
