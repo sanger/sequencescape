@@ -13,7 +13,7 @@ class UpdateV4Fields < ActiveRecord::Migration
 
         workflow.tasks.each do |task|
           next unless changes(task.name).present?
-
+          task.descriptors.clear
           new_descriptors = changes(task.name)[option].map do |name,kind,sort|
             {
               :name => name,
