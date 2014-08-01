@@ -48,7 +48,7 @@ class SequencingRequest < Request
   end
 
   def concentration
-    return "&nbsp" if request.lab_events_for_batch(batch).empty?
+    return "&nbsp" if lab_events_for_batch(batch).empty?
     conc = lab_events_for_batch(batch).first.descriptor_value("Concentration")
     return "#{conc}&#x3BC;l" if conc.present?
     dna = lab_events_for_batch(batch).first.descriptor_value("DNA Volume")
