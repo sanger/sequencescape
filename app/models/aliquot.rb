@@ -25,8 +25,8 @@ class Aliquot < ActiveRecord::Base
     named_scope :with_aliquots, :joins => :aliquots
 
     # Provide some named scopes that will fit with what we've used in the past
-    named_scope :with_sample_id, lambda { |id|     { :conditions => { :aliquots => { :sample_id => Array(id)               } }, :joins => :aliquots } }
-    named_scope :with_sample,    lambda { |sample| { :conditions => { :aliquots => { :sample_id => Array(sample).map(&:id) } }, :joins => :aliquots } }
+    named_scope :with_sample_id, lambda { |id|     { :conditions => { :aliquots => { :sample_id => Array(id)     } }, :joins => :aliquots } }
+    named_scope :with_sample,    lambda { |sample| { :conditions => { :aliquots => { :sample_id => Array(sample) } }, :joins => :aliquots } }
 
     # TODO: Remove these at some point in the future as they're kind of wrong!
     has_one :sample, :through => :primary_aliquot
