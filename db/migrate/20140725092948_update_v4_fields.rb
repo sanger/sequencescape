@@ -36,8 +36,7 @@ class UpdateV4Fields < ActiveRecord::Migration
     {
       "Specify Dilution Volume"=>{
         :new=>[
-          ["DNA Volume", "Text", 1],
-          ["RSB Volume", "Text", 2]
+          ["Concentration", "Text", 1]
         ],
         :old=>[
           ["Concentration", "Text", 1]
