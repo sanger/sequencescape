@@ -191,7 +191,7 @@ WHERE c.container_id=?
       :joins => "LEFT OUTER JOIN container_associations AS wscas ON wscas.container_id = assets.id
   LEFT JOIN assets AS wswells ON wswells.id = content_id
   LEFT JOIN aliquots AS wsaliquots ON wsaliquots.receptacle_id = wswells.id",
-      :conditions => ["wsaliquots.sample_id IN(?)", Array(sample).map(&:id)]
+      :conditions => ["wsaliquots.sample_id IN(?)", Array(sample)]
     }
   }
 
