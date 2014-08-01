@@ -18,7 +18,7 @@ class CherrypickForPulldownRequest < TransferRequest
 
     # State Machine events
     aasm_event :start do
-      transitions :to => :started, :from => [:pending]
+      transitions :to => :started, :from => [:pending,:hold]
     end
 
     aasm_event :pass do
