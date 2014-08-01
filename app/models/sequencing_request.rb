@@ -53,6 +53,6 @@ class SequencingRequest < Request
     return "#{conc}&#x3BC;l" if conc.present?
     dna = lab_events_for_batch(batch).first.descriptor_value("DNA Volume")
     rsb = lab_events_for_batch(batch).first.descriptor_value("RSB Volume")
-    "#{dna}&#x3BC;l DNA in #{rsb}}&#x3BC;l RSB"
+    "#{dna}&#x3BC;l DNA in #{rsb}&#x3BC;l RSB"
   end
 end
