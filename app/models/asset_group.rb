@@ -15,7 +15,7 @@ class AssetGroup < ActiveRecord::Base
 
 
 
-  named_scope :for_search_query, lambda { |query| { :conditions => [ 'name LIKE ?', "%#{query}%" ] } }
+  named_scope :for_search_query, lambda { |query,with_includes| { :conditions => [ 'name LIKE ?', "%#{query}%" ] } }
 
   def all_samples_have_accession_numbers?
     unaccessioned_samples.count == 0
