@@ -83,4 +83,9 @@ class TransferRequest < Request
   private :on_failed
 
   alias_method :on_cancelled, :on_failed
+
+  def remove_unused_assets
+    # Don't remove assets for transfer requests as they are made on creation
+  end
+
 end
