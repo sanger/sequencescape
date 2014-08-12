@@ -340,6 +340,7 @@ color: #E85C00;
   box-shadow: 0 1px 5px #D6E1EE;
   -moz-box-shadow: 0 1px 5px #D6E1EE;
   behavior: url(/stylesheets/PIE.htc);
+  overflow: auto;
 }
 
 .callout p {
@@ -425,6 +426,9 @@ padding-left: 12px;
 .info {
   padding-bottom: 5px;
   border-bottom: 1px solid #ccc;
+  width:45%;
+  display:inline-block;
+  float:left;
 }
 
 .loading {
