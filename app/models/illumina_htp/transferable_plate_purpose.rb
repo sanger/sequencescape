@@ -5,6 +5,10 @@ class IlluminaHtp::TransferablePlatePurpose < IlluminaHtp::FinalPlatePurpose
     plate.parent.stock_plate
   end
 
+  def source_wells_for(wells)
+    Well.in_column_major_order.stock_wells_for(wells)
+  end
+
   def transition_to(plate, state, contents = nil, customer_accepts_responsibility = false)
     super
     connect_requests(plate, state, contents)
