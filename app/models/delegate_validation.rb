@@ -40,7 +40,7 @@ module DelegateValidation
 
     def self.delegate_attribute(*args)
       options   = args.extract_options!
-      type_cast = ".#{ options[:type_cast] }"        if options.key?(:type_cast)
+      type_cast = ".#{ options[:type_cast] }"        if options.key?(:type_cast) && options[:type_cast].present?
       default   = " || #{options[:default].inspect}" if options.key?(:default)
 
       args.each do |attribute|
