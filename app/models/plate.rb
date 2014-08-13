@@ -307,6 +307,10 @@ WHERE c.container_id=?
     (self.get_plate_type == "Stock Plate" || self.get_plate_type.blank?) ? PlatePurpose.cherrypickable_as_source.first.name : self.get_plate_type
   end
 
+  def details
+    purpose.try(:name)||'Unknown plate purpose'
+  end
+
   def control_well_exists?
 		Request.into_by_id(well_ids).any? do |request|
 			request.asset.plate.is_a?(ControlPlate)

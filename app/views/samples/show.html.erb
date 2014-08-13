@@ -119,7 +119,7 @@
     <tbody>
       <% @sample.assets.each do |asset| %>
         <tr>
-          <td><%= link_to asset.display_name, asset_path(asset) %></td>
+          <td><%= link_to asset.display_name, asset_path(asset) %> <%= asset.details %></td>
         </tr>
       <% end %>
     </tbody>
