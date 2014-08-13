@@ -42,7 +42,6 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/taxon_lookup_by_term/:term', :controller => "samples", :action => "taxon_lookup"
   map.connect '/taxon_lookup_by_id/:id', :controller => "samples", :action => "taxon_lookup"
 
-  map.resources :sample_group
   map.connect '/studies/:study_id/workflows/:workflow_id/summary_detailed/:id', :controller => "studies/workflows", :action => "summary_detailed"
   map.connect 'studies/accession/:id', :controller =>"studies", :action =>"accession"
   map.connect 'studies/policy_accession/:id', :controller =>"studies", :action =>"policy_accession"
@@ -68,9 +67,7 @@ ActionController::Routing::Routes.draw do |map|
 
     study.resources :requests, :member => { :reset => :post, :cancel => :get }
     study.resources :comments, :controller => "studies/comments"
-    study.resources :sample_groups, :controller => "studies/sample_groups", :collection => {:sort => :get}, :member => {:manage => :get, :add_samples => :post, :remove_samples => :delete, :find => [:get, :post]} do |sample_group|
-      sample_group.resources :comments, :controller => "sample_groups/comments"
-    end
+
     study.resources :asset_groups, :controller => "studies/asset_groups", :member => {:search => :post, :add => :post, :print => :get, :print_labels => :post, :printing => :get}
 
     study.resources :plates, :controller => "studies/plates", :except => [:destroy], :collection => {:view_wells => :post, :asset_group => :post, :show_asset_group => :get}, :member => {:remove_wells => :post} do |plate|
