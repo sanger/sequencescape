@@ -426,6 +426,9 @@ padding-left: 12px;
 .info {
   padding-bottom: 5px;
   border-bottom: 1px solid #ccc;
+}
+
+.columnize .info {
   width:45%;
   display:inline-block;
   float:left;
