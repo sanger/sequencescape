@@ -77,8 +77,8 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
       end
 
       should "load the parameters properly" do
-        assert_equal 3, @order.input_field_infos.size
-        assert_equal [37, 54, 76, 108], @order.input_field_infos.last.selection
+        assert_equal 4, @order.input_field_infos.size
+        assert_equal [37, 54, 76, 108], @order.input_field_infos.detect {|ifi| ifi.display_name == 'Read length'}.selection
       end
     end
   end

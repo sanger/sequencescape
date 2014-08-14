@@ -114,7 +114,7 @@ Given /^I have a qc library created$/ do
   tag_plate.update_attributes!(:plate_purpose=>PlatePurpose.find_by_name('Tag PCR'))
   Transfer::BetweenPlates.create!(:user=>user,:source=>reporter_plate,:destination=>tag_plate,:transfers=>{'A1'=>'A1'})
   stc = SpecificTubeCreation.create!(:parent=>tag_plate,:child_purposes=>[Tube::Purpose.find_by_name('Tag MX')],:user=>user)
-  Batch.new(:pipeline=>Pipeline.last).tap do |batch|
+  Batch.new(:pipeline=>Pipeline.find_by_name('MiSeq sequencing')).tap do |batch|
     batch.id= 12345
     batch.save!
   end
