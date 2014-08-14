@@ -36,7 +36,11 @@
               <% request_item = request %>
               <td class="request" width='2%'>
               <%= hidden_label_tag_for_testing("select_all_group_#{index}", "Select Request Group #{index}") %>
-    		    <input type="checkbox" name="selectAll" onclick="select_requests_by_group(<%=  request_item.item_id %>,<%= requests.size %>, this.checked);" id="select_all_group_<%= index %>"></a>
+                <% if request.ready? %>
+    		      <input type="checkbox" name="selectAll" onclick="select_requests_by_group(<%=  request_item.item_id %>,<%= requests.size %>, this.checked);" id="select_all_group_<%= index %>"></a>
+                <% else %>
+                  <%= image_tag "error.png", 'title' => "The library creation hasn't been completed still, so this request is not ready.", :size => '16x16' %>
+                <% end %>
     		    <% index += 1 %>
     		  </td>
               <td class="request" width='2%'><a href="javascript:void(0)" onclick="showElement(<%=  request_item.item_id %>,<%= requests.size %>); return false;"><%= image_tag "information.png", :size =>"13x13" %></a></td>
@@ -68,7 +72,11 @@
               <td class="request" width='2%'>&nbsp;</td>
               <td>
     	        <%= label(:request, request.id, "Select Request #{indice}", :style => 'display:none') %>
-    		    <%= check_box :request, request.id, :value => request.id %>
+                <% if request.ready? %>
+    		      <%= check_box :request, request.id, :value => request.id %>
+                <% else %>
+                  <%= image_tag "error.png", 'title' => "The library creation hasn't been completed still, so this request is not ready.", :size => '16x16' %>
+                <% end %>
     		  </td>
               <td class='request' width='5%'><%= link_to request.id, "#{configatron.studies_url}/requests/#{request.id}" %></td>
               <td class='request' width='10%'><%= link_to request_asset.name, "#{configatron.studies_url}/assets/#{request.asset_id}" %></td>
