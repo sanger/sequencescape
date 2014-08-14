@@ -44,11 +44,11 @@ class Submission < ActiveRecord::Base
   named_scope :ready, :conditions => { :state => "ready" }
 
   before_destroy :building?, :empty_of_orders?
-  
+
   def empty_of_orders?
     self.orders.empty?
   end
-      
+
   # Before destroying this instance we should cancel all of the requests it has made
   before_destroy :cancel_all_requests_on_destruction
 
@@ -195,13 +195,13 @@ class Submission < ActiveRecord::Base
   def next_requests(request)
     # We should never be receiving requests that are not part of our request graph.
     raise RuntimeError, "Request #{request.id} is not part of submission #{id}" unless request.submission_id == self.id
-    return request.target_asset.requests if request.target_asset.present?
 
       # Pick out the siblings of the request, so we can work out where it is in the list, and all of
       # the requests in the subsequent request type, so that we can tie them up.  We order by ID
       # here so that the earliest requests, those created by the submission build, are always first;
       # any additional requests will have come from a sequencing batch being reset.
       next_request_type_id = self.next_request_type_id(request.request_type_id) or return []
+      return request.target_asset.requests.find(:all,:conditions=>{:submission_id=>id,:request_type_id=>next_request_type_id}) if request.target_asset.present?
       all_requests = requests.with_request_type_id([ request.request_type_id, next_request_type_id ]).all(:order => 'id ASC')
       sibling_requests, next_possible_requests = all_requests.partition { |r| r.request_type_id == request.request_type_id }
 
