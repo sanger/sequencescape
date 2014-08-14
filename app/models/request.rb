@@ -466,6 +466,10 @@ class Request < ActiveRecord::Base
     false
   end
 
+  def ready?
+    true
+  end
+  
   def target_purpose
     nil
   end

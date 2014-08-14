@@ -974,5 +974,15 @@ class BatchTest < ActiveSupport::TestCase
       @batch.complete!(@user)
     end
   end
+  
+  context "ready? all requests before creating batch" do
+    should "check that I can create a batch with valid requests ready?" do
+      @library_tube = Factory(:full_library_tube)
+      @library_creation_request = @library_tube.requests_as_target[0]
+      @batch    = Factory(:batch,:requests => [@library_creation_request])
+    end
+    
+  end
+  
 
 end

@@ -318,6 +318,37 @@ class RequestTest < ActiveSupport::TestCase
         end
       end
     end
+    
+    context "#ready?" do
+      setup do
+        @library_tube = Factory(:full_library_tube)
+        @library_creation_request = @library_tube.requests_as_target[0]
+        @request_type = RequestType.find_by_name("illumina_c_miseq_sequencing")
+        #@library_creation_request = Factory(:library_creation_request, { :target_asset => })
+        @sequencing_request = Factory(:sequencing_request_without_assets, { :asset => @library_tube, :request_type => @request_type })
+      end
+
+      should "check any non-sequencing request is always ready" do
+        assert_equal true, @library_creation_request.ready?
+      end
+      
+      should "check a sequencing request is ready if at least one library creation request is in passed status" do
+        @library_creation_request.pass
+        #@library_creation_request.state="passed"
+        assert true, @sequencing_request.ready?
+      end
+      
+      should "check a sequencing request is not ready if none of the library creation requests are in passed status" do
+        @library_creation_request.cancel
+        #@library_creation_request.state="cancelled"
+        assert false, @sequencing_request.ready?
+      end
+
+      should "check a sequencing request is not ready if any of the library creation requests is not in a closed status type (passed, failed, aborted, cancelled)" do
+        #@library_creation_request.state="pending"
+        assert false, @sequencing_request.ready?
+      end
+    end
 
     context "#customer_responsible" do
 
@@ -339,6 +370,5 @@ class RequestTest < ActiveSupport::TestCase
       end
 
     end
-
   end
 end

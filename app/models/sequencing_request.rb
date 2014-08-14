@@ -43,6 +43,15 @@ class SequencingRequest < Request
   def order=(_)
     # Do nothing
   end
+  
+  def ready?
+    asset = self.asset
+    return false if asset.nil?
+    requests_as_target = self.asset.requests_as_target
+    return false if requests_as_target.nil?
+    library_creation_requests = requests_as_target.where_is_a? LibraryCreationRequest
+    library_creation_requests.all?(&:closed?) && library_creation_requests.any?(&:passed?)
+  end
 
   def self.delegate_validator
     SequencingRequest::RequestOptionsValidator

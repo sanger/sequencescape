@@ -624,6 +624,116 @@ ActiveRecord::Schema.define(:version => 20140725092948) do
   add_index "maps", ["description", "asset_size"], :name => "index_maps_on_description_and_asset_size"
   add_index "maps", ["description"], :name => "index_maps_on_description"
 
+  create_table "mdf_samples", :id => false, :force => true do |t|
+    t.integer  "study_id",                    :default => 0, :null => false
+    t.integer  "sample_id",                   :default => 0, :null => false
+    t.string   "sample_name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "sanger_sample_id"
+    t.integer  "sample_manifest_id"
+    t.string   "sample_asset_type"
+    t.string   "sample_manifest_state"
+    t.string   "supplier_name"
+    t.string   "supplier_contact"
+    t.string   "reference_genome"
+    t.string   "organism"
+    t.string   "gc_content"
+    t.string   "cohort"
+    t.string   "gender"
+    t.string   "country_of_origin"
+    t.string   "geographical_region"
+    t.string   "ethnicity"
+    t.string   "dna_source"
+    t.string   "volume"
+    t.string   "supplier_plate_id"
+    t.string   "mother"
+    t.string   "father"
+    t.string   "replicate"
+    t.string   "sample_public_name"
+    t.string   "sample_common_name"
+    t.string   "sample_strain_att"
+    t.integer  "sample_taxon_id"
+    t.string   "sample_ebi_accession_number"
+    t.string   "sample_sra_hold"
+    t.string   "sample_reference_genome_old"
+    t.text     "sample_description"
+    t.string   "sibling"
+    t.boolean  "is_resubmitted"
+    t.string   "date_of_sample_collection"
+    t.string   "date_of_sample_extraction"
+    t.string   "sample_extraction_method"
+    t.string   "sample_purified"
+    t.string   "purification_method"
+    t.string   "concentration"
+    t.string   "concentration_determined_by"
+    t.string   "sample_type"
+    t.string   "sample_storage_conditions"
+    t.string   "genotype"
+    t.string   "phenotype"
+    t.string   "age"
+    t.string   "developmental_stage"
+    t.string   "cell_type"
+    t.string   "disease_state"
+    t.string   "compound"
+    t.string   "dose"
+    t.string   "immunoprecipitate"
+    t.string   "growth_condition"
+    t.string   "rnai"
+    t.string   "organism_part"
+    t.string   "time_point"
+    t.string   "disease"
+    t.string   "subject"
+    t.string   "treatment"
+  end
+
+  create_table "mdf_studies", :id => false, :force => true do |t|
+    t.integer  "study_id",                                                     :default => 0,    :null => false
+    t.string   "study_name"
+    t.datetime "created_date"
+    t.datetime "updated_date"
+    t.string   "study_state",                            :limit => 20
+    t.boolean  "ethically_approved"
+    t.boolean  "enforce_data_release",                                         :default => true
+    t.boolean  "enforce_accessioning",                                         :default => true
+    t.text     "study_description"
+    t.string   "contaminated_human_dna"
+    t.text     "study_abstract"
+    t.string   "study_study_title"
+    t.string   "study_ebi_accession_number"
+    t.string   "study_sra_hold"
+    t.string   "contains_human_dna"
+    t.string   "study_name_abbreviation"
+    t.string   "data_release_strategy"
+    t.string   "data_release_standard_agreement"
+    t.string   "data_release_timing"
+    t.string   "data_release_delay_reason"
+    t.string   "data_release_delay_other_comment"
+    t.string   "data_release_delay_period"
+    t.string   "data_release_delay_approval"
+    t.string   "data_release_delay_reason_comment"
+    t.string   "data_release_prevention_reason"
+    t.string   "data_release_prevention_approval"
+    t.string   "data_release_prevention_reason_comment"
+    t.integer  "snp_study_id"
+    t.integer  "snp_parent_study_id"
+    t.boolean  "bam",                                                          :default => true
+    t.string   "array_express_accession_number"
+    t.text     "dac_policy"
+    t.string   "ega_policy_accession_number"
+    t.string   "ega_dac_accession_number"
+    t.string   "commercially_available",                                       :default => "No"
+    t.float    "number_of_gigabases_per_sample"
+    t.string   "hmdmc_approval_number"
+    t.string   "remove_x_and_autosomes",                                       :default => "No", :null => false
+    t.string   "study_type"
+    t.string   "reference_genome"
+    t.string   "data_release_type"
+    t.string   "faculty_sponsor"
+    t.string   "owner",                                  :limit => 511
+    t.text     "manager",                                :limit => 2147483647
+  end
+
   create_table "order_roles", :force => true do |t|
     t.string   "role"
     t.datetime "created_at"
@@ -892,6 +1002,8 @@ ActiveRecord::Schema.define(:version => 20140725092948) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "qcable_creators", ["user_id"], :name => "fk_qcable_creators_to_users"
 
   create_table "qcables", :force => true do |t|
     t.integer  "lot_id",            :null => false

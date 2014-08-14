@@ -14,8 +14,13 @@ class Batch < ActiveRecord::Base
   include ModelExtensions::Batch
   include StandardNamedScopes
 
-  validate_on_create :requests_have_same_read_length, :cluster_formation_requests_must_be_over_minimum
+  validate_on_create :requests_have_same_read_length, :cluster_formation_requests_must_be_over_minimum, :all_requests_are_ready?
 
+  def all_requests_are_ready?
+    # Checks that SequencingRequests have at least one LibraryCreationRequest in passed status before being processed (as refered by #75102998)
+    @requests.all?(&:ready?)
+  end
+  
   def cluster_formation_requests_must_be_over_minimum
     if (!@pipeline.min_size.nil?) && (@requests.size < @pipeline.min_size)
       errors.add_to_base "You must create batches of at least " + @pipeline.min_size.to_s+" requests in the pipeline " + @pipeline.name
