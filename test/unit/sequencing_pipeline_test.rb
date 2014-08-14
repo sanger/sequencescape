@@ -9,7 +9,7 @@ class SequencingPipelineTest < ActiveSupport::TestCase
     setup do
       @pipeline = SequencingPipeline.new(
         :workflow     => LabInterface::Workflow.new,
-        :request_types => [ RequestType.new(:request_class_name => 'SequencingRequest') ]
+        :request_types => [ Factory :sequencing_request_type ]
       )
     end
 
@@ -20,7 +20,8 @@ class SequencingPipelineTest < ActiveSupport::TestCase
           :request_metadata_attributes => {
             :fragment_size_required_from => 100,
             :fragment_size_required_to   => 200,
-            :read_length                 => 76
+            :read_length                 => 76,
+            :customer_accepts_responsibility => false
           },
           :state => 'started'
         )

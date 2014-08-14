@@ -107,6 +107,10 @@ class Tube < Aliquot::Receptacle
     (primary_aliquot.nil? or primary_aliquot.sample.sanger_sample_id.blank?) ? self.name : primary_aliquot.sample.shorten_sanger_sample_id
   end
 
+  def details
+    purpose.try(:name)||'Tube'
+  end
+
   def transfer_request_type_from(source)
     purpose.transfer_request_type_from(source.purpose)
   end

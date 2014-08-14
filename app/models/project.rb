@@ -115,6 +115,12 @@ class Project < ActiveRecord::Base
     self.project_metadata.budget_division.name != 'Unallocated'
   end
 
+  def submittable?
+    return true if project_metadata.project_funding_model.present?
+    errors.add_to_base("No funding model specified")
+    false
+  end
+
   def sequencing_budget_division
     self.project_metadata.budget_division.name
   end

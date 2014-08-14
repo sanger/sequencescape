@@ -114,12 +114,6 @@ en:
           failed: "Failed to create submission for plate %{barcode}"
         create: "Create plates submission"
 
-    sample_groups:
-      no_sample_groups: "There are no Sample Groups. Click to add a new Group Sample"
-      no_samples_in_group: "There are no samples in this sample group. Click to add registered samples"
-      no_samples_available: "No results were found"
-      comments:
-        no_comments: "There are no comments on this sample group"
     comments:
       no_comments: "There are no comments on this study"
     workflows:
