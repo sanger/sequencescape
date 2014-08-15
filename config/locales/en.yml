@@ -125,6 +125,8 @@ en:
   requests:
     comments:
       no_comments: "There are no comments yet"
+    status:
+      not_ready: "The previous library creation requests haven't been completed still, so this request is not ready to use."
 
   assets:
     comments:

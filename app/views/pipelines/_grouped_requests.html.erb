@@ -33,7 +33,7 @@
             <% if request.ready? %>
               <input type="checkbox" name="selectAll" onclick="select_requests_by_group(<%=  request.submission_id %>,<%= requests.size %>, this.checked);" id="select_all_group_<%= index %>"></a>
             <% else %>
-              <%= image_tag "error.png", 'title' => "The library creation hasn't been completed still, so this request is not ready.", :size => '16x16' %>
+              <%= image_tag "error.png", 'title' => I18n.t("requests.status.not_ready"), :size => '16x16' %>
             <% end %>
             <% index += 1 %>
           </td>
