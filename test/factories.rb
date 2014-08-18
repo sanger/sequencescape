@@ -259,6 +259,18 @@ Factory.define :request_with_submission, :class => Request do |request|
   end
 end
 
+Factory.define :sequencing_request, :class => SequencingRequest do |request|
+  request.request_type { |rt| rt.association(:request_type) }
+
+  # Ensure that the request metadata is correctly setup based on the request type
+  request.after_build do |request|
+    next if request.request_type.nil?
+    request.request_metadata = Factory.build(:"request_metadata_for_standard_sequencing") if request.request_metadata.new_record?
+    request.sti_type = request.request_type.request_class_name
+  end
+end
+
+
 Factory.define :sequencing_request_with_submission, :class => SequencingRequest do |request|
   request.request_type { |rt| rt.association(:request_type) }
 
