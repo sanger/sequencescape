@@ -320,11 +320,11 @@ class RequestTest < ActiveSupport::TestCase
     
     context "#ready?" do
       setup do
-        @library_creation_request = Factory(:library_creation_request_for_testing)
+        @library_creation_request = Factory(:library_creation_request_for_testing_sequencing_requests)
         @library_creation_request.asset.aliquots.each { |a| a.update_attributes!(:project => Factory(:project)) }
         @library_tube = @library_creation_request.target_asset
         
-        @library_creation_request_2 = Factory(:library_creation_request_for_testing, :target_asset => @library_tube)
+        @library_creation_request_2 = Factory(:library_creation_request_for_testing_sequencing_requests, :target_asset => @library_tube)
         @library_creation_request_2.asset.aliquots.each { |a| a.update_attributes!(:project => Factory(:project)) }
         
         
