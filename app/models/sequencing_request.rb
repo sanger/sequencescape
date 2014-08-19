@@ -49,7 +49,7 @@ class SequencingRequest < Request
     return false if asset.nil?
     requests_as_target = self.asset.requests_as_target
     return false if requests_as_target.nil?
-    library_creation_requests = requests_as_target.where_is_a? LibraryCreationRequest
+    library_creation_requests = requests_as_target.where_is_a? Request::LibraryCreation
     library_creation_requests.all?(&:closed?) && library_creation_requests.any?(&:passed?)
   end
 

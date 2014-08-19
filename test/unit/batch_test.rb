@@ -976,10 +976,43 @@ class BatchTest < ActiveSupport::TestCase
   end
   
   context "ready? all requests before creating batch" do
+    setup do
+      @library_creation_request = Factory(:library_creation_request_for_testing)
+      @library_creation_request.asset.aliquots.each { |a| a.update_attributes!(:project => Factory(:project)) }
+      @library_tube = @library_creation_request.target_asset
+      
+      @library_creation_request_2 = Factory(:library_creation_request_for_testing, :target_asset => @library_tube)
+      @library_creation_request_2.asset.aliquots.each { |a| a.update_attributes!(:project => Factory(:project)) }
+      
+      
+      # The sequencing request will be created with a 76 read length (Standard sequencing), so the request 
+      # type needs to include this value in its read_length validation list (for example, single_ended_sequencing) 
+      #@request_type = RequestType.find_by_key("single_ended_sequencing")
+      
+      
+      
+      @pipeline = Factory :sequencing_pipeline
+      
+      @batch = @pipeline.batches.build
+      @request_type = @batch.pipeline.request_types.first
+      @request_type_validator = RequestType::Validator.create!(:request_type=>@request_type,:request_option=>'read_length',:valid_options=>[76])
+      @request_type.request_type_validators << @request_type_validator
+      @sequencing_request = Factory(:sequencing_request, { :asset => @library_tube, :request_type => @request_type })
+      @batch.requests << @sequencing_request
+    end
+
+    should "check that I cannot create a batch with invalid requests (ready?)" do
+      assert_equal false, @batch.save
+    end    
+        
     should "check that I can create a batch with valid requests ready?" do
-      @library_tube = Factory(:full_library_tube)
-      @library_creation_request = @library_tube.requests_as_target[0]
-      @batch    = Factory(:batch,:requests => [@library_creation_request])
+      @library_creation_request.start!
+      @library_creation_request.pass
+      @library_creation_request.save!
+      @library_creation_request_2.start!
+      @library_creation_request_2.cancel
+      @library_creation_request_2.save!
+      assert_equal true, @batch.save!
     end
     
   end

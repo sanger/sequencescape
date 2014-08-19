@@ -577,6 +577,17 @@ Factory.define :full_library_tube, :parent => :library_tube do |library_tube|
   library_tube.after_create { |tube| Factory(:library_creation_request, :target_asset => tube) }
 end
 
+Factory.define(:library_creation_request_for_testing, :class => Request::LibraryCreation) do |request|
+  request.request_type { |target| RequestType.find_by_name('Library creation') or raise StandardError, "Could not find 'Library creation' request type" }
+  request.asset        { |target| target.association(:well_with_sample_and_plate) }
+  request.target_asset { |target| target.association(:empty_well) }
+  request.after_build do |request|
+    request.request_metadata.fragment_size_required_from = 300
+    request.request_metadata.fragment_size_required_to   = 500
+  end
+end
+
+
 Factory.define :library_creation_request, :parent => :request do |request|
   request_type = RequestType.find_by_name('Library creation') or raise "Cannot find 'Library creation' request type"
 
