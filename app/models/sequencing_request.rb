@@ -45,12 +45,14 @@ class SequencingRequest < Request
   end
   
   def ready?
+    # It's ready if I don't have any lib creation requests or if all my lib creation requests are closed and
+    # at least one of them is in 'passed' status
     asset = self.asset
-    return false if asset.nil?
+    return true if asset.nil?
     requests_as_target = self.asset.requests_as_target
-    return false if requests_as_target.nil?
+    return true if requests_as_target.nil?
     library_creation_requests = requests_as_target.where_is_a? Request::LibraryCreation
-    library_creation_requests.all?(&:closed?) && library_creation_requests.any?(&:passed?)
+    (library_creation_requests.size==0) || library_creation_requests.all?(&:closed?) && library_creation_requests.any?(&:passed?)
   end
 
   def self.delegate_validator
