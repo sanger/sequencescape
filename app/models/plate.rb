@@ -21,6 +21,8 @@ class Plate < Asset
   delegate :barcode_type, :to => :plate_purpose, :allow_nil => true
   delegate :asset_shape, :to => :plate_purpose, :allow_nil => true
   delegate :fluidigm_barcode, :to => :plate_metadata
+ 
+  validates_length_of :fluidigm_barcode, :is => 10, :allow_blank => true
 
   # Transfer requests into a plate are the requests leading into the wells of said plate.
   def transfer_requests
