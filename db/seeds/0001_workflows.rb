@@ -44,7 +44,8 @@ locations_data = [
   'Genotyping freezer',
   'Pulldown freezer',
   'PacBio library prep freezer',
-  'PacBio sequencing freezer'
+  'PacBio sequencing freezer',
+  'Illumina high throughput freezer'
 ]
 locations_data.each do |location|
   Location.create!(:name=>location)

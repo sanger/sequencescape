@@ -11,7 +11,7 @@ class Search::FindIlluminaAPlates < Search
   private :illumina_a_plate_purposes
 
   def freezer
-    Location.find_by_name('Pulldown freezer') or raise ActiveRecord::RecordNotFound, 'Pulldown freezer'
+    Location.find_by_name('Illumina high throughput freezer') or raise ActiveRecord::RecordNotFound, 'Illumina high throughput freezer'
   end
   private :freezer
 end
