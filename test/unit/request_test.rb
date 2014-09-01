@@ -13,7 +13,6 @@ class RequestTest < ActiveSupport::TestCase
 
         @genotyping_request_type = Factory :request_type, :name => "genotyping"
         @cherrypick_request_type = Factory :request_type, :name => "cherrypick", :target_asset_type => nil
-        #@submission  = Factory(:order_with_submission, :request_types => [@cherrypick_request_type, @genotyping_request_type].map(&:id)).submission
         @submission  = Factory::submission(:request_types => [@cherrypick_request_type, @genotyping_request_type].map(&:id), :asset_group_name => 'to avoid asset errors')
         @item = Factory :item, :submission => @submission
 
@@ -318,6 +317,65 @@ class RequestTest < ActiveSupport::TestCase
         end
       end
     end
+    
+    context "#ready?" do
+      setup do
+        @library_creation_request = Factory(:library_creation_request_for_testing_sequencing_requests)
+        @library_creation_request.asset.aliquots.each { |a| a.update_attributes!(:project => Factory(:project)) }
+        @library_tube = @library_creation_request.target_asset
+        
+        @library_creation_request_2 = Factory(:library_creation_request_for_testing_sequencing_requests, :target_asset => @library_tube)
+        @library_creation_request_2.asset.aliquots.each { |a| a.update_attributes!(:project => Factory(:project)) }
+        
+        
+        # The sequencing request will be created with a 76 read length (Standard sequencing), so the request 
+        # type needs to include this value in its read_length validation list (for example, single_ended_sequencing) 
+        @request_type = RequestType.find_by_key("single_ended_sequencing")
+        
+        @sequencing_request = Factory(:sequencing_request, { :asset => @library_tube, :request_type => @request_type })
+      end
+
+      should "check any non-sequencing request is always ready" do
+        assert_equal true, @library_creation_request.ready?
+      end
+      
+      should "check a sequencing request is not ready if any of the library creation requests is not in a closed status type (passed, failed, aborted, cancelled)" do
+        assert_equal false, @sequencing_request.ready?
+      end
+      
+      should "check a sequencing request is ready if at least one library creation request is in passed status while the others are closed" do
+        @library_creation_request.start
+        @library_creation_request.pass
+        @library_creation_request.save!
+        
+        @library_creation_request_2.start
+        @library_creation_request_2.cancel
+        @library_creation_request_2.save!
+
+        assert_equal true, @sequencing_request.ready?
+      end
+      
+      should "check a sequencing request is not ready if any of the library creation requests is not closed, although one of them is in passed status" do
+        @library_creation_request.start
+        @library_creation_request.pass
+        @library_creation_request.save!
+
+        assert_equal false, @sequencing_request.ready?     
+      end
+      
+      should "check a sequencing request is not ready if none of the library creation requests are in passed status" do
+        @library_creation_request.start
+        @library_creation_request.fail
+        @library_creation_request.save!
+        
+        @library_creation_request_2.start
+        @library_creation_request_2.cancel
+        @library_creation_request_2.save!        
+
+        assert_equal false, @sequencing_request.ready?
+      end
+
+    end
 
     context "#customer_responsible" do
 
@@ -339,6 +397,5 @@ class RequestTest < ActiveSupport::TestCase
       end
 
     end
-
   end
 end

@@ -37,7 +37,11 @@
         <tr>
           <td class="request center">
             <%= hidden_label_tag_for_testing("request_#{request.id}", "Select #{request.asset.sti_type} #{request.asset.barcode} for batch") %>
-            <%= check_box :request, request.id, :value => request.id, :class => 'grouped_checkbox request_checkbox', :'data-count' => 1 %>
+            <% if request.ready? %>
+              <%= check_box :request, request.id, :value => request.id, :class => 'grouped_checkbox request_checkbox', :'data-count' => 1 %>
+            <% else %>
+              <%= image_tag "error.png", 'title' => I18n.t("requests.status.not_ready"), :size => '16x16' %>
+            <% end %>
           </td>
           <td  style='text-align: center'>
             <%= image_tag "icon_#{request.priority}_flag.png", 'alt' => request.priority, :size => '16x16', :class =>  "flag_image #{current_user.is_lab_manager? ? 'as_manager' : ''}", "data-priority" => request.priority, 'data-request-id' => request.id %>
