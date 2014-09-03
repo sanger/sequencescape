@@ -1,6 +1,6 @@
 <% submissions = @submissions %>
 <% request_type = @request_type %>
-
+<%= will_paginate @page_elements %>
 <table id="summary" width="100%" class="sortable">
   <thead>
     <tr>
@@ -14,8 +14,8 @@
     </tr>
   </thead>
 
-  <% @study.asset_progress do |statistics| %>
-    <% @study.requests.map(&:asset).compact.each do |asset| %>
+  <% @study.asset_progress(@page_elements) do |statistics| %>
+    <% @page_elements.each do |asset| %>
       <% asset_statistics = statistics[asset.id] %>
       <tr class="<%= asset.closed? ? 'closed' : 'open' %>">
         <td><%= link_to(h(asset.display_name), asset_path(asset), :title => asset.label.capitalize) %></td>
@@ -29,3 +29,4 @@
     <% end %>
   <% end %>
 </table>
+<%= will_paginate @page_elements %>

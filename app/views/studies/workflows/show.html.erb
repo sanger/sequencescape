@@ -67,7 +67,7 @@
   <% end -%>
   <br />
   Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(:long) %> &middot; <%= @study.state.capitalize %> <br />
-  Overall progress: <%= progress_bar(@study.completed) %>
+  Overall progress: <%= progress_bar(@study.completed(@workflow)) %>
 </div>
 
 <div class="content">
@@ -83,7 +83,7 @@
       <% if @study.samples.empty? -%>
         <%= display_user_guide(I18n.t('studies.samples.no_samples_registered'), study_sample_registration_index_path(@study)) %>
       <% else -%>
-        <% if (! @submissions.empty?) || (@study.requests.size > 0) -%>
+        <% if (! @submissions.empty?) || (@study.requests.count > 0) -%>
           <%= render :partial => "submission_warning" %>
           <%= render :partial => "study_summary" %>
           <br />

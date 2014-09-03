@@ -46,11 +46,9 @@ class AssetsController < ApplicationController
   end
 
   def edit
-    @valid_purposes_options = PlatePurpose.all.select do |purpose| 
-      purpose.target_type.nil? || purpose.target_type == @asset.sti_type 
-    end.map do |purpose|
-      [purpose.name, purpose.name]
-    end.sort! {|a,b| a[0].upcase <=> b[0].upcase}
+    @valid_purposes_options = @asset.compatible_purposes.map do |purpose|
+      [purpose.name, purpose.id]
+    end
   end
 
   def find_parents(text)
@@ -166,10 +164,6 @@ class AssetsController < ApplicationController
   end
 
   def update
-    if (params[:asset][:purpose])
-      params[:asset][:purpose] = PlatePurpose.find_by_name(params[:asset][:purpose])
-    end
-    
     respond_to do |format|
       if (@asset.update_attributes(params[:asset]) &&  @asset.update_attributes(params[:lane]))
         flash[:notice] = 'Asset was successfully updated.'

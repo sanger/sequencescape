@@ -12,6 +12,23 @@ class SampleTest < ActiveSupport::TestCase
     should_have_many :study_samples
     should_have_many :studies, :through => :study_samples
 
+    context "when used in older assets" do
+
+      setup do
+        @sample = Factory :sample
+        @tube_a = Factory :empty_library_tube
+        @tube_b = Factory :empty_sample_tube
+
+        @tube_b.aliquots.create!(:sample=>@sample)
+        @tube_a.aliquots.create!(:sample=>@sample)
+      end
+
+      should "have the first tube it was added to as a primary asset" do
+        assert_equal @sample.primary_receptacle, @tube_b
+      end
+
+    end
+
     context "move a Sample" do
       setup do
         @study_from = Factory :study

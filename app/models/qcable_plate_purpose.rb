@@ -6,7 +6,7 @@ class QcablePlatePurpose < PlatePurpose
       qcable_for(plate).state
     end
 
-    def transition_to(plate, state, _=nil)
+    def transition_to(plate, state, *ignored)
       qcable_for(plate).transition_to(state)
     end
 

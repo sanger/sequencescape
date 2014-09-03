@@ -156,6 +156,7 @@ class Request < ActiveRecord::Base
       case
       when request_type.nil? then nil   # TODO: Are the pipelines with nil request_type_id really nil?
       when request_type.is_a?(Fixnum), request_type.is_a?(String) then request_type
+      when request_type.is_a?(Array) then request_type
       else request_type.id
       end
     {:conditions => { :request_type_id => id} }
@@ -218,13 +219,22 @@ class Request < ActiveRecord::Base
   named_scope :for_asset_id, lambda { |id| { :conditions => { :asset_id => id } } }
   named_scope :for_study_ids, lambda { |ids|
     {
-      :joins =>  %Q(
-      INNER JOIN (assets AS a, aliquots AS al)
-       ON (requests.asset_id = a.id
-           AND  al.receptacle_id = a.id
-           AND al.study_id IN (#{ids.join(", ")}))
-             ),
-       :group => "requests.id"
+      :joins =>  'INNER JOIN aliquots AS al ON requests.asset_id = al.receptacle_id',
+      :group => "requests.id",
+      :conditions =>['al.study_id IN (?)',ids]
+    }
+  } do
+    #fix a bug in rail, the group clause if removed
+    #therefor we need to the DISTINCT parameter
+    def count
+      super('requests.id',:distinct =>true)
+    end
+  end
+  named_scope :for_study_id, lambda { |id|
+    {
+      :joins =>  'INNER JOIN aliquots AS al ON requests.asset_id = al.receptacle_id',
+      :group => "requests.id",
+      :conditions =>['al.study_id = ?',id]
     }
   } do
     #fix a bug in rail, the group clause if removed
@@ -234,9 +244,6 @@ class Request < ActiveRecord::Base
     end
   end
 
-  def self.for_study_id (study_id)
-    for_study_ids([study_id])
-  end
   def self.for_study(study)
     Request.for_study_id(study.id)
   end
@@ -255,7 +262,7 @@ class Request < ActiveRecord::Base
   named_scope :for_workflow, lambda { |workflow| { :joins => :workflow, :conditions => { :workflow => { :key => workflow } } } }
   named_scope :for_request_types, lambda { |types| { :joins => :request_type, :conditions => { :request_types => { :key => types } } } }
 
-  named_scope :for_search_query, lambda { |query|
+  named_scope :for_search_query, lambda { |query,with_includes|
     { :conditions => [ 'id=?', query ] }
   }
 
@@ -386,12 +393,6 @@ class Request < ActiveRecord::Base
   def remove_unused_assets
     ActiveRecord::Base.transaction do
       return if target_asset.nil?
-      target_asset.requests do |related_request|
-        target_asset.remove_unused_assets
-        releated_request.asset.ancestors.clear
-        releated_request.asset.destroy
-        releated_request.save!
-      end
       self.target_asset.ancestors.clear
       self.target_asset.destroy
       self.save!
@@ -428,6 +429,10 @@ class Request < ActiveRecord::Base
 
   def request_type_updatable?(new_request_type)
     self.pending?
+  end
+
+  def customer_accepts_responsibility!
+    self.request_metadata.update_attributes!(:customer_accepts_responsibility=>true)
   end
 
   extend Metadata

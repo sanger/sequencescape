@@ -8,7 +8,7 @@ class Supplier < ActiveRecord::Base
 
 
   # Named scope for search by query string behaviour
-  named_scope :for_search_query, lambda { |query|
+  named_scope :for_search_query, lambda { |query,with_includes|
     {
       :conditions => [
         'suppliers.name IS NOT NULL AND (suppliers.name LIKE :like)', { :like => "%#{query}%", :query => query } ]

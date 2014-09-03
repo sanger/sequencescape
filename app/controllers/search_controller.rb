@@ -12,4 +12,8 @@ private
   def searchable_classes
     SEARCHABLE_CLASSES
   end
+
+  def extended
+    true
+  end
 end
