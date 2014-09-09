@@ -82,7 +82,7 @@ class Aliquot < ActiveRecord::Base
 
         has_many :aliquots
         has_many :receptacles, :through => :aliquots, :uniq => true
-        has_one :primary_receptacle, :through => :aliquots, :source => :receptacle, :order => 'assets.created_at, assets.id ASC'
+        has_one :primary_receptacle, :through => :aliquots, :source => :receptacle, :order => 'aliquots.created_at, aliquots.id ASC'
 
         # Unfortunately we cannot use has_many :through because it ends up being a through through a through.  Really we want:
         #   has_many :requests, :through => :assets

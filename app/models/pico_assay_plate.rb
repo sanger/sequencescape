@@ -45,11 +45,13 @@ class PicoAssayPlate < Plate
   end
 
 
-  def upload_pico_results(state, well_details)
+  def upload_pico_results(state, failure_reason, well_details)
     return false if state.nil? || well_details.blank? || stock_plate().nil?
 
     ActiveRecord::Base.transaction do
-      stock_plate.events.create_pico!(state)
+      event = stock_plate.events.create_pico!(state)
+      # Adds a failure reason if it is available. 
+      event.update_attributes(:descriptor_key => failure_reason) unless failure_reason.nil?
       well_details.each { |details| WellDetail.new(details[:well], self).grade_as!(state) }
     end
   end
