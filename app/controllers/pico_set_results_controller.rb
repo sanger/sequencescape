@@ -12,7 +12,7 @@ class PicoSetResultsController < ApplicationController
 
     respond_to do |format|
       # create method call using pico_assay_plate[:state] and use send for 2 method calls
-      if pico_assay_plate && pico_assay_plate.upload_pico_results(pico_set_result[:state], pico_set_result[:wells])
+      if pico_assay_plate && pico_assay_plate.upload_pico_results(pico_set_result[:state], pico_set_result[:failure_reason], pico_set_result[:wells])
         flash[:notice] = 'Updated concentrations'
         format.xml  { render :xml  => flash.to_xml, :status => :ok }
         format.json { render :json => flash.to_json, :status => :ok }

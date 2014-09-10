@@ -12,7 +12,7 @@ class Search::FindIlluminaBPlates < Search
   private :illumina_b_plate_purposes
 
   def freezer
-    Location.find_by_name('Library creation freezer') or raise ActiveRecord::RecordNotFound, 'Library creation freezer'
+    Location.find_by_name('Illumina high throughput freezer') or raise ActiveRecord::RecordNotFound, 'Illumina high throughput freezer'
   end
   private :freezer
 end
