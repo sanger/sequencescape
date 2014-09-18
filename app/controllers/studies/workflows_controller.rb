@@ -1,18 +1,23 @@
 class Studies::WorkflowsController < ApplicationController
   before_filter :discover_study, :discover_workflow
 
-  before_filter :setup_tabs, :only => [ :show, :show_summary ]
+  before_filter :setup_tabs, :only => [ :show_summary ]
 
   def setup_tabs
+
     @total_requests = compute_total_request(@study)
     @cache          = { :total => @total_requests }
 
     @request_types  = @workflow.request_types.all(:order => "`order` ASC").reject { |r| @total_requests[r].zero? }
 
-    @basic_tabs = ["Summary", "Sample progress", "Assets progress"]
-    @summaries = @basic_tabs + @request_types.map(&:name)
+    @summaries = basic_tabs + @request_types.map(&:name)
   end
   private :setup_tabs
+  
+  def basic_tabs
+    ["Summary", "Sample progress", "Assets progress"]
+  end
+  private :basic_tabs
 
   def show
     Study.benchmark "BENCH Study:WorkflowController:show", Logger::DEBUG, false do
@@ -21,19 +26,15 @@ class Studies::WorkflowsController < ApplicationController
       @current_user.save!
     end
     @workflows = Submission::Workflow.find(:all, :order => ["name DESC"])
-
     @default_tab_label = "Sample progress"
     @summary = params[:summary].to_i
-    @summary = @basic_tabs.index(@default_tab_label) if params[:summary].nil?
-
+    @summary = basic_tabs.index(@default_tab_label) if params[:summary].nil?
     @submissions = @study.submissions_for_workflow(@workflow)
-
     # We need to propagate the extra_parameters - as page - to the summary partial
     @extra_params = params.dup
     [:summary, :study_id, :id, :action, :controller].each do |key|
       @extra_params.delete key
     end
-
     respond_to do |format|
       format.html
       format.xml
@@ -54,7 +55,7 @@ class Studies::WorkflowsController < ApplicationController
     if request.xhr?
       @default_tab_label = "Assets progress"
       @summary = params[:summary].to_i
-      @summary = @basic_tabs.index(@default_tab_label) if params[:summary].nil?
+      @summary = basic_tabs.index(@default_tab_label) if params[:summary].nil?
 
       case @summaries[@summary]
       when "Sample progress"
@@ -72,7 +73,7 @@ class Studies::WorkflowsController < ApplicationController
         asset_ids = @page_elements.map { |e| e.id }
         render :partial => "summary"
       else
-        @request_type = @request_types[@summary - @basic_tabs.size]
+        @request_type = @request_types[@summary - basic_tabs.size]
         @assets_to_detail = @study.requests.request_type(@request_type).with_asset.all(:include =>:asset).map(&:asset).uniq
 
         unless @assets_to_detail.empty?
