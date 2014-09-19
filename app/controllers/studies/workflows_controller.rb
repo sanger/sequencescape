@@ -1,7 +1,8 @@
 class Studies::WorkflowsController < ApplicationController
   before_filter :discover_study, :discover_workflow
 
-  before_filter :setup_tabs, :only => [ :show_summary ]
+  before_filter :setup_tabs, :only => [ :show_summary, :show ]
+  before_filter :create_cookie_testAB, :only => :show
 
   def setup_tabs
 
@@ -19,28 +20,82 @@ class Studies::WorkflowsController < ApplicationController
   end
   private :basic_tabs
 
+  def create_cookie_testAB
+    if study_report_testAB.nil?
+      self.send(:study_report_testAB=, rand(2))
+    end
+  end
+
   def show
+    unless params[:version].nil?
+      if params[:version] == "new"
+        show_new
+      else
+        show_previous
+      end
+    else
+      if is_previous_version?
+        show_previous
+      else
+        show_new
+      end
+    end
+  end
+
+  def study_report_testAB
+    @study_report_testAB || cookies[:study_report_testAB]
+  end 
+
+  def study_report_testAB=(value)
+    @study_report_testAB = value
+    cookies[:study_report_testAB] = value
+  end
+
+  def is_previous_version?
+    study_report_testAB==0
+  end
+
+  def log_info_testAB
+    "url: #{request.url}, referer: #{request.referer}, ua: #{request.user_agent}"
+  end
+
+  def show_new
+    flash.now[:alert] = "This is the <b>NEW</b> version of the reports. You can still access the previous version by <a href='#{study_workflow_path(@study, @workflow)}?version=previous'>clicking here</a>"
+    Rails.logger.warn("StudyRequestReport NEW - #{log_info_testAB}")
+    self.send(:study_report_testAB=, 1)
+    _show
+  end
+
+  def show_previous
+    flash.now[:alert] = "This is the <b>OLD</b> version of the reports. You can access the new version by <a href='#{study_workflow_path(@study, @workflow)}?version=new'>clicking here</a>"
+    Rails.logger.warn("StudyRequestReport DEPRECATED - #{log_info_testAB}")
+    self.send(:study_report_testAB=, 0)
+    _show
+  end
+
+  def _show
     Study.benchmark "BENCH Study:WorkflowController:show", Logger::DEBUG, false do
-    unless @current_user.nil?
-      @current_user.workflow = @workflow
-      @current_user.save!
+      unless @current_user.nil?
+        @current_user.workflow = @workflow
+        @current_user.save!
+      end
+      @workflows = Submission::Workflow.find(:all, :order => ["name DESC"])
+      @default_tab_label = "Sample progress"
+      @summary = params[:summary].to_i
+      @summary = basic_tabs.index(@default_tab_label) if params[:summary].nil?
+      @submissions = @study.submissions_for_workflow(@workflow)
+      # We need to propagate the extra_parameters - as page - to the summary partial
+      @extra_params = params.dup
+      [:summary, :study_id, :id, :action, :controller].each do |key|
+        @extra_params.delete key
+      end
+      @is_previous_version = is_previous_version?
+      respond_to do |format|
+        format.html 
+        format.xml
+        format.json { render :action => :show, :json => Study.all.to_json }
+      end
     end
-    @workflows = Submission::Workflow.find(:all, :order => ["name DESC"])
-    @default_tab_label = "Sample progress"
-    @summary = params[:summary].to_i
-    @summary = basic_tabs.index(@default_tab_label) if params[:summary].nil?
-    @submissions = @study.submissions_for_workflow(@workflow)
-    # We need to propagate the extra_parameters - as page - to the summary partial
-    @extra_params = params.dup
-    [:summary, :study_id, :id, :action, :controller].each do |key|
-      @extra_params.delete key
-    end
-    respond_to do |format|
-      format.html
-      format.xml
-      format.json { render :json => Study.all.to_json }
-    end
-    end # of benchhmark
   end
 
   def show_summary
@@ -127,3 +182,4 @@ class Studies::WorkflowsController < ApplicationController
     @workflow = Submission::Workflow.find(params[:id])
   end
 end
+

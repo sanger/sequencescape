@@ -69,6 +69,7 @@
   Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(:long) %> &middot; <%= @study.state.capitalize %> <br />
   Overall progress: <%= progress_bar(@study.completed(@workflow)) %>
 </div>
+
 <div class="content">
   <% if current_user.is_administrator? || current_user.is_manager?(@study) %>
     <% unless @study.approved? -%>
@@ -84,8 +85,13 @@
       <% else -%>
         <% if (! @submissions.empty?) || (@study.requests.count > 0) -%>
           <%= render :partial => "submission_warning" %>
-          <!-- change with iframe -->
-          <br />
+          <% if @is_previous_version %> 
+            <%= render :partial => "study_summary" %>
+            <br />
+            <%= render :partial => "items", :locals => {:summary => @summary} %>
+          <% else %>
+            <!-- iframe -->
+          <% end %>
         <% else -%>
           <% if @study.active? %>
             <%= display_user_guide(I18n.t('studies.guidance.now_create_submission'), new_submission_path(:study_id => @study.id)) %>
@@ -102,7 +108,12 @@
     <% end %>
   <% else %>
     <%= render :partial => "submission_warning" %>
-    <!-- change with iframe -->
-    <br />
+    <% if @is_previous_version %> 
+      <%= render :partial => "study_summary" %>
+      <br />
+      <%= render :partial => "items", :locals => {:summary => @summary} %>
+    <% else %>
+      <!-- iframe -->
+    <% end %>
   <% end -%>
 </div>
