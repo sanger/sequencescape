@@ -1,8 +1,9 @@
 class Studies::WorkflowsController < ApplicationController
+  include TableauTicketAuthentication
+
   before_filter :discover_study, :discover_workflow
 
-  before_filter :setup_tabs, :only => [ :show_summary, :show ]
-  before_filter :create_cookie_testAB, :only => :show
+  before_filter :setup_tabs, :only => [ :show_summary, :show, :show_oldss, :show_tableau ]
 
   def setup_tabs
 
@@ -20,56 +21,30 @@ class Studies::WorkflowsController < ApplicationController
   end
   private :basic_tabs
 
-  def create_cookie_testAB
-    if study_report_testAB.nil?
-      self.send(:study_report_testAB=, rand(2))
-    end
+  def is_tableau_report?
+    (@is_tableau_report == 1)
   end
 
-  def show
-    unless params[:version].nil?
-      if params[:version] == "new"
-        show_new
-      else
-        show_previous
-      end
-    else
-      if is_previous_version?
-        show_previous
-      else
-        show_new
-      end
-    end
-  end
-
-  def study_report_testAB
-    @study_report_testAB || cookies[:study_report_testAB]
-  end 
-
-  def study_report_testAB=(value)
-    @study_report_testAB = value
-    cookies[:study_report_testAB] = value
-  end
-
-  def is_previous_version?
-    study_report_testAB==0
-  end
-
-  def log_info_testAB
+  def log_info_reports
     "url: #{request.url}, referer: #{request.referer}, ua: #{request.user_agent}"
   end
 
-  def show_new
-    flash.now[:alert] = "This is the <b>NEW</b> version of the reports. You can still access the previous version by <a href='#{study_workflow_path(@study, @workflow)}?version=previous'>clicking here</a>"
-    Rails.logger.warn("StudyRequestReport NEW - #{log_info_testAB}")
-    self.send(:study_report_testAB=, 1)
+  def show
+    show_tableau
+  end 
+
+  def show_tableau
+    flash.now[:alert] = "This is the <b>NEW</b> version of the reports. You can still access the previous version by <a href='#{study_workflow_path(@study, @workflow)}/reports/oldss'>clicking here</a>"
+    Rails.logger.warn("StudyRequestReport NEW - #{log_info_reports}")
+    @is_tableau_report = 1
+    @ticket = get_tableau_ticket(@view_name)
     _show
   end
 
-  def show_previous
-    flash.now[:alert] = "This is the <b>OLD</b> version of the reports. You can access the new version by <a href='#{study_workflow_path(@study, @workflow)}?version=new'>clicking here</a>"
-    Rails.logger.warn("StudyRequestReport DEPRECATED - #{log_info_testAB}")
-    self.send(:study_report_testAB=, 0)
+  def show_oldss
+    flash.now[:alert] = "This is the <b>OLD</b> version of the reports. You can access the new version by <a href='#{study_workflow_path(@study, @workflow)}/reports/tableau'>clicking here</a>"
+    Rails.logger.warn("StudyRequestReport DEPRECATED - #{log_info_reports}")
+    @is_tableau_report = 0
     _show
   end
 
@@ -89,9 +64,9 @@ class Studies::WorkflowsController < ApplicationController
       [:summary, :study_id, :id, :action, :controller].each do |key|
         @extra_params.delete key
       end
-      @is_previous_version = is_previous_version?
+      @is_tableau_report = is_tableau_report?
       respond_to do |format|
-        format.html 
+        format.html { render :action => :show}
         format.xml
         format.json { render :action => :show, :json => Study.all.to_json }
       end
@@ -139,9 +114,10 @@ class Studies::WorkflowsController < ApplicationController
       end
     else
       page_params[:summary]= params[:summary]
-      redirect_to study_workflow_path(@study, @workflow, page_params)
+      redirect_to ss_report_study_workflow_path(@study, @workflow, page_params)
     end
   end
+
 
   def summary
     s = UiHelper::Summary.new
@@ -181,5 +157,10 @@ class Studies::WorkflowsController < ApplicationController
   def discover_workflow
     @workflow = Submission::Workflow.find(params[:id])
   end
+
+  def ss_report_study_workflow_path(study, workflow, params)
+    "#{study_workflow_path(study, workflow)}/reports/oldss?#{Rack::Utils.build_query(params)}"
+  end
+
 end
 

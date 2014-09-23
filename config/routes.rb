@@ -42,6 +42,15 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/taxon_lookup_by_term/:term', :controller => "samples", :action => "taxon_lookup"
   map.connect '/taxon_lookup_by_id/:id', :controller => "samples", :action => "taxon_lookup"
 
+  # New reporting routes
+  map.connect '/studies/:study_id/workflows/:id/reports/oldss', :controller => "studies/workflows", :action => "show_oldss"
+  map.connect '/studies/:study_id/workflows/:id/reports/tableau', :controller => "studies/workflows", :action => "show_tableau"
+  map.connect '/studies/:study_id/workflows/:id/reports/summary', :controller => "studies/workflows", :action => "show_oldss"
+  # End new reporting routes
+
+
+
+
   map.connect '/studies/:study_id/workflows/:workflow_id/summary_detailed/:id', :controller => "studies/workflows", :action => "summary_detailed"
   map.connect 'studies/accession/:id', :controller =>"studies", :action =>"accession"
   map.connect 'studies/policy_accession/:id', :controller =>"studies", :action =>"policy_accession"
@@ -112,6 +121,7 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   map.study_workflow_status "studies/:study_id/workflows/:id", :controller => "study_workflows", :action => "show"
+  
 
   map.resources :searches, :only => [:index]
 
