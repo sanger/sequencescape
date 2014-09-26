@@ -4,7 +4,7 @@ class Studies::WorkflowsController < ApplicationController
 
   before_filter :discover_study, :discover_workflow
 
-  before_filter :setup_tabs, :only => [ :show_summary, :show, :show_oldss, :show_tableau ]
+  before_filter :setup_tabs, :only => [ :show_summary, :show, :show_report_oldss, :show_report_tableau ]
 
   def setup_tabs
 
@@ -31,11 +31,11 @@ class Studies::WorkflowsController < ApplicationController
   end
 
   def show
-    show_tableau
+    show_report_tableau
   end 
 
-  def show_tableau
-    flash.now[:alert] = "This is the <b>NEW</b> version of the reports. You can still access the previous version by <a href='#{study_workflow_path(@study, @workflow)}/reports/oldss'>clicking here</a>"
+  def show_report_tableau
+    flash.now[:alert] = "This is the <b>NEW</b> version of the reports. You can still access the previous version by <a href='#{show_report_oldss_study_workflow_path(@study, @workflow)}'>clicking here</a>"
     Rails.logger.warn("StudyRequestReport NEW - #{log_info_reports}")
     @is_tableau_report = 1
     #@ticket = get_tableau_ticket(@view_name)
@@ -53,8 +53,8 @@ class Studies::WorkflowsController < ApplicationController
     _show
   end
 
-  def show_oldss
-    flash.now[:alert] = "This is the <b>OLD</b> version of the reports. You can access the new version by <a href='#{study_workflow_path(@study, @workflow)}/reports/tableau'>clicking here</a>"
+  def show_report_oldss
+    flash.now[:alert] = "This is the <b>OLD</b> version of the reports. You can access the new version by <a href='#{show_report_tableau_study_workflow_path(@study, @workflow)}'>clicking here</a>"
     Rails.logger.warn("StudyRequestReport DEPRECATED - #{log_info_reports}")
     @is_tableau_report = 0
     _show
@@ -126,7 +126,7 @@ class Studies::WorkflowsController < ApplicationController
       end
     else
       page_params[:summary]= params[:summary]
-      redirect_to ss_report_study_workflow_path(@study, @workflow, page_params)
+      redirect_to show_report_oldss_study_workflow_path(@study, @workflow, page_params)
     end
   end
 
@@ -167,11 +167,8 @@ class Studies::WorkflowsController < ApplicationController
   end
 
   def discover_workflow
-    @workflow = Submission::Workflow.find(params[:id])
+    @workflow = Submission::Workflow.find(params[:id] || params[:workflow_id])
   end
 
-  def ss_report_study_workflow_path(study, workflow, params)
-    "#{study_workflow_path(study, workflow)}/reports/oldss?#{Rack::Utils.build_query(params)}"
-  end
 end
 
