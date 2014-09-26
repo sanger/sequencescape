@@ -1,5 +1,6 @@
 class Studies::WorkflowsController < ApplicationController
-  include TableauTicketAuthentication
+
+  include TableauTrustedInterface
 
   before_filter :discover_study, :discover_workflow
 
@@ -37,7 +38,18 @@ class Studies::WorkflowsController < ApplicationController
     flash.now[:alert] = "This is the <b>NEW</b> version of the reports. You can still access the previous version by <a href='#{study_workflow_path(@study, @workflow)}/reports/oldss'>clicking here</a>"
     Rails.logger.warn("StudyRequestReport NEW - #{log_info_reports}")
     @is_tableau_report = 1
-    @ticket = get_tableau_ticket(@view_name)
+    #@ticket = get_tableau_ticket(@view_name)
+
+    tabserver = configatron.reporting_server
+    tabuser   = 'workgroupuser'
+    tabpath   = 'views/Book1/Sheet1'
+    tabparams = ':embed=yes&:toolbar=no'
+    @ticket    = tableau_get_trusted_ticket(tabserver, tabuser, request.remote_ip)
+ 
+    if @ticket != "-1"
+      @iframe_url = "http://#{tabserver}/trusted/#{ticket}/#{tabpath}?#{tabparams}"
+    end
+
     _show
   end
 
@@ -161,6 +173,5 @@ class Studies::WorkflowsController < ApplicationController
   def ss_report_study_workflow_path(study, workflow, params)
     "#{study_workflow_path(study, workflow)}/reports/oldss?#{Rack::Utils.build_query(params)}"
   end
-
 end
 

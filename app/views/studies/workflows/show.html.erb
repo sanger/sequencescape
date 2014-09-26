@@ -112,5 +112,11 @@
       <%= render :partial => "items", :locals => {:summary => @summary} %>
     <% end %>
   <% end -%>
-  <% if @is_tableau_report %><iframe src="http://tabserver/trusted/<%= "#{@ticket}" %>/views/<%= "#{@view_name}" %>?:embed=yes" width="1024" height="600"></iframe><% end %>
+  <% if @is_tableau_report %>
+    <% if @frame_url.nil? %>
+      <div>We can't connect to the new version of the reports.</div>
+    <% else %>
+      <iframe src="<%= @frame_url %>" width="1024" height="600"></iframe>
+    <% end %>
+  <% end %>
 </div>
