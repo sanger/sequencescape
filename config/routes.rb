@@ -78,13 +78,6 @@ ActionController::Routing::Routes.draw do |map|
     end
 
     study.resources :workflows, :controller => "studies/workflows", :member => { :summary => :get, :show_summary => :get, :show_report_oldss => :get, :show_report_tableau => :get } do |workflow|
-      #get 'oldss', to => "workflows#show_oldss"
-      #get 'tableau', to => "workflows#show_tableau"
-      #get 'summary', to => "workflows#show_oldss"
-      #workflow.resources :oldss, :controller => "studies/workflows", :action => :show_oldss
-      #workflow.resources :tableau, :controller => "studies/workflows", :action => :show_tableau
-      #workflow.resources :summary, :controller => "studies/workflows", :action => :show_oldss
-
       workflow.resources :assets, :collection => { :print => :post }
     end
 
