@@ -47,6 +47,8 @@ class Studies::WorkflowsController < ApplicationController
     @ticket    = tableau_get_trusted_ticket(tabserver, tabuser, "dna")
     if @ticket != "-1"
       @iframe_url = "http://#{tabserver}/trusted/#{@ticket}/#{tabpath}?#{tabparams}"
+    else
+      ticket_rejected
     end
 
     _show
