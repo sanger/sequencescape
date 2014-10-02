@@ -41,13 +41,12 @@ class Studies::WorkflowsController < ApplicationController
     #@ticket = get_tableau_ticket(@view_name)
 
     tabserver = configatron.reporting_server
-    tabuser   = current_user.login
+    tabuser   = configatron.reporting_server_username #current_user.login
     tabpath   = '/t/dna/views/S2Inbox/Inbox-UAT'
     tabparams = ':embed=yes&:toolbar=no'
-    @ticket    = tableau_get_trusted_ticket(tabserver, tabuser, request.remote_ip)
-
+    @ticket    = tableau_get_trusted_ticket(tabserver, tabuser, "dna")
     if @ticket != "-1"
-      @iframe_url = "http://#{tabserver}/trusted/#{ticket}/#{tabpath}?#{tabparams}"
+      @iframe_url = "http://#{tabserver}/trusted/#{@ticket}/#{tabpath}?#{tabparams}"
     end
 
     _show
