@@ -393,12 +393,6 @@ class Request < ActiveRecord::Base
   def remove_unused_assets
     ActiveRecord::Base.transaction do
       return if target_asset.nil?
-      target_asset.requests do |related_request|
-        target_asset.remove_unused_assets
-        releated_request.asset.ancestors.clear
-        releated_request.asset.destroy
-        releated_request.save!
-      end
       self.target_asset.ancestors.clear
       self.target_asset.destroy
       self.save!
@@ -472,6 +466,10 @@ class Request < ActiveRecord::Base
     false
   end
 
+  def ready?
+    true
+  end
+  
   def target_purpose
     nil
   end

@@ -30,7 +30,11 @@
           <% request = request %>
           <td class="request" width='2%'>
           <%= hidden_label_tag_for_testing("select_all_group_#{index}", "Select Request Group #{index}") %>
-            <input type="checkbox" name="selectAll" onclick="select_requests_by_group(<%=  request.submission_id %>,<%= requests.size %>, this.checked);" id="select_all_group_<%= index %>"></a>
+            <% if request.ready? %>
+              <input type="checkbox" name="selectAll" onclick="select_requests_by_group(<%=  request.submission_id %>,<%= requests.size %>, this.checked);" id="select_all_group_<%= index %>"></a>
+            <% else %>
+              <%= image_tag "error.png", 'title' => I18n.t("requests.status.not_ready"), :size => '16x16' %>
+            <% end %>
             <% index += 1 %>
           </td>
           <td class="request" width='2%'><a href="javascript:void(0)" onclick="showElement(<%=  request.submission_id %>,<%= requests.size %>); return false;"><%= image_tag "information.png", :size =>"13x13" %></a></td>
@@ -72,7 +76,11 @@
           <td class="request" width='2%'>&nbsp;</td>
           <td>
 	        <%= label(:request, request.id, 'Select Request', :style => 'display:none') %>
+            <% if request.ready? %>
 		    <%= check_box :request, request.id, :value => request.id %>
+            <% else %>
+            <%= image_tag "error.png", 'title' => "The library creation request hasn't been completed still, so this request is not ready.", :size => '16x16' %>
+            <% end %>
 		  </td>
           <td style="display:none" class="request" width='5%'><%= link_to request.submission_id,submission_path(request.submission) %></td>
           <td class='request' style='text-align: center' width='5%'>

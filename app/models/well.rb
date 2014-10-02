@@ -222,6 +222,11 @@ class Well < Aliquot::Receptacle
     "#{plate_name}:#{map ? map.description : ''}"
   end
 
+  def details
+    return 'Not yet picked' if plate.nil?
+    plate.purpose.try(:name)||'Unknown plate purpose'
+  end
+
   def can_be_created?
     plate.stock_plate?
   end

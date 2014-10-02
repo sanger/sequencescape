@@ -21,6 +21,8 @@ class Plate < Asset
   delegate :barcode_type, :to => :plate_purpose, :allow_nil => true
   delegate :asset_shape, :to => :plate_purpose, :allow_nil => true
   delegate :fluidigm_barcode, :to => :plate_metadata
+ 
+  validates_length_of :fluidigm_barcode, :is => 10, :allow_blank => true
 
   # Transfer requests into a plate are the requests leading into the wells of said plate.
   def transfer_requests
@@ -191,7 +193,7 @@ WHERE c.container_id=?
       :joins => "LEFT OUTER JOIN container_associations AS wscas ON wscas.container_id = assets.id
   LEFT JOIN assets AS wswells ON wswells.id = content_id
   LEFT JOIN aliquots AS wsaliquots ON wsaliquots.receptacle_id = wswells.id",
-      :conditions => ["wsaliquots.sample_id IN(?)", Array(sample).map(&:id)]
+      :conditions => ["wsaliquots.sample_id IN(?)", Array(sample)]
     }
   }
 
@@ -305,6 +307,10 @@ WHERE c.container_id=?
 
   def stock_plate_name
     (self.get_plate_type == "Stock Plate" || self.get_plate_type.blank?) ? PlatePurpose.cherrypickable_as_source.first.name : self.get_plate_type
+  end
+
+  def details
+    purpose.try(:name)||'Unknown plate purpose'
   end
 
   def control_well_exists?

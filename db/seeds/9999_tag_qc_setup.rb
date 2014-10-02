@@ -15,6 +15,7 @@ rt = RequestType.create!(
   ) do |rt|
   Pipeline.find_by_name('MiSeq sequencing').request_types << rt
 end
+RequestType::Validator.create!(:request_type=>rt,:request_option=>'read_length',:valid_options=>[25])
 
 tube = BarcodePrinterType.find_by_name('1D Tube')
 plate = BarcodePrinterType.find_by_name('96 Well PLate')

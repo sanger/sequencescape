@@ -8,6 +8,10 @@ module Submission::ProjectValidation
         record.errors.add_to_base("Project #{project.name} does not have a budget division") unless project.actionable?
       end
 
+      validates_each(:project, :if => :validating?) do |record, attr, project|
+        record.errors.add_to_base("Project #{project.name} is not suitable for submission: #{project.errors.full_messages.join('; ')}")  unless project.submittable?
+      end
+
       after_create :confirm_validity!
     end
   end
@@ -18,7 +22,11 @@ module Submission::ProjectValidation
   end
 
   def checking_project?
-    project && project.enforce_quotas? && @checking_project
+    validating? && project.enforce_quotas?
+  end
+
+  def validating?
+    project && @checking_project
   end
 
   Error = Class.new(Exception)
