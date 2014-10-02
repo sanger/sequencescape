@@ -1,6 +1,6 @@
 class IlluminaC::LibPcrXpPurpose < PlatePurpose
 
-  def transition_to(plate, state, contents = nil)
+  def transition_to(plate, state, contents = nil, customer_accepts_responsibility=false)
     super
     connect_requests(plate, state, contents)
   end
