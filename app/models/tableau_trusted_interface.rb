@@ -1,7 +1,7 @@
 module TableauTrustedInterface
   require 'rest_client'
 
-  class TicketRejection < Error
+  class TicketRejection < StandardError
   end
 
   # the client_ip parameter isn't necessary to send in the POST unless you have
