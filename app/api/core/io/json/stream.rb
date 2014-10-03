@@ -85,7 +85,7 @@ module ::Core::Io::Json
     private :array_encode
 
     def string_encode(object)
-      unencoded(%Q{"#{object}"})
+      unencoded(object.to_json)
     end
     private :string_encode
 

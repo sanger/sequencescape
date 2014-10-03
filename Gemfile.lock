@@ -138,8 +138,8 @@ GEM
     jruby-openssl (0.7.7)
       bouncy-castle-java (>= 1.5.0146.1)
     jruby-rack (1.1.10)
-    json (1.7.5)
-    json (1.7.5-java)
+    json (1.8.1)
+    json (1.8.1-java)
     json_pure (1.7.3)
     launchy (2.1.0)
       addressable (~> 2.2.6)
@@ -275,7 +275,6 @@ DEPENDENCIES
   jdbc-mysql
   jruby-openssl
   json
-  json_pure
   launchy
   log4r
   mocha
