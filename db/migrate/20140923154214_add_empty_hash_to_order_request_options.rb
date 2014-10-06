@@ -7,7 +7,7 @@ class AddEmptyHashToOrderRequestOptions < ActiveRecord::Migration
 
   def self.down
   	ActiveRecord::Base.transaction do
-  	  Order.update_all("request_options = NULL", ["REQUEST_OPTIONS = ?", Hash.new])
+  	  Order.update_all("request_options = NULL", ["REQUEST_OPTIONS = ?", Hash.new.to_yaml])
   	end
   end
 end
