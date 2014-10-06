@@ -4,7 +4,7 @@ function delayed_job_start() {
   if [ ! -f ../../shared/delayed_job.${1}.stop ]
   then
     touch ../../shared/delayed_job.${1}.stop
-    ./script/runner 'Delayed::Worker.new.start' &
+    ./script/runner 'Delayed::Worker.new.start' & > /dev/null
     echo $! > ../../shared/delayed_job.${1}.pid
     wait $!
     echo "Delayed::Worker died"
@@ -17,7 +17,7 @@ function delayed_job_start() {
 
 function delayed_job_stop() {
   cd `pwd`
-  kill -9 `cat ../../shared/delayed_job.${1}.pid`
+  kill `cat ../../shared/delayed_job.${1}.pid`
   if [ -f ../../shared/delayed_job.${1}.stop ]; then rm ../../shared/delayed_job.${1}.stop; fi
 }
 
