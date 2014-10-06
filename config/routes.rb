@@ -195,7 +195,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :families
   map.resources :tag_groups, :except => [:destroy] do |tag|
-    tag.resources :tags, :except => [:destroy, :index, :create, :new]
+    tag.resources :tags, :except => [:destroy, :index, :create, :new, :edit]
   end
 
 
