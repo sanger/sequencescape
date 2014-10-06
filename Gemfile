@@ -48,7 +48,7 @@ gem "irods_reader", '>=0.0.2', :git => 'git+ssh://git@github.com/sanger/irods_re
 gem "uuidtools"
 gem "sinatra", "~>1.1.0"
 gem "rack-acceptable", :require => 'rack/acceptable'
-gem "json_pure" #gem "yajl-ruby", :require => 'yajl'
+# gem "json_pure" #gem "yajl-ruby", :require => 'yajl'
 gem "json"
 gem "cancan"
 
