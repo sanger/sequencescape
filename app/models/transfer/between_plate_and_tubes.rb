@@ -81,7 +81,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
     ActiveSupport::OrderedHash[
       source.stock_wells.map do |well, stock_wells|
         tube = locate_mx_library_tube_for(well, stock_wells)
-        tube.nil? or should_well_not_be_transferred?(well) ? nil : [ well, [ tube, stock_wells ] ]
+        (tube.nil? or should_well_not_be_transferred?(well)) ? nil : [ well, [ tube, stock_wells ] ]
       end.compact
     ]
   end
