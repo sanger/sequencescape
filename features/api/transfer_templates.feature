@@ -298,16 +298,11 @@ Feature: Access transfer templates through the API
 
     And all multiplexed library tubes have sequential UUIDs based on "00000000-1111-2222-3333-9999"
 
-    When I make an authorised POST with the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
-      """
-      {
-        "transfer": {
-          "source": "11111111-2222-3333-4444-000000000001"
-        }
-      }
-      """
-    Then the HTTP response should be "201 Created"
-     And the JSON should match the following for the specified fields:
+    Given the UUID for the last transfer is "11111111-2222-3333-4444-000000000002"
+    When I GET the API path "/11111111-2222-3333-4444-000000000002"
+    Then the HTTP response should be "200 OK"
+
+    And the JSON should match the following for the specified fields:
       """
       {
         "transfer": {
@@ -315,8 +310,6 @@ Feature: Access transfer templates through the API
             "uuid": "11111111-2222-3333-4444-000000000001"
           },
           "transfers": {
-            "A1": { "uuid": "00000000-1111-2222-3333-999900000001" },
-            "B1": { "uuid": "00000000-1111-2222-3333-999900000001" },
             "C1": { "uuid": "00000000-1111-2222-3333-999900000002" },
             "D1": { "uuid": "00000000-1111-2222-3333-999900000002" }
           }
