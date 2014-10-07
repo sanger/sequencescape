@@ -36,6 +36,21 @@ module Submission::StateMachine
       # Does nothing by default!
     end
 
+    def process_callbacks!
+      callbacks.each do |_,callback|
+        callback.call
+      end
+    end
+
+    def callbacks
+      @callbacks ||= {}
+    end
+
+    def register_callback(key=nil,&block)
+      key ||= "k#{@callbacks.size}"
+      callbacks[key] = block
+    end
+
     def unprocessed?
       UnprocessedStates.include?(state)
     end
@@ -46,7 +61,7 @@ module Submission::StateMachine
     aasm_initial_state :building
     aasm_state :building, :exit => :valid_for_leaving_building_state
     aasm_state :pending, :enter => :complete_building
-    aasm_state :processing, :enter => :process_submission!
+    aasm_state :processing, :enter => :process_submission!, :exit => :process_callbacks!
     aasm_state :ready
     aasm_state :failed
 

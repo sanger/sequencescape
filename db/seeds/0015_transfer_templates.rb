@@ -68,4 +68,9 @@ ActiveRecord::Base.transaction do
     :transfer_class_name => 'Transfer::BetweenPlates',
     :transfers => Hash[wells.zip(wells.reverse)]
   )
+
+  TransferTemplate.create!(
+    :name=>'Transfer wells to MX library tubes by multiplex',
+    :transfer_class_name => 'Transfer::FromPlateToTubeByMultiplex'
+  )
 end

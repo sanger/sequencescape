@@ -57,7 +57,7 @@ def create_submission_of_assets(template, assets, request_options = {})
 end
 
 Given /^"([^\"]+)" of (the plate .+) have been (submitted to "[^"]+")$/ do |range, plate, template|
-  request_options = { :read_length => 100 }
+  request_options = { :read_length => 100, :fragment_size_required_from => 100, :fragment_size_required_to => 200 }
   request_options[:bait_library_name] = 'Human all exon 50MB' if template.name =~ /Pulldown I?SC/
 
   create_submission_of_assets(
