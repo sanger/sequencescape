@@ -45,7 +45,8 @@ module StudyReport::WellDetails
       :gel_qc_date => self.gel_qc_date,
       :pico_date => self.pico_date,
       :qc_started_date => self.plate.qc_started_date,
-      :sequenom_stamp_date => self.plate.sequenom_stamp_date
+      :sequenom_stamp_date => self.plate.sequenom_stamp_date,
+      :quantity => self.well_attribute.quantity_in_micro_grams.try(:round,3)
     })
     qc_data[:genotyping_status] = self.genotyping_status
     qc_data[:genotyping_barcode] = self.primary_aliquot.sample.genotyping_snp_plate_id if primary_aliquot.present?

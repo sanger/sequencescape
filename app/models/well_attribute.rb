@@ -49,6 +49,12 @@ class WellAttribute < ActiveRecord::Base
     (measured_volume * concentration).to_i
   end
 
+  def quantity_in_micro_grams
+    return nil if measured_volume.nil? || concentration.nil?
+    return nil if measured_volume < 0 || concentration < 0
+    (measured_volume * concentration)/1000
+  end
+
   aasm_event :pass_pico_test do
     transitions :to => :Pass, :from => [:ungraded, :Repeat, :Fail, :Pass]
   end
