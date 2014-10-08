@@ -33,6 +33,15 @@ class WellAttribute < ActiveRecord::Base
     end
   end
 
+  def measured_volume=(volume)
+    self.initial_volume = volume
+    super
+  end
+
+  def initial_volume=(volume)
+    super if initial_volume.nil?
+  end
+
   def quantity_in_nano_grams
     return nil if measured_volume.nil? || concentration.nil?
     return nil if measured_volume < 0 || concentration < 0

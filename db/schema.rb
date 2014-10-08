@@ -1,4 +1,4 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file, 
+# This file is auto-generated from the current state of the database. Instead of editing this file,
 # please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140923154214) do
+ActiveRecord::Schema.define(:version => 20141008101341) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -1615,6 +1615,7 @@ ActiveRecord::Schema.define(:version => 20140923154214) do
     t.string   "gender_markers"
     t.string   "gender"
     t.float    "measured_volume"
+    t.float    "initial_volume"
   end
 
   add_index "well_attributes", ["well_id"], :name => "index_well_attributes_on_well_id"
