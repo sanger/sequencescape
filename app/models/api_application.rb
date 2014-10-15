@@ -4,5 +4,15 @@ class ApiApplication < ActiveRecord::Base
 
   validates_inclusion_of :privilege, :in => ['full','tag_plates']
 
+  before_validation :generate_new_api_key, :unless => :key?
+
+  def generate_new_api_key
+    self.key = SecureRandom.base64(configatron.retrieve('api_key_length')||20)
+  end
+
+  def generate_new_api_key!
+    generate_new_api_key
+    save!
+  end
 
 end
