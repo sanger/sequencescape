@@ -40,17 +40,18 @@ class Studies::WorkflowsController < ApplicationController
     @is_tableau_report = 1
     #@ticket = get_tableau_ticket(@view_name)
 
-    tabserver = configatron.reporting_server
-    tabuser   = configatron.reporting_server_username #current_user.login
-    tabpath   = 't/dna/views/SS_studies_0/Studies'
-    tabparams = ''#'?:embed=yes&:tabs=no&:toolbar=yes'
-    @ticket    = tableau_get_trusted_ticket(tabserver, tabuser, "dna")
-    if @ticket != "-1"
-      @iframe_url = "http://#{tabserver}/trusted/#{@ticket}/#{tabpath}#{tabparams}"
-    else
-      ticket_rejected
+    unless configatron.reporting_server.nil?
+      tabserver = configatron.reporting_server
+      tabuser   = configatron.reporting_server_username #current_user.login
+      tabpath   = 't/dna/views/SS_studies_0/Studies'
+      tabparams = ''#'?:embed=yes&:tabs=no&:toolbar=yes'
+      @ticket    = tableau_get_trusted_ticket(tabserver, tabuser, "dna")
+      if @ticket != "-1"
+        @iframe_url = "http://#{tabserver}/trusted/#{@ticket}/#{tabpath}#{tabparams}"
+      else
+        ticket_rejected
+      end
     end
-
     _show
   end
 
