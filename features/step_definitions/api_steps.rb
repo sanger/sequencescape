@@ -134,7 +134,7 @@ When /^I make an authorised (POST|PUT) with the following JSON to the API path "
 end
 
 Given /^I have a "(.*?)" authorised user with the key "(.*?)"$/ do |permission, key|
-  ApiApplication.create(:name=>'test_api',:key=>key,:privilege=>permission,:contact=>'none')
+  ApiApplication.new(:name=>'test_api',:key=>key,:privilege=>permission,:contact=>'none').save(false)
 end
 
 When /^I retrieve the JSON for all (studies|samples|requests)$/ do |model|
@@ -364,10 +364,10 @@ end
 
 Given /^the "([^\"]+)" action on samples requires authorisation$/ do |action|
   Core::Abilities::Application.unregistered { cannot(action.to_sym, TestSampleEndpoint::Model) }
-  Core::Abilities::Application.registered   { can(action.to_sym,    TestSampleEndpoint::Model) }
+  Core::Abilities::Application.full   { can(action.to_sym,    TestSampleEndpoint::Model) }
 end
 
 Given /^the "([^\"]+)" action on a sample requires authorisation$/ do |action|
   Core::Abilities::Application.unregistered { cannot(action.to_sym, TestSampleEndpoint::Instance) }
-  Core::Abilities::Application.registered   { can(action.to_sym,    TestSampleEndpoint::Instance) }
+  Core::Abilities::Application.full   { can(action.to_sym,    TestSampleEndpoint::Instance) }
 end
