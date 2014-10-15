@@ -147,7 +147,7 @@ module Core::Abilities
     end
 
     def registered?
-      @request.authorisation_code == configatron.api.authorisation_code
+      ApiApplication.find_by_key(@request.authorisation_code).present?
     end
     private :registered?
 

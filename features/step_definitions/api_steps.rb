@@ -133,6 +133,10 @@ When /^I make an authorised (POST|PUT) with the following JSON to the API path "
   end
 end
 
+Given /^I have a "(.*?)" authorised user with the key "(.*?)"$/ do |permission, key|
+  ApiApplication.create(:name=>'test_api',:key=>key,:privilege=>permission,:contact=>'none')
+end
+
 When /^I retrieve the JSON for all (studies|samples|requests)$/ do |model|
   step(%Q{I GET the API path "/#{model}"})
 end
