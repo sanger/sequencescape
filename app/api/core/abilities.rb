@@ -83,6 +83,7 @@ module Core::Abilities
 
     recorder_helper(:full)
     recorder_helper(:unregistered)
+    recorder_helper(:tag_plate)
 
     def initialize(request)
       @request = request
@@ -154,6 +155,11 @@ module Core::Abilities
     full do
       can(:manage, :all)
       can(:authenticate, :all)
+    end
+
+    # State changes only
+    tag_plate do
+       can(:create, [ Endpoints::StateChanges])
     end
 
     def registered?

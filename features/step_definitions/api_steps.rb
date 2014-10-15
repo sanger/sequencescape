@@ -371,3 +371,8 @@ Given /^the "([^\"]+)" action on a sample requires authorisation$/ do |action|
   Core::Abilities::Application.unregistered { cannot(action.to_sym, TestSampleEndpoint::Instance) }
   Core::Abilities::Application.full   { can(action.to_sym,    TestSampleEndpoint::Instance) }
 end
+
+Given /^the "(.*?)" action on samples requires tag_plate authorisation$/ do |action|
+  Core::Abilities::Application.unregistered { cannot(action.to_sym, TestSampleEndpoint::Model) }
+  Core::Abilities::Application.tag_plate   { can(action.to_sym,    TestSampleEndpoint::Model) }
+end
