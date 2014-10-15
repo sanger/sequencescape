@@ -41,7 +41,8 @@ class Studies::WorkflowsController < ApplicationController
     #@ticket = get_tableau_ticket(@view_name)
 
     unless configatron.reporting_server.nil?
-      study_id = params[:study_id]
+      #study_id = params[:study_id]
+      study_id = 683 # Temporary UAT testing
       tabserver = configatron.reporting_server
       tabuser   = configatron.reporting_server_username #current_user.login
       tabpath   = 't/dna/views/SS_studies_0/Studies'
