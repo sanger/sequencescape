@@ -83,7 +83,7 @@ module Core::Abilities
 
     recorder_helper(:full)
     recorder_helper(:unregistered)
-    recorder_helper(:tag_plate)
+    recorder_helper(:tag_plates)
 
     def initialize(request)
       @request = request
@@ -158,7 +158,7 @@ module Core::Abilities
     end
 
     # State changes only
-    tag_plate do
+    tag_plates do
        can(:create, [ Endpoints::StateChanges])
     end
 
