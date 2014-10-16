@@ -83,7 +83,6 @@ module Core::Abilities
 
     recorder_helper(:full)
     recorder_helper(:unregistered)
-    recorder_helper(:tag_plates)
 
     def initialize(request)
       @request = request
@@ -132,6 +131,8 @@ module Core::Abilities
   end
 
   class Application < Base
+
+    recorder_helper(:tag_plates)
 
     def initialize(request)
       @api_application = ApiApplication.find_by_key(request.authorisation_code)

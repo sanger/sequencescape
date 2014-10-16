@@ -465,7 +465,7 @@ Feature: Access objects through the API
 
 @authorisation @update @error
   Scenario: The client has partial privileges and attempts to perform update action
-    Given the "create" action on samples requires tag_plate authorisation
+    Given the "create" action on samples requires tag_plates authorisation
     Given the "update" action on a sample requires authorisation
 
     When I make an authorised GET the API path "/samples"

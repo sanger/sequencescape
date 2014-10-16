@@ -12,6 +12,7 @@ Feature: Access reference genomes through the API
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
+And I have a "full" authorised user with the key "cucumber"
 
   @create
   Scenario: Creating a reference genome
@@ -70,7 +71,7 @@ Feature: Access reference genomes through the API
         }
       }
       """
-      
+
   @read
   Scenario: Updating the JSON for a reference genome UUID
     Given a reference genome called "testing-of-reading" with UUID "00000000-1111-2222-3333-444444444444"
@@ -78,7 +79,7 @@ Feature: Access reference genomes through the API
     When I make an authorised PUT with the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
       """
       {"reference_genome": { "name": "testing-of-update"}}
-      """    
+      """
     Then the HTTP response should be "200 OK"
      And the JSON should match the following for the specified fields:
       """
@@ -91,4 +92,4 @@ Feature: Access reference genomes through the API
           "uuid": "00000000-1111-2222-3333-444444444444"
         }
       }
-      """      
+      """
