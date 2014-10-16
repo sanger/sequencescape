@@ -160,7 +160,8 @@ module Core::Abilities
 
     # State changes only
     tag_plates do
-       can(:create, [ Endpoints::StateChanges])
+       can(:create, [ Endpoints::StateChanges::Model ])
+       can(:authenticate, :all)
     end
 
     def registered?
