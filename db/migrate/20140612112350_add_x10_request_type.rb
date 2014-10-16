@@ -3,8 +3,8 @@ class AddX10RequestType < ActiveRecord::Migration
     ActiveRecord::Base.transaction do
       ['a', 'b'].each do |pipeline|
         RequestType.create!({
-          :key => "illumina_#{pipeline}_hiseq_xten_paired_end_sequencing",
-          :name => "Illumina-#{pipeline.upcase} HiSeq X Ten Paired end sequencing",
+          :key => "illumina_#{pipeline}_hiseq_x_paired_end_sequencing",
+          :name => "Illumina-#{pipeline.upcase} HiSeq X Paired end sequencing",
           :workflow =>  Submission::Workflow.find_by_key("short_read_sequencing"),
           :asset_type => "LibraryTube",
           :order => 2,
@@ -20,7 +20,7 @@ class AddX10RequestType < ActiveRecord::Migration
   def self.down
     ActiveRecord::Base.transaction do
       ['a', 'b'].each do |pipeline|
-        request_type = RequestType.find_by_key("illumina_#{pipeline}_hiseq_xten_paired_end_sequencing")
+        request_type = RequestType.find_by_key("illumina_#{pipeline}_hiseq_x_paired_end_sequencing")
         if !request_type.nil?
           request_type.destroy
         end

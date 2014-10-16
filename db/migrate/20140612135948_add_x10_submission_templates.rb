@@ -22,11 +22,11 @@ class AddX10SubmissionTemplates < ActiveRecord::Migration
 
   def self.outlines
     [
-    {:pipeline=>'Illumina-A', :name => 'Pippin WGS',      :infos=>'full',  :request_types=>['illumina_a_shared', 'illumina_a_pippin'],   :role=>'ILA WGS'},
+    # {:pipeline=>'Illumina-A', :name => 'Pippin WGS',      :infos=>'full',  :request_types=>['illumina_a_shared', 'illumina_a_pippin'],   :role=>'ILA WGS'},
 
-    {:pipeline=>'Illumina-B', :name => 'Pooled HWGS',     :infos=>'full', :request_types=>['illumina_b_shared', 'illumina_b_pool'],   :role=>'HWGS' },
-    {:pipeline=>'Illumina-B', :name => 'Pippin HWGS',     :infos=>'full', :request_types=>['illumina_b_shared', 'illumina_b_pippin'], :role=>'HWGS' }
-
+    # {:pipeline=>'Illumina-B', :name => 'Pooled HWGS',     :infos=>'full', :request_types=>['illumina_b_shared', 'illumina_b_pool'],   :role=>'HWGS' },
+    # {:pipeline=>'Illumina-B', :name => 'Pippin HWGS',     :infos=>'full', :request_types=>['illumina_b_shared', 'illumina_b_pippin'], :role=>'HWGS' }
+    {:pipeline=>'Illumina-C', :name => 'General PCR',     :infos=>'wgs', :request_types=>['illumina_c_pcr'], :role=>'HSqX' }
     ].each do |outline|
       paras = {
           :input_field_infos => infos(outline[:infos]),
@@ -35,7 +35,7 @@ class AddX10SubmissionTemplates < ActiveRecord::Migration
         }
       paras.merge!({:order_role_id => Order::OrderRole.find_or_create_by_role(outline[:role]).id}) if outline[:role].present?
       template = {
-        :name => "#{outline[:pipeline]} - #{outline[:name]} - HiSeq x10 sequencing",
+        :name => "#{outline[:pipeline]} - #{outline[:name]} - HiSeq-X sequencing",
         :submission_class_name => 'LinearSubmission',
         :submission_parameters => paras,
         :product_line_id => ProductLine.find_by_name!(outline[:pipeline]).id
@@ -55,7 +55,7 @@ class AddX10SubmissionTemplates < ActiveRecord::Migration
   end
 
   def self.seq_x10_for(pipeline)
-    @hash ||= Hash.new {|h,i| h[i]= [RequestType.find_by_key("#{i.underscore}_hiseq_xten_paired_end_sequencing").id]}
+    @hash ||= Hash.new {|h,i| h[i]= [RequestType.find_by_key("illumina_b_hiseq_x_paired_end_sequencing").id]}
     @hash[pipeline]
   end
 end

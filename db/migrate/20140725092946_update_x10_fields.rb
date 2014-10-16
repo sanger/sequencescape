@@ -15,7 +15,7 @@ class UpdateX10Fields < ActiveRecord::Migration
           next unless changes(task.name).present?
           task.descriptors.clear
           new_descriptors = changes(task.name)[option].map do |name,kind,sort,spiked_only|
-            next if spiked_only && workflow.name != "HiSeq X Ten PE (spiked in controls)"
+            next if spiked_only && workflow.name != "HiSeq X PE (spiked in controls)"
             {
               :name => name,
               :selection => {"1"=>""},
@@ -35,15 +35,15 @@ class UpdateX10Fields < ActiveRecord::Migration
 
   def self.changes(step)
     {
-      "Specify Dilution Volume"=>{
-        :new=>[
-          ["DNA Volume", "Text", 1],
-          ["RSB Volume", "Text", 2]
-        ],
-        :old=>[
-          ["Concentration", "Text", 1]
-        ]
-      },
+      # "Specify Dilution Volume"=>{
+      #   :new=>[
+      #     ["DNA Volume", "Text", 1],
+      #     ["RSB Volume", "Text", 2]
+      #   ],
+      #   :old=>[
+      #     ["Concentration", "Text", 1]
+      #   ]
+      # },
       # "Add Spiked in control"=>{
       #   :new=>[],
       #   :old=>[]
@@ -138,7 +138,7 @@ class UpdateX10Fields < ActiveRecord::Migration
   end
 
   def self.each_workflow
-    ["HiSeq X Ten PE (spiked in controls)","HiSeq X Ten PE (no controls)"].each do |name|
+    ["HiSeq X PE (spiked in controls)","HiSeq X PE (no controls)"].each do |name|
       yield LabInterface::Workflow.find_by_name!(name)
     end
   end
