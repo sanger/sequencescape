@@ -24,13 +24,5 @@ class OrderPresenter
     @target_order.send(method, *args, &block)
   end
 
-  # Destroys the order and if it is the last order on it's submission
-  # destroy the submission too.
-  def destroy
-    submission = @target_order.submission
-
-    submission.destroy unless submission.orders.size > 1
-    @target_order.destroy
-  end
 end
 

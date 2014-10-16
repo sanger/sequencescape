@@ -41,6 +41,20 @@ class Sample < ActiveRecord::Base
   receptacle_alias(:wells,        :class_name => 'Well')
   receptacle_alias(:sample_tubes, :class_name => 'SampleTube')
 
+  # Ugh! We need to use finder sql here as our relationships are complicated
+  # Note: The interpolation of the id is something done in rails 2.3, but is deprecated
+  # in >3. You'll need to use a proc in that context.
+  has_many :asset_groups, :finder_sql => 'SELECT DISTINCT asset_groups.* FROM samples
+  INNER JOIN aliquots ON aliquots.sample_id = samples.id
+  INNER JOIN asset_group_assets ON aliquots.receptacle_id = asset_group_assets.asset_id
+  INNER JOIN asset_groups ON asset_group_assets.asset_group_id = asset_groups.id
+  WHERE samples.id = #{id} AND asset_groups.id IS NOT NULL;'
+  has_many :submissions, :finder_sql => 'SELECT DISTINCT submissions.* FROM samples
+  INNER JOIN aliquots ON aliquots.sample_id = samples.id
+  INNER JOIN requests ON aliquots.receptacle_id = requests.asset_id
+  INNER JOIN submissions ON requests.submission_id = submissions.id
+  WHERE samples.id = #{id} AND submissions.id IS NOT NULL;'
+
   belongs_to :sample_manifest
 
   validates_presence_of :name
@@ -71,7 +85,7 @@ class Sample < ActiveRecord::Base
 
   named_scope :with_name, lambda { |*names| { :conditions => { :name => names.flatten } } }
 
-  named_scope :for_search_query, lambda { |query|
+  named_scope :for_search_query, lambda { |query,with_includes|
     { :conditions => [ 'name LIKE ? OR id=?', "%#{query}%", query ] }
   }
 

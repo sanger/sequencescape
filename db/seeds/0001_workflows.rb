@@ -44,7 +44,8 @@ locations_data = [
   'Genotyping freezer',
   'Pulldown freezer',
   'PacBio library prep freezer',
-  'PacBio sequencing freezer'
+  'PacBio sequencing freezer',
+  'Illumina high throughput freezer'
 ]
 locations_data.each do |location|
   Location.create!(:name=>location)
@@ -279,7 +280,6 @@ PulldownLibraryCreationPipeline.create!(:name => 'Pulldown library preparation')
     end
   end
 end
-
 
 cluster_formation_se_request_type = ['a','b','c'].map do |pl|
   RequestType.create!(
@@ -737,8 +737,9 @@ SequencingPipeline.create!(:name => 'HiSeq Cluster formation PE (no controls)') 
       request_type.order             = 2
       request_type.multiples_allowed = true
       request_type.request_class =  HiSeqSequencingRequest
-    end <<
-  RequestType.create!(
+    end
+  end
+  pipeline.request_types << RequestType.create!(
     :workflow => next_gen_sequencing,
     :key => "hiseq_paired_end_sequencing",
     :name => "HiSeq Paired end sequencing",
@@ -750,7 +751,6 @@ SequencingPipeline.create!(:name => 'HiSeq Cluster formation PE (no controls)') 
     request_type.order             = 2
     request_type.multiples_allowed = true
     request_type.request_class =  HiSeqSequencingRequest
-  end
   end
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'HiSeq Cluster formation PE (no controls)') do |workflow|
@@ -1276,7 +1276,7 @@ SubmissionTemplate.create!(
 )
 
 
-v4_requests_types = ['a', 'b', 'c'].map do |pipeline| 
+v4_requests_types = ['a', 'b', 'c'].map do |pipeline|
   RequestType.create!({
     :key => "illumina_#{pipeline}_hiseq_v4_paired_end_sequencing",
     :name => "Illumina-#{pipeline.upcase} HiSeq V4 Paired end sequencing",
@@ -1327,7 +1327,6 @@ v4_pipelines = ['(spiked in controls)','(no controls)'].each do |type|
       end.tap do |workflow|
         [
           { :class => SetDescriptorsTask,     :name => 'Specify Dilution Volume',           :sorted => 1, :batched => true },
-    
           { :class => SetDescriptorsTask,     :name => 'Cluster generation',                :sorted => 3, :batched => true, :lab_activity => true },
           { :class => AddSpikedInControlTask, :name => 'Add Spiked in Control',             :sorted => 4, :batched => true, :lab_activity => true },
           { :class => SetDescriptorsTask,     :name => 'Quality control',                   :sorted => 5, :batched => true, :lab_activity => true },

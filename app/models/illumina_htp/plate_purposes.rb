@@ -183,7 +183,7 @@ module IlluminaHtp::PlatePurposes
     private :request_type_between
 
     def library_creation_freezer
-      Location.find_by_name('Library creation freezer') or raise "Cannot find library creation freezer"
+      Location.find_by_name("Illumina high throughput freezer") or raise "Cannot find Illumina high throughput freezer"
     end
     private :library_creation_freezer
 

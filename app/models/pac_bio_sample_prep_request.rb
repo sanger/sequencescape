@@ -4,6 +4,7 @@ class PacBioSamplePrepRequest < Request
     attribute(:insert_size)
     attribute(:sequencing_type)
   end
+  include Request::CustomerResponsibility
 
   class RequestOptionsValidator < DelegateValidation::Validator
   end

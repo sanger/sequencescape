@@ -3,6 +3,7 @@ class Request::LibraryCreation < Request
   # to the target when we are passed.  This is actually done by the TransferRequest from plate
   # to plate as it goes through being processed.
   include Request::StandardBillingStrategy
+  include Request::CustomerResponsibility
 
   def on_started
     # Override the default behaviour to not do the transfer
@@ -31,7 +32,6 @@ class Request::LibraryCreation < Request
         attribute(:fragment_size_required_to, maximum_details)
         attribute(:gigabases_expected, :positive_float => true)
       end
-
       include Request::LibraryManufacture
     end
     const_get(:Metadata).class_eval do

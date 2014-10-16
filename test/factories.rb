@@ -127,6 +127,7 @@ end
 
 Factory.define :project_metadata, :class => Project::Metadata do |m|
   m.project_cost_code 'Some Cost Code'
+  m.project_funding_model 'Internal'
   m.budget_division {|budget| budget.association(:budget_division)}
 end
 
@@ -176,6 +177,12 @@ Factory.define(:request_metadata_for_request_type_, :parent => :request_metadata
 
 # Pre-HiSeq sequencing
 Factory.define :request_metadata_for_standard_sequencing, :parent => :request_metadata do |m|
+  m.fragment_size_required_from   1
+  m.fragment_size_required_to     21
+  m.read_length                   76
+end
+
+Factory.define :request_metadata_for_standard_sequencing_with_read_length, :parent => :request_metadata, :class=>SequencingRequest::Metadata do |m|
   m.fragment_size_required_from   1
   m.fragment_size_required_to     21
   m.read_length                   76
@@ -255,6 +262,17 @@ Factory.define :request_with_submission, :class => Request do |request|
       :assets => [request.asset].compact,
       :request_options => request.request_metadata.attributes
     ) unless request.submission
+  end
+end
+
+Factory.define :sequencing_request, :class => SequencingRequest do |request|
+  request.request_type { |rt| rt.association(:request_type) }
+
+  # Ensure that the request metadata is correctly setup based on the request type
+  request.after_build do |request|
+    next if request.request_type.nil?
+    request.request_metadata = Factory.build(:"request_metadata_for_standard_sequencing_with_read_length") if request.request_metadata.new_record?
+    request.sti_type = request.request_type.request_class_name
   end
 end
 
@@ -528,6 +546,17 @@ end
 Factory.define :full_library_tube, :parent => :library_tube do |library_tube|
   library_tube.after_create { |tube| Factory(:library_creation_request, :target_asset => tube) }
 end
+
+Factory.define(:library_creation_request_for_testing_sequencing_requests, :class => Request::LibraryCreation) do |request|
+  request.request_type { |target| RequestType.find_by_name('Library creation') or raise StandardError, "Could not find 'Library creation' request type" }
+  request.asset        { |target| target.association(:well_with_sample_and_plate) }
+  request.target_asset { |target| target.association(:empty_well) }
+  request.after_build do |request|
+    request.request_metadata.fragment_size_required_from = 300
+    request.request_metadata.fragment_size_required_to   = 500
+  end
+end
+
 
 Factory.define :library_creation_request, :parent => :request do |request|
   request_type = RequestType.find_by_name('Library creation') or raise "Cannot find 'Library creation' request type"

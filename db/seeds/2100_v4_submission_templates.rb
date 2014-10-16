@@ -14,8 +14,8 @@
       
     {:pipeline=>'Illumina-C', :name => 'General PCR',     :infos=>'full', :request_types=>['illumina_c_pcr'], :role=>'PCR' },
     {:pipeline=>'Illumina-C', :name => 'General no PCR',     :infos=>'full', :request_types=>['illumina_c_nopcr'], :role=>'PCR' },
-    {:pipeline=>'Illumina-C', :name => 'Library Creation',     :infos=>'full', :request_types=>['illumina_c_library_creation'], :role=>'ILC' },
-    {:pipeline=>'Illumina-C', :name => 'Multiplexed Library Creation',     :infos=>'full', :request_types=>['illumina_c_multiplexed_library_creation'], :role=>'ILC' }
+    {:pipeline=>'Illumina-C', :name => 'Library Creation',     :infos=>'full_with_bespoke_libraries', :request_types=>['illumina_c_library_creation'], :role=>'ILC' },
+    {:pipeline=>'Illumina-C', :name => 'Multiplexed Library Creation',     :infos=>'full_with_bespoke_libraries', :request_types=>['illumina_c_multiplexed_library_creation'], :role=>'ILC' }
       
     ].map do |outline|
       def infos(type)
@@ -24,7 +24,15 @@
           'isc'  => ["Agilent Pulldown"],
           'full' => ["NlaIII gene expression","Standard","Long range","Small RNA","DpnII gene expression","qPCR only",
                     "High complexity and double size selected","Illumina cDNA protocol","Custom","High complexity",
-                    "Double size selected","No PCR","Agilent Pulldown","ChiP-seq","Pre-quality controlled"]
+                    "Double size selected","No PCR","Agilent Pulldown","ChiP-seq","Pre-quality controlled"],
+          'full_with_bespoke_libraries' => ["NlaIII gene expression","Standard","Long range","Small RNA","DpnII gene expression","qPCR only",
+                    "High complexity and double size selected","Illumina cDNA protocol","Custom","High complexity",
+                    "Double size selected","No PCR","Agilent Pulldown","ChiP-seq","Pre-quality controlled",
+                    "TraDIS qPCR only", "Transcriptome counting qPCR only", "Nextera single index qPCR only",
+                    "Nextera dual index qPCR only", "Bisulphate qPCR only", "TraDIS pre quality controlled",
+                    "Transcriptome counting pre quality controlled", "Nextera single index pre quality controlled",
+                    "Nextera dual index pre quality controlled", "Bisulphate pre quality controlled"
+                    ]
           }[type])
       end
     

@@ -61,7 +61,7 @@ class Tube < Aliquot::Receptacle
   end
 
   class StockMx < Tube::Purpose
-    def transition_to(tube, state, _ = nil)
+    def transition_to(tube, state, _ = nil, customer_accepts_responsibility=false)
       tube.requests_as_target.open.each do |request|
         request.transition_to(state)
       end
@@ -84,7 +84,7 @@ class Tube < Aliquot::Receptacle
     # Transitioning an MX library tube to a state involves updating the state of the transfer requests.  If the
     # state is anything but "started" or "pending" then the pulldown library creation request should also be
     # set to the same state
-    def transition_to(tube, state, _ = nil)
+    def transition_to(tube, state, _ = nil, customer_accepts_responsibility=false)
       update_all_requests = ![ 'started', 'pending' ].include?(state)
       tube.requests_as_target.open.for_billing.each do |request|
         request.transition_to(state) if update_all_requests or request.is_a?(TransferRequest)
@@ -105,6 +105,10 @@ class Tube < Aliquot::Receptacle
 
   def name_for_label
     (primary_aliquot.nil? or primary_aliquot.sample.sanger_sample_id.blank?) ? self.name : primary_aliquot.sample.shorten_sanger_sample_id
+  end
+
+  def details
+    purpose.try(:name)||'Tube'
   end
 
   def transfer_request_type_from(source)

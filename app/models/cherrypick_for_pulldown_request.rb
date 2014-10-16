@@ -18,7 +18,7 @@ class CherrypickForPulldownRequest < TransferRequest
 
     # State Machine events
     aasm_event :start do
-      transitions :to => :started, :from => [:pending]
+      transitions :to => :started, :from => [:pending,:hold]
     end
 
     aasm_event :pass do
@@ -45,6 +45,8 @@ class CherrypickForPulldownRequest < TransferRequest
   def on_failed
     # Do nothing
   end
+
+  alias_method :on_cancelled, :on_failed
 
   def perform_transfer_of_contents
     on_started # Ensures we set the study/project

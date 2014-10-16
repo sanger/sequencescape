@@ -21,7 +21,7 @@ Given /^the UUID for the (source|destination) of the transfer (#{TRANSFER_TYPES_
   set_uuid_for(transfer_model(model).find(id).send(target), uuid_value)
 end
 
-Given /^the ((?:pooling )?transfer template) called "([^\"]+)" exists$/ do |type, name|
+Given /^the ((?:pooling ||multiplex )?transfer template) called "([^\"]+)" exists$/ do |type, name|
   Factory(type.gsub(/\s/, '_').to_sym, :name => name)
 end
 
@@ -41,6 +41,17 @@ end
 
 Given /^a (source|destination) transfer plate called "([^\"]+)" exists$/ do |type, name|
   Factory("#{type}_transfer_plate", :name => name)
+end
+
+Given /^the plate "(.*?)" has additional wells$/ do |name|
+  Plate.find_by_name(name).tap do |plate|
+    plate.wells.import(
+      [ 'C1', 'D1' ].map do |location|
+        map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(Map::AssetShape.find_by_name('Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
+        Factory(:tagged_well, :map => map)
+      end
+    )
+  end
 end
 
 Given /^a destination transfer plate called "([^\"]+)" exists as a child of "([^\"]+)"$/ do |name, parent|

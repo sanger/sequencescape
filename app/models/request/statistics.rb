@@ -28,6 +28,15 @@ module Request::Statistics
     def cancelled_requests(request_type)
       self.requests.request_type(request_type).cancelled.count
     end
+    def total_requests_report
+      Hash[
+        self.requests.find(
+          :all,
+          :select=>'request_type_id,count(requests.id) AS total',
+          :group=>'request_type_id'
+          ).map {|rt| [rt.request_type.id,rt.total] }
+      ]
+    end
   end
 
   class Counter

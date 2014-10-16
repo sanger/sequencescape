@@ -14,8 +14,15 @@ class Batch < ActiveRecord::Base
   include ModelExtensions::Batch
   include StandardNamedScopes
 
-  validate_on_create :requests_have_same_read_length, :cluster_formation_requests_must_be_over_minimum
+  validate_on_create :requests_have_same_read_length, :cluster_formation_requests_must_be_over_minimum, :all_requests_are_ready?
 
+  def all_requests_are_ready?
+    # Checks that SequencingRequests have at least one LibraryCreationRequest in passed status before being processed (as refered by #75102998)
+    unless @requests.all?(&:ready?)
+      errors.add_to_base "All requests must be ready? to be added to a batch"
+    end
+  end
+  
   def cluster_formation_requests_must_be_over_minimum
     if (!@pipeline.min_size.nil?) && (@requests.size < @pipeline.min_size)
       errors.add_to_base "You must create batches of at least " + @pipeline.min_size.to_s+" requests in the pipeline " + @pipeline.name
@@ -44,7 +51,7 @@ class Batch < ActiveRecord::Base
   has_many :failures, :as => :failable
 
   # Named scope for search by query string behavior
-  named_scope :for_search_query, lambda { |query|
+  named_scope :for_search_query, lambda { |query,with_includes|
     conditions = [ 'id=?', query ]
     if user = User.find_by_login(query)
       conditions = [ 'user_id=?', user.id ]
@@ -81,7 +88,7 @@ class Batch < ActiveRecord::Base
   end
 
   # Fail specific items on this batch
-  def fail_batch_items(requests, reason, comment)
+  def fail_batch_items(requests, reason, comment, fail_but_charge=false)
     checkpoint = true
 
     requests.each do |key, value|
@@ -90,6 +97,7 @@ class Batch < ActiveRecord::Base
         unless key == "control"
           ActiveRecord::Base.transaction do
             request = self.requests.find(key)
+            request.update_attributes!(:customer_accepts_responisbility=>fail_but_charge) if fail_but_charge
             request.failures.create(:reason => reason, :comment => comment, :notify_remote => true)
             EventSender.send_fail_event(request.id, reason, comment, self.id)
           end

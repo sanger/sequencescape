@@ -32,6 +32,8 @@ class StateChange < ActiveRecord::Base
   # target being updated.
   serialize :contents
 
+  attr_accessor :customer_accepts_responsibility
+
   # These track the state of the target.  The target_state is what we want it to end up in and the previous_state
   # records the state that it was in before the update.  The previous_state is not assigned by the creator but
   # by the action of making the transition.
@@ -49,7 +51,7 @@ class StateChange < ActiveRecord::Base
   # After state change, update the owner
   after_create :update_state_of_target
   def update_state_of_target
-    target.transition_to(target_state, contents)
+    target.transition_to(target_state, contents, customer_accepts_responsibility)
   end
   private :update_state_of_target
 end

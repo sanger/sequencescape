@@ -36,9 +36,28 @@ class Order < ActiveRecord::Base
 
   belongs_to :workflow, :class_name => 'Submission::Workflow'
   validates_presence_of :workflow
+  
 
   belongs_to :submission, :inverse_of => :orders
   #validates_presence_of :submission
+  
+  before_destroy :is_building_submission?
+  after_destroy :on_delete_destroy_submission
+  
+  def is_building_submission?
+    self.submission.building?
+  end
+  
+  def on_delete_destroy_submission
+    if is_building_submission?
+      # After destroying an order, if it is the last order on it's submission
+      # destroy the submission too.
+      orders = self.submission.orders
+      submission.destroy unless orders.size > 1
+      return true
+    end
+    return false
+  end  
 
   serialize :request_types
   validates_presence_of :request_types

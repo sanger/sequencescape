@@ -82,10 +82,23 @@ end
 end
 
 
+## New library types Illumina C
+library_types = LibraryType.create!([
+  "TraDIS qPCR only", "Transcriptome counting qPCR only", "Nextera single index qPCR only",
+  "Nextera dual index qPCR only", "Bisulphate qPCR only", "TraDIS pre quality controlled",
+  "Transcriptome counting pre quality controlled", "Nextera single index pre quality controlled",
+  "Nextera dual index pre quality controlled", "Bisulphate pre quality controlled"].map {|name| {:name=>name} })
+
+[:illumina_c_multiplexed_library_creation, :illumina_c_library_creation].each do |request_class_symbol|
+  request_type = RequestType.find_by_key(request_class_symbol.to_s)
+  library_types.each do |library_type|
+    LibraryTypesRequestType.create!(:request_type=>request_type,:library_type=>library_type,:is_default=>false)
+  end
+end
+
 ['a', 'b'].each do |pipeline|
   rt = RequestType.find_by_key!("illumina_#{pipeline}_hiseq_xten_paired_end_sequencing")
   RequestType::Validator.create!(:request_type => rt, :request_option=> "read_length", :valid_options=>[150])
   rt.library_types << LibraryType.find_by_name('Standard')
   RequestType::Validator.create!(:request_type=>rt, :request_option=> "library_type", :valid_options=>RequestType::Validator::LibraryTypeValidator.new(rt.id))
 end
-

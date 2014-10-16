@@ -6,17 +6,17 @@ Feature: Searching for assets by barcode
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
-    
+
     Given the UUID for the search "Find Illumina-B plates" is "00000000-1111-2222-3333-444444444444"
     Given the UUID for the search "Find Illumina-B stock plates" is "00000000-1111-2222-3333-444444444445"
     Given the UUID for the search "Find Illumina-B plates for user" is "00000000-1111-2222-3333-444444444446"
-    
+
     Given the plate barcode webservice returns "1000001"
       And the plate barcode webservice returns "1000002"
       And the plate barcode webservice returns "1000003"
       And the plate barcode webservice returns "1000004"
       And the plate barcode webservice returns "1000005"
-      
+
       Given a "Stock Plate" plate called "stock plate" exists
       And a "ILB_STD_INPUT" plate called "Testing the API A" exists
       And the UUID for the plate "Testing the API A" is "00000000-1111-2222-3333-000000000001"
@@ -32,9 +32,9 @@ Feature: Searching for assets by barcode
       And pending transfer requests exist between 1 wells on "stock plate" and "Testing the API B"
       And pending transfer requests exist between 1 wells on "stock plate" and "Testing the API C"
       And pending transfer requests exist between 1 wells on "stock plate" and "Testing the API D"
-      
+
     Scenario: I should be able to find Illumina-B Plates
-      
+
       When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/all":
         """
         {
@@ -43,7 +43,7 @@ Feature: Searching for assets by barcode
           }
         }
         """
-        
+
         Then the HTTP response should be "300 Multiple Choices"
          And the JSON should match the following for the specified fields:
           """
@@ -67,7 +67,7 @@ Feature: Searching for assets by barcode
           """
 
       Scenario: I should be able to find Illumina-B Stock Plates in the right fridge
-        Given the plate "Testing the API A" is in the "Library creation freezer" freezer
+        Given the plate "Testing the API A" is in the "Illumina high throughput freezer" freezer
         When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444445/all":
          """
          {
@@ -98,7 +98,7 @@ Feature: Searching for assets by barcode
         And there is an asset link between "Stock Plate" and "Testing the API B"
 
         Given the plate "Testing the API B" is started by "plate_owner"
-        
+
          When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444446/all":
            """
            {
