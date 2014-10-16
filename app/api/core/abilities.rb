@@ -81,13 +81,13 @@ module Core::Abilities
     include ::CanCan::Ability
     extend ClassMethods
 
-    recorder_helper(:registered)
+    recorder_helper(:full)
     recorder_helper(:unregistered)
 
     def initialize(request)
       @request = request
       abilitise(:unregistered)
-      abilitise(:registered) if registered?
+      abilitise(privilege) if registered?
     end
 
     def abilitise(name)
@@ -131,6 +131,18 @@ module Core::Abilities
   end
 
   class Application < Base
+
+    recorder_helper(:tag_plates)
+
+    def initialize(request)
+      @api_application = ApiApplication.find_by_key(request.authorisation_code)
+      super
+    end
+
+    def privilege
+      @api_application.privilege.to_sym
+    end
+
     unregistered do
       # The API is designed to be read-only, at least.
       can(:read, :all)
@@ -141,13 +153,19 @@ module Core::Abilities
     end
 
     # Registered applications can manage all objects that allow it and can have unauthenicated users.
-    registered do
+    full do
       can(:manage, :all)
       can(:authenticate, :all)
     end
 
+    # State changes only
+    tag_plates do
+       can(:create, [ Endpoints::StateChanges::Model ])
+       can(:authenticate, :all)
+    end
+
     def registered?
-      @request.authorisation_code == configatron.api.authorisation_code
+      @api_application.present?
     end
     private :registered?
 

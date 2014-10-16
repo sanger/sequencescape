@@ -5,6 +5,7 @@ Feature: Illumina-b stock DNA plate state varies based on the presence of submis
       And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
+And I have a "full" authorised user with the key "cucumber"
 
     Given the plate barcode webservice returns "1000001"
       And a "ILB_STD_INPUT" plate called "Testing the API" exists
