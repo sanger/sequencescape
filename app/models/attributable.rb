@@ -137,12 +137,32 @@ module Attributable
       record.send(@name).send(@method)
     end
 
+    def display_name
+      Attribute::find_display_name(@owner,  name)
+    end
+
+    def kind
+      FieldInfo::SELECTION
+    end
+
+    def find_default(*args)
+      nil
+    end
+
+    def selection?
+      true
+    end
+
+    def selection_options(_)
+      get_scoped_selection.all.map(&@method.to_sym).sort
+    end
+
     def to_field_info(*args)
       FieldInfo.new(
-        :display_name  => Attribute::find_display_name(@owner,  name),
+        :display_name  => display_name,
         :key           => assignable_attribute_name,
-        :kind          => FieldInfo::SELECTION,
-        :selection     => get_scoped_selection.all.map(&@method.to_sym).sort
+        :kind          => kind,
+        :selection     => selection_options(nil)
       )
     end
 
@@ -169,6 +189,8 @@ module Attributable
   class Attribute
     attr_reader :name
     attr_reader :default
+
+    alias_method :assignable_attribute_name, :name
 
     def initialize(owner, name, options = {})
       @owner, @name, @options = owner, name.to_sym, options
@@ -304,16 +326,38 @@ module Attributable
       end
     end
 
+    def display_name
+      Attribute::find_display_name(@owner,  name)
+    end
+
+    def find_default(object = nil, metadata = nil)
+      default_from(metadata) || object.try(self.name) || self.default
+    end
+
+    def kind
+      return FieldInfo::SELECTION if self.selection?
+      return FieldInfo::BOOLEAN if self.boolean?
+      FieldInfo::TEXT
+    end
+
+    def selection_from_metadata(metadata)
+      return nil unless metadata.present?
+      return metadata.validator_for(name).valid_options.to_a if validator?
+    end
+
+    def selection_options(metadata)
+      self.selection_values||selection_from_metadata(metadata)||[]
+    end
+
     def to_field_info(object = nil, metadata = nil)
       options = {
         # TODO[xxx]: currently only working for metadata, the only place attributes are used
-        :display_name  => Attribute::find_display_name(@owner,  name),
-        :key           => self.name,
-        :default_value => default_from(metadata) || object.try(self.name) || self.default,
-        :kind          => FieldInfo::TEXT
+        :display_name  => display_name,
+        :key           => assignable_attribute_name,
+        :default_value => find_default(object,metadata),
+        :kind          => kind
       }
-      options.update(:kind => FieldInfo::SELECTION, :selection => self.selection_values||metadata.try(selection_includes)||[]) if self.selection?
-	  options.update(:kind => FieldInfo::BOOLEAN ) if self.boolean?
+      options.update(:selection => selection_options(metadata)) if self.selection?
       FieldInfo.new(options)
     end
 

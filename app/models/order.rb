@@ -36,18 +36,18 @@ class Order < ActiveRecord::Base
 
   belongs_to :workflow, :class_name => 'Submission::Workflow'
   validates_presence_of :workflow
-  
+
 
   belongs_to :submission, :inverse_of => :orders
   #validates_presence_of :submission
-  
+
   before_destroy :is_building_submission?
   after_destroy :on_delete_destroy_submission
-  
+
   def is_building_submission?
     self.submission.building?
   end
-  
+
   def on_delete_destroy_submission
     if is_building_submission?
       # After destroying an order, if it is the last order on it's submission
@@ -57,7 +57,7 @@ class Order < ActiveRecord::Base
       return true
     end
     return false
-  end  
+  end
 
   serialize :request_types
   validates_presence_of :request_types
@@ -231,15 +231,49 @@ class Order < ActiveRecord::Base
     return asset_groups
   end
 
+  class CompositeAttribute
+    attr_reader :display_name, :key, :default, :options
+    def initialize(key)
+      @key = key
+    end
+    def add(attribute,metadata)
+      @display_name ||= attribute.display_name
+      @key            = attribute.assignable_attribute_name
+      @default      ||= attribute.find_default(nil,metadata)
+      @kind           = attribute.kind if @kind.nil?||attribute.required?
+      if attribute.selection?
+        new_options   = attribute.selection_options(metadata)
+        @options    ||= new_options if selection?
+        @options     &= new_options
+      end
+    end
+    def kind
+      @kind||FieldInfo::TEXT
+    end
+    def selection?
+      kind==FieldInfo::SELECTION
+    end
+    def to_field_infos
+      values = {
+        :display_name  => display_name,
+        :key           => key,
+        :default_value => default,
+        :kind          => kind
+      }
+      values.update(:selection => options) if self.selection?
+      FieldInfo.new(values)
+    end
+  end
+
   def request_attributes
-    attributes = ActiveSupport::OrderedHash.new
+    attributes = ActiveSupport::OrderedHash.new {|hash,value| hash[value] = CompositeAttribute.new(value) }
     request_types_list.flatten.each do |request_type|
+      mocked = mock_metadata_for(request_type)
       request_type.request_class::Metadata.attribute_details.each do |att|
-        old_attribute = attributes[att.name]
-        attributes[att.name] = [att,mock_metadata_for(request_type)] unless old_attribute and old_attribute.first.required? # required attributes have a priority
+        attributes[att.name].add(att,mocked)
       end
       request_type.request_class::Metadata.association_details.each do |att|
-        attributes[att.name] = [att,mock_metadata_for(request_type)]
+        attributes[att.name].add(att,nil)
       end
     end
 
@@ -257,11 +291,10 @@ class Order < ActiveRecord::Base
   end
 
   # Return the list of input fields to edit when creating a new submission
-  # meant to be overidden
-  # the default use request property
-  def input_field_infos()
+  # Unless you are doing something fancy, fall back on the defaults
+  def input_field_infos
     return @input_field_infos if @input_field_infos
-    return compute_input_field_infos
+    return @cache_calc ||= compute_input_field_infos
   end
 
   # we don't call it input_field_infos= because it has a slightly different meanings
@@ -283,9 +316,9 @@ class Order < ActiveRecord::Base
   end
 
 
-  def compute_input_field_infos()
-    request_attributes.uniq.map do |att,meta|
-      att.to_field_info(nil,meta)
+  def compute_input_field_infos
+    request_attributes.uniq.map do |combined|
+      combined.to_field_infos
     end
   end
   protected :compute_input_field_infos
