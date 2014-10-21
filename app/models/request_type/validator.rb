@@ -43,6 +43,11 @@ class RequestType::Validator < ActiveRecord::Base
       @array.send(method,*args,&block)
     end
 
+    def include?(option)
+      # We have to define include specifically
+      @array.include?(option)
+    end
+
     def to_a
       @array
     end

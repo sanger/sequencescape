@@ -28,7 +28,7 @@ module Attributable
 
   def instance_defaults
     self.class.attribute_details.inject({}) do |hash, attribute|
-      hash.tap { hash[ attribute.name ] = attribute.default_from(self) if attribute.runtime_default? }
+      hash.tap { hash[ attribute.name ] = attribute.default_from(self) if attribute.validator? }
     end
   end
 
@@ -203,8 +203,12 @@ module Attributable
     end
 
     def default_from(origin=nil)
-      return nil if origin.nil? || self.no_lookup?
-      origin.send(default_method)
+      return nil if origin.nil?
+      return origin.validator_for(name).default if validator?
+    end
+
+    def validator?
+      @options.key?(:validator)
     end
 
     def required?
@@ -219,10 +223,6 @@ module Attributable
       @options.key?(:integer)
     end
 
-    def no_lookup?
-      !@options.key?(:default_lookup)
-    end
-
     def float?
       @options.key?(:positive_float)
     end
@@ -235,28 +235,16 @@ module Attributable
       @options.key?(:in)
     end
 
-    def runtime_selection?
-      @options.key?(:from)
-    end
-
     def selection?
-      fixed_selection?||runtime_selection?
+      fixed_selection?||@options.key?(:selection)
     end
 
     def method?
       @options.key?(:with_method)
     end
 
-    def runtime_default?
-      @options.key?(:default_lookup)
-    end
-
     def validate_method
       @options[:with_method]
-    end
-
-    def default_method
-      @options[:default_lookup]
     end
 
     def selection_values
@@ -269,10 +257,6 @@ module Attributable
 
     def valid_format?
       valid_format
-    end
-
-    def selection_includes
-      @options[:from]
     end
 
     def configure(model)
@@ -290,10 +274,10 @@ module Attributable
           required.validates_inclusion_of(name, :in => self.selection_values, :allow_false => true) if self.fixed_selection?
           required.validates_format_of(name, :with => self.valid_format) if self.valid_format?
           required.validate do |record|
-            valid = record.send(selection_includes).include?(record.send(name))
+            valid = record.validator_for(name).valid_options.to_a.include?(record.send(name))
             record.errors.add(name,"is not in the list") unless valid
             valid
-          end if self.runtime_selection?
+          end if self.validator?
           required.validate(self.validate_method) if self.method?
         end
       end

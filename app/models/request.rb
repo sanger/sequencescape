@@ -25,6 +25,10 @@ class Request < ActiveRecord::Base
     DelegateValidation::AlwaysValidValidator
   end
 
+  def validator_for(request_option)
+    request_type.request_type_validators.find_by_request_option!(request_option.to_s)
+  end
+
     named_scope :for_pipeline, lambda { |pipeline|
       {
         :joins => [ 'LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id' ],
@@ -437,16 +441,7 @@ class Request < ActiveRecord::Base
 
   extend Metadata
   has_metadata do
-    # TODO[xxx]: Until we know exactly what to do with these they live here.
-    # These are the metadata attributes that are updated by events.  As far as I am aware none of these
-    # are actually displayed anywhere, so I'm not entirely sure why they exist at all.
-    #
-    # TODO[xxx]: Actually we have to completely hide these otherwise the various request views are broken.
-#    attribute(:batch_id)
-#    attribute(:pipeline_id)
-#    attribute(:pass)
-#    attribute(:failure)
-#    attribute(:library_creation_complete)
+
   end
 
   # NOTE: With properties Request#name would have been silently sent through to the property.  With metadata
@@ -469,7 +464,7 @@ class Request < ActiveRecord::Base
   def ready?
     true
   end
-  
+
   def target_purpose
     nil
   end
