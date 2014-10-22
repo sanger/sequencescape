@@ -47,28 +47,28 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
         end
       end
     end
-    context "with input_field_infos set with a selection" do
-      setup do
-        @field = FieldInfo.new(:kind => "Selection", :selection => ["a", "b"])
-        @order.set_input_field_infos([@field])
-      end
+    # context "with input_field_infos set with a selection" do
+    #   setup do
+    #     @field = FieldInfo.new(:kind => "Selection", :selection => ["a", "b"])
+    #     @order.set_input_field_infos([@field])
+    #   end
 
-      context "saved as template" do
-        setup do
-          template = SubmissionTemplate.new_from_submission("template 2", @order)
-          template.save!
-          template_id = template.id
+    #   context "saved as template" do
+    #     setup do
+    #       template = SubmissionTemplate.new_from_submission("template 2", @order)
+    #       template.save!
+    #       template_id = template.id
 
-          @loaded_template = SubmissionTemplate.find(template_id)
-        end
+    #       @loaded_template = SubmissionTemplate.find(template_id)
+    #     end
 
-        should "load the parameters properly" do
-          order = @loaded_template.new_order
-          assert_equal 1, order.input_field_infos.size
-          assert_equal @field.selection, order.input_field_infos.first.selection
-        end
-      end
-    end
+    #     should "load the parameters properly" do
+    #       order = @loaded_template.new_order
+    #       assert_equal 1, order.input_field_infos.size
+    #       assert_equal @field.selection, order.input_field_infos.first.selection
+    #     end
+    #   end
+    # end
     context "without input_field_infos" do
       setup do
 

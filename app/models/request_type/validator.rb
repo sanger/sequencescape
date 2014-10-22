@@ -23,6 +23,7 @@ class RequestType::Validator < ActiveRecord::Base
     def to_a
       request_type.library_types.map(&:name)
     end
+    delegate :to_sentence, :to => :to_a
   end
 
   ##
@@ -71,7 +72,8 @@ class RequestType::Validator < ActiveRecord::Base
 
   def type_cast
     {
-      'read_length' => :to_i
+      'read_length'   => :to_i,
+      'insert_size'   => :to_i
     }[request_option]
   end
 end

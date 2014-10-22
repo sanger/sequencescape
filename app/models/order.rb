@@ -214,7 +214,6 @@ class Order < ActiveRecord::Base
       :workflow_id => workflow.id,
       :info_differential => info_differential,
       :customize_partial => customize_partial,
-      :input_field_infos => @input_field_infos,
       :asset_input_methods => asset_input_methods != DefaultAssetInputMethods ? asset_input_methods : nil
     }.reject { |k,v| v.nil?}
   end

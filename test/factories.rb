@@ -419,6 +419,7 @@ Factory.define :multiplexed_library_creation_request_type, :class => RequestType
   rt.workflow           { |workflow| workflow.association(:submission_workflow)}
     rt.after_build {|request_type|
     request_type.library_types_request_types << Factory(:library_types_request_type,:request_type=>request_type)
+    request_type.request_type_validators << Factory(:library_request_type_validator, :request_type=>request_type)
   }
 end
 
