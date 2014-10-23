@@ -10,5 +10,6 @@ class ::Io::TagLayout < ::Core::Io::Base
         tag_group <=> tag_group
         direction <=> direction
        walking_by <=> walking_by
+      initial_tag <=> initial_tag
   })
 end
