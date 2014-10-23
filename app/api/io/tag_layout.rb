@@ -7,8 +7,8 @@ class ::Io::TagLayout < ::Core::Io::Base
              user <=> user
             plate <=> plate
     substitutions <=> substitutions
-        tag_group  => tag_group
-        direction  => direction
-       walking_by  => walking_by
+        tag_group <=> tag_group
+        direction <=> direction
+       walking_by <=> walking_by
   })
 end
