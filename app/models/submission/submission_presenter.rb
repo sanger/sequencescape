@@ -315,6 +315,10 @@ class SubmissionCreater < PresenterSkeleton
     @templates ||= SubmissionTemplate.visible
   end
 
+  def product_lines
+    templates.group_by {|t| t.product_line.try(:name)||'General' }
+  end
+
   def template_id
     submission.try(:orders).try(:first).try(:id)
   end

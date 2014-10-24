@@ -19,8 +19,8 @@
   <span class="invalid badge"   >&#10006;</span>
   <% form_for :submission, @presenter do |f| -%>
   <h2>Order Template</h2>
-    <%= f.collection_select :template_id,
-      @presenter.templates, :id, :name,
+    <%= f.grouped_collection_select :template_id,
+      @presenter.product_lines, :last, :first, :id, :name,
       :prompt => "Please select a template..."
     %>
 
