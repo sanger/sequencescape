@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141017133429) do
+ActiveRecord::Schema.define(:version => 20141024141442) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -1504,6 +1504,7 @@ ActiveRecord::Schema.define(:version => 20141017133429) do
     t.datetime "updated_at"
     t.string   "substitutions",       :limit => 1525
     t.string   "walking_algorithm",                   :default => "TagLayout::WalkWellsByPools"
+    t.integer  "initial_tag",                         :default => 0,                             :null => false
   end
 
   create_table "tags", :force => true do |t|
