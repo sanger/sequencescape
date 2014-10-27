@@ -382,6 +382,7 @@ Factory.define :library_creation_request_type, :class => RequestType do |rt|
   rt.workflow    {|workflow| workflow.association(:submission_workflow)}
   rt.after_build {|request_type|
     request_type.library_types_request_types << Factory(:library_types_request_type,:request_type=>request_type)
+    request_type.request_type_validators << Factory(:library_request_type_validator, :request_type=>request_type)
   }
 end
 Factory.define :sequencing_request_type, :class => RequestType do |rt|
@@ -399,7 +400,12 @@ end
 
 Factory.define :sequencing_request_type_validator, :class => RequestType::Validator do |rtv|
   rtv.request_option 'read_length'
-  rtv.valid_options [37, 54, 76, 108]
+  rtv.valid_options { RequestType::Validator::ArrayWithDefault.new([37, 54, 76, 108],54) }
+end
+
+Factory.define :library_request_type_validator, :class => RequestType::Validator do |rtv|
+  rtv.request_option 'library_type'
+  rtv.valid_options {|rtva| RequestType::Validator::LibraryTypeValidator.new(rtva.request_type.id) }
 end
 
 Factory.define :multiplexed_library_creation_request_type, :class => RequestType do |rt|
@@ -413,6 +419,7 @@ Factory.define :multiplexed_library_creation_request_type, :class => RequestType
   rt.workflow           { |workflow| workflow.association(:submission_workflow)}
     rt.after_build {|request_type|
     request_type.library_types_request_types << Factory(:library_types_request_type,:request_type=>request_type)
+    request_type.request_type_validators << Factory(:library_request_type_validator, :request_type=>request_type)
   }
 end
 

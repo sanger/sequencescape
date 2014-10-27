@@ -130,6 +130,9 @@ private
       @validating_ena_required_fields = !!state
     end
 
+    delegate :validator_for, :to => :owner
+
+
     def service_specific_fields
       owner.required_tags.uniq.select do |tag|
         owner.errors.add_to_base("#{tag} is required") if send(tag).blank?
