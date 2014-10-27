@@ -39,7 +39,7 @@ ActiveRecord::Schema.define(:version => 20141024151615) do
     t.string "privilege",   :null => false
   end
 
-  add_index "api_applications", ["key"], :name => "index_applications_on_key"
+  add_index "api_applications", ["key"], :name => "index_api_applications_on_key"
 
   create_table "archived_properties", :force => true do |t|
     t.text    "value"
@@ -1504,7 +1504,6 @@ ActiveRecord::Schema.define(:version => 20141024151615) do
     t.datetime "updated_at"
     t.string   "substitutions",       :limit => 1525
     t.string   "walking_algorithm",                   :default => "TagLayout::WalkWellsByPools"
-    t.integer  "initial_tag",                         :default => 0,                             :null => false
   end
 
   create_table "tags", :force => true do |t|
