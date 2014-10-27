@@ -70,8 +70,6 @@ GEM
     activeresource (2.3.18)
       activesupport (= 2.3.18)
     activesupport (2.3.18)
-    acts_as_audited (1.1.1)
-      activerecord (>= 2.1)
     addressable (2.2.8)
     aws-s3 (0.6.3)
       builder
@@ -251,7 +249,6 @@ DEPENDENCIES
   activerecord-jdbc-adapter (>= 1.2.6)
   activerecord-oracle_enhanced-adapter (= 1.2.3)
   acts-as-dag!
-  acts_as_audited
   alter_table!
   bunny
   cancan
