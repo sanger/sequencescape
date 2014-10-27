@@ -93,9 +93,6 @@ module IlluminaC::Helper
         :info_differential => Submission::Workflow.find_by_key('short_read_sequencing').id
       }
       return sp if ['illumina_c_single_ended_sequencing','illumina_c_paired_end_sequencing'].include?(sequencing.key) || type == 'illumina_c_multiplexing'
-      sp.merge({
-        :input_field_infos => Hiseq2500Helper.input_fields(sizes_for(sequencing),library_types)
-      })
     end
 
     def sizes_for(sequencing)

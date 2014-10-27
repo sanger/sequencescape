@@ -6,6 +6,7 @@ Feature: The search interface should return outstanding Pre-PCR plates
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
+And I have a "full" authorised user with the key "cucumber"
 
     Given the UUID for the search "Find outstanding Illumina-B pre-PCR plates" is "00000000-1111-2222-3333-444444444444"
 

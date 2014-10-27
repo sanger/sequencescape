@@ -5,6 +5,7 @@ Feature: Pulldown stock DNA plate state varies based on the presence of submissi
       And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
+And I have a "full" authorised user with the key "cucumber"
 
     Given the plate barcode webservice returns "1000001"
       And a "WGS stock DNA" plate called "Testing the API" exists

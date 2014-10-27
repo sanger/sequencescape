@@ -1,4 +1,4 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file,
+# This file is auto-generated from the current state of the database. Instead of editing this file, 
 # please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141008101341) do
+ActiveRecord::Schema.define(:version => 20141024151615) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -30,6 +30,16 @@ ActiveRecord::Schema.define(:version => 20141008101341) do
   add_index "aliquots", ["sample_id"], :name => "index_aliquots_on_sample_id"
   add_index "aliquots", ["study_id"], :name => "index_aliquots_on_study_id"
   add_index "aliquots", ["tag_id"], :name => "tag_id_idx"
+
+  create_table "api_applications", :force => true do |t|
+    t.string "name",        :null => false
+    t.string "key",         :null => false
+    t.string "contact",     :null => false
+    t.text   "description"
+    t.string "privilege",   :null => false
+  end
+
+  add_index "api_applications", ["key"], :name => "index_applications_on_key"
 
   create_table "archived_properties", :force => true do |t|
     t.text    "value"
@@ -1494,6 +1504,7 @@ ActiveRecord::Schema.define(:version => 20141008101341) do
     t.datetime "updated_at"
     t.string   "substitutions",       :limit => 1525
     t.string   "walking_algorithm",                   :default => "TagLayout::WalkWellsByPools"
+    t.integer  "initial_tag",                         :default => 0,                             :null => false
   end
 
   create_table "tags", :force => true do |t|

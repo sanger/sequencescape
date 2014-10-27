@@ -6,6 +6,7 @@ Feature: Searching for assets by barcode
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
+And I have a "full" authorised user with the key "cucumber"
 
     Given the UUID for the search "Find Illumina-B tubes" is "00000000-1111-2222-3333-444444444444"
 

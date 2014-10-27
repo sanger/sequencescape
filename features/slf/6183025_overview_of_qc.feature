@@ -139,6 +139,7 @@ Feature: display an overview of all plates going through QC in SLF
     Given all HTTP requests to the API have the cookie "WTSISignOn" set to "I-am-authenticated"
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
     Given I am using the latest version of the API
+And I have a "full" authorised user with the key "cucumber"
     Given the plate exists with ID 1000
     And the UUID for the plate with ID 1000 is "00000000-1111-2222-3333-555555555555"
     And plate 1000 has is a stock plate
@@ -167,6 +168,7 @@ Feature: display an overview of all plates going through QC in SLF
     Given all HTTP requests to the API have the cookie "WTSISignOn" set to "I-am-authenticated"
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
     Given I am using the latest version of the API
+And I have a "full" authorised user with the key "cucumber"
     Given the plate exists with ID 1000
     And the UUID for the plate with ID 1000 is "00000000-1111-2222-3333-555555555555"
     And plate 1000 has is a stock plate
