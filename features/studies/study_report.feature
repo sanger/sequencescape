@@ -72,7 +72,7 @@ Feature: create a report on the current state of a study going through QC
       | Study B | 2010-07-12 | user       | Download | Rerun |
     Then I follow "Download report for Study B"
     Then I should see the report for "Study B":
-    | Study   |  Plate   |  Concentration | Sequenome Count | Sequenome Gender | Pico | Gel  | Genotyping Status                               | Genotyping Barcode | Supplier Sample Name | Well | Quantity | Initial Volume |
+    | Study   |  Plate   |  Concentration | Sequenome Count | Sequenome Gender | Pico | Gel  | Genotyping Status                               | Genotyping Barcode | Supplier Sample Name | Well | Total Micrograms | Initial Volume |
     | Study B |  1234567 |  1.0           | 29/30           | FFFF             | Pass | Pass | DNAlab completed: 13                            | 13                 | Sample_1234567_1     | A1   | 0.5      | 500.0          |
     | Study B |  1234567 |  1.0           | 29/30           | FFFF             | Pass | Pass | Imported to Illumina: 123                       | 123                | Sample_1234567_2     | A2   | 0.5      | 500.0          |
     | Study B |  1234567 |  1.0           | 29/30           | FFFF             | Pass | Pass | Imported to Illumina: 51\| DNAlab completed: 17 | 51                 | Sample_1234567_3     | A3   | 0.5      | 500.0          |

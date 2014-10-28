@@ -43,7 +43,7 @@ And I have a "full" authorised user with the key "cucumber"
       """
       {
         "content": {
-          "request_options.read_length": [ "is not included in the list" ]
+          "request_options.read_length": ["is '22' should be 50, 75 or 100"]
         }
       }
       """
@@ -79,7 +79,7 @@ And I have a "full" authorised user with the key "cucumber"
       """
       {
         "content": {
-          "orders.request_options.read_length": [ "is not included in the list" ]
+          "orders.request_options.read_length": ["is '0' should be 50, 75 or 100"]
         }
       }
       """
