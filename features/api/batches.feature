@@ -12,6 +12,7 @@ Feature: Access batches through the API
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
+And I have a "full" authorised user with the key "cucumber"
 
     Given I have a pipeline called "Testing the API"
     And the UUID for the pipeline "Testing the API" is "11111111-2222-3333-4444-555555555555"

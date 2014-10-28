@@ -108,6 +108,15 @@ class WellTest < ActiveSupport::TestCase
       assert vol.is_a?(Float)
     end
 
+    should "record the initial volume as initial_volume" do
+      @well.well_attribute.measured_volume = 3.5
+      vol = @well.well_attribute.initial_volume
+      assert_equal 3.5, vol
+      @well.well_attribute.measured_volume = 2.5
+      orig_vol = @well.well_attribute.initial_volume
+      assert_equal 3.5, orig_vol
+    end
+
     should "allow buffer volume to be set" do
       @well.set_buffer_volume(4.5)
       vol = @well.get_buffer_volume

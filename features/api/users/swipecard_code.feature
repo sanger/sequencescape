@@ -11,6 +11,7 @@ Feature: Set and check swipecard code of users through the API
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
+And I have a "full" authorised user with the key "cucumber"
 
   Scenario: Set a swipecard code to a user
     Given the user exists with ID 1

@@ -142,7 +142,7 @@ class RequestsController < ApplicationController
         redirect_to request_path(@request)
       end
     else
-      flash[:notice] = "Request #{@request.id} in progress. Can't be cancelled"
+      flash[:error] = "Request #{@request.id} in progress. Can't be cancelled"
       redirect_to request_path(@request)
     end
   end
