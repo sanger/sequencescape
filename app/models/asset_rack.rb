@@ -17,7 +17,7 @@ class AssetRack < Asset
 
   delegate :default_state, :to => :purpose, :allow_nil => true
   delegate :barcode_type, :to => :purpose, :allow_nil => true
-  delegate :asset_shape, :to => :plate_purpose, :allow_nil => true
+  delegate :asset_shape, :to => :purpose, :allow_nil => true
 
   contains :strip_tubes do
 
@@ -47,7 +47,6 @@ class AssetRack < Asset
     Purpose.find_by_name('Cherrypicked')
   end
 
-  # TODO: Fix to use the strip tubes
   def priority
     Submission.find(:first,
       :select => 'MAX(submissions.priority) AS priority',
@@ -55,7 +54,7 @@ class AssetRack < Asset
         'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
         'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id'
       ],
-      :conditions => ['caplp.container_id = ?',self.id]
+      :conditions => ['caplp.container_id IN (?)',self.strip_tubes.map(&:id)]
     ).try(:priority)||0
   end
 

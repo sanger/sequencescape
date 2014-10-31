@@ -8,11 +8,20 @@ end
 Factory.define :asset_rack do |a|
   a.purpose  { |_| Factory :asset_rack_purpose }
   a.name     { Factory.next :asset_rack_name }
+  a.size 96
 end
 
 Factory.define :full_asset_rack, :parent => :asset_rack do |a|
   a.after_create do |rack|
     rack.strip_tubes << Factory(:strip_tube)
+  end
+end
+
+Factory.define :fuller_asset_rack, :parent => :asset_rack do |a|
+  a.after_create do |rack|
+    2.times do |column_index|
+      rack.strip_tubes << Factory(:strip_tube,:map=>Map.find(:first,:conditions=>{:asset_size=>96,:asset_shape_id=>Map::AssetShape.default,:row_order=>column_index}))
+    end
   end
 end
 
@@ -35,6 +44,6 @@ Factory.define :strip_tube do |a|
   a.size               "8"
   a.plate_purpose      { Factory :strip_tube_purpose }
   a.after_create do |st|
-    st.wells.import(Map.where_plate_size(st.size).where_plate_shape(st.asset_shape).all.map { |map| Factory(:well, :map => map) })
+    st.wells.import(st.maps.map { |map| Factory(:well, :map => map) })
   end
 end

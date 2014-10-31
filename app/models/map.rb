@@ -242,6 +242,26 @@ class Map < ActiveRecord::Base
     self.column_order + 1
   end
 
+  def height
+    asset_shape.plate_height(asset_size)
+  end
+
+  def width
+    asset_shape.plate_width(asset_size)
+  end
+
+  ##
+  # Column of particular map location. Zero indexed integer
+  def column
+    self.row_order%width
+  end
+
+  ##
+  # Row of particular map location. Zero indexed integer
+  def row
+    self.column_order%height
+  end
+
   def horizontal_plate_position
     self.row_order + 1
   end
