@@ -226,15 +226,6 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :study_reports
   map.resources :sample_logistics, :collection => { :lab => :get, :qc_overview => :get }
 
-  ### Pulldown ###
-  map.with_options(:namespace => "pulldown/", :path_prefix => "/pulldown") do |pulldown|
-    pulldown.resources :plates, :collection => { :lookup_plate_purposes => :get }
-    pulldown.resources :validates, :collection => { :source_plate_type => :get, :target_plate_type => :get, :validate_plates => :post }
-  end
-
-
-
-
   ### Standard routes
   # You can have the root of your site routed with map.root -- just remember to delete public/index.html.
   map.root :controller => "studies"
