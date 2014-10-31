@@ -64,6 +64,28 @@ class Map < ActiveRecord::Base
       description_strategy.constantize.location_from_row_and_column(row, column,plate_width(size),size)
     end
 
+    def location_from_index(index, size=96)
+      row = index/plate_width(size) + 1
+      column = index%plate_width(size)
+      description_strategy.constantize.location_from_row_and_column(row, column,plate_width(size),size)
+    end
+
+    def generate_map(size)
+      raise StandardError, 'Map already exists' if Map.find_by_asset_size_and_asset_shape_id(size,id).present?
+      ActiveRecord::Base.transaction do
+        (0...size).each do |i|
+          Map.create!(
+            :asset_size     => size,
+            :asset_shape_id => self.id,
+            :location_id    => i+1,
+            :row_order      => i,
+            :column_order   => horizontal_to_vertical(i,size),
+            :description    => location_from_index(i,size)
+          )
+        end
+      end
+    end
+
   end
 
   module Coordinate
