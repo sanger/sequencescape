@@ -477,7 +477,8 @@ WHERE c.container_id=?
   end
 
   def lookup_stock_plate
-    self.ancestors.all(:order => 'created_at DESC', :include => :plate_purpose).detect(&:stock_plate?)
+    spp = PlatePurpose.find(:all,:conditions=>{:can_be_considered_a_stock_plate=>true})
+    self.ancestors.first(:order => 'created_at DESC', :conditions => {:plate_purpose_id=>spp})
   end
   private :lookup_stock_plate
 
