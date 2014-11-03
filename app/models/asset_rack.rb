@@ -51,7 +51,7 @@ class AssetRack < Asset
   alias_method :stock_plate, :lookup_stock_plate
 
   def source_plate
-    ancestor_of_purpose(source_plate_purpose) || raise(StandardError,"No #{source_plate_purpose.name} ancestor identified.")
+    ancestor_of_purpose(source_plate_purpose)
   end
 
   def priority
