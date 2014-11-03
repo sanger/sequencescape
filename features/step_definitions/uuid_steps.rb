@@ -55,8 +55,8 @@ Given /^the UUID for the (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) "([^\"]+)" is
   set_uuid_for(object, uuid_value)
 end
 
-Given /^the UUID for the asset rack purpose "(.*?)" is "(.*?)"$/ do |name,uuid_value|
-  object = AssetRack::Purpose.find_by_name(name) or raise "Cannot find asset rack #{ name.inspect }"
+Given /^the UUID for the last asset rack purpose is "(.*?)"$/ do |uuid_value|
+  object = AssetRack::Purpose.last or raise "Cannot find asset rack purpose"
   set_uuid_for(object, uuid_value)
 end
 

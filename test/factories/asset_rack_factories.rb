@@ -8,7 +8,8 @@ end
 Factory.define :asset_rack do |a|
   a.purpose  { |_| Factory :asset_rack_purpose }
   a.name     { Factory.next :asset_rack_name }
-  a.size 96
+  a.size 12
+  a.ancestors { [Factory(:plate,:plate_purpose => PlatePurpose.find_by_name('Cherrypicked') )] }
 end
 
 Factory.define :full_asset_rack, :parent => :asset_rack do |a|
@@ -27,9 +28,10 @@ end
 
 Factory.define :asset_rack_purpose, :class => AssetRack::Purpose do |a|
   a.name               { Factory.next :purpose_name }
-  a.size               "96"
-  a.asset_shape        Map::AssetShape.default
+  a.size               "12"
+  a.asset_shape        Map::AssetShape.find_by_name('StripTubeRack')
   a.barcode_for_tecan  'ean13_barcode'
+  a.target_type         'AssetRack'
 end
 
 Factory.define :strip_tube_purpose, :class => PlatePurpose do |a|

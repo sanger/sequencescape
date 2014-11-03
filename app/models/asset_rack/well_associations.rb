@@ -20,20 +20,41 @@ module AssetRack::WellAssociations
       @stic ||= Hash[asset_rack.strip_tubes.map {|st| [st.map.column, st.id] }]
     end
 
+    # ##
+    # # Currently this only supports column-based strip tubes
+    # # Its also a bit messier than I'd like.
+    # def located_at(locations)
+    #   column_wells = Hash.new {|hash,column| hash[column] = Array.new }
+
+    #   asset_rack.maps.where_description(locations).each do |m|
+    #     column_wells[m.column] << m.row
+    #   end
+
+    #   Well.for_strip_tubes_row(column_wells.map do |column,rows|
+    #     [strip_tubes_in_columns[column],rows]
+    #   end)
+    # end
+
     ##
-    # Currently this only supports column-based strip tubes
-    # Its also a bit messier than I'd like.
+    #
     def located_at(locations)
-      column_wells = Hash.new {|hash,column| hash[column] = Array.new }
-
-      asset_rack.maps.where_description(locations).each do |m|
-        column_wells[m.column] << m.row
-      end
-
-      Well.for_strip_tubes_row(column_wells.map do |column,rows|
+      Well.for_strip_tubes_row(column_wells_for(locations).map do |column,rows|
         [strip_tubes_in_columns[column],rows]
       end)
     end
+
+    ##
+    # Assumes a fixed 12xcolumn-wise strip layout. Will need to delegate and
+    # Refactor if things change in future
+    def column_wells_for(locations)
+      Hash.new {|hash,column| hash[column] = Array.new }. tap do |column_wells|
+        locations.each do |location|
+          row, column = /^([A-Z])([0-9]+)$/.match(location).captures
+          column_wells[column.to_i-1] = row[0]-65
+        end
+      end
+    end
+
   end
 
   module AssetRackAssociation

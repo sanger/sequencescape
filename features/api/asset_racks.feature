@@ -19,7 +19,7 @@ And I have a "full" authorised user with the key "cucumber"
     Given the asset rack exists with ID 1
       And the asset rack with ID 1 has a barcode of "1220000001831"
       And the UUID for the asset rack with ID 1 is "00000000-1111-2222-3333-444444444444"
-      And the UUID for the asset rack purpose "Standard asset rack" is "11111111-2222-3333-4444-555555555555"
+      And the UUID for the last asset rack purpose is "11111111-2222-3333-4444-555555555555"
 
     When I GET the API path "/00000000-1111-2222-3333-444444444444"
     Then the HTTP response should be "200 OK"
