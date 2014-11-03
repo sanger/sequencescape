@@ -3,7 +3,7 @@ class AssetRack < Asset
   include LocationAssociation::Locatable
   include Transfer::Associations
   include Barcode::Barcodeable
-  include Asset::Ownership::Owned
+  include Asset::Ownership::Unowned
   extend QcFile::Associations
   has_qc_files
 
