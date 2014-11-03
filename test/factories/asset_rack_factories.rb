@@ -49,3 +49,13 @@ Factory.define :strip_tube do |a|
     st.wells.import(st.maps.map { |map| Factory(:well, :map => map) })
   end
 end
+
+Factory.define(:asset_rack_creation) do |asser_rack_creation|
+  asser_rack_creation.user   { |target| target.association(:user) }
+  asser_rack_creation.parent { |target| target.association(:full_plate) }
+
+  asser_rack_creation.after_build do |asser_rack_creation|
+    asser_rack_creation.parent.plate_purpose = PlatePurpose.find_by_name('Parent plate purpose') || Factory(:parent_plate_purpose)
+    asser_rack_creation.child_purpose        = Purpose.find_by_name('Asset rack purpose')  || Factory(:child_plate_purpose)
+  end
+end
