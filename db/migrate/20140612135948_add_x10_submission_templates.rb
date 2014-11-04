@@ -29,7 +29,6 @@ class AddX10SubmissionTemplates < ActiveRecord::Migration
     {:pipeline=>'Illumina-C', :name => 'General PCR',     :infos=>'wgs', :request_types=>['illumina_c_pcr'], :role=>'HSqX' }
     ].each do |outline|
       paras = {
-          :input_field_infos => infos(outline[:infos]),
           :request_type_ids_list => outline[:request_types].map {|rt| [RequestType.find_by_key!(rt).id] } << seq_x10_for(outline[:pipeline]),
           :workflow_id => 1
         }
