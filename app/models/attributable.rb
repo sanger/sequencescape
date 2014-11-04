@@ -28,7 +28,7 @@ module Attributable
 
   def instance_defaults
     self.class.attribute_details.inject({}) do |hash, attribute|
-      hash.tap { hash[ attribute.name ] = attribute.default_from(self) if attribute.runtime_default? }
+      hash.tap { hash[ attribute.name ] = attribute.default_from(self) if attribute.validator? }
     end
   end
 
@@ -137,12 +137,32 @@ module Attributable
       record.send(@name).send(@method)
     end
 
+    def display_name
+      Attribute::find_display_name(@owner,  name)
+    end
+
+    def kind
+      FieldInfo::SELECTION
+    end
+
+    def find_default(*args)
+      nil
+    end
+
+    def selection?
+      true
+    end
+
+    def selection_options(_)
+      get_scoped_selection.all.map(&@method.to_sym).sort
+    end
+
     def to_field_info(*args)
       FieldInfo.new(
-        :display_name  => Attribute::find_display_name(@owner,  name),
+        :display_name  => display_name,
         :key           => assignable_attribute_name,
-        :kind          => FieldInfo::SELECTION,
-        :selection     => get_scoped_selection.all.map(&@method.to_sym).sort
+        :kind          => kind,
+        :selection     => selection_options(nil)
       )
     end
 
@@ -170,6 +190,8 @@ module Attributable
     attr_reader :name
     attr_reader :default
 
+    alias_method :assignable_attribute_name, :name
+
     def initialize(owner, name, options = {})
       @owner, @name, @options = owner, name.to_sym, options
       @default  = options.delete(:default)
@@ -181,8 +203,12 @@ module Attributable
     end
 
     def default_from(origin=nil)
-      return nil if origin.nil? || self.no_lookup?
-      origin.send(default_method)
+      return nil if origin.nil?
+      return origin.validator_for(name).default if validator?
+    end
+
+    def validator?
+      @options.key?(:validator)
     end
 
     def required?
@@ -197,10 +223,6 @@ module Attributable
       @options.key?(:integer)
     end
 
-    def no_lookup?
-      !@options.key?(:default_lookup)
-    end
-
     def float?
       @options.key?(:positive_float)
     end
@@ -213,28 +235,16 @@ module Attributable
       @options.key?(:in)
     end
 
-    def runtime_selection?
-      @options.key?(:from)
-    end
-
     def selection?
-      fixed_selection?||runtime_selection?
+      fixed_selection?||@options.key?(:selection)
     end
 
     def method?
       @options.key?(:with_method)
     end
 
-    def runtime_default?
-      @options.key?(:default_lookup)
-    end
-
     def validate_method
       @options[:with_method]
-    end
-
-    def default_method
-      @options[:default_lookup]
     end
 
     def selection_values
@@ -247,10 +257,6 @@ module Attributable
 
     def valid_format?
       valid_format
-    end
-
-    def selection_includes
-      @options[:from]
     end
 
     def configure(model)
@@ -268,10 +274,10 @@ module Attributable
           required.validates_inclusion_of(name, :in => self.selection_values, :allow_false => true) if self.fixed_selection?
           required.validates_format_of(name, :with => self.valid_format) if self.valid_format?
           required.validate do |record|
-            valid = record.send(selection_includes).include?(record.send(name))
+            valid = record.validator_for(name).valid_options.to_a.include?(record.send(name))
             record.errors.add(name,"is not in the list") unless valid
             valid
-          end if self.runtime_selection?
+          end if self.validator?
           required.validate(self.validate_method) if self.method?
         end
       end
@@ -304,16 +310,38 @@ module Attributable
       end
     end
 
+    def display_name
+      Attribute::find_display_name(@owner,  name)
+    end
+
+    def find_default(object = nil, metadata = nil)
+      default_from(metadata) || object.try(self.name) || self.default
+    end
+
+    def kind
+      return FieldInfo::SELECTION if self.selection?
+      return FieldInfo::BOOLEAN if self.boolean?
+      FieldInfo::TEXT
+    end
+
+    def selection_from_metadata(metadata)
+      return nil unless metadata.present?
+      return metadata.validator_for(name).valid_options.to_a if validator?
+    end
+
+    def selection_options(metadata)
+      self.selection_values||selection_from_metadata(metadata)||[]
+    end
+
     def to_field_info(object = nil, metadata = nil)
       options = {
         # TODO[xxx]: currently only working for metadata, the only place attributes are used
-        :display_name  => Attribute::find_display_name(@owner,  name),
-        :key           => self.name,
-        :default_value => default_from(metadata) || object.try(self.name) || self.default,
-        :kind          => FieldInfo::TEXT
+        :display_name  => display_name,
+        :key           => assignable_attribute_name,
+        :default_value => find_default(object,metadata),
+        :kind          => kind
       }
-      options.update(:kind => FieldInfo::SELECTION, :selection => self.selection_values||metadata.try(selection_includes)||[]) if self.selection?
-	  options.update(:kind => FieldInfo::BOOLEAN ) if self.boolean?
+      options.update(:selection => selection_options(metadata)) if self.selection?
       FieldInfo.new(options)
     end
   end

@@ -985,6 +985,14 @@ PacBioSequencingPipeline.create!(:name => 'PacBio Sequencing') do |pipeline|
     request_type.order             = 1
     request_type.multiples_allowed = true
     request_type.request_class     = PacBioSequencingRequest
+    request_type.request_type_validators.build([
+      {:request_option=>'insert_size',
+      :valid_options=>RequestType::Validator::ArrayWithDefault.new([500,1000,2000,5000,10000,20000],500),
+      :request_type=>request_type},
+      {:request_option=>'sequencing_type',
+      :valid_options=>RequestType::Validator::ArrayWithDefault.new(['Standard','MagBead'],'Standard'),
+      :request_type=>request_type}
+    ])
   end
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'PacBio Sequencing').tap do |workflow|
@@ -1265,13 +1273,7 @@ SubmissionTemplate.create!(
       },
     :request_type_ids_list=>[[tosta],[tosta2],[ptst],[tofluidigm]],
     :workflow_id => Submission::Workflow.find_by_name('Microarray genotyping').id,
-    :info_differential => Submission::Workflow.find_by_name('Microarray genotyping').id,
-    :input_field_infos => [
-      FieldInfo.new(
-        :kind => "Selection",:default_value => "Fluidigm 96-96",:parameters => { :selection => ['Fluidigm 96-96','Fluidigm 192-24'] },
-        :display_name => "Fluidigm Chip",
-        :key => "target_purpose_name"
-    )]
+    :info_differential => Submission::Workflow.find_by_name('Microarray genotyping').id
   }
 )
 

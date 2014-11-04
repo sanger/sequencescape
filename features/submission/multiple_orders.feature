@@ -6,6 +6,7 @@ Feature: Creating a submissin with many orders
     Given all HTTP requests to the API have the cookie "WTSISignOn" set to "I-am-authenticated"
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
     Given I am using the latest version of the API
+And I have a "full" authorised user with the key "cucumber"
 
     Given I have an "active" study called "Study A"
     And the UUID for the study "Study A" is "22222222-3333-4444-5555-000000000000"

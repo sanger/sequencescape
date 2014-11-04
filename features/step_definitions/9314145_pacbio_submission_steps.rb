@@ -23,7 +23,7 @@ Given /^I have a PacBio submission$/ do
     :workflow => Submission::Workflow.find_by_key('short_read_sequencing'),
     :user => User.last,
     :assets => Plate.find_by_barcode(1234567).wells.all,
-    :request_options => {:multiplier=>{"1"=>"1", "3"=>"1"}, "insert_size"=>"250", "sequencing_type"=>"Standard"}
+    :request_options => {:multiplier=>{"1"=>"1", "3"=>"1"}, "insert_size"=>"500", "sequencing_type"=>"Standard"}
     )
   step(%Q{1 pending delayed jobs are processed})
 end

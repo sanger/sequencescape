@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140923154214) do
+ActiveRecord::Schema.define(:version => 20141024151615) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -30,6 +30,16 @@ ActiveRecord::Schema.define(:version => 20140923154214) do
   add_index "aliquots", ["sample_id"], :name => "index_aliquots_on_sample_id"
   add_index "aliquots", ["study_id"], :name => "index_aliquots_on_study_id"
   add_index "aliquots", ["tag_id"], :name => "tag_id_idx"
+
+  create_table "api_applications", :force => true do |t|
+    t.string "name",        :null => false
+    t.string "key",         :null => false
+    t.string "contact",     :null => false
+    t.text   "description"
+    t.string "privilege",   :null => false
+  end
+
+  add_index "api_applications", ["key"], :name => "index_api_applications_on_key"
 
   create_table "archived_properties", :force => true do |t|
     t.text    "value"
@@ -1615,6 +1625,7 @@ ActiveRecord::Schema.define(:version => 20140923154214) do
     t.string   "gender_markers"
     t.string   "gender"
     t.float    "measured_volume"
+    t.float    "initial_volume"
   end
 
   add_index "well_attributes", ["well_id"], :name => "index_well_attributes_on_well_id"

@@ -57,33 +57,17 @@ module Hiseq2500Helper
   def self.other(settings)
     case settings[:sub_params]
     when :ill_c
-      { :input_field_infos => input_fields(["75","100"],[
-                "NlaIII gene expression","Standard","Long range","Small RNA","DpnII gene expression","qPCR only",
-                "High complexity and double size selected","Illumina cDNA protocol","Custom","High complexity",
-                "Double size selected","No PCR","Agilent Pulldown","ChiP-seq","Pre-quality controlled","TraDIS"
-              ]) }
+      { }
     when :ill_c_single
-      { :input_field_infos => input_fields(["50"],[
-                "NlaIII gene expression","Standard","Long range","Small RNA","DpnII gene expression","qPCR only",
-                "High complexity and double size selected","Illumina cDNA protocol","Custom","High complexity",
-                "Double size selected","No PCR","Agilent Pulldown","ChiP-seq","Pre-quality controlled","TraDIS"
-              ]) }
+      { }
     when :sc
       {:request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"}}
     when :wgs
       {:request_options=>{"fragment_size_required_to"=>"500", "fragment_size_required_from"=>"300", "library_type"=>"Standard"}}
     when :ill_b
-      { :input_field_infos => input_fields(["75","100"],[
-                "NlaIII gene expression","Standard","Long range","Small RNA","DpnII gene expression","qPCR only",
-                "High complexity and double size selected","Illumina cDNA protocol","Custom","High complexity",
-                "Double size selected","No PCR","Agilent Pulldown","ChiP-seq","Pre-quality controlled"
-              ]) }
+      { }
     when :ill_b_single
-      { :input_field_infos => input_fields(["50"],[
-                "NlaIII gene expression","Standard","Long range","Small RNA","DpnII gene expression","qPCR only",
-                "High complexity and double size selected","Illumina cDNA protocol","Custom","High complexity",
-                "Double size selected","No PCR","Agilent Pulldown","ChiP-seq","Pre-quality controlled"
-              ]) }
+      { }
     else
       raise "Invalid submission parameters"
     end

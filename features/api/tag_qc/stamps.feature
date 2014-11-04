@@ -6,6 +6,7 @@ Feature: Access stamps through the API
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
+And I have a "full" authorised user with the key "cucumber"
 
     Given I have a lot type for testing called "Test Lot Type"
       And the UUID for the lot type "Test Lot Type" is "11111111-2222-3333-4444-555555555555"

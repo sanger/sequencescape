@@ -9,7 +9,8 @@ module RequestType::Validation
 
     Class.new(RequestTypeValidator) do
       request_type.request_type_validators.each do |validator|
-        validates_inclusion_of :"#{validator.request_option}", :in => validator.valid_options, :if => :"#{validator.request_option}_needs_checking?"
+        message = "is '%{value}' should be #{validator.valid_options.to_sentence(:last_word_connector=>' or ')}"
+        validates_inclusion_of :"#{validator.request_option}", :in => validator.valid_options, :if => :"#{validator.request_option}_needs_checking?", :message => message
         delegate_attribute(:"#{validator.request_option}", :to => :target, :default => validator.default, :type_cast => validator.type_cast)
       end
     end.tap do |sub_class|

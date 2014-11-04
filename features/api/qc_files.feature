@@ -12,6 +12,7 @@ Feature: Access plate QC Information through the api
     And all of this is happening at exactly "23-Oct-2010 23:00:00+01:00"
 
     Given I am using the latest version of the API
+And I have a "full" authorised user with the key "cucumber"
 
     Given the plate exists with ID 1
       And the plate with ID 1 has a barcode of "1220000001831"

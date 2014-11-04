@@ -47,40 +47,50 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
         end
       end
     end
-    context "with input_field_infos set with a selection" do
-      setup do
-        @field = FieldInfo.new(:kind => "Selection", :selection => ["a", "b"])
-        @order.set_input_field_infos([@field])
-      end
+    # context "with input_field_infos set with a selection" do
+    #   setup do
+    #     @field = FieldInfo.new(:kind => "Selection", :selection => ["a", "b"])
+    #     @order.set_input_field_infos([@field])
+    #   end
 
-      context "saved as template" do
-        setup do
-          template = SubmissionTemplate.new_from_submission("template 2", @order)
-          template.save!
-          template_id = template.id
+    #   context "saved as template" do
+    #     setup do
+    #       template = SubmissionTemplate.new_from_submission("template 2", @order)
+    #       template.save!
+    #       template_id = template.id
 
-          @loaded_template = SubmissionTemplate.find(template_id)
-        end
+    #       @loaded_template = SubmissionTemplate.find(template_id)
+    #     end
 
-        should "load the parameters properly" do
-          order = @loaded_template.new_order
-          assert_equal 1, order.input_field_infos.size
-          assert_equal @field.selection, order.input_field_infos.first.selection
-        end
-      end
-    end
+    #     should "load the parameters properly" do
+    #       order = @loaded_template.new_order
+    #       assert_equal 1, order.input_field_infos.size
+    #       assert_equal @field.selection, order.input_field_infos.first.selection
+    #     end
+    #   end
+    # end
     context "without input_field_infos" do
       setup do
-        @test_request_type = Factory :sequencing_request_type
-        @order.request_types = [@test_request_type]
-        @order.request_type_ids_list = [[@test_request_type.id]]
+
+        @test_request_typ_b = Factory :library_creation_request_type
+        @test_request_typ_b
+        @test_request_type  = Factory :sequencing_request_type
+        @order.request_types = [@test_request_typ_b, @test_request_type]
+        @order.request_type_ids_list = [[@test_request_typ_b.id],[@test_request_type.id]]
       end
 
       should "load the parameters properly" do
-        assert_equal 4, @order.input_field_infos.size
-        assert_equal [37, 54, 76, 108], @order.input_field_infos.detect {|ifi| ifi.display_name == 'Read length'}.selection
+        assert_equal 6, @order.input_field_infos.size
+        assert_equal [37, 54, 76, 108], field('Read length').selection
+        assert_equal 54, field('Read length').default_value
+        assert_equal ['Standard'], field('Library type').selection
+        assert_equal 'Standard', field('Library type').default_value
       end
     end
+  end
+
+  def field(field_name)
+    @order.input_field_infos.detect {|ifi| ifi.display_name == field_name} || raise("#{field_name} field not found")
   end
 end
 

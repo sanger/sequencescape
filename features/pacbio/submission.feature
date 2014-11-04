@@ -10,49 +10,6 @@ Feature: Create a submission for the pacbio pipeline
     Given I am on the show page for study "Test study"
     Given the plate barcode webservice returns "99999"
 
-  @worksheet @old_submission @wip
-  Scenario Outline: Valid submission with different options
-  Given study "Test study" has an asset group called "Test group b" with 1 wells
-   When I have a "PacBio" submission with the following setup:
-        |Study | Test study |
-        | Project | Test project |
-        | Asset Group | Test group b |
-        | Insert size | <insert_size> |
-        | Sequencing type | <sequencing_type> |
-        | multiplier#2 |  <smart_cells_requested> |
-    Given 1 pending delayed jobs are processed
-    Then I should have <number_of_smart_cells> PacBioSequencingRequests
-    Given I am on the show page for pipeline "PacBio Sample Prep"
-    Then I should see "<sequencing_type>"
-    And I should see "<insert_size>"
-    When I check "Select SampleTube 111 for batch"
-    When I press "Submit"
-    When I follow "DNA Template Prep Kit Box Barcode"
-    Given Well "1234567":"A1" has a PacBioLibraryTube "333"
-    When I fill in "DNA Template Prep Kit Box Barcode" with "999"
-    And I press "Next step"
-    And I press "Next step"
-    When I press "Release this batch"
-    When I follow "Print worksheet"
-    Then the PacBio sample prep worksheet should look like:
-       | Well         | Name       | Required size | Complete? | Repaired? | Adapter ligated? | Clean up complete? | Exonnuclease cleanup | ng/ul | Fragment size | Volume |
-       | DN1234567T:A1 | Sample_111 | <insert_size> |           |           |                  |                    |                      |       |               |        |
-    Given I am on the homepage
-    When I set PacBioLibraryTube "3980000333858" to be in freezer "PacBio sequencing freezer"
-    Given I am on the show page for pipeline "PacBio Sequencing"
-    Then I should see "<sequencing_type>"
-    And I should see "<insert_size>"
-
-    Examples:
-      | sequencing_type | insert_size | number_of_smart_cells |
-      | MagBead         | 250         | 1                     |
-      | Standard        | 2000        | 2                     |
-      | MagBead         | 500         | 1                     |
-      | Standard        | 1000        | 2                     |
-      | MagBead         | 6000        | 1                     |
-      | Standard        | 8000        | 2                     |
-
-
   Scenario: No kit number entered
     Given I have a PacBio Library Prep batch
     When I follow "DNA Template Prep Kit Box Barcode"
@@ -67,8 +24,8 @@ Feature: Create a submission for the pacbio pipeline
     When I follow "Print worksheet"
     Then the PacBio sample prep worksheet should look like:
        | Well          | Name       | Required size | Complete? | Repaired? | Adapter ligated? | Clean up complete? | Exonnuclease cleanup | ng/ul | Fragment size | Volume |
-       | DN1234567T:A1 | Sample_111 | 250           |           |           |                  |                    |                      |       |               |        |
-       | DN1234567T:B1 | Sample_222 | 250           |           |           |                  |                    |                      |       |               |        |
+       | DN1234567T:A1 | Sample_111 | 500           |           |           |                  |                    |                      |       |               |        |
+       | DN1234567T:B1 | Sample_222 | 500           |           |           |                  |                    |                      |       |               |        |
 
 
   Scenario: When a sample fails dont enter number of SMRTcells and cancel sequencing request

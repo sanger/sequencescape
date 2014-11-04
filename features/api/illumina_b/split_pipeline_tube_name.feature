@@ -10,6 +10,7 @@ Feature: The bottom of the illumina_b htp pipeline
       And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
+And I have a "full" authorised user with the key "cucumber"
 
     Given a user with UUID "99999999-8888-7777-6666-555555555555" exists
 

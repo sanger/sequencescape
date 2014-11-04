@@ -133,6 +133,10 @@ When /^I make an authorised (POST|PUT) with the following JSON to the API path "
   end
 end
 
+Given /^I have a "(.*?)" authorised user with the key "(.*?)"$/ do |permission, key|
+  ApiApplication.new(:name=>'test_api',:key=>key,:privilege=>permission,:contact=>'none').save(false)
+end
+
 When /^I retrieve the JSON for all (studies|samples|requests)$/ do |model|
   step(%Q{I GET the API path "/#{model}"})
 end
@@ -360,10 +364,15 @@ end
 
 Given /^the "([^\"]+)" action on samples requires authorisation$/ do |action|
   Core::Abilities::Application.unregistered { cannot(action.to_sym, TestSampleEndpoint::Model) }
-  Core::Abilities::Application.registered   { can(action.to_sym,    TestSampleEndpoint::Model) }
+  Core::Abilities::Application.full   { can(action.to_sym,    TestSampleEndpoint::Model) }
 end
 
 Given /^the "([^\"]+)" action on a sample requires authorisation$/ do |action|
   Core::Abilities::Application.unregistered { cannot(action.to_sym, TestSampleEndpoint::Instance) }
-  Core::Abilities::Application.registered   { can(action.to_sym,    TestSampleEndpoint::Instance) }
+  Core::Abilities::Application.full   { can(action.to_sym,    TestSampleEndpoint::Instance) }
+end
+
+Given /^the "(.*?)" action on samples requires tag_plates authorisation$/ do |action|
+  Core::Abilities::Application.unregistered { cannot(action.to_sym, TestSampleEndpoint::Model) }
+  Core::Abilities::Application.tag_plates   { can(action.to_sym,    TestSampleEndpoint::Model) }
 end
