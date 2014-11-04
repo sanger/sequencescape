@@ -344,6 +344,5 @@ module Attributable
       options.update(:selection => selection_options(metadata)) if self.selection?
       FieldInfo.new(options)
     end
-
   end
 end
