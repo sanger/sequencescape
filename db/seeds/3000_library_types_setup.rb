@@ -38,7 +38,7 @@ LibraryType.create!([
   "TraDIS", "qPCR only", "Pre-quality controlled", "DSN_RNAseq", "RNA-seq dUTP",
   "Manual Standard WGS (Plate)", "ChIP-Seq Auto", "TruSeq mRNA (RNA Seq)", "Small RNA (miRNA)",
   "RNA-seq dUTP eukaryotic", "RNA-seq dUTP prokaryotic", "No PCR (Plate)"
-  ].map {|name| {:name=>name} })
+].map {|name| {:name=>name} })
 
 RequestType.find_each do |request_type|
 
@@ -94,4 +94,11 @@ library_types = LibraryType.create!([
   library_types.each do |library_type|
     LibraryTypesRequestType.create!(:request_type=>request_type,:library_type=>library_type,:is_default=>false)
   end
+end
+
+['a', 'b'].each do |pipeline|
+  rt = RequestType.find_by_key!("illumina_#{pipeline}_hiseq_xten_paired_end_sequencing")
+  RequestType::Validator.create!(:request_type => rt, :request_option=> "read_length", :valid_options=>[150])
+  rt.library_types << LibraryType.find_by_name('Standard')
+  RequestType::Validator.create!(:request_type=>rt, :request_option=> "library_type", :valid_options=>RequestType::Validator::LibraryTypeValidator.new(rt.id))
 end
