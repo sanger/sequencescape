@@ -19,11 +19,12 @@ Feature: Access rack creations through the API
     Given the plate barcode webservice returns "1000001"
       And the plate barcode webservice returns "1000002"
 
-    Given a plate purpose called "Parent plate purpose" with UUID "11111111-2222-3333-4444-000000000001"
+    Given the UUID for the plate purpose "Cherrypicked" is "11111111-2222-3333-4444-000000000001"
       And an asset rack purpose called "Asset rack purpose" with UUID "11111111-2222-3333-4444-000000000002"
-      And the purpose "Parent plate purpose" is a parent of the purpose "Asset rack purpose"
+      And the purpose "Cherrypicked" is a parent of the purpose "Asset rack purpose"
 
-    Given a "Parent plate purpose" plate called "Testing the API" exists
+
+    Given a "Cherrypicked" plate called "Testing the API" exists
       And the UUID for the plate "Testing the API" is "00000000-1111-2222-3333-000000000001"
 
   @create
@@ -71,6 +72,7 @@ Feature: Access rack creations through the API
       """
 
     Then the child asset rack of the last asset rack creation is a child of the parent plate
+    And the last asset rack has a strip tube in position 2 named "DN1000001M:S02"
 
   @create @error
   Scenario Outline: Creating a asset rack creation which results in an error
@@ -101,6 +103,8 @@ Feature: Access rack creations through the API
 
   @read
   Scenario: Reading the JSON for a UUID
+    Given a plate purpose called "Parent plate purpose" with UUID "11111111-2222-3333-4444-000000000001"
+      And the purpose "Parent plate purpose" is a parent of the purpose "Asset rack purpose"
     Given the asset rack creation exists with ID 1
       And the UUID for the asset rack creation with ID 1 is "55555555-6666-7777-8888-000000000001"
       And the UUID for the parent plate of the asset rack creation with ID 1 is "00000000-1111-2222-3333-000000000001"

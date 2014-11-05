@@ -64,6 +64,10 @@ Given /^an? (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) called "([^\"]+)" with UUI
   set_uuid_for(Factory(model.gsub(/\s+/, '_').to_sym, :name => name), uuid_value)
 end
 
+Given /^an asset rack purpose called "(.*?)" with UUID "(.*?)"$/ do |name,uuid_value|
+set_uuid_for( Factory(:asset_rack_purpose, :name => name), uuid_value )
+end
+
 Given /^an? (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) called "([^\"]+)" with ID (\d+)$/ do |model, name, id|
   Factory(model.gsub(/\s+/, '_').to_sym, :name => name, :id => id)
 end

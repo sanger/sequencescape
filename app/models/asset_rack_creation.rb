@@ -35,7 +35,7 @@ class AssetRackCreation < AssetCreation
     private :children
 
     def create_children!
-      self.child = child_purpose.create!(:location=>parent.location)
+      self.child = child_purpose.create!(:location=>parent.location,:source=>parent.source_plate)
     end
     private :create_children!
 

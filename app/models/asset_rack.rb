@@ -18,17 +18,18 @@ class AssetRack < Asset
 
   contains :strip_tubes do
 
-    def construct!
-      # By default we name the strip tubes after the containing plate.
-      # The transfer will later rename them after the source plate.
+    def construct!(source=nil)
+
+      source ||= proxy_owner.source_plate||proxy_owner
+
       strips = proxy_owner.maps.map do |map|
         {
-          :name => "#{proxy_owner.sanger_human_barcode}:#{map.description}",
+          :name => "#{source.sanger_human_barcode}:#{map.description}",
           :map  => map
         }
-        proxy_owner.strip_tubes.build(strips)
-        proxy_owner.save!
       end
+      proxy_owner.strip_tubes.build(strips)
+      proxy_owner.save!
 
     end
 
@@ -102,12 +103,14 @@ class AssetRack < Asset
       attributes           = args.extract_options!
       do_not_create_strips = !!args.first
 
+      source = attributes.delete(:source)
+
       attributes[:size]     ||= size
       attributes[:location] ||= default_location
       attributes[:purpose]    = self
 
       target_type.constantize.create_with_barcode!(attributes, &block).tap do |plate|
-        plate.strip_tubes.construct! unless do_not_create_strips
+        plate.strip_tubes.construct!(source) unless do_not_create_strips
       end
     end
 
