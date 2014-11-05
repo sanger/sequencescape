@@ -25,9 +25,11 @@ module AssetRack::WellAssociations
     # This may need to be revisited in future
     def located_at(locations)
       Well.for_strip_tubes_row(column_wells_for(locations).map do |column,rows|
-        [strip_tubes_in_columns[column],rows]
+        [strip_tubes_in_columns[column],column,rows]
       end)
     end
+
+    alias_method :located_at_position, :located_at
 
     ##
     # Assumes a fixed 12xcolumn-wise strip layout. Will need to delegate and
@@ -36,7 +38,7 @@ module AssetRack::WellAssociations
       Hash.new {|hash,column| hash[column] = Array.new }. tap do |column_wells|
         locations.each do |location|
           row, column = /^([A-Z])([0-9]+)$/.match(location).captures
-          column_wells[column.to_i-1] = row[0]-65
+          column_wells[column.to_i-1] << row[0]-65
         end
       end
     end
@@ -48,15 +50,29 @@ module AssetRack::WellAssociations
       base.class_eval do
         named_scope :for_asset_rack, lambda{ |rack| {:select=>'assets.*',:joins=>:container_association,:conditions=>{:container_associations=>{:container_id=>rack.strip_tubes }} }}
 
+        ##
+        # Quite specialised scope. Takes array of:
+        # [strip_id,strip_colum,row_offset]
+        # Strip column is used to provide a quick conversion back to the standard map description
+        # This is a performance optimization
         named_scope :for_strip_tubes_row, lambda{|strips_wells|
+
           query = 'false'
           conds = [query]
-          strips_wells.each do |strip_id,rows|
-            query << ' OR (fstr_ca.container_id=? AND fstr_map.row_order IN (?))'
+          id_column = Array.new
+          strips_wells.each do |strip_id,column_no,rows|
+            query << ' OR (fstr_ca.container_id=? AND fstr_map.column_order IN (?))'
             conds.concat([strip_id,rows])
+            id_column[column_no] = strip_id
           end
+
+          # Selects a row by performing a simple CHAR conversion on the row order
+          # Selects column by finding the index of the strip_tube id in an array based on column
+          # Sadly rails doesn't automatically sanitize selects. We're probably safe with this one,
+          # but this ensures we can re-use this without worry.
+          select = sanitize_sql_array(['assets.*, CONCAT(CHAR(fstr_map.column_order+65),FIELD(fstr_ca.container_id,?)) AS map_description',id_column])
           {
-            :select=>'assets.*',
+            :select=>select,
             :joins=>[
               'INNER JOIN container_associations AS fstr_ca ON fstr_ca.content_id = assets.id',
               'INNER JOIN maps AS fstr_map ON fstr_map.id = assets.map_id'

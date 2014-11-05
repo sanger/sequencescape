@@ -14,7 +14,7 @@ class AssetRack < Asset
   belongs_to :purpose, :class_name => 'AssetRack::Purpose', :foreign_key => :plate_purpose_id
   alias_method :asset_rack_purpose, :purpose
 
-  delegate :default_state, :barcode_type, :asset_shape, :source_plate_purpose, :to => :purpose, :allow_nil => true
+  delegate :default_state, :barcode_type, :asset_shape, :source_plate_purpose, :well_maps, :to => :purpose, :allow_nil => true
 
   contains :strip_tubes do
 
@@ -73,10 +73,20 @@ class AssetRack < Asset
     create!(attributes.merge(:barcode => barcode), &block)
   end
 
+  def valid_positions?(positions)
+    unique_positions_on_plate = well_maps.where_description(positions).all.map(&:description).sort.uniq
+    unique_positions_from_caller = positions.sort.uniq
+    unique_positions_on_plate == unique_positions_from_caller
+  end
+
   # Transfer requests into a rack are the requests leading into the wells of said rack.
   def transfer_requests
     wells.all(:include => :transfer_requests_as_target).map(&:transfer_requests_as_target).flatten
   end
+
+   def transfer_request_type_from(source)
+     purpose.transfer_request_type_from(source.plate_purpose)
+   end
 
   class Purpose < ::Purpose
 
@@ -99,6 +109,16 @@ class AssetRack < Asset
       target_type.constantize.create_with_barcode!(attributes, &block).tap do |plate|
         plate.strip_tubes.construct! unless do_not_create_strips
       end
+    end
+
+    ##
+    # We're fixed to a standard 96 well plate map for the moment.
+    def well_maps
+      Map.where_plate_size(self.size*strip_size).where_plate_shape(Map::AssetShape.default)
+    end
+
+    def strip_size
+      8
     end
 
   end

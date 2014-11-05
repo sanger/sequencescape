@@ -172,6 +172,7 @@ class Well < Aliquot::Receptacle
   end
 
   def map_description
+    return read_attribute("map_description") if read_attribute("map_description").present?
     return nil if map.nil?
     return nil unless map.description.is_a?(String)
 
