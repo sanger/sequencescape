@@ -44,8 +44,11 @@ class AssetRackTest < ActiveSupport::TestCase
     end
 
     should "create strip tubes" do
-      assert_equal 12, @rack.strip_tubes.count
+      assert_equal 12,   @rack.strip_tubes.count
+      assert_equal nil,  @rack.strip_tubes.first.barcode
+      assert_equal 'LS', @rack.strip_tubes.first.barcode_prefix.prefix
     end
+
   end
 
 

@@ -16,7 +16,7 @@ And I have a "full" authorised user with the key "cucumber"
 
   @read
   Scenario: Reading the JSON for a UUID
-    Given the asset rack exists with ID 1
+    Given the full asset rack exists with ID 1
       And the asset rack with ID 1 has a barcode of "1220000001831"
       And the UUID for the asset rack with ID 1 is "00000000-1111-2222-3333-444444444444"
       And the UUID for the last asset rack purpose is "11111111-2222-3333-4444-555555555555"
@@ -35,6 +35,11 @@ And I have a "full" authorised user with the key "cucumber"
               "read": "http://www.example.com/api/1/11111111-2222-3333-4444-555555555555"
             }
           },
+          "strip_tubes": {
+            "actions": {
+              "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/strip_tubes"
+            }
+          },
 
           "barcode": {
             "prefix": "DN",
@@ -47,3 +52,16 @@ And I have a "full" authorised user with the key "cucumber"
         }
       }
       """
+
+    When I GET the API path "/00000000-1111-2222-3333-444444444444/strip_tubes"
+    Then the HTTP response should be "200 OK"
+    And the JSON should match the following for the specified fields:
+      """
+      {
+        "plates": [{
+
+        }],
+        "size":   1
+      }
+      """
+

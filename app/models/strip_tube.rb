@@ -5,4 +5,6 @@
 # instead get assigned it later.
 class StripTube < Plate
   contained_by :asset_rack
+
+  self.prefix = 'LS'
 end
