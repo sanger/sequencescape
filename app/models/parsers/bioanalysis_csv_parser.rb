@@ -1,11 +1,12 @@
 # encoding: utf-8
 class Parsers::BioanalysisCsvParser
-	def initialize(file)
-		@file_path = file
+	def initialize(filename, file)
+		@filename = filename
+		@file = file
 	end
 
 	def read_file(file)
-		fd = File.open(file, "r:UTF-8")
+		fd = file # File.open(file, "r:UTF-8")
 		content = []
 		while (line = fd.gets) 
 			content.push line
@@ -61,7 +62,7 @@ class Parsers::BioanalysisCsvParser
 	end
 
 	def parse
-		content = read_file @file_path
+		content = read_file @file
 		@parsed_content = parse_samples content
 	end
 
@@ -69,13 +70,24 @@ class Parsers::BioanalysisCsvParser
 		@parsed_content.nil? ? parse : @parsed_content
 	end
 
+	def get_parsed_attribute(plate_position, field)
+		return nil if parsed_content[plate_position].nil?
+		parsed_content[plate_position][:peak_table][field]		
+	end
+
 	def concentration(plate_position)
 		field = "Conc. [ng/µl]"
-		field = parsed_content[plate_position][:peak_table].keys[1]
-		parsed_content[plate_position][:peak_table][field]
+		field = parsed_content["A1"][:peak_table].keys[1]
+		return get_parsed_attribute(plate_position, field)
+	end
+
+	def molarity(plate_position)
+		field = "Molarity [nmol/l]"
+		field = parsed_content["A1"][:peak_table].keys[2]
+		return get_parsed_attribute(plate_position, field)
 	end
 
 	def validates_content?
-		@file_path.match(/\.csv$/i).length > 0
+		!@filename.match(/\.csv$/i).nil?
 	end
 end
