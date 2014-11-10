@@ -19,6 +19,9 @@ class TagLayout < ActiveRecord::Base
   validates_presence_of :tag_group
   serialize :substitutions
 
+  validates_presence_of :direction_algorithm
+  validates_presence_of :walking_algorithm
+
   before_validation do |record|
     record.substitutions ||= {}
   end
@@ -36,16 +39,16 @@ class TagLayout < ActiveRecord::Base
     extend(walking_algorithm.constantize)   unless walking_algorithm.blank?
   end
 
-  def direction=(direction)
+  def direction=(new_direction)
     self.direction_algorithm = {
-      'column'         =>'TagLayout::InColumns',
-      'row'            =>'TagLayout::InRows',
+      'column'         => 'TagLayout::InColumns',
+      'row'            => 'TagLayout::InRows',
       'inverse column' => 'TagLayout::InInverseColumns',
       'inverse row'    => 'TagLayout::InInverseRows'
-    }[direction]
-    errors.add_to_base("#{direction} is not a valid direction")if self.direction_algorithm.nil?
+    }[new_direction]
+    errors.add_to_base("#{new_direction} is not a valid direction")if self.direction_algorithm.nil?
     raise(ActiveRecord::RecordInvalid, self) if self.direction_algorithm.nil?
-    extend(direction_algorithm.constantize) unless self.direction_algorithm.nil?
+    extend(direction_algorithm.constantize)
   end
 
   def walking_by=(walk)
@@ -57,7 +60,7 @@ class TagLayout < ActiveRecord::Base
     }[walk]
     errors.add_to_base("#{walk} is not a recognised walking method") if self.walking_algorithm.nil?
     raise(ActiveRecord::RecordInvalid, self) if self.walking_algorithm.nil?
-    extend(walking_algorithm.constantize) unless self.walking_algorithm.nil?
+    extend(walking_algorithm.constantize)
   end
 
 

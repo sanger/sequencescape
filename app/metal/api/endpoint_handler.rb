@@ -158,8 +158,6 @@ class ::Api::EndpointHandler < ::Core::Service
         return yield(model_name.join('/').classify.constantize, remainder)
       rescue NameError => exception
         # Nope, try again
-        puts exception.message
-        puts exception.backtrace
       end
     end
     raise StandardError, "Cannot route #{parts.join('/').inspect}"
