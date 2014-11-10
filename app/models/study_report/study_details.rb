@@ -20,7 +20,6 @@ module StudyReport::StudyDetails
   end
 
   def handle_wells(join, study_condition, plate_purpose_id, &block)
-    #TODO remove hardcoded plate purpose id
     Asset.find_in_batches(
       :select => 'DISTINCT assets.id',
       :joins => [
@@ -41,7 +40,7 @@ module StudyReport::StudyDetails
   def progress_report_header
     [
       "Status","Study","Supplier","Sanger Sample Name","Supplier Sample Name","Plate","Well","Supplier Volume",
-      "Supplier Gender", "Concentration","Measured Volume","Sequenome Count", "Sequenome Gender",
+      "Supplier Gender", "Concentration","Initial Volume","Measured Volume","Total Micrograms","Sequenome Count", "Sequenome Gender",
       "Pico","Gel", "Qc Status", "QC started date", "Pico date", "Gel QC date","Seq stamp date","Genotyping Status", "Genotyping Chip", "Genotyping Infinium Barcode", "Genotyping Barcode","Genotyping Well", "Cohort", "Country of Origin",
       "Geographical Region","Ethnicity","DNA Source","Is Resubmitted","Control"
       ]
@@ -67,7 +66,9 @@ module StudyReport::StudyDetails
                    asset_progress_data[:supplier_volume],
                    asset_progress_data[:supplier_gender],
                    asset_progress_data[:concentration],
+                   asset_progress_data[:initial_volume],
                    asset_progress_data[:measured_volume],
+                   asset_progress_data[:quantity],
                    asset_progress_data[:sequenom_count],
                    asset_progress_data[:sequenom_gender],
                    asset_progress_data[:pico],

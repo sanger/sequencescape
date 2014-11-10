@@ -1,4 +1,4 @@
-@pipeline @batch @javascript
+@pipeline @batch
 Feature:
   Background:
     Given I am logged in as "user"

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141023134306) do
+ActiveRecord::Schema.define(:version => 20141024151615) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -39,7 +39,7 @@ ActiveRecord::Schema.define(:version => 20141023134306) do
     t.string "privilege",   :null => false
   end
 
-  add_index "api_applications", ["key"], :name => "index_applications_on_key"
+  add_index "api_applications", ["key"], :name => "index_api_applications_on_key"
 
   create_table "archived_properties", :force => true do |t|
     t.text    "value"

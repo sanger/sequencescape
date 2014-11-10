@@ -7,15 +7,9 @@ class SequencingRequest < Request
     attribute(:fragment_size_required_from, :required =>true, :integer => true)
     attribute(:fragment_size_required_to, :required =>true, :integer =>true)
 
-    attribute(:read_length, { :integer => true, :from => :valid_read_lengths, :required => true })
+    attribute(:read_length, :integer => true, :validator => true, :required => true, :selection =>true )
   end
 
-  SequencingRequest::Metadata.class_eval do
-    def valid_read_lengths
-      owner.request_type.request_type_validators.find(:first,:conditions=>{:request_option=>'read_length'}).try(:valid_options)||
-      raise(StandardError, "No read lengths specified for #{owner.request_type.name}")
-    end
-  end
   include Request::CustomerResponsibility
 
   before_validation :clear_cross_projects
@@ -43,7 +37,7 @@ class SequencingRequest < Request
   def order=(_)
     # Do nothing
   end
-  
+
   def ready?
     # It's ready if I don't have any lib creation requests or if all my lib creation requests are closed and
     # at least one of them is in 'passed' status
