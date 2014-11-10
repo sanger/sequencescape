@@ -1,20 +1,23 @@
 # encoding: utf-8
 class Parsers::BioanalysisCsvParser
-	def initialize(filename, file)
+	def initialize(filename, content)
 		@filename = filename
-		@file = file
+		@content = content
 	end
 
-	def read_file(file)
-		fd = file # File.open(file, "r:UTF-8")
-		content = []
-		while (line = fd.gets) 
-			content.push line
-		end
-		fd.close
+	def get_field_name(sym_name)
+	  { 
+	  	:concentration => "Conc. [ng/µl]",
+	  	:molarity => "Molarity [nmol/l]"
+	  	}[sym_name]
+    end
 
-		# <ruby-1.9>content.join("").force_encoding("ISO-8859-1").encode("UTF-8")</ruby-1.9>
-		content.join("")
+	def concentration(plate_position)
+		return get_parsed_attribute(plate_position, get_field_name(:concentration))
+	end
+
+	def molarity(plate_position)
+		return get_parsed_attribute(plate_position, get_field_name(:molarity))
 	end
 
 	def table_content_hash(content)
@@ -62,8 +65,7 @@ class Parsers::BioanalysisCsvParser
 	end
 
 	def parse
-		content = read_file @file
-		@parsed_content = parse_samples content
+		@parsed_content = parse_samples @content
 	end
 
 	def parsed_content
@@ -75,19 +77,7 @@ class Parsers::BioanalysisCsvParser
 		parsed_content[plate_position][:peak_table][field]		
 	end
 
-	def concentration(plate_position)
-		field = "Conc. [ng/µl]"
-		field = parsed_content["A1"][:peak_table].keys[1]
-		return get_parsed_attribute(plate_position, field)
-	end
-
-	def molarity(plate_position)
-		field = "Molarity [nmol/l]"
-		field = parsed_content["A1"][:peak_table].keys[2]
-		return get_parsed_attribute(plate_position, field)
-	end
-
 	def validates_content?
-		!@filename.match(/\.csv$/i).nil?
+		!@content.match(/Version Created,B/).nil?
 	end
 end
