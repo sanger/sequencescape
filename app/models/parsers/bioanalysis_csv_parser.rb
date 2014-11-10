@@ -46,7 +46,7 @@ class Parsers::BioanalysisCsvParser
 	end
 
 	def parse_cell(content)
-		@cell = (content.match (/[A-Z]\d+/))[0]
+		@cell = (content.match(/[A-Z]\d+/))[0]
 	end
 
 	def parse_sample(sample_text)
@@ -70,14 +70,20 @@ class Parsers::BioanalysisCsvParser
 
 	def parsed_content
 		@parsed_content.nil? ? parse : @parsed_content
+	rescue NoMethodError
+		nil
 	end
 
 	def get_parsed_attribute(plate_position, field)
-		return nil if parsed_content[plate_position].nil?
+		return nil if parsed_content.nil? || parsed_content[plate_position].nil?
 		parsed_content[plate_position][:peak_table][field]		
 	end
 
-	def validates_content?
+	def is_bioanalysis_content?
 		!@content.match(/Version Created,B/).nil?
+	end
+
+	def validates_content?
+		is_bioanalysis_content? && !parsed_content.nil?
 	end
 end
