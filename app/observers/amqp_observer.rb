@@ -31,7 +31,7 @@ class AmqpObserver < ActiveRecord::Observer
 
     # A transaction is (potentially) a bulk send of messages and hence we can create a buffer that
     # will be written to during changes.  But transactions can be nested, which means that only the
-    # very outter one should do any publishing.
+    # very outer one should do any publishing.
     #
     #--
     # What follows looks complicated but is specialised to deal with a 'return' being called from

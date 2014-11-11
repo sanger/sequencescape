@@ -17,7 +17,7 @@ class Messenger < ActiveRecord::Base
 
   def as_json(options = {})
     { root => render_class.to_hash(target),
-      'lims' => 'SEQUENCESCAPE' }
+      'lims' => configatron.amqp.lims_id }
   end
 
 end
