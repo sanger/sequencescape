@@ -1,7 +1,0 @@
-<%= error_messages_for :document %>
-
-<% form_for :document, :url => study_documents_path(@study), :html => { :multipart => true } do |f| -%>
-  <label for="document">Upload A document:</label>
-  <%= f.file_field :uploaded_data %>
-      <%= submit_tag 'Create' %>
-<% end -%>

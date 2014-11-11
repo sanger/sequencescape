@@ -8,7 +8,7 @@ class PlateConversion < ActiveRecord::Base
   belongs_to :user
   belongs_to :purpose, :class_name => 'PlatePurpose'
 
-  attr_accessor :parent
+  belongs_to :parent, :class_name => 'Plate'
 
   validates_presence_of :target, :purpose, :user
 

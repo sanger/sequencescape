@@ -44,7 +44,7 @@
 
             <td width="7%"><%= link_to request.id, request_url(request), :target => "_blank" %></td>
             <td width="7%"><%= request.value_for("Read length", @batch) %></td>
-            <td width="7%"><%= request.position(@batch) %></td>
+            <td width="7%"><%= request.position %></td>
             <td width="7%"><%= request.value_for("Fragment size required (from)", @batch) %></td>
             <td width="7%"><%= request.value_for("Fragment size required (to)", @batch) %></td>
             <td width="7%"><%= request.value_for("Concentration", @batch) %></td>

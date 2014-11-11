@@ -22,7 +22,7 @@
 <h2><%= pluralize(@batch.requests.count, @batch.requests.first.asset.sti_type.underscore.humanize) %> in total</h2>
 
   <% @batch.requests.each do |request| %>
-    <h3>Batch item #<%= request.position(@batch) %></h3>
+    <h3>Batch item #<%= request.position %></h3>
     <div class="characterisation">
     <h2>Sample: <%= request.sample_name -%></h2>
         <table>

@@ -19,6 +19,18 @@ class PlateConversionTest < ActiveSupport::TestCase
         assert_equal @purpose_b, @plate.purpose
 
       end
+
+      should 'set parents when supplied' do
+        @plate = Factory :plate
+        @parent = Factory :plate
+        @user  = Factory :user
+        @purpose_b = PlatePurpose.new(:name=>'test_purpose')
+
+        PlateConversion.create!(:target=>@plate,:user=>@user,:purpose=>@purpose_b,:parent=>@parent)
+
+        assert_equal @parent, @plate.parents.first
+
+      end
     end
   end
 

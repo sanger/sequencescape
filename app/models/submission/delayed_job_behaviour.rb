@@ -13,7 +13,9 @@ module Submission::DelayedJobBehaviour
   end
 
   def build_batch
+  ActiveRecord::Base.transaction do
     finalize_build!
+  end
   rescue Submission::ProjectValidation::Error => project_exception
     fail_set_message_and_save(project_exception.message)
   rescue ActiveRecord::StatementInvalid => sql_exception
@@ -35,7 +37,7 @@ module Submission::DelayedJobBehaviour
 
   def fail_set_message_and_save(message)
     self.fail!
-    self.message = message
+    self.message = message[0..254]
     self.save(false)        # Just in case the cause is it being invalid!
   end
   private :fail_set_message_and_save

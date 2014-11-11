@@ -28,7 +28,7 @@
   <tbody id="item_list">
     <% requests.each do |request| -%>
       <tr id="request_<%= request.id %>" class="<%= cycle("rowodd", "roweven") %>">
-          <td width="5%"><%= request.position(@batch) %></td>
+          <td width="5%"><%= request.position %></td>
             <td width="7%"><%= request.sample_name %></td>
             <td><%= link_to request.id, "#{configatron.studies_url}/requests/#{request.id}" %></td>
           <% if request.asset  %>

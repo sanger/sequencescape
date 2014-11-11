@@ -9,6 +9,7 @@ Feature: The entry point for the API gives directions to the other actions
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
+And I have a "full" authorised user with the key "cucumber"
 
   Scenario: Retrieving the root entry point when unauthorised
     When I GET the API path "/"
@@ -290,6 +291,11 @@ Feature: The entry point for the API gives directions to the other actions
         "tube_from_tube_creations": {
           "actions": {
             "read": "http://www.example.com/api/1/tube_from_tube_creations"
+          }
+        },
+        "reference_genomes": {
+          "actions": {
+            "read": "http://www.example.com/api/1/reference_genomes"
           }
         }
       }
@@ -601,6 +607,12 @@ Feature: The entry point for the API gives directions to the other actions
           "actions": {
             "read": "http://www.example.com/api/1/tube_from_tube_creations",
             "create": "http://www.example.com/api/1/tube_from_tube_creations"
+          }
+        },
+        "reference_genomes": {
+          "actions": {
+            "read": "http://www.example.com/api/1/reference_genomes",
+            "create": "http://www.example.com/api/1/reference_genomes"
           }
         }
       }

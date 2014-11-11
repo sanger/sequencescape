@@ -28,7 +28,7 @@
           <% tag_options = @tags.collect { |t| ["Tag #{t.map_id}", t.id] } %>
           <% @requests.each_with_index do |request,index| -%>
             <tr id="request_<%= request.id %>" class="<%= cycle("rowodd", "roweven") %>">
-              <th class="order"><%= request.position(@batch) %></th>
+              <th class="order"><%= request.position %></th>
               <td><%= request.sample_name %></td>
               <td><%= link_to request.id, request_url(request) %></td>
               <% if request.asset  %>

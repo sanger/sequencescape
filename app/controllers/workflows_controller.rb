@@ -128,9 +128,10 @@ class WorkflowsController < ApplicationController
     @task = @workflow.tasks[@stage]
     @batch = Batch.find(params[:batch_id], :include => [:requests, :pipeline, :lab_events])
 
-    if [:completed?, :released?, :failed?, :discarded?].map {|s| @batch.send(s) }.any?
+    if params[:next_stage].present? && !@batch.editable?
       flash[:error] = "You cannot execute more tasks in a completed batch."
       redirect_to :back
+      return
     end
 
     ActiveRecord::Base.transaction do

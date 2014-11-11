@@ -14,6 +14,7 @@ Feature: Access objects through the API
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
+    And I have a "full" authorised user with the key "cucumber"
 
     Given there are no samples
 
@@ -440,6 +441,48 @@ Feature: Access objects through the API
   @authorisation @update @error
   Scenario: The client is unauthorised and attempts to perform update action
     Given the "update" action on a sample requires authorisation
+
+    Given the sample named "testing_the_object_service" exists with ID 1
+    And the UUID for the sample "testing_the_object_service" is "00000000-1111-2222-3333-444444444444"
+
+    When I PUT the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
+      """
+      {
+        "sample": {
+          "taxonomy": {
+            "organism": "weird green jelly like thing"
+          }
+        }
+      }
+      """
+    Then the HTTP response should be "501 Internal Error"
+    And the JSON should be:
+      """
+      {
+        "general": [ "requested action is not supported on this resource" ]
+      }
+      """
+
+@authorisation @update @error
+  Scenario: The client has partial privileges and attempts to perform update action
+    Given the "create" action on samples requires tag_plates authorisation
+    Given the "update" action on a sample requires authorisation
+
+    When I make an authorised GET the API path "/samples"
+    Then the HTTP response should be "200 OK"
+    And the JSON should be:
+      """
+      {
+        "actions": {
+          "first": "http://www.example.com/api/1/samples/1",
+          "read": "http://www.example.com/api/1/samples/1",
+          "last": "http://www.example.com/api/1/samples/1",
+          "create": "http://www.example.com/api/1/samples"
+        },
+        "size": 0,
+        "samples": []
+      }
+      """
 
     Given the sample named "testing_the_object_service" exists with ID 1
     And the UUID for the sample "testing_the_object_service" is "00000000-1111-2222-3333-444444444444"

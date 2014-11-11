@@ -3,12 +3,6 @@
 <% add :menu, 'Event history' => history_sample_path(@sample) -%>
 
 <% add :back_menu, "Back to STUDIES" => studies_path -%>
-<% if current_user.administrator? -%>
-  <% if (! @sample.has_submission? ) -%>
-    <% add :menu, { "Delete" => destroy_sample_path(@sample.id) }, { :confirm => "Are you sure to delete this sample?" } -%>
-  <% end %>
-  <% add :menu, { "Move sample to different study" => filtered_move_sample_path(@sample.id) } -%>
-<% end %>
 
 <% if current_user.manager_or_administrator? || current_user.owner?(@sample) -%>
   <% add :menu, "Edit" => edit_sample_path(@sample) -%>
@@ -38,6 +32,7 @@
     Patient consent has been withdrawn for this sample.
   </div>
 <% end %>
+<div class="columnize">
 <div class='info'>
   <table width="100%" cellspacing="0" cellpadding="0">
     <tr>
@@ -124,12 +119,56 @@
     <tbody>
       <% @sample.assets.each do |asset| %>
         <tr>
-          <td><%= link_to "#{asset.label} #{asset.id}", asset_path(asset) %></td>
+          <td><%= link_to asset.display_name, asset_path(asset) %> <%= asset.details %></td>
         </tr>
       <% end %>
     </tbody>
   </table>
 </div>
 
+<div class='info'>
+  <h3>ASSET GROUPS</h3>
+  <div class='help'>
+    This sample is associated with <%= pluralize @sample.asset_groups.size, "asset group" %>.
+  </div>
+
+  <table width='100%'>
+    <thead>
+      <tr>
+        <th width='70%'></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @sample.asset_groups.each do |asset_group| %>
+        <tr>
+          <td><%= link_to asset_group.name, study_asset_group_path(asset_group.study_id,asset_group) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<div class='info'>
+  <h3>SUBMISSIONS</h3>
+  <div class='help'>
+    This sample is associated with <%= pluralize @sample.submissions.size, "submission" %>.
+  </div>
+
+  <table width='100%'>
+    <thead>
+      <tr>
+        <th width='70%'></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @sample.submissions.each do |submission| %>
+        <tr>
+          <td><%= link_to "Submission #{submission.id}", submission_path(submission) %>:<%= submission.name||'un-named' %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+</div>
 <br />
 

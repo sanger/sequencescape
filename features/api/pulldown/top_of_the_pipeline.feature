@@ -11,6 +11,7 @@ Feature: The top of the pulldown pipeline
       And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
+And I have a "full" authorised user with the key "cucumber"
 
     Given a user with UUID "99999999-8888-7777-6666-555555555555" exists
 
@@ -65,8 +66,8 @@ Feature: The top of the pulldown pipeline
                 "H1", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "H9", "H10", "H11", "H12"
               ],
               "insert_size": {
-                "from": 300,
-                "to": 500
+                "from": 100,
+                "to": 200
               },
               "library_type": {
                 "name": "Standard"
@@ -380,7 +381,7 @@ Feature: The top of the pulldown pipeline
               ],
               "insert_size": {
                 "from": 100,
-                "to": 400
+                "to": 200
               },
               "library_type": {
                 "name": "Agilent Pulldown"

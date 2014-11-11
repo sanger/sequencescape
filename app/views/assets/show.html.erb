@@ -8,7 +8,6 @@
 <% end %>
 <% if @asset.is_a?(Plate) %>
   <% add :menu, "QC results" => plate_path(@asset) %>
-  <% add :menu, "Create wells Submission" => submit_wells_asset_path(@asset) %>
 <% end %>
 
 <% add :menu, "Event history" => history_asset_path(@asset) -%>
@@ -113,7 +112,7 @@
       </td>
       <td><%= request_status(request) %></td>
       <td>
-      <% request.batch_ids.each do |batch_id| %>
+      <% request.with_batch_id do |batch_id| %>
         <%= link_to batch_id, batch_url(batch_id) %>
       <% end %>
       </td>

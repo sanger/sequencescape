@@ -5,6 +5,7 @@ Feature: Full run through of the UK10K submissions
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
+And I have a "full" authorised user with the key "cucumber"
 
     Given I have an "active" study called "Testing submission creation"
     And the UUID for the study "Testing submission creation" is "22222222-3333-4444-5555-000000000000"

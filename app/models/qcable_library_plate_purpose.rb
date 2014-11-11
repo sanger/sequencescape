@@ -6,7 +6,7 @@ class QcableLibraryPlatePurpose < PlatePurpose
       qcable_for(plate).state
     end
 
-    def transition_to(plate, state, _=nil)
+    def transition_to(plate, state, *ignored)
       assign_library_information_to_wells(plate)
     end
 

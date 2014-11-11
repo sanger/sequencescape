@@ -27,7 +27,7 @@ class Sample < ActiveRecord::Base
 
 
 
-  has_many :study_samples
+  has_many :study_samples, :dependent => :destroy
   has_many :studies, :through => :study_samples
 
   has_many :roles, :as => :authorizable
@@ -40,6 +40,20 @@ class Sample < ActiveRecord::Base
   end
   receptacle_alias(:wells,        :class_name => 'Well')
   receptacle_alias(:sample_tubes, :class_name => 'SampleTube')
+
+  # Ugh! We need to use finder sql here as our relationships are complicated
+  # Note: The interpolation of the id is something done in rails 2.3, but is deprecated
+  # in >3. You'll need to use a proc in that context.
+  has_many :asset_groups, :finder_sql => 'SELECT DISTINCT asset_groups.* FROM samples
+  INNER JOIN aliquots ON aliquots.sample_id = samples.id
+  INNER JOIN asset_group_assets ON aliquots.receptacle_id = asset_group_assets.asset_id
+  INNER JOIN asset_groups ON asset_group_assets.asset_group_id = asset_groups.id
+  WHERE samples.id = #{id} AND asset_groups.id IS NOT NULL;'
+  has_many :submissions, :finder_sql => 'SELECT DISTINCT submissions.* FROM samples
+  INNER JOIN aliquots ON aliquots.sample_id = samples.id
+  INNER JOIN requests ON aliquots.receptacle_id = requests.asset_id
+  INNER JOIN submissions ON requests.submission_id = submissions.id
+  WHERE samples.id = #{id} AND submissions.id IS NOT NULL;'
 
   belongs_to :sample_manifest
 
@@ -59,9 +73,19 @@ class Sample < ActiveRecord::Base
   end
   validation_guarded_by(:rename_to!, :can_rename_sample)
 
+  before_destroy :safe_to_destroy
+
+  def safe_to_destroy
+    return true unless receptacles.present? || has_submission?
+    errors.add_to_base("Remove '#{name}' from assets before destroying") if receptacles.present?
+    errors.add_to_base("You can't delete '#{name}' because is linked to a submission.") if has_submission?
+    return false
+  end
+  private :safe_to_destroy
+
   named_scope :with_name, lambda { |*names| { :conditions => { :name => names.flatten } } }
 
-  named_scope :for_search_query, lambda { |query|
+  named_scope :for_search_query, lambda { |query,with_includes|
     { :conditions => [ 'name LIKE ? OR id=?', "%#{query}%", query ] }
   }
 
@@ -89,7 +113,7 @@ class Sample < ActiveRecord::Base
   end
 
   def has_request
-    not requests.empty?
+    requests.present?
   end
 
   def has_request_all_cancelled?
@@ -112,7 +136,7 @@ class Sample < ActiveRecord::Base
         has_submission = true
       end
     else # We have no requests, we're probably S2 (Or very old Sequencescape)
-         # This is a hack, but I'll get this tdied up.
+         # This is a hack, but I'll get this tidied up.
       has_submission = true
     end
     return has_submission

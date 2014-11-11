@@ -27,13 +27,13 @@ Feature: Project management
 
    When I follow "Create project"
    Then I should see "New project"
-
    When I fill in the field labeled "Name" with "Test project"
    And I fill in the field labeled "Project cost code" with "ABC"
    And I fill in the field labeled "Funding comments" with "Internal"
    And I fill in the field labeled "Collaborators" with "no collaborators"
    And I fill in the field labeled "External funding source" with "no funding source"
    And I select "Unallocated" from "Sequencing Project Manager"
+   And I select "Internal" from "Project funding model"
    And I press "Create"
    Then I should see "Your project has been created"
    And I should see the project information:
@@ -44,7 +44,7 @@ Feature: Project management
      |External funding source:       | no funding source |
      |Sequencing budget division:    | Unallocated       |
      |Sequencing budget cost centre: | Not specified     |
-     |Project funding model:         | Not specified     |
+     |Project funding model:         | Internal          |
 
  Scenario Outline: Create a Microarray genotyping project
    Given I am a "<user type>" user logged in as "user"

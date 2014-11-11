@@ -44,7 +44,8 @@ locations_data = [
   'Genotyping freezer',
   'Pulldown freezer',
   'PacBio library prep freezer',
-  'PacBio sequencing freezer'
+  'PacBio sequencing freezer',
+  'Illumina high throughput freezer'
 ]
 locations_data.each do |location|
   Location.create!(:name=>location)
@@ -279,7 +280,6 @@ PulldownLibraryCreationPipeline.create!(:name => 'Pulldown library preparation')
     end
   end
 end
-
 
 cluster_formation_se_request_type = ['a','b','c'].map do |pl|
   RequestType.create!(
@@ -737,8 +737,9 @@ SequencingPipeline.create!(:name => 'HiSeq Cluster formation PE (no controls)') 
       request_type.order             = 2
       request_type.multiples_allowed = true
       request_type.request_class =  HiSeqSequencingRequest
-    end <<
-  RequestType.create!(
+    end
+  end
+  pipeline.request_types << RequestType.create!(
     :workflow => next_gen_sequencing,
     :key => "hiseq_paired_end_sequencing",
     :name => "HiSeq Paired end sequencing",
@@ -750,7 +751,6 @@ SequencingPipeline.create!(:name => 'HiSeq Cluster formation PE (no controls)') 
     request_type.order             = 2
     request_type.multiples_allowed = true
     request_type.request_class =  HiSeqSequencingRequest
-  end
   end
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'HiSeq Cluster formation PE (no controls)') do |workflow|
@@ -985,6 +985,14 @@ PacBioSequencingPipeline.create!(:name => 'PacBio Sequencing') do |pipeline|
     request_type.order             = 1
     request_type.multiples_allowed = true
     request_type.request_class     = PacBioSequencingRequest
+    request_type.request_type_validators.build([
+      {:request_option=>'insert_size',
+      :valid_options=>RequestType::Validator::ArrayWithDefault.new([500,1000,2000,5000,10000,20000],500),
+      :request_type=>request_type},
+      {:request_option=>'sequencing_type',
+      :valid_options=>RequestType::Validator::ArrayWithDefault.new(['Standard','MagBead'],'Standard'),
+      :request_type=>request_type}
+    ])
   end
 
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'PacBio Sequencing').tap do |workflow|
@@ -1265,12 +1273,113 @@ SubmissionTemplate.create!(
       },
     :request_type_ids_list=>[[tosta],[tosta2],[ptst],[tofluidigm]],
     :workflow_id => Submission::Workflow.find_by_name('Microarray genotyping').id,
-    :info_differential => Submission::Workflow.find_by_name('Microarray genotyping').id,
-    :input_field_infos => [
-      FieldInfo.new(
-        :kind => "Selection",:default_value => "Fluidigm 96-96",:parameters => { :selection => ['Fluidigm 96-96','Fluidigm 192-24'] },
-        :display_name => "Fluidigm Chip",
-        :key => "target_purpose_name"
-    )]
+    :info_differential => Submission::Workflow.find_by_name('Microarray genotyping').id
   }
 )
+
+
+v4_requests_types = ['a', 'b', 'c'].map do |pipeline|
+  RequestType.create!({
+    :key => "illumina_#{pipeline}_hiseq_v4_paired_end_sequencing",
+    :name => "Illumina-#{pipeline.upcase} HiSeq V4 Paired end sequencing",
+    :workflow =>  Submission::Workflow.find_by_key("short_read_sequencing"),
+    :asset_type => "LibraryTube",
+    :order => 2,
+    :initial_state => "pending",
+    :request_class_name => "HiSeqSequencingRequest",
+    :billable => true,
+    :product_line => ProductLine.find_by_name("Illumina-#{pipeline.upcase}")
+  })
+end
+
+x10_requests_types = ['a', 'b'].map do |pipeline|
+  RequestType.create!({
+    :key => "illumina_#{pipeline}_hiseq_xten_paired_end_sequencing",
+    :name => "Illumina-#{pipeline.upcase} HiSeq X Ten Paired end sequencing",
+    :workflow =>  Submission::Workflow.find_by_key("short_read_sequencing"),
+    :asset_type => "LibraryTube",
+    :order => 2,
+    :initial_state => "pending",
+    :request_class_name => "HiSeqSequencingRequest",
+    :billable => true,
+    :product_line => ProductLine.find_by_name("Illumina-#{pipeline.upcase}")
+  })
+end
+
+
+v4_pipelines = ['(spiked in controls)','(no controls)'].each do |type|
+  SequencingPipeline.create!(
+    :name => "HiSeq v4 PE #{type}",
+      :automated => false,
+      :active => true,
+      :location => Location.find_by_name("Cluster formation freezer"),
+      :group_by_parent => false,
+      :asset_type => "Lane",
+      :sorter => 9,
+      :paginate => false,
+      :max_size => 8,
+      :min_size => 8,
+      :summary => true,
+      :group_name => "Sequencing",
+      :control_request_type_id => 0
+    ) do |pipeline|
+      pipeline.workflow = LabInterface::Workflow.create!(:name => pipeline.name) do |workflow|
+        workflow.locale     = 'Internal'
+        workflow.item_limit = 8
+      end.tap do |workflow|
+        [
+          { :class => SetDescriptorsTask,     :name => 'Specify Dilution Volume',           :sorted => 1, :batched => true },
+          { :class => SetDescriptorsTask,     :name => 'Cluster generation',                :sorted => 3, :batched => true, :lab_activity => true },
+          { :class => AddSpikedInControlTask, :name => 'Add Spiked in Control',             :sorted => 4, :batched => true, :lab_activity => true },
+          { :class => SetDescriptorsTask,     :name => 'Quality control',                   :sorted => 5, :batched => true, :lab_activity => true },
+          { :class => SetDescriptorsTask,     :name => 'Read 1 Lin/block/hyb/load',         :sorted => 6, :batched => true, :interactive => true, :per_item => true, :lab_activity => true },
+          { :class => SetDescriptorsTask,     :name => 'Read 2 Cluster/Lin/block/hyb/load', :sorted => 7, :batched => true, :interactive => true, :per_item => true, :lab_activity => true }
+        ].select do |task|
+          type ==  '(spiked in controls)' || task[:name] !=  'Add Spiked in Control'
+        end.each do |details|
+          details.delete(:class).create!(details.merge(:workflow => workflow))
+        end
+      end
+      pipeline.request_types = v4_requests_types
+    end
+end
+
+
+x10_pipelines = ['(spiked in controls)','(no controls)'].each do |type|
+  SequencingPipeline.create!(
+    :name => "HiSeq X Ten PE #{type}",
+      :automated => false,
+      :active => true,
+      :location => Location.find_by_name("Cluster formation freezer"),
+      :group_by_parent => false,
+      :asset_type => "Lane",
+      :sorter => 9,
+      :paginate => false,
+      :max_size => 8,
+      :min_size => 8,
+      :summary => true,
+      :group_name => "Sequencing",
+      :control_request_type_id => 0
+    ) do |pipeline|
+      pipeline.workflow = LabInterface::Workflow.create!(:name => pipeline.name) do |workflow|
+        workflow.locale     = 'Internal'
+        workflow.item_limit = 8
+      end.tap do |workflow|
+        [
+        { :class => SetDescriptorsTask,     :name => 'Specify Dilution Volume',           :sorted => 1, :batched => true },
+        { :class => SetDescriptorsTask,     :name => 'Cluster generation',                :sorted => 3, :batched => true, :lab_activity => true },
+        { :class => AddSpikedInControlTask, :name => 'Add Spiked in Control',             :sorted => 4, :batched => true, :lab_activity => true },
+        { :class => SetDescriptorsTask,     :name => 'Read 1 Lin/block/hyb/load',         :sorted => 6, :batched => true, :interactive => true, :per_item => true, :lab_activity => true },
+        { :class => SetDescriptorsTask,     :name => 'Read 2 Cluster/Lin/block/hyb/load', :sorted => 7, :batched => true, :interactive => true, :per_item => true, :lab_activity => true }
+        ].select do |task|
+          type ==  '(spiked in controls)' || task[:name] !=  'Add Spiked in Control'
+        end.each do |details|
+          details.delete(:class).create!(details.merge(:workflow => workflow))
+        end
+      end
+      pipeline.request_types = x10_requests_types        
+    end
+end
+
+
+

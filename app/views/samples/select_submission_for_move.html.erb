@@ -1,6 +1,0 @@
-<select id="submission_id" name="submission_id">
-<option value="0">- Select a Submission -</option>
-<% @submissions.each do |submission| %>
-  <option value="<%= submission.id %>"><%= submission.created_at %></option>
-<% end %>
-</select>

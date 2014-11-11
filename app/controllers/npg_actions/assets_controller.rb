@@ -32,13 +32,12 @@ class NpgActions::AssetsController < ApplicationController
             @asset.events.create_#{state}!(params[:qc_information][:message] || 'No reason given')
             request =  @asset.source_request
 
-            batches = request.batches
-            raise ActiveRecord::RecordNotFound, "Unable to find a batch for the Request" if (batches.size != 1)
+            batch = request.batch
+            raise ActiveRecord::RecordNotFound, "Unable to find a batch for the Request" if (batch.nil?)
 
             message = "#{state}ed manual QC".capitalize
             EventSender.send_#{state}_event(request.id, "", message, "","npg", :need_to_know_exceptions => true)
 
-            batch = batches.first
             batch.npg_set_state   if ('#{state}' == 'pass')
 
           end

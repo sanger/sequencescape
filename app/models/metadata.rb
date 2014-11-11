@@ -109,8 +109,15 @@ private
     # This ensures that the default values are stored within the DB, meaning that this information will be
     # preserved for the future, unlike the original properties information which didn't store values when
     # nil which lead to us having to guess.
-    def initialize(attributes = nil, &block)
+    def initialize(attributes = {}, &block)
       super(self.class.defaults.merge(attributes.try(:symbolize_keys) || {}), &block)
+    end
+
+    before_validation_on_create :merge_instance_defaults
+
+    def merge_instance_defaults
+      # Replace attributes with the default if the value is nil
+      self.attributes = instance_defaults.merge(self.attributes.symbolize_keys) {|key, default, attribute| attribute.nil? ? default : attribute}
     end
 
     include Attributable
@@ -122,6 +129,9 @@ private
     def validating_ena_required_fields=(state)
       @validating_ena_required_fields = !!state
     end
+
+    delegate :validator_for, :to => :owner
+
 
     def service_specific_fields
       owner.required_tags.uniq.select do |tag|

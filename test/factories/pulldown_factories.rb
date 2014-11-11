@@ -17,6 +17,7 @@ Factory.define(:source_transfer_plate, :parent => :transfer_plate) do |plate|
     plate.plate_purpose = PlatePurpose.find_by_name('Parent plate purpose') || Factory(:parent_plate_purpose)
   end
 end
+
 Factory.define(:destination_transfer_plate, :parent => :transfer_plate) do |plate|
   plate.after_build do |plate|
     plate.plate_purpose = PlatePurpose.find_by_name('Child plate purpose') || Factory(:child_plate_purpose)
@@ -93,6 +94,9 @@ Factory.define(:pooling_transfer_template, :class => TransferTemplate) do |trans
   transfer_template.transfer_class_name 'Transfer::BetweenPlatesBySubmission'
 end
 
+Factory.define(:multiplex_transfer_template, :class => TransferTemplate) do |transfer_template|
+  transfer_template.transfer_class_name 'Transfer::FromPlateToTubeByMultiplex'
+end
 # A tag group that works for the tag layouts
 Factory.sequence(:tag_group_for_layout_name) { |n| "Tag group #{n}" }
 Factory.define(:tag_group_for_layout, :class => TagGroup) do |tag_group|

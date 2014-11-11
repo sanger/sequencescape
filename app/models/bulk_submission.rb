@@ -122,6 +122,8 @@ class BulkSubmission < ActiveRecord::Base
 
     if spreadsheet_valid?
       submission_details = submission_structure
+
+      raise ActiveRecord::RecordInvalid, self if self.errors.count > 0
       # Within a single transaction process each of the rows of the CSV file as a separate submission.  Any name
       # fields need to be mapped to IDs, and the 'assets' field needs to be split up and processed if present.
       ActiveRecord::Base.transaction do
@@ -129,7 +131,7 @@ class BulkSubmission < ActiveRecord::Base
           submissions.each do |submission_name,orders|
             user = User.find_by_login(orders.first['user login'])
             if user.nil?
-              errors.add :spreadsheet, "Cannot find user #{orders.first["user login"].inspect}"
+              errors.add :spreadsheet, orders.first["user login"].nil? ? "No user specified for #{submission_name}" : "Cannot find user #{orders.first["user login"].inspect}"
               next
             end
 
@@ -160,7 +162,7 @@ class BulkSubmission < ActiveRecord::Base
     'user login',
 
     # Needed to identify the assets and what happens to them ...
-    'plate barcode', 'plate well',
+    'plate barcode',
     'asset group id', 'asset group name',
     'fragment size from', 'fragment size to',
     'read length',
@@ -171,7 +173,7 @@ class BulkSubmission < ActiveRecord::Base
     'pre-capture plex level',
     'pre-capture group',
     'gigabases expected',
-	'priority'
+    'priority'
   ]
 
   def validate_entry(header,pos,row,index)
@@ -185,22 +187,36 @@ class BulkSubmission < ActiveRecord::Base
   #    "submission name" => array of orders
   #    where each order is a hash of headers to values (grouped by "asset group name")
   def submission_structure
-    csv_data_rows.each_with_index.map do |row, index|
-      Hash[headers.each_with_index.map { |header, pos| validate_entry(header,pos,row,index+start_row) }].merge('row' => index+start_row)
-    end.group_by do |details|
-      details['submission name']
+    Hash.new {|h,i| h[i] = Array.new}.tap do |submission|
+      csv_data_rows.each_with_index do |row, index|
+        next if row.all?(&:nil?)
+        details = Hash[headers.each_with_index.map { |header, pos| validate_entry(header,pos,row,index+start_row) }].merge('row' => index+start_row)
+        submission[details['submission name']] << details
+      end
     end.map do |submission_name, rows|
       order = rows.group_by do |details|
         details["asset group name"]
       end.map do |group_name, rows|
-        Hash[COMMON_FIELDS.map { |f| [ f, rows.first[f] ] }].tap do |details|
+
+        Hash[shared_options!(rows)].tap do |details|
           details['rows']          = rows.comma_separate_field_list_for_display('row')
           details['asset ids']     = rows.comma_separate_field_list('asset id', 'asset ids')
           details['asset names']   = rows.comma_separate_field_list('asset name', 'asset names')
           details['plate well']    = rows.comma_separate_field_list('plate well')
         end.delete_if { |_,v| v.blank? }
+
       end
       Hash[submission_name, order]
+    end
+  end
+
+
+  def shared_options!(rows)
+    # Builds an array of the common fields. Raises and exception if the fields are inconsistent
+    COMMON_FIELDS.map do |field|
+      option = rows.map {|r| r[field] }.uniq
+      self.errors.add(:spreadsheet, "Column, #{field}, should be identical for all requests in asset group #{rows.first['asset group name']}") if option.count > 1
+      [field, option.first]
     end
   end
 

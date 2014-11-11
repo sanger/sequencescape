@@ -1,26 +1,4 @@
 class LibraryCreationRequest < Request
-  LIBRARY_TYPES = [
-    "No PCR",
-    "High complexity and double size selected",
-    "Illumina cDNA protocol",
-    "Agilent Pulldown",
-    "Custom",
-    "High complexity",
-    "ChiP-seq",
-    "NlaIII gene expression",
-    "Standard",
-    "Long range",
-    "Small RNA",
-    "Double size selected",
-    "DpnII gene expression",
-    "TraDIS",
-    "qPCR only",
-    "Pre-quality controlled",
-    "DSN_RNAseq",
-    "RNA-seq dUTP"
-  ]
-
-  DEFAULT_LIBRARY_TYPE = 'Standard'
 
   # NOTE: Do not alter the order here:
   #
@@ -35,6 +13,7 @@ class LibraryCreationRequest < Request
     attribute(:gigabases_expected, :positive_float => true)
   end
 
+  include Request::CustomerResponsibility
   include Request::LibraryManufacture
 
   # When a library creation request passes it does the default behaviour of a request but also adds the

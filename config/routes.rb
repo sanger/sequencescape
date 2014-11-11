@@ -1,8 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
   map.resources :reference_genomes
   map.resources :barcode_printers
-  map.resources :submission_workflows
-  map.resources :request_types
 
   map.resources :robot_verifications, :collection => {:submission => [:post, :get], :download => [:post]}
   map.resources :projects, :has_many => :studies, :member => { :related_studies => :get, :collaborators => :get, :follow => :get, :grant_role => :post, :remove_role => :post  } do |project|
@@ -35,7 +33,7 @@ ActionController::Routing::Routes.draw do |map|
   # Main objects
   map.resources :events
   map.resources :sources
-  map.resources :samples, :has_many => :assets, :member => {:filtered_move => :get, :move => :post, :history => :get }, :collection =>{ :move_spreadsheet => :get, :move_upload => :post, :move_upload_do => :post}
+  map.resources :samples, :has_many => :assets, :member => {:history => :get }
   map.resources :samples, :collection => { :upload => :get, :review => :post } do |sample|
     sample.resources :comments, :controller => "samples/comments"
     sample.resources :studies, :controller => "samples/studies"
@@ -44,7 +42,6 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/taxon_lookup_by_term/:term', :controller => "samples", :action => "taxon_lookup"
   map.connect '/taxon_lookup_by_id/:id', :controller => "samples", :action => "taxon_lookup"
 
-  map.resources :sample_group
   map.connect '/studies/:study_id/workflows/:workflow_id/summary_detailed/:id', :controller => "studies/workflows", :action => "summary_detailed"
   map.connect 'studies/accession/:id', :controller =>"studies", :action =>"accession"
   map.connect 'studies/policy_accession/:id', :controller =>"studies", :action =>"policy_accession"
@@ -70,9 +67,7 @@ ActionController::Routing::Routes.draw do |map|
 
     study.resources :requests, :member => { :reset => :post, :cancel => :get }
     study.resources :comments, :controller => "studies/comments"
-    study.resources :sample_groups, :controller => "studies/sample_groups", :collection => {:sort => :get}, :member => {:manage => :get, :add_samples => :post, :remove_samples => :delete, :find => [:get, :post]} do |sample_group|
-      sample_group.resources :comments, :controller => "sample_groups/comments"
-    end
+
     study.resources :asset_groups, :controller => "studies/asset_groups", :member => {:search => :post, :add => :post, :print => :get, :print_labels => :post, :printing => :get}
 
     study.resources :plates, :controller => "studies/plates", :except => [:destroy], :collection => {:view_wells => :post, :asset_group => :post, :show_asset_group => :get}, :member => {:remove_wells => :post} do |plate|
@@ -80,13 +75,10 @@ ActionController::Routing::Routes.draw do |map|
     end
 
     study.resources :workflows, :controller => "studies/workflows", :member => { :summary => :get, :show_summary => :get} do |workflow|
-      workflow.resources :submissions, :controller => "studies/workflows/submissions",
-        :collection => { :info => [:get, :put],
-          :template_chooser => :get, :new => [:get, :put] , :asset_inputs => :get }
       workflow.resources :assets, :collection => { :print => :post }
     end
 
-    study.resources :documents, :controller => "studies/documents", :only => [:index, :new, :create, :show, :destroy]
+    study.resources :documents, :controller => "studies/documents", :only => [:show, :destroy]
 
   end
 
@@ -96,11 +88,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :submissions, :collection => { :study_assets => :get, :order_fields => :get, :project_details => :get }
   map.resources :orders, :only => [:destroy]
 
-  map.resources :properties  do |property|
-    property.resources :documents, :controller => "properties/documents", :only => [:show]
-  end
-
-  map.resources :documents, :controller => 'properties/documents', :only => [ :show ]
+  map.resources :documents, :only => [ :show ]
 
 
   #Same path but two different actions. GET for put parameter in the form and show the error. PUT for the action.
@@ -123,25 +111,23 @@ ActionController::Routing::Routes.draw do |map|
     item.resource :request, :only => [:new, :create]
   end
 
-  map.resources :annotations
-
   map.study_workflow_status "studies/:study_id/workflows/:id", :controller => "study_workflows", :action => "show"
 
   map.resources :searches, :only => [:index]
 
   # Administrative things
   map.admin "admin", :controller => "admin", :action => "index"
-  map.resources :custom_texts, :controller => "admin/custom_texts", :path_prefix => "/admin"
-  map.resources :settings, :controller => "admin/settings", :path_prefix => "/admin", :collection => { :reset => :get, :apply => :get }
-  map.resources :studies, :controller => "admin/studies", :path_prefix => "/admin", :member => { :managed_update => :put }, :collection => {:index => :get}
-  map.resources :projects, :controller => "admin/projects", :path_prefix => "/admin", :member => { :managed_update => :put }, :collection => {:index => :get}
-  map.resources :plate_purposes, :controller => "admin/plate_purposes", :path_prefix => "/admin"
+  map.resources :custom_texts,     :controller => "admin/custom_texts",     :path_prefix => "/admin"
+  map.resources :settings,         :controller => "admin/settings",         :path_prefix => "/admin", :collection => { :reset => :get, :apply => :get }
+  map.resources :studies,          :controller => "admin/studies",          :path_prefix => "/admin", :member => { :managed_update => :put }, :collection => {:index => :get, :filer => :post}
+  map.resources :projects,         :controller => "admin/projects",         :path_prefix => "/admin", :member => { :managed_update => :put }, :collection => {:index => :get, :filer => :post}
+  map.resources :plate_purposes,   :controller => "admin/plate_purposes",   :path_prefix => "/admin", :only => [:index,:edit,:new,:create,:update]
+  map.resources :delayed_jobs,     :controller => "admin/delayed_jobs",     :path_prefix => "/admin", :only => [:index]
   map.resources :faculty_sponsors, :controller => "admin/faculty_sponsors", :path_prefix => "/admin"
-  map.resources :change_tags, :controller => "admin/change_tags", :path_prefix => "/admin", :collection => { :lookup => :get, :bulk_update => :put}
-  map.resources :delayed_jobs, :controller => "admin/delayed_jobs", :path_prefix => "/admin", :only => [:index]
-  map.resources :users, :controller => "admin/users", :path_prefix => "/admin",
-    :collection => { :filter => :get }, :member => { :switch => :get, :grant_user_role => :post, :remove_user_role => :post }
-  map.resources :profile, :controller => "users",:member => {:study_reports => :get, :projects => :get }, :only => [:show, :edit, :update, :projects]
+  map.resources :delayed_jobs,     :controller => "admin/delayed_jobs",     :path_prefix => "/admin", :only => [:index]
+  map.resources :users,            :controller => "admin/users",            :path_prefix => "/admin",
+    :collection => { :filter => :post }, :member => { :switch => :get, :grant_user_role => :post, :remove_user_role => :post }
+  map.resources :profile,          :controller => "users",:member => {:study_reports => :get, :projects => :get }, :only => [:show, :edit, :update, :projects]
   map.resources :roles, :path_prefix => "/admin", :shallow => true do |role|
     role.resources :users, :controller => "roles/users"
   end
@@ -209,12 +195,12 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :families
   map.resources :tag_groups, :except => [:destroy] do |tag|
-    tag.resources :tags, :except => [:destroy, :index, :create, :new]
+    tag.resources :tags, :except => [:destroy, :index, :create, :new, :edit]
   end
 
 
 
-  map.resources :assets, :has_many => :assets, :collection => { :snp_register => :get, :reception => :get, :print_labels => :post}, :member => { :parent_assets => :get, :child_assets => :get, :show_plate => :get, :new_request => :get, :create_request => :post, :summary => :get, :close => :get, :print => :get, :print_items => :post, :submit_wells => :get, :create_wells_group => :post, :history => :get, :filtered_move => :get, :move => :post, :move_to_2D => :get,  :complete_move_to_2D => :post} do |asset|
+  map.resources :assets, :has_many => :assets, :collection => { :snp_register => :get, :reception => :get, :print_labels => :post}, :member => { :parent_assets => :get, :child_assets => :get, :show_plate => :get, :new_request => :get, :create_request => :post, :summary => :get, :close => :get, :print => :get, :print_items => :post, :history => :get, :filtered_move => :get, :move => :post, :move_to_2D => :get,  :complete_move_to_2D => :post} do |asset|
     asset.resources :comments, :controller => "assets/comments"
   end
 

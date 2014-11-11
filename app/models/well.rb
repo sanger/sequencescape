@@ -46,7 +46,7 @@ class Well < Aliquot::Receptacle
   named_scope :located_at_position, lambda { |position| { :joins => :map, :readonly => false, :conditions => { :maps => { :description => position } } } }
 
   contained_by :plate
-  delegate :location, :to => :container , :allow_nil => true
+  delegate :location, :location_id, :location_id=, :to => :container , :allow_nil => true
   @@per_page = 500
 
   has_one :well_attribute, :inverse_of => :well
@@ -220,6 +220,11 @@ class Well < Aliquot::Receptacle
   def display_name
     plate_name = self.plate.present? ? self.plate.sanger_human_barcode : '(not on a plate)'
     "#{plate_name}:#{map ? map.description : ''}"
+  end
+
+  def details
+    return 'Not yet picked' if plate.nil?
+    plate.purpose.try(:name)||'Unknown plate purpose'
   end
 
   def can_be_created?

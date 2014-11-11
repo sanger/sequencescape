@@ -40,7 +40,7 @@ class Project < ActiveRecord::Base
   validates_presence_of :name
   validates_uniqueness_of :name, :on => :create, :message => "already in use (#{self.name})"
 
-  named_scope :for_search_query, lambda { |query|
+  named_scope :for_search_query, lambda { |query,with_includes|
     { :conditions => [ 'name LIKE ? OR id=?', "%#{query}%", query ] }
   }
 
@@ -113,6 +113,12 @@ class Project < ActiveRecord::Base
 
   def actionable?
     self.project_metadata.budget_division.name != 'Unallocated'
+  end
+
+  def submittable?
+    return true if project_metadata.project_funding_model.present?
+    errors.add_to_base("No funding model specified")
+    false
   end
 
   def sequencing_budget_division

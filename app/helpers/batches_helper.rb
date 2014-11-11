@@ -39,14 +39,6 @@ module BatchesHelper
 
   def workflow_name(batch)
     return unless batch and batch.workflow
-    wname = batch.workflow.name
-
-    name = ""
-    name = "HiSeq " if wname.include?("HiSeq")
-    case wname
-    when /PE/ then name += "PE"
-    when /SE/ then name += "SE"
-    end
-    name
+    batch.workflow.name.gsub(/Cluster formation | \([^\)]*\)/,'')
   end
 end

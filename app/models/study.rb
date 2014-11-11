@@ -78,7 +78,7 @@ class Study < ActiveRecord::Base
 
   has_many :aliquots
   has_many :assets_through_aliquots, :class_name => "Asset", :through => :aliquots, :source => :receptacle, :uniq => :true
-  has_many :assets_through_requests, :class_name => "Asset", :through => :requests, :source => :asset, :uniq => :true
+  has_many :assets_through_requests, :class_name => "Asset", :through => :initial_requests, :source => :asset, :uniq => :true
 
   has_many :items , :through => :requests, :uniq => true
 
@@ -129,7 +129,7 @@ class Study < ActiveRecord::Base
   end
   private :set_default_ethical_approval
 
-  named_scope :for_search_query, lambda { |query|
+  named_scope :for_search_query, lambda { |query,with_includes|
     { :conditions => [ 'name LIKE ? OR id=?', "%#{query}%", query ] }
   }
 
@@ -387,9 +387,13 @@ class Study < ActiveRecord::Base
     end
   end
 
-  def completed
-    if (self.requests.size - self.requests.failed.size - self.requests.cancelled.size) > 0
-      completed_percent = ((self.requests.passed.size.to_f / (self.requests.size - self.requests.failed.size - self.requests.cancelled.size).to_f)*100)
+  def completed(workflow=nil)
+    rts = workflow.present? ? workflow.request_types.map(&:id) : RequestType.all.map(&:id)
+    total = self.requests.request_type(rts).count
+    failed = self.requests.failed.request_type(rts).count
+    cancelled = self.requests.cancelled.request_type(rts).count
+    if (total - failed - cancelled) > 0
+      completed_percent = ((self.requests.passed.request_type(rts).count.to_f / (total - failed - cancelled).to_f)*100)
       completed_percent.to_i
     else
       return 0
@@ -401,7 +405,7 @@ class Study < ActiveRecord::Base
   end
 
   def orders_for_workflow(workflow)
-    self.orders.select {|s| s.workflow.id == workflow.id}
+    self.orders.find(:all,:conditions=>{:workflow_id=>workflow})
   end
   # Yields information on the state of all request types in a convenient fashion for displaying in a table.
   def request_progress(&block)
@@ -411,14 +415,14 @@ class Study < ActiveRecord::Base
   # Yields information on the state of all assets in a convenient fashion for displaying in a table.
   def asset_progress(assets = nil, &block)
     conditions = { }
-    conditions[:having] = "asset_id IN (#{assets.map(&:id).join(',')})" unless assets.blank?
+    conditions[:conditions] = "asset_id IN (#{assets.map(&:id).join(',')})" unless assets.blank?
     yield(self.initial_requests.asset_statistics(conditions))
   end
 
   # Yields information on the state of all samples in a convenient fashion for displaying in a table.
   def sample_progress(samples = nil, &block)
     conditions = { }
-    conditions[:having] = "sample_id IN (#{samples.map(&:id).join(',')})" unless samples.blank?
+    conditions[:conditions] = ["sample_id IN (#{samples.map(&:id).join(',')})"] unless samples.blank?
     yield(self.requests.sample_statistics(conditions))
   end
 

@@ -128,16 +128,6 @@ class StudiesController < ApplicationController
     render :action => "edit", :id => @study.id
   end
 
-  def destroy
-    study = Study.find(params[:id])
-    if study.destroy
-      flash[:notice] = "Study deleted."
-    else
-      flash[:error] = "Failed to destroy study!"
-    end
-    redirect_to studies_path
-  end
-
   def study_status
     @study = Study.find(params[:id])
     redirect_if_not_owner_or_admin

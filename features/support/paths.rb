@@ -167,14 +167,6 @@ module NavigationHelpers
       study    = Study.find_by_name($1) or raise StandardError, "No study defined with name #{ $1.inspect }"
       study_workflow_submissions_path(study, @current_user.workflow)
 
-
-    # Submission related
-    when /the "([^\"]+)" submission template selection page for study "([^\"]+)"/
-      workflow_name, study_name = $1, $2
-      study    = Study.find_by_name(study_name) or raise StandardError, "No study defined with name #{ study_name.inspect }"
-      workflow = Submission::Workflow.find_by_name(workflow_name) or raise StandardError, "No submission workflow defined with name #{ workflow_name.inspect }"
-      template_chooser_study_workflow_submissions_path(study, workflow)
-
     when /the Qc reports homepage/
       study_reports_path
 

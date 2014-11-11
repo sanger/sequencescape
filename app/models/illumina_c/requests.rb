@@ -12,25 +12,10 @@ module IlluminaC::Requests
   end
 
   class PcrLibraryRequest < LibraryRequest
-    LIBRARY_TYPES = [
-      'Manual Standard WGS (Plate)',
-      'ChIP-Seq Auto',
-      'TruSeq mRNA (RNA Seq)',
-      'Small RNA (miRNA)',
-      'RNA-seq dUTP eukaryotic',
-      'RNA-seq dUTP prokaryotic'
-    ]
-
-    DEFAULT_LIBRARY_TYPE = 'Manual Standard WGS (Plate)'
-
     fragment_size_details(:no_default, :no_default)
   end
 
   class NoPcrLibraryRequest < LibraryRequest
-    LIBRARY_TYPES = ['No PCR (Plate)']
-
-    DEFAULT_LIBRARY_TYPE = 'No PCR (Plate)'
-
     fragment_size_details(:no_default, :no_default)
   end
 
@@ -85,12 +70,29 @@ module IlluminaC::Requests
         {
           :name => 'Illumina-C Library Creation PCR',
           :key => 'illumina_c_pcr',
-          :request_class_name =>'IlluminaC::Requests::PcrLibraryRequest'
+          :for_multiplexing =>true,
+          :request_class_name =>'IlluminaC::Requests::PcrLibraryRequest',
+          :target_purpose =>Purpose.find_by_name('ILC Lib Pool Norm')
         },
         {
           :name => 'Illumina-C Library Creation No PCR',
           :key => 'illumina_c_nopcr',
-          :request_class_name =>'IlluminaC::Requests::NoPcrLibraryRequest'
+          :for_multiplexing =>true,
+          :request_class_name =>'IlluminaC::Requests::NoPcrLibraryRequest',
+          :target_purpose =>Purpose.find_by_name('ILC Lib Pool Norm')
+        },
+        {
+          :name               => 'Illumina-C Library Creation PCR No Pooling',
+          :key                => 'illumina_c_pcr_no_pool',
+          :request_class_name => 'IlluminaC::Requests::PcrLibraryRequest',
+          :for_multiplexing   => false
+        },
+        {
+        :name               => 'Illumina-C Multiplexing',
+        :key                => 'illumina_c_multiplexing',
+        :request_class_name => 'Request::Multiplexing',
+        :for_multiplexing   => true,
+        :target_purpose =>Purpose.find_by_name('ILC Lib Pool Norm')
         }
       ].each do |params|
          params.merge!({
@@ -98,9 +100,7 @@ module IlluminaC::Requests
           :asset_type => 'Well',
           :order =>1,
           :initial_state =>'pending',
-          :for_multiplexing =>true,
           :billable =>true,
-          :target_purpose =>Purpose.find_by_name('ILC Lib Pool Norm'),
           :product_line => ProductLine.find_by_name('Illumina-C')
         })
         yield(params)

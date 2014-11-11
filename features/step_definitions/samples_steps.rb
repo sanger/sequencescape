@@ -227,8 +227,18 @@ Given /^the dosage of the sample called "([^\"]+)" is (#{Sample::DOSE_REGEXP})/ 
   sample.update_attributes!(:sample_metadata_attributes => { :dose => dose })
 end
 
+Given /^the description of the sample called "([^\"]+)" contains quotes/ do |name|
+  sample = Sample.find_by_name(name) or raise StandardError, "Cannot find the sample #{name.inspect}"
+  sample.update_attributes!(:sample_metadata_attributes => { :sample_description => 'something "with" quotes' })
+end
+
 Given /^there are no samples$/ do
-  Sample.destroy_all
+  # Imagine there's no samples,
+  # it's easy if you try
+  # To bypass all the callbacks
+  # That trigger when they die
+  Sample.delete_all
+  Uuid.find(:all,:conditions=>{:resource_type=>'Sample'}).each(&:destroy)
 end
 
 Given /^the sample "(.*?)" should have an accesionable flag$/ do |name|

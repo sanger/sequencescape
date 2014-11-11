@@ -1,14 +1,13 @@
 source 'http://rubygems.org'
 source 'http://gems.github.com'
 
-gem "rails", "2.3.15"
+gem "rails", "~>2.3"
 
 # Warehouse builder
 gem "log4r"
 gem "db-charmer"
 
 gem "aasm", "~>2.4.0"
-gem "acts_as_audited"
 gem "configatron"
 gem "rest-client" # curb substitute.
 gem "fastercsv", "~>1.4.0"
@@ -48,7 +47,7 @@ gem "irods_reader", '>=0.0.2', :git => 'git+ssh://git@github.com/sanger/irods_re
 gem "uuidtools"
 gem "sinatra", "~>1.1.0"
 gem "rack-acceptable", :require => 'rack/acceptable'
-gem "json_pure" #gem "yajl-ruby", :require => 'yajl'
+# gem "json_pure" #gem "yajl-ruby", :require => 'yajl'
 gem "json"
 gem "cancan"
 
@@ -93,6 +92,8 @@ group :test do
   gem "timecop"
   gem "treetop", "~>1.2.5"
   gem 'parallel_tests'
+
+  gem "timocratic-test_benchmark"
 
   gem 'rgl'
 end

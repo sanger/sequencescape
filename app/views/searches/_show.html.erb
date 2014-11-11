@@ -1,34 +1,34 @@
 <h2>Results:</h2>
 <div class="info">
-  <% unless @studies.empty? %>
+  <% if @studies.present? %>
     <h4><%= pluralize @studies.size, "study" %></h4>
     <ul>
       <%= render :partial => "searches/show/study", :collection => @studies %>
     </ul>
   <% end %>
 
-  <% unless @samples.empty? %>
+  <% if @samples.present? %>
     <h4><%= pluralize @samples.size, "sample" %></h4>
     <ul>
       <%= render :partial => "searches/show/sample", :collection => @samples %>
     </ul>
   <% end %>
 
-  <% unless @assets.empty? %>
+  <% if @assets.present? %>
     <h4><%= pluralize @assets.size, "assets" %></h4>
     <ul>
       <%= render :partial => "searches/show/asset", :collection => @assets %>
     </ul>
   <% end %>
 
-  <% unless @asset_groups.empty? %>
+  <% if @asset_groups.present? %>
     <h4><%= pluralize @asset_groups.size, "asset groups" %></h4>
     <ul>
       <%= render :partial => "searches/show/asset_group", :collection => @asset_groups %>
     </ul>
   <% end %>
 
-  <% unless @requests.empty? %>
+  <% if @requests.present? %>
     <h4><%= pluralize @requests.size, "items" %></h4>
     <ul>
       <%= render :partial => "searches/show/request", :collection => @requests %>
@@ -36,7 +36,7 @@
   <% end %>
 
 </div>
-<% if @studies.empty? && @samples.empty? && @items.empty? && @assets.empty? && @requests.empty? -%>
+<% unless @studies.present? || @samples.present? || @assets.present? || @requests.present? -%>
   <div class="info">
     <h3>No results</h3>
   </div>

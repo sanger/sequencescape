@@ -32,7 +32,7 @@
           <% elsif stage %>
               <td class="7%"><input name='request[<%= request.id %>]' id="sample <%= i+1  %> checkbox" class='sample_check' value="on" type='checkbox' checked></td>
           <% end -%>
-          <td width="5%"><%= request.position(@batch) %></td>
+          <td width="5%"><%= request.position %></td>
 
           <% if request.asset %>
             <td width="7%"><%= h(request.asset.display_name) %></td>

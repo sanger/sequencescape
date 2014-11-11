@@ -34,7 +34,7 @@ class RequestsControllerTest < ActionController::TestCase
          request = Factory :request, :state => "started", :user => @user, :request_type => Factory(:request_type), :study => Factory(:study, :name => "ReqCon2"), :workflow => Factory(:submission_workflow)
          get :cancel, :id => request.id
 
-         assert_equal flash[:notice], "Request #{request.id} in progress. Can't be cancelled"
+         assert_equal flash[:error], "Request #{request.id} in progress. Can't be cancelled"
          assert_response :redirect
       end
 

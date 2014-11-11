@@ -176,6 +176,7 @@ Given /^I have a "([^\"]*)" submission with the following setup:$/ do |template_
       request_options[key]=v
     end
   end
+
   Submission.build!(
     :template=>submission_template,
     :project => Project.find_by_name(params['Project']),

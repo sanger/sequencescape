@@ -95,8 +95,7 @@ private
   end
 
   class Base < Sinatra::Base
-    # Use Mongrel as the handler as it's quicker to start than Webrick.  It might take a few seconds to
-    # shutdown but Webrick takes ~30 to start so Mongrel wins out.
+    # Use webrick as the handler.
     HANDLER, QUIT_HANDLER = Rack::Handler.get('webrick'), :shutdown
 
     def self.run!(options={})
