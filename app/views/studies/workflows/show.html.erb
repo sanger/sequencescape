@@ -11,9 +11,6 @@
 <% add :menu, "Sample Manifests" => sample_manifests_study_path(@study) %>
 <% add :menu, "Suppliers" => suppliers_study_path(@study) %>
 <% add :menu, "Assets" => study_workflow_assets_path(@study, @workflow) -%>
-<% if current_user.is_administrator? %>
-  <% add :menu, "Rename Assets and Samples" => filter_change_name_rename_path(@study) -%>
-<% end %>
 <% add :menu, "Asset groups" => study_asset_groups_path(@study) -%>
 <% add :menu, "Projects" => projects_study_path(@study) -%>
 <% if current_user.is_administrator? || current_user.is_manager?(@study) || current_user.owner?(@study) || current_user.lab? %>

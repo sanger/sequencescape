@@ -21,7 +21,7 @@ class Plate < Asset
   delegate :barcode_type, :to => :plate_purpose, :allow_nil => true
   delegate :asset_shape, :to => :plate_purpose, :allow_nil => true
   delegate :fluidigm_barcode, :to => :plate_metadata
- 
+
   validates_length_of :fluidigm_barcode, :is => 10, :allow_blank => true
 
   # Transfer requests into a plate are the requests leading into the wells of said plate.
@@ -553,15 +553,6 @@ WHERE c.container_id=?
     typed_plates   = source_plate_barcodes.scan(/\d+/).map { |v| find_by_barcode(v) }
 
     (scanned_plates | typed_plates).compact
-  end
-
-  def self.create_default_plates_and_print_barcodes(source_plate_barcodes, barcode_printer, current_user)
-    # NOTE: Temporary change as this code is going to disappear in the future
-    return false if source_plate_barcodes.blank? || barcode_printer.blank?
-    self.plates_from_scanned_plate_barcodes(source_plate_barcodes).group_by(&:plate_purpose).each do |plate_purpose, plates|
-      Plate::Creator.new(:plate_purposes => plate_purpose.child_plate_purposes).execute(plates.map(&:generate_machine_barcode).join("\n"), barcode_printer, current_user)
-    end
-    true
   end
 
   def number_of_blank_samples
