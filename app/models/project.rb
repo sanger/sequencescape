@@ -125,6 +125,8 @@ class Project < ActiveRecord::Base
     self.project_metadata.budget_division.name
   end
 
+  delegate :project_cost_code, :to=> :project_metadata
+
   PROJECT_FUNDING_MODELS = [
     '',
     "Internal",

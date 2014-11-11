@@ -29,6 +29,7 @@ class AmqpObserverTest < ActiveSupport::TestCase
         object.stubs(:id).returns(123456789)
         object.stubs(:class).returns(object_class)
         object.expects(:to_json).returns('JSON')
+        object.stubs(:routing_key).returns(nil)
         object_class.stubs(:name).returns('ClassName')
 
         exchange = mock('Exchange for sending')

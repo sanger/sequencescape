@@ -9,7 +9,8 @@ class AmqpObserver < ActiveRecord::Observer
     :billing_event,
     :batch, :batch_request,
     :role, Role::UserRole,
-    :reference_genome
+    :reference_genome,
+    :messenger
   )
 
   # Ensure we capture records being saved as well as deleted.
@@ -142,7 +143,7 @@ class AmqpObserver < ActiveRecord::Observer
     def publish(record)
       exchange.publish(
         record.to_json,
-        :key        => "#{Rails.env}.saved.#{record.class.name.underscore}.#{record.id}",
+        :key        => record.routing_key||"#{Rails.env}.saved.#{record.class.name.underscore}.#{record.id}",
         :persistent => configatron.amqp.persistent
       )
     end
@@ -185,4 +186,5 @@ class ActiveRecord::Base
     end
     alias_method_chain(:transaction, :amqp)
   end
+  def routing_key;nil;end
 end if ActiveRecord::Base.observers.include?(:amqp_observer)
