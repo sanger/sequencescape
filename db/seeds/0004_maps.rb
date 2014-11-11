@@ -35,3 +35,4 @@ map_data.each do |details|
 end
 
 Map.create!(FluidigmHelper.map_configuration_for(6,16,Map::AssetShape.find_by_name('Fluidigm96').id) + FluidigmHelper.map_configuration_for(12,16,Map::AssetShape.find_by_name('Fluidigm192').id))
+Map::AssetShape.find_by_name('StripTubeColumn').generate_map(8)

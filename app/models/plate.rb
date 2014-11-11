@@ -21,7 +21,7 @@ class Plate < Asset
   delegate :barcode_type, :to => :plate_purpose, :allow_nil => true
   delegate :asset_shape, :to => :plate_purpose, :allow_nil => true
   delegate :fluidigm_barcode, :to => :plate_metadata
- 
+
   validates_length_of :fluidigm_barcode, :is => 10, :allow_blank => true
 
   # Transfer requests into a plate are the requests leading into the wells of said plate.
@@ -55,32 +55,6 @@ class Plate < Asset
     ).try(:priority)||0
   end
 
-  # The iteration of a plate is defined as the number of times a plate of this type has been created
-  # from it's parent.
-  def iteration
-    return nil if parent.nil?  # No parent means no iteration, not a 0 iteration.
-
-    # NOTE: This is how to do row numbering with MySQL!  It essentially joins the assets and asset_links
-    # tables to find all of the child plates of our parent that have the same plate purpose, numbering
-    # those rows to give the iteration number for each plate.
-    iteration_of_plate = connection.select_one(%Q{
-      SELECT iteration
-      FROM (
-        SELECT iteration_plates.id, @rownum:=@rownum+1 AS iteration
-        FROM (
-          SELECT assets.id
-          FROM asset_links
-          JOIN assets ON asset_links.descendant_id=assets.id
-          WHERE asset_links.direct=TRUE AND ancestor_id=#{parent.id} AND assets.sti_type in (#{Plate.derived_classes.map(&:inspect).join(',')}) AND assets.plate_purpose_id=#{plate_purpose.id}
-          ORDER by assets.created_at ASC
-        ) AS iteration_plates,
-        (SELECT @rownum:=0) AS r
-      ) AS a
-      WHERE a.id=#{self.id}
-    }, "Plate #{self.id} iteration query")
-
-    iteration_of_plate['iteration'].to_i
-  end
   def study
     wells.first.try(:study)
   end
@@ -314,9 +288,9 @@ WHERE c.container_id=?
   end
 
   def control_well_exists?
-		Request.into_by_id(well_ids).any? do |request|
-			request.asset.plate.is_a?(ControlPlate)
-		end
+    Request.into_by_id(well_ids).any? do |request|
+      request.asset.plate.is_a?(ControlPlate)
+    end
   end
 
   # A plate has a sample with the specified name if any of its wells have that sample.
@@ -503,7 +477,8 @@ WHERE c.container_id=?
   end
 
   def lookup_stock_plate
-    self.ancestors.all(:order => 'created_at DESC', :include => :plate_purpose).detect(&:stock_plate?)
+    spp = PlatePurpose.find(:all,:conditions=>{:can_be_considered_a_stock_plate=>true})
+    self.ancestors.first(:order => 'created_at DESC', :conditions => {:plate_purpose_id=>spp})
   end
   private :lookup_stock_plate
 

@@ -6,6 +6,7 @@ class Well < Aliquot::Receptacle
   include Cherrypick::VolumeByMicroLitre
   include StudyReport::WellDetails
   include Tag::Associations
+  include AssetRack::WellAssociations::AssetRackAssociation
 
   class Link < ActiveRecord::Base
     set_table_name('well_links')

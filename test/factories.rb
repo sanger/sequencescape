@@ -302,7 +302,7 @@ end
 
 Factory.define :well_request, :parent => :request_without_assets do |request|
   # the sample should be setup correctly and the assets should be valid
-  request.request_type {|rt|         rt.association(:well_request_type)}
+  request.request_type { |rt|    rt.association(:well_request_type)}
   request.asset        { |asset| asset.association(:well)  }
   request.target_asset { |asset| asset.association(:well) }
 end
