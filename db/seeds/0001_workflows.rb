@@ -1011,7 +1011,8 @@ PacBioSequencingPipeline.create!(:name => 'PacBio Sequencing') do |pipeline|
   Task.find_by_name('Movie Lengths').descriptors.create!(
       :name => 'Movie length',
       :kind => 'Selection',
-      :selection => [30, 60, 90, 120, 180,210,240]
+      :selection => [30, 60, 90, 120, 180,210,240],
+      :value => 180
     )
 
 end.tap do |pipeline|
