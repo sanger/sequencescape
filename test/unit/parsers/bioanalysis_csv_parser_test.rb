@@ -1,10 +1,10 @@
 require File.dirname(__FILE__) + '/../../test_helper'
 
-class BionanalysisCsvParserTest < ActiveSupport::TestCase
+class BioanalysisCsvParserTest < ActiveSupport::TestCase
   def read_file(filename)
       fd = File.open(filename, "r")
       content = []
-      while (line = fd.gets) 
+      while (line = fd.gets)
         content.push line
       end
       fd.close
@@ -19,6 +19,16 @@ class BionanalysisCsvParserTest < ActiveSupport::TestCase
         content = read_file filename
 
         @parser = Parsers::BioanalysisCsvParser.new(filename, content)
+      end
+
+      should "parse last sample of testing file correctly" do
+        assert_equal "1", @parser.parse_overall([157,158])
+      end
+
+      should "use get_groups method to find matching regexp" do
+        test_data = [[24, 25], [37, 38], [49, 50], [61, 62], [73, 74], [85, 86],
+        [97, 98], [109, 110], [121, 122], [133, 134], [145, 146], [157,158]]
+        assert_equal test_data, @parser.get_groups(/Overall.*/m)
       end
 
       should "checks a file has correct type" do
