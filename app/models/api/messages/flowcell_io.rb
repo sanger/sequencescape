@@ -4,14 +4,6 @@ class Api::Messages::FlowcellIO < Api::Base
     def self.included(base)
       base.class_eval do
 
-        def lane_type
-          # Batch xml seems to identify control requests on the basis of a resource
-          # flag on the asset. Not sure why when we have a control request class
-          # but we reproduce the same behaviour here for backwards compatibility
-          return 'library_control' if asset.resource?
-          target_asset.aliquots.all {|a| a.tag.present? } ? 'pool' : 'library'
-        end
-
         def position
           batch_request.position
         end
@@ -63,7 +55,7 @@ class Api::Messages::FlowcellIO < Api::Base
         end
 
         def control_aliquot_type
-          tag.present? ? 'library_indexed_spike' : 'library_control'
+          tag.present? && asset.aliquots.count > 1 ? 'library_indexed_spike' : 'library_control'
         end
 
       end
@@ -114,7 +106,6 @@ class Api::Messages::FlowcellIO < Api::Base
   with_nested_has_many_association(:lanes) do # actually requests
 
     map_attribute_to_json_attribute(:manual_qc)
-    map_attribute_to_json_attribute(:lane_type,'entity_type')
     map_attribute_to_json_attribute(:position)
     map_attribute_to_json_attribute(:priority)
     map_attribute_to_json_attribute(:mx_library,'id_pool_lims')
