@@ -5,6 +5,10 @@ class Api::Messages::FlowcellIO < Api::Base
       base.class_eval do
 
         def lane_type
+          # Batch xml seems to identify control requests on the basis of a resource
+          # flag on the asset. Not sure why when we have a control request class
+          # but we reproduce the same behaviour here for backwards compatibility
+          return 'library_control' if asset.resource?
           target_asset.aliquots.all {|a| a.tag.present? } ? 'pool' : 'library'
         end
 
@@ -29,6 +33,7 @@ class Api::Messages::FlowcellIO < Api::Base
         end
 
         def samples
+          return [] if asset.resource? # Horrid backwards compatibility hack. Might be able to remove.
           target_asset.aliquots.reject do |a|
             spiked_in_buffer.present? && spiked_in_buffer.primary_aliquot =~ a
           end
@@ -37,7 +42,28 @@ class Api::Messages::FlowcellIO < Api::Base
         delegate :spiked_in_buffer, :external_release, :to=>:target_asset
 
         def controls
+          return asset.aliquots if asset.resource? # Horrid backwards compatibility hack. Might be able to remove.
           spiked_in_buffer.present? ? spiked_in_buffer.aliquots : []
+        end
+
+      end
+    end
+  end
+
+  module AliquotExtensions
+    module ClassMethods
+    end
+
+    def self.included(base)
+      base.class_eval do
+        extend ClassMethods
+
+        def aliquot_type
+          tag.present? ? 'library_indexed' : 'library'
+        end
+
+        def control_aliquot_type
+          tag.present? ? 'library_indexed_spike' : 'library_control'
         end
 
       end
@@ -92,7 +118,6 @@ class Api::Messages::FlowcellIO < Api::Base
     map_attribute_to_json_attribute(:position)
     map_attribute_to_json_attribute(:priority)
     map_attribute_to_json_attribute(:mx_library,'id_pool_lims')
-    map_attribute_to_json_attribute(:mx_library,'id_pool_lims')
     map_attribute_to_json_attribute(:external_release,'external_release')
 
     with_nested_has_many_association(:samples) do # actually aliquots
@@ -105,7 +130,7 @@ class Api::Messages::FlowcellIO < Api::Base
           map_attribute_to_json_attribute(:name, 'tag_set_name')
         end
       end
-      map_attribute_to_json_attribute(:library_type, 'id_bait')
+      map_attribute_to_json_attribute(:library_type, 'pipeline_id_lims')
       with_association(:bait_library) do
         map_attribute_to_json_attribute(:name, 'bait_name')
       end
@@ -121,8 +146,8 @@ class Api::Messages::FlowcellIO < Api::Base
         map_attribute_to_json_attribute(:project_cost_code, 'cost_code')
       end
       map_attribute_to_json_attribute(:library_id, 'entity_id_lims')
+      map_attribute_to_json_attribute(:aliquot_type,'entity_type')
     end
-    # ],
 
     with_nested_has_many_association(:controls) do
       with_association(:tag) do
@@ -133,9 +158,11 @@ class Api::Messages::FlowcellIO < Api::Base
           map_attribute_to_json_attribute(:name, 'tag_set_name')
         end
       end
+      map_attribute_to_json_attribute(:library_type, 'pipeline_id_lims')
       with_association(:sample) do
         map_attribute_to_json_attribute(:uuid, 'sample_uuid')
       end
+      map_attribute_to_json_attribute(:control_aliquot_type,'entity_type')
     end
   end
 
