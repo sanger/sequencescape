@@ -31,7 +31,7 @@ class Api::Messages::FlowcellIO < Api::Base
           end
         end
 
-        delegate :spiked_in_buffer, :external_release, :to=>:target_asset
+        delegate :spiked_in_buffer, :external_release, :to=>:target_asset, :allow_nil => true
 
         def controls
           return asset.aliquots if asset.resource? # Horrid backwards compatibility hack. Might be able to remove.
