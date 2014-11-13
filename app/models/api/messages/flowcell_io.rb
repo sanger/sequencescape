@@ -136,7 +136,7 @@ class Api::Messages::FlowcellIO < Api::Base
       with_association(:project) do
         map_attribute_to_json_attribute(:project_cost_code, 'cost_code')
       end
-      map_attribute_to_json_attribute(:library_id, 'entity_id_lims')
+      map_attribute_to_json_attribute(:id, 'entity_id_lims')
       map_attribute_to_json_attribute(:aliquot_type,'entity_type')
     end
 
@@ -153,6 +153,7 @@ class Api::Messages::FlowcellIO < Api::Base
       with_association(:sample) do
         map_attribute_to_json_attribute(:uuid, 'sample_uuid')
       end
+      map_attribute_to_json_attribute(:id, 'entity_id_lims')
       map_attribute_to_json_attribute(:control_aliquot_type,'entity_type')
     end
   end
