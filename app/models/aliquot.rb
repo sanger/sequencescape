@@ -6,6 +6,7 @@ class Aliquot < ActiveRecord::Base
   class Receptacle < Asset
     include Transfer::State
     include Aliquot::Remover
+    include Api::Messages::FlowcellIO::AliquotExtensions
 
     has_many :transfer_requests, :class_name => 'TransferRequest', :foreign_key => :target_asset_id
     has_many :transfer_requests_as_source, :class_name => 'TransferRequest', :foreign_key => :asset_id
