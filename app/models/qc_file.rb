@@ -13,6 +13,7 @@ class QcFile < ActiveRecord::Base
         def add_qc_file(file, filename=nil)
           opts = {:uploaded_data => {:tempfile=>file, :filename=>filename}}
           opts.merge!(:filename=>filename) unless filename.nil?
+          QcFile.set_validator_options(opts)
           qc_files.create!(opts) unless file.blank?
         end
 
@@ -42,7 +43,45 @@ class QcFile < ActiveRecord::Base
   end
 
   # Handle some of the metadata with this callback
+  before_create :validates_file
   before_save :update_document_attributes
+  after_save :store_file_extracted_data
+
+  def self.set_validator_options(opts)
+    fd = opts[:uploaded_data][:tempfile]
+    content = []
+    while (line = fd.gets) 
+      content.push line
+    end
+    fd.close
+
+    @file_extractor = Parsers::BioanalysisCsvParser.new(opts[:uploaded_data][:filename], content.join(""))
+  end
+
+  def self.get_validator
+    @file_extractor
+  end
+
+  def validates_file
+    @file_extractor = self.class.get_validator
+    return true if @file_extractor.nil?    
+    return @file_extractor.validates_content? if @file_extractor.is_bioanalysis_content?
+    true
+  end
+
+  def store_file_extracted_data
+    extractor = self.class.get_validator
+    self.asset.wells.each do |well|
+      # Is everything updated always or just the well specified in the report??
+      position = well.map.description
+      # It's updating directly the assets table, not the well_attributes
+      #app/models/well.rbwell.concentration = extractor.concentration(position)
+      well.set_concentration(extractor.concentration(position))
+      well.set_molarity(extractor.molarity(position))
+      well.save
+    end
+    true
+  end
 
   private
 
