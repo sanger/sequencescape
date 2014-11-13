@@ -141,11 +141,13 @@ class Parsers::BioanalysisCsvParser
 
 	def is_bioanalysis_content?
 		@content.each_with_index do |line, pos|
-			if line[0].match(/Version Created/) && line[1].match(/^B.*/)
-				return pos
+			if ((line.length > 1) && (!line[0].nil?) && (!line[1].nil?))
+				if (line[0].match(/Version Created/) && line[1].match(/^B.*/))
+					return true
+				end
 			end
 		end
-		-1
+		false
 	end
 
 	def validates_content?
