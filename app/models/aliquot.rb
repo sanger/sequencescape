@@ -2,11 +2,11 @@
 # of a sample, or it might be a library (a combination of the DNA sample and a tag).
 class Aliquot < ActiveRecord::Base
   include Uuid::Uuidable
+  include Api::Messages::FlowcellIO::AliquotExtensions
 
   class Receptacle < Asset
     include Transfer::State
     include Aliquot::Remover
-    include Api::Messages::FlowcellIO::AliquotExtensions
 
     has_many :transfer_requests, :class_name => 'TransferRequest', :foreign_key => :target_asset_id
     has_many :transfer_requests_as_source, :class_name => 'TransferRequest', :foreign_key => :asset_id
