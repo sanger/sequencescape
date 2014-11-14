@@ -57,7 +57,7 @@ class Api::Messages::FlowcellIO < Api::Base
         end
 
         def control_aliquot_type
-          tag.present? && receptacle.aliquots.count > 1 ? 'library_indexed_spike' : 'library_control'
+          tag.present? ? 'library_indexed_spike' : 'library_control'
         end
 
       end
