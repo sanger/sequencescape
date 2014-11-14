@@ -25,7 +25,6 @@ class Api::Messages::FlowcellIO < Api::Base
         end
 
         def samples
-          return [] if asset.resource? # Horrid backwards compatibility hack. Might be able to remove.
           some_untagged = target_asset.aliquots.any?(&:untagged?)
           target_asset.aliquots.reject do |a|
             (spiked_in_buffer.present? && spiked_in_buffer.primary_aliquot =~ a) or
@@ -36,8 +35,50 @@ class Api::Messages::FlowcellIO < Api::Base
         delegate :spiked_in_buffer, :external_release, :to=>:target_asset, :allow_nil => true
 
         def controls
-          return asset.aliquots if asset.resource? # Horrid backwards compatibility hack. Might be able to remove.
           spiked_in_buffer.present? ? spiked_in_buffer.aliquots : []
+        end
+
+      end
+    end
+  end
+
+  module ControlLaneExtensions
+    def self.included(base)
+      base.class_eval do
+
+        def position
+          batch_request.position
+        end
+
+        def mx_library
+          asset.name
+        end
+
+        def manual_qc
+          event = lab_events.find(
+            :first,
+            :conditions => {
+              :description=>'Quality control'
+            },
+            :order=>'created_at DESC'
+          )
+          return event.descriptor_value_for('Passed?') if event.present?
+          nil
+        end
+
+        def samples
+          return []
+        end
+
+        def spiked_in_buffer
+          false
+        end
+        def external_release
+         false
+        end
+
+        def controls
+          asset.aliquots
         end
 
       end
