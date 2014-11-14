@@ -26,8 +26,10 @@ class Api::Messages::FlowcellIO < Api::Base
 
         def samples
           return [] if asset.resource? # Horrid backwards compatibility hack. Might be able to remove.
+          some_untagged = target_asset.aliquots.all?(&:untagged?)
           target_asset.aliquots.reject do |a|
             spiked_in_buffer.present? && spiked_in_buffer.primary_aliquot =~ a
+            some_untagged && a.tagged? # Reproduces behaviour of batch.xml. Needed due to odd legacy data
           end
         end
 
