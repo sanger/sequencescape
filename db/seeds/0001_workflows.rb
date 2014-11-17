@@ -1106,7 +1106,7 @@ SequencingPipeline.create!(:name => "MiSeq sequencing") do |pipeline|
 
     end
   end.tap do |pipeline|
-    create_request_information_types(pipeline, 'fragment_size_required_from', 'fragment_size_required_to', 'library_type')
+    create_request_information_types(pipeline, 'fragment_size_required_from', 'fragment_size_required_to', 'library_type', 'read_length')
   end
 
 # ADD ILC Cherrypick
