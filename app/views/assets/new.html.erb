@@ -28,14 +28,13 @@
     <div class='section'>The new asset will be tagged with the following tag number:</div>
     <div class='section'>
       <%= label_tag "tag_", "Tag", {:style => 'display:none;'} %>
-      <%= text_field :tag, nil, { :readonly => true, :value => "888" } %>
+      <%= text_field :tag, nil, { :readonly => true, :value => "#{@phyx_tag.map_id}" } %>
     </div>
-     <!--div class='section'>
-     and optionally its sequence (e.g. ACAACGCA)
-     </div>
+    <div class='section'>The sequence for this tag is:</div>
     <div class='section'>
-      <%= label_tag "tag_sequence_", "Tag Sequence", {:style => 'display:none;'} %><%= text_field :tag_sequence, nil %>
-    </div -->
+    <%= label_tag "tag_sequence_", "Tag Sequence", {:style => 'display:none;'} %>
+    <%= text_field :tag_sequence, nil, { :readonly => true, :value => "#{@phyx_tag.oligo}", :disabled => true } %>
+    </div>
 
     <div class='section'>4. Provide the concentration (in nM).</div>
     <div class='section'><%= label_tag "asset_concentration", "Concentration", {:style => 'display:none;'} %><%= f.text_field :concentration  %> nM</div>
