@@ -37,7 +37,10 @@ class AssetsController < ApplicationController
 
   def new
     @asset = Asset.new
-    @asset_types = { "Sample Tube" =>'SampleTube', "Library Tube" => 'LibraryTube', "Hybridization Buffer Spiked" => "SpikedBuffer" }
+    @asset_types = { "Library Tube" => 'LibraryTube', "Hybridization Buffer Spiked" => "SpikedBuffer" }
+    @phyx_tag = TagGroup.find_by_name(configatron.phyx_tag.tag_group_name).tags.select do |t|
+      t.map_id == configatron.phyx_tag.tag_map_id
+    end.first
 
     respond_to do |format|
       format.html
@@ -64,6 +67,7 @@ class AssetsController < ApplicationController
   end
 
   def create
+
     count = first_param(:count)
     count = count.present? ? count.to_i : 1
     saved = true
@@ -75,7 +79,6 @@ class AssetsController < ApplicationController
         parent = Asset.find_by_id(parent_param) || Asset.find_from_machine_barcode(parent_param) || Asset.find_by_name(parent_param)
         raise StandardError, "Cannot find the parent asset #{parent_param.inspect}" if parent.nil?
       end
-
       # Find the tag up front
       tag, tag_param = nil, first_param(:tag)
       if tag_param.present?
