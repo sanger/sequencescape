@@ -1,7 +1,9 @@
 class Parsers::BioanalysisCsvParser
-  def initialize(filename, content)
-    @filename = filename
-    @content = FasterCSV.parse(content)
+
+  attr_reader :content
+
+  def initialize(content)
+    @content = content
   end
 
   def get_field_name(sym_name)
@@ -23,11 +25,11 @@ class Parsers::BioanalysisCsvParser
     content_hash = {}
     starting_line = group[0]
     ending_line = group[1]
-    type = @content[starting_line][0]
-    fields = @content[starting_line+1]
+    type = content[starting_line][0]
+    fields = content[starting_line+1]
 
     for pos in (starting_line+2) .. (ending_line) do
-      values = @content[pos]
+      values = content[pos]
       unless values.nil? && (values.length != fields.length)
         content_hash.merge!(Hash[fields.zip(values)])
       end
@@ -37,11 +39,11 @@ class Parsers::BioanalysisCsvParser
 
   def build_range(range)
     if range == nil
-      range = [0, @content.length-1]
+      range = [0, content.length-1]
     else
       range = range.dup
     end
-    range.push(@content.length-1) if (range.length==1)
+    range.push(content.length-1) if (range.length==1)
     range
   end
 
@@ -78,7 +80,7 @@ class Parsers::BioanalysisCsvParser
   end
 
   def get_group_content(group)
-    @content.slice(group[0], group[1]-group[0]+1)
+    content.slice(group[0], group[1]-group[0]+1)
   end
 
   def parse_peak_table(group)
@@ -136,8 +138,16 @@ class Parsers::BioanalysisCsvParser
     parsed_content[plate_position][:peak_table][field]
   end
 
+  def validates_content?
+    is_bioanalysis_content? && parsed_content.present?
+  end
+
   def is_bioanalysis_content?
-    @content.each_with_index do |line, pos|
+    true
+  end
+
+  def self.is_bioanalyzer?(filename, content)
+    content.each_with_index do |line, pos|
       if ((line.length > 1) && (!line[0].nil?) && (!line[1].nil?))
         if (line[0].match(/Version Created/) && line[1].match(/^B.*/))
           return true
@@ -145,9 +155,5 @@ class Parsers::BioanalysisCsvParser
       end
     end
     false
-  end
-
-  def validates_content?
-    is_bioanalysis_content? && !parsed_content.nil?
   end
 end

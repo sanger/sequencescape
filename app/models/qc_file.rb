@@ -1,6 +1,5 @@
 
 class QcFile < ActiveRecord::Base
-  attr_writer :validation_options
 
   extend DbFile::Uploader
   include Uuid::Uuidable
@@ -44,13 +43,10 @@ class QcFile < ActiveRecord::Base
 
   # Handle some of the metadata with this callback
   before_save :update_document_attributes
-  after_save :store_file_extracted_data
+  after_save :store_file_extracted_data, :if => :parser
 
-  def get_validator
-    if @file_extractor == nil
-      @file_extractor = Parsers::BioanalysisCsvParser.new(uploaded_data.filename, current_data)
-    end
-    @file_extractor
+  def parser
+    @parser ||= Parsers.parser_for(uploaded_data.filename, current_data)
   end
 
   def store_file_extracted_data
@@ -58,15 +54,12 @@ class QcFile < ActiveRecord::Base
       # Is everything updated always or just the well specified in the report??
       position = well.map.description
       # It's updating directly the assets table, not the well_attributes
-      extractor = get_validator
-      if extractor.is_bioanalysis_content?
-        if extractor.validates_content?
-          well.set_concentration(extractor.concentration(position))
-          well.set_molarity(extractor.molarity(position))
-          well.save
-        else
-          raise "Incorrect parsing validation of Bioanalysis file"
-        end
+      if parser.validates_content?
+        well.set_concentration(parser.concentration(position))
+        well.set_molarity(parser.molarity(position))
+        well.save
+      else
+        raise "Incorrect parsing validation of Bioanalysis file"
       end
     end
     true

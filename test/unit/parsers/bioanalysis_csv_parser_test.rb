@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/../../test_helper'
 
 class BioanalysisCsvParserTest < ActiveSupport::TestCase
+
   def read_file(filename)
       fd = File.open(filename, "r")
       content = []
@@ -11,6 +12,43 @@ class BioanalysisCsvParserTest < ActiveSupport::TestCase
       Iconv.conv('utf-8', 'WINDOWS-1253',content.join(""))
   end
 
+  context "Parser" do
+    context "With a valid csv file" do
+      setup do
+        @filename = File.dirname(__FILE__)+"/../../data/bioanalysis_qc_results.csv"
+        @content = read_file @filename
+        @csv = FasterCSV.parse(@content)
+      end
+
+      should "return a BioanalysisCsvParser" do
+        Parsers::BioanalysisCsvParser.expects(:new).with(@csv).returns(:pass)
+        assert_equal :pass, Parsers.parser_for(@filename,@content)
+      end
+    end
+
+    context "With an unreleated csv file" do
+      setup do
+        @filename = File.dirname(__FILE__)+"/../../data/fluidigm.csv"
+        @content = read_file @filename
+      end
+
+      should "return a BioanalysisCsvParser" do
+        assert_equal nil, Parsers.parser_for(@filename,@content)
+      end
+    end
+
+    context "with a non csv file" do
+      setup do
+        @filename = File.dirname(__FILE__)+"/../../data/example_file.txt"
+        @content = read_file @filename
+      end
+
+      should "return a BioanalysisCsvParser" do
+        assert_equal nil, Parsers.parser_for(@filename,@content)
+      end
+    end
+  end
+
   context "A Bioanalysis parser of CSV" do
     context "with a valid CSV biorobot file" do
       setup do
@@ -18,7 +56,7 @@ class BioanalysisCsvParserTest < ActiveSupport::TestCase
         # <ruby-1.9>content.join("").force_encoding("ISO-8859-1").encode("UTF-8")</ruby-1.9>
         content = read_file filename
 
-        @parser = Parsers::BioanalysisCsvParser.new(filename, content)
+        @parser = Parsers::BioanalysisCsvParser.new(FasterCSV.parse(content))
       end
 
       should "parse last sample of testing file correctly" do
@@ -45,7 +83,7 @@ class BioanalysisCsvParserTest < ActiveSupport::TestCase
         # <ruby-1.9>content.join("").force_encoding("ISO-8859-1").encode("UTF-8")</ruby-1.9>
         content = read_file filename
 
-        @parser = Parsers::BioanalysisCsvParser.new(filename, content)
+        @parser = Parsers::BioanalysisCsvParser.new(FasterCSV.parse(content))
       end
       should "checks a file has incorrect type" do
         assert_equal @parser.validates_content?, false
