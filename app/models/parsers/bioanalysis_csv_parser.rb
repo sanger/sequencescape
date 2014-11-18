@@ -1,10 +1,7 @@
-# encoding: utf-8
-require 'csv'
-
 class Parsers::BioanalysisCsvParser
   def initialize(filename, content)
     @filename = filename
-    @content = CSV.parse(content)
+    @content = FasterCSV.parse(content)
   end
 
   def get_field_name(sym_name)
