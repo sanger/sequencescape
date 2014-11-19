@@ -28,6 +28,7 @@ class Well < Aliquot::Receptacle
   end
 
   named_scope :include_stock_wells, { :include => { :stock_wells => :requests_as_source } }
+  named_scope :include_map,         { :include => :map }
 
   named_scope :located_at, lambda { |plate, location|
     { :joins => :map, :conditions => { :maps => { :description => location, :asset_size => plate.size } } }

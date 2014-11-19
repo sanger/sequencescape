@@ -1,5 +1,7 @@
 class Parsers::BioanalysisCsvParser
 
+  class InvalidFile < StandardError; end
+
   attr_reader :content
 
   def initialize(content)
@@ -92,11 +94,12 @@ class Parsers::BioanalysisCsvParser
   end
 
   def parse_overall(group)
+    # Number of peaks
     get_group_content(get_groups(/Overall.*/m, group)[0])[1][1]
   end
 
   def parse_cell(group)
-    @cell = get_group_content(group)[0][1]
+    get_group_content(group)[0][1]
   end
 
   def parse_sample(group)
@@ -123,14 +126,10 @@ class Parsers::BioanalysisCsvParser
     end
   end
 
-  def parse
-    @parsed_content = parse_samples
-  end
-
   def parsed_content
-    @parsed_content.nil? ? parse : @parsed_content
-  rescue NoMethodError
-    nil
+    @parsed_content ||= parse_samples
+  rescue NoMethodError  #Ugh! I want to catch these where they happen
+    raise InvalidFile
   end
 
   def get_parsed_attribute(plate_position, field)
@@ -138,22 +137,17 @@ class Parsers::BioanalysisCsvParser
     parsed_content[plate_position][:peak_table][field]
   end
 
-  def validates_content?
-    is_bioanalysis_content? && parsed_content.present?
-  end
-
-  def is_bioanalysis_content?
-    true
-  end
-
-  def self.is_bioanalyzer?(filename, content)
-    content.each_with_index do |line, pos|
-      if ((line.length > 1) && (!line[0].nil?) && (!line[1].nil?))
-        if (line[0].match(/Version Created/) && line[1].match(/^B.*/))
-          return true
-        end
-      end
+  def each_well_and_parameters
+    parsed_content.each do |well,values|
+      yield(well,values[:peak_table][get_field_name(:concentration)],values[:peak_table][get_field_name(:molarity)])
     end
-    false
+  end
+
+
+  def self.is_bioanalyzer?(content)
+    # We don't go through the whole file
+    content[0..10].detect do |line|
+      /Version Created/ === line[0] && /^B.*/ === line[1]
+    end.present?
   end
 end

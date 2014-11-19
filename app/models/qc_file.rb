@@ -17,11 +17,21 @@ class QcFile < ActiveRecord::Base
           opts.merge!(:filename=>filename) unless filename.nil?
           qc_files.create!(opts) unless file.blank?
         end
+
+        def update_concentrations_from(parser)
+          true
+        end
       }, __FILE__, line)
     end
   end
 
   belongs_to :asset, :polymorphic => true
+  validates_presence_of :asset
+
+
+  # Handle some of the metadata with this callback
+  before_save :update_document_attributes
+  after_save :store_file_extracted_data, :if => :parser
 
   # CarrierWave uploader - gets the uploaded_data file, but saves the identifier to the "filename" column
   has_uploaded :uploaded_data, {:serialization_column => "filename"}
@@ -41,38 +51,23 @@ class QcFile < ActiveRecord::Base
     end
   end
 
-  # Handle some of the metadata with this callback
-  before_save :update_document_attributes
-  after_save :store_file_extracted_data, :if => :parser
+  private
 
   def parser
-    @parser ||= Parsers.parser_for(uploaded_data.filename, current_data)
+    @parser ||= Parsers.parser_for(uploaded_data.filename, content_type, current_data)
   end
 
   def store_file_extracted_data
-    self.asset.wells.each do |well|
-      # Is everything updated always or just the well specified in the report??
-      position = well.map.description
-      # It's updating directly the assets table, not the well_attributes
-      if parser.validates_content?
-        well.set_concentration(parser.concentration(position))
-        well.set_molarity(parser.molarity(position))
-        well.save
-      else
-        raise "Incorrect parsing validation of Bioanalysis file"
-      end
-    end
-    true
+    return if parser.nil?
+    asset.update_concentrations_from(parser)
   end
 
-  private
-
-    # Save Size/content_type Metadata
-    def update_document_attributes
-      if uploaded_data.present?
-        self.content_type = uploaded_data.file.content_type
-        self.size    = uploaded_data.file.size
-      end
+  # Save Size/content_type Metadata
+  def update_document_attributes
+    if uploaded_data.present?
+      self.content_type = uploaded_data.file.content_type
+      self.size    = uploaded_data.file.size
     end
+  end
 end
 
