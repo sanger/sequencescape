@@ -990,7 +990,7 @@ PacBioSequencingPipeline.create!(:name => 'PacBio Sequencing') do |pipeline|
       :valid_options=>RequestType::Validator::ArrayWithDefault.new([500,1000,2000,5000,10000,20000],500),
       :request_type=>request_type},
       {:request_option=>'sequencing_type',
-      :valid_options=>RequestType::Validator::ArrayWithDefault.new(['Standard','MagBead'],'Standard'),
+      :valid_options=>RequestType::Validator::ArrayWithDefault.new(['Standard','MagBead','MagBead OneCellPerWell v1'],'Standard'),
       :request_type=>request_type}
     ])
   end
