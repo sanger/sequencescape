@@ -990,7 +990,7 @@ PacBioSequencingPipeline.create!(:name => 'PacBio Sequencing') do |pipeline|
       :valid_options=>RequestType::Validator::ArrayWithDefault.new([500,1000,2000,5000,10000,20000],500),
       :request_type=>request_type},
       {:request_option=>'sequencing_type',
-      :valid_options=>RequestType::Validator::ArrayWithDefault.new(['Standard','MagBead'],'Standard'),
+      :valid_options=>RequestType::Validator::ArrayWithDefault.new(['Standard','MagBead','MagBead OneCellPerWell v1'],'Standard'),
       :request_type=>request_type}
     ])
   end
@@ -1011,7 +1011,8 @@ PacBioSequencingPipeline.create!(:name => 'PacBio Sequencing') do |pipeline|
   Task.find_by_name('Movie Lengths').descriptors.create!(
       :name => 'Movie length',
       :kind => 'Selection',
-      :selection => [30, 60, 90, 120, 180]
+      :selection => [30, 60, 90, 120, 180,210,240],
+      :value => 180
     )
 
 end.tap do |pipeline|
@@ -1105,7 +1106,7 @@ SequencingPipeline.create!(:name => "MiSeq sequencing") do |pipeline|
 
     end
   end.tap do |pipeline|
-    create_request_information_types(pipeline, 'fragment_size_required_from', 'fragment_size_required_to', 'library_type')
+    create_request_information_types(pipeline, 'fragment_size_required_from', 'fragment_size_required_to', 'library_type', 'read_length')
   end
 
 # ADD ILC Cherrypick
@@ -1294,8 +1295,8 @@ end
 
 x10_requests_types = ['a', 'b'].map do |pipeline|
   RequestType.create!({
-    :key => "illumina_#{pipeline}_hiseq_xten_paired_end_sequencing",
-    :name => "Illumina-#{pipeline.upcase} HiSeq X Ten Paired end sequencing",
+    :key => "illumina_#{pipeline}_hiseq_x_paired_end_sequencing",
+    :name => "Illumina-#{pipeline.upcase} HiSeq X Paired end sequencing",
     :workflow =>  Submission::Workflow.find_by_key("short_read_sequencing"),
     :asset_type => "LibraryTube",
     :order => 2,
@@ -1377,7 +1378,7 @@ x10_pipelines = ['(spiked in controls)','(no controls)'].each do |type|
           details.delete(:class).create!(details.merge(:workflow => workflow))
         end
       end
-      pipeline.request_types = x10_requests_types        
+      pipeline.request_types = x10_requests_types
     end
 end
 

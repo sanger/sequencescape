@@ -95,11 +95,6 @@ ActionController::Routing::Routes.draw do |map|
   map.filter_change_decision_request 'requests/:id/change_decision', :controller => 'requests', :action => 'filter_change_decision', :conditions => { :method => :get }
   map.change_decision_request        'requests/:id/change_decision', :controller => 'requests', :action => 'change_decision',        :conditions => { :method => :put }
 
-  #Same path but two different actions. GET for put parameter in the form and show the error. PUT for the action.
-  map.filter_change_name_rename      'renames/:id/change_name', :controller => 'renames', :action => 'filter_change_name', :conditions => { :method => :get }
-  map.change_name_rename             'renames/:id/change_name', :controller => 'renames', :action => 'change_name',        :conditions => { :method => :put }
-
-
   map.resources :requests,
                 :has_many => :batches,
                 :member => { :copy => :get, :cancel => :get, :print => :get, :history => :get },
@@ -225,15 +220,6 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :study_reports
   map.resources :sample_logistics, :collection => { :lab => :get, :qc_overview => :get }
-
-  ### Pulldown ###
-  map.with_options(:namespace => "pulldown/", :path_prefix => "/pulldown") do |pulldown|
-    pulldown.resources :plates, :collection => { :lookup_plate_purposes => :get }
-    pulldown.resources :validates, :collection => { :source_plate_type => :get, :target_plate_type => :get, :validate_plates => :post }
-  end
-
-
-
 
   ### Standard routes
   # You can have the root of your site routed with map.root -- just remember to delete public/index.html.
