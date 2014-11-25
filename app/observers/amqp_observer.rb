@@ -141,7 +141,7 @@ class AmqpObserver < ActiveRecord::Observer
 
     def publish(record)
       exchange.publish(
-        record.to_json,
+        MultiJson.dump(record),
         :key        => "#{Rails.env}.saved.#{record.class.name.underscore}.#{record.id}",
         :persistent => configatron.amqp.persistent
       )

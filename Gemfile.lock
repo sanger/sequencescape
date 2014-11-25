@@ -133,6 +133,7 @@ GEM
       rake (>= 0.8, < 11.0)
     i18n (0.4.2)
     jdbc-mysql (5.1.30)
+    jrjackson (0.2.7)
     jruby-openssl (0.7.7)
       bouncy-castle-java (>= 1.5.0146.1)
     jruby-rack (1.1.16)
@@ -161,6 +162,7 @@ GEM
     mongrel_cluster (1.0.5)
       gem_plugin (>= 0.2.3)
       mongrel (>= 1.0.2)
+    multi_json (1.10.1)
     mysql (2.8.1)
     net-ldap (0.3.1)
     nokogiri (1.5.5)
@@ -270,12 +272,14 @@ DEPENDENCIES
   gmetric (~> 0.1.3)
   irods_reader (>= 0.0.2)!
   jdbc-mysql
+  jrjackson
   jruby-openssl
   json
   launchy
   log4r
   mocha
   mongrel_cluster
+  multi_json
   mysql
   net-ldap
   nokogiri

@@ -49,6 +49,8 @@ gem "sinatra", "~>1.1.0"
 gem "rack-acceptable", :require => 'rack/acceptable'
 # gem "json_pure" #gem "yajl-ruby", :require => 'yajl'
 gem "json"
+gem "jrjackson"
+gem "multi_json"
 gem "cancan"
 
 gem "bunny"
