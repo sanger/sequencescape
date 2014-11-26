@@ -266,7 +266,9 @@ module SampleManifest::InputBehaviour
   private :ensure_samples_are_being_updated_by_manifest
 
   def update_attributes_with_sample_manifest!(attributes, user = nil)
-    ensure_samples_are_being_updated_by_manifest(attributes, user)
-    update_attributes_without_sample_manifest!(attributes)
+    ActiveRecord::Base.transaction do
+      ensure_samples_are_being_updated_by_manifest(attributes, user)
+      update_attributes_without_sample_manifest!(attributes)
+    end
   end
 end
