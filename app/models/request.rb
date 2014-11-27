@@ -63,7 +63,7 @@ class Request < ActiveRecord::Base
     }
   }
 
-    named_scope :for_pre_cap_grouping_of, lambda { |plate|
+  named_scope :for_pre_cap_grouping_of, lambda { |plate|
     joins =
       if plate.stock_plate?
         [ 'INNER JOIN assets AS pw ON requests.asset_id=pw.id' ]
@@ -83,7 +83,7 @@ class Request < ActiveRecord::Base
       ],
       :group => 'pre_capture_pool_pooled_requests.pre_capture_pool_id',
       :conditions => [
-        'requests.sti_type NOT IN (?) AND container_associations.container_id=?',
+        'requests.sti_type NOT IN (?) AND container_associations.container_id=? AND requests.state="pending"',
         [TransferRequest,*Class.subclasses_of(TransferRequest)].map(&:name), plate.id
       ]
     }
