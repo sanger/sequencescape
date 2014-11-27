@@ -539,6 +539,8 @@ tags = {"TruSeq small RNA index tags - 6 mer tags"=>
    [54, "TGTTCTCC"],
    [140, "CGTTACTA"],
    [168, "ACAACGCAAT"]],
+ "Control Tag Group 888" =>
+ [[888,"ACAACGCAAT"]],
  "NEXTFLEX_48 - 6 mer tags"=>
   [[16, "CCGTCC"],
    [37, "CGGAAT"],
