@@ -44,7 +44,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
 
   # NOTE: Performance enhancement to convert a tube to it's minimal representation for presentation.
   def tube_to_hash(tube)
-    # Only build the hash once per tube. Shos significant speed improvement, esp. with label_text
+    # Only build the hash once per tube. Shows significant speed improvement, esp. with label_text
     @tubes||={}
     @tubes[tube.id] ||= {
       :uuid    => tube.uuid,

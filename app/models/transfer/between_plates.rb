@@ -20,8 +20,8 @@ class Transfer::BetweenPlates < Transfer
       record.errors.add(:transfers, 'must be a map from source to destination location')
     elsif record.source.present? and not record.source.valid_positions?(value.keys)
       record.errors.add(:transfers, 'are not valid positions for the source plate')
-    elsif record.destination.present? and not record.destination.valid_positions?(value.values)
-      record.errors.add(:transfers, 'are not valid positions for the destination plate')
+    elsif record.destination.present? and not record.destination.valid_positions?(value.values.flatten)
+      record.errors.add(:transfers, "#{value.values.inspect} are not valid positions for the destination plate")
     end
   end
 
@@ -36,11 +36,13 @@ class Transfer::BetweenPlates < Transfer
     # bad wells will be eliminated after we've done the transfers for the good ones.
     bad_wells, good_wells = source.wells.located_at_position(transfers.keys).with_pool_id.partition(&method(:should_well_not_be_transferred?))
     source_wells          = Hash[good_wells.map { |well| [well.map.description, well] }]
-    destination_locations = source_wells.keys.map { |p| transfers[p] }
+    destination_locations = source_wells.keys.map { |p| transfers[p] }.flatten
     destination_wells     = Hash[destination.wells.located_at_position(destination_locations).map { |well| [well.map.description, well] }]
 
     source_wells.each do |location, source_well|
-      yield(source_well, destination_wells[transfers[location]])
+      Array(transfers[location]).flatten.each do |target_well_location|
+        yield(source_well, destination_wells[target_well_location])
+      end
     end
 
     # Eliminate any of the transfers that were not made because of the bad source wells

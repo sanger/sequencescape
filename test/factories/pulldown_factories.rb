@@ -12,6 +12,22 @@ Factory.define(:transfer_plate, :class => Plate) do |plate|
   end
 end
 
+# A plate that has exactly the right number of wells!
+Factory.define(:pooling_plate, :class => Plate) do |plate|
+  plate.size 96
+  plate.purpose PlatePurpose.stock_plate_purpose
+
+  plate.after_create do |plate|
+    plate.wells.import(
+      [ 'A1', 'B1', 'C1', 'D1', 'E1','F1' ].map do |location|
+        map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(Map::AssetShape.find_by_name('Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
+        Factory(:tagged_well, :map => map)
+      end
+    )
+  end
+end
+
+
 Factory.define(:source_transfer_plate, :parent => :transfer_plate) do |plate|
   plate.after_build do |plate|
     plate.plate_purpose = PlatePurpose.find_by_name('Parent plate purpose') || Factory(:parent_plate_purpose)
@@ -229,6 +245,6 @@ Factory.define(:pulldown_isc_request, :class => Pulldown::Requests::IscLibraryRe
   request.after_build do |request|
     request.request_metadata.fragment_size_required_from = 100
     request.request_metadata.fragment_size_required_to   = 400
-    request.request_metadata.bait_library                = Factory(:bait_library)
+    request.request_metadata.bait_library                = BaitLibrary.first||Factory(:bait_library)
   end
 end
