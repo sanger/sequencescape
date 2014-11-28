@@ -3,13 +3,12 @@ require "test_helper"
 class PreCapGroupsTest < ActiveSupport::TestCase
 
   def with_pools(*pools)
-    t = Time.now
     pools.each_with_index do |well_locs,index|
       @plate.wells.located_at(well_locs).each do |well|
         Factory(:pulldown_isc_request, {
           :asset => well,
           :pre_capture_pool => @pools[index],
-          :created_at => t + index
+          :submission_id => index+1
         })
       end
     end
@@ -33,7 +32,6 @@ class PreCapGroupsTest < ActiveSupport::TestCase
 
       should "report two pools" do
 
-        assert_equal 6, @plate.wells.count
         assert_equal([
           ['00000000-0000-0000-0000-000000000000',['A1','B1','C1']],
           ['00000000-0000-0000-0000-000000000001',['D1','E1','F1']]
@@ -51,13 +49,39 @@ class PreCapGroupsTest < ActiveSupport::TestCase
 
         should "still report all the pools" do
 
-          assert_equal 6, @plate.wells.count
           assert_equal([
             ['00000000-0000-0000-0000-000000000000',['A1','B1','C1']],
             ['00000000-0000-0000-0000-000000000001',['D1','E1','F1']],
             ['00000000-0000-0000-0000-000000000002',['A1','D1']]
             ], @plate.pre_cap_groups.map {|pool,options| [pool,options[:wells].sort ]})
         end
+      end
+
+      context 'when transfers are created' do
+
+        setup do
+          @target_plate = Factory :destination_transfer_plate
+          @transfer = Transfer::BetweenPlates.create!(
+            :source=>@plate,
+            :destination=>@target_plate,
+            :user => Factory(:user),
+            :transfers => {'A1'=>['A1','B1'],'B1'=>['A1'],'C1'=>['A1'],'D1'=>['B1','C1'],'E1'=>['C1'],'F1'=>['C1']}
+          )
+        end
+
+        should "assign requests to the right submissions" do
+          transfer_sub = {
+            'A1'=>{'A1'=>1,'B1'=>3},'B1'=>{'A1'=>1}, 'C1'=>{'A1'=>1},
+            'D1'=>{'C1'=>2,'B1'=>3},'E1'=>{'C1'=>2}, 'F1'=>{'C1'=>2},
+          }
+
+          assert_equal 8, @target_plate.transfer_requests.count
+          @target_plate.transfer_requests.each do |request|
+            assert_equal transfer_sub[request.asset.map_description][request.target_asset.map_description], request.submission_id
+          end
+        end
+
+
       end
 
       context "when some are started" do

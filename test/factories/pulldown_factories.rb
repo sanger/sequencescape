@@ -4,7 +4,7 @@ Factory.define(:transfer_plate, :class => Plate) do |plate|
 
   plate.after_create do |plate|
     plate.wells.import(
-      [ 'A1', 'B1' ].map do |location|
+      [ 'A1', 'B1', 'C1' ].map do |location|
         map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(Map::AssetShape.find_by_name('Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
         Factory(:tagged_well, :map => map)
       end
@@ -15,7 +15,7 @@ end
 # A plate that has exactly the right number of wells!
 Factory.define(:pooling_plate, :class => Plate) do |plate|
   plate.size 96
-  plate.purpose PlatePurpose.stock_plate_purpose
+  plate.purpose { Factory :pooling_plate_purpose }
 
   plate.after_create do |plate|
     plate.wells.import(
@@ -161,6 +161,19 @@ Factory.define(:parent_plate_purpose, :class => PlatePurpose) do |plate_purpose|
 
   plate_purpose.after_create do |plate_purpose|
     plate_purpose.child_relationships.create!(:child => Factory(:child_plate_purpose), :transfer_request_type => RequestType.transfer)
+  end
+end
+Factory.define(:pooling_transfer, :class=>RequestType) do |pooling_transfer|
+  pooling_transfer.asset_type 'Well'
+  pooling_transfer.order 1
+  pooling_transfer.request_class_name 'IlluminaHtp::Requests::PcrXpToPool'
+end
+# Plate creations
+Factory.define(:pooling_plate_purpose, :class => PlatePurpose) do |plate_purpose|
+  plate_purpose.name 'Pooling plate purpose'
+  plate_purpose.can_be_considered_a_stock_plate true
+  plate_purpose.after_create do |plate_purpose|
+    plate_purpose.child_relationships.create!(:child => Factory(:child_plate_purpose), :transfer_request_type => Factory(:pooling_transfer))
   end
 end
 Factory.define(:child_plate_purpose, :class => PlatePurpose) do |plate_purpose|

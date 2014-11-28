@@ -39,9 +39,23 @@ class Transfer::BetweenPlates < Transfer
     destination_locations = source_wells.keys.map { |p| transfers[p] }.flatten
     destination_wells     = Hash[destination.wells.located_at_position(destination_locations).map { |well| [well.map.description, well] }]
 
+    # Build a list of source wells for each destination well.
+    dest_sources = Hash.new {|h,i| h[i] = Array.new }
+    transfers.each {|source,dests| dests.each {|dest| dest_sources[dest] << source }} if destination.supports_multiple_submissions?
+
+    pcg = source.pre_cap_groups
+    location_subs = dest_sources.inject({}) do |store, dest_source|
+      dest_loc, sources = *dest_source
+      uuid, transfer_details = pcg.detect {|k,v| v[:wells].sort == sources.sort}
+      raise StandardError, "Could not find appropriate pool" if transfer_details.nil?
+      pcg.delete(uuid)
+      store[dest_loc] = transfer_details[:submission_id]
+      store
+    end
+
     source_wells.each do |location, source_well|
       Array(transfers[location]).flatten.each do |target_well_location|
-        yield(source_well, destination_wells[target_well_location])
+        yield(source_well, destination_wells[target_well_location],location_subs[target_well_location])
       end
     end
 
