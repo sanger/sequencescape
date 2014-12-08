@@ -45,7 +45,16 @@ module IlluminaHtp::Requests
 
   module InitialDownstream
     def outer_request
-      asset.requests.detect {|request| request.is_a?(LibraryCompletion)}
+      asset.requests.reduce([]) do |list, request|
+        if list.empty? || (request.submission.updated_at == list.first.submission.updated_at)
+          list.push(request)
+        else
+          if (request.submission.updated_at > list.first.submission.updated_at)
+            list = [request]
+          end
+        end
+        list
+      end.detect {|request| request.is_a?(LibraryCompletion)}
     end
   end
 
