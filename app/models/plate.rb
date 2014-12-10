@@ -626,4 +626,17 @@ WHERE c.container_id=?
   def compatible_purposes
     PlatePurpose.compatible_with_purpose(self.purpose)
   end
+
+  def update_concentrations_from(parser)
+    ActiveRecord::Base.transaction do
+      parser.each_well_and_parameters do |position,concentration,molarity|
+        wells.include_map.detect {|w| w.map_description == position }.tap do |well|
+          well.set_concentration(concentration)
+          well.set_molarity(molarity)
+          well.save!
+        end
+      end
+    end
+    true
+  end
 end
