@@ -14,7 +14,7 @@ class AddX10LibraryPreparationPlatePurposes < ActiveRecord::Migration
         :barcode_for_tecan => "ean13_barcode"
       )
 
-      PlatePurpose.create!(
+      IlluminaHtp::NormalizedPlatePurpose.create!(
         :name => "Lib Norm 2",
         :can_be_considered_a_stock_plate => false,
         :default_state => "pending",

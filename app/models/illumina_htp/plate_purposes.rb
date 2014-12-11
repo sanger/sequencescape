@@ -11,6 +11,10 @@ module IlluminaHtp::PlatePurposes
       'Lib PCRR-XP',
       # Alternative branch for ILA
       'Post Shear XP',
+      # Plate based pooling
+      'Lib Norm',
+      'Lib Norm 2',
+      'Lib Norm 2 Pool'
     ]
   ]
 
@@ -33,6 +37,7 @@ module IlluminaHtp::PlatePurposes
     [ 'Lib PCR-XP','Lib Pool Pippin', 'Lib Pool Conc', 'Lib Pool SS', 'Lib Pool SS-XP', 'Lib Pool SS-XP-Norm' ],
     [ 'AL Libs', 'Lib PCRR', 'Lib PCRR-XP','Lib Pool Pippin' ],
     [ 'Lib PCR-XP','ISC lib pool' ],
+    [ 'Lib PCR-XP','Lib Norm','Lib Norm 2','Lib Norm 2 Pool'],
     [ 'Lib PCRR-XP','ISC lib pool' ],
     [ 'Post Shear', 'Post Shear XP', 'AL Libs']
   ]
@@ -88,7 +93,12 @@ module IlluminaHtp::PlatePurposes
 
     'Post Shear QC'    => IlluminaHtp::PostShearQcPlatePurpose,
     'Lib PCR-XP QC'    => PlatePurpose,
-    'Lib PCRR-XP QC'   => PlatePurpose
+    'Lib PCRR-XP QC'   => PlatePurpose,
+
+
+      'Lib Norm'        => PlatePurpose,
+      'Lib Norm 2'      => IlluminaHtp::NormalizedPlatePurpose,
+      'Lib Norm 2 Pool' => IlluminaHtp::PooledPlatePurpose
 
   }
 
