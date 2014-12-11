@@ -8,6 +8,7 @@ module IlluminaHtp::Requests
     def update_pool_information(pool_information)
       super
       pool_information[:target_tube_purpose] = target_tube.purpose.uuid if target_tube
+      pool_information[:request_type] = request_type.key
     end
 
     def role
