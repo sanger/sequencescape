@@ -1,7 +1,7 @@
 class AddX10LibraryPreparationPlatePurposes < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
-      PlatePurpose.create!(
+      IlluminaHtp::InitialDownstreamPlatePurpose.create!(
         :name => "Lib Norm",
         :can_be_considered_a_stock_plate => false,
         :default_state => "pending",

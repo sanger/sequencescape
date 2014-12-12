@@ -96,9 +96,9 @@ module IlluminaHtp::PlatePurposes
     'Lib PCRR-XP QC'   => PlatePurpose,
 
 
-      'Lib Norm'        => PlatePurpose,
-      'Lib Norm 2'      => IlluminaHtp::NormalizedPlatePurpose,
-      'Lib Norm 2 Pool' => IlluminaHtp::PooledPlatePurpose
+    'Lib Norm'        => IlluminaHtp::InitialDownstreamPlatePurpose,
+    'Lib Norm 2'      => IlluminaHtp::NormalizedPlatePurpose,
+    'Lib Norm 2 Pool' => IlluminaHtp::PooledPlatePurpose
 
   }
 
