@@ -67,6 +67,18 @@ namespace :working do
 
     Supplier.create!(:name=>'Test Supplier')
 
+    user = User.last
+    puts "Setting up tag plates..."
+    lot = LotType.find_by_name('IDT Tags').lots.create!(
+      :lot_number => 'UATTaglot',
+      :template => TagLayoutTemplate.find_by_name('Sanger_168tags - 10 mer tags in columns ignoring pools (first oligo: ATCACGTT)'),
+      :user => user,
+      :received_at => DateTime.now
+    )
+   qcc =  QcableCreator.create!(:lot=>lot,:user=>user,:count=>30)
+   qcc.qcables.each {|qcable| qcable.update_attributes!(:state=>'available'); puts "Tag Plate: #{qcable.asset.ean13_barcode}"}
+
+
  end
 end
 
