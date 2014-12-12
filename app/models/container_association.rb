@@ -64,6 +64,12 @@ class ContainerAssociation < ActiveRecord::Base
         class_eval(&block) if block_given?
       end
 
+      self.class_eval do
+        def maps
+          Map.where_plate_size(size).where_plate_shape(asset_shape)
+        end
+      end
+
       named_scope :"include_#{content_name}", :include => :contents  do
         def to_include
           [:contents]

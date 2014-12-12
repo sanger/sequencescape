@@ -64,6 +64,28 @@ class Map < ActiveRecord::Base
       description_strategy.constantize.location_from_row_and_column(row, column,plate_width(size),size)
     end
 
+    def location_from_index(index, size=96)
+      row = index/plate_width(size) + 1
+      column = index%plate_width(size)
+      description_strategy.constantize.location_from_row_and_column(row, column,plate_width(size),size)
+    end
+
+    def generate_map(size)
+      raise StandardError, 'Map already exists' if Map.find_by_asset_size_and_asset_shape_id(size,id).present?
+      ActiveRecord::Base.transaction do
+        (0...size).each do |i|
+          Map.create!(
+            :asset_size     => size,
+            :asset_shape_id => self.id,
+            :location_id    => i+1,
+            :row_order      => i,
+            :column_order   => horizontal_to_vertical(i,size),
+            :description    => location_from_index(i,size)
+          )
+        end
+      end
+    end
+
   end
 
   module Coordinate
@@ -218,6 +240,26 @@ class Map < ActiveRecord::Base
 
   def vertical_plate_position
     self.column_order + 1
+  end
+
+  def height
+    asset_shape.plate_height(asset_size)
+  end
+
+  def width
+    asset_shape.plate_width(asset_size)
+  end
+
+  ##
+  # Column of particular map location. Zero indexed integer
+  def column
+    self.row_order%width
+  end
+
+  ##
+  # Row of particular map location. Zero indexed integer
+  def row
+    self.column_order%height
   end
 
   def horizontal_plate_position

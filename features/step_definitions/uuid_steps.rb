@@ -16,6 +16,7 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME = [
   'stock multiplexed library tube',
   'PacBio library tube',
   'well',
+  'asset rack',
   'plate',
   'project',
   'submission template',
@@ -54,6 +55,11 @@ Given /^the UUID for the (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) "([^\"]+)" is
   set_uuid_for(object, uuid_value)
 end
 
+Given /^the UUID for the asset rack purpose "(.*?)" is "(.*?)"$/ do |name,uuid_value|
+  object = AssetRack::Purpose.find_by_name(name) or raise "Cannot find asset rack #{ name.inspect }"
+  set_uuid_for(object, uuid_value)
+end
+
 Given /^an? (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) called "([^\"]+)" with UUID "([^\"]+)"$/ do |model,name,uuid_value|
   set_uuid_for(Factory(model.gsub(/\s+/, '_').to_sym, :name => name), uuid_value)
 end
@@ -82,6 +88,7 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
 
   'user',
   'asset',
+  'asset rack',
   'sample tube',
   'lane',
   'plate',
