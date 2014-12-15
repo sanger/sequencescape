@@ -29,12 +29,6 @@ class Pipeline < ActiveRecord::Base
   has_many :request_types, :through => :pipelines_request_types
 
   validates_presence_of :request_types
-  # validate :has_request_types
-
-  # def has_request_types
-  #   errors.add_to_base('A Pipeline must have at least one associcated RequestType') if self.request_types.blank?
-  # end
-  # private :has_request_types
 
   belongs_to :control_request_type, :class_name => 'RequestType'
 

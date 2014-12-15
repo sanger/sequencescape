@@ -3,15 +3,19 @@
     <tr>
       <th class='label'>&nbsp;</th>
       <th id="priority_flag"  style='text-align: center'><%= link_to image_tag("icon_0_flag.png", :size=>"16x16"), "javascript:void(0);" %></th>
-      <th><%= link_to "Previous requests", "javascript:void(0);" %></th>
       <th class='label'><%= link_to "Internal ID", "javascript:void(0);" %></th>
       <th class='label'><%= link_to "Barcode", "javascript:void(0);" %></th>
+
       <th class='label'><%= link_to "Wells", "javascript:void(0);" %></th>
       <th class='label'><%= link_to "Plate Purpose", "javascript:void(0);" %></th>
       <th class='label'><%= link_to "Pick To", "javascript:void(0);" %></th>
       <% if @pipeline.display_next_pipeline? %><th class="label"><%= link_to "Next Pipeline", "javascript:void(0);" %></th><% end %>
       <th class='label'><%= link_to "Submission", "javascript:void(0);" %></th>
       <th class='label'><%= link_to "Study", "javascript:void(0);" %></th>
+
+      <th class='label'><%= link_to "Stock Barcode", "javascript:void(0);" %></th>
+      <th class='label'><%= link_to "Still Required", "javascript:void(0);" %></th>
+
       <th class='label'></th>
     </tr>
   </thead>
@@ -40,6 +44,7 @@
           </td>
           <td><%= parent.id %></td>
           <td><%= parent.sanger_human_barcode %></td>
+
           <td><%= requests.size %></td>
           <td><%= parent.purpose.name %></td>
           <td><%= target_purpose_for(requests.first) %></td>
@@ -54,6 +59,10 @@
               <%= submission.study_names %>
             <% end -%>
           </td>
+
+          <td><%= parent.stock_plate.try(:sanger_human_barcode) %></td>
+          <td><%= requests.size/parent.height %></td>
+
           <td><%= link_to 'Show plate', show_plate_asset_url(parent) %></td>
         </tr>
       <% else %>
