@@ -15,12 +15,17 @@ module PlatePurpose::RequestAttachment
       source_wells.each do |source_well|
 
         upstream = source_well.requests.detect {|r| r.is_a?(connected_class) }
+
+        # We need to find the downstream requests BEFORE connecting the upstream
+        # This is because submission.next_requests tries to take a shortcut through
+        # the target_asset if it is defined.
+        if connect_downstream
+          downstream = upstream.submission.next_requests(upstream)
+          downstream.each { |ds| ds.update_attributes!(:asset => target_well) }
+        end
+
         upstream.update_attributes!(:target_asset=> target_well)
         upstream.pass!
-
-        return true unless connect_downstream?
-        downstream = upstream.submission.next_requests(upstream)
-        downstream.each { |ds| ds.update_attributes!(:asset => target_well) }
 
         true
       end
