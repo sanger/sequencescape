@@ -6,16 +6,17 @@
       <th class='label'><%= link_to "Internal ID", "javascript:void(0);" %></th>
       <th class='label'><%= link_to "Barcode", "javascript:void(0);" %></th>
 
-      <th class='label'><%= link_to "Wells", "javascript:void(0);" %></th>
-      <th class='label'><%= link_to "Plate Purpose", "javascript:void(0);" %></th>
-      <th class='label'><%= link_to "Pick To", "javascript:void(0);" %></th>
-      <% if @pipeline.display_next_pipeline? %><th class="label"><%= link_to "Next Pipeline", "javascript:void(0);" %></th><% end %>
-      <th class='label'><%= link_to "Submission", "javascript:void(0);" %></th>
-      <th class='label'><%= link_to "Study", "javascript:void(0);" %></th>
-
-      <th class='label'><%= link_to "Stock Barcode", "javascript:void(0);" %></th>
-      <th class='label'><%= link_to "Still Required", "javascript:void(0);" %></th>
-
+      <% if @pipeline.purpose_information? -%>
+        <th class='label'><%= link_to "Wells", "javascript:void(0);" %></th>
+        <th class='label'><%= link_to "Plate Purpose", "javascript:void(0);" %></th>
+        <th class='label'><%= link_to "Pick To", "javascript:void(0);" %></th>
+        <% if @pipeline.display_next_pipeline? %><th class="label"><%= link_to "Next Pipeline", "javascript:void(0);" %></th><% end %>
+        <th class='label'><%= link_to "Submission", "javascript:void(0);" %></th>
+        <th class='label'><%= link_to "Study", "javascript:void(0);" %></th>
+      <% else %>
+        <th class='label'><%= link_to "Stock Barcode", "javascript:void(0);" %></th>
+        <th class='label'><%= link_to "Still Required", "javascript:void(0);" %></th>
+      <% end %>
       <th class='label'></th>
     </tr>
   </thead>
@@ -26,7 +27,7 @@
       <%# hash_group = @pipeline.group_key_to_hash(group) %>
       <% group_id = group.join(", ") %>
       <%- #beware , the group will be destructed after the shift operation %>
-      <%  parent  = @pipeline.group_by_parent? && ( pid = group.shift ) && Asset.find(pid) %>
+      <% parent  = @pipeline.group_by_parent? && ( pid = group.shift ) && Asset.find(pid) %>
       <% submission_id = @pipeline.group_by_submission? && group.shift  %>
       <% submission =  submission_id && Submission.find(submission_id) %>
       <% unless parent.nil? %>
@@ -44,25 +45,25 @@
           </td>
           <td><%= parent.id %></td>
           <td><%= parent.sanger_human_barcode %></td>
-
-          <td><%= requests.size %></td>
-          <td><%= parent.purpose.name %></td>
-          <td><%= target_purpose_for(requests.first) %></td>
-          <% if @pipeline.display_next_pipeline? %><td><%= next_pipeline_name_for(requests.first) %></td><% end %>
-          <td>
-            <% if @pipeline.group_by_submission? %>
-              <%= submission_id %>
-            <% end -%>
-          </td>
-          <td>
-            <% if submission -%>
-              <%= submission.study_names %>
-            <% end -%>
-          </td>
-
-          <td><%= parent.stock_plate.try(:sanger_human_barcode) %></td>
-          <td><%= requests.size/parent.height %></td>
-
+          <% if @pipeline.purpose_information? -%>
+            <td><%= requests.size %></td>
+            <td><%= parent.purpose.name %></td>
+            <td><%= target_purpose_for(requests.first) %></td>
+            <% if @pipeline.display_next_pipeline? %><td><%= next_pipeline_name_for(requests.first) %></td><% end %>
+            <td>
+              <% if @pipeline.group_by_submission? %>
+                <%= submission_id %>
+              <% end -%>
+            </td>
+            <td>
+              <% if submission -%>
+                <%= submission.study_names %>
+              <% end -%>
+            </td>
+          <% else %>
+            <td><%= parent.stock_plate.try(:sanger_human_barcode) %></td>
+            <td><%= requests.size/parent.height %></td>
+          <% end %>
           <td><%= link_to 'Show plate', show_plate_asset_url(parent) %></td>
         </tr>
       <% else %>

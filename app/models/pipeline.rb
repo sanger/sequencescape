@@ -268,6 +268,10 @@ class Pipeline < ActiveRecord::Base
     false
   end
 
+  def purpose_information?
+    true
+  end
+
   def prints_a_worksheet_per_task?
     false
   end
