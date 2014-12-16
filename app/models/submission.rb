@@ -192,16 +192,10 @@ class Submission < ActiveRecord::Base
     request_type_ids[request_type_ids.index(request_type_id)+1]  if request_type_ids.present?
   end
 
-  def next_requests(request)
-    # We should never be receiving requests that are not part of our request graph.
-    raise RuntimeError, "Request #{request.id} is not part of submission #{id}" unless request.submission_id == self.id
-
-      # Pick out the siblings of the request, so we can work out where it is in the list, and all of
-      # the requests in the subsequent request type, so that we can tie them up.  We order by ID
-      # here so that the earliest requests, those created by the submission build, are always first;
-      # any additional requests will have come from a sequencing batch being reset.
-      next_request_type_id = self.next_request_type_id(request.request_type_id) or return []
-      return request.target_asset.requests.find(:all,:conditions=>{:submission_id=>id,:request_type_id=>next_request_type_id}) if request.target_asset.present?
+  def obtain_next_requests_to_connect(request, next_request_type_id=nil)
+      if next_request_type_id.nil?
+        next_request_type_id = self.next_request_type_id(request.request_type_id) or return []
+      end
       all_requests = requests.with_request_type_id([ request.request_type_id, next_request_type_id ]).all(:order => 'id ASC')
       sibling_requests, next_possible_requests = all_requests.partition { |r| r.request_type_id == request.request_type_id }
 
@@ -222,6 +216,19 @@ class Submission < ActiveRecord::Base
       index = sibling_requests.index(request)
       next_possible_requests[index*divergence_ratio,[ 1, divergence_ratio ].max]
     end
+  end
+
+  def next_requests(request)
+    # We should never be receiving requests that are not part of our request graph.
+    raise RuntimeError, "Request #{request.id} is not part of submission #{id}" unless request.submission_id == self.id
+
+      # Pick out the siblings of the request, so we can work out where it is in the list, and all of
+      # the requests in the subsequent request type, so that we can tie them up.  We order by ID
+      # here so that the earliest requests, those created by the submission build, are always first;
+      # any additional requests will have come from a sequencing batch being reset.
+      next_request_type_id = self.next_request_type_id(request.request_type_id) or return []
+      return request.target_asset.requests.find(:all,:conditions=>{:submission_id=>id,:request_type_id=>next_request_type_id}) if request.target_asset.present?
+      obtain_next_requests_to_connect(request, next_request_type_id)
   end
 
   def name
