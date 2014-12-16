@@ -46,7 +46,7 @@ class PacBio::SampleSheet
 
 
   def row(requests, batch)
-    # Readd these lines when secondary analysis activated
+    # Read these lines when secondary analysis activated
     #  replace_non_alphanumeric(library_tube.pac_bio_library_tube_metadata.protocol),
     # "JobName=DefaultJob_#{Time.now}",
     request = requests.first
