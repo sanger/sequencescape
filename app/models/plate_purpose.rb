@@ -23,8 +23,8 @@ class PlatePurpose < Purpose
   end
 
   include Relationship::Associations
-  
-  named_scope :compatible_with_purpose, lambda {|purpose| { :conditions => ["(target_type is null and 'Plate'=?)  or target_type=?",purpose.target_plate_type, purpose.target_plate_type], :order=>"name ASC" } }  
+
+  named_scope :compatible_with_purpose, lambda {|purpose| { :conditions => ["(target_type is null and 'Plate'=?)  or target_type=?",purpose.target_plate_type, purpose.target_plate_type], :order=>"name ASC" } }
 
   named_scope :cherrypickable_as_target, :conditions => { :cherrypickable_target => true }
   named_scope :cherrypickable_as_source, :conditions => { :cherrypickable_source => true }
@@ -174,7 +174,9 @@ class PlatePurpose < Purpose
 
     attributes[:size]     ||= size
     attributes[:location] ||= default_location
-    plates.create_with_barcode!(attributes, &block).tap do |plate|
+    attributes[:purpose] = self
+
+    target_plate_type.constantize.create_with_barcode!(attributes, &block).tap do |plate|
       plate.wells.construct! unless do_not_create_wells
     end
   end

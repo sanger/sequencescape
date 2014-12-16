@@ -36,6 +36,21 @@ class AssetRackTest < ActiveSupport::TestCase
     end
   end
 
+  context "#create" do
+    setup do
+      PlateBarcode.stubs(:create).returns(OpenStruct.new(:barcode =>1))
+      @purpose = Factory :asset_rack_purpose
+      @rack =  @purpose.create!
+    end
+
+    should "create strip tubes" do
+      assert_equal 12,   @rack.strip_tubes.count
+      assert_equal nil,  @rack.strip_tubes.first.barcode
+      assert_equal 'LS', @rack.strip_tubes.first.barcode_prefix.prefix
+    end
+
+  end
+
 
   context "A Rack" do
     setup do
