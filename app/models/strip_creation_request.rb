@@ -1,0 +1,3 @@
+class StripCreationRequest < Request
+
+end

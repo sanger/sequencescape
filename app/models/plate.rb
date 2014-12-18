@@ -530,15 +530,6 @@ WHERE c.container_id=?
     (scanned_plates | typed_plates).compact
   end
 
-  def self.create_default_plates_and_print_barcodes(source_plate_barcodes, barcode_printer, current_user)
-    # NOTE: Temporary change as this code is going to disappear in the future
-    return false if source_plate_barcodes.blank? || barcode_printer.blank?
-    self.plates_from_scanned_plate_barcodes(source_plate_barcodes).group_by(&:plate_purpose).each do |plate_purpose, plates|
-      Plate::Creator.new(:plate_purposes => plate_purpose.child_plate_purposes).execute(plates.map(&:generate_machine_barcode).join("\n"), barcode_printer, current_user)
-    end
-    true
-  end
-
   def number_of_blank_samples
     self.wells.with_blank_samples.count
   end

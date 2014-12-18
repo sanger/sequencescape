@@ -1,6 +1,3 @@
-Given /^a (plate|tube) purpose "([^"]+)" with UUID "([^"]+)"$/ do |type, name, uuid_value|
-  set_uuid_for(Factory("#{type}_purpose", :name => name), uuid_value)
-end
 
 Transform /^the plate purpose "([^\"]+)"$/ do |name|
   PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"

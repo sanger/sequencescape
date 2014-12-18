@@ -37,12 +37,11 @@ class Transfer::BetweenPlates < Transfer
     bad_wells, good_wells = source.wells.located_at_position(transfers.keys).with_pool_id.partition(&method(:should_well_not_be_transferred?))
     source_wells          = Hash[good_wells.map { |well| [well.map.description, well] }]
     destination_locations = source_wells.keys.map { |p| transfers[p] }
-    destination_wells     = Hash[destination.wells.located_at_position(destination_locations).map { |well| [well.map.description, well] }]
+    destination_wells     = Hash[destination.wells.located_at_position(destination_locations).map { |well| [well.map_description, well] }]
 
     source_wells.each do |location, source_well|
       yield(source_well, destination_wells[transfers[location]])
     end
-
     # Eliminate any of the transfers that were not made because of the bad source wells
     transfers_we_did_not_make = bad_wells.map { |well| well.map.description }
     transfers.delete_if { |k,_| transfers_we_did_not_make.include?(k) }

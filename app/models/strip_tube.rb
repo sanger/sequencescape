@@ -5,4 +5,13 @@
 # instead get assigned it later.
 class StripTube < Plate
   contained_by :asset_rack
+
+  self.prefix = 'LS'
+
+  # Until we no how barcodes are going to work, we'll just override this
+  def self.create_with_barcode!(*args, &block)
+    attributes = args.extract_options!
+    barcode    = args.first || attributes[:barcode]
+    create!(attributes.merge(:barcode => barcode), &block)
+  end
 end

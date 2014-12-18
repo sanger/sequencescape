@@ -334,6 +334,9 @@ end
 Factory.define :gel_qc_task do |t|
 end
 
+Factory.define :strip_tube_creation_task do |t|
+end
+
 Factory.define :plate_transfer_task do |t|
   t.purpose_id Purpose.find_by_name('PacBio Sheared').id
 end
@@ -383,4 +386,18 @@ end
 
 Factory.define :barcode_prefix do |b|
   b.prefix  "DN"
+end
+
+# A plate that has exactly the right number of wells!
+Factory.define(:plate_for_strip_tubes, :class => Plate) do |plate|
+  plate.size 96
+
+  plate.after_create do |plate|
+    plate.wells.import(
+      [ 'A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1' ].map do |location|
+        map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(Map::AssetShape.find_by_name('Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
+        Factory(:tagged_well, :map => map)
+      end
+    )
+  end
 end

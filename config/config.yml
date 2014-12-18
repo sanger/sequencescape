@@ -35,6 +35,9 @@ development:
     mail_prefix: "[DEVELOPMENT]"
     pac_bio_instrument_api: http://example.com
     pac_bio_smrt_portal_api:  http://example.com
+    phyx_tag:
+        tag_group_name: "Control Tag Group 888"
+        tag_map_id: 888
     pico_green_url: http://localhost:3003
     pipelines_url: http://localhost:3000
     plate_barcode_service: http://localhost:3011

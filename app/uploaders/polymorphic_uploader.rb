@@ -13,15 +13,15 @@ module CarrierWave
       def retrieve!(identifier)
         CarrierWave::Storage::DirectDatabase::File.new(uploader, self, uploader.store_path(identifier))
       end
-      
+
       class File
         def initialize(uploader, base, path)
           @uploader = uploader
           @path = path
           @base = base
         end
-          
-        # Returns the current path of the file 
+
+        # Returns the current path of the file
         def path
           @path
         end
@@ -29,12 +29,12 @@ module CarrierWave
         def size
           current_data.size
         end
-        
+
         # Reads the contents of the file
         def read
           current_data
         end
-        
+
         # Remove the file
         def delete
           puts "Deleting file from database"
@@ -46,12 +46,12 @@ module CarrierWave
           raise NotImplementedError, "Files are stored in the database, so are not available directly through a URL"
         end
 
-        # Stores the file in the DbFiles model - split across many rows if size > 200KB 
+        # Stores the file in the DbFiles model - split across many rows if size > 200KB
         def store(file)
           each_slice(file) do |start, finish|
             @uploader.model.db_files.create!(:data => file.slice(start, finish))
           end
-          
+
           # Old code from attachment_fu: doesn't seem to be needed
           # #  self.class.update_all ['db_file_id = ?', self.db_file_id = db_file.id], ['id = ?', id]
         end
@@ -66,20 +66,20 @@ module CarrierWave
             @uploader.model.content_type=type unless type.nil?
           end
         end
-        
+
         private
           # Gets the current data from the database
           def current_data
             @uploader.model.db_files.map(&:data).join
           end
-          
+
           # Destroys the file. Called in the after_destroy callback
           def destroy_file
             @uploader.model.db_files.each do |db_file|
               db_file.delete
             end
           end
-          
+
           # Yields the partitions for the file with the max_part_size boundary
           def each_slice(data)
             max_part_size = 200.kilobytes
@@ -93,21 +93,21 @@ module CarrierWave
             end
           end
       end
-    end # Database 
+    end # Database
   end # Storage
 end # CarrierWave
 class PolymorphicUploader < CarrierWave::Uploader::Base
-  
+
   def initialize(*args, &block)
     super
   end
-  
+
   def exists?
     @column.blank?
   end
-  
+
   storage CarrierWave::Storage::DirectDatabase
-  
+
   # This is where files are stored on upload. We are using callbacks to empty it after upload
   def cache_dir
      "#{Rails.root}/tmp/uploads"
@@ -127,8 +127,8 @@ class PolymorphicUploader < CarrierWave::Uploader::Base
       FileUtils.rm_rf(File.join(cache_dir, @cache_id_was))
     end
   end
-  
-  
+
+
 end
 
 

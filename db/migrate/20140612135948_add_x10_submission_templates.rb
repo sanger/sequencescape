@@ -54,7 +54,7 @@ class AddX10SubmissionTemplates < ActiveRecord::Migration
   end
 
   def self.seq_x10_for(pipeline)
-    @hash ||= Hash.new {|h,i| h[i]= [RequestType.find_by_key("illumina_b_hiseq_x_paired_end_sequencing").id]}
+    @hash ||= Hash.new {|h,i| h[i]= [RequestType.find_by_key!("illumina_b_hiseq_x_paired_end_sequencing").id]}
     @hash[pipeline]
   end
 end
