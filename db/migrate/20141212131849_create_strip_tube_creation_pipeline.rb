@@ -10,6 +10,7 @@ class CreateStripTubeCreationPipeline < ActiveRecord::Migration
         :sorter => 8,
         :paginate => false,
         :max_size => 96,
+        :min_size => 8,
         :summary => true,
         :externally_managed => false,
         :control_request_type_id => 0,

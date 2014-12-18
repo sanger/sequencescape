@@ -1,0 +1,11 @@
+<h2>Strip Tube Creation</h2>
+<p><%= @tubes_available %> remaining <strong><%= @tubes_requested %></strong> requested.</p>
+<p>Select the number of stips to create. Any remaining requests will be returned to the inbox.</p>
+
+<% form_for @task, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
+  <dl>
+    <dt><label for="tubes_to_create">Strips to create</label></dt>
+    <dd><%= select_tag("tubes_to_create", options_for_select(@options,@default))  %></dd>
+  </dl>
+  <%= render :partial => "next_stage_submit" %>
+<% end %>

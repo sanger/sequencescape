@@ -37,7 +37,7 @@ end
 Factory.define :strip_tube_purpose, :class => PlatePurpose do |a|
   a.name               { Factory.next :purpose_name }
   a.size               "8"
-  a.asset_shape        Map::AssetShape.find_by_name!('StripTubeColumn')
+  a.asset_shape        { Map::AssetShape.find_by_name!('StripTubeColumn') }
   a.barcode_for_tecan  'ean13_barcode'
 end
 
