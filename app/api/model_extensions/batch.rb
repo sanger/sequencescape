@@ -2,8 +2,8 @@ module ModelExtensions::Batch
   def self.included(base)
     base.class_eval do
       # These were in Batch but it makes more sense to keep them here for the moment
-      has_many :batch_requests, :include => :request
-      has_many :requests, :through => :batch_requests do
+      has_many :batch_requests, :include => :request, :inverse_of => :batch
+      has_many :requests, :through => :batch_requests, :inverse_of => :batch do
         # we redefine count to use the fast one.
         # the normal request.count is slow because of the eager load of requests in batch_request
         def count
