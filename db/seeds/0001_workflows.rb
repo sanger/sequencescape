@@ -1298,7 +1298,7 @@ x10_requests_types = ['a', 'b'].map do |pipeline|
     :key => "illumina_#{pipeline}_hiseq_x_paired_end_sequencing",
     :name => "Illumina-#{pipeline.upcase} HiSeq X Paired end sequencing",
     :workflow =>  Submission::Workflow.find_by_key("short_read_sequencing"),
-    :asset_type => "LibraryTube",
+    :asset_type => "Well",
     :order => 2,
     :initial_state => "pending",
     :request_class_name => "HiSeqSequencingRequest",
@@ -1348,7 +1348,7 @@ end
 
 x10_pipelines = ['(spiked in controls)','(no controls)'].each do |type|
   SequencingPipeline.create!(
-    :name => "HiSeq X Ten PE #{type}",
+    :name => "HiSeq X PE #{type}",
       :automated => false,
       :active => true,
       :location => Location.find_by_name("Cluster formation freezer"),
