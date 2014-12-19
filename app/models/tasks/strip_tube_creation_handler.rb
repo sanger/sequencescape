@@ -27,7 +27,7 @@ module Tasks::StripTubeCreationHandler
       return false
     end
 
-    source_plate = @batch.requests.first.asset.plate
+    source_plate = @batch.requests.first.asset.plate.stock_plate||@batch.requests.first.asset.plate
     base_name = source_plate.sanger_human_barcode
 
     strip_purpose = Purpose.find_by_name(task.descriptors.find_by_key!('strip_tube_purpose').value)
