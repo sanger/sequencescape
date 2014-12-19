@@ -27,12 +27,15 @@ module Tasks::StripTubeCreationHandler
       return false
     end
 
-    base_name = @batch.requests.first.asset.plate.sanger_human_barcode
+    source_plate = @batch.requests.first.asset.plate
+    base_name = source_plate.sanger_human_barcode
 
     strip_purpose = Purpose.find_by_name(task.descriptors.find_by_key!('strip_tube_purpose').value)
 
     (0...tubes_to_create).each do |tube_number|
+
       tube = strip_purpose.create!(:name=>"#{base_name}:#{tube_number+1}-#{@batch.id}")
+      AssetLink::Job.create(source_plate,[tube])
 
       tube.size.times do |index|
         request = locations_requests[index].pop
