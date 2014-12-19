@@ -36,7 +36,7 @@ module Request::Statemachine
       aasm_column :state
       aasm_state :pending
       aasm_state :started,   :enter => :on_started
-      aasm_state :failed,    :enter => :on_failed
+      aasm_state :failed,    :after_enter => :on_failed
       aasm_state :passed,    :enter => :on_passed
       aasm_state :cancelled, :enter => :on_cancelled
       aasm_state :blocked,   :enter => :on_blocked

@@ -23,7 +23,7 @@ module IlluminaHtp::Requests
     end
 
     def on_failed
-      submission.next_requests(self).each {|r| r.pending? ? r.cancel_before_started! : r.transition_to('failed') }
+      submission.next_requests(self).each {|r| r.pending? ? r.cancel_before_started! : r.transition_to('failed') unless r.failed? }
     end
 
     validate :valid_purpose?
@@ -38,7 +38,9 @@ module IlluminaHtp::Requests
   class LibraryCompletion < StdLibraryRequest
     module FailUpstream
       def on_failed
-        asset.requests_as_target.select {|r| r.passed? && r.is_a?(SharedLibraryPrep) }.map(&:change_decision!)
+        asset.requests_as_target.select {|r| r.passed? && r.is_a?(SharedLibraryPrep) }.map do |r|
+          r.change_decision! unless r.failed?
+        end
       end
     end
     include FailUpstream
