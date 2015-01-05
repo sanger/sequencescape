@@ -33,14 +33,16 @@ module IlluminaHtp::Requests
       false
     end
 
+    def failed_downstream!
+      change_decision! unless failed?
+    end
+
   end
 
   class LibraryCompletion < StdLibraryRequest
     module FailUpstream
       def on_failed
-        asset.requests_as_target.select {|r| r.passed? && r.is_a?(SharedLibraryPrep) }.map do |r|
-          r.change_decision! unless r.failed?
-        end
+        asset.requests_as_target.each(&:failed_downstream!)
       end
     end
     include FailUpstream

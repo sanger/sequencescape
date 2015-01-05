@@ -167,6 +167,10 @@ module Request::Statemachine
     fail_from_upstream! unless failed?
   end
 
+  def failed_downstream!
+    # Do nothing by default
+  end
+
   def finished?
     self.passed? || self.failed?
   end
