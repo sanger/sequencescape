@@ -23,7 +23,7 @@ module IlluminaHtp::Requests
     end
 
     def on_failed
-      submission.next_requests(self).each {|r| r.pending? ? r.cancel_before_started! : r.transition_to('failed') unless r.failed? }
+      submission.next_requests(self).each(&:failed_upstream!)
     end
 
     validate :valid_purpose?
