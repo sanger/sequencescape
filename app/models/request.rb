@@ -468,4 +468,8 @@ class Request < ActiveRecord::Base
   def target_purpose
     nil
   end
+
+  def library_creation?
+    false
+  end
 end
