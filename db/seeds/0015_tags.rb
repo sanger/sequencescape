@@ -18,7 +18,8 @@ tag_group_names = [
   "NEXTFLEX - 6 mer tags",
   "NEXTFLEX_48 - 6 mer tags",
   "Pulldown 8 tag set - 8 mer tags",
-  "TruSeq small RNA index tags - 6 mer tags"
+  "TruSeq small RNA index tags - 6 mer tags",
+  "Control Tag Group 888"
 ]
 
 # Now we can load the tag information from production in a much more controlled fashion
