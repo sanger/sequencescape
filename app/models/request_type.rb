@@ -25,6 +25,8 @@ class RequestType < ActiveRecord::Base
   has_many :library_types, :through => :library_types_request_types
   has_many :request_type_validators, :class_name => 'RequestType::Validator'
 
+  belongs_to :pooling_method, :class_name => 'RequestType::PoolingMethod'
+
   def default_library_type
     library_types.find(:first,:conditions=>{:library_types_request_types=>{:is_default=>true}})
   end
@@ -144,10 +146,6 @@ class RequestType < ActiveRecord::Base
     end
   end
 
-  def pooling_module
-    RequestType::Pooling::PlateRow
-  end
-
-  delegate :pool_count,     :to => :pooling_module
-  delegate :pool_index_for, :to => :pooling_module
+  delegate :pool_count,     :to => :pooling_method
+  delegate :pool_index_for, :to => :pooling_method
 end

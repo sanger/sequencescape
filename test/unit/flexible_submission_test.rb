@@ -5,6 +5,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
     setup do
       @assets       = Factory(:full_stock_plate).wells
       @workflow     = Factory :submission_workflow
+      @pooling      = Factory :pooling_method
     end
 
     should_belong_to :study
@@ -16,7 +17,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         @project  = Factory :project
         @user     = Factory :user
 
-        @library_creation_request_type = Factory :well_request_type, {:target_purpose => nil, :for_multiplexing=>true}
+        @library_creation_request_type = Factory :well_request_type, {:target_purpose => nil, :for_multiplexing=>true, :pooling_method=>@pooling}
         @sequencing_request_type = Factory :sequencing_request_type
 
         @request_type_ids = [@library_creation_request_type.id, @sequencing_request_type.id]
@@ -62,7 +63,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         @project  = Factory :project
         @user     = Factory :user
 
-        @library_creation_request_type = Factory :well_request_type, {:for_multiplexing=>true, :target_asset_type=>'MultiplexedLibraryTube'}
+        @library_creation_request_type = Factory :well_request_type, {:for_multiplexing=>true, :target_asset_type=>'MultiplexedLibraryTube', :pooling_method=>@pooling}
         @sequencing_request_type = Factory :sequencing_request_type
 
         @request_type_ids = [@library_creation_request_type.id, @sequencing_request_type.id]
@@ -124,7 +125,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         @project = Factory :project
         @user = Factory :user
 
-        @mx_request_type = Factory :well_request_type, {:target_purpose => nil, :for_multiplexing=>true}
+        @mx_request_type = Factory :well_request_type, {:target_purpose => nil, :for_multiplexing=>true, :pooling_method=>@pooling}
         @pe_request_type = Factory :request_type, :asset_type => "LibraryTube", :initial_state => "pending", :name => "PE sequencing", :order => 2, :key => "pe_sequencing"
 
         @request_type_ids = [ @mx_request_type.id, @pe_request_type.id ]

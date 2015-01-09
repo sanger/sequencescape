@@ -206,7 +206,12 @@ ActiveRecord::Base.transaction do
     :for_multiplexing => true,
     :billable => false,
     :product_line => ProductLine.find_by_name!("Illumina-B")
-    )
+    ) do |rt|
+      rt.pooling_method = RequestType::PoolingMethod.create!(
+          :pooling_behaviour => 'PlateRow',
+          :pooling_options   => {:pool_count=>8}
+        )
+    end
 
     RequestType.create!(
       :name => 'Illumina-HTP Strip Tube Creation',

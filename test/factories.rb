@@ -694,3 +694,8 @@ end
 Factory.define(:faculty_sponsor) do |sponsor|
   sponsor.name     { |a| Factory.next :faculty_sponsor_name }
 end
+
+Factory.define(:pooling_method, :class=> 'RequestType::PoolingMethod') do |pooling|
+  pooling.pooling_behaviour 'PlateRow'
+  pooling.pooling_options({:pool_count => 8 })
+end
