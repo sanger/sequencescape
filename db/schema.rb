@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150109132509) do
+ActiveRecord::Schema.define(:version => 20150109135332) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -1039,6 +1039,7 @@ ActiveRecord::Schema.define(:version => 20150109132509) do
     t.boolean  "deprecated",                        :default => false, :null => false
     t.boolean  "no_target_asset",                   :default => false, :null => false
     t.integer  "target_purpose_id"
+    t.integer  "pooling_method_id"
   end
 
   create_table "requests", :force => true do |t|
