@@ -1,4 +1,15 @@
 module Pulldown::PlatePurposes
+
+  ISCH_PURPOSE_FLOWS = [[
+      'Lib PCR-XP',
+      'ISCH lib pool',
+      'ISCH hyb',
+      'ISCH cap lib',
+      'ISCH cap lib PCR',
+      'ISCH cap lib PCR-XP',
+      'ISCH cap lib pool'
+  ]]
+
   PLATE_PURPOSE_FLOWS = [
     [
       'WGS stock DNA',
@@ -36,15 +47,7 @@ module Pulldown::PlatePurposes
       'ISC cap lib PCR',
       'ISC cap lib PCR-XP',
       'ISC cap lib pool'
-    ], [
-      'Lib PCR-XP',
-      'ISCH lib pool',
-      'ISCH hyb',
-      'ISCH cap lib',
-      'ISCH cap lib PCR',
-      'ISCH cap lib PCR-XP',
-      'ISCH cap lib pool'
-    ]
+    ], ISCH_PURPOSE_FLOWS.first
   ]
 
   PLATE_PURPOSE_TYPE = {
