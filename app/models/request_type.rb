@@ -143,4 +143,11 @@ class RequestType < ActiveRecord::Base
     else                               target_asset_type.constantize.create!(&block)
     end
   end
+
+  def pooling_module
+    RequestType::Pooling::PlateRow
+  end
+
+  delegate :pool_count,     :to => :pooling_module
+  delegate :pool_index_for, :to => :pooling_module
 end

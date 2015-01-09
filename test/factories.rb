@@ -423,6 +423,21 @@ Factory.define :multiplexed_library_creation_request_type, :class => RequestType
   }
 end
 
+Factory.define :plate_based_multiplexed_library_creation_request_type, :class => RequestType do |rt|
+  rt_value = Factory.next :request_type_id
+  rt.name               "MX Request type #{rt_value}"
+  rt.key                "request_type_#{rt_value}"
+  rt.request_class      MultiplexedLibraryCreationRequest
+  rt.asset_type         "Well"
+  rt.order              1
+  rt.for_multiplexing   true
+  rt.workflow           { |workflow| workflow.association(:submission_workflow)}
+    rt.after_build {|request_type|
+    request_type.library_types_request_types << Factory(:library_types_request_type,:request_type=>request_type)
+    request_type.request_type_validators << Factory(:library_request_type_validator, :request_type=>request_type)
+  }
+end
+
 Factory.define :sample do |s|
   s.name            {|a| Factory.next :sample_name }
 end

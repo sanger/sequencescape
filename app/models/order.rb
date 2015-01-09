@@ -82,7 +82,7 @@ class Order < ActiveRecord::Base
 
   def assets_are_appropriate
     all_assets.each do |asset|
-      errors.add(:asset, "#{asset.name} is not an appropriate type for the request") unless is_asset_applicable_to_type?(first_request_type, asset)
+      errors.add(:asset, "'#{asset.name}'' is a #{asset.sti_type} which is not suitable for #{first_request_type.name} requests") unless is_asset_applicable_to_type?(first_request_type, asset)
     end
     return true if errors.empty?
     false
@@ -140,6 +140,7 @@ class Order < ActiveRecord::Base
     #call submission with appropriate Order subclass
     Submission.build!({:template => self}.merge(options))
   end
+
   def self.extended(base)
     class_eval do
       def self.build!(*args)
