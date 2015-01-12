@@ -13,4 +13,11 @@ class FlexibleSubmission < Order
     request_type_ids_list.map(&:first)
   end
 
+  def request_type_multiplier(&block)
+    RequestType.find(:all,:conditions=>{:id=>Order.last.request_types,:for_multiplexing=>true}).each do |mx_request|
+      yield(request_types[request_types.index(mx_request.id)+1].to_s.to_sym)
+    end unless request_types.blank?
+    nil
+  end
+
 end
