@@ -40,10 +40,10 @@ module Tasks::StripTubeCreationHandler
       tube.size.times do |index|
         request = locations_requests[index].pop
         well    = tube.wells.in_column_major_order.all[index].id
-        request.update_attributes!(:target_asset_id => well)
         request.submission.next_requests(request).each do |dsr|
           dsr.request.update_attributes!(:asset_id => well)
         end
+        request.update_attributes!(:target_asset_id => well)
       end
     end
 
