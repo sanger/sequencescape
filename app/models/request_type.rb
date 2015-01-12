@@ -146,6 +146,7 @@ class RequestType < ActiveRecord::Base
     end
   end
 
-  delegate :pool_count,     :to => :pooling_method
-  delegate :pool_index_for, :to => :pooling_method
+  delegate :pool_count,             :to => :pooling_method
+  delegate :pool_index_for_asset,   :to => :pooling_method
+  delegate :pool_index_for_request, :to => :pooling_method
 end

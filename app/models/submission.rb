@@ -14,7 +14,7 @@ class Submission < ActiveRecord::Base
   validates_presence_of :user
 
   # Created during the lifetime ...
-  has_many :requests
+  has_many :requests, :inverse_of => :submission
   has_many :items, :through => :requests
 
   has_many :orders, :inverse_of => :submission
@@ -192,17 +192,26 @@ class Submission < ActiveRecord::Base
     request_type_ids[request_type_ids.index(request_type_id)+1]  if request_type_ids.present?
   end
 
+  def previous_request_type_id(request_type_id)
+    request_type_ids[request_type_ids.index(request_type_id)-1]  if request_type_ids.present?
+  end
+
   def obtain_next_requests_to_connect(request, next_request_type_id=nil)
-      if next_request_type_id.nil?
-        next_request_type_id = self.next_request_type_id(request.request_type_id) or return []
-      end
-      all_requests = requests.with_request_type_id([ request.request_type_id, next_request_type_id ]).all(:order => 'id ASC')
-      sibling_requests, next_possible_requests = all_requests.partition { |r| r.request_type_id == request.request_type_id }
+    if next_request_type_id.nil?
+      next_request_type_id = self.next_request_type_id(request.request_type_id) or return []
+    end
+    all_requests = requests.with_request_type_id([ request.request_type_id, next_request_type_id ]).all(:order => 'id ASC')
+    sibling_requests, next_possible_requests = all_requests.partition { |r| r.request_type_id == request.request_type_id }
 
     if request.request_type.for_multiplexing?
-      # Multiplexed requests should not get batched separately, and furthermore, will all use the same sequencing request for
-      # each lane. The divergence ratio plays no part in identifying the start index
-      next_possible_requests
+      # If we have no pooling behaviour specified, then we're pooling by submission.
+      # We keep to the existing behaviour, to isolate risk
+      return next_possible_requests if request.request_type.pooling_method.nil?
+      # If we get here we've got custom pooling behaviour defined.
+      index = request.request_type.pool_index_for_request(request)
+      number_to_return = next_possible_requests.count / request.request_type.pool_count
+      return next_possible_requests.slice(index*number_to_return,number_to_return)
+
     else
       # If requests aren't multiplexed, then they may be batched separately, and we'll have issues
       # if downstream changes affect the ratio. We can use the multiplier on order however, as we

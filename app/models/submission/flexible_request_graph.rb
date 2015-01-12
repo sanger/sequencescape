@@ -114,6 +114,10 @@ module Submission::FlexibleRequestGraph
       chain.order.comments
     end
 
+    def user
+      chain.order.user
+    end
+
     def source_asset_target_assets
       new_target_assets = generate_target_assets
       source_assets_with_index do |source_asset,index|
@@ -148,7 +152,7 @@ module Submission::FlexibleRequestGraph
 
     def source_assets_with_index
       source_assets.each do |asset|
-        yield(asset,request_type.pool_index_for(asset))
+        yield(asset,request_type.pool_index_for_asset(asset))
       end
     end
 

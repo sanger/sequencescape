@@ -6,7 +6,11 @@ module RequestType::PoolingMethod::Submission
     1
   end
 
-  def pool_index_for(_)
+  def pool_index_for_asset(_)
+    0
+  end
+
+  def pool_index_for_request(_)
     0
   end
 end
