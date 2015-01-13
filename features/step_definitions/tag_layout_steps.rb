@@ -124,3 +124,16 @@ end
 Given /^the wells for (the plate.+) have been pooled to (the plate.+) according to the pooling strategy (\d+(?:,\s*\d+)*)$/ do |source, destination, pooling_strategy|
   pool_by_strategy(source, destination, pooling_strategy.split(',').map(&:to_i))
 end
+
+Given /^the tag group "(.*?)" exists$/ do |name|
+  TagGroup.create!(:name=>name)
+end
+
+Given /^the tag group "(.*?)" has (\d+) tags$/ do |group, count|
+  (1..count.to_i).each { |index| TagGroup.find_by_name!(group).tags.create!(:map_id => index, :oligo => "TAG#{index}") }
+end
+
+Given /^well "(.*?)" on the plate "(.*?)" is empty$/ do |well, plate|
+  Plate.find_by_name!(plate).wells.located_at(well).first.aliquots.each(&:destroy)
+end
+
