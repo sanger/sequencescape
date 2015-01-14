@@ -22,8 +22,7 @@
       template
     end
 
-
-  outlines.each do |template|
+superceed = outlines.map do |template|
     SubmissionTemplate.create!(template)
   end
 
@@ -43,7 +42,9 @@ new_st = SubmissionTemplate.create!(
     :product_line_id => ProductLine.find_by_name!('Illumina-B').id
   )
 
-SubmissionTemplate.find_by_name('Illumina-C - General PCR - HiSeq-X sequencing').update_attributes!({
-  :superceded_by => new_st,
-  :superceded_at => Time.now
-})
+superceed.each do |old_template|
+  old_template.update_attributes!({
+    :superceded_by => new_st,
+    :superceded_at => Time.now
+  })
+end
