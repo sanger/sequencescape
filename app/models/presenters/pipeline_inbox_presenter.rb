@@ -150,7 +150,7 @@ module Presenters
     end
 
     def next_pipeline
-      next_pipeline_name_for(line.requests.first)
+      next_pipeline_name_for(requests.first)
     end
 
     def study
