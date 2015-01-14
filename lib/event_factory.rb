@@ -47,8 +47,7 @@ class EventFactory
       end
     end
 
-    EventfulMailer.deliver_confirm_event(recipients_email.reject(&:blank?), event.eventful, event.message, event.content, "No Milestone")
-
+    EventfulMailer.deliver_confirm_event(recipients_email, event.eventful, event.message, event.content, "No Milestone")
   end
 
   ################################
