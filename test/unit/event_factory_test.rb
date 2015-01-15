@@ -5,10 +5,11 @@ class EventFactoryTest < ActiveSupport::TestCase
   context "An EventFactory" do
     setup do
       @user = Factory :user, :login => "south", :email => "south@example.com"
+      @bad_user = Factory :user, :login => "south", :email => ""
       @project = Factory :project, :name => "hello world"
       #@project = Factory :project, :name => "hello world", :user => @user
       role = Factory :owner_role, :authorizable => @project
-      role.users << @user
+      role.users << @user << @bad_user
       @request_type = Factory :request_type, :key => "library_creation", :name => "Library creation"
       @request = Factory :request, :request_type => @request_type, :user => @user, :project => @project
     end
@@ -30,6 +31,8 @@ class EventFactoryTest < ActiveSupport::TestCase
             && email.bcc.size == 1 \
             && email.body =~ /Project registered/
         end
+
+        assert_did_not_send_email { |email| "#{email.bcc}" ==  "" }
       end
     end
 
@@ -79,6 +82,8 @@ class EventFactoryTest < ActiveSupport::TestCase
               && email.bcc.size == 1 \
               && email.body =~ /New '#{@sample.name}' registered by #{@user.login}: #{@sample.name}. This sample was assigned to the '#{@project.name}' project./
           end
+
+          assert_did_not_send_email { |email| "#{email.bcc}" ==  "" }
         end
       end
     end
@@ -104,6 +109,7 @@ class EventFactoryTest < ActiveSupport::TestCase
             && email.bcc.size == 1 \
             && email.body =~ /Project approved/
         end
+        assert_did_not_send_email { |email| "#{email.bcc}" ==  "" }
       end
     end
 
@@ -127,16 +133,17 @@ class EventFactoryTest < ActiveSupport::TestCase
           email.subject =~ /Project/ \
             && email.subject =~ /Project approved/ \
             && email.bcc.include?("#{@user1.login}@example.com") \
-            && email.bcc.size == 1 \
+            && email.bcc.size == 3 \
             && email.body =~ /Project approved/
         end
         assert_sent_email do |email|
           email.subject =~ /Project/ \
             && email.subject =~ /Project approved/ \
             && email.bcc.include?("#{@user2.login}@example.com") \
-            && email.bcc.size == 1 \
+            && email.bcc.size == 3 \
             && email.body =~ /Project approved/
         end
+        assert_did_not_send_email { |email| "#{email.bcc}" ==  "" }
       end
 
       should ": send email to project manager" do
@@ -144,9 +151,10 @@ class EventFactoryTest < ActiveSupport::TestCase
           email.subject =~ /Project/ \
             && email.subject =~ /Project approved/ \
             && email.bcc.include?("#{@user.login}@example.com") \
-            && email.bcc.size == 1 \
+            && email.bcc.size == 3 \
             && email.body =~ /Project approved/
         end
+        assert_did_not_send_email { |email| "#{email.bcc}" ==  "" }
       end
     end
 
@@ -174,11 +182,13 @@ class EventFactoryTest < ActiveSupport::TestCase
             && email.bcc.size == 1 \
             && email.body =~ /Project approved/
         end
+        assert_did_not_send_email { |email| "#{email.bcc}" ==  "" }
       end
 
       should "send no email to adminstrator nor to approver" do
         assert_did_not_send_email { |email| "#{email.bcc}" ==  "#{@user1.login}@example.com" }
         assert_did_not_send_email { |email| "#{email.bcc}" ==  "#{@user2.login}@example.com" }
+        assert_did_not_send_email { |email| "#{email.bcc}" ==  "" }
       end
     end
 
