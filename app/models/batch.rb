@@ -5,6 +5,7 @@ include Sanger::Robots::Tecan
 
 class Batch < ActiveRecord::Base
   include Api::BatchIO::Extensions
+  include Api::Messages::FlowcellIO::Extensions
   cattr_reader :per_page
   @@per_page = 500
   include AASM
@@ -22,7 +23,7 @@ class Batch < ActiveRecord::Base
       errors.add_to_base "All requests must be ready? to be added to a batch"
     end
   end
-  
+
   def cluster_formation_requests_must_be_over_minimum
     if (!@pipeline.min_size.nil?) && (@requests.size < @pipeline.min_size)
       errors.add_to_base "You must create batches of at least " + @pipeline.min_size.to_s+" requests in the pipeline " + @pipeline.name
