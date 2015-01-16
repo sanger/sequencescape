@@ -103,8 +103,8 @@ class Request < ActiveRecord::Base
 
   belongs_to :user
 
-  belongs_to :submission
-  belongs_to :order
+  belongs_to :submission, :inverse_of => :requests
+  belongs_to :order, :inverse_of => :requests
 
   named_scope :with_request_type_id, lambda { |id| { :conditions => { :request_type_id => id } } }
 

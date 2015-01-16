@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141218134634) do
+ActiveRecord::Schema.define(:version => 20150109160847) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -818,6 +818,11 @@ ActiveRecord::Schema.define(:version => 20141218134634) do
 
   add_index "plate_volumes", ["uploaded_file_name"], :name => "index_plate_volumes_on_uploaded_file_name"
 
+  create_table "pooling_methods", :force => true do |t|
+    t.string "pooling_behaviour", :limit => 50, :null => false
+    t.text   "pooling_options"
+  end
+
   create_table "pre_capture_pool_pooled_requests", :force => true do |t|
     t.integer "pre_capture_pool_id", :null => false
     t.integer "request_id",          :null => false
@@ -1034,6 +1039,7 @@ ActiveRecord::Schema.define(:version => 20141218134634) do
     t.boolean  "deprecated",                        :default => false, :null => false
     t.boolean  "no_target_asset",                   :default => false, :null => false
     t.integer  "target_purpose_id"
+    t.integer  "pooling_method_id"
   end
 
   create_table "requests", :force => true do |t|

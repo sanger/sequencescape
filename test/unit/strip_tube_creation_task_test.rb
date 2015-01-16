@@ -1,6 +1,8 @@
 require "test_helper"
 
-class DummyWorkflowController < WorkflowsController
+class StripTubeCreationTest < TaskTestBase
+
+  class DummyWorkflowController < WorkflowsController
   attr_accessor :batch, :pipeline
   attr_accessor :flash, :tubes_requested, :tubes_available, :options
 
@@ -14,7 +16,6 @@ class DummyWorkflowController < WorkflowsController
   end
 end
 
-class StripTubeCreationTest < TaskTestBase
   context "StripTubeCreation task" do
     setup do
       @workflow_c  = DummyWorkflowController.new(@pipeline)
