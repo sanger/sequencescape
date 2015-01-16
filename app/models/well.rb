@@ -110,6 +110,10 @@ class Well < Aliquot::Receptacle
     # Do nothing
   end
 
+  def external_identifier
+    display_name
+  end
+
   #hotfix
   def well_attribute_with_creation
     self.well_attribute_without_creation || self.build_well_attribute

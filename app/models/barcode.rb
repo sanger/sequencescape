@@ -46,6 +46,11 @@ class Barcode
       end
     end
 
+    def external_identifier
+      sanger_human_barcode
+    end
+
+
   end
 
   InvalidBarcode = Class.new(StandardError)
