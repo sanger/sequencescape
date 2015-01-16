@@ -1,6 +1,6 @@
 development:
     amqp:
-      url: amqp://localhost:5672/
+      url: amqp://localhost:5672
       persistent: false
       burst_size: 1000
       lims_id: SQSCP
