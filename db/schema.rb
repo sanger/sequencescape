@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150109160847) do
+ActiveRecord::Schema.define(:version => 20150116164022) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -447,6 +447,13 @@ ActiveRecord::Schema.define(:version => 20150109160847) do
   add_index "events", ["eventful_id"], :name => "index_events_on_eventful_id"
   add_index "events", ["eventful_type"], :name => "index_events_on_eventful_type"
   add_index "events", ["family"], :name => "index_events_on_family"
+
+  create_table "extended_validators", :force => true do |t|
+    t.string   "behaviour",  :null => false
+    t.text     "options"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "external_properties", :force => true do |t|
     t.integer  "propertied_id"
@@ -1042,6 +1049,16 @@ ActiveRecord::Schema.define(:version => 20150109160847) do
     t.integer  "pooling_method_id"
   end
 
+  create_table "request_types_extended_validators", :force => true do |t|
+    t.integer  "request_type_id",       :null => false
+    t.integer  "extended_validator_id", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "request_types_extended_validators", ["extended_validator_id"], :name => "fk_request_types_extended_validators_to_extended_validators"
+  add_index "request_types_extended_validators", ["request_type_id"], :name => "fk_request_types_extended_validators_to_request_types"
+
   create_table "requests", :force => true do |t|
     t.integer  "initial_study_id"
     t.datetime "created_at"
@@ -1510,6 +1527,7 @@ ActiveRecord::Schema.define(:version => 20150109160847) do
     t.datetime "updated_at"
     t.string   "substitutions",       :limit => 1525
     t.string   "walking_algorithm",                   :default => "TagLayout::WalkWellsByPools"
+    t.integer  "initial_tag",                         :default => 0,                             :null => false
   end
 
   create_table "tags", :force => true do |t|

@@ -109,10 +109,15 @@ class PolymorphicUploader < CarrierWave::Uploader::Base
   storage CarrierWave::Storage::DirectDatabase
 
   # This is where files are stored on upload. We are using callbacks to empty it after upload
-  def cache_dir
+  def self.cache_dir
      "#{Rails.root}/tmp/uploads"
   end
-  
+
+  def cache_dir
+    self.class.cache_dir
+  end
+
+
   before :store, :remember_cache_id
   after :store, :delete_tmp_dir
 

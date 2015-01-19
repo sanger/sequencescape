@@ -104,6 +104,9 @@ test: &TEST
     ldap_server: "ldap.internal.sanger.ac.uk"
     login_url: /login
     mail_prefix: "[DEVELOPMENT]"
+    phyx_tag:
+        tag_group_name: "Control Tag Group 888"
+        tag_map_id: 888
     pico_green_url: http://localhost:3003
     plate_barcode_service: http://localhost:9998/plate_barcode_service/
     plate_volume_files: <%= Rails.root %>/test/data/plate_volume/
