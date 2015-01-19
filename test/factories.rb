@@ -357,6 +357,17 @@ Factory.define :request_type do |rt|
   rt.initial_state   "pending"
 end
 
+Factory.define :extended_validator do |ev|
+  ev.behaviour 'SpeciesValidator'
+  ev.options({:taxon_id=>9606})
+end
+
+Factory.define :validated_request_type, :parent => :request_type do |rt|
+  rt.after_create do |request_type|
+    request_type.extended_validators << Factory(:extended_validator)
+  end
+end
+
 Factory.define :library_type do |lt|
   lt_value = Factory.next :library_type_id
   lt.name    "Standard"
