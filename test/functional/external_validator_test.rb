@@ -21,7 +21,7 @@ class ExternalValidatorTest < ActiveSupport::TestCase
 
       should "should be invalid" do
         assert !@order.valid?
-        assert_equal ["Samples should have taxon_id 9606"], @order.errors.full_messages
+        assert_equal ["Samples should have taxon_id 9606: problems with #{@sample.sanger_sample_id}."], @order.errors.full_messages
       end
     end
 
