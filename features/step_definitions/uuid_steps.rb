@@ -41,6 +41,7 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME = [
   'tag layout template',
   'barcode printer',
   'tube',
+  'tag group',
   'robot',
   'reference genome'
 ]

@@ -176,7 +176,7 @@ class User < ActiveRecord::Base
 
   # returns all administrator users
   def self.all_administrators
-    role = Role.find_by_name('administrator')
+    role = Role.find_by_name_and_authorizable_type('administrator')
     role ? role.users : []
   end
 

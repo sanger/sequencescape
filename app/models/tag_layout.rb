@@ -19,6 +19,9 @@ class TagLayout < ActiveRecord::Base
   validates_presence_of :tag_group
   serialize :substitutions
 
+  validates_presence_of :direction_algorithm
+  validates_presence_of :walking_algorithm
+
   before_validation do |record|
     record.substitutions ||= {}
   end
@@ -36,22 +39,48 @@ class TagLayout < ActiveRecord::Base
     extend(walking_algorithm.constantize)   unless walking_algorithm.blank?
   end
 
+  def direction=(new_direction)
+    self.direction_algorithm = {
+      'column'         => 'TagLayout::InColumns',
+      'row'            => 'TagLayout::InRows',
+      'inverse column' => 'TagLayout::InInverseColumns',
+      'inverse row'    => 'TagLayout::InInverseRows'
+    }[new_direction]
+    errors.add_to_base("#{new_direction} is not a valid direction")if self.direction_algorithm.nil?
+    raise(ActiveRecord::RecordInvalid, self) if self.direction_algorithm.nil?
+    extend(direction_algorithm.constantize)
+  end
+
+  def walking_by=(walk)
+    self.walking_algorithm = {
+      'wells in pools'  => 'TagLayout::WalkWellsByPools',
+      'wells of plate'  => 'TagLayout::WalkWellsOfPlate',
+      'manual by pool'  => 'TagLayout::WalkManualWellsByPools',
+      'manual by plate' => 'TagLayout::WalkManualWellsOfPlate'
+    }[walk]
+    errors.add_to_base("#{walk} is not a recognised walking method") if self.walking_algorithm.nil?
+    raise(ActiveRecord::RecordInvalid, self) if self.walking_algorithm.nil?
+    extend(walking_algorithm.constantize)
+  end
+
+
   def wells_in_walking_order
     plate.wells.send(:"in_#{direction.gsub(' ', '_')}_major_order")
   end
   private :wells_in_walking_order
 
   # After creating the instance we can layout the tags into the wells.
-  after_create :layout_tags_into_wells
+  after_create :layout_tags_into_wells, :if => :valid?
 
   # Convenience mechanism for laying out tags in a particular fashion.
   def layout_tags_into_wells
     # Make sure that the substitutions requested by the user are handled before applying the tags
     # to the wells.
+
     tag_map_id_to_tag = ActiveSupport::OrderedHash[tag_group.tags.sort_by(&:map_id).map { |tag| [tag.map_id.to_s, tag] }]
     tags              = tag_map_id_to_tag.map { |k,tag| substitutions.key?(k) ? tag_map_id_to_tag[substitutions[k]] : tag }
     walk_wells do |well, index|
-      tags[index % tags.length].tag!(well) unless well.aliquots.empty?
+      tags[(index+initial_tag) % tags.length].tag!(well) unless well.aliquots.empty?
     end
 
     # We can now check that the pools do not contain duplicate tags.

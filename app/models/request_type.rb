@@ -26,6 +26,8 @@ class RequestType < ActiveRecord::Base
   has_many :request_type_validators, :class_name => 'RequestType::Validator'
 
   belongs_to :pooling_method, :class_name => 'RequestType::PoolingMethod'
+  has_many :request_type_extended_validators, :class_name => 'ExtendedValidator::RequestTypeExtendedValidator'
+  has_many :extended_validators, :through => :request_type_extended_validators, :dependent => :destroy
 
   def default_library_type
     library_types.find(:first,:conditions=>{:library_types_request_types=>{:is_default=>true}})
