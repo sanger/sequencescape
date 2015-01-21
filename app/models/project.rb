@@ -121,9 +121,15 @@ class Project < ActiveRecord::Base
     false
   end
 
+  def r_and_d?
+    self.project_metadata.budget_division.name == configatron.r_and_d_division
+  end
+
   def sequencing_budget_division
     self.project_metadata.budget_division.name
   end
+
+  delegate :project_cost_code, :to=> :project_metadata
 
   PROJECT_FUNDING_MODELS = [
     '',
