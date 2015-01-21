@@ -56,7 +56,7 @@ module ModelExtensions::Order
 
       validate :extended_validation
       def extended_validation
-        extended_validators.reduce(true) {|valid,validator| validator.validate(self) && valid }
+        extended_validators.reduce(true) {|valid,validator| validator.validate_order(self) && valid }
       end
 
       # The API can create submissions but we have to prevent someone from changing the study
