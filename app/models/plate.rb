@@ -30,6 +30,16 @@ class Plate < Asset
     wells.all(:include => :transfer_requests_as_target).map(&:transfer_requests_as_target).flatten
   end
 
+  # About 10x faster than going through the wells
+  def submission_ids
+    container_associations.find(
+      :all,
+      :select => 'DISTINCT requests.submission_id',
+      :joins  => 'LEFT JOIN requests ON requests.target_asset_id = container_associations.content_id',
+      :conditions => 'requests.submission_id IS NOT NULL'
+    ).map(&:submission_id)
+  end
+
   def self.derived_classes
     @derived_classes ||= [ self, *Class.subclasses_of(self) ].map(&:name)
   end
