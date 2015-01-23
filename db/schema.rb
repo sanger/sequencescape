@@ -641,6 +641,15 @@ ActiveRecord::Schema.define(:version => 20150116164022) do
   add_index "maps", ["description", "asset_size"], :name => "index_maps_on_description_and_asset_size"
   add_index "maps", ["description"], :name => "index_maps_on_description"
 
+  create_table "messengers", :force => true do |t|
+    t.integer  "target_id"
+    t.string   "target_type"
+    t.string   "root",        :null => false
+    t.string   "template",    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "order_roles", :force => true do |t|
     t.string   "role"
     t.datetime "created_at"
