@@ -15,6 +15,9 @@ class XtenStripTubeRequestType < ActiveRecord::Migration
       rt.acceptable_plate_purposes << PlatePurpose.find_by_name!('Strip Tube Purpose')
       RequestType::Validator.create!(:request_type => rt, :request_option=> "fragment_size_required_to", :valid_options=>['350','450'])
       RequestType::Validator.create!(:request_type => rt, :request_option=> "fragment_size_required_from", :valid_options=>['350','450'])
+      RequestType::Validator.create!(:request_type => rt, :request_option=> "read_length", :valid_options=>[150])
+      rt.library_types << LibraryType.find_by_name!('Standard')
+      RequestType::Validator.create!(:request_type => rt, :request_option=> 'library_type', :valid_options  => RequestType::Validator::LibraryTypeValidator.new(rt.id))
     end
   end
 
