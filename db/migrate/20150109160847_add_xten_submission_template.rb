@@ -2,7 +2,7 @@ class AddXtenSubmissionTemplate < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
       new_st = SubmissionTemplate.create!(
-        :name => "HiSeq-X sequencing",
+        :name => "HiSeq-X library creation and sequencing",
         :submission_class_name => 'FlexibleSubmission',
         :submission_parameters => {
           :order_role_id => Order::OrderRole.find_or_create_by_role('HSqX'),
@@ -16,7 +16,7 @@ class AddXtenSubmissionTemplate < ActiveRecord::Migration
 
   def self.down
     ActiveRecord::Base.transaction do
-      SubmissionTemplate.find_by_name!("HiSeq-X sequencing").destroy
+      SubmissionTemplate.find_by_name!("HiSeq-X library creation and sequencing").destroy
     end
   end
 
