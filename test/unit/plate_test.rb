@@ -299,6 +299,42 @@ class PlateTest < ActiveSupport::TestCase
       end
 
     end
+
+    context "with existing well data" do
+
+      class MockParser
+        def each_well_and_parameters
+          yield('B1','2','3')
+          yield('C1','4','5')
+        end
+      end
+
+      setup do
+        @plate = Plate.new
+        @plate.wells.build([
+          {:map=>Map.find_by_description('A1')},
+          {:map=>Map.find_by_description('B1')},
+          {:map=>Map.find_by_description('C1')}
+        ])
+        @plate.wells.first.set_concentration('12')
+        @plate.wells.first.set_molarity('34')
+        @plate.save! # Because we use a well scope, and mocking it is asking for trouble
+
+        @plate.update_concentrations_from(MockParser.new)
+      end
+
+      should 'update new wells' do
+        assert_equal 2.0, @plate.wells.detect {|w| w.map_description == 'B1' }.reload.get_concentration
+        assert_equal 3.0, @plate.wells.detect {|w| w.map_description == 'B1' }.reload.get_molarity
+        assert_equal 4.0, @plate.wells.detect {|w| w.map_description == 'C1' }.reload.get_concentration
+        assert_equal 5.0, @plate.wells.detect {|w| w.map_description == 'C1' }.reload.get_molarity
+      end
+
+      should 'no clear existing data' do
+        assert_equal 12.0, @plate.wells.detect {|w| w.map_description =='A1' }.reload.get_concentration
+        assert_equal 34.0, @plate.wells.detect {|w| w.map_description =='A1' }.reload.get_molarity
+      end
+    end
   end
 
 

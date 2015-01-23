@@ -22,7 +22,29 @@
       template
     end
 
-
-  outlines.each do |template|
+superceed = outlines.map do |template|
     SubmissionTemplate.create!(template)
   end
+
+new_st = SubmissionTemplate.create!(
+    :name => "HiSeq-X sequencing",
+    :submission_class_name => 'FlexibleSubmission',
+    :submission_parameters => {
+      :order_role_id => Order::OrderRole.find_or_create_by_role('HSqX'),
+      :request_type_ids_list => [
+  'illumina_b_shared',
+  'illumina_htp_library_creation',
+  'illumina_htp_strip_tube_creation',
+  'illumina_b_hiseq_x_paired_end_sequencing'
+].map {|key| [RequestType.find_by_key!(key).id]},
+      :workflow_id => Submission::Workflow.find_by_key("short_read_sequencing").id
+    },
+    :product_line_id => ProductLine.find_by_name!('Illumina-B').id
+  )
+
+superceed.each do |old_template|
+  old_template.update_attributes!({
+    :superceded_by => new_st,
+    :superceded_at => Time.now
+  })
+end

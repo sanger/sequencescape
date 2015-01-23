@@ -103,8 +103,8 @@ class Request < ActiveRecord::Base
 
   belongs_to :user
 
-  belongs_to :submission
-  belongs_to :order
+  belongs_to :submission, :inverse_of => :requests
+  belongs_to :order, :inverse_of => :requests
 
   named_scope :with_request_type_id, lambda { |id| { :conditions => { :request_type_id => id } } }
 
@@ -175,6 +175,7 @@ class Request < ActiveRecord::Base
   named_scope :with_asset, :conditions =>  'asset_id is not null'
   named_scope :with_target, :conditions =>  'target_asset_id is not null and (target_asset_id <> asset_id)'
   named_scope :join_asset, :joins => [ :asset ]
+  named_scope :with_asset_location, :include => { :asset => :map }
 
   #Asset are Locatable (or at least some of them)
   belongs_to :location_association, :primary_key => :locatable_id, :foreign_key => :asset_id
@@ -467,5 +468,9 @@ class Request < ActiveRecord::Base
 
   def target_purpose
     nil
+  end
+
+  def library_creation?
+    false
   end
 end

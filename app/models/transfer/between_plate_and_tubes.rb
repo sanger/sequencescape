@@ -110,7 +110,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
   # Builds the name for the tube based on the wells that are being transferred from by finding their stock plate wells and
   # creating an appropriate range.
   def tube_name_for(stock_wells)
-    source_wells = source.plate_purpose.source_wells_for(stock_wells)
+    source_wells = source.plate_purpose.source_wells_for(stock_wells).sort {|w1,w2| w1.map.column_order <=> w2.map.column_order }
     stock_plates = source_wells.map(&:plate).uniq
     raise StandardError, "There appears to be no stock plate!" if stock_plates.empty?
     raise StandardError, "Cannot handle cross plate pooling!" if stock_plates.size > 1

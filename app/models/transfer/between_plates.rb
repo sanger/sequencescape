@@ -37,7 +37,7 @@ class Transfer::BetweenPlates < Transfer
     bad_wells, good_wells = source.wells.located_at_position(transfers.keys).with_pool_id.partition(&method(:should_well_not_be_transferred?))
     source_wells          = Hash[good_wells.map { |well| [well.map.description, well] }]
     destination_locations = source_wells.keys.map { |p| transfers[p] }.flatten
-    destination_wells     = Hash[destination.wells.located_at_position(destination_locations).map { |well| [well.map.description, well] }]
+    destination_wells     = Hash[destination.wells.located_at_position(destination_locations).map { |well| [well.map_description, well] }]
 
     # Build a list of source wells for each destination well.
     dest_sources = Hash.new {|h,i| h[i] = Array.new }

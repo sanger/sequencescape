@@ -292,6 +292,18 @@ Map::AssetShape.create!(
   :vertical_ratio   => 4,
   :description_strategy => 'Map::Sequential'
 )
+Map::AssetShape.create!(
+  :name => 'StripTubeColumn',
+  :horizontal_ratio => 1,
+  :vertical_ratio   => 8,
+  :description_strategy => 'Map::Sequential'
+)
+Map::AssetShape.create!(
+  :name => 'StripTubeRack',
+  :horizontal_ratio => 12,
+  :vertical_ratio   => 1,
+  :description_strategy => 'Map::Sequential'
+)
 
 YAML::load(plate_purposes).each do |plate_purpose|
   attributes = plate_purpose.reverse_merge('type' => 'PlatePurpose', 'cherrypickable_target' => false, 'asset_shape_id'=>Map::AssetShape.find_by_name('Standard').id)

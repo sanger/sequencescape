@@ -2,8 +2,8 @@ module ModelExtensions::Batch
   def self.included(base)
     base.class_eval do
       # These were in Batch but it makes more sense to keep them here for the moment
-      has_many :batch_requests, :include => :request
-      has_many :requests, :through => :batch_requests do
+      has_many :batch_requests, :include => :request, :inverse_of => :batch
+      has_many :requests, :through => :batch_requests, :inverse_of => :batch do
         # we redefine count to use the fast one.
         # the normal request.count is slow because of the eager load of requests in batch_request
         def count
@@ -52,10 +52,6 @@ module ModelExtensions::Batch
       end
 
       request.update_attributes!(:target_asset => target_asset)
-
-      # Do not start requests here as the batch will not be started and it will try
-      # to start the requests when someone does something with the batch.
-      #request.start!
 
       # All links between the two assets as new, so we can bulk create them!
       asset_links << [request.asset.id, request.target_asset.id]

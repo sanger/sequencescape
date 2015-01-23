@@ -101,6 +101,12 @@ module Request::Statemachine
         transitions :to => :cancelled, :from => [:pending]
       end
 
+      aasm_event :fail_from_upstream do
+        transitions :to => :cancelled, :from => [:pending]
+        transitions :to => :failed,    :from => [:started], :on_transition => :charge_internally
+        transitions :to => :failed,    :from => [:passed],  :on_transition => :refund_project
+      end
+
       # new version of combinable named_scope
       named_scope :for_state, lambda { |state| { :conditions => { :state => state } } }
 
@@ -155,6 +161,14 @@ module Request::Statemachine
 
   def on_hold
 
+  end
+
+  def failed_upstream!
+    fail_from_upstream! unless failed?
+  end
+
+  def failed_downstream!
+    # Do nothing by default
   end
 
   def finished?

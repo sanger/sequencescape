@@ -302,7 +302,7 @@ end
 
 Factory.define :well_request, :parent => :request_without_assets do |request|
   # the sample should be setup correctly and the assets should be valid
-  request.request_type {|rt|         rt.association(:well_request_type)}
+  request.request_type { |rt|    rt.association(:well_request_type)}
   request.asset        { |asset| asset.association(:well)  }
   request.target_asset { |asset| asset.association(:well) }
 end
@@ -355,6 +355,17 @@ Factory.define :request_type do |rt|
   rt.order          1
   rt.workflow    {|workflow| workflow.association(:submission_workflow)}
   rt.initial_state   "pending"
+end
+
+Factory.define :extended_validator do |ev|
+  ev.behaviour 'SpeciesValidator'
+  ev.options({:taxon_id=>9606})
+end
+
+Factory.define :validated_request_type, :parent => :request_type do |rt|
+  rt.after_create do |request_type|
+    request_type.extended_validators << Factory(:extended_validator)
+  end
 end
 
 Factory.define :library_type do |lt|
@@ -414,6 +425,21 @@ Factory.define :multiplexed_library_creation_request_type, :class => RequestType
   rt.key                "request_type_#{rt_value}"
   rt.request_class      MultiplexedLibraryCreationRequest
   rt.asset_type         "SampleTube"
+  rt.order              1
+  rt.for_multiplexing   true
+  rt.workflow           { |workflow| workflow.association(:submission_workflow)}
+    rt.after_build {|request_type|
+    request_type.library_types_request_types << Factory(:library_types_request_type,:request_type=>request_type)
+    request_type.request_type_validators << Factory(:library_request_type_validator, :request_type=>request_type)
+  }
+end
+
+Factory.define :plate_based_multiplexed_library_creation_request_type, :class => RequestType do |rt|
+  rt_value = Factory.next :request_type_id
+  rt.name               "MX Request type #{rt_value}"
+  rt.key                "request_type_#{rt_value}"
+  rt.request_class      MultiplexedLibraryCreationRequest
+  rt.asset_type         "Well"
   rt.order              1
   rt.for_multiplexing   true
   rt.workflow           { |workflow| workflow.association(:submission_workflow)}
@@ -680,4 +706,9 @@ end
 
 Factory.define(:faculty_sponsor) do |sponsor|
   sponsor.name     { |a| Factory.next :faculty_sponsor_name }
+end
+
+Factory.define(:pooling_method, :class=> 'RequestType::PoolingMethod') do |pooling|
+  pooling.pooling_behaviour 'PlateRow'
+  pooling.pooling_options({:pool_count => 8 })
 end

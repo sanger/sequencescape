@@ -30,9 +30,9 @@ class Asset < ActiveRecord::Base
   has_many :asset_audits
 
   # TODO: Remove 'requests' and 'source_request' as they are abiguous
-  has_many :requests
-  has_one :source_request, :class_name => "Request", :foreign_key => :target_asset_id, :include => :request_metadata
-  has_many :requests_as_source, :class_name => 'Request', :foreign_key => :asset_id, :include => :request_metadata
+  has_many :requests, :inverse_of => :asset
+  has_one  :source_request,     :class_name => "Request", :foreign_key => :target_asset_id, :include => :request_metadata
+  has_many :requests_as_source, :class_name => 'Request', :foreign_key => :asset_id,        :include => :request_metadata
   has_many :requests_as_target, :class_name => 'Request', :foreign_key => :target_asset_id, :include => :request_metadata
 
   #Orders
@@ -218,6 +218,10 @@ class Asset < ActiveRecord::Base
 
   def display_name
     self.name.blank? ? "#{self.sti_type} #{self.id}" : self.name
+  end
+
+  def external_identifier
+    "#{self.sti_type}#{self.id}"
   end
 
   def details

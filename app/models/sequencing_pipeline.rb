@@ -7,6 +7,14 @@ class SequencingPipeline < Pipeline
     [:remove]
   end
 
+  def inbox_partial
+    group_by_parent? ? 'group_by_parent' : super
+  end
+
+  def purpose_information?
+    false
+  end
+
   def is_read_length_consistent_for_batch?(batch)
 
     if (batch.requests.size == 0) || (batch.requests.first.request_metadata.nil?)
@@ -43,4 +51,9 @@ class SequencingPipeline < Pipeline
       end
     end
   end
+
+  def post_release_batch(batch, user)
+    Messenger.create!(:target=>batch,:template=>'FlowcellIO',:root=>'flowcell')
+  end
+
 end

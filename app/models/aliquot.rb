@@ -2,6 +2,7 @@
 # of a sample, or it might be a library (a combination of the DNA sample and a tag).
 class Aliquot < ActiveRecord::Base
   include Uuid::Uuidable
+  include Api::Messages::FlowcellIO::AliquotExtensions
 
   class Receptacle < Asset
     include Transfer::State
@@ -72,6 +73,7 @@ class Aliquot < ActiveRecord::Base
 
     has_many :studies, :through => :aliquots
     has_many :projects, :through => :aliquots
+    has_many :samples, :through => :aliquots
   end
 
   # Something that is aliquotable can be part of an aliquot.  So sample and tag are both examples.

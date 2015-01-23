@@ -14,7 +14,7 @@ Feature: Access tag layout templates through the API
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
-And I have a "full" authorised user with the key "cucumber"
+    And I have a "full" authorised user with the key "cucumber"
 
   @read
   Scenario: Reading the JSON for a UUID
@@ -809,6 +809,7 @@ And I have a "full" authorised user with the key "cucumber"
       | TAG6 | TAG14 | TAG22 | TAG30 | TAG38 | TAG46 | TAG54 | TAG62 | TAG70 | TAG78 | TAG86 | TAG94 |
       | TAG7 | TAG15 | TAG23 | TAG31 | TAG39 | TAG47 | TAG55 | TAG63 | TAG71 | TAG79 | TAG87 | TAG95 |
       | TAG8 | TAG16 | TAG24 | TAG32 | TAG40 | TAG48 | TAG56 | TAG64 | TAG72 | TAG80 | TAG88 | TAG96 |
+
 
   @tag_layout @create @barcode-service
   Scenario: Creating a tag layout where one of the wells is empty
