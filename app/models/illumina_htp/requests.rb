@@ -137,13 +137,8 @@ module IlluminaHtp::Requests
     end
   end
 
-  class PcrXpToPool < PcrXpToStock
-    include InitialDownstream
-  end
-
   class QcCompletableTransfer < TransferRequest
     redefine_state_machine do
-      puts "Refining"
       aasm_column :state
       aasm_initial_state :pending
 
@@ -176,6 +171,10 @@ module IlluminaHtp::Requests
   end
 
   class PcrXpToLibNorm < QcCompletableTransfer
+  end
+
+  class PcrXpToPool < PcrXpToStock
+    include InitialDownstream
   end
 
 end
