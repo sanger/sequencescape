@@ -6,7 +6,18 @@ class IlluminaHtp::InitialDownstreamPlatePurpose < IlluminaHtp::DownstreamPlateP
       super
       new_outer_state = ['started','passed','qc_complete','nx_in_progress'].include?(state) ? 'started' : state
       stock_wells(plate,contents).each do |source_well|
-        source_well.requests.reject {|r| r.is_a?(TransferRequest)}.each do |request|
+        # Only transitions from last submission
+        requests = source_well.requests.reduce([]) do |list, request|
+          if list.empty? || (request.submission.updated_at == list.first.submission.updated_at)
+            list.push(request)
+          else
+            if (request.submission.updated_at > list.first.submission.updated_at)
+              list = [request]
+            end
+          end
+          list
+        end
+        requests.reject {|r| r.is_a?(TransferRequest)}.each do |request|
           request.transition_to(new_outer_state) if request.pending?
         end
       end
