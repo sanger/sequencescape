@@ -1,6 +1,7 @@
 class SequencingRequest < Request
 
   extend Request::AccessioningRequired
+  include Api::Messages::FlowcellIO::LaneExtensions
 
   has_metadata :as => Request  do
     #redundant with library creation , but THEY are using it .

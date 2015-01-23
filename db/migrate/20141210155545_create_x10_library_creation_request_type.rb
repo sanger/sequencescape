@@ -14,7 +14,13 @@ class CreateX10LibraryCreationRequestType < ActiveRecord::Migration
         :for_multiplexing => true,
         :billable => false,
         :product_line => ProductLine.find_by_name!("Illumina-B")
+      ).tap do |rt|
+        rt.library_types << LibraryType.find_by_name!('Standard')
+        rt.request_type_validators.create!(
+          :request_option => 'library_type',
+          :valid_options  => RequestType::Validator::LibraryTypeValidator.new(rt.id)
         )
+      end
     end
   end
 

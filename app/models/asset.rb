@@ -220,6 +220,10 @@ class Asset < ActiveRecord::Base
     self.name.blank? ? "#{self.sti_type} #{self.id}" : self.name
   end
 
+  def external_identifier
+    "#{self.sti_type}#{self.id}"
+  end
+
   def details
     nil
   end

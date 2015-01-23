@@ -2,7 +2,7 @@ class AddXtenSubmissionTemplate < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
       new_st = SubmissionTemplate.create!(
-        :name => "HiSeq-X sequencing",
+        :name => "HiSeq-X library creation and sequencing",
         :submission_class_name => 'FlexibleSubmission',
         :submission_parameters => {
           :order_role_id => Order::OrderRole.find_or_create_by_role('HSqX'),
@@ -11,20 +11,12 @@ class AddXtenSubmissionTemplate < ActiveRecord::Migration
         },
         :product_line_id => ProductLine.find_by_name!('Illumina-B').id
       )
-      SubmissionTemplate.find_by_name('Illumina-C - General PCR - HiSeq-X sequencing').try(:update_attributes!,{
-        :superceded_by => new_st,
-        :superceded_at => Time.now
-      })
     end
   end
 
   def self.down
     ActiveRecord::Base.transaction do
-      SubmissionTemplate.find_by_name!("HiSeq-X sequencing").destroy
-      SubmissionTemplate.find_by_name!('Illumina-C - General PCR - HiSeq-X sequencing').update_attributes!(
-        :superceded_by => SubmissionTemplate::LATEST_VERSION,
-        :superceded_at => nil
-      )
+      SubmissionTemplate.find_by_name!("HiSeq-X library creation and sequencing").destroy
     end
   end
 
@@ -33,7 +25,7 @@ class AddXtenSubmissionTemplate < ActiveRecord::Migration
       'illumina_b_shared',
       'illumina_htp_library_creation',
       'illumina_htp_strip_tube_creation',
-      'illumina_b_hiseq_x_paired_end_sequencing'
+      'hiseq_x_paired_end_sequencing'
     ].map {|key| [RequestType.find_by_key!(key).id]}
   end
 end

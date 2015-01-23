@@ -56,6 +56,11 @@ module Pulldown::Requests
 
   class IscLibraryRequestPart < IscLibraryRequest
     include IlluminaHtp::Requests::LibraryCompletion::FailUpstream
+
+    def update_pool_information(pool_information)
+      super
+      pool_information[:request_type] = request_type.key
+    end
   end
 
   class StockToCovaris < TransferRequest

@@ -46,9 +46,8 @@ module IlluminaHtp::PlatePurposes
 
   OUTPUT_PLATE_PURPOSES = ['Lib PCR-XP','Lib PCRR-XP']
 
-  # Don't have ILllumina B QC plates at the momnet...
   PLATE_PURPOSE_LEADING_TO_QC_PLATES = [
-    'Post Shear', 'Lib PCR-XP', 'Lib PCRR-XP'
+    'Post Shear', 'Lib PCR-XP', 'Lib PCRR-XP', 'Lib Norm'
   ]
 
   STOCK_PLATE_PURPOSE_TO_OUTER_REQUEST = {
@@ -70,7 +69,8 @@ module IlluminaHtp::PlatePurposes
     [ 'Lib PCR-XP',      'Lib Pool Pippin',     'IlluminaHtp::Requests::PcrXpToPoolPippin'     ],
     [ 'Lib PCRR-XP',     'Lib Pool Pippin',     'IlluminaHtp::Requests::PcrXpToPoolPippin'     ],
     [ 'Lib Pool',        'Lib Pool Norm',       'IlluminaHtp::Requests::LibPoolToLibPoolNorm'  ],
-    [ 'Lib Pool SS-XP',  'Lib Pool SS-XP-Norm', 'IlluminaHtp::Requests::LibPoolToLibPoolNorm'  ]
+    [ 'Lib Pool SS-XP',  'Lib Pool SS-XP-Norm', 'IlluminaHtp::Requests::LibPoolToLibPoolNorm'  ],
+    [ 'Lib PCR-XP',      'Lib Norm',            'IlluminaHtp::Requests::PcrXpToLibNorm'        ]
   ]
 
   PLATE_PURPOSE_TYPE = {
@@ -94,7 +94,7 @@ module IlluminaHtp::PlatePurposes
     'Post Shear QC'    => IlluminaHtp::PostShearQcPlatePurpose,
     'Lib PCR-XP QC'    => PlatePurpose,
     'Lib PCRR-XP QC'   => PlatePurpose,
-
+    'Lib Norm QC'      => PlatePurpose,
 
     'Lib Norm'        => IlluminaHtp::InitialDownstreamPlatePurpose,
     'Lib Norm 2'      => IlluminaHtp::NormalizedPlatePurpose,
@@ -223,11 +223,15 @@ module IlluminaHtp::PlatePurposes
     def create_qc_plates
       ActiveRecord::Base.transaction do
         self::PLATE_PURPOSE_LEADING_TO_QC_PLATES.each do |name|
-          qc_plate_purpose = purpose_for("#{name} QC").create!(:name => "#{name} QC", :cherrypickable_target => false)
-          plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
-          plate_purpose.child_relationships.create!(:child => qc_plate_purpose, :transfer_request_type => RequestType.find_by_name('Transfer'))
+          create_qc_plate_for(name)
         end
       end
+    end
+
+    def create_qc_plate_for(name)
+      qc_plate_purpose = purpose_for("#{name} QC").create!(:name => "#{name} QC", :cherrypickable_target => false)
+      plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
+      plate_purpose.child_relationships.create!(:child => qc_plate_purpose, :transfer_request_type => RequestType.find_by_name('Transfer'))
     end
   end
 

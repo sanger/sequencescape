@@ -51,4 +51,9 @@ class SequencingPipeline < Pipeline
       end
     end
   end
+
+  def post_release_batch(batch, user)
+    Messenger.create!(:target=>batch,:template=>'FlowcellIO',:root=>'flowcell')
+  end
+
 end
