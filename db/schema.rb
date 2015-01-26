@@ -1595,7 +1595,7 @@ ActiveRecord::Schema.define(:version => 20150121165623) do
     t.integer  "source_id"
     t.integer  "destination_id"
     t.string   "destination_type"
-    t.string   "transfers",        :limit => 1024
+    t.text     "transfers"
     t.integer  "bulk_transfer_id"
   end
 

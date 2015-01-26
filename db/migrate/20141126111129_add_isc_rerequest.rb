@@ -13,7 +13,7 @@ class AddIscRerequest < ActiveRecord::Migration
         :product_line => ProductLine.find_by_name('Illumina-A'),
         :target_purpose => Purpose.find_by_name('Standard MX')
         ) do |rt|
-        rt.acceptable_plate_purposes << PlatePurpose.find_by_name('Lib PCR-XP')
+        rt.acceptable_plate_purposes << Purpose.find_by_name!('Lib PCR-XP')
       end
     end
   end
