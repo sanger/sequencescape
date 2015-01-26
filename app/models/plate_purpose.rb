@@ -196,4 +196,7 @@ class PlatePurpose < Purpose
   def source_wells_for(stock_wells)
     stock_wells
   end
+
+  def supports_multiple_submissions?; false; end
+
 end

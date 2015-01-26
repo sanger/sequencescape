@@ -50,7 +50,7 @@ module IlluminaHtp::Requests
 
   module InitialDownstream
     def outer_request
-      asset.requests.detect {|request| request.is_a?(LibraryCompletion)}
+      asset.requests.detect {|request| request.library_creation? && request.submission_id == self.submission_id }
     end
   end
 

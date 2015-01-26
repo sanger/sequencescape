@@ -158,7 +158,7 @@ class PlateTest < ActiveSupport::TestCase
     end
 
     should "inherit the highest submission priority" do
-      assert_equal 2, @plate.priority
+      assert_equal 3, @plate.priority
     end
   end
 

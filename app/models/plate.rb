@@ -20,6 +20,7 @@ class Plate < Asset
   # The type of the barcode is delegated to the plate purpose because that governs the number of wells
   delegate :barcode_type, :to => :plate_purpose, :allow_nil => true
   delegate :asset_shape, :to => :plate_purpose, :allow_nil => true
+  delegate :supports_multiple_submissions?, :to => :plate_purpose
   delegate :fluidigm_barcode, :to => :plate_metadata
 
   validates_length_of :fluidigm_barcode, :is => 10, :allow_blank => true
@@ -27,6 +28,16 @@ class Plate < Asset
   # Transfer requests into a plate are the requests leading into the wells of said plate.
   def transfer_requests
     wells.all(:include => :transfer_requests_as_target).map(&:transfer_requests_as_target).flatten
+  end
+
+  # About 10x faster than going through the wells
+  def submission_ids
+    container_associations.find(
+      :all,
+      :select => 'DISTINCT requests.submission_id',
+      :joins  => 'LEFT JOIN requests ON requests.target_asset_id = container_associations.content_id',
+      :conditions => 'requests.submission_id IS NOT NULL'
+    ).map(&:submission_id)
   end
 
   def self.derived_classes

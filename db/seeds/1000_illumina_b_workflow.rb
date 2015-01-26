@@ -192,6 +192,43 @@ ActiveRecord::Base.transaction do
     RequestType.find_by_key(request).acceptable_plate_purposes << Purpose.find_by_name(purpose)
   end
 
+re_request = RequestType.create!(
+    :key=>'illumina_a_re_isc',
+    :name=>'Illumina-A ReISC',
+    :workflow=>workflow,
+    :asset_type => 'Well',
+    :initial_state => 'pending',
+    :order=>1,
+    :request_class_name => 'Pulldown::Requests::IscLibraryRequest',
+    :for_multiplexing => true,
+    :product_line => ProductLine.find_by_name('Illumina-A'),
+    :target_purpose => Purpose.find_by_name('Standard MX')
+  ) do |rt|
+    rt.acceptable_plate_purposes << PlatePurpose.find_by_name('Lib PCR-XP')
+  end
+  [
+    'illumina_a_hiseq_paired_end_sequencing',
+    'illumina_a_single_ended_hi_seq_sequencing',
+    'illumina_a_hiseq_2500_paired_end_sequencing',
+    'illumina_a_hiseq_2500_single_end_sequencing',
+    'illumina_a_miseq_sequencing',
+    'illumina_a_hiseq_v4_paired_end_sequencing',
+    'illumina_a_hiseq_x_paired_end_sequencing'
+  ].each do |sequencing_key|
+      sequencing_request = RequestType.find_by_key!(sequencing_key)
+      SubmissionTemplate.create!(
+          :name => "ISC Repool - #{sequencing_request.name.gsub('Illumina-A ','')}",
+          :submission_class_name => 'LinearSubmission',
+          :submission_parameters => {
+            :request_type_ids_list => [[re_request.id],[sequencing_request.id]],
+            :workflow_id => Submission::Workflow.find_by_key('short_read_sequencing').id,
+            :order_role_id => Order::OrderRole.find_or_create_by_role('ReISC').id,
+            :request_options => {'pre_capture_plex_level'=>8}
+          },
+          :product_line => ProductLine.find_by_name('Illumina-A')
+        )
+    end
+
 
   RequestType.create!(
     :name => "Illumina-HTP Library Creation",

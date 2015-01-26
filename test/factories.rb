@@ -693,6 +693,8 @@ Factory.define(:slf_manager, :parent => :user) do |user|
   user.roles { |role| [ role.association(:slf_manager_role) ] }
 end
 
+Factory.define(:pre_capture_pool) do
+end
 
 Factory.define(:asset_audit) do |audit|
   audit.message "Some message"
