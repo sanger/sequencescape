@@ -204,7 +204,9 @@ re_request = RequestType.create!(
     :product_line => ProductLine.find_by_name('Illumina-A'),
     :target_purpose => Purpose.find_by_name('Standard MX')
   ) do |rt|
-    rt.acceptable_plate_purposes << PlatePurpose.find_by_name('Lib PCR-XP')
+    rt.acceptable_plate_purposes << PlatePurpose.find_by_name!('Lib PCR-XP')
+     RequestType::Validator.create!(:request_type => rt, :request_option=> "read_length", :valid_options=>[150])
+     RequestType::Validator.create!(:request_type=>rt, :request_option=> "library_type", :valid_options=>RequestType::Validator::LibraryTypeValidator.new(rt.id))
   end
   [
     'illumina_a_hiseq_paired_end_sequencing',
