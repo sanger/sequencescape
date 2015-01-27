@@ -36,8 +36,7 @@ class AddIscReRequestSubmissionTemplates < ActiveRecord::Migration
       'illumina_a_hiseq_2500_paired_end_sequencing',
       'illumina_a_hiseq_2500_single_end_sequencing',
       'illumina_a_miseq_sequencing',
-      'illumina_a_hiseq_v4_paired_end_sequencing',
-      'illumina_a_hiseq_x_paired_end_sequencing'
+      'illumina_a_hiseq_v4_paired_end_sequencing'
     ]
   end
 end
