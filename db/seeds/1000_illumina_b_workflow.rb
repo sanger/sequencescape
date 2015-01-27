@@ -205,7 +205,6 @@ re_request = RequestType.create!(
     :target_purpose => Purpose.find_by_name('Standard MX')
   ) do |rt|
     rt.acceptable_plate_purposes << PlatePurpose.find_by_name!('Lib PCR-XP')
-     RequestType::Validator.create!(:request_type => rt, :request_option=> "read_length", :valid_options=>[150])
      RequestType::Validator.create!(:request_type=>rt, :request_option=> "library_type", :valid_options=>RequestType::Validator::LibraryTypeValidator.new(rt.id))
   end
   [
