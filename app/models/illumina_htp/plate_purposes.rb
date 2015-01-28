@@ -25,6 +25,12 @@ module IlluminaHtp::PlatePurposes
       'Lib Pool SS',
       'Lib Pool SS-XP',
       'Lib Pool SS-XP-Norm'
+    ],
+    [
+      'Cap Lib Pool Norm'
+    ],
+    [
+      'Legacy MX tube'
     ]
   ]
 
