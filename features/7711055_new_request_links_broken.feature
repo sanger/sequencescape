@@ -4,6 +4,7 @@ Feature: Creating new requests from an asset
     Given a sample tube called "Sample tube for testing new request" exists
       And a properly created library tube called "Library tube for testing new request" exists
       And a properly created multiplexed library tube called "Multiplexed library tube for testing new request" exists
+      And an improperly created multiplexed library tube called "Faulty Multiplexed library tube for testing new request" exists
       And I have an "active" study called "Study testing new request"
       And I have an "approved" project called "Project testing new request"
 
@@ -48,9 +49,10 @@ Feature: Creating new requests from an asset
 
     @multiplexed_library_tube
     Scenarios:
-      | asset type               | link to follow                | page                                     |
-      | Multiplexed library tube | Request additional sequencing | show page                                |
-      | Multiplexed library tube | Request additional sequencing | "Next-gen sequencing" workflow show page |
+      | asset type                      | link to follow                | page                                     |
+      | Multiplexed library tube        | Request additional sequencing | show page                                |
+      | Faulty Multiplexed library tube | Request additional sequencing | show page                                |
+      | Multiplexed library tube        | Request additional sequencing | "Next-gen sequencing" workflow show page |
 
   @manager
   Scenario Outline: Request more sequencing as the manager of a study for the asset
