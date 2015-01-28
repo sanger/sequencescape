@@ -5,7 +5,7 @@ class RequestFactory
       request.class.create!(request.attributes) do |request_copy|
         request_copy.target_asset_id = nil
         request_copy.state           = "pending"
-        request_copy.create_request_metadata(request.request_metadata.attributes)
+        request_copy.request_metadata_attributes = request.request_metadata.attributes
         request_copy.created_at      = Time.now
       end
     end
