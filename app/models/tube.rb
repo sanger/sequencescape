@@ -15,6 +15,10 @@ class Tube < Aliquot::Receptacle
     requests_as_target.where_is_a?(TransferRequest).all
   end
 
+  def automatic_move?
+    true
+  end
+
   named_scope :include_scanned_into_lab_event, :include => :scanned_into_lab_event
 
   named_scope :with_purpose, lambda { |*purposes|
