@@ -15,11 +15,15 @@ div.sample {
 }
 
 #header{
-	display: block;	
+	display: block;
 	font-size: 10pt;
 }
 #header h1{
-	
+	-moz-hyphens: auto;
+	-webkit-hyphens: auto;
+	-ms-hyphens: auto;
+	hyphens: auto;
+	word-wrap: break-word;
 }
 
 #batchbarcode{
