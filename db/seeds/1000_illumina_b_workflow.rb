@@ -64,7 +64,7 @@ ActiveRecord::Base.transaction do
 
   Pulldown::PlatePurposes.create_purposes(Pulldown::PlatePurposes::PLATE_PURPOSE_FLOWS.last)
 
-  tube_purpose = Tube::Purpose.find_by_name('Standard MX') or raise "Cannot find standard MX tube purpose"
+  tube_purpose = Tube::Purpose.find_by_name('Cap Lib Pool Norm') or raise "Cannot find standard MX tube purpose"
   Purpose.find_by_name(Pulldown::PlatePurposes::PLATE_PURPOSE_FLOWS.last.last).child_relationships.create!(:child => tube_purpose, :transfer_request_type => RequestType.transfer)
 
 
@@ -92,7 +92,7 @@ ActiveRecord::Base.transaction do
       :acceptable_plate_purposes => [Purpose.find_by_name('Lib PCR-XP')],
       :for_multiplexing => true,
       :no_target_asset => false,
-      :target_purpose => Purpose.find_by_name('Standard MX')
+      :target_purpose => Purpose.find_by_name('Cap Lib Pool Norm')
     }
   ].each do |request_type_options|
     RequestType.create!(shared_options_a.merge(request_type_options))

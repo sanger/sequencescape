@@ -512,4 +512,8 @@ class Asset < ActiveRecord::Base
     []
   end
 
+  def automatic_move?
+    false
+  end
+
 end

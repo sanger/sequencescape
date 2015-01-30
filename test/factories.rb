@@ -615,6 +615,10 @@ Factory.define :full_multiplexed_library_tube, :parent => :multiplexed_library_t
   end
 end
 
+Factory.define :broken_multiplexed_library_tube, :parent => :multiplexed_library_tube do |multiplexed_library_tube|
+
+end
+
 Factory.define :multiplexed_library_creation_request, :parent => :request do |request|
   request_type = RequestType.find_by_name('Multiplexed library creation') or raise "Cannot find 'Multiplexed library creation' request type"
 
