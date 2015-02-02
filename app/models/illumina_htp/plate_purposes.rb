@@ -32,9 +32,6 @@ module IlluminaHtp::PlatePurposes
     ],
     [
       'Cap Lib Pool Norm'
-    ],
-    [
-      'Legacy MX tube'
     ]
   ]
 
@@ -104,7 +101,9 @@ module IlluminaHtp::PlatePurposes
 
     'Lib Norm'        => IlluminaHtp::InitialDownstreamPlatePurpose,
     'Lib Norm 2'      => IlluminaHtp::NormalizedPlatePurpose,
-    'Lib Norm 2 Pool' => IlluminaHtp::PooledPlatePurpose
+    'Lib Norm 2 Pool' => IlluminaHtp::PooledPlatePurpose,
+
+    'Cap Lib Pool Norm' => IlluminaHtp::MxTubePurpose
 
   }
 
