@@ -28,9 +28,6 @@ module IlluminaHtp::PlatePurposes
     ],
     [
       'Cap Lib Pool Norm'
-    ],
-    [
-      'Legacy MX tube'
     ]
   ]
 
@@ -94,7 +91,10 @@ module IlluminaHtp::PlatePurposes
 
     'Post Shear QC'    => IlluminaHtp::PostShearQcPlatePurpose,
     'Lib PCR-XP QC'    => PlatePurpose,
-    'Lib PCRR-XP QC'   => PlatePurpose
+    'Lib PCRR-XP QC'   => PlatePurpose,
+
+
+    'Cap Lib Pool Norm' => IlluminaHtp::MxTubePurpose
 
   }
 
