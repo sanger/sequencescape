@@ -38,7 +38,7 @@ Feature: Interacting with sample tubes through the API
             "sample_name": "Sample1",
             "sample_internal_id": 1,
             "sample_uuid": "00000000-1111-2222-3333-444444444445"
-          }
+          }, "lims": "SQSCP"
         }
       ]
       """
@@ -74,7 +74,7 @@ Feature: Interacting with sample tubes through the API
           "sample_name": "Sample1",
           "sample_internal_id": 1,
           "sample_uuid": "00000000-1111-2222-3333-444444444445"
-        }
+        }, "lims": "SQSCP"
       }
       """
 
@@ -96,7 +96,7 @@ Feature: Interacting with sample tubes through the API
           "name": "Child for testing the JSON API",
           "uuid": "ffffffff-1111-2222-3333-444444444444",
           "url": "http://localhost:3000/0_5/library_tubes/ffffffff-1111-2222-3333-444444444444"
-        }
+        }, "lims": "SQSCP"
       ]
       """
 
@@ -132,7 +132,7 @@ Feature: Interacting with sample tubes through the API
             "sample_internal_id": 4,
             "created_at": "2010-09-16T13:45:00+01:00",
             "updated_at": "2010-09-16T13:45:00+01:00"
-          }
+          }, "lims": "SQSCP"
         }
       ]
       """
@@ -168,7 +168,7 @@ Feature: Interacting with sample tubes through the API
           "sample_internal_id": 4,
           "created_at": "2010-09-16T13:45:00+01:00",
           "updated_at": "2010-09-16T13:45:00+01:00"
-        }
+        }, "lims": "SQSCP"
       }
       """
 

@@ -29,6 +29,6 @@ Feature: Interacting with aliquot through the API
          "receptacle_type": "sample_tube",
          "sample_url": "http://localhost:3000/0_5/samples/bbbbbbbb-1111-2222-3333-000000000002",
          "sample_uuid": "bbbbbbbb-1111-2222-3333-000000000002"
-      }
+      }, "lims": "SQSCP"
     }
     """

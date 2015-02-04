@@ -22,13 +22,17 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
   private :target_requests
 
   def stock_plate(tube)
-    tube.requests_as_target.where_is_a?(IlluminaHtp::Requests::StdLibraryRequest).detect{|r| r.asset.present?} .asset.plate
+    tube.requests_as_target.where_is_a?(Request::LibraryCreation).detect{|r| r.asset.present?} .asset.plate
   end
 
   def request_state(request,state)
-    mappings = {'cancelled' =>'cancelled','failed' => 'failed','qc_complete' => 'passed'}
     request.is_a?(TransferRequest) ? state : mappings[state]
   end
   private :request_state
+
+  def mappings
+    {'cancelled' =>'cancelled','failed' => 'failed','qc_complete' => 'passed'}
+  end
+  private :mappings
 
 end

@@ -27,7 +27,7 @@ Feature: Interacting with samples through the API
       {
         "sample": {
           "name": "testing_the_json_api"
-        }
+        }, "lims": "SQSCP"
       }
       """
     Then the HTTP response should be "201 Created"
@@ -68,7 +68,7 @@ Feature: Interacting with samples through the API
           "id": "1",
           "uuid": "00000000-1111-2222-3333-444444444444",
           "sample_tubes": "http://localhost:3000/0_5/samples/00000000-1111-2222-3333-444444444445/sample_tubes"
-        }
+        }, "lims": "SQSCP"
       }
       """
 
@@ -128,7 +128,7 @@ Feature: Interacting with samples through the API
             "new_name_format": true,
 
             "id": 1
-          }
+          }, "lims": "SQSCP"
         }
       ]
       """
@@ -180,7 +180,7 @@ Feature: Interacting with samples through the API
             "new_name_format": true,
 
             "id": 1
-          }
+          }, "lims": "SQSCP"
         }
       ]
       """
@@ -228,7 +228,7 @@ Feature: Interacting with samples through the API
           "new_name_format": true,
 
           "id": 1
-        }
+        }, "lims": "SQSCP"
       }
       """
 
@@ -282,7 +282,7 @@ Feature: Interacting with samples through the API
           "new_name_format": true,
 
           "id": 1
-        }
+        }, "lims": "SQSCP"
       }
       """
 
@@ -338,7 +338,7 @@ Feature: Interacting with samples through the API
           "new_name_format": true,
 
           "id": 1
-        }
+        }, "lims": "SQSCP"
       }
       """
 
@@ -352,7 +352,7 @@ Feature: Interacting with samples through the API
       {
         "sample": {
           "name": ""
-        }
+        }, "lims": "SQSCP"
       }
       """
     Then the HTTP response should be "422 Unprocessable Entity"
@@ -373,7 +373,7 @@ Feature: Interacting with samples through the API
       {
         "sample": {
           "reference_genome": "Staphylococcus_aureus (NCTC_8325)"
-        }
+        }, "lims": "SQSCP"
       }
       """
     Then the HTTP response should be "200 OK"

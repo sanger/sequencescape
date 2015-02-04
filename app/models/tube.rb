@@ -15,6 +15,10 @@ class Tube < Aliquot::Receptacle
     requests_as_target.where_is_a?(TransferRequest).all
   end
 
+  def automatic_move?
+    true
+  end
+
   named_scope :include_scanned_into_lab_event, :include => :scanned_into_lab_event
 
   named_scope :with_purpose, lambda { |*purposes|
@@ -78,7 +82,7 @@ class Tube < Aliquot::Receptacle
 
   class StandardMx < Tube::Purpose
     def created_with_request_options(tube)
-      tube.parent.created_with_request_options
+      tube.parent.try(:created_with_request_options)||{}
     end
 
     # Transitioning an MX library tube to a state involves updating the state of the transfer requests.  If the

@@ -56,6 +56,17 @@ class RequestsControllerTest < ActionController::TestCase
          assert_equal flash[:notice], "Created request #{@new_request.id}"
          assert_response :redirect
       end
+
+      should "set failed requests to pending" do
+        @request_initial= Factory :request, :user => @user, :request_type => Factory(:request_type), :study => Factory(:study, :name => "ReqCon2"), :workflow => Factory(:submission_workflow), :state => 'failed'
+         get :copy, :id => @request_initial.id
+
+         @new_request = Request.last
+         assert_equal flash[:notice], "Created request #{@new_request.id}"
+         assert_response :redirect
+
+         assert_equal 'pending', @new_request.state
+      end
     end
 
     context "#update" do

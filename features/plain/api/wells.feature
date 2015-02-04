@@ -38,7 +38,7 @@ Feature: Interacting with wells through the API
             "sample_name": "Testing_the_JSON_API",
 
             "internal_id": 1
-          }
+          }, "lims": "SQSCP"
         }
       ]
       """
@@ -78,7 +78,7 @@ Feature: Interacting with wells through the API
 
           "plate_barcode": "2",
           "internal_id": 1
-        }
+        }, "lims": "SQSCP"
       }
       """
 
@@ -153,7 +153,7 @@ Feature: Interacting with wells through the API
 
             "plate_barcode": "123456",
             "internal_id": 1
-          }
+          }, "lims": "SQSCP"
         }
         """
 

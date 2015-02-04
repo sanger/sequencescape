@@ -45,6 +45,14 @@ class AssetGroup < ActiveRecord::Base
     return asset_group
   end
 
+  def automatic_move?
+    asset_types.one? && assets.first.automatic_move?
+  end
+
+  def asset_types
+    assets.map(&:sti_type).uniq
+  end
+
   def duplicate(project)
     # TODO: Implement me
   end

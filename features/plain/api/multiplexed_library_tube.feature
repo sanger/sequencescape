@@ -29,7 +29,7 @@ Feature: Interacting with multiplexed_library_tubes through the API
             "requests": "http://localhost:3000/0_5/multiplexed_library_tubes/00000000-1111-2222-3333-444444444444/requests",
 
             "id": 1
-          }
+          }, "lims": "SQSCP"
         }
       ]
       """
@@ -55,6 +55,6 @@ Feature: Interacting with multiplexed_library_tubes through the API
           "requests": "http://localhost:3000/0_5/multiplexed_library_tubes/00000000-1111-2222-3333-444444444444/requests",
 
           "id": 1
-        }
+        }, "lims": "SQSCP"
       }
       """
