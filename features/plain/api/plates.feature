@@ -34,7 +34,7 @@ Feature: Interacting with plates through the API
             "plate_purpose_uuid": "34567",
             "plate_purpose_internal_id": "2",
             "id": 1
-          }
+          }, "lims": "SQSCP"
         }
       ]
       """
@@ -66,6 +66,6 @@ Feature: Interacting with plates through the API
           "plate_purpose_uuid": "34567",
           "plate_purpose_internal_id": "2",
           "id": 1
-        }
+        }, "lims": "SQSCP"
       }
       """

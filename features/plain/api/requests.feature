@@ -76,7 +76,7 @@ Feature: Interacting with requests through the API
             "source_asset_internal_id": "ignored in test because it varies uncontrollably & you should use source_asset_uuid instead",
             "source_asset_sample_internal_id": "ignored in test because it varies uncontrollably & you should use source_asset_sample_uuid instead",
             "study_internal_id": "ignored in test because it varies uncontrollably & you should use study_uuid instead"
-          }
+          }, "lims": "SQSCP"
         }
       ]
       """
@@ -139,7 +139,7 @@ Feature: Interacting with requests through the API
             "project_internal_id": "ignored in test because it varies uncontrollably & you should use project_uuid instead",
             "source_asset_internal_id": "ignored in test because it varies uncontrollably & you should use source_asset_uuid instead",
             "study_internal_id": "ignored in test because it varies uncontrollably & you should use study_uuid instead"
-          }
+          }, "lims": "SQSCP"
         }
       ]
       """
@@ -203,7 +203,7 @@ Feature: Interacting with requests through the API
           "project_internal_id": "ignored in test because it varies uncontrollably & you should use project_uuid instead",
           "source_asset_internal_id": "ignored in test because it varies uncontrollably & you should use source_asset_uuid instead",
           "study_internal_id": "ignored in test because it varies uncontrollably & you should use study_uuid instead"
-        }
+        },"lims":"SQSCP"
       }
       """
 
@@ -270,7 +270,7 @@ Feature: Interacting with requests through the API
           "project_internal_id": "ignored in test because it varies uncontrollably & you should use project_uuid instead",
           "source_asset_internal_id": "ignored in test because it varies uncontrollably & you should use source_asset_uuid instead",
           "study_internal_id": "ignored in test because it varies uncontrollably & you should use study_uuid instead"
-        }
+        },"lims":"SQSCP"
       }
       """
 
@@ -340,7 +340,7 @@ Feature: Interacting with requests through the API
           "project_internal_id": "ignored in test because it varies uncontrollably & you should use project_uuid instead",
           "source_asset_internal_id": "ignored in test because it varies uncontrollably & you should use source_asset_uuid instead",
           "study_internal_id": "ignored in test because it varies uncontrollably & you should use study_uuid instead"
-        }
+        },"lims":"SQSCP"
       }
       """
   @aliquot
@@ -401,7 +401,7 @@ Feature: Interacting with requests through the API
             "source_asset_internal_id": "ignored in test because it varies uncontrollably & you should use source_asset_uuid instead",
             "source_asset_sample_internal_id": "ignored in test because it varies uncontrollably & you should use source_asset_sample_uuid instead",
             "study_internal_id": "ignored in test because it varies uncontrollably & you should use study_uuid instead"
-          }
+          },"lims":"SQSCP"
         }
       ]
       """

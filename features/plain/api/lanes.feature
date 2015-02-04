@@ -28,7 +28,7 @@ Feature: Interacting with lanes through the API
             "qc_state": "pending",
             "requests": "http://localhost:3000/0_5/lanes/00000000-1111-2222-3333-444444444444/requests",
             "internal_id": 1
-          }
+          }, "lims": "SQSCP"
         }
       ]
       """
@@ -56,6 +56,6 @@ Feature: Interacting with lanes through the API
           "qc_state": "pending",
 
           "internal_id": 1
-        }
+        }, "lims": "SQSCP"
       }
       """

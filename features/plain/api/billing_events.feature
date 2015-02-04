@@ -38,7 +38,7 @@ Feature: Interacting with billing_events through the API
             "request_uuid": "UUID-22222",
             "request_internal_id": 3,
             "reference": "R123A456"
-          }
+          }, "lims": "SQSCP"
         }
       ]
       """
@@ -75,6 +75,6 @@ Feature: Interacting with billing_events through the API
           "request_uuid": "UUID-22222",
           "request_internal_id": 3,
           "reference": "R123A456"
-        }
+        }, "lims": "SQSCP"
       }
       """
