@@ -41,8 +41,8 @@ class PipelinesProduceTubeOfAppropriatePurpose < ActiveRecord::Migration
         'SC cap lib pool',
         'WGS lib pool'
       ).to(old_tube)
-      IlluminaHtp::MxTubePurpose.find_by_name('Cap Lib Pool Norm').destroy
-      IlluminaHtp::MxTubePurpose.find_by_name('Legacy MX tube').destroy
+      IlluminaHtp::MxTubeNoQcPurpose.find_by_name('Cap Lib Pool Norm').destroy
+      IlluminaHtp::MxTubeNoQcPurpose.find_by_name('Legacy MX tube').destroy
     end
   end
 end

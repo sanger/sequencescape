@@ -94,7 +94,7 @@ module IlluminaHtp::PlatePurposes
     'Lib PCRR-XP QC'   => PlatePurpose,
 
 
-    'Cap Lib Pool Norm' => IlluminaHtp::MxTubePurpose
+    'Cap Lib Pool Norm' => IlluminaHtp::MxTubeNoQcPurpose
 
   }
 
