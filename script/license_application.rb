@@ -134,8 +134,9 @@ module WTSI
         new_file.close unless @new_file.nil? || new_file.closed?
       end
 
-      File.delete(filename)
-      File.rename("#{filename}.updated",filename)
+      File.rename(filename,"#{filename}.tmp")
+      File.rename(new_filename,filename)
+      File.delete("#{filename}.tmp")
     end
 
     private
