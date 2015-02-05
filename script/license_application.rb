@@ -116,6 +116,9 @@ module WTSI
       @filetype = licenser.filetype_for(extension)
     end
 
+    ##
+    # Apply the license text to the given file
+    # Involves the creation of a temporary file
     def apply_license
 
       begin
@@ -166,7 +169,8 @@ module WTSI
         filetype.comment_open,
         license_body,
         license_dates,
-        filetype.comment_close
+        filetype.comment_close,
+        "\n"
       ].compact.to_s
     end
 
