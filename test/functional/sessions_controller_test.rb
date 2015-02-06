@@ -31,6 +31,18 @@ class SessionsControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  def test_should_filter_passwords_from_all_fields
+    post :login, :login => 'john', :password => 'secret'
+    assert_equal(
+      {"password"=>"[FILTERED]"},
+      @controller.__send__(:filter_parameters,{"password"=>"login=username&password=secret&commit=Login"})
+    )
+    assert_equal(
+      {"rack.request.form_vars"=>"login=username&password=[FILTERED]&commit=Login"},
+      @controller.__send__(:filter_parameters,{"rack.request.form_vars"=>"login=username&password=secret&commit=Login"})
+    )
+  end
+
   def test_should_logout
     login_as @user
     get :logout

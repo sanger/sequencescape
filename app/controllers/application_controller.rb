@@ -6,6 +6,24 @@ require "exceptions"
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
 
+  class << self
+
+    alias_method :filter_parameter_logging_without_form_vars, :filter_parameter_logging
+
+    def filter_parameter_logging(*filter_words, &block)
+      filter_parameter_logging_without_form_vars(*filter_words) do |key, value|
+        # Rails 2.3 can't split the 'rack.request.form_vars' env into sub
+        # string. So it doesn't filter the password. We need to do it ourselves
+        # in a block.
+        block.call(key,value) if block.present?
+        return unless key == 'rack.request.form_vars'
+        filter_words.each do |word|
+          rex= Regexp.new("&#{word}=[^&]*")
+          value.gsub!(rex,"&#{word}=[FILTERED]")
+        end
+      end
+    end
+  end
   # See ActionController::RequestForgeryProtection for details
   # Uncomment the :secret if you're not using the cookie session store
   protect_from_forgery # :secret => "4418f0a814148fc28a0a38971e433b7d"
@@ -55,12 +73,12 @@ class ApplicationController < ActionController::Base
     exclude_nested_resource = request.headers["HTTP_EXCLUDE_NESTED_RESOURCE"] || params[:exclude_nested_resource]
     @exclude_nested_resource = exclude_nested_resource && exclude_nested_resource.to_s.downcase == "true"
   end
-  
+
   def set_cache_disabled!
     response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
     response.headers["Pragma"] = "no-cache"
     response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
-  end  
+  end
 
   def first_param(key)
     value  = params[key]
