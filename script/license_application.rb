@@ -158,7 +158,7 @@ module WTSI
       [
         filetype.comment_open,
         license_body
-      ].to_s.lines.all? do |line|
+      ].join("\n").lines.all? do |line|
         line == old_file.gets
       end
     ensure
@@ -172,7 +172,7 @@ module WTSI
         license_dates,
         filetype.comment_close,
         "\n"
-      ].compact.to_s
+      ].compact.join("\n")
     end
 
     def license_body
@@ -180,7 +180,11 @@ module WTSI
     end
 
     def date_stamps
-      [licenser.range_string].concat(updated_dates).join(',')
+      dates = updated_dates
+      initial = !dates.delete('INITIAL').nil?
+      dates.delete(licenser.initial_range.begin.to_s) if initial
+      initial_range = initial ? [licenser.range_string] : []
+      initial_range.concat(updated_dates).join(',')
     end
 
     def license_dates
@@ -191,10 +195,10 @@ module WTSI
     end
 
     def updated_dates
-      `git log --date=short --format=format:"%ad" -- follow -- #{filename} |
-      awk -F"-" '{print $1}' |
-      uniq |
-      sort`.split
+      `git log --date=short --format=format:"%ad %p" -- follow -- #{filename} |
+      awk -F'[\\- ]' '{print ($4?$1:"INITIAL")}' |
+      sort |
+      uniq`.split
     end
 
     def extension
@@ -204,15 +208,17 @@ module WTSI
 
   end
 end
+
+
 WTSI::LicenseApplication.new do |config|
 
   config.application = 'SEQUENCESCAPE'
   config.license_text = <<HEREDOC
-This file is part of %s; License information can be found in
-the file LICENSE in the root of this repository
+This file is part of %s is distributed under the terms of GNU General Public License version 1 or later;
+Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 HEREDOC
   config.date_line = 'Copyright (C) %s Genome Research Ltd.'
-  config.initial_range = (2007..2010)
+  config.initial_range = (2007..2011)
 
   config.add_filetype('rb','#')
   config.add_filetype('js','#')
