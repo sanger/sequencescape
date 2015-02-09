@@ -158,7 +158,7 @@ module WTSI
       [
         filetype.comment_open,
         license_body
-      ].join("\n").lines.all? do |line|
+      ].join.lines.all? do |line|
         line == old_file.gets
       end
     ensure
@@ -172,7 +172,7 @@ module WTSI
         license_dates,
         filetype.comment_close,
         "\n"
-      ].compact.join("\n")
+      ].flatten.compact.join
     end
 
     def license_body
@@ -184,7 +184,7 @@ module WTSI
       initial = !dates.delete('INITIAL').nil?
       dates.delete(licenser.initial_range.begin.to_s) if initial
       initial_range = initial ? [licenser.range_string] : []
-      initial_range.concat(updated_dates).join(',')
+      initial_range.concat(dates).join(',')
     end
 
     def license_dates
@@ -196,9 +196,7 @@ module WTSI
 
     def updated_dates
       `git log --date=short --format=format:"%ad %p" -- follow -- #{filename} |
-      awk -F'[\\- ]' '{print ($4?$1:"INITIAL")}' |
-      sort |
-      uniq`.split
+      awk -F'[\\- ]' '{print ($4?$1:"INITIAL")}'`.split.sort.uniq
     end
 
     def extension
