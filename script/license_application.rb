@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2015 Genome Research Ltd.
 #!/usr/bin/env ruby
 # This file is part of SEQUENCESCAPE; License information can be found in
 # the file LICENSE in the root of this repository
@@ -220,7 +223,7 @@ HEREDOC
 
   config.add_filetype('rb','#')
   config.add_filetype('js','#')
-  config.add_filetype('js','#','<%','%>')
+  config.add_filetype('js','//')
 
   config.exclude_folder 'lib'
   config.exclude_folder 'vendor'
