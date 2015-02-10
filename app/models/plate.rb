@@ -11,6 +11,7 @@ class Plate < Asset
   include Barcode::Barcodeable
   include Asset::Ownership::Owned
   include Plate::Iterations
+  include Plate::FluidigmBehaviour
 
   extend QcFile::Associations
   has_qc_files
