@@ -1,10 +1,7 @@
+#!/usr/bin/env ruby
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2015 Genome Research Ltd.
-#!/usr/bin/env ruby
-# This file is part of SEQUENCESCAPE; License information can be found in
-# the file LICENSE in the root of this repository
-# Copyright (C) 2015 Genome Research Ltd.
 module WTSI
   ##
   # Controls the addition of license files to an application
@@ -127,7 +124,10 @@ module WTSI
       begin
         return if existing_license?
         STDOUT.print "."
+        first_line = old_file.gets
+        new_file.write(first_line) if first_line.match(/^#!/)
         new_file.write(license_text)
+        new_file.write(first_line) unless first_line.match(/^#!/)
         old_file.each_line {|line| new_file.puts(line) }
       rescue => exception
         STDERR.puts "Something went wrong applying license to #{filename}:"
@@ -162,7 +162,9 @@ module WTSI
         filetype.comment_open,
         license_body
       ].join.lines.all? do |line|
-        line == old_file.gets
+        old_line = old_file.gets
+        old_line = old_file.gets if old_line.match(/^#!/)
+        line == old_line
       end
     ensure
       old_file.rewind
