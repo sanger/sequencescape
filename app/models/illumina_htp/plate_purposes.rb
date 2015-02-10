@@ -103,7 +103,7 @@ module IlluminaHtp::PlatePurposes
     'Lib Norm 2'      => IlluminaHtp::NormalizedPlatePurpose,
     'Lib Norm 2 Pool' => IlluminaHtp::PooledPlatePurpose,
 
-    'Cap Lib Pool Norm' => IlluminaHtp::MxTubePurpose
+    'Cap Lib Pool Norm' => IlluminaHtp::MxTubeNoQcPurpose
 
   }
 

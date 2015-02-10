@@ -59,7 +59,7 @@ module TubePurposeHelper
 
   def new_illumina_mx_tube(name)
     say "Creating '#{name}'' purpose"
-    IlluminaHtp::MxTubePurpose.create!(
+    IlluminaHtp::MxTubeNoQcPurpose.create!(
         :name                  => name,
         :target_type           => 'MultiplexedLibraryTube',
         :qc_display            => false,

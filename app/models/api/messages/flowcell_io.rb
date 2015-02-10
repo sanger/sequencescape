@@ -152,6 +152,7 @@ class Api::Messages::FlowcellIO < Api::Base
     map_attribute_to_json_attribute(:priority)
     map_attribute_to_json_attribute(:mx_library,'id_pool_lims')
     map_attribute_to_json_attribute(:external_release,'external_release')
+    map_attribute_to_json_attribute(:target_asset_id, 'entity_id_lims')
 
     with_nested_has_many_association(:samples) do # actually aliquots
 
@@ -179,7 +180,6 @@ class Api::Messages::FlowcellIO < Api::Base
         map_attribute_to_json_attribute(:project_cost_code, 'cost_code')
         map_attribute_to_json_attribute(:r_and_d?, 'is_r_and_d')
       end
-      map_attribute_to_json_attribute(:id, 'entity_id_lims')
       map_attribute_to_json_attribute(:external_library_id, 'id_library_lims')
       map_attribute_to_json_attribute(:library_id, 'legacy_library_id')
       map_attribute_to_json_attribute(:aliquot_type,'entity_type')
