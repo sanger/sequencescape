@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011 Genome Research Ltd.
 class AddOrder < ActiveRecord::Migration
   SUBMISSION_ONLY =%w{state message}
   ORDER_ONLY = %w{study_id workflow_id user_id item_options comments project_id sti_type template_name asset_group_id asset_group_name}
