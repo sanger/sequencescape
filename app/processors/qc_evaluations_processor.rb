@@ -1,7 +1,17 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 #perl -I/software/solexa/lib/perl5 ./report_qc_to_sequencescape_mq --usedb --id_run 3999 -l 1 -l 2
 #  -mqserver mq-dev -mqqueue /queue/staging.qc_evaluations
 # NOTE: Rails.logger.level may be overridden (Logger::DEBUG ?) in poller launch script
+
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012 Genome Research Ltd.
 class QcEvaluationsProcessor < ApplicationProcessor
+
+  # TODO: Remove this, as we no longer use it.
+
   subscribes_to :qc_evaluations, {:ack => 'client'}#, 'activemq.prefetchSize' => 1}
 
   def on_message(message)
