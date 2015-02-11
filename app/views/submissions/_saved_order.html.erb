@@ -65,7 +65,7 @@
   </div>
 
     <% form_tag(order_path, :method => :put, :class => "comments-box") do -%>
-      <%= text_field_tag :comments, nil, :placeholder => "Write a new comment here" %>
+      <%= text_area_tag :comments, nil, :placeholder => "Write a new comment here" %>
       <%= submit_tag "&#10010; Add new comment",
       :id       => "add-comment",
       :class    => "button add-comment" %>

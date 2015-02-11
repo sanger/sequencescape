@@ -1153,7 +1153,7 @@ ul#orders ul.sub-panel li {
 	background: #EBFFEB;
 }
 
-form.comments-box #comments { margin-left: 2em; margin-right: 0px; display: inline; width: 50ex;}
+form.comments-box #comments { margin-left: 2em; margin-right: 0px; display: inline; width: 65ex;}
 form.comments-box .add-comment {float: right; background-color: #00498C !important ;}
 
 #orders .comments {
