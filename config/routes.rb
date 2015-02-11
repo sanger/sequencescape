@@ -86,7 +86,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect "bulk_submissions", :controller => "bulk_submissions", :action => "new"
 
   map.resources :submissions, :collection => { :study_assets => :get, :order_fields => :get, :project_details => :get }
-  map.resources :orders, :only => [:destroy]
+  map.resources :orders, :only => [:destroy, :update]
 
   map.resources :documents, :only => [ :show ]
 

@@ -1,4 +1,4 @@
-<%- form ||= nil %>
+  <%- form ||= nil %>
   <span class="completed badge">✔</span>
   <h2>
     Order added to submission at: <%=h order.created_at.to_formatted_s(:day_full_with_time) %>
@@ -58,8 +58,19 @@
 
   <h4>Comments:</h4>
   <div class="sub-panel">
-    <%= "<p><i>#{order.comments}</i></p>" unless order.comments.nil? %>
+    <%= "<ul>#{order.comments}</ul>" unless order.comments.nil? %>
+  <div id="order-controls" class="buttons">
   </div>
+
+  </div>
+
+    <% form_tag(order_path, :method => :put, :class => "comments-box") do -%>
+      <%= text_field_tag :comments, nil, :placeholder => "Write a new comment here" %>
+      <%= submit_tag "&#10010; Add new comment",
+      :id       => "add-comment",
+      :class    => "button add-comment" %>
+    <% end %>
+
 
   <% if form.present? -%>
     <div class="save-buttons">
@@ -71,6 +82,7 @@
       <%= submit_tag '♻  Delete Order',
         :class => 'delete-order button'
       %>
+
     </div>
   <% end -%>
 
