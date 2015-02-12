@@ -1,6 +1,6 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2014 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2011,2012,2014,2015 Genome Research Ltd.%>
 <h1>Editing asset</h1>
 <table>
 <% form_for(:asset, :url => { :action => "update", :id => @asset.id }, :html => { :method => :put }) do |f| %>
@@ -10,9 +10,9 @@
   <% else %>
       <tr><td>Name: <%= h(@asset.display_name) %></td></tr>
   <% end %>
-  
+
   <% if (@current_user.is_lab_manager?) && (@asset.respond_to? :plate_purpose) %>
-    <tr><td>Purpose: <%= select_tag ("asset[plate_purpose_id]", options_for_select(@valid_purposes_options, @asset.purpose.id)) %></td></tr>
+    <tr><td>Purpose: <%= select_tag ("asset[plate_purpose_id]", options_for_select(@valid_purposes_options, @asset.purpose.try(:id))) %></td></tr>
   <% end %>
 
   <% if @asset.location %>
