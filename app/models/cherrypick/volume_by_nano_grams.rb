@@ -13,7 +13,8 @@ module Cherrypick::VolumeByNanoGrams
 
     source_concentration, source_volume = source_well.well_attribute.concentration, source_well.well_attribute.measured_volume
     raise Cherrypick::VolumeError, "Missing measured volume for well #{source_well.display_name}(#{source_well.id})"        if source_volume.blank? || source_volume <= 0.0
-    raise Cherrypick::ConcentrationError, "Missing measured concentration for well #{source_well.display_name}(#{source_well.id})" if source_concentration.blank? || source_concentration <= 0.0
+    raise Cherrypick::ConcentrationError, "Missing measured concentration for well #{source_well.display_name}(#{source_well.id})" if source_concentration.blank?
+    raise Cherrypick::ConcentrationError, "Concentration is negative for well #{source_well.display_name}(#{source_well.id})" if source_concentration < 0.0
   end
   private :check_inputs_to_volume_to_cherrypick_by_nano_grams!
 
@@ -22,7 +23,8 @@ module Cherrypick::VolumeByNanoGrams
 
     source_concentration = source_well.well_attribute.concentration.to_f
     source_volume        = source_well.well_attribute.measured_volume.to_f
-    requested_volume     = [ source_volume, (target_ng.to_f/source_concentration).ceil ].min
+    desired_volumne      = source_concentration.zero? ? source_volume : (target_ng.to_f/source_concentration).ceil
+    requested_volume     = [ source_volume, desired_volumne ].min
     buffer_volume        = requested_volume < minimum_volume ? buffer_volume_required(minimum_volume, requested_volume) : 0.0
     requested_volume     = maximum_volume if requested_volume > maximum_volume
 
