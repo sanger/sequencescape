@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 class BatchesController < ApplicationController
   include XmlCacheHelper::ControllerHelper
 
@@ -83,25 +83,25 @@ class BatchesController < ApplicationController
   def create
     ActiveRecord::Base.transaction do
     Batch.benchmark "BENCH Batch:WorkflowController:create", Logger::INFO, false do
-    @pipeline = Pipeline.find(params[:id])
+      @pipeline = Pipeline.find(params[:id])
 
-    unless @pipeline.valid_number_of_checked_request_groups?(params)
-      return pipeline_error_on_batch_creation("Too many request groups selected, maximum is #{@pipeline.max_number_of_groups}")
-    end
+      unless @pipeline.valid_number_of_checked_request_groups?(params)
+        return pipeline_error_on_batch_creation("Too many request groups selected, maximum is #{@pipeline.max_number_of_groups}")
+      end
 
-    requests = Batch.benchmark "BENCH Batch:WorkflowController:create - finding requests", Logger::INFO, false do
-      @pipeline.extract_requests_from_input_params(params)
-    end
+      requests = Batch.benchmark "BENCH Batch:WorkflowController:create - finding requests", Logger::INFO, false do
+        @pipeline.extract_requests_from_input_params(params)
+      end
 
-    return pipeline_error_on_batch_creation("Maximum batch size is #{@pipeline.max_size}") if @pipeline.max_size && requests.size > @pipeline.max_size
-    return pipeline_error_on_batch_creation("All plates in a submission must be selected") unless @pipeline.all_requests_from_submissions_selected?(requests)
+      return pipeline_error_on_batch_creation("Maximum batch size is #{@pipeline.max_size}") if @pipeline.max_size && requests.size > @pipeline.max_size
+      return pipeline_error_on_batch_creation("All plates in a submission must be selected") unless @pipeline.all_requests_from_submissions_selected?(requests)
 
-    return hide_from_inbox(requests) if params[:action_on_requests] == "hide_from_inbox"
+      return hide_from_inbox(requests) if params[:action_on_requests] == "hide_from_inbox"
 
-    @batch = @pipeline.batches.create!(:requests => requests, :user => current_user)
-    # we exclude the rendering bit from the usefull code
-    # the global time is anyway already in the Rails log
-    end # of benchmak
+      @batch = @pipeline.batches.create!(:requests => requests, :user => current_user)
+      # we exclude the rendering bit from the usefull code
+      # the global time is anyway already in the Rails log
+      end # of benchmak
     end # of transaction
 
     respond_to do |format|
