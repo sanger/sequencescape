@@ -1,5 +1,7 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011,2012,2013,2014 Genome Research Ltd.
 class Order < ActiveRecord::Base
-
   class OrderRole < ActiveRecord::Base
     set_table_name('order_roles')
   end
@@ -37,6 +39,7 @@ class Order < ActiveRecord::Base
   belongs_to :workflow, :class_name => 'Submission::Workflow'
   validates_presence_of :workflow
 
+  has_many :requests, :inverse_of => :order
 
   belongs_to :submission, :inverse_of => :orders
   #validates_presence_of :submission
@@ -341,6 +344,14 @@ class Order < ActiveRecord::Base
     input_field_infos.any? {|k| k.key==:gigabases_expected}
   end
 
+  def add_comment(comment_str, user)
+    update_attribute(:comments, comments + ['<li>', comment_str, '</li>'].join)
+    save!
+
+    requests.where_is_not_a?(TransferRequest).each do |request|
+      request.add_comment(comment_str, user)
+    end
+  end
 end
 
 

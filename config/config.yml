@@ -24,6 +24,9 @@ development:
     delayed_job:
       study_report_priority: 100
       submission_process_priority: 0
+    fluidigm_data:
+      source: directory
+      directory: <%= Rails.root %>/data/fluidigm
     disable_accession_check: true
     disable_api_authentication: true
     ega_accession_login: "ega_accession_login"
@@ -102,6 +105,9 @@ test: &TEST
     disable_web_proxy: true
     ega_accession_login: "ega_accession_login"
     era_accession_login: "era_accession_login"
+    fluidigm_data:
+      source: directory
+      directory: <%= Rails.root %>/data/fluidigm
     ldap_port: 389
     ldap_secure_port: 636
     ldap_server: "ldap.internal.sanger.ac.uk"
