@@ -25,9 +25,6 @@ class BillingEvent < ActiveRecord::Base
 
   validates_numericality_of :quantity
 
-#  validates_uniqueness_of :reference, :if => :charge?
-#  validates_uniqueness_of :reference, :if => :charge_internally?
-
   named_scope :charged_to_project, { :conditions => { :kind => 'charge' } }
   named_scope :charged_internally, { :conditions => { :kind => 'charge_internally' } }
   named_scope :refunded_to_project, { :conditions => { :kind => 'refund' } }

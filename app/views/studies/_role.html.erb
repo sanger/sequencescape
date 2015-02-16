@@ -1,3 +1,6 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011 Genome Research Ltd.%>
 <div style="text-align:center">
   <% form_remote_tag :url => grant_role_study_path(:id => @study), :update => "role_list" do -%>
     <label for="role_user">Select a user</label> <%= select "role", "user", @users.map {|r| [r.name, r.id]}, { :prompt => true } %>&nbsp;
