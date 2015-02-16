@@ -138,8 +138,8 @@ Feature: Pick a ng quantity using the Tecan robot
      | B2        222        v9 b1  | C6        333        v2 b8  |
      | B3        222        v8 b2  | C7        333        v2 b8  |
      | B4        222        v7 b3  | C8        333        v2 b8  |
-     | B5        222        v50 b4 | D1        333        v10 b0 |
-     | B6        222        v20 b5 | D2        333        v10 b0 |
+     | B5        222        v50 b0 | D1        333        v10 b0 |
+     | B6        222        v20 b0 | D2        333        v10 b0 |
      | C3        333        v30 b0 | D3        333        v15 b0 |
      | C4        333        v1 b9  | D4        333        v20 b0 |
      | 1                           | 2                           |

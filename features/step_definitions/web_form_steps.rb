@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2015 Genome Research Ltd.
 ########################################################################################
 # TODO: Remove these from the features and replace them with the new versions
 ########################################################################################
@@ -34,7 +34,7 @@ When /^I press exactly "([^\"]*)"$/ do |button|
 end
 
 Then /^the field "([^"]*)" should be empty$/ do |field|
-  field_value = field_labeled(field).value
+  field_value = field_labeled(field).attribute('value')
   assert(field_value.blank?, "Field #{ field.inspect } is not blank")
 end
 
@@ -108,7 +108,7 @@ When /^I fill in "([^"]*)" with(?: the)? multiline text:?$/ do |field, value|
 end
 
 Then /^"([^\"]+)" should be selected from "([^\"]+)"$/ do |value, name|
-  assert_equal([ value ], find_field(name).value, "Field #{name.inspect} does not have the correct value selected")
+  assert_equal([ value ], find_field(name).attribute('value'), "Field #{name.inspect} does not have the correct value selected")
 end
 
 Then /^I expect an exception to be raised when I press "([^"]*)"(?: within "([^"]*)")?$/ do |button, selector|

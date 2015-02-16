@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012 Genome Research Ltd.
+#Copyright (C) 2011,2012,2015 Genome Research Ltd.
 Factory.define :empty_well, :class => Well do |well|
   well.value               ""
   well.qc_state            ""
@@ -39,5 +39,6 @@ Factory.define :tagged_well, :parent => :empty_well do |well|
 end
 
 Factory.define :well_with_sample_and_plate, :parent => :well_with_sample_and_without_plate do |well|
+  well.map { |map| map.association(:map) }
   well.plate { |plate| plate.association(:plate) }
 end

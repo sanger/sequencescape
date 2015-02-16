@@ -96,7 +96,7 @@ Feature: Interacting with sample tubes through the API
           "name": "Child for testing the JSON API",
           "uuid": "ffffffff-1111-2222-3333-444444444444",
           "url": "http://localhost:3000/0_5/library_tubes/ffffffff-1111-2222-3333-444444444444"
-        }, "lims": "SQSCP"
+        }
       ]
       """
 

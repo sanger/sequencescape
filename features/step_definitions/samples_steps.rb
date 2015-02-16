@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 def GivenSampleMetadata(attribute, regexp)
   Given(regexp) do |name,value|
     sample = Sample.find_by_name(name) or raise StandardError, "There appears to be no sample named '#{ name }'"
@@ -32,7 +32,7 @@ Then /^the following samples should be in the sample registration fields:$/ do |
     with_scope("table#samples_to_register tr.sample_row:nth-child(#{index+1})") do
       details.each do |label, value|
         field       = find_field("#{ label } for sample #{ index }")
-        field_value = (field.tag_name == 'textarea') ? field.text : field.value
+        field_value = (field.tag_name == 'textarea') ? field.text : field.attribute('value')
         assert_match(/#{value}/, field_value, "Field #{ label.inspect } for sample #{ index } was unexpected")
       end
     end
