@@ -31,7 +31,6 @@ config.middleware.insert_after(ActionController::Failsafe, "ResponseTimer", File
 
 config.after_initialize do
   Bullet.enable = true
-  Bullet.alert = true
+  Bullet.alert = ENV['NOISY_BULLET']=='true'
   Bullet.bullet_logger = true
-  Bullet.console = true
 end
