@@ -74,7 +74,7 @@ group :development do
   gem "rcov", :require => false, :platforms => :mri
   #gem "rcov_rails" # gem only for Rails 3, plugin for Rails 2.3 :-/
   # ./script/plugin install http://svn.codahale.com/rails_rcov
-
+  gem "bullet", "<=4.5.0"
   gem "ruby-debug"
   gem "utility_belt"
 #  gem 'rack-perftools_profiler', '~> 0.1', :require => 'rack/perftools_profiler'

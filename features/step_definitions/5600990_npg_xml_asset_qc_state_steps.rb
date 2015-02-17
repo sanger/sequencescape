@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
 Given /^sequencescape is setup for 5600990$/ do
  lane = Factory :lane, :name => "NPG_Action_Lane_Test", :qc_state => 'passed', :external_release => 1
  library_tube = Factory :empty_library_tube

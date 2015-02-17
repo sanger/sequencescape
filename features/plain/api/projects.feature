@@ -40,7 +40,7 @@ Feature: Interacting with projects through the API
                 "state": "active",
 
                 "id": 644
-            }
+            }, "lims": "SQSCP"
         }
       ]
       """
@@ -78,6 +78,6 @@ Feature: Interacting with projects through the API
               "state": "active",
 
               "id": 644
-          }
+          }, "lims": "SQSCP"
       }
       """

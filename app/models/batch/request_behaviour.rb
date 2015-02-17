@@ -1,7 +1,10 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011,2012,2014,2015 Genome Research Ltd.
 module Batch::RequestBehaviour
   def self.included(base)
     base.class_eval do
-      has_one :batch_request
+      has_one :batch_request, :inverse_of => :request, :dependent => :destroy
       has_one :batch, :through => :batch_request
 
       # For backwards compatibility

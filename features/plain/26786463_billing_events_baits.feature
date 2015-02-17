@@ -34,7 +34,7 @@ Feature: Interacting with billing_events that include bait_libraries through the
           "request_uuid": "UUID-22222",
           "request_internal_id": 3,
           "reference": "R123A456"
-        }
+        }, "lims": "SQSCP"
       }
       """
 
@@ -105,7 +105,7 @@ Feature: Interacting with billing_events that include bait_libraries through the
             "source_asset_internal_id": "ignored in test because it varies uncontrollably & you should use source_asset_uuid instead",
             "source_asset_sample_internal_id": "ignored in test because it varies uncontrollably & you should use source_asset_sample_uuid instead",
             "study_internal_id": "ignored in test because it varies uncontrollably & you should use study_uuid instead"
-          }
+          }, "lims": "SQSCP"
         }
       ]
       """

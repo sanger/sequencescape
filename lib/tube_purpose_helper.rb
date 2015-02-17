@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2015 Genome Research Ltd.
 module TubePurposeHelper
 
   class PurposeMigrator
@@ -59,7 +62,7 @@ module TubePurposeHelper
 
   def new_illumina_mx_tube(name)
     say "Creating '#{name}'' purpose"
-    IlluminaHtp::MxTubePurpose.create!(
+    IlluminaHtp::MxTubeNoQcPurpose.create!(
         :name                  => name,
         :target_type           => 'MultiplexedLibraryTube',
         :qc_display            => false,

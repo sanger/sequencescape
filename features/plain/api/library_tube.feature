@@ -31,7 +31,7 @@ Feature: Interacting with library_tubes through the API
             "qc_state": "",
 
             "id": 1
-          }
+          }, "lims": "SQSCP"
         }
       ]
       """
@@ -58,7 +58,7 @@ Feature: Interacting with library_tubes through the API
           "qc_state": "",
 
           "id": 1
-        }
+        }, "lims": "SQSCP"
       }
       """
 
@@ -83,6 +83,6 @@ Feature: Interacting with library_tubes through the API
           "qc_state": "",
 
           "id": 1
-        }
+        }, "lims": "SQSCP"
       }
       """

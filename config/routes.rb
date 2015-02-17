@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
 ActionController::Routing::Routes.draw do |map|
   map.resources :reference_genomes
   map.resources :barcode_printers
@@ -86,7 +89,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect "bulk_submissions", :controller => "bulk_submissions", :action => "new"
 
   map.resources :submissions, :collection => { :study_assets => :get, :order_fields => :get, :project_details => :get }
-  map.resources :orders, :only => [:destroy]
+  map.resources :orders, :only => [:destroy, :update]
 
   map.resources :documents, :only => [ :show ]
 
