@@ -23,4 +23,8 @@ class Messenger < ActiveRecord::Base
       'lims' => configatron.amqp.retrieve(:lims_id) }
   end
 
+  def resend
+    AmqpObserver.instance << self
+  end
+
 end
