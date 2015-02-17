@@ -54,7 +54,7 @@ class Api::Messages::FlowcellIO < Api::Base
         end
 
         def mx_library
-          asset.external_identifier
+          asset.external_identifier||"UNKNOWN"
         end
 
         def manual_qc
