@@ -198,6 +198,9 @@ class Api::Messages::FlowcellIO < Api::Base
       with_association(:sample) do
         map_attribute_to_json_attribute(:uuid, 'sample_uuid')
       end
+      with_association(:study) do
+        map_attribute_to_json_attribute(:uuid, 'study_uuid')
+      end
       map_attribute_to_json_attribute(:id, 'entity_id_lims')
       map_attribute_to_json_attribute(:library_id, 'legacy_library_id')
       map_attribute_to_json_attribute(:external_library_id, 'id_library_lims')
