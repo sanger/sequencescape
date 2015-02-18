@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2015 Genome Research Ltd.
 # Settings specified here will take precedence over those in config/environment.rb
 
 # In the development environment your application's code is reloaded on
@@ -28,3 +28,9 @@ config.active_record.observers = [ :request_observer ]
 
 # Use the response timer middleware
 config.middleware.insert_after(ActionController::Failsafe, "ResponseTimer", File.new(ENV['LOG_TO'], 'w+')) unless ENV['LOG_TO'].nil?
+
+config.after_initialize do
+  Bullet.enable = true
+  Bullet.alert = ENV['NOISY_BULLET']=='true'
+  Bullet.bullet_logger = true
+end
