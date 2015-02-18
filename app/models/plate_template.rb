@@ -39,9 +39,9 @@ class PlateTemplate < Plate
     return 1 == descriptor_value('control_well').to_i
   end
 
-  def has_control_wells?
-    return false if descriptors.nil?
-    return 1 <= descriptor_value('control_well').to_i
+  def without_control_wells?
+    return true if descriptors.nil?
+    return 0 == descriptor_value('control_well').to_i
   end
 
   named_scope :with_sizes, lambda {|sizes| {:conditions => ["size IN (?)", sizes]}}
