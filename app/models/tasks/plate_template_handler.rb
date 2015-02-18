@@ -7,7 +7,7 @@ module Tasks::PlateTemplateHandler
     @plate_purpose_options = task.plate_purpose_options(@batch)
     suitable_sizes = @plate_purpose_options.map {|o| o[1] }
     if (@batch.pipeline.control_request_type.nil?)
-      @plate_templates = PlateTemplate.without_control_wells.with_sizes(suitable_sizes)
+      @plate_templates = PlateTemplate.with_sizes(suitable_sizes).select{|p| !p.control_well?}
     else
       @plate_templates = PlateTemplate.with_sizes(suitable_sizes)
     end

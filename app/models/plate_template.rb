@@ -39,7 +39,6 @@ class PlateTemplate < Plate
     return 1 == descriptor_value('control_well').to_i
   end
 
-  named_scope :without_control_wells, :conditions => ["descriptors IS NULL"]
   named_scope :with_sizes, lambda {|sizes| {:conditions => ["size IN (?)", sizes]}}
 
 end
