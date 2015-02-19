@@ -77,6 +77,8 @@ GEM
       xml-simple
     bouncy-castle-java (1.5.0146.1)
     builder (3.0.0)
+    bullet (4.5.0)
+      uniform_notifier
     bunny (0.7.9)
     cancan (1.6.8)
     capybara (0.3.9)
@@ -230,6 +232,7 @@ GEM
     trinidad_daemon_extension (0.3.1)
       trinidad_jars (>= 1.0.0)
     trinidad_jars (1.4.0)
+    uniform_notifier (1.7.0)
     utility_belt (1.1.0)
       Platform (>= 0.4.0)
       aws-s3 (>= 0.4.0)
@@ -250,6 +253,7 @@ DEPENDENCIES
   activerecord-oracle_enhanced-adapter (= 1.2.3)
   acts-as-dag!
   alter_table!
+  bullet (<= 4.5.0)
   bunny
   cancan
   capybara (~> 0.3.9)

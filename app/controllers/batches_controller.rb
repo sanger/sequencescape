@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 class BatchesController < ApplicationController
   include XmlCacheHelper::ControllerHelper
 
@@ -79,7 +82,7 @@ class BatchesController < ApplicationController
 
   def create
     ActiveRecord::Base.transaction do
-      Batch.benchmark "BENCH Batch:WorkflowController:create", Logger::INFO, false do
+    Batch.benchmark "BENCH Batch:WorkflowController:create", Logger::INFO, false do
       @pipeline = Pipeline.find(params[:id])
 
       unless @pipeline.valid_number_of_checked_request_groups?(params)
