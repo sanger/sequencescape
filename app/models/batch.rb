@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 require 'timeout'
 require "tecan_file_generation"
 
@@ -53,6 +53,7 @@ class Batch < ActiveRecord::Base
   belongs_to :assignee, :class_name => "User", :foreign_key => "assignee_id"
 
   has_many :failures, :as => :failable
+  has_many :messengers, :as => :target, :inverse_of => :target
 
   # Named scope for search by query string behavior
   named_scope :for_search_query, lambda { |query,with_includes|
