@@ -1,6 +1,8 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2015 Genome Research Ltd.
+
+next_gen_sequencing = Submission::Workflow.find_by_key!('short_read_sequencing')
 PacBioSamplePrepPipeline.create!(:name => 'PacBio Tagged Library Prep') do |pipeline|
   pipeline.sorter               = 14
   pipeline.automated            = false
@@ -67,7 +69,7 @@ PacBioSequencingPipeline.create!(:name => 'PacBio Multiplexed Sequencing') do |p
 
       { :class => BindingKitBarcodeTask,                 :name => 'Binding Kit Box Barcode', :sorted => 1, :batched => true, :lab_activity => true },
       { :class => MovieLengthTask,                       :name => 'Movie Lengths',           :sorted => 2, :batched => true, :lab_activity => true },
-      { :class => AssignTubesToMUltiplexedWellsTask,     :name => 'Layout tubes on a plate', :sorted => 4, :batched => true, :lab_activity => true },
+      { :class => AssignTubesToMultiplexedWellsTask,     :name => 'Layout tubes on a plate', :sorted => 4, :batched => true, :lab_activity => true },
       { :class => ValidateSampleSheetTask,               :name => 'Validate Sample Sheet',   :sorted => 5, :batched => true, :lab_activity => true }
     ].each do |details|
       details.delete(:class).create!(details.merge(:workflow => workflow))
