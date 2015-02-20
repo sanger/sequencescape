@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2014 Genome Research Ltd.
 class PlateTemplate < Plate
 
   include Lot::Template
@@ -35,5 +38,8 @@ class PlateTemplate < Plate
     return false if descriptors.nil?
     return 1 == descriptor_value('control_well').to_i
   end
+
+  named_scope :without_control_wells, :conditions => ["descriptors IS NULL"]
+  named_scope :with_sizes, lambda {|sizes| {:conditions => ["size IN (?)", sizes]}}
 
 end

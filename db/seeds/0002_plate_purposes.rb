@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.
 ActiveRecord::Base.transaction do
   # And here is pulldown
   purpose_flows = Pulldown::PlatePurposes::PLATE_PURPOSE_FLOWS.clone
@@ -38,7 +41,7 @@ ActiveRecord::Base.transaction do
     end
 
     # Ensure that the transfer to the tube at the end is possible
-    tube_purpose = Tube::Purpose.find_by_name('Standard MX') or raise "Cannot find standard MX tube purpose"
+    tube_purpose = Tube::Purpose.find_by_name('Legacy MX tube') or raise "Cannot find standard MX tube purpose"
     final_purpose.child_relationships.create!(:child => tube_purpose, :transfer_request_type => RequestType.transfer)
   end
 

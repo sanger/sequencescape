@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 require 'control_request_type_creation'
 
 Pipeline.send(:include, ControlRequestTypeCreation)
@@ -1052,7 +1055,7 @@ set_pipeline_flow_to('PacBio Library Prep' => 'PacBio Sequencing')
         request_type.key               = pipeline_name.downcase.underscore.gsub(/\s+/, '_')
         request_type.initial_state     = 'pending'
         request_type.asset_type        = 'Well'
-        request_type.target_purpose    = Tube::Purpose.standard_mx_tube
+        request_type.target_purpose    = Purpose.find_by_name('Legacy MX tube')
         request_type.order             = 1
         request_type.multiples_allowed = false
         request_type.request_class     = "Pulldown::Requests::#{pipeline_type.humanize}LibraryRequest".constantize

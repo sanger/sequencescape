@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 require 'factory_girl'
 
 Factory.sequence :project_name do |n|
@@ -587,6 +590,10 @@ Factory.define :full_multiplexed_library_tube, :parent => :multiplexed_library_t
   multiplexed_library_tube.after_create do |tube|
     tube.parents << (1..5).map { |_| Factory(:multiplexed_library_creation_request).target_asset }
   end
+end
+
+Factory.define :broken_multiplexed_library_tube, :parent => :multiplexed_library_tube do |multiplexed_library_tube|
+
 end
 
 Factory.define :multiplexed_library_creation_request, :parent => :request do |request|

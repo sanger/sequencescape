@@ -21,7 +21,7 @@ Feature: Create a submission for the pacbio pipeline
   @worksheet
   Scenario: Sample Sheet
     Given I have a PacBio Library Prep batch
-    When I follow "Print worksheet"
+    When I follow "Print sample prep worksheet"
     Then the PacBio sample prep worksheet should look like:
        | Well          | Name       | Required size | Complete? | Repaired? | Adapter ligated? | Clean up complete? | Exonnuclease cleanup | ng/ul | Fragment size | Volume |
        | DN1234567T:A1 | Sample_111 | 500           |           |           |                  |                    |                      |       |               |        |

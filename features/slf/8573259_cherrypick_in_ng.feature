@@ -14,8 +14,8 @@ Feature: Pick a ng quantity using the Tecan robot
       | B2            | 120                    | 10              |
       | B3            | 140                    | 20              |
       | B4            | 160                    | 20              |
-      | B5            | 180                    | 20              |
-      | B6            | 200                    | 20              |
+      | B5            | 0                      | 80              |
+      | B6            | 0                      | 20              |
     And I have a plate "333" with the following wells:
       | well_location | measured_concentration | measured_volume |
       | C3            | 10                     | 30              |
@@ -64,11 +64,11 @@ Feature: Pick a ng quantity using the Tecan robot
     A;1220000222748;;ABgene 0765;26;;7.0
     D;1220099999705;;ABgene 0800;4;;7.0
     W;
-    A;1220000222748;;ABgene 0765;34;;6.0
-    D;1220099999705;;ABgene 0800;5;;6.0
+    A;1220000222748;;ABgene 0765;34;;50.0
+    D;1220099999705;;ABgene 0800;5;;50.0
     W;
-    A;1220000222748;;ABgene 0765;42;;5.0
-    D;1220099999705;;ABgene 0800;6;;5.0
+    A;1220000222748;;ABgene 0765;42;;20.0
+    D;1220099999705;;ABgene 0800;6;;20.0
     W;
     A;1220000333802;;ABgene 0765;19;;30.0
     D;1220099999705;;ABgene 0800;7;;30.0
@@ -110,12 +110,6 @@ Feature: Pick a ng quantity using the Tecan robot
     A;BUFF;;96-TROUGH;4;;3.0
     D;1220099999705;;ABgene 0800;4;;3.0
     W;
-    A;BUFF;;96-TROUGH;5;;4.0
-    D;1220099999705;;ABgene 0800;5;;4.0
-    W;
-    A;BUFF;;96-TROUGH;6;;5.0
-    D;1220099999705;;ABgene 0800;6;;5.0
-    W;
     A;BUFF;;96-TROUGH;8;;9.0
     D;1220099999705;;ABgene 0800;8;;9.0
     W;
@@ -144,8 +138,8 @@ Feature: Pick a ng quantity using the Tecan robot
      | B2        222        v9 b1  | C6        333        v2 b8  |
      | B3        222        v8 b2  | C7        333        v2 b8  |
      | B4        222        v7 b3  | C8        333        v2 b8  |
-     | B5        222        v6 b4  | D1        333        v10 b0 |
-     | B6        222        v5 b5  | D2        333        v10 b0 |
+     | B5        222        v50 b0 | D1        333        v10 b0 |
+     | B6        222        v20 b0 | D2        333        v10 b0 |
      | C3        333        v30 b0 | D3        333        v15 b0 |
      | C4        333        v1 b9  | D4        333        v20 b0 |
      | 1                           | 2                           |

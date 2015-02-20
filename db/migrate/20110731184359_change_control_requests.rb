@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011 Genome Research Ltd.
 class ChangeControlRequests < ActiveRecord::Migration
   # Control requests have to be a specific type but to get them we have to work from all control assets.
   # To ensure that the correct requests are changed we make sure that the previous class name is given

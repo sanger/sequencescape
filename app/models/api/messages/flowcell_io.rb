@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2014,2015 Genome Research Ltd.
 class Api::Messages::FlowcellIO < Api::Base
 
   module LaneExtensions
@@ -55,7 +58,7 @@ class Api::Messages::FlowcellIO < Api::Base
         end
 
         def mx_library
-          asset.external_identifier
+          asset.external_identifier||"UNKNOWN"
         end
 
         def manual_qc
@@ -203,7 +206,6 @@ class Api::Messages::FlowcellIO < Api::Base
         map_attribute_to_json_attribute(:project_cost_code_for_uwh, 'cost_code')
         map_attribute_to_json_attribute(:r_and_d?, 'is_r_and_d')
       end
-      map_attribute_to_json_attribute(:id, 'entity_id_lims')
       map_attribute_to_json_attribute(:external_library_id, 'id_library_lims')
       map_attribute_to_json_attribute(:library_id, 'legacy_library_id')
       map_attribute_to_json_attribute(:aliquot_type,'entity_type')

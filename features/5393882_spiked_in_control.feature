@@ -11,7 +11,7 @@ Feature: Creating Spiked phiX
     When I select "Library Tube" from "Type"
     And I fill in "Parent Asset" with "Stock of phiX"
     And I fill in "Name" with "indexed phiX"
-    And  I fill in "Tag" with "168"
+    And  I fill in "Tag" with "888"
     And I fill in "Concentration" with "17"
     And I fill in "Volume" with "100"
     And I fill in "vol." with "100"
@@ -102,7 +102,7 @@ Feature: Creating Spiked phiX
     Given I am on the asset creation page
     When I select "Library Tube" from "Type"
     And I fill in "Name" with "indexed phiX"
-    And  I fill in "Tag" with "168"
+    And  I fill in "Tag" with "888"
     And I fill in "Concentration" with "17"
     And I fill in "Volume" with "100"
     And I fill in "Parent Asset" with "Stock of phiX"
@@ -175,7 +175,7 @@ Feature: Creating Spiked phiX
         <control name="indexed phiX" id="781"/>
         <sample project_id="" study_id="" sample_id="5">
           <tag tag_id="19">
-            <index>168</index>
+            <index>888</index>
             <expected_sequence>ACAACGCAAT</expected_sequence>
             <tag_group_id>6</tag_group_id>
           </tag>
