@@ -165,7 +165,7 @@ class AmqpObserver < ActiveRecord::Observer
     def activate_exchange(&block)
       return yield unless @exchange.nil?
 
-      client = Bunny.new(configatron.amqp.url, :spec => '09')
+      client = Bunny.new(configatron.amqp.url, :spec => '09', :frame_max => configatron.amqp.retrieve(:maximum_frame,0))
       begin
         client.start
         @exchange = client.exchange('psd.sequencescape', :passive => true)

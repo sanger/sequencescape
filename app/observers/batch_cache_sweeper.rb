@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012 Genome Research Ltd.
+#Copyright (C) 2012,2015 Genome Research Ltd.
 # A cache sweeper that clears out the batch XML that we're caching to improve the performance
 # of NPG.
 class BatchCacheSweeper < ActiveRecord::Observer
@@ -38,4 +38,11 @@ class BatchCacheSweeper < ActiveRecord::Observer
     through(record, &block)
   end
   private :query_details_for
+
+    def handle(record)
+    debug { "Rebroadcasting message for #{record.class.name}(#{record.id})" }
+    record.messengers.each(&:touch)
+    super
+  end
+  private :handle
 end

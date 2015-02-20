@@ -41,6 +41,10 @@ class Api::Messages::FlowcellIO < Api::Base
           spiked_in_buffer.present? ? spiked_in_buffer.aliquots : []
         end
 
+        def lane_identifier
+          target_asset_id
+        end
+
       end
     end
   end
@@ -84,6 +88,10 @@ class Api::Messages::FlowcellIO < Api::Base
           asset.aliquots
         end
 
+        def lane_identifier
+          'control_lane'
+        end
+
       end
     end
   end
@@ -108,6 +116,21 @@ class Api::Messages::FlowcellIO < Api::Base
           library.external_identifier
         end
 
+      end
+    end
+  end
+
+  module ProjectExtensions
+    module ClassMethods
+    end
+
+    def self.included(base)
+      base.class_eval do
+        extend ClassMethods
+
+        def project_cost_code_for_uwh
+          project_cost_code.length > 20 ? 'Custom' : project_cost_code
+        end
       end
     end
   end
@@ -155,7 +178,7 @@ class Api::Messages::FlowcellIO < Api::Base
     map_attribute_to_json_attribute(:priority)
     map_attribute_to_json_attribute(:mx_library,'id_pool_lims')
     map_attribute_to_json_attribute(:external_release,'external_release')
-    map_attribute_to_json_attribute(:target_asset_id, 'entity_id_lims')
+    map_attribute_to_json_attribute(:lane_identifier, 'entity_id_lims')
 
     with_nested_has_many_association(:samples) do # actually aliquots
 
@@ -180,7 +203,7 @@ class Api::Messages::FlowcellIO < Api::Base
         map_attribute_to_json_attribute(:uuid, 'study_uuid')
       end
       with_association(:project) do
-        map_attribute_to_json_attribute(:project_cost_code, 'cost_code')
+        map_attribute_to_json_attribute(:project_cost_code_for_uwh, 'cost_code')
         map_attribute_to_json_attribute(:r_and_d?, 'is_r_and_d')
       end
       map_attribute_to_json_attribute(:external_library_id, 'id_library_lims')
@@ -204,7 +227,6 @@ class Api::Messages::FlowcellIO < Api::Base
       with_association(:study) do
         map_attribute_to_json_attribute(:uuid, 'study_uuid')
       end
-      map_attribute_to_json_attribute(:id, 'entity_id_lims')
       map_attribute_to_json_attribute(:library_id, 'legacy_library_id')
       map_attribute_to_json_attribute(:external_library_id, 'id_library_lims')
       map_attribute_to_json_attribute(:control_aliquot_type,'entity_type')

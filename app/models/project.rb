@@ -4,6 +4,7 @@
 class Project < ActiveRecord::Base
   include Api::ProjectIO::Extensions
   include ModelExtensions::Project
+  include Api::Messages::FlowcellIO::ProjectExtensions
 
   cattr_reader :per_page
   @@per_page = 500
