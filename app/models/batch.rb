@@ -163,6 +163,8 @@ class Batch < ActiveRecord::Base
     end
   end
 
+  alias_method :ordered_requests, :requests
+
   def shift_item_positions(position, number)
     return unless number
     BatchRequest.transaction do
@@ -303,10 +305,6 @@ class Batch < ActiveRecord::Base
 
   def multiplexed_items_with_unique_library_ids
     requests.map { |r| r.target_asset.children }.flatten.uniq
-  end
-
-  def ordered_requests(options=nil)
-    batch_requests.ordered.all(options).map(&:request).compact
   end
 
   def assets
