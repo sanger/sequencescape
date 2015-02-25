@@ -43,5 +43,8 @@ module PlatesHelper
     end
   end
 
+  def event_family_for_fluidigm(plate_purpose_name)
+    "picked_well_from_#{plate_purpose_name.gsub(/ /,"_").downcase}_plate"
+  end
 
 end
