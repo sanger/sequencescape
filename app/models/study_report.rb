@@ -22,7 +22,7 @@ class StudyReport < ActiveRecord::Base
   def headers
      ["Study","Sample Name","Plate","Supplier Volume","Supplier Concentration","Supplier Sample Name",
        "Supplier Gender", "Concentration","Sequenome Count", "Sequenome Gender",
-       "Pico","Gel", "Qc Status", "Genotyping Status", "Genotyping Chip"]
+       "Pico","Gel", "Qc Status", "Genotyping Status", "Genotyping Chip", "Is in Fluidigm"]
    end
 
   def synchronous_perform
