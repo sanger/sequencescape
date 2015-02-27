@@ -120,6 +120,21 @@ class Api::Messages::FlowcellIO < Api::Base
     end
   end
 
+  module ProjectExtensions
+    module ClassMethods
+    end
+
+    def self.included(base)
+      base.class_eval do
+        extend ClassMethods
+
+        def project_cost_code_for_uwh
+          project_cost_code.length > 20 ? 'Custom' : project_cost_code
+        end
+      end
+    end
+  end
+
   module Extensions
     module ClassMethods
     end
@@ -188,7 +203,7 @@ class Api::Messages::FlowcellIO < Api::Base
         map_attribute_to_json_attribute(:uuid, 'study_uuid')
       end
       with_association(:project) do
-        map_attribute_to_json_attribute(:project_cost_code, 'cost_code')
+        map_attribute_to_json_attribute(:project_cost_code_for_uwh, 'cost_code')
         map_attribute_to_json_attribute(:r_and_d?, 'is_r_and_d')
       end
       map_attribute_to_json_attribute(:external_library_id, 'id_library_lims')
