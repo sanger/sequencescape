@@ -9,10 +9,6 @@ class IlluminaHtp::TransferablePlatePurpose < IlluminaHtp::FinalPlatePurpose
   write_inheritable_attribute :connect_downstream, true
   write_inheritable_attribute :connected_class, IlluminaHtp::Requests::SharedLibraryPrep
 
-  def source_plate(plate)
-    plate.parent.stock_plate
-  end
-
   def source_wells_for(wells)
     Well.in_column_major_order.stock_wells_for(wells)
   end

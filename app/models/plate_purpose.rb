@@ -44,7 +44,7 @@ class PlatePurpose < Purpose
   belongs_to :asset_shape, :class_name => 'Map::AssetShape'
 
   def source_plate(plate)
-    plate.stock_plate
+    source_purpose_id.present? ? plate.ancestor_of_purpose(source_purpose_id) : plate.stock_plate
   end
 
   def cherrypick_strategy

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150203145912) do
+ActiveRecord::Schema.define(:version => 20150227103809) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -817,6 +817,7 @@ ActiveRecord::Schema.define(:version => 20150203145912) do
     t.integer  "size",                                          :default => 96
     t.integer  "asset_shape_id",                                :default => 1,               :null => false
     t.string   "barcode_for_tecan",                             :default => "ean13_barcode", :null => false
+    t.integer  "source_purpose_id"
   end
 
   add_index "plate_purposes", ["qc_display"], :name => "index_plate_purposes_on_qc_display"
