@@ -323,4 +323,9 @@ class Pipeline < ActiveRecord::Base
   def request_actions
     [:fail]
   end
+
+  def check_tag_collision_on_tagging_task?
+    true
+  end
+
 end

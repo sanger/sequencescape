@@ -10,7 +10,9 @@
       </div>
     <% else -%>
     <p id="increment-tags-info"><label for="increment-tags">When you change a tag, the subsequent tags will be incremented according to your selection. Uncheck this if you wish manually assign all tags.</label><input type="checkbox" checked id="increment-tags" /></p>
-      <table id="tag-assignment" class="request-grid tablesorter">
+      <table id="tag-assignment" class="request-grid tablesorter"
+         data-fulfill-everything-automatically-with-tags="<%= @batch.pipeline.check_tag_collision_on_tagging_task?.to_s %>"
+         data-disable-checks="<%= @batch.pipeline.check_tag_collision_on_tagging_task?.to_s %>" >
         <thead>
           <tr>
             <th class='label'>Order</th>

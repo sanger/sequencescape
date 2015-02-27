@@ -34,6 +34,10 @@ class PacBioSamplePrepRequest < Request
     target_asset.requests_as_target.where_is_a?(TransferRequest).last
   end
 
+  def check_tag_collision_on_tagging_task?
+    false
+  end
+
   class Initial < TransferRequest
     include TransferRequest::InitialTransfer
     def outer_request
