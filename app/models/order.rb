@@ -105,7 +105,7 @@ class Order < ActiveRecord::Base
   end
 
   def all_assets
-    pull_assets_from_asset_group if assets.empty?
+    pull_assets_from_asset_group if assets.empty? && asset_group.present?
     assets
   end
 
