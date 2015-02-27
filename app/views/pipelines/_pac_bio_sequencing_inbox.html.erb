@@ -18,8 +18,8 @@
     <table width="100%" bgcolor="#edf5ff" cellpadding="2" cellspacing="0" class="sortable" id='request_inbox'>
       <thead>
         <tr>
-          <th class='label' style='text-align: left' width='2%'>&nbsp;</th>
-          <th class='label' style='text-align: left' width='2%'>&nbsp;</th>
+          <th class='label' style='text-align: left' width='2%'>&nbsp;<!-- Checkboxes --></th>
+          <th class='label' style='text-align: left' width='2%'>&nbsp; <!-- Notify --></th>
           <th style="display:none" class='label' width='5%'><%= link_to "", "javascript:void(0);" %></th>
           <th class='label' width='5%'>Request ID</th>
           <th class='label' width='10%'><%= link_to "Name", "javascript:void(0);" %></th>
@@ -38,19 +38,18 @@
               <% request = requests.first %>
               <% request_item = request %>
               <td class="request" width='2%'>
-              <%= hidden_label_tag_for_testing("select_all_group_#{index}", "Select Request Group #{index}") %>
+                <%= hidden_label_tag_for_testing("select_all_group_#{index}", "Select Request Group #{index}") %>
                 <% if request.ready? %>
-    		      <input type="checkbox" name="selectAll" onclick="select_requests_by_group(<%=  request_item.item_id %>,<%= requests.size %>, this.checked);" id="select_all_group_<%= index %>"></a>
+                  <input type="checkbox" name="selectAll" onclick="select_requests_by_group(<%=  request_item.item_id %>,<%= requests.size %>, this.checked);" id="select_all_group_<%= index %>"></a>
                 <% else %>
                   <%= image_tag "error.png", 'title' => I18n.t("requests.status.not_ready"), :size => '16x16' %>
                 <% end %>
-    		    <% index += 1 %>
-    		  </td>
+                <% index += 1 %>
+              </td>
               <td class="request" width='2%'><a href="javascript:void(0)" onclick="showElement(<%=  request_item.item_id %>,<%= requests.size %>); return false;"><%= image_tag "information.png", :size =>"13x13" %></a></td>
               <td class="request" width='5%'>&nbsp;</td>
               <td class='request' width='10%'><%= h(request.asset.display_name) %></td>
               <td class='request' width='15%'>&nbsp;</td>
-              <td class='request' width='10%'>&nbsp;</td>
               <% @information_types.each do |information_type| %>
                 <% next if information_type.hide_in_inbox %>
                 <td class='request' width='5%'><%= h(request.request_metadata[information_type.key]) %></td>
@@ -84,7 +83,6 @@
               <td class='request' width='5%'><%= link_to request.id, "#{configatron.studies_url}/requests/#{request.id}" %></td>
               <td class='request' width='10%'><%= link_to request_asset.name, "#{configatron.studies_url}/assets/#{request.asset_id}" %></td>
              <td class='request' width='10%'><%=  link_to "#{request_asset.sti_type} #{request_asset.barcode}", "#{configatron.studies_url}/assets/#{request.asset_id}" %></td>
-              <td>&nbsp;</td>
               <% @information_types.each do |information_type| %>
                 <% next if information_type.hide_in_inbox %>
                 <td class='request' width='5%'><%= h(request.request_metadata[information_type.key]) %></td>

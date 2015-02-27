@@ -328,6 +328,9 @@ end
 Factory.define :assign_tags_task do |t|
 end
 
+Factory.define :assign_tubes_to_multiplexed_wells_task do |t|
+end
+
 Factory.define :attach_infinium_barcode_task do |t|
 end
 

@@ -126,10 +126,12 @@ class WorkflowsController < ApplicationController
   end
 
   def stage
+
     @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
     @stage = params[:id].to_i
     @task = @workflow.tasks[@stage]
-    @batch = Batch.find(params[:batch_id], :include => [:requests, :pipeline, :lab_events])
+
+    @batch ||= Batch.find(params[:batch_id], :include => @task.included_for_task )
 
     if params[:next_stage].present? && !@batch.editable?
       flash[:error] = "You cannot execute more tasks in a completed batch."
@@ -161,10 +163,8 @@ class WorkflowsController < ApplicationController
   end
 
   def render_task(task, params)
-    @batch = Batch.find(params[:batch_id], :include => [:requests, :pipeline, :lab_events])
     @rits = @batch.pipeline.request_information_types
     @requests = @batch.ordered_requests
-    @requests_by_submission = @requests.group_by(&:submission)
 
     @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
     @task = task

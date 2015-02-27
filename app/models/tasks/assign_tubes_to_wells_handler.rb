@@ -5,15 +5,20 @@ module Tasks::AssignTubesToWellsHandler
   MAX_SMRT_CELLS_PER_WELL = 7
 
   def render_assign_tubes_to_wells_task(task, params)
-    available_tubes = uniq_assets_from_requests(task, params)
+    available_tubes = uniq_assets_from_requests
     @available_tubes_options = [['',nil]] | available_tubes.map{ |t| [t.name, t.id] }
 
     @tubes = calculate_number_of_wells_library_needs_to_use(task, params)
   end
 
+  def render_assign_tubes_to_multiplexed_wells_task(task, params)
+    available_tubes = uniq_assets_from_requests
+    @available_tubes_options = [['',nil]] | available_tubes.map{ |t| [t.name, t.id] }
+  end
+
   def do_assign_tubes_to_wells_task(task, params)
     tubes_to_well_positions = tubes_to_wells(params)
-    library_tubes = uniq_assets_from_requests(task, params)
+    library_tubes = uniq_assets_from_requests
 
     requests = task.find_batch_requests(params[:batch_id])
 
@@ -61,22 +66,22 @@ module Tasks::AssignTubesToWellsHandler
     tubes_to_well_positions
   end
 
-  def assets_from_requests(task, params)
-    task.find_batch_requests(params[:batch_id]).map{ |request| request.asset }
+  def assets_from_requests
+    @afr ||= @batch.requests.map{ |request| request.asset }
   end
 
-  def uniq_assets_from_requests(task, params)
-    assets_from_requests(task, params).uniq
+  def uniq_assets_from_requests
+    @uafr||=assets_from_requests.uniq
   end
 
-  def assets_from_requests_sorted_by_id(task, params)
-    assets_from_requests(task, params).sort{ |a,b| a.id <=> b.id }
+  def assets_from_requests_sorted_by_id
+    @asbi||=assets_from_requests.sort{ |a,b| a.id <=> b.id }
   end
 
   def calculate_number_of_wells_library_needs_to_use(task, params)
     tubes_for_wells = []
-    assets = assets_from_requests_sorted_by_id(task, params)
-    physical_library_tubes = uniq_assets_from_requests(task, params)
+    assets = assets_from_requests_sorted_by_id
+    physical_library_tubes = uniq_assets_from_requests
 
     physical_library_tubes.each do |library_tube|
       number_of_wells = ((assets.select{ |asset| asset == library_tube }.size.to_f) / MAX_SMRT_CELLS_PER_WELL).ceil

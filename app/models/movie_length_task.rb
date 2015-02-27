@@ -34,4 +34,8 @@ class MovieLengthTask < Task
     true
   end
 
+  def included_for_task
+    [{:requests=>:asset}, :pipeline ]
+  end
+
 end
