@@ -44,7 +44,9 @@ class PopulateSourcePurposeRelationship < ActiveRecord::Migration
         'Lib Pool SS',
         'Lib Pool SS-XP',
         'Lib Pool SS-XP-Norm',
-        'Cap Lib Pool Norm'
+        'Cap Lib Pool Norm',
+        'Lib PCR-XP QC',
+        'Lib Norm QC'
       ],
       'ILB_STD_INPUT' => [
         'ILB_STD_INPUT',
