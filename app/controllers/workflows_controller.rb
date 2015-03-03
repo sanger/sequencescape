@@ -5,7 +5,6 @@ class WorkflowsController < ApplicationController
   before_filter :find_workflow_by_id, :only =>[:auto_batch, :show, :edit, :duplicate, :batches, :update, :destroy, :reorder_tasks]
 
   include Tasks::AddSpikedInControlHandler
-  include Tasks::AssignPlatePurposeHandler
   include Tasks::AssignTagsHandler
   include Tasks::AssignTagsToWellsHandler
   include Tasks::AssignTubesToWellsHandler

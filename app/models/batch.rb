@@ -224,29 +224,9 @@ class Batch < ActiveRecord::Base
       #assets.holder_id = plate_assets.id group by plate_assets.barcode")
   end
 
-  # Returns the plate_purpose of the first output plate associated with the batch,
-  # this is currently assumed to the same for all output plates.
-  def output_plate_purpose
-    output_plates[0].plate_purpose unless output_plates[0].nil?
-  end
-
   def output_plate_role
     requests.first.try(:role)
   end
-
-  # Set the plate_purpose of all output plates associated with this batch
-  def set_output_plate_purpose(plate_purpose)
-    raise "This batch has no output plates to assign a purpose to!" if output_plates.blank?
-
-    output_plates.each { |plate|
-      plate.plate_purpose = plate_purpose
-      plate.save!
-    }
-
-    true
-  end
-
-
 
   def output_plate_in_batch?(barcode)
     return false if barcode.nil?
