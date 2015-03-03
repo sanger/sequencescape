@@ -23,7 +23,7 @@ class Batch < ActiveRecord::Base
   def all_requests_are_ready?
     # Checks that SequencingRequests have at least one LibraryCreationRequest in passed status before being processed (as refered by #75102998)
     unless @requests.all?(&:ready?)
-      errors.add_to_base "All requests must be ready? to be added to a batch"
+      errors.add_to_base "All requests must be ready to be added to a batch"
     end
   end
 
