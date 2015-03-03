@@ -32,13 +32,13 @@ class Request < ActiveRecord::Base
     request_type.request_type_validators.find_by_request_option!(request_option.to_s)
   end
 
-    named_scope :for_pipeline, lambda { |pipeline|
-      {
-        :joins => [ 'LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id' ],
-        :conditions => [ 'prt.pipeline_id=?', pipeline.id],
-        :readonly => false
-      }
+  named_scope :for_pipeline, lambda { |pipeline|
+    {
+      :joins => [ 'LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id' ],
+      :conditions => [ 'prt.pipeline_id=?', pipeline.id],
+      :readonly => false
     }
+  }
 
   named_scope :for_pooling_of, lambda { |plate|
     joins =
