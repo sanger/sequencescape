@@ -14,7 +14,7 @@ require "test_helper"
 
 class DummyWorkflowController < WorkflowsController
 
-  attr_accessor :flash
+  attr_accessor :flash, :batch
 
   def initialize
     @flash = {}
@@ -26,23 +26,21 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
     setup do
       @workflows_controller = DummyWorkflowController.new
       @task                 = Factory :assign_tubes_to_multiplexed_wells_task
+      @wells = mock('wells')
+      @fake_plate = mock('plate', :wells=>@wells)
+      @workflows_controller.stubs(:find_or_create_plate).returns(@fake_plate)
+
+      @dest_wells = ["A1","B1","C1","D1","E1","F1","G1"]
+
+      @mock_wells = @dest_wells.map {|loc| mock('well',:map_description=>loc)}
     end
 
     context "#do_assign_tubes_to_multiplexed_wells_task" do
       setup do
-      end
-      context "with no tag clashes" do
-        setup do
+
           @params = {
             :request_locations=>{
-              "1"=>"A1",
-              "2"=>"B1",
-              "3"=>"C1",
-              "4"=>"D1",
-              "5"=>"E1",
-              "6"=>"F1",
-              "7"=>"G1",
-              "8"=>"G1"
+              "1"=>"A1", "2"=>"B1", "3"=>"C1", "4"=>"D1", "5"=>"E1", "6"=>"F1", "7"=>"G1", "8"=>"G1"
             },
             :commit =>"Next step",
             :batch_id =>"2",
@@ -50,21 +48,54 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
             :workflow_id =>"24",
             :id=>"2"
           }
+      end
+      context "with no tag clashes" do
+        setup do
+          request_target = [:none,0,1,2,3,4,5,6,6]
+          @tags = [1,2,3,4,5,6,7,8]
+          @requests = (1..8).map do |i|
+            mock("request_#{i}",
+              :asset=> mock("asset_#{i}",:aliquots=>[mock("aliquot",:tag_id=>@tags[i-1])])
+            ).tap do |request|
+              request.expects(:target_asset=).with( @mock_wells[request_target[i]] )
+              request.expects(:save!)
+              request.expects(:id).at_least_once.returns(i)
+            end
+          end
+          @wells.expects(:located_at).with(['A1','B1','C1','D1','E1','F1','G1']).returns(@mock_wells)
+          @batch = mock('batch')
+          @batch.stubs(:requests).returns(@requests)
+          @workflows_controller.batch = @batch
         end
         should "set target assets appropriately" do
-          assert true
+          assert @task.do_task(@workflows_controller,@params)
         end
       end
 
       context "with tag clashes" do
         setup do
+          @tags = [1,2,3,4,5,5,6,6]
+          @requests = (1..8).map do |i|
+            mock("request_#{i}",
+              :asset=> mock("asset_#{i}",:aliquots=>[mock("aliquot",:tag_id=> @tags[i-1])])
+            ).tap do |request|
+              request.expects(:id).at_least_once.returns(i)
+            end
+          end
+          @wells.expects(:located_at).with(['A1','B1','C1','D1','E1','F1','G1']).returns(@mock_wells)
+          @batch = mock('batch')
+          @batch.stubs(:requests).returns(@requests)
+          @workflows_controller.batch = @batch
         end
 
         should "return false" do
+          assert !@task.do_task(@workflows_controller,@params)
         end
 
         should "set a flash[:notice] for failure" do
+          @task.do_task(@workflows_controller,@params)
           assert_not_nil @workflows_controller.flash[:error]
+          assert_equal "Duplicate tags in G1", @workflows_controller.flash[:error]
         end
       end
     end

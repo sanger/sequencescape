@@ -11,11 +11,6 @@ module Tasks::AssignTubesToWellsHandler
     @tubes = calculate_number_of_wells_library_needs_to_use(task, params)
   end
 
-  def render_assign_tubes_to_multiplexed_wells_task(task, params)
-    available_tubes = uniq_assets_from_requests
-    @available_tubes_options = [['',nil]] | available_tubes.map{ |t| [t.name, t.id] }
-  end
-
   def do_assign_tubes_to_wells_task(task, params)
     tubes_to_well_positions = tubes_to_wells(params)
     library_tubes = uniq_assets_from_requests
@@ -40,6 +35,41 @@ module Tasks::AssignTubesToWellsHandler
     end
 
     true
+  end
+
+  def do_assign_tubes_to_multiplexed_wells_task(task, params)
+
+    plate = find_or_create_plate
+
+    well_hash= Hash[plate.wells.located_at(params[:request_locations].values.uniq).map {|w| [w.map_description,w]}]
+
+    problem_wells = wells_with_duplicates(params)
+
+    if problem_wells.present?
+      flash[:error] = "Duplicate tags in #{problem_wells.join(',')}"
+      return false
+    end
+
+    @batch.requests.each do |request|
+      target_well = params[:request_locations][request.id.to_s]
+      request.target_asset = well_hash[target_well]
+      request.save!
+    end
+    true
+  end
+
+  def wells_with_duplicates(params)
+    invalid_wells = []
+    @batch.requests.group_by {|request| params[:request_locations][request.id.to_s]}.each do |well,requests|
+      next if requests.map {|r| r.asset.aliquots.map(&:tag_id) }.flatten.uniq!.nil?
+      invalid_wells << well
+    end
+    invalid_wells
+  end
+  private :wells_with_duplicates
+
+  def find_or_create_plate
+    @batch.requests.first.target_asset.try(:plate)||@batch.requests.first.request_type.target_purpose.create!
   end
 
   def find_target_asset_from_requests(requests)

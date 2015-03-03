@@ -24,11 +24,10 @@ class AssignTubesToMultiplexedWellsTask < Task
 
   def render_task(workflow, params)
     super
-    workflow.render_assign_tubes_to_multiplexed_wells_task(self, params)
   end
 
   def do_task(workflow, params)
-    workflow.do_assign_tubes_to_wells_task(self, params)
+    workflow.do_assign_tubes_to_multiplexed_wells_task(self, params)
   end
 
 

@@ -56,5 +56,19 @@ PacBioSequencingPipeline.find_by_name('PacBio Sequencing').request_types << Requ
   ])
 end
 
+pbs = PlatePurpose.create!(
+  :name=>'PacBio Sequencing',
+  :target_type=>'Plate',
+  :default_state=>'pending',
+  :barcode_printer_type=>BarcodePrinterType.find_by_name('96 Well Plate'),
+  :cherrypickable_target => false,
+  :cherrypickable_source => false,
+  :size => 96,
+  :asset_shape => Map::AssetShape.find_by_name('Standard'),
+  :barcode_for_tecan => 'ean13_barcode'
+)
+RequestType.find_by_key('pacbio_multiplexed_sequencing').update_attributes!(:target_purpose=>pbs)
+RequestType.find_by_key('pacbio_sequencing').update_attributes!(:target_purpose=>pbs)
+
 
 set_pipeline_flow_to('PacBio Tagged Library Prep' => 'PacBio Sequencing')
