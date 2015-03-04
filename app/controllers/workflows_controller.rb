@@ -8,6 +8,7 @@ class WorkflowsController < ApplicationController
   include Tasks::AssignPlatePurposeHandler
   include Tasks::AssignTagsHandler
   include Tasks::AssignTagsToWellsHandler
+  include Tasks::AssignTagsToTubesHandler
   include Tasks::AssignTubesToWellsHandler
   include Tasks::AttachInfiniumBarcodeHandler
   include Tasks::BindingKitBarcodeHandler

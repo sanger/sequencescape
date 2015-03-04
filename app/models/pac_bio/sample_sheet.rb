@@ -47,33 +47,40 @@ class PacBio::SampleSheet
     protocol.gsub(/[^\w]/,'_')
   end
 
+  CONCAT_SEPARATOR = ';'
 
   def row(requests, batch)
     # Read these lines when secondary analysis activated
     #  replace_non_alphanumeric(library_tube.pac_bio_library_tube_metadata.protocol),
     # "JobName=DefaultJob_#{Time.now}",
-    request = requests.first
-    library_tube = request.asset
-    well = request.target_asset
+    #request = requests.first
+
+    def concat(list, sym)
+      list.map(&sym).join(CONCAT_SEPARATOR)
+    end
+
+    library_tubes = requests.map(&:asset)
+    library_tubes_metadata = library_tubes.map(&:pac_bio_library_tube_metadata)
+    well = requests.first.target_asset
     [
       Map.pad_description(well.map),
-      library_tube.name,
-      library_tube.pac_bio_library_tube_metadata.prep_kit_barcode,
+      concat(library_tubes, :name),
+      concat(library_tubes_metadata, :prep_kit_barcode),
       nil,
-      library_tube.pac_bio_library_tube_metadata.binding_kit_barcode,
+      concat(library_tubes_metadata, :binding_kit_barcode),
       nil,
-      lookup_collection_protocol(request),
-      "AcquisitionTime=#{library_tube.pac_bio_library_tube_metadata.movie_length}|InsertSize=#{request.request_metadata.insert_size}|StageHS=True|SizeSelectionEnabled=False|Use2ndLook=False|NumberOfCollections=#{requests.size}",
+      requests.map{|r| lookup_collection_protocol(r)}.join(CONCAT_SEPARATOR),
+      "AcquisitionTime=#{concat(library_tubes_metadata, :movie_length)}|InsertSize=#{concat(requests.map(&:request_metadata), :insert_size)}|StageHS=True|SizeSelectionEnabled=False|Use2ndLook=False|NumberOfCollections=#{requests.size}",
       'Default',
       nil,
       nil,
       nil,
       nil,
       well.uuid,
-      library_tube.uuid,
+      concat(library_tubes, :uuid),
       batch.uuid,
       well.plate.barcode,
-      request.uuid,
+      concat(requests, :uuid),
       nil,
       nil
       ]
