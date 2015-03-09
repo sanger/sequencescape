@@ -28,7 +28,7 @@ module User::Authentication
     end
     self.save if self.changed?
 
-  rescue Exception => e
+  rescue StandardError => e
     logger.error "Profile failed for user #{login}: result code #{ldap.get_operation_result.code} message #{ldap.get_operation_result.message} - #{e}"
   end
   private :update_profile_via_ldap
@@ -71,7 +71,7 @@ module User::Authentication
       )
       begin
         ldap.bind
-      rescue Exception => e
+      rescue StandardError => e
         raise e, "LDAP connection problem: #{e}", caller
       end
       password = "" # clear out in case of crashes
