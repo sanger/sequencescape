@@ -29,21 +29,14 @@
           <% @output_barcodes.each do |plate| -%>
             <tr>
               <td width="35%" class="item"><label for="plate_<%= plate %>"><%= plate %></label></td>
-              <td width="65%"><input id="plate_<%= plate  %>" type='checkbox' checked='on' data-selectable="printable" name='printable[<%= plate  %>]'></td>
+              <td width="65%"><input id="plate_<%= plate  %>" type='checkbox' checked='on' name='printable[<%= plate  %>]'></td>
             </tr>
           <% end -%>
         <tr>
           <td width="35%" class="item">&nbsp;</td>
           <td width="65%"><input type='submit' value='Print labels'> or <%= link_to 'cancel', :controller => 'batches', :action => 'show', :id => @batch.id %></td>
-          <td><input type="button" name="select_printables" value="Select all" data-select-all="printable" data-checked-value="true" /></td>
-          <td><input type="button" name="unselect_printables" value="Deselect all" data-select-all="printable" data-checked-value="false" /></td>
-          <script>
-            (function($) {
-              $("[data-select-all]").click(function() {
-                $("[data-selectable="+$(this).attr("data-select-all")+"]").attr("checked", $(this).attr("data-checked-value")==='true');
-              });
-            })(jQuery);
-          </script>
+          <td><input type="button" name="select_printables" class="select-all-behaviour" value="Select all" /></td>
+          <td><input type="button" name="unselect_printables" class="deselect-all-behaviour" value="Deselect all" /></td>
         </tr>
       </table>
     <input type='hidden' name='batch_id' value='<%= @batch.id %>' />
