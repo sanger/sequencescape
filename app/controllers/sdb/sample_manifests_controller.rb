@@ -28,14 +28,14 @@ class Sdb::SampleManifestsController < Sdb::BaseController
 
   def export
     @manifest = SampleManifest.find(params[:id])
-    send_data(@manifest.generated_document.current_data, 
+    send_data(@manifest.generated_document.current_data,
               :filename => "manifest_#{@manifest.id}.xls",
               :type => 'application/excel')
   end
 
   def uploaded_spreadsheet
     @manifest = SampleManifest.find(params[:id])
-    send_data(@manifest.uploaded_document.current_data, 
+    send_data(@manifest.uploaded_document.current_data,
               :filename => "manifest_#{@manifest.id}.csv",
               :type => 'application/excel')
   end
@@ -50,14 +50,17 @@ class Sdb::SampleManifestsController < Sdb::BaseController
 
   def create
     barcode_printer_id = params[:sample_manifest].delete(:barcode_printer)
-    barcode_printer    = BarcodePrinter.find(barcode_printer_id) unless barcode_printer_id.blank?
+    barcode_printer = nil
+    barcode_printer    = BarcodePrinter.find(barcode_printer_id) unless barcode_printer_id.blank? || (barcode_printer_id.to_i < 0)
 
     template         = SampleManifestTemplate.find(params[:sample_manifest].delete(:template))
     @sample_manifest = template.create!(params[:sample_manifest].merge(:user => current_user, :rapid_generation => true))
 
     @sample_manifest.generate
     template.generate(@sample_manifest)
-    @sample_manifest.print_labels(barcode_printer)
+    unless barcode_printer.nil?
+      @sample_manifest.print_labels(barcode_printer)
+    end
 
     if !@sample_manifest.manifest_errors.empty?
       flash[:error] = @sample_manifest.manifest_errors.join(", ")
