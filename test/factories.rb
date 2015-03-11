@@ -279,7 +279,6 @@ Factory.define :sequencing_request, :class => SequencingRequest do |request|
   end
 end
 
-#Factory.define :request_without_assets, :class => Request do |request|
 Factory.define :request_without_assets, :parent => :request_with_submission do |request|
   request.item              {|item|       item.association(:item)}
   request.project           {|pr|         pr.association(:project)}

@@ -26,10 +26,10 @@ end
         Descriptor.new(:name=>'test',:selection=>[1,2,4,6,12], :key=>'strips_to_create') <<
         Descriptor.new(:name=>'test2',:value=>'Strip Tube Purpose', :key=>'strip_tube_purpose')
       @plate = Factory :plate_for_strip_tubes
+
       @request_type = Factory :well_request_type
       @plate.wells.in_plate_column(1,96).each do |well|
-        2.times { @batch.requests << Factory.build(:well_request, :asset => well, :target_asset => nil, :request_type=>@request_type ) }
-
+        2.times { @batch.requests << Factory.build(:request_without_assets, :asset => well, :target_asset => nil, :request_type=>@request_type ) }
       end
       @pipeline.request_types << @request_type
     end

@@ -27,9 +27,10 @@ module Tasks::StripTubeCreationHandler
       return false
     end
 
-    source_plate = @batch.requests.first.asset.plate.stock_plate||@batch.requests.first.asset.plate
+    input_plate  = @batch.requests.first.asset.plate
+    source_plate = input_plate.source_plate||input_plate
 
-    if params['source_plate_barcode'] != source_plate.ean13_barcode
+    if params['source_plate_barcode'] != input_plate.ean13_barcode
       flash[:error] = "'#{params['source_plate_barcode']}' is not the correct plate for this batch."
       return false
     end
