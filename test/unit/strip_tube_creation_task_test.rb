@@ -25,18 +25,13 @@ end
       @task.descriptors <<
         Descriptor.new(:name=>'test',:selection=>[1,2,4,6,12], :key=>'strips_to_create') <<
         Descriptor.new(:name=>'test2',:value=>'Strip Tube Purpose', :key=>'strip_tube_purpose')
-
       @plate = Factory :plate_for_strip_tubes
       @request_type = Factory :well_request_type
-
       @plate.wells.in_plate_column(1,96).each do |well|
-
-        2.times { @batch.requests << Factory(:well_request, :asset => well, :target_asset => nil, :request_type=>@request_type ) }
+        2.times { @batch.requests << Factory.build(:well_request, :asset => well, :target_asset => nil, :request_type=>@request_type ) }
 
       end
-
       @pipeline.request_types << @request_type
-
     end
 
     context "#render_task" do
@@ -56,7 +51,7 @@ end
     context "#do_task with all tubes" do
       setup do
         @workflow_c.batch = @batch
-        params = {'tubes_to_create'=>2}
+        params = {'tubes_to_create'=>2,'source_plate_barcode'=>@plate.ean13_barcode}
         @before = StripTube.count
         @task.do_task(@workflow_c, params)
       end
@@ -74,10 +69,29 @@ end
 
     end
 
+    context "#do_task with incorrect barcode" do
+      setup do
+        @workflow_c.batch = @batch
+        params = {'tubes_to_create'=>2,'source_plate_barcode'=>'not a barcode'}
+        @before = StripTube.count
+        @return = @task.do_task(@workflow_c, params)
+      end
+
+      should 'not create 2 strip tubes' do
+        assert_equal 0, StripTube.count - @before
+      end
+
+      should 'return false' do
+        assert_equal false, @return
+        assert_equal "'not a barcode' is not the correct plate for this batch.", @workflow_c.flash[:error]
+      end
+
+    end
+
     context "#do_task with remaining tubes" do
       setup do
         @workflow_c.batch = @batch
-        params = {'tubes_to_create'=>1}
+        params = {'tubes_to_create'=>1,'source_plate_barcode'=>@plate.ean13_barcode}
         @before = StripTube.count
         @task.do_task(@workflow_c, params)
         @rs = @batch.requests

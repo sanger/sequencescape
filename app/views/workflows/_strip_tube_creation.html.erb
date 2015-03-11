@@ -4,6 +4,10 @@
 
 <% form_for @task, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
   <dl>
+    <dt><label for="source_plate_barcode">Scan source plate:</label></dt>
+    <dd><%= text_field_tag("source_plate_barcode", :size=>13, :maxlength=>13, :inpumode=>'numeric', :minlength=>13)  %></dd>
+  </dl>
+  <dl>
     <dt><label for="tubes_to_create">Strips to create</label></dt>
     <dd><%= select_tag("tubes_to_create", options_for_select(@options,@default))  %></dd>
   </dl>

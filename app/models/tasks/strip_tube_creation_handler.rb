@@ -28,6 +28,12 @@ module Tasks::StripTubeCreationHandler
     end
 
     source_plate = @batch.requests.first.asset.plate.stock_plate||@batch.requests.first.asset.plate
+
+    if params['source_plate_barcode'] != source_plate.ean13_barcode
+      flash[:error] = "'#{params['source_plate_barcode']}' is not the correct plate for this batch."
+      return false
+    end
+
     base_name = source_plate.sanger_human_barcode
 
     strip_purpose = Purpose.find_by_name(task.descriptors.find_by_key!('strip_tube_purpose').value)
