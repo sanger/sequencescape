@@ -39,7 +39,7 @@ module Tasks::AssignTubesToWellsHandler
 
   def do_assign_tubes_to_multiplexed_wells_task(task, params)
 
-    plate = find_or_create_plate
+    plate = find_or_create_plate(task.purpose)
 
     well_hash= Hash[plate.wells.located_at(params[:request_locations].values.uniq).map {|w| [w.map_description,w]}]
 
@@ -68,8 +68,9 @@ module Tasks::AssignTubesToWellsHandler
   end
   private :wells_with_duplicates
 
-  def find_or_create_plate
-    @batch.requests.first.target_asset.try(:plate)||@batch.requests.first.request_type.target_purpose.create!
+  def find_or_create_plate(purpose)
+    first_request = @batch.requests.first
+    first_request.target_asset.try(:plate)||purpose.create!
   end
 
   def find_target_asset_from_requests(requests)

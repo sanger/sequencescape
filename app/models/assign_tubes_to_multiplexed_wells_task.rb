@@ -3,6 +3,8 @@
 #Copyright (C) 2015 Genome Research Ltd.
 class AssignTubesToMultiplexedWellsTask < Task
 
+  belongs_to :purpose
+
   class AssignTubesToWellsData < Task::RenderElement
     def initialize(request)
       super(request)

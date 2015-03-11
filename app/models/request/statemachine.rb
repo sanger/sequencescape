@@ -132,6 +132,10 @@ module Request::Statemachine
   # On starting a request the aliquots are copied from the source asset to the target
   # and updated with the project and study information from the request itself.
   def on_started
+    transfer_aliquots
+  end
+
+  def transfer_aliquots
     target_asset.aliquots << asset.aliquots.map do |aliquot|
       aliquot.clone.tap do |clone|
         clone.study_id   = initial_study_id   || aliquot.study_id

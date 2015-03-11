@@ -15,4 +15,9 @@ class PacBioSequencingPipeline < Pipeline
   def requires_position?
     false
   end
+
+  def post_release_batch(batch, user)
+    batch.requests.each(&:transfer_aliquots)
+  end
+
 end

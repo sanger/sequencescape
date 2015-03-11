@@ -12,8 +12,7 @@ class AddPacbioSequencingPlate < ActiveRecord::Migration
         :asset_shape => Map::AssetShape.find_by_name('Standard'),
         :barcode_for_tecan => 'ean13_barcode'
       )
-      RequestType.find_by_key('pacbio_multiplexed_sequencing').update_attributes!(:target_purpose=>pbs)
-      RequestType.find_by_key('pacbio_sequencing').update_attributes!(:target_purpose=>pbs)
+      AssignTubesToMultiplexedWellsTask.all.each {|task| task.update_attributes!(:purpose=>pbs)}
     end
   end
 

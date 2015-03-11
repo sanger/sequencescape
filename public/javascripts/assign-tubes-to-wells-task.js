@@ -5,15 +5,21 @@
 (function ($, undefined) {
   $(document).ready(function() {
 
-    var clashChecker, attach, detach, moveTo;
+    var clashChecker, attach, detach, moveTo, preventMatchingAssetPooling;
 
-    clashChecker = function(children,candidate_jr) {
-      var candidate = candidate_jr.get(0)
+    preventMatchingAssetPooling = true;
 
+    clashChecker = function(children,candidate_jq) {
+      var candidate = candidate_jq.get(0)
       for (var i = 0; i < children.length; i+=1) {
-        if (candidate.dataset.assetId !== children[i].dataset.assetId) { // Only perform checks if assets don't match
-          if(candidate.dataset.tagIndex === '-' || children[i].dataset.tagIndex === '-') { return true; } // We can't mix untagged with anything
-          if(candidate.dataset.tagIndex === children[i].dataset.tagIndex ) { return true; } // We can't mix matching tags
+        if (
+        (candidate.dataset.requestId !== (children.get(i).dataset.requestId)) && // the candidate becomes a child of the target before it is tested. We avoid it matching itself
+        (preventMatchingAssetPooling || (candidate.dataset.assetId !== children.get(i).dataset.assetId))// if preventMatchingAssetPooling Only perform checks if assets don't match
+        ) {
+
+          if(candidate.dataset.tagIndex === '-' || children.get(i).dataset.tagIndex === '-') { return true; } // We can't mix untagged with anything
+          if(candidate.dataset.tagIndex === children.get(i).dataset.tagIndex ) { return true; } // We can't mix matching tags
+
         }
       };
 
@@ -100,6 +106,28 @@
           destination[unsorted_tubes[i].dataset.assetId] = next_well;
         }
         if (next_well) { moveTo(unsorted_tubes[i],next_well); }
+      }
+    });
+
+    $('#smart_multiplexing').bind('click',function(){
+      var well_index = 0, unsorted_tubes;
+
+      unsorted_tubes = $('.tube_source .library_tube');
+
+      // Find first empty well
+      while ((next_well = document.getElementById('well_'+well_array[well_index])) && next_well.childElementCount > 0) {
+        well_index += 1;
+      }
+      for (var i = 0; i < unsorted_tubes.length ; i+=1) {
+
+        if (clashChecker($(next_well).children(),$(unsorted_tubes.get(i)))) {
+          well_index+= 1;
+          while ((next_well = document.getElementById('well_'+well_array[well_index])) && next_well.childElementCount > 0) {
+            well_index += 1;
+          }
+        }
+
+        if (next_well) { moveTo(unsorted_tubes.get(i),next_well); }
       }
     });
 

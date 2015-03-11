@@ -977,7 +977,7 @@ PacBioSequencingPipeline.create!(:name => 'PacBio Sequencing') do |pipeline|
   pipeline.automated            = false
   pipeline.active               = true
   pipeline.max_size             = 96
-  pipeline.asset_type           = 'Well'
+
   pipeline.group_by_parent = false
 
   pipeline.location = Location.first(:conditions => { :name => 'PacBio sequencing freezer' }) or raise StandardError, "Cannot find 'PacBio sequencing freezer' location"

@@ -24,4 +24,8 @@ class PacBioSequencingRequest < Request
     PacBioSequencingRequest::RequestOptionsValidator
   end
 
+  def on_started
+
+  end
+
 end
