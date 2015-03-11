@@ -9,6 +9,10 @@ class PacBioSamplePrepPipeline < Pipeline
     INBOX_PARTIAL
   end
 
+  def allow_tag_collision_on_tagging_task?
+    false
+  end
+
 
   def post_release_batch(batch, user)
     cancel_sequencing_requests_on_library_failure(batch)
