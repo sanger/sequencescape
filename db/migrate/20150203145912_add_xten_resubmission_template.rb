@@ -3,7 +3,7 @@ class AddXtenResubmissionTemplate < ActiveRecord::Migration
     ActiveRecord::Base.transaction do
       new_st = SubmissionTemplate.create!(
         :name => "HiSeq-X library re-sequencing",
-        :submission_class_name => 'LinearSubmission',
+        :submission_class_name => 'FlexibleSubmission',
         :submission_parameters => {
           :order_role_id => Order::OrderRole.find_or_create_by_role('HSqX'),
           :request_type_ids_list => request_types,

@@ -158,7 +158,7 @@ module Presenters
     end
 
     def stock_barcode
-      parent.stock_plate.try(:sanger_human_barcode)||"Unknown"
+      parent.source_plate.try(:sanger_human_barcode)||"Unknown"
     end
 
     def still_required
