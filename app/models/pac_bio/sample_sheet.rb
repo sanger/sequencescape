@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 class PacBio::SampleSheet
   def header_metadata(batch)
     [
@@ -49,28 +49,31 @@ class PacBio::SampleSheet
 
   CONCAT_SEPARATOR = ';'
 
+  def concat(list, sym)
+    list.map(&sym).uniq.join(CONCAT_SEPARATOR)
+  end
+
+
   def row(requests, batch)
     # Read these lines when secondary analysis activated
     #  replace_non_alphanumeric(library_tube.pac_bio_library_tube_metadata.protocol),
     # "JobName=DefaultJob_#{Time.now}",
     #request = requests.first
 
-    def concat(list, sym)
-      list.map(&sym).join(CONCAT_SEPARATOR)
-    end
-
     library_tubes = requests.map(&:asset)
     library_tubes_metadata = library_tubes.map(&:pac_bio_library_tube_metadata)
+    first_tube_metadata = library_tubes_metadata.first
+
     well = requests.first.target_asset
     [
       Map.pad_description(well.map),
       concat(library_tubes, :name),
-      concat(library_tubes_metadata, :prep_kit_barcode),
+      first_tube_metadata.prep_kit_barcode,
       nil,
-      concat(library_tubes_metadata, :binding_kit_barcode),
+      first_tube_metadata.binding_kit_barcode,
       nil,
-      requests.map{|r| lookup_collection_protocol(r)}.join(CONCAT_SEPARATOR),
-      "AcquisitionTime=#{concat(library_tubes_metadata, :movie_length)}|InsertSize=#{concat(requests.map(&:request_metadata), :insert_size)}|StageHS=True|SizeSelectionEnabled=False|Use2ndLook=False|NumberOfCollections=#{requests.size}",
+      lookup_collection_protocol(requests.first),
+      "AcquisitionTime=#{first_tube_metadata.movie_length}|InsertSize=#{first_tube_metadata.insert_size}|StageHS=True|SizeSelectionEnabled=False|Use2ndLook=False|NumberOfCollections=#{requests.size}",
       'Default',
       nil,
       nil,
