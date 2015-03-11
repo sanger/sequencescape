@@ -26,7 +26,7 @@ PacBioSamplePrepPipeline.create!(:name => 'PacBio Tagged Library Prep') do |pipe
       { :class => PrepKitBarcodeTask, :name => 'DNA Template Prep Kit Box Barcode',    :sorted => 1, :batched => true, :lab_activity => true },
       { :class => PlateTransferTask,  :name => 'Transfer to plate',                    :sorted => 2, :batched => nil,  :lab_activity => true, :purpose => Purpose.find_by_name('PacBio Sheared') },
       { :class => TagGroupsTask,      :name => "Tag Groups",                           :sorted => 3, :lab_activity => true },
-      {:class  => AssignTagsTask,     :name => "Assign Tags",                          :sorted => 4, :lab_activity => true },
+      { :class  => AssignTagsToTubes, :name => "Assign Tags",                          :sorted => 4, :lab_activity => true },
       { :class => SamplePrepQcTask,   :name => 'Sample Prep QC',                       :sorted => 5, :batched => true, :lab_activity => true }
      ].each do |details|
       details.delete(:class).create!(details.merge(:workflow => workflow))
