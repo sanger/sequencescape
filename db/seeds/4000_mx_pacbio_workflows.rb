@@ -70,3 +70,10 @@ pbs = PlatePurpose.create!(
 AssignTubesToMultiplexedWellsTask.all.each {|task| task.update_attributes!(:purpose=>pbs)}
 
 set_pipeline_flow_to('PacBio Tagged Library Prep' => 'PacBio Sequencing')
+
+SubmissionTemplate.create!( {
+    :name => "PacBio Tagged Library Preparation",
+    :submission_class_name => 'LinearSubmission',
+    :submission_parameters => { :request_type_ids_list=>['pacbio_tagged_library_prep','pacbio_sequencing'].map{|key| RequestType.find_by_key(key).id},
+                                :workflow_id => 1 }
+  })
