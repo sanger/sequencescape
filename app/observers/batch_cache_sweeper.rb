@@ -39,10 +39,16 @@ class BatchCacheSweeper < ActiveRecord::Observer
   end
   private :query_details_for
 
-    def handle(record)
+  def handle(record)
     debug { "Rebroadcasting message for #{record.class.name}(#{record.id})" }
-    record.messengers.each(&:touch)
+    # record.messengers.each(&:touch)
+    messengers_for(record).each(&:resend)
     super
   end
   private :handle
+
+  def messengers_for(record)
+    Messenger.find(:all,:conditions=>{:target_type=>'Batch',:target_id=>ids_for(record)})
+  end
+
 end
