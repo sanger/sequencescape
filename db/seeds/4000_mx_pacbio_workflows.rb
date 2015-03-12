@@ -23,11 +23,11 @@ PacBioSamplePrepPipeline.create!(:name => 'PacBio Tagged Library Prep') do |pipe
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'PacBio Tagged Library Prep').tap do |workflow|
     [
 
-      { :class => PrepKitBarcodeTask, :name => 'DNA Template Prep Kit Box Barcode',    :sorted => 1, :batched => true, :lab_activity => true },
-      { :class => PlateTransferTask,  :name => 'Transfer to plate',                    :sorted => 2, :batched => nil,  :lab_activity => true, :purpose => Purpose.find_by_name('PacBio Sheared') },
-      { :class => TagGroupsTask,      :name => "Tag Groups",                           :sorted => 3, :lab_activity => true },
-      { :class  => AssignTagsToTubes, :name => "Assign Tags",                          :sorted => 4, :lab_activity => true },
-      { :class => SamplePrepQcTask,   :name => 'Sample Prep QC',                       :sorted => 5, :batched => true, :lab_activity => true }
+      { :class => PrepKitBarcodeTask,    :name => 'DNA Template Prep Kit Box Barcode',    :sorted => 1, :batched => true, :lab_activity => true },
+      { :class => PlateTransferTask,     :name => 'Transfer to plate',                    :sorted => 2, :batched => nil,  :lab_activity => true, :purpose => Purpose.find_by_name('PacBio Sheared') },
+      { :class => TagGroupsTask,         :name => "Tag Groups",                           :sorted => 3, :lab_activity => true },
+      { :class => AssignTagsToTubesTask, :name => "Assign Tags",                          :sorted => 4, :lab_activity => true },
+      { :class => SamplePrepQcTask,      :name => 'Sample Prep QC',                       :sorted => 5, :batched => true, :lab_activity => true }
      ].each do |details|
       details.delete(:class).create!(details.merge(:workflow => workflow))
     end
@@ -71,9 +71,9 @@ AssignTubesToMultiplexedWellsTask.all.each {|task| task.update_attributes!(:purp
 
 set_pipeline_flow_to('PacBio Tagged Library Prep' => 'PacBio Sequencing')
 
-SubmissionTemplate.create!( {
-    :name => "PacBio Tagged Library Preparation",
-    :submission_class_name => 'LinearSubmission',
-    :submission_parameters => { :request_type_ids_list=>['pacbio_tagged_library_prep','pacbio_sequencing'].map{|key| RequestType.find_by_key(key).id},
-                                :workflow_id => 1 }
-  })
+      SubmissionTemplate.create!( {
+        :name => "Multiplexed PacBio",
+        :submission_class_name => 'LinearSubmission',
+        :submission_parameters => { :request_type_ids_list=>['pacbio_tagged_library_prep','pacbio_multiplexed_sequencing'].map{|key| RequestType.find_by_key(key).id},
+        :workflow_id => 1 }
+        })
