@@ -63,6 +63,7 @@ class PacBio::SampleSheet
     library_tubes = requests.map(&:asset)
     library_tubes_metadata = library_tubes.map(&:pac_bio_library_tube_metadata)
     first_tube_metadata = library_tubes_metadata.first
+    first_request_metadata = requests.first.request_metadata
 
     well = requests.first.target_asset
     [
@@ -73,7 +74,7 @@ class PacBio::SampleSheet
       first_tube_metadata.binding_kit_barcode,
       nil,
       lookup_collection_protocol(requests.first),
-      "AcquisitionTime=#{first_tube_metadata.movie_length}|InsertSize=#{first_tube_metadata.insert_size}|StageHS=True|SizeSelectionEnabled=False|Use2ndLook=False|NumberOfCollections=#{requests.size}",
+      "AcquisitionTime=#{first_tube_metadata.movie_length}|InsertSize=#{first_request_metadata.insert_size}|StageHS=True|SizeSelectionEnabled=False|Use2ndLook=False|NumberOfCollections=#{requests.size}",
       'Default',
       nil,
       nil,
