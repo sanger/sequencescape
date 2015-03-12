@@ -50,6 +50,14 @@ module Tasks::AssignTubesToWellsHandler
       return false
     end
 
+    incompatible_wells = find_icompatible_wells(params)
+
+    if incompatible_wells.present?
+      flash[:error] = "Incompatible requests in #{incompatible_wells.join(',')}"
+      return false
+    end
+
+
     @batch.requests.each do |request|
       target_well = params[:request_locations][request.id.to_s]
       request.target_asset = well_hash[target_well]
@@ -57,6 +65,7 @@ module Tasks::AssignTubesToWellsHandler
     end
     true
   end
+
 
   def wells_with_duplicates(params)
     invalid_wells = []
@@ -67,6 +76,16 @@ module Tasks::AssignTubesToWellsHandler
     invalid_wells
   end
   private :wells_with_duplicates
+
+  def find_icompatible_wells(params)
+    invalid_wells = []
+    @batch.requests.group_by {|request| params[:request_locations][request.id.to_s]}.each do |well,requests|
+      next if requests.map {|r| r.shared_attributes }.uniq.count <= 1
+      invalid_wells << well
+    end
+    invalid_wells
+  end
+  private :find_icompatible_wells
 
   def find_or_create_plate(purpose)
     first_request = @batch.requests.first

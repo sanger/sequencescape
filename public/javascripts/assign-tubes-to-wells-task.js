@@ -9,22 +9,26 @@
 
     preventMatchingAssetPooling = true;
 
-    clashChecker = function(children,candidate_jq) {
+    clashChecker = function(children,candidate_jq,errorReporter) {
       var candidate = candidate_jq.get(0)
       for (var i = 0; i < children.length; i+=1) {
+        var child = children.get(i)
         if (
-        (candidate.dataset.requestId !== (children.get(i).dataset.requestId)) && // the candidate becomes a child of the target before it is tested. We avoid it matching itself
-        (preventMatchingAssetPooling || (candidate.dataset.assetId !== children.get(i).dataset.assetId))// if preventMatchingAssetPooling Only perform checks if assets don't match
+        (candidate.dataset.requestId !== (child.dataset.requestId)) && // the candidate becomes a child of the target before it is tested. We avoid it matching itself
+        (preventMatchingAssetPooling || (candidate.dataset.assetId !== child.dataset.assetId))// if preventMatchingAssetPooling Only perform checks if assets don't match
         ) {
-
-          if(candidate.dataset.tagIndex === '-' || children.get(i).dataset.tagIndex === '-') { return true; } // We can't mix untagged with anything
-          if(candidate.dataset.tagIndex === children.get(i).dataset.tagIndex ) { return true; } // We can't mix matching tags
+          if(candidate.dataset.tagIndex === '-' || child.dataset.tagIndex === '-') { errorReporter('Can not multiplex untagged samples'); return true; } // We can't mix untagged with anything
+          if(candidate.dataset.tagIndex === child.dataset.tagIndex ) { errorReporter('Can not multiplex matching tags'); return true; } // We can't mix matching tags
+          if(candidate.title !== child.title) { errorReporter('Tubes have incompatible request options (eg. Movie Length)'); return true;} // We can't mix incompatible tubes
 
         }
       };
 
       return false;
     }
+
+    reportError = function(error) { $('#error_messages').show(100).text(error) };
+    doNothing = function(){};
 
     attach = function(tube,target) { document.getElementById('locations_for_'+tube.dataset.requestId).value=target.dataset.wellLocation };
     detach = function(tube) { document.getElementById('locations_for_'+tube.dataset.requestId).value='' };
@@ -57,7 +61,7 @@
       cancel:'p',
       connectWith: '.tube_receiver',
       receive: function( event,ui ) {
-        if (clashChecker($(this).children('.library_tube'),ui.item)) {
+        if (clashChecker($(this).children('.library_tube'),ui.item,reportError)) {
           $(ui.sender).sortable('cancel');
         } else {
           attach(ui.item.get(0),this)
@@ -120,7 +124,7 @@
       }
       for (var i = 0; i < unsorted_tubes.length ; i+=1) {
 
-        if (clashChecker($(next_well).children(),$(unsorted_tubes.get(i)))) {
+        if (clashChecker($(next_well).children(),$(unsorted_tubes.get(i)),doNothing)) {
           well_index+= 1;
           while ((next_well = document.getElementById('well_'+well_array[well_index])) && next_well.childElementCount > 0) {
             well_index += 1;

@@ -6,7 +6,8 @@
   <p>Drag tubes onto the wells of the plate, or drop them back here.</P>
 <% requests.each do |request| %>
   <% tag =  tag_index_for(request) %>
-  <li class='library_tube' data-tag-index='<%= tag %>' data-request-id='<%= request.id %>' data-asset-id='<%= request.asset_id %>'><%= request.asset.name %><span class='tube_tag'><%= tag %></span></li>
+  <% shared_attributes = request.shared_attributes %>
+  <li class='library_tube' data-tag-index='<%= tag %>' data-request-id='<%= request.id %>' data-asset-id='<%= request.asset_id %>' title='<%= shared_attributes %>'><%= request.asset.name %><span class='tube_tag'><%= tag %></span></li>
 <% end %>
 </ul>
 <% requests.each do |request| %>

@@ -60,6 +60,7 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
               request.expects(:target_asset=).with( @mock_wells[request_target[i]] )
               request.expects(:save!)
               request.expects(:id).at_least_once.returns(i)
+              request.expects(:shared_attributes).at_least_once.returns("match")
             end
           end
           @wells.expects(:located_at).with(['A1','B1','C1','D1','E1','F1','G1']).returns(@mock_wells)
@@ -96,6 +97,34 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
           @task.do_task(@workflows_controller,@params)
           assert_not_nil @workflows_controller.flash[:error]
           assert_equal "Duplicate tags in G1", @workflows_controller.flash[:error]
+        end
+      end
+
+      context "with incompatible attributes" do
+        setup do
+          @tags = [1,2,3,4,5,6,7,8]
+          @requests = (1..8).map do |i|
+            mock("request_#{i}",
+              :asset=> mock("asset_#{i}",:aliquots=>[mock("aliquot",:tag_id=> @tags[i-1])])
+            ).tap do |request|
+              request.expects(:id).at_least_once.returns(i)
+              request.expects(:shared_attributes).at_least_once.returns("clash#{i}")
+            end
+          end
+          @wells.expects(:located_at).with(['A1','B1','C1','D1','E1','F1','G1']).returns(@mock_wells)
+          @batch = mock('batch')
+          @batch.stubs(:requests).returns(@requests)
+          @workflows_controller.batch = @batch
+        end
+
+        should "return false" do
+          assert !@task.do_task(@workflows_controller,@params)
+        end
+
+        should "set a flash[:notice] for failure" do
+          @task.do_task(@workflows_controller,@params)
+          assert_not_nil @workflows_controller.flash[:error]
+          assert_equal "Incompatible requests in G1", @workflows_controller.flash[:error]
         end
       end
     end

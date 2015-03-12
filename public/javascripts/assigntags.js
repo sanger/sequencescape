@@ -93,7 +93,7 @@
             });
 
         }
-        if ($("table#tag-assignment").data('disable-checks') {
+        if ($("table#tag-assignment").data('disable-checks')) {
           highlightDuplicates();
         }
     });
