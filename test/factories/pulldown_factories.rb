@@ -43,6 +43,12 @@ Factory.define(:destination_transfer_plate, :parent => :transfer_plate) do |plat
   end
 end
 
+Factory.define(:initial_downstream_plate, :parent => :transfer_plate) do |plate|
+  plate.after_build do |plate|
+    plate.plate_purpose = PlatePurpose.find_by_name('Initial downstream plate purpose') || Factory(:initial_downstream_plate_purpose)
+  end
+end
+
 Factory.define(:full_plate, :class => Plate) do |plate|
   plate.size 96
 
@@ -177,10 +183,14 @@ Factory.define(:pooling_plate_purpose, :class => PlatePurpose) do |plate_purpose
   plate_purpose.can_be_considered_a_stock_plate true
   plate_purpose.after_create do |plate_purpose|
     plate_purpose.child_relationships.create!(:child => Factory(:child_plate_purpose), :transfer_request_type => Factory(:pooling_transfer))
+    plate_purpose.child_relationships.create!(:child => Factory(:initial_downstream_plate_purpose), :transfer_request_type => Factory(:pooling_transfer))
   end
 end
 Factory.define(:child_plate_purpose, :class => PlatePurpose) do |plate_purpose|
   plate_purpose.name 'Child plate purpose'
+end
+Factory.define(:initial_downstream_plate_purpose, :class=>Pulldown::InitialDownstreamPlatePurpose) do |plate_purpose|
+   plate_purpose.name 'Initial Downstream plate purpose'
 end
 Factory.define(:plate_creation) do |plate_creation|
   plate_creation.user   { |target| target.association(:user) }

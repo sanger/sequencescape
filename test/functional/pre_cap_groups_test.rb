@@ -60,7 +60,7 @@ class PreCapGroupsTest < ActiveSupport::TestCase
       context 'when transfers are created' do
 
         setup do
-          @target_plate = Factory :destination_transfer_plate
+          @target_plate = Factory :initial_downstream_plate
           @transfer = Transfer::BetweenPlates.create!(
             :source=>@plate,
             :destination=>@target_plate,
