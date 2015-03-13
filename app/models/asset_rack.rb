@@ -55,6 +55,10 @@ class AssetRack < Asset
     ancestor_of_purpose(source_plate_purpose)
   end
 
+  def supports_multiple_submissions?
+    false
+  end
+
   def priority
     Submission.find(:first,
       :select => 'MAX(submissions.priority) AS priority',

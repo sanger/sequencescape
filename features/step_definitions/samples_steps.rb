@@ -32,7 +32,7 @@ Then /^the following samples should be in the sample registration fields:$/ do |
     with_scope("table#samples_to_register tr.sample_row:nth-child(#{index+1})") do
       details.each do |label, value|
         field       = find_field("#{ label } for sample #{ index }")
-        field_value = (field.tag_name == 'textarea') ? field.text : field.attribute('value')
+        field_value = (field.tag_name == 'textarea') ? field.text : field.value
         assert_match(/#{value}/, field_value, "Field #{ label.inspect } for sample #{ index } was unexpected")
       end
     end
