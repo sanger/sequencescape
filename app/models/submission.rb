@@ -17,7 +17,7 @@ class Submission < ActiveRecord::Base
   validates_presence_of :user
 
   # Created during the lifetime ...
-  has_many :requests
+  has_many :requests, :inverse_of => :submission
   has_many :items, :through => :requests
 
   has_many :orders, :inverse_of => :submission

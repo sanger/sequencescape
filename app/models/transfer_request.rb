@@ -9,8 +9,8 @@ class TransferRequest < Request
     def perform_transfer_of_contents
       target_asset.aliquots << asset.aliquots.map do |a|
         aliquot = a.clone
-        aliquot.study = outer_request.initial_study
-        aliquot.project = outer_request.initial_project
+        aliquot.study_id = outer_request.initial_study_id
+        aliquot.project_id = outer_request.initial_project_id
         aliquot
       end unless asset.failed? or asset.cancelled?
     end

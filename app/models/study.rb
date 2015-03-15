@@ -404,12 +404,9 @@ class Study < ActiveRecord::Base
   end
 
   def submissions_for_workflow(workflow)
-    orders_for_workflow(workflow).map(&:submission).compact.uniq
+    orders.for_workflow(workflow).include_for_study_view.map(&:submission).compact.uniq
   end
 
-  def orders_for_workflow(workflow)
-    self.orders.find(:all,:conditions=>{:workflow_id=>workflow})
-  end
   # Yields information on the state of all request types in a convenient fashion for displaying in a table.
   def request_progress(&block)
     yield(self.initial_requests.progress_statistics)

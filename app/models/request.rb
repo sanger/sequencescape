@@ -106,7 +106,7 @@ class Request < ActiveRecord::Base
 
   belongs_to :user
 
-  belongs_to :submission
+  belongs_to :submission, :inverse_of => :requests
   belongs_to :order
 
   named_scope :with_request_type_id, lambda { |id| { :conditions => { :request_type_id => id } } }
@@ -179,6 +179,8 @@ class Request < ActiveRecord::Base
   named_scope :with_target, :conditions =>  'target_asset_id is not null and (target_asset_id <> asset_id)'
   named_scope :join_asset, :joins => [ :asset ]
 
+  named_scope :siblings_of, lambda {|request| { :conditions => ['asset_id = ? AND NOT id = ?', request.asset_id, request.id ] } }
+
   #Asset are Locatable (or at least some of them)
   belongs_to :location_association, :primary_key => :locatable_id, :foreign_key => :asset_id
   named_scope :located, lambda {|location_id| { :joins => :location_association, :conditions =>  ['location_associations.location_id = ?', location_id ], :readonly => false } }
@@ -204,7 +206,10 @@ class Request < ActiveRecord::Base
   named_scope :full_inbox, :conditions => {:state => ["pending","hold"]}
   named_scope :hold, :conditions => {:state => "hold"}
 
-  named_scope :loaded_for_inbox_display, :include => [{:submission => {:orders =>:study}, :asset => [:scanned_into_lab_event,:studies]}]
+  # Setup inbox eager loading
+  named_scope :loaded_for_inbox_display, :include => {:submission => {:orders =>:study}, :asset => [:scanned_into_lab_event,:studies]}
+  named_scope :loaded_for_grouped_inbox_display, :include => [ {:submission => :orders}, :asset , :target_asset, :request_type ]
+
   named_scope :ordered_for_ungrouped_inbox, :order => 'id DESC'
   named_scope :ordered_for_submission_grouped_inbox, :order => 'submission_id DESC, id ASC'
 

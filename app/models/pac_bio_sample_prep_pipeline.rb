@@ -13,6 +13,9 @@ class PacBioSamplePrepPipeline < Pipeline
     false
   end
 
+  def inbox_eager_loading
+    :loaded_for_grouped_inbox_display
+  end
 
   def post_release_batch(batch, user)
     cancel_sequencing_requests_on_library_failure(batch)

@@ -53,7 +53,7 @@ class Well < Aliquot::Receptacle
   @@per_page = 500
 
   has_one :well_attribute, :inverse_of => :well
-  after_create { |w| w.create_well_attribute unless w.well_attribute.present? }
+  before_create { |w| w.create_well_attribute unless w.well_attribute.present? }
 
   named_scope :pooled_as_target_by, lambda { |type|
     {

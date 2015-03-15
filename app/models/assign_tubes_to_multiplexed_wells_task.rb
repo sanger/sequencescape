@@ -15,10 +15,13 @@ class AssignTubesToMultiplexedWellsTask < Task
     "assign_tubes_to_wells"
   end
 
-  def included_for_task
+  def included_for_do_task
     [{:requests=>:asset}, :pipeline ]
   end
 
+  def included_for_render_task
+    [{:requests=>:asset}, :pipeline ]
+  end
 
   def create_render_element(request)
     request.asset && AssignTubesToWellsData.new(request)

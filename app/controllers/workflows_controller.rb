@@ -125,24 +125,33 @@ class WorkflowsController < ApplicationController
     render :nothing => true
   end
 
+  # TODO: This needs to be made RESTful.
+  # 1: Routes need to be refactored to provide more sensible urls
+  # 2: We call them tasks in the code, and stages in the URL. They should be consistent
+  # 3: This endpoint currently does two jobs, executing the current task, and rendering the next
+  # 4: Some tasks rely on parameters passed in from the previous task. This isn't ideal, but it might
+  #    be worth maintaining the behaviour until we solve the problems.
+  # 5: We need to improve the repeatability of tasks.
   def stage
 
     @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
     @stage = params[:id].to_i
     @task = @workflow.tasks[@stage]
 
-    @batch ||= Batch.find(params[:batch_id], :include => @task.included_for_task )
-
-    if params[:next_stage].present? && !@batch.editable?
-      flash[:error] = "You cannot execute more tasks in a completed batch."
-      redirect_to :back
-      return
-    end
-
     ActiveRecord::Base.transaction do
       # If params[:next_stage] is nil then just render the current task
       # else actually execute the task.
       unless params[:next_stage].nil?
+
+        eager_loading = @task.included_for_do_task
+        @batch ||= Batch.find(params[:batch_id], :include => eager_loading )
+
+        unless @batch.editable?
+          flash[:error] = "You cannot make changes to a completed batch."
+          redirect_to :back
+          return false
+        end
+
         if @task.do_task(self, params)
           # Task completed, start the batch is necessary and display the next one
           do_start_batch_task(@task,params)
@@ -157,6 +166,9 @@ class WorkflowsController < ApplicationController
         # All requests have finished all tasks: finish workflow
         redirect_to finish_batch_url(@batch)
       else
+        if @batch.nil? || @task.included_for_render_task != eager_loading
+          @batch = Batch.find(params[:batch_id], :include => @task.included_for_render_task )
+        end
         @task.render_task(self, params)
       end
     end
@@ -164,7 +176,7 @@ class WorkflowsController < ApplicationController
 
   def render_task(task, params)
     @rits = @batch.pipeline.request_information_types
-    @requests = @batch.ordered_requests
+    @requests = @batch.requests
 
     @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
     @task = task

@@ -4,7 +4,7 @@
 module Tasks::AssignTagsHandler
   def render_assign_tags_task(task, params)
     @tag_group = TagGroup.find(params[:tag_group])
-    @requests = @batch.ordered_requests
+    @requests = @batch.requests
     @tags = @tag_group.tags.sorted
     @rits = @batch.pipeline.request_information_types
   end

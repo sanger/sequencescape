@@ -603,7 +603,7 @@ WHERE c.container_id=?
   def set_plate_name_and_size
     self.name = "Plate #{barcode}" if self.name.blank?
     self.size = default_plate_size if self.size.nil?
-    self.location = Location.find_by_name("Sample logistics freezer") if self.location.nil?
+    self.location = Location.find_by_name("Sample logistics freezer") if self.location_id.nil?
   end
   private :set_plate_name_and_size
 
@@ -645,5 +645,11 @@ WHERE c.container_id=?
 
   def compatible_purposes
     PlatePurpose.compatible_with_purpose(self.purpose)
+  end
+
+  # Barcode is stored as a string, jet in a number of places is treated as
+  # a number. If we conver it before searching, things are faster!
+  def find_by_barcode(barcode)
+    super(barcode.to_s)
   end
 end

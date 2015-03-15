@@ -15,6 +15,11 @@ class Aliquot < ActiveRecord::Base
     has_many :transfer_requests_as_source, :class_name => 'TransferRequest', :foreign_key => :asset_id
     has_many :transfer_requests_as_target, :class_name => 'TransferRequest', :foreign_key => :target_asset_id
 
+    has_many :requests, :inverse_of => :asset, :foreign_key => :asset_id
+    has_one  :source_request, :class_name => "Request", :foreign_key => :target_asset_id, :include => :request_metadata
+    has_many :requests_as_source, :class_name => 'Request', :foreign_key => :asset_id, :include => :request_metadata, :inverse_of => :asset
+    has_many :requests_as_target, :class_name => 'Request', :foreign_key => :target_asset_id, :include => :request_metadata, :inverse_of => :target_asset
+
     def default_state
       nil
     end

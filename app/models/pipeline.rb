@@ -4,6 +4,9 @@
 class PipelinesRequestType < ActiveRecord::Base
   belongs_to :pipeline, :inverse_of => :pipelines_request_types
   belongs_to :request_type, :inverse_of => :pipelines_request_types
+
+  validates_uniqueness_of :request_type_id, :scope => :pipeline_id
+  validates_presence_of :request_type, :pipeline
 end
 
 class Pipeline < ActiveRecord::Base
@@ -75,7 +78,7 @@ class Pipeline < ActiveRecord::Base
       if action != :count
         actions << :include_request_metadata
         actions << (proxy_owner.group_by_submission? ? :ordered_for_submission_grouped_inbox : :ordered_for_ungrouped_inbox)
-        actions << :loaded_for_inbox_display
+        actions << proxy_owner.inbox_eager_loading
       end
       if action.present?
         actions << [ action ]
@@ -141,6 +144,10 @@ class Pipeline < ActiveRecord::Base
     INBOX_PARTIAL
   end
 
+  def inbox_eager_loading
+    :loaded_for_inbox_display
+  end
+
   def display_next_pipeline?
     false
   end
@@ -170,10 +177,6 @@ class Pipeline < ActiveRecord::Base
     true
   end
 
-  def need_picoset?
-    false
-  end
-
   # This is the old behaviour for every other pipeline.
   def detach_request_from_batch(batch, request)
     request.return_for_inbox!
@@ -186,7 +189,7 @@ class Pipeline < ActiveRecord::Base
   end
 
   def get_input_request_groups(show_held_requests=true)
-    group_requests( inbox_scope_on(requests.inputs(show_held_requests).unbatched))
+    group_requests( inbox_scope_on(requests.inputs(show_held_requests).unbatched.send(inbox_eager_loading)))
   end
 
   def inbox_scope_on(inbox_scope)
