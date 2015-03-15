@@ -42,6 +42,8 @@
         <tr>
           <td width="35%" class="item">&nbsp;</td>
           <td width="65%"><input type='submit' value='Print labels'> or <%= link_to 'cancel', :controller => 'batches', :action => 'show', :id => @batch.id %></td>
+          <td><input type="button" name="select_printables" class="select-all-behaviour" value="Select all" /></td>
+          <td><input type="button" name="unselect_printables" class="deselect-all-behaviour" value="Deselect all" /></td>
         </tr>
       </table>
     <input type='hidden' name='batch_id' value='<%= @batch.id %>' />
