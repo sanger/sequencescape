@@ -28,13 +28,13 @@ class Batch < ActiveRecord::Base
   end
 
   def cluster_formation_requests_must_be_over_minimum
-    if (!@pipeline.min_size.nil?) && (@requests.size < @pipeline.min_size)
+    if (!pipeline.min_size.nil?) && (@requests.size < @pipeline.min_size)
       errors.add_to_base "You must create batches of at least " + @pipeline.min_size.to_s+" requests in the pipeline " + @pipeline.name
     end
   end
 
   def requests_have_same_read_length
-    unless @pipeline.is_read_length_consistent_for_batch?(self)
+    unless pipeline.is_read_length_consistent_for_batch?(self)
       errors.add_to_base "The selected requests must have the same values in their 'Read length' field."
     end
   end

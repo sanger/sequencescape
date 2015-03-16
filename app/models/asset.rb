@@ -312,7 +312,7 @@ class Asset < ActiveRecord::Base
         asset_visited = []
         move_all_asset_group(study_from, study_to, asset_visited, asset_group, current_user)
       end
-      rescue Exception => exception
+      rescue StandardError => exception
         msg = exception.record.class.name + " id: " + exception.record.id.to_s + ": " + exception.message
         self.errors.add("Move:", msg)
         move_result = false

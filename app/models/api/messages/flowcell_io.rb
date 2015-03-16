@@ -23,7 +23,7 @@ class Api::Messages::FlowcellIO < Api::Base
             },
             :order=>'created_at DESC'
           )
-          return event.descriptor_value_for('Passed?') if event.present?
+          return event.descriptor_value_for('Passed?')=='Yes' if event.present?
           nil
         end
 
@@ -69,7 +69,7 @@ class Api::Messages::FlowcellIO < Api::Base
             },
             :order=>'created_at DESC'
           )
-          return event.descriptor_value_for('Passed?') if event.present?
+          return event.descriptor_value_for('Passed?')=='Yes' if event.present?
           nil
         end
 

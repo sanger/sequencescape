@@ -666,7 +666,7 @@ class Study < ActiveRecord::Base
         take_object(object, user, study_from)
         begin
           object.save!
-        rescue Exception => ex
+        rescue StandardError => ex
           errors << ex.message
         end
       end
