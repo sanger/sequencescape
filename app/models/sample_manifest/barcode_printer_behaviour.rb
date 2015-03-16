@@ -11,6 +11,5 @@ module SampleManifest::BarcodePrinterBehaviour
     printer_type = ASSET_TYPE_TO_PRINTER_TYPE[self.asset_type]
     printers     = BarcodePrinterType.find_by_name(printer_type).barcode_printers unless printer_type.nil?
     printers     = BarcodePrinter.all(:order => 'name ASC') if printers.blank?
-    printers
   end
 end
