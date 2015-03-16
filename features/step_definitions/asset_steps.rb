@@ -36,3 +36,7 @@ end
 Given /^the multiplexed library tube with ID (\d+) has a BigDecimal volume$/ do |id|
   MultiplexedLibraryTube.find(id).update_attributes!(:volume=>8.76000000)
 end
+
+Then /^the last asset rack has a strip tube in position (\d+) named "(.*?)"$/ do |location, name|
+  assert_equal name, AssetRack.last.strip_tubes.detect {|st| (st.map.column_order+1).to_s == location}.name
+end

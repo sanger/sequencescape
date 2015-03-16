@@ -44,6 +44,10 @@ Transform /^the plate with ID (\d+)$/ do |id|
   Plate.find(id)
 end
 
+Transform /^the asset rack with ID (\d+)$/ do |id|
+  AssetRack.find(id)
+end
+
 Given /^(the .+) has a barcode of "([^\"]+)"$/ do |asset, barcode|
   asset.update_attributes!(:barcode => Barcode.number_to_human(barcode.to_i))
 end

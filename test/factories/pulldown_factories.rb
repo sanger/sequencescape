@@ -7,13 +7,29 @@ Factory.define(:transfer_plate, :class => Plate) do |plate|
 
   plate.after_create do |plate|
     plate.wells.import(
-      [ 'A1', 'B1' ].map do |location|
+      [ 'A1', 'B1', 'C1' ].map do |location|
         map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(Map::AssetShape.find_by_name('Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
         Factory(:tagged_well, :map => map)
       end
     )
   end
 end
+
+# A plate that has exactly the right number of wells!
+Factory.define(:pooling_plate, :class => Plate) do |plate|
+  plate.size 96
+  plate.purpose { Factory :pooling_plate_purpose }
+
+  plate.after_create do |plate|
+    plate.wells.import(
+      [ 'A1', 'B1', 'C1', 'D1', 'E1','F1' ].map do |location|
+        map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(Map::AssetShape.find_by_name('Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
+        Factory(:tagged_well, :map => map)
+      end
+    )
+  end
+end
+
 
 Factory.define(:source_transfer_plate, :parent => :transfer_plate) do |plate|
   plate.after_build do |plate|
@@ -24,6 +40,12 @@ end
 Factory.define(:destination_transfer_plate, :parent => :transfer_plate) do |plate|
   plate.after_build do |plate|
     plate.plate_purpose = PlatePurpose.find_by_name('Child plate purpose') || Factory(:child_plate_purpose)
+  end
+end
+
+Factory.define(:initial_downstream_plate, :parent => :transfer_plate) do |plate|
+  plate.after_build do |plate|
+    plate.plate_purpose = PlatePurpose.find_by_name('Initial downstream plate purpose') || Factory(:initial_downstream_plate_purpose)
   end
 end
 
@@ -150,8 +172,25 @@ Factory.define(:parent_plate_purpose, :class => PlatePurpose) do |plate_purpose|
     plate_purpose.child_relationships.create!(:child => Factory(:child_plate_purpose), :transfer_request_type => RequestType.transfer)
   end
 end
+Factory.define(:pooling_transfer, :class=>RequestType) do |pooling_transfer|
+  pooling_transfer.asset_type 'Well'
+  pooling_transfer.order 1
+  pooling_transfer.request_class_name 'IlluminaHtp::Requests::PcrXpToPool'
+end
+# Plate creations
+Factory.define(:pooling_plate_purpose, :class => PlatePurpose) do |plate_purpose|
+  plate_purpose.name 'Pooling plate purpose'
+  plate_purpose.can_be_considered_a_stock_plate true
+  plate_purpose.after_create do |plate_purpose|
+    plate_purpose.child_relationships.create!(:child => Factory(:child_plate_purpose), :transfer_request_type => Factory(:pooling_transfer))
+    plate_purpose.child_relationships.create!(:child => Factory(:initial_downstream_plate_purpose), :transfer_request_type => Factory(:pooling_transfer))
+  end
+end
 Factory.define(:child_plate_purpose, :class => PlatePurpose) do |plate_purpose|
   plate_purpose.name 'Child plate purpose'
+end
+Factory.define(:initial_downstream_plate_purpose, :class=>Pulldown::InitialDownstreamPlatePurpose) do |plate_purpose|
+   plate_purpose.name 'Initial Downstream plate purpose'
 end
 Factory.define(:plate_creation) do |plate_creation|
   plate_creation.user   { |target| target.association(:user) }
@@ -232,6 +271,6 @@ Factory.define(:pulldown_isc_request, :class => Pulldown::Requests::IscLibraryRe
   request.after_build do |request|
     request.request_metadata.fragment_size_required_from = 100
     request.request_metadata.fragment_size_required_to   = 400
-    request.request_metadata.bait_library                = Factory(:bait_library)
+    request.request_metadata.bait_library                = BaitLibrary.first||Factory(:bait_library)
   end
 end

@@ -55,6 +55,8 @@ module ModelExtensions::Plate
       Request.include_request_metadata.for_pre_cap_grouping_of(self).each do |request|
         groups[request.group_id] = { :wells => request.group_into.split(',') }.tap do |pool_information|
           pool_information[:pre_capture_plex_level] ||= request.request_metadata.pre_capture_plex_level
+          # We supply the submission id to assist with correctly tagging transfer requests later
+          pool_information[:submission_id] ||= request.submission_id
         end unless request.group_id.nil?
       end
     end

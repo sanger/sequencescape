@@ -9,6 +9,7 @@ class Well < Aliquot::Receptacle
   include Cherrypick::VolumeByMicroLitre
   include StudyReport::WellDetails
   include Tag::Associations
+  include AssetRack::WellAssociations::AssetRackAssociation
 
   class Link < ActiveRecord::Base
     set_table_name('well_links')
@@ -30,6 +31,7 @@ class Well < Aliquot::Receptacle
   end
 
   named_scope :include_stock_wells, { :include => { :stock_wells => :requests_as_source } }
+  named_scope :include_map,         { :include => :map }
 
   named_scope :located_at, lambda { |plate, location|
     { :joins => :map, :conditions => { :maps => { :description => location, :asset_size => plate.size } } }
@@ -133,6 +135,9 @@ class Well < Aliquot::Receptacle
   alias_method(:get_pico_result, :get_concentration)
   writer_for_well_attribute_as_float(:concentration)
 
+  delegate_to_well_attribute(:molarity)
+  writer_for_well_attribute_as_float(:molarity)
+
   delegate_to_well_attribute(:current_volume)
   alias_method(:get_volume, :get_current_volume)
   writer_for_well_attribute_as_float(:current_volume)
@@ -178,6 +183,7 @@ class Well < Aliquot::Receptacle
   end
 
   def map_description
+    return read_attribute("map_description") if read_attribute("map_description").present?
     return nil if map.nil?
     return nil unless map.description.is_a?(String)
 
@@ -226,6 +232,7 @@ class Well < Aliquot::Receptacle
 
   def display_name
     plate_name = self.plate.present? ? self.plate.sanger_human_barcode : '(not on a plate)'
+    plate_name ||= plate.display_name # In the even the plate is barcodeless (ie strip tubes) use its name
     "#{plate_name}:#{map ? map.description : ''}"
   end
 

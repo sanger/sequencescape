@@ -78,6 +78,7 @@ class SampleManifest < ActiveRecord::Base
   end
 
   def print_labels(barcode_printer)
+    return false if barcode_printer.nil?
     core_behaviour.print_labels do |printables, prefix, *args|
       unless printables.empty?
         printables.each { |printable| printable.study = self.study.abbreviation }

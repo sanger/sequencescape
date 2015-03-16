@@ -47,7 +47,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
 
   # NOTE: Performance enhancement to convert a tube to it's minimal representation for presentation.
   def tube_to_hash(tube)
-    # Only build the hash once per tube. Shos significant speed improvement, esp. with label_text
+    # Only build the hash once per tube. Shows significant speed improvement, esp. with label_text
     @tubes||={}
     @tubes[tube.id] ||= {
       :uuid    => tube.uuid,
@@ -113,7 +113,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
   # Builds the name for the tube based on the wells that are being transferred from by finding their stock plate wells and
   # creating an appropriate range.
   def tube_name_for(stock_wells)
-    source_wells = source.plate_purpose.source_wells_for(stock_wells)
+    source_wells = source.plate_purpose.source_wells_for(stock_wells).sort {|w1,w2| w1.map.column_order <=> w2.map.column_order }
     stock_plates = source_wells.map(&:plate).uniq
     raise StandardError, "There appears to be no stock plate!" if stock_plates.empty?
     raise StandardError, "Cannot handle cross plate pooling!" if stock_plates.size > 1

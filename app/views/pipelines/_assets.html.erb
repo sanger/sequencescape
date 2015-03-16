@@ -6,69 +6,55 @@
     <tr>
       <th class='label'>&nbsp;</th>
       <th id="priority_flag"  style='text-align: center'><%= link_to image_tag("icon_0_flag.png", :size=>"16x16"), "javascript:void(0);" %></th>
-      <th><%= link_to "Previous requests", "javascript:void(0);" %></th>
-      <th class='label'><%= link_to "Internal ID", "javascript:void(0);" %></th>
-      <th class='label'><%= link_to "Barcode", "javascript:void(0);" %></th>
-      <th class='label'><%= link_to "Wells", "javascript:void(0);" %></th>
-      <th class='label'><%= link_to "Plate Purpose", "javascript:void(0);" %></th>
-      <th class='label'><%= link_to "Pick To", "javascript:void(0);" %></th>
-      <% if @pipeline.display_next_pipeline? %><th class="label"><%= link_to "Next Pipeline", "javascript:void(0);" %></th><% end %>
-      <th class='label'><%= link_to "Submission", "javascript:void(0);" %></th>
-      <th class='label'><%= link_to "Study", "javascript:void(0);" %></th>
+
+      <% @inbox_presenter.each_field_header do |field_name| %>
+        <th class='label'><%= link_to field_name, 'javascript:void(0);' %></th>
+      <% end %>
+
       <th class='label'></th>
     </tr>
   </thead>
   <tbody>
-    <% @request_groups.each_with_index do |(group, requests),index| -%>
-      <% if group.blank? -%><tr><td colspan="7">Null Group</td></tr><% next; end -%>
+    <% @inbox_presenter.each_line do |line| -%>
 
-      <%# hash_group = @pipeline.group_key_to_hash(group) %>
-      <% group_id = group.join(", ") %>
-      <%- #beware , the group will be destructed after the shift operation %>
-      <%  parent  = @pipeline.group_by_parent? && ( pid = group.shift ) && Asset.find(pid) %>
-      <% submission_id = @pipeline.group_by_submission? && group.shift  %>
-      <% submission =  submission_id && Submission.find(submission_id) %>
-      <% unless parent.nil? %>
+      <% line.groupless? do -%>
+        <tr><td colspan="<%= @inbox_presenter.field_count+2 %>">Null Group</td></tr>
+      <% end -%>
+
+      <% line.standard_fields? do %>
         <tr>
+          <!-- Shared fields. -->
           <td class="request center" width='5%'>
-            <% request_group_id = "request_group_#{ group_id.gsub(/[^a-z0-9]+/, '_') }" %>
-            <%= label_tag(request_group_id, "Select #{ parent.sanger_human_barcode } for batch", :style => 'display:none') %>
-            <%= label_tag(request_group_id, "Include request #{index+1}", :style => 'display:none') %>
-            <%= check_box(:request_group, group_id, :id => request_group_id, :class => 'grouped_checkbox', :'data-count' => requests.size) %>
-            <%= hidden_field_tag("#{request_group_id}_size", "",  :value => requests.size)  %>
+            <%= label_tag(line.request_group_id, "Select #{ line.parent.sanger_human_barcode } for batch", :style => 'display:none') %>
+            <%= label_tag(line.request_group_id, "Include request #{line.index+1}", :style => 'display:none') %>
+            <%= check_box(:request_group, line.group_id, :id => line.request_group_id, :class => 'grouped_checkbox', :'data-count' => line.requests.size) %>
+            <%= hidden_field_tag("#{line.request_group_id}_size", "",  :value => line.requests.size)  %>
           </td>
           <td  style='text-align: center'>
-            <% priority = requests.max_by(&:priority).priority %>
-            <%= image_tag "icon_#{priority}_flag.png", 'alt' => priority, :size => '16x16', :class =>  "flag_image #{current_user.is_lab_manager? ? 'as_manager' : ''}", "data-priority" => priority, 'data-request-id' => request.id %>
+            <!-- TODO: Restore priority toggle for grouped submissions -->
+            <%= image_tag "icon_#{line.priority}_flag.png", 'alt' => line.priority, :size => '16x16', :class =>  "flag_image #{current_user.is_lab_manager? ? 'as_manager' : ''}", "data-priority" => line.priority %>
           </td>
-          <td><%= parent.id %></td>
-          <td><%= parent.sanger_human_barcode %></td>
-          <td><%= requests.size %></td>
-          <td><%= parent.purpose.name %></td>
-          <td><%= target_purpose_for(requests.first) %></td>
-          <% if @pipeline.display_next_pipeline? %><td><%= next_pipeline_name_for(requests.first) %></td><% end %>
-          <td>
-            <% if @pipeline.group_by_submission? %>
-              <%= submission_id %>
-            <% end -%>
-          </td>
-          <td>
-            <% if submission -%>
-              <%= submission.study_names %>
-            <% end -%>
-          </td>
-          <td><%= link_to 'Show plate', show_plate_asset_url(parent) %></td>
+
+          <!-- Custom fields -->
+          <% line.each_field do |value| %>
+            <td><%= value %></td>
+          <% end %>
+
+          <td><%= link_to 'Show plate', show_plate_asset_url(line.parent) %></td>
         </tr>
-      <% else %>
+      <% end %>
+
+      <% line.parentless? do %>
         <tr>
+          <!-- Shared Fields -->
+          <td style="background:red;">&nbsp;</td>
+          <td style="background:red;">&nbsp;</td>
+          <!-- Custom Fields -->
           <td class="request center" width='5%' colspan="3" style="background:red;font-weight:bold;">Empty parent ID set</td>
-          <td style="background:red;"><%= requests.size %></td>
-          <td style="background:red;">&nbsp;</td>
-          <td style="background:red;">&nbsp;</td>
-          <td style="background:red;">&nbsp;</td>
-          <td style="background:red;">&nbsp;</td>
-          <td style="background:red;">&nbsp;</td>
-          <td style="background:red;">&nbsp;</td>
+          <td style="background:red;"><%= line.wells %></td>
+          <% (@inbox_presenter.field_count-2).times do %>
+            <td style="background:red;">&nbsp;</td>
+          <% end %>
         </tr>
       <% end -%>
     <% end -%>

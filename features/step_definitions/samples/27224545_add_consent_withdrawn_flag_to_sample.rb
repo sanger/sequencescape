@@ -57,7 +57,7 @@ Then /^the order should not have errors$/ do
   assert @order.errors.count == 0
 end
 
-Then /^the last error should contain "([^"]*)"$/ do |text|
+Then /^the last error should contain "([^\"]*)"$/ do |text|
   assert @order.errors.full_messages.include?(text)
 end
 

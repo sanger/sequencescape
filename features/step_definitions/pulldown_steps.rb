@@ -151,6 +151,10 @@ Transform /^the (?:.+\s)?plate "([^\"]+)"$/ do |name|
   Plate.find_by_name(name) or raise StandardError, "Could not find the plate #{name.inspect}"
 end
 
+Transform /^the asset rack "([^\"]+)"$/ do |name|
+  AssetRack.find_by_name(name) or raise StandardError, "Could not find the plate #{name.inspect}"
+end
+
 Transform /^the (?:.+) with UUID "([^\"]+)"$/ do |uuid|
   Uuid.lookup_single_uuid(uuid).resource
 end

@@ -14,6 +14,16 @@ def locations_for(row_range, column_range)
   row_range.map { |row| column_range.map { |column| "#{row}#{column}" } }.flatten
 end
 
+def pooling_row_to_first_column_transfer_layout_96
+  layout = {}
+  ('A'..'H').each do |row|
+    (1..12).each do |column|
+      layout["#{row}#{column}"]="#{row}1"
+    end
+  end
+  layout
+end
+
 ActiveRecord::Base.transaction do
   # Plate-to-plate transfers
   COLUMN_RANGES.each do |range|
@@ -76,4 +86,12 @@ ActiveRecord::Base.transaction do
     :name=>'Transfer wells to MX library tubes by multiplex',
     :transfer_class_name => 'Transfer::FromPlateToTubeByMultiplex'
   )
+
+  TransferTemplate.create!(
+    :name => "Pooling rows to first column",
+    :transfer_class_name => "Transfer::BetweenPlates",
+    :transfers => pooling_row_to_first_column_transfer_layout_96
+  )
+
+
 end

@@ -56,10 +56,6 @@ module ModelExtensions::Batch
 
       request.update_attributes!(:target_asset => target_asset)
 
-      # Do not start requests here as the batch will not be started and it will try
-      # to start the requests when someone does something with the batch.
-      #request.start!
-
       # All links between the two assets as new, so we can bulk create them!
       asset_links << [request.asset.id, request.target_asset.id]
     end

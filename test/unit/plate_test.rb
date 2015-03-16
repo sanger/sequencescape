@@ -16,13 +16,13 @@ class PlateTest < ActiveSupport::TestCase
         assert_equal "AAA", @plate.infinium_barcode
       end
     end
-    
+
     context "#fluidigm_barcode" do
       def create_plate_with_fluidigm(fluidigm_barcode)
         barcode = "12345678"
         PlatePurpose.find_by_name("Cherrypicked").create!(:do_not_create_wells,{:name => "Cherrypicked #{barcode}", :size => 192,:barcode => barcode,:plate_metadata_attributes=>{:fluidigm_barcode=>fluidigm_barcode}})
-      end      
-      
+      end
+
       should "check that I cannot create a plate with a fluidigm barcode different from 10 characters" do
         assert_raises(ActiveRecord::RecordInvalid) { create_plate_with_fluidigm("12345678") }
       end
@@ -161,7 +161,7 @@ class PlateTest < ActiveSupport::TestCase
     end
 
     should "inherit the highest submission priority" do
-      assert_equal 2, @plate.priority
+      assert_equal 3, @plate.priority
     end
   end
 
@@ -301,6 +301,42 @@ class PlateTest < ActiveSupport::TestCase
         end
       end
 
+    end
+
+    context "with existing well data" do
+
+      class MockParser
+        def each_well_and_parameters
+          yield('B1','2','3')
+          yield('C1','4','5')
+        end
+      end
+
+      setup do
+        @plate = Plate.new
+        @plate.wells.build([
+          {:map=>Map.find_by_description('A1')},
+          {:map=>Map.find_by_description('B1')},
+          {:map=>Map.find_by_description('C1')}
+        ])
+        @plate.wells.first.set_concentration('12')
+        @plate.wells.first.set_molarity('34')
+        @plate.save! # Because we use a well scope, and mocking it is asking for trouble
+
+        @plate.update_concentrations_from(MockParser.new)
+      end
+
+      should 'update new wells' do
+        assert_equal 2.0, @plate.wells.detect {|w| w.map_description == 'B1' }.reload.get_concentration
+        assert_equal 3.0, @plate.wells.detect {|w| w.map_description == 'B1' }.reload.get_molarity
+        assert_equal 4.0, @plate.wells.detect {|w| w.map_description == 'C1' }.reload.get_concentration
+        assert_equal 5.0, @plate.wells.detect {|w| w.map_description == 'C1' }.reload.get_molarity
+      end
+
+      should 'no clear existing data' do
+        assert_equal 12.0, @plate.wells.detect {|w| w.map_description =='A1' }.reload.get_concentration
+        assert_equal 34.0, @plate.wells.detect {|w| w.map_description =='A1' }.reload.get_molarity
+      end
     end
   end
 

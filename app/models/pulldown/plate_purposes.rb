@@ -2,6 +2,17 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2011,2012,2013 Genome Research Ltd.
 module Pulldown::PlatePurposes
+
+  ISCH_PURPOSE_FLOWS = [[
+      'Lib PCR-XP',
+      'ISCH lib pool',
+      'ISCH hyb',
+      'ISCH cap lib',
+      'ISCH cap lib PCR',
+      'ISCH cap lib PCR-XP',
+      'ISCH cap lib pool'
+  ]]
+
   PLATE_PURPOSE_FLOWS = [
     [
       'WGS stock DNA',
@@ -39,15 +50,7 @@ module Pulldown::PlatePurposes
       'ISC cap lib PCR',
       'ISC cap lib PCR-XP',
       'ISC cap lib pool'
-    ], [
-      'Lib PCR-XP',
-      'ISCH lib pool',
-      'ISCH hyb',
-      'ISCH cap lib',
-      'ISCH cap lib PCR',
-      'ISCH cap lib PCR-XP',
-      'ISCH cap lib pool'
-    ]
+    ], ISCH_PURPOSE_FLOWS.first
   ]
 
   PLATE_PURPOSE_TYPE = {

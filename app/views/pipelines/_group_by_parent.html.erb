@@ -6,6 +6,7 @@
 <%= render :partial => 'pipeline_limit' %>
 
 <% form_tag({:controller => :batches, :action => :create, :id => @pipeline.id}, :id => "assets_to_batch_form") do -%>
+  <%= render :partial => 'inbox_submission_button' %>
   <%= render :partial => "assets" %>
   <%= render :partial => 'inbox_submission_button' %>
 <%- end -%>

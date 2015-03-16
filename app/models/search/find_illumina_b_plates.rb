@@ -9,7 +9,7 @@ class Search::FindIlluminaBPlates < Search
   end
 
   def illumina_b_plate_purposes
-    names = IlluminaB::PlatePurposes::PLATE_PURPOSE_FLOWS.flatten.concat(IlluminaHtp::PlatePurposes::PLATE_PURPOSE_FLOWS.flatten)
+    names = IlluminaB::PlatePurposes::PLATE_PURPOSE_FLOWS.flatten.concat(IlluminaHtp::PlatePurposes::PLATE_PURPOSE_FLOWS.flatten).concat(Pulldown::PlatePurposes::ISCH_PURPOSE_FLOWS.flatten)
     PlatePurpose.find_all_by_name(names)
   end
   private :illumina_b_plate_purposes

@@ -108,7 +108,7 @@ When /^I fill in "([^"]*)" with(?: the)? multiline text:?$/ do |field, value|
 end
 
 Then /^"([^\"]+)" should be selected from "([^\"]+)"$/ do |value, name|
-  assert_equal([ value ], find_field(name).attribute('value'), "Field #{name.inspect} does not have the correct value selected")
+  assert_equal([ value ], find_field(name).value, "Field #{name.inspect} does not have the correct value selected")
 end
 
 Then /^I expect an exception to be raised when I press "([^"]*)"(?: within "([^"]*)")?$/ do |button, selector|
@@ -125,5 +125,6 @@ Then /^I expect an exception to be raised when I press "([^"]*)"(?: within "([^"
 end
 
 When /^I accept the action$/ do
+  sleep(0.3)
   page.driver.browser.switch_to.alert.accept
 end

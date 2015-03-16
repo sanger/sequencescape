@@ -147,6 +147,9 @@ test: &TEST
     api:
       authorisation_code: cucumber
       flush_response_at: 32768
+    phyx_tag:
+        tag_group_name: "Control Tag Group 888"
+        tag_map_id: 888
 
 cucumber:
     <<: *TEST

@@ -57,6 +57,11 @@ module ModelExtensions::Order
         { :conditions => { :submitted_assets => { :asset_id => asset_id } }, :joins => :submitted_assets }
       }
 
+      validate :extended_validation
+      def extended_validation
+        extended_validators.reduce(true) {|valid,validator| validator.validate_order(self) && valid }
+      end
+
       # The API can create submissions but we have to prevent someone from changing the study
       # and the project once they have been set.
       validates_each(:study, :project) do |record, attr, value|
@@ -64,6 +69,10 @@ module ModelExtensions::Order
         # In this case the original value of the attribute will be nil, so we account for that here.
         attr_value_was, attr_value_is = record.send(:"#{attr}_id_was"), record.send(:"#{attr}_id")
         record.errors.add(attr, 'cannot be changed') if not record.new_record? and attr_value_was != attr_value_is and attr_value_was.present?
+      end
+
+      def extended_validators
+        ExtendedValidator.for_submission(self)
       end
 
       extend ClassMethods

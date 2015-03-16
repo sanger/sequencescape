@@ -55,6 +55,11 @@ module Pulldown::Requests
       attribute(:pre_capture_plex_level, :default => 8, :integer => true)
     end
 
+    def update_pool_information(pool_information)
+      super
+      pool_information[:request_type] = request_type.key
+    end
+
   end
 
   class IscLibraryRequestPart < IscLibraryRequest

@@ -8,8 +8,12 @@ class IlluminaHtp::InitialDownstreamPlatePurpose < IlluminaHtp::DownstreamPlateP
     ActiveRecord::Base.transaction do
       super
       new_outer_state = ['started','passed','qc_complete','nx_in_progress'].include?(state) ? 'started' : state
+
+      active_submissions = plate.submission_ids
+
       stock_wells(plate,contents).each do |source_well|
-        source_well.requests.reject {|r| r.is_a?(TransferRequest)}.each do |request|
+        # Only transitions from last submission
+        source_well.requests.select {|r| r.library_creation? && active_submissions.include?(r.submission_id) }.each do |request|
           request.transition_to(new_outer_state) if request.pending?
         end
       end

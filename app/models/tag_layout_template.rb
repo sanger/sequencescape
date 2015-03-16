@@ -19,6 +19,8 @@ class TagLayoutTemplate < ActiveRecord::Base
   delegate :direction, :to => :direction_algorithm_class
   delegate :walking_by, :to => :walking_algorithm_class
 
+  named_scope :include_tags, :include => { :tag_group => :tags }
+
   def stamp_to(_)
     # Do Nothing
   end

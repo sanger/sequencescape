@@ -160,6 +160,8 @@ class ::Api::EndpointHandler < ::Core::Service
         model_name, remainder = parts.slice(0, n), parts.slice(n, parts.length)
         return yield(model_name.join('/').classify.constantize, remainder)
       rescue NameError => exception
+        # Re-raise No Method Errors as it means something is wrong
+        raise exception if exception.is_a?(NoMethodError)
         # Nope, try again
       end
     end

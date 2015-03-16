@@ -44,8 +44,8 @@ class PopulateRequestTypeValidatorsTable < ActiveRecord::Migration
       'illumina_a_hiseq_v4_paired_end_sequencing',
       'illumina_b_hiseq_v4_paired_end_sequencing',
       'illumina_c_hiseq_v4_paired_end_sequencing',
-      'illumina_a_hiseq_xten_paired_end_sequencing',
-      'illumina_b_hiseq_xten_paired_end_sequencing'
+      'illumina_a_hiseq_x_paired_end_sequencing',
+      'illumina_b_hiseq_x_paired_end_sequencing'
     ].include?(request_type.key)
     # By Key
     {

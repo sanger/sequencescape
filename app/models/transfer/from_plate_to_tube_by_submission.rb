@@ -7,7 +7,11 @@
 class Transfer::FromPlateToTubeBySubmission < Transfer::BetweenPlateAndTubes
   def locate_mx_library_tube_for(well, stock_wells)
     return nil if stock_wells.empty?
-    stock_wells.first.requests_as_source.detect { |request| request.target_asset.is_a?(Tube) }.try(:target_asset)
+    current_submission = well.creation_request.submission_id
+    stock_wells.first.requests_as_source.detect do |request|
+      request.submission_id == current_submission && request.target_asset.is_a?(Tube)
+    end.try(:target_asset)
   end
   private :locate_mx_library_tube_for
+
 end
