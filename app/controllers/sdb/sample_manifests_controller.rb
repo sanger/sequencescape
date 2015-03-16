@@ -51,7 +51,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   def create
     barcode_printer_id = params[:sample_manifest].delete(:barcode_printer)
     barcode_printer = nil
-    barcode_printer    = BarcodePrinter.find(barcode_printer_id) unless barcode_printer_id.blank? || (barcode_printer_id.to_i < 0)
+    barcode_printer    = BarcodePrinter.find(barcode_printer_id) unless barcode_printer_id.blank?
 
     template         = SampleManifestTemplate.find(params[:sample_manifest].delete(:template))
     @sample_manifest = template.create!(params[:sample_manifest].merge(:user => current_user, :rapid_generation => true))
