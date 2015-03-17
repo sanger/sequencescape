@@ -11,7 +11,7 @@
   </div>
   <div class="info">
     <form action='/batches/print_plate_barcodes' method='POST'>
-      <table width="100%" cellspacing="0" cellpadding="0">
+      <table width="100%" cellspacing="0" cellpadding="0" id="labels-list">
         <% if @batch.multiplexed? %>
         <tr>
           <td>Labels for requests and tag numbers </td>
@@ -35,6 +35,8 @@
         <tr>
           <td width="35%" class="item">&nbsp;</td>
           <td width="65%"><input type='submit' value='Print labels'> or <%= link_to 'cancel', :controller => 'batches', :action => 'show', :id => @batch.id %></td>
+          <td><input type="button" name="select_printables" class="select-all-behaviour" value="Select all" /></td>
+          <td><input type="button" name="unselect_printables" class="deselect-all-behaviour" value="Deselect all" /></td>
         </tr>
       </table>
     <input type='hidden' name='batch_id' value='<%= @batch.id %>' />
