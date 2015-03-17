@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013 Genome Research Ltd.
+#Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
 class Transfer < ActiveRecord::Base
   module Associations
     def self.included(base)
@@ -190,12 +190,13 @@ class Transfer < ActiveRecord::Base
   # asset to the destination one.
   before_create :create_transfer_requests
   def create_transfer_requests
-    # TODO: This is probably actually a submission, which means we'll need project & study too
-    each_transfer do |source, destination|
+    # Note: submission is optional. Unlike methods, blocks don't support default argument
+    # values, but any attributes not yielded will be nil. Apparently 1.9 is more consistent
+    each_transfer do |source, destination, submission|
       request_type_between(source, destination).create!(
         :asset         => source,
         :target_asset  => destination,
-        :submission_id => source.pool_id
+        :submission_id => submission||source.pool_id
       )
     end
   end

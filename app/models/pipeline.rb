@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 class PipelinesRequestType < ActiveRecord::Base
   belongs_to :pipeline, :inverse_of => :pipelines_request_types
   belongs_to :request_type, :inverse_of => :pipelines_request_types
@@ -35,12 +35,6 @@ class Pipeline < ActiveRecord::Base
   has_many :request_types, :through => :pipelines_request_types
 
   validates_presence_of :request_types
-  # validate :has_request_types
-
-  # def has_request_types
-  #   errors.add_to_base('A Pipeline must have at least one associcated RequestType') if self.request_types.blank?
-  # end
-  # private :has_request_types
 
   belongs_to :control_request_type, :class_name => 'RequestType'
 
@@ -278,6 +272,10 @@ class Pipeline < ActiveRecord::Base
 
   def pulldown?
     false
+  end
+
+  def purpose_information?
+    true
   end
 
   def prints_a_worksheet_per_task?

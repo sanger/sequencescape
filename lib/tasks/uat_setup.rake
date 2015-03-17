@@ -181,6 +181,7 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
       Study.create!(
         :name=>'UAT study A',
         :study_metadata_attributes=>{
+          :study_ebi_accession_number => 'YYYY',
           :study_type=>StudyType.find_by_name('Exome Sequencing'),
           :faculty_sponsor=>FacultySponsor.last,
           :data_release_study_type=>DataReleaseStudyType.find_by_name('genomic sequencing'),
@@ -195,6 +196,7 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
       Study.create!(
         :name=>'UAT study B',
         :study_metadata_attributes=>{
+          :study_ebi_accession_number => 'YYYY',
           :study_type=>StudyType.find_by_name('Exome Sequencing'),
           :faculty_sponsor=>FacultySponsor.last,
           :data_release_study_type=>DataReleaseStudyType.find_by_name('genomic sequencing'),
@@ -209,11 +211,12 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
       Study.create!(
         :name=>'UAT study C',
         :study_metadata_attributes=>{
+          :study_ebi_accession_number => 'YYYY',
           :study_type=>StudyType.find_by_name('Exome Sequencing'),
           :faculty_sponsor=>FacultySponsor.last,
           :data_release_study_type=>DataReleaseStudyType.find_by_name('genomic sequencing'),
           :study_type=>StudyType.first,
-          :study_description=>'A seeded test study',
+          :study_description=>'A seeded test study with mock human data',
           :contaminated_human_dna=>'No',
           :contains_human_dna=>'Yes',
           :commercially_available=>'No'
@@ -236,19 +239,23 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
           plate.wells.each { |w| w.aliquots.create!(
             :sample => Sample.create!(
               :name => "sample_in_#{w.plate.sanger_human_barcode}#{w.map.description}",
-              :studies=>[study]
+              :studies=>[study],
+              :sample_metadata_attributes => {
+                :sample_ebi_accession_number => 'XXX',
+                :sample_taxon_id => 9603+study.id
+              }
             ),
             :study => study
           )}
           puts "Stock: #{plate.ean13_barcode}-#{plate.sanger_human_barcode}"
         end
         (1..4).each do |i|
-          child = Purpose.find_by_name('Cherrypicked').create!(:barcode=>i+(10*study.id))
+          child = Purpose.find_by_name('Cherrypicked').create!(:barcode=>i+(10*study.id),:location=>Location.find_by_name('Illumina high throughput freezer'))
           child.wells.each {|w| w.aliquots << stock.wells.located_at(w.map_description).first.aliquots.first.clone }
           puts "Cherrypicked: #{child.ean13_barcode}-#{child.sanger_human_barcode}"
         end
         (1..4).each do |i|
-          child = Purpose.find_by_name('ILC Stock').create!(:barcode=>i+4+(10*study.id))
+          child = Purpose.find_by_name('ILC Stock').create!(:barcode=>i+4+(10*study.id),:location=>Location.find_by_name('Illumina high throughput freezer'))
           child.wells.each {|w| w.aliquots << stock.wells.located_at(w.map_description).first.aliquots.first.clone }
           puts "ILC Stock: #{child.ean13_barcode}-#{child.sanger_human_barcode}"
         end

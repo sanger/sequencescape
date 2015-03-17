@@ -31,13 +31,13 @@ class PresenterSkeleton
   end
 
   def lanes_from_request_options
-    return order.request_options.fetch(:multiplier, {}) if order.request_types[-2].nil?
-    library_request       = RequestType.find(order.request_types[-2])
+    return order.request_options.fetch(:multiplier, {}).values.last||1 if order.request_types[-2].nil?
+
     sequencing_request    = RequestType.find(order.request_types.last)
     multiplier_hash = order.request_options.fetch(:multiplier, {})
     sequencing_multiplier = (multiplier_hash[sequencing_request.id.to_s]||multiplier_hash.fetch(sequencing_request.id, 1)).to_i
 
-    if library_request.for_multiplexing?
+    if order.multiplexed?
       sequencing_multiplier
     else
       order.assets.count * sequencing_multiplier
@@ -46,9 +46,7 @@ class PresenterSkeleton
   private :lanes_from_request_options
 
   def lanes_from_request_counting
-    submission.requests.select do |r|
-      r.class.ancestors.include?(SequencingRequest)
-    end.count
+    submission.requests.where_is_a?(SequencingRequest).count
   end
   private :lanes_from_request_counting
 
@@ -84,7 +82,7 @@ class SubmissionCreater < PresenterSkeleton
     :asset_group_id,
     :pre_capture_plex_group,
     :gigabases_expected,
-	:priority
+    :priority
   ]
 
 

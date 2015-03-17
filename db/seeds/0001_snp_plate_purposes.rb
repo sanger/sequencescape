@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013 Genome Research Ltd.
+#Copyright (C) 2012,2013,2015 Genome Research Ltd.
 # Initially copied from SNP
 plate_purposes = <<-EOS
 - name: Working Dilution
@@ -293,6 +293,18 @@ Map::AssetShape.create!(
   :name => 'Fluidigm192',
   :horizontal_ratio => 3,
   :vertical_ratio   => 4,
+  :description_strategy => 'Map::Sequential'
+)
+Map::AssetShape.create!(
+  :name => 'StripTubeColumn',
+  :horizontal_ratio => 1,
+  :vertical_ratio   => 8,
+  :description_strategy => 'Map::Sequential'
+)
+Map::AssetShape.create!(
+  :name => 'StripTubeRack',
+  :horizontal_ratio => 12,
+  :vertical_ratio   => 1,
   :description_strategy => 'Map::Sequential'
 )
 
