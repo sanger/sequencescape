@@ -13,7 +13,7 @@ class Uuid < ActiveRecord::Base
         # It seems better not to do this but the performance of the API is directly affected by having to
         # create these instances when they do not exist.
         has_one :uuid_object, :class_name => 'Uuid', :as => :resource, :dependent => :destroy, :inverse_of => :resource
-        before_create :ensure_uuid_created
+        after_create :ensure_uuid_created
 
         # Some named scopes ...
         named_scope :include_uuid, { :include => :uuid_object }
