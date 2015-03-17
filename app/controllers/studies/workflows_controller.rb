@@ -2,47 +2,91 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
 class Studies::WorkflowsController < ApplicationController
+
+  include TableauTrustedInterface
+
   before_filter :discover_study, :discover_workflow
 
-  before_filter :setup_tabs, :only => [ :show, :show_summary ]
+  before_filter :setup_tabs, :only => [ :show_summary, :show, :show_report_oldss, :show_report_tableau ]
 
   def setup_tabs
+
     @total_requests = compute_total_request(@study)
     @cache          = { :total => @total_requests }
 
     @request_types  = @workflow.request_types.all(:order => "`order` ASC").reject { |r| @total_requests[r].zero? }
 
-    @basic_tabs = ["Summary", "Sample progress", "Assets progress"]
-    @summaries = @basic_tabs + @request_types.map(&:name)
+    @summaries = basic_tabs + @request_types.map(&:name)
   end
   private :setup_tabs
+  
+  def basic_tabs
+    ["Summary", "Sample progress", "Assets progress"]
+  end
+  private :basic_tabs
+
+  def is_tableau_report?
+    (@is_tableau_report == 1)
+  end
+
+  def log_info_reports
+    "url: #{request.url}, referer: #{request.referer}, ua: #{request.user_agent}"
+  end
 
   def show
+    show_report_tableau
+  end 
+
+  def show_report_tableau
+    flash.now[:alert] = "This is the <b>NEW</b> version of the reports. You can still access the previous version by <a href='#{show_report_oldss_study_workflow_path(@study, @workflow)}'>clicking here</a>"
+    Rails.logger.warn("StudyRequestReport NEW - #{log_info_reports}")
+    @is_tableau_report = 1
+    #@ticket = get_tableau_ticket(@view_name)
+
+    tabserver = configatron.reporting_server
+    tabuser   = configatron.reporting_server_username #current_user.login
+    tabpath   = '/t/dna/views/S2Inbox/Inbox-UAT'
+    tabparams = ':embed=yes&:toolbar=no'
+    @ticket    = tableau_get_trusted_ticket(tabserver, tabuser, "dna")
+    if @ticket != "-1"
+      @iframe_url = "http://#{tabserver}/trusted/#{@ticket}/#{tabpath}?#{tabparams}"
+    else
+      ticket_rejected
+    end
+
+    _show
+  end
+
+  def show_report_oldss
+    flash.now[:alert] = "This is the <b>OLD</b> version of the reports. You can access the new version by <a href='#{show_report_tableau_study_workflow_path(@study, @workflow)}'>clicking here</a>"
+    Rails.logger.warn("StudyRequestReport DEPRECATED - #{log_info_reports}")
+    @is_tableau_report = 0
+    _show
+  end
+
+  def _show
     Study.benchmark "BENCH Study:WorkflowController:show", Logger::DEBUG, false do
-    unless @current_user.nil?
-      @current_user.workflow = @workflow
-      @current_user.save!
+      unless @current_user.nil?
+        @current_user.workflow = @workflow
+        @current_user.save!
+      end
+      @workflows = Submission::Workflow.find(:all, :order => ["name DESC"])
+      @default_tab_label = "Sample progress"
+      @summary = params[:summary].to_i
+      @summary = basic_tabs.index(@default_tab_label) if params[:summary].nil?
+      @submissions = @study.submissions_for_workflow(@workflow)
+      # We need to propagate the extra_parameters - as page - to the summary partial
+      @extra_params = params.dup
+      [:summary, :study_id, :id, :action, :controller].each do |key|
+        @extra_params.delete key
+      end
+      @is_tableau_report = is_tableau_report?
+      respond_to do |format|
+        format.html { render :action => :show}
+        format.xml
+        format.json { render :action => :show, :json => Study.all.to_json }
+      end
     end
-    @workflows = Submission::Workflow.find(:all, :order => ["name DESC"])
-
-    @default_tab_label = "Sample progress"
-    @summary = params[:summary].to_i
-    @summary = @basic_tabs.index(@default_tab_label) if params[:summary].nil?
-
-    @submissions = @study.submissions_for_workflow(@workflow)
-
-    # We need to propagate the extra_parameters - as page - to the summary partial
-    @extra_params = params.dup
-    [:summary, :study_id, :id, :action, :controller].each do |key|
-      @extra_params.delete key
-    end
-
-    respond_to do |format|
-      format.html
-      format.xml
-      format.json { render :json => Study.all.to_json }
-    end
-    end # of benchhmark
   end
 
   def show_summary
@@ -57,7 +101,7 @@ class Studies::WorkflowsController < ApplicationController
     if request.xhr?
       @default_tab_label = "Assets progress"
       @summary = params[:summary].to_i
-      @summary = @basic_tabs.index(@default_tab_label) if params[:summary].nil?
+      @summary = basic_tabs.index(@default_tab_label) if params[:summary].nil?
 
       case @summaries[@summary]
       when "Sample progress"
@@ -75,7 +119,7 @@ class Studies::WorkflowsController < ApplicationController
         asset_ids = @page_elements.map { |e| e.id }
         render :partial => "summary"
       else
-        @request_type = @request_types[@summary - @basic_tabs.size]
+        @request_type = @request_types[@summary - basic_tabs.size]
         @assets_to_detail = @study.requests.request_type(@request_type).with_asset.all(:include =>:asset).map(&:asset).uniq
 
         unless @assets_to_detail.empty?
@@ -86,9 +130,10 @@ class Studies::WorkflowsController < ApplicationController
       end
     else
       page_params[:summary]= params[:summary]
-      redirect_to study_workflow_path(@study, @workflow, page_params)
+      redirect_to show_report_oldss_study_workflow_path(@study, @workflow, page_params)
     end
   end
+
 
   def summary
     s = UiHelper::Summary.new
@@ -126,6 +171,8 @@ class Studies::WorkflowsController < ApplicationController
   end
 
   def discover_workflow
-    @workflow = Submission::Workflow.find(params[:id])
+    @workflow = Submission::Workflow.find(params[:id] || params[:workflow_id])
   end
+
 end
+

@@ -4,7 +4,7 @@
 <div id="navi" class="yui-navset">
   <ul class="yui-nav">
     <% @summaries.each_with_index do |description, index| %>
-    <li class="<%= summary.to_i == index ? 'selected' : '' %>"><%= link_to "<em>#{description}</em>", study_workflow_path(@study,@workflow, {:summary => index}), :class => (summary.to_i == index ? 'selected' : '') %></li>
+    <li class="<%= summary.to_i == index ? 'selected' : '' %>"><%= link_to "<em>#{description}</em>",   "#{show_report_oldss_study_workflow_path(@study, @workflow)}?#{Rack::Utils.build_query({:summary => index})}", :class => (summary.to_i == index ? 'selected' : '') %></li>
     <% end %>
   </ul>
   <div class="yui-content">

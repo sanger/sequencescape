@@ -84,10 +84,12 @@
         <%= display_user_guide(I18n.t('studies.samples.no_samples_registered'), study_sample_registration_index_path(@study)) %>
       <% else -%>
         <% if (! @submissions.empty?) || (@study.requests.count > 0) -%>
-          <%= render :partial => "submission_warning" %>
-          <%= render :partial => "study_summary" %>
-          <br />
-          <%= render :partial => "items", :locals => {:summary => @summary} %>
+          <% unless @is_tableau_report %>
+            <%= render :partial => "submission_warning" %>
+            <%= render :partial => "study_summary" %>
+            <br />
+            <%= render :partial => "items", :locals => {:summary => @summary} %>
+          <% end %>
         <% else -%>
           <% if @study.active? %>
             <%= display_user_guide(I18n.t('studies.guidance.now_create_submission'), new_submission_path(:study_id => @study.id)) %>
@@ -103,9 +105,18 @@
       <% end -%>
     <% end %>
   <% else %>
-    <%= render :partial => "submission_warning" %>
-    <%= render :partial => "study_summary" %>
-    <br />
-    <%= render :partial => "items", :locals => {:summary => @summary} %>
+    <% unless @is_tableau_report %>
+      <%= render :partial => "submission_warning" %>
+      <%= render :partial => "study_summary" %>
+      <br />
+      <%= render :partial => "items", :locals => {:summary => @summary} %>
+    <% end %>
   <% end -%>
+  <% if @is_tableau_report %>
+    <% if @iframe_url.nil? %>
+      <div>We can't connect to the new version of the reports.</div>
+    <% else %>
+      <iframe src="<%= @iframe_url %>" width="1024" height="600"></iframe>
+    <% end %>
+  <% end %>
 </div>

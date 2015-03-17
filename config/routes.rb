@@ -45,6 +45,9 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/taxon_lookup_by_term/:term', :controller => "samples", :action => "taxon_lookup"
   map.connect '/taxon_lookup_by_id/:id', :controller => "samples", :action => "taxon_lookup"
 
+
+
+
   map.connect '/studies/:study_id/workflows/:workflow_id/summary_detailed/:id', :controller => "studies/workflows", :action => "summary_detailed"
   map.connect 'studies/accession/:id', :controller =>"studies", :action =>"accession"
   map.connect 'studies/policy_accession/:id', :controller =>"studies", :action =>"policy_accession"
@@ -77,7 +80,7 @@ ActionController::Routing::Routes.draw do |map|
       plate.resources :wells, :except => [:destroy, :edit], :controller => "studies/plates/wells"
     end
 
-    study.resources :workflows, :controller => "studies/workflows", :member => { :summary => :get, :show_summary => :get} do |workflow|
+    study.resources :workflows, :controller => "studies/workflows", :member => { :summary => :get, :show_summary => :get, :show_report_oldss => :get, :show_report_tableau => :get } do |workflow|
       workflow.resources :assets, :collection => { :print => :post }
     end
 
@@ -110,6 +113,7 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   map.study_workflow_status "studies/:study_id/workflows/:id", :controller => "study_workflows", :action => "show"
+  
 
   map.resources :searches, :only => [:index]
 
