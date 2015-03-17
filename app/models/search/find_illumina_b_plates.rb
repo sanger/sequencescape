@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2012,2013,2014 Genome Research Ltd.
 class Search::FindIlluminaBPlates < Search
   def scope(criteria)
     # We find all plates that do not have transfers where they are the source.  Once a plate has been transferred (or marked
@@ -6,7 +9,7 @@ class Search::FindIlluminaBPlates < Search
   end
 
   def illumina_b_plate_purposes
-    names = IlluminaB::PlatePurposes::PLATE_PURPOSE_FLOWS.flatten.concat(IlluminaHtp::PlatePurposes::PLATE_PURPOSE_FLOWS.flatten)
+    names = IlluminaB::PlatePurposes::PLATE_PURPOSE_FLOWS.flatten.concat(IlluminaHtp::PlatePurposes::PLATE_PURPOSE_FLOWS.flatten).concat(Pulldown::PlatePurposes::ISCH_PURPOSE_FLOWS.flatten)
     PlatePurpose.find_all_by_name(names)
   end
   private :illumina_b_plate_purposes

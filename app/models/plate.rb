@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
 class Plate < Asset
   include Api::PlateIO::Extensions
   include ModelExtensions::Plate
@@ -8,6 +11,7 @@ class Plate < Asset
   include Barcode::Barcodeable
   include Asset::Ownership::Owned
   include Plate::Iterations
+  include Plate::FluidigmBehaviour
 
   extend QcFile::Associations
   has_qc_files
@@ -20,6 +24,7 @@ class Plate < Asset
   # The type of the barcode is delegated to the plate purpose because that governs the number of wells
   delegate :barcode_type, :to => :plate_purpose, :allow_nil => true
   delegate :asset_shape, :to => :plate_purpose, :allow_nil => true
+  delegate :supports_multiple_submissions?, :to => :plate_purpose
   delegate :fluidigm_barcode, :to => :plate_metadata
 
   validates_length_of :fluidigm_barcode, :is => 10, :allow_blank => true
@@ -27,6 +32,16 @@ class Plate < Asset
   # Transfer requests into a plate are the requests leading into the wells of said plate.
   def transfer_requests
     wells.all(:include => :transfer_requests_as_target).map(&:transfer_requests_as_target).flatten
+  end
+
+  # About 10x faster than going through the wells
+  def submission_ids
+    container_associations.find(
+      :all,
+      :select => 'DISTINCT requests.submission_id',
+      :joins  => 'LEFT JOIN requests ON requests.target_asset_id = container_associations.content_id',
+      :conditions => 'requests.submission_id IS NOT NULL'
+    ).map(&:submission_id)
   end
 
   def self.derived_classes
@@ -55,32 +70,6 @@ class Plate < Asset
     ).try(:priority)||0
   end
 
-  # The iteration of a plate is defined as the number of times a plate of this type has been created
-  # from it's parent.
-  def iteration
-    return nil if parent.nil?  # No parent means no iteration, not a 0 iteration.
-
-    # NOTE: This is how to do row numbering with MySQL!  It essentially joins the assets and asset_links
-    # tables to find all of the child plates of our parent that have the same plate purpose, numbering
-    # those rows to give the iteration number for each plate.
-    iteration_of_plate = connection.select_one(%Q{
-      SELECT iteration
-      FROM (
-        SELECT iteration_plates.id, @rownum:=@rownum+1 AS iteration
-        FROM (
-          SELECT assets.id
-          FROM asset_links
-          JOIN assets ON asset_links.descendant_id=assets.id
-          WHERE asset_links.direct=TRUE AND ancestor_id=#{parent.id} AND assets.sti_type in (#{Plate.derived_classes.map(&:inspect).join(',')}) AND assets.plate_purpose_id=#{plate_purpose.id}
-          ORDER by assets.created_at ASC
-        ) AS iteration_plates,
-        (SELECT @rownum:=0) AS r
-      ) AS a
-      WHERE a.id=#{self.id}
-    }, "Plate #{self.id} iteration query")
-
-    iteration_of_plate['iteration'].to_i
-  end
   def study
     wells.first.try(:study)
   end
@@ -314,9 +303,9 @@ WHERE c.container_id=?
   end
 
   def control_well_exists?
-		Request.into_by_id(well_ids).any? do |request|
-			request.asset.plate.is_a?(ControlPlate)
-		end
+    Request.into_by_id(well_ids).any? do |request|
+      request.asset.plate.is_a?(ControlPlate)
+    end
   end
 
   # A plate has a sample with the specified name if any of its wells have that sample.
@@ -503,9 +492,15 @@ WHERE c.container_id=?
   end
 
   def lookup_stock_plate
-    self.ancestors.all(:order => 'created_at DESC', :include => :plate_purpose).detect(&:stock_plate?)
+    spp = PlatePurpose.find(:all,:conditions=>{:can_be_considered_a_stock_plate=>true})
+    self.ancestors.first(:order => 'created_at DESC', :conditions => {:plate_purpose_id=>spp})
   end
   private :lookup_stock_plate
+
+  def ancestor_of_purpose(ancestor_purpose_id)
+    return self if self.plate_purpose_id == ancestor_purpose_id
+    ancestors.first(:order => 'created_at DESC', :conditions => {:plate_purpose_id=>ancestor_purpose_id})
+  end
 
   def child_dilution_plates_filtered_by_type(parent_model)
     self.children.select{ |p| p.is_a?(parent_model) }
@@ -641,5 +636,18 @@ WHERE c.container_id=?
 
   def compatible_purposes
     PlatePurpose.compatible_with_purpose(self.purpose)
+  end
+
+  def update_concentrations_from(parser)
+    ActiveRecord::Base.transaction do
+      parser.each_well_and_parameters do |position,concentration,molarity|
+        wells.include_map.detect {|w| w.map_description == position }.tap do |well|
+          well.set_concentration(concentration)
+          well.set_molarity(molarity)
+          well.save!
+        end
+      end
+    end
+    true
   end
 end

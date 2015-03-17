@@ -52,7 +52,7 @@ Feature: Interacting with studies through the API
 
             "id": 1,
             "created_at": "2010-09-16T13:45:00+01:00"
-          }
+          }, "lims": "SQSCP"
         }
       ]
       """
@@ -97,6 +97,6 @@ Feature: Interacting with studies through the API
 
           "id": 1,
           "created_at": "2010-09-16T13:45:00+01:00"
-        }
+        }, "lims": "SQSCP"
       }
       """

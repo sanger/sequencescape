@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2014 Genome Research Ltd.
 module Tasks::MovieLengthHandler
   def render_movie_length_task(task, params)
     @valid_movie_lengths = task.descriptors.find_by_name('Movie length').selection

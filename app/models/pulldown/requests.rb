@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011,2012,2013,2014 Genome Research Ltd.
 module Pulldown::Requests
   module BaitLibraryRequest
     def self.included(base)
@@ -50,6 +53,11 @@ module Pulldown::Requests
 
     Metadata.class_eval do
       attribute(:pre_capture_plex_level, :default => 8, :integer => true)
+    end
+
+    def update_pool_information(pool_information)
+      super
+      pool_information[:request_type] = request_type.key
     end
 
   end

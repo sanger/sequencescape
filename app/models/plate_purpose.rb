@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 class PlatePurpose < Purpose
   module Associations
     def self.included(base)
@@ -23,8 +26,8 @@ class PlatePurpose < Purpose
   end
 
   include Relationship::Associations
-  
-  named_scope :compatible_with_purpose, lambda {|purpose| { :conditions => ["(target_type is null and 'Plate'=?)  or target_type=?",purpose.target_plate_type, purpose.target_plate_type], :order=>"name ASC" } }  
+
+  named_scope :compatible_with_purpose, lambda {|purpose| purpose.nil? ? {:conditions=>'FALSE'} : { :conditions => ["(target_type is null and 'Plate'=?)  or target_type=?",purpose.target_plate_type, purpose.target_plate_type], :order=>"name ASC" } }
 
   named_scope :cherrypickable_as_target, :conditions => { :cherrypickable_target => true }
   named_scope :cherrypickable_as_source, :conditions => { :cherrypickable_source => true }
@@ -41,7 +44,7 @@ class PlatePurpose < Purpose
   belongs_to :asset_shape, :class_name => 'Map::AssetShape'
 
   def source_plate(plate)
-    plate.stock_plate
+    source_purpose_id.present? ? plate.ancestor_of_purpose(source_purpose_id) : plate.stock_plate
   end
 
   def cherrypick_strategy
@@ -174,7 +177,9 @@ class PlatePurpose < Purpose
 
     attributes[:size]     ||= size
     attributes[:location] ||= default_location
-    plates.create_with_barcode!(attributes, &block).tap do |plate|
+    attributes[:purpose] = self
+
+    target_plate_type.constantize.create_with_barcode!(attributes, &block).tap do |plate|
       plate.wells.construct! unless do_not_create_wells
     end
   end
@@ -194,4 +199,7 @@ class PlatePurpose < Purpose
   def source_wells_for(stock_wells)
     stock_wells
   end
+
+  def supports_multiple_submissions?; false; end
+
 end

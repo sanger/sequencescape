@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2011,2013,2014,2015 Genome Research Ltd.
 require "test_helper"
 require 'requests_controller'
 
@@ -55,6 +58,17 @@ class RequestsControllerTest < ActionController::TestCase
          @new_request = Request.last
          assert_equal flash[:notice], "Created request #{@new_request.id}"
          assert_response :redirect
+      end
+
+      should "set failed requests to pending" do
+        @request_initial= Factory :request, :user => @user, :request_type => Factory(:request_type), :study => Factory(:study, :name => "ReqCon2"), :workflow => Factory(:submission_workflow), :state => 'failed'
+         get :copy, :id => @request_initial.id
+
+         @new_request = Request.last
+         assert_equal flash[:notice], "Created request #{@new_request.id}"
+         assert_response :redirect
+
+         assert_equal 'pending', @new_request.state
       end
     end
 

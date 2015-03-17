@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2011,2013,2015 Genome Research Ltd.
 class EventFactory
 
   #################################
@@ -47,8 +50,7 @@ class EventFactory
       end
     end
 
-    EventfulMailer.deliver_confirm_event(recipients_email.reject(&:blank?), event.eventful, event.message, event.content, "No Milestone")
-
+    EventfulMailer.deliver_confirm_event(recipients_email, event.eventful, event.message, event.content, "No Milestone")
   end
 
   ################################

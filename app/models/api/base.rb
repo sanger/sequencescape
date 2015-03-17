@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2014 Genome Research Ltd.
 class Api::Base
   # TODO[xxx]: This class is in a state of flux at the moment, please don't hack at this too much!
   #
@@ -45,6 +48,14 @@ class Api::Base
         value = object.send(association)
         json_attributes.update(helper.to_hash(value))
         helper.newer_than(value, json_attributes['updated_at']) { |timestamp| json_attributes['updated_at'] = timestamp }
+      end
+      self.nested_has_many_associations.each do |association, helper|
+        values = object.send(association)
+        all_targets = values.map do |value|
+          helper.newer_than(value, json_attributes['updated_at']) { |timestamp| json_attributes['updated_at'] = timestamp }
+          helper.to_hash(value)
+        end
+        json_attributes.update({association.to_s => all_targets })
       end
       self.related_resources.each do |relation|
         json_attributes[ relation.to_s ] = File.join(object.url, relation.to_s)
@@ -134,6 +145,10 @@ class Api::Base
   class_inheritable_reader :associations
   write_inheritable_attribute :associations, {}
 
+    # Contains the mapping from the ActiveRecord association to the I/O object that can output it.
+  class_inheritable_reader :nested_has_many_associations
+  write_inheritable_attribute :nested_has_many_associations, {}
+
   def self.newer_than(object, timestamp, &block)
     return if object.nil? or timestamp.nil?
     modified, object_timestamp = false, ((object.respond_to?(:updated_at) ? object.updated_at : timestamp) || timestamp)
@@ -159,6 +174,15 @@ class Api::Base
       define_method(:association) { association }
     end
     self.associations[ association.to_sym ] = association_helper
+  end
+
+  def self.with_nested_has_many_association(association, options = {}, &block)
+    association_helper = Class.new(Api::Base)
+    association_helper.class_eval(&block)
+    association_helper.singleton_class.class_eval do
+      define_method(:association) { association }
+    end
+    self.nested_has_many_associations[ association.to_sym ] = association_helper
   end
 
   def self.performs_lookup?

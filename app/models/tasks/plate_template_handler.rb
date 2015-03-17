@@ -1,9 +1,16 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013 Genome Research Ltd.
 module Tasks::PlateTemplateHandler
   def render_plate_template_task(task, params)
     @robots = Robot.all
     @plate_purpose_options = task.plate_purpose_options(@batch)
     suitable_sizes = @plate_purpose_options.map {|o| o[1] }
-    @plate_templates = PlateTemplate.find(:all, :conditions=>{:size=>suitable_sizes})
+    if (@batch.pipeline.control_request_type.nil?)
+      @plate_templates = PlateTemplate.with_sizes(suitable_sizes).select(&:without_control_wells?)
+    else
+      @plate_templates = PlateTemplate.with_sizes(suitable_sizes)
+    end
   end
 
   def do_plate_template_task(task, params)

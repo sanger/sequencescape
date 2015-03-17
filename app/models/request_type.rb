@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
 class RequestType < ActiveRecord::Base
 
   include RequestType::Validation
@@ -24,6 +27,10 @@ class RequestType < ActiveRecord::Base
   has_many :library_types_request_types, :inverse_of=> :request_type
   has_many :library_types, :through => :library_types_request_types
   has_many :request_type_validators, :class_name => 'RequestType::Validator'
+
+  belongs_to :pooling_method, :class_name => 'RequestType::PoolingMethod'
+  has_many :request_type_extended_validators, :class_name => 'ExtendedValidator::RequestTypeExtendedValidator'
+  has_many :extended_validators, :through => :request_type_extended_validators, :dependent => :destroy
 
   def default_library_type
     library_types.find(:first,:conditions=>{:library_types_request_types=>{:is_default=>true}})
@@ -143,4 +150,8 @@ class RequestType < ActiveRecord::Base
     else                               target_asset_type.constantize.create!(&block)
     end
   end
+
+  delegate :pool_count,             :to => :pooling_method
+  delegate :pool_index_for_asset,   :to => :pooling_method
+  delegate :pool_index_for_request, :to => :pooling_method
 end

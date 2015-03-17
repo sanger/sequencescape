@@ -1,8 +1,9 @@
 development:
     amqp:
-      url: amqp://localhost:5672/
+      url: amqp://localhost:5672
       persistent: false
       burst_size: 1000
+      lims_id: SQSCP
     accession_login: "accession_login"
     accession_url: http://localhost:9999/accession_service/
     accession_view_url: http://localhost:9999/view_accession/
@@ -23,6 +24,9 @@ development:
     delayed_job:
       study_report_priority: 100
       submission_process_priority: 0
+    fluidigm_data:
+      source: directory
+      directory: <%= Rails.root %>/data/fluidigm
     disable_accession_check: true
     disable_api_authentication: true
     ega_accession_login: "ega_accession_login"
@@ -42,6 +46,7 @@ development:
     pipelines_url: http://localhost:3000
     plate_barcode_service: http://localhost:3011
     plate_volume_files: <%= Rails.root %>/data/plate_volume/
+    r_and_d_division: RandD
     proxy: http://example.com
     sanger_auth_service: http://localhost:9999/cgi-bin/prodsoft/SSO/isAuth.pl
     sanger_login_service: http://localhost:9999/LOGIN
@@ -76,6 +81,7 @@ test: &TEST
       url: amqp://localhost:5672/
       persistent: false
       burst_size: 1000
+      lims_id: SQSCP
     accession_login: "accession_login"
     accession_url: http://localhost:9999/accession_service/
     accession_view_url: http://localhost:9999/view_accession/
@@ -99,14 +105,21 @@ test: &TEST
     disable_web_proxy: true
     ega_accession_login: "ega_accession_login"
     era_accession_login: "era_accession_login"
+    fluidigm_data:
+      source: directory
+      directory: <%= Rails.root %>/data/fluidigm
     ldap_port: 389
     ldap_secure_port: 636
     ldap_server: "ldap.internal.sanger.ac.uk"
     login_url: /login
     mail_prefix: "[DEVELOPMENT]"
+    phyx_tag:
+        tag_group_name: "Control Tag Group 888"
+        tag_map_id: 888
     pico_green_url: http://localhost:3003
     plate_barcode_service: http://localhost:9998/plate_barcode_service/
     plate_volume_files: <%= Rails.root %>/test/data/plate_volume/
+    r_and_d_division: RandD
     sanger_auth_service: http://localhost:9999/cgi-bin/prodsoft/SSO/isAuth.pl
     site_name: Projects (TEST)
     site_url: localhost:3000
@@ -134,6 +147,9 @@ test: &TEST
     api:
       authorisation_code: cucumber
       flush_response_at: 32768
+    phyx_tag:
+        tag_group_name: "Control Tag Group 888"
+        tag_map_id: 888
 
 cucumber:
     <<: *TEST

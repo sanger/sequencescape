@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2011,2012,2013 Genome Research Ltd.
 class Map < ActiveRecord::Base
 
   class AssetShape < ActiveRecord::Base
@@ -62,6 +65,26 @@ class Map < ActiveRecord::Base
 
     def location_from_row_and_column(row, column, size=96)
       description_strategy.constantize.location_from_row_and_column(row, column,plate_width(size),size)
+    end
+
+    def location_from_index(index, size=96)
+      description_strategy.constantize.location_from_index(index,size)
+    end
+
+    def generate_map(size)
+      raise StandardError, 'Map already exists' if Map.find_by_asset_size_and_asset_shape_id(size,id).present?
+      ActiveRecord::Base.transaction do
+        (0...size).each do |i|
+          Map.create!(
+            :asset_size     => size,
+            :asset_shape_id => self.id,
+            :location_id    => i+1,
+            :row_order      => i,
+            :column_order   => horizontal_to_vertical(i,size)||0,
+            :description    => location_from_index(i,size)
+          )
+        end
+      end
     end
 
   end
@@ -146,6 +169,10 @@ class Map < ActiveRecord::Base
       alternate_position(well_position, plate_size, :length, :width)
     end
 
+    def self.location_from_index(index, size)
+      horizontal_plate_position_to_description(index-1,size)
+    end
+
   class << self
     # Given the well position described in terms of a direction (vertical or horizontal) this function
     # will map it to the alternate positional representation, i.e. a vertical position will be mapped
@@ -173,6 +200,11 @@ class Map < ActiveRecord::Base
     def self.location_from_row_and_column(row, column, width, size)
       digit_count = Math.log10(size+1).ceil
       "S%0#{digit_count}d" % [(row)*width + column]
+    end
+
+    def self.location_from_index(index, size)
+      digit_count = Math.log10(size+1).ceil
+      "S%0#{digit_count}d" % [index+1]
     end
 
   end
@@ -218,6 +250,26 @@ class Map < ActiveRecord::Base
 
   def vertical_plate_position
     self.column_order + 1
+  end
+
+  def height
+    asset_shape.plate_height(asset_size)
+  end
+
+  def width
+    asset_shape.plate_width(asset_size)
+  end
+
+  ##
+  # Column of particular map location. Zero indexed integer
+  def column
+    self.row_order%width
+  end
+
+  ##
+  # Row of particular map location. Zero indexed integer
+  def row
+    self.column_order%height
   end
 
   def horizontal_plate_position

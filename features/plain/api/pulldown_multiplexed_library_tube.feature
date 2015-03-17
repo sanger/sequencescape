@@ -27,7 +27,7 @@ Feature: Interacting with pulldown_multiplexed_library_tubes through the API
             "public_name": "ABC",
 
             "internal_id": 1
-          }
+          }, "lims": "SQSCP"
         }
       ]
       """
@@ -52,6 +52,6 @@ Feature: Interacting with pulldown_multiplexed_library_tubes through the API
           "public_name": "ABC",
 
           "internal_id": 1
-        }
+        }, "lims": "SQSCP"
       }
       """

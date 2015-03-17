@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2011,2012,2013 Genome Research Ltd.
 module User::Authentication
   def self.included(base)
     base.class_eval do
@@ -25,7 +28,7 @@ module User::Authentication
     end
     self.save if self.changed?
 
-  rescue Exception => e
+  rescue StandardError => e
     logger.error "Profile failed for user #{login}: result code #{ldap.get_operation_result.code} message #{ldap.get_operation_result.message} - #{e}"
   end
   private :update_profile_via_ldap
@@ -68,7 +71,7 @@ module User::Authentication
       )
       begin
         ldap.bind
-      rescue Exception => e
+      rescue StandardError => e
         raise e, "LDAP connection problem: #{e}", caller
       end
       password = "" # clear out in case of crashes

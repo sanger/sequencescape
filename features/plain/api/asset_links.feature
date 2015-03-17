@@ -32,7 +32,7 @@ Feature: Interacting with asset_links through the API
 
             "created_at": "2010-09-16T13:45:00+01:00",
             "updated_at": "2010-09-16T13:45:00+01:00"
-          }
+          }, "lims": "SQSCP"
         }
       ]
       """
@@ -62,6 +62,6 @@ Feature: Interacting with asset_links through the API
 
             "created_at": "2010-09-16T13:45:00+01:00",
             "updated_at": "2010-09-16T13:45:00+01:00"
-          }
+          }, "lims": "SQSCP"
         }
       """

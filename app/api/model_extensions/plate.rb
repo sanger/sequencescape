@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2011,2012,2013 Genome Research Ltd.
 module ModelExtensions::Plate
   module NamedScopeHelpers
     def include_plate_named_scope(plate_association)
@@ -52,6 +55,8 @@ module ModelExtensions::Plate
       Request.include_request_metadata.for_pre_cap_grouping_of(self).each do |request|
         groups[request.group_id] = { :wells => request.group_into.split(',') }.tap do |pool_information|
           pool_information[:pre_capture_plex_level] ||= request.request_metadata.pre_capture_plex_level
+          # We supply the submission id to assist with correctly tagging transfer requests later
+          pool_information[:submission_id] ||= request.submission_id
         end unless request.group_id.nil?
       end
     end

@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2012,2013,2014 Genome Research Ltd.
 class AmqpObserver < ActiveRecord::Observer
   # Observe not only the records but their metadata too, otherwise we may miss changes.
   observe(
@@ -9,7 +12,8 @@ class AmqpObserver < ActiveRecord::Observer
     :billing_event,
     :batch, :batch_request,
     :role, Role::UserRole,
-    :reference_genome
+    :reference_genome,
+    :messenger
   )
 
   # Ensure we capture records being saved as well as deleted.
@@ -30,7 +34,7 @@ class AmqpObserver < ActiveRecord::Observer
 
     # A transaction is (potentially) a bulk send of messages and hence we can create a buffer that
     # will be written to during changes.  But transactions can be nested, which means that only the
-    # very outter one should do any publishing.
+    # very outer one should do any publishing.
     #
     #--
     # What follows looks complicated but is specialised to deal with a 'return' being called from
@@ -142,7 +146,7 @@ class AmqpObserver < ActiveRecord::Observer
     def publish(record)
       exchange.publish(
         record.to_json,
-        :key        => "#{Rails.env}.saved.#{record.class.name.underscore}.#{record.id}",
+        :key        => record.routing_key||"#{Rails.env}.saved.#{record.class.name.underscore}.#{record.id}",
         :persistent => configatron.amqp.persistent
       )
     end
@@ -161,7 +165,7 @@ class AmqpObserver < ActiveRecord::Observer
     def activate_exchange(&block)
       return yield unless @exchange.nil?
 
-      client = Bunny.new(configatron.amqp.url, :spec => '09')
+      client = Bunny.new(configatron.amqp.url, :spec => '09', :frame_max => configatron.amqp.retrieve(:maximum_frame,0))
       begin
         client.start
         @exchange = client.exchange('psd.sequencescape', :passive => true)
@@ -185,4 +189,5 @@ class ActiveRecord::Base
     end
     alias_method_chain(:transaction, :amqp)
   end
+  def routing_key;nil;end
 end if ActiveRecord::Base.observers.include?(:amqp_observer)

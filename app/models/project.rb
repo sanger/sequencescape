@@ -1,6 +1,10 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
 class Project < ActiveRecord::Base
   include Api::ProjectIO::Extensions
   include ModelExtensions::Project
+  include Api::Messages::FlowcellIO::ProjectExtensions
 
   cattr_reader :per_page
   @@per_page = 500
@@ -121,9 +125,15 @@ class Project < ActiveRecord::Base
     false
   end
 
+  def r_and_d?
+    self.project_metadata.budget_division.name == configatron.r_and_d_division
+  end
+
   def sequencing_budget_division
     self.project_metadata.budget_division.name
   end
+
+  delegate :project_cost_code, :to=> :project_metadata
 
   PROJECT_FUNDING_MODELS = [
     '',

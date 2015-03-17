@@ -1,3 +1,6 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.%>
 <% add :title, "Pipelines" %>
 <% add :menu, "Make training batch" => url_for(:action => "training_batch", :id => @pipeline.id) %>
 <% add :menu, "View all pipeline batches" => url_for(:action => "batches", :id => @pipeline.id) %>
@@ -29,6 +32,8 @@
       batch_size += (this.checked ? 1 : -1) * parseInt(element.attr('data-count'));
       counter.html('' + (batch_size === 0 ? 'no' : batch_size));
     });
+
+    $('.action_on_request').bind('change',function(){$('.action_on_request').val(this.value)});
 
 <% if (batch_size = @pipeline.item_limit || @pipeline.max_size).present? %>
     /* Handle disabling the inappropriate grouped requests */

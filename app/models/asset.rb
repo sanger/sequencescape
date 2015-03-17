@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 class Asset < ActiveRecord::Base
   include StudyReport::AssetDetails
   include ModelExtensions::Asset
@@ -30,9 +33,9 @@ class Asset < ActiveRecord::Base
   has_many :asset_audits
 
   # TODO: Remove 'requests' and 'source_request' as they are abiguous
-  has_many :requests
-  has_one :source_request, :class_name => "Request", :foreign_key => :target_asset_id, :include => :request_metadata
-  has_many :requests_as_source, :class_name => 'Request', :foreign_key => :asset_id, :include => :request_metadata
+  has_many :requests, :inverse_of => :asset
+  has_one  :source_request,     :class_name => "Request", :foreign_key => :target_asset_id, :include => :request_metadata
+  has_many :requests_as_source, :class_name => 'Request', :foreign_key => :asset_id,        :include => :request_metadata
   has_many :requests_as_target, :class_name => 'Request', :foreign_key => :target_asset_id, :include => :request_metadata
 
   #Orders
@@ -220,6 +223,10 @@ class Asset < ActiveRecord::Base
     self.name.blank? ? "#{self.sti_type} #{self.id}" : self.name
   end
 
+  def external_identifier
+    "#{self.sti_type}#{self.id}"
+  end
+
   def details
     nil
   end
@@ -305,7 +312,7 @@ class Asset < ActiveRecord::Base
         asset_visited = []
         move_all_asset_group(study_from, study_to, asset_visited, asset_group, current_user)
       end
-      rescue Exception => exception
+      rescue StandardError => exception
         msg = exception.record.class.name + " id: " + exception.record.id.to_s + ": " + exception.message
         self.errors.add("Move:", msg)
         move_result = false
@@ -506,6 +513,10 @@ class Asset < ActiveRecord::Base
 
   def compatible_purposes
     []
+  end
+
+  def automatic_move?
+    false
   end
 
 end

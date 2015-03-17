@@ -1,5 +1,7 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011,2012,2013,2014 Genome Research Ltd.
 class Order < ActiveRecord::Base
-
   class OrderRole < ActiveRecord::Base
     set_table_name('order_roles')
   end
@@ -37,6 +39,7 @@ class Order < ActiveRecord::Base
   belongs_to :workflow, :class_name => 'Submission::Workflow'
   validates_presence_of :workflow
 
+  has_many :requests, :inverse_of => :order
 
   belongs_to :submission, :inverse_of => :orders
   #validates_presence_of :submission
@@ -82,27 +85,28 @@ class Order < ActiveRecord::Base
 
   def assets_are_appropriate
     all_assets.each do |asset|
-      errors.add(:asset, "#{asset.name} is not an appropriate type for the request") unless is_asset_applicable_to_type?(first_request_type, asset)
+      errors.add(:asset, "'#{asset.name}'' is a #{asset.sti_type} which is not suitable for #{first_request_type.name} requests") unless is_asset_applicable_to_type?(first_request_type, asset)
     end
     return true if errors.empty?
     false
   end
   private :assets_are_appropriate
 
+  # TODO: Figure out why eager loading aliquots/samples returns [] even when
+  # we limit order_assets to receptacles.
   def samples
     #naive way
-    assets.map(&:aliquots).flatten.map(&:sample).uniq
+    assets.map(&:samples).flatten.uniq
   end
 
   def all_samples
     # slightly less naive way
-    all_assets.map do |asset|
-      asset.aliquots
-    end.flatten.map(&:sample).uniq
+    all_assets.map(&:samples).flatten.uniq
   end
 
   def all_assets
-    ((asset_group.try(:assets) || []) + (assets)).uniq
+    pull_assets_from_asset_group if assets.empty? && asset_group.present?
+    assets
   end
 
   named_scope :for_studies, lambda {|*args| {:conditions => { :study_id => args[0]} } }
@@ -122,7 +126,7 @@ class Order < ActiveRecord::Base
   alias_method(:json_root, :url_name)
 
   def asset_uuids
-    assets.select{ |asset| ! asset.nil? }.map(&:uuid) if assets
+    assets.select{ |asset| asset.present? }.map(&:uuid) if assets
   end
 
   # TODO[xxx]: I don't like the name but this should disappear once the UI has been fixed
@@ -140,6 +144,7 @@ class Order < ActiveRecord::Base
     #call submission with appropriate Order subclass
     Submission.build!({:template => self}.merge(options))
   end
+
   def self.extended(base)
     class_eval do
       def self.build!(*args)
@@ -341,6 +346,14 @@ class Order < ActiveRecord::Base
     input_field_infos.any? {|k| k.key==:gigabases_expected}
   end
 
+  def add_comment(comment_str, user)
+    update_attribute(:comments, comments + ['<li>', comment_str, '</li>'].join)
+    save!
+
+    requests.where_is_not_a?(TransferRequest).each do |request|
+      request.add_comment(comment_str, user)
+    end
+  end
 end
 
 

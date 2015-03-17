@@ -25,7 +25,7 @@ Feature: Interacting with events through the API
           "message": "external release event",
 
           "internal_id": 1
-          }
+          }, "lims": "SQSCP"
         },
         {
           "event": {
@@ -35,7 +35,7 @@ Feature: Interacting with events through the API
             "message": "event",
 
             "internal_id": 1
-          }
+          }, "lims": "SQSCP"
         }
       ]
       """
@@ -58,6 +58,6 @@ Feature: Interacting with events through the API
           "updated_at": "2010-09-16T13:45:00+01:00",
 
           "internal_id": 1
-        }
+        }, "lims": "SQSCP"
       }
       """

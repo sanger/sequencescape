@@ -69,7 +69,7 @@ Feature: Interacting with submissions through the API
               },
              "library_type": "qPCR only"
             }
-          }
+          }, "lims": "SQSCP"
          }
       """
     When I GET the API path "/submissions/11111111-2222-3333-4444-555555555555"
@@ -87,7 +87,7 @@ Feature: Interacting with submissions through the API
             "project_name": "Testing submission creation",
             "project_uuid": "22222222-3333-4444-5555-000000000001",
             "orders": "http://localhost:3000/0_5/submissions/11111111-2222-3333-4444-555555555555/orders"
-          }
+          }, "lims": "SQSCP"
         }
       """
 
@@ -128,7 +128,7 @@ Feature: Interacting with submissions through the API
               },
              "library_type": "qPCR only"
             }
-          }
+          }, "lims": "SQSCP"
         }
       """
     When I GET the API path "/submissions/11111111-2222-3333-4444-555555555555"
@@ -146,6 +146,6 @@ Feature: Interacting with submissions through the API
             "project_name": "Testing submission creation",
             "project_uuid": "22222222-3333-4444-5555-000000000001",
             "orders": "http://localhost:3000/0_5/submissions/11111111-2222-3333-4444-555555555555/orders"
-          }
+          },"lims":"SQSCP"
         }
       """
