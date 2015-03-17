@@ -99,7 +99,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
           plate_b = Factory :plate
           plate_b.wells << Factory(:well_with_sample_and_without_plate).tap do |w|
             w.map = Map.find_by_description_and_asset_size('A1',96)
-            request = Factory :request
+            request = Factory :well_request, :asset => w, :target_asset => Factory(:pac_bio_library_tube)
             w.requests << request
             @batch.requests << request
           end

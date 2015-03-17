@@ -20,6 +20,7 @@ class AssignTagsTaskTest < TaskTestBase
       @controller.stubs(:current_user).returns(@user)
       @pipeline       = Factory :pipeline
       @batch          = Factory :batch, :pipeline => @pipeline
+      @controller.batch = @batch
       @br        = Factory :batch_request
       @batch.batch_requests << @br
       @task      = Factory :assign_tags_task
