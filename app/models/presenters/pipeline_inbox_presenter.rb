@@ -116,7 +116,7 @@ module Presenters
     end
 
     def submission
-      Submission.find(submission_id) if submission_id.present?
+      Submission.find(submission_id).name if submission_id.present?
     end
 
     def priority
