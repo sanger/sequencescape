@@ -21,7 +21,7 @@ module Presenters
     add_field 'Plate Purpose',  :plate_purpose,  :if => :purpose_important?
     add_field 'Pick To',        :pick_to,        :if => :purpose_important?
     add_field 'Next Pipeline',  :next_pipeline,  :if => :display_next_pipeline?
-    add_field 'Submission',     :submission_name,:if => :group_by_submission?
+    add_field 'Submission',     :submission_id,  :if => :group_by_submission?
     add_field 'Study',          :study,          :if => :group_by_submission?
     add_field 'Stock Barcode',  :stock_barcode,  :if => :show_stock?
     add_field 'Still Required', :still_required, :if => :select_partial_requests?
