@@ -7,6 +7,15 @@ class ::Endpoints::Plates < ::Core::Endpoint::Base
   end
 
   instance do
+    has_many(:comments,                  :json => 'comments', :to => 'comments') do
+      action(:create, :as=>'create') do |request, _|
+        ActiveRecord::Base.transaction do
+          asset = request.target
+          asset.comments.create(:description => params[:comment], :user_id => current_user.id)
+          asset.comments
+        end
+      end
+    end
     has_many(:wells,                     :json => 'wells', :to => 'wells', :scoped => 'for_api_plate_json.in_row_major_order')
     has_many(:requests,                  :json => 'requests', :to => 'requests')
     belongs_to(:plate_purpose,           :json => 'plate_purpose')
