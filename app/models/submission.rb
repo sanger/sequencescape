@@ -24,6 +24,8 @@ class Submission < ActiveRecord::Base
   has_many :studies, :through => :orders
   accepts_nested_attributes_for :orders, :update_only => true
 
+  has_many :comments_from_requests, :through => :requests, :source => :comments
+
   def comments
     # has_many throug doesn't work. Comments is a column (string) of order
     # not an ActiveRecord
