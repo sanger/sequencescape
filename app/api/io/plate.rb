@@ -18,7 +18,6 @@ class Io::Plate < Io::Asset
                                     purpose.name => label.text
                                    location.name => location
                                         priority => priority
-                                        comments => comments
 
                                source_plate.uuid  => stock_plate.uuid
                             source_plate.barcode  => stock_plate.barcode.number

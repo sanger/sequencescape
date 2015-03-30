@@ -70,6 +70,10 @@ class Plate < Asset
     )||0
   end
 
+  def comments
+    submissions.map(&:comments_from_requests).flatten
+  end
+
   def priority
     Submission.find(:first,
       :select => 'MAX(submissions.priority) AS priority',
