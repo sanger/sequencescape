@@ -3,7 +3,10 @@
 #Copyright (C) 2014,2015 Genome Research Ltd.
 class Api::Messages::FlowcellIO < Api::Base
 
+  MANUAL_QC_BOOLS = {'passed'=>true,'failed'=>false }
+
   module LaneExtensions
+
     def self.included(base)
       base.class_eval do
 
@@ -16,15 +19,7 @@ class Api::Messages::FlowcellIO < Api::Base
         end
 
         def manual_qc
-          event = lab_events.find(
-            :first,
-            :conditions => {
-              :description=>'Quality control'
-            },
-            :order=>'created_at DESC'
-          )
-          return event.descriptor_value_for('Passed?')=='Yes' if event.present?
-          nil
+          MANUAL_QC_BOOLS[asset.qc_state]
         end
 
         def samples
@@ -62,15 +57,7 @@ class Api::Messages::FlowcellIO < Api::Base
         end
 
         def manual_qc
-          event = lab_events.find(
-            :first,
-            :conditions => {
-              :description=>'Quality control'
-            },
-            :order=>'created_at DESC'
-          )
-          return event.descriptor_value_for('Passed?')=='Yes' if event.present?
-          nil
+          MANUAL_QC_BOOLS[asset.qc_state]
         end
 
         def samples
