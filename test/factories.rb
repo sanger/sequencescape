@@ -718,3 +718,9 @@ Factory.define(:pooling_method, :class=> 'RequestType::PoolingMethod') do |pooli
   pooling.pooling_behaviour 'PlateRow'
   pooling.pooling_options({:pool_count => 8 })
 end
+
+Factory.define(:messenger_creator) do |reporter|
+  reporter.root 'a_plate'
+  reporter.template 'FluidigmPlateIO'
+  reporter.purpose {|purpose| purpose.association(:plate_purpose)}
+end

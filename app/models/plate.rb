@@ -21,6 +21,10 @@ class Plate < Asset
     plate_purpose.state_of(self)
   end
 
+  def cherrypick_completed
+    plate_purpose.cherrypick_completed(self)
+  end
+
   # The type of the barcode is delegated to the plate purpose because that governs the number of wells
   delegate :barcode_type, :to => :plate_purpose, :allow_nil => true
   delegate :asset_shape, :to => :plate_purpose, :allow_nil => true

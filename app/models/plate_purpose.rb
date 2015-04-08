@@ -55,6 +55,10 @@ class PlatePurpose < Purpose
     cherrypick_direction == 'column' ? plate_height : plate_width
   end
 
+  def cherrypick_completed(plate)
+    messenger_creators.each {|creator| creator.create!(plate) }
+  end
+
   def plate_height
     asset_shape.plate_height(size)
   end
