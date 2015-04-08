@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150311121818) do
+ActiveRecord::Schema.define(:version => 20150408093203) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -640,6 +640,16 @@ ActiveRecord::Schema.define(:version => 20150311121818) do
 
   add_index "maps", ["description", "asset_size"], :name => "index_maps_on_description_and_asset_size"
   add_index "maps", ["description"], :name => "index_maps_on_description"
+
+  create_table "messenger_creators", :force => true do |t|
+    t.string   "template",   :null => false
+    t.string   "root",       :null => false
+    t.integer  "purpose_id", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "messenger_creators", ["purpose_id"], :name => "fk_messenger_creators_to_plate_purposes"
 
   create_table "messengers", :force => true do |t|
     t.integer  "target_id"
