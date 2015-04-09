@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 class Plate < Asset
   include Api::PlateIO::Extensions
   include ModelExtensions::Plate
@@ -59,8 +59,8 @@ class Plate < Asset
 
   def all_submission_ids
     submission_ids_as_source.present? ?
-      submission_ids_as_source.join(',') :
-      (submission_ids + [-1]).join(',')
+      submission_ids_as_source :
+      submission_ids
   end
 
   def self.derived_classes
@@ -89,17 +89,31 @@ class Plate < Asset
     )||[]
   end
 
-  has_many :comments, :finder_sql => %q{
-    SELECT DISTINCT description, title, comments.user_id FROM comments
-    LEFT JOIN requests AS r ON r.id = comments.commentable_id AND comments.commentable_type = 'Request'
-    WHERE r.submission_id IN (#{all_submission_ids})
-    ;
-  } do
+  class CommentsProxy
+
+    attr_reader :plate
+
+    def initialize(plate)
+      @plate=plate
+    end
+
+    def comment_assn
+      @asn||=Comment.for_plate(plate)
+    end
+
+    def method_missing(method,*args)
+      comment_assn.send(method,*args)
+    end
 
     def create!(options)
-      proxy_owner.submissions.each {|s| s.add_comment(options[:description],options[:user]) }
-      Comment.create!(options.merge(:commentable=>proxy_owner))
+      plate.submissions.each {|s| s.add_comment(options[:description],options[:user]) }
+      Comment.create!(options.merge(:commentable=>plate))
     end
+
+  end
+
+  def comments
+    @comments||=CommentsProxy.new(self)
   end
 
   def priority
