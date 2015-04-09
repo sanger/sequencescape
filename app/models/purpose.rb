@@ -46,6 +46,7 @@ class Purpose < ActiveRecord::Base
 
   # Things that are created are often in a default location!
   belongs_to :default_location, :class_name => 'Location'
+  has_many :messenger_creators, :inverse_of => :purpose
 
   validates_format_of :name, :with => /^\w[\s\w._-]+\w$/i
   validates_presence_of :name
