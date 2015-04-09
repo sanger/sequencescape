@@ -347,10 +347,10 @@ class Order < ActiveRecord::Base
   end
 
   def add_comment(comment_str, user)
-    update_attribute(:comments, comments + ['<li>', comment_str, '</li>'].join)
+    update_attribute(:comments, [comments, comment_str ].compact.join('; '))
     save!
 
-    requests.where_is_not_a?(TransferRequest).each do |request|
+    requests.where_is_not_a?(TransferRequest).map do |request|
       request.add_comment(comment_str, user)
     end
   end

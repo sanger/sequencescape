@@ -3,10 +3,10 @@
 #Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
 class ::Endpoints::Comments < ::Core::Endpoint::Base
   model do
-
+    action(:create, :to => :standard_create!)
   end
 
   instance do
-    belongs_to :plate, :json => 'plate'
+    action(:update, :to => :standard_update!)
   end
 end

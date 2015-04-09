@@ -36,12 +36,27 @@ class Plate < Asset
 
   # About 10x faster than going through the wells
   def submission_ids
-    container_associations.find(
+    @siat ||=  container_associations.find(
       :all,
       :select => 'DISTINCT requests.submission_id',
       :joins  => 'LEFT JOIN requests ON requests.target_asset_id = container_associations.content_id',
       :conditions => 'requests.submission_id IS NOT NULL'
     ).map(&:submission_id)
+  end
+
+  def submission_ids_as_source
+    @sias ||= container_associations.find(
+      :all,
+      :select => 'DISTINCT requests.submission_id',
+      :joins  => 'LEFT JOIN requests ON requests.asset_id = container_associations.content_id',
+      :conditions => 'requests.submission_id IS NOT NULL'
+    ).map(&:submission_id)
+  end
+
+  def all_submission_ids
+    submission_ids_as_source.present? ?
+      submission_ids_as_source.join(',') :
+      (submission_ids + [-1]).join(',')
   end
 
   def self.derived_classes
@@ -67,11 +82,20 @@ class Plate < Asset
         'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id'
       ],
       :conditions => ['caplp.container_id = ?',self.id]
-    )||0
+    )||[]
   end
 
-  def comments
-    submissions.map(&:comments_from_requests).flatten
+  has_many :comments, :finder_sql => %q{
+    SELECT DISTINCT description, title, comments.user_id FROM comments
+    LEFT JOIN requests AS r ON r.id = comments.commentable_id AND comments.commentable_type = 'Request'
+    WHERE r.submission_id IN (#{all_submission_ids})
+    ;
+  } do
+
+    def create!(options)
+      proxy_owner.submissions.each {|s| s.add_comment(options[:description],options[:user]) }
+      Comment.create!(options.merge(:commentable=>proxy_owner))
+    end
   end
 
   def priority

@@ -41,7 +41,12 @@ module Core::Endpoint::BasicHandler::Paged
   end
   private :handler_for
 
+  def unpaged?
+    true
+  end
+
   def page_of_results(target, page = 1, model = target)
+    return target if self.unpaged?
     raise ActiveRecord::RecordNotFound, 'before the start of the results' if page <= 0
     target.paginate(
       :page          => page,

@@ -32,6 +32,10 @@ class Submission < ActiveRecord::Base
     orders.map(&:comments).flatten(1).compact
   end
 
+  def add_comment(description,user)
+    orders.map {|o| o.add_comment(description,user) }.flatten
+  end
+
   cattr_reader :per_page
   @@per_page = 500
   named_scope :including_associations_for_json, {

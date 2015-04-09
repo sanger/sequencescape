@@ -7,7 +7,10 @@ class ::Endpoints::Plates < ::Core::Endpoint::Base
   end
 
   instance do
-    has_many(:comments,                  :json => 'comments', :to => 'comments')
+    has_many(:comments,                  :json => 'comments', :to => 'comments') do |args, arguer|
+      action(:create, :to => :standard_create!)
+    end
+
     has_many(:wells,                     :json => 'wells', :to => 'wells', :scoped => 'for_api_plate_json.in_row_major_order')
     has_many(:requests,                  :json => 'requests', :to => 'requests')
     belongs_to(:plate_purpose,           :json => 'plate_purpose')

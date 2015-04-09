@@ -2,7 +2,7 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011 Genome Research Ltd.
 class Comment < ActiveRecord::Base
-  include Uuid::Uuidable
+  # include Uuid::Uuidable
   belongs_to :commentable, :polymorphic => true
   has_many :comments, :as => :commentable
   belongs_to :user
