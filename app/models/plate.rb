@@ -72,21 +72,23 @@ class Plate < Asset
   end
 
   def submissions
-    Submission.find(:all,
+    s = Submission.find(:all,
       :select => '*',
       :joins => [
         'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
         'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.asset_id'
       ],
       :conditions => ['caplp.container_id = ?',self.id]
-    )||Submission.find(:all,
+    )
+    return s unless s.blank?
+    Submission.find(:all,
       :select => '*',
       :joins => [
         'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
         'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id'
       ],
       :conditions => ['caplp.container_id = ?',self.id]
-    )||[]
+    )
   end
 
   class CommentsProxy

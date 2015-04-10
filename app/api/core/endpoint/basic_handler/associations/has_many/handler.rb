@@ -49,8 +49,7 @@ class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpo
   def read(request, path)
     association_details_for(request) do |association_io|
       association  = association_from(request)
-      eager_loaded = association_io.eager_loading_for(association)
-      eager_loaded = eager_loaded.include_uuid if eager_loaded.respond_to?(:include_uuid)
+      eager_loaded = association_io.eager_loading_for(association).include_uuid
       nested_action(request, path, page_of_results(eager_loaded, path.first.try(:to_i) || 1, association)) do
         super
       end
