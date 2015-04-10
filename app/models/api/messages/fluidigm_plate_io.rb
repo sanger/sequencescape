@@ -30,7 +30,7 @@ class Api::Messages::FluidigmPlateIO < Api::Base
 
   map_attribute_to_json_attribute(:id,'id_flgen_plate_lims')
   map_attribute_to_json_attribute(:sanger_human_barcode,'plate_barcode_lims')
-  map_attribute_to_json_attribute(:fluidigm_barcode,'barcode_lims')
+  map_attribute_to_json_attribute(:fluidigm_barcode,'plate_barcode')
   map_attribute_to_json_attribute(:uuid,'plate_uuid_lims')
   map_attribute_to_json_attribute(:size,'plate_size')
   map_attribute_to_json_attribute(:updated_at,'last_updated') # We do it for the whole plate to ensure the message has a timestamp
@@ -38,7 +38,7 @@ class Api::Messages::FluidigmPlateIO < Api::Base
   with_nested_has_many_association(:wells) do
      map_attribute_to_json_attribute(:map_description,     'well_label')
      map_attribute_to_json_attribute(:uuid,                'well_uuid_lims')
-     map_attribute_to_json_attribute(:cost_code,           'well_uuid_lims')
+     map_attribute_to_json_attribute(:cost_code,           'cost_code')
      map_attribute_to_json_attribute(:primary_sample_uuid, 'sample_uuid')
      map_attribute_to_json_attribute(:primary_study_uuid,  'study_uuid')
      map_attribute_to_json_attribute(:qc_state,            'qc_state')
