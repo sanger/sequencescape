@@ -107,6 +107,8 @@ class Study < ActiveRecord::Base
 
   include StudyRelation::Associations
 
+  squishify :name
+
   validates_presence_of :name
   validates_uniqueness_of :name, :on => :create, :message => "already in use (#{self.name})"
   validates_length_of :name, :maximum => 200
