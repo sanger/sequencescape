@@ -73,7 +73,7 @@ class Plate < Asset
 
   def submissions
     s = Submission.find(:all,
-      :select => '*',
+      :select => 'DISTINCT submissions.*',
       :joins => [
         'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
         'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.asset_id'
@@ -82,7 +82,7 @@ class Plate < Asset
     )
     return s unless s.blank?
     Submission.find(:all,
-      :select => '*',
+      :select => 'DISTINCT submission.*',
       :joins => [
         'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
         'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id'
@@ -107,6 +107,10 @@ class Plate < Asset
       comment_assn.send(method,*args)
     end
 
+    ##
+    # We add the comments to each submission to ensure that are available for all the requests.
+    # At time of writing, submissions add comments to each request, so there are a lot of comments
+    # getting created here. (The intent is to change this so requests are treated similarly to plates)
     def create!(options)
       plate.submissions.each {|s| s.add_comment(options[:description],options[:user]) }
       Comment.create!(options.merge(:commentable=>plate))

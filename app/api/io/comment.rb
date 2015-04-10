@@ -7,6 +7,7 @@ class Io::Comment < ::Core::Io::Base
   set_eager_loading { |model| model }
 
   define_attribute_and_json_mapping(%Q{
+                                           user  <=  user
                                           title  <=> title
                                     description  <=> description
   })
