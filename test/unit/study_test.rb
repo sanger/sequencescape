@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 require "test_helper"
 
 class StudyTest < ActiveSupport::TestCase
@@ -345,6 +345,11 @@ class StudyTest < ActiveSupport::TestCase
         assert_raise(ActiveRecord::RecordInvalid) do
           @study.update_attributes!(:name=>'a'*201)
         end
+      end
+
+      should ' squish whitespace' do
+        assert @study.update_attributes!(:name=>'   Squish   double spaces and flanking whitespace but not double letters ')
+        assert_equal 'Squish double spaces and flanking whitespace but not double letters', @study.name
       end
     end
 
