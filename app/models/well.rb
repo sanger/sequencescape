@@ -10,6 +10,7 @@ class Well < Aliquot::Receptacle
   include StudyReport::WellDetails
   include Tag::Associations
   include AssetRack::WellAssociations::AssetRackAssociation
+  include Api::Messages::FluidigmPlateIO::WellExtensions
 
   class Link < ActiveRecord::Base
     set_table_name('well_links')

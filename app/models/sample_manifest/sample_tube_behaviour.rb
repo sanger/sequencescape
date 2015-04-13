@@ -35,7 +35,7 @@ module SampleManifest::SampleTubeBehaviour
       printables = self.samples.map do |sample|
         sample_tube = sample.assets.first
         PrintBarcode::Label.new(
-          :number => sample_tube.sanger_human_barcode,
+          :number => sample_tube.barcode,
           :study  => sample.sanger_sample_id,
           :prefix => sample_tube.prefix, :suffix => ""
         )
