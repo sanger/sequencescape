@@ -9,13 +9,6 @@ require 'rdoc/task'
 require 'tasks/rails'
 
 begin
-  require 'ci/reporter/rake/cucumber' # HACK: lib/tasks/ci_setup_cucumber_replacement.rake
-  require 'ci/reporter/rake/test_unit'
-rescue LoadError => exception
-  # Ignore this, you simply don't have the file!
-end
-
-begin
   require 'delayed/tasks'
 rescue LoadError
   STDERR.puts "Run `rake gems:install` to install delayed_job"
@@ -35,4 +28,4 @@ rescue LoadError
 end
 
 
-task :test => ["test:units", "test:functionals"]
+# task :test => ["test:units", "test:functionals"]
