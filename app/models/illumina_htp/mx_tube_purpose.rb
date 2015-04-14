@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2013,2014,2015 Genome Research Ltd.
 class IlluminaHtp::MxTubePurpose < Tube::Purpose
   def created_with_request_options(tube)
     tube.requests_as_target.where_is_a?(Request::LibraryCreation).first.try(:request_options_for_creation) || {}
@@ -22,13 +25,17 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
   private :target_requests
 
   def stock_plate(tube)
-    tube.requests_as_target.where_is_a?(IlluminaHtp::Requests::StdLibraryRequest).detect{|r| r.asset.present?} .asset.plate
+    tube.requests_as_target.where_is_a?(Request::LibraryCreation).detect{|r| r.asset.present?} .asset.plate
   end
 
   def request_state(request,state)
-    mappings = {'cancelled' =>'cancelled','failed' => 'failed','qc_complete' => 'passed'}
     request.is_a?(TransferRequest) ? state : mappings[state]
   end
   private :request_state
+
+  def mappings
+    {'cancelled' =>'cancelled','failed' => 'failed','qc_complete' => 'passed'}
+  end
+  private :mappings
 
 end

@@ -36,7 +36,7 @@ Feature: Interacting with asset_audits through the API
           "plate_uuid": "00000000-1111-2222-3333-444444444999",
 
           "internal_id": 200
-        }
+        }, "lims": "SQSCP"
       }
       ]
       """
@@ -71,6 +71,6 @@ Feature: Interacting with asset_audits through the API
           "updated_at": "2010-09-16T13:45:00+01:00",
 
           "internal_id": 1
-        }
+        }, "lims": "SQSCP"
       }
       """

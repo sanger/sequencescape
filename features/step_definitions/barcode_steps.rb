@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2011,2012,2013 Genome Research Ltd.
 Then /^I should see barcode "([^"]*)"$/ do |machine_barcode|
   barcode = Barcode.barcode_to_human(machine_barcode)
   step %Q{I should see "#{barcode}"}
@@ -39,6 +42,10 @@ end
 
 Transform /^the plate with ID (\d+)$/ do |id|
   Plate.find(id)
+end
+
+Transform /^the asset rack with ID (\d+)$/ do |id|
+  AssetRack.find(id)
 end
 
 Given /^(the .+) has a barcode of "([^\"]+)"$/ do |asset, barcode|

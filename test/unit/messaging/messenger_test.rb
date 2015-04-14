@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2014,2015 Genome Research Ltd.
 require 'test_helper'
 
 class MessengerTest < ActiveSupport::TestCase
@@ -17,7 +20,7 @@ class MessengerTest < ActiveSupport::TestCase
       end
 
       should 'render the json' do
-        assert_equal %Q{{"example":{"example":"hash"},"lims":"SEQUENCESCAPE"}}, @messenger.to_json
+        assert_equal %Q{{"example":{"example":"hash"},"lims":"SQSCP"}}, @messenger.to_json
       end
 
     end

@@ -96,7 +96,7 @@ And I have a "full" authorised user with the key "cucumber"
                 "uuid": "11111111-2222-3333-4444-000000000003"
               },
               "transfers": {
-                "A1": "A1"
+                "A1": ["A1"]
               }
             },
             {
@@ -107,7 +107,7 @@ And I have a "full" authorised user with the key "cucumber"
                 "uuid": "11111111-2222-3333-4444-000000000004"
               },
               "transfers": {
-                "B1": "A1"
+                "B1": ["A1"]
               }
             },
             {
@@ -118,7 +118,7 @@ And I have a "full" authorised user with the key "cucumber"
                 "uuid": "11111111-2222-3333-4444-000000000003"
               },
               "transfers": {
-                "A1": "B1"
+                "A1": ["B1"]
               }
             },
             {
@@ -129,7 +129,88 @@ And I have a "full" authorised user with the key "cucumber"
                 "uuid": "11111111-2222-3333-4444-000000000004"
               },
               "transfers": {
-                "B1": "B1"
+                "B1": ["B1"]
+              }
+            }
+          ]
+        }
+        """
+
+  Scenario: Trtansfering the same well to two locations
+    Given a source transfer plate called "Source plate A" exists
+      And the UUID for the plate "Source plate A" is "11111111-2222-3333-4444-000000000001"
+      And a destination transfer plate called "Destination plate A" exists
+      And the UUID for the plate "Destination plate A" is "11111111-2222-3333-4444-000000000003"
+
+
+      Given a user with UUID "99999999-8888-7777-6666-555555555555" exists
+
+      Given the UUID of the next bulk transfer created will be "00000000-1111-2222-3333-444444444444"
+
+      When I make an authorised POST with the following JSON to the API path "/bulk_transfers":
+      """
+      {
+        "bulk_transfer": {
+          "well_transfers":[
+            {
+              "source_uuid": "11111111-2222-3333-4444-000000000001", "source_location":"A1",
+              "destination_uuid": "11111111-2222-3333-4444-000000000003", "destination_location":"A1"
+            },
+            {
+              "source_uuid": "11111111-2222-3333-4444-000000000001", "source_location":"B1",
+              "destination_uuid": "11111111-2222-3333-4444-000000000003", "destination_location":"A1"
+            },
+            {
+              "source_uuid": "11111111-2222-3333-4444-000000000001", "source_location":"A1",
+              "destination_uuid": "11111111-2222-3333-4444-000000000003", "destination_location":"B1"
+            },
+            {
+              "source_uuid": "11111111-2222-3333-4444-000000000001", "source_location":"B1",
+              "destination_uuid": "11111111-2222-3333-4444-000000000003", "destination_location":"B1"
+            }
+          ],
+          "user": "99999999-8888-7777-6666-555555555555"
+        }
+      }
+      """
+    Then the HTTP response should be "201 Created"
+
+    Then the transfers from the plate "Source plate A" to the plate "Destination plate A" should be:
+      | source | destination |
+      | A1     | A1          |
+      | A1     | B1          |
+      | B1     | A1          |
+      | A1     | B1          |
+
+     And the JSON should match the following for the specified fields:
+      """
+      {
+        "bulk_transfer": {
+          "transfers": {
+            "size":1,
+            "actions": { "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/transfers" }
+          },
+          "user": {"uuid": "99999999-8888-7777-6666-555555555555"}
+        }
+      }
+      """
+      Given the number of results returned by the API per page is 5
+      When I GET the API path "/00000000-1111-2222-3333-444444444444/transfers"
+      Then the HTTP response should be "200 OK"
+      And the JSON should match the following for the specified fields:
+        """
+        {
+          "transfers": [
+            {
+              "source": {
+                "uuid": "11111111-2222-3333-4444-000000000001"
+              },
+              "destination": {
+                "uuid": "11111111-2222-3333-4444-000000000003"
+              },
+              "transfers": {
+                "A1": ["A1","B1"],
+                "B1": ["A1","B1"]
               }
             }
           ]

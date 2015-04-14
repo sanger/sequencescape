@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011 Genome Research Ltd.
 require "test_helper"
 require 'sessions_controller'
 
@@ -29,6 +32,18 @@ class SessionsControllerTest < ActionController::TestCase
     post :login, :login => 'john', :password => 'bad password'
     assert_nil session[:user]
     assert_response :success
+  end
+
+  def test_should_filter_passwords_from_all_fields
+    post :login, :login => 'john', :password => 'secret'
+    assert_equal(
+      {"password"=>"[FILTERED]"},
+      @controller.__send__(:filter_parameters,{"password"=>"login=username&password=secret&commit=Login"})
+    )
+    assert_equal(
+      {"rack.request.form_vars"=>"login=username&password=[FILTERED]&commit=Login"},
+      @controller.__send__(:filter_parameters,{"rack.request.form_vars"=>"login=username&password=secret&commit=Login"})
+    )
   end
 
   def test_should_logout

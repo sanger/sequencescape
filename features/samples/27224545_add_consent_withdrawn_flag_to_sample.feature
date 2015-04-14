@@ -93,7 +93,7 @@ Feature: Patients should be able to withdraw consent
           "new_name_format": true,
 
           "id": 1
-        }
+        },"lims":"SQSCP"
       }
     """
     When I GET the API path "/samples/00000000-1111-2222-4444-555555555555"
@@ -136,7 +136,7 @@ Feature: Patients should be able to withdraw consent
           "new_name_format": true,
 
           "id": 1
-        }
+        },"lims":"SQSCP"
       }
     """
 

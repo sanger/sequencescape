@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 # It associates a name to a pre-filled submission (subclass) and a serialized set of attributes
 # We could have use a Prototype Factory , and so just associate a name to existing submission
 # but that doesn't work because the submission prototype doesn't pass the validation stage.
@@ -23,6 +26,7 @@ class SubmissionTemplate < ActiveRecord::Base
 
   named_scope :hidden, :order => 'product_line_id ASC', :conditions => [ 'superceded_by_id != ?', LATEST_VERSION ]
   named_scope :visible, :order => 'product_line_id ASC', :conditions => { :superceded_by_id => LATEST_VERSION }
+  named_scope :include_product_line, :include => [:product_line]
 
   def visible
     self.superceded_by_id == LATEST_VERSION
@@ -76,7 +80,6 @@ class SubmissionTemplate < ActiveRecord::Base
     return {} if self.submission_parameters.nil?
     submission_attributes = Marshal.load(Marshal.dump(self.submission_parameters))  # Deep clone
     submission_attributes[:request_types] = submission_attributes[:request_type_ids_list].flatten
-#    submission_attributes[:request_options_structured] = submission_attributes.delete(:request_options) if submission_attributes.key?(:request_options)
     submission_attributes
   end
   private :submission_attributes

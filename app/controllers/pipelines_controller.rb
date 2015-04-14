@@ -1,8 +1,13 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 class PipelinesController < ApplicationController
   before_filter :find_pipeline_by_id, :only => [ :show, :setup_inbox,
                                    :set_inbox, :training_batch, :show_comments, :activate, :deactivate, :destroy, :batches]
 
   before_filter :lab_manager_login_required, :only => [:update_priority]
+
+  after_filter :set_cache_disabled!, :only => [:show]
 
   def index
     @pipelines = Pipeline.active.internally_managed.all(:order => "sorter ASC")
@@ -15,6 +20,7 @@ class PipelinesController < ApplicationController
   end
 
   def show
+    self.expires_now
     @show_held_requests = (params[:view] == 'all')
     @current_page       = params[:page]
 
@@ -25,6 +31,9 @@ class PipelinesController < ApplicationController
     @failed_batches      = @pipeline.batches.failed_for_ui.includes_for_ui
 
     @batches = @pipeline.batches.all(:limit => 5, :order => "created_at DESC")
+
+    # TODO: The presenter currently only handles 'group_by_parent' pipelines.
+    @inbox_presenter = Presenters::PipelineInboxPresenter.new(@pipeline,current_user)
 
     unless @pipeline.qc?
       @information_types = @pipeline.request_information_types

@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2012,2013,2014 Genome Research Ltd.
 class AmqpObserver < ActiveRecord::Observer
   # Observe not only the records but their metadata too, otherwise we may miss changes.
   observe(
@@ -162,7 +165,7 @@ class AmqpObserver < ActiveRecord::Observer
     def activate_exchange(&block)
       return yield unless @exchange.nil?
 
-      client = Bunny.new(configatron.amqp.url, :spec => '09')
+      client = Bunny.new(configatron.amqp.url, :spec => '09', :frame_max => configatron.amqp.retrieve(:maximum_frame,0))
       begin
         client.start
         @exchange = client.exchange('psd.sequencescape', :passive => true)

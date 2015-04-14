@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
 class Tube < Aliquot::Receptacle
   include LocationAssociation::Locatable
   include Barcode::Barcodeable
@@ -13,6 +16,10 @@ class Tube < Aliquot::Receptacle
   # Transfer requests into a tube are direct requests where the tube is the target.
   def transfer_requests
     requests_as_target.where_is_a?(TransferRequest).all
+  end
+
+  def automatic_move?
+    true
   end
 
   named_scope :include_scanned_into_lab_event, :include => :scanned_into_lab_event
@@ -78,7 +85,7 @@ class Tube < Aliquot::Receptacle
 
   class StandardMx < Tube::Purpose
     def created_with_request_options(tube)
-      tube.parent.created_with_request_options
+      tube.parent.try(:created_with_request_options)||{}
     end
 
     # Transitioning an MX library tube to a state involves updating the state of the transfer requests.  If the

@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2011,2012,2013,2014 Genome Research Ltd.
 Transform /^submitted to "([^\"]+)"$/ do |name|
   SubmissionTemplate.find_by_name(name) or raise StandardError, "Cannot find submission template #{name.inspect}"
 end
@@ -146,6 +149,10 @@ end
 
 Transform /^the (?:.+\s)?plate "([^\"]+)"$/ do |name|
   Plate.find_by_name(name) or raise StandardError, "Could not find the plate #{name.inspect}"
+end
+
+Transform /^the asset rack "([^\"]+)"$/ do |name|
+  AssetRack.find_by_name(name) or raise StandardError, "Could not find the plate #{name.inspect}"
 end
 
 Transform /^the (?:.+) with UUID "([^\"]+)"$/ do |uuid|

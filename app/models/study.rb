@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
 class Study < ActiveRecord::Base
 
 
@@ -103,6 +106,8 @@ class Study < ActiveRecord::Base
   has_many :suppliers, :through => :sample_manifests, :uniq => true
 
   include StudyRelation::Associations
+
+  squishify :name
 
   validates_presence_of :name
   validates_uniqueness_of :name, :on => :create, :message => "already in use (#{self.name})"
@@ -666,7 +671,7 @@ class Study < ActiveRecord::Base
         take_object(object, user, study_from)
         begin
           object.save!
-        rescue Exception => ex
+        rescue StandardError => ex
           errors << ex.message
         end
       end

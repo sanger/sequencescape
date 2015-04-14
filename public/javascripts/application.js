@@ -1,5 +1,9 @@
+//This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+//Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+//Copyright (C) 2007-2011,2011 Genome Research Ltd.
 document.observe('dom:loaded', function(){
 	TableSorterFacade.setup();
+  Behaviours.assign_handlers();
 });
 
 function swap_filter() {
@@ -20,13 +24,13 @@ function swap_tab(ident, related, tab_no) {
 	$$('a.tab' + tab_no).each ( function(item) {
 		item.className = "tab" + tab_no;
 	});
-	
+
 	$(ident).className = "selected tab" + tab_no;
-	
+
 	$$('div.tab_content' + tab_no).each ( function(item) {
   		item.style.display = "none";
 	});
-	
+
 	$(related).style.display = "block";
 }
 
@@ -85,3 +89,14 @@ var TableSorterFacade = {
     );
   }
 }
+
+var Behaviours = {
+  assign_handlers: function() {
+    var $ = jQuery;
+    /** Select_all and Deselect_all buttons event handling **/
+    $(".select-all-behaviour").click(select_all);
+    $(".deselect-all-behaviour").click(deselect_all);
+  }
+};
+
+

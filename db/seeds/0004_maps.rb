@@ -1,3 +1,6 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2011,2012,2013 Genome Research Ltd.
 # Creates all of the Map instances in the DB for all know plate sizes.  This assumes a horizontal orientation
 # of the plate, i.e.:
 #
@@ -35,3 +38,6 @@ map_data.each do |details|
 end
 
 Map.create!(FluidigmHelper.map_configuration_for(6,16,Map::AssetShape.find_by_name('Fluidigm96').id) + FluidigmHelper.map_configuration_for(12,16,Map::AssetShape.find_by_name('Fluidigm192').id))
+
+Map::AssetShape.find_by_name('StripTubeColumn').generate_map(8)
+Map::AssetShape.find_by_name('StripTubeRack'  ).generate_map(12)
