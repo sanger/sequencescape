@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 class Study < ActiveRecord::Base
 
 
@@ -242,7 +242,7 @@ class Study < ActiveRecord::Base
       required.attribute(:data_release_prevention_reason_comment)
     end
 
-    attribute(:data_access_group, :with=> /\A[a-z_][a-z0-9_-]{0,31}\Z/)
+    attribute(:data_access_group, :with=> /\A[a-z_][a-z0-9_-]{0,31}(?:\s+[a-z_][a-z0-9_-]{0,31})*\Z/)
 
     # SNP information
     attribute(:snp_study_id, :integer => true)
