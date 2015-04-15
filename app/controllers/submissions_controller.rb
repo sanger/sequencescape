@@ -60,9 +60,8 @@ class SubmissionsController < ApplicationController
 
   def cancel
     submission = Submission.find(params[:id])
-    if submission.cancellable?
-      submission.cancel
-    end
+    submission.cancel
+    redirect_to :action=>:show, :id=>params[:id]
   end
 
   def destroy
