@@ -13,6 +13,8 @@ end %>
  Submission created at: <strong><%=h @presenter.submission.created_at.to_formatted_s(:day_full_with_time) %></strong>
 </div>
 <%= submission_status_message(@presenter.submission) %>
+
+
 <div class='priority_changer'>
   <h2>Priority:</h2>
   <%= image_tag("icon_#{@presenter.submission.priority}_flag.png", :size=>"64x64", :class=>'sub_flag') if @presenter.submission.priority > 0 %>
@@ -50,6 +52,20 @@ end %>
   </li>
 <% end %>
 </ul>
+
+<% form_for(:submission, @presenter,
+     :url => { :id=> @presenter.submission.id, :action => :cancel }) do |f| %>
+  <%= submit_tag "Cancel Submission",
+  :style=>'
+  box-shadow: inset 0px 1px 0px 0px darkRed, 0 1px 3px #999;
+  background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, darkRed), color-stop(1, red) );
+  border: 1px solid darkRed;
+  ',
+  :id       => "cancel-submission",
+  :confirm=>'Are you sure?',
+  :class    => "button" %>
+<% end %>
+
 
 <%= javascript_include_tag 'submissions' %>
 
