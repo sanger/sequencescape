@@ -3,9 +3,9 @@ class AddTableEquipment < ActiveRecord::Migration
     ActiveRecord::Base.transaction do
       create_table :equipment do |t|
         t.string :name
-        t.string :type
+        t.string :equipment_type
         t.string :prefix, :limit => 2, :null => false
-        t.string :ean13_barcode, :limit => 13, :null => false
+        t.string :ean13_barcode, :limit => 13
       end
     end
   end

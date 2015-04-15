@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150408093203) do
+ActiveRecord::Schema.define(:version => 20150414151730) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -426,6 +426,13 @@ ActiveRecord::Schema.define(:version => 20150408093203) do
   end
 
   add_index "documents_shadow", ["documentable_id", "documentable_type"], :name => "index_documents_on_documentable_id_and_documentable_type"
+
+  create_table "equipment", :force => true do |t|
+    t.string "name"
+    t.string "equipment_type"
+    t.string "prefix",         :limit => 2,  :null => false
+    t.string "ean13_barcode",  :limit => 13
+  end
 
   create_table "events", :force => true do |t|
     t.integer  "eventful_id"
