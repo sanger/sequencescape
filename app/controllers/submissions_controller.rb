@@ -60,7 +60,7 @@ class SubmissionsController < ApplicationController
 
   def cancel
     submission = Submission.find(params[:id])
-    submission.cancel
+    submission.cancel!
     redirect_to :action=>:show, :id=>params[:id]
   end
 

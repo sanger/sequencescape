@@ -67,9 +67,14 @@ module Submission::StateMachine
     aasm_state :processing, :enter => :process_submission!, :exit => :process_callbacks!
     aasm_state :ready
     aasm_state :failed
+    aasm_state :cancelled, :enter => :cancel_all_requests
 
     aasm_event :built do
       transitions :to => :pending, :from => [ :building ]
+    end
+
+    aasm_event :cancel do
+      transitions :to => :cancelled, :from => [ :ready, :cancelled ]
     end
 
     aasm_event :process do
