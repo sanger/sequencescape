@@ -1,8 +1,9 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2015 Genome Research Ltd.
 module Cherrypick::VolumeByNanoGramsPerMicroLitre
-  def volume_to_cherrypick_by_nano_grams_per_micro_litre(volume_required,concentration_required,source_concentration)
+  def volume_to_cherrypick_by_nano_grams_per_micro_litre(volume_required,concentration_required,source_concentration,minimum_volume=0)
+    minimum_volume||=0
     check_inputs_to_volume_to_cherrypick_by_nano_grams_per_micro_litre!(volume_required,concentration_required,source_concentration)
 
     well_attribute.concentration    = concentration_required
@@ -13,7 +14,7 @@ module Cherrypick::VolumeByNanoGramsPerMicroLitre
     buffer_volume  = 0.0
 
     if !source_concentration.blank? && (source_concentration != 0.0) && !concentration_required.blank? && (concentration_required != 0.0)
-      volume_to_pick = [volume_required, ((volume_required*concentration_required)/source_concentration).ceil.to_f].min
+      volume_to_pick = [[volume_required, ((volume_required*concentration_required)/source_concentration) ].min, minimum_volume].max
       buffer_volume  = buffer_volume_required(volume_required, volume_to_pick)
     end
 

@@ -37,7 +37,7 @@ module Cherrypick::VolumeByNanoGrams
   end
 
   def buffer_volume_required(minimum_volume, requested_volume)
-    (minimum_volume*100 - requested_volume*100).to_i.to_f / 100
+    minimum_volume - requested_volume
   end
   private :buffer_volume_required
 end

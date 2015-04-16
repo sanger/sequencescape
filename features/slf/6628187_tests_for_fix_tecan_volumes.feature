@@ -25,7 +25,6 @@ Feature: The Tecan file has the wrong buffer volumes, defaulting to 13 total vol
   	When I follow "Select Plate Template"
   	When I select "testtemplate" from "Plate Template"
   	When I select "Infinium 670k" from "Output plate purpose"
-
     When I fill in "Volume Required" with "65"
     When I press "Next step"
   	And I press "Next step"
@@ -75,42 +74,42 @@ Feature: The Tecan file has the wrong buffer volumes, defaulting to 13 total vol
     Then the downloaded tecan file for batch "550000555760" and plate "1220099999705" is
     """
     C;
-    A;1220000001831;;ABgene 0765;1;;16.0
-    D;1220099999705;;ABgene 0800;1;;16.0
+    A;1220000001831;;ABgene 0765;1;;15.9
+    D;1220099999705;;ABgene 0800;1;;15.9
     W;
-    A;1220000001831;;ABgene 0765;9;;16.0
-    D;1220099999705;;ABgene 0800;2;;16.0
+    A;1220000001831;;ABgene 0765;9;;15.8
+    D;1220099999705;;ABgene 0800;2;;15.8
     W;
-    A;1220000010734;;ABgene 0765;1;;16.0
-    D;1220099999705;;ABgene 0800;3;;16.0
+    A;1220000010734;;ABgene 0765;1;;15.9
+    D;1220099999705;;ABgene 0800;3;;15.9
     W;
-    A;1220000010734;;ABgene 0765;9;;16.0
-    D;1220099999705;;ABgene 0800;4;;16.0
+    A;1220000010734;;ABgene 0765;9;;15.8
+    D;1220099999705;;ABgene 0800;4;;15.8
     W;
-    A;1220000005877;;ABgene 0765;1;;16.0
-    D;1220099999705;;ABgene 0800;5;;16.0
+    A;1220000005877;;ABgene 0765;1;;15.9
+    D;1220099999705;;ABgene 0800;5;;15.9
     W;
-    A;1220000005877;;ABgene 0765;9;;16.0
-    D;1220099999705;;ABgene 0800;6;;16.0
+    A;1220000005877;;ABgene 0765;9;;15.8
+    D;1220099999705;;ABgene 0800;6;;15.8
     W;
     C;
-    A;BUFF;;96-TROUGH;1;;49.0
-    D;1220099999705;;ABgene 0800;1;;49.0
+    A;BUFF;;96-TROUGH;1;;49.1
+    D;1220099999705;;ABgene 0800;1;;49.1
     W;
-    A;BUFF;;96-TROUGH;2;;49.0
-    D;1220099999705;;ABgene 0800;2;;49.0
+    A;BUFF;;96-TROUGH;2;;49.2
+    D;1220099999705;;ABgene 0800;2;;49.2
     W;
-    A;BUFF;;96-TROUGH;3;;49.0
-    D;1220099999705;;ABgene 0800;3;;49.0
+    A;BUFF;;96-TROUGH;3;;49.1
+    D;1220099999705;;ABgene 0800;3;;49.1
     W;
-    A;BUFF;;96-TROUGH;4;;49.0
-    D;1220099999705;;ABgene 0800;4;;49.0
+    A;BUFF;;96-TROUGH;4;;49.2
+    D;1220099999705;;ABgene 0800;4;;49.2
     W;
-    A;BUFF;;96-TROUGH;5;;49.0
-    D;1220099999705;;ABgene 0800;5;;49.0
+    A;BUFF;;96-TROUGH;5;;49.1
+    D;1220099999705;;ABgene 0800;5;;49.1
     W;
-    A;BUFF;;96-TROUGH;6;;49.0
-    D;1220099999705;;ABgene 0800;6;;49.0
+    A;BUFF;;96-TROUGH;6;;49.2
+    D;1220099999705;;ABgene 0800;6;;49.2
     W;
     C;
     C; SCRC1 = 1220000001831
