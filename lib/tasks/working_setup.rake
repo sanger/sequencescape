@@ -15,6 +15,10 @@ namespace :working do
    end
   end
 
+  def relocate_plate(plate, pos, locations)
+    plate.location = locations[pos % locations.length]
+  end
+
    user = User.create!(:login=>'admin',:password=>'admin', :swipecard_code=>'abcdef')
    user.is_administrator
    faculty_sponsor = FacultySponsor.create!(:name=>'Faculty Sponsor')
@@ -38,6 +42,13 @@ namespace :working do
       Purpose.find_by_name('Cherrypicked').create!.tap do |plate|
         plate.wells.each { |w| w.aliquots.create!(:sample => Sample.create!(:name => "sample_in_cp#{i}_well_#{w.map.description}", :studies=>[study])) }
         puts "Cherrypicked: #{plate.ean13_barcode}-#{plate.sanger_human_barcode}"
+      end
+    end
+    16.times do |i|
+      Purpose.find_by_name('Cherrypicked').create!.tap do |plate|
+        plate.wells.each { |w| w.aliquots.create!(:sample => Sample.create!(:name => "sample_in_cp_located_#{i}_well_#{w.map.description}", :studies=>[study])) }
+        relocate_plate(plate, i, Location.all)
+        puts "Cherrypicked: #{plate.ean13_barcode}-#{plate.sanger_human_barcode} at '#{plate.location.name}'"
       end
     end
     4.times do |i|
