@@ -74,7 +74,7 @@ module Submission::StateMachine
     end
 
     aasm_event :cancel do
-      transitions :to => :cancelled, :from => [ :ready, :cancelled ]
+      transitions :to => :cancelled, :from => [ :pending, :ready, :cancelled ]
     end
 
     aasm_event :process do
