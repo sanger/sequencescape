@@ -28,8 +28,7 @@ class Equipment < ActiveRecord::Base
       :suffix => suffix,
       :prefix => prefix,
       :type => "custom-labels",
-      :label_name => name,
-      :label_description =>  equipment_type })]
+      :label_description =>  name })]
   end
 
   def print(barcode_printer)
