@@ -32,7 +32,7 @@ module PlatePurpose::Stock
     when ['cancelled','failed'] then 'failed'
     when ['pending']            then 'pending'
     when []                     then 'pending'
-    when ['started']            then 'passed'
+    when ['started']            then 'started'
     when ['passed']             then 'passed'
     else 'pending'
     end
