@@ -400,7 +400,7 @@ en:
 
         data_access_group:
           label: Data access group
-          help: Access to product data in the iRODs seq zone will be limited to the members of the Sanger UNIX group set here. Leaving the field empty allow public access within the Sanger. Entering an invalid group will stop all access.
+          help: Access to product data in the iRODs seq zone will be limited to the members of the Sanger UNIX group set here. Leaving the field empty allow public access within the Sanger. Entering an invalid group will stop all access. Multiple access groups can be specified and should be separated with spaces.
 
         bam:
           label: Alignments in BAM
