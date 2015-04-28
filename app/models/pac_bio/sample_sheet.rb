@@ -23,24 +23,19 @@ class PacBio::SampleSheet
 
 
   def create_csv_from_batch(batch)
-      csv_string = FasterCSV.generate( :row_sep => "\r\n") do |csv|
-        header_metadata(batch).each{ |header_row| csv << header_row }
-        csv << column_headers
-        requests_by_wells(batch).each do |requests|
-          csv << row(requests, batch)
-        end
+    csv_string = FasterCSV.generate( :row_sep => "\r\n") do |csv|
+      header_metadata(batch).each{ |header_row| csv << header_row }
+      csv << column_headers
+      requests_by_wells(batch).each do |requests|
+        csv << row(requests, batch)
       end
+    end
   end
 
   def requests_by_wells(batch)
     requests = batch.requests.for_pacbio_sample_sheet
-    wells = requests.map{ |request| request.target_asset }.uniq.sort_by {|w| w.map.column_order }
-    requests_grouped_by_wells = []
-    wells.each do |well|
-      requests_grouped_by_wells << requests.select{ |request| request.target_asset == well }
-    end
-
-    requests_grouped_by_wells
+    sorted_well_requests = requests.group_by {|r| r.target_asset.map.column_order }.sort
+    sorted_well_requests.map {|well_index,requests| requests }
   end
 
   def replace_non_alphanumeric(protocol)
