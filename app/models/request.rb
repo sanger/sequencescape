@@ -111,6 +111,8 @@ class Request < ActiveRecord::Base
 
   named_scope :with_request_type_id, lambda { |id| { :conditions => { :request_type_id => id } } }
 
+  named_scope :for_pacbio_sample_sheet, :include => [{:target_asset=>:map},:request_metadata]
+
   # project is read only so we can set it everywhere
   # but it will be only used in specific and controlled place
   belongs_to :initial_project, :class_name => "Project"

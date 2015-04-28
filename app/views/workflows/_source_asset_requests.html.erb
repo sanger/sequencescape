@@ -11,5 +11,5 @@
 <% end %>
 </ul>
 <% requests.each do |request| %>
-  <input type='hidden' class='tube_location' id='locations_for_<%= request.id %>' name='request_locations[<%= request.id %>]' autocomplete="off" value=''>
+  <input type='hidden' class='tube_location' id='locations_for_<%= request.asset.name %>' name='request_locations[<%= request.id %>]' autocomplete="off" value=''>
 <% end %>

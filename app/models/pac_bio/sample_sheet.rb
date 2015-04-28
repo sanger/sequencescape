@@ -33,8 +33,8 @@ class PacBio::SampleSheet
   end
 
   def requests_by_wells(batch)
-    requests = batch.requests
-    wells = requests.map{ |request| request.target_asset }.uniq
+    requests = batch.requests.for_pacbio_sample_sheet
+    wells = requests.map{ |request| request.target_asset }.uniq.sort_by {|w| w.map.column_order }
     requests_grouped_by_wells = []
     wells.each do |well|
       requests_grouped_by_wells << requests.select{ |request| request.target_asset == well }
