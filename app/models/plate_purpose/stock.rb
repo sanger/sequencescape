@@ -25,32 +25,16 @@ module PlatePurpose::Stock
   end
 
   def calculate_state_of_plate(wells_states)
-    ## We are aggregating all the wells status information
-    case wells_states.uniq.sort
-    when ['failed']             then 'failed'
-    when ['cancelled']          then 'cancelled'
-    when ['cancelled','failed'] then 'failed'
-    when ['pending']            then 'pending'
-    when []                     then 'pending'
-    when ['started']            then 'started'
-    when ['passed']             then 'passed'
-    else 'pending'
-    end
+    aggregated_states = wells_states.uniq.sort
+    return aggregated_states.first if aggregated_states.length == 1
+    return 'pending'
   end
 
   def calculate_state_of_well(well_requests_states)
-    ## We take the assumption that all the requests belong to the same submission.
-    case well_requests_states.uniq.sort
-      when ['failed']               then return 'failed'
-      when ['cancelled']            then return 'cancelled'
-      when ['cancelled','failed']   then return 'failed'
-      when ['cancelled', 'pending'] then return 'passed'
-      when ['cancelled', 'started'] then return 'passed'
-      when ['pending', 'pending']   then return 'pending'
-      when ['started', 'pending']   then return 'pending'
-      when ['passed', 'pending']    then return 'pending'
-    end
-    'passed' if well_requests_states.count == 1
+    return well_requests_states.first if well_requests_states.one?
+    well_requests_states.delete("cancelled")
+    return well_requests_states.first if well_requests_states.one?
+    return 'pending'
   end
 
   def transition_state_requests(*args)
