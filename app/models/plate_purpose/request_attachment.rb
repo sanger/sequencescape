@@ -13,7 +13,10 @@ module PlatePurpose::RequestAttachment
     wells.each do |target_well|
       source_wells = target_well.stock_wells
       source_wells.each do |source_well|
-        upstream = source_well.requests.detect {|r| r.is_a?(connected_class) && r.submission.state!="cancelled"}
+        # Cancelled requests come from a cancelled submission, so are ignored.
+        # We can have various submissions by each well, but only one of them should be active at a time, as we are
+        # filtering by this assumption
+        upstream = source_well.requests.excluding_states(["cancelled"]).detect {|r| r.is_a?(connected_class)}
 
         # We need to find the downstream requests BEFORE connecting the upstream
         # This is because submission.next_requests tries to take a shortcut through
