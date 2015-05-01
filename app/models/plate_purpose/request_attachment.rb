@@ -1,3 +1,7 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2014,2015 Genome Research Ltd.
+
 module PlatePurpose::RequestAttachment
 
   def transition_to(plate, state, contents = nil, customer_accepts_responsibility = false)
@@ -16,7 +20,7 @@ module PlatePurpose::RequestAttachment
         # Cancelled requests come from a cancelled submission, so are ignored.
         # We can have various submissions by each well, but only one of them should be active at a time, as we are
         # filtering by this assumption
-        upstream = source_well.requests.excluding_states(["cancelled"]).detect {|r| r.is_a?(connected_class)}
+        upstream = source_well.requests.detect {|r| r.is_a?(connected_class) && r.started? }
 
         # We need to find the downstream requests BEFORE connecting the upstream
         # This is because submission.next_requests tries to take a shortcut through
