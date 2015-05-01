@@ -203,7 +203,7 @@ class Request < ActiveRecord::Base
   named_scope :without_target, :conditions =>  'target_asset_id is null'
   named_scope :excluding_states, lambda { |states|
     {
-      :conditions => [states.map{|s| '(state != ?)' }.join(" OR "), states].flatten
+      :conditions => [states.map{|s| "(#{table_name}.state != ?)" }.join(" OR "), states].flatten
     }
   }
   named_scope :ordered, :order => ["id ASC"]
@@ -229,6 +229,7 @@ class Request < ActiveRecord::Base
   end
 
   named_scope :for_submission_id, lambda { |id| { :conditions => { :submission_id => id } } }
+
   named_scope :for_asset_id, lambda { |id| { :conditions => { :asset_id => id } } }
   named_scope :for_study_ids, lambda { |ids|
     {
