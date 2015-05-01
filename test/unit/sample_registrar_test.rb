@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2014,2015 Genome Research Ltd.
 require "test_helper"
 
 class SampleRegistrarTest < ActiveSupport::TestCase
@@ -41,6 +41,10 @@ class SampleRegistrarTest < ActiveSupport::TestCase
       should 'put the sample into the study' do
         @study.reload
         assert_contains(@study.samples, Sample.last)
+      end
+
+      should 'put the aliquots into the study' do
+        assert_equal @study, SampleTube.last.aliquots.first.study
       end
 
       should 'make the user the owner of the sample' do
