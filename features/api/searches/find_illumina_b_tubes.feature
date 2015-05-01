@@ -1,4 +1,4 @@
-@api @json @asset @search @single-sign-on @new-api @barcode_search @barcode-service
+@api @json @asset @search @single-sign-on @new-api @barcode_search @barcode-service @ci_fail
 Feature: Searching for assets by barcode
   Background:
     Given all of this is happening at exactly "12-Jun-2012 23:00:00+01:00"
