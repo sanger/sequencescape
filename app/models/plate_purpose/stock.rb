@@ -7,10 +7,7 @@ module PlatePurpose::Stock
   end
   private :_pool_wells
 
-  # The state of a pulldown stock plate is governed by the presence of pulldown requests combined
-  # with the aliquots.  Basically every well that has stuff in it should have a pulldown request
-  # for the plate to be 'passed', otherwise it is 'pending'.  An empty plate is also considered
-  # to be pending.
+
   def state_of(plate)
     # If there are no wells with aliquots we're pending
     wells_with_aliquots = plate.wells.with_aliquots.all
@@ -18,14 +15,26 @@ module PlatePurpose::Stock
 
     # All of the wells with aliquots must have requests for us to be considered passed
     requests = Request::LibraryCreation.all(:conditions => { :asset_id => wells_with_aliquots.map(&:id) })
-    return 'pending' unless requests.count == wells_with_aliquots.count
 
-    case requests.map(&:state).uniq.sort
-    when ['failed']             then 'failed'
-    when ['cancelled']          then 'cancelled'
-    when ['cancelled','failed'] then 'failed'
-    else                             'passed'
+    wells_states = wells_with_aliquots.map do |w|
+      calculate_state_of_well(requests.select{|r| r.asset_id == w.id}.map(&:state))
     end
+
+    return 'pending' unless wells_states.count == wells_with_aliquots.count
+    return calculate_state_of_plate(wells_states)
+  end
+
+  def calculate_state_of_plate(wells_states)
+    aggregated_states = wells_states.uniq.sort
+    return aggregated_states.first if aggregated_states.length == 1
+    return 'pending'
+  end
+
+  def calculate_state_of_well(well_requests_states)
+    return well_requests_states.first if well_requests_states.one?
+    well_requests_states.delete("cancelled")
+    return well_requests_states.first if well_requests_states.one?
+    return 'pending'
   end
 
   def transition_state_requests(*args)

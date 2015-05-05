@@ -94,6 +94,8 @@ module SubmissionsHelper
       display_user_error("<h2>Your submission has failed:</h2><p> #{h((submission.message||'No failure reason recorded').lines.first)} </p>")
     when 'ready'
       content_tag(:p, 'Your submission has been <strong>processed</strong>.')
+    when 'cancelled'
+      content_tag(:p, 'Your submission has been <strong>cancelled</strong>.')
     else
       content_tag(:p, 'Your submission is in an unknown state (contact support).')
     end
