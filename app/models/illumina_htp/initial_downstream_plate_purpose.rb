@@ -9,6 +9,11 @@ class IlluminaHtp::InitialDownstreamPlatePurpose < IlluminaHtp::DownstreamPlateP
       super
       new_outer_state = ['started','passed','qc_complete','nx_in_progress'].include?(state) ? 'started' : state
 
+      # CAUTION!
+      # TODO: While the behaviour here wont cause us any issues, its actually subtly wrong.
+      # 1) Multiple wells on the same plate may have the same stock wells
+      # 2) Well location may change between parent and child plates.
+      # 3) As we only fire on pending requests this isn't actually a massive problem as we'll be targeting the whole plate anyway
       active_submissions = plate.submission_ids
 
       stock_wells(plate,contents).each do |source_well|
