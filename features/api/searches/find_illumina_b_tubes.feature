@@ -69,13 +69,13 @@ Feature: Searching for assets by barcode
           {"size":2,
            "searches":
             [
-              {"name":"stock tube current",
-              "purpose":{"name":"ILB_STD_STOCK"},
-              "uuid":"00000000-1111-2222-3333-000000000001",
-              "state":"started"},
               {"name":"stock tube passed",
               "purpose":{"name":"ILB_STD_MX"},
               "uuid":"00000000-1111-2222-3333-000000000004",
+              "state":"started"},
+              {"name":"stock tube current",
+              "purpose":{"name":"ILB_STD_STOCK"},
+              "uuid":"00000000-1111-2222-3333-000000000001",
               "state":"started"}
               ]
            }

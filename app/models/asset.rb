@@ -54,11 +54,6 @@ class Asset < ActiveRecord::Base
     nil
   end
 
-  # Holder
-  # Replaced by container
-  #belongs_to :holder, :polymorphic => true
-  # Replaced by contents
-  #has_many :holded_assets, :as => :holder, :class_name => "Asset"
   belongs_to :map
   belongs_to :barcode_prefix
   named_scope :sorted , :order => "map_id ASC"
@@ -68,6 +63,7 @@ class Asset < ActiveRecord::Base
 
   named_scope :of_type, lambda { |*args| { :conditions => { :sti_type => args.map { |t| [t, Class.subclasses_of(t)] }.flatten.map(&:name) } } }
 
+  named_scope :recent_first, :order => 'id DESC'
   def studies
     []
   end
