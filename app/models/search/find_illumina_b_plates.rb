@@ -1,5 +1,7 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+
+require "#{Rails.root.to_s}/app/models/illumina_b/plate_purposes"
 #Copyright (C) 2012,2013,2014 Genome Research Ltd.
 class Search::FindIlluminaBPlates < Search
   def scope(criteria)
@@ -9,7 +11,7 @@ class Search::FindIlluminaBPlates < Search
   end
 
   def illumina_b_plate_purposes
-    names = IlluminaB::PlatePurposes::PLATE_PURPOSE_FLOWS.flatten.concat(IlluminaHtp::PlatePurposes::PLATE_PURPOSE_FLOWS.flatten).concat(Pulldown::PlatePurposes::ISCH_PURPOSE_FLOWS.flatten)
+    names = (IlluminaB::PlatePurposes::PLATE_PURPOSE_FLOWS + IlluminaHtp::PlatePurposes::PLATE_PURPOSE_FLOWS + Pulldown::PlatePurposes::ISCH_PURPOSE_FLOWS).flatten.uniq
     PlatePurpose.find_all_by_name(names)
   end
   private :illumina_b_plate_purposes
