@@ -11,16 +11,18 @@ module PlatePurpose::RequestAttachment
 
   def connect_requests(plate, state, contents = nil)
     return unless state == connect_on
-    wells = plate.wells
-    wells = wells.located_at(contents).include_stock_wells unless contents.blank?
+    wells = plate.wells.include_requests_as_target
+    wells = wells.located_at(contents) unless contents.blank?
 
-    wells.each do |target_well|
+    wells.include_stock_wells.each do |target_well|
       source_wells = target_well.stock_wells
+
+      submission_ids = target_well.requests_as_target.map(&:submission_id)
+
       source_wells.each do |source_well|
-        # Cancelled requests come from a cancelled submission, so are ignored.
-        # We can have various submissions by each well, but only one of them should be active at a time, as we are
-        # filtering by this assumption
-        upstream = source_well.requests.detect {|r| r.is_a?(connected_class) && r.started? }
+        # We may have multiple requests out of each well, however we're only concerned
+        # about those associated with the active submission.
+        upstream = source_well.requests.detect {|r| r.is_a?(connected_class) && submission_ids.include?(r.submission_id) }
 
         # We need to find the downstream requests BEFORE connecting the upstream
         # This is because submission.next_requests tries to take a shortcut through
