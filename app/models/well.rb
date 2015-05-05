@@ -92,8 +92,6 @@ class Well < Aliquot::Receptacle
     :joins => 'INNER JOIN aliquots ON aliquots.receptacle_id=assets.id'
   }
 
-  include Transfer::WellHelpers
-
   class << self
     def delegate_to_well_attribute(attribute, options = {})
       class_eval <<-END_OF_METHOD_DEFINITION
