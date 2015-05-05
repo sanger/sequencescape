@@ -45,7 +45,7 @@ module StudyReport::StudyDetails
       "Status","Study","Supplier","Sanger Sample Name","Supplier Sample Name","Plate","Well","Supplier Volume",
       "Supplier Gender", "Concentration","Initial Volume","Measured Volume","Total Micrograms","Sequenome Count", "Sequenome Gender",
       "Pico","Gel", "Qc Status", "QC started date", "Pico date", "Gel QC date","Seq stamp date","Genotyping Status", "Genotyping Chip", "Genotyping Infinium Barcode", "Genotyping Barcode","Genotyping Well", "Cohort", "Country of Origin",
-      "Geographical Region","Ethnicity","DNA Source","Is Resubmitted","Control"
+      "Geographical Region","Ethnicity","DNA Source","Is Resubmitted","Control","Is in Fluidigm"
       ]
   end
 
@@ -92,7 +92,8 @@ module StudyReport::StudyDetails
                    asset_progress_data[:ethnicity],
                    asset_progress_data[:dna_source],
                    asset_progress_data[:is_resubmitted],
-                   asset_progress_data[:control]
+                   asset_progress_data[:control],
+                   asset_progress_data[:is_in_fluidigm]
         ])
       end
     end
