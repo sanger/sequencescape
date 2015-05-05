@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013 Genome Research Ltd.
+#Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
 # This is a module containing the standard statemachine for a request that needs it.
 # It provides various callbacks that can be hooked in to by the derived classes.
 module Request::Statemachine
@@ -104,6 +104,10 @@ module Request::Statemachine
         transitions :to => :cancelled, :from => [:pending]
       end
 
+      aasm_event :submission_cancelled do
+        transitions :to => :cancelled, :from => [:pending,:cancelled]
+      end
+
       aasm_event :fail_from_upstream do
         transitions :to => :cancelled, :from => [:pending]
         transitions :to => :failed,    :from => [:started], :on_transition => :charge_internally
@@ -188,6 +192,10 @@ module Request::Statemachine
 
   def open?
     ["pending", "started"].include?(self.state)
+  end
+
+  def cancellable?
+    ["pending", "cancelled"].include?(self.state)
   end
 
   def transition_to(target_state)

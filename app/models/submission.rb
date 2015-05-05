@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 class Submission < ActiveRecord::Base
   include Uuid::Uuidable
   extend  Submission::StateMachine
@@ -60,7 +60,7 @@ class Submission < ActiveRecord::Base
   def cancel_all_requests_on_destruction
     ActiveRecord::Base.transaction do
       requests.all.each do |request|
-        request.cancel_before_started!  # Cancel first to prevent event doing something stupid
+        request.submission_cancelled!  # Cancel first to prevent event doing something stupid
         request.events.create!(:message => "Submission #{self.id} as destroyed")
       end
     end
@@ -70,12 +70,12 @@ class Submission < ActiveRecord::Base
   def cancel_all_requests
     raise RuntimeError, "Submission #{id} can not be cancelled" unless cancellable?
     ActiveRecord::Base.transaction do
-      requests.select{|r| !r.cancelled? }.each(&:cancel_before_started!)
+      requests.each(&:submission_cancelled!)
     end
   end
 
-  def cancellable?
-    (pending? || ready?) &&  (requests.all?(&:pending?) || requests.all?(&:cancelled?))
+  def requests_cancellable?
+    requests.all?(&:cancellable?)
   end
 
 
