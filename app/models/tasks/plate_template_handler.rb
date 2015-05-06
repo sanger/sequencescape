@@ -5,7 +5,7 @@ module Tasks::PlateTemplateHandler
   def render_plate_template_task(task, params)
     @robots = Robot.all
     @plate_purpose_options = task.plate_purpose_options(@batch)
-    suitable_sizes = @plate_purpose_options.map {|o| o[1] }
+    suitable_sizes = @plate_purpose_options.map {|o| o[1] }.uniq
     if (@batch.pipeline.control_request_type.nil?)
       @plate_templates = PlateTemplate.with_sizes(suitable_sizes).select(&:without_control_wells?)
     else
