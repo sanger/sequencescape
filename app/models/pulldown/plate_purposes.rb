@@ -1,6 +1,10 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013 Genome Research Ltd.
+#Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
+
+# We require all the plate and tube purpose files here as Rails eager loading does not play nicely with single table
+# inheritance
+
 module Pulldown::PlatePurposes
 
   ISCH_PURPOSE_FLOWS = [[
@@ -88,7 +92,8 @@ module Pulldown::PlatePurposes
 
   class << self
 
-    def create_purposes(branch)
+    def create_purposes(branch_o)
+      branch = branch_o.clone
       initial = Purpose.find_by_name!(branch.shift)
       branch.inject(initial) do |parent,new_purpose_name|
         Pulldown::PlatePurposes::PLATE_PURPOSE_TYPE[new_purpose_name].create!(:name => new_purpose_name).tap do |child_purpose|
@@ -107,4 +112,9 @@ module Pulldown::PlatePurposes
 
   end
 
+end
+
+
+['initial_downstream_plate','initial_plate','library_plate','stock_plate'].each do |type|
+  require "#{Rails.root.to_s}/app/models/pulldown/#{type}_purpose"
 end

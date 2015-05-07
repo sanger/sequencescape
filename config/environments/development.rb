@@ -24,6 +24,8 @@ config.action_mailer.raise_delivery_errors = false
 
 config.log_level = :debug
 
+config.time_zone = 'London'
+
 config.active_record.observers = [ :request_observer ]
 
 # Use the response timer middleware

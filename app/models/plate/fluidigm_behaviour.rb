@@ -7,7 +7,7 @@ module Plate::FluidigmBehaviour
 
   def self.included(base)
     base.class_eval do
-      fluidigm_request_id = RequestType.find_by_key('pick_to_fluidigm').id
+      fluidigm_request_id = RequestType.find_by_key!('pick_to_fluidigm').id
 
       named_scope :requiring_fluidigm_data, {
         :select => 'DISTINCT assets.*, plate_metadata.fluidigm_barcode AS fluidigm_barcode',
