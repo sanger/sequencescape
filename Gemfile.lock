@@ -38,10 +38,10 @@ GIT
 
 GIT
   remote: git://github.com/sanger/sanger_barcode.git
-  revision: 2d354c48dd325551662309be247c87a5bfea3b57
+  revision: 12b359c216b0fa35208eca94da353ae22b1a4784
   branch: ruby-1.8
   specs:
-    sanger_barcode (0.1.0)
+    sanger_barcode (0.1.1)
 
 GEM
   remote: https://rubygems.org/
@@ -280,7 +280,7 @@ DEPENDENCIES
   ruby-debug
   ruby-oci8 (= 1.0.7)
   ruby_walk (>= 0.0.3)!
-  sanger_barcode (~> 0.1.0)!
+  sanger_barcode (~> 0.1.1)!
   shoulda (~> 2.10.0)
   sinatra (~> 1.1.0)
   spoon
