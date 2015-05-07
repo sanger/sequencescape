@@ -1,11 +1,6 @@
-source 'http://rubygems.org'
-source 'http://gems.github.com'
+source 'https://rubygems.org'
 
 gem "rails", "~>2.3"
-
-# Warehouse builder
-gem "log4r"
-gem "db-charmer"
 
 gem "aasm", "~>2.4.0"
 gem "configatron"
@@ -25,23 +20,29 @@ gem 'rdoc', '~>2.4.2'
 gem 'trinidad', :platforms => :jruby
 
 # This was once a plugin, now it's a gem:
-gem 'catch_cookie_exception', :git => 'git+ssh://git@github.com/mhartl/catch_cookie_exception.git'
+gem 'catch_cookie_exception',
+  :github => 'mhartl/catch_cookie_exception'
 
-gem 'sanger_barcode', '~>0.1.0', :git => 'git+ssh://git@github.com/sanger/sanger_barcode.git', :branch => 'ruby-1.8'
+gem 'sanger_barcode', '~>0.1.1',
+  :github => 'sanger/sanger_barcode', :branch => 'ruby-1.8'
 # The graph library (1.x only because 2.x uses Rails 3).  This specific respository fixes an issue
 # seen in creating asset links during the assign_tags_handler (which blew up in rewire_crossing in the
 # gem code).
-gem "acts-as-dag", :git => "git+ssh://git@github.com/sanger/acts-as-dag.git", :branch => '38792421_add_dependent_destroy_to_links'
+gem "acts-as-dag",
+  :github => "sanger/acts-as-dag", :branch => '38792421_add_dependent_destroy_to_links'
 
 # Better table alterations
-gem "alter_table", :git => "git+ssh://git@github.com/sanger/alter_table.git"
+gem "alter_table",
+  :github => "sanger/alter_table"
 
 # For background processing
 gem "delayed_job", '~>2.0.4'
 
-gem "ruby_walk",  ">= 0.0.3",:git => "git+ssh://git@github.com/sanger/ruby_walk"
+gem "ruby_walk",  ">= 0.0.3",
+  :github => "sanger/ruby_walk"
 
-gem "irods_reader", '>=0.0.2', :git => 'git+ssh://git@github.com/sanger/irods_reader'
+gem "irods_reader", '>=0.0.2',
+  :github => 'sanger/irods_reader'
 
 # For the API level
 gem "uuidtools"
@@ -83,15 +84,16 @@ end
 
 group :test do
   # bundler requires these gems while running tests
-  gem "ci_reporter", :git => "git+ssh://git@github.com/sanger/ci_reporter.git"
-  gem "factory_girl", '~>1.3.1'
+  # gem "ci_reporter",
+  #   :github => "sanger/ci_reporter"
+  gem "factory_girl", '~>1.3.1', :require => false
   gem "launchy"
   gem "mocha", :require => false # avoids load order problems
   gem "nokogiri"
   gem "shoulda", "~>2.10.0"
   gem "timecop"
   gem "treetop", "~>1.2.5"
-  gem 'parallel_tests'
+  gem 'parallel_tests', :platforms => :mri
 
   gem "timocratic-test_benchmark"
 
@@ -109,7 +111,8 @@ end
 
 group :deployment do
   gem "mongrel_cluster", :platforms => :mri
-  gem "psd_logger", :git => "git@github.com:sanger/psd_logger.git"
+  gem "psd_logger",
+    :github => "sanger/psd_logger"
   gem "gmetric", "~>0.1.3"
   gem "trinidad_daemon_extension", :platforms => :jruby
 end

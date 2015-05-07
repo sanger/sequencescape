@@ -123,7 +123,8 @@ module IlluminaHtp::PlatePurposes
       end
     end
 
-    def create_tube_flow(flow)
+    def create_tube_flow(flow_o)
+      flow = flow_o.clone
       raise "Flow already exists" if Purpose.find_by_name(flow.first).present?
       create_tube_purpose(flow.pop, :target_type => 'MultiplexedLibraryTube')
       flow.each(&method(:create_tube_purpose))
@@ -135,7 +136,8 @@ module IlluminaHtp::PlatePurposes
       end
     end
 
-    def create_plate_flow(flow)
+    def create_plate_flow(flow_o)
+      flow = flow_o.clone
       raise "Flow already exists" if Purpose.find_by_name(flow.first).present?
       stock_plate = create_plate_purpose(
         flow.shift,
@@ -169,7 +171,8 @@ module IlluminaHtp::PlatePurposes
       end
     end
 
-    def create_branch(branch)
+    def create_branch(branch_o)
+      branch = branch_o.clone
       branch.inject(Purpose.find_by_name(branch.shift)) do |parent, child|
         Purpose.find_by_name(child).tap do |child_purpose|
           parent.child_relationships.create!(:child => child_purpose, :transfer_request_type => request_type_between(parent, child_purpose))
