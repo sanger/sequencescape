@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 require "test_helper"
 
 class StudyTest < ActiveSupport::TestCase
@@ -315,14 +315,14 @@ class StudyTest < ActiveSupport::TestCase
 
       should 'accept valid data access group names' do
         # Valid names contain alphanumerics and underscores. They are limited to 32 characters, and cannot begin with a number
-        ['goodname','g00dname','good_name','_goodname','good-name'].each do |name|
+        ['goodname','g00dname','good_name','_goodname','good-name','goodname1  goodname2'].each do |name|
           assert @study.study_metadata.update_attributes!(:data_access_group=>name)
           assert_equal name, @study.study_metadata.data_access_group
         end
       end
 
       should 'reject non-alphanumeric data access groups' do
-        ['b@dname','bad name','1badname','averylongbadnamewouldbebadsowesouldblockit','baDname'].each do |name|
+        ['b@dname','1badname','averylongbadnamewouldbebadsowesouldblockit','baDname'].each do |name|
           assert_raise ActiveRecord::RecordInvalid do
             @study.study_metadata.update_attributes!(:data_access_group=>name)
           end
@@ -345,6 +345,11 @@ class StudyTest < ActiveSupport::TestCase
         assert_raise(ActiveRecord::RecordInvalid) do
           @study.update_attributes!(:name=>'a'*201)
         end
+      end
+
+      should ' squish whitespace' do
+        assert @study.update_attributes!(:name=>'   Squish   double spaces and flanking whitespace but not double letters ')
+        assert_equal 'Squish double spaces and flanking whitespace but not double letters', @study.name
       end
     end
 

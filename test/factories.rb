@@ -173,6 +173,7 @@ end
 
 Factory.define :request_metadata, :class => Request::Metadata do |m|
   m.read_length 76
+  m.customer_accepts_responsibility false
 end
 
 # Automatically generated request types

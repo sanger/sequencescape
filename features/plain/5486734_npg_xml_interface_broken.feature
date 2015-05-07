@@ -32,6 +32,7 @@ Feature: NPG XML interface
               <property>
                 <key>customer_accepts_responsibility</key>
                 <name>Still charge on fail</name>
+                <value>false</value>
               </property>
               <property>
                 <key>read_length</key>
@@ -81,6 +82,7 @@ Feature: NPG XML interface
               <property>
                 <key>customer_accepts_responsibility</key>
                 <name>Still charge on fail</name>
+                <value>false</value>
               </property>
               <property>
                 <key>read_length</key>

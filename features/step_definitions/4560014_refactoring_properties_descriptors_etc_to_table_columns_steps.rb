@@ -117,7 +117,8 @@ Given /^the last "pending" submission is made$/ do
 end
 
 Then /^I should see the following request information:$/ do |expected|
-  expected.diff!(table(tableish('.info .property_group_general tr', 'td')))
+  actual = table(tableish('.info .property_group_general tr', 'td')).rows_hash
+  assert_equal expected.rows_hash, actual
 end
 
 Given /^all of the wells are on a "([^\"]+)" plate$/ do |plate_purpose_name|
