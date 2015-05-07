@@ -208,22 +208,26 @@ class WellTest < ActiveSupport::TestCase
         assert_equal 9.1,  @well.get_buffer_volume
       end
 
-      should "set the buffer volume" do
+      should "sets the buffer volume" do
         vol_to_pick = @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(5.0, 50.0, 200.0)
         assert_equal 3.75, @well.get_buffer_volume
         vol_to_pick = @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(13.0, 30.0, 100.0)
         assert_equal 9.1,  @well.get_buffer_volume
       end
 
-      should "set buffer and volume_to_pick correctly" do
+      should "sets buffer and volume_to_pick correctly" do
         vol_to_pick = @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(5.0, 50.0, 200.0)
         assert_equal @well.get_picked_volume, vol_to_pick
         assert_equal 5.0, @well.get_buffer_volume + vol_to_pick
       end
 
       should "checking extremes for volume" do
-        assert_equal 1.0, @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(0.5, 5.0, 50.0, 1.0)
+        # It should get 83.3 ml for 3 ng/ml, but the original volume available is 5.0 ml
         assert_equal 5.0, @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(5.0, 50.0, 3.0, 1.0)
+        # It should get 0.05 ml to get 50 ng/ml
+        assert_equal 0.05, @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(0.5, 5.0, 50.0, 0.0)
+        # It should get 8.33 ml, and the volume required is 0.5 ml, but the minimum pick is 1.0
+        assert_equal 1.0, @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(0.5, 50.0, 3.0, 1.0)
       end
 
       should "checking extremes for buffer volume" do
