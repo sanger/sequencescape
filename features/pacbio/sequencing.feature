@@ -46,8 +46,8 @@ Feature: Push samples through the PacBio pipeline for sequencing
     And I press "Next step"
     And I press "Next step"
     Then I should see "Layout tubes on a plate"
-    And I fill in the hidden field "locations_for_DN1234567T-A1" with "A1"
-    And I fill in the hidden field "locations_for_DN1234567T-B1" with "B1"
+    And I fill in the field for "DN1234567T-A1" with "A1"
+    And I fill in the field for "DN1234567T-B1" with "B1"
    And I press "Next step"
    And I press "Next step"
 
@@ -75,8 +75,8 @@ Feature: Push samples through the PacBio pipeline for sequencing
      And I press "Next step"
      And I press "Next step"
      Then I should see "Layout tubes on a plate"
-     And I fill in the hidden field "locations_for_DN1234567T-A1" with "A1"
-     And I fill in the hidden field "locations_for_DN1234567T-B1" with "B1"
+     And I fill in the field for "DN1234567T-A1" with "A1"
+     And I fill in the field for "DN1234567T-B1" with "B1"
      When I press "Next step"
 
      Given the UUID for the last batch is "00000000-1111-2222-3333-444444444445"
@@ -105,8 +105,8 @@ Feature: Push samples through the PacBio pipeline for sequencing
     And I press "Next step"
     And I press "Next step"
     Then I should see "Layout tubes on a plate"
-     And I fill in the hidden field "locations_for_DN1234567T-A1" with "C3"
-     And I fill in the hidden field "locations_for_DN1234567T-B1" with "C2"
+     And I fill in the field for "DN1234567T-A1" with "C3"
+     And I fill in the field for "DN1234567T-B1" with "C2"
 
     And I press "Next step"
     And I press "Next step"
