@@ -76,6 +76,7 @@ module Tasks::CherrypickHandler
     @concentration_required = params[:concentration_required]
     @minimum_volume = params[:minimum_volume]
     @maximum_volume = params[:maximum_volume]
+    @minimum_picking_volume = params[:minimum_picking_volume]
     @total_nano_grams = params[:total_nano_grams]
     @cherrypick_action = params[:cherrypick][:action]
     @plate_purpose_id = params[:plate_purpose_id]
