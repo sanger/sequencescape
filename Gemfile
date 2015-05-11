@@ -103,10 +103,13 @@ end
 group :cucumber do
   # We only need to bind cucumber-rails here, the rest are its dependencies which means it should be
   # making sensible choices.  Should ...
-  gem "capybara", "~>0.3.9", :require => false
+  # Yeah well, it doesn't.
+  gem "rubyzip", "~>0.9"
+  gem "capybara", "~>1.1", :require => false
   gem "database_cleaner", :require => false
   gem "cucumber", :require => false
   gem "cucumber-rails", "~>0.3.2", :require => false
+  gem "poltergeist", "1.0.3"
 end
 
 group :deployment do
