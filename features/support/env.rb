@@ -41,18 +41,6 @@ Capybara.javascript_driver = :poltergeist
 # steps to use the XPath syntax.
 Capybara.default_selector = :css
 
-# This is a monkey patch for capybara =0.3.9
-# If we upgrade to ~>0.4.0 then this monkey patch needs to go!
-# Add better support for Capybara parallel testing using server port numbering
-if ENV['TEST_ENV_NUMBER']
-  class Capybara::Server
-    def find_available_port
-      @port = 11000 + (ENV['TEST_ENV_NUMBER'].to_i * 100)
-      @port += 1 while is_port_open?(@port) and not is_running_on_port?(@port)
-    end
-  end
-end
-
 # If you set this to false, any error raised from within your app will bubble
 # up to your step definition and out to cucumber unless you catch it somewhere
 # on the way. You can make Rails rescue errors and render error pages on a
