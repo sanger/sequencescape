@@ -5,6 +5,22 @@ a {
   text-decoration:none;
 }
 
+/* Formats the tubes in the layout_tubes_on_plate task */
+.library_tube { margin:0.1em; padding:0.2em; background:#E3EEFC; border-radius:5px; }
+.tube_tag {padding: 0.2em; margin-left:0.2em; background: #6997BF; color: white; border-radius:5px; }
+.pac_well .library_tube { display: block; clear:left; }
+.tube_source .library_tube { display: inline-block; }
+.plate td.target_well {background-color: green;}
+.plate td.well {padding:0; min-width:5em; margin:0; }
+.target_plate {width:100%;}
+.target_plate th.corner-tr {border-top-right-radius: 10px;}
+.target_plate th.corner-tl {}
+.target_plate th.corner-br {border-bottom-right-radius: 10px;}
+.target_plate th.corner-bl {border-bottom-left-radius: 10px;}
+.tube_source {padding:0.5em; border-radius:10px; background-color: #FFFFCC;}
+.pac_well {margin:0; padding:0; height: 2em;}
+#error_messages { background-color: #ff7070; padding: 2em; margin:1em; border:3px solid red; border-radius:20px; display:none;}
+
 a:hover {
   text-decoration: underline;
 }
@@ -1414,4 +1430,4 @@ ul.options label {
 ul.options li {
   margin:0.3em;
 }
-}
+

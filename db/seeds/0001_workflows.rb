@@ -977,7 +977,7 @@ PacBioSequencingPipeline.create!(:name => 'PacBio Sequencing') do |pipeline|
   pipeline.automated            = false
   pipeline.active               = true
   pipeline.max_size             = 96
-  pipeline.asset_type           = 'Well'
+
   pipeline.group_by_parent = false
 
   pipeline.location = Location.first(:conditions => { :name => 'PacBio sequencing freezer' }) or raise StandardError, "Cannot find 'PacBio sequencing freezer' location"
@@ -1001,11 +1001,10 @@ PacBioSequencingPipeline.create!(:name => 'PacBio Sequencing') do |pipeline|
   pipeline.workflow = LabInterface::Workflow.create!(:name => 'PacBio Sequencing').tap do |workflow|
     [
 
-      { :class => BindingKitBarcodeTask,      :name => 'Binding Kit Box Barcode', :sorted => 1, :batched => true, :lab_activity => true },
-      { :class => MovieLengthTask,            :name => 'Movie Lengths',           :sorted => 2, :batched => true, :lab_activity => true },
-      { :class => ReferenceSequenceTask,      :name => 'Reference Sequence',      :sorted => 3, :batched => true, :lab_activity => true },
-      { :class => AssignTubesToWellsTask,     :name => 'Layout tubes on a plate', :sorted => 4, :batched => true, :lab_activity => true },
-      { :class => ValidateSampleSheetTask,    :name => 'Validate Sample Sheet',   :sorted => 5, :batched => true, :lab_activity => true }
+      { :class => BindingKitBarcodeTask,              :name => 'Binding Kit Box Barcode', :sorted => 1, :batched => true, :lab_activity => true },
+      { :class => MovieLengthTask,                    :name => 'Movie Lengths',           :sorted => 2, :batched => true, :lab_activity => true },
+      { :class => AssignTubesToMultiplexedWellsTask,  :name => 'Layout tubes on a plate', :sorted => 4, :batched => true, :lab_activity => true },
+      { :class => ValidateSampleSheetTask,            :name => 'Validate Sample Sheet',   :sorted => 5, :batched => true, :lab_activity => true }
     ].each do |details|
       details.delete(:class).create!(details.merge(:workflow => workflow))
     end

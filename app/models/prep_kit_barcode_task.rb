@@ -21,9 +21,16 @@ class PrepKitBarcodeTask < Task
     workflow.render_prep_kit_barcode_task(self, params)
   end
 
+  def included_for_render_task
+    [:pipeline]
+  end
+
+  def included_for_do_task
+    [:pipeline,{:requests=>:target_asset}]
+  end
+
   def do_task(workflow, params)
     workflow.do_prep_kit_barcode_task(self, params)
   end
-
 
 end

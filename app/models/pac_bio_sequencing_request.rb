@@ -24,4 +24,13 @@ class PacBioSequencingRequest < Request
     PacBioSequencingRequest::RequestOptionsValidator
   end
 
+  def on_started
+
+  end
+
+  # Returns a list of attributes that must match for any given pool
+  def shared_attributes
+    "MovieLength:#{asset.pac_bio_library_tube_metadata.movie_length};InsertSize:#{request_metadata.insert_size};SequencingType:#{request_metadata.sequencing_type};"
+  end
+
 end

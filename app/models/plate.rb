@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 class Plate < Asset
   include Api::PlateIO::Extensions
   include ModelExtensions::Plate
@@ -598,7 +598,7 @@ WHERE c.container_id=?
   def set_plate_name_and_size
     self.name = "Plate #{barcode}" if self.name.blank?
     self.size = default_plate_size if self.size.nil?
-    self.location = Location.find_by_name("Sample logistics freezer") if self.location.nil?
+    self.location = Location.find_by_name("Sample logistics freezer") if self.location_id.nil?
   end
   private :set_plate_name_and_size
 
@@ -653,5 +653,11 @@ WHERE c.container_id=?
       end
     end
     true
+  end
+
+  # Barcode is stored as a string, jet in a number of places is treated as
+  # a number. If we conver it before searching, things are faster!
+  def find_by_barcode(barcode)
+    super(barcode.to_s)
   end
 end

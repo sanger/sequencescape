@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 Given /^I have a sample tube "([^"]*)" in study "([^"]*)" in asset group "([^"]*)"$/ do |sample_tube_barcode, study_name, asset_group_name|
   study = Study.find_by_name(study_name)
   sample_tube = Factory(:sample_tube, :barcode => sample_tube_barcode, :location =>  Location.find_by_name('PacBio library prep freezer'))
@@ -222,4 +222,9 @@ Then /^the PacBio manifest should be:$/ do |expected_results_table|
   actual_table = FasterCSV.parse( csv_rows.map{|c| "#{c}\r\n"}.join(''))
   expected_results_table.column_names.each {|c| expected_results_table.map_column!(c) {|d| d.blank? ? nil : d }}
   expected_results_table.diff!(actual_table)
+end
+
+Then /^I fill in the field for "(.*?)" with "(.*?)"$/ do |asset_name, content|
+  request_id = Asset.find_by_name!(asset_name).requests.first.id
+  step(%Q{I fill in the hidden field "locations_for_#{request_id}" with "#{content}"})
 end
