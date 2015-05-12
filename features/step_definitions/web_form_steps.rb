@@ -108,7 +108,8 @@ When /^I fill in "([^"]*)" with(?: the)? multiline text:?$/ do |field, value|
 end
 
 Then /^"([^\"]+)" should be selected from "([^\"]+)"$/ do |value, name|
-  assert_equal([ value ], find_field(name).value, "Field #{name.inspect} does not have the correct value selected")
+  selected = find_field(name).find('option[selected]').text
+  assert_equal( value , selected, "Field #{name.inspect} does not have the correct value selected")
 end
 
 Then /^I expect an exception to be raised when I press "([^"]*)"(?: within "([^"]*)")?$/ do |button, selector|
