@@ -15,9 +15,10 @@ namespace :working do
    end
   end
 
-  def relocate_plate(plate, pos, locations)
-    plate.location = locations[pos % locations.length]
-  end
+   locations = {
+    :htp => Location.find_by_name('Illumina high throughput freezer'),
+    :ilc => Location.find_by_name('Library creation freezer')
+   }
 
    user = User.create!(:login=>'admin',:password=>'admin', :swipecard_code=>'abcdef')
    user.is_administrator
@@ -39,20 +40,13 @@ namespace :working do
       puts "Stock: #{plate.ean13_barcode}-#{plate.sanger_human_barcode}"
     end
     8.times do |i|
-      Purpose.find_by_name('Cherrypicked').create!.tap do |plate|
+      Purpose.find_by_name('Cherrypicked').create!(:location=>locations[:htp]).tap do |plate|
         plate.wells.each { |w| w.aliquots.create!(:sample => Sample.create!(:name => "sample_in_cp#{i}_well_#{w.map.description}", :studies=>[study])) }
         puts "Cherrypicked: #{plate.ean13_barcode}-#{plate.sanger_human_barcode}"
       end
     end
-    16.times do |i|
-      Purpose.find_by_name('Cherrypicked').create!.tap do |plate|
-        plate.wells.each { |w| w.aliquots.create!(:sample => Sample.create!(:name => "sample_in_cp_located_#{i}_well_#{w.map.description}", :studies=>[study])) }
-        relocate_plate(plate, i, Location.all)
-        puts "Cherrypicked: #{plate.ean13_barcode}-#{plate.sanger_human_barcode} at '#{plate.location.name}'"
-      end
-    end
     4.times do |i|
-      Purpose.find_by_name('ILC Stock').create!.tap do |plate|
+      Purpose.find_by_name('ILC Stock').create!(:location=>locations[:ilc]).tap do |plate|
         plate.wells.each { |w| w.aliquots.create!(:sample => Sample.create!(:name => "sample_in_ilc#{i}_well_#{w.map.description}", :studies=>[study])) }
         puts "ILC Stock: #{plate.ean13_barcode}-#{plate.sanger_human_barcode}"
       end
@@ -78,7 +72,6 @@ namespace :working do
 
     Supplier.create!(:name=>'Test Supplier')
 
-    user = User.last
     puts "Setting up tag plates..."
     lot = LotType.find_by_name('IDT Tags').lots.create!(
       :lot_number => 'UATTaglot',
@@ -87,7 +80,7 @@ namespace :working do
       :received_at => DateTime.now
     )
    qcc =  QcableCreator.create!(:lot=>lot,:user=>user,:count=>30)
-   qcc.qcables.each {|qcable| qcable.update_attributes!(:state=>'available'); puts "Tag Plate: #{qcable.asset.ean13_barcode}"}
+   qcc.qcables.each {|qcable| qcable.update_attributes!(:state=>'available'); qcable.asset.update_attributes!(:location=>locations[:htp]) ;puts "Tag Plate: #{qcable.asset.ean13_barcode}"}
 
 
  end
