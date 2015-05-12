@@ -68,16 +68,15 @@ class Submission < ActiveRecord::Base
   private :cancel_all_requests_on_destruction
 
   def cancel_all_requests
-    raise RuntimeError, "Submission #{id} can not be cancelled" unless cancellable?
     ActiveRecord::Base.transaction do
       requests.each(&:submission_cancelled!)
     end
   end
+  private :cancel_all_requests
 
   def requests_cancellable?
     requests.all?(&:cancellable?)
   end
-
 
   def self.render_class
     Api::SubmissionIO
