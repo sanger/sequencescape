@@ -97,20 +97,20 @@ Given /^plate "([^"]*)" has measured volume results$/ do |plate_barcode|
   end
 end
 
+def fetch_table(selector)
+  find(selector).all('tr').map {|row| row.all('th,td').map {|cell| cell.text.squish }}
+end
 
 Then /^I should see the cherrypick worksheet table:$/ do |expected_results_table|
-  actual_table = table(tableish('table.plate_layout tr', 'td,th'))
-  1.upto(12).each do |column_name|
-    actual_table.map_column!("#{column_name}") { |text| text.gsub(/\W+/,' ') }
-  end
+  actual_table = table(fetch_table('table.plate_layout'))
   expected_results_table.column_names.each do |column_name|
-    expected_results_table.map_column!("#{column_name}") { |text| text.gsub(/\W+/,' ') }
+    expected_results_table.map_column!("#{column_name}") { |text| text.squish }
   end
   expected_results_table.diff!(actual_table)
 end
 
 When /^I look at the pulldown report for the batch it should be:$/ do |expected_results_table|
-  expected_results_table.diff!(FasterCSV.parse(page.body).collect{|r| r.collect{|c| c ? c :""  }})
+  expected_results_table.diff!(FasterCSV.parse(page.source).collect{|r| r.collect{|c| c ? c :""  }})
 end
 
 Given /^I have a tag group called "([^"]*)" with (\d+) tags$/ do |tag_group_name, number_of_tags|
