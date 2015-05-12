@@ -7,6 +7,8 @@ module Batch::RequestBehaviour
       has_one :batch_request, :inverse_of => :request, :dependent => :destroy
       has_one :batch, :through => :batch_request
 
+      named_scope :include_for_batch_view, :include => [:batch_request,:asset,:target_asset,:request_metadata,:comments]
+
       # For backwards compatibility
       def batch_requests; [batch_request].compact ; end
       def batches; [batch].compact ; end

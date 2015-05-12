@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013,2014 Genome Research Ltd.
+#Copyright (C) 2013,2014,2015 Genome Research Ltd.
 module Tasks::PlateTransferHandler
 
   class InvalidBatch < StandardError; end
@@ -11,20 +11,32 @@ module Tasks::PlateTransferHandler
     end
   end
 
+  def includes_for_plate_creation
+    [{:asset=>[:map,{:plate=>[:plate_purpose,:barcode_prefix]},:aliquots]},{:target_asset=>[:pac_bio_library_tube_metadata]}]
+  end
+
   def find_or_create_target(task)
     return target_plate if target_plate.present?
-    source_wells = @batch.requests.map {|r| r.asset}
+    # We only eager load the request stuff if we actually need it.
+    batch_requests = @batch.requests.find(:all,:include=>includes_for_plate_creation)
+    source_wells = batch_requests.map {|r| r.asset}
     raise InvalidBatch if unsuitable_wells?(source_wells)
+
+    transfer_request_to_plate = RequestType.find_by_target_purpose_id(task.purpose_id)||RequestType.transfer
+    transfer_request_from_plate = RequestType.transfer
     task.purpose.create!.tap do |target|
-      @batch.requests.each do |outer_request|
+
+      well_map = Hash[target.wells.map {|well| [well.map_id,well] }]
+
+      batch_requests.each do |outer_request|
         source = outer_request.asset
-        (RequestType.find_by_target_purpose_id(task.purpose_id)||RequestType.transfer).create!(
+        transfer_request_to_plate.create!(
           :asset => source,
-          :target_asset => target.wells.located_at(source.map_description).first,
+          :target_asset => well_map[source.map_id],
           :submission_id => outer_request.submission_id
         )
-        RequestType.transfer.create!(
-          :asset => target.wells.located_at(source.map_description).first,
+        transfer_request_from_plate.create!(
+          :asset => well_map[source.map_id],
           :target_asset => outer_request.target_asset,
           :submission_id => outer_request.submission_id
         )
@@ -33,7 +45,7 @@ module Tasks::PlateTransferHandler
   end
 
   def target_plate
-    transfer = @batch.requests.first.asset.requests.where_is_a?(TransferRequest).find_by_submission_id(@batch.requests.first.submission_id)
+    transfer = TransferRequest.siblings_of(@batch.requests.first).for_submission_id(@batch.requests.first.submission_id).find(:first,:include=>{:target_asset=>:plate})
     return nil unless transfer.present?
     transfer.target_asset.plate
   end
@@ -44,7 +56,7 @@ module Tasks::PlateTransferHandler
   private :unsuitable_wells?
 
   def do_plate_transfer_task(task,params)
-    target_plate.transition_to('passed')
+    target_plate.transition_to('passed') unless target_plate.state=='passed'
     true
   end
 

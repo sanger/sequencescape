@@ -28,6 +28,7 @@ module Aliquot::DeprecatedBehaviours
     # I don't think that they are used anywhere else apart
     # from the batch xml and can therefore probably be removed.
     # ---
+    # Nope, they are used all over the place.
     def tag
       self.target_asset.primary_aliquot.try(:tag)
     end

@@ -5,7 +5,7 @@ module Tasks::AssignTubesToWellsHandler
   MAX_SMRT_CELLS_PER_WELL = 7
 
   def render_assign_tubes_to_wells_task(task, params)
-    available_tubes = uniq_assets_from_requests(task, params)
+    available_tubes = uniq_assets_from_requests
     @available_tubes_options = [['',nil]] | available_tubes.map{ |t| [t.name, t.id] }
 
     @tubes = calculate_number_of_wells_library_needs_to_use(task, params)
@@ -13,7 +13,7 @@ module Tasks::AssignTubesToWellsHandler
 
   def do_assign_tubes_to_wells_task(task, params)
     tubes_to_well_positions = tubes_to_wells(params)
-    library_tubes = uniq_assets_from_requests(task, params)
+    library_tubes = uniq_assets_from_requests
 
     requests = task.find_batch_requests(params[:batch_id])
 
@@ -35,6 +35,61 @@ module Tasks::AssignTubesToWellsHandler
     end
 
     true
+  end
+
+  def do_assign_tubes_to_multiplexed_wells_task(task, params)
+
+    plate = find_or_create_plate(task.purpose)
+
+    well_hash= Hash[plate.wells.located_at(params[:request_locations].values.uniq).map {|w| [w.map_description,w]}]
+
+    problem_wells = wells_with_duplicates(params)
+
+    if problem_wells.present?
+      flash[:error] = "Duplicate tags in #{problem_wells.join(',')}"
+      return false
+    end
+
+    incompatible_wells = find_icompatible_wells(params)
+
+    if incompatible_wells.present?
+      flash[:error] = "Incompatible requests in #{incompatible_wells.join(',')}"
+      return false
+    end
+
+
+    @batch.requests.each do |request|
+      target_well = params[:request_locations][request.id.to_s]
+      request.target_asset = well_hash[target_well]
+      request.save!
+    end
+    true
+  end
+
+
+  def wells_with_duplicates(params)
+    invalid_wells = []
+    @batch.requests.group_by {|request| params[:request_locations][request.id.to_s]}.each do |well,requests|
+      next if requests.map {|r| r.asset.aliquots.map(&:tag_id) }.flatten.uniq!.nil?
+      invalid_wells << well
+    end
+    invalid_wells
+  end
+  private :wells_with_duplicates
+
+  def find_icompatible_wells(params)
+    invalid_wells = []
+    @batch.requests.group_by {|request| params[:request_locations][request.id.to_s]}.each do |well,requests|
+      next if requests.map {|r| r.shared_attributes }.uniq.count <= 1
+      invalid_wells << well
+    end
+    invalid_wells
+  end
+  private :find_icompatible_wells
+
+  def find_or_create_plate(purpose)
+    first_request = @batch.requests.first
+    first_request.target_asset.try(:plate)||purpose.create!
   end
 
   def find_target_asset_from_requests(requests)
@@ -61,22 +116,22 @@ module Tasks::AssignTubesToWellsHandler
     tubes_to_well_positions
   end
 
-  def assets_from_requests(task, params)
-    task.find_batch_requests(params[:batch_id]).map{ |request| request.asset }
+  def assets_from_requests
+    @afr ||= @batch.requests.map{ |request| request.asset }
   end
 
-  def uniq_assets_from_requests(task, params)
-    assets_from_requests(task, params).uniq
+  def uniq_assets_from_requests
+    @uafr||=assets_from_requests.uniq
   end
 
-  def assets_from_requests_sorted_by_id(task, params)
-    assets_from_requests(task, params).sort{ |a,b| a.id <=> b.id }
+  def assets_from_requests_sorted_by_id
+    @asbi||=assets_from_requests.sort{ |a,b| a.id <=> b.id }
   end
 
   def calculate_number_of_wells_library_needs_to_use(task, params)
     tubes_for_wells = []
-    assets = assets_from_requests_sorted_by_id(task, params)
-    physical_library_tubes = uniq_assets_from_requests(task, params)
+    assets = assets_from_requests_sorted_by_id
+    physical_library_tubes = uniq_assets_from_requests
 
     physical_library_tubes.each do |library_tube|
       number_of_wells = ((assets.select{ |asset| asset == library_tube }.size.to_f) / MAX_SMRT_CELLS_PER_WELL).ceil

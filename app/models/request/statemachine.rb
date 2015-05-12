@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013 Genome Research Ltd.
+#Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
 # This is a module containing the standard statemachine for a request that needs it.
 # It provides various callbacks that can be hooked in to by the derived classes.
 module Request::Statemachine
@@ -138,6 +138,10 @@ module Request::Statemachine
   # On starting a request the aliquots are copied from the source asset to the target
   # and updated with the project and study information from the request itself.
   def on_started
+    transfer_aliquots
+  end
+
+  def transfer_aliquots
     target_asset.aliquots << asset.aliquots.map do |aliquot|
       aliquot.clone.tap do |clone|
         clone.study_id   = initial_study_id   || aliquot.study_id
