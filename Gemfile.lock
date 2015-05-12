@@ -145,7 +145,8 @@ GEM
     linecache (0.46)
       rbx-require-relative (> 0.0.4)
     metaclass (0.0.1)
-    mime-types (1.19)
+    mime-types (1.25.1)
+    mini_portile (0.6.2)
     minitest (1.7.2)
     mocha (0.12.0)
       metaclass (~> 0.0.1)
@@ -160,8 +161,9 @@ GEM
     multi_json (1.11.0)
     mysql (2.8.1)
     net-ldap (0.3.1)
-    nokogiri (1.5.5)
-    nokogiri (1.5.5-java)
+    nokogiri (1.6.6.2)
+      mini_portile (~> 0.6.0)
+    nokogiri (1.6.6.2-java)
     parallel (0.5.17)
     parallel_tests (0.8.4)
       parallel
@@ -207,7 +209,7 @@ GEM
     ruby-ole (1.2.11.1)
     ruby_parser (2.0.6)
       sexp_processor (~> 3.0)
-    rubyzip (0.9.4)
+    rubyzip (0.9.9)
     selenium-webdriver (2.35.1)
       childprocess (>= 0.2.5)
       multi_json (~> 1.0)
@@ -260,11 +262,11 @@ DEPENDENCIES
   bullet (<= 4.5.0)
   bunny
   cancan
-  capybara (~> 1.1)
+  capybara (< 2)
   carrierwave (~> 0.4.0)
   catch_cookie_exception!
   configatron
-  cucumber
+  cucumber (~> 1.2.1)
   cucumber-rails (~> 0.3.2)
   database_cleaner
   delayed_job (~> 2.0.4)
@@ -279,6 +281,7 @@ DEPENDENCIES
   jruby-openssl
   json
   launchy
+  mime-types (< 2)
   mocha
   mongrel_cluster
   mysql
