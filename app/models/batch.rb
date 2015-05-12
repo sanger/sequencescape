@@ -223,6 +223,12 @@ class Batch < ActiveRecord::Base
       #requests.target_asset_id = assets.id and
       #assets.holder_id = plate_assets.id group by plate_assets.barcode")
   end
+  
+  ## WARNING! This method is used in the sanger barcode gem. Do not remove it without
+  ## refactoring the sanger barcode gem.
+  def output_plate_purpose
+    output_plates[0].plate_purpose unless output_plates[0].nil?
+  end
 
   def output_plate_role
     requests.first.try(:role)
