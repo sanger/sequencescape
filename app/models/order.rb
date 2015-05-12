@@ -42,6 +42,7 @@ class Order < ActiveRecord::Base
   has_many :requests, :inverse_of => :order
 
   belongs_to :submission, :inverse_of => :orders
+  named_scope :include_for_study_view, :include => [:submission]
   #validates_presence_of :submission
 
   before_destroy :is_building_submission?

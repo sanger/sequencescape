@@ -901,69 +901,6 @@ class BatchTest < ActiveSupport::TestCase
       end
     end
 
-    context "#output_plate_purpose" do
-      setup do
-        @batch = @pipeline.batches.create!
-      end
-
-      context "where no output plates are set," do
-        setup do
-          @batch.stubs(:output_plates).returns([nil])
-        end
-
-        should "return nil" do
-          assert_nil @batch.output_plate_purpose
-        end
-      end
-
-
-      context "where at least 1 output plate is set," do
-        setup do
-          @plate = mock("Plate")
-          @plate_purpose = 'A_PLATE_PURPOSE'
-          @plate.stubs(:plate_purpose).returns(@plate_purpose)
-          @batch.stubs(:output_plates).returns([@plate])
-        end
-
-        should "return the plate_purpose of the first output plate associated with @batch, currently assumed to the same for all output plates." do
-          assert_equal @plate_purpose, @batch.output_plate_purpose
-        end
-      end
-    end
-
-    context "#set_output_plate_purpose" do
-      setup do
-        @batch = @pipeline.batches.create!
-        @plate_purpose = 'A_PLATE_PURPOSE_INSTANCE'
-        @output_plate = mock("Plate")
-      end
-
-      context "with a set of output plates," do
-        setup do
-          @output_plate.expects(:plate_purpose=).with(@plate_purpose)
-          @output_plate.expects(:save!)
-          @batch.stubs(:output_plates).returns([@output_plate])
-          @return_value = @batch.set_output_plate_purpose(@plate_purpose)
-        end
-
-        should "set the plate_purpose of associated output plates to @plate_purpose and return true" do
-          assert_equal true, @return_value
-        end
-      end
-
-      context "when no output plates are defined," do
-        setup do
-          @output_plate.expects(:plate_purpose=).never
-          @batch.expects(:output_plates).returns([])
-        end
-
-        should "should do no assignments but raise a RuntimeError" do
-          assert_raise(RuntimeError) {
-            @batch.set_output_plate_purpose(@plate_purpose)
-          }
-        end
-      end
-    end
   end
 
   context "completing a batch" do
@@ -977,25 +914,25 @@ class BatchTest < ActiveSupport::TestCase
       @batch.complete!(@user)
     end
   end
-  
+
   context "ready? all requests before creating batch" do
     setup do
       @library_creation_request = Factory(:library_creation_request_for_testing_sequencing_requests)
       @library_creation_request.asset.aliquots.each { |a| a.update_attributes!(:project => Factory(:project)) }
       @library_tube = @library_creation_request.target_asset
-      
+
       @library_creation_request_2 = Factory(:library_creation_request_for_testing_sequencing_requests, :target_asset => @library_tube)
       @library_creation_request_2.asset.aliquots.each { |a| a.update_attributes!(:project => Factory(:project)) }
-      
-      
-      # The sequencing request will be created with a 76 read length (Standard sequencing), so the request 
-      # type needs to include this value in its read_length validation list (for example, single_ended_sequencing) 
+
+
+      # The sequencing request will be created with a 76 read length (Standard sequencing), so the request
+      # type needs to include this value in its read_length validation list (for example, single_ended_sequencing)
       #@request_type = RequestType.find_by_key("single_ended_sequencing")
-      
-      
-      
+
+
+
       @pipeline = Factory :sequencing_pipeline
-      
+
       @batch = @pipeline.batches.build
       @request_type = @batch.pipeline.request_types.first
       @request_type_validator = RequestType::Validator.create!(:request_type=>@request_type,:request_option=>'read_length',:valid_options=>[76])
@@ -1006,8 +943,8 @@ class BatchTest < ActiveSupport::TestCase
 
     should "check that I cannot create a batch with invalid requests (ready?)" do
       assert_equal false, @batch.save
-    end    
-        
+    end
+
     should "check that I can create a batch with valid requests ready?" do
       @library_creation_request.start!
       @library_creation_request.pass
@@ -1017,8 +954,8 @@ class BatchTest < ActiveSupport::TestCase
       @library_creation_request_2.save!
       assert_equal true, @batch.save!
     end
-    
+
   end
-  
+
 
 end

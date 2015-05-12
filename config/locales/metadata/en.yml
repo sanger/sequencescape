@@ -6,6 +6,7 @@ en:
       unspecified: 'Not specified'
       edit_info: ""
       help: ""
+      label: 'Unlabelled field'
 
     request: &REQUEST
       metadata:
@@ -55,6 +56,13 @@ en:
     genotyping_request:
       <<: *REQUEST
     pulldown_library_creation:
+      <<: *REQUEST
+    pulldown_library_creation:
+      <<: *REQUEST
+
+    pac_bio_sequencing_request:
+      <<: *REQUEST
+    pac_bio_sample_prep_request:
       <<: *REQUEST
 
     pulldown:

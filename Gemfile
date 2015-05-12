@@ -23,7 +23,7 @@ gem 'trinidad', :platforms => :jruby
 gem 'catch_cookie_exception',
   :github => 'mhartl/catch_cookie_exception'
 
-gem 'sanger_barcode', '~>0.1.0',
+gem 'sanger_barcode', '~>0.1.1',
   :github => 'sanger/sanger_barcode', :branch => 'ruby-1.8'
 # The graph library (1.x only because 2.x uses Rails 3).  This specific respository fixes an issue
 # seen in creating asset links during the assign_tags_handler (which blew up in rewire_crossing in the

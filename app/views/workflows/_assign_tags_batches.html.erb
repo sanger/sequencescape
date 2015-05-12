@@ -10,7 +10,9 @@
       </div>
     <% else -%>
     <p id="increment-tags-info"><label for="increment-tags">When you change a tag, the subsequent tags will be incremented according to your selection. Uncheck this if you wish manually assign all tags.</label><input type="checkbox" checked id="increment-tags" /></p>
-      <table id="tag-assignment" class="request-grid tablesorter">
+      <table id="tag-assignment" class="request-grid tablesorter"
+         data-fulfill-everything-automatically-with-tags="<%= @batch.pipeline.allow_tag_collision_on_tagging_task?.to_s %>"
+         data-disable-checks="<%= @batch.pipeline.allow_tag_collision_on_tagging_task?.to_s %>" >
         <thead>
           <tr>
             <th class='label'>Order</th>
@@ -32,7 +34,7 @@
           <% @requests.each_with_index do |request,index| -%>
             <tr id="request_<%= request.id %>" class="<%= cycle("rowodd", "roweven") %>">
               <th class="order"><%= request.position %></th>
-              <td><%= request.sample_name %></td>
+              <td><%= request.asset.primary_aliquot.sample.name %></td>
               <td><%= link_to request.id, request_url(request) %></td>
               <% if request.asset  %>
                 <td class="request-asset-name"><%= link_to "#{request.asset.id} #{request.asset.display_name}", asset_url(request.asset), :target => "_blank" %>

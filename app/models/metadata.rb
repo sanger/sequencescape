@@ -17,7 +17,7 @@ private
     association_name = "#{ as_name }_metadata".underscore.to_sym
     class_name = "#{ self.name}::Metadata"
 
-    has_one(association_name, { :class_name => class_name, :dependent => :destroy, :validate => true, :autosave => true }.merge(options).merge(:foreign_key => "#{as_name}_id", :inverse_of => :owner))
+    has_one(association_name, { :class_name => class_name, :dependent => :destroy, :validate => true, :autosave => true, :inverse_of => :owner }.merge(options).merge(:foreign_key => "#{as_name}_id", :inverse_of => :owner))
     accepts_nested_attributes_for(association_name, :update_only => true)
     named_scope :"include_#{ association_name }", { :include => association_name }
 

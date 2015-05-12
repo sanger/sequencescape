@@ -1,0 +1,38 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.%>
+<table class="plate target_plate">
+  <thead>
+    <tr>
+    <% num_rows = Map::Coordinate.plate_length(96) -%>
+    <% num_columns = Map::Coordinate.plate_width(96) -%>
+    <th class='border corner-tl' ></th>
+    <% num_columns.times do |column| -%>
+      <th class='plate_column' scope='col'><%= column+1 %></th>
+    <% end -%>
+    <th class='border corner-tr'></th>
+    </tr>
+  </thead>
+  <tbody>
+  <% num_rows.times do |row| -%>
+    <tr>
+      <% rowchar = (65+row).chr %>
+      <th class='border' scope='row'><strong><%= rowchar %></strong></th>
+    <% (num_columns).times do |column| -%>
+      <% well_name = "#{rowchar}#{column+1}" %>
+      <td class='well tube_receiver pac_well' id='well_<%=well_name%>' data-well-location='<%=well_name%>'></td>
+      <% end -%>
+      <th class='border' width='2%' scope='row'><strong><%= rowchar %></strong></th>
+    </tr>
+  <% end -%>
+  </tbody>
+  <tfoot>
+    <tr>
+      <th class='border corner-bl'></th>
+      <% num_columns.times do |column| -%>
+        <th class='plate_column' scope='col'><strong><%= column+1 %></strong></th>
+      <% end -%>
+      <th class='border corner-br' ></th>
+    </tr>
+  </tfoot>
+</table>

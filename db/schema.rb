@@ -1,4 +1,4 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file, 
+# This file is auto-generated from the current state of the database. Instead of editing this file,
 # please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
@@ -835,6 +835,7 @@ ActiveRecord::Schema.define(:version => 20150414151730) do
     t.integer  "asset_shape_id",                                :default => 1,               :null => false
     t.string   "barcode_for_tecan",                             :default => "ean13_barcode", :null => false
     t.integer  "source_purpose_id"
+    t.integer  "lifespan"
   end
 
   add_index "plate_purposes", ["qc_display"], :name => "index_plate_purposes_on_qc_display"
