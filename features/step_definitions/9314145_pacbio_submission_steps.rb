@@ -169,7 +169,7 @@ Given /^the sample validation webservice returns "(true|false)"$/ do |success_bo
 end
 
 Then /^the PacBio sample prep worksheet should look like:$/ do |expected_results_table|
-  worksheet = page.body
+  worksheet = page.source
   csv_rows = worksheet.split(/\r\n/)
   csv_rows.shift(2)
   actual_table = FasterCSV.parse( csv_rows.map{|c| "#{c}\r\n"}.join(''))
@@ -216,7 +216,7 @@ Then /^the default protocols should be:$/ do |expected_results_table|
 end
 
 Then /^the PacBio manifest should be:$/ do |expected_results_table|
-  pac_bio_run_file = page.body
+  pac_bio_run_file = page.source
   csv_rows = pac_bio_run_file.split(/\r\n/)
   csv_rows.shift(8)
   actual_table = FasterCSV.parse( csv_rows.map{|c| "#{c}\r\n"}.join(''))

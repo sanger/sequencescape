@@ -21,7 +21,7 @@ end
 
 Then /^I should see the report for "([^"]*)":$/ do |study_name, expected_results_table|
   study = Study.find_by_name(study_name)
-  expected_results_table.diff!(FasterCSV.parse(page.body))
+  expected_results_table.diff!(FasterCSV.parse(page.source))
 end
 
 
