@@ -1277,6 +1277,7 @@ ul#orders > li.buttons {
 .danger-button {
   box-shadow: inset 0px 1px 0px 0px darkRed, 0 1px 3px #999;
   background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, darkRed), color-stop(1, red) );
+  background:-moz-linear-gradient( center top, Red 5%, darkRed 100% );
   border: 1px solid darkRed;
 }
 
