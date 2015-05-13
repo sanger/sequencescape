@@ -116,8 +116,8 @@ Feature: Pick by micro litre (stock transfer) using the Tecan robot
      | 1                                 | 2                                 |
     Examples:
       | volume |
-      | 13     |
-      | 65     |
+      | 13   |
+      | 65   |
 
 
   @cherrypicking_for_pulldown @pulldown

@@ -129,7 +129,7 @@ test: &TEST
     studies_url: http://localhost:3000
     taxon_lookup_url: http://eutils.ncbi.nlm.nih.gov/entrez/eutils/
     tecan_files_location:  <%= Rails.root %>/data
-    tecan_precision: 2
+    tecan_precision: 1
     uploaded_spreadsheet:
       max_number_of_samples: 380
       max_number_of_move_samples: 0
