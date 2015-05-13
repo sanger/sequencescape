@@ -23,9 +23,14 @@ module Cherrypick::VolumeByNanoGrams
 
     source_concentration = source_well.well_attribute.concentration.to_f
     source_volume        = source_well.well_attribute.measured_volume.to_f
-    desired_volumne      = source_concentration.zero? ? source_volume : (target_ng.to_f/source_concentration).ceil
-    requested_volume     = [ source_volume, desired_volumne ].min
-    buffer_volume        = requested_volume < minimum_volume ? buffer_volume_required(minimum_volume, requested_volume) : 0.0
+    if source_concentration.zero?
+      desired_volume = source_volume
+    else
+      desired_volume = (target_ng.to_f/source_concentration)
+      desired_volume = desired_volume.ceil if desired_volume < 2.0
+    end
+    requested_volume     = [ source_volume, desired_volume ].min
+    buffer_volume        = buffer_volume_required(minimum_volume, requested_volume)
     requested_volume     = maximum_volume if requested_volume > maximum_volume
 
     well_attribute.current_volume   = minimum_volume
@@ -37,7 +42,7 @@ module Cherrypick::VolumeByNanoGrams
   end
 
   def buffer_volume_required(minimum_volume, requested_volume)
-    (minimum_volume*100 - requested_volume*100).to_i.to_f / 100
+    [minimum_volume - requested_volume, 0.0].max
   end
   private :buffer_volume_required
 end

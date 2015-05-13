@@ -203,21 +203,53 @@ class WellTest < ActiveSupport::TestCase
       end
 
       should "return volume to pick" do
-        assert_equal 2.0, @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(5.0, 50.0, 200.0)
-        assert_equal 4.0,  @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(13.0, 30.0, 100.0)
+        assert_equal 1.25, @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(5.0, 50.0, 200.0)
+        assert_equal 3.9,  @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(13.0, 30.0, 100.0)
+        assert_equal 9.1,  @well.get_buffer_volume
       end
 
-      should "set the buffer volume" do
+      should "sets the buffer volume" do
         vol_to_pick = @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(5.0, 50.0, 200.0)
-        assert_equal 3.0, @well.get_buffer_volume
+        assert_equal 3.75, @well.get_buffer_volume
+        vol_to_pick = @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(13.0, 30.0, 100.0)
+        assert_equal 9.1,  @well.get_buffer_volume
       end
 
-      should "set buffer and volume_to_pick correctly" do
+      should "sets buffer and volume_to_pick correctly" do
         vol_to_pick = @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(5.0, 50.0, 200.0)
         assert_equal @well.get_picked_volume, vol_to_pick
         assert_equal 5.0, @well.get_buffer_volume + vol_to_pick
       end
+
+      [
+        # It should get 83.3 ml at 3 ng/ml for obtaining 5 ml at 50 ng/ml, but we are required to take 5 ml
+        [5.0, 50.0, 3.0, 1.0, 5.0, 0.0],
+        # It should get 8.33 ml at 3 ng/ml to obtain 0.5 ml at 50. The volume required is 0.5
+        [0.5, 50.0, 3.0, 0.0, 0.5, 1.0],
+        # It should get 8.33 ml at 3 ng/ml to obtain 0.5 ml at 50. The volume required is 0.5, but the minimum
+        # pick is 1.0
+        [0.5, 50.0, 3.0, 1.0, 1.0, 0.0],
+        # It should get 0.05 ml at 50 ng/ml to obtain 5 ng/ml for 0.5
+        [0.5, 5.0, 50.0, 0.0, 0.05, 0.0],
+        # It should get 0.05 ml, but the minimum pick is 1.0
+        [0.5, 5.0, 50.0, 1.0, 1.0, 0.0]
+      ].each do |volume_required, concentration_required, source_concentration, minimum_pick_volume,
+                volume_obtained, buffer_volume_obtained|
+        context "with different values of volume, concentration and minimum pick volume" do
+          setup do
+            @result_volume = @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(volume_required,
+                  concentration_required, source_concentration, minimum_pick_volume)
+            @result_buffer_volume = @well.get_buffer_volume
+          end
+          should "gets correct volume quantity" do
+            assert_equal volume_obtained, @result_volume
+          end
+          should "gets correct buffer volume measures" do
+            assert_equal buffer_volume_obtained, @result_buffer_volume
+          end
+        end
+      end
+
     end
   end
-
 end
