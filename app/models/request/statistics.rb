@@ -37,7 +37,7 @@ module Request::Statistics
           :all,
           :select=>'request_type_id,count(requests.id) AS total',
           :group=>'request_type_id'
-          ).map {|rt| [rt.request_type.id,rt.total] }
+          ).map {|rt| [rt.request_type_id,rt.total] }
       ]
     end
   end
@@ -95,7 +95,7 @@ module Request::Statistics
   # Returns a hash that maps from the RequestType to the information about the number of requests in various
   # states.  This is effectively summary data that can be displayed in a tabular format for the user.
   def progress_statistics
-    counters  = self.all(:select => 'request_type_id, state, count(distinct requests.id) as total', :group => 'request_type_id, state')
+    counters  = self.all(:select => 'request_type_id, state, count(distinct requests.id) as total', :group => 'request_type_id, state', :include=>:request_type)
     tabulated = Hash.new { |h,k| h[k] = Counter.new }
     tabulated.tap do
       counters.each do |request_type_state_count|
@@ -105,7 +105,7 @@ module Request::Statistics
   end
 
   def asset_statistics(options = {})
-    counters = self.all(options.merge(:select => 'asset_id,request_type_id,state, count(*) as total', :group => 'asset_id, request_type_id, state'))
+    counters = self.all(options.merge(:select => 'asset_id,request_type_id,state, count(*) as total', :group => 'asset_id, request_type_id, state', :include=>:request_type))
     tabulated = Hash.new { |h,k| h[k] = Summary.new }
     tabulated.tap do
       counters.each do |asset_request_type_state_count|
@@ -115,7 +115,7 @@ module Request::Statistics
   end
 
   def sample_statistics(options = {})
-    counters = self.join_asset.all(options.merge(:select => 'sample_id,request_type_id,state,count(*) as total', :group => 'sample_id, request_type_id, state'))
+    counters = self.join_asset.all(options.merge(:select => 'sample_id,request_type_id,state,count(*) as total', :group => 'sample_id, request_type_id, state', :include=>:request_type))
     tabulated = Hash.new { |h,k| h[k] = Summary.new }
     tabulated.tap do
       counters.each do |sample_request_type_state_count|

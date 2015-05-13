@@ -17,4 +17,8 @@ class PlateTransferTask < Task
     self.class.to_s.underscore.chomp('_task')
   end
 
+  def included_for_render_task
+    [:pipeline]
+  end
+
 end

@@ -1,0 +1,13 @@
+<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.%>
+<%= javascript_include_tag "assign-tubes-to-wells-task" %>
+<div id='error_messages'></div>
+<% form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form", :multipart => true} do |form| %>
+  <h2>Tubes</h2>
+  <%= render :partial => 'source_asset_requests', :locals => { :requests => @requests } %>
+  <h2>Target Plate</h2>
+  <%= render :partial => 'target_plate' %>
+  <%= render :partial => 'sorting_assistance' %>
+  <%= render :partial => 'next_stage_submit' %>
+<% end %>
