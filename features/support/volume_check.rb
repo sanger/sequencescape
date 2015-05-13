@@ -4,3 +4,10 @@
 Before('@plate_volume') do |scenario|
   PlateVolume.process_all_volume_check_files
 end
+
+After('@leave_the_window_open') do |scenario|
+  if scenario.respond_to?(:status) && scenario.status == :failed
+    print "Step Failed. Press return to close browser"
+    STDIN.getc
+  end
+end

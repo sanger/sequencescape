@@ -4,6 +4,7 @@
 class Robot < ActiveRecord::Base
   include Uuid::Uuidable
   include ModelExtensions::Robot
+
   validates_presence_of :name,:location
   has_many :robot_properties
   has_one :max_plates_property, :class_name => 'RobotProperty', :conditions => { :key => 'max_plates' }
@@ -21,6 +22,10 @@ class Robot < ActiveRecord::Base
 
   def self.prefix
     "RB"
+  end
+
+  def minimum_volume
+    @minimum_volume || 0.0
   end
 
   def self.find_from_barcode(code)

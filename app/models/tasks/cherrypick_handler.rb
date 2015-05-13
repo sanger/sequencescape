@@ -57,9 +57,9 @@ module Tasks::CherrypickHandler
     if @spreadsheet_layout
       @map_info = @spreadsheet_layout
     elsif @plate.present?
-      @map_info = @task.pick_onto_partial_plate(@requests,plate_template,@robot,@batch,@plate)
+      @map_info = @task.pick_onto_partial_plate(@requests,plate_template,@robot_instance,@batch,@plate)
     else
-      @map_info = @task.pick_new_plate(@requests, plate_template, @robot, @batch, @plate_purpose)
+      @map_info = @task.pick_new_plate(@requests, plate_template, @robot_instance, @batch, @plate_purpose)
     end
     @plates = @map_info[0]
     @source_plate_ids = @map_info[1]
@@ -69,14 +69,14 @@ module Tasks::CherrypickHandler
   end
 
   def setup_input_params_for_pass_through
-    @robot = Robot.find((params[:robot])["0"].to_i)
+    @robot = params[:robot]
+    @robot_instance = Robot.find(@robot)
     @plate_type = params[:plate_type]
     @volume_required= params[:volume_required]
     @micro_litre_volume_required= params[:micro_litre_volume_required]
     @concentration_required = params[:concentration_required]
     @minimum_volume = params[:minimum_volume]
     @maximum_volume = params[:maximum_volume]
-    @minimum_picking_volume = @robot.minimum_volume || 0.0
     @total_nano_grams = params[:total_nano_grams]
     @cherrypick_action = params[:cherrypick][:action]
     @plate_purpose_id = params[:plate_purpose_id]
