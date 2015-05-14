@@ -6,7 +6,7 @@ module ModelExtensions::Batch
     base.class_eval do
       # These were in Batch but it makes more sense to keep them here for the moment
       has_many :batch_requests, :include => :request, :inverse_of => :batch
-      has_many :requests, :through => :batch_requests, :inverse_of => :batch, :order => 'batch_requests.position ASC' do
+      has_many :requests, :through => :batch_requests, :inverse_of => :batch, :order => 'batch_requests.position ASC, request.id ASC' do
         # we redefine count to use the fast one.
         # the normal request.count is slow because of the eager load of requests in batch_request
         def count
