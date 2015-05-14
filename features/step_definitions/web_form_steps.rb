@@ -107,6 +107,10 @@ When /^I fill in "([^"]*)" with(?: the)? multiline text:?$/ do |field, value|
   fill_in(field, :with => value)
 end
 
+When /^I fill in the hidden field "([^"]*)" with "([^\"]+)"$/ do |field, value|
+  find(:xpath,"//input[@id='#{field}']").set(value)
+end
+
 Then /^"([^\"]+)" should be selected from "([^\"]+)"$/ do |value, name|
   selected = find_field(name).find('option[selected]').text
   assert_equal( value , selected, "Field #{name.inspect} does not have the correct value selected")

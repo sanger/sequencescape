@@ -240,6 +240,12 @@ Given /^I have a "([^"]*)" submission with 2 plates$/ do |submission_template_na
 end
 
 When /^the last batch is sorted in row order$/ do
-  order = Batch.last.batch_requests.map {|br| br.request.asset.map.row_order }
-  Batch.last.batch_requests.map {|br| br.update_attributes!(:position => order.sort.index(br.request.asset.map.row_order))}
+  order = Batch.last.batch_requests.map {|br| br.request.asset.map.row_order }.sort
+  Batch.last.batch_requests.map {|br| br.update_attributes!(:position => order.index(br.request.asset.map.row_order))}
+end
+
+When /^the last batch is sorted in row and plate order$/ do
+  source = Batch.last.batch_requests.group_by {|br| br.request.asset.plate.id }
+  order = source.sort_by(&:first).map {|plate,br| br.sort_by {|br| br.request.asset.map.row_order}.map(&:id) }.flatten
+  Batch.last.batch_requests.map {|br| br.update_attributes!(:position => order.index(br.id))}
 end

@@ -1,13 +1,13 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015,2015 Genome Research Ltd.
 class WorkflowsController < ApplicationController
   before_filter :find_workflow_by_id, :only =>[:auto_batch, :show, :edit, :duplicate, :batches, :update, :destroy, :reorder_tasks]
 
   include Tasks::AddSpikedInControlHandler
-  include Tasks::AssignPlatePurposeHandler
   include Tasks::AssignTagsHandler
   include Tasks::AssignTagsToWellsHandler
+  include Tasks::AssignTagsToTubesHandler
   include Tasks::AssignTubesToWellsHandler
   include Tasks::AttachInfiniumBarcodeHandler
   include Tasks::BindingKitBarcodeHandler
@@ -126,22 +126,33 @@ class WorkflowsController < ApplicationController
     render :nothing => true
   end
 
+  # TODO: This needs to be made RESTful.
+  # 1: Routes need to be refactored to provide more sensible urls
+  # 2: We call them tasks in the code, and stages in the URL. They should be consistent
+  # 3: This endpoint currently does two jobs, executing the current task, and rendering the next
+  # 4: Some tasks rely on parameters passed in from the previous task. This isn't ideal, but it might
+  #    be worth maintaining the behaviour until we solve the problems.
+  # 5: We need to improve the repeatability of tasks.
   def stage
+
     @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
     @stage = params[:id].to_i
     @task = @workflow.tasks[@stage]
-    @batch = Batch.find(params[:batch_id], :include => [:requests, :pipeline, :lab_events])
-
-    if params[:next_stage].present? && !@batch.editable?
-      flash[:error] = "You cannot execute more tasks in a completed batch."
-      redirect_to :back
-      return
-    end
 
     ActiveRecord::Base.transaction do
       # If params[:next_stage] is nil then just render the current task
       # else actually execute the task.
       unless params[:next_stage].nil?
+
+        eager_loading = @task.included_for_do_task
+        @batch ||= Batch.find(params[:batch_id], :include => eager_loading )
+
+        unless @batch.editable?
+          flash[:error] = "You cannot make changes to a completed batch."
+          redirect_to :back
+          return false
+        end
+
         if @task.do_task(self, params)
           # Task completed, start the batch is necessary and display the next one
           do_start_batch_task(@task,params)
@@ -156,16 +167,17 @@ class WorkflowsController < ApplicationController
         # All requests have finished all tasks: finish workflow
         redirect_to finish_batch_url(@batch)
       else
+        if @batch.nil? || @task.included_for_render_task != eager_loading
+          @batch = Batch.find(params[:batch_id], :include => @task.included_for_render_task )
+        end
         @task.render_task(self, params)
       end
     end
   end
 
   def render_task(task, params)
-    @batch = Batch.find(params[:batch_id], :include => [:requests, :pipeline, :lab_events])
     @rits = @batch.pipeline.request_information_types
-    @requests = @batch.ordered_requests
-    @requests_by_submission = @requests.group_by(&:submission)
+    @requests = @batch.requests
 
     @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
     @task = task

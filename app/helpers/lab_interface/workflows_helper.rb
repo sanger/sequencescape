@@ -30,6 +30,19 @@ module LabInterface::WorkflowsHelper
     truncate string, 15, "..."
   end
 
+  def tag_index_for(request)
+    batch_tag_index[request.asset_id]
+  end
+
+  def batch_tag_index
+    @tag_hash ||= Hash[Tag.find(:all,
+      :joins=>'INNER JOIN aliquots ON aliquots.tag_id = tags.id',
+      :select=>'tags.map_id, aliquots.receptacle_id AS receptacle_id',
+      :conditions=>['aliquots.receptacle_id IN (?)',@batch.requests.map(&:asset_id).uniq]).map do |tag|
+      [tag.receptacle_id,tag.map_id]
+    end].tap {|th| th.default = '-' }
+  end
+
   def qc_select_box(request, status, html_options={})
     select_options = [ 'pass', 'fail' ]
     select_options.unshift('') if html_options.delete(:generate_blank)

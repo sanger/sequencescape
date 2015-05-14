@@ -12,7 +12,7 @@ class Uuid < ActiveRecord::Base
         # Ensure that the resource has a UUID and that it's always created when the instance is created.
         # It seems better not to do this but the performance of the API is directly affected by having to
         # create these instances when they do not exist.
-        has_one :uuid_object, :class_name => 'Uuid', :as => :resource, :dependent => :destroy
+        has_one :uuid_object, :class_name => 'Uuid', :as => :resource, :dependent => :destroy, :inverse_of => :resource
         after_create :ensure_uuid_created
 
         # Some named scopes ...
@@ -29,7 +29,7 @@ class Uuid < ActiveRecord::Base
       end
     else
       def ensure_uuid_created
-        self.uuid_object = Uuid.create!(:resource => self)
+        self.build_uuid_object(:resource => self) || raise(ActiveRecord::RecordInvalid) # = Uuid.create!(:resource => self)
       end
     end
     private :ensure_uuid_created
@@ -89,7 +89,7 @@ class Uuid < ActiveRecord::Base
 
   # It is more efficient to check the individual parts of the resource association than it is to check the
   # association itself as the latter causes the record to be reloaded
-  belongs_to :resource, :polymorphic => true
+  belongs_to :resource, :polymorphic => true, :inverse_of => :uuid_object
 
   # TODO[xxx]: remove this and use resource everywhere!
   def object

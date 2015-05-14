@@ -32,13 +32,13 @@ class Request < ActiveRecord::Base
     request_type.request_type_validators.find_by_request_option!(request_option.to_s)
   end
 
-    named_scope :for_pipeline, lambda { |pipeline|
-      {
-        :joins => [ 'LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id' ],
-        :conditions => [ 'prt.pipeline_id=?', pipeline.id],
-        :readonly => false
-      }
+  named_scope :for_pipeline, lambda { |pipeline|
+    {
+      :joins => [ 'LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id' ],
+      :conditions => [ 'prt.pipeline_id=?', pipeline.id],
+      :readonly => false
     }
+  }
 
   named_scope :for_pooling_of, lambda { |plate|
     joins =
@@ -111,6 +111,8 @@ class Request < ActiveRecord::Base
 
   named_scope :with_request_type_id, lambda { |id| { :conditions => { :request_type_id => id } } }
 
+  named_scope :for_pacbio_sample_sheet, :include => [{:target_asset=>:map},:request_metadata]
+
   # project is read only so we can set it everywhere
   # but it will be only used in specific and controlled place
   belongs_to :initial_project, :class_name => "Project"
@@ -180,6 +182,8 @@ class Request < ActiveRecord::Base
   named_scope :join_asset, :joins => [ :asset ]
   named_scope :with_asset_location, :include => { :asset => :map }
 
+  named_scope :siblings_of, lambda {|request| { :conditions => ['asset_id = ? AND NOT id = ?', request.asset_id, request.id ] } }
+
   #Asset are Locatable (or at least some of them)
   belongs_to :location_association, :primary_key => :locatable_id, :foreign_key => :asset_id
   named_scope :located, lambda {|location_id| { :joins => :location_association, :conditions =>  ['location_associations.location_id = ?', location_id ], :readonly => false } }
@@ -205,7 +209,10 @@ class Request < ActiveRecord::Base
   named_scope :full_inbox, :conditions => {:state => ["pending","hold"]}
   named_scope :hold, :conditions => {:state => "hold"}
 
-  named_scope :loaded_for_inbox_display, :include => [{:submission => {:orders =>:study}, :asset => [:scanned_into_lab_event,:studies]}]
+  # Setup inbox eager loading
+  named_scope :loaded_for_inbox_display, :include => {:submission => {:orders =>:study}, :asset => [:scanned_into_lab_event,:studies]}
+  named_scope :loaded_for_grouped_inbox_display, :include => [ {:submission => :orders}, :asset , :target_asset, :request_type ]
+
   named_scope :ordered_for_ungrouped_inbox, :order => 'id DESC'
   named_scope :ordered_for_submission_grouped_inbox, :order => 'submission_id DESC, id ASC'
 
