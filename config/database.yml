@@ -59,6 +59,8 @@ development_snp:
 test: &test
   <<: *MYSQL
   database: sequencescape_test<%= ENV['TEST_ENV_NUMBER'] %><%= suffix %>
+  pool: 5
+  timeout: 5000
 
 cucumber:
   <<: *test
