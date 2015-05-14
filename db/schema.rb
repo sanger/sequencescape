@@ -1,4 +1,4 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file,
+# This file is auto-generated from the current state of the database. Instead of editing this file, 
 # please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150414151730) do
+ActiveRecord::Schema.define(:version => 20150514084632) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -1133,6 +1133,7 @@ ActiveRecord::Schema.define(:version => 20150414151730) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "barcode"
+    t.float    "minimum_volume"
   end
 
   create_table "roles", :force => true do |t|
@@ -1371,27 +1372,29 @@ ActiveRecord::Schema.define(:version => 20150414151730) do
     t.string   "data_release_prevention_reason_comment"
     t.integer  "snp_study_id"
     t.integer  "snp_parent_study_id"
-    t.boolean  "bam",                                    :default => true
+    t.boolean  "bam",                                                 :default => true
     t.integer  "study_type_id"
     t.integer  "data_release_study_type_id"
-    t.integer  "reference_genome_id",                    :default => 1
+    t.integer  "reference_genome_id",                                 :default => 1
     t.string   "array_express_accession_number"
     t.text     "dac_policy"
     t.string   "ega_policy_accession_number"
     t.string   "ega_dac_accession_number"
-    t.string   "commercially_available",                 :default => "No"
+    t.string   "commercially_available",                              :default => "No"
     t.integer  "faculty_sponsor_id"
     t.float    "number_of_gigabases_per_sample"
     t.string   "hmdmc_approval_number"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "remove_x_and_autosomes",                 :default => "No",  :null => false
+    t.string   "remove_x_and_autosomes",                              :default => "No",  :null => false
     t.string   "dac_policy_title"
-    t.boolean  "separate_y_chromosome_data",             :default => false, :null => false
+    t.boolean  "separate_y_chromosome_data",                          :default => false, :null => false
     t.string   "data_access_group"
+    t.string   "prelim_id",                              :limit => 5
   end
 
   add_index "study_metadata", ["faculty_sponsor_id"], :name => "index_study_metadata_on_faculty_sponsor_id"
+  add_index "study_metadata", ["prelim_id"], :name => "index_study_metadata_on_prelim_id"
   add_index "study_metadata", ["study_id"], :name => "index_study_metadata_on_study_id"
 
   create_table "study_relation_types", :force => true do |t|
