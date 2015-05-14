@@ -59,9 +59,9 @@ end
 def locate_labeled_field_type(label_text, field_type)
   field = page.find_field(label_text) or raise Capybara::ElementNotFound, "Could not find #{ label_text.inspect }"
   case field_type
-  when 'text'     then field.node.xpath("self::input[@type='text']") or raise Capybara::ElementNotFound, "Field #{label_text.inspect} is not a text field"
-  when 'select'   then field.node.xpath("self::select")              or raise Capybara::ElementNotFound, "Field #{label_text.inspect} is not a select field"
-  when 'textarea' then field.node.xpath("self::textarea")            or raise Capybara::ElementNotFound, "Field #{label_text.inspect} is not a textarea field"
+  when 'text'     then field['type']  == 'text'     or raise Capybara::ElementNotFound, "Field #{label_text.inspect} is not a text field"
+  when 'select'   then field.tag_name == 'select'   or raise Capybara::ElementNotFound, "Field #{label_text.inspect} is not a select field"
+  when 'textarea' then field.tag_name == 'textarea' or raise Capybara::ElementNotFound, "Field #{label_text.inspect} is not a textarea field"
   else raise StandardError, "Unrecognised field type '#{ field_type }'"
   end
   return field
@@ -85,7 +85,7 @@ Then /^I should see the (required )?select field "([^\"]+)" with options "([^\"]
   assert_label_exists(field, required)
   element = locate_labeled_field_type(field, 'select')
   options.split('/').each do |option|
-    element.node.xpath("option[text()='#{option}']") or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
+    element.all("option").detect {|o| o.text == option} or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
   end
 end
 
@@ -126,6 +126,7 @@ Then /^I expect an exception to be raised when I press "([^"]*)"(?: within "([^"
 end
 
 When /^I accept the action$/ do
-  sleep(0.3)
-  page.driver.browser.switch_to.alert.accept
+  # TODO: Poltergeist doesn't support this
+  # sleep(0.3)
+  # page.driver.browser.switch_to.alert.accept
 end

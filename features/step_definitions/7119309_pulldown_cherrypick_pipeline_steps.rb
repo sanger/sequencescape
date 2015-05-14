@@ -1,6 +1,8 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+
+
 Given /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" submission$/ do |plate_barcode, number_of_samples, study_name, submission_name|
   step(%Q{I have a plate "#{plate_barcode}" in study "#{study_name}" with #{number_of_samples} samples in asset group "Plate asset group #{plate_barcode}"})
   step(%Q{plate "#{plate_barcode}" has concentration results})
@@ -97,10 +99,6 @@ Given /^plate "([^"]*)" has measured volume results$/ do |plate_barcode|
   end
 end
 
-def fetch_table(selector)
-  find(selector).all('tr').map {|row| row.all('th,td').map {|cell| cell.text.squish }}
-end
-
 Then /^I should see the cherrypick worksheet table:$/ do |expected_results_table|
   actual_table = table(fetch_table('table.plate_layout'))
   expected_results_table.column_names.each do |column_name|
@@ -123,7 +121,7 @@ Given /^I have a tag group called "([^"]*)" with (\d+) tags$/ do |tag_group_name
 end
 
 Then /^the default plates to wells table should look like:$/ do |expected_results_table|
-  actual_table = table(tableish('table.plate tr', 'td,th').collect{ |row| row.collect{|cell| cell[/^(Tag [\d]+)|(\w+)/] }})
+  actual_table = table(fetch_table('table.plate').collect{ |row| row.collect{|cell| cell[/^(Tag [\d]+)|(\w+)/] }})
 
   expected_results_table.diff!(actual_table)
 end
@@ -198,7 +196,7 @@ Given /^all library tube barcodes are set to know values$/ do
 end
 
 Then /^the worksheet for the last batch should be:$/ do |expected_results_table|
-  expected_results_table.diff!(table(tableish('table#pulldown_worksheet_details tr', 'td,th')))
+  expected_results_table.diff!(table(fetch_table('table#pulldown_worksheet_details')))
 end
 
 Then /^library "([^"]*)" should have (\d+) sequencing requests$/ do |library_barcode, number_of_sequencing_requests|

@@ -112,6 +112,11 @@ if defined?(ActiveRecord::Base)
   end
 end
 
+def fetch_table(selector)
+  find(selector).all('tr').map {|row| row.all('th,td').map {|cell| cell.text.squish }}
+end
+
+
 After do |s|
   # If we're lost in time then we need to return to the present...
   Timecop.return

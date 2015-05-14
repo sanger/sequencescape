@@ -117,7 +117,7 @@ Given /^the last "pending" submission is made$/ do
 end
 
 Then /^I should see the following request information:$/ do |expected|
-  actual = table(tableish('.info .property_group_general tr', 'td')).rows_hash
+  actual = table(fetch_table('.info .property_group_general')).rows_hash
   assert_equal expected.rows_hash, actual
 end
 

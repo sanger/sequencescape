@@ -23,7 +23,7 @@ Feature: Sample manifest
 
   Scenario: Create a plate manifest and upload a manifest file without processing it
     Given a manifest has been created for "Test study"
-    When I fill in "File to upload" with "test/data/test_blank_wells.csv"
+    When I fill in "File to upload" with the file "test/data/test_blank_wells.csv"
     And I press "Upload manifest"
     When I follow "View all manifests"
     Then I should see the manifest table:
@@ -52,7 +52,7 @@ Feature: Sample manifest
 
   Scenario: Create a manifest then upload an excel file instead of a csv file
     Given a manifest has been created for "Test study"
-    When I fill in "File to upload" with "data/base_manifest.xls"
+    When I fill in "File to upload" with the file "data/base_manifest.xls"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
     Then I should see the manifest table:
@@ -87,7 +87,7 @@ Feature: Sample manifest
 
   Scenario Outline: Upload a manifest that has mismatched information
     Given a manifest has been created for "Test study"
-    When I fill in "File to upload" with "<filename>"
+    When I fill in "File to upload" with the file "<filename>"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
     When I follow "View all manifests"
@@ -104,7 +104,7 @@ Feature: Sample manifest
 
   Scenario: Upload a csv manifest with empty samples
     Given a manifest has been created for "Test study"
-    When I fill in "File to upload" with "test/data/test_blank_wells.csv"
+    When I fill in "File to upload" with the file "test/data/test_blank_wells.csv"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
     When I follow "View all manifests"
@@ -243,7 +243,7 @@ Feature: Sample manifest
   @concentration @volume
   Scenario: Upload a manifest without volume or concentration set
     Given a manifest has been created for "Test study"
-    When I fill in "File to upload" with "test/data/test_no_vol_conc.csv"
+    When I fill in "File to upload" with the file "test/data/test_no_vol_conc.csv"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
     When I follow "View all manifests"
@@ -259,7 +259,7 @@ Feature: Sample manifest
   @cell_line
   Scenario: Upload a manifest with invalid cell line
     Given a manifest has been created for "Test study"
-    When I fill in "File to upload" with "test/data/test_dna_sources_invalid.csv"
+    When I fill in "File to upload" with the file "test/data/test_dna_sources_invalid.csv"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
     When I follow "View all manifests"
@@ -272,7 +272,7 @@ Feature: Sample manifest
   @cell_line
   Scenario: Upload a manifest with invalid cell line
     Given a manifest has been created for "Test study"
-    When I fill in "File to upload" with "test/data/test_dna_sources_valid.csv"
+    When I fill in "File to upload" with the file "test/data/test_dna_sources_valid.csv"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
     When I follow "View all manifests"
@@ -283,7 +283,7 @@ Feature: Sample manifest
   @is_control
   Scenario: Check is_control and is_resubmit are set properly in an uploaded manifest
     Given a manifest has been created for "Test study"
-    When I fill in "File to upload" with "test/data/test_is_control_is_resubmit.csv"
+    When I fill in "File to upload" with the file "test/data/test_is_control_is_resubmit.csv"
     And I press "Upload manifest"
     Given the manifests are successfully processed
     When I follow "View all manifests"
@@ -305,7 +305,7 @@ Feature: Sample manifest
   @override
   Scenario: Upload some empty samples, reupload with samples but without override set
     Given a manifest has been created for "Test study"
-    When I fill in "File to upload" with "test/data/test_blank_wells.csv"
+    When I fill in "File to upload" with the file "test/data/test_blank_wells.csv"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
     When I follow "View all manifests"
@@ -328,7 +328,7 @@ Feature: Sample manifest
       | sample_12        | gggg          | false                      | 9617            |
 
 
-    When I fill in "File to upload" with "test/data/test_blank_wells_with_no_blanks.csv"
+    When I fill in "File to upload" with the file "test/data/test_blank_wells_with_no_blanks.csv"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
     When I follow "View all manifests"
@@ -354,7 +354,7 @@ Feature: Sample manifest
   @override
   Scenario: Upload some empty samples, reupload with samples but with override set
     Given a manifest has been created for "Test study"
-    When I fill in "File to upload" with "test/data/test_blank_wells.csv"
+    When I fill in "File to upload" with the file "test/data/test_blank_wells.csv"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
     When I follow "View all manifests"
@@ -377,7 +377,7 @@ Feature: Sample manifest
      | sample_12        | gggg          | false                      | 9617            |
 
 
-    When I fill in "File to upload" with "test/data/test_blank_wells_with_no_blanks.csv"
+    When I fill in "File to upload" with the file "test/data/test_blank_wells_with_no_blanks.csv"
     And I check "Override previously uploaded samples"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
@@ -403,14 +403,14 @@ Feature: Sample manifest
  @override
   Scenario Outline: Updating of sample accession numbers
     Given a manifest has been created for "Test study"
-    When I fill in "File to upload" with "test/data/<initial>"
+    When I fill in "File to upload" with the file "test/data/<initial>"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
     When I follow "View all manifests"
     Then I should see the manifest table:
       | Contains | Study      | Supplier           | Manifest       | Upload             | Errors | State     |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest |        | Completed |
-    When I fill in "File to upload" with "test/data/<update>"
+    When I fill in "File to upload" with the file "test/data/<update>"
     And I check "Override previously uploaded samples"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed

@@ -45,6 +45,12 @@ When /^(?:|I )fill in "([^"]*)" with "([^"]*)"(?: within "([^"]*)")?$/ do |field
   end
 end
 
+When /^(?:|I )fill in "([^"]*)" with the file "([^"]*)"(?: within "([^"]*)")?$/ do |field, value, selector|
+  with_scope(selector) do
+    attach_file(field, value)
+  end
+end
+
 When /^(?:|I )fill in "([^"]*)" for "([^"]*)"(?: within "([^"]*)")?$/ do |value, field, selector|
   with_scope(selector) do
     fill_in(field, :with => value)
@@ -63,6 +69,7 @@ end
 # based on naming conventions.
 #
 When /^(?:|I )fill in the following(?: within "([^"]*)")?:$/ do |selector, fields|
+  selector ||= 'body'
   with_scope(selector) do
     fields.rows_hash.each do |name, value|
       step %Q{I fill in "#{name}" with "#{value}"}
@@ -228,7 +235,11 @@ Then /^(?:|I )should have the following query string:$/ do |expected_pairs|
 end
 
 Then /^show me the page$/ do
-  save_and_open_page
+  # We don't use save_and_open_source as
+  # it passes the source through Nokogiri
+  # first and passes it out as xml.
+  require 'capybara/util/save_and_open_page'
+  Capybara.save_and_open_page(source)
 end
 
 Given /^the "([^"]*)" field is hidden$/ do |field_name|

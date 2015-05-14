@@ -2,7 +2,7 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
 Then /^I should see qc reports table:$/ do |expected_results_table|
-  expected_results_table.diff!(table(tableish('table#study_list tr', 'td,th')))
+  expected_results_table.diff!(table(fetch_table('table#study_list')))
 end
 
 Given /^there is (\d+) pending report for study "([^"]*)"$/ do |num_reports, study_name|

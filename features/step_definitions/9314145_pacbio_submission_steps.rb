@@ -137,7 +137,7 @@ Then /^the PacBioSamplePrepRequests for "([^"]*)" should be "([^"]*)"$/ do |asse
 end
 
 Then /^the plate layout should look like:$/ do |expected_results_table|
-  actual_table = table(tableish('table.plate tr', 'option[@selected],th.plate_column'))
+  actual_table = table(fetch_table('table.plate'))
   expected_results_table.diff!(actual_table)
 end
 
@@ -200,7 +200,7 @@ Given /^the sample in tube "([^"]*)" has a reference genome of "([^"]*)"$/ do |b
 end
 
 Then /^the sample reference sequence table should look like:$/ do |expected_results_table|
-  expected_results_table.diff!(table(tableish('table#reference_sequence tr', 'td,th')))
+  expected_results_table.diff!(table(fetch_table('table#reference_sequence')))
 end
 
 Then /^Library tube "([^"]*)" should have protocol "([^"]*)"$/ do |barcode, expected_protocol|
@@ -212,7 +212,7 @@ Given /^the study "([^"]*)" has a reference genome of "([^"]*)"$/ do |study_name
 end
 
 Then /^the default protocols should be:$/ do |expected_results_table|
-    actual_table = table(tableish('table#reference_sequence tr', 'option[@selected],th#protocol'))
+    actual_table = table(fetch_table('table#reference_sequence'))
 end
 
 Then /^the PacBio manifest should be:$/ do |expected_results_table|
