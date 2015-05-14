@@ -1,4 +1,4 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file, 
+# This file is auto-generated from the current state of the database. Instead of editing this file,
 # please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
@@ -524,7 +524,7 @@ ActiveRecord::Schema.define(:version => 20150513114856) do
 
   add_index "implements", ["barcode"], :name => "index_implements_on_barcode"
 
-  create_table "index_tag_layout_template", :force => true do |t|
+  create_table "index_tag_layout_templates", :force => true do |t|
     t.string   "name",       :null => false
     t.integer  "tag_id",     :null => false
     t.datetime "created_at"

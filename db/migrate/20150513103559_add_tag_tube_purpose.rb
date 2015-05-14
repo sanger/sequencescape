@@ -3,13 +3,9 @@
 #Copyright (C) 2015 Genome Research Ltd.
 class AddTagTubePurpose < ActiveRecord::Migration
 
-  class Purpose < ActiveRecord::Base
-    set_table_name('plate_purposes')
-  end
-
   def self.up
     ActiveRecord::Base.transaction do
-      Purpose.create!(
+      QcableTubePurpose.create!(
         :name => 'Index Tag Tube',
         :target_type => 'Tube',
         :qc_display => false,
@@ -19,8 +15,7 @@ class AddTagTubePurpose < ActiveRecord::Migration
         :cherrypickable_source => false,
         :size => 1,
         :barcode_for_tecan => 'ean13_barcode',
-        :default_state => 'pending',
-        :type => 'QcableTubePurpose'
+        :default_state => 'pending'
       )
     end
   end
