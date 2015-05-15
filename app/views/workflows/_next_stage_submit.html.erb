@@ -9,7 +9,7 @@
 
 <% if (check_selection ||= false) %>
 <script type="text/javascript">
-  (function($, undefined) {
+  (function($,undefined) {
     $('#stage_button').click(function() {
       var checkboxes = $('.sample_check:checkbox');
       if (checkboxes.length == 0) { return true; }
@@ -18,7 +18,7 @@
         return false;
       }
 
-      $('#stage_button').disable();
+      $('#stage_button').prop('disabled','disabled');
       $('#stage_links').hide();
       $('#stage_loading').show();
       return true;
