@@ -55,7 +55,7 @@ Feature: Cherrypicking for Pulldown pipeline
    And I should see "Cherrypick Group By Submission"
    Given a plate barcode webservice is available and returns "99999"
    When I follow "Cherrypick Group By Submission"
-   And the last batch is sorted in row order
+   And the last batch is sorted in row and plate order
    When I fill in "Volume Required" with "13"
    And I select "WGS stock DNA" from "Plate Purpose"
    And I fill in "Concentration Required" with "50"
