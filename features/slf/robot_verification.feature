@@ -1,4 +1,4 @@
-@robot_verification @javascript @barcode-service @tecan
+@robot_verification @javascript @barcode-service @tecan @leave_the_browser_open
 Feature: RobotVerification
   In order to ensure that the plates for a batch are placed in the correct beds
   the batch is used to generate labels for a form to prompt the user to put the
