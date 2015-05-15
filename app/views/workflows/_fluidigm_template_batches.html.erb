@@ -56,9 +56,6 @@
       <tr>
         <td><label for="robot">Picking Robot</label>:</td>
         <td><%= select_tag("robot", options_for_select(@robots.collect {|p| [ p.name, p.id ] }))  %></td>
-
-        <!--td>Picking Robot:</td>
-        <td><%= select("robot", "0", @robots.collect {|p| [ p.name, p.id ] })  %></td -->
       </tr>
     </table>
   </fieldset>
