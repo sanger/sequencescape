@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2014,2015 Genome Research Ltd.
 require "test_helper"
 
 class WellTest < ActiveSupport::TestCase
@@ -222,23 +222,20 @@ class WellTest < ActiveSupport::TestCase
       end
 
       [
-        # It should get 83.3 ml at 3 ng/ml for obtaining 5 ml at 50 ng/ml, but we are required to take 5 ml
-        [5.0, 50.0, 3.0, 1.0, 5.0, 0.0],
-        # It should get 8.33 ml at 3 ng/ml to obtain 0.5 ml at 50. The volume required is 0.5
-        [0.5, 50.0, 3.0, 0.0, 0.5, 1.0],
-        # It should get 8.33 ml at 3 ng/ml to obtain 0.5 ml at 50. The volume required is 0.5, but the minimum
-        # pick is 1.0
-        [0.5, 50.0, 3.0, 1.0, 1.0, 0.0],
-        # It should get 0.05 ml at 50 ng/ml to obtain 5 ng/ml for 0.5
-        [0.5, 5.0, 50.0, 0.0, 0.05, 0.0],
-        # It should get 0.05 ml, but the minimum pick is 1.0
-        [0.5, 5.0, 50.0, 1.0, 1.0, 0.0]
-      ].each do |volume_required, concentration_required, source_concentration, minimum_pick_volume,
-                volume_obtained, buffer_volume_obtained|
-        context "with different values of volume, concentration and minimum pick volume" do
+        [100.0, 50.0, 100.0,  200.0,  nil, 50.0,  50.0, 'Standard scenario, sufficient material, buffer and dna both added' ],
+        [100.0, 50.0, 100.0,  20.0,   nil, 20.0,  80.0, 'Insufficeint source materia for concentration or volume. Make up with buffer' ],
+        [100.0, 5.0,  100.0,  2.0,    nil, 2.0,   98.0, 'As above, just more extreme' ],
+        [100.0, 5.0,  100.0,  2.0,    5.0, 5.0,   95.0, 'High concentration, minimum robot volume increases source pick' ],
+        [100.0, 50.0, 52.0,   200.0,  5.0, 96.2,  5.0, 'Lowish concentration, non zero, but less than robot buffer required' ],
+        [100.0, 5.0,  100.0,  2.0,    5.0, 2.0,   98.0, 'Less DNA than robot minimum pick, fall back to DNA' ],
+        [100.0, 50.0, 1.0,    200.0,  5.0, 100.0, 0.0, 'Low concentration, maximun DNA, no buffer' ]
+      ].each do |volume_required, concentration_required, source_concentration, source_volume, robot_minimum_pick_volume,
+                volume_obtained, buffer_volume_obtained, scenario|
+        context "when testing #{scenario}" do
           setup do
+            @well.well_attribute.current_volume = source_volume
             @result_volume = @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(volume_required,
-                  concentration_required, source_concentration, minimum_pick_volume)
+                  concentration_required, source_concentration, robot_minimum_pick_volume)
             @result_buffer_volume = @well.get_buffer_volume
           end
           should "gets correct volume quantity" do
