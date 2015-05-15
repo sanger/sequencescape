@@ -33,7 +33,7 @@ When /^I press exactly "([^\"]*)"$/ do |button|
   end
 end
 
-Then /^the field "([^"]*)" should be empty$/ do |field|
+Then /^the field "([^\"]*)" should be empty$/ do |field|
   field_value = field_labeled(field).attribute('value')
   assert(field_value.blank?, "Field #{ field.inspect } is not blank")
 end
@@ -91,7 +91,7 @@ end
 
 Then /^the "([^\"]+)" field should be marked in error$/ do |field|
   element = page.find_field(field) or raise Capybara::ElementNotFound, "Field #{ field.inspect } not found"
-  assert(element.node.xpath("self::*[contains(@class, 'fieldWithErrors')]"), "Field #{field.inspect} does not appear to be marked in error")
+  find(".fieldWithErrors ##{element['id']}")
 end
 
 # There is an issue when attaching a file to a field and using the @javascript tag: the path is relative to some
@@ -103,7 +103,7 @@ When /^(?:|I )attach the relative file "([^\"]+)" to "([^\"]+)"(?: within "([^\"
   end
 end
 
-When /^I fill in "([^"]*)" with(?: the)? multiline text:?$/ do |field, value|
+When /^I fill in "([^\"]*)" with(?: the)? multiline text:?$/ do |field, value|
   fill_in(field, :with => value)
 end
 
