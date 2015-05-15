@@ -128,6 +128,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         @project = Factory :project
         @user = Factory :user
 
+        @ux_request_type = Factory :well_request_type, {:target_purpose => nil, :for_multiplexing=>false}
         @mx_request_type = Factory :well_request_type, {:target_purpose => nil, :for_multiplexing=>true, :pooling_method=>@pooling}
         @pe_request_type = Factory :request_type, :asset_type => "LibraryTube", :initial_state => "pending", :name => "PE sequencing", :order => 2, :key => "pe_sequencing"
 
@@ -157,6 +158,77 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
             assert_equal 96, lib_requests.count
             seq_requests = Request.find_all_by_submission_id_and_request_type_id(@mx_submission_with_multiplication_factor, @pe_request_type.id)
             assert_equal 16, seq_requests.count
+          end
+
+        end
+
+      end
+    end
+
+    context "correctly calculate multipliers" do
+      setup do
+
+        @study = Factory :study
+        @project = Factory :project
+        @user = Factory :user
+
+        @ux_request_type = Factory :well_request_type, {:target_purpose => nil, :for_multiplexing=>false}
+        @mx_request_type = Factory :well_request_type, {:target_purpose => nil, :for_multiplexing=>true, :pooling_method=>@pooling}
+        @pe_request_type = Factory :request_type, :asset_type => "LibraryTube", :initial_state => "pending", :name => "PE sequencing", :order => 2, :key => "pe_sequencing"
+
+        @mx_request_type_ids = [ @mx_request_type.id, @pe_request_type.id ]
+        @ux_request_type_ids = [ @ux_request_type.id, @pe_request_type.id ]
+
+      end
+
+      context "with multiplexed requests" do
+
+        context "for multiplexed libraries and sequencing" do
+          setup do
+            @mx_submission_with_multiplication_factor = FlexibleSubmission.build!(
+                :study            => @study,
+                :project          => @project,
+                :workflow         => @workflow,
+                :user             => @user,
+                :assets           => @assets,
+                :request_types    => @mx_request_type_ids,
+                :comments         => ''
+              )
+          end
+
+          should "multiply the sequencing" do
+            ids = []
+            @mx_submission_with_multiplication_factor.orders.first.request_type_multiplier do |id|
+              ids << id
+            end
+            assert_equal [:"#{@pe_request_type.id}"], ids
+          end
+
+        end
+
+      end
+
+      context "with unplexed requests" do
+
+        context "for unplexed libraries and sequencing" do
+          setup do
+            @ux_submission_with_multiplication_factor = FlexibleSubmission.build!(
+                :study            => @study,
+                :project          => @project,
+                :workflow         => @workflow,
+                :user             => @user,
+                :assets           => @assets,
+                :request_types    => @ux_request_type_ids,
+                :comments         => ''
+              )
+          end
+
+          should "multiply the library creation" do
+            ids = []
+            @ux_submission_with_multiplication_factor.orders.first.request_type_multiplier do |id|
+              ids << id
+            end
+            assert_equal [:"#{@ux_request_type.id}"], ids
           end
 
         end

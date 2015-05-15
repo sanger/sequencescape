@@ -593,7 +593,6 @@ Factory.define(:library_creation_request_for_testing_sequencing_requests, :class
   end
 end
 
-
 Factory.define :library_creation_request, :parent => :request do |request|
   request_type = RequestType.find_by_name('Library creation') or raise "Cannot find 'Library creation' request type"
 
