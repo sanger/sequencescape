@@ -6,7 +6,7 @@ require "test_helper"
 class FlexibleSubmissionTest < ActiveSupport::TestCase
   context "FlexibleSubmission" do
     setup do
-      @assets       = Factory(:full_stock_plate).wells
+      @assets       = Factory(:two_column_plate).wells
       @workflow     = Factory :submission_workflow
       @pooling      = Factory :pooling_method
     end
@@ -53,7 +53,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
                @mpx_submission.process!
             end
 
-            should_change("Request.count", :by => (96+8)) { Request.count }
+            should_change("Request.count", :by => (16+8)) { Request.count }
           end
         end
       end
@@ -99,7 +99,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
                @mpx_submission.process!
             end
 
-            should_change("Request.count", :by => (96+8)) { Request.count }
+            should_change("Request.count", :by => (16+8)) { Request.count }
 
             should "set target assets according to the request_type.pool_by" do
               rows = (0...8).map
@@ -153,9 +153,9 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
             @mx_submission_with_multiplication_factor.process!
           end
 
-          should "create 96 library requests and 40 sequencing requests" do
+          should "create 16 library requests and 40 sequencing requests" do
             lib_requests = Request.find_all_by_submission_id_and_request_type_id(@mx_submission_with_multiplication_factor, @mx_request_type.id)
-            assert_equal 96, lib_requests.count
+            assert_equal 16, lib_requests.count
             seq_requests = Request.find_all_by_submission_id_and_request_type_id(@mx_submission_with_multiplication_factor, @pe_request_type.id)
             assert_equal 16, seq_requests.count
           end
