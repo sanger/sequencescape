@@ -96,6 +96,19 @@ class SubmissionsControllerTest < ActionController::TestCase
 
     end
 
+    context "by plate barcode with pools" do
+
+      setup do
+        @plate.wells.first.aliquots.create!(:sample=> Factory(:sample), :tag_id=>Tag.first.id)
+        post :create, plate_submission('DN123456P')
+      end
+
+      should "create the appropriate orders" do
+        assert_equal 27, Order.first.assets.count
+      end
+
+    end
+
     context "should allow submission by plate barcode and wells" do
 
       setup do
