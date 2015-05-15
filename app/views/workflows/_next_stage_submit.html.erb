@@ -10,7 +10,7 @@
 <% if (check_selection ||= false) %>
 <script type="text/javascript">
   (function($,undefined) {
-    $('#stage_button').click(function() {
+    $('#stage_form').bind('submit', function() {
       var checkboxes = $('.sample_check:checkbox');
       if (checkboxes.length == 0) { return true; }
       if ($('.sample_check:checked').length == 0) {
@@ -18,7 +18,7 @@
         return false;
       }
 
-      $('#stage_button').prop('disabled','disabled');
+      $('#stage_button').prop('disabled',true);
       $('#stage_links').hide();
       $('#stage_loading').show();
       return true;
