@@ -24,10 +24,6 @@ class Robot < ActiveRecord::Base
     "RB"
   end
 
-  def minimum_volume
-    @minimum_volume || 0.0
-  end
-
   def self.find_from_barcode(code)
     human_robot_barcode = Barcode.number_to_human(code)
     Robot.find_by_barcode(human_robot_barcode) || Robot.find_by_id(human_robot_barcode)

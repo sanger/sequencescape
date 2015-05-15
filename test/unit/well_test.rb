@@ -177,8 +177,9 @@ class WellTest < ActiveSupport::TestCase
         @target_well = Factory :well
         minimum_volume = 10
         maximum_volume = 50
+        robot_minimum_picking_volume = 1.0
         @source_well.well_attribute.update_attributes!(:concentration => measured_concentration, :measured_volume => measured_volume)
-        @target_well.volume_to_cherrypick_by_nano_grams(minimum_volume, maximum_volume, target_ng, @source_well)
+        @target_well.volume_to_cherrypick_by_nano_grams(minimum_volume, maximum_volume, target_ng, @source_well, robot_minimum_picking_volume)
       end
       should "output stock_to_pick #{stock_to_pick} for a target of #{target_ng} with vol #{measured_volume} and conc #{measured_concentration}" do
           assert_equal stock_to_pick, @target_well.well_attribute.picked_volume
@@ -225,8 +226,8 @@ class WellTest < ActiveSupport::TestCase
         [100.0, 50.0, 100.0,  200.0,  nil, 50.0,  50.0, 'Standard scenario, sufficient material, buffer and dna both added' ],
         [100.0, 50.0, 100.0,  20.0,   nil, 20.0,  80.0, 'Insufficeint source materia for concentration or volume. Make up with buffer' ],
         [100.0, 5.0,  100.0,  2.0,    nil, 2.0,   98.0, 'As above, just more extreme' ],
-        [100.0, 5.0,  100.0,  2.0,    5.0, 5.0,   95.0, 'High concentration, minimum robot volume increases source pick' ],
-        [100.0, 50.0, 52.0,   200.0,  5.0, 96.2,  5.0, 'Lowish concentration, non zero, but less than robot buffer required' ],
+        [100.0, 5.0,  100.0,  2.0,    5.0, 2.0,   98.0, 'High concentration, minimum robot volume increases source pick' ],
+        [100.0, 50.0, 52.0,   200.0,  5.0, 96.2,  3.8, 'Lowish concentration, non zero, but less than robot buffer required' ],
         [100.0, 5.0,  100.0,  2.0,    5.0, 2.0,   98.0, 'Less DNA than robot minimum pick, fall back to DNA' ],
         [100.0, 50.0, 1.0,    200.0,  5.0, 100.0, 0.0, 'Low concentration, maximun DNA, no buffer' ]
       ].each do |volume_required, concentration_required, source_concentration, source_volume, robot_minimum_pick_volume,
@@ -234,9 +235,9 @@ class WellTest < ActiveSupport::TestCase
         context "when testing #{scenario}" do
           setup do
             @well.well_attribute.current_volume = source_volume
-            @result_volume = @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(volume_required,
-                  concentration_required, source_concentration, robot_minimum_pick_volume)
-            @result_buffer_volume = @well.get_buffer_volume
+            @result_volume = ("%.1f" % @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(volume_required,
+                  concentration_required, source_concentration, robot_minimum_pick_volume)).to_f
+            @result_buffer_volume = ("%.1f" % @well.get_buffer_volume).to_f
           end
           should "gets correct volume quantity" do
             assert_equal volume_obtained, @result_volume

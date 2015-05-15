@@ -2,22 +2,20 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2011,2012,2015 Genome Research Ltd.
 module Cherrypick::VolumeByNanoGramsPerMicroLitre
-  def volume_to_cherrypick_by_nano_grams_per_micro_litre(volume_required,concentration_required,source_concentration,minimum_volume=0.0)
-    minimum_volume||=0
+  def volume_to_cherrypick_by_nano_grams_per_micro_litre(volume_required,concentration_required,source_concentration,robot_minimum_picking_volume=0.0)
+    robot_minimum_picking_volume||=0
     check_inputs_to_volume_to_cherrypick_by_nano_grams_per_micro_litre!(volume_required,concentration_required,source_concentration)
 
+    source_volume = well_attribute.current_volume
     well_attribute.concentration    = concentration_required
     well_attribute.requested_volume = volume_required
     well_attribute.current_volume   = volume_required
 
-    #if source_concentration.zero?
-    #  volume_to_pick = volume_required.ceil if volume_required < 2.0
-    #  buffer_volume  = 0.0
-    #else
-    volume_to_pick = volume_required
+    volume_to_pick = [[volume_required, robot_minimum_picking_volume].max, source_volume].min
     buffer_volume  = 0.0
     unless source_concentration.zero?
-      volume_to_pick = [[volume_required, ((volume_required*concentration_required)/source_concentration) ].min, minimum_volume].max
+      volume_to_pick = [[volume_required, ((volume_required*concentration_required)/source_concentration) ].min, robot_minimum_picking_volume].max
+      volume_to_pick = [source_volume, volume_to_pick].min
       buffer_volume  = buffer_volume_required(volume_required, volume_to_pick)
     end
 

@@ -8,17 +8,17 @@ module Cherrypick::Task::PickByNanoGramsPerMicroLitre
   end
 
   def valid_params_for_nano_grams_per_micro_litre_pick?(options)
-    (!options[:robot].nil?) &&  [options[:volume_required], options[:concentration_required]].all?(&method(:valid_float_param?))
+    [options[:volume_required], options[:concentration_required]].all?(&method(:valid_float_param?))
   end
   private :valid_params_for_nano_grams_per_micro_litre_pick?
 
   def create_nano_grams_per_micro_litre_picker(params)
     volume, concentration = params[:volume_required].to_f, params[:concentration_required].to_f
-    robot = Robot.find(params[:robot])
-    minimum_volume = robot.minimum_volume.to_f
+    robot = Robot.find(params[:robot_id])
+    robot_minimum_picking_volume = robot.minimum_volume.to_f
 
     lambda do |well, request|
-      well.volume_to_cherrypick_by_nano_grams_per_micro_litre(volume, concentration, request.asset.get_concentration, minimum_volume)
+      well.volume_to_cherrypick_by_nano_grams_per_micro_litre(volume, concentration, request.asset.get_concentration, robot_minimum_picking_volume)
     end
   end
   private :create_nano_grams_per_micro_litre_picker
