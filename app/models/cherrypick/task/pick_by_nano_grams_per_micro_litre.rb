@@ -15,7 +15,7 @@ module Cherrypick::Task::PickByNanoGramsPerMicroLitre
   def create_nano_grams_per_micro_litre_picker(params)
     volume, concentration = params[:volume_required].to_f, params[:concentration_required].to_f
     robot = Robot.find(params[:robot_id])
-    robot_minimum_picking_volume = robot.minimum_volume.to_f
+    robot_minimum_picking_volume = robot.minimum_volume
 
     lambda do |well, request|
       well.volume_to_cherrypick_by_nano_grams_per_micro_litre(volume, concentration, request.asset.get_concentration, robot_minimum_picking_volume)
