@@ -84,17 +84,17 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     A;1220000333802;;ABgene 0765;28;;20.0
     D;1220099999705;;ABgene 0800;12;;20.0
     W;
-    A;1220000333802;;ABgene 0765;35;;2.0
-    D;1220099999705;;ABgene 0800;13;;2.0
+    A;1220000333802;;ABgene 0765;35;;1.1
+    D;1220099999705;;ABgene 0800;13;;1.1
     W;
-    A;1220000333802;;ABgene 0765;43;;2.0
-    D;1220099999705;;ABgene 0800;14;;2.0
+    A;1220000333802;;ABgene 0765;43;;1.3
+    D;1220099999705;;ABgene 0800;14;;1.3
     W;
-    A;1220000333802;;ABgene 0765;51;;2.0
-    D;1220099999705;;ABgene 0800;15;;2.0
+    A;1220000333802;;ABgene 0765;51;;1.4
+    D;1220099999705;;ABgene 0800;15;;1.4
     W;
-    A;1220000333802;;ABgene 0765;59;;2.0
-    D;1220099999705;;ABgene 0800;16;;2.0
+    A;1220000333802;;ABgene 0765;59;;1.7
+    D;1220099999705;;ABgene 0800;16;;1.7
     W;
     C;
     A;BUFF;;96-TROUGH;2;;1.7
@@ -115,17 +115,17 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     A;BUFF;;96-TROUGH;11;;9.0
     D;1220099999705;;ABgene 0800;11;;9.0
     W;
-    A;BUFF;;96-TROUGH;13;;8.0
-    D;1220099999705;;ABgene 0800;13;;8.0
+    A;BUFF;;96-TROUGH;13;;8.9
+    D;1220099999705;;ABgene 0800;13;;8.9
     W;
-    A;BUFF;;96-TROUGH;14;;8.0
-    D;1220099999705;;ABgene 0800;14;;8.0
+    A;BUFF;;96-TROUGH;14;;8.8
+    D;1220099999705;;ABgene 0800;14;;8.8
     W;
-    A;BUFF;;96-TROUGH;15;;8.0
-    D;1220099999705;;ABgene 0800;15;;8.0
+    A;BUFF;;96-TROUGH;15;;8.6
+    D;1220099999705;;ABgene 0800;15;;8.6
     W;
-    A;BUFF;;96-TROUGH;16;;8.0
-    D;1220099999705;;ABgene 0800;16;;8.0
+    A;BUFF;;96-TROUGH;16;;8.3
+    D;1220099999705;;ABgene 0800;16;;8.3
     W;
     C;
     C; SCRC1 = 1220000222748
