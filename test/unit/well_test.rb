@@ -182,16 +182,64 @@ class WellTest < ActiveSupport::TestCase
         @target_well.volume_to_cherrypick_by_nano_grams(minimum_volume, maximum_volume, target_ng, @source_well, robot_minimum_picking_volume)
       end
       should "output stock_to_pick #{stock_to_pick} for a target of #{target_ng} with vol #{measured_volume} and conc #{measured_concentration}" do
-          assert_equal stock_to_pick, @target_well.well_attribute.picked_volume
-
+        assert_equal stock_to_pick, @target_well.well_attribute.picked_volume
       end
       should "output buffer #{buffer_added} for a target of #{target_ng} with vol #{measured_volume} and conc #{measured_concentration}" do
-          assert_equal buffer_added, @target_well.well_attribute.buffer_volume
+        assert_equal buffer_added, @target_well.well_attribute.buffer_volume
       end
     end
   end
 
+  context "when while cherrypicking by nanograms " do
+    context "and we want to get less volume than the minimum" do
+        setup do
+          @source_well = Factory :well
+          @target_well = Factory :well
 
+          @measured_concentration = 100
+          @measured_volume = 50
+          @target_ng = 10
+          @minimum_volume = 10
+          @maximum_volume = 50
+        end
+        should "get correct volume and buffer volume when there is not robot minimum picking volume" do
+          stock_to_pick = 0.1
+          buffer_added = 9.9
+          robot_minimum_picking_volume = nil
+          @source_well.well_attribute.update_attributes!(:concentration => @measured_concentration, :measured_volume => @measured_volume)
+          @target_well.volume_to_cherrypick_by_nano_grams(@minimum_volume, @maximum_volume, @target_ng, @source_well, robot_minimum_picking_volume)
+          assert_equal stock_to_pick, @target_well.get_picked_volume
+          assert_equal buffer_added, @target_well.well_attribute.buffer_volume
+        end
+        should "get correct buffer volume when it's above robot minimum picking volume" do
+          stock_to_pick = 1
+          buffer_added = 9
+          robot_minimum_picking_volume = 1.0
+          @source_well.well_attribute.update_attributes!(:concentration => @measured_concentration, :measured_volume => @measured_volume)
+          @target_well.volume_to_cherrypick_by_nano_grams(@minimum_volume, @maximum_volume, @target_ng, @source_well, robot_minimum_picking_volume)
+          assert_equal stock_to_pick, @target_well.get_picked_volume
+          assert_equal buffer_added, @target_well.well_attribute.buffer_volume
+        end
+        should "get no buffer volume if the minimum picking volume exceeds the minimum volume" do
+          stock_to_pick = 10.0
+          buffer_added = 0.0
+          robot_minimum_picking_volume = 10.0
+          @source_well.well_attribute.update_attributes!(:concentration => @measured_concentration, :measured_volume => @measured_volume)
+          @target_well.volume_to_cherrypick_by_nano_grams(@minimum_volume, @maximum_volume, @target_ng, @source_well, robot_minimum_picking_volume)
+          assert_equal stock_to_pick, @target_well.get_picked_volume
+          assert_equal buffer_added, @target_well.well_attribute.buffer_volume
+        end
+        should "get robot minimum picking volume if the correct buffer volume is below this value" do
+          stock_to_pick = 5.0
+          buffer_added = 5.0
+          robot_minimum_picking_volume = 5.0
+          @source_well.well_attribute.update_attributes!(:concentration => @measured_concentration, :measured_volume => @measured_volume)
+          @target_well.volume_to_cherrypick_by_nano_grams(@minimum_volume, @maximum_volume, @target_ng, @source_well, robot_minimum_picking_volume)
+          assert_equal stock_to_pick, @target_well.get_picked_volume
+          assert_equal buffer_added, @target_well.well_attribute.buffer_volume
+        end
+      end
+    end
     context "to be cherrypicked" do
 
       context "with no source concentration" do
