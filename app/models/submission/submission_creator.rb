@@ -210,7 +210,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   private :find_assets_from_text
 
   def find_wells_in_array(plate,well_array)
-    return plate.wells.with_aliquots if well_array.empty?
+    return plate.wells.with_aliquots.find(:all,:select=>'DISTINCT assets.*') if well_array.empty?
     well_array.map do |map_description|
       case map_description
       when /^[a-z,A-Z][0-9]+$/ # A well
@@ -221,9 +221,9 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
           well
         end
       when /^[a-z,A-Z]$/ # A row
-        plate.wells.with_aliquots.in_plate_row(map_description,plate.size)
+        plate.wells.with_aliquots.in_plate_row(map_description,plate.size).find(:all,:select=>'DISTINCT assets.*')
       when /^[0-9]+$/ # A column
-        plate.wells.with_aliquots.in_plate_column(map_description,plate.size)
+        plate.wells.with_aliquots.in_plate_column(map_description,plate.size).find(:all,:select=>'DISTINCT assets.*')
       else
         raise InvalidInputException, "#{map_description} is not a valid well location"
       end
