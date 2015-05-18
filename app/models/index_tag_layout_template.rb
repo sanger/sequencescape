@@ -18,4 +18,8 @@ class IndexTagLayoutTemplate < ActiveRecord::Base
   def create!(attributes = {}, &block)
     ## TODO
   end
+
+  def stamp_to(_)
+    # Do Nothing
+  end
 end

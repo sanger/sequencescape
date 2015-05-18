@@ -725,3 +725,8 @@ Factory.define(:messenger_creator) do |reporter|
   reporter.template 'FluidigmPlateIO'
   reporter.purpose {|purpose| purpose.association(:plate_purpose)}
 end
+
+Factory.define :index_tag_layout_template do |itlt|
+  itlt.name 'Index tag layout template'
+  itlt.tag {|tag| tag.association :tag }
+end
