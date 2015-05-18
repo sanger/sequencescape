@@ -49,9 +49,9 @@ begin
     task :all => [:ok, :wip]
   end
   desc 'Alias for cucumber:ok'
-  task :cucumber => 'cucumber:nojs'
+  task :cucumber => 'cucumber:ok'
 
-  task :default => 'cucumber:nojs'
+  task :default => 'cucumber:ok'
 
   task :features => :cucumber do
     STDERR.puts "*** The 'features' task is deprecated. See rake -T cucumber ***"
