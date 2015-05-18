@@ -324,11 +324,11 @@ end
 
 Then /^the help text for "([^"]*)" should contain:$/ do |label_name, expected_tooltip_text|
   label = find(:xpath, "//label[text()='#{label_name}']")
-  tooltip_div_content = label.node.attribute('for')
+  tooltip_div_content = label['for']
   click_link(tooltip_div_content.gsub('content','link'))
 
-  actual_tooltip_text = find(:xpath, "//div[@id='#{tooltip_div_content}']").text
-  assert_equal expected_tooltip_text, actual_tooltip_text.gsub("\nclose","")
+  actual_tooltip_text = find("##{tooltip_div_content}").text
+  assert_equal expected_tooltip_text.squish, actual_tooltip_text.gsub(" close","").squish
 end
 
 Then /^I should exactly see "([^"]*)"$/ do |text|
@@ -403,11 +403,11 @@ end
 
 
 Then /^the list of studies should be:$/ do |expected_results_table|
-  expected_results_table.diff!(table(tableish('table#study_list tr', 'td,th')))
+  expected_results_table.diff!(table(fetch_table('table#study_list')))
 end
 
 Then /^the faculty sponsor index page should look like:$/ do |expected_results_table|
-  expected_results_table.diff!(table(tableish('table#faculty_sponsor_list tr', 'td,th')))
+  expected_results_table.diff!(table(fetch_table('table#faculty_sponsor_list')))
 end
 
 When /^I have an? (managed|open) study without a data release group called "(.*?)"$/ do |managed,study_name|

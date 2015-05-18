@@ -14,11 +14,11 @@ Given /^I have a Sample Tube "([^"]*)" with a request without a study$/ do |tube
 end
 
 Then /^the asset relations table should be:$/ do |expected_results_table|
-  expected_results_table.diff!(table(tableish('table.asset_relations tr', 'td,th')))
+  expected_results_table.diff!(table(fetch_table('table.asset_relations')))
 end
 
 Then /^the QC table for "([^"]*)" should be:$/ do |table_class_name, expected_results_table|
-  expected_results_table.diff!(table(tableish("table##{table_class_name} tr", 'td,th')))
+  expected_results_table.diff!(table(fetch_table("table##{table_class_name}")))
 end
 
 Given /^plate "([^"]*)" has QC results$/ do |barcode|

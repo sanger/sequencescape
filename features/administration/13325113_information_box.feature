@@ -17,14 +17,16 @@ Feature:  Site Wide Information Box
       And the field labeled "Custom text content type" should contain "text/html"
 
   Scenario: Entering a new message
-    Given I fill in "Custom text content" with "Something, something, darkside..."
+  # Note: We have to use the field name here as the XPATH form helpers allow partial
+  # matches for labels. This caused us to fill in the content type field.
+    Given I fill in "custom_text[content]" with "Something, something, darkside..."
       And I press "Save changes"
     When I go to the homepage
     Then the application information box should contain "Something, something, darkside..."
 
 
   Scenario: Entering a blank message should hide the application information box
-    Given I fill in "Custom text content" with ""
+    Given I fill in "custom_text[content]" with ""
       And I press "Save changes"
     When I go to the homepage
     Then the application information box is not shown
