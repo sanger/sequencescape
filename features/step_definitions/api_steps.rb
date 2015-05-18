@@ -162,25 +162,25 @@ end
 
 Then /^show me the HTTP response body$/ do
   $stderr.puts('=' * 80)
-  $stderr.send(:pp, JSON.parse(page.body)) rescue $stderr.puts(page.body)
+  $stderr.send(:pp, JSON.parse(page.source)) rescue $stderr.puts(page.source)
   $stderr.puts('=' * 80)
 end
 
 Then /^ignoring "([^\"]+)" the JSON should be:$/ do |key_list, serialised_json|
   regexp = Regexp.new(key_list)
   begin
-    assert_json_equal(serialised_json, page.body) do |key|
+    assert_json_equal(serialised_json, page.source) do |key|
       key.to_s =~ regexp
     end
   rescue
-    puts page.body
+    puts page.source
     raise
   end
 end
 
 Then /^ignoring everything but "([^\"]+)" the JSON should be:$/ do |key_list, serialised_json|
   keys = key_list.split('|')
-  assert_json_equal(serialised_json, page.body) do |key|
+  assert_json_equal(serialised_json, page.source) do |key|
     not keys.include?(key.to_s)
   end
 end
@@ -210,20 +210,20 @@ end
 
 Then /^the JSON should match the following for the specified fields:$/ do |serialised_json|
   expected = decode_json(serialised_json, 'Expected')
-  received = decode_json(page.body, 'Received')
+  received = decode_json(page.source, 'Received')
   strip_extraneous_fields(expected, received)
   assert_hash_equal(expected, received, 'JSON differs in the specified fields')
 end
 
 Then /^the JSON "([^\"]+)" should be exactly:$/ do |path, serialised_json|
   expected = decode_json(serialised_json, 'Expected')
-  received = decode_json(page.body, 'Received')
+  received = decode_json(page.source, 'Received')
   target   = path.split('.').inject(received) { |json,key| json[key] }
   assert_equal(expected, target, 'JSON differs in the specified key path')
 end
 
 Then /^the JSON "([^\"]+)" should not exist$/ do |path|
-  received = decode_json(page.body, 'Received')
+  received = decode_json(page.source, 'Received')
   steps    = path.split('.')
   leaf     = steps.pop
   target   = steps.inject(received) { |json,key| json.try(:[], key) }
@@ -235,7 +235,7 @@ end
 Then /^the JSON should be:$/ do |serialised_json|
   assert_hash_equal(
     decode_json(serialised_json, 'Expected'),
-    decode_json(page.body, 'Received'),
+    decode_json(page.source, 'Received'),
     'The JSON differs when decoded'
   )
 end
@@ -256,15 +256,15 @@ Then /^the HTTP "([^\"]+)" should be "([^\"]+)"$/ do |header,value|
 end
 
 Then /^the HTTP response body should be empty$/ do
-  assert(page.body.blank?, 'The response body is not blank')
+  assert(page.source.blank?, 'The response body is not blank')
 end
 
 Then /^the JSON should be an empty array$/ do
-  assert_hash_equal([], decode_json(page.body, 'Received'), 'The JSON is not an empty array')
+  assert_hash_equal([], decode_json(page.source, 'Received'), 'The JSON is not an empty array')
 end
 
 Then /^the JSON should not contain "([^\"]+)" within any element of "([^\"]+)"$/ do |name, path|
-  json = decode_json(page.body, 'Received')
+  json = decode_json(page.source, 'Received')
   target = path.split('.').inject(json) { |s,p| s.try(:[], p) } or raise StandardError, "Could not find #{path.inspect} in JSON"
   case target
   when Array

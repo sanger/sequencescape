@@ -37,7 +37,7 @@ Then /^study "([^"]*)" should have (\d+) samples$/ do |study_name, number_of_sam
 end
 
 Then /^I should see the manifest table:$/ do |expected_results_table|
-  expected_results_table.diff!(table(tableish('table#study_list tr', 'td,th')))
+  expected_results_table.diff!(table(fetch_table('table#study_list')))
 end
 
 def sequence_sanger_sample_ids_for(plate)
