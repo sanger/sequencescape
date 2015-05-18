@@ -55,14 +55,14 @@ Feature: Pick a ng quantity using the Tecan robot
     A;1220000222748;;ABgene 0765;2;;10.0
     D;1220099999705;;ABgene 0800;1;;10.0
     W;
-    A;1220000222748;;ABgene 0765;10;;9.0
-    D;1220099999705;;ABgene 0800;2;;9.0
+    A;1220000222748;;ABgene 0765;10;;8.3
+    D;1220099999705;;ABgene 0800;2;;8.3
     W;
-    A;1220000222748;;ABgene 0765;18;;8.0
-    D;1220099999705;;ABgene 0800;3;;8.0
+    A;1220000222748;;ABgene 0765;18;;7.1
+    D;1220099999705;;ABgene 0800;3;;7.1
     W;
-    A;1220000222748;;ABgene 0765;26;;7.0
-    D;1220099999705;;ABgene 0800;4;;7.0
+    A;1220000222748;;ABgene 0765;26;;6.3
+    D;1220099999705;;ABgene 0800;4;;6.3
     W;
     A;1220000222748;;ABgene 0765;34;;50.0
     D;1220099999705;;ABgene 0800;5;;50.0
@@ -76,17 +76,17 @@ Feature: Pick a ng quantity using the Tecan robot
     A;1220000333802;;ABgene 0765;27;;1.0
     D;1220099999705;;ABgene 0800;8;;1.0
     W;
-    A;1220000333802;;ABgene 0765;35;;2.0
-    D;1220099999705;;ABgene 0800;9;;2.0
+    A;1220000333802;;ABgene 0765;35;;1.1
+    D;1220099999705;;ABgene 0800;9;;1.1
     W;
-    A;1220000333802;;ABgene 0765;43;;2.0
-    D;1220099999705;;ABgene 0800;10;;2.0
+    A;1220000333802;;ABgene 0765;43;;1.3
+    D;1220099999705;;ABgene 0800;10;;1.3
     W;
-    A;1220000333802;;ABgene 0765;51;;2.0
-    D;1220099999705;;ABgene 0800;11;;2.0
+    A;1220000333802;;ABgene 0765;51;;1.4
+    D;1220099999705;;ABgene 0800;11;;1.4
     W;
-    A;1220000333802;;ABgene 0765;59;;2.0
-    D;1220099999705;;ABgene 0800;12;;2.0
+    A;1220000333802;;ABgene 0765;59;;1.7
+    D;1220099999705;;ABgene 0800;12;;1.7
     W;
     A;1220000333802;;ABgene 0765;4;;10.0
     D;1220099999705;;ABgene 0800;13;;10.0
@@ -101,29 +101,29 @@ Feature: Pick a ng quantity using the Tecan robot
     D;1220099999705;;ABgene 0800;16;;20.0
     W;
     C;
-    A;BUFF;;96-TROUGH;2;;1.0
-    D;1220099999705;;ABgene 0800;2;;1.0
+    A;BUFF;;96-TROUGH;2;;1.7
+    D;1220099999705;;ABgene 0800;2;;1.7
     W;
-    A;BUFF;;96-TROUGH;3;;2.0
-    D;1220099999705;;ABgene 0800;3;;2.0
+    A;BUFF;;96-TROUGH;3;;2.9
+    D;1220099999705;;ABgene 0800;3;;2.9
     W;
-    A;BUFF;;96-TROUGH;4;;3.0
-    D;1220099999705;;ABgene 0800;4;;3.0
+    A;BUFF;;96-TROUGH;4;;3.8
+    D;1220099999705;;ABgene 0800;4;;3.8
     W;
     A;BUFF;;96-TROUGH;8;;9.0
     D;1220099999705;;ABgene 0800;8;;9.0
     W;
-    A;BUFF;;96-TROUGH;9;;8.0
-    D;1220099999705;;ABgene 0800;9;;8.0
+    A;BUFF;;96-TROUGH;9;;8.9
+    D;1220099999705;;ABgene 0800;9;;8.9
     W;
-    A;BUFF;;96-TROUGH;10;;8.0
-    D;1220099999705;;ABgene 0800;10;;8.0
+    A;BUFF;;96-TROUGH;10;;8.8
+    D;1220099999705;;ABgene 0800;10;;8.8
     W;
-    A;BUFF;;96-TROUGH;11;;8.0
-    D;1220099999705;;ABgene 0800;11;;8.0
+    A;BUFF;;96-TROUGH;11;;8.6
+    D;1220099999705;;ABgene 0800;11;;8.6
     W;
-    A;BUFF;;96-TROUGH;12;;8.0
-    D;1220099999705;;ABgene 0800;12;;8.0
+    A;BUFF;;96-TROUGH;12;;8.3
+    D;1220099999705;;ABgene 0800;12;;8.3
     W;
     C;
     C; SCRC1 = 1220000222748
@@ -133,16 +133,16 @@ Feature: Pick a ng quantity using the Tecan robot
     """
     When I follow "Print worksheet for Plate 99999"
     Then I should see the cherrypick worksheet table:
-     | 1                           | 2                           |
-     | B1        222        v10 b0 | C5        333        v2 b8  |
-     | B2        222        v9 b1  | C6        333        v2 b8  |
-     | B3        222        v8 b2  | C7        333        v2 b8  |
-     | B4        222        v7 b3  | C8        333        v2 b8  |
-     | B5        222        v50 b0 | D1        333        v10 b0 |
-     | B6        222        v20 b0 | D2        333        v10 b0 |
-     | C3        333        v30 b0 | D3        333        v15 b0 |
-     | C4        333        v1 b9  | D4        333        v20 b0 |
-     | 1                           | 2                           |
+     | 1                               | 2                               |
+     | B1        222        v10.0 b0.0 | C5        333        v1.1  b8.9 |
+     | B2        222        v8.3  b1.7 | C6        333        v1.3  b8.8 |
+     | B3        222        v7.1  b2.9 | C7        333        v1.4  b8.6 |
+     | B4        222        v6.3  b3.8 | C8        333        v1.7  b8.3 |
+     | B5        222        v50.0 b0.0 | D1        333        v10.0 b0.0 |
+     | B6        222        v20.0 b0.0 | D2        333        v10.0 b0.0 |
+     | C3        333        v30.0 b0.0 | D3        333        v15.0 b0.0 |
+     | C4        333        v1.0  b9.0 | D4        333        v20.0 b0.0 |
+     | 1                               | 2                               |
 
   Scenario: Try to cherrypick where 1 well has no concentration
     Given a plate barcode webservice is available and returns "99999"

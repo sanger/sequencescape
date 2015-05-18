@@ -26,7 +26,7 @@ module Tasks::CherrypickGroupBySubmissionHandler
       end
     end
 
-    robot = Robot.find(params[:robot])
+    robot = Robot.find(params[:robot_id])
     batch = Batch.find(params[:batch_id], :include => [:requests, :pipeline, :lab_events])
 
     ActiveRecord::Base.transaction do
