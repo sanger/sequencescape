@@ -226,12 +226,11 @@ class WellTest < ActiveSupport::TestCase
         [100.0, 50.0, 100.0,  200.0,  nil, 50.0,  50.0, 'Standard scenario, sufficient material, buffer and dna both added' ],
         [100.0, 50.0, 100.0,  20.0,   nil, 20.0,  80.0, 'Insufficeint source materia for concentration or volume. Make up with buffer' ],
         [100.0, 5.0,  100.0,  2.0,    nil, 2.0,   98.0, 'As above, just more extreme' ],
-        [100.0, 5.0,  100.0,  2.0,    5.0, 2.0,   98.0, 'High concentration, minimum robot volume increases source pick' ],
-        [100.0, 50.0, 52.0,   200.0,  5.0, 96.2,  3.8, 'Lowish concentration, non zero, but less than robot buffer required' ],
+        [100.0, 5.0,  100.0,  5.0,    5.0, 5.0,   95.0, 'High concentration, minimum robot volume increases source pick' ],
+        [100.0, 50.0, 52.0,   200.0,  5.0, 96.2,  5.0, 'Lowish concentration, non zero, but less than robot buffer required' ],
         [100.0, 5.0,  100.0,  2.0,    5.0, 2.0,   98.0, 'Less DNA than robot minimum pick, fall back to DNA' ],
         [100.0, 50.0, 1.0,    200.0,  5.0, 100.0, 0.0, 'Low concentration, maximun DNA, no buffer' ]
-      ].each do |volume_required, concentration_required, source_concentration, source_volume, robot_minimum_pick_volume,
-                volume_obtained, buffer_volume_obtained, scenario|
+      ].each do |volume_required, concentration_required, source_concentration, source_volume, robot_minimum_pick_volume, volume_obtained, buffer_volume_obtained, scenario|
         context "when testing #{scenario}" do
           setup do
             @well.well_attribute.current_volume = source_volume

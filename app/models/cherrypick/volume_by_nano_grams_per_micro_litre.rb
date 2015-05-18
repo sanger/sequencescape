@@ -16,7 +16,7 @@ module Cherrypick::VolumeByNanoGramsPerMicroLitre
     unless source_concentration.zero?
       volume_to_pick = [[volume_required, ((volume_required*concentration_required)/source_concentration) ].min, robot_minimum_picking_volume].max
       volume_to_pick = [source_volume, volume_to_pick].compact.min
-      buffer_volume  = buffer_volume_required(volume_required, volume_to_pick)
+      buffer_volume  = buffer_volume_required(volume_required, volume_to_pick, robot_minimum_picking_volume)
     end
 
     well_attribute.picked_volume  = volume_to_pick
