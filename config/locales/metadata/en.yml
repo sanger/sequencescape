@@ -338,6 +338,10 @@ en:
           edit_info: '[ ENA requirement ]'
           help: Make this ENA project public immediately.
 
+        prelim_id:
+          label: "Prelim ID"
+          help: Prelim ID
+
         contains_human_dna:
           label: Do any of the samples in this study contain human DNA?
           help: If they do, you will be required to upload the relevant documents.  This does not apply to samples that are going to have the Human DNA removed prior to analysis.
