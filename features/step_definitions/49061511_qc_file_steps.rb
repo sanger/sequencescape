@@ -12,7 +12,7 @@ end
 Then /^the content should be the Qc Data$/ do
   filename = File.expand_path(File.join(Rails.root, %w{test data example_file.txt}))
   File.open(filename) do |file|
-     assert_equal(file.read, page.body)
+     assert_equal(file.read, page.source)
   end
   assert_equal("attachment; filename=\"example_file.txt\"", page.driver.response_headers["Content-Disposition"])
 end

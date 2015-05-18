@@ -2,7 +2,7 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
 Then /^I should see dna qc table:$/ do |expected_results_table|
-  actual_table = table(tableish('table#sortable_batches tr', 'td,th'))
+  actual_table = table(fetch_table('table#sortable_batches'))
   actual_table.map_column!('Qc') { |text| "" }
   expected_results_table.diff!(actual_table)
 end

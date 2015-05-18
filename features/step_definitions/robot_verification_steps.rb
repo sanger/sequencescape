@@ -92,5 +92,5 @@ Then /^the downloaded tecan file for batch "([^"]*)" and plate "([^"]*)" is$/ do
 end
 
 Then /^the source plates should be sorted by bed:$/ do |expected_results_table|
-  expected_results_table.diff!(table(tableish('table#source_beds tr', 'td,th')))
+  expected_results_table.diff!(table(fetch_table('table#source_beds')))
 end
