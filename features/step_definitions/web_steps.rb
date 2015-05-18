@@ -250,7 +250,10 @@ Then /^show me the page$/ do
   Capybara.save_and_open_page(source)
 end
 
-Given /^the "([^"]*)" field is hidden$/ do |field_name|
+Given /^the "([^\"]*)" field is hidden$/ do |field_name|
   assert find_field(field_name).visible? == false
 end
 
+Given /^I drag "(.*?)" to "(.*?)"$/ do |source, target|
+  find(source).drag_to(find(target))
+end

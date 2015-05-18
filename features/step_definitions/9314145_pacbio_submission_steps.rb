@@ -228,3 +228,7 @@ Then /^I fill in the field for "(.*?)" with "(.*?)"$/ do |asset_name, content|
   request_id = Asset.find_by_name!(asset_name).requests.first.id
   step(%Q{I fill in the hidden field "locations_for_#{request_id}" with "#{content}"})
 end
+
+When /^I drag the library tube to well "(.*?)"$/ do |well|
+  step %Q{I drag ".library_tube" to "#well_#{well}"}
+end
