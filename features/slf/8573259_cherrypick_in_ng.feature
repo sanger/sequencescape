@@ -76,17 +76,17 @@ Feature: Pick a ng quantity using the Tecan robot
     A;1220000333802;;ABgene 0765;27;;1.0
     D;1220099999705;;ABgene 0800;8;;1.0
     W;
-    A;1220000333802;;ABgene 0765;35;;2.0
-    D;1220099999705;;ABgene 0800;9;;2.0
+    A;1220000333802;;ABgene 0765;35;;1.1
+    D;1220099999705;;ABgene 0800;9;;1.1
     W;
-    A;1220000333802;;ABgene 0765;43;;2.0
-    D;1220099999705;;ABgene 0800;10;;2.0
+    A;1220000333802;;ABgene 0765;43;;1.3
+    D;1220099999705;;ABgene 0800;10;;1.3
     W;
-    A;1220000333802;;ABgene 0765;51;;2.0
-    D;1220099999705;;ABgene 0800;11;;2.0
+    A;1220000333802;;ABgene 0765;51;;1.4
+    D;1220099999705;;ABgene 0800;11;;1.4
     W;
-    A;1220000333802;;ABgene 0765;59;;2.0
-    D;1220099999705;;ABgene 0800;12;;2.0
+    A;1220000333802;;ABgene 0765;59;;1.7
+    D;1220099999705;;ABgene 0800;12;;1.7
     W;
     A;1220000333802;;ABgene 0765;4;;10.0
     D;1220099999705;;ABgene 0800;13;;10.0
@@ -113,17 +113,17 @@ Feature: Pick a ng quantity using the Tecan robot
     A;BUFF;;96-TROUGH;8;;9.0
     D;1220099999705;;ABgene 0800;8;;9.0
     W;
-    A;BUFF;;96-TROUGH;9;;8.0
-    D;1220099999705;;ABgene 0800;9;;8.0
+    A;BUFF;;96-TROUGH;9;;8.9
+    D;1220099999705;;ABgene 0800;9;;8.9
     W;
-    A;BUFF;;96-TROUGH;10;;8.0
-    D;1220099999705;;ABgene 0800;10;;8.0
+    A;BUFF;;96-TROUGH;10;;8.8
+    D;1220099999705;;ABgene 0800;10;;8.8
     W;
-    A;BUFF;;96-TROUGH;11;;8.0
-    D;1220099999705;;ABgene 0800;11;;8.0
+    A;BUFF;;96-TROUGH;11;;8.6
+    D;1220099999705;;ABgene 0800;11;;8.6
     W;
-    A;BUFF;;96-TROUGH;12;;8.0
-    D;1220099999705;;ABgene 0800;12;;8.0
+    A;BUFF;;96-TROUGH;12;;8.3
+    D;1220099999705;;ABgene 0800;12;;8.3
     W;
     C;
     C; SCRC1 = 1220000222748
@@ -134,10 +134,10 @@ Feature: Pick a ng quantity using the Tecan robot
     When I follow "Print worksheet for Plate 99999"
     Then I should see the cherrypick worksheet table:
      | 1                               | 2                               |
-     | B1        222        v10.0 b0.0 | C5        333        v2.0  b8.0 |
-     | B2        222        v8.3  b1.7 | C6        333        v2.0  b8.0 |
-     | B3        222        v7.1  b2.9 | C7        333        v2.0  b8.0 |
-     | B4        222        v6.3  b3.8 | C8        333        v2.0  b8.0 |
+     | B1        222        v10.0 b0.0 | C5        333        v1.1  b8.9 |
+     | B2        222        v8.3  b1.7 | C6        333        v1.3  b8.8 |
+     | B3        222        v7.1  b2.9 | C7        333        v1.4  b8.6 |
+     | B4        222        v6.3  b3.8 | C8        333        v1.7  b8.3 |
      | B5        222        v50.0 b0.0 | D1        333        v10.0 b0.0 |
      | B6        222        v20.0 b0.0 | D2        333        v10.0 b0.0 |
      | C3        333        v30.0 b0.0 | D3        333        v15.0 b0.0 |
