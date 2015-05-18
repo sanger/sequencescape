@@ -33,9 +33,9 @@ class Tube < Aliquot::Receptacle
     # TODO: change to purpose_id
     has_many :tubes, :foreign_key => :plate_purpose_id
 
-    def default_state(_)
-      self[:default_state]
-    end
+    # def default_state(_=nil)
+    #   self[:default_state]
+    # end
 
     # Tubes of the general types have no stock plate!
     def stock_plate(_)

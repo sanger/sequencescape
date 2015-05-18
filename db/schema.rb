@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150414151730) do
+ActiveRecord::Schema.define(:version => 20150513114856) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -523,6 +523,13 @@ ActiveRecord::Schema.define(:version => 20150414151730) do
   end
 
   add_index "implements", ["barcode"], :name => "index_implements_on_barcode"
+
+  create_table "index_tag_layout_templates", :force => true do |t|
+    t.string   "name",       :null => false
+    t.integer  "tag_id",     :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "items", :force => true do |t|
     t.datetime "created_at"
