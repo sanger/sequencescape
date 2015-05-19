@@ -20,7 +20,7 @@ Feature: Full sample manifest
 
   Scenario: Create a plate manifest and upload a manifest file and process it
     Given a manifest has been created for "Test study"
-    When I fill in "File to upload" with "test/data/full_manifest.csv"
+    When I fill in "File to upload" with the file "test/data/full_manifest.csv"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
     When I follow "View all manifests"

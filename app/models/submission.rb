@@ -24,10 +24,16 @@ class Submission < ActiveRecord::Base
   has_many :studies, :through => :orders
   accepts_nested_attributes_for :orders, :update_only => true
 
+  has_many :comments_from_requests, :through => :requests, :source => :comments
+
   def comments
     # has_many throug doesn't work. Comments is a column (string) of order
     # not an ActiveRecord
     orders.map(&:comments).flatten(1).compact
+  end
+
+  def add_comment(description,user)
+    orders.map {|o| o.add_comment(description,user) }.flatten
   end
 
   cattr_reader :per_page

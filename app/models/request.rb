@@ -397,8 +397,8 @@ class Request < ActiveRecord::Base
     self.asset.requests.select { |previous_failed_request| (previous_failed_request.failed? or previous_failed_request.blocked?)}
   end
 
-  def add_comment(comment, current_user)
-    self.comments.create({:description => comment, :user_id => current_user.id})
+  def add_comment(comment, user)
+    self.comments.create({:description => comment, :user => user})
   end
 
   def self.number_expected_for_submission_id_and_request_type_id(submission_id, request_type_id)

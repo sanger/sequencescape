@@ -17,7 +17,7 @@ Given /^I have the following library tubes with tags( multiplexed in a tube)?:$/
 end
 
 Then /^the tag changing table should be:$/ do |expected_results_table|
-  actual_table = table( tableish('table.library_tube_list tr', 'td,th').collect{ |row| row.collect{|cell| cell[/^(Tag [\d]+)|(.+)/] }}   )
+  actual_table = table( fetch_table('table.library_tube_list').collect{ |row| row.collect{|cell| cell[/^(Tag [\d]+)|(.+)/] }}   )
   expected_results_table.diff!(actual_table)
 end
 
