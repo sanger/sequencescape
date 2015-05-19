@@ -227,6 +227,11 @@ And I have a "full" authorised user with the key "cucumber"
             "read": "http://www.example.com/api/1/tag_layout_templates"
           }
         },
+        "index_tag_layout_templates": {
+          "actions": {
+            "read": "http://www.example.com/api/1/index_tag_layout_templates"
+          }
+        },
         "plate_creations": {
           "actions": {
             "read": "http://www.example.com/api/1/plate_creations"
@@ -533,6 +538,7 @@ And I have a "full" authorised user with the key "cucumber"
             "create": "http://www.example.com/api/1/tag_layouts"
           }
         },
+
         "tag_groups": {
           "actions": {
             "read": "http://www.example.com/api/1/tag_groups"
@@ -541,6 +547,11 @@ And I have a "full" authorised user with the key "cucumber"
         "tag_layout_templates": {
           "actions": {
             "read": "http://www.example.com/api/1/tag_layout_templates"
+          }
+        },
+        "index_tag_layout_templates": {
+          "actions": {
+            "read": "http://www.example.com/api/1/index_tag_layout_templates"
           }
         },
         "plate_creations": {
