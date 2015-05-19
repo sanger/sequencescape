@@ -9,14 +9,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150518153507) do
+ActiveRecord::Schema.define(:version => 20150519134004) do
 
   create_table "aliquots", :force => true do |t|
-    t.integer  "receptacle_id",    :null => false
+    t.integer  "receptacle_id",                    :null => false
     t.integer  "study_id"
     t.integer  "project_id"
     t.integer  "library_id"
-    t.integer  "sample_id",        :null => false
+    t.integer  "sample_id",                        :null => false
     t.integer  "tag_id"
     t.string   "library_type"
     t.integer  "insert_size_from"
@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(:version => 20150518153507) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "bait_library_id"
+    t.integer  "index_tag_id",     :default => -1, :null => false
   end
 
   add_index "aliquots", ["receptacle_id", "tag_id"], :name => "aliquot_tags_are_unique_within_receptacle", :unique => true
@@ -527,6 +528,14 @@ ActiveRecord::Schema.define(:version => 20150518153507) do
   create_table "index_tag_layout_templates", :force => true do |t|
     t.string   "name",       :null => false
     t.integer  "tag_id",     :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "index_tag_layouts", :force => true do |t|
+    t.integer  "tag_id"
+    t.integer  "plate_id"
+    t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -16,10 +16,16 @@ class IndexTagLayoutTemplate < ActiveRecord::Base
 
   # Create a TagLayout instance that does the actual work of laying out the tags.
   def create!(attributes = {}, &block)
-    ## TODO
+    IndexTagLayout.create!(attributes.merge(default_attributes),&block)
   end
 
   def stamp_to(_)
     # Do Nothing
+  end
+
+  private
+
+  def default_attributes
+    {:tag=>tag}
   end
 end
