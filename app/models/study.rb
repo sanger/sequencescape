@@ -200,7 +200,7 @@ class Study < ActiveRecord::Base
     association(:reference_genome, :name, :required => true)
     association(:faculty_sponsor, :name, :required => true)
 
-    attribute(:prelim_id, :with => /^G.{4}$/, :required => false)
+    attribute(:prelim_id, :required => false)
     attribute(:study_description, :required => true)
     attribute(:contaminated_human_dna, :required => true, :in => YES_OR_NO)
     attribute(:remove_x_and_autosomes, :required => true, :default => 'No', :in => YES_OR_NO)
@@ -310,8 +310,6 @@ class Study < ActiveRecord::Base
 
     validate :valid_policy_url?
 
-    validate :valid_prelim_id?
-
     validate :sanity_check_y_separation, :if => :separate_y_chromosome_data?
 
     def sanity_check_y_separation
@@ -349,10 +347,6 @@ class Study < ActiveRecord::Base
         return false
       end
       return true
-    end
-
-    def valid_prelim_id?
-      return true if prelim_id.nil? || (prelim_id.length == 5 && prelim_id.match(/^G.{4}$/))
     end
 
     with_options(:if => :validating_ena_required_fields?) do |ena_required_fields|

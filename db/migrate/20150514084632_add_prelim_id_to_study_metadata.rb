@@ -1,7 +1,7 @@
 class AddPrelimIdToStudyMetadata < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
-      add_column :study_metadata, :prelim_id, :string, :limit => 5
+      add_column :study_metadata, :prelim_id, :string
       add_index :study_metadata, :prelim_id
     end
   end
