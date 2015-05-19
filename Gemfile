@@ -75,7 +75,7 @@ group :development do
   gem "rcov", :require => false, :platforms => :mri
   #gem "rcov_rails" # gem only for Rails 3, plugin for Rails 2.3 :-/
   # ./script/plugin install http://svn.codahale.com/rails_rcov
-  gem "bullet", "<=4.5.0"
+  gem "bullet", "<=4.5.0", :require => false
   gem "ruby-debug"
   gem "utility_belt"
 #  gem 'rack-perftools_profiler', '~> 0.1', :require => 'rack/perftools_profiler'
@@ -87,17 +87,17 @@ group :test do
   # gem "ci_reporter",
   #   :github => "sanger/ci_reporter"
   gem "factory_girl", '~>1.3.1', :require => false
-  gem "launchy"
+  gem "launchy", :require => false
   gem "mocha", :require => false # avoids load order problems
-  gem "nokogiri"
-  gem "shoulda", "~>2.10.0"
-  gem "timecop"
-  gem "treetop", "~>1.2.5"
+  gem "nokogiri", :require => false
+  gem "shoulda", "~>2.10.0", :require => false
+  gem "timecop", :require => false
+  gem "treetop", "~>1.2.5", :require => false
   gem 'parallel_tests', :platforms => :mri
 
-  gem "timocratic-test_benchmark"
+  gem "timocratic-test_benchmark", :require => false
 
-  gem 'rgl'
+  gem 'rgl', :require => false
 end
 
 group :cucumber do
