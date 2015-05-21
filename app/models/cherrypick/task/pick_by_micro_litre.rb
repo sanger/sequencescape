@@ -14,11 +14,9 @@ module Cherrypick::Task::PickByMicroLitre
 
   def create_micro_litre_picker(params)
     volume = params[:micro_litre_volume_required].to_f
-    robot = Robot.find(params[:robot_id])
-    robot_minimum_picking_volume = robot.minimum_volume
 
     lambda do |well, _|
-      well.volume_to_cherrypick_by_micro_litre(volume, robot_minimum_picking_volume)
+      well.volume_to_cherrypick_by_micro_litre(volume)
     end
   end
   private :create_micro_litre_picker
