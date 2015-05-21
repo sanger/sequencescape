@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150415082735) do
+ActiveRecord::Schema.define(:version => 20150414151730) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -1133,7 +1133,6 @@ ActiveRecord::Schema.define(:version => 20150415082735) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "barcode"
-    t.float    "minimum_volume"
   end
 
   create_table "roles", :force => true do |t|
