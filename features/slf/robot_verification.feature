@@ -1,10 +1,11 @@
-@robot_verification @javascript @barcode-service @tecan @leave_the_browser_open
+@robot_verification @barcode-service @tecan @javascript
 Feature: RobotVerification
   In order to ensure that the plates for a batch are placed in the correct beds
   the batch is used to generate labels for a form to prompt the user to put the
   the correct number of plates on, and then to check the barcodes scanned.
 
   Scenario: 3 source plates should be ordered by bed number and scanner has CR suffix
+    Given the minimum robot pick is 1.0
     Given I have a released cherrypicking batch with 3 plates
     And user "user" has a user barcode of "ID41440E"
 
@@ -125,8 +126,154 @@ C;
 C; DEST1 = 1220099999705
     """
 
+  Scenario: Robot minimum volumes should be considered
+    Given the minimum robot pick is 5.0
+    Given I have a released cherrypicking batch with 2 samples
+    And user "user" has a user barcode of "ID41440E"
+
+    Given I am on the robot verification page
+    When I fill in "Scan user ID" with multiline text
+    """
+    2470041440697
+    """
+    When I fill in "Scan Tecan robot" with multiline text
+    """
+    4880000444853
+    """
+    When I fill in "Scan worksheet" with multiline text
+    """
+    550000555760
+    """
+    When I fill in "Scan destination plate" with multiline text
+    """
+    1220099999705
+    """
+    And I press "Check"
+    Then I should see "Scan robot beds and plates"
+    And the source plates should be sorted by bed:
+    | Bed    | Plate ID      |
+    | SCRC 1 | 1221234567841 |
+    | DEST 1 | 1220099999705 |
+
+
+    When I fill in "SCRC 1" with multiline text
+    """
+    4880000001780
+
+    """
+    When I fill in "1221234567841" with multiline text
+    """
+    1221234567841
+
+    """
+    When I fill in "DEST 1" with multiline text
+    """
+    4880000020729
+
+    """
+    When I fill in "1220099999705" with multiline text
+    """
+    1220099999705
+
+    """
+    And I press "Verify"
+    Then I should see "Download TECAN file"
+    Then the downloaded tecan file for batch "550000555760" and plate "1220099999705" is
+    """
+C;
+A;1221234567841;;ABgene 0765;1;;5.0
+D;1220099999705;;ABgene 0800;1;;5.0
+W;
+A;1221234567841;;ABgene 0765;9;;5.0
+D;1220099999705;;ABgene 0800;2;;5.0
+W;
+C;
+A;BUFF;;96-TROUGH;1;;8.0
+D;1220099999705;;ABgene 0800;1;;8.0
+W;
+A;BUFF;;96-TROUGH;2;;8.0
+D;1220099999705;;ABgene 0800;2;;8.0
+W;
+C;
+C; SCRC1 = 1221234567841
+C;
+C; DEST1 = 1220099999705
+    """
+
+  Scenario: Robot minimum volumes should be considered for water
+    Given the minimum robot pick is 5.0
+    Given I have a released low concentration cherrypicking batch with 2 samples
+    And user "user" has a user barcode of "ID41440E"
+
+    Given I am on the robot verification page
+    When I fill in "Scan user ID" with multiline text
+    """
+    2470041440697
+    """
+    When I fill in "Scan Tecan robot" with multiline text
+    """
+    4880000444853
+    """
+    When I fill in "Scan worksheet" with multiline text
+    """
+    550000555760
+    """
+    When I fill in "Scan destination plate" with multiline text
+    """
+    1220099999705
+    """
+    And I press "Check"
+    Then I should see "Scan robot beds and plates"
+    And the source plates should be sorted by bed:
+    | Bed    | Plate ID      |
+    | SCRC 1 | 1221234567841 |
+    | DEST 1 | 1220099999705 |
+
+
+    When I fill in "SCRC 1" with multiline text
+    """
+    4880000001780
+
+    """
+    When I fill in "1221234567841" with multiline text
+    """
+    1221234567841
+
+    """
+    When I fill in "DEST 1" with multiline text
+    """
+    4880000020729
+
+    """
+    When I fill in "1220099999705" with multiline text
+    """
+    1220099999705
+
+    """
+    And I press "Verify"
+    Then I should see "Download TECAN file"
+    Then the downloaded tecan file for batch "550000555760" and plate "1220099999705" is
+    """
+C;
+A;1221234567841;;ABgene 0765;1;;13.0
+D;1220099999705;;ABgene 0800;1;;13.0
+W;
+A;1221234567841;;ABgene 0765;9;;12.7
+D;1220099999705;;ABgene 0800;2;;12.7
+W;
+C;
+A;BUFF;;96-TROUGH;2;;5.0
+D;1220099999705;;ABgene 0800;2;;5.0
+W;
+C;
+C; SCRC1 = 1221234567841
+C;
+C; DEST1 = 1220099999705
+    """
+
 
   Scenario: Barcode scanners with carriage return should not submit page until end
+    Given the minimum robot pick is 1.0
     Given I have a released cherrypicking batch
     And user "user" has a user barcode of "ID41440E"
 
@@ -142,6 +289,7 @@ C; DEST1 = 1220099999705
     4880000444853
 
     """
+
     When I fill in "Scan worksheet" with multiline text
     """
     550000555760
@@ -156,6 +304,7 @@ C; DEST1 = 1220099999705
     # the last step (with a carriage reture) trigger the check
     # and launch a new page. We want capyra to wait the check is finished
     # before checking the page. Filling something does it.
+
 
     When I fill in the following:
     | SCRC 1        | 4880000001780 |

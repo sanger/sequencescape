@@ -94,7 +94,7 @@ module Sanger
             mapping_by_well.sort{|a,b| a[0]<=>b[0]}.each do |dest_position,mapping|
               if total_volume  > mapping["volume"]
                 dest_name = data_object["destination"][destination_barcode]["name"]
-                volume = total_volume - mapping["volume"]
+                volume = [(total_volume - mapping["volume"]),configatron.tecan_minimum_volume].max
                 vert_map_id = Map::Coordinate.description_to_vertical_plate_position(mapping["dst_well"],destination_details["plate_size"])
                 buffer << "A;BUFF;;96-TROUGH;#{vert_map_id};;#{tecan_precision_value(volume)}\nD;#{destination_barcode};;#{dest_name};#{vert_map_id};;#{tecan_precision_value(volume)}\nW;"
               end

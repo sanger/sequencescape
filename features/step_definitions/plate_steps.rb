@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 Given /^the system has a plate with a barcode of "([^\"]*)"$/ do |encoded_barcode|
   Factory(:plate, :barcode => Barcode.number_to_human(encoded_barcode))
 end
@@ -64,12 +64,22 @@ Given /^plate "([^"]*)" has concentration and sequenom results$/ do |plate_barco
   end
 end
 
-Given /^plate "([^"]*)" has concentration and volume results$/ do |plate_barcode|
+Given /^plate "([^\"]*)" has concentration and volume results$/ do |plate_barcode|
   plate = Plate.find_from_machine_barcode(plate_barcode)
   plate.wells.each_with_index do |well,index|
     well.well_attribute.update_attributes!(
       :current_volume      => 10 + (index%30),
       :concentration  => 205 + (index%50)
+    )
+  end
+end
+
+Given /^plate "([^\"]*)" has low concentration and volume results$/ do |plate_barcode|
+  plate = Plate.find_from_machine_barcode(plate_barcode)
+  plate.wells.each_with_index do |well,index|
+    well.well_attribute.update_attributes!(
+      :current_volume  => 10 + (index%30),
+      :concentration  =>  50 + (index%50)
     )
   end
 end
