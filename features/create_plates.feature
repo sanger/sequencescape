@@ -61,36 +61,32 @@ Feature: Printing new plate barcodes
       | Gel Dilution Plates |
       | Stock Plate         |
 
-  Scenario: Create plates from the proper plate
-    Given a plate with purpose <parent_plate_purpose> and barcode "1221234567841" exists
+  Scenario Outline: Create plates only from the proper parent plate or from scratch
+    Given a plate with purpose "<parent_plate_purpose>" and barcode "1221234567841" exists
+    And a plate with purpose "Cherrypicked" and barcode "1220001454858" exists
     And I am on the new plate page
     Then I should see "Create Plates"
 
-    When I select <plate_purpose> from "Plate purpose"
-    And I fill in the field labeled "Source plates" with "1221234567841"
+    When I select "<plate_purpose>" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
     And I select "xyz" from "Barcode printer"
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
     And I should be on the new plate page
 
-    Examples:
-      | plate_purpose         | parent_plate_purpose |
-      | Working Dilution      | Stock Plate          |
-
-
-  Scenario: Fail while creating plates from incorrect parent
-    Given a plate with purpose "Working Dilution" and barcode "1221234567841" exists
-    And I am on the new plate page
-    Then I should see "Create Plates"
-
-    When I select "Working dilution" from "Plate purpose"
-    And I fill in the field labeled "Source plates" with "1221234567841"
+    When I select "<plate_purpose>" from "Plate purpose"
+    And I fill in the field labeled "Source plates" with "1220001454858"
     And I fill in "User barcode" with "2470000100730"
     And I select "xyz" from "Barcode printer"
     And I press "Submit"
-    Then I should see "Scanned plate 1221234567841 has a purpose Working Dilution not valid for creating [Working Dilution]"
+    Then I should see "Scanned plate 1220001454858 has a purpose Cherrypicked not valid"
     And I should be on the new plate page
+
+    Examples:
+      | plate_purpose         | parent_plate_purpose |
+      | Working dilution      | Stock Plate          |
+      | Pico dilution         | Working dilution     |
+      | Pico Assay Plates     | Pico dilution        |
 
   @xml @qc_event
   Scenario: Create all QC plates for SLF
@@ -113,6 +109,7 @@ Feature: Printing new plate barcodes
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
 
+    And the plate barcode webservice returns "77777"
     When I fill in the field labeled "Source plates" with "1221234567841"
     When I select "Working dilution" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
@@ -120,6 +117,7 @@ Feature: Printing new plate barcodes
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
 
+    And the plate barcode webservice returns "77777"
     When I fill in the field labeled "Source plates" with "6251234567836"
     When I select "Pico dilution" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
@@ -127,6 +125,7 @@ Feature: Printing new plate barcodes
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
 
+    And the plate barcode webservice returns "77777"
     When I fill in the field labeled "Source plates" with "4361234567667"
     When I select "Pico Assay Plates" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
@@ -134,6 +133,7 @@ Feature: Printing new plate barcodes
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
 
+    And the plate barcode webservice returns "77777"
     When I fill in the field labeled "Source plates" with "6251234567836"
     When I select "Gel Dilution Plates" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
@@ -160,6 +160,7 @@ Feature: Printing new plate barcodes
       | Created Pico Dilution plate      | 2010-07-12 | jack       | Monday 12 July, 2010 |
       | Created child Pico Assay A plate | 2010-07-12 | jack       | Monday 12 July, 2010 |
       | Created child Pico Assay B plate | 2010-07-12 | jack       | Monday 12 July, 2010 |
+      | Created child Pico Assay Plates plate | 2010-07-12 | jack       | Monday 12 July, 2010 |
     Given I am on the events page for asset with barcode "6251234567836"
     Then the events table should be:
       | Message                           | Content    | Created by | Created at           |
@@ -194,6 +195,10 @@ Feature: Printing new plate barcodes
             <created-at type="datetime">2010-07-12T11:23:58+01:00</created-at>
             <barcode>4361234567667</barcode>
             <child-barcodes type="array">
+              <child-barcode>
+                <created-at type="datetime">2010-07-12T11:23:58+01:00</created-at>
+                <barcode>1220077777868</barcode>
+              </child-barcode>
               <child-barcode>
                 <created-at type="datetime">2010-07-12T11:23:58+01:00</created-at>
                 <barcode>4331234567653</barcode>
