@@ -12,5 +12,5 @@ Given /^I have five requests for "([^\"]*)"$/ do |pipeline_name|
 end
 
 Then /^the table of requests should be:$/ do |expected_results_table|
-  expected_results_table.diff!(table(tableish('table#pipeline_inbox tr', 'td,th')))
+  expected_results_table.diff!(table(fetch_table('table#pipeline_inbox')))
 end

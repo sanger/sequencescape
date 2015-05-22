@@ -79,6 +79,13 @@ class Aliquot < ActiveRecord::Base
       self.class.name.underscore
     end
 
+    def assign_index_tag(tag)
+      aliquots.each do |aliquot|
+        aliquot.index_tag = tag
+        aliquot.save!
+      end
+    end
+
     has_many :studies, :through => :aliquots
     has_many :projects, :through => :aliquots
     has_many :samples, :through => :aliquots
@@ -139,6 +146,9 @@ class Aliquot < ActiveRecord::Base
   UNASSIGNED_TAG = -1
   belongs_to :tag
   before_validation { |record| record.tag_id ||= UNASSIGNED_TAG }
+
+  belongs_to :index_tag, :class_name => 'Tag'
+  before_validation { |record| record.index_tag_id ||= UNASSIGNED_TAG }
 
   def untagged?
     self.tag_id.nil? or self.tag_id == UNASSIGNED_TAG

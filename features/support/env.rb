@@ -21,34 +21,19 @@ require 'cucumber/web/tableish'
 require 'capybara/rails'
 require 'capybara/cucumber'
 require 'capybara/session'
-require 'cucumber/rails/capybara_javascript_emulation' # Lets you click links with onclick javascript handlers without using @culerity or @javascript
+require 'capybara/poltergeist'
 require 'timecop'
 
-# If the environment establishes which firefox to run, use that.
-unless ENV['CAPYBARA_FIREFOX'].blank?
-  Capybara::Driver::Selenium # Appears to be required to initialize Selenium
-  Selenium::WebDriver::Firefox::Binary.path = File.join(File.expand_path(ENV['CAPYBARA_FIREFOX']), %w{Contents MacOS firefox-bin})
-end
 
 Capybara.save_and_open_page_path = "tmp/capybara"
+
+Capybara.javascript_driver = :poltergeist
 
 # Capybara defaults to XPath selectors rather than Webrat's default of CSS3. In
 # order to ease the transition to Capybara we set the default here. If you'd
 # prefer to use XPath just remove this line and adjust any selectors in your
 # steps to use the XPath syntax.
 Capybara.default_selector = :css
-
-# This is a monkey patch for capybara =0.3.9
-# If we upgrade to ~>0.4.0 then this monkey patch needs to go!
-# Add better support for Capybara parallel testing using server port numbering
-if ENV['TEST_ENV_NUMBER']
-  class Capybara::Server
-    def find_available_port
-      @port = 11000 + (ENV['TEST_ENV_NUMBER'].to_i * 100)
-      @port += 1 while is_port_open?(@port) and not is_running_on_port?(@port)
-    end
-  end
-end
 
 # If you set this to false, any error raised from within your app will bubble
 # up to your step definition and out to cucumber unless you catch it somewhere
@@ -126,6 +111,11 @@ if defined?(ActiveRecord::Base)
   rescue LoadError => ignore_if_database_cleaner_not_present
   end
 end
+
+def fetch_table(selector)
+  find(selector).all('tr').map {|row| row.all('th,td').map {|cell| cell.text.squish }}
+end
+
 
 After do |s|
   # If we're lost in time then we need to return to the present...

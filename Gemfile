@@ -75,7 +75,7 @@ group :development do
   gem "rcov", :require => false, :platforms => :mri
   #gem "rcov_rails" # gem only for Rails 3, plugin for Rails 2.3 :-/
   # ./script/plugin install http://svn.codahale.com/rails_rcov
-  gem "bullet", "<=4.5.0"
+  gem "bullet", "<=4.5.0", :require => false
   gem "ruby-debug"
   gem "utility_belt"
 #  gem 'rack-perftools_profiler', '~> 0.1', :require => 'rack/perftools_profiler'
@@ -87,26 +87,30 @@ group :test do
   # gem "ci_reporter",
   #   :github => "sanger/ci_reporter"
   gem "factory_girl", '~>1.3.1', :require => false
-  gem "launchy"
+  gem "launchy", :require => false
   gem "mocha", :require => false # avoids load order problems
-  gem "nokogiri"
-  gem "shoulda", "~>2.10.0"
-  gem "timecop"
-  gem "treetop", "~>1.2.5"
+  gem "nokogiri", :require => false
+  gem "shoulda", "~>2.10.0", :require => false
+  gem "timecop", :require => false
+  gem "treetop", "~>1.2.5", :require => false
   gem 'parallel_tests', :platforms => :mri
 
-  gem "timocratic-test_benchmark"
+  gem "timocratic-test_benchmark", :require => false
 
-  gem 'rgl'
+  gem 'rgl', :require => false
 end
 
 group :cucumber do
   # We only need to bind cucumber-rails here, the rest are its dependencies which means it should be
   # making sensible choices.  Should ...
-  gem "capybara", "~>0.3.9", :require => false
+  # Yeah well, it doesn't.
+  gem "rubyzip", "~>0.9"
+  gem "capybara", "< 2", :require => false
+  gem 'mime-types', '< 2'
   gem "database_cleaner", :require => false
-  gem "cucumber", :require => false
+  gem "cucumber", '~> 1.2.1', :require => false
   gem "cucumber-rails", "~>0.3.2", :require => false
+  gem "poltergeist", "1.0.3"
 end
 
 group :deployment do

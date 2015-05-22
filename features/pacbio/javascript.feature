@@ -46,19 +46,8 @@ Feature: Push samples through the PacBio pipeline with javascript
     And I press "Next step"
     When I select "30" from "Movie length for 333"
     And I press "Next step"
-    And I press "Next step"
     Then I should see "Layout tubes on a plate"
-    And the plate layout should look like:
-      | 1             | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
-      | DN1234567T-A1 |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
+    When I drag the library tube to well "A1"
     And I press "Next step"
     Then I should see "Validate Sample Sheet"
     And I should see "Download Sample Sheet"
