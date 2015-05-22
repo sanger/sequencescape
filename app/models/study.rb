@@ -200,7 +200,7 @@ class Study < ActiveRecord::Base
     association(:reference_genome, :name, :required => true)
     association(:faculty_sponsor, :name, :required => true)
 
-    attribute(:prelim_id, :required => false)
+    attribute(:prelim_id, :with => /^[a-zA-Z]\d{4}$/, :required => false)
     attribute(:study_description, :required => true)
     attribute(:contaminated_human_dna, :required => true, :in => YES_OR_NO)
     attribute(:remove_x_and_autosomes, :required => true, :default => 'No', :in => YES_OR_NO)
