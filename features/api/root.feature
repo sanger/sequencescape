@@ -14,7 +14,6 @@ And I have a "full" authorised user with the key "cucumber"
   Scenario: Retrieving the root entry point when unauthorised
     When I GET the API path "/"
     Then the HTTP response should be "200 OK"
-    Then show me the HTTP response body
     And the JSON should be:
       """
       {
@@ -220,6 +219,11 @@ And I have a "full" authorised user with the key "cucumber"
         "tag_layouts": {
           "actions": {
             "read": "http://www.example.com/api/1/tag_layouts"
+          }
+        },
+        "index_tag_layouts": {
+          "actions": {
+            "read": "http://www.example.com/api/1/index_tag_layouts"
           }
         },
         "tag_layout_templates": {
@@ -536,6 +540,12 @@ And I have a "full" authorised user with the key "cucumber"
           "actions": {
             "read": "http://www.example.com/api/1/tag_layouts",
             "create": "http://www.example.com/api/1/tag_layouts"
+          }
+        },
+        "index_tag_layouts": {
+          "actions": {
+            "read": "http://www.example.com/api/1/index_tag_layouts",
+            "create": "http://www.example.com/api/1/index_tag_layouts"
           }
         },
 
