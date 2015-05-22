@@ -2,8 +2,8 @@ class AddParentPurposeToPlateCreators < ActiveRecord::Migration
 
   def self.build_purpose_config_record(plate_purpose_name, parent_purpose_name)
     {
-      :plate_purpose => Purpose.find_by_name(plate_purpose_name),
-      :parent_purpose => Purpose.find_by_name(parent_purpose_name)
+      :plate_purpose => Purpose.find_by_name!(plate_purpose_name),
+      :parent_purpose => Purpose.find_by_name!(parent_purpose_name)
     }
   end
 
