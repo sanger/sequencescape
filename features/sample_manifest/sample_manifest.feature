@@ -465,3 +465,17 @@ Feature: Sample manifest
      | sample_10        | Centaur          |
      | sample_11        | Centaur          |
      | sample_12        | Centaur          |
+
+  @override
+  Scenario: Using an invalid reference genome
+    Given a manifest has been created for "Test study"
+    And the reference genome "Dragon" exists
+    When I fill in "File to upload" with the file "test/data/sample_manifest_reference_genomes.csv"
+    And I press "Upload manifest"
+    Given 1 pending delayed jobs are processed
+    When I follow "View all manifests"
+    Then I should see the manifest table:
+       | Contains | Study      | Supplier           | Manifest       | Upload           | Errors   | State  |
+       | 1 plate  | Test study | Test supplier name | Blank manifest | Upload manifest  | Errors   | Failed |
+    When I follow "Errors for manifest for Test study"
+    Then I should see "Couldn't find a Reference Genome with named 'Centaur'."
