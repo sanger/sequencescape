@@ -55,10 +55,9 @@ class Request < ActiveRecord::Base
       :joins => joins + [
         'INNER JOIN maps AS pw_location ON pw.map_id=pw_location.id',
         'INNER JOIN container_associations ON container_associations.content_id=pw.id',
-        'INNER JOIN submissions ON requests.submission_id=submissions.id',
-        'INNER JOIN uuids ON uuids.resource_id=submissions.id AND uuids.resource_type="Submission"'
+        'INNER JOIN uuids ON uuids.resource_id=requests.submission_id AND uuids.resource_type="Submission"'
       ],
-      :group => 'submissions.id',
+      :group => 'requests.submission_id',
       :conditions => [
         'requests.sti_type NOT IN (?) AND container_associations.container_id=?',
         [TransferRequest,*Class.subclasses_of(TransferRequest)].map(&:name), plate.id
