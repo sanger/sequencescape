@@ -135,7 +135,7 @@ class Study < ActiveRecord::Base
   private :set_default_ethical_approval
 
   named_scope :for_search_query, lambda { |query,with_includes|
-    { :conditions => [ 'name LIKE ? OR id=?', "%#{query}%", query ] }
+    { :joins => :study_metadata, :conditions => [ 'name LIKE ? OR studies.id=? OR prelim_id=?', "%#{query}%", query, query ] }
   }
 
   named_scope :with_no_ethical_approval, { :conditions => { :ethically_approved => false } }
