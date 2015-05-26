@@ -11,6 +11,6 @@ end
 
 
 Then /^the activity logging table should be:$/ do |expected_results_table|
-  expected_results_table.diff!(table(tableish('table#asset_audits tr', 'td,th')))
+  expected_results_table.diff!(table(fetch_table('table#asset_audits')))
 end
 

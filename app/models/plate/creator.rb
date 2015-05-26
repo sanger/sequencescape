@@ -2,11 +2,18 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2011,2012,2013 Genome Research Ltd.
 class Plate::Creator < ActiveRecord::Base
+  class PlateCreationError < StandardError
+    attr_accessor :text
+    def initialize(text)
+      @text = text
+    end
+  end
   class PurposeRelationship < ActiveRecord::Base
     set_table_name('plate_creator_purposes')
 
     belongs_to :plate_purpose
     belongs_to :plate_creator, :class_name => 'Plate::Creator'
+    belongs_to :parent_purpose, :class_name => 'Purpose', :foreign_key => :parent_purpose_id
   end
 
   set_table_name('plate_creators')
@@ -17,6 +24,14 @@ class Plate::Creator < ActiveRecord::Base
 
   # If there are no barcodes supplied then we use the plate purpose we represent
   belongs_to :plate_purpose
+
+  def can_create_plates?(source_plate, plate_purposes)
+    parent_purposes = plate_creator_purposes.select do |r|
+      plate_purposes.include?(r.plate_purpose)
+    end.map(&:parent_purpose).uniq.compact
+
+    parent_purposes.empty? || parent_purposes.all? {|p| p==source_plate.purpose}
+  end
 
   # Executes the plate creation so that the appropriate child plates are built.
   def execute(source_plate_barcodes, barcode_printer, scanned_user)
@@ -43,7 +58,9 @@ class Plate::Creator < ActiveRecord::Base
       plate =
         Plate.with_machine_barcode(scanned).first(:include => [ :location, { :wells => :aliquots } ]) or
           raise ActiveRecord::RecordNotFound, "Could not find plate with machine barcode #{scanned.inspect}"
-
+      unless can_create_plates?(plate, plate_purposes)
+        raise PlateCreationError.new("Scanned plate #{scanned} has a purpose #{plate.purpose.name} not valid for creating [#{self.plate_purposes.map(&:name).join(',')}]")
+      end
       create_child_plates_from(plate, current_user)
     end.flatten
   end

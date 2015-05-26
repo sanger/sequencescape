@@ -29,7 +29,7 @@ def create_request_for_pipeline(pipeline_name, options = {})
   request_metadata = Factory :"request_metadata_for_#{pipeline.request_types.first.key}"
   request_parameters = options.merge(:request_type => pipeline.request_types.last, :asset => Factory(pipeline_name_to_asset_type(pipeline_name)), :request_metadata => request_metadata)
   Factory(:request, request_parameters).tap do |request|
-    request.asset.update_attributes!(:location => pipeline.location)
+    request.asset.update_attributes!(:location => pipeline.location,:barcode=>request.asset.id%9999999)
   end
 end
 
@@ -159,7 +159,7 @@ Given /^Microarray genotyping is set up$/ do
 end
 
 Then /^the pipeline inbox should be:$/ do |expected_results_table|
-   expected_results_table.diff!(table(tableish('table#pipeline_inbox tr', 'td,th')))
+   expected_results_table.diff!(table(fetch_table('table#pipeline_inbox')))
 end
 
 When /^I click on the last "([^\"]*)" batch$/ do |status|

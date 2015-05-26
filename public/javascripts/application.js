@@ -63,7 +63,7 @@ function deselect_all(){
 }
 
 function disable_cr_and_change_focus(event, current_field, next_field) {
-	if (event.keyCode !=13) { return; }
+  if (event.keyCode !=13 && event.keyCode !=10) { return true; }
   $(next_field).focus();
   return false;
 }

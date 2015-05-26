@@ -15,7 +15,7 @@ end
 
 Then /^the role list table should look like:$/ do |expected_results_table|
   sleep 0.1
-  expected_results_table.diff!(table(tableish('table#roles_table tr', 'td,th')))
+  expected_results_table.diff!(table(fetch_table('table#roles_table')))
 end
 
 Then /^the user "([^"]*)" roles should look like:$/ do |user, role_table|
