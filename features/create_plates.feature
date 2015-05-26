@@ -61,9 +61,40 @@ Feature: Printing new plate barcodes
       | Gel Dilution Plates |
       | Stock Plate         |
 
+  Scenario: Create plates from the proper plate
+    Given a plate with purpose <parent_plate_purpose> and barcode "1221234567841" exists
+    And I am on the new plate page
+    Then I should see "Create Plates"
+
+    When I select <plate_purpose> from "Plate purpose"
+    And I fill in the field labeled "Source plates" with "1221234567841"
+    And I fill in "User barcode" with "2470000100730"
+    And I select "xyz" from "Barcode printer"
+    And I press "Submit"
+    Then I should see "Created plates and printed barcodes"
+    And I should be on the new plate page
+
+    Examples:
+      | plate_purpose         | parent_plate_purpose |
+      | Working Dilution      | Stock Plate          |
+
+
+  Scenario: Fail while creating plates from incorrect parent
+    Given a plate with purpose "Working Dilution" and barcode "1221234567841" exists
+    And I am on the new plate page
+    Then I should see "Create Plates"
+
+    When I select "Working dilution" from "Plate purpose"
+    And I fill in the field labeled "Source plates" with "1221234567841"
+    And I fill in "User barcode" with "2470000100730"
+    And I select "xyz" from "Barcode printer"
+    And I press "Submit"
+    Then I should see "Scanned plate 1221234567841 has a purpose Working Dilution not valid for creating [Working Dilution]"
+    And I should be on the new plate page
+
   @xml @qc_event
   Scenario: Create all QC plates for SLF
-    Given a plate of type "Plate" with barcode "1221234567841" exists
+    Given a plate with purpose "Stock plate" and barcode "1221234567841" exists
     And a plate of type "Plate" with barcode "1220001454858" exists
     Given I am on the new plate page
     Then I should see "Create Plates"
@@ -88,7 +119,7 @@ Feature: Printing new plate barcodes
     And I select "xyz" from "Barcode printer"
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
-    
+
     When I fill in the field labeled "Source plates" with "6251234567836"
     When I select "Pico dilution" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
