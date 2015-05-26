@@ -6,6 +6,7 @@
   <% form.fields_for(:study_metadata, :builder => Metadata::FormBuilder) do |metadata_fields| %>
     <%= metadata_fields.select_by_association(:faculty_sponsor)%>
     <%= metadata_fields.text_field(:number_of_gigabases_per_sample) %>
+    <%= metadata_fields.text_field(:prelim_id) %>
 
     <% metadata_fields.with_options(:grouping => 'ENA requirement') do |group| %>
       <%= group.text_field(:study_study_title) %>
