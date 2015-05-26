@@ -162,7 +162,8 @@ Feature: Upload Pico Green concentration results from the Pico Green application
     # Create pico standard, dilution and pico assay plates.
     # NOTE: We have to create the "Pico Standard" in this manner as it relies on the barcode service being
     # up and running, which appears not to be the case for backgrounds (oddly).
-    And the "Pico dilution" plate is created from the plate with barcode "1221234567841"
+    And the "Working dilution" plate is created from the plate with barcode "1221234567841"
+    And the "Pico dilution" plate is created from the plate with barcode "6251234567836"
     And the "Pico Assay Plates" plate is created from the plate with barcode "4361234567667"
     Given the Stock Plate's Pico pass state is set to "<INITIAL_STOCK_STATE>"
     When I post the JSON below to update the plate:
