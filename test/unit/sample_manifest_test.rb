@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2015 Genome Research Ltd.
 require "test_helper"
 
 class SampleManifestTest < ActiveSupport::TestCase
@@ -19,15 +19,22 @@ class SampleManifestTest < ActiveSupport::TestCase
       (1..2).each do |count|
         context "#{count} plate(s)" do
           setup do
+            @initial_samples  = Sample.count
+            @initial_plates   = Plate.count
+            @initial_wells    = Well.count
+            @initial_in_study = @study.samples.count
+
             @manifest = Factory :sample_manifest, :study => @study, :count => count
             @manifest.generate
           end
 
-          should_change('Sample.count', :by => (count * 96)) { Sample.count }
-          should_change('Plate.count',  :by => (count * 1))  { Plate.count  }
-          should_change('Well.count',   :by => (count * 96)) { Well.count   }
+          should "create #{count} plate(s) and #{count * 96} wells and samples in the right study" do
+            assert_equal (count * 96), Sample.count - @initial_samples
+            assert_equal (count * 1 ), Plate.count - @initial_plates
+            assert_equal (count * 96), Well.count  - @initial_wells
+            assert_equal (count * 96), @study.samples.count - @initial_in_study
+          end
 
-          should_change("Study.samples.count", :by => (count * 96)) { @study.samples.count }
         end
       end
     end
