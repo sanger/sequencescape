@@ -50,8 +50,8 @@
         <td><%= select_tag "plate_type", options_for_select(PlatePurpose.cherrypickable_as_source.map(&:name)) %></td>
       </tr>
       <tr>
-        <td>Picking Robot:</td>
-        <td><%= select("robot", "0", @robots.collect {|p| [ p.name, p.id ] })  %></td>
+        <td><label for="robot_id">Picking Robot</label>:</td>
+        <td><%= select_tag("robot_id", options_for_select(@robots.collect {|p| [ p.name, p.id ] }))  %></td>
       </tr>
     </table>
   </fieldset>

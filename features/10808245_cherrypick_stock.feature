@@ -104,20 +104,20 @@ Feature: Pick by micro litre (stock transfer) using the Tecan robot
     """
     When I follow "Print worksheet for Plate 99999"
     Then I should see the cherrypick worksheet table:
-     | 1                                 | 2                                 |
-     | B1        222        v<volume> b0 | C5        333        v<volume> b0 |
-     | B2        222        v<volume> b0 | C6        333        v<volume> b0 |
-     | B3        222        v<volume> b0 | C7        333        v<volume> b0 |
-     | B4        222        v<volume> b0 | C8        333        v<volume> b0 |
-     | B5        222        v<volume> b0 | D1        333        v<volume> b0 |
-     | B6        222        v<volume> b0 | D2        333        v<volume> b0 |
-     | C3        333        v<volume> b0 | D3        333        v<volume> b0 |
-     | C4        333        v<volume> b0 | D4        333        v<volume> b0 |
+     | 1                                   | 2                                 |
+     | B1        222        v<volume>.0 b0.0 | C5        333        v<volume>.0 b0.0 |
+     | B2        222        v<volume>.0 b0.0 | C6        333        v<volume>.0 b0.0 |
+     | B3        222        v<volume>.0 b0.0 | C7        333        v<volume>.0 b0.0 |
+     | B4        222        v<volume>.0 b0.0 | C8        333        v<volume>.0 b0.0 |
+     | B5        222        v<volume>.0 b0.0 | D1        333        v<volume>.0 b0.0 |
+     | B6        222        v<volume>.0 b0.0 | D2        333        v<volume>.0 b0.0 |
+     | C3        333        v<volume>.0 b0.0 | D3        333        v<volume>.0 b0.0 |
+     | C4        333        v<volume>.0 b0.0 | D4        333        v<volume>.0 b0.0 |
      | 1                                 | 2                                 |
     Examples:
       | volume |
-      | 13     |
-      | 65     |
+      | 13   |
+      | 65   |
 
 
   @cherrypicking_for_pulldown @pulldown
@@ -215,16 +215,16 @@ Feature: Pick by micro litre (stock transfer) using the Tecan robot
     """
     When I follow "Print worksheet for Plate 99999"
     Then I should see the cherrypick worksheet table:
-      | 1                                 |
-      | A1        1        v<volume> b0   |
-      | A2        1        v<volume> b0   |
-      | A1        10        v<volume> b0  |
-      | A2        10        v<volume> b0  |
-      | A1        5        v<volume> b0   |
-      | A2        5        v<volume> b0   |
-      |                                   |
-      |                                   |
-      | 1                                 |
+      | 1                                   |
+      | A1        1        v<volume>.0 b0.0 |
+      | A2        1        v<volume>.0 b0.0 |
+      | A1        10       v<volume>.0 b0.0 |
+      | A2        10       v<volume>.0 b0.0 |
+      | A1        5        v<volume>.0 b0.0 |
+      | A2        5        v<volume>.0 b0.0 |
+      |                                     |
+      |                                     |
+      | 1                                   |
     Examples:
       | volume |
       | 13     |

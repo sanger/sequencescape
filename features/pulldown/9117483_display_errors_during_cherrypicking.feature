@@ -1,4 +1,4 @@
-@cherrypicking_for_pulldown @cherrypicking @barcode-service @pulldown
+@cherrypicking_for_pulldown @cherrypicking @barcode-service @pulldown @javascript
 Feature: Display the errors that occur during cherrypicking for pulldown
   Background:
     Given I am a "administrator" user logged in as "user"
