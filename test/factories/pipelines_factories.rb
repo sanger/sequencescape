@@ -26,6 +26,9 @@ Factory.sequence :purpose_name do |n|
   "Purpose #{n}"
 end
 
+Factory.sequence :plate_creator_name do |n|
+  "Plate Creator #{n}"
+end
 
 Factory.define :asset do |a|
   a.name                {|a| Factory.next :asset_name }
@@ -45,6 +48,14 @@ Factory.define :plate do |a|
   a.sti_type            "Plate"
   a.barcode             {|a| Factory.next :barcode_number }
 end
+
+Factory.define :plate_creator_purpose, :class => Plate::Creator::PurposeRelationship do |t|
+end
+
+Factory.define :plate_creator, :class =>  Plate::Creator do |t|
+  t.name                {|t| Factory.next :plate_creator_name }
+end
+
 
 Factory.define :control_plate do |a|
   a.plate_purpose { |_| PlatePurpose.find_by_name('Stock plate') }
