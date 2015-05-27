@@ -5,7 +5,7 @@ class Assets::CommentsController < ApplicationController
   before_filter :discover_asset
 
   def index
-    @comments = @asset.comments.all(:order => "created_at ASC")
+    @comments = @asset.comments.all(:order => "comments.created_at ASC")
   end
 
   def create
