@@ -279,6 +279,12 @@ Feature: Sample manifest
     Then I should see the manifest table:
       | Contains | Study      | Supplier           | Manifest       | Upload              | Errors   | State     |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest  |          | Completed |
+    Then the samples table should look like:
+      | sanger_sample_id | supplier_name | dna_source |
+      | sample_1         | a             | Cell Line                      |
+      | sample_2         | b             | Blood                          |
+      | sample_3         | c             | Genomic                        |
+      | sample_4         | d             | Amniocentesis Cultured         |
 
   @is_control
   Scenario: Check is_control and is_resubmit are set properly in an uploaded manifest
