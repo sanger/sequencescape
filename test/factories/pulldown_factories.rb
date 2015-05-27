@@ -266,6 +266,17 @@ Factory.define(:pulldown_wgs_request, :class => Pulldown::Requests::WgsLibraryRe
     request.request_metadata.fragment_size_required_to   = 500
   end
 end
+
+Factory.define(:library_completion, :class => IlluminaHtp::Requests::LibraryCompletion) do |request|
+  request.request_type { |target| RequestType.find_by_name('Illumina-B Pooled') or raise StandardError, "Could not find 'Illumina-B Pooled' request type" }
+  request.asset        { |target| target.association(:well_with_sample_and_plate) }
+  request.target_asset { |target| target.association(:empty_well) }
+  request.after_build do |request|
+    request.request_metadata.fragment_size_required_from = 300
+    request.request_metadata.fragment_size_required_to   = 500
+  end
+end
+
 Factory.define(:pulldown_sc_request, :class => Pulldown::Requests::ScLibraryRequest) do |request|
   request.request_type { |target| RequestType.find_by_name('Pulldown SC') or raise StandardError, "Could not find 'Pulldown SC' request type" }
   request.asset        { |target| target.association(:well_with_sample_and_plate) }
