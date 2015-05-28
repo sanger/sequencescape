@@ -16,6 +16,7 @@ class FixAddParentPurposeToPlateCreators < ActiveRecord::Migration
 
   def self.up
     ActiveRecord::Base.transaction do
+      change_column(:plate_creator_purposes, :parent_purpose_id, :integer)
       self.purposes_config.each do |p|
         Plate::Creator.find_by_name(p[:plate_purpose].name).plate_creator_purposes.each do |relation|
           relation.update_attributes!(:parent_purpose_id =>  p[:parent_purpose].id)
