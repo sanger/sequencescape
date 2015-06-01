@@ -150,8 +150,16 @@ class Aliquot < ActiveRecord::Base
   belongs_to :index_tag, :class_name => 'Tag'
   before_validation { |record| record.index_tag_id ||= UNASSIGNED_TAG }
 
+  # Might need to remove these if we get a performance hit
+  validates_uniqueness_of :tag_id,       :scope => [:receptacle_id, :index_tag_id]
+  validates_uniqueness_of :index_tag_id, :scope => [:receptacle_id, :tag_id]
+
   def untagged?
     self.tag_id.nil? or self.tag_id == UNASSIGNED_TAG
+  end
+
+  def no_index_tag?
+    self.index_tag_id.nil? or self.index_tag_id == UNASSIGNED_TAG
   end
 
   def tagged?
@@ -207,20 +215,20 @@ class Aliquot < ActiveRecord::Base
 
   # Aliquot are similar if they share the same sample AND the same tag (if they have one: nil acts as a wildcard))
   def =~(object)
-    a, b = [self, object].map { |o| [o.tag_id, o.sample_id] }
+    a, b = [self, object].map { |o| [o.tag_id, o.sample_id, o.index_tag_id < 0 ? nil : o.index_tag_id ] }
     a.zip(b).all?  { |x, y|  (x || y) == (y || x)  }
   end
 
   def matches?(object)
-    # Note: This funtion is directional, and assumes that the downstream aliquot
+    # Note: This function is directional, and assumes that the downstream aliquot
     # is checking the upstream aliquot (or the AliquotRecord)
     case
     when self.sample_id != object.sample_id                                                   then return false # The samples don't match
     when object.library_id.present?      && (self.library_id      != object.library_id)       then return false # Our librarys don't match.
     when object.bait_library_id.present? && (self.bait_library_id != object.bait_library_id)  then return false # We have different bait libraries
     when self.untagged? && object.tagged?                                                     then raise StandardError, "Tag missing from downstream aliquot" # The downstream aliquot is untagged, but is tagged upstream. Something is wrong!
-    when object.untagged?                                                                     then return true # The upstream aliquot was untagged, we don't need to check tags
-    else self.tag_id == object.tag_id # Both aliquots are tagged, we need to check if they match
+    when object.untagged? && object.no_index_tag?                                             then return true # The upstream aliquot was untagged, we don't need to check tags
+    else (object.untagged?||(self.tag_id == object.tag_id)) && (object.no_index_tag?||(self.index_tag_id == object.index_tag_id ))  # Both aliquots are tagged, we need to check if they match
     end
   end
 
