@@ -24,7 +24,7 @@ ActiveRecord::Schema.define(:version => 20150527111421) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "bait_library_id"
-    t.integer  "tag_2_id",     :default => -1, :null => false
+    t.integer  "tag_2_id",         :default => -1, :null => false
   end
 
   add_index "aliquots", ["receptacle_id", "tag_id", "tag_2_id"], :name => "aliquot_tags_and_tag_2s_are_unique_within_receptacle", :unique => true
@@ -524,21 +524,6 @@ ActiveRecord::Schema.define(:version => 20150527111421) do
   end
 
   add_index "implements", ["barcode"], :name => "index_implements_on_barcode"
-
-  create_table "tag_2_layout_templates", :force => true do |t|
-    t.string   "name",       :null => false
-    t.integer  "tag_id",     :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "tag_2_layouts", :force => true do |t|
-    t.integer  "tag_id"
-    t.integer  "plate_id"
-    t.integer  "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "items", :force => true do |t|
     t.datetime "created_at"
@@ -1150,7 +1135,6 @@ ActiveRecord::Schema.define(:version => 20150527111421) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "barcode"
-    t.float    "minimum_volume"
   end
 
   create_table "roles", :force => true do |t|
@@ -1547,6 +1531,21 @@ ActiveRecord::Schema.define(:version => 20150527111421) do
   add_index "suppliers", ["created_at"], :name => "index_suppliers_on_created_at"
   add_index "suppliers", ["name"], :name => "index_suppliers_on_name"
   add_index "suppliers", ["updated_at"], :name => "index_suppliers_on_updated_at"
+
+  create_table "tag_2_layout_templates", :force => true do |t|
+    t.string   "name",       :null => false
+    t.integer  "tag_id",     :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "tag_2_layouts", :force => true do |t|
+    t.integer  "tag_id"
+    t.integer  "plate_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "tag_groups", :force => true do |t|
     t.string   "name"
