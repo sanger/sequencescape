@@ -575,7 +575,7 @@ Factory.define :new_stock_multiplexed_library_tube, :class=>StockMultiplexedLibr
 end
 
 Factory.define(:new_stock_tube_purpose, :class=>IlluminaHtp::StockTubePurpose) do |p|
-  p.name Factory.next :purpose_name
+  p.name { Factory.next :purpose_name }
 end
 
 Factory.define(:empty_library_tube, :class => LibraryTube) do |library_tube|
