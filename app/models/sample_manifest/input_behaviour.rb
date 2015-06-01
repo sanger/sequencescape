@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
 module SampleManifest::InputBehaviour
   module ClassMethods
     def find_sample_manifest_from_uploaded_spreadsheet(spreadsheet_file)
@@ -181,7 +181,7 @@ module SampleManifest::InputBehaviour
       yield(Hash[headers.each_with_index.map { |header, column| [ header, csv[row][column] ] }])
     end
   rescue FasterCSV::MalformedCSVError => exception
-    raise InvalidManifest, "Invalid CSV file, did you upload an EXCEL file by accident? - #{exception.message}"
+    raise InvalidManifest, "Invalid CSV file, did you upload an Excel file by accident? - #{exception.message}"
   end
   private :each_csv_row
 

@@ -14,6 +14,7 @@ module Cherrypick::Task::PickByMicroLitre
 
   def create_micro_litre_picker(params)
     volume = params[:micro_litre_volume_required].to_f
+
     lambda do |well, _|
       well.volume_to_cherrypick_by_micro_litre(volume)
     end

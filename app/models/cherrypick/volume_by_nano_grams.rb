@@ -18,14 +18,18 @@ module Cherrypick::VolumeByNanoGrams
   end
   private :check_inputs_to_volume_to_cherrypick_by_nano_grams!
 
-  def volume_to_cherrypick_by_nano_grams(minimum_volume, maximum_volume, target_ng, source_well)
+  def volume_to_cherrypick_by_nano_grams(minimum_volume, maximum_volume, target_ng, source_well, robot_minimum_picking_volume=0.0)
+    robot_minimum_picking_volume||=0.0
     check_inputs_to_volume_to_cherrypick_by_nano_grams!(minimum_volume, maximum_volume, target_ng, source_well)
 
     source_concentration = source_well.well_attribute.concentration.to_f
     source_volume        = source_well.well_attribute.measured_volume.to_f
-    desired_volumne      = source_concentration.zero? ? source_volume : (target_ng.to_f/source_concentration).ceil
-    requested_volume     = [ source_volume, desired_volumne ].min
-    buffer_volume        = requested_volume < minimum_volume ? buffer_volume_required(minimum_volume, requested_volume) : 0.0
+    desired_volume = source_volume
+    unless source_concentration.zero?
+      desired_volume = [(target_ng.to_f/source_concentration), robot_minimum_picking_volume].max
+    end
+    requested_volume     = [ source_volume, desired_volume ].min
+    buffer_volume        = buffer_volume_required(minimum_volume, requested_volume, robot_minimum_picking_volume)
     requested_volume     = maximum_volume if requested_volume > maximum_volume
 
     well_attribute.current_volume   = minimum_volume
@@ -36,8 +40,12 @@ module Cherrypick::VolumeByNanoGrams
     requested_volume
   end
 
-  def buffer_volume_required(minimum_volume, requested_volume)
-    (minimum_volume*100 - requested_volume*100).to_i.to_f / 100
+  def buffer_volume_required(minimum_volume, requested_volume, robot_minimum_picking_volume)
+    val = [minimum_volume - requested_volume, 0.0].max
+    if val > 0.0
+      val = [val, robot_minimum_picking_volume].max
+    end
+    val
   end
   private :buffer_volume_required
 end

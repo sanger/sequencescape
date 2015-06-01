@@ -57,6 +57,10 @@ Feature: The XML for the sequencescape API
             <value></value>
           </descriptor>
           <descriptor>
+            <name>Prelim ID</name>
+            <value></value>
+          </descriptor>
+          <descriptor>
             <name>Reason for delaying release</name>
             <value></value>
           </descriptor>

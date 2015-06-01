@@ -10,9 +10,16 @@ class PlatesControllerTest < ActionController::TestCase
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
 
-      @pico_assay_plate_creator    = Plate::Creator.find_by_name('Pico Assay Plates')
-      @dilution_plates_creator     = Plate::Creator.find_by_name('Dilution Plates')
-      @gel_dilution_plates_creator = Plate::Creator.find_by_name('Gel Dilution Plates')
+      @pico_assay_plate_creator    = Factory :plate_creator,  {
+        :plate_purpose => PlatePurpose.find_by_name!('Pico Assay Plates')
+      }
+      ['Pico Assay A', 'Pico Assay B'].map do |s|
+        PlatePurpose.find_by_name!(s)
+      end.map do |p|
+        Factory :plate_creator_purpose, { :plate_purpose => p, :plate_creator =>  @pico_assay_plate_creator }
+      end
+      @dilution_plates_creator     = Factory :plate_creator,  :plate_purpose => PlatePurpose.find_by_name!('Working dilution')
+      @gel_dilution_plates_creator = Factory :plate_creator,  :plate_purpose => PlatePurpose.find_by_name!('Gel Dilution Plates')
 
       @barcode_printer = mock("printer abc")
       @barcode_printer.stubs(:id).returns(1)

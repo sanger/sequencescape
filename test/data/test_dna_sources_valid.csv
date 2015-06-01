@@ -10,7 +10,7 @@ SANGER PLATE ID,WELL,SANGER SAMPLE ID,SUPPLIER SAMPLE NAME,COHORT,VOLUME (ul),CO
 DN1234567T,B1,sample_1,a,,10,20,,,,,Cell Line
 DN1234567T,C1,sample_2,b,,10,20,,,,,Blood,,,,,,,,,,,,,,,,,,,,,,,,,,,,,Any incomplete areas will be
 DN1234567T,D1,sample_3,c,,10,20,,,,,Genomic,,,,,,,,,,,,,,,,,,,,,,,,,,,,,shaded in blue -
-DN1234567T,E1,sample_4,d,,10,20,,,,,Whole Genome Amplified
+DN1234567T,E1,sample_4,d,,10,20,,,,,Amniocentesis Cultured
 DN1234567T,F1,sample_5,e,,10,20,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,Any incorrect data entries will
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,be shaded in red -
 
