@@ -221,9 +221,9 @@ And I have a "full" authorised user with the key "cucumber"
             "read": "http://www.example.com/api/1/tag_layouts"
           }
         },
-        "tag_2_layouts": {
+        "tag2_layouts": {
           "actions": {
-            "read": "http://www.example.com/api/1/tag_2_layouts"
+            "read": "http://www.example.com/api/1/tag2_layouts"
           }
         },
         "tag_layout_templates": {
@@ -231,9 +231,9 @@ And I have a "full" authorised user with the key "cucumber"
             "read": "http://www.example.com/api/1/tag_layout_templates"
           }
         },
-        "tag_2_layout_templates": {
+        "tag2_layout_templates": {
           "actions": {
-            "read": "http://www.example.com/api/1/tag_2_layout_templates"
+            "read": "http://www.example.com/api/1/tag2_layout_templates"
           }
         },
         "plate_creations": {
@@ -542,10 +542,10 @@ And I have a "full" authorised user with the key "cucumber"
             "create": "http://www.example.com/api/1/tag_layouts"
           }
         },
-        "tag_2_layouts": {
+        "tag2_layouts": {
           "actions": {
-            "read": "http://www.example.com/api/1/tag_2_layouts",
-            "create": "http://www.example.com/api/1/tag_2_layouts"
+            "read": "http://www.example.com/api/1/tag2_layouts",
+            "create": "http://www.example.com/api/1/tag2_layouts"
           }
         },
 
@@ -559,9 +559,9 @@ And I have a "full" authorised user with the key "cucumber"
             "read": "http://www.example.com/api/1/tag_layout_templates"
           }
         },
-        "tag_2_layout_templates": {
+        "tag2_layout_templates": {
           "actions": {
-            "read": "http://www.example.com/api/1/tag_2_layout_templates"
+            "read": "http://www.example.com/api/1/tag2_layout_templates"
           }
         },
         "plate_creations": {

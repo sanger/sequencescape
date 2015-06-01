@@ -24,10 +24,10 @@ class Tag2Layout < ActiveRecord::Base
   named_scope :include_plate, :include => :plate
 
   # After creating the instance we can layout the tags into the wells.
-  after_create :layout_tag_2_into_wells, :if => :valid?
+  after_create :layout_tag2_into_wells, :if => :valid?
 
-  def layout_tag_2_into_wells
-    plate.wells.include_aliquots.each {|w| w.assign_tag_2(tag) }
+  def layout_tag2_into_wells
+    plate.wells.include_aliquots.each {|w| w.assign_tag2(tag) }
   end
 
 end

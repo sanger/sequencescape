@@ -7,14 +7,14 @@ module Aliquot::Remover
     # the time we want to look at it. The aliquot record mimics
     # an aliquot in the comparison functions
 
-    attr_reader :tag_id, :sample_id, :library_id, :bait_library_id, :tag_2_id
+    attr_reader :tag_id, :sample_id, :library_id, :bait_library_id, :tag2_id
 
     def initialize(aliquot)
       @tag_id = aliquot.tag_id
       @sample_id = aliquot.sample_id
       @library_id = aliquot.library_id
       @bait_library_id = aliquot.bait_library_id
-      @tag_2_id = aliquot.tag_2_id
+      @tag2_id = aliquot.tag2_id
     end
 
     def tagged?
@@ -25,8 +25,8 @@ module Aliquot::Remover
       self.tag_id.nil? or (self.tag_id == Aliquot::UNASSIGNED_TAG)
     end
 
-    def no_tag_2?
-      self.tag_2_id.nil? or (self.tag_2_id == Aliquot::UNASSIGNED_TAG)
+    def no_tag2?
+      self.tag2_id.nil? or (self.tag2_id == Aliquot::UNASSIGNED_TAG)
     end
 
   end

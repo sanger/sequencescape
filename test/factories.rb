@@ -738,7 +738,7 @@ Factory.define(:messenger_creator) do |reporter|
   reporter.purpose {|purpose| purpose.association(:plate_purpose)}
 end
 
-Factory.define :tag_2_layout_template do |itlt|
+Factory.define :tag2_layout_template do |itlt|
   itlt.name 'Tag 2 layout template'
   itlt.tag {|tag| tag.association :tag }
 end

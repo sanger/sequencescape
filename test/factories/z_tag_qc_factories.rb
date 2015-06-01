@@ -24,7 +24,7 @@ Factory.define :created_purpose, :parent => :tube_purpose do |pp|
   pp.default_state 'created'
 end
 
-Factory.define :tag_2_lot_type, :parent=> :lot_type do |lot_type|
+Factory.define :tag2_lot_type, :parent=> :lot_type do |lot_type|
   lot_type.name           { Factory.next :lot_type_name }
   lot_type.template_class 'Tag2LayoutTemplate'
   lot_type.target_purpose { Tube::Purpose.stock_library_tube }
@@ -44,10 +44,10 @@ Factory.define :lot do |lot|
   lot.received_at '2014-02-01'
 end
 
-Factory.define :tag_2_lot, :parent => :lot do |lot|
+Factory.define :tag2_lot, :parent => :lot do |lot|
   lot.lot_number  { Factory.next :lot_number }
-  lot.lot_type    { Factory :tag_2_lot_type }
-  lot.template    { Factory :tag_2_layout_template }
+  lot.lot_type    { Factory :tag2_lot_type }
+  lot.template    { Factory :tag2_layout_template }
   lot.user        { Factory :user }
   lot.received_at '2014-02-01'
 end

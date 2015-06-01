@@ -16,19 +16,19 @@ class AliquotTest < ActiveSupport::TestCase
 
     end
 
-    should "match aliquots with same tags and tag_2s" do
-      assert Aliquot.new(:tag => @tag1, :tag_2 => @tag1) =~ Aliquot.new(:tag => @tag1, :tag_2 => @tag1)
-      assert Aliquot.new(:tag => @tag1, :tag_2 => @tag1).matches?(Aliquot.new(:tag => @tag1, :tag_2 => @tag1))
+    should "match aliquots with same tags and tag2s" do
+      assert Aliquot.new(:tag => @tag1, :tag2 => @tag1) =~ Aliquot.new(:tag => @tag1, :tag2 => @tag1)
+      assert Aliquot.new(:tag => @tag1, :tag2 => @tag1).matches?(Aliquot.new(:tag => @tag1, :tag2 => @tag1))
     end
 
     should "not match aliquots with different tags" do
-      assert Aliquot.new(:tag => @tag1, :tag_2 => @tag1) !~ Aliquot.new(:tag => @tag2, :tag_2 => @tag1)
-      assert ! Aliquot.new(:tag => @tag1, :tag_2 => @tag1).matches?(Aliquot.new(:tag => @tag2, :tag_2 => @tag1))
+      assert Aliquot.new(:tag => @tag1, :tag2 => @tag1) !~ Aliquot.new(:tag => @tag2, :tag2 => @tag1)
+      assert ! Aliquot.new(:tag => @tag1, :tag2 => @tag1).matches?(Aliquot.new(:tag => @tag2, :tag2 => @tag1))
     end
 
     should "not match aliquots with different tag 2" do
-      assert Aliquot.new(:tag => @tag1, :tag_2 => @tag1) !~ Aliquot.new(:tag => @tag1, :tag_2 => @tag2)
-      assert ! Aliquot.new(:tag => @tag1, :tag_2 => @tag1).matches?(Aliquot.new(:tag => @tag1, :tag_2 => @tag2))
+      assert Aliquot.new(:tag => @tag1, :tag2 => @tag1) !~ Aliquot.new(:tag => @tag1, :tag2 => @tag2)
+      assert ! Aliquot.new(:tag => @tag1, :tag2 => @tag1).matches?(Aliquot.new(:tag => @tag1, :tag2 => @tag2))
     end
 
     should " match aliquots with missing tags " do
@@ -37,18 +37,18 @@ class AliquotTest < ActiveSupport::TestCase
     end
 
     should " match aliquots with missing tag 2 " do
-      assert Aliquot.new(:tag_2 => @tag1) =~ Aliquot.new()
-      assert Aliquot.new(:tag_2 => @tag1).matches?(Aliquot.new())
+      assert Aliquot.new(:tag2 => @tag1) =~ Aliquot.new()
+      assert Aliquot.new(:tag2 => @tag1).matches?(Aliquot.new())
     end
 
     should " match aliquots with missing tags but present tag 2s " do
-      assert Aliquot.new(:tag => @tag1, :tag_2 => @tag1) =~ Aliquot.new(:tag_2 => @tag1)
-      assert Aliquot.new(:tag => @tag1, :tag_2 => @tag1).matches?(Aliquot.new(:tag_2 => @tag1))
+      assert Aliquot.new(:tag => @tag1, :tag2 => @tag1) =~ Aliquot.new(:tag2 => @tag1)
+      assert Aliquot.new(:tag => @tag1, :tag2 => @tag1).matches?(Aliquot.new(:tag2 => @tag1))
     end
 
     should " match aliquots with missing tag 2s but present tags " do
-      assert Aliquot.new(:tag => @tag1, :tag_2 => @tag1) =~ Aliquot.new(:tag => @tag1)
-      assert Aliquot.new(:tag => @tag1, :tag_2 => @tag1).matches?(Aliquot.new(:tag => @tag1))
+      assert Aliquot.new(:tag => @tag1, :tag2 => @tag1) =~ Aliquot.new(:tag => @tag1)
+      assert Aliquot.new(:tag => @tag1, :tag2 => @tag1).matches?(Aliquot.new(:tag => @tag1))
     end
 
     should "not match aliquots with different samples" do
@@ -56,18 +56,18 @@ class AliquotTest < ActiveSupport::TestCase
       assert ! Aliquot.new(:tag => @tag1, :sample => @sample1).matches?(Aliquot.new(:tag => @tag1, :sample => @sample2))
     end
 
-    should "allow mixing different tags with no tag_2" do
+    should "allow mixing different tags with no tag2" do
       @asset.aliquots << Aliquot.new(:tag => @tag1, :sample=>@sample1) << Aliquot.new(:tag => @tag2, :sample=>@sample2)
       @asset.save!
     end
 
     should "allow mixing different tags with a tag 2" do
-      @asset.aliquots << Aliquot.new(:tag => @tag1, :tag_2 => @tag1, :sample=>@sample1) << Aliquot.new(:tag => @tag2, :tag_2 => @tag1, :sample=>@sample2)
+      @asset.aliquots << Aliquot.new(:tag => @tag1, :tag2 => @tag1, :sample=>@sample1) << Aliquot.new(:tag => @tag2, :tag2 => @tag1, :sample=>@sample2)
       @asset.save!
     end
 
     should "allow mixing same tags with a different tag 2" do
-      @asset.aliquots << Aliquot.new(:tag => @tag1, :tag_2 => @tag1, :sample=>@sample1) << Aliquot.new(:tag => @tag1, :tag_2 => @tag2, :sample=>@sample2)
+      @asset.aliquots << Aliquot.new(:tag => @tag1, :tag2 => @tag1, :sample=>@sample1) << Aliquot.new(:tag => @tag1, :tag2 => @tag2, :sample=>@sample2)
       @asset.save!
     end
 
@@ -80,7 +80,7 @@ class AliquotTest < ActiveSupport::TestCase
 
     should "disallow mixing same tags with same tag 2" do
       assert_raise ActiveRecord::RecordInvalid do
-        @asset.aliquots << Aliquot.new(:tag => @tag1, :tag_2 => @tag2, :sample=>@sample1) << Aliquot.new(:tag => @tag1, :tag_2 => @tag2, :sample=>@sample2)
+        @asset.aliquots << Aliquot.new(:tag => @tag1, :tag2 => @tag2, :sample=>@sample1) << Aliquot.new(:tag => @tag1, :tag2 => @tag2, :sample=>@sample2)
         @asset.save!
       end
     end

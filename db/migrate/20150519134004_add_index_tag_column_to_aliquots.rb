@@ -4,10 +4,10 @@
 class AddIndexTagColumnToAliquots < ActiveRecord::Migration
   def self.up
     say "WARNING! This migration touches the aliquots table. It may take a very long time..."
-    add_column :aliquots, :tag_2_id, :integer, :null => false, :default=> -1
+    add_column :aliquots, :tag2_id, :integer, :null => false, :default=> -1
   end
 
   def self.down
-    remove_column :aliquots, :tag_2_id
+    remove_column :aliquots, :tag2_id
   end
 end

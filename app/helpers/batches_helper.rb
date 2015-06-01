@@ -32,11 +32,11 @@ module BatchesHelper
         xml.tag_group_id      aliquot.tag.tag_group_id
       } unless aliquot.tag.nil?
 
-      xml.tag_2(:tag_2, :tag_2_id => aliquot.tag_2.id) {
-        xml.index             aliquot.tag_2.map_id
-        xml.expected_sequence aliquot.tag_2.oligo
-        xml.tag_group_id      aliquot.tag_2.tag_group_id
-      } unless aliquot.tag_2.nil?
+      xml.tag2(:tag2, :tag2_id => aliquot.tag2.id) {
+        xml.index             aliquot.tag2.map_id
+        xml.expected_sequence aliquot.tag2.oligo
+        xml.tag_group_id      aliquot.tag2.tag_group_id
+      } unless aliquot.tag2.nil?
 
       xml.bait(:id => aliquot.bait_library.id) {
         xml.name aliquot.bait_library.name

@@ -4,11 +4,11 @@
 class TagsUniquenessDependsOnIndexTag < ActiveRecord::Migration
   def self.up
     remove_index "aliquots", :name => "aliquot_tags_are_unique_within_receptacle"
-    add_index "aliquots", ["receptacle_id", "tag_id","tag_2_id"], :name => "aliquot_tags_and_tag_2s_are_unique_within_receptacle", :unique => true
+    add_index "aliquots", ["receptacle_id", "tag_id","tag2_id"], :name => "aliquot_tags_and_tag2s_are_unique_within_receptacle", :unique => true
   end
 
   def self.down
-    remove_index "aliquots", :name =>  "aliquot_tags_and_tag_2s_are_unique_within_receptacle"
+    remove_index "aliquots", :name =>  "aliquot_tags_and_tag2s_are_unique_within_receptacle"
     add_index "aliquots", ["receptacle_id", "tag_id"], :name => "aliquot_tags_are_unique_within_receptacle", :unique => true
   end
 end
