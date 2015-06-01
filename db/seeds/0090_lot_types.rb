@@ -3,7 +3,7 @@
 #Copyright (C) 2014,2015 Genome Research Ltd.
 tp  = QcablePlatePurpose.create!(:name=>'Tag Plate', :target_type=>'Plate', :default_state=>'created')
 rp  = QcablePlatePurpose.create!(:name=>'Reporter Plate', :target_type=>'Plate', :default_state=>'created')
-itt = QcableTubePurpose.create!(:name=>'Index Tag Tube', :target_type=>'Tube')
+itt = QcableTubePurpose.create!(:name=>'Tag 2 Tube', :target_type=>'Tube')
 LotType.create!(:name=>'IDT Tags',        :template_class=>'TagLayoutTemplate', :target_purpose=>tp)
 LotType.create!(:name=>'IDT Reporters',   :template_class=>'PlateTemplate',     :target_purpose=>rp)
-LotType.create!(:name=>'Index Tag Tubes', :template_class=>'IndexTagLayoutTemplate', :target_purpose=>itt)
+LotType.create!(:name=>'Tag 2 Tubes', :template_class=>'Tag2LayoutTemplate', :target_purpose=>itt)

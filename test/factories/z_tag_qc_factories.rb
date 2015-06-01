@@ -26,7 +26,7 @@ end
 
 Factory.define :tag_2_lot_type, :parent=> :lot_type do |lot_type|
   lot_type.name           { Factory.next :lot_type_name }
-  lot_type.template_class 'IndexTagLayoutTemplate'
+  lot_type.template_class 'Tag2LayoutTemplate'
   lot_type.target_purpose { Tube::Purpose.stock_library_tube }
 end
 

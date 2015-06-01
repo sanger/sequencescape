@@ -1582,9 +1582,9 @@ ActiveRecord::Schema.define(:version => 20150527111421) do
     t.datetime "updated_at"
   end
 
-  add_index "tags", ["map_id"], :name => "tag_2s_on_map_id"
-  add_index "tags", ["tag_group_id"], :name => "tag_2s_on_tag_group_id"
-  add_index "tags", ["updated_at"], :name => "tag_2s_on_updated_at"
+  add_index "tags", ["map_id"], :name => "index_tags_on_map_id"
+  add_index "tags", ["tag_group_id"], :name => "index_tags_on_tag_group_id"
+  add_index "tags", ["updated_at"], :name => "index_tags_on_updated_at"
 
   create_table "task_request_types", :force => true do |t|
     t.integer  "task_id"

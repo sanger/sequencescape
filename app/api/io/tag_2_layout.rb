@@ -1,8 +1,8 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2015 Genome Research Ltd.
-class ::Io::IndexTagLayout < ::Core::Io::Base
-  set_model_for_input(::IndexTagLayout)
+class ::Io::Tag2Layout < ::Core::Io::Base
+  set_model_for_input(::Tag2Layout)
   set_json_root(:tag_2_layout)
   set_eager_loading { |model| model.include_plate.include_tag }
 

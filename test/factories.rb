@@ -739,6 +739,6 @@ Factory.define(:messenger_creator) do |reporter|
 end
 
 Factory.define :tag_2_layout_template do |itlt|
-  itlt.name 'Index tag layout template'
+  itlt.name 'Tag 2 layout template'
   itlt.tag {|tag| tag.association :tag }
 end

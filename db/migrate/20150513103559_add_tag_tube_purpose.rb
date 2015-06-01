@@ -6,7 +6,7 @@ class AddTagTubePurpose < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
       QcableTubePurpose.create!(
-        :name => 'Index Tag Tube',
+        :name => 'Tag 2 Tube',
         :target_type => 'Tube',
         :qc_display => false,
         :can_be_considered_a_stock_plate => false,
@@ -22,7 +22,7 @@ class AddTagTubePurpose < ActiveRecord::Migration
 
   def self.down
     ActiveRecord::Base.transaction do
-      Purpose.find_by_name('Index Tag Tube').destroy
+      Purpose.find_by_name('Tag 2 Tube').destroy
     end
   end
 end

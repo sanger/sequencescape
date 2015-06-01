@@ -1,5 +1,5 @@
 @api @json @tag_2_layout_template @single-sign-on @new-api
-Feature: Access index index tag layout templates through the API
+Feature: Access tag 2 layout templates through the API
   In order to actually be able to do anything useful
   As an authenticated user of the API
   I want to be able to create, read and update individual index tag layout templates through their UUID
@@ -16,8 +16,8 @@ Feature: Access index index tag layout templates through the API
     Given I am using the latest version of the API
     And I have a "full" authorised user with the key "cucumber"
 
-    Given the index tag layout template "Test tag layout" exists
-    And the UUID for the index tag layout template "Test tag layout" is "00000000-1111-2222-3333-444444444444"
+    Given the tag 2 layout template "Test tag layout" exists
+    And the UUID for the tag 2 layout template "Test tag layout" is "00000000-1111-2222-3333-444444444444"
 
   @read
   Scenario: Reading the JSON for a UUID
@@ -44,10 +44,10 @@ Feature: Access index index tag layout templates through the API
       """
 
   @tag_layout @create @barcode-service
-  Scenario: Creating a tag layout from a index tag layout template
+  Scenario: Creating a tag layout from a tag 2 layout template
     Given the plate barcode webservice returns "1000001"
 
-    Given the UUID of the next index tag layout created will be "00000000-1111-2222-3333-000000000002"
+    Given the UUID of the next tag 2 layout created will be "00000000-1111-2222-3333-000000000002"
 
     Given a "Stock plate" plate called "Testing the tagging" exists
       And the UUID for the plate "Testing the tagging" is "11111111-2222-3333-4444-000000000001"
@@ -85,7 +85,7 @@ Feature: Access index index tag layout templates through the API
       }
       """
 
-    Then the index tag layout on the plate "Testing the tagging" should be:
+    Then the tag 2 layout on the plate "Testing the tagging" should be:
       | AAA | AAA | AAA | AAA | AAA | AAA | AAA | AAA | AAA | AAA | AAA | AAA |
       | AAA | AAA | AAA | AAA | AAA | AAA | AAA | AAA | AAA | AAA | AAA | AAA |
       | AAA | AAA | AAA | AAA | AAA | AAA | AAA | AAA | AAA | AAA | AAA | AAA |
