@@ -1,8 +1,8 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2015 Genome Research Ltd.
-# Index Tag Layouts apply a single index tag to the entire plate
-class IndexTagLayoutTemplate < ActiveRecord::Base
+# Tag 2 Layouts apply a single tag to the entire plate
+class Tag2LayoutTemplate < ActiveRecord::Base
   include Uuid::Uuidable
   include Lot::Template
 
@@ -16,7 +16,7 @@ class IndexTagLayoutTemplate < ActiveRecord::Base
 
   # Create a TagLayout instance that does the actual work of laying out the tags.
   def create!(attributes = {}, &block)
-    IndexTagLayout.create!(attributes.merge(default_attributes),&block)
+    Tag2Layout.create!(attributes.merge(default_attributes),&block)
   end
 
   def stamp_to(_)

@@ -1,4 +1,4 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file, 
+# This file is auto-generated from the current state of the database. Instead of editing this file,
 # please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
@@ -24,10 +24,10 @@ ActiveRecord::Schema.define(:version => 20150527111421) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "bait_library_id"
-    t.integer  "index_tag_id",     :default => -1, :null => false
+    t.integer  "tag_2_id",     :default => -1, :null => false
   end
 
-  add_index "aliquots", ["receptacle_id", "tag_id", "index_tag_id"], :name => "aliquot_tags_and_index_tags_are_unique_within_receptacle", :unique => true
+  add_index "aliquots", ["receptacle_id", "tag_id", "tag_2_id"], :name => "aliquot_tags_and_tag_2s_are_unique_within_receptacle", :unique => true
   add_index "aliquots", ["sample_id"], :name => "index_aliquots_on_sample_id"
   add_index "aliquots", ["study_id"], :name => "index_aliquots_on_study_id"
   add_index "aliquots", ["tag_id"], :name => "tag_id_idx"
@@ -525,14 +525,14 @@ ActiveRecord::Schema.define(:version => 20150527111421) do
 
   add_index "implements", ["barcode"], :name => "index_implements_on_barcode"
 
-  create_table "index_tag_layout_templates", :force => true do |t|
+  create_table "tag_2_layout_templates", :force => true do |t|
     t.string   "name",       :null => false
     t.integer  "tag_id",     :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "index_tag_layouts", :force => true do |t|
+  create_table "tag_2_layouts", :force => true do |t|
     t.integer  "tag_id"
     t.integer  "plate_id"
     t.integer  "user_id"

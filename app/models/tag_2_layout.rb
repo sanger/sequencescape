@@ -3,8 +3,8 @@
 #Copyright (C) 2015 Genome Research Ltd.
 # Lays out the tags in the specified tag group in a particular pattern.
 #
-# Applies a single index tag to the entire plate
-class IndexTagLayout < ActiveRecord::Base
+# Applies a single tag 2 to the entire plate
+class Tag2Layout < ActiveRecord::Base
   include Uuid::Uuidable
 
   # The user performing the layout
@@ -23,11 +23,11 @@ class IndexTagLayout < ActiveRecord::Base
   named_scope :include_tag, :include => :tag
   named_scope :include_plate, :include => :plate
 
-  # After creating the instance we can layout the index tags into the wells.
-  after_create :layout_index_tags_into_wells, :if => :valid?
+  # After creating the instance we can layout the tags into the wells.
+  after_create :layout_tag_2_into_wells, :if => :valid?
 
-  def layout_index_tags_into_wells
-    plate.wells.include_aliquots.each {|w| w.assign_index_tag(tag) }
+  def layout_tag_2_into_wells
+    plate.wells.include_aliquots.each {|w| w.assign_tag_2(tag) }
   end
 
 end

@@ -4,13 +4,13 @@
 class AddIndexTagTubeLotType < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
-      LotType.create!(:name=>'Index Tag Tubes', :template_class=>'IndexTagLayoutTemplate', :target_purpose=>Purpose.find_by_name('Index Tag Tube'))
+      LotType.create!(:name=>'Tag 2 Tubes', :template_class=>'Tag2LayoutTemplate', :target_purpose=>Purpose.find_by_name('Tag 2 Tube'))
     end
   end
 
   def self.down
     ActiveRecord::Base.transaction do
-      LotType.find_by_name('Index Tag Tubes').destroy
+      LotType.find_by_name('Tag 2 Tubes').destroy
     end
   end
 end
