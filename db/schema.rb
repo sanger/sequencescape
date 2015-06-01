@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150527111421) do
+ActiveRecord::Schema.define(:version => 20150601150207) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",                    :null => false
@@ -1545,6 +1545,7 @@ ActiveRecord::Schema.define(:version => 20150527111421) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "source_id"
   end
 
   create_table "tag_groups", :force => true do |t|

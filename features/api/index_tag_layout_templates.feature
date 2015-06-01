@@ -53,11 +53,15 @@ Feature: Access tag 2 layout templates through the API
       And the UUID for the plate "Testing the tagging" is "11111111-2222-3333-4444-000000000001"
       And all wells on the plate "Testing the tagging" have unique samples
 
+    Given a "Tag 2 Tube" tube called "test tube" exists
+     And the UUID for the last tube is "11111111-2222-3333-4444-900000000001"
+
     When I make an authorised POST with the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
       """
       {
         "tag2_layout": {
-          "plate": "11111111-2222-3333-4444-000000000001"
+          "source": "11111111-2222-3333-4444-900000000001",
+          "plate":  "11111111-2222-3333-4444-000000000001"
         }
       }
       """
@@ -72,6 +76,11 @@ Feature: Access tag 2 layout templates through the API
           "plate": {
             "actions": {
               "read": "http://www.example.com/api/1/11111111-2222-3333-4444-000000000001"
+            }
+          },
+          "source": {
+            "actions": {
+              "read": "http://www.example.com/api/1/11111111-2222-3333-4444-900000000001"
             }
           },
 

@@ -20,6 +20,8 @@ class Tag2Layout < ActiveRecord::Base
   belongs_to :plate
   validates_presence_of :plate
 
+  belongs_to :source, :class_name => 'Asset'
+
   named_scope :include_tag, :include => :tag
   named_scope :include_plate, :include => :plate
 
