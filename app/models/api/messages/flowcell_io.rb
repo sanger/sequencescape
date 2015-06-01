@@ -187,6 +187,14 @@ class Api::Messages::FlowcellIO < Api::Base
           map_attribute_to_json_attribute(:name, 'tag_set_name')
         end
       end
+      with_association(:tag_2) do
+        map_attribute_to_json_attribute(:map_id, 'tag_2_index')
+        map_attribute_to_json_attribute(:oligo, 'tag_2_sequence')
+        map_attribute_to_json_attribute(:tag_group_id, 'tag_2__set_id_lims')
+        with_association(:tag_group) do
+          map_attribute_to_json_attribute(:name, 'tag_2_set_name')
+        end
+      end
       map_attribute_to_json_attribute(:library_type, 'pipeline_id_lims')
       with_association(:bait_library) do
         map_attribute_to_json_attribute(:name, 'bait_name')
