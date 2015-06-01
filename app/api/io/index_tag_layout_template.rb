@@ -3,7 +3,7 @@
 #Copyright (C) 2015 Genome Research Ltd.
 class ::Io::IndexTagLayoutTemplate < ::Core::Io::Base
   set_model_for_input(::IndexTagLayoutTemplate)
-  set_json_root(:index_tag_layout_template)
+  set_json_root(:tag_2_layout_template)
   set_eager_loading { |model| model.include_tag }   # TODO: uncomment and add any named_scopes that do includes you need
 
   define_attribute_and_json_mapping(%Q{

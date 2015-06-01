@@ -1,4 +1,4 @@
-@api @json @index_tag_layout_template @single-sign-on @new-api
+@api @json @tag_2_layout_template @single-sign-on @new-api
 Feature: Access index index tag layout templates through the API
   In order to actually be able to do anything useful
   As an authenticated user of the API
@@ -27,7 +27,7 @@ Feature: Access index index tag layout templates through the API
      And the JSON should match the following for the specified fields:
       """
       {
-        "index_tag_layout_template": {
+        "tag_2_layout_template": {
           "actions": {
             "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
           },
@@ -56,7 +56,7 @@ Feature: Access index index tag layout templates through the API
     When I make an authorised POST with the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
       """
       {
-        "index_tag_layout": {
+        "tag_2_layout": {
           "plate": "11111111-2222-3333-4444-000000000001"
         }
       }
@@ -65,7 +65,7 @@ Feature: Access index index tag layout templates through the API
      And the JSON should match the following for the specified fields:
       """
       {
-        "index_tag_layout": {
+        "tag_2_layout": {
           "actions": {
             "read": "http://www.example.com/api/1/00000000-1111-2222-3333-000000000002"
           },

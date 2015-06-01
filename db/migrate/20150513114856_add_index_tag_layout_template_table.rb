@@ -3,7 +3,7 @@
 #Copyright (C) 2015 Genome Research Ltd.
 class AddIndexTagLayoutTemplateTable < ActiveRecord::Migration
   def self.up
-    create_table :index_tag_layout_templates do |t|
+    create_table :tag_2_layout_templates do |t|
       t.string  :name, :null => false
       t.integer :tag_id, :null => false
       t.timestamps
@@ -11,6 +11,6 @@ class AddIndexTagLayoutTemplateTable < ActiveRecord::Migration
   end
 
   def self.down
-    drop_table :index_tag_layout_templates
+    drop_table :tag_2_layout_templates
   end
 end

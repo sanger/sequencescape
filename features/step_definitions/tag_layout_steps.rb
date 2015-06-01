@@ -6,7 +6,7 @@ Given /^the ((?:entire plate |inverted )?tag layout template) "([^"]+)" exists$/
 end
 
 Given /^the index tag layout template "([^"]+)" exists$/ do |name|
-  Factory(:index_tag_layout_template, :name => name)
+  Factory(:tag_2_layout_template, :name => name)
 end
 
 TAG_LAYOUT_TEMPLATE_REGEXP = 'tag layout template "[^\"]+"'
@@ -77,12 +77,12 @@ def check_tag_layout(name, well_range, expected_wells_to_oligos)
   end
 end
 
-def check_index_tag_layout(name, well_range, expected_wells_to_oligos)
+def check_tag_2_layout(name, well_range, expected_wells_to_oligos)
   plate           = Plate.find_by_name(name) or raise StandardError, "Cannot find plate #{name.inspect}"
   wells_to_oligos = Hash[
     plate.wells.map do |w|
       next unless well_range.include?(w)
-      [ w.map.description, w.primary_aliquot.try(:index_tag).try(:oligo) || "" ]
+      [ w.map.description, w.primary_aliquot.try(:tag_2).try(:oligo) || "" ]
     end.compact
   ]
   if expected_wells_to_oligos != wells_to_oligos
@@ -102,7 +102,7 @@ Then /^the tag layout on the plate "([^"]+)" should be:$/ do |name, table|
 end
 
 Then /^the index tag layout on the plate "([^"]+)" should be:$/ do |name, table|
-  check_index_tag_layout(
+  check_tag_2_layout(
     name, WellRange.new('A1', 'H12'),
     ('A'..'H').to_a.zip(table.raw).inject({}) do |h,(row_a, row)|
       h.tap { row.each_with_index { |cell, i| h["#{row_a}#{i+1}"] = cell } }

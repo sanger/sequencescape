@@ -4,7 +4,7 @@
 class AddIndexTagLayoutTable < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
-      create_table :index_tag_layouts do |t|
+      create_table :tag_2_layouts do |t|
         t.integer  :tag_id
         t.integer  :plate_id
         t.integer  :user_id
@@ -16,7 +16,7 @@ class AddIndexTagLayoutTable < ActiveRecord::Migration
 
   def self.down
     ActiveRecord::Base.transaction do
-      drop_table :index_tag_layouts
+      drop_table :tag_2_layouts
     end
   end
 end

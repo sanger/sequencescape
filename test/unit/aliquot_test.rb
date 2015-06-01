@@ -16,19 +16,19 @@ class AliquotTest < ActiveSupport::TestCase
 
     end
 
-    should "match aliquots with same tags and index_tags" do
-      assert Aliquot.new(:tag => @tag1, :index_tag => @tag1) =~ Aliquot.new(:tag => @tag1, :index_tag => @tag1)
-      assert Aliquot.new(:tag => @tag1, :index_tag => @tag1).matches?(Aliquot.new(:tag => @tag1, :index_tag => @tag1))
+    should "match aliquots with same tags and tag_2s" do
+      assert Aliquot.new(:tag => @tag1, :tag_2 => @tag1) =~ Aliquot.new(:tag => @tag1, :tag_2 => @tag1)
+      assert Aliquot.new(:tag => @tag1, :tag_2 => @tag1).matches?(Aliquot.new(:tag => @tag1, :tag_2 => @tag1))
     end
 
     should "not match aliquots with different tags" do
-      assert Aliquot.new(:tag => @tag1, :index_tag => @tag1) !~ Aliquot.new(:tag => @tag2, :index_tag => @tag1)
-      assert ! Aliquot.new(:tag => @tag1, :index_tag => @tag1).matches?(Aliquot.new(:tag => @tag2, :index_tag => @tag1))
+      assert Aliquot.new(:tag => @tag1, :tag_2 => @tag1) !~ Aliquot.new(:tag => @tag2, :tag_2 => @tag1)
+      assert ! Aliquot.new(:tag => @tag1, :tag_2 => @tag1).matches?(Aliquot.new(:tag => @tag2, :tag_2 => @tag1))
     end
 
     should "not match aliquots with different index tags" do
-      assert Aliquot.new(:tag => @tag1, :index_tag => @tag1) !~ Aliquot.new(:tag => @tag1, :index_tag => @tag2)
-      assert ! Aliquot.new(:tag => @tag1, :index_tag => @tag1).matches?(Aliquot.new(:tag => @tag1, :index_tag => @tag2))
+      assert Aliquot.new(:tag => @tag1, :tag_2 => @tag1) !~ Aliquot.new(:tag => @tag1, :tag_2 => @tag2)
+      assert ! Aliquot.new(:tag => @tag1, :tag_2 => @tag1).matches?(Aliquot.new(:tag => @tag1, :tag_2 => @tag2))
     end
 
     should " match aliquots with missing tags " do
@@ -37,18 +37,18 @@ class AliquotTest < ActiveSupport::TestCase
     end
 
     should " match aliquots with missing index tags " do
-      assert Aliquot.new(:index_tag => @tag1) =~ Aliquot.new()
-      assert Aliquot.new(:index_tag => @tag1).matches?(Aliquot.new())
+      assert Aliquot.new(:tag_2 => @tag1) =~ Aliquot.new()
+      assert Aliquot.new(:tag_2 => @tag1).matches?(Aliquot.new())
     end
 
     should " match aliquots with missing tags but present index tags " do
-      assert Aliquot.new(:tag => @tag1, :index_tag => @tag1) =~ Aliquot.new(:index_tag => @tag1)
-      assert Aliquot.new(:tag => @tag1, :index_tag => @tag1).matches?(Aliquot.new(:index_tag => @tag1))
+      assert Aliquot.new(:tag => @tag1, :tag_2 => @tag1) =~ Aliquot.new(:tag_2 => @tag1)
+      assert Aliquot.new(:tag => @tag1, :tag_2 => @tag1).matches?(Aliquot.new(:tag_2 => @tag1))
     end
 
     should " match aliquots with missing index tags but present tags " do
-      assert Aliquot.new(:tag => @tag1, :index_tag => @tag1) =~ Aliquot.new(:tag => @tag1)
-      assert Aliquot.new(:tag => @tag1, :index_tag => @tag1).matches?(Aliquot.new(:tag => @tag1))
+      assert Aliquot.new(:tag => @tag1, :tag_2 => @tag1) =~ Aliquot.new(:tag => @tag1)
+      assert Aliquot.new(:tag => @tag1, :tag_2 => @tag1).matches?(Aliquot.new(:tag => @tag1))
     end
 
     should "not match aliquots with different samples" do
@@ -62,12 +62,12 @@ class AliquotTest < ActiveSupport::TestCase
     end
 
     should "allow mixing different tags with a tag index" do
-      @asset.aliquots << Aliquot.new(:tag => @tag1, :index_tag => @tag1, :sample=>@sample1) << Aliquot.new(:tag => @tag2, :index_tag => @tag1, :sample=>@sample2)
+      @asset.aliquots << Aliquot.new(:tag => @tag1, :tag_2 => @tag1, :sample=>@sample1) << Aliquot.new(:tag => @tag2, :tag_2 => @tag1, :sample=>@sample2)
       @asset.save!
     end
 
     should "allow mixing same tags with a different tag index" do
-      @asset.aliquots << Aliquot.new(:tag => @tag1, :index_tag => @tag1, :sample=>@sample1) << Aliquot.new(:tag => @tag1, :index_tag => @tag2, :sample=>@sample2)
+      @asset.aliquots << Aliquot.new(:tag => @tag1, :tag_2 => @tag1, :sample=>@sample1) << Aliquot.new(:tag => @tag1, :tag_2 => @tag2, :sample=>@sample2)
       @asset.save!
     end
 
@@ -80,7 +80,7 @@ class AliquotTest < ActiveSupport::TestCase
 
     should "disallow mixing same tags with same index tag" do
       assert_raise ActiveRecord::RecordInvalid do
-        @asset.aliquots << Aliquot.new(:tag => @tag1, :index_tag => @tag2, :sample=>@sample1) << Aliquot.new(:tag => @tag1, :index_tag => @tag2, :sample=>@sample2)
+        @asset.aliquots << Aliquot.new(:tag => @tag1, :tag_2 => @tag2, :sample=>@sample1) << Aliquot.new(:tag => @tag1, :tag_2 => @tag2, :sample=>@sample2)
         @asset.save!
       end
     end

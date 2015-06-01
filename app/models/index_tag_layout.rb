@@ -24,10 +24,10 @@ class IndexTagLayout < ActiveRecord::Base
   named_scope :include_plate, :include => :plate
 
   # After creating the instance we can layout the index tags into the wells.
-  after_create :layout_index_tags_into_wells, :if => :valid?
+  after_create :layout_tag_2s_into_wells, :if => :valid?
 
-  def layout_index_tags_into_wells
-    plate.wells.include_aliquots.each {|w| w.assign_index_tag(tag) }
+  def layout_tag_2s_into_wells
+    plate.wells.include_aliquots.each {|w| w.assign_tag_2(tag) }
   end
 
 end
