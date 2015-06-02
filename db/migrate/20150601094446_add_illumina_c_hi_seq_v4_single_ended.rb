@@ -47,7 +47,7 @@ class AddIlluminaCHiSeqV4SingleEnded < ActiveRecord::Migration
         template = base_template.clone.tap do |s|
           s.name = name + " SE"
           s.submission_parameters[:request_type_ids_list] = [
-            [RequestType.find_by_key!("illumina_c_multiplexed_library_creation").id],
+            s.submission_parameters[:request_type_ids_list][0],
             [request_type.id]
           ]
         end
