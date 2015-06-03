@@ -14,12 +14,14 @@ module SampleManifest::CoreBehaviour
     end
   end
 
+
   def core_behaviour
     return @core_behaviour if @core_behaviour.present?
 
     behaviour = case self.asset_type
-    when '1dtube' then 'SampleTubeBehaviour'
-    when 'plate'  then 'PlateBehaviour'
+    when '1dtube'              then 'SampleTubeBehaviour'
+    when 'plate'               then 'PlateBehaviour'
+    when 'multiplexed_library' then 'MultiplexedLibraryBehaviour'
     else raise StandardError, "Unknown core behaviour (#{self.asset_type.inspect}) for sample manifest"
     end
 

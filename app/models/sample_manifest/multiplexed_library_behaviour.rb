@@ -1,0 +1,111 @@
+#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2015 Genome Research Ltd.
+module SampleManifest::MultiplexedLibraryBehaviour
+  module ClassMethods
+    def create_for_multiplexed_library!(attributes, *args, &block)
+      create!(attributes.merge(:asset_type => 'multiplexed_library'), *args, &block).tap do |manifest|
+        manifest.generate
+      end
+    end
+  end
+
+  class Core
+    def initialize(manifest)
+      @manifest = manifest
+    end
+
+    delegate :generate_mx_library, :to => :@manifest
+    alias_method(:generate, :generate_mx_library)
+
+    delegate :samples, :to => :@manifest
+
+    def io_samples
+      samples.map do |sample|
+        {
+          :sample    => sample,
+          :container => {
+            :barcode => sample.primary_receptacle.sanger_human_barcode
+          }
+        }
+      end
+    end
+
+    def print_labels(&block)
+      printables = self.samples.map do |sample|
+        sample_tube = sample.assets.first
+        PrintBarcode::Label.new(
+          :number => sample_tube.barcode,
+          :study  => sample.sanger_sample_id,
+          :prefix => sample_tube.prefix, :suffix => ""
+        )
+      end
+      yield(printables, 'NT')
+    end
+
+    def updated_by!(user, samples)
+      # Does nothing at the moment
+    end
+
+    def details(&block)
+      samples.each do |sample|
+        yield({
+          :barcode   => sample.assets.first.sanger_human_barcode,
+          :sample_id => sample.sanger_sample_id
+        })
+      end
+    end
+
+    def validate_sample_container(sample, row, &block)
+      manifest_barcode, primary_barcode = row['SANGER TUBE ID'], sample.primary_receptacle.sanger_human_barcode
+      return if primary_barcode == manifest_barcode
+      yield("Tube info for #{sample.sanger_sample_id} mismatch: expected #{primary_barcode} but reported as #{manifest_barcode}")
+    end
+  end
+
+  def self.included(base)
+    base.class_eval do
+      extend ClassMethods
+    end
+  end
+
+  def generate_mx_library
+    sanger_ids = generate_sanger_ids(self.count)
+    study_abbreviation = self.study.abbreviation
+
+    tubes, samples_data = [], []
+    (0...self.count).each do |_|
+      sample_tube = Tube::Purpose.standard_library_tube.create!
+      sanger_sample_id = SangerSampleId.generate_sanger_sample_id!(study_abbreviation, sanger_ids.shift)
+
+      tubes << sample_tube
+      samples_data << [sample_tube.barcode,sanger_sample_id,sample_tube.prefix]
+    end
+
+    mx_tube = Tube::Purpose.standard_mx_tube.create!
+
+    self.barcodes = mx_tube.sanger_human_barcode
+
+    sample_tube_sample_creation(samples_data,self.study.id)
+    delayed_generate_asset_requests(tubes.map(&:id), self.study.id)
+    save!
+  end
+
+  # This is provided for reference only.
+  # See SampleManifest::SampleTubeBehaviour for the live method
+  # def delayed_generate_asset_requests(asset_ids,study_id)
+  #   # TODO: Refactor?
+  #   RequestFactory.create_assets_requests(Asset.find(asset_ids), Study.find(study_id))
+  # end
+  # handle_asynchronously :delayed_generate_asset_requests
+
+  def sample_tube_sample_creation(samples_data,study_id)
+    study.samples << samples_data.map do |barcode, sanger_sample_id, prefix|
+      create_sample(sanger_sample_id).tap do |sample|
+        sample_tube = LibraryTube.find_by_barcode(barcode) or raise ActiveRecord::RecordNotFound, "Cannot find library tube with barcode #{barcode.inspect}"
+        sample_tube.aliquots.create!(:sample => sample)
+      end
+    end
+  end
+  private :sample_tube_sample_creation
+end
