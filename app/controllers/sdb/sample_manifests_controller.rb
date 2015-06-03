@@ -3,6 +3,7 @@
 #Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
 class Sdb::SampleManifestsController < Sdb::BaseController
   before_filter :set_sample_manifest_id, :only => [:show, :generated]
+  before_filter :validate_type,    :only => [:new, :create]
 
   # Upload the manifest and store it for later processing
   def upload
@@ -85,6 +86,16 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   private
   def set_sample_manifest_id
     @sample_manifest = SampleManifest.find(params[:id])
+  end
+
+  def validate_type
+    return true if SampleManifest.supported_asset_type?(params[:type])
+    flash[:error] = "'#{params[:type]}' is not a supported manifest type."
+    begin
+      redirect_to :back
+    rescue ActionController::RedirectBackError
+      redirect_to sample_manifests_path
+    end
   end
 
 end
