@@ -7,6 +7,10 @@ module SampleManifest::CoreBehaviour
       delegate :details, :validate_sample_container, :to => :core_behaviour
       attr_accessor :rapid_generation
       alias_method(:rapid_generation?, :rapid_generation)
+
+      def self.supported_asset_type?(asset_type)
+        asset_type.nil?||['1dtube','plate','multiplexed_library'].include?(asset_type)
+      end
     end
   end
 
