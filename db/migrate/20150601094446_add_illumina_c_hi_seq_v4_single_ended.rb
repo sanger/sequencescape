@@ -52,6 +52,11 @@ class AddIlluminaCHiSeqV4SingleEnded < ActiveRecord::Migration
           ]
         end
         template.save!
+
+        base_template.supercede do |s|
+          s.update_attributes!(:name => base_template.name + ' PE')
+        end
+
       end
     end
   end
@@ -68,6 +73,7 @@ class AddIlluminaCHiSeqV4SingleEnded < ActiveRecord::Migration
       end
       self.previous_submission_templates.each do |name|
         SubmissionTemplate.find_by_name!(name + " SE").destroy
+        SubmissionTemplate.find_by_name!(name + " PE").destroy
       end
     end
   end
