@@ -13,6 +13,10 @@ class LibraryTube < Tube
     true
   end
 
+  def can_be_created?
+    true
+  end
+
   named_scope :include_tag, :include => { :aliquots => { :tag => [ :uuid_object, { :tag_group => :uuid_object } ] } }
 
   def sorted_tags_for_select
@@ -30,6 +34,10 @@ class LibraryTube < Tube
 
   def self.stock_asset_purpose
     Tube::Purpose.stock_library_tube
+  end
+
+  def tag_id_from_manifest=(tag_id)
+    aliquots.first.update_attributes!(:tag_id=>tag_id)
   end
 
   extend Asset::Stock::CanCreateStockAsset

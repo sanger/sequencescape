@@ -16,7 +16,11 @@ module SampleManifest::MultiplexedLibraryBehaviour
     end
 
     delegate :generate_mx_library, :to => :@manifest
-    alias_method(:generate, :generate_mx_library)
+
+
+    def generate
+      @mx_tube = generate_mx_library
+    end
 
     delegate :samples, :to => :@manifest
 
@@ -32,15 +36,18 @@ module SampleManifest::MultiplexedLibraryBehaviour
     end
 
     def print_labels(&block)
-      printables = self.samples.map do |sample|
-        sample_tube = sample.assets.first
-        PrintBarcode::Label.new(
-          :number => sample_tube.barcode,
-          :study  => sample.sanger_sample_id,
-          :prefix => sample_tube.prefix, :suffix => ""
-        )
-      end
+      label = [self.samples.first,self.samples.last].map(&:sanger_sample_id).join('-')
+      printables = [PrintBarcode::Label.new(
+          :number => multiplexed_library_tube.barcode,
+          :study  => label,
+          :prefix => multiplexed_library_tube.prefix, :suffix => ""
+        )]
       yield(printables, 'NT')
+    end
+
+    def multiplexed_library_tube
+      # TODO: This is NOT threadsafe. Do not commit it.
+      @mx_tube || raise("Mx tube not found")
     end
 
     def updated_by!(user, samples)
@@ -59,9 +66,31 @@ module SampleManifest::MultiplexedLibraryBehaviour
     def validate_sample_container(sample, row, &block)
       manifest_barcode, primary_barcode = row['SANGER TUBE ID'], sample.primary_receptacle.sanger_human_barcode
       return if primary_barcode == manifest_barcode
-      yield("Tube info for #{sample.sanger_sample_id} mismatch: expected #{primary_barcode} but reported as #{manifest_barcode}")
+      yield("You can not move samples between tubes. #{sample.sanger_sample_id} is supposed to be in #{primary_barcode} but has been moved to #{manifest_barcode}.")
+    end
+
+    # There are a lot of things that can go wrong here
+    def validate_specialized_fields(sample,row,&block)
+
+      yield "#{sample.sanger_sample_id} has no tag group specified." if row[SampleManifest::Headers::TAG_GROUP_FIELD].blank?
+      yield "#{sample.sanger_sample_id} has no tag index specified." if row['TAG INDEX'].blank?
+
+      @tag_group ||= TagGroup.include_tags.first(:conditions => {:name=>row[SampleManifest::Headers::TAG_GROUP_FIELD]})
+
+      yield "Couldn't find a tag group called '#{row[SampleManifest::Headers::TAG_GROUP_FIELD]}'" if @tag_group.nil?
+      yield "You can only use one tag set per library. You specified both #{tag_group.name} and #{row[SampleManifest::Headers::TAG_GROUP_FIELD]}" if @tag_group.name != row[SampleManifest::Headers::TAG_GROUP_FIELD]
+      yield "#{tag_group.name} doesn't include a tag with index #{row['TAG INDEX']}" if @tag_group.tags.detect {|tag| tag.map_id == row['TAG INDEX'].to_i}.nil?
+
+    end
+
+    def specialized_fields(row)
+      # In practice the tag group should be loaded by this stage. However we double check, just to avoid nasty bugs in future
+      @tag_group ||= TagGroup.include_tags.first(:conditions => {:name=>row[SampleManifest::Headers::TAG_GROUP_FIELD]})
+      { :tag_id_from_manifest => @tag_group.tags.detect {|tag| tag.map_id == row['TAG INDEX'].to_i}.id }
     end
   end
+
+  RapidCore = Core
 
   def self.included(base)
     base.class_eval do
@@ -70,34 +99,9 @@ module SampleManifest::MultiplexedLibraryBehaviour
   end
 
   def generate_mx_library
-    sanger_ids = generate_sanger_ids(self.count)
-    study_abbreviation = self.study.abbreviation
-
-    tubes, samples_data = [], []
-    (0...self.count).each do |_|
-      sample_tube = Tube::Purpose.standard_library_tube.create!
-      sanger_sample_id = SangerSampleId.generate_sanger_sample_id!(study_abbreviation, sanger_ids.shift)
-
-      tubes << sample_tube
-      samples_data << [sample_tube.barcode,sanger_sample_id,sample_tube.prefix]
-    end
-
-    mx_tube = Tube::Purpose.standard_mx_tube.create!
-
-    self.barcodes = mx_tube.sanger_human_barcode
-
-    sample_tube_sample_creation(samples_data,self.study.id)
-    delayed_generate_asset_requests(tubes.map(&:id), self.study.id)
-    save!
+    generate_tubes(Tube::Purpose.standard_library_tube)
+    Tube::Purpose.standard_mx_tube.create!
   end
-
-  # This is provided for reference only.
-  # See SampleManifest::SampleTubeBehaviour for the live method
-  # def delayed_generate_asset_requests(asset_ids,study_id)
-  #   # TODO: Refactor?
-  #   RequestFactory.create_assets_requests(Asset.find(asset_ids), Study.find(study_id))
-  # end
-  # handle_asynchronously :delayed_generate_asset_requests
 
   def sample_tube_sample_creation(samples_data,study_id)
     study.samples << samples_data.map do |barcode, sanger_sample_id, prefix|

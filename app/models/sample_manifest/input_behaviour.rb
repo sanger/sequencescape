@@ -209,7 +209,12 @@ module SampleManifest::InputBehaviour
           sample_errors.push(message)
           next
         end
+        validate_specialized_fields(sample,row) do |message|
+          sample_errors.push(message)
+          next
+        end
       end
+
 
       metadata = Hash[
         SampleManifest::Headers::METADATA_ATTRIBUTES_TO_CSV_COLUMNS.map do |attribute, csv_column|
@@ -225,7 +230,7 @@ module SampleManifest::InputBehaviour
           :sanger_sample_id           => sanger_sample_id,
           :control                    => convert_yes_no_to_boolean(row['IS SAMPLE A CONTROL?']),
           :sample_metadata_attributes => metadata.delete_if { |_,v| v.nil? }
-        }
+        }.merge ( specialized_fields(row) )
       ])
     end
 

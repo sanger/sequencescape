@@ -11,6 +11,7 @@ class SampleManifest < ActiveRecord::Base
   include SampleManifest::CoreBehaviour
   include SampleManifest::PlateBehaviour
   include SampleManifest::InputBehaviour
+  include SampleManifest::SharedTubeBehaviour
   extend SampleManifest::StateMachine
   extend Document::Associations
 

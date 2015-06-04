@@ -1,0 +1,72 @@
+@sample @manifest @barcode-service
+Feature: Sample manifest
+  In order to process external libraries without creating unnecessary tubes
+  As a pipeline manager
+  I want to be able to be able to easily register multiplexed libraries
+  in a similar manner to sample tubes
+
+  Background:
+    Given I am an "External" user logged in as "john"
+    And the "1D Tube" barcode printer "xyz" exists
+    Given a supplier called "Test supplier name" exists
+    And I have an active study called "Test study"
+    And I have a tag group called "test tag group" with 7 tags
+    Given the study "Test study" has a abbreviation
+    And user "john" is a "manager" of study "Test study"
+    And the study have a workflow
+    Given I am visiting study "Test study" homepage
+    Then I should see "Test study"
+    When I follow "Sample Manifests"
+    Then I should see "Create manifest for multiplexed libraries"
+
+  Scenario: Create a 1D tube manifest without processing the manifest
+    When I follow "Create manifest for multiplexed libraries"
+    Then I should see "Barcode printer"
+    When I select "Test study" from "Study"
+    And I select "Simple multiplexed library manifest" from "Template"
+    And I select "Test supplier name" from "Supplier"
+    And I select "xyz" from "Barcode printer"
+    And I fill in the field labeled "Number of samples in library" with "5"
+    When I press "Create manifest and print labels"
+    Then I should see "Manifest_"
+    Then I should see "Download Blank Manifest"
+    Given 3 pending delayed jobs are processed
+    And library tubes are barcoded sequentially from 81
+    And library tubes are expected by the last manifest
+    And I reset all of the sanger sample ids to a known number sequence
+    When I follow "View all manifests"
+    Then I should see "Sample Manifests"
+    Then I should see "Upload a sample manifest"
+    And study "Test study" should have 5 samples
+    Then I should see the manifest table:
+      | Contains                  | Study      | Supplier           | Manifest       | Upload          | Errors | State                | Created by |
+      | 5 multiplexed_libraries  | Test study | Test supplier name | Blank manifest | Upload manifest |        | No manifest uploaded | john       |
+
+    When I fill in "File to upload" with the file "test/data/multiplexed_library_manifest.csv"
+    And I press "Upload manifest"
+    Given 1 pending delayed jobs are processed
+    When I follow "View all manifests"
+    Then print any manifest errors for debugging
+    Then I should see the manifest table:
+      | Contains                  | Study      | Supplier           | Manifest       | Upload              | Errors | State     | Created by |
+      | 5 multiplexed_libraries  | Test study | Test supplier name | Blank manifest | Completed manifest  |        | Completed | john       |
+    When I follow "Manifest for Test study"
+    Then I should see "NT81M"
+
+    Then the samples table should look like:
+      | sanger_sample_id      | supplier_name | empty_supplier_sample_name | sample_taxon_id |
+      | tube_sample_1         | aaaa          | false                      | 9606            |
+      | tube_sample_2         | bbbb          | false                      | 9606            |
+      | tube_sample_3         | cccc          | false                      | 9606            |
+      | tube_sample_4         | dddd          | false                      | 9606            |
+      | tube_sample_5         | eeee          | false                      | 9606            |
+
+    And the samples should be tagged in library and multiplexed library tubes with:
+      | tube_barcode | sanger_sample_id      | tag_group      | tag_index |
+      | NT81         | tube_sample_1         | test tag group | 1         |
+      | NT82         | tube_sample_2         | test tag group | 2         |
+      | NT83         | tube_sample_3         | test tag group | 3         |
+      | NT84         | tube_sample_4         | test tag group | 5         |
+      | NT85         | tube_sample_5         | test tag group | 7         |
+
+

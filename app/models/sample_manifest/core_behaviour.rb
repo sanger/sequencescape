@@ -2,9 +2,17 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2011 Genome Research Ltd.
 module SampleManifest::CoreBehaviour
+
+  # Include in cores which exhibit the default behaviour
+  module NoSpecializedValidation
+    def validate_specialized_fields(*args); end
+    def specialized_fields(*args); {}; end
+  end
+
   def self.included(base)
     base.class_eval do
-      delegate :details, :validate_sample_container, :to => :core_behaviour
+      delegate :details, :validate_sample_container, :validate_specialized_fields, :specialized_fields, :to => :core_behaviour
+
       attr_accessor :rapid_generation
       alias_method(:rapid_generation?, :rapid_generation)
 

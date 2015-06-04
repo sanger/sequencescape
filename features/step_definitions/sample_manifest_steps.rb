@@ -59,6 +59,9 @@ Given /^I reset all of the sanger sample ids to a known number sequence$/ do
   SampleTube.all(:order => 'id ASC').each_with_index do |tube, idx|
     tube.aliquots.first.sample.update_attributes!(:sanger_sample_id=>"tube_sample_#{idx+1}")
   end
+  LibraryTube.all(:order => 'id ASC').each_with_index do |tube, idx|
+    tube.aliquots.first.sample.update_attributes!(:sanger_sample_id=>"tube_sample_#{idx+1}")
+  end
 end
 
 Then /^sample "([^"]*)" should have empty supplier name set to "([^"]*)"$/ do |sanger_sample_id, boolean_string|
@@ -118,6 +121,19 @@ Then /^the sample reference genomes should be:$/ do |table|
     sample = Sample.find_by_sanger_sample_id(sanger_sample_id) or raise StandardError, "Could not find sample #{sanger_sample_id}"
     assert_equal(expected_data[:reference_genome],sample.sample_metadata.reference_genome.name)
   end
+end
+
+Then /^the samples should be tagged in library and multiplexed library tubes with:$/ do |table|
+  pooled_aliquots = MultiplexedLibraryTube.last.aliquots.map {|a| [a.sample.sanger_sample_id, a.tag.map_id]}
+  table.hashes.each do |expected_data|
+    lt = LibraryTube.find_by_barcode(expected_data[:tube_barcode].gsub('NT',''))
+    assert_equal 1, lt.aliquots.count
+    assert_equal expected_data[:sanger_sample_id], lt.aliquots.first.sample.sanger_sample_id
+    assert_equal expected_data[:tag_group], lt.aliquots.first.tag.try(:tag_group).try(:name)
+    assert_equal expected_data[:tag_index].to_i, lt.aliquots.first.tag.try(:map_id)
+    assert pooled_aliquots.delete([expected_data[:sanger_sample_id],expected_data[:tag_index]]), "Couldn't find #{expected_data[:sanger_sample_id]} with #{expected_data[:tag_index]} in MX tube."
+  end
+  assert pooled_aliquots.empty?, "MX tube contains extra samples: #{pooled_aliquots.inspect}"
 end
 
 Given /^a manifest has been created for "([^"]*)"$/ do |study_name|
@@ -207,4 +223,16 @@ end
 
 Given /^sample tubes are expected by the last manifest$/ do
   SampleManifest.last.update_attributes(:barcodes=>SampleTube.all.map(&:sanger_human_barcode))
+end
+
+Given /^library tubes are expected by the last manifest$/ do
+  SampleManifest.last.update_attributes(:barcodes=>LibraryTube.all.map(&:sanger_human_barcode))
+end
+
+Then /^print any manifest errors for debugging$/ do
+  if SampleManifest.last.last_errors.present?
+    puts "="*80
+    SampleManifest.last.last_errors.each {|error| puts error}
+    puts "="*80
+  end
 end

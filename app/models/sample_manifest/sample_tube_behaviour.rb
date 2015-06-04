@@ -11,6 +11,9 @@ module SampleManifest::SampleTubeBehaviour
   end
 
   class Core
+
+    include SampleManifest::CoreBehaviour::NoSpecializedValidation
+
     def initialize(manifest)
       @manifest = manifest
     end
@@ -61,6 +64,7 @@ module SampleManifest::SampleTubeBehaviour
       return if primary_barcode == manifest_barcode
       yield("Tube info for #{sample.sanger_sample_id} mismatch: expected #{primary_barcode} but reported as #{manifest_barcode}")
     end
+
   end
 
   # There is no reason for this to need a rapid version as it should be reasonably
@@ -74,38 +78,7 @@ module SampleManifest::SampleTubeBehaviour
   end
 
   def generate_1dtubes
-    sanger_ids = generate_sanger_ids(self.count)
-    study_abbreviation = self.study.abbreviation
-
-    tubes, samples_data = [], []
-    (0...self.count).each do |_|
-      sample_tube = Tube::Purpose.standard_sample_tube.create!
-      sanger_sample_id = SangerSampleId.generate_sanger_sample_id!(study_abbreviation, sanger_ids.shift)
-
-      tubes << sample_tube
-      samples_data << [sample_tube.barcode,sanger_sample_id,sample_tube.prefix]
-    end
-
-    self.barcodes = tubes.map(&:sanger_human_barcode)
-
-    sample_tube_sample_creation(samples_data,self.study.id)
-    delayed_generate_asset_requests(tubes.map(&:id), self.study.id)
-    save!
+    generate_tubes(Tube::Purpose.standard_sample_tube)
   end
 
-  def delayed_generate_asset_requests(asset_ids,study_id)
-    # TODO: Refactor?
-    RequestFactory.create_assets_requests(Asset.find(asset_ids), Study.find(study_id))
-  end
-  handle_asynchronously :delayed_generate_asset_requests
-
-  def sample_tube_sample_creation(samples_data,study_id)
-    study.samples << samples_data.map do |barcode, sanger_sample_id, prefix|
-      create_sample(sanger_sample_id).tap do |sample|
-        sample_tube = SampleTube.find_by_barcode(barcode) or raise ActiveRecord::RecordNotFound, "Cannot find sample tube with barcode #{barcode.inspect}"
-        sample_tube.aliquots.create!(:sample => sample)
-      end
-    end
-  end
-  private :sample_tube_sample_creation
 end

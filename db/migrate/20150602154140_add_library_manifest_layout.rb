@@ -5,7 +5,7 @@ class AddLibraryManifestLayout < ActiveRecord::Migration
           :name=> 'Simple multiplexed library manifest',
           :asset_type => 'multiplexed_library',
           :path => '/data/base_mx_library_manifest.xls',
-          :cell_map => {:study=>[4, 1], :supplier=>[5, 1], :number_of_plates=>[6, 1], :tag_set_name=>[7, 1]}
+          :cell_map => {:study=>[4, 1], :supplier=>[5, 1], :number_of_plates=>[6, 1]}
         )
     end
   end

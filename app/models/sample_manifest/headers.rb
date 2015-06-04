@@ -18,6 +18,8 @@ module SampleManifest::Headers
     'PHENOTYPE' => 'PHENOTYPE (required for EGA)'
   }
 
+  TAG_GROUP_FIELD = 'TAG GROUP (Must be same for all samples)'
+
 
   CORE_FIELDS = [
     'SANGER PLATE ID',
@@ -25,7 +27,9 @@ module SampleManifest::Headers
     'WELL',
     'SANGER SAMPLE ID',
     'IS SAMPLE A CONTROL?',
-    'IS RE-SUBMITTED SAMPLE?'
+    'IS RE-SUBMITTED SAMPLE?',
+    TAG_GROUP_FIELD,
+    'TAG INDEX'
   ]
 
   METADATA_ATTRIBUTES_TO_CSV_COLUMNS = {

@@ -40,7 +40,7 @@ class SampleManifestTemplate < ActiveRecord::Base
           :name=> 'Simple multiplexed library manifest',
           :asset_type => 'multiplexed_library',
           :path => '/data/base_mx_library_manifest.xls',
-          :cell_map => {:study=>[4, 1], :supplier=>[5, 1], :number_of_plates=>[6, 1], :tag_set_name=>[7, 1]}
+          :cell_map => {:study=>[4, 1], :supplier=>[5, 1], :number_of_plates=>[6, 1]}
         )
 
       unless RAILS_ENV == "production"
@@ -99,6 +99,7 @@ class SampleManifestTemplate < ActiveRecord::Base
     set_value(worksheet, :number_of_plates, manifest.count)  # NOT 'number_of_plates' BUT number of things!
 
     current_row = manifest.spreadsheet_offset
+
     manifest.details do |details|
       worksheet[current_row, barcode_position]   = details[:barcode]
       worksheet[current_row, sample_id_position] = details[:sample_id]
