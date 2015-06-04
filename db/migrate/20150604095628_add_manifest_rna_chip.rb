@@ -6,13 +6,16 @@ class AddManifestRnaChip < ActiveRecord::Migration
           :study => [4,1],
           :supplier => [5,1],
           :number_of_plates => [6,1]
-        }
-      SampleManifestTemplate.create!(
-        :name => "relevant RNA/ChIP",
-        :path => "/data/relevant_rnachip_plate_manifest.xls",
-        :cell_map => map,
-        :asset_type => '1dtube'
-      )
+      }
+
+      if SampleManifestTemplate.find_by_name("relevant RNA/ChIP").nil?
+        SampleManifestTemplate.create!(
+          :name => "relevant RNA/ChIP",
+          :path => "/data/relevant_rnachip_plate_manifest.xls",
+          :cell_map => map,
+          :asset_type => '1dtube'
+        )
+      end
     end
   end
 
