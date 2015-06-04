@@ -20,6 +20,7 @@ module SampleManifest::SharedTubeBehaviour
     tube_sample_creation(samples_data,self.study.id)
     delayed_generate_asset_requests(tubes.map(&:id), self.study.id)
     save!
+    tubes
   end
 
   def delayed_generate_asset_requests(asset_ids,study_id)

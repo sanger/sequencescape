@@ -230,7 +230,7 @@ module SampleManifest::InputBehaviour
           :sanger_sample_id           => sanger_sample_id,
           :control                    => convert_yes_no_to_boolean(row['IS SAMPLE A CONTROL?']),
           :sample_metadata_attributes => metadata.delete_if { |_,v| v.nil? }
-        }.merge ( specialized_fields(row) )
+        }.merge( specialized_fields(row) )
       ])
     end
 

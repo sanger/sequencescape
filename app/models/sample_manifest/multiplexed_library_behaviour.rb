@@ -46,7 +46,6 @@ module SampleManifest::MultiplexedLibraryBehaviour
     end
 
     def multiplexed_library_tube
-      # TODO: This is NOT threadsafe. Do not commit it.
       @mx_tube || raise("Mx tube not found")
     end
 
@@ -99,8 +98,10 @@ module SampleManifest::MultiplexedLibraryBehaviour
   end
 
   def generate_mx_library
-    generate_tubes(Tube::Purpose.standard_library_tube)
-    Tube::Purpose.standard_mx_tube.create!
+    tubes = generate_tubes(Tube::Purpose.standard_library_tube)
+    Tube::Purpose.standard_mx_tube.create!.tap do |mx_tube|
+      RequestFactory.create_external_multiplexed_library_creation_requests(tubes, mx_tube, study)
+    end
   end
 
   def sample_tube_sample_creation(samples_data,study_id)

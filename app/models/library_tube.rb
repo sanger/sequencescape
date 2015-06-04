@@ -38,6 +38,7 @@ class LibraryTube < Tube
 
   def tag_id_from_manifest=(tag_id)
     aliquots.first.update_attributes!(:tag_id=>tag_id)
+    requests.map(&:manifest_processed)
   end
 
   extend Asset::Stock::CanCreateStockAsset
