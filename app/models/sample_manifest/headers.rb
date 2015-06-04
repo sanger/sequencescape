@@ -18,6 +18,7 @@ module SampleManifest::Headers
     'PHENOTYPE' => 'PHENOTYPE (required for EGA)'
   }
 
+  # Used in a number of places, pulled out as not immediately obvious
   TAG_GROUP_FIELD = 'TAG GROUP (Must be same for all samples)'
 
 
@@ -29,7 +30,10 @@ module SampleManifest::Headers
     'IS SAMPLE A CONTROL?',
     'IS RE-SUBMITTED SAMPLE?',
     TAG_GROUP_FIELD,
-    'TAG INDEX'
+    'TAG INDEX',
+    'LIBRARY TYPE',
+    'INSERT SIZE FROM',
+    'INSERT SIZE TO'
   ]
 
   METADATA_ATTRIBUTES_TO_CSV_COLUMNS = {

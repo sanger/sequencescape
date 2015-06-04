@@ -79,7 +79,7 @@ class Aliquot < ActiveRecord::Base
       self.class.name.underscore
     end
 
-    def tag_id_from_manifest=(*args);end
+    def specialized_from_manifest=(*args);end
 
     has_many :studies, :through => :aliquots
     has_many :projects, :through => :aliquots

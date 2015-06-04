@@ -68,24 +68,49 @@ module SampleManifest::MultiplexedLibraryBehaviour
       yield("You can not move samples between tubes. #{sample.sanger_sample_id} is supposed to be in #{primary_barcode} but has been moved to #{manifest_barcode}.")
     end
 
+    def required_fields
+      ['TAG INDEX','LIBRARY TYPE','INSERT SIZE FROM','INSERT SIZE TO']
+    end
+
+    def numeric_fields
+      ['INSERT SIZE FROM','INSERT SIZE TO']
+    end
+
     # There are a lot of things that can go wrong here
     def validate_specialized_fields(sample,row,&block)
 
-      yield "#{sample.sanger_sample_id} has no tag group specified." if row[SampleManifest::Headers::TAG_GROUP_FIELD].blank?
-      yield "#{sample.sanger_sample_id} has no tag index specified." if row['TAG INDEX'].blank?
+      required_fields.each do |field|
+        yield  "#{sample.sanger_sample_id} has no #{field.downcase} specified." if row[field].blank?
+      end
+
+      numeric_fields.each do |field|
+        yield  "#{sample.sanger_sample_id} #{field.downcase} should be a number." unless /^[0-9]+$/ === row[field].strip
+        yield  "#{sample.sanger_sample_id} #{field.downcase} should be greater than 0." unless row[field].to_i > 0
+      end
+
+      return yield "Couldn't find the library type #{row['LIBRARY TYPE']} for #{sample.sanger_sample_id}." if LibraryType.find_by_name(row['LIBRARY TYPE']).nil?
+
+      return yield "#{sample.sanger_sample_id} has no tag group specified." if row[SampleManifest::Headers::TAG_GROUP_FIELD].blank?
 
       @tag_group ||= TagGroup.include_tags.first(:conditions => {:name=>row[SampleManifest::Headers::TAG_GROUP_FIELD]})
 
       yield "Couldn't find a tag group called '#{row[SampleManifest::Headers::TAG_GROUP_FIELD]}'" if @tag_group.nil?
-      yield "You can only use one tag set per library. You specified both #{tag_group.name} and #{row[SampleManifest::Headers::TAG_GROUP_FIELD]}" if @tag_group.name != row[SampleManifest::Headers::TAG_GROUP_FIELD]
-      yield "#{tag_group.name} doesn't include a tag with index #{row['TAG INDEX']}" if @tag_group.tags.detect {|tag| tag.map_id == row['TAG INDEX'].to_i}.nil?
+      yield "You can only use one tag group per library. You specified both #{@tag_group.name} and #{row[SampleManifest::Headers::TAG_GROUP_FIELD]}" if @tag_group.name != row[SampleManifest::Headers::TAG_GROUP_FIELD]
+      yield "#{@tag_group.name} doesn't include a tag with index #{row['TAG INDEX']}" if @tag_group.tags.detect {|tag| tag.map_id == row['TAG INDEX'].to_i}.nil?
 
     end
 
     def specialized_fields(row)
       # In practice the tag group should be loaded by this stage. However we double check, just to avoid nasty bugs in future
       @tag_group ||= TagGroup.include_tags.first(:conditions => {:name=>row[SampleManifest::Headers::TAG_GROUP_FIELD]})
-      { :tag_id_from_manifest => @tag_group.tags.detect {|tag| tag.map_id == row['TAG INDEX'].to_i}.id }
+      {
+        :specialized_from_manifest => {
+          :tag_id           => @tag_group.tags.detect {|tag| tag.map_id == row['TAG INDEX'].to_i}.id,
+          :library_type     => row['LIBRARY TYPE'],
+          :insert_size_from => row['INSERT SIZE FROM'].to_i,
+          :insert_size_to   => row['INSERT SIZE TO'].to_i
+        }
+      }
     end
   end
 

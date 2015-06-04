@@ -62,11 +62,11 @@ Feature: Sample manifest
       | tube_sample_5         | eeee          | false                      | 9606            |
 
     And the samples should be tagged in library and multiplexed library tubes with:
-      | tube_barcode | sanger_sample_id      | tag_group      | tag_index |
-      | NT81         | tube_sample_1         | test tag group | 1         |
-      | NT82         | tube_sample_2         | test tag group | 2         |
-      | NT83         | tube_sample_3         | test tag group | 3         |
-      | NT84         | tube_sample_4         | test tag group | 5         |
-      | NT85         | tube_sample_5         | test tag group | 7         |
+      | tube_barcode | sanger_sample_id      | tag_group      | tag_index | library_type | insert_size_from | insert_size_to |
+      | NT81         | tube_sample_1         | test tag group | 1         | Standard     | 100              | 200            |
+      | NT82         | tube_sample_2         | test tag group | 2         | Standard     | 100              | 200            |
+      | NT83         | tube_sample_3         | test tag group | 3         | Standard     | 100              | 200            |
+      | NT84         | tube_sample_4         | test tag group | 5         | Standard     | 100              | 200            |
+      | NT85         | tube_sample_5         | test tag group | 7         | Standard     | 100              | 200            |
 
 

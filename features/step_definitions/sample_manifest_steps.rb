@@ -131,6 +131,9 @@ Then /^the samples should be tagged in library and multiplexed library tubes wit
     assert_equal expected_data[:sanger_sample_id], lt.aliquots.first.sample.sanger_sample_id
     assert_equal expected_data[:tag_group], lt.aliquots.first.tag.try(:tag_group).try(:name)
     assert_equal expected_data[:tag_index].to_i, lt.aliquots.first.tag.try(:map_id)
+    assert_equal expected_data[:library_type], lt.aliquots.first.library_type
+    assert_equal expected_data[:insert_size_from].to_i, lt.aliquots.first.insert_size_from
+    assert_equal expected_data[:insert_size_to].to_i, lt.aliquots.first.insert_size_to
     assert pooled_aliquots.delete([expected_data[:sanger_sample_id],expected_data[:tag_index].to_i]), "Couldn't find #{expected_data[:sanger_sample_id]} with #{expected_data[:tag_index]} in MX tube."
   end
   assert pooled_aliquots.empty?, "MX tube contains extra samples: #{pooled_aliquots.inspect}"

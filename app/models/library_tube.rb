@@ -36,8 +36,8 @@ class LibraryTube < Tube
     Tube::Purpose.stock_library_tube
   end
 
-  def tag_id_from_manifest=(tag_id)
-    aliquots.first.update_attributes!(:tag_id=>tag_id)
+  def specialized_from_manifest=(attributes)
+    aliquots.first.update_attributes!(attributes)
     requests.map(&:manifest_processed)
   end
 
