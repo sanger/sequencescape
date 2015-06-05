@@ -145,7 +145,7 @@ Given /^a manifest has been created for "([^"]*)"$/ do |study_name|
   step(%Q{I select "default layout" from "Template"})
 	step(%Q{I select "Test supplier name" from "Supplier"})
 	step(%Q{I select "xyz" from "Barcode printer"})
-	step(%Q{I fill in the field labeled "Count" with "1"})
+	step(%Q{I fill in the field labeled "Plates required" with "1"})
   step(%Q{I select "default layout" from "Template"})
 	step(%Q{I press "Create manifest and print labels"})
 	step %Q{I should see "Manifest_"}

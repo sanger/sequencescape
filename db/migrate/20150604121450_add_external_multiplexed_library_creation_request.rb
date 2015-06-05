@@ -16,8 +16,7 @@ class AddExternalMultiplexedLibraryCreationRequest < ActiveRecord::Migration
         :multiples_allowed=>false,
         :name=>"External Multiplexed Library Creation",
         :no_target_asset=>false,
-        :request_class_name=>"ExternalLibraryCreationRequest",
-        :workflow_id=>1
+        :request_class_name=>"ExternalLibraryCreationRequest"
       )
     end
   end
