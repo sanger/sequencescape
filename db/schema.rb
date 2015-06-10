@@ -1,4 +1,4 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file,
+# This file is auto-generated from the current state of the database. Instead of editing this file, 
 # please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
@@ -779,7 +779,7 @@ ActiveRecord::Schema.define(:version => 20150601150207) do
     t.integer  "plate_purpose_id",  :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "parent_purpose_id"
+    t.integer  "parent_purpose_id"
   end
 
   create_table "plate_creators", :force => true do |t|
