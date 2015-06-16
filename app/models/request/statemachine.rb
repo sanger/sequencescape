@@ -6,7 +6,7 @@
 module Request::Statemachine
   COMPLETED_STATE = [ 'passed', 'failed' ]
   OPENED_STATE    = [ 'pending', 'blocked', 'started' ]
-  QUOTA_COUNTED   = [ 'passed', 'pending', 'blocked', 'started' ]
+  ACTIVE = QUOTA_COUNTED   = [ 'passed', 'pending', 'blocked', 'started' ]
   QUOTA_EXEMPTED  = [ 'failed', 'cancelled', 'aborted' ]
 
   module ClassMethods

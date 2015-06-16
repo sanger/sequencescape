@@ -129,6 +129,7 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
 
   'tag layout',
   'tag 2 layout',
+  'tag2 layout template',
   'plate creation',
   'plate conversion',
   'tube creation',

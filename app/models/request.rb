@@ -127,6 +127,14 @@ class Request < ActiveRecord::Base
   end
 
 
+  def submission_plate_count
+    submission.requests.find(:all,
+      :conditions=>{:request_type_id=>request_type_id},
+      :joins=>'LEFT JOIN container_associations AS spca ON spca.content_id = requests.asset_id',
+      :group=>'spca.container_id'
+    ).count
+  end
+
 
   def project=(project)
     return unless project
