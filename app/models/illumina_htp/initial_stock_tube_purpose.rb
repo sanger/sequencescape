@@ -20,6 +20,21 @@ class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
       end
     end
 
+    def pooling_information(tube)
+      {
+        :included_requests => outer_requests(tube),
+        :expected_requests => submission_requests(tube)
+      }
+    end
+
+    def outer_requests(tube)
+      tube.requests_as_target.map {|rat| rat.outer_request.uuid }
+    end
+
+    def submission_requests(tube)
+      tube.requests_as_target.first.outer_request.submission_siblings.map(&:uuid)
+    end
+
   end
 
   include InitialTube

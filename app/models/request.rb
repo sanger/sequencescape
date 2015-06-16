@@ -471,6 +471,10 @@ class Request < ActiveRecord::Base
     # Does not need anything here
   end
 
+  def submission_siblings
+    submission.requests.with_request_type_id(request_type_id)
+  end
+
   def role
     order.try(:role)
   end

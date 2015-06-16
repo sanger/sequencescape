@@ -12,4 +12,8 @@ class StockMultiplexedLibraryTube < Tube
     parent.created_with_request_options
   end
 
+  def pooling_information
+    purpose.pooling_information(self)
+  end
+
 end
