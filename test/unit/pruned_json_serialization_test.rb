@@ -30,7 +30,7 @@ class PrunedJsonSerializationTest < ActiveSupport::TestCase
          \"max_size\":null,
          \"min_size\":null,
          \"multiplexed\":null,
-         \"name\":\"Illumina-C Library preparation222\",
+         \"name\":\"Testing Illumina-C Library preparation\",
          \"next_pipeline\":null,
          \"paginate\":false,
          \"previous_pipeline\":null,
@@ -41,7 +41,7 @@ class PrunedJsonSerializationTest < ActiveSupport::TestCase
             \"transcoded_class\":\"LabInterface::Workflow\",
             \"item_limit\":null,
             \"locale\":\"External\",
-            \"name\":\"Library preparation\",
+            \"name\":\"Testing Library preparation\",
             \"tasks\":[
                {
                   \"transcoded_class\":\"SetDescriptorsTask\",
@@ -52,7 +52,26 @@ class PrunedJsonSerializationTest < ActiveSupport::TestCase
                   \"name\":\"Initial QC\",
                   \"per_item\":null,
                   \"sorted\":1,
-                  \"sti_type\":\"SetDescriptorsTask\"
+                  \"sti_type\":\"SetDescriptorsTask\",
+                  \"descriptors\":[
+                    {
+                      \"transcoded_class\":\"Descriptor\",
+                      \"kind\":\"Selection\",
+                      \"name\":\"Strips to create\",
+                      \"required\":null,
+                      \"selection\":[1,2,4,6,12],
+                      \"sorter\":null,
+                      \"value\":null
+                    },{
+                        \"transcoded_class\":\"Descriptor\",
+                        \"kind\":null,
+                        \"name\":\"Strip Tube Purpose\",
+                        \"required\":null,
+                        \"selection\":null,
+                        \"sorter\":null,
+                        \"value\":\"Strip Tube Purpose\"
+                    }
+                  ]
                },
                {
                   \"transcoded_class\":\"SetDescriptorsTask\",
@@ -102,7 +121,7 @@ class PrunedJsonSerializationTest < ActiveSupport::TestCase
 
     should "create a new pipeline from a json" do
       assert_equal true, PrunedJsonSerialization.build(@test.json)
-      pipeline = Pipeline.find_by_name("Illumina-C Library preparation222")
+      pipeline = Pipeline.find_by_name("Testing Illumina-C Library preparation")
       assert_equal true, !pipeline.nil?
       assert_equal 2, pipeline.request_types.length
       assert_equal "library_creation", pipeline.request_types.first.key
@@ -111,10 +130,11 @@ class PrunedJsonSerializationTest < ActiveSupport::TestCase
     should "duplicate a pipeline from an old one" do
       obj = PrunedJsonSerialization.pipeline_attribute_hash(Pipeline.first)
       obj["name"] = "My new pipeline"
+      obj["workflow"]["name"]="My new workflow"
       assert_equal true, PrunedJsonSerialization.build(obj.to_json)
       pipeline = Pipeline.find_by_name("My new pipeline")
       assert_equal true, !pipeline.nil?
-      assert_equal obj["name"], pipeline.name
+      assert_equal obj["workflow"]["name"], pipeline.workflow.name
     end
   end
 end

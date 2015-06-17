@@ -5,7 +5,12 @@ module PrunedJsonSerialization
 
     transcoded_object = prune_attributes(transcode_to_object(pipeline), prune_list)
     transcoded_object["workflow"] = prune_attributes(transcode_to_object(pipeline.workflow), prune_list + ["pipeline"])
-    transcoded_object["workflow"]["tasks"] = prune_attributes(transcode_to_object(pipeline.workflow.tasks), prune_list)
+    unless pipeline.workflow.nil?
+      transcoded_object["workflow"]["tasks"] = prune_attributes(transcode_to_object(pipeline.workflow.tasks), prune_list)
+      pipeline.workflow.tasks.each_with_index do |task, pos|
+        transcoded_object["workflow"]["tasks"][pos]["descriptors"] = prune_attributes(transcode_to_object(task.descriptors), prune_list)
+      end
+    end
     transcoded_object["request_types"] = prune_attributes(transcode_to_object(pipeline.request_types,1), prune_list)
 
     transcoded_object
@@ -43,23 +48,26 @@ module PrunedJsonSerialization
     klass = klass_name.constantize
     pruned_list = ["transcoded_class", "transcoded_find_by_key"]
     if klass.methods.include?("create")
-      klass.create(prune_attributes(config, pruned_list))
+      instance = klass.create(prune_attributes(config, pruned_list))
     else
       instance = klass.new(prune_attributes(config, pruned_list))
-      instance
     end
+    instance.save!
+    instance
   end
 
   def self.process_object(obj)
-    ["key", "name"].map do |key_finding_att|
-      [key_finding_att, "transcoded_find_by_#{key_finding_att}"]
-    end.detect do |key_finding_att, transcoded_key_finding_att|
-      !obj[transcoded_key_finding_att].nil?
-    end.tap do |match|
-      return match if match.nil?
-      key_finding_att = match[0]
-      transcoded_key_finding_att = match[1]
-      yield obj["transcoded_class"].constantize.send("find_by_#{key_finding_att}!", obj[transcoded_key_finding_att])
+    if obj.kind_of? Hash
+      ["key", "name"].map do |key_finding_att|
+        [key_finding_att, "transcoded_find_by_#{key_finding_att}"]
+      end.detect do |key_finding_att, transcoded_key_finding_att|
+        !obj[transcoded_key_finding_att].nil?
+      end.tap do |match|
+        return match if match.nil?
+        key_finding_att = match[0]
+        transcoded_key_finding_att = match[1]
+        yield obj["transcoded_class"].constantize.send("find_by_#{key_finding_att}!", obj[transcoded_key_finding_att])
+      end
     end
   end
 
@@ -70,24 +78,26 @@ module PrunedJsonSerialization
 
     process_object(obj) {|val| return val}
 
-    updated_obj = {}
-    obj.each_pair do |key, value|
-      if value.kind_of?(Hash)
-        match = process_object(value) {|val| obj[key] = val}
-        if match.nil?
-          val_obtained = transcode_from_object(value)
-          obj[key] = val_obtained
-          unless value["transcoded_key"].nil?
-            updated_obj[key+"_#{value["transcoded_key"]}"] = obj[key][value["transcoded_key"]]
-            obj.delete(key)
+    if obj.kind_of?(Hash)
+      updated_obj = {}
+      obj.each_pair do |key, value|
+        if value.kind_of?(Hash)
+          match = process_object(value) {|val| obj[key] = val}
+          if match.nil?
+            val_obtained = transcode_from_object(value)
+            obj[key] = val_obtained
+            unless value["transcoded_key"].nil?
+              updated_obj[key+"_#{value["transcoded_key"]}"] = obj[key][value["transcoded_key"]]
+              obj.delete(key)
+            end
           end
+        elsif value.kind_of?(Array)
+          obj[key] = value.map {|n| transcode_from_object(n)}
         end
-      elsif value.kind_of?(Array)
-        obj[key] = value.map {|n| transcode_from_object(n)}
       end
+      obj.merge!(updated_obj)
+      obj = build_from_config_object(obj) if obj["transcoded_class"]
     end
-    obj.merge!(updated_obj)
-    obj = build_from_config_object(obj) if obj["transcoded_class"]
     obj
   end
 
