@@ -57,7 +57,7 @@ class RequestType::Validator < ActiveRecord::Base
     end
   end
 
-  belongs_to :request_type
+  belongs_to :request_type, :inverse_of => :request_type_validators
   validates_presence_of :request_type, :request_option, :valid_options
   serialize :valid_options
 
