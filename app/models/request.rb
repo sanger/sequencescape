@@ -108,6 +108,8 @@ class Request < ActiveRecord::Base
   belongs_to :submission, :inverse_of => :requests
   belongs_to :order, :inverse_of => :requests
 
+  has_many :submission_siblings, :through => :submission, :source => :requests, :class_name => 'Request', :conditions => {:request_type_id => '#{request_type_id}'}
+
   named_scope :with_request_type_id, lambda { |id| { :conditions => { :request_type_id => id } } }
 
   named_scope :for_pacbio_sample_sheet, :include => [{:target_asset=>:map},:request_metadata]

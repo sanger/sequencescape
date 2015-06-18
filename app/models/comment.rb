@@ -15,7 +15,7 @@ class Comment < ActiveRecord::Base
       {
         :select => 'DISTINCT comments.description, comments.title, comments.user_id',
         :joins => "LEFT JOIN requests AS r ON r.id = comments.commentable_id AND comments.commentable_type = 'Request'",
-        :conditions => ['r.submission_id IN (?) OR (comments.commentable_type = "Asset" and commentable_id = ?)',submissions.join(','),plate.id]
+        :conditions => ['r.submission_id IN (?) OR (comments.commentable_type = "Asset" and commentable_id = ?)',submissions,plate.id]
       }
     else
       {
@@ -28,3 +28,4 @@ class Comment < ActiveRecord::Base
   named_scope :include_uuid, {} # BLUFF!
 
 end
+

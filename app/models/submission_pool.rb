@@ -40,6 +40,8 @@ class SubmissionPool < ActiveRecord::Base
 
     stock_plate = plate.stock_plate
 
+    return {:conditions=>'false'} if stock_plate.nil?
+
     {
       :select => 'submissions.*, our.id AS outer_request_id',
       :joins  => [
