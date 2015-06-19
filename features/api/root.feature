@@ -160,6 +160,11 @@ And I have a "full" authorised user with the key "cucumber"
             "create": "http://www.example.com/api/1/submissions"
           }
         },
+       "submission_pools": {
+          "actions": {
+            "read": "http://www.example.com/api/1/submission_pools"
+          }
+        },
         "orders": {
           "actions": {
             "read": "http://www.example.com/api/1/orders"
@@ -494,6 +499,11 @@ And I have a "full" authorised user with the key "cucumber"
           "actions": {
             "read": "http://www.example.com/api/1/submissions",
             "create": "http://www.example.com/api/1/submissions"
+          }
+        },
+        "submission_pools": {
+          "actions": {
+            "read": "http://www.example.com/api/1/submission_pools"
           }
         },
         "orders": {
