@@ -1,6 +1,7 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2012,2013,2015 Genome Research Ltd.
+
 class Purpose < ActiveRecord::Base
   set_table_name('plate_purposes')
 
@@ -46,6 +47,7 @@ class Purpose < ActiveRecord::Base
 
   # Things that are created are often in a default location!
   belongs_to :default_location, :class_name => 'Location'
+  has_many :messenger_creators, :inverse_of => :purpose
 
   validates_format_of :name, :with => /^\w[\s\w._-]+\w$/i
   validates_presence_of :name

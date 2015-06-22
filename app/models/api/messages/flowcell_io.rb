@@ -3,7 +3,10 @@
 #Copyright (C) 2014,2015 Genome Research Ltd.
 class Api::Messages::FlowcellIO < Api::Base
 
-  module LaneExtensions
+  MANUAL_QC_BOOLS = {'passed'=>true,'failed'=>false }
+
+  module LaneExtensions # Included in SequencingRequest
+
     def self.included(base)
       base.class_eval do
 
@@ -16,15 +19,7 @@ class Api::Messages::FlowcellIO < Api::Base
         end
 
         def manual_qc
-          event = lab_events.find(
-            :first,
-            :conditions => {
-              :description=>'Quality control'
-            },
-            :order=>'created_at DESC'
-          )
-          return event.descriptor_value_for('Passed?')=='Yes' if event.present?
-          nil
+          MANUAL_QC_BOOLS[target_asset.try(:qc_state)]
         end
 
         def samples
@@ -45,6 +40,11 @@ class Api::Messages::FlowcellIO < Api::Base
           target_asset_id
         end
 
+        def product_line
+          return nil if request_type.product_line.nil?
+          request_type.product_line.name
+        end
+
       end
     end
   end
@@ -62,19 +62,15 @@ class Api::Messages::FlowcellIO < Api::Base
         end
 
         def manual_qc
-          event = lab_events.find(
-            :first,
-            :conditions => {
-              :description=>'Quality control'
-            },
-            :order=>'created_at DESC'
-          )
-          return event.descriptor_value_for('Passed?')=='Yes' if event.present?
-          nil
+          MANUAL_QC_BOOLS[target_asset.try(:qc_state)]
         end
 
         def samples
           return []
+        end
+
+        def product_line
+          nil
         end
 
         def spiked_in_buffer
@@ -179,6 +175,7 @@ class Api::Messages::FlowcellIO < Api::Base
     map_attribute_to_json_attribute(:mx_library,'id_pool_lims')
     map_attribute_to_json_attribute(:external_release,'external_release')
     map_attribute_to_json_attribute(:lane_identifier, 'entity_id_lims')
+    map_attribute_to_json_attribute(:product_line,'team')
 
     with_nested_has_many_association(:samples) do # actually aliquots
 

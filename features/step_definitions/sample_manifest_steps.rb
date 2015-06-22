@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2015 Genome Research Ltd.
 Given /^a supplier called "(.*)" exists$/ do |supplier_name|
   Supplier.create!({:name => supplier_name })
 end
@@ -37,7 +37,7 @@ Then /^study "([^"]*)" should have (\d+) samples$/ do |study_name, number_of_sam
 end
 
 Then /^I should see the manifest table:$/ do |expected_results_table|
-  expected_results_table.diff!(table(tableish('table#study_list tr', 'td,th')))
+  expected_results_table.diff!(table(fetch_table('table#study_list')))
 end
 
 def sequence_sanger_sample_ids_for(plate)
@@ -109,6 +109,14 @@ Then /^the sample accession numbers should be:$/ do |table|
     sanger_sample_id = expected_data[:sanger_sample_id]
     sample = Sample.find_by_sanger_sample_id(sanger_sample_id) or raise StandardError, "Could not find sample #{sanger_sample_id}"
     assert_equal(expected_data[:accession_number],sample.sample_metadata.sample_ebi_accession_number)
+  end
+end
+
+Then /^the sample reference genomes should be:$/ do |table|
+  table.hashes.each do |expected_data|
+    sanger_sample_id = expected_data[:sanger_sample_id]
+    sample = Sample.find_by_sanger_sample_id(sanger_sample_id) or raise StandardError, "Could not find sample #{sanger_sample_id}"
+    assert_equal(expected_data[:reference_genome],sample.sample_metadata.reference_genome.name)
   end
 end
 

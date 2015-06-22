@@ -9,7 +9,7 @@ Feature: Push samples through the PacBio pipeline for sequencing
     Given I am on the show page for study "Test study"
 
     Given I have a sample tube "111" in study "Test study" in asset group "Test study group"
-    And the plate barcode webservice returns "99998..99999"
+    And the plate barcode webservice returns "99997..99999"
     Given the sample validation webservice returns "true"
       And the reference genome "Mouse" exists
     Given the study "Test study" has a reference genome of "Mouse"
@@ -46,17 +46,8 @@ Feature: Push samples through the PacBio pipeline for sequencing
     And I press "Next step"
     And I press "Next step"
     Then I should see "Layout tubes on a plate"
-    And the plate layout should look like:
-      | 1             | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
-      | DN1234567T-A1 |   |   |   |   |   |   |   |   |    |    |    |
-      | DN1234567T-B1 |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
+    And I fill in the field for "DN1234567T-A1" with "A1"
+    And I fill in the field for "DN1234567T-B1" with "B1"
    And I press "Next step"
    And I press "Next step"
 
@@ -84,17 +75,8 @@ Feature: Push samples through the PacBio pipeline for sequencing
      And I press "Next step"
      And I press "Next step"
      Then I should see "Layout tubes on a plate"
-     And the plate layout should look like:
-      | 1             | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
-      | DN1234567T-A1 |   |   |   |   |   |   |   |   |    |    |    |
-      | DN1234567T-B1 |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
+     And I fill in the field for "DN1234567T-A1" with "A1"
+     And I fill in the field for "DN1234567T-B1" with "B1"
      When I press "Next step"
 
      Given the UUID for the last batch is "00000000-1111-2222-3333-444444444445"
@@ -113,7 +95,7 @@ Feature: Push samples through the PacBio pipeline for sequencing
        | B01      | DN1234567T-B1  | 999                               |                     | 777                     |                        | Standard Seq v3 | AcquisitionTime=60\|InsertSize=500\|StageHS=True\|SizeSelectionEnabled=False\|Use2ndLook=False\|NumberOfCollections=1 | Default    |                       |                             |                               |                 | 00000000-1111-2222-3333-444444444442 | 00000000-1111-2222-3333-444444444444 | 00000000-1111-2222-3333-444444444445 | 99999        | 00000000-1111-2222-3333-000000000004 |              |                          |
 
 
-  Scenario: Alter tube layout on the plate
+  Scenario: Alter tube layout on the plate (And flip the order as well!)
     Given I have a PacBio sequencing batch
     When I follow "Binding Kit Box Barcode"
     When I fill in "Binding Kit Box Barcode" with "777"
@@ -123,27 +105,15 @@ Feature: Push samples through the PacBio pipeline for sequencing
     And I press "Next step"
     And I press "Next step"
     Then I should see "Layout tubes on a plate"
-    And the plate layout should look like:
-      | 1             | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
-      | DN1234567T-A1 |   |   |   |   |   |   |   |   |    |    |    |
-      | DN1234567T-B1 |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-      |               |   |   |   |   |   |   |   |   |    |    |    |
-    When I select "" from "Well A1"
-    And I select "" from "Well B1"
-    And I select "DN1234567T-A1" from "Well C2"
-    And I select "DN1234567T-B1" from "Well A12"
+     And I fill in the field for "DN1234567T-A1" with "C3"
+     And I fill in the field for "DN1234567T-B1" with "C2"
+
     And I press "Next step"
     And I press "Next step"
     Then the PacBio manifest for the last batch should look like:
-       | Well No. | Sample Name | DNA Template Prep Kit Box Barcode | Prep Kit Parameters | Binding Kit Box Barcode | Binding Kit Parameters | Collection Protocol   | CP Parameters                                                                                                         | Basecaller | Basecaller Parameters | Secondary Analysis Protocol | Secondary Analysis Parameters | Sample Comments |
-       | C02      | DN1234567T-A1  | 999                               |                     | 777                     |                        | Standard Seq v3 | AcquisitionTime=30\|InsertSize=500\|StageHS=True\|SizeSelectionEnabled=False\|Use2ndLook=False\|NumberOfCollections=1 | Default    |                       |                             |                               |                 |
-       | A12      | DN1234567T-B1  | 999                               |                     | 777                     |                        | Standard Seq v3 | AcquisitionTime=60\|InsertSize=500\|StageHS=True\|SizeSelectionEnabled=False\|Use2ndLook=False\|NumberOfCollections=1 | Default    |                       |                             |                               |                 |
+      | Well No. | Sample Name | DNA Template Prep Kit Box Barcode | Prep Kit Parameters | Binding Kit Box Barcode | Binding Kit Parameters | Collection Protocol   | CP Parameters                                                                                                         | Basecaller | Basecaller Parameters | Secondary Analysis Protocol | Secondary Analysis Parameters | Sample Comments |
+      | C02      | DN1234567T-B1  | 999                               |                     | 777                     |                        | Standard Seq v3 | AcquisitionTime=60\|InsertSize=500\|StageHS=True\|SizeSelectionEnabled=False\|Use2ndLook=False\|NumberOfCollections=1 | Default    |                       |                             |                               |                 |
+      | C03      | DN1234567T-A1  | 999                               |                     | 777                     |                        | Standard Seq v3 | AcquisitionTime=30\|InsertSize=500\|StageHS=True\|SizeSelectionEnabled=False\|Use2ndLook=False\|NumberOfCollections=1 | Default    |                       |                             |                               |                 |
 
     When I press "Release this batch"
     Then I should see "Batch released!"

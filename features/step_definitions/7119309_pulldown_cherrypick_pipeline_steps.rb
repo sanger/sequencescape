@@ -1,6 +1,8 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+
+
 Given /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" submission$/ do |plate_barcode, number_of_samples, study_name, submission_name|
   step(%Q{I have a plate "#{plate_barcode}" in study "#{study_name}" with #{number_of_samples} samples in asset group "Plate asset group #{plate_barcode}"})
   step(%Q{plate "#{plate_barcode}" has concentration results})
@@ -97,20 +99,16 @@ Given /^plate "([^"]*)" has measured volume results$/ do |plate_barcode|
   end
 end
 
-
 Then /^I should see the cherrypick worksheet table:$/ do |expected_results_table|
-  actual_table = table(tableish('table.plate_layout tr', 'td,th'))
-  1.upto(12).each do |column_name|
-    actual_table.map_column!("#{column_name}") { |text| text.gsub(/\W+/,' ') }
-  end
+  actual_table = table(fetch_table('table.plate_layout'))
   expected_results_table.column_names.each do |column_name|
-    expected_results_table.map_column!("#{column_name}") { |text| text.gsub(/\W+/,' ') }
+    expected_results_table.map_column!("#{column_name}") { |text| text.squish }
   end
   expected_results_table.diff!(actual_table)
 end
 
 When /^I look at the pulldown report for the batch it should be:$/ do |expected_results_table|
-  expected_results_table.diff!(FasterCSV.parse(page.body).collect{|r| r.collect{|c| c ? c :""  }})
+  expected_results_table.diff!(FasterCSV.parse(page.source).collect{|r| r.collect{|c| c ? c :""  }})
 end
 
 Given /^I have a tag group called "([^"]*)" with (\d+) tags$/ do |tag_group_name, number_of_tags|
@@ -123,7 +121,7 @@ Given /^I have a tag group called "([^"]*)" with (\d+) tags$/ do |tag_group_name
 end
 
 Then /^the default plates to wells table should look like:$/ do |expected_results_table|
-  actual_table = table(tableish('table.plate tr', 'td,th').collect{ |row| row.collect{|cell| cell[/^(Tag [\d]+)|(\w+)/] }})
+  actual_table = table(fetch_table('table.plate').collect{ |row| row.collect{|cell| cell[/^(Tag [\d]+)|(\w+)/] }})
 
   expected_results_table.diff!(actual_table)
 end
@@ -198,7 +196,7 @@ Given /^all library tube barcodes are set to know values$/ do
 end
 
 Then /^the worksheet for the last batch should be:$/ do |expected_results_table|
-  expected_results_table.diff!(table(tableish('table#pulldown_worksheet_details tr', 'td,th')))
+  expected_results_table.diff!(table(fetch_table('table#pulldown_worksheet_details')))
 end
 
 Then /^library "([^"]*)" should have (\d+) sequencing requests$/ do |library_barcode, number_of_sequencing_requests|
@@ -242,6 +240,12 @@ Given /^I have a "([^"]*)" submission with 2 plates$/ do |submission_template_na
 end
 
 When /^the last batch is sorted in row order$/ do
-  order = Batch.last.batch_requests.map {|br| br.request.asset.map.row_order }
-  Batch.last.batch_requests.map {|br| br.update_attributes!(:position => order.sort.index(br.request.asset.map.row_order))}
+  order = Batch.last.batch_requests.map {|br| br.request.asset.map.row_order }.sort
+  Batch.last.batch_requests.map {|br| br.update_attributes!(:position => order.index(br.request.asset.map.row_order))}
+end
+
+When /^the last batch is sorted in row and plate order$/ do
+  source = Batch.last.batch_requests.group_by {|br| br.request.asset.plate.id }
+  order = source.sort_by(&:first).map {|plate,br| br.sort_by {|br| br.request.asset.map.row_order}.map(&:id) }.flatten
+  Batch.last.batch_requests.map {|br| br.update_attributes!(:position => order.index(br.id))}
 end

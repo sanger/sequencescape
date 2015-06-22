@@ -27,8 +27,8 @@
     <legend>Cherrypicking robot</legend>
     <table cellspacing='0' cellpadding='0'>
       <tr>
-        <td><label for="robot">Picking Robot</label>:</td>
-        <td><%= select_tag("robot", options_for_select(Robot.all.collect {|p| [ p.name, p.id ] }))  %></td>
+        <td><label for="robot_id">Picking Robot</label>:</td>
+        <td><%= select_tag("robot_id", options_for_select(Robot.all.collect {|p| [ p.name, p.id ] }))  %></td>
       </tr>
     </table>
   </fieldset>

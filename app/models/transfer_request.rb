@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
 # Every request "moving" an asset from somewhere to somewhere else without really transforming it
 # (chemically) as, cherrypicking, pooling, spreading on the floor etc
 class TransferRequest < Request
@@ -9,8 +9,8 @@ class TransferRequest < Request
     def perform_transfer_of_contents
       target_asset.aliquots << asset.aliquots.map do |a|
         aliquot = a.clone
-        aliquot.study = outer_request.initial_study
-        aliquot.project = outer_request.initial_project
+        aliquot.study_id = outer_request.initial_study_id
+        aliquot.project_id = outer_request.initial_project_id
         aliquot
       end unless asset.failed? or asset.cancelled?
     end

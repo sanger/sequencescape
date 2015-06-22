@@ -7,7 +7,13 @@
   $(function(){
     $('.select_all').bind(
       'change', function() {
-        $('.select_all_target').attr('checked',this.checked);
+        var target
+        if (this.dataset.action) {
+          target = '.select_' + this.dataset.action;
+        } else {
+          target = '.select_all_target';
+        }
+        $(target).attr('checked',this.checked);
       }
     );
   });

@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 class Study < ActiveRecord::Base
 
 
@@ -107,6 +107,8 @@ class Study < ActiveRecord::Base
 
   include StudyRelation::Associations
 
+  squishify :name
+
   validates_presence_of :name
   validates_uniqueness_of :name, :on => :create, :message => "already in use (#{self.name})"
   validates_length_of :name, :maximum => 200
@@ -133,7 +135,7 @@ class Study < ActiveRecord::Base
   private :set_default_ethical_approval
 
   named_scope :for_search_query, lambda { |query,with_includes|
-    { :conditions => [ 'name LIKE ? OR id=?', "%#{query}%", query ] }
+    { :joins => :study_metadata, :conditions => [ 'name LIKE ? OR studies.id=? OR prelim_id=?', "%#{query}%", query, query ] }
   }
 
   named_scope :with_no_ethical_approval, { :conditions => { :ethically_approved => false } }
@@ -198,6 +200,7 @@ class Study < ActiveRecord::Base
     association(:reference_genome, :name, :required => true)
     association(:faculty_sponsor, :name, :required => true)
 
+    attribute(:prelim_id, :with => /^[a-zA-Z]\d{4}$/, :required => false)
     attribute(:study_description, :required => true)
     attribute(:contaminated_human_dna, :required => true, :in => YES_OR_NO)
     attribute(:remove_x_and_autosomes, :required => true, :default => 'No', :in => YES_OR_NO)
@@ -240,7 +243,7 @@ class Study < ActiveRecord::Base
       required.attribute(:data_release_prevention_reason_comment)
     end
 
-    attribute(:data_access_group, :with=> /\A[a-z_][a-z0-9_-]{0,31}\Z/)
+    attribute(:data_access_group, :with=> /\A[a-z_][a-z0-9_-]{0,31}(?:\s+[a-z_][a-z0-9_-]{0,31})*\Z/)
 
     # SNP information
     attribute(:snp_study_id, :integer => true)
@@ -404,12 +407,9 @@ class Study < ActiveRecord::Base
   end
 
   def submissions_for_workflow(workflow)
-    orders_for_workflow(workflow).map(&:submission).compact.uniq
+    orders.for_workflow(workflow).include_for_study_view.map(&:submission).compact.uniq
   end
 
-  def orders_for_workflow(workflow)
-    self.orders.find(:all,:conditions=>{:workflow_id=>workflow})
-  end
   # Yields information on the state of all request types in a convenient fashion for displaying in a table.
   def request_progress(&block)
     yield(self.initial_requests.progress_statistics)

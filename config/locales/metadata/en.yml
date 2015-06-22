@@ -6,6 +6,7 @@ en:
       unspecified: 'Not specified'
       edit_info: ""
       help: ""
+      label: 'Unlabelled field'
 
     request: &REQUEST
       metadata:
@@ -55,6 +56,13 @@ en:
     genotyping_request:
       <<: *REQUEST
     pulldown_library_creation:
+      <<: *REQUEST
+    pulldown_library_creation:
+      <<: *REQUEST
+
+    pac_bio_sequencing_request:
+      <<: *REQUEST
+    pac_bio_sample_prep_request:
       <<: *REQUEST
 
     pulldown:
@@ -330,6 +338,10 @@ en:
           edit_info: '[ ENA requirement ]'
           help: Make this ENA project public immediately.
 
+        prelim_id:
+          label: "Prelim ID"
+          help: Prelim ID
+
         contains_human_dna:
           label: Do any of the samples in this study contain human DNA?
           help: If they do, you will be required to upload the relevant documents.  This does not apply to samples that are going to have the Human DNA removed prior to analysis.
@@ -392,7 +404,7 @@ en:
 
         data_access_group:
           label: Data access group
-          help: Access to product data in the iRODs seq zone will be limited to the members of the Sanger UNIX group set here. Leaving the field empty allow public access within the Sanger. Entering an invalid group will stop all access.
+          help: Access to product data in the iRODs seq zone will be limited to the members of the Sanger UNIX group set here. Leaving the field empty allow public access within the Sanger. Entering an invalid group will stop all access. Multiple access groups can be specified and should be separated with spaces.
 
         bam:
           label: Alignments in BAM

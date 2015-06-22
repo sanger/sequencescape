@@ -134,13 +134,13 @@ Feature: Picking more than 13 minimum volume should render in tecan file
     """
     When I follow "Print worksheet for Plate 99999"
     Then I should see the cherrypick worksheet table:
-     | 1                            | 2                            |
-     | B1        222        v150 b0 | C3        333        v30 b0  |
-     | B2        222        v150 b0 | D3        333        v15 b5  |
-     | B3        222        v150 b0 | C4        333        v10 b10 |
-     | B4        222        v150 b0 | D4        333        v20 b0  |
-     | B5        222        v150 b0 | C5        333        v10 b10 |
-     | B6        222        v150 b0 | C6        333        v10 b10 |
-     | D1        333        v10 b10 | C7        333        v10 b10 |
-     | D2        333        v10 b10 | C8        333        v10 b10 |
-     | 1                            | 2                            |
+     | 1                                 | 2                                |
+     | B1        222        v150.0 b0.0  | C3        333        v30.0 b0.0  |
+     | B2        222        v150.0 b0.0  | D3        333        v15.0 b5.0  |
+     | B3        222        v150.0 b0.0  | C4        333        v10.0 b10.0 |
+     | B4        222        v150.0 b0.0  | D4        333        v20.0 b0.0  |
+     | B5        222        v150.0 b0.0  | C5        333        v10.0 b10.0 |
+     | B6        222        v150.0 b0.0  | C6        333        v10.0 b10.0 |
+     | D1        333        v10.0  b10.0 | C7        333        v10.0 b10.0 |
+     | D2        333        v10.0  b10.0 | C8        333        v10.0 b10.0 |
+     | 1                                 | 2                                |

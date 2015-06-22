@@ -5,5 +5,7 @@ std_opts = "--format #{ENV['CUCUMBER_FORMAT'] || 'pretty'} --strict --tags ~@wip
 %>
 default: <%= std_opts %> features
 wip: --tags @wip:3 --wip features
+nojs:  "--format progress --strict --tags ~@wip --tags ~@deprecated --tags ~@javascript --color -r features"
+jsonly:  "--format pretty --strict --tags @javascript --tags ~@wip --tags ~@deprecated --color -r features"
 deprecated: --tags @deprecated:3 --deprecated features
 rerun: <%= rerun_opts %> --format rerun --out rerun.txt --strict --tags ~@wip

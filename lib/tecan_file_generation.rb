@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 module Sanger
   module Robots
     module Tecan
@@ -50,6 +50,10 @@ module Sanger
           "C;\nC; This file created by #{data_object["user"]} on #{data_object["time"]}\nC;"
         end
 
+        def self.tecan_precision_value(value)
+          "%.#{configatron.tecan_precision}f" % value
+        end
+
         def self.dyn_mappings(data_object)
           dyn_mappings = ""
           data_object["destination"].each do |dest_plate_barcode,plate_details|
@@ -65,8 +69,9 @@ module Sanger
               source_position  = Map::Coordinate.description_to_vertical_plate_position(mapping["src_well"][1],data_object["source"]["#{mapping["src_well"][0]}"]["plate_size"])
               destination_position = Map::Coordinate.description_to_vertical_plate_position(mapping["dst_well"],plate_details["plate_size"])
               temp = [
-                "A;#{source_barcode};;#{source_name};#{source_position};;#{mapping["volume"]}",
-                "D;#{dest_plate_barcode};;#{plate_details["name"]};#{destination_position};;#{mapping["volume"]}",
+
+                "A;#{source_barcode};;#{source_name};#{source_position};;#{tecan_precision_value(mapping['volume'])}",
+                "D;#{dest_plate_barcode};;#{plate_details["name"]};#{destination_position};;#{tecan_precision_value(mapping['volume'])}" ,
                 "W;\n"].join("\n")
               dyn_mappings  += temp
             end
@@ -89,9 +94,9 @@ module Sanger
             mapping_by_well.sort{|a,b| a[0]<=>b[0]}.each do |dest_position,mapping|
               if total_volume  > mapping["volume"]
                 dest_name = data_object["destination"][destination_barcode]["name"]
-                volume = ((total_volume*100) - (mapping["volume"]*100)).to_i.to_f/100
+                volume = [(total_volume - mapping["volume"]),configatron.tecan_minimum_volume].max
                 vert_map_id = Map::Coordinate.description_to_vertical_plate_position(mapping["dst_well"],destination_details["plate_size"])
-                buffer << "A;BUFF;;96-TROUGH;#{vert_map_id};;#{volume}\nD;#{destination_barcode};;#{dest_name};#{vert_map_id};;#{volume}\nW;"
+                buffer << "A;BUFF;;96-TROUGH;#{vert_map_id};;#{tecan_precision_value(volume)}\nD;#{destination_barcode};;#{dest_name};#{vert_map_id};;#{tecan_precision_value(volume)}\nW;"
               end
             end
           end

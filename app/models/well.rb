@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 class Well < Aliquot::Receptacle
   include Api::WellIO::Extensions
   include ModelExtensions::Well
@@ -10,6 +10,7 @@ class Well < Aliquot::Receptacle
   include StudyReport::WellDetails
   include Tag::Associations
   include AssetRack::WellAssociations::AssetRackAssociation
+  include Api::Messages::FluidigmPlateIO::WellExtensions
 
   class Link < ActiveRecord::Base
     set_table_name('well_links')
@@ -55,7 +56,7 @@ class Well < Aliquot::Receptacle
   @@per_page = 500
 
   has_one :well_attribute, :inverse_of => :well
-  after_create { |w| w.create_well_attribute unless w.well_attribute.present? }
+  before_create { |w| w.create_well_attribute unless w.well_attribute.present? }
 
   named_scope :pooled_as_target_by, lambda { |type|
     {

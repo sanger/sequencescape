@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
 class ActiveRecord::Base
   class << self
     def find_by_id_or_name(id, name)
@@ -251,6 +251,7 @@ class BulkSubmission < ActiveRecord::Base
       attributes[:request_options][:bait_library_name]            ||= details['bait library']           unless details['bait library'].blank?
       attributes[:request_options]['pre_capture_plex_level']        = details['pre-capture plex level'] unless details['pre-capture plex level'].blank?
       attributes[:request_options]['gigabases_expected']            = details['gigabases expected']     unless details['gigabases expected'].blank?
+      attributes[:request_options][:multiplier]                     = {}
 
       # Deal with the asset group: either it's one we should be loading, or one we should be creating.
       begin
@@ -287,13 +288,14 @@ class BulkSubmission < ActiveRecord::Base
       end
 
       # Create the order.  Ensure that the number of lanes is correctly set.
-      template          = find_template(details['template name'])
-      request_types     = RequestType.all(:conditions => { :id => template.submission_parameters[:request_type_ids_list].flatten })
-      lane_request_type = request_types.detect(&:targets_lanes?)
+      sub_template      = find_template(details['template name'])
       number_of_lanes   = details.fetch('number of lanes', 1).to_i
-      attributes[:request_options][:multiplier] = { lane_request_type.id => number_of_lanes } if lane_request_type.present?
 
-      return template.new_order(attributes)
+      sub_template.new_order(attributes).tap do |new_order|
+        new_order.request_type_multiplier do |multiplexed_request_type_id|
+          new_order.request_options[:multiplier][multiplexed_request_type_id] = number_of_lanes
+        end
+      end
     rescue => exception
       errors.add :spreadsheet, "There was a problem on row(s) #{details['rows']}: #{exception.message}"
       nil

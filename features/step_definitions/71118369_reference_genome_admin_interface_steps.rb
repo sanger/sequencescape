@@ -21,6 +21,6 @@ end
 
 Then /^including "([^\"]+)" the XML response should be:$/ do |key_regexp, serialized_xml|
   expected = sort_arrays(remove_fields_from(Hash.from_xml(serialized_xml), /^#{key_regexp}$/))
-  received = sort_arrays(remove_fields_from(Hash.from_xml(page.body), /^#{key_regexp}$/))
+  received = sort_arrays(remove_fields_from(Hash.from_xml(page.source), /^#{key_regexp}$/))
   assert_equal(expected, received, 'XML differs when decoded')
 end
