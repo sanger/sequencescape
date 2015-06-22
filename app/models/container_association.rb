@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2015 Genome Research Ltd.
 class ContainerAssociation < ActiveRecord::Base
   #We don't define the class, so will get an error if being used directly
   # in fact , the class need to be definend otherwise, eager loading through doesn't work

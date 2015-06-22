@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 require 'factory_girl'
 require 'control_request_type_creation'
 
@@ -26,6 +26,9 @@ Factory.sequence :purpose_name do |n|
   "Purpose #{n}"
 end
 
+Factory.sequence :plate_creator_name do |n|
+  "Plate Creator #{n}"
+end
 
 Factory.define :asset do |a|
   a.name                {|a| Factory.next :asset_name }
@@ -45,6 +48,14 @@ Factory.define :plate do |a|
   a.sti_type            "Plate"
   a.barcode             {|a| Factory.next :barcode_number }
 end
+
+Factory.define :plate_creator_purpose, :class => Plate::Creator::PurposeRelationship do |t|
+end
+
+Factory.define :plate_creator, :class =>  Plate::Creator do |t|
+  t.name                {|t| Factory.next :plate_creator_name }
+end
+
 
 Factory.define :control_plate do |a|
   a.plate_purpose { |_| PlatePurpose.find_by_name('Stock plate') }
@@ -330,6 +341,9 @@ Factory.define :tag_group do |t|
 end
 
 Factory.define :assign_tags_task do |t|
+end
+
+Factory.define :assign_tubes_to_multiplexed_wells_task do |t|
 end
 
 Factory.define :attach_infinium_barcode_task do |t|

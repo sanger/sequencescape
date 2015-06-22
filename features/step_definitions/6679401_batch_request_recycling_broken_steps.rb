@@ -52,11 +52,11 @@ Then /^the inbox should contain (\d+) requests?$/ do |count|
 end
 
 Then /^the batch (input|output) asset table should be:$/ do |name, expected_table|
-  expected_table.diff!(table(tableish("##{name}_assets tr", 'td,th')))
+  expected_table.diff!(table(fetch_table("##{name}_assets")))
 end
 
 Then /^the batch input asset table should have 1 row with (\d+) wells$/ do |count|
-  Cucumber::Ast::Table.new([ { 'Wells' => count } ]).diff!(table(tableish("##{name}_assets tr", 'td, th')))
+  Cucumber::Ast::Table.new([ { 'Wells' => count } ]).diff!(table(fetch_table("##{name}_assets")))
 end
 
 Given /^the plate template "([^\"]+)" exists$/ do |name|

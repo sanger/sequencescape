@@ -42,6 +42,11 @@ class PlatesController < ApplicationController
         end
       end
     end
+  rescue Plate::Creator::PlateCreationError => e
+    respond_to do |format|
+      flash[:error] = e.text
+      format.html { redirect_to(new_plate_path) }
+    end
   end
 
   def to_sample_tubes

@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 class PacBio::SampleSheet
   def header_metadata(batch)
     [
@@ -23,28 +23,29 @@ class PacBio::SampleSheet
 
 
   def create_csv_from_batch(batch)
-      csv_string = FasterCSV.generate( :row_sep => "\r\n") do |csv|
-        header_metadata(batch).each{ |header_row| csv << header_row }
-        csv << column_headers
-        requests_by_wells(batch).each do |requests|
-          csv << row(requests, batch)
-        end
+    csv_string = FasterCSV.generate( :row_sep => "\r\n") do |csv|
+      header_metadata(batch).each{ |header_row| csv << header_row }
+      csv << column_headers
+      requests_by_wells(batch).each do |requests|
+        csv << row(requests, batch)
       end
+    end
   end
 
   def requests_by_wells(batch)
-    requests = batch.requests
-    wells = requests.map{ |request| request.target_asset }.uniq
-    requests_grouped_by_wells = []
-    wells.each do |well|
-      requests_grouped_by_wells << requests.select{ |request| request.target_asset == well }
-    end
-
-    requests_grouped_by_wells
+    requests = batch.requests.for_pacbio_sample_sheet
+    sorted_well_requests = requests.group_by {|r| r.target_asset.map.column_order }.sort
+    sorted_well_requests.map {|well_index,requests| requests }
   end
 
   def replace_non_alphanumeric(protocol)
     protocol.gsub(/[^\w]/,'_')
+  end
+
+  CONCAT_SEPARATOR = ';'
+
+  def concat(list, sym)
+    list.map(&sym).uniq.join(CONCAT_SEPARATOR)
   end
 
 
@@ -52,28 +53,33 @@ class PacBio::SampleSheet
     # Read these lines when secondary analysis activated
     #  replace_non_alphanumeric(library_tube.pac_bio_library_tube_metadata.protocol),
     # "JobName=DefaultJob_#{Time.now}",
-    request = requests.first
-    library_tube = request.asset
-    well = request.target_asset
+    #request = requests.first
+
+    library_tubes = requests.map(&:asset)
+    library_tubes_metadata = library_tubes.map(&:pac_bio_library_tube_metadata)
+    first_tube_metadata = library_tubes_metadata.first
+    first_request_metadata = requests.first.request_metadata
+
+    well = requests.first.target_asset
     [
       Map.pad_description(well.map),
-      library_tube.name,
-      library_tube.pac_bio_library_tube_metadata.prep_kit_barcode,
+      concat(library_tubes, :name),
+      first_tube_metadata.prep_kit_barcode,
       nil,
-      library_tube.pac_bio_library_tube_metadata.binding_kit_barcode,
+      first_tube_metadata.binding_kit_barcode,
       nil,
-      lookup_collection_protocol(request),
-      "AcquisitionTime=#{library_tube.pac_bio_library_tube_metadata.movie_length}|InsertSize=#{request.request_metadata.insert_size}|StageHS=True|SizeSelectionEnabled=False|Use2ndLook=False|NumberOfCollections=#{requests.size}",
+      lookup_collection_protocol(requests.first),
+      "AcquisitionTime=#{first_tube_metadata.movie_length}|InsertSize=#{first_request_metadata.insert_size}|StageHS=True|SizeSelectionEnabled=False|Use2ndLook=False|NumberOfCollections=#{requests.size}",
       'Default',
       nil,
       nil,
       nil,
       nil,
       well.uuid,
-      library_tube.uuid,
+      concat(library_tubes, :uuid),
       batch.uuid,
       well.plate.barcode,
-      request.uuid,
+      concat(requests, :uuid),
       nil,
       nil
       ]

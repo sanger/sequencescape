@@ -1,0 +1,12 @@
+language: ruby
+rvm:
+  - jruby-18mode
+bundler_args: --without warehouse development deployment
+before_install:
+  - export TZ=Europe/London
+before_script:
+  - "bundle exec rake db:create RAILS_ENV=test"
+  - "bundle exec rake db:test:load"
+  - export CUCUMBER_FORMAT=progress
+sudo: false
+cache: bundler

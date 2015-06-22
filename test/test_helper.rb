@@ -6,6 +6,7 @@ require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 #TODO: for rails 3 replace with rails/test_help
 require "test_help"
 require 'test_benchmark'
+require 'factory_girl'
 
 require File.expand_path(File.join(Rails.root, %w{test factories.rb}))
  Dir.glob(File.expand_path(File.join(Rails.root, %w{test factories ** *.rb}))) do |factory_filename|
@@ -13,24 +14,6 @@ require File.expand_path(File.join(Rails.root, %w{test factories.rb}))
  end
 
 require "#{Rails.root}/test/unit/task_test_base"
-
-# add the ci_reporter to create reports for test-runs, since parallel_tests is not invoked through rake
-if ENV.has_key?("CI")
-  require 'ci/reporter/test_unit' # needed, despite "bundle exec"!
-  # Intercepts mediator creation in ruby-test >= 2.1
-  module Test #:nodoc:all
-    module Unit
-      module UI
-        class TestRunner
-          def setup_mediator
-            # swap in our custom mediator
-            @mediator = CI::Reporter::TestUnit.new(@suite)
-          end
-        end
-      end
-    end
-  end
-end
 
 class ActiveSupport::TestCase
   extend Sanger::Testing::Controller::Macros

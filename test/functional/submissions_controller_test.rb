@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013 Genome Research Ltd.
+#Copyright (C) 2012,2013,2015 Genome Research Ltd.
 require "test_helper"
 require 'submissions_controller'
 
@@ -87,6 +87,19 @@ class SubmissionsControllerTest < ActionController::TestCase
     context "by plate barcode" do
 
       setup do
+        post :create, plate_submission('DN123456P')
+      end
+
+      should "create the appropriate orders" do
+        assert_equal 27, Order.first.assets.count
+      end
+
+    end
+
+    context "by plate barcode with pools" do
+
+      setup do
+        @plate.wells.first.aliquots.create!(:sample=> Factory(:sample), :tag_id=>Tag.first.id)
         post :create, plate_submission('DN123456P')
       end
 

@@ -61,9 +61,36 @@ Feature: Printing new plate barcodes
       | Gel Dilution Plates |
       | Stock Plate         |
 
+  Scenario Outline: Create plates only from the proper parent plate or from scratch
+    Given a plate with purpose "<parent_plate_purpose>" and barcode "1221234567841" exists
+    And a plate with purpose "Cherrypicked" and barcode "1220001454858" exists
+    And I am on the new plate page
+    Then I should see "Create Plates"
+
+    When I select "<plate_purpose>" from "Plate purpose"
+    And I fill in "User barcode" with "2470000100730"
+    And I select "xyz" from "Barcode printer"
+    And I press "Submit"
+    Then I should see "Created plates and printed barcodes"
+    And I should be on the new plate page
+
+    When I select "<plate_purpose>" from "Plate purpose"
+    And I fill in the field labeled "Source plates" with "1220001454858"
+    And I fill in "User barcode" with "2470000100730"
+    And I select "xyz" from "Barcode printer"
+    And I press "Submit"
+    Then I should see "Scanned plate 1220001454858 has a purpose Cherrypicked not valid"
+    And I should be on the new plate page
+
+    Examples:
+      | plate_purpose         | parent_plate_purpose |
+      | Working dilution      | Stock Plate          |
+      | Pico dilution         | Working dilution     |
+      | Pico Assay Plates     | Pico dilution        |
+
   @xml @qc_event
   Scenario: Create all QC plates for SLF
-    Given a plate of type "Plate" with barcode "1221234567841" exists
+    Given a plate with purpose "Stock plate" and barcode "1221234567841" exists
     And a plate of type "Plate" with barcode "1220001454858" exists
     Given I am on the new plate page
     Then I should see "Create Plates"
@@ -82,13 +109,15 @@ Feature: Printing new plate barcodes
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
 
+    And the plate barcode webservice returns "77777"
     When I fill in the field labeled "Source plates" with "1221234567841"
     When I select "Working dilution" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
     And I select "xyz" from "Barcode printer"
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
-    
+
+    And the plate barcode webservice returns "77777"
     When I fill in the field labeled "Source plates" with "6251234567836"
     When I select "Pico dilution" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
@@ -96,6 +125,7 @@ Feature: Printing new plate barcodes
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
 
+    And the plate barcode webservice returns "77777"
     When I fill in the field labeled "Source plates" with "4361234567667"
     When I select "Pico Assay Plates" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
@@ -103,6 +133,7 @@ Feature: Printing new plate barcodes
     And I press "Submit"
     Then I should see "Created plates and printed barcodes"
 
+    And the plate barcode webservice returns "77777"
     When I fill in the field labeled "Source plates" with "6251234567836"
     When I select "Gel Dilution Plates" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"

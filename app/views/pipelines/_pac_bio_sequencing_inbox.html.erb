@@ -1,6 +1,6 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.%>
 <h2>Input requests</h2>
 <%= render :partial => "batch_statuses" %>
 <%= render :partial => 'pipeline_limit' %>
@@ -9,89 +9,100 @@
   There are no outstanding requests for this pipeline.
 <% else -%>
   <%= render :partial => 'pipeline_paginate' %>
+  <!-- _pacbio_sequencing_inbox.html.erb -->
   <% form_tag({:controller => :batches, :action => :create, :id => @pipeline.id}, :id => "requests_to_batch_form") do -%>
     <% if @pipeline.item_limit -%>
       <input type="hidden" id="batch_item_limit" value="<%= @pipeline.item_limit %>" />
     <% end -%>
 
-
+    <!-- _pac_bio_sequencing_inbox.html.erb -->
     <table width="100%" bgcolor="#edf5ff" cellpadding="2" cellspacing="0" class="sortable" id='request_inbox'>
       <thead>
         <tr>
-          <th class='label' style='text-align: left' width='2%'>&nbsp;</th>
-          <th class='label' style='text-align: left' width='2%'>&nbsp;</th>
-          <th style="display:none" class='label' width='5%'><%= link_to "", "javascript:void(0);" %></th>
-          <th class='label' width='5%'>Request ID</th>
-          <th class='label' width='10%'><%= link_to "Name", "javascript:void(0);" %></th>
-          <th class='label' width='10%'><%= link_to "Asset", "javascript:void(0);" %></th>
+          <th class='label' style='text-align: left' width='2%'>&nbsp;<!-- Checkboxes --></th>
+          <th class='label' style='text-align: left' width='2%'>&nbsp; <!-- Notify --></th>
+          <th class='label'>Request ID</th>
+          <th class='label'><%= link_to "Name", "javascript:void(0);" %></th>
+          <th class='label'><%= link_to "Asset", "javascript:void(0);" %></th>
+          <th class='label'><%= link_to "Tag", "javascript:void(0);" %></th>
           <% @information_types.each do |information_type| %>
             <% next if information_type.hide_in_inbox %>
-            <th class='label' style='text-align: left' width='5%'><%= link_to "#{information_type.label}", "javascript:void(0);" %></th>
+            <th class='label' style='text-align: left'><%= link_to "#{information_type.label}", "javascript:void(0);" %></th>
           <% end %>
           <th class='label' width='5%'><%= link_to "Study", "javascript:void(0);" %></th>
         </tr>
       </thead>
       <tbody>
-       <% index = 0 %>
-        <% @grouped_requests.each do |grouping, requests| %>
-            <tr>
-              <% request = requests.first %>
-              <% request_item = request %>
-              <td class="request" width='2%'>
+
+        <% @grouped_requests.each_with_index do |(submission_id, requests), index| %>
+          <tr class="request_group">
+            <% request = requests.first %>
+            <% request_item = request %>
+
+            <td class="request" width='2%'><!-- Checkboxes -->
               <%= hidden_label_tag_for_testing("select_all_group_#{index}", "Select Request Group #{index}") %>
-                <% if request.ready? %>
-    		      <input type="checkbox" name="selectAll" onclick="select_requests_by_group(<%=  request_item.item_id %>,<%= requests.size %>, this.checked);" id="select_all_group_<%= index %>"></a>
-                <% else %>
-                  <%= image_tag "error.png", 'title' => I18n.t("requests.status.not_ready"), :size => '16x16' %>
-                <% end %>
-    		    <% index += 1 %>
-    		  </td>
-              <td class="request" width='2%'><a href="javascript:void(0)" onclick="showElement(<%=  request_item.item_id %>,<%= requests.size %>); return false;"><%= image_tag "information.png", :size =>"13x13" %></a></td>
-              <td class="request" width='5%'>&nbsp;</td>
-              <td class='request' width='10%'><%= h(request.asset.display_name) %></td>
-              <td class='request' width='15%'>&nbsp;</td>
-              <td class='request' width='10%'>&nbsp;</td>
-              <% @information_types.each do |information_type| %>
-                <% next if information_type.hide_in_inbox %>
-                <td class='request' width='5%'><%= h(request.request_metadata[information_type.key]) %></td>
+              <% if request.ready? %>
+                <input type="checkbox" name="selectAll" onclick="select_requests_by_group(<%=  request_item.item_id %>,<%= requests.size %>, this.checked);" id="select_all_group_<%= index %>"></a>
+              <% else %>
+                <%= image_tag "error.png", 'title' => I18n.t("requests.status.not_ready"), :size => '16x16' %>
               <% end %>
-              <td class='request' width='5%'><%= request.submission.study_names %></td>
-            </tr>
+            </td>
+
+            <td class="request" width='2%'><!-- Notify -->
+              <a href="javascript:void(0)" onclick="showElement(<%=  request_item.item_id %>,<%= requests.size %>); return false;"><%= image_tag "information.png", :size =>"13x13" %></a>
+            </td>
+            <td class="request">&nbsp; <!-- Request ID--></td>
+            <td class='request'><!-- Name --><%= h(request.asset.display_name) %></td>
+            <td class='request'><!-- Asset -->&nbsp;</td>
+            <td class='request'><!-- Tag -->&nbsp;</td>
+            <% @information_types.each do |information_type| %>
+              <% next if information_type.hide_in_inbox %>
+              <td class='request'><%= h(request.request_metadata[information_type.key]) %></td>
+            <% end %>
+            <td class='request'><%= request.submission.study_names %></td>
+          </tr>
 
           <tr class="nested" id="<%= request_item.item_id %>_0" style="display:none">
-             <td>&nbsp;</td>
-             <td>&nbsp;</td>
-             <td style="display:none" class="request" width='5%'><%= link_to request_item.item_id, "#{configatron.studies_url}/items/#{request_item.item_id}" %></td>
-            <td>&nbsp;</td>
-            <td style="display:none" class='request' width='5%'><%= link_to request_item.id, "#{configatron.studies_url}/items/#{request_item.id}" %></td>
+            <td>&nbsp;<!-- Checkboxes --></td>
+            <td>&nbsp;<!-- notify --></td>
+            <td>&nbsp;<!-- request_id --></td>
             <td class="request" colspan=3><%= requests.size %> out of <%= Request.number_expected_for_submission_id_and_request_type_id(request.submission_id, request.request_type_id) %> scanned in.</td>
           </tr>
-            <%- requests.each_with_index do |request, indice| -%>
-              <% request_comments = request.comments -%>
-              <% request_asset = request.asset -%>
-              <% request_asset_comments = request_asset.comments -%>
-              <% progr = indice + 1 %>
+          <%- requests.each_with_index do |request, indice| -%>
+            <% request_comments = request.comments -%>
+            <% request_asset = request.asset -%>
+            <% request_asset_comments = request_asset.comments -%>
+            <% request_tag = request_asset.aliquots.map {|a| a.tag.present? ? "#{a.tag.tag_group.name}:#{a.tag.map_id}" : "Untagged" }.join(',') -%>
+            <% progr = indice + 1 %>
             <tr class="nested" id="<%= request_item.item_id %>_<%= progr.to_s %>" style="display:none">
-              <td class="request" width='2%'>&nbsp;</td>
-              <td>
-    	        <%= label(:request, request.id, "Select Request #{indice}", :style => 'display:none') %>
+              <td class="request">&nbsp;<!-- Checkboxes (grp) --></td>
+              <td> <!-- Notify/ Checkboxes (ind) -->
+                <%= label(:request, request.id, "Select Request #{indice}", :style => 'display:none') %>
                 <% if request.ready? %>
-    		      <%= check_box :request, request.id, :value => request.id %>
+                  <%= check_box :request, request.id, :value => request.id %>
                 <% else %>
                   <%= image_tag "error.png", 'title' => I18n.t("requests.status.not_ready"), :size => '16x16' %>
                 <% end %>
-    		  </td>
-              <td class='request' width='5%'><%= link_to request.id, "#{configatron.studies_url}/requests/#{request.id}" %></td>
-              <td class='request' width='10%'><%= link_to request_asset.name, "#{configatron.studies_url}/assets/#{request.asset_id}" %></td>
-             <td class='request' width='10%'><%=  link_to "#{request_asset.sti_type} #{request_asset.barcode}", "#{configatron.studies_url}/assets/#{request.asset_id}" %></td>
-              <td>&nbsp;</td>
+              </td>
+              <td class='request'> <!-- Request id -->
+                <%= link_to request.id, "#{configatron.studies_url}/requests/#{request.id}" %>
+              </td>
+              <td class='request'> <!-- Name -->
+                <%= link_to request_asset.name, "#{configatron.studies_url}/assets/#{request.asset_id}" %>
+              </td>
+              <td class='request'> <!-- Asset -->
+                <%=  link_to "#{request_asset.sti_type} #{request_asset.barcode}", "#{configatron.studies_url}/assets/#{request.asset_id}" %>
+              </td>
+              <td class='request'>
+                <%= request_tag %>
+              </td>
               <% @information_types.each do |information_type| %>
                 <% next if information_type.hide_in_inbox %>
-                <td class='request' width='5%'><%= h(request.request_metadata[information_type.key]) %></td>
+                <td class='request'><%= h(request.request_metadata[information_type.key]) %></td>
               <% end %>
-              <td class='request' width='5%'><%= request.submission.study_names %></td>
+              <td class='request'><%= request.submission.study_names %></td>
             </tr>
-            <% end -%>
+          <% end -%>
         <% end %>
       </tbody>
     </table>

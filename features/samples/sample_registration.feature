@@ -78,75 +78,6 @@ Feature: Registering samples
     Then I should be on the study workflow page for "Testing registering samples"
     And I should see "Your samples have been registered"
 
-  # TODO: Really this should have steps like 'Then the sample registration row for "Sample 1" should not exist'
-  # And check that all the values are reset to the blank state.
-  # TODO: 'Add row' should be a button!
-  @wip @javascript
-  Scenario: Adding new rows
-    Then I should not see the text field "Common name for sample 1"
-    And I should not see the text field "Common name for sample 2"
-
-    When I follow "Add row"
-    Then I should see the text field "Common name for sample 1"
-
-    When I follow "Add row"
-    Then I should see the text field "Common name for sample 2"
-
-  @wip @javascript
-  Scenario: Adding a new row if the first row is ignored
-    Given I check "Ignore sample 0"
-    When I follow "Add row"
-    Then the "Ignore sample 1" checkbox should be checked
-
-  @wip @javascript
-  Scenario: Looking up the real 'common name' and 'taxon ID' for multiple samples
-    When I fill in "Common name for sample 0" with "human"
-    And I press "Lookup"
-
-    Then the "Common name for sample 0" field should contain "Homo sapiens"
-    And the "Taxon ID for sample 0" field should contain "9606"
-
-  @wip @javascript
-  Scenario: Looking up the real 'common name' and 'taxon ID' when they error
-    When I fill in "Common name for sample 0" with "horrible looking green slime"
-    And I press "Lookup"
-
-    Then the "Common name for sample 0" field should be marked in error
-    And the "Taxon ID for sample 0" field should be marked in error
-
-  @wip @javascript
-  Scenario: Lookup up the real 'common name' and 'taxon ID' for multiple samples
-    When I fill in "Common name for sample 0" with "human"
-    And I fill in "Common name for sample 1" with "rat"
-    And I fill in "Common name for sample 2" with "mouse"
-    And I press "Lookup"
-
-    Then the "Common name for sample 0" field should contain "Homo sapiens"
-    And the "Taxon ID for sample 0" field should contain "9606"
-    And the "Common name for sample 1" field should contain "Rattus norvegicus"
-    And the "Taxon ID for sample 1" field should contain "10116"
-    And the "Common name for sample 2" field should contain "Mus musculus"
-    And the "Taxon ID for sample 2" field should contain "10090"
-
-  # TODO: Implement the following scenario
-  # In theory this should behave much like the one with an asset group except that when
-  # you check for the asset it does not exist, which is kind of worrying.
-  @wip
-  Scenario: Setting a 2D barcode on the sample, with no asset group
-
-    @wip @to_fix
-  Scenario: Setting a 2D barcode on the sample which goes into an asset group
-    When I fill in "Sample name for sample 0" with "sample_with_barcode"
-    And I fill in "2D barcode for sample 0" with "12345"
-    And I fill in "Asset group name" with "Barcoded assets"
-    And I press "Register samples"
-    Then I should be on the study workflow page for "Testing registering samples"
-    And I should see "Your samples have been registered"
-
-    When I follow "Assets"
-    And I follow "sample_with_barcode"
-    Then I should see "NT345B"
-
   Scenario: Fields filled with data should remain so after invalid submission
     When I fill in "2D barcode for sample 0" with "12345"
     And I fill in "Organism for sample 0" with "Weird green jelly like thing"
@@ -159,6 +90,7 @@ Feature: Registering samples
 
   @sample_registration
    Scenario: Uploading a spreadsheet of data for sequencing
+   # Stuff goes wrong here!
     Given user "John Smith" has a workflow "Next-gen sequencing"
 
     Given I am on the page for choosing how to register samples for study "Testing registering samples"

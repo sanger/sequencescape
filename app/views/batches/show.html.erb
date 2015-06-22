@@ -13,10 +13,7 @@
   This batch belongs to pipeline: <%= @pipeline.name %>
 </div>
 
-
-<% if @pipeline.need_picoset? %>
-  <%= render :partial => "shared/plate", :locals => { :plate => @batch.ordered_requests } %>
-<% elsif @pipeline.group_by_parent %>
+<% if @pipeline.group_by_parent %>
   <div id="input_assets">
     <h2>Input</h2>
     <% @request_groups= @input_assets %>
@@ -31,7 +28,7 @@
   <%end %>
   <br/>
 <% else %>
-  <%= render :partial => "shared/batch", :locals => { :requests => @batch.ordered_requests, :edit => false, :stage => false } %>
+  <%= render :partial => "shared/batch", :locals => { :requests => @batch.ordered_requests.include_for_batch_view, :edit => false, :stage => false } %>
 <% end %>
 
 <h1>EVENTS</h1>

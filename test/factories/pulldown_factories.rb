@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
 # A plate that has exactly the right number of wells!
 Factory.define(:transfer_plate, :class => Plate) do |plate|
   plate.size 96
@@ -82,6 +82,18 @@ Factory.define(:partial_plate, :class => Plate) do |plate|
 
   plate.after_create do |plate|
     plate.wells.import(Map.where_plate_size(plate.size).where_plate_shape(plate.asset_shape).in_column_major_order.slice(0,48).map { |map| Factory(:well, :map => map) })
+  end
+end
+
+Factory.define(:two_column_plate, :class => Plate) do |plate|
+  plate.size 96
+
+  plate.after_build do |plate|
+    plate.plate_purpose = PlatePurpose.stock_plate_purpose
+  end
+
+  plate.after_create do |plate|
+    plate.wells.import(Map.where_plate_size(plate.size).where_plate_shape(plate.asset_shape).in_column_major_order.slice(0,16).map { |map| Factory(:well, :map => map) })
   end
 end
 

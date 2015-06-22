@@ -20,30 +20,34 @@ Feature: Disable form submission on carriage return on Sequenom plate creation p
 2470000100730
 
 """
+    Then I should not see "successfully created"
     When I fill in "Plate 1" with multiline text
 """
 <plate_1>
 
 """
+    Then I should not see "successfully created"
     When I fill in "Plate 2" with multiline text
 """
 <plate_2>
 
 """
+    Then I should not see "successfully created"
     When I fill in "Plate 3" with multiline text
 """
 <plate_3>
 
 """
+    Then I should not see "successfully created"
     When I fill in "Plate 4" with multiline text
 """
 <plate_4>
 
 """
+    Then I should not see "successfully created"
     And I fill in "Number of Plates" with "1"
     And select "<plate_type>" from "Plate Type"
     And select "xyz" from "Barcode Printer"
-
     When I press "Create new Plate"
     And I should see "Sequenom <plate_type> Plate <plate_type><plate_1_human>_<plate_2_human>_<plate_3_human>_<plate_4_human>_20100804 successfully created"
     And I should see "labels printed"

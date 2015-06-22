@@ -48,7 +48,7 @@ Given /^there is a (\d+) well "([^"]*)" plate with a barcode of "([^"]*)"$/ do |
 end
 
 Then /^the table of sequenom plates should be:$/ do |expected_results_table|
-  expected_results_table.diff!(table(tableish('table#study_list tr', 'td,th')))
+  expected_results_table.diff!(table(fetch_table('table#study_list')))
 end
 
 Given /^plate "([^"]*)" has (\d+) blank samples$/ do |plate_barcode, number_of_blanks|

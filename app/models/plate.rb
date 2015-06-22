@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 class Plate < Asset
   include Api::PlateIO::Extensions
   include ModelExtensions::Plate
@@ -40,12 +40,27 @@ class Plate < Asset
 
   # About 10x faster than going through the wells
   def submission_ids
-    container_associations.find(
+    @siat ||=  container_associations.find(
       :all,
       :select => 'DISTINCT requests.submission_id',
       :joins  => 'LEFT JOIN requests ON requests.target_asset_id = container_associations.content_id',
       :conditions => 'requests.submission_id IS NOT NULL'
     ).map(&:submission_id)
+  end
+
+  def submission_ids_as_source
+    @sias ||= container_associations.find(
+      :all,
+      :select => 'DISTINCT requests.submission_id',
+      :joins  => 'LEFT JOIN requests ON requests.asset_id = container_associations.content_id',
+      :conditions => 'requests.submission_id IS NOT NULL'
+    ).map(&:submission_id)
+  end
+
+  def all_submission_ids
+    submission_ids_as_source.present? ?
+      submission_ids_as_source :
+      submission_ids
   end
 
   def self.derived_classes
@@ -54,6 +69,61 @@ class Plate < Asset
 
   def prefix
     self.barcode_prefix.try(:prefix) || self.class.prefix
+  end
+
+  def submissions
+    s = Submission.find(:all,
+      :select => 'DISTINCT submissions.*',
+      :joins => [
+        'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
+        'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.asset_id'
+      ],
+      :conditions => ['caplp.container_id = ?',self.id]
+    )
+    return s unless s.blank?
+    Submission.find(:all,
+      :select => 'DISTINCT submissions.*',
+      :joins => [
+        'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
+        'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id'
+      ],
+      :conditions => ['caplp.container_id = ?',self.id]
+    )
+  end
+
+  class CommentsProxy
+
+    attr_reader :plate
+
+    def initialize(plate)
+      @plate=plate
+    end
+
+    def comment_assn
+      @asn||=Comment.for_plate(plate)
+    end
+
+    def method_missing(method,*args)
+      comment_assn.send(method,*args)
+    end
+
+    ##
+    # We add the comments to each submission to ensure that are available for all the requests.
+    # At time of writing, submissions add comments to each request, so there are a lot of comments
+    # getting created here. (The intent is to change this so requests are treated similarly to plates)
+    def create!(options)
+      plate.submissions.each {|s| s.add_comment(options[:description],options[:user]) }
+      Comment.create!(options.merge(:commentable=>plate))
+    end
+
+    def count(*args)
+      super(args,{:select=>'DISTINCT comments.description, IFNULL(comments.title,""), comments.user_id'})
+    end
+
+  end
+
+  def comments
+    @comments||=CommentsProxy.new(self)
   end
 
   def priority
@@ -598,7 +668,7 @@ WHERE c.container_id=?
   def set_plate_name_and_size
     self.name = "Plate #{barcode}" if self.name.blank?
     self.size = default_plate_size if self.size.nil?
-    self.location = Location.find_by_name("Sample logistics freezer") if self.location.nil?
+    self.location = Location.find_by_name("Sample logistics freezer") if self.location_id.nil?
   end
   private :set_plate_name_and_size
 
@@ -653,5 +723,11 @@ WHERE c.container_id=?
       end
     end
     true
+  end
+
+  # Barcode is stored as a string, jet in a number of places is treated as
+  # a number. If we conver it before searching, things are faster!
+  def find_by_barcode(barcode)
+    super(barcode.to_s)
   end
 end

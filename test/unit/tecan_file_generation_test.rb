@@ -91,7 +91,7 @@ class GeneratorTest < ActiveSupport::TestCase
             "plate_size" => 96,
             "mapping" => [
                 { "src_well" =>  ["122289", "G7"], "dst_well" => "D4", "volume" => 3.33   },
-                { "src_well" =>  ["80785", "A1"],  "dst_well" => "E4", "volume" => 13     },
+                { "src_well" =>  ["80785", "A1"],  "dst_well" => "E4", "volume" => 13   },
                 { "src_well" =>  ["122289", "H7"], "dst_well" => "F4", "volume" => 3.27   },
                 { "src_well" =>  ["122290", "A1"], "dst_well" => "E9", "volume" => 2.8    },
                 { "src_well" =>  ["122290", "B1"], "dst_well" => "F9", "volume" => 4.08   }

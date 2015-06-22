@@ -173,6 +173,7 @@ end
 
 Factory.define :request_metadata, :class => Request::Metadata do |m|
   m.read_length 76
+  m.customer_accepts_responsibility false
 end
 
 # Automatically generated request types
@@ -592,7 +593,6 @@ Factory.define(:library_creation_request_for_testing_sequencing_requests, :class
   end
 end
 
-
 Factory.define :library_creation_request, :parent => :request do |request|
   request_type = RequestType.find_by_name('Library creation') or raise "Cannot find 'Library creation' request type"
 
@@ -724,3 +724,4 @@ Factory.define(:messenger_creator) do |reporter|
   reporter.template 'FluidigmPlateIO'
   reporter.purpose {|purpose| purpose.association(:plate_purpose)}
 end
+

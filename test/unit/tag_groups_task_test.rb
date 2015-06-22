@@ -4,6 +4,11 @@
 require "test_helper"
 
 class TagGroupsTaskTest < TaskTestBase
+
+  class DummyWorkflowController < WorkflowsController
+    attr_accessor :batch, :pipeline
+  end
+
   context '#render_tag_groups_task' do
     setup do
 
@@ -31,9 +36,10 @@ class TagGroupsTaskTest < TaskTestBase
 
     context '#render_task' do
       should 'call render_tag_groups_task on workflow' do
-        @controller  = WorkflowsController.new
+        @controller  = DummyWorkflowController.new
         @user = Factory :user
         @controller.stubs(:current_user).returns(@user)
+        @controller.batch = @batch
         @workflow = Factory :lab_workflow_for_pipeline
         params = {:batch_id => @batch.id, :workflow_id => @workflow.id}
         @task.render_task(@controller, params)

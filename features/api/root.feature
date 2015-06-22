@@ -263,6 +263,11 @@ And I have a "full" authorised user with the key "cucumber"
             "read": "http://www.example.com/api/1/bulk_transfers"
           }
         },
+        "comments": {
+          "actions": {
+          "read": "http://www.example.com/api/1/comments"
+          }
+        },
         "pooled_plate_creations": {
           "actions": {
             "read": "http://www.example.com/api/1/pooled_plate_creations"
@@ -578,6 +583,11 @@ And I have a "full" authorised user with the key "cucumber"
           "actions": {
             "read": "http://www.example.com/api/1/bulk_transfers",
             "create": "http://www.example.com/api/1/bulk_transfers"
+          }
+        },
+        "comments": {
+          "actions": {
+          "read": "http://www.example.com/api/1/comments"
           }
         },
         "pooled_plate_creations": {

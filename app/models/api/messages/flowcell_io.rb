@@ -19,7 +19,7 @@ class Api::Messages::FlowcellIO < Api::Base
         end
 
         def manual_qc
-          MANUAL_QC_BOOLS[asset.qc_state]
+          MANUAL_QC_BOOLS[target_asset.try(:qc_state)]
         end
 
         def samples
@@ -62,7 +62,7 @@ class Api::Messages::FlowcellIO < Api::Base
         end
 
         def manual_qc
-          MANUAL_QC_BOOLS[asset.qc_state]
+          MANUAL_QC_BOOLS[target_asset.try(:qc_state)]
         end
 
         def samples

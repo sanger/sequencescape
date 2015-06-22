@@ -33,7 +33,7 @@ When /^I press exactly "([^\"]*)"$/ do |button|
   end
 end
 
-Then /^the field "([^"]*)" should be empty$/ do |field|
+Then /^the field "([^\"]*)" should be empty$/ do |field|
   field_value = field_labeled(field).attribute('value')
   assert(field_value.blank?, "Field #{ field.inspect } is not blank")
 end
@@ -59,9 +59,9 @@ end
 def locate_labeled_field_type(label_text, field_type)
   field = page.find_field(label_text) or raise Capybara::ElementNotFound, "Could not find #{ label_text.inspect }"
   case field_type
-  when 'text'     then field.node.xpath("self::input[@type='text']") or raise Capybara::ElementNotFound, "Field #{label_text.inspect} is not a text field"
-  when 'select'   then field.node.xpath("self::select")              or raise Capybara::ElementNotFound, "Field #{label_text.inspect} is not a select field"
-  when 'textarea' then field.node.xpath("self::textarea")            or raise Capybara::ElementNotFound, "Field #{label_text.inspect} is not a textarea field"
+  when 'text'     then field['type']  == 'text'     or raise Capybara::ElementNotFound, "Field #{label_text.inspect} is not a text field"
+  when 'select'   then field.tag_name == 'select'   or raise Capybara::ElementNotFound, "Field #{label_text.inspect} is not a select field"
+  when 'textarea' then field.tag_name == 'textarea' or raise Capybara::ElementNotFound, "Field #{label_text.inspect} is not a textarea field"
   else raise StandardError, "Unrecognised field type '#{ field_type }'"
   end
   return field
@@ -85,13 +85,13 @@ Then /^I should see the (required )?select field "([^\"]+)" with options "([^\"]
   assert_label_exists(field, required)
   element = locate_labeled_field_type(field, 'select')
   options.split('/').each do |option|
-    element.node.xpath("option[text()='#{option}']") or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
+    element.all("option").detect {|o| o.text == option} or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
   end
 end
 
 Then /^the "([^\"]+)" field should be marked in error$/ do |field|
   element = page.find_field(field) or raise Capybara::ElementNotFound, "Field #{ field.inspect } not found"
-  assert(element.node.xpath("self::*[contains(@class, 'fieldWithErrors')]"), "Field #{field.inspect} does not appear to be marked in error")
+  find(".fieldWithErrors ##{element['id']}")
 end
 
 # There is an issue when attaching a file to a field and using the @javascript tag: the path is relative to some
@@ -103,12 +103,17 @@ When /^(?:|I )attach the relative file "([^\"]+)" to "([^\"]+)"(?: within "([^\"
   end
 end
 
-When /^I fill in "([^"]*)" with(?: the)? multiline text:?$/ do |field, value|
+When /^I fill in "([^\"]*)" with(?: the)? multiline text:?$/ do |field, value|
   fill_in(field, :with => value)
 end
 
+When /^I fill in the hidden field "([^"]*)" with "([^\"]+)"$/ do |field, value|
+  find(:xpath,"//input[@id='#{field}']").set(value)
+end
+
 Then /^"([^\"]+)" should be selected from "([^\"]+)"$/ do |value, name|
-  assert_equal([ value ], find_field(name).value, "Field #{name.inspect} does not have the correct value selected")
+  selected = find_field(name).find('option[selected]').text
+  assert_equal( value , selected, "Field #{name.inspect} does not have the correct value selected")
 end
 
 Then /^I expect an exception to be raised when I press "([^"]*)"(?: within "([^"]*)")?$/ do |button, selector|
@@ -125,6 +130,7 @@ Then /^I expect an exception to be raised when I press "([^"]*)"(?: within "([^"
 end
 
 When /^I accept the action$/ do
-  sleep(0.3)
-  page.driver.browser.switch_to.alert.accept
+  # TODO: Poltergeist doesn't support this
+  # sleep(0.3)
+  # page.driver.browser.switch_to.alert.accept
 end

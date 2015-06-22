@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
 # An aliquot can be considered to be an amount of a material in a liquid.  The material could be the DNA
 # of a sample, or it might be a library (a combination of the DNA sample and a tag).
 class Aliquot < ActiveRecord::Base
@@ -14,6 +14,11 @@ class Aliquot < ActiveRecord::Base
     has_many :transfer_requests, :class_name => 'TransferRequest', :foreign_key => :target_asset_id
     has_many :transfer_requests_as_source, :class_name => 'TransferRequest', :foreign_key => :asset_id
     has_many :transfer_requests_as_target, :class_name => 'TransferRequest', :foreign_key => :target_asset_id
+
+    has_many :requests, :inverse_of => :asset, :foreign_key => :asset_id
+    has_one  :source_request, :class_name => "Request", :foreign_key => :target_asset_id, :include => :request_metadata
+    has_many :requests_as_source, :class_name => 'Request', :foreign_key => :asset_id, :include => :request_metadata
+    has_many :requests_as_target, :class_name => 'Request', :foreign_key => :target_asset_id, :include => :request_metadata
 
     def default_state
       nil

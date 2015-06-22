@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 Given /^I have a sample tube "([^"]*)" in study "([^"]*)" in asset group "([^"]*)"$/ do |sample_tube_barcode, study_name, asset_group_name|
   study = Study.find_by_name(study_name)
   sample_tube = Factory(:sample_tube, :barcode => sample_tube_barcode, :location =>  Location.find_by_name('PacBio library prep freezer'))
@@ -137,7 +137,7 @@ Then /^the PacBioSamplePrepRequests for "([^"]*)" should be "([^"]*)"$/ do |asse
 end
 
 Then /^the plate layout should look like:$/ do |expected_results_table|
-  actual_table = table(tableish('table.plate tr', 'option[@selected],th.plate_column'))
+  actual_table = table(fetch_table('table.plate'))
   expected_results_table.diff!(actual_table)
 end
 
@@ -169,7 +169,7 @@ Given /^the sample validation webservice returns "(true|false)"$/ do |success_bo
 end
 
 Then /^the PacBio sample prep worksheet should look like:$/ do |expected_results_table|
-  worksheet = page.body
+  worksheet = page.source
   csv_rows = worksheet.split(/\r\n/)
   csv_rows.shift(2)
   actual_table = FasterCSV.parse( csv_rows.map{|c| "#{c}\r\n"}.join(''))
@@ -191,7 +191,7 @@ Then /^the PacBioLibraryTube "(.*?)" should have (\d+) SMRTcells$/ do |barcode, 
 end
 
 Given /^the reference genome "([^"]*)" exists$/ do |name|
-  Factory :reference_genome, :name =>name
+  Factory :reference_genome, :name => name
 end
 
 Given /^the sample in tube "([^"]*)" has a reference genome of "([^"]*)"$/ do |barcode, reference_genome_name|
@@ -200,7 +200,7 @@ Given /^the sample in tube "([^"]*)" has a reference genome of "([^"]*)"$/ do |b
 end
 
 Then /^the sample reference sequence table should look like:$/ do |expected_results_table|
-  expected_results_table.diff!(table(tableish('table#reference_sequence tr', 'td,th')))
+  expected_results_table.diff!(table(fetch_table('table#reference_sequence')))
 end
 
 Then /^Library tube "([^"]*)" should have protocol "([^"]*)"$/ do |barcode, expected_protocol|
@@ -212,14 +212,23 @@ Given /^the study "([^"]*)" has a reference genome of "([^"]*)"$/ do |study_name
 end
 
 Then /^the default protocols should be:$/ do |expected_results_table|
-    actual_table = table(tableish('table#reference_sequence tr', 'option[@selected],th#protocol'))
+    actual_table = table(fetch_table('table#reference_sequence'))
 end
 
 Then /^the PacBio manifest should be:$/ do |expected_results_table|
-  pac_bio_run_file = page.body
+  pac_bio_run_file = page.source
   csv_rows = pac_bio_run_file.split(/\r\n/)
   csv_rows.shift(8)
   actual_table = FasterCSV.parse( csv_rows.map{|c| "#{c}\r\n"}.join(''))
   expected_results_table.column_names.each {|c| expected_results_table.map_column!(c) {|d| d.blank? ? nil : d }}
   expected_results_table.diff!(actual_table)
+end
+
+Then /^I fill in the field for "(.*?)" with "(.*?)"$/ do |asset_name, content|
+  request_id = Asset.find_by_name!(asset_name).requests.first.id
+  step(%Q{I fill in the hidden field "locations_for_#{request_id}" with "#{content}"})
+end
+
+When /^I drag the library tube to well "(.*?)"$/ do |well|
+  step %Q{I drag ".library_tube" to "#well_#{well}"}
 end
