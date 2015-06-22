@@ -12,10 +12,10 @@ class Comment < ActiveRecord::Base
     submissions = plate.all_submission_ids
 
     if submissions.present?
+      rids = Request.find(:all,:select=>'id',:conditions=>{:submission_id=>submissions}).map(&:id)
       {
         :select => 'DISTINCT comments.description, comments.title, comments.user_id',
-        :joins => "LEFT JOIN requests AS r ON r.id = comments.commentable_id AND comments.commentable_type = 'Request'",
-        :conditions => ['r.submission_id IN (?) OR (comments.commentable_type = "Asset" and commentable_id = ?)',submissions.join(','),plate.id]
+        :conditions => ['(commentable_type= "Request" AND commentable_id IN (?)) OR (commentable_type = "Asset" and commentable_id = ?)',rids,plate.id]
       }
     else
       {
