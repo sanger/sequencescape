@@ -65,6 +65,7 @@ RequestType.find_each do |request_type|
       'illumina_a_hiseq_v4_paired_end_sequencing' => [75,125],
       'illumina_b_hiseq_v4_paired_end_sequencing' => [75,125],
       'illumina_c_hiseq_v4_paired_end_sequencing' => [75,125],
+      'illumina_c_hiseq_v4_single_end_sequencing' => [19,50],
       'illumina_a_hiseq_x_paired_end_sequencing' => [150],
       'illumina_b_hiseq_x_paired_end_sequencing' => [150]
       }[request_type.key]||{
@@ -83,6 +84,9 @@ end
   rt = RequestType.find_by_key("illumina_#{pipeline}_hiseq_v4_paired_end_sequencing")
   RequestType::Validator.create!(:request_type => rt, :request_option=> "read_length", :valid_options=>[125,75])
 end
+
+rt = RequestType.find_by_key("illumina_c_hiseq_v4_single_end_sequencing")
+RequestType::Validator.create!(:request_type => rt, :request_option=> "read_length", :valid_options=>[29, 50])
 
 
 ## New library types Illumina C

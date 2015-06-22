@@ -45,3 +45,24 @@
   outlines.each do |template|
     SubmissionTemplate.create!(template)
   end
+
+  [ "Illumina-C - General PCR - HiSeq v4 sequencing",
+    "Illumina-C - General no PCR - HiSeq v4 sequencing",
+    "Illumina-C - Library Creation - HiSeq v4 sequencing",
+    "Illumina-C - Multiplexed Library Creation - HiSeq v4 sequencing"
+  ].each do |name|
+    base_template = SubmissionTemplate.find_by_name!(name)
+    template = base_template.clone.tap do |s|
+      s.name = name + " SE"
+      s.submission_parameters[:request_type_ids_list] = [
+        s.submission_parameters[:request_type_ids_list][0],
+        [ RequestType.find_by_key!("illumina_c_hiseq_v4_single_end_sequencing").id]
+      ]
+    end
+    template.save!
+
+    base_template.supercede do |s|
+      s.update_attributes!(:name => base_template.name + ' PE')
+    end
+
+  end
