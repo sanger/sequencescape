@@ -160,7 +160,6 @@ Feature: Printing new plate barcodes
       | Created Pico Dilution plate      | 2010-07-12 | jack       | Monday 12 July, 2010 |
       | Created child Pico Assay A plate | 2010-07-12 | jack       | Monday 12 July, 2010 |
       | Created child Pico Assay B plate | 2010-07-12 | jack       | Monday 12 July, 2010 |
-      | Created child Pico Assay Plates plate | 2010-07-12 | jack       | Monday 12 July, 2010 |
     Given I am on the events page for asset with barcode "6251234567836"
     Then the events table should be:
       | Message                           | Content    | Created by | Created at           |
@@ -195,10 +194,6 @@ Feature: Printing new plate barcodes
             <created-at type="datetime">2010-07-12T11:23:58+01:00</created-at>
             <barcode>4361234567667</barcode>
             <child-barcodes type="array">
-              <child-barcode>
-                <created-at type="datetime">2010-07-12T11:23:58+01:00</created-at>
-                <barcode>1220077777868</barcode>
-              </child-barcode>
               <child-barcode>
                 <created-at type="datetime">2010-07-12T11:23:58+01:00</created-at>
                 <barcode>4331234567653</barcode>
