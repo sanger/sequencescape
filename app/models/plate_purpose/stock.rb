@@ -39,9 +39,10 @@ module PlatePurpose::Stock
   end
 
   def calculate_state_of_well(wells_states)
-    wells_states.reject! {|state| state == 'cancelled' } if wells_states.count > 1
+    cancelled = wells_states.delete('cancelled') if wells_states.count > 1
     return wells_states.first if wells_states.one?
-    return :unready
+    return :unready if wells_states > 1
+    cancelled || :unready
   end
 
   def transition_state_requests(*args)
