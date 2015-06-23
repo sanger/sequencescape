@@ -69,7 +69,8 @@ module Tasks::CherrypickHandler
   end
 
   def setup_input_params_for_pass_through
-    @robot = Robot.find((params[:robot])["0"].to_i)
+    @robot_id = params[:robot_id]
+    @robot = Robot.find(@robot_id)
     @plate_type = params[:plate_type]
     @volume_required= params[:volume_required]
     @micro_litre_volume_required= params[:micro_litre_volume_required]

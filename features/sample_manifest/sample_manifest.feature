@@ -279,6 +279,12 @@ Feature: Sample manifest
     Then I should see the manifest table:
       | Contains | Study      | Supplier           | Manifest       | Upload              | Errors   | State     |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest  |          | Completed |
+    Then the samples table should look like:
+      | sanger_sample_id | supplier_name | dna_source |
+      | sample_1         | a             | Cell Line                      |
+      | sample_2         | b             | Blood                          |
+      | sample_3         | c             | Genomic                        |
+      | sample_4         | d             | Amniocentesis Cultured         |
 
   @is_control
   Scenario: Check is_control and is_resubmit are set properly in an uploaded manifest
@@ -439,7 +445,43 @@ Feature: Sample manifest
       | sample_manifest_a_accessions.csv  | sample_manifest_b_accessions.csv  | Failed    | Errors |
       | sample_manifest_no_accessions.csv | sample_manifest_a_accessions.csv  | Completed |        |
 
+@override
+  Scenario: Setting of reference_genomes
+    Given a manifest has been created for "Test study"
+    And the reference genome "Dragon" exists
+    And the reference genome "Centaur" exists
+    When I fill in "File to upload" with the file "test/data/sample_manifest_reference_genomes.csv"
+    And I press "Upload manifest"
+    Given 1 pending delayed jobs are processed
+    When I follow "View all manifests"
+    Then I should see the manifest table:
+      | Contains | Study      | Supplier           | Manifest       | Upload             | Errors | State     |
+      | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest |        | Completed |
+    Then the sample reference genomes should be:
+     | sanger_sample_id | reference_genome |
+     | sample_1         | Dragon           |
+     | sample_2         | Dragon           |
+     | sample_3         | Dragon           |
+     | sample_4         | Dragon           |
+     | sample_5         | Dragon           |
+     | sample_6         | Centaur          |
+     | sample_7         | Centaur          |
+     | sample_8         | Centaur          |
+     | sample_9         | Centaur          |
+     | sample_10        | Centaur          |
+     | sample_11        | Centaur          |
+     | sample_12        | Centaur          |
 
-
-
-
+  @override
+  Scenario: Using an invalid reference genome
+    Given a manifest has been created for "Test study"
+    And the reference genome "Dragon" exists
+    When I fill in "File to upload" with the file "test/data/sample_manifest_reference_genomes.csv"
+    And I press "Upload manifest"
+    Given 1 pending delayed jobs are processed
+    When I follow "View all manifests"
+    Then I should see the manifest table:
+       | Contains | Study      | Supplier           | Manifest       | Upload           | Errors   | State  |
+       | 1 plate  | Test study | Test supplier name | Blank manifest | Upload manifest  | Errors   | Failed |
+    When I follow "Errors for manifest for Test study"
+    Then I should see "Couldn't find a Reference Genome with named 'Centaur'."

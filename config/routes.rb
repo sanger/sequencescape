@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 ActionController::Routing::Routes.draw do |map|
   map.resources :reference_genomes
   map.resources :barcode_printers
@@ -159,8 +159,6 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resource :search, :controller => 'search', :only => [:new, :index]
 
-  map.resources :errors
-
   map.resources :events
 
   map.connect 'batches/all', :controller => 'batches', :action => 'all'
@@ -227,6 +225,8 @@ ActionController::Routing::Routes.draw do |map|
   ### Standard routes
   # You can have the root of your site routed with map.root -- just remember to delete public/index.html.
   map.root :controller => "studies"
+
+  map.health 'health', :controller => 'health', :action => :index
 
   ######  API  #####
   map.with_options(:path_prefix => "/#{API_VERSION}") do |api|

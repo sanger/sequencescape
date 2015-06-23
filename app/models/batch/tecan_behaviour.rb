@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2015 Genome Research Ltd.
 module Batch::TecanBehaviour
   def validate_for_tecan(target_barcode)
     return false if user_id.nil?
@@ -24,7 +24,7 @@ module Batch::TecanBehaviour
        "source" => {},
        "destination" => {}
     }
-    requests.find_all_by_state("passed").each do |request|
+    requests.find(:all, :include=>[{:asset=>:plate},{:target_asset=>:plate}],:conditions=>{:state=>"passed"}).each do |request|
 
       destination_barcode = request.target_asset.plate.barcode
       next unless destination_barcode == target_barcode

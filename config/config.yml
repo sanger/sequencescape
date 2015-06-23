@@ -56,6 +56,8 @@ development:
     studies_url: http://localhost:3000
     taxon_lookup_url: http://eutils.ncbi.nlm.nih.gov/entrez/eutils/
     tecan_files_location:  <%= Rails.root %>/data
+    tecan_precision: 2
+    tecan_minimum_volume: 1.0
     two_d_barcode_files_location: <%= Rails.root %>/data/2d
     uploaded_spreadsheet:
       max_number_of_samples: 384
@@ -128,6 +130,8 @@ test: &TEST
     studies_url: http://localhost:3000
     taxon_lookup_url: http://eutils.ncbi.nlm.nih.gov/entrez/eutils/
     tecan_files_location:  <%= Rails.root %>/data
+    tecan_precision: 1
+    tecan_minimum_volume: 1.0
     uploaded_spreadsheet:
       max_number_of_samples: 380
       max_number_of_move_samples: 0

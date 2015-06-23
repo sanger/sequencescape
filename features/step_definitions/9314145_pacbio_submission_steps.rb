@@ -191,7 +191,7 @@ Then /^the PacBioLibraryTube "(.*?)" should have (\d+) SMRTcells$/ do |barcode, 
 end
 
 Given /^the reference genome "([^"]*)" exists$/ do |name|
-  Factory :reference_genome, :name =>name
+  Factory :reference_genome, :name => name
 end
 
 Given /^the sample in tube "([^"]*)" has a reference genome of "([^"]*)"$/ do |barcode, reference_genome_name|

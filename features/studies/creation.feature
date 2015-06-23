@@ -11,6 +11,7 @@ Feature: Creating studies
       | Study name                                                                                                    | text                                                                                       |
       | Faculty Sponsor                                                                                               | select                                                                                     |
       | Study description                                                                                             | textarea                                                                                   |
+      | Prelim ID                                                                                                     | text                                                                                       |
       | Do any of the samples in this study contain human DNA?                                                        | Yes/No                                                                                     |
       | Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis? | Yes/No                                                                                     |
       | Does this study require the removal of X chromosome and autosome sequence?                                    | Yes/No                                                                                     |
@@ -18,6 +19,7 @@ Feature: Creating studies
       | Study Visibility                                                                                              | Hold/Public                                                                                |
       | What sort of study is this?                                                                                   | genomic sequencing/transcriptomics/other sequencing-based assay/genotyping or cytogenetics |
       | How is the data release to be timed?                                                                          | standard/immediate/delayed/never                                                           |
+
 
     When I press "Create"
     Then I should be on the studies page

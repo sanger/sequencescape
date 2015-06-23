@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 require 'rexml/text'
 class Sample < ActiveRecord::Base
   include ModelExtensions::Sample
@@ -238,7 +238,8 @@ class Sample < ActiveRecord::Base
 
   GC_CONTENTS     = [ 'Neutral', 'High AT', 'High GC' ]
   GENDERS         = [ 'Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable' ]
-  DNA_SOURCES     = [ 'Genomic', 'Whole Genome Amplified', 'Blood', 'Cell Line','Saliva','Brain','FFPE' ]
+  DNA_SOURCES     = [ 'Genomic', 'Whole Genome Amplified', 'Blood', 'Cell Line','Saliva','Brain','FFPE',
+                      'Amniocentesis Uncultured', 'Amniocentesis Cultured', 'CVS Uncultured', 'CVS Cultured', 'Fetal Blood' ]
   SRA_HOLD_VALUES = [ 'Hold', 'Public', 'Protect' ]
   AGE_REGEXP      = '\d+(?:\.\d+|\-\d+|\.\d+\-\d+\.\d+|\.\d+\-\d+\.\d+)?\s+(?:second|minute|day|week|month|year)s?|Not Applicable|N/A|To be provided'
   DOSE_REGEXP     = '\d+(?:\.\d+)?\s+\w+(?:\/\w+)?|Not Applicable|N/A|To be provided'
@@ -356,6 +357,8 @@ class Sample < ActiveRecord::Base
   include SampleManifest::InputBehaviour::SampleUpdating
 
   class Metadata
+
+    attr_reader :reference_genome_set_by_name
     # here we are aliasing ArrayExpress attribute from normal one
     # This is easier that way so the name is exactly the name of the array-express field
     # and the values can be easily remapped
@@ -368,6 +371,25 @@ class Sample < ActiveRecord::Base
     end
     def species
       sample_common_name
+    end
+
+    def reference_genome_name=(reference_genome_name)
+      return unless reference_genome_name.present?
+      @reference_genome_set_by_name = reference_genome_name
+      self.reference_genome = ReferenceGenome.find_by_name(reference_genome_name)
+    end
+
+    # If we set a reference genome via its name, we want to validate that we found it.
+    # We can't just raise and exception when we don't find it, as this cases the sample manifest
+    # delayed job to fail completely.
+    validate :reference_genome_found, :if => :reference_genome_set_by_name
+
+    def reference_genome_found
+      # A reference genome of nil automatically get converted to the reference genome named "", so
+      # we need to explicitly check the name has been set as expected.
+      return true if reference_genome.name == reference_genome_set_by_name
+      errors.add(:base,"Couldn't find a Reference Genome with named '#{reference_genome_set_by_name}'.")
+      false
     end
 
   end
