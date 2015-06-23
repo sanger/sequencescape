@@ -41,7 +41,7 @@ module PlatePurpose::Stock
   def calculate_state_of_well(wells_states)
     cancelled = wells_states.delete('cancelled') if wells_states.count > 1
     return wells_states.first if wells_states.one?
-    return :unready if wells_states > 1
+    return :unready if wells_states.size > 1
     cancelled || :unready
   end
 
