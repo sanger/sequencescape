@@ -92,6 +92,12 @@ class Request < ActiveRecord::Base
     }
   }
 
+  named_scope :for_order_including_submission_based_requests, lambda {|order|
+    {
+      :conditions => ['requests.order_id=? OR requests.order_id IS NULL', order.id]
+    }
+  }
+
   belongs_to :pipeline
   belongs_to :item
 
