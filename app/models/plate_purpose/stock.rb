@@ -17,9 +17,9 @@ module PlatePurpose::Stock
     return UNREADY_STATE if wells_with_aliquots.empty?
 
     # All of the wells with aliquots must have requests for us to be considered passed
-    requests = Request::LibraryCreation.all(:conditions => { :asset_id => wells_with_aliquots.map(&:id) })
+    well_requests = Request::LibraryCreation.all(:conditions => { :asset_id => wells_with_aliquots.map(&:id) })
 
-    wells_states = requests.group_by(&:asset_id).map do |well_id, requests|
+    wells_states = well_requests.group_by(&:asset_id).map do |well_id, requests|
       calculate_state_of_well(requests.map(&:state))
     end
 
@@ -39,7 +39,7 @@ module PlatePurpose::Stock
   end
 
   def calculate_state_of_well(wells_states)
-    wells_states.delete('cancelled') if wells_states.count > 1
+    wells_states.reject! {|state| state == 'cancelled' } if wells_states.count > 1
     return wells_states.first if wells_states.one?
     return :unready
   end
