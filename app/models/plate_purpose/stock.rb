@@ -28,9 +28,9 @@ module PlatePurpose::Stock
   end
 
   def calculate_state_of_plate(wells_states)
-    unique_states = wells_states.uniq.sort
+    unique_states = wells_states.uniq
     return UNREADY_STATE if unique_states.include?(:unready)
-    case unique_states
+    case unique_states.sort
      when ['failed'] then 'failed'
      when ['cancelled'] then 'cancelled'
      when ['cancelled','failed'] then 'failed'
