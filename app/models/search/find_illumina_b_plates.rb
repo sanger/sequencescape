@@ -2,12 +2,12 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 
 require "#{Rails.root.to_s}/app/models/illumina_b/plate_purposes"
-#Copyright (C) 2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.
 class Search::FindIlluminaBPlates < Search
   def scope(criteria)
     # We find all plates that do not have transfers where they are the source.  Once a plate has been transferred (or marked
     # for transfer) the destination plate becomes the end of the chain.
-    Plate.include_plate_metadata.include_plate_purpose.with_plate_purpose(illumina_b_plate_purposes).with_no_outgoing_transfers.in_state(criteria['state']).located_in(freezer)
+    Plate.include_plate_purpose.with_plate_purpose(illumina_b_plate_purposes).with_no_outgoing_transfers.in_state(criteria['state']).located_in(freezer)
   end
 
   def illumina_b_plate_purposes

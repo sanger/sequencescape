@@ -36,6 +36,12 @@ class SampleManifestTemplate < ActiveRecord::Base
         :cell_map => map,
         :asset_type => '1dtube'
       )
+      SampleManifestTemplate.create!(
+        :name => "relevant RNA/ChIP",
+        :path => "/data/relevant_rnachip_plate_manifest.xls",
+        :cell_map => map,
+        :asset_type => '1dtube'
+      )
 
       unless RAILS_ENV == "production"
         SampleManifestTemplate.create!(

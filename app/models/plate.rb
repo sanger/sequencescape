@@ -116,6 +116,10 @@ class Plate < Asset
       Comment.create!(options.merge(:commentable=>plate))
     end
 
+    def count(*args)
+      super(args,{:select=>'DISTINCT comments.description, IFNULL(comments.title,""), comments.user_id'})
+    end
+
   end
 
   def comments
