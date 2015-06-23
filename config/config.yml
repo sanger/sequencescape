@@ -53,6 +53,7 @@ development:
     site_name: Projects (DEVELOPMENT)
     site_url: localhost:3000
     sanger_auth_freshness: 60
+    sta_plate_purpose_name: "STA"
     studies_url: http://localhost:3000
     taxon_lookup_url: http://eutils.ncbi.nlm.nih.gov/entrez/eutils/
     tecan_files_location:  <%= Rails.root %>/data
