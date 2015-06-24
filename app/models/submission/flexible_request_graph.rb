@@ -38,7 +38,9 @@ module Submission::FlexibleRequestGraph
     # the multiplexing_assets
     def multiplexing_assets
       @multiplexed = true
+
       @multiplexing_assets ||= yield if block_given?
+      @multiplexing_assets
     end
 
     private
