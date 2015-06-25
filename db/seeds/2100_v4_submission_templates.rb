@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2014 Genome Research Ltd.
+#Copyright (C) 2014,2015 Genome Research Ltd.
   outlines =
     [
     {:pipeline=>'Illumina-A', :name => 'Pulldown WGS',    :infos=>'wgs',  :request_types=>['illumina_a_pulldown_wgs']},
@@ -44,4 +44,25 @@
 
   outlines.each do |template|
     SubmissionTemplate.create!(template)
+  end
+
+  [ "Illumina-C - General PCR - HiSeq v4 sequencing",
+    "Illumina-C - General no PCR - HiSeq v4 sequencing",
+    "Illumina-C - Library Creation - HiSeq v4 sequencing",
+    "Illumina-C - Multiplexed Library Creation - HiSeq v4 sequencing"
+  ].each do |name|
+    base_template = SubmissionTemplate.find_by_name!(name)
+    template = base_template.clone.tap do |s|
+      s.name = name + " SE"
+      s.submission_parameters[:request_type_ids_list] = [
+        s.submission_parameters[:request_type_ids_list][0],
+        [ RequestType.find_by_key!("illumina_c_hiseq_v4_single_end_sequencing").id]
+      ]
+    end
+    template.save!
+
+    base_template.supercede do |s|
+      s.update_attributes!(:name => base_template.name + ' PE')
+    end
+
   end
