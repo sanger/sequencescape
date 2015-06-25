@@ -26,6 +26,7 @@ class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
     # The RIGHT OUTER JOIN ensures we have a null result for any outer requests which don't have matching transfer requests
     # We only pick up open requests, just in case a whole tube has failed / been cancelled.
     def sibling_tubes(tube)
+      return [] if tube.submission.nil?
       submission_id     = tube.submission.id
       tfr_request_type  = tube.requests_as_target.first.request_type_id
       outr_request_type = tube.requests_as_target.first.outer_request.request_type_id
