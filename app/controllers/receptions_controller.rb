@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
 class ReceptionsController < ApplicationController
   before_filter :find_asset_by_id, :only => [:print, :snp_register]
 
@@ -64,12 +64,12 @@ class ReceptionsController < ApplicationController
     end
 
     if all_barcodes_blank
-      @errors << "No barcodes have been entered or scanned!"
+      @errors << "No barcodes have been entered or scanned"
     end
 
     if @errors.size > 0
       respond_to do |format|
-        flash[:error] = "Error with scanned samples"
+        flash[:error] = "Error with scanned samples: #{@errors.join('. ')}"
         format.html { render :action => :index }
         format.xml  { render :xml  => @errors, :status => :unprocessable_entity }
         format.json { render :json => @errors, :status => :unprocessable_entity }
