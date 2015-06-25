@@ -23,7 +23,11 @@ class ReceptionsController < ApplicationController
 
     all_barcodes_blank = true
 
-    barcodes.each do |index,barcode|
+    barcodes.each do |index,barcode_ws|
+
+      # We don't perform strip! as this results in modification of the parameters themselves, which affects logging and
+      # exception notification. This can hinder investigation of any issues, as it changes apparent user input.
+      barcode = barcode_ws.strip
       if barcode.blank?
         next
       else
@@ -39,7 +43,7 @@ class ReceptionsController < ApplicationController
       end
       prefix, id, checksum = Barcode.split_barcode(barcode)
 
-      case params[:type][:id]
+      case 'Plate'
       when 'LibraryTube' then @asset = LibraryTube.find_by_barcode(id)
       when 'MultiplexedLibraryTube' then @asset = MultiplexedLibraryTube.find_by_barcode(id)
       when 'PulldownMultiplexedLibraryTube' then @asset = PulldownMultiplexedLibraryTube.find_by_barcode(id)
