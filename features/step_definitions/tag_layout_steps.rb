@@ -168,3 +168,9 @@ Given /^well "(.*?)" on the plate "(.*?)" is empty$/ do |well, plate|
   Plate.find_by_name!(plate).wells.located_at(well).first.aliquots.each(&:destroy)
 end
 
+Given /^the tag2 layout template "(.*?)" is associated with the last submission$/ do |template|
+  Tag2Layout::TemplateSubmission.create!(
+    :tag2_layout_template => Tag2LayoutTemplate.find_by_name!(template),
+    :submission => Submission.last
+    )
+end

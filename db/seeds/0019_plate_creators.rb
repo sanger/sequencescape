@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012 Genome Research Ltd.
+#Copyright (C) 2011,2012,2015 Genome Research Ltd.
 ActiveRecord::Base.transaction do
 
   excluded = ['Dilution Plates']
@@ -32,28 +32,9 @@ ActiveRecord::Base.transaction do
     ]
   end
 
-  def validate_purposes_config(purposes_config)
-    purposes_config.all? { |p| !p[:plate_purpose].nil? && !p[:parent_purpose].nil? }
-  end
-
   purposes_config.each do |p|
-    relations = Plate::Creator::PurposeRelationship.find(:all, :conditions => {
-      :plate_purpose_id => p[:plate_purpose].id
-    })
-    if (relations.length == 0)
-      Plate::Creator.find(:all, :conditions => {
-        :plate_purpose_id => p[:plate_purpose].id
-      } ).each do |c|
-        Plate::Creator::PurposeRelationship.create!({
-          :plate_creator_id => c.id,
-          :plate_purpose_id => p[:plate_purpose].id,
-          :parent_purpose_id => p[:parent_purpose].id
-        })
-      end
-    else
-      relations.each do |r|
-        r.update_attributes!(:parent_purpose_id =>  p[:parent_purpose].id)
-      end
+    Plate::Creator.find_by_name(p[:plate_purpose].name).plate_creator_purposes.each do |relation|
+      relation.update_attributes!(:parent_purpose_id =>  p[:parent_purpose].id)
     end
   end
 

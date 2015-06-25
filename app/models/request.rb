@@ -108,6 +108,8 @@ class Request < ActiveRecord::Base
   belongs_to :submission, :inverse_of => :requests
   belongs_to :order, :inverse_of => :requests
 
+  has_many :submission_siblings, :through => :submission, :source => :requests, :class_name => 'Request', :conditions => {:request_type_id => '#{request_type_id}'}
+
   named_scope :with_request_type_id, lambda { |id| { :conditions => { :request_type_id => id } } }
 
   named_scope :for_pacbio_sample_sheet, :include => [{:target_asset=>:map},:request_metadata]
@@ -126,6 +128,14 @@ class Request < ActiveRecord::Base
     self.initial_project_id = project_id
   end
 
+
+  def submission_plate_count
+    submission.requests.find(:all,
+      :conditions=>{:request_type_id=>request_type_id},
+      :joins=>'LEFT JOIN container_associations AS spca ON spca.content_id = requests.asset_id',
+      :group=>'spca.container_id'
+    ).count
+  end
 
 
   def project=(project)
@@ -461,6 +471,10 @@ class Request < ActiveRecord::Base
   # Adds any pool information to the structure so that it can be reported to client applications
   def update_pool_information(pool_information)
     # Does not need anything here
+  end
+
+  def submission_siblings
+    submission.requests.with_request_type_id(request_type_id)
   end
 
   def role

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150601150207) do
+ActiveRecord::Schema.define(:version => 20150623152205) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",                    :null => false
@@ -24,7 +24,7 @@ ActiveRecord::Schema.define(:version => 20150601150207) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "bait_library_id"
-    t.integer  "tag2_id",         :default => -1, :null => false
+    t.integer  "tag2_id",          :default => -1, :null => false
   end
 
   add_index "aliquots", ["receptacle_id", "tag_id", "tag2_id"], :name => "aliquot_tags_and_tag2s_are_unique_within_receptacle", :unique => true
@@ -779,7 +779,7 @@ ActiveRecord::Schema.define(:version => 20150601150207) do
     t.integer  "plate_purpose_id",  :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "parent_purpose_id"
+    t.integer  "parent_purpose_id"
   end
 
   create_table "plate_creators", :force => true do |t|
@@ -1538,6 +1538,16 @@ ActiveRecord::Schema.define(:version => 20150601150207) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "tag2_layout_template_submissions", :force => true do |t|
+    t.integer  "submission_id",           :null => false
+    t.integer  "tag2_layout_template_id", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "tag2_layout_template_submissions", ["submission_id", "tag2_layout_template_id"], :name => "tag2_layouts_used_once_per_submission", :unique => true
+  add_index "tag2_layout_template_submissions", ["tag2_layout_template_id"], :name => "fk_tag2_layout_template_submissions_to_tag2_layout_templates"
 
   create_table "tag2_layouts", :force => true do |t|
     t.integer  "tag_id"

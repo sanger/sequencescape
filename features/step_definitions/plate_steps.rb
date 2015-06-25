@@ -204,7 +204,7 @@ Given /^all wells on (the plate "[^\"]+") have unique samples$/ do |plate|
   end
 end
 
-Given /^([0-9]+) wells on (the plate "[^\"]+") have unique samples$/ do |number,plate|
+Given /^([0-9]+) wells on (the plate "[^\"]+"|the last plate|the plate with ID [\d]+) have unique samples$/ do |number,plate|
   plate.wells.in_column_major_order[0,number.to_i].each do |well|
     well.aliquots.create!(:sample => Factory(:sample))
   end

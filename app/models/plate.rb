@@ -12,6 +12,7 @@ class Plate < Asset
   include Asset::Ownership::Owned
   include Plate::Iterations
   include Plate::FluidigmBehaviour
+  include SubmissionPool::Association::Plate
 
   extend QcFile::Associations
   has_qc_files
@@ -114,6 +115,10 @@ class Plate < Asset
     def create!(options)
       plate.submissions.each {|s| s.add_comment(options[:description],options[:user]) }
       Comment.create!(options.merge(:commentable=>plate))
+    end
+
+    def count(*args)
+      super(args,{:select=>'DISTINCT comments.description, IFNULL(comments.title,""), comments.user_id'})
     end
 
   end
