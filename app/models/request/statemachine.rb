@@ -62,9 +62,12 @@ module Request::Statemachine
         transitions :to => :failed, :from => [:started]
       end
 
-      aasm_event :change_decision do
-        transitions :to => :failed, :from => [:passed]
+      aasm_event :retrospective_pass do
         transitions :to => :passed, :from => [:failed]
+      end
+
+      aasm_event :retrospective_fail do
+        transitions :to => :failed, :from => [:passed]
       end
 
       aasm_event :block do
@@ -148,6 +151,13 @@ module Request::Statemachine
       end
     end
   end
+
+  def change_decision!
+    Rails.logger.warn('Change decision is being deprecated in favour of retrospective_pass and retrospective_fail!')
+    retrospective_fail! if passed?
+    retrospective_pass! if failed?
+  end
+  deprecate :sample
 
   def on_failed
 
