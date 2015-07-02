@@ -157,7 +157,7 @@ module Request::Statemachine
     retrospective_fail! if passed?
     retrospective_pass! if failed?
   end
-  deprecate :sample
+  deprecate :change_decision!
 
   def on_failed
 
