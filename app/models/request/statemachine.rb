@@ -33,7 +33,6 @@ module Request::Statemachine
   def self.included(base)
     base.class_eval do
       extend ClassMethods
-      include Request::BillingStrategy
 
       ## State machine
       aasm_column :state
@@ -56,16 +55,16 @@ module Request::Statemachine
       end
 
       aasm_event :pass do
-        transitions :to => :passed, :from => [:started], :on_transition => :charge_to_project
+        transitions :to => :passed, :from => [:started]
       end
 
       aasm_event :fail do
-        transitions :to => :failed, :from => [:started], :on_transition => :charge_internally
+        transitions :to => :failed, :from => [:started]
       end
 
       aasm_event :change_decision do
-        transitions :to => :failed, :from => [:passed],  :on_transition => :refund_project
-        transitions :to => :passed, :from => [:failed], :on_transition => :charge_to_project
+        transitions :to => :failed, :from => [:passed]
+        transitions :to => :passed, :from => [:failed]
       end
 
       aasm_event :block do
@@ -106,8 +105,8 @@ module Request::Statemachine
 
       aasm_event :fail_from_upstream do
         transitions :to => :cancelled, :from => [:pending]
-        transitions :to => :failed,    :from => [:started], :on_transition => :charge_internally
-        transitions :to => :failed,    :from => [:passed],  :on_transition => :refund_project
+        transitions :to => :failed,    :from => [:started]
+        transitions :to => :failed,    :from => [:passed]
       end
 
       # new version of combinable named_scope
