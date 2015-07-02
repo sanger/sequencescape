@@ -37,12 +37,12 @@ module Request::Statemachine
       ## State machine
       aasm_column :state
       aasm_state :pending
-      aasm_state :started,   :enter => :on_started
-      aasm_state :failed,    :enter => :on_failed
-      aasm_state :passed,    :enter => :on_passed
-      aasm_state :cancelled, :enter => :on_cancelled
-      aasm_state :blocked,   :enter => :on_blocked
-      aasm_state :hold,      :enter => :on_hold
+      aasm_state :started,   :after_enter => :on_started
+      aasm_state :failed,    :after_enter => :on_failed
+      aasm_state :passed,    :after_enter => :on_passed
+      aasm_state :cancelled, :after_enter => :on_cancelled
+      aasm_state :blocked,   :after_enter => :on_blocked
+      aasm_state :hold,      :after_enter => :on_hold
       aasm_initial_state :pending
 
       aasm_event :hold do
