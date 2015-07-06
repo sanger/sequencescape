@@ -71,14 +71,6 @@ Factory.sequence :faculty_sponsor_name do |n|
   "Faculty Sponsor #{n}"
 end
 
-Factory.define :billing_event do |be|
-  be.kind "charge"
-  be.reference {|reference| Factory.next :billing_reference }
-  be.created_by "abc123@example.com"
-  be.project {|project| project.association(:project)}
-  be.request {|request| request.association(:request)}
-end
-
 Factory.define :comment do |c|
   c.description
 end

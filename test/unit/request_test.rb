@@ -10,6 +10,66 @@ class RequestTest < ActiveSupport::TestCase
     should_have_many :events
     should_have_instance_methods :pending?, :start, :started?, :fail, :failed?, :pass, :passed?, :reset, :workflow_id
 
+    context "while scoping with #for_order_including_submission_based_requests" do
+      setup do
+        @study =  Factory :study
+        @project =  Factory :project
+
+        @asset = Factory :empty_sample_tube
+        @asset.aliquots.create!(:sample => Factory(:sample, :studies => [@study]))
+
+        @asset2 = Factory :empty_sample_tube
+        @asset2.aliquots.create!(:sample => Factory(:sample, :studies => [@study]))
+
+        @order1 = Factory :order_with_submission, :study => @study, :assets => [@asset], :project => @project
+        @order2 = Factory :order,  :study => @study, :assets => [@asset], :project => @project
+        @order3 = Factory :order,  :study => @study, :assets => [@asset2], :project => @project
+        @order4 = Factory :order_with_submission,  :study => @study, :assets => [@asset2], :project => @project
+
+        @submission = @order1.submission
+        @submission.orders.push(@order2)
+        @submission.orders.push(@order3)
+
+        @sequencing_request = Factory :request_with_sequencing_request_type, :submission => @submission
+        @request = Factory :request, :order => @order1, :asset => @asset, :submission => @submission
+        @request2 = Factory :request, :order => @order2, :submission => @submission
+
+        @request3 = Factory :request, :order => @order4, :submission => @order4.submission
+        @sequencing_request2 = Factory :request_with_sequencing_request_type, :submission => @order4.submission
+      end
+      should "the sequencing requests are included" do
+        assert_equal 1, @order1.requests.length
+        assert_equal 1, @order2.requests.length
+        assert_equal 0, @order3.requests.length
+        assert_equal 3, @submission.requests.length
+        assert_equal 2, @submission.requests.for_order_including_submission_based_requests(@order1).length
+        assert_equal 2, @submission.requests.for_order_including_submission_based_requests(@order2).length
+      end
+      should "an order without requests should at least find the sequencing requests" do
+        assert_equal 1, @submission.requests.for_order_including_submission_based_requests(@order3).length
+      end
+
+      should "when filtering from submission and scoping with an order of another submission, none of the requests are included" do
+        assert_equal 0, @order4.submission.requests.for_order_including_submission_based_requests(@order1).length
+        assert_equal 0, @order4.submission.requests.for_order_including_submission_based_requests(@order2).length
+        assert_equal 0, @order4.submission.requests.for_order_including_submission_based_requests(@order3).length
+        assert_equal 0, @submission.requests.for_order_including_submission_based_requests(@order4).length
+      end
+
+      should "requests from other submission behave independently" do
+        assert_equal 1, @order4.requests.length
+        assert_equal 2, @order4.submission.requests.length
+        assert_equal 2, @order4.submission.requests.for_order_including_submission_based_requests(@order4).length
+      end
+
+      should "can be used as any other request scope" do
+        assert_equal 2, Request.for_order_including_submission_based_requests(@order1).length
+        assert_equal 2, Request.for_order_including_submission_based_requests(@order2).length
+        assert_equal 1, Request.for_order_including_submission_based_requests(@order3).length
+        assert_equal 2, Request.for_order_including_submission_based_requests(@order4).length
+      end
+    end
+
     context "#next_request" do
       setup do
         @sample = Factory :sample
@@ -400,5 +460,6 @@ class RequestTest < ActiveSupport::TestCase
       end
 
     end
+
   end
 end

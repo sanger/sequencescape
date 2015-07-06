@@ -199,15 +199,6 @@ Given /^I have an (event|external release event) with uuid "([^"]*)"$/ do |model
   set_uuid_for(model.gsub(/\s+/, '_').methodize.camelize.constantize.create!(:message => model), uuid_value)
 end
 
-Given /^I have a billing event with UUID "([^\"]+)"$/ do |uuid_value|
-  project = Factory :project, :name => "Test Project"
-  step(%Q{the project "Test Project" a budget division "Human variation"})
-  request = Request.create!(:request_type => RequestType.find_by_key('paired_end_sequencing'))
-  request.request_metadata.update_attributes!(:read_length => 100, :library_type => "Standard" )
-  billing_event = Factory :billing_event, :project => project, :request => request
-  set_uuid_for(billing_event, uuid_value)
-end
-
 Given /^a (plate|well) with uuid "([^"]*)" exists$/ do |model,uuid_value|
   set_uuid_for(Factory(model.to_sym), uuid_value)
 end

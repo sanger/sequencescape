@@ -1444,8 +1444,8 @@ x10_pipelines = ['(spiked in controls)','(no controls)'].each do |type|
       pipeline.request_types = x10_requests_types
     end
 end
-st_x10_pipelines = ['(spiked in controls) Striptube'].each do |type|
-  SequencingPipeline.create!(
+st_x10_pipelines = ['(spiked in controls) from strip-tubes'].each do |type|
+  UnrepeatableSequencingPipeline.create!(
     :name => "HiSeq X PE #{type}",
       :automated => false,
       :active => true,

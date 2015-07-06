@@ -33,17 +33,16 @@ module Request::Statemachine
   def self.included(base)
     base.class_eval do
       extend ClassMethods
-      include Request::BillingStrategy
 
       ## State machine
       aasm_column :state
       aasm_state :pending
-      aasm_state :started,   :enter => :on_started
-      aasm_state :failed,    :enter => :on_failed
-      aasm_state :passed,    :enter => :on_passed
-      aasm_state :cancelled, :enter => :on_cancelled
-      aasm_state :blocked,   :enter => :on_blocked
-      aasm_state :hold,      :enter => :on_hold
+      aasm_state :started,   :after_enter => :on_started
+      aasm_state :failed,    :after_enter => :on_failed
+      aasm_state :passed,    :after_enter => :on_passed
+      aasm_state :cancelled, :after_enter => :on_cancelled
+      aasm_state :blocked,   :after_enter => :on_blocked
+      aasm_state :hold,      :after_enter => :on_hold
       aasm_initial_state :pending
 
       aasm_event :hold do
@@ -56,16 +55,19 @@ module Request::Statemachine
       end
 
       aasm_event :pass do
-        transitions :to => :passed, :from => [:started], :on_transition => :charge_to_project
+        transitions :to => :passed, :from => [:started]
       end
 
       aasm_event :fail do
-        transitions :to => :failed, :from => [:started], :on_transition => :charge_internally
+        transitions :to => :failed, :from => [:started]
       end
 
-      aasm_event :change_decision do
-        transitions :to => :failed, :from => [:passed],  :on_transition => :refund_project
-        transitions :to => :passed, :from => [:failed], :on_transition => :charge_to_project
+      aasm_event :retrospective_pass do
+        transitions :to => :passed, :from => [:failed]
+      end
+
+      aasm_event :retrospective_fail do
+        transitions :to => :failed, :from => [:passed]
       end
 
       aasm_event :block do
@@ -106,8 +108,8 @@ module Request::Statemachine
 
       aasm_event :fail_from_upstream do
         transitions :to => :cancelled, :from => [:pending]
-        transitions :to => :failed,    :from => [:started], :on_transition => :charge_internally
-        transitions :to => :failed,    :from => [:passed],  :on_transition => :refund_project
+        transitions :to => :failed,    :from => [:started]
+        transitions :to => :failed,    :from => [:passed]
       end
 
       # new version of combinable named_scope
@@ -149,6 +151,13 @@ module Request::Statemachine
       end
     end
   end
+
+  def change_decision!
+    Rails.logger.warn('Change decision is being deprecated in favour of retrospective_pass and retrospective_fail!')
+    retrospective_fail! if passed?
+    retrospective_pass! if failed?
+  end
+  deprecate :change_decision!
 
   def on_failed
 
