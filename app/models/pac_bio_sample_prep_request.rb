@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2013,2014,2015 Genome Research Ltd.
 class PacBioSamplePrepRequest < Request
 
   has_metadata :as => Request do
@@ -20,6 +20,7 @@ class PacBioSamplePrepRequest < Request
 
   def on_started
     target_asset.generate_name(asset.display_name.gsub(':','-'))
+    target_asset.save
   end
 
   def on_passed

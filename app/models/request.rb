@@ -96,7 +96,6 @@ class Request < ActiveRecord::Base
   belongs_to :item
 
   has_many :failures, :as => :failable
-  has_many :billing_events
 
   belongs_to :request_type, :inverse_of => :requests
   delegate :billable?, :to => :request_type, :allow_nil => true
