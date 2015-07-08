@@ -1,4 +1,4 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file, 
+# This file is auto-generated from the current state of the database. Instead of editing this file,
 # please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
@@ -21,14 +21,6 @@ ActiveRecord::Schema.define(:version => 20150708130846) do
 
   add_index "aliquot_indices", ["aliquot_id"], :name => "index_aliquot_indices_on_aliquot_id", :unique => true
   add_index "aliquot_indices", ["lane_id", "aliquot_index"], :name => "index_aliquot_indices_on_lane_id_and_aliquot_index", :unique => true
-
-  create_table "aliquot_indicies", :force => true do |t|
-    t.integer  "aliquot_id",    :null => false
-    t.integer  "lane_id",       :null => false
-    t.integer  "aliquot_index", :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",                    :null => false
