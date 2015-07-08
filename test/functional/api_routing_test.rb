@@ -30,7 +30,7 @@ class ApiRoutingTest < ActionController::TestCase
 
       resources_with_nesting.each do |parent, resources|
         resources.each do |resource|
-          with_options(:"#{parent.to_s.singularize}_idf" => '67890', :controller => "api/#{resource}") do |check|
+          with_options(:"#{parent.to_s.singularize}_id" => '67890', :controller => "api/#{resource}") do |check|
             yield(check, "/0_5/#{parent}/67890/#{resource}")
 
             # We absolutely, never, ever expose :destroy
