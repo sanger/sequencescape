@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 class NpgActions::AssetsController < ApplicationController
   before_filter :login_required, :except => [ :pass, :fail ]
   before_filter :find_asset, :only => [ :pass, :fail ]
@@ -17,9 +17,6 @@ class NpgActions::AssetsController < ApplicationController
 
   XmlInvalid = Class.new(StandardError)
   rescue_from(XmlInvalid, :with => :rescue_error)
-
-  BillingInvalid = Class.new(StandardError)
-  rescue_from(BillingInvalid, :with => :rescue_error_internal_server_error)
 
   NPGActionInvalid = Class.new(StandardError)
   rescue_from(NPGActionInvalid, :with => :rescue_error_internal_server_error)
@@ -44,8 +41,6 @@ class NpgActions::AssetsController < ApplicationController
             batch.npg_set_state   if ('#{state}' == 'pass')
 
           end
-        rescue BillingException::Base => exception
-          raise BillingInvalid, "There was an error with BillingEvent."
         end
 
         respond_to do |format|

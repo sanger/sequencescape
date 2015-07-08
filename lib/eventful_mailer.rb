@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 class EventfulMailer < ActionMailer::Base
   def confirm_event(receiver, eventful, message, content, milestone, sent_at = Time.now)
     from        "#{configatron.sequencescape_email}"
@@ -23,14 +23,6 @@ class EventfulMailer < ActionMailer::Base
     subject     "#{configatron.mail_prefix} #{eventful.class} #{eventful.id}: #{message}"
     bcc         receiver
     body        :eventful => eventful, :message => message, :content => content
-    sent_on     sent_at
-  end
-
-  def notify_overrun(receiver, eventful, message, run, lane, sent_at = Time.now)
-    from        "#{configatron.sequencescape_email}"
-    subject     "#{configatron.mail_prefix} Sequencing overrun for item #{eventful.id}"
-    bcc         receiver
-    body        :eventful => eventful, :message => message, :run => run, :lane => lane
     sent_on     sent_at
   end
 

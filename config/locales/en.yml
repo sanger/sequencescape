@@ -76,11 +76,6 @@ en:
       valid: Valid bed layout for destination plate %{plate_barcode}
 
   projects:
-    billing_events:
-      created: "You have successfully created a billing event with the reference %{ref}"
-      not_created: "There was a problem creating the billing event"
-      no_charge_refund_attempt: "You can not create a refund for something that has not been charged!"
-      duplicate_refund_attempt: "You can not create a second refund for a charge!"
     status:
       not_approved: "This project has not been approved yet."
     workflows:
@@ -89,11 +84,6 @@ en:
 
   studies:
     about: "Studies bundle together samples and quotas and enable you to make requests for work."
-    billing_events:
-      created: "You have successfully created a billing event with the reference %{ref}"
-      not_created: "There was a problem creating the billing event"
-      no_charge_refund_attempt: "You can not create a refund for something that has not been charged!"
-      duplicate_refund_attempt: "You can not create a second refund for a charge!"
     status:
       not_approved: "This study has not been approved yet."
       not_active: "This study has not been activated yet."
@@ -135,12 +125,6 @@ en:
   batches:
     comments:
       no_comments: "There are no comments yet"
-
-  billing_events:
-    exceptions:
-      uncharged_refund: "No matching charge - Unable to refund!!"
-      over_refund: "The refund you are issuing is for a quantity more than the remain refunds which is %{refunds}"
-      duplicate_refund: "Refund already been issued - Unable to refund!!"
 
   samples:
     name_format: "Sample name can only contain letters, numbers, _ or -"
