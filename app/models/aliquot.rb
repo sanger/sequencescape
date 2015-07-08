@@ -6,6 +6,7 @@
 class Aliquot < ActiveRecord::Base
   include Uuid::Uuidable
   include Api::Messages::FlowcellIO::AliquotExtensions
+  include AliquotIndexer::AliquotScopes
 
   class Receptacle < Asset
     include Transfer::State
@@ -26,7 +27,7 @@ class Aliquot < ActiveRecord::Base
 
     # A receptacle can hold many aliquots.  For example, a multiplexed library tube will contain more than
     # one aliquot.
-    has_many :aliquots, :foreign_key => :receptacle_id, :autosave => true, :dependent => :destroy, :inverse_of => :receptacle, :include => :tag, :order => 'tags.map_id ASC'
+    has_many :aliquots, :foreign_key => :receptacle_id, :autosave => true, :dependent => :destroy, :inverse_of => :receptacle, :include => [:tag,:tag2], :order => 'tag2s_aliquots.map_id ASC, tags.map_id ASC'
     has_one :primary_aliquot, :class_name => 'Aliquot', :foreign_key => :receptacle_id, :order => 'created_at ASC', :readonly => true
 
     # Named scopes for the future
@@ -138,6 +139,8 @@ class Aliquot < ActiveRecord::Base
 
   # An aliquot is an amount of a sample
   belongs_to :sample
+
+  has_one :aliquot_index
 
   # It may have a tag but not necessarily.  If it does, however, that tag needs to be unique within the receptacle.
   # To ensure that there can only be one untagged aliquot present in a receptacle we use a special value for tag_id,

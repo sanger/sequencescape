@@ -87,6 +87,14 @@ Factory.define :comment do |c|
   c.description
 end
 
+Factory.define :aliquot do |a|
+  a.sample  {|s| s.association(:sample) }
+  a.study   {|s| s.association(:study) }
+  a.project {|p| p.association(:project) }
+  a.tag     {|t| t.association(:tag) }
+  a.tag2    {|t| t.association(:tag) }
+end
+
 Factory.define :event do |e|
   e.family          ""
   e.content         ""
