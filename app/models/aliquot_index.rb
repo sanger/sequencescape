@@ -9,6 +9,6 @@ class AliquotIndex < ActiveRecord::Base
 
   validates_presence_of :aliquot
   validates_presence_of :lane
-  validates_numericality_of :aliquot_index, :only_integer => true, :greater_than => 0, :allow_blank? => false
+  validates_numericality_of :aliquot_index, :only_integer => true, :greater_than => 0, :less_than_or_equal_to => 999, :allow_blank? => false
 
 end

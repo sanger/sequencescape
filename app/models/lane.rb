@@ -4,6 +4,7 @@
 class Lane < Aliquot::Receptacle
   include Api::LaneIO::Extensions
   include LocationAssociation::Locatable
+  include AliquotIndexer::Indexable
 
   LIST_REASONS_NEGATIVE = [
     "Failed on yield but sufficient data for experiment",
@@ -30,4 +31,5 @@ class Lane < Aliquot::Receptacle
   has_one_as_child(:spiked_in_buffer, :conditions => { :sti_type => 'SpikedBuffer' })
 
   has_many :aliquot_indicies, :inverse_of => :lane, :class_name => 'AliquotIndex'
+
 end

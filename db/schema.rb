@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150708105440) do
+ActiveRecord::Schema.define(:version => 20150708130846) do
 
   create_table "aliquot_indices", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
@@ -19,8 +19,8 @@ ActiveRecord::Schema.define(:version => 20150708105440) do
     t.datetime "updated_at"
   end
 
-  add_index "aliquot_indices", ["aliquot_id"], :name => "fk_aliquot_indices_to_aliquots"
-  add_index "aliquot_indices", ["lane_id"], :name => "fk_aliquot_indices_to_assets"
+  add_index "aliquot_indices", ["aliquot_id"], :name => "index_aliquot_indices_on_aliquot_id", :unique => true
+  add_index "aliquot_indices", ["lane_id", "aliquot_index"], :name => "index_aliquot_indices_on_lane_id_and_aliquot_index", :unique => true
 
   create_table "aliquot_indicies", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
