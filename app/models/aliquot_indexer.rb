@@ -15,7 +15,10 @@ class AliquotIndexer
 
   module Indexable
     def index_aliquots
-      AliquotIndexer.index(self)
+      # Skip indexing if already present. Makes the call idempotent and also
+      # reduces the downtime required for the initial migration. Race conditions
+      # are unlikely, and will be pretty harmless if they do occur.
+      AliquotIndexer.index(self) unless aliquot_indicies.present?
     end
   end
 
