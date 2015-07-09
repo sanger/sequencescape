@@ -27,13 +27,12 @@ module BatchesHelper
     ) {
       # NOTE: XmlBuilder has a method called 'tag' so we have to say we want the element 'tag'!
       xml.tag!(:tag, :tag_id => aliquot.tag.id) {
-        xml.index             aliquot.tag.map_id
+        xml.index             aliquot.aliquot_index_value
         xml.expected_sequence aliquot.tag.oligo
         xml.tag_group_id      aliquot.tag.tag_group_id
       } unless aliquot.tag.nil?
 
       xml.tag2(:tag2, :tag2_id => aliquot.tag2.id) {
-        xml.index             aliquot.tag2.map_id
         xml.expected_sequence aliquot.tag2.oligo
         xml.tag_group_id      aliquot.tag2.tag_group_id
       } unless aliquot.tag2.nil?

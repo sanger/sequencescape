@@ -142,6 +142,10 @@ class Aliquot < ActiveRecord::Base
 
   has_one :aliquot_index
 
+  def aliquot_index_value
+    aliquot_index.try(:aliquot_index)||tag.map_id
+  end
+
   # It may have a tag but not necessarily.  If it does, however, that tag needs to be unique within the receptacle.
   # To ensure that there can only be one untagged aliquot present in a receptacle we use a special value for tag_id,
   # rather than NULL which does not work in MySQL.  It also works because the unassigned tag ID never gets matched
