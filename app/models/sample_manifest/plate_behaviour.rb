@@ -11,6 +11,9 @@ module SampleManifest::PlateBehaviour
   end
 
   class Base
+
+    include SampleManifest::CoreBehaviour::NoSpecializedValidation
+
     def initialize(manifest)
       @manifest = manifest
     end

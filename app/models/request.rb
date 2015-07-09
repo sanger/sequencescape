@@ -503,4 +503,6 @@ class Request < ActiveRecord::Base
   def library_creation?
     false
   end
+
+  def manifest_processed; end
 end

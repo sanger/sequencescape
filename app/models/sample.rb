@@ -446,4 +446,6 @@ class Sample < ActiveRecord::Base
     self.update_attribute(:consent_withdrawn, true)
   end
 
+  delegate :specialized_from_manifest=, :to => :primary_receptacle
+
 end

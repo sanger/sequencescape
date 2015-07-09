@@ -80,7 +80,9 @@ class Aliquot < ActiveRecord::Base
       self.class.name.underscore
     end
 
-    def assign_tag2(tag)
+    def specialized_from_manifest=(*args);end
+
+	def assign_tag2(tag)
       aliquots.each do |aliquot|
         aliquot.tag2 = tag
         aliquot.save!
