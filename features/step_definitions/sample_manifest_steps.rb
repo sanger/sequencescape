@@ -128,12 +128,14 @@ Then /^the samples should be tagged in library and multiplexed library tubes wit
   table.hashes.each do |expected_data|
     lt = LibraryTube.find_by_barcode(expected_data[:tube_barcode].gsub('NT',''))
     assert_equal 1, lt.aliquots.count
-    assert_equal expected_data[:sanger_sample_id], lt.aliquots.first.sample.sanger_sample_id
-    assert_equal expected_data[:tag_group], lt.aliquots.first.tag.try(:tag_group).try(:name)
-    assert_equal expected_data[:tag_index].to_i, lt.aliquots.first.tag.try(:map_id)
-    assert_equal expected_data[:library_type], lt.aliquots.first.library_type
-    assert_equal expected_data[:insert_size_from].to_i, lt.aliquots.first.insert_size_from
-    assert_equal expected_data[:insert_size_to].to_i, lt.aliquots.first.insert_size_to
+    assert_equal expected_data[:sanger_sample_id], lt.aliquots.first.sample.sanger_sample_id, "sanger_sample_id: #{expected_data[:sanger_sample_id]} #{lt.aliquots.first.sample.sanger_sample_id}"
+    assert_equal expected_data[:tag_group], lt.aliquots.first.tag.try(:tag_group).try(:name), "tag_group: #{expected_data[:tag_group]} #{lt.aliquots.first.tag.try(:tag_group).try(:name)}"
+    assert_equal expected_data[:tag_index].to_i, lt.aliquots.first.tag.try(:map_id), "tag_index: #{expected_data[:tag_index]} #{lt.aliquots.first.tag.try(:map_id)}"
+    assert_equal expected_data[:tag2_group], lt.aliquots.first.tag2.try(:tag_group).try(:name)||'', "tag2_group: #{expected_data[:tag2_group]} #{lt.aliquots.first.tag2.try(:tag_group).try(:name)||''}"
+    assert_equal expected_data[:tag2_index].to_i, lt.aliquots.first.tag2.try(:map_id)||0, "tag2_index: #{expected_data[:tag2_index]} #{lt.aliquots.first.tag2.try(:map_id)||''}"
+    assert_equal expected_data[:library_type], lt.aliquots.first.library_type, "library_type: #{expected_data[:library_type]} #{lt.aliquots.first.library_type}"
+    assert_equal expected_data[:insert_size_from].to_i, lt.aliquots.first.insert_size_from, "insert_size_from: #{expected_data[:insert_size_from]} #{lt.aliquots.first.insert_size_from}"
+    assert_equal expected_data[:insert_size_to].to_i, lt.aliquots.first.insert_size_to, "insert_size_to: #{expected_data[:insert_size_to]} #{lt.aliquots.first.insert_size_to}"
     assert pooled_aliquots.delete([expected_data[:sanger_sample_id],expected_data[:tag_index].to_i]), "Couldn't find #{expected_data[:sanger_sample_id]} with #{expected_data[:tag_index]} in MX tube."
   end
   assert pooled_aliquots.empty?, "MX tube contains extra samples: #{pooled_aliquots.inspect}"

@@ -206,10 +206,12 @@ module SampleManifest::InputBehaviour
         next
       else
         validate_sample_container(sample, row) do |message|
+          p message
           sample_errors.push(message)
           next
         end
         validate_specialized_fields(sample,row) do |message|
+          p message
           sample_errors.push(message)
           next
         end
@@ -247,6 +249,7 @@ module SampleManifest::InputBehaviour
     self.last_errors = nil
     self.finished!
   rescue ActiveRecord::RecordInvalid => exception
+    errors.add(:base,exception.message)
     fail_with_errors!(errors.full_messages)
   rescue InvalidManifest => exception
     fail_with_errors!(Array(exception.message).flatten)

@@ -19,7 +19,9 @@ module SampleManifest::Headers
   }
 
   # Used in a number of places, pulled out as not immediately obvious
-  TAG_GROUP_FIELD = 'TAG GROUP (Must be same for all samples)'
+  TAG_GROUP_FIELD = 'TAG GROUP'
+  TAG2_GROUP_FIELD = 'TAG2 GROUP (Fill in for dual Index Only)'
+  TAG2_INDEX_FIELD = 'TAG2 INDEX (Fill in for dual Index Only)'
 
 
   CORE_FIELDS = [
@@ -31,6 +33,8 @@ module SampleManifest::Headers
     'IS RE-SUBMITTED SAMPLE?',
     TAG_GROUP_FIELD,
     'TAG INDEX',
+    TAG2_GROUP_FIELD,
+    TAG2_INDEX_FIELD,
     'LIBRARY TYPE',
     'INSERT SIZE FROM',
     'INSERT SIZE TO'

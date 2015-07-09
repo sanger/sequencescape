@@ -76,6 +76,13 @@ module SampleManifest::MultiplexedLibraryBehaviour
       ['INSERT SIZE FROM','INSERT SIZE TO']
     end
 
+    # Chances are we're going to use the same tag group multiple times. This avoids the need to poll
+    # the database each time, allowing us just to retrieve the list of tags in one go.
+    def tag_group_cache(name)
+      @tag_group_cache ||= Hash.new {|h,new_name| h[new_name] = TagGroup.include_tags.find(:first,:conditions => {:name=>new_name}) }
+      @tag_group_cache[name]
+    end
+
     # There are a lot of things that can go wrong here
     def validate_specialized_fields(sample,row,&block)
 
@@ -92,25 +99,39 @@ module SampleManifest::MultiplexedLibraryBehaviour
 
       return yield "#{sample.sanger_sample_id} has no tag group specified." if row[SampleManifest::Headers::TAG_GROUP_FIELD].blank?
 
-      @tag_group ||= TagGroup.include_tags.first(:conditions => {:name=>row[SampleManifest::Headers::TAG_GROUP_FIELD]})
+      # Tag Group validation
+      tag_group = tag_group_cache(row[SampleManifest::Headers::TAG_GROUP_FIELD])
+      yield "Couldn't find a tag group called '#{row[SampleManifest::Headers::TAG_GROUP_FIELD]}'" if tag_group.nil?
+      yield "#{tag_group.name} doesn't include a tag with index #{row['TAG INDEX']}" if tag_group.tags.detect {|tag| tag.map_id == row['TAG INDEX'].to_i}.nil?
 
-      yield "Couldn't find a tag group called '#{row[SampleManifest::Headers::TAG_GROUP_FIELD]}'" if @tag_group.nil?
-      yield "You can only use one tag group per library. You specified both #{@tag_group.name} and #{row[SampleManifest::Headers::TAG_GROUP_FIELD]}" if @tag_group.name != row[SampleManifest::Headers::TAG_GROUP_FIELD]
-      yield "#{@tag_group.name} doesn't include a tag with index #{row['TAG INDEX']}" if @tag_group.tags.detect {|tag| tag.map_id == row['TAG INDEX'].to_i}.nil?
+      # Keep track if our first row is dual indexed or not.
+      @dual_indexed = row[SampleManifest::Headers::TAG2_GROUP_FIELD].present? if @dual_indexed.nil?
+      return yield "All samples in pool must have the same number of tags" unless @dual_indexed == row[SampleManifest::Headers::TAG2_GROUP_FIELD].present?
+      return unless @dual_indexed
+
+      tag2_group = tag_group_cache(row[SampleManifest::Headers::TAG2_GROUP_FIELD])
+      yield "Couldn't find a tag group called '#{row[SampleManifest::Headers::TAG_GROUP_FIELD]}' for tag 2" if tag2_group.nil?
+      yield "#{tag2_group.name} doesn't include a tag with index #{row[SampleManifest::Headers::TAG2_INDEX_FIELD]}" if tag2_group.tags.detect {|tag| tag.map_id == row[SampleManifest::Headers::TAG2_INDEX_FIELD].to_i}.nil?
 
     end
 
     def specialized_fields(row)
-      # In practice the tag group should be loaded by this stage. However we double check, just to avoid nasty bugs in future
-      @tag_group ||= TagGroup.include_tags.first(:conditions => {:name=>row[SampleManifest::Headers::TAG_GROUP_FIELD]})
+
+      tag_group  = tag_group_cache(row[SampleManifest::Headers::TAG_GROUP_FIELD])
+      tag2_group = tag_group_cache(row[SampleManifest::Headers::TAG2_GROUP_FIELD])
+
       {
         :specialized_from_manifest => {
-          :tag_id           => @tag_group.tags.detect {|tag| tag.map_id == row['TAG INDEX'].to_i}.id,
+          :tag_id           => tag_group.tags.detect {|tag| tag.map_id == row['TAG INDEX'].to_i}.id,
           :library_type     => row['LIBRARY TYPE'],
           :insert_size_from => row['INSERT SIZE FROM'].to_i,
           :insert_size_to   => row['INSERT SIZE TO'].to_i
         }
-      }
+      }.tap do |params|
+        if row[SampleManifest::Headers::TAG2_GROUP_FIELD].present?
+          params[:specialized_from_manifest].merge!(:tag2_id => tag2_group.tags.detect {|tag| tag.map_id == row[SampleManifest::Headers::TAG2_INDEX_FIELD].to_i}.id )
+        end
+      end
     end
   end
 

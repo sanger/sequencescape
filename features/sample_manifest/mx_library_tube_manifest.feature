@@ -19,7 +19,6 @@ Feature: Sample manifest
     When I follow "Sample Manifests"
     Then I should see "Create manifest for multiplexed libraries"
 
-  Scenario: Create a 1D tube manifest without processing the manifest
     When I follow "Create manifest for multiplexed libraries"
     Then I should see "Barcode printer"
     When I select "Test study" from "Study"
@@ -40,7 +39,9 @@ Feature: Sample manifest
     And study "Test study" should have 5 samples
     Then I should see the manifest table:
       | Contains                  | Study      | Supplier           | Manifest       | Upload          | Errors | State                | Created by |
-      | 5 multiplexed_libraries  | Test study | Test supplier name | Blank manifest | Upload manifest |        | No manifest uploaded | john       |
+      | 5 multiplexed_libraries   | Test study | Test supplier name | Blank manifest | Upload manifest |        | No manifest uploaded | john       |
+
+  Scenario: Create a mx manifest
 
     When I fill in "File to upload" with the file "test/data/multiplexed_library_manifest.csv"
     And I press "Upload manifest"
@@ -62,11 +63,43 @@ Feature: Sample manifest
       | tube_sample_5         | eeee          | false                      | 9606            |
 
     And the samples should be tagged in library and multiplexed library tubes with:
-      | tube_barcode | sanger_sample_id      | tag_group      | tag_index | library_type | insert_size_from | insert_size_to |
-      | NT81         | tube_sample_1         | test tag group | 1         | Standard     | 100              | 200            |
-      | NT82         | tube_sample_2         | test tag group | 2         | Standard     | 100              | 200            |
-      | NT83         | tube_sample_3         | test tag group | 3         | Standard     | 100              | 200            |
-      | NT84         | tube_sample_4         | test tag group | 5         | Standard     | 100              | 200            |
-      | NT85         | tube_sample_5         | test tag group | 7         | Standard     | 100              | 200            |
+      | tube_barcode | sanger_sample_id      | tag_group      | tag_index | library_type | insert_size_from | insert_size_to | tag2_group | tag2_index |
+      | NT81         | tube_sample_1         | test tag group | 1         | Standard     | 100              | 200            |            |            |
+      | NT82         | tube_sample_2         | test tag group | 2         | Standard     | 100              | 200            |            |            |
+      | NT83         | tube_sample_3         | test tag group | 3         | Standard     | 100              | 200            |            |            |
+      | NT84         | tube_sample_4         | test tag group | 5         | Standard     | 100              | 200            |            |            |
+      | NT85         | tube_sample_5         | test tag group | 7         | Standard     | 100              | 200            |            |            |
+
+Scenario: Create a dual indexed mx manifest
+
+    Given I have a tag group called "test tag group2" with 2 tags
+    And I have a tag group called "test tag group3" with 2 tags
+
+    When I fill in "File to upload" with the file "test/data/multiplexed_di_library_manifest.csv"
+    And I press "Upload manifest"
+    Given 1 pending delayed jobs are processed
+    When I follow "View all manifests"
+    Then print any manifest errors for debugging
+    Then I should see the manifest table:
+      | Contains                  | Study      | Supplier           | Manifest       | Upload              | Errors | State     | Created by |
+      | 5 multiplexed_libraries  | Test study | Test supplier name | Blank manifest | Completed manifest  |        | Completed | john       |
+    When I follow "Manifest for Test study"
+    Then I should see "NT81M"
+
+    Then the samples table should look like:
+      | sanger_sample_id      | supplier_name | empty_supplier_sample_name | sample_taxon_id |
+      | tube_sample_1         | aaaa          | false                      | 9606            |
+      | tube_sample_2         | bbbb          | false                      | 9606            |
+      | tube_sample_3         | cccc          | false                      | 9606            |
+      | tube_sample_4         | dddd          | false                      | 9606            |
+      | tube_sample_5         | eeee          | false                      | 9606            |
+
+    And the samples should be tagged in library and multiplexed library tubes with:
+      | tube_barcode | sanger_sample_id      | tag_group       | tag_index | tag2_group      | tag2_index | library_type | insert_size_from | insert_size_to |
+      | NT81         | tube_sample_1         | test tag group  | 1         | test tag group2 | 1          | Standard     | 100              | 200            |
+      | NT82         | tube_sample_2         | test tag group  | 2         | test tag group2 | 1          | Standard     | 100              | 200            |
+      | NT83         | tube_sample_3         | test tag group  | 3         | test tag group2 | 1          | Standard     | 100              | 200            |
+      | NT84         | tube_sample_4         | test tag group3 | 1         | test tag group2 | 1          | Standard     | 100              | 200            |
+      | NT85         | tube_sample_5         | test tag group3 | 2         | test tag group2 | 1          | Standard     | 100              | 200            |
 
 
