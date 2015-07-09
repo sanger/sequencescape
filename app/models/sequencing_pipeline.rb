@@ -56,7 +56,11 @@ class SequencingPipeline < Pipeline
   end
 
   def post_release_batch(batch, user)
-    batch.assets.each(&:index_aliquots)
+    # We call compact to handle ControlRequests which may have no target asset.
+    # In practice this isn't required, as we don't use control lanes any more.
+    # However some old features still use them, and until this behaviour is completely
+    # deprecated we should leave it here.
+    batch.assets.compact.uniq.each(&:index_aliquots)
     Messenger.create!(:target=>batch,:template=>'FlowcellIO',:root=>'flowcell')
   end
 
