@@ -81,8 +81,10 @@ class Aliquot < ActiveRecord::Base
     end
 
     def specialized_from_manifest=(*args);end
+    def library_information;end
+    def library_information=(*args);end
 
-	def assign_tag2(tag)
+    def assign_tag2(tag)
       aliquots.each do |aliquot|
         aliquot.tag2 = tag
         aliquot.save!

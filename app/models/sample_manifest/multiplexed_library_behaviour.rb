@@ -30,7 +30,8 @@ module SampleManifest::MultiplexedLibraryBehaviour
           :sample    => sample,
           :container => {
             :barcode => sample.primary_receptacle.sanger_human_barcode
-          }
+          },
+          :library_information => sample.primary_receptacle.library_information
         }
       end
     end
