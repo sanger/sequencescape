@@ -190,7 +190,7 @@ class Api::Messages::FlowcellIO < Api::Base
       end
       with_association(:tag2) do
         map_attribute_to_json_attribute(:oligo, 'tag2_sequence')
-        map_attribute_to_json_attribute(:tag_group_id, 'tag2__set_id_lims')
+        map_attribute_to_json_attribute(:tag_group_id, 'tag2_set_id_lims')
         with_association(:tag_group) do
           map_attribute_to_json_attribute(:name, 'tag2_set_name')
         end
