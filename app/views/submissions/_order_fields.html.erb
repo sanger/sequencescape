@@ -23,6 +23,8 @@
     SCAPE.submission.pre_capture_plex_group = null;
     SCAPE.submission.show_gigabses_expected = <%= @presenter.order.collect_gigabases_expected? %>;
 
+    SCAPE.submission.cross_compatible = <%= @presenter.cross_compatible? %>;
+
     <% unless @presenter.order.new_record? -%>
     $(function(){
       $('#order-template').

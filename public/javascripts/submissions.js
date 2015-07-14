@@ -229,12 +229,12 @@
   var validateOrder = function(event) {
     var currentPane = $(event.target).submission('currentPane');
 
-    var studyId     = currentPane.find('.study_id').val();
+    var studyId     = currentPane.find('.study_id').val()||currentPane.find('.cross_study')[0].checked;
 
     // TODO This should validate that the project name is in the list but the
     // autocomplete callback doesn't seem to fire properly so this is a bit of
     // a kludge around that.
-    var projectName = currentPane.find('.submission_project_name').val();
+    var projectName = currentPane.find('.submission_project_name').val()||currentPane.find('.cross_project')[0].checked;
     var hasAssets   = currentPane.submission('hasAssets');
 
 
@@ -282,7 +282,21 @@
       removeAttr('disabled');
 
 
-    // if this is not a sequencing order remove the lanes_of_sequencing_required stuff
+    // Enable the cross study/project buttons if appropriate
+    if (SCAPE.submission.cross_compatible === false) {
+      newOrder.find('.cross-compatible').remove();
+    }
+
+    newOrder.find('.cross_study').bind('change',function(e){
+      newOrder.find('.study_id').prop('disabled',this.checked);
+      validateOrder(e);
+    })
+
+    newOrder.find('.cross_project').bind('change',function(e){
+      newOrder.find('.submission_project_name').prop('disabled',this.checked);
+      validateOrder(e);
+    })
+        // if this is not a sequencing order remove the lanes_of_sequencing_required stuff
     if (SCAPE.submission.is_a_sequencing_order === false) {
       newOrder.find('.lanes-of-sequencing').remove();
     }
@@ -301,7 +315,7 @@
       minLength : 3
     });
 
-    // iAnd gigabase stuff is only for library creation
+    // And gigabase stuff is only for library creation
     if (SCAPE.submission.show_gigabses_expected === false) {
       newOrder.find('.gigabases-expected').remove();
     }

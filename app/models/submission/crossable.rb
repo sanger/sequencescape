@@ -9,4 +9,8 @@ module Submission::Crossable
   def cross_project_allowed
     assets.any? {|a| a.projects.uniq.count > 1 }
   end
+
+  def cross_compatible?
+    true
+  end
 end

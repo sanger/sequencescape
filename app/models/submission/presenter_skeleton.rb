@@ -30,6 +30,9 @@ class Submission::PresenterSkeleton
     lanes_from_request_counting
   end
 
+  def cross_compatible?
+  end
+
   def lanes_from_request_options
     return order.request_options.fetch(:multiplier, {}).values.last||1 if order.request_types[-2].nil?
 
