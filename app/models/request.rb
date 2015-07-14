@@ -92,11 +92,18 @@ class Request < ActiveRecord::Base
     }
   }
 
+  named_scope :for_order_including_submission_based_requests, lambda {|order|
+    # To obtain the requests for an order and the sequencing requests of its submission (as they are defined
+    # as a common element for any order in the submission)
+    {
+      :conditions => ['requests.order_id=? OR (requests.order_id IS NULL AND requests.submission_id=?)', order.id, order.submission.id]
+    }
+  }
+
   belongs_to :pipeline
   belongs_to :item
 
   has_many :failures, :as => :failable
-  has_many :billing_events
 
   belongs_to :request_type, :inverse_of => :requests
   delegate :billable?, :to => :request_type, :allow_nil => true

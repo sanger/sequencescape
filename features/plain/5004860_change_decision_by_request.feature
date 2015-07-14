@@ -1,5 +1,5 @@
 # rake features FEATURE=features/plain/5004860_change_decision_by_request.feature
-Feature: Change decision for request state, asset qc_state and refund billing
+Feature: Change decision for request state and asset qc_state
   Background:
     Given sequencescape is setup for 5004860
     Given I am logged in as "John Doe"
@@ -51,23 +51,11 @@ Feature: Change decision for request state, asset qc_state and refund billing
     Then I should see "failed"
     And I should see "Update. Below you find the new situation."
 
-  Scenario: Select to change Billing State, select a combobox value, not fill comment -> Error
-    When I check "Update Billing:"
-    And I select "refund" from "Billing State Available"
-    And I fill in "Description for billing event:" with "Refund as asked user YXZ"
-    And I fill in "Reason for this action:" with "User Smith asked to modify this status"
-    When I press "Save changes"
-    Then I should see "Update. Below you find the new situation."
-
   Scenario: Case Complete.
     When I check "Change decision:"
     And I check "Update Asset QC State:"
     And I select "failed" from "Asset QC State Available"
-    And I check "Update Billing:"
-    And I select "refund" from "Billing State Available"
-    And I fill in "Description for billing event:" with "Refund as asked user YXZ"
     And I fill in "Reason for this action:" with "User Smith asked to modify this status"
     When I press "Save changes"
     Then I should see "failed"
-    And I should see "refund"
     And I should see "Update. Below you find the new situation."

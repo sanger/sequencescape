@@ -33,7 +33,9 @@ class Submission < ActiveRecord::Base
   end
 
   def add_comment(description,user)
-    orders.map {|o| o.add_comment(description,user) }.flatten
+    requests.where_is_not_a?(TransferRequest).map do |request|
+      request.add_comment(description,user)
+    end
   end
 
   cattr_reader :per_page
