@@ -32,7 +32,7 @@ module BatchesHelper
         xml.tag_group_id      aliquot.tag.tag_group_id
       } unless aliquot.tag.nil?
 
-      xml.tag2(:tag2, :tag2_id => aliquot.tag2.id) {
+      xml.tag(:tag2_id => aliquot.tag2.id) {
         xml.expected_sequence aliquot.tag2.oligo
         xml.tag_group_id      aliquot.tag2.tag_group_id
       } unless aliquot.tag2.nil?
