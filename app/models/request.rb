@@ -55,10 +55,9 @@ class Request < ActiveRecord::Base
       :joins => joins + [
         'INNER JOIN maps AS pw_location ON pw.map_id=pw_location.id',
         'INNER JOIN container_associations ON container_associations.content_id=pw.id',
-        'INNER JOIN submissions ON requests.submission_id=submissions.id',
-        'INNER JOIN uuids ON uuids.resource_id=submissions.id AND uuids.resource_type="Submission"'
+        'INNER JOIN uuids ON uuids.resource_id=requests.submission_id AND uuids.resource_type="Submission"'
       ],
-      :group => 'submissions.id',
+      :group => 'requests.submission_id',
       :conditions => [
         'requests.sti_type NOT IN (?) AND container_associations.container_id=?',
         [TransferRequest,*Class.subclasses_of(TransferRequest)].map(&:name), plate.id
@@ -116,6 +115,8 @@ class Request < ActiveRecord::Base
   belongs_to :submission, :inverse_of => :requests
   belongs_to :order, :inverse_of => :requests
 
+  has_many :submission_siblings, :through => :submission, :source => :requests, :class_name => 'Request', :conditions => {:request_type_id => '#{request_type_id}'}
+
   named_scope :with_request_type_id, lambda { |id| { :conditions => { :request_type_id => id } } }
 
   named_scope :for_pacbio_sample_sheet, :include => [{:target_asset=>:map},:request_metadata]
@@ -134,6 +135,14 @@ class Request < ActiveRecord::Base
     self.initial_project_id = project_id
   end
 
+
+  def submission_plate_count
+    submission.requests.find(:all,
+      :conditions=>{:request_type_id=>request_type_id},
+      :joins=>'LEFT JOIN container_associations AS spca ON spca.content_id = requests.asset_id',
+      :group=>'spca.container_id'
+    ).count
+  end
 
 
   def project=(project)
@@ -471,6 +480,10 @@ class Request < ActiveRecord::Base
     # Does not need anything here
   end
 
+  def submission_siblings
+    submission.requests.with_request_type_id(request_type_id)
+  end
+
   def role
     order.try(:role)
   end
@@ -490,4 +503,6 @@ class Request < ActiveRecord::Base
   def library_creation?
     false
   end
+
+  def manifest_processed; end
 end

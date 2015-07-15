@@ -1,7 +1,7 @@
 namespace :uat do
   desc "Establishes an environment for UAT..."
   # Built from this task as the seeds don't guarantee an accurate reflection of some key production tables
-  # Plus there a whole load of usefult things in the database that nonetheless don't belong in seeds
+  # Plus there a whole load of useful things in the database that nonetheless don't belong in seeds
   task :setup, [:db_file,:expected_env] => :environment do |t,args|
 
     class PlateBarcode < ActiveResource::Base
@@ -145,6 +145,10 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
       end
 
       puts "Seeding!"
+
+      puts "Creating basic template..."
+
+      PlateTemplate.create!(:name=>'Empty Template')
 
       puts "Setting up projects..."
       Project.create!(

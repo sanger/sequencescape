@@ -48,7 +48,7 @@ Feature: I wish to create samples and push them all the way through QC in SLF
     And I select "default layout" from "Template"
     And I select "Test supplier name" from "Supplier"
     And I select "xyz" from "Barcode printer"
-    And I fill in "Count" with "1"
+    And I fill in "Plates required" with "1"
     When I press "Create manifest and print labels"
     Given 3 pending delayed jobs are processed
     When I follow "View all manifests"

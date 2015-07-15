@@ -42,6 +42,7 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME = [
   'supplier',
   'transfer template',
   'tag layout template',
+  'tag 2 layout template',
   'barcode printer',
   'tube',
   'tag group',
@@ -127,6 +128,8 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
   'batch',
 
   'tag layout',
+  'tag 2 layout',
+  'tag2 layout template',
   'plate creation',
   'plate conversion',
   'tube creation',
@@ -180,6 +183,16 @@ Given /^the UUID of the next (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) created wil
   root_class = model_class
   root_class = root_class.superclass until root_class.superclass == ActiveRecord::Base
   Uuid.new(:resource_type => root_class.sti_name, :resource_id => next_id, :external_id => uuid_value).save(false)
+end
+
+Given /^the samples in manifest (\d+) have sequential UUIDs based on "([^\"]+)"$/ do |id,core_uuid|
+  core_uuid = core_uuid.dup  # Oh the irony of modifying a string that then alters Cucumber output!
+  core_uuid << '-' if core_uuid.length == 23
+  core_uuid << "%0#{36-core_uuid.length}d"
+
+  SampleManifest.find(id).samples.each_with_index do |object, index|
+    set_uuid_for(object, core_uuid % (index+1))
+  end
 end
 
 Given /^the UUID of the last (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) created is "([^\"]+)"$/ do |model,uuid_value|

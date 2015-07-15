@@ -119,6 +119,7 @@ module Core::Abilities
       can(:update, Endpoints::SampleManifests::Instance)
       can(:create, Endpoints::Studies::Instance::SampleManifests::CreateForPlates)
       can(:create, Endpoints::Studies::Instance::SampleManifests::CreateForTubes)
+      can(:create, Endpoints::Studies::Instance::SampleManifests::CreateForMultiplexedLibraries)
     end
 
     def registered?

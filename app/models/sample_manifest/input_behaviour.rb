@@ -206,10 +206,17 @@ module SampleManifest::InputBehaviour
         next
       else
         validate_sample_container(sample, row) do |message|
+          p message
+          sample_errors.push(message)
+          next
+        end
+        validate_specialized_fields(sample,row) do |message|
+          p message
           sample_errors.push(message)
           next
         end
       end
+
 
       metadata = Hash[
         SampleManifest::Headers::METADATA_ATTRIBUTES_TO_CSV_COLUMNS.map do |attribute, csv_column|
@@ -225,7 +232,7 @@ module SampleManifest::InputBehaviour
           :sanger_sample_id           => sanger_sample_id,
           :control                    => convert_yes_no_to_boolean(row['IS SAMPLE A CONTROL?']),
           :sample_metadata_attributes => metadata.delete_if { |_,v| v.nil? }
-        }
+        }.merge( specialized_fields(row) )
       ])
     end
 
@@ -242,6 +249,7 @@ module SampleManifest::InputBehaviour
     self.last_errors = nil
     self.finished!
   rescue ActiveRecord::RecordInvalid => exception
+    errors.add(:base,exception.message)
     fail_with_errors!(errors.full_messages)
   rescue InvalidManifest => exception
     fail_with_errors!(Array(exception.message).flatten)

@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 module BatchesHelper
   def purpose_for_plate(plate)
     if plate.plate_purpose.nil? || plate.plate_purpose.name.blank?
@@ -27,10 +27,15 @@ module BatchesHelper
     ) {
       # NOTE: XmlBuilder has a method called 'tag' so we have to say we want the element 'tag'!
       xml.tag!(:tag, :tag_id => aliquot.tag.id) {
-        xml.index             aliquot.tag.map_id
+        xml.index             aliquot.aliquot_index_value
         xml.expected_sequence aliquot.tag.oligo
         xml.tag_group_id      aliquot.tag.tag_group_id
       } unless aliquot.tag.nil?
+
+      xml.tag2(:tag2, :tag2_id => aliquot.tag2.id) {
+        xml.expected_sequence aliquot.tag2.oligo
+        xml.tag_group_id      aliquot.tag2.tag_group_id
+      } unless aliquot.tag2.nil?
 
       xml.bait(:id => aliquot.bait_library.id) {
         xml.name aliquot.bait_library.name

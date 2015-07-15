@@ -39,7 +39,7 @@ development:
     mail_prefix: "[DEVELOPMENT]"
     pac_bio_instrument_api: http://example.com
     pac_bio_smrt_portal_api:  http://example.com
-    phyx_tag:
+    phix_tag:
         tag_group_name: "Control Tag Group 888"
         tag_map_id: 888
     pico_green_url: http://localhost:3003
@@ -115,7 +115,7 @@ test: &TEST
     ldap_server: "ldap.internal.sanger.ac.uk"
     login_url: /login
     mail_prefix: "[DEVELOPMENT]"
-    phyx_tag:
+    phix_tag:
         tag_group_name: "Control Tag Group 888"
         tag_map_id: 888
     pico_green_url: http://localhost:3003
@@ -151,7 +151,7 @@ test: &TEST
     api:
       authorisation_code: cucumber
       flush_response_at: 32768
-    phyx_tag:
+    phix_tag:
         tag_group_name: "Control Tag Group 888"
         tag_map_id: 888
 

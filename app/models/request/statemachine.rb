@@ -6,7 +6,7 @@
 module Request::Statemachine
   COMPLETED_STATE = [ 'passed', 'failed' ]
   OPENED_STATE    = [ 'pending', 'blocked', 'started' ]
-  QUOTA_COUNTED   = [ 'passed', 'pending', 'blocked', 'started' ]
+  ACTIVE = QUOTA_COUNTED   = [ 'passed', 'pending', 'blocked', 'started' ]
   QUOTA_EXEMPTED  = [ 'failed', 'cancelled', 'aborted' ]
 
   module ClassMethods
@@ -154,8 +154,9 @@ module Request::Statemachine
 
   def change_decision!
     Rails.logger.warn('Change decision is being deprecated in favour of retrospective_pass and retrospective_fail!')
-    retrospective_fail! if passed?
-    retrospective_pass! if failed?
+    return retrospective_fail! if passed?
+    return retrospective_pass! if failed?
+    raise StandardError, "Can only use change decision on passed or failed requests"
   end
   deprecate :change_decision!
 

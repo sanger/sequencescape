@@ -26,6 +26,7 @@ class Endpoints::Studies < Core::Endpoint::Base
 
       constructor(:create_for_plates, :create_for_plate!)
       constructor(:create_for_tubes, :create_for_sample_tube!)
+      constructor(:create_for_multiplexed_libraries, :create_for_multiplexed_library!)
     end
   end
 end
