@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 module Tasks::CherrypickHandler
   def self.included(base)
     base.class_eval do
@@ -121,7 +121,15 @@ module Tasks::CherrypickHandler
       wells = Hash[Well.find(@batch.requests.map(&:target_asset_id), :include => :well_attribute).map { |w| [w.id,w] }]
       request_and_well = Hash[@batch.requests.all(:include => :request_metadata).map { |r| [r.id.to_i, [r, wells[r.target_asset_id]]] }]
       used_requests, plates_and_wells, plate_and_requests = [], Hash.new { |h,k| h[k] = [] }, Hash.new { |h,k| h[k] = [] }
-      plates.each do |id, plate_params|
+
+      # If we overflow the plate we create a new one, even if we subsequently clear the fields.
+      plates_with_samples = plates.reject {|pid,rows| rows.values.map(&:values).flatten.all?(&:empty?) }
+
+      if fluidigm_plate.present? && plates_with_samples.count > 1
+        raise Cherrypick::Error, 'Sorry, You cannot pick to multiple fluidigm plates in one batch.'
+      end
+
+      plates_with_samples.each do |id, plate_params|
         # The first time round this loop we'll either have a plate, from the partial_plate, or we'll
         # be needing to create a new one.
         plate = partial_plate

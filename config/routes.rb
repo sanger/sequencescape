@@ -6,9 +6,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :barcode_printers
 
   map.resources :robot_verifications, :collection => {:submission => [:post, :get], :download => [:post]}
-  map.resources :projects, :has_many => :studies, :member => { :related_studies => :get, :collaborators => :get, :follow => :get, :grant_role => :post, :remove_role => :post  } do |project|
-    project.resources :billing_events, :controller => "projects/billing_events", :only => [:index, :show, :new, :create]
-  end
+  map.resources :projects, :has_many => :studies, :member => { :related_studies => :get, :collaborators => :get, :follow => :get, :grant_role => :post, :remove_role => :post  }
 
   #### NPG start ####
   map.with_options(:path_prefix => '/npg_actions', :conditions => { :method => :post, :format => :xml }) do |npg|
@@ -236,7 +234,6 @@ ActionController::Routing::Routes.draw do |map|
       read_only.model :asset_links, :controller => "api/asset_links"
       read_only.model :batch_requests, :controller => "api/batch_requests"
       read_only.asset :batches, :controller => "api/batches"
-      read_only.model :billing_events, :controller => "api/billing_events"
       read_only.model :events, :controller => "api/events"
       read_only.asset :lanes, :controller => "api/lanes"
       read_only.asset :library_tubes, :controller => "api/library_tubes" do |library_tube|

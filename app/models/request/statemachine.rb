@@ -106,6 +106,10 @@ module Request::Statemachine
         transitions :to => :cancelled, :from => [:pending]
       end
 
+      aasm_event :submission_cancelled do
+        transitions :to => :cancelled, :from => [:pending,:cancelled]
+      end
+
       aasm_event :fail_from_upstream do
         transitions :to => :cancelled, :from => [:pending]
         transitions :to => :failed,    :from => [:started]
@@ -202,6 +206,10 @@ module Request::Statemachine
 
   def open?
     ["pending", "started"].include?(self.state)
+  end
+
+  def cancellable?
+    ["pending", "cancelled"].include?(self.state)
   end
 
   def transition_to(target_state)

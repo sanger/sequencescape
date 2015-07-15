@@ -54,19 +54,6 @@ Feature: The XML for the sequencescape API
         <error><message>Unable to find a request for Lane: 1</message></error>
         """
 
-  Scenario: POST XML to change qc_state on a asset. The relative request has a double refund
-    Given a billing event to the request
-    When I POST following XML to change the QC state on the last asset:
-       """
-      <?xml version="1.0" encoding="UTF-8"?><qc_information><message>NPG change status in failed</message></qc_information>
-       """
-    Then the HTTP response should be "500"
-    And the XML response should be:
-        """
-        <?xml version="1.0" encoding="UTF-8"?>
-        <error><message>There was an error with BillingEvent.</message></error>
-        """
-
   Scenario: POST XML to change qc_state on a asset. NPG did this action before
     Given an event to the request
     When I POST following XML to change the QC state on the last asset:

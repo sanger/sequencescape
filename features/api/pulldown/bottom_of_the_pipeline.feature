@@ -153,7 +153,6 @@ And I have a "full" authorised user with the key "cucumber"
     Then the state of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "passed"
      And the state of all the transfer requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "passed"
      And the state of all the pulldown library creation requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "passed"
-     And all of the pulldown library creation requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be billed to their project
 
     Scenarios:
       | pipeline     |
@@ -253,7 +252,6 @@ And I have a "full" authorised user with the key "cucumber"
     Then the state of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "passed"
      And the state of all the transfer requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "passed"
      And the state of all the pulldown library creation requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "<state>"
-     And all of the pulldown library creation requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should not have billing
 
     Scenarios:
       | state     |

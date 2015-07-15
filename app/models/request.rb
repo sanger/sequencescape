@@ -60,7 +60,7 @@ class Request < ActiveRecord::Base
       ],
       :group => 'submissions.id',
       :conditions => [
-        'requests.sti_type NOT IN (?) AND container_associations.container_id=?',
+        'requests.sti_type NOT IN (?) AND container_associations.container_id=? AND submissions.state != "cancelled"',
         [TransferRequest,*Class.subclasses_of(TransferRequest)].map(&:name), plate.id
       ]
     }
@@ -92,11 +92,18 @@ class Request < ActiveRecord::Base
     }
   }
 
+  named_scope :for_order_including_submission_based_requests, lambda {|order|
+    # To obtain the requests for an order and the sequencing requests of its submission (as they are defined
+    # as a common element for any order in the submission)
+    {
+      :conditions => ['requests.order_id=? OR (requests.order_id IS NULL AND requests.submission_id=?)', order.id, order.submission.id]
+    }
+  }
+
   belongs_to :pipeline
   belongs_to :item
 
   has_many :failures, :as => :failable
-  has_many :billing_events
 
   belongs_to :request_type, :inverse_of => :requests
   delegate :billable?, :to => :request_type, :allow_nil => true
@@ -205,6 +212,11 @@ class Request < ActiveRecord::Base
   }
   named_scope :without_asset, :conditions =>  'asset_id is null'
   named_scope :without_target, :conditions =>  'target_asset_id is null'
+  named_scope :excluding_states, lambda { |states|
+    {
+      :conditions => [states.map{|s| '(state != ?)' }.join(" OR "), states].flatten
+    }
+  }
   named_scope :ordered, :order => ["id ASC"]
   named_scope :full_inbox, :conditions => {:state => ["pending","hold"]}
   named_scope :hold, :conditions => {:state => "hold"}
