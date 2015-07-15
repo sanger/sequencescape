@@ -10,7 +10,7 @@ class ImportHistoricalLaneInformation < ActiveRecord::Migration
   end
 
   def self.up
-    min_aliquot = ENV['MIN_ALIQUOT']
+    min_aliquot = ENV['MIN_ALIQUOT']||0
     say "Preparing to migrate: #{AliquotTagMigration::MigratableAliquots.count} aliquots"
     last_id = 0
     dual_tagged_lanes = []
