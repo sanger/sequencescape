@@ -60,7 +60,7 @@ class Request < ActiveRecord::Base
       ],
       :group => 'submissions.id',
       :conditions => [
-        'requests.sti_type NOT IN (?) AND container_associations.container_id=?',
+        'requests.sti_type NOT IN (?) AND container_associations.container_id=? AND submissions.state != "cancelled"',
         [TransferRequest,*Class.subclasses_of(TransferRequest)].map(&:name), plate.id
       ]
     }
@@ -212,6 +212,11 @@ class Request < ActiveRecord::Base
   }
   named_scope :without_asset, :conditions =>  'asset_id is null'
   named_scope :without_target, :conditions =>  'target_asset_id is null'
+  named_scope :excluding_states, lambda { |states|
+    {
+      :conditions => [states.map{|s| '(state != ?)' }.join(" OR "), states].flatten
+    }
+  }
   named_scope :ordered, :order => ["id ASC"]
   named_scope :full_inbox, :conditions => {:state => ["pending","hold"]}
   named_scope :hold, :conditions => {:state => "hold"}

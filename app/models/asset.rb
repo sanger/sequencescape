@@ -38,6 +38,9 @@ class Asset < ActiveRecord::Base
   has_many :requests_as_source, :class_name => 'Request', :foreign_key => :asset_id,        :include => :request_metadata
   has_many :requests_as_target, :class_name => 'Request', :foreign_key => :target_asset_id, :include => :request_metadata
 
+  named_scope :include_requests_as_target, :include => :requests_as_target
+  named_scope :include_requests_as_source, :include => :requests_as_target
+
   #Orders
   has_many :submitted_assets
   has_many :orders, :through => :submitted_assets
