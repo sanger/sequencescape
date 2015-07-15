@@ -42,7 +42,7 @@ class AliquotIndexer
 
   def next_index
     @index += 1
-    next_index if @index == phix_map_id
+    next_index if [phix_map_id,configatron.phix_tag.tag_map_id].include?(@index)
     @index
   end
 
