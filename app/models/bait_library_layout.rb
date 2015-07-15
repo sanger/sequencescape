@@ -3,7 +3,6 @@
 #Copyright (C) 2011,2012 Genome Research Ltd.
 class BaitLibraryLayout < ActiveRecord::Base
   include Uuid::Uuidable
-  include Transfer::WellHelpers
   include ModelExtensions::BaitLibraryLayout
 
   # So we can track who is requesting the layout of the bait libraries

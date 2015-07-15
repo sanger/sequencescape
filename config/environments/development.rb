@@ -32,7 +32,7 @@ config.active_record.observers = [ :request_observer ]
 config.middleware.insert_after(ActionController::Failsafe, "ResponseTimer", File.new(ENV['LOG_TO'], 'w+')) unless ENV['LOG_TO'].nil?
 
 config.after_initialize do
-  Bullet.enable = true
+  Bullet.enable = ENV['WITH_BULLET']=='true'
   Bullet.alert = ENV['NOISY_BULLET']=='true'
-  Bullet.bullet_logger = true
+  Bullet.bullet_logger = ENV['WITH_BULLET']=='true'
 end
