@@ -35,6 +35,7 @@ Feature: Cherrypicking for Pulldown pipeline
     Then I should see "This pipelines has a limit of 2 requests in a batch"
     Then I should see "There are 3 requests available."
 
+ @cifail
  Scenario: Cherrypick for pulldown from 2 submissions from different studies and view worksheet
    Given I have a project called "Test project"
 

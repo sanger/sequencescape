@@ -6,7 +6,7 @@
 module Request::Statemachine
   COMPLETED_STATE = [ 'passed', 'failed' ]
   OPENED_STATE    = [ 'pending', 'blocked', 'started' ]
-  QUOTA_COUNTED   = [ 'passed', 'pending', 'blocked', 'started' ]
+  ACTIVE = QUOTA_COUNTED   = [ 'passed', 'pending', 'blocked', 'started' ]
   QUOTA_EXEMPTED  = [ 'failed', 'cancelled', 'aborted' ]
 
   module ClassMethods
@@ -106,6 +106,10 @@ module Request::Statemachine
         transitions :to => :cancelled, :from => [:pending]
       end
 
+      aasm_event :submission_cancelled do
+        transitions :to => :cancelled, :from => [:pending,:cancelled]
+      end
+
       aasm_event :fail_from_upstream do
         transitions :to => :cancelled, :from => [:pending]
         transitions :to => :failed,    :from => [:started]
@@ -154,8 +158,9 @@ module Request::Statemachine
 
   def change_decision!
     Rails.logger.warn('Change decision is being deprecated in favour of retrospective_pass and retrospective_fail!')
-    retrospective_fail! if passed?
-    retrospective_pass! if failed?
+    return retrospective_fail! if passed?
+    return retrospective_pass! if failed?
+    raise StandardError, "Can only use change decision on passed or failed requests"
   end
   deprecate :change_decision!
 
@@ -201,6 +206,10 @@ module Request::Statemachine
 
   def open?
     ["pending", "started"].include?(self.state)
+  end
+
+  def cancellable?
+    ["pending", "cancelled"].include?(self.state)
   end
 
   def transition_to(target_state)
