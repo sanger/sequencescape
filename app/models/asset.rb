@@ -515,4 +515,9 @@ class Asset < ActiveRecord::Base
     false
   end
 
+  # See Aliquot::Receptacle for handling of assets with contents
+  def tag_count
+    nil
+  end
+
 end
