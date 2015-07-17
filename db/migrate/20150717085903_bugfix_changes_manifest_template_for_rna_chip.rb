@@ -7,16 +7,16 @@ class BugfixChangesManifestTemplateForRnaChip < ActiveRecord::Migration
           :number_of_plates => [6,1]
       }
 
-      SampleManifestTemplate.find_by_name("relevant RNA/ChIP").update_attributes!(
+      SampleManifestTemplate.find_by_name("relevant RNA/ChIP").update_attributes!({
         :asset_type => 'plate',
-      )
+      })
 
-      SampleManifestTemplate.create!(
+      SampleManifestTemplate.create!({
         :name => "relevant RNA/ChIP tube",
         :path => "/data/relevant_rnachip_tube_manifest.xls",
         :cell_map => map,
         :asset_type => '1dtube'
-      )
+      })
     end
   end
 
