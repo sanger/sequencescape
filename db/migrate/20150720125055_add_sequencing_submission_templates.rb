@@ -26,8 +26,6 @@ class AddSequencingSubmissionTemplates < ActiveRecord::Migration
         template_sequencing = template.clone
         template_sequencing.name.gsub!(/$/," - Only Sequencing")
         template_sequencing.submission_class_name = FlexibleSubmission.name
-        # We select just the sequencing part of the submission template parameters. Normally it's the last request, but it could
-        # be different CHECK BEFORE APPLYING
         template_sequencing.submission_parameters[:request_type_ids_list] = template_sequencing.submission_parameters[:request_type_ids_list].last
         template_sequencing.save!
       end
