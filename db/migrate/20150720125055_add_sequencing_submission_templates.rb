@@ -24,9 +24,10 @@ class AddSequencingSubmissionTemplates < ActiveRecord::Migration
     ActiveRecord::Base.transaction do
       self.submission_templates.map {|t| SubmissionTemplate.find_by_name(t)}.compact.each do |template|
         template_sequencing = template.clone
-        template_sequencing.name.gsub!(/IHTP/,"IHTP Only Sequencing")
-        template.submission_class_name = FlexibleSubmission.class.name
-        # We select just the sequencing part of the submission template parameters
+        template_sequencing.name.gsub!(/$/," - Only Sequencing")
+        template_sequencing.submission_class_name = FlexibleSubmission.name
+        # We select just the sequencing part of the submission template parameters. Normally it's the last request, but it could
+        # be different CHECK BEFORE APPLYING
         template_sequencing.submission_parameters[:request_type_ids_list] = template_sequencing.submission_parameters[:request_type_ids_list].last
         template_sequencing.save!
       end
@@ -35,7 +36,7 @@ class AddSequencingSubmissionTemplates < ActiveRecord::Migration
 
   def self.down
     ActiveRecord::Base.transaction do
-      SubmissionTemplate.all.select{|st| st.name.match(/IHTP Only Sequencing/)}.each(&:destroy!)
+      SubmissionTemplate.all.select{|st| st.name.match(/Only Sequencing/)}.each(&:destroy)
     end
   end
 end
