@@ -1,14 +1,12 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 ActionController::Routing::Routes.draw do |map|
   map.resources :reference_genomes
   map.resources :barcode_printers
 
   map.resources :robot_verifications, :collection => {:submission => [:post, :get], :download => [:post]}
-  map.resources :projects, :has_many => :studies, :member => { :related_studies => :get, :collaborators => :get, :follow => :get, :grant_role => :post, :remove_role => :post  } do |project|
-    project.resources :billing_events, :controller => "projects/billing_events", :only => [:index, :show, :new, :create]
-  end
+  map.resources :projects, :has_many => :studies, :member => { :related_studies => :get, :collaborators => :get, :follow => :get, :grant_role => :post, :remove_role => :post  }
 
   #### NPG start ####
   map.with_options(:path_prefix => '/npg_actions', :conditions => { :method => :post, :format => :xml }) do |npg|
@@ -159,8 +157,6 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resource :search, :controller => 'search', :only => [:new, :index]
 
-  map.resources :errors
-
   map.resources :events
 
   map.connect 'batches/all', :controller => 'batches', :action => 'all'
@@ -228,6 +224,8 @@ ActionController::Routing::Routes.draw do |map|
   # You can have the root of your site routed with map.root -- just remember to delete public/index.html.
   map.root :controller => "studies"
 
+  map.health 'health', :controller => 'health', :action => :index
+
   ######  API  #####
   map.with_options(:path_prefix => "/#{API_VERSION}") do |api|
     # Some of our resources are read-only (default behaviour but this just makes it clearer) ...
@@ -236,7 +234,6 @@ ActionController::Routing::Routes.draw do |map|
       read_only.model :asset_links, :controller => "api/asset_links"
       read_only.model :batch_requests, :controller => "api/batch_requests"
       read_only.asset :batches, :controller => "api/batches"
-      read_only.model :billing_events, :controller => "api/billing_events"
       read_only.model :events, :controller => "api/events"
       read_only.asset :lanes, :controller => "api/lanes"
       read_only.asset :library_tubes, :controller => "api/library_tubes" do |library_tube|

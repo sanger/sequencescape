@@ -1281,7 +1281,7 @@ SubmissionTemplate.create!(
 )
 
 
-v4_requests_types = ['a', 'b', 'c'].map do |pipeline|
+v4_requests_types_pe = ['a', 'b', 'c'].map do |pipeline|
   RequestType.create!({
     :key => "illumina_#{pipeline}_hiseq_v4_paired_end_sequencing",
     :name => "Illumina-#{pipeline.upcase} HiSeq V4 Paired end sequencing",
@@ -1294,6 +1294,20 @@ v4_requests_types = ['a', 'b', 'c'].map do |pipeline|
     :product_line => ProductLine.find_by_name("Illumina-#{pipeline.upcase}")
   })
 end
+
+v4_requests_types_se = [
+  RequestType.create!({
+  :key => "illumina_c_hiseq_v4_single_end_sequencing",
+  :name => "Illumina-C HiSeq V4 Single end sequencing",
+  :workflow =>  Submission::Workflow.find_by_key("short_read_sequencing"),
+  :asset_type => "LibraryTube",
+  :order => 2,
+  :initial_state => "pending",
+  :request_class_name => "HiSeqSequencingRequest",
+  :billable => true,
+  :product_line => ProductLine.find_by_name("Illumina-C")
+})]
+
 
 x10_requests_types = ['a', 'b'].map do |pipeline|
   RequestType.create!({
@@ -1355,8 +1369,43 @@ v4_pipelines = ['(spiked in controls)','(no controls)'].each do |type|
           details.delete(:class).create!(details.merge(:workflow => workflow))
         end
       end
-      pipeline.request_types = v4_requests_types
+      pipeline.request_types = v4_requests_types_pe
     end
+
+  SequencingPipeline.create!(
+    :name => "HiSeq v4 SE #{type}",
+      :automated => false,
+      :active => true,
+      :location => Location.find_by_name("Cluster formation freezer"),
+      :group_by_parent => false,
+      :asset_type => "Lane",
+      :sorter => 9,
+      :paginate => false,
+      :max_size => 8,
+      :min_size => 8,
+      :summary => true,
+      :group_name => "Sequencing",
+      :control_request_type_id => 0
+    ) do |pipeline|
+      pipeline.workflow = LabInterface::Workflow.create!(:name => pipeline.name) do |workflow|
+        workflow.locale     = 'Internal'
+        workflow.item_limit = 8
+      end.tap do |workflow|
+        [
+          { :class => SetDescriptorsTask,     :name => 'Specify Dilution Volume',           :sorted => 1, :batched => true },
+          { :class => SetDescriptorsTask,     :name => 'Cluster generation',                :sorted => 3, :batched => true, :lab_activity => true },
+          { :class => AddSpikedInControlTask, :name => 'Add Spiked in Control',             :sorted => 4, :batched => true, :lab_activity => true },
+          { :class => SetDescriptorsTask,     :name => 'Quality control',                   :sorted => 5, :batched => true, :lab_activity => true },
+          { :class => SetDescriptorsTask,     :name => 'Read 1 Lin/block/hyb/load',         :sorted => 6, :batched => true, :interactive => true, :per_item => true, :lab_activity => true }
+        ].select do |task|
+          type ==  '(spiked in controls)' || task[:name] !=  'Add Spiked in Control'
+        end.each do |details|
+          details.delete(:class).create!(details.merge(:workflow => workflow))
+        end
+      end
+      pipeline.request_types = v4_requests_types_se
+    end
+
 end
 
 
@@ -1395,8 +1444,8 @@ x10_pipelines = ['(spiked in controls)','(no controls)'].each do |type|
       pipeline.request_types = x10_requests_types
     end
 end
-st_x10_pipelines = ['(spiked in controls) Striptube'].each do |type|
-  SequencingPipeline.create!(
+st_x10_pipelines = ['(spiked in controls) from strip-tubes'].each do |type|
+  UnrepeatableSequencingPipeline.create!(
     :name => "HiSeq X PE #{type}",
       :automated => false,
       :active => true,

@@ -33,7 +33,9 @@ class Submission < ActiveRecord::Base
   end
 
   def add_comment(description,user)
-    orders.map {|o| o.add_comment(description,user) }.flatten
+    requests.where_is_not_a?(TransferRequest).map do |request|
+      request.add_comment(description,user)
+    end
   end
 
   cattr_reader :per_page
@@ -66,12 +68,23 @@ class Submission < ActiveRecord::Base
   def cancel_all_requests_on_destruction
     ActiveRecord::Base.transaction do
       requests.all.each do |request|
-        request.cancel_before_started!  # Cancel first to prevent event doing something stupid
+        request.submission_cancelled!  # Cancel first to prevent event doing something stupid
         request.events.create!(:message => "Submission #{self.id} as destroyed")
       end
     end
   end
   private :cancel_all_requests_on_destruction
+
+  def cancel_all_requests
+    ActiveRecord::Base.transaction do
+      requests.each(&:submission_cancelled!)
+    end
+  end
+  private :cancel_all_requests
+
+  def requests_cancellable?
+    requests.all?(&:cancellable?)
+  end
 
   def self.render_class
     Api::SubmissionIO

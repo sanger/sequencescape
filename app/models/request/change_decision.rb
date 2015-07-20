@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 class Request::ChangeDecision
   include Validateable
 
@@ -15,10 +15,9 @@ class Request::ChangeDecision
 
   attr_accessor :change_decision_check_box
   attr_accessor :asset_qc_state_check_box
-  attr_accessor :billing_state_check_box
 
   def checkboxes
-    [ self.change_decision_check_box, self.asset_qc_state_check_box, self.billing_state_check_box ]
+    [ self.change_decision_check_box, self.asset_qc_state_check_box ]
   end
   validates_each(:checkboxes) do |record, attribute, list_of_checkbox_values|
     record.errors.add(attribute, 'at least one must be selected') if list_of_checkbox_values.all? { |v| v.blank? or v == '0' }
@@ -34,21 +33,10 @@ class Request::ChangeDecision
   end
   validates_presence_of :asset_qc_state, :unless => :asset_qc_state_absent?
 
-  attr_accessor :billing_event_kind
-  validates_each(:billing_event_kind, :unless => :billing_event_kind_absent?) do |record, attr, value|
-    record.errors.add(:billing_event_kind, 'cannot be same value') unless record.billing.empty? or value != record.billing.first.kind
-  end
-  validates_presence_of :billing_event_kind, :unless => :billing_event_kind_absent?
-  attr_accessor :description_billing
-  validates_presence_of :description_billing, :unless => :billing_event_kind_absent?
-
   attr_accessor :comment
   validates_presence_of :comment
 
   attr_accessor :request
-
-  attr_writer :billing
-  validates_presence_of :billing, :unless => :billing_event_kind_absent?, :message => 'should exist'
 
   attr_accessor :user
   validates_presence_of(:request)
@@ -57,20 +45,12 @@ class Request::ChangeDecision
     attributes.each { |k,v| self.send(:"#{k}=", v) }
   end
 
-  def billing
-    @billing || []
-  end
-
   def state_change?
     self.change_decision_check_box == "1"
   end
 
   def asset_qc_state_absent?
     self.asset_qc_state_check_box == "0" || self.asset_qc_state_check_box.nil?
-  end
-
-  def billing_event_kind_absent?
-    self.billing_state_check_box == "0" || self.billing_state_check_box.nil?
   end
 
   def execute!
@@ -85,7 +65,6 @@ private
       ActiveRecord::Base.transaction do
         perform_decision_change_request_state! if state_change?
         perform_decision_change_asset_qc_state! unless asset_qc_state_absent?
-        perform_decision_change_billing_kind! unless billing_event_kind_absent?
       end
     rescue ActiveRecord::RecordInvalid => exception
       reload_objects
@@ -113,25 +92,5 @@ private
     #self.request.asset.events << Event.new({:message => "Change qc_state from #{previous_state} to  #{asset_qc_state}", :created_by => self.user.login, :family => self.asset_qc_state})
     self.request.target_asset.comments.create!(:description => self.comment, :user_id => self.user.id)
   end
-
-  def perform_decision_change_billing_kind!
-    begin
-      ActiveRecord::Base.transaction do
-        self.billing.each do |bill|
-          next if bill.kind != 'charge' # We don't want to refund, eg. charge internal
-          BillingEvent.change_decision_refund( bill.reference, self.description_billing, self.user.login)
-          project = Project.find(bill.project_id)
-          EventFactory.project_refund_request(project, self.user, bill.reference)
-        end
-      end
-    rescue BillingException::DuplicateRefund
-          self.errors.add(I18n.t("projects.billing_events.duplicate_refund_attempt"))
-          raise ActiveRecord::RecordInvalid, self
-    rescue BillingException::UnchargedRefund
-          self.errors.add(I18n.t("projects.billing_events.no_charge_refund_attempt"))
-          raise ActiveRecord::RecordInvalid, self
-    end
-  end
-
 
 end

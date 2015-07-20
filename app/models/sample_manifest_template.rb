@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2013 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2013,2015 Genome Research Ltd.
 class SampleManifestTemplate < ActiveRecord::Base
   serialize :default_values, Hash
   serialize :cell_map, Hash
@@ -33,6 +33,12 @@ class SampleManifestTemplate < ActiveRecord::Base
       SampleManifestTemplate.create!(
         :name => "full tube layout",
         :path => "/data/full_tube_manifest.xls",
+        :cell_map => map,
+        :asset_type => '1dtube'
+      )
+      SampleManifestTemplate.create!(
+        :name => "relevant RNA/ChIP",
+        :path => "/data/relevant_rnachip_plate_manifest.xls",
         :cell_map => map,
         :asset_type => '1dtube'
       )

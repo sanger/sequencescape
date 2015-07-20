@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2014 Genome Research Ltd.
+#Copyright (C) 2014,2015 Genome Research Ltd.
 module SetupLibraryTypes
   def self.existing_associations_for(request_type)
     {
@@ -65,6 +65,7 @@ RequestType.find_each do |request_type|
       'illumina_a_hiseq_v4_paired_end_sequencing' => [75,125],
       'illumina_b_hiseq_v4_paired_end_sequencing' => [75,125],
       'illumina_c_hiseq_v4_paired_end_sequencing' => [75,125],
+      'illumina_c_hiseq_v4_single_end_sequencing' => [19,50],
       'illumina_a_hiseq_x_paired_end_sequencing' => [150],
       'illumina_b_hiseq_x_paired_end_sequencing' => [150]
       }[request_type.key]||{
@@ -84,6 +85,9 @@ end
   RequestType::Validator.create!(:request_type => rt, :request_option=> "read_length", :valid_options=>[125,75])
 end
 
+rt = RequestType.find_by_key("illumina_c_hiseq_v4_single_end_sequencing")
+RequestType::Validator.create!(:request_type => rt, :request_option=> "read_length", :valid_options=>[29, 50])
+
 
 ## New library types Illumina C
 library_types = LibraryType.create!([
@@ -96,6 +100,19 @@ library_types = LibraryType.create!([
   request_type = RequestType.find_by_key(request_class_symbol.to_s)
   library_types.each do |library_type|
     LibraryTypesRequestType.create!(:request_type=>request_type,:library_type=>library_type,:is_default=>false)
+  end
+end
+
+
+
+libs_ribozero = ["Ribozero RNA-seq (Bacterial)", "Ribozero RNA-seq (HMR)"].map do |name|
+  LibraryType.create!(:name=> name)
+end
+
+libs_ribozero.each do |lib|
+  [:illumina_c_pcr, :illumina_c_pcr_no_pool].each do |request_class_symbol|
+    request_type = RequestType.find_by_key(request_class_symbol.to_s)
+    LibraryTypesRequestType.create!(:request_type=>request_type,:library_type=> lib, :is_default => false)
   end
 end
 

@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
 class ReceptionsController < ApplicationController
   before_filter :find_asset_by_id, :only => [:print, :snp_register]
 
@@ -23,7 +23,11 @@ class ReceptionsController < ApplicationController
 
     all_barcodes_blank = true
 
-    barcodes.each do |index,barcode|
+    barcodes.each do |index,barcode_ws|
+
+      # We don't perform strip! as this results in modification of the parameters themselves, which affects logging and
+      # exception notification. This can hinder investigation of any issues, as it changes apparent user input.
+      barcode = barcode_ws.strip
       if barcode.blank?
         next
       else
@@ -39,7 +43,7 @@ class ReceptionsController < ApplicationController
       end
       prefix, id, checksum = Barcode.split_barcode(barcode)
 
-      case params[:type][:id]
+      case 'Plate'
       when 'LibraryTube' then @asset = LibraryTube.find_by_barcode(id)
       when 'MultiplexedLibraryTube' then @asset = MultiplexedLibraryTube.find_by_barcode(id)
       when 'PulldownMultiplexedLibraryTube' then @asset = PulldownMultiplexedLibraryTube.find_by_barcode(id)
@@ -64,12 +68,12 @@ class ReceptionsController < ApplicationController
     end
 
     if all_barcodes_blank
-      @errors << "No barcodes have been entered or scanned!"
+      @errors << "No barcodes have been entered or scanned"
     end
 
     if @errors.size > 0
       respond_to do |format|
-        flash[:error] = "Error with scanned samples"
+        flash[:error] = "Error with scanned samples: #{@errors.join('. ')}"
         format.html { render :action => :index }
         format.xml  { render :xml  => @errors, :status => :unprocessable_entity }
         format.json { render :json => @errors, :status => :unprocessable_entity }
