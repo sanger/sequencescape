@@ -1,6 +1,6 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
 <% add :title, "Change Decision by request." -%>
 <% add :menu, "Back to request" => request_path(@request) -%>
 
@@ -29,28 +29,6 @@
           <li><%= @request.try(:target_asset).try(:qc_state) %></li>
           <li><%= label('change_decision','asset_qc_state', 'Asset QC State Available', :style => 'display:none;') %>
                <%= form.select("asset_qc_state", ["","pending", "failed", "passed"] )   %></li>
-        </ul>
-      </li>
-      <% end %>
-      <% if @change_decision.billing.size > 0 %>
-      <li class="options_group"><h2><%= label_tag(:billing_name, 'Billing') %></h2>
-        <ul class="options">
-          <li>Billing events
-            <ul class="options">
-              <% @change_decision.billing.each do |billing| %>
-                <li><strong><%= billing.kind %></strong> <%= billing.description %></li>
-              <% end %>
-            </ul></li>
-          <li><%= label('change_decision_billing_state','check_box', 'Update Billing:') %>
-              <%= form.check_box("billing_state_check_box", { 'data-field' => 'change_decision_billing_event_kind'}, '1') %></li>
-          <li><%= label('change_decision','billing_event_kind', 'Billing State Available', :style => 'display:none;') %>
-              <%= form.select("billing_event_kind", ["", "refund"] )   %></li>
-          <li class="help">In cases where a pass becomes a fail a refund will be required and this option must be selected.
-              A description for billing event must be entered and the original description will be displayed so can be cut and paste
-              and 'refund' added at the end.  For situations where a fail becomes a pass there is an internal charge which needs to be
-              refunded and then a full charge needs to be created.  This isn't included in this interface at the moment and is a manual process.</li>
-          <li><%= label_tag("change_decision_description_billing", 'Description for billing event:') %><br/>
-              <%= form.text_area "description_billing", {:size => "50x2"} %></li>
         </ul>
       </li>
       <% end %>

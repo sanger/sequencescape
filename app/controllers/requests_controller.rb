@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 class RequestsController < ApplicationController
 
   before_filter :admin_login_required, :only => [ :describe, :undescribe, :destroy ]
@@ -237,21 +237,14 @@ class RequestsController < ApplicationController
   end
 
   def filter_change_decision
-    reference = BillingEvent.build_reference(@request)
-    #@billing  = BillingEvent.related_to_reference(reference).only_these_kinds('charge', 'refund').all
-    @billing  = BillingEvent.related_to_reference(reference).all
-    @change_decision = Request::ChangeDecision.new(:request => @request, :billing => @billing, :user => @current_user)
+    @change_decision = Request::ChangeDecision.new(:request => @request, :user => @current_user)
     respond_to do |format|
       format.html
     end
   end
 
   def change_decision
-    reference = BillingEvent.build_reference(@request)
-    #@billing  = BillingEvent.related_to_reference(reference).only_these_kinds('charge', 'refund').all
-    @billing  = BillingEvent.related_to_reference(reference).all
-
-    @change_decision = Request::ChangeDecision.new({:request => @request,:billing => @billing, :user => @current_user}.merge(params[:change_decision] || {})).execute!
+    @change_decision = Request::ChangeDecision.new({:request => @request, :user => @current_user}.merge(params[:change_decision] || {})).execute!
     flash[:notice] = "Update. Below you find the new situation."
     redirect_to filter_change_decision_request_path(params[:id])
    rescue Request::ChangeDecision::InvalidDecision => exception

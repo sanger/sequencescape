@@ -103,6 +103,19 @@ library_types = LibraryType.create!([
   end
 end
 
+
+
+libs_ribozero = ["Ribozero RNA-seq (Bacterial)", "Ribozero RNA-seq (HMR)"].map do |name|
+  LibraryType.create!(:name=> name)
+end
+
+libs_ribozero.each do |lib|
+  [:illumina_c_pcr, :illumina_c_pcr_no_pool].each do |request_class_symbol|
+    request_type = RequestType.find_by_key(request_class_symbol.to_s)
+    LibraryTypesRequestType.create!(:request_type=>request_type,:library_type=> lib, :is_default => false)
+  end
+end
+
 ['a', 'b'].each do |pipeline|
   rt = RequestType.find_by_key!("illumina_#{pipeline}_hiseq_x_paired_end_sequencing")
   RequestType::Validator.create!(:request_type => rt, :request_option=> "read_length", :valid_options=>[150])
