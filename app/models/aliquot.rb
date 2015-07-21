@@ -79,6 +79,13 @@ class Aliquot < ActiveRecord::Base
       self.class.name.underscore
     end
 
+    def assign_tag2(tag)
+      aliquots.each do |aliquot|
+        aliquot.tag2 = tag
+        aliquot.save!
+      end
+    end
+
     has_many :studies, :through => :aliquots
     has_many :projects, :through => :aliquots
     has_many :samples, :through => :aliquots
@@ -140,8 +147,19 @@ class Aliquot < ActiveRecord::Base
   belongs_to :tag
   before_validation { |record| record.tag_id ||= UNASSIGNED_TAG }
 
+  belongs_to :tag2, :class_name => 'Tag'
+  before_validation { |record| record.tag2_id ||= UNASSIGNED_TAG }
+
+  # Might need to remove these if we get a performance hit
+  validates_uniqueness_of :tag_id,       :scope => [:receptacle_id, :tag2_id]
+  validates_uniqueness_of :tag2_id, :scope => [:receptacle_id, :tag_id]
+
   def untagged?
     self.tag_id.nil? or self.tag_id == UNASSIGNED_TAG
+  end
+
+  def no_tag2?
+    self.tag2_id.nil? or self.tag2_id == UNASSIGNED_TAG
   end
 
   def tagged?
@@ -197,20 +215,20 @@ class Aliquot < ActiveRecord::Base
 
   # Aliquot are similar if they share the same sample AND the same tag (if they have one: nil acts as a wildcard))
   def =~(object)
-    a, b = [self, object].map { |o| [o.tag_id, o.sample_id] }
+    a, b = [self, object].map { |o| [o.tag_id, o.sample_id, o.tag2_id < 0 ? nil : o.tag2_id ] }
     a.zip(b).all?  { |x, y|  (x || y) == (y || x)  }
   end
 
   def matches?(object)
-    # Note: This funtion is directional, and assumes that the downstream aliquot
+    # Note: This function is directional, and assumes that the downstream aliquot
     # is checking the upstream aliquot (or the AliquotRecord)
     case
     when self.sample_id != object.sample_id                                                   then return false # The samples don't match
     when object.library_id.present?      && (self.library_id      != object.library_id)       then return false # Our librarys don't match.
     when object.bait_library_id.present? && (self.bait_library_id != object.bait_library_id)  then return false # We have different bait libraries
     when self.untagged? && object.tagged?                                                     then raise StandardError, "Tag missing from downstream aliquot" # The downstream aliquot is untagged, but is tagged upstream. Something is wrong!
-    when object.untagged?                                                                     then return true # The upstream aliquot was untagged, we don't need to check tags
-    else self.tag_id == object.tag_id # Both aliquots are tagged, we need to check if they match
+    when object.untagged? && object.no_tag2?                                             then return true # The upstream aliquot was untagged, we don't need to check tags
+    else (object.untagged?||(self.tag_id == object.tag_id)) && (object.no_tag2?||(self.tag2_id == object.tag2_id ))  # Both aliquots are tagged, we need to check if they match
     end
   end
 

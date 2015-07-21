@@ -28,3 +28,4 @@ class Comment < ActiveRecord::Base
   named_scope :include_uuid, {} # BLUFF!
 
 end
+

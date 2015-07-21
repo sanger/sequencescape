@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2014 Genome Research Ltd.
+#Copyright (C) 2014,2015 Genome Research Ltd.
 ##
 # A lot type governs the behaviour of a lot
 
@@ -20,6 +20,10 @@ class LotType < ActiveRecord::Base
 
   def create!(options)
     self.lots.create!(options)
+  end
+
+  def printer_type
+    target_purpose.barcode_printer_type.name
   end
 
 end
