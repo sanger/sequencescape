@@ -19,4 +19,13 @@ class Event::SequenomLoading < Event
         :family => "update_sequenom_count"
       )
     end
+
+  def self.updated_fluidigm_plate!(asset, resource)
+    self.create!(
+        :eventful => asset,
+        :message => "Updated fluidigm plate from #{resource}",
+        :content => resource,
+        :family => "update_fluidigm_plate"
+      )
+  end
 end
