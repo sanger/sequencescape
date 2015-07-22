@@ -6,6 +6,7 @@
 class Aliquot < ActiveRecord::Base
   include Uuid::Uuidable
   include Api::Messages::FlowcellIO::AliquotExtensions
+  include AliquotIndexer::AliquotScopes
 
   class Receptacle < Asset
     include Transfer::State
@@ -26,8 +27,11 @@ class Aliquot < ActiveRecord::Base
 
     # A receptacle can hold many aliquots.  For example, a multiplexed library tube will contain more than
     # one aliquot.
-    has_many :aliquots, :foreign_key => :receptacle_id, :autosave => true, :dependent => :destroy, :inverse_of => :receptacle, :include => :tag, :order => 'tags.map_id ASC'
+    has_many :aliquots, :foreign_key => :receptacle_id, :autosave => true, :dependent => :destroy, :inverse_of => :receptacle, :include => [:tag,:tag2], :order => 'tag2s_aliquots.map_id ASC, tags.map_id ASC'
     has_one :primary_aliquot, :class_name => 'Aliquot', :foreign_key => :receptacle_id, :order => 'created_at ASC', :readonly => true
+
+    # Our receptacle needs to report its tagging status based on the most highly tagged aliquot. This retrieves it
+    has_one :most_tagged_aliquot, :class_name => 'Aliquot', :foreign_key => :receptacle_id, :order => 'tag2_id DESC, tag_id DESC', :readonly => true
 
     # Named scopes for the future
     named_scope :include_aliquots, :include => { :aliquots => [ :sample, :tag, :bait_library ] }
@@ -70,6 +74,13 @@ class Aliquot < ActiveRecord::Base
       aliquots
     end
     deprecate :tags
+
+    def tag_count
+      # Find the most highly tagged aliquot
+      return 2 if most_tagged_aliquot.tag2_id != Aliquot::UNASSIGNED_TAG
+      return 1 if most_tagged_aliquot.tag_id != Aliquot::UNASSIGNED_TAG
+      0
+    end
 
     def primary_aliquot_if_unique
       primary_aliquot if aliquots.count == 1
@@ -138,6 +149,12 @@ class Aliquot < ActiveRecord::Base
 
   # An aliquot is an amount of a sample
   belongs_to :sample
+
+  has_one :aliquot_index
+
+  def aliquot_index_value
+    aliquot_index.try(:aliquot_index)||tag.map_id
+  end
 
   # It may have a tag but not necessarily.  If it does, however, that tag needs to be unique within the receptacle.
   # To ensure that there can only be one untagged aliquot present in a receptacle we use a special value for tag_id,
