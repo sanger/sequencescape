@@ -30,6 +30,9 @@ class Aliquot < ActiveRecord::Base
     has_many :aliquots, :foreign_key => :receptacle_id, :autosave => true, :dependent => :destroy, :inverse_of => :receptacle, :include => [:tag,:tag2], :order => 'tag2s_aliquots.map_id ASC, tags.map_id ASC'
     has_one :primary_aliquot, :class_name => 'Aliquot', :foreign_key => :receptacle_id, :order => 'created_at ASC', :readonly => true
 
+    # Our receptacle needs to report its tagging status based on the most highly tagged aliquot. This retrieves it
+    has_one :most_tagged_aliquot, :class_name => 'Aliquot', :foreign_key => :receptacle_id, :order => 'tag2_id DESC, tag_id DESC', :readonly => true
+
     # Named scopes for the future
     named_scope :include_aliquots, :include => { :aliquots => [ :sample, :tag, :bait_library ] }
     named_scope :with_aliquots, :joins => :aliquots
@@ -71,6 +74,13 @@ class Aliquot < ActiveRecord::Base
       aliquots
     end
     deprecate :tags
+
+    def tag_count
+      # Find the most highly tagged aliquot
+      return 2 if most_tagged_aliquot.tag2_id != Aliquot::UNASSIGNED_TAG
+      return 1 if most_tagged_aliquot.tag_id != Aliquot::UNASSIGNED_TAG
+      0
+    end
 
     def primary_aliquot_if_unique
       primary_aliquot if aliquots.count == 1
