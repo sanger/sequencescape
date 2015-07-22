@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 Given /^I have a plate in study "([^"]*)" with samples with known sanger_sample_ids$/ do |study_name|
   study = Study.find_by_name(study_name)
   plate = PlatePurpose.stock_plate_purpose.create!(true, :barcode => "1234567", :location => Location.find_by_name("Sample logistics freezer"))
@@ -195,4 +195,8 @@ end
 
 Then /^the last submission should have a priority of (\d+)$/ do |priority|
   Submission.last.update_attributes!(:priority=>priority)
+end
+
+Given /^all the requests in the last submission are cancelled$/ do
+  Submission.last.requests.each {|r| r.update_attributes!(:state=>'cancelled') }
 end

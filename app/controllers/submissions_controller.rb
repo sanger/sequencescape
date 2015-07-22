@@ -59,6 +59,12 @@ class SubmissionsController < ApplicationController
     @ready = Submission.ready.find(:all, :limit => 10, :order => "created_at DESC", :conditions => { :user_id => current_user.id })
   end
 
+  def cancel
+    submission = Submission.find(params[:id])
+    submission.cancel!
+    redirect_to :action=>:show, :id=>params[:id]
+  end
+
   def destroy
     ActiveRecord::Base.transaction do
       submission = Submission::SubmissionPresenter.new(current_user, :id => params[:id])

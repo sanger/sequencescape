@@ -140,8 +140,6 @@ class Transfer < ActiveRecord::Base
   module ControlledDestinations
     def self.included(base)
       base.class_eval do
-        include Transfer::WellHelpers
-
         # Ensure that the transfers are recorded so we can see what happened.
         serialize :transfers
         validates_unassigned :transfers
@@ -156,20 +154,6 @@ class Transfer < ActiveRecord::Base
       end
     end
     private :each_transfer
-  end
-
-  module WellHelpers
-    # To calculate the depth we keep walking the requests_as_target until we reach a plate that can be
-    # considered a stock plate.
-    def calculate_stock_well_depth_for(well)
-      depth = -1    # Because we do not include the first well in our calculations!
-      until well.plate.stock_plate?
-        well   = well.requests_as_target.first.try(:asset) or raise StandardError, "Walked off the end of the graph!"
-        depth += 1
-      end
-      depth
-    end
-    private :calculate_stock_well_depth_for
   end
 
   include Uuid::Uuidable
