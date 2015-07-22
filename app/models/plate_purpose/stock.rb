@@ -1,31 +1,48 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013 Genome Research Ltd.
+#Copyright (C) 2012,2013,2015 Genome Research Ltd.
 module PlatePurpose::Stock
   def _pool_wells(wells)
     wells.pooled_as_source_by(Request::LibraryCreation)
   end
   private :_pool_wells
 
-  # The state of a pulldown stock plate is governed by the presence of pulldown requests combined
-  # with the aliquots.  Basically every well that has stuff in it should have a pulldown request
-  # for the plate to be 'passed', otherwise it is 'pending'.  An empty plate is also considered
-  # to be pending.
+  UNREADY_STATE      = 'pending'
+  READY_STATE        = 'passed'
+
+
   def state_of(plate)
     # If there are no wells with aliquots we're pending
     wells_with_aliquots = plate.wells.with_aliquots.all
-    return 'pending' if wells_with_aliquots.empty?
+    return UNREADY_STATE if wells_with_aliquots.empty?
 
     # All of the wells with aliquots must have requests for us to be considered passed
-    requests = Request::LibraryCreation.all(:conditions => { :asset_id => wells_with_aliquots.map(&:id) })
-    return 'pending' unless requests.count == wells_with_aliquots.count
+    well_requests = Request::LibraryCreation.all(:conditions => { :asset_id => wells_with_aliquots.map(&:id) })
 
-    case requests.map(&:state).uniq.sort
-    when ['failed']             then 'failed'
-    when ['cancelled']          then 'cancelled'
-    when ['cancelled','failed'] then 'failed'
-    else                             'passed'
+    wells_states = well_requests.group_by(&:asset_id).map do |well_id, requests|
+      calculate_state_of_well(requests.map(&:state))
     end
+
+    return UNREADY_STATE unless wells_states.count == wells_with_aliquots.count
+    return calculate_state_of_plate(wells_states)
+  end
+
+  def calculate_state_of_plate(wells_states)
+    unique_states = wells_states.uniq
+    return UNREADY_STATE if unique_states.include?(:unready)
+    case unique_states.sort
+     when ['failed'] then 'failed'
+     when ['cancelled'] then 'cancelled'
+     when ['cancelled','failed'] then 'failed'
+     else READY_STATE
+    end
+  end
+
+  def calculate_state_of_well(wells_states)
+    cancelled = wells_states.delete('cancelled') if wells_states.count > 1
+    return wells_states.first if wells_states.one?
+    return :unready if wells_states.size > 1
+    cancelled || :unready
   end
 
   def transition_state_requests(*args)

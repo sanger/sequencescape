@@ -1,6 +1,6 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013 Genome Research Ltd.%>
+#Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.%>
 <%- add :title, "Viewing Submission" -%>
 <% @presenter.submission.orders.uniq(&:asset_group).each do |order|
   add :menu, "Print labels for #{order.asset_group.name}" => print_study_asset_group_path(order.study,order.asset_group) unless order.asset_group.nil?
@@ -13,6 +13,8 @@ end %>
  Submission created at: <strong><%=h @presenter.submission.created_at.to_formatted_s(:day_full_with_time) %></strong>
 </div>
 <%= submission_status_message(@presenter.submission) %>
+
+
 <div class='priority_changer'>
   <h2>Priority:</h2>
   <%= image_tag("icon_#{@presenter.submission.priority}_flag.png", :size=>"64x64", :class=>'sub_flag') if @presenter.submission.priority > 0 %>
@@ -50,6 +52,19 @@ end %>
   </li>
 <% end %>
 </ul>
+
+<% if @presenter.submission.cancellable? %>
+<% form_for(:submission, @presenter,
+     :url => { :id=> @presenter.submission.id, :action => :cancel }) do |f| %>
+  <%= submit_tag "&varnothing; Cancel Submission",
+  :style=>'
+  ',
+  :id       => "cancel-submission",
+  :confirm=>'Are you sure?',
+  :class    => "button danger-button" %>
+<% end %>
+<% end %>
+
 
 <%= javascript_include_tag 'submissions' %>
 

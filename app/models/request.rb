@@ -55,11 +55,12 @@ class Request < ActiveRecord::Base
       :joins => joins + [
         'INNER JOIN maps AS pw_location ON pw.map_id=pw_location.id',
         'INNER JOIN container_associations ON container_associations.content_id=pw.id',
-        'INNER JOIN uuids ON uuids.resource_id=requests.submission_id AND uuids.resource_type="Submission"'
+        'INNER JOIN submissions ON requests.submission_id=submissions.id',
+        'INNER JOIN uuids ON uuids.resource_id=submissions.id AND uuids.resource_type="Submission"'
       ],
       :group => 'requests.submission_id',
       :conditions => [
-        'requests.sti_type NOT IN (?) AND container_associations.container_id=?',
+        'requests.sti_type NOT IN (?) AND container_associations.container_id=? AND submissions.state != "cancelled"',
         [TransferRequest,*Class.subclasses_of(TransferRequest)].map(&:name), plate.id
       ]
     }
@@ -221,6 +222,11 @@ class Request < ActiveRecord::Base
   }
   named_scope :without_asset, :conditions =>  'asset_id is null'
   named_scope :without_target, :conditions =>  'target_asset_id is null'
+  named_scope :excluding_states, lambda { |states|
+    {
+      :conditions => [states.map{|s| '(state != ?)' }.join(" OR "), states].flatten
+    }
+  }
   named_scope :ordered, :order => ["id ASC"]
   named_scope :full_inbox, :conditions => {:state => ["pending","hold"]}
   named_scope :hold, :conditions => {:state => "hold"}

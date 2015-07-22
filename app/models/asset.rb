@@ -38,6 +38,9 @@ class Asset < ActiveRecord::Base
   has_many :requests_as_source, :class_name => 'Request', :foreign_key => :asset_id,        :include => :request_metadata
   has_many :requests_as_target, :class_name => 'Request', :foreign_key => :target_asset_id, :include => :request_metadata
 
+  named_scope :include_requests_as_target, :include => :requests_as_target
+  named_scope :include_requests_as_source, :include => :requests_as_target
+
   #Orders
   has_many :submitted_assets
   has_many :orders, :through => :submitted_assets
@@ -97,6 +100,7 @@ class Asset < ActiveRecord::Base
     event_constructor(:create_pico!,                   Event::SampleLogisticsQcEvent, :create_pico_result_for_asset!)
     event_constructor(:created_using_sample_manifest!, Event::SampleManifestEvent,    :created_sample!)
     event_constructor(:updated_using_sample_manifest!, Event::SampleManifestEvent,    :updated_sample!)
+    event_constructor(:updated_fluidigm_plate!,         Event::SequenomLoading,        :updated_fluidigm_plate!)
     event_constructor(:update_gender_markers!,         Event::SequenomLoading,        :created_update_gender_makers!)
     event_constructor(:update_sequenom_count!,         Event::SequenomLoading,        :created_update_sequenom_count!)
   end
