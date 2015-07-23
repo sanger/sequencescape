@@ -36,9 +36,9 @@ class Plate::Creator < ActiveRecord::Base
   end
 
   # Executes the plate creation so that the appropriate child plates are built.
-  def execute(source_plate_barcodes, barcode_printer, scanned_user)
+  def execute(source_plate_barcodes, barcode_printer, scanned_user, creation_parameters)
     ActiveRecord::Base.transaction do
-      new_plates = source_plate_barcodes.blank? ? [ self.plate_purpose.plates.create_with_barcode! ] : create_plates(source_plate_barcodes, scanned_user)
+      new_plates = source_plate_barcodes.blank? ? [ self.plate_purpose.plates.create_with_barcode! ] : create_plates(source_plate_barcodes, scanned_user, creation_parameters)
       return false if new_plates.empty?
 
       new_plates.group_by(&:plate_purpose).each do |plate_purpose, plates|
@@ -49,7 +49,7 @@ class Plate::Creator < ActiveRecord::Base
     end
   end
 
-  def create_plates(source_plate_barcodes, current_user)
+  def create_plates(source_plate_barcodes, current_user, creation_parameters)
     scanned_barcodes = source_plate_barcodes.scan(/\d+/)
     raise "Scanned plate barcodes in incorrect format: #{source_plate_barcodes.inspect}" if scanned_barcodes.blank?
 
@@ -63,12 +63,12 @@ class Plate::Creator < ActiveRecord::Base
       unless can_create_plates?(plate, plate_purposes)
         raise PlateCreationError.new("Scanned plate #{scanned} has a purpose #{plate.purpose.name} not valid for creating [#{self.plate_purposes.map(&:name).join(',')}]")
       end
-      create_child_plates_from(plate, current_user)
+      create_child_plates_from(plate, current_user, creation_parameters)
     end.flatten
   end
   private :create_plates
 
-  def create_child_plates_from(plate, current_user)
+  def create_child_plates_from(plate, current_user, creation_parameters)
     stock_well_picker = plate.plate_purpose.can_be_considered_a_stock_plate? ? lambda { |w| [w] } : lambda { |w| w.stock_wells }
     plate_purposes.map do |target_plate_purpose|
       target_plate_purpose.target_plate_type.constantize.create_with_barcode!(plate.barcode) do |child_plate|
@@ -81,6 +81,7 @@ class Plate::Creator < ActiveRecord::Base
             well.clone.tap do |child_well|
               child_well.aliquots = well.aliquots.map(&:clone)
               child_well.stock_wells.attach(stock_well_picker.call(well))
+              child_well.set_dilution_factor(creation_parameters[:dilution_factor]) unless creation_parameters[:dilution_factor].nil?
             end
           end
         AssetLink.create_edge!(plate, child_plate)

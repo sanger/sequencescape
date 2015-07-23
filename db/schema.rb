@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150722151720) do
+ActiveRecord::Schema.define(:version => 20150723160136) do
 
   create_table "aliquots", :force => true do |t|
     t.integer  "receptacle_id",    :null => false
@@ -1684,6 +1684,7 @@ ActiveRecord::Schema.define(:version => 20150722151720) do
     t.float    "measured_volume"
     t.float    "initial_volume"
     t.float    "molarity"
+    t.integer  "dilution_factor"
   end
 
   add_index "well_attributes", ["well_id"], :name => "index_well_attributes_on_well_id"

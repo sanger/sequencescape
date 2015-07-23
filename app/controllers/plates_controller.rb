@@ -33,7 +33,7 @@ class PlatesController < ApplicationController
         if scanned_user.nil?
           flash[:error] = 'Please scan your user barcode'
           format.html { redirect_to(new_plate_path) }
-        elsif plate_creator.execute(source_plate_barcodes, barcode_printer, scanned_user)
+        elsif plate_creator.execute(source_plate_barcodes, barcode_printer, scanned_user, plate_creation_parameters(params))
           flash[:notice] = 'Created plates and printed barcodes'
           format.html { redirect_to(new_plate_path) }
         else
