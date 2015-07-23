@@ -1,19 +1,20 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013 Genome Research Ltd.
+#Copyright (C) 2012,2013,2015 Genome Research Ltd.
 module Aliquot::Remover
   class AliquotRecord
     # We can't use the aliquot itself, as it will have been destroyed by
     # the time we want to look at it. The aliquot record mimics
     # an aliquot in the comparison functions
 
-    attr_reader :tag_id, :sample_id, :library_id, :bait_library_id
+    attr_reader :tag_id, :sample_id, :library_id, :bait_library_id, :tag2_id
 
     def initialize(aliquot)
       @tag_id = aliquot.tag_id
       @sample_id = aliquot.sample_id
       @library_id = aliquot.library_id
       @bait_library_id = aliquot.bait_library_id
+      @tag2_id = aliquot.tag2_id
     end
 
     def tagged?
@@ -22,6 +23,10 @@ module Aliquot::Remover
 
     def untagged?
       self.tag_id.nil? or (self.tag_id == Aliquot::UNASSIGNED_TAG)
+    end
+
+    def no_tag2?
+      self.tag2_id.nil? or (self.tag2_id == Aliquot::UNASSIGNED_TAG)
     end
 
   end

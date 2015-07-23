@@ -100,6 +100,7 @@ class Asset < ActiveRecord::Base
     event_constructor(:create_pico!,                   Event::SampleLogisticsQcEvent, :create_pico_result_for_asset!)
     event_constructor(:created_using_sample_manifest!, Event::SampleManifestEvent,    :created_sample!)
     event_constructor(:updated_using_sample_manifest!, Event::SampleManifestEvent,    :updated_sample!)
+    event_constructor(:updated_fluidigm_plate!,         Event::SequenomLoading,        :updated_fluidigm_plate!)
     event_constructor(:update_gender_markers!,         Event::SequenomLoading,        :created_update_gender_makers!)
     event_constructor(:update_sequenom_count!,         Event::SequenomLoading,        :created_update_sequenom_count!)
   end
@@ -516,6 +517,11 @@ class Asset < ActiveRecord::Base
 
   def automatic_move?
     false
+  end
+
+  # See Aliquot::Receptacle for handling of assets with contents
+  def tag_count
+    nil
   end
 
 end
