@@ -12,6 +12,7 @@ class Plate < Asset
   include Asset::Ownership::Owned
   include Plate::Iterations
   include Plate::FluidigmBehaviour
+  include SubmissionPool::Association::Plate
 
   extend QcFile::Associations
   has_qc_files
