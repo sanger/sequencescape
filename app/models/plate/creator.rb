@@ -25,6 +25,8 @@ class Plate::Creator < ActiveRecord::Base
   # If there are no barcodes supplied then we use the plate purpose we represent
   belongs_to :plate_purpose
 
+  serialize :valid_options
+
   def can_create_plates?(source_plate, plate_purposes)
     parent_purposes = plate_creator_purposes.select do |r|
       plate_purposes.include?(r.plate_purpose)
