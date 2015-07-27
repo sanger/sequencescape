@@ -68,6 +68,13 @@ class Plate::Creator < ActiveRecord::Base
   end
   private :create_plates
 
+  def load_creation_parameters(obj, creation_parameters)
+    # At this moment, the creation parameters are loaded into well_attributes
+    creation_parameters.keys.each do |key|
+      obj.method("set_#{key.to_s}").call(creation_parameters[key]) unless creation_parameters[key].nil?
+    end
+  end
+
   def create_child_plates_from(plate, current_user, creation_parameters)
     stock_well_picker = plate.plate_purpose.can_be_considered_a_stock_plate? ? lambda { |w| [w] } : lambda { |w| w.stock_wells }
     plate_purposes.map do |target_plate_purpose|
@@ -81,7 +88,7 @@ class Plate::Creator < ActiveRecord::Base
             well.clone.tap do |child_well|
               child_well.aliquots = well.aliquots.map(&:clone)
               child_well.stock_wells.attach(stock_well_picker.call(well))
-              child_well.set_dilution_factor(creation_parameters[:dilution_factor]) unless creation_parameters[:dilution_factor].nil?
+              load_creation_parameters(child_well, creation_parameters)
             end
           end
         AssetLink.create_edge!(plate, child_plate)
