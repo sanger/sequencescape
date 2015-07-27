@@ -19,6 +19,10 @@ class PlatesControllerTest < ActionController::TestCase
         Factory :plate_creator_purpose, { :plate_purpose => p, :plate_creator =>  @pico_assay_plate_creator }
       end
       @dilution_plates_creator     = Factory :plate_creator,  :plate_purpose => PlatePurpose.find_by_name!('Working dilution')
+      Factory :plate_creator_purpose, {
+        :plate_purpose => PlatePurpose.find_by_name!('Working dilution'),
+        :plate_creator =>  @dilution_plates_creator
+      }
       @gel_dilution_plates_creator = Factory :plate_creator,  :plate_purpose => PlatePurpose.find_by_name!('Gel Dilution Plates')
 
       @barcode_printer = mock("printer abc")
@@ -66,6 +70,22 @@ class PlatesControllerTest < ActionController::TestCase
           should_set_the_flash_to /Created/
         end
 
+        context "Create a Plate" do
+          context "with one source plate" do
+            context "with a dilution factor selected" do
+              setup do
+                @well =  Factory :well
+                @parent_plate.wells << [@well]
+                @parent_raw_barcode = Barcode.calculate_barcode(Plate.prefix, @parent_plate.barcode.to_i)
+                post :create, :plates => {:creator_id =>  @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
+                  :source_plates =>"#{@parent_raw_barcode}", :user_barcode => '2470000100730', :dilution_factor => 12 }
+              end
+              should "sets the dilution factor" do
+                assert_equal 12, Plate.find(@parent_plate.id).children.first.wells.first.get_dilution_factor
+              end
+            end
+          end
+        end
 
         context "Create Pico Assay Plates" do
           context "with one source plate" do

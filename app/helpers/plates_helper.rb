@@ -43,12 +43,4 @@ module PlatesHelper
     end
   end
 
-  def plate_creation_parameters(params)
-    creation_parameters = {}
-    unless params[:plates][:dilution_factor].nil?
-      creation_parameters[:dilution_factor] = params[:plates][:dilution_factor]
-    end
-    creation_parameters
-  end
-
 end

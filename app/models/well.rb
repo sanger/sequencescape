@@ -108,6 +108,14 @@ class Well < Aliquot::Receptacle
         end
       END_OF_METHOD_DEFINITION
     end
+
+    def writer_for_well_attribute(attribute)
+      class_eval <<-END_OF_METHOD_DEFINITION
+        def set_#{attribute}(value)
+          self.well_attribute.update_attributes!(:#{attribute} => value)
+        end
+      END_OF_METHOD_DEFINITION
+    end
   end
 
   def generate_name(_)
@@ -133,6 +141,9 @@ class Well < Aliquot::Receptacle
   delegate_to_well_attribute(:concentration)
   alias_method(:get_pico_result, :get_concentration)
   writer_for_well_attribute_as_float(:concentration)
+
+  delegate_to_well_attribute(:dilution_factor)
+  writer_for_well_attribute(:dilution_factor)
 
   delegate_to_well_attribute(:molarity)
   writer_for_well_attribute_as_float(:molarity)

@@ -20,6 +20,7 @@ class PlatesController < ApplicationController
     @plate = Plate.find(params[:id])
   end
 
+
   def create
     ActiveRecord::Base.transaction do
       plate_creator         = Plate::Creator.find(params[:plates][:creator_id])
@@ -28,6 +29,7 @@ class PlatesController < ApplicationController
 
       user_barcode = Barcode.barcode_to_human(params[:plates][:user_barcode])
       scanned_user = User.find_by_barcode(user_barcode) if user_barcode
+
 
       respond_to do |format|
         if scanned_user.nil?
@@ -87,6 +89,15 @@ class PlatesController < ApplicationController
         format.csv { render :csv => @plate, :content_type => "text/csv" }
       end
     end
+  end
+
+  private
+  def plate_creation_parameters(params)
+    creation_parameters = {}
+    unless params[:plates][:dilution_factor].nil?
+      creation_parameters[:dilution_factor] = params[:plates][:dilution_factor]
+    end
+    creation_parameters
   end
 
 end
