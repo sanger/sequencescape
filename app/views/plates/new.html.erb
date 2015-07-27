@@ -8,7 +8,7 @@
     <%= form.input :source_plates,   :as => :text,   :required => false %>
     <%= form.input :creator_id,      :as => :select, :collection => @plate_creators, :label => 'Plate purpose', :input_html => { :"data-plate-creators" => "true"} %>
 
-    <%= form.input :dilution_factor, :as => :select, :label => 'Dilution factor', :data => "eduval", :class=>'something',
+    <%= form.input :dilution_factor, :as => :select, :label => 'Dilution factor',
     :input_html => { :"data-plate-dilution-valid-options" => 'dilutionFactors'} %>
     <%= form.input :barcode_printer, :as => :select, :collection => @barcode_printers %>
     <%= form.commit_button %>
