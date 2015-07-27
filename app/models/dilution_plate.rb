@@ -3,19 +3,14 @@
 #Copyright (C) 2007-2011,2015 Genome Research Ltd.
 class DilutionPlate < Plate
 
-  # We have to put the asset_links.direct condition on here, rather than go through :links_as_parent as rails gets confused about
-  # the location of the 'direct' column
+  # We have to put the asset_links.direct condition on here, rather than go through :links_as_parent as it seems that
+  # rails doesn't cope with conditions on has_many_through relationships where the relationship itself also have conditions
   named_scope :with_pico_children, { :joins => :pico_descendants, :select=>'DISTINCT `assets`.*', :conditions=>['asset_links.direct = ?',true] }
 
   has_many :pico_descendants,
     :through => :links_as_ancestor,
     :conditions => { :sti_type=>[PicoAssayPlate,PicoAssayAPlate,PicoAssayBPlate].map(&:name) },
     :source => :descendant
-
-  # has_many :pico_children,
-  #   :through => :links_as_ancestor,
-  #   :conditions => ['pico_descendants_assets.sti_type IN (?) AND asset_links.direct = ?',PicoAssayPlate,PicoAssayAPlate,PicoAssayBPlate].map(&:name),true],
-  #   :source => :descendant
 
   def pico_children
     pico_descendants.find(:all,:conditions=>['asset_links.direct = ?',true])
