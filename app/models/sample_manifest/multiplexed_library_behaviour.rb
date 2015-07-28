@@ -111,7 +111,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
       return unless @dual_indexed
 
       tag2_group = tag_group_cache(row[SampleManifest::Headers::TAG2_GROUP_FIELD])
-      yield "Couldn't find a tag group called '#{row[SampleManifest::Headers::TAG_GROUP_FIELD]}' for tag 2" if tag2_group.nil?
+      return yield "Couldn't find a tag group called '#{row[SampleManifest::Headers::TAG_GROUP_FIELD]}' for tag 2" if tag2_group.nil?
       yield "#{tag2_group.name} doesn't include a tag with index #{row[SampleManifest::Headers::TAG2_INDEX_FIELD]}" if tag2_group.tags.detect {|tag| tag.map_id == row[SampleManifest::Headers::TAG2_INDEX_FIELD].to_i}.nil?
 
     end
