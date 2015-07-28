@@ -102,7 +102,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
 
       # Tag Group validation
       tag_group = tag_group_cache(row[SampleManifest::Headers::TAG_GROUP_FIELD])
-      yield "Couldn't find a tag group called '#{row[SampleManifest::Headers::TAG_GROUP_FIELD]}'" if tag_group.nil?
+      return yield "Couldn't find a tag group called '#{row[SampleManifest::Headers::TAG_GROUP_FIELD]}'" if tag_group.nil?
       yield "#{tag_group.name} doesn't include a tag with index #{row['TAG INDEX']}" if tag_group.tags.detect {|tag| tag.map_id == row['TAG INDEX'].to_i}.nil?
 
       # Keep track if our first row is dual indexed or not.
