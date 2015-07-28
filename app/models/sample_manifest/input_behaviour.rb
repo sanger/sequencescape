@@ -198,25 +198,27 @@ module SampleManifest::InputBehaviour
       #
       # NOTE: Do not include the primary_receptacle here as it will cause the wrong one to be loaded!
       sample = samples.find_by_sanger_sample_id(sanger_sample_id)
+
+      errors = false
+
       if sample.nil?
         sample_errors.push("Sample #{sanger_sample_id} does not appear to be part of this manifest")
-        next
+         errors = true
       elsif sample.primary_receptacle.nil?
         sample_errors.push("Sample #{sanger_sample_id} appears to not have a receptacle defined! Contact PSD")
-        next
+        errors = true
       else
         validate_sample_container(sample, row) do |message|
-          p message
           sample_errors.push(message)
-          next
+          errors = true
         end
         validate_specialized_fields(sample,row) do |message|
-          p message
           sample_errors.push(message)
-          next
+          errors = true
         end
       end
 
+      next if errors
 
       metadata = Hash[
         SampleManifest::Headers::METADATA_ATTRIBUTES_TO_CSV_COLUMNS.map do |attribute, csv_column|

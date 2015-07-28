@@ -66,7 +66,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
     def validate_sample_container(sample, row, &block)
       manifest_barcode, primary_barcode = row['SANGER TUBE ID'], sample.primary_receptacle.sanger_human_barcode
       return if primary_barcode == manifest_barcode
-      yield("You can not move samples between tubes. #{sample.sanger_sample_id} is supposed to be in #{primary_barcode} but has been moved to #{manifest_barcode}.")
+      yield("You can not move samples between tubes. #{sample.sanger_sample_id} is supposed to be in '#{primary_barcode}'' but has been moved to '#{manifest_barcode}'.")
     end
 
     def required_fields
@@ -96,7 +96,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
         yield  "#{sample.sanger_sample_id} #{field.downcase} should be greater than 0." unless row[field].to_i > 0
       end
 
-      return yield "Couldn't find the library type #{row['LIBRARY TYPE']} for #{sample.sanger_sample_id}." if LibraryType.find_by_name(row['LIBRARY TYPE']).nil?
+      yield "Couldn't find the library type #{row['LIBRARY TYPE']} for #{sample.sanger_sample_id}." if LibraryType.find_by_name(row['LIBRARY TYPE']).nil?
 
       return yield "#{sample.sanger_sample_id} has no tag group specified." if row[SampleManifest::Headers::TAG_GROUP_FIELD].blank?
 
@@ -119,7 +119,6 @@ module SampleManifest::MultiplexedLibraryBehaviour
     def specialized_fields(row)
 
       tag_group  = tag_group_cache(row[SampleManifest::Headers::TAG_GROUP_FIELD])
-      tag2_group = tag_group_cache(row[SampleManifest::Headers::TAG2_GROUP_FIELD])
 
       {
         :specialized_from_manifest => {
@@ -130,6 +129,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
         }
       }.tap do |params|
         if row[SampleManifest::Headers::TAG2_GROUP_FIELD].present?
+          tag2_group = tag_group_cache(row[SampleManifest::Headers::TAG2_GROUP_FIELD])
           params[:specialized_from_manifest].merge!(:tag2_id => tag2_group.tags.detect {|tag| tag.map_id == row[SampleManifest::Headers::TAG2_INDEX_FIELD].to_i}.id )
         end
       end

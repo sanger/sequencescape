@@ -62,7 +62,7 @@ module SampleManifest::SampleTubeBehaviour
     def validate_sample_container(sample, row, &block)
       manifest_barcode, primary_barcode = row['SANGER TUBE ID'], sample.primary_receptacle.sanger_human_barcode
       return if primary_barcode == manifest_barcode
-      yield("Tube info for #{sample.sanger_sample_id} mismatch: expected #{primary_barcode} but reported as #{manifest_barcode}")
+      yield("You cannot move samples between tubes or modify their barcodes: #{sample.sanger_sample_id} should be in '#{primary_barcode}' but the manifest is trying to put it in '#{manifest_barcode}'")
     end
 
   end
