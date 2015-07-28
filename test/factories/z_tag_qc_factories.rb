@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2014 Genome Research Ltd.
+#Copyright (C) 2014,2015 Genome Research Ltd.
 Factory.sequence :lot_number do |n|
   "lot#{n}"
 end
@@ -11,6 +11,22 @@ end
 Factory.define :lot_type do |lot_type|
   lot_type.name           { Factory.next :lot_type_name }
   lot_type.template_class 'PlateTemplate'
+  lot_type.target_purpose { |purpose| purpose.association :created_purpose }
+end
+
+Factory.define :pending_purpose, :parent => :tube_purpose do |pp|
+  pp.name { Factory.next :purpose_name }
+  pp.default_state 'pending'
+end
+
+Factory.define :created_purpose, :parent => :tube_purpose do |pp|
+  pp.name { Factory.next :purpose_name }
+  pp.default_state 'created'
+end
+
+Factory.define :tag2_lot_type, :parent=> :lot_type do |lot_type|
+  lot_type.name           { Factory.next :lot_type_name }
+  lot_type.template_class 'Tag2LayoutTemplate'
   lot_type.target_purpose { Tube::Purpose.stock_library_tube }
 end
 
@@ -28,6 +44,14 @@ Factory.define :lot do |lot|
   lot.received_at '2014-02-01'
 end
 
+Factory.define :tag2_lot, :parent => :lot do |lot|
+  lot.lot_number  { Factory.next :lot_number }
+  lot.lot_type    { Factory :tag2_lot_type }
+  lot.template    { Factory :tag2_layout_template }
+  lot.user        { Factory :user }
+  lot.received_at '2014-02-01'
+end
+
 Factory.define :stamp do |stamp|
   stamp.lot     { Factory :lot }
   stamp.user    { Factory :user }
@@ -36,7 +60,6 @@ Factory.define :stamp do |stamp|
 end
 
 Factory.define :qcable do |qcable|
-  qcable.state  'created'
   qcable.lot    { Factory :lot }
   qcable.qcable_creator { Factory :qcable_creator }
 end

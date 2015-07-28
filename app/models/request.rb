@@ -58,9 +58,9 @@ class Request < ActiveRecord::Base
         'INNER JOIN submissions ON requests.submission_id=submissions.id',
         'INNER JOIN uuids ON uuids.resource_id=submissions.id AND uuids.resource_type="Submission"'
       ],
-      :group => 'submissions.id',
+      :group => 'requests.submission_id',
       :conditions => [
-        'requests.sti_type NOT IN (?) AND container_associations.container_id=?',
+        'requests.sti_type NOT IN (?) AND container_associations.container_id=? AND submissions.state != "cancelled"',
         [TransferRequest,*Class.subclasses_of(TransferRequest)].map(&:name), plate.id
       ]
     }
@@ -116,6 +116,8 @@ class Request < ActiveRecord::Base
   belongs_to :submission, :inverse_of => :requests
   belongs_to :order, :inverse_of => :requests
 
+  has_many :submission_siblings, :through => :submission, :source => :requests, :class_name => 'Request', :conditions => {:request_type_id => '#{request_type_id}'}
+
   named_scope :with_request_type_id, lambda { |id| { :conditions => { :request_type_id => id } } }
 
   named_scope :for_pacbio_sample_sheet, :include => [{:target_asset=>:map},:request_metadata]
@@ -134,6 +136,14 @@ class Request < ActiveRecord::Base
     self.initial_project_id = project_id
   end
 
+
+  def submission_plate_count
+    submission.requests.find(:all,
+      :conditions=>{:request_type_id=>request_type_id},
+      :joins=>'LEFT JOIN container_associations AS spca ON spca.content_id = requests.asset_id',
+      :group=>'spca.container_id'
+    ).count
+  end
 
 
   def project=(project)
@@ -212,6 +222,11 @@ class Request < ActiveRecord::Base
   }
   named_scope :without_asset, :conditions =>  'asset_id is null'
   named_scope :without_target, :conditions =>  'target_asset_id is null'
+  named_scope :excluding_states, lambda { |states|
+    {
+      :conditions => [states.map{|s| '(state != ?)' }.join(" OR "), states].flatten
+    }
+  }
   named_scope :ordered, :order => ["id ASC"]
   named_scope :full_inbox, :conditions => {:state => ["pending","hold"]}
   named_scope :hold, :conditions => {:state => "hold"}
@@ -469,6 +484,10 @@ class Request < ActiveRecord::Base
   # Adds any pool information to the structure so that it can be reported to client applications
   def update_pool_information(pool_information)
     # Does not need anything here
+  end
+
+  def submission_siblings
+    submission.requests.with_request_type_id(request_type_id)
   end
 
   def role

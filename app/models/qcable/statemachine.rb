@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2014 Genome Research Ltd.
+#Copyright (C) 2014,2015 Genome Research Ltd.
 module Qcable::Statemachine
 
   module ClassMethods
@@ -27,12 +27,12 @@ module Qcable::Statemachine
       aasm_state :pending,        :enter => :on_stamp
       aasm_state :failed,         :enter => :on_failed
       aasm_state :passed,         :enter => :on_passed
-      aasm_state :available,     :enter => :on_released
+      aasm_state :available,      :enter => :on_released
       aasm_state :destroyed,      :enter => :on_destroyed
       aasm_state :qc_in_progress, :enter => :on_qc
       aasm_state :exhausted,      :enter => :on_used
 
-      aasm_initial_state :created
+      aasm_initial_state Proc.new {|qcable| qcable.default_state }
 
       aasm_event :hold do
         transitions :to => :hold, :from => [ :pending ]
@@ -83,6 +83,12 @@ module Qcable::Statemachine
   #++
   def on_stamp
     lot.template.stamp_to(asset)
+  end
+
+  def default_state
+    # We validate the presence of lot, however initial state gets called BEFORE we reach validation
+    return :created if lot.nil?
+    asset_purpose.default_state.to_sym || :created
   end
 
   def on_failed; end
