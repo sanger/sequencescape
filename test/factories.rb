@@ -161,6 +161,10 @@ Factory.define :submission_workflow, :class => Submission::Workflow do |p|
   p.item_label  "library"
 end
 
+Factory.define :submission do |s|
+  s.user  {|user| user.association(:user) }
+end
+
 Factory.define :submission_template do |submission_template|
   submission_template.submission_class_name LinearSubmission.name
   submission_template.name                  "my_template"
