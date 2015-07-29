@@ -95,7 +95,7 @@ Feature: Sample manifest
       | Contains | Study      | Supplier           | Manifest       | Upload          | Errors | State  | Created by |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Upload manifest | Errors | Failed | john       |
     When I follow "Errors for manifest for Test study"
-    And I should see "Well info for sample_1 mismatch: expected DN1234567T B1 but reported as <barcode> <well>"
+    And I should see "You can not move samples between wells or modify barcodes: sample_1 should be in 'DN1234567T B1' but the manifest is trying to put it in '<barcode> <well>'"
 
     Scenarios:
       | filename                                 | barcode    | well |
