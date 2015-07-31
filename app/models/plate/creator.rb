@@ -32,7 +32,7 @@ class Plate::Creator < ActiveRecord::Base
   belongs_to :plate_purpose
 
   def can_create_plates?(source_plate, plate_purposes)
-    parent_plate_purposes.empty? || parent__purposes.find_by_parent_purpose_id(source_plate.plate_purpose_id)
+    parent_plate_purposes.empty? || parent_plate_purposes.include?(source_plate)
   end
 
   # Executes the plate creation so that the appropriate child plates are built.
