@@ -42,6 +42,7 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME = [
   'supplier',
   'transfer template',
   'tag layout template',
+  'tag 2 layout template',
   'barcode printer',
   'tube',
   'tag group',
@@ -127,6 +128,8 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
   'batch',
 
   'tag layout',
+  'tag 2 layout',
+  'tag2 layout template',
   'plate creation',
   'plate conversion',
   'tube creation',

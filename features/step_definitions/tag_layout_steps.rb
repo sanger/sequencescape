@@ -1,8 +1,12 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2014 Genome Research Ltd.
+#Copyright (C) 2011,2012,2014,2015 Genome Research Ltd.
 Given /^the ((?:entire plate |inverted )?tag layout template) "([^"]+)" exists$/ do |style, name|
   Factory(style.gsub(/ /, '_'), :name => name)
+end
+
+Given /^the tag 2 layout template "([^"]+)" exists$/ do |name|
+  Factory(:tag2_layout_template, :name => name)
 end
 
 TAG_LAYOUT_TEMPLATE_REGEXP = 'tag layout template "[^\"]+"'
@@ -73,8 +77,32 @@ def check_tag_layout(name, well_range, expected_wells_to_oligos)
   end
 end
 
+def check_tag2_layout(name, well_range, expected_wells_to_oligos)
+  plate           = Plate.find_by_name(name) or raise StandardError, "Cannot find plate #{name.inspect}"
+  wells_to_oligos = Hash[
+    plate.wells.map do |w|
+      next unless well_range.include?(w)
+      [ w.map.description, w.primary_aliquot.try(:tag2).try(:oligo) || "" ]
+    end.compact
+  ]
+  if expected_wells_to_oligos != wells_to_oligos
+    plate_view_of_oligos('Expected', expected_wells_to_oligos)
+    plate_view_of_oligos('Got',      wells_to_oligos)
+    assert(false, 'Tag 2 assignment appears to be invalid')
+  end
+end
+
 Then /^the tag layout on the plate "([^"]+)" should be:$/ do |name, table|
   check_tag_layout(
+    name, WellRange.new('A1', 'H12'),
+    ('A'..'H').to_a.zip(table.raw).inject({}) do |h,(row_a, row)|
+      h.tap { row.each_with_index { |cell, i| h["#{row_a}#{i+1}"] = cell } }
+    end
+  )
+end
+
+Then /^the tag 2 layout on the plate "([^"]+)" should be:$/ do |name, table|
+  check_tag2_layout(
     name, WellRange.new('A1', 'H12'),
     ('A'..'H').to_a.zip(table.raw).inject({}) do |h,(row_a, row)|
       h.tap { row.each_with_index { |cell, i| h["#{row_a}#{i+1}"] = cell } }
@@ -140,3 +168,9 @@ Given /^well "(.*?)" on the plate "(.*?)" is empty$/ do |well, plate|
   Plate.find_by_name!(plate).wells.located_at(well).first.aliquots.each(&:destroy)
 end
 
+Given /^the tag2 layout template "(.*?)" is associated with the last submission$/ do |template|
+  Tag2Layout::TemplateSubmission.create!(
+    :tag2_layout_template => Tag2LayoutTemplate.find_by_name!(template),
+    :submission => Submission.last
+    )
+end

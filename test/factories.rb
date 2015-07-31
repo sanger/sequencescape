@@ -39,6 +39,10 @@ Factory.sequence :library_type_id do |n|
   n
 end
 
+Factory.sequence :purpose_name do |n|
+  "Purpose #{n}"
+end
+
 Factory.sequence :billing_reference do |ref|
   ref.to_s
 end
@@ -73,6 +77,14 @@ end
 
 Factory.define :comment do |c|
   c.description
+end
+
+Factory.define :aliquot do |a|
+  a.sample  {|s| s.association(:sample) }
+  a.study   {|s| s.association(:study) }
+  a.project {|p| p.association(:project) }
+  a.tag     {|t| t.association(:tag) }
+  a.tag2    {|t| t.association(:tag) }
 end
 
 Factory.define :event do |e|
@@ -147,6 +159,10 @@ end
 Factory.define :submission_workflow, :class => Submission::Workflow do |p|
   p.name         {|a| Factory.next :item_name }
   p.item_label  "library"
+end
+
+Factory.define :submission do |s|
+  s.user  {|user| user.association(:user) }
 end
 
 Factory.define :submission_template do |submission_template|
@@ -557,6 +573,15 @@ Factory.define :stock_multiplexed_library_tube do |a|
   a.purpose Tube::Purpose.stock_mx_tube
 end
 
+Factory.define :new_stock_multiplexed_library_tube, :class=>StockMultiplexedLibraryTube do |t|
+  t.name    {|a| Factory.next :asset_name }
+  t.purpose { |a| a.association(:new_stock_tube_purpose) }
+end
+
+Factory.define(:new_stock_tube_purpose, :class=>IlluminaHtp::StockTubePurpose) do |p|
+  p.name { Factory.next :purpose_name }
+end
+
 Factory.define(:empty_library_tube, :class => LibraryTube) do |library_tube|
   library_tube.qc_state ''
   library_tube.name     {|_| Factory.next :asset_name }
@@ -715,5 +740,10 @@ Factory.define(:messenger_creator) do |reporter|
   reporter.root 'a_plate'
   reporter.template 'FluidigmPlateIO'
   reporter.purpose {|purpose| purpose.association(:plate_purpose)}
+end
+
+Factory.define :tag2_layout_template do |itlt|
+  itlt.name 'Tag 2 layout template'
+  itlt.tag {|tag| tag.association :tag }
 end
 
