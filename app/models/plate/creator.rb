@@ -40,7 +40,7 @@ class Plate::Creator < ActiveRecord::Base
   # Executes the plate creation so that the appropriate child plates are built.
   def execute(source_plate_barcodes, barcode_printer, scanned_user, creation_parameters)
     ActiveRecord::Base.transaction do
-      new_plates = source_plate_barcodes.blank? ? [ self.plate_purpose.plates.create_with_barcode! ] : create_plates(source_plate_barcodes, scanned_user, creation_parameters)
+      new_plates = create_plates(source_plate_barcodes, scanned_user, creation_parameters)
       return false if new_plates.empty?
 
       new_plates.group_by(&:plate_purpose).each do |plate_purpose, plates|
@@ -52,6 +52,8 @@ class Plate::Creator < ActiveRecord::Base
   end
 
   def create_plates(source_plate_barcodes, current_user, creation_parameters)
+    return [ self.plate_purpose.plates.create_with_barcode! ] if source_plate_barcodes.blank?
+
     scanned_barcodes = source_plate_barcodes.scan(/\d+/)
     raise PlateCreationError, "Scanned plate barcodes in incorrect format: #{source_plate_barcodes.inspect}" if scanned_barcodes.blank?
 
@@ -71,11 +73,11 @@ class Plate::Creator < ActiveRecord::Base
   private :create_plates
 
   def load_creation_parameters(obj, creation_parameters)
-    # At this moment, the creation parameters are loaded into well_attributes
     creation_parameters.keys.each do |key|
       obj.method("set_#{key.to_s}").call(creation_parameters[key]) unless creation_parameters[key].nil?
     end
   end
+  private :load_creation_parameters
 
   def create_child_plates_from(plate, current_user, creation_parameters)
     stock_well_picker = plate.plate_purpose.can_be_considered_a_stock_plate? ? lambda { |w| [w] } : lambda { |w| w.stock_wells }
@@ -90,9 +92,10 @@ class Plate::Creator < ActiveRecord::Base
             well.clone.tap do |child_well|
               child_well.aliquots = well.aliquots.map(&:clone)
               child_well.stock_wells.attach(stock_well_picker.call(well))
-              load_creation_parameters(child_well, creation_parameters)
+              load_creation_parameters(child_well, creation_parameters[:well_creation_parameters])
             end
           end
+        load_creation_parameters(child_plate, creation_parameters[:plate_creation_parameters])
         AssetLink.create_edge!(plate, child_plate)
         plate.events.create_plate!(target_plate_purpose, child_plate, current_user)
       end
