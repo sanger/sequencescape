@@ -97,7 +97,7 @@ class PlatesController < ApplicationController
       creation_parameters_value = params.keys.select do |key|
         key.to_s.match(pattern)
       end.map do |key|
-        [key.gsub(pattern+"_", ""), params[key]]
+        [key.gsub(pattern+"_", "").to_sym, params[key]]
       end
       [id_string.pluralize.to_sym, Hash[*creation_parameters_value.flatten]]
     end
