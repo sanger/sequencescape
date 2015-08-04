@@ -34,7 +34,7 @@ class Plate::Creator < ActiveRecord::Base
   serialize :valid_options
 
   def can_create_plates?(source_plate, plate_purposes)
-    parent_plate_purposes.empty? || parent_plate_purposes.include?(source_plate)
+    parent_plate_purposes.empty? || parent_plate_purposes.include?(source_plate.purpose)
   end
 
   # Executes the plate creation so that the appropriate child plates are built.
