@@ -35,7 +35,7 @@ class PlatesController < ApplicationController
         if scanned_user.nil?
           flash[:error] = 'Please scan your user barcode'
           format.html { redirect_to(new_plate_path) }
-        elsif plate_creator.execute(source_plate_barcodes, barcode_printer, scanned_user, creation_parameters(params))
+        elsif plate_creator.execute(source_plate_barcodes, barcode_printer, scanned_user, creation_parameters(params[:plates]))
           flash[:notice] = 'Created plates and printed barcodes'
           format.html { redirect_to(new_plate_path) }
         else
@@ -92,15 +92,16 @@ class PlatesController < ApplicationController
   end
 
   def creation_parameters(params)
-    ["plate_creation_parameter", "well_creation_parameter"].map do |id_string|
-      pattern = "^"+id_string
-      creation_parameters = params.keys.select do |key|
+    value = ["plate_creation_parameter", "well_creation_parameter"].map do |id_string|
+      pattern = id_string
+      creation_parameters_value = params.keys.select do |key|
         key.to_s.match(pattern)
       end.map do |key|
-        key.gsub(pattern, "")
+        [key.gsub(pattern+"_", ""), params[key]]
       end
-      [id_string.pluralize, params.slice(creation_parameters)]
-    end.to_hash
+      [id_string.pluralize.to_sym, Hash[*creation_parameters_value.flatten]]
+    end
+    Hash[*(value.flatten)]
   end
 
 end

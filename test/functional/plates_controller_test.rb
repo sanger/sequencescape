@@ -78,10 +78,11 @@ class PlatesControllerTest < ActionController::TestCase
                 @parent_plate.wells << [@well]
                 @parent_raw_barcode = Barcode.calculate_barcode(Plate.prefix, @parent_plate.barcode.to_i)
                 post :create, :plates => {:creator_id =>  @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
-                  :source_plates =>"#{@parent_raw_barcode}", :user_barcode => '2470000100730', :dilution_factor => 12 }
+                  :source_plates =>"#{@parent_raw_barcode}", :user_barcode => '2470000100730',
+                  :plate_creation_parameter_dilution_factor => 12 }
               end
               should "sets the dilution factor" do
-                assert_equal 12, Plate.find(@parent_plate.id).children.first.wells.first.get_dilution_factor
+                assert_equal 12.0, Plate.find(@parent_plate.id).dilution_factor
               end
             end
           end

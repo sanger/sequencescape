@@ -815,7 +815,7 @@ ActiveRecord::Schema.define(:version => 20150803092346) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "fluidigm_barcode", :limit => 10
-    t.decimal  "dilution_factor",                :precision => 5, :scale => 2
+    t.decimal  "dilution_factor",                :precision => 5, :scale => 2, :default => 1.0
   end
 
   add_index "plate_metadata", ["fluidigm_barcode"], :name => "index_on_fluidigm_barcode", :unique => true

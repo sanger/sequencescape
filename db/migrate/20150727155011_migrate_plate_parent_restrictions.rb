@@ -27,7 +27,9 @@ class MigratePlateParentRestrictions < ActiveRecord::Migration
   def self.down
     ActiveRecord::Base.transaction do
       NewPurposeRelationship.all.each do |npr|
-        PurposeRelationship.find_all_by_plate_creator_id(npr.plate_creator_id).update_all(:parent_purpose_id=>npr.plate_purpose_id)
+        PurposeRelationship.find_all_by_plate_creator_id(npr.plate_creator_id).each do |p|
+          p.update_attributes!(:parent_purpose_id=>npr.plate_purpose_id)
+        end
       end
     end
   end
