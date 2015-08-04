@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150728095257) do
+ActiveRecord::Schema.define(:version => 20150803092346) do
 
   create_table "aliquot_indices", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
@@ -815,6 +815,7 @@ ActiveRecord::Schema.define(:version => 20150728095257) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "fluidigm_barcode", :limit => 10
+    t.decimal  "dilution_factor",                :precision => 5, :scale => 2
   end
 
   add_index "plate_metadata", ["fluidigm_barcode"], :name => "index_on_fluidigm_barcode", :unique => true
@@ -1153,6 +1154,7 @@ ActiveRecord::Schema.define(:version => 20150728095257) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "barcode"
+    t.float    "minimum_volume"
   end
 
   create_table "roles", :force => true do |t|
@@ -1727,7 +1729,6 @@ ActiveRecord::Schema.define(:version => 20150728095257) do
     t.float    "measured_volume"
     t.float    "initial_volume"
     t.float    "molarity"
-    t.integer  "dilution_factor"
   end
 
   add_index "well_attributes", ["well_id"], :name => "index_well_attributes_on_well_id"
