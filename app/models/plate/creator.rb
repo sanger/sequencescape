@@ -2,9 +2,6 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
 
-require 'bigdecimal'
-require 'bigdecimal/util'
-
 class Plate::Creator < ActiveRecord::Base
 
   PlateCreationError = Class.new(StandardError)
@@ -42,9 +39,9 @@ class Plate::Creator < ActiveRecord::Base
   end
 
   # Executes the plate creation so that the appropriate child plates are built.
-  def execute(source_plate_barcodes, barcode_printer, scanned_user, creation_parameters={})
+  def execute(source_plate_barcodes, barcode_printer, scanned_user, creator_parameters=nil)
     ActiveRecord::Base.transaction do
-      new_plates = create_plates(source_plate_barcodes, scanned_user, creation_parameters)
+      new_plates = create_plates(source_plate_barcodes, scanned_user, creator_parameters)
       return false if new_plates.empty?
       new_plates.group_by(&:plate_purpose).each do |plate_purpose, plates|
         barcode_printer.print_labels(plates.map(&:barcode_label_for_printing), Plate.prefix, "long", plate_purpose.name.to_s, scanned_user.login)
@@ -53,14 +50,16 @@ class Plate::Creator < ActiveRecord::Base
     end
   end
 
-  def create_plate_without_parent(creation_parameters)
+  def create_plate_without_parent(creator_parameters)
     plate = self.plate_purpose.plates.create_with_barcode!
-    load_creation_parameters(plate, creation_parameters[:plate_creation_parameters])
+
+    creator_parameters.set_plate_parameters(plate)
+
     return [ plate ]
   end
 
-  def create_plates(source_plate_barcodes, current_user, creation_parameters={})
-    return create_plate_without_parent(creation_parameters) if source_plate_barcodes.blank?
+  def create_plates(source_plate_barcodes, current_user, creator_parameters=nil)
+    return create_plate_without_parent(creator_parameters) if source_plate_barcodes.blank?
 
     scanned_barcodes = source_plate_barcodes.scan(/\d+/)
     raise PlateCreationError, "Scanned plate barcodes in incorrect format: #{source_plate_barcodes.inspect}" if scanned_barcodes.blank?
@@ -75,27 +74,13 @@ class Plate::Creator < ActiveRecord::Base
       unless can_create_plates?(plate, plate_purposes)
         raise PlateCreationError, "Scanned plate #{scanned} has a purpose #{plate.purpose.name} not valid for creating [#{self.plate_purposes.map(&:name).join(',')}]"
       end
-      create_child_plates_from(plate, current_user, creation_parameters)
+      create_child_plates_from(plate, current_user, creator_parameters)
     end.flatten
   end
   private :create_plates
 
-  def load_creation_parameters(obj, creation_parameters)
-    # All the creation parameters are applied as String values into the ActiveRecord. Maybe in
-    # future this will need to be reviewed in case Ruby conversion from strings is not appropriate
-    obj.update_attributes!(creation_parameters) unless creation_parameters.nil?
-  end
-  private :load_creation_parameters
 
-  def create_child_plates_from(plate, current_user, creation_parameters)
-    plate_parameters = creation_parameters[:plate_creation_parameters].tap do |o|
-      if o.keys.include?(:dilution_factor)
-        # The dilution factor of the parent is propagated to the children taking the parent's dilution
-        # as basis. We leave the dilution factor as a String after changing it, as this creation param
-        # can be shared by all the list of plates created with this PlateCreator.
-        o[:dilution_factor] = (o[:dilution_factor].to_d * plate.dilution_factor).to_s
-      end
-    end
+  def create_child_plates_from(plate, current_user, creator_parameters)
     stock_well_picker = plate.plate_purpose.can_be_considered_a_stock_plate? ? lambda { |w| [w] } : lambda { |w| w.stock_wells }
     plate_purposes.map do |target_plate_purpose|
       target_plate_purpose.target_plate_type.constantize.create_with_barcode!(plate.barcode) do |child_plate|
@@ -108,10 +93,12 @@ class Plate::Creator < ActiveRecord::Base
             well.clone.tap do |child_well|
               child_well.aliquots = well.aliquots.map(&:clone)
               child_well.stock_wells.attach(stock_well_picker.call(well))
-              load_creation_parameters(child_well, creation_parameters[:well_creation_parameters])
+
+              creator_parameters.set_well_parameters(child_well)
             end
           end
-        load_creation_parameters(child_plate, plate_parameters)
+
+        creator_parameters.set_plate_parameters(child_plate, plate)
 
         AssetLink.create_edge!(plate, child_plate)
         plate.events.create_plate!(target_plate_purpose, child_plate, current_user)
