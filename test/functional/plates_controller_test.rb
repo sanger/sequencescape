@@ -123,16 +123,18 @@ class PlatesControllerTest < ActionController::TestCase
               should_set_the_flash_to /Created/
             end
 
-            context "with a dilution factor" do
+            context "with a parent with dilution factor 4 and a specified dilution factor 12" do
               setup do
+                @parent_plate.dilution_factor = 4
+                @parent_plate.save!
                 post :create, :plates => {:creator_id => @pico_assay_plate_creator.id,
                   :barcode_printer => @barcode_printer.id, :source_plates =>"#{@parent_raw_barcode}",
                   :plate_creation_parameter_dilution_factor => 12.0,
                   :user_barcode => '2470000100730' }
               end
-              should "create all the pico assay plates with the same dilution factor" do
+              should "create all the pico assay plates with dilution factor 48" do
                 childrens = Plate.find(@parent_plate.id).children
-                assert_equal 12.0, childrens.first.dilution_factor
+                assert_equal 48.0, childrens.first.dilution_factor
                 assert_equal 1, childrens.map(&:dilution_factor).uniq.length
               end
             end
