@@ -38,7 +38,7 @@ class Plate::CreatorParameters
   end
 
   def update_dilution_factor(params, plate, parent_plate)
-    if params.keys.include?(:dilution_factor)
+    if params.keys.include?(:dilution_factor) && (!params[:dilution_factor].empty?)
       # The dilution factor of the parent is propagated to the children taking the parent's dilution
       # as basis.
       params[:dilution_factor] = (params[:dilution_factor].to_d * inherited_dilution_factor(parent_plate)).to_s

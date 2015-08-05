@@ -22,7 +22,7 @@
 (function($) {
   var plate_creator_parameters = <%= "{" + @plate_creators.map {|pc| "'#{pc.name}': #{pc.valid_options.to_json}"}.join(",") + "}" %>;
   var dilutionFactorsNodes = $("[data-plate-dilution-valid-options=dilutionFactors]");
-  var defaultOption = "<option value='not_set' disabled='disabled'>Not configurable for this type</option>";
+  var defaultOption = "<option value='1.0' disabled='disabled'>1.0</option>";
   dilutionFactorsNodes.html(defaultOption);
 
   var plateCreators = $("[data-plate-creators=true]");
