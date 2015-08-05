@@ -110,6 +110,46 @@ class PlatesControllerTest < ActionController::TestCase
                   assert_equal 3.53, @parent_plate.children.first.dilution_factor
                 end
               end
+              context "when we have 2 parents" do
+                setup do
+                    @well2 =  Factory :well
+                    @parent_plate2.wells << [@well2]
+                    @parent2_raw_barcode = Barcode.calculate_barcode(Plate.prefix, @parent_plate2.barcode.to_i)
+                end
+                context "and first parent has a dilution factor of 3.53, and second parent with 4.56" do
+                  setup do
+                    @parent_plate.dilution_factor=3.53
+                    @parent_plate.save!
+
+                    @parent_plate2.dilution_factor=4.56
+                    @parent_plate2.save!
+                  end
+                  context "and I don't select any dilution factor" do
+                    setup do
+                      post :create, :plates => {:creator_id =>  @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
+                        :source_plates =>"#{@parent_raw_barcode},#{@parent2_raw_barcode}", :user_barcode => '2470000100730'}
+                    end
+                    should_change("Plate.count", :by => 2) { Plate.count }
+                    should "set the dilution factor of each children to 3.53 and 4.56" do
+                      assert_equal 3.53, @parent_plate.children.first.dilution_factor
+                      assert_equal 4.56, @parent_plate2.children.first.dilution_factor
+                    end
+                  end
+                  context "and I select a dilution factor of 2.0" do
+                    setup do
+                      post :create, :plates => {:creator_id =>  @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
+                        :source_plates =>"#{@parent_raw_barcode},#{@parent2_raw_barcode}", :user_barcode => '2470000100730',
+                        :plate_creation_parameter_dilution_factor => 2.0
+                      }
+                    end
+                    should_change("Plate.count", :by => 2) { Plate.count }
+                    should "set the dilution factor of each children to 7.06 and 9.12" do
+                      assert_equal 7.06, @parent_plate.children.first.dilution_factor
+                      assert_equal 9.12, @parent_plate2.children.first.dilution_factor
+                    end
+                  end
+                end
+              end
             end
             context "and we select a dilution factor of 12.0" do
               context "when we don't have a parent" do
