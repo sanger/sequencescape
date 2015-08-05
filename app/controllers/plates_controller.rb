@@ -30,7 +30,6 @@ class PlatesController < ApplicationController
       user_barcode = Barcode.barcode_to_human(params[:plates][:user_barcode])
       scanned_user = User.find_by_barcode(user_barcode) if user_barcode
 
-
       respond_to do |format|
         if scanned_user.nil?
           flash[:error] = 'Please scan your user barcode'

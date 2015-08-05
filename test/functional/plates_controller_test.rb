@@ -108,15 +108,34 @@ class PlatesControllerTest < ActionController::TestCase
           context "with one source plate" do
             setup do
               @parent_raw_barcode = Barcode.calculate_barcode(Plate.prefix, @parent_plate.barcode.to_i)
-              post :create, :plates => {:creator_id => @pico_assay_plate_creator.id, :barcode_printer => @barcode_printer.id, :source_plates =>"#{@parent_raw_barcode}", :user_barcode => '2470000100730' }
             end
-            should_change("PicoAssayPlate.count", :by => 2) { PicoAssayPlate.count }
-            should "add a child to the parent plate" do
-              assert Plate.find(@parent_plate.id).children.first.is_a?(Plate)
-              assert_equal PicoAssayPlatePurpose.find_by_name("Pico Assay A"), Plate.find(@parent_plate.id).children.first.plate_purpose
+            context "without a dilution factor" do
+              setup do
+                post :create, :plates => {:creator_id => @pico_assay_plate_creator.id, :barcode_printer => @barcode_printer.id,
+                  :source_plates =>"#{@parent_raw_barcode}", :user_barcode => '2470000100730' }
+              end
+              should_change("PicoAssayPlate.count", :by => 2) { PicoAssayPlate.count }
+              should "add a child to the parent plate" do
+                assert Plate.find(@parent_plate.id).children.first.is_a?(Plate)
+                assert_equal PicoAssayPlatePurpose.find_by_name("Pico Assay A"), Plate.find(@parent_plate.id).children.first.plate_purpose
+              end
+              should_respond_with :redirect
+              should_set_the_flash_to /Created/
             end
-            should_respond_with :redirect
-            should_set_the_flash_to /Created/
+
+            context "with a dilution factor" do
+              setup do
+                post :create, :plates => {:creator_id => @pico_assay_plate_creator.id,
+                  :barcode_printer => @barcode_printer.id, :source_plates =>"#{@parent_raw_barcode}",
+                  :plate_creation_parameter_dilution_factor => 12.0,
+                  :user_barcode => '2470000100730' }
+              end
+              should "create all the pico assay plates with the same dilution factor" do
+                childrens = Plate.find(@parent_plate.id).children
+                assert_equal 12.0, childrens.first.dilution_factor
+                assert_equal 1, childrens.map(&:dilution_factor).uniq.length
+              end
+            end
           end
 
           context "with 3 source plates" do

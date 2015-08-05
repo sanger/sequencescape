@@ -1,6 +1,10 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
+
+require 'bigdecimal'
+require 'bigdecimal/util'
+
 class Plate::Creator < ActiveRecord::Base
 
   PlateCreationError = Class.new(StandardError)
@@ -77,11 +81,21 @@ class Plate::Creator < ActiveRecord::Base
   private :create_plates
 
   def load_creation_parameters(obj, creation_parameters)
+    # All the creation parameters are applied as String values into the ActiveRecord. Maybe in
+    # future this will need to be reviewed in case Ruby conversion from strings is not appropriate
     obj.update_attributes!(creation_parameters) unless creation_parameters.nil?
   end
   private :load_creation_parameters
 
   def create_child_plates_from(plate, current_user, creation_parameters)
+    plate_parameters = creation_parameters[:plate_creation_parameters].tap do |o|
+      if o.keys.include?(:dilution_factor)
+        # The dilution factor of the parent is propagated to the children taking the parent's dilution
+        # as basis. We leave the dilution factor as a String after changing it, as this creation param
+        # can be shared by all the list of plates created with this PlateCreator.
+        o[:dilution_factor] = (o[:dilution_factor].to_d * plate.dilution_factor).to_s
+      end
+    end
     stock_well_picker = plate.plate_purpose.can_be_considered_a_stock_plate? ? lambda { |w| [w] } : lambda { |w| w.stock_wells }
     plate_purposes.map do |target_plate_purpose|
       target_plate_purpose.target_plate_type.constantize.create_with_barcode!(plate.barcode) do |child_plate|
@@ -97,12 +111,7 @@ class Plate::Creator < ActiveRecord::Base
               load_creation_parameters(child_well, creation_parameters[:well_creation_parameters])
             end
           end
-        load_creation_parameters(child_plate, creation_parameters[:plate_creation_parameters].tap do |o|
-          # The dilution factor of the parent is propagated to the children taking the parent's dilution as basis
-          if o.keys.include?(:dilution_factor)
-            o[:dilution_factor] = o[:dilution_factor] * plate.dilution_factor
-          end
-        end)
+        load_creation_parameters(child_plate, plate_parameters)
 
         AssetLink.create_edge!(plate, child_plate)
         plate.events.create_plate!(target_plate_purpose, child_plate, current_user)
