@@ -53,7 +53,7 @@ class Plate::Creator < ActiveRecord::Base
   def create_plate_without_parent(creator_parameters)
     plate = self.plate_purpose.plates.create_with_barcode!
 
-    creator_parameters.set_plate_parameters(plate)
+    creator_parameters.set_plate_parameters(plate) unless creator_parameters.nil?
 
     return [ plate ]
   end
@@ -94,11 +94,11 @@ class Plate::Creator < ActiveRecord::Base
               child_well.aliquots = well.aliquots.map(&:clone)
               child_well.stock_wells.attach(stock_well_picker.call(well))
 
-              creator_parameters.set_well_parameters(child_well)
+              creator_parameters.set_well_parameters(child_well) unless creator_parameters.nil?
             end
           end
 
-        creator_parameters.set_plate_parameters(child_plate, plate)
+        creator_parameters.set_plate_parameters(child_plate, plate) unless creator_parameters.nil?
 
         AssetLink.create_edge!(plate, child_plate)
         plate.events.create_plate!(target_plate_purpose, child_plate, current_user)

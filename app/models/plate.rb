@@ -97,7 +97,7 @@ class Plate < Asset
     return {} if barcode.blank?
     {
       :barcode    => generate_machine_barcode,
-      :dilution_factor => dilution_factor,
+      :dilution_factor => dilution_factor.to_s,
       :created_at => created_at
     }
   end
