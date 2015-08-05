@@ -142,9 +142,6 @@ class Well < Aliquot::Receptacle
   alias_method(:get_pico_result, :get_concentration)
   writer_for_well_attribute_as_float(:concentration)
 
-  delegate_to_well_attribute(:dilution_factor)
-  writer_for_well_attribute(:dilution_factor)
-
   delegate_to_well_attribute(:molarity)
   writer_for_well_attribute_as_float(:molarity)
 
