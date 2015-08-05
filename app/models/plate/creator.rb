@@ -38,7 +38,7 @@ class Plate::Creator < ActiveRecord::Base
   end
 
   # Executes the plate creation so that the appropriate child plates are built.
-  def execute(source_plate_barcodes, barcode_printer, scanned_user, creation_parameters)
+  def execute(source_plate_barcodes, barcode_printer, scanned_user, creation_parameters={})
     ActiveRecord::Base.transaction do
       new_plates = create_plates(source_plate_barcodes, scanned_user, creation_parameters)
       return false if new_plates.empty?
@@ -52,7 +52,7 @@ class Plate::Creator < ActiveRecord::Base
     end
   end
 
-  def create_plates(source_plate_barcodes, current_user, creation_parameters)
+  def create_plates(source_plate_barcodes, current_user, creation_parameters={})
     return [ self.plate_purpose.plates.create_with_barcode! ]  if source_plate_barcodes.blank?
 
     scanned_barcodes = source_plate_barcodes.scan(/\d+/)

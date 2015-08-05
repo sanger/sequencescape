@@ -77,12 +77,28 @@ class PlatesControllerTest < ActionController::TestCase
                 @well =  Factory :well
                 @parent_plate.wells << [@well]
                 @parent_raw_barcode = Barcode.calculate_barcode(Plate.prefix, @parent_plate.barcode.to_i)
-                post :create, :plates => {:creator_id =>  @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
-                  :source_plates =>"#{@parent_raw_barcode}", :user_barcode => '2470000100730',
-                  :plate_creation_parameter_dilution_factor => 12.0 }
               end
-              should "sets the dilution factor" do
-                assert_equal 12.0, Plate.find(@parent_plate.id).children.first.dilution_factor
+              context "when the parent doesnt have a dilution factor" do
+                setup do
+                  @parent_plate.dilution_factor=1.0
+                  post :create, :plates => {:creator_id =>  @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
+                    :source_plates =>"#{@parent_raw_barcode}", :user_barcode => '2470000100730',
+                    :plate_creation_parameter_dilution_factor => 12.0 }
+                end
+                should "sets the dilution factor to the one specified" do
+                  assert_equal 12.0, @parent_plate.children.first.dilution_factor
+                end
+              end
+              context "when the parent plate has a dilution factor" do
+                setup do
+                  @parent_plate.dilution_factor=4
+                  post :create, :plates => {:creator_id =>  @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
+                    :source_plates =>"#{@parent_raw_barcode}", :user_barcode => '2470000100730',
+                    :plate_creation_parameter_dilution_factor => 12.0 }
+                end
+                should "sets the dilution factor with the multiplication of parent diltion and specified dilution" do
+                  assert_equal 48.0, @parent_plate.children.first.dilution_factor
+                end
               end
             end
           end
