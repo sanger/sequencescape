@@ -42,9 +42,6 @@ class Plate::Creator < ActiveRecord::Base
     ActiveRecord::Base.transaction do
       new_plates = create_plates(source_plate_barcodes, scanned_user, creation_parameters)
       return false if new_plates.empty?
-      new_plates.each do |child_plate|
-        load_creation_parameters(child_plate, creation_parameters[:plate_creation_parameters])
-      end
       new_plates.group_by(&:plate_purpose).each do |plate_purpose, plates|
         barcode_printer.print_labels(plates.map(&:barcode_label_for_printing), Plate.prefix, "long", plate_purpose.name.to_s, scanned_user.login)
       end
@@ -52,8 +49,14 @@ class Plate::Creator < ActiveRecord::Base
     end
   end
 
+  def create_plate_without_parent(creation_parameters)
+    plate = self.plate_purpose.plates.create_with_barcode!
+    load_creation_parameters(plate, creation_parameters[:plate_creation_parameters])
+    return [ plate ]
+  end
+
   def create_plates(source_plate_barcodes, current_user, creation_parameters={})
-    return [ self.plate_purpose.plates.create_with_barcode! ]  if source_plate_barcodes.blank?
+    return create_plate_without_parent(creation_parameters) if source_plate_barcodes.blank?
 
     scanned_barcodes = source_plate_barcodes.scan(/\d+/)
     raise PlateCreationError, "Scanned plate barcodes in incorrect format: #{source_plate_barcodes.inspect}" if scanned_barcodes.blank?
@@ -94,6 +97,13 @@ class Plate::Creator < ActiveRecord::Base
               load_creation_parameters(child_well, creation_parameters[:well_creation_parameters])
             end
           end
+        load_creation_parameters(child_plate, creation_parameters[:plate_creation_parameters].tap do |o|
+          # The dilution factor of the parent is propagated to the children taking the parent's dilution as basis
+          if o.keys.include?(:dilution_factor)
+            o[:dilution_factor] = o[:dilution_factor] * plate.dilution_factor
+          end
+        end)
+
         AssetLink.create_edge!(plate, child_plate)
         plate.events.create_plate!(target_plate_purpose, child_plate, current_user)
       end
