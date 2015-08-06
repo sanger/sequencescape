@@ -1,7 +1,7 @@
 class PopulateValidOptionsForPlateCreators < ActiveRecord::Migration
   def self.population_data
   [
-    ["Working dilution", [12.5, 20]],
+    ["Working dilution", [12.5, 20, 15, 50]],
     ["Pico dilution", [4]]
   ]
   end

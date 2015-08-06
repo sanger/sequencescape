@@ -33,8 +33,9 @@ class Plate::CreatorParameters
 
   def inherited_dilution_factor(parent_plate)
     return parent_plate.dilution_factor unless parent_plate.nil?
-    # This is the default dilution factor for creation
-    1.0
+    # If nobody specify any dilution factor (not even the PlateCreator), I can't assume any
+    # default dilution factor. We'll fall back to database default value (if it has one)
+    nil
   end
 
   def update_dilution_factor(params, plate, parent_plate)
@@ -45,6 +46,7 @@ class Plate::CreatorParameters
     else
       params[:dilution_factor] = inherited_dilution_factor(parent_plate)
     end
+    params.delete(:dilution_factor) if params[:dilution_factor].nil?
   end
 
   def plate_parameters(plate, parent_plate=nil)
