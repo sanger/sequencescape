@@ -31,21 +31,28 @@ class Plate::CreatorParameters
     load_creation_parameters(well, well_parameters(well))
   end
 
-  def inherited_dilution_factor(parent_plate)
-    return parent_plate.dilution_factor unless parent_plate.nil?
+  def plate_dilution_factor(plate)
+    return plate.dilution_factor unless plate.nil?
     # If nobody specify any dilution factor (not even the PlateCreator), I can't assume any
     # default dilution factor. We'll fall back to database default value (if it has one)
     nil
   end
 
+  def params_has_dilution_factor?(params)
+    (params.keys.include?(:dilution_factor) && (!params[:dilution_factor].nil?) && (!params[:dilution_factor].to_s.empty?))
+  end
+
   def update_dilution_factor(params, plate, parent_plate)
-    if (params.keys.include?(:dilution_factor) && (!params[:dilution_factor].nil?) && (!params[:dilution_factor].to_s.empty?))
+    parent_dilution_factor = plate_dilution_factor(parent_plate)
+    if params_has_dilution_factor?(params)
       # The dilution factor of the parent is propagated to the children taking the parent's dilution
       # as basis.
-      params[:dilution_factor] = (params[:dilution_factor].to_d * inherited_dilution_factor(parent_plate)).to_s
+      params[:dilution_factor] = (params[:dilution_factor].to_d * parent_dilution_factor).to_s unless parent_dilution_factor.nil?
     else
-      params[:dilution_factor] = inherited_dilution_factor(parent_plate)
+      # If not specified, I'll inherit the value of the source plate (if it has one)
+      params[:dilution_factor] = parent_dilution_factor
     end
+    # If I don't have a dilution factor yet, I'll let the value fall back to database default
     params.delete(:dilution_factor) if params[:dilution_factor].nil?
   end
 
