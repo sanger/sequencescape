@@ -43,5 +43,4 @@ module PlatesHelper
     end
   end
 
-
 end

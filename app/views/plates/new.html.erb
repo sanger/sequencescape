@@ -6,10 +6,48 @@
   <% form.inputs :name => "Create Plates" do %>
     <%= form.input :user_barcode,    :input_html => {:onkeypress => "return disable_cr_and_change_focus(event,'user_barcode','plates_source_plates')" } %>
     <%= form.input :source_plates,   :as => :text,   :required => false %>
-    <%= form.input :creator_id,      :as => :select, :collection => @plate_creators, :label => 'Plate purpose' %>
+    <%= form.input :creator_id,      :as => :select, :collection => @plate_creators, :label => 'Plate purpose', :input_html => { :"data-plate-creators" => "true"} %>
+
+    <!-- Plates and Well creation parameters (name starts to plate_creation_parameter or well_creation_parameter) -->
+    <%= form.input :plate_creation_parameter_dilution_factor, :as => :select, :label => 'Dilution factor',
+    :input_html => { :"data-plate-dilution-valid-options" => 'dilutionFactors'} %>
+    <!-- End of Plates and Well creation parameters -->
+
     <%= form.input :barcode_printer, :as => :select, :collection => @barcode_printers %>
     <%= form.commit_button %>
   <% end %>
 <% end %>
 
+<script type="text/javascript">
+(function($) {
+  var plate_creator_parameters = <%= "{" + @plate_creators.map {|pc| "'#{pc.name}': #{pc.valid_options.to_json}"}.join(",") + "}" %>;
+  var dilutionFactorsNodes = $("[data-plate-dilution-valid-options=dilutionFactors]");
+  var defaultOption = "<option value='1.0' disabled='disabled'>1.0</option>";
+  dilutionFactorsNodes.html(defaultOption);
 
+  var plateCreators = $("[data-plate-creators=true]");
+
+  function getSelectedText(select) {
+    var options = select[0].options;
+    for (var i=0; i<options.length; i++) {
+      if (options[i].selected) {
+        return $(options[i]).text();
+      }
+    }
+  }
+
+  plateCreators.change(function() {
+    var name = getSelectedText(plateCreators);
+    dilutionFactorsNodes.html("");
+    if (plate_creator_parameters[name] !== null) {
+      var validDilutionFactors = plate_creator_parameters[name].valid_dilution_factors;
+      for (var i=0; i<validDilutionFactors.length; i++) {
+        var val = validDilutionFactors[i]
+        dilutionFactorsNodes.append("<option value='"+val+"'>"+val+"</option>");
+      }
+    } else {
+      dilutionFactorsNodes.append(defaultOption);
+    }
+  });
+})(jQuery)
+</script>

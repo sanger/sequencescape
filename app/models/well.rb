@@ -108,6 +108,14 @@ class Well < Aliquot::Receptacle
         end
       END_OF_METHOD_DEFINITION
     end
+
+    def writer_for_well_attribute(attribute)
+      class_eval <<-END_OF_METHOD_DEFINITION
+        def set_#{attribute}(value)
+          self.well_attribute.update_attributes!(:#{attribute} => value)
+        end
+      END_OF_METHOD_DEFINITION
+    end
   end
 
   def generate_name(_)

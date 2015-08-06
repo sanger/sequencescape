@@ -31,6 +31,7 @@ class Plate < Asset
   delegate :asset_shape, :to => :plate_purpose, :allow_nil => true
   delegate :supports_multiple_submissions?, :to => :plate_purpose
   delegate :fluidigm_barcode, :to => :plate_metadata
+  delegate :dilution_factor,:dilution_factor=, :to => :plate_metadata
 
   validates_length_of :fluidigm_barcode, :is => 10, :allow_blank => true
 
@@ -91,6 +92,16 @@ class Plate < Asset
       :conditions => ['caplp.container_id = ?',self.id]
     )
   end
+
+   def barcode_dilution_factor_created_at_hash
+    return {} if barcode.blank?
+    {
+      :barcode    => generate_machine_barcode,
+      :dilution_factor => dilution_factor.to_s,
+      :created_at => created_at
+    }
+  end
+
 
   class CommentsProxy
 

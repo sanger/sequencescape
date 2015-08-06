@@ -1,19 +1,23 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013 Genome Research Ltd.
+#Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
+
 class Plate::Creator < ActiveRecord::Base
-  class PlateCreationError < StandardError
-    attr_accessor :text
-    def initialize(text)
-      @text = text
-    end
-  end
+
+  PlateCreationError = Class.new(StandardError)
+
   class PurposeRelationship < ActiveRecord::Base
     set_table_name('plate_creator_purposes')
 
     belongs_to :plate_purpose
     belongs_to :plate_creator, :class_name => 'Plate::Creator'
-    belongs_to :parent_purpose, :class_name => 'Purpose', :foreign_key => :parent_purpose_id
+
+  end
+
+  class ParentPurposeRelationship < ActiveRecord::Base
+    set_table_name('plate_creator_parent_purposes')
+
+    belongs_to :plate_purpose, :class_name => 'Purpose'
   end
 
   set_table_name('plate_creators')
@@ -22,34 +26,43 @@ class Plate::Creator < ActiveRecord::Base
   has_many :plate_creator_purposes, :class_name => 'Plate::Creator::PurposeRelationship', :dependent => :destroy, :foreign_key => :plate_creator_id
   has_many :plate_purposes, :through => :plate_creator_purposes
 
+  has_many :parent_purpose_relationships, :class_name => 'Plate::Creator::ParentPurposeRelationship',:dependent => :destroy, :foreign_key => :plate_creator_id
+  has_many :parent_plate_purposes, :through => :parent_purpose_relationships, :source => :plate_purpose
+
   # If there are no barcodes supplied then we use the plate purpose we represent
   belongs_to :plate_purpose
 
-  def can_create_plates?(source_plate, plate_purposes)
-    parent_purposes = plate_creator_purposes.select do |r|
-      plate_purposes.include?(r.plate_purpose)
-    end.map(&:parent_purpose).uniq.compact
+  serialize :valid_options
 
-    parent_purposes.empty? || parent_purposes.all? {|p| p==source_plate.purpose}
+  def can_create_plates?(source_plate, plate_purposes)
+    parent_plate_purposes.empty? || parent_plate_purposes.include?(source_plate.purpose)
   end
 
   # Executes the plate creation so that the appropriate child plates are built.
-  def execute(source_plate_barcodes, barcode_printer, scanned_user)
+  def execute(source_plate_barcodes, barcode_printer, scanned_user, creator_parameters=nil)
     ActiveRecord::Base.transaction do
-      new_plates = source_plate_barcodes.blank? ? [ self.plate_purpose.plates.create_with_barcode! ] : create_plates(source_plate_barcodes, scanned_user)
+      new_plates = create_plates(source_plate_barcodes, scanned_user, creator_parameters)
       return false if new_plates.empty?
-
       new_plates.group_by(&:plate_purpose).each do |plate_purpose, plates|
         barcode_printer.print_labels(plates.map(&:barcode_label_for_printing), Plate.prefix, "long", plate_purpose.name.to_s, scanned_user.login)
       end
-
       true
     end
   end
 
-  def create_plates(source_plate_barcodes, current_user)
+  def create_plate_without_parent(creator_parameters)
+    plate = self.plate_purpose.plates.create_with_barcode!
+
+    creator_parameters.set_plate_parameters(plate) unless creator_parameters.nil?
+
+    return [ plate ]
+  end
+
+  def create_plates(source_plate_barcodes, current_user, creator_parameters=nil)
+    return create_plate_without_parent(creator_parameters) if source_plate_barcodes.blank?
+
     scanned_barcodes = source_plate_barcodes.scan(/\d+/)
-    raise "Scanned plate barcodes in incorrect format: #{source_plate_barcodes.inspect}" if scanned_barcodes.blank?
+    raise PlateCreationError, "Scanned plate barcodes in incorrect format: #{source_plate_barcodes.inspect}" if scanned_barcodes.blank?
 
     # NOTE: Plate barcodes are not unique within certain laboratories.  That means that we cannot do:
     #  plates = Plate.with_machine_barcode(*scanned_barcodes).all(:include => [ :location, { :wells => :aliquots } ])
@@ -59,14 +72,15 @@ class Plate::Creator < ActiveRecord::Base
         Plate.with_machine_barcode(scanned).first(:include => [ :location, { :wells => :aliquots } ]) or
           raise ActiveRecord::RecordNotFound, "Could not find plate with machine barcode #{scanned.inspect}"
       unless can_create_plates?(plate, plate_purposes)
-        raise PlateCreationError.new("Scanned plate #{scanned} has a purpose #{plate.purpose.name} not valid for creating [#{self.plate_purposes.map(&:name).join(',')}]")
+        raise PlateCreationError, "Scanned plate #{scanned} has a purpose #{plate.purpose.name} not valid for creating [#{self.plate_purposes.map(&:name).join(',')}]"
       end
-      create_child_plates_from(plate, current_user)
+      create_child_plates_from(plate, current_user, creator_parameters)
     end.flatten
   end
   private :create_plates
 
-  def create_child_plates_from(plate, current_user)
+
+  def create_child_plates_from(plate, current_user, creator_parameters)
     stock_well_picker = plate.plate_purpose.can_be_considered_a_stock_plate? ? lambda { |w| [w] } : lambda { |w| w.stock_wells }
     plate_purposes.map do |target_plate_purpose|
       target_plate_purpose.target_plate_type.constantize.create_with_barcode!(plate.barcode) do |child_plate|
@@ -79,8 +93,13 @@ class Plate::Creator < ActiveRecord::Base
             well.clone.tap do |child_well|
               child_well.aliquots = well.aliquots.map(&:clone)
               child_well.stock_wells.attach(stock_well_picker.call(well))
+
+              creator_parameters.set_well_parameters(child_well) unless creator_parameters.nil?
             end
           end
+
+        creator_parameters.set_plate_parameters(child_plate, plate) unless creator_parameters.nil?
+
         AssetLink.create_edge!(plate, child_plate)
         plate.events.create_plate!(target_plate_purpose, child_plate, current_user)
       end

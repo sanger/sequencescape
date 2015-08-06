@@ -11,13 +11,16 @@ Given /^a "([^"]*)" tube called "([^"]*)" exists$/ do |tube_purpose, tube_name|
 end
 
 Given /^the tube "([^"]*)" is the target of a (started|passed|pending) "([^"]*)" from "([^"]*)"$/ do |tube_name, state, request_type, source_name|
+  submission = Submission.last || Factory(:submission)
   tube = Tube.find_by_name(tube_name)
   source = Asset.find_by_name(source_name)
   source = source.wells.first if source.is_a?(Plate)
   RequestType.find_by_name(request_type).create!(
     {:state => state,
     :asset => source,
-    :target_asset => tube}.merge(request_defaults(request_type))
+    :target_asset => tube,
+    :submission => submission
+    }.merge(request_defaults(request_type))
   )
 end
 

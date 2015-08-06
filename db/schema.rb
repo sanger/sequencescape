@@ -1,4 +1,4 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file,
+# This file is auto-generated from the current state of the database. Instead of editing this file, 
 # please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150717085903) do
+ActiveRecord::Schema.define(:version => 20150803092346) do
 
   create_table "aliquot_indices", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
@@ -785,12 +785,18 @@ ActiveRecord::Schema.define(:version => 20150717085903) do
     t.datetime "updated_at"
   end
 
-  create_table "plate_creator_purposes", :force => true do |t|
-    t.integer  "plate_creator_id",  :null => false
-    t.integer  "plate_purpose_id",  :null => false
+  create_table "plate_creator_parent_purposes", :force => true do |t|
+    t.integer  "plate_creator_id", :null => false
+    t.integer  "plate_purpose_id", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "parent_purpose_id"
+  end
+
+  create_table "plate_creator_purposes", :force => true do |t|
+    t.integer  "plate_creator_id", :null => false
+    t.integer  "plate_purpose_id", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "plate_creators", :force => true do |t|
@@ -798,6 +804,7 @@ ActiveRecord::Schema.define(:version => 20150717085903) do
     t.integer  "plate_purpose_id", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "valid_options"
   end
 
   add_index "plate_creators", ["name"], :name => "index_plate_creators_on_name", :unique => true
@@ -808,6 +815,7 @@ ActiveRecord::Schema.define(:version => 20150717085903) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "fluidigm_barcode", :limit => 10
+    t.decimal  "dilution_factor",                :precision => 5, :scale => 2, :default => 1.0
   end
 
   add_index "plate_metadata", ["fluidigm_barcode"], :name => "index_on_fluidigm_barcode", :unique => true
@@ -1146,6 +1154,7 @@ ActiveRecord::Schema.define(:version => 20150717085903) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "barcode"
+    t.float    "minimum_volume"
   end
 
   create_table "roles", :force => true do |t|
