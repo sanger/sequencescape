@@ -60,6 +60,7 @@ class Api::StudyIO < Api::Base
     with_association(:reference_genome, :lookup_by => :name) do
       map_attribute_to_json_attribute(:name, 'reference_genome')
     end
+    map_attribute_to_json_attribute(:prelim_id, 'prelim_id')
     map_attribute_to_json_attribute(:study_ebi_accession_number, 'accession_number')
     map_attribute_to_json_attribute(:study_description         , 'description')
     map_attribute_to_json_attribute(:study_abstract            , 'abstract')
