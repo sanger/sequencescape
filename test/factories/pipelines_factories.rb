@@ -346,6 +346,9 @@ end
 Factory.define :assign_tubes_to_multiplexed_wells_task do |t|
 end
 
+Factory.define :multiplexed_cherrypicking_task do |t|
+end
+
 Factory.define :attach_infinium_barcode_task do |t|
 end
 
@@ -393,7 +396,7 @@ Factory.define :assign_plate_purpose_task do |assign_plate_purpose_task|
 end
 
 Factory.define :plate_purpose do |plate_purpose|
-  plate_purpose.name    "Frag"
+  plate_purpose.name   { Factory.next :purpose_name }
 end
 
 Factory.define :purpose do |purpose|

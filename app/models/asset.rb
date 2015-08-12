@@ -22,6 +22,12 @@ class Asset < ActiveRecord::Base
   class VolumeError< StandardError
   end
 
+  def summary_hash
+    {
+      :asset_id => id
+    }
+  end
+
   cattr_reader :per_page
   @@per_page = 500
   self.inheritance_column = "sti_type"

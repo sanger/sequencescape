@@ -351,6 +351,10 @@ Factory.define :"#{state}_request", :parent =>  :request do |r|
 end
 end
 
+Factory.define :pooled_cherrypick_request do |r|
+  r.asset      {|asset| asset.association(:well_with_sample_and_without_plate)}
+end
+
 
 Factory.define :request_type do |rt|
   rt_value = Factory.next :request_type_id
@@ -588,7 +592,10 @@ Factory.define :library_tube, :parent => :empty_library_tube do |library_tube|
     library_tube.aliquots.create!(:sample => Factory(:sample))
   end
 end
-Factory.define :pac_bio_library_tube do
+Factory.define :pac_bio_library_tube do |tube|
+  tube.after_build do |t|
+    t.aliquots.build(:sample=>Factory(:sample))
+  end
 end
 
 # A library tube is created from a sample tube through a library creation request!

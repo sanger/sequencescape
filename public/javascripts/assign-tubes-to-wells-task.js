@@ -4,11 +4,18 @@
 
 (function ($, undefined) {
   $(document).ready(function() {
+    "use strict";
 
-    var clashChecker, attach, detach, moveTo, preventMatchingAssetPooling;
-
+    var clashChecker, attach, detach, moveTo, preventMatchingAssetPooling, preventMatchingSamplePooling, reportError, hideWells, doNothing, reset, well_array, lookup_url;
+    if (window.SCAPE == undefined) {window.SCAPE = {};}
+    // Forbid pooling of requests from assets with the same contents
+    preventMatchingSamplePooling = (SCAPE.preventMatchingSamplePooling == undefined ? true : SCAPE.preventMatchingSamplePooling ) ;
+    // Forbid pooling of requests from same source
     preventMatchingAssetPooling = true;
 
+    lookup_url = '/machine_barcodes/'
+
+    // Uses errorReporter to pass message back to user, returns true in the event of a clash.
     clashChecker = function(children,candidate_jq,errorReporter) {
       var candidate = candidate_jq.get(0)
       for (var i = 0; i < children.length; i+=1) {
@@ -17,6 +24,8 @@
         (candidate.dataset.requestId !== (child.dataset.requestId)) && // the candidate becomes a child of the target before it is tested. We avoid it matching itself
         (preventMatchingAssetPooling || (candidate.dataset.assetId !== child.dataset.assetId))// if preventMatchingAssetPooling Only perform checks if assets don't match
         ) {
+          // If we're not blocking pooling matching samples, the requests are from different assets and the samples match, allow pooling
+          if(!preventMatchingSamplePooling && (candidate.dataset.assetId !== child.dataset.assetId) && (candidate.dataset.sampleId == child.dataset.sampleId) ) { return false; }
           if(candidate.dataset.tagIndex === '-' || child.dataset.tagIndex === '-') { errorReporter('Can not multiplex untagged samples'); return true; } // We can't mix untagged with anything
           if(candidate.dataset.tagIndex === child.dataset.tagIndex ) { errorReporter('Can not multiplex matching tags'); return true; } // We can't mix matching tags
           if(candidate.title !== child.title) { errorReporter('Tubes have incompatible request options (eg. Movie Length)'); return true;} // We can't mix incompatible tubes
@@ -36,6 +45,18 @@
     // moveTo bypasses the receive and remove checks.
     moveTo = function(tube,target) { $(target).append(tube); attach(tube,target);};
     reset = function(tube) { $('#tube_source').append(tube); detach(tube);};
+
+    hideWells = function(filled_well) {
+      for (var i = 0; i < filled_well.length; i += 1) {
+        var child_element, child_content, well;
+        child_element = document.createElement("span");
+        child_content = document.createTextNode("Filled");
+        child_element.appendChild(child_content);
+        well = document.getElementById('well_'+filled_well[i])
+        well.appendChild(child_element);
+        $(well).sortable('destroy');
+      }
+    }
 
     well_array = [
       "A1", "B1", "C1", "D1", "E1", "F1", "G1", "H1",
@@ -113,8 +134,29 @@
       }
     });
 
+    $('#sample_matching').bind('click',function(){
+      var destination = {}, well_index = 0, unsorted_tubes;
+
+      unsorted_tubes = $('.tube_source .library_tube');
+
+      for (var i = 0; i < unsorted_tubes.length ; i+=1) {
+        var next_well;
+
+        if (destination[unsorted_tubes[i].dataset.sampleId]) {
+          next_well = destination[unsorted_tubes[i].dataset.sampleId]
+        } else {
+          // Find the first empty well
+          while ((next_well = document.getElementById('well_'+well_array[well_index])) && next_well.childElementCount > 0) {
+            well_index += 1;
+          }
+          destination[unsorted_tubes[i].dataset.sampleId] = next_well;
+        }
+        if (next_well) { moveTo(unsorted_tubes[i],next_well); }
+      }
+    });
+
     $('#smart_multiplexing').bind('click',function(){
-      var well_index = 0, unsorted_tubes;
+      var well_index = 0, unsorted_tubes, next_well;
 
       unsorted_tubes = $('.tube_source .library_tube');
 
@@ -138,6 +180,36 @@
     $('#clear_plate').bind('click',function(){
       $('.library_tube').each(function(){ reset(this); })
     });
+
+    $('button#new_plate').bind('click',function(e){
+      document.getElementById('existing_plate_barcode').value = "";
+      $('#target_plate_selector').slideUp();
+      $('#target_plate_selected').slideDown();
+      e.preventDefault();
+    })
+
+    $('#existing_plate_barcode').bind('change',function(e){
+      var barcode;
+      barcode = this.value
+      if(barcode.length===13) {
+        $('#target_plate_selector').slideUp();
+        $.get(lookup_url+barcode).success(function(data){
+            if (data["occupied_wells"] === undefined ) {
+              $('#target_plate_selector').slideDown();
+              reportError(barcode+" is not a plate");
+            } else {
+              hideWells(data["occupied_wells"]);
+              $('#target_plate_selected').slideDown();
+            }
+          }).fail(function(){
+            $('#target_plate_selector').slideDown();
+            reportError("Could not find "+barcode);
+          })
+      } else {
+        reportError("Barcode should be 13 digits long.")
+      };
+      e.preventDefault();
+    })
 
 
   })
