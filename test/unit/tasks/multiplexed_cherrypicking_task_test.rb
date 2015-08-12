@@ -62,12 +62,6 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
       :id=>"2",
       :plate_purpose_id => @purpose_id,
       :existing_plate_barcode => @barcode,
-      :volume_required => "65",
-      :concentration_required => "50",
-      :total_nano_grams => "1000",
-      :minimum_volume => "10",
-      :maximum_volume => "50",
-      :cherrypick => {"action"=>"micro_litre"},
       :micro_litre_volume_required => "5"
     }
   end
@@ -151,6 +145,12 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
             assert_equal request_location_hash[r.id.to_s], r.target_asset.map_description
             assert_equal @purpose.plates.last, r.target_asset.plate
             assert_equal @purpose, r.target_asset.plate.purpose
+          end
+        end
+        should "set the pick volume on the target_wells" do
+          assert @task.do_task(@workflows_controller,params), "Task returned false"
+          @requests.each do |request|
+            assert_equal 5, request.target_asset.get_picked_volume
           end
         end
       end

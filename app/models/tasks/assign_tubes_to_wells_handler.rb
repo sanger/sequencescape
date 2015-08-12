@@ -68,6 +68,14 @@ module Tasks::AssignTubesToWellsHandler
     true
   end
 
+  def do_assign_pick_volume_task(task, params)
+    @batch.requests.each do |r|
+      next if r.target_asset.nil?
+      r.target_asset.set_picked_volume(params[:micro_litre_volume_required].to_i)
+    end
+    true
+  end
+
   # Identifies and array of well map descriptions that contain duplicate tags
   # First filters out any equivalent aliquots. (ie. same sample, tag, library_type, etc.)
   def wells_with_duplicates(params)
