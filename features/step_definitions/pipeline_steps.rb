@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 Given /^I have a pipeline called "([^\"]*)"$/ do |name|
   request_type = Factory :request_type
   pipeline = Factory :pipeline, :name => name, :request_types => [request_type]
@@ -21,7 +21,9 @@ Given /^I have a control called "([^\"]*)" for "([^\"]*)"$/ do |name, pipeline_n
 end
 
 def pipeline_name_to_asset_type(pipeline_name)
-  pipeline_name.include?('Library Preparation') || pipeline_name.include?('Library preparation') ? :sample_tube : :library_tube
+  return :sample_tube if pipeline_name.downcase.include?('library preparation')
+  return :well if pipeline_name.downcase.include?('from strip-tubes')
+  :library_tube
 end
 
 def create_request_for_pipeline(pipeline_name, options = {})
