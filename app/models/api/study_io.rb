@@ -92,7 +92,7 @@ class Api::StudyIO < Api::Base
     map_attribute_to_json_attribute(:data_access_group)
 
     map_attribute_to_json_attribute(:bam, 'alignments_in_bam')
-    map_attribute_to_json_attribute(:prelim_id)
+    # map_attribute_to_json_attribute(:prelim_id) Temporary remove
   end
 
   self.related_resources = [ :samples, :projects ]
