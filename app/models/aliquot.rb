@@ -152,6 +152,8 @@ class Aliquot < ActiveRecord::Base
 
   has_one :aliquot_index
 
+  named_scope :include_summary, :include => [ :sample, :tag, :tag2 ]
+
   def aliquot_index_value
     aliquot_index.try(:aliquot_index)||tag.map_id
   end
