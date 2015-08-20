@@ -28,6 +28,7 @@ module Presenters
     add_field 'Study',          :study,          :if => :group_by_submission?
     add_field 'Stock Barcode',  :stock_barcode,  :if => :show_stock?
     add_field 'Still Required', :still_required, :if => :select_partial_requests?
+    add_field 'Submitted at',   :submitted_at
 
 
     attr_reader :pipeline, :user
@@ -120,6 +121,10 @@ module Presenters
 
     def submission
       Submission.find(submission_id) if submission_id.present?
+    end
+
+    def submitted_at
+      requests.first.submitted_at
     end
 
     def submission_name

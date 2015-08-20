@@ -1,7 +1,4 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2015 Genome Research Ltd.%>
-<div class="columnize">
-<div class="info"><%= render :partial => 'asset_summary', :locals => {:asset => @asset} %></div>
-<div class="info"><%= render :partial => 'sample_list', :locals => {:asset => @asset} if @asset.respond_to?(:sample)%></div>
-</div>
+<%= tag.map_id %> (<%= tag.oligo %>) <%= link_to('Group',tag.tag_group,{:title=>tag.tag_group.name}) %>

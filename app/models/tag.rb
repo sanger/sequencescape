@@ -37,4 +37,12 @@ class Tag < ActiveRecord::Base
     raise StandardError, "Cannot tag multiple samples" if asset.aliquots.size > 1
     asset.aliquots.first.update_attributes!(:tag => self)
   end
+
+  # Map id is converted to a string here for consistency with elsewhere in the api.
+  def summary
+    {
+      :tag_group => tag_group.name,
+      :tag_index => map_id.to_s
+    }
+  end
 end

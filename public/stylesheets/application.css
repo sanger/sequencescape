@@ -439,6 +439,8 @@ padding-left: 12px;
   behavior: url(/stylesheets/PIE.htc);
 }
 
+table.sample_list td:first-child {text-align:right; padding-right:0.5em;}
+
 .info {
   padding-bottom: 5px;
   border-bottom: 1px solid #ccc;
@@ -448,6 +450,10 @@ padding-left: 12px;
   width:45%;
   display:inline-block;
   float:left;
+}
+
+.columnize {
+  overflow:auto;
 }
 
 .loading {

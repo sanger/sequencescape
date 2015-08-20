@@ -198,18 +198,27 @@ module SampleManifest::InputBehaviour
       #
       # NOTE: Do not include the primary_receptacle here as it will cause the wrong one to be loaded!
       sample = samples.find_by_sanger_sample_id(sanger_sample_id)
+
+      errors = false
+
       if sample.nil?
         sample_errors.push("Sample #{sanger_sample_id} does not appear to be part of this manifest")
-        next
+         errors = true
       elsif sample.primary_receptacle.nil?
         sample_errors.push("Sample #{sanger_sample_id} appears to not have a receptacle defined! Contact PSD")
-        next
+        errors = true
       else
         validate_sample_container(sample, row) do |message|
           sample_errors.push(message)
-          next
+          errors = true
+        end
+        validate_specialized_fields(sample,row) do |message|
+          sample_errors.push(message)
+          errors = true
         end
       end
+
+      next if errors
 
       metadata = Hash[
         SampleManifest::Headers::METADATA_ATTRIBUTES_TO_CSV_COLUMNS.map do |attribute, csv_column|
@@ -225,7 +234,7 @@ module SampleManifest::InputBehaviour
           :sanger_sample_id           => sanger_sample_id,
           :control                    => convert_yes_no_to_boolean(row['IS SAMPLE A CONTROL?']),
           :sample_metadata_attributes => metadata.delete_if { |_,v| v.nil? }
-        }
+        }.merge( specialized_fields(row) )
       ])
     end
 
@@ -242,6 +251,7 @@ module SampleManifest::InputBehaviour
     self.last_errors = nil
     self.finished!
   rescue ActiveRecord::RecordInvalid => exception
+    errors.add(:base,exception.message)
     fail_with_errors!(errors.full_messages)
   rescue InvalidManifest => exception
     fail_with_errors!(Array(exception.message).flatten)
