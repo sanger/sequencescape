@@ -72,7 +72,8 @@ And I have a "full" authorised user with the key "cucumber"
             "actions": {
               "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/sample_manifests",
               "create_for_plates": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/sample_manifests/create_for_plates",
-              "create_for_tubes": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/sample_manifests/create_for_tubes"
+              "create_for_tubes": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/sample_manifests/create_for_tubes",
+              "create_for_multiplexed_libraries": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/sample_manifests/create_for_multiplexed_libraries"
             }
           }
         }

@@ -446,4 +446,9 @@ class Sample < ActiveRecord::Base
     self.update_attribute(:consent_withdrawn, true)
   end
 
+  # These don't really belong here, but exist due to the close coupling between sample
+  # and its initial aliquot in the sample manifest.
+  delegate :specialized_from_manifest=, :to => :primary_receptacle
+  delegate :library_information=, :to => :primary_receptacle
+
 end

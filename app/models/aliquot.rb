@@ -90,6 +90,10 @@ class Aliquot < ActiveRecord::Base
       self.class.name.underscore
     end
 
+    def specialized_from_manifest=(*args);end
+    def library_information;end
+    def library_information=(*args);end
+
     def assign_tag2(tag)
       aliquots.each do |aliquot|
         aliquot.tag2 = tag

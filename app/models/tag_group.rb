@@ -6,6 +6,8 @@ class TagGroup < ActiveRecord::Base
 
   has_many :tags, :order => 'map_id ASC'
 
+  named_scope :include_tags, :include => :tags
+
 
   named_scope :visible, :conditions => {:visible => true}
 
