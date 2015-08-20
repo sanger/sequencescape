@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2013,2015 Genome Research Ltd.
 class Api::StudyIO < Api::Base
   module Extensions
     module ClassMethods
@@ -92,6 +92,7 @@ class Api::StudyIO < Api::Base
     map_attribute_to_json_attribute(:data_access_group)
 
     map_attribute_to_json_attribute(:bam, 'alignments_in_bam')
+    map_attribute_to_json_attribute(:prelim_id)
   end
 
   self.related_resources = [ :samples, :projects ]
