@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2013 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2013,2015 Genome Research Ltd.
 class LabEvent < ActiveRecord::Base
   belongs_to :batch
   belongs_to :user
@@ -34,7 +34,7 @@ class LabEvent < ActiveRecord::Base
 
   def descriptor_value_for(name)
     self.descriptors.each do |desc|
-      if desc.name.eql?(name.to_s)
+      if desc.name.downcase == name.to_s.downcase
         return desc.value
       end
     end

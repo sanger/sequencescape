@@ -3,6 +3,7 @@
 #Copyright (C) 2007-2011 Genome Research Ltd.%>
 <% add :menu, "Create manifest for plates" => new_sample_manifest_path({:type => "plate"}) %>
 <% add :menu, "Create manifest for 1D tubes" => new_sample_manifest_path({:type => "1dtube"}) %>
+<% add :menu, "Create manifest for multiplexed libraries" => new_sample_manifest_path({:type => "multiplexed_library"}) %>
 
 <h2>Sample Manifests for <%= @study.name %></h2>
 <%= will_paginate @sample_manifests %>

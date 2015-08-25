@@ -22,6 +22,14 @@ class Api::Messages::FlowcellIO < Api::Base
           MANUAL_QC_BOOLS[target_asset.try(:qc_state)]
         end
 
+        def flowcell_identifier
+          "Chip Barcode"
+        end
+
+        def flowcell_barcode
+          lab_events.each {|e| e.descriptor_value_for(flowcell_identifier).tap {|bc| return bc unless bc.nil? } }
+        end
+
         def samples
           some_untagged = target_asset.aliquots.any?(&:untagged?)
           target_asset.aliquots.reject do |a|
@@ -142,8 +150,7 @@ class Api::Messages::FlowcellIO < Api::Base
         named_scope :including_associations_for_json, { :include => [ :uuid_object, :user, :assignee, { :pipeline => :uuid_object }] }
 
         def flowcell_barcode
-          requests.first.lab_events.each {|e| e.descriptor_value_for("Chip Barcode").tap {|bc| return bc unless bc.nil? } }
-          nil
+          requests.first.flowcell_barcode
         end
 
         def read_length

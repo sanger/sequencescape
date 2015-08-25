@@ -490,6 +490,15 @@ class Request < ActiveRecord::Base
     submission.requests.with_request_type_id(request_type_id)
   end
 
+  # The date at which the submission was made. In most cases this will be similar to the request's created_at
+  # timestamp. We go via submission to ensure that copied requests bear the original timestamp.
+  def submitted_at
+    # Hopefully we shouldn't get any requests that don't have a submission. But validation is turned off, so
+    # we should assume it it possible.
+    return '' if submission.nil?
+    submission.created_at.strftime('%Y-%m-%d')
+  end
+
   def role
     order.try(:role)
   end
@@ -509,4 +518,6 @@ class Request < ActiveRecord::Base
   def library_creation?
     false
   end
+
+  def manifest_processed; end
 end

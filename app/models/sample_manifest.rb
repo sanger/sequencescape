@@ -7,9 +7,11 @@ class SampleManifest < ActiveRecord::Base
   include SampleManifest::BarcodePrinterBehaviour
   include SampleManifest::TemplateBehaviour
   include SampleManifest::SampleTubeBehaviour
+  include SampleManifest::MultiplexedLibraryBehaviour
   include SampleManifest::CoreBehaviour
   include SampleManifest::PlateBehaviour
   include SampleManifest::InputBehaviour
+  include SampleManifest::SharedTubeBehaviour
   extend SampleManifest::StateMachine
   extend Document::Associations
 
