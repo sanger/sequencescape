@@ -6,6 +6,9 @@ require 'control_request_type_creation'
 Pipeline.send(:include, ControlRequestTypeCreation)
 Pipeline.send(:before_save, :add_control_request_type)
 
+RequestType.send(:include, RequestTypePurposeCreation)
+RequestType.send(:before_validation, :add_request_purpose)
+
 ProductLine.create(:name=>'Illumina-A')
 ProductLine.create(:name=>'Illumina-B')
 ProductLine.create(:name=>'Illumina-C')

@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 #TODO: for rails 3 replace with rails/test_help
@@ -60,34 +60,3 @@ class ActiveSupport::TestCase
   # Add more helper methods to be used by all tests here...
 end
 
-# Adds support for a setup and teardown method across a set of tests, meaning that expensive DB
-# operations can be done once.  Please note that you are responsible for tidying up after yourself,
-# don't rely on a transaction doing it for you!
-class ActiveSupport::TestCase
-  class << self
-    # Called at the start of a group of tests.
-    def startup
-      # Does nothing
-    end
-
-    # Called at the end of a group of tests.  You must manage your exception handling yourself
-    # and not raise any out of this method.
-    def shutdown
-      # Does nothing
-    end
-
-    def suite #:nodoc:
-      test_suite = super
-      test_suite.instance_variable_set('@test_class', self)
-      class << test_suite
-        def run(*args, &block)
-          @test_class.startup
-          super
-        ensure
-          @test_class.shutdown
-        end
-      end
-      test_suite
-    end
-  end
-end

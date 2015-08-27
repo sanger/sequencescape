@@ -54,6 +54,7 @@ class RequestType < ActiveRecord::Base
   # ie. standrad, qc, internal
   # The value on request type acts as a default for requests
   belongs_to :request_purpose
+  validates_presence_of :request_purpose
 
   MORPHOLOGIES  = [
     LINEAR = 0,   # one-to-one
@@ -94,6 +95,7 @@ class RequestType < ActiveRecord::Base
         attributes ||= {}
         #{target}.#{target_method}(attributes.merge(request_parameters || {})) do |request|
           request.request_type = self
+          request.request_purpose ||= self.request_purpose
           yield(request) if block_given?
         end.tap do |request|
           requests << request
