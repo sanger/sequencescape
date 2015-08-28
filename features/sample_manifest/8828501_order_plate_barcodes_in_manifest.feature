@@ -25,7 +25,7 @@ Also print out the barcodes in the same order as they appear in the manifest
        And I select "Test study" from "Study"
        And I select "Test supplier name" from "Supplier"
        And I select "xyz" from "Barcode printer"
-        And I fill in "Count" with "3"
+        And I fill in "Plates required" with "3"
         And I press "Create manifest and print labels"
       Then I should see "Download Blank Manifest"
       Then the last created sample manifest should be:

@@ -16,7 +16,7 @@ class SampleManifestTest < ActiveSupport::TestCase
     end
 
     context 'creates the right assets' do
-      (1..2).each do |count|
+      [1,2].each do |count|
         context "#{count} plate(s)" do
           setup do
             @initial_samples  = Sample.count
@@ -33,6 +33,31 @@ class SampleManifestTest < ActiveSupport::TestCase
             assert_equal (count * 1 ), Plate.count - @initial_plates
             assert_equal (count * 96), Well.count  - @initial_wells
             assert_equal (count * 96), @study.samples.count - @initial_in_study
+          end
+
+        end
+      end
+    end
+
+    context 'for a library' do
+      [3,4].each do |count|
+        context "#{count} plate(s)" do
+          setup do
+            @initial_samples       = Sample.count
+            @initial_library_tubes = LibraryTube.count
+            @initial_mx_tubes      = MultiplexedLibraryTube.count
+            @initial_in_study      = @study.samples.count
+
+            @manifest = Factory :sample_manifest, :study => @study, :count => count, :asset_type=>'multiplexed_library'
+            @manifest.generate
+          end
+
+          should "create 1 tubes(s) and #{count} samples in the right study" do
+            assert_equal (count), Sample.count                 - @initial_samples
+            # We need to create library tubes as we have downstream dependencies that assume a unique library tube
+            assert_equal (count), LibraryTube.count            - @initial_library_tubes
+            assert_equal (1),     MultiplexedLibraryTube.count - @initial_mx_tubes
+            assert_equal (count), @study.samples.count         - @initial_in_study
           end
 
         end

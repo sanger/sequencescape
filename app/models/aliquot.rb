@@ -90,6 +90,10 @@ class Aliquot < ActiveRecord::Base
       self.class.name.underscore
     end
 
+    def specialized_from_manifest=(*args);end
+    def library_information;end
+    def library_information=(*args);end
+
     def assign_tag2(tag)
       aliquots.each do |aliquot|
         aliquot.tag2 = tag
@@ -151,6 +155,8 @@ class Aliquot < ActiveRecord::Base
   belongs_to :sample
 
   has_one :aliquot_index
+
+  named_scope :include_summary, :include => [ :sample, :tag, :tag2 ]
 
   def aliquot_index_value
     aliquot_index.try(:aliquot_index)||tag.map_id

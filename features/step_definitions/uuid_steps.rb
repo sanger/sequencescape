@@ -185,6 +185,16 @@ Given /^the UUID of the next (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) created wil
   Uuid.new(:resource_type => root_class.sti_name, :resource_id => next_id, :external_id => uuid_value).save(false)
 end
 
+Given /^the samples in manifest (\d+) have sequential UUIDs based on "([^\"]+)"$/ do |id,core_uuid|
+  core_uuid = core_uuid.dup  # Oh the irony of modifying a string that then alters Cucumber output!
+  core_uuid << '-' if core_uuid.length == 23
+  core_uuid << "%0#{36-core_uuid.length}d"
+
+  SampleManifest.find(id).samples.each_with_index do |object, index|
+    set_uuid_for(object, core_uuid % (index+1))
+  end
+end
+
 Given /^the UUID of the last (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) created is "([^\"]+)"$/ do |model,uuid_value|
   target = model.gsub(/\s+/, '_').classify.constantize.last or raise StandardError, "There appear to be no #{model.pluralize}"
   target.uuid_object.update_attributes!(:external_id => uuid_value)
