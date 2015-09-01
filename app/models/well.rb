@@ -33,7 +33,7 @@ class Well < Aliquot::Receptacle
 
   def is_in_fluidigm?
     sta_plate_purpose_name = "#{configatron.sta_plate_purpose_name}"
-    !self.target_wells.detect{|w| w.events.detect {|e| e.family == event_family_for_pick(sta_plate_purpose_name)}.nil?}
+    !self.target_wells.detect{|w| w.events.detect {|e| e.family == PlatesHelper::event_family_for_pick(sta_plate_purpose_name)}.nil?}
   end
 
   named_scope :include_stock_wells, { :include => { :stock_wells => :requests_as_source } }
