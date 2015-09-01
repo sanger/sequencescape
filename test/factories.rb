@@ -39,6 +39,10 @@ Factory.sequence :library_type_id do |n|
   n
 end
 
+Factory.sequence :purpose_name do |n|
+  "Purpose #{n}"
+end
+
 Factory.sequence :billing_reference do |ref|
   ref.to_s
 end
@@ -71,16 +75,16 @@ Factory.sequence :faculty_sponsor_name do |n|
   "Faculty Sponsor #{n}"
 end
 
-Factory.define :billing_event do |be|
-  be.kind "charge"
-  be.reference {|reference| Factory.next :billing_reference }
-  be.created_by "abc123@example.com"
-  be.project {|project| project.association(:project)}
-  be.request {|request| request.association(:request)}
-end
-
 Factory.define :comment do |c|
   c.description
+end
+
+Factory.define :aliquot do |a|
+  a.sample  {|s| s.association(:sample) }
+  a.study   {|s| s.association(:study) }
+  a.project {|p| p.association(:project) }
+  a.tag     {|t| t.association(:tag) }
+  a.tag2    {|t| t.association(:tag) }
 end
 
 Factory.define :event do |e|
@@ -157,6 +161,10 @@ Factory.define :submission_workflow, :class => Submission::Workflow do |p|
   p.item_label  "library"
 end
 
+Factory.define :submission do |s|
+  s.user  {|user| user.association(:user) }
+end
+
 Factory.define :submission_template do |submission_template|
   submission_template.submission_class_name LinearSubmission.name
   submission_template.name                  "my_template"
@@ -201,6 +209,13 @@ Factory.define :request_metadata_for_hiseq_sequencing, :parent => :request_metad
   m.fragment_size_required_to     21
   m.read_length                   100
 end
+
+# HiSeq sequencing
+Factory.define :hiseq_x_request_metadata, :parent => :request_metadata do |m|
+  m.fragment_size_required_from   1
+  m.fragment_size_required_to     21
+  m.read_length                   100
+end
 Factory.define(:request_metadata_for_hiseq_paired_end_sequencing, :parent => :request_metadata_for_hiseq_sequencing) {}
 Factory.define(:request_metadata_for_single_ended_hi_seq_sequencing, :parent => :request_metadata_for_hiseq_sequencing) {}
 
@@ -232,6 +247,10 @@ Factory.define(:request_metadata_for_illumina_b_multiplexed_library_creation, :p
 Factory.define(:request_metadata_for_illumina_c_multiplexed_library_creation, :parent => :request_metadata_for_library_manufacture) {}
 Factory.define(:request_metadata_for_pulldown_library_creation, :parent => :request_metadata_for_library_manufacture) {}
 Factory.define(:request_metadata_for_pulldown_multiplex_library_preparation, :parent => :request_metadata_for_library_manufacture) {}
+
+Factory.define(:request_metadata_for_illumina_a_hiseq_x_paired_end_sequencing, :parent => :hiseq_x_request_metadata) {}
+Factory.define(:request_metadata_for_illumina_b_hiseq_x_paired_end_sequencing, :parent => :hiseq_x_request_metadata) {}
+Factory.define(:request_metadata_for_hiseq_x_paired_end_sequencing, :parent => :hiseq_x_request_metadata) {}
 
 # Bait libraries
 Factory.define(:request_metadata_for_bait_pulldown, :parent => :request_metadata) do |m|
@@ -565,6 +584,15 @@ Factory.define :stock_multiplexed_library_tube do |a|
   a.purpose Tube::Purpose.stock_mx_tube
 end
 
+Factory.define :new_stock_multiplexed_library_tube, :class=>StockMultiplexedLibraryTube do |t|
+  t.name    {|a| Factory.next :asset_name }
+  t.purpose { |a| a.association(:new_stock_tube_purpose) }
+end
+
+Factory.define(:new_stock_tube_purpose, :class=>IlluminaHtp::StockTubePurpose) do |p|
+  p.name { Factory.next :purpose_name }
+end
+
 Factory.define(:empty_library_tube, :class => LibraryTube) do |library_tube|
   library_tube.qc_state ''
   library_tube.name     {|_| Factory.next :asset_name }
@@ -723,5 +751,10 @@ Factory.define(:messenger_creator) do |reporter|
   reporter.root 'a_plate'
   reporter.template 'FluidigmPlateIO'
   reporter.purpose {|purpose| purpose.association(:plate_purpose)}
+end
+
+Factory.define :tag2_layout_template do |itlt|
+  itlt.name 'Tag 2 layout template'
+  itlt.tag {|tag| tag.association :tag }
 end
 

@@ -1,4 +1,4 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file,
+# This file is auto-generated from the current state of the database. Instead of editing this file, 
 # please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
@@ -9,14 +9,25 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150604095628) do
+ActiveRecord::Schema.define(:version => 20150729125715) do
+
+  create_table "aliquot_indices", :force => true do |t|
+    t.integer  "aliquot_id",    :null => false
+    t.integer  "lane_id",       :null => false
+    t.integer  "aliquot_index", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "aliquot_indices", ["aliquot_id"], :name => "index_aliquot_indices_on_aliquot_id", :unique => true
+  add_index "aliquot_indices", ["lane_id", "aliquot_index"], :name => "index_aliquot_indices_on_lane_id_and_aliquot_index", :unique => true
 
   create_table "aliquots", :force => true do |t|
-    t.integer  "receptacle_id",    :null => false
+    t.integer  "receptacle_id",                    :null => false
     t.integer  "study_id"
     t.integer  "project_id"
     t.integer  "library_id"
-    t.integer  "sample_id",        :null => false
+    t.integer  "sample_id",                        :null => false
     t.integer  "tag_id"
     t.string   "library_type"
     t.integer  "insert_size_from"
@@ -24,9 +35,10 @@ ActiveRecord::Schema.define(:version => 20150604095628) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "bait_library_id"
+    t.integer  "tag2_id",          :default => -1, :null => false
   end
 
-  add_index "aliquots", ["receptacle_id", "tag_id"], :name => "aliquot_tags_are_unique_within_receptacle", :unique => true
+  add_index "aliquots", ["receptacle_id", "tag_id", "tag2_id"], :name => "aliquot_tags_and_tag2s_are_unique_within_receptacle", :unique => true
   add_index "aliquots", ["sample_id"], :name => "index_aliquots_on_sample_id"
   add_index "aliquots", ["study_id"], :name => "index_aliquots_on_study_id"
   add_index "aliquots", ["tag_id"], :name => "tag_id_idx"
@@ -1134,7 +1146,6 @@ ActiveRecord::Schema.define(:version => 20150604095628) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "barcode"
-    t.float    "minimum_volume"
   end
 
   create_table "roles", :force => true do |t|
@@ -1531,6 +1542,32 @@ ActiveRecord::Schema.define(:version => 20150604095628) do
   add_index "suppliers", ["created_at"], :name => "index_suppliers_on_created_at"
   add_index "suppliers", ["name"], :name => "index_suppliers_on_name"
   add_index "suppliers", ["updated_at"], :name => "index_suppliers_on_updated_at"
+
+  create_table "tag2_layout_template_submissions", :force => true do |t|
+    t.integer  "submission_id",           :null => false
+    t.integer  "tag2_layout_template_id", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "tag2_layout_template_submissions", ["submission_id", "tag2_layout_template_id"], :name => "tag2_layouts_used_once_per_submission", :unique => true
+  add_index "tag2_layout_template_submissions", ["tag2_layout_template_id"], :name => "fk_tag2_layout_template_submissions_to_tag2_layout_templates"
+
+  create_table "tag2_layout_templates", :force => true do |t|
+    t.string   "name",       :null => false
+    t.integer  "tag_id",     :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "tag2_layouts", :force => true do |t|
+    t.integer  "tag_id"
+    t.integer  "plate_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "source_id"
+  end
 
   create_table "tag_groups", :force => true do |t|
     t.string   "name"

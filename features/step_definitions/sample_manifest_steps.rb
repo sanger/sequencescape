@@ -59,6 +59,9 @@ Given /^I reset all of the sanger sample ids to a known number sequence$/ do
   SampleTube.all(:order => 'id ASC').each_with_index do |tube, idx|
     tube.aliquots.first.sample.update_attributes!(:sanger_sample_id=>"tube_sample_#{idx+1}")
   end
+  LibraryTube.all(:order => 'id ASC').each_with_index do |tube, idx|
+    tube.aliquots.first.sample.update_attributes!(:sanger_sample_id=>"tube_sample_#{idx+1}")
+  end
 end
 
 Then /^sample "([^"]*)" should have empty supplier name set to "([^"]*)"$/ do |sanger_sample_id, boolean_string|
@@ -120,13 +123,31 @@ Then /^the sample reference genomes should be:$/ do |table|
   end
 end
 
+Then /^the samples should be tagged in library and multiplexed library tubes with:$/ do |table|
+  pooled_aliquots = MultiplexedLibraryTube.last.aliquots.map {|a| [a.sample.sanger_sample_id, a.tag.map_id]}
+  table.hashes.each do |expected_data|
+    lt = LibraryTube.find_by_barcode(expected_data[:tube_barcode].gsub('NT',''))
+    assert_equal 1, lt.aliquots.count
+    assert_equal expected_data[:sanger_sample_id], lt.aliquots.first.sample.sanger_sample_id, "sanger_sample_id: #{expected_data[:sanger_sample_id]} #{lt.aliquots.first.sample.sanger_sample_id}"
+    assert_equal expected_data[:tag_group], lt.aliquots.first.tag.try(:tag_group).try(:name), "tag_group: #{expected_data[:tag_group]} #{lt.aliquots.first.tag.try(:tag_group).try(:name)}"
+    assert_equal expected_data[:tag_index].to_i, lt.aliquots.first.tag.try(:map_id), "tag_index: #{expected_data[:tag_index]} #{lt.aliquots.first.tag.try(:map_id)}"
+    assert_equal expected_data[:tag2_group], lt.aliquots.first.tag2.try(:tag_group).try(:name)||'', "tag2_group: #{expected_data[:tag2_group]} #{lt.aliquots.first.tag2.try(:tag_group).try(:name)||''}"
+    assert_equal expected_data[:tag2_index].to_i, lt.aliquots.first.tag2.try(:map_id)||0, "tag2_index: #{expected_data[:tag2_index]} #{lt.aliquots.first.tag2.try(:map_id)||''}"
+    assert_equal expected_data[:library_type], lt.aliquots.first.library_type, "library_type: #{expected_data[:library_type]} #{lt.aliquots.first.library_type}"
+    assert_equal expected_data[:insert_size_from].to_i, lt.aliquots.first.insert_size_from, "insert_size_from: #{expected_data[:insert_size_from]} #{lt.aliquots.first.insert_size_from}"
+    assert_equal expected_data[:insert_size_to].to_i, lt.aliquots.first.insert_size_to, "insert_size_to: #{expected_data[:insert_size_to]} #{lt.aliquots.first.insert_size_to}"
+    assert pooled_aliquots.delete([expected_data[:sanger_sample_id],expected_data[:tag_index].to_i]), "Couldn't find #{expected_data[:sanger_sample_id]} with #{expected_data[:tag_index]} in MX tube."
+  end
+  assert pooled_aliquots.empty?, "MX tube contains extra samples: #{pooled_aliquots.inspect}"
+end
+
 Given /^a manifest has been created for "([^"]*)"$/ do |study_name|
   step(%Q{I follow "Create manifest for plates"})
 	step(%Q{I select "#{study_name}" from "Study"})
   step(%Q{I select "default layout" from "Template"})
 	step(%Q{I select "Test supplier name" from "Supplier"})
 	step(%Q{I select "xyz" from "Barcode printer"})
-	step(%Q{I fill in the field labeled "Count" with "1"})
+	step(%Q{I fill in the field labeled "Plates required" with "1"})
   step(%Q{I select "default layout" from "Template"})
 	step(%Q{I press "Create manifest and print labels"})
 	step %Q{I should see "Manifest_"}
@@ -199,6 +220,11 @@ Given /^the sample manifest with ID (\d+) is for (\d+) plates?$/ do |id, count|
   manifest.update_attributes!(:asset_type => 'plate', :count => count.to_i)
 end
 
+Given /^the sample manifest with ID (\d+) is for (\d+) libraries?$/ do |id, count|
+  manifest = SampleManifest.find(id)
+  manifest.update_attributes!(:asset_type => 'multiplexed_library', :count => count.to_i)
+end
+
 Given /^the sample manifest with ID (\d+) has been processed$/ do |id|
   manifest = SampleManifest.find(id)
   manifest.generate
@@ -207,4 +233,16 @@ end
 
 Given /^sample tubes are expected by the last manifest$/ do
   SampleManifest.last.update_attributes(:barcodes=>SampleTube.all.map(&:sanger_human_barcode))
+end
+
+Given /^library tubes are expected by the last manifest$/ do
+  SampleManifest.last.update_attributes(:barcodes=>LibraryTube.all.map(&:sanger_human_barcode))
+end
+
+Then /^print any manifest errors for debugging$/ do
+  if SampleManifest.last.last_errors.present?
+    puts "="*80
+    SampleManifest.last.last_errors.each {|error| puts error}
+    puts "="*80
+  end
 end

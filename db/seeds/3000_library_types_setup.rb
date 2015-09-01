@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2014 Genome Research Ltd.
+#Copyright (C) 2014,2015 Genome Research Ltd.
 module SetupLibraryTypes
   def self.existing_associations_for(request_type)
     {
@@ -100,6 +100,19 @@ library_types = LibraryType.create!([
   request_type = RequestType.find_by_key(request_class_symbol.to_s)
   library_types.each do |library_type|
     LibraryTypesRequestType.create!(:request_type=>request_type,:library_type=>library_type,:is_default=>false)
+  end
+end
+
+
+
+libs_ribozero = ["Ribozero RNA-seq (Bacterial)", "Ribozero RNA-seq (HMR)"].map do |name|
+  LibraryType.create!(:name=> name)
+end
+
+libs_ribozero.each do |lib|
+  [:illumina_c_pcr, :illumina_c_pcr_no_pool].each do |request_class_symbol|
+    request_type = RequestType.find_by_key(request_class_symbol.to_s)
+    LibraryTypesRequestType.create!(:request_type=>request_type,:library_type=> lib, :is_default => false)
   end
 end
 

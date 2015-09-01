@@ -351,7 +351,7 @@ class Order < ActiveRecord::Base
     update_attribute(:comments, [comments, comment_str ].compact.join('; '))
     save!
 
-    requests.where_is_not_a?(TransferRequest).map do |request|
+    submission.requests.where_is_not_a?(TransferRequest).for_order_including_submission_based_requests(self).map do |request|
       request.add_comment(comment_str, user)
     end
   end

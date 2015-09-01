@@ -439,6 +439,8 @@ padding-left: 12px;
   behavior: url(/stylesheets/PIE.htc);
 }
 
+table.sample_list td:first-child {text-align:right; padding-right:0.5em;}
+
 .info {
   padding-bottom: 5px;
   border-bottom: 1px solid #ccc;
@@ -448,6 +450,10 @@ padding-left: 12px;
   width:45%;
   display:inline-block;
   float:left;
+}
+
+.columnize {
+  overflow:auto;
 }
 
 .loading {
@@ -1015,7 +1021,7 @@ ul#orders {
   color:#333129;
   padding: 0;
   clear: both;
-  margin: 15px 0;
+  margin: 15px 5px;
 	-moz-transition:    all 0.3s ease-in-out 0s;
   -webkit-transition: all 0.3s ease-in-out 0s;
   transition:         all 0.3s ease-in-out 0s;
@@ -1205,6 +1211,7 @@ ul#orders > li.buttons {
 }
 
 .button {
+  cursor: pointer;
   -moz-box-shadow:inset 0px 1px 0px 0px #bbdaf7;
   -webkit-box-shadow:inset 0px 1px 0px 0px #bbdaf7;
   box-shadow:inset 0px 1px 0px 0px #395F94, 0 1px 3px #999;
@@ -1273,7 +1280,17 @@ ul#orders > li.buttons {
   color: #ddd;
 }
 
+.danger-button {
+  box-shadow: inset 0px 1px 0px 0px darkRed, 0 1px 3px #999;
+  background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, darkRed), color-stop(1, red) );
+  background:-moz-linear-gradient( center top, Red 5%, darkRed 100% );
+  border: 1px solid darkRed;
+}
 
+.danger-button.button:hover {
+  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, darkRed), color-stop(1, darkRed) );
+  background:-moz-linear-gradient( center top, darkRed 5%, darkRed 100% );
+}
 
 
 #asset_input_methods td { vertical-align: top; }

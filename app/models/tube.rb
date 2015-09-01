@@ -22,6 +22,8 @@ class Tube < Aliquot::Receptacle
     true
   end
 
+  has_one :submission, :through => :requests_as_target
+
   named_scope :include_scanned_into_lab_event, :include => :scanned_into_lab_event
 
   named_scope :with_purpose, lambda { |*purposes|
@@ -33,9 +35,9 @@ class Tube < Aliquot::Receptacle
     # TODO: change to purpose_id
     has_many :tubes, :foreign_key => :plate_purpose_id
 
-    def default_state(_)
-      self[:default_state]
-    end
+    # def default_state(_=nil)
+    #   self[:default_state]
+    # end
 
     # Tubes of the general types have no stock plate!
     def stock_plate(_)
@@ -48,6 +50,10 @@ class Tube < Aliquot::Receptacle
 
     def create!(*args, &block)
       target_class.create_with_barcode!(*args, &block).tap { |t| tubes << t }
+    end
+
+    def sibling_tubes(tube)
+      nil
     end
 
     # Define some simple helper methods
@@ -75,7 +81,7 @@ class Tube < Aliquot::Receptacle
     end
 
     def pool_id(tube)
-      tube.requests_as_target.first.try(:submission_id)
+      tube.submission.id
     end
 
     def name_for_child_tube(tube)
@@ -121,6 +127,7 @@ class Tube < Aliquot::Receptacle
   def transfer_request_type_from(source)
     purpose.transfer_request_type_from(source.purpose)
   end
+
 
   def self.create_with_barcode!(*args, &block)
     attributes = args.extract_options!

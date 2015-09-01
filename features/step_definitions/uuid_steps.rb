@@ -42,6 +42,7 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAME = [
   'supplier',
   'transfer template',
   'tag layout template',
+  'tag 2 layout template',
   'barcode printer',
   'tube',
   'tag group',
@@ -127,6 +128,8 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
   'batch',
 
   'tag layout',
+  'tag 2 layout',
+  'tag2 layout template',
   'plate creation',
   'plate conversion',
   'tube creation',
@@ -182,6 +185,16 @@ Given /^the UUID of the next (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) created wil
   Uuid.new(:resource_type => root_class.sti_name, :resource_id => next_id, :external_id => uuid_value).save(false)
 end
 
+Given /^the samples in manifest (\d+) have sequential UUIDs based on "([^\"]+)"$/ do |id,core_uuid|
+  core_uuid = core_uuid.dup  # Oh the irony of modifying a string that then alters Cucumber output!
+  core_uuid << '-' if core_uuid.length == 23
+  core_uuid << "%0#{36-core_uuid.length}d"
+
+  SampleManifest.find(id).samples.each_with_index do |object, index|
+    set_uuid_for(object, core_uuid % (index+1))
+  end
+end
+
 Given /^the UUID of the last (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) created is "([^\"]+)"$/ do |model,uuid_value|
   target = model.gsub(/\s+/, '_').classify.constantize.last or raise StandardError, "There appear to be no #{model.pluralize}"
   target.uuid_object.update_attributes!(:external_id => uuid_value)
@@ -197,15 +210,6 @@ end
 # TODO: It's 'UUID' not xxxing 'uuid'.
 Given /^I have an (event|external release event) with uuid "([^"]*)"$/ do |model,uuid_value|
   set_uuid_for(model.gsub(/\s+/, '_').methodize.camelize.constantize.create!(:message => model), uuid_value)
-end
-
-Given /^I have a billing event with UUID "([^\"]+)"$/ do |uuid_value|
-  project = Factory :project, :name => "Test Project"
-  step(%Q{the project "Test Project" a budget division "Human variation"})
-  request = Request.create!(:request_type => RequestType.find_by_key('paired_end_sequencing'))
-  request.request_metadata.update_attributes!(:read_length => 100, :library_type => "Standard" )
-  billing_event = Factory :billing_event, :project => project, :request => request
-  set_uuid_for(billing_event, uuid_value)
 end
 
 Given /^a (plate|well) with uuid "([^"]*)" exists$/ do |model,uuid_value|

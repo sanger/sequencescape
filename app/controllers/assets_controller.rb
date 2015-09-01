@@ -41,8 +41,8 @@ class AssetsController < ApplicationController
   def new
     @asset = Asset.new
     @asset_types = { "Library Tube" => 'LibraryTube', "Hybridization Buffer Spiked" => "SpikedBuffer" }
-    @phyx_tag = TagGroup.find_by_name(configatron.phyx_tag.tag_group_name).tags.select do |t|
-      t.map_id == configatron.phyx_tag.tag_map_id
+    @phix_tag = TagGroup.find_by_name(configatron.phix_tag.tag_group_name).tags.select do |t|
+      t.map_id == configatron.phix_tag.tag_map_id
     end.first
 
     respond_to do |format|

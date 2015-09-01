@@ -75,7 +75,7 @@ class Well < Aliquot::Receptacle
   named_scope :pooled_as_source_by, lambda { |type|
     {
       :joins      => 'LEFT JOIN requests pasb ON assets.id=pasb.asset_id',
-      :conditions => [ '(pasb.sti_type IS NULL OR pasb.sti_type IN (?))', [ type, *Class.subclasses_of(type) ].map(&:name) ],
+      :conditions => [ '(pasb.sti_type IS NULL OR pasb.sti_type IN (?)) AND pasb.state IN (?)', [ type, *Class.subclasses_of(type) ].map(&:name), Request::Statemachine::OPENED_STATE ],
       :select     => 'assets.*, pasb.submission_id AS pool_id'
     }
   }
@@ -98,8 +98,6 @@ class Well < Aliquot::Receptacle
   named_scope :with_contents, {
     :joins => 'INNER JOIN aliquots ON aliquots.receptacle_id=assets.id'
   }
-
-  include Transfer::WellHelpers
 
   class << self
     def delegate_to_well_attribute(attribute, options = {})

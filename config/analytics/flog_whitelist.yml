@@ -36,7 +36,6 @@ Batch#generate_tecan_data: 108
 PicoSetsController#create: 108
 SamplesController#accession: 111
 Batch#swap: 120
-Projects::BillingEventsController#create: 120
 StudiesController#accession: 121
 SamplesController#is_check_params_move: 122
 BatchesController#create: 123

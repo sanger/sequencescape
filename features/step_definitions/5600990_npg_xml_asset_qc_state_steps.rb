@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2015 Genome Research Ltd.
 Given /^sequencescape is setup for 5600990$/ do
  lane = Factory :lane, :name => "NPG_Action_Lane_Test", :qc_state => 'passed', :external_release => 1
  library_tube = Factory :empty_library_tube
@@ -17,15 +17,6 @@ Given /^a second request$/ do
  request = Factory :request_with_sequencing_request_type, :asset => library_tube, :target_asset => lane
 end
 
-Given /^a billing event to the request$/ do
- lane = Lane.find_by_name("NPG_Action_Lane_Test")
- request = lane.source_request
- BillingEvent.send(:map_for_each_aliquot, request) do |aliquot_info|
-   reference = BillingEvent.build_reference(request, aliquot_info)
-   Factory :billing_event, :reference => reference,  :quantity => 1, :kind => "charge"
-   Factory :billing_event, :reference => reference,  :quantity => 1, :kind => "refund"
- end
-end
 
 Given /^an event to the request$/ do
  lane = Lane.find_by_name("NPG_Action_Lane_Test")

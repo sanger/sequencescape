@@ -58,9 +58,9 @@ class Request < ActiveRecord::Base
         'INNER JOIN submissions ON requests.submission_id=submissions.id',
         'INNER JOIN uuids ON uuids.resource_id=submissions.id AND uuids.resource_type="Submission"'
       ],
-      :group => 'submissions.id',
+      :group => 'requests.submission_id',
       :conditions => [
-        'requests.sti_type NOT IN (?) AND container_associations.container_id=?',
+        'requests.sti_type NOT IN (?) AND container_associations.container_id=? AND submissions.state != "cancelled"',
         [TransferRequest,*Class.subclasses_of(TransferRequest)].map(&:name), plate.id
       ]
     }
@@ -92,11 +92,18 @@ class Request < ActiveRecord::Base
     }
   }
 
+  named_scope :for_order_including_submission_based_requests, lambda {|order|
+    # To obtain the requests for an order and the sequencing requests of its submission (as they are defined
+    # as a common element for any order in the submission)
+    {
+      :conditions => ['requests.order_id=? OR (requests.order_id IS NULL AND requests.submission_id=?)', order.id, order.submission.id]
+    }
+  }
+
   belongs_to :pipeline
   belongs_to :item
 
   has_many :failures, :as => :failable
-  has_many :billing_events
 
   belongs_to :request_type, :inverse_of => :requests
   delegate :billable?, :to => :request_type, :allow_nil => true
@@ -108,6 +115,8 @@ class Request < ActiveRecord::Base
 
   belongs_to :submission, :inverse_of => :requests
   belongs_to :order, :inverse_of => :requests
+
+  has_many :submission_siblings, :through => :submission, :source => :requests, :class_name => 'Request', :conditions => {:request_type_id => '#{request_type_id}'}
 
   named_scope :with_request_type_id, lambda { |id| { :conditions => { :request_type_id => id } } }
 
@@ -127,6 +136,14 @@ class Request < ActiveRecord::Base
     self.initial_project_id = project_id
   end
 
+
+  def submission_plate_count
+    submission.requests.find(:all,
+      :conditions=>{:request_type_id=>request_type_id},
+      :joins=>'LEFT JOIN container_associations AS spca ON spca.content_id = requests.asset_id',
+      :group=>'spca.container_id'
+    ).count
+  end
 
 
   def project=(project)
@@ -205,6 +222,11 @@ class Request < ActiveRecord::Base
   }
   named_scope :without_asset, :conditions =>  'asset_id is null'
   named_scope :without_target, :conditions =>  'target_asset_id is null'
+  named_scope :excluding_states, lambda { |states|
+    {
+      :conditions => [states.map{|s| '(state != ?)' }.join(" OR "), states].flatten
+    }
+  }
   named_scope :ordered, :order => ["id ASC"]
   named_scope :full_inbox, :conditions => {:state => ["pending","hold"]}
   named_scope :hold, :conditions => {:state => "hold"}
@@ -464,6 +486,19 @@ class Request < ActiveRecord::Base
     # Does not need anything here
   end
 
+  def submission_siblings
+    submission.requests.with_request_type_id(request_type_id)
+  end
+
+  # The date at which the submission was made. In most cases this will be similar to the request's created_at
+  # timestamp. We go via submission to ensure that copied requests bear the original timestamp.
+  def submitted_at
+    # Hopefully we shouldn't get any requests that don't have a submission. But validation is turned off, so
+    # we should assume it it possible.
+    return '' if submission.nil?
+    submission.created_at.strftime('%Y-%m-%d')
+  end
+
   def role
     order.try(:role)
   end
@@ -483,4 +518,6 @@ class Request < ActiveRecord::Base
   def library_creation?
     false
   end
+
+  def manifest_processed; end
 end
