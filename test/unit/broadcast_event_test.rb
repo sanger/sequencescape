@@ -76,6 +76,15 @@ class BroadcastEventTest < ActiveSupport::TestCase
       should 'find subjects with a block relationship' do
         assert_subject(@dynamic_target,'block')
       end
+
+      should 'find the seed subject' do
+        assert_subject(@seed,'seed')
+      end
+
+      should 'have five subjects in total' do
+        # Just to make sure we're not registering extra subjects
+        assert_equal 5, @event.subjects.length
+      end
     end
   end
 end
