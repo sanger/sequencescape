@@ -2,7 +2,8 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2015 Genome Research Ltd.
 module BroadcastEvent::SubjectHelpers
-   class Subject
+
+  class Subject
 
     attr_reader :target, :role_type
 
@@ -86,5 +87,36 @@ module BroadcastEvent::SubjectHelpers
   class BlockManySubjectAssociation
     include BlockTargetLookup
     include MultiTarget
+  end
+
+  module SubjectableClassMethods
+    # The class expected to seed the messenger
+    def seed_class(seed_class)
+      @seed_class = seed_class
+    end
+
+    # The role type that will identify the seed (if applicable)
+    def seed_subject(role_type)
+      subject_associations << SeedSubjectAssociation.new(role_type)
+    end
+
+    # Defines a new subject, specifies the role type and either a method on the seed that will return
+    # the subject, or a block that gets passed the seed, and will return the subject.
+    def has_subject(role_type,method=nil,&block)
+      return subject_associations << SimpleSingleSubjectAssociation.new(role_type,method) unless method.nil?
+      return subject_associations << BlockSingleSubjectAssociation.new(role_type,&block) unless block.nil?
+      raise StandardError, "No block or method defined for #{role_type} on #{name}"
+    end
+
+    # Used when you explicitly expect to receive more than one subject
+    def has_subjects(role_type,method=nil,&block)
+      return subject_associations << SimpleManySubjectAssociation.new(role_type,method) unless method.nil?
+      return subject_associations << BlockManySubjectAssociation.new(role_type,&block) unless block.nil?
+      raise StandardError, "No block or method defined for #{role_type} on #{name}"
+    end
+
+    def subject_associations
+      @subject_associations ||= []
+    end
   end
 end
