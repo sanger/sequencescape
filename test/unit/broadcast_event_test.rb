@@ -6,12 +6,12 @@ require "test_helper"
 class BroadcastEventTest < ActiveSupport::TestCase
 
 
-  TestSeed    = Struct.new(:uuid,:friendly_name,:subject_type,:single_relation,:many_relation,:dynamic_relation,:id)
+  TestSeed    = Struct.new(:uuid,:friendly_name,:subject_type,:single_relation,:many_relation,:dynamic_relation,:id,:data_method_a)
   class TestSeed
     def self.base_class; BroadcastEvent; end
   end
   TestSubject = Struct.new(:uuid,:friendly_name,:subject_type)
-  DynamicSubject = Struct.new(:target)
+  DynamicSubject = Struct.new(:target,:data_method_b)
 
   def assert_subject(subject,role_type)
     assert @event.subjects, "No subjects found"
@@ -22,6 +22,10 @@ class BroadcastEventTest < ActiveSupport::TestCase
     assert_equal subject.friendly_name, test_subject.friendly_name
     assert_equal subject.subject_type, test_subject.subject_type
     assert_equal role_type, test_subject.role_type
+  end
+
+  def assert_metadata(key,value)
+    assert_equal value, @event.metadata[key]
   end
 
   # As BroadcastEvents is primarily about making events easy to configure
@@ -38,6 +42,9 @@ class BroadcastEventTest < ActiveSupport::TestCase
     has_subjects :many, :many_relation
     # Blocks that define more complicated relationships
     has_subject(:block) { |ts| ts.dynamic_relation.target }
+
+    has_metadata :data_a, :data_method_a
+    has_metadata(:data_b) { |ts| ts.dynamic_relation.data_method_b }
   end
 
 
@@ -59,8 +66,10 @@ class BroadcastEventTest < ActiveSupport::TestCase
         @many_one       = TestSubject.new('001','many_subject_1','many_type')
         @many_two       = TestSubject.new('002','many_subject_1','many_type')
         @dynamic_target = TestSubject.new('003','dynamic_subject','dynamic_type')
-        @dynamic = DynamicSubject.new(@dynamic_target)
-        @seed = TestSeed.new('004','seed_subject','seed_type',@single,[@many_one,@many_two],@dynamic,1)
+        @value_b = 'value_b'
+        @dynamic = DynamicSubject.new(@dynamic_target,@value_b)
+        @value_a = 'value_a'
+        @seed = TestSeed.new('004','seed_subject','seed_type',@single,[@many_one,@many_two],@dynamic,1,@value_a)
         @event = ExampleEvent.new(:seed=>@seed)
       end
 
@@ -84,6 +93,18 @@ class BroadcastEventTest < ActiveSupport::TestCase
       should 'have five subjects in total' do
         # Just to make sure we're not registering extra subjects
         assert_equal 5, @event.subjects.length
+      end
+
+      should 'find metadata by simple calls' do
+        assert_metadata('data_a',@value_a)
+      end
+
+      should 'find metadata by block calls' do
+        assert_metadata('data_b',@value_b)
+      end
+
+      should 'find all metadata as a hash' do
+        assert_equal({'data_a' => @value_a, 'data_b' => @value_b}, @event.metadata)
       end
     end
   end

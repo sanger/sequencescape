@@ -4,6 +4,7 @@
 class BroadcastEvent < ActiveRecord::Base
 
   extend BroadcastEvent::SubjectHelpers::SubjectableClassMethods
+  extend BroadcastEvent::MetadataHelpers::MetadatableClassMethods
 
   belongs_to :seed, :polymorphic => true
   validates_presence_of :seed
@@ -18,6 +19,11 @@ class BroadcastEvent < ActiveRecord::Base
     self.class.subject_associations.map do |sa|
       sa.for(seed)
     end.flatten
+  end
+
+  # Returns a hash of all metadata
+  def metadata
+    Hash[self.class.metadata_finders.map {|mf| mf.for(seed) } ]
   end
 
 end
