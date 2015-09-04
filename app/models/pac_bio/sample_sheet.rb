@@ -63,7 +63,7 @@ class PacBio::SampleSheet
     well = requests.first.target_asset
     [
       Map.pad_description(well.map),
-      concat(library_tubes, :name, '_'),
+      concat(library_tubes, :name, '-'),
       first_tube_metadata.prep_kit_barcode,
       nil,
       first_tube_metadata.binding_kit_barcode,
