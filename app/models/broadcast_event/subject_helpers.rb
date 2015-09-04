@@ -12,6 +12,14 @@ module BroadcastEvent::SubjectHelpers
       @target = target
     end
 
+    def json_fields
+      [:friendly_name,:uuid,:subject_type,:role_type]
+    end
+
+    def as_json(*args)
+      Hash[json_fields.map {|f| [f,send(f)] }]
+    end
+
     delegate :friendly_name, :uuid, :subject_type, :to => :target
   end
 
@@ -117,6 +125,13 @@ module BroadcastEvent::SubjectHelpers
 
     def subject_associations
       @subject_associations ||= []
+    end
+  end
+
+  module Subjectable
+
+    def self.included(base)
+      base.class.extend SubjectableClassMethods
     end
   end
 end

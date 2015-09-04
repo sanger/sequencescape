@@ -9,6 +9,8 @@ class BroadcastEventTest < ActiveSupport::TestCase
   TestSeed    = Struct.new(:uuid,:friendly_name,:subject_type,:single_relation,:many_relation,:dynamic_relation,:id,:data_method_a)
   class TestSeed
     def self.base_class; BroadcastEvent; end
+    def destroyed?; false; end
+    def new_record?; false; end
   end
   TestSubject = Struct.new(:uuid,:friendly_name,:subject_type)
   DynamicSubject = Struct.new(:target,:data_method_b)
@@ -31,6 +33,8 @@ class BroadcastEventTest < ActiveSupport::TestCase
   # As BroadcastEvents is primarily about making events easy to configure
   # lets generate a test instance
   class ExampleEvent < BroadcastEvent
+
+    set_event_type 'example_event'
 
     seed_class TestSeed
 
@@ -64,13 +68,15 @@ class BroadcastEventTest < ActiveSupport::TestCase
       setup do
         @single         = TestSubject.new('000','single_subject','single_type')
         @many_one       = TestSubject.new('001','many_subject_1','many_type')
-        @many_two       = TestSubject.new('002','many_subject_1','many_type')
+        @many_two       = TestSubject.new('002','many_subject_2','many_type')
         @dynamic_target = TestSubject.new('003','dynamic_subject','dynamic_type')
         @value_b = 'value_b'
         @dynamic = DynamicSubject.new(@dynamic_target,@value_b)
         @value_a = 'value_a'
+        @user = Factory :user, :email => 'example@example.com'
+        @time = DateTime.parse("2012-03-11 10:22:42")
         @seed = TestSeed.new('004','seed_subject','seed_type',@single,[@many_one,@many_two],@dynamic,1,@value_a)
-        @event = ExampleEvent.new(:seed=>@seed)
+        @event = ExampleEvent.new(:seed=>@seed,:user=>@user,:created_at=>@time)
       end
 
       should 'find subjects with a 1 to 1 relationship' do
@@ -105,6 +111,61 @@ class BroadcastEventTest < ActiveSupport::TestCase
 
       should 'find all metadata as a hash' do
         assert_equal({'data_a' => @value_a, 'data_b' => @value_b}, @event.metadata)
+      end
+
+      # Put it all together
+      should 'generate the expected json' do
+
+        @event.save!
+
+        expected_json = {
+          "event" => {
+          "uuid" => @event.uuid,
+          "event_type" => "example_event",
+          "occured_at" => "2012-03-11T10:22:42+00:00",
+          "user_identifier" => "example@example.com",
+          "subjects" => [
+            {
+              "role_type" => "seed",
+              "subject_type" => "seed_type",
+              "friendly_name" => "seed_subject",
+              "uuid" => "004"
+            },
+            {
+              "role_type" => "single",
+              "subject_type" => "single_type",
+              "friendly_name" => "single_subject",
+              "uuid" => "000"
+            },
+            {
+              "role_type" => "many",
+              "subject_type" => "many_type",
+              "friendly_name" => "many_subject_1",
+              "uuid" => "001"
+            },
+            {
+              "role_type" => "many",
+              "subject_type" => "many_type",
+              "friendly_name" => "many_subject_2",
+              "uuid" => "002"
+            },
+            {
+              "role_type" => "block",
+              "subject_type" => "dynamic_type",
+              "friendly_name" => "dynamic_subject",
+              "uuid" => "003"
+            }
+          ],
+          "metadata" => {
+            "data_a" => "value_a",
+            "data_b" => "value_b"
+          }
+          },
+          "lims" => "SQSCP"
+        }
+
+        assert_equal expected_json, JSON.parse(@event.to_json)
+
       end
     end
   end
