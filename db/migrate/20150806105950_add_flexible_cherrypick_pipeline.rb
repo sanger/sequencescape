@@ -10,7 +10,7 @@ class AddFlexibleCherrypickPipeline < ActiveRecord::Migration
         :active => true,
         :location => Location.find_by_name('Sample logistics freezer'),
         :group_by_parent => true,
-        :asset_type => 'Well',
+        :asset_type => nil,
         :paginate => 0,
         :summary => true,
         :externally_managed => false,
