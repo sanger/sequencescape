@@ -16,7 +16,7 @@ class AddFlexibleCherrypickRequest < ActiveRecord::Migration
         :name =>"Flexible Cherrypick",
         :no_target_asset =>false,
         :order =>1,
-        :request_class_name =>"FelxibleCherrypickRequest",
+        :request_class_name =>"PooledCherrypickRequest",
         :workflow_id => Submission::Workflow.find_by_name("Microarray genotyping")
       })
     end
