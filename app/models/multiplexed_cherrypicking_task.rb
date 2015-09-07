@@ -36,7 +36,8 @@ class MultiplexedCherrypickingTask < Task
   def do_task(workflow, params)
     destination_plate = target_plate(params[:existing_plate_barcode],params[:plate_purpose_id])
     workflow.do_assign_requests_to_multiplexed_wells_task(self, params, destination_plate) &&
-    workflow.do_assign_pick_volume_task(self,params)
+    workflow.do_assign_pick_volume_task(self,params) &&
+    workflow.requests.select(&:target_asset).each(&:pass!)
   end
 
   def target_plate(barcode,plate_purpose_id)
