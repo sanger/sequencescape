@@ -308,6 +308,7 @@ ActiveRecord::Schema.define(:version => 20150902112414) do
     t.string   "seed_type"
     t.integer  "seed_id"
     t.integer  "user_id"
+    t.text     "properties"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

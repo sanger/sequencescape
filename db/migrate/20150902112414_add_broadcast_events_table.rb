@@ -8,6 +8,7 @@ class AddBroadcastEventsTable < ActiveRecord::Migration
       t.string :seed_type
       t.integer :seed_id
       t.integer :user_id
+      t.text :properties
       t.timestamps
     end
   end

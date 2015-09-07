@@ -18,6 +18,8 @@ class BroadcastEvent < ActiveRecord::Base
   validates_presence_of :seed
   validates_presence_of :user
 
+  serialize :properties
+
   def initialize(*args)
     raise StandardError, 'BroadcastEvents can not be created directly' unless self.class < BroadcastEvent
     super
