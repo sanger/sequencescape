@@ -3,9 +3,8 @@
 #Copyright (C) 2015 Genome Research Ltd.
 class FlexibleCherrypickPipeline < CherrypickForPulldownPipeline
 
-  def post_release_batch(batch, user)
+  def post_finish_batch(batch, user)
     batch.requests.with_target.each(&:pass!)
-    super
   end
 
 end
