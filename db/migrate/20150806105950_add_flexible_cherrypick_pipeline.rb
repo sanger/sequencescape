@@ -4,7 +4,7 @@
 class AddFlexibleCherrypickPipeline < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
-      pl= CherrypickPipeline.create!(
+      pl= FlexibleCherrypickPipeline.create!(
         :name => 'Flexible Cherrypick',
         :automated => false,
         :active => true,
@@ -27,8 +27,8 @@ class AddFlexibleCherrypickPipeline < ActiveRecord::Migration
 
   def self.down
     ActiveRecord::Base.transaction do
-      CherrypickPipeline.find_by_name('Flexible Cherrypick').workflow.destroy
-      CherrypickPipeline.find_by_name('Flexible Cherrypick').destroy
+      FlexibleCherrypickPipeline.find_by_name('Flexible Cherrypick').workflow.destroy
+      FlexibleCherrypickPipeline.find_by_name('Flexible Cherrypick').destroy
     end
   end
 end
