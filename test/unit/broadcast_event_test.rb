@@ -45,10 +45,16 @@ class BroadcastEventTest < ActiveSupport::TestCase
     # Methods that yield an array
     has_subjects :many, :many_relation
     # Blocks that define more complicated relationships
-    has_subject(:block) { |ts| ts.dynamic_relation.target }
+    has_subject(:block) { |ts,e| ts.dynamic_relation.target }
 
     has_metadata :data_a, :data_method_a
-    has_metadata(:data_b) { |ts| ts.dynamic_relation.data_method_b }
+    has_metadata(:data_b) { |ts,e| ts.dynamic_relation.data_method_b }
+
+    has_metadata(:data_c) {|ts,e| e.accessible }
+
+    def accessible
+      'value_c'
+    end
   end
 
 
@@ -109,8 +115,12 @@ class BroadcastEventTest < ActiveSupport::TestCase
         assert_metadata('data_b',@value_b)
       end
 
+      should 'scope metadata on event' do
+        assert_metadata('data_c','value_c')
+      end
+
       should 'find all metadata as a hash' do
-        assert_equal({'data_a' => @value_a, 'data_b' => @value_b}, @event.metadata)
+        assert_equal({'data_a' => @value_a, 'data_b' => @value_b, 'data_c' => 'value_c'}, @event.metadata)
       end
 
       # Put it all together
@@ -158,7 +168,8 @@ class BroadcastEventTest < ActiveSupport::TestCase
           ],
           "metadata" => {
             "data_a" => "value_a",
-            "data_b" => "value_b"
+            "data_b" => "value_b",
+            "data_c" => "value_c"
           }
           },
           "lims" => "SQSCP"

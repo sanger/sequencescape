@@ -29,7 +29,7 @@ module BroadcastEvent::SubjectHelpers
       @method = method
     end
 
-    def target_for(seed)
+    def target_for(seed,event)
       seed.send(method)
     end
 
@@ -44,8 +44,8 @@ module BroadcastEvent::SubjectHelpers
       @block = block
     end
 
-    def target_for(seed)
-      block.call(seed)
+    def target_for(seed,event)
+      block.call(seed,event)
     end
 
     def self.included(base)
@@ -54,14 +54,14 @@ module BroadcastEvent::SubjectHelpers
   end
 
   module SingleTarget
-    def for(seed)
-      Subject.new(name,target_for(seed))
+    def for(seed,event)
+      Subject.new(name,target_for(seed,event))
     end
   end
 
   module MultiTarget
-    def for(seed)
-      target_for(seed).map {|t| Subject.new(name,t) }
+    def for(seed,event)
+      target_for(seed,event).map {|t| Subject.new(name,t) }
     end
   end
 
@@ -72,7 +72,7 @@ module BroadcastEvent::SubjectHelpers
     def initialize(name)
       @name = name
     end
-    def for(seed)
+    def for(seed,event)
       Subject.new(name,seed)
     end
   end

@@ -9,7 +9,7 @@ module BroadcastEvent::MetadataHelpers
       @name = name.to_s
       @method = method
     end
-    def for(seed)
+    def for(seed,event)
       [name,seed.send(method)]
     end
   end
@@ -20,8 +20,8 @@ module BroadcastEvent::MetadataHelpers
       @name = name.to_s
       @block = block
     end
-    def for(seed)
-      [name,block.call(seed)]
+    def for(seed,event)
+      [name,block.call(seed,event)]
     end
   end
 

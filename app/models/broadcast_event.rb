@@ -19,6 +19,7 @@ class BroadcastEvent < ActiveRecord::Base
   validates_presence_of :user
 
   serialize :properties
+  self.inheritance_column = "sti_type"
 
   def initialize(*args)
     raise StandardError, 'BroadcastEvents can not be created directly' unless self.class < BroadcastEvent
@@ -34,13 +35,13 @@ class BroadcastEvent < ActiveRecord::Base
   # Returns an array of all subjects
   def subjects
     self.class.subject_associations.map do |sa|
-      sa.for(seed)
+      sa.for(seed,self)
     end.flatten
   end
 
   # Returns a hash of all metadata
   def metadata
-    Hash[self.class.metadata_finders.map {|mf| mf.for(seed) } ]
+    Hash[self.class.metadata_finders.map {|mf| mf.for(seed,self) } ]
   end
 
   def json_root
