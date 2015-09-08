@@ -95,6 +95,11 @@ class Submission < ActiveRecord::Base
   end
   alias_method(:json_root, :url_name)
 
+  def subject_type
+    'submission'
+  end
+  alias_attribute :friendly_name, :name
+
   def self.build!(options)
     submission_options = {}
     [:message, :priority].each do |option|

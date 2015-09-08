@@ -582,6 +582,10 @@ WHERE c.container_id=?
   end
   private :lookup_stock_plate
 
+  def original_stock_plates
+    ancestors.find(:all,:conditions => {:plate_purpose_id => PlatePurpose.stock_plate_purpose })
+  end
+
   def ancestor_of_purpose(ancestor_purpose_id)
     return self if self.plate_purpose_id == ancestor_purpose_id
     ancestors.first(:order => 'created_at DESC', :conditions => {:plate_purpose_id=>ancestor_purpose_id})
@@ -710,7 +714,7 @@ WHERE c.container_id=?
   def stock_wells
     # Optimisation: if the plate is a stock plate then it's wells are it's stock wells!
     return Hash[wells.with_pool_id.map { |w| [w,[w]] }] if stock_plate?
-    Hash[wells.with_pool_id.map { |w| [w, w.stock_wells.in_column_major_order] }.reject { |_,v| v.empty? }].tap do |stock_wells_hash|
+    Hash[wells.include_stock_wells.with_pool_id.map { |w| [w, w.stock_wells.in_column_major_order] }.reject { |_,v| v.empty? }].tap do |stock_wells_hash|
       raise "No stock plate associated with #{id}" if stock_wells_hash.empty?
     end
   end
@@ -736,9 +740,29 @@ WHERE c.container_id=?
     true
   end
 
+  def samples_in_order(order_id)
+    Sample.for_plate_and_order(self.id,order_id)
+  end
+
+  def team
+    ProductLine.find(:first,
+      :joins => [
+        'INNER JOIN request_types ON request_types.product_line_id = product_lines.id',
+        'INNER JOIN requests ON requests.request_type_id = request_types.id',
+        'INNER JOIN well_links ON well_links.source_well_id = requests.asset_id AND well_links.type = "stock"',
+        'INNER JOIN container_associations AS ca ON ca.content_id = well_links.target_well_id'
+      ],
+      :conditions => ['ca.container_id = ?',self.id]).try(:name)||'UNKNOWN'
+  end
+
   # Barcode is stored as a string, jet in a number of places is treated as
   # a number. If we conver it before searching, things are faster!
   def find_by_barcode(barcode)
     super(barcode.to_s)
+  end
+
+  alias_method :friendly_name, :sanger_human_barcode
+  def subject_type
+    'plate'
   end
 end

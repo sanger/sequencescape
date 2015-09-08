@@ -15,8 +15,8 @@ class PlatePurpose < Purpose
     end
 
     # Delegate the change of state to our plate purpose.
-    def transition_to(state, contents = nil, customer_accepts_responsibility=false)
-      purpose.transition_to(self, state, contents,customer_accepts_responsibility)
+    def transition_to(state, user, contents = nil, customer_accepts_responsibility=false)
+      purpose.transition_to(self, state, user, contents, customer_accepts_responsibility)
     end
 
     # Delegate the transfer request type determination to our plate purpose
@@ -79,13 +79,14 @@ class PlatePurpose < Purpose
   # Updates the state of the specified plate to the specified state.  The basic implementation does this by updating
   # all of the TransferRequest instances to the state specified.  If contents is blank then the change is assumed to
   # relate to all wells of the plate, otherwise only the selected ones are updated.
-  def transition_to(plate, state, contents = nil, customer_accepts_responsibility=false)
+  def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility=false)
     wells = plate.wells
     wells = wells.located_at(contents) unless contents.blank?
 
     transition_state_requests(wells, state)
     fail_stock_well_requests(wells,customer_accepts_responsibility) if state == 'failed'
   end
+
 
   module Overrideable
     def transition_state_requests(wells, state)

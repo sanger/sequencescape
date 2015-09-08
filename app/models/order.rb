@@ -356,6 +356,14 @@ class Order < ActiveRecord::Base
       request.add_comment(comment_str, user)
     end
   end
+
+  def friendly_name
+    asset_group(:name)
+  end
+
+  def subject_type
+    'order'
+  end
 end
 
 
