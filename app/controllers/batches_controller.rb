@@ -80,6 +80,18 @@ class BatchesController < ApplicationController
     end
   end
 
+  def cancel_requests(requests)
+    ActiveRecord::Base.transaction do
+      requests.map(&:cancel_before_started!)
+    end
+
+    respond_to do |format|
+      flash[:notice] = 'Requests canceled'
+      format.html { redirect_to :controller => :pipelines, :action => :show, :id => @pipeline.id }
+      format.xml  { head :ok }
+    end
+  end
+
   def create
     ActiveRecord::Base.transaction do
     Batch.benchmark "BENCH Batch:WorkflowController:create", Logger::INFO, false do
@@ -97,6 +109,7 @@ class BatchesController < ApplicationController
       return pipeline_error_on_batch_creation("All plates in a submission must be selected") unless @pipeline.all_requests_from_submissions_selected?(requests)
 
       return hide_from_inbox(requests) if params[:action_on_requests] == "hide_from_inbox"
+      return cancel_requests(requests) if params[:action_on_requests] == "cancel_requests"
 
       @batch = @pipeline.batches.create!(:requests => requests, :user => current_user)
       # we exclude the rendering bit from the usefull code
