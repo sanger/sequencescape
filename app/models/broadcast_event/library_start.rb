@@ -3,7 +3,6 @@
 #Copyright (C) 2015 Genome Research Ltd.
 class BroadcastEvent::LibraryStart < BroadcastEvent
 
-
   set_event_type 'library_start'
 
   # Properties takes :order_id
@@ -16,7 +15,7 @@ class BroadcastEvent::LibraryStart < BroadcastEvent
   has_subject(:submission) {|_,e| e.order.submission }
 
 
-  has_subject(:source_plate,:source_plate)
+  has_subject(:origin_plate,:source_plate)
 
   has_subjects(:stock_plate,:original_stock_plates)
   has_subjects(:sample) { |plate,e| plate.samples_in_order(e.properties[:order_id]) }
