@@ -78,9 +78,9 @@ class Accessionable::Base
 
   class Tag
     attr_reader :value
-    def initialize(label_scope, name, value)
+    def initialize(label_scope, name, value, downcase = false)
       @name = name
-      @value = value
+      @value = downcase && value ? value.downcase : value
       @scope = label_scope
     end
 
