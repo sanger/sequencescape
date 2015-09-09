@@ -37,7 +37,7 @@ class CherrypickForPulldownRequest < TransferRequest
     end
 
     aasm_event :cancel_before_started do
-      transitions :to => :cancelled, :from => [:pending]
+      transitions :to => :cancelled, :from => [:pending,:hold]
     end
 
     aasm_event :submission_cancelled do
