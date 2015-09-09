@@ -46,4 +46,25 @@ class AccessionServiceTest < ActiveSupport::TestCase
       assert_equal({:tag => "Gender", :value => "male" }, gender_tag)
     end
   end
+
+  context "A sample with a donor_id" do
+    setup do
+      @study = Factory :managed_study
+      @sample = Factory :sample, :studies => [@study]
+      @sample.sample_metadata.donor_id  = "123456789"
+    end
+
+
+    should "expose donor_id as subject_id in EGA xml" do
+      subject_tag = nil
+      acc = Accessionable::Sample.new(@sample)
+      acc.tags.each do |tag|
+        if tag.label  == "subject_id"
+          subject_tag = {:tag => tag.label, :value => tag.value }
+          break
+        end
+      end
+      assert_equal({:tag => "subject_id", :value => "123456789" }, subject_tag)
+    end
+  end
 end
