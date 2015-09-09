@@ -38,7 +38,7 @@ class LibraryTube < Tube
 
   def specialized_from_manifest=(attributes)
     aliquots.first.update_attributes!(attributes)
-    requests.map(&:manifest_processed)
+    requests.map(&:manifest_processed!)
   end
 
   def library_information

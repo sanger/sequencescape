@@ -519,5 +519,5 @@ class Request < ActiveRecord::Base
     false
   end
 
-  def manifest_processed; end
+  def manifest_processed!; end
 end
