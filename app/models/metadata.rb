@@ -63,7 +63,7 @@ private
   end
 
   def include_tag(tag,options=Hash.new)
-    tags << AccessionedTag.new(tag,options[:as],options[:services])
+    tags << AccessionedTag.new(tag,options[:as],options[:services],options[:downcase])
   end
 
   def require_tag(tag,services=:all)
@@ -74,11 +74,12 @@ private
 
 
   class AccessionedTag
-    attr_reader :tag, :name
-    def initialize(tag, as=nil, services=[])
+    attr_reader :tag, :name, :downcase
+    def initialize(tag, as=nil, services=[],downcase=false)
       @tag = tag
       @name = as||tag
       @services = [services].flatten.compact
+      @downcase = downcase
     end
 
     def for?(service)

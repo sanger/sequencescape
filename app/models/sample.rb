@@ -342,7 +342,7 @@ class Sample < ActiveRecord::Base
     include_tag(:sample_strain_att)
     include_tag(:sample_description)
 
-    include_tag(:gender, :services=>:EGA)
+    include_tag(:gender, :services=>:EGA, :downcase => true)
     include_tag(:phenotype, :services=>:EGA)
     include_tag(:donor_id, :services=>:EGA, :as => 'subject_id')
 

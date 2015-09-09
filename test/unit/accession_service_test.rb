@@ -30,7 +30,7 @@ class AccessionServiceTest < ActiveSupport::TestCase
     setup do
       @study = Factory :managed_study
       @sample = Factory :sample, :studies => [@study]
-      @sample.sample_metadata.gender  = "male"
+      @sample.sample_metadata.gender  = "Male"
     end
 
 
