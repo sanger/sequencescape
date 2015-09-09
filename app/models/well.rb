@@ -36,7 +36,7 @@ class Well < Aliquot::Receptacle
     !self.target_wells.detect{|w| w.events.detect {|e| e.family == PlatesHelper::event_family_for_pick(sta_plate_purpose_name)}.nil?}
   end
 
-  named_scope :include_stock_wells, { :include => { :stock_wells => :requests_as_source } }
+  named_scope :include_stock_wells, { :include => { :stock_wells => [:requests_as_source,:map] } }
   named_scope :include_map,         { :include => :map }
 
   named_scope :located_at, lambda { |plate, location|
