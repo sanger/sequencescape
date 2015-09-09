@@ -43,5 +43,8 @@ module PlatesHelper
     end
   end
 
+  def self.event_family_for_pick(plate_purpose_name)
+    "picked_well_from_#{plate_purpose_name.gsub(/ /,"_").downcase}_plate"
+  end
 
 end
