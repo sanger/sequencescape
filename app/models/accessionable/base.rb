@@ -85,7 +85,7 @@ class Accessionable::Base
     end
 
     def label
-      I18n.t("#{@scope}.#{ @name }.label")
+      I18n.t("#{@scope}.#{ @name }.label").gsub(' ','_').downcase
     end
 
     def build(xml)
