@@ -41,6 +41,7 @@ class Request < ActiveRecord::Base
   }
 
   named_scope :for_pooling_of, lambda { |plate|
+    submission_ids = plate.all_submission_ids
     joins =
       if plate.stock_plate?
         [ 'INNER JOIN assets AS pw ON requests.asset_id=pw.id' ]
@@ -55,13 +56,12 @@ class Request < ActiveRecord::Base
       :joins => joins + [
         'INNER JOIN maps AS pw_location ON pw.map_id=pw_location.id',
         'INNER JOIN container_associations ON container_associations.content_id=pw.id',
-        'INNER JOIN submissions ON requests.submission_id=submissions.id',
-        'INNER JOIN uuids ON uuids.resource_id=submissions.id AND uuids.resource_type="Submission"'
+        'INNER JOIN uuids ON uuids.resource_id=requests.submission_id AND uuids.resource_type="Submission"'
       ],
       :group => 'requests.submission_id',
       :conditions => [
-        'requests.sti_type NOT IN (?) AND container_associations.container_id=? AND submissions.state != "cancelled"',
-        [TransferRequest,*Class.subclasses_of(TransferRequest)].map(&:name), plate.id
+        'requests.sti_type NOT IN (?) AND container_associations.container_id=? AND requests.submission_id IN (?)',
+        [TransferRequest,*Class.subclasses_of(TransferRequest)].map(&:name), plate.id, submission_ids
       ]
     }
   }
