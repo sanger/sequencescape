@@ -37,7 +37,7 @@ class LibraryTube < Tube
   end
 
   def specialized_from_manifest=(attributes)
-    aliquots.first.update_attributes!(attributes)
+    aliquots.first.update_attributes!(attributes.merge(:library_id => self.id))
     requests.map(&:manifest_processed!)
   end
 
