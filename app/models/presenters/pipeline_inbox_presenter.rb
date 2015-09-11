@@ -33,9 +33,10 @@ module Presenters
 
     attr_reader :pipeline, :user
 
-    def initialize(pipeline,user)
+    def initialize(pipeline,user,show_held_requests=false)
       @pipeline = pipeline
       @user = user
+      @show_held_requests = show_held_requests
     end
 
     def each_field_header
