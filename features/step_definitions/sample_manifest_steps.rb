@@ -124,7 +124,7 @@ Then /^the sample reference genomes should be:$/ do |table|
 end
 
 Then /^the samples should be tagged in library and multiplexed library tubes with:$/ do |table|
-  pooled_aliquots = MultiplexedLibraryTube.last.aliquots.map {|a| [a.sample.sanger_sample_id, a.tag.map_id]}
+  pooled_aliquots = MultiplexedLibraryTube.last.aliquots.map {|a| [a.sample.sanger_sample_id, a.tag.map_id, a.library_id]}
   table.hashes.each do |expected_data|
     lt = LibraryTube.find_by_barcode(expected_data[:tube_barcode].gsub('NT',''))
     assert_equal 1, lt.aliquots.count
@@ -136,7 +136,8 @@ Then /^the samples should be tagged in library and multiplexed library tubes wit
     assert_equal expected_data[:library_type], lt.aliquots.first.library_type, "library_type: #{expected_data[:library_type]} #{lt.aliquots.first.library_type}"
     assert_equal expected_data[:insert_size_from].to_i, lt.aliquots.first.insert_size_from, "insert_size_from: #{expected_data[:insert_size_from]} #{lt.aliquots.first.insert_size_from}"
     assert_equal expected_data[:insert_size_to].to_i, lt.aliquots.first.insert_size_to, "insert_size_to: #{expected_data[:insert_size_to]} #{lt.aliquots.first.insert_size_to}"
-    assert pooled_aliquots.delete([expected_data[:sanger_sample_id],expected_data[:tag_index].to_i]), "Couldn't find #{expected_data[:sanger_sample_id]} with #{expected_data[:tag_index]} in MX tube."
+    assert_equal lt.id, lt.aliquots.first.library_id, "Library_id hasn't been set"
+    assert pooled_aliquots.delete([expected_data[:sanger_sample_id],expected_data[:tag_index].to_i,lt.id]), "Couldn't find #{expected_data[:sanger_sample_id]} with #{expected_data[:tag_index]} in MX tube."
   end
   assert pooled_aliquots.empty?, "MX tube contains extra samples: #{pooled_aliquots.inspect}"
 end
@@ -245,4 +246,8 @@ Then /^print any manifest errors for debugging$/ do
     SampleManifest.last.last_errors.each {|error| puts error}
     puts "="*80
   end
+end
+
+Then /^library_id should be set as required$/ do
+  pending # express the regexp above with the code you wish you had
 end
