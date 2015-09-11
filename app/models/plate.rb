@@ -45,7 +45,7 @@ class Plate < Asset
       :all,
       :select => 'DISTINCT requests.submission_id',
       :joins  => 'LEFT JOIN requests ON requests.target_asset_id = container_associations.content_id',
-      :conditions => 'requests.submission_id IS NOT NULL'
+      :conditions => ['requests.submission_id IS NOT NULL AND requests.state NOT IN (?)',Request::Statemachine::INACTIVE]
     ).map(&:submission_id)
   end
 
@@ -54,7 +54,7 @@ class Plate < Asset
       :all,
       :select => 'DISTINCT requests.submission_id',
       :joins  => 'LEFT JOIN requests ON requests.asset_id = container_associations.content_id',
-      :conditions => 'requests.submission_id IS NOT NULL'
+      :conditions => ['requests.submission_id IS NOT NULL AND requests.state NOT IN (?)',Request::Statemachine::INACTIVE]
     ).map(&:submission_id)
   end
 

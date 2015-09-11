@@ -22,7 +22,7 @@ module Accessionable
       # NOTE[xxx]: This used to also look for 'ENA links' and push them to the 'data[:links]' value, but group was empty
       @links = []
       @tags  = sample.tags.map do |datum|
-        Tag.new(label_scope, datum.name, sample.sample_metadata[datum.tag])
+        Tag.new(label_scope, datum.name, sample.sample_metadata[datum.tag], datum.downcase)
       end
 
       #TODO maybe unify this with the previous loop
