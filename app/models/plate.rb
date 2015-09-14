@@ -285,6 +285,14 @@ WHERE c.container_id=?
     }
   }
 
+  named_scope :with_wells, lambda { |wells|
+    {
+      :select => 'DISTINCT assets.*',
+      :joins=>[:container_associations],
+      :conditions=>{:container_associations=>{:content_id=> wells.map(&:id) }}
+    }
+  }
+
   def wells_sorted_by_map_id
     wells.sorted
   end
