@@ -16,7 +16,6 @@ class BroadcastEvent < ActiveRecord::Base
   belongs_to :seed, :polymorphic => true
   belongs_to :user
   validates_presence_of :seed
-  validates_presence_of :user
 
   serialize :properties
   self.inheritance_column = "sti_type"

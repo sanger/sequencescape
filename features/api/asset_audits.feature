@@ -145,6 +145,7 @@ And I have a "full" authorised user with the key "cucumber"
     Then the activity logging table should be:
       | Message    | Key      | Created by | Created at             |
       | My message | some_key | john       | October 23, 2010 23:00 |
+    And there is a broadcast event for the last asset audit created
 
   @read
   Scenario: Reading the JSON for a UUID

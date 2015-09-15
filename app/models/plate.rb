@@ -752,6 +752,10 @@ WHERE c.container_id=?
     Sample.for_plate_and_order(self.id,order_id)
   end
 
+  def contained_samples
+    Sample.on_plate(self)
+  end
+
   def team
     ProductLine.find(:first,
       :joins => [

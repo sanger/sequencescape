@@ -70,6 +70,8 @@ Feature: Sample manifest
       | NT84         | tube_sample_4         | test tag group | 5         | Standard     | 100              | 200            |            |            |
       | NT85         | tube_sample_5         | test tag group | 7         | Standard     | 100              | 200            |            |            |
 
+    And library_id should be set as required
+
 Scenario: Create a dual indexed mx manifest
 
     Given I have a tag group called "test tag group2" with 2 tags
