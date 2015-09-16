@@ -11,6 +11,9 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
       request.customer_accepts_responsibility! if customer_accepts_responsibility
       to_state = request_state(request,state)
       request.transition_to(to_state) unless to_state.nil?
+
+      ## Here should be the event
+      BroadcastEvent::LibraryComplete.create!(:seed=>tube,:user=>user,:properties=>{:order_id=>request.order.id})
     end
   end
 

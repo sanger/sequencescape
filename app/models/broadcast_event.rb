@@ -10,7 +10,6 @@ class BroadcastEvent < ActiveRecord::Base
 
   extend BroadcastEvent::SubjectHelpers::SubjectableClassMethods
   extend BroadcastEvent::MetadataHelpers::MetadatableClassMethods
-  extend BroadcastEvent::MetadataHelpers::MetadatableClassMethods
   extend BroadcastEvent::RenderHelpers::RenderableClassMethods
 
   belongs_to :seed, :polymorphic => true

@@ -161,6 +161,11 @@ class Asset < ActiveRecord::Base
     study.try(:id)
   end
 
+  def ancestor_of_purpose(ancestor_purpose_id)
+    # If it's not a tube or a plate, defaults to stock_plate
+    return self.stock_plate
+  end
+
   has_one :creation_request, :class_name => 'Request', :foreign_key => :target_asset_id
 
   def label
