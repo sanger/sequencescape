@@ -3,10 +3,10 @@
 #Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
 class ActiveRecord::Base
   class << self
-    def find_by_id_or_name(id, name)
+    def find_by_id_or_name!(id, name)
       return find(id) unless id.blank?
       raise StandardError, "Must specify at least ID or name" if name.blank?
-      find_by_name(name) or raise ActiveRecord::RecordNotFound, "Cannot find #{self.name} #{name.inspect}"
+      find_by_name!(name)
     end
 
     def find_all_by_id_or_name(ids, names)
@@ -22,11 +22,15 @@ end
 
 class Array
   def comma_separate_field_list(*fields)
-    map { |row| fields.map { |field| row[field] } }.flatten.delete_if(&:blank?).join(',')
+    field_list(*fields).join(',')
   end
 
   def comma_separate_field_list_for_display(*fields)
-    map { |row| fields.map { |field| row[field] } }.flatten.delete_if(&:blank?).join(', ')
+    field_list(*fields).join(', ')
+  end
+
+  def field_list(*fields)
+    map { |row| fields.map { |field| row[field] } }.flatten.delete_if(&:blank?)
   end
 end
 
@@ -165,7 +169,6 @@ class BulkSubmission < ActiveRecord::Base
     'user login',
 
     # Needed to identify the assets and what happens to them ...
-    'plate barcode',
     'asset group id', 'asset group name',
     'fragment size from', 'fragment size to',
     'read length',
@@ -179,8 +182,17 @@ class BulkSubmission < ActiveRecord::Base
     'priority'
   ]
 
+  ALIAS_FIELDS = {
+    'plate barcode' => 'barcode',
+    'tube barcode' => 'barcode'
+  }
+
+  def translate(header)
+    ALIAS_FIELDS[header]||header
+  end
+
   def validate_entry(header,pos,row,index)
-    return [header, row[pos].try(:strip)] unless header.nil? && row[pos].present?
+    return [translate(header), row[pos].try(:strip)] unless header.nil? && row[pos].present?
     errors.add(:spreadsheet, "Row #{index}, column #{pos+1} contains data but no heading.")
   end
   private :validate_entry
@@ -203,9 +215,10 @@ class BulkSubmission < ActiveRecord::Base
 
         Hash[shared_options!(rows)].tap do |details|
           details['rows']          = rows.comma_separate_field_list_for_display('row')
-          details['asset ids']     = rows.comma_separate_field_list('asset id', 'asset ids')
-          details['asset names']   = rows.comma_separate_field_list('asset name', 'asset names')
-          details['plate well']    = rows.comma_separate_field_list('plate well')
+          details['asset ids']     = rows.field_list('asset id', 'asset ids')
+          details['asset names']   = rows.field_list('asset name', 'asset names')
+          details['plate well']    = rows.field_list('plate well')
+          details['barcode']       = rows.field_list('barcode')
         end.delete_if { |_,v| v.blank? }
 
       end
@@ -226,10 +239,9 @@ class BulkSubmission < ActiveRecord::Base
   # Returns an order for the given details
   def prepare_order(details)
     begin
-
       # Retrieve common attributes
-      study   = Study.find_by_id_or_name(details['study id'], details['study name'])
-      project = Project.find_by_id_or_name(details['project id'], details['project name'])
+      study   = Study.find_by_id_or_name!(details['study id'], details['study name'])
+      project = Project.find_by_id_or_name!(details['project id'], details['project name'])
       user    = User.find_by_login(details['user login']) or raise StandardError, "Cannot find user #{details['user login'].inspect}"
 
       # The order attributes are initially
@@ -255,25 +267,25 @@ class BulkSubmission < ActiveRecord::Base
 
       # Deal with the asset group: either it's one we should be loading, or one we should be creating.
       begin
-        attributes[:asset_group] = study.asset_groups.find_by_id_or_name(details['asset group id'], details['asset group name'])
+
+        attributes[:asset_group] = study.asset_groups.find_by_id_or_name!(details['asset group id'], details['asset group name'])
 
       rescue ActiveRecord::RecordNotFound => exception
 
         attributes[:asset_group_name] = details['asset group name']
 
         # Locate either the assets by name or ID, or find the plate and it's well
-        if not details['plate barcode'].blank? and not details['plate well'].blank?
-          match = /^([A-Z]{2})(\d+)[A-Z]$/.match(details['plate barcode']) or raise StandardError, "Plate barcode should be human readable (e.g. DN111111K)"
-          prefix = BarcodePrefix.find_by_prefix(match[1]) or raise StandardError, "Cannot find barcode prefix #{match[1].inspect} for #{details['rows']}"
-          plate  = Plate.find_by_barcode_prefix_id_and_barcode(prefix.id, match[2]) or raise StandardError, "Cannot find plate with barcode #{details['plate barcode']} for #{details['rows']}"
+        if not details['barcode'].blank? and not details['plate well'].blank?
 
-          wells, well_locations = [], details['plate well'].split(',').map(&:strip)
-          plate.wells.walk_in_column_major_order { |well, _| wells << well if well_locations.include?(well.map.description) }
-          raise StandardError, "Too few wells found for #{details['rows']}: #{wells.map(&:map).map(&:description).inspect}" if wells.size != well_locations.size
-          attributes[:assets] = wells
+          attributes[:assets] = find_wells_for!(details)
+        # We've probably got a tube
+        elsif not details['barcode'].blank? and details['plate well'].blank?
+
+          attributes[:assets] = find_tubes_for!(details)
 
         else
-          asset_ids, asset_names = details.fetch('asset ids', '').split(','), details.fetch('asset names', '').split(',')
+
+          asset_ids, asset_names = details.fetch('asset ids', ''), details.fetch('asset names', '')
           attributes[:assets]    = Asset.find_all_by_id_or_name(asset_ids, asset_names).uniq
 
           assets_found, expecting = attributes[:assets].map { |asset| "#{asset.name}(#{asset.id})" }, asset_ids.size + asset_names.size
@@ -299,6 +311,29 @@ class BulkSubmission < ActiveRecord::Base
     rescue => exception
       errors.add :spreadsheet, "There was a problem on row(s) #{details['rows']}: #{exception.message}"
       nil
+    end
+  end
+
+  def find_wells_for!(details)
+    barcodes, well_list = details['barcode'], details['plate well']
+    self.errors.add(:spreadsheet, "You can only specify one plate per asset group") unless barcodes.uniq.one?
+    barcode = barcodes.first
+
+    match = /^([A-Z]{2})(\d+)[A-Z]$/.match(barcode) or raise StandardError, "Plate Barcode should be human readable (e.g. DN111111K)"
+    prefix = BarcodePrefix.find_by_prefix(match[1]) or raise StandardError, "Cannot find barcode prefix #{match[1].inspect} for #{details['rows']}"
+    plate  = Plate.find_by_barcode_prefix_id_and_barcode(prefix.id, match[2]) or raise StandardError, "Cannot find plate with barcode #{barcode} for #{details['rows']}"
+
+    wells, well_locations = [], well_list.map(&:strip)
+    plate.wells.walk_in_column_major_order { |well, _| wells << well if well_locations.include?(well.map.description) }
+    raise StandardError, "Too few wells found for #{details['rows']}: #{wells.map(&:map).map(&:description).inspect}" if wells.size != well_locations.size
+    attributes[:assets] = wells
+  end
+
+  def find_tubes_for!(details)
+    details['barcode'].map do |barcode|
+      match = /^([A-Z]{2})(\d+)[A-Z]$/.match(barcode) or raise StandardError, "Tube Barcode should be human readable (e.g. NT2P)"
+      prefix = BarcodePrefix.find_by_prefix(match[1]) or raise StandardError, "Cannot find barcode prefix #{match[1].inspect} for #{details['rows']}"
+      plate  = Tube.find_by_barcode_prefix_id_and_barcode(prefix.id, match[2]) or raise StandardError, "Cannot find tube with barcode #{barcode} for #{details['rows']}"
     end
   end
 
