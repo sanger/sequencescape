@@ -1,12 +1,6 @@
 class PopulateAncestorsFromPlateToTube < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
-      TubeCreation.find_each(&:create_ancestor_plate!)
-      say "TubeCreation ancestor plates created"
-      TubeFromTubeCreation.find_each(&:create_ancestor_plate!)
-      say "TubeFromTubeCreation ancestor plates created"
-      #AssetLink.find_each(&:create_ancestor_plate!)
-
       ["ILB_STD_MX", "ILC Lib Pool Norm", "Cap Lib Pool Norm", "Legacy MX tube", "Lib Pool Norm", "Lib Pool SS-XP-Norm"].each do |purpose_name|
         purpose = Purpose.find_by_name(purpose_name)
         [Transfer::BetweenSpecificTubes, Transfer::BetweenTubesBySubmission].each do |klass|
@@ -30,8 +24,8 @@ class PopulateAncestorsFromPlateToTube < ActiveRecord::Migration
               # destroy the common for our destination
               (source.ancestors & destination.ancestors).each do |common_ancestor|
                 say "Destroying edge between #{common_ancestor.id} and #{destination.id}"
-                AssetLink.find_link(common_ancestor, destination).delete
-                AssetLink.find_link(common_ancestor, destination).delete
+                AssetLink.find_link(common_ancestor, destination).delete if AssetLink.find_link(common_ancestor, destination)
+                AssetLink.find_link(common_ancestor, destination).delete if AssetLink.find_link(common_ancestor, destination)
                 say "Destroyed edge" unless AssetLink.edge?(common_ancestor, destination)
               end
               source.reload
