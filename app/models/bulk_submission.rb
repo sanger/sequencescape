@@ -10,12 +10,12 @@ class ActiveRecord::Base
     end
 
     def find_by_id_or_name(id, name)
-      return find_by_id(id) unless id.blank?
+      return find(id) unless id.blank?
       raise StandardError, "Must specify at least ID or name" if name.blank?
       find_by_name(name)
     end
 
-    def find_all_by_id_or_name(ids, names)
+    def find_all_by_id_or_name!(ids, names)
       return Array(find(*ids)) unless ids.blank?
       raise StandardError, "Must specify at least an ID or a name" if names.blank?
       find_all_by_name(names).tap do |found|
@@ -295,7 +295,11 @@ class BulkSubmission < ActiveRecord::Base
       else
 
         asset_ids, asset_names = details.fetch('asset ids', ''), details.fetch('asset names', '')
-        found_assets    = Asset.find_all_by_id_or_name(asset_ids, asset_names).uniq
+        if attributes[:asset_group] && asset_ids.blank? && asset_names.blank?
+          found_assets    = []
+        else
+          found_assets    = Asset.find_all_by_id_or_name!(asset_ids, asset_names).uniq
+        end
 
         assets_found, expecting = found_assets.map { |asset| "#{asset.name}(#{asset.id})" }, asset_ids.size + asset_names.size
         raise StandardError, "Too few assets found for #{details['rows']}: #{assets_found.inspect}"  if assets_found.size < expecting
@@ -309,7 +313,7 @@ class BulkSubmission < ActiveRecord::Base
         raise StandardError, "Assets not in study #{study.name.inspect} for #{details['rows']}: #{assets_not_in_study.map(&:display_name).inspect}" unless assets_not_in_study.empty?
         attributes[:assets] = found_assets
       else
-        raise StandardError, "Asset Group '#{attributes[:asset_group].name}' contains different assets to those you specified. You may be reusing an asset group name" unless found_assets == attributes[:asset_group].assets
+        raise StandardError, "Asset Group '#{attributes[:asset_group].name}' contains different assets to those you specified. You may be reusing an asset group name" if found_assets.present? && found_assets != attributes[:asset_group].assets
       end
 
       # Create the order.  Ensure that the number of lanes is correctly set.
@@ -346,7 +350,7 @@ class BulkSubmission < ActiveRecord::Base
     details['barcode'].map do |barcode|
       match = /^([A-Z]{2})(\d+)[A-Z]$/.match(barcode) or raise StandardError, "Tube Barcode should be human readable (e.g. NT2P)"
       prefix = BarcodePrefix.find_by_prefix(match[1]) or raise StandardError, "Cannot find barcode prefix #{match[1].inspect} for #{details['rows']}"
-      plate  = Tube.find_by_barcode_prefix_id_and_barcode(prefix.id, match[2]) or raise StandardError, "Cannot find tube with barcode #{barcode} for #{details['rows']}"
+      plate  = Tube.find_by_barcode_prefix_id_and_barcode(prefix.id, match[2]) or raise StandardError, "Cannot find tube with barcode #{barcode} for #{details['rows']}."
     end
   end
 
