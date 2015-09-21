@@ -9,6 +9,12 @@ class ActiveRecord::Base
       find_by_name!(name)
     end
 
+    def find_by_id_or_name(id, name)
+      return find_by_id(id) unless id.blank?
+      raise StandardError, "Must specify at least ID or name" if name.blank?
+      find_by_name(name)
+    end
+
     def find_all_by_id_or_name(ids, names)
       return Array(find(*ids)) unless ids.blank?
       raise StandardError, "Must specify at least an ID or a name" if names.blank?
@@ -266,37 +272,44 @@ class BulkSubmission < ActiveRecord::Base
       attributes[:request_options][:multiplier]                     = {}
 
       # Deal with the asset group: either it's one we should be loading, or one we should be creating.
-      begin
 
-        attributes[:asset_group] = study.asset_groups.find_by_id_or_name!(details['asset group id'], details['asset group name'])
 
-      rescue ActiveRecord::RecordNotFound => exception
+      attributes[:asset_group] = study.asset_groups.find_by_id_or_name(details['asset group id'], details['asset group name'])
+      attributes[:asset_group_name] = details['asset group name'] if attributes[:asset_group].nil?
 
-        attributes[:asset_group_name] = details['asset group name']
 
-        # Locate either the assets by name or ID, or find the plate and it's well
-        if not details['barcode'].blank? and not details['plate well'].blank?
+      ##
+      # We go ahead and find our assets regardless of whether we have an asset group.
+      # While this takes longer, it helps to detect cases where an asset group name has been
+      # reused. This is a common cause of submission problems.
 
-          attributes[:assets] = find_wells_for!(details)
-        # We've probably got a tube
-        elsif not details['barcode'].blank? and details['plate well'].blank?
+      # Locate either the assets by name or ID, or find the plate and it's well
+      if not details['barcode'].blank? and not details['plate well'].blank?
 
-          attributes[:assets] = find_tubes_for!(details)
+        found_assets = find_wells_for!(details)
+      # We've probably got a tube
+      elsif not details['barcode'].blank? and details['plate well'].blank?
 
-        else
+        found_assets = find_tubes_for!(details)
 
-          asset_ids, asset_names = details.fetch('asset ids', ''), details.fetch('asset names', '')
-          attributes[:assets]    = Asset.find_all_by_id_or_name(asset_ids, asset_names).uniq
+      else
 
-          assets_found, expecting = attributes[:assets].map { |asset| "#{asset.name}(#{asset.id})" }, asset_ids.size + asset_names.size
-          raise StandardError, "Too few assets found for #{details['rows']}: #{assets_found.inspect}"  if assets_found.size < expecting
-          raise StandardError, "Too many assets found for #{details['rows']}: #{assets_found.inspect}" if assets_found.size > expecting
+        asset_ids, asset_names = details.fetch('asset ids', ''), details.fetch('asset names', '')
+        found_assets    = Asset.find_all_by_id_or_name(asset_ids, asset_names).uniq
 
-        end
+        assets_found, expecting = found_assets.map { |asset| "#{asset.name}(#{asset.id})" }, asset_ids.size + asset_names.size
+        raise StandardError, "Too few assets found for #{details['rows']}: #{assets_found.inspect}"  if assets_found.size < expecting
+        raise StandardError, "Too many assets found for #{details['rows']}: #{assets_found.inspect}" if assets_found.size > expecting
 
-        assets_not_in_study = attributes[:assets].select { |asset| not asset.aliquots.map(&:sample).map(&:studies).flatten.uniq.include?(study) }
+      end
+
+
+      if attributes[:asset_group].nil?
+        assets_not_in_study = found_assets.select { |asset| not asset.aliquots.map(&:sample).map(&:studies).flatten.uniq.include?(study) }
         raise StandardError, "Assets not in study #{study.name.inspect} for #{details['rows']}: #{assets_not_in_study.map(&:display_name).inspect}" unless assets_not_in_study.empty?
-
+        attributes[:assets] = found_assets
+      else
+        raise StandardError, "Asset Group '#{attributes[:asset_group].name}' contains different assets to those you specified. You may be reusing an asset group name" unless found_assets == attributes[:asset_group].assets
       end
 
       # Create the order.  Ensure that the number of lanes is correctly set.
