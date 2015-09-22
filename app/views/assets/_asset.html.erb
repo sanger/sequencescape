@@ -3,5 +3,4 @@
 #Copyright (C) 2015 Genome Research Ltd.%>
 <div class="columnize">
 <div class="info"><%= render :partial => 'asset_summary', :locals => {:asset => @asset} %></div>
-<div class="info"><%= render :partial => 'sample_list', :locals => {:asset => @asset} if @asset.respond_to?(:sample)%></div>
 </div>
