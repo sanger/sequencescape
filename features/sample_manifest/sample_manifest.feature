@@ -21,6 +21,45 @@ Feature: Sample manifest
     When I follow "Sample Manifests"
     Then I should see "Create manifest for plates"
 
+  Scenario: Create a plate manifest and print just the first barcode when selecting option Only First Label
+    When I follow "Create manifest for plates"
+    Then I should see "Barcode printer"
+    When I select "Test study" from "Study"
+    And I select "default layout" from "Template"
+    And I select "Test supplier name" from "Supplier"
+    And I select "xyz" from "Barcode printer"
+    And I select "default layout" from "Template"
+    And I fill in the field labeled "Plates required" with "4"
+    And I uncheck "Print only the first label"
+    When I press "Create manifest and print labels"
+    Then exactly 1 label should have been printed
+
+  Scenario: Create a plate manifest and print all the barcodes when deselecting option Only First Label
+    When I follow "Create manifest for plates"
+    Then I should see "Barcode printer"
+    When I select "Test study" from "Study"
+    And I select "default layout" from "Template"
+    And I select "Test supplier name" from "Supplier"
+    And I select "xyz" from "Barcode printer"
+    And I select "default layout" from "Template"
+    And I fill in the field labeled "Plates required" with "4"
+    And I uncheck "Print only the first label"
+    When I press "Create manifest and print labels"
+    Then exactly 4 labels should have been printed
+
+  Scenario: Create a plate manifest and print all the barcodes
+    When I follow "Create manifest for plates"
+    Then I should see "Barcode printer"
+    When I select "Test study" from "Study"
+    And I select "default layout" from "Template"
+    And I select "Test supplier name" from "Supplier"
+    And I select "xyz" from "Barcode printer"
+    And I select "default layout" from "Template"
+    And I fill in the field labeled "Plates required" with "4"
+    When I press "Create manifest and print labels"
+    Then exactly 4 labels should have been printed
+
+
   Scenario: Create a plate manifest and upload a manifest file without processing it
     Given a manifest has been created for "Test study"
     When I fill in "File to upload" with the file "test/data/test_blank_wells.csv"
