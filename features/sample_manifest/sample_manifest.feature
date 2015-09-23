@@ -31,7 +31,7 @@ Feature: Sample manifest
     And I select "default layout" from "Template"
     And the plate barcode service is available with barcodes "1..4"
     And I fill in the field labeled "Plates required" with "4"
-    And I uncheck "Print only the first label"
+    And I check "Print only the first label"
     When I press "Create manifest and print labels"
     And all pending delayed jobs are processed
     Then exactly 1 label should have been printed

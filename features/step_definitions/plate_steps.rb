@@ -6,7 +6,9 @@ Given /^the system has a plate with a barcode of "([^\"]*)"$/ do |encoded_barcod
 end
 
 Given /^exactly (\d+) labels? should have been printed/ do |expected_number|
-  assert_equal(expected_number.to_i, FakeBarcodeService.instance.printed_labels!.size)
+  message = FakeBarcodeService.instance.printed_labels!.flatten.join("")
+  barcodes = Nokogiri(message).xpath("/env:Envelope/env:Body//labels/item/barcode")
+  assert_equal(expected_number.to_i, barcodes.size)
 end
 
 Given /^the study "([^\"]+)" has a plate with barcode "([^\"]+)"$/ do |study_name, barcode|
