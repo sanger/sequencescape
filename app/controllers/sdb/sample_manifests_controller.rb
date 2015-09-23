@@ -49,20 +49,29 @@ class Sdb::SampleManifestsController < Sdb::BaseController
     @templates        = @sample_manifest.applicable_templates
   end
 
+  def printer_options(params)
+    barcode_printer_id = params[:sample_manifest][:barcode_printer]
+    barcode_printer  = BarcodePrinter.find(barcode_printer_id) unless barcode_printer_id.blank?
+    return { :barcode_printer => barcode_printer,
+             :only_first_label => (params[:sample_manifest][:only_first_label].to_i == 1) }
+  end
+
+  def template_manifest_options(params)
+    params[:sample_manifest].merge(:user => current_user, :rapid_generation => true).except!(:only_first_label, :barcode_printer)
+  end
 
   def create
-    barcode_printer_id = params[:sample_manifest].delete(:barcode_printer)
-    barcode_printer = nil
-    barcode_printer    = BarcodePrinter.find(barcode_printer_id) unless barcode_printer_id.blank?
-
     template         = SampleManifestTemplate.find(params[:sample_manifest].delete(:template))
-    only_first_label = (params[:sample_manifest].delete(:only_first_label)==true)
-    @sample_manifest = template.create!(params[:sample_manifest].merge(:user => current_user, :rapid_generation => true))
+    @sample_manifest = template.create!(template_manifest_options(params))
 
     @sample_manifest.generate
     template.generate(@sample_manifest)
+
+    printer_options = printer_options(params)
+    barcode_printer=printer_options[:barcode_printer]
+
     unless barcode_printer.nil?
-      @sample_manifest.print_labels(barcode_printer, { :only_first_label => only_first_label })
+      @sample_manifest.print_labels(barcode_printer, printer_options)
     end
 
     if !@sample_manifest.manifest_errors.empty?
