@@ -29,9 +29,11 @@ Feature: Sample manifest
     And I select "Test supplier name" from "Supplier"
     And I select "xyz" from "Barcode printer"
     And I select "default layout" from "Template"
+    And the plate barcode service is available with barcodes "1..4"
     And I fill in the field labeled "Plates required" with "4"
     And I uncheck "Print only the first label"
     When I press "Create manifest and print labels"
+    And all pending delayed jobs are processed
     Then exactly 1 label should have been printed
 
   Scenario: Create a plate manifest and print all the barcodes when deselecting option Only First Label
@@ -42,9 +44,11 @@ Feature: Sample manifest
     And I select "Test supplier name" from "Supplier"
     And I select "xyz" from "Barcode printer"
     And I select "default layout" from "Template"
+    And the plate barcode service is available with barcodes "1..4"
     And I fill in the field labeled "Plates required" with "4"
     And I uncheck "Print only the first label"
     When I press "Create manifest and print labels"
+    And all pending delayed jobs are processed
     Then exactly 4 labels should have been printed
 
   Scenario: Create a plate manifest and print all the barcodes
@@ -55,8 +59,10 @@ Feature: Sample manifest
     And I select "Test supplier name" from "Supplier"
     And I select "xyz" from "Barcode printer"
     And I select "default layout" from "Template"
+    And the plate barcode service is available with barcodes "1..4"
     And I fill in the field labeled "Plates required" with "4"
     When I press "Create manifest and print labels"
+    And all pending delayed jobs are processed
     Then exactly 4 labels should have been printed
 
 
