@@ -86,6 +86,10 @@ class FakeBarcodeService < FakeSinatraService
     printer_responses.shift || good_printer_response
   end
 
+  def each_message_with_index!(&block)
+    printed_labels!.each_with_index {|message, index| yield message.join(""), index }
+  end
+
   def push_printing_error
     printer_responses.push(%Q{
       <?xml version="1.0"?>
