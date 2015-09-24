@@ -23,7 +23,7 @@ class Asset < ActiveRecord::Base
   end
 
 
-  SAMPLE_PARTIAL = '_blank'
+  SAMPLE_PARTIAL = 'assets/samples_partials/blank'
 
   def sample_partial
     self.class::SAMPLE_PARTIAL

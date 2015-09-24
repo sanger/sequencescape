@@ -3,10 +3,6 @@
 #Copyright (C) 2007-2011 Genome Research Ltd.%>
 <h2>QC Results</h2>
 
-<h3>Samples</h3>
-<%= render :partial => "plate_with_samples", :locals => { :plate => @plate } %>
-
-
 <h3>Concentration</h3>
 <%= render :partial => "qc_table", :locals => { :plate => @plate, :qc_type => "concentration" } %>
 
