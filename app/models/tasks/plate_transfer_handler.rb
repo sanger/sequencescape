@@ -56,7 +56,7 @@ module Tasks::PlateTransferHandler
   private :unsuitable_wells?
 
   def do_plate_transfer_task(task,params)
-    target_plate.transition_to('passed') unless target_plate.state=='passed'
+    target_plate.transition_to('passed',current_user) unless target_plate.state=='passed'
     true
   end
 
