@@ -7,14 +7,14 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
   end
 
   def transition_to(tube, state, user, _ = nil, customer_accepts_responsibility = false)
+    orders = Set.new
     target_requests(tube).each do |request|
       request.customer_accepts_responsibility! if customer_accepts_responsibility
       to_state = request_state(request,state)
       request.transition_to(to_state) unless to_state.nil?
-
-      ## Here should be the event
-      BroadcastEvent::LibraryComplete.create!(:seed=>tube,:user=>user,:properties=>{:order_id=>request.order.id})
+      orders << request.order.id unless request.is_a?(TransferRequest)
     end
+    generate_events_for(tube,orders,user) if state == 'qc_complete'
   end
 
   def target_requests(tube)
@@ -40,5 +40,12 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
     {'cancelled' =>'cancelled','failed' => 'failed','qc_complete' => 'passed'}
   end
   private :mappings
+
+  def generate_events_for(tube,orders,user)
+    orders.each do |order_id|
+      BroadcastEvent::LibraryComplete.create!(:seed=>tube,:user=>user,:properties=>{:order_id=>order_id})
+    end
+  end
+  private :generate_events_for
 
 end
