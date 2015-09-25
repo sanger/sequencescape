@@ -6,11 +6,11 @@ Given /^the system has a plate with a barcode of "([^\"]*)"$/ do |encoded_barcod
 end
 
 Given /^exactly (\d+) labels? should have been printed/ do |expected_number|
-  barcodes = []
-  FakeBarcodeService.instance.each_message_with_index! do |message, index|
-    barcodes += Nokogiri(message).xpath("/env:Envelope/env:Body//labels/item/barcode/text()").map(&:to_s)
-  end
-  assert_equal(expected_number.to_i, barcodes.uniq.size)
+  assert_equal(expected_number.to_i, FakeBarcodeService.instance.printed_barcodes!.size)
+end
+
+Given /^exactly (\d+) barcodes? different should have been sent to print/ do |expected_number|
+  assert_equal(expected_number.to_i, FakeBarcodeService.instance.printed_barcodes!.uniq.size)
 end
 
 Given /^the study "([^\"]+)" has a plate with barcode "([^\"]+)"$/ do |study_name, barcode|
