@@ -86,6 +86,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
               :request_options  => @request_options,
               :submission       => @xs_mpx_submission
             )
+            @xs_mpx_submission.orders << @order_b
             @xs_mpx_submission.save!
           end
 
@@ -97,7 +98,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
 
             context 'multiple requests' do
               setup do
-                 @xs_mpx_submission.process!
+                @xs_mpx_submission.process!
               end
 
               should_change("Request.count", :by => (16+8)) { Request.count }
