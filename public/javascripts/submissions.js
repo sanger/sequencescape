@@ -1,6 +1,6 @@
 //This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 //Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-//Copyright (C) 2011,2012,2013 Genome Research Ltd.
+//Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
 // Submission workflow jQuery Plugin...
 (function(window, $, undefined){
   "use strict";
@@ -289,11 +289,13 @@
 
     newOrder.find('.cross_study').bind('change',function(e){
       newOrder.find('.study_id').prop('disabled',this.checked);
+      newOrder.find('.study_id option:eq(0)').prop('selected',true);
       validateOrder(e);
     })
 
     newOrder.find('.cross_project').bind('change',function(e){
       newOrder.find('.submission_project_name').prop('disabled',this.checked);
+      newOrder.find('.submission_project_name').prop('value',null);
       validateOrder(e);
     })
         // if this is not a sequencing order remove the lanes_of_sequencing_required stuff
