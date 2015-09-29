@@ -1451,3 +1451,10 @@ ul.options li {
   margin:0.3em;
 }
 
+.hidden {
+  display: none;
+}
+.shown-button {
+  cursor: pointer;
+  float: right;
+}

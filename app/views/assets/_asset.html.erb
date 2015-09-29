@@ -1,6 +1,38 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2015 Genome Research Ltd.%>
-<div class="columnize">
+<div>
 <div class="info"><%= render :partial => 'asset_summary', :locals => {:asset => @asset} %></div>
+<div class="info"><%= render :partial => @asset.sample_partial, :locals => {:asset => @asset} %></div>
 </div>
+
+<script type="text/javascript">
+(function($) {
+  function applyCollapseDataConfig(link) {
+    var tableId = link.data("collapse-element-id");
+    var table = $(document.getElementById(tableId));
+
+    if (!!link.data("hidden") == false) {
+      table.removeClass("hidden");
+      link.text("Hide")
+    } else {
+      table.addClass("hidden");
+      link.text("Show")
+    }
+  }
+
+  $(document).ready(function() {
+    $("a[data-collapse-element-id]").each(function(pos, link) {
+      applyCollapseDataConfig($(link));
+    });
+
+    $("a[data-collapse-element-id]").click(function(e) {
+      var link = $(e.target);
+      link.data("hidden", !link.data("hidden"));
+      applyCollapseDataConfig(link);
+      e.preventDefault();
+    });
+  });
+}(jQuery));
+</script>
+

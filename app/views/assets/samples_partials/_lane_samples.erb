@@ -4,7 +4,12 @@
 
 <h3>SAMPLES</h3>
 
- <table width="100%" cellspacing="0" cellpadding="0" class="sortable">
+<div class="help">
+  This asset has <%= @asset.aliquots.count %> samples.
+  <a data-collapse-element-id="lanes-table" data-hidden="false" class="shown-button">Collapse</a>
+</div>
+
+ <table id="lanes-table" width="100%" cellspacing="0" cellpadding="0" class="sortable">
   <colgroup>
     <col class="npg_aliquot_index">
   </colgroup>
