@@ -39,7 +39,6 @@ Feature: Interacting with samples through the API
           "new_name_format": true,
 
           "replicate": null,
-          "reference_genome": "",
           "organism": null,
           "sample_strain_att": null,
           "ethnicity": null,
@@ -97,7 +96,6 @@ Feature: Interacting with samples through the API
             "sample_tubes": "http://localhost:3000/0_5/samples/00000000-1111-2222-3333-444444444444/sample_tubes",
 
             "replicate": null,
-            "reference_genome": "",
             "organism": null,
             "sample_strain_att": null,
             "ethnicity": null,
@@ -152,7 +150,6 @@ Feature: Interacting with samples through the API
             "sample_tubes": "http://localhost:3000/0_5/samples/00000000-1111-2222-3333-444444444444/sample_tubes",
 
             "replicate": null,
-            "reference_genome": "",
             "organism": null,
             "sample_strain_att": null,
             "ethnicity": null,
@@ -200,7 +197,6 @@ Feature: Interacting with samples through the API
           "sample_tubes": "http://localhost:3000/0_5/samples/00000000-1111-2222-3333-444444444444/sample_tubes",
 
           "replicate": null,
-          "reference_genome": "",
           "organism": null,
           "sample_strain_att": null,
           "ethnicity": null,
@@ -248,7 +244,6 @@ Feature: Interacting with samples through the API
         "sample": {
           "uuid": "00000000-1111-2222-3333-444444444444",
           "name": "sample_testing_the_json_api",
-          "reference_genome": "Homo_sapiens (GRCh37_53)",
           "sample_tubes": "http://localhost:3000/0_5/samples/00000000-1111-2222-3333-444444444444/sample_tubes",
 
           "replicate": null,
@@ -304,7 +299,6 @@ Feature: Interacting with samples through the API
         "sample": {
           "uuid": "UUID-1234567890",
           "name": "sample_testing_the_json_api",
-          "reference_genome": "Homo_sapiens (GRCh37_53)",
           "sample_tubes": "http://localhost:3000/0_5/samples/UUID-1234567890/sample_tubes",
 
           "replicate": null,

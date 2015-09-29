@@ -208,7 +208,7 @@ Feature: Access transfer templates through the API
       And the UUID for the plate "Destination plate" is "11111111-2222-3333-4444-000000000002"
       And transfers between "Stock plate" and "Child plate purpose" plates are done by "Transfer" requests
 
-    Given "A1-B1" of the plate "Source plate" have been submitted to "Pulldown WGS - HiSeq Paired end sequencing"
+    Given "A1-B1" of the plate "Source plate" are part of the same submission
 
     When I make an authorised POST with the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
       """
@@ -256,7 +256,7 @@ Feature: Access transfer templates through the API
       And the UUID for the plate "Destination plate" is "11111111-2222-3333-4444-000000000002"
       And transfers between "Stock plate" and "Child plate purpose" plates are done by "Transfer" requests
 
-    Given "A1-B1" of the plate "Source plate" have been submitted to "Pulldown WGS - HiSeq Paired end sequencing"
+    Given "A1-B1" of the plate "Source plate" are part of the same submission
 
     When I make an authorised POST with the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
       """

@@ -161,6 +161,10 @@ Factory.define :submission_workflow, :class => Submission::Workflow do |p|
   p.item_label  "library"
 end
 
+Factory.define :submission do |s|
+  s.user  {|user| user.association(:user) }
+end
+
 Factory.define :submission_template do |submission_template|
   submission_template.submission_class_name LinearSubmission.name
   submission_template.name                  "my_template"
@@ -205,6 +209,13 @@ Factory.define :request_metadata_for_hiseq_sequencing, :parent => :request_metad
   m.fragment_size_required_to     21
   m.read_length                   100
 end
+
+# HiSeq sequencing
+Factory.define :hiseq_x_request_metadata, :parent => :request_metadata do |m|
+  m.fragment_size_required_from   1
+  m.fragment_size_required_to     21
+  m.read_length                   100
+end
 Factory.define(:request_metadata_for_hiseq_paired_end_sequencing, :parent => :request_metadata_for_hiseq_sequencing) {}
 Factory.define(:request_metadata_for_single_ended_hi_seq_sequencing, :parent => :request_metadata_for_hiseq_sequencing) {}
 
@@ -236,6 +247,10 @@ Factory.define(:request_metadata_for_illumina_b_multiplexed_library_creation, :p
 Factory.define(:request_metadata_for_illumina_c_multiplexed_library_creation, :parent => :request_metadata_for_library_manufacture) {}
 Factory.define(:request_metadata_for_pulldown_library_creation, :parent => :request_metadata_for_library_manufacture) {}
 Factory.define(:request_metadata_for_pulldown_multiplex_library_preparation, :parent => :request_metadata_for_library_manufacture) {}
+
+Factory.define(:request_metadata_for_illumina_a_hiseq_x_paired_end_sequencing, :parent => :hiseq_x_request_metadata) {}
+Factory.define(:request_metadata_for_illumina_b_hiseq_x_paired_end_sequencing, :parent => :hiseq_x_request_metadata) {}
+Factory.define(:request_metadata_for_hiseq_x_paired_end_sequencing, :parent => :hiseq_x_request_metadata) {}
 
 # Bait libraries
 Factory.define(:request_metadata_for_bait_pulldown, :parent => :request_metadata) do |m|
@@ -590,6 +605,9 @@ Factory.define :library_tube, :parent => :empty_library_tube do |library_tube|
 end
 Factory.define :pac_bio_library_tube do
 end
+
+Factory.define :transfer_request do
+  end
 
 # A library tube is created from a sample tube through a library creation request!
 Factory.define :full_library_tube, :parent => :library_tube do |library_tube|

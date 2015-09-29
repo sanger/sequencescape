@@ -8,8 +8,9 @@ class Transfer::BetweenTubesBySubmission < Transfer
 
   before_validation :ensure_destination_setup
   def ensure_destination_setup
+    submission_id = source.submission.id
     self.destination = source.stock_wells.flatten.first.requests_as_source.detect do |request|
-      request.library_creation? && request.target_tube
+      request.library_creation? && request.submission_id == submission_id && request.target_tube
     end.try(:target_tube)
   end
   private :ensure_destination_setup

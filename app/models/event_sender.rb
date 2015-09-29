@@ -39,6 +39,11 @@ class EventSender
     self.publishing_to_queue(hash.merge(options || {}))
   end
 
+  def self.send_pick_event(well_id, purpose_name, message, options = nil)
+    hash = { :eventful_id => well_id, :eventful_type => 'Asset', :family => PlatesHelper::event_family_for_pick(purpose_name), :message => message }
+    self.publishing_to_queue(hash.merge(options || {}))
+  end
+
   private
 
   def self.publishing_to_queue(hash = {})
