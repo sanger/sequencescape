@@ -19,6 +19,10 @@ Given /^the plate barcode printing service will error$/ do
 end
 
 
+Given /^the plate barcode service is available with barcodes "([1-9][0-9]*)\.\.([1-9][0-9]*)"$/ do |start, finish|
+  (start.to_i..finish.to_i).each { |i| step(%Q{the plate barcode webservice returns "#{i}"}) }
+end
+
 Given /^the plate barcode webservice returns "([1-9][0-9]*)\.\.([1-9][0-9]*)"$/ do |start, finish|
   (start.to_i..finish.to_i).each { |i| step(%Q{the plate barcode webservice returns "#{i}"}) }
 end
