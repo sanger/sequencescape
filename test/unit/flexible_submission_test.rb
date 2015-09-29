@@ -130,10 +130,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
           context "On pooled assets" do
             setup do
               @pooled = Factory :cross_pooled_well
-            end
-
-            should 'work' do
-              sub = FlexibleSubmission.build!(
+              @sub = FlexibleSubmission.build!(
                 :study            => nil,
                 :project          => nil,
                 :workflow         => @workflow,
@@ -142,8 +139,14 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
                 :request_types    => @request_type_ids,
                 :request_options  => @request_options
               )
-              sub.process!
+              @sub.process!
             end
+
+             should_change("Request.count", :by => (1+8)) { Request.count }
+
+             should 'not set request study or projects' do
+              assert @sub.requests.all? {|r| r.initial_study_id.nil? && r.initial_project_id.nil? }
+             end
           end
 
         end
