@@ -284,11 +284,11 @@ class BulkSubmission < ActiveRecord::Base
       # reused. This is a common cause of submission problems.
 
       # Locate either the assets by name or ID, or find the plate and it's well
-      if not details['barcode'].blank? and not details['plate well'].blank?
+      if is_plate?(details)
 
         found_assets = find_wells_for!(details)
       # We've probably got a tube
-      elsif not details['barcode'].blank? and details['plate well'].blank?
+      elsif is_tube?(details)
 
         found_assets = find_tubes_for!(details)
 
@@ -329,6 +329,14 @@ class BulkSubmission < ActiveRecord::Base
       errors.add :spreadsheet, "There was a problem on row(s) #{details['rows']}: #{exception.message}"
       nil
     end
+  end
+
+  def is_plate?(details)
+    details['barcode'].present? and details['plate well'].present?
+  end
+
+  def is_tube?(details)
+    details['barcode'].present? and details['plate well'].blank?
   end
 
   def find_wells_for!(details)
