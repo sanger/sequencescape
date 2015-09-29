@@ -348,9 +348,9 @@ class BulkSubmission < ActiveRecord::Base
     prefix = BarcodePrefix.find_by_prefix(match[1]) or raise StandardError, "Cannot find barcode prefix #{match[1].inspect} for #{details['rows']}"
     plate  = Plate.find_by_barcode_prefix_id_and_barcode(prefix.id, match[2]) or raise StandardError, "Cannot find plate with barcode #{barcode} for #{details['rows']}"
 
-    wells, well_locations = [], well_list.map(&:strip)
-    plate.wells.walk_in_column_major_order { |well, _| wells << well if well_locations.include?(well.map.description) }
-    raise StandardError, "Too few wells found for #{details['rows']}: #{wells.map(&:map).map(&:description).inspect}" if wells.size != well_locations.size
+    well_locations = well_list.map(&:strip)
+    wells = plate.wells.located_at(well_locations)
+    raise StandardError, "Too few wells found for #{details['rows']}: #{wells.map(&:map).map(&:description).inspect}" if wells.length != well_locations.size
     attributes[:assets] = wells
   end
 
