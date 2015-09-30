@@ -23,6 +23,10 @@ Factory.sequence :sample_name do |n|
   "Sample#{n}"
 end
 
+Factory.sequence :product_name do |n|
+  "Product#{n}"
+end
+
 Factory.sequence :keys do |n|
   "Key #{n}"
 end
@@ -130,6 +134,11 @@ end
 
 Factory.define :budget_division do |bd|
  bd.name { |a| Factory.next :budget_division_name }
+end
+
+Factory.define :product do |product|
+  product.name            { Factory.next :product_name }
+  product.deprecated_at   nil
 end
 
 Factory.define :project_metadata, :class => Project::Metadata do |m|

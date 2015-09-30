@@ -10,6 +10,7 @@ class SubmissionTemplate < ActiveRecord::Base
 
   validates_presence_of :name
   validates_presence_of :submission_class_name
+  validates_presence_of :product
 
   serialize :submission_parameters
 
@@ -20,6 +21,7 @@ class SubmissionTemplate < ActiveRecord::Base
 
   has_many   :supercedes,    :class_name => 'SubmissionTemplate', :foreign_key => :superceded_by_id
   belongs_to :superceded_by, :class_name => 'SubmissionTemplate', :foreign_key => :superceded_by_id
+  belongs_to :product, :inverse_of => :submission_templates
 
   LATEST_VERSION = -1
   SUPERCEDED_BY_UNKNOWN_TEMPLATE = -2

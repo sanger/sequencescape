@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150729125715) do
+ActiveRecord::Schema.define(:version => 20150930112659) do
 
   create_table "aliquot_indices", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
@@ -887,6 +887,13 @@ ActiveRecord::Schema.define(:version => 20150729125715) do
     t.string "name", :null => false
   end
 
+  create_table "products", :force => true do |t|
+    t.string   "name",          :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "deprecated_at"
+  end
+
   create_table "project_managers", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -1482,6 +1489,7 @@ ActiveRecord::Schema.define(:version => 20150729125715) do
     t.integer  "product_line_id"
     t.integer  "superceded_by_id",      :default => -1, :null => false
     t.datetime "superceded_at"
+    t.integer  "product_id",            :default => 2
   end
 
   add_index "submission_templates", ["name", "superceded_by_id"], :name => "name_and_superceded_by_unique_idx", :unique => true
