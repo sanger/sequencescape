@@ -178,6 +178,7 @@ Factory.define :submission_template do |submission_template|
   submission_template.submission_class_name LinearSubmission.name
   submission_template.name                  "my_template"
   submission_template.submission_parameters({ :workflow_id => 1, :request_type_ids_list => [] })
+  submission_template.product  {|product| product.association(:product) }
 end
 Factory.define :order_template, :class => SubmissionTemplate do |submission_template|
   submission_template.submission_class_name LinearSubmission.name
