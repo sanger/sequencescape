@@ -8,6 +8,7 @@ class Product < ActiveRecord::Base
   validates_uniqueness_of :name, :scope => :deprecated_at
   before_destroy :prevent_destruction
   has_many :submission_templates, :inverse_of => :product
+  has_many :requests
 
   named_scope :active, :conditions => { :deprecated_at => nil }
 

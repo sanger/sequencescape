@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150930112659) do
+ActiveRecord::Schema.define(:version => 20150930160847) do
 
   create_table "aliquot_indices", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
@@ -1126,6 +1126,7 @@ ActiveRecord::Schema.define(:version => 20150930112659) do
     t.integer  "priority",                         :default => 0
     t.string   "sti_type"
     t.integer  "order_id"
+    t.integer  "product_id"
   end
 
   add_index "requests", ["asset_id"], :name => "index_requests_on_asset_id"
