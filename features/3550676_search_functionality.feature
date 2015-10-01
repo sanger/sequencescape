@@ -33,12 +33,12 @@ Feature: Searching sequencescape
     And I should see "No results"
 
   Scenario: Searching for everything
-    When I fill in "Search for" with "My"
+    When I fill in "Search for" with "This"
     And I press "Go"
     Then I should be on the search page
     And the search results I should see are:
-      | section |   result    |
-      | project | My Project  |
-      | study   | My Study    |
-      | sample  | SampleForMy |
-      | asset   | My Asset    |
+      | section |   result      |
+      | project | This Project  |
+      | study   | This Study    |
+      | sample  | SampleForThis |
+      | asset   | This Asset    |
