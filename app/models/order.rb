@@ -76,6 +76,7 @@ class Order < ActiveRecord::Base
 
   def cross_study_allowed; false; end
   def cross_project_allowed; false; end
+  def cross_compatible?; false; end
 
   def no_consent_withdrawl
     return true unless all_samples.detect(&:consent_withdrawn?)

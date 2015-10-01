@@ -71,6 +71,14 @@ class FakeBarcodeService < FakeSinatraService
     labels
   end
 
+  def printed_barcodes!()
+    barcodes = []
+    each_message_with_index! do |message, index|
+      barcodes += Nokogiri(message).xpath("/env:Envelope/env:Body//labels/item/barcode/text()").map(&:to_s)
+    end
+    barcodes
+  end
+
   def clear_printed_labels!()
     @printed_labels=[]
   end
@@ -84,6 +92,10 @@ class FakeBarcodeService < FakeSinatraService
 
   def printer_response
     printer_responses.shift || good_printer_response
+  end
+
+  def each_message_with_index!(&block)
+    printed_labels!.each_with_index {|message, index| yield message.join(""), index }
   end
 
   def push_printing_error

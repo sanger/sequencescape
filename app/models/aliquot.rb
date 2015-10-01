@@ -25,6 +25,8 @@ class Aliquot < ActiveRecord::Base
       nil
     end
 
+    SAMPLE_PARTIAL = 'assets/samples_partials/asset_samples'
+
     # A receptacle can hold many aliquots.  For example, a multiplexed library tube will contain more than
     # one aliquot.
     has_many :aliquots, :foreign_key => :receptacle_id, :autosave => true, :dependent => :destroy, :inverse_of => :receptacle, :include => [:tag,:tag2], :order => 'tag2s_aliquots.map_id ASC, tags.map_id ASC'

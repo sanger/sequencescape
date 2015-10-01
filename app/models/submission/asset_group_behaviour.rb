@@ -40,6 +40,7 @@ module Submission::AssetGroupBehaviour
 
   # NOTE: We cannot name this method 'create_asset_group' because that's provided by 'has_one :asset_group'!
   def create_our_asset_group
+    return nil if self.study.nil? && cross_study_allowed
     group_name = self.asset_group_name
     group_name = self.uuid if asset_group_name.blank?
 
