@@ -30,6 +30,29 @@ class Submission::PresenterSkeleton
     lanes_from_request_counting
   end
 
+  def cross_compatible?
+  end
+
+  def order_studies
+    if order.study
+      yield(order.study.name, order.study)
+    else # Cross study
+      Study.in_assets(order.all_assets).each do |study|
+        yield(study.name,study)
+      end
+    end
+  end
+
+  def order_projects
+    if order.project
+      yield(order.project.name, order.project)
+    else # Cross Project
+      Project.in_assets(order.all_assets).each do |project|
+        yield(project.name,project)
+      end
+    end
+  end
+
   def lanes_from_request_options
     return order.request_options.fetch(:multiplier, {}).values.last||1 if order.request_types[-2].nil?
 

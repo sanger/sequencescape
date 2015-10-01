@@ -13,6 +13,10 @@
     <h3>Study</h3>
     <%= form.label :study_id, "Study:" %>
     <%= studies_select(form, @presenter.studies) %>
+    <div class='cross-compatible'>
+      <%= form.label    :cross_study, 'This is a cross-study pool' %>
+      <%= form.check_box :cross_study, :class=>'cross_study' %>
+    </div>
   </li>
 
   <li class="assets asset_group_selector">
@@ -81,6 +85,10 @@
       :placeholder => "enter the first few characters of the financial project name",
       :disabled    => true
     %>
+    <div class='cross-compatible'>
+      <%= form.label    :cross_project, 'This is a cross-project pool' %>
+      <%= form.check_box :cross_project, :class=>'cross_project' %>
+    </div>
   </li>
 
   <li>

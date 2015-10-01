@@ -10,12 +10,16 @@
 
   <h4>
     Study:
-    <%= link_to(order.study.name, order.study, :target => "_blank") %>
+    <% presenter.order_studies do |name,study| %>
+      <%= link_to(name, study, :target => "_blank") %>
+    <% end %>
   </h4>
 
   <h4>
     Project:
-    <%= link_to(order.project.name, order.project, :target => "_blank") %>
+    <% presenter.order_projects do |name,project| %>
+      <%= link_to(name, project, :target => "_blank") %>
+    <% end %>
   </h4>
 
   <% if order.asset_group.present? -%>
