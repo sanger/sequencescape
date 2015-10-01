@@ -22,6 +22,13 @@ class Asset < ActiveRecord::Base
   class VolumeError< StandardError
   end
 
+
+  SAMPLE_PARTIAL = 'assets/samples_partials/blank'
+
+  def sample_partial
+    self.class::SAMPLE_PARTIAL
+  end
+
   cattr_reader :per_page
   @@per_page = 500
   self.inheritance_column = "sti_type"
