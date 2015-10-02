@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150930160847) do
+ActiveRecord::Schema.define(:version => 20151001152659) do
 
   create_table "aliquot_indices", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
@@ -705,6 +705,7 @@ ActiveRecord::Schema.define(:version => 20150930160847) do
     t.integer  "submission_id"
     t.integer  "pre_cap_group"
     t.integer  "order_role_id"
+    t.integer  "product_id"
   end
 
   add_index "orders", ["state_to_delete"], :name => "index_submissions_on_state"
@@ -883,9 +884,27 @@ ActiveRecord::Schema.define(:version => 20150930160847) do
     t.datetime "updated_at"
   end
 
+  create_table "product_catalogues", :force => true do |t|
+    t.string   "name",                                             :null => false
+    t.string   "selection_behaviour", :default => "SingleProduct", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "product_lines", :force => true do |t|
     t.string "name", :null => false
   end
+
+  create_table "product_product_catalogues", :force => true do |t|
+    t.integer  "product_id",           :null => false
+    t.integer  "product_catalogue_id", :null => false
+    t.string   "selection_criterion"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "product_product_catalogues", ["product_catalogue_id"], :name => "fk_product_product_catalogues_to_product_catalogues"
+  add_index "product_product_catalogues", ["product_id"], :name => "fk_product_product_catalogues_to_products"
 
   create_table "products", :force => true do |t|
     t.string   "name",          :null => false
@@ -1126,7 +1145,6 @@ ActiveRecord::Schema.define(:version => 20150930160847) do
     t.integer  "priority",                         :default => 0
     t.string   "sti_type"
     t.integer  "order_id"
-    t.integer  "product_id"
   end
 
   add_index "requests", ["asset_id"], :name => "index_requests_on_asset_id"
@@ -1490,10 +1508,11 @@ ActiveRecord::Schema.define(:version => 20150930160847) do
     t.integer  "product_line_id"
     t.integer  "superceded_by_id",      :default => -1, :null => false
     t.datetime "superceded_at"
-    t.integer  "product_id",            :default => 2
+    t.integer  "product_catalogue_id"
   end
 
   add_index "submission_templates", ["name", "superceded_by_id"], :name => "name_and_superceded_by_unique_idx", :unique => true
+  add_index "submission_templates", ["product_catalogue_id"], :name => "fk_submission_templates_to_product_catalogues"
 
   create_table "submission_workflows", :force => true do |t|
     t.string   "key",        :limit => 50

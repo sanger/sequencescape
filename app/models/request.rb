@@ -104,7 +104,6 @@ class Request < ActiveRecord::Base
   belongs_to :item
 
   has_many :failures, :as => :failable
-  belongs_to :product
 
   belongs_to :request_type, :inverse_of => :requests
   delegate :billable?, :to => :request_type, :allow_nil => true
