@@ -13,7 +13,6 @@ Feature: Searching sequencescape
     When I fill in "Search for" with "<search>"
     And I press "Go"
     Then I should be on the search page
-    Then show me the page
     And I should see "1 <type>"
     And I should see "<result>"
 
