@@ -43,29 +43,39 @@ module Accessionable
      @sample.id
     end
 
+    def sample_element_attributes
+      # In case the accession number is defined, we won't send the alias
+      {
+        :alias => self.alias,
+        :accession => self.accession_number
+      }.tap do |obj|
+        delete obj[:alias] unless self.accession_number.blank?
+      end
+    end
+
     def xml
-    xml = Builder::XmlMarkup.new
-    xml.instruct!
-    xml.SAMPLE_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
-      xml.SAMPLE(:alias => self.alias, :accession => self.accession_number) {
-        xml.SAMPLE_NAME {
-          xml.COMMON_NAME  self.common_name
-          xml.TAXON_ID     self.taxon_id
+      xml = Builder::XmlMarkup.new
+      xml.instruct!
+      xml.SAMPLE_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
+        xml.SAMPLE(sample_element_attributes) {
+          xml.SAMPLE_NAME {
+            xml.COMMON_NAME  self.common_name
+            xml.TAXON_ID     self.taxon_id
+          }
+          xml.SAMPLE_ATTRIBUTES {
+            self.tags.each do |tag|
+              xml.SAMPLE_ATTRIBUTE {
+                tag.build(xml)
+              }
+            end
+          } unless self.tags.blank?
+
+          xml.SAMPLE_LINKS {
+
+          } unless self.links.blank?
         }
-        xml.SAMPLE_ATTRIBUTES {
-          self.tags.each do |tag|
-            xml.SAMPLE_ATTRIBUTE {
-              tag.build(xml)
-            }
-          end
-        } unless self.tags.blank?
-
-        xml.SAMPLE_LINKS {
-
-        } unless self.links.blank?
       }
-    }
-    return xml.target!
+      return xml.target!
     end
 
     def update_accession_number!(user, accession_number)
