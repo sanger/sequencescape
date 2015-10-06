@@ -14,17 +14,17 @@ class AddProductToExistingOrdersByRole < ActiveRecord::Migration
   end
 
   ORDER_ROLE_PRODUCT = {
-    'PATH'    => 'PWGS',
-    'ILB PATH'    => 'PWGS',
-    'HWGS'    => 'MWGS',
-    'ILB HWGS'    => 'MWGS',
-    'ILA ISC' => 'ISC',
-    'ILA WGS' => 'MWGS',
-    'HSqX'    => 'HSqX',
-    'ReISC'   => 'ReISC',
-    'PWGS'    => 'PWGS',
-    'MWGS'    => 'MWGS',
-    'ISC'     => 'ISC'
+    'PATH'     => 'PWGS',
+    'ILB PATH' => 'PWGS',
+    'HWGS'     => 'MWGS',
+    'ILB HWGS' => 'MWGS',
+    'ILA ISC'  => 'ISC',
+    'ILA WGS'  => 'MWGS',
+    'HSqX'     => 'HSqX',
+    'ReISC'    => 'ReISC',
+    'PWGS'     => 'PWGS',
+    'MWGS'     => 'MWGS',
+    'ISC'      => 'ISC'
   }
 
   def self.up

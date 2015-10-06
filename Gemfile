@@ -88,7 +88,7 @@ group :test do
   # bundler requires these gems while running tests
   # gem "ci_reporter",
   #   :github => "sanger/ci_reporter"
-  gem "factory_girl", '~>1.3.1', :require => false
+  gem "factory_girl", '~>1.3.3', :require => false
   gem "launchy", :require => false
   gem "mocha", :require => false # avoids load order problems
   gem "nokogiri", :require => false

@@ -31,11 +31,11 @@ Given /^I have an order created with the following details based on the template
 end
 
 Given /^an order template with UUID "([^"]+)" exists$/ do |uuid_value|
-  set_uuid_for(Factory(:order_template), uuid_value)
+  set_uuid_for(Factory(:submission_template), uuid_value)
 end
 
 Given /^an order template called "([^\"]+)" with UUID "([^"]+)"$/ do |name, uuid_value|
-  set_uuid_for(Factory(:order_template, :name => name), uuid_value)
+  set_uuid_for(Factory(:submission_template, :name => name), uuid_value)
 end
 
 Given /^the UUID for the order template "([^\"]+)" is "([^\"]+)"$/ do |name,uuid_value|

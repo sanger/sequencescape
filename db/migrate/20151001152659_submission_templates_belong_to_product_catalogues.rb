@@ -8,7 +8,7 @@ class SubmissionTemplatesBelongToProductCatalogues < ActiveRecord::Migration
 
 
   def self.up
-    add_column :submission_templates, :product_catalogue_id, :integer, :null => :false
+    add_column :submission_templates, :product_catalogue_id, :integer
     add_constraint('submission_templates','product_catalogues')
   end
 

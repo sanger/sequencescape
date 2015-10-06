@@ -140,22 +140,7 @@ ActiveRecord::Base.transaction do
       submission.info_differential = workflow.id
       submission.workflow          = workflow
       submission.request_options   = defaults
-
-      st = SubmissionTemplate.new_from_submission(
-        "Illumina-B - Cherrypicked - #{request_type_options[:name]} - #{sequencing_request_type.name.gsub(/Illumina-[ABC] /,'')}",
-        submission
-      )
-      st.submission_parameters.merge!({:order_role_id=>Order::OrderRole.find_or_create_by_role(request_type_options[:label]).id}) unless request_type_options[:label].nil?
-      st.save!
-
       submission.request_type_ids  = [ pulldown_request_types.map(&:id), sequencing_request_type.id ].flatten
-
-      st = SubmissionTemplate.new_from_submission(
-        "Illumina-B - #{request_type_options[:name]} - #{sequencing_request_type.name.gsub(/Illumina-[ABC] /,'')}",
-        submission
-      )
-      st.submission_parameters.merge!({:order_role_id=>Order::OrderRole.find_or_create_by_role(request_type_options[:label]).id}) unless request_type_options[:label].nil?
-      st.save!
     end
   end
 
@@ -174,21 +159,8 @@ ActiveRecord::Base.transaction do
       submission.workflow          = workflow
       submission.request_options   = defaults
 
-      st = SubmissionTemplate.new_from_submission(
-        "Illumina-A - Cherrypicked - #{request_type_options[:name]} - #{sequencing_request_type.name.gsub(/Illumina-[ABC] /,'')}",
-        submission
-      )
-      st.submission_parameters.merge!({:order_role_id=>Order::OrderRole.find_or_create_by_role(request_type_options[:label]).id})
-      st.save!
-
       submission.request_type_ids  = [ pulldown_request_types.map(&:id), sequencing_request_type.id ].flatten
 
-      st = SubmissionTemplate.new_from_submission(
-        "Illumina-A - #{request_type_options[:name]} - #{sequencing_request_type.name.gsub(/Illumina-[ABC] /,'')}",
-        submission
-      )
-       st.submission_parameters.merge!({:order_role_id=>Order::OrderRole.find_or_create_by_role(request_type_options[:label]).id})
-      st.save!
     end
   end
   IlluminaHtp::PlatePurposes::STOCK_PLATE_PURPOSE_TO_OUTER_REQUEST.each do |purpose,request|
@@ -210,29 +182,6 @@ re_request = RequestType.create!(
     rt.acceptable_plate_purposes << PlatePurpose.find_by_name!('Lib PCR-XP')
      RequestType::Validator.create!(:request_type=>rt, :request_option=> "library_type", :valid_options=>RequestType::Validator::LibraryTypeValidator.new(rt.id))
   end
-  [
-    'illumina_a_hiseq_paired_end_sequencing',
-    'illumina_a_single_ended_hi_seq_sequencing',
-    'illumina_a_hiseq_2500_paired_end_sequencing',
-    'illumina_a_hiseq_2500_single_end_sequencing',
-    'illumina_a_miseq_sequencing',
-    'illumina_a_hiseq_v4_paired_end_sequencing',
-    'illumina_a_hiseq_x_paired_end_sequencing'
-  ].each do |sequencing_key|
-      sequencing_request = RequestType.find_by_key!(sequencing_key)
-      SubmissionTemplate.create!(
-          :name => "ISC Repool - #{sequencing_request.name.gsub('Illumina-A ','')}",
-          :submission_class_name => 'LinearSubmission',
-          :submission_parameters => {
-            :request_type_ids_list => [[re_request.id],[sequencing_request.id]],
-            :workflow_id => Submission::Workflow.find_by_key('short_read_sequencing').id,
-            :order_role_id => Order::OrderRole.find_or_create_by_role('ReISC').id,
-            :request_options => {'pre_capture_plex_level'=>8}
-          },
-          :product_line => ProductLine.find_by_name('Illumina-A')
-        )
-    end
-
 
   RequestType.create!(
     :name => "Illumina-HTP Library Creation",

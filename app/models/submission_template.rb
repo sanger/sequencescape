@@ -10,18 +10,19 @@ class SubmissionTemplate < ActiveRecord::Base
 
   validates_presence_of :name
   validates_presence_of :submission_class_name
-  validates_presence_of :product
 
   serialize :submission_parameters
 
 
   has_many :orders
   belongs_to :product_line
-  belongs_to :order_role, :class_name => 'Order::OrderRole'
 
   has_many   :supercedes,    :class_name => 'SubmissionTemplate', :foreign_key => :superceded_by_id
   belongs_to :superceded_by, :class_name => 'SubmissionTemplate', :foreign_key => :superceded_by_id
-  belongs_to :product, :inverse_of => :submission_templates
+
+  belongs_to :product_catalogue, :inverse_of => :submission_templates
+  delegate :product_for, :to => :product_catalogue
+  validates_presence_of :product_catalogue
 
   LATEST_VERSION = -1
   SUPERCEDED_BY_UNKNOWN_TEMPLATE = -2
@@ -73,6 +74,7 @@ class SubmissionTemplate < ActiveRecord::Base
 
     submission_class.new(attributes).tap do |order|
       order.template_name = self.name
+      order.product = product_for(params)
       order.set_input_field_infos(infos) unless infos.nil?
     end
   end

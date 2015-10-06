@@ -33,6 +33,8 @@ class Order < ActiveRecord::Base
   belongs_to :order_role, :class_name => 'Order::OrderRole'
   delegate :role, :to => :order_role, :allow_nil => true
 
+  belongs_to :product
+
   belongs_to :user
   validates_presence_of :user
 

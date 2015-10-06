@@ -7,7 +7,7 @@ class Product < ActiveRecord::Base
   validates_presence_of :name
   validates_uniqueness_of :name, :scope => :deprecated_at
   before_destroy :prevent_destruction
-  has_many :prodyuct_product_catalogues
+  has_many :product_product_catalogues, :dependent => :destroy
   has_many :product_catalogues, :through => :product_product_catalogues
   has_many :submission_templates, :inverse_of => :product, :through => :product_catalogues
   has_many :orders

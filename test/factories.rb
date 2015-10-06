@@ -3,82 +3,6 @@
 #Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 require 'factory_girl'
 
-Factory.sequence :project_name do |n|
-  "Project #{n}"
-end
-
-Factory.sequence :study_name do |n|
-  "Study #{n}"
-end
-
-Factory.sequence :item_name do |n|
-  "Item #{n}"
-end
-
-Factory.sequence :item_version do |n|
-  n
-end
-
-Factory.sequence :sample_name do |n|
-  "Sample#{n}"
-end
-
-Factory.sequence :product_name do |n|
-  "Product#{n}"
-end
-
-Factory.sequence :keys do |n|
-  "Key #{n}"
-end
-
-Factory.sequence :barcode do |n|
-  "DN#{n}"
-end
-
-Factory.sequence :request_type_id do |n|
-  n
-end
-
-Factory.sequence :library_type_id do |n|
-  n
-end
-
-Factory.sequence :purpose_name do |n|
-  "Purpose #{n}"
-end
-
-Factory.sequence :billing_reference do |ref|
-  ref.to_s
-end
-
-Factory.sequence :asset_group_name do |n|
-  "Asset_Group #{n}"
-end
-
-Factory.sequence :pipeline_name do |n|
-  "Lab Pipeline #{n}"
-end
-
-Factory.sequence :lab_workflow_name do |n|
-  "Lab Workflow #{n}"
-end
-
-Factory.sequence :barcode_number do |n|
-  "#{n}"
-end
-
-Factory.sequence :asset_name do |n|
-  "Asset #{n}"
-end
-
-Factory.sequence :budget_division_name do |n|
-  "Budget Division#{n}"
-end
-
-Factory.sequence :faculty_sponsor_name do |n|
-  "Faculty Sponsor #{n}"
-end
-
 Factory.define :comment do |c|
   c.description
 end
@@ -136,11 +60,6 @@ Factory.define :budget_division do |bd|
  bd.name { |a| Factory.next :budget_division_name }
 end
 
-Factory.define :product do |product|
-  product.name            { Factory.next :product_name }
-  product.deprecated_at   nil
-end
-
 Factory.define :project_metadata, :class => Project::Metadata do |m|
   m.project_cost_code 'Some Cost Code'
   m.project_funding_model 'Internal'
@@ -178,12 +97,7 @@ Factory.define :submission_template do |submission_template|
   submission_template.submission_class_name LinearSubmission.name
   submission_template.name                  "my_template"
   submission_template.submission_parameters({ :workflow_id => 1, :request_type_ids_list => [] })
-  submission_template.product  {|product| product.association(:product) }
-end
-Factory.define :order_template, :class => SubmissionTemplate do |submission_template|
-  submission_template.submission_class_name LinearSubmission.name
-  submission_template.name                  "my_template"
-  submission_template.submission_parameters({ :workflow_id => 1, :request_type_ids_list => [] })
+  submission_template.product_catalogue  {|pc| pc.association(:single_product_catalogue) }
 end
 
 Factory.define :report do |r|
@@ -378,9 +292,8 @@ end
 
 
 Factory.define :request_type do |rt|
-  rt_value = Factory.next :request_type_id
-  rt.name           "Request type #{rt_value}"
-  rt.key            "request_type_#{rt_value}"
+  rt.name           { rt_value = Factory.next :request_type_id ; "Request type #{rt_value}" }
+  rt.key            {|x| x.name.methodize }
   rt.deprecated     false
   rt.asset_type     'SampleTube'
   rt.request_class  Request
@@ -401,7 +314,6 @@ Factory.define :validated_request_type, :parent => :request_type do |rt|
 end
 
 Factory.define :library_type do |lt|
-  lt_value = Factory.next :library_type_id
   lt.name    "Standard"
 end
 
@@ -415,9 +327,8 @@ Factory.define :well_request_type, :parent => :request_type do |rt|
 end
 
 Factory.define :library_creation_request_type, :class => RequestType do |rt|
-  rt_value = Factory.next :request_type_id
-  rt.name           "LC Request type #{rt_value}"
-  rt.key            "request_type_#{rt_value}"
+  rt.name           { rt_value = Factory.next :request_type_id ; "LC Request type #{rt_value}" }
+  rt.key            {|x| x.name.methodize }
   rt.asset_type     "SampleTube"
   rt.target_asset_type "LibraryTube"
   rt.request_class  LibraryCreationRequest
@@ -429,9 +340,8 @@ Factory.define :library_creation_request_type, :class => RequestType do |rt|
   }
 end
 Factory.define :sequencing_request_type, :class => RequestType do |rt|
-  rt_value = Factory.next :request_type_id
-  rt.name           "Request type #{rt_value}"
-  rt.key            "request_type_#{rt_value}"
+  rt.name           {rt_value = Factory.next :request_type_id ; "Request type #{rt_value}"}
+  rt.key            {|x| x.name.methodize }
   rt.asset_type     "LibraryTube"
   rt.request_class  SequencingRequest
   rt.order          1
@@ -452,9 +362,8 @@ Factory.define :library_request_type_validator, :class => RequestType::Validator
 end
 
 Factory.define :multiplexed_library_creation_request_type, :class => RequestType do |rt|
-  rt_value = Factory.next :request_type_id
-  rt.name               "MX Request type #{rt_value}"
-  rt.key                "request_type_#{rt_value}"
+  rt.name               {rt_value = Factory.next :request_type_id ; "MX Request type #{rt_value}" }
+  rt.key                {|x| x.name.methodize }
   rt.request_class      MultiplexedLibraryCreationRequest
   rt.asset_type         "SampleTube"
   rt.order              1
@@ -467,9 +376,8 @@ Factory.define :multiplexed_library_creation_request_type, :class => RequestType
 end
 
 Factory.define :plate_based_multiplexed_library_creation_request_type, :class => RequestType do |rt|
-  rt_value = Factory.next :request_type_id
-  rt.name               "MX Request type #{rt_value}"
-  rt.key                "request_type_#{rt_value}"
+  rt.name               {rt_value = Factory.next :request_type_id ; "MX Request type #{rt_value}" }
+  rt.key                {|x| x.name.methodize }
   rt.request_class      MultiplexedLibraryCreationRequest
   rt.asset_type         "Well"
   rt.order              1

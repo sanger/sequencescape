@@ -25,7 +25,7 @@ end
 ActiveRecord::Base.transaction do
 
   # Set the default product in the seeds
-  SubmissionTemplate.before_validation {|record| record.product ||= Product.find_or_create_by_name('Generic') }
+  SubmissionTemplate.before_validation {|record| record.product_catalogue ||= ProductCatalogue.find_by_name('Generic') }
 
   # Here is a proc that will do the seeding.
   handler = lambda do |seed_data_file|

@@ -13,4 +13,5 @@ class ProductProductCatalogue < ActiveRecord::Base
 
   validates_presence_of :product
   validates_presence_of :product_catalogue
+
 end
