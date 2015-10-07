@@ -21,6 +21,51 @@ Feature: Sample manifest
     When I follow "Sample Manifests"
     Then I should see "Create manifest for plates"
 
+  Scenario: Create a plate manifest and print just the first barcode when selecting option Only First Label
+    When I follow "Create manifest for plates"
+    Then I should see "Barcode printer"
+    When I select "Test study" from "Study"
+    And I select "default layout" from "Template"
+    And I select "Test supplier name" from "Supplier"
+    And I select "xyz" from "Barcode printer"
+    And I select "default layout" from "Template"
+    And the plate barcode service is available with barcodes "1..4"
+    And I fill in the field labeled "Plates required" with "4"
+    And I check "Print only the first label"
+    When I press "Create manifest and print labels"
+    And all pending delayed jobs are processed
+    Then exactly 1 label should have been printed
+
+  Scenario: Create a plate manifest and print all the barcodes when deselecting option Only First Label
+    When I follow "Create manifest for plates"
+    Then I should see "Barcode printer"
+    When I select "Test study" from "Study"
+    And I select "default layout" from "Template"
+    And I select "Test supplier name" from "Supplier"
+    And I select "xyz" from "Barcode printer"
+    And I select "default layout" from "Template"
+    And the plate barcode service is available with barcodes "1..4"
+    And I fill in the field labeled "Plates required" with "4"
+    And I uncheck "Print only the first label"
+    When I press "Create manifest and print labels"
+    And all pending delayed jobs are processed
+    Then exactly 4 labels should have been printed
+
+  Scenario: Create a plate manifest and print all the barcodes
+    When I follow "Create manifest for plates"
+    Then I should see "Barcode printer"
+    When I select "Test study" from "Study"
+    And I select "default layout" from "Template"
+    And I select "Test supplier name" from "Supplier"
+    And I select "xyz" from "Barcode printer"
+    And I select "default layout" from "Template"
+    And the plate barcode service is available with barcodes "1..4"
+    And I fill in the field labeled "Plates required" with "4"
+    When I press "Create manifest and print labels"
+    And all pending delayed jobs are processed
+    Then exactly 4 labels should have been printed
+
+
   Scenario: Create a plate manifest and upload a manifest file without processing it
     Given a manifest has been created for "Test study"
     When I fill in "File to upload" with the file "test/data/test_blank_wells.csv"
@@ -67,7 +112,7 @@ Feature: Sample manifest
     And I select "default tube layout" from "Template"
     And I select "Test supplier name" from "Supplier"
     And I select "xyz" from "Barcode printer"
-    And I fill in the field labeled "Count" with "10"
+    And I fill in the field labeled "Tubes required" with "10"
     When I press "Create manifest and print labels"
     Then I should see "Manifest_"
     Then I should see "Download Blank Manifest"
@@ -95,7 +140,7 @@ Feature: Sample manifest
       | Contains | Study      | Supplier           | Manifest       | Upload          | Errors | State  | Created by |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Upload manifest | Errors | Failed | john       |
     When I follow "Errors for manifest for Test study"
-    And I should see "Well info for sample_1 mismatch: expected DN1234567T B1 but reported as <barcode> <well>"
+    And I should see "You can not move samples between wells or modify barcodes: sample_1 should be in 'DN1234567T B1' but the manifest is trying to put it in '<barcode> <well>'"
 
     Scenarios:
       | filename                                 | barcode    | well |

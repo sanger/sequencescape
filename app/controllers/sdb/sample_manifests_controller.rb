@@ -1,8 +1,9 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
+#Copyright (C) 2007-2011,2011,2012,2015 Genome Research Ltd.
 class Sdb::SampleManifestsController < Sdb::BaseController
   before_filter :set_sample_manifest_id, :only => [:show, :generated]
+  before_filter :validate_type,    :only => [:new, :create]
 
   # Upload the manifest and store it for later processing
   def upload
@@ -48,18 +49,29 @@ class Sdb::SampleManifestsController < Sdb::BaseController
     @templates        = @sample_manifest.applicable_templates
   end
 
-  def create
-    barcode_printer_id = params[:sample_manifest].delete(:barcode_printer)
-    barcode_printer = nil
-    barcode_printer    = BarcodePrinter.find(barcode_printer_id) unless barcode_printer_id.blank?
+  def printer_options(params)
+    barcode_printer_id = params[:sample_manifest][:barcode_printer]
+    barcode_printer  = BarcodePrinter.find(barcode_printer_id) unless barcode_printer_id.blank?
+    return { :barcode_printer => barcode_printer,
+             :only_first_label => (params[:sample_manifest][:only_first_label].to_i == 1) }
+  end
 
+  def template_manifest_options(params)
+    params[:sample_manifest].merge(:user => current_user, :rapid_generation => true).except!(:only_first_label, :barcode_printer)
+  end
+
+  def create
     template         = SampleManifestTemplate.find(params[:sample_manifest].delete(:template))
-    @sample_manifest = template.create!(params[:sample_manifest].merge(:user => current_user, :rapid_generation => true))
+    @sample_manifest = template.create!(template_manifest_options(params))
 
     @sample_manifest.generate
     template.generate(@sample_manifest)
+
+    printer_options = printer_options(params)
+    barcode_printer=printer_options[:barcode_printer]
+
     unless barcode_printer.nil?
-      @sample_manifest.print_labels(barcode_printer)
+      @sample_manifest.print_labels(barcode_printer, printer_options)
     end
 
     if !@sample_manifest.manifest_errors.empty?
@@ -85,6 +97,16 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   private
   def set_sample_manifest_id
     @sample_manifest = SampleManifest.find(params[:id])
+  end
+
+  def validate_type
+    return true if SampleManifest.supported_asset_type?(params[:type])
+    flash[:error] = "'#{params[:type]}' is not a supported manifest type."
+    begin
+      redirect_to :back
+    rescue ActionController::RedirectBackError
+      redirect_to sample_manifests_path
+    end
   end
 
 end

@@ -27,7 +27,7 @@ Feature: Sample manifest
     And I select "default tube layout" from "Template"
     And I select "Test supplier name" from "Supplier"
     And I select "xyz" from "Barcode printer"
-    And I fill in the field labeled "Count" with "5"
+    And I fill in the field labeled "Tubes required" with "5"
     When I press "Create manifest and print labels"
     Then I should see "Manifest_"
     Then I should see "Download Blank Manifest"

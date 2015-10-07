@@ -342,9 +342,9 @@ class Sample < ActiveRecord::Base
     include_tag(:sample_strain_att)
     include_tag(:sample_description)
 
-    include_tag(:gender, :services=>:EGA)
+    include_tag(:gender, :services=>:EGA, :downcase => true)
     include_tag(:phenotype, :services=>:EGA)
-    include_tag(:donor_id, :services=>:EGA)
+    include_tag(:donor_id, :services=>:EGA, :as => 'subject_id')
 
     require_tag(:sample_taxon_id)
     require_tag(:sample_common_name)
@@ -445,5 +445,10 @@ class Sample < ActiveRecord::Base
   def withdraw_consent
     self.update_attribute(:consent_withdrawn, true)
   end
+
+  # These don't really belong here, but exist due to the close coupling between sample
+  # and its initial aliquot in the sample manifest.
+  delegate :specialized_from_manifest=, :to => :primary_receptacle
+  delegate :library_information=, :to => :primary_receptacle
 
 end

@@ -16,8 +16,12 @@ class RequestFactory
 
   def self.create_assets_requests(assets, study)
     # internal requests to link study -> request -> asset -> sample
-    # TODO: do this as a submission
     request_type = RequestType.find_by_key('create_asset') or raise StandardError, "Cannot find create asset request type"
     assets.each { |asset| request_type.create!(:study => study, :asset => asset, :state => 'passed') }
+  end
+
+  def self.create_external_multiplexed_library_creation_requests(sources,target,study)
+    request_type = RequestType.find_by_key!('external_multiplexed_library_creation')
+    sources.each { |asset| request_type.create!(:study => study, :asset => asset, :target_asset => target ) }
   end
 end

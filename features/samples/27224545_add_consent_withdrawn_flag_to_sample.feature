@@ -64,7 +64,6 @@ Feature: Patients should be able to withdraw consent
           "sample_tubes": "http://localhost:3000/0_5/samples/00000000-1111-2222-4444-444444444444/sample_tubes",
 
           "replicate": null,
-          "reference_genome": "",
           "organism": null,
           "sample_strain_att": null,
           "ethnicity": null,
@@ -107,7 +106,6 @@ Feature: Patients should be able to withdraw consent
           "sample_tubes": "http://localhost:3000/0_5/samples/00000000-1111-2222-4444-555555555555/sample_tubes",
 
           "replicate": null,
-          "reference_genome": "",
           "organism": null,
           "sample_strain_att": null,
           "ethnicity": null,

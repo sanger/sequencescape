@@ -57,6 +57,10 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
     @order = create_order
   end
 
+  def cross_compatible?
+    order.cross_compatible?
+  end
+
   def create_order
     order_role = Order::OrderRole.find_by_role(order_params.delete('order_role')) if order_params.present?
     new_order = template.new_order(
@@ -167,6 +171,14 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
       sample.wells.all(:include => :plate).detect { |well| well.plate.present? and (well.plate.plate_purpose_id == plate_purpose.id) } or
         raise InvalidInputException, "No #{plate_purpose.name} plate found with sample: #{sample.name}"
     end
+  end
+
+  def cross_project
+    false
+  end
+
+  def cross_study
+    false
   end
 
   def plate_purpose

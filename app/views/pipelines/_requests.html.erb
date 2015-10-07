@@ -24,6 +24,7 @@
         <th><%= link_to "Asset comments", "javascript:void(0);" %></th>
         <th><%= link_to "Conc", "javascript:void(0);" %></th>
         <th><%= link_to "Scanned in (Y-M-D)", "javascript:void(0);" %></th>
+        <th><%= link_to "Submitted at (Y-M-D)", "javascript:void(0);" %></th>
         <th><%= link_to "Number of tags", "javascript:void(0);" %></th>
         <% @information_types.each do |information_type| %>
           <% next if information_type.hide_in_inbox %>
@@ -79,8 +80,9 @@
             <% else -%>
               <td>&nbsp;</td>
             <% end -%>
-            <td><%=  request.asset.concentration %></td>
+            <td><%= request.asset.concentration %></td>
             <td><%= request.asset.scanned_in_date %></td>
+            <td><%= request.submitted_at %></td>
           <% else %>
             <td>&nbsp;</td>
             <td>&nbsp;</td>

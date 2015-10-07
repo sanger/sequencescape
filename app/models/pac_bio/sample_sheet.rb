@@ -42,10 +42,10 @@ class PacBio::SampleSheet
     protocol.gsub(/[^\w]/,'_')
   end
 
-  CONCAT_SEPARATOR = ';'
+  @@CONCAT_SEPARATOR = ';'
 
-  def concat(list, sym)
-    list.map(&sym).uniq.join(CONCAT_SEPARATOR)
+  def concat(list, sym, separator=@@CONCAT_SEPARATOR)
+    list.map(&sym).uniq.join(separator)
   end
 
 
@@ -63,7 +63,7 @@ class PacBio::SampleSheet
     well = requests.first.target_asset
     [
       Map.pad_description(well.map),
-      concat(library_tubes, :name),
+      concat(library_tubes, :name, '-'),
       first_tube_metadata.prep_kit_barcode,
       nil,
       first_tube_metadata.binding_kit_barcode,

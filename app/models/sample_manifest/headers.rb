@@ -18,6 +18,11 @@ module SampleManifest::Headers
     'PHENOTYPE' => 'PHENOTYPE (required for EGA)'
   }
 
+  # Used in a number of places, pulled out as not immediately obvious
+  TAG_GROUP_FIELD = 'TAG GROUP'
+  TAG2_GROUP_FIELD = 'TAG2 GROUP (Fill in for dual Index Only)'
+  TAG2_INDEX_FIELD = 'TAG2 INDEX (Fill in for dual Index Only)'
+
 
   CORE_FIELDS = [
     'SANGER PLATE ID',
@@ -25,7 +30,14 @@ module SampleManifest::Headers
     'WELL',
     'SANGER SAMPLE ID',
     'IS SAMPLE A CONTROL?',
-    'IS RE-SUBMITTED SAMPLE?'
+    'IS RE-SUBMITTED SAMPLE?',
+    TAG_GROUP_FIELD,
+    'TAG INDEX',
+    TAG2_GROUP_FIELD,
+    TAG2_INDEX_FIELD,
+    'LIBRARY TYPE',
+    'INSERT SIZE FROM',
+    'INSERT SIZE TO'
   ]
 
   METADATA_ATTRIBUTES_TO_CSV_COLUMNS = {
