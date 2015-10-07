@@ -23,6 +23,8 @@ class Lane < Aliquot::Receptacle
 
   LIST_REASONS = [""] + LIST_REASONS_NEGATIVE + LIST_REASONS_POSITIVE
 
+  SAMPLE_PARTIAL = 'assets/samples_partials/lane_samples'
+
   extend Metadata
   has_metadata do
     attribute(:release_reason, :in => LIST_REASONS)

@@ -439,6 +439,8 @@ padding-left: 12px;
   behavior: url(/stylesheets/PIE.htc);
 }
 
+table.sample_list td:first-child {text-align:right; padding-right:0.5em;}
+
 .info {
   padding-bottom: 5px;
   border-bottom: 1px solid #ccc;
@@ -448,6 +450,10 @@ padding-left: 12px;
   width:45%;
   display:inline-block;
   float:left;
+}
+
+.columnize {
+  overflow:auto;
 }
 
 .loading {
@@ -506,6 +512,9 @@ font-weight: bold;
 .sortdsc {
 font-weight: bold;
 }
+table.sortable thead tr th a { cursor: pointer;}
+table.sortable thead tr th { padding: 1px 1px 1px 1px;}
+table.sortable tbody tr td { padding: 1px 1px 1px 1px;}
 .task_list {
 list-style: none;
 margin: 0px 0px 0px 0px;
@@ -1442,3 +1451,10 @@ ul.options li {
   margin:0.3em;
 }
 
+.hidden {
+  display: none;
+}
+.shown-button {
+  cursor: pointer;
+  float: right;
+}

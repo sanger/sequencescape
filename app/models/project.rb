@@ -34,6 +34,14 @@ class Project < ActiveRecord::Base
     transitions :to => :inactive, :from => [:pending, :active]
   end
 
+  named_scope :in_assets, lambda { |assets| {
+    :select => 'DISTINCT projects.*',
+    :joins => [
+      'LEFT JOIN aliquots ON aliquots.project_id = projects.id',
+    ],
+    :conditions => ['aliquots.receptacle_id IN (?)',assets.map(&:id)]
+  }}
+
   has_many :roles, :as => :authorizable
   has_many :orders
   has_many :studies, :class_name => "Study", :through => :orders, :source => :study, :uniq => true

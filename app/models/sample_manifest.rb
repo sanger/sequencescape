@@ -7,9 +7,11 @@ class SampleManifest < ActiveRecord::Base
   include SampleManifest::BarcodePrinterBehaviour
   include SampleManifest::TemplateBehaviour
   include SampleManifest::SampleTubeBehaviour
+  include SampleManifest::MultiplexedLibraryBehaviour
   include SampleManifest::CoreBehaviour
   include SampleManifest::PlateBehaviour
   include SampleManifest::InputBehaviour
+  include SampleManifest::SharedTubeBehaviour
   extend SampleManifest::StateMachine
   extend Document::Associations
 
@@ -47,6 +49,10 @@ class SampleManifest < ActiveRecord::Base
 
   before_save :default_asset_type
 
+  def only_first_label
+    false
+  end
+
   def default_asset_type
     self.asset_type = "plate" if self.asset_type.blank?
   end
@@ -77,11 +83,12 @@ class SampleManifest < ActiveRecord::Base
     return nil
   end
 
-  def print_labels(barcode_printer)
+  def print_labels(barcode_printer, options={})
     return false if barcode_printer.nil?
     core_behaviour.print_labels do |printables, prefix, *args|
       unless printables.empty?
         printables.each { |printable| printable.study = self.study.abbreviation }
+        printables = [printables.first] if options[:only_first_label]==true
         barcode_printer.print_labels(printables, prefix, *args)
       end
     end

@@ -70,8 +70,7 @@ class Api::SampleIO < Api::Base
 
   extra_json_attributes do |object, json_attributes|
     if json_attributes['reference_genome'].blank?
-      metadata = object.try(:studies).try(:first).try(:study_metadata)
-      json_attributes["reference_genome"] = metadata.reference_genome.name unless metadata.nil?
+      json_attributes['reference_genome'] = nil
     end
   end
 

@@ -7,7 +7,7 @@ module Request::Statemachine
   COMPLETED_STATE = [ 'passed', 'failed' ]
   OPENED_STATE    = [ 'pending', 'blocked', 'started' ]
   ACTIVE = QUOTA_COUNTED   = [ 'passed', 'pending', 'blocked', 'started' ]
-  QUOTA_EXEMPTED  = [ 'failed', 'cancelled', 'aborted' ]
+  INACTIVE = QUOTA_EXEMPTED  = [ 'failed', 'cancelled', 'aborted' ]
 
   module ClassMethods
     def redefine_state_machine(&block)
@@ -103,7 +103,7 @@ module Request::Statemachine
       end
 
       aasm_event :cancel_before_started do
-        transitions :to => :cancelled, :from => [:pending]
+        transitions :to => :cancelled, :from => [:pending, :hold]
       end
 
       aasm_event :submission_cancelled do
