@@ -358,7 +358,7 @@ class Order < ActiveRecord::Base
   end
 
   def friendly_name
-    asset_group(:name)
+    asset_group.try(:name)||asset_group_name||id
   end
 
   def subject_type
