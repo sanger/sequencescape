@@ -19,5 +19,6 @@ Feature: object with an accession should be modifiable
     Given an accessioning webservice exists which returns a sample accession number "E-ERA-16"
     When I update an accession number for sample "sample"
 
-    When I am on the event history page for sample "sample"
-    Then I should see "accession data has been updated by user me"
+    Then I should not have sent an alias to the accessioning service
+      And I should have sent an accession number to the accessioning service
+      And I should have received an accession number from the accessioning service

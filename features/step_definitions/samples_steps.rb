@@ -137,6 +137,12 @@ When /^I generate an? accession number for sample "([^\"]+)"$/ do |sample_name|
 end
 
 When /^I update an? accession number for sample "([^\"]+)"$/ do |sample_name|
+  RestClient::Resource.class_eval do |klass|
+    def post(payload)
+      FakeAccessionService.instance.sent.push(payload)
+      FakeAccessionService.instance.next!
+    end
+  end
  step %Q{I am on the show page for sample "#{sample_name}"}
  step(%Q{I follow "Update EBI Sample data"})
 end

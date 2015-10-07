@@ -49,7 +49,7 @@ module Accessionable
         :alias => self.alias,
         :accession => self.accession_number
       }.tap do |obj|
-        delete obj[:alias] unless self.accession_number.blank?
+        obj.delete(:alias) unless self.accession_number.blank?
       end
     end
 

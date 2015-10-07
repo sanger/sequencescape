@@ -14,6 +14,10 @@ class FakeAccessionService < FakeSinatraService
     @bodies ||= []
   end
 
+  def sent
+    @sent ||= []
+  end
+
   def clear
     @bodies = []
   end
@@ -38,6 +42,10 @@ class FakeAccessionService < FakeSinatraService
 
   def service
     Service
+  end
+
+  def submit_sample_for_user(sample, user)
+
   end
 
   class Service < FakeSinatraService::Base
