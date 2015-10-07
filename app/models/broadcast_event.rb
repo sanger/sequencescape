@@ -42,6 +42,10 @@ class BroadcastEvent < ActiveRecord::Base
     Hash[self.class.metadata_finders.map {|mf| mf.for(seed,self) } ]
   end
 
+  def routing_key
+    "#{Rails.env}.event.#{event_type}.#{id}"
+  end
+
   def json_root
     EVENT_JSON_ROOT
   end
