@@ -785,12 +785,18 @@ ActiveRecord::Schema.define(:version => 20150729125715) do
     t.datetime "updated_at"
   end
 
-  create_table "plate_creator_purposes", :force => true do |t|
-    t.integer  "plate_creator_id",  :null => false
-    t.integer  "plate_purpose_id",  :null => false
+  create_table "plate_creator_parent_purposes", :force => true do |t|
+    t.integer  "plate_creator_id", :null => false
+    t.integer  "plate_purpose_id", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "parent_purpose_id"
+  end
+
+  create_table "plate_creator_purposes", :force => true do |t|
+    t.integer  "plate_creator_id", :null => false
+    t.integer  "plate_purpose_id", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "plate_creators", :force => true do |t|
