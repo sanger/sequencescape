@@ -93,8 +93,6 @@ class Plate::Creator < ActiveRecord::Base
             well.clone.tap do |child_well|
               child_well.aliquots = well.aliquots.map(&:clone)
               child_well.stock_wells.attach(stock_well_picker.call(well))
-
-              creator_parameters.set_well_parameters(child_well) unless creator_parameters.nil?
             end
           end
 

@@ -30,4 +30,24 @@ ActiveRecord::Base.transaction do
     creator.parent_plate_purposes << purpose
   end
 
+  # Valid options: Dilution Factors:
+  [
+    ["Working dilution", [12.5, 20.0, 15.0, 50.0]],
+    ["Pico dilution", [4.0]]
+  ].each do |name, values|
+    c = Plate::Creator.find_by_name!(name)
+    c.update_attributes!(:valid_options => {
+        :valid_dilution_factors => values
+    })
+  end
+  Plate::Creator.all.each do |c|
+    if c.valid_options.nil?
+      # Any other valid option will be set to 1
+      c.update_attributes!(:valid_options => {
+          :valid_dilution_factors => [1.0]
+      })
+    end
+  end
+
+
 end

@@ -9,7 +9,7 @@ class UpdateDilutionFactorForWdAndPd < ActiveRecord::Migration
       },
       {
         :purpose_name => "Pico Dilution",
-        :value => 50
+        :value => 50.0
       }
     ]
   end
@@ -29,7 +29,7 @@ class UpdateDilutionFactorForWdAndPd < ActiveRecord::Migration
     ActiveRecord::Base.transaction do |t|
       self.types.each do |c|
         Purpose.find_by_name!(c[:purpose_name]).plates.find_each do |plate|
-          plate.dilution_factor = 1
+          plate.dilution_factor = 1.0
           plate.save!
         end
       end

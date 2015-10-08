@@ -1,8 +1,8 @@
 class PopulateValidOptionsForPlateCreators < ActiveRecord::Migration
   def self.population_data
   [
-    ["Working dilution", [12.5, 20, 15, 50]],
-    ["Pico dilution", [4]]
+    ["Working dilution", [12.5, 20.0, 15.0, 50.0]],
+    ["Pico dilution", [4.0]]
   ]
   end
   def self.up
@@ -17,7 +17,7 @@ class PopulateValidOptionsForPlateCreators < ActiveRecord::Migration
         if c.valid_options.nil?
           # Any other valid option will be set to 1
           c.update_attributes!(:valid_options => {
-              :valid_dilution_factors => [1]
+              :valid_dilution_factors => [1.0]
           })
         end
       end
