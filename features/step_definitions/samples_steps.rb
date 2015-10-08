@@ -131,12 +131,7 @@ end
 
 GivenSampleMetadata(:sample_ebi_accession_number, /^the sample "([^\"]+)" has the accession number "([^\"]+)"$/)
 
-When /^I generate an? accession number for sample "([^\"]+)"$/ do |sample_name|
- step %Q{I am on the show page for sample "#{sample_name}"}
- step(%Q{I follow "Generate Accession Number"})
-end
-
-When /^I update an? accession number for sample "([^\"]+)"$/ do |sample_name|
+When /^I (create|update) an? accession number for sample "([^\"]+)"$/ do |action_type, sample_name|
   RestClient::Resource.class_eval do |klass|
     def post(payload)
       FakeAccessionService.instance.sent.push(payload)
@@ -144,9 +139,14 @@ When /^I update an? accession number for sample "([^\"]+)"$/ do |sample_name|
     end
   end
  step %Q{I am on the show page for sample "#{sample_name}"}
- step(%Q{I follow "Update EBI Sample data"})
+ action_str = (action_type=='create') ? 'Generate Accession Number' : 'Update EBI Sample data'
+ step(%Q{I follow "#{action_str}"})
 end
 
+Then /^I (should|should not) have (sent|received) the attribute "([^\"]*)" for the sample element (to|from) the accessioning service$/ do |state_action, type_action, attr_name, dest|
+  xml = (state_action == "sent") ? FakeAccessionService.instance.sent.last["SAMPLE"].readlines.to_s : FakeAccessionService.instance.last_received
+  assert Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/@#{attr_name}").map(&:to_s).empty?, state_action == "should"
+end
 
 Given /^sample "([^"]*)" came from a sample manifest$/ do |sample_name|
   sample = Sample.find_by_name(sample_name)

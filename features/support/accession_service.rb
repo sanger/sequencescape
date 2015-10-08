@@ -18,6 +18,10 @@ class FakeAccessionService < FakeSinatraService
     @sent ||= []
   end
 
+  def last_received
+    @last_received
+  end
+
   def clear
     @bodies = []
   end
@@ -37,7 +41,7 @@ class FakeAccessionService < FakeSinatraService
   end
 
   def next!
-    self.bodies.pop
+    @last_received = self.bodies.pop
   end
 
   def service
