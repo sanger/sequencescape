@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20151002154511) do
+ActiveRecord::Schema.define(:version => 20151006105706) do
 
   create_table "aliquot_indices", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
@@ -891,6 +891,18 @@ ActiveRecord::Schema.define(:version => 20151002154511) do
     t.datetime "updated_at"
   end
 
+  create_table "product_criteria", :force => true do |t|
+    t.integer  "product_id",                         :null => false
+    t.string   "stage",                              :null => false
+    t.string   "behaviour",     :default => "Basic", :null => false
+    t.text     "configuration"
+    t.datetime "deprecated_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "product_criteria", ["product_id"], :name => "fk_product_criteria_to_products"
+
   create_table "product_lines", :force => true do |t|
     t.string "name", :null => false
   end
@@ -974,6 +986,31 @@ ActiveRecord::Schema.define(:version => 20151002154511) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "qc_metrics", :force => true do |t|
+    t.integer  "qc_report_id", :null => false
+    t.integer  "asset_id",     :null => false
+    t.text     "metrics"
+    t.boolean  "qc_decision",  :null => false
+    t.boolean  "proceed"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "qc_metrics", ["asset_id"], :name => "fk_qc_metrics_to_assets"
+  add_index "qc_metrics", ["qc_report_id"], :name => "fk_qc_metrics_to_qc_reports"
+
+  create_table "qc_reports", :force => true do |t|
+    t.integer  "study_id",                               :null => false
+    t.integer  "product_criteria_id",                    :null => false
+    t.boolean  "returned",            :default => false, :null => false
+    t.string   "state"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "qc_reports", ["product_criteria_id"], :name => "fk_qc_reports_to_product_criteria"
+  add_index "qc_reports", ["study_id"], :name => "fk_qc_reports_to_studies"
 
   create_table "qcable_creators", :force => true do |t|
     t.integer  "lot_id",     :null => false
