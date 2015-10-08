@@ -139,7 +139,7 @@ class PlatesControllerTest < ActionController::TestCase
                     setup do
                       post :create, :plates => {:creator_id =>  @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
                         :source_plates =>"#{@parent_raw_barcode},#{@parent2_raw_barcode}", :user_barcode => '2470000100730',
-                        :plate_creation_parameter_dilution_factor => 2.0
+                        :dilution_factor => 2.0
                       }
                     end
                     should_change("Plate.count", :by => 2) { Plate.count }
@@ -156,7 +156,7 @@ class PlatesControllerTest < ActionController::TestCase
                 setup do
                   post :create, :plates => {:creator_id =>  @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
                     :source_plates =>"", :user_barcode => '2470000100730',
-                    :plate_creation_parameter_dilution_factor => 12.0 }
+                    :dilution_factor => 12.0 }
                 end
                 should_change("Plate.count", :by => 1) { Plate.count }
                 should "set the dilution factor to 12.0" do
@@ -167,7 +167,7 @@ class PlatesControllerTest < ActionController::TestCase
                 setup do
                   post :create, :plates => {:creator_id =>  @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
                     :source_plates =>"#{@parent_raw_barcode}", :user_barcode => '2470000100730',
-                    :plate_creation_parameter_dilution_factor => 12.0 }
+                    :dilution_factor => 12.0 }
                 end
                 should_change("Plate.count", :by => 1) { Plate.count }
                 should "set the dilution factor to 12.0" do
@@ -180,7 +180,7 @@ class PlatesControllerTest < ActionController::TestCase
                   @parent_plate.save!
                   post :create, :plates => {:creator_id =>  @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
                     :source_plates =>"#{@parent_raw_barcode}", :user_barcode => '2470000100730',
-                    :plate_creation_parameter_dilution_factor => 12.0 }
+                    :dilution_factor => 12.0 }
                 end
                 should_change("Plate.count", :by => 1) { Plate.count }
                 should "sets the dilution factor to 48.0 (parent=4*child=12)" do
@@ -216,7 +216,7 @@ class PlatesControllerTest < ActionController::TestCase
                 @parent_plate.save!
                 post :create, :plates => {:creator_id => @pico_assay_plate_creator.id,
                   :barcode_printer => @barcode_printer.id, :source_plates =>"#{@parent_raw_barcode}",
-                  :plate_creation_parameter_dilution_factor => 12.0,
+                  :dilution_factor => 12.0,
                   :user_barcode => '2470000100730' }
               end
               should "create all the pico assay plates with dilution factor 48" do
