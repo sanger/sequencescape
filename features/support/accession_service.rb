@@ -48,10 +48,6 @@ class FakeAccessionService < FakeSinatraService
     Service
   end
 
-  def submit_sample_for_user(sample, user)
-
-  end
-
   class Service < FakeSinatraService::Base
     post('/accession_service/era_accession_login') do
       response = FakeAccessionService.instance.next! or halt(500)
