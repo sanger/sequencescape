@@ -6,23 +6,24 @@ class ProductCriteria::Basic
   attr_reader :passed, :params, :errors
   alias_method :passed?, :passed
 
-  Comparator = Struct.new(:method,:message)
+  Comparison = Struct.new(:method,:message)
 
   METHOD_ALIAS = {
-    :greater_than => Comparator.new(:>,  'too low' ),
-    :less_than    => Comparator.new(:<,  'too high'),
-    :at_least     => Comparator.new(:>=, 'too low' ),
-    :at_most      => Comparator.new(:<=, 'too high')
+    :greater_than => Comparison.new(:>,  'too low' ),
+    :less_than    => Comparison.new(:<,  'too high'),
+    :at_least     => Comparison.new(:>=, 'too low' ),
+    :at_most      => Comparison.new(:<=, 'too high')
   }
 
   def initialize(params,well)
     @params = params
     @well = well
     @errors = []
-    validate!
+    assess!
   end
 
   def total_micrograms
+    return nil if measured_volume.nil? || concentration.nil?
     (measured_volume * concentration) / 1000.0
   end
 
@@ -35,27 +36,29 @@ class ProductCriteria::Basic
     @well.well_attribute
   end
 
-  def invalid(attribute,comparison)
+  def invalid(attribute,message)
+    puts "Failing #{attribute}: #{message}"
     @passed = false
-    @errors << "#{attribute.to_s.humanize} #{message_for(comparison)}"
+    @errors << message
   end
 
-  def validate!
+  def assess!
     @passed = true
     params.each do |attribute,comparisons|
       value = self.send(attribute)
+      invalid(attribute,'has not been recorded') && next if value.nil?
       comparisons.each do |comparison,target|
-        value.send(method_for(comparison),target) || invalid(attribute,comparison)
+        value.send(method_for(comparison),target) || invalid(attribute,message_for(comparison))
       end
     end
   end
 
-  def method_for(comparator)
-    METHOD_ALIAS[comparator].method || raise(UnknownSpecification, "#{comparator} isn't a recognised means of comparison.")
+  def method_for(comparison)
+    METHOD_ALIAS[comparison].method || raise(UnknownSpecification, "#{comparison} isn't a recognised means of comparison.")
   end
 
-  def message_for(comparator)
-    METHOD_ALIAS[comparator].message || raise(UnknownSpecification, "#{comparator} isn't a recognised means of comparison.")
+  def message_for(comparison)
+    METHOD_ALIAS[comparison].message || raise(UnknownSpecification, "#{comparison} isn't a recognised means of comparison.")
   end
 
 end

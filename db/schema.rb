@@ -1001,9 +1001,9 @@ ActiveRecord::Schema.define(:version => 20151006105706) do
   add_index "qc_metrics", ["qc_report_id"], :name => "fk_qc_metrics_to_qc_reports"
 
   create_table "qc_reports", :force => true do |t|
-    t.integer  "study_id",                               :null => false
-    t.integer  "product_criteria_id",                    :null => false
-    t.boolean  "returned",            :default => false, :null => false
+    t.integer  "study_id",            :null => false
+    t.integer  "product_criteria_id", :null => false
+    t.boolean  "exclude_existing",    :null => false
     t.string   "state"
     t.datetime "created_at"
     t.datetime "updated_at"

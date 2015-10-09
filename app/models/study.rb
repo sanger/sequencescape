@@ -147,6 +147,12 @@ class Study < ActiveRecord::Base
   named_scope :newest_first, { :order => "#{ self.quoted_table_name }.created_at DESC" }
   named_scope :with_user_included, { :include => :user }
 
+  def each_well_for_qc_report(exclude_existing)
+    base_scope = Well.on_plate_purpose(PlatePurpose.find_all_by_name(['Stock Plate','Stock RNA Plate']))
+    scope = exclude_existing ? base_scope.without_report : base_scope
+    scope.find_each {|a| yield a }
+  end
+
   YES = 'Yes'
   NO  = 'No'
   YES_OR_NO = [ YES, NO ]
@@ -539,18 +545,6 @@ class Study < ActiveRecord::Base
       }
     }
   }
-
-  def self.all_awaiting_ethical_approval
-    self.awaiting_ethical_approval
-  end
-
-  def self.all_contaminated_with_human_dna
-    self.contaminated_with_human_dna
-  end
-
-  def self.all_with_remove_x_and_autosomes
-    self.with_remove_x_and_autosomes
-  end
 
   def ebi_accession_number
     self.study_metadata.study_ebi_accession_number

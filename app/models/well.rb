@@ -38,6 +38,25 @@ class Well < Aliquot::Receptacle
     { :joins => :map, :conditions => { :maps => { :description => location, :asset_size => plate.size } } }
   }
 
+  named_scope :on_plate_purpose, lambda { |purposes|
+    {
+      :joins=>:plate,
+      :conditions=>{:plates_assets=>{:plate_purpose_id=>purposes}}
+    }
+  }
+
+  named_scope :for_study_through_sample, lambda { |study|
+    {
+      :joins => {:aliquots=>{:sample=>:study_samples}},
+      :conditions => {:study_samples=>{:study_id=>study}}
+    }
+  }
+
+  named_scope :without_report, {
+    :joins => :qc_metrics,
+    :conditions => {:qc_metrics => { :id=> nil}}
+  }
+
   has_many :target_well_links, :class_name => 'Well::Link', :foreign_key => :source_well_id, :conditions => { :type => 'stock' }
   has_many :target_wells, :through => :target_well_links, :source => :target_well
   named_scope :stock_wells_for, lambda { |wells| {
