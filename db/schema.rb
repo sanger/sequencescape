@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150914104607) do
+ActiveRecord::Schema.define(:version => 20150803092346) do
 
   create_table "aliquot_indices", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
@@ -303,16 +303,6 @@ ActiveRecord::Schema.define(:version => 20150914104607) do
   add_index "billing_events", ["kind"], :name => "index_billing_events_on_kind"
   add_index "billing_events", ["reference"], :name => "index_billing_events_on_reference"
 
-  create_table "broadcast_events", :force => true do |t|
-    t.string   "sti_type"
-    t.string   "seed_type"
-    t.integer  "seed_id"
-    t.integer  "user_id"
-    t.text     "properties"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "budget_divisions", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -391,7 +381,6 @@ ActiveRecord::Schema.define(:version => 20150914104607) do
     t.string   "locked_by"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "queue"
   end
 
   create_table "depricated_attempts", :force => true do |t|
@@ -1553,7 +1542,7 @@ ActiveRecord::Schema.define(:version => 20150914104607) do
     t.string   "contact_name"
     t.string   "phone_number"
     t.string   "fax"
-    t.string   "supplier_url"
+    t.string   "url"
     t.string   "abbreviation"
   end
 
