@@ -63,4 +63,13 @@ class FakeAccessionService < FakeSinatraService
   end
 end
 
+RestClient::Resource.class_eval do |klass|
+  alias_method :original_post, :post
+  def post(payload)
+    FakeAccessionService.instance.sent.push(payload)
+    original_post(payload)
+  end
+end
+
+
 FakeAccessionService.install_hooks(self, '@accession-service')

@@ -132,12 +132,6 @@ end
 GivenSampleMetadata(:sample_ebi_accession_number, /^the sample "([^\"]+)" has the accession number "([^\"]+)"$/)
 
 When /^I (create|update) an? accession number for sample "([^\"]+)"$/ do |action_type, sample_name|
-  RestClient::Resource.class_eval do |klass|
-    def post(payload)
-      FakeAccessionService.instance.sent.push(payload)
-      FakeAccessionService.instance.next!
-    end
-  end
  step %Q{I am on the show page for sample "#{sample_name}"}
  action_str = (action_type=='create') ? 'Generate Accession Number' : 'Update EBI Sample data'
  step(%Q{I follow "#{action_str}"})
