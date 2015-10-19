@@ -7,4 +7,6 @@ class QcMetric < ActiveRecord::Base
   belongs_to :qc_report
   validates_presence_of :asset, :qc_report
 
+  serialize :metrics
+
 end

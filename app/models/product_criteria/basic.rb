@@ -37,6 +37,10 @@ class ProductCriteria::Basic
     (measured_volume * concentration) / 1000.0
   end
 
+  def metrics
+    values.merge({:errors => @errors.join(';')})
+  end
+
   SUPPORTED_WELL_ATTRIBUTES.each do |attribute|
     delegate(attribute, :to => :well_attribute)
   end

@@ -40,7 +40,7 @@ class QcReport < ActiveRecord::Base
       ActiveRecord::Base.transaction do
         study.each_well_for_qc_report(exclude_existing) do |asset|
           criteria = product_criteria.assess(asset)
-          qc_metrics.build(:asset=>asset,:qc_decision=>criteria.passed?)
+          qc_metrics.build(:asset=>asset,:qc_decision=>criteria.passed?,:metrics=>criteria.metrics)
         end
         save!
         generation_complete!
