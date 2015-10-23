@@ -35,13 +35,18 @@ class QcReportTest < ActiveSupport::TestCase
       assert_equal 2, @qc_report.qc_metrics.count
     end
 
+    should 'assign a report identifier' do
+      assert @qc_report.report_identifier.present?, "No identifier assigned"
+      assert /wtccc_product[0-9]+_[0-9]{12}/ === @qc_report.report_identifier, "Unexpected identifier: #{@qc_report.report_identifier}"
+    end
+
     should 'record the result of each qc' do
       @qc_report.qc_metrics.each do |metric|
         assert_equal true, metric.qc_decision, "Metric had a qc_decision of #{metric.qc_decision} not true"
         assert_equal nil, metric.proceed
         assert_equal({
           :total_micrograms => 100,
-          :errors => ''
+          :comment => ''
         }, metric.metrics)
       end
     end

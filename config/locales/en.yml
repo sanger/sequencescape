@@ -169,7 +169,7 @@ en:
       complete: "Proceed decisions have been made."
     pending_report: "Please wait, the report will be available once it is generated."
     fixed_content: This section is for information only and cannot be changed
-    instruction: Please place a Y in the proceed coulmn for any samples you wish to proceed; use a N for samples you don't want to proceed.
+    instruction: Please place a Y in the proceed column for any samples you wish to proceed; use a N for samples you don't want to proceed.
     exclude_existing:
       yes: New samples
       no: All samples

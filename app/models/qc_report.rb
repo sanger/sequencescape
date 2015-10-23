@@ -4,6 +4,10 @@
 
 class QcReport < ActiveRecord::Base
 
+  # :id => The primary key for internal use only
+  # :report_identifier => A unique identifier exposed to customers
+  # :state => Tracks report processing and return
+
   include AASM
 
   module StateMachine
@@ -73,6 +77,8 @@ class QcReport < ActiveRecord::Base
   belongs_to :study
   has_many :qc_metrics
 
+  before_validation :generate_report_identifier
+
   after_create :generate
 
   named_scope :for_report_page, lambda {|conditions|
@@ -89,8 +95,27 @@ class QcReport < ActiveRecord::Base
 
   handle_asynchronously :generate
 
+  def to_param
+    report_identifier
+  end
+
   def product_id
     product.try(:id)
+  end
+
+  private
+
+  # Note: You won't be able to generate two reports for the
+  # same product / study abbreviation combo within one second
+  # of each other.
+  def generate_report_identifier
+    return true if study.nil? || product_criteria.nil?
+    rid = [
+      study.abbreviation,
+      product_criteria.product.name,
+      DateTime.now.to_formatted_s(:number)
+    ].compact.join('_').downcase.gsub(/[^\w]/,'_')
+    self.report_identifier = rid
   end
 
 end

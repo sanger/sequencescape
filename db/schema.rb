@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20151022100517) do
+ActiveRecord::Schema.define(:version => 20151023110903) do
 
   create_table "aliquot_indices", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
@@ -1002,6 +1002,7 @@ ActiveRecord::Schema.define(:version => 20151022100517) do
   add_index "qc_metrics", ["qc_report_id"], :name => "fk_qc_metrics_to_qc_reports"
 
   create_table "qc_reports", :force => true do |t|
+    t.string   "report_identifier",   :null => false
     t.integer  "study_id",            :null => false
     t.integer  "product_criteria_id", :null => false
     t.boolean  "exclude_existing",    :null => false
@@ -1011,6 +1012,7 @@ ActiveRecord::Schema.define(:version => 20151022100517) do
   end
 
   add_index "qc_reports", ["product_criteria_id"], :name => "fk_qc_reports_to_product_criteria"
+  add_index "qc_reports", ["report_identifier"], :name => "index_qc_reports_on_report_identifier", :unique => true
   add_index "qc_reports", ["study_id"], :name => "fk_qc_reports_to_studies"
 
   create_table "qcable_creators", :force => true do |t|

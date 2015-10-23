@@ -9,6 +9,7 @@ class Presenters::QcReportPresenter
     'Study' => :study_name,
     'Product' => :product_name,
     'Criteria Version' => :criteria_version,
+    'Report Identifier'=> :report_identifier,
     'Generated on' => :created_date,
     'Contents' => :new_or_all
   }
@@ -21,12 +22,7 @@ class Presenters::QcReportPresenter
   end
 
   def filename
-    [
-      study_abbreviation,
-      product_name,
-      criteria_version,
-      qc_report.created_at.to_formatted_s(:number)
-    ].join('_').methodize << '.csv'
+    "#{report_identifier}.csv"
   end
 
   def criteria_version
@@ -71,7 +67,7 @@ class Presenters::QcReportPresenter
     @csv
   end
 
-  delegate :available?, :study, :to => :qc_report
+  delegate :available?, :study, :report_identifier, :to => :qc_report
 
   def each_header
     HEADER_FIELDS.each do |field,lookup|

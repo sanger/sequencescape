@@ -8,6 +8,8 @@
     <th><%= link_to "Product", "javascript:void(0);" %></th>
     <th><%= link_to "State", "javascript:void(0);" %></th>
     <th><%= link_to "Created at", "javascript:void(0);" %></th>
+    <th><%= link_to "View", "javascript:void(0);" %></th>
+    <th><%= link_to "Download", "javascript:void(0);" %></th>
   </tr>
 </thead>
 <tbody>
@@ -17,6 +19,8 @@
     <td><%= report.product.name %></td>
     <td><%= report.state.humanize %></td>
     <td><%= report.created_at.to_formatted_s(:sortable) %></td>
+    <td><%= link_to('Show',report) %></td>
+    <td><%= link_to('Download',qc_report_path(report,:format=>:csv)) if report.available? %></td>
   </tr>
 <% end %>
 </tbody>
