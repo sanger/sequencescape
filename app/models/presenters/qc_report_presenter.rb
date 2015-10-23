@@ -20,6 +20,15 @@ class Presenters::QcReportPresenter
     @queue_count = queue_count
   end
 
+  def filename
+    [
+      study_abbreviation,
+      product_name,
+      criteria_version,
+      qc_report.created_at.to_formatted_s(:number)
+    ].join('_').methodize << '.csv'
+  end
+
   def criteria_version
     "#{qc_report.product_criteria.stage}_#{qc_report.product_criteria.version}"
   end
@@ -31,6 +40,11 @@ class Presenters::QcReportPresenter
   def study_name
     qc_report.study.name
   end
+
+  def study_abbreviation
+    qc_report.study.abbreviation
+  end
+
 
   def state
     qc_report.state.humanize

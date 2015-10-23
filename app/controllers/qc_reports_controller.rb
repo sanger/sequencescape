@@ -44,9 +44,17 @@ class QcReportsController < ApplicationController
 
     respond_to do |format|
       format.html
-      # TODO: We should either stream directly, or create a tmp file.
+
       format.csv  do
-        render :text => proc { |response, output| @report_presenter.to_csv(output); debugger; output.flush; }, :content_type => "text/csv"
+        file = nil
+        begin
+          file = Tempfile.new(@report_presenter.filename)
+          @report_presenter.to_csv(file)
+          file.flush
+        ensure
+          file.close unless file.nil?
+        end
+        send_file file.path, :content_type => "text/csv", :filename => @report_presenter.filename, :x_sendfile => true
       end if qc_report.available?
     end
   end

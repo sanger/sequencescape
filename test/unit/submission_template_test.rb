@@ -6,7 +6,7 @@ require "test_helper"
 class SubmissionTemplateTest < ActiveSupport::TestCase
   context "A Order Template" do
 
-    should_validate_presense_of :product_catalogue
+    should_validate_presence_of :product_catalogue
 
     setup do
       @template = Factory.build :submission_template
