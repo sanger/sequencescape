@@ -4,5 +4,10 @@
 Factory.define :qc_report do |qc|
   qc.study {|study| study.association(:study) }
   qc.product_criteria {|pc| pc.association(:product_criteria) }
-  qc.exclude_existing { false }
+  qc.exclude_existing false
+end
+
+Factory.define :qc_metric do |qc|
+  qc.qc_report        {|qcr| qcr.association(:qc_report) }
+  qc.asset            {|a|  a.association(:well) }
 end

@@ -25,7 +25,7 @@ class ProductCriteriaBasicTest < ActiveSupport::TestCase
 
       should '#passed? should return false' do
         assert !@criteria.passed?, 'Well passed when it should have failed'
-        assert_equal ['Concentration too low','Measured volume too high'], @criteria.errors
+        assert_equal ['Concentration too low','Measured volume too high'], @criteria.comment
       end
 
       should 'store all values' do
@@ -47,7 +47,7 @@ class ProductCriteriaBasicTest < ActiveSupport::TestCase
       end
 
       should '#pass? should return false' do
-        assert_equal [], @criteria.errors
+        assert_equal [], @criteria.comment
         assert @criteria.passed?, 'Well failed when it should have passed'
       end
 

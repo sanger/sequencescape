@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20151006105706) do
+ActiveRecord::Schema.define(:version => 20151022100517) do
 
   create_table "aliquot_indices", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
@@ -899,9 +899,10 @@ ActiveRecord::Schema.define(:version => 20151006105706) do
     t.datetime "deprecated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "version"
   end
 
-  add_index "product_criteria", ["product_id"], :name => "fk_product_criteria_to_products"
+  add_index "product_criteria", ["product_id", "stage", "version"], :name => "index_product_criteria_on_product_id_and_stage_and_version", :unique => true
 
   create_table "product_lines", :force => true do |t|
     t.string "name", :null => false

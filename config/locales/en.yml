@@ -159,3 +159,18 @@ en:
 
   cherrypick:
     picking_by_row: "This cherrypick may take longer as it is picking by rows, rather than columns."
+
+  qc_reports:
+    state_descriptions:
+      default: "No description has been provided for this state."
+      queued: "Your report has been queued for processing. There are currently %{queue_count} items in the queue."
+      generating: "The report has reached the front of the queue and is being generated."
+      awaiting_proceed: "The report can be delivered to the customer and is currently awaiting their proceed decision."
+      complete: "Proceed decisions have been made."
+    pending_report: "Please wait, the report will be available once it is generated."
+    fixed_content: This section is for information only and cannot be changed
+    instruction: Please place a Y in the proceed coulmn for any samples you wish to proceed; use a N for samples you don't want to proceed.
+    exclude_existing:
+      yes: New samples
+      no: All samples
+

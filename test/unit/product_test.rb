@@ -6,9 +6,7 @@ require "test_helper"
 
 class ProductTest < ActiveSupport::TestCase
   context "A product" do
-    should_have_many :submission_templates, :orders
-    # TODO:
-    # should_have_one  :critera
+    should_have_many :submission_templates, :orders, :product_criteria
 
     should_validate_presence_of :name
 

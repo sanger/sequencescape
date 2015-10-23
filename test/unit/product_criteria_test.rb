@@ -31,6 +31,14 @@ class ProductCriteriaTest < ActiveSupport::TestCase
       assert @criteria_2.valid?
     end
 
+    should 'automatically version criteria' do
+      assert_equal 1, @criteria_a.version
+      @criteria_a.deprecated_at = Time.now
+      @criteria_a.save
+      @criteria_b = Factory :product_criteria, :product => @product_a
+      assert_equal 2, @criteria_b.version
+    end
+
     should 'not be destroyable' do
       # ActiveRecord::RecordNotDestroyed is the Rails4 exception for this
       # Added here as Rails 2 is a bit useless with appropriate exceptions

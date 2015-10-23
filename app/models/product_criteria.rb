@@ -4,6 +4,12 @@
 
 class ProductCriteria < ActiveRecord::Base
 
+  STAGE_STOCK = 'stock'
+
+
+  # By default rails will try and name the table 'product_criterias'
+  # We don't use the singular 'ProductCriterion' as the class name
+  # as a single record may define multiple criteria.
   set_table_name('product_criteria')
 
   belongs_to :product
@@ -14,6 +20,12 @@ class ProductCriteria < ActiveRecord::Base
 
   serialize :configuration
 
+  named_scope :for_stage, lambda {|stage| {:conditions=>{:stage=>stage} } }
+  named_scope :stock, {:conditions=>{:stage=>STAGE_STOCK}}
+  named_scope :older_than, lambda {|id| { :conditions => ['id < ?',id] } }
+
+  before_create :set_version_number
+
   include SharedBehaviour::Indestructable
   include SharedBehaviour::Deprecatable
   include SharedBehaviour::Immutable
@@ -21,6 +33,10 @@ class ProductCriteria < ActiveRecord::Base
 
   def assess(asset)
     ProductCriteria.const_get(behaviour).new(configuration,asset)
+  end
+
+  def headers
+    ProductCriteria.const_get(behaviour).headers(configuration)
   end
 
   private
@@ -34,5 +50,10 @@ class ProductCriteria < ActiveRecord::Base
   rescue NameError
     errors.add(:behaviour,"#{behaviour} is not recognized")
     false
+  end
+
+  def set_version_number
+    v = product.product_criteria.for_stage(stage).count + 1
+    self.version = v
   end
 end

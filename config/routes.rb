@@ -217,6 +217,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :pico_dilutions
 
+  map.resources :qc_reports, :except => [:delete]
+
   map.resources :study_reports
   map.resources :sample_logistics, :collection => { :lab => :get, :qc_overview => :get }
 

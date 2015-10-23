@@ -13,6 +13,22 @@ class Product < ActiveRecord::Base
   has_many :product_catalogues, :through => :product_product_catalogues
   has_many :submission_templates, :inverse_of => :product, :through => :product_catalogues
   has_many :orders
+  has_many :product_criteria, :inverse_of => :product, :class_name => 'ProductCriteria'
+
+  named_scope :with_stock_report, {
+    :joins => :product_criteria,
+    :conditions => { :product_criteria => {:deprecated_at=>nil,:stage=>ProductCriteria::STAGE_STOCK}}
+  }
+
+  named_scope :alphabetical, { :order => 'name ASC' }
+
+  def stock_criteria
+    product_criteria.active.stock.first
+  end
+
+  def display_name
+    deprecated? ? "#{name} (Deprecated #{deprecated_at.to_formatted_s(:iso8601)})": name
+  end
 
 
 end

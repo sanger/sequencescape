@@ -7,8 +7,18 @@ class QcReport < ActiveRecord::Base
   include AASM
 
   module StateMachine
+
+    module ClassMethods
+      def available_states
+        QcReport.aasm_states.map {|state| state.name.to_s }
+      end
+    end
+
     def self.included(base)
       base.class_eval do
+
+        # When adding new states, please make sure you update the config/locals/en.yml file
+        # with decriptions.
 
         aasm_column :state
 
@@ -31,7 +41,14 @@ class QcReport < ActiveRecord::Base
 
         aasm_initial_state :queued
 
+        def available?
+          awaiting_proceed? or complete?
+        end
+
+        extend ClassMethods
+
       end
+
     end
   end
 
@@ -52,11 +69,28 @@ class QcReport < ActiveRecord::Base
   include ReportBehaviour
 
   belongs_to :product_criteria
+  has_one :product, :through => :product_criteria
   belongs_to :study
   has_many :qc_metrics
 
+  after_create :generate
+
+  named_scope :for_report_page, lambda {|conditions|
+    {
+      :order => "id desc",
+      :conditions => conditions,
+      :joins  => :product_criteria
+    }
+  }
+
   validates_presence_of :product_criteria, :study, :state
 
-  validates_inclusion_of :exclude_existing, :in => [true, false]
+  validates_inclusion_of :exclude_existing, :in => [true, false], :message => 'should be true or false.'
+
+  handle_asynchronously :generate
+
+  def product_id
+    product.try(:id)
+  end
 
 end

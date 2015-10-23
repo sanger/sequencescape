@@ -4,8 +4,9 @@
 class ProductCriteria::Basic
 
   SUPPORTED_WELL_ATTRIBUTES = [:gel_pass, :concentration, :current_volume, :pico_pass, :gender_markers, :gender, :measured_volume, :initial_volume, :molarity]
+  EXTENDED_ATTRIBUTES = [:total_micrograms]
 
-  attr_reader :passed, :params, :errors, :values
+  attr_reader :passed, :params, :comment, :values
   alias_method :passed?, :passed
 
   Comparison = Struct.new(:method,:message)
@@ -20,14 +21,18 @@ class ProductCriteria::Basic
   class << self
     # Returns a list of possible criteria to either display or validate
     def available_criteria
-      SUPPORTED_WELL_ATTRIBUTES + [:total_micrograms]
+      SUPPORTED_WELL_ATTRIBUTES + EXTENDED_ATTRIBUTES
+    end
+
+    def headers(configuration)
+      configuration.map {|k,v| k } + [:comment]
     end
   end
 
   def initialize(params,well)
     @params = params
     @well = well
-    @errors = []
+    @comment = []
     @values = {}
     assess!
   end
@@ -38,7 +43,7 @@ class ProductCriteria::Basic
   end
 
   def metrics
-    values.merge({:errors => @errors.join(';')})
+    values.merge({:comment => @comment.join(';')})
   end
 
   SUPPORTED_WELL_ATTRIBUTES.each do |attribute|
@@ -53,7 +58,7 @@ class ProductCriteria::Basic
 
   def invalid(attribute,message)
     @passed = false
-    @errors << message % attribute.to_s.humanize
+    @comment << message % attribute.to_s.humanize
   end
 
   def assess!
@@ -61,7 +66,7 @@ class ProductCriteria::Basic
     params.each do |attribute,comparisons|
       value = self.send(attribute)
       values[attribute] = value
-      invalid(attribute,'has not been recorded') && next if value.nil? && comparisons.present?
+      invalid(attribute,'%s has not been recorded') && next if value.nil? && comparisons.present?
       comparisons.each do |comparison,target|
         value.send(method_for(comparison),target) || invalid(attribute,message_for(comparison))
       end

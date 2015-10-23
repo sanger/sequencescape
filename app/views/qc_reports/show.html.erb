@@ -1,0 +1,21 @@
+<%#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+#Copyright (C) 2015 Genome Research Ltd.%>
+<h2><%= @report_presenter.product_name %> report for <%=  link_to(@report_presenter.study_name,@report_presenter.study) %></h2>
+
+<dl>
+<% @report_presenter.each_header do |attribute,value| %>
+  <dt><%= attribute %></dt><dd><%= value %></dd>
+<% end %>
+</dl>
+
+<div class='report_state'>
+  <p>This report is <em><%= @report_presenter.state %></em></p>
+  <p><%= @report_presenter.state_description %></p>
+</div>
+
+<% if @report_presenter.available? %>
+  <%= render :partial => 'qc_report', :locals => {:qc_report=>@report_presenter} %>
+<% else %>
+  <%= I18n.t('qc_reports.pending_report') %>
+<% end %>

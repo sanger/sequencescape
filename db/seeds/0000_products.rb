@@ -50,3 +50,5 @@ require './lib/product_helpers'
 ].each do |param|
   ProductCatalogue.construct!(param)
 end
+
+Product.find_by_name('MWGS').product_criteria.create!(:stage=>'stock',:behaviour=>'Basic',:configuration=>{:total_micrograms=>{:greater_than=>50}})

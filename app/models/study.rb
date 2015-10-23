@@ -147,6 +147,9 @@ class Study < ActiveRecord::Base
   named_scope :newest_first, { :order => "#{ self.quoted_table_name }.created_at DESC" }
   named_scope :with_user_included, { :include => :user }
 
+  named_scope :alphabetical, { :order => 'name ASC' }
+  named_scope :for_listing, { :select => 'name, id' }
+
   def each_well_for_qc_report(exclude_existing)
     base_scope = Well.on_plate_purpose(PlatePurpose.find_all_by_name(['Stock Plate','Stock RNA Plate']))
     scope = exclude_existing ? base_scope.without_report : base_scope

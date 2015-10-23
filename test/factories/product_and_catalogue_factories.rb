@@ -16,7 +16,8 @@ end
 
 Factory.define :product_criteria do |pc|
   pc.product       {|product| product.association(:product) }
-  pc.stage         'stock_report'
+  pc.stage         'stock'
   pc.behaviour     'Basic'
   pc.configuration { {:total_micrograms=>{:greater_than=>50}} }
 end
+

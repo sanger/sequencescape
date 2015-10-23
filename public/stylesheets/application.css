@@ -780,6 +780,10 @@ table.bed_verification{
 	width: 100%;
 }
 
+table.detailed {
+  width: 100%;
+}
+
 tr.destination{
 	background-color: #ccc;
 }
@@ -1446,5 +1450,11 @@ ul.options label {
 }
 ul.options li {
   margin:0.3em;
+}
+
+.form-group {
+  display: inline-block;
+  width: auto;
+  padding: 1em;
 }
 

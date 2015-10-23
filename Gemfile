@@ -5,7 +5,7 @@ gem "rails", "~>2.3"
 gem "aasm", "~>2.4.0"
 gem "configatron"
 gem "rest-client" # curb substitute.
-gem "fastercsv", "~>1.4.0"
+gem "fastercsv", "~>1.5.5"
 gem "formtastic", "~>1.2.0"
 gem "activerecord-jdbc-adapter", ">= 1.2.6", :platforms => :jruby
 gem "jdbc-mysql", :platforms => :jruby
