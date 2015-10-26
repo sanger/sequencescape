@@ -193,8 +193,8 @@ class StudyTest < ActiveSupport::TestCase
       end
 
       should "show in the filters" do
-        assert Study.all_with_remove_x_and_autosomes.include?(@study_remove)
-        assert !Study.all_with_remove_x_and_autosomes.include?(@study_keep)
+        assert Study.with_remove_x_and_autosomes.include?(@study_remove)
+        assert !Study.with_remove_x_and_autosomes.include?(@study_keep)
       end
     end
 
