@@ -1458,3 +1458,5 @@ ul.options li {
   padding: 1em;
 }
 
+.file_drop { border: 2px dotted gray; width:80%; padding:1em; }
+.report_form { display:block; float: left; width: 50%;}

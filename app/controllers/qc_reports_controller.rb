@@ -38,6 +38,21 @@ class QcReportsController < ApplicationController
 
   end
 
+  # On form submit of a qc_file. Strictly speaking this should be an update action
+  # on the qc_report itself. However we don't want to force the user to extract
+  # the report identifier from the file.
+  def qc_file
+    qc_file = params[:qc_report_file]
+    overide_qc =  params[:overide_qc_decision] == "1"
+    file = QcReport::File.new(qc_file,overide_qc,qc_file.original_filename,qc_file.content_type)
+    if file.process
+      redirect_to file.qc_report
+    else
+      flash[:error] = "Failed to read report: #{file.errors.join('; ')}"
+      redirect_to :back
+    end
+  end
+
   def show
     qc_report = QcReport.find_by_report_identifier(params[:id])
     queue_count = qc_report.queued? ? Delayed::Job.count : 0
@@ -55,7 +70,7 @@ class QcReportsController < ApplicationController
         ensure
           file.close unless file.nil?
         end
-        send_file file.path, :content_type => "text/csv", :filename => @report_presenter.filename, :x_sendfile => true
+        send_file file.path, :content_type => "text/csv", :filename => @report_presenter.filename
       end if qc_report.available?
     end
   end

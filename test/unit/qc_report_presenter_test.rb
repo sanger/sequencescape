@@ -12,7 +12,7 @@ Please place a Y in the proceed column for any samples you wish to proceed; use 
 Study,Example study
 Product,Demo Product
 Criteria Version,stock_1
-Report Identifier,wtccc_demo_product_20150101010000
+Report Identifier,wtccc_demo_product_20150101000000
 Generated on,"Thu, 01 Jan 2015 00:00:00 +0000"
 Contents,All samples
 
@@ -28,7 +28,7 @@ Asset ID,Total micrograms,Comment,Qc Decision,Proceed
       @criteria = Factory :product_criteria, :product => @product, :version => 1
       @study  = Factory :study, :name => 'Example study'
       Timecop.freeze(DateTime.parse('01/01/2015')) do
-        @report = Factory :qc_report, :study => @study, :exclude_existing => false, :created_at => DateTime.parse('01/01/2015'), :product_criteria => @criteria
+        @report = Factory :qc_report, :study => @study, :exclude_existing => false, :created_at => DateTime.parse('01/01/2015 00:00:00'), :product_criteria => @criteria
       end
       @asset_ids = []
       2.times do |i|

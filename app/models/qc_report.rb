@@ -39,8 +39,9 @@ class QcReport < ActiveRecord::Base
           transitions :from => :generating, :to => :awaiting_proceed
         end
 
+        # A QC report might be uploaded multiple times
         aasm_event :proceed_decision do
-          transitions :from => :awaiting_proceed, :to => :complete
+          transitions :from => [:complete,:awaiting_proceed], :to => :complete
         end
 
         aasm_initial_state :queued
@@ -77,7 +78,7 @@ class QcReport < ActiveRecord::Base
   belongs_to :study
   has_many :qc_metrics
 
-  before_validation :generate_report_identifier
+  before_validation :generate_report_identifier, :if => :identifier_required?
 
   after_create :generate
 
@@ -104,6 +105,10 @@ class QcReport < ActiveRecord::Base
   end
 
   private
+
+  def identifier_required?
+    self.report_identifier.nil?
+  end
 
   # Note: You won't be able to generate two reports for the
   # same product / study abbreviation combo within one second

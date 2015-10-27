@@ -10,9 +10,11 @@
     <%= f.label "product_id", 'Product' %>
     <%= f.select :product_id, products, { :prompt => 'Select product...', :disabled => [''], :selected => default_product }, { :autocomplete => 'off', :required => 'required'  } %>
   </div>
-    <div class="form-group">
+  <div class="form-group">
     <%= f.label "exclude_existing", 'Exclude samples with existing reports' %>
     <%= f.check_box :exclude_existing %>
   </div>
-  <%= f.submit('Create report', :autocomplete => 'off',:class=>'disable_on_submit') %>
+  <div class="form-group actions-group">
+    <%= f.submit('Create report', :autocomplete => 'off',:class=>'disable_on_submit') %>
+  </div>
 <% end %>
