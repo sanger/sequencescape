@@ -18,12 +18,16 @@ class QcReportTest < ActiveSupport::TestCase
 
     setup do
       @study = Factory :study
+      @other_study = Factory :study
       @stock_plate = Factory :plate
-      2.times do |i|
-        @attribute = Factory :well_attribute, :measured_volume => 500, :concentration => 200
-        sample = Factory(:study_sample, :study => @study).sample
-        well = Factory :well, :samples => [sample], :plate => @stock_plate, :map => Factory(:map, :location_id => i), :well_attribute => @attribute
-        well.aliquots.each {|a| a.update_attributes!(:study => @study) }
+
+      [@study,@other_study].each do |study|
+        2.times do |i|
+          @attribute = Factory :well_attribute, :measured_volume => 500, :concentration => 200
+          sample = Factory(:study_sample, :study => study).sample
+          well = Factory :well, :samples => [sample], :plate => @stock_plate, :map => Factory(:map, :location_id => i), :well_attribute => @attribute
+          well.aliquots.each {|a| a.update_attributes!(:study => study) }
+        end
       end
 
       @qc_report = Factory :qc_report, :study => @study
