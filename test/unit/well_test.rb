@@ -296,5 +296,29 @@ class WellTest < ActiveSupport::TestCase
       end
 
     end
+    context 'proceed test' do
+      setup do
+        @our_product_criteria = Factory :product_criteria
+        @other_criteria = Factory :product_criteria
+
+        @old_report = Factory :qc_report, :product_criteria => @our_product_criteria, :created_at => Time.now - 1.day, :report_identifier => "A#{Time.now}"
+        @current_report = Factory :qc_report, :product_criteria => @our_product_criteria, :created_at => Time.now - 1.hour, :report_identifier => "B#{Time.now}"
+        @unrelated_report = Factory :qc_report, :product_criteria => @other_criteria, :created_at => Time.now, :report_identifier => "C#{Time.now}"
+
+        @stock_well = Factory :well
+
+        @well.stock_wells.attach!([@stock_well])
+        @well.reload
+
+        Factory :qc_metric, :asset => @stock_well, :qc_report => @old_report, :qc_decision => true, :proceed => true
+        Factory :qc_metric, :asset => @stock_well, :qc_report => @unrelated_report, :qc_decision => true, :proceed => true
+
+        @expected_metric = Factory :qc_metric, :asset => @stock_well, :qc_report => @current_report, :qc_decision => false, :proceed => true
+      end
+
+      should 'report appropriate metrics' do
+        assert_equal @expected_metric, @well.latest_stock_metric(@our_product_criteria.product)
+      end
+    end
   end
 end

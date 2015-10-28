@@ -31,6 +31,8 @@ class Well < Aliquot::Receptacle
     end
   end
 
+  has_many :qc_metrics, :inverse_of => :asset, :foreign_key => :asset_id
+
   named_scope :include_stock_wells, { :include => { :stock_wells => :requests_as_source } }
   named_scope :include_map,         { :include => :map }
 
@@ -273,5 +275,13 @@ class Well < Aliquot::Receptacle
 
   def can_be_created?
     plate.stock_plate?
+  end
+
+  def latest_stock_metric(product)
+    raise StandardError, 'Too many stock wells to report metrics' if stock_wells.count > 1
+    # If we don't have any stock wells, use ourself. If it is a stock well, we'll find our
+    # qc metric. If its not a stock well, then a metric won't be present anyway
+    stock_well = stock_wells.first || self
+    stock_well.qc_metrics.for_product(product).most_recent_first.first
   end
 end

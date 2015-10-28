@@ -23,6 +23,16 @@ class QcMetric < ActiveRecord::Base
 
   named_scope :with_asset_ids, lambda {|ids| {:conditions=>{:asset_id=>ids}}}
 
+  named_scope :for_product, lambda {|product|
+      {
+      :joins => {:qc_report=>:product_criteria},
+      :conditions => {
+        :product_criteria => { :product_id => product}
+      }
+    }
+  }
+  named_scope :most_recent_first, { :order => 'created_at DESC, id DESC' }
+
   def human_qc_decision
     QC_DECISION_TRANSLATION[qc_decision]
   end
@@ -38,6 +48,12 @@ class QcMetric < ActiveRecord::Base
   def human_proceed=(h_proceed)
     return self.proceed = nil if h_proceed.blank?
     self.proceed = human_to_bool(PROCEED_TRANSLATION,h_proceed.upcase)
+  end
+
+  # The metric indicates that the sample has been progressed despite poor quality
+  # || false ensures nil gets converted to a boolean
+  def poor_quality_proceed
+    ((! qc_decision) && proceed) || false
   end
 
   private
