@@ -3,7 +3,7 @@
 #Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
 # Every request "moving" an asset from somewhere to somewhere else without really transforming it
 # (chemically) as, cherrypicking, pooling, spreading on the floor etc
-class TransferRequest < Request
+class TransferRequest < SystemRequest
 
   module InitialTransfer
     def perform_transfer_of_contents

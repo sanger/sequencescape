@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20151023110903) do
+ActiveRecord::Schema.define(:version => 20151028144210) do
 
   create_table "aliquot_indices", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
@@ -987,6 +987,16 @@ ActiveRecord::Schema.define(:version => 20151023110903) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "qc_metric_requests", :force => true do |t|
+    t.integer  "qc_metric_id", :null => false
+    t.integer  "request_id",   :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "qc_metric_requests", ["qc_metric_id"], :name => "fk_qc_metric_requests_to_qc_metrics"
+  add_index "qc_metric_requests", ["request_id"], :name => "fk_qc_metric_requests_to_requests"
 
   create_table "qc_metrics", :force => true do |t|
     t.integer  "qc_report_id", :null => false

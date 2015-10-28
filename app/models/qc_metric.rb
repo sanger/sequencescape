@@ -24,13 +24,21 @@ class QcMetric < ActiveRecord::Base
   named_scope :with_asset_ids, lambda {|ids| {:conditions=>{:asset_id=>ids}}}
 
   named_scope :for_product, lambda {|product|
-      {
+    {
       :joins => {:qc_report=>:product_criteria},
       :conditions => {
         :product_criteria => { :product_id => product}
       }
     }
   }
+
+  named_scope :stock_metric, {
+    :joins => {:qc_report=>:product_criteria},
+    :conditions => {
+      :product_criteria => { :stage => ProductCriteria::STAGE_STOCK }
+    }
+  }
+
   named_scope :most_recent_first, { :order => 'created_at DESC, id DESC' }
 
   def human_qc_decision

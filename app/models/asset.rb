@@ -524,4 +524,9 @@ class Asset < ActiveRecord::Base
     nil
   end
 
+  # We only support wells for the time being
+  def latest_stock_metric(product,*args)
+    nil
+  end
+
 end

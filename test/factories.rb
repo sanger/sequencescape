@@ -324,6 +324,7 @@ end
 
 Factory.define :well_request_type, :parent => :request_type do |rt|
   rt.asset_type     'Well'
+  rt.request_class  CustomerRequest
 end
 
 Factory.define :library_creation_request_type, :class => RequestType do |rt|
