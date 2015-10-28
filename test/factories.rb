@@ -391,6 +391,7 @@ end
 
 Factory.define :sample do |s|
   s.name            {|a| Factory.next :sample_name }
+  s.empty_supplier_sample_name false
 end
 
 Factory.define :sample_submission do |sps|

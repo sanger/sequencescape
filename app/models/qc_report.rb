@@ -60,7 +60,7 @@ class QcReport < ActiveRecord::Base
   module ReportBehaviour
     def generate_report
       ActiveRecord::Base.transaction do
-        study.each_well_for_qc_report(exclude_existing) do |asset|
+        study.each_well_for_qc_report(exclude_existing,product_criteria) do |asset|
           criteria = product_criteria.assess(asset)
           qc_metrics.build(:asset=>asset,:qc_decision=>criteria.passed?,:metrics=>criteria.metrics)
         end

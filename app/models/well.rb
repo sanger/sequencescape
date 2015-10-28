@@ -52,10 +52,17 @@ class Well < Aliquot::Receptacle
     }
   }
 
-  named_scope :without_report, {
-    :joins => :qc_metrics,
-    :conditions => {:qc_metrics => { :id=> nil}}
+  named_scope :for_study_through_aliquot, lambda { |study|
+    {
+      :joins => :aliquots,
+      :conditions => {:aliquots=>{:study_id=>study}}
+    }
   }
+
+  named_scope :without_report, lambda { |product_criteria| {
+    :joins => {:qc_metrics => :product_criteria},
+    :conditions => {:qc_metrics => { :id=> nil},:product_criteria=>{:product_id=>product_criteria.product_id,:stage=>product_criteria.stage}}
+  }}
 
   has_many :target_well_links, :class_name => 'Well::Link', :foreign_key => :source_well_id, :conditions => { :type => 'stock' }
   has_many :target_wells, :through => :target_well_links, :source => :target_well
@@ -105,6 +112,11 @@ class Well < Aliquot::Receptacle
       "INNER JOIN samples ON aliquots.sample_id=samples.id"
     ],
     :conditions => ['samples.empty_supplier_sample_name=?',true]
+  }
+
+  named_scope :without_blank_samples, {
+    :joins => {:aliquots=>:sample},
+    :conditions => {:samples => { :empty_supplier_sample_name=> false } }
   }
 
   named_scope :with_contents, {

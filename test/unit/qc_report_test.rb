@@ -23,6 +23,7 @@ class QcReportTest < ActiveSupport::TestCase
         @attribute = Factory :well_attribute, :measured_volume => 500, :concentration => 200
         sample = Factory(:study_sample, :study => @study).sample
         well = Factory :well, :samples => [sample], :plate => @stock_plate, :map => Factory(:map, :location_id => i), :well_attribute => @attribute
+        well.aliquots.each {|a| a.update_attributes!(:study => @study) }
       end
 
       @qc_report = Factory :qc_report, :study => @study
