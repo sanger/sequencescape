@@ -15,7 +15,8 @@ class ProductCriteria::Basic
     :greater_than => Comparison.new(:>,  '%s too low' ),
     :less_than    => Comparison.new(:<,  '%s too high'),
     :at_least     => Comparison.new(:>=, '%s too low' ),
-    :at_most      => Comparison.new(:<=, '%s too high')
+    :at_most      => Comparison.new(:<=, '%s too high'),
+    :equals       => Comparison.new(:==, '%s not suitable')
   }
 
   class << self
