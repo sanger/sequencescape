@@ -35,7 +35,10 @@ class AddSubmissionTemplateNoPcrxTen < ActiveRecord::Migration
       unless hiseqlt.nil?
         ["illumina_c_nopcr", "illumina_a_hiseq_x_paired_end_sequencing", "illumina_b_hiseq_x_paired_end_sequencing"].each do |rt_name|
           rt = RequestType.find_by_key(rt_name)
-          rt.library_types = rt.library_types.reject!{|lt| lt == hiseqlt }
+          lib_types = rt.library_types
+          unless lib_types.nil?
+            rt.library_types = lib_types.reject!{|lt| lt == hiseqlt }
+          end
         end
         hiseqlt.destroy
       end
