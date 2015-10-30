@@ -31,7 +31,17 @@ class AddSubmissionTemplateNoPcrxTen < ActiveRecord::Migration
 
   def self.down
     ActiveRecord::Base.transaction do |t|
-      LibraryType.find_by_name("HiSeqX PCR free").destroy
+      hiseqlt = LibraryType.find_by_name("HiSeqX PCR free")
+      unless hiseqlt.nil?
+        ["illumina_c_nopcr", "illumina_a_hiseq_x_paired_end_sequencing", "illumina_b_hiseq_x_paired_end_sequencing"].each do |rt_name|
+          rt = RequestType.find_by_key(rt_name)
+          lib_types = rt.library_types
+          unless lib_types.nil?
+            rt.library_types = lib_types.reject{|lt| lt == hiseqlt }
+          end
+        end
+        hiseqlt.destroy
+      end
       TagLayoutTemplate.find_by_name("NEXTflex-96 barcoded adapters tags in rows (first oligo: AACGTGAT)").destroy
       SubmissionTemplate.find_by_name("Illumina-C - General no PCR - HiSeq-X sequencing").destroy
     end
