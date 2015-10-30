@@ -30,5 +30,10 @@ class AddSubmissionTemplateNoPcrxTen < ActiveRecord::Migration
   end
 
   def self.down
+    ActiveRecord::Base.transaction do |t|
+      LibraryType.find_by_name("HiSeqX PCR free").destroy
+      TagLayoutTemplate.find_by_name("NEXTflex-96 barcoded adapters tags in rows (first oligo: AACGTGAT)").destroy
+      SubmissionTemplate.find_by_name("Illumina-C - General no PCR - HiSeq-X sequencing").destroy
+    end
   end
 end
