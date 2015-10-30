@@ -6,7 +6,7 @@ class AddSubmissionTemplateNoPcrxTen < ActiveRecord::Migration
       st = SubmissionSerializer.construct!({
         :name => "Illumina-C - General no PCR - HiSeq-X sequencing",
         :submission_class_name => "LinearSubmission",
-        :product_line => "Product line",
+        :product_line => "Illumina-C",
         :submission_parameters => {
           :request_types => ["illumina_c_nopcr", "illumina_b_hiseq_x_paired_end_sequencing"],
           :workflow => "short_read_sequencing"
