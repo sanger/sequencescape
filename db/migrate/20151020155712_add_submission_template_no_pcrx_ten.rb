@@ -34,8 +34,8 @@ class AddSubmissionTemplateNoPcrxTen < ActiveRecord::Migration
       hiseqlt = LibraryType.find_by_name("HiSeqX PCR free")
       unless hiseqlt.nil?
         ["illumina_c_nopcr", "illumina_a_hiseq_x_paired_end_sequencing", "illumina_b_hiseq_x_paired_end_sequencing"].each do |rt_name|
-          RequestType.find_by_key(rt_name).library_types.reject!{|lt| lt == hiseqlt }
-          RequestType.find_by_key(rt_name).library_types.save
+          rt = RequestType.find_by_key(rt_name)
+          rt.library_types = rt.library_types.reject!{|lt| lt == hiseqlt }
         end
         hiseqlt.destroy
       end
