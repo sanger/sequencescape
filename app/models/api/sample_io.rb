@@ -70,7 +70,7 @@ class Api::SampleIO < Api::Base
 
   extra_json_attributes do |object, json_attributes|
     if json_attributes['reference_genome'].blank?
-      json_attributes.delete("reference_genome")
+      json_attributes['reference_genome'] = nil
     end
   end
 

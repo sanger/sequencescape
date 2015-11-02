@@ -239,7 +239,7 @@ class Sample < ActiveRecord::Base
   GC_CONTENTS     = [ 'Neutral', 'High AT', 'High GC' ]
   GENDERS         = [ 'Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable' ]
   DNA_SOURCES     = [ 'Genomic', 'Whole Genome Amplified', 'Blood', 'Cell Line','Saliva','Brain','FFPE',
-                      'Amniocentesis Uncultured', 'Amniocentesis Cultured', 'CVS Uncultured', 'CVS Cultured', 'Fetal Blood' ]
+                      'Amniocentesis Uncultured', 'Amniocentesis Cultured', 'CVS Uncultured', 'CVS Cultured', 'Fetal Blood', 'Tissue' ]
   SRA_HOLD_VALUES = [ 'Hold', 'Public', 'Protect' ]
   AGE_REGEXP      = '\d+(?:\.\d+|\-\d+|\.\d+\-\d+\.\d+|\.\d+\-\d+\.\d+)?\s+(?:second|minute|day|week|month|year)s?|Not Applicable|N/A|To be provided'
   DOSE_REGEXP     = '\d+(?:\.\d+)?\s+\w+(?:\/\w+)?|Not Applicable|N/A|To be provided'
@@ -342,9 +342,9 @@ class Sample < ActiveRecord::Base
     include_tag(:sample_strain_att)
     include_tag(:sample_description)
 
-    include_tag(:gender, :services=>:EGA)
+    include_tag(:gender, :services=>:EGA, :downcase => true)
     include_tag(:phenotype, :services=>:EGA)
-    include_tag(:donor_id, :services=>:EGA)
+    include_tag(:donor_id, :services=>:EGA, :as => 'subject_id')
 
     require_tag(:sample_taxon_id)
     require_tag(:sample_common_name)

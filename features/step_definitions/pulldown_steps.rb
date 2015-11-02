@@ -70,6 +70,16 @@ Given /^"([^\"]+)" of (the plate .+) have been (submitted to "[^"]+")$/ do |rang
   )
 end
 
+Given /^"([^\"]+)" of (the plate .+) are part of the same submission$/ do |range, plate|
+
+
+  submission = Factory :submission
+  plate.wells.select(&range.method(:include?)).each do |well|
+    Factory :transfer_request, :submission => submission, :target_asset => well
+  end
+
+end
+
 Given /^"([^\"]+)" of (the plate .+) have been failed$/ do |range, plate|
   plate.wells.select(&range.method(:include?)).each do |well|
     well.aliquots.clear

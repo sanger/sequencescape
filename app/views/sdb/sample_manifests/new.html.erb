@@ -17,7 +17,9 @@
   <% form.inputs :name => "Barcodes" do %>
     <%= form.input :count, :input_html => { :size => 3, :value => "1" }, :label => count_label_for(params[:type]) %>
     <%= form.input :barcode_printer,  :as => :select, :collection => @barcode_printers %>
+    <%= form.input :only_first_label, :as => :boolean, :label => 'Print only the first label' %>
   <% end %>
+
 
 
   <% form.buttons do %>
