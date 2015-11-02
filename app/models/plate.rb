@@ -22,6 +22,14 @@ class Plate < Asset
     plate_purpose.state_of(self)
   end
 
+  def summary_hash
+    {
+      :asset_id => id,
+      :barcode => { :ean13_barcode => ean13_barcode, :human_readable => sanger_human_barcode },
+      :occupied_wells => wells.with_aliquots.include_map.map(&:map_description)
+    }
+  end
+
   def cherrypick_completed
     plate_purpose.cherrypick_completed(self)
   end

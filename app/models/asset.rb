@@ -6,6 +6,8 @@ class Asset < ActiveRecord::Base
   include ModelExtensions::Asset
   include AssetLink::Associations
 
+  SAMPLE_PARTIAL = 'assets/samples_partials/blank'
+
   module InstanceMethods
     # Assets are, by default, non-barcoded
     def generate_barcode
@@ -22,8 +24,11 @@ class Asset < ActiveRecord::Base
   class VolumeError< StandardError
   end
 
-
-  SAMPLE_PARTIAL = 'assets/samples_partials/blank'
+  def summary_hash
+    {
+      :asset_id => id
+    }
+  end
 
   def sample_partial
     self.class::SAMPLE_PARTIAL

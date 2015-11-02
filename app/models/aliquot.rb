@@ -257,4 +257,12 @@ class Aliquot < ActiveRecord::Base
     end
   end
 
+  # Unlike the above methods, which allow untagged to match with tagged, this looks for exact matches only
+  # only id, timestamps and receptacles are excluded
+  def equivalent?(other)
+    [:sample_id, :tag_id, :tag2_id, :library_id, :bait_library_id, :insert_size_from, :insert_size_to, :library_type, :project_id, :study_id].all? do |attrib|
+      self.send(attrib) == other.send(attrib)
+    end
+  end
+
 end
