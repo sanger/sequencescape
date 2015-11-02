@@ -305,18 +305,6 @@ WHERE c.container_id=?
     ( children | wells )
   end
 
-  def create_child
-    raise StandardError, "Kaboom! Don't use this method!"
-    child = Plate.create({:size => self.size})
-    self.children << child
-
-    self.wells.each do |well|
-      child.add_well Well.create({:map_id => well.map_id, :sample_id => well.sample_id})
-    end
-    child
-  end
-  deprecate :create_child
-
   def find_map_by_rowcol(row, col)
     # Count from 0
     description  = asset_shape.location_from_row_and_column(row,col+1,size)

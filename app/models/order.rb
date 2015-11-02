@@ -112,7 +112,7 @@ class Order < ActiveRecord::Base
   end
 
   named_scope :for_studies, lambda {|*args| {:conditions => { :study_id => args[0]} } }
-  named_scope :with_plate_as_target, labmda {|plate|
+  named_scope :with_plate_as_target, lambda {|plate|
     # Essentially :joins => {:requests=>{:target_asset=>:container_association}}
     # But container_association only exists on wells
     {
