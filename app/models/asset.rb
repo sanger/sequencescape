@@ -232,6 +232,11 @@ class Asset < ActiveRecord::Base
     self.children.last
   end
 
+  # Labware reflects the physical piece of plastic corresponding to an asset
+  def labware
+    self
+  end
+
   def library_prep?
     false
   end

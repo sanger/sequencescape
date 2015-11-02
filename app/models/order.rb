@@ -112,6 +112,18 @@ class Order < ActiveRecord::Base
   end
 
   named_scope :for_studies, lambda {|*args| {:conditions => { :study_id => args[0]} } }
+  named_scope :with_plate_as_target, labmda {|plate|
+    # Essentially :joins => {:requests=>{:target_asset=>:container_association}}
+    # But container_association only exists on wells
+    {
+      :select => "DISTINCT orders.*",
+      :joins => [
+        'INNER JOIN requests AS wpat_r ON wpat_r.order_id = orders.id',
+        'INNER JOIN container_associations ON container_associations.content_id = wpat_r.target_asset_id'
+      ],
+      :conditions => ['container_associations.container_id = ?',plate.id]
+    }
+  }
 
   cattr_reader :per_page
   @@per_page = 500

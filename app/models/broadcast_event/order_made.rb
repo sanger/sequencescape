@@ -17,11 +17,11 @@ class BroadcastEvent::OrderMade < BroadcastEvent
 
   has_subjects(:sample,:samples)
 
-  has_subjects(:origin_plate) do |order,event|
+  has_subjects(:order_source_plate) do |order,event|
     event.plates
   end
 
-  has_subjects(:origin_tubes) {|order,event| order.assets.select {|a| a.is_a?(Tube) } }
+  has_subjects(:order_source_tubes) {|order,event| order.assets.select {|a| a.is_a?(Tube) } }
 
   has_subjects(:stock_plate) {|order,event| event.plates.map(&:original_stock_plates).flatten.uniq }
 

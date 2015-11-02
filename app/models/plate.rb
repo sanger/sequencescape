@@ -748,8 +748,16 @@ WHERE c.container_id=?
     true
   end
 
+  def orders_as_target
+    Order.with_plate_as_target(self)
+  end
+
   def samples_in_order(order_id)
     Sample.for_plate_and_order(self.id,order_id)
+  end
+
+  def samples_in_order_by_target(order_id)
+    Sample.for_plate_and_order_as_target(order_id)
   end
 
   def contained_samples

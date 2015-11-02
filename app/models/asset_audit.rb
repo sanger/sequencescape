@@ -15,7 +15,9 @@ class AssetAudit < ActiveRecord::Base
   validates_presence_of :key
   validates_format_of :key, :with => /^[\w_]+$/i, :message => I18n.t('asset_audit.key_format'), :on => :create
 
-  after_create :broadcast_event
+  # Disabled in the initial events release. One enabling ensure historical audits
+  # get broadcast
+  # after_create :broadcast_event
 
   private
 

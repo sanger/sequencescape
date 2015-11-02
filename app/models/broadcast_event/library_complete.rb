@@ -7,7 +7,7 @@ class BroadcastEvent::LibraryComplete < BroadcastEvent
 
   # Properties takes :order_id
 
-  seed_class Plate
+  seed_class MultiplexedLibraryTube
 
   has_subject(:order) {|_,e| e.order }
   has_subject(:study) {|_,e| e.order.study }
@@ -15,7 +15,7 @@ class BroadcastEvent::LibraryComplete < BroadcastEvent
   has_subject(:submission) {|_,e| e.order.submission }
 
 
-  has_subject(:origin_plate,:source_plate)
+  has_subject(:library_source_labware,:source_plate)
 
   has_subjects(:stock_plate,:original_stock_plates)
   has_subjects(:sample) do |tube,e|

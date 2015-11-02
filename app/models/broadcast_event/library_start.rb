@@ -15,7 +15,7 @@ class BroadcastEvent::LibraryStart < BroadcastEvent
   has_subject(:submission) {|_,e| e.order.submission }
 
 
-  has_subject(:origin_plate,:source_plate)
+  has_subject(:library_source_labware,:source_plate)
 
   has_subjects(:stock_plate,:original_stock_plates)
   has_subjects(:sample) { |plate,e| plate.samples_in_order(e.properties[:order_id]) }

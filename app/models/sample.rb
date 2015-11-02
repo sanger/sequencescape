@@ -116,6 +116,17 @@ class Sample < ActiveRecord::Base
     }
   }
 
+  named_scope :for_plate_and_order_as_target, lambda {|plate_id,order_id|
+    {
+      :joins => [
+        'INNER JOIN aliquots ON aliquots.sample_id = samples.id',
+        'INNER JOIN container_associations AS ca ON ca.content_id = aliquots.receptacle_id',
+        'INNER JOIN requests ON requests.target_asset_id = aliquots.receptacle_id'
+      ],
+      :conditions => ['ca.container_id = ? AND requests.order_id = ?',plate_id,order_id]
+    }
+  }
+
   def self.by_name(sample_id)
     self.find_by_name(sample_id)
   end

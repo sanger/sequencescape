@@ -35,6 +35,10 @@ class Tube < Aliquot::Receptacle
     ancestors.first(:order => 'created_at DESC', :conditions => {:plate_purpose_id=>ancestor_purpose_id})
   end
 
+  def original_stock_plates
+    ancestors.find(:all,:conditions => {:plate_purpose_id => PlatePurpose.stock_plate_purpose })
+  end
+
   # Base class for the all tube purposes
   class Purpose < ::Purpose
     # TODO: change to purpose_id
