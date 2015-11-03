@@ -112,6 +112,8 @@ class Request < ActiveRecord::Base
   named_scope :for_billing, :include => [ :initial_project, :request_type, { :target_asset => :aliquots } ]
 
   belongs_to :user
+  belongs_to :request_purpose
+  validates_presence_of :request_purpose
 
   belongs_to :submission, :inverse_of => :requests
   belongs_to :order, :inverse_of => :requests

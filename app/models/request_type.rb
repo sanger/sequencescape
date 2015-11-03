@@ -50,6 +50,12 @@ class RequestType < ActiveRecord::Base
   has_many :plate_purposes, :class_name => 'RequestType::RequestTypePlatePurpose'
   has_many :acceptable_plate_purposes, :through => :plate_purposes, :source => :plate_purpose
 
+  # While a request type describes what a request is, a request purpose describes why it is being done.
+  # ie. standrad, qc, internal
+  # The value on request type acts as a default for requests
+  belongs_to :request_purpose
+  validates_presence_of :request_purpose
+
   MORPHOLOGIES  = [
     LINEAR = 0,   # one-to-one
     CONVERGENT = 1, # many-to-one
@@ -89,6 +95,7 @@ class RequestType < ActiveRecord::Base
         attributes ||= {}
         #{target}.#{target_method}(attributes.merge(request_parameters || {})) do |request|
           request.request_type = self
+          request.request_purpose ||= self.request_purpose
           yield(request) if block_given?
         end.tap do |request|
           requests << request
