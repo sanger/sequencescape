@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 require "test_helper"
 
 class BatchTest < ActiveSupport::TestCase
@@ -201,7 +201,7 @@ class BatchTest < ActiveSupport::TestCase
     context "with 1 request" do
       setup do
         @study2 = Factory :study
-        @request1 = @batch.requests.create!(:request_type => @pipeline.request_types.last, :study => @study1)
+        @request1 = Factory :request, :request_type => @pipeline.request_types.last, :study => @study1, :batch => @batch
       end
 
       should "return correct studies" do
@@ -219,8 +219,8 @@ class BatchTest < ActiveSupport::TestCase
       setup do
         @study2 = Factory :study
         @study3 = Factory :study
-        @request1 = @batch.requests.create!(:request_type => @pipeline.request_types.last, :study => @study1)
-        @request2 = @batch.requests.create!(:request_type => @pipeline.request_types.last, :study => @study2)
+        @request1 = Factory :request, :request_type => @pipeline.request_types.last, :study => @study1, :batch => @batch
+        @request2 = Factory :request, :request_type => @pipeline.request_types.last, :study => @study2, :batch => @batch
       end
 
       should "return correct studies" do

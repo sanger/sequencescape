@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013,2014 Genome Research Ltd.
+#Copyright (C) 2013,2014,2015 Genome Research Ltd.
 require "test_helper"
 
 class DummyWorkflowController < WorkflowsController
@@ -29,11 +29,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
       @source_plate.wells   = ['A1','B1','C1'].map do |loc|
         Factory(:well_with_sample_and_without_plate).tap do |w|
           w.map = Map.find_by_description_and_asset_size(loc,96)
-          request = PacBioSamplePrepRequest.create!(
-            :asset=>w,
-            :submission=>Submission.create!(:user=>Factory(:user)),
-            :target_asset=> Factory(:pac_bio_library_tube)
-          )
+          request = Factory :pac_bio_sample_prep_request, :asset => w
           @batch.requests << request
         end
       end

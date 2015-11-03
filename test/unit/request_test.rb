@@ -8,6 +8,7 @@ class RequestTest < ActiveSupport::TestCase
   context "A Request" do
     should_belong_to :user, :request_type, :item
     should_have_many :events
+    should_validate_presence_of :request_purpose
     should_have_instance_methods :pending?, :start, :started?, :fail, :failed?, :pass, :passed?, :reset, :workflow_id
 
     context "while scoping with #for_order_including_submission_based_requests" do
@@ -346,7 +347,7 @@ class RequestTest < ActiveSupport::TestCase
             @request.pass!
           end
           assert_nothing_raised do
-            @request.change_decision!
+            @request.retrospective_pass!
           end
         end
       end

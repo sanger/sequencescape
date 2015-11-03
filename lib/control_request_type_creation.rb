@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012 Genome Research Ltd.
+#Copyright (C) 2012,2015 Genome Research Ltd.
 module ControlRequestTypeCreation
   def control_type_name
     key_name.titleize
@@ -26,7 +26,8 @@ module ControlRequestTypeCreation
         :multiples_allowed  => last_request_type.multiples_allowed,
         :initial_state      => last_request_type.initial_state,
         :asset_type         => last_request_type.asset_type,
-        :order              => last_request_type.order
+        :order              => last_request_type.order,
+        :request_purpose    => RequestPurpose.find_by_key!('control')
       ).tap do |control_request_type|
         self.control_request_type = control_request_type
       end
