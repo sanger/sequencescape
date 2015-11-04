@@ -9,23 +9,26 @@ class ProductCriteriaBasicTest < ActiveSupport::TestCase
 
     setup do
       @params = {
-        :concentration    => {:greater_than => 5 },
-        :total_micrograms => {:greater_than => 10 },
-        :measured_volume  => {:greater_than => 8, :less_than => 2000 },
-        :gel_pass         => {:equals => 'OKAY' }
+        :concentration              => {:greater_than => 5 },
+        :total_micrograms           => {:greater_than => 10 },
+        :measured_volume            => {:greater_than => 8, :less_than => 2000 },
+        :gel_pass                   => {:equals       => 'OKAY' },
+        :conflicting_gender_markers => {:less_than    => 1 }
       }
     end
 
     context "with a bad well" do
       setup do
-        @well_attribute = Factory :well_attribute, :concentration => 1, :measured_volume => 30000, :gel_pass => 'OKAY'
+        @well_attribute = Factory :well_attribute, :concentration => 1, :measured_volume => 30000, :gel_pass => 'OKAY', :gender_markers => ["M", "M", "U"]
         @well = Factory :well, :well_attribute => @well_attribute
+        @sample = Factory :sample, :sample_metadata_attributes => {:gender => 'female' }
+        @well.samples << @sample
         @criteria = ProductCriteria::Basic.new(@params,@well)
       end
 
       should '#passed? should return false' do
         assert !@criteria.passed?, 'Well passed when it should have failed'
-        assert_equal ['Concentration too low','Measured volume too high'], @criteria.comment
+        assert_equal ['Concentration too low','Measured volume too high','Conflicting gender markers too high'], @criteria.comment
       end
 
       should 'store all values' do
@@ -33,7 +36,8 @@ class ProductCriteriaBasicTest < ActiveSupport::TestCase
           :concentration => 1,
           :measured_volume => 30000,
           :total_micrograms => 30,
-          :gel_pass => 'OKAY'
+          :gel_pass => 'OKAY',
+          :conflicting_gender_markers => 2
         }
         assert_equal expected_hash, @criteria.values
       end
@@ -41,8 +45,10 @@ class ProductCriteriaBasicTest < ActiveSupport::TestCase
 
     context "with a good well" do
       setup do
-        @well_attribute = Factory :well_attribute, :concentration => 800, :measured_volume => 100, :gel_pass => 'OKAY'
+        @well_attribute = Factory :well_attribute, :concentration => 800, :measured_volume => 100, :gel_pass => 'OKAY', :gender_markers => ["M", "M", "U"]
         @well = Factory :well, :well_attribute => @well_attribute
+        @sample = Factory :sample, :sample_metadata_attributes => {:gender => 'male' }
+        @well.samples << @sample
         @criteria = ProductCriteria::Basic.new(@params,@well)
       end
 
@@ -56,7 +62,8 @@ class ProductCriteriaBasicTest < ActiveSupport::TestCase
           :concentration => 800,
           :measured_volume => 100,
           :total_micrograms => 80,
-          :gel_pass => 'OKAY'
+          :gel_pass => 'OKAY',
+          :conflicting_gender_markers => 0
         }
         assert_equal expected_hash, @criteria.values
       end

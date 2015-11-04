@@ -4,7 +4,7 @@
 class ProductCriteria::Basic
 
   SUPPORTED_WELL_ATTRIBUTES = [:gel_pass, :concentration, :current_volume, :pico_pass, :gender_markers, :gender, :measured_volume, :initial_volume, :molarity]
-  EXTENDED_ATTRIBUTES = [:total_micrograms]
+  EXTENDED_ATTRIBUTES = [:total_micrograms, :conflicting_gender_markers, :sample_gender]
 
   attr_reader :passed, :params, :comment, :values
   alias_method :passed?, :passed
@@ -17,6 +17,11 @@ class ProductCriteria::Basic
     :at_least     => Comparison.new(:>=, '%s too low' ),
     :at_most      => Comparison.new(:<=, '%s too high'),
     :equals       => Comparison.new(:==, '%s not suitable')
+  }
+
+  GENDER_MARKER_MAPS = {
+    'male' => 'M',
+    'female' => 'F'
   }
 
   class << self
@@ -43,6 +48,10 @@ class ProductCriteria::Basic
     (measured_volume * concentration) / 1000.0
   end
 
+  def conflicting_gender_markers
+    (gender_markers||[]).select {|marker| conflicting_marker?(marker)}.count
+  end
+
   def metrics
     values.merge({:comment => @comment.join(';')})
   end
@@ -51,10 +60,29 @@ class ProductCriteria::Basic
     delegate(attribute, :to => :well_attribute)
   end
 
+  # Return the sample gender, returns nil if it can't be determined
+  # ie. mixed input, or not male/female
+  def sample_gender
+    markers = @well.samples.map {|s| s.sample_metadata.gender.downcase.strip }.uniq
+    return nil if markers.count > 1
+    GENDER_MARKER_MAPS[markers.first]
+  end
+
   private
 
   def well_attribute
     @well.well_attribute
+  end
+
+  def conflicting_marker?(marker)
+    expected = sample_gender
+    return false if expected.nil?
+    return false unless known_marker?(marker)
+    marker != expected
+  end
+
+  def known_marker?(marker)
+    GENDER_MARKER_MAPS.values.include?(marker)
   end
 
   def invalid(attribute,message)
