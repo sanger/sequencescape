@@ -12,6 +12,11 @@
       <tr><td>Type: </td><td><%= @asset.sti_type %></td></tr>
       <tr><td>Barcode: </td><td><%= @asset.barcode %></td></tr>
       <tr><td>Location: </td><td><%= @asset.location.nil? ? 'Not known' : @asset.location.name %></td></tr>
+      <% if @asset.respond_to?(:get_storage_location) %>
+         <tr><td>Storage Area: </td><td><%= @asset.get_storage_location['storage_area'] %></td></tr>
+         <tr><td>Freezer: </td><td><%= @asset.get_storage_location['storage_device'] %></td></tr>
+         <tr><td>Building Area: </td><td><%= "#{@asset.get_storage_location["building_area"]}#{' -' + @asset.get_storage_location["building"] unless @asset.get_storage_location["building"].nil?}" %></td></tr>
+      <% end %>
       <tr><td>Batches: </td></tr>
       <% requests = Request.find_all_by_asset_id(@asset.id) %>
       <% requests << Request.find_all_by_target_asset_id(@asset.id) %>
