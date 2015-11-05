@@ -15,7 +15,7 @@ class FluidigmFileTest < ActiveSupport::TestCase
     setup do
 
       File.open("#{RAILS_ROOT}/test/data/fluidigm.csv") do |file|
-        @fluidigm = FluidigmFile.new(@file.read)
+        @fluidigm = FluidigmFile.new(file.read)
       end
 
       @well_maps = {
