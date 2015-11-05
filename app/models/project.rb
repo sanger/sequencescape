@@ -140,6 +140,8 @@ class Project < ActiveRecord::Base
     self.project_metadata.budget_division.name
   end
 
+  alias_attribute :friendly_name, :name
+
   delegate :project_cost_code, :to=> :project_metadata
 
   PROJECT_FUNDING_MODELS = [
@@ -169,6 +171,10 @@ class Project < ActiveRecord::Base
     before_validation do |record|
       record.project_funding_model = nil if record.project_funding_model.blank?
     end
+  end
+
+  def subject_type
+    'project'
   end
 
   named_scope :with_unallocated_budget_division, { :joins => :project_metadata, :conditions => { :project_metadata => { :budget_division_id => BudgetDivision.find_by_name('Unallocated') } } }

@@ -699,6 +699,12 @@ class Study < ActiveRecord::Base
     end
   end
 
+  alias_attribute :friendly_name, :name
+
+  def subject_type
+    'study'
+  end
+
   private
   # beware , this method change the study of an object but doesn't look at some
   #  eventual dependencies.

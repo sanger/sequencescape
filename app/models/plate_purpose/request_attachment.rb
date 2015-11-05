@@ -3,7 +3,7 @@
 #Copyright (C) 2014,2015 Genome Research Ltd.
 module PlatePurpose::RequestAttachment
 
-  def transition_to(plate, state, contents = nil, customer_accepts_responsibility = false)
+  def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility = false)
     super
     connect_requests(plate, state, contents)
   end
