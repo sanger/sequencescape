@@ -37,7 +37,7 @@ class AliquotIndexer
   end
 
   def aliquots
-    @aliquots ||= lane.aliquots
+    @aliquots ||= lane.aliquots.reject {|a| a.untagged? }
   end
 
   def next_index

@@ -4,7 +4,7 @@
 class IlluminaHtp::InitialDownstreamPlatePurpose < IlluminaHtp::DownstreamPlatePurpose
   # Initial plates in the pulldown pipelines change the state of the pulldown requests they are being
   # created for to exactly the same state.
-  def transition_to(plate, state, contents = nil, customer_accepts_responsibility = false)
+  def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility = false)
     ActiveRecord::Base.transaction do
       super
       new_outer_state = ['started','passed','qc_complete','nx_in_progress'].include?(state) ? 'started' : state

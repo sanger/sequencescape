@@ -106,6 +106,9 @@ class Aliquot < ActiveRecord::Base
     has_many :studies, :through => :aliquots
     has_many :projects, :through => :aliquots
     has_many :samples, :through => :aliquots
+
+    # Contained samples also works on eg. plate
+    alias_attribute :contained_samples, :samples
   end
 
   # Something that is aliquotable can be part of an aliquot.  So sample and tag are both examples.
@@ -254,6 +257,14 @@ class Aliquot < ActiveRecord::Base
     when self.untagged? && object.tagged?                                                     then raise StandardError, "Tag missing from downstream aliquot" # The downstream aliquot is untagged, but is tagged upstream. Something is wrong!
     when object.untagged? && object.no_tag2?                                             then return true # The upstream aliquot was untagged, we don't need to check tags
     else (object.untagged?||(self.tag_id == object.tag_id)) && (object.no_tag2?||(self.tag2_id == object.tag2_id ))  # Both aliquots are tagged, we need to check if they match
+    end
+  end
+
+  # Unlike the above methods, which allow untagged to match with tagged, this looks for exact matches only
+  # only id, timestamps and receptacles are excluded
+  def equivalent?(other)
+    [:sample_id, :tag_id, :tag2_id, :library_id, :bait_library_id, :insert_size_from, :insert_size_to, :library_type, :project_id, :study_id].all? do |attrib|
+      self.send(attrib) == other.send(attrib)
     end
   end
 
