@@ -40,7 +40,7 @@ class QcReportsControllerTest < ActionController::TestCase
       end
       should_respond_with :redirect
       should_set_the_flash_to('Your report has been requested and will be presented on this page when complete.')
-      should_redirect_to('show') { "/qc_reports/#{QcReport.last.id}" }
+      should_redirect_to('show') { "/qc_reports/#{QcReport.last.report_identifier}" }
 
       should 'create a qc report for the study and product' do
         assert_equal 1, QcReport.count - @qc_report_count
