@@ -6,6 +6,8 @@ require 'rest-client'
 module LabWhereClient
   @@CACHED_INSTANCES= {}
 
+  LabwhereException = Class.new(StandardError)
+
   def self.load_params(obj, params)
     params.each do |k,v|
       obj.instance_variable_set("@#{k.to_s}", v)
@@ -119,6 +121,9 @@ module LabWhereClient
       LabWhereClient::build_from_url(LabWhereClient::Labware, "#{configatron.labwhere_api}/api/labwares/#{barcode}")
     end
 
+  end
+
+  class Scan
   end
 
   class Parent
