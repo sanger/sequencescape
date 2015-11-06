@@ -39,6 +39,8 @@ class Tube < Aliquot::Receptacle
     ancestors.find(:all,:conditions => {:plate_purpose_id => PlatePurpose.stock_plate_purpose })
   end
 
+  alias_method :friendly_name, :sanger_human_barcode
+
   # Base class for the all tube purposes
   class Purpose < ::Purpose
     # TODO: change to purpose_id
