@@ -410,8 +410,8 @@ WHERE c.container_id=?
       self.get_external_value(key)
     end.compact.join(' - ')
 
-  rescue Errno::ECONNREFUSED
-    return "Not found (LabWhere service is down)"
+  rescue LabWhereClient::LabwhereException => e
+    return "Not found (#{e.message})"
   end
 
   def barcode_for_tecan
