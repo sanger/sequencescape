@@ -397,7 +397,14 @@ WHERE c.container_id=?
   end
 
   def get_storage_location
+    # Labwhere
+    info_from_labwhere = LabWhereClient::Labware.find_by_barcode(barcode)
+    unless info_from_labwhere.nil? || info_from_labwhere.location.nil?
+      return info_from_labwhere.location.location_info
+    end
+
     plate_location = HashWithIndifferentAccess.new
+    # Not in labwhere
     return {"storage_area" => "Control"} if self.is_a?(ControlPlate)
     return {} if self.barcode.blank?
     ['storage_area', 'storage_device', 'building_area', 'building'].each do |key|
