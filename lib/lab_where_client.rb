@@ -4,10 +4,13 @@
 require 'rest-client'
 
 module LabWhereClient
+
+  LabwhereException = Class.new(StandardError)
+
   class LabWhere
     include Singleton
     def base_url
-        configatron.labwhere_api
+      configatron.labwhere_api
     end
 
     def path_to(instance, target)
@@ -59,8 +62,12 @@ module LabWhereClient
     end
   end
 
+  class Scan
+  end
+  
   class Location < Endpoint
     endpoint_name 'locations'
+
 
     attr_reader :name
     attr_reader :parentage
