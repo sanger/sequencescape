@@ -67,6 +67,11 @@
       <td><strong><%= @asset.qc_state %></strong></td>
     </tr>
   <% end %>
-  <%= render :partial => "shared/external_properties", :locals => {:item => @asset} %>
+  <% if @asset.respond_to?(:get_storage_location) && !@asset.get_storage_location.empty? %>
+    <tr>
+      <td class="item">Storage location</td>
+      <td><strong><%= @asset.get_storage_location %></strong></td>
+    </tr>
+  <% end %>
 </table>
 

@@ -4,8 +4,6 @@
 require 'rest-client'
 
 module LabWhereClient
-  @@CACHED_INSTANCES= {}
-
   def self.load_params(obj, params)
     params.each do |k,v|
       obj.instance_variable_set("@#{k.to_s}", v)
@@ -22,10 +20,10 @@ module LabWhereClient
     return params if params.nil?
     if params.kind_of? Array
       params.map do |obj|
-        LabWhereClient::load_params(klass.new, obj)
+        LabWhereClient.load_params(klass.new, obj)
       end
     else
-      LabWhereClient::load_params(klass.new, params)
+      LabWhereClient.load_params(klass.new, params)
     end
   end
 
@@ -36,7 +34,7 @@ module LabWhereClient
   end
 
   def self.build_from_url(klass, url)
-    @@CACHED_INSTANCES[url] ||= LabWhereClient.build_from_object(klass, LabWhereClient.json_retriever(url))
+    LabWhereClient.build_from_object(klass, LabWhereClient.json_retriever(url))
   end
 
   def self.included(base)
@@ -94,7 +92,7 @@ module LabWhereClient
       end
     end
 
-    def location_info
+    def location_info_ets_format
       info = HashWithIndifferentAccess.new
       { 'storage_device' => [ "Box",  "Shelf", "Freezer -80C", "Incubator 37C"],
         'storage_area' => ["Room"],
@@ -104,6 +102,10 @@ module LabWhereClient
         info[location_tag] = ancestors_classified_by_location_type(location_type_list).flatten.compact.map(&:name).join('|')
       end
       return info
+    end
+
+    def location_info
+      [name, parentage].join(' - ')
     end
   end
 
