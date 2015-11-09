@@ -68,7 +68,7 @@
     </tr>
   <% end %>
   <% if @asset.respond_to?(:storage_location) && !@asset.storage_location.empty? %>
-    <tr>
+    <tr class="location-service-<%= @asset.storage_location_service %>">
       <td class="item">Storage location</td>
       <td><strong><%= @asset.storage_location %></strong></td>
     </tr>
