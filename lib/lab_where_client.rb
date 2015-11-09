@@ -120,7 +120,7 @@ module LabWhereClient
 
     def self.creation_params(params)
       obj = params.dup
-      obj[:labware_barcodes] = obj[:labware_barcodes].join('\\n')
+      obj[:labware_barcodes] = obj[:labware_barcodes].join("\n")
       { :scan => obj }
     end
 
@@ -129,7 +129,7 @@ module LabWhereClient
     end
 
     def error
-      @errors.join('\n')
+      @errors.join(";")
     end
 
   end
