@@ -14,7 +14,7 @@ module LabWhereClient
 
     def path_to(instance, target)
       raise LabwhereException.new, "LabWhere service URL not set" if base_url.nil?
-      [base_url, instance.endpoint, target].join('/')
+      [base_url, instance.endpoint, target].compact.join('/')
     end
 
     def parseJSON(str)
@@ -29,6 +29,17 @@ module LabWhereClient
     end
 
     def post(instance, target, payload)
+      parseJSON(RestClient.post(path_to(instance,target), payload))
+    rescue Errno::ECONNREFUSED => e
+      raise LabwhereException.new(e), "LabWhere service is down", e.backtrace
+    rescue RestClient::UnprocessableEntity => e
+      return parseJSON(e.response)
+    end
+
+    def put(instance, target, payload)
+      parseJSON(RestClient.put(path_to(instance,target), payload))
+    rescue Errno::ECONNREFUSED => e
+      raise LabwhereException.new(e), "LabWhere service is down", e.backtrace
     end
 
   end
@@ -44,6 +55,35 @@ module LabWhereClient
     end
 
     def initialize(params)
+    end
+
+  end
+
+  module EndpointCreateActions
+    module ClassMethods
+      def creation_params(params)
+        params
+      end
+
+      def create(params)
+        attrs = LabWhere.instance.post(self, nil, creation_params(params))
+        new(attrs) unless attrs.nil?
+      end
+    end
+    def self.included(base)
+      base.send(:extend, ClassMethods)
+    end
+  end
+
+  module EndpointUpdateActions
+    module ClassMethods
+      def update(target, params)
+        attrs = LabWhere.instance.put(self, target, params)
+        new(attrs) unless attrs.nil?
+      end
+    end
+    def self.included(base)
+      base.send(:extend, ClassMethods)
     end
   end
 
@@ -67,7 +107,35 @@ module LabWhereClient
   end
 
   class Scan < Endpoint
+    include EndpointCreateActions
+
+    attr_reader :message, :errors
+
     endpoint_name 'scans'
+
+    def initialize(params)
+      @message = params['message']
+      @errors = params['errors']
+    end
+
+    def response_message
+      @message
+    end
+
+    def self.creation_params(params)
+      obj = params.dup
+      obj[:labware_barcodes] = obj[:labware_barcodes].join('\\n')
+      { :scan => obj }
+    end
+
+    def valid?
+      @errors.nil?
+    end
+
+    def error
+      @errors.join('\n')
+    end
+
   end
 
   class Location < Endpoint
