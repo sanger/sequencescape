@@ -9,11 +9,13 @@ module LabWhereClient
 
   class LabWhere
     include Singleton
+
     def base_url
       configatron.labwhere_api
     end
 
     def path_to(instance, target)
+      raise LabwhereException.new, "LabWhere service URL not set" if base_url.nil?
       [base_url, instance.endpoint, target].join('/')
     end
 
