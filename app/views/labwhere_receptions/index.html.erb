@@ -1,10 +1,7 @@
 <h1>Labware Reception</h1>
 <%= javascript_include_tag 'labwhere_reception' %>
-<div class="user_guide">
-  <h2>Getting started...</h2>
-  <p>This page integrates with Labwhere to provide shelf level asset tracking, replacing ETS.</p>
-</div>
-<% form_for(@labwhere_reception, :url => labwhere_receptions_path) do |form| %>
+
+<% form_for(@labwhere_reception) do |form| %>
 
   <div class="form-group">
   <%= form.label :location_id, 'Sequencescape location' %>
@@ -21,5 +18,13 @@
   <%= form.text_field :location_barcode, :required => true %>
   </div>
 
-  <%= form.submit %>
+  <div class="form-group">
+  <%= form.label :asset_scan, 'Scan plate or tube' %>
+  <%= text_field_tag :asset_scan, {}, :class => 'rescannable' %>
+  </div>
+
+  <ul id="barcode_list" class="barcode_list">
+  </ul>
+
+  <%= form.submit 'Update locations' %>
 <% end %>

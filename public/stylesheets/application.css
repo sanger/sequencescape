@@ -39,6 +39,18 @@ a:visited {
   text-shadow: 0 -1px 1px #00131C;
 }
 
+#barcode_list li {
+  width: 80%;
+  border: 1px solid black;
+  border-radius: 3px;
+  padding: 0.2em;
+  margin: 0.2em;
+}
+
+#barcode_list li a {
+  float: right;
+}
+
 #search {
   float: right;
   text-align: right;
