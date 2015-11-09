@@ -297,6 +297,15 @@ class Batch < ActiveRecord::Base
     requests.map(&:target_asset)
   end
 
+  def source_assets
+    requests.map(&:asset)
+  end
+
+  # Source Labware returns the physical pieces of lawbare (ie. a plate for wells, but stubes for tubes)
+  def source_labware
+    requests.map(&:target_asset).map(&:labware).uniq
+  end
+
   def verify_tube_layout(barcodes, user = nil)
     self.requests.each do |request|
       barcode = barcodes["#{request.position}"]

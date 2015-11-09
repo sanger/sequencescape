@@ -2,7 +2,7 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2015 Genome Research Ltd.
 class IlluminaHtp::PooledPlatePurpose < PlatePurpose
-  def transition_to(plate, state, contents = nil, customer_accepts_responsibility = false)
+  def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility = false)
     ActiveRecord::Base.transaction do
       super
       if (state=='passed')

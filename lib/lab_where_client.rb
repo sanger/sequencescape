@@ -4,18 +4,24 @@
 require 'rest-client'
 
 module LabWhereClient
+
   class LabWhere
     include Singleton
     def base_url
-        configatron.labwhere_api
+      configatron.labwhere_api
     end
 
     def path_to(instance, target)
       [base_url, instance.endpoint, target].join('/')
     end
 
+    def parseJSON(str)
+      return nil if str=='null'
+      JSON.parse(str)
+    end
+
     def get(instance, target)
-      JSON.parse(RestClient.get(path_to(instance,target)))
+      parseJSON(RestClient.get(path_to(instance,target)))
     rescue Errno::ECONNREFUSED => e
       raise LabwhereException.new(e), "LabWhere service is down", e.backtrace
     end
@@ -39,9 +45,7 @@ module LabWhereClient
     end
   end
 
-  class LabwhereException < Exception
-  end
-
+  LabwhereException = Class.new(StandardError)
 
   class Labware < Endpoint
     endpoint_name 'labwares'
@@ -50,13 +54,18 @@ module LabWhereClient
     attr_reader :location
 
     def self.find_by_barcode(barcode)
-      new(LabWhere.instance.get(self, barcode))
+      attrs = LabWhere.instance.get(self, barcode)
+      new(attrs) unless attrs.nil?
     end
 
     def initialize(params)
       @barcode = params['barcode']
       @location = Location.new(params['location'])
     end
+  end
+
+  class Scan < Endpoint
+    endpoint_name 'scans'
   end
 
   class Location < Endpoint
