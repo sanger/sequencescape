@@ -442,6 +442,10 @@ class Batch < ActiveRecord::Base
     self.orders.map(&:project).compact
   end
 
+  def samples
+    requests.including_samples_from_target.map {|r| r.target_asset.samples }.flatten.uniq
+  end
+
   def requests_by_study(*args)
     self.requests.for_studies(*args).all
   end
