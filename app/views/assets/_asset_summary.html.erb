@@ -67,10 +67,10 @@
       <td><strong><%= @asset.qc_state %></strong></td>
     </tr>
   <% end %>
-  <% if @asset.respond_to?(:get_storage_location) && !@asset.get_storage_location.empty? %>
-    <tr>
+  <% if @asset.respond_to?(:storage_location) && !@asset.storage_location.empty? %>
+    <tr class="location-service-<%= @asset.storage_location_service %>">
       <td class="item">Storage location</td>
-      <td><strong><%= @asset.get_storage_location %></strong></td>
+      <td><strong><%= @asset.storage_location %></strong></td>
     </tr>
   <% end %>
 </table>
