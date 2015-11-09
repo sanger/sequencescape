@@ -19,6 +19,9 @@ class LabwhereReception
      @location ||= Location.find_by_id(location_id)
   end
 
+  def id; nil; end
+  def new_record?; true; end
+
   # save attempts to perform the actions, and returns true if it was successful
   # This maintains compatibility with rails
   def save
@@ -65,6 +68,7 @@ class LabwhereReception
   end
 
   def missing_assets
+    add_error('No barcodes scanned in!') if asset_barcodes.empty?
     asset_barcodes - assets.map(&:machine_barcode)
   end
 
