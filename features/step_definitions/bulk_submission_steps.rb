@@ -10,6 +10,10 @@ When /^I upload a file with (.*) data for (\d+) submissions$/ do |type,number|
   upload_submission_spreadsheet("#{number}_#{type}_rows")
 end
 
+When /^I upload a file with valid data for 1 tube submissions$/ do
+  upload_submission_spreadsheet("1_tube_submission")
+end
+
 When /^I upload a file with 2 valid SC submissions$/ do
   upload_submission_spreadsheet("2_valid_sc_submissions")
 end
@@ -46,4 +50,12 @@ Then /^there should be an order with the gigabases expected set to "(.*?)"$/ do 
     Order.all.detect { |o| o.request_options['gigabases_expected'] == gigabase },
     "There is no order with the gigabases expected set to #{gigabase}"
   )
+end
+
+Then /^the last submission should contain two assets$/ do
+  assert_equal 2, Submission.last.orders.reduce(0) {|total,order| total + order.assets.count }
+end
+
+Then /^the last submission should contain the tube with barcode "(.*?)"$/ do |barcode|
+  assert Submission.last.orders.reduce([]) {|assets,order| assets.concat(order.assets) }.detect {|a| a.barcode == barcode}
 end

@@ -95,6 +95,11 @@ class Submission < ActiveRecord::Base
   end
   alias_method(:json_root, :url_name)
 
+  def subject_type
+    'submission'
+  end
+  alias_attribute :friendly_name, :name
+
   def self.build!(options)
     submission_options = {}
     [:message, :priority].each do |option|
@@ -103,11 +108,13 @@ class Submission < ActiveRecord::Base
     end
     ActiveRecord::Base.transaction do
       order = Order.prepare!(options)
-      order.create_submission({:user_id => order.user_id}.merge(submission_options)).built!
+      order.create_submission({:user_id => order.user_id}.merge(submission_options))
       order.save! #doesn't save submission id otherwise
       study_name = order.study.try(:name)
       order.submission.update_attributes!(:name=>study_name) if study_name
       order.submission.reload
+      order.submission.built!
+      order.submission
     end
   end
   # TODO[xxx]: ... to here really!

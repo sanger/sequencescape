@@ -38,6 +38,10 @@ class Purpose < ActiveRecord::Base
   include Relationship::Associations
   include Uuid::Uuidable
 
+  def source_plate(asset)
+    source_purpose_id.present? ? asset.ancestor_of_purpose(source_purpose_id) : asset.stock_plate
+  end
+
   # There's a barcode printer type that has to be used to print the labels for this type of plate.
   belongs_to :barcode_printer_type
 

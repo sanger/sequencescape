@@ -22,9 +22,19 @@ class Plate < Asset
     plate_purpose.state_of(self)
   end
 
+  def summary_hash
+    {
+      :asset_id => id,
+      :barcode => { :ean13_barcode => ean13_barcode, :human_readable => sanger_human_barcode },
+      :occupied_wells => wells.with_aliquots.include_map.map(&:map_description)
+    }
+  end
+
   def cherrypick_completed
     plate_purpose.cherrypick_completed(self)
   end
+
+  SAMPLE_PARTIAL = 'assets/samples_partials/plate_samples'
 
   # The type of the barcode is delegated to the plate purpose because that governs the number of wells
   delegate :barcode_type, :to => :plate_purpose, :allow_nil => true
@@ -288,6 +298,14 @@ WHERE c.container_id=?
     }
   }
 
+  named_scope :with_wells, lambda { |wells|
+    {
+      :select => 'DISTINCT assets.*',
+      :joins=>[:container_associations],
+      :conditions=>{:container_associations=>{:content_id=> wells.map(&:id) }}
+    }
+  }
+
   named_scope :with_wells_and_requests, {
     :include => {
       :wells => [
@@ -314,18 +332,6 @@ WHERE c.container_id=?
   def children_and_holded
     ( children | wells )
   end
-
-  def create_child
-    raise StandardError, "Kaboom! Don't use this method!"
-    child = Plate.create({:size => self.size})
-    self.children << child
-
-    self.wells.each do |well|
-      child.add_well Well.create({:map_id => well.map_id, :sample_id => well.sample_id})
-    end
-    child
-  end
-  deprecate :create_child
 
   def find_map_by_rowcol(row, col)
     # Count from 0
@@ -600,6 +606,10 @@ WHERE c.container_id=?
   end
   private :lookup_stock_plate
 
+  def original_stock_plates
+    ancestors.find(:all,:conditions => {:plate_purpose_id => PlatePurpose.stock_plate_purpose })
+  end
+
   def ancestor_of_purpose(ancestor_purpose_id)
     return self if self.plate_purpose_id == ancestor_purpose_id
     ancestors.first(:order => 'created_at DESC', :conditions => {:plate_purpose_id=>ancestor_purpose_id})
@@ -728,7 +738,7 @@ WHERE c.container_id=?
   def stock_wells
     # Optimisation: if the plate is a stock plate then it's wells are it's stock wells!
     return Hash[wells.with_pool_id.map { |w| [w,[w]] }] if stock_plate?
-    Hash[wells.with_pool_id.map { |w| [w, w.stock_wells.in_column_major_order] }.reject { |_,v| v.empty? }].tap do |stock_wells_hash|
+    Hash[wells.include_stock_wells.with_pool_id.map { |w| [w, w.stock_wells.sort_by {|sw| sw.map.column_order } ] }.reject { |_,v| v.empty? }].tap do |stock_wells_hash|
       raise "No stock plate associated with #{id}" if stock_wells_hash.empty?
     end
   end
@@ -754,9 +764,41 @@ WHERE c.container_id=?
     true
   end
 
+  def orders_as_target
+    Order.with_plate_as_target(self)
+  end
+
+  def samples_in_order(order_id)
+    Sample.for_plate_and_order(self.id,order_id)
+  end
+
+  def samples_in_order_by_target(order_id)
+    Sample.for_plate_and_order_as_target(order_id)
+  end
+
+  def contained_samples
+    Sample.on_plate(self)
+  end
+
+  def team
+    ProductLine.find(:first,
+      :joins => [
+        'INNER JOIN request_types ON request_types.product_line_id = product_lines.id',
+        'INNER JOIN requests ON requests.request_type_id = request_types.id',
+        'INNER JOIN well_links ON well_links.source_well_id = requests.asset_id AND well_links.type = "stock"',
+        'INNER JOIN container_associations AS ca ON ca.content_id = well_links.target_well_id'
+      ],
+      :conditions => ['ca.container_id = ?',self.id]).try(:name)||'UNKNOWN'
+  end
+
   # Barcode is stored as a string, jet in a number of places is treated as
   # a number. If we conver it before searching, things are faster!
   def find_by_barcode(barcode)
     super(barcode.to_s)
+  end
+
+  alias_method :friendly_name, :sanger_human_barcode
+  def subject_type
+    'plate'
   end
 end

@@ -31,39 +31,52 @@ class SearchesControllerTest < ActionController::TestCase
 
       end
       context "#index" do
-        setup do
-          get :index, :q => "FindMe"
+
+        context "with the valid search" do
+          setup do
+            get :index, :q => "FindMe"
+          end
+
+          should_respond_with :success
+
+          context "results" do
+            define_method(:assert_link_to) do |url|
+              assert_tag :tag => 'a', :attributes => { :href => url }
+            end
+
+            define_method(:deny_link_to) do |url|
+              assert_no_tag :tag => 'a', :attributes => { :href => url }
+            end
+
+            should "contain a link to the study that was found" do
+              assert_link_to study_path(@study)
+            end
+
+            should "not contain a link to the study that was not found" do
+              deny_link_to study_path(@study2)
+            end
+
+            should "contain a link to the sample that was found" do
+              assert_link_to sample_path(@sample)
+            end
+
+            should 'contain a link to the asset that was found' do
+              assert_link_to asset_path(@asset)
+            end
+
+            should "contain a link to the asset_group that was found" do
+              assert_link_to study_asset_group_path(@asset_group_to_find.study, @asset_group_to_find)
+            end
+          end
         end
 
-        should_respond_with :success
-
-        context "results" do
-          define_method(:assert_link_to) do |url|
-            assert_tag :tag => 'a', :attributes => { :href => url }
+        context "with a too short query" do
+          setup do
+            get :index, :q => "A"
           end
 
-          define_method(:deny_link_to) do |url|
-            assert_no_tag :tag => 'a', :attributes => { :href => url }
-          end
-
-          should "contain a link to the study that was found" do
-            assert_link_to study_path(@study)
-          end
-
-          should "not contain a link to the study that was not found" do
-            deny_link_to study_path(@study2)
-          end
-
-          should "contain a link to the sample that was found" do
-            assert_link_to sample_path(@sample)
-          end
-
-          should 'contain a link to the asset that was found' do
-            assert_link_to asset_path(@asset)
-          end
-
-          should "contain a link to the asset_group that was found" do
-            assert_link_to study_asset_group_path(@asset_group_to_find.study, @asset_group_to_find)
+          should 'set the flash' do
+            assert_equal 'Queries should be at least 3 characters long', @controller.action_flash[:error]
           end
         end
       end

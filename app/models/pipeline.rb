@@ -263,7 +263,12 @@ class Pipeline < ActiveRecord::Base
   end
   deprecate :release_batch
 
+  def on_start_batch(batch, user)
+    # Do nothing
+  end
+
   def post_release_batch(batch, user)
+    # Do Nothing
   end
 
   def has_controls?

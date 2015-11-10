@@ -43,9 +43,10 @@
 <h3>RELATIONS</h3>
 <div class='help'>
   This asset has <%= pluralize @asset.parents.size+@asset.children.size, "relation" %>.
+  <a data-collapse-element-id="relations-table" data-hidden="false" class="shown-button">Collapse</a>
 </div>
 
-<table width='100%' class='sortable asset_relations' >
+<table id="relations-table" width='100%' class='sortable asset_relations' >
   <thead>
     <tr>
       <th><%= link_to "Asset", "javascript:void(0);" %></th>
@@ -80,6 +81,7 @@
 <h3>REQUESTS</h3>
 <div class='help'>
   This asset has <%= pluralize @asset.requests.size, "request" %>.
+  <a data-collapse-element-id="requests_table" data-hidden="false" class="shown-button">Collapse</a>
 </div>
 
 <table id="requests_table" width='100%' class='sortable' cellpadding="4" cellspacing="1">
@@ -133,3 +135,4 @@
     <% end %>
   </tbody>
  </table>
+

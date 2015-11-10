@@ -32,7 +32,7 @@ class AssignTubesToMultiplexedWellsTask < Task
   end
 
   def do_task(workflow, params)
-    workflow.do_assign_tubes_to_multiplexed_wells_task(self, params)
+    workflow.do_assign_requests_to_multiplexed_wells_task(self, params)
   end
 
 

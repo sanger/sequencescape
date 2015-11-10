@@ -76,6 +76,7 @@ class Order < ActiveRecord::Base
 
   def cross_study_allowed; false; end
   def cross_project_allowed; false; end
+  def cross_compatible?; false; end
 
   def no_consent_withdrawl
     return true unless all_samples.detect(&:consent_withdrawn?)
@@ -86,7 +87,7 @@ class Order < ActiveRecord::Base
 
   def assets_are_appropriate
     all_assets.each do |asset|
-      errors.add(:asset, "'#{asset.name}'' is a #{asset.sti_type} which is not suitable for #{first_request_type.name} requests") unless is_asset_applicable_to_type?(first_request_type, asset)
+      errors.add(:asset, "'#{asset.name}' is a #{asset.sti_type} which is not suitable for #{first_request_type.name} requests") unless is_asset_applicable_to_type?(first_request_type, asset)
     end
     return true if errors.empty?
     false
@@ -111,6 +112,18 @@ class Order < ActiveRecord::Base
   end
 
   named_scope :for_studies, lambda {|*args| {:conditions => { :study_id => args[0]} } }
+  named_scope :with_plate_as_target, lambda {|plate|
+    # Essentially :joins => {:requests=>{:target_asset=>:container_association}}
+    # But container_association only exists on wells
+    {
+      :select => "DISTINCT orders.*",
+      :joins => [
+        'INNER JOIN requests AS wpat_r ON wpat_r.order_id = orders.id',
+        'INNER JOIN container_associations ON container_associations.content_id = wpat_r.target_asset_id'
+      ],
+      :conditions => ['container_associations.container_id = ?',plate.id]
+    }
+  }
 
   cattr_reader :per_page
   @@per_page = 500
@@ -354,6 +367,18 @@ class Order < ActiveRecord::Base
     submission.requests.where_is_not_a?(TransferRequest).for_order_including_submission_based_requests(self).map do |request|
       request.add_comment(comment_str, user)
     end
+  end
+
+  def friendly_name
+    asset_group.try(:name)||asset_group_name||id
+  end
+
+  def subject_type
+    'order'
+  end
+
+  def generate_broadcast_event
+    BroadcastEvent::OrderMade.create!(:seed=>self,:user=>user)
   end
 end
 
