@@ -1,9 +1,8 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2013,2014,2015 Genome Research Ltd.
 class PacBioSequencingRequest < Request
 
-  SEQUENCING_TYPE = ["Standard","MagBead","Strobe","Circular"]
   has_metadata :as => Request  do
     attribute(:insert_size,      :validator => true, :required => true, :integer => true, :selection =>true  )
     attribute(:sequencing_type,  :validator => true, :required => true, :selection =>true                    )

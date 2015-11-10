@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2014 Genome Research Ltd.
+#Copyright (C) 2014,2015 Genome Research Ltd.
 require "test_helper"
 
 class QcableLibraryPlatePurposeTest < ActiveSupport::TestCase
@@ -23,7 +23,7 @@ class QcableLibraryPlatePurposeTest < ActiveSupport::TestCase
         plate.expects(:wells).returns([well])
         well.expects(:aliquots).returns([aliquot])
 
-        @purpose.transition_to(plate, 'passed')
+        @purpose.transition_to(plate, 'passed', nil)
 
         assert_equal aliquot.library, well
         assert_equal aliquot.library_type, 'QA1'

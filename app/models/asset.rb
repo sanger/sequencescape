@@ -6,6 +6,8 @@ class Asset < ActiveRecord::Base
   include ModelExtensions::Asset
   include AssetLink::Associations
 
+  SAMPLE_PARTIAL = 'assets/samples_partials/blank'
+
   module InstanceMethods
     # Assets are, by default, non-barcoded
     def generate_barcode
@@ -22,8 +24,11 @@ class Asset < ActiveRecord::Base
   class VolumeError< StandardError
   end
 
-
-  SAMPLE_PARTIAL = 'assets/samples_partials/blank'
+  def summary_hash
+    {
+      :asset_id => id
+    }
+  end
 
   def sample_partial
     self.class::SAMPLE_PARTIAL
@@ -156,6 +161,11 @@ class Asset < ActiveRecord::Base
     study.try(:id)
   end
 
+  def ancestor_of_purpose(ancestor_purpose_id)
+    # If it's not a tube or a plate, defaults to stock_plate
+    return self.stock_plate
+  end
+
   has_one :creation_request, :class_name => 'Request', :foreign_key => :target_asset_id
 
   def label
@@ -220,6 +230,11 @@ class Asset < ActiveRecord::Base
 
   def child
     self.children.last
+  end
+
+  # Labware reflects the physical piece of plastic corresponding to an asset
+  def labware
+    self
   end
 
   def library_prep?
@@ -530,5 +545,7 @@ class Asset < ActiveRecord::Base
   def tag_count
     nil
   end
+
+  def contained_samples; []; end
 
 end

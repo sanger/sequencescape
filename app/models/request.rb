@@ -92,6 +92,19 @@ class Request < ActiveRecord::Base
     }
   }
 
+  named_scope :for_event_notification_by_order, lambda {|order|
+    {
+      :conditions => [
+        'requests.sti_type NOT IN (?) AND requests.state = "passed" AND requests.order_id=?',
+        [TransferRequest,*Class.subclasses_of(TransferRequest)].map(&:name), order.id
+      ]
+    }
+  }
+
+
+  named_scope :including_samples_from_target, :include => { :target_asset => {:aliquots  => :sample } }
+  named_scope :including_samples_from_source, :include => { :asset => {:aliquots  => :sample } }
+
   named_scope :for_order_including_submission_based_requests, lambda {|order|
     # To obtain the requests for an order and the sequencing requests of its submission (as they are defined
     # as a common element for any order in the submission)

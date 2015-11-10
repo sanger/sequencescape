@@ -30,6 +30,17 @@ class Tube < Aliquot::Receptacle
     { :conditions => { :plate_purpose_id => purposes.flatten.map(&:id) } }
   }
 
+  def ancestor_of_purpose(ancestor_purpose_id)
+    return self if self.plate_purpose_id == ancestor_purpose_id
+    ancestors.first(:order => 'created_at DESC', :conditions => {:plate_purpose_id=>ancestor_purpose_id})
+  end
+
+  def original_stock_plates
+    ancestors.find(:all,:conditions => {:plate_purpose_id => PlatePurpose.stock_plate_purpose })
+  end
+
+  alias_method :friendly_name, :sanger_human_barcode
+
   # Base class for the all tube purposes
   class Purpose < ::Purpose
     # TODO: change to purpose_id
@@ -74,7 +85,7 @@ class Tube < Aliquot::Receptacle
   end
 
   class StockMx < Tube::Purpose
-    def transition_to(tube, state, _ = nil, customer_accepts_responsibility=false)
+    def transition_to(tube, state, user, _ = nil, customer_accepts_responsibility=false)
       tube.requests_as_target.open.each do |request|
         request.transition_to(state)
       end
@@ -97,7 +108,7 @@ class Tube < Aliquot::Receptacle
     # Transitioning an MX library tube to a state involves updating the state of the transfer requests.  If the
     # state is anything but "started" or "pending" then the pulldown library creation request should also be
     # set to the same state
-    def transition_to(tube, state, _ = nil, customer_accepts_responsibility=false)
+    def transition_to(tube, state, user, _ = nil, customer_accepts_responsibility=false)
       update_all_requests = ![ 'started', 'pending' ].include?(state)
       tube.requests_as_target.open.for_billing.each do |request|
         request.transition_to(state) if update_all_requests or request.is_a?(TransferRequest)
