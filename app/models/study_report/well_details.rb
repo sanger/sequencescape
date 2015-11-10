@@ -5,7 +5,7 @@ module StudyReport::WellDetails
   def self.included(base)
     base.class_eval do
       named_scope :for_study_report, { :include => [
-        :map, :well_attribute, { :plate => :plate_purpose, :primary_aliquot => { :sample => :sample_metadata } }
+        :map, :well_attribute, :events, :target_wells, { :plate => :plate_purpose, :primary_aliquot => { :sample => :sample_metadata } }
       ] }
     end
   end
@@ -42,6 +42,7 @@ module StudyReport::WellDetails
       :sequenom_count  => "#{self.get_sequenom_count.to_i}/30",
       :sequenom_gender => self.get_gender_markers,
       :pico => self.well_attribute.pico_pass,
+      :is_in_fluidigm => self.is_in_fluidigm?,
       :gel => self.well_attribute.gel_pass,
       :plate_barcode => self.plate.barcode,
       :measured_volume => self.well_attribute.measured_volume,

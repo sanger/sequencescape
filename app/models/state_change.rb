@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013 Genome Research Ltd.
+#Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
 # Performs a change of state on an asset.
 #
 #--
@@ -54,7 +54,7 @@ class StateChange < ActiveRecord::Base
   # After state change, update the owner
   after_create :update_state_of_target
   def update_state_of_target
-    target.transition_to(target_state, contents, customer_accepts_responsibility)
+    target.transition_to(target_state, user, contents, customer_accepts_responsibility)
   end
   private :update_state_of_target
 end

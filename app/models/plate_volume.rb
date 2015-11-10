@@ -23,8 +23,8 @@ class PlateVolume < ActiveRecord::Base
 
     extract_well_volumes do |well_description, volume|
       map  = Map.find_for_cell_location(well_description,plate.size) or raise "Cannot find location for #{well_description.inspect} on plate size #{plate.size}"
-      well = location_to_well[map] or raise "Could not find well #{map.description} on plate #{plate.id} (barcode: #{plate.barcode})"
-      well.well_attribute.update_attributes!(:measured_volume => volume.to_f)
+      well = location_to_well[map]
+      well.well_attribute.update_attributes!(:measured_volume => volume.to_f) if well.present?
     end
   end
   private :update_well_volumes

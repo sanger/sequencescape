@@ -33,14 +33,14 @@ class PipelinesController < ApplicationController
     @batches = @pipeline.batches.all(:limit => 5, :order => "created_at DESC")
 
     # TODO: The presenter currently only handles 'group_by_parent' pipelines.
-    @inbox_presenter = Presenters::PipelineInboxPresenter.new(@pipeline,current_user)
+    @inbox_presenter = Presenters::PipelineInboxPresenter.new(@pipeline,current_user,@show_held_requests)
 
     unless @pipeline.qc?
       @information_types = @pipeline.request_information_types
       @requests_waiting  = @pipeline.requests.inbox(@show_held_requests, @current_page, :count)
 
       if @pipeline.group_by_parent?
-        @request_groups = @pipeline.get_input_request_groups(@show_held_requests)
+        # We use the inbox presenter
       elsif @pipeline.group_by_submission?
         @grouped_requests  = @pipeline.requests.inbox(@show_held_requests,@current_page).group_by(&:submission_id)
       else

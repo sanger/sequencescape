@@ -21,6 +21,11 @@ class TubeFromTubeCreation < AssetCreation
   end
   private :create_children!
 
+  def create_ancestor_plate!
+    create_ancestor_asset!(parent.plate, child) if can_create_ancestor_plate?(parent.plate, child)
+  end
+  before_save :create_ancestor_plate!
+
   def record_creation_of_children
 #    children.each { |child| parent.events.create_tube!(child_purpose, child, user) }
   end

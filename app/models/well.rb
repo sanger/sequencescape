@@ -31,7 +31,12 @@ class Well < Aliquot::Receptacle
     end
   end
 
-  named_scope :include_stock_wells, { :include => { :stock_wells => :requests_as_source } }
+  def is_in_fluidigm?
+    sta_plate_purpose_name = "#{configatron.sta_plate_purpose_name}"
+    !self.target_wells.detect{|w| w.events.detect {|e| e.family == PlatesHelper::event_family_for_pick(sta_plate_purpose_name)}.nil?}
+  end
+
+  named_scope :include_stock_wells, { :include => { :stock_wells => [:requests_as_source,:map] } }
   named_scope :include_map,         { :include => :map }
 
   named_scope :located_at, lambda { |plate, location|
@@ -49,9 +54,18 @@ class Well < Aliquot::Receptacle
       }
     }}
 
+
+
   named_scope :located_at_position, lambda { |position| { :joins => :map, :readonly => false, :conditions => { :maps => { :description => position } } } }
 
   contained_by :plate
+
+  # We don't handle this in contained by as identifiable pieces of labware
+  # may still be contained. (Such as if we implement tube racks)
+  def labware
+    plate
+  end
+
   delegate :location, :location_id, :location_id=, :to => :container , :allow_nil => true
   @@per_page = 500
 

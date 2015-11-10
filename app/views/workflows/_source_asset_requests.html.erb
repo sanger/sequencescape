@@ -1,13 +1,15 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2015 Genome Research Ltd.%>
-<ul class="tube_source tube_receiver" id='tube_source'>
-  <h3>Unsorted Tubes</h3>
-  <p>Drag tubes onto the wells of the plate, or drop them back here.</P>
+<%# TODO: Rename the classes here to be less asset-type specific %>
+<ul class="tube_source tube_receiver interface_group" id='tube_source'>
+  <h3>Unsorted <%= type.capitalize %></h3>
+  <p>Drag <%= type %> onto the wells of the plate, or drop them back here.</P>
 <% requests.each do |request| %>
   <% tag =  tag_index_for(request) %>
   <% shared_attributes = request.shared_attributes %>
-  <li class='library_tube' data-tag-index='<%= tag %>' data-request-id='<%= request.id %>' data-asset-id='<%= request.asset_id %>' title='<%= shared_attributes %>'><%= request.asset.name %><span class='tube_tag'><%= tag %></span></li>
+  <% sample_list = request.asset.samples.map(&:id).join(',') %>
+  <li class='library_tube' data-tag-index='<%= tag %>' data-request-id='<%= request.id %>' data-asset-id='<%= request.asset_id %>' data-sample-id='<%= sample_list %>' title='<%= shared_attributes %>'><%= request.asset.display_name %><span class='tube_tag'><%= tag %></span></li>
 <% end %>
 </ul>
 <% requests.each do |request| %>
