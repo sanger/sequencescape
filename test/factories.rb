@@ -638,8 +638,9 @@ Factory.define :pac_bio_library_tube do |tube|
   end
 end
 
-Factory.define :transfer_request do
-  end
+Factory.define :transfer_request do |tr|
+  tr.request_purpose {|rp| rp.association(:request_purpose)}
+end
 
 # A library tube is created from a sample tube through a library creation request!
 Factory.define :full_library_tube, :parent => :library_tube do |library_tube|

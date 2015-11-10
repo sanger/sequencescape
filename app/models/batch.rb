@@ -303,7 +303,7 @@ class Batch < ActiveRecord::Base
 
   # Source Labware returns the physical pieces of lawbare (ie. a plate for wells, but stubes for tubes)
   def source_labware
-    requests.map(&:target_asset).map(&:labware).uniq
+    requests.map(&:asset).map(&:labware).uniq
   end
 
   def verify_tube_layout(barcodes, user = nil)
@@ -440,6 +440,10 @@ class Batch < ActiveRecord::Base
 
   def projects
     self.orders.map(&:project).compact
+  end
+
+  def samples
+    requests.including_samples_from_target.map {|r| r.target_asset.samples }.flatten.uniq
   end
 
   def requests_by_study(*args)
