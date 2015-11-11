@@ -384,6 +384,7 @@ end
 
 Factory.define :pooled_cherrypick_request do |r|
   r.asset      {|asset| asset.association(:well_with_sample_and_without_plate)}
+  r.request_purpose { |rt| rt.association(:request_purpose) }
 end
 
 
