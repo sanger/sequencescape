@@ -8,7 +8,7 @@
     <%= form.input :source_plates,   :as => :text,   :required => false %>
     <%= form.input :creator_id,      :as => :select, :collection => @plate_creators, :label => 'Plate purpose' %>
     <%= form.input :barcode_printer, :as => :select, :collection => @barcode_printers %>
-    <%= form.commit_button %>
+    <%= form.commit_button :disable_with => 'Please wait...' %>
   <% end %>
 <% end %>
 
