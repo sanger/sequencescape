@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2014 Genome Research Ltd.
+#Copyright (C) 2014,2015 Genome Research Ltd.
 Given /^I have a lot type for testing called "(.*?)"$/ do |name|
   LotType.create!(
     :name           => name,
@@ -117,11 +117,12 @@ Given /^I have a qc library created$/ do
   tag_plate.update_attributes!(:plate_purpose=>PlatePurpose.find_by_name('Tag PCR'))
   Transfer::BetweenPlates.create!(:user=>user,:source=>reporter_plate,:destination=>tag_plate,:transfers=>{'A1'=>'A1'})
   stc = SpecificTubeCreation.create!(:parent=>tag_plate,:child_purposes=>[Tube::Purpose.find_by_name('Tag MX')],:user=>user)
-  Batch.new(:pipeline=>Pipeline.find_by_name('MiSeq sequencing')).tap do |batch|
+  batch = Batch.new(:pipeline=>Pipeline.find_by_name('MiSeq sequencing')).tap do |batch|
     batch.id= 12345
     batch.save!
   end
-  Batch.find(12345).batch_requests.create!(:request=>Request.create!(:asset=>stc.children.first),:position=>1)
+  Factory :request_without_submission, :asset=> stc.children.first, :batch => batch
+  # Batch.find(12345).batch_requests.create!(:request=>Request.create!(:asset=>stc.children.first),:position=>1)
 
 end
 

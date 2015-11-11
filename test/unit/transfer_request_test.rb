@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012 Genome Research Ltd.
+#Copyright (C) 2011,2012,2015 Genome Research Ltd.
 require 'test_helper'
 
 class TransferRequestTest < ActiveSupport::TestCase
@@ -28,16 +28,6 @@ class TransferRequestTest < ActiveSupport::TestCase
   end
 
   context 'TransferRequest' do
-    context 'when starting the request directly' do
-
-      setup do
-        shared_setup
-        @transfer_request = TransferRequest.create!(:asset => @source, :target_asset => @destination)
-      end
-
-      shared_tests
-
-    end
 
     context 'when using the constuctor' do
       setup do
@@ -51,7 +41,6 @@ class TransferRequestTest < ActiveSupport::TestCase
 
     should 'not permit transfers to the same asset' do
       asset = Factory(:sample_tube)
-      assert_raises(ActiveRecord::RecordInvalid) { TransferRequest.create!(:asset => asset, :target_asset => asset) }
       assert_raises(ActiveRecord::RecordInvalid) { RequestType.transfer.create!(:asset => asset, :target_asset => asset) }
     end
 

@@ -188,6 +188,7 @@ Factory.define(:pooling_transfer, :class=>RequestType) do |pooling_transfer|
   pooling_transfer.asset_type 'Well'
   pooling_transfer.order 1
   pooling_transfer.request_class_name 'IlluminaHtp::Requests::PcrXpToPool'
+  pooling_transfer.request_purpose {|rp| rp.association(:request_purpose) }
 end
 # Plate creations
 Factory.define(:pooling_plate_purpose, :class => PlatePurpose) do |plate_purpose|
@@ -265,6 +266,7 @@ Factory.define(:pulldown_wgs_request, :class => Pulldown::Requests::WgsLibraryRe
     request.request_metadata.fragment_size_required_from = 300
     request.request_metadata.fragment_size_required_to   = 500
   end
+  request.request_purpose {|rp| rp.association(:request_purpose) }
 end
 
 Factory.define(:library_completion, :class => IlluminaHtp::Requests::LibraryCompletion) do |request|
@@ -275,6 +277,7 @@ Factory.define(:library_completion, :class => IlluminaHtp::Requests::LibraryComp
     request.request_metadata.fragment_size_required_from = 300
     request.request_metadata.fragment_size_required_to   = 500
   end
+  request.request_purpose {|rp| rp.association(:request_purpose) }
 end
 
 Factory.define(:pulldown_sc_request, :class => Pulldown::Requests::ScLibraryRequest) do |request|
@@ -286,6 +289,7 @@ Factory.define(:pulldown_sc_request, :class => Pulldown::Requests::ScLibraryRequ
     request.request_metadata.fragment_size_required_to   = 400
     request.request_metadata.bait_library                = Factory(:bait_library)
   end
+  request.request_purpose {|rp| rp.association(:request_purpose) }
 end
 Factory.define(:pulldown_isc_request, :class => Pulldown::Requests::IscLibraryRequest) do |request|
   request.request_type { |target| RequestType.find_by_name('Pulldown ISC') or raise StandardError, "Could not find 'Pulldown ISC' request type" }
@@ -296,4 +300,5 @@ Factory.define(:pulldown_isc_request, :class => Pulldown::Requests::IscLibraryRe
     request.request_metadata.fragment_size_required_to   = 400
     request.request_metadata.bait_library                = BaitLibrary.first||Factory(:bait_library)
   end
+  request.request_purpose {|rp| rp.association(:request_purpose) }
 end
