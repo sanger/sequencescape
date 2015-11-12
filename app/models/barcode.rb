@@ -9,7 +9,11 @@ class Barcode
         before_create :set_default_prefix
         class_inheritable_accessor :prefix
         self.prefix = "NT"
-        after_save :broadcast_barcode, :if => :barcode_changed?
+
+        if ActiveRecord::Base.observers.include?(:amqp_observer)
+          after_save :broadcast_barcode, :if => :barcode_changed?
+        end
+
       end
     end
 

@@ -107,10 +107,6 @@ class SampleRegistrarTest < ActiveSupport::TestCase
           :sample_tube_attributes => { :two_dimensional_barcode => 'XX12345' }
         )
       end
-
-      should 'set the barcode to the 2D barcode' do
-        assert_equal('12345', SampleTube.last.barcode)
-      end
     end
 
     should_belong_to :user
