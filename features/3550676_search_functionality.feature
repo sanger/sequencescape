@@ -4,10 +4,10 @@ Feature: Searching sequencescape
     Given I am logged in as "user"
     And I am on the search page
 
-    Given a project named "My Project" exists
-    And a study named "My Study" exists
-    And a sample named "SampleForMy" exists
-    And sample "SampleForMy" is in a sample tube named "My Asset"
+    Given a project named "This Project" exists
+    And a study named "This Study" exists
+    And a sample named "SampleForThis" exists
+    And sample "SampleForThis" is in a sample tube named "This Asset"
 
   Scenario Outline: Searching
     When I fill in "Search for" with "<search>"
@@ -17,11 +17,11 @@ Feature: Searching sequencescape
     And I should see "<result>"
 
     Examples:
-      |  search |   type  |   result     |
-      | Project | project | My Project   |
-      | Study   | study   | My Study     |
-      | Sample  | sample  | SampleForMy  |
-      | Asset   | asset   | My Asset     |
+      |  search |   type  |   result       |
+      | Project | project | This Project   |
+      | Study   | study   | This Study     |
+      | Sample  | sample  | SampleForThis  |
+      | Asset   | asset   | This Asset     |
 
   @wip
   Scenario: Searching for a request

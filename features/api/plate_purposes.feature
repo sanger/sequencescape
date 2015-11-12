@@ -18,9 +18,7 @@ And I have a "full" authorised user with the key "cucumber"
 
   @read
   Scenario: Reading the JSON for a UUID
-    Given the plate purpose exists with ID 1
-    And the UUID for the plate purpose with ID 1 is "00000000-1111-2222-3333-444444444444"
-
+    Given a plate purpose "Example purpose" with UUID "00000000-1111-2222-3333-444444444444"
     When I GET the API path "/00000000-1111-2222-3333-444444444444"
     Then the HTTP response should be "200 OK"
     And the JSON should match the following for the specified fields:
@@ -33,7 +31,7 @@ And I have a "full" authorised user with the key "cucumber"
 
           "uuid": "00000000-1111-2222-3333-444444444444",
 
-          "name": "Frag",
+          "name": "Example purpose",
           "plates": {
             "actions": {
               "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/plates"

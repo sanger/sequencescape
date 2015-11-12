@@ -3,7 +3,6 @@
 #Copyright (C) 2007-2011,2013,2014,2015 Genome Research Ltd.
 class PacBioSequencingRequest < CustomerRequest
 
-  SEQUENCING_TYPE = ["Standard","MagBead","Strobe","Circular"]
   has_metadata :as => Request  do
     attribute(:insert_size,      :validator => true, :required => true, :integer => true, :selection =>true  )
     attribute(:sequencing_type,  :validator => true, :required => true, :selection =>true                    )

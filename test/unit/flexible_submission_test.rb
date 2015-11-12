@@ -98,49 +98,94 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         setup do
           @study_b   = Factory :study
           @project_b = Factory :project
-
-          @xs_mpx_submission = FlexibleSubmission.build!(
-            :study            => @study,
-            :project          => @project,
-            :workflow         => @workflow,
-            :user             => @user,
-            :assets           => @assets.slice(0,8),
-            :request_types    => @request_type_ids,
-            :request_options  => @request_options
-          )
-          @order_b = FlexibleSubmission.prepare!(
-            :study            => @study_b,
-            :project          => @project_b,
-            :workflow         => @workflow,
-            :user             => @user,
-            :assets           => @assets.slice(8,8),
-            :request_types    => @request_type_ids,
-            :request_options  => @request_options,
-            :submission       => @xs_mpx_submission
-          )
-          @xs_mpx_submission.save!
         end
 
-        should 'be a multiplexed submission' do
-          assert @xs_mpx_submission.multiplexed?
-        end
+        context "specified at submission" do
+          setup do
+            @xs_mpx_submission = FlexibleSubmission.build!(
+              :study            => @study,
+              :project          => @project,
+              :workflow         => @workflow,
+              :user             => @user,
+              :assets           => @assets.slice(0,8),
+              :request_types    => @request_type_ids,
+              :request_options  => @request_options
+            )
+            @order_b = FlexibleSubmission.prepare!(
+              :study            => @study_b,
+              :project          => @project_b,
+              :workflow         => @workflow,
+              :user             => @user,
+              :assets           => @assets.slice(8,8),
+              :request_types    => @request_type_ids,
+              :request_options  => @request_options,
+              :submission       => @xs_mpx_submission
+            )
+            @xs_mpx_submission.orders << @order_b
+            @xs_mpx_submission.save!
+          end
 
-        context "#process!" do
+          should 'be a multiplexed submission' do
+            assert @xs_mpx_submission.multiplexed?
+          end
 
-          context 'multiple requests' do
-            setup do
-               @xs_mpx_submission.process!
+          context "#process!" do
+
+            context 'multiple requests' do
+              setup do
+                @xs_mpx_submission.process!
+              end
+
+              should_change("Request.count", :by => (16+8)) { Request.count }
+
+              should 'not set study or project post multiplexing' do
+                assert_equal nil, @sequencing_request_type.requests.last.initial_study_id
+                assert_equal nil, @sequencing_request_type.requests.last.initial_project_id
+              end
             end
+          end
+        end
 
-            should_change("Request.count", :by => (16+8)) { Request.count }
+        context "not specified at submission" do
+          should 'not be valid for unpooled assets' do
+            assert_raise(ActiveRecord::RecordInvalid) do
+              FlexibleSubmission.build!(
+                :study            => nil,
+                :project          => nil,
+                :workflow         => @workflow,
+                :user             => @user,
+                :assets           => @assets,
+                :request_types    => @request_type_ids,
+                :request_options  => @request_options
+              )
 
-            should 'not set study or project post multiplexing' do
-              assert_equal nil, @sequencing_request_type.requests.last.initial_study_id
-              assert_equal nil, @sequencing_request_type.requests.last.initial_project_id
             end
           end
 
+          context "On pooled assets" do
+            setup do
+              @pooled = Factory :cross_pooled_well
+              @sub = FlexibleSubmission.build!(
+                :study            => nil,
+                :project          => nil,
+                :workflow         => @workflow,
+                :user             => @user,
+                :assets           => [@pooled],
+                :request_types    => @request_type_ids,
+                :request_options  => @request_options
+              )
+              @sub.process!
+            end
+
+             should_change("Request.count", :by => (1+8)) { Request.count }
+
+             should 'not set request study or projects' do
+              assert @sub.requests.all? {|r| r.initial_study_id.nil? && r.initial_project_id.nil? }
+             end
+          end
+
         end
+
       end
 
 

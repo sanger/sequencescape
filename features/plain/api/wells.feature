@@ -123,7 +123,7 @@ Feature: Interacting with wells through the API
       """
 
   Scenario: Convenient well naming format is exposed in the warehouse
-     Given the nameless well exists with ID 1
+     Given the well exists with ID 1
       And the UUID for the well with ID 1 is "00000000-1111-2222-3333-444444444444"
       Given the plate exists with ID 2
       And the plate with ID 2 has a barcode of "1220123456808"

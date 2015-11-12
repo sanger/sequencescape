@@ -187,8 +187,21 @@ RequestType.all.each do |rt|
   Factory.define(factory_name, :parent => :request_metadata) {}
 end
 
+Factory.define :request_without_submission, :class => Request do |request|\
+  request.request_type    { |rt| rt.association(:request_type) }
+  request.request_purpose { |rt| rt.association(:request_purpose) }
+
+  # Ensure that the request metadata is correctly setup based on the request type
+  request.after_build do |request|
+    next if request.request_type.nil?
+    request.request_metadata = Factory.build(:"request_metadata_for_#{request.request_type.name.downcase.gsub(/[^a-z]+/, '_')}") if request.request_metadata.new_record?
+    request.sti_type = request.request_type.request_class_name
+  end
+end
+
 Factory.define :request_with_submission, :class => Request do |request|
-  request.request_type { |rt| rt.association(:request_type) }
+  request.request_type    { |rt| rt.association(:request_type) }
+  request.request_purpose { |rt| rt.association(:request_purpose) }
 
   # Ensure that the request metadata is correctly setup based on the request type
   request.after_build do |request|
@@ -214,6 +227,7 @@ end
 
 Factory.define :sequencing_request, :class => SequencingRequest do |request|
   request.request_type { |rt| rt.association(:request_type) }
+  request.request_purpose { |rt| rt.association(:request_purpose) }
 
   # Ensure that the request metadata is correctly setup based on the request type
   request.after_build do |request|
@@ -263,6 +277,7 @@ Factory.define :request_without_item, :class => "Request" do |r|
   r.project         {|pr| pr.association(:project)}
   r.user            {|user|     user.association(:user)}
   r.request_type    {|request_type| request_type.association(:request_type)}
+  r.request_purpose { |rt| rt.association(:request_purpose) }
   r.workflow        {|workflow| workflow.association(:submission_workflow)}
   r.state           'pending'
   r.after_build { |request| request.submission = Factory::submission(:study => request.initial_study,
@@ -280,6 +295,7 @@ Factory.define :request_without_project, :class => Request do |r|
   r.item            {|item| item.association(:item)}
   r.user            {|user|     user.association(:user)}
   r.request_type    {|request_type| request_type.association(:request_type)}
+  r.request_purpose { |rt| rt.association(:request_purpose) }
   r.workflow        {|workflow| workflow.association(:submission_workflow)}
   r.state           'pending'
 end
@@ -290,10 +306,16 @@ Factory.define :"#{state}_request", :parent =>  :request do |r|
 end
 end
 
+Factory.define :pooled_cherrypick_request do |r|
+  r.asset      {|asset| asset.association(:well_with_sample_and_without_plate)}
+  r.request_purpose { |rt| rt.association(:request_purpose) }
+end
+
 
 Factory.define :request_type do |rt|
   rt.name           { rt_value = Factory.next :request_type_id ; "Request type #{rt_value}" }
   rt.key            {|x| x.name.methodize }
+  rt.request_purpose { |rt| rt.association(:request_purpose) }
   rt.deprecated     false
   rt.asset_type     'SampleTube'
   rt.request_class  Request
@@ -328,6 +350,7 @@ Factory.define :well_request_type, :parent => :request_type do |rt|
 end
 
 Factory.define :library_creation_request_type, :class => RequestType do |rt|
+  rt.request_purpose { |rt| rt.association(:request_purpose) }
   rt.name           { rt_value = Factory.next :request_type_id ; "LC Request type #{rt_value}" }
   rt.key            {|x| x.name.methodize }
   rt.asset_type     "SampleTube"
@@ -341,6 +364,7 @@ Factory.define :library_creation_request_type, :class => RequestType do |rt|
   }
 end
 Factory.define :sequencing_request_type, :class => RequestType do |rt|
+  rt.request_purpose { |rt| rt.association(:request_purpose) }
   rt.name           {rt_value = Factory.next :request_type_id ; "Request type #{rt_value}"}
   rt.key            {|x| x.name.methodize }
   rt.asset_type     "LibraryTube"
@@ -363,6 +387,7 @@ Factory.define :library_request_type_validator, :class => RequestType::Validator
 end
 
 Factory.define :multiplexed_library_creation_request_type, :class => RequestType do |rt|
+  rt.request_purpose { |rt| rt.association(:request_purpose) }
   rt.name               {rt_value = Factory.next :request_type_id ; "MX Request type #{rt_value}" }
   rt.key                {|x| x.name.methodize }
   rt.request_class      MultiplexedLibraryCreationRequest
@@ -379,6 +404,7 @@ end
 Factory.define :plate_based_multiplexed_library_creation_request_type, :class => RequestType do |rt|
   rt.name               {rt_value = Factory.next :request_type_id ; "MX Request type #{rt_value}" }
   rt.key                {|x| x.name.methodize }
+  rt.request_purpose { |rt| rt.association(:request_purpose) }
   rt.request_class      MultiplexedLibraryCreationRequest
   rt.asset_type         "Well"
   rt.order              1
@@ -513,6 +539,10 @@ Factory.define(:new_stock_tube_purpose, :class=>IlluminaHtp::StockTubePurpose) d
   p.name { Factory.next :purpose_name }
 end
 
+Factory.define(:request_purpose) do |rp|
+  rp.key { Factory.next :purpose_name }
+end
+
 Factory.define(:empty_library_tube, :class => LibraryTube) do |library_tube|
   library_tube.qc_state ''
   library_tube.name     {|_| Factory.next :asset_name }
@@ -523,7 +553,14 @@ Factory.define :library_tube, :parent => :empty_library_tube do |library_tube|
     library_tube.aliquots.create!(:sample => Factory(:sample))
   end
 end
-Factory.define :pac_bio_library_tube do
+Factory.define :pac_bio_library_tube do |tube|
+  tube.after_build do |t|
+    t.aliquots.build(:sample=>Factory(:sample))
+  end
+end
+
+Factory.define :transfer_request do |tr|
+  tr.request_purpose {|rp| rp.association(:request_purpose)}
 end
 
 # A library tube is created from a sample tube through a library creation request!
@@ -533,6 +570,7 @@ end
 
 Factory.define(:library_creation_request_for_testing_sequencing_requests, :class => Request::LibraryCreation) do |request|
   request.request_type { |target| RequestType.find_by_name('Library creation') or raise StandardError, "Could not find 'Library creation' request type" }
+  request.request_purpose {|rp| rp.association(:request_purpose)}
   request.asset        { |target| target.association(:well_with_sample_and_plate) }
   request.target_asset { |target| target.association(:empty_well) }
   request.after_build do |request|
@@ -547,6 +585,7 @@ Factory.define :library_creation_request, :parent => :request do |request|
   request.sti_type      request_type.request_class_name
   request.asset         { |asset| asset.association(:sample_tube) }
   request.request_type  { |type|  type = request_type }
+  request.request_purpose {|rp| rp.association(:request_purpose)}
   request.after_create do |request|
     request.request_metadata.update_attributes!(
       :fragment_size_required_from => 100,
@@ -554,6 +593,13 @@ Factory.define :library_creation_request, :parent => :request do |request|
       :library_type                => 'Standard'
     )
   end
+end
+
+Factory.define :pac_bio_sample_prep_request do |r|
+  r.target_asset    {|ta| ta.association(:pac_bio_library_tube)}
+  r.asset           {|a|   a.association(:well) }
+  r.submission      {|s|   s.association(:submission)}
+  r.request_purpose {|rp| rp.association(:request_purpose)}
 end
 
 # A Multiplexed library tube comes from several library tubes, which are themselves created through a

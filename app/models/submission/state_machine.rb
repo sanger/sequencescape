@@ -66,6 +66,10 @@ module Submission::StateMachine
       # Default behaviour, overidden in the model itself
       false
     end
+
+    def broadcast_events
+      orders.each(&:generate_broadcast_event)
+    end
   end
 
   def configure_state_machine
@@ -74,7 +78,7 @@ module Submission::StateMachine
     aasm_state :building, :exit => :valid_for_leaving_building_state
     aasm_state :pending, :enter => :complete_building
     aasm_state :processing, :enter => :process_submission!, :exit => :process_callbacks!
-    aasm_state :ready
+    aasm_state :ready, :enter => :broadcast_events
     aasm_state :failed
     aasm_state :cancelled, :enter => :cancel_all_requests
 

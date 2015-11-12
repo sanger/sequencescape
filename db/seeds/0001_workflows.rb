@@ -6,6 +6,9 @@ require 'control_request_type_creation'
 Pipeline.send(:include, ControlRequestTypeCreation)
 Pipeline.send(:before_save, :add_control_request_type)
 
+RequestType.send(:include, RequestTypePurposeCreation)
+RequestType.send(:before_validation, :add_request_purpose)
+
 ProductLine.create(:name=>'Illumina-A')
 ProductLine.create(:name=>'Illumina-B')
 ProductLine.create(:name=>'Illumina-C')
@@ -1018,7 +1021,7 @@ PacBioSequencingPipeline.create!(:name => 'PacBio Sequencing') do |pipeline|
   Task.find_by_name('Movie Lengths').descriptors.create!(
       :name => 'Movie length',
       :kind => 'Selection',
-      :selection => [30, 60, 90, 120, 180,210,240],
+      :selection => [30, 60, 90, 120, 180,210,240, 270, 300, 330, 360],
       :value => 180
     )
 
@@ -1073,48 +1076,47 @@ end
 
 mi_seq_freezer = Location.create!({:name => "MiSeq freezer"})
 SequencingPipeline.create!(:name => "MiSeq sequencing") do |pipeline|
-    pipeline.asset_type = 'Lane'
-    pipeline.sorter     = 2
-    pipeline.automated  = false
-    pipeline.active     = true
+  pipeline.asset_type = 'Lane'
+  pipeline.sorter     = 2
+  pipeline.automated  = false
+  pipeline.active     = true
 
-    pipeline.location = mi_seq_freezer
+  pipeline.location = mi_seq_freezer
 
-    pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'miseq_sequencing', :name => "MiSeq sequencing") do |request_type|
+  pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => 'miseq_sequencing', :name => "MiSeq sequencing") do |request_type|
+    request_type.initial_state     = 'pending'
+    request_type.asset_type        = 'LibraryTube'
+    request_type.order             = 1
+    request_type.multiples_allowed = false
+    request_type.request_class_name = MiSeqSequencingRequest.name
+  end
+
+  ['a','b','c'].each do |pl|
+    pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => "illumina_#{pl}_miseq_sequencing", :name => "Illumina-#{pl.upcase} MiSeq sequencing") do |request_type|
       request_type.initial_state     = 'pending'
       request_type.asset_type        = 'LibraryTube'
       request_type.order             = 1
       request_type.multiples_allowed = false
       request_type.request_class_name = MiSeqSequencingRequest.name
     end
-
-    ['a','b','c'].each do |pl|
-      pipeline.request_types << RequestType.create!(:workflow => next_gen_sequencing, :key => "illumina_#{pl}_miseq_sequencing", :name => "Illumina-#{pl.upcase} MiSeq sequencing") do |request_type|
-        request_type.initial_state     = 'pending'
-        request_type.asset_type        = 'LibraryTube'
-        request_type.order             = 1
-        request_type.multiples_allowed = false
-        request_type.request_class_name = MiSeqSequencingRequest.name
-      end
-    end
-
-    pipeline.workflow = LabInterface::Workflow.create!(:name => "MiSeq sequencing") do |workflow|
-      workflow.locale     = 'External'
-      workflow.item_limit = 1
-    end.tap do |workflow|
-        t1 = SetDescriptorsTask.create!({:name => 'Specify Dilution Volume', :sorted => 0, :workflow => workflow})
-        Descriptor.create!({:kind => "Text", :sorter => 1, :name => "Concentration", :task => t1})
-        t2 = SetDescriptorsTask.create!({:name => 'Cluster Generation', :sorted => 0, :workflow => workflow})
-        Descriptor.create!({:kind => "Text", :sorter => 1, :name => "Chip barcode", :task => t2})
-        Descriptor.create!({:kind => "Text", :sorter => 2, :name => "Cartridge barcode", :task => t2})
-        Descriptor.create!({:kind => "Text", :sorter => 3, :name => "Operator", :task => t2})
-        Descriptor.create!({:kind => "Text", :sorter => 4, :name => "Machine name", :task => t2})
-
-
-    end
-  end.tap do |pipeline|
-    create_request_information_types(pipeline, 'fragment_size_required_from', 'fragment_size_required_to', 'library_type', 'read_length')
   end
+
+  pipeline.workflow = LabInterface::Workflow.create!(:name => "MiSeq sequencing") do |workflow|
+    workflow.locale     = 'External'
+    workflow.item_limit = 1
+  end.tap do |workflow|
+      t1 = SetDescriptorsTask.create!({:name => 'Specify Dilution Volume', :sorted => 0, :workflow => workflow})
+      Descriptor.create!({:kind => "Text", :sorter => 1, :name => "Concentration", :task => t1})
+      t2 = SetDescriptorsTask.create!({:name => 'Cluster Generation', :sorted => 0, :workflow => workflow})
+      Descriptor.create!({:kind => "Text", :sorter => 1, :name => "Chip barcode", :task => t2})
+      Descriptor.create!({:kind => "Text", :sorter => 2, :name => "Cartridge barcode", :task => t2})
+      Descriptor.create!({:kind => "Text", :sorter => 3, :name => "Operator", :task => t2})
+      Descriptor.create!({:kind => "Text", :sorter => 4, :name => "Machine name", :task => t2})
+
+  end
+end.tap do |pipeline|
+  create_request_information_types(pipeline, 'fragment_size_required_from', 'fragment_size_required_to', 'library_type', 'read_length')
+end
 
 # ADD ILC Cherrypick
     cprt =  RequestType.create!(

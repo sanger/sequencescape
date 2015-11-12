@@ -133,8 +133,6 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :bait_library_suppliers, :controller => "admin/bait_libraries/bait_library_suppliers", :path_prefix => "/admin"
 
   ## From pipelines
-
-
   map.resources :verifications, :collection => {:input => :get, :verify => :post }
   map.resources :plate_templates
 
@@ -192,8 +190,6 @@ ActionController::Routing::Routes.draw do |map|
     tag.resources :tags, :except => [:destroy, :index, :create, :new, :edit]
   end
 
-
-
   map.resources :assets, :has_many => :assets, :collection => { :snp_register => :get, :reception => :get, :print_labels => :post}, :member => { :parent_assets => :get, :child_assets => :get, :show_plate => :get, :new_request => :get, :create_request => :post, :summary => :get, :close => :get, :print => :get, :print_items => :post, :history => :get, :filtered_move => :get, :move => :post, :move_to_2D => :get,  :complete_move_to_2D => :post} do |asset|
     asset.resources :comments, :controller => "assets/comments"
   end
@@ -221,6 +217,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :study_reports
   map.resources :sample_logistics, :collection => { :lab => :get, :qc_overview => :get }
+
+  map.resources :machine_barcodes, :only => [ :show ]
 
   ### Standard routes
   # You can have the root of your site routed with map.root -- just remember to delete public/index.html.

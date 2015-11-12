@@ -147,6 +147,14 @@ class Study < ActiveRecord::Base
   named_scope :newest_first, { :order => "#{ self.quoted_table_name }.created_at DESC" }
   named_scope :with_user_included, { :include => :user }
 
+  named_scope :in_assets, lambda { |assets| {
+    :select => 'DISTINCT studies.*',
+    :joins => [
+      'LEFT JOIN aliquots ON aliquots.study_id = studies.id',
+    ],
+    :conditions => ['aliquots.receptacle_id IN (?)',assets.map(&:id)]
+  }}
+
   named_scope :alphabetical, { :order => 'name ASC' }
   named_scope :for_listing, { :select => 'name, id' }
 
@@ -688,6 +696,12 @@ class Study < ActiveRecord::Base
     else
       true
     end
+  end
+
+  alias_attribute :friendly_name, :name
+
+  def subject_type
+    'study'
   end
 
   private

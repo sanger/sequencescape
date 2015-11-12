@@ -14,8 +14,8 @@ class Comment < ActiveRecord::Base
     if submissions.present?
       rids = Request.find(:all,:select=>'id',:conditions=>{:submission_id=>submissions}).map(&:id)
       {
-        :select => 'DISTINCT comments.description, comments.title, comments.user_id',
-        :conditions => ['(commentable_type= "Request" AND commentable_id IN (?)) OR (commentable_type = "Asset" and commentable_id = ?)',rids,plate.id]
+        :conditions => ['(commentable_type= "Request" AND commentable_id IN (?)) OR (commentable_type = "Asset" and commentable_id = ?)',rids,plate.id],
+        :group => 'comments.description, comments.title, comments.user_id'
       }
     else
       {

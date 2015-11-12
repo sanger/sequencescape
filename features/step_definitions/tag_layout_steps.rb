@@ -141,7 +141,10 @@ def pool_by_strategy(source, destination, pooling_strategy)
   pooling_strategy.each_with_index do |pool, submission_id|
     submission_id = Submission.create!(:user=>User.first||User.create!(:login=>'a')).id
     wells_for_source, wells_for_destination = source_wells.slice!(0, pool), destination_wells.slice!(0, pool)
-    wells_for_source.zip(wells_for_destination).each { |w| RequestType.transfer.create!(:asset => w.first, :target_asset => w.last, :submission_id => submission_id);Request.create!(:asset => w.first, :target_asset => w.last, :submission_id => submission_id) }
+    wells_for_source.zip(wells_for_destination).each do |w|
+      RequestType.transfer.create!(:asset => w.first, :target_asset => w.last, :submission_id => submission_id)
+      Factory :request_without_submission, :asset => w.first, :target_asset => w.last, :submission_id => submission_id
+    end
   end
 end
 

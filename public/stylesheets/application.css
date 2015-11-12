@@ -18,8 +18,11 @@ a {
 .target_plate th.corner-br {border-bottom-right-radius: 10px;}
 .target_plate th.corner-bl {border-bottom-left-radius: 10px;}
 .tube_source {padding:0.5em; border-radius:10px; background-color: #FFFFCC;}
+.interface_group {padding:0.5em; border-radius:10px; background-color: #FFFFCC;}
 .pac_well {margin:0; padding:0; height: 2em;}
 #error_messages { background-color: #ff7070; padding: 2em; margin:1em; border:3px solid red; border-radius:20px; display:none;}
+
+#target_plate_selected { display: none; }
 
 a:hover {
   text-decoration: underline;
@@ -512,6 +515,9 @@ font-weight: bold;
 .sortdsc {
 font-weight: bold;
 }
+table.sortable thead tr th a { cursor: pointer;}
+table.sortable thead tr th { padding: 1px 1px 1px 1px;}
+table.sortable tbody tr td { padding: 1px 1px 1px 1px;}
 .task_list {
 list-style: none;
 margin: 0px 0px 0px 0px;
@@ -1452,6 +1458,13 @@ ul.options li {
   margin:0.3em;
 }
 
+.hidden {
+  display: none;
+}
+.shown-button {
+  cursor: pointer;
+  float: right;
+}
 .form-group {
   display: inline-block;
   width: auto;

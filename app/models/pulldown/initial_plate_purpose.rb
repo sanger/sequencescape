@@ -1,10 +1,10 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013 Genome Research Ltd.
+#Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
 # Specialised implementation of the plate purpose for the initial plate types in the Pulldown pipelines:
 # WGS Covaris, SC Covaris, ISC Covaris.
 class Pulldown::InitialPlatePurpose < PlatePurpose
-  def transition_to(plate, state, contents = nil,customer_accepts_responsibility=false)
+  def transition_to(plate, state, user, contents = nil,customer_accepts_responsibility=false)
     ActiveRecord::Base.transaction do
       super
       new_outer_state = ['started','passed','qc_complete','nx_in_progress'].include?(state) ? 'started' : state

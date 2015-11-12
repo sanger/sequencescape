@@ -16,6 +16,7 @@
 #     :order_role=>"ILC"
 #   }
 # }
+
 module SubmissionSerializer
 
   STRAIGHT_CLONE = ['name','submission_class_name']
@@ -25,63 +26,63 @@ module SubmissionSerializer
     attributes = st.attributes
     new_attributes = {}
 
-    STRAIGHT_CLONE.each do |key|
-      new_attributes[key.to_sym] = attributes[key].dup
-    end
+   STRAIGHT_CLONE.each do |key|
+     new_attributes[key.to_sym] = attributes[key].duplicable? ? attributes[key].dup : attributes[key]
+   end
 
-    new_attributes[:product_line]  = ProductLine.find(attributes['product_line_id']).name if attributes['product_line_id']
-    new_attributes[:product_catalogue]  = ProductCatalogue.find(attributes['product_catalogue_id']).name if attributes['product_catalogue_id']
-    new_attributes[:superceded_by] = SubmissionTemplate.find(attributes['superceded_by_id']).name if attributes['superceded_by_id'] > 0
-    new_attributes[:superceded_at] = attributes['superceded_at'].to_s if attributes['superceded_at']
+   new_attributes[:product_line]  = ProductLine.find(attributes['product_line_id']).name if attributes['product_line_id']
+   new_attributes[:product_catalogue]  = ProductCatalogue.find(attributes['product_catalogue_id']).name if attributes['product_catalogue_id']
+   new_attributes[:superceded_by] = SubmissionTemplate.find(attributes['superceded_by_id']).name if attributes['superceded_by_id'] > 0
+   new_attributes[:superceded_at] = attributes['superceded_at'].to_s if attributes['superceded_at']
 
-    sp = attributes['submission_parameters'] || {}
-    ensp = new_attributes[:submission_parameters] = {}
+   sp = attributes['submission_parameters'] || {}
+   ensp = new_attributes[:submission_parameters] = {}
 
-    SP_STRAIGHT_CLONE.each do |key|
-      ensp[key] = sp[key] if sp[key].present?
-    end
+   SP_STRAIGHT_CLONE.each do |key|
+     ensp[key] = sp[key] if sp[key].present?
+   end
 
-    if ensp[:request_options] && ensp[:request_options][:initial_state]
-      new_initial = Hash[ensp[:request_options][:initial_state].map {|k,v| [RequestType.find(k).key,v] }]
-      ensp[:request_options][:initial_state] = new_initial
-    end
+   if ensp[:request_options] && ensp[:request_options][:initial_state]
+     new_initial = Hash[ensp[:request_options][:initial_state].map {|k,v| [RequestType.find(k).key,v] }]
+     ensp[:request_options][:initial_state] = new_initial
+   end
 
-    ensp[:request_types] = sp[:request_type_ids_list].flatten.map {|id| RequestType.find(id).key }
-    ensp[:workflow] = Submission::Workflow.find(sp[:workflow_id]).key if sp[:workflow_id]
-    ensp[:order_role] = Order::OrderRole.find(sp[:order_role_id]).role if sp[:order_role_id]
+   ensp[:request_types] = sp[:request_type_ids_list].flatten.map {|id| RequestType.find(id).key }
+   ensp[:workflow] = Submission::Workflow.find(sp[:workflow_id]).key if sp[:workflow_id]
+   ensp[:order_role] = Order::OrderRole.find(sp[:order_role_id]).role if sp[:order_role_id]
 
-    new_attributes
-  end
+   new_attributes
+ end
 
-  def self.construct!(hash)
+ def self.construct!(hash)
 
-    st = {}
+   st = {}
 
-    STRAIGHT_CLONE.each do |key|
-      st[key.to_sym] = hash[key.to_sym]
-    end
+   STRAIGHT_CLONE.each do |key|
+     st[key.to_sym] = hash[key.to_sym]
+   end
 
-    st[:product_line_id] = ProductLine.find_or_create_by_name(hash[:product_line]).id if hash[:product_line]
-    st[:product_catalogue_id]  = ProductCatalogue.find_by_name!(hash[:product_catalogue]).id if hash[:product_catalogue]
-    st[:superceded_by_id] = hash[:superceded_by].present? ? -1 : SubmissionTemplate.find_by_name(hash[:superceded_by]).try(:id)||-2
-    st[:superceded_at] = DateTime.parse(hash[:superceded_at]) if hash[:superceded_at]
+   st[:product_line_id] = ProductLine.find_or_create_by_name(hash[:product_line]).id if hash[:product_line]
+   st[:product_catalogue_id]  = ProductCatalogue.find_by_name!(hash[:product_catalogue]).id if hash[:product_catalogue]
+   st[:superceded_by_id] = hash.has_key?(:superceded_by) ? SubmissionTemplate.find_by_name(hash[:superceded_by]).try(:id)||-2 : -1
+   st[:superceded_at] =  DateTime.parse(hash[:superceded_at]) if hash.has_key?(:superceded_at)
 
-    sp = st[:submission_parameters] = {}
-    ensp = hash[:submission_parameters]
+   sp = st[:submission_parameters] = {}
+   ensp = hash[:submission_parameters]
 
-    SP_STRAIGHT_CLONE.each do |key|
-      sp[key] = ensp[key] if ensp[key].present?
-    end
+   SP_STRAIGHT_CLONE.each do |key|
+     sp[key] = ensp[key] if ensp[key].present?
+   end
 
-    if sp[:request_options] && p[:request_options][:initial_state]
-      new_initial = Hash[sp[:request_options][:initial_state].map {|k,v| [RequestType.find_by_key(k).id,v] }]
-      sp[:request_options][:initial_state] = new_initial
-    end
+   if sp[:request_options] && p[:request_options][:initial_state]
+     new_initial = Hash[sp[:request_options][:initial_state].map {|k,v| [RequestType.find_by_key(k).id,v] }]
+     sp[:request_options][:initial_state] = new_initial
+   end
 
-    sp[:request_type_ids_list] = ensp[:request_types].map {|rtk| [ RequestType.find_by_key!(rtk).id ] }
-    sp[:workflow_id] = Submission::Workflow.find_by_key!(ensp[:workflow]).id if ensp[:workflow]
-    sp[:order_role_id] = Order::OrderRole.find_or_create_by_role(ensp[:order_role]).id if ensp[:order_role]
+   sp[:request_type_ids_list] = ensp[:request_types].map {|rtk| [ RequestType.find_by_key!(rtk).id ] }
+   sp[:workflow_id] = Submission::Workflow.find_by_key!(ensp[:workflow]).id if ensp[:workflow]
+   sp[:order_role_id] = Order::OrderRole.find_or_create_by_role(ensp[:order_role]).id if ensp[:order_role]
 
-    SubmissionTemplate.create!(st)
-  end
+   SubmissionTemplate.create!(st)
+ end
 end

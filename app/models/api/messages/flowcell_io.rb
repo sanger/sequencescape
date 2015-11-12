@@ -53,6 +53,10 @@ class Api::Messages::FlowcellIO < Api::Base
           request_type.product_line.name
         end
 
+        def request_purpose_key
+          request_purpose.try(:key)
+        end
+
       end
     end
   end
@@ -94,6 +98,10 @@ class Api::Messages::FlowcellIO < Api::Base
 
         def lane_identifier
           'control_lane'
+        end
+
+        def request_purpose_key
+          request_purpose.try(:key)
         end
 
       end
@@ -183,6 +191,7 @@ class Api::Messages::FlowcellIO < Api::Base
     map_attribute_to_json_attribute(:external_release,'external_release')
     map_attribute_to_json_attribute(:lane_identifier, 'entity_id_lims')
     map_attribute_to_json_attribute(:product_line,'team')
+    map_attribute_to_json_attribute(:request_purpose_key,'purpose')
 
     with_nested_has_many_association(:samples) do # actually aliquots
 
@@ -194,6 +203,7 @@ class Api::Messages::FlowcellIO < Api::Base
         with_association(:tag_group) do
           map_attribute_to_json_attribute(:name, 'tag_set_name')
         end
+        map_attribute_to_json_attribute(:map_id, 'tag_identifier')
       end
       with_association(:tag2) do
         map_attribute_to_json_attribute(:oligo, 'tag2_sequence')
@@ -201,6 +211,7 @@ class Api::Messages::FlowcellIO < Api::Base
         with_association(:tag_group) do
           map_attribute_to_json_attribute(:name, 'tag2_set_name')
         end
+        map_attribute_to_json_attribute(:map_id, 'tag2_identifier')
       end
       map_attribute_to_json_attribute(:library_type, 'pipeline_id_lims')
       with_association(:bait_library) do

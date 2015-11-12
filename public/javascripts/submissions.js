@@ -1,6 +1,6 @@
 //This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 //Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-//Copyright (C) 2011,2012,2013 Genome Research Ltd.
+//Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
 // Submission workflow jQuery Plugin...
 (function(window, $, undefined){
   "use strict";
@@ -229,12 +229,12 @@
   var validateOrder = function(event) {
     var currentPane = $(event.target).submission('currentPane');
 
-    var studyId     = currentPane.find('.study_id').val();
+    var studyId     = currentPane.find('.study_id').val()||currentPane.find('.cross_study').attr('checked');
 
     // TODO This should validate that the project name is in the list but the
     // autocomplete callback doesn't seem to fire properly so this is a bit of
     // a kludge around that.
-    var projectName = currentPane.find('.submission_project_name').val();
+    var projectName = currentPane.find('.submission_project_name').val()||currentPane.find('.cross_project').attr('checked');
     var hasAssets   = currentPane.submission('hasAssets');
 
 
@@ -282,7 +282,23 @@
       removeAttr('disabled');
 
 
-    // if this is not a sequencing order remove the lanes_of_sequencing_required stuff
+    // Enable the cross study/project buttons if appropriate
+    if (SCAPE.submission.cross_compatible === false) {
+      newOrder.find('.cross-compatible').remove();
+    }
+
+    newOrder.find('.cross_study').bind('change',function(e){
+      newOrder.find('.study_id').prop('disabled',this.checked);
+      newOrder.find('.study_id option:eq(0)').prop('selected',true);
+      validateOrder(e);
+    })
+
+    newOrder.find('.cross_project').bind('change',function(e){
+      newOrder.find('.submission_project_name').prop('disabled',this.checked);
+      newOrder.find('.submission_project_name').prop('value',null);
+      validateOrder(e);
+    })
+        // if this is not a sequencing order remove the lanes_of_sequencing_required stuff
     if (SCAPE.submission.is_a_sequencing_order === false) {
       newOrder.find('.lanes-of-sequencing').remove();
     }
@@ -301,7 +317,7 @@
       minLength : 3
     });
 
-    // iAnd gigabase stuff is only for library creation
+    // And gigabase stuff is only for library creation
     if (SCAPE.submission.show_gigabses_expected === false) {
       newOrder.find('.gigabases-expected').remove();
     }

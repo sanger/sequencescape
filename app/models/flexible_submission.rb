@@ -7,6 +7,7 @@
 # pooling properties defined on the multiplexed request type
 class FlexibleSubmission < Order
   include Submission::FlexibleRequestGraph::OrderMethods
+  include Submission::Crossable
 
   def request_type_ids=(id_list)
     self.request_type_ids_list = id_list.map {|i| [i] }

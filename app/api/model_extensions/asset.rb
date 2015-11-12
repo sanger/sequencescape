@@ -7,4 +7,9 @@ module ModelExtensions::Asset
       named_scope :include_barcode_prefix, :include => :barcode_prefix
     end
   end
+
+  def source_plate
+    self.purpose.source_plate(self)
+  end
+
 end

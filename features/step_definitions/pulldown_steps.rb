@@ -70,6 +70,16 @@ Given /^"([^\"]+)" of (the plate .+) have been (submitted to "[^"]+")$/ do |rang
   )
 end
 
+Given /^"([^\"]+)" of (the plate .+) are part of the same submission$/ do |range, plate|
+
+
+  submission = Factory :submission
+  plate.wells.select(&range.method(:include?)).each do |well|
+    Factory :transfer_request, :submission => submission, :target_asset => well
+  end
+
+end
+
 Given /^"([^\"]+)" of (the plate .+) have been failed$/ do |range, plate|
   plate.wells.select(&range.method(:include?)).each do |well|
     well.aliquots.clear
@@ -207,7 +217,8 @@ Given /^(the plate .+) will pool into 1 tube$/ do |plate|
   plate.wells.in_column_major_order.each do |well|
     RequestType.transfer.create!(:asset => stock_well, :target_asset => well, :submission => submission)
     well.stock_wells.attach!([stock_well])
-    LibraryCreationRequest.create!(:request_type=>RequestType.find_by_request_class_name_and_deprecated('LibraryCreationRequest',false),:asset => stock_well, :target_asset => well, :submission => submission, :sti_type=>'Request', :request_metadata_attributes=>{:fragment_size_required_from=>20,:fragment_size_required_to=>30})
+    Factory :library_creation_request, :asset=> stock_well, :target_asset => well, :submission => submission
+    # LibraryCreationRequest.create!(:request_type=>RequestType.find_by_request_class_name_and_deprecated('LibraryCreationRequest',false),:asset => stock_well, :target_asset => well, :submission => submission, :sti_type=>'Request', :request_metadata_attributes=>{:fragment_size_required_from=>20,:fragment_size_required_to=>30})
   end
 end
 

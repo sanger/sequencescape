@@ -94,6 +94,39 @@ class Sample < ActiveRecord::Base
 
   named_scope :non_genotyped, :conditions => "samples.id not in (select propertied_id from external_properties where propertied_type = 'Sample' and `key` = 'genotyping_done'  )"
 
+  named_scope :on_plate, lambda {|plate|
+    {
+      :joins => [
+        'INNER JOIN aliquots ON aliquots.sample_id = samples.id',
+        'INNER JOIN container_associations AS ca ON ca.content_id = aliquots.receptacle_id'
+      ],
+      :conditions => ['ca.container_id = ?',plate.id]
+    }
+  }
+
+  named_scope :for_plate_and_order, lambda {|plate_id,order_id|
+    {
+      :joins => [
+        'INNER JOIN aliquots ON aliquots.sample_id = samples.id',
+        'INNER JOIN container_associations AS ca ON ca.content_id = aliquots.receptacle_id',
+        'INNER JOIN well_links ON target_well_id = aliquots.receptacle_id AND well_links.type = "stock"',
+        'INNER JOIN requests ON requests.asset_id = well_links.source_well_id'
+      ],
+      :conditions => ['ca.container_id = ? AND requests.order_id = ?',plate_id,order_id]
+    }
+  }
+
+  named_scope :for_plate_and_order_as_target, lambda {|plate_id,order_id|
+    {
+      :joins => [
+        'INNER JOIN aliquots ON aliquots.sample_id = samples.id',
+        'INNER JOIN container_associations AS ca ON ca.content_id = aliquots.receptacle_id',
+        'INNER JOIN requests ON requests.target_asset_id = aliquots.receptacle_id'
+      ],
+      :conditions => ['ca.container_id = ? AND requests.order_id = ?',plate_id,order_id]
+    }
+  }
+
   def self.by_name(sample_id)
     self.find_by_name(sample_id)
   end
@@ -239,7 +272,7 @@ class Sample < ActiveRecord::Base
   GC_CONTENTS     = [ 'Neutral', 'High AT', 'High GC' ]
   GENDERS         = [ 'Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable' ]
   DNA_SOURCES     = [ 'Genomic', 'Whole Genome Amplified', 'Blood', 'Cell Line','Saliva','Brain','FFPE',
-                      'Amniocentesis Uncultured', 'Amniocentesis Cultured', 'CVS Uncultured', 'CVS Cultured', 'Fetal Blood' ]
+                      'Amniocentesis Uncultured', 'Amniocentesis Cultured', 'CVS Uncultured', 'CVS Cultured', 'Fetal Blood', 'Tissue' ]
   SRA_HOLD_VALUES = [ 'Hold', 'Public', 'Protect' ]
   AGE_REGEXP      = '\d+(?:\.\d+|\-\d+|\.\d+\-\d+\.\d+|\.\d+\-\d+\.\d+)?\s+(?:second|minute|day|week|month|year)s?|Not Applicable|N/A|To be provided'
   DOSE_REGEXP     = '\d+(?:\.\d+)?\s+\w+(?:\/\w+)?|Not Applicable|N/A|To be provided'
@@ -342,9 +375,9 @@ class Sample < ActiveRecord::Base
     include_tag(:sample_strain_att)
     include_tag(:sample_description)
 
-    include_tag(:gender, :services=>:EGA)
+    include_tag(:gender, :services=>:EGA, :downcase => true)
     include_tag(:phenotype, :services=>:EGA)
-    include_tag(:donor_id, :services=>:EGA)
+    include_tag(:donor_id, :services=>:EGA, :as => 'subject_id')
 
     require_tag(:sample_taxon_id)
     require_tag(:sample_common_name)
@@ -444,6 +477,14 @@ class Sample < ActiveRecord::Base
 
   def withdraw_consent
     self.update_attribute(:consent_withdrawn, true)
+  end
+
+  def subject_type
+    'sample'
+  end
+
+  def friendly_name
+    sanger_sample_id||name
   end
 
   # These don't really belong here, but exist due to the close coupling between sample

@@ -34,6 +34,14 @@ class Project < ActiveRecord::Base
     transitions :to => :inactive, :from => [:pending, :active]
   end
 
+  named_scope :in_assets, lambda { |assets| {
+    :select => 'DISTINCT projects.*',
+    :joins => [
+      'LEFT JOIN aliquots ON aliquots.project_id = projects.id',
+    ],
+    :conditions => ['aliquots.receptacle_id IN (?)',assets.map(&:id)]
+  }}
+
   has_many :roles, :as => :authorizable
   has_many :orders
   has_many :studies, :class_name => "Study", :through => :orders, :source => :study, :uniq => true
@@ -132,6 +140,8 @@ class Project < ActiveRecord::Base
     self.project_metadata.budget_division.name
   end
 
+  alias_attribute :friendly_name, :name
+
   delegate :project_cost_code, :to=> :project_metadata
 
   PROJECT_FUNDING_MODELS = [
@@ -161,6 +171,10 @@ class Project < ActiveRecord::Base
     before_validation do |record|
       record.project_funding_model = nil if record.project_funding_model.blank?
     end
+  end
+
+  def subject_type
+    'project'
   end
 
   named_scope :with_unallocated_budget_division, { :joins => :project_metadata, :conditions => { :project_metadata => { :budget_division_id => BudgetDivision.find_by_name('Unallocated') } } }
