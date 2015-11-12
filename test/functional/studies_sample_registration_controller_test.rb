@@ -183,9 +183,6 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
               assert_equal "SI0000012345", subject.assets.first.two_dimensional_barcode
             end
 
-            should 'have the barcode on the asset' do
-              assert_equal "12345", subject.assets.first.barcode
-            end
           end
 
           context 'sample 2' do
@@ -193,10 +190,6 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
 
             should 'have the 2D barcode on the asset' do
               assert_equal "SI0000098765", subject.assets.first.two_dimensional_barcode
-            end
-
-            should 'have the barcode on the asset' do
-              assert_equal "98765", subject.assets.first.barcode
             end
           end
         end

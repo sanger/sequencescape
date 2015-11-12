@@ -6,20 +6,8 @@ class SampleTube < Tube
   include ModelExtensions::SampleTube
   include StandardNamedScopes
 
-  # In theory these two callbacks should ensure that if a 2D barcode is set then the barcode of
-  # the SampleTube is properly configured, otherwise it will be set to the ID of the SampleTube
-  # after it has been created.  Note that the after_create callback causes a second save of the
-  # SampleTube instance, which should not fail ... in theory.
-  before_validation do |record|
-    unless record.two_dimensional_barcode.blank?
-      two_d_barcode         = record.two_dimensional_barcode
-      reduced_2d_barcode    = two_d_barcode.delete(two_d_barcode[0..1]).to_i
-      record.barcode        = reduced_2d_barcode.to_s
-      record.barcode_prefix = BarcodePrefix.find_by_prefix("SI")
-    end
-  end
   after_create do |record|
-    record.barcode = AssetBarcode.new_barcode           if record.two_dimensional_barcode.blank? and record.barcode.blank?
+    record.barcode = AssetBarcode.new_barcode           if record.barcode.blank?
     record.name    = record.primary_aliquot.sample.name if record.name.blank? and not record.primary_aliquot.try(:sample).nil?
 
     record.save! if record.barcode_changed? or record.name_changed?
