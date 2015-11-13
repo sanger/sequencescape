@@ -121,6 +121,7 @@ module SampleManifest::InputBehaviour
 
   def self.included(base)
     base.class_eval do
+      extend ManifestUtil
       extend ClassMethods
       handle_asynchronously :process
 
@@ -165,11 +166,17 @@ module SampleManifest::InputBehaviour
 
   InvalidManifest = Class.new(StandardError)
 
+  def headers
+    @headers ||= filter_end_of_header(csv[spreadsheet_header_row]).map do |header|
+      h = header.gsub(/\s+/, ' ')
+      SampleManifest::Headers.renamed(h)
+    end
+  end
+
   def each_csv_row(&block)
     csv = FasterCSV.parse(uploaded.current_data)
     clean_up_sheet(csv)
 
-    headers = csv[spreadsheet_header_row].map { |header| h = header.gsub(/\s+/, ' '); SampleManifest::Headers.renamed(h) }
     headers.each_with_index.map do |name, index|
       "Header '#{name}' not recognised!" unless name.blank? || SampleManifest::Headers.valid?(name)
     end.compact.tap do |headers_with_errors|
