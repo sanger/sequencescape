@@ -47,6 +47,7 @@ class AddProductCataloguesToExistingTemplates < ActiveRecord::Migration
     when /Illumina-C.*General no PCR/      then 'GenericNoPCR'
     when /Illumina-C.*Multiplexed Library/ then 'ClassicMultiplexed'
     when /TagQC/                           then 'InternalQC'
+    when /Genotyping/                      then 'Genotyping'
     when 'Cherrypick'                      then 'Manual'
     else 'Generic'
     end

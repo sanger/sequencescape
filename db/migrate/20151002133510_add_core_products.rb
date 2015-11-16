@@ -13,7 +13,8 @@ require './lib/product_helpers'
     'ReISC',
     'PacBio',
     'Fluidigm',
-    'InternalQC'
+    'InternalQC',
+    'Genotyping'
   ]
 
   COMPLEX_PRODUCTS = [
