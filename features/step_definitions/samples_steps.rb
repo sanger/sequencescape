@@ -80,6 +80,17 @@ Then /^the reference genome for the sample "([^\"]+)" should be "([^\"]+)"$/ do 
   assert_equal(genome, sample.sample_metadata.reference_genome.name)
 end
 
+Then /^the UUID for the sample "([^\"]+)" should be "([^\"]+)"$/ do |name, uuid|
+  sample = Sample.find_by_name(name) or raise StandardError, "Cannot find sample with name #{ name.inspect }"
+  assert_equal(uuid, sample.uuid)
+end
+
+Then /^the alias sent to the accession service for sample "([^\"]+)" should be "(.*?)"$/ do |sample_name, value|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
+  assert_equal(Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/@alias").map(&:to_s)[0], value)
+end
+
 Then /^the sample "([^\"]+)" should exist$/ do |name|
   assert_not_nil(Sample.find_by_name(name), "The sample #{name.inspect} does not exist")
 end

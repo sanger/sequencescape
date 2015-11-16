@@ -43,6 +43,10 @@ module Accessionable
      @sample.id
     end
 
+    def alias
+      @sample.uuid
+    end
+
     def sample_element_attributes
       # In case the accession number is defined, we won't send the alias
       {

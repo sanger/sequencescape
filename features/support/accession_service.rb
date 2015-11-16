@@ -48,6 +48,10 @@ class FakeAccessionService < FakeSinatraService
     Service
   end
 
+  def add_payload(payload)
+    sent.push(Hash[*payload.map{|k,v| [k, v.readlines]}.map{|k,v| [k,(v unless v.empty?)]}.flatten])
+  end
+
   class Service < FakeSinatraService::Base
     post('/accession_service/era_accession_login') do
       response = FakeAccessionService.instance.next! or halt(500)
@@ -66,7 +70,7 @@ end
 RestClient::Resource.class_eval do |klass|
   alias_method :original_post, :post
   def post(payload)
-    FakeAccessionService.instance.sent.push(payload)
+    FakeAccessionService.instance.add_payload(payload)
     original_post(payload)
   end
 end

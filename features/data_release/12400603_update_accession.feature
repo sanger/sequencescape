@@ -13,6 +13,15 @@ Feature: object with an accession should be modifiable
     When I am on the event history page for study "study"
     Then I should see "accession data has been updated by user me"
 
+  Scenario: A sample without an accession number should not sent alias based on public name but in uuid
+    Given a sample named "sample" exists for accession
+    Given an accessioning webservice exists which returns a sample accession number "E-ERA-16"
+    Given I am on the show page for sample "sample"
+    And the UUID for the sample "sample" is "11111111-1111-1111-1111-1111111111"
+    When I create an accession number for sample "sample"
+
+    Then the alias sent to the accession service for sample "sample" should be "11111111-1111-1111-1111-1111111111"
+
   Scenario: A sample with already an accession number should add updated in the history
     Given a sample named "sample" exists for accession
     And the sample "sample" has the accession number "E-ERA-16"
