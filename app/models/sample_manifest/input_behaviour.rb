@@ -2,6 +2,7 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
 module SampleManifest::InputBehaviour
+
   module ClassMethods
     def find_sample_manifest_from_uploaded_spreadsheet(spreadsheet_file)
       csv        = FasterCSV.parse(spreadsheet_file.read)
@@ -121,7 +122,7 @@ module SampleManifest::InputBehaviour
 
   def self.included(base)
     base.class_eval do
-      extend ManifestUtil
+      include ManifestUtil
       extend ClassMethods
       handle_asynchronously :process
 
@@ -166,8 +167,8 @@ module SampleManifest::InputBehaviour
 
   InvalidManifest = Class.new(StandardError)
 
-  def headers
-    @headers ||= filter_end_of_header(csv[spreadsheet_header_row]).map do |header|
+  def get_headers(csv)
+    filter_end_of_header(csv[spreadsheet_header_row]).map do |header|
       h = header.gsub(/\s+/, ' ')
       SampleManifest::Headers.renamed(h)
     end
@@ -176,6 +177,8 @@ module SampleManifest::InputBehaviour
   def each_csv_row(&block)
     csv = FasterCSV.parse(uploaded.current_data)
     clean_up_sheet(csv)
+
+    headers = get_headers(csv)
 
     headers.each_with_index.map do |name, index|
       "Header '#{name}' not recognised!" unless name.blank? || SampleManifest::Headers.valid?(name)
