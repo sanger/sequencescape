@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20151029152735) do
+ActiveRecord::Schema.define(:version => 20151112123030) do
 
   create_table "aliquot_indices", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
@@ -1012,7 +1012,7 @@ ActiveRecord::Schema.define(:version => 20151029152735) do
     t.integer  "qc_report_id", :null => false
     t.integer  "asset_id",     :null => false
     t.text     "metrics"
-    t.boolean  "qc_decision",  :null => false
+    t.string   "qc_decision",  :null => false
     t.boolean  "proceed"
     t.datetime "created_at"
     t.datetime "updated_at"

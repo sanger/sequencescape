@@ -65,7 +65,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
           @current_report = Factory :qc_report, :product_criteria => @our_product_criteria
           @stock_well = Factory :well
 
-          @metric =  Factory :qc_metric, :asset => @stock_well, :qc_report => @current_report, :qc_decision => false, :proceed => true
+          @metric =  Factory :qc_metric, :asset => @stock_well, :qc_report => @current_report, :qc_decision => 'failed', :proceed => true
 
           @assets.each do |qced_well|
             qced_well.stock_wells.attach!([@stock_well])

@@ -98,7 +98,7 @@ class Presenters::QcReportPresenter
 
   def csv_body
     qc_report.qc_metrics.each do |m|
-      @csv << [m.asset_id] + criteria_headers.map {|h| m.metrics[h] } + [m.human_qc_decision,m.human_proceed]
+      @csv << [m.asset_id] + criteria_headers.map {|h| m.metrics[h] } + [m.qc_decision,m.human_proceed]
     end
   end
 

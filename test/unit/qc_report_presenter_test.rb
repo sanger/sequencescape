@@ -17,11 +17,13 @@ Generated on,"Thu, 01 Jan 2015 00:00:00 +0000"
 Contents,All samples
 
 Asset ID,Total micrograms,Comment,Qc Decision,Proceed
-%s,10,X,pass,
-%s,10,X,fail,
+%s,10,X,passed,
+%s,10,X,failed,
 }
 
   context "A QcReportPresenter" do
+
+    STATE_ARRAY = ['passed','failed']
 
     setup do
       @product = Factory :product, :name => 'Demo Product'
@@ -32,7 +34,7 @@ Asset ID,Total micrograms,Comment,Qc Decision,Proceed
       end
       @asset_ids = []
       2.times do |i|
-        m = Factory :qc_metric, :qc_report => @report, :qc_decision => (i%2)==0, :metrics =>{:total_micrograms=>10,:comment=>'X'}
+        m = Factory :qc_metric, :qc_report => @report, :qc_decision => STATE_ARRAY[i], :metrics =>{:total_micrograms=>10,:comment=>'X'}
         @asset_ids << m.asset_id
       end
     end

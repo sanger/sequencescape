@@ -9,5 +9,5 @@ Generated on,"Thu, 01 Jan 2015 00:00:00 +0000"
 Contents,All samples
 
 Asset ID,Total micrograms,Comment,Qc Decision,Proceed
-1,10,X,pass,Y
-2,10,X,pass,Y
+1,10,X,passed,Y
+2,10,X,passed,Y

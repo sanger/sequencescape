@@ -69,6 +69,17 @@ class ProductCriteriaTest < ActiveSupport::TestCase
       assert assesment.is_a?(ProductCriteria::Basic)
       assert assesment.passed?
     end
+
+    should 'be able to take metrics' do
+      well = {
+        :concentration => 800,
+        :measured_volume => 100,
+        :total_micrograms => 90
+      }
+      assesment = @criteria_a.assess(well)
+      assert assesment.is_a?(ProductCriteria::Basic)
+      assert assesment.passed?
+    end
   end
 
 end

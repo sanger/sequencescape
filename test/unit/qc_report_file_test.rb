@@ -70,7 +70,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
         end
         @asset_ids = []
         2.times do |i|
-          Factory :qc_metric, :qc_report => @report, :qc_decision => (i%2)==0, :asset => Factory(:well, :id=>i+1)
+          Factory :qc_metric, :qc_report => @report, :qc_decision => ['passed','failed'][i], :asset => Factory(:well, :id=>i+1)
         end
         @file = File.open("#{RAILS_ROOT}/test/data/qc_report.csv")
 
@@ -91,7 +91,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
 
       should "not adjust the qc_decision flag" do
         @qcr_file.process
-        assert_equal ['pass','fail'], @report.qc_metrics.find(:all,:order=>'asset_id ASC').map(&:human_qc_decision)
+        assert_equal ['passed','failed'], @report.qc_metrics.find(:all,:order=>'asset_id ASC').map(&:qc_decision)
       end
 
       teardown do
@@ -99,7 +99,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
       end
     end
 
-    context 'On overiding' do
+    context 'On overriding' do
       setup do
         @product = Factory.build :product, :name => 'Demo Product'
         @criteria = Factory.build :product_criteria, :product => @product, :version => 1
@@ -114,7 +114,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
         end
         @asset_ids = []
         2.times do |i|
-          m = Factory :qc_metric, :qc_report => @report, :qc_decision => (i%2)==0, :asset => Factory(:well, :id=>i+1)
+          m = Factory :qc_metric, :qc_report => @report, :qc_decision => ['passed','failed'][i], :asset => Factory(:well, :id=>i+1)
           @asset_ids << m.asset_id
         end
         @file = File.open("#{RAILS_ROOT}/test/data/qc_report.csv")
@@ -124,7 +124,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
 
       should "adjust the qc_decision flag" do
         @qcr_file.process
-        assert_equal ['pass','pass'], @report.qc_metrics.find(:all,:order=>'asset_id ASC').map(&:human_qc_decision)
+        assert_equal ['passed','manually_passed'], @report.qc_metrics.find(:all,:order=>'asset_id ASC').map(&:qc_decision)
       end
 
       teardown do
@@ -147,7 +147,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
         end
         @asset_ids = []
         2.times do |i|
-          Factory :qc_metric, :qc_report => @report, :qc_decision => (i%2)==0
+          Factory :qc_metric, :qc_report => @report, :qc_decision => ['passed','failed'][i]
         end
         @file = File.open("#{RAILS_ROOT}/test/data/qc_report.csv")
 

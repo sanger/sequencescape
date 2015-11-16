@@ -55,7 +55,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
             @request_well = Factory :well
             @request_well.stock_wells.attach!([@stock_well])
             @request_well.reload
-            @expected_metric = Factory :qc_metric, :asset => @stock_well, :qc_report => @current_report, :qc_decision => false, :proceed => true
+            @expected_metric = Factory :qc_metric, :asset => @stock_well, :qc_report => @current_report, :qc_decision => 'manually_failed', :proceed => true
 
             @mpx_submission = LinearSubmission.build!(@basic_options.merge(:assets=>[@request_well]))
             @mpx_submission.save!

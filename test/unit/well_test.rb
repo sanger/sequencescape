@@ -310,10 +310,10 @@ class WellTest < ActiveSupport::TestCase
         @well.stock_wells.attach!([@stock_well])
         @well.reload
 
-        Factory :qc_metric, :asset => @stock_well, :qc_report => @old_report, :qc_decision => true, :proceed => true
-        Factory :qc_metric, :asset => @stock_well, :qc_report => @unrelated_report, :qc_decision => true, :proceed => true
+        Factory :qc_metric, :asset => @stock_well, :qc_report => @old_report, :qc_decision => 'passed', :proceed => true
+        Factory :qc_metric, :asset => @stock_well, :qc_report => @unrelated_report, :qc_decision => 'passed', :proceed => true
 
-        @expected_metric = Factory :qc_metric, :asset => @stock_well, :qc_report => @current_report, :qc_decision => false, :proceed => true
+        @expected_metric = Factory :qc_metric, :asset => @stock_well, :qc_report => @current_report, :qc_decision => 'failed', :proceed => true
       end
 
       should 'report appropriate metrics' do

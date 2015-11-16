@@ -96,7 +96,7 @@ class QcReport::File
     raise DataError, "Could not find assets #{(asset_ids - assets.map(&:id)).to_sentence}" if asset_ids.count != assets.length
     assets.each do |metric|
       metric.human_proceed = group[metric.asset_id][:proceed]
-      metric.human_qc_decision = group[metric.asset_id][:qc_decision] if @set_decision
+      metric.manual_qc_decision = group[metric.asset_id][:qc_decision] if @set_decision
       metric.save!
     end
   end

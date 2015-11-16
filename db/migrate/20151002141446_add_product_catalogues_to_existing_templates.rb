@@ -24,13 +24,14 @@ class AddProductCataloguesToExistingTemplates < ActiveRecord::Migration
   def self.product_by_role(template)
     role_id = (template.submission_parameters||{})[:order_role_id]
     return nil if role_id.nil?
-    product_name = ORDER_ROLE_PRODUCT[OrderRole.find(role_id).role]
+    role = OrderRole.find(role_id).role
+    product_name = ORDER_ROLE_PRODUCT[role]
     return nil if product_name.nil?
-    Product.find_by_name!(product_name)
+    product_name
   end
 
   def self.product_by_name(template)
-    product = case template.name
+    product_name = case template.name
     when /Illumina-B.*WGS/ then 'PWGS'
     when /Illumina-B.*Multiplexed library creation/ then 'PWGS'
     when /Illumina-A - Pooled/                      then 'MWGS'
@@ -58,7 +59,7 @@ class AddProductCataloguesToExistingTemplates < ActiveRecord::Migration
         product = product_by_role(template)
         product ||= product_by_name(template)
         say "Setting to #{product}"
-        template.product_catalogue = ProductCatalogue.find_by_name(product)
+        template.product_catalogue = ProductCatalogue.find_by_name!(product)
       end
     end
   end

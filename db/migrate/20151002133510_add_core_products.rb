@@ -8,6 +8,7 @@ require './lib/product_helpers'
     'MWGS',
     'PWGS',
     'ISC',
+    'SC',
     'HSqX',
     'ReISC',
     'PacBio',
