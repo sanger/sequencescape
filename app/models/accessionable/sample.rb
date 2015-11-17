@@ -43,13 +43,23 @@ module Accessionable
      @sample.id
     end
 
+    def alias_attribute
+      @sample.uuid
+    end
+
+    def title
+      @sample.sample_metadata.sample_public_name || @sample.sanger_sample_id
+    end
+
     def sample_element_attributes
       # In case the accession number is defined, we won't send the alias
       {
-        :alias => self.alias,
-        :accession => self.accession_number
+        :alias => alias_attribute,
+        :accession => accession_number,
+        :title => title
       }.tap do |obj|
         obj.delete(:alias) unless self.accession_number.blank?
+        obj.delete(:title) if title.nil?
       end
     end
 
