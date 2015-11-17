@@ -56,6 +56,8 @@ class BulkSubmission < ActiveRecord::Base
   validates_presence_of :spreadsheet
   validate :process_file
 
+  include ManifestUtil
+
   def process_file
     # Slightly inelegant file-type checking
     #TODO (jr) Find a better way of verifying the CSV file?
@@ -75,7 +77,7 @@ class BulkSubmission < ActiveRecord::Base
   end
 
   def headers
-    @headers ||= @csv_rows.fetch(header_index) unless header_index.nil?
+    @headers ||= filter_end_of_header(@csv_rows.fetch(header_index)) unless header_index.nil?
   end
   private :headers
 
