@@ -164,7 +164,7 @@ class Aliquot < ActiveRecord::Base
   named_scope :include_summary, :include => [ :sample, :tag, :tag2 ]
 
   def aliquot_index_value
-    aliquot_index.try(:aliquot_index)||tag.map_id
+    aliquot_index.try(:aliquot_index)
   end
 
   # It may have a tag but not necessarily.  If it does, however, that tag needs to be unique within the receptacle.
