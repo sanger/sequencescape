@@ -150,7 +150,7 @@ module LabWhereClient
     end
 
     def location_info
-      [name, parentage].join(' - ')
+      [parentage, name].join(' - ')
     end
   end
 
