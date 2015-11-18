@@ -14,6 +14,10 @@ class StripTube < Plate
     name
   end
 
+  def subject_type
+    'strip_tube'
+  end
+
   # Until we no how barcodes are going to work, we'll just override this
   def self.create_with_barcode!(*args, &block)
     attributes = args.extract_options!
