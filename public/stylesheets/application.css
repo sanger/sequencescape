@@ -1490,5 +1490,5 @@ form#new_labwhere_reception ul li a {
 }
 
 form#new_labwhere_reception ul li:hover {
-  background-color: #D6E1EE;
+  text-decoration: underline;
 }
