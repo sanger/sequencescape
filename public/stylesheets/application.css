@@ -40,7 +40,7 @@ a:visited {
 }
 
 #barcode_list li {
-  width: 80%;
+  width: 20em;
   border: 1px solid black;
   border-radius: 3px;
   padding: 0.2em;
@@ -49,6 +49,10 @@ a:visited {
 
 #barcode_list li a {
   float: right;
+}
+
+#barcode_list {
+    list-style: none;
 }
 
 #search {
@@ -1481,14 +1485,6 @@ form#new_labwhere_reception .form-group {
   margin-bottom: 0.5em;
 }
 
-form#new_labwhere_reception ul li {
-  border-width: 0px;
-}
-
 form#new_labwhere_reception ul li a {
   cursor: pointer;
-}
-
-form#new_labwhere_reception ul li:hover {
-  text-decoration: underline;
 }
