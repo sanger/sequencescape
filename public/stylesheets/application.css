@@ -1472,3 +1472,23 @@ ul.options li {
   cursor: pointer;
   float: right;
 }
+
+form#new_labwhere_reception label {
+    display: inline-block;
+    width: 20em;
+  }
+form#new_labwhere_reception .form-group {
+  margin-bottom: 0.5em;
+}
+
+form#new_labwhere_reception ul li {
+  border-width: 0px;
+}
+
+form#new_labwhere_reception ul li a {
+  cursor: pointer;
+}
+
+form#new_labwhere_reception ul li:hover {
+  background-color: #D6E1EE;
+}
