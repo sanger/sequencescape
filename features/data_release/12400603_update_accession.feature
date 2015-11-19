@@ -30,7 +30,7 @@ Feature: object with an accession should be modifiable
     And the attribute "sanger_sample_id" of the sample "sample" is <sanger_sample_id>
     When I create an accession number for sample "sample"
 
-    Then the XML root attribute "title" sent to the accession service for sample "sample" should be <title>
+    Then the XML identifier tag "TITLE" sent to the accession service for sample "sample" should be <title>
 
     Examples:
       | sample_public_name                | sanger_sample_id                       | title                                  |

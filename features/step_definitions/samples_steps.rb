@@ -97,6 +97,18 @@ Then /^the XML root attribute "([^\"]+)" sent to the accession service for sampl
   assert_equal(value, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/@#{xml_attr}").map(&:to_s)[0])
 end
 
+Then /^the XML identifier tag "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be not present$/ do |xml_attr, sample_name|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
+  assert_equal(true, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/IDENTIFIERS/#{xml_attr}").length == 0)
+end
+
+Then /^the XML identifier tag "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be "(.*?)"$/ do |xml_attr, sample_name, value|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
+  assert_equal(value, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/IDENTIFIERS/#{xml_attr}").text)
+end
+
 Given /^the metadata attribute "(.*?)" of the sample "(.*?)" is "(.*?)"$/ do |attr_name, sample_name, value|
   sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
   sample.sample_metadata.update_attributes(Hash[* [attr_name, (value unless value == "empty")]])
