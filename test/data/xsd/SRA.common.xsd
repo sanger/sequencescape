@@ -1,0 +1,908 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- INSDC Sequence Read Archive resource Common object XML specification -->
+<!-- $Id: SRA.common.xsd,v 1.4 2014/08/06 10:59:49 rajeshr Exp $ -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:com="SRA.common"
+    targetNamespace="SRA.common">
+
+    <xs:attributeGroup name="NameGroup">
+        <xs:attribute name="alias" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    Submitter designated name of the SRA document of this type.  At minimum alias should
+                    be unique throughout the submission of this document type.  If center_name is specified, the name should
+                    be unique in all submissions from that center of this document type.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="center_name" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    Owner authority of this document and namespace for submitter's name of this document. 
+                    If not provided, then the submitter is regarded as "Individual" and document resolution
+                    can only happen within the submission.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="broker_name" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    Broker authority of this document.  If not provided, then the broker is considered "direct".
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="accession" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    The document's accession as assigned by the Home Archive.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:attributeGroup>
+
+    <xs:attributeGroup name="RefNameGroup">
+        <xs:attribute name="refname" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    Identifies a record by name that is known within the namespace defined by attribute "refcenter"
+                    Use this field when referencing an object for which an accession has not yet been issued.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="refcenter" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    The center namespace of the attribute "refname". When absent, the namespace is assumed to be the current submission.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="accession" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    Identifies a record by its accession.  The scope of resolution is the entire Archive.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:attributeGroup>
+
+    <xs:complexType name="NameType">
+        <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="label" use="optional" type="xs:string">
+          <xs:annotation>
+            <xs:documentation>Alternative/explanatory description of the same object/identifier.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="QualifiedNameType">
+        <xs:simpleContent>
+            <xs:extension base="com:NameType">
+                <xs:attribute name="namespace" use="required" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>A string value that constrains the domain of named
+                            identifiers (namespace). </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="IdentifierType">
+        <xs:annotation>
+            <xs:documentation>Set of record identifiers.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="PRIMARY_ID" type="com:NameType" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>A primary identifier in the INSDC namespace.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="SECONDARY_ID" type="com:NameType" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>A secondary identifier in the INSDC namespace.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="EXTERNAL_ID" type="com:QualifiedNameType" minOccurs="0"
+                maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>An identifer rom a public non-INSDC resource.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="SUBMITTER_ID" type="com:QualifiedNameType" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>A submitter provided identifier.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="UUID" type="com:NameType" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>A universally unique identifier that requires no namespace.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="XRefType">
+        <xs:all>
+            <xs:element name="DB" type="xs:string" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation> INSDC controlled vocabulary of permitted cross references.
+                        Please see http://www.insdc.org/db_xref.html . For example, FLYBASE. </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="ID" minOccurs="1" maxOccurs="1" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                            Accession in the referenced database.    For example,  FBtr0080008 (in FLYBASE).
+                        </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="LABEL" type="xs:string" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                            Text label to display for the link.
+                        </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:complexType name="URLType">
+        <xs:all>
+            <xs:element name="LABEL" type="xs:string" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Text label to display for the link.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="URL" minOccurs="1" maxOccurs="1" type="xs:anyURI">
+                <xs:annotation>
+                    <xs:documentation>
+                        The internet service link (file:, http:, ftp:, etc).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="AttributeType">
+        <xs:annotation>
+            <xs:documentation>
+                Reusable attributes to encode tag-value pairs with optional units.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="TAG" type="xs:string" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Name of the attribute.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="VALUE" type="xs:string" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Value of the attribute.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="UNITS" type="xs:string" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Optional scientific units.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:complexType name="LinkType">
+        <xs:annotation>
+            <xs:documentation>
+                Reusable external links type to encode URL links, Entrez links, and db_xref links.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice>
+            <xs:element name="URL_LINK">
+                <xs:complexType>
+                    <xs:all>
+                        <xs:element name="LABEL" type="xs:string" minOccurs="1" maxOccurs="1">
+                            <xs:annotation>
+                                <xs:documentation>
+                                    Text label to display for the link.
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="URL" minOccurs="1" maxOccurs="1" type="xs:anyURI">
+                            <xs:annotation>
+                              <xs:documentation> The internet service link (file:, http:, ftp: etc). </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:all>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="XREF_LINK" type="com:XRefType"/>
+
+            <xs:element name="ENTREZ_LINK">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="DB" type="xs:string" minOccurs="1" maxOccurs="1">
+                            <xs:annotation>
+                                <xs:documentation>
+                                    NCBI controlled vocabulary of permitted cross references.  Please see http://www.ncbi.nlm.nih.gov/entrez/eutils/einfo.fcgi? .
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:choice>
+                            <xs:element name="ID" type="xs:nonNegativeInteger" minOccurs="1"
+                                maxOccurs="1">
+                                <xs:annotation>
+                                    <xs:documentation>
+                                        Numeric record id meaningful to the NCBI Entrez system.
+                                    </xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="QUERY" type="xs:string" minOccurs="1" maxOccurs="1">
+                                <xs:annotation>
+                                    <xs:documentation>
+                                        Accession string meaningful to the NCBI Entrez system.
+                                    </xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                        </xs:choice>
+                        <xs:element name="LABEL" type="xs:string" minOccurs="0" maxOccurs="1">
+                            <xs:annotation>
+                                <xs:documentation>
+                                    How to label the link.
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+        </xs:choice>
+    </xs:complexType>
+
+
+    <xs:complexType name="SpotDescriptorType">
+        <xs:annotation>
+            <xs:documentation>
+                    The SPOT_DESCRIPTOR specifies how to decode the individual reads of interest from the 
+                    monolithic spot sequence.  The spot descriptor contains aspects of the experimental design, 
+                    platform, and processing information.  There will be two methods of specification: one 
+                    will be an index into a table of typical decodings, the other being an exact specification.                                      
+                </xs:documentation>
+        </xs:annotation>
+        <xs:choice>
+            <xs:element name="SPOT_DECODE_SPEC">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="SPOT_LENGTH" type="xs:nonNegativeInteger" minOccurs="0"
+                            maxOccurs="1">
+                            <xs:annotation>
+                                <xs:documentation> Number of base/color calls, cycles, or flows per
+                                    spot (raw sequence length or flow length including all
+                                    application and technical tags and mate pairs, but not including
+                                    gap lengths). This value will be platform dependent, library
+                                    dependent, and possibly run dependent. Variable length platforms
+                                    will still have a constant flow/cycle length. </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="READ_SPEC" minOccurs="1" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="READ_INDEX" type="xs:nonNegativeInteger"
+                                        nillable="false">
+                                        <xs:annotation>
+                                            <xs:documentation>READ_INDEX starts at 0 and is incrementally increased for each sequential READ_SPEC within a SPOT_DECODE_SPEC</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:element>
+                                    <xs:element name="READ_LABEL" type="xs:string" minOccurs="0"
+                                        maxOccurs="1">
+                                        <xs:annotation>
+                                            <xs:documentation>READ_LABEL is a name for this tag, and can be used to on output to determine read name, for example F or R.</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:element>
+                                    <xs:element name="READ_CLASS">
+                                        <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                                <xs:enumeration value="Application Read"/>
+                                                <xs:enumeration value="Technical Read"/>
+                                            </xs:restriction>
+                                        </xs:simpleType>
+                                    </xs:element>
+                                    <xs:element name="READ_TYPE" default="Forward">
+                                        <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                                <xs:enumeration value="Forward"/>
+                                                <xs:enumeration value="Reverse"/>
+                                                <xs:enumeration value="Adapter"/>
+                                                <xs:enumeration value="Primer"/>
+                                                <xs:enumeration value="Linker"/>
+                                                <xs:enumeration value="BarCode"/>
+                                                <xs:enumeration value="Other"/>
+                                            </xs:restriction>
+                                        </xs:simpleType>
+                                    </xs:element>
+
+                                    <xs:choice>
+                                        <xs:annotation>
+                                            <xs:documentation>
+                                                    There are various methods to ordering the reads on the spot.
+                                                </xs:documentation>
+                                        </xs:annotation>
+                                        <xs:element name="RELATIVE_ORDER">
+                                            <xs:annotation>
+                                                <xs:documentation>
+                                                        The read is located beginning at the offset or cycle relative to another read.  
+                                                        This choice is appropriate for example when specifying a read
+                                                        that follows a variable length expected sequence(s).
+                                                    </xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:attribute name="follows_read_index"
+                                                  type="xs:nonNegativeInteger" use="optional">
+                                                  <xs:annotation>
+                                                  <xs:documentation>
+                                                                Specify the read index that precedes this read.
+                                                            </xs:documentation>
+                                                  </xs:annotation>
+                                                </xs:attribute>
+                                                <xs:attribute name="precedes_read_index"
+                                                  type="xs:nonNegativeInteger" use="optional">
+                                                  <xs:annotation>
+                                                  <xs:documentation>
+                                                                Specify the read index that follows this read.
+                                                            </xs:documentation>
+                                                  </xs:annotation>
+                                                </xs:attribute>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="BASE_COORD" type="xs:integer">
+                                            <xs:annotation>
+                                                <xs:documentation>
+                                                        The location of the read start in terms of base count (1 is beginning of spot).
+                                                    </xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="EXPECTED_BASECALL_TABLE">
+                                            <xs:annotation>
+                                                <xs:documentation>
+                                                        A set of choices of expected basecalls for a current read. Read will be zero-length if none is found.
+                                                    </xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence minOccurs="1" maxOccurs="1">
+                                                  <xs:element name="BASECALL" maxOccurs="unbounded">
+                                                  <xs:annotation>
+                                                  <xs:documentation>
+                                                       Element's body contains a basecall, attribute provide description of this read meaning as well as matching rules.
+                                                  </xs:documentation>
+                                                  </xs:annotation>
+                                                  <xs:complexType>
+                                                  <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="read_group_tag"
+                                                  type="xs:string" use="optional">
+                                                  <xs:annotation>
+                                                  <xs:documentation>
+                                                       When match occurs, the read will be tagged with this group membership
+                                                  </xs:documentation>
+                                                  </xs:annotation>
+                                                  </xs:attribute>
+                                                  <xs:attribute name="min_match"
+                                                  type="xs:nonNegativeInteger" use="optional">
+                                                  <xs:annotation>
+                                                  <xs:documentation>
+                                                       Minimum number of matches to trigger identification.
+                                                  </xs:documentation>
+                                                  </xs:annotation>
+                                                  </xs:attribute>
+                                                  <xs:attribute name="max_mismatch"
+                                                  type="xs:nonNegativeInteger" use="optional">
+                                                  <xs:annotation>
+                                                  <xs:documentation>
+                                                       Maximum number of mismatches 
+                                                   </xs:documentation>
+                                                  </xs:annotation>
+                                                  </xs:attribute>
+                                                  <xs:attribute name="match_edge">
+                                                  <xs:annotation>
+                                                  <xs:documentation>
+                                                       Where the match should occur. Changes the rules on how min_match and max_mismatch are counted.                                                                                                          
+                                                  </xs:documentation>
+                                                  </xs:annotation>
+                                                  <xs:simpleType>
+                                                  <xs:restriction base="xs:string">
+                                                  <xs:enumeration value="full">
+                                                  <xs:annotation>
+                                                  <xs:documentation>
+                                                      Only @max_mismatch influences matching process                                                                                                          
+                                                  </xs:documentation>
+                                                  </xs:annotation>
+                                                  </xs:enumeration>
+                                                  <xs:enumeration value="start">
+                                                  <xs:annotation>
+                                                  <xs:documentation>
+                                                       Both matches and mismatches are counted. 
+                                                       When @max_mismatch is exceeded - it is not a match.
+                                                       When @min_match is reached - match is declared.                                                                                                                                                                                                                           
+                                                  </xs:documentation>
+                                                  </xs:annotation>
+                                                  </xs:enumeration>
+                                                  <xs:enumeration value="end">
+                                                  <xs:annotation>
+                                                  <xs:documentation>
+                                                       Both matches and mismatches are counted. 
+                                                       When @max_mismatch is exceeded - it is not a match.
+                                                       When @min_match is reached - match is declared.                                                                                                                                                                                                                           
+                                                  </xs:documentation>
+                                                  </xs:annotation>
+                                                  </xs:enumeration>
+                                                  </xs:restriction>
+                                                  </xs:simpleType>
+                                                  </xs:attribute>
+                                                  </xs:extension>
+                                                  </xs:simpleContent>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                </xs:sequence>
+                                                <xs:attribute name="default_length"
+                                                  type="xs:nonNegativeInteger" use="optional">
+                                                  <xs:annotation>
+                                                  <xs:documentation>
+                                                      Specify whether the spot should have a default length for this tag if the expected base cannot be matched.
+                                                  </xs:documentation>
+                                                  </xs:annotation>
+                                                </xs:attribute>
+                                                <xs:attribute name="base_coord"
+                                                  type="xs:nonNegativeInteger" use="optional">
+                                                  <xs:annotation>
+                                                  <xs:documentation>
+                                                      Specify an optional starting point for tag (base offset from 1).  
+                                                  </xs:documentation>
+                                                  </xs:annotation>
+                                                </xs:attribute>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:choice>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+
+    </xs:complexType>
+
+    <xs:complexType name="PlatformType">
+        <xs:annotation>
+      <xs:documentation> The PLATFORM record selects which sequencing platform and platform-specific runtime parameters. This will be
+        determined by the Center. </xs:documentation>
+        </xs:annotation>
+        <xs:choice>
+            <xs:element name="LS454">
+              <xs:annotation>
+                <xs:documentation> 454 technology use 1-color sequential flows </xs:documentation>
+              </xs:annotation>
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:type454Model"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+            <xs:element name="ILLUMINA">
+              <xs:annotation>
+                <xs:documentation> Illumina is 4-channel flowgram with 1-to-1 mapping between basecalls and flows </xs:documentation>
+              </xs:annotation>
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typeIlluminaModel"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+            <xs:element name="HELICOS">
+              <xs:annotation>
+                <xs:documentation> Helicos is similar to 454 technology - uses 1-color sequential flows </xs:documentation>
+              </xs:annotation>
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typeHelicosModel"/>
+                </xs:sequence>
+              </xs:complexType>
+          </xs:element>
+          <xs:element name="ABI_SOLID">
+            <xs:annotation>
+              <xs:documentation> ABI is 4-channel flowgram with 1-to-1 mapping between basecalls and flows </xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typeAbiSolidModel"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="COMPLETE_GENOMICS">
+            <xs:annotation>
+              <xs:documentation> CompleteGenomics platform type. At present there is no instrument model. </xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typeCGModel"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="OXFORD_NANOPORE">
+            <xs:annotation>
+              <xs:documentation> Oxford Nanopore platform type. nanopore-based electronic single molecule analysis </xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typeOxfordNanoporeModel"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="PACBIO_SMRT">
+            <xs:annotation>
+              <xs:documentation> PacificBiosciences platform type for the single molecule real time (SMRT) technology. </xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typePacBioModel"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="ION_TORRENT">
+            <xs:annotation>
+              <xs:documentation> Ion Torrent Personal Genome Machine (PGM) from Life Technologies. </xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typeIontorrentModel"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="CAPILLARY">
+            <xs:annotation>
+              <xs:documentation> Sequencers based on capillary electrophoresis technology manufactured by LifeTech (formerly Applied
+                BioSciences). </xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typeCapillaryModel"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+
+    </xs:complexType>
+
+    <xs:complexType name="SequencingDirectivesType">
+        <xs:all>
+            <xs:element name="SAMPLE_DEMUX_DIRECTIVE" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Tells the Archive who will execute the sample demultiplexing operation..
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="leave_as_pool">
+                            <xs:annotation>
+                                <xs:documentation>
+                                    There shall be no sample de-multiplexing at the level of assiging individual reads to sample pool members.
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="submitter_demultiplexed">
+                            <xs:annotation>
+                                <xs:documentation>
+                                    The submitter has assigned individual reads to sample pool members by providing individual files 
+                                    containing reads with the same member assignment.
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:enumeration>
+
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+
+
+    <xs:complexType name="PipelineType">
+        <xs:annotation>
+            <xs:documentation> The PipelineType identifies the sequence or tree of actions to
+                process the sequencing data. </xs:documentation>
+        </xs:annotation>
+        <xs:sequence minOccurs="1" maxOccurs="1">
+            <xs:element name="PIPE_SECTION" minOccurs="1" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="STEP_INDEX" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>
+                                    Lexically ordered  value that allows for the pipe section to be hierarchically ordered.  The float primitive data type is
+                                    used to allow for pipe sections to be inserted later on.
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="PREV_STEP_INDEX" type="xs:string" nillable="true"
+                            minOccurs="1" maxOccurs="unbounded">
+                            <xs:annotation>
+                                <xs:documentation>
+                                    STEP_INDEX of the previous step in the workflow.  Set toNIL if the first pipe section.
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="PROGRAM" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>
+                                    Name of the program or process for primary analysis.   This may include a test or condition
+                                    that leads to branching in the workflow.
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="VERSION" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>
+                                    Version of the program or process for primary analysis. 
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="NOTES" type="xs:string" maxOccurs="1" minOccurs="0">
+                            <xs:annotation>
+                                <xs:documentation>
+                                    Notes about the program or process for primary analysis. 
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="section_name" type="xs:string" use="optional">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Name of the processing pipeline section.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ReferenceAssemblyType">
+        <xs:annotation>
+            <xs:documentation>Reference assembly details.</xs:documentation>
+        </xs:annotation>
+        <xs:choice>
+
+            <xs:element name="STANDARD">
+                <xs:annotation>
+                    <xs:documentation>A standard genome assembly.
+                                                 </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:attribute name="refname" type="xs:string" use="optional">
+                        <xs:annotation>
+                            <xs:documentation>A recognized name for the genome assembly.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="accession" type="xs:token">
+                        <xs:annotation>
+                            <xs:documentation>Identifies the genome assembly
+                                using an accession number and a sequence version.
+                             </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="CUSTOM">
+                <xs:annotation>
+                    <xs:documentation>Other genome assembly.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="1" minOccurs="0" name="DESCRIPTION" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>Description of the genome
+                                                 assembly.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" name="URL_LINK">
+                            <xs:annotation>
+                                <xs:documentation>A link to the genome
+                                                 assembly.</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:all>
+                                    <xs:element maxOccurs="1" minOccurs="0" name="LABEL"
+                                        type="xs:string">
+                                        <xs:annotation>
+                                            <xs:documentation> Text label to display for the
+                                                 link. </xs:documentation>
+                                        </xs:annotation>
+                                    </xs:element>
+                                    <xs:element maxOccurs="1" minOccurs="1" name="URL"
+                                        type="xs:anyURI">
+                                        <xs:annotation>
+                                            <xs:documentation> The internet service link
+                                                 (file:, http:, ftp:, etc). </xs:documentation>
+                                        </xs:annotation>
+                                    </xs:element>
+                                </xs:all>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="ReferenceSequenceType">
+        <xs:annotation>
+            <xs:documentation>Reference assembly and sequence details.                              </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element minOccurs="0" name="ASSEMBLY" type="com:ReferenceAssemblyType">
+                <xs:annotation>
+                    <xs:documentation>Reference assembly details.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="SEQUENCE">
+                <xs:annotation>
+                    <xs:documentation>Reference sequence details.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:attribute name="refname" type="xs:string" use="optional">
+                        <xs:annotation>
+                            <xs:documentation>A recognized name for the
+                                                 reference sequence.</xs:documentation>
+                        </xs:annotation>
+
+                    </xs:attribute>
+                    <xs:attribute name="accession" type="xs:token">
+                        <xs:annotation>
+                            <xs:documentation>  Accession.version with version being mandatory
+                                  </xs:documentation>
+
+
+
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="label" type="xs:string" use="optional">
+                        <xs:annotation>
+                            <xs:documentation> This is how Reference Sequence is labeled in submission file(s). 
+                                  It is equivalent to  SQ label in BAM. 
+                                  Optional when submitted file uses INSDC accession.version</xs:documentation>
+
+
+
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ProcessingType">
+        <xs:sequence>
+            <xs:element name="PIPELINE" type="com:PipelineType" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation> Generic processing pipeline specification. </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="DIRECTIVES" type="com:SequencingDirectivesType" minOccurs="0"  maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation> Processing directives tell the Sequence Read Archive how to
+                        treat the input data, if any treatment is requested. </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+  <!-- STRING ENUMERATIONS BEGIN -->
+  <xs:simpleType name="type454Model">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="454 GS"/>
+      <xs:enumeration value="454 GS 20"/>
+      <xs:enumeration value="454 GS FLX"/>
+      <xs:enumeration value="454 GS FLX+"/>
+      <xs:enumeration value="454 GS FLX Titanium"/>
+      <xs:enumeration value="454 GS Junior"/>
+      <xs:enumeration value="unspecified"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="typeIlluminaModel">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Illumina Genome Analyzer"/>
+      <xs:enumeration value="Illumina Genome Analyzer II"/>
+      <xs:enumeration value="Illumina Genome Analyzer IIx"/>
+      <xs:enumeration value="Illumina HiSeq 2500"/>
+      <xs:enumeration value="Illumina HiSeq 2000"/>
+      <xs:enumeration value="Illumina HiSeq 1500"/>
+      <xs:enumeration value="Illumina HiSeq 1000"/>
+      <xs:enumeration value="Illumina MiSeq"/>
+      <xs:enumeration value="Illumina HiScanSQ"/>
+      <xs:enumeration value="HiSeq X Ten"/>
+      <xs:enumeration value="NextSeq 500"/>
+      <xs:enumeration value="HiSeq X Five"/>
+      <xs:enumeration value="Illumina HiSeq 3000"/>
+      <xs:enumeration value="Illumina HiSeq 4000"/>
+      <xs:enumeration value="NextSeq 550"/>
+      <xs:enumeration value="unspecified"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="typeHelicosModel">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Helicos HeliScope"/>
+      <xs:enumeration value="unspecified"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="typeAbiSolidModel">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="AB SOLiD System">
+        <xs:annotation>
+          <xs:documentation>Undifferentiated early AB SOLiD system</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="AB SOLiD System 2.0"/>
+      <xs:enumeration value="AB SOLiD System 3.0"/>
+      <xs:enumeration value="AB SOLiD 3 Plus System"/>
+      <xs:enumeration value="AB SOLiD 4 System"/>
+      <xs:enumeration value="AB SOLiD 4hq System"/>
+      <xs:enumeration value="AB SOLiD PI System"/>
+      <xs:enumeration value="AB 5500 Genetic Analyzer"/>
+      <xs:enumeration value="AB 5500xl Genetic Analyzer"/>
+      <xs:enumeration value="AB 5500xl-W Genetic Analysis System"/>
+      <xs:enumeration value="unspecified"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="typeCGModel">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Complete Genomics"/>
+      <xs:enumeration value="unspecified"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="typePacBioModel">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="PacBio RS"/>
+      <xs:enumeration value="PacBio RS II"/>
+      <xs:enumeration value="unspecified"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="typeIontorrentModel">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Ion Torrent PGM"/>
+      <xs:enumeration value="Ion Torrent Proton"/>
+      <xs:enumeration value="unspecified"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="typeCapillaryModel">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="AB 3730xL Genetic Analyzer"/>
+      <xs:enumeration value="AB 3730 Genetic Analyzer"/>
+      <xs:enumeration value="AB 3500xL Genetic Analyzer"/>
+      <xs:enumeration value="AB 3500 Genetic Analyzer"/>
+      <xs:enumeration value="AB 3130xL Genetic Analyzer"/>
+      <xs:enumeration value="AB 3130 Genetic Analyzer"/>
+      <xs:enumeration value="AB 310 Genetic Analyzer"/>
+      <xs:enumeration value="unspecified"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="typeOxfordNanoporeModel">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="MinION"/>
+      <xs:enumeration value="GridION"/>
+      <xs:enumeration value="unspecified"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- STRING ENUMERATIONS END -->
+
+</xs:schema>
