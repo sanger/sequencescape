@@ -66,9 +66,7 @@ module Accessionable
       xml.instruct!
       xml.SAMPLE_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
         xml.SAMPLE(sample_element_attributes) {
-          xml.IDENTIFIERS {
-            xml.TITLE self.title
-          } unless title.nil?
+          xml.TITLE self.title unless title.nil?
           xml.SAMPLE_NAME {
             xml.COMMON_NAME  self.common_name
             xml.TAXON_ID     self.taxon_id
