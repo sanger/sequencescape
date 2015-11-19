@@ -6,6 +6,10 @@ class Lane < Aliquot::Receptacle
   include LocationAssociation::Locatable
   include AliquotIndexer::Indexable
 
+  def subject_type
+    'lane'
+  end
+
   LIST_REASONS_NEGATIVE = [
     "Failed on yield but sufficient data for experiment",
     "Failed on quality but sufficient data for experiment",

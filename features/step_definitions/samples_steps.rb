@@ -80,6 +80,33 @@ Then /^the reference genome for the sample "([^\"]+)" should be "([^\"]+)"$/ do 
   assert_equal(genome, sample.sample_metadata.reference_genome.name)
 end
 
+Then /^the UUID for the sample "([^\"]+)" should be "([^\"]+)"$/ do |name, uuid|
+  sample = Sample.find_by_name(name) or raise StandardError, "Cannot find sample with name #{ name.inspect }"
+  assert_equal(uuid, sample.uuid)
+end
+
+Then /^the XML root attribute "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be not present$/ do |xml_attr, sample_name|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
+  assert_equal(true, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/@#{xml_attr}").length == 0)
+end
+
+Then /^the XML root attribute "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be "(.*?)"$/ do |xml_attr, sample_name, value|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
+  assert_equal(value, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/@#{xml_attr}").map(&:to_s)[0])
+end
+
+Given /^the metadata attribute "(.*?)" of the sample "(.*?)" is "(.*?)"$/ do |attr_name, sample_name, value|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  sample.sample_metadata.update_attributes(Hash[* [attr_name, (value unless value == "empty")]])
+end
+
+Given /^the attribute "(.*?)" of the sample "(.*?)" is "(.*?)"$/ do |attr_name, sample_name, value|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  sample.update_attributes(Hash[* [attr_name, (value unless value=="empty")]])
+end
+
 Then /^the sample "([^\"]+)" should exist$/ do |name|
   assert_not_nil(Sample.find_by_name(name), "The sample #{name.inspect} does not exist")
 end

@@ -22,6 +22,10 @@ class Tube < Aliquot::Receptacle
     true
   end
 
+  def subject_type
+    'tube'
+  end
+
   has_one :submission, :through => :requests_as_target
 
   named_scope :include_scanned_into_lab_event, :include => :scanned_into_lab_event
