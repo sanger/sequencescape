@@ -19,9 +19,9 @@ class GenerateManifestTaskTest < ActiveSupport::TestCase
         should 'filter incorrect characters' do
           @batch                = Factory :batch, :id => 1
           @study                = Factory :study, :name => [
-          "Study name with any content:",
-          "’'[](){}⟨⟩:,،、‒–—―…......!.‐-?‘’“”''"";/⁄· &*@\•^†‡°″¡¿#№÷×ºª%‰+−=‱¶′″‴§~_|‖‗¦©℗®℠™¤₳​฿​₵​¢​₡​₢​$​₫​₯​₠​€​ƒ​₣​₲​₴​₭​₺​ℳ​₥​₦​₧​₱",
-          "​₰​£​៛​₽​₹₨​₪​৳​₸​₮​₩​¥⁂❧☞‽⸮◊※⁀", "and no more"].join('')
+          "Study name with any content:’'[](){}⟨⟩:,،、‒–—―…......!.‐-?‘’“”'';/⁄· &*@•^†",
+          "‡°″¡¿#№÷×ºª%‰+−=‱¶′″‴§~_|‖‗¦©℗®℠™¤₳฿₵¢₡₢$₫₯₠€ƒ₣₲₴₭₺ℳ₥₦₧₱₰£៛₽₹₨₪৳₸₮₩¥⁂❧☞‽⸮◊※",
+          "⁀and no more"].join('')
           @task = DummyTaskGroup.new(:study => @study, :batch => @batch)
           name = 'Study_name_with_any_content.......-_and_no_more_1_manifest.csv'
           assert_equal name, @task.manifest_filename
