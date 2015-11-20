@@ -25,6 +25,16 @@ class MultiplexedLibraryTube < Tube
     LibraryTube
   end
 
+  def creation_requests
+    direct = requests_as_target.where_is_a?(Request::LibraryCreation)
+    return direct unless direct.empty?
+    parents.find(:all,:include=>:creation_request).map(&:creation_request)
+  end
+
+  def team
+    creation_requests.first.request_type.try(:product_line).try(:name)
+  end
+
   def self.stock_asset_type
     StockMultiplexedLibraryTube
   end
