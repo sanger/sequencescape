@@ -100,6 +100,7 @@ end
 Then /^the XML sent for sample "([^\"]+)" validates with the schema "([^\"]+)"$/ do |sample_name, schema|
   sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
   xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
+  # Schema downloaded from http://www.ebi.ac.uk/ena/submit/data-formats
   xsd = Nokogiri::XML::Schema(File.open(schema))
   result = xsd.validate(Nokogiri(xml))
   assert(result.length==0, result.map(&:message).join(""))
