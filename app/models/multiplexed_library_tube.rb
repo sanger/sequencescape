@@ -35,6 +35,10 @@ class MultiplexedLibraryTube < Tube
     creation_requests.first.request_type.try(:product_line).try(:name)
   end
 
+  def library_source_plates
+    purpose.library_source_plates(self)
+  end
+
   def self.stock_asset_type
     StockMultiplexedLibraryTube
   end

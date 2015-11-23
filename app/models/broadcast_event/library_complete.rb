@@ -15,7 +15,9 @@ class BroadcastEvent::LibraryComplete < BroadcastEvent
   has_subject(:submission) {|_,e| e.order.submission }
 
 
-  has_subject(:library_source_labware,:source_plate)
+  has_subjects(:library_source_labware,:library_source_plates)
+
+  has_subject(:multiplexed_library) {|tube,e| tube }
 
   has_subjects(:stock_plate,:original_stock_plates)
   has_subjects(:sample) do |tube,e|
