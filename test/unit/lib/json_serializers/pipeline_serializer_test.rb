@@ -106,7 +106,7 @@ class PipelineSerializerTest < ActiveSupport::TestCase
     end
 
     should "create a new pipeline from a json" do
-      JsonSerializers::PipelineSerializer.build(@test.json).save!
+      JsonSerializers::PipelineSerializer.from_json(@test.json).save!
       pipeline = Pipeline.find_by_name("Illumina-C Library preparation Testing")
       assert_equal true, !pipeline.nil?
       assert_equal 2, pipeline.request_types.length
@@ -115,7 +115,7 @@ class PipelineSerializerTest < ActiveSupport::TestCase
 
     should "all the content of the pipeline has been loaded from the json used for initializing itself" do
       [@test.json, @test.json_seq_pipeline].each do |json|
-        JsonSerializers::PipelineSerializer.build(json).save!
+        JsonSerializers::PipelineSerializer.from_json(json).save!
         object_a = JSON.parse(json)
         object_b = JSON.parse(JsonSerializers::PipelineSerializer.to_json(Pipeline.find_by_name(object_a["name"])))
 
@@ -144,7 +144,7 @@ class PipelineSerializerTest < ActiveSupport::TestCase
       obj["name"] = "My new pipeline"
       obj["workflow"]["name"]="My new workflow"
 
-      JsonSerializers::PipelineSerializer.build(obj.to_json).save!
+      JsonSerializers::PipelineSerializer.from_json(obj.to_json).save!
       pipeline = Pipeline.find_by_name("My new pipeline")
       assert_equal true, !pipeline.nil?
     end
@@ -155,7 +155,7 @@ class PipelineSerializerTest < ActiveSupport::TestCase
       obj["name"] = "My duplicate pipeline from #{original_pipeline.name}"
       obj["workflow"]["name"]="My duplicate workflow from #{original_pipeline.name}"
 
-      JsonSerializers::PipelineSerializer.build(obj.to_json).save!
+      JsonSerializers::PipelineSerializer.from_json(obj.to_json).save!
       pipeline = Pipeline.find_by_name("My duplicate pipeline from #{original_pipeline.name}")
       assert_equal true, !pipeline.nil?
     end

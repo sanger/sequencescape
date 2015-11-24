@@ -20,7 +20,7 @@ module JsonSerializers
       hash.to_json
     end
 
-    def self.build(json)
+    def self.from_json(json)
       ActiveRecord::Base.transaction do |t|
         params = ActiveSupport::JSON.decode(json).symbolize_keys
 
