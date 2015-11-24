@@ -59,6 +59,10 @@ class Tube < Aliquot::Receptacle
       nil
     end
 
+    def library_source_plates(_)
+      []
+    end
+
     def created_with_request_options(tube)
       tube.creation_request.try(:request_options_for_creation) || {}
     end

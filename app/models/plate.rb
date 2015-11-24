@@ -764,7 +764,7 @@ WHERE c.container_id=?
   end
 
   def samples_in_order_by_target(order_id)
-    Sample.for_plate_and_order_as_target(order_id)
+    Sample.for_plate_and_order_as_target(self.id,order_id)
   end
 
   def contained_samples

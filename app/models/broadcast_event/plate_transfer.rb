@@ -3,7 +3,7 @@
 #Copyright (C) 2015 Genome Research Ltd.
 class BroadcastEvent::PlateTransfer < BroadcastEvent
 
-  set_event_type 'plate_register'
+  set_event_type 'plate_transfer'
 
   # Created when a plate receives material. Should be as cloase to the actual lab event as possible
   # Eg AssetAudit/BedVerification in SM
