@@ -7,9 +7,10 @@ module Plate::FluidigmBehaviour
 
   def self.included(base)
     base.class_eval do
-      fluidigm_request_id = RequestType.find_by_key!('pick_to_fluidigm').id
 
-      named_scope :requiring_fluidigm_data, {
+      named_scope :requiring_fluidigm_data, lambda {
+        fluidigm_request_id = RequestType.find_by_key!('pick_to_fluidigm').id
+        {
         :select => 'DISTINCT assets.*, plate_metadata.fluidigm_barcode AS fluidigm_barcode',
         :joins => [
           'INNER JOIN plate_metadata ON plate_metadata.plate_id = assets.id AND plate_metadata.fluidigm_barcode IS NOT NULL', # The fluidigm metadata
@@ -20,7 +21,7 @@ module Plate::FluidigmBehaviour
           'LEFT OUTER JOIN events ON eventful_id = assets.id AND eventful_type = "Asset" AND family = "update_fluidigm_plate" AND content = "FLUIDIGM_DATA" '
         ],
         :conditions => 'events.id IS NULL'
-      }
+      }}
     end
   end
 

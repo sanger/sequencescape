@@ -192,14 +192,17 @@ Feature: Printing new plate barcodes
           <study_name/>
           <pico-dilution>
             <created-at type="datetime">2010-07-12T11:23:58+01:00</created-at>
+             <dilution_factor>1.0</dilution_factor>
             <barcode>4361234567667</barcode>
             <child-barcodes type="array">
               <child-barcode>
                 <created-at type="datetime">2010-07-12T11:23:58+01:00</created-at>
+                <dilution_factor>1.0</dilution_factor>
                 <barcode>4331234567653</barcode>
               </child-barcode>
               <child-barcode>
                 <created-at type="datetime">2010-07-12T11:23:58+01:00</created-at>
+                <dilution_factor>1.0</dilution_factor>
                 <barcode>4341234567737</barcode>
               </child-barcode>
             </child-barcodes>

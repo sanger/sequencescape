@@ -5,7 +5,30 @@ require "test_helper"
 
 class PlateTest < ActiveSupport::TestCase
 
-  context "" do
+  context "A plate" do
+    context "with a barcode" do
+      setup do
+        @asset = Factory :plate
+        @result_hash = @asset.barcode_dilution_factor_created_at_hash
+      end
+      should "return a hash with the barcode and created_at time" do
+        assert ! @result_hash.blank?
+        assert @result_hash.is_a?(Hash)
+        assert @result_hash[:barcode].is_a?(String)
+        assert @result_hash[:created_at].is_a?(ActiveSupport::TimeWithZone)
+      end
+    end
+
+    context "without a barcode" do
+      setup do
+        @asset = Factory :plate, :barcode => nil
+        @result_hash = @asset.barcode_dilution_factor_created_at_hash
+      end
+      should "return an empty hash" do
+        assert @result_hash.blank?
+      end
+    end
+
     context "#infinium_barcode=" do
       setup do
         @plate = Plate.new
