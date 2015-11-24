@@ -1,9 +1,7 @@
-require 'submission_serializer'
-
 class AddSubmissionTemplateNoPcrxTen < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do |t|
-      st = SubmissionSerializer.construct!({
+      st = JsonSerializers::SubmissionSerializer.construct!({
         :name => "Illumina-C - General no PCR - HiSeq-X sequencing",
         :submission_class_name => "LinearSubmission",
         :product_line => "Illumina-C",
@@ -42,8 +40,8 @@ class AddSubmissionTemplateNoPcrxTen < ActiveRecord::Migration
         end
         hiseqlt.destroy
       end
-      TagLayoutTemplate.find_by_name("NEXTflex-96 barcoded adapters tags in rows (first oligo: AACGTGAT)").destroy
-      SubmissionTemplate.find_by_name("Illumina-C - General no PCR - HiSeq-X sequencing").destroy
+      TagLayoutTemplate.find_by_name("NEXTflex-96 barcoded adapters tags in rows (first oligo: AACGTGAT)").tap{|t|t.destroy unless t.nil?}
+      SubmissionTemplate.find_by_name("Illumina-C - General no PCR - HiSeq-X sequencing").tap{|t|t.destroy unless t.nil?}
     end
   end
 end
