@@ -27,7 +27,7 @@ module JsonSerializers
         control_request_type_key = params.delete(:control_request_type_key)
         params[:control_request_type_id] = control_request_type_key.nil? ? 0 : RequestType.find_by_key(control_request_type_key).id
 
-        params[:location] = Location.first(:conditions => { :name => params.delete(:location_name) }) or raise StandardError, "Cannot find 'Library creation freezer' location"
+        params[:location] = Location.first(:conditions => { :name => params.delete(:location_name) }) or raise StandardError, "Cannot find location"
         params[:request_types] = params.delete(:request_types_keys).map{|key| RequestType.find_by_key(key)}
 
         workflow_info = params.delete(:workflow).symbolize_keys
