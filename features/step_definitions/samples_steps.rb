@@ -80,6 +80,66 @@ Then /^the reference genome for the sample "([^\"]+)" should be "([^\"]+)"$/ do 
   assert_equal(genome, sample.sample_metadata.reference_genome.name)
 end
 
+Then /^the UUID for the sample "([^\"]+)" should be "([^\"]+)"$/ do |name, uuid|
+  sample = Sample.find_by_name(name) or raise StandardError, "Cannot find sample with name #{ name.inspect }"
+  assert_equal(uuid, sample.uuid)
+end
+
+Then /^the XML root attribute "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be not present$/ do |xml_attr, sample_name|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
+  assert_equal(true, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/@#{xml_attr}").length == 0)
+end
+
+Then /^the XML root attribute "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be "(.*?)"$/ do |xml_attr, sample_name, value|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
+  assert_equal(value, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/@#{xml_attr}").map(&:to_s)[0])
+end
+
+Then /^the XML sent for sample "([^\"]+)" validates with the schema "([^\"]+)"$/ do |sample_name, schema|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
+  # Schema downloaded from http://www.ebi.ac.uk/ena/submit/data-formats
+  xsd = Nokogiri::XML::Schema(File.open(schema))
+  result = xsd.validate(Nokogiri(xml))
+  assert(result.length==0, result.map(&:message).join(""))
+end
+
+Then /^the XML identifier tag "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be not present$/ do |xml_attr, sample_name|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
+  assert_equal(true, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/IDENTIFIERS/#{xml_attr}").length == 0)
+end
+
+Then /^the XML tag "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be not present$/ do |xml_attr, sample_name|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
+  assert_equal(true, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/#{xml_attr}").length == 0)
+end
+
+Then /^the XML identifier tag "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be "(.*?)"$/ do |xml_attr, sample_name, value|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
+  assert_equal(value, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/IDENTIFIERS/#{xml_attr}").text)
+end
+
+Then /^the XML tag "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be "(.*?)"$/ do |xml_attr, sample_name, value|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
+  assert_equal(value, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/#{xml_attr}").text)
+end
+
+Given /^the metadata attribute "(.*?)" of the sample "(.*?)" is "(.*?)"$/ do |attr_name, sample_name, value|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  sample.sample_metadata.update_attributes(Hash[* [attr_name, (value unless value == "empty")]])
+end
+
+Given /^the attribute "(.*?)" of the sample "(.*?)" is "(.*?)"$/ do |attr_name, sample_name, value|
+  sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample with name #{ sample_name.inspect }"
+  sample.update_attributes(Hash[* [attr_name, (value unless value=="empty")]])
+end
+
 Then /^the sample "([^\"]+)" should exist$/ do |name|
   assert_not_nil(Sample.find_by_name(name), "The sample #{name.inspect} does not exist")
 end
@@ -131,16 +191,16 @@ end
 
 GivenSampleMetadata(:sample_ebi_accession_number, /^the sample "([^\"]+)" has the accession number "([^\"]+)"$/)
 
-When /^I generate an? accession number for sample "([^\"]+)"$/ do |sample_name|
+When /^I (create|update) an? accession number for sample "([^\"]+)"$/ do |action_type, sample_name|
  step %Q{I am on the show page for sample "#{sample_name}"}
- step(%Q{I follow "Generate Accession Number"})
+ action_str = (action_type=='create') ? 'Generate Accession Number' : 'Update EBI Sample data'
+ step(%Q{I follow "#{action_str}"})
 end
 
-When /^I update an? accession number for sample "([^\"]+)"$/ do |sample_name|
- step %Q{I am on the show page for sample "#{sample_name}"}
- step(%Q{I follow "Update EBI Sample data"})
+Then /^I (should|should not) have (sent|received) the attribute "([^\"]*)" for the sample element (to|from) the accessioning service$/ do |state_action, type_action, attr_name, dest|
+  xml = (state_action == "sent") ? FakeAccessionService.instance.sent.last["SAMPLE"].readlines.to_s : FakeAccessionService.instance.last_received
+  assert Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/@#{attr_name}").map(&:to_s).empty?, state_action == "should"
 end
-
 
 Given /^sample "([^"]*)" came from a sample manifest$/ do |sample_name|
   sample = Sample.find_by_name(sample_name)

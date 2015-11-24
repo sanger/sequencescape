@@ -14,7 +14,7 @@
     <!-- End of Plates and Well creation parameters -->
 
     <%= form.input :barcode_printer, :as => :select, :collection => @barcode_printers %>
-    <%= form.commit_button %>
+    <%= form.commit_button :disable_with => 'Please wait...' %>
   <% end %>
 <% end %>
 

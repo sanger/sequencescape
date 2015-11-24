@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150803092346) do
+ActiveRecord::Schema.define(:version => 20151029152735) do
 
   create_table "aliquot_indices", :force => true do |t|
     t.integer  "aliquot_id",    :null => false
@@ -302,6 +302,16 @@ ActiveRecord::Schema.define(:version => 20150803092346) do
 
   add_index "billing_events", ["kind"], :name => "index_billing_events_on_kind"
   add_index "billing_events", ["reference"], :name => "index_billing_events_on_reference"
+
+  create_table "broadcast_events", :force => true do |t|
+    t.string   "sti_type"
+    t.string   "seed_type"
+    t.integer  "seed_id"
+    t.integer  "user_id"
+    t.text     "properties"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "budget_divisions", :force => true do |t|
     t.string   "name"
@@ -1052,6 +1062,12 @@ ActiveRecord::Schema.define(:version => 20150803092346) do
 
   add_index "request_metadata", ["request_id"], :name => "index_request_metadata_on_request_id"
 
+  create_table "request_purposes", :force => true do |t|
+    t.string   "key",        :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "request_quotas_bkp", :force => true do |t|
     t.integer "request_id", :null => false
     t.integer "quota_id",   :null => false
@@ -1096,6 +1112,7 @@ ActiveRecord::Schema.define(:version => 20150803092346) do
     t.boolean  "no_target_asset",                   :default => false, :null => false
     t.integer  "target_purpose_id"
     t.integer  "pooling_method_id"
+    t.integer  "request_purpose_id"
   end
 
   create_table "request_types_extended_validators", :force => true do |t|
@@ -1127,6 +1144,7 @@ ActiveRecord::Schema.define(:version => 20150803092346) do
     t.integer  "priority",                         :default => 0
     t.string   "sti_type"
     t.integer  "order_id"
+    t.integer  "request_purpose_id"
   end
 
   add_index "requests", ["asset_id"], :name => "index_requests_on_asset_id"
@@ -1134,6 +1152,7 @@ ActiveRecord::Schema.define(:version => 20150803092346) do
   add_index "requests", ["initial_study_id", "request_type_id", "state"], :name => "index_requests_on_project_id_and_request_type_id_and_state"
   add_index "requests", ["initial_study_id"], :name => "index_request_on_project_id"
   add_index "requests", ["item_id"], :name => "index_request_on_item_id"
+  add_index "requests", ["request_type_id", "state"], :name => "request_type_id_state_index"
   add_index "requests", ["state", "request_type_id", "initial_study_id"], :name => "request_project_index"
   add_index "requests", ["submission_id"], :name => "index_requests_on_submission_id"
   add_index "requests", ["target_asset_id"], :name => "index_requests_on_target_asset_id"

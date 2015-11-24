@@ -6,12 +6,15 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
     tube.requests_as_target.where_is_a?(Request::LibraryCreation).first.try(:request_options_for_creation) || {}
   end
 
-  def transition_to(tube, state, _ = nil, customer_accepts_responsibility = false)
+  def transition_to(tube, state, user, _ = nil, customer_accepts_responsibility = false)
+    orders = Set.new
     target_requests(tube).each do |request|
       request.customer_accepts_responsibility! if customer_accepts_responsibility
       to_state = request_state(request,state)
       request.transition_to(to_state) unless to_state.nil?
+      orders << request.order.id unless request.is_a?(TransferRequest)
     end
+    generate_events_for(tube,orders,user) if state == 'qc_complete'
   end
 
   def target_requests(tube)
@@ -25,7 +28,19 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
   private :target_requests
 
   def stock_plate(tube)
-    tube.requests_as_target.where_is_a?(Request::LibraryCreation).detect{|r| r.asset.present?} .asset.plate
+    tube.requests_as_target.where_is_a?(Request::LibraryCreation).detect{|r| r.asset.present?}.asset.plate
+  end
+
+  def library_source_plates(tube)
+    Plate.find(:all,
+      :select=>'DISTINCT assets.*',
+      :joins=>{:wells=>:requests},
+      :conditions=>[
+        'requests.target_asset_id = ? AND requests.sti_type IN (?)',
+        tube.id,
+        [Request::LibraryCreation,*Class.subclasses_of(Request::LibraryCreation)].map(&:name)
+      ]
+    ).map(&:source_plate)
   end
 
   def request_state(request,state)
@@ -37,5 +52,12 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
     {'cancelled' =>'cancelled','failed' => 'failed','qc_complete' => 'passed'}
   end
   private :mappings
+
+  def generate_events_for(tube,orders,user)
+    orders.each do |order_id|
+      BroadcastEvent::LibraryComplete.create!(:seed=>tube,:user=>user,:properties=>{:order_id=>order_id})
+    end
+  end
+  private :generate_events_for
 
 end

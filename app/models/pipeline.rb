@@ -32,7 +32,7 @@ class Pipeline < ActiveRecord::Base
   belongs_to :location
 
   has_many :pipelines_request_types, :inverse_of => :pipeline
-  has_many :request_types, :through => :pipelines_request_types
+  has_many :request_types, :through => :pipelines_request_types, :validate => false
 
   validates_presence_of :request_types
 
@@ -263,7 +263,12 @@ class Pipeline < ActiveRecord::Base
   end
   deprecate :release_batch
 
+  def on_start_batch(batch, user)
+    # Do nothing
+  end
+
   def post_release_batch(batch, user)
+    # Do Nothing
   end
 
   def has_controls?

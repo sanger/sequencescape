@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 class Barcode
   # Anything that has a barcode is considered barcodeable.
   module Barcodeable
@@ -9,11 +9,24 @@ class Barcode
         before_create :set_default_prefix
         class_inheritable_accessor :prefix
         self.prefix = "NT"
+
+        if ActiveRecord::Base.observers.include?(:amqp_observer)
+          after_save :broadcast_barcode, :if => :barcode_changed?
+        end
+
       end
     end
 
     def generate_barcode
       self.barcode = AssetBarcode.new_barcode
+    end
+
+    def broadcast_barcode
+      AmqpObserver.instance << Messenger.new(:template=>'BarcodeIO',:root=>'barcode',:target=>self)
+    end
+
+    def barcode_type
+      'SangerEan13'
     end
 
     def set_default_prefix
@@ -30,6 +43,7 @@ class Barcode
       return nil unless barcode.present? and prefix.present?
       Barcode.calculate_barcode(self.prefix, self.barcode.to_i).to_s
     end
+    alias_method :machine_barcode, :ean13_barcode
 
     def role
       return nil if no_role?

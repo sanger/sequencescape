@@ -229,12 +229,12 @@
   var validateOrder = function(event) {
     var currentPane = $(event.target).submission('currentPane');
 
-    var studyId     = currentPane.find('.study_id').val()||currentPane.find('.cross_study')[0].checked;
+    var studyId     = currentPane.find('.study_id').val()||currentPane.find('.cross_study').attr('checked');
 
     // TODO This should validate that the project name is in the list but the
     // autocomplete callback doesn't seem to fire properly so this is a bit of
     // a kludge around that.
-    var projectName = currentPane.find('.submission_project_name').val()||currentPane.find('.cross_project')[0].checked;
+    var projectName = currentPane.find('.submission_project_name').val()||currentPane.find('.cross_project').attr('checked');
     var hasAssets   = currentPane.submission('hasAssets');
 
 

@@ -17,9 +17,11 @@ a {
 .target_plate th.corner-tl {}
 .target_plate th.corner-br {border-bottom-right-radius: 10px;}
 .target_plate th.corner-bl {border-bottom-left-radius: 10px;}
-.tube_source {padding:0.5em; border-radius:10px; background-color: #FFFFCC;}
+.interface_group {padding:0.5em; border-radius:10px; background-color: #FFFFCC;}
 .pac_well {margin:0; padding:0; height: 2em;}
 #error_messages { background-color: #ff7070; padding: 2em; margin:1em; border:3px solid red; border-radius:20px; display:none;}
+
+#target_plate_selected { display: none; }
 
 a:hover {
   text-decoration: underline;
@@ -35,6 +37,22 @@ a:visited {
   letter-spacing: 3px;
   float: left;
   text-shadow: 0 -1px 1px #00131C;
+}
+
+#barcode_list li {
+  width: 20em;
+  border: 1px solid black;
+  border-radius: 3px;
+  padding: 0.2em;
+  margin: 0.2em;
+}
+
+#barcode_list li a {
+  float: right;
+}
+
+#barcode_list {
+    list-style: none;
 }
 
 #search {
@@ -1457,4 +1475,16 @@ ul.options li {
 .shown-button {
   cursor: pointer;
   float: right;
+}
+
+form#new_labwhere_reception label {
+    display: inline-block;
+    width: 20em;
+  }
+form#new_labwhere_reception .form-group {
+  margin-bottom: 0.5em;
+}
+
+form#new_labwhere_reception ul li a {
+  cursor: pointer;
 }

@@ -14,6 +14,14 @@ class FakeAccessionService < FakeSinatraService
     @bodies ||= []
   end
 
+  def sent
+    @sent ||= []
+  end
+
+  def last_received
+    @last_received
+  end
+
   def clear
     @bodies = []
   end
@@ -33,11 +41,15 @@ class FakeAccessionService < FakeSinatraService
   end
 
   def next!
-    self.bodies.pop
+    @last_received = self.bodies.pop
   end
 
   def service
     Service
+  end
+
+  def add_payload(payload)
+    sent.push(Hash[*payload.map{|k,v| [k, v.readlines]}.map{|k,v| [k,(v unless v.empty?)]}.flatten])
   end
 
   class Service < FakeSinatraService::Base
@@ -54,5 +66,14 @@ class FakeAccessionService < FakeSinatraService
     end
   end
 end
+
+RestClient::Resource.class_eval do |klass|
+  alias_method :original_post, :post
+  def post(payload)
+    FakeAccessionService.instance.add_payload(payload)
+    original_post(payload)
+  end
+end
+
 
 FakeAccessionService.install_hooks(self, '@accession-service')

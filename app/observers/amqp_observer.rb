@@ -12,7 +12,8 @@ class AmqpObserver < ActiveRecord::Observer
     :batch, :batch_request,
     :role, Role::UserRole,
     :reference_genome,
-    :messenger
+    :messenger,
+    :broadcast_event
   )
 
   # Ensure we capture records being saved as well as deleted.

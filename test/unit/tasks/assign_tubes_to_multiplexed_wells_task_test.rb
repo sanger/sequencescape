@@ -35,7 +35,7 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
       @mock_wells = @dest_wells.map {|loc| mock('well',:map_description=>loc)}
     end
 
-    context "#do_assign_tubes_to_multiplexed_wells_task" do
+    context "#do_assign_requests_to_multiplexed_wells_task" do
       setup do
 
           @params = {
@@ -52,10 +52,13 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
       context "with no tag clashes" do
         setup do
           request_target = [:none,0,1,2,3,4,5,6,6]
-          @tags = [1,2,3,4,5,6,7,8]
+          tag_hash = Hash.new {|h,i| h[i] = Factory :tag }
+          @tags = [1,2,3,4,5,5,7,8].map {|i| tag_hash[i] }
           @requests = (1..8).map do |i|
+            asset = Factory :pac_bio_library_tube
+            asset.aliquots.first.update_attributes!(:tag=>@tags[i-1])
             mock("request_#{i}",
-              :asset=> mock("asset_#{i}",:aliquots=>[mock("aliquot",:tag_id=>@tags[i-1])])
+              :asset=> asset
             ).tap do |request|
               request.expects(:target_asset=).with( @mock_wells[request_target[i]] )
               request.expects(:save!)
@@ -75,10 +78,13 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
 
       context "with tag clashes" do
         setup do
-          @tags = [1,2,3,4,5,5,6,6]
+          tag_hash = Hash.new {|h,i| h[i] = Factory :tag }
+          @tags = [1,2,3,4,5,5,6,6].map {|i| tag_hash[i] }
           @requests = (1..8).map do |i|
+            asset = Factory :pac_bio_library_tube
+            asset.aliquots.first.update_attributes!(:tag=>@tags[i-1])
             mock("request_#{i}",
-              :asset=> mock("asset_#{i}",:aliquots=>[mock("aliquot",:tag_id=> @tags[i-1])])
+              :asset=> asset
             ).tap do |request|
               request.expects(:id).at_least_once.returns(i)
             end
@@ -102,10 +108,13 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
 
       context "with incompatible attributes" do
         setup do
-          @tags = [1,2,3,4,5,6,7,8]
+          tag_hash = Hash.new {|h,i| h[i] = Factory :tag }
+          @tags = [1,2,3,4,5,5,7,8].map {|i| tag_hash[i] }
           @requests = (1..8).map do |i|
+            asset = Factory :pac_bio_library_tube
+            asset.aliquots.first.update_attributes!(:tag=>@tags[i-1])
             mock("request_#{i}",
-              :asset=> mock("asset_#{i}",:aliquots=>[mock("aliquot",:tag_id=> @tags[i-1])])
+              :asset=> asset
             ).tap do |request|
               request.expects(:id).at_least_once.returns(i)
               request.expects(:shared_attributes).at_least_once.returns("clash#{i}")
