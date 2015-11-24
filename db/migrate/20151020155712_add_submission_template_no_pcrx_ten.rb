@@ -3,7 +3,7 @@ require 'submission_serializer'
 class AddSubmissionTemplateNoPcrxTen < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do |t|
-      st = SubmissionSerializer.construct!({
+      st = Serializers::SubmissionSerializer.construct!({
         :name => "Illumina-C - General no PCR - HiSeq-X sequencing",
         :submission_class_name => "LinearSubmission",
         :product_line => "Illumina-C",
