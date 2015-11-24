@@ -312,13 +312,19 @@ class AssetsController < ApplicationController
 
   def lookup
     if params[:asset] && params[:asset][:barcode]
-      id = params[:asset][:barcode][3,7]
+      id = params[:asset][:barcode][3,7].to_i
       @assets = Asset.find(:all, :conditions => {:barcode => id}).paginate :per_page => 50, :page => params[:page]
 
       if @assets.size == 1
-        redirect_to @assets.first
+        @asset = @assets.first
+        respond_to do |format|
+          format.html { render :action => "show" }
+          format.xml  { render :xml => @assets.to_xml }
+        end
       elsif @assets.size == 0
-        action_flash[:error] = "No asset found with barcode #{params[:asset][:barcode]}"
+        if params[:asset] && params[:asset][:barcode]
+          flash[:error] = "No asset found with barcode #{params[:asset][:barcode]}"
+        end
         respond_to do |format|
           format.html { render :action => "lookup" }
           format.xml  { render :xml => @assets.to_xml }

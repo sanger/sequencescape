@@ -284,8 +284,6 @@ ActionController::Routing::Routes.draw do |map|
     sdb.connect "/", :controller => "home"
   end
 
-  map.resources :labwhere_receptions, :only => [:index, :create]
-
 
   # Install the default routes as the lowest priority.
   map.connect ":controller/:action/:id"
