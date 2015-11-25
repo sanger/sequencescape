@@ -17,25 +17,37 @@ ActiveRecord::Base.transaction do
     Plate::Creator.create!(:name => name, :plate_purpose => plate_purpose, :plate_purposes => [ plate_purpose ])
   end
 
-  def build_purpose_config_record(plate_purpose_name, parent_purpose_name)
-    {
-      :plate_purpose => Purpose.find_by_name!(plate_purpose_name),
-      :parent_purpose => Purpose.find_by_name!(parent_purpose_name)
-    }
-  end
 
-  def purposes_config
-    [
-      build_purpose_config_record("Working dilution", "Stock plate"),
-      build_purpose_config_record("Pico dilution", "Working dilution"),
-      build_purpose_config_record("Pico Assay Plates", "Pico dilution")
+  purposes_config = [
+      [Plate::Creator.find_by_name!("Working dilution"),  Purpose.find_by_name!("Stock plate")],
+      [Plate::Creator.find_by_name!("Pico dilution"),     Purpose.find_by_name!("Working dilution")],
+      [Plate::Creator.find_by_name!("Pico Assay Plates"), Purpose.find_by_name!("Pico dilution")],
+      [Plate::Creator.find_by_name!("Pico Assay Plates"), Purpose.find_by_name!("Working dilution")],
     ]
+
+
+  purposes_config.each do |creator,purpose|
+    creator.parent_plate_purposes << purpose
   end
 
-  purposes_config.each do |p|
-    Plate::Creator.find_by_name(p[:plate_purpose].name).plate_creator_purposes.each do |relation|
-      relation.update_attributes!(:parent_purpose_id =>  p[:parent_purpose].id)
+  # Valid options: Dilution Factors:
+  [
+    ["Working dilution", [12.5, 20.0, 15.0, 50.0]],
+    ["Pico dilution", [4.0]]
+  ].each do |name, values|
+    c = Plate::Creator.find_by_name!(name)
+    c.update_attributes!(:valid_options => {
+        :valid_dilution_factors => values
+    })
+  end
+  Plate::Creator.all.each do |c|
+    if c.valid_options.nil?
+      # Any other valid option will be set to 1
+      c.update_attributes!(:valid_options => {
+          :valid_dilution_factors => [1.0]
+      })
     end
   end
+
 
 end

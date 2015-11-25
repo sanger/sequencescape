@@ -28,7 +28,19 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
   private :target_requests
 
   def stock_plate(tube)
-    tube.requests_as_target.where_is_a?(Request::LibraryCreation).detect{|r| r.asset.present?} .asset.plate
+    tube.requests_as_target.where_is_a?(Request::LibraryCreation).detect{|r| r.asset.present?}.asset.plate
+  end
+
+  def library_source_plates(tube)
+    Plate.find(:all,
+      :select=>'DISTINCT assets.*',
+      :joins=>{:wells=>:requests},
+      :conditions=>[
+        'requests.target_asset_id = ? AND requests.sti_type IN (?)',
+        tube.id,
+        [Request::LibraryCreation,*Class.subclasses_of(Request::LibraryCreation)].map(&:name)
+      ]
+    ).map(&:source_plate)
   end
 
   def request_state(request,state)

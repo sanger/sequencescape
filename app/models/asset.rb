@@ -464,14 +464,6 @@ class Asset < ActiveRecord::Base
     with_machine_barcode(source_barcode).first
   end
 
-  def barcode_and_created_at_hash
-    return {} if barcode.blank?
-    {
-      :barcode    => generate_machine_barcode,
-      :created_at => created_at
-    }
-  end
-
   def generate_machine_barcode
     "#{Barcode.calculate_barcode( barcode_prefix.prefix,barcode.to_i)}"
   end

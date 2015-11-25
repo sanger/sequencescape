@@ -795,12 +795,18 @@ ActiveRecord::Schema.define(:version => 20151029152735) do
     t.datetime "updated_at"
   end
 
-  create_table "plate_creator_purposes", :force => true do |t|
-    t.integer  "plate_creator_id",  :null => false
-    t.integer  "plate_purpose_id",  :null => false
+  create_table "plate_creator_parent_purposes", :force => true do |t|
+    t.integer  "plate_creator_id", :null => false
+    t.integer  "plate_purpose_id", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "parent_purpose_id"
+  end
+
+  create_table "plate_creator_purposes", :force => true do |t|
+    t.integer  "plate_creator_id", :null => false
+    t.integer  "plate_purpose_id", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "plate_creators", :force => true do |t|
@@ -808,6 +814,7 @@ ActiveRecord::Schema.define(:version => 20151029152735) do
     t.integer  "plate_purpose_id", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "valid_options"
   end
 
   add_index "plate_creators", ["name"], :name => "index_plate_creators_on_name", :unique => true
@@ -818,6 +825,7 @@ ActiveRecord::Schema.define(:version => 20151029152735) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "fluidigm_barcode", :limit => 10
+    t.decimal  "dilution_factor",                :precision => 5, :scale => 2, :default => 1.0
   end
 
   add_index "plate_metadata", ["fluidigm_barcode"], :name => "index_on_fluidigm_barcode", :unique => true

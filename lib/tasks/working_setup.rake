@@ -20,7 +20,8 @@ namespace :working do
     :ilc => Location.find_by_name('Library creation freezer')
    }
 
-   user = User.create!(:login=>'admin',:password=>'admin', :swipecard_code=>'abcdef')
+   # Admin full barcode will be: Barcode.human_to_machine_barcode("ID99A")
+   user = User.create!(:login=>'admin',:password=>'admin', :swipecard_code=>'abcdef', :barcode =>'ID99A')
    user.is_administrator
    faculty_sponsor = FacultySponsor.create!(:name=>'Faculty Sponsor')
 

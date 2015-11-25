@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 class PlatesController < ApplicationController
   before_filter :login_required, :except => [:upload_pico_results, :fluidigm_file]
 
@@ -20,6 +20,7 @@ class PlatesController < ApplicationController
     @plate = Plate.find(params[:id])
   end
 
+
   def create
     ActiveRecord::Base.transaction do
       plate_creator         = Plate::Creator.find(params[:plates][:creator_id])
@@ -33,7 +34,7 @@ class PlatesController < ApplicationController
         if scanned_user.nil?
           flash[:error] = 'Please scan your user barcode'
           format.html { redirect_to(new_plate_path) }
-        elsif plate_creator.execute(source_plate_barcodes, barcode_printer, scanned_user)
+        elsif plate_creator.execute(source_plate_barcodes, barcode_printer, scanned_user, Plate::CreatorParameters.new(params[:plates]))
           flash[:notice] = 'Created plates and printed barcodes'
           format.html { redirect_to(new_plate_path) }
         else
@@ -42,9 +43,9 @@ class PlatesController < ApplicationController
         end
       end
     end
-  rescue Plate::Creator::PlateCreationError => e
+  rescue Plate::Creator::PlateCreationError, ActiveRecord::RecordNotFound => e
     respond_to do |format|
-      flash[:error] = e.text
+      flash[:error] = e.message
       format.html { redirect_to(new_plate_path) }
     end
   end
