@@ -4,7 +4,10 @@
 
 ( function($, undefined){
   "use strict";
-  $(document).ready(function(){
+
+  var attachEvents;
+
+  attachEvents = function(){
     $('.remote-form').bind("ajax:beforeSend",  function(){
       $(this).find('.btn').attr('disabled','disabled');
     })
@@ -15,10 +18,15 @@
       var target;
       target = this.dataset.success ||  this.dataset.update;
       $(target).html(data);
+      attachEvents();
     }).bind('ajax:error', function(xhr, data, status) {
       var target;
       target = this.dataset.failure ||  this.dataset.update;
       $(target).html(data);
+      attachEvents();
     });
-  });
+  };
+
+  $(document).ready( attachEvents );
+
 })(jQuery);
