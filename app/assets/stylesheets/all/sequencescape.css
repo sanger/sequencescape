@@ -249,8 +249,12 @@ position: relative;
 left: 0px;
 padding-left: 5px;
 }
-#logo_container {
+body.production #logo_container {
 background-color: rgba(0, 0, 0, 0.3);
+padding: 3px;
+}
+body #logo_container {
+background-color: rgba(255, 0, 0, 0.8);
 padding: 3px;
 }
 #main-items {

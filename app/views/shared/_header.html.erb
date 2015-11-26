@@ -30,7 +30,11 @@
         <div id="sequencescape_logo">
           <%= link_to image_tag("sequencescape.gif"), '/' %>
         </div>
-        <div id="app_name"><%= link_to I18n.t('application.name').upcase, '/' %></div>
+        <% if Rails.env == 'production' %>
+          <div id="app_name"><%= link_to I18n.t('application.name').upcase, '/' %></div>
+        <% else %>
+          <div id="app_name"><%= link_to Rails.env.humanize, '/' %></div>
+        <% end %>
       </div>
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
       <span class="sr-only">Toggle navigation</span>
@@ -40,7 +44,6 @@
       <span class="icon-bar"></span>
       </button>
     </div>
-
     <!-- The main body of the navbar. Collapses at low resolutions -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
     <ul class="nav navbar-nav">
