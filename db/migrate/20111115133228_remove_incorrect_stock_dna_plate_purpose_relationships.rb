@@ -10,7 +10,7 @@ class RemoveIncorrectStockDnaPlatePurposeRelationships < ActiveRecord::Migration
     end
 
     self.table_name =('plate_purposes')
-    set_inheritance_column :not_defined_please_ignore_inheritance
+    self.inheritance_column = :not_defined_please_ignore_inheritance
 
     has_many :child_relationships, :class_name => 'RemoveIncorrectStockDnaPlatePurposeRelationships::PlatePurpose::Relationship', :foreign_key => :parent_id, :dependent => :destroy
     has_many :child_plate_purposes, :through => :child_relationships, :source => :child

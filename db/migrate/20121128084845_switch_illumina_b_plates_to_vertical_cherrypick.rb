@@ -4,7 +4,7 @@
 class SwitchIlluminaBPlatesToVerticalCherrypick < ActiveRecord::Migration
   class PlatePurpose < ActiveRecord::Base
     self.table_name =('plate_purposes')
-    set_inheritance_column
+    self.inheritance_column =
   end
 
   def self.up

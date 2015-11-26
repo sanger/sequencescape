@@ -25,7 +25,7 @@ class Request < ActiveRecord::Base
   has_many_events
   has_many_lab_events
 
-  set_inheritance_column "sti_type"
+  self.inheritance_column = "sti_type"
 
   def self.delegate_validator
     DelegateValidation::AlwaysValidValidator

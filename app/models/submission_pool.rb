@@ -38,7 +38,7 @@ class SubmissionPool < ActiveRecord::Base
     end
   end
 
-  set_table_name('submissions')
+  self.table_name = 'submissions'
 
   belongs_to :outer_request, :class_name => 'Request'
   has_many :tag2_layout_template_submissions, :class_name => 'Tag2Layout::TemplateSubmission', :foreign_key => 'submission_id'

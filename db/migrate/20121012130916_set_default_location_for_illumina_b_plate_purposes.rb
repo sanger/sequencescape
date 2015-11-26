@@ -8,7 +8,7 @@ class SetDefaultLocationForIlluminaBPlatePurposes < ActiveRecord::Migration
 
   class Purpose < ActiveRecord::Base
     self.table_name =('plate_purposes')
-    set_inheritance_column
+    self.inheritance_column =
   end
 
   def self.up

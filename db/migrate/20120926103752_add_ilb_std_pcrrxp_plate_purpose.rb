@@ -12,14 +12,14 @@ class AddIlbStdPcrrxpPlatePurpose < ActiveRecord::Migration
     end
 
     self.table_name =('plate_purposes')
-    set_inheritance_column
+    self.inheritance_column =
 
     has_many :child_relationships, :class_name => 'AddIlbStdPcrrxpPlatePurpose::Purpose::Relationship', :foreign_key => :parent_id, :dependent => :destroy
   end
 
   class RequestType < ActiveRecord::Base
     self.table_name =('request_types')
-    set_inheritance_column
+    self.inheritance_column =
   end
 
   def self.up

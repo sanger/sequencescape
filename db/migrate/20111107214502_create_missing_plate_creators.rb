@@ -20,7 +20,7 @@ class CreateMissingPlateCreators < ActiveRecord::Migration
 
   class PlatePurpose < ActiveRecord::Base
     self.table_name =('plate_purposes')
-    set_inheritance_column :_type_disabled
+    self.inheritance_column = :_type_disabled
   end
 
   def self.up

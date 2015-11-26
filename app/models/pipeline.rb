@@ -19,7 +19,7 @@ class Pipeline < ActiveRecord::Base
   INBOX_PARTIAL               = 'default_inbox'
   ALWAYS_SHOW_RELEASE_ACTIONS = false # Override this in subclasses if you want to display action links for released batches
 
-  set_inheritance_column "sti_type"
+  self.inheritance_column = "sti_type"
 
   delegate :item_limit, :has_batch_limit?, :to => :workflow
   validates_presence_of :workflow

@@ -26,7 +26,7 @@ class PopulatePlateCreators < ActiveRecord::Migration
     end
 
     self.table_name =('plate_purposes')
-    set_inheritance_column :_type_disabled
+    self.inheritance_column = :_type_disabled
 
     has_many :child_relationships, :class_name => 'PopulatePlateCreators::PlatePurpose::Relationship', :foreign_key => :parent_id, :dependent => :destroy
     has_many :child_plate_purposes, :through => :child_relationships, :source => :child

@@ -10,7 +10,7 @@ class SetIlbStdMxTubePurposeOnRequestType < ActiveRecord::Migration
   module IlluminaB
     class MxTubePurpose < ActiveRecord::Base
       self.table_name =('plate_purposes')
-      set_inheritance_column
+      self.inheritance_column =
     end
   end
 
