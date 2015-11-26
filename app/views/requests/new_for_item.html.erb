@@ -11,7 +11,7 @@ Enter the number of <%= ActiveSupport::Inflector.pluralize @request.request_type
 </div>
 
 <div id="study">
-<% form_for(:request, :url => requests_path) do |form| %>
+<%= form_for(:request, :url => requests_path) do |form| %>
 
 <table width="100%" cellspacing="0" cellpadding="0">
   <tr>

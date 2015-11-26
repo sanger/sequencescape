@@ -11,7 +11,7 @@
   </div>
   <div class="info">
     <table width="100%" cellspacing="0" cellpadding="0">
-      <% form_tag(:controller => :pipelines, :action => :set_inbox, :id => @pipeline.id ) do -%>
+      <%= form_tag(:controller => :pipelines, :action => :set_inbox, :id => @pipeline.id ) do -%>
         <tr>
           <td width="35%" class="item">Control samples: </td>
           <td width="65%">

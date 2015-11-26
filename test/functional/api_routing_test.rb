@@ -10,7 +10,7 @@ class ApiRoutingTest < ActionController::TestCase
 
       should matcher.description do
         # Not only can we not be allowed the method, we also might not even have the route!
-        assert_raises(ActionController::MethodNotAllowed, Test::Unit::AssertionFailedError) do
+        assert_raises(ActionController::MethodNotAllowed,MiniTest::Assertion) do
           assert_accepts matcher.in_context(self), self
         end
       end
@@ -21,7 +21,7 @@ class ApiRoutingTest < ActionController::TestCase
 
       resources.each do |resource|
         with_options(:controller => "api/#{resource}") do |check|
-          yield(check, "/0_5/#{resource}")
+          yield(check, "/0_5/#{resource}", {:controller=>"api/#{resource}"})
 
           # We absolutely, never, ever expose :destroy
           check.should_not_route :delete, "/0_5/#{resource}/12345", :action => :destroy
@@ -31,7 +31,7 @@ class ApiRoutingTest < ActionController::TestCase
       resources_with_nesting.each do |parent, resources|
         resources.each do |resource|
           with_options(:"#{parent.to_s.singularize}_id" => '67890', :controller => "api/#{resource}") do |check|
-            yield(check, "/0_5/#{parent}/67890/#{resource}")
+            yield(check, "/0_5/#{parent}/67890/#{resource}", {:"#{parent.to_s.singularize}_id" => '67890', :controller => "api/#{resource}"})
 
             # We absolutely, never, ever expose :destroy
             check.should_not_route :delete, "/0_5/#{parent}/67890/#{resource}/12345", :action => :destroy
@@ -42,9 +42,9 @@ class ApiRoutingTest < ActionController::TestCase
 
     def read_only_routes(*resources)
       context 'read only resources' do
-        resource_routes(*resources) do |context, core_path|
-          context.should_route :get, core_path,            :action => :index
-          context.should_route :get, "#{core_path}/12345", :action => :show, :id => '12345'
+        resource_routes(*resources) do |context, core_path, controller|
+          context.should route(:get, core_path).to(controller.merge(:action => :index ))
+          context.should route(:get, "#{core_path}/12345").to(controller.merge(:action => :show, :id => '12345'))
 
           context.should_not_route :post, core_path,            :action => :create
           context.should_not_route :put,  "#{core_path}/12345", :action => :update, :id => '12345'
@@ -54,11 +54,11 @@ class ApiRoutingTest < ActionController::TestCase
 
     def crud_routes(*resources)
       context 'CRUD resources' do
-        resource_routes(*resources) do |context, core_path|
-          context.should_route :get,  core_path,            :action => :index
-          context.should_route :get,  "#{core_path}/12345", :action => :show, :id => '12345'
-          context.should_route :post, core_path,            :action => :create
-          context.should_route :put,  "#{core_path}/12345", :action => :update, :id => '12345'
+        resource_routes(*resources) do |context, core_path, controller|
+          context.should route(:get,  core_path).to(controller.merge(            :action => :index ))
+          context.should route(:get,  "#{core_path}/12345").to(controller.merge( :action => :show, :id => '12345'))
+          context.should route(:post, core_path).to(controller.merge(             :action => :create ))
+          context.should route(:put,  "#{core_path}/12345").to(controller.merge(  :action => :update, :id => '12345'))
         end
       end
     end
@@ -101,9 +101,9 @@ class ApiRoutingTest < ActionController::TestCase
         :plates,
         :wells,
         :samples => [ :sample_tubes ]
-      ) do |context, core_path|
-        context.should_route :get, "#{core_path}/12345/parents",  :action => :parents,  :id => '12345'
-        context.should_route :get, "#{core_path}/12345/children", :action => :children, :id => '12345'
+      ) do |context, core_path, controller|
+        context.should route(:get, "#{core_path}/12345/parents").to(controller.merge(   :action => :parents,  :id => '12345' ))
+        context.should route(:get, "#{core_path}/12345/children").to(controller.merge(  :action => :children, :id => '12345' ))
 
         # No other method should be allowed to these resources:
         [ :put, :post, :delete ].each do |method|

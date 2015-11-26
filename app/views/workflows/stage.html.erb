@@ -34,11 +34,12 @@
 <% add :menu, (pluralize @batch.comments.size, "comment") => batch_comments_path(@batch) -%>
 <% add :back_menu, "Back to pipeline" => pipeline_path(@batch.pipeline) %>
 
-<h1>BATCH <%= @batch.id %>: <%= @task.name %> <% if @batch.failed? %><span style="color: red">(failed)</span><% end %></h1>
+<%= page_title "BATCH #{@batch.id}", @task.name %>
+<h2><% if @batch.failed? %><span style="color: red">(failed)</span><% end %></h2>
 <% if not @task.partial.blank? %>
   <%= render :partial => @task.partial, :locals => { :requests => @batch.requests } %>
 <% elsif not @batch.processing_in_manual_qc? %>
-  <% form_for :workflow, :url => { :action => "stage", :id => @stage }, :html => { :id => "stage_form"} do |form| %>
+  <%= form_for :workflow, :url => { :action => "stage", :id => @stage }, :html => { :id => "stage_form"} do |form| %>
     <%= render :partial => "shared/batch", :locals => { :requests => @batch.ordered_requests, :edit => false, :stage => true } %>
 
     <br />

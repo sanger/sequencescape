@@ -84,7 +84,7 @@ Feature: Custom text administration
     And I fill in the field labeled "Custom text differential" with "wibble"
     And I fill in the field labeled "Custom text content type" with " letters "
     And I fill in the field labeled "custom_text[content]" with ""
-    And I press "Save changes"
+    And I press "Save Custom text"
     Then I should see "Details have been updated"
     When I follow "Edit"
     Then I should see "EDIT CUSTOM TEXT"

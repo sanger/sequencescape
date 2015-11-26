@@ -10,7 +10,7 @@ Given /^I have a plate in study "([^"]*)" with samples with known sanger_sample_
 end
 
 Given /^I have an empty submission$/ do
-  Factory(:submission_without_order)
+  FactoryGirl.create(:submission_without_order)
 end
 
 Given /^all submissions have been built$/ do
@@ -44,7 +44,7 @@ Then /^the submission with UUID "([^"]+)" should have (\d+) "([^"]+)" requests?$
 end
 
 Given /^the request type "([^\"]+)" exists$/ do |name|
-  Factory(:request_type, :name => name)
+  FactoryGirl.create(:request_type, :name => name)
 end
 
 Then /^the (library tube) "([^\"]+)" should have (\d+) "([^\"]+)" requests$/ do |asset_model, asset_name, count, request_type_name|
@@ -56,9 +56,9 @@ end
 def submission_in_state(state, attributes = {})
   study    = Study.first or raise StandardError, "There are no studies!"
   workflow = Submission::Workflow.first or raise StandardError, "There are no workflows!"
-  submission = Factory::submission({ :asset_group_name => 'Faked to prevent empty asset errors' }.merge(attributes).merge(:study => study, :workflow => workflow))
+  submission = FactoryHelp::submission({ :asset_group_name => 'Faked to prevent empty asset errors' }.merge(attributes).merge(:study => study, :workflow => workflow))
   submission.state = state
-  submission.save(false)
+  submission.save(:validate => false)
 end
 
 Given /^I have a submission in the "([^\"]+)" state$/ do |state|
@@ -75,14 +75,14 @@ end
 SENSIBLE_DEFAULTS_STANDARD = {
   'Fragment size required (from)' => 100,
   'Fragment size required (to)'   => 200,
-  'Library type'                  => lambda { |step, field| step.select('Standard', :from => field) },
+  'Library type'                  => ->(step, field) { step.select('Standard', :from => field) },
   'Read length'                   => 76
 }
 SENSIBLE_DEFAULTS_FOR_SEQUENCING = {
-  'Read length'                   => lambda { |step, field| step.select('76', :from => field) }
+  'Read length'                   => ->(step, field) { step.select('76', :from => field) }
 }
 SENSIBLE_DEFAULTS_HISEQ = SENSIBLE_DEFAULTS_FOR_SEQUENCING.merge(
-  'Read length' => lambda { |step, field| step.select('100', :from => field) }
+  'Read length' => ->(step, field) { step.select('100', :from => field) }
 )
 SENSIBLE_DEFAULTS_FOR_REQUEST_TYPE = {
   # Non-HiSeq defaults

@@ -42,14 +42,14 @@
       };
 
     <% related.each do |field| %>
-      observe(<%= field.inspect %>);
+      observe("<%= field.to_s %>");
     <% end %>
     })();
   });
 
   (function($, undefined) {
 <% changing_fields.reverse.each do |field, options| %>
-    attach_option_updater(<%= field.to_s.inspect %>, <%= options[:when].to_s.inspect %>, {<%= options[:values].map { |k,v| "#{k.inspect}:#{v.inspect}" }.join(',') %>});
+    attach_option_updater("<%= field.to_s %>", "<%= options[:when].to_s %>", {<%= options[:values].map { |k,v| "#{k.inspect}:#{v.inspect}" }.join(',').html_safe %>});
 <% end %>
 
     function attach_option_updater(target, source, values) {

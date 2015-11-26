@@ -9,7 +9,7 @@ class PicoDilutionsController < ApplicationController
     pico_dilutions_hash = PicoDilutionPlate.index_to_hash(pico_dilutions)
 
     respond_to do |format|
-      format.xml  { render :xml  => pico_dilutions_hash }
+      format.xml  { render :xml  => pico_dilutions_hash, :root => 'records' }
       format.json { render :json => pico_dilutions_hash }
     end
   end

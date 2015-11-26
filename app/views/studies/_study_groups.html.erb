@@ -17,19 +17,14 @@
   <div class="group_content" id="everything">
     <script>
     Event.observe(window, 'load', function() {
-      <%= remote_function(:url => study_list_studies_path(:scope => scope),
-        :update => "everything",
-        :method => :get,
-        :loading => "Element.show('loading')",
-        :complete => "try {
+      new Ajax.Updater('everything', '<%= study_list_studies_path(:scope => scope)%>', {asynchronous:true, evalScripts:true, method:'get', onComplete:function(request){try {
             TableSorterFacade.extend_table('study_list');
             Element.highlight('study_list');
           } catch (e) {
             (e.name == 'ElementDoesNotExistError') || console.warn(e);
           } finally {
             Element.hide('loading');
-          };",
-        :failure => "Element.show('remote_error')") %>
+          };}, onFailure:function(request){Element.show('remote_error')}, onLoading:function(request){Element.show('loading')}})
     });
     </script>
   </div>

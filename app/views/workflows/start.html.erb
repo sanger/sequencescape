@@ -17,7 +17,7 @@
 </div>
 
 <%= render :partial => "controls", :locals => { :assets => @workflow.assets } %>
-<%= link_to_remote 'Start', :url => { :action => :confirm, :id => @workflow.id, :batch_id => @batch.id } %>
+<%= link_to 'Start', :url => { :action => :confirm, :id => @workflow.id, :batch_id => @batch.id }, :remote => true  %>
 
 <div id='confirm' class='overlay_panel' style='display: none;'>
 </div>

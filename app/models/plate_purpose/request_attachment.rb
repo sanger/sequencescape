@@ -48,9 +48,9 @@ module PlatePurpose::RequestAttachment
 
   def self.included(base)
     base.class_eval do
-      class_inheritable_reader :connect_on
-      class_inheritable_reader :connect_downstream
-      class_inheritable_reader :connected_class
+      class_attribute :connect_on
+      class_attribute :connect_downstream
+      class_attribute :connected_class
     end
   end
 

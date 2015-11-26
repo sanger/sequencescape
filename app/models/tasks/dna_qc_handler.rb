@@ -6,18 +6,14 @@ module Tasks::DnaQcHandler
     @batch = Batch.find(params[:batch_id], :include => [{ :requests => :request_metadata }, :pipeline, :lab_events])
     @batch.start!(current_user) if @batch.pending?
     @rits = @batch.pipeline.request_information_types
-    @requests = @batch.requests.all(
-      :include => {
-        :source_well => [
-          :external_properties,
-          :map,
-          :plate,
-          :well_attribute,
-          { :aliquots => [ :tag, { :sample => :sample_metadata } ] }
-        ]
-      },
-      :order => 'maps.column_order ASC'
-    )
+    @requests = @batch.requests.includes(
+      :source_well => [
+        :external_properties,
+        :map,
+        :plate,
+        :well_attribute,
+        { :aliquots => [ :tag, { :sample => :sample_metadata } ] }
+    ]).order('maps.column_order ASC').all
 
     @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
     @task = task # @workflow.tasks[params[:id].to_i]

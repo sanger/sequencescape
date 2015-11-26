@@ -11,7 +11,7 @@
   <% end %>
   <div id='form'>
     <br />
-    <% form_for :asset, :url => { :controller => :assets, :action => :complete_move_to_2D } do |f| %>
+    <%= form_for :asset, :url => { :controller => :assets, :action => :complete_move_to_2D } do |f| %>
     Type: <%= select :type, :id, { "Library" => "LibraryTube", "Sample" => "SampleTube", "Multiplexed Library" => "MultiplexedLibraryTube", "PacBioLibraryTube" => "PacBioLibraryTube" } %><br />
     <ul class="tube_import">
       <% num_text_boxes ||= 1 %>

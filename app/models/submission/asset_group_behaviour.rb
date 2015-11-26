@@ -10,9 +10,7 @@ module Submission::AssetGroupBehaviour
 
       # Required once out of the building state ...
       validates_presence_of :assets, :if => :assets_need_validating?
-#      validates_each(:assets, :unless => :building?) do |record, attr, value|
-#        record.errors.add(:assets, 'cannot be changed once built') if not record.new_record? and record.assets_was != value
-#      end
+
     end
   end
 
@@ -35,6 +33,7 @@ module Submission::AssetGroupBehaviour
 
   def pull_assets_from_asset_group
     self.assets = self.asset_group.assets unless self.asset_group.assets.empty?
+    true
   end
   private :pull_assets_from_asset_group
 
@@ -55,6 +54,7 @@ module Submission::AssetGroupBehaviour
 
   def find_asset_group
     self.asset_group = self.study.asset_groups.first(:conditions => { :name => asset_group_name }) unless asset_group_name.blank?
+    true
   end
   private :find_asset_group
 end

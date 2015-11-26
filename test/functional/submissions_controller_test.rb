@@ -3,41 +3,43 @@
 #Copyright (C) 2012,2013,2015 Genome Research Ltd.
 require "test_helper"
 require 'submissions_controller'
+require 'pry'
 
 class SubmissionsControllerTest < ActionController::TestCase
   context "Submissions controller" do
     setup do
-      @user = Factory :user
+      @user =FactoryGirl.create :user
       @controller = SubmissionsController.new
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
       @controller.stubs(:logged_in?).returns(@user)
       @controller.stubs(:current_user).returns(@user)
 
-      @plate = Factory :plate, :barcode => 123456
+      @plate =FactoryGirl.create :plate, :barcode => 123456
       [
         'A1','A2','A3','A4','A5','A6','A7','A8','A9','A10','A11','A12',
         'B1','B2','B3','B4','B5','B6','B7','B8','B9','B10','B11','B12',
         'C1','C2','C3'
       ].each do |location|
-        well = Factory :well_with_sample_and_without_plate, :map => Map.find_by_description(location)
+        well =FactoryGirl.create :well_with_sample_and_without_plate, :map => Map.find_by_description(location)
         @plate.wells << well
       end
-      @plate.wells << Factory(:well, :map => Map.find_by_description('C5'))
-      @study = Factory :study, :name => 'A study'
-      @project = Factory :project, :name => 'A project'
+     FactoryGirl.create(:well, :map => Map.find_by_description('C5'), :plate=>@plate)
+      @study =FactoryGirl.create :study, :name => 'A study'
+      @project =FactoryGirl.create :project, :name => 'A project'
       @submission_template = SubmissionTemplate.find_by_name('Cherrypicking for pulldown')
     end
 
     context "when a submission exists" do
 
       setup do
+        @user.is_lab_manager
         @submission = Submission.create!(:priority=>1, :user=>@user)
         post :change_priority, {:id=> @submission.id, :submission=>{:priority=>3}}
       end
 
       should 'allow update of priorities' do
-        assert 3, @submission.reload.priority
+        assert_equal 3, @submission.reload.priority
       end
     end
 
@@ -62,19 +64,34 @@ class SubmissionsControllerTest < ActionController::TestCase
     context "by sample name and working dilution" do
 
       setup do
-        @wd_plate = Factory :working_dilution_plate, :barcode=> 123457
+        @wd_plate =FactoryGirl.create :working_dilution_plate, :barcode=> 123457
         [
           'A1','A2','A3','A4','A5','A6','A7','A8','A9','A10','A11','A12',
           'B1','B2','B3','B4','B5','B6','B7','B8','B9','B10','B11','B12',
           'C1','C2','C3'
         ].each do |location|
-        well = Factory :empty_well, :map => Map.find_by_description(location)
+        well =FactoryGirl.create :empty_well, :map => Map.find_by_description(location)
           well.aliquots.create(:sample => @plate.wells.located_at(location).first.aliquots.first.sample)
           @wd_plate.wells << well
         end
         samples = @wd_plate.wells.with_aliquots.each.map {|w| w.aliquots.first.sample.name}
 
-        post(:create, :submission => {:is_a_sequencing_order=>"false", :comments=>"", :template_id=>@submission_template.id.to_s, :order_params=>{"read_length"=>"37", "fragment_size_required_to"=>"400", "bait_library_name"=>"Human all exon 50MB", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"}, :asset_group_id=>"", :study_id=>@study.id.to_s, :sample_names_text=>samples[1..4].join("\n"), :plate_purpose_id=>@wd_plate.plate_purpose.id.to_s, :project_name=>"A project"})
+        post(:create, :submission => {
+          :is_a_sequencing_order=>"false",
+          :comments=>"",
+          :template_id=>@submission_template.id.to_s,
+          :order_params=>{
+            "read_length"=>"37",
+            "fragment_size_required_to"=>"400",
+            "bait_library_name"=>"Human all exon 50MB",
+            "fragment_size_required_from"=>"100",
+            "library_type"=>"Agilent Pulldown"
+          },
+          :asset_group_id=>"",
+          :study_id=>@study.id.to_s,
+          :sample_names_text=>samples[1..4].join("\n"),
+          :plate_purpose_id=>@wd_plate.plate_purpose.id.to_s,
+          :project_name=>"A project"})
 
       end
 
@@ -91,6 +108,7 @@ class SubmissionsControllerTest < ActionController::TestCase
       end
 
       should "create the appropriate orders" do
+        assert Order.first.present?, "No order was created!"
         assert_equal 27, Order.first.assets.count
       end
 
@@ -99,7 +117,7 @@ class SubmissionsControllerTest < ActionController::TestCase
     context "by plate barcode with pools" do
 
       setup do
-        @plate.wells.first.aliquots.create!(:sample=> Factory(:sample), :tag_id=>Tag.first.id)
+        @plate.wells.first.aliquots.create!(:sample=>FactoryGirl.create(:sample), :tag_id=>Tag.first.id)
         post :create, plate_submission('DN123456P')
       end
 

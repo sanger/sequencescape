@@ -2,6 +2,11 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2015 Genome Research Ltd.
 class AddFlexibleCherrypickRequest < ActiveRecord::Migration
+
+  class RequestType < ActiveRecord::Base
+    self.table_name = 'request_types'
+  end
+
   def self.up
     ActiveRecord::Base.transaction do
       RequestType.create!({
@@ -17,7 +22,7 @@ class AddFlexibleCherrypickRequest < ActiveRecord::Migration
         :no_target_asset =>false,
         :order =>1,
         :request_class_name =>"PooledCherrypickRequest",
-        :workflow_id => Submission::Workflow.find_by_name("Microarray genotyping")
+        :workflow_id => Submission::Workflow.find_by_name("Microarray genotyping").id
       })
     end
   end

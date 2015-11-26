@@ -2,6 +2,9 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011 Genome Research Ltd.
 # AASM isn't consistent with the Rails use of '!'.  So, I give you ...
+
+require 'aasm'
+
 module AASM::ClassMethods
   def aasm_event_with_exception_raising(name, options = {}, &block)
     aasm_event_without_exception_raising(name, options, &block)

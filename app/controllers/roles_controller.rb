@@ -55,7 +55,7 @@ class RolesController < ApplicationController
     respond_to do |format|
       if @role.update_attributes(params[:role])
         flash[:notice] = 'Role was successfully updated.'
-        format.html { redirect_to(@role) }
+        format.html { redirect_to admin_role_path(@role) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -69,7 +69,7 @@ class RolesController < ApplicationController
     @role.destroy
 
     respond_to do |format|
-      format.html { redirect_to(roles_path) }
+      format.html { redirect_to(admin_roles_path) }
       format.xml  { head :ok }
     end
   end

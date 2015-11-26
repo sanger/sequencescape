@@ -3,7 +3,7 @@
 #Copyright (C) 2011 Genome Research Ltd.
 class RemoveNotSpecifiedFromDataReleaseStudyTypes < ActiveRecord::Migration
   class DataReleaseStudyType < ActiveRecord::Base
-    set_table_name('data_release_study_types')
+    self.table_name =('data_release_study_types')
 
     def self.default
       self.first(:conditions => { :is_default => true })
@@ -11,7 +11,7 @@ class RemoveNotSpecifiedFromDataReleaseStudyTypes < ActiveRecord::Migration
   end
 
   class StudyMetadata < ActiveRecord::Base
-    set_table_name('study_metadata')
+    self.table_name =('study_metadata')
   end
 
   def self.up

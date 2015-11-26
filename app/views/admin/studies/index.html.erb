@@ -5,8 +5,8 @@
 <%- add :menu, "View all studies" => url_for(:controller => "admin/studies", :action => "index")  %>
 
 <% if @studies %>
-  <h1>Manage Studies</h1>
-  <%= form_remote_tag(:url => { :action => :filter }, :html => { :id => "filter_form"}, :id => "filter_form", :update => "studies", :loading => "show_update_loader();", :complete => "hide_update_loader();") %>
+  <%= page_title 'Manage Studies' %>
+  <%= form_tag(:url => { :action => :filter }, :remote => true, :html => { :id => "filter_form"}, :id => "filter_form", :update => "studies", :loading => "show_update_loader();", :complete => "hide_update_loader();") %>
 
     <div class='callout_filter'>
       <table width='100%'>
@@ -28,7 +28,7 @@
   </div>
 
 <% else %>
-  <h1>Manage study: <%= @study.name %></h1>
+  <%= page_title 'Manage Study', @study.name %>
   <p>You can update billing information and approval status for a study here.</p>
   <%= render :partial => "manage_single_study" %>
 <% end %>

@@ -3,9 +3,7 @@
 #Copyright (C) 2011,2012,2013 Genome Research Ltd.%>
 <span class="invalid badge">✘</span>
 <span class="completed badge">✔</span>
-
-<h2>New Order</h2>
-
+<%= panel :info, title:'New Order' do %>
 <span class="project-details" style="dislay:none;"></span>
 
 <ul class="sub-panel">
@@ -81,7 +79,6 @@
     <%= form.label :project_name, "Project Name:" %>
     <%= form.text_field :project_name,
       :class       => 'submission_project_name',
-      :size        => 130,
       :placeholder => "enter the first few characters of the financial project name",
       :disabled    => true
     %>
@@ -130,19 +127,20 @@
       :class => 'order-id' %>
 
     <%= submit_tag "♻  Delete Order",
-      :class    => "delete-order button"
+      :class    => "delete-order btn btn-danger"
     %>
 
   <% else -%>
     <%= submit_tag "Cancel",
-      :class    => "cancel-order button",
+      :class    => "cancel-order btn btn-warning",
       :disabled => true
     %>
 
-    <%= submit_tag "&#10004; Save Order",
-      :class    => "save-order final button",
-      :disabled => true
+    <%= submit_tag raw("&#10004; Save Order"),
+      :class    => "save-order btn btn-success",
+      :disabled => true,
+      :disable_with => 'Creating...'
     %>
   <% end -%>
 </div>
-
+<% end %>

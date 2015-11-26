@@ -4,7 +4,7 @@
 <%= render_title "Edit '#{@task.name}'" %>
 <%= render_help 'Update your task definition here.'%>
 
-<% form_for(:task, :url => task_path(@task), :html => { :id => 'task_form', :method => :put }) do |f| %>
+<%= form_for(:task, :url => task_path(@task), :html => { :id => 'task_form', :method => :put }) do |f| %>
 
 <div id='yield'>
   <div id='main-items'>

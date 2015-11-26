@@ -6,8 +6,14 @@ Then /^log "([^\"]+)" for debugging$/ do |message|
 end
 
 Then /^launch the debugger$/ do
+  binding.pry
   debugger
   puts
+end
+
+Then /^debug the javascript$/ do
+  p page.driver.network_traffic
+  page.driver.debug
 end
 
 Then /^stop$/ do

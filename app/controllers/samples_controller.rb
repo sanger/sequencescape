@@ -9,7 +9,7 @@ class SamplesController < ApplicationController
   before_filter :admin_login_required, :only => [ :administer, :destroy ]
 
   def index
-    @samples = Sample.paginate :page => params[:page], :order => 'created_at DESC'
+    @samples = Sample.order('created_at DESC').page(params[:page])
     respond_to do |format|
       format.html
       format.xml

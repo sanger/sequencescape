@@ -134,10 +134,10 @@ class WorkflowsController < ApplicationController
   #    be worth maintaining the behaviour until we solve the problems.
   # 5: We need to improve the repeatability of tasks.
   def stage
-
     @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
     @stage = params[:id].to_i
     @task = @workflow.tasks[@stage]
+
 
     ActiveRecord::Base.transaction do
       # If params[:next_stage] is nil then just render the current task
@@ -146,7 +146,6 @@ class WorkflowsController < ApplicationController
 
         eager_loading = @task.included_for_do_task
         @batch ||= Batch.find(params[:batch_id], :include => eager_loading )
-
         unless @batch.editable?
           flash[:error] = "You cannot make changes to a completed batch."
           redirect_to :back

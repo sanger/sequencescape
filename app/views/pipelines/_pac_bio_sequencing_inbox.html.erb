@@ -10,7 +10,7 @@
 <% else -%>
   <%= render :partial => 'pipeline_paginate' %>
   <!-- _pacbio_sequencing_inbox.html.erb -->
-  <% form_tag({:controller => :batches, :action => :create, :id => @pipeline.id}, :id => "requests_to_batch_form") do -%>
+  <%= form_tag({:controller => :batches, :action => :create, :id => @pipeline.id}, :id => "requests_to_batch_form") do -%>
     <% if @pipeline.item_limit -%>
       <input type="hidden" id="batch_item_limit" value="<%= @pipeline.item_limit %>" />
     <% end -%>
@@ -74,7 +74,7 @@
             <% request_asset_comments = request_asset.comments -%>
             <% request_tag = request_asset.aliquots.map {|a| a.tag.present? ? "#{a.tag.tag_group.name}:#{a.tag.map_id}" : "Untagged" }.join(',') -%>
             <% progr = indice + 1 %>
-            <tr class="nested" id="<%= request_item.item_id %>_<%= progr.to_s %>" style="display:none">
+            <tr class="nested request<%= indice %>" id="<%= request_item.item_id %>_<%= progr.to_s %>" style="display:none">
               <td class="request">&nbsp;<!-- Checkboxes (grp) --></td>
               <td> <!-- Notify/ Checkboxes (ind) -->
                 <%= label(:request, request.id, "Select Request #{indice}", :style => 'display:none') %>

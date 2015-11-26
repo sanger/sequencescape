@@ -4,8 +4,8 @@
 module ModelExtensions::AssetGroup
   def self.included(base)
     base.class_eval do
-      named_scope :include_study, { :include => :study }
-      named_scope :include_assets, { :include => :assets }
+      scope :include_study, -> { includes(:study) }
+      scope :include_assets, -> { includes(:assets) }
     end
   end
 end

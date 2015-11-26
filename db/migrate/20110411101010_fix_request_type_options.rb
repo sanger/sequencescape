@@ -3,8 +3,8 @@
 #Copyright (C) 2011 Genome Research Ltd.
 class FixRequestTypeOptions < ActiveRecord::Migration
   # we fix submission which have request options set to []. Should be nil or {}
-  class Submission < ActiveRecord::Base ; set_table_name(:submissions) ; end
-  
+  class Submission < ActiveRecord::Base ; self.table_name =(:submissions) ; end
+
   def self.up
     ActiveRecord::Base.transaction do
       Submission.find_all_by_request_options("--- []\n\n").each do |submission|

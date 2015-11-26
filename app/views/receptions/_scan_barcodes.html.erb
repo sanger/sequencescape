@@ -14,7 +14,7 @@
       <%= render :partial => message %>
     </div>
     <br />
-    <% form_for :asset, :url => { :action => receive_barcode } do |f| %>
+    <%= form_for :asset, :url => { :action => receive_barcode } do |f| %>
     <label for="type_id">Type</label>: <%= select :type, :id, { "Plate" => "Plate", "Library" => "LibraryTube", "Sample" => "SampleTube", "Multiplexed Library" => "MultiplexedLibraryTube", "PacBioLibraryTube" => "PacBioLibraryTube", " Pulldown Multiplexed Library" => "PulldownMultiplexedLibraryTube" } %><br />
     <ul class="plate_import">
       <% num_text_boxes ||= 10 %>

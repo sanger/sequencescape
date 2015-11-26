@@ -3,7 +3,7 @@
 #Copyright (C) 2011 Genome Research Ltd.
 class HideNotSpecifiedStudyType < ActiveRecord::Migration
   class StudyType < ActiveRecord::Base
-    set_table_name('study_types')
+    self.table_name =('study_types')
   end
 
   def self.set_valid_for_creation_to(state)

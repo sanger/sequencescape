@@ -16,8 +16,8 @@ class AccessionServiceTest < ActiveSupport::TestCase
   # temporary test for hotfix
   context "A sample with a strain" do
     setup do
-      @study = Factory :study
-      @sample = Factory :sample, :studies => [@study]
+      @study = create :study
+      @sample = create :sample, :studies => [@study]
       @sample.sample_metadata.sample_strain_att  = "my strain"
     end
 
@@ -28,9 +28,9 @@ class AccessionServiceTest < ActiveSupport::TestCase
 
   context "A sample with a gender" do
     setup do
-      @study = Factory :managed_study
-      @sample = Factory :sample, :studies => [@study]
-      @sample.sample_metadata.gender  = "Male"
+      @study = create :managed_study
+      @sample = create :sample, :studies => [@study]
+      @sample.sample_metadata.gender  = "male"
     end
 
 
@@ -41,8 +41,8 @@ class AccessionServiceTest < ActiveSupport::TestCase
 
   context "A sample with a donor_id" do
     setup do
-      @study = Factory :managed_study
-      @sample = Factory :sample, :studies => [@study]
+      @study = create :managed_study
+      @sample = create :sample, :studies => [@study]
       @sample.sample_metadata.donor_id  = "123456789"
     end
 

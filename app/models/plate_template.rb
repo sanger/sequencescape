@@ -23,7 +23,7 @@ class PlateTemplate < Plate
   def stamp_to(plate)
     ActiveRecord::Base.transaction do
       self.wells.each do |well|
-        plate.wells.located_at(well.map_description).first.aliquots = well.aliquots.map {|a| a.clone }
+        plate.wells.located_at(well.map_description).first.aliquots = well.aliquots.map {|a| a.dup }
       end
     end
   end
@@ -44,6 +44,8 @@ class PlateTemplate < Plate
     return 0 == descriptor_value('control_well').to_i
   end
 
-  named_scope :with_sizes, lambda {|sizes| {:conditions => ["size IN (?)", sizes]}}
+  scope :with_sizes, ->(sizes) {
+    where(["size IN (?)", sizes])
+  }
 
 end

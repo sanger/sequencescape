@@ -4,18 +4,21 @@
 <% add :manager_option, "New Project" => new_project_path -%>
 
 <%= will_paginate @projects %>
-<table width="100%" class="sortable" id="summary">
-  <tr>
-    <th class="label">Name</th>
-    <th class="label">State</th>
-  </tr>
-
+<table class="sortable table table-striped" id="summary">
+  <thead>
+    <tr>
+      <th><a>Name</a></th>
+      <th><a>State</a></th>
+    </tr>
+  </thead>
+<tbody>
 <% for project in @projects %>
   <tr>
     <td><%= link_to  "#{project.name}", project%></td>
-    <td><%=h project.state %></td>
+    <td><%= project.state %></td>
   </tr>
 <% end %>
+</tbody>
 
 </table>
 <%= will_paginate @projects %>

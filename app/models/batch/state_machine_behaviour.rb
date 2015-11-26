@@ -30,11 +30,11 @@ module Batch::StateMachineBehaviour
       end
 
       # Some named scopes needed for finding the batches in a particular state
-      named_scope :pending,   :conditions => {:state => "pending"}
-      named_scope :started,   :conditions => {:state => "started"}
-      named_scope :completed, :conditions => {:state => "completed"}
-      named_scope :released,  :conditions => {:state => "released"}
-      named_scope :failed,    :conditions => {:production_state => "fail"}
+      scope :pending,   -> { where(:state => "pending") }
+      scope :started,   -> { where(:state => "started") }
+      scope :completed, -> { where(:state => "completed") }
+      scope :released,  -> { where(:state => "released") }
+      scope :failed,    -> { where(:production_state => "fail") }
 
       # We override the behaviour of a couple of events because they require user details.
       alias_method_chain(:start!, :user)

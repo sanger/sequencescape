@@ -5,13 +5,13 @@
 
 <p class="info">Please note that <strong>all</strong> submissions in your file will be processed, or if there are any errors, <strong>none</strong> of them will be processed. You will get feedback about any problems.</p>
 
-<% semantic_form_for @bulk_submission, :url => {:action => "create"}, :html => {:multipart => true } do |form|  %>
-    <% form.inputs do %>
+<%= semantic_form_for @bulk_submission, :url => {:action => "create"}, :html => {:multipart => true } do |form|  %>
+    <%= form.inputs do %>
       <%= form.input :spreadsheet, :as => :file, :label => 'Spreadsheet' %>
 
     <% end %>
-    <% form.buttons do %>
-      <%= form.commit_button %>
+    <%= form.button do %>
+      <%= form.action(:submit) %>
 
     <% end %>
     <div id="being_created" style="display: none;">

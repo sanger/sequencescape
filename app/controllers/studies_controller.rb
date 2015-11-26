@@ -79,16 +79,12 @@ class StudiesController < ApplicationController
 
   def show
     @study = Study.find(params[:id])
-
-
     respond_to do |format|
       format.html do
         if current_user.workflow.nil?
-          flash[:notice] = "Your profile is incomplete. Please select a workflow."
+          action_flash[:notice] = "Your profile is incomplete. Please select a workflow."
           redirect_to edit_profile_path(current_user)
         else
-          flash.keep
-          flash.merge!({:warning=>@study.warnings}) if @study.warnings.present?
           redirect_to study_workflow_path(@study, current_user.workflow)
         end
       end
@@ -99,8 +95,7 @@ class StudiesController < ApplicationController
 
   def edit
     @study = Study.find(params[:id])
-    flash.keep
-    flash.merge!({:warning=>@study.warnings}) if @study.warnings.present?
+    action_flash[:warning] = @study.warnings if @study.warnings.present?
     @users   = User.all
     redirect_if_not_owner_or_admin
   end
@@ -120,14 +115,12 @@ class StudiesController < ApplicationController
       end
 
       flash[:notice] = "Your study has been updated"
-      flash.keep
-      flash.merge!({:warning=>@study.warnings}) if @study.warnings.present?
 
       redirect_to study_path(@study)
     end
   rescue ActiveRecord::RecordInvalid => exception
-    logger.warn "Failed to update attributes: #{@study.errors.map {|e| e.to_s }}"
-    flash[:error] = "Failed to update attributes for study!"
+    Rails.logger.warn "Failed to update attributes: #{@study.errors.map {|e| e.to_s }}"
+    action_flash[:error] = "Failed to update attributes for study!"
     render :action => "edit", :id => @study.id
   end
 
@@ -176,7 +169,7 @@ class StudiesController < ApplicationController
     @study    = Study.find(params[:id])
     @relation_names = StudyRelationType::names
     @studies = current_user.interesting_studies
-    @studies.delete(@study)
+    @studies.reject {|s| s == @study }
 
     #TODO create a proper ReversedStudyRelation
     @relations = @study.study_relations.map { |r| [r.related_study, r.name ] } +
@@ -467,7 +460,7 @@ class StudiesController < ApplicationController
     begin
       yield
     rescue ActiveRecord::RecordInvalid
-      logger.warn "Failed to update attributes: #{@study.errors.map {|e| e.to_s }}"
+      Rails.logger.warn "Failed to update attributes: #{@study.errors.map {|e| e.to_s }}"
       flash[:error] = "Failed to update attributes for study!"
       render :action => "edit", :id => @study.id
     end

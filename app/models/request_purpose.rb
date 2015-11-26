@@ -7,9 +7,16 @@
 # the latter.
 class RequestPurpose < ActiveRecord::Base
 
+  STANDARD_PURPOSE = 'standard'
+
   validates_presence_of :key
   validates_uniqueness_of :key
 
   has_many :requests
   has_many :request_types
+
+  def self.standard
+    self.find_by_key(STANDARD_PURPOSE)
+  end
+
 end

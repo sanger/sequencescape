@@ -9,7 +9,11 @@ module Core::Service::ErrorHandling
       # We need hierarchical exception handling, so we rewrite the @errors Hash with our own implementation
       @errors = HierarchicalExceptionMap.new(@errors)
 
-      error([ ::IllegalOperation, ::Core::Service::Error, ActiveRecord::ActiveRecordError ]) do
+      error([
+        ::IllegalOperation,
+        ::Core::Service::Error,
+        ActiveRecord::ActiveRecordError
+      ]) do
         buffer = [ exception_thrown.message, exception_thrown.backtrace ].join("\n")
         Rails.logger.error("API[error]: #{buffer}")
 
@@ -41,6 +45,7 @@ module Core::Service::ErrorHandling
     end
 
     def general_error(code, errors = nil)
+      p exception_thrown.backtrace
       errors ||= [ exception_thrown.message ]
       error(code, JsonError.new(:general => errors))
     end
@@ -96,9 +101,15 @@ class ActiveRecord::RecordInvalid
   end
 
   def errors_grouped_by_attribute
-    Hash[record.errors.to_a.group_by(&:first).map { |k,v| [ yield(k), v.map(&:last).uniq ] }]
+    Hash[record.errors.map { |k,v| [ yield(k), [v].flatten.uniq ] }]
   end
   private :errors_grouped_by_attribute
+end
+
+class ActiveRecord::RecordNotSaved
+  def api_error(response)
+    response.content_error(422, message)
+  end
 end
 
 class IllegalOperation < RuntimeError

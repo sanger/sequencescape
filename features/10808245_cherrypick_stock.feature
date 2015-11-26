@@ -34,7 +34,7 @@ Feature: Pick by micro litre (stock transfer) using the Tecan robot
      And I am on the show page for pipeline "Cherrypicking for Pulldown"
     When I check "Select DN222J for batch"
      And I check "Select DN333P for batch"
-     And I press "Submit"
+     And I press the first "Submit"
      And the last batch is sorted in row order
      And I follow "Cherrypick Group By Submission"
      And I choose "Pick by µl"
@@ -42,7 +42,9 @@ Feature: Pick by micro litre (stock transfer) using the Tecan robot
         | Volume  | <volume>   |
      And I select "Pulldown" from "Plate Purpose"
      And I press "Next step"
+
      And I press "Next step"
+
      And I press "Release this batch"
     Given the last batch has a barcode of "550000555760"
     Then the downloaded tecan file for batch "550000555760" and plate "1220099999705" is
@@ -128,7 +130,7 @@ Feature: Pick by micro litre (stock transfer) using the Tecan robot
     Given I have a "Cherrypicking for Pulldown" submission with plate "222"
      And I am on the show page for pipeline "Cherrypicking for Pulldown"
     When I check "Select DN222J for batch"
-     And I press "Submit"
+     And I press the first "Submit"
      And I follow "Cherrypick Group By Submission"
 
     When I choose "Pick by µl"
@@ -170,7 +172,7 @@ Feature: Pick by micro litre (stock transfer) using the Tecan robot
     When I check "Select DN1S for batch"
      And I check "Select DN10I for batch"
      And I check "Select DN5W for batch"
-     And I press "Submit"
+     And I press the first "Submit"
      And I follow "Select Plate Template"
      And I select "testtemplate" from "Plate Template"
    	 And I select "Infinium 670k" from "Output plate purpose"

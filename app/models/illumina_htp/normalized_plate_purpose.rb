@@ -4,9 +4,9 @@
 class IlluminaHtp::NormalizedPlatePurpose < PlatePurpose
   include PlatePurpose::RequestAttachment
 
-  write_inheritable_attribute :connect_on, 'passed'
-  write_inheritable_attribute :connect_downstream, false
-  write_inheritable_attribute :connected_class, IlluminaHtp::Requests::LibraryCompletion
+  self.connect_on = 'passed'
+  self.connect_downstream = false
+  self.connected_class = IlluminaHtp::Requests::LibraryCompletion
 
   def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility = false)
     super

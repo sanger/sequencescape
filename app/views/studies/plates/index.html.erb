@@ -7,7 +7,7 @@
 <div class='subtitle'>
   Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(:long) %> &middot; <%= @study.state.capitalize %>
 </div>
-<% form_tag view_wells_study_plates_path(@study) do %>
+<%= form_tag view_wells_study_plates_path(@study) do %>
 <div class="help" style="text-align:center">
   <p>Select plates you wish to view their wells from below then click on the view wells button</p>
   <%= submit_tag "View wells of selected plates" %>

@@ -13,7 +13,7 @@ class Api::MultiplexedLibraryTubeIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        named_scope :including_associations_for_json, { :include => [:uuid_object, :barcode_prefix, :scanned_into_lab_event ] }
+        scope :including_associations_for_json, -> { includes([:uuid_object, :barcode_prefix, :scanned_into_lab_event ]) }
         alias_method(:json_root, :url_name)
       end
     end

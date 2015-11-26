@@ -15,7 +15,7 @@ Feature: Manage users
     Then I should see "Registered users"
     And I should see "john"
     When I follow "Edit user john"
-    Then I should see "Edit profile: John Smith"
+    Then I should see "EDIT PROFILE John Smith"
 
   Scenario Outline: Edit a user and give them universal roles
     Given the role "<role_name>" exists

@@ -9,7 +9,7 @@
 <p>Select the type of reference assembly to upload, or select from one of our preset default sequences.</p>
 <p>Not specifying a reference sequence can delay analysis.</p>
 
-<% form_for :study, :url => assembly_study_path(@study), :html => {:method => 'put', :multipart => true } do |form| %>
+<%= form_for :study, :url => assembly_study_path(@study), :html => {:method => 'put', :multipart => true } do |form| %>
   <table width="100%" cellspacing="0" cellpadding="0">
     <tr>
       <td width="35%" class="item">Reference assembly type: <%= required_marker %></span></td>

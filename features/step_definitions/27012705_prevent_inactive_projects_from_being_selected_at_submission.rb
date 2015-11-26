@@ -2,6 +2,6 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2012 Genome Research Ltd.
 Given /^I have an inactive project called "([^"]*)"$/ do |project_name|
-  project = Factory :project, :name => project_name
+  project = FactoryGirl.create :project, :name => project_name
   project.update_attributes(:state => 'pending')
 end

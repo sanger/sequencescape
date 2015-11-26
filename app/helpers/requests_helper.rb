@@ -2,19 +2,10 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2012 Genome Research Ltd.
 module RequestsHelper #:nodoc: all
+
   def request_status(request)
-    return if request.state.blank?
-    if request.state == "pending"
-      %Q{<strong style="color:#3c3c3c;">PENDING</strong>}
-    elsif request.state == "started"
-      %Q{<strong style="color:#0066ff;">STARTED</strong>}
-    elsif request.state == "passed"
-      %Q{<strong style="color:#008800;">PASSED</strong>}
-    elsif request.state == "failed"
-      %Q{<strong style="color:#880000;">FAILED</strong>}
-    else
-      %Q{<strong style="color:#3c3c3c;">#{request.state.upcase}</strong>}
-    end
+    state = request.state.blank? ? 'unknown' : request.state
+    content_tag(:span,state.upcase,:class=>"request-state text-#{bootstrapify(state.downcase)}")
   end
 
   def read_length(request)

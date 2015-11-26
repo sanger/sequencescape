@@ -53,7 +53,7 @@ end
 
 def assert_label_exists(label_text, required = false)
   selector = 'label' << (required ? '.required' : ':not(.required)')
-  assert(page.has_css?(selector), "The #{ label_text.inspect } should #{ required ? '' : 'not '}be labeled as 'required' (class=\"required\")")
+  assert(page.has_css?(selector,:visible=>false,:text=>label_text), "The #{ label_text.inspect } should #{ required ? '' : 'not '}be labeled as 'required' (class=\"required\")")
 end
 
 def locate_labeled_field_type(label_text, field_type)
@@ -88,10 +88,27 @@ Then /^I should see the (required )?select field "([^\"]+)" with options "([^\"]
     element.all("option").detect {|o| o.text == option} or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
   end
 end
+Then /^I should see the (required )?select field "([^\"]+)" without options "([^\"]+(?:\/[^\"]+)+)"$/ do |required, field, options|
+  assert_label_exists(field, required)
+  element = locate_labeled_field_type(field, 'select')
+  options.split('/').each do |option|
+    element.all("option").none? {|o| o.text == option} or raise Capybara::ElementNotFound, "Field #{field.inspect} has option #{option.inspect}"
+  end
+end
+Then /^I should see the (required )?select field "([^\"]+)" with the option "([^\"]+)"$/ do |required, field, option|
+  assert_label_exists(field, required)
+  element = locate_labeled_field_type(field, 'select')
+  element.all("option").detect {|o| o.text == option} or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
+end
+Then /^I should see the (required )?select field "([^\"]+)" without the option "([^\"]+)"$/ do |required, field, option|
+  assert_label_exists(field, required)
+  element = locate_labeled_field_type(field, 'select')
+  element.all("option").none? {|o| o.text == option} or raise Capybara::ElementNotFound, "Field #{field.inspect} has option #{option.inspect}"
+end
 
 Then /^the "([^\"]+)" field should be marked in error$/ do |field|
   element = page.find_field(field) or raise Capybara::ElementNotFound, "Field #{ field.inspect } not found"
-  find(".fieldWithErrors ##{element['id']}")
+  find(".field_with_errors ##{element['id']}")
 end
 
 # There is an issue when attaching a file to a field and using the @javascript tag: the path is relative to some
@@ -104,7 +121,15 @@ When /^(?:|I )attach the relative file "([^\"]+)" to "([^\"]+)"(?: within "([^\"
 end
 
 When /^I fill in "([^\"]*)" with(?: the)? multiline text:?$/ do |field, value|
-  fill_in(field, :with => value)
+  begin
+    find_field(field).send_keys(value)
+  rescue NotImplementedError
+    fill_in(field, :with => value)
+  end
+end
+
+When /^I press enter on "([^\"]*)"$/ do |field|
+  find_field(field).native.send_key(:Enter)
 end
 
 When /^I fill in the hidden field "([^"]*)" with "([^\"]+)"$/ do |field, value|
@@ -113,6 +138,11 @@ end
 
 Then /^"([^\"]+)" should be selected from "([^\"]+)"$/ do |value, name|
   selected = find_field(name).find('option[selected]').text
+  assert_equal( value , selected, "Field #{name.inspect} does not have the correct value selected")
+end
+
+Then /^"([^\"]+)" should be selected from a disabled "([^\"]+)"$/ do |value, name|
+  selected = find_field(name,disabled:true).find('option[selected]').text
   assert_equal( value , selected, "Field #{name.inspect} does not have the correct value selected")
 end
 

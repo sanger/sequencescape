@@ -30,7 +30,7 @@ Given /^I am an? "([^\"]*)" user logged in as "([^\"]*)"$/ do |type_of_user, log
     :workflow_id => wk.id
   )
 
-  @current_user.roles << Factory(:role, :name => type_of_user)
+  @current_user.roles << FactoryGirl.create(:role, :name => type_of_user)
   # :create syntax for restful_authentication w/ aasm. Tweak as needed.
   # @current_user.activate!
 
@@ -43,7 +43,7 @@ Given /^I am an? "([^\"]*)" user logged in as "([^\"]*)"$/ do |type_of_user, log
 end
 
 Given /^there is at least one administrator$/ do
-  Factory :admin
+  FactoryGirl.create :admin
 end
 
 Given /^I am not logged in$/ do
@@ -62,7 +62,7 @@ Then /^I should be logged in as "([^\"]*)"$/ do |login|
 end
 
 Given /^a user with human barcode "(ID\d+.)" exists$/ do |human_barcode|
-  Factory(:user, :barcode => human_barcode)
+  FactoryGirl.create(:user, :barcode => human_barcode)
 end
 
 Given /^user "([^"]*)" has nil first and last names$/ do |login|

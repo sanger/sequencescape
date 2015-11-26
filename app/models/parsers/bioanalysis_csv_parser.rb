@@ -1,3 +1,4 @@
+# encoding: utf-8
 #This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2015 Genome Research Ltd.
@@ -11,7 +12,7 @@ class Parsers::BioanalysisCsvParser
     @content = content
   end
 
-  def get_field_name(sym_name)
+  def field_name_for(sym_name)
     {
       :concentration => "Conc. [ng/µl]",
       :molarity => "Molarity [nmol/l]"
@@ -19,11 +20,11 @@ class Parsers::BioanalysisCsvParser
   end
 
   def concentration(plate_position)
-    return get_parsed_attribute(plate_position, get_field_name(:concentration))
+    return get_parsed_attribute(plate_position, field_name_for(:concentration))
   end
 
   def molarity(plate_position)
-    return get_parsed_attribute(plate_position, get_field_name(:molarity))
+    return get_parsed_attribute(plate_position, field_name_for(:molarity))
   end
 
   def table_content_hash(group)
@@ -65,12 +66,11 @@ class Parsers::BioanalysisCsvParser
     group_contents = get_group_content(range)
 
     group_contents.each_with_index do |line, pos|
-      if (line[0].match(regexp) && group.length == 0)
+
+      if line[0].present? && line[0].match(regexp) && group.empty?
         group.push(pos)
-      else
-        if ((line[0].match(" ") && line.length == 1) && group.length == 1)
-          group.push(pos-1)
-        end
+      elsif (line.empty? && group.one? )
+        group.push(pos-1)
       end
 
       if group.length == 2
@@ -117,6 +117,7 @@ class Parsers::BioanalysisCsvParser
 
   def parse_samples
     groups = get_groups(/Sample Name/)
+
     groups.each_with_index.map do |group, pos|
       if (pos == (groups.length - 1))
         next_index = @content.length - 1
@@ -131,7 +132,7 @@ class Parsers::BioanalysisCsvParser
 
   def parsed_content
     @parsed_content ||= parse_samples
-  rescue NoMethodError  #Ugh! I want to catch these where they happen
+  rescue NoMethodError => e  #Ugh! I want to catch these where they happen
     raise InvalidFile
   end
 
@@ -142,7 +143,7 @@ class Parsers::BioanalysisCsvParser
 
   def each_well_and_parameters
     parsed_content.each do |well,values|
-      yield(well,values[:peak_table][get_field_name(:concentration)],values[:peak_table][get_field_name(:molarity)])
+      yield(well,values[:peak_table][field_name_for(:concentration)],values[:peak_table][field_name_for(:molarity)])
     end
   end
 

@@ -7,7 +7,7 @@ class FragmentTest < ActiveSupport::TestCase
   context Fragment do
     context '#to_xml' do
       setup do
-        @fragment = Factory(:fragment)
+        @fragment = create(:fragment)
       end
 
       should 'not fail if descriptor_fields present' do

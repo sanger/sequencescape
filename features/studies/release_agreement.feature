@@ -21,7 +21,10 @@ Feature: Studies have a release agreement
     Given I select "No" from "Will you be using WTSI's standard access agreement?"
     When I press "Create"
     Then I should be on the studies page
-    And I should see "Data release non standard agreement can't be blank"
+    #TODO: This is not ideal. It would be better without the 'study metadata' bit.
+    # Problem is changing this here has impact on the API messages
+    # Once we're fully upgraded we should look at the proper way of handling this
+    And I should see "Study metadata data release non standard agreement can't be blank"
 
   Scenario: Using a non-standard agreement with a file uploaded
     Given I select "No" from "Will you be using WTSI's standard access agreement?"

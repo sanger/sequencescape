@@ -4,8 +4,8 @@
 # Lays out the tags so that they are based on the pool.
 class TagLayout::ByPools < TagLayout
   # The direction of the tagging is column major, within the pools.
-  class_inheritable_reader :direction
-  write_inheritable_attribute(:direction, 'column')
+  class_attribute :direction, :instance_writer => false
+  self.direction = 'column'
 
   def walk_wells(&block)
     # Take the pools for this plate and flatten them out.  This ensures that the wells within a pool are

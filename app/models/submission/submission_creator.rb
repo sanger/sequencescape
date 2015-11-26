@@ -1,12 +1,15 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.
+
+require 'aasm'
+
 class Submission::SubmissionCreator < Submission::PresenterSkeleton
   SubmissionsCreaterError  = Class.new(StandardError)
   IncorrectParamsException = Class.new(SubmissionsCreaterError)
   InvalidInputException    = Class.new(SubmissionsCreaterError)
 
-  write_inheritable_attribute :attributes,  [
+  self.attributes = [
     :id,
     :template_id,
     :sample_names_text,
@@ -30,13 +33,13 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
     begin
       submission.built!
     rescue AASM::InvalidTransition
-      submission.errors.add_to_base("Submissions can not be edited once they are submitted for building.")
+      submission.errors.add(:base,"Submissions can not be edited once they are submitted for building.")
     rescue ActiveRecord::RecordInvalid => exception
       exception.record.errors.full_messages.each do |message|
-        submission.errors.add_to_base(message)
+        submission.errors.add(:base,message)
       end
     rescue Submission::ProjectValidation::Error => exception
-      submission.errors.add_to_base(exception.message)
+      submission.errors.add(:base,exception.message)
     end
   end
 
@@ -125,14 +128,14 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
       end
 
     rescue Submission::ProjectValidation::Error => project_exception
-      order.errors.add_to_base(project_exception.message)
+      order.errors.add(:base,project_exception.message)
     rescue InvalidInputException => input_exception
-      order.errors.add_to_base(input_exception.message)
+      order.errors.add(:base,input_exception.message)
     rescue IncorrectParamsException => exception
-      order.errors.add_to_base(exception.message)
+      order.errors.add(:base,exception.message)
     rescue ActiveRecord::RecordInvalid => exception
       exception.record.errors.full_messages.each do |message|
-        order.errors.add_to_base(message)
+        order.errors.add(:base,message)
       end
     end
 
@@ -222,7 +225,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   private :find_assets_from_text
 
   def find_wells_in_array(plate,well_array)
-    return plate.wells.with_aliquots.find(:all,:select=>'DISTINCT assets.*') if well_array.empty?
+    return plate.wells.with_aliquots.select('DISTINCT assets.*').all if well_array.empty?
     well_array.map do |map_description|
       case map_description
       when /^[a-z,A-Z][0-9]+$/ # A well
@@ -233,9 +236,9 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
           well
         end
       when /^[a-z,A-Z]$/ # A row
-        plate.wells.with_aliquots.in_plate_row(map_description,plate.size).find(:all,:select=>'DISTINCT assets.*')
+        plate.wells.with_aliquots.in_plate_row(map_description,plate.size).select('DISTINCT assets.*').all
       when /^[0-9]+$/ # A column
-        plate.wells.with_aliquots.in_plate_column(map_description,plate.size).find(:all,:select=>'DISTINCT assets.*')
+        plate.wells.with_aliquots.in_plate_column(map_description,plate.size).select('DISTINCT assets.*').all
       else
         raise InvalidInputException, "#{map_description} is not a valid well location"
       end

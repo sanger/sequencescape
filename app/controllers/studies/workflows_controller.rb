@@ -18,7 +18,6 @@ class Studies::WorkflowsController < ApplicationController
   private :setup_tabs
 
   def show
-    Study.benchmark "BENCH Study:WorkflowController:show", Logger::DEBUG, false do
     unless @current_user.nil?
       @current_user.workflow = @workflow
       @current_user.save!
@@ -42,7 +41,7 @@ class Studies::WorkflowsController < ApplicationController
       format.xml
       format.json { render :json => Study.all.to_json }
     end
-    end # of benchhmark
+
   end
 
   def show_summary
@@ -122,7 +121,7 @@ class Studies::WorkflowsController < ApplicationController
   private
   def discover_study
     @study  = Study.find(params[:study_id])
-    flash[:warning] = "#{flash[:warning]} #{@study.warnings}" if @study.warnings.present?
+    action_flash[:warning] = @study.warnings if @study.warnings.present?
   end
 
   def discover_workflow

@@ -3,7 +3,7 @@
 #Copyright (C) 2007-2011 Genome Research Ltd.%>
 <h1>Gel scoring</h1>
 
-<% form_tag(lookup_gels_url, :method => :post) do %>
+<%= form_tag(lookup_gels_url, :method => :post) do %>
   <%= label_tag :barcode, "Find gel plate:" %>
   <%= text_field_tag :barcode %>
   <br /><br />

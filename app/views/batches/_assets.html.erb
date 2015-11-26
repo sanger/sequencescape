@@ -1,16 +1,16 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2012,2013,2014 Genome Research Ltd.%>
-<table width="100%" cellpadding="2" cellspacing="0" class="sortable">
+<table class="sortable table table-striped">
   <thead>
     <tr>
-      <th width="5%" class='label'>&nbsp;</th>
-      <th width="10%" class='label'><%= link_to "Barcode", "javascript:void(0);" %></th>
-      <th width="10%" class='label'><%= link_to "Wells", "javascript:void(0);" %></th>
-      <% if output_plate %><th width="10%" class='label'>Plate's Purpose</th><% end %>
-      <th width="10%" class='label'></th>
-      <th class='label'></th>
-      <th class='label'></th>
+      <th>&nbsp;</th>
+      <th><%= link_to "Barcode", "javascript:void(0);" %></th>
+      <th><%= link_to "Wells", "javascript:void(0);" %></th>
+      <% if output_plate %><th>Plate's Purpose</th><% end %>
+      <th></th>
+      <th></th>
+      <th></th>
     </tr>
   </thead>
   <tbody>

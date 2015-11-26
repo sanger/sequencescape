@@ -17,7 +17,7 @@ class PooledCherrypickRequest < Request
 
   def aliquots_for_transfer
     asset.aliquots.map do |aliquot|
-      aliquot.clone.tap do |clone|
+      aliquot.dup.tap do |clone|
         clone.study_id   = initial_study_id   || aliquot.study_id
         clone.project_id = initial_project_id || aliquot.project_id
       end

@@ -73,7 +73,7 @@ module StudyReport::StudyDetails
                    asset_progress_data[:measured_volume],
                    asset_progress_data[:quantity],
                    asset_progress_data[:sequenom_count],
-                   asset_progress_data[:sequenom_gender],
+                   (asset_progress_data[:sequenom_gender]||[]).join(''),
                    asset_progress_data[:pico],
                    asset_progress_data[:gel],
                    asset_progress_data[:qc_status],

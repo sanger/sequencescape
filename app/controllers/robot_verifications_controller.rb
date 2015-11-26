@@ -26,7 +26,7 @@ class RobotVerificationsController < ApplicationController
       @batch = Batch.find(params[:batch_id])
       @destination_plate_id = Plate.with_machine_barcode(params[:destination_plate_barcodes].first.first).first.barcode
     else
-      flash[:error] = "Error: Check everything again"
+      flash[:error] = "Error: #{@robot_verification.errors.join('; ')}"
       redirect_to :action => :index
     end
   end

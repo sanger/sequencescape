@@ -3,12 +3,12 @@
 #Copyright (C) 2012 Genome Research Ltd.
 class ReattachGeneratedSampleManifests < ActiveRecord::Migration
   class Document < ActiveRecord::Base
-    set_table_name('documents')
-    set_inheritance_column(nil)
+    self.table_name =('documents')
+    set_inheritance_column
 
-    named_scope :unattached, :conditions => { :documentable_id => nil }
-    named_scope :for, lambda { |m| { :conditions => { :documentable_type => m } } }
-    named_scope :extended_type, lambda { |m| { :conditions => { :documentable_extended => m } } } 
+   scope :unattached, -> { where( :documentable_id => nil ) }
+   scope :for, ->(m) { { :conditions => { :documentable_type => m } } }
+   scope :extended_type, ->(m) { { :conditions => { :documentable_extended => m } } }
 
     validates_presence_of :documentable_type
     validates_presence_of :documentable_id

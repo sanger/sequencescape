@@ -20,7 +20,11 @@ class User < ActiveRecord::Base
   has_many :comments
   has_many :settings
   has_many :roles
+  has_many :project_roles, :class_name => 'Role', :conditions => {authorizable_type:'Project'}
+  has_many :study_roles, :class_name => 'Role', :conditions => {authorizable_type:'Study'}
+  has_many :study_roles
   has_many :batches
+  has_many :pipelines, :through => :batches, :order => 'batches.id DESC'
 
   before_save :encrypt_password
   before_create { |record| record.new_api_key if record.api_key.blank? }
@@ -29,9 +33,12 @@ class User < ActiveRecord::Base
   validates_presence_of :login
   validates_confirmation_of :password, :if => :password_required?
 
-  named_scope :with_login, lambda { |*logins| { :conditions => { :login => logins.flatten } } }
+  scope :with_login, ->(*logins) { { :conditions => { :login => logins.flatten } } }
+  scope :all_administrators, -> { joins(:roles).where(:roles=>{:name=>'administrator'}) }
 
   acts_as_authorized_user
+
+  scope :owners, ->() { where('last_name IS NOT NULL').joins(:roles).where(:roles=>{:name=>'owner'}).order('last_name ASC') }
 
   attr_accessor :password
 
@@ -52,7 +59,7 @@ class User < ActiveRecord::Base
   end
 
   def user_roles(authorizable_class_name)
-    self.roles.find_all_by_authorizable_type(authorizable_class_name)
+    roles.where(authorizable_type:authorizable_class_name)
   end
 
   def following?(item)
@@ -88,36 +95,30 @@ class User < ActiveRecord::Base
   end
 
   def projects
-    return Project.all if self.is_administrator?
+    # We use where(true) to get a scope. In Later versions of rails all is a scope
+    return Project.where(true) if self.is_administrator?
+    atuhorized = authorized_projects
+    return Project.where(true) if ( (atuhorized.blank?) && (privileged?) )
+    atuhorized
+  end
 
-    authorized_projects = []
-
-    self.project_roles.each do |role|
-      next if role.authorizable_id.nil?
-      project = Project.find_by_id(role.authorizable_id)
-      next if project.nil?
-      authorized_projects << project
-    end
-
-    return Project.all if ( (authorized_projects.blank?) && (privileged?) )
-
-    authorized_projects
+  def authorized_projects
+    Project.for_user(self)
   end
 
   def sorted_project_names_and_ids
-    self.projects.sort_by(&:name).map{|p| [p.name, p.id] }
+    projects.alphabetical.map{|p| [p.name, p.id] }
   end
+
   def sorted_valid_project_names_and_ids
-    self.projects.select(&method(:valid_project)).sort_by(&:name).map{|p| [p.name, p.id] }
+    projects.valid.alphabetical.map{|p| [p.name, p.id] }
   end
-  def valid_project(project)
-    project.active? && project.approved?
-  end
-  private :valid_project
+
 
   def sorted_study_names_and_ids
-    self.interesting_studies.sort_by(&:name).map{|p| [p.name, p.id] }
+    interesting_studies.alphabetical.map{|p| [p.name, p.id] }
   end
+
   def workflow_name
     self.workflow and self.workflow.name
   end
@@ -167,20 +168,12 @@ class User < ActiveRecord::Base
     self.is_administrator? || self.is_manager?
   end
 
-  # Checks if the current user is a manager
   def manager?
-    self.is_manager?
+    is_manager?
   end
 
-  # Checks if the current user is an administrator
   def administrator?
-    self.is_administrator?
-  end
-
-  # returns all administrator users
-  def self.all_administrators
-    role = Role.find_by_name_and_authorizable_type('administrator')
-    role ? role.users : []
+    is_administrator?
   end
 
   # returns emails of all admins
@@ -212,13 +205,13 @@ class User < ActiveRecord::Base
   def remember_me
     self.remember_token_expires_at = 2.weeks.from_now.utc
     self.remember_token            = encrypt("#{email}--#{remember_token_expires_at}")
-    save(false)
+    save(:validate => false)
   end
 
   def forget_me
     self.remember_token_expires_at = nil
     self.remember_token            = nil
-    save(false)
+    save(:validate => false)
   end
 
   # User has a relationship by role to these studies
@@ -244,10 +237,6 @@ class User < ActiveRecord::Base
     end
 
     nil
-  end
-
-  def self.owners
-    all.select{ |user| user.is_owner? && ! user.last_name.blank? }.sort{ |user1, user2| user1.last_name <=> user2.last_name }
   end
 
   protected

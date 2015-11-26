@@ -7,10 +7,12 @@ class BroadcastEventTest < ActiveSupport::TestCase
 
 
   TestSeed    = Struct.new(:uuid,:friendly_name,:subject_type,:single_relation,:many_relation,:dynamic_relation,:id,:data_method_a)
+
   class TestSeed
     def self.base_class; BroadcastEvent; end
     def destroyed?; false; end
     def new_record?; false; end
+    def self.primary_key; :id; end
   end
   TestSubject = Struct.new(:uuid,:friendly_name,:subject_type)
   DynamicSubject = Struct.new(:target,:data_method_b)
@@ -79,7 +81,7 @@ class BroadcastEventTest < ActiveSupport::TestCase
         @value_b = 'value_b'
         @dynamic = DynamicSubject.new(@dynamic_target,@value_b)
         @value_a = 'value_a'
-        @user = Factory :user, :email => 'example@example.com'
+        @user = create :user, :email => 'example@example.com'
         @time = DateTime.parse("2012-03-11 10:22:42")
         @seed = TestSeed.new('004','seed_subject','seed_type',@single,[@many_one,@many_two],@dynamic,1,@value_a)
         @event = ExampleEvent.new(:seed=>@seed,:user=>@user,:created_at=>@time)

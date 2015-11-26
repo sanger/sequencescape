@@ -3,7 +3,7 @@
 #Copyright (C) 2007-2011 Genome Research Ltd.%>
 <h1>New asset group</h1>
 
-<% form_for @asset_group,  :url => study_asset_groups_path(@study) do |f| %>
+<%= form_for @asset_group,  :url => study_asset_groups_path(@study) do |f| %>
   <%= f.error_messages %>
 
   <p><%= f.label(:name, 'Name') %>: <%= f.text_field :name %></p>

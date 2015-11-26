@@ -29,7 +29,7 @@
     </thead>
     <tbody id="requests_list">
       <% requests.each_with_index do |request, i| -%>
-        <tr id="request_<%= request.id %>" class="<%= cycle("rowodd", "roweven") %>">
+        <tr id="request_<%= request.id %>" class="<%= cycle("rowodd", "roweven") %> row<%= i %>">
           <% if edit -%>
             <td width="3%" class="center" style="cursor:move;"><%= image_tag "arrow_out.png", :size =>"13x13" %></td>
           <% elsif stage %>

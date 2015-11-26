@@ -1,26 +1,25 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2015 Genome Research Ltd.
-require File.dirname(__FILE__) + '/../../test_helper'
+require './test/test_helper'
+require 'csv'
 
 class IscXtenParserTest < ActiveSupport::TestCase
 
   def read_file(filename)
-      fd = File.open(filename, "r")
-      content = []
-      while (line = fd.gets)
-        content.push line
-      end
-      fd.close
-      Iconv.conv('utf-8', 'WINDOWS-1253',content.join(""))
+    content = nil
+    File.open(filename, "r") do |fd|
+      content = fd.read
+    end
+    content
   end
 
   context "Parser" do
     context "With a valid csv file" do
       setup do
-        @filename = File.dirname(__FILE__)+"/../../data/isc_xten_parsing_Zebrafish_example.csv"
+        @filename = Rails.root.to_s + "/test/data/isc_xten_parsing_Zebrafish_example.csv"
         @content = read_file @filename
-        @csv = FasterCSV.parse(@content)
+        @csv = CSV.parse(@content)
       end
 
       should "return a Parsers::ISCXTenParser" do
@@ -31,22 +30,22 @@ class IscXtenParserTest < ActiveSupport::TestCase
 
     context "With an unreleated csv file" do
       setup do
-        @filename = File.dirname(__FILE__)+"/../../data/fluidigm.csv"
+        @filename = Rails.root.to_s + "/test/data/fluidigm.csv"
         @content = read_file @filename
       end
 
-      should "return a Parsers::ISCXTenParser" do
+      should "not return a Parsers::ISCXTenParser" do
         assert_equal nil, Parsers.parser_for(@filename,nil,@content)
       end
     end
 
     context "with a non csv file" do
       setup do
-        @filename = File.dirname(__FILE__)+"/../../data/example_file.txt"
+        @filename = Rails.root.to_s + "/test/data/example_file.txt"
         @content = read_file @filename
       end
 
-      should "return a Parsers::ISCXTenParser" do
+      should "not return a Parsers::ISCXTenParser" do
         assert_equal nil, Parsers.parser_for(@filename,nil,@content)
       end
     end
@@ -55,10 +54,10 @@ class IscXtenParserTest < ActiveSupport::TestCase
   context "A Parsers::ISCXTenParser parser of CSV" do
     context "with a valid CSV Parsers::ISCXTenParser file" do
       setup do
-        filename = File.dirname(__FILE__)+"/../../data/isc_xten_parsing_Zebrafish_example.csv"
+        filename = Rails.root.to_s + "/test/data/isc_xten_parsing_Zebrafish_example.csv"
         content = read_file filename
 
-        @parser = Parsers::ISCXTenParser.new(FasterCSV.parse(content))
+        @parser = Parsers::ISCXTenParser.new(CSV.parse(content))
       end
 
       #should "parse last sample of testing file correctly" do
@@ -70,8 +69,6 @@ class IscXtenParserTest < ActiveSupport::TestCase
       #  [97, 98], [109, 110], [121, 122], [133, 134], [145, 146], [157,158]]
       #  assert_equal test_data, @parser.get_groups(/Overall.*/m)
       #end
-
-
 
       should "parses a CSV example file" do
         assert_equal "75.783", @parser.concentration("A1")
@@ -100,10 +97,10 @@ class IscXtenParserTest < ActiveSupport::TestCase
     end
     context "with an invalid CSV ISC file" do
       setup do
-        filename = File.dirname(__FILE__)+"/../../data/bioanalysis_qc_results-with-error.csv"
+        filename = Rails.root.to_s + "/test/data/bioanalysis_qc_results-with-error.csv"
         content = read_file filename
 
-        @parser = Parsers::ISCXTenParser.new(FasterCSV.parse(content))
+        @parser = Parsers::ISCXTenParser.new(CSV.parse(content))
       end
 
       should "raise an exception while accessing any information" do

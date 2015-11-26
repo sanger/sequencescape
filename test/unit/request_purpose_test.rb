@@ -5,7 +5,8 @@ require 'test_helper'
 
 class RequestPurposeTest < ActiveSupport::TestCase
   context "RequestPurpose" do
-    should_have_many :requests, :request_types
-    should_validate_presence_of :key
+    should have_many :requests
+    should have_many :request_types
+    should validate_presence_of :key
   end
 end

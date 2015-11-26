@@ -72,7 +72,9 @@ class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpo
           actions(
             count_of_pages(association),
             options.merge(:target => object)
-          ).map(&action_stream.method(:attribute))
+          ).map do |action,url|
+            action_stream.attribute(action,url)
+          end
         end
       end
     end

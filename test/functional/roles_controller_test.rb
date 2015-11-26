@@ -14,7 +14,7 @@ class RolesControllerTest < ActionController::TestCase
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
 
-      @user = Factory :user
+      @user =FactoryGirl.create :user
       @controller.stubs(:logged_in?).returns(@user)
       @controller.stubs(:current_user).returns(@user)
 
@@ -22,6 +22,6 @@ class RolesControllerTest < ActionController::TestCase
 
     should_require_login
 
-    resource_test('role', :ignore_actions =>['show', 'create'], :formats => ['html'])
+    resource_test('role', :with_prefix => 'admin_', :ignore_actions =>['show', 'create'], :formats => ['html'])
   end
 end

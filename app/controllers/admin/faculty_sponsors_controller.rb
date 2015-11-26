@@ -25,7 +25,7 @@ class Admin::FacultySponsorsController < ApplicationController
     respond_to do |format|
       if @faculty_sponsor.save
         flash[:notice] = 'Faculty Sponsor was successfully created.'
-        format.html { redirect_to(faculty_sponsors_path) }
+        format.html { redirect_to(admin_faculty_sponsors_path) }
       else
         format.html { render :action => "new" }
       end
@@ -36,7 +36,7 @@ class Admin::FacultySponsorsController < ApplicationController
     respond_to do |format|
       if @faculty_sponsor.update_attributes(params[:faculty_sponsor])
         flash[:notice] = 'Faculty Sponsor was successfully updated.'
-        format.html { redirect_to(faculty_sponsors_path) }
+        format.html { redirect_to(admin_faculty_sponsors_path) }
       else
         format.html { render :action => "edit" }
       end
@@ -48,7 +48,7 @@ class Admin::FacultySponsorsController < ApplicationController
 
     respond_to do |format|
       flash[:notice] = 'Faculty Sponsor was successfully deleted.'
-      format.html { redirect_to(faculty_sponsors_url) }
+      format.html { redirect_to(admin_faculty_sponsors_path) }
     end
   end
 

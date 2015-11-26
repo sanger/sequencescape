@@ -3,12 +3,12 @@
 #Copyright (C) 2012 Genome Research Ltd.
 class ChangeCherrypickStrategyToFilterListInPlatePurpose < ActiveRecord::Migration
   class PlatePurpose < ActiveRecord::Base
-    set_table_name('plate_purposes')
-    set_inheritance_column(nil)
+    self.table_name =('plate_purposes')
+    set_inheritance_column
 
     serialize :cherrypick_strategy
 
-    named_scope :with_strategy, { :conditions => 'cherrypick_strategy IS NOT NULL' }
+    scope :with_strategy, -> { where('cherrypick_strategy IS NOT NULL') }
   end
 
   def self.up

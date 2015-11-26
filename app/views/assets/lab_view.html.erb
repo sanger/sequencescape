@@ -6,7 +6,7 @@
   <%= Date.today %>
 </div>
 <div class="info">
-  <% form_for(:asset, @asset, :url => { :controller => "assets", :action => "update", :id => @asset.id, :lab_view => true }, :html => { :method => :put }) do |f| %>
+  <%= form_for(:asset, @asset, :url => { :controller => "assets", :action => "update", :id => @asset.id, :lab_view => true }, :html => { :method => :put }) do |f| %>
     <table>
       <tr><td>Name: </td><td><%= h(@asset.display_name) %></td></tr>
       <tr><td>Type: </td><td><%= @asset.sti_type %></td></tr>

@@ -13,8 +13,8 @@ module ApplicationHelper
         }
       )
 
-      RAILS_DEFAULT_LOGGER.debug
-        "No custom text found for #{identifier} #{differential}." if custom_text.nil?
+      #.debug
+      #  "No custom text found for #{identifier} #{differential}." if custom_text.nil?
 
       custom_text.try(:content) || ""
     end
@@ -46,19 +46,15 @@ module ApplicationHelper
   end
 
   def required_marker
-    output = %Q{<span class="required">&raquo;</span>}
-  end
-
-  def required_marker_bold
-    %Q{<span style="font-size : medium;"class="required">&raquo;</span>}
+    content_tag(:span,"&raquo;".html_safe,:class=>'required')
   end
 
   def render_flashes
-    output = ""
-    flash.merge(action_flash).each do |key, message|
+    output = String.new.html_safe
+    (flash.to_a + action_flash.to_a).each do |key, message|
       content = message
       content = message.map { |m| content_tag(:div, m) }.join if message.is_a?(Array)
-      output << content_tag(:div, content, :class => 'flash', :id => "message_#{ key }")
+      output << alert(key,:id=>"message_#{key}") { content }
     end
     return output
   end
@@ -232,26 +228,25 @@ module ApplicationHelper
     add :help, help
   end
 
-  def required_marker
-    output = %Q{<span class="required">&raquo;</span>}
-  end
-
   def tabulated_error_messages_for(*params)
     options = params.last.is_a?(Hash) ? params.pop.symbolize_keys : {}
     objects = params.collect {|object_name| instance_variable_get("@#{object_name}") }.compact
     count   = objects.inject(0) {|sum, object| sum + object.errors.count }
     unless count.zero?
-      error_messages = objects.map {|object| object.errors.full_messages.map {|msg| content_tag(:div, msg) } }
-      html = %Q{<td class="error item">Your #{params.first} has not been created.</td>}
-      html = html + %Q{<td class="error">#{error_messages}</td>}
-      html
+      error_messages = objects.map {|object| object.errors.full_messages.map {|msg| content_tag(:div, msg) } }.join
+      [content_tag(:td, :class=>'error item') do
+        "Your #{params.first} has not been created."
+      end,
+      content_tag(:td, :class=>'error') do
+        raw(error_messages)
+      end].join.html_safe
     else
       ""
     end
   end
 
   def horizontal_tab(name, key, related_div, tab_no, selected = false)
-     link_to "#{name}", "javascript:void(0);", :onclick => %Q{swap_tab("#{key}", "#{related_div}", "#{tab_no}");}, :id => "#{key}", :class => "#{selected ? "selected " : ""}tab#{tab_no}"
+     link_to raw("#{name}"), "javascript:void(0);", :onclick => %Q{swap_tab("#{key}", "#{related_div}", "#{tab_no}");}, :id => "#{key}", :class => "#{selected ? "selected " : ""}tab#{tab_no}"
   end
 
   def item_status(item)
@@ -316,6 +311,10 @@ module ApplicationHelper
     label_tag(name, text, options.merge(:style => 'display:none;'))
   end
 
+  def non_breaking_space
+    '&nbsp;'.html_safe
+  end
+
   def help_text(label_text = nil, suggested_id = nil, &block)
     content = capture(&block)
 
@@ -327,15 +326,15 @@ module ApplicationHelper
     shortened_text = (content =~ /^(.{20}\S*)\s\S/ and $1)
 
     if content.blank?
-      concat('&nbsp;')
+      concat(non_breaking_space)
     elsif shortened_text.nil?
-      concat(content)
+      concat(content.html_safe)
     else
-      concat(shortened_text)
+      concat(shortened_text.html_safe)
       tooltip_id = "prop_#{suggested_id || content.hash}_help"
-      concat(label_tag("tooltip_content_#{tooltip_id}", label_text, :style => 'display:none;'))
+      concat(label_tag("tooltip_content_#{tooltip_id}", label_text, :style => 'display:none;').html_safe)
 
-      tooltip('...', :id => tooltip_id, &block)
+      tooltip('?', :id => tooltip_id, &block)
     end
   end
 
@@ -344,4 +343,6 @@ module ApplicationHelper
     admin_address = configatron.admin_email || "admin@test.com"
     link_to "#{admin_address}", "mailto:#{admin_address}"
   end
+
+
 end

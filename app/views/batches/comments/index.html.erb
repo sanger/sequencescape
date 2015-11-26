@@ -13,7 +13,7 @@
   <%= render :partial => "list", :locals => {:batch => @batch } %>
     <div>
       <p>Type your comment:</p>
-      <%= form_remote_tag(:url => batch_comments_path(@batch), :update => "batch_annotations_#{@batch.id}") %>
+      <%= form_tag(:url => batch_comments_path(@batch), :update => "batch_annotations_#{@batch.id}", :remote => true) %>
       <%= text_field_tag "comment", '', :size  => 65 %><%= submit_tag 'Add comment' %>
     </div>
 </div>

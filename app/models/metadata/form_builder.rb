@@ -24,15 +24,36 @@ class Metadata::FormBuilder < Metadata::BuilderBase
     end
   end
 
-  def select_by_association(association, options={})
+  def select_by_association(association, options={},html_options={})
     association_target, options = association.to_s.classify.constantize, { }
     options[:selected] = association_target.default.for_select_dropdown.last if @object.send(association).nil? and association_target.default.present?
-    select(:"#{association}_id", association_target.for_select_association, options)
+    select(:"#{association}_id", association_target.for_select_association, options,html_options)
   end
 
   def checktext_field(field, options = {})
     render_view(:checktext, field, options)
   end
+
+  [:text_area, :text_field].each do |field|
+    class_eval <<-END_OF_METHOD
+      def #{ field }_with_bootstrap(*args, &block)
+        options    = args.extract_options!
+        options[:class] ||= ''
+        options[:class] << ' form-control'
+        args.push(options)
+        #{ field }_without_bootstrap(*args, &block)
+      end
+    END_OF_METHOD
+    alias_method_chain(field, :bootstrap)
+  end
+
+  def select_with_bootstrap(method, choices, options={}, html_options={}, &block)
+    html_options[:class] ||= ''
+    html_options[:class] << ' form-control'
+    select_without_bootstrap(method, choices, options, html_options, &block)
+  end
+  alias_method_chain(:select, :bootstrap)
+
 
   # We wrap each of the following field types (text_field, select, etc) within a special
   # layout for our properties
@@ -109,7 +130,7 @@ private
     end
 
     div_options = { :id => field.to_s }
-    div_options[:class] = 'fieldWithErrors' unless @object.errors.on(field).blank?
+    div_options[:class] = 'field_with_errors' unless @object.errors.get(field).blank?
     content_tag(:div, content, div_options)
   end
 end

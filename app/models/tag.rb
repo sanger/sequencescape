@@ -19,7 +19,7 @@ class Tag < ActiveRecord::Base
   has_many :assets, :as => :material
   has_many :requests, :through => :assets, :uniq => true
 
-  named_scope :sorted , :order => "map_id ASC"
+  scope :sorted , order("map_id ASC")
 
   def name
     "Tag #{map_id}"

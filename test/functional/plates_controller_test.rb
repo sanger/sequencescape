@@ -10,20 +10,22 @@ class PlatesControllerTest < ActionController::TestCase
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
 
-      @pico_assay_plate_creator    = Factory :plate_creator,  {
+      @pico_assay_plate_creator    =FactoryGirl.create :plate_creator,  {
         :plate_purpose => PlatePurpose.find_by_name!('Pico Assay Plates')
       }
       ['Pico Assay A', 'Pico Assay B'].map do |s|
         PlatePurpose.find_by_name!(s)
       end.map do |p|
-        Factory :plate_creator_purpose, { :plate_purpose => p, :plate_creator =>  @pico_assay_plate_creator }
+       FactoryGirl.create :plate_creator_purpose, { :plate_purpose => p, :plate_creator =>  @pico_assay_plate_creator }
       end
-      @dilution_plates_creator     = Factory :plate_creator,  :plate_purpose => PlatePurpose.find_by_name!('Working dilution')
-      Factory :plate_creator_purpose, {
+      @dilution_plates_creator     =FactoryGirl.create :plate_creator,  :plate_purpose => PlatePurpose.find_by_name!('Working dilution')
+	  
+      create :plate_creator_purpose, {
         :plate_purpose => PlatePurpose.find_by_name!('Working dilution'),
         :plate_creator =>  @dilution_plates_creator
       }
-      @gel_dilution_plates_creator = Factory :plate_creator,  :plate_purpose => PlatePurpose.find_by_name!('Gel Dilution Plates')
+
+      @gel_dilution_plates_creator =FactoryGirl.create :plate_creator,  :plate_purpose => PlatePurpose.find_by_name!('Gel Dilution Plates')
 
       @barcode_printer = mock("printer abc")
       @barcode_printer.stubs(:id).returns(1)
@@ -41,33 +43,36 @@ class PlatesControllerTest < ActionController::TestCase
 
     context "with a logged in user" do
       setup do
-        @user = Factory :user, :barcode => 'ID100I'
+        @user =FactoryGirl.create :user, :barcode => 'ID100I'
         @user.is_administrator
         @controller.stubs(:current_user).returns(@user)
 
-        @parent_plate  = Factory :plate, :barcode => "5678"
-        @parent_plate2 = Factory :plate, :barcode => "1234"
-        @parent_plate3 = Factory :plate, :barcode => "987"
+        @parent_plate  =FactoryGirl.create :plate, :barcode => "5678"
+        @parent_plate2 =FactoryGirl.create :plate, :barcode => "1234"
+        @parent_plate3 =FactoryGirl.create :plate, :barcode => "987"
       end
 
       context "#new" do
         setup do
           get :new
         end
-        should_respond_with :success
-        should_not_set_the_flash
+        should respond_with :success
+        should_not set_the_flash
       end
 
       context "#create" do
 
        context "with no source plates" do
           setup do
+            @plate_count =  Plate.count
             post :create, :plates => {:creator_id => @gel_dilution_plates_creator.id, :barcode_printer => @barcode_printer.id, :user_barcode => '2470000100730'}
           end
 
-          should_change("Plate.count", :by => 1) { Plate.count }
-          should_respond_with :redirect
-          should_set_the_flash_to /Created/
+           should "change Plate.count by 1" do
+             assert_equal 1,  Plate.count  - @plate_count, "Expected Plate.count to change by 1"
+          end
+          should respond_with :redirect
+          should set_the_flash.to( /Created/)
         end
 
         context "Create a Plate" do
@@ -194,6 +199,7 @@ class PlatesControllerTest < ActionController::TestCase
         context "Create Pico Assay Plates" do
           context "with one source plate" do
             setup do
+              @picoassayplate_count =  PicoAssayPlate.count
               @parent_raw_barcode = Barcode.calculate_barcode(Plate.prefix, @parent_plate.barcode.to_i)
             end
             context "without a dilution factor" do
@@ -229,20 +235,25 @@ class PlatesControllerTest < ActionController::TestCase
 
           context "with 3 source plates" do
             setup do
+              @picoassayplate_count =  PicoAssayPlate.count
               @parent_raw_barcode  = Barcode.calculate_barcode(Plate.prefix, @parent_plate.barcode.to_i)
               @parent_raw_barcode2 = Barcode.calculate_barcode(Plate.prefix, @parent_plate2.barcode.to_i)
               @parent_raw_barcode3 = Barcode.calculate_barcode(Plate.prefix, @parent_plate3.barcode.to_i)
               post :create, :plates => {:creator_id => @pico_assay_plate_creator.id, :barcode_printer => @barcode_printer.id, :source_plates =>"#{@parent_raw_barcode}\n#{@parent_raw_barcode2}\t#{@parent_raw_barcode3}", :user_barcode => '2470000100730'}
             end
-            should_change("PicoAssayPlate.count", :by => 6) { PicoAssayPlate.count }
+
+            should "change PicoAssayPlate.count by 6" do
+              assert_equal 6,  PicoAssayPlate.count  - @picoassayplate_count, "Expected PicoAssayPlate.count to change by 6"
+            end
+
             should "have child plates" do
               [@parent_plate, @parent_plate2, @parent_plate3].each do  |plate|
                 assert Plate.find(plate.id).children.first.is_a?(Plate)
                 assert_equal PicoAssayPlatePurpose.find_by_name("Pico Assay A"), Plate.find(plate.id).children.first.plate_purpose
               end
             end
-            should_respond_with :redirect
-            should_set_the_flash_to /Created/
+            should respond_with :redirect
+            should set_the_flash.to( /Created/)
           end
         end
 

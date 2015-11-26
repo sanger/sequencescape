@@ -1,6 +1,9 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+
+require 'aasm'
+
 module Submission::StateMachine
   def self.extended(base)
     base.class_eval do
@@ -106,8 +109,8 @@ module Submission::StateMachine
 
   UnprocessedStates = ["building", "pending", "processing"]
   def configure_named_scopes
-    named_scope :unprocessed, :conditions => {:state => UnprocessedStates}
-    named_scope :processed, :conditions => {:state => ["ready", "failed"]}
+   scope :unprocessed, -> { where(:state => UnprocessedStates) }
+   scope :processed, -> { where(:state => ["ready", "failed"]) }
   end
 
   private :configure_named_scopes

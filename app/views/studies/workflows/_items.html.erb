@@ -4,7 +4,10 @@
 <div id="navi" class="yui-navset">
   <ul class="yui-nav">
     <% @summaries.each_with_index do |description, index| %>
-    <li class="<%= summary.to_i == index ? 'selected' : '' %>"><%= link_to "<em>#{description}</em>", study_workflow_path(@study,@workflow, {:summary => index}), :class => (summary.to_i == index ? 'selected' : '') %></li>
+    <% selected = summary.to_i == index ? 'selected' : '' %>
+    <%= content_tag(:li, :class=>selected) do %>
+      <%= link_to content_tag(:em) { description }, study_workflow_path(@study,@workflow, {:summary => index}), :class => (summary.to_i == index ? 'selected' : '') %>
+      <% end %>
     <% end %>
   </ul>
   <div class="yui-content">

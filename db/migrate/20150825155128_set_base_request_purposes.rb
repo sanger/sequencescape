@@ -3,6 +3,10 @@
 #Copyright (C) 2015 Genome Research Ltd.
 class SetBaseRequestPurposes < ActiveRecord::Migration
 
+  class RequestType < ActiveRecord::Base
+    self.table_name = 'request_types'
+  end
+
   def self.qc_type?(rt)
     ['qc_miseq_sequencing'].include?(rt.key)
   end
@@ -17,7 +21,7 @@ class SetBaseRequestPurposes < ActiveRecord::Migration
   end
 
   def self.internal?(rt)
-    rc = rt.request_class
+    rc = rt.request_class_name.constantize
     return false if rc <= CherrypickForPulldownRequest
     return true if rc <= TransferRequest
     return true if rc <= CreateAssetRequest
@@ -34,7 +38,7 @@ class SetBaseRequestPurposes < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
       RequestType.find_each do |rt|
-        rt.request_purpose = purpose_for(rt)
+        rt.request_purpose_id = purpose_for(rt).id
         rt.save!
       end
     end
@@ -43,7 +47,7 @@ class SetBaseRequestPurposes < ActiveRecord::Migration
   def self.down
     ActiveRecord::Base.transaction do
       RequestType.find_each do |rt|
-        rt.request_purpose = nil
+        rt.request_purpose_id = nil
         rt.save!
       end
     end

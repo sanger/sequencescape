@@ -11,7 +11,7 @@ class TagLayout < ActiveRecord::Base
   include Uuid::Uuidable
   include ModelExtensions::TagLayout
 
-  self.inheritance_column = "sti_type"
+  set_inheritance_column "sti_type"
 
   # The user performing the layout
   belongs_to :user
@@ -37,7 +37,9 @@ class TagLayout < ActiveRecord::Base
   set_target_for_owner(:plate)
 
   # After loading the record from the database, inject the behaviour.
-  def after_initialize
+  after_initialize :import_behaviour
+
+  def import_behaviour
     extend(direction_algorithm.constantize) unless direction_algorithm.blank?
     extend(walking_algorithm.constantize)   unless walking_algorithm.blank?
   end
@@ -49,7 +51,7 @@ class TagLayout < ActiveRecord::Base
       'inverse column' => 'TagLayout::InInverseColumns',
       'inverse row'    => 'TagLayout::InInverseRows'
     }[new_direction]
-    errors.add_to_base("#{new_direction} is not a valid direction")if self.direction_algorithm.nil?
+    errors.add(:base,"#{new_direction} is not a valid direction")if self.direction_algorithm.nil?
     raise(ActiveRecord::RecordInvalid, self) if self.direction_algorithm.nil?
     extend(direction_algorithm.constantize)
   end
@@ -61,7 +63,7 @@ class TagLayout < ActiveRecord::Base
       'manual by pool'  => 'TagLayout::WalkManualWellsByPools',
       'manual by plate' => 'TagLayout::WalkManualWellsOfPlate'
     }[walk]
-    errors.add_to_base("#{walk} is not a recognised walking method") if self.walking_algorithm.nil?
+    errors.add(:base,"#{walk} is not a recognised walking method") if self.walking_algorithm.nil?
     raise(ActiveRecord::RecordInvalid, self) if self.walking_algorithm.nil?
     extend(walking_algorithm.constantize)
   end
@@ -91,7 +93,7 @@ class TagLayout < ActiveRecord::Base
     plate.wells.walk_in_pools do |pool_id, wells|
       pool_to_tag[pool_id] = wells.map { |well| well.aliquots.map(&:tag).uniq }.flatten
     end
-    errors.add_to_base('duplicate tags within a pool') if pool_to_tag.any? { |_,t| t.uniq.size > 1 }
+    errors.add(:base,'duplicate tags within a pool') if pool_to_tag.any? { |_,t| t.uniq.size > 1 }
   end
   private :layout_tags_into_wells
 

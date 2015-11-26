@@ -20,17 +20,27 @@ class EventsControllerTest < ActionController::TestCase
 
     context "#create" do
       context "HTML" do
+        # This test has been imported from the rails 2 days.
+        # Oddly we still seemed to return XML content so
+        # I have no idea what was going  on here. Give the
+        # test below, it was probably just a mistake.
         setup do
           @controller.stubs(:login_required).returns(true)
           put :create, :event => {:key => 'blah'}
         end
-        should_respond_with :success
+        should respond_with :success
       end
+
+      # Prior to the rails 3 upgrade, the xml test actually expected
+      # a not_acceptable response. This seemed weird, and only passed
+      # as the rails2 tests don't handle formats provided as symbols
+      # correctly. This tests we preserve the actual behaviour, which
+      # also feels like the RIGHT behaviour.
       context "XML" do
         setup do
-          get :create, :format => :xml
+          get :create, :format => :xml, :event => {:key => 'blah'}
         end
-        should_respond_with :not_acceptable
+        should respond_with :success
       end
     end
   end

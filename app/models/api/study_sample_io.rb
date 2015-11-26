@@ -13,7 +13,7 @@ class Api::StudySampleIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        named_scope :including_associations_for_json, { :include => [:uuid_object, {:study => :uuid_object }, {:sample => :uuid_object } ] }
+        scope :including_associations_for_json, -> { includes([:uuid_object, {:study => :uuid_object }, {:sample => :uuid_object } ]) }
       end
     end
   end

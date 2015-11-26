@@ -11,7 +11,7 @@ Feature: Creating studies
     Then I should see "No user group specified for a managed study."
     When I fill in "Data access group" with "group1"
     And I press "Update"
-    Then should see "Manage study: Bad study"
+    Then should see "MANAGE STUDY Bad study"
     And I should see "Your study has been updated"
     And I should not see "No user group specified for a managed study."
 

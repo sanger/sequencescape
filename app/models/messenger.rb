@@ -20,7 +20,7 @@ class Messenger < ActiveRecord::Base
 
   def as_json(options = {})
     { root => render_class.to_hash(target),
-      'lims' => configatron.amqp.retrieve(:lims_id) }
+      'lims' => configatron.amqp.lims_id! }
   end
 
   def resend

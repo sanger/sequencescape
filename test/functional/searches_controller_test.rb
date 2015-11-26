@@ -18,16 +18,16 @@ class SearchesControllerTest < ActionController::TestCase
 
     context "searching (when logged in)" do
       setup do
-        @user = Factory :user
+        @user =FactoryGirl.create :user
         @controller.stubs(:logged_in?).returns(@user)
         @controller.stubs(:current_user).returns(@user)
 
-        @study                    = Factory :study, :name => "FindMeStudy"
-        @study2                   = Factory :study, :name => "Another study"
-        @sample                   = Factory :sample, :name => "FindMeSample"
-        @asset                    = Factory(:sample_tube, :name => 'FindMeAsset')
-        @asset_group_to_find      = Factory :asset_group, :name => "FindMeAssetGroup", :study => @study
-        @asset_group_to_not_find  = Factory :asset_group, :name => "IgnoreAssetGroup"
+        @study                    =FactoryGirl.create :study, :name => "FindMeStudy"
+        @study2                   =FactoryGirl.create :study, :name => "Another study"
+        @sample                   =FactoryGirl.create :sample, :name => "FindMeSample"
+        @asset                    =FactoryGirl.create(:sample_tube, :name => 'FindMeAsset')
+        @asset_group_to_find      =FactoryGirl.create :asset_group, :name => "FindMeAssetGroup", :study => @study
+        @asset_group_to_not_find  =FactoryGirl.create :asset_group, :name => "IgnoreAssetGroup"
 
       end
       context "#index" do
@@ -37,7 +37,7 @@ class SearchesControllerTest < ActionController::TestCase
             get :index, :q => "FindMe"
           end
 
-          should_respond_with :success
+          should respond_with :success
 
           context "results" do
             define_method(:assert_link_to) do |url|

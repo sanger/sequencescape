@@ -9,7 +9,9 @@ class EventsController < ApplicationController
 
   def create
     # Compatible with NPG
+
     params[:event].delete(:key)
+
     @event = Event.create(params[:event])
 
     unless @event.eventful.nil?
@@ -17,8 +19,11 @@ class EventsController < ApplicationController
     end
 
     respond_to do |format|
+      # I know this looks crazy, but it appears to be explicitly tested for
+      # Unfortunately there is no comment as to why.
+      format.html { render :xml => @event.to_xml }
       format.xml  { render :xml => @event.to_xml }
-      format.json  { render :json => @event.to_json }
+      format.json { render :json => @event.to_json }
     end
   end
 

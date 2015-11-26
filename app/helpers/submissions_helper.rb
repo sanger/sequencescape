@@ -9,17 +9,20 @@ module SubmissionsHelper
     projects_array.inspect
   end
 
+  #<label for="submission_order_params_field_info_key">field_info.display_name/label>
   def order_input_label(field_info)
-    label("submission[order_params][#{field_info.key}]", field_info.display_name)
+    label('submission[order_params]',field_info.key, field_info.display_name,:class=>'control-label col-sm-6')
   end
 
   # Returns a either a text input or a selection tag based on the 'kind'
   # of the order parameter passed in.
   # field_info is expected to be FieldInfo [sic]
   def order_input_tag(order, field_info)
-    case field_info.kind
-    when "Selection" then order_selection_tag(order, field_info)
-    when "Text"      then order_text_tag(order, field_info)
+    content_tag(:div,:class=>'col-sm-6') do
+      case field_info.kind
+      when "Selection" then order_selection_tag(order, field_info)
+      when "Text"      then order_text_tag(order, field_info)
+      end
     end
   end
 
@@ -30,7 +33,8 @@ module SubmissionsHelper
         field_info.selection.map(&:to_s),
         order.request_options.try(:[], field_info.key)
       ),
-      :class => "required",
+      :class => "required form-control",
+      :required => true,
       :disabled => (field_info.selection.size == 1)
     )
   end
@@ -40,7 +44,8 @@ module SubmissionsHelper
     text_field_tag(
       "submission[order_params][#{field_info.key}]",
       order.request_options.try(:[], field_info.key) || field_info.default_value,
-      :class => "required"
+      :class => "required form-control",
+      :required => true
     )
   end
   private :order_text_tag
@@ -91,11 +96,11 @@ module SubmissionsHelper
     when 'processing' then
       display_user_guide("Your submission is currently being processed.  This should take no longer than five minutes.")
     when 'failed' then
-      display_user_error("<h2>Your submission has failed:</h2><p> #{h((submission.message||'No failure reason recorded').lines.first)} </p>")
+      display_user_error(raw("<h2>Your submission has failed:</h2><p> #{h((submission.message||'No failure reason recorded').lines.first)} </p>"))
     when 'ready'
-      content_tag(:p, 'Your submission has been <strong>processed</strong>.')
+      content_tag(:p, raw('Your submission has been <strong>processed</strong>.'))
     when 'cancelled'
-      content_tag(:p, 'Your submission has been <strong>cancelled</strong>.')
+      content_tag(:p, raw('Your submission has been <strong>cancelled</strong>.'))
     else
       content_tag(:p, 'Your submission is in an unknown state (contact support).')
     end

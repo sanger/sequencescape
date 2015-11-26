@@ -5,7 +5,7 @@
   <div id="" class="yui-navset">
     <ul class="yui-nav">
       <% ["Pending", "In progress", "Completed (unreleased)", "Released", "Failed", "Last 5"].each_with_index do |type, index|-%>
-      <li><%= horizontal_tab "<em>#{type}</em>", "#{index}", "#{index}_definition", 0, index == 0 ? true : false %></li>
+      <li><%= horizontal_tab("<em>#{type}</em>", "#{index}", "#{index}_definition", 0, index == 0 ? true : false) %></li>
       <% end -%>
     </ul>
     <div id="" class="yui-content">

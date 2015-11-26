@@ -1,6 +1,7 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
+
 class AssetsController < ApplicationController
   include BarcodePrintersController::Print
    before_filter :discover_asset, :only => [:show, :edit, :update, :destory, :summary, :close, :print_assets, :print, :show_plate, :history, :holded_assets, :complete_move_to_2D]
@@ -10,7 +11,7 @@ class AssetsController < ApplicationController
     @assets_with_requests = []
     if params[:study_id]
       @study = Study.find(params[:study_id])
-      @assets = @study.assets_through_aliquots.all(:order => 'name ASC').paginate(:page => params[:page])
+      @assets = @study.assets_through_aliquots.order('name ASC').paginate(:page => params[:page])
     end
 
     respond_to do |format|
@@ -79,9 +80,10 @@ class AssetsController < ApplicationController
       # Find the parent asset up front
       parent, parent_param = nil, first_param(:parent_asset)
       if parent_param.present?
-        parent = Asset.find_by_id(parent_param) || Asset.find_from_machine_barcode(parent_param) || Asset.find_by_name(parent_param)
+        parent = Asset.find_from_machine_barcode(parent_param) || Asset.find_by_name(parent_param) || Asset.find_by_id(parent_param)
         raise StandardError, "Cannot find the parent asset #{parent_param.inspect}" if parent.nil?
       end
+
       # Find the tag up front
       tag, tag_param = nil, first_param(:tag)
       if tag_param.present?
@@ -99,11 +101,11 @@ class AssetsController < ApplicationController
           asset = asset_class.new(params[:asset]) do |asset|
             asset.name += " ##{n}" if count !=1
           end
-
           # from asset
           if parent.present?
             parent_volume, parent_used = params[:parent_volume], parent
             if parent_volume.present? and parent_volume.first.present?
+
               extract = parent_used.transfer(parent_volume.first)
 
               if asset.volume
@@ -118,9 +120,8 @@ class AssetsController < ApplicationController
                 asset, parent_used = extract, nil
               end
             end
-
             # We must copy the aliquots of the 'extract' to the asset, otherwise the asset remains empty.
-            asset.aliquots = parent_used.aliquots.map(&:clone) unless parent_used.nil?
+            asset.aliquots = parent_used.aliquots.map(&:dup) unless parent_used.nil?
             asset.add_parent(parent_used)
           else
             # All new assets are assumed to have a phiX sample in them as that's the only asset that
@@ -130,11 +131,9 @@ class AssetsController < ApplicationController
             aliquot_attributes[:library] = asset if asset.is_a?(LibraryTube) or asset.is_a?(SpikedBuffer)
             asset.aliquots.create!(aliquot_attributes)
           end
-
           tag.tag!(asset) if tag.present?
           asset.update_attributes!(:barcode => AssetBarcode.new_barcode) if asset.barcode.nil?
           asset.comments.create!(:user => current_user, :description => "asset has been created by #{current_user.login}")
-
           asset
         end
       end # transaction

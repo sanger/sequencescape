@@ -23,6 +23,7 @@ module Qcable::Statemachine
 
       ## State machine
       aasm_column :state
+
       aasm_state :created
       aasm_state :pending,        :enter => :on_stamp
       aasm_state :failed,         :enter => :on_failed
@@ -33,10 +34,6 @@ module Qcable::Statemachine
       aasm_state :exhausted,      :enter => :on_used
 
       aasm_initial_state Proc.new {|qcable| qcable.default_state }
-
-      aasm_event :hold do
-        transitions :to => :hold, :from => [ :pending ]
-      end
 
       # State Machine events
       aasm_event :do_stamp do
@@ -68,10 +65,10 @@ module Qcable::Statemachine
       end
 
       # new version of combinable named_scope
-      named_scope :for_state, lambda { |state| { :conditions => { :state => state } } }
+     scope :for_state, ->(state) { { :conditions => { :state => state } } }
 
-      named_scope :available, :conditions => {:state => :available}
-      named_scope :unavailable, :conditions => {:state => [:created,:pending,:failed,:passed,:destroyed,:qc_in_progress,:exhausted]}
+     scope :available,   -> { where(:state => :available) }
+     scope :unavailable, -> { where(:state => [:created,:pending,:failed,:passed,:destroyed,:qc_in_progress,:exhausted]) }
 
     end
   end

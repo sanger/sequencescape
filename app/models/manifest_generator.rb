@@ -14,7 +14,7 @@ class ManifestGenerator
   end
 
   def self.generate_manifest_for_plate_ids(plate_ids,study)
-    csv_string = FasterCSV.generate(:row_sep => "\n", :quote_char => "#{QUOTE_CHAR}") do |csv|
+    csv_string = CSV.generate(:row_sep => "\n", :quote_char => "#{QUOTE_CHAR}") do |csv|
       create_header(csv,study)
       row = 1
       plate_ids.each do |plate_id|

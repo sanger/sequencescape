@@ -7,10 +7,10 @@ class AssetRackTest < ActiveSupport::TestCase
 
   context "Rack priority" do
     setup do
-      @rack = Factory :full_asset_rack
-      user = Factory(:user)
+      @rack = create :full_asset_rack
+      user = create(:user)
       @rack.wells[0...3].each_with_index do |well,index|
-        Factory :request, :target_asset=>well, :submission=>Submission.create!(:priority => (index%2)+1, :user => user)
+        create :request, :target_asset=>well, :submission=>Submission.create!(:priority => (index%2)+1, :user => user)
       end
     end
 
@@ -21,7 +21,7 @@ class AssetRackTest < ActiveSupport::TestCase
 
   context "Rack wells" do
     setup do
-      @rack = Factory :fuller_asset_rack
+      @rack = create :fuller_asset_rack
     end
 
     should "find the right well" do
@@ -42,7 +42,7 @@ class AssetRackTest < ActiveSupport::TestCase
   context "#create" do
     setup do
       PlateBarcode.stubs(:create).returns(OpenStruct.new(:barcode =>1))
-      @purpose = Factory :asset_rack_purpose
+      @purpose = create :asset_rack_purpose
       @rack =  @purpose.create!
     end
 
@@ -57,7 +57,7 @@ class AssetRackTest < ActiveSupport::TestCase
 
   context "A Rack" do
     setup do
-      @rack = Factory :asset_rack
+      @rack = create :asset_rack
     end
 
     context "without attachments" do

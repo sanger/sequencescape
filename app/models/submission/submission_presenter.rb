@@ -2,7 +2,7 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.
 class Submission::SubmissionPresenter < Submission::PresenterSkeleton
-  write_inheritable_attribute :attributes, [ :id ]
+  self.attributes = [ :id ]
 
   def submission
     @submission ||= Submission.find(id)

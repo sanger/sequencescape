@@ -3,7 +3,7 @@
 #Copyright (C) 2007-2011 Genome Research Ltd.
 class Implement < ActiveRecord::Base
   validates_presence_of :name
-  validates_presence_of :barcode, :on => :update
+  validates :barcode, :presence => true, :on => :update
   @@barcode_prefix = "LE"
 
   def generate_barcode

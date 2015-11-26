@@ -5,25 +5,26 @@ require "test_helper"
 
 class CommentTest < ActiveSupport::TestCase
   context "A comment" do
-    should_belong_to :commentable, :user
-    should_have_many :comments
+    should belong_to :commentable
+    should belong_to :user
+    should have_many :comments
   end
 
   context "while adding comments to requests" do
     setup do
-      @study =  Factory :study
-      @project =  Factory :project
+      @study =  create :study
+      @project =  create :project
 
-      @asset = Factory :empty_sample_tube
-      @asset.aliquots.create!(:sample => Factory(:sample, :studies => [@study]))
+      @asset = create :empty_sample_tube
+      @asset.aliquots.create!(:sample => create(:sample, :studies => [@study]))
 
-      @asset2 = Factory :empty_sample_tube
-      @asset2.aliquots.create!(:sample => Factory(:sample, :studies => [@study]))
+      @asset2 = create :empty_sample_tube
+      @asset2.aliquots.create!(:sample => create(:sample, :studies => [@study]))
 
-      @order1 = Factory :order_with_submission, :study => @study, :assets => [@asset], :project => @project
-      @order2 = Factory :order,  :study => @study, :assets => [@asset], :project => @project
-      @order3 = Factory :order,  :study => @study, :assets => [@asset2], :project => @project
-      @order4 = Factory :order_with_submission,  :study => @study, :assets => [@asset2], :project => @project
+      @order1 = create :order_with_submission, :study => @study, :assets => [@asset], :project => @project
+      @order2 = create :order,  :study => @study, :assets => [@asset], :project => @project
+      @order3 = create :order,  :study => @study, :assets => [@asset2], :project => @project
+      @order4 = create :order_with_submission,  :study => @study, :assets => [@asset2], :project => @project
 
       @submission = @order1.submission
       @submission.orders.push(@order2)
@@ -31,12 +32,12 @@ class CommentTest < ActiveSupport::TestCase
 
       @submission2 = @order4.submission
 
-      @sequencing_request = Factory :request_with_sequencing_request_type, :submission => @submission
-      @request = Factory :request, :order => @order1, :asset => @asset, :submission => @submission
-      @request2 = Factory :request, :order => @order2, :submission => @submission
+      @sequencing_request = create :request_with_sequencing_request_type, :submission => @submission
+      @request = create :request, :order => @order1, :asset => @asset, :submission => @submission
+      @request2 = create :request, :order => @order2, :submission => @submission
 
-      @request3 = Factory :request, :order => @order4, :submission => @order4.submission
-      @sequencing_request2 = Factory :request_with_sequencing_request_type, :submission => @order4.submission
+      @request3 = create :request, :order => @order4, :submission => @order4.submission
+      @sequencing_request2 = create :request_with_sequencing_request_type, :submission => @order4.submission
     end
     context "from an order" do
       setup do

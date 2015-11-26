@@ -36,7 +36,7 @@ class Cherrypick::Strategy
     # Orders the plexes by the optimum fitting
     class BestFit
       def call(plexes, current_plate)
-        comparator = lambda { |l,r| r.size <=> l.size }
+        comparator = ->(l,r) { r.size <=> l.size }
         comparator = lambda do |left, right|
           left_fill, right_fill = current_plate.space_after_adding(left), current_plate.space_after_adding(right)
           sorted_fill =  left_fill <=> right_fill
@@ -150,10 +150,6 @@ class Cherrypick::Strategy
     class << empty
       def barcode
         nil
-      end
-
-      def representation
-        [0, 'Empty', '']
       end
 
       # This well really isn't present!

@@ -6,7 +6,7 @@ require "test_helper"
 class StockSampleTubeTest < ActiveSupport::TestCase
   context "A stock sample tube" do
     setup do
-      @stock_sample = Factory :stock_sample_tube
+      @stock_sample = create :stock_sample_tube
     end
 
     context "#has_stock_asset?" do

@@ -8,7 +8,7 @@ class BaitLibraryType < ActiveRecord::Base
   validates_presence_of :name
   validates_uniqueness_of :name
 
-  named_scope :visible, :conditions => { :visible => true }
+  scope :visible, -> { where(:visible => true) }
 
   def hide
     self.visible = false

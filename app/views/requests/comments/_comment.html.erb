@@ -9,15 +9,15 @@
     <% unless comment.user.nil? %>
       Added by <%= comment.user.login %> <%= comment.created_at.to_formatted_s(:short)%> &nbsp;
       <% if (current_user.id == comment.user.id) || current_user.administrator? %>
-        <%= link_to_remote image_tag("delete.png", :alt => "Delete", :title => "Delete"), :update => "request_annotations_#{commentable.id}",
-            :url => { :action => "destroy", :id => comment.id }, :method => :delete %>
+        <%= link_to image_tag("delete.png", :alt => "Delete", :title => "Delete"), :update => "request_annotations_#{commentable.id}",
+            :url => { :action => "destroy", :id => comment.id }, :method => :delete, :remote => true  %>
       <% end %>
 
     <% else %>
       Added on <%= comment.created_at.to_formatted_s(:short)%> &nbsp;
       <% if current_user.administrator? %>
-        <%= link_to_remote image_tag("delete.png", :alt => "Delete", :title => "Delete"), :update => "request_annotations_#{commentable.id}",
-            :url => { :action => "destroy", :id => comment.id }, :method => :delete %>
+        <%= link_to image_tag("delete.png", :alt => "Delete", :title => "Delete"), :update => "request_annotations_#{commentable.id}",
+            :url => { :action => "destroy", :id => comment.id }, :method => :delete, :remote => true  %>
       <% end %>
     <% end %>
 

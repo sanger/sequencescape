@@ -2,6 +2,11 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2015 Genome Research Ltd.
 class AddExternalMultiplexedLibraryCreationRequest < ActiveRecord::Migration
+
+  class RequestType < ActiveRecord::Base
+    self.table_name = 'request_types'
+  end
+
   def self.up
     ActiveRecord::Base.transaction do
       RequestType.create!(

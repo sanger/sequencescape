@@ -1,0 +1,13 @@
+/* This file contains the styling for shared components
+ * Please ensure you keep it commented
+ */
+
+/* A Summary table presents simple key-value pairs */
+.table-summary th { text-align: right;}
+.table-summary th:after {
+  content: ":";
+}
+table.sortable { table-layout:fixed; }
+
+/* main-row encomasses the bulk of the application */
+.main-row { margin-bottom:10px; }

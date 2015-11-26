@@ -1,44 +1,5 @@
-#!/bin/bash -l
-function delayed_job_start() {
-  if [ ! -f tmp/pids/delayed_job.${1}.stop ]
-  then
-    touch tmp/pids/delayed_job.${1}.stop
-    ./script/runner 'Delayed::Worker.new.start' & > /dev/null
-    echo $! > tmp/pids/delayed_job.${1}.pid
-    wait $!
-    echo "Delayed::Worker died"
-    if [ -f tmp/pids/delayed_job.${1}.stop ]; then rm tmp/pids/delayed_job.${1}.stop; fi
-  else
-    echo "Worker already running with pid:"
-    echo `cat tmp/pids/delayed_job.${1}.pid`
-  fi
-}
+#!/usr/bin/env ruby
 
-function check_stopped() {
-  if [ -f tmp/pids/delayed_job.${1}.pid ] && ps -p `cat tmp/pids/delayed_job.${1}.pid` >> /dev/null ; then
-    echo '.'
-  else
-    echo 'Delayed Job stopped'
-    if [ -f tmp/pids/delayed_job.${1}.stop ]; then rm tmp/pids/delayed_job.${1}.stop; fi
-    exit 0
-  fi
-}
-
-function delayed_job_stop() {
-  kill `cat tmp/pids/delayed_job.${1}.pid`
-  echo 'Waiting for process to die'
-  for ((i = 0; i < 60; i = i + 1)); do
-    check_stopped ${1}
-    sleep 1
-  done
-  echo 'Delayed Job failed to die, killing it...'
-  kill -9 `cat tmp/pids/delayed_job.${1}.pid`
-  if [ -f tmp/pids/delayed_job.${1}.stop ]; then rm tmp/pids/delayed_job.${1}.stop; fi
-}
-
-function delayed_job_restart() {
-  delayed_job_stop
-  delayed_job_start
-}
-
-delayed_job_${3} $2
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'config', 'environment'))
+require 'delayed/command'
+Delayed::Command.new(ARGV).daemonize

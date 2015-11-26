@@ -4,9 +4,9 @@
 Given /^study "([^\"]+)" has an asset group called "([^\"]+)" with (\d+) wells$/ do |study_name, group_name, count|
   study = Study.find_by_name(study_name) or raise StandardError, "Cannot find the study #{study_name.inspect}"
 
-  plate = Factory(:plate)
+  plate = FactoryGirl.create(:plate)
   study.asset_groups.create!(:name => group_name).tap do |asset_group|
-    asset_group.assets << (1..count.to_i).map { |index| Factory(:well, :plate => plate, :map => Map.map_96wells[index-1] ) }
+    asset_group.assets << (1..count.to_i).map { |index| FactoryGirl.create(:well, :plate => plate, :map => Map.map_96wells[index-1] ) }
   end
 end
 
@@ -46,7 +46,7 @@ Then /^the inbox should contain (\d+) requests?$/ do |count|
     if page.respond_to? :should
       page.should have_xpath('//td[contains(@class, "request")]', :count => count.to_i)
     else
-      assert page.has_xpath?('//td[contains(@class, "request")]', :count => count.to_i)
+      assert page.has_xpath?('//td[contains(@class, "request")]', :count => count.to_i), "Page missing xpath"
     end
   end
 end
@@ -60,18 +60,25 @@ Then /^the batch input asset table should have 1 row with (\d+) wells$/ do |coun
 end
 
 Given /^the plate template "([^\"]+)" exists$/ do |name|
-  Factory(:plate_template, :name => name)
+  FactoryGirl.create(:plate_template, :name => name)
 end
 
 # This is a complete hack to get this to work: it knows where the wells are and goes to get them.  It knows
 # where the empty cells are and it goes and gets them too.
 When /^I drag (\d+) wells to the scratch pad$/ do |count|
-  (1..count.to_i).each do |index|
-    sleep(8)        # Apparently we're just too damn fast at some things
-    src_well = find("#plate_1 tr:nth-child(#{index}) td[class*='colour']") or raise StandardError, "Could not find the #{index} well in the plate"
-    dest_pad = find("#scratch_pad tr:first-child td:first-child")          or raise StandardError, "Could not find the #{index} scratch pad cell"
+  # The new style moves the scratch pad outside the viewport, we enlarge the viewport for this test
+  page.driver.resize(1440, 2000)
+  dest_pad = find("#scratch_pad tr:first-child td:first-child") or raise StandardError, "Could not find scratch pad"
 
+  (1..count.to_i).each do |index|
+    src_well = first("#plate_1 td.colour0") or raise StandardError, "Could not find the #{index} well in the plate"
+    src_id = src_well[:id]
     src_well.drag_to(dest_pad)
+
+    # Ugh. While find is supposed to wait for an element, it doesn't appear to
+    # We still need to sleep.
+    sleep(1)
+    find("#scratch_pad ##{src_id}")
   end
 end
 
@@ -83,30 +90,32 @@ def build_batch_for(name, count, &block)
   pipeline           = Pipeline.find_by_name(name) or raise StandardError, "Cannot find pipeline #{name.inspect}"
   submission_details = yield(pipeline)
 
-  user = Factory(:user)
+  user = FactoryGirl.create(:user)
 
   assets = (1..count.to_i).map do |_|
     asset_attributes = { }
     if submission_details.key?(:holder_type)
-      asset_attributes[:container] = Factory(submission_details[:holder_type], :location_id => pipeline.location_id)
-      asset_attributes[:map_id] = Map.find(1)
+      asset_attributes[:container] = FactoryGirl.create(submission_details[:holder_type], :location_id => pipeline.location_id)
+      asset_attributes[:map_id] = 1
     else
       asset_attributes[:location_id] = pipeline.location_id
     end
-    Factory(submission_details[:asset_type], asset_attributes)
+    FactoryGirl.create(submission_details[:asset_type], asset_attributes)
   end
 
+  wf = pipeline.request_types.last.workflow
+  rts = pipeline.request_types.reject(&:deprecated?).map(&:id)
   # Build a submission that should end up in the appropriate inbox, once all of the assets have been
   # deemed as scanned into the lab!
   LinearSubmission.build!(
-    :study    => Factory(:study),
-    :project  => Factory(:project),
-    :workflow => pipeline.request_types.last.workflow,
+    :study    => FactoryGirl.create(:study),
+    :project  => FactoryGirl.create(:project),
+    :workflow => wf,
     :user     => user,
 
     # Setup the assets so that they have samples and they are scanned into the correct lab.
     :assets        => assets,
-    :request_types => [pipeline.request_type_ids.detect {|id| !RequestType.find(id).deprecated }],
+    :request_types => rts,
 
     # Request parameter options
     :request_options => submission_details[:request_options]

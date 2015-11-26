@@ -34,8 +34,8 @@
     </tr>
   </thead>
   <tbody id="item_list">
-    <% requests.each do |request| -%>
-      <tr id="request_<%= request.id %>" class="<%= cycle("rowodd", "roweven") %>">
+    <% requests.each_with_index do |request,index| -%>
+      <tr id="request_<%= request.id %>" class="<%= cycle("rowodd", "roweven") %> row<%= index %>">
         <% if edit -%>
           <td width="3%" class="center" style="cursor:move;"><%= image_tag "arrow_out.png", :size =>"13x13" %></td>
         <% end -%>

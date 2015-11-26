@@ -3,7 +3,7 @@
 #Copyright (C) 2011 Genome Research Ltd.
 class MakePulldownStockPlateDefaultToPassed < ActiveRecord::Migration
   class PlatePurpose < ActiveRecord::Base
-    set_table_name('plate_purposes')
+    self.table_name =('plate_purposes')
   end
 
   def self.up

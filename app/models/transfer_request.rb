@@ -8,7 +8,7 @@ class TransferRequest < Request
   module InitialTransfer
     def perform_transfer_of_contents
       target_asset.aliquots << asset.aliquots.map do |a|
-        aliquot = a.clone
+        aliquot = a.dup
         aliquot.study_id = outer_request.initial_study_id
         aliquot.project_id = outer_request.initial_project_id
         aliquot
@@ -76,7 +76,7 @@ class TransferRequest < Request
   after_create(:perform_transfer_of_contents)
 
   def perform_transfer_of_contents
-    target_asset.aliquots << asset.aliquots.map(&:clone) unless asset.failed? or asset.cancelled?
+    target_asset.aliquots << asset.aliquots.map(&:dup) unless asset.failed? or asset.cancelled?
   end
   private :perform_transfer_of_contents
 

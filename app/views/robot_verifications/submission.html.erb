@@ -2,7 +2,7 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.%>
 <% add :menu, "Sample Logistics homepage" => lab_sample_logistics_path %>
-<% form_for :robot_verifications, :url => {:action => "download"} do |f| %>
+<%= form_for :robot_verifications, :url => {:action => "download"} do |f| %>
 <h2>Step 2 of 3: Scan robot beds and plates</h2>
 
 <table class="bed_verification" id="source_beds">

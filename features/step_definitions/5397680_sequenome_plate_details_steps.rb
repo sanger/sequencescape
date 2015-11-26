@@ -36,7 +36,7 @@ Given /^there is a (\d+) well "([^"]*)" plate with a barcode of "([^"]*)"$/ do |
     :barcode       => Barcode.number_to_human("#{plate_barcode}"),
     :plate_purpose => PlatePurpose.find_by_name(plate_purpose_name)
   )
-  sample = Factory :sample, :name => "#{plate_barcode}_x"
+  sample = FactoryGirl.create :sample, :name => "#{plate_barcode}_x"
 
   1.upto(number_of_wells.to_i) do |i|
     new_plate.wells.create!(:map_id => i).aliquots.create!(:sample => sample)

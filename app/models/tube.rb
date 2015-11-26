@@ -26,13 +26,16 @@ class Tube < Aliquot::Receptacle
     'tube'
   end
 
-  has_one :submission, :through => :requests_as_target
+  has_many :submissions, :through => :requests_as_target, :uniq =>true
+  scope :include_scanned_into_lab_event, -> { includes(:scanned_into_lab_event) }
 
-  named_scope :include_scanned_into_lab_event, :include => :scanned_into_lab_event
-
-  named_scope :with_purpose, lambda { |*purposes|
+ scope :with_purpose, ->(*purposes) {
     { :conditions => { :plate_purpose_id => purposes.flatten.map(&:id) } }
   }
+
+  def submission
+    submissions.first
+  end
 
   def ancestor_of_purpose(ancestor_purpose_id)
     return self if self.plate_purpose_id == ancestor_purpose_id

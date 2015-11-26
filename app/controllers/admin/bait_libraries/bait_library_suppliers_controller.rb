@@ -17,7 +17,7 @@ class Admin::BaitLibraries::BaitLibrarySuppliersController < ApplicationControll
     respond_to do |format|
       if @bait_library_supplier.save
         flash[:notice] = 'Supplier was successfully created.'
-        format.html { redirect_to(bait_libraries_path) }
+        format.html { redirect_to(admin_bait_libraries_path) }
       else
         format.html { render :action => "new" }
       end
@@ -28,7 +28,7 @@ class Admin::BaitLibraries::BaitLibrarySuppliersController < ApplicationControll
     respond_to do |format|
       if @bait_library_supplier.update_attributes(params[:bait_library_supplier])
         flash[:notice] = 'Supplier was successfully updated.'
-        format.html { redirect_to(bait_libraries_path) }
+        format.html { redirect_to(admin_bait_libraries_path) }
       else
         format.html { render :action => "edit" }
       end
@@ -39,14 +39,14 @@ class Admin::BaitLibraries::BaitLibrarySuppliersController < ApplicationControll
     if @bait_library_supplier.bait_libraries.visible.count > 0
       respond_to do |format|
         flash[:error] = "Can not delete '#{@bait_library_supplier.name}', supplier is in use by #{@bait_library_supplier.bait_libraries.visible.count} libraries.<br/>"
-        format.html { redirect_to(bait_libraries_path) }
+        format.html { redirect_to(admin_bait_libraries_path) }
       end
     else
       respond_to do |format|
         if @bait_library_supplier.hide
           flash[:notice] = 'Supplier was successfully deleted.'
         end
-        format.html { redirect_to(bait_libraries_path) }
+        format.html { redirect_to(admin_bait_libraries_path) }
       end
     end
   end

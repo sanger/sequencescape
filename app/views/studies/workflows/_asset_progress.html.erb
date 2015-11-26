@@ -27,7 +27,11 @@
         <tr class="<%= label_asset_state(asset) %>">
           <td><%= link_to(h(asset.display_name), asset_path(asset), :title => asset.label.capitalize) %></td>
           <td><%= asset.label %></td>
-          <td><% if asset.is_a?(Aliquot::Receptacle) %><%= asset.aliquots.map { |a| link_to(a.sample.name, a.sample) }.join(', ') %><% end %></td>
+          <td><% if asset.is_a?(Aliquot::Receptacle) %>
+            <% asset.aliquots.each do |a| %>
+              <%= link_to(a.sample.name, a.sample) %>;
+            <% end %>
+          <% end %>
           <td><%= asset.closed? ? 'Yes' : 'No' %></td>
 
           <% @request_types.each do |request_type| %>

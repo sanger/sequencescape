@@ -12,10 +12,11 @@ require 'rexml/text'
 # Rails 3, and we need some of those above-and-beyond just validation.  If required, the after_create
 # callback could be removed to keep track of sample registrations.
 #++
-require 'rexml/text'
 class SampleRegistrar < ActiveRecord::Base
-  def initialize(attributes = {})
-    super({ :sample_attributes => {}, :sample_tube_attributes => {} }.merge(attributes.symbolize_keys))
+
+  # UPGRADE TODO: This hack is horrible! Find out what its doing and fix it!
+  def initialize(attributes = {},what = {})
+    super({ :sample_attributes => {}, :sample_tube_attributes => {} }.merge(attributes.symbolize_keys),what)
   end
 
   # Raised if the call to SampleRegistrar.register! fails for any reason, and so that calling code
@@ -105,9 +106,11 @@ class SampleRegistrar < ActiveRecord::Base
   validates_each(:asset_group_name, :if => :new_record?) do |record, attr, value|
     record.errors.add(:asset_group, "#{value} already exists, please enter another name") if record.asset_group_helper.existing_asset_group?(value)
   end
+
   before_create do |record|
-    record.asset_group = create_asset_group_by_name(record.asset_group_name, record.study)
+    record.asset_group = SampleRegistrar.create_asset_group_by_name(record.asset_group_name, record.study)
   end
+
   after_create do |record|
     record.asset_group.assets.concat(record.sample_tube) unless record.asset_group.blank?
   end
@@ -143,7 +146,7 @@ class SampleRegistrar < ActiveRecord::Base
   REQUIRED_COLUMNS_SENTENCE = REQUIRED_COLUMNS.map { |w| "'#{w}'" }.to_sentence(:two_words_connector => ' or ', :last_word_connector => ', or ')
 
   def self.from_spreadsheet(file, study, user)
-    workbook = Spreadsheet.open(file) or raise SpreadsheetError, 'Problems processing your file. Only Excel spreadsheets accepted'
+    workbook = Spreadsheet.open(file.path) or raise SpreadsheetError, 'Problems processing your file. Only Excel spreadsheets accepted'
     worksheet = workbook.worksheet(0)
 
     # Assume there is always 1 header row
@@ -162,16 +165,16 @@ class SampleRegistrar < ActiveRecord::Base
     # being the preferred decoding.
     definitions = Sample::Metadata.attribute_details.inject({}) do |hash,attribute|
       label   = attribute.to_field_info.display_name
-      handler = lambda { |attributes, value| attributes[:sample_attributes][:sample_metadata_attributes][attribute.name] = value }
+      handler = ->(attributes, value) { attributes[:sample_attributes][:sample_metadata_attributes][attribute.name] = value }
       hash.tap do
         hash[CGI.unescapeHTML(label)]        = handler   # For the old spreadsheets
         hash[REXML::Text.unnormalize(label)] = handler   # For the new spreadsheets
       end
     end.merge(
-      'Asset group' => lambda { |attributes, value| attributes[:asset_group_name] = value },
-      'Sample name' => lambda { |attributes, value| attributes[:sample_attributes][:name] = value },
-      '2D barcode'  => lambda { |attributes, value| attributes[:sample_tube_attributes][:two_dimensional_barcode] = value },
-      'Reference Genome' => lambda { |attributes, value| attributes[:sample_attributes][:sample_metadata_attributes][:reference_genome_id] = ReferenceGenome.find_by_name(value).try(:id) || 0 }
+      'Asset group' => ->(attributes, value) { attributes[:asset_group_name] = value },
+      'Sample name' => ->(attributes, value) { attributes[:sample_attributes][:name] = value },
+      '2D barcode'  => ->(attributes, value) { attributes[:sample_tube_attributes][:two_dimensional_barcode] = value },
+      'Reference Genome' => ->(attributes, value) { attributes[:sample_attributes][:sample_metadata_attributes][:reference_genome_id] = ReferenceGenome.find_by_name(value).try(:id) || 0 }
     )
 
     # Map the headers to their attribute handlers.  Ensure that the required headers are present.

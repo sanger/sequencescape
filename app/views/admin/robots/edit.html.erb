@@ -3,7 +3,7 @@
 #Copyright (C) 2007-2011 Genome Research Ltd.%>
 <h1>Editing robot</h1>
 
-<% form_for(@robot) do |f| %>
+<%= form_for(@robot, :url=>admin_robot_path(@robot)) do |f| %>
   <%= f.error_messages %>
 
   <p>
@@ -19,5 +19,5 @@
   </p>
 <% end %>
 
-<%= link_to 'Show', @robot %> |
-<%= link_to 'Back', robots_path %>
+<%= link_to 'Show', admin_robot_path(@robot) %> |
+<%= link_to 'Back', admin_robots_path %>

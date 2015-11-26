@@ -36,8 +36,8 @@ class Tag2Layout < ActiveRecord::Base
 
   belongs_to :source, :class_name => 'Asset'
 
-  named_scope :include_tag, :include => :tag
-  named_scope :include_plate, :include => :plate
+  scope :include_tag, ->() { includes(:tag) }
+  scope :include_plate, ->() { includes(:plate) }
 
   before_create :record_template_use
   # After creating the instance we can layout the tags into the wells.

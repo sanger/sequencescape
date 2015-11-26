@@ -4,32 +4,32 @@
 class AddIlbStdPcrrxpPlatePurpose < ActiveRecord::Migration
   class Purpose < ActiveRecord::Base
     class Relationship < ActiveRecord::Base
-      set_table_name('plate_purpose_relationships')
+      self.table_name =('plate_purpose_relationships')
       belongs_to :child, :class_name => 'AddIlbStdPcrrxpPlatePurpose::Purpose'
       belongs_to :transfer_request_type, :class_name => 'AddIlbStdPcrrxpPlatePurpose::RequestType'
 
-      named_scope :with_child,  lambda { |plate_purpose| { :conditions => { :child_id  => plate_purpose.id } } }
+      scope :with_child,  ->(plate_purpose) { { :conditions => { :child_id  => plate_purpose.id } } }
     end
 
-    set_table_name('plate_purposes')
-    set_inheritance_column(nil)
+    self.table_name =('plate_purposes')
+    set_inheritance_column
 
     has_many :child_relationships, :class_name => 'AddIlbStdPcrrxpPlatePurpose::Purpose::Relationship', :foreign_key => :parent_id, :dependent => :destroy
   end
 
   class RequestType < ActiveRecord::Base
-    set_table_name('request_types')
-    set_inheritance_column(nil)
+    self.table_name =('request_types')
+    set_inheritance_column
   end
 
   def self.up
     ActiveRecord::Base.transaction do
       pcr_xp   = Purpose.find_by_name('ILB_STD_PCRXP') or raise "Cannot find ILB_STD_PCRXP"
-      pcr_r_xp = pcr_xp.clone.tap { |p| p.name = 'ILB_STD_PCRRXP' ; p.save! }
+      pcr_r_xp = pcr_xp.dup.tap { |p| p.name = 'ILB_STD_PCRRXP' ; p.save! }
 
       # Ensure the child transfers are correctly setup
       pcr_xp.child_relationships.each do |relationship|
-        request_type = relationship.transfer_request_type.clone.tap do |r|
+        request_type = relationship.transfer_request_type.dup.tap do |r|
           r.name = r.name.sub(pcr_xp.name, pcr_r_xp.name)
           r.key  = r.name.gsub(/\W+/, '_')
           r.save!

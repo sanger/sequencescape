@@ -6,7 +6,7 @@
 <% @request.associated_studies.each do |study| %>
   <% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(study) -%>
 <% end %>
-<% add :admin_option, "Administer studies" => index_studies_path -%>
+<% add :admin_option, "Administer studies" => admin_studies_path -%>
 
 <h1>Request <%= @request.id %> : Comments</h1>
 <div class='subtitle'>
@@ -18,7 +18,7 @@
   <% if current_user.privileged? @request %>
     <div>
       <p>Type your comment:</p>
-      <%= form_remote_tag(:url => request_comments_path(@request), :update => "request_annotations_#{@request.id}") %>
+      <%= form_tag(:url => request_comments_path(@request), :update => "request_annotations_#{@request.id}", :remote => true) %>
       <%= text_field_tag "comment", '', :size  => 65 %><%= submit_tag 'Add comment' %>
     </div>
   <% end %>

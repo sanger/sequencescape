@@ -1,8 +1,8 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013 Genome Research Ltd.%>
+#Copyright (C) 2007-2011,2012,2013 Genome Research Ltd.%>
 <!--% form_for @batch, :url => {:controller => :batches, :action => :qc_batch, :id => @batch.id, :task_id => @task.id }, :html => { :id => 'stage_form'} do |form| %-->
-<% form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
+<%= form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
 
   <% plate_class = {}%>
   <h4>Source Plates</h4>
@@ -34,7 +34,7 @@
        * row in the the plate tables, and allows dragging between them and the scratch pad.
        */
       <% plate_ids.each do |plate| %>
-      Sortable.create('<%= plate %>', { containment: ['<%= plate_ids.join("','") %>'], tag: 'td', overlap: 'horizontal' });
+        Sortable.create('<%= plate %>', { containment: ['<%= raw(plate_ids.join("','")) %>'], tag: 'td', overlap: 'horizontal' });
       <% end%>
     })($);
   </script>

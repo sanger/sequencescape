@@ -29,7 +29,7 @@
         You can...
         <ul>
           <li><%= link_to "try your request again", request.referrer %></li>
-          <li><%= link_to "go to the front page", root_path %>
+          <li><%= link_to "go to the front page",'root' %>
           <li><%= link_to "report it to our support team",
             "mailto:configatron.admin_email?subject=Error%20report&body=Issue%20on%20page:%20#{request.referrer}" %></li>
       </div>

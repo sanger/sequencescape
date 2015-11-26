@@ -69,7 +69,9 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
     end
 
     def self.create!(attributes)
-      self.new(attributes).tap { |search| search.validate! }
+      search = self.new(attributes)
+      search.validate! {}
+      search
     end
 
     def self.create_bulk!(list_of_attributes)
@@ -92,7 +94,8 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
 
     # Does an individual resource lookup
     bind_action(:create, :to => 'lookup', :as => :lookup) do |_,request, response|
-      uuid = Search.create!(request.json['lookup']).find
+      lookup = request.json.respond_to?(:keys) ? request.json['lookup'] : nil
+      uuid = Search.create!(lookup).find
 
       # Hack time ...
       class << response ; include ::Endpoints::Uuids::Response ; end
@@ -109,7 +112,8 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
 
     # Handles trying to find multiple resources
     bind_action(:create, :to => 'bulk', :as => :bulk) do |_,request, response|
-      uuids = Search.create_bulk!(request.json['lookup']).map(&:find)
+      lookup = request.json.respond_to?(:keys) ? request.json['lookup'] : nil
+      uuids = Search.create_bulk!(lookup).map(&:find)
 
       # Hack time ...
       class << response ; include ::Endpoints::Uuids::Response ; end

@@ -8,7 +8,7 @@
 
 <% if @request.finished? %>
 <div id="study">
-  <% form_for(:change_decision, :url => change_decision_request_path(@change_decision.request), :html => {:method => :put}) do |form| -%>
+  <%= form_for(:change_decision, :url => change_decision_request_path(@change_decision.request), :html => {:method => :put}) do |form| -%>
   <%= error_messages_for :change_decision %>
     <ul class="options">
       <li class="options_group"><h2><%= label_tag(:request_state_name, 'Request State') %></h2>

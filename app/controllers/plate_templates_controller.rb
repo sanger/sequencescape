@@ -4,7 +4,7 @@
 class PlateTemplatesController < ApplicationController
   before_filter :slf_manager_login_required
   def index
-    @patterns = PlateTemplate.find(:all).paginate :per_page => 50, :page => params[:page]
+    @patterns = PlateTemplate.paginate(:per_page => 50, :page => params[:page])
   end
 
   def new

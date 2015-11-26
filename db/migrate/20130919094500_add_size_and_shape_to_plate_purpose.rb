@@ -3,7 +3,7 @@
 #Copyright (C) 2013 Genome Research Ltd.
 class AddSizeAndShapeToPlatePurpose < ActiveRecord::Migration
   def self.up
-    default = Map::AssetShape.find_by_name('Standard').id
+    default = AssetShape.find_by_name('Standard').id
     ActiveRecord::Base.transaction do
       add_column :plate_purposes, :size, :integer, :default=>96, :null=>true
       add_column :plate_purposes, :asset_shape_id, :integer, :default=>default, :null=>false

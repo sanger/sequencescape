@@ -85,7 +85,7 @@ module Submission::LinearRequestGraph
           # given that the request graph describes this relationship.
           AssetLink.create_edge!(source_asset, target_asset) if source_asset.present? and target_asset.present?
 
-          comments.each do |comment|
+          comments.split("\n").each do |comment|
             request.comments.create!(:user => user, :description => comment)
           end if comments.present?
         end
@@ -118,7 +118,7 @@ module Submission::LinearRequestGraph
     assets.map(&:requests).flatten.each do |request|
       request.update_attributes!(:initial_study => nil) if request.initial_study != study
       request.update_attributes!(:initial_project => nil) if request.initial_project != project
-      comments.each do |comment|
+      comments.split("\n").each do |comment|
         request.comments.create!(:user => user, :description => comment)
       end if comments.present?
     end

@@ -4,9 +4,9 @@
 module StudyReport::WellDetails
   def self.included(base)
     base.class_eval do
-      named_scope :for_study_report, { :include => [
+      scope :for_study_report, -> { includes([
         :map, :well_attribute, :events, :target_wells, { :plate => :plate_purpose, :primary_aliquot => { :sample => :sample_metadata } }
-      ] }
+      ])}
     end
   end
 

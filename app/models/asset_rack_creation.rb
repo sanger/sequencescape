@@ -8,8 +8,8 @@ class AssetRackCreation < AssetCreation
 
   # This is the child that is created from the parent.  It cannot be assigned before validation.
   belongs_to :parent, :class_name => 'Asset'
-  # named_scope :include_parent, :include => :parent
-  named_scope :include_child, :include => :child
+
+  scope :include_child, -> { includes(:child) }
 
   def record_creation_of_children
     parent.events.create_plate!(child_purpose, child, user)

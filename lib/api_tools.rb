@@ -30,7 +30,7 @@ module ApiTools
 
   # TODO: Add relationships for object
   def as_json(options = {})
-    { self.json_root => self.class.render_class.to_hash(self), 'lims'=>configatron.amqp.retrieve(:lims_id) }
+    { self.json_root => self.class.render_class.to_hash(self), 'lims'=>configatron.amqp.lims_id! }
   end
 
   def to_yaml(options = {})

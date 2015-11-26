@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012 Genome Research Ltd.
+#Copyright (C) 2012,2015 Genome Research Ltd.
 module ::Core::Io::Json::Grammar
   module Intermediate
     attr_reader :children
@@ -174,7 +174,9 @@ module ::Core::Io::Json::Grammar
   module Resource
     def resource_details(endpoint, object, options, stream)
       stream.block('actions') do |nested_stream|
-        endpoint.send(:actions, object, options.merge(:target => object)).map(&nested_stream.method(:attribute))
+        endpoint.send(:actions, object, options.merge(:target => object)).map do |action,url|
+          nested_stream.attribute(action,url)
+        end
         actions(object, options, nested_stream)
       end
       stream.attribute('uuid', object.uuid)

@@ -11,10 +11,10 @@
 unless [ :development, :test, :seeding ].include?(Rails.env.to_sym)
   raise StandardError, <<-END_OF_MESSAGE
 **********************************************************************************************************
-********************************** SERIOUSLY, YOU DON'T WANT TO DO THIS ********************************** 
+********************************** SERIOUSLY, YOU DON'T WANT TO DO THIS **********************************
 
 You are quite clearly either wreckless, incompetent or insane.  You are trying to seed the #{ Rails.env }
-database which should never be done.  Please recheck your shell environment to ensure that RAILS_ENV
+database which should never be done.  Please recheck your shell environment to ensure that Rails.env
 is not set, or is set to either 'development' or 'test'.
 
 **********************************************************************************************************

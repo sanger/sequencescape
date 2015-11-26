@@ -4,7 +4,7 @@
 class AddStripTubeMapAndShape < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
-      Map::AssetShape.create!(
+      AssetShape.create!(
         :name => 'StripTubeColumn',
         :horizontal_ratio => 1,
         :vertical_ratio   => 8,
@@ -15,7 +15,7 @@ class AddStripTubeMapAndShape < ActiveRecord::Migration
 
   def self.down
     ActiveRecord::Base.transaction do
-      Map::AssetShape.find_by_name('StripTubeColumn').tap do |shape|
+      AssetShape.find_by_name('StripTubeColumn').tap do |shape|
         Map.find_all_by_shape(shape).each(&:destroy)
         shape.destroy
       end

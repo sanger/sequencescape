@@ -7,7 +7,7 @@ Given /^study "([^\"]*)" has property "([^\"]*)" set to "([^\"]*)"$/ do |study_n
 end
 
 Given /^I have a study called "([^\"]*)"$/ do |study|
-  proj = Factory :study, :name => study
+  FactoryGirl.create :study, :name => study
 end
 
 Given /^study "([^\"]*)" status is "([^\"]*)"$/ do |study, status|
@@ -24,7 +24,7 @@ end
 Given /^study "([^\"]*)" has samples registered$/ do |study|
   proj = Study.find_by_name(study)
   user = User.find_by_login 'user'
-  new_sample_group = Factory :sample_group, :name => "new_sample_group", :user => user, :study => proj
+  new_sample_group = FactoryGirl.create :sample_group, :name => "new_sample_group", :user => user, :study => proj
   samples = {
     "0"=>{
       "name"=>"SUPPLIER SAMPLE NAME",
@@ -52,7 +52,7 @@ end
 Given /^study "([^\"]*)" has assets registered$/ do |study|
   proj = Study.find_by_name(study)
   user = User.find_by_login 'user'
-  new_sample_group = Factory :asset_group, :name => "new_asset_group", :user => user, :study => proj
+  new_sample_group = FactoryGirl.create :asset_group, :name => "new_asset_group", :user => user, :study => proj
 end
 
 Given /^the following user records$/ do |table|
@@ -61,7 +61,7 @@ Given /^the following user records$/ do |table|
        usr.first_name = hash['first_name']
        usr.last_name = hash['last_name']
      else
-       usr = Factory(:user, hash)
+       usr = FactoryGirl.create(:user, hash)
      end
        usr.save
    end
@@ -72,7 +72,7 @@ Given /^user "([^\"]*)" is an? "([^\"]*)" of study "([^\"]*)"$/ do |login, role_
   role = Role.find(:first, :conditions =>
       ['name=? and authorizable_type = ? and authorizable_id = ?', role_name, "Study", proj.id])
   if role.nil?
-    role = Factory :role, :name => role_name, :authorizable_type => 'Study',
+    role = FactoryGirl.create :role, :name => role_name, :authorizable_type => 'Study',
       :authorizable_id => proj.id, :created_at => Time.now, :updated_at => Time.now
   end
   usr = User.find_by_login(login)
@@ -95,7 +95,7 @@ Given /^I am visiting study "([^\"]*)" homepage$/ do |study_name|
 end
 
 And /^the study have a workflow$/ do
-  Factory :submission_workflow
+  FactoryGirl.create :submission_workflow
 end
 
 def GivenFixedStudyMetadata(attribute, value, regexp)
@@ -213,34 +213,34 @@ Given /^study "([^\"]*)" has asset and assetgroup$/ do |study|
   proj = Study.find_by_name(study)
   user = User.find_by_login 'user'
 
-  id_asset_group = Factory :asset_group, :name => "new_asset_group", :user => user, :study => proj
-#  id_asset = Factory :asset, :name => 'Cucumberirbattle', :sti_type => 'SampleTube', :barcode => 'barcode', :sample_id => '1', :closed => '0'
-  id_asset = Factory :sample_tube, :name => 'Cucumberirbattle', :barcode => 'barcode', :closed => '0'
-  id_aga = Factory :asset_group_asset, :asset_id => id_asset.id, :asset_group_id => id_asset_group.id
+  id_asset_group = FactoryGirl.create :asset_group, :name => "new_asset_group", :user => user, :study => proj
+#  id_asset = FactoryGirl.create :asset, :name => 'Cucumberirbattle', :sti_type => 'SampleTube', :barcode => 'barcode', :sample_id => '1', :closed => '0'
+  id_asset = FactoryGirl.create :sample_tube, :name => 'Cucumberirbattle', :barcode => 'barcode', :closed => '0'
+  id_aga = FactoryGirl.create :asset_group_asset, :asset_id => id_asset.id, :asset_group_id => id_asset_group.id
 end
 
 Given /^study "([^\"]*)" has asset and assetgroup called "([^\"]*)"$/ do |study, new_asset_group|
   proj = Study.find_by_name(study)
   user = User.find_by_login 'user'
 
-  id_asset_group = Factory :asset_group, :name => new_asset_group, :user => user, :study => proj
-  id_asset = Factory :sample_tube, :name => 'Cucumberirbattle', :barcode => 'barcode', :closed => '0'
-  id_aga = Factory :asset_group_asset, :asset_id => id_asset.id, :asset_group_id => id_asset_group.id
+  id_asset_group = FactoryGirl.create :asset_group, :name => new_asset_group, :user => user, :study => proj
+  id_asset = FactoryGirl.create :sample_tube, :name => 'Cucumberirbattle', :barcode => 'barcode', :closed => '0'
+  id_aga = FactoryGirl.create :asset_group_asset, :asset_id => id_asset.id, :asset_group_id => id_asset_group.id
 end
 
 Given /^study "([^\"]*)" has plate and assetgroup$/ do |study_name|
   study = Study.find_by_name(study_name)
   user = User.find_by_login 'user'
 
-  id_asset_group = Factory :asset_group, :name => "new_asset_group", :user => user, :study => study
-  sample = Factory :sample
+  id_asset_group = FactoryGirl.create :asset_group, :name => "new_asset_group", :user => user, :study => study
+  sample = FactoryGirl.create :sample
   study.samples << sample
-  map   = Factory :map
-  plate = Factory :plate, :name => 'Cucumberirbattle', :barcode => '123', :closed => '0'
-  well = Factory :well, :name => 'Well 1', :closed => '0',  :sample => sample, :map => map
+  map   = FactoryGirl.create :map
+  plate = FactoryGirl.create :plate, :name => 'Cucumberirbattle', :barcode => '123', :closed => '0'
+  well = FactoryGirl.create :well, :name => 'Well 1', :closed => '0',  :sample => sample, :map => map
   well.plate = plate
   well.save
-  id_aga = Factory :asset_group_asset, :asset_id => well.id, :asset_group_id => id_asset_group.id
+  id_aga = FactoryGirl.create :asset_group_asset, :asset_id => well.id, :asset_group_id => id_asset_group.id
 end
 
 
@@ -268,7 +268,7 @@ Given /^studies will appear in the following study lists:$/ do |table|
 end
 
 Given /^a study will appear in the study list "([^\"]+)"$/ do |study_list|
-  Factory(:"study_for_study_list_#{ study_list.downcase.gsub(/[^a-z0-9]+/, '_') }")
+  FactoryGirl.create(:"study_for_study_list_#{ study_list.downcase.gsub(/[^a-z0-9]+/, '_') }")
 end
 
 Then /^I should see the studies for the following study lists:$/ do |table|
@@ -294,7 +294,7 @@ end
 def assign_asset_to_study(asset,study_name)
   study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   asset_ids = [asset.id]
-  asset_ids = asset.well_ids if asset.respond_to?(:wells)
+  asset_ids = asset.wells.map(&:id) if asset.respond_to?(:wells)
   if asset.can_be_created? || (asset.respond_to?(:wells) && (asset.stock_plate?))
     RequestFactory.create_assets_requests(Asset.find(asset_ids), study)
   else
@@ -318,12 +318,12 @@ end
 
 Given /^the study "([^\"]+)" has a (library tube) called "([^\"]+)"$/ do |study_name, asset_model, asset_name|
   study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
-  asset = Factory(asset_model.gsub(/\s+/, '_').to_sym, :name => asset_name)
+  asset = FactoryGirl.create(asset_model.gsub(/\s+/, '_').to_sym, :name => asset_name)
   step %Q(the asset "#{asset_name}" belongs to study "#{study_name}")
 end
 
 Then /^the help text for "([^"]*)" should contain:$/ do |label_name, expected_tooltip_text|
-  label = find(:xpath, "//label[text()='#{label_name}']")
+  label = find(:xpath, "//label[text()='#{label_name}']",visible: false)
   tooltip_div_content = label['for']
   click_link(tooltip_div_content.gsub('content','link'))
 
@@ -414,7 +414,7 @@ When /^I have an? (managed|open) study without a data release group called "(.*?
   Study.create!(
       :name => study_name,
       :study_metadata_attributes => {
-        :faculty_sponsor => Factory(:faculty_sponsor),
+        :faculty_sponsor => FactoryGirl.create(:faculty_sponsor),
         :study_type => StudyType.last,
         :data_release_strategy => managed,
         :study_description => 'blah',

@@ -12,7 +12,7 @@ class Sample < ActiveRecord::Base
   include Identifiable
   include Uuid::Uuidable
   include StandardNamedScopes
-  include Named
+  include SharedBehaviour::Named
   include Aliquot::Aliquotable
 
   extend EventfulRecord
@@ -28,8 +28,6 @@ class Sample < ActiveRecord::Base
 
   acts_as_authorizable
 
-
-
   has_many :study_samples, :dependent => :destroy
   has_many :studies, :through => :study_samples
 
@@ -44,19 +42,9 @@ class Sample < ActiveRecord::Base
   receptacle_alias(:wells,        :class_name => 'Well')
   receptacle_alias(:sample_tubes, :class_name => 'SampleTube')
 
-  # Ugh! We need to use finder sql here as our relationships are complicated
-  # Note: The interpolation of the id is something done in rails 2.3, but is deprecated
-  # in >3. You'll need to use a proc in that context.
-  has_many :asset_groups, :finder_sql => 'SELECT DISTINCT asset_groups.* FROM samples
-  INNER JOIN aliquots ON aliquots.sample_id = samples.id
-  INNER JOIN asset_group_assets ON aliquots.receptacle_id = asset_group_assets.asset_id
-  INNER JOIN asset_groups ON asset_group_assets.asset_group_id = asset_groups.id
-  WHERE samples.id = #{id} AND asset_groups.id IS NOT NULL;'
-  has_many :submissions, :finder_sql => 'SELECT DISTINCT submissions.* FROM samples
-  INNER JOIN aliquots ON aliquots.sample_id = samples.id
-  INNER JOIN requests ON aliquots.receptacle_id = requests.asset_id
-  INNER JOIN submissions ON requests.submission_id = submissions.id
-  WHERE samples.id = #{id} AND submissions.id IS NOT NULL;'
+  has_many :asset_groups, :through => :assets
+  has_many :requests, :through => :assets
+  has_many :submissions, :through => :requests
 
   belongs_to :sample_manifest
 
@@ -64,8 +52,12 @@ class Sample < ActiveRecord::Base
   validates_format_of :name, :with => /^[\w_-]+$/i, :message => I18n.t('samples.name_format'), :if => :new_name_format, :on => :create
   validates_format_of :name, :with => /^[\(\)\+\s\w._-]+$/i, :message => I18n.t('samples.name_format'), :if => :new_name_format, :on => :update
   validates_uniqueness_of :name, :on => :create, :message => "already in use", :unless => :sample_manifest_id?
-  validates_each(:name, :on => :save, :unless => :can_rename_sample?) do |record,attr,value|
-    record.errors.add(:name, 'cannot be changed') if record.name_changed? and not record.new_record?
+
+  validate :name_unchanged, :if => :name_changed?, :on => :update
+
+  def name_unchanged
+    errors.add(:name, 'cannot be changed') unless can_rename_sample
+    can_rename_sample
   end
 
   extend ValidationStateGuard
@@ -80,51 +72,45 @@ class Sample < ActiveRecord::Base
 
   def safe_to_destroy
     return true unless receptacles.present? || has_submission?
-    errors.add_to_base("Remove '#{name}' from assets before destroying") if receptacles.present?
-    errors.add_to_base("You can't delete '#{name}' because is linked to a submission.") if has_submission?
+    errors.add(:base,"Remove '#{name}' from assets before destroying") if receptacles.present?
+    errors.add(:base,"You can't delete '#{name}' because is linked to a submission.") if has_submission?
     return false
   end
   private :safe_to_destroy
 
-  named_scope :with_name, lambda { |*names| { :conditions => { :name => names.flatten } } }
+  scope :with_name, ->(*names) { where(:name => names.flatten) }
 
-  named_scope :for_search_query, lambda { |query,with_includes|
-    { :conditions => [ 'name LIKE ? OR id=?', "%#{query}%", query ] }
+  scope :for_search_query, ->(query,with_includes) {
+    where(['name LIKE ? OR id=?', "%#{query}%", query ])
   }
 
-  named_scope :non_genotyped, :conditions => "samples.id not in (select propertied_id from external_properties where propertied_type = 'Sample' and `key` = 'genotyping_done'  )"
+  scope :non_genotyped, -> { where("samples.id not in (select propertied_id from external_properties where propertied_type = 'Sample' and `key` = 'genotyping_done'  )") }
 
-  named_scope :on_plate, lambda {|plate|
-    {
-      :joins => [
-        'INNER JOIN aliquots ON aliquots.sample_id = samples.id',
-        'INNER JOIN container_associations AS ca ON ca.content_id = aliquots.receptacle_id'
-      ],
-      :conditions => ['ca.container_id = ?',plate.id]
-    }
+  scope :on_plate, ->(plate) {
+    joins([
+      'INNER JOIN aliquots ON aliquots.sample_id = samples.id',
+      'INNER JOIN container_associations AS ca ON ca.content_id = aliquots.receptacle_id'
+    ]).
+    where(['ca.container_id = ?',plate.id])
   }
 
-  named_scope :for_plate_and_order, lambda {|plate_id,order_id|
-    {
-      :joins => [
-        'INNER JOIN aliquots ON aliquots.sample_id = samples.id',
-        'INNER JOIN container_associations AS ca ON ca.content_id = aliquots.receptacle_id',
-        'INNER JOIN well_links ON target_well_id = aliquots.receptacle_id AND well_links.type = "stock"',
-        'INNER JOIN requests ON requests.asset_id = well_links.source_well_id'
-      ],
-      :conditions => ['ca.container_id = ? AND requests.order_id = ?',plate_id,order_id]
-    }
+  scope :for_plate_and_order, ->(plate_id,order_id) {
+    joins([
+      'INNER JOIN aliquots ON aliquots.sample_id = samples.id',
+      'INNER JOIN container_associations AS ca ON ca.content_id = aliquots.receptacle_id',
+      'INNER JOIN well_links ON target_well_id = aliquots.receptacle_id AND well_links.type = "stock"',
+      'INNER JOIN requests ON requests.asset_id = well_links.source_well_id'
+    ]).
+    where(['ca.container_id = ? AND requests.order_id = ?',plate_id,order_id])
   }
 
-  named_scope :for_plate_and_order_as_target, lambda {|plate_id,order_id|
-    {
-      :joins => [
-        'INNER JOIN aliquots ON aliquots.sample_id = samples.id',
-        'INNER JOIN container_associations AS ca ON ca.content_id = aliquots.receptacle_id',
-        'INNER JOIN requests ON requests.target_asset_id = aliquots.receptacle_id'
-      ],
-      :conditions => ['ca.container_id = ? AND requests.order_id = ?',plate_id,order_id]
-    }
+  scope :for_plate_and_order_as_target, ->(plate_id,order_id) {
+    joins([
+      'INNER JOIN aliquots ON aliquots.sample_id = samples.id',
+      'INNER JOIN container_associations AS ca ON ca.content_id = aliquots.receptacle_id',
+      'INNER JOIN requests ON requests.target_asset_id = aliquots.receptacle_id'
+    ]).
+    where(['ca.container_id = ? AND requests.order_id = ?',plate_id,order_id])
   }
 
   def self.by_name(sample_id)
@@ -430,7 +416,7 @@ class Sample < ActiveRecord::Base
 
   # Together these two validations ensure that the first study exists and is valid for the ENA submission.
   validates_each(:ena_study, :if => :validating_ena_required_fields?) do |record, attr, value|
-    record.errors.add_to_base('Sample has no study') if value.blank?
+    record.errors.add(:base,'Sample has no study') if value.blank?
   end
   validates_associated(:ena_study, :allow_blank => true, :if => :validating_ena_required_fields?)
 
@@ -450,9 +436,9 @@ class Sample < ActiveRecord::Base
     self.valid? or raise ActiveRecord::RecordInvalid, self
   rescue ActiveRecord::RecordInvalid => exception
     @ena_study.errors.full_messages.each do |message|
-      self.errors.add_to_base("#{ message } on study")
+      self.errors.add(:base,"#{ message } on study")
     end unless @ena_study.nil?
-    raise
+    raise exception
   ensure
     # Do not alter the order of this line, otherwise the @ena_study won't be reset!
     self.validating_ena_required_fields, @ena_study = false, nil

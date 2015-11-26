@@ -15,13 +15,13 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
 
   def self.extended(base)
     base.class_eval do
-      class_inheritable_reader :model_for_input
+      class_attribute :model_for_input, :instance_writer => false
       extend AssociationHandling
     end
   end
 
   def set_model_for_input(model)
-    write_inheritable_attribute(:model_for_input, model)
+    self.model_for_input =  model
   end
 
   def generate_json_to_object_mapping(json_to_attribute)
@@ -75,7 +75,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
       end
 
       if model.nil?
-        code << "    section[#{leaf.inspect}] = value"
+        code << "    section[#{leaf.inspect}] = value #nil"
       elsif model.respond_to?(:reflections) and association = model.reflections[leaf]
         code << "    handle_#{association.macro}(section, #{leaf.inspect}, value, object)"
       elsif model.respond_to?(:klass) and association = model.klass.reflections[leaf]

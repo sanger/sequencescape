@@ -1,10 +1,12 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file, 
-# please use the migrations feature of Active Record to incrementally modify your database, and
-# then regenerate this schema definition.
+# encoding: UTF-8
+# This file is auto-generated from the current state of the database. Instead
+# of editing this file, please use the migrations feature of Active Record to
+# incrementally modify your database, and then regenerate this schema definition.
 #
-# Note that this schema.rb definition is the authoritative source for your database schema. If you need
-# to create the application database on another system, you should be using db:schema:load, not running
-# all the migrations from scratch. The latter is a flawed and unsustainable approach (the more migrations
+# Note that this schema.rb definition is the authoritative source for your
+# database schema. If you need to create the application database on another
+# system, you should be using db:schema:load, not running all the migrations
+# from scratch. The latter is a flawed and unsustainable approach (the more migrations
 # you'll amass, the slower it'll run and the greater likelihood for issues).
 #
 # It's strongly recommended to check this file into your version control system.
@@ -15,8 +17,8 @@ ActiveRecord::Schema.define(:version => 20151029152735) do
     t.integer  "aliquot_id",    :null => false
     t.integer  "lane_id",       :null => false
     t.integer  "aliquot_index", :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
   end
 
   add_index "aliquot_indices", ["aliquot_id"], :name => "index_aliquot_indices_on_aliquot_id", :unique => true
@@ -309,8 +311,8 @@ ActiveRecord::Schema.define(:version => 20151029152735) do
     t.integer  "seed_id"
     t.integer  "user_id"
     t.text     "properties"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "budget_divisions", :force => true do |t|
@@ -391,6 +393,7 @@ ActiveRecord::Schema.define(:version => 20151029152735) do
     t.string   "locked_by"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "queue"
   end
 
   create_table "depricated_attempts", :force => true do |t|
@@ -1064,8 +1067,8 @@ ActiveRecord::Schema.define(:version => 20151029152735) do
 
   create_table "request_purposes", :force => true do |t|
     t.string   "key",        :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "request_quotas_bkp", :force => true do |t|
@@ -1173,6 +1176,7 @@ ActiveRecord::Schema.define(:version => 20151029152735) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "barcode"
+    t.float    "minimum_volume"
   end
 
   create_table "roles", :force => true do |t|
@@ -1561,7 +1565,7 @@ ActiveRecord::Schema.define(:version => 20151029152735) do
     t.string   "contact_name"
     t.string   "phone_number"
     t.string   "fax"
-    t.string   "url"
+    t.string   "supplier_url"
     t.string   "abbreviation"
   end
 
@@ -1573,8 +1577,8 @@ ActiveRecord::Schema.define(:version => 20151029152735) do
   create_table "tag2_layout_template_submissions", :force => true do |t|
     t.integer  "submission_id",           :null => false
     t.integer  "tag2_layout_template_id", :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",              :null => false
+    t.datetime "updated_at",              :null => false
   end
 
   add_index "tag2_layout_template_submissions", ["submission_id", "tag2_layout_template_id"], :name => "tag2_layouts_used_once_per_submission", :unique => true
@@ -1583,8 +1587,8 @@ ActiveRecord::Schema.define(:version => 20151029152735) do
   create_table "tag2_layout_templates", :force => true do |t|
     t.string   "name",       :null => false
     t.integer  "tag_id",     :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "tag2_layouts", :force => true do |t|

@@ -3,7 +3,7 @@
 #Copyright (C) 2011 Genome Research Ltd.
 class AddSubstitutionsToTagLayouts < ActiveRecord::Migration
   class TagLayout < ActiveRecord::Base
-    set_table_name('tag_layouts')
+    self.table_name =('tag_layouts')
     serialize :subtitutions
   end
 

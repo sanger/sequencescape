@@ -6,13 +6,13 @@ module Submission::ProjectValidation
     base.class_eval do
       # We probably want to move this validation
       validates_each(:project, :if => :checking_project?) do |record, attr, project|
-        record.errors.add_to_base("Project #{project.name} is not approved")                 unless project.approved?
-        record.errors.add_to_base("Project #{project.name} is not active")                   unless project.active?
-        record.errors.add_to_base("Project #{project.name} does not have a budget division") unless project.actionable?
+        record.errors.add(:base,"Project #{project.name} is not approved")                 unless project.approved?
+        record.errors.add(:base,"Project #{project.name} is not active")                   unless project.active?
+        record.errors.add(:base,"Project #{project.name} does not have a budget division") unless project.actionable?
       end
 
       validates_each(:project, :if => :validating?) do |record, attr, project|
-        record.errors.add_to_base("Project #{project.name} is not suitable for submission: #{project.errors.full_messages.join('; ')}")  unless project.submittable?
+        record.errors.add(:base,"Project #{project.name} is not suitable for submission: #{project.errors.full_messages.join('; ')}")  unless project.submittable?
       end
 
       after_create :confirm_validity!

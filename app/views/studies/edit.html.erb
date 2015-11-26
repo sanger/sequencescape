@@ -9,7 +9,7 @@
 <p>Edit your study. Required fields are marked with <%= required_marker %>.</p>
 
 <div id="study">
-  <% form_for :study, :url => study_path(@study), :html => {:method => :put, :multipart => true} do |form| %>
+  <%= form_for :study, :url => study_path(@study), :html => {:method => :put, :multipart => true} do |form| %>
     <%= render :partial => "study", :locals => {:read_only => false, :creation => false, :form => form, :study => @study} %>
   <% end %>
 </div>

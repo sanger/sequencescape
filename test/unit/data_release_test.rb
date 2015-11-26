@@ -6,7 +6,7 @@ require File.join(File.dirname(__FILE__), *%w[.. test_helper])
 class DataReleaseTest < ActiveSupport::TestCase
   context "A study" do
     setup do
-      @study = Factory :study
+      @study = create :study
     end
     context "#valid_data_release_properties?" do
       context "and data_release enforced" do

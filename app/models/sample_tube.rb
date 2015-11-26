@@ -18,6 +18,10 @@ class SampleTube < Tube
     record.label = 'SampleTube' if record.label.blank?
   end
 
+  def created_with_request_options
+    {}
+  end
+
   def move_asset_group(study_from, asset_group)
     asset_groups_study_from = self.asset_groups.find_all_by_study_id(study_from.id)
     self.asset_groups = self.asset_groups - asset_groups_study_from

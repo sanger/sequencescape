@@ -3,7 +3,7 @@
 #Copyright (C) 2007-2011,2011,2013 Genome Research Ltd.%>
 <h1>New request for <%= @asset.label %> "<%= h(@asset.display_name) %>"</h1>
 
-<% form_for(@asset, :url => create_request_asset_url(@asset), :html => {:method => :post}) do |f| %>
+<%= form_for(@asset, :url => create_request_asset_url(@asset), :html => {:method => :post}) do |f| %>
   <%= f.error_messages %>
 
   <div id="details">

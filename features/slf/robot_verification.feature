@@ -305,7 +305,6 @@ C; DEST1 = 1220099999705
     # and launch a new page. We want capyra to wait the check is finished
     # before checking the page. Filling something does it.
 
-
     When I fill in the following:
     | SCRC 1        | 4880000001780 |
     | 1221234567841 | 1221234567841 |

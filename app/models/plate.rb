@@ -76,7 +76,7 @@ class Plate < Asset
   end
 
   def self.derived_classes
-    @derived_classes ||= [ self, *Class.subclasses_of(self) ].map(&:name)
+    [ self, *self.descendants ].map(&:name)
   end
 
   def prefix
@@ -138,10 +138,6 @@ class Plate < Asset
       Comment.create!(options.merge(:commentable=>plate))
     end
 
-    def count(*args)
-      super(args,{:select=>'DISTINCT comments.description, IFNULL(comments.title,""), comments.user_id'})
-    end
-
   end
 
   def comments
@@ -181,9 +177,6 @@ WHERE c.container_id=?
   end
 
   contains :wells do #, :order => '`assets`.map_id ASC' do
-    def located_at(location)
-      super(proxy_owner, location)
-    end
 
     # After importing wells we need to also create the AssetLink and WellAttribute information for them.
     def post_import(links_data)
@@ -205,16 +198,16 @@ WHERE c.container_id=?
     private :post_import
 
     def post_connect(well)
-#      AssetLink.create!(:ancestor => proxy_owner, :descendant => well)
+#      AssetLink.create!(:ancestor => proxy_association.owner, :descendant => well)
     end
     private :post_connect
 
     def construct!
-      Map.where_plate_size(proxy_owner.size).where_plate_shape(proxy_owner.asset_shape).in_row_major_order.map do |location|
+      Map.where_plate_size(proxy_association.owner.size).where_plate_shape(proxy_association.owner.asset_shape).in_row_major_order.map do |location|
         build(:map => location)
       end.tap do |wells|
-        proxy_owner.save!
-        AssetLink::Job.create(proxy_owner, wells)
+        proxy_association.owner.save!
+        AssetLink::Job.create(proxy_association.owner, wells)
       end
     end
 
@@ -229,7 +222,7 @@ WHERE c.container_id=?
 
     # Returns the wells with their pool identifier included
     def with_pool_id
-      proxy_owner.plate_purpose.pool_wells(self)
+      proxy_association.owner.plate_purpose.pool_wells(self)
     end
 
     # Yields each pool and the wells that are in it
@@ -248,11 +241,11 @@ WHERE c.container_id=?
     end
 
     def in_preferred_order
-      proxy_owner.plate_purpose.in_preferred_order(self)
+      proxy_association.owner.plate_purpose.in_preferred_order(self)
     end
   end
 
-  named_scope :include_wells_and_attributes, { :include => { :wells => [ :map, :well_attribute ] } }
+  scope :include_wells_and_attributes, -> { includes(:wells => [ :map, :well_attribute ]) }
 
   #has_many :wells, :as => :holder, :class_name => "Well"
   DEFAULT_SIZE = 96
@@ -262,17 +255,25 @@ WHERE c.container_id=?
 
   before_create :set_plate_name_and_size
 
-  named_scope :qc_started_plates, lambda {
-    {
-      :select => "distinct assets.*",
-      :order => 'assets.id DESC',
-      :conditions => ["(events.family = 'create_dilution_plate_purpose' OR asset_audits.key = 'slf_receive_plates') AND plate_purpose_id = ?", PlatePurpose.find_by_name('Stock Plate') ],
-      :joins => "LEFT OUTER JOIN `events` ON events.eventful_id = assets.id LEFT OUTER JOIN `asset_audits` ON asset_audits.asset_id = assets.id" ,
-      :include => [:events, :asset_audits]
-    }
+ # scope :qc_started_plates, -> {
+ #    {
+ #      :select => "distinct assets.*",
+ #      :order => 'assets.id DESC',
+ #      :conditions => ["(events.family = 'create_dilution_plate_purpose' OR asset_audits.key = 'slf_receive_plates') AND plate_purpose_id = ?", PlatePurpose.find_by_name('Stock Plate') ],
+ #      :joins => "LEFT OUTER JOIN `events` ON events.eventful_id = assets.id LEFT OUTER JOIN `asset_audits` ON asset_audits.asset_id = assets.id" ,
+ #      :include => [:events, :asset_audits]
+ #    }
+ #  }
+  scope :qc_started_plates, -> {
+    select('DISTINCT assets.*').
+    joins("LEFT OUTER JOIN `events` ON events.eventful_id = assets.id LEFT OUTER JOIN `asset_audits` ON asset_audits.asset_id = assets.id").
+    where(["(events.family = 'create_dilution_plate_purpose' OR asset_audits.key = 'slf_receive_plates') AND plate_purpose_id = ?", PlatePurpose.stock_plate_purpose.id ]).
+    order('assets.id DESC').
+    includes(:events,:asset_audits)
   }
 
-  named_scope :with_sample,    lambda { |sample|
+
+  scope :with_sample,    ->(sample) {
     {
       :select => "distinct assets.*",
       :joins => "LEFT OUTER JOIN container_associations AS wscas ON wscas.container_id = assets.id
@@ -282,7 +283,7 @@ WHERE c.container_id=?
     }
   }
 
-  named_scope :with_requests, lambda { |requests|
+ scope :with_requests, ->(requests) {
     {
       :select     => "DISTINCT assets.*",
       :joins      => [
@@ -296,12 +297,10 @@ WHERE c.container_id=?
     }
   }
 
-  named_scope :with_wells, lambda { |wells|
-    {
-      :select => 'DISTINCT assets.*',
-      :joins=>[:container_associations],
-      :conditions=>{:container_associations=>{:content_id=> wells.map(&:id) }}
-    }
+  scope :with_wells, ->(wells) {
+      select('DISTINCT assets.*').
+      joins(:container_associations).
+      where(:container_associations=>{:content_id=> wells.map(&:id) })
   }
 
   def wells_sorted_by_map_id
@@ -319,12 +318,11 @@ WHERE c.container_id=?
   def find_map_by_rowcol(row, col)
     # Count from 0
     description  = asset_shape.location_from_row_and_column(row,col+1,size)
-    Map.find(:first,
-             :conditions =>{
-              :description    => description,
-              :asset_size     => size,
-              :asset_shape_id => asset_shape
-             })
+    Map.where(
+      :description    => description,
+      :asset_size     => size,
+      :asset_shape_id => asset_shape
+     ).first
   end
 
   def find_well_by_rowcol(row, col)
@@ -357,7 +355,7 @@ WHERE c.container_id=?
   end
 
   def find_well_by_name(well_name)
-    self.wells.position_name(well_name, self.size).first
+    self.wells.located_at_position(well_name).first
   end
   alias :find_well_by_map_description :find_well_by_name
 
@@ -395,7 +393,7 @@ WHERE c.container_id=?
   end
 
   def control_well_exists?
-    Request.into_by_id(well_ids).any? do |request|
+    Request.into_by_id(wells.map(&:id)).any? do |request|
       request.asset.plate.is_a?(ControlPlate)
     end
   end
@@ -438,7 +436,7 @@ WHERE c.container_id=?
   def self.create_from_rack_csv(file_location, plate_barcode)
     plate = self.create(:name => "Plate #{plate_barcode}", :barcode => plate_barcode, :size => 96)
 
-    FasterCSV.foreach(file_location) do |row|
+    CSV.foreach(file_location) do |row|
       map = Map.find_for_cell_location(row.first, plate.size)
       unless row.last.strip.blank?
         asset = Asset.find_by_two_dimensional_barcode(row.last.strip)
@@ -584,8 +582,8 @@ WHERE c.container_id=?
   end
 
   def lookup_stock_plate
-    spp = PlatePurpose.find(:all,:conditions=>{:can_be_considered_a_stock_plate=>true})
-    self.ancestors.first(:order => 'created_at DESC', :conditions => {:plate_purpose_id=>spp})
+    spp = PlatePurpose.where(:can_be_considered_a_stock_plate=>true).all.map(&:id)
+    self.ancestors.order('created_at DESC').where(:plate_purpose_id=>spp).first
   end
   private :lookup_stock_plate
 
@@ -595,7 +593,7 @@ WHERE c.container_id=?
 
   def ancestor_of_purpose(ancestor_purpose_id)
     return self if self.plate_purpose_id == ancestor_purpose_id
-    ancestors.first(:order => 'created_at DESC', :conditions => {:plate_purpose_id=>ancestor_purpose_id})
+    self.ancestors.order('created_at DESC').where(:plate_purpose_id=>ancestor_purpose_id).first
   end
 
   def child_dilution_plates_filtered_by_type(parent_model)
@@ -625,7 +623,9 @@ WHERE c.container_id=?
   def self.create_with_barcode!(*args, &block)
     attributes = args.extract_options!
     barcode    = args.first || attributes[:barcode]
-    barcode    = nil if barcode.present? and find_by_barcode(barcode).present?
+    # If this gets called on plate_purpose.plates it implicitly scopes
+    # plate to the plate purpose of choice.
+    barcode    = nil if barcode.present? and unscoped.find_by_barcode(barcode).present?
     barcode  ||= PlateBarcode.create.barcode
     create!(attributes.merge(:barcode => barcode), &block)
   end

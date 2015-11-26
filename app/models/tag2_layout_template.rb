@@ -12,7 +12,7 @@ class Tag2LayoutTemplate < ActiveRecord::Base
   validates_presence_of :name
   validates_uniqueness_of :name
 
-  named_scope :include_tag, :include => :tag
+  scope :include_tag, ->() { includes(:tag) }
 
   # Create a TagLayout instance that does the actual work of laying out the tags.
   def create!(attributes = {}, &block)

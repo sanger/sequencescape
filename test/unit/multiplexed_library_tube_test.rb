@@ -6,12 +6,12 @@ require "test_helper"
 class MultiplexedLibraryTubeTest < ActiveSupport::TestCase
   context "A multiplexed Library tube" do
     setup do
-      @multiplexed_library_tube = Factory :multiplexed_library_tube
+      @multiplexed_library_tube = create :multiplexed_library_tube
     end
     context "#has_stock_asset?" do
       setup do
-        @multiplexed_library_tube_with_stock_tube = Factory :multiplexed_library_tube
-        @stock_multiplexed_library_tube = Factory :stock_multiplexed_library_tube
+        @multiplexed_library_tube_with_stock_tube = create :multiplexed_library_tube
+        @stock_multiplexed_library_tube = create :stock_multiplexed_library_tube
         @stock_multiplexed_library_tube.children << @multiplexed_library_tube_with_stock_tube
       end
 

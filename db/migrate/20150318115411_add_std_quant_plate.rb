@@ -12,7 +12,7 @@ class AddStdQuantPlate < ActiveRecord::Migration
         :name=> self.purpose_name,
         :default_state=>'pending',
         :barcode_printer_type => BarcodePrinterType.find_by_name('96 Well Plate'),
-        :asset_shape => Map::AssetShape.find_by_name('Standard')
+        :asset_shape => AssetShape.find_by_name('Standard')
       )
       Plate::Creator.create!(:name => self.purpose_name, :plate_purpose => purpose, :plate_purposes => [ purpose ])
     end

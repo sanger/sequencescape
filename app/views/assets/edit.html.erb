@@ -3,7 +3,7 @@
 #Copyright (C) 2007-2011,2011,2012,2014,2015 Genome Research Ltd.%>
 <h1>Editing asset</h1>
 <table>
-<% form_for(:asset, :url => { :action => "update", :id => @asset.id }, :html => { :method => :put }) do |f| %>
+<%= form_for(@asset) do |f| %>
   <tr><td><%= f.error_messages %></td></tr>
   <% if @current_user.administrator? %>
       <tr><td>Name: <%= f.text_field :name %></td></tr>
@@ -12,7 +12,7 @@
   <% end %>
 
   <% if (@current_user.is_lab_manager?) && (@asset.respond_to? :plate_purpose) %>
-    <tr><td>Purpose: <%= select_tag ("asset[plate_purpose_id]", options_for_select(@valid_purposes_options, @asset.purpose.try(:id))) %></td></tr>
+    <tr><td>Purpose: <%= select_tag("asset[plate_purpose_id]", options_for_select(@valid_purposes_options, @asset.purpose.try(:id))) %></td></tr>
   <% end %>
 
   <% if @asset.location %>

@@ -1,7 +1,7 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2011,2013 Genome Research Ltd.%>
-<% form_for(:sample_registrars, nil, :url => study_sample_registration_index_path, :method => :post) do |registrars_fields| %>
+<%= form_for(:sample_registrars, :url => study_sample_registration_index_path, :method => :post) do |registrars_fields| %>
   <%= error_messages_for(:sample_registrars, :object => @sample_registrars, :object_name => "set of sample(s)") %>
 
   <h2>1. Enter sample information</h2>
@@ -41,8 +41,8 @@
           2D Barcode
         </th>
         <%# NOTE[xxx]: Kind of a hack because we're not actually building a form %>
-        <% fields_for(Sample.new) do |form| %>
-          <% form.fields_for(:sample_metadata, :builder => Metadata::FormBuilder) do |metadata_fields| %>
+        <%= fields_for(Sample.new) do |form| %>
+          <%= form.fields_for(:sample_metadata, :builder => Metadata::FormBuilder) do |metadata_fields| %>
             <% metadata_fields.filter { |field| current_user.workflow.visible_attribute?(field) } %>
 
             <%# Fields for 'Microarray genotyping' %>
@@ -118,7 +118,7 @@
     </thead>
     <tbody>
     <% @sample_registrars.each_with_index do |registrar, index| %>
-      <% registrars_fields.fields_for(index.to_s, registrar) do |registrar_fields| %>
+      <%= registrars_fields.fields_for(index.to_s, registrar) do |registrar_fields| %>
         <tr class="sample_row">
           <td>
             <%= registrar_fields.label(:ignore, "Ignore sample #{ index }", :style => 'display:none;') %>
@@ -129,14 +129,14 @@
             <%= registrar_fields.text_field(:asset_group_name, :size => 15) %>
           </td>
 
-          <% registrar_fields.fields_for(:sample) do |sample_fields| %>
+          <%= registrar_fields.fields_for(:sample) do |sample_fields| %>
             <td>
               <%= sample_fields.label(:name, "Sample name for sample #{ index }", :style => 'display:none;') %>
               <%= sample_fields.text_field(:name, :size => 15) %>
             </td>
           <% end %>
 
-          <% registrar_fields.fields_for(:sample_tube) do |sample_tube_fields| %>
+          <%= registrar_fields.fields_for(:sample_tube) do |sample_tube_fields| %>
             <td>
               <%= sample_tube_fields.label(:two_dimensional_barcode, "2D barcode for sample #{ index }", :style => 'display:none;') %>
               <%= sample_tube_fields.text_field(:two_dimensional_barcode, :size => 15) %>
@@ -144,8 +144,8 @@
           <% end %>
 
           <%# TODO[xxx]: This is really inefficient, taking 25s to render for the large spreadsheet %>
-          <% registrar_fields.fields_for(:sample) do |sample_fields| %>
-            <% sample_fields.fields_for(:sample_metadata, :builder => Metadata::FormBuilder) do |metadata_fields| %>
+          <%= registrar_fields.fields_for(:sample) do |sample_fields| %>
+            <%= sample_fields.fields_for(:sample_metadata, :builder => Metadata::FormBuilder) do |metadata_fields| %>
               <% metadata_fields.view_for(:field, 'shared/metadata/edit_value') %>
               <% metadata_fields.locals = { :index => index } %>
               <% metadata_fields.filter { |field| current_user.workflow.visible_attribute?(field) } %>
@@ -273,8 +273,8 @@
       updateIgnoreState(e.checked = false, newRow);
     });
 
-    // Remove any fieldWithErrors elements
-    newRow.select('.fieldWithErrors').each(function(field) {
+    // Remove any field_with_errors elements
+    newRow.select('.field_with_errors').each(function(field) {
       field.childElements().reverse().each(function(child) {
         field.insert({ after: child });
       });

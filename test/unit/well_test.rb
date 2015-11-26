@@ -6,7 +6,7 @@ require "test_helper"
 class WellTest < ActiveSupport::TestCase
   context "A well" do
     setup do
-      @well = Factory :well
+      @well = create :well
     end
 
     context "with gender_markers results" do
@@ -129,7 +129,7 @@ class WellTest < ActiveSupport::TestCase
 
     context "with a plate" do
       setup do
-        @plate = Factory :plate
+        @plate = create :plate
         @plate.add_and_save_well @well
       end
       should "have a parent plate" do
@@ -173,8 +173,8 @@ class WellTest < ActiveSupport::TestCase
     ].each do |target_ng ,  measured_concentration , measured_volume , stock_to_pick , buffer_added|
     context "cherrypick by nano grams" do
       setup do
-        @source_well = Factory :well
-        @target_well = Factory :well
+        @source_well = create :well
+        @target_well = create :well
         minimum_volume = 10
         maximum_volume = 50
         robot_minimum_picking_volume = 1.0
@@ -193,8 +193,8 @@ class WellTest < ActiveSupport::TestCase
   context "when while cherrypicking by nanograms " do
     context "and we want to get less volume than the minimum" do
         setup do
-          @source_well = Factory :well
-          @target_well = Factory :well
+          @source_well = create :well
+          @target_well = create :well
 
           @measured_concentration = 100
           @measured_volume = 50

@@ -7,7 +7,7 @@
 <% unless @requests_waiting == 0  -%>
   <%= render :partial => 'pipeline_paginate' %>
   <!-- _default_inbox.html.erb -->
-  <% form_tag({:controller => :batches, :action => :create, :id => @pipeline.id}, :id => "requests_to_batch_form") do -%>
+  <%= form_tag({:controller => :batches, :action => :create, :id => @pipeline.id}, :id => "requests_to_batch_form") do -%>
     <% if @pipeline.item_limit -%>
       <input type="hidden" id="batch_item_limit" value="<%= @pipeline.item_limit %>" />
     <% end -%>

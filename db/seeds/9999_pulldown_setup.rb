@@ -23,7 +23,7 @@ options_hash = {
       'Pulldown ISC'
     ],
 
-    :submission_template_name => lambda {|pipeline| "Cherrypick for pulldown - #{pipeline} - HiSeq Paired end sequencing"}
+    :submission_template_name => ->(pipeline) { "Cherrypick for pulldown - #{pipeline} - HiSeq Paired end sequencing"}
 
 
   },
@@ -32,7 +32,7 @@ options_hash = {
       'Illumina-B STD'
     ],
 
-    :submission_template_name => lambda {|_| 'Illumina-B - Cherrypicked - Multiplexed WGS - HiSeq Paired end sequencing' }
+    :submission_template_name => ->(_) { 'Illumina-B - Cherrypicked - Multiplexed WGS - HiSeq Paired end sequencing' }
 
   }
 }
@@ -60,7 +60,7 @@ options_hash = {
     )
 
     # Rubbish data we need
-    study       = Study.new(:name => "#{chosen_pipeline} study", :state => 'active').tap { |t| t.save_without_validation }
+    study       = Study.new(:name => "#{chosen_pipeline} study", :state => 'active').tap { |t| t.save(validate: false) }
     project     = Project.create!(:name => "#{chosen_pipeline} project", :enforce_quotas => false, :project_metadata_attributes => { :project_cost_code => '1111' })
     user        = User.create!(:login => "testuser", :password => 'testuser', :swipecard_code => 'abcdef', :workflow_id => 1).tap do |u|
       u.roles.create!(:name => 'administrator')
@@ -99,7 +99,7 @@ options_hash = {
     LinearSubmission.all.each(&:build_request_graph!)
 
     $stderr.puts "Fudging 7 additional HiSeq requests so that they are available"
-    LinearSubmission.new(:study => Study.first, :request_types => [ 8 ], :project => Project.first, :user => User.first, :workflow_id => 1).save_without_validation
+    LinearSubmission.new(:study => Study.first, :request_types => [ 8 ], :project => Project.first, :user => User.first, :workflow_id => 1).save(validate: false)
 
     submission = LinearSubmission.last.create_submission
 

@@ -6,7 +6,7 @@ require "test_helper"
 class StockLibraryTubeTest < ActiveSupport::TestCase
   context "A stock Library tube" do
     setup do
-      @stock_library = Factory :stock_library_tube
+      @stock_library = create :stock_library_tube
     end
 
     context "#has_stock_asset?" do

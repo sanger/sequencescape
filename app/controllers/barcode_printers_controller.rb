@@ -98,11 +98,11 @@ class BarcodePrintersController < ApplicationController
       if e.kind_of? SOAP::FaultError
         flash[:warning] = "There is a problem with the selected printer. Please report it to Systems."
       else
-        flash[:error] = "There was a problem with the printer. Select another and try again."    
+        flash[:error] = "There was a problem with the printer. Select another and try again."
       end
-    logger.error($!)
-    
-    redirect_to failure_url
-  end
+      Rails.logger.error($!)
+
+      redirect_to failure_url
+    end
   end
 end

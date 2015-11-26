@@ -4,10 +4,16 @@
 require "test_helper"
 
 class ApiApplicationTest < ActiveSupport::TestCase
+
+  should validate_presence_of :name
+  should validate_presence_of :contact
+  should validate_presence_of :privilege
+
   context "#create" do
 
-    should_validate_presence_of :name, :contact, :privilege
-
+    setup do
+      @app = ApiApplication.create(:name=>'test')
+    end
 
     should "automatically generate a key if no present" do
       @app = ApiApplication.create()
@@ -20,7 +26,6 @@ class ApiApplicationTest < ActiveSupport::TestCase
       assert @app.key.present?
       assert_equal 'test', @app.key
     end
-
 
   end
 

@@ -9,7 +9,7 @@ class AddTaskDescriptors < ActiveRecord::Migration
           old_task = Task.find(:first, :conditions=>{:name=>task.name, :pipeline_workflow_id => old_workflow.id})
           old_task.descriptors.each do |descriptor|
             next if filtered_desriptors(task).include?(descriptor.name)
-            new_descriptor = descriptor.clone
+            new_descriptor = descriptor.dup
             new_descriptor.task = task
             new_descriptor.save!
           end

@@ -9,9 +9,7 @@ class RequestType::PoolingMethod < ActiveRecord::Base
 
   set_table_name('pooling_methods')
 
-  def after_initialize
-    import_behaviour
-  end
+  after_initialize :import_behaviour
 
   def import_behaviour
     return if pooling_behaviour.nil?

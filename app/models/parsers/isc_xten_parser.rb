@@ -48,9 +48,9 @@ class Parsers::ISCXTenParser
   end
 
   def self.is_isc_xten_file?(content)
-    @@my_instance = Parsers::ISCXTenParser.new(content)
+    parser = Parsers::ISCXTenParser.new(content)
     [:row, :col, :content, :raw_data, :concentration].each_with_index.map do |sym, pos|
-      @@my_instance.get_column_for_header(sym) == pos
+      parser.get_column_for_header(sym) == pos
     end.all?
   end
 

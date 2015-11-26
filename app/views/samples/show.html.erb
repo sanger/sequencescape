@@ -80,7 +80,7 @@
     This sample is associated with <%= pluralize @sample.studies.size, "study" %>.
   </div>
 
-  <% form_for :sample, :url => url_for({:controller => "samples", :id => @sample.id, :action => :add_to_study}), :html => {:method => :put} do |form| -%>
+  <%= form_for :sample, :url => url_for({:controller => "samples", :id => @sample.id, :action => :add_to_study}), :html => {:method => :put} do |form| -%>
   <table width='100%'>
     <thead>
       <tr>

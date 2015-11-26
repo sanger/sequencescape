@@ -1,6 +1,9 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+
+require 'aasm'
+
 class Project < ActiveRecord::Base
   include Api::ProjectIO::Extensions
   include ModelExtensions::Project
@@ -11,8 +14,11 @@ class Project < ActiveRecord::Base
   include EventfulRecord
   include AASM
   include Uuid::Uuidable
-  include Named
+  include SharedBehaviour::Named
   extend EventfulRecord
+
+  ACTIVE_STATE = 'active'
+
   has_many_events
   has_many_lab_events
 
@@ -34,13 +40,13 @@ class Project < ActiveRecord::Base
     transitions :to => :inactive, :from => [:pending, :active]
   end
 
-  named_scope :in_assets, lambda { |assets| {
-    :select => 'DISTINCT projects.*',
-    :joins => [
+  scope :in_assets, ->(assets) {
+    select('DISTINCT projects.*').
+    joins([
       'LEFT JOIN aliquots ON aliquots.project_id = projects.id',
-    ],
-    :conditions => ['aliquots.receptacle_id IN (?)',assets.map(&:id)]
-  }}
+    ]).
+    where(['aliquots.receptacle_id IN (?)',assets.map(&:id)])
+  }
 
   has_many :roles, :as => :authorizable
   has_many :orders
@@ -51,9 +57,13 @@ class Project < ActiveRecord::Base
   validates_presence_of :name
   validates_uniqueness_of :name, :on => :create, :message => "already in use (#{self.name})"
 
-  named_scope :for_search_query, lambda { |query,with_includes|
-    { :conditions => [ 'name LIKE ? OR id=?', "%#{query}%", query ] }
+  scope :for_search_query, ->(query,with_includes) {
+    where([ 'name LIKE ? OR id=?', "%#{query}%", query ])
   }
+
+  scope :valid, ->() { where(state: ACTIVE_STATE, approved: true) }
+  scope :alphabetical, ->() { order('name ASC') }
+  scope :for_user, ->(user) { joins({:roles=>:user_role_bindings}).where(:roles_users=>{:user_id=>user}) }
 
   def ended_billable_lanes(ended)
     events = []
@@ -128,7 +138,7 @@ class Project < ActiveRecord::Base
 
   def submittable?
     return true if project_metadata.project_funding_model.present?
-    errors.add_to_base("No funding model specified")
+    errors.add(:base,"No funding model specified")
     false
   end
 
@@ -169,6 +179,7 @@ class Project < ActiveRecord::Base
     attribute(:gt_committee_tracking_id)
 
     before_validation do |record|
+      record.project_cost_code = nil if record.project_cost_code.blank?
       record.project_funding_model = nil if record.project_funding_model.blank?
     end
   end
@@ -177,5 +188,5 @@ class Project < ActiveRecord::Base
     'project'
   end
 
-  named_scope :with_unallocated_budget_division, { :joins => :project_metadata, :conditions => { :project_metadata => { :budget_division_id => BudgetDivision.find_by_name('Unallocated') } } }
+  scope :with_unallocated_budget_division, -> { joins(:project_metadata).where(:project_metadata => { :budget_division_id => BudgetDivision.find_by_name('Unallocated') }) }
 end

@@ -42,7 +42,8 @@ Feature: Studies have timings for release of their data
     And I select "<period>" from "Delay for"
     When I press "Create"
     Then I should be on the studies page
-    And I should see "Data release delay reason comment can't be blank"
+    # Ideally this should be without the study metadata qualification
+    And I should see "Study metadata data release delay reason comment can't be blank"
 
     Examples:
       | period    |
@@ -73,7 +74,8 @@ Feature: Studies have timings for release of their data
     And I select "never" from "How is the data release to be timed?"
     When I press "Create"
     Then I should be on the studies page
-    And I should see "Data release prevention reason comment can't be blank"
+    # Again, ideally without study metadata
+    And I should see "Study metadata data release prevention reason comment can't be blank"
 
   Scenario: When the data release is never and the comment is supplied
     When I select "not applicable" from "What is the data release strategy for this study?"

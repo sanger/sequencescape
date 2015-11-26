@@ -16,7 +16,6 @@ class Studies::SampleRegistrationController < ApplicationController
     end.compact
 
     @sample_registrars = SampleRegistrar.register!(attributes)
-
     flash[:notice] = 'Your samples have been registered'
     respond_to do |format|
       format.html { redirect_to study_path(@study) }
@@ -24,27 +23,28 @@ class Studies::SampleRegistrationController < ApplicationController
       format.xml  { render(:xml  => flash.to_xml)  }
     end
   rescue SampleRegistrar::NoSamplesError => exception
-    flash[:error]      = 'You do not appear to have specified any samples'
+    action_flash[:error]      = 'You do not appear to have specified any samples'
     @sample_registrars = [ SampleRegistrar.new ]
     render(:action => 'new')
   rescue SampleRegistrar::RegistrationError => exception
-    flash[:error]      = 'Your samples have not been registered'
+    action_flash[:error]      = 'Your samples have not been registered'
     @sample_registrars = exception.sample_registrars
     render(:action => 'new')
   end
 
   def new
-    if params['file']
-      flash[:notice] = "Processing your file: please wait a few minutes..."
-      @sample_registrars = SampleRegistrar.from_spreadsheet(params['file'], @study, current_user)
-      flash[:notice] = 'Your file has been processed'
-    else
-      @sample_registrars = [ SampleRegistrar.new ]
-    end
+    @sample_registrars = [ SampleRegistrar.new ]
+  end
+
+  def spreadsheet
+    action_flash[:notice] = "Processing your file: please wait a few minutes..."
+    @sample_registrars = SampleRegistrar.from_spreadsheet(params['file'], @study, current_user)
+    action_flash[:notice] = 'Your file has been processed'
+    render :new
   rescue SampleRegistrar::SpreadsheetError => exception
     flash[:notice] = 'Your file has been processed'
     flash[:error] = exception.message
-    redirect_to upload_study_sample_registration_path
+    redirect_to upload_study_sample_registration_index_path
   end
 
   def upload

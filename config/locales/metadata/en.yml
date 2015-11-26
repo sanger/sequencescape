@@ -124,7 +124,7 @@ en:
           label: DNA source
 
         volume:
-          label: "Volume (&#181;l)" # NOTE: This is '&micro;' except we can unescape this in the code
+          label: "Volume (µl)"
 
         supplier_plate_id:
           label: Plate

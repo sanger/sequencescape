@@ -4,7 +4,7 @@
 class AddRackMapAndShape < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
-      Map::AssetShape.create!(
+      AssetShape.create!(
         :name => 'StripTubeRack',
         :horizontal_ratio => 12,
         :vertical_ratio   => 1,
@@ -15,7 +15,7 @@ class AddRackMapAndShape < ActiveRecord::Migration
 
   def self.down
     ActiveRecord::Base.transaction do
-      Map::AssetShape.find_by_name('StripTubeRack').tap do |shape|
+      AssetShape.find_by_name('StripTubeRack').tap do |shape|
         Map.find_all_by_shape(shape).each(&:destroy)
         shape.destroy
       end

@@ -22,7 +22,9 @@ module ::Core::Io::Json
     end
 
     def attribute(attribute, value, options = {})
-      named(attribute) { encode(value, options) }
+      named(attribute) do
+        encode(value, options)
+      end
     end
 
     def block(attribute, &block)
@@ -32,15 +34,16 @@ module ::Core::Io::Json
     def encode(object, options = {})
       case
       when object.nil?              then unencoded('null')
-      when Symbol     === object    then string_encode(object)
-      when TrueClass  === object    then unencoded('true')
-      when FalseClass === object    then unencoded('false')
-      when String     === object    then string_encode(object)
-      when Fixnum     === object    then unencoded(object.to_s)
-      when Float      === object    then unencoded(object.to_s)
-      when Date       === object    then string_encode(object.to_s)
-      when Time       === object    then string_encode(object.to_s)
-      when Hash       === object    then hash_encode(object, options)
+      when Symbol                        === object    then string_encode(object)
+      when TrueClass                     === object    then unencoded('true')
+      when FalseClass                    === object    then unencoded('false')
+      when String                        === object    then string_encode(object)
+      when Fixnum                        === object    then unencoded(object.to_s)
+      when Float                         === object    then unencoded(object.to_s)
+      when Date                          === object    then string_encode(object)
+      when ActiveSupport::TimeWithZone   === object    then string_encode(object.to_s)
+      when Time                          === object    then string_encode(object.to_s(:compatible))
+      when Hash                          === object    then hash_encode(object, options)
       when object.respond_to?(:zip) then array_encode(object) { |o| encode(o, options) }
       else object_encode(object, options)
       end

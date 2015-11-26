@@ -1,4 +1,4 @@
-compat.version=1.8
+compat.version=1.9
 cext.enabled=false
 objectspace.enabled=false
 compile.invokedynamic=true

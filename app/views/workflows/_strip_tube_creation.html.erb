@@ -5,7 +5,7 @@
 <p><%= @tubes_available %> remaining <strong><%= @tubes_requested %></strong> requested.</p>
 <p>Select the number of stips to create. Any remaining requests will be returned to the inbox.</p>
 
-<% form_for @task, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
+<%= form_for @task, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
   <dl>
     <dt><label for="source_plate_barcode">Scan source plate:</label></dt>
     <dd><%= text_field_tag("source_plate_barcode", nil, :size=>13, :maxlength=>13, :inputmode=>'numeric', :minlength=>13)  %></dd>

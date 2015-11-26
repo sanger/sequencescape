@@ -7,8 +7,8 @@ class Pulldown::RequestsTest < ActiveSupport::TestCase
   [ :wgs, :sc, :isc ].each do |request_type|
     context request_type.to_s.upcase do
       setup do
-        @request = Factory(:"pulldown_#{request_type}_request")
-        @request.asset.aliquots.each { |a| a.update_attributes!(:project => Factory(:project)) }
+        @request = create(:"pulldown_#{request_type}_request")
+        @request.asset.aliquots.each { |a| a.update_attributes!(:project => create(:project)) }
       end
 
     end

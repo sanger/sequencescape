@@ -18,7 +18,7 @@ class AddSubmissionTemplateNoPcrxTen < ActiveRecord::Migration
         RequestType.find_by_key(xtlb_name).library_types << lt
       end
 
-      tag_group = TagGroup.find_by_name('NEXTflex-96 barcoded adapters')
+      tag_group = TagGroup.find_by_name('NEXTflex-96 barcoded adapters')||TagGroup.first
 
       TagLayoutTemplate.create!(
         :name                => "NEXTflex-96 barcoded adapters tags in rows (first oligo: AACGTGAT)",

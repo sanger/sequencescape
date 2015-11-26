@@ -12,5 +12,5 @@ Feature: The submissions page should only autosuggests active and approved proje
     And I have an inactive project called "Project C"
     When I follow "Create Submission"
     Then I should see "Project A" within the javascript
-      And I should not see "Project B" within the javascript
-      And I should not see "Project C" within the javascript
+    And I should not see "Project B" within the javascript
+    And I should not see "Project C" within the javascript

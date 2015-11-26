@@ -5,26 +5,25 @@
 
 <h2>Create sample manifest</h2>
 
-<% semantic_form_for(@sample_manifest) do |form| %>
-  <% form.inputs :name => "Manifest Type" do %>
+<%= semantic_form_for(@sample_manifest) do |form| %>
+  <%= form.inputs :name => "Manifest Type" do %>
     <%= form.input :template,  :as => :select, :collection => @templates%>
   <% end %>
-  <% form.inputs :name => "Manifest For" do %>
+  <%= form.inputs :name => "Manifest For" do %>
     <%= form.input :study,  :as => :select, :collection => @studies %>
     <%= form.input :supplier,  :as => :select, :collection => @suppliers %>
   <% end %>
 
-  <% form.inputs :name => "Barcodes" do %>
+  <%= form.inputs :name => "Barcodes" do %>
     <%= form.input :count, :input_html => { :size => 3, :value => "1" }, :label => count_label_for(params[:type]) %>
     <%= form.input :barcode_printer,  :as => :select, :collection => @barcode_printers %>
     <%= form.input :only_first_label, :as => :boolean, :label => 'Print only the first label' %>
   <% end %>
 
+  <%= form.input :asset_type, :value => params[:type], :as => :hidden %>
 
-
-  <% form.buttons do %>
-    <%= form.input :asset_type, :value => params[:type], :as => :hidden %>
-    <%= form.commit_button 'Create manifest and print labels' %>
+  <%= form.actions do %>
+    <%= form.action(:submit, :as=>:button, :label => 'Create manifest and print labels') %>
   <% end %>
 
 

@@ -2,7 +2,7 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011 Genome Research Ltd.%>
 <%- add :title, "User Management" %>
-<%- add :admin_option, "Add new role" => new_role_path %>
+<%- add :admin_option, "Add new role" => new_admin_role_path %>
 <%- add :admin_option, "Back to Admin Panel" => admin_path %>
 
 <h1>Listing Roles</h1>
@@ -11,8 +11,8 @@
   <% @roles.each do |role| -%>
     <li>
       <h3><%= role.name.humanize %></h3>
-      <p><%= link_to "<strong>Edit #{role.name}'s role</strong>", edit_role_path(role) %></p>
-      <p><%= link_to "<strong>Show all users that are #{role.name}s</strong>", role_users_path(role) %></p>
+      <p><%= link_to "<strong>Edit #{role.name}'s role</strong>", edit_admin_role_path(role) %></p>
+      <p><%= link_to "<strong>Show all users that are #{role.name}s</strong>", admin_role_users_path(role) %></p>
     </li>
   <% end %>
 </ul>

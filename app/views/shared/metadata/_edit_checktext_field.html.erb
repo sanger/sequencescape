@@ -5,11 +5,11 @@
 </td>
   <tr>
   <td>
-  <% form.related_fields(:to => "check_#{field_name}", :when => "true") do %>
+  <%= form.related_fields(:to => "check_#{field_name}", :when => "true") do %>
     <%= form.text_field_without_property_field_wrapper(field_name)  %>
   <% end %>
   <td>
-    <% form.related_fields(:to => "check_#{field_name}", :when => "true") do %>
+    <%= form.related_fields(:to => "check_#{field_name}", :when => "true") do %>
       <!-- to add separator if need -->
     &nbsp;
   <% end %>
@@ -17,7 +17,7 @@
 </td>
   <td>
     <!-- Hack. we prefix with check , so we can use the #{field} attribute as it is without colliding with the real field -->
-    <% form.fields_for("check", form.object) do |check_form| %>
+    <%= form.fields_for("check", form.object) do |check_form| %>
   <%= check_form.select_without_property_field_wrapper("#{field_name}?", [["N/A", false], ["value", true]]) %>
 <% end %>
 </td>

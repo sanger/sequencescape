@@ -25,7 +25,7 @@
       <br />
       <strong>I have placed the above barcoded DNA plates in the reception fridge in the following lab:</strong>
       <br /><br />
-      <% form_for :asset,  :url => { :action => "import_from_snp" } do |f| %>
+      <%= form_for :asset,  :url => { :action => "import_from_snp" } do |f| %>
               <%= f.collection_select :location_id, Location.all, :id, :name %>
               <% @snp_plates.each_with_index do |plate_barcode,index| %>
                 <% next if plate_barcode.is_a?(Plate) %>

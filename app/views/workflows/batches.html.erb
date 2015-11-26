@@ -20,11 +20,11 @@
     <div id='details'>
       <table width='100%' cellpadding='4' cellspacing='0'>
         <tr class='header'>
-          <th width='10%'><%= link_to_remote 'ID', { :update => 'batches', :url => { :action => 'list', :search => 'id' } }, { :class => 'header'} %></th>
-          <th width='10%'><%= link_to_remote 'Samples', { :update => 'batches', :url => { :action => 'list', :search => 'samples' } }, { :class => 'header'} %></th>
-          <th width='35%'><%= link_to_remote 'Pipeline', { :update => 'batches', :url => { :action => 'list', :search => 'pipeline' } }, { :class => 'header'} %></th>
-          <th width='10%'><%= link_to_remote 'User', { :update => 'batches', :url => { :action => 'list', :search => 'user' } }, { :class => 'header'} %></th>
-          <th width='20%'><%= link_to_remote 'Created', { :update => 'batches', :url => { :action => 'list', :search => 'created' } }, { :class => 'header'} %></th>
+          <th width='10%'><%= link_to 'ID', { :update => 'batches', :remote => true , :url => { :action => 'list', :search => 'id' } }, { :class => 'header'} %></th>
+          <th width='10%'><%= link_to 'Samples', { :update => 'batches', :remote => true , :url => { :action => 'list', :search => 'samples' } }, { :class => 'header'} %></th>
+          <th width='35%'><%= link_to 'Pipeline', { :update => 'batches', :remote => true , :url => { :action => 'list', :search => 'pipeline' } }, { :class => 'header'} %></th>
+          <th width='10%'><%= link_to 'User', { :update => 'batches', :remote => true , :url => { :action => 'list', :search => 'user' } }, { :class => 'header'} %></th>
+          <th width='20%'><%= link_to 'Created', { :update => 'batches', :remote => true , :url => { :action => 'list', :search => 'created' } }, { :class => 'header'} %></th>
           <th width='15%'>&nbsp;</th>
         </tr>
       <table width='100%' cellpadding='4' cellspacing='0' id='batches'>
@@ -38,7 +38,7 @@
   <div id='main-links'>
     <div>
       Find batch by user:
-      <% form_tag ({:controller => :batches, :action => :index, :id => 'user'}) do -%>
+      <%= form_tag ({:controller => :batches, :action => :index, :id => 'user'}) do -%>
         <div class='entry'>
           <%= hidden_field_tag :id, 'user' %>
           <%= text_field :user_id, {} , :size => "25" %>

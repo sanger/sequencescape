@@ -3,8 +3,8 @@
 #Copyright (C) 2012 Genome Research Ltd.
 class SwitchIlluminaBPlatesToVerticalCherrypick < ActiveRecord::Migration
   class PlatePurpose < ActiveRecord::Base
-    set_table_name('plate_purposes')
-    set_inheritance_column(nil)
+    self.table_name =('plate_purposes')
+    set_inheritance_column
   end
 
   def self.up

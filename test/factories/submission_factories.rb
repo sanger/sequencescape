@@ -1,15 +1,35 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2011,2012 Genome Research Ltd.
-Factory.define :submission__ do |submission|
-  #raise "call Factory::submission instead "
+FactoryGirl.define do
+  factory :submission__ do |submission|
+    #raise "call FactoryHelp::submission instead "
+  end
+
+  factory :submission_without_order , :class => Submission do |submission|
+      submission.user                  {|user| user.association(:user)}
+  end
+
+  #TODO move in a separate file
+  #easier to keep it here at the moment because we are moving stuff between both
+  factory :order do |order|
+    study                 {|study| study.association(:study)}
+    workflow              {|workflow| workflow.association(:submission_workflow)}
+    project               {|project| project.association(:project)}
+    user                  {|user| user.association(:user)}
+    item_options          {}
+    request_options       {}
+    assets                []
+    request_types         { [ create(:request_type).id ] }
+  end
+
+
+  factory :order_with_submission, :parent => :order do |order|
+    after(:build) { |o| o.create_submission(:user_id => o.user_id) }
+  end
 end
 
-Factory.define :submission_without_order , :class => Submission do |submission|
-    submission.user                  {|user| user.association(:user)}
-end
-
-class Factory
+class FactoryHelp
   def self.submission(options)
     submission_options = {}
     [:message, :state].each do |option|
@@ -18,7 +38,7 @@ class Factory
     end
     state = options.delete(:state)
     message = options.delete(:message)
-    submission = Factory(:order_with_submission, options).submission
+    submission = FactoryGirl.create(:order_with_submission, options).submission
     #trying to skip StateMachine
     if submission_options.present?
       submission.update_attributes!(submission_options)
@@ -26,23 +46,3 @@ class Factory
     submission.reload
   end
 end
-
-
-#TODO move in a separate file
-#easier to keep it here at the moment because we are moving stuff between both
-Factory.define :order do |order|
-    order.study                 {|study| study.association(:study)}
-    order.workflow              {|workflow| workflow.association(:submission_workflow)}
-    order.project               {|project| project.association(:project)}
-    order.user                  {|user| user.association(:user)}
-    order.item_options          {}
-    order.request_options       {}
-    order.assets                []
-    order.request_types         { [ Factory(:request_type).id ] }
-end
-
-
-Factory.define :order_with_submission, :parent => :order do |order|
-  order.after_build { |o| o.create_submission(:user_id => o.user_id) }
-end
-

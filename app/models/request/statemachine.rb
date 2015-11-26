@@ -3,6 +3,8 @@
 #Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
 # This is a module containing the standard statemachine for a request that needs it.
 # It provides various callbacks that can be hooked in to by the derived classes.
+require 'aasm'
+
 module Request::Statemachine
   COMPLETED_STATE = [ 'passed', 'failed' ]
   OPENED_STATE    = [ 'pending', 'blocked', 'started' ]
@@ -117,21 +119,21 @@ module Request::Statemachine
       end
 
       # new version of combinable named_scope
-      named_scope :for_state, lambda { |state| { :conditions => { :state => state } } }
+     scope :for_state, ->(state) { { :conditions => { :state => state } } }
 
-      named_scope :completed, :conditions => {:state => COMPLETED_STATE}
-      named_scope :passed, :conditions => {:state => "passed"}
-      named_scope :failed, :conditions => {:state => "failed"}
-      named_scope :pipeline_pending, :conditions => {:state => "pending"} #  we don't want the blocked one here
-      named_scope :pending, :conditions => {:state => ["pending", "blocked"]} # block is a kind of substate of pending
+     scope :completed,        -> { where(:state => COMPLETED_STATE) }
+     scope :passed,           -> { where(:state => "passed") }
+     scope :failed,           -> { where(:state => "failed") }
+     scope :pipeline_pending, -> { where(:state => "pending") } #  we don't want the blocked one here }
+     scope :pending,          -> { where(:state => ["pending", "blocked"]) } # block is a kind of substate of pending }
 
-      named_scope :started, :conditions => {:state => "started"}
-      named_scope :cancelled, :conditions => {:state => "cancelled"}
-      named_scope :aborted, :conditions => {:state => "aborted"}
+     scope :started,          -> { where(:state => "started") }
+     scope :cancelled,        -> { where(:state => "cancelled") }
+     scope :aborted,          -> { where(:state => "aborted") }
 
-      named_scope :open, :conditions => {:state => OPENED_STATE}
-      named_scope :closed, :conditions => {:state => ["passed", "failed", "cancelled", "aborted"]}
-      named_scope :hold, :conditions => {:state => "hold"}
+     scope :open,             -> { where(:state => OPENED_STATE) }
+     scope :closed,           -> { where(:state => ["passed", "failed", "cancelled", "aborted"]) }
+     scope :hold,             -> { where(:state => "hold") }
     end
   end
 
@@ -149,7 +151,7 @@ module Request::Statemachine
 
   def transfer_aliquots
     target_asset.aliquots << asset.aliquots.map do |aliquot|
-      aliquot.clone.tap do |clone|
+      aliquot.dup.tap do |clone|
         clone.study_id   = initial_study_id   || aliquot.study_id
         clone.project_id = initial_project_id || aliquot.project_id
       end

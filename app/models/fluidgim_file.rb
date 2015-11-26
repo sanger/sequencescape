@@ -105,7 +105,7 @@ class FluidigmFile
   end
 
   def initialize(file_contents)
-    @csv = FasterCSV.parse(file_contents)
+    @csv = CSV.parse(file_contents)
     build_wells
     self
   end

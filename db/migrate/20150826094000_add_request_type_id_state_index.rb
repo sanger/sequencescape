@@ -7,6 +7,6 @@ class AddRequestTypeIdStateIndex < ActiveRecord::Migration
   end
 
   def self.down
-    remove_index 'request_type_id_state_index'
+    remove_index :requests, 'request_type_id_state_index'
   end
 end

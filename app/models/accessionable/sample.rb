@@ -39,7 +39,7 @@ module Accessionable
       @hold = sample_hold.blank? ? 'hold' : sample_hold
     end
 
-    def object_id
+    def accessionable_id
      @sample.id
     end
 

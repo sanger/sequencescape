@@ -14,7 +14,7 @@ module IlluminaB::RequestStatemachineChecks
       @owner.instance_eval do
         context "##{name}" do
           setup do
-            @request = target.new(:request_purpose=>Factory(:request_purpose))
+            @request = target.new(:request_purpose=>create(:request_purpose))
             @request.stubs(:perform_transfer_of_contents).returns(true)
           end
 

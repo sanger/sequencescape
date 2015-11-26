@@ -9,7 +9,7 @@ class AddPacbioSequencingPlate < ActiveRecord::Migration
         :cherrypickable_target => false,
         :cherrypickable_source => false,
         :size => 96,
-        :asset_shape => Map::AssetShape.find_by_name('Standard'),
+        :asset_shape => AssetShape.find_by_name('Standard'),
         :barcode_for_tecan => 'ean13_barcode'
       )
       AssignTubesToMultiplexedWellsTask.all.each {|task| task.update_attributes!(:purpose=>pbs)}

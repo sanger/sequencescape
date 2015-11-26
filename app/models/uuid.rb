@@ -16,16 +16,16 @@ class Uuid < ActiveRecord::Base
         after_create :ensure_uuid_created
 
         # Some named scopes ...
-        named_scope :include_uuid, { :include => :uuid_object }
+        scope :include_uuid, -> { includes(:uuid_object ) }
       end
     end
 
     # In the test environment we need to have a slightly different behaviour, as we can predefine
     # the UUID for a record to make things predictable.  In production new records always have new
     # UUIDs.
-    if ['test', 'cucumber'].include?(RAILS_ENV)
+    if ['test', 'cucumber'].include?(Rails.env)
       def ensure_uuid_created
-        self.uuid_object = Uuid.create!(:resource => self) if self.uuid_object(true).nil?
+        self.create_uuid_object!(:resource => self) unless self.uuid_object(true).present?
       end
     else
       def ensure_uuid_created
@@ -96,11 +96,11 @@ class Uuid < ActiveRecord::Base
     self.resource
   end
 
-  named_scope :with_resource_type, lambda { |type| { :conditions => { :resource_type => type.to_s } } }
+  scope :with_resource_type, ->(type) { where(:resource_type => type.to_s ) }
 
-  named_scope :include_resource, :include => :resource
-  named_scope :with_external_id, lambda { |external_id| { :conditions => { :external_id => external_id } } }
-  named_scope :with_resource_by_type_and_id, lambda { |t,id| { :conditions => { :resource_type => t, :resource_id => id } } }
+  scope :include_resource, -> { includes(:resource) }
+  scope :with_external_id, ->(external_id) { where(:external_id => external_id) }
+  scope :with_resource_by_type_and_id, ->(t,id) { where(:resource_type => t, :resource_id => id ) }
 
   before_validation do |record|
     record.external_id = Uuid.generate_uuid if record.new_record? and record.external_id.blank?

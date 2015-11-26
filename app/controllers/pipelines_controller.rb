@@ -5,7 +5,7 @@ class PipelinesController < ApplicationController
   before_filter :find_pipeline_by_id, :only => [ :show, :setup_inbox,
                                    :set_inbox, :training_batch, :show_comments, :activate, :deactivate, :destroy, :batches]
 
-  before_filter :lab_manager_login_required, :only => [:update_priority]
+  before_filter :lab_manager_login_required, :only => [:update_priority,:deactivate,:activate]
 
   after_filter :set_cache_disabled!, :only => [:show]
 
@@ -139,18 +139,6 @@ class PipelinesController < ApplicationController
       flash[:notice] = "Failed to deactivate pipeline"
       redirect_to pipeline_path(@pipeline)
     end
-  end
-
-  def destroy
-    unless current_user.is_administrator?
-      flash[:error]  = "User #{current_user.name} can't delete pipelines"
-      redirect_to :action => "index"
-      return
-    end
-
-    @pipeline.destroy
-    flash[:notice] = "Pipeline deleted"
-    redirect_to :action => "index"
   end
 
   def batches

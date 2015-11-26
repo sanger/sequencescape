@@ -8,7 +8,7 @@ class PlateTemplatesControllerTest < ActionController::TestCase
 
   context "#PlateTemplates controller" do
     setup do
-      @user = Factory(:slf_manager)
+      @user =FactoryGirl.create(:slf_manager)
       @controller.stubs(:current_user).returns(@user)
     end
     should_require_login
@@ -17,18 +17,18 @@ class PlateTemplatesControllerTest < ActionController::TestCase
       setup do
         get :index
       end
-      should_render_template :index
-      should_respond_with :success
-      should_not_set_the_flash
+      should render_template :index
+      should respond_with :success
+      should_not set_the_flash
     end
 
     context "#new" do
       setup do
         get :new
       end
-      should_render_template :new
-      should_respond_with :success
-      should_not_set_the_flash
+      should render_template :new
+      should respond_with :success
+      should_not set_the_flash
     end
 
     context "#create" do
@@ -36,8 +36,8 @@ class PlateTemplatesControllerTest < ActionController::TestCase
         setup do
           post :create
         end
-        should_respond_with :redirect
-        should_set_the_flash_to "Please enter a name"
+        should respond_with :redirect
+        should set_the_flash.to( "Please enter a name")
       end
 
       context "with valid parameters" do
@@ -46,8 +46,8 @@ class PlateTemplatesControllerTest < ActionController::TestCase
           @old_count_wells = Well.count
           post :create, :name=>"test",:user_id=>@user.id, :rows => 8,  :cols => 12, :empty_well=>{"A1"=>1,"H12"=>96}
         end
-        should_respond_with :redirect
-        should_set_the_flash_to "Template saved"
+        should respond_with :redirect
+        should set_the_flash.to( "Template saved")
         should "increment plate templates" do
           assert_equal @old_count_plate+1, PlateTemplate.count
         end

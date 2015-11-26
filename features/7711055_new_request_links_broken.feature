@@ -16,7 +16,7 @@ Feature: Creating new requests from an asset
       And the asset "Sample tube for testing new request" belongs to study "Study testing new request"
 
     Given I am on the assets page for the study "Study testing new request" in the "<workflow>" workflow
-     When I follow "New request" within "*[@id='asset_sample_tube_for_testing_new_request']"
+     When I follow "New request" within "[id='asset_sample_tube_for_testing_new_request']"
      Then I should be on the new request page for "Sample tube for testing new request"
       And "Study testing new request" should be selected from "Study"
 
@@ -124,10 +124,10 @@ Feature: Creating new requests from an asset
       And the asset "<asset type> for testing new request" belongs to study "Study testing new request"
 
     Given I am on the new request page for "<asset type> for testing new request"
+
+     When I select "<request type>" from "Request type"
      Then the "Fragment size required (from)" field should contain "<fragment size required from>"
       And the "Fragment size required (to)" field should contain "<fragment size required to>"
-
-    When I select "<request type>" from "Request type"
      And I fill in the request fields with sensible values for "<request type>"
      And I select "Study testing new request" from "Study"
      And I select "Project testing new request" from "Project"
@@ -187,6 +187,6 @@ Feature: Creating new requests from an asset
      And I select "Project testing new request" from "Project"
      And I press "Create"
     Then I should see "Validation failed"
-     And "Illumina-C Library creation" should be selected from "Request type"
+     And "Illumina-C Library creation" should be selected from a disabled "Request type"
      And "Study testing new request" should be selected from "Study"
      And "Project testing new request" should be selected from "Project"

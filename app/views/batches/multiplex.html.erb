@@ -10,8 +10,8 @@
   This batch belongs to pipeline: <%= @batch.pipeline.name %>
 </div>
 
-<% form_for :batch, :url => {:action => "add_tags", :id => @batch} do |form| -%>
-  <% form.error_messages %>
+<%= form_for :batch, :url => {:action => "add_tags", :id => @batch} do |form| -%>
+  <%= form.error_messages %>
   <%= render :partial => "assign_tags", :locals => { :requests => @batch.ordered_requests, :form => form } %>
 
 <% end %>

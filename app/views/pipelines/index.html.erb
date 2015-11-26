@@ -10,12 +10,17 @@
   <% add :menu, "Create controls" => new_asset_path -%>
 <% end %>
 
-
-<h1>PIPELINES</h1>
-<div class="info">
-  Available pipelines
+<div class="page-header">
+<h1>PIPELINES <small>Available pipelines</small></h1>
 </div>
 
+<div class="col-md-6">
 <% @grouping.each do |group_name, pipelines| %>
-  <%= render :partial => 'pipelines', :locals => { :title => group_name, :pipelines => pipelines } %>
+  <%= render :partial => 'pipelines', :locals => { :title => group_name, :pipelines => pipelines, :style=>'info' } %>
+<% end %>
+</div>
+<% if current_user.pipelines.active.present? %>
+  <div class="col-md-6">
+    <%= render :partial => 'pipelines', :locals => { :title => 'Your Most Recent', :pipelines => current_user.pipelines.active, :style=>'success' } %>
+  </div>
 <% end %>

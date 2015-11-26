@@ -7,25 +7,23 @@ class Comment < ActiveRecord::Base
   has_many :comments, :as => :commentable
   belongs_to :user
 
-  named_scope :for_plate, lambda { |plate|
+  scope :for_plate, ->(plate) {
 
     submissions = plate.all_submission_ids
 
     if submissions.present?
       rids = Request.find(:all,:select=>'id',:conditions=>{:submission_id=>submissions}).map(&:id)
-      {
-        :conditions => ['(commentable_type= "Request" AND commentable_id IN (?)) OR (commentable_type = "Asset" and commentable_id = ?)',rids,plate.id],
-        :group => 'comments.description, comments.title, comments.user_id'
-      }
+      where([
+        '(commentable_type= "Request" AND commentable_id IN (?)) OR (commentable_type = "Asset" and commentable_id = ?)',
+        rids,plate.id
+      ]).group('comments.description, comments.title, comments.user_id')
     else
-      {
-        :conditions => ['comments.commentable_type = "Asset" and commentable_id = ?', plate.id]
-      }
+      where(['comments.commentable_type = "Asset" and commentable_id = ?', plate.id])
     end
 
   }
 
-  named_scope :include_uuid, {} # BLUFF!
+  scope :include_uuid, -> { where('TRUE') }
 
 end
 
