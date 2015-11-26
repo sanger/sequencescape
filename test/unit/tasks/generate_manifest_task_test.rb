@@ -18,8 +18,8 @@ class GenerateManifestTaskTest < ActiveSupport::TestCase
     context '#generate_manifest_task' do
       context 'when obtaining a new manifest' do
         should 'filter incorrect characters' do
-          @batch                = Factory :batch, :id => 1
-          @study                = Factory :study, :name => [
+          @batch                = create :batch, :id => 1
+          @study                = create :study, :name => [
           "Study name with any content:’'[](){}⟨⟩:,،、‒–—―…......!.‐-?‘’“”'';/⁄· &*@•^†",
           "‡°″¡¿#№÷×ºª%‰+−=‱¶′″‴§~_|‖‗¦©℗®℠™¤₳฿₵¢₡₢$₫₯₠€ƒ₣₲₴₭₺ℳ₥₦₧₱₰£៛₽₹₨₪৳₸₮₩¥⁂❧☞‽⸮◊※",
           "⁀and no more"].join('')

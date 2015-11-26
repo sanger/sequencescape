@@ -90,6 +90,14 @@ class Asset < ActiveRecord::Base
     []
   end
 
+  def barcode_and_created_at_hash
+    return {} if barcode.blank?
+    {
+      :barcode    => generate_machine_barcode,
+      :created_at => created_at
+    }
+  end
+
   def study_ids
     []
   end
