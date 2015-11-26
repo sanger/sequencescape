@@ -801,8 +801,8 @@ ActiveRecord::Schema.define(:version => 20151029152735) do
   create_table "plate_creator_parent_purposes", :force => true do |t|
     t.integer  "plate_creator_id", :null => false
     t.integer  "plate_purpose_id", :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
   end
 
   create_table "plate_creator_purposes", :force => true do |t|
