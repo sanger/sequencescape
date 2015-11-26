@@ -10,7 +10,7 @@ class PipelinesController < ApplicationController
   after_filter :set_cache_disabled!, :only => [:show]
 
   def index
-    @pipelines = Pipeline.active.internally_managed.all(:order => "sorter ASC")
+    @pipelines = Pipeline.active.internally_managed.alphabetical.all
     @grouping  = @pipelines.inject(Hash.new { |h,k| h[k] = [] }) { |h,p| h[p.group_name] << p ; h }
 
     respond_to do |format|

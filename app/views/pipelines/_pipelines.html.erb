@@ -3,26 +3,17 @@
 #Copyright (C) 2007-2011,2012 Genome Research Ltd.%>
 
 
-<%= panel(style,title:"#{title} pipelines".titleize) do %>
+<%= link_panel(style,title:"#{title} pipelines".titleize) do %>
+  <% pipelines.each do |pipeline| -%>
 
-  <% if pipelines.empty? -%>
-    <div id="empty_filter">
-      No pipelines found. <%= link_to "Create the first one", :action => "new" %>
-    </div>
-  <% else -%>
-    <ul>
-      <% pipelines.each do |pipeline| -%>
+    <% if pipeline.active? -%>
+      <%= link_to(pipeline.name, pipeline_path(pipeline), :class=>"list-group-item") %>
+    <% else -%>
+      <% if current_user.is_administrator? -%>
+        <%= link_to("#{pipeline.name} [Inactive]", pipeline_path(pipeline), :class=>"list-group-item disabled") %>
+      <% end %>
+    <% end -%>
 
-        <% if pipeline.active? -%>
-          <li><%= link_to pipeline.name, pipeline_path(pipeline) %></li>
-        <% else -%>
-          <% if current_user.is_administrator? -%>
-            <li><%= link_to pipeline.name, pipeline_path(pipeline) %> (inactive)</li>
-          <% end %>
-        <% end -%>
-
-      <% end -%>
-    </ul>
   <% end -%>
 <% end %>
 

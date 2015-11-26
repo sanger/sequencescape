@@ -4,6 +4,18 @@
 module BootstrapHelper
 
   def panel(type=:default,options={},&block)
+    bs_custom_panel(type,:div,{:class=>"panel-body"},options,&block)
+  end
+
+  def list_panel(type=:default,options={},&block)
+    bs_custom_panel(type,:ul,{:class=>"list-group"},options,&block)
+  end
+
+  def link_panel(type=:default,options={},&block)
+    bs_custom_panel(type,:div,{:class=>"list-group"},options,&block)
+  end
+
+  def bs_custom_panel(type,body_type,body_options,options,&block)
     title = options.delete(:title)
     options[:class] ||= String.new
     options[:class] << " panel panel-#{type}"
@@ -12,7 +24,7 @@ module BootstrapHelper
       out << content_tag(:div,:class=>"panel-heading") do
         content_tag(:h3,title,:class=>"panel-title")
       end unless title.nil?
-      out << content_tag(:div,:class=>"panel-body",&block)
+      out << content_tag(body_type,body_options,&block)
     end
   end
 
