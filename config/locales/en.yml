@@ -63,6 +63,7 @@ en:
       pipelines: "Pipelines"
       batches: "Batches"
       reception: "Reception"
+      labwhere_reception: "Labwhere Reception"
       labsearch: "Lab search"
       labview:  "Lab view"
 

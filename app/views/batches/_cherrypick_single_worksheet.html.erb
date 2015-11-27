@@ -17,24 +17,19 @@
          <th>Bed</th>
          <th>Plate name</th>
          <th>Barcode</th>
-         <th>Storage Area</th>
-         <th>Freezer</th>
-         <th>Building Area</th>
+         <th>Storage location</th>
        </tr>
      </thead>
      <tbody>
        <% source_plate_colour = {} %>
        <% robot_plate_layout[1].sort{|a,b| a[1]<=>b[1]}.each do |barcode,index| -%>
          <% plate = Plate.find_from_machine_barcode(barcode) %>
-         <% location_data = plate.get_storage_location %>
          <% source_plate_colour["#{barcode}"] = "colour#{index%12}" %>
        <tr>
          <td>SCRC<%= index %></td>
          <td><%= plate.barcode %></td>
          <td><strong><%= barcode %></strong></td>
-         <td><%= location_data["storage_area"] %></td>
-         <td><%= location_data["storage_device"] %></td>
-         <td><%= location_data["building_area"] %> - <%= location_data["building"] %></td>
+         <td ><%= plate.storage_location %></td>
        </tr>
        <% end -%>
      </tbody>
