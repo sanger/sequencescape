@@ -54,7 +54,6 @@ class LabwhereReception
     add_error('Could not find specified location in Sequencescape') if location.nil?
     add_error("Could not find labware #{missing_assets.join(', ')} in Sequencescape") unless missing_assets.empty?
     add_error("No user supplied") if user_code.blank?
-    add_error("No location scanned") if location_barcode.blank?
     @valid
   end
 

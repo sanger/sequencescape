@@ -53,6 +53,39 @@ class LabwhereReceptionsControllerTest < ActionController::TestCase
         should_redirect_to('labwhere_receptions') { '/labwhere_receptions' }
       end
 
+      context 'with no location' do
+
+        setup do
+          LabWhereClient::Scan.expects(:create).with(
+            :location_barcode=>'',:user_code=>'ID123',:labware_barcodes=>["1220000001831","1220000002845","3980000001795" ]
+          ).returns(MockResponse.new(true,''))
+
+          post :create, { :labwhere_reception =>{
+            :barcodes => {"1" => "1220000001831", "2" => " 1220000002845 ", "3" => "3980000001795" },
+            :location_id => @location.id,
+            :user_code => 'ID123',
+            :location_barcode => ''
+          }}
+        end
+
+        should 'Move items in sequencescape' do
+          [@plate,@plate_2,@sample_tube].each do |asset|
+            asset.reload
+            assert_equal @location, asset.location, "Did not move #{asset}"
+          end
+        end
+
+        should 'Create reception events' do
+          [@plate,@plate_2,@sample_tube].each do |asset|
+            assert_equal Event::ScannedIntoLabEvent, asset.events.last.class
+            assert_equal "Scanned into #{@location.name}", asset.events.last.message
+          end
+        end
+
+        should_set_the_flash_to "Locations updated!"
+        should_redirect_to('labwhere_receptions') { '/labwhere_receptions' }
+      end
+
       context 'with missing assets' do
         setup do
           post :create, { :labwhere_reception =>{
