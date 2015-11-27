@@ -19,7 +19,7 @@ class PlatesControllerTest < ActionController::TestCase
        FactoryGirl.create :plate_creator_purpose, { :plate_purpose => p, :plate_creator =>  @pico_assay_plate_creator }
       end
       @dilution_plates_creator     =FactoryGirl.create :plate_creator,  :plate_purpose => PlatePurpose.find_by_name!('Working dilution')
-	  
+
       create :plate_creator_purpose, {
         :plate_purpose => PlatePurpose.find_by_name!('Working dilution'),
         :plate_creator =>  @dilution_plates_creator
@@ -68,8 +68,8 @@ class PlatesControllerTest < ActionController::TestCase
             post :create, :plates => {:creator_id => @gel_dilution_plates_creator.id, :barcode_printer => @barcode_printer.id, :user_barcode => '2470000100730'}
           end
 
-           should "change Plate.count by 1" do
-             assert_equal 1,  Plate.count  - @plate_count, "Expected Plate.count to change by 1"
+          should "change Plate.count by 1" do
+            assert_equal 1,  Plate.count  - @plate_count, "Expected Plate.count to change by 1"
           end
           should respond_with :redirect
           should set_the_flash.to( /Created/)
@@ -78,49 +78,70 @@ class PlatesControllerTest < ActionController::TestCase
         context "Create a Plate" do
           context "with one source plate" do
             setup do
-              @well =  Factory :well
+              @well =  create :well
               @parent_plate.wells << [@well]
               @parent_raw_barcode = Barcode.calculate_barcode(Plate.prefix, @parent_plate.barcode.to_i)
             end
+
             context "and we don't select any dilution factor" do
               context "when we don't have a parent" do
                 setup do
+                  @plate_count =  Plate.count
                   post :create, :plates => {:creator_id =>  @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
                     :source_plates =>"", :user_barcode => '2470000100730'}
                 end
-                should_change("Plate.count", :by => 1) { Plate.count }
+
+                should "change Plate.count by 1" do
+                  assert_equal 1,  Plate.count  - @plate_count, "Expected Plate.count to change by 1"
+                end
+
                 should "set the dilution factor to default (1.0)" do
                   assert_equal 1.0, Plate.last.dilution_factor
                 end
+
               end
+
               context "when the parent doesn't have a dilution factor" do
                 setup do
+                  @plate_count =  Plate.count
                   post :create, :plates => {:creator_id =>  @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
                     :source_plates =>"#{@parent_raw_barcode}", :user_barcode => '2470000100730'}
                 end
-                should_change("Plate.count", :by => 1) { Plate.count }
+
+                should "change Plate.count by 1" do
+                  assert_equal 1,  Plate.count  - @plate_count, "Expected Plate.count to change by 1"
+                end
+
                 should "set the dilution factor to default (1.0)" do
                   assert_equal 1.0, @parent_plate.children.first.dilution_factor
                 end
               end
+
               context "when the parent plate has a dilution factor of 3.53" do
                 setup do
                   @parent_plate.dilution_factor=3.53
                   @parent_plate.save!
+                  @plate_count =  Plate.count
                   post :create, :plates => {:creator_id =>  @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
                     :source_plates =>"#{@parent_raw_barcode}", :user_barcode => '2470000100730'}
                 end
-                should_change("Plate.count", :by => 1) { Plate.count }
+
+                should "change Plate.count by 1" do
+                  assert_equal 1,  Plate.count  - @plate_count, "Expected Plate.count to change by 1"
+                end
+
                 should "set the dilution factor to 3.53" do
                   assert_equal 3.53, @parent_plate.children.first.dilution_factor
                 end
               end
+
               context "when we have 2 parents" do
                 setup do
-                    @well2 =  Factory :well
-                    @parent_plate2.wells << [@well2]
-                    @parent2_raw_barcode = Barcode.calculate_barcode(Plate.prefix, @parent_plate2.barcode.to_i)
+                  @well2 =  create :well
+                  @parent_plate2.wells << [@well2]
+                  @parent2_raw_barcode = Barcode.calculate_barcode(Plate.prefix, @parent_plate2.barcode.to_i)
                 end
+
                 context "and first parent has a dilution factor of 3.53, and second parent with 4.56" do
                   setup do
                     @parent_plate.dilution_factor=3.53
@@ -129,25 +150,37 @@ class PlatesControllerTest < ActionController::TestCase
                     @parent_plate2.dilution_factor=4.56
                     @parent_plate2.save!
                   end
+
                   context "and I don't select any dilution factor" do
                     setup do
+                      @plate_count =  Plate.count
                       post :create, :plates => {:creator_id =>  @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
                         :source_plates =>"#{@parent_raw_barcode},#{@parent2_raw_barcode}", :user_barcode => '2470000100730'}
                     end
-                    should_change("Plate.count", :by => 2) { Plate.count }
+
+                    should "change Plate.count by 2" do
+                      assert_equal 2,  Plate.count  - @plate_count, "Expected Plate.count to change by 2"
+                    end
+
                     should "set the dilution factor of each children to 3.53 and 4.56" do
                       assert_equal 3.53, @parent_plate.children.first.dilution_factor
                       assert_equal 4.56, @parent_plate2.children.first.dilution_factor
                     end
                   end
+
                   context "and I select a dilution factor of 2.0" do
                     setup do
+                      @plate_count =  Plate.count
                       post :create, :plates => {:creator_id =>  @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
                         :source_plates =>"#{@parent_raw_barcode},#{@parent2_raw_barcode}", :user_barcode => '2470000100730',
                         :dilution_factor => 2.0
                       }
                     end
-                    should_change("Plate.count", :by => 2) { Plate.count }
+
+                    should "change Plate.count by 2" do
+                      assert_equal 2,  Plate.count  - @plate_count, "Expected Plate.count to change by 2"
+                    end
+
                     should "set the dilution factor of each children to 7.06 and 9.12" do
                       assert_equal 7.06, @parent_plate.children.first.dilution_factor
                       assert_equal 9.12, @parent_plate2.children.first.dilution_factor
@@ -156,38 +189,55 @@ class PlatesControllerTest < ActionController::TestCase
                 end
               end
             end
+
             context "and we select a dilution factor of 12.0" do
               context "when we don't have a parent" do
                 setup do
+                  @plate_count =  Plate.count
                   post :create, :plates => {:creator_id =>  @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
                     :source_plates =>"", :user_barcode => '2470000100730',
                     :dilution_factor => 12.0 }
                 end
-                should_change("Plate.count", :by => 1) { Plate.count }
+
+                should "change Plate.count by 1" do
+                  assert_equal 1,  Plate.count  - @plate_count, "Expected Plate.count to change by 1"
+                end
+
                 should "set the dilution factor to 12.0" do
                   assert_equal 12.0, Plate.last.dilution_factor
                 end
               end
               context "when the parent doesn't have a dilution factor" do
                 setup do
+                  @plate_count =  Plate.count
                   post :create, :plates => {:creator_id =>  @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
                     :source_plates =>"#{@parent_raw_barcode}", :user_barcode => '2470000100730',
                     :dilution_factor => 12.0 }
                 end
-                should_change("Plate.count", :by => 1) { Plate.count }
+
+                should "change Plate.count by 1" do
+                  assert_equal 1,  Plate.count  - @plate_count, "Expected Plate.count to change by 1"
+                end
+
                 should "set the dilution factor to 12.0" do
                   assert_equal 12.0, @parent_plate.children.first.dilution_factor
                 end
               end
+
               context "when the parent plate has a dilution factor of 4.0" do
                 setup do
+                  @plate_count =  Plate.count
                   @parent_plate.dilution_factor=4
                   @parent_plate.save!
                   post :create, :plates => {:creator_id =>  @dilution_plates_creator.id, :barcode_printer => @barcode_printer.id,
                     :source_plates =>"#{@parent_raw_barcode}", :user_barcode => '2470000100730',
                     :dilution_factor => 12.0 }
                 end
-                should_change("Plate.count", :by => 1) { Plate.count }
+
+                should "change Plate.count by 1" do
+                  assert_equal 1,  Plate.count  - @plate_count, "Expected Plate.count to change by 1"
+                end
+
                 should "sets the dilution factor to 48.0 (parent=4*child=12)" do
                   assert_equal 48.0, @parent_plate.children.first.dilution_factor
                 end
@@ -199,21 +249,28 @@ class PlatesControllerTest < ActionController::TestCase
         context "Create Pico Assay Plates" do
           context "with one source plate" do
             setup do
-              @picoassayplate_count =  PicoAssayPlate.count
               @parent_raw_barcode = Barcode.calculate_barcode(Plate.prefix, @parent_plate.barcode.to_i)
             end
+
             context "without a dilution factor" do
               setup do
+                @picoassayplate_count =  PicoAssayPlate.count
                 post :create, :plates => {:creator_id => @pico_assay_plate_creator.id, :barcode_printer => @barcode_printer.id,
                   :source_plates =>"#{@parent_raw_barcode}", :user_barcode => '2470000100730' }
               end
-              should_change("PicoAssayPlate.count", :by => 2) { PicoAssayPlate.count }
+
+              should "change PicoAssayPlate.count by 2" do
+                assert_equal 2,  PicoAssayPlate.count - @picoassayplate_count, "Expected PicoAssayPlate.count to change by 2"
+              end
+
               should "add a child to the parent plate" do
                 assert Plate.find(@parent_plate.id).children.first.is_a?(Plate)
                 assert_equal PicoAssayPlatePurpose.find_by_name("Pico Assay A"), Plate.find(@parent_plate.id).children.first.plate_purpose
               end
-              should_respond_with :redirect
-              should_set_the_flash_to /Created/
+
+              should respond_with :redirect
+
+              should set_the_flash.to(/Created/)
             end
 
             context "with a parent with dilution factor 4 and a specified dilution factor 12" do
@@ -225,6 +282,7 @@ class PlatesControllerTest < ActionController::TestCase
                   :dilution_factor => 12.0,
                   :user_barcode => '2470000100730' }
               end
+
               should "create all the pico assay plates with dilution factor 48" do
                 childrens = Plate.find(@parent_plate.id).children
                 assert_equal 48.0, childrens.first.dilution_factor

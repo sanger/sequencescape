@@ -61,14 +61,14 @@ class PicoDilutionsControllerTest < ActionController::TestCase
 
     context "with assay plates " do
       setup do
-        @working_dilution_plate_a = Factory :working_dilution_plate, :barcode => "2222"
-        @working_dilution_plate_b = Factory :working_dilution_plate, :barcode => "2223"
-        @assay_plate_a = Factory :pico_assay_a_plate, :barcode => "9999"
-        @assay_plate_b = Factory :pico_assay_b_plate, :barcode => "8888"
-        @assay_plate_c = Factory :pico_assay_a_plate, :barcode => "5555"
-        @assay_plate_d = Factory :pico_assay_a_plate, :barcode => "5555"
-        @sequenom_plate_a = Factory :sequenom_qc_plate , :barcode => "7777", :name=>'a'
-        @sequenom_plate_b = Factory :sequenom_qc_plate , :barcode => "6666", :name=>'b'
+        @working_dilution_plate_a = create :working_dilution_plate, :barcode => "2222"
+        @working_dilution_plate_b = create :working_dilution_plate, :barcode => "2223"
+        @assay_plate_a = create :pico_assay_a_plate, :barcode => "9999"
+        @assay_plate_b = create :pico_assay_b_plate, :barcode => "8888"
+        @assay_plate_c = create :pico_assay_a_plate, :barcode => "5555"
+        @assay_plate_d = create :pico_assay_a_plate, :barcode => "5555"
+        @sequenom_plate_a = create :sequenom_qc_plate , :barcode => "7777", :name=>'a'
+        @sequenom_plate_b = create :sequenom_qc_plate , :barcode => "6666", :name=>'b'
 
         AssetLink.create_edge!(@working_dilution_plate_a,@assay_plate_a)
         AssetLink.create_edge!(@working_dilution_plate_a,@assay_plate_b)
