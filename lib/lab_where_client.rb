@@ -84,8 +84,6 @@ module LabWhereClient
     end
   end
 
-  LabwhereException = Class.new(StandardError)
-
   class Labware < Endpoint
     endpoint_name 'labwares'
 
