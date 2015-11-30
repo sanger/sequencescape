@@ -18,8 +18,6 @@
 <% add(:menu, 'Request additional sequencing' => new_request_asset_path_in_context(@asset)) if current_user_can_request_additional_sequencing_on?(@asset) -%>
 
 <% if current_user.administrator? %>
-  <% add :menu, { "Move asset to different study" => filtered_move_asset_path(@asset.id) } -%>
-  <% add :menu, { "Move asset to 2D tube" => move_to_2D_asset_path(@asset.id) } -%>
   <% add(:menu, 'Request a new library' => new_request_asset_path_in_context(@asset)) if current_user_can_request_additional_library_on?(@asset) -%>
 <% end %>
 

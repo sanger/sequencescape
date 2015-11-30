@@ -4,7 +4,7 @@
 
 class AssetsController < ApplicationController
   include BarcodePrintersController::Print
-   before_filter :discover_asset, :only => [:show, :edit, :update, :destory, :summary, :close, :print_assets, :print, :show_plate, :history, :holded_assets, :complete_move_to_2D]
+   before_filter :discover_asset, :only => [:show, :edit, :update, :destory, :summary, :close, :print_assets, :print, :show_plate, :history, :holded_assets]
 
   def index
     @assets_without_requests = []
@@ -337,66 +337,8 @@ class AssetsController < ApplicationController
     end
   end
 
-  def filtered_move
-    @asset = Asset.find(params[:id])
-    if @asset.resource
-      @studies = []
-      @studies_from = []
-      flash[:error] = "This Asset is Control Lane."
-    else
-      @studies = Study.all
-      @studies.each do |study|
-        study.name = study.name + " (" + study.id.to_s + ")"
-      end
-      @studies_from = @asset.studies
-      @studies_from.each do |study|
-        study.name = study.name + " (" + study.id.to_s + ")"
-      end
-    end
-  end
-
-  def select_asset_name_for_move
-    @asset = Asset.find(params[:asset_id])
-    study = Study.find_by_id(params[:study_id_to])
-    @assets = []
-    unless study.nil?
-      @assets = study.asset_groups
-    end
-    render :layout => false
-  end
-
   def reset_values_for_move
     render :layout => false
-  end
-
-  def move_single(params)
-    @asset          = Asset.find(params[:id])
-    @study_from     = Study.find(params[:study_id_from])
-    @study_to       = Study.find(params[:study_id_to])
-    @asset_group    = AssetGroup.find_by_id(params[:asset_group_id])
-    if @asset_group.nil?
-      @asset_group    = AssetGroup.find_or_create_asset_group(params[:new_assets_name], @study_to)
-    end
-
-    result = @asset.move_to_asset_group(@study_from, @study_to, @asset_group, params[:new_assets_name], current_user)
-    return result
-  end
-
-  def move
-    @asset = Asset.find(params[:id])
-    unless check_valid_values(params)
-      redirect_to :action => :filtered_move, :id => params[:id]
-      return
-    end
-
-    result = move_single(params)
-    if result
-      flash[:notice] = "Assets has been moved"
-      redirect_to asset_path(@asset)
-    else
-      flash[:error] = @asset.errors.full_messages.join("<br />")
-      redirect_to :action => "filtered_move", :id => @asset.id
-    end
   end
 
   def find_by_barcode

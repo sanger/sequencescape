@@ -5,14 +5,16 @@
 <%- add :menu, "View all projects" => url_for(:controller => "admin/projects", :action => "index")  %>
 
 <% if @projects %>
-  <h1>Manage Projects</h1>
-  <%= form_tag(:url => { :action => :filter }, :remote => true, :html => { :id => "filter_form"}, :id => "filter_form", :update => "projects", :loading => "show_update_loader();", :complete => "hide_update_loader();") %>
+  <%= page_title 'Projects', 'Manage' %>
+
+  <%= form_tag(filter_admin_projects_path, :remote => true, :id => "filter_form", :class=>'remote-form observed', :data => { :update => "#projects",  :throbber => '#update_loader'} ) %>
 
     <div class='callout_filter'>
       <table width='100%'>
         <tr>
           <td>
-            Show <%= select :filter, :status, [ "open", "closed", "all" ] -%> projects that are <%= select :filter, :by, [ "not approved", "unallocated division", "unallocated manager", "all" ], {}, :onchange => "swap_filter();" -%>
+            <% state_selection = Project.states.map {|state| [state.to_s.humanize, state.to_s]} + [['All',nil]] %>
+            Show <%= select :filter, :status, state_selection -%> projects that are <%= select :filter, :by, [ "not approved", "unallocated division", "unallocated manager", "all" ], {}, :onchange => "swap_filter();" -%>
           </td>
           <td style='text-align: right;'>
             <%= image_tag "ajax-loader.gif", :size => "10x10", :id => "update_loader", :style => "display: none;"%>
@@ -20,9 +22,9 @@
           </td>
         </tr>
       </table>
-      <%= observe_form(:filter_form, :url => { :action => :filter }, :loading => "show_update_loader();", :complete => "hide_update_loader();", :frequency => 0.5, :update => :projects) %>
     </div>
   </form>
+
   <div id='projects'>
     <%= render :partial => "filtered_projects" %>
   </div>

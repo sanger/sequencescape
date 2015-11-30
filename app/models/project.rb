@@ -17,6 +17,10 @@ class Project < ActiveRecord::Base
   include SharedBehaviour::Named
   extend EventfulRecord
 
+  def self.states
+    Project.aasm_states.map(&:name)
+  end
+
   ACTIVE_STATE = 'active'
 
   has_many_events
@@ -54,16 +58,30 @@ class Project < ActiveRecord::Base
   has_many :submissions, :through => :orders, :source => :submission, :uniq => true
   has_many :sample_manifests
 
-  validates_presence_of :name
+  validates_presence_of :name, :state
   validates_uniqueness_of :name, :on => :create, :message => "already in use (#{self.name})"
 
   scope :for_search_query, ->(query,with_includes) {
     where([ 'name LIKE ? OR id=?', "%#{query}%", query ])
   }
 
-  scope :valid, ->() { where(state: ACTIVE_STATE, approved: true) }
-  scope :alphabetical, ->() { order('name ASC') }
-  scope :for_user, ->(user) { joins({:roles=>:user_role_bindings}).where(:roles_users=>{:user_id=>user}) }
+  # Allow us to pass in nil or '' if we don't want to filter state.
+  # State is required so we don't need to look up an actual null state
+  scope :in_state, ->(state) {
+    state.present? ? where(state:state) : where(true)
+  }
+
+  scope :active,       ->()     { where(state: ACTIVE_STATE) }
+  scope :approved,     ->()     { where(approved: true) }
+  scope :unapproved,   ->()     { where(approved: false) }
+  scope :valid,        ->()     { active.approved }
+  scope :alphabetical, ->()     { order('name ASC') }
+  scope :for_user,     ->(user) { joins({:roles=>:user_role_bindings}).where(:roles_users=>{:user_id=>user}) }
+
+  scope :with_unallocated_manager, ->() {
+    roles = Role.arel_table
+    joins(:roles).on(roles[:name].eq('manager')).where(roles[:id].eq(nil))
+  }
 
   def ended_billable_lanes(ended)
     events = []

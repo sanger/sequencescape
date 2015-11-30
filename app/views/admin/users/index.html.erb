@@ -5,7 +5,7 @@
 
 <h1>User management</h1>
 
-<%= form_tag({:url => filter_admin_users_url, :remote => true, :update => "users", :loading => "show_update_loader();", :complete => "hide_update_loader();"},:id=>'filter_form') do %>
+<%= form_tag(filter_admin_users_url, :remote => true, :data => { :update => "#users", :throbber => '#update_loader' }, :id=>'filter_form', :class=>'remote-form observed') do %>
 <div class="callout_filter">
   <table width="100%">
     <tr>
@@ -15,8 +15,6 @@
       </td>
     </tr>
   </table>
-  <%= observe_form(:filter_form, :url => { :action => :filter }, :loading => "show_update_loader();", :complete => "hide_update_loader();", :frequency => 0.5, :update => :users) %>
-</div>
 <% end %>
 <div id='users'>
   <%= render :partial => 'users', :locals => { :users => @users } %>

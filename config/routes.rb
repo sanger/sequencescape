@@ -247,20 +247,22 @@ Sequencescape::Application.routes.draw do
       end
     end
 
-    resources :studies do
+    resources :studies, except:[:destroy]  do
       collection do
         get :index
-        post :filer
+        post :filter
+        post :edit
       end
       member do
         put :managed_update
       end
     end
 
-    resources :projects do
+    resources :projects, except:[:destroy] do
       collection do
         get :index
-        post :filer
+        post :filter
+        post :edit
       end
       member do
         put :managed_update
@@ -419,10 +421,7 @@ Sequencescape::Application.routes.draw do
       get :print
       post :print_items
       get :history
-      get :filtered_move
       post :move
-      get :move_to_2D
-      post :complete_move_to_2D
     end
 
     resources :comments, :controller => "assets/comments"

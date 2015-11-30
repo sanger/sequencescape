@@ -20,11 +20,11 @@ class Admin::StudiesController < ApplicationController
    render :partial => "manage_single_study"
   end
 
-  def editor
+  def edit
     @request_types = RequestType.all(:order => "name ASC")
     if params[:id] != "0"
       @study = Study.find(params[:id])
-      render :partial => "editor", :locals => { :study => @study }
+      render :partial => "edit", :locals => { :study => @study }
     else
       render :nothing => true
     end

@@ -298,69 +298,6 @@ class Asset < ActiveRecord::Base
     self.set_external_release(self.qc_state)
   end
 
-  def move_asset_group(study_from, asset_group)
-    return
-  end
-
-  def move_study_sample(study_from, study_to, current_user)
-    return
-  end
-
-  def move_all_asset_group(study_from, study_to, asset_visited, asset_group, current_user)
-    unless asset_visited.include?(self.id)
-      asset_visited << self.id
-      self.children.each do |child|
-        unless asset_visited.include?(child.id)
-          child.move_all_asset_group(study_from, study_to, asset_visited, asset_group, current_user)
-        end
-      end
-
-      self.parents.each do |parent|
-        unless asset_visited.include?(parent.id)
-          parent.move_all_asset_group(study_from, study_to, asset_visited, asset_group, current_user)
-        end
-      end
-
-      self.move_asset_requests(study_from, study_to)
-      self.move_asset_group(study_from, asset_group)   # only subclass sampleTube
-      self.move_study_sample(study_from, study_to, current_user) # only subclass sampleTube
-    end
-  end
-
-
-  def move_asset_requests(study_from, study_to)
-    requests = self.requests.for_study(study_from)
-    # apparently requests here are read only
-    requests = Request.find(:all, requests.map(&:id))
-    requests.each do |request|
-      request.initial_study_id = study_to.id
-      request.save!
-
-      #redundant with code in sample move ? (Study#take_sample)
-      (request.asset.try(:aliquots) ||[]).each do |aliquot|
-        next if aliquot.study != study_from
-        aliquot.update_attributes!(:study => study_to) if aliquot
-      end
-    end
-    #puts self.id
-  end
-
-  def move_to_asset_group(study_from, study_to, asset_group, new_assets_name, current_user)
-    move_result = true
-    begin
-      ActiveRecord::Base.transaction do
-        asset_visited = []
-        move_all_asset_group(study_from, study_to, asset_visited, asset_group, current_user)
-      end
-      rescue StandardError => exception
-        msg = exception.record.class.name + " id: " + exception.record.id.to_s + ": " + exception.message
-        self.errors.add("Move:", msg)
-        move_result = false
-    end
-
-    return move_result
-  end
-
   def has_been_through_qc?
     not self.qc_state.blank?
   end

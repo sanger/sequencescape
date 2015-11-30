@@ -5,13 +5,25 @@
 ( function($, undefined){
   "use strict";
 
-  var attachEvents;
+  var attachEvents, throttledUpdate;
+
+  throttledUpdate = function(){
+    // Keyup events only trigger once every 0.5s
+    if (this.wait !== true ) {
+      var formElement = this;
+      $(this).trigger("submit.rails");
+      formElement.wait = true;
+      setTimeout(function(){ formElement.wait = false }, 500);
+    }
+  };
 
   attachEvents = function(){
     $('.remote-form').bind("ajax:beforeSend",  function(){
+      $(this.dataset.throbber || '#update_loader').show();
       $(this).find('.btn').attr('disabled','disabled');
     })
     .bind("ajax:complete", function(){
+      $(this.dataset.throbber || '#update_loader').hide();
       $(this).find('.btn').removeAttr('disabled');
     })
     .bind("ajax:success", function(xhr, data, status) {
@@ -25,6 +37,8 @@
       $(target).html(data);
       attachEvents();
     });
+
+    $('.observed').bind('keyup',throttledUpdate).bind('change',throttledUpdate)
   };
 
   $(document).ready( attachEvents );

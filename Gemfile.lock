@@ -1,10 +1,4 @@
 GIT
-  remote: git://github.com/rails/prototype_legacy_helper.git
-  revision: a2cd95c3e3c1a4f7a9566efdab5ce59c886cb05f
-  specs:
-    prototype_legacy_helper (0.0.0)
-
-GIT
   remote: git://github.com/sanger/irods_reader.git
   revision: 14db88aa7783118d2d4a8351c5028d07e6ee5644
   specs:
@@ -136,6 +130,9 @@ GEM
       unf (>= 0.0.5, < 1.0.0)
     dynamic_form (1.1.4)
     erubis (2.7.0)
+    exception_notification (4.1.1)
+      actionmailer (>= 3.0.4)
+      activesupport (>= 3.0.4)
     execjs (2.6.0)
     factory_girl (4.5.0)
       activesupport (>= 3.0.0)
@@ -338,13 +335,13 @@ DEPENDENCIES
   activerecord-jdbc-adapter
   activerecord-oracle_enhanced-adapter (= 1.2.3)
   acts-as-dag (~> 3.0.0)
-  bootstrap-sass (~> 3.3.5)
+  bootstrap-sass
   bullet
   bunny (~> 0.7)
   cancan
   capybara
   carrierwave
-  coffee-rails (~> 3.2.1)
+  coffee-rails
   configatron
   cucumber
   cucumber-rails
@@ -352,10 +349,11 @@ DEPENDENCIES
   debugger
   delayed_job_active_record
   dynamic_form
+  exception_notification
   factory_girl
   flay
   flog
-  formtastic (~> 2.3)
+  formtastic
   gmetric (~> 0.1.3)
   irods_reader (>= 0.0.2)!
   jdbc-mysql
@@ -374,11 +372,10 @@ DEPENDENCIES
   nokogiri
   poltergeist
   prototype-rails
-  prototype_legacy_helper (= 0.0.0)!
   pry
   psd_logger!
   rack-acceptable
-  rails (= 3.2.19)
+  rails
   rdoc
   rest-client
   rgl
@@ -387,7 +384,7 @@ DEPENDENCIES
   ruby_walk (>= 0.0.3)!
   rubyzip (~> 0.9)
   sanger_barcode (~> 0.2)!
-  sass-rails (~> 3.2.3)
+  sass-rails
   shoulda (~> 3.4.0)
   sinatra (~> 1.1.0)
   spoon

@@ -654,22 +654,6 @@ WHERE c.container_id=?
     DEFAULT_SIZE
   end
 
-  def move_study_sample(study_from, study_to, current_user)
-    study_from.events.create(
-      :message => "Plate #{self.id} was moved to Study #{study_to.id}",
-      :created_by => current_user.login,
-      :content => "Plate moved by #{current_user.login}",
-      :of_interest_to => "administrators"
-    )
-
-    study_to.events.create(
-      :message => "Plate #{self.id} was moved from Study #{study_from.id}",
-      :created_by => current_user.login,
-      :content => "Plate moved by #{current_user.login}",
-      :of_interest_to => "administrators"
-    )
-  end
-
   def scored?
     wells.any? { |w| w.get_gel_pass }
   end
