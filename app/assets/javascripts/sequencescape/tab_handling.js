@@ -5,6 +5,22 @@
 ( function($, undefined){
   "use strict";
 
+  function contentFor(tab) {
+    return $("[data-tab-content="+$(tab).data("tab-refers")+"]");
+  }
+
+  function selectTab(tab) {
+    $(tab).parent().addClass("selected");
+    contentFor(tab).show();
+  }
+
+
+  function unselectTab(tab) {
+    $(tab).parent().removeClass("selected");
+    contentFor(tab).hide();
+  }
+
+
   var attachEvents;
 
   attachEvents = function(){
@@ -13,13 +29,13 @@
       // Tab selection behaviour
       li.on("click", function(event, object) {
         $("[data-tab-group="+ $(node).data('tab-group') +"]").each(function(pos, n) {
-          $(n).parent().removeClass("selected");
+          unselectTab($(n));
         });
-        li.addClass("selected");
+        selectTab($(node));
       });
 
       // Loads the content of the selected tab
-      if (li.hasClass("selected")) {
+      if (li.hasClass("selected") || $(node).hasClass("selected")) {
         $("a", li).trigger("click");
       };
     });
