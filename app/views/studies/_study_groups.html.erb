@@ -5,7 +5,7 @@
 <div class="yui-u first grouped_items"  style="width: 20%">
   <% @alternatives.each_with_index do |description, index| -%>
     <div class="grouped_item" id="<%= index %>_link">
-      <%= link_to description.humanize, studies_path(:scope => index) %>
+      <%= link_to description.humanize, study_list_studies_path(:scope => index), :remote => true, :'data-throbber' => '#loading', :'data-failure' => '#remote_error', :'data-update' => '#everything' %>
     </div>
   <% end -%>
 </div>
@@ -15,17 +15,10 @@
   <%= loading_bar %>
   <%= remote_error %>
   <div class="group_content" id="everything">
-    <script>
-    Event.observe(window, 'load', function() {
-      new Ajax.Updater('everything', '<%= study_list_studies_path(:scope => scope)%>', {asynchronous:true, evalScripts:true, method:'get', onComplete:function(request){try {
-            TableSorterFacade.extend_table('study_list');
-            Element.highlight('study_list');
-          } catch (e) {
-            (e.name == 'ElementDoesNotExistError') || console.warn(e);
-          } finally {
-            Element.hide('loading');
-          };}, onFailure:function(request){Element.show('remote_error')}, onLoading:function(request){Element.show('loading')}})
-    });
+    <script type="text/javascript">
+    (function($, undefined){
+      $("#everything").load('<%= study_list_studies_path(:scope => scope)%>');
+    })(jQuery);
     </script>
   </div>
 </div>
