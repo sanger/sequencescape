@@ -6,31 +6,32 @@
     <% @summaries.each_with_index do |description, index| %>
     <% selected = summary.to_i == index ? 'selected' : '' %>
     <%= content_tag(:li, :class=>selected) do %>
-      <%= link_to content_tag(:em) { description }, study_workflow_path(@study,@workflow, {:summary => index}), :class => (summary.to_i == index ? 'selected' : '') %>
+      <%= link_to content_tag(:em) { description }, show_summary_study_workflow_path(@study,@workflow, {:summary => index}.merge(@extra_params)), :class => (summary.to_i == index ? 'selected' : ''), :remote => true, :'data-throbber' => '#loading', :'data-failure' => '#remote_error', :'data-update' => '#everything' %>
       <% end %>
     <% end %>
   </ul>
+  <script type="text/javascript">
+    (function($,undefined) {
+      var liList = $("#navi ul li");
+      liList.each(function(pos, node) {
+        var li = $(node);
+        // Tab selection behaviour
+        li.on("ajax:beforeSend", function(event, object) {
+          liList.removeClass("selected")
+          li.addClass("selected");
+        });
+        // Loads the content of the selected tab
+        if (li.hasClass("selected")) {
+          $("a", li).trigger("click");
+        };
+      });
+    }(jQuery));
+  </script>
   <div class="yui-content">
     <%= loading_bar %>
     <%= remote_error %>
     <div id="everything">
-    <script>
-    Event.observe(window, 'load', function() {
-      <%= remote_function(:url => show_summary_study_workflow_path(@study, @workflow, { :summary => summary}.merge(@extra_params)),
-        :update => {:success => "everything"},
-        :method => :get,
-        :loading => "Element.show('loading')",
-        :complete => "try {
-            TableSorterFacade.extend_table('summary');
-            Element.highlight('summary');
-          } catch (e) {
-            (e.name == 'ElementDoesNotExistError') || console.warn(e);
-          } finally {
-            Element.hide('loading');
-          };",
-        :failure => "Element.show('remote_error')") %>
-    });
-    </script>
+
     </div>
   </div>
 </div>
