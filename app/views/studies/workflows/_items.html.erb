@@ -6,26 +6,11 @@
     <% @summaries.each_with_index do |description, index| %>
     <% selected = summary.to_i == index ? 'selected' : '' %>
     <%= content_tag(:li, :class=>selected) do %>
-      <%= link_to content_tag(:em) { description }, show_summary_study_workflow_path(@study,@workflow, {:summary => index}.merge(@extra_params)), :class => (summary.to_i == index ? 'selected' : ''), :remote => true, :'data-throbber' => '#loading', :'data-failure' => '#remote_error', :'data-update' => '#everything' %>
+      <%= link_to content_tag(:em) { description }, show_summary_study_workflow_path(@study,@workflow, {:summary => index}.merge(@extra_params)), :class => (summary.to_i == index ? 'selected' : ''), :remote => true, :'data-throbber' => '#loading', :'data-failure' => '#remote_error', :'data-update' => '#everything', :'data-tab-group' => 'studies-summaries-tab' %>
       <% end %>
     <% end %>
   </ul>
   <script type="text/javascript">
-    (function($,undefined) {
-      var liList = $("#navi ul li");
-      liList.each(function(pos, node) {
-        var li = $(node);
-        // Tab selection behaviour
-        li.on("ajax:beforeSend", function(event, object) {
-          liList.removeClass("selected")
-          li.addClass("selected");
-        });
-        // Loads the content of the selected tab
-        if (li.hasClass("selected")) {
-          $("a", li).trigger("click");
-        };
-      });
-    }(jQuery));
   </script>
   <div class="yui-content">
     <%= loading_bar %>
