@@ -47,27 +47,28 @@ class AssetLink < ActiveRecord::Base
     end
 
     module ClassMethods
-      def has_one_as_child(name, options = {})
-        # has_one(name, options.merge(:through => :links_as_child, :source => :ancestor))
+      def has_one_as_child(name, scope)
 
-        line = __LINE__ + 1
-        class_eval(%Q{
+        has_one(name, scope, :through => :links_as_child, :source => :ancestor)
 
-          def #{name}
-            ancestors.find(:first,#{options.inspect})
-          end
+        # line = __LINE__ + 1
+        # class_eval(%Q{
 
-          def #{name}=(value)
-            raise RuntimeError, 'Value for #{name} must be saved' if value.new_record?
-            old_value = self.#{name}
-            parents.delete(old_value) if old_value.present?
-            AssetLink.create_edge!(value, self)
-          end
+        #   def #{name}
+        #     ancestors.find(:first,#{options.inspect})
+        #   end
 
-          def has_#{name}?
-            #{name}.present?
-          end
-        }, __FILE__, line)
+        #   def #{name}=(value)
+        #     raise RuntimeError, 'Value for #{name} must be saved' if value.new_record?
+        #     old_value = self.#{name}
+        #     parents.delete(old_value) if old_value.present?
+        #     AssetLink.create_edge!(value, self)
+        #   end
+
+        #   def has_#{name}?
+        #     #{name}.present?
+        #   end
+        # }, __FILE__, line)
       end
     end
   end

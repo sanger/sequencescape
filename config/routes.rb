@@ -33,8 +33,8 @@ Sequencescape::Application.routes.draw do
     end
   end
 
-  match '/login' => 'sessions#login', :as => :login
-  match '/logout' => 'sessions#logout', :as => :logout
+  match '/login' => 'sessions#login', :as => :login, :via => [:get,:post]
+  match '/logout' => 'sessions#logout', :as => :logout, :via => [:get,:post]
 
   resources :reference_genomes
   resources :barcode_printers
@@ -71,31 +71,28 @@ Sequencescape::Application.routes.draw do
 
   end
 
-  match 'pipelines/release/:id' => 'pipelines#release', :as => :release_batch
-  match 'pipelines/finish/:id' => 'pipelines#finish', :as => :finish_batch
-  match 'run/:run' => 'items#run_lanes'
-  match 'run/:run.json' => 'items#run_lanes', :format => 'json'
-  match 'run/:run.xml' => 'items#run_lanes', :format => 'xml'
+  match 'pipelines/release/:id' => 'pipelines#release', :as => :release_batch, :via => :post
+  match 'pipelines/finish/:id' => 'pipelines#finish', :as => :finish_batch, :via => :post
 
   resources :events
   resources :sources
 
-  match '/taxon_lookup_by_term/:term' => 'samples#taxon_lookup'
-  match '/taxon_lookup_by_id/:id' => 'samples#taxon_lookup'
+  match '/taxon_lookup_by_term/:term' => 'samples#taxon_lookup', :via => :get
+  match '/taxon_lookup_by_id/:id' => 'samples#taxon_lookup', :via => :get
 
-  match '/studies/:study_id/workflows/:workflow_id/summary_detailed/:id' => 'studies/workflows#summary_detailed'
-  match 'studies/accession/:id' => 'studies#accession'
-  match 'studies/policy_accession/:id' => 'studies#policy_accession'
-  match 'studies/dac_accession/:id' => 'studies#dac_accession'
-  match 'studies/accession/show/:id' => 'studies#show_accession', :as => :study_show_accession
-  match 'studies/accession/dac/show/:id' => 'studies#show_dac_accession', :as => :study_show_dac_accession
-  match 'studies/accession/policy/show/:id' => 'studies#show_policy_accession', :as => :study_show_policy_accession
-  match 'samples/accession/:id' => 'samples#accession'
-  match 'samples/accession/show/:id' => 'samples#show_accession'
-  match 'samples/destroy/:id' => 'samples#destroy', :as => :destroy_sample
-  match 'samples/accession/show/:id' => 'samples#show_accession', :as => :sample_show_accession
-  match '/taxon_lookup_by_term/:term' => 'samples#taxon_lookup'
-  match '/taxon_lookup_by_id/:id' => 'samples#taxon_lookup'
+  match '/studies/:study_id/workflows/:workflow_id/summary_detailed/:id' => 'studies/workflows#summary_detailed', :via => :post
+
+  match 'studies/accession/:id' => 'studies#accession', :via => :get
+  match 'studies/policy_accession/:id' => 'studies#policy_accession', :via => :get
+  match 'studies/dac_accession/:id' => 'studies#dac_accession', :via => :get
+
+  match 'studies/accession/show/:id' => 'studies#show_accession', :as => :study_show_accession, :via => :get
+  match 'studies/accession/dac/show/:id' => 'studies#show_dac_accession', :as => :study_show_dac_accession, :via => :get
+  match 'studies/accession/policy/show/:id' => 'studies#show_policy_accession', :as => :study_show_policy_accession, :via => :get
+
+  match 'samples/accession/:id' => 'samples#accession', :via => :get
+  match 'samples/accession/show/:id' => 'samples#show_accession', :via => :get
+  match 'samples/accession/show/:id' => 'samples#show_accession', :as => :sample_show_accession, :via => :get
 
   resources :studies do
 
@@ -191,7 +188,7 @@ Sequencescape::Application.routes.draw do
 
   end
 
-  match 'bulk_submissions' => 'bulk_submissions#new'
+  get 'bulk_submissions' => 'bulk_submissions#new'
 
   resources :submissions do
     collection do
@@ -233,7 +230,7 @@ Sequencescape::Application.routes.draw do
     resource :request
   end
 
-  match 'studies/:study_id/workflows/:id' => 'study_workflows#show', :as => :study_workflow_status
+  get 'studies/:study_id/workflows/:id' => 'study_workflows#show', :as => :study_workflow_status
 
   resources :searches
 
@@ -303,9 +300,10 @@ Sequencescape::Application.routes.draw do
       resources :bait_library_suppliers
     end
   end
-  match 'admin' => 'admin#index', :as => :admin
 
-  resources :profile, :controller => 'Users' do
+  get 'admin' => 'admin#index', :as => :admin
+
+  resources :profile, :controller => 'users' do
     member do
       get :study_reports
       get :projects
@@ -321,7 +319,7 @@ Sequencescape::Application.routes.draw do
 
   resources :plate_templates
 
-  match 'implements/print_labels' => 'implements#print_labels'
+  get 'implements/print_labels' => 'implements#print_labels'
 
   resources :implements
   resources :pico_sets do
@@ -349,8 +347,6 @@ Sequencescape::Application.routes.draw do
   resources :locations
   resources :request_information_types
 
-  match '/logout' => 'sessions#logout', :as => :logout
-  match '/login' => 'sessions#login', :as => :login
   match 'pipelines/assets/new/:id' => 'pipelines/assets#new', :via => 'get'
 
   resources :pipelines, :except => [:delete] do
@@ -369,9 +365,9 @@ Sequencescape::Application.routes.draw do
   resources :errors
   resources :events
 
-  match 'batches/all' => 'batches#all'
-  match 'batches/released' => 'batches#released'
-  match 'batches/released/clusters' => 'batches#released'
+  get 'batches/all' => 'batches#all'
+  get 'batches/released' => 'batches#released'
+  get 'batches/released/clusters' => 'batches#released'
 
   resources :items do
     collection do
@@ -379,23 +375,21 @@ Sequencescape::Application.routes.draw do
     end
   end
 
-  match 'workflows/refresh_sample_list' => 'workflows#refresh_sample_list'
-
   resources :workflows
 
   resources :tasks
   resources :asset_audits
 
-  match 'assets/snp_import' => 'assets#snp_import'
-  match 'assets/lookup' => 'assets#lookup', :as => :assets_lookup
-  match 'assets/receive_barcode' => 'assets#receive_barcode'
-  match 'assets/import_from_snp' => 'assets#import_from_snp'
-  match 'assets/combine' => 'assets#combine'
-  match 'assets/get_plate_layout' => 'assets#get_plate_layout'
-  match 'assets/create_plate_layout' => 'assets#create_plate_layout'
-  match 'assets/make_plate_from_rack' => 'assets#make_plate_from_rack'
-  match 'assets/find_by_barcode' => 'assets#find_by_barcode'
-  match 'lab_view' => 'assets#lab_view', :as => :lab_view
+  get 'assets/snp_import' => 'assets#snp_import'
+  get 'assets/lookup' => 'assets#lookup', :as => :assets_lookup
+  get 'assets/receive_barcode' => 'assets#receive_barcode'
+  get 'assets/import_from_snp' => 'assets#import_from_snp'
+  get 'assets/combine' => 'assets#combine'
+  get 'assets/get_plate_layout' => 'assets#get_plate_layout'
+  get 'assets/create_plate_layout' => 'assets#create_plate_layout'
+  get 'assets/make_plate_from_rack' => 'assets#make_plate_from_rack'
+  get 'assets/find_by_barcode' => 'assets#find_by_barcode'
+  get 'lab_view' => 'assets#lab_view', :as => :lab_view
 
   resources :families
 
@@ -455,8 +449,8 @@ Sequencescape::Application.routes.draw do
 
   match 'sequenom/index' => 'sequenom#index', :as => :sequenom_root, :via => 'get'
   match 'sequenom/search' => 'sequenom#search', :as => :sequenom_search, :via => 'post'
-  match 'sequenom/:id' => 'sequenom#show', :as => :sequenom_plate, :constraints => 'id(?-mix:\d+)', :via => 'get'
-  match 'sequenom/:id' => 'sequenom#update', :as => :sequenom_update, :constraints => 'id(?-mix:\d+)', :via => 'put'
+  match 'sequenom/:id' => 'sequenom#show', :as => :sequenom_plate, :via => 'get'
+  match 'sequenom/:id' => 'sequenom#update', :as => :sequenom_update, :via => 'put'
   match 'sequenom/quick' => 'sequenom#quick_update', :as => :sequenom_quick_update, :via => 'post'
 
   resources :sequenom_qc_plates
@@ -580,9 +574,10 @@ Sequencescape::Application.routes.draw do
       end
     end
 
-    match '/' => 'home#index'
+    get '/' => 'home#index'
   end
 
-  match '/:controller(/:action(/:id))'
+  # The default routes: We should consider replacing these
+  get '/:controller(/:action(/:id))'
 
 end

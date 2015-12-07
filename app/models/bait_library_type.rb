@@ -2,6 +2,8 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2012 Genome Research Ltd.
 class BaitLibraryType < ActiveRecord::Base
+  include SharedBehaviour::Named
+
   has_many :bait_libraries
 
   # Types have names, need to be unique

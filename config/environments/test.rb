@@ -11,8 +11,11 @@ Sequencescape::Application.configure do
   config.cache_classes = true
   config.active_support.deprecation = :log
 
+  config.serve_static_files = true
+
   # Log error messages when you accidentally call methods on nil.
   config.whiny_nils = true
+  config.eager_load = false
 
   # we don't need :debug unless we're debugging tests
   config.log_level = :warn
@@ -23,9 +26,6 @@ Sequencescape::Application.configure do
 
   # Disable request forgery protection in test environment
   config.action_controller.allow_forgery_protection    = false
-
-  # Rails 4 provides much more sensible protection
-  config.active_record.whitelist_attributes = false
 
   # Tell Action Mailer not to deliver emails to the real world.
   # The :test delivery method accumulates sent emails in the

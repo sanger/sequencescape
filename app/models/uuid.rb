@@ -84,7 +84,7 @@ class Uuid < ActiveRecord::Base
     end
   end
 
-  ValidRegexp = /^[\da-f]{8}(-[\da-f]{4}){3}-[\da-f]{12}$/
+  ValidRegexp = /\A[\da-f]{8}(-[\da-f]{4}){3}-[\da-f]{12}\z/
   validates_format_of :external_id, :with => ValidRegexp
 
   # It is more efficient to check the individual parts of the resource association than it is to check the

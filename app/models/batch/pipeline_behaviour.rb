@@ -6,7 +6,6 @@ module Batch::PipelineBehaviour
     base.class_eval do
       # The associations with the pipeline
       belongs_to :pipeline
-      attr_protected :pipeline_id
       delegate :workflow, :item_limit, :multiplexed?, :to => :pipeline
       delegate :tasks, :to => :workflow
 

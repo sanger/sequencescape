@@ -20,11 +20,11 @@ class User < ActiveRecord::Base
   has_many :comments
   has_many :settings
   has_many :roles
-  has_many :project_roles, :class_name => 'Role', :conditions => {authorizable_type:'Project'}
-  has_many :study_roles, :class_name => 'Role', :conditions => {authorizable_type:'Study'}
+  has_many :project_roles, ->() { where(authorizable_type:'Project') }, :class_name => 'Role'
+  has_many :study_roles,   ->() { where(authorizable_type:'Study') },   :class_name => 'Role'
   has_many :study_roles
   has_many :batches
-  has_many :pipelines, :through => :batches, :order => 'batches.id DESC'
+  has_many :pipelines, ->() { order('batches.id DESC').distinct }, :through => :batches
 
   before_save :encrypt_password
   before_create { |record| record.new_api_key if record.api_key.blank? }

@@ -13,12 +13,13 @@ class Well < Aliquot::Receptacle
   include Api::Messages::FluidigmPlateIO::WellExtensions
 
   class Link < ActiveRecord::Base
-    self.table_name =('well_links')
-    set_inheritance_column
+    self.table_name = 'well_links'
+    self.inheritance_column = nil
+
     belongs_to :target_well, :class_name => 'Well'
     belongs_to :source_well, :class_name => 'Well'
   end
-  has_many :stock_well_links,  :class_name => 'Well::Link', :foreign_key => :target_well_id, :conditions => { :type => 'stock' }
+  has_many :stock_well_links,  ->() { where(sti_type:'stock') }, :class_name => 'Well::Link', :foreign_key => :target_well_id
 
   has_many :stock_wells, :through => :stock_well_links, :source => :source_well do
     def attach!(wells)
@@ -43,17 +44,13 @@ class Well < Aliquot::Receptacle
     joins(:map).where(:maps => { :description => location })
   }
 
-  has_many :target_well_links, :class_name => 'Well::Link', :foreign_key => :source_well_id, :conditions => { :type => 'stock' }
+  has_many :target_well_links,  ->() { where(sti_type:'stock') }, :class_name => 'Well::Link', :foreign_key => :source_well_id
   has_many :target_wells, :through => :target_well_links, :source => :target_well
 
-  scope :stock_wells_for, ->(wells) { {
-    :joins      => :target_well_links,
-    :conditions => {
-      :well_links =>{
-        :target_well_id => [wells].flatten.map(&:id)
-        }
-      }
-    }}
+  scope :stock_wells_for, ->(wells) {
+    joins(:target_well_links).
+    where(:well_links =>{:target_well_id => [wells].flatten.map(&:id) })
+  }
 
   scope :located_at_position, ->(position) { joins(:map).readonly(false).where(:maps => { :description => position }) }
 

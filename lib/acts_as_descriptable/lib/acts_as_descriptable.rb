@@ -40,7 +40,7 @@ module ActiveRecord # :nodoc:
         module Active
           def self.included(base)
             base.class_eval do
-              has_many :descriptors, :order => 'sorter', :dependent => :destroy
+              has_many :descriptors, ->() { order('sorter') }, :dependent => :destroy
             end
           end
 

@@ -17,9 +17,9 @@ class Aliquot < ActiveRecord::Base
     has_many :transfer_requests_as_target, :class_name => 'TransferRequest', :foreign_key => :target_asset_id
 
     has_many :requests, :inverse_of => :asset, :foreign_key => :asset_id
-    has_one  :source_request, :class_name => "Request", :foreign_key => :target_asset_id, :include => :request_metadata
-    has_many :requests_as_source, :class_name => 'Request', :foreign_key => :asset_id, :include => :request_metadata
-    has_many :requests_as_target, :class_name => 'Request', :foreign_key => :target_asset_id, :include => :request_metadata
+    has_one  :source_request, ->() { includes(:request_metadata) }, :class_name => "Request", :foreign_key => :target_asset_id
+    has_many :requests_as_source, ->() { includes(:request_metadata) }, :class_name => 'Request', :foreign_key => :asset_id
+    has_many :requests_as_target, ->() { includes(:request_metadata) }, :class_name => 'Request', :foreign_key => :target_asset_id
 
     def default_state
       nil
@@ -29,11 +29,11 @@ class Aliquot < ActiveRecord::Base
 
     # A receptacle can hold many aliquots.  For example, a multiplexed library tube will contain more than
     # one aliquot.
-    has_many :aliquots, :foreign_key => :receptacle_id, :autosave => true, :dependent => :destroy, :inverse_of => :receptacle, :include => [:tag,:tag2], :order => 'tag2s_aliquots.map_id ASC, tags.map_id ASC'
-    has_one :primary_aliquot, :class_name => 'Aliquot', :foreign_key => :receptacle_id, :order => 'created_at ASC', :readonly => true
+    has_many :aliquots, ->() { includes([:tag,:tag2]).order('tag2s_aliquots.map_id ASC, tags.map_id ASC') }, :foreign_key => :receptacle_id, :autosave => true, :dependent => :destroy, :inverse_of => :receptacle
+    has_one :primary_aliquot, ->() { order('created_at ASC').readonly }, :class_name => 'Aliquot', :foreign_key => :receptacle_id
 
     # Our receptacle needs to report its tagging status based on the most highly tagged aliquot. This retrieves it
-    has_one :most_tagged_aliquot, :class_name => 'Aliquot', :foreign_key => :receptacle_id, :order => 'tag2_id DESC, tag_id DESC', :readonly => true
+    has_one :most_tagged_aliquot, ->() { order('tag2_id DESC, tag_id DESC').readonly }, :class_name => 'Aliquot', :foreign_key => :receptacle_id
 
     # Named scopes for the future
     scope :include_aliquots, -> { includes( :aliquots => [ :sample, :tag, :bait_library ] ) }
@@ -42,8 +42,8 @@ class Aliquot < ActiveRecord::Base
     scope :with_aliquots, -> { joins(:aliquots) }
 
     # Provide some named scopes that will fit with what we've used in the past
-    scope :with_sample_id, ->(id)     { { :conditions => { :aliquots => { :sample_id => Array(id)     } }, :joins => :aliquots } }
-    scope :with_sample,    ->(sample) { { :conditions => { :aliquots => { :sample_id => Array(sample) } }, :joins => :aliquots } }
+    scope :with_sample_id, ->(id)     { where(:aliquots => { :sample_id => Array(id)     }).joins(:aliquots) }
+    scope :with_sample,    ->(sample) { where(:aliquots => { :sample_id => Array(sample) }).joins(:aliquots) }
 
     # TODO: Remove these at some point in the future as they're kind of wrong!
     has_one :sample, :through => :primary_aliquot
@@ -120,8 +120,7 @@ class Aliquot < ActiveRecord::Base
         extend ClassMethods
 
         has_many :aliquots
-        has_many :receptacles, :through => :aliquots, :uniq => true
-        # has_one :primary_receptacle, :through => :aliquots, :source => :receptacle, :order => 'aliquots.created_at, aliquots.id ASC'
+        has_many :receptacles, ->() { distinct },  :through => :aliquots
 
         def primary_receptacle
           receptacles.order('aliquots.created_at, aliquots.id ASC').first
@@ -135,7 +134,7 @@ class Aliquot < ActiveRecord::Base
 
     module ClassMethods
       def receptacle_alias(name, options = {}, &block)
-        has_many(name, options.merge(:through => :aliquots, :source => :receptacle, :uniq => true), &block)
+        has_many(name, ->() { distinct }, options.merge(:through => :aliquots, :source => :receptacle), &block)
       end
     end
   end

@@ -13,16 +13,25 @@ class WellAttribute < ActiveRecord::Base
     gender_markers.try(:to_s)
   end
 
-  aasm_column :pico_pass
+  aasm column: :pico_pass do
 
-  aasm_initial_state :ungraded
 
-  aasm_state :ungraded
-  # These states are originally used in SNP
-  aasm_state :Pass
-  aasm_state :Repeat
-  aasm_state :Fail
+    state :ungraded, :initial => true
+    # These states are originally used in SNP
+    state :Pass
+    state :Repeat
+    state :Fail
 
+    event :pass_pico_test do
+      transitions :to => :Pass, :from => [:ungraded, :Repeat, :Fail, :Pass]
+    end
+
+    event :fail_pico_test do
+      transitions :to => :Fail, :from => [:Repeat, :Fail, :Pass]
+      transitions :to => :Repeat, :from => [:ungraded]
+    end
+
+  end
   # TODO Remvoe 'Too Low To Normalise' from the pico_pass column
   # The state of 'Too Low To Normalise' exists in the database (from SNP?)
   # but it doesn't look like AASM can handle spaces in state names.
@@ -58,15 +67,6 @@ class WellAttribute < ActiveRecord::Base
     return nil if measured_volume.nil? || concentration.nil?
     return nil if measured_volume < 0 || concentration < 0
     (measured_volume * concentration)/1000
-  end
-
-  aasm_event :pass_pico_test do
-    transitions :to => :Pass, :from => [:ungraded, :Repeat, :Fail, :Pass]
-  end
-
-  aasm_event :fail_pico_test do
-    transitions :to => :Fail, :from => [:Repeat, :Fail, :Pass]
-    transitions :to => :Repeat, :from => [:ungraded]
   end
 
 end

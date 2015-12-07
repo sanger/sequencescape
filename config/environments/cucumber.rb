@@ -10,11 +10,16 @@ Sequencescape::Application.configure do
 # For more information see https://rspec.lighthouseapp.com/projects/16211/tickets/165
 config.cache_classes = true
 
+config.serve_static_files = true
+
 # Log error messages when you accidentally call methods on nil.
 config.whiny_nils = true
+config.eager_load = false
 
 # we don't need :debug unless we're debugging tests
 config.log_level = :debug
+
+config.active_record.whitelist_attributes = false
 
 # Show full error reports and disable caching
 # config.action_controller.consider_all_requests_local = true

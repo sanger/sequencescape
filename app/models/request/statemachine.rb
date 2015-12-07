@@ -12,11 +12,12 @@ module Request::Statemachine
   INACTIVE = QUOTA_EXEMPTED  = [ 'failed', 'cancelled', 'aborted' ]
 
   module ClassMethods
-    def redefine_state_machine(&block)
+    def redefine_aasm(options={},&block)
       # Destroy all evidence of the statemachine we've inherited!  Ugly, but it works!
-      instance_variable_set(:@aasm, nil)
-      AASM::StateMachine[self] = AASM::StateMachine.new('')
-      instance_eval(&block)
+      @aasm = nil
+
+      AASM::StateMachine[self] = {}
+      aasm(options,&block)
     end
 
     # Determines the most likely event that should be fired when transitioning between the two states.  If there is
@@ -37,103 +38,101 @@ module Request::Statemachine
       extend ClassMethods
 
       ## State machine
-      aasm_column :state
-      aasm_state :pending
-      aasm_state :started,   :after_enter => :on_started
-      aasm_state :failed,    :after_enter => :on_failed
-      aasm_state :passed,    :after_enter => :on_passed
-      aasm_state :cancelled, :after_enter => :on_cancelled
-      aasm_state :blocked,   :after_enter => :on_blocked
-      aasm_state :hold,      :after_enter => :on_hold
-      aasm_initial_state :pending
+      aasm :column => :state do
 
-      aasm_event :hold do
-        transitions :to => :hold, :from => [ :pending ]
-      end
+        state :pending,   :initial => true
+        state :started,   :after_enter => :on_started
+        state :failed,    :after_enter => :on_failed
+        state :passed,    :after_enter => :on_passed
+        state :cancelled, :after_enter => :on_cancelled
+        state :blocked,   :after_enter => :on_blocked
+        state :hold,      :after_enter => :on_hold
 
-      # State Machine events
-      aasm_event :start do
-        transitions :to => :started, :from => [:pending, :hold]
-      end
 
-      aasm_event :pass do
-        transitions :to => :passed, :from => [:started]
-      end
+        event :hold do
+          transitions :to => :hold, :from => [ :pending ]
+        end
 
-      aasm_event :fail do
-        transitions :to => :failed, :from => [:started]
-      end
+        # State Machine events
+        event :start do
+          transitions :to => :started, :from => [:pending, :hold]
+        end
 
-      aasm_event :retrospective_pass do
-        transitions :to => :passed, :from => [:failed]
-      end
+        event :pass do
+          transitions :to => :passed, :from => [:started]
+        end
 
-      aasm_event :retrospective_fail do
-        transitions :to => :failed, :from => [:passed]
-      end
+        event :fail do
+          transitions :to => :failed, :from => [:started]
+        end
 
-      aasm_event :block do
-        transitions :to => :blocked, :from => [:pending]
-      end
+        event :retrospective_pass do
+          transitions :to => :passed, :from => [:failed]
+        end
 
-      aasm_event :unblock do
-        transitions :to => :pending, :from => [:blocked]
-      end
+        event :retrospective_fail do
+          transitions :to => :failed, :from => [:passed]
+        end
 
-      aasm_event :detach do
-        transitions :to => :pending, :from => [:cancelled]
-      end
+        event :block do
+          transitions :to => :blocked, :from => [:pending]
+        end
 
-      aasm_event :reset do
-        transitions :to => :pending, :from => [:hold]
-      end
+        event :unblock do
+          transitions :to => :pending, :from => [:blocked]
+        end
 
-      aasm_event :cancel do
-        transitions :to => :cancelled, :from => [:started, :hold]
-      end
+        event :detach do
+          transitions :to => :pending, :from => [:cancelled]
+        end
 
-      aasm_event :return do
-        transitions :to => :pending, :from => [:failed, :passed]
-      end
+        event :reset do
+          transitions :to => :pending, :from => [:hold]
+        end
 
-      aasm_event :cancel_completed do
-        transitions :to => :cancelled, :from => [:failed, :passed]
-      end
+        event :cancel do
+          transitions :to => :cancelled, :from => [:started, :hold]
+        end
 
-      aasm_event :cancel_from_upstream do
-        transitions :to => :cancelled, :from => [:pending]
-      end
+        event :return do
+          transitions :to => :pending, :from => [:failed, :passed]
+        end
 
-      aasm_event :cancel_before_started do
-        transitions :to => :cancelled, :from => [:pending, :hold]
-      end
+        event :cancel_completed do
+          transitions :to => :cancelled, :from => [:failed, :passed]
+        end
 
-      aasm_event :submission_cancelled do
-        transitions :to => :cancelled, :from => [:pending,:cancelled]
-      end
+        event :cancel_from_upstream do
+          transitions :to => :cancelled, :from => [:pending]
+        end
 
-      aasm_event :fail_from_upstream do
-        transitions :to => :cancelled, :from => [:pending]
-        transitions :to => :failed,    :from => [:started]
-        transitions :to => :failed,    :from => [:passed]
+        event :cancel_before_started do
+          transitions :to => :cancelled, :from => [:pending, :hold]
+        end
+
+        event :submission_cancelled do
+          transitions :to => :cancelled, :from => [:pending,:cancelled]
+        end
+
+        event :fail_from_upstream do
+          transitions :to => :cancelled, :from => [:pending]
+          transitions :to => :failed,    :from => [:started]
+          transitions :to => :failed,    :from => [:passed]
+        end
+
       end
 
       # new version of combinable named_scope
      scope :for_state, ->(state) { { :conditions => { :state => state } } }
 
      scope :completed,        -> { where(:state => COMPLETED_STATE) }
-     scope :passed,           -> { where(:state => "passed") }
-     scope :failed,           -> { where(:state => "failed") }
+
      scope :pipeline_pending, -> { where(:state => "pending") } #  we don't want the blocked one here }
      scope :pending,          -> { where(:state => ["pending", "blocked"]) } # block is a kind of substate of pending }
 
-     scope :started,          -> { where(:state => "started") }
-     scope :cancelled,        -> { where(:state => "cancelled") }
-     scope :aborted,          -> { where(:state => "aborted") }
-
      scope :open,             -> { where(:state => OPENED_STATE) }
      scope :closed,           -> { where(:state => ["passed", "failed", "cancelled", "aborted"]) }
-     scope :hold,             -> { where(:state => "hold") }
+
     end
   end
 

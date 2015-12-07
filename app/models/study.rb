@@ -30,22 +30,24 @@ class Study < ActiveRecord::Base
 
   acts_as_authorizable
 
-  aasm_column :state
-  aasm_initial_state :pending
-  aasm_state :pending
-  aasm_state :active, :enter => :mark_active
-  aasm_state :inactive, :enter => :mark_deactive
+  aasm :column => :state do
 
-  aasm_event :reset do
-    transitions :to => :pending, :from => [:inactive, :active]
-  end
+    state :pending, :initial => true
+    state :active, :enter => :mark_active
+    state :inactive, :enter => :mark_deactive
 
-  aasm_event :activate do
-    transitions :to => :active, :from => [:pending, :inactive]
-  end
+    event :reset do
+      transitions :to => :pending, :from => [:inactive, :active]
+    end
 
-  aasm_event :deactivate do
-    transitions :to => :inactive, :from => [:pending, :active]
+    event :activate do
+      transitions :to => :active, :from => [:pending, :inactive]
+    end
+
+    event :deactivate do
+      transitions :to => :inactive, :from => [:pending, :active]
+    end
+
   end
 
   attr_accessor :approval
@@ -64,7 +66,7 @@ class Study < ActiveRecord::Base
 
   belongs_to :user
 
-  has_many :study_samples #, :group => 'study_id, sample_id', :conditions => 'sample_id IS NOT NULL'
+  has_many :study_samples
   has_many :orders
   has_many :submissions, :through => :orders
   has_many :samples, :through => :study_samples
@@ -80,33 +82,24 @@ class Study < ActiveRecord::Base
   has_many :study_reports
 
   #load all the associated requests with attemps and request type
-  has_many :eager_items , :class_name => "Item", :include => [{:requests => [:request_type]}], :through => :requests, :source => :item # , :uniq => true
+  has_many :eager_items, ->() { includes(:requests => :request_type) }, :class_name => "Item", :through => :requests, :source => :item
 
   has_many :aliquots
-  has_many :assets_through_aliquots, :class_name => "Asset", :through => :aliquots, :source => :receptacle, :uniq => :true
-  has_many :assets_through_requests, :class_name => "Asset", :through => :initial_requests, :source => :asset, :uniq => :true
+  has_many :assets_through_aliquots,  ->() { distinct }, :class_name => "Asset", :through => :aliquots, :source => :receptacle
+  has_many :assets_through_requests,  ->() { distinct }, :class_name => "Asset", :through => :initial_requests, :source => :asset
 
-  has_many :items , :through => :requests, :uniq => true
-
-  # This is a performance enhancement!  Projects and studies are related through
-  # requests but the requests table can be huge, and then performance can really
-  # suck (200s load times for 100 studies when eager loading projects).  Instead
-  # this reduces the requests for this study down to unique projects, and then
-  # says use those unique projects.  That knocks times down to 0.15s for the same
-  # studies!
-  #has_many :project_requests, :class_name => 'Request', :group => 'study_id, project_id', :conditions => 'project_id IS NOT NULL'
-  #has_many :projects, :class_name => "Project", :through => :project_requests, :source => :initial_project, :uniq => true
+  has_many :items, ->() { distinct }, :through => :requests
 
   #New version
-  has_many :projects,:through => :orders, :uniq => true
+  has_many :projects, ->() { distinct }, :through => :orders
 
   has_many :initial_requests, :class_name => "Request", :foreign_key => :initial_study_id
 
   has_many :comments, :as => :commentable
-  has_many :events, :as => :eventful, :order => 'created_at ASC, id ASC'
+  has_many :events, ->() { order('created_at ASC, id ASC') }, :as => :eventful
   has_many :documents, :as => :documentable
   has_many :sample_manifests
-  has_many :suppliers, :through => :sample_manifests, :uniq => true
+  has_many :suppliers, ->() { distinct }, :through => :sample_manifests
 
   include StudyRelation::Associations
 
@@ -115,7 +108,7 @@ class Study < ActiveRecord::Base
   validates_presence_of :name
   validates_uniqueness_of :name, :on => :create, :message => "already in use (#{self.name})"
   validates_length_of :name, :maximum => 200
-  validates_format_of :abbreviation, :with => /^[\w_-]+$/i, :allow_blank => false, :message => 'cannot contain spaces or be blank'
+  validates_format_of :abbreviation, :with => /\A[\w_-]+\z/i, :allow_blank => false, :message => 'cannot contain spaces or be blank'
 
   validate :validate_ethically_approved
   def validate_ethically_approved
@@ -211,7 +204,7 @@ class Study < ActiveRecord::Base
     association(:reference_genome, :name, :required => true)
     association(:faculty_sponsor, :name, :required => true)
 
-    attribute(:prelim_id, :with => /^[a-zA-Z]\d{4}$/, :required => false)
+    attribute(:prelim_id, :with => /\A[a-zA-Z]\d{4}\z/, :required => false)
     attribute(:study_description, :required => true)
     attribute(:contaminated_human_dna, :required => true, :in => YES_OR_NO)
     attribute(:remove_x_and_autosomes, :required => true, :default => 'No', :in => YES_OR_NO)
@@ -523,7 +516,7 @@ class Study < ActiveRecord::Base
     end
   end
 
-  scope :awaiting_ethical_approval,
+  scope :awaiting_ethical_approval, ->() {
     joins(:study_metadata).
     where(
       :ethically_approved => false,
@@ -533,23 +526,26 @@ class Study < ActiveRecord::Base
         :commercially_available => Study::NO
       }
     )
+  }
 
 
-  scope :contaminated_with_human_dna,
+  scope :contaminated_with_human_dna, ->() {
     joins(:study_metadata).
     where(
       :study_metadata => {
         :contaminated_human_dna => Study::YES
       }
     )
+  }
 
-  scope :with_remove_x_and_autosomes,
+  scope :with_remove_x_and_autosomes, ->() {
     joins(:study_metadata).
     where(
       :study_metadata => {
         :remove_x_and_autosomes => Study::YES
       }
     )
+  }
 
 
   def self.all_awaiting_ethical_approval

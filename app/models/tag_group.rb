@@ -4,7 +4,7 @@
 class TagGroup < ActiveRecord::Base
   include Uuid::Uuidable
 
-  has_many :tags, :order => 'map_id ASC'
+  has_many :tags, ->() { order('map_id ASC') }
 
   scope :include_tags, ->() { includes(:tags) }
 

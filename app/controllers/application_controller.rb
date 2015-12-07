@@ -7,7 +7,6 @@ require "exceptions"
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
-  helper :all # include all helpers, all the time
 
   # See ActionController::RequestForgeryProtection for details
   # Uncomment the :secret if you're not using the cookie session store
@@ -79,4 +78,12 @@ class ApplicationController < ActionController::Base
     @action_flash ||= {}
   end
   helper_method(:action_flash)
+
+  def evil_parameter_hack!
+    # WARNING! This hack is purely in place while we manually update ALL our
+    # existing controllers to support Strong Parameters. It should under
+    # not circumstances get used in new code, and should be removed from
+    # existing controllers as soon as humanly possible.
+    params.permit!
+  end
 end

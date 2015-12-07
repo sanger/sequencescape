@@ -148,13 +148,14 @@ private
     end
 
     class << self
-      extend ActiveSupport::Memoizable
+      # We used to have memoization going on here, but unless I'm missing something there doesn't seem to be
+      # anything happening here that particularly merits it.
 
       def metadata_attribute_path(field)
         self.name.underscore.split('/').map(&:to_sym) + [ field.to_sym ]
       end
-      memoize :metadata_attribute_path
 
+      # TODO: A Struct would be far more useful than an OpenStruct here!
       def localised_sections(field)
         OpenStruct.new(
           [ :edit_info, :help, :label, :unspecified ].inject({}) do |hash,section|
@@ -168,7 +169,7 @@ private
           end.merge(:label_options => {})
         )
       end
-      memoize :localised_sections
+
     end
   end
 end

@@ -142,7 +142,7 @@ class Request < ActiveRecord::Base
 
   belongs_to :order, :inverse_of => :requests
 
-  has_many :submission_siblings, :through => :submission, :source => :requests, :class_name => 'Request', :conditions => {:request_type_id => '#{request_type_id}'}
+  has_many :submission_siblings, ->() { where(:request_type_id => request_type_id) }, :through => :submission, :source => :requests, :class_name => 'Request'
 
   scope :with_request_type_id, ->(id) { { :conditions => { :request_type_id => id } } }
 
@@ -152,7 +152,8 @@ class Request < ActiveRecord::Base
   # but it will be only used in specific and controlled place
   belongs_to :initial_project, :class_name => "Project"
 
-  has_many :request_events, :order => 'current_from ASC'
+  has_many :request_events, ->() { order('current_from ASC') }
+
   def current_request_event
     request_events.current.last
   end

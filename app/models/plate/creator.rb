@@ -15,7 +15,7 @@ class Plate::Creator < ActiveRecord::Base
   end
 
   class ParentPurposeRelationship < ActiveRecord::Base
-    set_table_name('plate_creator_parent_purposes')
+    self.table_name=('plate_creator_parent_purposes')
 
     belongs_to :plate_purpose, :class_name => 'Purpose'
   end

@@ -31,12 +31,14 @@ class EventFactoryTest < ActiveSupport::TestCase
      end
 
       context "send 1 email to 1 recipient" do
-        should have_sent_email.
-          with_subject(/Project/).
-          bcc("abc123@example.com").
-          with_body(/Project registered/)
-        # should have_sent_email.bcc.size == 1
-        should_not have_sent_email.bcc("")
+
+        should 'Have sent an email' do
+          last_mail = ActionMailer::Base.deliveries.last
+          assert /Project/ === last_mail.subject
+          assert last_mail.bcc.include?("abc123@example.com")
+          assert /Project registered/, last_mail.body
+          assert_equal 1, last_mail.bcc.size
+        end
       end
     end
 
@@ -59,15 +61,19 @@ class EventFactoryTest < ActiveSupport::TestCase
       end
 
         context "send an email to one recipient" do
-          should have_sent_email.
-            with_subject(/Sample/).
-            bcc("abc123@example.com").
-            with_body(/New 'NewSample' registered by south/)
+          should 'Have sent an email' do
+            last_mail = ActionMailer::Base.deliveries.last
+            assert /Sample/ === last_mail.subject
+            assert last_mail.bcc.include?("abc123@example.com")
+            assert /New 'NewSample' registered by south/, last_mail.body
+          end
         end
+
       end
 
       context "project is not blank" do
         setup do
+          ActionMailer::Base.deliveries.clear
           @event_count =  Event.count
           EventFactory.new_sample(@sample, @project, @user)
         end
@@ -78,20 +84,14 @@ class EventFactoryTest < ActiveSupport::TestCase
         end
 
         context "send 2 emails each to one recipient" do
-          should have_sent_email.
-            with_subject(/Sample/).
-            bcc("abc123@example.com").
-            # && email.bcc.size == 1 \
-            with_body(/New 'NewSample' registered by south/)
-
-
-          should have_sent_email.
-            with_subject(/Project/).
-            bcc("abc123@example.com").
-            # && email.bcc.size == 1 \
-            with_body(/New 'NewSample' registered by south: NewSample. This sample was assigned to the 'hello world' project./)
-
-          should_not have_sent_email.bcc("")
+          should 'Have sent a 2 emails' do
+            assert_equal 2, ActionMailer::Base.deliveries.count
+            assert ActionMailer::Base.deliveries.detect {|d| /Sample/ === d.subject }
+            assert ActionMailer::Base.deliveries.detect {|d| /Project/ === d.subject }
+            assert ActionMailer::Base.deliveries.all? {|d| d.bcc.include?("abc123@example.com") }
+            assert ActionMailer::Base.deliveries.detect  {|d| /New 'NewSample' registered by south/ === d.body }
+            assert ActionMailer::Base.deliveries.detect  {|d| /This sample was assigned to the 'hello world' project./ === d.body }
+          end
         end
       end
     end
@@ -113,12 +113,13 @@ class EventFactoryTest < ActiveSupport::TestCase
       end
 
       context "send email to project manager" do
-        should have_sent_email.
-          with_subject(/Project approved/).
-          bcc("south@example.com").
-          with_body(/Project approved/)
-
-        should_not have_sent_email.bcc("")
+        should 'Have sent an email' do
+          last_mail = ActionMailer::Base.deliveries.last
+          assert /Project approved/ === last_mail.subject
+          assert last_mail.bcc.include?("south@example.com")
+          assert !last_mail.bcc.include?("")
+          assert /Project approved/, last_mail.body
+        end
       end
     end
 
@@ -141,14 +142,15 @@ class EventFactoryTest < ActiveSupport::TestCase
       end
 
       context ": send emails to everyone administrators" do
-        should have_sent_email.
-          with_subject(/Project approved/).
-          bcc("west@example.com").
-          bcc("north@example.com").
-          bcc("south@example.com").
-          with_body(/Project approved/)
-
-        should_not have_sent_email.bcc("")
+        should 'Have sent an email' do
+          last_mail = ActionMailer::Base.deliveries.last
+          assert /Project approved/ === last_mail.subject
+          assert last_mail.bcc.include?("north@example.com")
+          assert last_mail.bcc.include?("south@example.com")
+          assert last_mail.bcc.include?("west@example.com")
+          assert !last_mail.bcc.include?("")
+          assert /Project approved/, last_mail.body
+        end
       end
 
     end
@@ -156,7 +158,7 @@ class EventFactoryTest < ActiveSupport::TestCase
     context "#project_approved but not by administrator" do
       setup do
         @event_count =  Event.count
-        ::ActionMailer::Base.deliveries = []
+        ActionMailer::Base.deliveries.clear
         admin = create :role, :name => "administrator"
         @user1 = create :user, :login => "west"
         @user1.roles << admin
@@ -174,19 +176,21 @@ class EventFactoryTest < ActiveSupport::TestCase
       end
 
       context ": send email to project manager" do
-        should have_sent_email.
-          with_subject(/Project/).
-          with_subject(/Project approved/).
-          bcc("south@example.com").
-          with_body(/Project approved/)
-
-       should_not have_sent_email.bcc("")
+        should 'Have sent an email' do
+          last_mail = ActionMailer::Base.deliveries.last
+          assert /Project approved/ === last_mail.subject
+          assert last_mail.bcc.include?("south@example.com")
+          assert !last_mail.bcc.include?("")
+          assert /Project approved/, last_mail.body
+        end
       end
 
       context "send no email to adminstrator nor to approver" do
-        should_not have_sent_email.bcc("west@example.com")
-        should_not have_sent_email.bcc("north@example.com")
-        should_not have_sent_email.bcc("")
+        ActionMailer::Base.deliveries.each do |d|
+          assert !d.bcc.include?("west@example.com")
+          assert !d.bcc.include?("north@example.com")
+          assert !d.bcc.include?("")
+        end
       end
     end
 
@@ -214,10 +218,12 @@ class EventFactoryTest < ActiveSupport::TestCase
       end
 
       context "send email to project manager" do
-        should have_sent_email.
-          with_subject(/Sample/).
-          with_subject(/registered/).
-          bcc("south@example.com")
+        should 'Have sent an email' do
+          last_mail = ActionMailer::Base.deliveries.last
+          assert /Sample/ === last_mail.subject
+          assert /registered/ === last_mail.subject
+          assert last_mail.bcc.include?("south@example.com")
+        end
       end
 
     end
@@ -247,10 +253,12 @@ class EventFactoryTest < ActiveSupport::TestCase
       end
 
       context "send email to project manager" do
-        should have_sent_email.
-          with_subject(/Request update/).
-          with_subject(/failed/).
-          bcc("south@example.com")
+        should 'Have sent an email' do
+          last_mail = ActionMailer::Base.deliveries.last
+          assert /Request update/ === last_mail.subject
+          assert /failed/ === last_mail.subject
+          assert last_mail.bcc.include?("south@example.com")
+        end
       end
     end
   end

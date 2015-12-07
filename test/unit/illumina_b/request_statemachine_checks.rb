@@ -25,7 +25,7 @@ module IlluminaB::RequestStatemachineChecks
             end
           end
 
-          (target.aasm_states.map(&:name).map(&:to_s) - acceptable_states.map(&:to_s)).each do |state|
+          (target.aasm.states.map(&:name).map(&:to_s) - acceptable_states.map(&:to_s)).each do |state|
             should "not transition from #{state}" do
               @request.state = state
               assert_raises(AASM::InvalidTransition) { @request.send(:"#{name}") }

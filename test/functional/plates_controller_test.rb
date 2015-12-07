@@ -57,7 +57,7 @@ class PlatesControllerTest < ActionController::TestCase
           get :new
         end
         should respond_with :success
-        should_not set_the_flash
+        should_not set_flash
       end
 
       context "#create" do
@@ -72,7 +72,7 @@ class PlatesControllerTest < ActionController::TestCase
             assert_equal 1,  Plate.count  - @plate_count, "Expected Plate.count to change by 1"
           end
           should respond_with :redirect
-          should set_the_flash.to( /Created/)
+          should set_flash.to( /Created/)
         end
 
         context "Create a Plate" do
@@ -270,7 +270,7 @@ class PlatesControllerTest < ActionController::TestCase
 
               should respond_with :redirect
 
-              should set_the_flash.to(/Created/)
+              should set_flash.to(/Created/)
             end
 
             context "with a parent with dilution factor 4 and a specified dilution factor 12" do
@@ -311,7 +311,7 @@ class PlatesControllerTest < ActionController::TestCase
               end
             end
             should respond_with :redirect
-            should set_the_flash.to( /Created/)
+            should set_flash.to( /Created/)
           end
         end
 

@@ -2,9 +2,10 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
 class FacultySponsor < ActiveRecord::Base
+  include SharedBehaviour::Named
   extend Attributable::Association::Target
 
-  default_scope :order => :name
+  default_scope { order(:name) }
 
   validates_presence_of  :name
   validates_uniqueness_of :name, :message => "of faculty sponsor already present in database"

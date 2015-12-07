@@ -29,7 +29,7 @@ class ReceptionsControllerTest < ActionController::TestCase
           assert_equal 1,  Plate.count  - @plate_count, "Expected Plate.count to change by 1"
         end
         should respond_with :redirect
-        should set_the_flash.to( /queued to be imported/)
+        should set_flash.to( /queued to be imported/)
       end
 
       context "with 3 plates" do
@@ -42,7 +42,7 @@ class ReceptionsControllerTest < ActionController::TestCase
           assert_equal 3,  Plate.count  - @plate_count, "Expected Plate.count to change by 3"
         end
         should respond_with :redirect
-        should set_the_flash.to( /queued to be imported/)
+        should set_flash.to( /queued to be imported/)
       end
 
       context "with 3 plates plus blanks" do
@@ -55,7 +55,7 @@ class ReceptionsControllerTest < ActionController::TestCase
           assert_equal 3,  Plate.count  - @plate_count, "Expected Plate.count to change by 3"
         end
         should respond_with :redirect
-        should set_the_flash.to( /queued to be imported/)
+        should set_flash.to( /queued to be imported/)
       end
     end
 
@@ -80,7 +80,7 @@ class ReceptionsControllerTest < ActionController::TestCase
         should "change Asset.count by 0" do
           assert_equal 0,  Asset.count  - @asset_count, "Expected Asset.count to change by 0"
         end
-        should set_the_flash.to( /not found/)
+        should set_flash.to( /not found/)
       end
 
       context "create an event" do

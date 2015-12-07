@@ -85,7 +85,7 @@ class StudiesControllerTest < ActionController::TestCase
           }
         end
 
-        should set_the_flash.to( "Your study has been created")
+        should set_flash.to( "Your study has been created")
         should redirect_to("study path") { study_path(Study.last) }
         should "change Study.count by 1" do
           assert_equal 1, Study.count - @study_count
@@ -132,7 +132,7 @@ class StudiesControllerTest < ActionController::TestCase
           assert_equal 1, Study.count - @study_count
         end
         should redirect_to("study path") { study_path(Study.last) }
-        should set_the_flash.to( "Your study has been created")
+        should set_flash.to( "Your study has been created")
       end
 
     end

@@ -5,11 +5,11 @@ class MigratePlateParentRestrictions < ActiveRecord::Migration
 
 
   class PurposeRelationship < ActiveRecord::Base
-    set_table_name('plate_creator_purposes')
+    self.table_name=('plate_creator_purposes')
   end
 
   class NewPurposeRelationship < ActiveRecord::Base
-    set_table_name('plate_creator_parent_purposes')
+    self.table_name=('plate_creator_parent_purposes')
   end
 
 

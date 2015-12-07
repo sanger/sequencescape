@@ -76,34 +76,37 @@ module Submission::StateMachine
   end
 
   def configure_state_machine
-    aasm_column :state
-    aasm_initial_state :building
-    aasm_state :building, :exit => :valid_for_leaving_building_state
-    aasm_state :pending, :enter => :complete_building
-    aasm_state :processing, :enter => :process_submission!, :exit => :process_callbacks!
-    aasm_state :ready, :enter => :broadcast_events
-    aasm_state :failed
-    aasm_state :cancelled, :enter => :cancel_all_requests
 
-    aasm_event :built do
-      transitions :to => :pending, :from => [ :building ]
+    aasm :column => :state do
+
+      state :building,    :initial => true,               :exit => :valid_for_leaving_building_state
+      state :pending,     :enter => :complete_building
+      state :processing,  :enter => :process_submission!, :exit => :process_callbacks!
+      state :ready,       :enter => :broadcast_events
+      state :failed
+      state :cancelled,   :enter => :cancel_all_requests
+
+      event :built do
+        transitions :to => :pending, :from => [ :building ]
+      end
+
+      event :cancel do
+        transitions :to => :cancelled, :from => [ :pending, :ready, :cancelled ], :guard => :requests_cancellable?
+      end
+
+      event :process do
+        transitions :to => :processing, :from => [:processing, :failed, :pending]
+      end
+
+      event :ready do
+        transitions :to => :ready, :from => [:processing, :failed]
+      end
+
+      event :fail do
+        transitions :to => :failed, :from => [:processing, :failed, :pending]
+      end
     end
 
-    aasm_event :cancel do
-      transitions :to => :cancelled, :from => [ :pending, :ready, :cancelled ], :guard => :requests_cancellable?
-    end
-
-    aasm_event :process do
-      transitions :to => :processing, :from => [:processing, :failed, :pending]
-    end
-
-    aasm_event :ready do
-      transitions :to => :ready, :from => [:processing, :failed]
-    end
-
-    aasm_event :fail do
-      transitions :to => :failed, :from => [:processing, :failed, :pending]
-    end
   end
   private :configure_state_machine
 

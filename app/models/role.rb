@@ -37,14 +37,8 @@ class Role < ActiveRecord::Base
       base.instance_eval do
         has_many :roles, :as => :authorizable
 
-       scope :with_related_users_included, -> { includes(:roles => :users ) }
-       scope :of_interest_to, ->(user) {
-          {
-            :joins => joins_through_to_users,
-            :conditions => ['rj_u.id=?', user.id],
-            :group => "rj_r.authorizable_id"
-          }
-        }
+        scope :with_related_users_included, -> { includes(:roles => :users ) }
+        scope :of_interest_to, ->(user) { joins(:users).where(:users=>{:id=>user.id}) }
       end
     end
 

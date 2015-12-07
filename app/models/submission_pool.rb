@@ -12,9 +12,11 @@ class SubmissionPool < ActiveRecord::Base
 
           # Rails 4 takes scopes as second argument, we can probablu also tidy up and remove the counter_sql
           # as it is the :group by seems to throw rails, and distinct will throw off out count.
-          has_many :submission_pools, :through => :active_requests,
-            :select => 'submissions.*, requests.id AS outer_request_id',
-            :group => 'submissions.id', :uniq => true do
+          has_many :submission_pools, ->() {
+            select('submissions.*, requests.id AS outer_request_id').
+            group('submissions.id').
+            distinct
+          }, :through => :active_requests do
 
               def count(*args)
                 # Horrid hack due to the behaviour of count with a group_by
@@ -26,9 +28,11 @@ class SubmissionPool < ActiveRecord::Base
               end
           end
 
-          has_many :active_requests, :conditions => {
-            :state => Request::Statemachine::ACTIVE,
-            :request_purpose_id => proc { RequestPurpose.standard }
+          has_many :active_requests, ->() {
+            where(
+              :state => Request::Statemachine::ACTIVE,
+              :request_purpose_id => RequestPurpose.standard
+            )
           },
           :through => :wells, :source => :requests
 

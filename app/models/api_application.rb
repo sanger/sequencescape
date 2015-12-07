@@ -3,6 +3,8 @@
 #Copyright (C) 2014 Genome Research Ltd.
 class ApiApplication < ActiveRecord::Base
 
+  include SharedBehaviour::Named
+
   validates_presence_of :name, :key, :contact, :privilege
 
   validates_inclusion_of :privilege, :in => ['full','tag_plates']

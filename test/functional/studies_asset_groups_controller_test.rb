@@ -120,7 +120,7 @@ class Studies::AssetGroupsControllerTest < ActionController::TestCase
         put :update, :study_id => @study.id, :id => @asset_group.id, :name=>"update name"
       end
 
-      should set_the_flash.to( /updated/)
+      should set_flash.to( /updated/)
 
       should "change AssetGroup.count by 0" do
          assert_equal 0,  AssetGroup.count  - @assetgroup_count, "Expected AssetGroup.count to change by 0"

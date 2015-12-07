@@ -69,7 +69,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
             post :spreadsheet, :study_id => @study, :file => Rack::Test::UploadedFile.new(Rails.root.to_s + '/config/environment.rb','text/csv')
           end
 
-          should set_the_flash.to( "Problems processing your file. Only Excel spreadsheets accepted")
+          should set_flash.to( "Problems processing your file. Only Excel spreadsheets accepted")
           should redirect_to("upload study sample registration") { upload_study_sample_registration_index_path }
         end
       end

@@ -6,7 +6,7 @@ module ModelExtensions::Sample
     base.class_eval do
       scope :include_studies, -> { includes(:studies => :study_metadata) }
 
-      has_one :primary_study_samples, :class_name => 'StudySample', :order => 'study_id'
+      has_one :primary_study_samples, ->() { order('study_id') }, :class_name => 'StudySample'
       has_one :primary_study, :through => :primary_study_samples, :source => :study
     end
   end

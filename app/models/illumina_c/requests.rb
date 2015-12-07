@@ -27,22 +27,21 @@ module IlluminaC::Requests
   end
 
   class QcCompleteable < TransferRequest
-    redefine_state_machine do
-      aasm_column :state
-      aasm_initial_state :pending
+    aasm :column => :state do
 
-      aasm_state :pending
-      aasm_state :started
-      aasm_state :passed
-      aasm_state :qc_complete
-      aasm_state :failed
-      aasm_state :cancelled
 
-      aasm_event :start  do transitions :to => :started,     :from => [:pending]                    end
-      aasm_event :pass   do transitions :to => :passed,      :from => [:pending, :started, :failed] end
-      aasm_event :qc     do transitions :to => :qc_complete, :from => [:passed]                     end
-      aasm_event :fail   do transitions :to => :failed,      :from => [:pending, :started, :passed] end
-      aasm_event :cancel do transitions :to => :cancelled,   :from => [:started, :passed]           end
+      state :pending, :initial => true
+      state :started
+      state :passed
+      state :qc_complete
+      state :failed
+      state :cancelled
+
+      event :start  do transitions :to => :started,     :from => [:pending]                    end
+      event :pass   do transitions :to => :passed,      :from => [:pending, :started, :failed] end
+      event :qc     do transitions :to => :qc_complete, :from => [:passed]                     end
+      event :fail   do transitions :to => :failed,      :from => [:pending, :started, :passed] end
+      event :cancel do transitions :to => :cancelled,   :from => [:started, :passed]           end
     end
   end
 

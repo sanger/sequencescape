@@ -3,6 +3,8 @@
 #Copyright (C) 2013,2015 Genome Research Ltd.
 class AssetShape < ActiveRecord::Base
 
+  include SharedBehaviour::Named
+
   validates_presence_of :name, :horizontal_ratio, :vertical_ratio, :description_strategy
   validates_numericality_of :horizontal_ratio, :vertical_ratio
 

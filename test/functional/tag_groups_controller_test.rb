@@ -36,7 +36,7 @@ class TagGroupsControllerTest < ActionController::TestCase
           assert_equal 0,  Tag.count  - @tag_count, "Expected Tag.count to change by 0"
         end
         should respond_with :redirect
-        should set_the_flash.to( /created/)
+        should set_flash.to( /created/)
       end
       context "with 2 tag" do
         setup do
@@ -51,7 +51,7 @@ class TagGroupsControllerTest < ActionController::TestCase
           assert_equal 2,  Tag.count  - @tag_count, "Expected Tag.count to change by 2"
         end
         should respond_with :redirect
-        should set_the_flash.to( /created/)
+        should set_flash.to( /created/)
       end
 
       context "with 4 tags where 2 have empty oligos" do
@@ -68,7 +68,7 @@ class TagGroupsControllerTest < ActionController::TestCase
           assert_equal 2,  Tag.count  - @tag_count, "Expected Tag.count to change by 2"
         end
         should respond_with :redirect
-        should set_the_flash.to( /created/)
+        should set_flash.to( /created/)
       end
     end
 
@@ -93,7 +93,7 @@ class TagGroupsControllerTest < ActionController::TestCase
         @tag_count =  Tag.count
         put :update, :id => @tag_group.id, :name=>"update name"
       end
-      should set_the_flash.to( /updated/)
+      should set_flash.to( /updated/)
       should "change TagGroup.count by 0" do
         assert_equal 0,  TagGroup.count  - @taggroup_count, "Expected TagGroup.count to change by 0"
       end

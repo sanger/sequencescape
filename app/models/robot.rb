@@ -7,7 +7,7 @@ class Robot < ActiveRecord::Base
   validates_presence_of :name
   validates_presence_of :location
   has_many :robot_properties
-  has_one :max_plates_property, :class_name => 'RobotProperty', :conditions => { :key => 'max_plates' }
+  has_one :max_plates_property, ->() { where(:key => 'max_plates') }, :class_name => 'RobotProperty'
 
  scope :with_machine_barcode, ->(barcode) {
     barcode_number = Barcode.number_to_human(barcode)

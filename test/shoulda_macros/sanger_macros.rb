@@ -8,8 +8,6 @@ module Sanger
     module Controller
       module Macros
 
-
-
         def should_have_instance_methods(*methods)
           dt = described_type
           should "have instance methods #{methods.join(',')}" do
@@ -34,8 +32,9 @@ module Sanger
             context "#{action}" do
               context "when logged in" do
                 setup do
-                  @controller.stubs(:logged_in?).returns(true)
-                  @controller.stubs(:current_user).returns(create(:user))
+                  session[:user] = create(:user)
+                  # @controller.stubs(:logged_in?).returns(true)
+                  # @controller.stubs(:current_user).returns(create(:user))
                   begin
                     get action
                   rescue AbstractController::ActionNotFound
@@ -55,7 +54,9 @@ module Sanger
               end
               context "when not logged in" do
                 setup do
-                  @controller.stubs(:logged_in?).returns(false)
+
+                  session[:user] = nil
+
                   begin
                     get action
                   rescue AbstractController::ActionNotFound

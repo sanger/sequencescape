@@ -1,9 +1,13 @@
 /*
  * Import all the required stylesheets. We use SASS,so that we can use bootstrap
+ * @import "all/*"
  */
 
 @import "jquery-tablesorter/theme.blue";
 @import "jquery-ui";
 @import "bootstrap-sprockets";
 @import "bootstrap";
-@import "all/*";
+/* SEQUENCESCAPE */
+@import "all/components";
+@import "all/screen";
+@import "all/sequencescape";

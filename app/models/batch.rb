@@ -3,14 +3,13 @@
 #Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 require 'timeout'
 require "tecan_file_generation"
-require 'aasm'
 
 class Batch < ActiveRecord::Base
   include Api::BatchIO::Extensions
   include Api::Messages::FlowcellIO::Extensions
   cattr_reader :per_page
   @@per_page = 500
-  include AASM
+
   include SequencingQcBatch
   include Commentable
   include Uuid::Uuidable
@@ -412,29 +411,14 @@ class Batch < ActiveRecord::Base
     self.studies.first
   end
 
-  #TODO has_many :aliquots, :finder_sql => ...
-  def aliquots
-    self.requests.map(&:asset).compact.map(&:aliquots).flatten.compact
-  end
-
   #TODO has_many :orders, :finder_sql => ...
-  def orders
-    self.requests.map(&:submission).compact.map(&:orders).flatten.compact
-  end
-
-  #not efficient, but not used often
-  def studies
-    #we use order and not aliquots because aliquots can be empty
-    self.orders.map(&:study).compact.uniq
-  end
-
-  def projects
-    self.orders.map(&:project).compact
-  end
-
-  def samples
-    requests.including_samples_from_target.map {|r| r.target_asset.samples }.flatten.uniq
-  end
+  has_many :submissions,  ->() { distinct }, :through => :requests
+  has_many :orders,  ->() { distinct }, :through => :submissions
+  has_many :studies,  ->() { distinct }, :through => :orders
+  has_many :projects,  ->() { distinct }, :through => :orders
+  has_many :source_assets,  ->() { distinct }, :through => :requests
+  has_many :aliquots,  ->() { distinct }, :through => :source_assets
+  has_many :samples,  ->() { distinct }, :through => :aliquots
 
   def requests_by_study(*args)
     self.requests.for_studies(*args).all

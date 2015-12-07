@@ -53,7 +53,7 @@ class Purpose < ActiveRecord::Base
   belongs_to :default_location, :class_name => 'Location'
   has_many :messenger_creators, :inverse_of => :purpose
 
-  validates_format_of :name, :with => /^\w[\s\w._-]+\w$/i
+  validates_format_of :name, :with => /\A\w[\s\w._-]+\w\z/i
   validates_presence_of :name
   validates_uniqueness_of :name, :message => "already in use"
   validates_inclusion_of :barcode_for_tecan, :in => ['ean13_barcode','fluidigm_barcode']

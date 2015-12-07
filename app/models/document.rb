@@ -18,7 +18,7 @@ class Document < ActiveRecord::Base
 
       line = __LINE__ + 1
       class_eval(%Q{
-        has_one(:#{field}_document, :class_name => "Document", :as => :documentable, :conditions => {:documentable_extended => differentiator}, :dependent => :destroy
+        has_one(:#{field}_document, ->(){ where(:documentable_extended => differentiator) }, :class_name => "Document", :as => :documentable, :dependent => :destroy
           )
 
         def #{field}

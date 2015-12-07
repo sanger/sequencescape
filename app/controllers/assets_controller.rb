@@ -3,6 +3,9 @@
 #Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 
 class AssetsController < ApplicationController
+#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  before_filter :evil_parameter_hack!
   include BarcodePrintersController::Print
    before_filter :discover_asset, :only => [:show, :edit, :update, :destory, :summary, :close, :print_assets, :print, :show_plate, :history, :holded_assets]
 
@@ -61,8 +64,8 @@ class AssetsController < ApplicationController
   def find_parents(text)
     return [] unless text.present?
       names = text.lines.map(&:chomp).reject { |l| l.blank? }
-      objects = Asset.find(:all, :conditions => {:id => names})
-      objects += Asset.find(:all, :conditions => {:barcode => names})
+      objects = Asset.where(:id => names).all
+      objects += Asset.where(:barcode => names).all
       name_set = Set.new(names)
       found_set = Set.new(objects.map(&:name))
       not_found = name_set - found_set

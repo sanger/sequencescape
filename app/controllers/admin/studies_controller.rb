@@ -2,10 +2,13 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2011 Genome Research Ltd.
 class Admin::StudiesController < ApplicationController
+#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  before_filter :evil_parameter_hack!
   before_filter :admin_login_required
 
   def index
-    @studies = Study.all(:order => "name ASC")
+    @studies = Study.alphabetical
   end
 
   def show

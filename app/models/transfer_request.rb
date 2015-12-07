@@ -21,40 +21,37 @@ class TransferRequest < Request
     end
   end
 
-
-  redefine_state_machine do
+  redefine_aasm :column => :state do
     # The statemachine for transfer requests is more promiscuous than normal requests, as well
     # as being more concise as it has less states.
-    aasm_column :state
-    aasm_state :pending
-    aasm_state :started
-    aasm_state :failed,	    :enter => :on_failed
-    aasm_state :passed
-    aasm_state :cancelled,  :enter => :on_cancelled
-    aasm_initial_state :pending
+    state :pending, :initial => true
+    state :started
+    state :failed,	    :enter => :on_failed
+    state :passed
+    state :cancelled,  :enter => :on_cancelled
 
     # State Machine events
-    aasm_event :start do
+    event :start do
       transitions :to => :started, :from => [:pending]
     end
 
-    aasm_event :pass do
+    event :pass do
       transitions :to => :passed, :from => [:pending, :started, :failed]
     end
 
-    aasm_event :fail do
+    event :fail do
       transitions :to => :failed, :from => [:pending, :started, :passed]
     end
 
-    aasm_event :cancel do
+    event :cancel do
       transitions :to => :cancelled, :from => [:started, :passed]
     end
 
-    aasm_event :cancel_before_started do
+    event :cancel_before_started do
       transitions :to => :cancelled, :from => [:pending]
     end
 
-    aasm_event :detach do
+    event :detach do
       transitions :to => :pending, :from => [:pending]
     end
   end

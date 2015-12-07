@@ -17,9 +17,9 @@ class Tag < ActiveRecord::Base
 
   belongs_to :tag_group
   has_many :assets, :as => :material
-  has_many :requests, :through => :assets, :uniq => true
+  has_many :requests, ->() { distinct }, :through => :assets
 
-  scope :sorted , order("map_id ASC")
+  scope :sorted, ->() { order("map_id ASC") }
 
   def name
     "Tag #{map_id}"

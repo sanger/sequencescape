@@ -6,7 +6,7 @@ class Supplier < ActiveRecord::Base
   include ::Io::Supplier::ApiIoSupport
   include SampleManifest::Associations
 
-  has_many :studies, :through => :sample_manifests, :uniq => true
+  has_many :studies, ->() { distinct }, :through => :sample_manifests
   validates_presence_of :name
 
 

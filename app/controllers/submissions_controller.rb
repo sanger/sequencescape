@@ -3,6 +3,9 @@
 #Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
 
 class SubmissionsController < ApplicationController
+#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  before_filter :evil_parameter_hack!
 
   before_filter :lab_manager_login_required, :only => [:change_priority]
 

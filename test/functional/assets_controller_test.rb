@@ -26,7 +26,7 @@ class AssetsControllerTest < ActionController::TestCase
       post :create, ActiveSupport::JSON.decode(@json_data)
     end
 
-    should set_the_flash.to(  /Asset was successfully created/)
+    should set_flash.to(  /Asset was successfully created/)
 
      should "change Asset.count by 1" do
        assert_equal 1,  Asset.count  - @asset_count, "Expected Asset.count to change by 1"

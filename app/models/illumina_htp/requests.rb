@@ -62,101 +62,97 @@ module IlluminaHtp::Requests
   end
 
   class CovarisToSheared < TransferRequest
-    redefine_state_machine do
-      aasm_column :state
-      aasm_initial_state :pending
 
-      aasm_state :pending
-      aasm_state :started
-      aasm_state :passed
-      aasm_state :qc_complete
-      aasm_state :failed
-      aasm_state :cancelled
+    redefine_aasm :column => :state do
 
-      aasm_event :start  do transitions :to => :started,     :from => [:pending]                    end
-      aasm_event :pass   do transitions :to => :passed,      :from => [:pending, :started, :failed] end
-      aasm_event :qc     do transitions :to => :qc_complete, :from => [:passed]                     end
-      aasm_event :fail   do transitions :to => :failed,      :from => [:pending, :started, :passed] end
-      aasm_event :cancel do transitions :to => :cancelled,   :from => [:started, :passed]           end
+      state :pending, :initial => true
+      state :started
+      state :passed
+      state :qc_complete
+      state :failed
+      state :cancelled
+
+      event :start  do transitions :to => :started,     :from => [:pending]                    end
+      event :pass   do transitions :to => :passed,      :from => [:pending, :started, :failed] end
+      event :qc     do transitions :to => :qc_complete, :from => [:passed]                     end
+      event :fail   do transitions :to => :failed,      :from => [:pending, :started, :passed] end
+      event :cancel do transitions :to => :cancelled,   :from => [:started, :passed]           end
     end
   end
 
   class PostShearToAlLibs < TransferRequest
-    redefine_state_machine do
-      aasm_column :state
-      aasm_state :pending
-      aasm_state :started
-      aasm_state :fx_transfer
-      aasm_state :failed,     :enter => :on_failed
-      aasm_state :passed
-      aasm_state :cancelled,  :enter => :on_cancelled
-      aasm_initial_state :pending
 
-      aasm_event :start                 do transitions :to => :started, :from => [:pending] end
-      aasm_event :pass                  do transitions :to => :passed, :from => [:fx_transfer, :failed] end
-      aasm_event :fail                  do transitions :to => :failed, :from => [:pending, :started, :passed] end
-      aasm_event :cancel                do transitions :to => :cancelled, :from => [:started, :passed] end
-      aasm_event :cancel_before_started do transitions :to => :cancelled, :from => [:pending] end
-      aasm_event :detach                do transitions :to => :pending, :from => [:pending] end
-      aasm_event :fx_transfer           do transitions :to => :fx_transfer, :from => [:started] end
+    redefine_aasm :column => :state do
+
+      state :pending, :initial => true
+      state :started
+      state :fx_transfer
+      state :failed,     :enter => :on_failed
+      state :passed
+      state :cancelled,  :enter => :on_cancelled
+
+
+      event :start                 do transitions :to => :started, :from => [:pending] end
+      event :pass                  do transitions :to => :passed, :from => [:fx_transfer, :failed] end
+      event :fail                  do transitions :to => :failed, :from => [:pending, :started, :passed] end
+      event :cancel                do transitions :to => :cancelled, :from => [:started, :passed] end
+      event :cancel_before_started do transitions :to => :cancelled, :from => [:pending] end
+      event :detach                do transitions :to => :pending, :from => [:pending] end
+      event :fx_transfer           do transitions :to => :fx_transfer, :from => [:started] end
 
     end
   end
 
   class PrePcrToPcr < TransferRequest
-    redefine_state_machine do
-      aasm_column :state
-      aasm_initial_state :pending
 
-      aasm_state :pending
-      aasm_state :started_fx
-      aasm_state :started_mj
-      aasm_state :passed
-      aasm_state :failed
-      aasm_state :cancelled
+    redefine_aasm :column => :state do
 
-      aasm_event :start_fx do transitions :to => :started_fx,  :from => [:pending]                                    end
-      aasm_event :start_mj do transitions :to => :started_mj,  :from => [:started_fx]                                 end
-      aasm_event :pass     do transitions :to => :passed,      :from => [:pending, :started_mj, :failed]              end
-      aasm_event :fail     do transitions :to => :failed,      :from => [:pending, :started_fx, :started_mj, :passed] end
-      aasm_event :cancel   do transitions :to => :cancelled,   :from => [:started_fx, :started_mj, :passed]           end
+      state :pending, :initial => true
+      state :started_fx
+      state :started_mj
+      state :passed
+      state :failed
+      state :cancelled
+
+      event :start_fx do transitions :to => :started_fx,  :from => [:pending]                                    end
+      event :start_mj do transitions :to => :started_mj,  :from => [:started_fx]                                 end
+      event :pass     do transitions :to => :passed,      :from => [:pending, :started_mj, :failed]              end
+      event :fail     do transitions :to => :failed,      :from => [:pending, :started_fx, :started_mj, :passed] end
+      event :cancel   do transitions :to => :cancelled,   :from => [:started_fx, :started_mj, :passed]           end
     end
   end
 
   class PcrXpToPoolPippin < TransferRequest
-    include InitialDownstream
-    redefine_state_machine do
-      aasm_column :state
-      aasm_initial_state :pending
 
-      aasm_state :pending
-      aasm_state :started
-      aasm_state :passed
-      aasm_state :cancelled
+    redefine_aasm :column => :state do
 
-      aasm_event :start  do transitions :to => :started,     :from => [:pending]                    end
-      aasm_event :pass   do transitions :to => :passed,      :from => [:pending, :started, :failed] end
-      aasm_event :cancel do transitions :to => :cancelled,   :from => [:started, :passed, :qc]      end
+      state :pending, :initial => true
+      state :started
+      state :passed
+      state :cancelled
+
+      event :start  do transitions :to => :started,     :from => [:pending]                    end
+      event :pass   do transitions :to => :passed,      :from => [:pending, :started, :failed] end
+      event :cancel do transitions :to => :cancelled,   :from => [:started, :passed, :qc]      end
     end
   end
 
   class QcCompletableTransfer < TransferRequest
-    redefine_state_machine do
-      aasm_column :state
-      aasm_initial_state :pending
 
-      aasm_state :pending
-      aasm_state :started
-      aasm_state :passed
-      aasm_state :qc_complete
-      aasm_state :failed
-      aasm_state :cancelled
+    redefine_aasm :column => :state do
 
-      aasm_event :start  do transitions :to => :started,     :from => [:pending]                    end
-      aasm_event :pass   do transitions :to => :passed,      :from => [:pending, :started, :failed] end
-      aasm_event :qc     do transitions :to => :qc_complete, :from => [:passed]                     end
-      aasm_event :fail   do transitions :to => :failed,      :from => [:pending, :started, :passed] end
-      aasm_event :cancel do transitions :to => :cancelled,   :from => [:started, :passed, :qc]      end
+      state :pending, :initial => true
+      state :started
+      state :passed
+      state :qc_complete
+      state :failed
+      state :cancelled
+
+      event :start  do transitions :to => :started,     :from => [:pending]                    end
+      event :pass   do transitions :to => :passed,      :from => [:pending, :started, :failed] end
+      event :qc     do transitions :to => :qc_complete, :from => [:passed]                     end
+      event :fail   do transitions :to => :failed,      :from => [:pending, :started, :passed] end
+      event :cancel do transitions :to => :cancelled,   :from => [:started, :passed, :qc]      end
     end
   end
 

@@ -7,9 +7,9 @@ class Transfer < ActiveRecord::Base
       base.class_eval do
         include Transfer::State
 
-        has_many :transfers_as_source,     :class_name => 'Transfer', :foreign_key => :source_id,      :order => 'created_at ASC'
-        has_many :transfers_to_tubes,      :class_name => 'Transfer::BetweenPlateAndTubes', :foreign_key => :source_id, :order => 'created_at ASC'
-        has_many :transfers_as_destination, :class_name => 'Transfer', :foreign_key => :destination_id, :order => 'id ASC'
+        has_many :transfers_as_source,      ->() { order('created_at ASC') }, :class_name => 'Transfer', :foreign_key => :source_id
+        has_many :transfers_to_tubes,       ->() { order('created_at ASC') }, :class_name => 'Transfer::BetweenPlateAndTubes', :foreign_key => :source_id
+        has_many :transfers_as_destination, ->() { order('id ASC') },         :class_name => 'Transfer', :foreign_key => :destination_id
 
         # This looks odd but it's a LEFT OUTER JOIN, meaning that the rows we would be interested in have no source_id.
         scope :with_no_outgoing_transfers, -> {

@@ -2,8 +2,9 @@ source 'https://rubygems.org'
 
 group :default do
   gem "rails"
+  gem 'rails-observers'
 
-  gem "aasm", "~>2.4.0"
+  gem "aasm"
   gem "configatron"
   gem "rest-client" # curb substitute.
   gem "formtastic"
@@ -19,7 +20,7 @@ group :default do
   gem 'jruby-openssl', :platforms => :jruby
 
   # Provides legacy prototype helpers
-  gem 'prototype-rails'
+  gem 'prototype-rails', github: 'rails/prototype-rails', branch: '4.2'
 
   # Provides eg. error_messages_for previously in rails 2, now deprecated.
   gem 'dynamic_form'
@@ -31,7 +32,7 @@ group :default do
   # The graph library (1.x only because 2.x uses Rails 3).  This specific respository fixes an issue
   # seen in creating asset links during the assign_tags_handler (which blew up in rewire_crossing in the
   # gem code).
-  gem "acts-as-dag", '~>3.0.0'
+  gem "acts-as-dag"
 
   # Better table alterations
   # gem "alter_table",
@@ -103,7 +104,7 @@ group :test do
   gem "launchy", :require => false
   gem "mocha", :require => false # avoids load order problems
   gem "nokogiri", :require => false
-  gem "shoulda", "~>3.4.0", :require => false
+  gem "shoulda", :require => false
   gem "timecop", :require => false
   gem "treetop", :require => false
   # gem 'parallel_tests', :require => false

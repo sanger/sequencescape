@@ -170,7 +170,7 @@ module Sanger
                 #       delete :destroy, :id => -1
                 #     end
                 #   end
-                #   should_not set_the_flash
+                #   should_not set_flash
                 # end
               end
 

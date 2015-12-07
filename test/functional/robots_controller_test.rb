@@ -19,7 +19,7 @@ class RobotsControllerTest < ActionController::TestCase
         get :index
       end
       should respond_with :success
-      should_not set_the_flash
+      should_not set_flash
     end
 
     context "#new" do
@@ -27,7 +27,7 @@ class RobotsControllerTest < ActionController::TestCase
         get :new
       end
       should respond_with :success
-      should_not set_the_flash
+      should_not set_flash
     end
 
     context "#create" do
@@ -39,7 +39,7 @@ class RobotsControllerTest < ActionController::TestCase
         assert_equal @count+1, Robot.count
         assert_redirected_to admin_robot_path(assigns(:robot))
       end
-      should set_the_flash.to( "Robot was successfully created.")
+      should set_flash.to( "Robot was successfully created.")
     end
 
     context "#show" do
@@ -47,7 +47,7 @@ class RobotsControllerTest < ActionController::TestCase
         get :show, :id => @robot.id
       end
       should respond_with :success
-      should_not set_the_flash
+      should_not set_flash
     end
 
     context "#edit" do
@@ -55,7 +55,7 @@ class RobotsControllerTest < ActionController::TestCase
         get :edit, :id => @robot.id
       end
       should respond_with :success
-      should_not set_the_flash
+      should_not set_flash
     end
 
     context "#update" do
@@ -67,7 +67,7 @@ class RobotsControllerTest < ActionController::TestCase
         assert_equal "tecan", Robot.find(@robot.id).name
         assert_redirected_to admin_robot_path(assigns(:robot))
       end
-      should set_the_flash.to( "Robot was successfully updated.")
+      should set_flash.to( "Robot was successfully updated.")
     end
 
     context "#destroy" do
@@ -79,7 +79,7 @@ class RobotsControllerTest < ActionController::TestCase
         assert_equal @count-1, Robot.count
         assert_redirected_to admin_robots_path
       end
-      should set_the_flash.to("Robot removed successfully")
+      should set_flash.to("Robot removed successfully")
     end
 
   end

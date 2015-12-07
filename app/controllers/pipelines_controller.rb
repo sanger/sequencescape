@@ -2,6 +2,9 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 class PipelinesController < ApplicationController
+#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  before_filter :evil_parameter_hack!
   before_filter :find_pipeline_by_id, :only => [ :show, :setup_inbox,
                                    :set_inbox, :training_batch, :show_comments, :activate, :deactivate, :destroy, :batches]
 

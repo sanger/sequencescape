@@ -1,7 +1,7 @@
 
 class UpdatePacbioSequencingWithTubesToMxWells < ActiveRecord::Migration
   class Task < ActiveRecord::Base
-    set_table_name "tasks"
+    self.table_name= "tasks"
   end
   def self.up
     ActiveRecord::Base.transaction do

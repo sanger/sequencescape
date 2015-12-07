@@ -11,6 +11,7 @@ class Asset < ActiveRecord::Base
   include StudyReport::AssetDetails
   include ModelExtensions::Asset
   include AssetLink::Associations
+  include SharedBehaviour::Named
 
   SAMPLE_PARTIAL = 'assets/samples_partials/blank'
 
@@ -52,9 +53,9 @@ class Asset < ActiveRecord::Base
 
   # TODO: Remove 'requests' and 'source_request' as they are abiguous
   has_many :requests
-  has_one  :source_request,     :class_name => "Request", :foreign_key => :target_asset_id, :include => :request_metadata
-  has_many :requests_as_source, :class_name => 'Request', :foreign_key => :asset_id,        :include => :request_metadata
-  has_many :requests_as_target, :class_name => 'Request', :foreign_key => :target_asset_id, :include => :request_metadata
+  has_one  :source_request, ->() { includes(:request_metadata) },      :class_name => "Request", :foreign_key => :target_asset_id
+  has_many :requests_as_source, ->() { includes(:request_metadata) },  :class_name => 'Request', :foreign_key => :asset_id
+  has_many :requests_as_target, ->() { includes(:request_metadata) },  :class_name => 'Request', :foreign_key => :target_asset_id
 
   scope :include_requests_as_target, -> { includes(:requests_as_target) }
   scope :include_requests_as_source, -> { includes(:requests_as_source) }
@@ -63,7 +64,7 @@ class Asset < ActiveRecord::Base
   has_many :submitted_assets
   has_many :orders, :through => :submitted_assets
 
- scope :requests_as_source_is_a?, ->(t) { { :joins => :requests_as_source, :conditions => { :requests => { :sti_type => [ t, *t.descendants ].map(&:name) } } } }
+  scope :requests_as_source_is_a?, ->(t) { joins(:requests_as_source).where(:requests => { :sti_type => [ t, *t.descendants ].map(&:name) }) }
 
   extend ContainerAssociation::Extension
 
@@ -74,7 +75,7 @@ class Asset < ActiveRecord::Base
 
   belongs_to :map
   belongs_to :barcode_prefix
-  scope :sorted , order("map_id ASC")
+  scope :sorted, ->() { order("map_id ASC") }
 
   scope :position_name, ->(*args) {
     joins(:map).where(["description = ? AND asset_size = ?", args[0], args[1]])
@@ -82,7 +83,7 @@ class Asset < ActiveRecord::Base
   scope :get_by_type, ->(*args) { {:conditions => { :sti_type => args[0]} } }
   scope :for_summary, -> { includes([:map,:barcode_prefix]) }
 
- scope :of_type, ->(*args) { { :conditions => { :sti_type => args.map { |t| [t, *t.descendants] }.flatten.map(&:name) } } }
+  scope :of_type, ->(*args) { { :conditions => { :sti_type => args.map { |t| [t, *t.descendants] }.flatten.map(&:name) } } }
 
   scope :recent_first, -> { order('id DESC') }
 

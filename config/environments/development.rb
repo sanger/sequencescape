@@ -12,12 +12,13 @@ Sequencescape::Application.configure do
   # Log error messages when you accidentally call methods on nil.
   config.whiny_nils = true
 
-  config.serve_static_assets = true
+  config.serve_static_files = true
 
   # Show full error reports and disable caching
   # config.action_controller.consider_all_requests_local = true
   # config.action_view.debug_rjs                         = true
   config.action_controller.perform_caching             = false
+  config.eager_load = false
 
   # Temp whilst API / access is finalised
   config.action_controller.allow_forgery_protection    = false
@@ -25,17 +26,11 @@ Sequencescape::Application.configure do
   # Don't care if the mailer can't send
   config.action_mailer.raise_delivery_errors = false
 
-  # We use mass assignment far too often to make this practical to change now.
-  # Plus, rails 4 impliments it far more sensibly on the controller.
-  config.active_record.whitelist_attributes = false
-
   config.time_zone = 'London'
 
   config.active_record.observers = [ :request_observer ]
 
   config.log_level = :debug
-
-  config.active_record.observers = [ :request_observer ]
 
   config.active_support.deprecation = :log
 

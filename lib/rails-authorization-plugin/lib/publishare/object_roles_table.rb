@@ -95,19 +95,27 @@ module Authorization
 
         def get_role( role_name, authorizable_obj )
           if authorizable_obj.is_a? Class
-            Role.find( :first,
-                       :conditions => [ 'name = ? and authorizable_type = ? and authorizable_id IS NULL', role_name, authorizable_obj.to_s ] )
+            Role.where(
+              :name =>role_name,
+              :authorizable_type => authorizable_obj.to_s,
+              :authorizable_id => nil
+            ).first
           elsif authorizable_obj
-            Role.find( :first,
-                       :conditions => [ 'name = ? and authorizable_type = ? and authorizable_id = ?',
-                                        role_name, authorizable_obj.class.base_class.to_s, authorizable_obj.id ] )
+            Role.where(
+              :name => role_name,
+              :authorizable_type => authorizable_obj.class.base_class.to_s,
+              :authorizable_id => authorizable_obj.id
+            ).first
           else
-            Role.find( :first,
-                       :conditions => [ 'name = ? and authorizable_type IS NULL and authorizable_id IS NULL', role_name ] )
+            Role.where(
+              :name => role_name,
+              :authorizable_type => nil,
+              :authorizable_id => nil
+            ).first
           end
         end
 
-        def delete_role( role ) 
+        def delete_role( role )
           if role
             self.roles.delete( role )
             role.destroy if role.users.empty?
@@ -126,7 +134,7 @@ module Authorization
         def acts_as_authorizable
           has_many :accepted_roles, :as => :authorizable, :class_name => 'Role', :dependent => :destroy
 
-          has_many :users, :finder_sql => 'SELECT DISTINCT users.* FROM users INNER JOIN roles_users ON user_id = users.id INNER JOIN roles ON roles.id = role_id WHERE authorizable_type = \'#{self.class.base_class.to_s}\' AND authorizable_id = #{id}', :counter_sql => 'SELECT COUNT(DISTINCT users.id) FROM users INNER JOIN roles_users ON user_id = users.id INNER JOIN roles ON roles.id = role_id WHERE authorizable_type = \'#{self.class.base_class.to_s}\' AND authorizable_id = #{id}', :readonly => true
+          has_many :users, :through => :roles
 
           def accepts_role?( role_name, user )
             user.has_role? role_name, self

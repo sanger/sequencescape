@@ -19,7 +19,7 @@ class PlateTemplatesControllerTest < ActionController::TestCase
       end
       should render_template :index
       should respond_with :success
-      should_not set_the_flash
+      should_not set_flash
     end
 
     context "#new" do
@@ -28,7 +28,7 @@ class PlateTemplatesControllerTest < ActionController::TestCase
       end
       should render_template :new
       should respond_with :success
-      should_not set_the_flash
+      should_not set_flash
     end
 
     context "#create" do
@@ -37,7 +37,7 @@ class PlateTemplatesControllerTest < ActionController::TestCase
           post :create
         end
         should respond_with :redirect
-        should set_the_flash.to( "Please enter a name")
+        should set_flash.to( "Please enter a name")
       end
 
       context "with valid parameters" do
@@ -47,7 +47,7 @@ class PlateTemplatesControllerTest < ActionController::TestCase
           post :create, :name=>"test",:user_id=>@user.id, :rows => 8,  :cols => 12, :empty_well=>{"A1"=>1,"H12"=>96}
         end
         should respond_with :redirect
-        should set_the_flash.to( "Template saved")
+        should set_flash.to( "Template saved")
         should "increment plate templates" do
           assert_equal @old_count_plate+1, PlateTemplate.count
         end

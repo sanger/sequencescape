@@ -18,7 +18,7 @@ class Project < ActiveRecord::Base
   extend EventfulRecord
 
   def self.states
-    Project.aasm_states.map(&:name)
+    Project.aasm.states.map(&:name)
   end
 
   ACTIVE_STATE = 'active'
@@ -26,22 +26,24 @@ class Project < ActiveRecord::Base
   has_many_events
   has_many_lab_events
 
-  aasm_column :state
-  aasm_initial_state :pending
-  aasm_state :pending
-  aasm_state :active, :enter => :mark_active
-  aasm_state :inactive, :enter => :mark_deactive
+  aasm :column => :state do
 
-  aasm_event :reset do
-    transitions :to => :pending, :from => [:inactive, :active]
-  end
+    state :pending, :initial => true
+    state :active, :enter => :mark_active
+    state :inactive, :enter => :mark_deactive
 
-  aasm_event :activate do
-    transitions :to => :active, :from => [:pending, :inactive]
-  end
+    event :reset do
+      transitions :to => :pending, :from => [:inactive, :active]
+    end
 
-  aasm_event :deactivate do
-    transitions :to => :inactive, :from => [:pending, :active]
+    event :activate do
+      transitions :to => :active, :from => [:pending, :inactive]
+    end
+
+    event :deactivate do
+      transitions :to => :inactive, :from => [:pending, :active]
+    end
+
   end
 
   scope :in_assets, ->(assets) {
@@ -54,8 +56,8 @@ class Project < ActiveRecord::Base
 
   has_many :roles, :as => :authorizable
   has_many :orders
-  has_many :studies, :class_name => "Study", :through => :orders, :source => :study, :uniq => true
-  has_many :submissions, :through => :orders, :source => :submission, :uniq => true
+  has_many :studies, ->() { distinct }, :class_name => "Study", :through => :orders, :source => :study
+  has_many :submissions,  ->() { distinct }, :through => :orders, :source => :submission
   has_many :sample_manifests
 
   validates_presence_of :name, :state
@@ -71,11 +73,9 @@ class Project < ActiveRecord::Base
     state.present? ? where(state:state) : where(true)
   }
 
-  scope :active,       ->()     { where(state: ACTIVE_STATE) }
   scope :approved,     ->()     { where(approved: true) }
   scope :unapproved,   ->()     { where(approved: false) }
   scope :valid,        ->()     { active.approved }
-  scope :alphabetical, ->()     { order('name ASC') }
   scope :for_user,     ->(user) { joins({:roles=>:user_role_bindings}).where(:roles_users=>{:user_id=>user}) }
 
   scope :with_unallocated_manager, ->() {

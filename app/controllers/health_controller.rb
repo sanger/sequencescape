@@ -3,6 +3,9 @@
 #Copyright (C) 2015 Genome Research Ltd.
 # Provides a simple endpoint for monitoring server status
 class HealthController < ApplicationController
+#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  before_filter :evil_parameter_hack!
 
   before_filter :login_required, :except => [ :index ]
 

@@ -5,6 +5,7 @@ class AssetGroup < ActiveRecord::Base
 
   include Uuid::Uuidable
   include ModelExtensions::AssetGroup
+  include SharedBehaviour::Named
 
   belongs_to :study
   belongs_to :user

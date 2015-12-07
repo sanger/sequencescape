@@ -6,14 +6,12 @@
 # For example, we don't know the read length etc. when the request is created
 class ExternalLibraryCreationRequest < Request
 
-  redefine_state_machine do
+  aasm :column => :state do
     # We have a vastly simplified two state state machine. Requests are passed once the manifest is processed
-    aasm_column :state
-    aasm_state :pending
-    aasm_state :passed, :enter => :on_passed
-    aasm_initial_state :pending
+    state :pending, :initial => true
+    state :passed, :enter => :on_passed
 
-    aasm_event :manifest_processed do
+    event :manifest_processed do
       transitions :to => :passed, :from => [:pending]
     end
   end

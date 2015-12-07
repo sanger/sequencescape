@@ -14,25 +14,27 @@ module SampleManifest::StateMachine
   end
 
   def configure_state_machine
-    aasm_column :state
-    aasm_state :pending
-    aasm_state :processing
-    aasm_state :failed
-    aasm_state :completed
-    aasm_initial_state :pending
+    aasm :column => :state do
 
-    # State Machine events
-    aasm_event :start do
-      transitions :to => :processing, :from => [:pending, :failed, :completed, :processing]
+      state :pending, :initial => true
+      state :processing
+      state :failed
+      state :completed
+
+      # State Machine events
+      event :start do
+        transitions :to => :processing, :from => [:pending, :failed, :completed, :processing]
+      end
+
+      event :finished do
+        transitions :to => :completed, :from => [:processing]
+      end
+
+      event :fail do
+        transitions :to => :failed, :from => [:processing]
+      end
     end
 
-    aasm_event :finished do
-      transitions :to => :completed, :from => [:processing]
-    end
-
-    aasm_event :fail do
-      transitions :to => :failed, :from => [:processing]
-    end
   end
   private :configure_state_machine
 

@@ -51,14 +51,18 @@ module AssetRack::WellAssociations
   module AssetRackAssociation
     def self.included(base)
       base.class_eval do
-        scope :for_asset_rack, lambda{ |rack| {:select=>'assets.*',:joins=>:container_association,:conditions=>{:container_associations=>{:container_id=>rack.strip_tubes }} }}
+        scope :for_asset_rack, ->(rack) {
+          select('assets.*').
+          joins(:container_association).
+          where(:container_associations=>{:container_id=>rack.strip_tubes })
+        }
 
         ##
         # Quite specialised scope. Takes array of:
         # [strip_id,strip_colum,row_offset]
         # Strip column is used to provide a quick conversion back to the standard map description
         # This is a performance optimization
-        scope :for_strip_tubes_row, lambda{|strips_wells|
+        scope :for_strip_tubes_row, ->(strips_wells) {
 
           query = 'false'
           conds = [query]
@@ -73,15 +77,15 @@ module AssetRack::WellAssociations
           # Selects column by finding the index of the strip_tube id in an array based on column
           # Sadly rails doesn't automatically sanitize selects. We're probably safe with this one,
           # but this ensures we can re-use this without worry.
-          select = sanitize_sql_array(['assets.*, CONCAT(CHAR(fstr_map.column_order+65),FIELD(fstr_ca.container_id,?)) AS map_description',id_column])
-          {
-            :select=>select,
-            :joins=>[
+          select_q = sanitize_sql_array(['assets.*, CONCAT(CHAR(fstr_map.column_order+65),FIELD(fstr_ca.container_id,?)) AS map_description',id_column])
+
+          select(select_q).
+          joins([
               'INNER JOIN container_associations AS fstr_ca ON fstr_ca.content_id = assets.id',
               'INNER JOIN maps AS fstr_map ON fstr_map.id = assets.map_id'
-            ],
-            :conditions=>conds
-          }
+          ]).
+          where(conds)
+
         }
       end
     end

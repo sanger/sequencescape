@@ -26,7 +26,7 @@ class Tube < Aliquot::Receptacle
     'tube'
   end
 
-  has_many :submissions, :through => :requests_as_target, :uniq =>true
+  has_many :submissions, ->() { distinct }, :through => :requests_as_target
   scope :include_scanned_into_lab_event, -> { includes(:scanned_into_lab_event) }
 
  scope :with_purpose, ->(*purposes) {

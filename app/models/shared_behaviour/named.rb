@@ -6,6 +6,7 @@ module SharedBehaviour::Named
     base.class_eval do
       scope :with_name, ->(*names) { where(:name => names.flatten) }
       scope :sorted_by_name, -> { order('name ASC') }
+      scope :alphabetical, -> { order('name ASC') }
     end
   end
 end

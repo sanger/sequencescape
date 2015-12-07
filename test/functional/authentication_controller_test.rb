@@ -5,6 +5,9 @@ require "test_helper"
 
 # Re-raise errors caught by the controller.
 class AuthenticationController < ApplicationController
+#WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+#It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  before_filter :evil_parameter_hack!
 
   before_filter :login_required, :except => :open
 
@@ -31,12 +34,23 @@ end
 
 class AuthenticationControllerTest < ActionController::TestCase
 
+  def skip_routing
+    Rails.application.routes.draw do
+      get 'authentication/open'
+      get 'authentication/restricted'
+      match '/login' => 'sessions#login', :as => :login, :via => [:get,:post]
+      match '/logout' => 'sessions#logout', :as => :logout, :via => [:get,:post]
+    end
+  end
+
+
   context "Authenticated pages" do
     setup do
       @controller = AuthenticationController.new
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
       @request.host = "www.example.com"
+      skip_routing
     end
 
     context "with configatron disable_api_authentication set to true" do
@@ -55,7 +69,9 @@ class AuthenticationControllerTest < ActionController::TestCase
           get :open
         end
         should respond_with :success
-        should respond_with_content_type :xml
+        should "Respond with xml" do
+          assert_equal 'application/xml', @response.content_type
+        end
       end
       context "allow access to open JSON content" do
         setup do
@@ -63,7 +79,9 @@ class AuthenticationControllerTest < ActionController::TestCase
           get :open
         end
         should respond_with :success
-        should respond_with_content_type :json
+        should "Respond with json" do
+         assert_equal 'application/json', @response.content_type
+        end
       end
       context "require login to restricted HTML content" do
         setup do
@@ -78,7 +96,9 @@ class AuthenticationControllerTest < ActionController::TestCase
           get :restricted
         end
         should respond_with :success
-        should respond_with_content_type :xml
+        should "Respond with xml" do
+          assert_equal 'application/xml', @response.content_type
+        end
       end
       context "require login to restricted JSON" do
         setup do
@@ -86,7 +106,9 @@ class AuthenticationControllerTest < ActionController::TestCase
           get :restricted
         end
         should respond_with :success
-        should respond_with_content_type :json
+        should "Respond with json" do
+          assert_equal 'application/json', @response.content_type
+        end
       end
     end
 
@@ -136,14 +158,18 @@ class AuthenticationControllerTest < ActionController::TestCase
             get :open
           end
           should respond_with :success
-          should respond_with_content_type :xml
+          should "Respond with xml" do
+            assert_equal 'application/xml', @response.content_type
+          end
         end
         context "will require login to restricted content" do
           setup do
             get :restricted
           end
           should respond_with :unauthorized
-          should respond_with_content_type :xml
+          should "Respond with xml" do
+            assert_equal 'application/xml', @response.content_type
+          end
         end
         context "with valid api_key will not require login to restricted content" do
           setup do
@@ -151,14 +177,18 @@ class AuthenticationControllerTest < ActionController::TestCase
             get :restricted, :api_key => @user.api_key
           end
           should respond_with :success
-          should respond_with_content_type :xml
+          should "Respond with xml" do
+            assert_equal 'application/xml', @response.content_type
+          end
         end
         context "with an invalid api_key will require login to restricted content" do
           setup do
             get :restricted, :api_key => "fakeapikey"
           end
           should respond_with :unauthorized
-          should respond_with_content_type :xml
+          should "Respond with xml" do
+            assert_equal 'application/xml', @response.content_type
+          end
         end
       end
       context "and JSON request" do
@@ -170,14 +200,18 @@ class AuthenticationControllerTest < ActionController::TestCase
             get :open
           end
           should respond_with :success
-          should respond_with_content_type :json
+          should "Respond with json" do
+            assert_equal 'application/json', @response.content_type
+          end
         end
         context "will require login to restricted content" do
           setup do
             get :restricted
           end
           should respond_with :unauthorized
-          should respond_with_content_type :json
+          should "Respond with json" do
+            assert_equal 'application/json', @response.content_type
+          end
         end
         context "with valid api_key will not require login to restricted content" do
           setup do
@@ -185,14 +219,18 @@ class AuthenticationControllerTest < ActionController::TestCase
             get :restricted, :api_key => @user.api_key
           end
           should respond_with :success
-          should respond_with_content_type :json
+          should "Respond with json" do
+            assert_equal 'application/json', @response.content_type
+          end
         end
         context "with an invalid api_key will require login to restricted content" do
           setup do
             get :restricted, :api_key => "fakeapikey"
           end
           should respond_with :unauthorized
-          should respond_with_content_type :json
+          should "Respond with json" do
+            assert_equal 'application/json', @response.content_type
+          end
         end
       end
     end

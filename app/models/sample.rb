@@ -49,8 +49,8 @@ class Sample < ActiveRecord::Base
   belongs_to :sample_manifest
 
   validates_presence_of :name
-  validates_format_of :name, :with => /^[\w_-]+$/i, :message => I18n.t('samples.name_format'), :if => :new_name_format, :on => :create
-  validates_format_of :name, :with => /^[\(\)\+\s\w._-]+$/i, :message => I18n.t('samples.name_format'), :if => :new_name_format, :on => :update
+  validates_format_of :name, :with => /\A[\w_-]+\z/i, :message => I18n.t('samples.name_format'), :if => :new_name_format, :on => :create
+  validates_format_of :name, :with => /\A[\(\)\+\s\w._-]+\z/i, :message => I18n.t('samples.name_format'), :if => :new_name_format, :on => :update
   validates_uniqueness_of :name, :on => :create, :message => "already in use", :unless => :sample_manifest_id?
 
   validate :name_unchanged, :if => :name_changed?, :on => :update
@@ -307,13 +307,13 @@ class Sample < ActiveRecord::Base
     attribute(:phenotype)
     #attribute(:strain_or_line) strain
     #TODO: split age in two fields and use a composed_of
-    attribute(:age, :with => Regexp.new("^#{Sample::AGE_REGEXP}$"))
+    attribute(:age, :with => Regexp.new("\\A#{Sample::AGE_REGEXP}\\z"))
     attribute(:developmental_stage)
     #attribute(:sex) gender
     attribute(:cell_type)
     attribute(:disease_state)
     attribute(:compound) #TODO : yes/no?
-    attribute(:dose, :with => Regexp.new("^#{Sample::DOSE_REGEXP}$"))
+    attribute(:dose, :with => Regexp.new("\\A#{Sample::DOSE_REGEXP}\\z"))
     attribute(:immunoprecipitate)
     attribute(:growth_condition)
     attribute(:rnai)
