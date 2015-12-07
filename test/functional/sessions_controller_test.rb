@@ -3,7 +3,6 @@
 #Copyright (C) 2007-2011 Genome Research Ltd.
 require "test_helper"
 require 'sessions_controller'
-require 'pry'
 
 # Re-raise errors caught by the controller.
 class SessionsController; def rescue_action(e) raise e end; end
