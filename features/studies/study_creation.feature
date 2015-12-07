@@ -11,7 +11,7 @@ Feature: Study creation
    When I go to the homepage
    When I follow "Create study"
    Then I should be on the new study page
-   Then I should see "CREATE STUDY"
+   Then I should see "STUDY Create"
    Then I should see "Properties"
 
   Scenario: A study is created with an abbreviation set

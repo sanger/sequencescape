@@ -120,5 +120,20 @@ module BootstrapHelper
   #   end
   # end
 
+  def render_section(form,field_name,sections,field)
+    form_group do
+      fg = content_tag(:div,:class=>"col-md-4") do
+        label = form.label(field_name, sections.label, sections.label_options)
+        label << content_tag(:br)
+        label << content_tag(:span, sections.edit_info, :class => 'property_edit_info') if sections.edit_info
+      end
+      fg << content_tag(:div,field,:class=>'col-md-5')
+      fg << content_tag(:div,:class=>'help-block col-md-3') do
+        help_text("#{sections.label} help text", field.hash) do
+          raw(sections.help)
+        end if sections.help
+      end
+    end
+  end
 
 end

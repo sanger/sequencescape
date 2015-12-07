@@ -11,6 +11,9 @@ module Metadata
     build_association(as_class, options)
   end
 
+  SECTION_FIELDS = [ :edit_info, :help, :label, :unspecified ]
+  Section = Struct.new(*SECTION_FIELDS,:label_options)
+
 private
 
   def build_association(as_class, options)
@@ -156,16 +159,14 @@ private
       memoize :metadata_attribute_path
 
       def localised_sections(field)
-        OpenStruct.new(
-          [ :edit_info, :help, :label, :unspecified ].inject({}) do |hash,section|
-            hash.tap do
-              hash[ section ] = I18n.t(
-                section,
-                :scope => [ :metadata, metadata_attribute_path(field) ].flatten,
-                :default => I18n.t(section, :scope => [ :metadata, :defaults ])
-              )
-            end
-          end.merge(:label_options => {})
+        Section.new(
+          * (SECTION_FIELDS.map do |section|
+            I18n.t(
+              section,
+              :scope => [ :metadata, metadata_attribute_path(field) ].flatten,
+              :default => I18n.t(section, :scope => [ :metadata, :defaults ])
+            )
+          end << {})
         )
       end
       memoize :localised_sections
