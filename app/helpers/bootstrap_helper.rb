@@ -136,4 +136,15 @@ module BootstrapHelper
     end
   end
 
+  def form_collection(label,field,help=nil,friendly_label='Field')
+    form_group do
+      fg = bs_column(4,'md') { label }
+      fg << bs_column(5,'md') { field }
+      fg << bs_column(3,'md') do
+        help_text("#{friendly_label} help text") { raw(help)}
+      end if help
+      fg
+    end
+  end
+
 end

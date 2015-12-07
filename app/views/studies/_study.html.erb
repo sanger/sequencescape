@@ -8,24 +8,19 @@
 <% end -%>
 
 <% if creation %>
-  <%= form_group do %>
-    <div class='col-md-4'>
-      <%= form.label(:name, 'Study name', :class => 'required') %>
-    </div>
-    <div class='col-md-5'>
-      <%= form.text_field :name, :class => 'form-control' %>
-    </div>
-  <% end %>
+  <%= form_collection(
+    form.label(:name, 'Study name', :class => 'required'),
+    form.text_field(:name, :class=>'form-control')
+  ) %>
 <% end %>
-<%= form_group do %>
-  <div class='col-md-4'>
-    <%= form.label(:study_owner_id, 'Study owner name' ) %>
-  </div>
-  <div class='col-md-5'>
-    <%= select_tag "study_owner_id",
-    options_from_collection_for_select(User.owners, :id, :name, study.owner.try(:id)||params[:study_owner_id].to_i ), :prompt => 'Select an owner...', :class=>'form-control' %>
-  </div>
-<% end %>
+
+<%= form_collection(
+  form.label(:study_owner_id, 'Study owner name' ),
+  select_tag("study_owner_id",
+    options_from_collection_for_select(User.owners, :id, :name, study.owner.try(:id)||params[:study_owner_id].to_i ),
+    :prompt => 'Select an owner...', :class=>'form-control'
+  )
+) %>
 
 <% unless creation %>
   <tr>
