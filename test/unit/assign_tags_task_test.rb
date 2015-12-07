@@ -56,7 +56,7 @@ class AssignTagsTaskTest < TaskTestBase
         @batch          = create :batch, :pipeline => @pipeline
         # TODO: Move this into factory. Create library and sample_tube factory
         @sample_tube    = create(:sample_tube)
-        @library        = create(:library_tube).tap { |tube| tube.aliquots = @sample_tube.aliquots.map(&:clone) }
+        @library        = create(:library_tube).tap { |tube| tube.aliquots = @sample_tube.aliquots.map(&:dup) }
         @sample_tube.children << @library
 
         submission = Submission.last # probably built in batch ...?
