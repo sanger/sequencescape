@@ -203,8 +203,6 @@ GEM
       multi_json (~> 1.0)
       websocket-driver (>= 0.2.0)
     polyglot (0.3.5)
-    prototype-rails (3.2.1)
-      rails (~> 3.2)
     pry (0.10.3)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -371,7 +369,6 @@ DEPENDENCIES
   net-ldap
   nokogiri
   poltergeist
-  prototype-rails
   pry
   psd_logger!
   rack-acceptable

@@ -14,6 +14,9 @@
 //= require jquery_ujs
 //= require jquery-ui
 //= require jquery-tablesorter
+//= require jquery-tablesorter/jquery.tablesorter
+//= require jquery-tablesorter/jquery.tablesorter.widgets
+//= require jquery-tablesorter/addons/pager/jquery.tablesorter.pager
 //= require bootstrap-sprockets
 //= require widgets/tooltip
 //= require_tree ./sequencescape
