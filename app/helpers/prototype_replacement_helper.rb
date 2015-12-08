@@ -14,8 +14,8 @@ module PrototypeReplacementHelper
 
 
   def tooltip(name=nil, opts={}, &proc)
-    name ||= image_tag('/images/widgets/tooltip_image.gif', :border => 0, :title => tooltip_content(opts,&proc),
-     :'data-toggle' => 'tooltip')
+    name ||= image_tag('/images/widgets/tooltip_image.gif', :border => 0, :'data-content' => tooltip_content(opts,&proc),
+     :'data-toggle' => 'popover', :'data-title'=> 'About this')
     result = name
 
     if block_given?
