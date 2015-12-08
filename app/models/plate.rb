@@ -22,6 +22,10 @@ class Plate < Asset
     plate_purpose.state_of(self)
   end
 
+  def occupied_well_count
+    wells.with_contents.count
+  end
+
   def summary_hash
     {
       :asset_id => id,
