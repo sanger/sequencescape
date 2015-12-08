@@ -12,4 +12,18 @@ module PrototypeReplacementHelper
     end
   end
 
+
+  def tooltip(name=nil, opts={}, &proc)
+    name ||= image_tag('/images/widgets/tooltip_image.gif', :border => 0, :title => tooltip_content(opts,&proc),
+     :'data-toggle' => 'tooltip')
+    result = name
+
+    if block_given?
+      concat result.html_safe
+      return nil
+    else
+      return result.html_safe
+    end
+  end
+
 end
