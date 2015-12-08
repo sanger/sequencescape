@@ -14,8 +14,7 @@ class BroadcastEvent::PlateLibraryComplete < BroadcastEvent
   has_subject(:project) {|_,e| e.order.project }
   has_subject(:submission) {|_,e| e.order.submission }
 
-
-  has_subject(:library_source_labware,:library_source_plate)
+  has_subject(:library_source_labware,:library_source_plates)
 
   has_subjects(:stock_plate,:original_stock_plates)
   has_subjects(:sample) { |plate,e| plate.samples_in_order_by_target(e.properties[:order_id]) }

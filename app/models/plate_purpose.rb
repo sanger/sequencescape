@@ -47,6 +47,10 @@ class PlatePurpose < Purpose
     source_purpose_id.present? ? plate.ancestor_of_purpose(source_purpose_id) : plate.stock_plate
   end
 
+  def source_plates(plate)
+    source_purpose_id.present? ? plate.ancestors_of_purpose(source_purpose_id) : [plate.stock_plate]
+  end
+
   def cherrypick_strategy
     Cherrypick::Strategy.new(self)
   end

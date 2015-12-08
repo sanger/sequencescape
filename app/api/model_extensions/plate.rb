@@ -36,6 +36,10 @@ module ModelExtensions::Plate
     self.plate_purpose.source_plate(self)
   end
 
+  def source_plates
+    self.plate_purpose.source_plates(self)
+  end
+
   alias_method :library_source_plate, :source_plate
 
   # Returns a hash from the submission for the pools to the wells that form that pool on this plate.  This is

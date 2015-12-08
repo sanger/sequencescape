@@ -621,6 +621,11 @@ WHERE c.container_id=?
     ancestors.first(:order => 'created_at DESC', :conditions => {:plate_purpose_id=>ancestor_purpose_id})
   end
 
+  def ancestor_of_purpose(ancestor_purpose_id)
+    return self if self.plate_purpose_id == ancestor_purpose_id
+    ancestors.find(:all,:order => 'created_at DESC', :conditions => {:plate_purpose_id=>ancestor_purpose_id})
+  end
+
   def child_dilution_plates_filtered_by_type(parent_model)
     self.children.select{ |p| p.is_a?(parent_model) }
   end

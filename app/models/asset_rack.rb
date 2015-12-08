@@ -46,6 +46,10 @@ class AssetRack < Asset
     self.ancestors.first(:order => 'created_at DESC', :conditions => {:plate_purpose_id=>purpose})
   end
 
+  def ancestors_of_purpose(purpose)
+    self.ancestors.find(:all,:order => 'created_at DESC', :conditions => {:plate_purpose_id=>purpose})
+  end
+
   def lookup_stock_plate
     ancestor_of_purpose(PlatePurpose.find(:all,:conditions=>{:can_be_considered_a_stock_plate=>true}))
   end
@@ -56,6 +60,10 @@ class AssetRack < Asset
 
   def source_plate
     ancestor_of_purpose(source_plate_purpose)
+  end
+
+  def source_plates
+    ancestors_of_purpose(source_plate_purpose)
   end
 
   def supports_multiple_submissions?
