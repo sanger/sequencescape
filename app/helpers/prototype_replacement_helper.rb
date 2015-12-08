@@ -26,4 +26,10 @@ module PrototypeReplacementHelper
     end
   end
 
+  def tooltip_content(opts={}, &proc)
+   return render(:partial => opts[:partial]) if opts[:partial]
+   return capture(&proc)
+  end
+
+
 end
