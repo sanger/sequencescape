@@ -25,19 +25,19 @@
 * HISTORY:
 *====================================================================
 */
-(function(undefined) {
-  document.observe('dom:loaded', function() {
+(function($,undefined) {
+  $(document).ready(function() {
     // Any validate_organism control needs to be setup to update the 'common name' and the 'taxon ID' fields.
     // It is assumed that the 'common name' and 'taxon ID' fields are paired in order: in other words, the
     // first 'common name' field goes with the first 'taxon ID' field.  If this is not true then you should
     // write your own method and call validateSingleOrganism yourself.
-    $$('.validate_organism').each(function(control) {
-      control.observe('click', function(event) {
+    $('.validate_organism').each(function(pos, control) {
+      $(control).on('click', function(event) {
         event.preventDefault();
-        common_names = $$('input[data-organism="common_name"]');
-        taxon_ids    = $$('input[data-organism="taxon_id"]');
+        var common_names = $('input[data-organism="common_name"]');
+        var taxon_ids    = $('input[data-organism="taxon_id"]');
 
-        common_names.each(function(common_name, index) {
+        common_names.each(function(index, common_name) {
           validateOrganism(common_name, taxon_ids[index]);
         });
       });
@@ -46,29 +46,38 @@
 
   highlight_field = function(state, field) {
     if (state == 'good') {
-      Element.highlight(field, { startcolor: '#ffff99', endcolor: '#ffffff', restorecolor: '#ffffff'});
+      $(field).css("background-color", "#ffff99")
+        .animate({ backgroundColor: "#ffffff"}, 1500);
+      //Element.highlight(field, { startcolor: '#ffff99', endcolor: '#ffffff', restorecolor: '#ffffff'});
     } else if (state == 'bad') {
-      Element.highlight(field, { startcolor: '#A80000', endcolor: '#ffffff', restorecolor: '#ff6666'});
+      $(field).css("background-color", "#A80000")
+        .animate({ backgroundColor: "#ff6666"}, 1500);
+      //Element.highlight(field, { startcolor: '#A80000', endcolor: '#ffffff', restorecolor: '#ff6666'});
     }
   };
 
   ajaxXMLRequest = function(url, field, callbacks) {
-    xmlSelect = function(element, name) {
-      elements = element.getElementsByTagName(name);
+    var xmlSelect = function(element, name) {
+      elements = $(name, element);
       if (elements.length == 0) { return undefined; }
       return elements[0].text || elements[0].textContent || undefined;
     };
 
-    new Ajax.Request(url, {
-      requestHeaders: { 'Accept': 'application/xml,text/xml' },
-      onSuccess: function(response) { 
+
+    $.ajax(url, {
+      headers: { 'Accept': 'application/xml,text/xml' },
+      success: function(response) {
         value = xmlSelect(response.responseXML, field);
         if (value == undefined) {
           callbacks.unfound();
         } else {
           callbacks.found(value);
         }
-      }
+      },
+      error: function() {
+        callbacks.unfound();
+      },
+      timeout: 5000
     });
   };
 
@@ -106,4 +115,4 @@
       }
     });
   };
-})();
+})(jQuery);
