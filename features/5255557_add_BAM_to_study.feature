@@ -10,7 +10,7 @@ Feature: Study creation with a checkbox for BAM file.
   Scenario: A study is created with a BAM property as true
     When I follow "Create study"
     Then I should be on the new study page
-    Then I should see "CREATE STUDY"
+    Then I should see "STUDY Create"
     Then I should see "Alignments in BAM"
     And the checkbox labeled "Alignments in BAM" should be checked
     When I uncheck "Alignments in BAM"

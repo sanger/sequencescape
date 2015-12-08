@@ -38,7 +38,7 @@ class User < ActiveRecord::Base
 
   acts_as_authorized_user
 
-  scope :owners, ->() { where('last_name IS NOT NULL').joins(:roles).where(:roles=>{:name=>'owner'}).order('last_name ASC') }
+  scope :owners, ->() { where('last_name IS NOT NULL').joins(:roles).where(:roles=>{:name=>'owner'}).order('last_name ASC').uniq }
 
   attr_accessor :password
 
