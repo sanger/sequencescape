@@ -36,6 +36,8 @@ module ModelExtensions::Plate
     self.plate_purpose.source_plate(self)
   end
 
+  alias_method :library_source_plate, :source_plate
+
   # Returns a hash from the submission for the pools to the wells that form that pool on this plate.  This is
   # not necessarily efficient but it is correct.  Unpooled wells, those without submissions, are completely
   # ignored within the returned result.
