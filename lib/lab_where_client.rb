@@ -20,7 +20,7 @@ module LabWhereClient
     end
 
     def parse_json(str)
-       return {} if str=='null'
+       return nil if str=='null'
        JSON.parse(str)
     end
 
@@ -96,7 +96,8 @@ module LabWhereClient
     attr_reader :location
 
     def self.find_by_barcode(barcode)
-      new(LabWhere.instance.get(self, barcode))
+      attrs = LabWhere.instance.get(self, barcode)
+      new(labwhere_result) unless attrs.nil?
     end
 
     def initialize(params)
