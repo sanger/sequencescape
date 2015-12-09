@@ -3,7 +3,6 @@
 #Copyright (C) 2012,2013,2015 Genome Research Ltd.
 require "test_helper"
 require 'submissions_controller'
-require 'pry'
 
 class SubmissionsControllerTest < ActionController::TestCase
   context "Submissions controller" do
