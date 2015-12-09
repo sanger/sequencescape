@@ -37,15 +37,16 @@
 </table>
 
 <script type="text/javascript">
-(function(undefined) {
- document.observe('dom:loaded', function() {
+(function($, undefined) {
+  $(document).on('dom:loaded', function() {
 
-   $$('input[type=checkbox]').each(function(checkbox) {
-     var field = $(checkbox.readAttribute('data-field'));
+   $('input[type=checkbox]').each(function(checkbox) {
+     var field = $(checkbox.attr('data-field'));
      field.disabled = true;
 
-     checkbox.observe('click', function() {
+     checkbox.on('click', function() {
       asset_qc_state = $('qc_state_value').value
+      // TODO : REMOVE EVAL()
       external_release = eval($('external_release_value').value)
       checkbox_status = this.checked
 
@@ -62,5 +63,5 @@
      });
    });
  });
-})();
+})(jQuery);
 </script>

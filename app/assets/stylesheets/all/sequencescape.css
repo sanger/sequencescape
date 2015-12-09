@@ -1397,11 +1397,11 @@ table#samples_to_register .label {
 }
 
 /* table tab border */
-.yui-skin-sam .yui-navset .yui-nav, .yui-skin-sam .yui-navset .yui-navset-top .yui-nav {
+/*.yui-skin-sam .yui-navset .yui-nav, .yui-skin-sam .yui-navset .yui-navset-top .yui-nav {
     border: solid #2647a0;
     border-width: 0 0 0px;
     zoom: 1;
-}
+}*/
 
 .yui-skin-sam .yui-navset .yui-nav .selected, .yui-skin-sam .yui-navset .yui-navset-top .yui-nav .selected {
     margin: 0 .16em 0px 0;

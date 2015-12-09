@@ -22,7 +22,7 @@
 </table>
 
 <br />
-<script type="text/javascript">$$('table tbody > tr:nth-child(even)').invoke('addClassName', 'roweven');</script>
+<script type="text/javascript">$('table tbody > tr:nth-child(even)').addClass('roweven');</script>
 
 <% if current_user.administrator? %>
 <%= link_to 'New Tag Group with 12 tags', new_tag_group_path(:number_of_tags => 12) %>

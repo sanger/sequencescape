@@ -94,11 +94,11 @@ function decrement_counter(ident, callback) {
 function addDescriptor() {
   increment_counter('count', function(count) {
     url = controller() + "/new_field/" + count;
-    new Ajax.Request(
+    $.ajax(
       url, {
         method:'GET', asynchronous:true, evalScripts:true,
-        onSuccess: function(response) { handleDescriptor(response, model() + '_form'); },
-        onFailure: handleErrorResponse
+        success: function(response) { handleDescriptor(response, model() + '_form'); },
+        error: handleErrorResponse
       }
     );
   });
@@ -108,11 +108,11 @@ function addAsset(family) {
   increment_counter('count', function(count) {
     $('#descriptors').style.display = 'table';
     url = controller() + "/new/" + count + "?family=" + family;
-    new Ajax.Request(
+    $.ajax(
       url, {
         method:'GET', asynchronous:true, evalScripts:true,
-        onSuccess: function(response) { handleDescriptor(response, model() + '_form'); },
-        onFailure: handleErrorResponse
+        success: function(response) { handleDescriptor(response, model() + '_form'); },
+        error: handleErrorResponse
       }
     )
   });
@@ -121,16 +121,16 @@ function addAsset(family) {
 function addOption(field, controller, model) {
   increment_counter('option_count_' + field, function(new_ident) {
     url = "/" + controller + "/new_option/" + field + "?option=" + new_ident;
-    new Ajax.Request(
+    $.ajax(
       url, {
         method:'GET', asynchronous:true, evalScripts:true,
-        onSuccess: function(response) {
+        success: function(response) {
           maintainFormValues(model + '_form', function() {
             optionsField = $('#field_options_' + field);
             optionsField.innerHTML = optionsField.innerHTML + response.responseText;
           });
         },
-        onFailure: handleErrorResponse
+        error: handleErrorResponse
       }
     );
   });

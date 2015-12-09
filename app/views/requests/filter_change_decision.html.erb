@@ -45,21 +45,21 @@
 </div>
 
 <script type="text/javascript">
-(function(undefined) {
- document.observe('dom:loaded', function() {
-   $$('input[type=checkbox]').each(function(checkbox) {
-     if (checkbox.readAttribute('data-field')!== null) {
-       var field = $(checkbox.readAttribute('data-field'));
+(function($, undefined) {
+ $(document).on('dom:loaded', function() {
+   $('input[type=checkbox]').each(function(checkbox) {
+     if (checkbox.attr('data-field')!== null) {
+       var field = $(checkbox.attr('data-field'));
        field.disabled = !checkbox.checked;
 
-       checkbox.observe('click', function() {
+       $(checkbox).on('click', function() {
          field.disabled = !checkbox.checked;
          if (!checkbox.checked)  {field[0].selected = true;}
        });
      }
    });
  });
-})();
+})(jQuery);
 </script>
 
 <% else %>
