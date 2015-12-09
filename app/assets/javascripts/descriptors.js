@@ -5,7 +5,7 @@ var controller_name;
 var model_name;
 
 function field_change(ident) {
-  $('#field_selection_' + ident).style.display = ($('#field_type_' + ident).value == 'Selection') ? 'block' : 'none';
+  $('#field_selection_' + ident).style.display = ($('#field_type_' + ident).val() == 'Selection') ? 'block' : 'none';
 }
 
 function set_controller(name) {
