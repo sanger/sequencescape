@@ -25,7 +25,7 @@ module LabWhereClient
     end
 
     def get(instance, target)
-      JSON.parse(RestClient.get(path_to(instance,target)))
+      parse_json(RestClient.get(path_to(instance,target)))
     rescue Errno::ECONNREFUSED => e
       raise LabwhereException.new(e), "LabWhere service is down", e.backtrace
     end
