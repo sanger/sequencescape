@@ -43,6 +43,7 @@ class Barcode
       return nil unless barcode.present? and prefix.present?
       Barcode.calculate_barcode(self.prefix, self.barcode.to_i).to_s
     end
+    alias_method :machine_barcode, :ean13_barcode
 
     def role
       return nil if no_role?

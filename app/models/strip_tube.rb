@@ -18,6 +18,10 @@ class StripTube < Plate
     'strip_tube'
   end
 
+  def library_source_plates
+    source_plates
+  end
+
   # Until we no how barcodes are going to work, we'll just override this
   def self.create_with_barcode!(*args, &block)
     attributes = args.extract_options!
