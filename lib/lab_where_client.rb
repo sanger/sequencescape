@@ -20,7 +20,7 @@ module LabWhereClient
     end
 
     def parse_json(str)
-       return nil if str=='null'
+       return {} if str=='null'
        JSON.parse(str)
     end
 
