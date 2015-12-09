@@ -120,6 +120,19 @@ module BootstrapHelper
   #   end
   # end
 
+  # <div class="progress">
+  #   <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
+  #     <span class="sr-only">45% Complete</span>
+  #   </div>
+  # </div>
+  def loading_bar(id='update_loader')
+    content_tag(:div,class:'loading-bar-placeholder') do
+      content_tag(:div,id:id,class:'progress loading-bar-container') do
+        content_tag(:div,'Loading',class:'progress-bar progress-bar-striped active loading-bar',role:'progressbar')
+      end
+    end
+  end
+
   def render_section(form,field_name,sections,field)
     form_group do
       fg = content_tag(:div,:class=>"col-md-4") do
@@ -145,6 +158,16 @@ module BootstrapHelper
       end if help
       fg
     end
+  end
+
+  def bs_select(*args)
+    hashes = args[-2,2].select {|arg| arg.respond_to?(:keys) }.count
+    (2 - hashes).times do
+      args << {}
+    end
+    args.last[:class] ||= ''
+    args.last[:class] << ' form-control'
+    select(*args)
   end
 
 end

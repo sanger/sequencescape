@@ -13,3 +13,6 @@ table.sortable { table-layout:fixed; }
 .main-row { margin-bottom:10px; }
 
 
+.loading-bar { width: 100% !important; }
+.loading-bar-container { display: none; }
+.loading-bar-placeholder { height: 22px; margin: 11px 0;}

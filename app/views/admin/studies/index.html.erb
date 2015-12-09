@@ -7,21 +7,12 @@
 <% if @studies %>
   <%= page_title 'Studies', 'Manage' %>
 
-  <%= form_tag(filter_admin_studies_path, :remote => true, :id => "filter_form", :class=>'remote-form observed', :data => { :update => "#studies",  :throbber => '#update_loader'} ) %>
+  <%= form_tag(filter_admin_studies_path, :remote => true, :id => "filter_form", :class=>'remote-form observed form-inline', :data => { :update => "#studies",  :throbber => '#update_loader'} ) %>
 
-    <div class='callout_filter'>
-      <table width='100%'>
-        <tr>
-          <td>
-            Show <%= select :filter, :status, [ "open", "closed", "all" ] -%> studies that are <%= select :filter, :by, ["unallocated manager", "all" ], {}, :onchange => "swap_filter();" -%>
-          </td>
-          <td style='text-align: right;'>
-            <%= image_tag "ajax-loader.gif", :size => "10x10", :id => "update_loader", :style => "display: none;"%>
-            <input type="search" placeholder="Search" name="q" id="q" />
-          </td>
-        </tr>
-      </table>
-    </div>
+    <%= panel(:default,title:'Filter Studies') do %>
+        Show <%= bs_select :filter, :status, [ "open", "closed", "all" ] -%> studies that are <%= bs_select :filter, :by, ["unallocated manager", "all" ], {} -%> named <input type="search" placeholder="Search" name="q" id="q" class="form-control" />
+        <%= loading_bar("update_loader") %>
+    <% end %>
   </form>
   <div id='studies'>
     <%= render :partial => "filtered_studies" %>
