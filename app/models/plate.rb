@@ -621,7 +621,7 @@ WHERE c.container_id=?
     ancestors.first(:order => 'created_at DESC', :conditions => {:plate_purpose_id=>ancestor_purpose_id})
   end
 
-  def ancestor_of_purpose(ancestor_purpose_id)
+  def ancestors_of_purpose(ancestor_purpose_id)
     return self if self.plate_purpose_id == ancestor_purpose_id
     ancestors.find(:all,:order => 'created_at DESC', :conditions => {:plate_purpose_id=>ancestor_purpose_id})
   end
