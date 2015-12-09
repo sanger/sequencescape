@@ -34,6 +34,7 @@ class Api::Messages::FluidigmPlateIO < Api::Base
   map_attribute_to_json_attribute(:uuid,'plate_uuid_lims')
   map_attribute_to_json_attribute(:size,'plate_size')
   map_attribute_to_json_attribute(:updated_at,'last_updated') # We do it for the whole plate to ensure the message has a timestamp
+  map_attribute_to_json_attribute(:occupied_well_count,'plate_size_occupied')
 
   with_nested_has_many_association(:wells) do
      map_attribute_to_json_attribute(:map_description,     'well_label')

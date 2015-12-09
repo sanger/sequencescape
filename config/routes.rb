@@ -583,6 +583,8 @@ Sequencescape::Application.routes.draw do
     match '/' => 'home#index'
   end
 
+  resources :labwhere_receptions, :only => [:index, :create]
+
   match '/:controller(/:action(/:id))'
 
 end

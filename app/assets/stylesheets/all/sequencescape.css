@@ -57,6 +57,22 @@ div.quota {
   border: 1px solid #7BBDD8;
 }
 
+#barcode_list li {
+  width: 20em;
+  border: 1px solid black;
+  border-radius: 3px;
+  padding: 0.2em;
+  margin: 0.2em;
+}
+
+#barcode_list li a {
+  float: right;
+}
+
+#barcode_list {
+    list-style: none;
+}
+
 
 #search {
   float: right;
@@ -1388,4 +1404,16 @@ ul.options li {
 
 #main-row {
   margin-bottom: 10px;
+}
+
+form#new_labwhere_reception label {
+    display: inline-block;
+    width: 20em;
+  }
+form#new_labwhere_reception .form-group {
+  margin-bottom: 0.5em;
+}
+
+form#new_labwhere_reception ul li a {
+  cursor: pointer;
 }
