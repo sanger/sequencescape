@@ -49,7 +49,7 @@ class LabwhereReceptionsControllerTest < ActionController::TestCase
           end
         end
 
-        should_set_the_flash_to "Locations updated!"
+        should set_the_flash.to "Locations updated!"
         should_redirect_to('labwhere_receptions') { '/labwhere_receptions' }
       end
 
@@ -82,7 +82,7 @@ class LabwhereReceptionsControllerTest < ActionController::TestCase
           end
         end
 
-        should_set_the_flash_to "Locations updated!"
+        should set_the_flash.to "Locations updated!"
         should_redirect_to('labwhere_receptions') { '/labwhere_receptions' }
       end
 
@@ -109,7 +109,7 @@ class LabwhereReceptionsControllerTest < ActionController::TestCase
           end
         end
 
-       should_set_the_flash_to "Could not find labware 1220000044838 in Sequencescape"
+       should set_the_flash.to "Could not find labware 1220000044838 in Sequencescape"
        should_redirect_to('labwhere_receptions') { '/labwhere_receptions' }
       end
     end
