@@ -69,7 +69,7 @@ class StudiesController < ApplicationController
       format.json { render :json => @study, :status => :created, :location => @study }
     end
   rescue ActiveRecord::RecordInvalid => exception
-    action_flash[:error] = "Problems creating your new study"
+    flash.now[:error] = "Problems creating your new study"
     respond_to do |format|
       format.html { render :action => "new" }
       format.xml  { render :xml  => @study.errors, :status => :unprocessable_entity }
@@ -79,10 +79,11 @@ class StudiesController < ApplicationController
 
   def show
     @study = Study.find(params[:id])
+    flash.keep
     respond_to do |format|
       format.html do
         if current_user.workflow.nil?
-          action_flash[:notice] = "Your profile is incomplete. Please select a workflow."
+          flash[:notice] = "Your profile is incomplete. Please select a workflow."
           redirect_to edit_profile_path(current_user)
         else
           redirect_to study_workflow_path(@study, current_user.workflow)
@@ -95,7 +96,7 @@ class StudiesController < ApplicationController
 
   def edit
     @study = Study.find(params[:id])
-    action_flash[:warning] = @study.warnings if @study.warnings.present?
+    flash.now[:warning] = @study.warnings if @study.warnings.present?
     @users   = User.all
     redirect_if_not_owner_or_admin
   end
@@ -120,7 +121,7 @@ class StudiesController < ApplicationController
     end
   rescue ActiveRecord::RecordInvalid => exception
     Rails.logger.warn "Failed to update attributes: #{@study.errors.map {|e| e.to_s }}"
-    action_flash[:error] = "Failed to update attributes for study!"
+    flash.now[:error] = "Failed to update attributes for study!"
     render :action => "edit", :id => @study.id
   end
 
@@ -192,11 +193,11 @@ class StudiesController < ApplicationController
         return
       rescue ActiveRecord::RecordInvalid, RuntimeError => ex
         status = 403
-        action_flash[:error] = ex.to_s
+        flash.now[:error] = ex.to_s
       end
 
     else
-      action_flash[:error] = "A problem occurred while relating the study"
+      flash.now[:error] = "A problem occurred while relating the study"
       status = 500
     end
     @study.reload

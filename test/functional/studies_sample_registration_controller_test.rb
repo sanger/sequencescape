@@ -90,7 +90,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
           end
 
           should 'set a flash'  do
-            assert @controller.action_flash.values.include?( 'You do not appear to have specified any samples')
+            assert @controller.flash.now.values.include?( 'You do not appear to have specified any samples')
           end
           should render_template :new
         end

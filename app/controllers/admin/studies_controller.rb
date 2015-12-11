@@ -10,12 +10,12 @@ class Admin::StudiesController < ApplicationController
 
   def show
     @study = Study.find(params[:id])
-    action_flash[:warning] = @study.warnings if @study.warnings.present?
+    flash.now[:warning] = @study.warnings if @study.warnings.present?
   end
 
   def update
    @study = Study.find(params[:id])
-   action_flash[:warning] = @study.warnings if @study.warnings.present?
+   flash.now[:warning] = @study.warnings if @study.warnings.present?
    flash[:notice] = "Your study has been updated"
    render :partial => "manage_single_study"
   end

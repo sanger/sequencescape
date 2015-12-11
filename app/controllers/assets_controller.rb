@@ -317,7 +317,7 @@ class AssetsController < ApplicationController
       if @assets.size == 1
         redirect_to @assets.first
       elsif @assets.size == 0
-        action_flash[:error] = "No asset found with barcode #{params[:asset][:barcode]}"
+        flash.now[:error] = "No asset found with barcode #{params[:asset][:barcode]}"
         respond_to do |format|
           format.html { render :action => "lookup" }
           format.xml  { render :xml => @assets.to_xml }

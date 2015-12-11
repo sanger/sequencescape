@@ -76,7 +76,7 @@ class SearchesControllerTest < ActionController::TestCase
           end
 
           should 'set the flash' do
-            assert_equal 'Queries should be at least 3 characters long', @controller.action_flash[:error]
+            assert_equal 'Queries should be at least 3 characters long', @controller.flash.now[:error]
           end
         end
       end

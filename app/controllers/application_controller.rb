@@ -68,15 +68,5 @@ class ApplicationController < ActionController::Base
     value  = params[key]
     value ? value.first : nil
   end
-  #--
-  # We are using flash irresponsibly, using it as a convenient way to get error messages displayed on the
-  # page we are rendering, rather than as a mechanism to pass those messages across redirects.  Because
-  # this is so prevalent this 'action_flash' has been created for the former cases.
-  #
-  # TODO: remove this once the code has been converted across to properly using model error messages.
-  #++
-  def action_flash
-    @action_flash ||= {}
-  end
-  helper_method(:action_flash)
+
 end

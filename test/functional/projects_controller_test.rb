@@ -83,7 +83,7 @@ class ProjectsControllerTest < ActionController::TestCase
         end
 
         should 'set a message for the error' do
-          assert_contains(@controller.action_flash.values, 'Problems creating your new project')
+          assert_contains(@controller.flash.now.values, 'Problems creating your new project')
         end
       end
 

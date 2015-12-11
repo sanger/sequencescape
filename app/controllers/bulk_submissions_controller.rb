@@ -30,7 +30,7 @@ class BulkSubmissionsController < ApplicationController
         render :action => "new"
       end
     rescue ActiveRecord::RecordInvalid => exception
-      action_flash[:error] = exception.message
+      flash.now[:error] = exception.message
       render :action => "new"
     end
   end

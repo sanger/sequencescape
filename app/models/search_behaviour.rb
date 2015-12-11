@@ -37,6 +37,6 @@ private
 
   def query_invalid?
     return false if params[:q].length >= MINIMUM_QUERY_LENGTH
-    action_flash[:error] = "Queries should be at least #{MINIMUM_QUERY_LENGTH} characters long"
+    flash.now[:error] = "Queries should be at least #{MINIMUM_QUERY_LENGTH} characters long"
   end
 end

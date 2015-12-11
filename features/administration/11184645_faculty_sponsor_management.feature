@@ -67,6 +67,7 @@ Feature: Manage a list of faculty sponsors
       And I fill in "Study description" with "some description"
       And I select "John Doe" from "Faculty Sponsor"
       And I press "Create"
+      Then show me the page
     Then I should see "Your study has been created"
     When I follow "Study details"
     Then I should see "John Doe"

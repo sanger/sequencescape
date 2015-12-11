@@ -51,7 +51,7 @@ module ApplicationHelper
 
   def render_flashes
     output = String.new.html_safe
-    (flash.to_a + action_flash.to_a).each do |key, message|
+    flash.to_a.each do |key, message|
       content = message
       content = message.map { |m| content_tag(:div, m) }.join if message.is_a?(Array)
       output << alert(key,:id=>"message_#{key}") { content }
