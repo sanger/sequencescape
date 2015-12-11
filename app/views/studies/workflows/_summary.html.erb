@@ -3,7 +3,7 @@
 #Copyright (C) 2007-2011,2011,2012,2014 Genome Research Ltd.%>
 <% submissions = @submissions %>
 <% request_type = @request_type %>
-<%= will_paginate @page_elements %>
+<%= pagination @page_elements %>
 <table id="summary" width="100%" class="sortable">
   <thead>
     <tr>
@@ -32,4 +32,4 @@
     <% end %>
   <% end %>
 </table>
-<%= will_paginate @page_elements %>
+<%= pagination @page_elements %>

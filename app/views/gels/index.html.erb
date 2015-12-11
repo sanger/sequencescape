@@ -11,7 +11,7 @@
 <% end %>
 
 <h2>Recently updated</h2>
-<%= will_paginate @gel_plates %>
+<%= pagination @gel_plates %>
 <table id="study_list" width="100%" class="sortable" cellpadding="4" cellspacing="0">
   <thead>
   <tr>
@@ -36,4 +36,4 @@
   <% end %>
   </tbody>
 </table>
-<%= will_paginate @gel_plates %>
+<%= pagination @gel_plates %>

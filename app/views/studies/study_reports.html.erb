@@ -7,6 +7,6 @@
 <h2><%= link_to "New report", new_study_report_path(:study => @study) %></h2>
 
 
-<%= will_paginate @study_reports %>
+<%= pagination @study_reports %>
 <%= render :partial => 'shared/study_reports', :locals => { :study_reports => @study_reports} %>
-<%= will_paginate @study_reports %>
+<%= pagination @study_reports %>

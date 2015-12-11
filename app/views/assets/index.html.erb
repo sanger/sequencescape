@@ -12,7 +12,7 @@
 </h1>
 <br />
 
-<%= will_paginate @assets %>
+<%= pagination @assets %>
       <%= render(:partial => 'table_of_assets', :locals => { :assets => @assets, :study => @study }) %>
-<%= will_paginate @assets %>
+<%= pagination @assets %>
 <br />
