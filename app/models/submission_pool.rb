@@ -28,7 +28,7 @@ class SubmissionPool < ActiveRecord::Base
 
           has_many :active_requests, :conditions => {
             :state => Request::Statemachine::ACTIVE,
-            :request_purpose_id => proc { RequestPurpose.standard }
+            :request_purpose_id => RequestPurpose.standard
           },
           :through => :wells, :source => :requests
 
