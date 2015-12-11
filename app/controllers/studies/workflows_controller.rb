@@ -65,7 +65,9 @@ class Studies::WorkflowsController < ApplicationController
         sample_ids      = @page_elements.map(&:id)
         render :partial => "sample_progress"
       when "Assets progress"
-        @page_elements= @study.assets_through_aliquots.paginate(page_params)
+        asset_type = Class.subclasses_of(Aliquot::Receptacle).detect {|cls| cls.name == params[:asset_type] } || Aliquot::Receptacle
+        @asset_type_name = params.fetch(:asset_type,'All Assets').underscore.humanize
+        @page_elements= @study.assets_through_aliquots.of_type(asset_type).paginate(page_params)
         asset_ids = @page_elements.map { |e| e.id }
 
         @cache.merge!(:passed => @passed_asset_request, :failed => @failed_asset_request)
@@ -122,7 +124,7 @@ class Studies::WorkflowsController < ApplicationController
   private
   def discover_study
     @study  = Study.find(params[:study_id])
-    flash[:warning] = "#{flash[:warning]} #{@study.warnings}" if @study.warnings.present?
+    action_flash[:warning] = @study.warnings if @study.warnings.present?
   end
 
   def discover_workflow

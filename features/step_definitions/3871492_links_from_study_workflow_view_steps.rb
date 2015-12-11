@@ -5,9 +5,11 @@ Given /^study "([^"]+)" has a registered sample "([^"]+)"$/ do |study_name,sampl
   study  = Study.first(:conditions => { :name => study_name }) or raise "No study defined with name '#{ study_name }'"
   sample = study.samples.create!(:name => sample_name)
 
+  st = SampleTube.create!.tap { |sample_tube| sample_tube.aliquots.create!(:sample => sample, :study=> study) }
+
   Factory::submission(
     :study => study,
-    :assets => [ SampleTube.create!.tap { |sample_tube| sample_tube.aliquots.create!(:sample => sample) } ],
+    :assets => [ st ],
     :workflow => @current_user.workflow,
     :state => 'ready'
   )

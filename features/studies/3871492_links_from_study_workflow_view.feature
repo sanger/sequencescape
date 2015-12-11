@@ -30,3 +30,13 @@ Feature: Links from the study workflow page
   Scenario: The count for 2 failed requests goes to the asset overview
     When I view the failed requests for "Asset 1 - 3871492"
     Then I should see "Failed paired end sequencing requests for study 'Study 3871492'"
+
+  @javascript
+  Scenario: I can filter the asset overview page
+    When I follow "Assets progress"
+    Then I should see "SampleTube" within "#summary"
+    And I should see "LibraryTube" within "#summary"
+    And I select "Library Tubes" from "Filter by"
+    Then I should see "Showing Library Tubes"
+    Then I should see "LibraryTube" within "#summary"
+    And I should not see "SampleTube" within "#summary"
