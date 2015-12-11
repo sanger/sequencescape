@@ -15,7 +15,7 @@ Sequencescape::Application.configure do
   config.whiny_nils = true
 
   # we don't need :debug unless we're debugging tests
-  config.log_level = :warn
+  config.log_level = :error
 
   # Show full error reports and disable caching
   # config.action_controller.consider_all_requests_local = true

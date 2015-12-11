@@ -34,7 +34,7 @@ Feature: I wish to create samples and push them all the way through QC in SLF
     And I select "Yes" from "Do any of the samples in this study contain human DNA?"
     And I select "No" from "Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?"
     And I select "No" from "Does this study require the removal of X chromosome and autosome sequence?"
-    And I select "open" from "What is the data release strategy for this study?"
+    And I select "Open (ENA)" from "What is the data release strategy for this study?"
 
     # NOTE[xxx]: This feels like a bit of a hack but I can't see a way to turn off enforce_accessioning
     # at this level of the UI.  Apparently no studies that come through the SLF pipeline will need accession

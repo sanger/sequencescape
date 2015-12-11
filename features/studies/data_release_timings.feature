@@ -10,7 +10,7 @@ Feature: Studies have timings for release of their data
     And I fill in "Study description" with "Checking that the data release strategies behave appropriately"
     And I select "No" from "Do any of the samples in this study contain human DNA?"
     And I select "No" from "Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?"
-    And I select "open" from "What is the data release strategy for this study?"
+    And I select "Open (ENA)" from "What is the data release strategy for this study?"
 
   Scenario: When the data release is standard
     Given I select "standard" from "How is the data release to be timed?"

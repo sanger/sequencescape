@@ -21,7 +21,7 @@ Feature: Added property "commercially_available". Add and edit this value. Pendi
     And I select "<contain_dna>" from "Do any of the samples in this study contain human DNA?"
     And I select "<contaminated_dna>" from "Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?"
     And I select "<commercial>" from "Are all the samples to be used in this study commercially available, unlinked anonymised cell-lines?"
-    And I select "open" from "What is the data release strategy for this study?"
+    And I select "Open (ENA)" from "What is the data release strategy for this study?"
     When I press "Create"
     Then I should be on the study workflow page for "new study"
     Then abbreviation for Study "new study" should be "CCC3435"
