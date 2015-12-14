@@ -91,7 +91,7 @@ class Asset < ActiveRecord::Base
   # Named scope for search by query string behaviour
   named_scope :for_search_query, lambda { |query,with_includes|
 
-    search = '(sti_type != "Well") AND ((assets.name IS NOT NULL AND assets.name LIKE :name)'
+    search = '(assets.sti_type != "Well") AND ((assets.name IS NOT NULL AND assets.name LIKE :name)'
     arguments = {:name => "%#{query}%"}
 
     # The entire string consists of one of more numeric characters, treat it as an id or barcode
