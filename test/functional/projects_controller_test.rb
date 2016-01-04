@@ -82,7 +82,7 @@ class ProjectsControllerTest < ActionController::TestCase
           assert_equal @initial_project_count, Project.count
         end
 
-        should set_the_flash.to('Problems creating your new project')
+        should set_the_flash.now.to('Problems creating your new project')
 
       end
 

@@ -953,16 +953,6 @@ input.enhanced {
   font-size: 1.1em;
 }
 
-table.sortable thead tr th.sortasc:after {
-  content: '▲';
-  margin-right:-100%;
-}
-
-table.sortable thead tr th.sortdesc:after {
-  content: '▼';
-  margin-right:-100%;
-}
-
 .nested {
 	background:#ffffff;
 }
