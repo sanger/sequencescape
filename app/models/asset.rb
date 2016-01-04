@@ -108,9 +108,28 @@ class Asset < ActiveRecord::Base
   end
   # Named scope for search by query string behaviour
  scope :for_search_query, ->(query,with_includes) {
+
+    search = '(assets.sti_type != "Well") AND ((assets.name IS NOT NULL AND assets.name LIKE :name)'
+    arguments = {:name => "%#{query}%"}
+
+    # The entire string consists of one of more numeric characters, treat it as an id or barcode
+    if /\A\d+\z/ === query
+      search << ' OR (assets.id = :id) OR (assets.barcode = :barcode)'
+      arguments.merge!({:id => query.to_i, :barcode => query.to_s})
+    end
+
+    # If We're a Sanger Human barcode
+    if match = /\A([A-z]{2})(\d{1,7})[A-z]{0,1}\z/.match(query)
+      prefix_id = BarcodePrefix.find_by_prefix(match[1]).try(:id)
+      number = match[2]
+      search << ' OR (assets.barcode = :barcode AND assets.barcode_prefix_id = :prefix_id)' unless prefix_id.nil?
+      arguments.merge!({:barcode => number, :prefix_id => prefix_id})
+    end
+
+    search <<')'
+
     {
-      :conditions => [
-        'assets.name IS NOT NULL AND (assets.name LIKE :like OR assets.id=:query OR assets.barcode = :query)', { :like => "%#{query}%", :query => query } ]
+      :conditions => [ search, arguments ]
     }.tap {|cond| cond.merge!(:include => :requests, :order => 'requests.pipeline_id ASC') if with_includes }
   }
 
