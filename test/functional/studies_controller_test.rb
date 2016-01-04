@@ -104,9 +104,7 @@ class StudiesControllerTest < ActionController::TestCase
           assert_equal @initial_study_count, Study.count
         end
 
-        should 'set a message for the error' do
-          assert_contains(@controller.flash.now.values, 'Problems creating your new study')
-        end
+        should set_the_flash.to('Problems creating your new study')
       end
 
       context "create a new study using permission allowed (not required)" do
