@@ -1,7 +1,6 @@
-<h1>Labware Reception</h1>
-<%= javascript_include_tag 'labwhere_reception' %>
+<h1>Labwhere Reception</h1>
 
-<% form_for(@labwhere_reception) do |form| %>
+<%= form_for(@labwhere_reception) do |form| %>
 
   <div class="form-group">
   <%= form.label :location_id, 'Sequencescape location' %>
@@ -20,7 +19,7 @@
 
   <div class="form-group">
   <%= form.label :asset_scan, 'Scan plate or tube' %>
-  <%= text_field_tag :asset_scan, {}, :class => 'rescannable', :class=>'form-control' %>
+  <%= text_field_tag :asset_scan, '', :class=>'rescannable form-control' %>
   </div>
 
   <ul id="barcode_list" class="barcode_list">
@@ -28,3 +27,5 @@
 
   <%= form.submit 'Update locations', :class=>'btn btn-success' %>
 <% end %>
+
+<%= javascript_include_tag 'labwhere_reception' %>
