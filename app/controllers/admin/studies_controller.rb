@@ -10,6 +10,7 @@ class Admin::StudiesController < ApplicationController
 
   def show
     @study = Study.find(params[:id])
+    action_flash[:warning] = @study.warnings if @study.warnings.present?
   end
 
   def update
@@ -22,6 +23,7 @@ class Admin::StudiesController < ApplicationController
     @request_types = RequestType.all(:order => "name ASC")
     if params[:id] != "0"
       @study = Study.find(params[:id])
+      action_flash[:warning] = @study.warnings if @study.warnings.present?
       render :partial => "editor", :locals => { :study => @study }
     else
       render :nothing => true
