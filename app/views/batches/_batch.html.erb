@@ -80,10 +80,3 @@
 <% end -%>
 <br />
 </div>
-
-<% if edit -%>
-<%= sortable_element 'item_list',
-                      :tag => 'tr',
-                      :url => { :action => "sort", :batch_id => @batch.id },
-                      :complete => "reload_batch();" %>
-<% end -%>

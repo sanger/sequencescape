@@ -18,5 +18,4 @@
 //= require jquery-tablesorter/jquery.tablesorter.widgets
 //= require jquery-tablesorter/addons/pager/jquery.tablesorter.pager
 //= require bootstrap-sprockets
-//= require widgets/tooltip
 //= require_tree ./sequencescape

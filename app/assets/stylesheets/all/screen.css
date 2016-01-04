@@ -1034,7 +1034,7 @@ table.checktext_field td {
   border-spacing: 0px;
   margin: 0;
   padding: 0;
-  /*padding-right: 2px;*/
+  padding-right: 2px;
   vertical-align: bottom;
   border: 0px solid #cf3;
 }
