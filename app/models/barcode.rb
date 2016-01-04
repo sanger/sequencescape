@@ -147,7 +147,10 @@ class Barcode
 
   def self.human_to_machine_barcode(human_barcode)
     human_prefix, bcode, human_suffix = split_human_barcode(human_barcode)
-    if Barcode.calculate_checksum(human_prefix, bcode) != human_suffix
+    # Bugfix Exception 8:39 am Dec 22th 2015
+    #  undefined method `+' for nil:NilClass app/models/barcode.rb:101:in `calculate_checksum'
+    # Incorrect barcode format
+    if human_prefix.nil? || Barcode.calculate_checksum(human_prefix, bcode) != human_suffix
       raise InvalidBarcode, "The human readable barcode was invalid, perhaps it was mistyped?"
     else
       calculate_barcode(human_prefix,bcode.to_i)
