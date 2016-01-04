@@ -43,7 +43,7 @@
             <tr class="<%= cycle("alternate", "") %>">
           <% end -%>
             <td class='small'><%= item.id %></td>
-            <td class='small'><%= image_tag "add.png", :size => "12x12", :onclick => "Element.toggle(\"#{item.id}_samples\");" %></td>
+            <td class='small'><%= image_tag "add.png", :size => "12x12", :onclick => "$(##{item.id}_samples).toggle();" %></td>
             <td class='small'><%= link_to not_so_shorten(item.name), { :controller => 'items', :action => 'show', :id => item.ident, :batch_id => @batch.id }, :title => item.name  %></td>
             <td class='small'><%= item.studies.last.nil? ? "Unclassified" : shorten(item.studies.last.name) %></td>
             <td class='small'></td>

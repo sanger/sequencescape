@@ -18,9 +18,6 @@ group :default do
   gem 'carrierwave'
   gem 'jruby-openssl', :platforms => :jruby
 
-  # Provides legacy prototype helpers
-  gem 'prototype-rails'
-
   # Provides eg. error_messages_for previously in rails 2, now deprecated.
   gem 'dynamic_form'
 

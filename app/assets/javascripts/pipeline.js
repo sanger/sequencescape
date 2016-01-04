@@ -3,7 +3,7 @@
 //Copyright (C) 2007-2011,2011,2013 Genome Research Ltd.
 function select_requests_by_group(elementId,size,value) {
   for (var i = 1; i < size+1; i++) {
-	$$('#' + elementId + '_' + i + ' input[type=checkbox]')[0].checked = value;
+	$('#' + elementId + '_' + i + ' input[type=checkbox]')[0].checked = value;
 
 	element = $(elementId + '_' + i);
 	if (value) {
