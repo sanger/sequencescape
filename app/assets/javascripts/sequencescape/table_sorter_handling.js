@@ -65,6 +65,7 @@
       //tables.tablesorterPager(TABLE_SORTER_PAGER_CONFIG);
       tables.trigger("sortReset");
     });
+    $(document.body).trigger("ajaxDomUpdate");
   };
   $(document).ready(attachEvents);
 
