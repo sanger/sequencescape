@@ -2,5 +2,7 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2015 Genome Research Ltd.
 
-#Disable savon logging
-Savon.log= false
+# Disable savon logging
+Savon.log = false
+# Disable HTTPI logging
+HTTPI.log = false

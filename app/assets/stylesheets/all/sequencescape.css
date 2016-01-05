@@ -878,6 +878,9 @@ background-color: #F5A9F2;
 .plate td.colour11 {
 background-color: #F5A9D0;
 }
+.plate td.placehold {
+background-color: #BBBBBB;
+}
 
 
 /* New style CSS plate this needs to slowly replace the existing table style */
