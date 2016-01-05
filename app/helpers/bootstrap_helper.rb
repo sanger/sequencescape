@@ -141,10 +141,10 @@ module BootstrapHelper
         label << content_tag(:span, sections.edit_info, :class => 'property_edit_info') if sections.edit_info
       end
       fg << content_tag(:div,field,:class=>'col-md-5')
-      fg << content_tag(:div,:class=>'help-block col-md-3') do
+      fg << content_tag(:div,:class=>'col-md-3') do
         help_text("#{sections.label} help text", field.hash) do
           raw(sections.help)
-        end if sections.help
+        end if sections.help.present?
       end
     end
   end

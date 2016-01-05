@@ -319,25 +319,9 @@ module ApplicationHelper
 
   def help_text(label_text = nil, suggested_id = nil, &block)
     content = capture(&block)
-
-    # TODO: This regexp isn't obvious until you stare at it for a while but:
-    #   * The $1 is at least 20 characters long on match
-    #   * $1 will end with a complete word (even if 20 characters is in the middle)
-    #   * If there's no match then $1 is nil
-    # Hence shortened_text is either nil or at least 20 characters
-    shortened_text = (content =~ /^(.{20}\S*)\s\S/ and $1)
-
-    if content.blank?
-      concat(non_breaking_space)
-    elsif shortened_text.nil?
-      concat(content.html_safe)
-    else
-      concat(shortened_text.html_safe)
-      tooltip_id = "prop_#{suggested_id || content.hash}_help"
-      concat(label_tag("tooltip_content_#{tooltip_id}", label_text, :style => 'display:none;').html_safe)
-
-      tooltip('?', :id => tooltip_id, &block)
-    end
+    return if content.blank?
+    tooltip_id = "prop_#{suggested_id || content.hash}_help"
+    tooltip('?', :id => tooltip_id, &block)
   end
 
   # The admin email address should be stored in config.yml for the current environment

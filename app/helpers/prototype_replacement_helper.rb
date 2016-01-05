@@ -13,23 +13,12 @@ module PrototypeReplacementHelper
   end
 
 
-  def tooltip(name=nil, opts={}, &proc)
-    name ||= image_tag('/images/widgets/tooltip_image.gif', :border => 0, :'data-content' => tooltip_content(opts,&proc),
-     :'data-toggle' => 'popover', :'data-title'=> 'About this')
-    result = name
-
-    if block_given?
-      concat result.html_safe
-      return nil
-    else
-      return result.html_safe
-    end
+  def tooltip(name='Help', opts={}, &block)
+    button = content_tag(:span,name,:class=>'btn btn-info',:'data-content' => capture(opts,&block),
+    :'data-toggle' => 'popover', :'data-title'=> opts.fetch(:title,'About this'))
+    concat button
   end
 
-  def tooltip_content(opts={}, &proc)
-   return render(:partial => opts[:partial]) if opts[:partial]
-   return capture(&proc)
-  end
 
 
 end
