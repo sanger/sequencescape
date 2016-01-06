@@ -14,7 +14,7 @@ module PrototypeReplacementHelper
 
 
   def tooltip(name='Help', opts={}, &block)
-    button = content_tag(:span,name,:class=>'btn btn-info',:'data-content' => capture(opts,&block),
+    button = content_tag(:span,name,:class=>'btn btn-info popover-trigger',:'data-content' => capture(opts,&block),
     :'data-toggle' => 'popover', :'data-title'=> opts.fetch(:title,'About this'))
     concat button
   end

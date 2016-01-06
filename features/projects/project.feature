@@ -6,7 +6,7 @@ Feature: Project management
    And user "user" has a workflow "Next-gen sequencing"
 
    When I follow "Create project"
-   Then I should see "New project"
+   Then I should see "PROJECTS New"
    And I should not see "External funding source"
    And I should not see "Sequencing Project Manager"
    And I should not see "Sequencing budget division"
@@ -26,7 +26,7 @@ Feature: Project management
    And user "user" has a workflow "Next-gen sequencing"
 
    When I follow "Create project"
-   Then I should see "New project"
+   Then I should see "PROJECTS New"
    When I fill in the field labeled "Name" with "Test project"
    And I fill in the field labeled "Project cost code" with "ABC"
    And I fill in the field labeled "Funding comments" with "Internal"
@@ -52,7 +52,7 @@ Feature: Project management
    And I am on the homepage
 
    When I follow "Create project"
-   Then I should see "New project"
+   Then I should see "PROJECTS New"
    When I fill in the field labeled "Name" with "Test project"
    And I fill in the field labeled "Project cost code" with "ABC"
    And I fill in the field labeled "Genotyping committee Tracking ID" with "12345"

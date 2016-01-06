@@ -322,13 +322,10 @@ Given /^the study "([^\"]+)" has a (library tube) called "([^\"]+)"$/ do |study_
   step %Q(the asset "#{asset_name}" belongs to study "#{study_name}")
 end
 
-Then /^the help text for "([^"]*)" should contain:$/ do |label_name, expected_tooltip_text|
-  label = find(:xpath, "//label[text()='#{label_name}']",visible: false)
-  tooltip_div_content = label['for']
-  click_link(tooltip_div_content.gsub('content','link'))
-
-  actual_tooltip_text = find("##{tooltip_div_content}").text
-  assert_equal expected_tooltip_text.squish, actual_tooltip_text.gsub(" close","").squish
+Then /^the help text for "([^\"]*)" should contain:$/ do |label_name, expected_tooltip_text|
+  link = find(:xpath, "//label[text()='#{label_name}']/../..//span[text()='?']")
+  link.click
+  step %Q{I should see "#{expected_tooltip_text}"}
 end
 
 Then /^I should exactly see "([^"]*)"$/ do |text|

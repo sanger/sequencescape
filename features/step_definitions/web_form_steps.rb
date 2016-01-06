@@ -53,7 +53,7 @@ end
 
 def assert_label_exists(label_text, required = false)
   selector = 'label' << (required ? '.required' : ':not(.required)')
-  assert(page.has_css?(selector,:visible=>false,:text=>label_text), "The #{ label_text.inspect } should #{ required ? '' : 'not '}be labeled as 'required' (class=\"required\")")
+  assert(page.has_css?(selector,:visible=>:all,:text=>label_text), "The #{ label_text.inspect } should #{ required ? '' : 'not '}be labeled as 'required' (class=\"required\")")
 end
 
 def locate_labeled_field_type(label_text, field_type)

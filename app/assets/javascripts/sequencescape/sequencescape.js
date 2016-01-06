@@ -76,7 +76,7 @@ var Behaviours = {
   }
 };
 
-  $.ready(function(){
+  $(function(){
     Behaviours.assign_handlers();
   });
 })(jQuery);

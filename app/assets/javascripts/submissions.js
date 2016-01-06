@@ -431,7 +431,7 @@
 
     // Initialise the template selector and attach a change handler to
     // it.
-    $('#submission_template_id').change(templateChangeHandler);
+    $('#submission_template_id').on('change',templateChangeHandler);
 
     // Validate the order-parameters
     $('#order-parameters').on('keypress','.required',validateOrderParams)
