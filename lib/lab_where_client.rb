@@ -100,7 +100,7 @@ module LabWhereClient
     def self.find_by_barcode(barcode)
       return nil if barcode.blank?
       attrs = LabWhere.instance.get(self, barcode)
-      new(labwhere_result) unless attrs.nil?
+      new(attrs) unless attrs.nil?
     end
 
     def initialize(params)
