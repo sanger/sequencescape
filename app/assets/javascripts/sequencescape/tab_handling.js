@@ -6,7 +6,12 @@
   "use strict";
 
   function contentFor(tab) {
-    return $("[data-tab-content="+$(tab).data("tab-refers")+"]");
+    var content = $("[data-tab-content="+$(tab).data("tab-refers")+"]");
+    if (content.length == 0) {
+      return $($(tab).data("tab-refers"));
+    } else {
+      return content;
+    }
   }
 
   function selectTab(tab) {
