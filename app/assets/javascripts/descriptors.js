@@ -128,7 +128,7 @@ function addOption(field, controller, model) {
         success: function(response) {
           maintainFormValues(model + '_form', function() {
             optionsField = document.getElementById('field_options_' + field);
-            optionsField.innerHTML = optionsField.innerHTML + response.responseText;
+            optionsField.innerHTML = optionsField.innerHTML + response;
           });
         },
         error: handleErrorResponse
@@ -154,6 +154,6 @@ function removeOption(field, ident) {
 function handleDescriptor(response, form_id) {
   maintainFormValues(form_id, function() {
     descriptorsElement = document.getElementById('descriptors');
-    descriptorsElement.innerHTML = descriptorsElement.innerHTML + response.responseText;
+    descriptorsElement.innerHTML = descriptorsElement.innerHTML + response;
   });
 }
