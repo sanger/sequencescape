@@ -29,6 +29,15 @@
   var attachEvents;
 
   attachEvents = function(){
+    $(document).on("click", "[data-tab-group]", function(e) {
+      var node = e.target
+      var li = $(node).parent();
+      $("[data-tab-group="+ $(node).data('tab-group') +"]").each(function(pos, n) {
+          unselectTab($(n));
+      });
+      selectTab($(node));
+    });
+
     $("[data-tab-group]").each(function(pos, node) {
       var li = $(node).parent();
       // Tab selection behaviour

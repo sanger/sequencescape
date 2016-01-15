@@ -1112,7 +1112,7 @@ ul#orders ul.sub-panel li {
 }
 
 #orders ul.sub-panel .assets {
-  height: 120px;
+  //height: 120px;
 }
 
 #orders li.completed h3, #orders li.completed textarea, #orders li.completed input:not(.delete-order) {
@@ -1439,5 +1439,12 @@ table#samples_to_register .label {
     padding: 0 0;
 }
 
-
+ul#orders ul.sub-panel .assets li {
+  padding: inherit;
+  margin: inherit;
+  border-color: #a3a3a3;
+  border-style: solid;
+  border-width: 1px 0px 0px 0px;
+  border-radius: initial;
+}
 
