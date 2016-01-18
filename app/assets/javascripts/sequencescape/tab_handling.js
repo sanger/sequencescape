@@ -5,6 +5,7 @@
 ( function($, undefined){
   "use strict";
 
+
   function contentFor(tab) {
     var content = $("[data-tab-content="+$(tab).data("tab-refers")+"]");
     if (content.length == 0) {
@@ -25,32 +26,34 @@
     contentFor(tab).hide();
   }
 
+  function dataTabGroupHandler(node) {
+    return function(event) {
+      $("[data-tab-group="+ $(node).data('tab-group') +"]").each(function(pos, checkedNode) {
+        if ($(checkedNode).data("tab-refers")!==$(node).data("tab-refers")) {
+          unselectTab($(checkedNode));
+        } else {
+          selectTab($(checkedNode));
+        }
+      });
+      selectTab($(node));
+    };
+  };
 
   var attachEvents;
 
   attachEvents = function(){
     $(document).on("click", "[data-tab-group]", function(e) {
-      var node = e.target
-      var li = $(node).parent();
-      $("[data-tab-group="+ $(node).data('tab-group') +"]").each(function(pos, n) {
-          unselectTab($(n));
-      });
-      selectTab($(node));
+      return dataTabGroupHandler.call(this, e.target).call(this, e);
     });
 
     $("[data-tab-group]").each(function(pos, node) {
       var li = $(node).parent();
       // Tab selection behaviour
-      li.on("click", function(event, object) {
-        $("[data-tab-group="+ $(node).data('tab-group') +"]").each(function(pos, n) {
-          unselectTab($(n));
-        });
-        selectTab($(node));
-      });
+      li.on("click", dataTabGroupHandler(node));
 
       // Loads the content of the selected tab
       if (li.hasClass("selected") || $(node).hasClass("selected")) {
-        $("a", li).trigger("click");
+        li.trigger("click");
       };
     });
   };
