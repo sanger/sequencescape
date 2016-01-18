@@ -2,8 +2,8 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2012 Genome Research Ltd.
 module Tasks::GenerateManifestHandler
-  def manifest_filename
-    ["#{study.name}", "#{batch.id}", "manifest.csv"].join("_").gsub(/\s/,"_").gsub(/[^A-Za-z0-9_\-\.]/,"")
+  def manifest_filename(name,number)
+    [name, number.to_s, "manifest.csv"].join("_").gsub(/\s/,"_").gsub(/[^A-Za-z0-9_\-\.]/,"")
   end
 
   def generate_manifest
@@ -12,7 +12,7 @@ module Tasks::GenerateManifestHandler
     csv_string = GenerateManifestsTask.generate_manifests(batch,study)
     send_data csv_string,
       :type => "text/csv",
-      :filename=> manifest_filename,
+      :filename=> manifest_filename(study.name,batch.id),
       :disposition => 'attachment'
   end
 
