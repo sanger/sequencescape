@@ -28,6 +28,16 @@
 
   function dataTabGroupHandler(node) {
     return function(event) {
+      if (typeof $(node).data("tab-refers") === "undefined") {
+        $("[data-tab-group="+ $(node).data('tab-group') +"]").each(function(pos, checkedNode) {
+          if (checkedNode === node) {
+            selectTab($(checkedNode));
+          } else {
+            unselectTab($(checkedNode));
+          }
+        });
+        return;
+      }
       $("[data-tab-group="+ $(node).data('tab-group') +"]").each(function(pos, checkedNode) {
         if ($(checkedNode).data("tab-refers")!==$(node).data("tab-refers")) {
           unselectTab($(checkedNode));
@@ -53,7 +63,7 @@
 
       // Loads the content of the selected tab
       if (li.hasClass("selected") || $(node).hasClass("selected")) {
-        li.trigger("click");
+        $('a', li).trigger("click");
       };
     });
   };

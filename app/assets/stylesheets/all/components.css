@@ -19,4 +19,4 @@ table.sortable th:focus {
 
 .loading-bar { width: 100% !important; }
 .loading-bar-container { display: none; }
-.loading-bar-placeholder { height: 22px; margin: 11px 0;}
+.loading-bar-placeholder {  margin: 11px 0;}

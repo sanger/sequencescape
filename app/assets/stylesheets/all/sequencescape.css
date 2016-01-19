@@ -1439,7 +1439,18 @@ table#samples_to_register .label {
     padding: 0 0;
 }
 
-ul#orders ul.sub-panel .assets li {
+
+ul.nav.nav-tabs li {
+  padding: inherit;
+  margin: inherit;
+  border-color: inherit;
+  border-style: inherit;
+  border-radius: inherit;
+  border-width: inherit;
+  margin-bottom: -1px;
+}
+
+ul#orders ul.sub-panel li {
   padding: inherit;
   margin: inherit;
   border-color: inherit;
@@ -1451,23 +1462,25 @@ ul#orders ul.sub-panel .assets li {
 
 ul#orders li.order { text-align: left;}
 
-ul#orders ul.sub-panel li:hover {
+.nav.nav-tabs li:hover {
   cursor: pointer;
 }
 
 .selected { background-color: inherit;}
-ul#orders li.selected {
-  box-shadow: inherit;
-}
 
 .yui-skin-sam .yui-navset .yui-content {
   border: 1px solid #ddd;
 }
-ul.nav-tabs { border-bottom: inherit; }
+.nav.nav-tabs { border-bottom: inherit; }
+
+.nav.nav-tabs li a { color: inherit;}
+
+.nav.nav-tabs li.selected { box-shadow: inherit;}
 
 ul#orders li.selected { box-shadow: inherit;}
 
-.assets .nav-tabs > li.selected > a {
+
+ul.nav.nav-tabs > li.selected > a {
   color: #555555;
   background-color: #edf5ff;
   border: 1px solid #ddd;
@@ -1492,4 +1505,17 @@ ul.sub-panel h3 {
   font-size: large;
 }
 
-ul#orders .panel-body ul.sub-panel li {padding-top: 0px;}
+ul#orders .panel-body ul.sub-panel li { padding-top: 0px;}
+
+
+.yui-skin-sam .yui-navset .yui-content { padding: 1em;}
+
+div.grouper { padding-left: 1em; padding-right: 1em;}
+
+.grouped_items div.grouped_item { font-size: 13px;}
+
+section { margin-bottom: 0.5em;}
+
+table.sortable tbody tr td { padding-left: 0.5em;}
+
+.tablesorter-header-inner { overflow: hidden; text-overflow: ellipsis;}
