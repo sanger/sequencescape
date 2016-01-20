@@ -6,8 +6,8 @@
 <div>
   <h1>Search</h1>
   <div class="info">
-    <%= form_tag('/lab_searches/new', :method => :get) do -%>
-      <div>Search for: <%= text_field_tag "q" -%> <%= submit_tag "Go" -%></div>
+    <%= form_tag('/lab_searches/new', :method => :get, :class => 'form-inline') do -%>
+      <div>Search for: <%= text_field_tag "q", nil, :class => 'form-control' -%> <%= submit_tag "Go", :class => 'form-control' -%></div>
     <% end -%>
   </div>
   <% unless params["q"].blank? -%>

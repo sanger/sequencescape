@@ -61,7 +61,7 @@ module SubmissionsHelper
       :study_id,
       studies, :id, :name,
       { :prompt => prompt },
-      { :disabled => true, :class => 'study_id' }
+      { :disabled => true, :class => 'study_id form-control' }
     )
   end
 
@@ -77,7 +77,7 @@ module SubmissionsHelper
       asset_groups, :id, :name,
       { :prompt => prompt },
       {
-        :class => 'submission_asset_group_id required',
+        :class => 'submission_asset_group_id required form-control',
         :disabled => (asset_groups.size == 0)
       }
     )

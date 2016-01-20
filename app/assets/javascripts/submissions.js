@@ -467,8 +467,8 @@
       on('change', '.study_id',     studySelectHandler).
       on('click',  '.cancel-order', cancelOrderHandler).
       on('click',  '.save-order',   saveOrderHandler).
-      on('click',  '.delete-order', deleteOrderHandler).
-      on('click',  '.assets a',     assetSelectorToggle);
+      on('click',  '.delete-order', deleteOrderHandler);
+      //on('click',  '.assets a',     assetSelectorToggle);
 
   });
 

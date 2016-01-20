@@ -1035,7 +1035,7 @@ ul#orders li.completed {
   opacity: 0.95;
 }
 
-ul#orders li.active {
+ul#orders li.selected {
   opacity: 1;
   -moz-box-shadow: 0 2px 5px #C3CEDA;
   box-shadow:     0 2px 5px #C3CEDA;
@@ -1112,7 +1112,7 @@ ul#orders ul.sub-panel li {
 }
 
 #orders ul.sub-panel .assets {
-  height: 120px;
+  //height: 120px;
 }
 
 #orders li.completed h3, #orders li.completed textarea, #orders li.completed input:not(.delete-order) {
@@ -1440,4 +1440,82 @@ table#samples_to_register .label {
 }
 
 
+ul.nav.nav-tabs li {
+  padding: inherit;
+  margin: inherit;
+  border-color: inherit;
+  border-style: inherit;
+  border-radius: inherit;
+  border-width: inherit;
+  margin-bottom: -1px;
+}
 
+ul#orders ul.sub-panel li {
+  padding: inherit;
+  margin: inherit;
+  border-color: inherit;
+  border-style: inherit;
+  border-radius: inherit;
+  border-width: inherit;
+  margin-bottom: -1px;
+}
+
+ul#orders li.order { text-align: left;}
+
+.nav.nav-tabs li:hover {
+  cursor: pointer;
+}
+
+.selected { background-color: inherit;}
+
+.yui-skin-sam .yui-navset .yui-content {
+  border: 1px solid #ddd;
+}
+.nav.nav-tabs { border-bottom: inherit; }
+
+.nav.nav-tabs li a { color: inherit;}
+
+.nav.nav-tabs li.selected { box-shadow: inherit;}
+
+ul#orders li.selected { box-shadow: inherit;}
+
+
+ul.nav.nav-tabs > li.selected > a {
+  color: #555555;
+  background-color: #edf5ff;
+  border: 1px solid #ddd;
+  border-bottom-color: transparent;
+  cursor: default;
+}
+
+ul#orders .yui-content li[data-tab-content] h3 { display: none;}
+
+ul#orders ul.sub-panel .assets li[data-tab-content] {
+  padding-right: 1em;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
+ul#orders ul.sub-panel .assets li[data-tab-content] textarea {
+  width: 100%;
+  height: 100%;
+}
+
+ul.sub-panel h3 {
+  font-size: large;
+}
+
+ul#orders .panel-body ul.sub-panel li { padding-top: 0px;}
+
+
+.yui-skin-sam .yui-navset .yui-content { padding: 1em;}
+
+div.grouper { padding-left: 1em; padding-right: 1em;}
+
+.grouped_items div.grouped_item { font-size: 13px;}
+
+section { margin-bottom: 0.5em;}
+
+table.sortable tbody tr td { padding-left: 0.5em;}
+
+.tablesorter-header-inner { overflow: hidden; text-overflow: ellipsis;}
