@@ -86,7 +86,8 @@ SubmissionTemplate.create!(
     :workflow_id=>Submission::Workflow.find_by_key('short_read_sequencing').id,
     :info_differential=>Submission::Workflow.find_by_key('short_read_sequencing').id
   },
-  :superceded_by_id => -2
+  :superceded_by_id => -2,
+  :product_catalogue => ProductCatalogue.find_by_name('Generic')
 )
 SubmissionTemplate.create!(
   :name => 'MiSeq for QC',
@@ -98,5 +99,6 @@ SubmissionTemplate.create!(
     :workflow_id=>Submission::Workflow.find_by_key('short_read_sequencing').id,
     :info_differential=>Submission::Workflow.find_by_key('short_read_sequencing').id
   },
-  :superceded_by_id => -2
+  :superceded_by_id => -2,
+  :product_catalogue => ProductCatalogue.find_by_name('Generic')
 )

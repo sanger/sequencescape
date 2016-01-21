@@ -1,19 +1,24 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2014 Genome Research Ltd.
+#Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
 require "test_helper"
 
 class SubmissionTemplateTest < ActiveSupport::TestCase
   context "A Order Template" do
+
+    should validate_presence_of :product_catalogue
+
     setup do
-      @template = SubmissionTemplate.new(:name => "default order", :submission_class_name => "Order")
+      @template = FactoryGirl.build :submission_template
+      @product = create(:product)
+      @template.product_catalogue.products <<  @product
     end
 
     should "be able to create a new order" do
       order = @template.new_order
       assert order
       assert order.is_a?(Order)
-
+      assert_equal @product, order.product
     end
   end
 
@@ -50,28 +55,7 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
         end
       end
     end
-    # context "with input_field_infos set with a selection" do
-    #   setup do
-    #     @field = FieldInfo.new(:kind => "Selection", :selection => ["a", "b"])
-    #     @order.set_input_field_infos([@field])
-    #   end
 
-    #   context "saved as template" do
-    #     setup do
-    #       template = SubmissionTemplate.new_from_submission("template 2", @order)
-    #       template.save!
-    #       template_id = template.id
-
-    #       @loaded_template = SubmissionTemplate.find(template_id)
-    #     end
-
-    #     should "load the parameters properly" do
-    #       order = @loaded_template.new_order
-    #       assert_equal 1, order.input_field_infos.size
-    #       assert_equal @field.selection, order.input_field_infos.first.selection
-    #     end
-    #   end
-    # end
     context "without input_field_infos" do
       setup do
 

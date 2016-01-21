@@ -148,6 +148,9 @@ class Request < ActiveRecord::Base
 
   scope :for_pacbio_sample_sheet, -> { includes([{:target_asset=>:map},:request_metadata]) }
 
+  has_many :qc_metric_requests
+  has_many :qc_metrics, :through => :qc_metric_requests
+
   # project is read only so we can set it everywhere
   # but it will be only used in specific and controlled place
   belongs_to :initial_project, :class_name => "Project"
@@ -169,6 +172,10 @@ class Request < ActiveRecord::Base
       :joins=>'LEFT JOIN container_associations AS spca ON spca.content_id = requests.asset_id',
       :group=>'spca.container_id'
     ).count
+  end
+
+  def update_responsibilities!
+    # Do nothing
   end
 
 
@@ -464,7 +471,7 @@ class Request < ActiveRecord::Base
   end
 
   def customer_accepts_responsibility!
-    self.request_metadata.update_attributes!(:customer_accepts_responsibility=>true)
+    # Do nothing
   end
 
   extend Metadata

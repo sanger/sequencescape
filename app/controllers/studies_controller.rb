@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012,2013 Genome Research Ltd.
+#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 require "rexml/document"
 
 class StudiesController < ApplicationController
@@ -444,9 +444,9 @@ class StudiesController < ApplicationController
     when "managed & active"            then Study.managed_by(current_user).is_active
     when "managed & inactive"          then Study.managed_by(current_user).is_inactive
     when "pending"                     then Study.is_pending
-    when "pending ethical approval"    then Study.all_awaiting_ethical_approval
-    when "contaminated with human dna" then Study.all_contaminated_with_human_dna
-    when "remove x and autosomes"      then Study.all_with_remove_x_and_autosomes
+    when "pending ethical approval"    then Study.awaiting_ethical_approval
+    when "contaminated with human dna" then Study.contaminated_with_human_dna
+    when "remove x and autosomes"      then Study.with_remove_x_and_autosomes
     when "active"                      then Study.is_active
     when "inactive"                    then Study.is_inactive
     when "collaborations"              then Study.collaborated_with(current_user)

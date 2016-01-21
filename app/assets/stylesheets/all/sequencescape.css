@@ -19,6 +19,7 @@ a {
 .target_plate th.corner-tl {}
 .target_plate th.corner-br {border-bottom-right-radius: 10px;}
 .target_plate th.corner-bl {border-bottom-left-radius: 10px;}
+.tube_source {padding:0.5em; border-radius:10px; background-color: #FFFFCC;}
 .interface_group {padding:0.5em; border-radius:10px; background-color: #FFFFCC;}
 .pac_well {margin:0; padding:0; height: 2em;}
 #error_messages { background-color: #ff7070; padding: 2em; margin:1em; border:3px solid red; border-radius:20px; display:none;}
@@ -752,6 +753,10 @@ border-radius: 5px;
 }
 
 table.bed_verification{
+  width: 100%;
+}
+
+table.detailed {
   width: 100%;
 }
 
@@ -1519,3 +1524,8 @@ section { margin-bottom: 0.5em;}
 table.sortable tbody tr td { padding-left: 0.5em;}
 
 .tablesorter-header-inner { overflow: hidden; text-overflow: ellipsis;}
+
+.file_drop { border: 2px dotted gray; width:80%; padding:1em; }
+.report_form { display:block; float: left; width: 50%;}
+
+

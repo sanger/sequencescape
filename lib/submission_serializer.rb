@@ -19,15 +19,14 @@
 
 module SubmissionSerializer
 
- STRAIGHT_CLONE = ['name','submission_class_name']
- SP_STRAIGHT_CLONE = [:info_differential,:asset_input_methods,:request_options]
+  STRAIGHT_CLONE = ['name','submission_class_name']
+  SP_STRAIGHT_CLONE = [:info_differential,:asset_input_methods,:request_optiions]
 
- def self.serialize(st)
-   attributes = st.attributes
-   new_attributes = {}
+  def self.serialize(st)
+    attributes = st.attributes
+    new_attributes = {}
 
    STRAIGHT_CLONE.each do |key|
-     puts attributes[key]
      new_attributes[key.to_sym] = attributes[key].duplicable? ? attributes[key].dup : attributes[key]
    end
 

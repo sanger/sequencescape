@@ -1,6 +1,6 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011 Genome Research Ltd.
+#Copyright (C) 2007-2011,2015 Genome Research Ltd.
 # This file should contain all the record creation needed to seed the database with its default values.
 # The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
 
@@ -22,8 +22,8 @@ is not set, or is set to either 'development' or 'test'.
 END_OF_MESSAGE
 end
 
-# Why this stuff isn't run in a transaction I don't know!
 ActiveRecord::Base.transaction do
+
   # Here is a proc that will do the seeding.
   handler = lambda do |seed_data_file|
     Rails.logger.info("Loading seed data from #{ seed_data_file } ...")

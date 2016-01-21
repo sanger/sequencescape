@@ -386,6 +386,12 @@ Sequencescape::Application.routes.draw do
   resources :tasks
   resources :asset_audits
 
+  resources :qc_reports, :except => [:delete,:update] do
+    collection do 
+      post :qc_file
+    end
+  end
+
   match 'assets/snp_import' => 'assets#snp_import'
   match 'assets/lookup' => 'assets#lookup', :as => :assets_lookup
   match 'assets/receive_barcode' => 'assets#receive_barcode'
