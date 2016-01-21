@@ -21,6 +21,8 @@ module IlluminaHtp::PlatePurposes
     ]
   ]
 
+  #PF_PLATE_PURPOSE_FLOW = [ 'PF Cherrypicked', 'PF Shear', 'PF Post Shear', 'PF Post Shear XP', 'PF Lib XP', 'PF Lib XP2', 'PF EM Pool ', 'PF Lib Norm']
+
   TUBE_PURPOSE_FLOWS = [
     [
       'Lib Pool',
@@ -39,6 +41,8 @@ module IlluminaHtp::PlatePurposes
   ]
 
   BRANCHES = [
+    [ 'PF Cherrypicked', 'PF Shear', 'PF Post Shear', 'PF Post Shear XP', 'PF AL Libs', 'PF Lib XP', 'PF Lib XP2', 'PF EM Pool ', 'PF Lib Norm'],
+    [ 'PF Lib XP2', 'PF MiSeq Stock', 'PF MiSeq QC'],
     [ 'Cherrypicked', 'Shear', 'Post Shear', 'AL Libs', 'Lib PCR', 'Lib PCR-XP','Lib Pool','Lib Pool Norm'],
     [ 'Lib PCR-XP','Lib Pool Pippin', 'Lib Pool Conc', 'Lib Pool SS', 'Lib Pool SS-XP', 'Lib Pool SS-XP-Norm' ],
     [ 'AL Libs', 'Lib PCRR', 'Lib PCRR-XP','Lib Pool Pippin' ],
@@ -60,7 +64,29 @@ module IlluminaHtp::PlatePurposes
     'Cherrypicked'  => 'illumina_b_shared'
   }
 
+  PF_PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
+    ['PF Cherrypicked', 'PF Shear', 'IlluminaHtp::Requests::CherrypickedToShear'],
+    ['PF Shear', 'PF Post Shear'],
+    ['PF Post Shear', 'PF Post Shear XP'],
+    ['PF Post Shear XP', 'PF Lib XP'],
+    ['PF Lib XP', 'PF Lib XP2']
+  ]
+
   PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
+    [ 'PF Cherrypicked', 'PF Shear', 'IlluminaHtp::Requests::CherrypickedToShear'],
+    # ['PF Shear', 'PF Post Shear'],
+    # ['PF Post Shear', 'PF Post Shear XP' ],
+    # ['PF Post Shear XP', 'PF AL Libs'],
+    # ['PF AL Libs', 'PF Lib XP'],
+    # ['PF Lib XP', 'PF Lib XP2'],
+    # ['PF Lib XP2', 'PF EM Pool'],
+    # ['PF EM Pool', 'PF Lib Norm'],
+    # ['PF Lib Norm', 'PF MiSeq Stock'],
+    # ['PF MiSeq Stock', 'PF MiSeq QC'],
+    # ['PF EM Pool', 'PF EM Pool D1'],
+    # ['PF EM Pool D1', 'PF EM Pool D2'],
+    # ['PF EM Pool D2', 'PF qPCR QC'],
+
     [ 'Cherrypicked',    'Shear',               'IlluminaHtp::Requests::CherrypickedToShear'   ],
     [ 'Shear',           'Post Shear',          'IlluminaHtp::Requests::CovarisToSheared'      ],
     [ 'Post Shear',      'AL Libs',             'IlluminaHtp::Requests::PostShearToAlLibs'     ],
@@ -80,6 +106,20 @@ module IlluminaHtp::PlatePurposes
   ]
 
   PLATE_PURPOSE_TYPE = {
+    'PF Cherrypicked'        => IlluminaHtp::StockPlatePurpose,
+    'PF Shear'               => IlluminaHtp::CovarisPlatePurpose,
+    'PF Post Shear'          => PlatePurpose,
+    'PF Post Shear XP'       => PlatePurpose,
+    'PF AL Libs'             => PlatePurpose,
+    'PF Lib XP'              => PlatePurpose,
+    'PF Lib XP2'             => PlatePurpose,
+    'PF EM Pool'             => PlatePurpose,
+    'PF Lib Norm'            => PlatePurpose,
+    'PF qPCR QC'             => PlatePurpose,
+    'PF MiSeq Stock'         => IlluminaHtp::StockTubePurpose,
+    'PF MiSeq QC'            => IlluminaC::QcPoolPurpose, #Illumina C
+
+
     'Cherrypicked'        => IlluminaHtp::StockPlatePurpose,
     'Shear'               => IlluminaHtp::CovarisPlatePurpose,
     'Post Shear'          => PlatePurpose,
@@ -196,10 +236,13 @@ module IlluminaHtp::PlatePurposes
     private :purpose_for
 
     def request_type_between(parent, child)
+      std = RequestPurpose.find_by_key('standard')
       _, _, request_class = self::PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES.detect { |a,b,_| (parent.name == a) && (child.name == b) }
       return RequestType.transfer if request_class.nil?
       request_type_name = "#{request_type_prefix} #{parent.name}-#{child.name}"
-      RequestType.create!(:name => request_type_name, :key => request_type_name.gsub(/\W+/, '_'), :request_class_name => request_class, :asset_type => 'Well', :order => 1)
+      RequestType.create!(:name => request_type_name, :key => request_type_name.gsub(/\W+/, '_'), :request_class_name => request_class, :asset_type => 'Well', :order => 1,
+        :request_purpose => std
+        )
     end
     private :request_type_between
 
@@ -209,6 +252,7 @@ module IlluminaHtp::PlatePurposes
     private :library_creation_freezer
 
     def create_plate_purpose(plate_purpose_name, options = {})
+      puts plate_purpose_name
       purpose_for(plate_purpose_name).create!(options.reverse_merge(
         :name                  => plate_purpose_name,
         :cherrypickable_target => false,
