@@ -1,6 +1,11 @@
 language: ruby
-# We don't specify a list of ruby versions, as Travis will fall back to .ruby-version
-# This is the behaviour we want, so no sense in overriding it
-bundler_args: --without deployment
-sudo: false
-cache: bundler
+rvm:
+  - jruby-19mode
+bundler_args: --without warehouse development deployment
+before_install:
+  - export TZ=Europe/London
+before_script:
+  - "bundle exec rake db:create RAILS_ENV=test"
+  - "bundle exec rake db:test:load"
+  - export CUCUMBER_FORMAT=progress
+  - export RUBY_OPT=--profile
