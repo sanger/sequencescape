@@ -26,6 +26,7 @@
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100"},
     :request_types=>
      ["cherrypick_for_pulldown",
       "pulldown_wgs",
@@ -37,6 +38,7 @@
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100"},
     :request_types=>
      ["cherrypick_for_pulldown",
       "pulldown_wgs",
@@ -48,6 +50,7 @@
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100"},
     :request_types=>
      ["cherrypick_for_pulldown",
       "pulldown_wgs",
@@ -59,6 +62,7 @@
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100"},
     :request_types=>
      ["cherrypick_for_pulldown",
       "pulldown_wgs",
@@ -67,8 +71,10 @@
  {:name=>"Cherrypick for pulldown - Pulldown WGS - Paired end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceded_by_id=>-2,
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100"},
     :request_types=>
      ["cherrypick_for_pulldown",
       "pulldown_wgs",
@@ -80,6 +86,7 @@
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100"},
     :request_types=>
      ["cherrypick_for_pulldown",
       "pulldown_wgs",
@@ -89,8 +96,10 @@
    "Cherrypick for pulldown - Pulldown WGS - HiSeq Paired end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceded_by_id=>-2,
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100"},
     :request_types=>
      ["cherrypick_for_pulldown",
       "pulldown_wgs",
@@ -102,6 +111,7 @@
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100"},
     :request_types=>
      ["cherrypick_for_pulldown",
       "pulldown_wgs",
@@ -112,6 +122,7 @@
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100"},
     :request_types=>["pulldown_wgs", "illumina_a_single_ended_sequencing"],
     :workflow=>"short_read_sequencing"}},
  {:name=>"Pulldown WGS - Single ended hi seq sequencing",
@@ -119,6 +130,7 @@
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100"},
     :request_types=>
      ["pulldown_wgs", "illumina_a_single_ended_hi_seq_sequencing"],
     :workflow=>"short_read_sequencing"}},
@@ -127,6 +139,7 @@
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100"},
     :request_types=>["pulldown_wgs", "illumina_a_paired_end_sequencing"],
     :workflow=>"short_read_sequencing"}},
  {:name=>"Pulldown WGS - HiSeq Paired end sequencing",
@@ -134,6 +147,7 @@
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100"},
     :request_types=>["pulldown_wgs", "illumina_a_hiseq_paired_end_sequencing"],
     :workflow=>"short_read_sequencing"}},
  {:name=>"Cherrypick for pulldown - Pulldown SC - Single ended sequencing",
@@ -141,6 +155,7 @@
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"},
     :request_types=>
      ["cherrypick_for_pulldown",
       "pulldown_sc",
@@ -152,6 +167,7 @@
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"},
     :request_types=>
      ["cherrypick_for_pulldown",
       "pulldown_sc",
@@ -163,6 +179,7 @@
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"},
     :request_types=>
      ["cherrypick_for_pulldown",
       "pulldown_sc",
@@ -174,6 +191,7 @@
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"},
     :request_types=>
      ["cherrypick_for_pulldown",
       "pulldown_sc",
@@ -184,6 +202,7 @@
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"},
     :request_types=>
      ["cherrypick_for_pulldown",
       "pulldown_sc",
@@ -195,6 +214,7 @@
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"},
     :request_types=>
      ["cherrypick_for_pulldown",
       "pulldown_sc",
@@ -205,6 +225,7 @@
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"},
     :request_types=>
      ["cherrypick_for_pulldown",
       "pulldown_sc",
@@ -216,6 +237,7 @@
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"},
     :request_types=>
      ["cherrypick_for_pulldown",
       "pulldown_sc",
@@ -227,6 +249,7 @@
   :submission_parameters=>
    {:info_differential=>5,
     :request_types=>["pulldown_sc", "illumina_a_single_ended_sequencing"],
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"},
     :workflow=>"short_read_sequencing"}},
  {:name=>"Pulldown SC - Single ended hi seq sequencing",
   :submission_class_name=>"LinearSubmission",
@@ -235,6 +258,7 @@
    {:info_differential=>5,
     :request_types=>
      ["pulldown_sc", "illumina_a_single_ended_hi_seq_sequencing"],
+     :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"},
     :workflow=>"short_read_sequencing"}},
  {:name=>"Multiplexed PacBio",
   :submission_class_name=>"LinearSubmission",
@@ -249,6 +273,7 @@
   :submission_parameters=>
    {:info_differential=>5,
     :request_types=>["pulldown_sc", "illumina_a_paired_end_sequencing"],
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"},
     :workflow=>"short_read_sequencing"}},
  {:name=>"MiSeq for TagQC",
   :submission_class_name=>"LinearSubmission",
@@ -257,18 +282,13 @@
    {:info_differential=>5,
     :request_types=>["qc_miseq_sequencing"],
     :workflow=>"short_read_sequencing"}},
- {:name=>"Pulldown SC - HiSeq Paired end sequencing",
-  :submission_class_name=>"LinearSubmission",
-  :product_catalogue=>"Generic",
-  :submission_parameters=>
-   {:info_differential=>5,
-    :request_types=>["pulldown_sc", "illumina_a_hiseq_paired_end_sequencing"],
-    :workflow=>"short_read_sequencing"}},
+ {:name=>"Pulldown SC - HiSeq Paired end sequencing", :submission_class_name=>"LinearSubmission", :product_catalogue=>"Generic", :submission_parameters=>{:info_differential=>1, :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"}, :request_types=>["pulldown_sc", "hiseq_paired_end_sequencing"], :workflow=>"short_read_sequencing"}},
  {:name=>"Cherrypick for pulldown - Pulldown ISC - Single ended sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"},
     :request_types=>
      ["cherrypick_for_pulldown",
       "pulldown_isc",
@@ -280,6 +300,7 @@
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"},
     :request_types=>
      ["cherrypick_for_pulldown",
       "pulldown_isc",
@@ -291,6 +312,7 @@
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"},
     :request_types=>
      ["cherrypick_for_pulldown",
       "pulldown_isc",
@@ -302,6 +324,7 @@
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"},
     :request_types=>
      ["cherrypick_for_pulldown",
       "pulldown_isc",
@@ -312,6 +335,7 @@
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"},
     :request_types=>
      ["cherrypick_for_pulldown",
       "pulldown_isc",
@@ -323,6 +347,7 @@
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"},
     :request_types=>
      ["cherrypick_for_pulldown",
       "pulldown_isc",
@@ -334,6 +359,7 @@
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"},
     :request_types=>
      ["cherrypick_for_pulldown",
       "pulldown_isc",
@@ -345,6 +371,7 @@
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"},
     :request_types=>
      ["cherrypick_for_pulldown",
       "pulldown_isc",
@@ -355,6 +382,7 @@
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"},
     :request_types=>["pulldown_isc", "illumina_a_single_ended_sequencing"],
     :workflow=>"short_read_sequencing"}},
  {:name=>"Pulldown ISC - Single ended hi seq sequencing",
@@ -370,6 +398,7 @@
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"},
     :request_types=>["pulldown_isc", "illumina_a_paired_end_sequencing"],
     :workflow=>"short_read_sequencing"}},
  {:name=>"Pulldown ISC - HiSeq Paired end sequencing",
@@ -377,6 +406,7 @@
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:info_differential=>5,
+    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"},
     :request_types=>["pulldown_isc", "illumina_a_hiseq_paired_end_sequencing"],
     :workflow=>"short_read_sequencing"}},
  {:name=>"Library creation - Single ended sequencing",

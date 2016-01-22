@@ -7,7 +7,7 @@ module Api
     class << self
 
       def registered_mimetypes
-        @registered_mimetypes
+        @registered_mimetypes||[]
       end
 
       # We can't use the built in provides, as the accepted mimetimes are fixed when the route is set up.
