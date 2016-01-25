@@ -6,24 +6,31 @@
 <%= panel :info, title:'New Order' do %>
 <span class="project-details" style="dislay:none;"></span>
 
-<ul class="sub-panel">
-  <li>
-    <h3>Study</h3>
+<div class="sub-panel row">
+  <h3>Study and Project</h3>
+  <div class="col-md-6">
     <%= form.label :study_id, "Study:" %>
     <%= studies_select(form, @presenter.studies) %>
     <div class='cross-compatible'>
       <%= form.label    :cross_study, 'This is a cross-study pool' %>
       <%= form.check_box :cross_study, :class=>'cross_study form-control' %>
     </div>
-  </li>
+  </div>
+  <div class="project col-md-6">
+    <%= form.label :project_name, "Project Name:" %>
+    <%= projects_select(form, @presenter.user_valid_projects) %>
+    <div class='cross-compatible'>
+      <%= form.label    :cross_project, 'This is a cross-project pool' %>
+      <%= form.check_box :cross_project, :class=>'cross_project form-control' %>
+    </div>
+  </div>
+</div>
 
-
-
-  <li class="assets">
-    <h3>Add Samples</h3>
+<div class="sub-panel row assets">
+  <h3>Add Samples</h3>
   <div class="assets ">
     <div class="yui-navset">
-      <ul class=" nav nav-tabs">
+      <ul class="nav nav-tabs">
         <li class="selected active"><a data-tab-refers="asset_group_selector" data-tab-group="add_samples_sources">From Study asset group</a></li>
         <li><a data-tab-refers="sample_name_selector" data-tab-group="add_samples_sources">From Plate</a></li>
         <li><a data-tab-refers="plate_wells_selector" data-tab-group="add_samples_sources">From Plate and Wells</a></li>
@@ -92,32 +99,17 @@
       </div>
     </div>
   </div>
- </li>
+</div>
 
-  <li class="project">
-    <h3>Project</h3>
-    <%= form.label :project_name, "Project Name:" %>
-    <%= form.text_field :project_name,
-      :class       => 'submission_project_name form-control form-control',
-      :placeholder => "enter the first few characters of the financial project name",
-      :disabled    => true
-    %>
-    <div class='cross-compatible'>
-      <%= form.label    :cross_project, 'This is a cross-project pool' %>
-      <%= form.check_box :cross_project, :class=>'cross_project form-control' %>
-    </div>
-  </li>
-
-  <li>
-    <h3>Comments</h3>
-    <%= form.text_area :comments,
-      :rows        => 5,
-      :placeholder => "Optionally, please add comments for this order here...",
-      :class       => 'submission_comments comments form-control',
-      :disabled    => true
-    %>
-  </li>
-</ul>
+<div class="sub-panel row comments-panel">
+  <h3>Comments</h3>
+  <%= form.text_area :comments,
+    :rows        => 5,
+    :placeholder => "Optionally, please add comments for this order here...",
+    :class       => 'submission_comments comments form-control',
+    :disabled    => true
+  %>
+</div>
 
 
 <div class="lanes-of-sequencing">

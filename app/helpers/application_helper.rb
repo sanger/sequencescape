@@ -64,19 +64,15 @@ module ApplicationHelper
   end
 
   def display_user_guide(display_text, link=nil)
-    if link.nil?
-      content_tag(:div, display_text, :class => "user_guide")
-    else
-      content_tag(:div, link_to(display_text, link), :class => "user_guide")
-   end
+    alert(:warning) do
+      link.present? ? link_to(display_text, link) : display_text
+    end
   end
 
   def display_user_error(display_text, link=nil)
-    unless link.nil?
-      content_tag(:div, link_to(display_text, link), :class => "user_error")
-    else
-      content_tag(:div, display_text, :class => "user_error")
-   end
+    alert(:danger) do
+      link.present? ? link_to(display_text, link) : display_text
+    end
   end
 
   def display_status(status)

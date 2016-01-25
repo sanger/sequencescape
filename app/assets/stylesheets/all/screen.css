@@ -1074,13 +1074,6 @@ div.order_in_submission h2 {
   right : 10px;
   top : 10px;
 }
-.priority_changer {
-  position : relative;
-}
-.priority_changer input {
-  clear : left;
-}
-
 .submission_project_name {
   width: 100%;
 }

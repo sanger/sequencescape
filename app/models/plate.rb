@@ -142,6 +142,15 @@ class Plate < Asset
       Comment.create!(options.merge(:commentable=>plate))
     end
 
+    def create(options)
+      plate.submissions.each {|s| s.add_comment(options[:description],options[:user]) }
+      Comment.create(options.merge(:commentable=>plate))
+    end
+
+    def size(*args)
+      super(*args).length
+    end
+
   end
 
   def comments

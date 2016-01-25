@@ -111,7 +111,11 @@ class User < ActiveRecord::Base
   end
 
   def sorted_valid_project_names_and_ids
-    projects.valid.alphabetical.map{|p| [p.name, p.id] }
+    valid_projects.map{|p| [p.name, p.id] }
+  end
+
+  def valid_projects
+    projects.valid.alphabetical
   end
 
 

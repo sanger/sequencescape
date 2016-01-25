@@ -222,3 +222,6 @@ class PlatePurpose < Purpose
 
 end
 
+# Load the subclasses now
+require 'plate_purpose/subclasses'
+

@@ -286,9 +286,10 @@
     // Remove the disable from the form inputs
     // but leave the save button disabled
     newOrder.find('input, select, textarea').
-      css('opacity', 1).
       not('.save-order').
-      removeAttr('disabled');
+      css('opacity', 1).
+      removeAttr('disabled').
+      prop('disabled',false);
 
 
     // Enable the cross study/project buttons if appropriate
@@ -339,7 +340,10 @@
     }
 
     $('#blank-order').before(newOrder);
+
     newOrder.slideDown();
+
+    newOrder.find('select').select2({theme: "bootstrap"});
 
   };
 
@@ -444,13 +448,6 @@
     if ($('.order.completed').length) $('#start-submission').removeAttr('disabled');
     // Uncomment for multiple orders
     // if ($('.order.completed').length) $('#add-order, #start-submission').removeAttr('disabled');
-
-
-    $('.submission_project_name').autocomplete({
-      source:    SCAPE.user_project_names,
-      minLength: 3,
-      select:    validateOrder
-    });
 
     // NB.  There seems to being some odd behaviour related to the
     // autocompleter select callback firing.  As a kludgey fix validation is

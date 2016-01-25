@@ -67,6 +67,7 @@ group :default do
   gem 'bootstrap-sass'
   gem 'sass-rails'
   gem 'coffee-rails'
+  gem "select2-rails"
   # gem 'font-awesome-sass'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes

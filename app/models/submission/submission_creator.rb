@@ -149,7 +149,6 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
     raise InvalidInputException, "No Samples found" if input_methods.empty?
     raise InvalidInputException, "Samples cannot be added from multiple sources at the same time." unless input_methods.size == 1
 
-
     return case input_methods.first
       when :asset_group_id    then { :asset_group => find_asset_group }
       when :sample_names_text then
@@ -282,7 +281,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   # Returns an array of all the names of active projects associated with the
   # current user.
   def user_valid_projects
-    @user_active_projects ||= @user.sorted_valid_project_names_and_ids.map(&:first)
+    @user_active_projects ||= @user.valid_projects
   end
 
   def url(view)

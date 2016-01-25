@@ -18,10 +18,19 @@ module IlluminaHtp::PlatePurposes
       'Lib Norm',
       'Lib Norm 2',
       'Lib Norm 2 Pool'
+    ],
+    [
+      'PF Cherrypicked',
+      'PF Shear',
+      'PF Post Shear',
+      'PF Post Shear XP',
+      'PF Lib',
+      'PF Lib XP',
+      'PF Lib XP2',
+      'PF EM Pool',
+      'PF Lib Norm'
     ]
   ]
-
-  #PF_PLATE_PURPOSE_FLOW = [ 'PF Cherrypicked', 'PF Shear', 'PF Post Shear', 'PF Post Shear XP', 'PF Lib XP', 'PF Lib XP2', 'PF EM Pool ', 'PF Lib Norm']
 
   TUBE_PURPOSE_FLOWS = [
     [
@@ -37,11 +46,15 @@ module IlluminaHtp::PlatePurposes
     ],
     [
       'Cap Lib Pool Norm'
+    ],
+    [
+      'PF MiSeq Stock',
+      'PF MiSeq QC'
     ]
   ]
 
   BRANCHES = [
-    [ 'PF Cherrypicked', 'PF Shear', 'PF Post Shear', 'PF Post Shear XP', 'PF AL Libs', 'PF Lib XP', 'PF Lib XP2', 'PF EM Pool ', 'PF Lib Norm'],
+    [ 'PF Cherrypicked', 'PF Shear', 'PF Post Shear', 'PF Post Shear XP', 'PF Lib', 'PF Lib XP', 'PF Lib XP2', 'PF EM Pool', 'PF Lib Norm'],
     [ 'PF Lib XP2', 'PF MiSeq Stock', 'PF MiSeq QC'],
     [ 'Cherrypicked', 'Shear', 'Post Shear', 'AL Libs', 'Lib PCR', 'Lib PCR-XP','Lib Pool','Lib Pool Norm'],
     [ 'Lib PCR-XP','Lib Pool Pippin', 'Lib Pool Conc', 'Lib Pool SS', 'Lib Pool SS-XP', 'Lib Pool SS-XP-Norm' ],
@@ -110,7 +123,7 @@ module IlluminaHtp::PlatePurposes
     'PF Shear'               => IlluminaHtp::CovarisPlatePurpose,
     'PF Post Shear'          => PlatePurpose,
     'PF Post Shear XP'       => PlatePurpose,
-    'PF AL Libs'             => PlatePurpose,
+    'PF Lib'                 => PlatePurpose,
     'PF Lib XP'              => PlatePurpose,
     'PF Lib XP2'             => PlatePurpose,
     'PF EM Pool'             => PlatePurpose,
@@ -213,8 +226,8 @@ module IlluminaHtp::PlatePurposes
 
     def create_branch(branch_o)
       branch = branch_o.clone
-      branch.inject(Purpose.find_by_name(branch.shift)) do |parent, child|
-        Purpose.find_by_name(child).tap do |child_purpose|
+      branch.inject(Purpose.find_by_name!(branch.shift)) do |parent, child|
+        Purpose.find_by_name!(child).tap do |child_purpose|
           parent.child_relationships.create!(:child => child_purpose, :transfer_request_type => request_type_between(parent, child_purpose))
         end
       end
@@ -231,7 +244,7 @@ module IlluminaHtp::PlatePurposes
     end
 
     def purpose_for(name)
-      self::PLATE_PURPOSE_TYPE[name]
+      self::PLATE_PURPOSE_TYPE[name] || raise("NO class configured for #{name}")
     end
     private :purpose_for
 
@@ -252,12 +265,12 @@ module IlluminaHtp::PlatePurposes
     private :library_creation_freezer
 
     def create_plate_purpose(plate_purpose_name, options = {})
-      puts plate_purpose_name
       purpose_for(plate_purpose_name).create!(options.reverse_merge(
         :name                  => plate_purpose_name,
         :cherrypickable_target => false,
         :cherrypick_direction  => 'column',
-        :can_be_considered_a_stock_plate => self::OUTPUT_PLATE_PURPOSES.include?(plate_purpose_name)
+        :can_be_considered_a_stock_plate => self::OUTPUT_PLATE_PURPOSES.include?(plate_purpose_name),
+        :asset_shape => AssetShape.default
       )).tap do |plate_purpose|
         plate_purpose.barcode_printer_type = BarcodePrinterType.find_by_type('BarcodePrinterType96Plate')||plate_purpose.barcode_printer_type
       end

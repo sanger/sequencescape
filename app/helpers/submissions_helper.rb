@@ -65,6 +65,24 @@ module SubmissionsHelper
     )
   end
 
+  def projects_select(form, projects)
+    prompt = case projects.count
+             when 0 then "There are no valid projects available"
+             else "Please select a Project for this Submission..."
+             end
+# form.text_field :project_name,
+#       :class       => 'submission_project_name form-control form-control',
+#       :placeholder => "enter the first few characters of the financial project name",
+#       :disabled    => true
+
+    form.collection_select(
+      :project_name,
+      projects, :name, :name,
+      { :prompt => prompt },
+      { :disabled => true, :class => 'submission_project_name form-control' }
+    )
+  end
+
   def asset_group_select(asset_groups)
     prompt = case asset_groups.size
              when 0 then "There are no Asset Groups associcated with this Study"
@@ -96,13 +114,13 @@ module SubmissionsHelper
     when 'processing' then
       display_user_guide("Your submission is currently being processed.  This should take no longer than five minutes.")
     when 'failed' then
-      display_user_error(raw("<h2>Your submission has failed:</h2><p> #{h((submission.message||'No failure reason recorded').lines.first)} </p>"))
+      display_user_error(raw("<h3>Your submission has failed:</h3><p> #{h((submission.message||'No failure reason recorded').lines.first)} </p>"))
     when 'ready'
-      content_tag(:p, raw('Your submission has been <strong>processed</strong>.'))
+      alert(:success) { raw('Your submission has been <strong>processed</strong>.') }
     when 'cancelled'
-      content_tag(:p, raw('Your submission has been <strong>cancelled</strong>.'))
+      alert(:info) { raw('Your submission has been <strong>cancelled</strong>.') }
     else
-      content_tag(:p, 'Your submission is in an unknown state (contact support).')
+      alert(:danger) { 'Your submission is in an unknown state (contact support).' }
     end
   end
 

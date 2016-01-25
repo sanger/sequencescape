@@ -29,8 +29,8 @@ class Project < ActiveRecord::Base
   aasm_column :state
   aasm_initial_state :pending
   aasm_state :pending
-  aasm_state :active, :enter => :mark_active
-  aasm_state :inactive, :enter => :mark_deactive
+  aasm_state :active
+  aasm_state :inactive
 
   aasm_event :reset do
     transitions :to => :pending, :from => [:inactive, :active]

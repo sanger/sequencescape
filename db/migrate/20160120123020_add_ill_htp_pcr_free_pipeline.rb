@@ -13,6 +13,9 @@ class AddIllHtpPcrFreePipeline < ActiveRecord::Migration
 
       plate_flow = [stock_name].concat(branches.flatten).uniq
 
+      tube_flow = ['PF MiSeq Stock','PF MiSeq QC']
+
+      IlluminaHtp::PlatePurposes.create_tube_flow(tube_flow)
       IlluminaHtp::PlatePurposes.create_plate_flow(plate_flow)
       branches.each do |branch|
         IlluminaHtp::PlatePurposes.create_branch(branch)

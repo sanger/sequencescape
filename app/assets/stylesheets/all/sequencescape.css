@@ -406,7 +406,7 @@ color: #666;
 padding-left: 12px;
 }
 
-.help, .priority_changer {
+.help {
   background: #FBFFC7;
   padding: 5px;
   -moz-border-radius: 3px;
@@ -1003,11 +1003,10 @@ body.yui-skin-sam ul.ui-menu {
 }
 
 ul#orders {
-  max-width: 950px;
   color:#333129;
   padding: 0;
   clear: both;
-  margin: 15px 5px;
+  margin: 15px 0;
   list-style: none outside none;
   -moz-transition:    all 0.3s ease-in-out 0s;
   -webkit-transition: all 0.3s ease-in-out 0s;
@@ -1017,7 +1016,6 @@ ul#orders {
 
 /* This overly verbose rule is needed to override formtastic styling  */
 ul#orders li.order, ul#orders li.buttons {
-  padding: 15px;
   margin: 15px 0;
   color: #00498C;
   background: #fff;
@@ -1114,14 +1112,6 @@ ul#orders ul.sub-panel li {
   padding: 15px;
   list-style: none outside none;
   position: relative;
-}
-
-#orders ul.sub-panel .assets {
-  //height: 120px;
-}
-
-#orders li.completed h3, #orders li.completed textarea, #orders li.completed input:not(.delete-order) {
-  background: #EBFFEB;
 }
 
 form.comments-box #comments { margin-left: 2em; margin-right: 0px; display: inline; width: 65ex;}
@@ -1455,13 +1445,8 @@ ul.nav.nav-tabs li {
   margin-bottom: -1px;
 }
 
-ul#orders ul.sub-panel li {
-  padding: inherit;
-  margin: inherit;
-  border-color: inherit;
-  border-style: inherit;
-  border-radius: inherit;
-  border-width: inherit;
+ul#orders div.sub-panel li {
+  list-style-type: none;
   margin-bottom: -1px;
 }
 

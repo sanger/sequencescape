@@ -30,12 +30,13 @@
     :request_types=>
      ["cherrypick_for_pulldown",
       "pulldown_wgs",
-      "illumina_a_single_ended_sequencing"],
+      "illumina_a_single_endMuled_sequencing"],
     :workflow=>"short_read_sequencing"}},
  {:name=>
    "Illumina-A - Cherrypick for pulldown - Pulldown WGS - Single ended sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100"},
@@ -60,6 +61,7 @@
    "Illumina-A - Cherrypick for pulldown - Pulldown WGS - Single ended hi seq sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100"},
@@ -84,6 +86,7 @@
    "Illumina-A - Cherrypick for pulldown - Pulldown WGS - Paired end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100"},
@@ -109,6 +112,7 @@
    "Illumina-A - Cherrypick for pulldown - Pulldown WGS - HiSeq Paired end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100"},
@@ -165,6 +169,7 @@
    "Illumina-A - Cherrypick for pulldown - Pulldown SC - Single ended sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"},
@@ -189,6 +194,7 @@
    "Illumina-A - Cherrypick for pulldown - Pulldown SC - Single ended hi seq sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"},
@@ -212,6 +218,7 @@
    "Illumina-A - Cherrypick for pulldown - Pulldown SC - Paired end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"},
@@ -235,6 +242,7 @@
    "Illumina-A - Cherrypick for pulldown - Pulldown SC - HiSeq Paired end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"},
@@ -298,6 +306,7 @@
    "Illumina-A - Cherrypick for pulldown - Pulldown ISC - Single ended sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"},
@@ -322,6 +331,7 @@
    "Illumina-A - Cherrypick for pulldown - Pulldown ISC - Single ended hi seq sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"},
@@ -345,6 +355,7 @@
    "Illumina-A - Cherrypick for pulldown - Pulldown ISC - Paired end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"},
@@ -369,6 +380,7 @@
    "Illumina-A - Cherrypick for pulldown - Pulldown ISC - HiSeq Paired end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100", "library_type"=>"Agilent Pulldown"},
@@ -855,6 +867,7 @@
  {:name=>"Illumina-B - Multiplexed Library Creation - Single ended sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :superceded_at=>"Mon Oct 05 15:58:52 UTC 2015",
   :submission_parameters=>
    {:info_differential=>5,
@@ -866,6 +879,7 @@
    "Illumina-B - Multiplexed Library Creation - Single ended hi seq sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :superceded_at=>"Mon Oct 05 15:58:52 UTC 2015",
   :submission_parameters=>
    {:info_differential=>5,
@@ -876,6 +890,7 @@
  {:name=>"Illumina-B - Multiplexed Library Creation - Paired end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :superceded_at=>"Mon Oct 05 15:58:52 UTC 2015",
   :submission_parameters=>
    {:info_differential=>5,
@@ -887,6 +902,7 @@
    "Illumina-B - Multiplexed Library Creation - HiSeq 2500 Paired end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :superceded_at=>"Mon Oct 05 15:58:52 UTC 2015",
   :submission_parameters=>
    {:info_differential=>5,
@@ -898,6 +914,7 @@
    "Illumina-B - Multiplexed Library Creation - HiSeq 2500 Single end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :superceded_at=>"Mon Oct 05 15:58:52 UTC 2015",
   :submission_parameters=>
    {:info_differential=>5,
@@ -909,6 +926,7 @@
    "Illumina-B - Multiplexed Library Creation - HiSeq Paired end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :superceded_at=>"Mon Oct 05 15:58:52 UTC 2015",
   :submission_parameters=>
    {:info_differential=>5,
@@ -920,6 +938,7 @@
    "Illumina-B - Multiplexed Library Creation - HiSeq V4 Paired end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :superceded_at=>"Mon Oct 05 15:58:52 UTC 2015",
   :submission_parameters=>
    {:info_differential=>5,
@@ -931,6 +950,7 @@
    "Illumina-B - Multiplexed Library Creation - HiSeq X Paired end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :superceded_at=>"Mon Oct 05 15:58:52 UTC 2015",
   :submission_parameters=>
    {:info_differential=>5,
@@ -941,6 +961,7 @@
  {:name=>"Illumina-A - Single ended sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_types=>["illumina_a_single_ended_sequencing"],
@@ -948,6 +969,7 @@
  {:name=>"Illumina-A - Single ended hi seq sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_types=>["illumina_a_single_ended_hi_seq_sequencing"],
@@ -955,6 +977,7 @@
  {:name=>"Illumina-A - Paired end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_types=>["illumina_a_paired_end_sequencing"],
@@ -962,6 +985,7 @@
  {:name=>"Illumina-A - HiSeq 2500 Paired end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_types=>["illumina_a_hiseq_2500_paired_end_sequencing"],
@@ -969,6 +993,7 @@
  {:name=>"Illumina-A - HiSeq 2500 Single end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_types=>["illumina_a_hiseq_2500_single_end_sequencing"],
@@ -976,6 +1001,7 @@
  {:name=>"Illumina-A - HiSeq Paired end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_types=>["illumina_a_hiseq_paired_end_sequencing"],
@@ -983,6 +1009,7 @@
  {:name=>"Illumina-A - HiSeq V4 Paired end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_types=>["illumina_a_hiseq_v4_paired_end_sequencing"],
@@ -990,6 +1017,7 @@
  {:name=>"Illumina-A - HiSeq X Paired end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_types=>["illumina_a_hiseq_x_paired_end_sequencing"],
@@ -1115,6 +1143,7 @@
  {:name=>"Illumina-B - Multiplexed WGS - Single ended sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_types=>["illumina_b_std", "illumina_b_single_ended_sequencing"],
@@ -1133,6 +1162,7 @@
  {:name=>"Illumina-B - Multiplexed WGS - Single ended hi seq sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_types=>
@@ -1151,6 +1181,7 @@
  {:name=>"Illumina-B - Multiplexed WGS - Paired end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_types=>["illumina_b_std", "illumina_b_paired_end_sequencing"],
@@ -1169,6 +1200,7 @@
  {:name=>"Illumina-B - Multiplexed WGS - HiSeq 2500 Paired end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_types=>
@@ -1188,6 +1220,7 @@
  {:name=>"Illumina-B - Multiplexed WGS - HiSeq 2500 Single end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_types=>
@@ -1207,6 +1240,7 @@
  {:name=>"Illumina-B - Multiplexed WGS - HiSeq Paired end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_types=>
@@ -1783,6 +1817,7 @@
  {:name=>"Illumina-A - Cherrypicked - HTP ISC - Single ended sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_types=>
@@ -1795,6 +1830,7 @@
  {:name=>"Illumina-A - HTP ISC - Single ended sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_types=>
@@ -1807,6 +1843,7 @@
    "Illumina-A - Cherrypicked - HTP ISC - Single ended hi seq sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_types=>
@@ -1819,6 +1856,7 @@
  {:name=>"Illumina-A - HTP ISC - Single ended hi seq sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_types=>
@@ -1830,6 +1868,7 @@
  {:name=>"Illumina-A - Cherrypicked - HTP ISC - Paired end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_types=>
@@ -1842,6 +1881,7 @@
  {:name=>"Illumina-A - HTP ISC - Paired end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_types=>
@@ -1854,6 +1894,7 @@
    "Illumina-A - Cherrypicked - HTP ISC - HiSeq 2500 Paired end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_types=>
@@ -1866,6 +1907,7 @@
  {:name=>"Illumina-A - HTP ISC - HiSeq 2500 Paired end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_types=>
@@ -1878,6 +1920,7 @@
    "Illumina-A - Cherrypicked - HTP ISC - HiSeq 2500 Single end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_types=>
@@ -1890,6 +1933,7 @@
  {:name=>"Illumina-A - HTP ISC - HiSeq 2500 Single end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_types=>
@@ -1901,6 +1945,7 @@
  {:name=>"Illumina-A - Cherrypicked - HTP ISC - HiSeq Paired end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_types=>
@@ -1913,6 +1958,7 @@
  {:name=>"Illumina-A - HTP ISC - HiSeq Paired end sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_catalogue=>"Generic",
+  :superceeded_by_id => -2,
   :submission_parameters=>
    {:info_differential=>5,
     :request_types=>
@@ -1924,24 +1970,30 @@
  {:name=>"Illumina-A - Pulldown SC - HiSeq v4 sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_line=>"Illumina-A",
+  :superceeded_by_id => -2,
   :product_catalogue=>"Generic",
   :submission_parameters=>
+  :superceeded_by_id => -2,
    {:request_types=>
      ["illumina_a_pulldown_sc", "illumina_a_hiseq_v4_paired_end_sequencing"],
     :workflow=>"short_read_sequencing"}},
  {:name=>"Illumina-A - Pulldown ISC - HiSeq v4 sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_line=>"Illumina-A",
+  :superceeded_by_id => -2,
   :product_catalogue=>"Generic",
   :submission_parameters=>
+  :superceeded_by_id => -2,
    {:request_types=>
      ["illumina_a_pulldown_isc", "illumina_a_hiseq_v4_paired_end_sequencing"],
     :workflow=>"short_read_sequencing"}},
  {:name=>"Illumina-A - Pooled - HiSeq v4 sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_line=>"Illumina-A",
+  :superceeded_by_id => -2,
   :product_catalogue=>"Generic",
   :submission_parameters=>
+  :superceeded_by_id => -2,
    {:request_types=>
      ["illumina_a_shared",
       "illumina_a_pool",
@@ -1950,8 +2002,10 @@
  {:name=>"Illumina-A - HTP ISC - HiSeq v4 sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_line=>"Illumina-A",
+  :superceeded_by_id => -2,
   :product_catalogue=>"Generic",
   :submission_parameters=>
+  :superceeded_by_id => -2,
    {:request_types=>
      ["illumina_a_isc", "illumina_a_hiseq_v4_paired_end_sequencing"],
     :workflow=>"short_read_sequencing"}},
@@ -1960,6 +2014,7 @@
   :product_line=>"Illumina-A",
   :product_catalogue=>"Generic",
   :submission_parameters=>
+  :superceeded_by_id => -2,
    {:request_types=>
      ["illumina_a_re_isc", "illumina_a_hiseq_paired_end_sequencing"],
     :workflow=>"short_read_sequencing",
@@ -1969,6 +2024,7 @@
   :product_line=>"Illumina-A",
   :product_catalogue=>"Generic",
   :submission_parameters=>
+  :superceeded_by_id => -2,
    {:request_types=>
      ["illumina_a_re_isc", "illumina_a_single_ended_hi_seq_sequencing"],
     :workflow=>"short_read_sequencing",
@@ -1978,6 +2034,7 @@
   :product_line=>"Illumina-A",
   :product_catalogue=>"Generic",
   :submission_parameters=>
+  :superceeded_by_id => -2,
    {:request_types=>
      ["illumina_a_re_isc", "illumina_a_hiseq_2500_paired_end_sequencing"],
     :workflow=>"short_read_sequencing",
@@ -1987,6 +2044,7 @@
   :product_line=>"Illumina-A",
   :product_catalogue=>"Generic",
   :submission_parameters=>
+  :superceeded_by_id => -2,
    {:request_types=>
      ["illumina_a_re_isc", "illumina_a_hiseq_2500_single_end_sequencing"],
     :workflow=>"short_read_sequencing",
@@ -1996,6 +2054,7 @@
   :product_line=>"Illumina-A",
   :product_catalogue=>"Generic",
   :submission_parameters=>
+  :superceeded_by_id => -2,
    {:request_types=>["illumina_a_re_isc", "illumina_a_miseq_sequencing"],
     :workflow=>"short_read_sequencing",
     :order_role=>"ReISC"}},
@@ -2004,6 +2063,7 @@
   :product_line=>"Illumina-A",
   :product_catalogue=>"Generic",
   :submission_parameters=>
+  :superceeded_by_id => -2,
    {:request_types=>
      ["illumina_a_re_isc", "illumina_a_hiseq_v4_paired_end_sequencing"],
     :workflow=>"short_read_sequencing",
@@ -2013,6 +2073,7 @@
   :product_line=>"Illumina-A",
   :product_catalogue=>"Generic",
   :submission_parameters=>
+  :superceeded_by_id => -2,
    {:request_types=>
      ["illumina_a_re_isc", "illumina_a_hiseq_x_paired_end_sequencing"],
     :workflow=>"short_read_sequencing",
@@ -2020,14 +2081,17 @@
  {:name=>"Illumina-A - Pulldown WGS - HiSeq v4 sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_line=>"Illumina-A",
+  :superceeded_by_id => -2,
   :product_catalogue=>"Generic",
   :submission_parameters=>
+  :superceeded_by_id => -2,
    {:request_types=>
      ["illumina_a_pulldown_wgs", "illumina_a_hiseq_v4_paired_end_sequencing"],
     :workflow=>"short_read_sequencing"}},
  {:name=>"Illumina-B - Multiplexed WGS - HiSeq v4 sequencing",
   :submission_class_name=>"LinearSubmission",
   :product_line=>"Illumina-B",
+  :superceeded_by_id => -2,
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:request_types=>
