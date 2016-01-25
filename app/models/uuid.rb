@@ -29,7 +29,7 @@ class Uuid < ActiveRecord::Base
       end
     else
       def ensure_uuid_created
-        self.build_uuid_object(:resource => self) || raise(ActiveRecord::RecordInvalid) # = Uuid.create!(:resource => self)
+        self.create_uuid_object!(:resource => self) || raise(ActiveRecord::RecordInvalid) # = Uuid.create!(:resource => self)
       end
     end
     private :ensure_uuid_created
