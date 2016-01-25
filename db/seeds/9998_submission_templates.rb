@@ -30,7 +30,7 @@
     :request_types=>
      ["cherrypick_for_pulldown",
       "pulldown_wgs",
-      "illumina_a_single_endMuled_sequencing"],
+      "illumina_a_single_ended_sequencing"],
     :workflow=>"short_read_sequencing"}},
  {:name=>
    "Illumina-A - Cherrypick for pulldown - Pulldown WGS - Single ended sequencing",
