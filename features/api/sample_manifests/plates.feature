@@ -23,12 +23,12 @@ Feature: Access sample manifests through the API
     And the plate barcode webservice returns "1234567"
 
   @read
-  Scenario: Reading the JSON for a UUID
+  Scenario Outline: Reading the JSON for a UUID
     Given the sample manifest exists with ID 1
     And the UUID for the sample manifest with ID 1 is "00000000-1111-2222-3333-444444444444"
     And the sample manifest with ID 1 is owned by study "Testing sample manifests"
     And the sample manifest with ID 1 is supplied by "John's Genes"
-    And the sample manifest with ID 1 is for 1 plate
+    And the sample manifest with ID 1 is for 1 <plate_type_created_in_manifest>
 
     Given the sample manifest with ID 1 has been processed
     And all samples have a Sanger sample ID based on "WTCCC"
@@ -159,14 +159,19 @@ Feature: Access sample manifests through the API
         }
       }
       """
+    Examples:
+      | plate_type_created_in_manifest |
+      | plate                          |
+      | preextracted plate             |
+
 
   @update
-  Scenario: Updating a manifest
+  Scenario Outline: Updating a manifest
     Given the sample manifest exists with ID 1
       And the UUID for the sample manifest with ID 1 is "00000000-1111-2222-3333-444444444444"
       And the sample manifest with ID 1 is owned by study "Testing sample manifests"
       And the sample manifest with ID 1 is supplied by "John's Genes"
-      And the sample manifest with ID 1 is for 1 plate
+      And the sample manifest with ID 1 is for 1 <plate_type_created_in_manifest>
 
     Given the sample manifest with ID 1 has been processed
       And all samples have a Sanger sample ID based on "WTCCC"
@@ -336,6 +341,12 @@ Feature: Access sample manifests through the API
         }
       }
       """
+    Examples:
+    | plate_type_created_in_manifest |
+    | plate                          |
+    | preextracted plate             |
+
+
 
   @create
   Scenario: Creating a plate sample manifest through a study

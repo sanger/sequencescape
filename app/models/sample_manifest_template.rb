@@ -49,6 +49,13 @@ class SampleManifestTemplate < ActiveRecord::Base
         :cell_map => {:study=>[4, 1], :supplier=>[5, 1], :number_of_plates=>[6, 1]}
        )
 
+      SampleManifestTemplate.create!(
+        :name=> 'Pre-extracted plate',
+        :asset_type => 'pre_extracted_plate',
+        :path => '/data/base_manifest.xls',
+        :cell_map => map
+       )
+
       unless RAILS_ENV == "production"
         SampleManifestTemplate.create!(
           :name => "test layout",
