@@ -48,7 +48,7 @@ class SampleManifestTest < ActiveSupport::TestCase
             @initial_wells    = Well.count
             @initial_in_study = @study.samples.count
 
-            @manifest = create :sample_manifest, :study => @study, :count => count, :asset_type=>'pre_extracted_plate'
+            @manifest = Factory :sample_manifest, :study => @study, :count => count, :asset_type=>'pre_extracted_plate'
             @manifest.generate
           end
 
