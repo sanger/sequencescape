@@ -1972,8 +1972,8 @@
   :product_line=>"Illumina-A",
   :superceeded_by_id => -2,
   :product_catalogue=>"Generic",
-  :submission_parameters=>
   :superceeded_by_id => -2,
+  :submission_parameters=>
    {:request_types=>
      ["illumina_a_pulldown_sc", "illumina_a_hiseq_v4_paired_end_sequencing"],
     :workflow=>"short_read_sequencing"}},
@@ -1982,8 +1982,8 @@
   :product_line=>"Illumina-A",
   :superceeded_by_id => -2,
   :product_catalogue=>"Generic",
-  :submission_parameters=>
   :superceeded_by_id => -2,
+  :submission_parameters=>
    {:request_types=>
      ["illumina_a_pulldown_isc", "illumina_a_hiseq_v4_paired_end_sequencing"],
     :workflow=>"short_read_sequencing"}},
@@ -1992,8 +1992,8 @@
   :product_line=>"Illumina-A",
   :superceeded_by_id => -2,
   :product_catalogue=>"Generic",
-  :submission_parameters=>
   :superceeded_by_id => -2,
+  :submission_parameters=>
    {:request_types=>
      ["illumina_a_shared",
       "illumina_a_pool",
@@ -2004,8 +2004,8 @@
   :product_line=>"Illumina-A",
   :superceeded_by_id => -2,
   :product_catalogue=>"Generic",
-  :submission_parameters=>
   :superceeded_by_id => -2,
+  :submission_parameters=>
    {:request_types=>
      ["illumina_a_isc", "illumina_a_hiseq_v4_paired_end_sequencing"],
     :workflow=>"short_read_sequencing"}},
@@ -2013,8 +2013,8 @@
   :submission_class_name=>"LinearSubmission",
   :product_line=>"Illumina-A",
   :product_catalogue=>"Generic",
-  :submission_parameters=>
   :superceeded_by_id => -2,
+  :submission_parameters=>
    {:request_types=>
      ["illumina_a_re_isc", "illumina_a_hiseq_paired_end_sequencing"],
     :workflow=>"short_read_sequencing",
@@ -2023,8 +2023,8 @@
   :submission_class_name=>"LinearSubmission",
   :product_line=>"Illumina-A",
   :product_catalogue=>"Generic",
-  :submission_parameters=>
   :superceeded_by_id => -2,
+  :submission_parameters=>
    {:request_types=>
      ["illumina_a_re_isc", "illumina_a_single_ended_hi_seq_sequencing"],
     :workflow=>"short_read_sequencing",
@@ -2033,8 +2033,8 @@
   :submission_class_name=>"LinearSubmission",
   :product_line=>"Illumina-A",
   :product_catalogue=>"Generic",
-  :submission_parameters=>
   :superceeded_by_id => -2,
+  :submission_parameters=>
    {:request_types=>
      ["illumina_a_re_isc", "illumina_a_hiseq_2500_paired_end_sequencing"],
     :workflow=>"short_read_sequencing",
@@ -2043,8 +2043,8 @@
   :submission_class_name=>"LinearSubmission",
   :product_line=>"Illumina-A",
   :product_catalogue=>"Generic",
-  :submission_parameters=>
   :superceeded_by_id => -2,
+  :submission_parameters=>
    {:request_types=>
      ["illumina_a_re_isc", "illumina_a_hiseq_2500_single_end_sequencing"],
     :workflow=>"short_read_sequencing",
@@ -2053,8 +2053,8 @@
   :submission_class_name=>"LinearSubmission",
   :product_line=>"Illumina-A",
   :product_catalogue=>"Generic",
-  :submission_parameters=>
   :superceeded_by_id => -2,
+  :submission_parameters=>
    {:request_types=>["illumina_a_re_isc", "illumina_a_miseq_sequencing"],
     :workflow=>"short_read_sequencing",
     :order_role=>"ReISC"}},
@@ -2062,8 +2062,8 @@
   :submission_class_name=>"LinearSubmission",
   :product_line=>"Illumina-A",
   :product_catalogue=>"Generic",
-  :submission_parameters=>
   :superceeded_by_id => -2,
+  :submission_parameters=>
    {:request_types=>
      ["illumina_a_re_isc", "illumina_a_hiseq_v4_paired_end_sequencing"],
     :workflow=>"short_read_sequencing",
@@ -2072,8 +2072,8 @@
   :submission_class_name=>"LinearSubmission",
   :product_line=>"Illumina-A",
   :product_catalogue=>"Generic",
-  :submission_parameters=>
   :superceeded_by_id => -2,
+  :submission_parameters=>
    {:request_types=>
      ["illumina_a_re_isc", "illumina_a_hiseq_x_paired_end_sequencing"],
     :workflow=>"short_read_sequencing",
@@ -2083,8 +2083,8 @@
   :product_line=>"Illumina-A",
   :superceeded_by_id => -2,
   :product_catalogue=>"Generic",
-  :submission_parameters=>
   :superceeded_by_id => -2,
+  :submission_parameters=>
    {:request_types=>
      ["illumina_a_pulldown_wgs", "illumina_a_hiseq_v4_paired_end_sequencing"],
     :workflow=>"short_read_sequencing"}},
