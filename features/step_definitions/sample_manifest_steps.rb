@@ -221,6 +221,11 @@ Given /^the sample manifest with ID (\d+) is for (\d+) plates?$/ do |id, count|
   manifest.update_attributes!(:asset_type => 'plate', :count => count.to_i)
 end
 
+Given /^the sample manifest with ID (\d+) is for (\d+) preextracted plates?$/ do |id, count|
+  manifest = SampleManifest.find(id)
+  manifest.update_attributes!(:asset_type => 'pre_extracted_plate', :count => count.to_i)
+end
+
 Given /^the sample manifest with ID (\d+) is for (\d+) libraries?$/ do |id, count|
   manifest = SampleManifest.find(id)
   manifest.update_attributes!(:asset_type => 'multiplexed_library', :count => count.to_i)

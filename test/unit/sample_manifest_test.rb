@@ -39,6 +39,31 @@ class SampleManifestTest < ActiveSupport::TestCase
       end
     end
 
+    context 'for a pre-extracted plate' do
+      [1,2].each do |count|
+        context "#{count} plate(s)" do
+          setup do
+            @initial_samples  = Sample.count
+            @initial_plates   = Plate.count
+            @initial_wells    = Well.count
+            @initial_in_study = @study.samples.count
+
+            @manifest = Factory :sample_manifest, :study => @study, :count => count, :asset_type=>'pre_extracted_plate'
+            @manifest.generate
+          end
+
+          should "create #{count} plate(s) and #{count * 96} wells and samples in the right study" do
+            assert_equal (count * 96), Sample.count - @initial_samples
+            assert_equal (count * 1 ), Plate.count - @initial_plates
+            assert_equal (count * 96), Well.count  - @initial_wells
+            assert_equal (count * 96), @study.samples.count - @initial_in_study
+          end
+
+        end
+      end
+    end
+
+
     context 'for a library' do
       [3,4].each do |count|
         context "#{count} plate(s)" do

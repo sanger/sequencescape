@@ -7,7 +7,8 @@ module Sdb::SampleManifestsHelper
     {
       '1dtube'              => 'Tubes required',
       'plate'               => 'Plates required',
-      'multiplexed_library' => 'Number of samples in library'
+      'multiplexed_library' => 'Number of samples in library',
+      'pre_extracted_plate' => 'Pre-extracted plates required'
     }
   end
 
