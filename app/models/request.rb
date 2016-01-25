@@ -51,7 +51,7 @@ class Request < ActiveRecord::Base
     }
   }
 
-	scope :for_pooling_of, ->(plate) {
+  scope :for_pooling_of, ->(plate) {
     submission_ids = plate.all_submission_ids
     joins =
       if plate.stock_plate?

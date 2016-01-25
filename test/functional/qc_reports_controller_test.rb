@@ -29,8 +29,8 @@ class QcReportsControllerTest < ActionController::TestCase
       setup do
         get :index, :study_id => @study.id
       end
-      should_respond_with :success
-      should_render_template :index
+      should respond_with :success
+      should render_template :index
     end
 
     context "#create" do
@@ -38,9 +38,9 @@ class QcReportsControllerTest < ActionController::TestCase
         @qc_report_count = QcReport.count
         post :create, :qc_report => { :study_id => @study.id, :product_id => @product.id }
       end
-      should_respond_with :redirect
-      should_set_the_flash_to('Your report has been requested and will be presented on this page when complete.')
-      should_redirect_to('show') { "/qc_reports/#{QcReport.last.report_identifier}" }
+      should respond_with :redirect
+      should set_the_flash.to('Your report has been requested and will be presented on this page when complete.')
+      should redirect_to('show') { "/qc_reports/#{QcReport.last.report_identifier}" }
 
       should 'create a qc report for the study and product' do
         assert_equal 1, QcReport.count - @qc_report_count
@@ -53,9 +53,9 @@ class QcReportsControllerTest < ActionController::TestCase
       setup do
         post :create, :qc_report => { :study_id => @study.id }
       end
-      should_respond_with :redirect
-      should_redirect_to('index') { "/" }
-      should_set_the_flash_to('You must select a product')
+      should respond_with :redirect
+      should redirect_to('index') { "/" }
+      should set_the_flash.to('You must select a product')
     end
   end
 end
