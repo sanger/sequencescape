@@ -15,16 +15,8 @@ class AddRequestTypeForPcrFreeXten < ActiveRecord::Migration
         :request_purpose    => RequestPurpose.find_by_key("standard"),
         :request_class_name => "HTPLibraryPCRFreeRequest",
         :workflow_id        => Submission::Workflow.find_by_key('short_read_sequencing'),
-        :product_line       => ProductLine.find_by_name('Illumina-HTP'),
-        ) do | request_type|
-        request_type.request_type_validators.build([
-          {:request_option=>'insert_size',
-          :valid_options=>RequestType::Validator::ArrayWithDefault.new([500,1000,2000,5000,10000,20000],500),
-          :request_type=>request_type},
-          {:request_option=>'sequencing_type',
-          :valid_options=>RequestType::Validator::ArrayWithDefault.new(['Standard','MagBead','MagBead OneCellPerWell v1'],'Standard'),
-          :request_type=>request_type}
-        ])
+        :product_line       => ProductLine.find_by_name('Illumina-HTP')
+        )
       end
 
       st = SubmissionSerializer.construct!({
