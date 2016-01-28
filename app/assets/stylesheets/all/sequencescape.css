@@ -1516,21 +1516,70 @@ table.sortable tbody tr td { padding-left: 0.5em;}
 
 /** Adding default colors **/
 
-.navbar-default {
+
+/* Blue SS */
+/*rgb(37,60,175)*/
+
+/*rgb(12,50,0)*/
+/* Green SS */
+
+header div.header ul {
+  color: #fff !important;
   /*background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgb(96, 62, 125)), to(rgb(73, 34, 85))) rgb(167, 74, 134);*/
-  background-color: #7f2d95;
+   /*background-color: #002A3A !important;*/
+   background-color: #31353d;
+   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(0%, #29384D), color-stop(100%, #272C32));
+   background-image: -moz-linear-gradient(top, #29384D 0%, #272C32 100%);
+   color: #fff !important;
+   font-size: 12px;
+   border-top: 3px solid #055694;
+   padding: 3px 10px 2px 10px;
+   text-shadow: 0 -1px 1px #000;
+   /*background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(black), to(#002A3A)) rgb(167, 74, 134);*/
+   /*background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgb(37,60,175)), to(#002A3A)) rgb(167, 74, 134);*/
+  /*background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgb(12,50,0)), to(black)) rgb(167, 74, 134);*/
+  /*background-color: rgb(12,50,0) !important;*/
+
 }
 
-.navbar-default ul {
+header div.header ul a:visited {
   color: #fff !important;
 }
 
-.navbar-default .navbar-nav > li > a {
-  color: #fff !important;
+section {
+  background-color: #f8f8f8 !important;
+  border-radius: 5px;
 }
 
-.panel > .panel-heading {
-  /*background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgb(96, 62, 125)), to(rgb(73, 34, 85))) rgb(167, 74, 134);*/
-  background-color: #7f2d95;
+section.main-row {
+  border: 1px solid #e7e7e7;;
+}
+
+.header.small .welcome {
+  float:right;
+}
+
+.header.small .logout_action{
+  float:right;
+}
+
+.panel .panel-heading {
   color: #fff !important;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgb(96, 62, 125)), to(rgb(73, 34, 85))) rgb(167, 74, 134);
+  /*background-color: #002A3A !important;*/
+  /*background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgb(37,60,175)), to(#002A3A)) rgb(167, 74, 134);*/
+
+
+  /*background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgb(12,50,0)), to(rgb(37,60,175))) rgb(167, 74, 134);*/
+  /*background-color: rgb(37,60,175) !important;*/
+}
+
+.alert-success {
+    background-color: green;
+    color: #fff;
+    margin-top: 2em;
+}
+
+#menu {
+  margin-top: 2em;
 }
