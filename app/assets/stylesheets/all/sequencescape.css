@@ -1514,3 +1514,23 @@ table.sortable tbody tr td { padding-left: 0.5em;}
 .report_form { display:block; float: left; width: 50%;}
 
 
+/** Adding default colors **/
+
+.navbar-default {
+  /*background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgb(96, 62, 125)), to(rgb(73, 34, 85))) rgb(167, 74, 134);*/
+  background-color: #7f2d95;
+}
+
+.navbar-default ul {
+  color: #fff !important;
+}
+
+.navbar-default .navbar-nav > li > a {
+  color: #fff !important;
+}
+
+.panel > .panel-heading {
+  /*background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgb(96, 62, 125)), to(rgb(73, 34, 85))) rgb(167, 74, 134);*/
+  background-color: #7f2d95;
+  color: #fff !important;
+}
