@@ -201,6 +201,33 @@ re_request = RequestType.create!(
           :pooling_behaviour => 'PlateRow',
           :pooling_options   => {:pool_count=>8}
         )
+      rt.acceptable_plate_purposes << PlatePurpose.find_by_name!("PF Cherrypicked")
+      RequestType::Validator.create!(
+        :request_type   => rt,
+        :request_option => 'library_type',
+        :valid_options  => RequestType::Validator::LibraryTypeValidator.new(rt.id)
+      )
+      rt.library_types << LibraryType.find_or_create_by_name!("HiSeqX PCR free")
+    end
+
+  RequestType.create!(
+    :name => 'HTP PCR Free Library',
+    :key => 'htp_pcr_free_lib',
+    :asset_type => 'Well',
+    :deprecated         => false,
+    :initial_state      => "pending",
+    :for_multiplexing   => true,
+    :morphology         => 0,
+    :multiples_allowed  => false,
+    :no_target_asset    => false,
+    :order              => 1,
+    :pooling_method     => RequestType::PoolingMethod.find_by_pooling_behaviour!("PlateRow"),
+    :request_purpose    => RequestPurpose.find_by_key!("standard"),
+    :request_class_name => "IlluminaHtp::Requests::StdLibraryRequest",
+    :workflow           => Submission::Workflow.find_by_key!('short_read_sequencing'),
+    :product_line       => ProductLine.find_by_name!('Illumina-HTP')
+    ) do |rt|
+      rt.acceptable_plate_purposes << PlatePurpose.find_by_name!("PF Cherrypicked")
     end
 
     RequestType.create!(
