@@ -1516,17 +1516,8 @@ table.sortable tbody tr td { padding-left: 0.5em;}
 
 /** Adding default colors **/
 
-
-/* Blue SS */
-/*rgb(37,60,175)*/
-
-/*rgb(12,50,0)*/
-/* Green SS */
-
 header div.header ul {
   color: #fff !important;
-  /*background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgb(96, 62, 125)), to(rgb(73, 34, 85))) rgb(167, 74, 134);*/
-   /*background-color: #002A3A !important;*/
    background-color: #31353d;
    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(0%, #29384D), color-stop(100%, #272C32));
    background-image: -moz-linear-gradient(top, #29384D 0%, #272C32 100%);
@@ -1535,10 +1526,6 @@ header div.header ul {
    border-top: 3px solid #055694;
    padding: 3px 10px 2px 10px;
    text-shadow: 0 -1px 1px #000;
-   /*background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(black), to(#002A3A)) rgb(167, 74, 134);*/
-   /*background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgb(37,60,175)), to(#002A3A)) rgb(167, 74, 134);*/
-  /*background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgb(12,50,0)), to(black)) rgb(167, 74, 134);*/
-  /*background-color: rgb(12,50,0) !important;*/
 
 }
 
@@ -1566,12 +1553,6 @@ section.main-row {
 .panel .panel-heading {
   color: #fff !important;
   background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgb(96, 62, 125)), to(rgb(73, 34, 85))) rgb(167, 74, 134);
-  /*background-color: #002A3A !important;*/
-  /*background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgb(37,60,175)), to(#002A3A)) rgb(167, 74, 134);*/
-
-
-  /*background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgb(12,50,0)), to(rgb(37,60,175))) rgb(167, 74, 134);*/
-  /*background-color: rgb(37,60,175) !important;*/
 }
 
 .alert-success {
