@@ -1,12 +1,12 @@
 
 <div class="header small">
   <ul class="list-inline">
-  <li><span id="institute"><%= link_to I18n.t('application.institute'), I18n.t('application.institute_link') %></span></li>
+  <li class="institute"><span id="institute"><%= link_to I18n.t('application.institute'), I18n.t('application.institute_link') %></span></li>
   <% if logged_in? -%>
-  <li>
+  <li class="welcome">
     <%= I18n.t('global_links.welcome') %> <%= link_to current_user.name, profile_path(current_user) %> ·
   </li>
-  <li>
+  <li class="workflow_name">
     <%= I18n.t('global_links.workflow') %>
     <% unless current_user.workflow.nil? -%>
     <%= link_to current_user.workflow_name, edit_profile_path(current_user) %> ·
@@ -14,7 +14,7 @@
     <strong><%= link_to I18n.t('global_links.workflow_not_set'), edit_profile_path(current_user) %></strong> ·
     <% end -%>
   </li>
-  <li>
+  <li class="logout_action">
     <%= link_to I18n.t('global_links.logout'), logout_path -%>
   </li>
   <% end -%>
