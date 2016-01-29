@@ -3,7 +3,7 @@
 #Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
 <%= render :partial => "side_links" %>
 
-<h2>Create sample manifest</h2>
+<%= page_title 'Sample Manifest', 'Create' %>
 
 <%= semantic_form_for(@sample_manifest) do |form| %>
   <%= form.inputs :name => "Manifest Type" do %>

@@ -278,12 +278,7 @@ div.message {
   font-size: 11px;
 }
 
-#message a, #message a:link, #message a:visited {
-  color: #ff9900;
-}
-
 #message a:hover {
-  color: #880000;
   text-decoration: underline;
 }
 

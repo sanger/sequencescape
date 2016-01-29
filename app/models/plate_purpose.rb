@@ -221,7 +221,3 @@ class PlatePurpose < Purpose
   def supports_multiple_submissions?; false; end
 
 end
-
-# Load the subclasses now
-require 'plate_purpose/subclasses'
-

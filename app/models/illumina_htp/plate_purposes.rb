@@ -70,7 +70,7 @@ module IlluminaHtp::PlatePurposes
   OUTPUT_PLATE_PURPOSES = ['Lib PCR-XP','Lib PCRR-XP']
 
   PLATE_PURPOSE_LEADING_TO_QC_PLATES = [
-    'Post Shear', 'Lib PCR-XP', 'Lib PCRR-XP', 'Lib Norm'
+    'Post Shear', 'Lib PCR-XP', 'Lib PCRR-XP', 'Lib Norm', 'PF EM Pool'
   ]
 
   STOCK_PLATE_PURPOSE_TO_OUTER_REQUEST = {
@@ -96,9 +96,6 @@ module IlluminaHtp::PlatePurposes
     # ['PF EM Pool', 'PF Lib Norm'],
     # ['PF Lib Norm', 'PF MiSeq Stock'],
     # ['PF MiSeq Stock', 'PF MiSeq QC'],
-    # ['PF EM Pool', 'PF EM Pool D1'],
-    # ['PF EM Pool D1', 'PF EM Pool D2'],
-    # ['PF EM Pool D2', 'PF qPCR QC'],
 
     [ 'Cherrypicked',    'Shear',               'IlluminaHtp::Requests::CherrypickedToShear'   ],
     [ 'Shear',           'Post Shear',          'IlluminaHtp::Requests::CovarisToSheared'      ],
@@ -125,10 +122,9 @@ module IlluminaHtp::PlatePurposes
     'PF Post Shear XP'       => PlatePurpose,
     'PF Lib'                 => PlatePurpose,
     'PF Lib XP'              => PlatePurpose,
-    'PF Lib XP2'             => PlatePurpose,
-    'PF EM Pool'             => PlatePurpose,
+    'PF Lib XP2'             => IlluminaHtp::LibraryCompleteOnQcPurpose,
+    'PF EM Pool'             => IlluminaHtp::PooledPlatePurpose,
     'PF Lib Norm'            => PlatePurpose,
-    'PF qPCR QC'             => PlatePurpose,
     'PF MiSeq Stock'         => IlluminaHtp::StockTubePurpose,
     'PF MiSeq QC'            => IlluminaC::QcPoolPurpose, #Illumina C
 
@@ -154,6 +150,7 @@ module IlluminaHtp::PlatePurposes
     'Lib PCR-XP QC'    => PlatePurpose,
     'Lib PCRR-XP QC'   => PlatePurpose,
     'Lib Norm QC'      => PlatePurpose,
+    'PF EM Pool QC'    => PlatePurpose,
 
     'Lib Norm'        => IlluminaHtp::InitialDownstreamPlatePurpose,
     'Lib Norm 2'      => IlluminaHtp::NormalizedPlatePurpose,
@@ -207,7 +204,7 @@ module IlluminaHtp::PlatePurposes
       )
 
       flow.each do |name|
-        create_plate_purpose(name, :default_location => library_creation_freezer)
+        create_plate_purpose(name, :default_location => library_creation_freezer, :source_purpose_id => stock_plate.id)
       end
     end
 

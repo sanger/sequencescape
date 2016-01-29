@@ -1,7 +1,28 @@
 # encoding: utf-8
 require 'formtastic'
+
+
+module Formtastic
+  module Inputs
+    module Base
+      module Labelling
+        def label_html_options
+          {
+            :for => input_html_options[:id],
+            :class => ['ft-label'],
+          }
+        end
+      end
+    end
+  end
+end
 # Set the default text field size when input is a string. Default is nil.
 # Formtastic::FormBuilder.default_text_field_size = 50
+
+# Switch to the bootstrap compatible builder
+# TODO: Find a tidier way of handling this. (Ie. Pull request to formtastic allowing us to
+# overide the problem classes through configuration)
+# Formtastic::Helpers::FormHelper.builder = FormtasticBootstrap::FormBuilder
 
 # Set the default text area height when input is a text. Default is 20.
 # Formtastic::FormBuilder.default_text_area_height = 5
@@ -82,7 +103,7 @@ Formtastic::FormBuilder.inline_errors = :list
 
 # You can opt-in to Formtastic's use of the HTML5 `required` attribute on `<input>`, `<select>`
 # and `<textarea>` tags by setting this to true (defaults to false).
-# Formtastic::FormBuilder.use_required_attribute = false
+Formtastic::FormBuilder.use_required_attribute = true
 
 # You can opt-in to new HTML5 browser validations (for things like email and url inputs) by setting
 # this to true. Doing so will add a `novalidate` attribute to the `<form>` tag.

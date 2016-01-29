@@ -64,7 +64,7 @@ module ApplicationHelper
   end
 
   def display_user_guide(display_text, link=nil)
-    alert(:warning) do
+    alert(:info) do
       link.present? ? link_to(display_text, link) : display_text
     end
   end

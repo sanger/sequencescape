@@ -20,6 +20,8 @@ class AddIllHtpPcrFreePipeline < ActiveRecord::Migration
       branches.each do |branch|
         IlluminaHtp::PlatePurposes.create_branch(branch)
       end
+
+      IlluminaHtp::PlatePurposes.create_qc_plate_for('PF EM Pool')
     end
   end
 

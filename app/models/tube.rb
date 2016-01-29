@@ -30,7 +30,7 @@ class Tube < Aliquot::Receptacle
   scope :include_scanned_into_lab_event, -> { includes(:scanned_into_lab_event) }
 
  scope :with_purpose, ->(*purposes) {
-    { :conditions => { :plate_purpose_id => purposes.flatten.map(&:id) } }
+    where(:plate_purpose_id => purposes.flatten.map(&:id))
   }
 
   def submission

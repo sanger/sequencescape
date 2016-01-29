@@ -52,7 +52,7 @@ module AssetsHelper
     select_tag(
       field,
       options_for_select(select_options_source.sorted_by_name.map { |x| [x.name, x.id] }, selected.try(:to_i)),
-      options.merge(:disabled => (selected.present? and not current_user.is_administrator?))
+      options.merge(:disabled => (selected.present? and not current_user.is_administrator?), :class=>'form-control select2')
     )
   end
 
