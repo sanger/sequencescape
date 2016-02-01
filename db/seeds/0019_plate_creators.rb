@@ -17,6 +17,10 @@ ActiveRecord::Base.transaction do
     Plate::Creator.create!(:name => name, :plate_purpose => plate_purpose, :plate_purposes => [ plate_purpose ])
   end
 
+  plate_purpose = PlatePurpose.find_or_create_by_name!("Pre-Extracted Plate")
+  creator = Plate::Creator.create!(:name => "Pre-Extracted Plate", :plate_purpose => plate_purpose, :plate_purposes => [ plate_purpose ])
+  creator.parent_plate_purposes << Purpose.find_by_name!("Stock plate")
+
 
   purposes_config = [
       [Plate::Creator.find_by_name!("Working dilution"),  Purpose.find_by_name!("Stock plate")],
