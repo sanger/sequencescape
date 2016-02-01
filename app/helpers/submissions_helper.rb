@@ -22,6 +22,9 @@ module SubmissionsHelper
       case field_info.kind
       when "Selection" then order_selection_tag(order, field_info)
       when "Text"      then order_text_tag(order, field_info)
+      when "Numeric"   then order_number_tag(order, field_info)
+      # Fall back to a text field
+      else order_text_tag(order, field_info)
       end
     end
   end
@@ -42,6 +45,16 @@ module SubmissionsHelper
 
   def order_text_tag(order, field_info)
     text_field_tag(
+      "submission[order_params][#{field_info.key}]",
+      order.request_options.try(:[], field_info.key) || field_info.default_value,
+      :class => "required form-control",
+      :required => true
+    )
+  end
+  private :order_text_tag
+
+  def order_number_tag(order, field_info)
+    number_field_tag(
       "submission[order_params][#{field_info.key}]",
       order.request_options.try(:[], field_info.key) || field_info.default_value,
       :class => "required form-control",

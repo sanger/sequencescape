@@ -26,13 +26,13 @@ module Attributable
   end
 
 
-    class CustomValidator < ActiveModel::EachValidator
-      def validate_each(record, attribute, value)
-        valid = record.validator_for(attribute).valid_options.include?(value)
-        record.errors.add(attribute,"is not a valid option") unless valid
-        valid
-      end
+  class CustomValidator < ActiveModel::EachValidator
+    def validate_each(record, attribute, value)
+      valid = record.validator_for(attribute).valid_options.include?(value)
+      record.errors.add(attribute,"is not a valid option") unless valid
+      valid
     end
+  end
 
   def attribute_details_for(*args)
     self.class.attribute_details_for(*args)
@@ -260,6 +260,10 @@ module Attributable
       @options[:with_method]
     end
 
+    def minimum
+      @options[:minimum]||0
+    end
+
     def selection_values
       @options[:in]
     end
@@ -334,6 +338,7 @@ module Attributable
     def kind
       return FieldInfo::SELECTION if self.selection?
       return FieldInfo::BOOLEAN if self.boolean?
+      return FieldInfo::NUMERIC if self.numeric? || self.float?
       FieldInfo::TEXT
     end
 
@@ -352,9 +357,12 @@ module Attributable
         :display_name  => display_name,
         :key           => assignable_attribute_name,
         :default_value => find_default(object,metadata),
-        :kind          => kind
+        :kind          => kind,
+        :required      => required?
       }
       options.update(:selection => selection_options(metadata)) if self.selection?
+      options.update(:step => 1, :min => self.minimum) if self.numeric?
+      options.update(:step => 0.1, :min => 0) if self.float?
       FieldInfo.new(options)
     end
   end

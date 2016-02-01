@@ -4,6 +4,7 @@
 Sequencescape::Application.routes.draw do
 
   root to:'studies#index'
+
   mount Api::RootService.new => '/api/1'
 
   resources :samples do
@@ -387,7 +388,7 @@ Sequencescape::Application.routes.draw do
   resources :asset_audits
 
   resources :qc_reports, :except => [:delete,:update] do
-    collection do 
+    collection do
       post :qc_file
     end
   end
