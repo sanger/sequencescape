@@ -297,7 +297,7 @@
     :request_options=>{"fragment_size_required_to"=>"400",
       "fragment_size_required_from"=>"100",
       "library_type"=>"Agilent Pulldown"},
-      :request_types=>["pulldown_sc", "hiseq_paired_end_sequencing"],
+      :request_types=>["pulldown_sc", "illumina_a_hiseq_paired_end_sequencing"],
       :workflow=>"short_read_sequencing"}},
  {:name=>"Cherrypick for pulldown - Pulldown ISC - Single ended sequencing",
   :submission_class_name=>"LinearSubmission",
