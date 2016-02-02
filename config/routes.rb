@@ -2,8 +2,8 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2011,2012,2013,2014 Genome Research Ltd.
 Sequencescape::Application.routes.draw do
-
   root to:'studies#index'
+  resource :home, :only => [:show]
 
   mount Api::RootService.new => '/api/1'
 

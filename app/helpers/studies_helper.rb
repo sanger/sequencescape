@@ -44,4 +44,19 @@ public
   def label_asset_state(asset)
     asset.closed? ? "closed" : "open"
   end
+
+  def bootstrapify_study_state(state)
+    {
+      'pending' => 'warning',
+      'active'  => 'success',
+      'inactive' => 'danger'
+    }[state.downcase]||'default'
+  end
+
+  def study_link(study,options)
+    link_text = content_tag(:strong,study.name) << ' ' <<
+    content_tag(:span,study.state,:class=>"batch-state label label-#{bootstrapify_study_state(study.state)}")
+    link_to(link_text, study_path(study), options)
+  end
+
 end

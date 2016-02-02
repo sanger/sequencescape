@@ -1,48 +1,55 @@
 require 'configatron'
 
-  configatron.amqp.url = "amqp://localhost:5672"
-  configatron.amqp.persistent = false
-  configatron.amqp.burst_size = 1000
-  configatron.amqp.lims_id = "SQSCP"
+configatron.amqp.url = "amqp://localhost:5672"
+configatron.amqp.persistent = false
+configatron.amqp.burst_size = 1000
+configatron.amqp.lims_id = "SQSCP"
 
-  configatron.team_name = "LIMS and Informatics"
-  configatron.team_url = "http://www.sanger.ac.uk/science/groups/production-software-development"
+configatron.team_name = "LIMS and Informatics"
+configatron.team_url = "http://www.sanger.ac.uk/science/groups/production-software-development"
 
-  configatron.accession_login = "accession_login"
-  configatron.accession_url = "http://localhost:9999/accession_service/"
-  configatron.accession_view_url = "http://localhost:9999/view_accession/"
+configatron.accession_login = "accession_login"
+configatron.accession_url = "http://localhost:9999/accession_service/"
+configatron.accession_view_url = "http://localhost:9999/view_accession/"
 
-  configatron.admin_email = "admin@test.com"
-  configatron.exception_recipients = "exceptions@test.com"
-  configatron.api_documentation_url = "http://localhost:3000/documentation"
-  configatron.api_url = "http://localhost:3000"
-  configatron.array_express_accession_login = nil
-  configatron.auth_cookie = nil
-  configatron.authentication = "local"
-  configatron.barcode_service_url = "http://localhost:9998/barcode_service.wsdl"
-  configatron.default_policy_text = "https://www.example.com/"
-  configatron.default_policy_title = "Default Policy Title"
-  configatron.fluidigm_data.source = "directory"
-  configatron.fluidigm_data.directory = "#{Rails.root}/data/fluidigm"
-  configatron.irods_audience = "http://localhost:3000"
-  configatron.ega_accession_login = "ega_accession_login"
-  configatron.era_accession_login = "era_accession_login"
-  configatron.login_url = "/login"
-  configatron.mail_prefix = "[DEVELOPMENT]"
-  configatron.pac_bio_instrument_api = "http://example.com"
-  configatron.pac_bio_smrt_portal_api = "http://example.com"
-  configatron.phix_tag.tag_group_name = "Control Tag Group 888"
-  configatron.phix_tag.tag_map_id = 888
-  configatron.pico_green_url = "http://localhost:3003"
-  configatron.r_and_d_division = "RandD"
-  configatron.sanger_auth_service = "http://localhost:9999/cgi-bin/prodsoft/SSO/isAuth.pl"
-  configatron.site_url = "localhost:3000"
-  configatron.sta_plate_purpose_name = "STA"
-  configatron.studies_url = "http://localhost:3000"
-  configatron.sanger_auth_freshness = 60
-  configatron.taxon_lookup_url = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
-  configatron.tecan_files_location = "#{Rails.root}/data"
-  configatron.tecan_minimum_volume = 1.0
+configatron.admin_email = "admin@test.com"
+configatron.exception_recipients = "exceptions@test.com"
+configatron.api_documentation_url = "http://localhost:3000/documentation"
+configatron.api_url = "http://localhost:3000"
+configatron.array_express_accession_login = nil
+configatron.auth_cookie = nil
+configatron.authentication = "local"
+configatron.barcode_service_url = "http://localhost:9998/barcode_service.wsdl"
+configatron.default_policy_text = "https://www.example.com/"
+configatron.default_policy_title = "Default Policy Title"
+configatron.fluidigm_data.source = "directory"
+configatron.fluidigm_data.directory = "#{Rails.root}/data/fluidigm"
+configatron.irods_audience = "http://localhost:3000"
+configatron.ega_accession_login = "ega_accession_login"
+configatron.era_accession_login = "era_accession_login"
+configatron.login_url = "/login"
+configatron.mail_prefix = "[DEVELOPMENT]"
+configatron.pac_bio_instrument_api = "http://example.com"
+configatron.pac_bio_smrt_portal_api = "http://example.com"
+configatron.phix_tag.tag_group_name = "Control Tag Group 888"
+configatron.phix_tag.tag_map_id = 888
+configatron.pico_green_url = "http://localhost:3003"
+configatron.r_and_d_division = "RandD"
+configatron.sanger_auth_service = "http://localhost:9999/cgi-bin/prodsoft/SSO/isAuth.pl"
+configatron.site_url = "localhost:3000"
+configatron.sta_plate_purpose_name = "STA"
+configatron.studies_url = "http://localhost:3000"
+configatron.sanger_auth_freshness = 60
+configatron.taxon_lookup_url = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
+configatron.tecan_files_location = "#{Rails.root}/data"
+configatron.tecan_minimum_volume = 1.0
+
+configatron.external_applications = [
+  ['High Throughput Pipeline','http://www.example.com'],
+  ['Generic Lims','http://www.example.com'],
+  ['Gatekeeper','http://www.example.com'],
+  ['Crier','http://www.example.com']
+]
 
 if Rails.env == 'development'
 

@@ -50,6 +50,8 @@ class Submission < ActiveRecord::Base
   scope :pending,  -> { where( :state => "pending" ) }
   scope :ready,    -> { where( :state => "ready" ) }
 
+  scope :latest_first, -> { order('id DESC') }
+
   before_destroy :building?, :empty_of_orders?
 
   def empty_of_orders?

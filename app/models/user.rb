@@ -20,10 +20,12 @@ class User < ActiveRecord::Base
   has_many :comments
   has_many :settings
   has_many :roles
+  has_many :submissions
   has_many :project_roles, :class_name => 'Role', :conditions => {authorizable_type:'Project'}
   has_many :study_roles, :class_name => 'Role', :conditions => {authorizable_type:'Study'}
   has_many :study_roles
   has_many :batches
+  has_many :assigned_batches, :class_name => 'Batch', :foreign_key => :assignee_id, :inverse_of => :assignee
   has_many :pipelines, :through => :batches, :order => 'batches.id DESC', :uniq => true
 
   before_save :encrypt_password
@@ -75,7 +77,7 @@ class User < ActiveRecord::Base
   end
 
   def profile_incomplete?
-    name_incomplete? or email.blank?
+    name_incomplete? or email.blank? or swipecard_code.blank?
   end
 
   def profile_complete?

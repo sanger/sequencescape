@@ -58,6 +58,8 @@
 
   var attachEvents;
 
+  $.tablesorter.themes.bootstrap.table = 'table table-striped';
+
   attachEvents = function() {
     $(document.body).on("ajaxDomUpdate", function() {
       var tables = $("table.sortable");

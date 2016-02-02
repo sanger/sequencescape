@@ -4,6 +4,6 @@
 <% add :title, "Batch" -%>
 <% add :back_menu, "Back to pipeline" => pipeline_path(@pipeline) -%>
 
-<h1>PENDING BATCHES FOR <%= @pipeline.name %></h1>
+<%= page_title @pipeline.name, "Pending Batches" %>
 
 <%= render :partial => "shared/batches", :locals => { :batches => @batches, :showing_all => true, :in_progress => false, :batch_state => 'pending' } %>

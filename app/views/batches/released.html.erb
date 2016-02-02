@@ -4,6 +4,6 @@
 <% add :title, "Batch" -%>
 <% add :back_menu, "Back to pipeline" => pipeline_path(@pipeline) -%>
 
-<h1>RELEASED BATCHES FOR <%= @pipeline.name %></h1>
+<%= page_title @pipeline.name, "Released Batches" %>
 
 <%= render :partial => "shared/batches", :locals => { :batches => @batches, :in_progress => false, :showing_all => true, :batch_state => 'released' } %>

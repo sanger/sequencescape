@@ -148,4 +148,21 @@ module SubmissionsHelper
 
     content_tag(:em, pluralize(presenter.lanes_of_sequencing, 'Lane') + ' of ') + request_type_name
   end
+
+  def bootstrapify_submission_state(state)
+    {
+    'building' => 'info',
+    'cancelled' => 'default',
+    'failed' => 'danger',
+    'pending' => 'warning',
+    'processing' => 'primary',
+    'ready' => 'success'
+    }[state]||'default'
+  end
+
+  def submission_link(submission,options)
+    link_text = content_tag(:strong,submission.name) << ' ' <<
+    content_tag(:span,submission.state,:class=>"batch-state label label-#{bootstrapify_submission_state(submission.state)}")
+    link_to(link_text, submission_path(submission), options)
+  end
 end

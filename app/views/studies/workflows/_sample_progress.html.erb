@@ -2,13 +2,13 @@
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.%>
 <%= pagination @page_elements %>
-<table id="summary" width="100%" class="sortable">
+<table id="summary" class=" table sortable table-striped">
   <thead>
     <tr>
       <th>Name</th>
       <th>Update date</th>
       <% @request_types.each do |request_type| %>
-        <th><center><%= request_type.name %></center></th>
+        <th><%= request_type.name %></th>
       <% end %>
     </tr>
   </thead>
@@ -17,7 +17,7 @@
       <% @page_elements.each do |sample| %>
         <% sample_statistics = statistics[sample.id] %>
         <tr>
-          <td> <%= link_to sample.name, sample_path(sample)    %></td>
+          <td><%= link_to sample.name, sample_path(sample)    %></td>
           <td><%= sample.updated_at.to_formatted_s(:sortable) %></td>
           <% @request_types.each do |request_type| %>
             <% request_type_statistics = sample_statistics[request_type.id] %>
@@ -26,13 +26,13 @@
             <% else %>
               <td>
                 <% if request_type_statistics.passed > 0 %>
-                  <center><span style="display:none">passed</span><%= image_tag "accept.png" %></center>
+                  <span style="display:none">passed</span><%= image_tag "accept.png" %>
                 <% elsif request_type_statistics.started > 0 %>
-                  <center><span style="display:none">started</span><%= image_tag "cog.png" %></center>
+                  <span style="display:none">started</span><%= image_tag "cog.png" %>
                 <% elsif request_type_statistics.pending > 0 %>
-                  <center><span style="display:none">pending</span><%= image_tag "hourglass.png" %></center>
+                  <span style="display:none">pending</span><%= image_tag "hourglass.png" %>
                 <% elsif request_type_statistics.failed > 0 %>
-                  <center><span style="display:none">failed</span><%= image_tag "delete.png" %></center>
+                  <span style="display:none">failed</span><%= image_tag "delete.png" %>
                 <% end %>
               </td>
             <% end %>

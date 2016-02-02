@@ -1461,6 +1461,10 @@ ul#orders li.order { text-align: left;}
 .yui-skin-sam .yui-navset .yui-content {
   border: 1px solid #ddd;
 }
+
+.yui-skin-sam .yui-navset .yui-content .table {
+  background: white;
+}
 .nav.nav-tabs { border-bottom: inherit; }
 
 .nav.nav-tabs li a { color: inherit;}

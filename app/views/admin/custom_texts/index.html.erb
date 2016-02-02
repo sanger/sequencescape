@@ -3,7 +3,7 @@
 #Copyright (C) 2007-2011,2011 Genome Research Ltd.%>
 <% add :title, "Custom texts." %>
 <% add :menu, "Create custom texts" => url_for(:controller => :custom_texts, :action => :new) %>
-<h1>CUSTOM TEXTS</h1>
+<%= page_title "Custom Text", "List" %>
 <div id="custom_texts">
   <table cellpadding="4" cellspacing="0" width="100%" class="sortable">
     <thead>
@@ -29,7 +29,7 @@
             <td>
             <%= link_to "Edit", edit_admin_custom_text_path(custom_text) %>
             </td>
-            <td><%= link_to "<span style='color: red;'><strong>[Delete]</strong></span>", admin_custom_text_path(custom_text), :method => :delete, :confirm => "Are you sure?" %></td>
+            <td><%= link_to content_tag(:span,"[Delete]",style:"color:red;"), admin_custom_text_path(custom_text), :method => :delete, :confirm => "Are you sure?" %></td>
           <% end %>
         </tr>
       <% end %>
