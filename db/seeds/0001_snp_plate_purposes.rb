@@ -275,6 +275,11 @@ plate_purposes = <<-EOS
   id: 83
   type: PulldownQpcrPlatePurpose
   target_type: PulldownQpcrPlate
+- name: Pre-Extracted Plate
+  qc_display: false
+  id: 84
+  type: PlatePurpose
+  target_type: Plate
 EOS
 
 Map::AssetShape.create!(
