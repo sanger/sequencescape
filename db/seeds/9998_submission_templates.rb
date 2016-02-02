@@ -151,7 +151,7 @@
   :product_catalogue=>"Generic",
   :submission_parameters=>
    {:info_differential=>5,
-    :request_options=>{"fragment_size_required_to"=>"400", "fragment_size_required_from"=>"100"},
+    :request_options=>{"fragment_size_required_to"=>"500", "fragment_size_required_from"=>"300"},
     :request_types=>["pulldown_wgs", "illumina_a_hiseq_paired_end_sequencing"],
     :workflow=>"short_read_sequencing"}},
  {:name=>"Cherrypick for pulldown - Pulldown SC - Single ended sequencing",
