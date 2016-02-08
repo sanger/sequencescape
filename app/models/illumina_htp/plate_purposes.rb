@@ -88,17 +88,7 @@ module IlluminaHtp::PlatePurposes
   ]
 
   PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
-    [ 'PF Cherrypicked', 'PF Shear', 'IlluminaHtp::Requests::CherrypickedToShear'],
-    # ['PF Shear', 'PF Post Shear'],
-    # ['PF Post Shear', 'PF Post Shear XP' ],
-    # ['PF Post Shear XP', 'PF AL Libs'],
-    # ['PF AL Libs', 'PF Lib XP'],
-    # ['PF Lib XP', 'PF Lib XP2'],
-    # ['PF Lib XP2', 'PF EM Pool'],
-    # ['PF EM Pool', 'PF Lib Norm'],
-    # ['PF Lib Norm', 'PF MiSeq Stock'],
-    # ['PF MiSeq Stock', 'PF MiSeq QC'],
-
+    [ 'PF Cherrypicked', 'PF Shear',            'IlluminaHtp::Requests::CherrypickedToShear'   ],
     [ 'Cherrypicked',    'Shear',               'IlluminaHtp::Requests::CherrypickedToShear'   ],
     [ 'Shear',           'Post Shear',          'IlluminaHtp::Requests::CovarisToSheared'      ],
     [ 'Post Shear',      'AL Libs',             'IlluminaHtp::Requests::PostShearToAlLibs'     ],
@@ -270,7 +260,7 @@ module IlluminaHtp::PlatePurposes
         :cherrypickable_target => false,
         :cherrypick_direction  => 'column',
         :can_be_considered_a_stock_plate => self::OUTPUT_PLATE_PURPOSES.include?(plate_purpose_name),
-        :asset_shape => AssetShape.default
+        :asset_shape_id => AssetShape.default.id
       )).tap do |plate_purpose|
         plate_purpose.barcode_printer_type = BarcodePrinterType.find_by_type('BarcodePrinterType96Plate')||plate_purpose.barcode_printer_type
       end
