@@ -19,7 +19,7 @@ class AddRequestTypeForPcrFreeXten < ActiveRecord::Migration
         :product_line       => ProductLine.find_by_name!('Illumina-HTP')
         )
 
-      rt.acceptable_plate_purposes << PlatePurpose.find_by_name!("PF Cherrypicked")
+      rt.acceptable_plate_purposes << Purpose.find_by_name!("PF Cherrypicked")
 
       lt = LibraryType.find_or_create_by_name!("HiSeqX PCR free")
       rt_v = RequestType::Validator.create!(
