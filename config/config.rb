@@ -8,7 +8,6 @@ configatron.amqp.lims_id = "SQSCP"
 configatron.team_name = "LIMS and Informatics"
 configatron.team_url = "http://www.sanger.ac.uk/science/groups/production-software-development"
 
-configatron.accession_login = "accession_login"
 configatron.accession_url = "http://localhost:9999/accession_service/"
 configatron.accession_view_url = "http://localhost:9999/view_accession/"
 
@@ -16,8 +15,7 @@ configatron.admin_email = "admin@test.com"
 configatron.exception_recipients = "exceptions@test.com"
 configatron.api_documentation_url = "http://localhost:3000/documentation"
 configatron.api_url = "http://localhost:3000"
-configatron.array_express_accession_login = nil
-configatron.auth_cookie = nil
+
 configatron.authentication = "local"
 configatron.barcode_service_url = "http://localhost:9998/barcode_service.wsdl"
 configatron.default_policy_text = "https://www.example.com/"
@@ -38,7 +36,6 @@ configatron.r_and_d_division = "RandD"
 configatron.sanger_auth_service = "http://localhost:9999/cgi-bin/prodsoft/SSO/isAuth.pl"
 configatron.site_url = "localhost:3000"
 configatron.sta_plate_purpose_name = "STA"
-configatron.studies_url = "http://localhost:3000"
 configatron.sanger_auth_freshness = 60
 configatron.taxon_lookup_url = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
 configatron.tecan_files_location = "#{Rails.root}/data"
@@ -77,7 +74,6 @@ if Rails.env == 'development'
   configatron.proxy = "http://example.com"
 
   configatron.sanger_login_service = "http://localhost:9999/LOGIN"
-  configatron.site_name = "Projects (DEVELOPMENT)"
 
   configatron.tecan_precision = 2
   configatron.tecan_minimum_volume = 1.0
@@ -123,11 +119,6 @@ if (Rails.env == 'test')||(Rails.env == 'cucumber')
   configatron.plate_volume_files = "#{Rails.root}/test/data/plate_volume/"
 
   # configatron.proxy = "http://example.com"
-
-
-  configatron.site_name = "Projects (TEST)"
-
-
 
   configatron.taxon_lookup_url = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
   configatron.tecan_files_location = "#{Rails.root}/data"
