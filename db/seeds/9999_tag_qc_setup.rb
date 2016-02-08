@@ -1,7 +1,7 @@
 #This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2014,2015 Genome Research Ltd.
-
+rt = rt = RequestType.find_by_key("qc_miseq_sequencing")
 tube = BarcodePrinterType.find_by_name('1D Tube')
 plate = BarcodePrinterType.find_by_name('96 Well PLate')
 
@@ -28,6 +28,7 @@ ActiveRecord::Base.transaction do
     end
   end
   Purpose::Relationship.create!(:parent=>Purpose.find_by_name('Reporter Plate'),:child=>Purpose.find_by_name('Tag PCR'),:transfer_request_type=>RequestType.transfer)
+  Purpose::Relationship.create!(:parent=>Purpose.find_by_name('Pre Stamped Tag Plate'),:child=>Purpose.find_by_name('Tag PCR'),:transfer_request_type=>RequestType.transfer)
 end
 
 mi_seq_freezer = Location.find_by_name("MiSeq freezer")

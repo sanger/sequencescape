@@ -118,8 +118,7 @@ module Request::Statemachine
         transitions :to => :failed,    :from => [:passed]
       end
 
-      # new version of combinable named_scope
-     scope :for_state, ->(state) { { :conditions => { :state => state } } }
+     scope :for_state, ->(state) { where(:state => state) }
 
      scope :completed,        -> { where(:state => COMPLETED_STATE) }
      scope :passed,           -> { where(:state => "passed") }
@@ -131,7 +130,7 @@ module Request::Statemachine
      scope :cancelled,        -> { where(:state => "cancelled") }
      scope :aborted,          -> { where(:state => "aborted") }
 
-     scope :open,             -> { where(:state => OPENED_STATE) }
+     scope :opened,           -> { where(:state => OPENED_STATE) }
      scope :closed,           -> { where(:state => ["passed", "failed", "cancelled", "aborted"]) }
      scope :hold,             -> { where(:state => "hold") }
     end

@@ -9,13 +9,14 @@ class AddIllHtpPcrFreePipeline < ActiveRecord::Migration
       stock_name = 'PF Cherrypicked'
 
       branches =  [[ stock_name, 'PF Shear', 'PF Post Shear', 'PF Post Shear XP', 'PF AL Libs', 'PF Lib XP', 'PF Lib XP2', 'PF EM Pool', 'PF Lib Norm'],
-        [ 'PF Lib XP2', 'PF MiSeq Stock', 'PF MiSeq QC']]
+        [ 'PF Lib XP2', 'PF MiSeq Stock', 'PF MiSeq QC'],['PF MiSeq Stock','PF MiSeq QCR']]
 
       plate_flow = [stock_name].concat(branches.flatten).uniq
 
       tube_flow = ['PF MiSeq Stock','PF MiSeq QC']
 
       IlluminaHtp::PlatePurposes.create_tube_flow(tube_flow)
+      IlluminaHtp::PlatePurposes.create_tube_flow(['PF MiSeq QCR'])
       IlluminaHtp::PlatePurposes.create_plate_flow(plate_flow)
       branches.each do |branch|
         IlluminaHtp::PlatePurposes.create_branch(branch)

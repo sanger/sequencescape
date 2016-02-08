@@ -50,12 +50,14 @@ module IlluminaHtp::PlatePurposes
     [
       'PF MiSeq Stock',
       'PF MiSeq QC'
-    ]
+    ],
+    ['PF MiSeq QCR']
   ]
 
   BRANCHES = [
     [ 'PF Cherrypicked', 'PF Shear', 'PF Post Shear', 'PF Post Shear XP', 'PF Lib', 'PF Lib XP', 'PF Lib XP2', 'PF EM Pool', 'PF Lib Norm'],
     [ 'PF Lib XP2', 'PF MiSeq Stock', 'PF MiSeq QC'],
+    [ 'PF MiSeq Stock','PF MiSeq QCR'],
     [ 'Cherrypicked', 'Shear', 'Post Shear', 'AL Libs', 'Lib PCR', 'Lib PCR-XP','Lib Pool','Lib Pool Norm'],
     [ 'Lib PCR-XP','Lib Pool Pippin', 'Lib Pool Conc', 'Lib Pool SS', 'Lib Pool SS-XP', 'Lib Pool SS-XP-Norm' ],
     [ 'AL Libs', 'Lib PCRR', 'Lib PCRR-XP','Lib Pool Pippin' ],
@@ -126,7 +128,8 @@ module IlluminaHtp::PlatePurposes
     'PF EM Pool'             => IlluminaHtp::PooledPlatePurpose,
     'PF Lib Norm'            => PlatePurpose,
     'PF MiSeq Stock'         => IlluminaHtp::StockTubePurpose,
-    'PF MiSeq QC'            => IlluminaC::QcPoolPurpose, #Illumina C
+    'PF MiSeq QC'            => IlluminaC::QcPoolPurpose,
+    'PF MiSeq QCR'           => IlluminaC::QcPoolPurpose,
 
 
     'Cherrypicked'        => IlluminaHtp::StockPlatePurpose,

@@ -1114,9 +1114,6 @@ ul#orders ul.sub-panel li {
   position: relative;
 }
 
-form.comments-box #comments { margin-left: 2em; margin-right: 0px; display: inline; width: 65ex;}
-form.comments-box .add-comment {float: right; background-color: #00498C !important ;}
-
 #orders .comments {
   width: 100%;
 }
@@ -1182,20 +1179,6 @@ ul#orders > li.buttons {
   background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #00498C), color-stop(1, #004390) );
   background:-moz-linear-gradient( center top, #00498C 5%, #004390 100% );
 }
-.button.final {
-  border-color: #1C7C00;
-  background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, hsl(102, 100%, 21%)), color-stop(1, hsl(120, 100%, 14%)) );
-  background: -moz-linear-gradient( center top, hsl(102, 100%, 21%) 5%, hsl(120, 100%, 14%) 100% );
-  background-color: #1C7C00;
-}
-
-.button.final:hover {
-  color: #FAF9F5;
-  background-color: #1C7C00;
-  background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, hsl(120, 100%, 14%)), color-stop(1, hsl(120, 100%, 16%)) );
-  background: -moz-linear-gradient( center top, hsl(120, 100%, 14%) 5%, hsl(120, 100%, 16%) 100% );
-
-}
 
 .button[disabled] {
   -moz-box-shadow: 0 0 0 0;
@@ -1220,19 +1203,6 @@ ul#orders > li.buttons {
   text-shadow:0px 0px 0px #528ecc;
   color: #ddd;
 }
-
-.danger-button {
-  box-shadow: inset 0px 1px 0px 0px darkRed, 0 1px 3px #999;
-  background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, darkRed), color-stop(1, red) );
-  background:-moz-linear-gradient( center top, Red 5%, darkRed 100% );
-  border: 1px solid darkRed;
-}
-
-.danger-button.button:hover {
-  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, darkRed), color-stop(1, darkRed) );
-  background:-moz-linear-gradient( center top, darkRed 5%, darkRed 100% );
-}
-
 
 #asset_input_methods td { vertical-align: top; }
 #asset_input_methods td.separator { vertical-align: middle; }
@@ -1418,13 +1388,6 @@ table#samples_to_register .label {
   font-size: inherit;
   color: inherit;
 }
-
-/* table tab border */
-/*.yui-skin-sam .yui-navset .yui-nav, .yui-skin-sam .yui-navset .yui-navset-top .yui-nav {
-    border: solid #2647a0;
-    border-width: 0 0 0px;
-    zoom: 1;
-}*/
 
 .yui-skin-sam .yui-navset .yui-nav .selected, .yui-skin-sam .yui-navset .yui-navset-top .yui-nav .selected {
     margin: 0 .16em 0px 0;
