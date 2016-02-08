@@ -374,7 +374,7 @@ class RequestTest < ActiveSupport::TestCase
       end
       context "open requests" do
         should "total right number" do
-          assert_equal @open_states.size, Request.open.count
+          assert_equal @open_states.size, Request.opened.count
         end
       end
       context "closed requests" do

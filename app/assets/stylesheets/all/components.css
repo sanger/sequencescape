@@ -7,7 +7,7 @@
 .table-summary th:after {
   content: ":";
 }
-table.sortable { table-layout:fixed; }
+/*table.sortable { table-layout:fixed; }*/
 
 table.sortable th:focus {
   outline: none;

@@ -1,27 +1,27 @@
 <%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
 #Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 #Copyright (C) 2007-2011,2011 Genome Research Ltd.%>
-<div class="yui-gf">
-<div class="yui-u first grouped_items"  style="width: 20%">
-  <% @alternatives.each_with_index do |description, index| -%>
-    <div class="grouped_item" id="<%= index %>_link">
-      <%= link_to description.humanize, study_list_studies_path(:scope => index), :remote => true, :'data-throbber' => '#loading', :'data-failure' => '#remote_error', :'data-update' => '#everything' %>
-    </div>
-  <% end -%>
-</div>
-
-<div class="yui-u group_contents">
-
-  <%= loading_bar %>
-  <%= remote_error %>
-  <div class="group_content" id="everything">
-    <script type="text/javascript">
-    (function($, undefined){
-      $("#everything").load('<%= study_list_studies_path(:scope => scope)%>', function() {
-        $(document.body).trigger("ajaxDomUpdate");
-      });
-    })(jQuery);
-    </script>
+<div class="yui-gf row">
+  <div class="yui-u first grouped_items col-sm-2">
+    <% @alternatives.each_with_index do |description, index| -%>
+      <div class="grouped_item" id="<%= index %>_link">
+        <%= link_to description.humanize, study_list_studies_path(:scope => index), :remote => true, :'data-throbber' => '#loading', :'data-failure' => '#remote_error', :'data-update' => '#everything' %>
+      </div>
+    <% end -%>
   </div>
-</div>
+
+  <div class="yui-u group_contents col-sm-10">
+
+    <%= loading_bar %>
+    <%= remote_error %>
+    <div class="group_content" id="everything">
+      <script type="text/javascript">
+      (function($, undefined){
+        $("#everything").load('<%= study_list_studies_path(:scope => scope)%>', function() {
+          $(document.body).trigger("ajaxDomUpdate");
+        });
+      })(jQuery);
+      </script>
+    </div>
+  </div>
 </div>
