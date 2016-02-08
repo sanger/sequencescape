@@ -147,10 +147,6 @@ class Plate < Asset
       Comment.create(options.merge(:commentable=>plate))
     end
 
-    def size(*args)
-      super(*args).length
-    end
-
   end
 
   def comments
