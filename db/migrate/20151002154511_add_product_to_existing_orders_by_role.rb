@@ -4,13 +4,13 @@
 class AddProductToExistingOrdersByRole < ActiveRecord::Migration
 
   class Order < ActiveRecord::Base
-    set_table_name('orders')
+    self.table_name=('orders')
     belongs_to :order_role
     scope :with_role, ->(role) { where(:order_role_id => role.id) }
   end
 
   class OrderRole < ActiveRecord::Base
-    set_table_name('order_roles')
+    self.table_name=('order_roles')
   end
 
   ORDER_ROLE_PRODUCT = {

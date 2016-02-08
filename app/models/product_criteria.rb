@@ -10,7 +10,7 @@ class ProductCriteria < ActiveRecord::Base
   # By default rails will try and name the table 'product_criterias'
   # We don't use the singular 'ProductCriterion' as the class name
   # as a single record may define multiple criteria.
-  set_table_name('product_criteria')
+  self.table_name=('product_criteria')
 
   belongs_to :product
   validates_presence_of :product, :stage, :behaviour

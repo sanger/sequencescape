@@ -4,7 +4,7 @@
 class HiseqXPipelineDoesntCloneRequest < ActiveRecord::Migration
 
   class Pipeline < ActiveRecord::Base
-    set_table_name('pipelines')
+    self.table_name=('pipelines')
   end
 
   def self.up

@@ -4,15 +4,15 @@
 class AddGenericProductCatalogue < ActiveRecord::Migration
 
   class ProductProductCatalogue < ActiveRecord::Base
-    set_table_name('product_product_catalogues')
+    self.table_name=('product_product_catalogues')
   end
 
   class ProductCatalogue < ActiveRecord::Base
-    set_table_name('product_catalogues')
+    self.table_name=('product_catalogues')
   end
 
   class Product < ActiveRecord::Base
-    set_table_name('products')
+    self.table_name=('products')
   end
 
   def self.up

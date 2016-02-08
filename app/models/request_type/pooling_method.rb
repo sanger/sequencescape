@@ -7,7 +7,7 @@ class RequestType::PoolingMethod < ActiveRecord::Base
   validates_presence_of :pooling_behaviour
   serialize :pooling_options
 
-  set_table_name('pooling_methods')
+  self.table_name=('pooling_methods')
 
   after_initialize :import_behaviour
 
