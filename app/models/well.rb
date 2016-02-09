@@ -88,7 +88,7 @@ class Well < Aliquot::Receptacle
   end
 
   delegate :location, :location_id, :location_id=, :to => :container , :allow_nil => true
-  @@per_page = 500
+  self.per_page = 500
 
   has_one :well_attribute, :inverse_of => :well
   before_create { |w| w.create_well_attribute unless w.well_attribute.present? }

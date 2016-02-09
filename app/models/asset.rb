@@ -40,8 +40,7 @@ class Asset < ActiveRecord::Base
     self.class::SAMPLE_PARTIAL
   end
 
-  cattr_reader :per_page
-  @@per_page = 500
+  self.per_page = 500
   self.inheritance_column = "sti_type"
   #acts_as_paranoid
 #  validates_uniqueness_of :name

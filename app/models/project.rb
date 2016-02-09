@@ -9,8 +9,8 @@ class Project < ActiveRecord::Base
   include ModelExtensions::Project
   include Api::Messages::FlowcellIO::ProjectExtensions
 
-  cattr_reader :per_page
-  @@per_page = 500
+
+  self.per_page = 500
   include EventfulRecord
   include AASM
   include Uuid::Uuidable

@@ -29,8 +29,8 @@ class AssetLink < ActiveRecord::Base
     end
   end
 
-  cattr_reader :per_page
-  @@per_page = 500
+
+  self.per_page = 500
   include Uuid::Uuidable
 
   def destroy!

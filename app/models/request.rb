@@ -9,8 +9,8 @@ class Request < ActiveRecord::Base
   include Aliquot::DeprecatedBehaviours::Request
 
   include Api::RequestIO::Extensions
-  cattr_reader :per_page
-  @@per_page = 500
+
+  self.per_page = 500
 
   include Uuid::Uuidable
   include AASM

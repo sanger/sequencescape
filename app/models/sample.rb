@@ -6,8 +6,8 @@ class Sample < ActiveRecord::Base
   include ModelExtensions::Sample
   include Api::SampleIO::Extensions
 
-  cattr_reader :per_page
-  @@per_page = 500
+
+  self.per_page = 500
   include ExternalProperties
   include Identifiable
   include Uuid::Uuidable

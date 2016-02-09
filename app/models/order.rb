@@ -126,8 +126,8 @@ class Order < ActiveRecord::Base
       where(['container_associations.container_id = ?',plate.id])
   }
 
-  cattr_reader :per_page
-  @@per_page = 500
+
+  self.per_page = 500
   scope :including_associations_for_json, -> {
     includes([
       :uuid_object,

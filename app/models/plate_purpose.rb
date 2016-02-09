@@ -162,8 +162,8 @@ class PlatePurpose < Purpose
   private :_pool_wells
 
   include Api::PlatePurposeIO::Extensions
-  cattr_reader :per_page
-  @@per_page = 500
+
+  self.per_page = 500
 
   # TODO: change to purpose_id
   has_many :plates, :foreign_key => :plate_purpose_id

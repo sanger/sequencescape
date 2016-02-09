@@ -10,8 +10,8 @@ class Study < ActiveRecord::Base
   include ModelExtensions::Study
 
   include Api::StudyIO::Extensions
-  cattr_reader :per_page
-  @@per_page = 500
+
+  self.per_page = 500
   include Uuid::Uuidable
 
   include EventfulRecord

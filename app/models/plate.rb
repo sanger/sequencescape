@@ -259,8 +259,8 @@ WHERE c.container_id=?
   #has_many :wells, :as => :holder, :class_name => "Well"
   DEFAULT_SIZE = 96
   self.prefix = "DN"
-  cattr_reader :per_page
-  @@per_page = 50
+
+  self.per_page = 50
 
   before_create :set_plate_name_and_size
 

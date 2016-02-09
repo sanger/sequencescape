@@ -9,8 +9,8 @@ class Tag < ActiveRecord::Base
   end
 
   include Api::TagIO::Extensions
-  cattr_reader :per_page
-  @@per_page = 500
+
+  self.per_page = 500
   include Uuid::Uuidable
 
 
