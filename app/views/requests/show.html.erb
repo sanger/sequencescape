@@ -72,7 +72,6 @@
 <div class="info">
 <h3>Batch</h3>
   <% @request.with_batch_id do |batch_id| %>
-    <% binding.pry %>
     <%= link_to batch_id, batch_path(batch_id) %>
   <% end %>
 </div>

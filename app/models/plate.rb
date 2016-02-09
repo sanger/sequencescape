@@ -373,7 +373,7 @@ WHERE c.container_id=?
   end
 
   def plate_rows
-    ("A".."#{(?A+height-1).chr}").to_a
+    ("A".."#{(?A.getbyte(0)+height-1).chr}").to_a
   end
 
   def plate_columns
