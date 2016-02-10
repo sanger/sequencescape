@@ -62,7 +62,7 @@ class Well < Aliquot::Receptacle
 
   scope :without_report, ->(product_criteria) {
     joins(:qc_metrics => :product_criteria).
-   where(:qc_metrics => { :id=> nil},:product_criteria=>{:product_id=>product_criteria.product_id,:stage=>product_criteria.stage})
+    where(:qc_metrics => { :id=> nil},:product_criteria=>{:product_id=>product_criteria.product_id,:stage=>product_criteria.stage})
   }
 
   has_many :target_well_links, :class_name => 'Well::Link', :foreign_key => :source_well_id, :conditions => { :type => 'stock' }

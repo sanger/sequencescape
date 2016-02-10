@@ -27,6 +27,7 @@ class QcMetric < ActiveRecord::Base
 
   belongs_to :asset
   belongs_to :qc_report
+  has_one :product_criteria, :through => :qc_report
   validates_presence_of :asset, :qc_report
   validates_inclusion_of :qc_decision, :in => QcMetric.valid_states
 

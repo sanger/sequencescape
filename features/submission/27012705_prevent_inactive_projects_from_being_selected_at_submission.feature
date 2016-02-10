@@ -11,7 +11,7 @@ Feature: The submissions page should only autosuggests active and approved proje
     And I have an "unapproved" project called "Project B"
     And I have an inactive project called "Project C"
     When I follow "Create Submission"
-    Then I should see the required select field "Project" with the option "Project A"
-    Then I should see the required select field "Project" without the option "Project B"
-    Then I should see the required select field "Project" without the option "Project C"
+    Then the select field "Project Name" should have the option "Project A"
+    Then the select field "Project Name" should not have the option "Project B"
+    Then the select field "Project Name" should not have the option "Project C"
 

@@ -9,7 +9,7 @@
 <div class="sub-panel row">
   <h3>Study and Project</h3>
   <div class="col-md-6">
-    <%= form.label :study_id, "Study:" %>
+    <%= form.label :study_id, "Study" %>:
     <%= studies_select(form, @presenter.studies) %>
     <div class='cross-compatible'>
       <%= form.label    :cross_study, 'This is a cross-study pool' %>
@@ -17,7 +17,7 @@
     </div>
   </div>
   <div class="project col-md-6">
-    <%= form.label :project_name, "Project Name:" %>
+    <%= form.label :project_name, "Project Name" %>:
     <%= projects_select(form, @presenter.user_valid_projects) %>
     <div class='cross-compatible'>
       <%= form.label    :cross_project, 'This is a cross-project pool' %>

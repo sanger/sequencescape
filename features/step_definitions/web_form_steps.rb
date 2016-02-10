@@ -106,6 +106,16 @@ Then /^I should see the (required )?select field "([^\"]+)" without the option "
   element.all("option").none? {|o| o.text == option} or raise Capybara::ElementNotFound, "Field #{field.inspect} has option #{option.inspect}"
 end
 
+Then /^the select field "([^\"]+)" should have the option "([^\"]+)"$/ do |field, option|
+  element = page.find_field(field, :visible=>:all,:disabled=>true)
+  element.all("option").detect {|o| o.text == option} or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
+end
+
+Then /^the select field "([^\"]+)" should not have the option "([^\"]+)"$/ do |field, option|
+  element = page.find_field(field, :visible=>:all,:disabled=>true)
+  element.all("option").none? {|o| o.text == option} or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
+end
+
 Then /^the "([^\"]+)" field should be marked in error$/ do |field|
   element = page.find_field(field) or raise Capybara::ElementNotFound, "Field #{ field.inspect } not found"
   find(".field_with_errors ##{element['id']}")
